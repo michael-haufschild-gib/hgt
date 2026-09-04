@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SecondOrderCoefficientDecomposition
+import GaloisForLFunctions.HTGeometry.StrelitzLogJetDefs
 
 /-!
 # Strelitz logarithmic-jet reduction for second-order ADEs
@@ -20,13 +21,6 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 open Complex
-
-/-- Euler logarithmic derivative `z f'(z) / f(z)`. -/
-def eulerLogDeriv (f : ℂ → ℂ) (z : ℂ) : ℂ := z * deriv f z / f z
-
-/-- Euler derivative of the Euler logarithmic derivative. -/
-def eulerLogDerivSecond (f : ℂ → ℂ) (z : ℂ) : ℂ :=
-  z * deriv (eulerLogDeriv f) z
 
 /-- Exact logarithmic-jet identity replacing the second derivative. -/
 theorem eulerSecondDeriv_eq

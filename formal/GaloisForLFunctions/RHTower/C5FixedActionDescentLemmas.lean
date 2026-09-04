@@ -32,17 +32,17 @@ theorem deriv_cross_lt_of_strictAnti_derivRatio {N D N' D' : ℝ → ℝ} {t : �
     (hD' : ∀ s ∈ Ioc 0 t, 0 < D' s)
     (hanti : StrictAntiOn (fun s => N' s / D' s) (Ioc 0 t)) :
     N' t * D t < N t * D' t := by
-  obtain ⟨ξ, hξ, hcauchy⟩ := exists_ratio_hasDerivAt_eq_ratio_slope ht hNc hDc hN hD
+  obtain ⟨ξ, hξ, hcauchy⟩ := exists_ratio_hasDerivAt_eq_ratio_slope N N' ht hNc hN D D' hDc hD
   rw [hN0, hD0, sub_zero, sub_zero] at hcauchy
   -- `D t > 0` by the mean value theorem
   obtain ⟨η, hη, hslope⟩ := exists_hasDerivAt_eq_slope D D' ht hDc hD
   have hDt : 0 < D t := by
     rw [hD0, sub_zero, sub_zero] at hslope
-    have hη' : 0 < D' η := hD' ⟨hη.1, hη.2.le⟩
-    have : D t = D' η * t := by rw [hslope]; field_simp
+    have hη' : 0 < D' η := hD' η ⟨hη.1, hη.2.le⟩
+    have : D t = D' η * t := by rw [hslope, div_mul_cancel₀ _ ht.ne']
     rw [this]; positivity
-  have hD'ξ : 0 < D' ξ := hD' ⟨hξ.1, hξ.2.le⟩
-  have hD't : 0 < D' t := hD' ⟨ht, le_rfl⟩
+  have hD'ξ : 0 < D' ξ := hD' ξ ⟨hξ.1, hξ.2.le⟩
+  have hD't : 0 < D' t := hD' t ⟨ht, le_rfl⟩
   have hlt : N' t / D' t < N' ξ / D' ξ := hanti ⟨hξ.1, hξ.2.le⟩ ⟨ht, le_rfl⟩ hξ.2
   have hratio : N' ξ / D' ξ = N t / D t := by
     rw [div_eq_div_iff hD'ξ.ne' hDt.ne']
@@ -52,7 +52,7 @@ theorem deriv_cross_lt_of_strictAnti_derivRatio {N D N' D' : ℝ → ℝ} {t : �
 
 /-- **Monotone l'Hospital, strict form.**  Under the same hypotheses, `N/D` is strictly decreasing
 on `(0, t]`. -/
-theorem strictAntiOn_ratio_of_strictAnti_derivRatio {N D N' D' : ℝ → ℝ} {t : ℝ} (ht : 0 < t)
+theorem strictAntiOn_ratio_of_strictAnti_derivRatio {N D N' D' : ℝ → ℝ} {t : ℝ} (_ht : 0 < t)
     (hN0 : N 0 = 0) (hD0 : D 0 = 0)
     (hNc : ContinuousOn N (Icc 0 t)) (hDc : ContinuousOn D (Icc 0 t))
     (hN : ∀ s ∈ Ioo 0 t, HasDerivAt N (N' s) s) (hD : ∀ s ∈ Ioo 0 t, HasDerivAt D (D' s) s)
@@ -66,8 +66,8 @@ theorem strictAntiOn_ratio_of_strictAnti_derivRatio {N D N' D' : ℝ → ℝ} {t
       (hDc.mono (Icc_subset_Icc le_rfl hs.2))
       (fun x hx => hD x ⟨hx.1, lt_of_lt_of_le hx.2 hs.2⟩)
     rw [hD0, sub_zero, sub_zero] at hslope
-    have hη' : 0 < D' η := hD' ⟨hη.1, hη.2.le.trans hs.2⟩
-    have : D s = D' η * s := by rw [hslope]; field_simp
+    have hη' : 0 < D' η := hD' η ⟨hη.1, hη.2.le.trans hs.2⟩
+    have : D s = D' η * s := by rw [hslope, div_mul_cancel₀ _ hs.1.ne']
     rw [this]; exact mul_pos hη' hs.1
   refine strictAntiOn_of_deriv_neg (convex_Ioc 0 t) ?_ ?_
   · -- continuity of the quotient on `(0, t]`
@@ -89,7 +89,7 @@ theorem strictAntiOn_ratio_of_strictAnti_derivRatio {N D N' D' : ℝ → ℝ} {t
 
 /-- The two-point curvature gain `Q(y, x) = 3(c'(x)² − c'(y)²) − 2(c''(x) − c''(y))(c(x) + c(y))`. -/
 def twoPointCurvatureGain (c c₁ c₂ : ℝ → ℝ) (y x : ℝ) : ℝ :=
-  3 * (c₁ x ^ 2 - c₁ y ^ 2) - 2 * (c₂ x - c₂ y) * (c x + c y)
+  3 * (c₁ x * c₁ x - c₁ y * c₁ y) - 2 * ((c₂ x - c₂ y) * (c x + c y))
 
 /-- **Two-point curvature gain is nonnegative.**  Hypotheses on `[y, ∞)`: `c` differentiable with
 derivative `c₁`, `c₁` with derivative `c₂`, `c₂` with derivative `c₃`; `0 < c`, `0 ≤ c₁`,
@@ -113,31 +113,28 @@ theorem twoPointCurvatureGain_nonneg {c c₁ c₂ c₃ : ℝ → ℝ} {y : ℝ}
       have hd : HasDerivAt (twoPointCurvatureGain c c₁ c₂ y)
           (3 * (2 * c₁ x * c₂ x) - 2 * (c₃ x * (c x + c y) + (c₂ x - c₂ y) * c₁ x)) x := by
         unfold twoPointCurvatureGain
-        have h1 := ((hc₁ x hx).pow 2).sub_const (c₁ y ^ 2)
+        have h1 := ((hc₁ x hx).mul (hc₁ x hx)).sub_const (c₁ y * c₁ y)
         have h2 := ((hc₂ x hx).sub_const (c₂ y)).mul ((hc x hx).add_const (c y))
         have := (h1.const_mul 3).sub (h2.const_mul 2)
-        convert this using 1
-        ring
+        exact this.congr_deriv (by ring)
       exact hd.continuousAt.continuousWithinAt
     · intro x hx; rw [interior_Ici] at hx
       have hd : HasDerivAt (twoPointCurvatureGain c c₁ c₂ y)
           (3 * (2 * c₁ x * c₂ x) - 2 * (c₃ x * (c x + c y) + (c₂ x - c₂ y) * c₁ x)) x := by
         unfold twoPointCurvatureGain
-        have h1 := ((hc₁ x hx.le).pow 2).sub_const (c₁ y ^ 2)
+        have h1 := ((hc₁ x hx.le).mul (hc₁ x hx.le)).sub_const (c₁ y * c₁ y)
         have h2 := ((hc₂ x hx.le).sub_const (c₂ y)).mul ((hc x hx.le).add_const (c y))
         have := (h1.const_mul 3).sub (h2.const_mul 2)
-        convert this using 1
-        ring
+        exact this.congr_deriv (by ring)
       exact hd.differentiableAt.differentiableWithinAt
     · intro x hx; rw [interior_Ici] at hx
       have hd : HasDerivAt (twoPointCurvatureGain c c₁ c₂ y)
           (3 * (2 * c₁ x * c₂ x) - 2 * (c₃ x * (c x + c y) + (c₂ x - c₂ y) * c₁ x)) x := by
         unfold twoPointCurvatureGain
-        have h1 := ((hc₁ x hx.le).pow 2).sub_const (c₁ y ^ 2)
+        have h1 := ((hc₁ x hx.le).mul (hc₁ x hx.le)).sub_const (c₁ y * c₁ y)
         have h2 := ((hc₂ x hx.le).sub_const (c₂ y)).mul ((hc x hx.le).add_const (c y))
         have := (h1.const_mul 3).sub (h2.const_mul 2)
-        convert this using 1
-        ring
+        exact this.congr_deriv (by ring)
       rw [hd.deriv]
       have hcy : c y ≤ c x := hmono (mem_Ici.2 le_rfl) (mem_Ici.2 hx.le) hx.le
       have hcyp : 0 < c y := hpos y le_rfl
@@ -165,11 +162,12 @@ theorem two_mul_integral_le_mul_of_convexOn {E : ℝ → ℝ} {t : ℝ} (ht : 0 
     intro s hs
     have hθ0 : 0 ≤ s / t := div_nonneg hs.1 ht.le
     have hθ1 : s / t ≤ 1 := (div_le_one ht).2 hs.2
-    have := hconv.2 (Set.left_mem_Icc.2 ht.le) (Set.right_mem_Icc.2 ht.le)
-      (sub_nonneg.2 hθ1) hθ0 (by ring)
-    simp only [smul_eq_mul, mul_zero, zero_add, hE0] at this
-    have hs' : (1 - s / t) * 0 + s / t * t = s := by field_simp
-    rw [hs'] at this
+    have hab : (1 - s / t) + s / t = 1 := by ring
+    have hcv := hconv.2 (Set.left_mem_Icc.2 ht.le) (Set.right_mem_Icc.2 ht.le)
+      (sub_nonneg.2 hθ1) hθ0 hab
+    simp only [smul_eq_mul, mul_zero, zero_add, hE0] at hcv
+    have hst : s / t * t = s := div_mul_cancel₀ s ht.ne'
+    rw [hst] at hcv
     linarith
   have hint : (∫ s in (0 : ℝ)..t, E s) ≤ ∫ s in (0 : ℝ)..t, s / t * E t := by
     refine intervalIntegral.integral_mono_on ht.le ?_ ?_ ?_

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.StrelitzLogJetReduction
+import GaloisForLFunctions.HTGeometry.StrelitzLogJetDefs
 import GaloisForLFunctions.RHTower.LogModulusHorizontal
 import Mathlib.Analysis.Complex.RealDeriv
 

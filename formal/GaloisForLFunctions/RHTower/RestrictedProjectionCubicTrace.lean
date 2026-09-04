@@ -269,8 +269,8 @@ theorem re_opTrace_restrictedProjectionCubicDefect_eq_seamEnergies
   change (opTrace (ContinuousLinearMap.adjoint S ∘L S -
       ContinuousLinearMap.adjoint T ∘L T)).re = hsNormSq S - hsNormSq T
   rw [opTrace_sub_seamEnergy S T hS hT]
-  change (opTrace (ContinuousLinearMap.adjoint S ∘L S)).re -
-      (opTrace (ContinuousLinearMap.adjoint T ∘L T)).re =
+  change RCLike.re (opTrace (ContinuousLinearMap.adjoint S ∘L S)) -
+      RCLike.re (opTrace (ContinuousLinearMap.adjoint T ∘L T)) =
     hsNormSq S - hsNormSq T
   rw [re_opTrace_adjoint_comp_self hS, re_opTrace_adjoint_comp_self hT]
 

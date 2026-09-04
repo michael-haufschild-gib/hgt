@@ -1,5 +1,5 @@
-import GaloisForLFunctions.HTGeometry.StrelitzHeatLeadingDecay
 import GaloisForLFunctions.HTGeometry.CircleMaximumExistence
+import GaloisForLFunctions.HTGeometry.StrelitzLogJetDefs
 
 /-!
 # Maximum-modulus points in Strelitz logarithmic coordinates
@@ -27,7 +27,7 @@ theorem exists_maximumPoint_real_eulerLogDeriv
   obtain ⟨z, hz, hmax⟩ := exists_max_on_circle ha hr
   have hfloor := maxTerm_le_norm_of_max_on_circle ha hr hz hmax
   have hfz : coeffFun a z ≠ 0 := by
-    have hmu : 0 < maxTerm a r := maxTerm_pos ha hr hn₀
+    obtain ⟨_, _, hmu⟩ := exists_maxTerm_eq ha hr hn₀
     exact norm_pos_iff.mp (lt_of_lt_of_le hmu hfloor)
   exact ⟨z, hz, hfloor, hfz, by
     simpa [eulerLogDeriv] using

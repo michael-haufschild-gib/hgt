@@ -405,9 +405,11 @@ C_def(c) = C_B - D_c* C_B D_c >= 0.                    (RUCRI.13)
 Tr C_def(c)
   = sum_(n>=2) (1-n^(-2c)) Lambda(n)/(4*n*log(n)^3),   (RUCRI.14)
 
+right-d/dc|_(c=0) Tr C_def(c) = F(0),
+
 d/dc Tr C_def(c)
   = F(c)
-  = sum_(n>=2) Lambda(n)n^(-(1+2c))/(2*log(n)^2),      (RUCRI.15)
+  = sum_(n>=2) Lambda(n)n^(-(1+2c))/(2*log(n)^2),      c>0,  (RUCRI.15)
 
 B_base = integral_0^infinity F(c) dc.                  (RUCRI.16)
 ```
@@ -418,9 +420,11 @@ prime matrix coefficients remain present.
 
 **Proof.** The corpus identifies each diagonal of `C_B` with
 `Lambda(n)/(4*n*log(n)^3)` and proves full matrix colligation.  Multiplication by `D_c` changes its
-diagonal by `n^(-2c)`, proving `(RUCRI.14)`.  Termwise differentiation is justified by the
-summable quadratic Green flux already proved in
-`RoutePPrimitiveBurnolApertureDefectFirstFlux`; it gives `(RUCRI.15)`.  Positivity permits Tonelli,
+diagonal by `n^(-2c)`, proving `(RUCRI.14)`.  Termwise differentiation on the open ray is justified
+by the summable quadratic Green flux already proved in
+`RoutePPrimitiveBurnolApertureDefectFirstFlux`; the same theorem supplies the right derivative at
+the endpoint `c=0`.  This gives `(RUCRI.15)` without pretending that the total series extends to a
+two-sided neighborhood of zero.  Positivity permits Tonelli,
 and
 
 ```text
@@ -478,5 +482,9 @@ action estimate, not a coefficientwise `ell^3` estimate.
 
 ## 9. Lean status
 
-Paper proof dependency-closed.  Lean formalization intentionally deferred during current
-corpus-audit phase.
+Formalization in progress in
+`GaloisForLFunctions.RHTower.RestrictedProjectionCubicTrace` and
+`GaloisForLFunctions.RHTower.RestrictedUnitaryCubicRelativeIndex`.  The generic cubic
+Schatten-one/channel algebra, signed seam-energy trace, exact safe-Euler Gamma clock, Gaussian and
+continuum Mellin subordination, natural-number Burnol defect/flux formulas, interior derivative,
+endpoint right derivative, and total action identity are represented by closed Lean theorems.

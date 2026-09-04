@@ -148,3 +148,8 @@ with the prime 2 to λ = 1.433 (> √2). Floating-point stage; interval evaluati
   produce the cofinal statement.  Guth–Maynard: the corpus proves `guthMaynard_inert`
   (`HTGeometry/LindelofPivotCoincidences`) — the GM bound never improves the classical bound at the
   Lindelöf pivot — so formalising GM Theorem 1.1 has no RH-lane consumer here; the GM card is parked.
+
+### WP-T8 (2026-09-04) — two-sided bracket of μ₀(S)
+- `certificate_upper.py` (pod, derivative-energy tail penalty, Ξ₂ = 1000): μ₀(log 2) ∈ [0.5177, 0.5515],
+  μ₀(0.9) ∈ [0.0173, 0.0693], μ₀(1.0) ∈ [0.0014, 0.0131], μ₀(1.05) ≤ 0.0042.  The gap is the staircase
+  loss on the lower side and the finite-N truncation on the upper side; no sign change anywhere.

@@ -4934,3 +4934,24 @@ as a cubic-clock morphism; evaluate its lifting class on PCOB's unique
 `S_Lambda^3(T)=8 sign(t) Phi tensor |b_t><b_t|`; prove this ideal value is the Xi escape incidence
 and inherits the same primitive nuclear `<1` budget. Failure of any coefficientwise identification
 retires the mechanism.
+F625 — `ULF-PLCIE-001`: inverse prime heat on the literal formed density has exact weight
+`p^(2u)w_d(p)=8d log(p)p^(-(1+2(d-u)))`, summable exactly for `u<d`. Thus `d` is the maximal
+trace-ideal time of `T_d`; every finite-prime compression crosses it by an invertible gauge, while
+cofinal source completion cannot.
+F626 — At forced exit `u=d`, first prime clock is exactly `8d(log p)^2/p`, the projective
+coefficient ray of the proved completion metric anomaly; equality of scalar normalization is open.
+Same source orbit has third forward jet
+`-S_Lambda^3(T_d)=-8 Phi tensor |b_d><b_d|`. Cubic birth and non-trace-class completion anomaly are
+therefore infinitesimal and endpoint shadows of one literal source flow.
+CANNOT-279 — One-sided prime reflection and local Stokes multi-Rees channels are old/closed.
+Finite-cutoff gauge failure, generic jets, and the always-one source survival index cannot select
+the Xi `0/1` escape invariant; a divisor-fitted scalar match `8d=115/(864a^4)` is circular.
+MUST-194 — Construct theta-forced normalization and relative cubic-clock boundary pairing for
+`0<=u<d`; prove its integer is Xi escape multiplicity and its same ideal representative is the
+anomaly-subtracted primitive Euler remainder with norm `<1`. This is sole PHCCED completion gate.
+F627 — `ULF-PLCCKU-001`: raw inverse-heat endpoint is unbounded. On prime packets
+`n<p<=n^2`, critical cubic-Cauchy Rayleigh quotients grow at least by a constant times
+`sum log(p)/p`, which grows like `log n` from existing explicit Mangoldt-square bounds.
+CANNOT-280 — Raw `T_(d,d)` is not a bounded extension element; trace normalization returns the
+old nonselective aperture family. Only a source-canonical closed endpoint relation and its graph
+projection/bounded transform survive. Retire PHCCED if that transform has universal cone class.

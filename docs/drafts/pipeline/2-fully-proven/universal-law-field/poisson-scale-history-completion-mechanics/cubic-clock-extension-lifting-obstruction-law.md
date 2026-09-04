@@ -4,7 +4,8 @@
 - **Stage:** 2-fully-proven
 - **Type:** unconditional source-clock extension law
 - **Parents:** ULF-PCOB-001, ULF-SACWHT-001
-- **Status:** `[PAPER-PROVED] [LEAN-IN-PROGRESS] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/CubicClockExtensionLiftingObstruction.lean`
 
 ## 1. Statement
 
@@ -138,4 +139,3 @@ specialization and identify the ideal term in `(CCEL.10)` with its physical comp
 - `[NOT CLAIMED]` Identification with escape multiplicity or any RH consequence.
 - `[FALSIFIER]` Retire the arithmetic use if theta completion does not yield `(CCEL.2)` before Xi
   specialization, or if its admissible source-preserving changes of splitting can kill the class.
-

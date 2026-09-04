@@ -158,3 +158,56 @@ language `4t|M|/|H| = [tD₂'/D₂]·[(ρ − r₃)/(ρ − r₂)]` with `ρ ≥
    likelihood jets `J₂ … J₅` bounded by the moment machinery (`twelve_mul_thetaCuspLikelihoodMean…`,
    `…TailProbability_lt_thirtyFive_mul_exp_neg_three_scale`); `(R4)` near `x = 0` is the delicate one.
 4. `(c)`: the `w − 2` bound, then `4t|M| ≤ (3 + 2w' + 0.88Φ)|H|`.
+
+## Sign facts: first-atom part versus likelihood jets (numerical, 2026-09-04)
+
+`c = c₁ − J₂` with `c₁ = 4A + 6A/(A − 3/2)²` (first atom) and `J_k = LP^{(k)}` the likelihood jets:
+
+| x | c₁' | J₃ | c₁'' | J₄ | J₄/c₁'' | c₁''' | J₅ |
+|---|---|---|---|---|---|---|---|
+| 0.0 | −14.42 | −14.42 | 371.8 | 228.8 | 0.62 | −3378 | −3378 |
+| 0.1 | 11.45 | −2.62 | 184.9 | 48.6 | 0.26 | −928 | −810 |
+| 0.2 | 26.74 | −0.33 | 132.1 | 7.62 | 0.058 | −250 | −158 |
+| 0.3 | 39.21 | −0.025 | 121.5 | 0.73 | 0.006 | 4.8 | −19.3 |
+| 0.5 | 65.37 | −2e−5 | 147.2 | 8e−4 | 5e−6 | 225 | −0.03 |
+
+* `(R2)` `c' = c₁' − J₃ ≥ c₁' > 0` for `x ≥ 0.1` (since `J₃ < 0`); on `(0, 0.1)` the likelihood
+  term carries the sign (`c'(0) = 0`, `c''(0) = 143`).
+* `(R3)` `c'' = c₁'' − J₄ > 0` with margin `≥ 38 %` (worst at `x = 0`); needs upper bounds on `J₄`
+  of size `≈ 230` at `A = π`, `≈ 50` at `A ≥ 3.8`, `≈ 8` at `A ≥ 4.7`; the corpus's uniform
+  `J₄ < 2432` is too weak, its scale-indexed families are the right tool.
+* `(R4)` is needed only where `c''' ≥ 0`, i.e. `x ≳ 0.28`; there `c''' = c₁''' − J₅ ≥ c₁''' > 0`
+  (`J₅ < 0`) and `E = c'c'' − c c''' ≫ 0`.  On `(0, 0.28)` we have `c''' < 0` (`c⁗(0) < 0`), so
+  `E > 0` holds automatically; the earlier worry about a 12 % margin at `x = 0` was a sign error.
+* All three are robust two-level-system statements: at `A = π` the `n = 3` atom is `10⁷` times
+  smaller than the `n = 2` atom, so closed forms with the `n = 2` atom plus a remainder bound suffice.
+
+## Lean status
+
+* `C5FixedActionDescentLemmas` (Mathlib-only): strict monotone l'Hospital (`deriv_cross_lt…`,
+  `strictAntiOn_ratio…`), `twoPointCurvatureGain_nonneg`, chord bound — compiled, wired.
+* `ThetaCuspC5CompletedGateReduction`: excess form, Bose floor, assembly — written, awaiting the
+  dependency build.
+* `ThetaCuspC5CompletedGateSigns`: `(b)` from `(R3)`, `(a)` from `(R1)–(R4)` — written, awaiting
+  the dependency build.
+
+## Regime I (`A(u − t) ≥ 6`): explicit plan for the sign facts (2026-09-04, pod `clg_moments.py`)
+
+Corpus decompositions on `x > 0`: `c' = BW₃ − J₃`, `c'' = BW₄ − J₄`, `c''' = BW₅ − J₅` with
+`BW_k = thetaCuspBornWittenLog{Third,Fourth,Fifth}Derivative 1 x` (explicit rational functions of
+`B = A − 3/2`: `BW₃ = 2A(4 − 6/B² − 18/B³)`, `BW₄ = 2A(8 + 12/B² + 108/B³ + 162/B⁴)`) and
+`J_k = thetaCuspLikelihoodSourceLogPartitionJet_k` (via `iteratedDeriv_{three,four,five}_…_eq_full_jets`
+and `…_eq_higherLikelihoodLogJet…`).
+
+Normalized moments `NM_k = M_k/Z` of the higher likelihood state, for `A ∈ [6, 26]` (and monotone in
+`A`): `NM_k ≤ C_k e^{−3A}` with `C = (20.0, 60.9, 185.7, 567.8, 1740.7, 5354.1)` for `k = 0…5`; these
+are the `n = 2` closed forms at `A = 6`, `16·3^k + 18 Σ_{j≤k} k!/j!·3^j/B^{k−j+1}`; the `n ≥ 3` atoms
+contribute a relative `5·10⁻¹³`.  Cumulants: `|κ₃| ≤ NM₃(1 + 3NM₀ + 2NM₀²)` etc. by the corpus
+`thetaCuspHigherLikelihoodSpectralMoment_mul_le_tailMass_mul`.  Hence
+`|J₃| ≤ 5300·A³e^{−3A}`, `J₄ ≤ 2·10⁴·A⁴e^{−3A}`, `|J₅| ≤ 1.2·10⁵·A⁵e^{−3A}` (numerically `3813`,
+`1.9·10⁴`, `9·10⁴`), against `BW₃ ≥ 8A − 6`, `BW₄ ≥ 16A`, `BW₅(A=6) ≈ 42`, `E₁(A=6) ≈ 4055`.
+All four sign facts then hold on `[0.3235, ∞)` with margins `≥ 10⁴`.
+
+The corner regime `A(u − t) < 6` (i.e. `t > u − 0.3235`) needs `J₄ < BW₄` on `[0, 0.32]` with
+`J₄(0) = 229` vs `BW₄(0) = 372`; this is a chamber-wise two-level-system computation
+(`J₄` decreasing from `229` to `0.7`, `BW₄` from `372` to `121`), to be done after regime I.

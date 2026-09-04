@@ -62,8 +62,19 @@ Certified positivity: `S ≤ 1`, i.e. `λ ≤ √e = 1.6487`, against the Connes
 multiplier beyond `Ξ = 24` by the constant `c_last ≤ m`, so it is a lower bound of the Rayleigh
 quotient of one test function; an earlier version of this README wrongly read a "threshold
 `S* ≈ 1.05`" off it.  Rigorous upper bounds come from `certificate_upper.py` (test function in `V₀`
-vanishing at both endpoints, `|f̂| ≤ W/ξ²`, exact multiplier to `Ξ₂ = 200` with the upper series
-tail, analytic tail beyond); its log is `certificate_upper.log`.
+vanishing at both endpoints, exact multiplier to `Ξ₂ = 1000` with the upper series tail, and the
+derivative-energy penalty `τ‖f'‖²`, `τ = sup_{ξ≥Ξ₂} m_up(ξ)/ξ²`, for the far tail); log
+`certificate_upper2.log`.  Two-sided brackets for the constrained ground energy `μ₀(S)`:
+
+| S | certified lower bound | rigorous upper bound |
+|---|---|---|
+| log 2 | 0.5177 | 0.5515 |
+| 0.90 | 0.0173 | 0.0693 |
+| 1.00 | 0.0014 | 0.0131 |
+| 1.05 | — | 0.0042 |
+
+The upper bounds are Rayleigh quotients of explicit polynomials times `(a² − x²)` (quadrature at
+25 digits), so they are exact up to quadrature; the lower bounds are the staircase certificates.
 
 Logs: `certificate_rigorous.log` (width 0.25, first far-tail bound — superseded),
 `certificate_rigorous_w005.log` (width 0.05; the `S ≥ log 3` rows there omit the prime terms and are

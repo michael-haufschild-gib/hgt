@@ -1,5 +1,6 @@
 import Mathlib.LinearAlgebra.Quotient.Basic
 import Mathlib.Tactic.Abel
+import Mathlib.Data.Complex.Basic
 
 /-!
 # Cubic clock extension lifting obstruction
@@ -237,5 +238,66 @@ theorem cubicCompletion_transgression (F : C.Lift) (x : X) :
 end Lift
 
 end CubicClockCompletion
+
+/-! ## A split linear extension with nonzero cubic refinement -/
+
+/-- Unipotent clock on a split two-coordinate completion. -/
+def unipotentCompletionClock : (ℂ × ℂ) →ₗ[ℂ] (ℂ × ℂ) where
+  toFun z := (z.1 + z.2, z.2)
+  map_add' x y := by ext <;> simp [add_left_comm, add_comm]
+  map_smul' r x := by ext <;> simp [mul_add]
+
+/-- All scalar lifts of the second-coordinate quotient landing. -/
+def unipotentCompletionLift (h : ℂ) : ℂ →ₗ[ℂ] (ℂ × ℂ) where
+  toFun z := (h * z, z)
+  map_add' x y := by ext <;> simp [mul_add]
+  map_smul' r x := by ext <;> simp [mul_left_comm]
+
+@[simp]
+theorem unipotentCompletionClock_apply (z : ℂ × ℂ) :
+    unipotentCompletionClock z = (z.1 + z.2, z.2) := by
+  rfl
+
+@[simp]
+theorem unipotentCompletionLift_apply (h z : ℂ) :
+    unipotentCompletionLift h z = (h * z, z) := by
+  rfl
+
+/-- The cube of the unipotent completion clock adds exactly three copies of the quotient
+coordinate. -/
+theorem linearClockCube_unipotentCompletionClock (z : ℂ × ℂ) :
+    linearClockCube unipotentCompletionClock z = (z.1 + 3 * z.2, z.2) := by
+  simp [linearClockCube]
+  ring
+
+/-- Every lift of the displayed scalar family has the same nonzero cubic defect. -/
+theorem unipotentCompletionLift_cubicDefect (h z : ℂ) :
+    linearClockCube unipotentCompletionClock (unipotentCompletionLift h z) -
+        unipotentCompletionLift h (linearClockCube LinearMap.id z) =
+      (3 * z, 0) := by
+  rw [linearClockCube_unipotentCompletionClock]
+  simp [linearClockCube]
+
+/-- With identity clocks on source and ideal, every cubic splitting coboundary vanishes. -/
+theorem identityClock_cubicCoboundary_zero (H : ℂ →ₗ[ℂ] ℂ) :
+    (linearClockCube LinearMap.id).comp H -
+        H.comp (linearClockCube LinearMap.id) = 0 := by
+  apply LinearMap.ext
+  intro z
+  simp [linearClockCube]
+
+/-- No scalar lift of the split second-coordinate quotient is cubic-equivariant. -/
+theorem not_exists_unipotentCompletionLift_cubicEquivariant :
+    ¬ ∃ h : ℂ,
+      (linearClockCube unipotentCompletionClock).comp (unipotentCompletionLift h) =
+        (unipotentCompletionLift h).comp (linearClockCube LinearMap.id) := by
+  rintro ⟨h, heq⟩
+  have hpoint := LinearMap.congr_fun heq (1 : ℂ)
+  have hdef := unipotentCompletionLift_cubicDefect h 1
+  rw [show linearClockCube unipotentCompletionClock (unipotentCompletionLift h 1) =
+      unipotentCompletionLift h (linearClockCube LinearMap.id 1) by
+        simpa [LinearMap.comp_apply] using hpoint] at hdef
+  have hfirst := congrArg Prod.fst hdef
+  norm_num at hfirst
 
 end GaloisForLFunctions.HTGeometry

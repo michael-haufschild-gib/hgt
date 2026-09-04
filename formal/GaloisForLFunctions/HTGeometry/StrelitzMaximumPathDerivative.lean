@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.StrelitzNonnegativeEdgePhase
+import GaloisForLFunctions.HTGeometry.StrelitzAngularCurvature
 import GaloisForLFunctions.RHTower.LogModulusHorizontal
 
 /-!
