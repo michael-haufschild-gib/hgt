@@ -92,6 +92,46 @@ noncomputable def laurentSeriesResidueFieldEquiv
     (laurentPowerSeriesEquivValuedInteger F)).symm.trans
       PowerSeries.residueFieldOfPowerSeries
 
+private theorem powerSeriesResidueFieldEquiv_residue
+    (F : Type u) [Field F] (p : PowerSeries F) :
+    PowerSeries.residueFieldOfPowerSeries
+        (IsLocalRing.residue (PowerSeries F) p) =
+      PowerSeries.constantCoeff p := by
+  change PowerSeries.residueFieldOfPowerSeries
+    ((Ideal.Quotient.mk (IsLocalRing.maximalIdeal (PowerSeries F))) p) = _
+  change ((Ideal.quotEquivOfEq
+      (PowerSeries.ker_coeff_eq_max_ideal (k := F)).symm).trans
+      (RingHom.quotientKerEquivOfSurjective
+        (PowerSeries.constantCoeff_surj (R := F))))
+      ((Ideal.Quotient.mk (IsLocalRing.maximalIdeal (PowerSeries F))) p) = _
+  rw [RingEquiv.trans_apply, Ideal.quotEquivOfEq_mk,
+    RingHom.quotientKerEquivOfSurjective_apply_mk]
+
+/-- Under the canonical Laurent residue equivalence, reduction of a power series is its constant
+coefficient. -/
+theorem laurentSeriesResidueFieldEquiv_residue_powerSeries
+    (F : Type u) [Field F] (p : PowerSeries F) :
+    laurentSeriesResidueFieldEquiv F
+        (IsLocalRing.residue
+          ((Valued.v : Valuation (LaurentSeries F) ℤᵐ⁰).integer)
+          (laurentPowerSeriesEquivValuedInteger F p)) =
+      PowerSeries.constantCoeff p := by
+  let e := laurentPowerSeriesEquivValuedInteger F
+  have hmap :
+      (IsLocalRing.ResidueField.mapEquiv e).symm
+          (IsLocalRing.residue
+            ((Valued.v : Valuation (LaurentSeries F) ℤᵐ⁰).integer) (e p)) =
+        IsLocalRing.residue (PowerSeries F) p := by
+    apply (IsLocalRing.ResidueField.mapEquiv e).injective
+    rw [(IsLocalRing.ResidueField.mapEquiv e).apply_symm_apply]
+    rfl
+  change PowerSeries.residueFieldOfPowerSeries
+      ((IsLocalRing.ResidueField.mapEquiv e).symm
+        (IsLocalRing.residue
+          ((Valued.v : Valuation (LaurentSeries F) ℤᵐ⁰).integer) (e p))) = _
+  rw [hmap]
+  exact powerSeriesResidueFieldEquiv_residue F p
+
 noncomputable instance laurentSeriesRankOne
     (F : Type u) [Field F] :
     (Valued.v : Valuation F⸨X⸩ ℤᵐ⁰).RankOne :=

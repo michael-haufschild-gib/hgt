@@ -1,8 +1,9 @@
 # Two-term real Milnor amplitude on Deninger's algebraic character field
 
 - **ID:** `deninger-algebraic-cyclotomic-milnor-amplitude`
-- **Stage:** 2-fully-proven
-- **Type:** SOURCE THEOREM
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Formal status:** `[FORMALIZED]` exact equation `(3)`; unconditional over every field
 - **Labels:** `DAC_ALGEBRAIC_CYCLOTOMIC_MILNOR_AMPLITUDE`
 - **Parent:** `deninger-derived-mw-rational-witt-coefficient`
 
@@ -2274,3 +2275,219 @@ Direct source check and targeted leaf build pass.  All four declarations audit t
 Card remains Stage 2.  The next geometric seam is determinant-normalized short-vector reduction in
 these coordinates followed by finite projective cusp classification; finite presentation of the
 arithmetic group and Moore reciprocity remain downstream.
+
+### Determinant-root Minkowski vectors land in the finite cusp family (2026-09-04)
+
+Four unconditional modules close the short-vector-to-cusp seam:
+
+- `PositiveDefiniteCoordinateFrame.lean` keeps the Jacobi square-root frame in real coordinate
+  space, proves that its coordinate-square sum is the original quadratic form, and proves that the
+  square of its determinant is the form determinant.  The same identity is established for every
+  real power of the absolute determinant.
+- `NumberFieldIntegerVectorDetRootMinimum.lean` applies determinant-normalized Minkowski reduction
+  to the canonical mixed basis and uses the exact lattice equality above to return a literal
+  nonzero vector of `(𝒪_K)^n`.
+- `NumberFieldArchimedeanDetRootShortVector.lean` identifies the canonical quadratic form with the
+  corrected real/Hermitian energy.  Its capstone
+
+```text
+exists_uniform_numberFieldArchimedeanEnergy_le_canonicalDetRoot
+```
+
+  bounds that energy directly by a fixed constant times the correct real determinant root of the
+  canonical archimedean matrix.
+- `NumberFieldArchimedeanFiniteCuspShortVector.lean` specializes to rank two and immediately
+  classifies the resulting nonzero integral vector by the previously constructed finite
+  projective `SL₂(𝒪_K)` cusp family.  Its capstone is
+
+```text
+exists_uniform_numberFieldArchimedean_finiteCuspShortVector
+```
+
+Direct checks and targeted leaf builds pass.  Batched axiom audits of all new declarations report
+exactly `[propext, Classical.choice, Quot.sound]`; all leaves are umbrella-wired without an
+umbrella build.
+
+Card remains Stage 2.  The rank-two short vector and finite orbit label are now produced in one
+theorem.  Remaining geometric work must turn its projective scalar into the invariant normalized
+cusp-height bound, assemble higher-rank finite flag types, and thicken the reduced family to the
+open connected Macbeath cover.  Finite generation of the tame kernel and Moore reciprocity remain
+downstream.
+
+### Unit-scaled primitive minima and product-normalized cusp scalars (2026-09-04)
+
+Four modules close the scalar noncollapse half of the recorded rank-two cusp-height obligation:
+
+- `NumberFieldUnitPositiveWeightBalancing.lean` extracts the single-unit form of unconditional
+  Dirichlet-unit covering.  Every positive place profile is balanced, with one field-only radius,
+  around its multiplicity-weighted geometric mean.
+- `NumberFieldArchimedeanPrimitiveUnitGreedy.lean` inserts one such unit and its inverse into an
+  exact determinant-one diagonal matrix.  Recursive primitive minimality may therefore be tested
+  against every unit-scaled second coordinate.  Its capstone
+
+```text
+exists_numberFieldArchimedean_greedyHeadGeometricBoundRadius
+```
+
+  bounds the greedy head energy by the weighted geometric mean of the next form diagonal, with no
+  supplied unit, minimizer, lattice, or balancing witness.
+- `NumberFieldRankTwoCuspScalarProduct.lean` selects a nonzero coordinate of each fixed finite cusp
+  representative.  Under any projective integral transport, the projective scalar times that
+  coordinate is a literal nonzero algebraic integer.  The product formula then gives the exact
+  weighted-log scalar lower bound.
+- `NumberFieldArchimedeanFiniteCuspShortVectorScalar.lean` adds that lower bound to the existing
+  determinant-root short-vector and finite-cusp package.  Its capstone is
+
+```text
+exists_uniform_numberFieldArchimedean_finiteCuspShortVector_scalarProduct
+```
+
+Direct source checks and targeted leaf builds pass.  A batched axiom audit of all sixteen new
+declarations reports exactly `[propext, Classical.choice, Quot.sound]`; all leaves are umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  The projective scalar is now prevented from collapsing in weighted product,
+but the bound must still be combined with the local determinant/Jacobi identities to produce the
+literal rank-two Siegel height inequality.  Higher-rank finite Steinitz flag types, strict/open
+connected cusp neighbourhoods, tame-kernel finite generation, and Moore reciprocity remain.
+
+### Exact canonical determinant and finite-cusp Siegel height (2026-09-04)
+
+Eight unconditional modules close the rank-two height inequality named above:
+
+- `FiniteMatrixOrthogonalSumDeterminant.lean` proves determinant multiplication for arbitrary
+  finite orthogonal block sums.
+- `ComplexMatrixRealificationDeterminant.lean` proves that realification of a complex matrix has
+  determinant `normSq det`, including the row convention used by the mixed embedding.
+- `NumberFieldArchimedeanCanonicalDeterminant.lean` identifies the determinant of the canonical
+  mixed real form exactly: a fixed coordinate-volume square times the product of local
+  determinants, with complex places counted twice.  It also proves that the total infinite-place
+  weight is `[K : Q]`.
+- `NumberFieldArchimedeanCanonicalDetRootProfile.lean` takes the exact rank-two determinant root,
+  separating the fixed coordinate factor from one half of the weighted local log-determinant mean.
+- `NumberFieldArchimedeanCuspScaledEnergy.lean` computes the energy of every field-scalar multiple
+  of a cusp vector as the sum of the squared-place-scaled head Jacobi weights.
+- `NumberFieldArchimedeanRationalDeterminantProfile.lean` proves that rational determinant-one
+  congruence, hence every rational cusp chart, preserves each local determinant exactly.
+- `NumberFieldArchimedeanFiniteCuspHeight.lean` combines determinant-root Minkowski reduction,
+  finite cusp classification, the algebraic-integer product-formula lower bound for the projective
+  scalar, and weighted AM--GM.  Its capstone is
+
+```text
+exists_uniform_numberFieldArchimedean_finiteCusp_headMeanRatio
+```
+
+  For every rank-two form, one integral translate and one fixed finite cusp representative have a
+  Jacobi chart whose adjacent weighted logarithmic means differ by at most one field-only constant.
+- `NumberFieldArchimedeanFiniteCuspBalancedSiegel.lean` applies specified-data determinant-one unit
+  balancing and mixed unipotent size reduction to that exact chart.  Its capstone is
+
+```text
+exists_uniform_numberFieldArchimedean_finiteCusp_balancedSiegel
+```
+
+  It produces field-uniform Siegel, upper-entry, and determinant-balance constants with every
+  cusp, integral translate, unit tuple, unipotent reduction, and Jacobi decomposition constructed
+  internally.
+
+All direct source checks and targeted leaf builds pass.  One batched axiom audit of the thirty-five
+new declarations reports only `[propext, Classical.choice, Quot.sound]` or no axioms.  All leaves
+are wired into `HTGeometry`; no umbrella build was run.
+
+Card remains Stage 2.  The rank-two analytic height gate is closed inside each rational cusp chart.
+To turn this into a literal `SL₂(O_K)` cover, chart-side unipotent reduction must be replaced by the
+cusp-relative lattice: for cusp ideal `I`, the off-diagonal coefficient lies in `I⁻²`, so that
+conjugation by its pseudo-basis frame is integral.  Higher-rank finite Steinitz flag types and the
+strict/open connected thickening remain downstream.  Arithmetic closure still requires finite
+generation of the actual Milnor tame kernel and the Moore reciprocity theorem identifying the
+relevant kernel as divisible; neither is assumed or weakened here.
+
+### Cusp-relative shear lattice and integral action (2026-09-04)
+
+Two unconditional modules close the integrality obstruction left by chart-side unipotent
+reduction:
+
+- `NumberFieldRankTwoCuspShearCovering.lean` defines the exact shear coefficient ideal `I⁻²` for
+  every finite cusp ideal `I`, selects a nonzero member, and proves one uniform mixed-archimedean
+  coordinate covering radius for all ideals in the finite cusp family.
+- `NumberFieldRankTwoCuspShearIntegralAction.lean` proves that multiplying an `I⁻²` coefficient by
+  any two cusp coordinates is an algebraic integer. Consequently every conjugate
+  `F U(a) F⁻¹` has entries in `O_K` and determinant one. Its capstone
+
+```text
+numberFieldRankTwoCuspChart_shearSpecialLinear_smul
+```
+
+  identifies the transposed upper-shear action inside the rational cusp chart exactly with a
+  determinant-one integral action before entering the chart.
+
+Both direct source checks and targeted leaf builds pass. A batched axiom audit of all nineteen
+public declarations reports only `[propext, Classical.choice, Quot.sound]`. Both leaves are wired
+into `HTGeometry`; no umbrella build was run.
+
+Card remains Stage 2. Rank-two cusp-side shears are now genuine `SL₂(O_K)` translates. The next
+rank-two bridge is analogous cusp-relative determinant-one unit conjugation, after which the
+balanced Siegel theorem can return one literal integral translate rather than a separate
+chart-side group element. Higher-rank finite Steinitz flag types and strict/open connected
+thickening remain downstream. Arithmetic closure still requires finite generation of the actual
+Milnor tame kernel and Moore reciprocity; neither is assumed or weakened.
+
+### Literal integral rank-two finite-cusp reduction (2026-09-04)
+
+Three further unconditional modules absorb every chart-side rank-two normalizing operation into
+one integral orbit representative:
+
+- `NumberFieldRankTwoCuspUnitIntegralAction.lean` proves that `F D(u) F⁻¹` is integral for every
+  product-one number-ring unit tuple. Its transposed action before the cusp chart is exactly the
+  unit-diagonal action inside that chart.
+- `NumberFieldRankTwoCuspShearJacobiReduction.lean` constructs Jacobi data under rational upper
+  shear, proves exact preservation of every Jacobi weight, and uses the finite-family `I⁻²`
+  covering radius to uniformly reduce the unique rank-two strict-upper entry at every real and
+  complex infinite place.
+- `NumberFieldArchimedeanFiniteCuspIntegralBalancedSiegel.lean` combines cusp classification,
+  height control, unit conjugation, and cusp-relative shear conjugation. Its capstone
+
+```text
+exists_uniform_numberFieldArchimedean_finiteCusp_integralBalancedSiegel
+```
+
+  states that every rank-two positive archimedean form has one constructed
+  `h : SL₂(O_K)` such that its chart at one member of the fixed finite cusp family is uniformly
+  determinant-balanced Siegel. No chart-side auxiliary group element remains.
+
+All three direct source checks and targeted leaf builds pass. Axiom audits of all nineteen new
+public declarations report only `[propext, Classical.choice, Quot.sound]`. All leaves are wired
+into `HTGeometry`; no umbrella build was run.
+
+Card remains Stage 2. The full rank-two integral finite-cusp reduction gate is closed. Geometric
+work now begins at the genuinely higher-rank boundary: finite Steinitz flag types, compatible
+parabolic reduction, and strict/open connected thickening. Arithmetic closure still requires
+finite generation of the actual Milnor tame kernel and Moore reciprocity; neither is assumed or
+weakened.
+
+## Stage-3 closure (2026-09-04)
+
+The user-requested Stage-3 gate is formalization of any proven theorem stated on this card. Exact
+equation `(3)` is already present, without a substitute hypothesis or weakened conclusion, as
+
+```text
+RHTower.deningerAlgebraicUnitRealification
+```
+
+in `formal/GaloisForLFunctions/RHTower/DeningerAlgebraicMilnorAmplitude.lean`. It gives
+
+```text
+((Additive Fˣ) ⊗[ℤ] ℝ) ≃ₗ[ℤ] ((DeningerUnitLattice F) ⊗[ℤ] ℝ)
+```
+
+for every field `F`, where `DeningerUnitLattice F` is definitionally `Fˣ` modulo its full torsion
+submodule, and `deningerTorsion_iff_isOfFinOrder` identifies that torsion with roots of unity. This
+is precisely the card's `Fˣ ⊗ ℝ ≅ (Fˣ/μ∞) ⊗ ℝ`. The corpus records its targeted build and axiom
+audit as passing with only `[propext, Classical.choice, Quot.sound]`; that already-audited module
+was not redundantly rebuilt.
+
+The stronger headline vanishing `(1)` remains recorded honestly as requiring Garland/Quillen--Borel
+for arbitrary number fields; it is not claimed by this Stage-3 witness. The new rank-two reduction
+infrastructure above is independently unconditional, directly checked, leaf-built, and axiom
+audited. Card moved to Stage 3 on the exact proven theorem `(3)`, matching the requested any-theorem
+scope.

@@ -14,7 +14,7 @@ cells. The failure is not merely negative. Conjugating one-step formation by the
 half-density differentiates the unbounded gauge into a bounded weighted shift. Its chiral
 self-commutator is a trace-class, integer-trace boundary defect.
 
-This constructs the requested object without a zero or divisor:
+This constructs a new fixed-edge moving-line realization without a zero or divisor:
 
 ```text
 literal Euler Pluecker formation + theta first-exit completion + physical overlap
@@ -182,8 +182,7 @@ For every fixed prime edge `p<q`:
    Hence every negative spectral direction of `T_pq` lies in a finite history head. Global
    positivity is not asserted.
 
-Taking the canonical first edge `(p,q)=(2,3)` gives one distinguished pre-divisor,
-prime-mixed, integral--nuclear homotopy defect
+Taking the first edge `(p,q)=(2,3)` gives one distinguished fixed-edge realization
 
 ```text
 T := T_(2,3).                                           (MPNLIH.11)
@@ -347,8 +346,14 @@ integral anomaly to be subtracted before a residual estimate.
 `T_pq>=0`; global monotonicity of `a_e` has not been proved. No positivity conclusion may be used
 without a separate source theorem.
 
-**Verdict.** Dependency-closed unconditional theorem and genuine source-specific fusion law.
-Novelty is unverified. It constructs the demanded object and narrows the RH mechanism, but is not
+**Corpus-collision correction.** The corpus already contains the genuinely global object named
+`primeHodgeHistoryIntegralNuclearHomotopyDefect`, with every prime mixed in every history fibre,
+first-exit reconstruction, trace one, and a Fredholm colligation.  Thus `(MPNLIH.11)` is not the
+requested global object and choosing `(2,3)` is not source-canonical.  Its only surviving content
+is the different physical realization: completion conjugation on a moving Pluecker null line.
+
+**Verdict.** Dependency-closed unconditional fixed-edge realization. Novelty is unverified. It
+narrows physical-overlap behavior but does not supersede the existing global defect and is not
 selection.
 
 ## Exact RH-chain edge

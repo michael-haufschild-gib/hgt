@@ -229,6 +229,25 @@ theorem compositeValuationSubring_contains_subfield
   intro x
   exact (mem_compositeValuationSubring_map_iff A B f hmem x).2 (hres x)
 
+/-- A valuation of a retained residue subfield can be prolonged and composed with the parent
+valuation.  The resulting finer valuation lies below the parent and contracts exactly to the
+prescribed valuation of the retained field. -/
+theorem exists_compositeValuationSubring_comap_eq
+    {F K : Type*} [Field F] [Field K]
+    (A : ValuationSubring F) (B : ValuationSubring K)
+    (f : F →+* K) (hmem : ∀ x, f x ∈ B) :
+    ∃ C : ValuationSubring K, C ≤ B ∧ C.comap f = A := by
+  let e := valuationSubringResidueEmbedding B f hmem
+  obtain ⟨D, hD⟩ := exists_valuationSubring_extension_comap_eq A e
+  refine ⟨compositeValuationSubring B D,
+    compositeValuationSubring_le B D, ?_⟩
+  apply SetLike.ext
+  intro x
+  change f x ∈ compositeValuationSubring B D ↔ x ∈ A
+  rw [mem_compositeValuationSubring_map_iff B D f hmem x]
+  change x ∈ D.comap e ↔ x ∈ A
+  rw [hD]
+
 end
 
 end GaloisForLFunctions.HTGeometry

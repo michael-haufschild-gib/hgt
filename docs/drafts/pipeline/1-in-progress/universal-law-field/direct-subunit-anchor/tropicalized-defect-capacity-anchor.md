@@ -145,6 +145,23 @@ synchronized squarefree formation. Candidate must:
 Transport, rate transmutation, local Krein lift, shorting, and Gamma/polar descent need not be
 rebuilt.
 
+### Sharpening: purity-cost firewall
+
+`ULF-PHPCF-001` now proves unconditionally
+
+```text
+B_Euler + ||T_prime-Hodge|| < 1079/1080 < 1,
+||P_rank-one-T_prime-Hodge|| > B_Euler,
+||P_rank-one-T_prime-Hodge||_1 > 2 B_Euler.
+```
+
+Hence strictness cannot be a bounded additive completion `P=T+R` with `||R||_1<=B_Euler`, nor any
+even a reflection-doubled completion with `||R||_1<=2 B_Euler`. The surviving formation theorem
+must construct an action of length at most `B_Euler` per orientation before divisor specialization
+and prove actual theta completion preserves it. Horizon exhaustion would then contradict the
+endpoint-distance theorem. This is strictly stronger than asking for the RH-equivalent target
+inequality `E_Loewner<=B_Euler`.
+
 ## Audit addendum 2026-09-02 (from the terminal-classification lane; no status change made here)
 
 Lean (`RHTower.EscapeMultiplicityOffLineIndicator`): `thetaKakutaniEscapeMultiplicity q =

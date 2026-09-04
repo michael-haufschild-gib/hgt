@@ -1894,3 +1894,156 @@ the distance from Hermite anchor `6/11` to Euler boundary `1`. Exact critical sl
 without eventual one-sided bounds, and distributed/nonlocal transitions remain open. Lean:
 `SquarefreeConvolutionHalfMovingHermiteSupercriticalSlopeNoGo.lean`; direct check, targeted build
 (`13306/13306`), and axiom audit pass.
+
+## 2026-09-04 — Unbounded Hermite depth forces an impossible flat Vitali limit
+
+The canonical degree-`K` boundary-Hermite correction makes the corrected arithmetic source vanish
+to exact order at least `K+1` at the fixed anchor `6/11`. Analytic pole and determinant prefactors
+preserve this zero jet. Therefore, when `depth N→∞`, every fixed derivative of the full corrected
+approximant is eventually exactly zero at the anchor.
+
+If the counterterm were Euler-admissible and a cofinal pole-factor schedule locally bounded,
+Vitali would give a holomorphic compact-open limit on `rightHalf`. Cauchy derivative convergence
+would make every derivative of that limit vanish at `6/11`; analytic germ determinacy and the
+identity theorem would make it identically zero. Euler fidelity instead identifies its value at
+`2` with `poleClearedFirstTraceSourceLimit 2`, whose square is the nonzero value
+`(2-1) exp(coronaPrimeZeta 2)`.
+
+Status: `[ALL DEPTH-TENDING-TO-INFINITY POINT-HERMITE SCHEDULES CLOSED] [LEAN-PROVED] [NOT RH]`.
+This closes exact critical slope `5/11` and every other monotone unbounded depth rate without a
+growth estimate. Remaining point-Hermite class is nonconvergent oscillatory depth; viable
+representation successors must avoid eventually annihilating every fixed jet at one anchor.
+Lean: `SquarefreeConvolutionHalfMovingHermiteUnboundedDepthNoGo.lean`; direct check, targeted build
+(`13066/13066`), and axiom audit pass.
+
+## 2026-09-04 — Entire fixed-anchor point-Hermite class is closed
+
+Oscillatory depth supplies no escape. If the depth range is bounded, it is eventually below slope
+`1/54`, so the original interior pole-factor obstruction applies. If the range is unbounded, choose
+`phi j` with `j≤depth(phi j)`. A finite-prefix sum argument proves `phi j→∞`; hence the original
+approximants restricted to `phi` preserve their true Dirichlet cutoffs, Euler convergence, and
+local bounds while their depths tend to infinity. The flat Vitali-limit contradiction applies to
+this subsequence.
+
+Status: `[ALL FIXED-ANCHOR POINT-HERMITE DEPTH SCHEDULES CLOSED] [LEAN-PROVED] [NOT RH]`.
+No bounded, monotone, critical, supercritical, or oscillatory depth schedule can be both
+Euler-admissible and locally bounded along a cofinal pole-factor schedule. Positive survivor:
+successor corrections must move or distribute anchors, retain a nonzero fixed jet, or be genuinely
+nonlocal rather than subtracting an increasing initial Taylor segment at one point. Capstone:
+`not_admissible_and_locallyBounded_boundaryHermiteJetCounterterm` in
+`SquarefreeConvolutionHalfMovingHermiteUnboundedDepthNoGo.lean`.
+
+## 2026-09-04 — Interior-cluster moving anchors are also closed
+
+For any Euler-faithful locally bounded holomorphic approximation family, suppose anchors `b_N`
+converge within `rightHalf` to an interior point and vanishing depths tend to infinity. Cauchy
+derivative convergence is locally uniform; evaluating those derivative families at the moving
+anchors transports every eventual zero jet to the limit point. The Vitali limit is therefore flat,
+hence identically zero, contradicting its nonzero Euler value.
+
+Status: `[MOVING-ANCHOR INTERIOR CLUSTERS CLOSED] [LEAN-PROVED] [NOT RH]`. A high-depth anchor
+mechanism can survive only by escaping every compact subset of `rightHalf`: toward the critical
+boundary, vertically to infinity, or to the far right. Lean:
+`SquarefreeConvolutionHalfMovingAnchorFlatnessNoGo.lean`; capstone
+`not_eulerFaithful_locallyBounded_of_moving_flat_anchors`; direct check, targeted build
+(`13067/13067`), and axiom audit pass.
+
+## 2026-09-04 — Compact escape is a sharp topological boundary
+
+The explicit entire gauge
+
+`B_N(s) = (1 - s/(N+1)^2)^(N+1)`
+
+converges locally uniformly to `1`, while all jets through order `N` vanish at the right-half-plane
+anchor `(N+1)^2`. The anchors tend to far-right infinity and eventually avoid every compact subset
+of the plane.
+
+Status: `[SHARPNESS EXAMPLE] [LEAN-PROVED] [NOT RH]`. Increasing multiplicity does not itself
+contradict compact-open convergence; only interior concentration does. Therefore a viable no-go or
+construction must control noncompact divisor escape using literal arithmetic provenance. The
+example is coefficient-fitted and supplies no half-divisor. Lean:
+`SquarefreeConvolutionHalfMovingAnchorEscapeSharpness.lean`; targeted build (`13173/13173`) and
+axiom audit pass.
+
+## 2026-09-04 — Xi-passport sharpness permits unbounded escaping multiplicity
+
+The actual normalized functional-equation quartet gauges can be raised to order `N+1` at height
+`N+1` and still converge locally uniformly to `1`: the variable-power error scale is
+`(N+1)/(N+1)^2→0`. Multiplying Xi by these gauges preserves the completed functional equation,
+Schwarz symmetry, and hypertranscendence, while producing an explicit off-critical zero whose jets
+through order `N` vanish and whose imaginary part tends to infinity.
+
+Status: `[FULL XI-PASSPORT TOPOLOGY-ONLY BOUNDS CLOSED] [LEAN-PROVED] [NOT RH]`. Compact-open
+continuity plus the report's structural passport cannot even bound escaping off-line multiplicity;
+literal Euler/Dirichlet provenance and noncompact boundary charge are indispensable. Quartet zeros
+are inserted by hand, so this sharpness family does not construct a half-divisor. Lean:
+`SquarefreeConvolutionHalfMovingAnchorQuartetEscapeSharpness.lean`; targeted build (`13174/13174`)
+and axiom audit pass.
+
+## 2026-09-04 — Cesàro smoothing isolates a concrete slow-schedule frontier
+
+Canonical Cesàro averages of the literal convolution-half Dirichlet polynomials are entire and
+retain compact-open Euler-chamber convergence. Coupled to any cofinal Cayley pole-degree schedule,
+local boundedness on `rightHalf` implies `RHLadder 1` by the formal Vitali bridge.
+
+Diagonal coupling is impossible. More generally, every schedule for which
+`5^(κ(N)-24)` eventually dominates `N` is impossible: boundary local boundedness would bound
+`N C_N`, and exact discrete differentiation would bound raw partial sums at `6/11`, contradicting
+their certified arithmetic unboundedness. Canonical iterated-log schedule is cofinal and Lean
+proves it escapes this fast class.
+
+Status: `[FAST CESARO SCHEDULES CLOSED] [ITERATED-LOG LOCAL BOUNDEDNESS OPEN] [LEAN-PROVED]
+[NOT RH]`. This is first exact nonlocal source-derived survivor after closure of point-Hermite
+regularization. It is still only a criterion: no local bound has been proved. Lean:
+`SquarefreeConvolutionHalfCesaroCriterion.lean`,
+`SquarefreeConvolutionHalfCesaroScheduleCriterion.lean`,
+`SquarefreeConvolutionHalfCesaroFastScheduleNoGo.lean`, and
+`SquarefreeConvolutionHalfCesaroIteratedLogFrontier.lean`.
+
+## 2026-09-04 — Cesàro schedules share one zero-limit gate; power threshold is `6/11`
+
+Finite summation identifies the source exactly as triangular/Riesz mean
+`C_N(s)=N⁻¹∑_{n<N}(N-n-1)a_n n^{-s}`. Local boundedness along any cofinal pole schedule forces
+`C_N(6/11)→0`; this necessary condition no longer depends on schedule.
+
+Polynomial Abel continuation strengthens rate classification. Raw half partial sums at real
+`sigma>1/2` cannot be `O(N^alpha)` for `alpha<1-sigma`, since that would continue their square
+across zeta's pole at one. Therefore every schedule with certified pole amplification at least
+`N^rho`, `rho>6/11`, is terminal after one Cesàro discrete derivative.
+
+Status: `[POWER EXPONENTS > 6/11 CLOSED] [COMMON ZERO-LIMIT OPEN] [LEAN-PROVED] [NOT RH]`.
+Iterated-log amplification is subpower and survives. Expected Selberg--Delange scale would refute
+the zero limit, but corpus contains no such theorem; no asymptotic is claimed. Lean:
+`SquarefreeConvolutionHalfCesaroWeightedIdentity.lean`,
+`SquarefreeConvolutionHalfCesaroVanishingNecessity.lean`, and
+`SquarefreeConvolutionHalfCesaroPowerScheduleNoGo.lean`.
+
+## 2026-09-04 — All cofinal Cesàro schedules are closed
+
+The common zero-limit gate is false. If triangular Cesàro means satisfied `C_N(6/11)→0`, their
+primitive `B_N=N C_N` would be eventually `O(N)`. A complex-valued discrete Landau interpolation
+over backward blocks of length `k^3`, with `k≈N^(1/4)`, combines this primitive bound with literal
+coefficient decay to force raw half partial sums `D_N(6/11)=O(N^(1/3))`. Polynomial Abel
+continuation forbids every exponent below `5/11`.
+
+Status: `[ALL COFINAL CESARO SCHEDULES CLOSED] [LEAN-PROVED] [NOT RH]`. This includes the former
+iterated-log survivor: any cofinal pole schedule would force the impossible zero limit. The
+positive architectural survivor is narrower: schedule slowing cannot rescue order-one
+Cesàro/Riesz smoothing. A successor needs stronger smoothing whose primitive does not yield this
+interpolation, or a singular nonlinear arithmetic correction that changes the recovered discrete
+derivative. Lean: `SquarefreeConvolutionHalfCesaroAllCofinalNoGo.lean`; targeted build
+`13053/13053`; axiom audit standard foundations only.
+
+## 2026-09-04 — Infinite-order arithmetic Laplace smoothing is a formal frontier
+
+Retaining every canonical convolution-half coefficient with weight `exp(-n/(N+1))` produces an
+entire function at every stage. Dominated convergence recovers the exact Euler half pointwise on
+`Re(s)>1`. After the existing Cayley pole and Carleman normalizations, local boundedness on
+`rightHalf` implies `RHLadder 1` by Vitali.
+
+Status: `[LAPLACE LOCAL BOUNDEDNESS OPEN] [LEAN-PROVED BRIDGE] [NOT RH]`. This is not rescued
+Cesaro schedule engineering: no finite endpoint or first discrete primitive remains, so the
+all-cofinal Cesaro no-go does not apply verbatim. Expected Selberg--Delange growth at `6/11` may
+still refute it, but corpus has no such theorem and no boundedness is claimed. Lean:
+`SquarefreeConvolutionHalfLaplaceCriterion.lean`; direct check and targeted build `12847/12847`
+pass; axiom audit standard foundations only.

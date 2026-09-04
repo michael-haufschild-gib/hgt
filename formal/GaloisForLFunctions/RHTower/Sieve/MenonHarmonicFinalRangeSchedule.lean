@@ -57,13 +57,13 @@ theorem menonFinalRangeLadder_pow_eq_exp {x : ℝ}
   congr 1
   ring
 
-private theorem geometric_ceil_depth_pos
+theorem geometric_ceil_depth_pos
     {H Q B : ℝ} (hH : 0 < H) (hQ : 0 < Q) (hQB : Q < B) :
     1 ≤ ⌈H * Real.log (B / Q)⌉₊ := by
   rw [Nat.one_le_ceil_iff]
   exact mul_pos hH (Real.log_pos (by rwa [one_lt_div hQ]))
 
-private theorem geometric_ceil_depth_cover
+theorem geometric_ceil_depth_cover
     {H Q B : ℝ} (hH : 0 < H) (hQ : 0 < Q) (hQB : Q < B) :
     B ≤ Q * Real.exp ((⌈H * Real.log (B / Q)⌉₊ : ℝ) / H) := by
   have hratio : 0 < B / Q := div_pos (lt_trans hQ hQB) hQ
@@ -82,7 +82,7 @@ private theorem geometric_ceil_depth_cover
     _ ≤ Q * Real.exp ((⌈H * Real.log (B / Q)⌉₊ : ℝ) / H) :=
       mul_le_mul_of_nonneg_left hexp hQ.le
 
-private theorem geometric_before_ceil_depth_lt
+theorem geometric_before_ceil_depth_lt
     {H Q B : ℝ} (hH : 0 < H) (hQ : 0 < Q) (hQB : Q < B)
     {j : ℕ} (hj : j < ⌈H * Real.log (B / Q)⌉₊) :
     Q * Real.exp ((j : ℝ) / H) < B := by

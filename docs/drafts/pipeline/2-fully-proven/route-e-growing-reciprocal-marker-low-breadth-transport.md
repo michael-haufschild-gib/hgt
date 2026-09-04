@@ -6467,3 +6467,28 @@ Card remains Stage 2.  Full-ladder support loss and exact one-block cofactor sca
 Remaining work is the quantitative initial-exceptional/Case-II volume specialization, its
 final-block and frequency-band summation, and the terminal harmonic-to-integer-start receiver; none
 is assumed.
+
+## Lean progress update (2026-09-04) — bounded terminal receiver and initial all-small rate
+
+Three new leaves close two previously named quantitative seams without introducing a mean-square
+premise:
+
+- `Sieve/MenonHarmonicBoundedDyadicHeadReceiver.lean` retains the actual reciprocal coefficient
+  bound `1/(A+1)` through terminal discretization;
+- `Sieve/MenonHarmonicBoundedDyadicSchedule.lean` chooses the exact mesh `1/K`, proves by
+  Bernoulli that `K` steps cover every literal dyadic range `B+1 <= 2A`, and performs the ordinary
+  Möbius Abel transfer with its endpoint loss intact;
+- `Sieve/MenonHarmonicInitialRangeDefect.lean` keeps the true initial endpoint `hN` in the single
+  global support defect, rather than replacing it by the ambient source scale;
+- `Sieve/MenonHarmonicInitialRangeLogPower.lean` specializes the exact initial ladder at
+  `a=1/2`, `c=A=20` and proves, uniformly for every `hN <= x^(1/4)`, that the global defect is at
+  most `(log x)^(-16)` and the complete all-small bilinear branch is at most `(log x)^(-12)`.
+
+Direct source checks and targeted leaf builds pass.  Axiom audit of all newly exported declarations
+reports only `[propext, Classical.choice, Quot.sound]`.  Leaves are umbrella-wired without an
+umbrella build.
+
+Card remains Stage 2.  Initial all-small decay and the exact bounded terminal mechanism are closed.
+Remaining work is the initial-exceptional/Case-II numerical specialization, its final-block and
+frequency-band summation, and the final insertion into the growing marker/grid/count chain; none is
+assumed.

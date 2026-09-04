@@ -3,7 +3,8 @@
 - **ID:** ULF-FTGM
 - **Stage:** 1-in-progress
 - **Type:** COFINAL INFORMATION-TRANSFER MECHANICS / SATURATED-BOUNDARY TOMOGRAPHY
-- **Status:** `[FIELD PROGRAMME] [ONE CHAMBER PAPER-CLOSED] [UNIVERSAL RECONSTRUCTION OPEN]`
+- **Status:** `[FIELD PROGRAMME] [TWO CHAMBERS PAPER-CLOSED] [CROSS-SPECIES LAW PROVED]`
+  `[FIXED-ANOMALY PRODUCER OPEN]`
   `[NOT RH]`
 
 ## 1. Pivot
@@ -94,6 +95,19 @@ The dependency-closed theorem is in:
 
 `../../../2-fully-proven/universal-law-field/formation-transfer-germ-mechanics/poisson-boolean-information-transfer-cocycle-and-boundary-germ-tomography-law.md`.
 
+## 3A. Second closed chamber and cross-species law
+
+`ULF-INBSG-001` realizes a nonprobabilistic chamber on the one prime-mixed integral--nuclear
+Pluecker defect `T`.  Singular boundary transfer has an exact norm-corona scale germ, and its
+distance squared is complementary to the literal Poisson scale-history overlap.  Thus gates 1--3
+below are now closed in one source-specific instance: capacity/operator formation, cross-species
+transport, and the distinction between constant strong endpoint and faithful open germ.
+
+`ULF-PBTIA-001` further identifies the germ as the positive interchange defect between singular
+completion and source-record closure of `T`'s purification.  It also proves that a counterterm
+allowed to move with polarization trivializes every scale.  The universal conjecture must
+therefore use a counterterm fixed before specialization.
+
 ## 4. Field conjecture
 
 ### Conjecture FTGM-A -- jointly sufficient transfer atlas
@@ -139,11 +153,11 @@ the cofinal transfer germ can be complete for the source parameter.
 
 ## 7. Next gates
 
-1. instantiate the transfer laws in a nonprobabilistic capacity/rank organ;
-2. prove one comparison transporting a transfer germ across two nonisomorphic formation species;
-3. identify which existing route completion preserves the full germ and which retains only its
-   zero boundary point;
-4. construct the source-normal rule forcing neutral oriented germ before Xi specialization;
+1. [closed by `ULF-INBSG-001`] instantiate transfer in a nonprobabilistic operator-capacity organ;
+2. [closed by `ULF-INBSG-001`] transport it to Poisson history by an exact Pythagorean identity;
+3. [closed by `ULF-PBTIA-001`] singular completion preserves the open anomaly germ while strong
+   observer closure retains only the universal endpoint `I-T`;
+4. construct from integer/Poisson self-duality the anomaly germ fixed before polarization;
 5. only then apply the zero-germ equivalence to RH selection.
 
 ## 8. Lean boundary

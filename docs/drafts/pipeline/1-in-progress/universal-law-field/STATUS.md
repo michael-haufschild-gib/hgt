@@ -11,6 +11,15 @@ F01 — Receiver abundance. Corpus has many exact RH equivalences: positivity, f
 action, recurrence descent, formation properness, source-dagger descent, boundary absence. They
 are readouts, not independent evidence or producers.
 
+HARD LOCK P — Positivity cannot be an RH producer. This is corpus-wide, not route-local:
+all-test/Weil positivity is RH itself; finite or fixed-aperture positivity admits off-line
+countermodels; Gram squares, absolute values, CP maps, KMS passivity, and positive quotients erase
+the reflection-odd orientation; positive completed-source order is repeatedly RH-equivalent; and
+the complete positive Green--Stokes split exceeds the literal Euler budget. Positivity may be used
+only as a terminal readout after an independently derived pre-divisor signed, noncommutative,
+causal, or transgressive source law. A proposal whose new mechanism is positivity, PSD completion,
+contractivity, passivity, or Loewner order is already closed unless it first produces such a law.
+
 F02 — Finite local exactness is nonselective. Arbitrary finite packets, jets, multiplicities,
 indices, Grams, KMS systems, homology, determinants, and recoveries coexist with off-line charge.
 
@@ -4614,202 +4623,235 @@ MUST-168 — Any literal global completion must carry one unit graph connection 
 blocks; derive that connection from integer/Poisson formation before any Xi specialization.
 MUST-169 — Complete on the formation cover before quotienting to physical cells; subtract the
 universal unit residue, then prove only the residual relation descends properly.
-## 2026-09-03 (viii–ix) — constrained Weil continuity and ground energy
-F403/MUST-141 — Lean: a positive constrained Weil Rayleigh floor persists on a right aperture
-neighborhood, including prime entries. The remaining quantitative input is Connes–Consani's
-pole-vanishing Sonin inequality at `√2`.
-F404/F405 — Lean: nonzero pole-vanishing smooth interior sources exist and are dense; ground energy
-`μ₀` is antitone and continuous, and strict positivity is open.
-MUST-142 — `WEIL-ENTRY-001` is Lean-closed modulo published numerical certificate
-`μ₀(√2)>0` (margin about `0.3%`); qualitative prime-2 crossing is formal, quantitative crossing is
-that one external number.
-## 2026-09-03 (x) — degeneracy threshold of the pole-vanishing Weil form
-F406 — Lean (`RHTower.CCMRestrictedWeilPolarGroundState`): the pole-vanishing ground energy is
-attained; either it is positive at every aperture or it vanishes at a unique threshold with an
-attained normalized pole-vanishing null vector and nonnegativity on the pole-vanishing subspace.
-MUST-143 — Failure of Weil positivity on the pole-vanishing subspace, if it happens, is a
-degenerate threshold `a*` with an attained null vector; prime entries cannot cause it
-discontinuously; given Connes–Consani, `a* > (log 2)/2`. The remaining links to RH itself
-(RH ⇒ no threshold by zero density; no threshold ⇒ RH by the `s(s−1)` multiplier) are paper-level.
-## 2026-09-03 (xi) — pole-vanishing multiplier; RH-link status
-F407 — Lean (`RHTower.CCMRestrictedWeilPolarMultiplier`): `∫ e^{sx} g'' = s² ∫ e^{sx} g` for smooth
-compactly supported `g`; the operator `∂² − 1/4` sends every strict-interior source to a
-pole-vanishing one (`isPolarConstrained_polarMultiplier`). The pole-vanishing smooth core is the
-image of `∂² − 1/4` (converse on paper via the Green kernel `−e^{−|x|/2}`).
-MUST-144 — The link `μ₀ > 0 everywhere ⇒ RH` is Bombieri–Yoshida's pole-vanishing Weil criterion;
-the corpus cannot currently formalize it (two-bump localization is not pole-vanishing; the
-explicit formula stops at the resolvent algebra). It is a known theorem, so it is recorded, not
-pursued. The archimedean form alone is indefinite on the pole-vanishing subspace at large
-apertures (Fourier mass near `|ξ| = 1/2` where `θ′ < 0`), so primes are necessary there.
-- **Nugget:** the pole-vanishing subspace is the range of `∂² − 1/4`, the operator with Mellin
-  symbol `s(s−1)`; Weil's pole terms and the two pole constraints are the same two-dimensional
-  space seen from the test side and the zero side.
-## 2026-09-03 (xii) — numerical study of the pole-vanishing Weil form
-F408 — Computation (RunPod, report in `2-fully-proven/computations/weil-polar-ground-energy/`):
-`μ₀(√2) = 0.54704` with second eigenvalue 0.84; `μ₀(a) > 0` at every aperture tested, converged
-through `λ ≈ 2.1` and decaying super-exponentially after; archimedean-only positivity on the
-pole-vanishing subspace ends at `λ_arch = 1.81451`; each prime power becomes necessary within
-0.01–0.02 of aperture after its entry. Upper-bound numerics with convergence control, not
-interval-certified.
-MUST-145 — Numerically the constrained input of Theorem D holds with an order-one margin, and no
-degeneracy threshold exists below `λ ≈ 5`; the analytic wall is unchanged (a Galerkin minimum is
-an upper bound, so positivity is evidence, negativity is proof). New quantitative facts: the
-archimedean threshold `λ_arch = 1.8145` and the immediate necessity of each entering prime.
-F409 — Computation: the pole-vanishing ground state's Fourier zeros converge to the zeta
-ordinates (eight zeros to `10⁻³` by `a = 0.9`), like the full ground state of Connes–Consani–
-Moscovici; the spectral realization does not depend on the pole terms.
-## 2026-09-03 (xiii) — Route J: the critical degree is `n ≈ p`
-F410 — Computation (`computations/routej-semilocal-scale/`): for the one-prime semilocal Jacobi
-matrix of Connes–Consani–Moscovici, the exact Euler deformation of the four-radius residual is
-order one at degree `n ≈ p` (`qn ≈ 1`), not at the first-jet scale `p²` nor the third-jet scale
-`p^{6/5}`; the corpus's Lean-proved jets are confirmed in their regimes and overtaken beyond.
-MUST-146 — Route J survivor target 2 is settled numerically: the fixed Euler orders do not share
-a scale; the natural variable of the finite-`q` semilocal Jacobi problem is `x = n/p`. Analytic
-work on the one-prime boundary layer should be organized around `qn`.
-F411 — Computation: Route J scaling law `D_k(q) = q^{1/2}Φ(qn) + O(q)`, universal profile `Φ`
-with zeros `0.159, 0.823, 1.586, 2.369` and extrema `−10.0, +35.4, −72.5`; odd Lean-proved jets
-are its Taylor coefficients, even jets are subleading corrections. Order-one threshold at
-`n ~ p^{6/5}` (third-jet scale), refining F410.
-F412 — Computation: the profile `Φ` is a modulated sinusoid, `Φ(x) ≈ −26 x^{1.45} sin(4.06x − 0.19)`
-(rms 0.4 %), so the order-one degree is `n* ≈ p^{4/3}/8.8`; for two primes the cross term is the
-linear response to the beat mode `2(p₁p₂)^{−1/2} cos(s log(p₂/p₁))` (correlation 1.0000) and
-dominates the one-prime terms by a factor `~p`.
-MUST-147 — The finite-`S` semilocal Jacobi problem is governed by the pairwise beat frequencies
-`log(p_i/p_j)`, not by one-prime boundary layers; Route J survivor target 3 is settled
-numerically, and the analytic target is the first-order response `H(n, δ)` of the
-Meixner–Pollaczek Jacobi matrix to `1 + 2ε cos(δ s)`. The frequency `4` of `Φ` in `n/p` is
-unexplained.
-F413 — Lean (`SemilocalCosineModeFirstOrderResponse.lean`): for the archimedean semilocal Jacobi
-matrix, the Gram matrix of the measure `(1 + 2ε cos(δ s)) μ` in the orthonormal basis is
-`1 + ε T_n(δ)`, the normalized Hankel determinant has jet `2 Σ_{j≤n} m_j(δ)`
-(`m_j(δ) = ∫ p_j² cos(δ s) dμ`), and the Jacobi radii respond at first order by
-`[ε] a_n = r_n (m_{n+1}(δ) − m_n(δ))`, the Route J residual by `residualJetOf`.  The transfer
-theorems are stated for an arbitrary jet sequence and contain the first-Euler jet as a special
-case.  Beat-mode instance `δ = log(p₂/p₁)` recorded.
-F414 — Computation: the exact one-prime deviation of the Route J residual equals the first-order
-response to the single mode `cos(s log p)` of amplitude `p^{−1/2}` to 0.1–0.4 % (correlation
-≥ 0.999996 for `p = 211..1511`, `n ≤ 2.6 p`); higher harmonics and orders are `O(q)`.
-F415 — Paper theorem (numerically verified to `10⁻⁹`): generating function of all boost matrix
-elements `Σ c_m c_n ⟨p_m, e^{its} p_n⟩ w^m z^n = (cosh t)^{−1/2}(1 − wz − i tanh t (w+z))^{−1/2}`,
-diagonal `m_n(t) = (cosh t)^{−1/2} P_n^{(0,−1/2)}(1 − 2 tanh² t)`.  Mehler–Heine at rapidity
-`log p` gives `m_n ≈ (−1)^n √(2/(πpn)) cos(4n/p)`, hence
-`Φ(x) = 4√(2/π)[√x cos 4x − 8 x^{3/2} sin 4x]` (1 % rms against the data, extrema to three digits,
-exact Lean jets `c₁ = 4√(2/π)`, `c₃ = −160√(2/π)` as Taylor coefficients, prediction
-`c₅ = 384√(2/π)`, threshold `n* = p^{4/3}/8.66`).  The frequency `4` of MUST-147 is the
-Mehler–Heine angle `2 sech(log p)`.
-MUST-148 — Formalize F415: the Meixner–Pollaczek generating function of the archimedean Jacobi
-polynomials, the two-variable boost generating function, the diagonal closed form, and the
-Mehler–Heine limit of `P_n^{(−1/2,0)}`; then the Route J profile `Φ` becomes a Lean theorem
-through F413.  Route J's boundary question is closed on paper: there is no prime-scale boundary
-layer, only the Bessel regime of the SU(1,1) boost elements.
-F416 — Lean (`SemilocalJacobiMeixnerPollaczekGeneratingFunction.lean`): the corpus's archimedean
-semilocal Jacobi polynomials are Meixner–Pollaczek: `Σ c_n p_n(s) w^n = (1 − iw)^{−1/4+is/2}(1 + iw)^{−1/4−is/2}`
-for `‖w‖ < 1`, real form `(1 + w²)^{−1/4} exp(s arctan w)`; proved through the ODE
-`(1 + w²)G′ = (s − w/2)G`, its `n`-fold derivative recurrence at `0`, and Cauchy's Taylor theorem.
-First brick of MUST-148; remaining bricks listed in
-`3-formalized/semilocal-jacobi-meixner-pollaczek-generating-function-lean.md`.
-F417 — Lean (`SemilocalGammaComplexRapidityCharacteristic`): the archimedean characteristic
-function continues to `∫ e^{zs} dμ = (cos z)^{−1/2}` on the strip `|Re z| < π/2` (Mathlib
-`complexMGF` analyticity + identity theorem, corpus majorant of rate `π/2`); two-variable boost
-integral `∫ G_s(w)G_s(z)e^{its} dμ` in cosine form.
-F418 — Lean (`ScalarPowerSeriesUniqueness`, `SemilocalJacobiCoefficientCauchyBound`,
-`SemilocalBoostCoefficientInterchange`): coefficient uniqueness on discs and on the real diameter,
-Taylor coefficients, complex binomial series; Cauchy bound `|c_m p_m(s)| ≤ (3/4)^{−1/2} e^{|s|/2} 4^m`;
-term-by-term integration of the generating function against `e^{|s|/2}`-integrable weights.
-F419 — Lean (`SemilocalBoostGeneratingFunctionClosedForm`): the two-variable boost generating
-function `∫ G_s(w)G_s(z)e^{its} dμ = (cosh t)^{−1/2}(1 − wz − i tanh t (w+z))^{−1/2}` (real `|w|,|z| < 1`)
-and its `w`-coefficients `(cosh t)^{−1/2}(1−iτz)^{−1/2}(−½ choose m)(−q(z))^m`.
-F420 — Lean (`SemilocalBoostRowTaylorIdentification`, `SemilocalBoostDiagonalClosedForm`): the boost
-matrix entries `M_{mn}(t) = ∫ p_m p_n e^{its} dμ` are the Taylor coefficients of
-`K_m (z+iτ)^m (1−iτz)^{−(m+½)}`; diagonal closed form
-`∫ p_n² e^{its} dμ = (cosh t)^{−1/2} Σ_{l≤n} C(n,l)((−(n+½)) choose l) tanh^{2l} t`, i.e.
-`(cosh t)^{−1/2} P_n^{(0,−1/2)}(1 − 2tanh² t)`; real form `cosineDiagonalMoment_eq` for the response
-module.  F415's paper theorem is Lean.  MUST-148 items (i)–(iv) closed.
-MUST-149 — Mehler–Heine limit of `S_n(τ) = Σ_l C(n,l) Ring.choose(−(n+½), l) τ^{2l}` at
-`τ = tanh(log p)`, `n = xp`: `S_n ≈ (−1)^n (πn)^{−1/2} cos(4x)`; then the residual jet
-`residualJetOf` gives the Route J profile `Φ(x) = 4√(2/π)[√x cos 4x − 8x^{3/2} sin 4x]` in Lean.
-Card: `3-formalized/semilocal-boost-diagonal-closed-form-lean.md`.
-F421 — Lean (`ScaledTerminatingHypergeometricLimit`): the Mehler–Heine mechanism for terminating
-hypergeometric sums: `₂F₁(−n_j, n_j+d; c; σ_j²) → Σ_l (−1)^l w^{2l}/((c)_l l!)` when `n_j → ∞`,
-`n_j σ_j → w` (Tannery), with the limits `cos 2w` (`c = ½`) and `sin 2w / 2w` (`c = 3/2`).
-F422 — Lean (`SemilocalDiagonalPfaffTransformation`, `SemilocalBoostContiguousRelations`): the Pfaff
-transformation of the diagonal cosine moments to the bounded `σ`-form
-`m_n(δ) = (cosh δ)^{-1/2}(−1)^n C_n ₂F₁(−n, n+½; ½; sech² δ)` (Chu–Vandermonde), and the two
-contiguous relations `(2n+1)F_{n+1} + 2(n+1)F_n = (4n+3)(1−x)H_n`, `H_{n+1} − H_n = −(4n+5)xK_n`.
-F423 — Lean (`RouteJResidualFirstDifferenceForm`): the Route J residual jet is exactly
-`(cosh δ)^{-1/2}[r_{2k}r_{2k+1}ΔQ_{2k} + 2Δ(r²Q)_{2k+1} + r_{2k+2}r_{2k+3}ΔQ_{2k+2}]` with the smooth
-`Q_n = C_n(4n+3)(1−x)H_n/(2(n+1))`, and the differences are closed forms in `H_n, K_n` with a factor
-`x = sech² δ` in front of `K_n`.
-F424 — Lean (`RouteJScalingProfileLimits`, `RouteJScalingProfile`, `RouteJResidualNormalizationLimit`):
-**the Route J profile is a theorem**: along `p_j → ∞`, `2k_j/p_j → X > 0`,
-`residualJetOf (cosineModeDeterminantJet (log p_j)) k_j → Φ(X) = 4√(2/π)[√X cos 4X − 8X^{3/2} sin 4X]`,
-and `R_k(0) → 1`, so the relative first-order deviation has the same limit.  MUST-149 closed.  Card:
-`3-formalized/route-j-scaling-profile-lean.md`.
-MUST-150 — The beat-mode profile: the two-prime cross term is the first-order response at fixed
-`δ = log(p₂/p₁)` (report §3.5); its large-`n` law needs the Darboux (fixed-argument) asymptotics of
-`₂F₁(−n, n+½; ½; sech² δ)`, i.e. the oscillation `cos(n θ_δ + φ)` with `θ_δ = 2 arcsin(sech δ)`; the
-Tannery route does not apply (the terms are not individually bounded), so this is a new mechanism.
-F551 — Lean (`LegendreGeneratingFunction`, `LegendreConvolution`, `CentralBinomialAbelBounds`,
-`LegendreHalfSumEstimate`, `LegendreLaplaceHeine`): Legendre polynomials built explicitly (Mathlib has
-none), their generating function, the exact convolution `P_N(cos φ) = Σ C_k C_{N−k} cos((N−2k)φ)`, and
-**Laplace–Heine with an explicit constant**: `|P_N(cos φ) − 2C_N(2 sin φ)^{-1/2}cos((N+½)φ − π/4)| ≤
-400/(N sin φ)` for `0 < φ < π`, `N ≥ 8` (Abel summation + Abel's limit theorem, no contour).
-F552 — Lean (`SemilocalDiagonalLegendre`): `∫p_n² cos(δs)dμ = (cosh δ)^{-1/2} P_{2n}(sech δ)`; the Route
-J residual jet is an exact combination of `P_{4k}, …, P_{4k+8}(sech δ)`.
-F553 — Lean (`RouteJBeatModeProfile`): **the beat-mode law is a theorem**: for fixed `δ > 0`,
-`residualJetOf (cosineModeDeterminantJet δ) k / k^{3/2} − 32√(2/π) σ^{3/2} τ^{5/2}
-sin((4k+9/2)φ − π/4) → 0`, `σ = sech δ`, `τ = tanh δ`, `φ = arccos σ`.  The Darboux mechanism of
-MUST-150 is replaced by the convolution/Abel route.  MUST-150 closed.  Card:
-`3-formalized/route-j-beat-mode-profile-lean.md`.
-MUST-170 — The uniform two-term law: one asymptotic formula for the first-order residual response
-`J_k(δ)` valid for all `δ ≥ δ₀`, `k → ∞`, whose leading term is the beat law and whose second term
-(`k^{1/2}`, from the `O(k)` corrections of `r_{2k+a}r_{2k+b}` and the Szegő second Laplace–Heine term
-`O(1/(N sin φ))`) reproduces the `√X cos 4X` term of `Φ` in the scaling regime `2k sech δ → X`.
-Needs the second-order Laplace–Heine expansion with explicit error and the `1/k` expansion of the
-radius products; then `Φ` and the beat law are two limits of a single theorem.
-F554 — Lean (`LegendreShiftReduction`, `RouteJTwoIndexResidual`): **exact two-index form of the Route J
-residual**: `J_k(δ) = (cosh δ)^{-1/2}[a(k,σ) P_{4k+3}(σ) + b(k,σ) P_{4k+4}(σ)]` with explicit rational
-coefficients (`a = R₁a₁ + R₂a₂ + a₀`, `R₁ = r_{2k}r_{2k+1}`, …), obtained by eliminating
-`P_{4k}, P_{4k+2}, P_{4k+6}, P_{4k+8}` through the three-term recurrence; all cancellations of the
-five-term form (a third difference and a `(1,2,1)` smoothing) are performed algebraically.
-F555 — Lean (`RouteJUniformLaw`): **the uniform law**: for all `δ > 0`, `k ≥ 2`,
-`|J_k(δ) − M_k(δ)| ≤ (cosh δ)^{-1/2}(|a| + |b|)·400/(sin φ·(4k+3))` with the closed-form main term
-`M_k(δ) = (cosh δ)^{-1/2}·2(2 sin φ)^{-1/2}[a C_{4k+3} cos θ_{k,3} + b C_{4k+4} cos θ_{k,4}]`.  The
-second-order Laplace–Heine term is not needed: the exact rewriting removes the cancellation, so the
-owned first-order estimate with constant 400 is uniform.
-F556 — Lean (`RouteJUniformLawCoefficients`, `RouteJUniformLawLimits`): `a/k² → 64σ(1−σ²)`,
-`b/k² → −64σ²(1−σ²)` (fixed σ); `a/k → 64X`, `b/k → 8` (scaling); **both limits from one theorem**:
-`tendsto_beatMode_profile_of_uniform` (beat law) and `tendsto_residual_profile_of_uniform` (`Φ`)
-are corollaries of F555.  MUST-170 closed.  Card: `3-formalized/route-j-uniform-law-lean.md`.
-MUST-171 — The bilinear (ε₁ε₂) response.  The two-prime cross term of the semilocal measure is
-`ε₁ε₂[J_k(log(p₂/p₁)) + J_k(log(p₁p₂))]` (first-order responses to the difference and sum modes of
-the product of Euler factors) plus the *bilinear second-order response* of the Jacobi radii to two
-separate modes, which first-order theory does not see.  Compute it (the second-order Christoffel
-variation of the recurrence coefficients under `w ↦ w(1+2ε₁cos δ₁s)(1+2ε₂cos δ₂s)`), prove the
-structure of the ε₁ε₂ coefficient, and quantify its size against the beat-law term
-`32√(2/π)k^{3/2}σ^{3/2}τ^{5/2}`; report §3.5 suggests it is subleading.
 F557 — Paper theorem (`ULF-MPNLIH-001`): for each source prime edge `p<q`, the forced Euler/theta half-density ratio defines a bounded weighted shift on moving physical Pluecker null lines. Its self-commutator is self-adjoint Schatten-one, eventually positive outside a finite history head, and satisfies `Tr(T_pq)=1=-index(C_pq)`; finite-cutoff traces telescope exactly to the transport square `a_N`.
-F558 — `T_(2,3)` is one canonical pre-divisor prime-mixed integral--nuclear defect: no Xi/divisor enters; its zeroth physical `4x4` block has every cross-prime entry nonzero; moving null lines prevent history tensor fixed-packet separation relative to literal source coordinates.
+F558 — `T_(2,3)` is a distinguished fixed-edge moving-line realization, not the global requested object. Corpus already has `primeHodgeHistoryIntegralNuclearHomotopyDefect`, mixing every prime with exact first-exit/Fredholm reconstruction. Surviving novelty of `T_(2,3)` is only its physical moving-Pluecker realization.
 CANNOT-249 — Flat connection/unbounded trivialization and weighted-shift trace-index theory are generic and already occur in corpus; they cannot be field core. Only source-forced completion-before-overlap realization is new residue.
 CANNOT-250 — `T_pq` cannot be direct sub-unit anchor: `Tr(T_pq)=1` forces `||T_pq||_1>=1`; positivity is also unproved because global monotonicity of transport squares is unknown.
 MUST-172 — Next selection theorem must derive, before divisor specialization, `completed boundary = T_pq + R_pq` with source-forced theta positivity and `Tr(R_pq)=0`; defining this residual or assuming its positivity is old RH receiver, not producer.
-F559 — Lean (`SemilocalTwoModeBilinearResponse`): **the bilinear response of the semilocal Hankel
-determinants**: for the two-mode weight `(1+2ε₁cos δ₁s)(1+2ε₂cos δ₂s)`, the Gram matrix is
-`1 + ε₁T(δ₁) + ε₂T(δ₂) + ε₁ε₂(T(δ₁+δ₂) + T(δ₁−δ₂))` and `∂₁∂₂ log D_n|₀ = J_{δ₁+δ₂}(n) + J_{δ₁−δ₂}(n)
-− tr(T(δ₁)T(δ₂))` (`deriv_deriv_log_twoModeDeterminant`), an iterated `deriv` of a genuine
-two-parameter determinant family.  The product-mode first-order response cancels exactly against
-the diagonal part of the second-order term (covariance of linear statistics, `tr(Kf₁(1−K)f₂K)`).
-F560 — Lean (`SemilocalTwoModeRadiusResponse`): transfer through the Hankel quotient:
-`∂₁∂₂ a_n²|₀ = r_n²(B_{n−1} + B_{n+1} − 2B_n) + [ε₁]a_n²[ε₂]a_n²/r_n²` (`deriv_deriv_twoModeSquaredRadius`).
-Numerics (211, 421): the truncation defect `tr(T₁T₂)` is 17 % of the beat term at `n = 20` and 92 %
-at `n = 150` at the determinant level, but smooth in `n`, so at the radius level the `ε₁ε₂` jet is
-the beat-mode radius jet to 1–3 % — the mechanism of report §3.5.  MUST-171 closed (structure).
-Card: `3-formalized/semilocal-two-mode-bilinear-response-lean.md`.
-MUST-173 — The large-rapidity boost bound.  Prove `|M_{ij}(t)| ≤ (cosh t)^{-1/2} c_i c_j · K(i+j, e^{−t})`
-with explicit `K → 1` for `i + j ≪ e^{t}` (the sharp form without `K` is false at small `t`; the
-naive coefficient majorant is exponential; the route is the `tanh t = 1` factorization
-`(1−iw)^{-1/2}(1−iz)^{-1/2}` of the boost kernel and a series in `1 − tanh t`), and deduce
-`|ΔΔ tr(T(δ₁)T(δ₂))| ≤ C (cosh δ₁ cosh δ₂)^{-1/2} √n`, i.e. the two-prime cross term is the beat-mode
-radius jet up to relative `O(ε√n)`, `ε = (p₁p₂)^{-1/2}`.  Then the one-prime `ε²` self-response
-(harmonic `cos(2δs)` plus the variance term `tr(T(δ)²)`) with the same tools.
 MUST-174 — `T_pq` retains six-minor mass and moving kernel line but not full rank-three Pluecker covariance; any Xi use must prove null-line sufficiency or lift the index defect coefficient-faithfully without losing trace conservation.
+F561 — Paper theorem (`ULF-PCPOS-001`): fixed-presentation purification of moving full Pluecker covariances gives positive `S_1` trace-one `T` and the exact identity `1-Tr(T^2)=sum_(n,k)w_nw_k||u_n wedge u_k||^2`.
+F562 — Failure audit: PCPOS's strict gap compares different depth fibres in one chosen presentation. Source-forced depth-dependent metric isometries can alter/erase this overlap; only a common-unitary gauge preserves it. PCPOS is a fixed-frame bridge, not coordinate-free selection leverage.
+CANNOT-251 — Existing global `primeHodgeHistoryIntegralNuclearHomotopyDefect` already satisfies the literal requested description. Another fixed prime kernel or separable `diag(w) tensor A` is rediscovery. Purification/partial trace and weighted-shift theory are generic; only full moving Pluecker specialization survives.
+F563 — Paper theorem (`ULF-POINH-001`): let `A` be P-G94's literal positive `S_1` physical-overlap Pluecker operator and `tau=Tr A>0`; `T=A/tau` is pre-divisor, faithful, prime/depth formed, positive `S_1`, with `Tr T=||T||_1=1` and `||T||<1`.
+F564 — Intrinsic strictness law: for canonical source rays `alpha_i`, `1-Tr(T^2)=sum_(i,k)||alpha_i wedge alpha_k||^2>0`. One packet's proved rank three witnesses strictness; no cross-depth frame comparison is used.
+F565 — Exact homotopy reconstruction: purify `T` by `Psi=sum_i delta_i tensor alpha_i`, lift `Psi` through theta Mellin-six survival shift (`index=-1`), apply first exit, then close theta and source-record observers. Output is exactly `T`, and `-index=Tr selfcommutator=Tr T=1`.
+CANNOT-252 — Raw inter-depth fidelity is gauge-dependent. Any completion argument using `A_0!=A_1` without fixing source connection can be trivialized by independent fibre unitaries.
+CANNOT-253 — POINH cannot close by positive coefficient-recovering prime damping: `riemannHypothesis_iff_xiReflectionIncidenceTraceOnePositiveCofinalRegularizationLanding` proves that whole trace-one cofinal repair class equivalent to RH. Missing completion must transform Pluecker/Kraus relations before scalar coefficient extraction.
+MUST-175 — Derive from anomaly-subtracted integer/Poisson self-duality that completion commutes with POINH's canonical Kraus purification and two observer closures and is positive unital. Only then does `||T||<1` exclude a norm-one strict-right horizon; asserting landing remains the `ULF-DSA-003` RH-strength receiver.
+F569 — Paper theorem (`ULF-INBSG-001`): for every positive compact injective infinite-dimensional `T`,
+the norm-corona distance between scaled boundary-transfer germs is exactly
+`||[E_eps(cT)]-[E_eps(dT)]||=|sqrt(c)-sqrt(d)|/(sqrt(c)+sqrt(d))`, independent of spectrum.
+F570 — Exact three-organ conservation: for literal Poisson histories,
+`||e_T(t²)-e_T(u²)||² + <psi_t,psi_u> = (t-u)²/(t+u)² + 4tu/(t+u)² = 1`.
+F571 — Euler specialization `c=p^(2a)` makes oriented germ distance
+`C=(p^a-1)/(p^a+1)=tanh(a log p/2)`.  From `G=1-C²` it reconstructs Burnol holonomy `4C/G`, Gamma
+curvature `4C²/G`, Poisson visibility `sqrt G`, rapidity `artanh C`; reflection reverses only `C`.
+F572 — Closed strong observer sends every scale germ to `I`, while open norm history separates scales.
+A nonzero contrast is impossible for a finite-rank/gapped carrier; it is created exactly by faithful
+compact spectrum accumulating at zero.
+MUST-177 — Derive before divisor specialization that anomaly-subtracted integer/Poisson self-duality
+identifies direct/reflected translations of the same boundary-transfer history modulo norm-null `C_0`.
+Then F569 forces `p^(2a)=1`, hence `a=0`; asserting this equality on Xi fibres is only an RH classifier.
+F577 — Paper theorem (`ULF-PBTIA-001`): for canonical purification `P=|Psi><Psi|`, `Cl(P)=T`,
+singular completion and source-record closure have positive interchange anomaly
+`A_(eps,c)=F_eps(cT)-Cl(F_eps(cP))=F_eps(cT)-c/(eps+c)T >= 0`.
+F578 — Exact anomaly subtraction preserves unsquared source data:
+`F_eps(cT)-A_(eps,c)=c/(eps+c)T -> T` in trace norm.  This is the operator shadow of Route P's
+proved law “metric anomaly minus completion companion = literal primitive source,” not zero.
+F579 — Every polarization has the same strong closed anomaly `A_(eps,c)->I-T`, but anomaly germs obey
+`||[A_c]-[A_d]||=|sqrt(c)-sqrt(d)|/(sqrt(c)+sqrt(d))`; all transverse scale information lives in
+the open completion/observer noncommutation.
+CANNOT-255 — A moving anomaly is nonselective: subtracting each polarization's own `A_c` makes all
+residual boundaries equal `T`.  “Residual vanishes/agrees after anomaly subtraction” has content
+only when counterterm is fixed on pre-divisor theta source before horizontal specialization.
+F580 — Formation-transfer germ mechanics now has a second nonprobabilistic chamber and exact
+cross-species transport: anomaly-germ distance squared plus literal Poisson overlap equals one.
+MUST-179 — Derive from literal integer/Poisson self-duality that actual Euler completion uses the
+single theta-fixed anomaly germ `[A_1]`.  Then `[A_(p^a)]=[A_(p^-a)]` forces `a=0`; equality only at
+Xi fibres remains a classifier, and strong equality is automatic at every grade.
+F581 — Paper theorem (`ULF-POINH-001`, POINH-B): using the prime-mixed density as a local Fredholm
+Euler multiplicity is impossible.  Exact `det(1-zT)^(-1)=(1-z)^(-1)` forces `Tr(T^2)=1`, while
+physical Pluecker rank three gives `Tr(T^2)<1` by the exact wedge-dispersion identity.
+CANNOT-256 — `T` cannot replace or rank-multiply local Euler atoms without corrupting prime-power
+coefficients.  Its viable role is relational: completion history, observer interchange, or
+non-scalar shorting formed after literal Euler coefficients and before divisor specialization.
+F584 — Paper theorem (`ULF-SACWHT-001`): for any positive compact injective infinite-rank `T`, all
+singular boundary-transfer scale germs generate one algebra:
+`e_d=phi_(d/c)(e_c)`, `spectrum(e_c)=[0,1]`, `C*(e_c:c>0) ~= C_0((0,1])`.
+F585 — Scale differences generate exactly the open-history ideal
+`J=C*(e_c-e_d) ~= C_0((0,1)) ~= C_0(R)`; closed strong observation is endpoint evaluation in
+`0 -> J -> C_0((0,1]) -> C -> 0`.
+F586 — Cone middle algebra is contractible, so its connecting map `K_0(C)=Z -> K_1(J)=Z` is an
+isomorphism; endpoint unit lifts to `e_1` and transgresses to winding-one `exp(2 pi i t)`.
+F587 — Log-aperture translation crosses this cone extension to the one-dimensional Wiener--Hopf
+extension; its compact ideal/index is the crossed-product form of theta first exit.  Sonin shell
+cocycle independently recovers unsquared `Lambda(p^k)` from translation length `k log p`.
+CANNOT-257 — Primary integral class is identical for every scale lift.  Although `||e_c-e_d||<1`,
+`exp(2 pi i(e_c-e_d))` is null-homotopic.  No positive scale functional calculus can turn the
+sub-unit contrast into an off-line integer.
+MUST-181 — A viable direct-subunit mechanism must make literal prime formation twist the
+Wiener--Hopf extension or quotient symbol itself, retain unsquared Euler shell coefficients, and
+produce a failure-specific relative index with nuclear representative below source budget.  A
+Möbius translate inside fixed cone is topologically trivial and is excluded.
+CANNOT-258 — Prime marking/KMS existence does not repair CANNOT-257: every grade `a` defines the
+unitary modular flow `beta_t^a(fU_gamma)=exp(i t a ell(gamma))fU_gamma`; `p^a` is its imaginary-time
+value.  Crossed-product dynamics exists off wall.  Selection needs a failure-specific pairing of
+this twist with Wiener--Hopf boundary class and literal nuclear ideal.
+F588 — Ordered-cone law: if `e` is an order unit, `Phi` is positive, and nonzero `Phi(e)` spans an
+extreme target ray, then `range(Phi) subset R Phi(e)`.  Thus positive landing of any faithful finite
+compression of prime-mixed `T` on a rank-one horizon erases every transverse coefficient direction.
+CANNOT-259 — This does not constrain actual Xi completion: P-G98 is singular boundary transfer
+`E_eps(T)=T(eps I+T)^(-1)`, not a bounded positive map carrying `T` to the horizon.  Any viable law
+must control its open singular history or anomaly quotient; positive-channel landing is closed.
+F591 — Paper theorem `ULF-PHPCF-001`: any positive trace-one `S` has exact coordinate-free pure
+boundary radii `inf_P||P-S||=1-||S||`, `inf_P||P-S||_1=2(1-||S||)`. For prime--Hodge `T`,
+`B<115/216`, `||T||<7/15`, so `B+||T||<1079/1080<1` and even `2B` cannot reach any rank-one horizon.
+CANNOT-260 — No bounded additive landing, trace-norm coherent finite-packet completion, or
+absolutely continuous nuclear homotopy financed by two copies of the entire primitive collision
+budget can purify `T` into an off-line horizon.
+CANNOT-261 — Retire MUST-183's finite-action transport: actual completion is singular/strong and
+retains an open norm germ. No trace-norm path-length bound can be presumed to survive it; F591 only
+constrains a source-generated relative nuclear representative.
+F592 — Paper theorem `ULF-PHPTCIS-001`: prime visibility and signed contrast diagonal multipliers
+`V_a,C_a` satisfy `V_a^2+C_a^2=I`; hence `Tr(V_aTV_a)+Tr(C_aTC_a)=Tr(T)=1`, grade-tail by
+grade-tail, while every same-history cross-prime entry survives for `a!=0`.
+CANNOT-262 — For `a!=0`, both two-channel charges lie strictly in `(0,1)`. The visible marginal is
+not an integer; the full charge is integral but grade-blind. Information-neutral recovery cannot
+discard contrast, so visibility-only direct-subunit selection is impossible.
+F593 — Explicitly bounded history--prime `T` (`ULF-PHIN-001`) and physical Pluecker singular-source
+`T` (`ULF-POINH-001`) are distinct. Pure-state radii survive arbitrary unitary transport, but prime
+formation/completion do not; no structure-preserving intertwiner is proved.
+MUST-184 — Construct before divisor a prime-marked pairing of open contrast history with the
+singular-completion ideal: off-wall value integral and nonzero, nuclear representative bounded by
+the literal Euler budget, completed relative class exhausting the horizon. It cannot be closed
+visibility, total charge, fixed-cone scale, or a post-divisor endpoint bound.
+F594 — `ULF-FBG-001`: blow up `a=0,p=infinity` by `u=a log p`. The literal
+`(sech(u/2),tanh(u/2))` profile compactifies to a degree-one `RP1` kink with sharp action `1`; its
+barrier gradient is exactly minus the prime-Gamma Bockstein and predicts the proved Schatten wall.
+F595 — `ULF-FBG-002`: the framed orbit `mathcal T_a=W_a T W_a*` is positive prime-mixed `S1`,
+`Tr=||.||_1=1`, trace-norm continuous across the wall, closes at `+-infinity`, and satisfies exact
+information-neutral recovery `W_a*mathcal T_aW_a=T`.
+F596 — Same object has an exact topology defect: for every `a!=0`, `||W_a-W_0||=sqrt 2` and
+`||W_aW_a*-W_0W_0*||=1`, although `||mathcal T_a-mathcal T_0||_1->0`. Nuclear closure forgets a
+fixed open prime-infinity frame defect.
+CANNOT-263 — Whole projective kink cannot be a subunit residual: its action is at least `1` while
+Euler budget is `<1`. It exists at every nonzero grade, so its degree alone is nonselective.
+CANNOT-264 — Bare nuclear loop is contractible in positive trace-one `S1`; its constant integral
+trace cannot select. Signed wall family is not a continuous homotopy. Frame cannot be discarded.
+MUST-185 — Construct pre-divisor theta completion as a second framed cycle, cancel the universal
+projective unit at frame level, and give the relative class a native prime-mixed nuclear
+representative of norm `<=B_Euler<1` whose horizon pairing is unsigned escape. Trace/asymptotic
+matching or singular pushforward of a finite budget does not qualify.
+F597 — `ULF-FBG-005`: theta and cubic completion use reciprocal prime coordinates
+`x=delta log p`, `y=(log p)/delta`, with `xy=log^2 p`; literal one-dimensional principal-symbol
+identification is false.
+F598 — Tensoring theta `v^2+c^2=1` with completion `h^2-k^2=1` gives a four-channel `O(2,2)`
+frame. For every finite history--prime packet its source-fixed synthesis satisfies the exact
+operator identity `A*JA=T_E`; cofinally these `J`-Grams converge in trace norm to prime-mixed
+integral nuclear `T`. On the cubic diagonal this reconstructs anomaly = companion + source.
+CANNOT-265 — Compact theta frame and split completion frame are not the same anomaly coordinate;
+they are reciprocal legs. Identifying them, or taking channelwise absolute values before the
+`J`-Gram cancellation, reproduces the old receiver/non-trace-class companion failures.
+MUST-186 — Prove actual singular theta completion is a morphism of reciprocal framed `J`-Grams,
+preserving cancellation and unsquared prime provenance before positive closure. Its relative
+Schatten norm must be native to completion topology; only then can budget `<1` pair with unsigned
+escape without violating the bounded/singular dichotomy.
+F599 — The requested pre-divisor prime-mixed integral--nuclear homotopy defect already exists as
+one Lean term `primeHodgeHistoryIntegralNuclearHomotopyDefect(t)`. For `t!=0` its kernel is
+`1_(n=k) sign(t) w_n sqrt(mu_|t|(p)mu_|t|(q)) kappa(log p,log q)`; Lean proves `S1`, integral
+trace `sign(t)`, trace norm one, reflection oddness, and every same-history cross-prime entry
+nonzero. No zero/divisor enters.
+F600 — Arithmetic identity of `T` is not supplied by those generic operator properties. On paper,
+`T` is the unique bounded solution of the literal cubic prime-clock boundary law
+`S_(I tensor L)^3(T(t))=8 sign(t) Phi tensor |b_|t|><b_|t||`, while its history tails are the
+theta Mellin-six moments `m_n`. These two source laws force prime kernel and history factor.
+F601 — Hostile correction to `ULF-FBG-005`: `A*JA=T` is a generic `J`-isometric dilation valid
+for arbitrary positive trace-class `T`; it does not narrow the source model class. The card is a
+bridge organizing reciprocal corpus coordinates, not a producer or selector.
+CANNOT-266 — “Positive, prime-mixed, Schatten-one, integral trace” cannot characterize the
+arithmetic object; many generic operators satisfy it. Any completion theorem preserving only
+these invariants has forgotten literal formation and cannot close RH.
+MUST-187 — Completion must intertwine `T`'s cubic prime-clock boundary equation and exact
+theta-history tail flux before divisor specialization. Transporting only `T`, its trace, or a
+generic `J`-Gram is information-neutral and does not qualify as source-to-horizon identification.
+F602 — `ULF-RPBDT-001` gives a canonical trace density to the noncompact same-`T` completion
+horizon. For every finite prime set `F` and history cutoff `N`, a positive fixed remainder
+`R=U*RU` satisfies `Tr(P_(N,F)RP_(N,F))=N Tr(Q_F E_0*RE_0Q_F)` exactly; no infinite trace is used.
+F603 — For any positive bounded completion `X-G_d=R`, inverse-clock cumulative cubic boundary
+excess is the same quantity:
+`sum_(p in F)[beta_p(X)-8b_d(p)^2]/(8log(p)^3)=Tr(Q_F E_0*RE_0Q_F)>=0`.
+This is a same-object source/completion identity, not a bounded covariance landing.
+F604 — Exact preservation of every cumulative unsquared prime coefficient forces `R=0`, even when
+`R` has infinite total trace. If `E_0*RE_0` is a finite-rank projection, total excess is its
+integer rank; excess `<1` forces zero. A rank-one horizon costs exactly one recurrent unit.
+CANNOT-267 — Modular traciality, prime modular spectrum collapse, and reflected entropy neutrality
+are already neutral-grade/RH classifiers. They do not derive admissibility from integer formation
+and cannot be the higher producer (`ULF-MSA-FAILED`).
+CANNOT-268 — A nonzero positive harmonic horizon cannot preserve all cumulative cubic prime
+boundary coefficients. If a proposed completion is coefficient-transparent, its harmonic
+remainder is zero; any claimed off-line horizon must exhibit positive boundary excess somewhere.
+MUST-188 — `ULF-TRDS-001`: derive from literal integer/Poisson self-duality one positive relative
+theta completion with `X-U*XU=T`, recurrent boundary excess `<=B_base<1`, and strict-right relation
+incidence as nonzero grade-zero projection of the same harmonic remainder. These imply RH by
+`1<=Ex<=B_base<1`; assuming any clause only on Xi fibres is still a receiver.
+F605 — `ULF-CRSHC-001`: prime--Hodge reachability `W_d` and complete Burnol Euler covariance
+`S_base` live on the same literal radial `L2(0,infinity)`. Their sandwich
+`C_d=W_dS_baseW_d*` is canonical on `ell2(Primes)`, positive, nuclear, and fully prime-mixed.
+F606 — `0<Tr(C_d)<=||W_d||^2 B_base<B_base<1`. Strictness follows because
+`W_dW_d*=A_d` is positive compact, injective, infinite-rank, and trace one, hence `||W_d||^2<1`.
+No numerical cutoff, abstract carrier unitary, zero, or divisor enters.
+F607 — `X_d^src=G_d+I tensor C_d` is a positive bounded completion with exact displacement
+`X_d^src-U*X_d^srcU=T_d` and recurrent excess `Ex(X_d^src)=Tr(C_d)<B_base<1`, despite infinite
+ordinary trace. This closes construction of a same-carrier source-budgeted completion.
+CANNOT-269 — Existence of a canonical sub-unit same-`T` completion does not select it: the
+same-defect fibre contains arbitrary positive Toeplitz symbols. Calling `X_d^src` the actual theta
+completion without a functional-equation source-factorization theorem is theatre.
+MUST-189 — Revised `ULF-TRDS-001`: derive pre-divisor that anomaly-subtracted theta completion's
+grade-zero harmonic covariance is `W_dVS_baseV*W_d*` for a source-forced contraction `V`; then
+identify strict-right relation incidence as a projection in that same covariance. F604/F608 force
+`1<=Tr(C_theta)<1`.
+F608 — Common-radial admissibility is stable under every contraction: for `||V||<=1`,
+`C_(d,V)=W_dVS_baseV*W_d*` yields a positive same-`T` completion with recurrent excess
+`Tr(C_(d,V))<=||W_d||^2||V||^2B_base<B_base<1` (`ULF-CRSHC-001`).
+CANNOT-270 — A fixed scalar mixture of Burnol's three exact aperture-colligation channels cannot
+equal any strict-right completed conormal: source decay rates are `>=log 2`, target rate is
+`Re(rho)-1/2<1/2`, and the tail ratio diverges (`ULF-FBCL-FAILED`, Lean-closed).
+MUST-190 — Actual anomaly-subtracted functional-equation channel must change exponential type via
+a nonlocal/aperture-covariant or additional defect channel while retaining a contractive
+covariance factorization through `S_base`. Pointwise fixed-channel equality is excluded; only this
+factorization can legitimately import the source `<1` bound.
+F609 — `ULF-PQSCH-001`: every measurable radial contraction field `V(z)` on the phase circle
+produces a positive operator-valued source density
+`c(z)=W_dV(z)S_baseV(z)*W_d*` and a bounded positive Toeplitz history `R_V` with `U*R_VU=R_V`.
+Thus `X_V=G_d+R_V` has the single conserved displacement `X_V-U*X_VU=T_d`; phases do not create
+new defects.
+F610 — Open history retains all Fourier blocks `C_j=integral z^j c(z)`, while Haar phase closure
+is exactly `E_phase(R_V)=I tensor C_0`. Closure deletes nonzero temporal modes but preserves the
+full grade-zero covariance and recurrent mass: `Ex(X_V)=Tr(C_0)`.
+F611 — Every such source phase field obeys
+`Tr(C_0)<=||W_d||^2B_base<B_base<1`; finite history--prime trace is exactly
+`N Tr(Q_FC_0Q_F)`. The sub-unit anchor survives nonconstant open phase history, not only static
+harmonic repetitions.
+F612 — Norm-continuous paths of contraction fields give operator-norm-continuous same-`T_d`
+completion paths. This is a genuine homotopy fibre: integral nuclear local charge stays fixed while
+noncompact stationary history changes.
+CANNOT-271 — Abstract Toeplitz recurrence is already in the corpus and phase dependence alone does
+not evade the aperture-rate obstruction. If every channel commutes with radial translations, no
+phase average can change primitive Burnol decay into strict-right Xi decay.
+MUST-191 — Derive from integer/Poisson formation the actual theta contraction field, with a
+polar--Gamma component that breaks aperture covariance before positive closure; then identify
+strict-right relation incidence as a projection in its same grade-zero average. This gives the
+closed contradiction `1<=Tr(C_0)<B_base<1`.
+F613 — Hostile audit of the completion fibre: operator-valued Toeplitz phase lifting is a generic
+bridge, not a producer. Functional-equation formation lifts are information-neutral, and arbitrary
+phase fields preserve the same defect without selecting one completion.
+F614 — Complete Green--Stokes positivity cannot finance a strict-right landing: its two positive
+channels total `8||c||^2`, and even the canonical Krein-signed split tends to `(8/3)||c||^2`, both
+strictly above the literal primitive budget for `c!=0`.
+CANNOT-272 — Local `T`-completion instance of HARD LOCK P: do not seek selection from
+positivity/order, phase averaging, or signed conservation. The surviving completed-source order
+inequality for the pivot-resistant Julia--Wold orbit is proved equivalent to RH; assuming it merely
+renames the endpoint.
+MUST-192 — Any successor must be a pre-divisor formation law that acts before order comparison,
+retains `T`'s cubic prime-clock equation and theta first-exit flux, and changes the completion
+extension/quotient data rather than moving inside the already classified same-`T` fibre.

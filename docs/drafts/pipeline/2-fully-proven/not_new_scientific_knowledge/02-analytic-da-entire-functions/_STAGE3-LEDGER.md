@@ -14,7 +14,7 @@ Goal: unconditional Lean formalization of every card in this folder, then promot
 | 5 | quasianalytic-exponential-log-phase-jet-law | all steps closed | **DONE → 3-formalized** (2026-08-29) |
 | 6 | exponential-tower-exact-differential-order | both halves closed | **DONE → 3-formalized** (2026-08-29) |
 | 7 | first-order-meromorphic-compression-matching | 3-field factorization | **DONE → 3-formalized** (2026-09-02) |
-| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1 closed; order 2 open |
+| 8 | entire-heat-multiplicative-da-order-three-floor | Valiron–Zimogljad–Strelitz | **IN PROGRESS** — orders 0/1, fixed nonzero leading log-jet curve, numerical root proximity, two-sided branch growth, and finite rational Newton-slope extraction are closed; leading-phase extraction plus connected-component theorem open |
 | 9 | drifting-periodic-primitive-ramification-exclusion | closed with `card_totallyRamified_le_four` | **DONE → 3-formalized** (2026-08-29) |
 | 10 | entire-composition-hypertranscendence-or-law | Steinmetz reduction / Huang–Ng Thm 3 | TODO |
 | 11 | first-order-composition-two-defect-decomposition | Clunie + trdeg observability | **DONE → 3-formalized** (2026-08-30) |
@@ -221,6 +221,151 @@ Steps 1–3 give a compact-base Schottky bound and Bohr's covering theorem — b
 beyond this card (they are the quantitative core of Picard/Montel).
 
 ## Log
+- 2026-09-04 — Card 8 logarithmic Newton normalization closed in
+  `HTGeometry/StrelitzJetCurveNormalizedRoot`.  Dividing the selected root by the exact real power
+  of the escaping first-jet norm leaves logarithmic exponent zero, proved by a literal
+  `log`/`rpow` identity rather than a boundedness premise.  Direct source check, targeted leaf
+  build, and new-theorem axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Compact-annulus dominance, edge-root matching, and
+  global continuation remain.
+- 2026-09-04 — Card 8 phase-sensitive coefficient asymptotics closed in
+  `HTGeometry/StrelitzJetCurveCoefficientPhase`.  Relative Wiman error forces the first jet's
+  normalized complex phase to tend to `1`; each fixed curve coefficient, divided by the matching
+  power of the first-jet norm, therefore tends to its exact complex leading coefficient.  Direct
+  source check, targeted leaf build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 zero/nonzero branch split closed in
+  `HTGeometry/StrelitzJetCurveBranchDichotomy`.  Every selected root sequence is now treated:
+  eventual nonvanishing yields the exact rational Newton-edge package, while recurrent zero roots
+  admit a strictly increasing cofinal zero subsequence and force the observed second logarithmic
+  jet to tend to zero there.  Direct source check, targeted leaf build, and all new-theorem axiom
+  audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 exact Newton edge closed in
+  `HTGeometry/StrelitzJetCurveNewtonEdge`.  The rational slope now defines a maximal face and an
+  explicit leading-coefficient polynomial; both slope-defining curve monomials survive on that
+  face, so the corpus edge-root theorem gives a nonzero complex root.  Direct source check,
+  targeted leaf build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Numerical phase matching and global continuation
+  remain.
+- 2026-09-04 — Card 8 finite Newton-slope extraction closed in
+  `HTGeometry/StrelitzJetCurveNewtonSlope`.  Every eventually nonzero selected branch has a bounded
+  logarithmic slope and hence a convergent cofinal subsequence.  Existing log-scale
+  noncancellation forces the maximal fixed-curve weight to occur twice, identifying the limit with
+  an explicit rational slope determined by two monomials.  Direct source check, targeted leaf
+  build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 reciprocal branch growth closed in
+  `HTGeometry/StrelitzJetCurveReciprocalGrowth`.  Escaping specialization preserves the curve's
+  trailing degree and bounds its trailing coefficient away from zero.  Polynomial reversal maps
+  each nonzero root to its reciprocal, so Cauchy's theorem supplies the missing polynomial lower
+  scale.  Direct source check, targeted leaf build, and all new-theorem axiom audits pass; axioms
+  are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 specialized-root polynomial growth closed in
+  `HTGeometry/StrelitzJetCurveRootGrowth`.  One finite coefficient mass and degree bound every
+  coefficient after specialization in `u`; the leading coefficient stays uniformly away from zero,
+  so Cauchy's theorem gives a fixed polynomial envelope for every selected numerical root.  Direct
+  source check, targeted leaf build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 numerical jet-curve branch selected in
+  `HTGeometry/StrelitzJetCurveRootProximity`.  The fixed nonzero face is split as a polynomial in
+  `v` over `C[u]`; escaping `u` preserves a positive specialization degree and bounds the leading
+  coefficient away from zero.  Root proximity then selects actual roots of every eventual
+  specialization, with distance to the observed `v = z u′` tending to zero.  Direct source check,
+  targeted leaf build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 highest-face analytic isolation closed in
+  `HTGeometry/StrelitzBaseFaceDecay`.  Degree control, a quantitative leading-coefficient
+  inequality, and exponential domination of every heat-scale jet polynomial show that the fixed
+  nonzero highest `z`-coefficient face `S(u,v)` tends to zero along the escaping Wiman sequence.
+  The independent variable has now been eliminated from the asymptotic relation.  Direct source
+  check, targeted leaf build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 heat-scale jet separation closed in
+  `HTGeometry/StrelitzHeatJetGrowth`.  Along the exact Wiman sequence, the logarithmic radii tend
+  to infinity, the central index is `o(x)`, and eventually `ν ≤ x`, `|u| ≤ 2x`, and `|v| ≤ x²`.
+  These are the fixed polylogarithmic bounds needed to make every lower `z`-degree negligible
+  against the nonzero highest face.  Direct source check, targeted leaf build, and all new-theorem
+  axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 highest-independent-variable face closed in
+  `HTGeometry/StrelitzBaseCoefficient`.  Specializing the two logarithmic jets while retaining `z`
+  gives a univariate polynomial whose `z^k` coefficient is evaluation of one fixed bivariate
+  polynomial.  The face at the largest coefficient degree is proved nonzero, and the retained-`z`
+  polynomial remains superpolynomially small along the exact Wiman sequence.  Direct source check,
+  targeted leaf build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 derivative-variable reduction closed in
+  `HTGeometry/StrelitzDerivativePolynomial`.  `jetUnlift` turns the fixed nonzero two-jet
+  polynomial into a fixed nonzero univariate polynomial in `v = z u′`, with coefficients
+  polynomial in `(z,u)`; its specialization along the escaping Wiman sequence remains
+  superpolynomially small after multiplication by every natural power of the radius.  Direct
+  source check, targeted leaf build, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 closed maximum-modulus locus built in
+  `HTGeometry/StrelitzMaximumModulusSet`.  The locus meets every positive circle and is closed for
+  every continuous function; on the entire-function locus the maximum-term floor and reality of
+  `zf'/f` hold pointwise.  Direct source check, targeted leaf build, and new-theorem axiom audits
+  pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Added Card 8 maximum-modulus locus package
+  `HTGeometry/StrelitzMaximumModulusPoint`: every positive circle has a selected point whose value
+  dominates the maximum term, is nonzero, and whose Euler logarithmic derivative is real.  Direct
+  source check, targeted leaf build, and capstone axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 superpolynomial leading-coefficient decay closed in
+  `HTGeometry/StrelitzHeatLeadingDecay`.  The fixed nonzero leading log-jet polynomial from an
+  assumed order-two ADE satisfies `r^j|P(z,u,v)| → 0` for every natural `j` along the selected
+  escaping Wiman sequence.  The proof uses the already-owned theorem that an infinite entire
+  maximum term outgrows every power.  Direct source check, targeted leaf build, and new-theorem
+  axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 heat-specific maximum-term reduction closed in
+  `HTGeometry/StrelitzHeatLeadingMaximumTerm`.  From any assumed order-two ADE, the theorem returns
+  one fixed nonzero leading log-jet polynomial, escaping exact Wiman roots, both quantitative jet
+  errors, and the eventual bound `|C_D(z,u,v)| μ(r) ≤ C_Q r^K`.  Heat decay supplies `ν(r) ≤ r`;
+  infinite support supplies `μ(r) → ∞`.  Direct source check, targeted leaf build, and capstone axiom
+  audit pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 finite numerator estimate closed in
+  `HTGeometry/StrelitzCoefficientGrowthBound`.  Every subfamily of logarithmic-jet coefficients is
+  bounded by one explicit finite constant times `r^K` on `|z| ≤ r`, `|u| ≤ 2r`, `|v| ≤ r²`.
+  Direct source check, targeted leaf build, and new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 normalized leading bound closed in
+  `HTGeometry/StrelitzNormalizedLeadingBound`.  At any exact root with `|f| ≥ 1`, maximality of the
+  value degree cancels every common power except one, proving that the leading coefficient times
+  `|f|` is bounded by the finite sum of lower coefficient values.  Direct source check, targeted
+  leaf build, and capstone axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Added generic nested evaluation bound
+  `HTGeometry/PolynomialCoefficientMvPolynomialGrowth`.  A multivariate polynomial with
+  one-variable polynomial coefficients is bounded explicitly by its finite coefficient-norm sum,
+  maximal coefficient degree, and multivariate total degree.  This supplies the numerator bound for
+  Card 8's leading-summand inequality.  Direct source check, targeted leaf build, and capstone axiom
+  audit pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 leading value summand isolated in
+  `HTGeometry/StrelitzLeadingCoefficientIsolation`.  A nonzero relation now supplies a maximal
+  value degree with nonzero logarithmic-jet coefficient; at every exact root its summand equals the
+  negative sum of all lower summands, and the corresponding norm inequality is Lean-proved.
+  Direct source check, targeted leaf build, and new-theorem axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 canonical value-degree split closed in
+  `HTGeometry/StrelitzValueCoefficientDecomposition`.  Every nonzero logarithmic-jet relation is
+  regrouped exactly by powers of the function value; all recorded coefficient polynomials are
+  nonzero and the evaluated finite sum is definitionally tied back to the original relation.
+  `HTGeometry/StrelitzLogJetInitialData` also fixes one relation and an escaping sequence of exact
+  roots with simultaneous `1/(n+1)` logarithmic-jet errors.  Direct source checks, targeted leaf
+  builds, and new-theorem axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 variable-accuracy analytic bridge closed in
+  `HTGeometry/StrelitzLogJetWimanAsymptotic`.  The existing simultaneous first/second derivative
+  Wiman estimate and the exact logarithmic-jet identity now give, at arbitrarily large selected
+  radii, `zf'/f = nu + O(eps*nu)` and `z(zf'/f)' = O(eps*nu^2)` for every `eps>0`, with nonvanishing
+  of the selected value proved internally.  Direct source check, targeted leaf build, and new
+  theorem axiom audit pass; axioms are `[propext, Classical.choice, Quot.sound]`.
+- 2026-09-04 — Card 8 exact algebraic reduction closed in
+  `HTGeometry/StrelitzLogJetReduction`.  Every order-two polynomial ADE is transformed, without a
+  Newton-face hypothesis, into a nonzero polynomial-coefficient relation in
+  `(f, zf'/f, z(zf'/f)')`; the triangular substitution has an explicit inverse and its evaluation
+  is the original relation times the exact clearing power `z^(2d)`.  Direct source check, targeted
+  leaf build, and capstone axiom audit pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Remaining Card 8 core is the published
+  maximum-modulus connected-component/Newton argument.
 - 2026-09-02 — **Card 13 closed and promoted**.  New differential-coefficient infrastructure:
   `RamifiedMultiGradedNewtonModelBase` and `RamifiedPuiseuxDifferentialBranchField`.  Actual analytic
   transfer: `NonautonomousRamifiedPuiseuxCascadeActual`.  The branch-selection structure contains

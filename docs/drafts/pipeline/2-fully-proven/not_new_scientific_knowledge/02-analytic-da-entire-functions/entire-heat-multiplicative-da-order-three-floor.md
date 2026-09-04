@@ -21,9 +21,49 @@ Determine how much algebraic-differential complexity is forced by entire backwar
   gives `ν(r) = o(log r)`.  Order zero and order one are now excluded unconditionally; the latter
   follows from the exact compiler in `HTGeometry/FirstOrderCoefficientDecomposition.lean` and the
   corpus Newton-face theorem.  The four-variable order-two compiler is also Lean-proved in
-  `HTGeometry/SecondOrderCoefficientDecomposition.lean`.  Remaining step is the genuine
-  Valiron--Zimogljad--Strelitz minimal-relation reduction when the homogeneous top symbol vanishes
-  on the monomial jet model; see `_STAGE3-LEDGER.md`.
+  `HTGeometry/SecondOrderCoefficientDecomposition.lean`.  The exact logarithmic-jet compiler is now
+  Lean-proved in `HTGeometry/StrelitzLogJetReduction.lean`: every order-two ADE produces a nonzero
+  polynomial-coefficient relation in `(f, zf'/f, z(zf'/f)')`, with the second-derivative identity
+  and every clearing power proved exactly.  `HTGeometry/StrelitzLogJetWimanAsymptotic.lean` also
+  proves the variable-accuracy Wiman input `zf'/f = nu + o(nu)` and
+  `z(zf'/f)' = o(nu^2)` at arbitrarily large selected radii.
+  `HTGeometry/StrelitzLogJetInitialData.lean` packages one fixed nonzero relation with an escaping
+  sequence of exact roots and errors `1/(n+1)`, while
+  `HTGeometry/StrelitzValueCoefficientDecomposition.lean` canonically splits that relation by
+  powers of `f`, proves every retained logarithmic-jet coefficient is nonzero, and proves exact
+  recombination after evaluation.  `HTGeometry/StrelitzLeadingCoefficientIsolation.lean` selects
+  a nonzero maximal value-degree coefficient and derives both its exact root identity and finite-sum
+  norm bound.  `HTGeometry/PolynomialCoefficientMvPolynomialGrowth.lean` supplies the uniform
+  polynomial bound in the coefficient variable and every logarithmic-jet variable, and
+  `HTGeometry/StrelitzNormalizedLeadingBound.lean` cancels the common function-value powers to gain
+  one full factor of `|f|` against the lower coefficients.
+  `HTGeometry/StrelitzCoefficientGrowthBound.lean` bounds the entire finite lower-coefficient
+  family by one explicit constant times one fixed radius power on the Wiman scale.  Remaining step
+  `HTGeometry/StrelitzHeatLeadingMaximumTerm.lean` combines these results with heat decay and
+  infinite-support maximum-term growth: any assumed order-two ADE yields a fixed nonzero leading
+  coefficient satisfying `|C_D(z,u,v)| mu(r) <= C_Q r^K` along escaping exact Wiman roots.
+  `HTGeometry/StrelitzHeatLeadingDecay.lean` sharpens this to
+  `r^j |C_D(z,u,v)| -> 0` for every fixed `j`.
+  `HTGeometry/StrelitzMaximumModulusPoint.lean` packages maximum points on every positive circle,
+  including nonvanishing, the maximum-term floor, and reality of `zf'/f`.
+  `HTGeometry/StrelitzMaximumModulusSet.lean` constructs the full closed maximum locus, proves it
+  meets every positive circle, and extends both the maximum-term floor and logarithmic-derivative
+  reality to every relevant point of that locus.  `HTGeometry/StrelitzJetCurveNewtonEdge.lean`
+  now defines the exact maximal Newton face and its leading-coefficient edge polynomial; the two
+  monomials determining every extracted rational slope both survive on that face, so the edge
+  polynomial has a nonzero complex root.  `HTGeometry/StrelitzJetCurveBranchDichotomy.lean` closes
+  the previously omitted zero-root case: every selected branch either has this nonzero Newton-edge
+  package or vanishes on a cofinal strict subsequence, where root proximity forces the observed
+  second logarithmic jet itself to tend to zero.  `HTGeometry/StrelitzJetCurveCoefficientPhase.lean`
+  retains the missing complex phase: the normalized first jet tends to the positive real phase,
+  and every fixed curve coefficient divided by the matching power of the first-jet norm converges
+  to its exact complex leading coefficient.  `HTGeometry/StrelitzJetCurveNormalizedRoot.lean`
+  removes the extracted real Newton power exactly and proves that the resulting numerical root has
+  logarithmic exponent zero.  Remaining step is upgrading that subpolynomial control to a compact
+  annulus and matching the selected nonzero branch to one leading edge root, followed by the global argument
+  in both branches of this exhaustive dichotomy, namely the
+  Valiron--Zimogljad--Strelitz Newton-branch/
+  connected-component argument for that relation; see `_STAGE3-LEDGER.md`.
 
 ## Theorem `[PROVED HERE] [BRIDGE]`
 
@@ -106,3 +146,64 @@ The theorem does not rule out the actual de Bruijn-Newman deformation, which has
 ## Log
 
 - 2026-07-11 — Proved the coefficient-free differential-order-three floor and classified it `[BRIDGE]` under the direct-parent gate.
+- 2026-09-04 — Formalization advanced through an exact last-variable reduction:
+  `StrelitzDerivativePolynomial` converts the fixed nonzero second-order log-jet relation into a
+  fixed nonzero polynomial in `v = z u′`, with coefficients polynomial in `(z,u)`, whose value
+  along the escaping Wiman sequence is superpolynomially small.  Remaining order-two core is the
+  Newton/Puiseux branch selection and maximum-modulus connected-component argument; card remains
+  stage 2 until that exact residue is closed.
+- 2026-09-04 — `StrelitzBaseCoefficient` now extracts the opposite Newton face exactly: after
+  specializing `(u,v)` and retaining `z`, every `z^k` coefficient is evaluation of a fixed
+  bivariate complex polynomial, and the coefficient at the largest `z`-degree is nonzero.  The
+  retained-`z` polynomial inherits superpolynomial decay along the selected Wiman sequence.
+  Remaining residue is to isolate this nonzero highest face analytically and globalize one of its
+  Newton/Puiseux branches on maximum-modulus components.
+- 2026-09-04 — `StrelitzHeatJetGrowth` proves the required heat-scale separation along that same
+  sequence: `x → ∞`, `ν(exp x)/x → 0`, and eventually `ν ≤ x`, `|u| ≤ 2x`, `|v| ≤ x²`.
+  Thus both logarithmic jets are polylogarithmic in `|z|`; next exact step is the finite-sum
+  estimate isolating the nonzero highest `z`-coefficient face.
+- 2026-09-04 — `StrelitzBaseFaceDecay` completes that finite-sum estimate.  After division by the
+  highest power of `|z|`, every lower coefficient face carries at least one `exp(-x)` factor, which
+  dominates its fixed polynomial growth in the heat-scale jets.  Hence an assumed order-two ADE
+  produces a fixed nonzero `S ∈ C[u,v]` with `|S(u_n,v_n)| → 0`; no `z`-coefficient remains.
+  Remaining residue is the bivariate Newton/Puiseux branch classification and its globalization on
+  maximum-modulus components.
+- 2026-09-04 — `StrelitzJetCurveRootProximity` splits `S` as a fixed polynomial in `v` over
+  `C[u]`.  Since `|u_n| → ∞`, specializations eventually retain a fixed positive `v`-degree and a
+  leading coefficient bounded away from zero.  Actual specialized roots are selected with
+  `|v_n-root_n| → 0`.  Remaining residue is now strictly the asymptotic Puiseux classification of
+  those roots and the global maximum-modulus component argument.
+- 2026-09-04 — `StrelitzJetCurveRootGrowth` gives all specialized curve coefficients one explicit
+  polynomial envelope in `|u|`.  The eventual leading-coefficient floor and Cauchy's root bound then
+  force every selected numerical branch to have at most polynomial growth in the escaping first
+  logarithmic jet.  This supplies the bounded-above logarithmic slopes required for the next
+  Newton-edge subsequence extraction; reciprocal lower growth and global branch continuation remain.
+- 2026-09-04 — `StrelitzJetCurveReciprocalGrowth` stabilizes the least nonzero `v`-coefficient under
+  the same escaping specializations.  Reversing the specialized polynomial turns every nonzero
+  selected root into its reciprocal, and a second Cauchy estimate proves that reciprocal also has a
+  fixed polynomial envelope.  Nonzero branches therefore have two-sided polynomial scale; finite
+  logarithmic-slope extraction and global continuation remain.
+- 2026-09-04 — `StrelitzJetCurveNewtonSlope` turns that two-sided scale into a finite Newton
+  classification.  Compactness selects a cofinal subsequence with a limiting logarithmic root
+  slope; the corpus log-scale noncancellation theorem forces two distinct curve monomials to attain
+  the maximal weight.  The limit is therefore their explicit rational Newton slope.
+- 2026-09-04 — `StrelitzJetCurveNewtonEdge` turns every extracted slope into its exact maximal-face
+  polynomial.  Both slope-defining monomials have nonzero leading coefficients on that face, and
+  the corpus edge-root theorem supplies a genuine nonzero complex root.  Matching the numerical
+  root sequence to one edge root and the global maximum-modulus component argument remain.
+- 2026-09-04 — `StrelitzJetCurveBranchDichotomy` makes the numerical branch analysis exhaustive.
+  Either roots are eventually nonzero and carry the rational Newton-edge package, or exact zero
+  roots recur on a strictly increasing cofinal subsequence; in the latter case proximity proves
+  the observed second logarithmic jet tends to zero.  Global analytic treatment of both branches
+  remains.
+- 2026-09-04 — `StrelitzJetCurveCoefficientPhase` retains coefficient phase at the Wiman points.
+  The exact relative-error estimate makes radial normalization of the first logarithmic jet tend
+  to `1`; combining this with the corpus norm-escape leading-monomial theorem proves that every
+  coefficient row, normalized by its matching first-jet norm power, converges to its complex
+  leading coefficient.  Normalized-root compactness, edge-root matching, and global continuation
+  remain.
+- 2026-09-04 — `StrelitzJetCurveNormalizedRoot` removes the extracted real Newton power from the
+  selected numerical root and proves, by an exact logarithm/rpow identity, that its residual
+  logarithmic exponent is zero.  This closes scale normalization without assuming boundedness.
+  Remaining local step is the finite-face dominance argument upgrading subpolynomial size to a
+  compact annulus and identifying the resulting limit with an actual edge root.

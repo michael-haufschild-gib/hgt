@@ -383,3 +383,45 @@ finite-difference mixed derivative to `10⁻⁶`; for `(211, 421)` the defect is
 (n = 150) of the beat term at the determinant level but smooth in `n`, so at the radius level the
 `ε₁ε₂` jet equals the beat-mode radius jet to 1–3 % — which is what §3.5 measured.  The rigorous
 bound on the defect's second differences is MUST-173 (large-rapidity boost-entry estimate).
+
+### 3.13 The boost bound and the quantitative cross term (2026-09-04)
+
+`RHTower.MeixnerPollaczek.norm_boostMatrixEntry_le`: `|M_{mn}(t)| ≤ (cosh t)^{-1/2} c_m c_n (tanh t)^{m+n}
+exp(2mn/sinh² t)` from the separable expansion `c_n M_{mn} = (cosh t)^{-1/2} c_m Σ_k binom(m,k)
+σ^{2k}(iτ)^{m+n−2k}(k+½)_{n−k}/(n−k)!` (`boost_entry_bound.py`, `.log`: formula vs quadrature
+`10⁻³²`, bound never exceeded, within 1–8 % for `m,n ≤ 20` at `t = log 211`).  Consequence
+(`abs_bilinearSquaredRadiusJet_sub_beat_le`): the two-prime cross term at the squared-radius level
+equals the beat-mode jet up to an explicit `O((cosh δ₁ cosh δ₂)^{-1/2})` error, i.e. relative
+`O(εn)` for `δ_a = log p_a`, `n ≪ p` — the rigorous form of §3.5.
+
+### 3.14 The one-prime second-order response (2026-09-04)
+
+`RHTower.CosineModeResponse.deriv_deriv_eulerQuadraticSquaredRadius` and `abs_onePrimeSecondOrder_le`:
+`[ε²]a_n² = r_n²(ΔΔJ_{2δ} − ½ΔΔ tr(T(δ)²) + ½(ΔΔJ_δ)²)` for the quadratic truncation of the Euler
+factor (`|Euler − quadratic| ≤ 60ε³`), bounded by the boost bound: the second-order term of the
+one-prime deviation is `O(q²)`.  `one_prime_second_order.py` (`.log`): the formula against the true
+Euler weight (finite differences) to `10⁻⁶`/`10⁻⁷`; at `p = 211` the second-order term is `2·10⁻³`
+of the first-order one and the remainder after second order is at the `ε³` scale.  So the `O(q)`
+in `√qΦ(qn) + O(q)` is entirely the non-scaling part of the first-order response.
+
+### 3.15 The finite-`S` second-order assembly (2026-09-04)
+
+`RHTower.CosineModeResponse.deriv_deriv_raySquaredRadius_assembly`: along `ε = tv`,
+`(a_n²)''(0) = Σ_a v_a²·[one-prime second-order jet]_a + Σ_{a≠b} v_av_b·[bilinear squared-radius jet]_{ab}`
+— no three-body term at second order; the log-det second derivative is the quadratic form
+`Σ v_av_b B_{ab} + Σ v_a² J_{2δ_a}` (`rayLogJet_eq`); the product weight agrees with its quadratic
+truncation to `|t|³∏(1+w)(1+Σw)³` (`abs_prod_sub_quadratic_le`).  `finite_prime_second_order.py` (`.log`):
+for `{101, 211, 307}` the quadratic form matches the true product to `10⁻⁷`, and first+second order
+matches the exact deviation to `10⁻⁵`, with the pairwise beat terms dominating.
+
+### 3.16 The determinant-level Taylor remainder for the true Euler product (2026-09-04)
+
+`RHTower.CosineModeResponse.abs_log_det_eulerProductGram_sub_jet_le`: for the true finite-`S` Euler
+product, `log det G_n(W)` equals the second-order jet `Σ ε_a J_{δ_a} + ½(ΣΣ ε_aε_b B_ab + Σ ε_a² J_{2δ_a})`
+up to an explicit `O(V³)` remainder (`V = Σ ε_a`), via the generic
+`RHTower.MatrixLogDet.abs_log_det_one_add_sub_jet_le` (`|log det(1+N) − tr N + ½ tr N²| ≤
+d(d+1)‖N‖₁³/(1−‖N‖₁)²`) and the weight-level cubic bound.  Radius level:
+`abs_log_eulerProductSquaredRadius_sub_jet_le`.  `logdet_remainder_check.py` (`.log`): for
+`{101, 211, 307}` the remainder scales as `λ³` under `ε → λε` (ratios ≈ 8), the trace form of the jet
+equals the corpus jets exactly, and at `n = 10` the true operator norm of `G_W − 1` is `0.16` while the
+`ℓ¹` entry norm used by the theorem is `1.1` — the `n`-uniform operator-norm refinement is next.
