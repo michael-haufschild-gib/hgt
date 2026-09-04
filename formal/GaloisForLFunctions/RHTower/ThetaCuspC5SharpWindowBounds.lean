@@ -365,7 +365,6 @@ theorem centreJets_chamber_bounds {u A₁ A₂ : ℝ} (h1 : 6 ≤ A₁)
   have m4 := sharpJetMain4_abs_le_of_le h1 hA1
   have m5 := sharpJetMain5_abs_le_of_le h1 hA1
   obtain ⟨bw2, bw3, bw4, bw5⟩ := bornWitten_jets_eq u
-  simp only at bw2 bw3 bw4 bw5
   rw [hq] at bw2 bw3 bw4 bw5
   have hbw := bornWitten_chamber_bounds (q := thetaCuspSingleAtomReflectionScale 1 u - 3 / 2)
     (q₁ := A₁ - 3 / 2) (q₂ := A₂ - 3 / 2) (by linarith) (by linarith) (by linarith)
@@ -437,26 +436,22 @@ theorem sharpKey_of_bounds {c₀ c₁ c₂ c₃ S₄ S₅ t : ℝ}
   have ht40 : 0 ≤ t ^ 4 := by positivity
   have ht7 : 0 < t ^ 7 := by positivity
   -- the six reduced quantities at `t`
-  have hΦ : c₀l - S₄u * tb ^ 4 / 360 ≤ c₀ + c₂ * t ^ 2 / 12 - S₄ * t ^ 4 / 360 := by
-    have := mul_le_mul hS4u ht4 ht40 (by linarith)
-    nlinarith [mul_nonneg hc2 ht20]
-  have hO : c₁l / 2 - S₅u * tb ^ 4 / 720 ≤ c₁ / 2 + c₃ * t ^ 2 / 24 - S₅ * t ^ 4 / 720 := by
-    have := mul_le_mul hS5u ht4 ht40 (by linarith)
-    nlinarith [mul_nonneg hc3 ht20]
-  have hY : c₂l / 3 - S₄u * tb ^ 2 / 30 ≤ c₂ / 3 - S₄ * t ^ 2 / 30 := by
-    have := mul_le_mul hS4u ht2 ht20 (by linarith)
-    nlinarith
+  have p44 : S₄ * t ^ 4 ≤ S₄u * tb ^ 4 := mul_le_mul hS4u ht4 ht40 (by linarith)
+  have p42 : S₄ * t ^ 2 ≤ S₄u * tb ^ 2 := mul_le_mul hS4u ht2 ht20 (by linarith)
+  have p54 : S₅ * t ^ 4 ≤ S₅u * tb ^ 4 := mul_le_mul hS5u ht4 ht40 (by linarith)
+  have p52 : S₅ * t ^ 2 ≤ S₅u * tb ^ 2 := mul_le_mul hS5u ht2 ht20 (by linarith)
+  have p22 : c₂ * t ^ 2 ≤ c₂u * tb ^ 2 := mul_le_mul h2u ht2 ht20 (by linarith)
+  have p32 : c₃ * t ^ 2 ≤ c₃u * tb ^ 2 := mul_le_mul h3u ht2 ht20 (by linarith)
+  have n22 : 0 ≤ c₂ * t ^ 2 := mul_nonneg hc2 ht20
+  have n32 : 0 ≤ c₃ * t ^ 2 := mul_nonneg hc3 ht20
+  have hΦ : c₀l - S₄u * tb ^ 4 / 360 ≤ c₀ + c₂ * t ^ 2 / 12 - S₄ * t ^ 4 / 360 := by linarith
+  have hO : c₁l / 2 - S₅u * tb ^ 4 / 720 ≤ c₁ / 2 + c₃ * t ^ 2 / 24 - S₅ * t ^ 4 / 720 := by linarith
+  have hY : c₂l / 3 - S₄u * tb ^ 2 / 30 ≤ c₂ / 3 - S₄ * t ^ 2 / 30 := by linarith
   have hE : c₀ + c₂ * t ^ 2 / 6 + S₄ * t ^ 4 / 120 ≤ c₀u + c₂u * tb ^ 2 / 6 + S₄u * tb ^ 4 / 120 := by
-    have := mul_le_mul hS4u ht4 ht40 (by linarith)
-    have := mul_le_mul h2u ht2 ht20 (by linarith)
-    nlinarith
-  have hΛ : c₃ / 12 + S₅ * t ^ 2 / 180 ≤ c₃u / 12 + S₅u * tb ^ 2 / 180 := by
-    have := mul_le_mul hS5u ht2 ht20 (by linarith)
-    nlinarith
-  have hOu : c₁ / 2 + c₃ * t ^ 2 / 24 + S₅ * t ^ 4 / 720 ≤ c₁u / 2 + c₃u * tb ^ 2 / 24 + S₅u * tb ^ 4 / 720 := by
-    have := mul_le_mul hS5u ht4 ht40 (by linarith)
-    have := mul_le_mul h3u ht2 ht20 (by linarith)
-    nlinarith
+    linarith
+  have hΛ : c₃ / 12 + S₅ * t ^ 2 / 180 ≤ c₃u / 12 + S₅u * tb ^ 2 / 180 := by linarith
+  have hOu : c₁ / 2 + c₃ * t ^ 2 / 24 + S₅ * t ^ 4 / 720 ≤
+      c₁u / 2 + c₃u * tb ^ 2 / 24 + S₅u * tb ^ 4 / 720 := by linarith
   have hE0 : 0 ≤ c₀ + c₂ * t ^ 2 / 6 + S₄ * t ^ 4 / 120 := by positivity
   have hΛ0 : 0 ≤ c₃ / 12 + S₅ * t ^ 2 / 180 := by positivity
   have hOu0 : 0 ≤ c₁ / 2 + c₃ * t ^ 2 / 24 + S₅ * t ^ 4 / 720 := by positivity
@@ -513,8 +508,7 @@ theorem sharpKey_of_bounds {c₀ c₁ c₂ c₃ S₄ S₅ t : ℝ}
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
   · have : 0 ≤ t * (c₀ + c₂ * t ^ 2 / 6 - S₄ * t ^ 4 / 120) := by
       apply mul_nonneg ht0
-      have := mul_le_mul hS4u ht4 ht40 (by linarith)
-      nlinarith [mul_nonneg hc2 ht20]
+      linarith
     linarith [this]
   · have : 0 ≤ t ^ 2 * Ot := mul_nonneg ht20 hOt0
     rw [← hOt] at this; linarith [this]

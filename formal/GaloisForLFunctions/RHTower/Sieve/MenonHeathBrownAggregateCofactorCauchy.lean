@@ -175,13 +175,17 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
       calc
         ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 =
             ∑ box ∈ active, ‖f box‖ ^ 2 := by
-          rw [Finset.sum_filter]
-          apply Finset.sum_congr rfl
-          intro box _
-          by_cases hbox : IsHeathBrownBoxEligible L X 3 T0 t box ∧
-              IsHeathBrownBoxWindowRelevant N X 3 box
-          · simp [active, menonHeathBrownActiveBoxes, hbox]
-          · simp [active, menonHeathBrownActiveBoxes, f, hbox]
+          symm
+          refine Finset.sum_subset (Finset.subset_univ active) ?_
+          intro box _ hnot
+          have hbox : ¬ (IsHeathBrownBoxEligible L X 3 T0 t box ∧
+              IsHeathBrownBoxWindowRelevant N X 3 box) := by
+            intro hactive
+            exact hnot (by
+              simp only [active, menonHeathBrownActiveBoxes, Finset.mem_filter,
+                Finset.mem_univ, true_and]
+              exact hactive)
+          simp [f, hbox]
         _ ≤ ∑ box ∈ active,
             64 * ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
               (s r) * D r‖ ^ 2 := by
@@ -207,8 +211,18 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
             ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
               (s r) * D r‖ ^ 2 := by rw [Finset.mul_sum]
     rw [hsum]
-    exact hcs.trans (mul_le_mul_of_nonneg_left hsumActive
-      (mul_nonneg (Nat.cast_nonneg _) (by norm_num)))
+    have hcard0 : 0 ≤ (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) := by
+      positivity
+    calc
+      ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ 2 ≤
+          (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
+            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 := hcs
+      _ ≤ (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
+          (64 * ∑ box ∈ active,
+            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
+              (s r) * D r‖ ^ 2) :=
+        mul_le_mul_of_nonneg_left hsumActive hcard0
+      _ = _ := by ring
   calc
     ∑ r ∈ S,
         ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ 2 ≤

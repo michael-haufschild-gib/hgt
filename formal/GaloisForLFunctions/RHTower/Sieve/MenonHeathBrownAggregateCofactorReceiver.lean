@@ -79,6 +79,47 @@ theorem exists_sum_normSq_windowRelevantAggregate_mul_dirPoly_le_selectedFactor
     hdelta hT hgap hband (hselected box)
   simpa only [menonHeathBrownSelectedFactorCofactorCost] using hbox
 
+/-- Active-box version: factor control is required only for boxes that occur in the
+window-relevant aggregate, and only those boxes contribute complementary Montgomery cost. -/
+theorem exists_sum_normSq_windowRelevantAggregate_mul_dirPoly_le_activeSelectedFactor
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (L X : ℕ) (T0 t N : ℝ) (M : ℕ), 1 ≤ M →
+      ∀ (b : Fin M → ℂ) (u : ℝ)
+        (j : (box : HeathBrownBoxChoice L X 3) →
+          HeathBrownBoxFactorIndex 3 box.m)
+        (V : HeathBrownBoxChoice L X 3 → ℝ) {sigma : ℝ},
+        0 ≤ sigma → (∀ box, 0 ≤ V box) →
+        ∀ {S : Finset ℕ} {lam : ℕ → ℝ} {delta T : ℝ},
+        0 < delta → 0 ≤ T →
+        (∀ i, lam i + delta ≤ lam (i + 1)) →
+        (∀ r ∈ S, delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ T) →
+        (∀ box ∈ menonHeathBrownActiveBoxes L X T0 t N, ∀ r ∈ S,
+          ‖heathBrownBoxFactorValue L X 3 box
+            ((sigma : ℂ) + ((u + lam r : ℝ) : ℂ) * Complex.I) (j box)‖ ≤ V box) →
+        ∑ r ∈ S,
+            ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N
+                ((sigma : ℂ) + ((u + lam r : ℝ) : ℂ) * Complex.I) *
+              dirPoly M b (-lam r)‖ ^ 2 ≤
+          (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
+            ∑ box ∈ menonHeathBrownActiveBoxes L X T0 t N,
+              menonHeathBrownSelectedFactorCofactorCost box (j box)
+                epsilon C sigma (V box) delta T M b := by
+  obtain ⟨C, hC, hmean⟩ :=
+    exists_meanSquare_heathBrownBox_shift_mul_dirPoly_le_selectedFactor hepsilon
+  refine ⟨C, hC, ?_⟩
+  intro L X T0 t N M hM b u j V sigma hsigma hV S lam delta T hdelta hT hgap hband
+    hselected
+  have haggregate := sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
+    L X T0 t N S
+      (fun r => (sigma : ℂ) + ((u + lam r : ℝ) : ℂ) * Complex.I)
+      (fun r => dirPoly M b (-lam r))
+  refine haggregate.trans ?_
+  gcongr with box hbox
+  have hboxMean := hmean L X 3 box (j box) hsigma (hV box) M hM b u
+    hdelta hT hgap hband (hselected box hbox)
+  simpa only [menonHeathBrownSelectedFactorCofactorCost] using hboxMean
+
 end
 
 end RHTower.Sieve
