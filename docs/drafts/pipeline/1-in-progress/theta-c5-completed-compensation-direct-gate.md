@@ -311,3 +311,51 @@ Pod (`clg_beta3.py`): the key inequality holds with ratio `20` at `t = 1/4` (`A(
 exponential form `shape ≥ 32 sinh 2t cosh² 2t` (`t ≥ 5/4`) is needed.  Remaining for regime I:
 the numeric discharge of the key (chambers in `t` after absorbing `A(u−t) ≥ 6` by the decay
 `A^kε(A)` for `k ≤ 18`), and the small-`t` frozen-jet discharge for `t ≤ 0.3`.
+
+## 2026-09-05 (verdict on the downstream chain) — work on this gate paused
+
+**Question settled by corpus search only:** is "direct-J in all regimes + rank-four/Ptolemy ⇒ Weil
+positivity" a theorem, or is the general-packet step RH-equivalent?
+
+**Answer: the general-packet step is RH-equivalent; the implication is not a theorem.**
+
+- What direct-J + rank-four gives (once the compact sign is closed in all regimes): nonnegativity
+  of every fibre odd wall (`thetaCuspReflectedSourceOddParityWall_nonneg_of_dividedDrop_logConvex`),
+  transported to the physical mixture (`thetaCuspCenterMixedOddParityWall_nonneg_of_sourceFibres`),
+  hence positive semidefiniteness of the center-mixed Toeplitz kernel on the **equispaced four-node
+  packet** `{0,t,2t,3t}` for every aperture `a ∈ (0,1/2)` and `t > 0`
+  (`thetaCuspCenterMixedGramFourEquispaced_posSemidef_iff_ptolemy`).  Separated packets of any size
+  are already unconditional (`thetaTailFirstMomentKernel_separatedPacket_quadraticForm_nonneg`,
+  `posSemidef_thetaTailFirstMomentBezoutian_separatedRealPacket`).
+- What Weil positivity is in this receiver: `thetaCuspCenterMixedFourierNonnegative_iff_riemannHypothesis`
+  (Fourier nonnegativity of the center-mixed autocorrelation tangent for all `a`, all `b`), and
+  `riemannHypothesis_iff_posSemidef_thetaTailFirstMomentBezoutian` /
+  `riemannHypothesis_iff_posSemidef_thetaTailKreinDifference` (PSD on **every finite node system**,
+  every aperture).  Both are `↔ RiemannHypothesis`.
+- No corpus theorem reduces the universal packet quantifier to bounded size or to equispaced nodes.
+  The corpus records the opposite direction of evidence: rank five does not follow from the shape
+  properties that give rank four (explicit indefinite five-node compression, frontier map "W2C"
+  paragraph); the three-point problem needed its own compact-core theorem
+  (`exists_thetaCuspCenterMixedThreePointMatrix_compactCore_iff`); and on the Xi side even fixed
+  rank two over all packet pairs is `↔ RH`
+  (`riemannHypothesis_iff_forall_xiSeparatedPacketWeilGram_two_det_nonnegative`), i.e. the RH
+  content sits in the quantifier over all packets, not in the rank.
+- Hence "extend rank four to clustered/general packets and exclude cofinal escape" (frontier map,
+  CLG/TTF) is the universal criterion minus the proven separated stratum, which is RH itself.
+  The direct-J gate is a receiver-side local input: closing it in every regime would add the
+  equispaced four-node stratum of an RH-equivalent universal positivity and nothing beyond it.
+
+**State of the gate itself at pause (all Lean, unconditional, wired, built, axioms clean):**
+- `c5CompletedCompensationMargin_pos_of_regimeOne_quarter`: `1/4 ≤ t ≤ u`, `A(u−t) ≥ 6` ⇒ gate.
+- Small `t` in regime I: theory complete, assembly not done.  Modules
+  `ThetaCuspC5SharpTailMeasures` (second atom + deep tail, closed-form second-atom moments `j ≤ 7`,
+  support-8 tail bound), `ThetaCuspC5SharpTailJets` (`|J_k − e^{−3A}G_k(A)| ≤ K_k A^k ε² + L_k A^k e^{−8(A−π)}/399`,
+  `k = 2..7`, `|h_k|` antitone on `[6,∞)`), `C5FrozenJetSharpKernel` (`|K₁| ≤ S₅t⁶/90`, `|K₂| ≤ S₄t⁵/15`),
+  `ThetaCuspC5FrozenJetGateSharp`, `ThetaCuspC5SharpWindowBounds` (uniform errors, `c⁽⁴⁾ = BW₆ − J₆`,
+  `c⁽⁵⁾ = BW₇ − J₇`, window majorants, two-sided centre chambers, `sharpKey_of_bounds`).
+  Remaining: 17 chamber certificates (`A(u) ∈ [6,16.5]`, Case I `[6,9]` with `t ≤ (A₂−6)/12` and
+  window `[6, A₂²/6]`; Case II `[9,16.5]` with `t ≤ 1/4`, window `[max(6,0.6A₁), min(1.65A₂, A₂²/6)]`)
+  plus a linear-bound tail for `A(u) ≥ 16.5`, using BW₇ monotone in `q` (via
+  `thetaCuspBornWittenLogEighthDerivative_pos`) for the `S₅` lower end.  Chamber list verified on the
+  pod against the exact Lean-side expressions (`clg_chambers_v2.py`).
+- Corner regime `A(u−t) ∈ [π,6)`: not started.

@@ -5,7 +5,24 @@
 - **Type:** pre-divisor arithmetic realization conjecture
 - **Parents:** ULF-PCOB-001, ULF-SACWHT-001, ULF-CCEL-001, ULF-PLCIE-001, ULF-PLCCKU-001,
   ULF-PHIN-001
-- **Status:** `[CONJECTURAL REALIZATION] [SOURCE GRAPH LEAN-PROVED] [ONE PRE-DIVISOR GATE] [NOT RH]`
+- **Status:** `[CONJECTURAL REALIZATION] [SOURCE GRAPH LEAN-PROVED] [POWERED-CLOCK/TRANSPORT IDENTIFICATION REJECTED] [NOT RH]`
+
+## Mechanism audit — controlling qualification
+
+`ULF-CDMA-001` separates the actual source orbit from the powered-clock lifting class used below.
+`D_E^3F-FD_X^3` is not the third derivative of `exp(uD_E)F exp(-uD_X)`; mixed terms are missing.
+The CCEL unipotent witness has nonzero powered-clock defect but an affine transport orbit with
+zero third derivative. Positive diagonal clock cubing also preserves the exact splitting
+corrections on maximal coefficient domains; see the paper survivor ULF-CTRS-001.
+
+Thus (PHCCED.7), a source-flow jet, and (PHCCED.8), a powered-clock defect, are distinct statements.
+Their proposed identification has not been constructed. The frozen arithmetic realization remains
+open, but the displayed formulas do not by themselves construct a cubic deformation of an
+extension. The actual theta action, its domains, and its mixed third jet must be supplied before
+using the downstream index argument. The existing forward weighted-shift semigroup is already
+formalized in `RoutePPrimitiveBurnolApertureDampingSemigroup`; rederiving it does not supply theta.
+
+Audit: [cubic-deformation-mechanism-audit.md](cubic-deformation-mechanism-audit.md).
 
 ## 1. Big-picture interpretation
 

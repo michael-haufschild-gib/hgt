@@ -3475,3 +3475,41 @@ normalization, Wold recurrence, seam existence, and analytic mixed cost are no l
 
 Full proof and hostile audit:
 `../2-fully-proven/new_scientific_knowledge/route-e-grade-recurrent-sparse-reservoir-cube-admission.md`.
+
+## 2026-09-05 — falsification pass on the harmonic Menon residue
+
+Target audited: the frontier map's Route E residue "prove that the explicit active-box
+complementary-cost sum in the complete selected-factor mean-square theorem has the required decay
+under its literal eighth-root factor lengths and full-frequency parameters; then sum active boxes,
+colors, and ladder steps at Menon normalization" (`Sieve/MenonHeathBrownActiveBoxCofactorMeanSquare`,
+cost `menonHeathBrownSelectedFactorCofactorCost`).
+
+Verdict: `REDISCOVERED` and `INSIGNIFICANT` for RH; the route's RH-bearing step is `CIRCULAR`.
+
+- The residue is the last computation of S. Menon, *Improved bounds for multiplicative functions
+  in almost all short intervals*, arXiv:2607.15574 (17 Jul 2026), Proposition 3.1, Case II(a)/(b)
+  (pp. 29–30): after the Heath–Brown decomposition of the long prime polynomial on the exceptional
+  frequency set `U`, one factor of length in `[Q^{1/8}, Q^{1/3}]` is bounded pointwise by Lemma
+  2.10/2.11 (zero-free region), and the complementary product is paid by Halász–Montgomery
+  (Lemma 2.3) over a well-spaced set with `|E| ≪ X^ε`. The corpus's `a^{1/8}` factor-length
+  threshold, "complementary Montgomery cost", and "full-frequency" `|t| ≤ X` parameters are this
+  step. Closing it certifies Menon's Theorem 1.1 in Lean:
+  `(1/X)∫_X^{2X} |(1/h)Σ_{x≤n≤x+h} χ(n)λ(n)|² dx ≪_B (log log h)²/(log h)² + (log log X)⁴/(log X)²`
+  (`X ≥ h ≥ 10`, `q ≤ (log X)^B`; Möbius identical). Literature formalization, not new knowledge.
+- Significance for RH: none. Menon's rate is `o(1/log Y)` at `L = exp((log Y)^β)`, `β > 1/2`, which
+  is exactly what the marker cards consume (Markov step, exceptional starts `o(Y/log Y)`); it feeds
+  sign-supply combinatorics only. Menon himself records that the Matomäki–Radziwiłł framework
+  cannot show decay much beyond `1/log H` (p. 3) and that RH gives substantially better error
+  (Chinis). No almost-all short-interval mean square, at any rate, is an RH producer.
+- The RH content of Route E sits in the structured-cell endpoint, and Lean proves it is RH:
+  `routeEParityColumnDefectAllStrictHalfPowerBound_implies_riemannHypothesis` (route kill),
+  `finiteMobiusCoprimeSignatureAllStrictHalfPowerBound_iff_riemannHypothesis`,
+  `mobiusMertensAllStrictHalfPowerBound_iff_riemannHypothesis` (Littlewood both ways). The live
+  conjecture `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY` (interval Hall expansion for
+  opposite-parity corner unions at strict-half Gibbs cost) is a reformulation whose success is
+  strict-half Möbius cancellation itself; the Boundary paragraph already records that signed column
+  balance is a receiver.
+- Relentless interrogation: there is no intermediate statement between Menon-type log savings and
+  the strict-half bound that is (i) not RH-equivalent and (ii) known to imply anything on the RH
+  side; every strengthening of the residue toward RH passes through Littlewood's criterion. The
+  harmonic front should be finished, if at all, as `3-formalized/not_new_scientific_knowledge`.

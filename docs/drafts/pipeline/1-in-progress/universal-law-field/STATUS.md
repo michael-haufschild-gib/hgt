@@ -4914,17 +4914,11 @@ the paper order-three floor is not yet a closed Lean theorem.
 CANNOT-277 — Do not count numerical certificates, conditional assembly theorems, local Newton
 branch packages, or one imported inequality as closed source laws. They constrain searches but do
 not discharge a universal-law or RH gate.
-F622 — The first viable cubic deformation is an extension-lifting class, not a cubic trace or
-operator perturbation. For a theta quotient landing `f` with `D_Q^3 f=fD_X^3`, any lift `F` has
-ideal defect `omega_3(F)=D_E^3F-FD_X^3`; changing splitting by `H` adds exactly
-`delta_3(H)=D_I^3H-HD_X^3` (`ULF-CCEL-001`).
-F623 — `[omega_3] in coker(delta_3)` is lift-independent and vanishes iff the quotient landing has
-an exactly cubic-equivariant lift. Exact transgression is
-`D_E^3F(x)=F(D_X^3x)+i omega_3(F)(x)`. This is a completion-extension law with no positivity,
-order, phase, regularization, or quadratic cross-prime premise.
-F624 — Cubic refinement is genuinely stronger than ordinary splitting: for the unipotent clock
-`D_E(v,w)=(v+w,w)` on `C^2`, every lift of the second coordinate has defect `3 id`, while cubic
-coboundaries vanish. Thus a linearly split extension can have nonzero cubic-clock class.
+F622 — `ULF-CCEL-001` defines powered-clock defect `omega_3(F)=D_E^3F-FD_X^3`; a splitting change adds `delta_3(H)=D_I^3H-HD_X^3`. This is algebraic, with no parameterized completion flow.
+F623 — Lean proves lift independence in `coker(delta_3)`, vanishing iff a powered-clock-equivariant lift exists, and `D_E^3F=FD_X^3+i omega_3`. Actual deformation interpretation is unproved.
+F624 — CCEL's unipotent example has powered-clock defect `3 id` and zero cubic coboundaries.
+It separates vector-space splitting from clock splitting; its first clock defect is already `id`.
+It does not establish a new obstruction beyond first-order clock equivariance (audit ULF-CDMA-001).
 CANNOT-278 — Ordinary Busby perturbation by nuclear `T`, odd projection traces, cyclic/Massey
 cocycles without arithmetic realization, and support-boundary regularizations do not answer the
 gate. They respectively vanish in the corona, recover an old index, read a supplied class, or add
@@ -4975,15 +4969,11 @@ theta comparison and closed-unbounded source syntheses already exist without RH 
 MUST-196 — Next object must be a relative theta Calderon class on this exact source graph, with
 prime labels retained in one representative whose boundary index is escape multiplicity and whose
 nuclear norm is the existing strict sub-unit Euler budget. Any separate representatives fail.
-F631 — `ULF-MCPT-001` identifies information erased by ordinary cubic trace. For any sigma-trace,
-the projection cubic associator equals an explicit five-channel modular-displacement term; it
-vanishes when all three polarizations lie in the modular centralizer. Lean proves the exact
-two-block law `P(C⁻¹(xP)C)P-xP=(bc/(ad-bc))xP`: block-separable density is blind. A prime-mixed
-`3/4<1` witness has ordinary cubic trace zero, modular cubic value `-1/8`, and defect one.
-F632 — Diagonal modularization is closed: reflected prime-depth incidence is a flat diagonal
-coboundary, so every finite characteristic polynomial, determinant, and cyclic trace moment is
-horizontally blind. `ULF-PBFMS-001` constructs the literal non-diagonal Burnol covariance directly
-from prime powers and proves every injective finite packet has full support and canonical inverse.
+F631 — `ULF-MCPT-001`: sigma-trace reads the cubic associator as five modular-displacement channels; all vanish in the modular centralizer.
+Lean proves `P(C⁻¹(xP)C)P-xP=(bc/(ad-bc))xP`; block-separable density is blind.
+A prime-mixed `3/4<1` witness has ordinary cubic trace zero, modular cubic value `-1/8`, defect one.
+F632 — Reflected diagonal prime-depth incidence is a flat coboundary: finite characteristic polynomials, determinants, and cyclic moments are horizontally blind.
+`ULF-PBFMS-001` forms non-diagonal Burnol covariance from prime powers; every injective finite packet has full support and canonical inverse.
 CANNOT-283 — KMS positivity, modular traciality, or an abstract twisted cocycle cannot be the
 producer. They are receivers unless literal Burnol density defines the modular action before Xi
 and theta compression itself creates its cofinal nonnaturality.
@@ -4992,8 +4982,18 @@ same-representative boundary theorem: its cubic twisted source pairing equals th
 formation-relative index and is bounded by `B_base<1`. Diagonal weights, bounded S3 limits, or a
 postulated KK/cyclic pairing fail.
 F633 — Prime-mixed nuclear `T` is an observer: its unframed positive loop is null-homotopic; nested projections are diamond-flat and Schur elimination transitive.
-F634 — `H_C(U)=C⁻¹UCU⁻¹` is source-faithful: nonabelian cocycle, reversal, modular/frame intertwining, cubic transgression; literal Burnol--theta packets have `H_F(0)=1` and `H_F(a)≠1` for `a≠0`.
+F634 — For the defined frame, `H_C(U)=C⁻¹UCU⁻¹` has exact cocycle, reversal, modular intertwining and cubic transgression; `H_F(0)=1`, `H_F(a)≠1` off neutral. Identification of that frame with Poisson completion is unproved.
 F634a — Exact fusion: `[C_F⊗I,U_F(a)]_(ir,js)=(C_F)_(ij)(U_j-U_i)_(rs)` with every Burnol edge `(C_F)_(ij)=A_iA_j2/c_(ij)^3≠0`.
-F635 — `ULF-PDAMB-001`: positive 2/3 depths have arbitrarily close unequal Burnol rates; retained holonomy block is `I+g²/(de-g²)(I-U₃U₂⁻¹)`; capacity is unbounded and frame mismatch nonzero for `a≠0`, proving the pre-divisor classification `PrimeDepthThetaModularAdmissible(a) ↔ a=0`.
+F635 — `ULF-PDAMB-001` proves `PrimeDepthThetaModularAdmissible(a) ↔ a=0` via close 2/3 depth rates and block `I+g²/(de-g²)(I-U₃U₂⁻¹)`. Its frame uses `a log p/2`, ignoring depth; no classification for a valuation-clock replacement follows.
 CANNOT-284 — Diagonal/commuting frames, finite determinant/phase/K1, old flat exponential depth coboundary (boundedness iff RH), raw curvature, quadratic Schur data, positivity, and unframed `T` cannot produce selection.
-MUST-198 — Prove every Xi divisor copy lands in `PrimeDepthThetaModularAdmissible(2 Re rho-1)` via the actual theta/Poisson completion; F635 then forces RH. If false, construct cofinal cubic boundary on one representative equal to Xi escape and bounded by `B_base<1`.
+MUST-198 — Before using F635, derive its exact prime-only frame from theta/Poisson and prove Xi admission; neither is established. The other open edge remains one cofinal boundary representative equal to Xi escape and bounded by `B_base<1`.
+F636 — `[PAPER-PROVED; not Lean]` ULF-CTRS-001: powered-clock defect differs from the third transport jet by `3A(AF-FB)B`; CCEL's unipotent orbit is affine, so its true third jet is zero.
+The quotient condition `A_Q^3 f=fB^3` does not ensure ideal landing of `(L_A-R_B)^3F`.
+F637 — `[PAPER-PROVED; not Lean]` For positive labelled clocks `a_i,b_j>=c>0`, cubic-root Schur recovery divides by `a_i²+a_i b_j+b_j²`, with trace norm bound `1/(3c²)`.
+Powered and ordinary clock defects have exactly the same trace-class corrections on maximal coefficient domains, even at cofinal near-resonances. Smaller physical domains remain a separate gate.
+F638 — `[PAPER ARGUMENT; not Lean]` `diag(n^-4 tanh(an))` is trace-class/C², smooth off zero, with nonsummable third neutral jet `-2/n`, yet has zero Calkin image in a split extension.
+Thus scalar cubic ideal-exit support, even inside a sub-unit norm ball, does not supply an integral completion class (ULF-CDMA-001).
+F639 — `RoutePPrimitiveBurnolApertureDampingSemigroup` already gives exact weighted shift `K_u f(t)=t/(t+u)f(t+u)`, contraction, primitive log-clock eigenfeatures, and failure of backward transport.
+This closes the proposed forward-shift reinvention; a relative theta action must add information beyond this existing source semigroup.
+CANNOT-285 — Do not identify clock cubes with transport third derivatives, count positive-clock reparametrization as a new selector, or call a declared tanh frame the literal theta completion without an identification theorem.
+MUST-199 — Specify actual completion action and domains, retain mixed third-jet terms and affine zero-clock charge, then prove the unchanged same-representative Xi/Euler boundary identity. ULF-CDMA-001 records audit and survivor.

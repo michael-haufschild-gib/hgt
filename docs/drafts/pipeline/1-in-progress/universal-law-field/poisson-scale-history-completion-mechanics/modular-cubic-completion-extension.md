@@ -9,6 +9,20 @@
   [SOURCE-FRAME HOLONOMY LEAN-PROVED] [FINITE SOURCE SUPPORT LEAN-PROVED]
   [FINITE THETA FRAME LEAN-PROVED] [PRIME-DEPTH ALIASING ESCAPE LEAN-PROVED] [NOT RH]
 
+## Source identification audit — controlling qualification
+
+The Lean frame is explicitly `sech/tanh(a log p/2)` at every depth of prime `p`.
+The Burnol source retains prime-depth log frequency, but this frame ignores depth. Its cocycle,
+noncommutation, and aliasing theorems are valid for those definitions; identifying that frame with
+literal Poisson/theta completion is unproved. Consequently (MCCED.A3) is a classification of a
+defined model, not yet intrinsic arithmetic admissibility. No claim that a valuation-clock
+replacement is bounded follows from this audit.
+
+The related powered-clock class CCEL is also distinct from an actual third transport derivative.
+The distinction and its positive-clock correction-set theorem are recorded in
+[ULF-CDMA-001](cubic-deformation-mechanism-audit.md). The conjectural theta correspondence below
+remains unconstructed; its name cannot stand in for the coefficientwise identification.
+
 ## 1. Big-picture interpretation
 
 The completion obstruction is not a missing positive operator and not a missing phase. It is

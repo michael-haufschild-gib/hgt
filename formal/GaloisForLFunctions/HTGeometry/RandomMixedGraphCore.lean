@@ -45,6 +45,29 @@ theorem mixedHermitianMatrix_imagPart {ι : Type*}
   ext i j
   simp [complexMatrixImagPart, mixedHermitianMatrix]
 
+/-- Reversing every directed edge negates the skew-symmetric sector. -/
+def reverseDirectedPart {ι : Type*} (D : RealSkewSymmetricMatrix ι) :
+    RealSkewSymmetricMatrix ι where
+  matrix := -D.matrix
+  transpose_eq_neg := by
+    rw [Matrix.transpose_neg, D.transpose_eq_neg, neg_neg]
+
+theorem mixedHermitianMatrix_reverseDirectedPart_apply {ι : Type*}
+    (U : RealSymmetricMatrix ι) (D : RealSkewSymmetricMatrix ι) (i j : ι) :
+    mixedHermitianMatrix U (reverseDirectedPart D) i j =
+      star (mixedHermitianMatrix U D i j) := by
+  simp [mixedHermitianMatrix, reverseDirectedPart]
+
+theorem mixedHermitianMatrix_transpose_eq_reverseDirectedPart {ι : Type*}
+    (U : RealSymmetricMatrix ι) (D : RealSkewSymmetricMatrix ι) :
+    (mixedHermitianMatrix U D)ᵀ = mixedHermitianMatrix U (reverseDirectedPart D) := by
+  ext i j
+  have hU := congrFun (congrFun U.transpose_eq i) j
+  have hD := congrFun (congrFun D.transpose_eq_neg i) j
+  change U.matrix j i = U.matrix i j at hU
+  change D.matrix j i = -D.matrix i j at hD
+  simp [mixedHermitianMatrix, reverseDirectedPart, hU, hD]
+
 def hermitianUndirectedPart {ι : Type*} (H : {M : Matrix ι ι ℂ // M.IsHermitian}) :
     RealSymmetricMatrix ι where
   matrix := complexMatrixRealPart H
@@ -150,6 +173,18 @@ theorem edgeVariance_eq (θ : Parameters) :
   simp [Complex.normSq]
   ring
 
+theorem edgeVariance_nonneg (θ : Parameters) : 0 ≤ edgeVariance θ := by
+  rw [edgeVariance_eq]
+  rcases θ.connection_mem with ⟨hc0, hc1⟩
+  rcases θ.directionality_mem with ⟨hp0, hp1⟩
+  have hfactor0 : 0 ≤ 1 - θ.directionality := by linarith
+  have hfactor1 : 1 - θ.directionality ≤ 1 := by linarith
+  have hx0 : 0 ≤ θ.connection * (1 - θ.directionality) := mul_nonneg hc0 hfactor0
+  have hxc : θ.connection * (1 - θ.directionality) ≤ θ.connection :=
+    mul_le_of_le_one_right hc0 hfactor1
+  have hx1 : θ.connection * (1 - θ.directionality) ≤ 1 := hxc.trans hc1
+  nlinarith [mul_nonneg hx0 (sub_nonneg.mpr hx1)]
+
 def radiusSquared (N : ℕ) (θ : Parameters) : ℝ :=
   4 * N * (1 - θ.directionality) * θ.connection *
       (1 - (1 - θ.directionality) * θ.connection) +
@@ -167,6 +202,71 @@ theorem radiusSquared_simplified (N : ℕ) (θ : Parameters) :
         (1 - (1 - θ.directionality) ^ 2 * θ.connection) := by
   rw [radiusSquared_eq_four_mul_variance, edgeVariance_eq]
   ring
+
+theorem radiusSquared_nonneg (N : ℕ) (θ : Parameters) : 0 ≤ radiusSquared N θ := by
+  rw [radiusSquared_eq_four_mul_variance]
+  exact mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg N)) (edgeVariance_nonneg θ)
+
+def undirectedParameters (connection : Set.Icc (0 : ℝ) 1) : Parameters where
+  connection := connection
+  directionality := 0
+  connection_mem := connection.property
+  directionality_mem := by constructor <;> norm_num
+
+def directedParameters (connection : Set.Icc (0 : ℝ) 1) : Parameters where
+  connection := connection
+  directionality := 1
+  connection_mem := connection.property
+  directionality_mem := by constructor <;> norm_num
+
+@[simp] theorem edgeVariance_undirectedParameters (connection : Set.Icc (0 : ℝ) 1) :
+    edgeVariance (undirectedParameters connection) = connection - connection ^ 2 := by
+  rw [edgeVariance_eq]
+  simp [undirectedParameters]
+
+@[simp] theorem edgeVariance_directedParameters (connection : Set.Icc (0 : ℝ) 1) :
+    edgeVariance (directedParameters connection) = connection := by
+  rw [edgeVariance_eq]
+  simp [directedParameters]
+
+/-! Pandey--Mehta Hermitian interpolation. -/
+
+def pandeyMehtaMatrix {ι : Type*} (alpha : Set.Icc (0 : ℝ) 1)
+    (H₁ H₂ : {M : Matrix ι ι ℂ // M.IsHermitian}) : Matrix ι ι ℂ :=
+  (Real.sqrt (1 - (alpha : ℝ) ^ 2) : ℂ) • H₁.val + (alpha : ℂ) • H₂.val
+
+theorem pandeyMehtaMatrix_isHermitian {ι : Type*} (alpha : Set.Icc (0 : ℝ) 1)
+    (H₁ H₂ : {M : Matrix ι ι ℂ // M.IsHermitian}) :
+    (pandeyMehtaMatrix alpha H₁ H₂).IsHermitian := by
+  apply Matrix.IsHermitian.add
+  · exact H₁.property.smul (Complex.conj_ofReal _)
+  · exact H₂.property.smul (Complex.conj_ofReal _)
+
+def orthogonalEndpoint : Set.Icc (0 : ℝ) 1 := ⟨0, by constructor <;> norm_num⟩
+
+def unitaryEndpoint : Set.Icc (0 : ℝ) 1 := ⟨1, by constructor <;> norm_num⟩
+
+@[simp] theorem pandeyMehtaMatrix_orthogonalEndpoint {ι : Type*}
+    (H₁ H₂ : {M : Matrix ι ι ℂ // M.IsHermitian}) :
+    pandeyMehtaMatrix orthogonalEndpoint H₁ H₂ = H₁ := by
+  simp [pandeyMehtaMatrix, orthogonalEndpoint]
+
+@[simp] theorem pandeyMehtaMatrix_unitaryEndpoint {ι : Type*}
+    (H₁ H₂ : {M : Matrix ι ι ℂ // M.IsHermitian}) :
+    pandeyMehtaMatrix unitaryEndpoint H₁ H₂ = H₂ := by
+  simp [pandeyMehtaMatrix, unitaryEndpoint]
+
+theorem pandeyMehtaMatrix_mixedGraph_reconstruction {ι : Type*}
+    (alpha : Set.Icc (0 : ℝ) 1)
+    (H₁ H₂ : {M : Matrix ι ι ℂ // M.IsHermitian}) :
+    mixedHermitianMatrix
+        (hermitianUndirectedPart ⟨pandeyMehtaMatrix alpha H₁ H₂,
+          pandeyMehtaMatrix_isHermitian alpha H₁ H₂⟩)
+        (hermitianDirectedPart ⟨pandeyMehtaMatrix alpha H₁ H₂,
+          pandeyMehtaMatrix_isHermitian alpha H₁ H₂⟩) =
+      pandeyMehtaMatrix alpha H₁ H₂ :=
+  mixedHermitianMatrix_parts_reconstruct
+    ⟨pandeyMehtaMatrix alpha H₁ H₂, pandeyMehtaMatrix_isHermitian alpha H₁ H₂⟩
 
 /-! Ordered spacings and unfolding-free ratios. -/
 
@@ -275,6 +375,46 @@ def equispacedTriple (origin : ℝ) (step : {x : ℝ // 0 < x}) : OrderedSpectra
     (origin : ℝ) (step : {x : ℝ // 0 < x}) :
     foldedSpacingRatio (equispacedTriple origin step) = 1 := by
   simp [foldedSpacingRatio]
+
+structure OrderedSpectralQuintuple where
+  first : ℝ
+  second : ℝ
+  third : ℝ
+  fourth : ℝ
+  fifth : ℝ
+  first_lt_second : first < second
+  second_lt_third : second < third
+  third_lt_fourth : third < fourth
+  fourth_lt_fifth : fourth < fifth
+
+/-- Paper's non-overlapping second-order ratio `(λᵢ₊₄-λᵢ₊₂)/(λᵢ₊₂-λᵢ)`. -/
+def secondOrderSpacingRatio (Q : OrderedSpectralQuintuple) : ℝ :=
+  (Q.fifth - Q.third) / (Q.third - Q.first)
+
+theorem secondOrderSpacingRatio_pos (Q : OrderedSpectralQuintuple) :
+    0 < secondOrderSpacingRatio Q := by
+  exact div_pos
+    (sub_pos.mpr (Q.third_lt_fourth.trans Q.fourth_lt_fifth))
+    (sub_pos.mpr (Q.first_lt_second.trans Q.second_lt_third))
+
+def equispacedQuintuple (origin : ℝ) (step : {x : ℝ // 0 < x}) :
+    OrderedSpectralQuintuple where
+  first := origin
+  second := origin + step
+  third := origin + 2 * step
+  fourth := origin + 3 * step
+  fifth := origin + 4 * step
+  first_lt_second := by linarith [step.property]
+  second_lt_third := by linarith [step.property]
+  third_lt_fourth := by linarith [step.property]
+  fourth_lt_fifth := by linarith [step.property]
+
+@[simp] theorem secondOrderSpacingRatio_equispacedQuintuple
+    (origin : ℝ) (step : {x : ℝ // 0 < x}) :
+    secondOrderSpacingRatio (equispacedQuintuple origin step) = 1 := by
+  unfold secondOrderSpacingRatio equispacedQuintuple
+  field_simp [ne_of_gt step.property]
+  ring
 
 /-! Correlation-distance transform from the market application. -/
 

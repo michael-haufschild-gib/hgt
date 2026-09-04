@@ -7,6 +7,14 @@
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/CubicClockExtensionLiftingObstruction.lean`
 
+Interpretation qualification: the verified statements concern **powered clocks**. They do not
+identify `D_E^3F-FD_X^3` with a third transport derivative. The unipotent example below already
+has a nonzero first clock obstruction and an affine transport orbit. It does not distinguish
+third-order deformation from first-order equivariance. See
+[ULF-CTRS-001](cubic-clock-transport-separation-law.md) for the exact separation and its
+positive-clock correction-set theorem (paper proof only). The original Lean statements remain
+unchanged and valid.
+
 ## 1. Statement
 
 Let `X` be a complex source space and

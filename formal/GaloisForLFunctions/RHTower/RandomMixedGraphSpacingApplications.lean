@@ -114,7 +114,40 @@ def affineGammaPoleSpectralTriple
       (_root_.RHTower.affineGammaAddPole A slope (n + 2)).re = slope.val⁻¹ by linarith,
     div_self hinv]
 
+def landauSpectralQuintuple (n : ℕ) : OrderedSpectralQuintuple :=
+  equispacedQuintuple (unitLandauCrossing n) ⟨1, by norm_num⟩
+
+@[simp] theorem landauSpectralQuintuple_secondOrderRatio (n : ℕ) :
+    secondOrderSpacingRatio (landauSpectralQuintuple n) = 1 := by
+  simp [landauSpectralQuintuple]
+
+def gaussPrimeSpectralQuintuple (p : Nat.Primes) (n : ℕ) : OrderedSpectralQuintuple :=
+  equispacedQuintuple (RHTower.gaussPrimeSampleHeightInt p (n : ℤ))
+    ⟨RHTower.gaussPrimeSampleSpacing p, RHTower.gaussPrimeSampleSpacing_pos p⟩
+
+@[simp] theorem gaussPrimeSpectralQuintuple_secondOrderRatio
+    (p : Nat.Primes) (n : ℕ) :
+    secondOrderSpacingRatio (gaussPrimeSpectralQuintuple p n) = 1 := by
+  simp [gaussPrimeSpectralQuintuple]
+
+def dyadicSpectralQuintuple (a : ℝ) (k : ℤ) : OrderedSpectralQuintuple :=
+  equispacedQuintuple (dyadicCenter a (k + 4)) ⟨Real.log 2, log_two_pos⟩
+
+@[simp] theorem dyadicSpectralQuintuple_secondOrderRatio (a : ℝ) (k : ℤ) :
+    secondOrderSpacingRatio (dyadicSpectralQuintuple a k) = 1 := by
+  simp [dyadicSpectralQuintuple]
+
+def affineGammaPoleSpectralQuintuple
+    (A : ℂ) (slope : {b : ℝ // 0 < b}) (n : ℕ) : OrderedSpectralQuintuple :=
+  equispacedQuintuple
+    (_root_.RHTower.affineGammaAddPole A slope (n + 4)).re
+    ⟨slope.val⁻¹, inv_pos.mpr slope.property⟩
+
+@[simp] theorem affineGammaPoleSpectralQuintuple_secondOrderRatio
+    (A : ℂ) (slope : {b : ℝ // 0 < b}) (n : ℕ) :
+    secondOrderSpacingRatio (affineGammaPoleSpectralQuintuple A slope n) = 1 := by
+  simp [affineGammaPoleSpectralQuintuple]
+
 end
 
 end GaloisForLFunctions.RHTower.RandomMixedGraph
-
