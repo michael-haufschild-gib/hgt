@@ -17,7 +17,7 @@ positive Green--Stokes split exceeds its Euler budget. These no-gos retain their
 An independently proved quantitative bound for the literal arithmetic source remains a possible
 producer: being positive, quadratic, or contractive is not itself a mathematical disqualification.
 In particular, Gamma--Hankel PSD supplies a lower covariance floor, not the missing upper ceiling
-(`MobiusLaplaceGammaHankelWall.finiteMobiusGammaHankelOffDiagonalCovariance_lower_floor`).
+(`MobiusLaplaceGammaHankelWall`: `finiteMobiusGammaHankelOffDiagonalCovariance_lower_floor`).
 
 F02 — Finite local exactness is nonselective. Arbitrary finite packets, jets, multiplicities,
 indices, Grams, KMS systems, homology, determinants, and recoveries coexist with off-line charge.
@@ -3998,7 +3998,7 @@ MUST-131 — A direct anchor needs its own unsigned obstruction and independent 
 existence nor its impossibility follows from sign oscillation of a different observable.
 F641 — Linear oscillation can coexist with positive integral nonlinear defects: `u₀=u₁=1`,
 `uₙ₊₂=2uₙ₊₁−2uₙ` has both signs cofinally, but `uₙ₊₁²−uₙuₙ₊₂=2ⁿ>0` for every `n`
-(`HTGeometry.OscillationHankelDefect.oscillation_all_positive_integer_defects`, Lean; standard axioms).
+(`OscillationHankelDefect`: `HTGeometry.oscillation_all_positive_integer_defects`, Lean; standard axioms).
 Its terms are `Re((1+i)^n)`; no identification with Li coefficients or RH source bound is claimed.
 ## 2026-09-02 — stage 4: `4-publication-ready/archimedean-integrality-obstructions.md`
 The manuscript packages twin rigidity, global parity, Frobenius torsion, six exponentials,
