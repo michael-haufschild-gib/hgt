@@ -50,7 +50,7 @@ def blockThinnedSign (K : ℕ → ℕ) (n : ℕ) : ℝ :=
 def logThinnedSign : ℕ → ℝ := blockThinnedSign (fun j => j + 1)
 
 /-- The thinned sign takes only the values `±1`. -/
-theorem blockThinnedSign_eq_one_or_neg_one (K : ℕ → ℕ) (hK : ∀ j, 1 ≤ K j) (n : ℕ) :
+theorem blockThinnedSign_eq_one_or_neg_one (K : ℕ → ℕ) (n : ℕ) :
     blockThinnedSign K n = 1 ∨ blockThinnedSign K n = -1 := by
   unfold blockThinnedSign
   by_cases hd : 2 * K (Nat.log 2 n) ∣ n + 1
@@ -63,9 +63,9 @@ theorem blockThinnedSign_eq_one_or_neg_one (K : ℕ → ℕ) (hK : ∀ j, 1 ≤ 
   · rw [if_neg hd, mul_zero, add_zero]
     exact neg_one_pow_eq_or ℝ n
 
-theorem abs_blockThinnedSign_le_one (K : ℕ → ℕ) (hK : ∀ j, 1 ≤ K j) (n : ℕ) :
+theorem abs_blockThinnedSign_le_one (K : ℕ → ℕ) (n : ℕ) :
     |blockThinnedSign K n| ≤ 1 := by
-  rcases blockThinnedSign_eq_one_or_neg_one K hK n with h | h <;> rw [h] <;> norm_num
+  rcases blockThinnedSign_eq_one_or_neg_one K n with h | h <;> rw [h] <;> norm_num
 
 /-- An interval sum of the thinned sign is the alternating sum plus twice the number of flips. -/
 theorem sum_Ico_blockThinnedSign (K : ℕ → ℕ) (a b : ℕ) :
@@ -87,56 +87,26 @@ theorem abs_sum_Ico_neg_one_pow_le {a b : ℕ} (hab : a ≤ b) :
     rcases sum_range_neg_one_pow_eq_zero_or_one a with ha | ha <;>
     rw [hb, ha] <;> norm_num
 
-/-- Multiples of `m` in `(a, b]`. -/
-theorem card_filter_dvd_Ioc {a b : ℕ} (m : ℕ) (hab : a ≤ b) :
-    ((Ioc a b).filter (fun x => m ∣ x)).card = b / m - a / m := by
-  classical
-  have hunion : (Ioc 0 b).filter (fun x => m ∣ x) =
-      (Ioc 0 a).filter (fun x => m ∣ x) ∪ (Ioc a b).filter (fun x => m ∣ x) := by
-    rw [← Finset.filter_union, Finset.Ioc_union_Ioc_eq_Ioc (Nat.zero_le a) hab]
-  have hdisj : Disjoint ((Ioc 0 a).filter (fun x => m ∣ x))
-      ((Ioc a b).filter (fun x => m ∣ x)) := by
-    rw [Finset.disjoint_left]
-    intro x hx hx'
-    rw [Finset.mem_filter, Finset.mem_Ioc] at hx hx'
-    omega
-  have hcard := Finset.card_union_of_disjoint hdisj
-  rw [← hunion, Nat.Ioc_filter_dvd_card_eq_div, Nat.Ioc_filter_dvd_card_eq_div] at hcard
-  omega
-
 /-- Integers `n ∈ [a, b)` with `m ∣ n + 1`. -/
 theorem card_filter_dvd_succ_Ico {a b : ℕ} (m : ℕ) (hab : a ≤ b) :
     ((Ico a b).filter (fun n => m ∣ n + 1)).card = b / m - a / m := by
   classical
-  rw [← card_filter_dvd_Ioc m hab, Finset.card_filter, Finset.card_filter]
+  rw [← card_filter_dvd_Ioc m a b hab, Finset.card_filter, Finset.card_filter]
   have h := Finset.sum_Ico_add' (fun x => if m ∣ x then 1 else 0) a b 1
-  simp only at h
   rw [h, Finset.Ico_add_one_add_one_eq_Ioc]
 
 theorem cast_div_sub_div_le {a b m : ℕ} (hab : a ≤ b) (hm : 0 < m) :
     ((b / m - a / m : ℕ) : ℝ) ≤ ((b : ℝ) - a) / m + 1 := by
-  rw [Nat.cast_sub (Nat.div_le_div_right hab)]
-  have hmR : (0 : ℝ) < m := by exact_mod_cast hm
-  have h1 : ((b / m : ℕ) : ℝ) ≤ (b : ℝ) / m := Nat.cast_div_le
-  have h2 : (a : ℝ) / m < ((a / m : ℕ) : ℝ) + 1 := by
-    rw [div_lt_iff₀ hmR]
-    have h := Nat.lt_div_mul_add (a := a) hm
-    have h' : (a : ℝ) < ((a / m : ℕ) : ℝ) * m + m := by exact_mod_cast h
-    linarith
-  rw [sub_div]
+  rw [Nat.cast_sub (Nat.div_le_div_right hab), sub_div]
+  obtain ⟨hb1, -⟩ := cast_div_bounds (d := m) (n := b) hm
+  obtain ⟨-, ha2⟩ := cast_div_bounds (d := m) (n := a) hm
   linarith
 
 theorem le_cast_div_sub_div {a b m : ℕ} (hab : a ≤ b) (hm : 0 < m) :
     ((b : ℝ) - a) / m - 1 ≤ ((b / m - a / m : ℕ) : ℝ) := by
-  rw [Nat.cast_sub (Nat.div_le_div_right hab)]
-  have hmR : (0 : ℝ) < m := by exact_mod_cast hm
-  have h1 : ((a / m : ℕ) : ℝ) ≤ (a : ℝ) / m := Nat.cast_div_le
-  have h2 : (b : ℝ) / m < ((b / m : ℕ) : ℝ) + 1 := by
-    rw [div_lt_iff₀ hmR]
-    have h := Nat.lt_div_mul_add (a := b) hm
-    have h' : (b : ℝ) < ((b / m : ℕ) : ℝ) * m + m := by exact_mod_cast h
-    linarith
-  rw [sub_div]
+  rw [Nat.cast_sub (Nat.div_le_div_right hab), sub_div]
+  obtain ⟨-, hb2⟩ := cast_div_bounds (d := m) (n := b) hm
+  obtain ⟨ha1, -⟩ := cast_div_bounds (d := m) (n := a) hm
   linarith
 
 theorem log_two_eq_of_mem_Ico_pow {j n : ℕ} (hn : n ∈ Ico (2 ^ j) (2 ^ (j + 1))) :
@@ -205,7 +175,7 @@ theorem sum_range_blockThinnedSign_ge (K : ℕ → ℕ) (hK : ∀ j, 1 ≤ K j) 
 
 /-- The number of flips in `[a, a+h)`, `h ≤ a`, is at most `h/K_J + 2` with `J = ⌊log₂ a⌋`. -/
 theorem card_filter_Ico_le (K : ℕ → ℕ) (hK : ∀ j, 1 ≤ K j) (hmono : Monotone K)
-    {a h : ℕ} (ha : 1 ≤ a) (hha : h ≤ a) :
+    {a h : ℕ} (hha : h ≤ a) :
     ((((Ico a (a + h)).filter (fun n => 2 * K (Nat.log 2 n) ∣ n + 1)).card : ℕ) : ℝ)
       ≤ (h : ℝ) / K (Nat.log 2 a) + 2 := by
   classical
@@ -277,11 +247,11 @@ theorem card_filter_Ico_le (K : ℕ → ℕ) (hK : ∀ j, 1 ≤ K j) (hmono : Mo
 /-- **Interval sums of the thinned sign.**  At every start `a ≥ 1` and length `h ≤ a`,
 `|∑_{a ≤ n < a+h} f(n)| ≤ 5 + 2h/K_J`, `J = ⌊log₂ a⌋`. -/
 theorem abs_sum_Ico_blockThinnedSign_le (K : ℕ → ℕ) (hK : ∀ j, 1 ≤ K j) (hmono : Monotone K)
-    {a h : ℕ} (ha : 1 ≤ a) (hha : h ≤ a) :
+    {a h : ℕ} (hha : h ≤ a) :
     |∑ n ∈ Ico a (a + h), blockThinnedSign K n| ≤ 5 + 2 * ((h : ℝ) / K (Nat.log 2 a)) := by
   rw [sum_Ico_blockThinnedSign]
   have h1 := abs_le.mp (abs_sum_Ico_neg_one_pow_le (Nat.le_add_right a h))
-  have h2 := card_filter_Ico_le K hK hmono ha hha
+  have h2 := card_filter_Ico_le K hK hmono hha
   have h3 : (0 : ℝ) ≤ ((((Ico a (a + h)).filter
       (fun n => 2 * K (Nat.log 2 n) ∣ n + 1)).card : ℕ) : ℝ) := Nat.cast_nonneg _
   have h4 : (0 : ℝ) ≤ (h : ℝ) / K (Nat.log 2 a) := by positivity
@@ -297,17 +267,17 @@ theorem monotone_logSchedule : Monotone (fun j : ℕ => j + 1) :=
 
 theorem logThinnedSign_eq_one_or_neg_one (n : ℕ) :
     logThinnedSign n = 1 ∨ logThinnedSign n = -1 :=
-  blockThinnedSign_eq_one_or_neg_one _ one_le_logSchedule n
+  blockThinnedSign_eq_one_or_neg_one _ n
 
 theorem abs_logThinnedSign_le_one (n : ℕ) : |logThinnedSign n| ≤ 1 :=
-  abs_blockThinnedSign_le_one _ one_le_logSchedule n
+  abs_blockThinnedSign_le_one _ n
 
 /-- **Every** short-interval sum of the witness is `≤ 5 + 2h/(⌊log₂ a⌋ + 1)`. -/
-theorem abs_sum_Ico_logThinnedSign_le {a h : ℕ} (ha : 1 ≤ a) (hha : h ≤ a) :
+theorem abs_sum_Ico_logThinnedSign_le {a h : ℕ} (hha : h ≤ a) :
     |∑ n ∈ Ico a (a + h), logThinnedSign n|
       ≤ 5 + 2 * ((h : ℝ) / ((Nat.log 2 a : ℝ) + 1)) := by
   have := abs_sum_Ico_blockThinnedSign_le (fun j => j + 1) one_le_logSchedule
-    monotone_logSchedule ha hha
+    monotone_logSchedule hha
   unfold logThinnedSign
   simp only [Nat.cast_add, Nat.cast_one] at this
   exact this
@@ -324,9 +294,8 @@ theorem meanSquare_logThinnedSign_le {X h : ℕ} (hX : 1 ≤ X) (hh : 1 ≤ h) (
       ((∑ n ∈ Ico x (x + h), logThinnedSign n) / h) ^ 2 ≤ B ^ 2 := by
     intro x hx
     rw [Finset.mem_Ico] at hx
-    have hx1 : 1 ≤ x := le_trans hX hx.1
     have hhx : h ≤ x := le_trans hhX hx.1
-    have hbound := abs_sum_Ico_logThinnedSign_le hx1 hhx
+    have hbound := abs_sum_Ico_logThinnedSign_le hhx
     have hlogle : (Nat.log 2 X : ℝ) + 1 ≤ (Nat.log 2 x : ℝ) + 1 := by
       have := Nat.log_mono_right (b := 2) hx.1
       have h' : Nat.log 2 X + 1 ≤ Nat.log 2 x + 1 := Nat.succ_le_succ this
@@ -339,7 +308,7 @@ theorem meanSquare_logThinnedSign_le {X h : ℕ} (hX : 1 ≤ X) (hh : 1 ≤ h) (
       have : (5 / (h : ℝ) + 2 / ((Nat.log 2 X : ℝ) + 1)) * h
           = 5 + 2 * ((h : ℝ) / ((Nat.log 2 X : ℝ) + 1)) := by
         field_simp
-        ring
+        try ring
       rw [this]
       linarith
     calc ((∑ n ∈ Ico x (x + h), logThinnedSign n) / h) ^ 2
@@ -520,7 +489,7 @@ theorem abs_sum_innerFibre_logThinnedSign_le {x h : ℝ} (hx : 16 ≤ x) (hh : 1
   by_cases hcase : hi + 1 ≤ lo
   · rw [Finset.Ico_eq_empty_of_le hcase, Finset.sum_empty, abs_zero]
     positivity
-  · push_neg at hcase
+  · rw [not_le] at hcase
     have hLdef : hi + 1 = lo + (hi + 1 - lo) := by omega
     rw [hLdef]
     have hLR : ((hi + 1 - lo : ℕ) : ℝ) ≤ h + 1 := by
@@ -530,7 +499,7 @@ theorem abs_sum_innerFibre_logThinnedSign_le {x h : ℝ} (hx : 16 ≤ x) (hh : 1
     have hLle : hi + 1 - lo ≤ lo := by
       have : ((hi + 1 - lo : ℕ) : ℝ) ≤ (lo : ℝ) := by linarith
       exact_mod_cast this
-    have hbound := abs_sum_Ico_logThinnedSign_le hlo1 hLle
+    have hbound := abs_sum_Ico_logThinnedSign_le hLle
     refine le_trans hbound ?_
     set J := Nat.log 2 lo with hJ
     have hJ1 : (0 : ℝ) < (J : ℝ) + 1 := by positivity
@@ -613,7 +582,7 @@ theorem averagedShortInterval_logThinnedSign {hh : ℝ → ℝ} (hgrow : Tendsto
             = 10 * Real.sqrt x + 12 * (hh x * Real.sqrt x * u) := by
         rw [hu]
         field_simp
-        ring
+        try ring
       rw [hrhs, hB]
       have hur : 4 * u ≤ Real.sqrt x * u := by nlinarith
       have hhu : 0 ≤ hh x * u := by positivity
@@ -629,14 +598,14 @@ sums violate every strict-half-power bound.  A short-interval rate of Menon's sh
 the Möbius strict-half-power bound (equivalently RH) can be derived using only `|μ| ≤ 1`. -/
 theorem routeE_shortIntervalRate_not_strictHalfPower :
     ∃ f : ℕ → ℝ, (∀ n, f n = 1 ∨ f n = -1) ∧
-      (∀ a h : ℕ, 1 ≤ a → h ≤ a →
+      (∀ a h : ℕ, h ≤ a →
         |∑ n ∈ Ico a (a + h), f n| ≤ 5 + 2 * ((h : ℝ) / ((Nat.log 2 a : ℝ) + 1))) ∧
       (∀ hh : ℝ → ℝ, Tendsto hh atTop atTop →
         (∀ᶠ x in atTop, hh x + 2 ≤ Real.sqrt x / 2) → AveragedShortInterval f hh) ∧
       (∀ δ : ℝ, 0 < δ → δ < 1 / 2 → ∀ C : ℝ,
         ¬ ∀ N : ℕ, |∑ n ∈ range N, f n| ≤ C * ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)) :=
   ⟨logThinnedSign, logThinnedSign_eq_one_or_neg_one,
-    fun _ _ ha hha => abs_sum_Ico_logThinnedSign_le ha hha,
+    fun _ _ hha => abs_sum_Ico_logThinnedSign_le hha,
     fun _ hgrow hsmall => averagedShortInterval_logThinnedSign hgrow hsmall,
     fun _ hδ0 hδ1 C => logThinnedSign_not_strictHalfPowerBound hδ0 hδ1 C⟩
 

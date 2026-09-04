@@ -121,8 +121,8 @@ theorem ae_eq_zero_of_boundedCoordinate_complex_moments
   filter_upwards [hre, him] with x hx hy
   exact Complex.ext hx hy
 
-/-- All positive integer samples of a half-line Laplace transform determine an `L¹` density.
-No analytic continuation or divisor hypothesis enters. -/
+/-- Nonnegative integer samples of a half-line Laplace transform determine an `L¹` density.
+No analytic-continuation or divisor hypothesis is assumed. -/
 theorem ae_eq_zero_of_integer_laplace_moments
     {ell : ℝ} (hell : 0 < ell) {f : ℝ → ℂ}
     (hf : IntegrableOn f (Ioi 0))
@@ -235,7 +235,7 @@ private theorem burnolTwoClockRelation_graph_left
   have hclosed : IsClosed {x : BurnolHalfLineL2 |
       (x, c • x) ∈ (burnolTwoClockRelation ell m c d).topologicalClosure} :=
     (burnolTwoClockRelation ell m c d).isClosed_topologicalClosure.preimage
-      (show Continuous (fun x : BurnolHalfLineL2 => (x, c • x)) by fun_prop)
+      (continuous_id.prodMk (continuous_const_smul c))
   apply closure_minimal (t := {x : BurnolHalfLineL2 |
     (x, c • x) ∈ (burnolTwoClockRelation ell m c d).topologicalClosure}) ?_ hclosed
     (dense_burnolDepthSpan ell x)
@@ -249,7 +249,7 @@ private theorem burnolTwoClockRelation_graph_right
   have hclosed : IsClosed {x : BurnolHalfLineL2 |
       (x, d • x) ∈ (burnolTwoClockRelation ell m c d).topologicalClosure} :=
     (burnolTwoClockRelation ell m c d).isClosed_topologicalClosure.preimage
-      (show Continuous (fun x : BurnolHalfLineL2 => (x, d • x)) by fun_prop)
+      (continuous_id.prodMk (continuous_const_smul d))
   apply closure_minimal (t := {x : BurnolHalfLineL2 |
     (x, d • x) ∈ (burnolTwoClockRelation ell m c d).topologicalClosure}) ?_ hclosed
     (dense_burnolDepthSpan m x)
@@ -292,10 +292,21 @@ theorem burnolTwoClockRelation_closure_eq_graph
     · apply Submodule.span_le.mpr
       rintro _ (⟨x, _, rfl⟩ | ⟨x, _, rfl⟩) <;> rfl
     · exact isClosed_eq continuous_snd
-        (show Continuous (fun x : BurnolHalfLineL2 × BurnolHalfLineL2 => c • x.1) by fun_prop)
+        ((continuous_const_smul c).comp continuous_fst)
   · intro z hz
     change z.2 = c • z.1 at hz
     simpa only [← hz, Prod.mk.eta] using burnolTwoClockRelation_graph_left ell m c c z.1
+
+/-- Complete classification, with no closability or boundedness premise. -/
+theorem burnolTwoClockRelation_closure
+    (ell m : Ioi (0 : ℝ)) (c d : ℂ) :
+    (burnolTwoClockRelation ell m c d).topologicalClosure =
+      if c = d then (c • (LinearMap.id : BurnolHalfLineL2 →ₗ[ℂ] BurnolHalfLineL2)).graph
+      else ⊤ := by
+  split_ifs with h
+  · subst d
+    exact burnolTwoClockRelation_closure_eq_graph ell m c
+  · exact burnolTwoClockRelation_closure_eq_top ell m h
 
 /-- Nonzero source amplitudes change neither the algebraic span nor its completion. -/
 theorem burnolDepthSpan_eq_span_scaled (ell : Ioi (0 : ℝ))
@@ -317,4 +328,3 @@ theorem burnolDepthSpan_eq_span_scaled (ell : Ioi (0 : ℝ))
 
 end
 end HTGeometry
-
