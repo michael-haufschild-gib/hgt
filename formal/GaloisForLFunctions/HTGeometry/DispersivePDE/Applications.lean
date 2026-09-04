@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DispersivePDE.ScalarSolitons
 import GaloisForLFunctions.HTGeometry.DispersivePDE.NLSSolitons
 import GaloisForLFunctions.HTGeometry.DispersivePDE.FDNLSApplications
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaApplications
 import GaloisForLFunctions.HTGeometry.BelinskiZakharovJacobiTodaBridge
 import GaloisForLFunctions.HTGeometry.KerrNewmanBelinskiZakharovTwoPoleBridge
 
@@ -19,6 +20,7 @@ open GaloisForLFunctions.HTGeometry.FDNLS
 
 /-- Closed atlas spanning the new PDE profiles and pre-existing corpus soliton structures. -/
 structure ClosedDispersiveAtlas : Prop where
+  brizardElastica : BrizardElastica.ClosedAtlas
   kdv : SolvesKdV kdvSolitonJet
   potentialKdV : SolvesPotentialKdV potentialKdVPulseJet
   modifiedKdV : SolvesModifiedKdV modifiedKdVKinkJet
@@ -60,6 +62,7 @@ structure ClosedDispersiveAtlas : Prop where
 
 /-- Assumption-free inhabitant of the full dispersive/soliton atlas. -/
 theorem closedDispersiveAtlas : ClosedDispersiveAtlas where
+  brizardElastica := BrizardElastica.closedAtlas
   kdv := kdvSoliton_solves
   potentialKdV := potentialKdVPulse_solves
   modifiedKdV := modifiedKdVKink_solves

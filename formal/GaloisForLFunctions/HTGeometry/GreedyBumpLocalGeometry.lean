@@ -154,6 +154,46 @@ theorem greedyBump_expected_profile_gain (D : ℕ) (Q : PositiveSignal) :
   simp_rw [greedyBumpProfile_at_displacement]
   rw [integral_div, greedyBump_integral_norm_sq_stdGaussian]
 
+/-- Template/tangent pair satisfying the normalized-template orthogonality law. -/
+structure OrthogonalTemplateTangent (E : Type*) [NormedAddCommGroup E]
+    [InnerProductSpace ℝ E] where
+  template : E
+  tangent : E
+  orthogonal : @inner ℝ E _ template tangent = 0
+
+/-- Data residual after subtracting the matched signal component. -/
+def greedyBumpResidual {E : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℝ E] (Q : ℝ) (data template : E) : E :=
+  data - Q • template
+
+/-- Proposition 6.1 bridge: score derivative couples only to residual noise. -/
+theorem greedyBump_matchedFilter_derivative_bridge
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (pair : OrthogonalTemplateTangent E) (Q : ℝ) (data : E) :
+    @inner ℝ E _ data pair.tangent =
+      @inner ℝ E _ (greedyBumpResidual Q data pair.template) pair.tangent := by
+  simp [greedyBumpResidual, inner_sub_left, real_inner_smul_left, pair.orthogonal]
+
+/-- Complex template/tangent pair satisfying normalized-template orthogonality. -/
+structure OrthogonalComplexTemplateTangent (E : Type*) [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] where
+  template : E
+  tangent : E
+  orthogonal : @inner ℂ E _ template tangent = 0
+
+/-- Complex-data residual after subtracting a real matched amplitude. -/
+def greedyBumpComplexResidual {E : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] (Q : ℝ) (data template : E) : E :=
+  data - (Q : ℂ) • template
+
+/-- Complex matched-filter bridge used by arithmetic Hilbert-space sources. -/
+theorem greedyBump_complexMatchedFilter_derivative_bridge
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    (pair : OrthogonalComplexTemplateTangent E) (Q : ℝ) (data : E) :
+    @inner ℂ E _ data pair.tangent =
+      @inner ℂ E _ (greedyBumpComplexResidual Q data pair.template) pair.tangent := by
+  simp [greedyBumpComplexResidual, pair.orthogonal]
+
 /-- Exact, independence-free local/remote maximum decomposition. -/
 theorem greedyBump_max_decomposition (baseline localValue remote : ℝ) :
     max localValue remote - baseline =
@@ -169,4 +209,3 @@ theorem greedyBump_remote_correction_nonneg (localValue remote : ℝ) :
 end
 
 end GaloisForLFunctions.HTGeometry
-

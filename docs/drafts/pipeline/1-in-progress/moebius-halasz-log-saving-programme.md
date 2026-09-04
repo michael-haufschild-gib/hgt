@@ -2481,3 +2481,7 @@ The next exact target is therefore the harmonic Ramaré factorization and its dy
 the existing Gallagher receiver.  The rough and square-multiple bookkeeping is already closed;
 the diagonal normalization must remain harmonic.  Direct check, targeted leaf build, and axiom
 audit pass; only `[propext, Classical.choice, Quot.sound]` occur.
+
+## 2026-09-05 — consumer no-go (Lean)
+
+`Sieve/RouteEShortIntervalRateStrictHalfNoGo.routeE_shortIntervalRate_not_strictHalfPower`: the mean square this lane targets (Menon 2026, arXiv:2607.15574, Theorem 1.1) — at any rate, even pointwise in the start, plus the MR-reduced `AveragedShortInterval` hypothesis — is satisfied by a `±1` sequence that violates every strict-half-power bound. Completing the lane certifies literature; it cannot feed the Möbius strict-half bound (`mobiusMertensAllStrictHalfPowerBound_iff_riemannHypothesis`). File further work under `3-formalized/not_new_scientific_knowledge`; the Route E parent card is in `5-failed`.

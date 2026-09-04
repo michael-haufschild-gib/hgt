@@ -4949,12 +4949,8 @@ F627 — `ULF-PLCCKU-001`: raw inverse-heat endpoint is unbounded. On prime pack
 CANNOT-280 — Raw `T_(d,d)` is not a bounded extension element; trace normalization returns the
 old nonselective aperture family. Only a source-canonical closed endpoint relation and its graph
 projection/bounded transform survive. Retire PHCCED if that transform has universal cone class.
-F628 — `ULF-PCLGF-001`: the critical cubic prime kernel is exactly the Gram of the literal
-Laplace synthesis `(A_*c)(t)=2t sum_p c_p(log p)^2p^(-t-1/2)`. Before exit its column norm square
-is `w_(d,u)(p)`, so the same operator family is Hilbert--Schmidt exactly for `u<d`.
-F629 — `A_*` is unbounded but canonically closable: compact-away-from-zero `L2` tests lie densely
-in its adjoint domain because their prime coefficients are dominated by
-`(log p)^4/p^(1+2epsilon)`. The endpoint object is `Graph(cl A_*)`, not a finite part.
+F628 — `ULF-PCLGF-001`: critical cubic prime kernel is exactly the Gram of literal Laplace synthesis `(A_*c)(t)=2t sum_p c_p(log p)^2p^(-t-1/2)`; before exit its column norm square is `w_(d,u)(p)`, so this family is Hilbert--Schmidt exactly for `u<d`.
+F629 — `A_*` is unbounded but canonically closable: compact-away-from-zero `L2` tests lie densely in its adjoint domain, their prime coefficients dominated by `(log p)^4/p^(1+2epsilon)`; endpoint object is `Graph(cl A_*)`, not a finite part.
 CANNOT-281 — Closed unbounded synthesis alone is nonselective, and the full-Schwartz theta-null
 Hilbert-Gram category is nonclosable. Do not call the source graph an RH mechanism or transport it
 naively into ordinary full-source `L2`.
@@ -4996,4 +4992,8 @@ MUST-199 — Specify actual completion action and domains, retain mixed third-je
 CANNOT-286 — It cannot obtain selection from density plus a declared closed admission set: `RHTower.nonempty_closedOrientedSourceAdmission_iff` (`RiemannDenseSourceClosedAdmissionLaw`) classifies existence as exactly the chosen `good` proposition; its global Xi specialization is exactly RH, not an unconditional construction.
 MUST-200 — It must prove both source landing and the finite detector trace for the same independently constructed closed admission set; density then closes selection (`exists_deningerCompletedXiClosedHodgeAdmission_iff`, `xiCompletedGreenClosedHodgeLanding_iff_riemannHypothesis`); neither declaration supplies that set off neutral.
 CANNOT-287 — It cannot retain prime identity as separate closed Burnol output sectors: every prime's full depth tower spans densely the same `L²(0,∞)`, with literal unsquared Euler amplitudes retained (`PrimeBurnolDepthCompletion.dense_primeBurnolLiteralDepthSpan`, Lean; general law `BurnolDepthCompletion.dense_burnolDepthSpan`).
+
+CANNOT-288 — It cannot be a short-interval mean-square rate: no bound of Menon's shape on `∑_{x≤n<x+h} μ(n)` — at any rate `φ` with `N φ(N) ≫ N^(1/2+δ)`, even pointwise in the start, together with the corpus's averaged fibre hypothesis `AveragedShortInterval` — reaches the strict-half-power Möbius bound (Littlewood's criterion, RH) using only `|μ| ≤ 1`: a `±1` sequence satisfies all of them and violates every such bound (`RHTower.Sieve.routeE_shortIntervalRate_not_strictHalfPower`, Lean).
 MUST-201 — It must derive actual theta admission, not prescribe prime-only contrast: that declared two-prime relation closes to its scalar graph when `p=q` or `a=0`, and to all `H×H` otherwise (`primeOnlyBurnolContrastRelation_closure`, Lean). This classifies the stated scalar action, not the full matrix frame or actual Xi completion.
+F640 — Tail-rounding law (Lean): if a norm-summable sequence retains dense real span after every finite deletion, its integer span is dense; finite rounding error is bounded by the norm tail independently of coefficient size (`IntegralTailCompletion.dense_integer_span_of_summable_tail_dense`).
+CANNOT-289 — It cannot recover discrete prime sectors by restricting Burnol coefficients to integers: every single prime's literal unsquared Euler depth columns still have dense integer span in real `L²(0,∞)` (`PrimeBurnolIntegralDepthCompletion.dense_integer_primeBurnolRealDepthSpan`, Lean). This retires unrestricted integer-combination repair, not bounded coefficients, multiplicative formation, or source-labelled graph topology.

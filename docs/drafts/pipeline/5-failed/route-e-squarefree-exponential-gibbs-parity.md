@@ -3513,3 +3513,31 @@ Verdict: `REDISCOVERED` and `INSIGNIFICANT` for RH; the route's RH-bearing step 
   the strict-half bound that is (i) not RH-equivalent and (ii) known to imply anything on the RH
   side; every strengthening of the residue toward RH passes through Littlewood's criterion. The
   harmonic front should be finished, if at all, as `3-formalized/not_new_scientific_knowledge`.
+
+## 2026-09-05 — rate no-go formalized; route retired
+
+Lean, module `Sieve/RouteEShortIntervalRateStrictHalfNoGo` (built, axiom-clean, wired into
+`RHTower`):
+
+- `routeE_shortIntervalRate_not_strictHalfPower`: a `±1`-valued sequence `logThinnedSign`
+  (`(-1)^n` with one sign in every `2(⌊log₂ n⌋+1)` flipped) has
+  `|∑_{a≤n<a+h} f| ≤ 5 + 2h/(⌊log₂ a⌋+1)` at **every** start `a` and every length `h ≤ a`
+  (`abs_sum_Ico_logThinnedSign_le`), Menon-shape discrete mean square
+  `≤ (5/h + 2/(⌊log₂ X⌋+1))²` over `X ≤ x < 2X` (`meanSquare_logThinnedSign_le`, better than
+  Menon's rate), the corpus's MR-reduced hypothesis `AveragedShortInterval f hh` for every window
+  law `hh → ∞` with `hh + 2 ≤ √x/2` (`averagedShortInterval_logThinnedSign`), and partial sums
+  `≥ 2^(m−1)/m − 3m` at `N = 2^m` (`sum_range_pow_logThinnedSign_ge`), so every bound
+  `|∑_{n<N} f| ≤ C (N+1)^(1/2+δ)`, `0 < δ < 1/2`, fails (`logThinnedSign_not_strictHalfPowerBound`).
+- General schedule `blockThinnedSign K` (any nondecreasing `K ≥ 1`): interval sums
+  `≤ 5 + 2h/K_J` (`abs_sum_Ico_blockThinnedSign_le`), partial sums
+  `≥ ∑_{j<⌊log₂ N⌋} (2^j/K_j − 3) − 1` (`sum_range_blockThinnedSign_ge`) — the rate/growth
+  trade-off for an arbitrary short-interval rate.
+
+Consequence. Any argument that uses of `μ` only `|μ| ≤ 1`, a short-interval bound of Menon's
+shape (any rate `φ` with `N φ(N) ≫ N^(1/2+δ)`, even pointwise in the start), and the averaged
+fibre hypothesis cannot reach the Möbius strict-half-power bound. Together with
+`routeEParityColumnDefectAllStrictHalfPowerBound_implies_riemannHypothesis` and
+`finiteMobiusCoprimeSignatureAllStrictHalfPowerBound_iff_riemannHypothesis` (the route's RH step
+is Littlewood's criterion), Route E has no non-receiver core left. The harmonic Menon front is a
+formalization of Menon 2026 (arXiv:2607.15574) Theorem 1.1 and belongs under
+`3-formalized/not_new_scientific_knowledge` if completed. Card moved to `5-failed`.
