@@ -213,8 +213,9 @@ prime-marked theta extension.
 
 ## 9. Formal status
 
-Paper proof is unconditional and dependency-closed. Lean parents already certify `T`, its
-strictly positive diagonal, unit trace, history-tail laws, all-cross-prime kernel, the scalar and
-operator identity `visibility^2+contrast^2=1`, and information-neutral functional-equation lifts.
-No Lean module for the congruence/trace-class fusion `(PTC.3)--(PTC.11)` was written or built during
-this read-only research audit.
+Formalized unconditionally in
+`GaloisForLFunctions.RHTower.PrimeHodgePoissonTwoChannelIntegralSplit`.  Closed capstone
+`primeHodgePoissonTwoChannelIntegralSplit_fully_closed` certifies every claim
+`(PTC.1)--(PTC.11)`: scalar and operator conservation, positivity and Schatten-one membership,
+exact traces, strict off-wall fractionalization, every cross-prime entry, information-neutral
+reflection, history-tail limits, and adjacent-tail reconstruction.

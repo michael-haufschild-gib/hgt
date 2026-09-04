@@ -136,3 +136,15 @@ with the prime 2 to λ = 1.433 (> √2). Floating-point stage; interval evaluati
   (staircase `m_S ≥ m_stair` + Taylor localisation `M_low` + finite block) → assembly.  Not in Lean:
   the identification of the Legendre-block Gram entries with the band projections of the multiplier
   form (a routine but long Fourier-side computation) and the finite numerical block.
+
+### WP-T7 (2026-09-04) — correction and S = 1
+- `S = 1.0` certified at band width 0.005: `μ₀(1) ≥ 0.0014` (`λ = √e`).  `S = 1.02`: −0.0003 (not certified).
+- Retracted: the "threshold `S* ≈ 1.05`" reading.  The exact-multiplier finite block replaces the tail
+  multiplier by `c_last` and is a lower bound of one Rayleigh quotient, not an upper bound of `μ₀`.
+  Rigorous upper bounds: `certificate_upper.py` (endpoint-vanishing `V₀` test function, `|f̂| ≤ W/ξ²`).
+- Position of the lane in the corpus audit (`rh-current-frontier-map.md`, branch O, gates `ORD COF`):
+  the open core is the finite Gamma–Slepian head inequality *at every aperture* passed through a
+  cofinal aperture family.  A certificate at fixed aperture is a receiver-side computation; it cannot
+  produce the cofinal statement.  Guth–Maynard: the corpus proves `guthMaynard_inert`
+  (`HTGeometry/LindelofPivotCoincidences`) — the GM bound never improves the classical bound at the
+  Lindelöf pivot — so formalising GM Theorem 1.1 has no RH-lane consumer here; the GM card is parked.

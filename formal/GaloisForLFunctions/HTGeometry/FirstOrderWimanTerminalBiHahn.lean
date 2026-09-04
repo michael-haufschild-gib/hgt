@@ -172,6 +172,18 @@ noncomputable def firstOrderTerminalBiHahnCoefficientComplexMap :
     FirstOrderTerminalBiHahnCoefficientField).comp
       (algebraMap ℂ FirstOrderTerminalInnerHahnField)
 
+/-- Named complex algebra structure used by the inner Hahn Euler derivation. -/
+@[reducible] noncomputable def firstOrderTerminalInnerHahnComplexAlgebra :
+    Algebra ℂ FirstOrderTerminalInnerHahnField := inferInstance
+
+/-- Named complex algebra structure used by the algebraic Bi-Hahn coefficient field. -/
+@[reducible] noncomputable def firstOrderTerminalBiHahnCoefficientComplexAlgebra :
+    Algebra ℂ FirstOrderTerminalBiHahnCoefficientField := inferInstance
+
+/-- Named complex algebra structure used by the Bi-Hahn Euler derivations. -/
+@[reducible] noncomputable def firstOrderTerminalBiHahnComplexAlgebra :
+    Algebra ℂ FirstOrderTerminalBiHahnField := inferInstance
+
 local instance firstOrderTerminalInnerHahnCharZero :
     CharZero FirstOrderTerminalInnerHahnField :=
   charZero_of_injective_algebraMap
@@ -386,6 +398,38 @@ theorem firstOrderTerminalBiHahnInnerEuler_inner_algebraMap
         rw [hahnGrade_laurentToHahn]
         exact (firstOrderTerminalBiHahnEmbedding_inner_algebraMap
           (hahnGrade (Int.castAddHom ℂ) x)).symm
+
+/-- The inner Euler derivative of an embedded inner Laurent monomial is the same monomial with
+its integer grade as coefficient. -/
+theorem firstOrderTerminalBiHahnInnerEuler_inner_single
+    (e : ℤ) :
+    firstOrderTerminalBiHahnInnerEuler
+        (firstOrderTerminalBiHahnEmbedding
+          (firstOrderTerminalOuterCoefficientMap
+            (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField
+              (HahnSeries.single e (1 : ℂ))))) =
+      firstOrderTerminalBiHahnEmbedding
+        (firstOrderTerminalOuterCoefficientMap
+          (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField
+            (HahnSeries.single e (e : ℂ)))) := by
+  rw [firstOrderTerminalBiHahnInnerEuler_inner_algebraMap]
+  congr 3
+  ext d
+  rw [coeff_hahnGrade]
+  by_cases hd : d = e
+  · subst d
+    simp
+  · simp [hd]
+
+/-- The inner Euler derivation kills a pure outer monomial with constant coefficient one. -/
+theorem firstOrderTerminalBiHahnInnerEuler_outer_single_one
+    (e : ℤ) :
+    firstOrderTerminalBiHahnInnerEuler
+        (firstOrderTerminalBiHahnEmbedding
+          (HahnSeries.single e (1 : FirstOrderTerminalCoefficientField))) = 0 := by
+  rw [firstOrderTerminalBiHahnEmbedding_single,
+    firstOrderTerminalBiHahnInnerEuler_single]
+  simp
 
 /-- Exact Wiman input-times-coefficient charge remains nonzero after faithful two-level Hahn
 transport and is detected by the inner Euler derivation. -/

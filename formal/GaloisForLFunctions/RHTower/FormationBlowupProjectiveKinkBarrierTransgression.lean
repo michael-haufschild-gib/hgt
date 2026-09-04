@@ -11,6 +11,7 @@ import GaloisForLFunctions.HTGeometry.GronwallUniqueness
 import GaloisForLFunctions.HTGeometry.BanachIntervalIntegralAbsoluteContinuity
 import GaloisForLFunctions.HTGeometry.DaiYoshikawa.IntegralGronwallAffine
 import GaloisForLFunctions.RHTower.PerturbedDip
+import GaloisForLFunctions.RHTower.SourceHorizontalWoldBVCompleteSplitPrimitiveBudgetFirewall
 
 /-!
 # Prime-infinity formation blow-up
@@ -1054,6 +1055,22 @@ theorem formationGammaBockstein_eq_neg_formationBarrier_deriv
   simp [formationGammaBockstein, primeActivationOccupancyFisherTwist]
   ring
 
+/-- The whole degree-one formation kink cannot fit inside the primitive Euler collision budget. -/
+theorem routePPrimitiveCollisionCubicTraceBudget_lt_formationAction
+    (lift : FormationAbsolutelyContinuousFiniteActionLift) :
+    routePPrimitiveCollisionCubicTraceBudget <
+      formationAbsolutelyContinuousAction lift := by
+  calc
+    routePPrimitiveCollisionCubicTraceBudget ≤
+        (115 / 432 : ℝ) * ∑' p : Nat.Primes, invNatLogSq p :=
+      routePPrimitiveCollisionCubicTraceBudget_le_primeInvLogSq
+    _ < (115 / 432 : ℝ) * 2 :=
+      mul_lt_mul_of_pos_left tsum_prime_invNatLogSq_lt_two (by norm_num)
+    _ = 115 / 216 := by norm_num
+    _ < 1 := by norm_num
+    _ ≤ formationAbsolutelyContinuousAction lift :=
+      formationAbsolutelyContinuousAction_one_le lift
+
 /-- Closed scalar/operator/projective/cotangent certificate for the universal formation kink. -/
 theorem formationBlowupProjectiveKinkBarrierTransgression_closed :
     affineProjectiveDegree formationSlope = 1 ∧
@@ -1064,6 +1081,9 @@ theorem formationBlowupProjectiveKinkBarrierTransgression_closed :
     Tendsto formationRotation atBot (nhds (-formationQuarterTurn)) ∧
     (∀ lift : FormationAbsolutelyContinuousFiniteActionLift,
       1 ≤ formationAbsolutelyContinuousAction lift) ∧
+    (∀ lift : FormationAbsolutelyContinuousFiniteActionLift,
+      routePPrimitiveCollisionCubicTraceBudget <
+        formationAbsolutelyContinuousAction lift) ∧
     formationAbsolutelyContinuousAction
       canonicalFormationAbsolutelyContinuousLift = 1 ∧
     (∀ lift : FormationAbsolutelyContinuousFiniteActionLift,
@@ -1091,6 +1111,7 @@ theorem formationBlowupProjectiveKinkBarrierTransgression_closed :
     formationRotation_tendsto_atTop,
     formationRotation_tendsto_atBot,
     formationAbsolutelyContinuousAction_one_le,
+    routePPrimitiveCollisionCubicTraceBudget_lt_formationAction,
     formationAbsolutelyContinuousAction_canonical,
     formationAbsolutelyContinuousAction_eq_one_iff_velocity,
     FormationAbsolutelyContinuousFiniteActionLift.phase_eq_canonical_of_action_eq_one,

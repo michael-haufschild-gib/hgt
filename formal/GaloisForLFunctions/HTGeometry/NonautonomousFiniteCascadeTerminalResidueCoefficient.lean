@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FirstOrderWimanTerminalResidue
 import GaloisForLFunctions.HTGeometry.FirstOrderWimanTerminalBiHahn
+import GaloisForLFunctions.HTGeometry.LogCoordinateDerivationTransport
 import GaloisForLFunctions.HTGeometry.NonautonomousFiniteCascadeTerminalLowerRetention
 
 /-!
@@ -28,6 +29,49 @@ attribute [local instance] cascadeUnitCostDomain cascadeUnitCostRatFuncAlgebra
 local instance (priority := high) terminalResidueCoefficientComplexAlgebra :
     Algebra ℂ FirstOrderTerminalLaurentField :=
   firstOrderTerminalComplexMap.toAlgebra
+
+local instance (priority := high) terminalResidueCoefficientInnerHahnComplexAlgebra :
+    Algebra ℂ FirstOrderTerminalInnerHahnField :=
+  firstOrderTerminalInnerHahnComplexAlgebra
+
+local instance (priority := high) terminalResidueCoefficientBiHahnCoefficientComplexAlgebra :
+    Algebra ℂ FirstOrderTerminalBiHahnCoefficientField :=
+  firstOrderTerminalBiHahnCoefficientComplexAlgebra
+
+local instance (priority := high) terminalResidueCoefficientBiHahnComplexAlgebra :
+    Algebra ℂ FirstOrderTerminalBiHahnField :=
+  firstOrderTerminalBiHahnComplexAlgebra
+
+/-- The faithful two-level Hahn transport as a complex-algebra embedding for the terminal source
+algebra used in this module. -/
+private noncomputable def terminalResidueCoefficientBiHahnAlgHom :
+    FirstOrderTerminalLaurentField →ₐ[ℂ] FirstOrderTerminalBiHahnField :=
+  { firstOrderTerminalBiHahnEmbedding with
+    commutes' := by
+      intro c
+      unfold firstOrderTerminalBiHahnEmbedding
+      change laurentToHahn
+        (firstOrderTerminalLaurentBaseChange (laurentToHahn (k := ℂ))
+          (firstOrderTerminalComplexMap c)) = _
+      change laurentToHahn
+        (firstOrderTerminalLaurentBaseChange (laurentToHahn (k := ℂ))
+          (firstOrderTerminalOuterCoefficientMap
+            (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField
+              (algebraMap ℂ (LaurentSeries ℂ) c)))) = _
+      rw [firstOrderTerminalOuterCoefficientMap,
+        firstOrderTerminalLaurentBaseChange_algebraMap,
+        firstOrderTerminalCoefficientBaseChange_algebraMap,
+        laurentToHahn_algebraMap, laurentToHahn_algebraMap]
+      change HahnSeries.ofPowerSeries ℚ FirstOrderTerminalBiHahnCoefficientField
+          (PowerSeries.C _) = HahnSeries.C _
+      rw [HahnSeries.ofPowerSeries_C]
+      congr 1
+      change algebraMap FirstOrderTerminalInnerHahnField
+          FirstOrderTerminalBiHahnCoefficientField
+          (HahnSeries.ofPowerSeries ℚ ℂ (PowerSeries.C c)) =
+        algebraMap FirstOrderTerminalInnerHahnField
+          FirstOrderTerminalBiHahnCoefficientField (HahnSeries.C c)
+      rw [HahnSeries.ofPowerSeries_C] }
 
 /-- A source element mapped to a negative inner Laurent monomial becomes a genuine pole in the
 pulled-back inner residue valuation. -/
@@ -141,7 +185,19 @@ theorem exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoef
               hstate) ∧
         IsLocalRing.residue B (⟨g u, huB⟩ : B) ∉ C ∧
         firstOrderTerminalBiHahnInnerEuler
-          (firstOrderTerminalBiHahnEmbedding (phi (u * x))) ≠ 0 := by
+          (firstOrderTerminalBiHahnEmbedding (phi (u * x))) ≠ 0 ∧
+        ∃ D : Derivation ℂ
+            (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+            (NonautonomousFiniteCascadeTerminalComponentField hfan N),
+          D u = algebraMap ℂ
+              (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+              ((-((Nram * q : ℕ) : ℤ) : ℂ)) * u ∧
+          D y = 0 ∧
+          (∀ w : NonautonomousFiniteCascadeTerminalComponentField hfan N,
+            firstOrderTerminalBiHahnEmbedding (phi (D w)) =
+              firstOrderTerminalBiHahnInnerEuler
+                (firstOrderTerminalBiHahnEmbedding (phi w))) ∧
+          D (u * x) ≠ 0 := by
   obtain ⟨M, a, q, Nram, hNram, z₀, R, hR, z, hq, phi, B₀,
       hslope, hz₀, hz, hdata⟩ :=
     exists_nonautonomousFiniteCascadeTerminalWimanValuation hfan hall N h1
@@ -205,6 +261,51 @@ theorem exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoef
     change phi (v / y) = _
     rw [map_div₀ phi, show phi v = W from hphiGen, hphiY,
       terminalWiman_W_div_V R z]
+  have hphiC (c : ℂ) :
+      phi (algebraMap ℂ
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N) c) =
+        algebraMap ℂ FirstOrderTerminalLaurentField c := by
+    change phi (algebraMap
+      (NonautonomousFiniteCascadeTerminalPairField hfan N)
+      (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+      (algebraMap ℂ (NonautonomousFiniteCascadeTerminalPairField hfan N) c)) = _
+    rw [hphiBase]
+    simp
+  let pairCoordinate : Fin 2 →
+      NonautonomousFiniteCascadeTerminalPairField hfan N := fun i =>
+    ⟨nonautonomousFiniteCascadeTerminalStatePair hfan N i,
+      IntermediateField.subset_adjoin ℂ _ (Set.mem_range_self i)⟩
+  let pairIndex : Fin 2 → Fin (N + 2) := fun i => ⟨N + i, by omega⟩
+  have hpairIndex : Function.Injective pairIndex := by
+    intro i j hij
+    apply Fin.ext
+    have hv := congrArg Fin.val hij
+    simp only [pairIndex] at hv
+    omega
+  have hpairAmbient : AlgebraicIndependent ℂ
+      (nonautonomousFiniteCascadeTerminalStatePair hfan N) := by
+    have hfull :=
+      algebraicIndependent_nonautonomousFiniteCascadeStateInBranchField
+        hfan hall (N + 1)
+    have hsub := hfull.comp pairIndex hpairIndex
+    convert hsub using 1
+    funext i
+    rfl
+  have hpairAI : AlgebraicIndependent ℂ pairCoordinate := by
+    let incl : NonautonomousFiniteCascadeTerminalPairField hfan N →ₐ[ℂ]
+        NonautonomousFiniteCascadeBranchField hfan (N + 1) :=
+      IsScalarTower.toAlgHom ℂ
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeBranchField hfan (N + 1))
+    apply AlgebraicIndependent.of_comp incl
+    convert hpairAmbient using 1
+    funext i
+    rfl
+  have hpairTop : IntermediateField.adjoin ℂ (Set.range pairCoordinate) = ⊤ := by
+    simpa [pairCoordinate] using
+      (adjoin_range_lift_eq_top
+        (nonautonomousFiniteCascadeTerminalStatePair hfan N)
+        (nonautonomousFiniteCascadeTerminalStatePair hfan N) rfl)
   have hzNe : PowerSeries.constantCoeff z ≠ 0 :=
     terminalWimanPowerSeries_constantCoeff_ne_zero
       M a Nram z₀ z
@@ -256,6 +357,119 @@ theorem exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoef
     apply firstOrderTerminalBiHahnInnerEuler_outer_mul_coe_ne_zero
     rw [hz, ← map_mul]
     exact hterminalBiHahnCharge
+  let phiAlg : NonautonomousFiniteCascadeTerminalComponentField hfan N →ₐ[ℂ]
+      FirstOrderTerminalLaurentField :=
+    { phi with commutes' := hphiC }
+  let rho : NonautonomousFiniteCascadeTerminalComponentField hfan N →ₐ[ℂ]
+      FirstOrderTerminalBiHahnField :=
+    terminalResidueCoefficientBiHahnAlgHom.comp phiAlg
+  let cPair : NonautonomousFiniteCascadeTerminalPairField hfan N :=
+    algebraMap ℂ (NonautonomousFiniteCascadeTerminalPairField hfan N)
+      ((-((Nram * q : ℕ) : ℤ) : ℂ))
+  have hinnerU : firstOrderTerminalBiHahnInnerEuler (rho u) =
+      rho (algebraMap (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair * u) := by
+    rw [show rho u = firstOrderTerminalBiHahnEmbedding (phi u) by rfl, hphiU]
+    change firstOrderTerminalBiHahnInnerEuler
+        (firstOrderTerminalBiHahnEmbedding
+          (firstOrderTerminalOuterCoefficientMap
+            (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField U))) = _
+    dsimp only [U]
+    rw [firstOrderTerminalBiHahnInnerEuler_inner_single]
+    rw [map_mul]
+    rw [show rho (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair) =
+          firstOrderTerminalBiHahnEmbedding
+            (phi (algebraMap
+              (NonautonomousFiniteCascadeTerminalPairField hfan N)
+              (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair)) by rfl,
+      show rho u = firstOrderTerminalBiHahnEmbedding (phi u) by rfl]
+    change firstOrderTerminalBiHahnEmbedding
+          (firstOrderTerminalOuterCoefficientMap
+            (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField
+              (HahnSeries.single (-((Nram * q : ℕ) : ℤ))
+              (((-((Nram * q : ℕ) : ℤ) : ℤ) : ℂ))))) =
+      firstOrderTerminalBiHahnEmbedding
+        (phi (algebraMap
+          (NonautonomousFiniteCascadeTerminalPairField hfan N)
+          (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair)) *
+        firstOrderTerminalBiHahnEmbedding (phi u)
+    rw [show phi (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair) =
+          algebraMap ℂ FirstOrderTerminalLaurentField
+            ((-((Nram * q : ℕ) : ℤ) : ℂ)) by
+      rw [hphiBase]
+      simp [cPair]]
+    rw [hphiU]
+    rw [← map_mul]
+    apply congrArg firstOrderTerminalBiHahnEmbedding
+    rw [show algebraMap ℂ FirstOrderTerminalLaurentField
+        ((-((Nram * q : ℕ) : ℤ) : ℂ)) =
+      algebraMap FirstOrderTerminalCoefficientField FirstOrderTerminalLaurentField
+        (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField
+          (algebraMap ℂ (LaurentSeries ℂ)
+            ((-((Nram * q : ℕ) : ℤ) : ℂ)))) by rfl]
+    rw [← map_mul, ← map_mul]
+    congr 2
+    dsimp only [U]
+    rw [LaurentSeries.algebraMap_apply]
+    rw [HahnSeries.C_apply, HahnSeries.single_mul_single]
+    simp
+  have hinnerY : firstOrderTerminalBiHahnInnerEuler (rho y) = 0 := by
+    rw [show rho y = firstOrderTerminalBiHahnEmbedding (phi y) by rfl, hphiY]
+    exact firstOrderTerminalBiHahnInnerEuler_outer_single_one _
+  letI : Algebra.IsAlgebraic
+      (NonautonomousFiniteCascadeTerminalPairField hfan N)
+      (NonautonomousFiniteCascadeTerminalComponentField hfan N) :=
+    nonautonomousFiniteCascadeTerminalComponent_isAlgebraic hfan hall N h1
+  obtain ⟨D, hDu, hDy, hDtransport⟩ :=
+    exists_logCoordinateDerivation_intertwining_of_isAlgebraic_tower_coefficient
+      pairCoordinate hpairAI hpairTop rho firstOrderTerminalBiHahnInnerEuler cPair
+      (by
+        change firstOrderTerminalBiHahnInnerEuler (rho u) =
+          rho (algebraMap (NonautonomousFiniteCascadeTerminalPairField hfan N)
+            (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair * u)
+        exact hinnerU)
+      (by
+        change firstOrderTerminalBiHahnInnerEuler (rho y) = 0
+        exact hinnerY)
+  have hDu' : D u = algebraMap ℂ
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+        ((-((Nram * q : ℕ) : ℤ) : ℂ)) * u := by
+    change D (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+        (pairCoordinate 0)) = _ at hDu
+    rw [hDu]
+    change algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair * u = _
+    rw [show algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N) cPair =
+          algebraMap ℂ
+            (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+            ((-((Nram * q : ℕ) : ℤ) : ℂ)) by
+      simp [cPair]]
+  have hDy' : D y = 0 := by
+    change D (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan N)
+        (NonautonomousFiniteCascadeTerminalComponentField hfan N)
+        (pairCoordinate 1)) = 0 at hDy
+    exact hDy
+  have hDtransport' (w : NonautonomousFiniteCascadeTerminalComponentField hfan N) :
+      firstOrderTerminalBiHahnEmbedding (phi (D w)) =
+        firstOrderTerminalBiHahnInnerEuler
+          (firstOrderTerminalBiHahnEmbedding (phi w)) := by
+    exact hDtransport w
+  have hDnonzero : D (u * x) ≠ 0 := by
+    intro hzero
+    apply hterminalActualBiHahnCharge
+    rw [← hDtransport' (u * x), hzero]
+    have hrhoZero := map_zero rho
+    exact hrhoZero
   have hAtriv : A.comap
       (IntermediateField.adjoin ℂ
         ({terminalLeadingStateInComponent hfan N} :
@@ -314,7 +528,8 @@ theorem exists_nonautonomousFiniteCascadeTerminal_normalizedVelocity_residueCoef
   exact ⟨hcoeff, hext,
     nonautonomousFiniteCascadeLowerBranchResidueEmbedding_injective
       hfan hall (fun k hk => h1 k (by omega)) B hstate,
-    huPoleB, hterminalActualBiHahnCharge⟩
+    huPoleB, hterminalActualBiHahnCharge,
+    D, hDu', hDy', hDtransport', hDnonzero⟩
 
 end
 

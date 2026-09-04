@@ -325,3 +325,14 @@ The theorem does not rule out the actual de Bruijn-Newman deformation, which has
   new-theorem axiom audits pass; axioms are `[propext, Classical.choice, Quot.sound]`.  Card remains
   stage 2: the paper's enlarged open set and its unbounded connected-component continuation are
   still required to turn these pointwise signs into the global scalar branch contradiction.
+- 2026-09-04 — `StrelitzNonnegativeEdgePhase` proves that, in the nonnegative-slope branch,
+  selected-root proximity survives Newton normalization and the matched nonzero edge root lies in
+  the closed right half-plane.  `StrelitzMaximumPathDerivative` then proves the exact differential
+  identity on every smooth local maximum-modulus path: if the second Euler jet is `v` and
+  `Re(v) > 0`, the derivative of the real first Euler jet is `normSq(v) / Re(v)`; if
+  `Re(v) = 0`, then `v = 0`.  `StrelitzMaximumPathObstruction` closes the resulting scalar
+  endpoint, including purely imaginary limiting edge roots: a nonzero second-jet limit normalized
+  by any nonnegative power forces a fixed positive derivative floor and contradicts sublinearity.
+  Direct source checks, targeted leaf builds, and all new-theorem axiom audits pass; axioms are
+  `[propext, Classical.choice, Quot.sound]`.  Card remains stage 2 only because the paper's enlarged
+  Strelitz set and global branch continuation have not yet been constructed in Lean.

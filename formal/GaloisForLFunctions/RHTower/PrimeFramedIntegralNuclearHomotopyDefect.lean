@@ -2092,6 +2092,21 @@ theorem primeFramedIntegralNuclearHomotopyDefect_closed :
       MemSchattenClass 1 (primeFramedNuclearNullHomotopy r z) ∧
       ContinuousLinearMap.opTrace (primeFramedNuclearNullHomotopy r z) = 1 ∧
       traceNorm PrimeFramedDouble (primeFramedNuclearNullHomotopy r z) = 1) ∧
+    (∀ (r : Set.Icc (0 : ℝ) 1) (a : ℝ),
+      Tendsto (fun b : ℝ => traceNorm PrimeFramedDouble
+        (primeFramedNuclearNullHomotopy r (b : OnePoint ℝ) -
+          primeFramedNuclearNullHomotopy r (a : OnePoint ℝ)))
+        (nhds a) (nhds 0)) ∧
+    (∀ r : Set.Icc (0 : ℝ) 1,
+      Tendsto (fun a : ℝ => traceNorm PrimeFramedDouble
+        (primeFramedNuclearNullHomotopy r (a : OnePoint ℝ) -
+          primeFramedNuclearNullHomotopy r OnePoint.infty))
+        (cocompact ℝ) (nhds 0)) ∧
+    (∀ (r : Set.Icc (0 : ℝ) 1) (z : OnePoint ℝ),
+      Tendsto (fun s => traceNorm PrimeFramedDouble
+        (primeFramedNuclearNullHomotopy s z -
+          primeFramedNuclearNullHomotopy r z))
+        (nhds r) (nhds 0)) ∧
     (∀ z : OnePoint ℝ,
       primeFramedNuclearNullHomotopy
           ⟨0, by constructor <;> norm_num⟩ z =
@@ -2107,7 +2122,10 @@ theorem primeFramedIntegralNuclearHomotopyDefect_closed :
     primeFramedNuclearOrbit_tendsto_endpoint_atBot,
     primeFramedNuclearOrbit_reflection, ?_,
     primeFramedProjectiveDegree_eq_one, ?_,
-    primeFramedClosedNuclearLoop_traceNormContinuous_infty, ?_, ?_⟩
+    primeFramedClosedNuclearLoop_traceNormContinuous_infty, ?_,
+    primeFramedNuclearNullHomotopy_traceNormContinuous_coe,
+    primeFramedNuclearNullHomotopy_traceNormContinuous_infty,
+    primeFramedNuclearNullHomotopy_traceNormContinuous_parameter, ?_⟩
   · intro a
     exact ⟨primeFramedNuclearOrbit_isPositive a,
       primeFramedNuclearOrbit_memSchattenClass_one a,

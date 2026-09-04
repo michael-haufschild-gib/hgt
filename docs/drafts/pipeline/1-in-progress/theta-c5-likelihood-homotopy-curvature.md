@@ -275,3 +275,15 @@ remains before the convex likelihood lift can close.
   only `propext`, `Classical.choice`, and `Quot.sound`. Primary-literature audit found no matching
   fixed Bose cone or seam law; Chouikha's complete monotonicity (arXiv:1409.1498) and Planat--Solé's
   second-level theta-kernel concavity (arXiv:2608.19160) concern different inequalities.
+- 2026-09-04 — `[NUMERICAL SURVIVAL]` Independent falsification pass (transcription of the Lean
+  definitions to mpmath, validated against numerical derivatives; scripts and README in
+  `2-fully-proven/computations/clg-ttf-c5-homotopy-numerical-test/`).  On the structural tail
+  `0 < t ≤ u`, `π e^{2u} ≥ 6`, 861 points at 120 digits plus 400-digit checks to `u = 8` and down to
+  `u = 0.001`: `M'''(λ) > 0` on `[0,1]`, `M''(0) ≥ 0`, `M'(0) ≥ −M(0)/5`, and `M(1) > 0` hold at
+  every point; the adverse term `W'''H` never exceeds `1.2 %` of the two favourable terms.  The
+  four-face cone fails at 97 % of the points (first face), confirming the Lean route kill while the
+  balance itself survives.  Structural observation: `max |M(1) − M(0)|/M(0) = 0.19` (at
+  `u = u_min, t = u`), all seven likelihood corrections `≤ 5.9 %` of the first-atom jets, so the
+  gate `M(1) > 0` is a perturbation of the proved `M(0) > 0`.  Proposed proof route: quantitative
+  lower bound for `c5SingleAtomCompensationMargin` plus explicit `n ≥ 2` correction bounds from the
+  atomic spectral measure, bypassing the curvature homotopy.

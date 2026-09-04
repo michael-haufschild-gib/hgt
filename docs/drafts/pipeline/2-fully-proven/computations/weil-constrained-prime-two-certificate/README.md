@@ -52,15 +52,18 @@ Environment variable `WIDTH` sets the band width (grid spacing is `WIDTH/10`).
 | 0.80 | 1.4918 | 2 | 33 | 0.05 | 0.1100 | 0.1244 |
 | 0.90 | 1.5683 | 2 | 37 | 0.05 | 0.0173 | 0.0341 |
 | 0.95 | 1.6080 | 2 | 39 | 0.02 | 0.0059 | 0.0127 |
-| 0.98 | 1.6323 | 2 | 40 | 0.01 | **0.0024** | 0.0059 |
-| 1.00 | 1.6487 | 2 | 41 | 0.01 | −0.0003 | 0.0031 |
+| 0.98 | 1.6323 | 2 | 40 | 0.01 | 0.0024 | 0.0059 |
+| 1.00 | 1.6487 | 2 | 41 | 0.005 | **0.0014** | 0.0031 |
+| 1.02 | 1.6701 | 2 | 42 | 0.005 | −0.0003 | 0.0014 |
 | 1.05 | 1.6905 | 2 | 43 | 0.05 | −0.0166 | 0.00007 |
 
-The finite block with the exact multiplier is a Rayleigh quotient over a subspace, hence an upper
-bound of the true constrained ground energy (up to the `10⁻¹²` tail replacement): the full
-constrained form loses positivity at `S* ≈ 1.05` (`λ* ≈ 1.69`), before the prime 3 enters at
-`log 3 = 1.0986`.  Certified positivity: `S ≤ 0.98`, i.e. `λ ≤ 1.632`, against the Connes–Consani
-aperture `√2 = 1.414`.
+Certified positivity: `S ≤ 1`, i.e. `λ ≤ √e = 1.6487`, against the Connes–Consani aperture
+`√2 = 1.414`.  **The last column is not an upper bound of the ground energy**: it replaces the
+multiplier beyond `Ξ = 24` by the constant `c_last ≤ m`, so it is a lower bound of the Rayleigh
+quotient of one test function; an earlier version of this README wrongly read a "threshold
+`S* ≈ 1.05`" off it.  Rigorous upper bounds come from `certificate_upper.py` (test function in `V₀`
+vanishing at both endpoints, `|f̂| ≤ W/ξ²`, exact multiplier to `Ξ₂ = 200` with the upper series
+tail, analytic tail beyond); its log is `certificate_upper.log`.
 
 Logs: `certificate_rigorous.log` (width 0.25, first far-tail bound — superseded),
 `certificate_rigorous_w005.log` (width 0.05; the `S ≥ log 3` rows there omit the prime terms and are

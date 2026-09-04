@@ -1,9 +1,11 @@
 # Reciprocal four-channel Krein--nuclear renormalization
 
 - **ID:** `ULF-FBG-005`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** unconditional pre-divisor bridge and exact reconstruction theorem
-- **Status:** `[PAPER-PROVED] [BRIDGE] [GENERIC J-DILATION] [NOT A SELECTOR]`
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/ReciprocalFourChannelKreinNuclearRenormalization.lean`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [BRIDGE] [GENERIC J-DILATION] [NOT A SELECTOR]`
 - **RH used:** no
 - **Divisor used:** no
 - **Parents:** `ULF-FBG-001`, `ULF-FBG-002`, `ULF-DSA-002`, `ULF-PHIN-001`
@@ -298,6 +300,19 @@ with unsigned escape multiplicity.
 
 ## 9. Formal status
 
-Paper proof is unconditional and dependency-closed. All scalar ingredients and both endpoint
-operator objects are Lean-certified; finite `J`-Gram assembly and cofinal reconstruction have not
-been formalized. No Lean file was written or built during this read-only research programme.
+Fully formalized in Lean by `ReciprocalFourChannelKreinNuclearRenormalization.lean`. The module
+proves the reciprocal compact/split and local `SO(2)`/Krein laws, constructs finite coordinate
+projections and source compressions, their positive square roots, all four diagonal channels, the
+literal nested four-channel Hilbert carrier, synthesis, adjoint analysis, and fixed Krein metric.
+It proves the exact `A*JA=T_E` and positive-Gram identities, the complete retained/off-packet
+coefficient formula, same-history nonvanishing, fixed reflection gauge, strong cofinal projection
+convergence, Hilbert--Schmidt square-root convergence, trace-norm recovery of `T`, trace/trace-norm
+limits equal to one, the Route-P anomaly split, and the full zero-rate compact/split asymptotics.
+These claims are bundled in
+`reciprocalFourChannelKreinNuclearRenormalization_closed`.
+
+The unrestricted constant-one rectangular Schatten Hölder infrastructure needed for cofinal
+recovery is proved in `HTGeometry/RectangularNuclearNormBound.lean`. Targeted `lake env lean` and
+leaf-only `lake build` checks pass. `#print axioms` on both capstone and helper reports only
+`propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, premise, divisor, or RH
+hypothesis is used.

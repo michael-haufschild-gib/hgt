@@ -1,7 +1,10 @@
 # Prime-infinity projective kink and barrier transgression
 
 - **ID:** `ULF-FBG-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/FormationBlowupProjectiveKinkBarrierTransgression.lean`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [UNCONDITIONAL] [NOT A SELECTOR]`
 - **Type:** unconditional pre-divisor blow-up geometry and four-organ reconstruction
 - **RH used:** no
 - **Divisor used:** no
@@ -306,8 +309,16 @@ same-boundary receiver.
 
 ## 10. Formal status
 
-Paper proof is unconditional and dependency-closed. Lean already certifies all scalar
-visibility/contrast identities, the prime--Hodge object, the two-channel parents, the cofinal
-Bockstein, and its exact Schatten threshold. The projective compactification and sharp action
-theorem `(FBG.4)--(FBG.11)` have not been formalized; no Lean file was written or built during this
-read-only research programme.
+Fully formalized in Lean by
+`FormationBlowupProjectiveKinkBarrierTransgression.lean`. The module constructs the bundled
+one-point projective homeomorphism, proves orientation/degree one, both frame limits, the phase
+identities, and the exact square-completion theorem on the full absolutely-continuous finite-action
+class. Equality is characterized almost everywhere by the kink ODE and the anchored equality case
+is uniquely the canonical profile. Prime sampling, marginal trace conservation, exact barrier
+transgression, Schatten threshold, all-order neutral classification, and the strict primitive
+Euler-budget obstruction are included in the closed certificate
+`formationBlowupProjectiveKinkBarrierTransgression_closed`.
+
+Targeted `lake env lean` and leaf-only `lake build` checks pass. `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, premise, divisor, or RH
+hypothesis is used.

@@ -5126,3 +5126,23 @@ This does not close Card 8.  The remaining exact paper obligation is constructio
 enlarged open set, existence of its relevant unbounded connected component, and analytic
 continuation/integration of the selected Newton branch on that component.  Maximum-locus
 components themselves are not assumed unbounded.
+
+## Entire-heat maximum-path scalar endpoint closed (2026-09-04)
+
+`HTGeometry/StrelitzNonnegativeEdgePhase.lean` transfers the maximum-point curvature sign through
+Newton normalization and proves that every matched nonnegative-slope edge root lies in the closed
+right half-plane.  `HTGeometry/StrelitzMaximumPathDerivative.lean` formalizes the exact smooth-path
+identity
+
+`d Re(zf'/f)/d(log r) = normSq(v) / Re(v)`,
+
+with `v = z(zf'/f)'`, and proves that `Re(v) = 0` forces `v = 0` on such a path.
+`HTGeometry/StrelitzMaximumPathObstruction.lean` integrates the resulting lower bound: any nonzero
+limit of `v / K^p`, for `p ≥ 0`, contradicts `K(x)/x → 0`; no positivity of the limiting real part
+is assumed.  All modules pass direct source checks, targeted leaf builds, and new-declaration axiom
+audits with only `[propext, Classical.choice, Quot.sound]`.
+
+Card 8 remains in stage 2.  Its exact residue is global and geometric: construct the enlarged open
+Strelitz set from the paper, obtain the relevant unbounded connected component, and continue the
+selected algebraic branch far enough to supply the now-closed scalar endpoint.  No unboundedness of
+a maximum-locus component is assumed.

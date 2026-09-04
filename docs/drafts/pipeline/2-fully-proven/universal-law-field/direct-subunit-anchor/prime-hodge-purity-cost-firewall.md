@@ -34,16 +34,18 @@ Let
 B = routePPrimitiveCollisionCubicTraceBudget
 ```
 
-and let `T` be the positive unit-aperture prime--Hodge history defect of `ULF-PHIN-001` on
-`H = ell2(Nat x Primes)`. Then
+and let `T` be the actual positive prime--Hodge relative-curvature lift
+`primeHodgeHistoryRelativeCurvaturePrimeLift` on `PrimeHodgeHistoryHilbert`. Then
 
 ```text
 T >= 0,  T in S_1,  Tr(T)=||T||_1=1,
-||T|| <= 8/(3 sqrt(35)).                                      (PCF.1)
+||T|| <= 1/3.                                                 (PCF.1)
 ```
 
 Every same-history cross-prime matrix entry of `T` is nonzero. Neither `T` nor `B` uses a zero,
-divisor copy, or ordinate.
+divisor copy, or ordinate.  An earlier draft incorrectly assigned the bound `8/(3 sqrt(35))`
+from the fixed unit-aperture history defect to this source.  The source used by the firewall is
+the relative-curvature lift above, and its proved `1/3` ceiling is stronger.
 
 Let `P` be any rank-one orthogonal projection on `H`. Later specialization may take `P` to be a
 unitarily transported relation-horizon defect, but the theorem below is independent of that
@@ -107,15 +109,14 @@ ordered-cross-prime carrier to `H` by any unitary cannot change the lower bounds
 One has
 
 ```text
-8/(3 sqrt(35)) < 7/15,
-B + ||T|| < 115/216 + 7/15 = 1079/1080 < 1.                (PCF.5)
+B + ||T|| < 115/216 + 1/3 = 187/216 < 1.                  (PCF.5)
 ```
 
 Therefore every rank-one projection satisfies
 
 ```text
-||P-T|| >= rho_pure(T)=1-||T|| > B,                         (PCF.6)
-||P-T||_1 >= rho_pure,1(T)=2(1-||T||) > 16/15 > 115/108 > 2B. (PCF.7)
+||P-T|| >= rho_pure(T)=1-||T|| >= 2/3 > B,                  (PCF.6)
+||P-T||_1 >= rho_pure,1(T)=2(1-||T||) >= 4/3 > 2B.          (PCF.7)
 ```
 
 In particular, there is no trace-class `R` such that
@@ -140,30 +141,27 @@ integral_0^1 ||K'(u)||_1 du > 2B.                          (PCF.10)
 ### Proof
 
 From `(PCF.2)`, positivity of `115/432`, and strictness of the prime sum,
-`B<115/216`. Also `40/7<sqrt(35)`, since both sides are positive and
-`1600<49*35=1715`. Inverting and multiplying by `8/3` gives
-`8/(3sqrt(35))<7/15`. With `(PCF.1)`,
+`B<115/216`. With `(PCF.1)`,
 
 ```text
-B+||T|| < 115/216+7/15 = 575/1080+504/1080 = 1079/1080<1.
+B+||T|| < 115/216+1/3 = 187/216<1.
 ```
 
 The first purity-radius identity gives
 
 ```text
-||P-T|| >= ||P||-||T|| = 1-||T|| > B.
+||P-T|| >= ||P||-||T|| = 1-||T|| >= 2/3 > B.
 ```
 
 The second purity-radius identity gives
 
 ```text
-||P-T||_1 >= 2(1-||T||) > 16/15.
+||P-T||_1 >= 2(1-||T||) >= 4/3.
 ```
 
-Meanwhile `2B<115/108`, and `115/108<16/15` because `1725<1728`; the rational slack at this last
-comparison is `1/540`. This proves `(PCF.6)--(PCF.8)`. Every path variation dominates endpoint
-distance, proving `(PCF.9)`. Absolute continuity and the fundamental variation bound give
-`(PCF.10)`. QED.
+Meanwhile `2B<115/108<4/3`. This proves `(PCF.6)--(PCF.8)`. Every path variation dominates
+endpoint distance, proving `(PCF.9)`. Absolute continuity and the fundamental variation bound
+give `(PCF.10)`. QED.
 
 ## 6. Joint reconstruction and fourth-organ prediction
 
@@ -240,7 +238,8 @@ open contrast summand with prime-marked singular completion.
 
 ## 9. Formal status
 
-Paper proof is dependency-closed and unconditional. Lean parents already formalize `T`, its
-Schatten-one/trace laws, `B`, the prime logarithmic bound `<2`, and the budget majorization.
-The operator-norm bound for `T` is currently a proved paper parent. No Lean file was written or
-built during this research audit.
+Formalized unconditionally in
+`GaloisForLFunctions.RHTower.PrimeHodgePurityCostFirewall`.  Its closed capstone
+`primeHodgePurityCostFirewall` certifies the corrected source object, positivity, Schatten-one
+membership, trace and trace norm one, the `1/3` norm ceiling, exact pure-state radii, strict
+operator/trace-distance firewalls, and same-history cross-prime nonvanishing.

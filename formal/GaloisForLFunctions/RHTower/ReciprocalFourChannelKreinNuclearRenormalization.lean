@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.FormationBlowupProjectiveKinkBarrierTransgres
 import GaloisForLFunctions.RHTower.TraceClassCyclicity
 import GaloisForLFunctions.RHTower.PrimeHodgeHistoryIntegralNuclearDefect
 import GaloisForLFunctions.RHTower.SoninResidualApertureHilbertSchmidtContinuity
+import GaloisForLFunctions.RHTower.ArithmeticDilationStageDeterminant
 import GaloisForLFunctions.HTGeometry.RectangularNuclearNormBound
 import GaloisForLFunctions.RHTower.DirectSubunitEscapeCapacityFusion
 import GaloisForLFunctions.HTGeometry.DiagonalEllTwoIndexed
@@ -740,7 +741,7 @@ theorem reciprocalFourChannel_adjoint_krein_synthesis
                 (reciprocalVisibleNegativeChannel δ E (reciprocalPacketRoot E x)) -
             reciprocalContrastNegativeChannel δ E
                 (reciprocalContrastNegativeChannel δ E (reciprocalPacketRoot E x))) by
-          simp only [map_add, map_sub, map_neg]
+          simp only [map_add, map_sub]
           abel,
       hcharge, hroot]
 
@@ -805,6 +806,25 @@ theorem reciprocalPacketProjection_lpBasis_of_mem
     HTGeometry.ellTwoDiagonal_coordinateBasis]
   simp [hi]
 
+theorem reciprocalPacketProjection_lpBasis
+    (E : Finset PrimeHodgeHistoryIndex) (i : PrimeHodgeHistoryIndex) :
+    reciprocalPacketProjection E (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex i) =
+      if i ∈ E then HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex i else 0 := by
+  classical
+  by_cases hi : i ∈ E
+  · rw [if_pos hi, reciprocalPacketProjection_lpBasis_of_mem hi]
+  · apply lp.ext
+    funext j
+    rw [reciprocalPacketProjection_apply]
+    by_cases hj : j ∈ E
+    · have hji : j ≠ i := by
+        intro h
+        apply hi
+        simpa [h] using hj
+      simp [hi, hj, HilbertSchmidt.lpBasis_apply, lp.single_apply,
+        Pi.single_eq_of_ne hji]
+    · simp [hi, hj]
+
 /-- Every retained unsquared matrix coefficient is literally the original source coefficient. -/
 theorem inner_lpBasis_reciprocalPacketCompression
     {E : Finset PrimeHodgeHistoryIndex} {i j : PrimeHodgeHistoryIndex}
@@ -846,6 +866,40 @@ theorem reciprocalPacketCompression_sameHistory_ne_zero
           (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex (n, q))) ≠ 0 := by
   rw [inner_lpBasis_reciprocalPacketCompression hp hq]
   exact primeHodgeHistoryIntegralNuclearDefect_closed.2.2.2.2.1 n p q
+
+/-- Full finite-compression coefficient formula, including the zero rows and columns off packet. -/
+theorem inner_lpBasis_reciprocalPacketCompression_eq_indicator
+    (E : Finset PrimeHodgeHistoryIndex) (i j : PrimeHodgeHistoryIndex) :
+    inner ℂ (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex i)
+        (reciprocalPacketCompression E
+          (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex j)) =
+      if i ∈ E ∧ j ∈ E then primeHodgeHistoryDefectKernel 1 (i, j) else 0 := by
+  classical
+  by_cases hi : i ∈ E
+  · by_cases hj : j ∈ E
+    · simpa [hi, hj] using inner_lpBasis_reciprocalPacketCompression hi hj
+    · rw [if_neg (fun h => hj h.2), reciprocalPacketCompression]
+      simp [ContinuousLinearMap.comp_apply, reciprocalPacketProjection_lpBasis,
+        hj]
+  · rw [if_neg (fun h => hi h.1), reciprocalPacketCompression]
+    simp only [ContinuousLinearMap.comp_apply]
+    have hsym := ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
+      (reciprocalPacketProjection_isSelfAdjoint E)
+    calc
+      inner ℂ (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex i)
+          (reciprocalPacketProjection E
+            (primeHodgeHistoryIntegralNuclearDefectT
+              (reciprocalPacketProjection E
+                (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex j)))) =
+        inner ℂ
+          (reciprocalPacketProjection E
+            (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex i))
+          (primeHodgeHistoryIntegralNuclearDefectT
+            (reciprocalPacketProjection E
+              (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex j))) :=
+        (hsym _ _).symm
+      _ = 0 := by
+        rw [reciprocalPacketProjection_lpBasis, if_neg hi, inner_zero_left]
 
 theorem reciprocalVisiblePositiveChannel_neg
     (δ : ℝ) (E : Finset PrimeHodgeHistoryIndex) :
@@ -973,6 +1027,448 @@ theorem reciprocalFourChannelSynthesis_neg
       rw [reciprocalFourChannelSynthesis_four,
         reciprocalContrastGauge_snd_snd, reciprocalFourChannelSynthesis_four,
         reciprocalContrastNegativeChannel_neg, neg_apply]
+
+/-! ### Cofinal trace-norm reconstruction -/
+
+/-- An increasing sequence of finite coordinate packets which eventually contains every index. -/
+structure ReciprocalPacketExhaustion where
+  packet : ℕ → Finset PrimeHodgeHistoryIndex
+  monotone : Monotone packet
+  eventually_mem : ∀ i : PrimeHodgeHistoryIndex, ∃ N, ∀ n, N ≤ n → i ∈ packet n
+
+theorem reciprocalPacketProjection_strong_tendsto_id
+    (F : ReciprocalPacketExhaustion) (x : PrimeHodgeHistoryHilbert) :
+    Tendsto (fun n => reciprocalPacketProjection (F.packet n) x)
+      atTop (nhds x) := by
+  let f : ℕ → PrimeHodgeHistoryIndex → ℝ := fun n i =>
+    ‖(reciprocalPacketProjection (F.packet n) x - x) i‖ ^ 2
+  let bound : PrimeHodgeHistoryIndex → ℝ := fun i => ‖x i‖ ^ 2
+  have hbound : Summable bound := by
+    simpa [bound] using (lp.memℓp x).summable (by norm_num)
+  have hpoint : ∀ i, Tendsto (fun n => f n i) atTop (nhds 0) := by
+    intro i
+    obtain ⟨N, hN⟩ := F.eventually_mem i
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [eventually_ge_atTop N] with n hn
+    simp [f, reciprocalPacketProjection_apply, hN n hn]
+  have hdom : ∀ᶠ n in atTop, ∀ i, ‖f n i‖ ≤ bound i := by
+    refine Eventually.of_forall fun n i => ?_
+    classical
+    by_cases hi : i ∈ F.packet n
+    · simp [f, bound, reciprocalPacketProjection_apply, hi]
+    · simp [f, bound, reciprocalPacketProjection_apply, hi]
+  have htsum : Tendsto (fun n => ∑' i, f n i) atTop (nhds 0) := by
+    simpa using tendsto_tsum_of_dominated_convergence hbound hpoint hdom
+  have hsq : ∀ n,
+      ‖reciprocalPacketProjection (F.packet n) x - x‖ ^ 2 = ∑' i, f n i := by
+    intro n
+    simpa [f] using HilbertSchmidt.lp_norm_sq_eq
+      (reciprocalPacketProjection (F.packet n) x - x)
+  have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp htsum
+  have hnorm : Tendsto
+      (fun n => ‖reciprocalPacketProjection (F.packet n) x - x‖)
+      atTop (nhds 0) := by
+    have hsqrt' : Tendsto (fun n => Real.sqrt (∑' i, f n i))
+        atTop (nhds 0) := by simpa [Function.comp_def] using hsqrt
+    convert hsqrt' using 1
+    funext n
+    rw [← hsq n, Real.sqrt_sq (norm_nonneg _)]
+  rw [tendsto_iff_dist_tendsto_zero]
+  simpa only [dist_eq_norm] using hnorm
+
+def reciprocalGlobalSourceRoot :
+    PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert :=
+  traceClassRoot primeHodgeHistoryIntegralNuclearDefectT
+
+theorem reciprocalGlobalSourceRoot_isSelfAdjoint :
+    IsSelfAdjoint reciprocalGlobalSourceRoot :=
+  isSelfAdjoint_traceClassRoot _
+
+theorem reciprocalGlobalSourceRoot_isHilbertSchmidt :
+    reciprocalGlobalSourceRoot.IsHilbertSchmidt :=
+  traceClassRoot_isHilbertSchmidt
+    primeHodgeHistoryIntegralNuclearDefect_closed.2.1
+
+theorem reciprocalGlobalSourceRoot_comp_self :
+    reciprocalGlobalSourceRoot ∘L reciprocalGlobalSourceRoot =
+      primeHodgeHistoryIntegralNuclearDefectT := by
+  rw [reciprocalGlobalSourceRoot, traceClassRoot_comp_self]
+  apply ContinuousLinearMap.absOp_of_nonneg
+  rw [ContinuousLinearMap.le_def, sub_zero]
+  exact primeHodgeHistoryIntegralNuclearDefect_closed.1
+
+def reciprocalPacketCutRoot (E : Finset PrimeHodgeHistoryIndex) :
+    PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert :=
+  reciprocalPacketProjection E ∘L reciprocalGlobalSourceRoot
+
+theorem reciprocalPacketCutRoot_isHilbertSchmidt
+    (E : Finset PrimeHodgeHistoryIndex) :
+    (reciprocalPacketCutRoot E).IsHilbertSchmidt :=
+  reciprocalGlobalSourceRoot_isHilbertSchmidt.comp_left
+    (reciprocalPacketProjection E)
+
+theorem reciprocalPacketCompression_eq_cutRootGram
+    (E : Finset PrimeHodgeHistoryIndex) :
+    reciprocalPacketCompression E =
+      reciprocalPacketCutRoot E ∘L
+        ContinuousLinearMap.adjoint (reciprocalPacketCutRoot E) := by
+  rw [reciprocalPacketCutRoot, ContinuousLinearMap.adjoint_comp]
+  change reciprocalPacketCompression E =
+    (reciprocalPacketProjection E ∘L reciprocalGlobalSourceRoot) ∘L
+      (ContinuousLinearMap.adjoint reciprocalGlobalSourceRoot ∘L
+        ContinuousLinearMap.adjoint (reciprocalPacketProjection E))
+  rw [show ContinuousLinearMap.adjoint reciprocalGlobalSourceRoot =
+      reciprocalGlobalSourceRoot from reciprocalGlobalSourceRoot_isSelfAdjoint,
+    show ContinuousLinearMap.adjoint (reciprocalPacketProjection E) =
+      reciprocalPacketProjection E from reciprocalPacketProjection_isSelfAdjoint E,
+    reciprocalPacketCompression, ← reciprocalGlobalSourceRoot_comp_self]
+  simp only [ContinuousLinearMap.comp_assoc]
+
+private theorem adjoint_sub_reciprocal
+    (A B : PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert) :
+    ContinuousLinearMap.adjoint (A - B) =
+      ContinuousLinearMap.adjoint A - ContinuousLinearMap.adjoint B := by
+  symm
+  rw [ContinuousLinearMap.eq_adjoint_iff]
+  intro y x
+  simp only [sub_apply, inner_sub_left, inner_sub_right]
+  rw [ContinuousLinearMap.adjoint_inner_left,
+    ContinuousLinearMap.adjoint_inner_left]
+
+private theorem traceNorm_reciprocalGram_sub_le
+    {K L : PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert}
+    (hK : K.IsHilbertSchmidt) (hL : L.IsHilbertSchmidt) :
+    traceNorm PrimeHodgeHistoryHilbert
+        (K ∘L ContinuousLinearMap.adjoint K -
+          L ∘L ContinuousLinearMap.adjoint L) ≤
+      (K.hsNorm + L.hsNorm) * (K - L).hsNorm := by
+  let D := K - L
+  let A := D ∘L ContinuousLinearMap.adjoint K
+  let B := L ∘L ContinuousLinearMap.adjoint D
+  have hD : D.IsHilbertSchmidt := hK.sub hL
+  have hArect : MemRectSchattenClass 1 A :=
+    memRectSchattenClass_one_comp_of_hilbertSchmidt_unrestricted hK.adjoint hD
+  have hBrect : MemRectSchattenClass 1 B :=
+    memRectSchattenClass_one_comp_of_hilbertSchmidt_unrestricted hD.adjoint hL
+  have hA : MemSchattenClass 1 A :=
+    (memRectSchattenClass_iff_memSchattenClass 1 _).mp hArect
+  have hB : MemSchattenClass 1 B :=
+    (memRectSchattenClass_iff_memSchattenClass 1 _).mp hBrect
+  have htri : traceNorm PrimeHodgeHistoryHilbert (A + B) ≤
+      traceNorm PrimeHodgeHistoryHilbert A +
+        traceNorm PrimeHodgeHistoryHilbert B :=
+    traceNorm_add_le (hA.isCompactOperator one_pos)
+      (hB.isCompactOperator one_pos) hA.one_summable_approxNumber
+      hB.one_summable_approxNumber
+  have hAbound : traceNorm PrimeHodgeHistoryHilbert A ≤ K.hsNorm * D.hsNorm := by
+    rw [← rectTraceNorm_eq_traceNorm]
+    have h := rectTraceNorm_comp_le_hsNorm_mul_hsNorm_unrestricted hK.adjoint hD
+    simpa [A, ContinuousLinearMap.hsNorm, hK.hsNormSq_adjoint] using h
+  have hBbound : traceNorm PrimeHodgeHistoryHilbert B ≤ D.hsNorm * L.hsNorm := by
+    rw [← rectTraceNorm_eq_traceNorm]
+    have h := rectTraceNorm_comp_le_hsNorm_mul_hsNorm_unrestricted hD.adjoint hL
+    simpa [B, ContinuousLinearMap.hsNorm, hD.hsNormSq_adjoint, mul_comm] using h
+  have hdecomp :
+      K ∘L ContinuousLinearMap.adjoint K -
+          L ∘L ContinuousLinearMap.adjoint L = A + B := by
+    dsimp [A, B, D]
+    rw [adjoint_sub_reciprocal]
+    ext z
+    simp only [sub_apply, add_apply, ContinuousLinearMap.comp_apply, map_sub]
+    abel
+  rw [hdecomp]
+  calc
+    traceNorm PrimeHodgeHistoryHilbert (A + B) ≤
+        traceNorm PrimeHodgeHistoryHilbert A +
+          traceNorm PrimeHodgeHistoryHilbert B := htri
+    _ ≤ K.hsNorm * D.hsNorm + D.hsNorm * L.hsNorm :=
+      add_le_add hAbound hBbound
+    _ = (K.hsNorm + L.hsNorm) * D.hsNorm := by ring
+
+theorem tendsto_hsNorm_reciprocalPacketCutRoot_sub
+    (F : ReciprocalPacketExhaustion) :
+    Tendsto (fun n =>
+      (reciprocalPacketCutRoot (F.packet n) - reciprocalGlobalSourceRoot).hsNorm)
+      atTop (nhds 0) := by
+  let An : ℕ → PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert :=
+    fun n => reciprocalPacketProjection (F.packet n) -
+      ContinuousLinearMap.id ℂ PrimeHodgeHistoryHilbert
+  have hstrong : ∀ x : PrimeHodgeHistoryHilbert,
+      Tendsto (fun n => An n x) atTop (nhds 0) := by
+    intro x
+    have h := (reciprocalPacketProjection_strong_tendsto_id F x).sub_const x
+    simpa [An] using h
+  have hbound : ∀ n, ‖An n‖ ≤ 2 := by
+    intro n
+    have hid : ‖ContinuousLinearMap.id ℂ PrimeHodgeHistoryHilbert‖ ≤ 1 :=
+      ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun x => by simp
+    calc
+      ‖An n‖ ≤ ‖reciprocalPacketProjection (F.packet n)‖ +
+          ‖ContinuousLinearMap.id ℂ PrimeHodgeHistoryHilbert‖ := by
+        simpa [An] using norm_sub_le
+          (reciprocalPacketProjection (F.packet n))
+          (ContinuousLinearMap.id ℂ PrimeHodgeHistoryHilbert)
+      _ ≤ 1 + 1 := add_le_add
+        (norm_reciprocalPacketProjection_le_one (F.packet n)) hid
+      _ = 2 := by norm_num
+  have hsq := tendsto_hsNormSq_comp_left_zero_of_strong An
+    reciprocalGlobalSourceRoot reciprocalGlobalSourceRoot_isHilbertSchmidt
+    hstrong (by norm_num : (0 : ℝ) ≤ 2) hbound
+  have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
+  have hnorm : Tendsto (fun n => (An n * reciprocalGlobalSourceRoot).hsNorm)
+      atTop (nhds 0) := by
+    simpa [ContinuousLinearMap.hsNorm, Function.comp_def] using hsqrt
+  convert hnorm using 1
+  funext n
+  congr 1
+
+/-- Every cofinal finite packet exhaustion recovers the source in trace norm. -/
+theorem reciprocalPacketCompression_traceNorm_tendsto
+    (F : ReciprocalPacketExhaustion) :
+    Tendsto (fun n => traceNorm PrimeHodgeHistoryHilbert
+      (reciprocalPacketCompression (F.packet n) -
+        primeHodgeHistoryIntegralNuclearDefectT)) atTop (nhds 0) := by
+  have hdiff := tendsto_hsNorm_reciprocalPacketCutRoot_sub F
+  have hupper : Tendsto (fun n =>
+      (2 * reciprocalGlobalSourceRoot.hsNorm) *
+        (reciprocalPacketCutRoot (F.packet n) - reciprocalGlobalSourceRoot).hsNorm)
+      atTop (nhds 0) := by
+    simpa using tendsto_const_nhds.mul hdiff
+  refine squeeze_zero' (Eventually.of_forall fun n => traceNorm_nonneg _) ?_ hupper
+  refine Eventually.of_forall fun n => ?_
+  rw [reciprocalPacketCompression_eq_cutRootGram,
+    ← reciprocalGlobalSourceRoot_comp_self]
+  have hK := reciprocalPacketCutRoot_isHilbertSchmidt (F.packet n)
+  have hbound := reciprocalGlobalSourceRoot_isHilbertSchmidt.hsNorm_comp_left_le
+    (reciprocalPacketProjection (F.packet n))
+  have hKnorm : (reciprocalPacketCutRoot (F.packet n)).hsNorm ≤
+      reciprocalGlobalSourceRoot.hsNorm := by
+    rw [reciprocalPacketCutRoot]
+    calc
+      (reciprocalPacketProjection (F.packet n) ∘L reciprocalGlobalSourceRoot).hsNorm ≤
+          ‖reciprocalPacketProjection (F.packet n)‖ *
+            reciprocalGlobalSourceRoot.hsNorm := hbound
+      _ ≤ 1 * reciprocalGlobalSourceRoot.hsNorm := by
+        exact mul_le_mul_of_nonneg_right
+          (norm_reciprocalPacketProjection_le_one (F.packet n))
+          (ContinuousLinearMap.hsNorm_nonneg _)
+      _ = reciprocalGlobalSourceRoot.hsNorm := one_mul _
+  calc
+    traceNorm PrimeHodgeHistoryHilbert
+        (reciprocalPacketCutRoot (F.packet n) ∘L
+            ContinuousLinearMap.adjoint (reciprocalPacketCutRoot (F.packet n)) -
+          reciprocalGlobalSourceRoot ∘L reciprocalGlobalSourceRoot) ≤
+      ((reciprocalPacketCutRoot (F.packet n)).hsNorm +
+          reciprocalGlobalSourceRoot.hsNorm) *
+        (reciprocalPacketCutRoot (F.packet n) - reciprocalGlobalSourceRoot).hsNorm := by
+      have hself : ContinuousLinearMap.adjoint reciprocalGlobalSourceRoot =
+          reciprocalGlobalSourceRoot := reciprocalGlobalSourceRoot_isSelfAdjoint
+      simpa only [hself] using
+        traceNorm_reciprocalGram_sub_le hK
+          reciprocalGlobalSourceRoot_isHilbertSchmidt
+    _ ≤ (2 * reciprocalGlobalSourceRoot.hsNorm) *
+        (reciprocalPacketCutRoot (F.packet n) - reciprocalGlobalSourceRoot).hsNorm := by
+      exact mul_le_mul_of_nonneg_right (by linarith [hKnorm])
+        (ContinuousLinearMap.hsNorm_nonneg _)
+
+theorem reciprocalPacketCompression_opTrace_tendsto_one
+    (F : ReciprocalPacketExhaustion) :
+    Tendsto (fun n => ContinuousLinearMap.opTrace
+      (reciprocalPacketCompression (F.packet n))) atTop (nhds 1) := by
+  have hdiff : ∀ n, MemSchattenClass 1
+      (reciprocalPacketCompression (F.packet n) -
+        primeHodgeHistoryIntegralNuclearDefectT) := fun n =>
+    (reciprocalPacketCompression_memSchattenClass_one _).one_sub
+      primeHodgeHistoryIntegralNuclearDefect_closed.2.1
+  have h := opTrace_tendsto_of_traceNorm_tendsto
+    (fun n => reciprocalPacketCompression_memSchattenClass_one _)
+    hdiff (reciprocalPacketCompression_traceNorm_tendsto F)
+  simpa [primeHodgeHistoryIntegralNuclearDefect_closed.2.2.1] using h
+
+theorem reciprocalPacketCompression_traceNorm_tendsto_one
+    (F : ReciprocalPacketExhaustion) :
+    Tendsto (fun n => traceNorm PrimeHodgeHistoryHilbert
+      (reciprocalPacketCompression (F.packet n))) atTop (nhds 1) := by
+  simpa [primeHodgeHistoryIntegralNuclearDefect_closed.2.2.2.1] using
+    traceNorm_tendsto_of_traceNorm_sub_tendsto
+      (fun n => reciprocalPacketCompression_memSchattenClass_one _)
+      primeHodgeHistoryIntegralNuclearDefect_closed.2.1
+      (reciprocalPacketCompression_traceNorm_tendsto F)
+
+/-! ### The zero-rate homotopy defect -/
+
+theorem reciprocalCompactFrame_tendsto_visibleWall (p : Nat.Primes) :
+    Tendsto (fun δ : ℝ => (reciprocalVisibility δ p, reciprocalContrast δ p))
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds (1, 0)) := by
+  have hδ : Tendsto (fun δ : ℝ => δ) (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) :=
+    tendsto_id.mono_left inf_le_left
+  have hx : Tendsto (fun δ : ℝ => 2 * reciprocalCompactCoordinate δ p)
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) := by
+    simpa [reciprocalCompactCoordinate, reciprocalPrimeLog] using
+      tendsto_const_nhds.mul (hδ.mul_const (Real.log (p : ℝ)))
+  have hv := (show ContinuousAt formationVisibility 0 by
+      unfold formationVisibility
+      exact (continuous_const.div
+        (Real.continuous_cosh.comp (continuous_id.div_const 2))
+        (fun u => (Real.cosh_pos (u / 2)).ne')).continuousAt).tendsto.comp hx
+  have hc := (show ContinuousAt formationContrast 0 by
+      unfold formationContrast
+      rw [show (fun u : ℝ => Real.tanh (u / 2)) =
+          (Real.sinh / Real.cosh) ∘ (fun u : ℝ => u / 2) by
+        funext u
+        exact Real.tanh_eq_sinh_div_cosh (u / 2)]
+      exact ((Real.continuous_sinh.div Real.continuous_cosh
+        (fun u => (Real.cosh_pos u).ne')).comp
+        (continuous_id.div_const 2)).continuousAt).tendsto.comp hx
+  rw [nhds_prod_eq]
+  simpa [reciprocalVisibility, reciprocalContrast, formationVisibility,
+    formationContrast] using hv.prodMk hc
+
+theorem reciprocalSplitCoordinate_tendsto_atTop_zero
+    (p : Nat.Primes) :
+    Tendsto (fun δ : ℝ => reciprocalSplitCoordinate δ p)
+      (nhdsWithin 0 (Set.Ioi 0)) atTop := by
+  have hp : 0 < reciprocalPrimeLog p :=
+    lt_trans (by norm_num) (two_thirds_lt_reciprocalPrimeLog p)
+  have h := tendsto_inv_nhdsGT_zero.const_mul_atTop hp
+  simpa [reciprocalSplitCoordinate, div_eq_mul_inv] using h
+
+theorem reciprocalHyperbolic_tendsto_atTop_zero
+    (p : Nat.Primes) :
+    Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p)
+      (nhdsWithin 0 (Set.Ioi 0)) atTop := by
+  have hsplit := reciprocalSplitCoordinate_tendsto_atTop_zero p
+  have hge : ∀ᶠ δ in nhdsWithin 0 (Set.Ioi 0),
+      1 ≤ reciprocalSplitCoordinate δ p :=
+    hsplit (eventually_ge_atTop 1)
+  change Tendsto (fun δ : ℝ => reciprocalSplitCoordinate δ p ^ 2)
+    (nhdsWithin 0 (Set.Ioi 0)) atTop
+  refine tendsto_atTop_mono' (nhdsWithin 0 (Set.Ioi 0)) ?_ hsplit
+  filter_upwards [hge] with δ hδ
+  nlinarith [sq_nonneg (reciprocalSplitCoordinate δ p)]
+
+theorem reciprocalKreinCompanion_tendsto_atTop_zero
+    (p : Nat.Primes) :
+    Tendsto (fun δ : ℝ => reciprocalKreinCompanion δ p)
+      (nhdsWithin 0 (Set.Ioi 0)) atTop := by
+  have hhyper := reciprocalHyperbolic_tendsto_atTop_zero p
+  have hge : ∀ᶠ δ in nhdsWithin 0 (Set.Ioi 0),
+      1 ≤ reciprocalHyperbolic δ p := hhyper (eventually_ge_atTop 1)
+  have hsq : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ 2)
+      (nhdsWithin 0 (Set.Ioi 0)) atTop := by
+    refine tendsto_atTop_mono' (nhdsWithin 0 (Set.Ioi 0)) ?_ hhyper
+    filter_upwards [hge] with δ hδ
+    nlinarith [sq_nonneg (reciprocalHyperbolic δ p)]
+  have hsub : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ 2 - 1)
+      (nhdsWithin 0 (Set.Ioi 0)) atTop := by
+    simpa [sub_eq_add_neg] using
+      tendsto_atTop_add_const_right (nhdsWithin 0 (Set.Ioi 0)) (-1) hsq
+  unfold reciprocalKreinCompanion
+  change Tendsto
+    ((fun y : ℝ => Real.sqrt y) ∘
+      fun δ : ℝ => reciprocalHyperbolic δ p ^ 2 - 1)
+    (nhdsWithin 0 (Set.Ioi 0)) atTop
+  exact Real.tendsto_sqrt_atTop.comp hsub
+
+theorem reciprocalPositiveEnergy_tendsto_atTop_zero
+    (p : Nat.Primes) :
+    Tendsto (fun δ : ℝ => 2 * reciprocalHyperbolic δ p ^ 2 - 1)
+      (nhdsWithin 0 (Set.Ioi 0)) atTop := by
+  have hhyper := reciprocalHyperbolic_tendsto_atTop_zero p
+  have hge : ∀ᶠ δ in nhdsWithin 0 (Set.Ioi 0),
+      1 ≤ reciprocalHyperbolic δ p := hhyper (eventually_ge_atTop 1)
+  have hsq : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ 2)
+      (nhdsWithin 0 (Set.Ioi 0)) atTop := by
+    refine tendsto_atTop_mono' (nhdsWithin 0 (Set.Ioi 0)) ?_ hhyper
+    filter_upwards [hge] with δ hδ
+    nlinarith [sq_nonneg (reciprocalHyperbolic δ p)]
+  have hmul := hsq.const_mul_atTop (by norm_num : (0 : ℝ) < 2)
+  simpa [sub_eq_add_neg] using
+    tendsto_atTop_add_const_right (nhdsWithin 0 (Set.Ioi 0)) (-1) hmul
+
+/-- Closed certificate for reciprocal compact/split conservation, coefficient-faithful finite
+`J`-Gram reconstruction, cofinal nuclear recovery, reflection, anomaly splitting, and the
+zero-rate homotopy defect. -/
+theorem reciprocalFourChannelKreinNuclearRenormalization_closed :
+    (∀ δ : ReciprocalFormationRate, ∀ p : Nat.Primes,
+      reciprocalCompactCoordinate δ p * reciprocalSplitCoordinate δ p =
+          reciprocalPrimeLog p ^ 2 ∧
+        reciprocalVisibility δ p ^ 2 + reciprocalContrast δ p ^ 2 = 1 ∧
+        reciprocalHyperbolic δ p ^ 2 - reciprocalKreinCompanion δ p ^ 2 = 1 ∧
+        (reciprocalVisibility δ p * reciprocalHyperbolic δ p) ^ 2 +
+            (reciprocalContrast δ p * reciprocalHyperbolic δ p) ^ 2 -
+            (reciprocalVisibility δ p * reciprocalKreinCompanion δ p) ^ 2 -
+            (reciprocalContrast δ p * reciprocalKreinCompanion δ p) ^ 2 = 1) ∧
+    (∀ E : Finset PrimeHodgeHistoryIndex,
+      IsSelfAdjoint (reciprocalPacketProjection E) ∧
+        reciprocalPacketProjection E ∘L reciprocalPacketProjection E =
+          reciprocalPacketProjection E ∧
+        (reciprocalPacketCompression E).IsPositive ∧
+        MemSchattenClass 1 (reciprocalPacketCompression E) ∧
+        ∀ i j : PrimeHodgeHistoryIndex,
+          inner ℂ (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex i)
+              (reciprocalPacketCompression E
+                (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex j)) =
+            if i ∈ E ∧ j ∈ E then primeHodgeHistoryDefectKernel 1 (i, j) else 0) ∧
+    (∀ δ : ReciprocalFormationRate, ∀ E : Finset PrimeHodgeHistoryIndex,
+      ContinuousLinearMap.adjoint (reciprocalFourChannelSynthesis δ E) ∘L
+          reciprocalKreinMetric ∘L reciprocalFourChannelSynthesis δ E =
+        reciprocalPacketCompression E ∧
+      ContinuousLinearMap.adjoint (reciprocalFourChannelSynthesis δ E) ∘L
+          reciprocalFourChannelSynthesis δ E =
+        reciprocalPacketRoot E ∘L reciprocalHyperbolicEnergyDiagonal δ E ∘L
+          reciprocalPacketRoot E) ∧
+    (∀ δ : ℝ, ∀ E : Finset PrimeHodgeHistoryIndex,
+      reciprocalFourChannelSynthesis (-δ) E =
+        reciprocalContrastGauge ∘L reciprocalFourChannelSynthesis δ E) ∧
+    (∀ F : ReciprocalPacketExhaustion,
+      Tendsto (fun n => traceNorm PrimeHodgeHistoryHilbert
+          (reciprocalPacketCompression (F.packet n) -
+            primeHodgeHistoryIntegralNuclearDefectT)) atTop (nhds 0) ∧
+        Tendsto (fun n => ContinuousLinearMap.opTrace
+          (reciprocalPacketCompression (F.packet n))) atTop (nhds 1) ∧
+        Tendsto (fun n => traceNorm PrimeHodgeHistoryHilbert
+          (reciprocalPacketCompression (F.packet n))) atTop (nhds 1)) ∧
+    (∀ δ : ReciprocalFormationRate, ∀ p : Nat.Primes,
+      reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ 2 =
+          115 * reciprocalPrimeLog p ^ 2 / (864 * (δ : ℝ) ^ 4 * (p : ℝ)) ∧
+        reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ 2 =
+          reciprocalPrimitiveCubicWeight p *
+            (reciprocalHyperbolic δ p ^ 2 - 1) ∧
+        reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ 2 -
+            reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ 2 =
+          reciprocalPrimitiveCubicWeight p) ∧
+    (∀ p : Nat.Primes,
+      Tendsto (fun δ : ℝ => (reciprocalVisibility δ p, reciprocalContrast δ p))
+          (nhdsWithin 0 (Set.Ioi 0)) (nhds (1, 0)) ∧
+        Tendsto (fun δ : ℝ => reciprocalSplitCoordinate δ p)
+          (nhdsWithin 0 (Set.Ioi 0)) atTop ∧
+        Tendsto (fun δ : ℝ => reciprocalKreinCompanion δ p)
+          (nhdsWithin 0 (Set.Ioi 0)) atTop ∧
+        Tendsto (fun δ : ℝ => 2 * reciprocalHyperbolic δ p ^ 2 - 1)
+          (nhdsWithin 0 (Set.Ioi 0)) atTop) := by
+  refine ⟨fun δ p => ⟨reciprocalCompact_mul_split δ p,
+      reciprocalVisibility_sq_add_contrast_sq δ p,
+      reciprocalHyperbolic_sq_sub_kreinCompanion_sq δ p,
+      reciprocalFourChannel_charge δ p⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact fun E => ⟨reciprocalPacketProjection_isSelfAdjoint E,
+      reciprocalPacketProjection_idempotent E,
+      reciprocalPacketCompression_isPositive E,
+      reciprocalPacketCompression_memSchattenClass_one E,
+      inner_lpBasis_reciprocalPacketCompression_eq_indicator E⟩
+  · exact fun δ E => ⟨reciprocalFourChannel_adjoint_krein_synthesis δ E,
+      reciprocalFourChannel_adjoint_synthesis δ E⟩
+  · exact reciprocalFourChannelSynthesis_neg
+  · exact fun F => ⟨reciprocalPacketCompression_traceNorm_tendsto F,
+      reciprocalPacketCompression_opTrace_tendsto_one F,
+      reciprocalPacketCompression_traceNorm_tendsto_one F⟩
+  · exact fun δ p => ⟨reciprocalPrimitiveCubicWeight_mul_hyperbolic_sq δ p,
+      reciprocalPrimitiveCubicWeight_mul_kreinCompanion_sq δ p,
+      reciprocalCubicAnomaly_sub_companion δ p⟩
+  · exact fun p => ⟨reciprocalCompactFrame_tendsto_visibleWall p,
+      reciprocalSplitCoordinate_tendsto_atTop_zero p,
+      reciprocalKreinCompanion_tendsto_atTop_zero p,
+      reciprocalPositiveEnergy_tendsto_atTop_zero p⟩
 
 end
 end RHTower

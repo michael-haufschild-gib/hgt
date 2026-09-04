@@ -158,15 +158,28 @@ and the 25-digit symmetric eigenvalue.
 | 0.90 | 1.568 | 0.0173 | 0.0341 |
 | 0.95 | 1.608 | 0.0059 | 0.0127 |
 | 0.98 | 1.632 | 0.0024 (band width 0.01) | 0.0059 |
-| 1.00 | 1.649 | −0.0003 at width 0.01 (not certified; width 0.005 running) | 0.0031 |
+| 1.00 | 1.649 | **0.0014** (band width 0.005) | 0.0031 |
+| 1.02 | 1.670 | −0.0003 at width 0.005 (not certified) | 0.0014 |
 | 1.05 | 1.691 | not certified | 0.00007 |
 
 **Theorem (certified).**  The polar-constrained restricted Weil form is positive definite on every
-aperture `S ≤ 0.98` (`λ ≤ 1.632`), with the prime 2 inside the window for `S > log 2`.
-**Observation.**  The full constrained form loses positivity at `S* ≈ 1.05` (`λ* ≈ 1.69`), *before*
-the prime 3 enters; the threshold is decided by the interplay of the archimedean negative band
-`|ξ| < ξ_S` and the prime-2 oscillation `−√2 log 2 cos(ξ log 2)` alone.  (The earlier "threshold
-1.19" was the archimedean-only form.)
+aperture `S ≤ 1` (`λ ≤ √e = 1.6487`), with the prime 2 inside the window for `S > log 2`.
+
+**Correction (2026-09-04, later).**  An earlier version of this section claimed that the full
+constrained form "loses positivity at `S* ≈ 1.05`".  That was unjustified: the "finite block with
+the exact multiplier" replaces the multiplier beyond `Ξ = 24` by the lower constant `c_last`, so
+it is a *lower* bound of the Rayleigh quotient of one test function and bounds the true ground
+energy `μ₀(S)` from neither side.  The certified numbers only show that the *lower* bound falls
+below the resolution of the band staircase near `S ≈ 1`.  The behaviour is exactly what RH
+predicts: on `V₀`, `Q(f) = Σ_ρ |f̂(γ_ρ)|²` (explicit formula), so `μ₀(S)` is the least spectral mass
+that a function of exponential type `S/2` in `V₀` can leave on the zero set — a constrained-prolate
+leakage that decays rapidly in `S` (through the gap `(−γ₁, γ₁)` and the zero gaps above), while
+`μ₀(S) ≥ 0` for all `S` is equivalent to RH (`riemannHypothesis_of_polarGroundEnergy_nonneg`).  A
+rigorous *upper* bound for `μ₀(S)` needs a test function with controlled Fourier tail
+(`certificate_upper.py`: `V₀` plus vanishing endpoints, `|f̂| ≤ W/ξ²`); see the computations README.
+Consequence for the lane: no finite-aperture certificate can approach the producer (all apertures),
+and the margins shrink at least exponentially; the value of the lane is the exact multiplier, the
+Lean chain, and the aperture-`√e` theorem, not a route to RH.
 
 Lean (both wired into `RHTower.lean`, axioms `[propext, Classical.choice, Quot.sound]`):
 * `SuzukiWeilConstrainedKernelForm.lean` — `suzukiRestrictedWeilForm_eq_constrainedKernelForm`:

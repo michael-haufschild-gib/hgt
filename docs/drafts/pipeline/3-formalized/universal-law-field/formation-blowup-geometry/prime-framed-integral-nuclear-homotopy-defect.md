@@ -1,7 +1,10 @@
 # Prime-framed integral--nuclear homotopy defect
 
 - **ID:** `ULF-FBG-002`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/PrimeFramedIntegralNuclearHomotopyDefect.lean`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [UNCONDITIONAL] [NOT A SELECTOR]`
 - **Type:** unconditional pre-divisor framed-operator theorem
 - **RH used:** no
 - **Divisor used:** no
@@ -247,7 +250,15 @@ comparison is open; declaring it at Xi support would again be an RH receiver.
 
 ## 9. Formal status
 
-Paper proof is unconditional and dependency-closed. Lean already certifies `T`, its integral
-nuclearity and prime mixing, and the scalar/operator visibility--contrast laws. The coherent
-two-channel orbit, trace-norm continuity, and exact norm jumps `(FNH.4)--(FNH.12)` have not been
-assembled in Lean. No Lean file was written or built during this read-only research programme.
+Fully formalized in Lean by `PrimeFramedIntegralNuclearHomotopyDefect.lean`. The module constructs
+the doubled unitary frame, isometric synthesis, framed projection, positive Schatten-one orbit,
+four literal channel blocks, exact source recovery, coefficient nonvanishing, trace-norm
+continuity, both endpoint limits, fixed reflection gauge, exact frame/projection norm jumps, and
+degree-one prime fibres. It extends the orbit to the one-point compactification and constructs the
+positive trace-one straight-line null homotopy, including trace-norm continuity in the real,
+infinity, and homotopy-parameter directions. These claims are bundled in the premise-free theorem
+`primeFramedIntegralNuclearHomotopyDefect_closed`.
+
+Targeted `lake env lean` and leaf-only `lake build` checks pass. `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, premise, divisor, or RH
+hypothesis is used.

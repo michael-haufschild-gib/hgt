@@ -4855,3 +4855,62 @@ renames the endpoint.
 MUST-192 — Any successor must be a pre-divisor formation law that acts before order comparison,
 retains `T`'s cubic prime-clock equation and theta first-exit flux, and changes the completion
 extension/quotient data rather than moving inside the already classified same-`T` fibre.
+
+F615 — Lean separates algebraic formation from analytic admission. Every normalized arithmetic
+function has a unique normalized Dirichlet-convolution half; the canonical squarefree half is
+multiplicative, squares to the squarefree Euler source, and is holomorphic in its Euler chamber.
+Yet its raw partial sums are unbounded at `s=6/11`; no cofinal raw or Cesàro pole schedule is
+locally bounded there. Coefficientwise square roots therefore exist automatically and carry no
+RH selection; the obstruction is extension through completion (`SquarefreeConvolutionHalfRigidity`,
+`SquarefreeConvolutionHalfCofinalScheduleNoGo`, `SquarefreeConvolutionHalfCesaroAllCofinalNoGo`).
+F616 — Lean closes the infinite-order scheduling loophole. Diagonal Laplace smoothing is not
+locally bounded, and eventual bounded samples on any positive heat clock tending to zero force
+the normalized adjacent gaps to escape every bound
+`|tau_N-tau_(N+1)|=O(tau_(N+1)^(16/11))`. Independent pole degree does not change this once it is
+at least `24` (`SquarefreeConvolutionHalfLaplaceDiagonalNoGo`,
+`SquarefreeConvolutionHalfLaplaceScheduledNoGo`, `SquarefreeConvolutionHalfLaplaceTwoClockNoGo`).
+CANNOT-273 — It cannot evade completion obstruction merely by increasing smoothing order,
+changing a dense clock, or decoupling pole and heat clocks. Surviving scalar schedules must be
+genuinely sparse in the exact `16/11` arithmetic metric, or alter source profile by a
+source-derived singular/nonlinear correction.
+F617 — Lean identifies constrained Weil positivity exactly. On the polar-moment-zero subspace,
+the restricted form is a scalar term plus the positive translation-defect energy
+`integral K_+(h) ||u-T_hu||^2/2` plus literal prime block, and equivalently the integral of the
+spectral density against one explicit multiplier. Nonnegativity of its ground energy at every
+aperture implies RH (`SuzukiWeilConstrainedKernelForm`, `ConstrainedWeilFourierMultiplier`,
+`riemannHypothesis_of_polarGroundEnergy_nonneg`).
+CANNOT-274 — Polar constraints do not turn positivity into a producer. All-aperture constrained
+positivity is now a Lean-certified RH endpoint; any finite-aperture inequality is a local gauge.
+The prime-two finite-block certificate remains computation/paper evidence, not a Lean theorem.
+F618 — Lean computes literal finite-Euler formation through second order. Its squared-radius
+Hessian is exactly the sum of one-prime self jets and ordered two-prime bilinear jets; there is no
+three-prime term. The two-mode product contribution cancels the diagonal covariance term, and the
+true Euler-product log determinant has an explicit cubic remainder
+(`SemilocalTwoModeBilinearResponse`, `SemilocalFinitePrimeSecondOrder`,
+`SemilocalEulerProductLogDetRemainder`).
+CANNOT-275 — A quadratic cross-prime compatibility, covariance, Gram, or Hessian cannot be the new
+higher interaction: literal multiplication already exhausts that level pairwise. A genuinely new
+formation law must enter through cubic/higher coherence or through nonlocal completion/extension
+data. This independently supports retaining the cubic prime-clock law of `T`.
+F619 — Route E's new Lean front localizes rather than solves its producer. Central/final defects,
+both actual Case-I/II frequency regions, receiver-height costs, and source-fixed exceptional-volume
+bounds are closed; the remaining harmonic statement is one collective Menon-normalized sum over
+the growing ladder. Kloosterman completion likewise leaves cancellation only in incomplete
+cross-modulus interaction, not equal-modulus or symmetrically completed blocks.
+CANNOT-276 — It cannot infer global arithmetic cancellation from any fixed block, local large-value
+bound, equal-modulus Gram, or symmetric two-leg completion. Local organs are now closed receivers;
+the missing arithmetic law is collective and cofinal.
+F620 — Formalization status sharpened: closed Lean certificates now cover the projective kink,
+prime-framed integral-nuclear cycle, prime-Hodge purity-cost firewall, restricted-unitary cubic
+projection algebra, and exact unsquared von-Mangoldt cubic budget. Lean also proves common-radial
+contracted completions have recurrent excess `<1`, while every finite-rank projection horizon has
+integer excess and excess `<1` forces zero. These certify corresponding portions of F594--F608 but
+do not select actual theta completion.
+F621 — Two advertised programmes remain incomplete and must not be promoted. Guth--Maynard has
+only its Hermitian trace-defect/singular-value lemma in Lean, not the large-values theorem.
+Entire-heat code excludes algebraic-differential orders zero and one and has a long local
+order-two Strelitz/Newton reduction, but the global maximum-locus continuation is still missing;
+the paper order-three floor is not yet a closed Lean theorem.
+CANNOT-277 — Do not count numerical certificates, conditional assembly theorems, local Newton
+branch packages, or one imported inequality as closed source laws. They constrain searches but do
+not discharge a universal-law or RH gate.

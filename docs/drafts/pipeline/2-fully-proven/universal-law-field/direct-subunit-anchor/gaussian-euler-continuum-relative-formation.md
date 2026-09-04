@@ -141,12 +141,10 @@ sub-unit chiral-corona bound; those are the exact remaining arithmetic steps.
 The transition law `(GECRF.4)` is not itself a selector.  Functional-equation symmetry is a
 static chart compatibility and does not prevent the common completed section from vanishing.
 
-## Lean target
-
-Formalize the entire functions, derivative identity, safe-half-plane limit, zero-free strip phase,
-and zero winding in a new `RHTower` module.  No RH premise, zero parameter, added axiom, or
-computation is permitted.
-
 ## Lean status
 
-Pending.  Current research phase audits Lean only; no Lean file or build was started.
+Formalized unconditionally in
+`GaloisForLFunctions.RHTower.GaussianEulerContinuumRelativeFormation`.  Closed capstone
+`gaussianEulerContinuumRelativeFormation_closed` certifies the entire Euler, continuum, and
+formation fields; exact logarithmic-current identity; all locally uniform safe-chart limits;
+zero rectangle winding; `C¹` contour-phase convergence; and reflected zero-free transition law.

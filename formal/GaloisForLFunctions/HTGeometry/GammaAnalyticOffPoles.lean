@@ -27,6 +27,13 @@ theorem measurable_Gamma : Measurable Complex.Gamma := by
     hinv.measurable.inv
   simpa only [inv_inv] using hmeas
 
+/-- **The totalized real Gamma function is Borel measurable.**  This is the restriction of the
+complex statement to the real axis, followed by the continuous real-part map. -/
+theorem measurable_realGamma : Measurable Real.Gamma := by
+  have h := Complex.measurable_re.comp (measurable_Gamma.comp Complex.measurable_ofReal)
+  change Measurable (fun s : ℝ => (Complex.Gamma (s : ℂ)).re) at h
+  simpa only [Complex.Gamma_ofReal, Complex.ofReal_re] using h
+
 /-- **`Γ` is analytic off its poles.**  At any `x ∉ -ℕ`, `Complex.Gamma` is the pointwise inverse of
 the entire reciprocal `1/Γ`, which is nonzero exactly off the poles; inversion preserves analyticity
 at a nonvanishing point. -/

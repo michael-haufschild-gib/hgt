@@ -13,6 +13,7 @@ import GaloisForLFunctions.RHTower.ZetaUnitIntervalIntegrals
 import GaloisForLFunctions.RHTower.Sieve.LogNormSegment
 import GaloisForLFunctions.RHTower.XiShiftEulerProductBridge
 import GaloisForLFunctions.HTGeometry.LocallyUniformProduct
+import GaloisForLFunctions.HTGeometry.LogDerivUniformLimit
 import GaloisForLFunctions.HTGeometry.UnitaryReflectionPhaseHalving
 import GaloisForLFunctions.RHTower.RiemannGaussian.FiniteToEntireLogDerivative
 import GaloisForLFunctions.Core
@@ -138,6 +139,16 @@ theorem deriv_gaussianEulerLog {x : ℝ} (hx : 0 < x) :
     deriv (gaussianEulerLog x) = -gaussianVonMangoldtCurrent x := by
   funext s
   exact (hasDerivAt_gaussianEulerLog hx s).deriv
+
+/-- The Gaussian von Mangoldt current is entire, not merely pointwise defined by a convergent
+series. -/
+theorem differentiable_gaussianVonMangoldtCurrent {x : ℝ} (hx : 0 < x) :
+    Differentiable ℂ (gaussianVonMangoldtCurrent x) := by
+  have hderiv :=
+    GaloisForLFunctions.HTGeometry.differentiable_deriv_of_differentiable
+      (differentiable_gaussianEulerLog hx)
+  rw [deriv_gaussianEulerLog hx] at hderiv
+  simpa using hderiv.neg
 
 /-! ## Continuum zero-mode and normalized primitive -/
 
@@ -1805,6 +1816,83 @@ theorem norm_gaussianReflectedTransition_critical
   rw [gaussianReflectedTransition, href,
     gaussianEulerContinuumFormation_conj hx, norm_div, norm_conj]
   exact div_self (norm_ne_zero_iff.mpr hne)
+
+/-! ## Closed card certificate -/
+
+/-- **Unconditional GECRF certificate.**  Entire source fields, exact current law, every
+safe-chart locally-uniform limit, zero rectangle winding, `C¹` phase convergence, and the
+zero-free unitary reflected transition hold simultaneously.  All assumptions occur under
+universal quantifiers; the declaration itself is closed. -/
+theorem gaussianEulerContinuumRelativeFormation_closed :
+    (∀ x : ℝ, 0 < x →
+      Differentiable ℂ (gaussianEulerLog x) ∧
+      Differentiable ℂ (gaussianVonMangoldtCurrent x) ∧
+      Differentiable ℂ (gaussianContinuumCurrent x) ∧
+      Differentiable ℂ (gaussianContinuumPrimitive x) ∧
+      gaussianContinuumPrimitive x 2 = 0) ∧
+    (∀ x : ℝ, 0 < x → ∀ s : ℂ, 0 < s.re →
+      deriv (gaussianEulerLog x) s = -gaussianVonMangoldtCurrent x s ∧
+      DifferentiableAt ℂ (gaussianEulerContinuumFormation x) s ∧
+      gaussianEulerContinuumFormation x s ≠ 0 ∧
+      logDeriv (gaussianEulerContinuumFormation x) s =
+        logDeriv gaussianArchimedeanHalfFactor s -
+          gaussianVonMangoldtCurrent x s + gaussianContinuumCurrent x s) ∧
+    TendstoLocallyUniformlyOn (fun x : ℝ => gaussianEulerLog x)
+      canonicalEulerLogZeta (nhdsWithin (0 : ℝ) (Ioi 0)) gaussianSafeEulerChart ∧
+    TendstoLocallyUniformlyOn (fun x : ℝ => gaussianVonMangoldtCurrent x)
+      (fun s => -deriv riemannZeta s / riemannZeta s)
+      (nhdsWithin (0 : ℝ) (Ioi 0)) gaussianSafeEulerChart ∧
+    TendstoLocallyUniformlyOn (fun x : ℝ => gaussianContinuumCurrent x)
+      (fun s => (s - 1)⁻¹) (nhdsWithin (0 : ℝ) (Ioi 0)) gaussianSafeEulerChart ∧
+    TendstoLocallyUniformlyOn (fun x : ℝ => gaussianContinuumPrimitive x)
+      gaussianContinuumPrimitiveLimit (nhdsWithin (0 : ℝ) (Ioi 0))
+      gaussianSafeEulerChart ∧
+    TendstoLocallyUniformlyOn (fun x : ℝ => gaussianEulerContinuumFormation x)
+      xi (nhdsWithin (0 : ℝ) (Ioi 0)) gaussianSafeEulerChart ∧
+    (∀ x : ℝ, 0 < x → ∀ z₁ z₂ : ℂ, 0 < z₁.re → 0 < z₂.re →
+      gaussianFormationRectangleWinding x z₁ z₂ = 0) ∧
+    (∀ D : GaussianSafeContour,
+      TendstoUniformlyOn
+          (fun x : ℝ => gaussianContourPhase (gaussianEulerContinuumFormation x) D)
+          (gaussianContourPhase xi D) (nhdsWithin (0 : ℝ) (Ioi 0)) (Icc D.a D.b) ∧
+        TendstoUniformlyOn
+          (fun x : ℝ => gaussianContourPhaseTangent
+            (gaussianEulerContinuumFormation x) D)
+          (gaussianContourPhaseTangent xi D) (nhdsWithin (0 : ℝ) (Ioi 0))
+          (Icc D.a D.b)) ∧
+    (∀ x : ℝ, 0 < x → ∀ s : ℂ, 0 < s.re → s.re < 1 →
+      DifferentiableAt ℂ (gaussianReflectedTransition x) s ∧
+      gaussianReflectedTransition x s ≠ 0 ∧
+      gaussianReflectedTransition x (1 - s) =
+        (gaussianReflectedTransition x s)⁻¹) ∧
+    (∀ x : ℝ, 0 < x → ∀ t : ℝ,
+      ‖gaussianReflectedTransition x
+        ((1 / 2 : ℂ) + Complex.I * (t : ℂ))‖ = 1) := by
+  refine ⟨?_, ?_, tendstoLocallyUniformlyOn_gaussianEulerLog,
+    tendstoLocallyUniformlyOn_gaussianVonMangoldtCurrent,
+    tendstoLocallyUniformlyOn_gaussianContinuumCurrent,
+    tendstoLocallyUniformlyOn_gaussianContinuumPrimitive,
+    tendstoLocallyUniformlyOn_gaussianEulerContinuumFormation, ?_,
+    tendstoUniformlyOn_gaussianContourPhase_c1, ?_, ?_⟩
+  · intro x hx
+    exact ⟨differentiable_gaussianEulerLog hx,
+      differentiable_gaussianVonMangoldtCurrent hx,
+      differentiable_gaussianContinuumCurrent hx,
+      differentiable_gaussianContinuumPrimitive hx,
+      gaussianContinuumPrimitive_two (x := x) hx⟩
+  · intro x hx s hs
+    exact ⟨congrFun (deriv_gaussianEulerLog hx) s,
+      differentiableAt_gaussianEulerContinuumFormation hx hs,
+      gaussianEulerContinuumFormation_ne_zero x hs,
+      logDeriv_gaussianEulerContinuumFormation hx hs⟩
+  · intro x hx z₁ z₂ hz₁ hz₂
+    exact gaussianFormationRectangleWinding_eq_zero hx hz₁ hz₂
+  · intro x hx s hs0 hs1
+    exact ⟨differentiableAt_gaussianReflectedTransition hx hs0 hs1,
+      gaussianReflectedTransition_ne_zero x hs0 hs1,
+      gaussianReflectedTransition_one_sub x hs0 hs1⟩
+  · intro x hx t
+    exact norm_gaussianReflectedTransition_critical hx t
 
 end
 end RHTower

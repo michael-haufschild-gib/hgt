@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.RectangularNuclearNormBound
 import GaloisForLFunctions.HTGeometry.AIIIGramFibreTorsor
 import GaloisForLFunctions.HTGeometry.FiniteCuspMacbeath
 import GaloisForLFunctions.HTGeometry.FiniteCuspMacbeathConvexSubset
@@ -13519,3 +13520,6 @@ import GaloisForLFunctions.HTGeometry.StrelitzAngularCurvature
 import GaloisForLFunctions.HTGeometry.StrelitzMaximumPointSlopeSign
 import GaloisForLFunctions.HTGeometry.StrelitzNonnegativeEdgePhase
 import GaloisForLFunctions.HTGeometry.StrelitzMaximumPathDerivative
+import GaloisForLFunctions.HTGeometry.StrelitzMaximumPathObstruction
+import GaloisForLFunctions.HTGeometry.StrelitzMaximumNorm
+import GaloisForLFunctions.HTGeometry.StrelitzMaximumSlope
