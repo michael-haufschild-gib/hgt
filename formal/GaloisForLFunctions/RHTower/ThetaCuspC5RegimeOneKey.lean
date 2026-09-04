@@ -557,4 +557,539 @@ theorem key_chamber_12 :
     C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
   norm_num
 
+/-! ## Large `t`: the exponential shape -/
+
+/-- Right side with the exponential shape `32 sinh 2t cosh² 2t`. -/
+noncomputable def keyRHSexp (w t : ℝ) : ℝ :=
+  (288 * w ^ 2 - 72) * (32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2)
+
+theorem keyRHSexp_ge {w t : ℝ} (hw : w = Real.exp (2 * t)) (hw403 : 403 ≤ w) :
+    552 * w ^ 5 ≤ keyRHSexp w t := by
+  unfold keyRHSexp
+  have hw0 : 0 < w := by linarith
+  have hsinh : Real.sinh (2 * t) = (w - 1 / w) / 2 := by
+    rw [Real.sinh_eq, Real.exp_neg, ← hw]; ring
+  have hcosh : Real.cosh (2 * t) = (w + 1 / w) / 2 := by
+    rw [Real.cosh_eq, Real.exp_neg, ← hw]; ring
+  have hinv : 1 / w ≤ 1 := by rw [div_le_one hw0]; linarith
+  have hinv0 : 0 ≤ 1 / w := by positivity
+  have hs : w / 4 ≤ Real.sinh (2 * t) := by rw [hsinh]; linarith
+  have hc : w / 2 ≤ Real.cosh (2 * t) := by rw [hcosh]; linarith
+  have hc2 : (w / 2) ^ 2 ≤ Real.cosh (2 * t) ^ 2 := pow_le_pow_left₀ (by positivity) hc 2
+  have hsc : (w / 4) * (w / 2) ^ 2 ≤ Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2 :=
+    mul_le_mul hs hc2 (by positivity) (by linarith)
+  have hsq : 403 ^ 2 ≤ w ^ 2 := pow_le_pow_left₀ (by norm_num) hw403 2
+  have hfac : 287 * w ^ 2 ≤ 288 * w ^ 2 - 72 := by linarith
+  have e : 287 * w ^ 2 * (32 * ((w / 4) * (w / 2) ^ 2)) = 574 * w ^ 5 := by ring
+  have h5 : 0 < w ^ 5 := by positivity
+  calc 552 * w ^ 5 ≤ 287 * w ^ 2 * (32 * ((w / 4) * (w / 2) ^ 2)) := by rw [e]; linarith
+    _ ≤ (288 * w ^ 2 - 72) * (32 * (Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2)) :=
+        mul_le_mul hfac (by linarith) (by positivity) (by linarith)
+    _ = _ := by ring
+
+/-- The crude large-`t` left side as an explicit polynomial. -/
+theorem keyLHS_largeT_eq (w t : ℝ) (hw0 : w ≠ 0) :
+    keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ 2)) =
+      ((75411 / 3125000 * w ^ 4 + 58653 / 12500000 * w ^ 3 + 3695139 / 78125000000000 * w ^ 2) +
+        (164052 / 390625 * w ^ 6 + 158319 / 781250 * w ^ 5 + 20298914426427 / 19531250000000 * w ^ 4 +
+          29648127132519 / 78125000000000 * w ^ 3 + 10935361398702257853 / 488281250000000000000 * w ^ 2 +
+          2532314217069 / 15258789062500000000 * w + 85766121 / 61035156250000000000) * t +
+        (2093427 / 390625 * w ^ 6 + 6753327 / 1562500 * w ^ 5 + 102237463826547 / 9765625000000 * w ^ 4 +
+          26141457617499 / 7812500000000 * w ^ 3 + 176154704575741197621 / 488281250000000000000 * w ^ 2 +
+          298721716340060433 / 15258789062500000000 * w + 19452988668897 / 61035156250000000000) * t ^ 2) /
+        w ^ 2 := by
+  unfold keyLHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
+    C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
+    C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
+  field_simp
+  ring
+
+theorem keyLHS_largeT_le {w t : ℝ} (hw : 403 ≤ w) (ht1 : 1 ≤ t) (htw : t ^ 2 ≤ w) :
+    keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ 2)) ≤ 6 * w ^ 5 := by
+  have hw0 : 0 < w := by linarith
+  have hw1 : 1 ≤ w := by linarith
+  rw [keyLHS_largeT_eq w t hw0.ne', div_le_iff₀ (by positivity)]
+  have ht2 : t ≤ w := by nlinarith
+  have hβ : 0 ≤ 164052 / 390625 * w ^ 6 + 158319 / 781250 * w ^ 5 + 20298914426427 / 19531250000000 * w ^ 4 +
+      29648127132519 / 78125000000000 * w ^ 3 + 10935361398702257853 / 488281250000000000000 * w ^ 2 +
+      2532314217069 / 15258789062500000000 * w + 85766121 / 61035156250000000000 := by positivity
+  have hγ : 0 ≤ 2093427 / 390625 * w ^ 6 + 6753327 / 1562500 * w ^ 5 + 102237463826547 / 9765625000000 * w ^ 4 +
+      26141457617499 / 7812500000000 * w ^ 3 + 176154704575741197621 / 488281250000000000000 * w ^ 2 +
+      298721716340060433 / 15258789062500000000 * w + 19452988668897 / 61035156250000000000 := by positivity
+  have h1 := mul_le_mul_of_nonneg_left ht2 hβ
+  have h2 := mul_le_mul_of_nonneg_left htw hγ
+  have p1 : w ≤ w ^ 6 := by simpa using pow_le_pow_right₀ hw1 (show 1 ≤ 6 by norm_num)
+  have p2 : w ^ 2 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
+  have p3 : w ^ 3 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
+  have p4 : w ^ 4 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
+  have p5 : w ^ 5 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
+  have p0 : (1 : ℝ) ≤ w ^ 6 := one_le_pow₀ hw1
+  have p7 : 403 * w ^ 6 ≤ w ^ 7 := by
+    have : w ^ 7 = w ^ 6 * w := by ring
+    rw [this]; nlinarith [pow_pos hw0 6]
+  have e5 : 6 * w ^ 5 * w ^ 2 = 6 * w ^ 7 := by ring
+  rw [e5]
+  nlinarith
+
+/-- The key for `t ≥ 3` against the exponential shape. -/
+theorem key_largeT {ε w z zp t eq : ℝ} (ht : 3 ≤ t) (hw : w = Real.exp (2 * t))
+    (hε0 : 0 ≤ ε) (hε : ε ≤ 49 / 100000000)
+    (hz : z = (w + 1 / w) / 2 - 1) (hzp : zp = w - 1 / w) (heq0 : 0 ≤ eq)
+    (heq : eq ≤ 1 / (1 + 12 * w * z)) :
+    keyLHS ε w (1 / w) z zp t eq < keyRHSexp w t := by
+  have hw403 : 403 ≤ w := by
+    rw [hw]
+    have h1 := exp_six_bounds.1
+    have h2 := Real.exp_le_exp.mpr (show (6 : ℝ) ≤ 2 * t by linarith)
+    linarith
+  have hw0 : 0 < w := by linarith
+  have hinv1 : 1 / w ≤ 1 := by rw [div_le_one hw0]; linarith
+  have hinv0 : 0 ≤ 1 / w := by positivity
+  have hcosh : Real.cosh (2 * t) = (w + 1 / w) / 2 := by
+    rw [Real.cosh_eq, Real.exp_neg, ← hw]; ring
+  have htw : t ^ 2 ≤ w := by
+    have h1 := one_add_sq_div_two_le_cosh' (2 * t)
+    rw [hcosh] at h1
+    nlinarith
+  have hz0 : 0 ≤ z := by rw [hz]; nlinarith
+  have hzw : z ≤ w / 2 := by rw [hz]; linarith
+  have hzp0 : 0 ≤ zp := by rw [hzp]; linarith
+  have hzpw : zp ≤ w := by rw [hzp]; linarith
+  have hzlow : w / 2 - 1 ≤ z := by rw [hz]; linarith
+  have heq' : eq ≤ 1 / (3 * w ^ 2) := by
+    refine le_trans heq (one_div_le_one_div_of_le (by positivity) ?_)
+    have : 12 * w * (w / 2 - 1) ≤ 12 * w * z := mul_le_mul_of_nonneg_left hzlow (by positivity)
+    nlinarith
+  have h5 : 0 < w ^ 5 := by positivity
+  calc keyLHS ε w (1 / w) z zp t eq
+      ≤ keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ 2)) :=
+        keyLHS_mono hε0 hw0.le hinv0 hz0 hzp0 (by linarith) heq0 hε le_rfl hinv1 hzw hzpw le_rfl heq'
+    _ ≤ 6 * w ^ 5 := keyLHS_largeT_le hw403 (by linarith) htw
+    _ < 552 * w ^ 5 := by linarith
+    _ ≤ keyRHSexp w t := keyRHSexp_ge hw hw403
+
+/-! ## Absorbing the scale `A(u−t) = 6ρ` -/
+
+/-- The base point with `A(x₀) = 6`. -/
+noncomputable def regimeOneBasePoint : ℝ := Real.log (6 / Real.pi) / 2
+
+theorem thetaCuspSingleAtomReflectionScale_basePoint :
+    thetaCuspSingleAtomReflectionScale 1 regimeOneBasePoint = 6 := by
+  unfold thetaCuspSingleAtomReflectionScale regimeOneBasePoint
+  rw [show 2 * (Real.log (6 / Real.pi) / 2) = Real.log (6 / Real.pi) by ring,
+    Real.exp_log (by positivity)]
+  simp only [Nat.cast_one, one_pow, mul_one]
+  field_simp
+
+theorem regimeOneBasePoint_le {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    regimeOneBasePoint ≤ x := by
+  have h6 := thetaCuspSingleAtomReflectionScale_basePoint
+  unfold thetaCuspSingleAtomReflectionScale at hA h6
+  simp only [Nat.cast_one, one_pow, mul_one] at hA h6
+  have : Real.exp (2 * regimeOneBasePoint) ≤ Real.exp (2 * x) :=
+    le_of_mul_le_mul_left (by linarith) Real.pi_pos
+  have := Real.exp_le_exp.mp this
+  linarith
+
+/-- `A(x)^k ε(x) ≤ 6^k · 49·10⁻⁸` for `A(x) ≥ 6`, `k ≤ 18`. -/
+theorem regimeOne_scale_pow_le {x : ℝ} {k : ℕ} (hk : (k : ℝ) ≤ 18)
+    (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    thetaCuspSingleAtomReflectionScale 1 x ^ k * regimeOneLikelihoodScale x ≤
+      6 ^ k * (49 / 100000000) := by
+  have h := regimeOne_pow_scale_le_left hk (x := regimeOneBasePoint) (y := x)
+    (by rw [thetaCuspSingleAtomReflectionScale_basePoint]) (regimeOneBasePoint_le hA)
+  rw [thetaCuspSingleAtomReflectionScale_basePoint] at h
+  have hε : regimeOneLikelihoodScale regimeOneBasePoint ≤ 49 / 100000000 := by
+    unfold regimeOneLikelihoodScale
+    rw [thetaCuspSingleAtomReflectionScale_basePoint]
+    have := base_scale_six_lt
+    rw [div_mul_eq_mul_div, ← Real.exp_add,
+      show 3 * Real.pi + -(3 * (6 : ℝ)) = -(3 * (6 - Real.pi)) by ring] at this
+    exact this.le
+  calc _ ≤ 6 ^ k * regimeOneLikelihoodScale regimeOneBasePoint := h
+    _ ≤ 6 ^ k * (49 / 100000000) := mul_le_mul_of_nonneg_left hε (by positivity)
+
+/-- The correction inputs scale like `ρ⁻⁹` when `A(u−t) = 6ρ`. -/
+theorem regimeOne_dInputs_le {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    let Am := thetaCuspSingleAtomReflectionScale 1 x
+    let ε := regimeOneLikelihoodScale x
+    let ρ := Am / 6
+    12 * Am * ε ≤ 72 * (49 / 100000000) / ρ ^ 9 ∧
+    76 * Am ^ 2 * ε ≤ 2736 * (49 / 100000000) / ρ ^ 9 ∧
+    522 * Am ^ 3 * ε ≤ 112752 * (49 / 100000000) / ρ ^ 9 ∧
+    24 * Am * ε ≤ 144 * (49 / 100000000) / ρ ^ 9 ∧
+    4 * ε ≤ 4 * (49 / 100000000) / ρ ^ 9 := by
+  intro Am ε ρ
+  have hε0 : 0 < ε := regimeOneLikelihoodScale_pos x
+  have hρ : 1 ≤ ρ := by show 1 ≤ Am / 6; rw [le_div_iff₀ (by norm_num)]; linarith
+  have hρ0 : 0 < ρ := by linarith
+  have hAm : Am = 6 * ρ := by show Am = 6 * (Am / 6); ring
+  have h9 := regimeOne_scale_pow_le (k := 9) (by norm_num) hA
+  have h10 := regimeOne_scale_pow_le (k := 10) (by norm_num) hA
+  have h11 := regimeOne_scale_pow_le (k := 11) (by norm_num) hA
+  have h12 := regimeOne_scale_pow_le (k := 12) (by norm_num) hA
+  change Am ^ 9 * ε ≤ _ at h9
+  change Am ^ 10 * ε ≤ _ at h10
+  change Am ^ 11 * ε ≤ _ at h11
+  change Am ^ 12 * ε ≤ _ at h12
+  rw [hAm] at h9 h10 h11 h12 ⊢
+  have r9 : ρ ^ 9 * ε ≤ 49 / 100000000 := by
+    rw [mul_pow] at h9; nlinarith
+  have r10 : ρ ^ 10 * ε ≤ 49 / 100000000 := by
+    rw [mul_pow] at h10; nlinarith
+  have r11 : ρ ^ 11 * ε ≤ 49 / 100000000 := by
+    rw [mul_pow] at h11; nlinarith
+  have r12 : ρ ^ 12 * ε ≤ 49 / 100000000 := by
+    rw [mul_pow] at h12; nlinarith
+  have hρ9 : 0 < ρ ^ 9 := by positivity
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · rw [le_div_iff₀ hρ9]
+    have : 12 * (6 * ρ) * ε * ρ ^ 9 = 72 * (ρ ^ 10 * ε) := by ring
+    rw [this]; linarith
+  · rw [le_div_iff₀ hρ9]
+    have : 76 * (6 * ρ) ^ 2 * ε * ρ ^ 9 = 2736 * (ρ ^ 11 * ε) := by ring
+    rw [this]; linarith
+  · rw [le_div_iff₀ hρ9]
+    have : 522 * (6 * ρ) ^ 3 * ε * ρ ^ 9 = 112752 * (ρ ^ 12 * ε) := by ring
+    rw [this]; linarith
+  · rw [le_div_iff₀ hρ9]
+    have : 24 * (6 * ρ) * ε * ρ ^ 9 = 144 * (ρ ^ 10 * ε) := by ring
+    rw [this]; linarith
+  · rw [le_div_iff₀ hρ9]
+    have : 4 * ε * ρ ^ 9 = 4 * (ρ ^ 9 * ε) := by ring
+    rw [this]; linarith
+
+/-- The single-atom inputs are bounded by `ρ³` times their `ρ = 1` values. -/
+theorem regimeOne_hat_inputs_le {A ρ w z z' : ℝ} (hρ : 1 ≤ ρ) (hw : 1 ≤ w) (hz : 0 ≤ z)
+    (hz' : 0 ≤ z') (hAeq : A = 6 * ρ * w) :
+    (2 * A + 12 / A) * z' ≤ ρ ^ 3 * ((12 * w + 2 * (1 / w)) * z') ∧
+    4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1) ≤
+      ρ ^ 3 * (4 * (2 * (1 / w)) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1)) ∧
+    z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)) ≤
+      ρ ^ 3 * (z' * (8 * (2 * (1 / w)) ^ 3 * z * (z + 2) + 12 * (2 * (1 / w)) ^ 2 * (z + 1) +
+        4 * (12 * w + 2 * (1 / w)))) ∧
+    4 * A * z + 36 / A * z ≤ ρ ^ 3 * (24 * w * z + 6 * z * (1 / w)) ∧
+    (4 * A + 72 / A) * z' ≤ ρ ^ 3 * ((24 * w + 12 * (1 / w)) * z') ∧
+    4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)) ≤
+      ρ ^ 3 * (4 * (48 * (1 / w) ^ 2 * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1))) := by
+  have hρ0 : 0 < ρ := by linarith
+  have hw0 : 0 < w := by linarith
+  have hA0 : 0 < A := by rw [hAeq]; positivity
+  have hρ3 : 1 ≤ ρ ^ 3 := one_le_pow₀ hρ
+  have hρρ : ρ ≤ ρ ^ 3 := by
+    have := mul_le_mul_of_nonneg_left (one_le_pow₀ hρ : (1:ℝ) ≤ ρ ^ 2) hρ0.le
+    linarith
+  have hX : 2 * A ≤ ρ ^ 3 * (12 * w) := by
+    rw [hAeq]
+    have := mul_le_mul_of_nonneg_right hρρ (by positivity : (0:ℝ) ≤ 12 * w)
+    linarith
+  have hY0 : 0 ≤ 2 * (1 / w) := by positivity
+  have hY : 12 / A ≤ 2 * (1 / w) := by
+    rw [hAeq, div_le_iff₀ (by positivity)]
+    field_simp
+    nlinarith
+  have hYn : 0 ≤ 12 / A := by positivity
+  have hYY : 12 / A ≤ ρ ^ 3 * (2 * (1 / w)) := hY.trans (le_mul_of_one_le_left hY0 hρ3)
+  have hY2 : (12 / A) ^ 2 ≤ ρ ^ 3 * (2 * (1 / w)) ^ 2 :=
+    (pow_le_pow_left₀ hYn hY 2).trans (le_mul_of_one_le_left (by positivity) hρ3)
+  have hY3 : (12 / A) ^ 3 ≤ ρ ^ 3 * (2 * (1 / w)) ^ 3 :=
+    (pow_le_pow_left₀ hYn hY 3).trans (le_mul_of_one_le_left (by positivity) hρ3)
+  have hz1 : 0 ≤ z + 1 := by linarith
+  have hzz : 0 ≤ z * (z + 2) := by positivity
+  have hz'zz : 0 ≤ z' * (z * (z + 2)) := by positivity
+  have hz'z1 : 0 ≤ z' * (z + 1) := by positivity
+  have P1 := mul_le_mul_of_nonneg_right hX hz'
+  have P2 := mul_le_mul_of_nonneg_right hYY hz'
+  have P3 := mul_le_mul_of_nonneg_right hX hz1
+  have P4 := mul_le_mul_of_nonneg_right hYY hz1
+  have P5 := mul_le_mul_of_nonneg_right hX hz
+  have P6 := mul_le_mul_of_nonneg_right hYY hz
+  have P7 := mul_le_mul_of_nonneg_right hY2 hzz
+  have P8 := mul_le_mul_of_nonneg_right hY3 hz'zz
+  have P9 := mul_le_mul_of_nonneg_right hY2 hz'z1
+  have e1728 : 1728 / A ^ 2 = 12 * (12 / A) ^ 2 := by field_simp; ring
+  have e36 : 36 / A = 3 * (12 / A) := by ring
+  have e72 : 72 / A = 6 * (12 / A) := by ring
+  have e48 : 48 * (1 / w) ^ 2 = 12 * (2 * (1 / w)) ^ 2 := by ring
+  have e6 : 6 * z * (1 / w) = 3 * z * (2 * (1 / w)) := by ring
+  have e12 : 12 * (1 / w) = 6 * (2 * (1 / w)) := by ring
+  rw [e1728, e36, e72, e48, e6, e12]
+  generalize 12 / A = Y at *
+  generalize 2 * (1 / w) = Y0 at *
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> linarith [P1, P2, P3, P4, P5, P6, P7, P8, P9]
+
+/-- `e^{-q} ≤ 1/(1 + 12 w z)` for the single-atom action at `A(u) ≥ 6w`. -/
+theorem exp_neg_action_le {u t w : ℝ} (ht : 0 ≤ t) (htu : t ≤ u)
+    (hA : 6 * w ≤ thetaCuspSingleAtomReflectionScale 1 u) (hw : 0 ≤ w) :
+    Real.exp (-thetaCuspSingleAtomReflectedAction (thetaCuspSingleAtomReflectionScale 1 u) t) ≤
+      1 / (1 + 12 * w * thetaCuspSingleAtomReflectionDefect t) := by
+  have hr0 := one_half_lt_thetaCuspSingleAtomReflectionFactor_of_sameHalfLine ht htu
+  have hA3 := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) (le_trans ht htu)
+  set A := thetaCuspSingleAtomReflectionScale 1 u with hAdef
+  set z := thetaCuspSingleAtomReflectionDefect t with hzdef
+  have hz0 : 0 ≤ z := by
+    show 0 ≤ Real.cosh (2 * t) - 1
+    linarith [Real.one_le_cosh (2 * t)]
+  have hq : 12 * w * z ≤ thetaCuspSingleAtomReflectedAction A t := by
+    unfold thetaCuspSingleAtomReflectedAction
+    rw [← hzdef]
+    have hr1 : thetaCuspSingleAtomReflectionFactor A z ≤ 1 := by
+      unfold thetaCuspSingleAtomReflectionFactor
+      have := mul_nonneg (thetaCuspSingleAtomReflectionLambda_pos hA3).le hz0
+      linarith
+    have hlog : Real.log (thetaCuspSingleAtomReflectionFactor A z) ≤ 0 :=
+      Real.log_nonpos (by linarith) hr1
+    have := mul_le_mul_of_nonneg_right hA hz0
+    linarith
+  have h1 : 1 + 12 * w * z ≤ Real.exp (12 * w * z) := by
+    have := Real.add_one_le_exp (12 * w * z); linarith
+  have h2 : Real.exp (12 * w * z) ≤ Real.exp (thetaCuspSingleAtomReflectedAction A t) :=
+    Real.exp_le_exp.mpr hq
+  rw [Real.exp_neg, one_div]
+  exact inv_anti₀ (by positivity) (h1.trans h2)
+
+/-- The scaled key: from the `ρ = 1` key at `(w, t)` to the actual inputs. -/
+theorem key_scaled {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
+    (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 (u - t)) :
+    let A := thetaCuspSingleAtomReflectionScale 1 u
+    let Am := thetaCuspSingleAtomReflectionScale 1 (u - t)
+    let ε := regimeOneLikelihoodScale (u - t)
+    let z := thetaCuspSingleAtomReflectionDefect t
+    let z' := 2 * Real.sinh (2 * t)
+    let w := Real.exp (2 * t)
+    C5LikelihoodAffineData.compensationDiffBound t
+        ((2 * A + 12 / A) * z')
+        (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+        (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+        (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
+        (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+        (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
+        (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) ≤
+      keyLHS (49 / 100000000) w (1 / w) z z' t (1 / (1 + 12 * w * z)) := by
+  intro A Am ε z z' w
+  have ht0 : 0 < t := by linarith
+  have hw1 : 1 ≤ w := by
+    show 1 ≤ Real.exp (2 * t); rw [Real.one_le_exp_iff]; linarith
+  have hw0 : 0 < w := by linarith
+  have hz0 : 0 ≤ z := by
+    show 0 ≤ Real.cosh (2 * t) - 1
+    linarith [Real.one_le_cosh (2 * t)]
+  have hz'0 : 0 ≤ z' := by
+    show 0 ≤ 2 * Real.sinh (2 * t)
+    have := Real.sinh_nonneg_iff.mpr (by linarith : (0:ℝ) ≤ 2 * t)
+    linarith
+  have hAm6 : 6 ≤ Am := hA
+  have hAeq : A = Am * w := by
+    show thetaCuspSingleAtomReflectionScale 1 u = thetaCuspSingleAtomReflectionScale 1 (u - t) * Real.exp (2 * t)
+    unfold thetaCuspSingleAtomReflectionScale
+    rw [show (2 : ℝ) * u = 2 * (u - t) + 2 * t by ring, Real.exp_add]
+    ring
+  set ρ := Am / 6 with hρdef
+  have hρ : 1 ≤ ρ := by rw [hρdef, le_div_iff₀ (by norm_num)]; linarith
+  have hAρ : A = 6 * ρ * w := by rw [hAeq, hρdef]; ring
+  have hA0 : 0 < A := by rw [hAρ]; positivity
+  have hAw : 6 * w ≤ A := by
+    rw [hAρ]
+    have := mul_le_mul_of_nonneg_right hρ (by positivity : (0:ℝ) ≤ 6 * w)
+    linarith
+  obtain ⟨ha, hb, hc, hs, hm, hn⟩ := regimeOne_hat_inputs_le hρ hw1 hz0 hz'0 hAρ
+  obtain ⟨hda, hdb, hdc, hds, hdq⟩ := regimeOne_dInputs_le hA
+  have heq : Real.exp (-thetaCuspSingleAtomReflectedAction A t) ≤ 1 / (1 + 12 * w * z) :=
+    exp_neg_action_le ht0.le htu hAw hw0.le
+  have hε0 : 0 < ε := regimeOneLikelihoodScale_pos (u - t)
+  have hAm0 : 0 < Am := by linarith
+  have heq0 : 0 ≤ Real.exp (-thetaCuspSingleAtomReflectedAction A t) := (Real.exp_pos _).le
+  rw [C5LikelihoodAffineData.compensationDiffBound_eq_E]
+  have hz1 : 0 ≤ z + 1 := by linarith
+  have hzz : 0 ≤ z + 2 := by linarith
+  have hinv0 : 0 ≤ 1 / w := by positivity
+  have step1 := C5LikelihoodAffineData.compensationDiffBoundE_mono (t := t)
+    (a' := (2 * A + 12 / A) * z')
+    (b' := 4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (c' := z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (s' := 4 * A * z + 36 / A * z) (m' := (4 * A + 72 / A) * z')
+    (n' := 4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (da' := 12 * Am * ε) (db' := 76 * Am ^ 2 * ε) (dc' := 522 * Am ^ 3 * ε) (ds' := 24 * Am * ε)
+    (dm' := 76 * Am ^ 2 * ε) (dn' := 522 * Am ^ 3 * ε) (dq' := 4 * ε)
+    (eq := Real.exp (-thetaCuspSingleAtomReflectedAction A t))
+    (a'' := ρ ^ 3 * ((12 * w + 2 * (1 / w)) * z'))
+    (b'' := ρ ^ 3 * (4 * (2 * (1 / w)) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1)))
+    (c'' := ρ ^ 3 * (z' * (8 * (2 * (1 / w)) ^ 3 * z * (z + 2) + 12 * (2 * (1 / w)) ^ 2 * (z + 1) +
+        4 * (12 * w + 2 * (1 / w)))))
+    (s'' := ρ ^ 3 * (24 * w * z + 6 * z * (1 / w))) (m'' := ρ ^ 3 * ((24 * w + 12 * (1 / w)) * z'))
+    (n'' := ρ ^ 3 * (4 * (48 * (1 / w) ^ 2 * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1))))
+    (da'' := 72 * (49 / 100000000) / ρ ^ 9) (db'' := 2736 * (49 / 100000000) / ρ ^ 9)
+    (dc'' := 112752 * (49 / 100000000) / ρ ^ 9) (ds'' := 144 * (49 / 100000000) / ρ ^ 9)
+    (dm'' := 2736 * (49 / 100000000) / ρ ^ 9) (dn'' := 112752 * (49 / 100000000) / ρ ^ 9)
+    (dq'' := 4 * (49 / 100000000) / ρ ^ 9) (eq' := 1 / (1 + 12 * w * z))
+    ht0.le (by positivity) (by positivity) (by positivity) (by positivity) (by positivity)
+    (by positivity) (by positivity) (by positivity) (by positivity) (by positivity) (by positivity)
+    (by positivity) (by positivity) heq0
+    ha hb hc hs hm hn hda hdb hdc hds hdb hdc hdq heq
+  have step2 := C5LikelihoodAffineData.compensationDiffBoundE_scale (ρ := ρ) (t := t)
+    (a' := (12 * w + 2 * (1 / w)) * z')
+    (b' := 4 * (2 * (1 / w)) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1))
+    (c' := z' * (8 * (2 * (1 / w)) ^ 3 * z * (z + 2) + 12 * (2 * (1 / w)) ^ 2 * (z + 1) +
+        4 * (12 * w + 2 * (1 / w))))
+    (s' := 24 * w * z + 6 * z * (1 / w)) (m' := (24 * w + 12 * (1 / w)) * z')
+    (n' := 4 * (48 * (1 / w) ^ 2 * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1)))
+    (da' := 72 * (49 / 100000000)) (db' := 2736 * (49 / 100000000)) (dc' := 112752 * (49 / 100000000))
+    (ds' := 144 * (49 / 100000000)) (dm' := 2736 * (49 / 100000000)) (dn' := 112752 * (49 / 100000000))
+    (dq' := 4 * (49 / 100000000)) (eq := 1 / (1 + 12 * w * z))
+    hρ ht0.le (by positivity) (by positivity) (by positivity) (by positivity) (by positivity)
+    (by positivity) (by positivity) (by positivity) (by positivity) (by positivity) (by positivity)
+    (by positivity) (by positivity) (by positivity)
+  exact step1.trans step2
+
+/-- Chamber selection: the `ρ = 1` key on `[ta, tb]` from the corner instance. -/
+theorem key_in_chamber {t ta tb wa wb : ℝ} (hta : ta ≤ t) (htb : t ≤ tb) (hta0 : 0 ≤ ta)
+    (hwa1 : 1 ≤ wa) (hwa : wa ≤ Real.exp (2 * ta)) (hwb : Real.exp (2 * tb) ≤ wb)
+    (hnum : keyLHS (49 / 100000000) wb (1 / wa) ((wb + 1 / wb) / 2 - 1) (wb - 1 / wb) tb
+        (1 / (1 + 12 * wa * ((wa + 1 / wa) / 2 - 1))) < keyRHS wa ta) :
+    keyLHS (49 / 100000000) (Real.exp (2 * t)) (1 / Real.exp (2 * t))
+        (thetaCuspSingleAtomReflectionDefect t) (2 * Real.sinh (2 * t)) t
+        (1 / (1 + 12 * Real.exp (2 * t) * thetaCuspSingleAtomReflectionDefect t)) <
+      keyRHS (Real.exp (2 * t)) t := by
+  set w := Real.exp (2 * t) with hwdef
+  have hw1 : 1 ≤ w := by rw [hwdef, Real.one_le_exp_iff]; linarith
+  have hw0 : 0 < w := by linarith
+  have hwa0 : 0 < wa := by linarith
+  have hwlo : wa ≤ w := hwa.trans (Real.exp_le_exp.mpr (by linarith))
+  have hwhi : w ≤ wb := (Real.exp_le_exp.mpr (by linarith)).trans hwb
+  have hz : thetaCuspSingleAtomReflectionDefect t = (w + 1 / w) / 2 - 1 := by
+    show Real.cosh (2 * t) - 1 = _
+    rw [Real.cosh_eq, Real.exp_neg, hwdef]; ring
+  have hzp : 2 * Real.sinh (2 * t) = w - 1 / w := by
+    rw [Real.sinh_eq, Real.exp_neg, hwdef]; ring
+  rw [hz, hzp]
+  obtain ⟨hzb, hzpb⟩ := defect_le_of_le hw1 hwhi
+  obtain ⟨hza, -⟩ := defect_le_of_le hwa1 hwlo
+  have hwne : w ≠ 0 := hw0.ne'
+  have hwane : wa ≠ 0 := hwa0.ne'
+  have hz0 : 0 ≤ (w + 1 / w) / 2 - 1 := by
+    have e : (w + 1 / w) / 2 - 1 = (w - 1) ^ 2 / (2 * w) := by field_simp; ring
+    rw [e]; positivity
+  have hzp0 : 0 ≤ w - 1 / w := by
+    rw [sub_nonneg, div_le_iff₀ hw0]; nlinarith
+  have hza0 : 0 ≤ (wa + 1 / wa) / 2 - 1 := by
+    have e : (wa + 1 / wa) / 2 - 1 = (wa - 1) ^ 2 / (2 * wa) := by field_simp; ring
+    rw [e]; positivity
+  have heq : 1 / (1 + 12 * w * ((w + 1 / w) / 2 - 1)) ≤
+      1 / (1 + 12 * wa * ((wa + 1 / wa) / 2 - 1)) := by
+    apply one_div_le_one_div_of_le (by positivity)
+    have := mul_le_mul hwlo hza hza0 hw0.le
+    linarith
+  exact key_of_chamber (by norm_num) hw0.le (by positivity) hz0 hzp0 hta0 (by positivity) hwa1
+    le_rfl hwlo hwhi (one_div_le_one_div_of_le hwa0 hwlo) hzb hzpb hta htb heq hnum
+
+/-- **The regime-I key inequality holds** for `1/4 ≤ t ≤ u`, `A(u−t) ≥ 6`. -/
+theorem regimeOne_key_holds {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
+    (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 (u - t)) :
+    ∃ sh : ℝ, 0 ≤ sh ∧ sh ≤ c5HyperbolicGaussianBaseShape t ∧
+      (let A := thetaCuspSingleAtomReflectionScale 1 u
+      let Am := thetaCuspSingleAtomReflectionScale 1 (u - t)
+      let ε := regimeOneLikelihoodScale (u - t)
+      let z := thetaCuspSingleAtomReflectionDefect t
+      let z' := 2 * Real.sinh (2 * t)
+      C5LikelihoodAffineData.compensationDiffBound t
+        ((2 * A + 12 / A) * z')
+        (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+        (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+        (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
+        (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+        (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
+        (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
+      2 * A * (4 * A - 36 / A) * sh) := by
+  have hks := key_scaled ht htu hA
+  simp only at hks ⊢
+  have ht0 : 0 < t := by linarith
+  set w := Real.exp (2 * t) with hwdef
+  set A := thetaCuspSingleAtomReflectionScale 1 u with hAdef
+  set z := thetaCuspSingleAtomReflectionDefect t with hzdef
+  have hz0 : 0 ≤ z := by
+    rw [hzdef]
+    show 0 ≤ Real.cosh (2 * t) - 1
+    linarith [Real.one_le_cosh (2 * t)]
+  have hw1 : 1 ≤ w := by rw [hwdef, Real.one_le_exp_iff]; linarith
+  have hw0 : 0 < w := by linarith
+  have hAeq : A = thetaCuspSingleAtomReflectionScale 1 (u - t) * w := by
+    rw [hAdef, hwdef]
+    unfold thetaCuspSingleAtomReflectionScale
+    rw [show (2 : ℝ) * u = 2 * (u - t) + 2 * t by ring, Real.exp_add]
+    ring
+  have hAw : 6 * w ≤ A := by
+    rw [hAeq]; exact mul_le_mul_of_nonneg_right hA hw0.le
+  have hA0 : 0 < A := by linarith
+  have hfac : 288 * w ^ 2 - 72 ≤ 2 * A * (4 * A - 36 / A) := by
+    have e : 2 * A * (4 * A - 36 / A) = 8 * A ^ 2 - 72 := by field_simp; ring
+    rw [e]
+    have := pow_le_pow_left₀ (by positivity) hAw 2
+    nlinarith
+  rcases le_or_gt t 3 with ht3 | ht3
+  · -- chambers
+    refine ⟨6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11, by positivity,
+      c5HyperbolicGaussianBaseShape_ge ht0.le, ?_⟩
+    have hcase : keyLHS (49 / 100000000) w (1 / w) z (2 * Real.sinh (2 * t)) t
+        (1 / (1 + 12 * w * z)) < keyRHS w t := by
+      rw [hwdef, hzdef]
+      rcases le_or_gt t (3 / 10) with h1 | h1
+      · exact key_in_chamber ht h1 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (1/4) = 1/2 by norm_num]; exact exp_half_bounds.1) (by rw [show (2 : ℝ) * (3/10) = 3/5 by norm_num]; exact exp_threeFifths_bounds.2) key_chamber_1
+      rcases le_or_gt t (7/20) with h2 | h2
+      · exact key_in_chamber h1.le h2 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (3/10) = 3/5 by norm_num]; exact exp_threeFifths_bounds.1) (by rw [show (2 : ℝ) * (7/20) = 7/10 by norm_num]; exact exp_sevenTenths_bounds.2) key_chamber_2
+      rcases le_or_gt t (2/5) with h3 | h3
+      · exact key_in_chamber h2.le h3 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (7/20) = 7/10 by norm_num]; exact exp_sevenTenths_bounds.1) (by rw [show (2 : ℝ) * (2/5) = 4/5 by norm_num]; exact exp_fourFifths_bounds.2) key_chamber_3
+      rcases le_or_gt t (1/2) with h4 | h4
+      · exact key_in_chamber h3.le h4 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (2/5) = 4/5 by norm_num]; exact exp_fourFifths_bounds.1) (by rw [show (2 : ℝ) * (1/2) = 1 by norm_num]; exact exp_one_bounds.2) key_chamber_4
+      rcases le_or_gt t (3/5) with h5 | h5
+      · exact key_in_chamber h4.le h5 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (1/2) = 1 by norm_num]; exact exp_one_bounds.1) (by rw [show (2 : ℝ) * (3/5) = 6/5 by norm_num]; exact exp_sixFifths_bounds.2) key_chamber_5
+      rcases le_or_gt t (3/4) with h6 | h6
+      · exact key_in_chamber h5.le h6 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (3/5) = 6/5 by norm_num]; exact exp_sixFifths_bounds.1) (by rw [show (2 : ℝ) * (3/4) = 3/2 by norm_num]; exact exp_threeHalves_bounds.2) key_chamber_6
+      rcases le_or_gt t (1) with h7 | h7
+      · exact key_in_chamber h6.le h7 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (3/4) = 3/2 by norm_num]; exact exp_threeHalves_bounds.1) (by rw [show (2 : ℝ) * (1) = 2 by norm_num]; exact exp_two_bounds.2) key_chamber_7
+      rcases le_or_gt t (5/4) with h8 | h8
+      · exact key_in_chamber h7.le h8 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (1) = 2 by norm_num]; exact exp_two_bounds.1) (by rw [show (2 : ℝ) * (5/4) = 5/2 by norm_num]; exact exp_fiveHalves_bounds.2) key_chamber_8
+      rcases le_or_gt t (3/2) with h9 | h9
+      · exact key_in_chamber h8.le h9 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (5/4) = 5/2 by norm_num]; exact exp_fiveHalves_bounds.1) (by rw [show (2 : ℝ) * (3/2) = 3 by norm_num]; exact exp_three_bounds.2) key_chamber_9
+      rcases le_or_gt t (2) with h10 | h10
+      · exact key_in_chamber h9.le h10 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (3/2) = 3 by norm_num]; exact exp_three_bounds.1) (by rw [show (2 : ℝ) * (2) = 4 by norm_num]; exact exp_four_bounds.2) key_chamber_10
+      rcases le_or_gt t (5/2) with h11 | h11
+      · exact key_in_chamber h10.le h11 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (2) = 4 by norm_num]; exact exp_four_bounds.1) (by rw [show (2 : ℝ) * (5/2) = 5 by norm_num]; exact exp_five_bounds.2) key_chamber_11
+      exact key_in_chamber h11.le ht3 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (5/2) = 5 by norm_num]; exact exp_five_bounds.1) (by rw [show (2 : ℝ) * (3) = 6 by norm_num]; exact exp_six_bounds.2) key_chamber_12
+    have hpoly : 0 ≤ 6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11 := by positivity
+    have hR : keyRHS w t ≤ 2 * A * (4 * A - 36 / A) *
+        (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11) := by
+      unfold keyRHS
+      exact mul_le_mul_of_nonneg_right hfac hpoly
+    exact lt_of_le_of_lt hks (lt_of_lt_of_le hcase hR)
+  · -- large `t`
+    refine ⟨32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2, ?_,
+      c5HyperbolicGaussianBaseShape_ge_exp (by linarith), ?_⟩
+    · have := Real.sinh_nonneg_iff.mpr (by linarith : (0:ℝ) ≤ 2 * t)
+      positivity
+    have hz : z = (w + 1 / w) / 2 - 1 := by
+      rw [hzdef, hwdef]
+      show Real.cosh (2 * t) - 1 = _
+      rw [Real.cosh_eq, Real.exp_neg]; ring
+    have hzp : 2 * Real.sinh (2 * t) = w - 1 / w := by
+      rw [hwdef, Real.sinh_eq, Real.exp_neg]; ring
+    have hcase : keyLHS (49 / 100000000) w (1 / w) z (2 * Real.sinh (2 * t)) t
+        (1 / (1 + 12 * w * z)) < keyRHSexp w t :=
+      key_largeT ht3.le hwdef (by norm_num) le_rfl hz hzp (by positivity) le_rfl
+    have hsh0 : 0 ≤ 32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2 := by
+      have := Real.sinh_nonneg_iff.mpr (by linarith : (0:ℝ) ≤ 2 * t)
+      positivity
+    have hR : keyRHSexp w t ≤ 2 * A * (4 * A - 36 / A) *
+        (32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2) := by
+      unfold keyRHSexp
+      exact mul_le_mul_of_nonneg_right hfac hsh0
+    exact lt_of_le_of_lt hks (lt_of_lt_of_le hcase hR)
+
+/-- **Unconditional regime-I gate** for `t ≥ 1/4`: the completed C5 compensation margin is
+positive whenever `1/4 ≤ t ≤ u` and `π e^{2(u−t)} ≥ 6`. -/
+theorem c5CompletedCompensationMargin_pos_of_regimeOne_quarter {u t : ℝ} (ht : 1 / 4 ≤ t)
+    (htu : t ≤ u) (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 (u - t)) :
+    0 < c5CompletedCompensationMargin u t := by
+  obtain ⟨sh, hsh0, hsh, hkey⟩ := regimeOne_key_holds ht htu hA
+  exact c5CompletedCompensationMargin_pos_of_regimeOne_key_of_shape ht htu hA hsh0 hsh hkey
+
 end RHTower

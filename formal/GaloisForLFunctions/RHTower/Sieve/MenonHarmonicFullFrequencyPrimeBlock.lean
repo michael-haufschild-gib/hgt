@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIFrequencyRange
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicFullFrequencySchedule
+import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIActualBlock
 
 /-!
 # Menon's final prime blocks on the full physical frequency range
@@ -14,6 +14,74 @@ namespace RHTower.Sieve
 open Filter Topology
 
 noncomputable section
+
+theorem eventually_cardLength_nineteen_twentieth_le_menonFinalRangePrimeCutoffNat_fullFrequency :
+    ∀ᶠ x : ℝ in atTop,
+      cardLength ((19 : ℝ) / 20) x ≤ (menonFinalRangePrimeCutoffNat x : ℝ) := by
+  have hsmall := tendsto_logLog_div_logRpow (δ := (1 : ℝ) / 20) (by norm_num)
+  filter_upwards [Tendsto.eventually_le_const (show (0 : ℝ) < 1 / 160 by norm_num) hsmall,
+    Filter.eventually_gt_atTop (Real.exp (Real.exp (Real.exp 1))),
+    (tendsto_cardLength (show (0 : ℝ) < (19 : ℝ) / 20 by norm_num)).eventually_ge_atTop 2]
+      with x hsmall hx hcard
+  have hx0 : (0 : ℝ) < x := lt_trans (by positivity) hx
+  have hlogLower : Real.exp (Real.exp 1) < Real.log x :=
+    (Real.lt_log_iff_exp_lt hx0).2 hx
+  have hlog0 : (0 : ℝ) < Real.log x := lt_trans (by positivity) hlogLower
+  have hllLower : Real.exp 1 < Real.log (Real.log x) :=
+    (Real.lt_log_iff_exp_lt hlog0).2 hlogLower
+  have hll0 : (0 : ℝ) < Real.log (Real.log x) := lt_trans (by positivity) hllLower
+  have hlll : (1 : ℝ) ≤ Real.log (Real.log (Real.log x)) := by
+    have := (Real.lt_log_iff_exp_lt hll0).2 hllLower
+    exact this.le
+  have hp : (0 : ℝ) < (Real.log x) ^ ((1 : ℝ) / 20) :=
+    Real.rpow_pos_of_pos hlog0 _
+  have hll : 160 * Real.log (Real.log x) ≤ (Real.log x) ^ ((1 : ℝ) / 20) := by
+    rw [div_le_iff₀ hp] at hsmall
+    nlinarith
+  have hmain : 2 * (Real.log x) ^ ((19 : ℝ) / 20) ≤
+      (Real.log x / 80) *
+        (Real.log (Real.log (Real.log x)) / Real.log (Real.log x)) := by
+    have hpow19 : (Real.log x) ^ ((19 : ℝ) / 20) *
+        (Real.log x) ^ ((1 : ℝ) / 20) = Real.log x := by
+      rw [← Real.rpow_add hlog0]
+      norm_num
+    rw [show (Real.log x / 80) *
+        (Real.log (Real.log (Real.log x)) / Real.log (Real.log x)) =
+      ((Real.log x / 80) * Real.log (Real.log (Real.log x))) /
+        Real.log (Real.log x) by ring]
+    rw [le_div_iff₀ hll0]
+    have hstep := mul_le_mul_of_nonneg_left hll
+      (Real.rpow_nonneg hlog0.le ((19 : ℝ) / 20))
+    rw [← mul_assoc, hpow19] at hstep
+    have hlllStep := mul_le_mul_of_nonneg_left hlll (by positivity :
+      (0 : ℝ) ≤ Real.log x / 80)
+    nlinarith
+  have hcut : cardLength ((19 : ℝ) / 20) x ^ (2 : ℕ) ≤
+      menonFinalRangePrimeCutoff x := by
+    rw [cardLength, menonFinalRangePrimeCutoff, ← Real.exp_nat_mul]
+    exact Real.exp_le_exp.2 (by simpa [two_mul] using hmain)
+  have hplus : cardLength ((19 : ℝ) / 20) x + 1 ≤
+      menonFinalRangePrimeCutoff x := by
+    have hsq : cardLength ((19 : ℝ) / 20) x + 1 ≤
+        cardLength ((19 : ℝ) / 20) x ^ (2 : ℕ) := by
+      nlinarith [cardLength_pos ((19 : ℝ) / 20) x]
+    exact hsq.trans hcut
+  have hfloor := Nat.lt_floor_add_one (menonFinalRangePrimeCutoff x)
+  rw [menonFinalRangePrimeCutoffNat]
+  exact le_of_lt (by exact_mod_cast (show
+    cardLength ((19 : ℝ) / 20) x <
+      ((⌊menonFinalRangePrimeCutoff x⌋₊ : ℕ) : ℝ) from by linarith))
+
+theorem menonFinalRangePrimeCutoffNat_le_blockLower_fullFrequency
+    {x : ℝ} {j : ℕ} (heta : 0 ≤ menonFinalRangeLadderEta x) :
+    menonFinalRangePrimeCutoffNat x ≤ menonFinalRangeBlockLowerNat x j := by
+  rw [menonFinalRangeBlockLowerNat, ← Nat.floor_natCast (R := ℝ)
+    (menonFinalRangePrimeCutoffNat x)]
+  apply Nat.floor_mono
+  rw [menonFinalRangeLadderBase]
+  have hstep : 1 ≤ 1 + menonFinalRangeLadderEta x := by linarith
+  have hpow : 1 ≤ (1 + menonFinalRangeLadderEta x) ^ j := one_le_pow₀ hstep
+  exact le_mul_of_one_le_right (by positivity) hpow
 
 set_option maxHeartbeats 800000 in
 /-- Every actual final-range prime block is logarithmically small throughout the full physical
@@ -44,7 +112,7 @@ theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_
       (β := (19 : ℝ) / 20) (by norm_num) (40 : ℝ)).const_mul (7 * Real.exp 9))
   filter_upwards [eventually_menonFinalRangeLadder_basic,
     eventually_menonFinalRangeActualBlock_caseII_endpoints,
-    eventually_cardLength_nineteen_twentieth_le_menonFinalRangePrimeCutoffNat,
+    eventually_cardLength_nineteen_twentieth_le_menonFinalRangePrimeCutoffNat_fullFrequency,
     one_le_twoRangeWidth (b := (2 : ℝ)) (A₃ := (100 : ℝ)) (by norm_num) (by norm_num),
     twoRangeDisc_ge (b := (2 : ℝ)) (A₃ := (100 : ℝ)) (by norm_num) (by norm_num) tau0,
     eventually_menonHarmonicFullFrequency_heightCost_le_logSq
@@ -71,7 +139,8 @@ theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_
   have ha0 : (0 : ℝ) < (a : ℝ) := by positivity
   have hY0 : (0 : ℝ) < (Y : ℝ) := by positivity
   have hcardA : cardLength ((19 : ℝ) / 20) x ≤ (a : ℝ) := by
-    exact hcut.trans (by exact_mod_cast menonFinalRangePrimeCutoffNat_le_blockLower heta)
+    exact hcut.trans (by exact_mod_cast
+      menonFinalRangePrimeCutoffNat_le_blockLower_fullFrequency heta)
   have hcardY : cardLength ((19 : ℝ) / 20) x ≤ (Y : ℝ) :=
     hcardA.trans (by exact_mod_cast haY.le)
   have hYtopNat : Y ≤ menonFinalRangeTopNat x := by

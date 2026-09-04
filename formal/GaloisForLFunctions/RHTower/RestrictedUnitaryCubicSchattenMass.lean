@@ -73,7 +73,32 @@ private theorem RestrictedUnitaryDatum.cubicDisplacement_energy_eq_hankelEnergie
         D.projection - D.projection * D.conjugateProjection * D.projection := by
     rw [adjoint_forwardHankelSeam D, RestrictedUnitaryDatum.forwardHankelSeam,
       RestrictedUnitaryDatum.conjugateProjection]
-    noncomm_ring [hPP, hVU]
+    have hQQ : (1 - D.projection) * (1 - D.projection) = 1 - D.projection := by
+      noncomm_ring [hPP]
+    have hPVUP : D.projection * ContinuousLinearMap.adjoint D.unitary *
+        D.unitary * D.projection = D.projection := by
+      calc
+        D.projection * ContinuousLinearMap.adjoint D.unitary *
+            D.unitary * D.projection =
+          D.projection * (ContinuousLinearMap.adjoint D.unitary * D.unitary) *
+            D.projection := by simp only [mul_assoc]
+        _ = D.projection := by rw [hVU, mul_one, hPP]
+    calc
+      (D.projection * ContinuousLinearMap.adjoint D.unitary * (1 - D.projection)) *
+          ((1 - D.projection) * D.unitary * D.projection) =
+        D.projection * ContinuousLinearMap.adjoint D.unitary *
+          ((1 - D.projection) * (1 - D.projection)) * D.unitary *
+            D.projection := by simp only [mul_assoc]
+      _ = D.projection * ContinuousLinearMap.adjoint D.unitary *
+          (1 - D.projection) * D.unitary * D.projection := by rw [hQQ]
+      _ = D.projection * ContinuousLinearMap.adjoint D.unitary *
+          D.unitary * D.projection -
+            D.projection * ContinuousLinearMap.adjoint D.unitary *
+              D.projection * D.unitary * D.projection := by noncomm_ring
+      _ = D.projection -
+          D.projection *
+            (ContinuousLinearMap.adjoint D.unitary * D.projection * D.unitary) *
+              D.projection := by rw [hPVUP]; simp only [mul_assoc]
   have hbackward :
       ContinuousLinearMap.adjoint
           (ContinuousLinearMap.adjoint D.adjointHankelSeam) *
@@ -82,6 +107,14 @@ private theorem RestrictedUnitaryDatum.cubicDisplacement_energy_eq_hankelEnergie
     rw [ContinuousLinearMap.adjoint_adjoint, adjoint_adjointHankelSeam D,
       RestrictedUnitaryDatum.adjointHankelSeam,
       RestrictedUnitaryDatum.conjugateProjection]
+    calc
+      (1 - D.projection) * ContinuousLinearMap.adjoint D.unitary *
+          D.projection * D.projection * D.unitary * (1 - D.projection) =
+        (1 - D.projection) * ContinuousLinearMap.adjoint D.unitary *
+          (D.projection * D.projection) * D.unitary *
+            (1 - D.projection) := by simp only [mul_assoc]
+      _ = (1 - D.projection) * ContinuousLinearMap.adjoint D.unitary *
+          D.projection * D.unitary * (1 - D.projection) := by rw [hPP]
   rw [hdelta, hforward, hbackward]
   noncomm_ring
 
