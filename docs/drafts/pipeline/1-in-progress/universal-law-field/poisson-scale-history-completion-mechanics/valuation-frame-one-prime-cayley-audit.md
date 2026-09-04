@@ -2,7 +2,7 @@
 
 - ID: ULF-VFCA-001
 - Stage: 1-in-progress; bounded-realization audit, not a new primary conjecture.
-- Type: `[BRIDGE]` candidate / hostile test of the MCCED frame replacement.
+- Type: `[BRIDGE]` / hostile test of the MCCED frame replacement; exact survivor paper-complete.
 - Lean: read-only; no new certificate or build in this pass.
 
 ## Higher-law obligation
@@ -80,3 +80,42 @@ Hostile checks required before Stage 2: prove density with the correct transform
 control both support-boundary and weight errors; distinguish source norm from coefficient norm;
 prove domain density and closedness without assuming inverse boundedness; audit prime amplitudes;
 do not infer Xi admission, modular-coefficient boundedness, or an index from this result.
+
+## Verdict and positive survivor
+
+[ULF-BFCC-001](../../../2-fully-proven/universal-law-field/poisson-scale-history-completion-mechanics/burnol-frame-completion-classification.md)
+closes those paper obligations. Lean status remains **not formalized**, per read-only instruction.
+
+- Original prime-only frame: after literal Burnol synthesis, each prime's depth span is dense.
+  Two distinct constant rotations force graph closure to be the whole doubled input/output space.
+  This realization is maximally nonclosable at every nonzero grade, not just unbounded.
+- Valuation-clock replacement: its scalar contrast has the unique closed realization
+  `sgn(a)(I-K_|a|)(I+K_|a|)^(-1)`. The full frame splits into two phase-Cayley operators on
+  their exact dense domains. Both are unbounded without invoking any Xi zero or second prime.
+- Strongest survivor: for every unit phase zeta and h>0, attenuated Cayley operator
+  `(I-r zeta K_h)(I+r zeta K_h)^(-1)` has norm AND essential norm `(1+r)/(1-r)`.
+  Compact/nuclear perturbation of K_h cannot repair the unattenuated Cayley equation.
+
+Additional checked corpus parent: `GraphSaturationCore.linearGraphSubmodule_closure_eq_top_iff_annihilator`
+already gives the abstract graph criterion. `CompleteResolutionCofinalConditioningLaw` already
+turns dense collapsing outputs into full vertical fibre. The source-specific two-prime application
+is the audit delta, not a claim to have invented a graph-saturation theory.
+
+**Verdict:** `FALSE` for a closable prime-only action on this synthesis space; `BRIDGE` for the
+valuation action and its exact singular cost. These do not falsify the finite modular identities
+or the separate coefficient-space representation.
+
+## Failure-driven next constraint
+
+The forced reinterpretation is precise: completion in the Burnol energy norm forgets enough
+prime ancestry that each individual prime already spans the whole space. Prime-dependent
+operations cannot then be treated as ordinary operators on that completed observation space.
+Changing to the valuation clock repairs that compatibility but recovers a universal shift
+boundary singularity, not a new arithmetic charge.
+
+No new primary conjecture is frozen: neither adding a source-marked norm nor declaring a relative
+graph would yet meet the conjecture-distance gate. The next discriminator must be an actual
+Poisson-derived operation that retains source ancestry and differs from these generic Cayley
+domains. It must predict the same Xi/Euler boundary comparison, not assume it. An immediate
+hostile test for any proposed replacement is whether its claimed arithmetic obstruction already
+occurs with one arbitrary geometric rate ladder and no cross-prime multiplication.

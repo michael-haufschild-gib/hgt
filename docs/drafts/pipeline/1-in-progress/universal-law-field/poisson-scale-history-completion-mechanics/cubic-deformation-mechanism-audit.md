@@ -179,3 +179,9 @@ graph, including its domains and affine boundary term. That action must differ i
 way from both the existing forward shift and a polynomial reparametrization of its generator.
 If those data are supplied only after Xi specialization, PHCCED has no pre-divisor realization.
 Ordinary clocks, scalar singular support, and an unspecified derived category do not fill the gap.
+
+The valuation-frame test now has an exact paper answer in ULF-VFCA-001 / ULF-BFCC-001: original
+prime-only frame is maximally nonclosable in Burnol synthesis norm; depth-corrected frame has
+closed unbounded phase-Cayley domains and universal essential norm cost. Both distinctions arise
+before Xi and neither supplies arithmetic selection. See `valuation-frame-one-prime-cayley-audit.md`;
+no new Lean certificate is claimed.
