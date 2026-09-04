@@ -1,12 +1,10 @@
 # One postcritical reciprocal coefficient collapses the entire horizon ambiguity
 
 - **ID:** `projective-horizon-one-step-postcritical-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SHARP BIRATIONAL PAGE TRANSITION
 - **Scientific status:** `[PROVED HERE] [NOVELTY PROVISIONAL] [SIGNIFICANT] [FORMAL CORE COMPLETE]`
-- **Formal status:** step 1 is formal in full for every `(m,n)`: `(7)`, `(8)`, and the separation
-  `v notin H(u)` — the last as `postcritical_escapes_criticalField`, with no hypotheses beyond
-  `m, n >= 1` over an algebraically closed field of characteristic zero.
+- **Formal status:** `[FORMALIZED]` exact one-step field equality for every positive `(m,n)` over every algebraically closed characteristic-zero field
 - **Parents:** `hypertranscendental-maximal-finite-horizon-galois-law`,
   `projective-horizon-pure-tail-fermionic-fiber`
 - **Lane:** source-pure hypertranscendental geometry; finite-resolution reconstruction
@@ -1675,6 +1673,22 @@ for all `1×n` and `m×1` horizons.  Direct check, targeted build, and axiom aud
 declarations use only `[propext, Classical.choice, Quot.sound]`, and the leaf is umbrella-wired
 without an umbrella build.
 
-Card remains Stage 2 only because the parent full-monodromy card still lacks its arbitrary-base
-higher-rank case.  Over `ℂ`, all higher-rank cases are already unconditional.  No additional
-one-step reconstruction mathematics remains once that exact parent producer is supplied.
+### Exact unconditional all-field terminal (2026-09-04)
+
+`HTGeometry/CriticalOneStepRigidityAllFields.lean` discharges the sole remaining `hfull` premise
+using `criticalGeometricMonodromy_eq_top_charZero`.  It proves the card's exact primitive-field
+identity for every positive pair and every allowed coefficient field:
+
+```text
+criticalObservation_sup_postcritical_eq_criticalSourceFieldSup_charZero
+  (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+  (hm : 0 < m) (hn : 0 < n) :
+  criticalObservationField K m n
+    ⊔ adjoin K {postcriticalRawFieldElement K m n}
+    ⊔ adjoin K {postcriticalReciprocalFieldElement K m n}
+  = criticalSourceFieldSup K m n
+```
+
+No full-monodromy or reconstruction hypothesis remains.  Direct leaf check, targeted leaf build,
+umbrella wiring, and axiom audit pass with only `[propext, Classical.choice, Quot.sound]`.  Card
+moved to Stage 3; no umbrella build was run.

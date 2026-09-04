@@ -18,6 +18,45 @@ open Polynomial PowerSeries
 
 variable {K : Type} [Field K]
 
+/-- A root-multiplicity factor lifts from any nonzero special fibre.  The ambient polynomial need
+not be monic: Hensel factorization only requires the selected fibre factor itself to be monic. -/
+theorem exists_monic_factor_of_rootMultiplicity_with_reduction_of_specialFiber_ne
+    {f : (PowerSeries K)[X]}
+    (hfne : f.map (PowerSeries.constantCoeff (R := K)) ≠ 0) (c : K) :
+    ∃ g h : (PowerSeries K)[X], g.Monic ∧
+      g.natDegree = (f.map (PowerSeries.constantCoeff (R := K))).rootMultiplicity c ∧
+      f = g * h ∧
+      g.map (PowerSeries.constantCoeff (R := K)) =
+        ((X : K[X]) - Polynomial.C c) ^
+          (f.map (PowerSeries.constantCoeff (R := K))).rootMultiplicity c := by
+  classical
+  set F : K[X] := f.map (PowerSeries.constantCoeff (R := K)) with hFdef
+  set m : ℕ := F.rootMultiplicity c with hmdef
+  set q : K[X] := ((X : K[X]) - Polynomial.C c) ^ m with hqdef
+  have hqmonic : q.Monic := (monic_X_sub_C c).pow m
+  set b : K[X] := F /ₘ q with hbdef
+  have hFfact : F = q * b := by
+    have hzero : F %ₘ q = 0 :=
+      (Polynomial.modByMonic_eq_zero_iff_dvd hqmonic).mpr (pow_rootMultiplicity_dvd F c)
+    have hadd := Polynomial.modByMonic_add_div F q
+    rw [hzero, zero_add] at hadd
+    exact hadd.symm
+  have heval : b.eval c ≠ 0 :=
+    Polynomial.eval_divByMonic_pow_rootMultiplicity_ne_zero c (hFdef ▸ hfne)
+  have hnotdvd : ¬ (((X : K[X]) - Polynomial.C c) ∣ b) := by
+    rw [Polynomial.dvd_iff_isRoot]
+    exact heval
+  have hcop : IsCoprime ((X : K[X]) - Polynomial.C c) b := by
+    by_contra hc
+    exact hnotdvd ((Polynomial.irreducible_X_sub_C c).dvd_iff_not_isCoprime.mpr hc)
+  obtain ⟨g, h, hgm, hgdeg, hfgh, hgred, _⟩ :=
+    exists_factorization_of_coprime_reduction (a := q) (b := b) hqmonic hFfact hcop.pow_left
+  have hqdegree : q.natDegree = m := by
+    rw [hqdef, Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one]
+  refine ⟨g, h, hgm, ?_, hfgh, ?_⟩
+  · rw [Polynomial.natDegree_eq_of_degree_eq hgdeg, hqdegree]
+  · simpa [hFdef, hmdef, hqdef] using hgred
+
 /-- A root-multiplicity factor can be lifted while retaining its exact special fibre. -/
 theorem exists_monic_factor_of_rootMultiplicity_with_reduction
     {f : (PowerSeries K)[X]} (hf : f.Monic) (c : K) :
@@ -84,6 +123,56 @@ theorem constantCoeff_eq_of_isRoot_map_expand_rootMultiplicity_factor
   apply sub_eq_zero.mp
   by_contra hne
   exact (pow_ne_zero m hne) hyc
+
+/-- **Prescribed-edge Newton--Puiseux without ambient monicity.**  It is enough that the Newton
+transform have a nonzero special fibre.  Hensel lifting first extracts the monic local factor
+supported at the chosen edge root, after which ordinary Newton--Puiseux applies to that factor. -/
+theorem exists_isRoot_map_expand_with_prescribed_newton_lead_of_specialFiber_ne
+    [IsAlgClosed K] [CharZero K]
+    {f : (PowerSeries K)[X]}
+    (p q : ℕ) (hq : q ≠ 0)
+    (hdvd : ∀ i ≤ f.natDegree,
+      (PowerSeries.X : PowerSeries K) ^ (p * (f.natDegree - i)) ∣
+        PowerSeries.expand q hq (f.coeff i))
+    (c : K)
+    (hfibne : (newtonTransform f p q hq).map
+      (PowerSeries.constantCoeff (R := K)) ≠ 0)
+    (hc : ((newtonTransform f p q hq).map
+      (PowerSeries.constantCoeff (R := K))).IsRoot c) :
+    ∃ (N : ℕ) (hN : N ≠ 0) (z : PowerSeries K),
+      (f.map (PowerSeries.expand (R := K) (N * q) (Nat.mul_ne_zero hN hq)).toRingHom).IsRoot
+        ((PowerSeries.X : PowerSeries K) ^ (N * p) * z) ∧
+      PowerSeries.constantCoeff z = c := by
+  classical
+  let T : (PowerSeries K)[X] := newtonTransform f p q hq
+  have hmpos : 0 < (T.map (PowerSeries.constantCoeff (R := K))).rootMultiplicity c :=
+    (Polynomial.rootMultiplicity_pos hfibne).2 hc
+  obtain ⟨g, h, hgmonic, hgdeg, hTfactor, hgred⟩ :=
+    exists_monic_factor_of_rootMultiplicity_with_reduction_of_specialFiber_ne hfibne c
+  have hgpos : 0 < g.natDegree := by rw [hgdeg]; exact hmpos
+  obtain ⟨N, hN, z, hz⟩ :=
+    exists_isRoot_map_expand (K := K) g.natDegree g hgmonic rfl hgpos
+  have hzT :
+      (T.map (PowerSeries.expand (R := K) N hN).toRingHom).IsRoot z := by
+    change ((newtonTransform f p q hq).map
+      (PowerSeries.expand (R := K) N hN).toRingHom).IsRoot z
+    rw [hTfactor, Polynomial.map_mul, Polynomial.IsRoot, Polynomial.eval_mul, hz, zero_mul]
+  have hzlead : PowerSeries.constantCoeff z = c :=
+    constantCoeff_eq_of_isRoot_map_expand_rootMultiplicity_factor hN hgred hz
+  have hztransform :
+      (newtonTransform f (N * p) (N * q) (Nat.mul_ne_zero hN hq)).IsRoot z := by
+    rw [← map_expand_newtonTransform f p q N hq hN]
+    exact hzT
+  have hdvd' : ∀ i ≤ f.natDegree,
+      (PowerSeries.X : PowerSeries K) ^ ((N * p) * (f.natDegree - i)) ∣
+        PowerSeries.expand (N * q) (Nat.mul_ne_zero hN hq) (f.coeff i) := by
+    intro i hi
+    have hdiv := expand_dvd_X_pow hN (hdvd i hi)
+    rw [← PowerSeries.expand_mul N hN q hq] at hdiv
+    simpa only [Nat.mul_assoc] using hdiv
+  refine ⟨N, hN, z, ?_, hzlead⟩
+  exact isRoot_map_expand_of_isRoot_newtonTransform
+    (N * p) (N * q) (Nat.mul_ne_zero hN hq) hdvd' hztransform
 
 /-- **Newton--Puiseux with prescribed Newton-edge root.**  A chosen root `c` of the special fibre
 of a Newton transform lifts, after a further nonzero ramification, to a root of the original

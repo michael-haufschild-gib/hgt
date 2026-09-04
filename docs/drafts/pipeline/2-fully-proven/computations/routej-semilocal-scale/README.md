@@ -357,3 +357,18 @@ Pre-certification: `beat_mode_precert.py` (`beat_mode_precert.log`): Legendre id
 `10⁻³⁰`, convolution identity, `N·(P_N − asymptotic)` bounded, exact Legendre form of `J_k` to `10⁻²⁹`,
 `J_k / beat law → 1` (`1.0005` at `k = 3200`).  At `δ = log(p₂/p₁)` this is the two-prime cross term of
 §3.5.  Next (MUST-170): the uniform two-term law joining this to `Φ`.
+
+### 3.11 The uniform law: `Φ` and the beat law as two limits of one theorem (2026-09-03)
+
+`RHTower.RouteJUniform.abs_residual_sub_uniformMain_le`: for all `δ > 0`, `k ≥ 2`,
+`|J_k(δ) − M_k(δ)| ≤ (cosh δ)^{-1/2}(|a| + |b|)·400/(sin φ (4k+3))`, with
+`M_k(δ) = (cosh δ)^{-1/2}·2(2 sin φ)^{-1/2}[a C_{4k+3} cos θ_{k,3} + b C_{4k+4} cos θ_{k,4}]` and the
+exact identity `J_k(δ) = (cosh δ)^{-1/2}[a P_{4k+3}(σ) + b P_{4k+4}(σ)]` (`residual_eq_twoIndex`).
+Corollaries: the beat law (`tendsto_beatMode_profile_of_uniform`) and `Φ`
+(`tendsto_residual_profile_of_uniform`).  Scripts: `uniform_law_derive.py` (sympy: the recurrence
+reduction and the closed forms of `a, b`), `uniform_law_expand.py` (`k`-expansions:
+`a = 64k²σ(1−σ²) + 136kσ(1−σ²) + …`, `b = −64k²σ²(1−σ²) + 8k(1−σ²)(1−22σ²) + …`),
+`uniform_law_leanforms.py` (symbolic verification of the shift chain, the coefficient pieces and the
+twelve limit forms), `uniform_law_numeric.py` (the identity to `10⁻²⁵`; `|J − M|/|J| = 1.3·10⁻⁴` at
+`k = 3200`, `δ = log 2`; `M − Φ = −5·10⁻⁴` at `p = 4·10⁴`, `X = 1.3`).  The proven error constant is
+loose (`≈ 17|J|` at `k = 3200`): it is the `400` of the elementary Laplace–Heine proof.

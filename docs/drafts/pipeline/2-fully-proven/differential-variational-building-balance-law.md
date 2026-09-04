@@ -2370,3 +2370,55 @@ targeted leaf build pass; all seven new public declarations audit to at most
 was run.  The remaining strict part of `(21)` is now exactly zero-speed versus bounded orbit/fixed
 point.  Continuous affine realization, semisimple axes, `(22)`, and weighted visual flags also
 remain, so the card stays at Stage 2.
+
+`DifferentialVariationalRankOnePhase` upgrades the earlier free-field and carrier-subsingleton
+results to the complete intrinsic type-`A₀` phase statement.  Every rank-one canonical action fixes
+every projective completed-lattice vertex; every finite orbit displacement is exactly zero; the
+full Cartan translation vector and scalar Euclidean speed vanish; and the orbit is bounded with
+bound zero.  Direct checking and the targeted leaf build pass.  All six new theorems audit to
+exactly `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella
+build.  This closes the sharp rank-one no-displacement theorem on the full current carrier.  The
+higher-rank continuous affine realization, zero-speed semisimplicity, axes, and weighted visual
+flags remain, so the card stays at Stage 2.
+
+`DifferentialVariationalPhaseNecessary` proves every unconditional implication that does not use
+semisimplicity.  Boundedness is independent of lattice base point; a fixed vertex forces a bounded
+orbit; a bounded orbit forces zero scalar speed and zero Cartan vector; and strict positive speed
+is equivalent to a nonzero Cartan vector and excludes both bounded orbits and fixed vertices.  The
+abstract subadditive translation length is also proved nonnegative.  Direct checking and the
+targeted leaf build pass.  All ten new theorems audit to exactly
+`[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella build.
+The only missing direction in the phase partition is now the semisimple rigidity
+`zero vector/speed -> fixed point -> bounded orbit`, together with continuous axes and their
+weighted visual endpoints.  Card remains at Stage 2.
+
+### Lean progress — bounded orbit exactly fixes a projective lattice vertex (2026-09-03)
+
+`CompletedPseudoDiffOpIntegerNoetherian` proves every left ideal of the completed
+pseudodifferential valuation ring is principal, by choosing a nonzero member of least natural
+valuation and using exact left divisibility.  Consequently the valuation ring and all its finite
+coordinate powers are left Noetherian.
+
+`DifferentialVariationalBoundedOrbitFixedVertex` uses this finiteness algebraically.  Exact Cartan
+balance turns a projective Euclidean bound into a literal uniformizer-interleaving bound for every
+chosen lattice representative.  Isometry identifies forward and inverse displacement, so one
+bound controls all integer iterates.  Their carrier supremum lies in one fixed enlarged lattice;
+Noetherianity makes it finitely generated, while the zeroth iterate makes its completed-skew span
+full.  Shifting the integer index proves this new lattice is literally invariant under the
+canonical semilinear action.  Thus, without a geometric fixed-point premise,
+
+```text
+DifferentialVariationalEuclideanOrbitBounded b x sigma
+  -> DifferentialVariationalHasFixedVertex b sigma.
+```
+
+`DifferentialVariationalFixedVertexPhase` combines this result with the already-proved reverse
+implication, giving exact bounded-orbit/fixed-vertex equivalence for every finite rank and every
+base vertex.  In the free differential field it also identifies bounded reconstruction-order
+powers exactly with the fixed-projective-lattice phase.
+
+Both new leaves pass direct checking and targeted builds.  All new declarations audit to at most
+`[propext, Classical.choice, Quot.sound]`; both leaves are wired into `HTGeometry`, and no umbrella
+build was run.  Remaining exact phase obligation is now strictly `zero Cartan vector/scalar speed
+-> bounded orbit`; continuous affine-building realization, semisimple axes, and opposite weighted
+visual flags also remain.  Card stays at Stage 2.

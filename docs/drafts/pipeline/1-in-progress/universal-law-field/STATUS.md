@@ -5145,3 +5145,24 @@ MUST-170 — The uniform two-term law: one asymptotic formula for the first-orde
 `O(1/(N sin φ))`) reproduces the `√X cos 4X` term of `Φ` in the scaling regime `2k sech δ → X`.
 Needs the second-order Laplace–Heine expansion with explicit error and the `1/k` expansion of the
 radius products; then `Φ` and the beat law are two limits of a single theorem.
+F554 — Lean (`LegendreShiftReduction`, `RouteJTwoIndexResidual`): **exact two-index form of the Route J
+residual**: `J_k(δ) = (cosh δ)^{-1/2}[a(k,σ) P_{4k+3}(σ) + b(k,σ) P_{4k+4}(σ)]` with explicit rational
+coefficients (`a = R₁a₁ + R₂a₂ + a₀`, `R₁ = r_{2k}r_{2k+1}`, …), obtained by eliminating
+`P_{4k}, P_{4k+2}, P_{4k+6}, P_{4k+8}` through the three-term recurrence; all cancellations of the
+five-term form (a third difference and a `(1,2,1)` smoothing) are performed algebraically.
+F555 — Lean (`RouteJUniformLaw`): **the uniform law**: for all `δ > 0`, `k ≥ 2`,
+`|J_k(δ) − M_k(δ)| ≤ (cosh δ)^{-1/2}(|a| + |b|)·400/(sin φ·(4k+3))` with the closed-form main term
+`M_k(δ) = (cosh δ)^{-1/2}·2(2 sin φ)^{-1/2}[a C_{4k+3} cos θ_{k,3} + b C_{4k+4} cos θ_{k,4}]`.  The
+second-order Laplace–Heine term is not needed: the exact rewriting removes the cancellation, so the
+owned first-order estimate with constant 400 is uniform.
+F556 — Lean (`RouteJUniformLawCoefficients`, `RouteJUniformLawLimits`): `a/k² → 64σ(1−σ²)`,
+`b/k² → −64σ²(1−σ²)` (fixed σ); `a/k → 64X`, `b/k → 8` (scaling); **both limits from one theorem**:
+`tendsto_beatMode_profile_of_uniform` (beat law) and `tendsto_residual_profile_of_uniform` (`Φ`)
+are corollaries of F555.  MUST-170 closed.  Card: `3-formalized/route-j-uniform-law-lean.md`.
+MUST-171 — The bilinear (ε₁ε₂) response.  The two-prime cross term of the semilocal measure is
+`ε₁ε₂[J_k(log(p₂/p₁)) + J_k(log(p₁p₂))]` (first-order responses to the difference and sum modes of
+the product of Euler factors) plus the *bilinear second-order response* of the Jacobi radii to two
+separate modes, which first-order theory does not see.  Compute it (the second-order Christoffel
+variation of the recurrence coefficients under `w ↦ w(1+2ε₁cos δ₁s)(1+2ε₂cos δ₂s)`), prove the
+structure of the ε₁ε₂ coefficient, and quantify its size against the beat-law term
+`32√(2/π)k^{3/2}σ^{3/2}τ^{5/2}`; report §3.5 suggests it is subleading.

@@ -74,6 +74,8 @@ structure EntireFirstOrderWimanInitialData (f : ℂ → ℂ) where
     totalDegree (slope : ℝ) weight
   second_mem_face : secondIndex ∈ firstOrderMaxNewtonFace indexSupport coeff
     totalDegree (slope : ℝ) weight
+  weight_maximal : ∀ i ∈ firstOrderTopNewtonFace indexSupport coeff totalDegree,
+    firstOrderNewtonWeight coeff (slope : ℝ) i ≤ weight
   indices_ne : firstIndex ≠ secondIndex
   derivativeExponents_ne : firstIndex.2 ≠ secondIndex.2
   charge_pos : 0 < (slope : ℝ) + 1
@@ -135,6 +137,41 @@ theorem exists_entireFirstOrderWimanInitialData
       (firstOrderNewtonWeight A (q - 1) i₁ - d - (q - 1)) := by
     rw [← hsourceFace]
     exact hu₂Source
+  have hsourceMax : ∀ u ∈ firstOrderTopNewtonFace S₀ A₀ (d - 1),
+      firstOrderNewtonWeight A₀ (q - 1) u ≤
+        firstOrderNewtonWeight A (q - 1) i₁ - d - (q - 1) := by
+    intro u hu
+    have hu' := hu
+    rw [firstOrderTopNewtonFace, Finset.mem_filter] at hu'
+    obtain ⟨huS₀, huDeg, huA₀⟩ := hu'
+    have hshiftMem : firstOrderDerivativeShift u ∈ S := by
+      rw [hsourceS, Finset.mem_image]
+      exact ⟨u, huS₀, rfl⟩
+    have hshiftTop : firstOrderDerivativeShift u ∈ firstOrderTopNewtonFace S A d := by
+      rw [firstOrderTopNewtonFace, Finset.mem_filter]
+      refine ⟨hshiftMem, ?_, ?_⟩
+      · simp only [firstOrderDerivativeShift]
+        omega
+      · rw [hsourceCoeff u huS₀]
+        exact mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) huA₀
+    have hdegree :
+        (A (firstOrderDerivativeShift u)).natDegree = d + (A₀ u).natDegree := by
+      rw [hsourceCoeff u huS₀, Polynomial.natDegree_mul
+        (pow_ne_zero _ Polynomial.X_ne_zero) huA₀, Polynomial.natDegree_X_pow]
+    have hweightShift :
+        firstOrderNewtonWeight A (q - 1) (firstOrderDerivativeShift u) =
+          firstOrderNewtonWeight A₀ (q - 1) u + d + (q - 1) := by
+      rw [firstOrderNewtonWeight, firstOrderNewtonWeight, hdegree]
+      simp only [firstOrderDerivativeShift]
+      push_cast
+      ring
+    calc
+      firstOrderNewtonWeight A₀ (q - 1) u =
+          firstOrderNewtonWeight A (q - 1) (firstOrderDerivativeShift u) - d -
+            (q - 1) := by rw [hweightShift]; ring
+      _ ≤ firstOrderNewtonWeight A (q - 1) i₁ - d - (q - 1) := by
+        gcongr
+        exact hmax (firstOrderDerivativeShift u) hshiftTop
   have hu₁₂ : u₁ ≠ u₂ := by
     intro h
     apply hi₁₂
@@ -172,6 +209,7 @@ theorem exists_entireFirstOrderWimanInitialData
     support_degree_le := hsourceDeg
     first_mem_face := ?_
     second_mem_face := ?_
+    weight_maximal := ?_
     indices_ne := hu₁₂
     derivativeExponents_ne := hu₁₂snd
     charge_pos := hpRatPos
@@ -181,6 +219,7 @@ theorem exists_entireFirstOrderWimanInitialData
   · simpa only [hcoeff] using hPrel
   · simpa only [hpRat, w₀] using hu₁Face
   · simpa only [hpRat, w₀] using hu₂Face
+  · simpa only [hpRat, w₀] using hsourceMax
   · simpa only [hpRat, w₀] using hsourceRoot
 
 end

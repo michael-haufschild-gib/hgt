@@ -1,10 +1,10 @@
 # Every critical projective horizon has full symmetric monodromy
 
 - **ID:** `projective-horizon-full-symmetric-monodromy`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ALL-RANK BRANCHED-COVER TOPOLOGY
 - **Scientific status:** `[PROVED ON PAPER] [NOVELTY PROVISIONAL] [SIGNIFICANT]`
-- **Formal status:** conormal-displacement uniqueness core formalized
+- **Formal status:** `[FORMALIZED]` exact all-rank theorem over every algebraically closed characteristic-zero field
 - **Parents:** `projective-horizon-irreducible-simple-ramification`,
   `projective-horizon-rank-one-full-monodromy`,
   `projective-horizon-reversal-self-legendre-tower`
@@ -7206,8 +7206,26 @@ over every algebraically closed characteristic-zero field, including the previou
 degree-two case.  All new leaves pass direct checks, targeted builds, and axiom audits with only
 `[propext, Classical.choice, Quot.sound]`, and are umbrella-wired without an umbrella build.
 
-Card remains Stage 2 because its statement quantifies over an arbitrary algebraically closed
-characteristic-zero base.  The sole surviving case is `m,n>1` over such a base `K`; the complex
-topological proof cannot be reused definitionally.  Exact remaining producer is algebraic
-invariance of the universal critical normal-closure group under extension of algebraically closed
-constants, or equivalently the arbitrary-base torus finite-etale/Kummer block-elimination theorem.
+### Arbitrary-base higher rank and exact all-rank terminal (2026-09-04)
+
+The constant-extension bridge is now formalized in
+`HTGeometry/CriticalConstantExtensionCompatibility.lean` and
+`HTGeometry/CriticalNormalClosureConstantExtension.lean`.  It proves that the actual critical
+observation/source square commutes under extension of algebraically closed constants, that the
+scalar-extended normal closure remains the actual normal closure, and that its Galois-group
+cardinality is unchanged.
+
+`HTGeometry/CriticalGeometricMonodromyAllFields.lean` transports the complex higher-rank result,
+uses faithfulness of the actual normal-closure action and the field-independent exact sheet count,
+and combines it with the rank-one terminals.  The exact card theorem is now:
+
+```text
+criticalGeometricMonodromy_eq_top_charZero
+  (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+  (hm : 0 < m) (hn : 0 < n) :
+  criticalGeometricMonodromy K m n = ⊤
+```
+
+No monodromy, base-change, rank, or auxiliary hypothesis remains.  Direct leaf checks, targeted
+leaf builds, umbrella wiring, and a batched axiom audit pass.  Every new declaration depends only
+on `[propext, Classical.choice, Quot.sound]`.  Card moved to Stage 3; no umbrella build was run.

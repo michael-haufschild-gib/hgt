@@ -2168,3 +2168,65 @@ must compare all finitely many projective cusp types rather than force a nonprin
 principal cusp.  A finite-cusp reduction/action layer and the resulting adjacent weighted-mean
 bound are the next obligations.  Finite overlap, tame-kernel finite generation, and Moore
 reciprocity remain downstream.
+
+### Determinant-balanced global Siegel overlap (2026-09-04)
+
+The overlap half of corrected-cone reduction is now unconditional.  The new dependency chain is:
+
+- `NumberFieldArchimedeanBalancedMean.lean` removes arbitrary determinant-balance witnesses by
+  identifying them, up to the balance radius, with actual weighted logarithmic coordinate means.
+- `NumberFieldArchimedeanBalancedPrefixComparison.lean` converts global leading-minor descent into
+  two-sided same-index Jacobi-weight comparison at every infinite place.
+- `NumberFieldArchimedeanBalancedEntryComparison.lean` applies the algebraic-integer product
+  formula to every nonzero transition or inverse-transition entry.  This is the correct global
+  replacement for the false local assertion that a nonzero algebraic integer has absolute value at
+  least one at each place.
+- `NumberFieldArchimedeanBalancedSiegelLocal.lean` feeds those support comparisons into the real
+  symmetric and complex Hermitian bounded-isometry arguments.
+- `NumberFieldArchimedeanBalancedSiegelFiniteness.lean` produces one bound for every real and
+  complex embedding of every integral transition matrix and invokes Minkowski discreteness.  Its
+  capstone is
+
+```text
+finite_numberFieldArchimedean_detBalancedSiegelTransitionSet
+```
+
+Direct source check and targeted leaf build pass.  Batched axiom audit of all twenty-six public
+declarations in this chain reports exactly `[propext, Classical.choice, Quot.sound]`; all five
+modules are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  Finite overlap is no longer an open obligation.  Geometric work remaining
+before finite presentation is the finite ideal-class cusp covering, including strict/open cusp
+neighbourhoods and connected finite union.  Arithmetic work then remains the comparison from that
+finite presentation to finite generation of the Milnor tame kernel and the unconditional Moore
+reciprocity/divisibility theorem.  None of these obligations is replaced by the overlap theorem.
+
+### Constructive rank-two cusp orbit classification (2026-09-04)
+
+Three new modules turn the finite ideal-class labels into actual projective orbit data:
+
+- `NumberFieldRankTwoCuspFrame.lean` expands `I I⁻¹ = 1` for the two displayed generators of a
+  coordinate ideal.  It chooses dual coordinates in `I⁻¹`, proves their pairing is one, and builds
+  the resulting determinant-one number-field pseudo-basis frame.
+- `NumberFieldRankTwoCuspTransitivity.lean` proves that the transition between two frames with the
+  same coordinate ideal has algebraic-integer entries.  It packages that transition in
+  `SL₂(𝓞_K)`, proves it maps one vector to the other, and then applies Steinitz normalization to
+  show that equality of cusp classes is a complete invariant of projective `SL₂(𝓞_K)` orbits.
+- `NumberFieldRankTwoFiniteCuspRepresentatives.lean` takes the finite attained range of the cusp
+  class map, chooses one representative vector in each class, and proves that every nonzero
+  rank-two vector is carried projectively to one of these finitely many representatives.
+
+The capstone is
+
+```text
+exists_numberFieldRankTwo_finiteCuspRepresentative_projectiveMap
+```
+
+Direct checks and targeted leaf builds pass.  A batched axiom audit of all twenty-four public
+declarations reports exactly `[propext, Classical.choice, Quot.sound]`; all three modules are
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  The label-to-orbit seam is closed, but this is not yet the finite-cusp
+Siegel covering.  Remaining geometric work must use these pseudo-basis frames in each adjacent
+Schur rank, assemble the finite flag-type family, prove strict/open connected cusp neighbourhoods,
+and connect that cover to the already proved finite-overlap theorem.

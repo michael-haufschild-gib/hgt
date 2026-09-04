@@ -6439,3 +6439,31 @@ dependency closure.  Axiom audit of all new and changed exported declarations re
 Card remains Stage 2.  Case-II's former scale mismatch is closed.  Remaining work is the exact
 initial-range exceptional-frequency insertion, final-block/spectral-shell summation, and terminal
 quantitative harmonic-to-window receiver; none is assumed.
+
+## Lean progress update (2026-09-04) — exact full-ladder defect and final product scale
+
+The literal final-prime ladder now retains every designated prime while paying its moving-support
+error at the required logarithmic rate:
+
+- `Sieve/MenonHarmonicHighLadderGap.lean` reindexes the suffix gap by cofactor, proves physical
+  product injectivity above the quadratic cutoff, and bounds the gap by two endpoint windows;
+- `Sieve/MenonHarmonicHighLadderError.lean` converts that count into a closed suffix mean square;
+- `Sieve/MenonHarmonicFullLadderError.lean` recombines the truncated prefix and injective suffix and
+  proves the exact full defect is eventually at most `4*(log X)^(-8)`;
+- `Sieve/MenonHarmonicExactDefectAssembly.lean` carries this literal defect through external-set,
+  final-shell, and ordinary all-small assemblies instead of substituting the earlier coarse budget;
+- `Sieve/MenonHarmonicProductCostBounds.lean` proves the exact cofactor coefficient factor has scale
+  `Q_j/X`, not the trivial ambient scale, and reduces one final-shell product to an explicit scalar
+  whose only exceptional-volume term is `sqrt X * log X * vol(E) * Q_j/X`;
+- `Sieve/MenonHarmonicFinalProductSchedule.lean` proves, with no external premise, that every step of
+  Menon's literal schedule satisfies all positivity and natural-endpoint conditions required by
+  that explicit product bound.
+
+Direct source checks and targeted leaf builds pass.  Axiom audit of all 31 new exported theorem
+declarations reports only `[propext, Classical.choice, Quot.sound]`.  New leaves are umbrella-wired
+without an umbrella build.
+
+Card remains Stage 2.  Full-ladder support loss and exact one-block cofactor scaling are closed.
+Remaining work is the quantitative initial-exceptional/Case-II volume specialization, its
+final-block and frequency-band summation, and the terminal harmonic-to-integer-start receiver; none
+is assumed.
