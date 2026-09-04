@@ -124,7 +124,7 @@ noncomputable def keyLHS (ε w winv z zp t eq : ℝ) : ℝ :=
 
 /-- Right side of the key at scale `ρ = 1`. -/
 noncomputable def keyRHS (w t : ℝ) : ℝ :=
-  12 * w * (24 * w - 1) * (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11)
+  (288 * w ^ 2 - 72) * (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11)
 
 /-- Monotonicity of `keyLHS` in all arguments. -/
 theorem keyLHS_mono {ε w winv z zp t eq εb wb winvb zb zpb tb eqb : ℝ}
@@ -184,14 +184,13 @@ theorem keyLHS_mono {ε w winv z zp t eq εb wb winvb zb zpb tb eqb : ℝ}
 theorem keyRHS_mono {w t wa ta : ℝ} (hwa1 : 1 ≤ wa) (hw : wa ≤ w) (hta0 : 0 ≤ ta) (ht : ta ≤ t) :
     keyRHS wa ta ≤ keyRHS w t := by
   unfold keyRHS
-  have h1 : 0 ≤ 24 * wa - 1 := by linarith
-  have h2 : 24 * wa - 1 ≤ 24 * w - 1 := by linarith
   have hw0 : 0 ≤ wa := by linarith
   have hpoly : 6656 / 9 * ta ^ 7 + 615872 / 945 * ta ^ 9 + 50560 / 189 * ta ^ 11 ≤
       6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11 := by gcongr
-  have hfac : 12 * wa * (24 * wa - 1) ≤ 12 * w * (24 * w - 1) :=
-    mul_le_mul (by linarith) h2 h1 (by linarith)
-  exact mul_le_mul hfac hpoly (by positivity) (mul_nonneg (by linarith) (by linarith))
+  have hsq : wa ^ 2 ≤ w ^ 2 := pow_le_pow_left₀ hw0 hw 2
+  have hfac : 288 * wa ^ 2 - 72 ≤ 288 * w ^ 2 - 72 := by linarith
+  have h1 : 0 ≤ 288 * wa ^ 2 - 72 := by nlinarith
+  exact mul_le_mul hfac hpoly (by positivity) (by linarith)
 
 /-- Chamber transfer: if the corner values satisfy the strict inequality, so do all interior
 points. -/

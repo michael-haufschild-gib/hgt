@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.NonautonomousFiniteCascadeTerminalOutputCharge
 import GaloisForLFunctions.HTGeometry.JacobianDomainCriterion
+import GaloisForLFunctions.HTGeometry.BigradedCorank
 
 /-!
 # The actual Wiman-charge frame in a finite cascade branch
@@ -62,17 +63,6 @@ noncomputable def nonautonomousFiniteCascadeWimanChargeInBranch
       (Nat.succ_le_iff.mpr j.isLt)
     (nonautonomousFiniteCascadeTerminalChargedVelocityInComponent hfan j)
 
-/-- Wiman charges commute with every canonical inclusion in the finite actual branch tower. -/
-@[simp] theorem nonautonomousFiniteCascadeBranchInclusion_WimanCharge
-    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
-    {N M : ℕ} (hNM : N ≤ M) (j : Fin N) :
-    nonautonomousFiniteCascadeBranchInclusion hfan hNM
-        (nonautonomousFiniteCascadeWimanChargeInBranch hfan j) =
-      nonautonomousFiniteCascadeWimanChargeInBranch hfan
-        ⟨j, lt_of_lt_of_le j.isLt hNM⟩ := by
-  apply Subtype.ext
-  rfl
-
 /-- A state-coordinate derivation annihilates every strictly later Wiman charge. -/
 theorem nonautonomousFiniteCascadeCoordinateDerivation_laterWimanCharge_eq_zero
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
@@ -129,6 +119,70 @@ theorem nonautonomousFiniteCascadeCoordinateDerivation_laterWimanCharge_eq_zero
       rw [show D₀ y = 0 by rfl, map_zero, hgy, hP]
       simp
       omega
+  have hintertwine : ∀ a : A, g (D₀ a) = P (g a) :=
+    derivation_map_eq_of_isAlgebraic_tower_adjoin
+      pairCoordinate hpairTop g D₀ P hmapPair
+  let w := nonautonomousFiniteCascadeTerminalChargedVelocityInComponent hfan (k : ℕ)
+  change P (g w) = 0
+  rw [← hintertwine w]
+  simp [D₀]
+
+/-- A state-coordinate derivation annihilates a Wiman charge whenever it kills both adjacent
+states defining that charge. -/
+theorem nonautonomousFiniteCascadeCoordinateDerivation_WimanCharge_eq_zero_of_ne
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ)
+    (h1 : ∀ k, k < M → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (j : Fin (M + 1)) (k : Fin M)
+    (hjk : (j : ℕ) ≠ (k : ℕ)) (hjks : (j : ℕ) ≠ (k : ℕ) + 1)
+    (P : Derivation ℂ (NonautonomousFiniteCascadeBranchField hfan M)
+      (NonautonomousFiniteCascadeBranchField hfan M))
+    (hP : ∀ i, P (nonautonomousFiniteCascadeStateInBranchField hfan M i) =
+      algebraMap ℂ _ (if (i : ℕ) = (j : ℕ) then 1 else 0)) :
+    P (nonautonomousFiniteCascadeWimanChargeInBranch hfan k) = 0 := by
+  classical
+  have hkM : (k : ℕ) + 1 ≤ M := Nat.succ_le_iff.mpr k.isLt
+  let A := NonautonomousFiniteCascadeTerminalComponentField hfan (k : ℕ)
+  let B := NonautonomousFiniteCascadeBranchField hfan M
+  let g := nonautonomousFiniteCascadeTerminalComponentInclusion hfan hkM
+  let pairCoordinate : Fin 2 →
+      NonautonomousFiniteCascadeTerminalPairField hfan (k : ℕ) := fun i =>
+    ⟨nonautonomousFiniteCascadeTerminalStatePair hfan (k : ℕ) i,
+      IntermediateField.subset_adjoin ℂ _ (Set.mem_range_self i)⟩
+  have hpairTop : IntermediateField.adjoin ℂ (Set.range pairCoordinate) = ⊤ := by
+    simpa [pairCoordinate] using
+      (adjoin_range_lift_eq_top
+        (nonautonomousFiniteCascadeTerminalStatePair hfan (k : ℕ))
+        (nonautonomousFiniteCascadeTerminalStatePair hfan (k : ℕ)) rfl)
+  have h1k : ∀ i, i < (k : ℕ) + 1 → DifferentiallyAlgebraicOfOrder (f i) 1 :=
+    fun i hi => h1 i (lt_of_lt_of_le hi hkM)
+  letI : Algebra.IsAlgebraic
+      (NonautonomousFiniteCascadeTerminalPairField hfan (k : ℕ)) A :=
+    nonautonomousFiniteCascadeTerminalComponent_isAlgebraic hfan hall k h1k
+  let D₀ : Derivation ℂ A A := 0
+  let u := terminalLeadingStateInComponent hfan (k : ℕ)
+  let y := nonautonomousFiniteCascadeTerminalOutputInComponent hfan (k : ℕ)
+  have hgu : g u =
+      nonautonomousFiniteCascadeStateInBranchField hfan M ⟨k, by omega⟩ := by
+    exact nonautonomousFiniteCascadeTerminalComponentInclusion_input hfan hkM
+  have hgy : g y =
+      nonautonomousFiniteCascadeStateInBranchField hfan M ⟨(k : ℕ) + 1, by omega⟩ := by
+    exact nonautonomousFiniteCascadeTerminalComponentInclusion_output hfan hkM
+  have hmapPair : ∀ i : Fin 2,
+      g (D₀ (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan (k : ℕ)) A
+        (pairCoordinate i))) =
+      P (g (algebraMap
+        (NonautonomousFiniteCascadeTerminalPairField hfan (k : ℕ)) A
+        (pairCoordinate i))) := by
+    intro i
+    fin_cases i
+    · change g (D₀ u) = P (g u)
+      rw [show D₀ u = 0 by rfl, map_zero, hgu, hP]
+      simp [Ne.symm hjk]
+    · change g (D₀ y) = P (g y)
+      rw [show D₀ y = 0 by rfl, map_zero, hgy, hP]
+      simp [Ne.symm hjks]
   have hintertwine : ∀ a : A, g (D₀ a) = P (g a) :=
     derivation_map_eq_of_isAlgebraic_tower_adjoin
       pairCoordinate hpairTop g D₀ P hmapPair
@@ -361,15 +415,23 @@ theorem algebraicIndependent_nonautonomousFiniteCascadeClockWimanOutputFrame
     by_cases hj₀ : (j : ℕ) = 0
     · omega
     by_cases hjM : (j : ℕ) = M
-    · simp only [J, Matrix.of_apply, frame,
-        nonautonomousFiniteCascadeClockWimanOutputFrame, hj₀, hjM, dite_false, dite_true]
-      rw [hP]
+    · have hM₀ : M ≠ 0 := by omega
+      have hframe : frame j =
+          nonautonomousFiniteCascadeStateInBranchField hfan M (Fin.last M) := by
+        simp [frame, nonautonomousFiniteCascadeClockWimanOutputFrame,
+          hjM, hM₀]
+      change P i (frame j) = 0
+      rw [hframe, hP]
       simp
       omega
     · let i' : Fin M := ⟨i, by omega⟩
       let j' : Fin M := ⟨j, by omega⟩
-      simp only [J, Matrix.of_apply, frame,
-        nonautonomousFiniteCascadeClockWimanOutputFrame, hj₀, hjM, dite_false]
+      have hframe : frame j =
+          nonautonomousFiniteCascadeWimanChargeInBranch hfan j' := by
+        simp [frame, nonautonomousFiniteCascadeClockWimanOutputFrame,
+          hj₀, hjM, j']
+      change P i (frame j) = 0
+      rw [hframe]
       apply nonautonomousFiniteCascadeCoordinateDerivation_laterWimanCharge_eq_zero
         hfan hall M h1 i' j'
       · exact hij'
@@ -378,19 +440,28 @@ theorem algebraicIndependent_nonautonomousFiniteCascadeClockWimanOutputFrame
   have hdiag : ∀ i : Fin (M + 1), J i i ≠ 0 := by
     intro i
     by_cases hi₀ : (i : ℕ) = 0
-    · simp only [J, Matrix.of_apply, frame,
-        nonautonomousFiniteCascadeClockWimanOutputFrame, hi₀, dite_true]
-      rw [hP]
-      simp
+    · have hframe : frame i =
+          nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩ := by
+        simp [frame, nonautonomousFiniteCascadeClockWimanOutputFrame, hi₀]
+      change P i (frame i) ≠ 0
+      rw [hframe, hP]
+      simp [hi₀]
     by_cases hiM : (i : ℕ) = M
-    · simp only [J, Matrix.of_apply, frame,
-        nonautonomousFiniteCascadeClockWimanOutputFrame, hi₀, hiM, dite_false, dite_true]
-      rw [hP]
-      simp
-      exact hiM
+    · have hM₀ : M ≠ 0 := by omega
+      have hframe : frame i =
+          nonautonomousFiniteCascadeStateInBranchField hfan M (Fin.last M) := by
+        simp [frame, nonautonomousFiniteCascadeClockWimanOutputFrame,
+          hiM, hM₀]
+      change P i (frame i) ≠ 0
+      rw [hframe, hP]
+      simp [hiM]
     · let i' : Fin M := ⟨i, by omega⟩
-      simp only [J, Matrix.of_apply, frame,
-        nonautonomousFiniteCascadeClockWimanOutputFrame, hi₀, hiM, dite_false]
+      have hframe : frame i =
+          nonautonomousFiniteCascadeWimanChargeInBranch hfan i' := by
+        simp [frame, nonautonomousFiniteCascadeClockWimanOutputFrame,
+          hi₀, hiM, i']
+      change P i (frame i) ≠ 0
+      rw [hframe]
       apply nonautonomousFiniteCascadeCoordinateDerivation_WimanCharge_ne_zero
         hfan hall M h1 i' (P i)
       intro s
@@ -408,6 +479,124 @@ theorem algebraicIndependent_nonautonomousFiniteCascadeClockWimanOutputFrame
     exact (P i).map_algebraMap c
   · intro i j
     rfl
+
+/-- Every rational-clock coefficient in the finite branch lies in the field generated by the
+literal clock over `ℂ`. -/
+theorem nonautonomousFiniteBranch_algebraMap_mem_clockAdjoin
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M : ℕ) (r : RatFunc ℂ) :
+    algebraMap (RatFunc ℂ) (NonautonomousFiniteCascadeBranchField hfan M) r ∈
+      IntermediateField.adjoin ℂ
+        {nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩} := by
+  let A := IntermediateField.adjoin ℂ
+    {nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩}
+  have hX : algebraMap (RatFunc ℂ)
+      (NonautonomousFiniteCascadeBranchField hfan M) RatFunc.X ∈ A := by
+    rw [nonautonomousFiniteBranch_algebraMap_X]
+    exact IntermediateField.subset_adjoin ℂ _ (Set.mem_singleton _)
+  have hpoly : ∀ p : Polynomial ℂ,
+      algebraMap (RatFunc ℂ) (NonautonomousFiniteCascadeBranchField hfan M)
+        (algebraMap (Polynomial ℂ) (RatFunc ℂ) p) ∈ A := by
+    intro p
+    induction p using Polynomial.induction_on' with
+    | add p q hp hq =>
+        rw [map_add, map_add]
+        exact A.add_mem hp hq
+    | monomial n a =>
+        rw [← Polynomial.C_mul_X_pow_eq_monomial, map_mul, map_mul, map_pow, map_pow]
+        refine A.mul_mem ?_ (A.pow_mem hX n)
+        change algebraMap (RatFunc ℂ) (NonautonomousFiniteCascadeBranchField hfan M)
+          (algebraMap ℂ (RatFunc ℂ) a) ∈ A
+        rw [← IsScalarTower.algebraMap_apply ℂ (RatFunc ℂ)
+          (NonautonomousFiniteCascadeBranchField hfan M)]
+        exact A.algebraMap_mem a
+  induction r using RatFunc.induction_on with
+  | _ p q hq =>
+      rw [map_div₀]
+      exact A.div_mem (hpoly p) (hpoly q)
+
+/-- Positive-layer Wiman charges followed by the terminal output: the `M` genuine hidden
+coordinates after the rational clock is moved into the coefficient field. -/
+noncomputable def nonautonomousFiniteCascadeHiddenWimanOutputFrame
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (M : ℕ) (i : Fin M) : NonautonomousFiniteCascadeBranchField hfan M :=
+  nonautonomousFiniteCascadeClockWimanOutputFrame hfan M i.succ
+
+/-- The hidden Wiman/output frame is algebraically independent over the actual rational clock
+field `ℂ(z)`. -/
+theorem algebraicIndependent_ratFunc_nonautonomousFiniteCascadeHiddenWimanOutputFrame
+    {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (M : ℕ)
+    (h1 : ∀ k, k < M → DifferentiallyAlgebraicOfOrder (f k) 1) :
+    AlgebraicIndependent (RatFunc ℂ)
+      (nonautonomousFiniteCascadeHiddenWimanOutputFrame hfan M) := by
+  classical
+  let B := NonautonomousFiniteCascadeBranchField hfan M
+  let frame : Fin (M + 1) → B :=
+    nonautonomousFiniteCascadeClockWimanOutputFrame hfan M
+  let clock : Fin 1 → B := fun _ => frame 0
+  let hidden : Fin M → B :=
+    nonautonomousFiniteCascadeHiddenWimanOutputFrame hfan M
+  let e : Sum (Fin M) (Fin 1) → Fin (M + 1) :=
+    Sum.elim (fun i => i.succ) (fun _ => 0)
+  have he : Function.Injective e := by
+    intro i j hij
+    cases i with
+    | inl i =>
+        cases j with
+        | inl j =>
+            congr 1
+            apply Fin.ext
+            have hv := congrArg Fin.val hij
+            simpa [e] using hv
+        | inr j =>
+            exfalso
+            have hv := congrArg Fin.val hij
+            simp [e] at hv
+    | inr i =>
+        cases j with
+        | inl j =>
+            exfalso
+            have hv := congrArg Fin.val hij
+            simp [e] at hv
+        | inr j =>
+            exact congrArg Sum.inr (Subsingleton.elim i j)
+  have hjoint : AlgebraicIndependent ℂ (Sum.elim hidden clock) := by
+    have hcomp :=
+      (algebraicIndependent_nonautonomousFiniteCascadeClockWimanOutputFrame
+        hfan hall M h1).comp e he
+    convert hcomp using 1
+    funext i
+    cases i <;> rfl
+  let A := IntermediateField.adjoin ℂ
+    {nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩}
+  have hhiddenA : AlgebraicIndependent A hidden := by
+    have hsplit :=
+      (algebraicIndependent_sumElim_intermediateField_iff clock hidden).mp hjoint
+    have hrange : Set.range clock =
+        {nonautonomousFiniteCascadeStateInBranchField hfan M ⟨0, by omega⟩} := by
+      ext x
+      constructor
+      · rintro ⟨i, rfl⟩
+        simp [clock, frame, nonautonomousFiniteCascadeClockWimanOutputFrame]
+      · intro hx
+        rw [Set.mem_singleton_iff] at hx
+        subst x
+        refine ⟨0, ?_⟩
+        simp [clock, frame, nonautonomousFiniteCascadeClockWimanOutputFrame]
+    have hrel := hsplit.2
+    rw [hrange] at hrel
+    simpa [A] using hrel
+  let ratToA : RatFunc ℂ →+* A :=
+    (algebraMap (RatFunc ℂ) B).codRestrict A
+      (nonautonomousFiniteBranch_algebraMap_mem_clockAdjoin hfan M)
+  letI : Algebra (RatFunc ℂ) A := ratToA.toAlgebra
+  letI : IsScalarTower (RatFunc ℂ) A B :=
+    IsScalarTower.of_algebraMap_eq fun _ => rfl
+  have hrestricted : AlgebraicIndependent (RatFunc ℂ) hidden :=
+    AlgebraicIndependent.restrictScalars
+      (algebraMap (RatFunc ℂ) A).injective hhiddenA
+  simpa [hidden] using hrestricted
 
 /-- The finite actual branch field is algebraic over its Wiman-charge/terminal-output frame. -/
 theorem nonautonomousFiniteCascadeBranchField_isAlgebraic_WimanChargeOutputFrame
@@ -580,12 +769,8 @@ theorem nonautonomousFiniteCascadeCoordinateDerivation_aboveWimanCharge_eq_zero
     (hP : ∀ i, P (nonautonomousFiniteCascadeStateInBranchField hfan M i) =
       algebraMap ℂ _ (if (i : ℕ) = (j : ℕ) then 1 else 0)) :
     P (nonautonomousFiniteCascadeWimanChargeInBranch hfan k) = 0 := by
-  let k' : Fin ((k : ℕ) + 1) := Fin.last (k : ℕ)
-  have hkM : (k : ℕ) + 1 ≤ M := Nat.succ_le_iff.mpr k.isLt
-  rw [← nonautonomousFiniteCascadeBranchInclusion_WimanCharge hfan hkM k']
-  exact nonautonomousFiniteCascadeCoordinateDerivation_lowerBranch_eq_zero
-    hfan hall h1 j hkj P hP
-      (nonautonomousFiniteCascadeWimanChargeInBranch hfan k')
+  exact nonautonomousFiniteCascadeCoordinateDerivation_WimanCharge_eq_zero_of_ne
+    hfan hall M h1 j k (by omega) (by omega) P hP
 
 /-- Exact adjacent-coordinate support of every actual Wiman charge. -/
 theorem nonautonomousFiniteCascadeCoordinateDerivation_WimanCharge_eq_zero_of_not_adjacent
@@ -599,17 +784,8 @@ theorem nonautonomousFiniteCascadeCoordinateDerivation_WimanCharge_eq_zero_of_no
     (hP : ∀ i, P (nonautonomousFiniteCascadeStateInBranchField hfan M i) =
       algebraMap ℂ _ (if (i : ℕ) = (j : ℕ) then 1 else 0)) :
     P (nonautonomousFiniteCascadeWimanChargeInBranch hfan k) = 0 := by
-  by_cases hjklt : (j : ℕ) < (k : ℕ)
-  · let j' : Fin M := ⟨j, by omega⟩
-    apply nonautonomousFiniteCascadeCoordinateDerivation_laterWimanCharge_eq_zero
-      hfan hall M h1 j' k
-    · exact hjklt
-    · intro i
-      simpa [j'] using hP i
-  · apply nonautonomousFiniteCascadeCoordinateDerivation_aboveWimanCharge_eq_zero
-      hfan hall M h1 j k
-    · omega
-    · exact hP
+  exact nonautonomousFiniteCascadeCoordinateDerivation_WimanCharge_eq_zero_of_ne
+    hfan hall M h1 j k hjk hjks P hP
 
 /-- Exact bidiagonal chain rule for the time derivative of an actual Wiman charge: only the
 layer's input and output state velocities can occur. -/
@@ -635,6 +811,9 @@ theorem nonautonomousFiniteCascadeDerivation_WimanCharge_bidiagonal
   let k₀ : Fin (M + 1) := ⟨k, by omega⟩
   let k₁ : Fin (M + 1) := ⟨(k : ℕ) + 1, by omega⟩
   let w := nonautonomousFiniteCascadeWimanChargeInBranch hfan k
+  change D w =
+    D (nonautonomousFiniteCascadeStateInBranchField hfan M k₀) * P k₀ w +
+      D (nonautonomousFiniteCascadeStateInBranchField hfan M k₁) * P k₁ w
   have hkne : k₀ ≠ k₁ := by
     intro h
     have := Fin.ext_iff.mp h
@@ -642,8 +821,8 @@ theorem nonautonomousFiniteCascadeDerivation_WimanCharge_bidiagonal
   have hdecomp :=
     nonautonomousFiniteCascadeDerivation_coordinate_decomposition
       hfan hall M h1 D P hP w
-  rw [show D w = ∑ i, D (nonautonomousFiniteCascadeStateInBranchField hfan M i) *
-      P i w by simpa only [smul_eq_mul] using hdecomp]
+  rw [hdecomp]
+  simp only [smul_eq_mul]
   calc
     ∑ i, D (nonautonomousFiniteCascadeStateInBranchField hfan M i) * P i w =
         ∑ i ∈ ({k₀, k₁} : Finset (Fin (M + 1))),

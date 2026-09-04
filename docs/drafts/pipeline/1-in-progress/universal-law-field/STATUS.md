@@ -4991,3 +4991,7 @@ MUST-197 — Construct cofinal modular-compression class of finite full Burnol G
 same-representative boundary theorem: its cubic twisted source pairing equals the ordinary
 formation-relative index and is bounded by `B_base<1`. Diagonal weights, bounded S3 limits, or a
 postulated KK/cyclic pairing fail.
+F633 — Corpus already has prime-mixed trace-one nuclear `T` and theta frame, but the unframed positive loop is null-homotopic; raw nested projections are diamond-flat and exact Schur elimination is transitive. These are observers/local coordinates, not producers.
+F634 — `ULF-SFMH-001` constructs the source-faithful deformation: `H_C(U)=C⁻¹UCU⁻¹` is a nonabelian frame cocycle, reversal gives conjugate inverse, and it exactly intertwines source modular transport with framing. Its odd cubic projection defect is the MCPT modular anomaly; literal finite Burnol Grams define canonical `H_F` with all cross-prime entries retained.
+CANNOT-284 — Commuting/diagonal source frames have `H=1` and zero cubic defect; every finite matrix `H` has determinant one. Finite phase/determinant/K1, raw projection curvature, quadratic Schur data, positivity, and the unframed nuclear loop cannot select.
+MUST-198 — Construct actual pre-divisor theta frames on the same Burnol packets and their relative cofinal holonomy. Prove one representative has boundary equal to Xi escape multiplicity and twisted cubic source value bounded by `B_base<1`; finite holonomy alone is necessarily index-blind.

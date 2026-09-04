@@ -3,10 +3,10 @@
 - **ID:** ULF-MCCED-001
 - **Stage:** 1-in-progress
 - **Type:** pre-divisor modular-extension construction conjecture
-- **Parents:** ULF-MCPT-001, ULF-CCEL-001, ULF-FACHD-001, ULF-RUCRI-001,
-  ULF-CRSHC-001, ULF-PCLGF-001
+- **Parents:** ULF-MCPT-001, ULF-SFMH-001, ULF-PBFMS-001, ULF-FBG-002,
+  ULF-CCEL-001, ULF-FACHD-001, ULF-RUCRI-001, ULF-CRSHC-001, ULF-PCLGF-001
 - **Status:** [CONJECTURAL ARITHMETIC REALIZATION] [GENERIC LAW LEAN-PROVED]
-  [SCALAR TWO-BLOCK LAW LEAN-PROVED] [FINITE SOURCE SUPPORT LEAN-PROVED] [NOT RH]
+  [SOURCE-FRAME HOLONOMY LEAN-PROVED] [FINITE SOURCE SUPPORT LEAN-PROVED] [NOT RH]
 
 ## 1. Big-picture interpretation
 
@@ -17,6 +17,18 @@ Literal Euler formation already supplies a finite-mass, prime-mixed density. On 
 source packet this density defines a modular automorphism and a twisted trace. Ordinary cyclic
 trace deliberately erases the cubic associator of three polarizations. The source twisted trace
 does not: ULF-MCPT-001 proves that it converts the associator into an exact modular displacement.
+
+ULF-SFMH-001 now identifies the missing dynamical object. If `C_F` is literal Burnol density and
+`U_F` is theta frame, then
+
+~~~text
+H_F(U_F)=C_F^(-1) U_F C_F U_F^(-1)
+~~~
+
+is the exact nonabelian obstruction to commuting source modular time through completion. It is a
+cocycle under frame composition, reverses to its inverse up to frame gauge, and is trivial exactly
+when source and frame commute. The proposed extension class is the cofinal odd cubic boundary of
+this holonomy, not the quadratic Schur coefficient used to calculate it locally.
 
 The proposed higher law is:
 
@@ -47,6 +59,14 @@ scripts/formal_tools.py research "routePPrimitiveBurnolWindowFeature linearIndep
 scripts/formal_tools.py research "Burnol base Cauchy Gram finite packet linear independent invertible"
 scripts/formal_tools.py research "complex exponential functions real variable arbitrary complex distinct rates linear independent"
 scripts/formal_tools.py research "holomorphic entire function zero on real line identity theorem"
+scripts/formal_tools.py research "multiplicative commutator source density theta frame holonomy"
+scripts/formal_tools.py research "C inverse U C U inverse projection modular conjugation"
+scripts/formal_tools.py research "group commutator reversal conjugate inverse"
+scripts/formal_tools.py research "modular holonomy framed projection source density"
+scripts/formal_tools.py research "commutator holonomy odd Chern character frame"
+scripts/formal_tools.py research "nested projection quadratic variation diamond flatness"
+scripts/formal_tools.py research "Schur elimination transitive order independent"
+scripts/formal_tools.py research "prime framed nuclear loop null homotopy positive trace one"
 ~~~
 
 The audit fixes the following.
@@ -86,6 +106,17 @@ The audit fixes the following.
 12. ULF-PBFMS-001 constructs full finite source support directly from literal prime powers. Every
     injective Burnol packet is linearly independent in the half-line `L2` source for arbitrary
     ordinate clocks; its complete prime-mixed Gram has nonzero determinant and is invertible.
+13. ULF-FBG-002 already constructs the prime-mixed trace-one nuclear cycle `T` and its moving theta
+    frame, but proves the unframed positive trace-one loop null-homotopic. `T` is the observer;
+    its missing invariant must retain the frame relative to source modular time.
+14. Raw nested packet projections satisfy exact diamond flatness, and exact Schur elimination is
+    transitive and order-independent. Neither raw inclusion curvature nor a quadratic Schur form
+    can produce the missing class.
+15. ULF-SFMH-001 constructs the surviving finite object exactly. `H_C(U)=C^(-1)UCU^(-1)` obeys a
+    nonabelian cocycle law, reverses by conjugate inversion, and implements the complete failure of
+    modular/frame naturality. Its cubic projection defect maps to the MCPT modular anomaly.
+16. Every finite matrix `H_C(U)` has determinant one. Finite phase, determinant, or ordinary `K1`
+    is blind; the proposed integer is forced to be a cofinal relative boundary.
 
 These facts narrow the object to a modular refinement of the cubic completion extension, formed
 from the non-diagonal Burnol source density before theta completion.
@@ -105,14 +136,29 @@ ULF-PBFMS-001 proves every injective label packet has full support for the liter
 Burnol covariance. Thus `C_F^(-1)` is canonical; no support reduction or chosen pseudoinverse
 remains in the construction.
 
-For F contained in G, compression preserves tau but generally not sigma:
+For the theta frame `U_F(a)`, form the literal source-frame holonomy
+
+~~~text
+H_F(a)=C_F^(-1) U_F(a) C_F U_F(a)^(-1).                (MCCED.2)
+~~~
+
+ULF-SFMH-001 proves its exact formation laws. For two frame steps,
+
+~~~text
+H_F(UV)=H_F(U) U H_F(V) U^(-1),
+H_F(U^(-1))=U^(-1)H_F(U)^(-1)U.                        (MCCED.2a)
+~~~
+
+For F contained in G, compression preserves tau but generally not this holonomy. Equivalently,
+compression does not preserve sigma:
 
 ~~~text
 Delta_(G/F)(A)
- = Q_F sigma_G(iota_(G/F)(A)) Q_F - sigma_F(A).         (MCCED.2)
+ = Q_F sigma_G(iota_(G/F)(A)) Q_F - sigma_F(A).         (MCCED.2b)
 ~~~
 
-Construct the cofinal class of these defects and its theta/Poisson completion. Required theorem:
+Construct the relative cofinal class of `H_F`, equivalently of these defects, and its
+theta/Poisson completion. Required theorem:
 
 ~~~text
 boundary_3([Delta^sigma_theta])
@@ -146,16 +192,17 @@ literal source density and theta compression. Integrality is topological; smalln
 
 ## 4. Object to construct
 
-The object is a cofinal modular correspondence, not a bounded map of one-particle Hilbert spaces:
+The object is the cofinal source-frame holonomy of a modular correspondence, not a bounded map of
+one-particle Hilbert spaces:
 
 ~~~text
-(A_F, sigma_F, tau_F)  --theta/Poisson compression-->  Toeplitz/Hardy extension
-        |                                              |
-        +------ cubic twisted Chern character ---------+
+(C_F,U_F) --> H_F=C_F^(-1)U_F C_F U_F^(-1) --> relative cofinal boundary
+    |                                                   |
+    +----------- cubic twisted Chern character ---------+
 ~~~
 
 At finite F, C_F is the complete primitive Burnol Gram, not its diagonal. Its inverse mixes every
-prime/depth label. The failure (MCCED.2) is therefore source-faithful and noncentral.
+prime/depth label. The holonomy (MCCED.2) is therefore source-faithful and noncentral.
 
 For a block enlargement with density
 
@@ -174,16 +221,17 @@ The local action is A^(-1)A0A. Their difference is zero exactly when the new sou
 modular coupling to the old block. Thus cofinal cross-prime Schur data, already conserved by the
 Burnol colligation, is the concrete carrier of the extension defect.
 
-The scalar two-block specialization is now unconditional and Lean-proved in ULF-MCPT-001:
+The scalar two-block specialization is unconditional and Lean-proved in ULF-MCPT-001:
 
 ~~~text
 P(C^(-1)(xP)C)P-xP = (bc/(ad-bc))xP.                  (MCCED.6s)
 ~~~
 
 It proves necessity of off-diagonal source coupling without promoting the quadratic coefficient
-to the sought invariant: that coefficient enters the cubic twisted associator of three
-polarizations. Operator-block (MCCED.6), cofinal compatibility, and arithmetic specialization
-remain open.
+to the sought invariant. ULF-SFMH-001 identifies the nonlinear object containing that local
+coefficient: the multiplicative commutator `H_F`. The sought invariant is the odd cubic boundary
+of its cofinal failure to trivialize. Operator-block (MCCED.6), actual theta frames, and cofinal
+compatibility remain open.
 
 ULF-MCPT-001 then turns the cubic projection associator into
 
@@ -230,15 +278,22 @@ bounded lift of A_* itself.
    be RH-equivalent, the argument is circular.
 10. If the modular anomaly is an ordinary trace of a commutator, it vanishes and returns
     ULF-FACHD-001.
+11. If the candidate is raw nested-projection curvature, it is diamond-flat.
+12. If the candidate is Schur elimination or its quadratic coefficient, exact transitivity makes
+    it a local coordinate calculation, not a producer.
+13. If it uses the unframed positive nuclear loop, ULF-FBG-002 supplies an explicit null-homotopy.
+14. If it reads finite determinant or scalar phase of `H_F`, ULF-SFMH-001 proves the value is one.
 
 ## 7. Immediate proof programme
 
 1. **Completed (ULF-PBFMS-001):** finite primitive Burnol packets are linearly independent, so
    every `C_F` is invertible.
-2. Lift proved scalar (MCCED.6s) to operator blocks and prove the exact three-level cocycle law
-   for Delta_(G/F).
-3. Construct the support-reduced inductive modular algebra and show its cofinal defect is not an
-   ordinary S1 limit.
-4. Build theta/Poisson action on that algebra before Xi specialization.
-5. Prove the cubic twisted-to-ordinary boundary identities (MCCED.3)--(MCCED.4).
+2. **Completed (ULF-SFMH-001):** finite literal Burnol holonomy exists canonically; it obeys exact
+   nonabelian composition and reversal, its cubic defect has exact modular transgression, and every
+   finite determinant is blind.
+3. Construct actual theta/Poisson frame `U_F(a)` on the same Burnol packet and prove its source
+   commutator is nontrivial without importing Xi or divisor data.
+4. Construct the relative cofinal holonomy class and prove its failure to trivialize is not an
+   ordinary `S3` limit; raw projection and Schur routes are closed.
+5. Prove cubic twisted-to-ordinary boundary identities (MCCED.3)--(MCCED.4).
 6. Prove same-representative bound (MCCED.5).
