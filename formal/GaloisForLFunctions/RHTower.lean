@@ -4889,6 +4889,8 @@ import GaloisForLFunctions.RHTower.GibbsCurrentGap
 import GaloisForLFunctions.RHTower.GibbsDilationSeam
 import GaloisForLFunctions.RHTower.GibbsEnergySpread
 import GaloisForLFunctions.RHTower.GibbsFourFieldMellinPolarization
+import GaloisForLFunctions.RHTower.GibbsFullPrimeGammaEscape
+import GaloisForLFunctions.RHTower.GibbsHardCutoffTransport
 import GaloisForLFunctions.RHTower.GibbsInfiniteVolume
 import GaloisForLFunctions.RHTower.GibbsLogDerivative
 import GaloisForLFunctions.RHTower.GibbsMoebiusAnchor

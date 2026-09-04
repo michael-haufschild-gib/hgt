@@ -4909,9 +4909,7 @@ branch packages, or one imported inequality as closed source laws. They constrai
 not discharge a universal-law or RH gate.
 F622 — `ULF-CCEL-001` defines powered-clock defect `omega_3(F)=D_E^3F-FD_X^3`; a splitting change adds `delta_3(H)=D_I^3H-HD_X^3`. This is algebraic, with no parameterized completion flow.
 F623 — Lean proves lift independence in `coker(delta_3)`, vanishing iff a powered-clock-equivariant lift exists, and `D_E^3F=FD_X^3+i omega_3`. Actual deformation interpretation is unproved.
-F624 — CCEL's unipotent example has powered-clock defect `3 id` and zero cubic coboundaries.
-It separates vector-space splitting from clock splitting; its first clock defect is already `id`.
-It does not establish a new obstruction beyond first-order clock equivariance (audit ULF-CDMA-001).
+F624 — CCEL's unipotent example has powered-clock defect `3 id` and zero cubic coboundaries. It separates vector-space splitting from clock splitting; its first clock defect is already `id`. It does not establish a new obstruction beyond first-order clock equivariance (audit ULF-CDMA-001).
 CANNOT-278 — Ordinary Busby perturbation by nuclear `T`, odd projection traces, cyclic/Massey
 cocycles without arithmetic realization, and support-boundary regularizations do not answer the
 gate. They respectively vanish in the corona, recover an old index, read a supplied class, or add
@@ -4921,15 +4919,8 @@ as a cubic-clock morphism; evaluate its lifting class on PCOB's unique
 `S_Lambda^3(T)=8 sign(t) Phi tensor |b_t><b_t|`; prove this ideal value is the Xi escape incidence
 and inherits the same primitive nuclear `<1` budget. Failure of any coefficientwise identification
 retires the mechanism.
-F625 — `ULF-PLCIE-001`: inverse prime heat on the literal formed density has exact weight
-`p^(2u)w_d(p)=8d log(p)p^(-(1+2(d-u)))`, summable exactly for `u<d`. Thus `d` is the maximal
-trace-ideal time of `T_d`; every finite-prime compression crosses it by an invertible gauge, while
-cofinal source completion cannot.
-F626 — At forced exit `u=d`, first prime clock is exactly `8d(log p)^2/p`, the projective
-coefficient ray of the proved completion metric anomaly; equality of scalar normalization is open.
-Same source orbit has third forward jet
-`-S_Lambda^3(T_d)=-8 Phi tensor |b_d><b_d|`. Cubic birth and non-trace-class completion anomaly are
-therefore infinitesimal and endpoint shadows of one literal source flow.
+F625 — `ULF-PLCIE-001`: inverse prime heat on the literal formed density has exact weight `p^(2u)w_d(p)=8d log(p)p^(-(1+2(d-u)))`, summable exactly for `u<d`. Thus `d` is the maximal trace-ideal time of `T_d`; every finite-prime compression crosses it by an invertible gauge, while cofinal source completion cannot.
+F626 — At forced exit `u=d`, first prime clock is exactly `8d(log p)^2/p`, the projective coefficient ray of the proved completion metric anomaly; equality of scalar normalization is open. Same source orbit has third forward jet `-S_Lambda^3(T_d)=-8 Phi tensor |b_d><b_d|`. Cubic birth and non-trace-class completion anomaly are therefore infinitesimal and endpoint shadows of one literal source flow.
 CANNOT-279 — One-sided prime reflection and local Stokes multi-Rees channels are old/closed.
 Finite-cutoff gauge failure, generic jets, and the always-one source survival index cannot select
 the Xi `0/1` escape invariant; a divisor-fitted scalar match `8d=115/(864a^4)` is circular.
@@ -4963,9 +4954,7 @@ Lean proves `P(C⁻¹(xP)C)P-xP=(bc/(ad-bc))xP`; block-separable density is blin
 A prime-mixed `3/4<1` witness has ordinary cubic trace zero, modular cubic value `-1/8`, defect one.
 F632 — Reflected diagonal prime-depth incidence is a flat coboundary: finite characteristic polynomials, determinants, and cyclic moments are horizontally blind.
 `ULF-PBFMS-001` forms non-diagonal Burnol covariance from prime powers; every injective finite packet has full support and canonical inverse.
-CANNOT-283 — KMS positivity, modular traciality, or an abstract twisted cocycle cannot be the
-producer. They are receivers unless literal Burnol density defines the modular action before Xi
-and theta compression itself creates its cofinal nonnaturality.
+CANNOT-283 — KMS positivity, modular traciality, or an abstract twisted cocycle cannot be the producer. They are receivers unless literal Burnol density defines the modular action before Xi and theta compression itself creates its cofinal nonnaturality.
 MUST-197 — Construct cofinal modular-compression class of finite full Burnol Grams, then prove one
 same-representative boundary theorem: its cubic twisted source pairing equals the ordinary
 formation-relative index and is bounded by `B_base<1`. Diagonal weights, bounded S3 limits, or a
@@ -4996,3 +4985,14 @@ CANNOT-290 — It cannot obtain cancellation by renaming covariance accumulation
 CANNOT-291 — It cannot infer square-root cancellation from successor–dilation subdivision alone: its joint-eigenvector law holds for every completely multiplicative sequence, including logarithmic characters (`CCMFirstClockBlockSubdivisionTransfer`).
 F644 — Finite Möbius Gamma--Hankel energy is `Γ(r)sum_(m,n≤N) μ(m)μ(n)/(m+n)^r`; its diagonal has a cutoff-uniform bound for `r>1`. An off-line zero forces the off-diagonal covariance to `+∞` on every strict-right line below it (`MobiusLaplaceGammaHankelWall`, `MobiusGammaHankelTransverseEscapeCone`).
 MUST-202 — For the suggested additive/multiplicative cancellation mechanism, a sufficient exact target is bounded covariance returns at arbitrarily large `N`, on exponents `r>1` arbitrarily close to `1` (`mobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded_implies_riemannHypothesis`). The return bound is unproved; the terminal implication is not that bound.
+F645 — Born probabilities and every diagonal-energy Born variance can remain unchanged under unimodular Euler twists carrying prescribed Helson zeros (`exists_phase_fisher_blind_with_prescribed_zero`, Lean). This does not exclude phase-sensitive interferometry or all possible QFI experiments.
+F646 — Indeterminate Hamburger completions can share all local-time jets yet have incompatible recurrence; compact positive-spectrum families can separately share all perturbative jets yet differ nonperturbatively (`exists_infiniteJetQuantumRecurrenceSeparation`, `quantumRecurrenceGlobalCompletionWitness`, Lean). Neither theorem contradicts compact moment determinacy.
+F647 — A finite observer's return is weighted edge-phase energy; its exact visible capacity is vertices minus coherence components (`finite_quantum_observer_coherence_law`, Lean). Observed recurrence need not be full-state or full-channel recurrence.
+F648 — Generic static nearest-neighbour qudit paths attain maximal projective rank, both clock exponents and every positive-weight replica floor (`exists_quditPath_everyChart_sameDraw_recurrenceCollisionLaw`, Lean). Spatial locality alone supplies no low-rank or rapid-return bound.
+F649 — Collective pure-generator QFI equals four times the complete covariance sum (`pureGeneratorQuantumFisher_collective_eq_four_mul_sum`, Lean). Its positivity does not bound cross terms by diagonal terms or pay coherent preparation cost.
+MUST-203 — It must distinguish cutoff returns `N->infinity` from time recurrence at fixed `N`; the quantum-recurrence manuscript's completed-time-then-size laws supply no joint-limit transfer. Any physics mechanism must retain the unnormalized arithmetic signal and prove that transfer or a direct cofinal estimate.
+F650 — Literal cutoff-scale transfers `T_p F(N,x)=F(N div p,px)` still commute; `D_p=I+T_p` commutes with signed insertion `I-T_q`. Integer birth instead obeys `Delta T_p F=1_(p divides N+1) T_p Delta F` (`GibbsHardCutoffTransport`, Lean). The floors alone do not create noncommuting mixing.
+F651 — For `p>=2`, zero-boundary cutoff histories are determined by same-sign seams through exact finite alternating reconstruction. Nevertheless one history has `|D_p F|<=1` everywhere and `|F(p^K,x)|=K+1` (`exists_hardCutoff_unit_seam_logarithmic_escape`, Lean); injectivity does not imply uniform control.
+CANNOT-292 — It cannot bound all unnormalized cutoff histories using a zero initial boundary and uniformly bounded one-prime seams (`not_hardCutoff_unit_seam_uniform_bound`, Lean). This is a generic sup-bound obstruction, not a counterexample for Möbius coefficients, a Gamma--Hankel norm theorem, or a no-go for variable-hazard/adjoint/additional-source dynamics.
+F652 — For every fixed `1/2<=sigma<1`, complete prime-cutoff energy `integral_(-1)^1 |Gamma(sigma+it)|² product_(p<=Y)|1-p^(-sigma-it)|² dt` tends to `+infinity` along all apertures. Every continuous nonnegative weight positive at zero has the same escape, not merely a pointwise spike (`GibbsFullPrimeGammaEscape.fullPrimeEulerGammaEnergy_tendsto`, `fullEuler_weighted_energy_tendsto`, Lean; declarations in `RHTower`).
+CANNOT-293 — It cannot obtain bounded integer-prefix Gamma--Hankel returns by uniformly bounding unchanged complete prime products: those products have no bounded-energy cofinal subsequence even on a fixed bounded-height window (`not_fullPrimeEulerGammaEnergy_bounded_returns`, Lean). This rules out that approximation, not the Möbius integer-prefix estimate or cancellation between a prime product and its discarded integer tail; pointwise Gibbs recovery is not an energy bound.
