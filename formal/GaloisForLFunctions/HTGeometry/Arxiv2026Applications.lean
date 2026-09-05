@@ -3,14 +3,17 @@ import GaloisForLFunctions.HTGeometry.Arxiv2608ExprelFilon
 import GaloisForLFunctions.HTGeometry.Arxiv2608FilonBesselSeries
 import GaloisForLFunctions.HTGeometry.Arxiv2608VortexLiouville
 import GaloisForLFunctions.HTGeometry.Arxiv2607FaradayFloquet
+import GaloisForLFunctions.HTGeometry.Arxiv2609DispersionlessAxion
+import GaloisForLFunctions.HTGeometry.ClockNullFrameEquivalence
+import GaloisForLFunctions.HTGeometry.KleinGordonOperator
 
 /-!
-# Cross-paper applications from four 2026 arXiv papers
+# Cross-paper applications from 2026 arXiv papers
 
-This module records theorem-level intersections between the four source papers and the existing
-corpus.  The main new bridge is the order-one Liouville normal form: the `J₁` equation exposed by
-the anisotropic-beam paper supplies exact dipolar radial modes for both the optical-vortex and
-Faraday--Rayleigh--Taylor equations.
+This module records theorem-level intersections between 2026 source papers and the existing corpus.
+Its bridges include the order-one Liouville normal form connecting anisotropic beams, optical
+vortices, and Faraday--Rayleigh--Taylor modes, plus the null-frame, Bessel, and Klein--Gordon
+structures of the cylindrical dispersionless Maxwell--axion solver.
 -/
 
 noncomputable section
@@ -350,5 +353,76 @@ theorem neutralFaradayFloquetWindow (period : Set.Ioi (0 : ℝ)) :
   have h := faradayFloquetWindow_eq_cgcExprel (neutralFaradayFloquetData period)
   rw [neutralFaradayFloquetGrowthRate] at h
   simpa [neutralFaradayFloquetData] using h
+
+/-! ## Dispersionless Maxwell--axion bridges -/
+
+/-- At unit wave speed, the axion transport split is the corpus null frame with its two
+characteristics ordered as `(right-moving, left-moving)`. -/
+theorem qdsAxionTransportForward_one_eq_nullFrame (time space : ℝ) :
+    qdsAxionTransportForward (1 : ℝˣ) (time, space) =
+      (nullFrame ![time, space] 1, nullFrame ![time, space] 0) := by
+  rw [nullFrame_one, nullFrame_zero]
+  norm_num [qdsAxionTransportForward]
+
+/-- QDS reconstruction at unit speed is exactly the inverse null-frame map, after restoring the
+corpus convention `(left-moving, right-moving)`. -/
+theorem qdsAxionTransportInverse_one_eq_invNullFrame (transport : ℝ × ℝ) :
+    qdsAxionTransportInverse (1 : ℝˣ) transport =
+      (invNullFrame ![transport.2, transport.1] 0,
+        invNullFrame ![transport.2, transport.1] 1) := by
+  rw [invNullFrame_zero, invNullFrame_one]
+  norm_num [qdsAxionTransportInverse]
+  constructor <;> ring
+
+/-- Radial residual in the cylindrical axion equation (34). -/
+def qdsCylindricalRadialResidual
+    (m : ℤ) (beta r value first second : ℝ) : ℝ :=
+  second + first / r + (beta ^ 2 - (m : ℝ) ^ 2 / r ^ 2) * value
+
+/-- The QDS radial operator is definitionally the Faraday cylindrical Bessel operator already
+present in the corpus. -/
+theorem qdsCylindricalRadialResidual_eq_faraday
+    (m : ℤ) (beta r value first second : ℝ) :
+    qdsCylindricalRadialResidual m beta r value first second =
+      faradayRadialBesselResidual m beta r value first second := by
+  rfl
+
+/-- The paper's axisymmetric axion sector inherits the corpus's exact `J₀` radial solution. -/
+theorem qdsAxisymmetricJ0_radial_residual_zero
+    (eta : EscobarPositiveFrequency) (r : PositiveRadius) :
+    qdsCylindricalRadialResidual 0 eta r
+      (escobarIsotropicRadialMode eta r)
+      (escobarIsotropicRadialModeDeriv eta r)
+      (escobarIsotropicRadialModeSecond eta r) = 0 := by
+  rw [qdsCylindricalRadialResidual_eq_faraday]
+  exact faradayAxisymmetricJ0_radial_residual_zero eta r
+
+/-- The regular dipolar sector inherits the corpus's exact `J₁` radial solution. -/
+theorem qdsDipolarJ1_radial_residual_zero
+    (eta : EscobarPositiveFrequency) (r : PositiveRadius) :
+    qdsCylindricalRadialResidual 1 eta r
+      (escobarOrderOneMode eta r)
+      (escobarOrderOneModeDeriv eta r)
+      (escobarOrderOneModeSecond eta r) = 0 := by
+  rw [qdsCylindricalRadialResidual_eq_faraday]
+  exact faradayDipolarJ1_radial_residual_zero eta r
+
+/-- Squared unit-mass axion dispersion, written in the paper's `ω²` form. -/
+def qdsUnitMassDispersionSq {E : Type*} [NormedAddCommGroup E] (xi : E) : ℝ :=
+  1 + ‖xi‖ ^ 2
+
+/-- The axion dispersion law is exactly the corpus Klein--Gordon frequency symbol. -/
+theorem qdsUnitMassDispersionSq_eq_kgFreq_sq
+    {E : Type*} [NormedAddCommGroup E] (xi : E) :
+    qdsUnitMassDispersionSq xi = kgFreq xi ^ 2 := by
+  rw [kgFreq_sq]
+  rfl
+
+/-- Hence every unit-mass axion mode has strictly positive squared frequency. -/
+theorem qdsUnitMassDispersionSq_pos
+    {E : Type*} [NormedAddCommGroup E] (xi : E) :
+    0 < qdsUnitMassDispersionSq xi := by
+  simp only [qdsUnitMassDispersionSq]
+  positivity
 
 end GaloisForLFunctions.HTGeometry

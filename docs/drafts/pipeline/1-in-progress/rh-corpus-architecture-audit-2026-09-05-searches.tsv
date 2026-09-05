@@ -1,0 +1,99 @@
+query_id	query	declaration_hits	gap_hits
+01	nonlinear arithmetic source interaction	6	6
+02	confluence repair termination invariant	6	6
+03	Hurwitz independence shift field	6	6
+04	Bottcher monodromy obstruction rigidity	6	6
+05	U0 translation difference independence	6	6
+06	HilbertMetric determinant curvature collision	6	6
+07	QECLean syndrome homology correctability	6	0
+08	QuantumAlg amplitude interference complement	6	6
+09	PNTPlus arithmetic cancellation convolution	6	6
+10	SelbergClass twist converse rigidity	6	6
+11	incidence coalgebra antipode distributivity	6	6
+12	noncommutative arithmetic resonance fusion	6	6
+13	carry automaton arithmetic	5	5
+14	"""nonlinear"" ""theta"""	5	5
+15	resonance product closure	5	5
+16	QECLean	5	0
+17	QuantumAlg	5	0
+18	"""quantum"" ""no-cloning"""	5	5
+19	ramification product formula	5	5
+20	"""Frobenius"" ""additive"""	5	5
+21	"""distributivity"""	5	0
+22	"""Ostrowski"""	5	0
+23	"""Yang Baxter"""	5	0
+24	"""pentagon"""	5	0
+25	"""nonlinear"" ""Mellin"""	5	5
+26	"""Hasse"" ""Schmidt"""	5	5
+27	"""automatic"" ""sequence"""	5	5
+28	"""arithmetic"" ""carry"""	5	5
+29	"""cobordism"""	0	0
+30	"""coherence"" ""ends"""	5	5
+31	"""isomonodromy"""	5	0
+32	"""rigidity"" ""source"""	5	5
+33	"""carry"""	5	5
+34	"""radix"""	5	0
+35	"""Cobham"""	0	0
+36	"""Mahler"" ""theta"""	5	5
+37	"""nonlinear convolution"""	0	0
+38	"""Titchmarsh"""	5	0
+39	"""Plucker"" ""source"""	5	5
+40	"""affine semigroup"""	0	0
+41	"""renormalization"" ""integer"""	5	5
+42	"""twoProduct"""	0	0
+43	"""theta addition"""	0	0
+44	"""replica"" ""fusion"""	5	5
+45	"""Rota"""	1	0
+46	"""shuffle"""	6	0
+47	"""resonant primitive"""	0	0
+48	"""thetaSource"""	6	0
+49	"""conjugate"" ""resonance"" ""product"""	6	6
+50	"""Titchmarsh"" ""Mellin"""	6	6
+51	exponential Vandermonde determinant	6	6
+52	Gaussian lattice mixed rank	6	6
+53	"""two clock"""	6	0
+54	"""unequal"" ""theta"""	6	6
+55	"""thetaLattice"""	6	0
+56	"""exp"" ""vandermonde"""	6	6
+57	"""self reference"""	1	0
+58	"""incompressibility"""	1	0
+59	"""word"" ""normal"" ""form"""	40	40
+60	"""undecidable"""	1	0
+61	"""finite presentation"""	22	2
+62	"""arithmetic"" ""rewriting"""	40	40
+63	"""proof complexity"""	0	0
+64	"""locality"" ""shortcut"""	40	5
+65	"""causal"" ""reconstruction"""	40	32
+66	"""finiteness"" ""obstruction"""	40	40
+67	"""constitutive"" ""selection"""	40	40
+68	"""nonlinear"" ""integer"""	40	23
+69	"""integer"" ""carry"" ""cocycle"""	30	30
+70	"""rewrite"""	30	0
+71	"""critical pair"""	13	0
+72	"""binomial"" ""difference"""	30	18
+73	"""discrete"" ""arithmetic"" ""deformation"""	30	30
+74	"""finite presentation independence"""	0	0
+75	"""Noether"" ""integer"""	30	16
+76	"""monoid"" ""congruence"""	30	1
+77	"""successor"""	30	7
+78	"""division algorithm"""	0	0
+79	"""quadratic filling"""	1	0
+80	"""integer lattice"" ""nonlinear"""	30	9
+81	"""arithmetic"" ""syntax"""	80	80
+82	"""arithmetic"" ""grammar"""	80	80
+83	"""carry"" ""multiplication"""	80	34
+84	"""normalization"" ""word"""	80	47
+85	"""discrete"" ""rigidity"""	80	80
+86	"""species"" ""combinatorial"""	80	4
+87	"""refinement"" ""integer"""	80	20
+88	"""completion"" ""critical"" ""heredity"""	80	80
+89	"""coupled"" ""arithmetic"""	80	80
+90	"""conservative"" ""new"" ""law"""	80	80
+91	"""Fermat quotient"""	0	0
+92	"""p-derivation"""	0	0
+93	"""delta ring"""	0	0
+94	"""Wieferich"""	0	0
+95	"""arithmetic curvature"""	1	0
+96	"""Frobenius lift"""	9	0
+97	"""Mac Lane"""	0	0
+98	"""Witt carry"""	0	0

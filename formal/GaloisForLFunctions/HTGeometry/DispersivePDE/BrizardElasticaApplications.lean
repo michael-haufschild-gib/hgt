@@ -43,6 +43,28 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLemniscaticCl
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaVerticalClosure
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaClosureParameters
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaClosureWalls
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaEllipticIntegralMonotonicity
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAkhmedievProfile
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaMaProfile
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherSymmetry
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherMaxima
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherPoleGap
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherGalilean
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAkhmedievQuarter
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherPhysicalScaling
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaMaLocalization
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAkhmedievLocalization
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherPhysicalLocalization
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAkhmedievNLS
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaMaNLS
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherPhysicalNLS
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherMovingNLS
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaBreatherPhysicalMoving
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaPlanar
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCurvatureEquivalence
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRadialSolution
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAngularCubic
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaPlanarJump
 
 /-!
 # Closed application atlas for arXiv:2607.21750
@@ -707,6 +729,252 @@ structure ClosedAtlas : Prop where
     closureQ m = (1 + (m : ℝ)) / 3 ↔
       closureQ (extendedToClassical m) =
         (1 + (extendedToClassical m : ℝ)) / 3
+  completeEStrictAntitone : ∀ P : StrictSubcriticalPair,
+    completeEllipticE P.upper < completeEllipticE P.lower
+  completeKStrictMonotone : ∀ P : StrictSubcriticalPair,
+    completeEllipticK P.lower < completeEllipticK P.upper
+  completeRatioStrictAntitone : ∀ P : StrictClassicalPair,
+    completeEllipticE P.upper / completeEllipticK P.upper <
+      completeEllipticE P.lower / completeEllipticK P.lower
+  classicalClosureRootUniqueness : ∀ a b : ClassicalClosureRoot, a = b
+  negativeClosureRootUniqueness : ∀ a b : NegativeClosureRoot, a = b
+  akhmedievRegular : ∀ (φ : BreatherAngle) (ξ τ : ℝ),
+    0 < akhmedievDenominator φ ξ τ
+  akhmedievWaveNumberPeriod : ∀ φ : BreatherAngle,
+    akhmedievWaveNumber φ * akhmedievSpatialPeriod φ = 2 * Real.pi
+  akhmedievSpatialPeriodic : ∀ (φ : BreatherAngle) (ξ τ : ℝ),
+    akhmedievBreather φ (ξ + akhmedievSpatialPeriod φ) τ =
+      akhmedievBreather φ ξ τ
+  akhmedievCenterValue : ∀ φ : BreatherAngle,
+    akhmedievBreather φ 0 0 =
+      (((1 + 2 * Real.cos (φ : ℝ)) / Real.sqrt 2 : ℝ) : ℂ)
+  akhmedievCenterNorm : ∀ φ : BreatherAngle,
+    ‖akhmedievBreather φ 0 0‖ =
+      (1 + 2 * Real.cos (φ : ℝ)) / Real.sqrt 2
+  akhmedievPrintedHeightGap : ∀ φ : BreatherAngle,
+    ‖akhmedievBreather φ 0 0‖ < 1 + 2 * Real.cos (φ : ℝ)
+  maRegular : ∀ (φ : MaAngle) (ξ τ : ℝ), 0 < maDenominator φ ξ τ
+  maCoreTemporalPeriodic : ∀ (φ : MaAngle) (ξ τ : ℝ),
+    maCore φ ξ (τ + maTemporalPeriod φ) = maCore φ ξ τ
+  maFieldFloquetLaw : ∀ (φ : MaAngle) (ξ τ : ℝ),
+    maBreather φ ξ (τ + maTemporalPeriod φ) =
+      maBreather φ ξ τ * linearPhase 1 0 (maTemporalPeriod φ) 0
+  maNormTemporalPeriodic : ∀ (φ : MaAngle) (ξ τ : ℝ),
+    ‖maBreather φ ξ (τ + maTemporalPeriod φ)‖ = ‖maBreather φ ξ τ‖
+  maCenterValue : ∀ φ : MaAngle,
+    maBreather φ 0 0 =
+      (((1 + 2 * Real.cosh (φ : ℝ)) / Real.sqrt 2 : ℝ) : ℂ)
+  maLiteralPeriodicityCounterexample :
+    maBreather resonantMaAngle 0 (0 + maTemporalPeriod resonantMaAngle) ≠
+      maBreather resonantMaAngle 0 0
+  akhmedievSpatialReflection : ∀ (φ : BreatherAngle) (ξ τ : ℝ),
+    akhmedievBreather φ (-ξ) τ = akhmedievBreather φ ξ τ
+  akhmedievTimeReflection : ∀ (φ : BreatherAngle) (ξ τ : ℝ),
+    akhmedievBreather φ ξ (-τ) =
+      (starRingEnd ℂ) (akhmedievBreather φ ξ τ)
+  maSpatialReflection : ∀ (φ : MaAngle) (ξ τ : ℝ),
+    maBreather φ (-ξ) τ = maBreather φ ξ τ
+  maTimeReflection : ∀ (φ : MaAngle) (ξ τ : ℝ),
+    maBreather φ ξ (-τ) = (starRingEnd ℂ) (maBreather φ ξ τ)
+  akhmedievGlobalPeak : ∀ (φ : BreatherAngle) (ξ τ : ℝ),
+    ‖akhmedievBreather φ ξ τ‖ ≤ ‖akhmedievBreather φ 0 0‖
+  maGlobalPeak : ∀ (φ : MaAngle) (ξ τ : ℝ),
+    ‖maBreather φ ξ τ‖ ≤ ‖maBreather φ 0 0‖
+  akhmedievUniformPoleGap : ∀ (φ : BreatherAngle) (ξ τ : ℝ),
+    1 - Real.cos (φ : ℝ) ≤ akhmedievDenominator φ ξ τ
+  maUniformPoleGap : ∀ (φ : MaAngle) (ξ τ : ℝ),
+    Real.cosh (φ : ℝ) - 1 ≤ maDenominator φ ξ τ
+  dimensionlessGalileanIdentification : ∀ (u : ℝ) (q : ℝ → ℝ → ℂ),
+    dimensionlessGalileanField u q = galileanField 1 (u / 2) q
+  dimensionlessGalileanComposition : ∀ (u v : ℝ) (q : ℝ → ℝ → ℂ),
+    dimensionlessGalileanField u (dimensionlessGalileanField v q) =
+      dimensionlessGalileanField (u + v) q
+  movingMaScrewPeriod : ∀ (u : ℝ) (φ : MaAngle) (ξ τ : ℝ),
+    ‖movingMaBreather u φ (ξ + u * maTemporalPeriod φ)
+        (τ + maTemporalPeriod φ)‖ = ‖movingMaBreather u φ ξ τ‖
+  quarterAkhmedievUnitScales :
+    akhmedievOmega quarterBreatherAngle = 1 ∧
+      akhmedievWaveNumber quarterBreatherAngle = 1
+  quarterAkhmedievPeriod :
+    akhmedievSpatialPeriod quarterBreatherAngle = 2 * Real.pi
+  physicalAkhmedievPeriod : ∀ (P : BreatherPhysicalScales)
+      (φ : BreatherAngle) (s t : ℝ),
+    physicalAkhmedievBreather P φ (s + physicalAkhmedievSpatialPeriod P) t =
+      physicalAkhmedievBreather P φ s t
+  physicalMaMagnitudePeriod : ∀ (P : BreatherPhysicalScales) (φ : MaAngle) (s t : ℝ),
+    ‖physicalMaBreather P φ s (t + physicalMaTemporalPeriod P φ)‖ =
+      ‖physicalMaBreather P φ s t‖
+  maLocalizedAtPositiveInfinity : ∀ (φ : MaAngle) (τ : ℝ),
+    Filter.Tendsto (fun ξ => maBreather φ ξ τ) Filter.atTop
+      (nhds (-linearPhase 1 0 τ 0 / (Real.sqrt 2 : ℂ)))
+  maLocalizedAtNegativeInfinity : ∀ (φ : MaAngle) (τ : ℝ),
+    Filter.Tendsto (fun ξ => maBreather φ ξ τ) Filter.atBot
+      (nhds (-linearPhase 1 0 τ 0 / (Real.sqrt 2 : ℂ)))
+  akhmedievMagnitudeLocalizedAtPositiveInfinity : ∀ (φ : BreatherAngle) (ξ : ℝ),
+    Filter.Tendsto (fun τ => ‖akhmedievBreather φ ξ τ‖) Filter.atTop
+      (nhds ((Real.sqrt 2)⁻¹))
+  akhmedievMagnitudeLocalizedAtNegativeInfinity : ∀ (φ : BreatherAngle) (ξ : ℝ),
+    Filter.Tendsto (fun τ => ‖akhmedievBreather φ ξ τ‖) Filter.atBot
+      (nhds ((Real.sqrt 2)⁻¹))
+  physicalAkhmedievMagnitudeLocalizedAtPositiveInfinity :
+      ∀ (P : BreatherPhysicalScales) (φ : BreatherAngle) (s : ℝ),
+    Filter.Tendsto (fun t => ‖physicalAkhmedievBreather P φ s t‖) Filter.atTop
+      (nhds (physicalAkhmedievAmplitude P φ * (Real.sqrt 2)⁻¹))
+  physicalAkhmedievMagnitudeLocalizedAtNegativeInfinity :
+      ∀ (P : BreatherPhysicalScales) (φ : BreatherAngle) (s : ℝ),
+    Filter.Tendsto (fun t => ‖physicalAkhmedievBreather P φ s t‖) Filter.atBot
+      (nhds (physicalAkhmedievAmplitude P φ * (Real.sqrt 2)⁻¹))
+  physicalMaLocalizedAtPositiveInfinity :
+      ∀ (P : BreatherPhysicalScales) (φ : MaAngle) (t : ℝ),
+    Filter.Tendsto (fun s => physicalMaBreather P φ s t) Filter.atTop
+      (nhds ((physicalMaAmplitude P φ : ℂ) *
+        (-linearPhase 1 0 (physicalMaTau P φ t) 0 / (Real.sqrt 2 : ℂ))))
+  physicalMaLocalizedAtNegativeInfinity :
+      ∀ (P : BreatherPhysicalScales) (φ : MaAngle) (t : ℝ),
+    Filter.Tendsto (fun s => physicalMaBreather P φ s t) Filter.atBot
+      (nhds ((physicalMaAmplitude P φ : ℂ) *
+        (-linearPhase 1 0 (physicalMaTau P φ t) 0 / (Real.sqrt 2 : ℂ))))
+  akhmedievNLSSolution : ∀ φ : BreatherAngle,
+    SolvesFocusingNLS (akhmedievBreatherJet φ)
+  maNLSSolution : ∀ φ : MaAngle, SolvesFocusingNLS (maBreatherJet φ)
+  physicalizationClosure : ∀ (D α : ℝ) (S : FocusingSolutionJet),
+    SolvesNLS D (physicalizeFocusingSolution D α S).val
+  physicalAkhmedievFieldIdentification : ∀ (P : BreatherPhysicalScales)
+      (φ : BreatherAngle) (t s : ℝ),
+    (physicalAkhmedievSolution P φ).val.u t s = physicalAkhmedievBreather P φ s t
+  physicalMaFieldIdentification : ∀ (P : BreatherPhysicalScales)
+      (φ : MaAngle) (t s : ℝ),
+    (physicalMaSolution P φ).val.u t s = physicalMaBreather P φ s t
+  physicalAkhmedievNLSSolution : ∀ (P : BreatherPhysicalScales) (φ : BreatherAngle),
+    SolvesNLS (P.circulation : ℝ) (physicalAkhmedievSolution P φ).val
+  physicalMaNLSSolution : ∀ (P : BreatherPhysicalScales) (φ : MaAngle),
+    SolvesNLS (P.circulation : ℝ) (physicalMaSolution P φ).val
+  focusingGalileanClosure : ∀ (v : ℝ) (S : TransportCompatibleFocusingSolution),
+    SolvesFocusingNLS (galileanFocusingSolution v S).val
+  akhmedievTransportCompatibility : ∀ (φ : BreatherAngle) (c t x : ℝ),
+    HasDerivAt (fun s => akhmedievBreather φ (x - c * s) s)
+      ((akhmedievBreatherJet φ).ut t (x - c * t) -
+        (c : ℂ) * (akhmedievBreatherJet φ).ux t (x - c * t)) t
+  maTransportCompatibility : ∀ (φ : MaAngle) (c t x : ℝ),
+    HasDerivAt (fun s => maBreather φ (x - c * s) s)
+      ((maBreatherJet φ).ut t (x - c * t) -
+        (c : ℂ) * (maBreatherJet φ).ux t (x - c * t)) t
+  movingAkhmedievNLSSolution : ∀ (u : ℝ) (φ : BreatherAngle),
+    SolvesFocusingNLS (movingAkhmedievSolution u φ).val
+  movingMaNLSSolution : ∀ (u : ℝ) (φ : MaAngle),
+    SolvesFocusingNLS (movingMaSolution u φ).val
+  physicalMovingAkhmedievNLSSolution : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : BreatherAngle),
+    SolvesNLS (P.circulation : ℝ) (physicalMovingAkhmedievSolution P u φ).val
+  physicalMovingMaNLSSolution : ∀ (P : BreatherPhysicalScales) (u : ℝ) (φ : MaAngle),
+    SolvesNLS (P.circulation : ℝ) (physicalMovingMaSolution P u φ).val
+  physicalAkhmedievMovingCenter : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : BreatherAngle) (t : ℝ),
+    physicalAkhmedievXi P φ (physicalAkhmedievVelocity P u φ * t) =
+      u * physicalAkhmedievTau P φ t
+  physicalMaMovingCenter : ∀ (P : BreatherPhysicalScales) (u : ℝ) (φ : MaAngle) (t : ℝ),
+    physicalMaXi P φ (physicalMaVelocity P u φ * t) = u * physicalMaTau P φ t
+  physicalMovingAkhmedievReflection : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : BreatherAngle) (δ t : ℝ),
+    ‖physicalMovingAkhmedievBreather P u φ
+        (physicalAkhmedievVelocity P u φ * t - δ) t‖ =
+      ‖physicalMovingAkhmedievBreather P u φ
+        (physicalAkhmedievVelocity P u φ * t + δ) t‖
+  physicalMovingMaReflection : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : MaAngle) (δ t : ℝ),
+    ‖physicalMovingMaBreather P u φ (physicalMaVelocity P u φ * t - δ) t‖ =
+      ‖physicalMovingMaBreather P u φ (physicalMaVelocity P u φ * t + δ) t‖
+  physicalMovingAkhmedievPeriod : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : BreatherAngle) (s t : ℝ),
+    ‖physicalMovingAkhmedievBreather P u φ
+        (s + physicalAkhmedievSpatialPeriod P) t‖ =
+      ‖physicalMovingAkhmedievBreather P u φ s t‖
+  physicalMovingMaScrewPeriod : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : MaAngle) (s t : ℝ),
+    ‖physicalMovingMaBreather P u φ
+        (s + physicalMaVelocity P u φ * physicalMaTemporalPeriod P φ)
+        (t + physicalMaTemporalPeriod P φ)‖ =
+      ‖physicalMovingMaBreather P u φ s t‖
+  physicalMovingAkhmedievGlobalPeak : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : BreatherAngle) (s t : ℝ),
+    ‖physicalMovingAkhmedievBreather P u φ s t‖ ≤
+      ‖physicalMovingAkhmedievBreather P u φ 0 0‖
+  physicalMovingMaGlobalPeak : ∀ (P : BreatherPhysicalScales)
+      (u : ℝ) (φ : MaAngle) (s t : ℝ),
+    ‖physicalMovingMaBreather P u φ s t‖ ≤ ‖physicalMovingMaBreather P u φ 0 0‖
+  planarTorsionlessWall : ∀ m : PlanarTravelingModulus,
+    nuSq (planarTorsionlessParameters m) = 0
+  planarSquaredSpeedNonnegative : ∀ m : PlanarTravelingModulus,
+    0 ≤ gammaSq (planarTorsionlessParameters m)
+  planarStationaryEndpoint : ∀ m : PlanarTravelingModulus,
+    gammaSq (planarTorsionlessParameters m) = 0 ↔ (m : ℝ) = 1 / 2
+  planarUnitWallNoRealSpeed : ∀ m : ClassicalModulus,
+    ¬ ∃ γ : ℝ, gammaSq (unitTorsionlessParameters m) = γ ^ 2
+  printedPlanarEndpointAngle : printedPlanarMidpointAngle (1 / 2) = 0
+  printedPlanarEndpointMismatch : printedPlanarMidpointAngle (1 / 2) ≠ Real.pi / 2
+  correctedPlanarAngleNonnegative : ∀ m : PlanarTravelingModulus,
+    0 ≤ planarMidpointAngle m
+  correctedPlanarAngleUpperBound : ∀ m : PlanarTravelingModulus,
+    planarMidpointAngle m ≤ Real.pi / 2
+  correctedPlanarEndpointAngle : planarMidpointAngle (1 / 2) = Real.pi / 2
+  planarQuarterAngle : planarMidpointAngle (1 / 4) = Real.pi / 3
+  classicalEllipticIntegralStrictBound : ∀ m : ClassicalModulus,
+    (1 - (m : ℝ)) * completeEllipticK m < completeEllipticE m
+  planarJumpClosureFactorization : ∀ m : ClassicalModulus,
+    torsionlessVerticalJump m =
+      2 * completeEllipticK m / Real.sqrt (m : ℝ) *
+        (closureQ m - (m : ℝ))
+  planarJumpZeroClassification : ∀ m : ClassicalModulus,
+    torsionlessVerticalJump m = 0 ↔ closureQ m = (m : ℝ)
+  planarClosureGapPositive : ∀ m : PlanarTravelingModulus,
+    (m : ℝ) < closureQ m
+  planarJumpPositive : ∀ m : PlanarTravelingModulus,
+    0 < torsionlessVerticalJump (planarAsClassical m)
+  normalizedCurvatureScaleTransport : ∀ (m : NegativeModulus)
+      (q : PositiveCurvatureScale),
+    normalizedNegativeCurvatureFunctional m (transportedNegativeCurvatureScale m q) =
+      normalizedClassicalCurvatureFunctional (extendedToClassical m) q
+  closureCurvatureScaleTransport : ∀ m : NegativeModulus,
+    closureQ m = transportedNegativeCurvatureScale m (closureQ (extendedToClassical m))
+  normalizedClosureCurvatureSymmetry : ∀ m : NegativeModulus,
+    normalizedClosureCurvatureNegative m =
+      normalizedClosureCurvatureClassical (extendedToClassical m)
+  normalizedLemniscaticCurvatureSymmetry :
+    normalizedClosureCurvatureNegative negativeOneModulus =
+      normalizedClosureCurvatureClassical halfClassicalModulus
+  radialGapCylindricalIdentification : ∀ (k₀ : ℝˣ) (γ ν : ℝ) (κ : ℝˣ),
+    radialGap k₀ γ ν κ = (κ : ℝ) ^ 2 * (1 - spatialCcoefSq k₀ γ ν κ)
+  radialGapRegularity : ∀ (k₀ : ℝˣ) (γ ν : ℝ) (κ : ℝˣ),
+    0 < radialGap k₀ γ ν κ ↔ 0 < 1 - spatialCcoefSq k₀ γ ν κ
+  radialAntiderivative : ∀ (k₀ : ℝˣ) (γ ν : ℝ)
+      (K : RadialCurvatureProfile k₀ γ ν) (s : ℝ),
+    HasDerivAt (radialPosition k₀ γ ν K) (radialPositionX k₀ γ ν K s) s
+  radialSquareIdentity : ∀ (k₀ : ℝˣ) (γ ν : ℝ)
+      (K : RadialCurvatureProfile k₀ γ ν) (s : ℝ),
+    radialPosition k₀ γ ν K s ^ 2 =
+      spatialRadiusFourth k₀ γ ν * (K.κ s : ℝ) ^ 2 *
+        (1 - spatialCcoefSq k₀ γ ν (K.κ s))
+  angularOmegaNonnegative : ∀ P : AngularPhysicalParameters,
+    0 ≤ angularOmegaSq P
+  angularOmegaStrictUpperBound : ∀ P : AngularPhysicalParameters,
+    angularOmegaSq P < 1
+  angularTorsionRelation : ∀ P : AngularPhysicalParameters,
+    nuSq P.val = angularOmegaSq P / (1 - angularOmegaSq P) *
+      (1 + gammaSq P.val / 2) ^ 2
+  angularInvariantBridge : ∀ P : Parameters,
+    12 * e₃ P ^ 2 - g₂ P = 8 + 4 * (gammaSq P - nuSq P)
+  angularCubicCollapse : ∀ P : AngularPhysicalParameters,
+    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
+        g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val =
+      -4 * angularOmegaSq P *
+        (angularOmegaSq P + gammaSq P.val / 2) ^ 2
+  angularCubicNonpositive : ∀ P : AngularPhysicalParameters,
+    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
+        g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val ≤ 0
+  angularCubicTorsionlessDegeneration : ∀ P : AngularPhysicalParameters,
+    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
+        g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val = 0 ↔
+      nuSq P.val = 0
   parameterReconstruction₁ : ∀ P : Parameters,
     P.modulus = (P.q₀ : ℝ) * (3 + gammaSq P) - 1
   parameterReconstruction₂ : ∀ P : Parameters,
@@ -1022,6 +1290,100 @@ theorem closedAtlas : ClosedAtlas where
   extendedClosureTorsionPositive := extendedTravelingClosure_nuSq_pos
   closureSpeedIntegralWall := closureQ_eq_speedWall_iff
   closureSpeedWallTransport := closureQ_negative_speedWall_iff_classical
+  completeEStrictAntitone := completeEllipticE_strictAntitone
+  completeKStrictMonotone := completeEllipticK_strictMonotone
+  completeRatioStrictAntitone := completeEllipticE_div_K_strictAntitone
+  classicalClosureRootUniqueness := classicalClosureRoot_unique
+  negativeClosureRootUniqueness := negativeClosureRoot_unique
+  akhmedievRegular := akhmedievDenominator_pos
+  akhmedievWaveNumberPeriod := akhmedievWaveNumber_mul_period
+  akhmedievSpatialPeriodic := akhmedievBreather_periodic
+  akhmedievCenterValue := akhmedievBreather_center
+  akhmedievCenterNorm := norm_akhmedievBreather_center
+  akhmedievPrintedHeightGap := norm_akhmedievBreather_center_lt_printed
+  maRegular := maDenominator_pos
+  maCoreTemporalPeriodic := maCore_periodic
+  maFieldFloquetLaw := maBreather_quasiperiodic
+  maNormTemporalPeriodic := norm_maBreather_periodic
+  maCenterValue := maBreather_center
+  maLiteralPeriodicityCounterexample := resonantMaBreather_not_periodic
+  akhmedievSpatialReflection := akhmedievBreather_space_neg
+  akhmedievTimeReflection := akhmedievBreather_time_neg
+  maSpatialReflection := maBreather_space_neg
+  maTimeReflection := maBreather_time_neg
+  akhmedievGlobalPeak := norm_akhmedievBreather_le_center
+  maGlobalPeak := norm_maBreather_le_center
+  akhmedievUniformPoleGap := akhmedievDenominator_center_le
+  maUniformPoleGap := maDenominator_center_le
+  dimensionlessGalileanIdentification := dimensionlessGalileanField_eq_galileanField
+  dimensionlessGalileanComposition := dimensionlessGalileanField_add
+  movingMaScrewPeriod := norm_movingMaBreather_screw_periodic
+  quarterAkhmedievUnitScales := ⟨quarterAkhmedievOmega, quarterAkhmedievWaveNumber⟩
+  quarterAkhmedievPeriod := quarterAkhmedievSpatialPeriod
+  physicalAkhmedievPeriod := physicalAkhmedievBreather_periodic
+  physicalMaMagnitudePeriod := norm_physicalMaBreather_periodic
+  maLocalizedAtPositiveInfinity := tendsto_maBreather_atTop
+  maLocalizedAtNegativeInfinity := tendsto_maBreather_atBot
+  akhmedievMagnitudeLocalizedAtPositiveInfinity := tendsto_norm_akhmedievBreather_atTop
+  akhmedievMagnitudeLocalizedAtNegativeInfinity := tendsto_norm_akhmedievBreather_atBot
+  physicalAkhmedievMagnitudeLocalizedAtPositiveInfinity :=
+    tendsto_norm_physicalAkhmedievBreather_atTop
+  physicalAkhmedievMagnitudeLocalizedAtNegativeInfinity :=
+    tendsto_norm_physicalAkhmedievBreather_atBot
+  physicalMaLocalizedAtPositiveInfinity := tendsto_physicalMaBreather_atTop
+  physicalMaLocalizedAtNegativeInfinity := tendsto_physicalMaBreather_atBot
+  akhmedievNLSSolution := akhmedievBreather_solves
+  maNLSSolution := maBreather_solves
+  physicalizationClosure := physicalizeFocusingSolution_solves
+  physicalAkhmedievFieldIdentification := physicalAkhmedievSolution_field
+  physicalMaFieldIdentification := physicalMaSolution_field
+  physicalAkhmedievNLSSolution := physicalAkhmedievSolution_solves
+  physicalMaNLSSolution := physicalMaSolution_solves
+  focusingGalileanClosure := galileanFocusingSolution_solves
+  akhmedievTransportCompatibility := hasDerivAt_akhmedievBreather_transport
+  maTransportCompatibility := hasDerivAt_maBreather_transport
+  movingAkhmedievNLSSolution := movingAkhmedievSolution_solves
+  movingMaNLSSolution := movingMaSolution_solves
+  physicalMovingAkhmedievNLSSolution := physicalMovingAkhmedievSolution_solves
+  physicalMovingMaNLSSolution := physicalMovingMaSolution_solves
+  physicalAkhmedievMovingCenter := physicalAkhmediev_center_coordinates
+  physicalMaMovingCenter := physicalMa_center_coordinates
+  physicalMovingAkhmedievReflection := norm_physicalMovingAkhmedievBreather_reflection
+  physicalMovingMaReflection := norm_physicalMovingMaBreather_reflection
+  physicalMovingAkhmedievPeriod := norm_physicalMovingAkhmedievBreather_periodic
+  physicalMovingMaScrewPeriod := norm_physicalMovingMaBreather_screw_periodic
+  physicalMovingAkhmedievGlobalPeak := norm_physicalMovingAkhmedievBreather_le_center
+  physicalMovingMaGlobalPeak := norm_physicalMovingMaBreather_le_center
+  planarTorsionlessWall := planarTorsionless_nuSq
+  planarSquaredSpeedNonnegative := planarTorsionless_gammaSq_nonneg
+  planarStationaryEndpoint := planarTorsionless_gammaSq_eq_zero_iff
+  planarUnitWallNoRealSpeed := unitTorsionless_no_real_speed
+  printedPlanarEndpointAngle := printedPlanarMidpointAngle_half
+  printedPlanarEndpointMismatch := printedPlanarMidpointAngle_half_ne_pi_div_two
+  correctedPlanarAngleNonnegative := planarMidpointAngle_nonneg
+  correctedPlanarAngleUpperBound := planarMidpointAngle_le_pi_div_two
+  correctedPlanarEndpointAngle := planarMidpointAngle_half
+  planarQuarterAngle := planarMidpointAngle_quarter
+  classicalEllipticIntegralStrictBound := one_sub_mul_completeK_lt_completeE
+  planarJumpClosureFactorization := torsionlessVerticalJump_eq_closureGap
+  planarJumpZeroClassification := torsionlessVerticalJump_eq_zero_iff
+  planarClosureGapPositive := planar_closureQ_gt_modulus
+  planarJumpPositive := torsionlessVerticalJump_pos_on_planar
+  normalizedCurvatureScaleTransport := normalizedCurvatureFunctional_transport
+  closureCurvatureScaleTransport := closureQ_curvatureScale_transport
+  normalizedClosureCurvatureSymmetry := normalizedClosureCurvature_transport
+  normalizedLemniscaticCurvatureSymmetry := normalizedClosureCurvature_negativeOne_eq_half
+  radialGapCylindricalIdentification := radialGap_eq_curvatureSq_mul_cylindricalGap
+  radialGapRegularity := radialGap_pos_iff_cylindricalRegular
+  radialAntiderivative := hasDerivAt_radialPosition
+  radialSquareIdentity := radialPosition_sq_eq_cylindricalGap
+  angularOmegaNonnegative := angularOmegaSq_nonneg
+  angularOmegaStrictUpperBound := angularOmegaSq_lt_one
+  angularTorsionRelation := angular_nuSq_relation
+  angularInvariantBridge := twelve_e₃_sq_sub_g₂_parameters
+  angularCubicCollapse := angular_shifted_e₃_cubic
+  angularCubicNonpositive := angular_shifted_e₃_cubic_nonpos
+  angularCubicTorsionlessDegeneration := angular_shifted_e₃_cubic_eq_zero_iff
   parameterReconstruction₁ := modulus_eq_q₀_mul_gammaSq
   parameterReconstruction₂ := modulus_eq_q₀_sq_mul_gammaSq_sub_nuSq
   torsionWalls := nuSq_eq_zero_iff

@@ -24,3 +24,12 @@ torus constant, the two-sided torus law for `log|Ψ|` (uniform integrability on 
 corpus minimum-modulus and zero-count tools), and the resulting equivalence are not in the
 literature (Conrey–Snaith treat mollified second moments; Jessen–Tornehave give the torus law for
 fixed polynomials without the window uniformity needed here).
+
+**Addendum (cycle 3).** `DirichletPolynomialWindowTorusLaw.exists_window_logMean_torus_twoSided`:
+for every real bounded unit-head Dirichlet polynomial `Ψ = edPoly b (Icc 1 N)`, with line
+coefficients `lineCoeff b n = Re(b n)/√n` and `J(ε) = lineTorusLogMean b (Icc 1 N) ε`,
+`J(ε) − η − D/log(1/ε) ≤ (1/T)∫_T^{2T} log|Ψ(1/2+it)| ≤ J(ε) + η` eventually — the
+Jessen–Tornehave law on dyadic windows with a quantitative truncation error, for an arbitrary such
+polynomial (bridge `edPoly_line_eq_dpoly_lineCoeff`, shift identity `edPoly_lineCoeff_eq_shift`).
+Caveat recorded in STATUS CANNOT-298 / MUST-211: the fixed-`M` equivalence is this law plus the
+decomposition; the `(L)`-productive regime `M = T^θ` needs the law uniformly in `M`.

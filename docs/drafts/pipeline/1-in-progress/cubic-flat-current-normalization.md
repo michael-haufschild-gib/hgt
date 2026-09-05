@@ -1,7 +1,11 @@
 # Cubic flat-current normalization
 
-**Status:** CFC-1 FALSE; exact positive circulant first-jet bridge on paper.
-Arithmetic operator identification remains open.
+**Status:** CFC-1 FALSE. The complete source-loop winding realization is
+Lean-proved in `CubicCirculantWindingIntegral.exists_faithful_circulant_winding_cubic`
+(declaration namespace `RHTower`), retaining exact source recovery, genuine
+doubled/reversed Hardy compression, and ordinary cubic trace `(2πi)⁻¹∫f'/f`.
+Literal arithmetic contour specialization remains Lean-open; independent
+arithmetic zero-charge control remains mathematically unproved.
 
 **RH chain:** literal completed prime–Gamma source → noncommuting flat source
 triple → Hardy cubic boundary charge → multiplicity-normalized Xi index.
@@ -37,8 +41,12 @@ the candidate polynomial residual separately. Floating-point acceptance is
 not proof. If a violation survives, reconstruct an exact witness before Lean.
 If no violation appears, no inference of truth or arithmetic admission follows.
 
-**[OPEN CORE]:** prove or refute CFC-1, then identify what its verdict permits
-for the literal coefficient-faithful source, without encoding an index by hand.
+**[FORMALIZATION GAP]:** specialize the source-loop theorem to a smooth
+traversal of the literal arithmetic rectangle and use the already-proved completed
+prime–Gamma argument principle. No prescribed index may enter the source construction.
+**[OPEN CORE]:** independent arithmetic control forcing the resulting strict-right
+charge to vanish. Admission, recovery, and exact normalization hold for every
+eligible smooth source; those properties alone cannot supply this selection.
 
 ## Exact verdict and positive survivor
 
@@ -74,9 +82,8 @@ For `x=r u`, `y=r/u`, `|u|=1`, two identical copies and `6r²=1` give
 Reversing the last two projection labels reverses K. The real-line Hardy
 convention is `Tr C=i/(4π)∮Tr(G dK)`, so this reversed doubled source
 has cubic boundary charge exactly `wind(u)`, after integrating the exact
-polynomial derivative. This conclusion requires a proved operator admission
-and trace transport for this new matrix source; the first-jet identity itself
-does not supply those analytic steps.
+polynomial derivative. Operator admission and trace transport for this matrix
+source and the integrated winding identity are Lean-proved.
 
 The constants exist without a source-dependent clock:
 `r=1/√6`, `t=√((1+1/√3)/2)`, `b=√((1-1/√3)/2)`, `u=b·phase(f)`.
@@ -94,8 +101,67 @@ For a nonzero closed source loop, `du/u=df/f-d log|f|`; the real-log term
 has zero integral. Hence the target charge is its ordinary source winding,
 not an off-line-zero selector.
 
-**Remaining formal obligations:** source-jet matrix bridge; graph retention;
-actual matrix Hardy admission and trace theorem; closed-loop and arithmetic
-contour landing. Do not report the requested arithmetic producer as proved
-until all these steps are closed. No conservation or RH conclusion follows
-from unit normalization alone.
+## Source charge theorem proved in Lean
+
+Let f:ℝ→ℂ be smooth, nowhere zero, and equal to the same nonzero constant
+outside a compact interval. There is a fixed source-value-faithful family of
+three 12-channel orthogonal multiplier projections whose Hardy-rounded
+projections have trace-class combined cubic and ordinary cubic trace
+
+`(2πi)⁻¹ ∫ f'(s)/f(s) ds`.
+
+**Proof.** Use the real constants above, phase q=f/|f|, and the column
+projections of V=circ(t,bq,0). Tensor with E(|f|), take two identical copies,
+and reverse the last two projection labels. All matrix entries are smooth
+and constant outside the interval. Their deviations from those constants
+are Schwartz. Entrywise scalar Hardy nuclearity therefore proves every
+cutoff/source commutator is trace class; finite coordinate inclusions and
+projections preserve that ideal. Pointwise projection identities give
+orthogonal multiplier projections, and the circulant and graph identities
+give aggregate/current commutation.
+
+Apply `exists_rounded_cubic_with_boundary_trace` on the finite orthogonal
+sum of twelve copies of L²(ℝ). Expanding the finite block trace and applying
+the scalar CCM cocycle to each entry gives
+`Tr C=i/(4π) ∫Tr(S K')`. Constants cause no boundary term because the
+derivative integrates to zero. Graph insertion preserves this pairing,
+doubling multiplies it by two, and label reversal negates it. The exact
+polynomial primitive has equal endpoint values. Unit normalization leaves
+`(2πi)⁻¹∫q'/q`. Finally `q'/q=f'/f-(log|f|)'`; the real logarithm has
+equal endpoint values. This proves the formula. Source-value recovery is
+the displayed entrywise identity before Hardy compression; no claim of
+bounded inverse recovery after compression is made.
+
+This construction uses f pointwise, not its zero count. Applied to a smooth
+orientation-preserving traversal of a zero-free arithmetic contour, the
+argument principle retains analytic multiplicity. The corpus already
+identifies the completed prime–Gamma contour integral with that multiplicity
+in `FormationAnchoredCubicContourCharge`. This is a source-to-charge
+realization, not a proof that its charge vanishes on strict-right contours.
+
+**Lean-closed analytic bridge:**
+`cubicFiniteMatrix_admissible_boundary_trace` proves the ordinary matrix
+cocycle with coefficient `i/(2π)` for constant-plus-Schwartz symbols, including
+all off-diagonal coefficients and the vanishing constant boundary terms.
+`exists_rounded_finiteSource_cubic_with_local_charge` constructs genuine
+rounded projections and proves `Tr C=i/(4π)∫Tr(S K')`.
+`exists_rounded_faithful_circulant_source` applies it to the explicit
+six-channel amplitude-retaining source of any smooth nowhere-zero f constant
+outside a compact set; its conclusion also recovers f pointwise from that
+same source aggregate. Smoothness, compact deviation, orthogonality, flatness,
+and nuclear admission are proved, not added as source-law fields.
+
+**Exact integrated bridge:** `integral_cyclicFaithfulSourceSymbol_current`
+identifies the actual admitted matrix current, including its actual derivative,
+with `∫f'/f`. `exists_faithful_circulant_winding_cubic` chooses t,b before f,
+recovers f from the same source aggregate, and constructs genuine doubled/reversed
+projections whose combined cubic has ordinary trace `(2πi)⁻¹∫f'/f`. Its nuclear
+corrections are relative to the explicitly doubled source compressions with
+labels `0,2,1`. Neither the trace nor the winding is a premise.
+
+**Remaining Lean obligation:** literal arithmetic contour specialization.
+The winding leaf passed scratch/published checks, is wired without an umbrella
+build, and its five principal axiom audits contain only `propext`,
+`Classical.choice`, `Quot.sound`. These are standard analytic bridges, not new
+arithmetic conservation or budget theorems. Do not report the requested Xi
+operator-index identification as Lean-proved until contour specialization closes.

@@ -289,7 +289,10 @@ how would a fields medal mathematician approach this problem? what our corpus is
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlatires from https://arxiv.org/abs/2608.27883 formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed arxiv papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+
+papers:
+- https://arxiv.org/abs/2609.03550
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -391,6 +394,42 @@ goal is met when RH proof is formalized.
 ## create new RH knowledge
 create significant novel knowledge towards the riemann hypothesis, riemann zetas, that answers an important question no literature up to september 2026 has answered yet (check arxiv and journals).
 
-Missing mathematical knowledge: create it with the hgtl7  skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+Missing mathematical knowledge: create it with a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+
+Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
 
 write down high level interpretation of significant facts about the RH problem and solution in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. it is not a diary or working log, but key points of guiding future research agents where to look and where to not look for a solution of the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", "Must have this", "Must be able to do this". If the entry cannot be understood without first researching a specific route, it is not valid.
+
+if computations can help you to find new leads or answer questions which you truly could not find or answer by reasoning, then computations are allowed
+
+run the computations on this runpod: ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519
+download results and document them in a subfolder in docs/drafts/pipeline/2-fully-proven/computations. optimize python code for multicore. once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+
+
+## new idea
+Use the search tool for our lean corpus to do a very wide audit and find an unusual but plausible potential proof architecture for RH that can nowhere be found in literature and avoids all the known open mathematical problems of classic routes.
+
+The architecture has not do be closed or even be implicating RH. Only first find the plausible idea, then develop it further into a full formal RH proof step by step. It must be radically new, can be even fringe, cannot exist in literature and should stay far away from classic routes.
+
+Missing mathematical knowledge: create it with a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+
+**Lean rules:**
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. No computational results can be used in lean proof - computations only support ideas and guidance.
+4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+   
+Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
+
+write down high level interpretation of significant facts about the RH problem and solution in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. it is not a diary or working log, but key points of guiding future research agents where to look and where to not look for a solution of the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", "Must have this", "Must be able to do this". If the entry cannot be understood without first researching a specific route, it is not valid.
+
+if computations can help you to find new leads or answer questions which you truly could not find or answer by reasoning, then computations are allowed
+
+run the computations on this runpod: ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519
+download results and document them in a subfolder in docs/drafts/pipeline/2-fully-proven/computations. optimize python code for multicore. once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+
+again: a radical new proof architecture. no suzuki, no hedenmalm, no weyl positivity, no connes, no burnol, no hilbert-polyia, no spectral shit, no theta shit, no gamma, none of these and other usual suspects.
+
+and use the search tool for our lean corpus

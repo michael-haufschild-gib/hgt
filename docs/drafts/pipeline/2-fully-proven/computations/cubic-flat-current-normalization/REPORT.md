@@ -67,7 +67,23 @@ phase current modulo an explicit polynomial derivative. A real amplitude
 graph retains the full complex source value without changing this first-jet
 pairing. These exact bridges, not larger numerical cutoffs, are the useful
 continuation. Detailed statements and proof obligations are on
-`../../../1-in-progress/cubic-flat-current-normalization.md`.
+[the research card](../../../1-in-progress/cubic-flat-current-normalization.md).
+
+Exact reconstruction and positive bridges are formalized in
+`formal/GaloisForLFunctions/RHTower/CubicCirculantSourceCurrent.lean`:
+honest column projections, flat aggregate/current, actual current derivative,
+trace transgression/curvature, two-copy unit coefficient, amplitude-graph
+invariance, injective source recovery, and the rational counterexample.
+The complete scratch check and published leaf-olean check passed. The ten
+audited principal theorems depend only on `propext`, `Classical.choice`, and
+`Quot.sound`; `scripts/formal_tools.py lint` passed with existing large-file
+warnings. The module is wired into RHTower; no umbrella build was run.
+All own Lean and remote experiment processes completed.
+The resulting smooth-loop operator charge theorem is Lean-proved in
+`CubicCirculantWindingIntegral.exists_faithful_circulant_winding_cubic`
+(namespace `RHTower`): fixed source constants, exact pre-compression recovery,
+genuine doubled/reversed Hardy projections, and ordinary cubic trace
+`(2πi)⁻¹∫f'/f`. Arithmetic contour specialization remains separate.
 
 **Limit:** this does not establish arithmetic Hardy admission, equality of
 the resulting operator trace with a Xi divisor index, any subunit nuclear
