@@ -139,9 +139,14 @@ Module `formal/GaloisForLFunctions/RHTower/EulerDeletionJointPolygonMoment.lean`
 Scratch `lake env lean /tmp/hgt-joint-polygon-17TZsg/LowDegree.lean` passed. Scratch
 `Axioms.lean` also passed: all eight audited endpoint/factorization/integration/capstone theorems
 use only `propext`, `Classical.choice`, and `Quot.sound`. No unfinished proof, added axiom,
-external computation certificate, or numerical experiment is used. Narrow leaf build and global
-lint results will be recorded after their current audit completes. The umbrella import is wired;
-no umbrella build is requested.
+external computation certificate, or numerical experiment is used. The narrow final audit
+`lake build GaloisForLFunctions.RHTower.EulerDeletionJointPolygonMoment` passed. The umbrella
+import is wired; no umbrella build ran. Production source matches the axiom-audited scratch
+body exactly. Scoped whitespace validation passed. All owned Lean handles have finished.
+
+Repository-wide `scripts/formal_tools.py lint` returned exit 1, reporting two concurrent unwired
+modules: `EulerDeletionBalancedPeriodCurvatureNoGo` and `EulerDeletionCurvatureCriticalBoundary`.
+It reported no error in this new module. Global lint is therefore not claimed to pass.
 
 ## Decision
 
@@ -150,3 +155,23 @@ polynomial moment, not merely a negative observation about a chosen toy polygon.
 as a proved arithmetic input. Do not count a standard path-signature interpretation as the
 requested radical architecture. The joint weighted construction remains an explicit candidate
 object, with its infinite norm and zero-specific arithmetic relations still to be proved.
+
+## Developed successor: a full joint product
+
+[Dependency-closed paper proof of the sharp one-fifth admission
+boundary](../2-fully-proven/euler-deletion-joint-product-one-fifth.md) now derives convergence
+to a unit for the joint product in every complete complex normed algebra when `Re(s)>1/5`.
+It includes a summable error estimate for the actual varying weights, all partial prefixes,
+and a fixed finite-dimensional truncated-algebra witness of divergence for real `0<s<=1/5`.
+This is a paper theorem, not yet the full Lean theorem. Its source is the finite arithmetic
+moment law above. Direct formal verification of the actual six-exponential word's first four
+derivatives is the next step, followed by its fifth-order remainder and block estimates.
+Convergence is nonselective with respect to zeta zeros; no RH implication has appeared.
+
+The concrete analytic step is now formalized in
+`formal/GaloisForLFunctions/RHTower/EulerDeletionJointExponentialRemainder.lean`: actual source
+velocities, actual exponential-word derivatives, and `B(z)-1=O(||z||^5)`. Its scratch and five
+axiom checks passed, followed by a successful narrow leaf build. The generic ring cancellation
+uses no commutation hypothesis. Latest global lint reports only the independently unwired
+`EulerDeletionBalancedPeriodCurvatureNoGo` module. The varying-weight summability, all-prefix
+convergence, and sharpness steps remain the exact next obligations.

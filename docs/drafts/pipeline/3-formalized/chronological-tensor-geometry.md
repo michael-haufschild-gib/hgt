@@ -1,6 +1,6 @@
 # Chronological tensor geometry: a formalized research seed
 
-**Status:** thirteen individual Lean builds passed; all 176 declarations axiom-audited (127 theorems, 49 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
+**Status:** sixteen individual Lean builds passed; all 200 declarations axiom-audited (146 theorems, 54 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
 
 **Question.** What geometric information becomes visible when alternating tensors are tested by an ordered probe with a limited budget for changing its value?
 
@@ -238,28 +238,104 @@ For the six-endpoint reversal form, `M=1` and `L=3·28=84`. `SealingExamples.lea
 
 `ProbeComparison.lean` proves the telescoping estimate and orientation argument. `Sealing.lean` defines both capacity suprema, proves (3), proves equality of the monotone and signed observational kernels, and closes `eventual_exact_sealing` with no nonzero-response premise. This is stronger than the earlier proposed convergence statement. Together with the enclosure survivors, it shows a genuine distinction between fixing a polynomial and allowing its degree to grow; no conflict between the two quantifier orders occurs.
 
+## A universal bound depending only on degree
+
+For every homogeneous window form of degree d≥2, on any nonempty finite gap space,
+
+\[
+\boxed{C_{d(d-1)+k}=M\quad\text{for every integer }k\ge0.}\tag{4}
+\]
+
+The bound is independent of coefficients and the number of gaps. In particular, the original cubic reversal form stabilizes by depth six. The claim here is a universal upper bound; optimality of this degree bound for genuine chord pairings is not asserted.
+
+**Chebyshev growth ingredient.** The classical extremal theorem bounds a degree-d polynomial q with `|q|≤1` on `[-1,1]` by `|q(x)|≤T_d(x)` for x≥1. This theorem is already formalized in mathlib. The further elementary majorant
+
+\[
+T_d(x)\le x^{d^2}\qquad(x\ge1)
+\]
+
+follows from `cosh(dt)≤cosh(t)^(d²)` for t≥0. Here is a direct proof of the latter. Hyperbolic addition inductively gives `sinh(nt)cosh(t)≤n sinh(t)cosh(nt)`. Writing c=cosh(t), s=sinh(t), this and Bernoulli's inequality give
+
+\[
+\cosh((n+1)t)c\le\cosh(nt)\{1+(n+1)s^2\}
+\le\cosh(nt)c^{2(n+1)}.
+\]
+
+Induction, cancellation of c>0, and `n²+2(n+1)=(n+1)²+1` finish. Substitute t=arcosh(x). `ChebyshevGrowth.lean` checks this argument without estimates or numerical certificates.
+
+**Jordan reduction.** Take a unit-budget signed probe g. Reverse its global sign if needed, so `S=Σg_i≥0`, and put `V=Σ|g_i|≤1`. The nonnegative vectors `|g|+g` and `|g|−g` have masses V+S and V−S. Normalize them to monotone unit probes u,v, choosing any unit coordinate probe if a mass vanishes. For S>0,
+
+\[
+g=S\left\{\frac{1+V/S}{2}u+\frac{1-V/S}{2}v\right\}.
+\]
+
+Restrict P to the segment between u and v. This produces a polynomial q of degree at most d, bounded in absolute value by M on `[-1,1]`. Homogeneity and Chebyshev growth imply
+
+\[
+|P(g)|=S^d|q(V/S)|\le M S^d(V/S)^{d^2}.
+\]
+
+Multiplication by `S^(d(d−1))` cancels the denominator exactly and leaves `M V^(d²)≤M`. When S=0 the positive enclosure exponent makes the response zero. Monotone unit probes supply the reverse inequality. Finally, enclosure capacity decreases with depth since `|S|≤1`, so equality persists.
+
+`SegmentExtrapolation.lean` builds the actual segment polynomial and checks its degree, evaluation, and norm bound, including M=0. `DegreeSealing.lean` proves the Jordan identity, (4), depth monotonicity, and the cubic depth-six corollary. General polynomial growth is established mathematics; this enclosure specialization is being developed as a structural ingredient of the research program.
+
+## One enclosure: an exact cubic depth
+
+**Theorem.** For arbitrary signed gaps,
+
+`|S(27D−R)| ≤ V⁴`, where `S=a+b+c+d+e` and `V=|a|+|b|+|c|+|d|+|e|`.
+
+`OneEnclosure.lean` has passed its final leaf build. The following proof uses no optimizer output.
+
+First put `x=|b|+|c|+|d|`, `y=|a|+|e|`. The majorant for the cubic has the rational envelope `|27D−R|≤(8/7)V³`, certified by
+
+`(8/7)(x+y)³−[27xy²/4+(x+y)x²]`
+`= (3x−2y)²(x+21y)/75 + (x−y/2)²(x+4y)/81 + 149(x+y)³/14175`.
+
+Thus `|S|≤7V/8` proves the desired quartic inequality. Otherwise reverse all gaps if necessary so that `S≥7V/8`. Write `M=b+c+d`, `L=|b|+|c|+|d|`, `u=a+e`, `w=|a|+|e|`. The response is `c(27ae−SM)`.
+
+When `ae` and `M` have the same weak sign, the two terms subtract with the same sign. The individual bounds `|27D|≤V³`, `|R|≤V³`, and `S≤V` suffice.
+
+If `ae≥0` and `M≤0`, then `u≥0` and `w=u`. Triangle inequalities give `2|c|≤V−S`, hence `S|c|≤V²/8`. Also `4ae≤u²` and `4S(−M)≤u²≤V²`. Therefore `27ae−SM≤7V²`, and the enclosed response is at most `7V⁴/8`.
+
+If `ae≤0` and `M≥0`, put `z=u+L`. Then `S≤z≤V`, `2L≤V+z`, and `w²−u²=−4ae`. Replacing `M` and `|c|` by their bounds `L` reduces the response to
+
+`f(L)=27Lz(V²−z²)/4−L²z(27V−29z)/2`.
+
+Set `H=(V+z)/2`. The exact difference is
+
+`f(H)−f(L)=(H−L)z[27(V²−z²)/4−(27V−29z)(H+L)/2]`.
+
+The bracket is nonnegative: if `27V−29z≤0`, both terms have the required sign; otherwise use `H+L≤V+z` and `31z≥27V`. Thus `f(L)≤f(H)=z²(V+z)²/4≤V⁴`. Zero variation is already included in every inequality.
+
+**Cone consequence (paper proof; capacity bridge in scratch audit).** For `0≤A≤27B`, write `AD−BR=B[q(27D−R)−(1−q)R]`, with `0≤q≤1`. Triangle inequality gives `|S(AD−BR)|≤BV⁴`. A pure central jump attains `B`, and the monotone lower bound persists at every depth. Thus `C_k(AD−BR)=M=B` for all `k≥1`. For `A=27,B=1`, the earlier rational reversal witness proves `C_0>1`; its exact minimum enclosure depth is therefore one. The broader claim that this convexity argument covers the entire coefficient plane was rejected: for `A>27B`, cancellation can make monotone capacity strictly smaller than `A/27`.
+
+The remote [enclosure search](../2-fully-proven/computations/chronological-chord-capacity/ENCLOSURE-REPORT.md) prompted this proof and found an unsealed response near `1.04387639`. Identification of that value as the global signed optimum remains open.
+
+
 ## Relation to existing mathematics and novelty limits
 
 - The ambient geometry is polynomial sup-norm geometry, an established subject. García et al. study explicit polynomial norm balls and their extreme points in [Geometry of homogeneous polynomials in ℝ²](https://arxiv.org/html/2408.01741v1). Pérez-García and Villanueva study norm attainment over ℓ₁ balls in [Where do homogeneous polynomials on ℓ₁ⁿ attain their norm?](https://doi.org/10.1016/j.jat.2004.01.001). Our chronological restriction is additional structure; the word “curvature” by itself supplies no novelty.
-- Alternating tensor contractions, chord descriptions, and Plücker identities are standard algebraic ingredients. The corpus supplies `KnotTheory/ChordData.lean`; no claim of a new braid or knot invariant is made.
+- Alternating tensor contractions, chord descriptions, and Plücker identities are standard algebraic ingredients. In particular, chord products identify, up to orientation sign, with classical Specht polynomials for the two-row partition (r,r), by Definition 8 of Moustrou–Riener–Verdure, [Symmetric ideals, Specht polynomials and solutions to symmetric systems of equations](https://arxiv.org/pdf/1912.05266). Their chronological norm is the extra structure being investigated. The corpus supplies `KnotTheory/ChordData.lean`; no claim of a new braid or knot invariant is made.
 - An earlier switching-only proposal overlapped directly with Lotter and Preiß's [Piecewise Symmetric Tensors](https://arxiv.org/html/2607.04712v1). It was rejected as a novelty claim.
 - Single-diagram optimization is closely related to products of interval masses and graph entropy. This connection still needs a precise equivalence audit; it is not claimed as an invention.
+- The extrapolation ingredient is classical polynomial growth, reviewed by Révész in [Some polynomial inequalities on real normed spaces](https://arxiv.org/pdf/math/0703386). The enclosure proof uses that theorem rather than claiming a new extrapolation principle.
 - Finite stabilization is related to established exact-penalty theory: Jane J. Ye, [Exact Penalty Principle](https://web.uvic.ca/~janeye/hosted/papers/ExactPenaltyFinal.pdf), presents Lipschitz/error-bound mechanisms enforcing constraints at a finite penalty weight. Our multiplicative enclosure bound is an explicit application of the same general mechanism, rather than evidence that finite penalties were invented here.
 - The specific package of chronological capacities, the exact displayed constants, reversal witnesses, and graded comparisons are candidates for further novelty review. Searches have not established priority. A research field would require substantially more than naming this package.
 
 ## Next mathematical questions
 
 1. Classify the full signed six-endpoint coefficient ball, including negative relative coefficients.
-2. Determine sharp stabilization depths. Finite stabilization is proved; a possible universal bound `r(r−1)` for general degree-r window polynomials is a Chebyshev-extrapolation lead, still awaiting complete audit and Lean. Its sharpness for actual endpoint pairings is a separate question.
+2. Determine sharp stabilization depths. The universal upper bound `r(r−1)` is formalized for r≥2. A homogenized Chebyshev family should establish sharpness for unrestricted window forms; representation and lower-bound details remain to be checked. Sharpness for actual endpoint pairings remains open; the original cubic now has exact depth one.
 3. Prove general fusion and nesting laws for arbitrary chord forms, beyond the repeated family above.
 4. Identify order-preserving maps, their contraction constants, and invariants of the resulting graded spaces. Determine which facts survive comparison with polynomial Banach spaces, planar algebras, and graph entropy.
 
 ## Artifacts and verification
 
-Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Thirteen modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`. All are wired into `HTGeometry.lean`.
+Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Sixteen modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`, `ChebyshevGrowth`, `SegmentExtrapolation`, `DegreeSealing`. All are wired into `HTGeometry.lean`.
 
-All development checks used foreground `lake env lean` on scratch files, sequentially. All thirteen individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 176 declarations (127 theorems and 49 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
+All development checks used foreground `lake env lean` on scratch files, sequentially. All sixteen individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 200 declarations (146 theorems and 54 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
 
-`scripts/formal_tools.py index` completed. The authoritative repository-wide `scripts/formal_tools.py lint` was run and most recently failed on two unrelated, currently unwired modules: `RHTower.EulerDeletionBalancedPeriodCurvatureNoGo` and `RHTower.EulerDeletionCurvatureCriticalBoundary`. It reported no proof-debt error and no wiring error in this contribution. Those other researchers' files were not modified.
+`scripts/formal_tools.py index` completed. The authoritative repository-wide `scripts/formal_tools.py lint` was run and most recently failed on one unrelated, currently unwired module: `RHTower.EulerDeletionBalancedPeriodCurvatureNoGo`. It reported no proof-debt error and no wiring error in this contribution. Those other researchers' files were not modified.
 
 Numerical leads and reproducible sources: [computation report](../2-fully-proven/computations/chronological-chord-capacity/REPORT.md). No numerical results enter any Lean proof. Symbolic proofs use algebraic identities, inequalities, differentiation rules, and finite AM–GM.

@@ -1,0 +1,4171 @@
+{
+  "scope": "numerical leads only; no global optimality certificate",
+  "workers": 24,
+  "numpy": "1.24.4",
+  "scipy": "1.10.1",
+  "seconds": 0.17760920524597168,
+  "tasks": 224,
+  "best_by_depth": [
+    {
+      "depth": 0,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0438763935978541,
+      "gaps": [
+        0.30358751438052023,
+        -6.766972211067675e-18,
+        -0.36573359255707716,
+        -1.4186860129885213e-21,
+        -0.3306788930624027
+      ],
+      "variation": 1.0,
+      "displacement": -0.39282497123895965,
+      "value": 1.0438763935978541,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    }
+  ],
+  "failed_local_runs": 50,
+  "chamber_results": [
+    {
+      "depth": 0,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 0.03703703703703704,
+      "gaps": [
+        0.6666666666663409,
+        -0.0,
+        -0.33333333333365917,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.3333333333326817,
+      "value": -0.03703703703703704,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0438763935978541,
+      "gaps": [
+        0.30358751438052023,
+        -6.766972211067675e-18,
+        -0.36573359255707716,
+        -1.4186860129885213e-21,
+        -0.3306788930624027
+      ],
+      "variation": 1.0,
+      "displacement": -0.39282497123895965,
+      "value": 1.0438763935978541,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 1,
+      "output_sign": -1,
+      "signed_objective": 0.037037037037037035,
+      "gaps": [
+        0.6666666666666324,
+        6.192366235544968e-17,
+        -0.3333333333333675,
+        -1.685707906886702e-17,
+        -9.298907739622981e-19
+      ],
+      "variation": 1.0,
+      "displacement": 0.33333333333326504,
+      "value": -0.037037037037037035,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 1,
+      "output_sign": 1,
+      "signed_objective": 1.043876393597854,
+      "gaps": [
+        0.30358751496445724,
+        0.0,
+        -0.36573359283604084,
+        -0.0,
+        -0.3306788921995019
+      ],
+      "variation": 1.0,
+      "displacement": -0.3928249700710855,
+      "value": 1.043876393597854,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 2,
+      "output_sign": -1,
+      "signed_objective": 1.0438763935978541,
+      "gaps": [
+        0.3306788926522477,
+        -2.0140831145256014e-17,
+        0.36573359163381447,
+        -2.0140831807000505e-17,
+        -0.3035875157139379
+      ],
+      "variation": 1.0,
+      "displacement": 0.3928249685721243,
+      "value": -1.0438763935978541,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 2,
+      "output_sign": 1,
+      "signed_objective": 0.03703703703703704,
+      "gaps": [
+        0.0,
+        -4.848098351783325e-19,
+        0.3333333334215712,
+        -4.397688864051615e-19,
+        -0.6666666665784289
+      ],
+      "variation": 1.0,
+      "displacement": -0.3333333331568577,
+      "value": 0.03703703703703704,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 3,
+      "output_sign": -1,
+      "signed_objective": 1.0438763935978534,
+      "gaps": [
+        0.33067889604287104,
+        0.0,
+        0.36573359283920814,
+        -0.0,
+        -0.30358751111792087
+      ],
+      "variation": 1.0,
+      "displacement": 0.3928249777641583,
+      "value": -1.0438763935978534,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 3,
+      "output_sign": 1,
+      "signed_objective": 0.03703703703703705,
+      "gaps": [
+        0.0,
+        3.755886403639139e-17,
+        0.3333333341006367,
+        -2.2105685376517807e-17,
+        -0.6666666658993634
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": -0.33333333179872665,
+      "value": 0.03703703703703705,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 4,
+      "output_sign": -1,
+      "signed_objective": 0.03703703703703641,
+      "gaps": [
+        0.6666666666670759,
+        -4.4354983283501e-15,
+        -0.3333333333329185,
+        1.1048292594377374e-15,
+        -0.0
+      ],
+      "variation": 0.9999999999999999,
+      "displacement": 0.33333333333415405,
+      "value": -0.03703703703703641,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 4,
+      "output_sign": 1,
+      "signed_objective": 1.0438763935978492,
+      "gaps": [
+        0.303587492895426,
+        -0.0,
+        -0.36573360080501943,
+        3.805362351733435e-16,
+        -0.33067890629955426
+      ],
+      "variation": 1.0,
+      "displacement": -0.3928250142091473,
+      "value": 1.0438763935978492,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 5,
+      "output_sign": -1,
+      "signed_objective": 0.037037037037037056,
+      "gaps": [
+        0.666666666666815,
+        7.80082696150882e-20,
+        -0.3333333333331852,
+        1.2635377518489892e-21,
+        -0.0
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 0.33333333333362974,
+      "value": -0.037037037037037056,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 5,
+      "output_sign": 1,
+      "signed_objective": 1.043876393597854,
+      "gaps": [
+        0.3035875161121063,
+        0.0,
+        -0.3657335953795823,
+        0.0,
+        -0.3306788885083115
+      ],
+      "variation": 1.0,
+      "displacement": -0.39282496777578746,
+      "value": 1.043876393597854,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 6,
+      "output_sign": -1,
+      "signed_objective": 1.0438763935978537,
+      "gaps": [
+        0.33067889186739213,
+        -0.0,
+        0.3657335930359109,
+        0.0,
+        -0.3035875150966969
+      ],
+      "variation": 1.0,
+      "displacement": 0.3928249698066062,
+      "value": -1.0438763935978537,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 6,
+      "output_sign": 1,
+      "signed_objective": 0.03703703703703705,
+      "gaps": [
+        0.0,
+        -2.027748285630101e-18,
+        0.3333333338011656,
+        8.374182854250323e-19,
+        -0.6666666661988345
+      ],
+      "variation": 1.0,
+      "displacement": -0.33333333239766894,
+      "value": 0.03703703703703705,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 7,
+      "output_sign": -1,
+      "signed_objective": 1.0438763935978528,
+      "gaps": [
+        0.33067889286770236,
+        0.0,
+        0.36573358179551657,
+        0.0,
+        -0.303587525336781
+      ],
+      "variation": 1.0,
+      "displacement": 0.39282494932643797,
+      "value": -1.0438763935978528,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 7,
+      "output_sign": 1,
+      "signed_objective": 0.03703703703703704,
+      "gaps": [
+        0.0,
+        0.0,
+        0.3333333333356119,
+        0.0,
+        -0.6666666666643881
+      ],
+      "variation": 1.0,
+      "displacement": -0.33333333332877624,
+      "value": 0.03703703703703704,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 8,
+      "output_sign": -1,
+      "signed_objective": 1.0370370370370372,
+      "gaps": [
+        0.33333333396262327,
+        -0.0,
+        -0.3333333325671185,
+        -0.0,
+        0.33333333347025823
+      ],
+      "variation": 1.0,
+      "displacement": 0.333333334865763,
+      "value": -1.0370370370370372,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 8,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 9,
+      "output_sign": -1,
+      "signed_objective": 1.0370370370370372,
+      "gaps": [
+        0.3333333333331923,
+        0.0,
+        -0.33333333333329584,
+        -0.0,
+        0.3333333333335119
+      ],
+      "variation": 1.0,
+      "displacement": 0.33333333333340837,
+      "value": -1.0370370370370372,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 9,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 10,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 10,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995146,
+      "gaps": [
+        0.3537495900676826,
+        -1.0178822941839726e-17,
+        0.29250081972224257,
+        -0.0,
+        0.353749590210075
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995146,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 11,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 11,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995141,
+      "gaps": [
+        0.3537495901817301,
+        0.0,
+        0.29250081440450143,
+        -0.0,
+        0.3537495954137686
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995141,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 12,
+      "output_sign": -1,
+      "signed_objective": 1.0370370370370374,
+      "gaps": [
+        0.3333333331564529,
+        -0.0,
+        -0.333333333263791,
+        1.0695144274116079e-17,
+        0.3333333335797562
+      ],
+      "variation": 1.0,
+      "displacement": 0.3333333334724181,
+      "value": -1.0370370370370374,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 12,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 13,
+      "output_sign": -1,
+      "signed_objective": 1.0370370370370374,
+      "gaps": [
+        0.3333333302533136,
+        0.0,
+        -0.3333333360708566,
+        0.0,
+        0.33333333367582996
+      ],
+      "variation": 1.0,
+      "displacement": 0.33333332785828695,
+      "value": -1.0370370370370374,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 13,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 14,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 14,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995141,
+      "gaps": [
+        0.35374959026625846,
+        -0.0,
+        0.29250081971772196,
+        0.0,
+        0.3537495900160196
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995141,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 15,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 0,
+      "chamber": 15,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.3537495940530609,
+        1.8934392523187843e-17,
+        0.29250081725346627,
+        0.0,
+        0.35374958869347295
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 0.16673930357993474,
+      "gaps": [
+        0.6936842748189292,
+        -0.0,
+        -0.1500543932585087,
+        -0.0,
+        -0.15626133192256214
+      ],
+      "variation": 1.0,
+      "displacement": 0.38736854963785844,
+      "value": 0.16673930357993474,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 1,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 1,
+      "output_sign": 1,
+      "signed_objective": 0.16673930357993466,
+      "gaps": [
+        0.6936842744166676,
+        0.0,
+        -0.15005439283365204,
+        -0.0,
+        -0.15626133274968038
+      ],
+      "variation": 1.0,
+      "displacement": 0.38736854883333516,
+      "value": 0.16673930357993466,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 2,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 2,
+      "output_sign": 1,
+      "signed_objective": 0.16673930357993463,
+      "gaps": [
+        0.15626133169630824,
+        -0.0,
+        0.15005439032753826,
+        -4.069868903592785e-17,
+        -0.6936842779761535
+      ],
+      "variation": 1.0,
+      "displacement": -0.38736855595230707,
+      "value": 0.16673930357993463,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 3,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 3,
+      "output_sign": 1,
+      "signed_objective": 0.16673930357993463,
+      "gaps": [
+        0.15626133274252438,
+        9.899062296324194e-18,
+        0.1500543891082861,
+        -0.0,
+        -0.6936842781491895
+      ],
+      "variation": 1.0,
+      "displacement": -0.3873685562983791,
+      "value": 0.16673930357993463,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 4,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 4,
+      "output_sign": 1,
+      "signed_objective": 0.16673930357993455,
+      "gaps": [
+        0.6936842739553765,
+        -0.0,
+        -0.1500543932054615,
+        6.395467343450919e-17,
+        -0.1562613328391618
+      ],
+      "variation": 0.9999999999999999,
+      "displacement": 0.38736854791075326,
+      "value": 0.16673930357993455,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 5,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 5,
+      "output_sign": 1,
+      "signed_objective": 0.1667393035799347,
+      "gaps": [
+        0.6936842739001058,
+        0.0,
+        -0.1500543942410879,
+        1.1680656803658461e-16,
+        -0.1562613318588063
+      ],
+      "variation": 1.0,
+      "displacement": 0.3873685478002117,
+      "value": 0.1667393035799347,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 6,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 6,
+      "output_sign": 1,
+      "signed_objective": 0.16673930357993477,
+      "gaps": [
+        0.15626133192741398,
+        -0.0,
+        0.1500543932516272,
+        0.0,
+        -0.693684274820959
+      ],
+      "variation": 1.0,
+      "displacement": -0.3873685496419178,
+      "value": 0.16673930357993477,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 7,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 7,
+      "output_sign": 1,
+      "signed_objective": 0.16673930357993458,
+      "gaps": [
+        0.15626133212677756,
+        0.0,
+        0.15005439205106266,
+        0.0,
+        -0.6936842758221596
+      ],
+      "variation": 0.9999999999999999,
+      "displacement": -0.3873685516443194,
+      "value": 0.16673930357993458,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 8,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 8,
+      "output_sign": 1,
+      "signed_objective": 0.12478919412479898,
+      "gaps": [
+        0.1821106011492283,
+        -7.432261148053051e-17,
+        -0.6357787977072172,
+        -1.0402014578536037e-17,
+        0.18211060114355443
+      ],
+      "variation": 1.0,
+      "displacement": -0.2715575954144346,
+      "value": 0.12478919412479898,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 9,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 9,
+      "output_sign": 1,
+      "signed_objective": 0.12478919412479904,
+      "gaps": [
+        0.18211060105191723,
+        0.0,
+        -0.6357787988718592,
+        -0.0,
+        0.1821106000762237
+      ],
+      "variation": 1.0,
+      "displacement": -0.27155759774371824,
+      "value": 0.12478919412479904,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 10,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 10,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.3537495901555578,
+        -0.0,
+        0.2925008197172944,
+        -0.0,
+        0.35374959012714785
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 11,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 11,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995145,
+      "gaps": [
+        0.35374958196197864,
+        0.0,
+        0.2925008227410981,
+        -1.6681211338931725e-21,
+        0.3537495952969234
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995145,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 12,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 12,
+      "output_sign": 1,
+      "signed_objective": 0.12478919412479907,
+      "gaps": [
+        0.18211060215649535,
+        -0.0,
+        -0.6357787978059579,
+        9.507039070158776e-19,
+        0.18211060003754687
+      ],
+      "variation": 1.0,
+      "displacement": -0.2715575956119157,
+      "value": 0.12478919412479907,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 13,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 13,
+      "output_sign": 1,
+      "signed_objective": 0.1247891941247981,
+      "gaps": [
+        0.18211058920095066,
+        0.0,
+        -0.6357788059915269,
+        0.0,
+        0.18211060480752234
+      ],
+      "variation": 1.0,
+      "displacement": -0.2715576119830539,
+      "value": 0.1247891941247981,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 14,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 14,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995143,
+      "gaps": [
+        0.3537495901430115,
+        -0.0,
+        0.2925008197924227,
+        0.0,
+        0.35374959006456586
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995143,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 15,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 1,
+      "chamber": 15,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995105,
+      "gaps": [
+        0.35374960762755103,
+        3.357933906394727e-17,
+        0.29250080046957755,
+        0.0,
+        0.3537495919028714
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995105,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 0.00864,
+      "gaps": [
+        0.8000000000001001,
+        -7.756220871281252e-17,
+        -0.19999999999989987,
+        -4.16838850048732e-17,
+        -7.416894480850833e-19
+      ],
+      "variation": 1.0,
+      "displacement": 0.6000000000002002,
+      "value": -0.00864,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 1,
+      "output_sign": -1,
+      "signed_objective": 0.008639999999999991,
+      "gaps": [
+        0.799999997138804,
+        0.0,
+        -0.20000000286119596,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.599999994277608,
+      "value": -0.008639999999999991,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 1,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 2,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 2,
+      "output_sign": 1,
+      "signed_objective": 0.008639999999999995,
+      "gaps": [
+        0.0,
+        -0.0,
+        0.2000000043122144,
+        -0.0,
+        -0.7999999956877857
+      ],
+      "variation": 1.0,
+      "displacement": -0.5999999913755713,
+      "value": 0.008639999999999995,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 3,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 3,
+      "output_sign": 1,
+      "signed_objective": 0.008640000000000005,
+      "gaps": [
+        0.0,
+        7.2647332695160435e-19,
+        0.19999999999948823,
+        -2.6345291573854675e-17,
+        -0.8000000000005119
+      ],
+      "variation": 1.0,
+      "displacement": -0.6000000000010237,
+      "value": 0.008640000000000005,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 4,
+      "output_sign": -1,
+      "signed_objective": 0.008640000000000004,
+      "gaps": [
+        0.7999999987898909,
+        -9.185549929559088e-24,
+        -0.2000000012101092,
+        2.5242117842839685e-24,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.5999999975797817,
+      "value": -0.008640000000000004,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 4,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 5,
+      "output_sign": -1,
+      "signed_objective": 0.008639999999999998,
+      "gaps": [
+        0.8000000000633147,
+        0.0,
+        -0.19999999993668524,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.6000000001266295,
+      "value": -0.008639999999999998,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 5,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 6,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 6,
+      "output_sign": 1,
+      "signed_objective": 0.008640000000000004,
+      "gaps": [
+        0.0,
+        -0.0,
+        0.1999999999712683,
+        0.0,
+        -0.8000000000287317
+      ],
+      "variation": 1.0,
+      "displacement": -0.6000000000574635,
+      "value": 0.008640000000000004,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 7,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 7,
+      "output_sign": 1,
+      "signed_objective": 0.008640000000000005,
+      "gaps": [
+        0.0,
+        1.678635949089433e-19,
+        0.20000000000090656,
+        1.350880183577527e-19,
+        -0.7999999999990935
+      ],
+      "variation": 1.0,
+      "displacement": -0.599999999998187,
+      "value": 0.008640000000000005,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 8,
+      "output_sign": -1,
+      "signed_objective": 0.3705897547609558,
+      "gaps": [
+        0.4341922517671511,
+        -0.0,
+        -0.13161549404990353,
+        -0.0,
+        0.43419225418294544
+      ],
+      "variation": 1.0,
+      "displacement": 0.7367690119001931,
+      "value": -0.3705897547609558,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 8,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 9,
+      "output_sign": -1,
+      "signed_objective": 0.3705897547609553,
+      "gaps": [
+        0.43419225466535966,
+        2.7486865001024244e-16,
+        -0.13161549395659933,
+        -0.0,
+        0.4341922513780407
+      ],
+      "variation": 1.0,
+      "displacement": 0.7367690120868013,
+      "value": -0.3705897547609553,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 9,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 10,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 10,
+      "output_sign": 1,
+      "signed_objective": 0.902729496099515,
+      "gaps": [
+        0.35374959010504975,
+        -0.0,
+        0.2925008197911352,
+        -0.0,
+        0.35374959010381524
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.902729496099515,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 11,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 11,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.35374959010384843,
+        0.0,
+        0.2925008197923835,
+        -0.0,
+        0.3537495901037681
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 12,
+      "output_sign": -1,
+      "signed_objective": 0.37058975476095546,
+      "gaps": [
+        0.4341922513929069,
+        -0.0,
+        -0.13161549619820223,
+        6.26348041967849e-17,
+        0.4341922524088908
+      ],
+      "variation": 1.0,
+      "displacement": 0.7367690076035955,
+      "value": -0.37058975476095546,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 12,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 13,
+      "output_sign": -1,
+      "signed_objective": 0.37058975476095585,
+      "gaps": [
+        0.4341922528311127,
+        0.0,
+        -0.1316154943940222,
+        1.5817577960321532e-16,
+        0.4341922527748651
+      ],
+      "variation": 1.0,
+      "displacement": 0.7367690112119558,
+      "value": -0.37058975476095585,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 13,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 14,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 14,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.35374958972504716,
+        -0.0,
+        0.2925008198956485,
+        0.0,
+        0.3537495903793044
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 15,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 2,
+      "chamber": 15,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995145,
+      "gaps": [
+        0.3537495903438699,
+        0.0,
+        0.2925008185957031,
+        0.0,
+        0.35374959106042714
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995145,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 0.04577189419769551,
+      "gaps": [
+        0.8137276360398705,
+        -0.0,
+        -0.09055017764763562,
+        -0.0,
+        -0.09572218631249373
+      ],
+      "variation": 0.9999999999999999,
+      "displacement": 0.6274552720797412,
+      "value": 0.04577189419769551,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 1,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 1,
+      "output_sign": 1,
+      "signed_objective": 0.04577189419769548,
+      "gaps": [
+        0.813727631947653,
+        0.0,
+        -0.09055017936805765,
+        -1.0302118953808213e-16,
+        -0.09572218868428932
+      ],
+      "variation": 1.0,
+      "displacement": 0.6274552638953059,
+      "value": 0.04577189419769548,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 2,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 2,
+      "output_sign": 1,
+      "signed_objective": 0.04577189419769457,
+      "gaps": [
+        0.09572217225801356,
+        -1.1936308883368795e-17,
+        0.0905501709833879,
+        -0.0,
+        -0.8137276567585985
+      ],
+      "variation": 1.0,
+      "displacement": -0.627455313517197,
+      "value": 0.04577189419769457,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 3,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 3,
+      "output_sign": 1,
+      "signed_objective": 0.045771894197695485,
+      "gaps": [
+        0.09572218628522894,
+        8.983884886718796e-17,
+        0.09055017762394804,
+        -4.1657825139390033e-16,
+        -0.8137276360908225
+      ],
+      "variation": 1.0,
+      "displacement": -0.6274552721816459,
+      "value": 0.045771894197695485,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 4,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 4,
+      "output_sign": 1,
+      "signed_objective": 0.04577189419769535,
+      "gaps": [
+        0.8137276360110102,
+        -2.0627338084274827e-16,
+        -0.09055017758786393,
+        2.466770324212797e-15,
+        -0.09572218640112326
+      ],
+      "variation": 1.0,
+      "displacement": 0.6274552720220252,
+      "value": 0.04577189419769535,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 5,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 5,
+      "output_sign": 1,
+      "signed_objective": 0.04577189419769555,
+      "gaps": [
+        0.8137276351350868,
+        3.2615003634026835e-18,
+        -0.09055017885071878,
+        7.125071745713724e-17,
+        -0.09572218601419435
+      ],
+      "variation": 1.0,
+      "displacement": 0.6274552702701738,
+      "value": 0.04577189419769555,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 6,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 6,
+      "output_sign": 1,
+      "signed_objective": 0.045771894197695534,
+      "gaps": [
+        0.09572218334327777,
+        -1.4370944948084691e-16,
+        0.09055017863422689,
+        0.0,
+        -0.8137276380224953
+      ],
+      "variation": 1.0,
+      "displacement": -0.6274552760449907,
+      "value": 0.045771894197695534,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 7,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 7,
+      "output_sign": 1,
+      "signed_objective": 0.0457718941976955,
+      "gaps": [
+        0.09572218515862838,
+        4.039117637140513e-17,
+        0.090550178435293,
+        0.0,
+        -0.8137276364060785
+      ],
+      "variation": 0.9999999999999999,
+      "displacement": -0.6274552728121571,
+      "value": 0.0457718941976955,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 8,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 8,
+      "output_sign": 1,
+      "signed_objective": 0.014714502244136762,
+      "gaps": [
+        0.1520496379583467,
+        -7.010785825305437e-18,
+        -0.6959007286996617,
+        -2.282197927478704e-16,
+        0.15204963334199145
+      ],
+      "variation": 1.0,
+      "displacement": -0.39180145739932376,
+      "value": 0.014714502244136762,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 9,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 9,
+      "output_sign": 1,
+      "signed_objective": 0.033489797668038425,
+      "gaps": [
+        0.0,
+        0.9166666662038039,
+        -0.08333333379619605,
+        -0.0,
+        1.1011954183961893e-16
+      ],
+      "variation": 1.0,
+      "displacement": 0.833333332407608,
+      "value": 0.033489797668038425,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 10,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 10,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.3537495894344883,
+        -0.0,
+        0.29250082113110487,
+        -0.0,
+        0.3537495894344069
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 3,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 11,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 11,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995151,
+      "gaps": [
+        0.3537495901038113,
+        3.557860898631558e-19,
+        0.29250081979236836,
+        -0.0,
+        0.3537495901038205
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995151,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 12,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 12,
+      "output_sign": 1,
+      "signed_objective": 0.03348979766803839,
+      "gaps": [
+        0.0,
+        -6.050707651580373e-17,
+        -0.0833333332721637,
+        0.9166666667278363,
+        5.3345381957564025e-18
+      ],
+      "variation": 1.0,
+      "displacement": 0.8333333334556725,
+      "value": 0.03348979766803839,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 13,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 13,
+      "output_sign": 1,
+      "signed_objective": 0.033489797668038425,
+      "gaps": [
+        0.0,
+        0.2017887419700419,
+        -0.08333333299966537,
+        0.7148779250302928,
+        9.024374040571865e-18
+      ],
+      "variation": 1.0,
+      "displacement": 0.8333333340006693,
+      "value": 0.033489797668038425,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 14,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 14,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995154,
+      "gaps": [
+        0.35374959014674534,
+        -0.0,
+        0.2925008170563829,
+        0.0,
+        0.35374959279687196
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995154,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 15,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 3,
+      "chamber": 15,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.35374958698041925,
+        0.0,
+        0.2925008195933534,
+        0.0,
+        0.35374959342622747
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 0.0037945802465687867,
+      "gaps": [
+        0.857142857345558,
+        -1.9480272036051908e-16,
+        -0.14285714265444188,
+        -4.2147054461635397e-17,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.7142857146911159,
+      "value": -0.0037945802465687867,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 1,
+      "output_sign": -1,
+      "signed_objective": 0.0037945802465687898,
+      "gaps": [
+        0.85714285714442,
+        0.0,
+        -0.14285714285558007,
+        -0.0,
+        -6.096666720915497e-19
+      ],
+      "variation": 1.0,
+      "displacement": 0.7142857142888399,
+      "value": -0.0037945802465687898,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 1,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 2,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 2,
+      "output_sign": 1,
+      "signed_objective": 0.003794580246568788,
+      "gaps": [
+        0.0,
+        -9.156239768561997e-17,
+        0.14285714358252702,
+        -0.0,
+        -0.857142856417473
+      ],
+      "variation": 1.0,
+      "displacement": -0.714285712834946,
+      "value": 0.003794580246568788,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 3,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 3,
+      "output_sign": 1,
+      "signed_objective": 0.003794580246568786,
+      "gaps": [
+        0.0,
+        7.577558362678311e-17,
+        0.14285714288462686,
+        -7.5775583626253e-17,
+        -0.8571428571153731
+      ],
+      "variation": 1.0,
+      "displacement": -0.7142857142307462,
+      "value": 0.003794580246568786,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 4,
+      "output_sign": -1,
+      "signed_objective": 0.0037945802465687807,
+      "gaps": [
+        0.8571428526320333,
+        -0.0,
+        -0.14285714736796667,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.7142857052640665,
+      "value": -0.0037945802465687807,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 4,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 5,
+      "output_sign": -1,
+      "signed_objective": 0.0037945802465686827,
+      "gaps": [
+        0.8571428614853127,
+        1.4799607953367509e-16,
+        -0.14285713851468707,
+        0.0,
+        -1.0636271590343656e-16
+      ],
+      "variation": 1.0,
+      "displacement": 0.7142857229706256,
+      "value": -0.0037945802465686827,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 5,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 6,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 6,
+      "output_sign": 1,
+      "signed_objective": 0.0037945802465685873,
+      "gaps": [
+        2.1581118776088679e-16,
+        -1.7752199186297252e-16,
+        0.1428571411836375,
+        0.0,
+        -0.8571428588163622
+      ],
+      "variation": 1.0,
+      "displacement": -0.7142857176327246,
+      "value": 0.0037945802465685873,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 7,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 7,
+      "output_sign": 1,
+      "signed_objective": 0.0037945802465687915,
+      "gaps": [
+        0.0,
+        0.0,
+        0.1428571428571237,
+        0.0,
+        -0.8571428571428764
+      ],
+      "variation": 1.0,
+      "displacement": -0.7142857142857527,
+      "value": 0.0037945802465687915,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 8,
+      "output_sign": -1,
+      "signed_objective": 0.2308205434032096,
+      "gaps": [
+        0.4572470113528273,
+        -0.0,
+        -0.0855059862766206,
+        -0.0,
+        0.4572470023705522
+      ],
+      "variation": 1.0,
+      "displacement": 0.8289880274467589,
+      "value": -0.2308205434032096,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 8,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 9,
+      "output_sign": -1,
+      "signed_objective": 0.23082054340320962,
+      "gaps": [
+        0.4572470069538457,
+        7.13481463870592e-23,
+        -0.08550598609371492,
+        -0.0,
+        0.45724700695243947
+      ],
+      "variation": 1.0,
+      "displacement": 0.8289880278125703,
+      "value": -0.23082054340320962,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 9,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 10,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 10,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.3537495905702773,
+        -0.0,
+        0.2925008197031507,
+        -0.0,
+        0.35374958972657206
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 11,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 11,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995152,
+      "gaps": [
+        0.35374958962826103,
+        0.0,
+        0.2925008204919778,
+        -0.0,
+        0.3537495898797613
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995152,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 12,
+      "output_sign": -1,
+      "signed_objective": 0.2308205434032095,
+      "gaps": [
+        0.4572470070378851,
+        -0.0,
+        -0.08550598609793206,
+        0.0,
+        0.45724700686418285
+      ],
+      "variation": 1.0,
+      "displacement": 0.8289880278041359,
+      "value": -0.2308205434032095,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 12,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 13,
+      "output_sign": -1,
+      "signed_objective": 0.2308205434032096,
+      "gaps": [
+        0.45724700685145153,
+        0.0,
+        -0.0855059861047146,
+        0.0,
+        0.457247007043834
+      ],
+      "variation": 1.0,
+      "displacement": 0.8289880277905709,
+      "value": -0.2308205434032096,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 13,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 14,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 14,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995152,
+      "gaps": [
+        0.353749590107866,
+        -0.0,
+        0.29250081979642933,
+        1.3386975052855644e-16,
+        0.3537495900957048
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995152,
+      "failed_local_runs": 4,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 15,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 4,
+      "chamber": 15,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995155,
+      "gaps": [
+        0.3537495900978326,
+        0.0,
+        0.29250082076906725,
+        0.0,
+        0.35374958913310034
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995155,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 0.02139119443122421,
+      "gaps": [
+        0.8649453361907321,
+        -0.0,
+        -0.06548079567084598,
+        -0.0,
+        -0.06957386813842201
+      ],
+      "variation": 1.0,
+      "displacement": 0.7298906723814641,
+      "value": 0.02139119443122421,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 1,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 1,
+      "output_sign": 1,
+      "signed_objective": 0.02454349398612977,
+      "gaps": [
+        0.0,
+        0.937500000018169,
+        -0.062499999981831006,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.875000000036338,
+      "value": 0.02454349398612977,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 2,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 2,
+      "output_sign": 1,
+      "signed_objective": 0.02454349398612979,
+      "gaps": [
+        0.0,
+        -0.8820767383829399,
+        0.06250000038868021,
+        -0.055423261228380025,
+        -2.2019619524874216e-17
+      ],
+      "variation": 1.0,
+      "displacement": -0.8749999992226397,
+      "value": 0.02454349398612979,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 3,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 3,
+      "output_sign": 1,
+      "signed_objective": 0.02454349398612968,
+      "gaps": [
+        0.0,
+        1.6573916708210087e-16,
+        0.06250000000551593,
+        -0.9374999999944839,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -0.8749999999889677,
+      "value": 0.02454349398612968,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 4,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 4,
+      "output_sign": 1,
+      "signed_objective": 0.024543493986123557,
+      "gaps": [
+        1.5652790979483359e-13,
+        -1.4255794253820547e-15,
+        -0.0625000108537814,
+        0.9374999891460584,
+        -2.261400907598111e-15
+      ],
+      "variation": 1.0,
+      "displacement": 0.8749999782924298,
+      "value": 0.024543493986123557,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 5,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 5,
+      "output_sign": 1,
+      "signed_objective": 0.024543493986129816,
+      "gaps": [
+        7.971361493942015e-18,
+        0.6569078827172176,
+        -0.06250000009213388,
+        0.28059211719064875,
+        -0.0
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 0.8749999998157325,
+      "value": 0.024543493986129816,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 6,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 6,
+      "output_sign": 1,
+      "signed_objective": 0.024543493986129778,
+      "gaps": [
+        4.664046870290226e-17,
+        -0.9375000001166918,
+        0.062499999883308274,
+        0.0,
+        -1.609545843860646e-17
+      ],
+      "variation": 1.0,
+      "displacement": -0.8750000002333835,
+      "value": 0.024543493986129778,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 7,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 7,
+      "output_sign": 1,
+      "signed_objective": 0.021391194431224204,
+      "gaps": [
+        0.06957386690008416,
+        0.0,
+        0.0654807952759502,
+        0.0,
+        -0.8649453378239657
+      ],
+      "variation": 1.0,
+      "displacement": -0.7298906756479313,
+      "value": 0.021391194431224204,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 8,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 8,
+      "output_sign": 1,
+      "signed_objective": 0.002533060444337088,
+      "gaps": [
+        0.14176584560411112,
+        -0.0,
+        -0.7164683088854743,
+        -1.6998680701972923e-17,
+        0.14176584551041477
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": -0.43293661777094844,
+      "value": 0.002533060444337088,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 9,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 9,
+      "output_sign": 1,
+      "signed_objective": 0.024543493986129754,
+      "gaps": [
+        9.044694908210868e-17,
+        0.9374999998395481,
+        -0.0625000001604517,
+        -0.0,
+        0.0
+      ],
+      "variation": 0.9999999999999999,
+      "displacement": 0.8749999996790966,
+      "value": 0.024543493986129754,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 10,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 10,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995156,
+      "gaps": [
+        0.3537495898596177,
+        -0.0,
+        0.29250081926764204,
+        -0.0,
+        0.35374959087274044
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995156,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 11,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 11,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995146,
+      "gaps": [
+        0.3537495901043337,
+        0.0,
+        0.2925008197923787,
+        -0.0,
+        0.3537495901032877
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995146,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 12,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 12,
+      "output_sign": 1,
+      "signed_objective": 0.024543493986129778,
+      "gaps": [
+        0.0,
+        -0.0,
+        -0.06249999993284885,
+        0.937500000067151,
+        2.7832559429160743e-16
+      ],
+      "variation": 1.0,
+      "displacement": 0.8750000001343025,
+      "value": 0.024543493986129778,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 13,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 13,
+      "output_sign": 1,
+      "signed_objective": 0.024543493986129775,
+      "gaps": [
+        4.447927143624875e-16,
+        0.20471818316669704,
+        -0.06249999854742002,
+        0.7327818182858826,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.8750000029051601,
+      "value": 0.024543493986129775,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 14,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 14,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995146,
+      "gaps": [
+        0.3537495901662446,
+        -0.0,
+        0.29250081980414777,
+        0.0,
+        0.35374959002960776
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995146,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 15,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 5,
+      "chamber": 15,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995144,
+      "gaps": [
+        0.35374959016058977,
+        0.0,
+        0.29250081977489445,
+        0.0,
+        0.35374959006451584
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995144,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 0,
+      "output_sign": -1,
+      "signed_objective": 0.0021257084314918583,
+      "gaps": [
+        0.8888888888753288,
+        -2.369604079251986e-16,
+        -0.11111111112467098,
+        -3.6277175125480546e-17,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.7777777777506576,
+      "value": -0.0021257084314918583,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 0,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 1,
+      "output_sign": -1,
+      "signed_objective": 0.0021257084314918627,
+      "gaps": [
+        0.888888888888718,
+        0.0,
+        -0.11111111111128211,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 0.7777777777774358,
+      "value": -0.0021257084314918627,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 1,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 2,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 2,
+      "output_sign": 1,
+      "signed_objective": 0.0021257084314917052,
+      "gaps": [
+        1.3849116906331126e-16,
+        -0.0,
+        0.11111111110769355,
+        -3.7492131298690375e-15,
+        -0.8888888888923027
+      ],
+      "variation": 1.0,
+      "displacement": -0.7777777777846128,
+      "value": 0.0021257084314917052,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 3,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 3,
+      "output_sign": 1,
+      "signed_objective": 0.0021257084314918635,
+      "gaps": [
+        0.0,
+        0.0,
+        0.11111110870897425,
+        -0.0,
+        -0.8888888912910259
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": -0.7777777825820517,
+      "value": 0.0021257084314918635,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 4,
+      "output_sign": -1,
+      "signed_objective": 0.002125708431491864,
+      "gaps": [
+        0.8888888893039021,
+        -0.0,
+        -0.11111111069609808,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 0.777777778607804,
+      "value": -0.002125708431491864,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 4,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 5,
+      "output_sign": -1,
+      "signed_objective": 0.0021257084314918575,
+      "gaps": [
+        0.8888888891419783,
+        0.0,
+        -0.11111111085802163,
+        4.166659809288967e-18,
+        -4.166659822213664e-18
+      ],
+      "variation": 0.9999999999999999,
+      "displacement": 0.7777777782839567,
+      "value": -0.0021257084314918575,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 5,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 6,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 6,
+      "output_sign": 1,
+      "signed_objective": 0.002125708431491854,
+      "gaps": [
+        0.0,
+        -1.0926227077531233e-16,
+        0.11111111590255987,
+        5.600823456362603e-17,
+        -0.88888888409744
+      ],
+      "variation": 1.0,
+      "displacement": -0.7777777681948802,
+      "value": 0.002125708431491854,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 7,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 7,
+      "output_sign": 1,
+      "signed_objective": 0.0021257084314918575,
+      "gaps": [
+        0.0,
+        2.0249048213005828e-16,
+        0.1111111111098031,
+        3.595702843790043e-17,
+        -0.8888888888901967
+      ],
+      "variation": 1.0,
+      "displacement": -0.7777777777803934,
+      "value": 0.0021257084314918575,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 8,
+      "output_sign": -1,
+      "signed_objective": 0.16796798087574635,
+      "gaps": [
+        0.46822980743609954,
+        -0.0,
+        -0.06354037302837083,
+        -0.0,
+        0.46822981953552967
+      ],
+      "variation": 1.0,
+      "displacement": 0.8729192539432584,
+      "value": -0.16796798087574635,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 8,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 1,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 9,
+      "output_sign": -1,
+      "signed_objective": 0.16796798087574635,
+      "gaps": [
+        0.46822981347116344,
+        2.5490613232539213e-17,
+        -0.06354037300957374,
+        -0.0,
+        0.46822981351926285
+      ],
+      "variation": 1.0,
+      "displacement": 0.8729192539808526,
+      "value": -0.16796798087574635,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 9,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 10,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 10,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995139,
+      "gaps": [
+        0.3537495982784996,
+        -0.0,
+        0.29250081753194457,
+        -0.0,
+        0.3537495841895559
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995139,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 11,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 11,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995146,
+      "gaps": [
+        0.35374959011547746,
+        3.699190674791152e-19,
+        0.29250081979001274,
+        -0.0,
+        0.3537495900945099
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995146,
+      "failed_local_runs": 2,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 12,
+      "output_sign": -1,
+      "signed_objective": 0.1679679808757464,
+      "gaps": [
+        0.46822981191485813,
+        -0.0,
+        -0.06354037311489896,
+        0.0,
+        0.46822981497024296
+      ],
+      "variation": 1.0,
+      "displacement": 0.8729192537702022,
+      "value": -0.1679679808757464,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 12,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 13,
+      "output_sign": -1,
+      "signed_objective": 0.16796798087574644,
+      "gaps": [
+        0.4682298131983027,
+        0.0,
+        -0.06354037314611473,
+        3.0301730185295745e-17,
+        0.46822981365558264
+      ],
+      "variation": 1.0,
+      "displacement": 0.8729192537077707,
+      "value": -0.16796798087574644,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 13,
+      "output_sign": 1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": -1.0,
+      "value": 1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 14,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 14,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995129,
+      "gaps": [
+        0.3537495927756609,
+        -0.0,
+        0.2925008239890572,
+        3.420691796233417e-16,
+        0.35374958323528155
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": 0.9027294960995129,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 15,
+      "output_sign": -1,
+      "signed_objective": 1.0,
+      "gaps": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "variation": 1.0,
+      "displacement": 1.0,
+      "value": -1.0,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    },
+    {
+      "depth": 6,
+      "chamber": 15,
+      "output_sign": 1,
+      "signed_objective": 0.9027294960995158,
+      "gaps": [
+        0.35374959012108625,
+        0.0,
+        0.29250081977242054,
+        0.0,
+        0.3537495901064934
+      ],
+      "variation": 1.0000000000000002,
+      "displacement": 1.0000000000000002,
+      "value": 0.9027294960995158,
+      "failed_local_runs": 0,
+      "local_runs": 8
+    }
+  ]
+}
