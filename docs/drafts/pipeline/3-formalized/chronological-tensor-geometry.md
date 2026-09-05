@@ -1,6 +1,6 @@
 # Chronological tensor geometry: a formalized research seed
 
-**Status:** sixteen individual Lean builds passed; all 200 declarations axiom-audited (146 theorems, 54 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
+**Status:** twenty individual Lean builds passed; all 230 declarations axiom-audited (173 theorems, 57 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
 
 **Question.** What geometric information becomes visible when alternating tensors are tested by an ordered probe with a limited budget for changing its value?
 
@@ -175,7 +175,7 @@ Consequently the maximum of the individual normalized coefficient magnitudes doe
 
 ## Enclosure depth competes with degree
 
-There is a further operation intrinsic to the chord description: add an outer chord whose two probe values equal the initial and final values of the existing history. The added factor is total signed displacement `S=Σg_i`. Repeating it k times multiplies the response by `S^k`. The extra endpoints can be assigned repeated probe values, so the variation cost is unchanged. This is an algebraic enclosure operation, not a claim about a physical horizon.
+There is a further operation intrinsic to the chord description: add an outer chord whose two probe values equal the initial and final values of the existing history. The added factor is total signed displacement `S=Σg_i`. Repeating it k times multiplies the response by `S^k`. The extra endpoints can be assigned repeated probe values, so the variation cost is unchanged. This is an algebraic enclosure operation with prescribed repeated endpoint values. Allowing the new outer endpoints to vary freely introduces padding gaps and a different capacity optimization; the present theorems must not silently be read as statements about that larger optimization. No physical-horizon claim is made.
 
 For n independent reversal blocks define
 
@@ -308,10 +308,57 @@ Set `H=(V+z)/2`. The exact difference is
 
 The bracket is nonnegative: if `27V−29z≤0`, both terms have the required sign; otherwise use `H+L≤V+z` and `31z≥27V`. Thus `f(L)≤f(H)=z²(V+z)²/4≤V⁴`. Zero variation is already included in every inequality.
 
-**Cone consequence (paper proof; capacity bridge in scratch audit).** For `0≤A≤27B`, write `AD−BR=B[q(27D−R)−(1−q)R]`, with `0≤q≤1`. Triangle inequality gives `|S(AD−BR)|≤BV⁴`. A pure central jump attains `B`, and the monotone lower bound persists at every depth. Thus `C_k(AD−BR)=M=B` for all `k≥1`. For `A=27,B=1`, the earlier rational reversal witness proves `C_0>1`; its exact minimum enclosure depth is therefore one. The broader claim that this convexity argument covers the entire coefficient plane was rejected: for `A>27B`, cancellation can make monotone capacity strictly smaller than `A/27`.
+**Cone consequence (final Lean audit passed in EnclosureCone).** For `0≤A≤27B`, write `AD−BR=B[q(27D−R)−(1−q)R]`, with `0≤q≤1`. Triangle inequality gives `|S(AD−BR)|≤BV⁴`. A pure central jump attains `B`, and the monotone lower bound persists at every depth. Thus `C_k(AD−BR)=M=B` for all `k≥1`. For `A=27,B=1`, the earlier rational reversal witness proves `C_0>1`; its exact minimum enclosure depth is therefore one. The broader claim that this convexity argument covers the entire coefficient plane was rejected: for `A>27B`, cancellation can make monotone capacity strictly smaller than `A/27`.
 
 The remote [enclosure search](../2-fully-proven/computations/chronological-chord-capacity/ENCLOSURE-REPORT.md) prompted this proof and found an unsealed response near `1.04387639`. Identification of that value as the global signed optimum remains open.
 
+
+## Finite curvature and reconstruction
+
+Let `C_k` be the enclosed capacity and `M` the monotone capacity, on a nonempty finite gap space. Define
+
+`κ_k = C_k−2C_(k+1)+C_(k+2)`.
+
+**Theorem.** The capacity sequence is log-convex, `C_(k+1)²≤C_k C_(k+2)`. Moreover,
+
+- `C_k=C_(k+1)` iff `C_k=M`;
+- `C_(k+1)<C_k` iff `M<C_k`;
+- `κ_k≥0`, and `κ_k=0` iff `C_k=M`.
+
+For each fixed probe the absolute enclosed response is a geometric sequence. Its middle value squared equals the product of its neighbors. Bounding both neighbors by their capacity suprema and then taking the middle supremum proves log-convexity, including zero capacities. If adjacent capacities agree at a positive value, log-convexity and monotonicity force the next capacity to agree; induction makes the entire tail constant. Finite exact stabilization identifies that constant as M. At value zero, nonnegativity and the monotone lower bound give the same result. The second-difference claims follow from log-convexity and the nonnegative square `(C_k−C_(k+2))²`. These arguments are checked in `EnclosureCurvature.lean`.
+
+Define the **enclosure depth** `N` as the least natural k with `C_k=M`. Existence is already proved, so this definition requires no additional hypothesis. Then
+
+`κ_k>0 ⇔ k<N`, and `κ_k=0 ⇔ N≤k`.
+
+Thus curvature has finite support with no gaps. The degree bound gives `N≤d(d−1)` for d≥2, while the cubic reversal form has `N=1`.
+
+**Reconstruction theorem.** For every k,
+
+`C_k−C_(k+1)=Σ_(j<N) κ_(k+j)`,
+
+`C_k=M+Σ_(j<N) (j+1)κ_(k+j)`.
+
+The proof is finite telescoping. For an arbitrary sequence F,
+
+`Σ_(j<N)(j+1)[F_(k+j)−2F_(k+j+1)+F_(k+j+2)]`
+`=F_k−(N+1)F_(k+N)+N F_(k+N+1)`.
+
+Both terminal values are M for the capacity sequence. No limiting interchange or numerical approximation is involved. `CurvatureDepth.lean` checks the least-depth definition, exact support, and both reconstruction identities; its final leaf audit passed. Curvature here is a discrete second difference of an operational norm profile, not Riemannian curvature. Log-convexity and finite-difference inversion are familiar mathematics; the contribution under investigation is their combination with finite enclosure stabilization in this tensor setting.
+
+## Free padding and common-cut reduction
+
+Append an unused gap p to the observer. The payload polynomial does not change, but its enclosing displacement becomes `p+S` and cost becomes `|p|+V`. `Padding.lean` proves that this operation preserves signed and monotone capacities, can only increase enclosed capacity and minimal depth, and retains the degree bound because payload degree is unchanged. Its final leaf build passed.
+
+For the cubic, the free-padding estimate is particularly direct:
+
+`|(p+S)(27D−R)|≤|p|(8/7)V³+V⁴≤(|p|+V)⁴`.
+
+The last gap equals `|p|⁴+4|p|³V+6|p|²V²+(20/7)|p|V³`, termwise nonnegative. `PaddedCubic.lean` has passed its final leaf build and proves exact minimal depth one even with this additional freedom.
+
+For a family of outer chords, let q be their padding gaps. Every outer factor has the form `S+Σ_(i∈W_j)q_i`. If the windows share a padding cut, each absolute factor is at most `|S|+Σ|q_i|`. Concentrating all padding variation in the shared cut, with sign aligned to S, attains every such bound simultaneously and preserves cost. Fully nested outer chords have such a cut immediately outside the original history.
+
+The Lean presentation generates each outer window as `{0}∪succ(W_j)`, so the common cut is built into the object without an external assumption. `CommonCut` is being scratch-checked for the cost-preserving domination and simultaneous attainment. The resulting capacity should equal the padded enclosed capacity independently of the remaining outer-window arrangement. `OuterCapacity` has a scratch implementation of the joint normalization and both supremum comparisons; it is not yet checked. This is the bridge needed before transferring the earlier enclosure results to freely variable outer endpoints.
 
 ## Relation to existing mathematics and novelty limits
 
@@ -332,10 +379,10 @@ The remote [enclosure search](../2-fully-proven/computations/chronological-chord
 
 ## Artifacts and verification
 
-Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Sixteen modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`, `ChebyshevGrowth`, `SegmentExtrapolation`, `DegreeSealing`. All are wired into `HTGeometry.lean`.
+Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Twenty modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`, `ChebyshevGrowth`, `SegmentExtrapolation`, `DegreeSealing`, `OneEnclosure`, `EnclosureCone`, `EnclosureCurvature`, `CurvatureDepth`. All are wired into `HTGeometry.lean`.
 
-All development checks used foreground `lake env lean` on scratch files, sequentially. All sixteen individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 200 declarations (146 theorems and 54 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
+All development checks used foreground `lake env lean` on scratch files, sequentially. All twenty individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 230 declarations (173 theorems and 57 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
 
-`scripts/formal_tools.py index` completed. The authoritative repository-wide `scripts/formal_tools.py lint` was run and most recently failed on one unrelated, currently unwired module: `RHTower.EulerDeletionBalancedPeriodCurvatureNoGo`. It reported no proof-debt error and no wiring error in this contribution. Those other researchers' files were not modified.
+`scripts/formal_tools.py index` completed. The latest authoritative repository-wide `scripts/formal_tools.py lint` passed, with existing large-file warnings only. Other researchers' files were not modified.
 
 Numerical leads and reproducible sources: [computation report](../2-fully-proven/computations/chronological-chord-capacity/REPORT.md). No numerical results enter any Lean proof. Symbolic proofs use algebraic identities, inequalities, differentiation rules, and finite AM–GM.

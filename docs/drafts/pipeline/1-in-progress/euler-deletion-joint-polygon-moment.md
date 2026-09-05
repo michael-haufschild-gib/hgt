@@ -1,6 +1,6 @@
 # Mixed Euler-deletion polygon: first surviving polynomial moment
 
-**Stage:** finite arithmetic identity formalized; infinite development still a conjecture.
+**Stage:** finite arithmetic identity and full moduli-two-and-three convergence formalized; sharpness and general-pair convergence have paper proofs.
 **RH status:** no implication. **Novelty:** arithmetic specialization unverified; generic ancestry published.
 This is an arithmetic source-construction test, not a qualifying proof architecture yet.
 
@@ -163,15 +163,16 @@ boundary](../2-fully-proven/euler-deletion-joint-product-one-fifth.md) now deriv
 to a unit for the joint product in every complete complex normed algebra when `Re(s)>1/5`.
 It includes a summable error estimate for the actual varying weights, all partial prefixes,
 and a fixed finite-dimensional truncated-algebra witness of divergence for real `0<s<=1/5`.
-This is a paper theorem, not yet the full Lean theorem. Its source is the finite arithmetic
-moment law above. Direct formal verification of the actual six-exponential word's first four
-derivatives is the next step, followed by its fifth-order remainder and block estimates.
-Convergence is nonselective with respect to zeta zeros; no RH implication has appeared.
+For actual moduli two and three, the full convergence assertion is now Lean-closed. The
+remaining general-pair extension and sharpness assertion are still paper-only. Convergence is
+nonselective with respect to zeta zeros; no RH implication has appeared.
 
-The concrete analytic step is now formalized in
-`formal/GaloisForLFunctions/RHTower/EulerDeletionJointExponentialRemainder.lean`: actual source
-velocities, actual exponential-word derivatives, and `B(z)-1=O(||z||^5)`. Its scratch and five
-axiom checks passed, followed by a successful narrow leaf build. The generic ring cancellation
-uses no commutation hypothesis. Latest global lint reports only the independently unwired
-`EulerDeletionBalancedPeriodCurvatureNoGo` module. The varying-weight summability, all-prefix
-convergence, and sharpness steps remain the exact next obligations.
+`EulerDeletionJointExponentialRemainder` proves the actual six-factor derivatives vanish through
+order four and `B(z)-1=O(||z||^5)`. `EulerDeletionJointProductOneFifth` then proves summable
+error for the actual varying weights, convergence to a unit, exact regrouping, and convergence
+of every partial prefix. Both scratches and their axiom audits passed, followed by successful
+narrow leaf builds. The generic ring cancellation uses no commutation hypothesis.
+
+The exact next obligation is the fixed sharpness witness, with actual varying weights controlled
+also at the boundary. General coprime-modulus convergence remains a separate paper-to-Lean
+obligation. Neither convergence nor its sharpness supplies the missing zero-specific relation.

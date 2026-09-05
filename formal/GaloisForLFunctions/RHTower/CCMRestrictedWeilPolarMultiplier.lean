@@ -8,8 +8,9 @@ integrations by parts give `∫ e^{sx} g'' = s² ∫ e^{sx} g` for every compact
 function `g`, so the operator `D = ∂² − 1/4`, whose Mellin symbol is `s(s − 1)` in the centred
 variable, annihilates both pole coefficients: `D g` is pole-vanishing for every smooth
 strict-interior source `g`.  This is the canonical description of the pole-vanishing smooth
-core as the image of `D`; the converse, that every pole-vanishing smooth source is `D g` for the
-compactly supported solution `g = −e^{−|x|/2} ∗ f`, is recorded on paper.
+core as the image of `D`. The same-aperture range converse and uniqueness are proved by
+exponential primitives in `CCMRestrictedWeilPolarInverse`; that argument does not require the
+convolution representation `g = −e^{−|x|/2} ∗ f`.
 -/
 
 open Complex MeasureTheory Set intervalIntegral

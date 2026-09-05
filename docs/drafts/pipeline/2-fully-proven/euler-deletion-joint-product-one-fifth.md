@@ -1,6 +1,6 @@
 # A sharp one-fifth boundary for the joint deletion exponential product
 
-**Stage:** dependency-closed paper proof; full analytic theorem not yet formalized.
+**Stage:** dependency-closed paper proof. Convergence for actual moduli two and three is Lean-closed; general coprime moduli and sharpness remain paper-only.
 **RH status:** no implication. **Novelty:** arithmetic specialization not certified; standard
 signature and Banach-algebra arguments are explicitly reused.
 
@@ -145,18 +145,50 @@ and hence the full literal product, cannot converge.
 This argument controls the varying weights at the boundary too. It does not infer divergence
 of a perturbed product merely from divergence of its frozen approximation.
 
+## Concrete six-coordinate realization for the sharpness proof
+
+The full truncated word algebra can be replaced by six-by-six coefficient arrays with ordinary
+matrix multiplication. Let `E_ij` denote the array with its only nonzero entry, equal to one,
+in position `(i,j)`. Set `X=E_01+E_12` and `Y=E_23+E_34+E_45`.
+Every product of six generators vanishes; the only five-letter word with a nonzero value is
+`XXYYY`, whose value is `E_05`. No spectral construction or spectral theorem enters this realization.
+
+For a closed planar path the `XXYYY` coefficient is
+`-(1/6) integral x*y^3 dx`: integrate at the second X, with prefix X integral `x` and
+remaining triple Y integral `(-y)^3/3!`. Thus the frozen block is exactly
+`1-(z^5/60)E_05`. The `(0,5)` coordinate supplies the nonzero scalar functional used in
+Step 5, with negative rather than positive divergence. This realizes the same paper proof
+in a smaller fixed target. These finite identities and the literal-source identification are now
+Lean-closed in `EulerDeletionJointNilpotentWitness`, with a clean axiom audit and successful
+narrow leaf build. The infinite corrected-product argument remains the Lean sharpness objective.
+
+In this realization put `Z=E_05`, `q_k=z_k^5/60`, and `E_k=B_k+q_k Z`.
+Since `Z^2=0` and every actual block satisfies `B_k Z=Z B_k=Z`, one has
+`E_k-1=B_k-B(z_k)`. Thus the correction has summable displacement for every `Re(s)>0`.
+Induction gives the exact identity
+
+`B_0...B_(N-1)=E_0...E_(N-1)-(sum_{k<N}q_k)Z`.
+
+This simpler form needs only convergence of the corrected product. Applying the `(0,5)`
+coordinate reduces actual-product divergence to the nonsummability of
+`(6k+1)^(-5*sigma)` for real `0<sigma<=1/5`.
+
 ## Proof and formalization boundary
 
 The finite prefix, segment, CRT, low-degree, and nonzero-moment identities are Lean-closed in
-`EulerDeletionJointPolygonMoment`. The existing Dirichlet-weight variation and generic
-summable-unit-product theorems are also Lean-closed. The concrete two-and-three derivative bridge and fifth-order analytic remainder are now
-Lean-closed too. The general-pair signature bridge, varying-weight/block estimates, and
-truncated-algebra sharpness theorem remain to be formalized. The paper proof supplies each of those steps above without an RH premise.
+`EulerDeletionJointPolygonMoment`. The concrete two-and-three derivative bridge and fifth-order
+analytic remainder are Lean-closed in `EulerDeletionJointExponentialRemainder`.
 
-Next exact Lean objective: connect the verified literal moduli-2-and-3 fifth-order remainder
-to the varying-weight block convergence argument, then formalize the sharpness witness. The
-full coprime-family moment result should remain the arithmetic source, not be replaced by a
-hand-assigned formal coefficient.
+`EulerDeletionJointProductOneFifth.sourceProduct_converges_to_unit` now proves the full
+convergence assertion for **actual moduli two and three**, arbitrary target algebra and `X,Y`,
+and every complex `s` with `Re(s)>1/5`. It controls actual within-block weights by a summable
+error, proves convergence of the block inverse products, identifies exact source regrouping,
+and handles every unfinished prefix. The scratch proof and six axiom audits passed; the narrow
+leaf build passed. The source has no supplied zero, commutation, or cancellation premise.
+
+The general-pair signature bridge and truncated-algebra sharpness theorem remain to be
+formalized. The next exact objective is the fixed sharpness witness, including the effect of
+varying weights. Proving only divergence of frozen blocks would not close that objective.
 
 No numerical computation was needed. No global novelty certificate or qualifying RH proof
 architecture is claimed. Convergence here reaches strictly left of the critical line and holds

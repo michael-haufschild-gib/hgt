@@ -20,6 +20,8 @@ Scope: compressed facts and logically forced design constraints extracted from a
 - **Must keep impossibility claims within their proved premises.** Failure of one positive, linear, continuous, or spectral construction does not forbid all such RH proofs. No theorem here requires every solution to be nonlinear, singular, nonclassical, or absent from literature.
 - **Must control approximation error after summing over the full spectrum.** Fixed polynomial probes can each have finite trace while their traces increase to infinite root mass. For nonnegative roots at most one, the proved finite-prefix error is `2K/(n+2)` and the remaining tail is charged by `n/2` times square energy. Approximate moment matching also pays the absolute coefficients of the chosen polynomial; small errors at each fixed degree alone do not bound that growing weighted error. Evidence: `finite_rootPrefix_le_certificate_add_resolution`, `certificate_le_rootPrefix_add_energyTail`, and `rootMomentCertificate_le_rootBudget_add_error` in `GaloisForLFunctions.HTGeometry.PolynomialRootBudget`. This is an approximation constraint, not an arithmetic positivity theorem.
 
+- **Must distinguish strict test positivity from a uniform positive floor.** At a first zero of the constrained ground energy, if such an aperture exists, every nonzero smooth interior test is strictly positive, while its normalized energies approach zero and the completed space contains a nonzero null vector. Smooth density does not make that null vector a smooth test, and invertibility of a differential test parametrization does not supply a uniform bound. This is a proved conditional boundary description, not evidence that such an aperture exists. Evidence: `RHTower.polarMultiplier_firstZero_no_uniform_positive_floor` and `RHTower.riemannHypothesis_or_polar_firstZero_core_boundary` in `CCMRestrictedWeilPolarMultiplierCriterion`.
+
 ## Hard facts
 
 F01 — Receiver abundance. Corpus has many exact RH equivalences: positivity, flatness, finite action, recurrence descent, formation properness, source-dagger descent, boundary absence. They are readouts, not independent evidence or producers.
@@ -4933,6 +4935,15 @@ moment is also proved. A proof must justify the higher cancellation it needs; lo
 cannot supply it. This finite unweighted statement makes no claim about cancellation for the
 actual infinite weights defining zeta.
 [Exact source and closed Lean certificate](../euler-deletion-joint-polygon-moment.md).
+
+CANNOT-JP2 — Existence and invertibility of an ordered arithmetic product cannot select the
+critical line if they already hold on an open region crossing it. For the literal discrepancies
+`a_p(n)=1-p[p divides n]`, the products of `exp(n^(-s)*(a_2(n)X+a_3(n)Y))` converge to a
+unit for every `Re(s)>1/5` and arbitrary `X,Y` in a complete complex normed unital algebra.
+This includes noncommuting `X,Y` and every partial prefix, with no zeta-zero assumption.
+Any critical-line argument using this object must establish an additional relation derived
+from the zero condition; convergence alone supplies none.
+[Closed Lean convergence theorem](../../3-formalized/euler-deletion-joint-product-one-fifth.md).
 
 CANNOT-AFF1 — Applying an arbitrary nonlinear rule to finitely many fixed congruence tests of
 `a*n+b` cannot escape periodic coefficients: the result depends only on `n` modulo the product
