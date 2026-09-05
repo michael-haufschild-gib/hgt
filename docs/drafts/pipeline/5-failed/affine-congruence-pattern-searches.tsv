@@ -1,0 +1,17 @@
+query	options	purpose
+nonlinear	--exclude-module RHTower --exclude-module Gamma --exclude-module Spectral --limit 24 --explore 10	Initial declaration screen
+nonlinear	--exclude-module RHTower --exclude-module Gamma --exclude-module Spectral --limit 32 --offset 24 --explore 0	Second capped page
+nonlinear	--exclude-module RHTower --exclude-module Gamma --exclude-module Spectral --limit 32 --offset 56 --explore 0	Remaining capped page
+primitive formation	--exclude-module RHTower --exclude-module Gamma --limit 18 --explore 8	Source operations
+shifted divisibility	--limit 20 --explore 6	Neighboring-integer construction
+periodic Hurwitz	--limit 20 --explore 6	Existing analytic representation
+residue reconstruction	--exclude-module Gamma --limit 16 --explore 5	Representation collision screen
+deletion shift	--limit 20 --explore 5	Existing deletion variants
+EulerDeletionChronologicalScheduleBoundary	--limit 16 --per-module 0 --explore 0	Current concurrent source theorem
+periodic series	--exclude-module Gamma --exclude-module Theta --exclude-module Mobius --limit 18 --explore 5	Periodic series comparison
+PeriodicLSeriesRightAsymptotics	--limit 8 --per-module 0 --explore 0	Existing source asymptotics
+clock inverse	--exclude-module RHTower --exclude-module Gamma --limit 20 --explore 5	Alternative operation screen
+constraint arithmetic	--exclude-module RHTower --exclude-module Gamma --limit 20 --explore 5	Actual arithmetic constraints
+Prouhet	--limit 20 --explore 5	Nonperiodic digital source screen
+digit	--exclude-module QuantumAlg --exclude-module RHTower --limit 16 --explore 5	Digit constructions
+ThueMorse shift	--limit 18 --explore 5	Adjacent digital source collision

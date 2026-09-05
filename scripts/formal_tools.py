@@ -31,6 +31,7 @@ from lean_search_index import (
     SearchResults,
     SearchIndexUnavailable,
     SourceFile,
+    SCHEMA_FINGERPRINT,
     build_match_expression,
     matches_fields,
     module_matches,
@@ -49,7 +50,9 @@ SRC = FORMAL / "GaloisForLFunctions"
 API_MD = FORMAL / "LEAN_API.md"
 GAPS_MD = FORMAL / "LEAN_GAPS.md"
 OVERVIEW_MD = FORMAL / "LEAN_OVERVIEW.md"
-SEARCH_DB = FORMAL / ".lean_search.db"
+# Build a new generation beside the old database. Agents already querying the
+# previous generation keep their own SQLite/WAL files during an upgrade.
+SEARCH_DB = FORMAL / f".lean_search-{SCHEMA_FINGERPRINT}.db"
 
 DECL_RE = re.compile(r"^\s*(theorem|lemma|def|structure|class|abbrev|inductive)\s+([\w'.]+)")
 # `DECL_RE` drives the generated API catalog and must stay as it is; the search
@@ -468,18 +471,32 @@ def unreachable_owned_modules(
 
 
 def doc_before(lines: list[str], index: int, *, limit: int | None = 180) -> str:
-    """Return the first useful line of the docstring immediately above index."""
+    """Return the adjacent docstring; limit=None indexes its full contents."""
     j = index - 1
     while j >= 0 and lines[j].strip() == "":
         j -= 1
-    if j < 0 or "-/" not in lines[j]:
+    if j < 0 or not lines[j].rstrip().endswith("-/"):
         return ""
     block: list[str] = []
+    depth = 0
     while j >= 0:
         block.append(lines[j])
-        if "/--" in lines[j]:
+        found = False
+        for delimiter in reversed(list(re.finditer(r"/-|-/", lines[j]))):
+            depth += 1 if delimiter.group() == "-/" else -1
+            if depth == 0:
+                # A plain/module comment must not capture earlier declarations
+                # and unrelated docs when searching backward for '/--'.
+                if not lines[j][delimiter.start():].startswith("/--"):
+                    return ""
+                block[-1] = lines[j][delimiter.start():]
+                found = True
+                break
+        if found:
             break
         j -= 1
+    else:
+        return ""
     block.reverse()
     text = " ".join(
         line.strip()
@@ -1001,7 +1018,6 @@ def render_search(args: argparse.Namespace, result: SearchResults,
               "--module <substring> to focus; --per-module 0 to show all matches per module.")
     if not result.total:
         print("No declarations matched. Try fewer terms or --any, alternate names, and rg on Lean sources.")
-    print("Reuse check: inspect candidate statements/hypotheses; search results do not prove absence or equivalence.")
 
 
 def research(args: argparse.Namespace) -> int:
@@ -1216,9 +1232,8 @@ def main(argv: list[str] | None = None) -> int:
 
     research_parser = sub.add_parser(
         "research", help="search Lean declarations: spaces mean AND; --any means OR",
-        description='Require every term/phrase by default. Use 2–4 concepts, not a keyword dump. '
-                    'Shell quotes group arguments; inner double quotes require a phrase. '
-                    'Inspect candidate Lean statements before deciding to reuse or write code.',
+        description='Require every term/phrase by default; --any matches alternatives. '
+                    'Shell quotes group arguments; inner double quotes require a phrase.',
     )
     research_parser.add_argument("query", nargs="+", help='words, identifier, or inner-quoted phrase')
     research_parser.add_argument("--limit", type=int, default=20)

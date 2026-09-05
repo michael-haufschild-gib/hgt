@@ -9,6 +9,7 @@ Card template: docs/drafts/pipeline/_card-template.md
 
 ## Check prior research before any new topic or writing new lean code
 - Current ledger of the major RH proof routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md (ignore if you are not working on RH)
+- High level facts about things the RH proof must or can not be like: docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md (ignore if not working on RH)
 - Search: `scripts/formal_tools.py research "clock inverse"`. Spaces mean AND; `--any` means OR.
 - Use inner quotes for phrases: `research '"critical line" zero'`. `--exact` disables prefix expansion.
 - Default: 20 hits, at most 2 per module, plus 5 exploration hits matching the same query.

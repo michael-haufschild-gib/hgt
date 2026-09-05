@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.HTGeometry.StokesResistance.SymmetricTensorCharacter
+import GaloisForLFunctions.HTGeometry.StokesResistance.MirrorSymmetricResponse
 
 /-!
 # Algebraic core of piecewise symmetric tensor splittings
@@ -15,6 +15,8 @@ Stokes-resistance corpus.  It supplies the alternating projection complementary 
 -/
 
 noncomputable section
+
+open scoped BigOperators Kronecker
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -193,6 +195,44 @@ theorem tensorPermute_altPart_antiFixed {d : Type*} {k : ℕ}
   rw [hw]
   ring
 
+/-! ### Descent-indexed basis partition from Corollary 2.5 -/
+
+/-- Number of strict descents in a finite list. -/
+def listDescentCount {α : Type*} [LT α] [DecidableRel ((· < ·) : α → α → Prop)] :
+    List α → ℕ
+  | a :: b :: rest => (if b < a then 1 else 0) + listDescentCount (b :: rest)
+  | _ => 0
+
+/-- Number of descents in a tensor basis word. -/
+def tensorWordDescentCount {d k : ℕ} (w : Fin k → Fin d) : ℕ :=
+  listDescentCount (List.ofFn w)
+
+/-- Basis words contributing to the paper's piecewise symmetric summand: fewer than `m`
+descents. -/
+def piecewiseSymmetricWordIndices (d k m : ℕ) : Finset (Fin k → Fin d) :=
+  Finset.univ.filter fun w => tensorWordDescentCount w < m
+
+/-- Complementary basis words contributing to the piecewise alternating summand. -/
+def piecewiseAlternatingWordIndices (d k m : ℕ) : Finset (Fin k → Fin d) :=
+  Finset.univ.filter fun w => m ≤ tensorWordDescentCount w
+
+/-- The descent-indexed symmetric and alternating basis sets partition all `d ^ k` tensor words.
+This is the cardinality backbone of Corollary 2.5. -/
+theorem piecewise_wordIndex_card_add (d k m : ℕ) :
+    (piecewiseSymmetricWordIndices d k m).card +
+        (piecewiseAlternatingWordIndices d k m).card = d ^ k := by
+  classical
+  rw [piecewiseSymmetricWordIndices, piecewiseAlternatingWordIndices]
+  have h := Finset.card_filter_add_card_filter_not
+    (s := (Finset.univ : Finset (Fin k → Fin d)))
+    (fun w => tensorWordDescentCount w < m)
+  rw [show (Finset.univ.filter fun w : Fin k → Fin d => m ≤ tensorWordDescentCount w) =
+      Finset.univ.filter fun w => ¬tensorWordDescentCount w < m by
+    apply Finset.filter_congr
+    intro w _
+    exact (not_lt).symm]
+  simpa using h
+
 end CoordinateTensors
 
 end GaloisForLFunctions.HTGeometry
@@ -225,6 +265,32 @@ theorem tensorSwap_fixed_isCompl_antiFixed :
 /-- Alternating projector complementary to `symmetricTensorProjection`. -/
 def alternatingTensorProjection : Matrix (ι × ι) (ι × ι) ℂ :=
   (1 / 2 : ℂ) • (1 - tensorSwap)
+
+/-- Alternating-square dimension formula, expressed as projector trace. -/
+theorem trace_alternatingTensorProjection :
+    Matrix.trace (alternatingTensorProjection (ι := ι)) =
+      ((Fintype.card ι : ℂ) ^ 2 - Fintype.card ι) / 2 := by
+  rw [alternatingTensorProjection, Matrix.trace_smul, Matrix.trace_sub,
+    Matrix.trace_one, trace_tensorSwap]
+  simp [Fintype.card_prod]
+  ring
+
+/-- Alternating projection commutes with every doubled action. -/
+theorem alternatingTensorProjection_commutes_kronecker_self (M : Matrix ι ι ℂ) :
+    alternatingTensorProjection * (M ⊗ₖ M) =
+      (M ⊗ₖ M) * alternatingTensorProjection := by
+  rw [alternatingTensorProjection, Matrix.smul_mul, Matrix.mul_smul,
+    Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, Matrix.mul_one,
+    tensorSwap_commutes_kronecker_self]
+
+/-- Alternating-square character formula complementary to the corpus symmetric-square formula. -/
+theorem trace_alternatingTensorProjection_mul_kronecker_self (M : Matrix ι ι ℂ) :
+    Matrix.trace (alternatingTensorProjection * (M ⊗ₖ M)) =
+      (Matrix.trace M ^ 2 - Matrix.trace (M * M)) / 2 := by
+  rw [alternatingTensorProjection, Matrix.smul_mul, Matrix.sub_mul,
+    Matrix.one_mul, Matrix.trace_smul, Matrix.trace_sub,
+    Matrix.trace_kronecker, trace_tensorSwap_mul_kronecker_self]
+  ring
 
 /-- Generic involution symmetric projection agrees with the corpus matrix projector. -/
 theorem involutionSymPart_tensorSwapAction_eq
@@ -304,5 +370,55 @@ theorem tensorSwap_alternating_component
       simp only [Matrix.mul_sub, Matrix.mul_one, tensorSwap_mul_self]
       module
     _ = -(alternatingTensorProjection * A) := by simp
+
+/-! ### Alternating mirror responses -/
+
+/-- Projection onto alternating response tensors fixed by the mirror `A`. -/
+def mirrorAlternatingResponseProjection (A : Matrix ι ι ℂ) :
+    Matrix (ι × ι) (ι × ι) ℂ :=
+  alternatingTensorProjection *
+    ((2 : ℂ)⁻¹ • (1 + (A ⊗ₖ A)))
+
+/-- Alternating and mirror projections combine to an idempotent response projector. -/
+theorem mirrorAlternatingResponseProjection_isIdempotent
+    (A : Matrix ι ι ℂ) (hA : A * A = 1) :
+    IsIdempotentElem (mirrorAlternatingResponseProjection A) := by
+  let P : Matrix (ι × ι) (ι × ι) ℂ := alternatingTensorProjection
+  let Q : Matrix (ι × ι) (ι × ι) ℂ :=
+    (2 : ℂ)⁻¹ • (1 + (A ⊗ₖ A))
+  have hP : P * P = P := alternatingTensorProjection_mul_self
+  have hQ : Q * Q = Q := (mirrorTensorProjection_isIdempotent A hA).eq
+  have hcomm : Q * P = P * Q := by
+    dsimp [Q, P]
+    rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul, Matrix.mul_add,
+      Matrix.one_mul, Matrix.mul_one,
+      alternatingTensorProjection_commutes_kronecker_self]
+  rw [IsIdempotentElem]
+  change P * Q * (P * Q) = P * Q
+  calc
+    P * Q * (P * Q) = P * (Q * P) * Q := by noncomm_ring
+    _ = P * (P * Q) * Q := by rw [hcomm]
+    _ = (P * P) * (Q * Q) := by noncomm_ring
+    _ = P * Q := by rw [hP, hQ]
+
+/-- Symmetric and alternating mirror sectors reconstruct the full mirror-fixed sector. -/
+theorem mirrorResponse_symmetric_add_alternating (A : Matrix ι ι ℂ) :
+    mirrorSymmetricResponseProjection A + mirrorAlternatingResponseProjection A =
+      (2 : ℂ)⁻¹ • (1 + (A ⊗ₖ A)) := by
+  rw [mirrorSymmetricResponseProjection, mirrorAlternatingResponseProjection,
+    ← Matrix.add_mul, symmetric_add_alternatingTensorProjection, Matrix.one_mul]
+
+/-- Character formula for the alternating mirror-response sector. -/
+theorem trace_mirrorAlternatingResponseProjection
+    (A : Matrix ι ι ℂ) (hA : A * A = 1) :
+    Matrix.trace (mirrorAlternatingResponseProjection A) =
+      ((Fintype.card ι : ℂ) ^ 2 - 2 * Fintype.card ι +
+        Matrix.trace A ^ 2) / 4 := by
+  rw [mirrorAlternatingResponseProjection, Matrix.mul_smul, Matrix.mul_add,
+    Matrix.mul_one, Matrix.trace_smul, Matrix.trace_add,
+    trace_alternatingTensorProjection,
+    trace_alternatingTensorProjection_mul_kronecker_self, hA,
+    Matrix.trace_one]
+  ring
 
 end GaloisForLFunctions.HTGeometry.StokesResistance

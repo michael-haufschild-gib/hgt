@@ -17,6 +17,24 @@ def dyonicChargeSq (electric magnetic : ℝ) : ℝ :=
 def quintessenceRadialPower (omega radius : ℝ) : ℝ :=
   Real.rpow radius (1 - 3 * omega)
 
+theorem quintessenceRadialPower_oneThird (radius : ℝ) :
+    quintessenceRadialPower (1 / 3) radius = 1 := by
+  unfold quintessenceRadialPower
+  convert Real.rpow_zero radius using 1
+  all_goals norm_num
+
+theorem quintessenceRadialPower_zero (radius : ℝ) :
+    quintessenceRadialPower 0 radius = radius := by
+  unfold quintessenceRadialPower
+  convert Real.rpow_one radius using 1
+  all_goals norm_num
+
+theorem quintessenceRadialPower_negOne (radius : ℝ) :
+    quintessenceRadialPower (-1) radius = radius ^ 4 := by
+  unfold quintessenceRadialPower
+  convert Real.rpow_natCast radius 4 using 1
+  all_goals norm_num
+
 def dyonicKerrNewmanDelta
     (mass spin electric magnetic radius : ℝ) : ℝ :=
   radius ^ 2 - 2 * mass * radius + spin ^ 2 + dyonicChargeSq electric magnetic
@@ -31,6 +49,45 @@ def dyonicCosmologicalQuintessenceStationaryLimit
     (mass spin electric magnetic cosmological quintessence omega radius polar : ℝ) : ℝ :=
   dyonicCosmologicalQuintessenceDelta mass spin electric magnetic cosmological
       quintessence omega radius - spin ^ 2 * Real.sin polar ^ 2
+
+/-- Quartic carrier for all equation-of-state values whose radial source reduces to degree `≤ 1`. -/
+def dyonicCosmologicalHorizonQuartic
+    (mass spin electric magnetic cosmological linearSource constantSource : ℝ) :
+    Polynomial ℝ :=
+  Polynomial.C (-cosmological / 3) * Polynomial.X ^ 4 +
+    Polynomial.X ^ 2 +
+    Polynomial.C (-2 * mass - linearSource) * Polynomial.X +
+    Polynomial.C (spin ^ 2 + dyonicChargeSq electric magnetic - constantSource)
+
+theorem dyonicCosmologicalHorizonQuartic_eval
+    (mass spin electric magnetic cosmological linearSource constantSource radius : ℝ) :
+    Polynomial.eval radius
+        (dyonicCosmologicalHorizonQuartic mass spin electric magnetic cosmological
+          linearSource constantSource) =
+      radius ^ 2 - 2 * mass * radius + spin ^ 2 +
+        dyonicChargeSq electric magnetic - cosmological * radius ^ 4 / 3 -
+        linearSource * radius - constantSource := by
+  simp [dyonicCosmologicalHorizonQuartic]
+  ring
+
+theorem dyonicCosmologicalHorizonQuartic_natDegree_le_four
+    (mass spin electric magnetic cosmological linearSource constantSource : ℝ) :
+    (dyonicCosmologicalHorizonQuartic mass spin electric magnetic cosmological
+      linearSource constantSource).natDegree ≤ 4 := by
+  unfold dyonicCosmologicalHorizonQuartic
+  refine (Polynomial.natDegree_add_le _ _).trans ?_
+  simp only [max_le_iff]
+  constructor
+  · refine (Polynomial.natDegree_add_le _ _).trans ?_
+    simp only [max_le_iff]
+    constructor
+    · refine (Polynomial.natDegree_add_le _ _).trans ?_
+      simp only [max_le_iff]
+      constructor
+      · exact (Polynomial.natDegree_C_mul_le _ _).trans (by simp)
+      · simp
+    · exact (Polynomial.natDegree_C_mul_le _ _).trans (by simp)
+  · simp
 
 theorem dyonicChargeSq_swap (electric magnetic : ℝ) :
     dyonicChargeSq electric magnetic = dyonicChargeSq magnetic electric := by
@@ -117,6 +174,89 @@ theorem dyonicCosmologicalQuintessenceDelta_zero_sources
     dyonicCosmologicalQuintessenceDelta mass spin electric magnetic 0 0 omega radius =
       dyonicKerrNewmanDelta mass spin electric magnetic radius := by
   simp [dyonicCosmologicalQuintessenceDelta]
+
+/-- At `ω = 1/3`, quintessence is a constant shift of the horizon function. -/
+theorem dyonicCosmologicalQuintessenceDelta_oneThird
+    (mass spin electric magnetic cosmological quintessence radius : ℝ) :
+    dyonicCosmologicalQuintessenceDelta mass spin electric magnetic cosmological
+        quintessence (1 / 3) radius =
+      dyonicKerrNewmanDelta mass spin electric magnetic radius -
+        cosmological * radius ^ 4 / 3 - quintessence := by
+  rw [dyonicCosmologicalQuintessenceDelta, quintessenceRadialPower_oneThird]
+  ring
+
+/-- At `ω = 0`, quintessence is exactly a mass-parameter translation. -/
+theorem dyonicCosmologicalQuintessenceDelta_zeroOmega
+    (mass spin electric magnetic cosmological quintessence radius : ℝ) :
+    dyonicCosmologicalQuintessenceDelta mass spin electric magnetic cosmological
+        quintessence 0 radius =
+      dyonicKerrNewmanDelta (mass + quintessence / 2) spin electric magnetic radius -
+        cosmological * radius ^ 4 / 3 := by
+  rw [dyonicCosmologicalQuintessenceDelta, quintessenceRadialPower_zero]
+  simp only [dyonicKerrNewmanDelta]
+  ring
+
+theorem dyonicCosmologicalQuintessenceDelta_zeroOmega_at_shiftedMass_zero_iff_extremal
+    (mass spin electric magnetic quintessence : ℝ) :
+    dyonicCosmologicalQuintessenceDelta mass spin electric magnetic 0 quintessence 0
+        (mass + quintessence / 2) = 0 ↔
+      (mass + quintessence / 2) ^ 2 =
+        spin ^ 2 + electric ^ 2 + magnetic ^ 2 := by
+  rw [dyonicCosmologicalQuintessenceDelta_zeroOmega]
+  simpa using dyonicKerrNewmanDelta_at_mass_zero_iff_extremal
+    (mass + quintessence / 2) spin electric magnetic
+
+/-- At `ω = -1`, quintessence is exactly a cosmological-parameter translation. -/
+theorem dyonicCosmologicalQuintessenceDelta_negOneOmega
+    (mass spin electric magnetic cosmological quintessence radius : ℝ) :
+    dyonicCosmologicalQuintessenceDelta mass spin electric magnetic cosmological
+        quintessence (-1) radius =
+      dyonicKerrNewmanDelta mass spin electric magnetic radius -
+        (cosmological + 3 * quintessence) * radius ^ 4 / 3 := by
+  rw [dyonicCosmologicalQuintessenceDelta, quintessenceRadialPower_negOne]
+  ring
+
+theorem dyonicCosmologicalQuintessenceDelta_negOneOmega_cancelled
+    (mass spin electric magnetic quintessence radius : ℝ) :
+    dyonicCosmologicalQuintessenceDelta mass spin electric magnetic
+        (-3 * quintessence) quintessence (-1) radius =
+      dyonicKerrNewmanDelta mass spin electric magnetic radius := by
+  rw [dyonicCosmologicalQuintessenceDelta_negOneOmega]
+  ring
+
+theorem dyonicCosmologicalHorizonQuartic_oneThird_eq_delta
+    (mass spin electric magnetic cosmological quintessence radius : ℝ) :
+    Polynomial.eval radius
+        (dyonicCosmologicalHorizonQuartic mass spin electric magnetic cosmological
+          0 quintessence) =
+      dyonicCosmologicalQuintessenceDelta mass spin electric magnetic cosmological
+        quintessence (1 / 3) radius := by
+  rw [dyonicCosmologicalHorizonQuartic_eval,
+    dyonicCosmologicalQuintessenceDelta_oneThird]
+  simp [dyonicKerrNewmanDelta]
+
+theorem dyonicCosmologicalHorizonQuartic_zeroOmega_eq_delta
+    (mass spin electric magnetic cosmological quintessence radius : ℝ) :
+    Polynomial.eval radius
+        (dyonicCosmologicalHorizonQuartic mass spin electric magnetic cosmological
+          quintessence 0) =
+      dyonicCosmologicalQuintessenceDelta mass spin electric magnetic cosmological
+        quintessence 0 radius := by
+  rw [dyonicCosmologicalHorizonQuartic_eval,
+    dyonicCosmologicalQuintessenceDelta_zeroOmega]
+  simp [dyonicKerrNewmanDelta]
+  ring
+
+theorem dyonicCosmologicalHorizonQuartic_negOneOmega_eq_delta
+    (mass spin electric magnetic cosmological quintessence radius : ℝ) :
+    Polynomial.eval radius
+        (dyonicCosmologicalHorizonQuartic mass spin electric magnetic
+          (cosmological + 3 * quintessence) 0 0) =
+      dyonicCosmologicalQuintessenceDelta mass spin electric magnetic cosmological
+        quintessence (-1) radius := by
+  rw [dyonicCosmologicalHorizonQuartic_eval,
+    dyonicCosmologicalQuintessenceDelta_negOneOmega]
+  simp [dyonicKerrNewmanDelta]
 
 theorem dyonicCosmologicalQuintessenceDelta_neg_spin
     (mass spin electric magnetic cosmological quintessence omega radius : ℝ) :

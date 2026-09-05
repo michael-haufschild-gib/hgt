@@ -109,11 +109,11 @@ Regenerate agent-facing indexes after adding, moving, or renaming declarations:
 
 ## How Search Works Here
 
-`research` is a ranked search, not a grep.  It is backed by a SQLite FTS5 index
-at `formal/.lean_search.db` (git-ignored, derivable from the tree) holding every
-declaration name, docstring, module and gap marker in
-`GaloisForLFunctions/`.  A query costs about 130 ms; a full rebuild, which you
-should never need, about 17 s.
+`research` searches extracted declaration names, full adjacent docstrings,
+module names, and gap markers in `GaloisForLFunctions/`. The SQLite FTS5 cache
+is `formal/.lean_search-<fingerprint>.db` (git-ignored and derivable).
+Schema/extractor upgrades get separate database generations, so an agent
+using the previous version retains its own database and WAL files.
 
 ### What keeps it current
 
@@ -121,7 +121,7 @@ Nothing watches the filesystem and no hook has to fire.  Every `research`
 invocation re-syncs before it searches:
 
 1. One `os.scandir` walk of `GaloisForLFunctions/` stamps every `.lean` and
-   `.md` file with `(size, mtime_ns)` — 18.7k files in ~60 ms.
+   `.md` file with `(size, mtime_ns)`.
 2. Those stamps are compared against the index's `file` table.  A file whose
    stamp differs, or that has no row, is **changed**; a row with no file on disk
    is **removed**.
@@ -133,8 +133,10 @@ invocation re-syncs before it searches:
 So an agent that adds a module or edits a proof sees it in the very next search,
 its own or another agent's.  Nothing needs regenerating by hand.
 
-The index rebuilds itself automatically if the schema changes (it is fingerprinted,
-not hand-versioned) or if the database file is damaged.
+The first query builds a missing generation. For a shared-tool upgrade, prepare
+the new generation before switching the entrypoint. A damaged cache is rebuilt;
+lock contention never causes deletion of a live database. `--no-refresh` uses
+cached contents and reports an error if that generation is empty.
 
 ```bash
 ../scripts/formal_tools.py search-index            # refresh and report
@@ -142,15 +144,39 @@ not hand-versioned) or if the database file is damaged.
 ../scripts/formal_tools.py research "<query>" --scan   # bypass the index
 ```
 
-Ranking is BM25 over name, exploded identifier components, docstring and module,
-so `research "measured clock inverse"` finds
-`evalJet_measuredClockInverseOperator_difference` and a query that is itself an
-identifier puts that declaration first.  Terms are OR-ed and prefix-matched;
-quote a phrase (`research '"critical line" zero'`) to require it verbatim.
+Spaces mean **AND**: every term or phrase must match. Shell quotes group an
+argument; inner double quotes require contiguous words in one indexed field.
+`--any` switches to OR, useful for alternatives or broader follow-up searches.
+Prefixes expand automatically; `--exact` restricts matches to complete tokens.
+Boolean query syntax is rejected with guidance instead of being searched as text.
 
-Use `rg` instead when the target is proof-body text rather than a declaration —
-raw regex over the whole tree is fast and the index only covers declaration
-metadata and gap markers.
+```bash
+../scripts/formal_tools.py research "spectral gap coercivity"
+../scripts/formal_tools.py research '"critical line" zero'
+../scripts/formal_tools.py research "coercivity positivity" --any
+../scripts/formal_tools.py research "carry" --module IntegerCarryTransport --per-module 0
+../scripts/formal_tools.py research "prolate ladder" --offset 20 --explore 0
+```
+
+BM25 weights declaration names and split identifier words above docstrings and
+split module names; exact identifiers receive a boost. Two declarations per
+module are shown by default. The cap is applied across all matches before
+paging; `--per-module 0` disables it. Results report raw match counts, module
+counts, and how many remain after the cap. `--json` includes those counts,
+the effective MATCH expression, filters, and separate result lists.
+
+Five appended exploration hits use the **same query and filters**, exclude
+modules on the main page, and favor less represented filename families across
+all matching modules. Family means directory plus the first two CamelCase
+filename words: a heuristic for discovery, not a mathematical classification
+or a measure of novelty. `--explore 0` disables it; `--exclude-module` removes
+a literal module substring and can be repeated. Results are deterministic.
+
+Use `rg` for theorem statements, types, proof bodies, mathlib, and pipeline
+cards: they are outside this metadata index. Extraction is source-based, not
+Lean elaboration, and cannot detect mathematical equivalence. The scan fallback
+uses the same extraction and AND/OR/phrase/filter rules, with approximate token
+ranking. Gap markers are text mentions, not verified open obligations.
 
 Many agents share one index, and the design assumes it.  Readers never block.
 Writers take the lock only for a batch at a time, and re-check each file's stamp

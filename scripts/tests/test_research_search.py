@@ -62,6 +62,14 @@ class SearchQualityTests(unittest.TestCase):
         self.refresh()
         self.assertEqual(self.names('integer carry transport'), {'mul'})
 
+    def test_unicode_identifier_queries_do_not_expand_sharp_s_to_ascii(self):
+        self.add('M', [('Straße', ''), ('Böttcher', ''), ('ξ', ''), ('Λ_pos', ''),
+                       ('deckMap₁_leftInverse', '')])
+        self.refresh()
+        for name in ('Straße', 'Böttcher', 'ξ', 'Λ_pos', 'deckMap₁_leftInverse'):
+            with self.subTest(name=name):
+                self.assertIn(name, self.names(name))
+
     def test_module_cap_pages_and_exploration_reach_past_dominant_family(self):
         for i in range(25):
             self.add(f'Area.PrimeSpectralPacket{i}', [(f'gap{i}_{j}', 'spectral gap') for j in range(8)])
@@ -169,7 +177,7 @@ class ResearchCommandTests(unittest.TestCase):
         self.assertEqual([m['line'] for m in json.loads(out)['markers']], [511])
 
     def test_invalid_queries_fail_without_search_or_traceback(self):
-        for args in [('foo OR bar',), ('"unclosed',), ('---',), ('foo', '--limit', '-1'),
+        for args in [('foo OR bar',), ('"unclosed',), ('...',), ('foo', '--limit', '-1'),
                      ('foo', '--offset', '-1'), ('foo', '--explore', '-1')]:
             with self.subTest(args=args):
                 code, out, err = self.run_cli(*args)
@@ -182,6 +190,22 @@ class ResearchCommandTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertFalse(out)
         self.assertIn('rerun without --no-refresh', err)
+
+    def test_plain_comment_does_not_pull_unrelated_code_into_docstring(self):
+        self.write('CommentBoundary', '/-- Unrelated exotic description. -/\n'
+                   'theorem oldLemma : True := trivial\n'
+                   '/- A plain implementation comment. -/\n'
+                   'theorem nextLemma : True := trivial\n')
+        code, out, _ = self.run_cli('exotic', '--module', 'CommentBoundary', '--json')
+        self.assertEqual(code, 0)
+        self.assertEqual([h['name'] for h in json.loads(out)['declarations']], ['oldLemma'])
+
+    def test_nested_doc_comment_preserves_whole_adjacent_block(self):
+        self.write('NestedDoc', '/-- Outer intro.\n/- nested -/\nRare tail words. -/\n'
+                   'theorem leaf : True := trivial\n')
+        code, out, _ = self.run_cli('rare tail', '--json')
+        self.assertEqual(code, 0)
+        self.assertEqual([h['name'] for h in json.loads(out)['declarations']], ['leaf'])
 
     def test_unavailable_index_falls_back_and_reports_backend(self):
         with patch.object(LeanSearchIndex, 'refresh', side_effect=ft.SearchIndexUnavailable('missing FTS5')):

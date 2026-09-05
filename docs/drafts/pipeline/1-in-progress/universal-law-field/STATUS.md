@@ -40,6 +40,8 @@ F06 — Functional equation transports; it does not select. Common recovery lift
 
 F07 — Faithful recovery conserves obstruction. Split/injective recovery preserves information, Hellinger affinity, formation capital, and completion boundary. Strict improvement requires erasure.
 
+F07a — Cannot count copied labels as independently formed data. Diagonal copying preserves every coordinate marginal but equals the independent `d`-fold product (`d>=2`) only for a Dirac packet, even for normalized signed real weights. For two finite probability packets, one common stochastic map produces both independent products iff the packets are identical or have disjoint supports (`finiteDiagonalPower_marginal`, `finiteDiagonalPower_eq_independentPower_iff_dirac`, `finiteFormationClone_exists_iff`, Lean). Matching marginals or faithful split recovery does not supply that common replicator; an arithmetic cloning argument must construct it rather than assume it.
+
 F08 — Formation and completion do not commute. Off-line current appears as completion boundary, Roos `lim¹`, and physical transport. Boundary absence is RH-equivalent; finite formation never sees class.
 
 F09 — Bounded presentation changes are genuine gauges. Mutually bounded dictionaries preserve saturation and completion boundary. Ordinary naturality across bounded gauges cannot kill off-line class.
@@ -63,6 +65,8 @@ F16 — Quantization detects; it does not prohibit. Integer, rank, and `π`-scal
 F16a — Must distinguish arbitrary finite depth from a finite source cutoff. For a holomorphic function nonzero somewhere on a connected open domain, existence of a holomorphic `2^k`-th root on that entire domain for every `k` already forces nonvanishing: a positive finite zero order cannot be divisible by every `2^k`. No compatibility between roots or limiting estimate is needed; on a simply connected domain a coherent tower follows. The unproved arithmetic input would be the global finite-depth roots, not their coherence (`RHTower.CoherentTower.nonvanishing_of_exists_roots_all_two_powers_preconnected`, `coherentTower_iff_exists_roots_all_two_powers_preconnected`; declaration namespace `RHTower`).
 
 F16b — Cannot infer integral vanishing from all modular observations without excluding invisible divisible components. Adjoining a nonzero rational vector space to an abelian group preserves its mod-`m` quotient data and torsion subgroup, and every homomorphism to a direct sum of finite groups kills that added space. Finite generation supplies additional information: non-torsion then gives a surjective map to the integers (`HTGeometry.DivisibilityFirewall.divisibility_firewall`, `exists_int_surjection_of_not_isTorsion`; declaration namespace `HTGeometry`).
+
+F16c — Must derive invertibility on the actual obstruction space when using finite phase transport to force integer vanishing; a phase relation alone is insufficient. On a coefficient space of positive dimension `d`, a clock with entries `1,z,…,z^(d−1)` and a shift with closing-edge weight `h` obey `CS=zSC` exactly when `h=0` or `z^d=1`. The zero-edge shift always works but is singular. For a primitive `2^k`-th root, an invertible pair exists exactly when `2^k` divides `d`; the converse constructs that pair without further source information. For the corpus's actual off-critical zero-multiplicity spaces, existence at cofinally many depths is exactly RH. This does not prohibit an arithmetic construction of invertible transport; it identifies what that construction must prove. Evidence: `dyadicBoundaryCompletedJetWeyl_iff_zero_or_dvd`, `boundaryCompletedJetShift_zero_det`, `semDyadicWeylModel_nonempty_iff_pow_dvd_holeCount`, `riemannHypothesis_iff_cofinal_semDyadicWeylModels` (namespace `RHTower`, Lean).
 
 F17 — Cofinal order is law data. Fixed cutoffs, convergent scalar prefixes, compact subsequences, and local positivity do not control moving heads, apertures, domains, or retained infinite tails.
 
@@ -4839,6 +4843,10 @@ type of replacement mechanism.
 MDFGT-SCHEDULE-001 — [Lean] Must retain diagonal charge when changing summation order. If closed-prefix and jump norms decay as `(n+1)^(-sigma)`, `sigma>1/2`, every row-stabilizing moving cutoff with `K_N(n)+1>=c(n+1)` for fixed `c>0` preserves its ordered limit. No upper cutoff bound is needed. For literal integer-deletion singleton/interaction signals, inclusive-minus-strict order retains the strictly positive original Mellin charge even at a hypothetical right-half zero (`source_schedule_boundary`, `canonical_source_boundary`). Cofinal schedule independence therefore does not supply annihilation; collapsing-ratio and higher-index constructions are not classified.
 WORD-CARRY-001 — [Lean] Cannot treat a longer conditional sum as a new anomaly without evaluating its boundary. At a hypothetical right-half zeta zero, every finite mixed-label/conjugation word of literal integer-deletion jumps converges and has an absolutely summable latest-letter formula (`source_word_normal_form`). Its terminal factor is a vanishing single-letter prefix times a convergent shorter word. This closes the natural middle-index regrouping of three letters, not higher-word vanishing, bounds uniform in length, or associativity of a different arithmetic-label operation.
 
+FULL-ENERGY-001 — [Lean] Must distinguish conservation of a complete observable from vanishing of one selected component. For literal integer deletion, full quadratic energy is factorization-flat coefficient by coefficient, while omitted square terms carry exactly the selected component's nonzero curvature (`omittedEnergy_curvature_eq`). Full-source associativity therefore does not itself select a horizontal zero location. Any argument discarding those terms needs a separate source law; non-quadratic and zero-specific laws remain unclassified.
+
+CRITICAL-CHARGE-001 — [Lean] Cannot transfer source-sum vanishing through conjugate multiplication without a new law. At a genuine critical-line zeta zero, one fixed integer coefficient stream has ordered Mellin sum zero but its literal Hermitian pairing has limit `-8 log 2` (`exists_actual_zero_with_different_source_limits`). Pairing changes the exponent from `rho` to `rho+conjugate(rho)`. This disproves unrestricted zero-fibre annihilation of that charge, not a law confined to `Re(rho)>1/2`; ordered boundary convergence cannot be replaced by an unproved unordered sum.
+
 F691 — [Lean] Cofactor insertion is a flat multiplicative action before chronological summation:
 `I_P(I_Q x)=I_(PQ)x=I_Q(I_P x)` for every coefficient stream. Nested scalar cutoffs are equally
 flat, `(N/P)/Q=(N/Q)/P` (`deletionCoefficientInsertion_comp`,
@@ -4915,6 +4923,23 @@ MUST-223 — To annihilate a nonzero correction curvature on a special analytic 
 construct an observation or quotient, prove the correction is admitted by it, and derive that
 admission from the fibre's actual closure data. Merely declaring the two lifted products coherent
 assumes the result.
+
+CANNOT-JP1 — Returning every coordinate to its starting value, even with every polynomial line
+integral of coefficient degree at most three equal to zero, cannot imply absence of all higher
+joint path information. The literal integer-count paths for moduli two and three give a closed
+polygon passing all those tests but with `integral x*y^3 dx=1/10`. The general coprime-family
+moment is also proved. A proof must justify the higher cancellation it needs; low-degree closure
+cannot supply it. This finite unweighted statement makes no claim about cancellation for the
+actual infinite weights defining zeta.
+[Exact source and closed Lean certificate](../euler-deletion-joint-polygon-moment.md).
+
+CANNOT-AFF1 — Applying an arbitrary nonlinear rule to finitely many fixed congruence tests of
+`a*n+b` cannot escape periodic coefficients: the result depends only on `n` modulo the product
+of the test moduli. Its Dirichlet series is therefore a finite combination of the existing
+Hurwitz-zeta functions in the absolute-convergence region. Neighboring inputs, overlapping
+moduli, and non-invertible slopes do not alter this fact. This statement does not cover growing
+moduli, operations on already-summed analytic functions, or ordered infinite histories.
+[Exact scope and Lean scratch verification](../../5-failed/affine-congruence-pattern-architecture-audit.md).
 
 CANNOT-MODEL1 — An inequality between assigned exponents for several named methods cannot rule
 out every method in a family. Likewise a predicate defined as `False` proves no obstruction for

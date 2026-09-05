@@ -126,6 +126,14 @@ theorem lameEnergy_pos (P : AdmissibleLamePair ι) {M : Matrix ι ι ℝ} (hM : 
     lt_of_le_of_ne (matrixFrobeniusSq_nonneg M) (Ne.symm hFne)
   exact lt_of_lt_of_le (mul_pos P.coercivityConstant_pos hFpos) (lameEnergy_lower P M)
 
+/-- Legendre--Hadamard corollary on symmetrized rank-one strains. -/
+theorem lameLegendreHadamard_symmetrizedRankOne
+    (P : AdmissibleLamePair ι) (u v : ι → ℝ) :
+    P.coercivityConstant *
+        matrixFrobeniusSq (matrixSymPart (Matrix.vecMulVec u v)) ≤
+      lameEnergy P (matrixSymPart (Matrix.vecMulVec u v)) :=
+  lameEnergy_lower P _
+
 end LamePair
 
 section FiniteCellHomogenization
@@ -224,18 +232,26 @@ section SquareRootRate
 /-- Certified pointwise `O(sqrt epsilon)` error estimate. -/
 structure SqrtHomogenizationBound (X : Type*) where
   error : ℝ → X → ℝ
+  magnitude : X → ℝ
   constant : ℝ
   constant_nonneg : 0 ≤ constant
+  magnitude_nonneg : ∀ x, 0 ≤ magnitude x
   error_nonneg : ∀ ε x, 0 ≤ error ε x
-  bound : ∀ {ε}, 0 ≤ ε → ∀ x, error ε x ≤ constant * Real.sqrt ε
+  bound : ∀ {ε}, 0 ≤ ε → ∀ x,
+    error ε x ≤ constant * Real.sqrt ε * magnitude x
 
 /-- Squaring the paper's `O(sqrt epsilon)` estimate gives an `O(epsilon)` energy error. -/
 theorem SqrtHomogenizationBound.sq_le (H : SqrtHomogenizationBound X)
     {ε : ℝ} (hε : 0 ≤ ε) (x : X) :
-    H.error ε x ^ 2 ≤ H.constant ^ 2 * ε := by
+    H.error ε x ^ 2 ≤ H.constant ^ 2 * ε * H.magnitude x ^ 2 := by
   have hbound := H.bound hε x
-  have hsqrt : 0 ≤ Real.sqrt ε := Real.sqrt_nonneg _
-  nlinarith [H.error_nonneg ε x, Real.sq_sqrt hε]
+  have hmajorant : 0 ≤ H.constant * Real.sqrt ε * H.magnitude x :=
+    mul_nonneg (mul_nonneg H.constant_nonneg (Real.sqrt_nonneg _)) (H.magnitude_nonneg x)
+  calc
+    H.error ε x ^ 2 ≤ (H.constant * Real.sqrt ε * H.magnitude x) ^ 2 :=
+      (sq_le_sq₀ (H.error_nonneg ε x) hmajorant).mpr hbound
+    _ = H.constant ^ 2 * ε * H.magnitude x ^ 2 := by
+      rw [mul_pow, mul_pow, Real.sq_sqrt hε]
 
 end SquareRootRate
 

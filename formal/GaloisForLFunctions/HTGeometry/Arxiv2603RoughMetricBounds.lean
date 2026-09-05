@@ -1,5 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.BlockProductMetric
+import GaloisForLFunctions.HTGeometry.CompactDetectorNearRadicalAlternative
 
 /-!
 # Lipschitz scaling and uniform convergence for rough metrics
@@ -169,6 +170,25 @@ theorem tendstoUniformlyOn_of_twoSidedEnvelope
   intro ε hε
   filter_upwards [hmax.eventually_lt_const hε] with n hn x hx
   rw [Real.dist_eq, abs_sub_comm]
+  exact lt_of_le_of_lt
+    (twoSidedDistanceEnvelope_abs (henvelope n x).1 (henvelope n x).2) hn
+
+/-- The same two-sided envelope feeds the corpus's `UniformlyVanishesAlong` interface. -/
+theorem uniformlyVanishesAlong_sub_of_twoSidedEnvelope
+    {X N : Type*} {l : Filter N}
+    {F : N → X → ℝ} {f : X → ℝ}
+    {lowerError upperError : N → ℝ}
+    (hlower : Tendsto lowerError l (𝓝 0))
+    (hupper : Tendsto upperError l (𝓝 0))
+    (henvelope : ∀ n x,
+      f x - lowerError n ≤ F n x ∧ F n x ≤ f x + upperError n) :
+    UniformlyVanishesAlong l Set.univ (fun n x => F n x - f x) := by
+  have hmax : Tendsto (fun n => max (lowerError n) (upperError n)) l (𝓝 0) := by
+    simpa using hlower.max hupper
+  intro ε hε
+  filter_upwards [hmax.eventually_lt_const hε] with n hn
+  intro x _
+  rw [Real.norm_eq_abs]
   exact lt_of_le_of_lt
     (twoSidedDistanceEnvelope_abs (henvelope n x).1 (henvelope n x).2) hn
 

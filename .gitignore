@@ -27,3 +27,4 @@ formal/.formal_tools_cache.*.tmp
 formal/.lean_search.db
 formal/.lean_search.db-wal
 formal/.lean_search.db-shm
+formal/.lean_search-*.db*

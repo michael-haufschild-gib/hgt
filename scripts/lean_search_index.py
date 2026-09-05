@@ -58,17 +58,17 @@ def query_parts(query: str) -> list[tuple[tuple[str, ...], bool]]:
         raise ValueError('Boolean syntax is not supported: spaces mean AND; use --any for OR')
     parts = []
     for phrase in _PHRASE_RE.findall(query):
-        terms = tuple(t.casefold() for t in _TERM_RE.findall(phrase))
+        terms = tuple(t.lower() for t in _TERM_RE.findall(phrase))
         if terms:
             parts.append((terms, True))
-    parts.extend(((t.casefold(),), False) for t in _TERM_RE.findall(rest))
+    parts.extend(((t.lower(),), False) for t in _TERM_RE.findall(rest))
     return list(dict.fromkeys(parts))
 
 
 def matches_fields(parts: list[tuple[tuple[str, ...], bool]], fields: Sequence[str],
                    *, any_terms: bool = False, exact: bool = False) -> bool:
     """Token/phrase matching for machines without FTS5; phrases cannot cross fields."""
-    columns = [tuple(t.casefold() for t in _TERM_RE.findall(f)) for f in fields]
+    columns = [tuple(t.lower() for t in _TERM_RE.findall(f)) for f in fields]
     matches = []
     for terms, phrase in parts:
         if phrase:
@@ -285,7 +285,8 @@ _MARKER_WEIGHTS = (4.0, 1.0)
 # The stored fingerprint is derived from the schema text rather than a
 # hand-bumped integer, so editing `_SCHEMA` cannot leave agents querying an
 # index built to the previous layout.
-SCHEMA_FINGERPRINT = hashlib.sha256(_SCHEMA.encode("utf-8")).hexdigest()[:16]
+# Bump extraction version when token/doc extraction changes without SQL changes.
+SCHEMA_FINGERPRINT = hashlib.sha256((_SCHEMA + "full-docstrings-v2").encode("utf-8")).hexdigest()[:16]
 
 
 def _fts5_available(con: sqlite3.Connection) -> bool:

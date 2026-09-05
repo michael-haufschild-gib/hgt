@@ -1,0 +1,265 @@
+# Chronological tensor geometry: a formalized research seed
+
+**Status:** thirteen individual Lean builds passed; all 176 declarations axiom-audited (127 theorems, 49 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
+
+**Question.** What geometric information becomes visible when alternating tensors are tested by an ordered probe with a limited budget for changing its value?
+
+![Curved coefficient boundary, reinforcing responses, and reversal-sensitive probes](../2-fully-proven/computations/chronological-chord-capacity/geometry.png)
+
+## Objects and scope
+
+Take ordered endpoints `0,…,2r−1`, a real probe value `x_i` at each endpoint, and a pairing D of endpoints. Set
+
+\[
+P_D(x)=\prod_{(i,j)\in D,\ i<j}(x_j-x_i),\qquad
+V(x)=\sum_{i=0}^{2r-2}|x_{i+1}-x_i|.
+\]
+
+Each factor is the alternating contraction of affine vectors `(1,x_i)` and `(1,x_j)`. In gap coordinates `g_i=x_{i+1}−x_i`, it is the sum of gaps in the interval `[i,j)`. For a real linear combination P of these products define
+
+\[
+\mathcal C(P)=\sup_{V(x)\le1}|P(x)|.
+\]
+
+Translation disappears in gap coordinates. Degree r controls scaling. Two coefficient descriptions represent the same object when their response polynomials agree. The resulting space carries a norm; coefficient presentations carry a seminorm because diagram identities can produce a kernel.
+
+`Foundations.lean` implements the more general finite-window construction, its bounded supremum, an actual mathlib `Seminorm`, and the observational kernel. It also constructs the interval specialization. It does not formalize the full invariant-theory identification with all `SL₂` tensors, or a quotient normed-space instance. Those identifications are not needed for the results below. `Models.lean` realizes the four- and six-endpoint polynomials as explicit window families and identifies their actual capacity suprema with the sharp constants and supporting arc below.
+
+This is geometry of response polynomials. It is not a knot-isotopy invariant, a metric on physical spacetime, or a claim about quantum or gravitational dynamics.
+
+## Foundations
+
+For any finite window W,
+
+\[
+\left|\sum_{i\in W}g_i\right|\le\sum_{i\in W}|g_i|\le\sum_i|g_i|.
+\]
+
+Products and the triangle inequality imply `|P(g)|≤(Σ|c_D|)V(g)^r`. Thus the capacity is finite. Taking suprema of the pointwise triangle and scalar identities gives the seminorm laws. The kernel consists exactly of combinations vanishing on every budgeted probe.
+
+The Lean construction uses the explicit map `g↦g/max(1,V(g))`; this maps onto the closed unit-variation ball and is idempotent. It avoids leaving a budget assumption as a theorem premise. `chronologicalSeminorm` is built from the proved laws, not from an assumed norm contract.
+
+For a single diagram, replacing gaps by their absolute values preserves cost and can only increase absolute response. This assertion does **not** extend to arbitrary signed linear combinations; the reversal theorem below supplies a counterexample.
+
+## Four endpoints: a rectangular ball
+
+With three gaps `(u,v,w)`, let
+
+\[
+D=uw,\qquad N=v(u+v+w),\qquad C=(u+v)(v+w).
+\]
+
+The Plücker identity is `C=D+N`. The exact capacity is
+
+\[
+\boxed{\mathcal C(aD+bN)=\max(|a|/4,|b|).}
+\]
+
+**Proof.** Put `U=|u|`, `B=|v|`, `W=|w|`, `T=U+B+W`. Triangle inequalities and `(U−W)²≥0` give `4|D|+|N|≤T²`. Hence the displayed maximum is an upper bound. The unit-cost probes `(1/2,0,1/2)` and `(0,1,0)` attain `|a|/4` and `|b|`, respectively. The coefficient unit ball is therefore `|a|≤4`, `|b|≤1`. All statements are formalized in `FourPoint.lean`.
+
+## Six endpoints: curved support and an exact transition
+
+With gaps `(a,b,c,d,e)`, put
+
+\[
+D=ace,\qquad R=(a+b+c+d+e)(b+c+d)c.
+\]
+
+These are the separated pairing `(01)(23)(45)` and the rainbow pairing `(05)(14)(23)`. Write `T=|a|+|b|+|c|+|d|+|e|`, `x=|b|+|c|+|d|`, `y=|a|+|e|`, so `T=x+y`. For arbitrary real A,B,
+
+\[
+|AD+BR|\le\frac{|A|}{4}xy^2+|B|(x+y)x^2.\tag{1}
+\]
+
+**Proof of (1).** Bound the two interval sums by T and x; use `|c|≤x` and `|a||e|≤y²/4`. Every factor subsequently multiplied is nonnegative. For `A,B≥0`, equality is achieved by gaps `(y/2,0,x,0,y/2)`. Thus the positive coefficient quadrant reduces exactly to the response curve
+
+\[
+\phi(z)=\left(\frac{z(1-z)^2}{4},z^2\right),\quad 0\le z\le1.
+\]
+
+For `1/3≤q≤√2−1`, coefficients and capacity are
+
+\[
+A=8q,\quad B=(3q-1)(1-q),\quad L=q^2(1-q^2).
+\]
+
+**Exact support certificate.** For all x,y,q,
+
+\[
+L(x+y)^3-\{2qxy^2+(3q-1)(1-q)(x+y)x^2\}
+=(x-q(x+y))^2\{(1-q^2)(x+y)-2qx\}.
+\]
+
+On the stated q interval and for nonnegative x,y, the final factor is nonnegative because `1−q²−2q≥0`. Equation (1) therefore proves the global upper bound `L T³`. Gaps `((1−q)/2,0,q,0,(1−q)/2)` have cost one and attain L. In Lean the interval is generated by clamping an arbitrary real parameter; its bounds are proved internally.
+
+The **actual** first and second derivatives satisfy
+
+\[
+\det(\phi'(q),\phi''(q))=\frac{1-3q^2}{2}>0
+\]
+
+on this whole arc. `Curvature.lean` proves the derivative statements, supporting bound, and attainment. This establishes a strictly turning dual response arc; it is not a formal proof of every topological property of the entire unit-ball boundary.
+
+For the ray `AD+R`, the exact plateau endpoint is
+
+\[
+\boxed{A_*=12+8\sqrt2.}
+\]
+
+**Transition proof.** At this weight,
+
+\[
+(x+y)^3-\left\{\frac{A_*}{4}xy^2+(x+y)x^2\right\}
+=y(\sqrt2x-y)^2.\tag{2}
+\]
+
+Hence capacity is one at the threshold, and stays one for `0≤A≤A_*`: the upper bound decreases with A, while a pure central jump always attains one. At `q=√2−1`, the distributed unit-cost probe also attains one. Its D-value is strictly positive, so every `A>A_*` gives response strictly above one at that same probe. This proves the iff classification. Equation (2) also classifies equality in the reduced mass problem: `y=0` or `y=√2x`. `Transition.lean` checks the classification and both distinct optimizing probes.
+
+## An algebraic capacity greater than one
+
+For `27D+R`, define
+
+\[
+q_0=\frac{50-\sqrt{313}}{81},\qquad
+K=\frac{27}{4}q_0(1-q_0)^2+q_0^2\approx1.132005672.
+\]
+
+Then `C(27D+R)=K>1`.
+
+**Proof.** The quadratic equation `81q₀²−100q₀+27=0` and bounds `0≤q₀≤5/12` follow from `(√313)²=313`. The cubic gap factors as
+
+\[
+K(x+y)^3-\left\{\frac{27}{4}xy^2+(x+y)x^2\right\}
+=(x-q_0(x+y))^2\left\{\left(\frac{25}{2}-\frac{27q_0}{2}\right)(x+y)-\frac{27x}{4}\right\}.
+\]
+
+The last factor is nonnegative for x,y≥0 by the displayed bound on q₀. Apply (1). The same distributed probe at q₀ attains K. The rational probe `(1/3,0,1/3,0,1/3)` already attains `10/9`, proving `K>1` without estimating the radical. `SixPoint.lean` proves the global bound and both witnesses.
+
+## Reversing a probe reveals additional information
+
+Individually `C(27D)=C(R)=1`. For the separated term this follows from (1) and
+
+\[
+(x+y)^3-\frac{27}{4}xy^2=(x-y/2)^2(x+4y),
+\]
+
+with equality at three equal separated gaps. For R, bound each interval factor by T; a pure central jump attains one.
+
+On monotone probes both normalized terms lie in `[0,T³]`, so
+
+\[
+|27D-R|\le T^3.
+\]
+
+The pure central jump attains absolute value one. In contrast, gaps `(1/3,0,−1/3,0,1/3)` have cost one and response `−28/27`. Thus **the signed capacity is strictly greater than the monotone capacity**. `Reversal.lean` proves both claims. The exact signed optimum is not asserted.
+
+## Amplification at every finite scale
+
+Take n independent six-endpoint blocks and write `P_i=27D_i+R_i`. Use the shared cost `T=ΣT_i` and the normalized product
+
+\[
+F_n=n^{3n}\prod_{i=1}^n P_i.
+\]
+
+Then
+
+\[
+\boxed{\mathcal C(F_n)=K^n.}
+\]
+
+**Proof.** The six-endpoint bound gives `|∏P_i|≤Kⁿ(∏T_i)³`. Finite AM–GM gives `nⁿ∏T_i≤(ΣT_i)ⁿ`. Combining proves the upper bound. Scale every optimal unit-cost block probe by `1/n`; the shared cost is one and its response is exactly Kⁿ. Scaling the rational probes instead gives `(10/9)ⁿ`. `Fusion.lean` proves this for every n, including an empty-product bound and constructive witnesses for every positive n.
+
+Expanding the product yields `2ⁿ` terms indexed by choices of a separated or rainbow block. **Each individual normalized term has capacity exactly one.** The upper bound uses the same AM–GM argument with each individual block capacity one. Attainment follows by choosing an optimal unit probe for the selected block type and scaling by `1/n`. `Amplification.lean` proves the expansion, all individual bounds, and witnesses for every choice.
+
+Consequently the maximum of the individual normalized coefficient magnitudes does not control the capacity by any degree-independent constant. This is a property of this explicit graded family, not a general theorem claiming that collective amplification or tensor-product norm phenomena were previously unknown. Between-block connector gaps, if included in a single long endpoint sequence, do not affect any response and only add cost; setting them to zero gives the same optimum.
+
+## Enclosure depth competes with degree
+
+There is a further operation intrinsic to the chord description: add an outer chord whose two probe values equal the initial and final values of the existing history. The added factor is total signed displacement `S=Σg_i`. Repeating it k times multiplies the response by `S^k`. The extra endpoints can be assigned repeated probe values, so the variation cost is unchanged. This is an algebraic enclosure operation, not a claim about a physical horizon.
+
+For n independent reversal blocks define
+
+\[
+E_{n,k}=S^k n^{3n}\prod_{i=1}^n(27D_i-R_i).
+\]
+
+For every n≥1 and k≥0 its monotone capacity is exactly one. The upper bound combines the monotone block estimate, finite AM–GM, and `S=T` on monotone probes. Repeating the pure central jump at block cost `1/n` attains absolute value one.
+
+Repeating the reversed rational probe at block cost `1/n` gives total displacement `1/3`, hence the exact unit-cost response magnitude
+
+\[
+\boxed{|E_{n,k}|=(28/27)^n/3^k.}
+\]
+
+Bernoulli's inequality gives `(28/27)^54≥1+54/27=3`. Consequently, for every k, choosing `n=54(k+1)` produces a signed unit-cost probe with response at least three, while the entire monotone unit ball remains bounded by one.
+
+Thus no finite enclosure depth can uniformly remove reversal advantage across this graded family. The positive quantitative content is the exact witness law and an explicit sufficient linear degree-versus-depth bound. This does not rule out convergence to monotone capacity when the underlying response polynomial is fixed and only k tends to infinity. `Enclosure.lean` checks this whole argument, including the exact witnesses, monotone upper bound, and survival at every finite depth.
+
+## Every fixed response stabilizes after finite enclosure
+
+Let P be a homogeneous window polynomial of degree r on at least one gap, with coefficient presentation `P=Σ c_D P_D`. Put
+
+\[
+M=\sup_{g_i\ge0,\,\sum g_i\le1}|P(g)|,\qquad L=r\sum_D|c_D|,
+\qquad C_k=\sup_{V(g)\le1}|S(g)^kP(g)|.
+\]
+
+Then, for every integer k≥1,
+
+\[
+\boxed{M\le C_k\le\max\{M,L/k\}.}\tag{3}
+\]
+
+Consequently **every fixed P has a finite enclosure depth after which `C_k=M` exactly**. If M>0, every integer k≥1 with kM≥L suffices. If M=0, P vanishes identically and all capacities are zero. The bound depends on the chosen coefficient presentation; minimal stabilization depth is an intrinsic quantity and may be much smaller.
+
+**Proof of the comparison estimate.** Each window has absolute value at most one on the unit-variation ball. Telescoping a product of r window values therefore bounds its change between g and h by `r V(g−h)`. Summing with absolute coefficients gives `|P(g)−P(h)|≤L V(g−h)`. Orient g so that S(g)≥0; this preserves |P(g)| by homogeneity. Replacing g by |g| then has exact distance `V(g)−|S(g)|≤1−|S(g)|`. Writing z=|S(g)| gives
+
+\[
+|P(g)|\le M+L(1-z),\qquad 0\le z\le1.
+\]
+
+For k≥0 the elementary inequality `z^k(1+k(1−z))≤1` follows by induction: the expression decreases at step k by `(k+1)z^k(1−z)²`. Set `B=max(M,L/k)` for k≥1. Then
+
+\[
+z^k|P(g)|\le Bz^k(1+k(1-z))\le B.
+\]
+
+This proves the upper bound. For the lower bound, every nonnegative unit-sphere probe has S=1. Radial scaling shows that their supremum equals M; when the original probe is zero, use a unit coordinate probe and homogeneity. Thus multiplying by S^k preserves all these unit-sphere responses.
+
+**The zero case is proved, not assumed away.** If M=0, homogeneity makes P vanish on the entire nonnegative orthant. For arbitrary g, the univariate polynomial
+
+\[
+q(t)=P\bigl(|g|+t(g-|g|)\bigr)
+\]
+
+vanishes on `[0,1/2]`, where every coordinate of its argument is nonnegative. Infinitely many roots force q=0, hence P(g)=q(1)=0. In Lean this is an actual `Polynomial ℝ` with a checked evaluation identity.
+
+For the six-endpoint reversal form, `M=1` and `L=3·28=84`. `SealingExamples.lean` proves `C_(84+k)=1` for every natural k. This is a sufficient depth, with no claim of minimality.
+
+`ProbeComparison.lean` proves the telescoping estimate and orientation argument. `Sealing.lean` defines both capacity suprema, proves (3), proves equality of the monotone and signed observational kernels, and closes `eventual_exact_sealing` with no nonzero-response premise. This is stronger than the earlier proposed convergence statement. Together with the enclosure survivors, it shows a genuine distinction between fixing a polynomial and allowing its degree to grow; no conflict between the two quantifier orders occurs.
+
+## Relation to existing mathematics and novelty limits
+
+- The ambient geometry is polynomial sup-norm geometry, an established subject. García et al. study explicit polynomial norm balls and their extreme points in [Geometry of homogeneous polynomials in ℝ²](https://arxiv.org/html/2408.01741v1). Pérez-García and Villanueva study norm attainment over ℓ₁ balls in [Where do homogeneous polynomials on ℓ₁ⁿ attain their norm?](https://doi.org/10.1016/j.jat.2004.01.001). Our chronological restriction is additional structure; the word “curvature” by itself supplies no novelty.
+- Alternating tensor contractions, chord descriptions, and Plücker identities are standard algebraic ingredients. The corpus supplies `KnotTheory/ChordData.lean`; no claim of a new braid or knot invariant is made.
+- An earlier switching-only proposal overlapped directly with Lotter and Preiß's [Piecewise Symmetric Tensors](https://arxiv.org/html/2607.04712v1). It was rejected as a novelty claim.
+- Single-diagram optimization is closely related to products of interval masses and graph entropy. This connection still needs a precise equivalence audit; it is not claimed as an invention.
+- Finite stabilization is related to established exact-penalty theory: Jane J. Ye, [Exact Penalty Principle](https://web.uvic.ca/~janeye/hosted/papers/ExactPenaltyFinal.pdf), presents Lipschitz/error-bound mechanisms enforcing constraints at a finite penalty weight. Our multiplicative enclosure bound is an explicit application of the same general mechanism, rather than evidence that finite penalties were invented here.
+- The specific package of chronological capacities, the exact displayed constants, reversal witnesses, and graded comparisons are candidates for further novelty review. Searches have not established priority. A research field would require substantially more than naming this package.
+
+## Next mathematical questions
+
+1. Classify the full signed six-endpoint coefficient ball, including negative relative coefficients.
+2. Determine sharp stabilization depths. Finite stabilization is proved; a possible universal bound `r(r−1)` for general degree-r window polynomials is a Chebyshev-extrapolation lead, still awaiting complete audit and Lean. Its sharpness for actual endpoint pairings is a separate question.
+3. Prove general fusion and nesting laws for arbitrary chord forms, beyond the repeated family above.
+4. Identify order-preserving maps, their contraction constants, and invariants of the resulting graded spaces. Determine which facts survive comparison with polynomial Banach spaces, planar algebras, and graph entropy.
+
+## Artifacts and verification
+
+Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Thirteen modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`. All are wired into `HTGeometry.lean`.
+
+All development checks used foreground `lake env lean` on scratch files, sequentially. All thirteen individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 176 declarations (127 theorems and 49 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
+
+`scripts/formal_tools.py index` completed. The authoritative repository-wide `scripts/formal_tools.py lint` was run and most recently failed on two unrelated, currently unwired modules: `RHTower.EulerDeletionBalancedPeriodCurvatureNoGo` and `RHTower.EulerDeletionCurvatureCriticalBoundary`. It reported no proof-debt error and no wiring error in this contribution. Those other researchers' files were not modified.
+
+Numerical leads and reproducible sources: [computation report](../2-fully-proven/computations/chronological-chord-capacity/REPORT.md). No numerical results enter any Lean proof. Symbolic proofs use algebraic identities, inequalities, differentiation rules, and finite AM–GM.

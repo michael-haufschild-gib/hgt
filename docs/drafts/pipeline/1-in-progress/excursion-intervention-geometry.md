@@ -1,6 +1,6 @@
 # Chronological tensor geometry — working knowledge
 
-**Status:** candidate theory with checked four- and six-endpoint core; new-field novelty unestablished.
+**Status:** thirteen final leaf builds passed; all 176 declarations axiom-audited (127 theorems, 49 definitions). New-field novelty unestablished.
 **Aim:** develop a coherent mathematical theory from corpus connections, with complete paper proofs and unconditional Lean theorems. Novelty must survive comparison with existing mathematics.
 
 ## Core question
@@ -19,6 +19,7 @@ Current primitive: a linear combination of chord polynomials
 - Existing corpus “new field” proposals already include observer homotopy fibres, Gauss–Codazzi comparison geometry, and persistent quantum phase geometry. Repackaging these is insufficient.
 - Unweighted switching filtrations are already piecewise symmetric tensor spaces: Lotter–Preiß, [arXiv:2607.04712](https://arxiv.org/html/2607.04712v1). Exact overlap found; do not claim novelty here.
 - Noncommutative transfer-function realization is established: Ball–Groenewald–Malakorn, [DOI:10.1137/S0363012904443750](https://doi.org/10.1137/S0363012904443750).
+- Finite stabilization uses the established Lipschitz/error-bound mechanism of [exact penalty theory](https://web.uvic.ca/~janeye/hosted/papers/ExactPenaltyFinal.pdf); do not claim that mechanism as new.
 - Polynomial sup-norm geometry and curved polynomial norm balls are established, including García et al., [arXiv:2408.01741](https://arxiv.org/html/2408.01741v1), and Pérez-García–Villanueva, [DOI:10.1016/j.jat.2004.01.001](https://doi.org/10.1016/j.jat.2004.01.001), on norm attainment over ℓ₁ balls. Thus curvature alone is not a new field; the chronological chord restriction, its exact laws, and its composition structure need substantive independent results.
 
 ## Paper deductions to develop
@@ -31,6 +32,7 @@ Current primitive: a linear combination of chord polynomials
 - General disjoint fusion should satisfy `cap(P⊗Q)=cap(P)cap(Q) r^r s^s/(r+s)^(r+s)` for homogeneous degrees `r,s`. Consequently normalizing each term of `(27D+R)⊗m` to capacity one yields total capacity at least `(10/9)^m`. This exposes exponentially large collective response invisible to the maximum of individual coefficients.
 - **Curvature is the leading organizing principle.** For the degree-three plane `A·D+B·R`, the response curve is `φ(c)=(c(1-c)^2/4,c^2)`. Supporting coefficient rays are `(8c,(3c-1)(1-c))`, with exact capacity `c²(1-c²)` for `1/3≤c≤sqrt(2)-1`. The certificate is `c²(1-c²)-[2c z(1-z)²+(3c-1)(1-c)z²]=(z-c)²(1-c²-2cz)`.
 - **Reversal advantage found by reasoning, outside the earlier ternary search.** For `27D-R`, every monotone unit-budget probe has absolute response ≤1, since each of `27D` and `R` lies in `[0,1]`. Gaps `(1/3,0,-1/3,0,1/3)` have cost 1 and response `-28/27`. Thus signed and monotone capacities really differ. Exact signed optimum is open; `28/27` is only a rigorous witness.
+- **Enclosure/degree competition (Lean checked).** Let `P_n=n^(3n)∏(27D_i-R_i)` and seal by multiplying by total signed displacement to power k. Monotone capacity stays exactly 1. Repeating the reversed rational probe gives signed absolute response `(28/27)^n/3^k`. For `n=54(k+1)`, Bernoulli gives `(28/27)^54≥3`, hence response ≥3. Thus no finite enclosure depth uniformly erases reversal sensitivity across all degrees. Positive survivor is this exact compositional law and explicit linear degree-versus-depth bound; fixed-form convergence remains a separate open target.
 - `det(φ′,φ″)=(1-3c²)/2>0` on that active arc. Thus degree three exposes a curved dual boundary where degree two has a rectangle. `Curvature.lean` checks actual first/second derivatives and the entire supporting family. For `A·D+R`, the flat branch loses optimality exactly at `A=12+8sqrt(2)`: at the transition two distinct probe motions are optimal. `Transition.lean` checks the iff classification and both witnesses. Strong certificate: `(x+y)³-[(3+2√2)xy²+(x+y)x²]=y(√2x-y)²`. This is response geometry, not spacetime curvature.
 
 ## Approaches rejected as novelty claims
@@ -45,10 +47,10 @@ These are overlap findings, not mathematical impossibility theorems.
 
 ## Exact open work
 
-1. Arbitrary-degree amplification; four/six core, supporting arc, derivatives, and transition now checked in scratch. Paper reductions above are the current exact core.
-2. Develop the underlying capacity space and fusion law; distinguish normed invariant-tensor geometry from known unweighted tensor/graph constructions.
-3. Formalize reversal advantage. Investigate nested sealing: multiply a response by `(Σ gaps)^k`; on the unit variation sphere this penalizes reversals. Compactness suggests capacities converge to monotone capacity. Candidate quantitative bound from polynomial Lipschitz control: defect `O(1/k)`. Not yet proved.
-4. Targeted foreground Lean checks, final leaf builds, axiom audits, lint, umbrella wiring. Computation report written. New-field status remains unestablished.
+1. Checked: four/six core, supporting arc, actual derivatives, transition, and reversal advantage. `Fusion.lean` checks exact repeated capacity `K^n`; `Amplification.lean` checks the Boolean expansion and capacity-one normalization of every summand.
+2. `Foundations.lean` constructs bounded capacity suprema, a mathlib seminorm, observational kernel, and interval specialization. General fusion for unequal arbitrary forms and the full invariant-theory identification remain open here.
+3. **Finite stabilization now proved and final-built.** With M=monotone capacity and L=r·Σ|coefficients|, sealed capacity C_k satisfies M≤C_k≤max(M,L/k) for k≥1. Product telescoping + orientation gives |P(g)|≤M+L(1−|S|). The exact inequality z^k(1+k(1−z))≤1 closes the bound. M=0 implies P=0 via the polynomial t↦P(|g|+t(g−|g|)), zero on [0,1/2]. Thus every fixed form stabilizes exactly in finite depth; growing-degree survivors coexist with this. Lean: ProbeComparison, Sealing. SealingExamples proves exact capacity one for 27D−R at every depth ≥84; minimal depth unknown. Sharp universal degree-only depth r(r−1) is the next formal target. Paper mechanism: Jordan decomposition of a unit-cost probe gives |P(g)|≤M z^r T_r(1/z), z=|S|. T_r(x)≤x^(r²) for x≥1 follows from cosh(nt)≤cosh(t)^(n²). Sharpness in unrestricted homogeneous windows comes from (x+y)^r T_r((x−y)/(x+y)): after k enclosures, the boundary derivative at z=1 is r+k−r². Need formalize all edge cases and the polynomial representation. Mathlib has the classical extremal result in Analysis/SpecialFunctions/Trigonometric/Chebyshev/Extremal.lean; read fully, reuse it. No novelty claim for Chebyshev extrapolation (Révész survey arXiv:math/0703386). Actual chord-pairing sharpness is separate.
+4. Completed: thirteen final foreground leaf builds, all 176 axiom audits, umbrella wiring, generated index, computation report and illustration. Latest global lint has two unrelated unwired-module errors: RHTower.EulerDeletionBalancedPeriodCurvatureNoGo and RHTower.EulerDeletionCurvatureCriticalBoundary; no proof-debt or contribution-specific wiring errors. New-field status remains unestablished.
 
 ## Useful corpus anchors
 
@@ -61,4 +63,4 @@ These are overlap findings, not mathematical impossibility theorems.
 
 ## Verification and resources
 
-Runpod computation directory: `/root/chronological-chord-capacity`; local source and downloaded results: `docs/drafts/pipeline/2-fully-proven/computations/chronological-chord-capacity`. Two searches completed with 24 processes, one BLAS thread each. Strong normalized-basis inequality fails from degree three; tested maxima through degree six are approximately `1, 1.1320, 1.4108, 1.8967, 2.6903`. These are numerical leads only. Four-endpoint proof under verification in `/tmp/chronological_four.lean`. Existing dirty worktree contains other research; preserve it. Plan tool unavailable; this document carries research state.
+Runpod computation directory: `/root/chronological-chord-capacity`; local source/results/report/figure: `docs/drafts/pipeline/2-fully-proven/computations/chronological-chord-capacity`. Two searches used 24 processes, one BLAS thread each. Strong normalized-basis inequality fails from degree three; numerical maxima through degree six are approximately `1, 1.1320, 1.4108, 1.8967, 2.6903`. Detailed paper proofs and audit: `docs/drafts/pipeline/3-formalized/chronological-tensor-geometry.md`. All thirteen leaves wired into `HTGeometry.lean`. Existing shared working tree contains other researchers' work; preserve it. No commit or push was initiated by this research session. Plan tool unavailable; this document carries research state.

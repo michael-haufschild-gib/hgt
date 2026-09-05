@@ -35,3 +35,7 @@ Independent symbolic reasoning then gave the global optimum: `q=(50-√313)/81` 
 Further reasoning resolved the existence of signed advantage outside the first experiment's ternary coefficient class: `27D-R` has monotone capacity exactly 1, while gaps `(1/3,0,-1/3,0,1/3)` give `-28/27`. This is checked independently in `ChronologicalTensor/Reversal.lean`. It is not an output of either search.
 
 Useful next questions concern composition across independent blocks and how nesting suppresses reversal-sensitive response. The degree 4–6 numerical values remain leads only.
+
+## Illustration
+
+`plot_geometry.py` renders the proved formulas and the two explicit probe histories, without optimization. It ran on the same Runpod using Matplotlib 3.7.5 installed into the task's `plot-deps` directory. Downloaded outputs are `geometry.png`, `geometry.svg`, and `geometry.pdf`. The first panel shows the positive coefficient quadrant; the second shows the monotone response curve and its exact supporting line; the third compares equal-budget probe histories. This illustration supplies no further proof evidence.

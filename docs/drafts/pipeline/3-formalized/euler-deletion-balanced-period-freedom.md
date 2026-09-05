@@ -78,8 +78,9 @@ concurrent `IntegerCarryTransport` source. The last supplies a concrete carry bu
 argument must be transported under multiplication; forgetting transport works only at integer
 offsets where the carry vanishes. None supplies a new arithmetic zero bridge.
 
-Search semantics were checked in `scripts/lean_search_index.py:209`: unquoted terms are OR-ed;
-quoted runs stay phrases. A missing phrase hit is not absence from the corpus: the query
-`"integer carry"` returned nothing while the exact module query `IntegerCarryTransport` found
-the source. Subsequent discovery should use module identifiers and exact phrases with `rg`,
-rather than treating conceptual word lists as conjunctive searches. No search code was modified.
+The earlier audit used the former OR-default search implementation. The current tool uses
+spaces as AND, `--any` as OR, inner quotes for phrases, and `--exact` to disable prefix expansion.
+Use the current semantics for subsequent work. The historical missing phrase hit for
+`"integer carry"`, despite a module hit for `IntegerCarryTransport`, remains a reminder that
+search misses do not prove absence. Pair corpus discovery with `rg` on actual statements and
+proof bodies. This audit did not modify search code.

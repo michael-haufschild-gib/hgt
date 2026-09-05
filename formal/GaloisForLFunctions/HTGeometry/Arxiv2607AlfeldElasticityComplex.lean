@@ -1,6 +1,7 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.Arxiv2607PiecewiseSymmetric
 import GaloisForLFunctions.HTGeometry.MayerVietorisQuotient
+import GaloisForLFunctions.HTGeometry.ConstitutivePolyscopicMatching
 
 /-!
 # Exactness and dimension laws for tetrahedral Alfeld elasticity complexes
@@ -89,6 +90,36 @@ theorem mvDiff_zero_iff_exists_commonLift (I J : Ideal R) (z : (R ⧸ I) × (R �
 
 end MayerVietorisApplication
 
+section MatchingComplexApplication
+
+universe u
+variable {k V W : Type u} [Field k]
+  [AddCommGroup V] [Module k V] [AddCommGroup W] [Module k W]
+
+/-- Kernel inclusion followed by any corpus matching map is an exact linear triple. -/
+def matchingKernelExactLinearTriple (μ : V →ₗ[k] W) :
+    ExactLinearTriple k (LinearMap.ker μ) V W where
+  first := (LinearMap.ker μ).subtype
+  second := μ
+  exact := (matching_kernel_cokernel μ).1
+
+/-- Any corpus matching map followed by its range quotient is an exact linear triple. -/
+def matchingCokernelExactLinearTriple (μ : V →ₗ[k] W) :
+    ExactLinearTriple k V W (W ⧸ LinearMap.range μ) where
+  first := μ
+  second := Submodule.mkQ (LinearMap.range μ)
+  exact := (matching_kernel_cokernel μ).2.1
+
+/-- Vanishing of a matching cokernel class is equivalent to existence of a global preimage. -/
+theorem matchingClass_zero_iff_exists_preimage (μ : V →ₗ[k] W) (w : W) :
+    Submodule.mkQ (LinearMap.range μ) w = 0 ↔ ∃ v, μ v = w := by
+  constructor
+  · exact (matchingCokernelExactLinearTriple μ).cycle_has_potential
+  · rintro ⟨v, rfl⟩
+    exact (matchingCokernelExactLinearTriple μ).boundary_is_cycle v
+
+end MatchingComplexApplication
+
 section MatrixElasticity
 
 variable {𝕜 ι : Type*} [Field 𝕜] [CharZero 𝕜]
@@ -115,10 +146,10 @@ end MatrixElasticity
 
 section Dimensions
 
-/-- Formula (3.3), after clearing the denominator and taking three vector components. -/
-theorem alfeld_hess_vector_dimension_identity (k : ℤ) :
-    3 * (2 * (k ^ 3 + 6 * k ^ 2 + 20 * k + 30)) =
-      6 * (k ^ 3 + 6 * k ^ 2 + 20 * k + 30) := by
+/-- Formula (3.3) with both binomial denominators cleared. -/
+theorem alfeld_hess_dimension_cleared (k : ℤ) :
+    (k + 6) * (k + 5) * (k + 4) + 3 * (k + 2) * (k + 1) * k =
+      4 * (k ^ 3 + 6 * k ^ 2 + 20 * k + 30) := by
   ring
 
 /-- Formula (3.4), expanded. -/
@@ -153,12 +184,6 @@ theorem alfeld_symmetric_div_dimension_expansion (k : ℤ) :
 theorem alfeld_div_bubble_dimension_expansion (k : ℤ) :
     (k + 1) * (k + 2) * (4 * k - 3) =
       4 * k ^ 3 + 9 * k ^ 2 - k - 6 := by
-  ring
-
-/-- Formula (3.20), with the denominator cleared. -/
-theorem alfeld_hermite_bubble_dimension_cleared (k : ℤ) :
-    3 * (2 * k * (k + 1) * (k + 2)) =
-      6 * k * (k + 1) * (k + 2) := by
   ring
 
 /-- Formula (3.21) follows from the smoother bubble Euler characteristic. -/

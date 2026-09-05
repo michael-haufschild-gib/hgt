@@ -121,6 +121,31 @@ def kerrGaussBonnetPolarInvariant
     (mass spin radius polar : ℝ) : ℝ :=
   kerrGaussBonnetInvariant mass radius (spin * Real.cos polar)
 
+/-- Paper's Kerr Gauss--Bonnet denominator is sixth power of corpus Boyer--Lindquist `Σ`. -/
+theorem kerrGaussBonnetPolarInvariant_eq_kerrNewmanSigma
+    (mass spin radius polar : ℝ) :
+    kerrGaussBonnetPolarInvariant mass spin radius polar =
+      48 * mass ^ 2 *
+          kerrGaussBonnetNumerator radius (spin * Real.cos polar) /
+        kerrNewmanSigma spin radius polar ^ 6 := by
+  simp [kerrGaussBonnetPolarInvariant, kerrGaussBonnetInvariant,
+    kerrNewmanSigma]
+  ring
+
+theorem kerrNewmanSigma_eq_zero_iff_for_gaussBonnet
+    (spin radius polar : ℝ) :
+    kerrNewmanSigma spin radius polar = 0 ↔
+      radius = 0 ∧ spin * Real.cos polar = 0 := by
+  rw [show kerrNewmanSigma spin radius polar =
+      radius ^ 2 + (spin * Real.cos polar) ^ 2 by
+    simp [kerrNewmanSigma]
+    ring]
+  constructor
+  · intro h
+    constructor <;> nlinarith [sq_nonneg radius, sq_nonneg (spin * Real.cos polar)]
+  · rintro ⟨rfl, h⟩
+    simp [h]
+
 theorem kerrGaussBonnetNumerator_factor (radius chi : ℝ) :
     kerrGaussBonnetNumerator radius chi =
       (radius ^ 2 - chi ^ 2) *
@@ -138,6 +163,15 @@ theorem kerrGaussBonnetNumerator_radicalFactor (radius chi : ℝ) :
   ring_nf
   rw [hsqrt]
   ring
+
+theorem kerrGaussBonnetNumerator_eq_zero_iff (radius chi : ℝ) :
+    kerrGaussBonnetNumerator radius chi = 0 ↔
+      radius ^ 2 = chi ^ 2 ∨
+      radius ^ 2 = (7 + 4 * Real.sqrt 3) * chi ^ 2 ∨
+      radius ^ 2 = (7 - 4 * Real.sqrt 3) * chi ^ 2 := by
+  rw [kerrGaussBonnetNumerator_radicalFactor]
+  simp only [mul_eq_zero, sub_eq_zero]
+  tauto
 
 theorem kerrGaussBonnetNumerator_swap (radius chi : ℝ) :
     kerrGaussBonnetNumerator chi radius =
@@ -174,6 +208,38 @@ theorem kerrGaussBonnetNumerator_center (chi : ℝ) :
     kerrGaussBonnetNumerator 0 chi = -chi ^ 6 := by
   simp [kerrGaussBonnetNumerator]
 
+theorem kerrGaussBonnetNumerator_axis_nonneg (radius : ℝ) :
+    0 ≤ kerrGaussBonnetNumerator radius 0 := by
+  rw [kerrGaussBonnetNumerator_axis]
+  positivity
+
+theorem kerrGaussBonnetNumerator_center_nonpos (chi : ℝ) :
+    kerrGaussBonnetNumerator 0 chi ≤ 0 := by
+  rw [kerrGaussBonnetNumerator_center]
+  exact neg_nonpos.mpr (by positivity)
+
+/-- Outer exact sign-change ray of Kerr's Gauss--Bonnet curvature numerator. -/
+theorem kerrGaussBonnetNumerator_outerCriticalRay (chi : ℝ) :
+    kerrGaussBonnetNumerator ((2 + Real.sqrt 3) * chi) chi = 0 := by
+  rw [kerrGaussBonnetNumerator_radicalFactor]
+  have hsqrt : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by positivity)
+  have hsq : ((2 + Real.sqrt 3) * chi) ^ 2 =
+      (7 + 4 * Real.sqrt 3) * chi ^ 2 := by
+    nlinarith
+  rw [hsq]
+  ring
+
+/-- Inner exact sign-change ray of Kerr's Gauss--Bonnet curvature numerator. -/
+theorem kerrGaussBonnetNumerator_innerCriticalRay (chi : ℝ) :
+    kerrGaussBonnetNumerator ((2 - Real.sqrt 3) * chi) chi = 0 := by
+  rw [kerrGaussBonnetNumerator_radicalFactor]
+  have hsqrt : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by positivity)
+  have hsq : ((2 - Real.sqrt 3) * chi) ^ 2 =
+      (7 - 4 * Real.sqrt 3) * chi ^ 2 := by
+    nlinarith
+  rw [hsq]
+  ring
+
 theorem kerrGaussBonnetInvariant_swap (mass radius chi : ℝ) :
     kerrGaussBonnetInvariant mass chi radius =
       -kerrGaussBonnetInvariant mass radius chi := by
@@ -181,9 +247,37 @@ theorem kerrGaussBonnetInvariant_swap (mass radius chi : ℝ) :
     kerrGaussBonnetNumerator_swap]
   ring
 
+theorem kerrGaussBonnetInvariant_eq_zero_iff (mass radius chi : ℝ) :
+    kerrGaussBonnetInvariant mass radius chi = 0 ↔
+      mass = 0 ∨ kerrGaussBonnetNumerator radius chi = 0 := by
+  unfold kerrGaussBonnetInvariant
+  constructor
+  · intro h
+    rcases div_eq_zero_iff.mp h with hnum | hden
+    · simp only [mul_eq_zero, OfNat.ofNat_ne_zero, false_or] at hnum
+      rcases hnum with hmass | hnum
+      · exact Or.inl (eq_zero_of_pow_eq_zero hmass)
+      · exact Or.inr hnum
+    · right
+      have hsum : radius ^ 2 + chi ^ 2 = 0 := eq_zero_of_pow_eq_zero hden
+      have hradius : radius = 0 := by nlinarith [sq_nonneg radius, sq_nonneg chi]
+      have hchi : chi = 0 := by nlinarith [sq_nonneg radius, sq_nonneg chi]
+      simp [hradius, hchi, kerrGaussBonnetNumerator]
+  · rintro (rfl | hnum)
+    · simp
+    · simp [hnum]
+
 theorem kerrGaussBonnetInvariant_diagonal (mass radius : ℝ) :
     kerrGaussBonnetInvariant mass radius radius = 0 := by
   simp [kerrGaussBonnetInvariant, kerrGaussBonnetNumerator_diagonal]
+
+theorem kerrGaussBonnetInvariant_outerCriticalRay (mass chi : ℝ) :
+    kerrGaussBonnetInvariant mass ((2 + Real.sqrt 3) * chi) chi = 0 := by
+  simp [kerrGaussBonnetInvariant, kerrGaussBonnetNumerator_outerCriticalRay]
+
+theorem kerrGaussBonnetInvariant_innerCriticalRay (mass chi : ℝ) :
+    kerrGaussBonnetInvariant mass ((2 - Real.sqrt 3) * chi) chi = 0 := by
+  simp [kerrGaussBonnetInvariant, kerrGaussBonnetNumerator_innerCriticalRay]
 
 theorem kerrGaussBonnetInvariant_axis (mass radius : ℝ) :
     kerrGaussBonnetInvariant mass radius 0 = 48 * mass ^ 2 / radius ^ 6 := by
@@ -231,6 +325,15 @@ theorem qnmDampingTime_realShift (omega : ℂ) (shift : ℝ) :
 theorem qnmDampingTime_ofReal (frequency : ℝ) :
     qnmDampingTime frequency = ⊤ := by
   simp [qnmDampingTime]
+
+theorem qnmDampingTime_eq_top_iff (omega : ℂ) :
+    qnmDampingTime omega = ⊤ ↔ omega.im = 0 := by
+  rw [qnmDampingTime, ENNReal.inv_eq_top, ENNReal.ofReal_eq_zero]
+  simp
+
+theorem qnmDampingTime_ne_top_iff (omega : ℂ) :
+    qnmDampingTime omega ≠ ⊤ ↔ omega.im ≠ 0 := by
+  rw [ne_eq, qnmDampingTime_eq_top_iff]
 
 theorem qnmDampingTime_I : qnmDampingTime Complex.I = 1 := by
   simp only [qnmDampingTime, Complex.I_im, abs_one, ENNReal.ofReal_one, inv_one]

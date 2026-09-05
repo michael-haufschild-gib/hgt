@@ -42,6 +42,23 @@ Search the full indexed corpus, including the non-RH theorem areas. Ranked searc
 
 ## Current evidence
 
+- **Joint polygon arithmetic verified:** the literal coprime deletion polygon closes and every
+  polynomial one-form of coefficient degree at most three integrates to zero. Nevertheless
+  `integral x*y^3 dx=P(P-1)Q(Q-1)(Q-2)/120`; the moduli-2-and-3 value is `1/10`.
+  Lean proves the general formula from the actual source, not an assigned scalar invariant.
+  Standard polynomial-moment/signature machinery is published. The proposed joint weighted
+  exponential product still lacks its infinite-norm and zero-specific arithmetic theorems.
+  [Exact construction, formal certificate, and ancestry audit](euler-deletion-joint-polygon-moment.md).
+
+- **Adjacent nonperiodic digital extension rejected:** the published Thue–Morse two-column zeta
+  identity loses its zeta term identically after centering. Its residual relation holds for every
+  parameter in the convergence domain, so zero specialization creates no new arithmetic constraint.
+  The exact relation is already published. [Source and cancellation audit](../5-failed/adjacent-digital-zeta-cancellation-audit.md).
+- **Finite affine-pattern extension rejected:** even an arbitrary nonlinear rule on finitely many
+  bits `[q_j divides a_j*n+c_j]`, with overlapping moduli and non-invertible slopes, remains a
+  function of one finite residue class. Scratch Lean verifies its exact reduction to mathlib's
+  existing periodic L-series/Hurwitz representation. This does not cover growing moduli or
+  chronological infinite histories. [Conjecture, second pass, and verified reduction](../5-failed/affine-congruence-pattern-architecture-audit.md).
 - **Source-scope correction:** `SmoothMultiplicativeDichotomy` compares named records with assigned
   rational exponents and contains assigned applicability flags. It does not prove that all methods
   fall into two exhausted families. Source comments and the exact downstream citations were
@@ -462,7 +479,7 @@ The proposed residual operation was never constructed. Its ancestry and intended
 - `EulerDeletionCoprimeWordPeriodicity` passed scratch compilation, its targeted leaf build, and an imported audit of six capstones. It is wired into `RHTower.lean`; all audited dependencies are only `propext`, `Classical.choice`, and `Quot.sound`. The subsequent repository-wide formal lint run passed, with existing large-file warnings. The all-depth finite residue classification and independent-phase vanishing supply a boundary test, not a weighted refinement law.
 - `EulerDeletionCylinderReconstruction` passed scratch compilation, a targeted leaf build, and an imported audit of eight capstones. All audited dependencies are only `propext`, `Classical.choice`, and `Quot.sound`. It is wired into `RHTower.lean`. The source equivalence, every-length word transport, arbitrary conjugation choices, exact coefficient costs, and zero-endpoint equivalence are closed; no associated-graded RH descent was proved.
 - Index snapshot: 32,233 files, 392,125 declarations, 3,855 gap markers. All-index search scope is not a proof-body audit of all declarations.
-- 196 saved numbered corpus queries. Query wording and capped hit counts are in the adjacent search manifest. Search terms are OR-ed; ranked results can omit relevant low-ranked declarations. Exact `rg` searches supplied definition and proof-body checks. No absence or completeness theorem follows from search misses.
+- 196 saved numbered corpus queries. Query wording and capped hit counts are in the adjacent search manifest. Those historical queries used the former OR-default tool. The current tool uses AND for spaces and explicit `--any` for OR; ranked results can still omit relevant low-ranked declarations. Exact `rg` searches supplied definition and proof-body checks. No absence or completeness theorem follows from search misses.
 - Lean modules `CoprimeBlockCarryTransgression`, `CoprimeBlockMultiplicationFiber`, `EulerDeletionQuasiShuffleScaling`, `EulerDeletionQuasiShuffleConvergence`, `EulerDeletionQuasiShuffleZeroLanding`, `EulerDeletionQuasiShuffleSecondShadow`, `EulerDeletionQuasiShuffleSecondConvergence`, `EulerDeletionQuasiShuffleCylinderClosure`, `EulerDeletionQuasiShuffleCylinderSquareNoGo`, and `EulerDeletionNoncommutativeAbelianShadow` compile directly; targeted leaf builds cover the new leaves, and all are wired into `RHTower.lean`. Capstones prove exact finite dilation, positive-half-plane zero landing, positive energy, cutoff-independent complex self/cross levels, nonvanishing self level, limiting polarized quasi-shuffle, squarefree cylinder closure, repeated-generator obstruction, and commutative-shadow collapse. `/tmp/hgt_edqs_axioms.lean` reports only standard Lean axioms `propext`, `Classical.choice`, and `Quot.sound` for audited capstones. No full build ran.
 - `EulerDeletionQuasiShuffleCrossDomain` and `EulerDeletionQuasiShuffleOrderedDilation` also passed scratch checks and targeted leaf builds. They are wired into `RHTower.lean`. The imported audit `/tmp/hgt-deletion-cross-limit-VJDXsM/FinalAudit.lean` checked seven capstones and reported only `propext`, `Classical.choice`, and `Quot.sound`. These close the zero-independent chronological domain and exact grouped dilation formula; they do not supply refinement coherence.
 - `EulerDeletionFactorizationGraded` passed scratch and direct compilation and is wired into
