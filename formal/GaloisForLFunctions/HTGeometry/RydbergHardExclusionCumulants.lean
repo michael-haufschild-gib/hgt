@@ -165,6 +165,42 @@ theorem blockedCliqueOccupationCumulant_eq
         ∏ i ∈ s, law.meanOccupation (i : V) := by
   exact (law.blockedCliqueMomentFamily K).jointCumulant_eq_discrete s
 
+/-- Rydberg site whose no-excitation probability is strictly positive. -/
+structure StrictSite (law : RydbergOutcomeLaw G) where
+  site : V
+  meanOccupation_lt_one : law.meanOccupation site < 1
+
+/-- Certified strict Bernoulli parameter carried by a Rydberg site. -/
+def StrictSite.probabilityParameter
+    {law : RydbergOutcomeLaw G} (s : StrictSite law) :
+    GaloisForLFunctions.HTGeometry.StrictProbabilityParameter :=
+  ⟨law.meanOccupation s.site, law.meanOccupation_nonneg s.site,
+    s.meanOccupation_lt_one⟩
+
+omit [DecidableRel G.Adj] in
+/-- Paper's complete factorial-cumulant series reconstructs a Rydberg site's log no-excitation
+probability. -/
+theorem StrictSite.logVoidSeries_hasSum
+    {law : RydbergOutcomeLaw G} (s : StrictSite law) :
+    HasSum
+      (GaloisForLFunctions.HTGeometry.greedyBumpBernoulliLogVoidContribution
+        s.probabilityParameter)
+      (Real.log ((law.sitePointCountLaw s.site).voidMass)) := by
+  rw [law.sitePointCountLaw_voidMass]
+  simpa [StrictSite.probabilityParameter] using
+    GaloisForLFunctions.HTGeometry.greedyBumpBernoulli_logVoidSeries_hasSum
+      s.probabilityParameter
+
+omit [DecidableRel G.Adj] in
+/-- Exact Rydberg log-void identity in `tsum` form. -/
+theorem StrictSite.log_voidMass_eq_cumulantSeries
+    {law : RydbergOutcomeLaw G} (s : StrictSite law) :
+    Real.log ((law.sitePointCountLaw s.site).voidMass) =
+      ∑' k : ℕ,
+        GaloisForLFunctions.HTGeometry.greedyBumpBernoulliLogVoidContribution
+          s.probabilityParameter k := by
+  exact s.logVoidSeries_hasSum.tsum_eq.symm
+
 end RydbergOutcomeLaw
 
 end HTGeometry

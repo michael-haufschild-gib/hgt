@@ -3,6 +3,10 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.NLSSolitons
 import GaloisForLFunctions.HTGeometry.DispersivePDE.FDNLSApplications
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaApplications
 import GaloisForLFunctions.HTGeometry.DispersivePDE.MondalElectronAcousticKP
+import GaloisForLFunctions.HTGeometry.DispersivePDE.MondalElectronAcousticBreathers
+import GaloisForLFunctions.HTGeometry.DispersivePDE.MondalElectronAcousticCoefficients
+import GaloisForLFunctions.HTGeometry.DispersivePDE.MondalElectronAcousticSuperposition
+import GaloisForLFunctions.HTGeometry.DispersivePDE.MondalElectronAcousticLumpSingularity
 import GaloisForLFunctions.HTGeometry.BelinskiZakharovJacobiTodaBridge
 import GaloisForLFunctions.HTGeometry.KerrNewmanBelinskiZakharovTwoPoleBridge
 
@@ -35,6 +39,9 @@ structure ClosedDispersiveAtlas : Prop where
   mondalOneTauHirota : ∀ δ ρ k slope shift : ℝ,
     SolvesHirotaKP δ ρ
       (mondalOneExponentialTauJet (mondalFrequency δ ρ k slope) k (k * slope) shift)
+  mondalTwoTauHirota : ∀ δ ρ k₁ slope₁ shift₁ k₂ slope₂ shift₂ : ℝ,
+    SolvesHirotaKP δ ρ
+      (mondalCorrectedTwoExponentialTauJet δ ρ k₁ slope₁ shift₁ k₂ slope₂ shift₂)
   mondalLumpHirota : ∀ beta gammaLog r b d m : ℝ,
     SolvesHirotaKP beta (-Real.exp gammaLog)
       (mondalCorrectedLumpTauJet beta gammaLog r b d m)
@@ -46,9 +53,46 @@ structure ClosedDispersiveAtlas : Prop where
     SolvesHirotaKPTimeReversed β (-γ)
       (mondalOneExponentialTauJet
         (mondalPrintedLeftFrequency β γ k slope) k (k * slope) shift)
+  mondalPrintedRightTwoTimeReverse : ∀ β γ k₁ slope₁ shift₁ k₂ slope₂ shift₂ : ℝ,
+    SolvesHirotaKPTimeReversed (-β) γ
+      (mondalPrintedRightTwoTauJet β γ k₁ slope₁ shift₁ k₂ slope₂ shift₂)
+  mondalPrintedLeftTwoTimeReverse : ∀ β γ k₁ slope₁ shift₁ k₂ slope₂ shift₂ : ℝ,
+    SolvesHirotaKPTimeReversed β (-γ)
+      (mondalPrintedLeftTwoTauJet β γ k₁ slope₁ shift₁ k₂ slope₂ shift₂)
   mondalPhysicalLumpTauZero : ∀ q p s : ℝ,
     mondalPhysicalLumpTau q p s 0
       (Real.sqrt (-mondalPhysicalLumpOffset q p s)) 0 = 0
+  mondalNegativeBetaLumpTauZero : ∀ betaLog gammaLog r b d m : ℝ,
+    (mondalCorrectedLumpTauJet (-Real.exp betaLog) gammaLog r b d m).u 0
+      (mondalLumpZeroX betaLog gammaLog r b d m)
+      (mondalLumpZeroY betaLog gammaLog r b d m) = 0
+  mondalPrintedLumpRejected : ¬ SolvesHirotaKP (-1) (-1) mondalPrintedLumpWitness
+  mondalPhysicalBreatherTauZero : ∀ betaLog gammaLog mLog n slopeIm : ℝ,
+    ∃ z : ℂ,
+      mondalRealBreatherTau
+        (mondalPhysicalBreatherInteraction betaLog gammaLog mLog n slopeIm) z = 0
+  mondalPositiveBreatherTauNonzero : ∀ a : ℝ, ∀ z : ℂ,
+    mondalRealBreatherTau (mondalPositiveBreatherInteraction a) z ≠ 0
+  mondalSubcriticalPhasePositive : ∀ q p r : ℝ,
+    0 < mondalPhaseCorrectionRatio q p (mondalSubcriticalTemperatureAmplitude q p r)
+  mondalCriticalPhaseZero : ∀ q p : ℝ,
+    mondalPhaseCorrectionRatio q p (mondalCriticalTemperatureAmplitude q p) = 0
+  mondalSupercriticalPhaseNegative : ∀ q p r : ℝ,
+    mondalPhaseCorrectionRatio q p (mondalSupercriticalTemperatureAmplitude q p r) < 0
+  mondalConcentrationSlopeAtZeroPositive : ∀ q s : ℝ,
+    0 < mondalAmplitudeConcentrationSlope q s 0
+  mondalConcentrationSlopeAtOneNegative : ∀ q s : ℝ,
+    mondalAmplitudeConcentrationSlope q s 1 < 0
+  mondalRaisedTemperatureLowersAmplitude : ∀ q p s r : ℝ,
+    mondalAmplitudeAtConcentration q (mondalRaisedTemperatureAmplitude s r)
+        (mondalHotConcentration p) <
+      mondalAmplitudeAtConcentration q s (mondalHotConcentration p)
+  mondalRaisedKappaRaisesAmplitude : ∀ q p s r : ℝ,
+    mondalAmplitudeAtConcentration q s (mondalHotConcentration p) <
+      mondalAmplitudeAtConcentration (mondalRaisedKappaParameter q r) s
+        (mondalHotConcentration p)
+  mondalDirectSuperpositionRejected :
+    ¬ SolvesGeneralKP 6 1 3 mondalCanonicalDoubledJet
   shriraPesenson : ∀ α β γ₁ γ₂ ε : ℝ,
     SolvesShriraPesenson α β γ₁ γ₂ ε shriraPesensonTiltJet
   brightNLS : SolvesFocusingNLS nlsBrightSolitonJet
@@ -93,10 +137,25 @@ theorem closedDispersiveAtlas : ClosedDispersiveAtlas where
   kpII := kpLineSoliton_solves_KPII
   mondalGeneralKP := mondalSoliton_solves
   mondalOneTauHirota := mondalOneExponentialTau_corrected_solvesHirota
+  mondalTwoTauHirota := mondalCorrectedTwoExponentialTau_solvesHirota
   mondalLumpHirota := mondalCorrectedLumpTau_solvesHirota
   mondalPrintedRightTimeReverse := mondalPrintedRightOneTau_solvesTimeReversedHirota
   mondalPrintedLeftTimeReverse := mondalPrintedLeftOneTau_solvesTimeReversedHirota
+  mondalPrintedRightTwoTimeReverse := mondalPrintedRightTwoTau_solvesTimeReversedHirota
+  mondalPrintedLeftTwoTimeReverse := mondalPrintedLeftTwoTau_solvesTimeReversedHirota
   mondalPhysicalLumpTauZero := mondalPhysicalLumpTau_has_zero
+  mondalNegativeBetaLumpTauZero := mondalCorrectedNegativeBetaLumpTau_has_zero
+  mondalPrintedLumpRejected := mondalPrintedLumpWitness_not_solvesHirota
+  mondalPhysicalBreatherTauZero := mondalPhysicalBreatherTau_has_zero
+  mondalPositiveBreatherTauNonzero := mondalPositiveBreatherTau_ne_zero
+  mondalSubcriticalPhasePositive := mondalPhaseCorrectionRatio_subcritical_pos
+  mondalCriticalPhaseZero := mondalPhaseCorrectionRatio_critical_zero
+  mondalSupercriticalPhaseNegative := mondalPhaseCorrectionRatio_supercritical_neg
+  mondalConcentrationSlopeAtZeroPositive := mondalAmplitudeConcentrationSlope_zero_pos
+  mondalConcentrationSlopeAtOneNegative := mondalAmplitudeConcentrationSlope_one_neg
+  mondalRaisedTemperatureLowersAmplitude := mondalAmplitude_raisedTemperature_decreases
+  mondalRaisedKappaRaisesAmplitude := mondalAmplitude_raisedKappa_increases
+  mondalDirectSuperpositionRejected := mondalCanonicalDoubled_not_solves
   shriraPesenson := shriraPesensonTilt_solves_all
   brightNLS := nlsBrightSoliton_solves
   darkNLS := nlsDarkSoliton_solves

@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.GreedyBumpLocalGeometry
 import GaloisForLFunctions.HTGeometry.ArcsineHankelPositiveDefinite
 import GaloisForLFunctions.HTGeometry.BlackHoleDressedLogSpectralClock
 import GaloisForLFunctions.HTGeometry.AtomicMomentHankelSection
+import GaloisForLFunctions.HTGeometry.PoleUnitGammaBase
+import GaloisForLFunctions.HTGeometry.ReciprocalTailHankelStrict
 
 /-!
 # Greedy-bump geometry on positive Hankel metrics
@@ -154,6 +156,53 @@ theorem greedyBumpAtomic_bias {N D : ℕ} (A : GreedyBumpAtomicDesign N D)
       ((greedyBumpHessian Q A.metric)⁻¹ * A.metric.matrix) =
       (D : ℝ) / (2 * (Q : ℝ)) :=
   greedyBump_matched_bias Q A.metric
+
+/-- Positive shape of a unit-rate Gamma moment law. -/
+abbrev GreedyBumpPositiveGammaShape := {r : ℝ // 0 < r}
+
+/-- Unit-rate Gamma moment Hankel blocks as template metrics. -/
+def greedyBumpGammaShapeMetric (r : GreedyBumpPositiveGammaShape) (D : ℕ) :
+    PositiveTemplateMetric D where
+  matrix := _root_.HTGeometry.momentHankelMatrix (gammaShapeMoment (r : ℝ)) D
+  posDef := gammaShapeMoment_momentHankelMatrix_posDef r.property D
+
+/-- Complete local-search geometry on every positive-shape Gamma moment block. -/
+theorem greedyBumpGammaShape_laws
+    (r : GreedyBumpPositiveGammaShape) (D : ℕ) (Q : PositiveSignal) :
+    GreedyBumpMetricLaws Q (greedyBumpGammaShapeMetric r D) :=
+  greedyBumpMetricLaws_closed Q (greedyBumpGammaShapeMetric r D)
+
+/-- Reciprocal continuum-clock moment blocks as template metrics. -/
+def greedyBumpReciprocalTailMetric (D : ℕ) : PositiveTemplateMetric D where
+  matrix := _root_.HTGeometry.momentHankelMatrix _root_.HTGeometry.reciprocalTailClock D
+  posDef := _root_.HTGeometry.momentHankelMatrix_posDef_of_infiniteSupport
+    _root_.HTGeometry.reciprocalTailClock
+    _root_.HTGeometry.reciprocalTailClock_eq_moment
+    _root_.HTGeometry.reciprocalTailMeasure_integrable_moments
+    _root_.HTGeometry.reciprocalTailMeasure_infiniteSupport D
+
+/-- Complete local-search geometry on every reciprocal continuum-clock block. -/
+theorem greedyBumpReciprocalTail_laws (D : ℕ) (Q : PositiveSignal) :
+    GreedyBumpMetricLaws Q (greedyBumpReciprocalTailMetric D) :=
+  greedyBumpMetricLaws_closed Q (greedyBumpReciprocalTailMetric D)
+
+/-- Gamma, reciprocal-tail, and arcsine moment sources have identical matched bias at equal
+dimension, despite different measures and support geometry. -/
+theorem greedyBump_classicalMomentBias_dimensionUniversality
+    (r : GreedyBumpPositiveGammaShape) (D : ℕ) (Q : PositiveSignal) :
+    (1 / 2 : ℝ) * Matrix.trace
+        ((greedyBumpHessian Q (greedyBumpGammaShapeMetric r D))⁻¹ *
+          (greedyBumpGammaShapeMetric r D).matrix) =
+        (1 / 2 : ℝ) * Matrix.trace
+          ((greedyBumpHessian Q (greedyBumpReciprocalTailMetric D))⁻¹ *
+            (greedyBumpReciprocalTailMetric D).matrix) ∧
+      (1 / 2 : ℝ) * Matrix.trace
+        ((greedyBumpHessian Q (greedyBumpGammaShapeMetric r D))⁻¹ *
+          (greedyBumpGammaShapeMetric r D).matrix) =
+        (1 / 2 : ℝ) * Matrix.trace
+          ((greedyBumpHessian Q (greedyBumpArcsineMetric D))⁻¹ *
+            (greedyBumpArcsineMetric D).matrix) := by
+  constructor <;> rw [greedyBump_matched_bias, greedyBump_matched_bias]
 
 end
 

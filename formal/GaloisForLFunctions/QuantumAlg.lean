@@ -27,6 +27,7 @@ import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.Common
 import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.EkeraHastadStyle
 import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.FormulaEnvelope
 import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.ShorStyle
+import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.GreedyBumpRetryCumulants
 import GaloisForLFunctions.QuantumAlg.Algorithms.FiniteCyclicDLP
 import GaloisForLFunctions.QuantumAlg.Algorithms.GHZ
 import GaloisForLFunctions.QuantumAlg.Algorithms.Grover

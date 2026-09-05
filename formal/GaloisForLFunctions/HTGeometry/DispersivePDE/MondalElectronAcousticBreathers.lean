@@ -354,7 +354,7 @@ theorem mondalPhysicalBreatherTau_has_zero
     unfold mondalRealBreatherTau mondalComplexPair mondalBreatherRadialTau
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.mul_im,
       Complex.I_re, Complex.I_im, mul_zero, sub_zero, Complex.add_im, Complex.ofReal_im,
-      zero_add, mul_one, Real.cos_pi, Real.exp_log hradialExpPos]
+      zero_add, add_zero, mul_one, Real.cos_pi, Real.exp_log hradialExpPos]
     rw [hexpTwo]
     ring]
   exact hzero

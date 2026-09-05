@@ -70,3 +70,37 @@ density at the mean spacing; the mollified log-mean `ℓ_{ζΨ}` is its analytic
 `[OPEN CORE]` `(L)` itself (`ℓ_ζ → 0`); and `J_M → 0` for the linear mollifier (small-ball
 estimates for the random mollifier sum; Carbery–Wright-type anti-concentration is far too weak,
 log-normal small-ball tails are needed).
+
+## 6. Lean (2026-09-05, all axiom-clean, wired after `MollifiedDeviationHeadFourthMoment`)
+
+* `MollifierLineLogMeanFloor`: `exists_edPoly_line_logMean_floor` — for a real unit-head bounded
+  Dirichlet polynomial, `−(C + K log Mb) ≤ ∫_{T₁}^{T₂} log|Ψ(1/2+it)| dt`, **uniformly in the
+  heights** (Littlewood rectangle for `Ψ` alone; generic far-right `O(1)` lemmas; the edPoly
+  horizontal-edge bound with the trace `‖Ψ(4±iT)‖ ≥ 5/16`).
+* `DirichletPolynomialTorusLogUpperLaw`: `tendsto_contMoment_average_steinhaus` /
+  `tendsto_contMoment_window_steinhaus` — for every continuous `φ`, the time average of
+  `φ(|F|²)` (Cesàro or on `[T,2T]`) converges to the Steinhaus expectation (Weierstrass on top of
+  the corpus even-moment Bohr tower); `eventually_window_logMean_dpoly_le` — the torus upper law
+  `(1/T)∫_T^{2T} log|F| ≤ ½E_χ log max(|F_χ|², ε²) + η` eventually (zeros of `F` on the window
+  are finite, so the continuous majorant works a.e.).
+* `OuterDecompositionLawMollifiedProduct`: `integral_log_norm_zeta_mul_edPoly_line`
+  (`ℓ_{ζΨ} = ℓ_ζ + ℓ_Ψ` on any segment, heights `≥ 20`);
+  `exists_zetaLine_logMean_le_mollifiedProduct_logMean` (**producer direction**:
+  `ℓ_ζ ≤ ℓ_{ζΨ} + C + K log Mb` — any outer law `ℓ_{ζΨ} = o(T)` forces `(L)`);
+  `eventually_window_logMean_zeta_mul_linearMollifier_le` (**receiver direction**, linear
+  mollifier: `ℓ_{ζΨ_M}(T,2T) ≤ ℓ_ζ(T,2T) + T(J_M(ε) + η)` eventually, with
+  `J_M(ε) = linearMollifierTorusLogMean M ε` the truncated torus Jensen mass).
+
+So the outer law is proven as the exact **decomposition law** with both one-sided torus/Littlewood
+bounds; the vanishing statement `ℓ_{ζΨ} → 0` is equivalent to `(L)` (given `J_M → 0`) and stays
+open, and `J_M → 0` for the linear mollifier is supported numerically (`≤ 0.005` up to `M = 10⁴`)
+and heuristically (small-ball events of probability `≈ 1/log M`).
+
+## 7. Open core (after the Lean pass)
+
+`[OPEN CORE]` (i) `(L)` itself; (ii) `J_M → 0` for the linear mollifier (small-ball law of the
+random mollifier sum at scale `log p/log M`; negative-moment/Carbery–Wright routes are far too
+weak); (iii) the **lower** torus law `liminf ℓ_Ψ(T,2T)/T ≥ J_M` (needs uniform integrability of
+`log⁻|Ψ|` on the line: Poisson–Jensen on discs with the `≪_M T` zeros of the strip gives
+`∫(log⁻|Ψ|)² ≪_M T`; not formalized), which would upgrade the receiver direction to the exact
+equivalence `(L) ⟺ lim ℓ_{ζΨ_M}(T,2T)/T = J_M` for each fixed `M`.

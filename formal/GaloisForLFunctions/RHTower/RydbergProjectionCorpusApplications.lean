@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.RydbergClockDephasing
+import GaloisForLFunctions.HTGeometry.PositiveObserverGNSDecompositionLaw
 import GaloisForLFunctions.RHTower.CCMArchimedeanQuantizedCalculus
 import GaloisForLFunctions.RHTower.SoninEvenCarrier
 import GaloisForLFunctions.RHTower.SuperPoincareProjectionFamily
@@ -206,5 +207,81 @@ theorem pinched_projectorDephasing_eq_zero
     (C.projection μ) A (C.projection_idempotent μ)
 
 end RydbergMeasurableCutoff
+
+/-! ## Conditional-expectation projections -/
+
+/-- The completed GNS conditional expectation carries its projection law as data. -/
+theorem completedConditionalProjection_idempotent
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.CompletedConditionalProjection H) :
+    IsIdempotentElem P.projector := by
+  apply ContinuousLinearMap.ext
+  exact P.idempotent
+
+/-- Conditional-expectation dephasing is half the observed/hidden pinching disturbance. -/
+theorem completedConditionalProjection_projectorDephasing_eq_halfPinching
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.CompletedConditionalProjection H)
+    (A : H →L[ℂ] H) :
+    HTGeometry.projectorDephasingGenerator (k := ℂ) P.projector A =
+      (2 : ℂ)⁻¹ • (HTGeometry.twoOutcomePinching P.projector A - A) := by
+  exact HTGeometry.projectorDephasingGenerator_eq_half_pinching_sub (k := ℂ)
+    P.projector A (completedConditionalProjection_idempotent P)
+
+/-- Zero dephasing is exactly preservation of the observed/hidden GNS split. -/
+theorem completedConditionalProjection_projectorDephasing_eq_zero_iff
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.CompletedConditionalProjection H)
+    (A : H →L[ℂ] H) :
+    HTGeometry.projectorDephasingGenerator (k := ℂ) P.projector A = 0 ↔
+      P.projector * A = A * P.projector := by
+  exact HTGeometry.projectorDephasingGenerator_eq_zero_iff_commute (k := ℂ)
+    P.projector A (completedConditionalProjection_idempotent P)
+
+theorem completedConditionalProjection_pinched_projectorDephasing_eq_zero
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.CompletedConditionalProjection H)
+    (A : H →L[ℂ] H) :
+    HTGeometry.projectorDephasingGenerator (k := ℂ) P.projector
+      (HTGeometry.twoOutcomePinching P.projector A) = 0 := by
+  exact HTGeometry.projectorDephasingGenerator_pinching_eq_zero (k := ℂ)
+    P.projector A (completedConditionalProjection_idempotent P)
+
+/-- Boundary moment-fiber conditional expectation is an algebraic projector. -/
+theorem boundaryConditionalProjection_idempotent
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.BoundaryConditionalProjection H) :
+    IsIdempotentElem P.projector := by
+  apply LinearMap.ext
+  exact P.idempotent
+
+/-- Moment-fiber boundary dephasing is half the horizontal/vertical pinching disturbance. -/
+theorem boundaryConditionalProjection_projectorDephasing_eq_halfPinching
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.BoundaryConditionalProjection H)
+    (A : H →ₗ[ℂ] H) :
+    HTGeometry.projectorDephasingGenerator (k := ℂ) P.projector A =
+      (2 : ℂ)⁻¹ • (HTGeometry.twoOutcomePinching P.projector A - A) := by
+  exact HTGeometry.projectorDephasingGenerator_eq_half_pinching_sub (k := ℂ)
+    P.projector A (boundaryConditionalProjection_idempotent P)
+
+/-- Zero boundary dephasing is exactly preservation of horizontal/vertical moment sectors. -/
+theorem boundaryConditionalProjection_projectorDephasing_eq_zero_iff
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.BoundaryConditionalProjection H)
+    (A : H →ₗ[ℂ] H) :
+    HTGeometry.projectorDephasingGenerator (k := ℂ) P.projector A = 0 ↔
+      P.projector * A = A * P.projector := by
+  exact HTGeometry.projectorDephasingGenerator_eq_zero_iff_commute (k := ℂ)
+    P.projector A (boundaryConditionalProjection_idempotent P)
+
+theorem boundaryConditionalProjection_pinched_projectorDephasing_eq_zero
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (P : GaloisForLFunctions.HTGeometry.BoundaryConditionalProjection H)
+    (A : H →ₗ[ℂ] H) :
+    HTGeometry.projectorDephasingGenerator (k := ℂ) P.projector
+      (HTGeometry.twoOutcomePinching P.projector A) = 0 := by
+  exact HTGeometry.projectorDephasingGenerator_pinching_eq_zero (k := ℂ)
+    P.projector A (boundaryConditionalProjection_idempotent P)
 
 end RHTower

@@ -101,6 +101,109 @@ theorem greedyBumpBernoulli_voidMass (p : ProbabilityParameter) :
     (greedyBumpBernoulliExclusion p).voidMass = 1 - (p : ℝ) := by
   simp [FinitePointCountLaw.voidMass, greedyBumpBernoulliExclusion]
 
+/-- Strict probability parameter, with the open upper bound carried as data. -/
+abbrev StrictProbabilityParameter := {p : ℝ // 0 ≤ p ∧ p < 1}
+
+/-- Forget the strict upper bound on a probability parameter. -/
+def StrictProbabilityParameter.toProbabilityParameter (p : StrictProbabilityParameter) :
+    ProbabilityParameter :=
+  ⟨p, p.property.1, p.property.2.le⟩
+
+/-- Order-`k+1` factorial cumulant of a one-point hard-exclusion law. -/
+def greedyBumpBernoulliFactorialCumulantSucc
+    (p : StrictProbabilityParameter) (k : ℕ) : ℝ :=
+  (-1 : ℝ) ^ k * k.factorial * (p : ℝ) ^ (k + 1)
+
+/-- Paper's signed, factorially normalized order-`k+1` void contribution. -/
+def greedyBumpBernoulliLogVoidContribution
+    (p : StrictProbabilityParameter) (k : ℕ) : ℝ :=
+  (-1 : ℝ) ^ (k + 1) * greedyBumpBernoulliFactorialCumulantSucc p k /
+    (k + 1).factorial
+
+/-- The all-order hierarchy extends the actual first factorial cumulant. -/
+theorem greedyBumpBernoulli_factorialCumulantSucc_zero
+    (p : StrictProbabilityParameter) :
+    greedyBumpBernoulliFactorialCumulantSucc p 0 =
+      (greedyBumpBernoulliExclusion p.toProbabilityParameter).factorialCumulantOne := by
+  rw [greedyBumpBernoulli_factorialCumulantOne]
+  simp [greedyBumpBernoulliFactorialCumulantSucc,
+    StrictProbabilityParameter.toProbabilityParameter]
+
+/-- The all-order hierarchy extends the actual second factorial cumulant. -/
+theorem greedyBumpBernoulli_factorialCumulantSucc_one
+    (p : StrictProbabilityParameter) :
+    greedyBumpBernoulliFactorialCumulantSucc p 1 =
+      (greedyBumpBernoulliExclusion p.toProbabilityParameter).factorialCumulantTwo := by
+  rw [greedyBumpBernoulli_factorialCumulantTwo]
+  simp [greedyBumpBernoulliFactorialCumulantSucc,
+    StrictProbabilityParameter.toProbabilityParameter]
+
+/-- The all-order hierarchy extends the actual third factorial cumulant. -/
+theorem greedyBumpBernoulli_factorialCumulantSucc_two
+    (p : StrictProbabilityParameter) :
+    greedyBumpBernoulliFactorialCumulantSucc p 2 =
+      (greedyBumpBernoulliExclusion p.toProbabilityParameter).factorialCumulantThree := by
+  rw [greedyBumpBernoulli_factorialCumulantThree]
+  norm_num [greedyBumpBernoulliFactorialCumulantSucc,
+    StrictProbabilityParameter.toProbabilityParameter]
+
+/-- Alternating factorial cumulants become nonnegative after sign correction. -/
+theorem greedyBumpBernoulli_signed_factorialCumulantSucc_nonneg
+    (p : StrictProbabilityParameter) (k : ℕ) :
+    0 ≤ (-1 : ℝ) ^ k * greedyBumpBernoulliFactorialCumulantSucc p k := by
+  rw [greedyBumpBernoulliFactorialCumulantSucc]
+  have hs : 0 ≤ ((-1 : ℝ) ^ k) ^ 2 := sq_nonneg _
+  have hr : 0 ≤ (k.factorial : ℝ) * (p : ℝ) ^ (k + 1) := by
+    exact mul_nonneg (Nat.cast_nonneg _) (pow_nonneg p.property.1 _)
+  simpa only [pow_two, mul_assoc] using mul_nonneg hs hr
+
+/-- Each normalized cumulant contribution is exactly one negative logarithmic-series term. -/
+theorem greedyBumpBernoulli_logVoidContribution_eq
+    (p : StrictProbabilityParameter) (k : ℕ) :
+    greedyBumpBernoulliLogVoidContribution p k =
+      -((p : ℝ) ^ (k + 1) / (k + 1)) := by
+  have hsign : (-1 : ℝ) ^ (k + 1) * (-1 : ℝ) ^ k = -1 := by
+    rw [← pow_add]
+    have hk : k + 1 + k = 2 * k + 1 := by omega
+    rw [hk, pow_succ, pow_mul]
+    norm_num
+  simp only [greedyBumpBernoulliLogVoidContribution,
+    greedyBumpBernoulliFactorialCumulantSucc, Nat.factorial_succ]
+  calc
+    (-1 : ℝ) ^ (k + 1) *
+          ((-1 : ℝ) ^ k * (k.factorial : ℝ) * (p : ℝ) ^ (k + 1)) /
+          (((k + 1) * k.factorial : ℕ) : ℝ) =
+        ((-1 : ℝ) ^ (k + 1) * (-1 : ℝ) ^ k) * (k.factorial : ℝ) *
+          (p : ℝ) ^ (k + 1) / (((k + 1) * k.factorial : ℕ) : ℝ) := by ring
+    _ = -(k.factorial : ℝ) * (p : ℝ) ^ (k + 1) /
+          (((k + 1) * k.factorial : ℕ) : ℝ) := by rw [hsign]; ring
+    _ = -((p : ℝ) ^ (k + 1) / (k + 1)) := by
+      field_simp [Nat.factorial_ne_zero]
+      push_cast
+      ring
+
+/-- Exact all-order factorial-cumulant expansion of the hard-exclusion log void mass. -/
+theorem greedyBumpBernoulli_logVoidSeries_hasSum
+    (p : StrictProbabilityParameter) :
+    HasSum (greedyBumpBernoulliLogVoidContribution p) (Real.log (1 - (p : ℝ))) := by
+  have hpabs : |(p : ℝ)| < 1 := by
+    simpa [abs_of_nonneg p.property.1] using p.property.2
+  have h := (Real.hasSum_pow_div_log_of_abs_lt_one hpabs).mul_left (-1)
+  have hseries :
+      HasSum (fun k : ℕ => -((p : ℝ) ^ (k + 1) / (k + 1)))
+        (Real.log (1 - (p : ℝ))) := by
+    simpa using h
+  refine HasSum.congr_fun hseries fun k => ?_
+  exact greedyBumpBernoulli_logVoidContribution_eq p k
+
+/-- Log void probability equals the complete signed factorial-cumulant series. -/
+theorem greedyBumpBernoulli_log_voidMass_eq_cumulantSeries
+    (p : StrictProbabilityParameter) :
+    Real.log ((greedyBumpBernoulliExclusion p.toProbabilityParameter).voidMass) =
+      ∑' k : ℕ, greedyBumpBernoulliLogVoidContribution p k := by
+  rw [greedyBumpBernoulli_voidMass]
+  exact (greedyBumpBernoulli_logVoidSeries_hasSum p).tsum_eq.symm
+
 end
 
 end GaloisForLFunctions.HTGeometry

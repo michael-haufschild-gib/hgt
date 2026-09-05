@@ -25,6 +25,37 @@ theorem mondalB1_closed_form (q : ℝ) :
   field_simp [hexp]
   ring
 
+theorem mondalGamma_closed_form (q p s : ℝ) :
+    mondalGamma q p s = mondalPhaseSpeed q p s / 2 := by
+  have hspeed : mondalPhaseSpeed q p s ≠ 0 := ne_of_gt (mondalPhaseSpeed_pos q p s)
+  have hA1 : mondalA1 q ≠ 0 := ne_of_gt (mondalA1_pos q)
+  have hp : mondalHotConcentration p ≠ 0 := by
+    unfold mondalHotConcentration
+    exact Real.exp_ne_zero p
+  unfold mondalGamma mondalD mondalA
+  rw [← mondalPhaseSpeed_sq]
+  field_simp [hspeed, hA1, hp]
+
+theorem mondalBeta_closed_form (q p s : ℝ) :
+    mondalBeta q p s =
+      -1 / (2 * mondalPhaseSpeed q p s * mondalA1 q ^ 2) := by
+  have hspeed : mondalPhaseSpeed q p s ≠ 0 := ne_of_gt (mondalPhaseSpeed_pos q p s)
+  have hA1 : mondalA1 q ≠ 0 := ne_of_gt (mondalA1_pos q)
+  have hp : mondalHotConcentration p ≠ 0 := by
+    unfold mondalHotConcentration
+    exact Real.exp_ne_zero p
+  unfold mondalBeta mondalC mondalA
+  field_simp [hspeed, hA1, hp]
+
+theorem mondalPhysicalLumpOffset_closed_form (q p s : ℝ) :
+    mondalPhysicalLumpOffset q p s =
+      -3 / (mondalPhaseSpeedSq q p s * mondalA1 q ^ 2) := by
+  unfold mondalPhysicalLumpOffset
+  rw [show 3 * mondalBeta q p s / mondalGamma q p s =
+      3 * (mondalBeta q p s / mondalGamma q p s) by ring,
+    mondalBeta_div_gamma]
+  ring
+
 noncomputable def mondalE (q p s : ℝ) : ℝ :=
   2 * mondalHotConcentration p * mondalB1 q / mondalA1 q
     + mondalHotConcentration p ^ 2 * mondalA1 q
@@ -261,6 +292,131 @@ theorem mondalAmplitudeConcentrationSlope_one_neg (q s : ℝ) :
     nlinarith [sq_nonneg (mondalA1 q)]
   exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (mondalA1_pos q) hnum)
     (sq_pos_of_pos hden)
+
+/-! ## Exact temperature-ratio and spectral-index amplitude trends -/
+
+theorem mondalAmplitudeDenominator_pos (q s concentrationLog : ℝ) :
+    0 < mondalAmplitudeDenominator q s (Real.exp concentrationLog) := by
+  have hA1 := mondalA1_gt_one q
+  have htemp : 0 ≤ mondalTemperatureRatio s := by
+    unfold mondalTemperatureRatio
+    positivity
+  unfold mondalAmplitudeDenominator
+  have hbase : 0 < 2 * mondalA1 q - 1 := by linarith
+  positivity [mondalA1_pos q, Real.exp_pos concentrationLog]
+
+noncomputable def mondalRaisedTemperatureAmplitude (s r : ℝ) : ℝ :=
+  Real.sqrt (mondalTemperatureRatio s + Real.exp r)
+
+theorem mondalRaisedTemperatureAmplitude_sq (s r : ℝ) :
+    mondalTemperatureRatio (mondalRaisedTemperatureAmplitude s r) =
+      mondalTemperatureRatio s + Real.exp r := by
+  unfold mondalTemperatureRatio mondalRaisedTemperatureAmplitude
+  apply Real.sq_sqrt
+  exact add_nonneg (sq_nonneg s) (le_of_lt (Real.exp_pos r))
+
+theorem mondalAmplitudeDenominator_raisedTemperature
+    (q p s r : ℝ) :
+    mondalAmplitudeDenominator q s (mondalHotConcentration p) <
+      mondalAmplitudeDenominator q (mondalRaisedTemperatureAmplitude s r)
+        (mondalHotConcentration p) := by
+  unfold mondalAmplitudeDenominator
+  rw [mondalRaisedTemperatureAmplitude_sq]
+  unfold mondalHotConcentration
+  have hA1 := mondalA1_pos q
+  have hp := Real.exp_pos p
+  have hr := Real.exp_pos r
+  apply sub_pos.mp
+  rw [show mondalA1 q *
+        (2 * mondalA1 q - 1 + 3 * mondalA1 q * Real.exp p ^ 2 +
+          2 * mondalA1 q ^ 2 * Real.exp p ^ 3 *
+            (mondalTemperatureRatio s + Real.exp r)) -
+      mondalA1 q *
+        (2 * mondalA1 q - 1 + 3 * mondalA1 q * Real.exp p ^ 2 +
+          2 * mondalA1 q ^ 2 * Real.exp p ^ 3 * mondalTemperatureRatio s) =
+      2 * mondalA1 q ^ 3 * Real.exp p ^ 3 * Real.exp r by ring]
+  positivity
+
+theorem mondalAmplitude_raisedTemperature_decreases
+    (q p s r : ℝ) :
+    mondalAmplitudeAtConcentration q (mondalRaisedTemperatureAmplitude s r)
+        (mondalHotConcentration p) <
+      mondalAmplitudeAtConcentration q s (mondalHotConcentration p) := by
+  have hlow := mondalAmplitudeDenominator_pos q s p
+  have hhigh := mondalAmplitudeDenominator_pos q
+    (mondalRaisedTemperatureAmplitude s r) p
+  have hden := mondalAmplitudeDenominator_raisedTemperature q p s r
+  unfold mondalAmplitudeAtConcentration
+  exact (div_lt_div_iff₀ hhigh hlow).2
+    (mul_lt_mul_of_pos_left hden (by exact Real.exp_pos p))
+
+noncomputable def mondalRaisedKappaParameter (q r : ℝ) : ℝ := q + Real.exp r
+
+theorem mondalRaisedKappaParameter_kappa_lt (q r : ℝ) :
+    mondalKappa q < mondalKappa (mondalRaisedKappaParameter q r) := by
+  unfold mondalKappa mondalRaisedKappaParameter
+  have hexp := Real.exp_lt_exp.mpr (lt_add_of_pos_right q (Real.exp_pos r))
+  linarith
+
+theorem mondalRaisedKappaParameter_A1_lt (q r : ℝ) :
+    mondalA1 (mondalRaisedKappaParameter q r) < mondalA1 q := by
+  have hq : 0 < Real.exp q := Real.exp_pos q
+  have hexp : Real.exp q < Real.exp (mondalRaisedKappaParameter q r) := by
+    apply Real.exp_lt_exp.mpr
+    unfold mondalRaisedKappaParameter
+    exact lt_add_of_pos_right q (Real.exp_pos r)
+  rw [mondalA1_closed_form, mondalA1_closed_form]
+  linarith [one_div_lt_one_div_of_lt hq hexp]
+
+theorem mondalAmplitudeDenominator_raisedKappa
+    (q p s r : ℝ) :
+    mondalAmplitudeDenominator (mondalRaisedKappaParameter q r) s
+        (mondalHotConcentration p) <
+      mondalAmplitudeDenominator q s (mondalHotConcentration p) := by
+  let smallA := mondalA1 (mondalRaisedKappaParameter q r)
+  let largeA := mondalA1 q
+  let concentration := mondalHotConcentration p
+  let temperature := mondalTemperatureRatio s
+  have hsmall : 1 < smallA := mondalA1_gt_one _
+  have hlarge : 1 < largeA := mondalA1_gt_one _
+  have horder : smallA < largeA := mondalRaisedKappaParameter_A1_lt q r
+  have hconcentration : 0 < concentration := by
+    unfold concentration mondalHotConcentration
+    exact Real.exp_pos p
+  have htemperature : 0 ≤ temperature := by
+    unfold temperature mondalTemperatureRatio
+    positivity
+  have hfactor :
+      0 < 2 * (largeA + smallA) - 1
+        + 3 * concentration ^ 2 * (largeA + smallA)
+        + 2 * concentration ^ 3 * temperature *
+          (largeA ^ 2 + largeA * smallA + smallA ^ 2) := by
+    have hbase : 0 < 2 * (largeA + smallA) - 1 := by linarith
+    positivity
+  apply sub_pos.mp
+  rw [show mondalAmplitudeDenominator q s (mondalHotConcentration p) -
+      mondalAmplitudeDenominator (mondalRaisedKappaParameter q r) s
+        (mondalHotConcentration p) =
+      (largeA - smallA) *
+        (2 * (largeA + smallA) - 1
+          + 3 * concentration ^ 2 * (largeA + smallA)
+          + 2 * concentration ^ 3 * temperature *
+            (largeA ^ 2 + largeA * smallA + smallA ^ 2)) by
+    unfold mondalAmplitudeDenominator smallA largeA concentration temperature
+    ring]
+  exact mul_pos (sub_pos.mpr horder) hfactor
+
+theorem mondalAmplitude_raisedKappa_increases
+    (q p s r : ℝ) :
+    mondalAmplitudeAtConcentration q s (mondalHotConcentration p) <
+      mondalAmplitudeAtConcentration (mondalRaisedKappaParameter q r) s
+        (mondalHotConcentration p) := by
+  have hlarge := mondalAmplitudeDenominator_pos q s p
+  have hsmall := mondalAmplitudeDenominator_pos (mondalRaisedKappaParameter q r) s p
+  have hden := mondalAmplitudeDenominator_raisedKappa q p s r
+  unfold mondalAmplitudeAtConcentration
+  exact (div_lt_div_iff₀ hlarge hsmall).2
+    (mul_lt_mul_of_pos_left hden (by exact Real.exp_pos p))
 
 noncomputable def mondalPhaseCorrectionRatio (q p s : ℝ) : ℝ := mondalE q p s / mondalF q p s
 

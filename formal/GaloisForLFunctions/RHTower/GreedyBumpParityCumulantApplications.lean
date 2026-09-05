@@ -72,6 +72,78 @@ theorem greedyBumpRadialBinaryDigit_voidMass
   field_simp [ne_of_gt (by linarith : 0 < 1 + radialBinaryDigitOdds c p j)]
   ring
 
+/-- Every radial binary digit has a strict probability parameter, for every drift. -/
+def radialBinaryDigitStrictProbability (c : ℝ) (p : Nat.Primes) (j : ℕ) :
+    StrictProbabilityParameter := by
+  let a := radialBinaryDigitOdds c p j
+  have ha : 0 < a := pow_pos (radialNome_pos p.property.two_le) _
+  exact ⟨a / (1 + a), div_nonneg ha.le (by linarith),
+    (div_lt_one (by linarith)).2 (by linarith)⟩
+
+/-- The all-order hierarchy specializes to each prime/valuation digit. -/
+def greedyBumpRadialBinaryDigit_factorialCumulantSucc
+    (c : ℝ) (p : Nat.Primes) (j k : ℕ) : ℝ :=
+  greedyBumpBernoulliFactorialCumulantSucc
+    (radialBinaryDigitStrictProbability c p j) k
+
+/-- Every prime/valuation digit has the paper's all-order alternating cumulant sign law. -/
+theorem greedyBumpRadialBinaryDigit_signed_factorialCumulantSucc_nonneg
+    (c : ℝ) (p : Nat.Primes) (j k : ℕ) :
+    0 ≤ (-1 : ℝ) ^ k *
+      greedyBumpRadialBinaryDigit_factorialCumulantSucc c p j k := by
+  exact greedyBumpBernoulli_signed_factorialCumulantSucc_nonneg
+    (radialBinaryDigitStrictProbability c p j) k
+
+/-- Complete factorial-cumulant series for one radial binary digit's log void probability. -/
+theorem greedyBumpRadialBinaryDigit_logVoidSeries_hasSum
+    (c : ℝ) (p : Nat.Primes) (j : ℕ) :
+    HasSum
+      (greedyBumpBernoulliLogVoidContribution
+        (radialBinaryDigitStrictProbability c p j))
+      (Real.log ((greedyBumpRadialBinaryDigitCount c p j).voidMass)) := by
+  have hmass :
+      (greedyBumpRadialBinaryDigitCount c p j).voidMass =
+        1 - (radialBinaryDigitStrictProbability c p j : ℝ) := by
+    rw [greedyBumpRadialBinaryDigit_voidMass]
+    change 1 / (1 + radialBinaryDigitOdds c p j) =
+      1 - radialBinaryDigitOdds c p j / (1 + radialBinaryDigitOdds c p j)
+    have ha : 0 < radialBinaryDigitOdds c p j :=
+      pow_pos (radialNome_pos p.property.two_le) _
+    field_simp [ne_of_gt (by linarith : 0 < 1 + radialBinaryDigitOdds c p j)]
+    ring
+  rw [hmass]
+  exact greedyBumpBernoulli_logVoidSeries_hasSum
+    (radialBinaryDigitStrictProbability c p j)
+
+/-- One digit's complete correction series is the negative log of its normalization factor. -/
+theorem greedyBumpRadialBinaryDigit_cumulantSeries_eq_neg_log_normalizer
+    (c : ℝ) (p : Nat.Primes) (j : ℕ) :
+    (∑' k : ℕ, greedyBumpBernoulliLogVoidContribution
+      (radialBinaryDigitStrictProbability c p j) k) =
+      -Real.log (1 + radialBinaryDigitOdds c p j) := by
+  rw [(greedyBumpRadialBinaryDigit_logVoidSeries_hasSum c p j).tsum_eq,
+    greedyBumpRadialBinaryDigit_voidMass]
+  rw [one_div, Real.log_inv]
+
+/-- Across any finite valuation-depth window, the sum of all connected corrections is the log of
+the product no-digit probability. -/
+theorem greedyBumpRadialBinaryDigits_cumulantSeries_eq_log_voidProduct
+    (c : ℝ) (p : Nat.Primes) (J : ℕ) :
+    (∑ j ∈ Finset.range J,
+      ∑' k : ℕ, greedyBumpBernoulliLogVoidContribution
+        (radialBinaryDigitStrictProbability c p j) k) =
+      Real.log (∏ j ∈ Finset.range J,
+        (greedyBumpRadialBinaryDigitCount c p j).voidMass) := by
+  rw [Real.log_prod]
+  · apply Finset.sum_congr rfl
+    intro j hj
+    exact (greedyBumpRadialBinaryDigit_logVoidSeries_hasSum c p j).tsum_eq
+  · intro j hj
+    rw [greedyBumpRadialBinaryDigit_voidMass]
+    have ha : 0 < radialBinaryDigitOdds c p j :=
+      pow_pos (radialNome_pos p.property.two_le) _
+    exact div_ne_zero one_ne_zero (ne_of_gt (by linarith))
+
 /-- The factorial-cumulant signs alternate through order three for every radial digit. -/
 theorem greedyBumpRadialBinaryDigit_cumulantSigns
     (c : ℝ) (p : Nat.Primes) (j : ℕ) :

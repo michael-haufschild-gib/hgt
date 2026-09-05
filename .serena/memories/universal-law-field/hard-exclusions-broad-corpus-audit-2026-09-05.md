@@ -1,0 +1,28 @@
+# Current user scope: hard pivot, not another RH architecture
+User explicitly excludes Connes, Bessel, Burnol, Suzuki, Moebius/Mobius, Hankel, Gamma (typed 'gamme'), Weil positivity, and now ALL SPECTRAL APPROACHES. Also rejects restricting physics audit to recurrence/QFI/quantum examples they previously named. These override older memories and candidate architectures. Do not return to theta/Xi deformation, resolvents, recurrence, operator positivity, or old criteria in different words. Do not treat incidental search hits as permission to work on excluded branches.
+Task remains an unconditional formal RH proof through a genuinely different mechanism, but CURRENT work is broader corpus comprehension before conjecturing. No new RH mechanism or theorem was produced. No replacement route selected. Do not turn a toy bridge into a breakthrough or assume the entire corpus was audited.
+
+## Audit scope and evidence
+Repository inventory: ~14,543 HTGeometry modules, ~16,486 RHTower, 384 Bottcher, 236 QuantumAlg, 208 QECLean, 73 HilbertMetric (changing concurrently). Directory/name inventory is NOT mathematical review. Search via scripts/formal_tools.py research remains mandatory; exact module names work. Broad queries often yield excluded results; screen headers/imports before deep reading. No subagents authorized.
+Newly read non-recurrence bodies:
+- QECLean/Stabilizer/Framework/Homological/BocksteinLift.lean FULL. Core: in characteristic 2, actual order-four lift gives Ann(eps)=(eps^3). Lift both divisibilities Az=eps*a, Bz=eps*b; eps*(A*b+B*a)=0; obstruction is eps^3-divisible and dies in quotient by eps^2. Compatible preimages with exact zero representative are CONSTRUCTED, not assumed. Other choices differ in eps*(A,B).
+- QECLean/.../BBBocksteinTransport.lean: read 1–210, 245–292, 385–530, 678–712, 830–858; file 980 lines, NOT fully read. Explicit corrected cycle (a+eps*s,b+eps*r) has zero boundary and pushes to original seam chain exactly. Order-four lifts derived for concrete doubled ZMod products, including twisted deck. Theorems exists_cycle_push_eq_seamC, elementForm_of_orderFourLift, bocksteinVanishes_of_zmod_double, finrank_range_epsH1_eq_of_zmod_double. Original rank/quotient theorem is not a theorem about RH. This is an actual solved repair mechanism worth understanding, NOT a selected new RH route.
+- HTGeometry/StokesResistance/MobilityAndElimination.lean FULL: invertible resistance and inverse have identical symmetry commutants; unique force-free elimination. Ordinary algebra bridge.
+- StokesResistance/MirrorResponseFracture.lean FULL; MirrorSymmetricResponse.lean 1–80 only (121 total): reciprocal mirror response dimension (d^2+2d+tr(A)^2)/4; constant on connected continuous fixed-carrier involution families. No RH consequence.
+- HTGeometry/HiggsCorpusApplications.lean FULL: marked-axis residual group ±1, radial weight stabilizers, finite bipartite massless gauge. Bundled finite examples, not dynamics selecting a vacuum.
+- NomologicalHomotopyGeometry/MinimalLawLeadingJet.lean FULL: triangular coordinate-change law is STRUCTURE DATA, not derived coalgebra map in this file; first nonzero arity and leading operation invariant under invertible law equivalence. Observer kernel facts and Gram theorem are basic bridges.
+- Octonion/CayleySecondaryObstruction.lean FULL: explicit grade-fed 2x2 twist, quadratic obstruction 0, cubic grade*I, identified with octonion associator. NOT new forcing law; parameter is input.
+- GreedyBumpFactorialCumulants.lean FULL at then 209 lines; now actively edited by another agent. Bernoulli exact factorial cumulants and log void series, not general interacting count theorem.
+- NoOutsideOperationalSquareCausality.lean 1–200: finite Gram-addition/positive-record/Lorentz-cone equivalences. NOT gravity dynamics, not candidate RH mechanism.
+- NonlinearIntegratedPhotonics.lean read; imports/use include temporal spectrum, so EXCLUDE from further pursuit after latest user's spectral ban. Do not repackage this as broader new direction.
+- ConstitutiveLawDerivativeGenesis.lean 1–180: polynomial-container contexts, plug/restore, branch bookkeeping; capstone includes elementary dichotomies. No significant new forcing law.
+- ConstitutiveCarrierBifurcation.lean 1–180: imports excluded Gamma model; do not pursue.
+- DispersivePDE/Applications.lean 1–110 only: inventory of exact scalar/NLS/KP profiles and corrected electron-acoustic tau examples, includes unrelated spectral material. Active other-agent edit; do not modify.
+
+## Prior narrowed toy audit in same turn — STOP using as exclusive direction
+Fully read interaction temporal rank, recurrence swaps, operational memory/future fan, spin-torsion, Rydberg parity, time crystal, Pauli canonical maximal-deficiency modules. User explicitly objected to this narrowing. Do NOT continue those instead of auditing other work.
+No conjecture frozen, no external novelty audit, no paper proof, no Lean process/build or repository edit in this pivot turn. Existing oleans confirmed for BBBocksteinTransport, MirrorResponseFracture, MinimalLawLeadingJet, but NOT compiled/audited anew.
+
+## Shared tree
+Many other agents actively editing DispersivePDE, GreedyBump*, HTGeometry umbrella, RHTower, STATUS. Preserve all. STATUS was 4992, now 5004 lines from others; duplicate MUST-210 exists from concurrent additions. We made NO STATUS edits. Do not add diary, speculative architecture, or unsupported universal necessities. No commit/push.
+Next work must continue breadth audit outside spectral/recurrence/RH-route classes. Do not falsely promote toy evidence into RH progress. Persist findings as precise facts only when their scope and actual proof assumptions are understood.

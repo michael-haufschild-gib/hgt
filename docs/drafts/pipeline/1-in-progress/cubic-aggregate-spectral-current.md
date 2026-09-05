@@ -40,6 +40,15 @@ commutator of bounded operators need not have zero trace: cyclicity cannot be us
 actual ideal hypotheses. Finite matrices, finite block sums, and bounded unitary conjugation of
 those models cannot settle that continuous-sector question.
 
+**Lean status:** `CubicAggregateSpectralCurrent` proves the aggregate identity, eigenvalue-gap
+matrix coefficients, and combined-only nuclear trace cancellation under an aggregate eigenbasis.
+`TraceClassProjectionRounding` proves projection rounding from the nuclear idempotency defect,
+derives the spectral cut internally, and proves nuclear commutator-perturbation invariance.
+`CubicBoundaryChargeTransport.exists_rounded_cubic_with_boundary_trace` constructs the three
+rounded projections and proves `2 Tr C = Tr(S[E,K])` from source projections, nuclear cutoff
+commutators, and `[S,K]=0`. All three modules are wired and pass individual Lean checks.
+The explicit nonzero source instance is still to be formalized.
+
 ## Novelty gate
 
 BRIDGE: the identities above are algebra plus the standard basis trace formula. They are not the
@@ -159,3 +168,28 @@ uses admitted pair traces; [Blower--Doust, IEOT 98 (2026), Proposition 3.13](htt
 supplies standard Toeplitz/Hankel curvature and trace-cocycle ancestry. Neither is credited here
 as a newly discovered trace formula. The candidate novelty is the three-projection realization
 under combined-only trace-class admission, not the parent operator theory.
+
+## Concrete Lean landing: reuse the real-line corpus
+
+Use `CCMArchimedeanQuantizedTraceClass.ccmQuantizedDifferential_memSchattenClass_one` and
+`CCMArchimedeanRealTraceCocycle.opTrace_ccmSchwartzMultiplier_comp_quantizedDifferential_local`;
+both declarations are in namespace `RHTower`. No new circle Fourier theory is needed.
+
+An explicit unrolled loop is given by `η(t)=Real.smoothTransition t`,
+`θ(t)=π(η(t)-η(t-2))`, `a=cos θ`, `b=sin θ`, `σ=1-2η(t-1)`, `c=σb`.
+Then `a-1,b,c` are smooth and supported in `[0,3]`; `a²+b²=1`, `c²=b²`.
+The transition in `σ` occurs only on the plateau where `a=-1,b=0`.
+The endpoint primitive proves `∫ (a-1)(bc)' = 8/3`: each changing-latitude leg contributes
+`4/3`, and the plateau contributes zero. Bundle compactly supported smooth functions with
+`HasCompactSupport.toSchwartzMap`.
+
+Represent these functions by the literal scalar CCM multipliers, then use the Hilbert sum
+`GaloisForLFunctions.HTGeometry.HilbertSum` and its coordinate inclusions/projections from
+`SourceLinearClosedRelationSplitting`. The matrix symbols have common diagonal `a` and planar
+coordinates `(b,0)`, `(-b/2,√3c/2)`, `(-b/2,-√3c/2)`. Their sum/current are diagonal. Reverse
+the last two labels for the positive target charge: the corpus real-line Hardy convention has
+`Tr(M_f[Q,M_g])=i/(2π)∫f g'`, opposite to the circle convention used in the paper presentation.
+
+Remaining formal statements: explicit Schwartz pulse and its integral; two-channel multiplier
+projection identities and nuclear cutoff admission; exact evaluation of the already proved
+source boundary pairing. The generic source-to-projection producer itself is no longer missing.
