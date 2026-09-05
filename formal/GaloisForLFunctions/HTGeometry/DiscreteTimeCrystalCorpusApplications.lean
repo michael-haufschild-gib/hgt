@@ -15,67 +15,67 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-/-- A doubled-clock odd observable has an exact alternating orbit. -/
-theorem doubledParityClock_iterate_oddObservable
+/-- Identity parity on the base space gives an unconditional exact alternating doubled-clock
+orbit. -/
+theorem identityDoubledParityClock_iterate_oddObservable
     {𝕜 E : Type*} [RCLike 𝕜]
     [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
-    (J A : E →L[𝕜] E) (hJsq : J ^ 2 = 1)
-    (hcomm : J * A = A * J) (ψ : E) (n : ℕ) :
-    ((HTGeometry.doubledParityClock J) ^ n)
-        (HTGeometry.doubledOddObservable A (HTGeometry.doubledParitySource J ψ)) =
+    (ψ : E) (n : ℕ) :
+    ((HTGeometry.doubledParityClock (1 : E →L[𝕜] E)) ^ n)
+        (HTGeometry.doubledOddObservable (1 : E →L[𝕜] E)
+          (HTGeometry.doubledParitySource (1 : E →L[𝕜] E) ψ)) =
       ((-1 : 𝕜) ^ n) •
-        HTGeometry.doubledOddObservable A (HTGeometry.doubledParitySource J ψ) := by
+        HTGeometry.doubledOddObservable (1 : E →L[𝕜] E)
+          (HTGeometry.doubledParitySource (1 : E →L[𝕜] E) ψ) := by
+  have hJsq : (1 : E →L[𝕜] E) ^ 2 = 1 := by simp
+  have hcomm : (1 : E →L[𝕜] E) * 1 = 1 * 1 := rfl
   induction n with
   | zero => simp
   | succ n ih =>
       rw [pow_succ, mul_apply_eq_comp,
-        HTGeometry.doubledParityClock_odd_source J A hJsq hcomm,
+        HTGeometry.doubledParityClock_odd_source
+          (1 : E →L[𝕜] E) (1 : E →L[𝕜] E) hJsq hcomm,
         map_neg, ih]
       rw [pow_succ]
       module
 
 /-- Scalar response seen by a real linear observer along the doubled-clock orbit. -/
-def doubledParityClockResponse
+def identityDoubledParityClockResponse
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    (J A : E →L[ℝ] E)
     (observer : WithLp 2 (E × E) →L[ℝ] ℝ)
     (ψ : E) (n : ℕ) : ℝ :=
-  observer (((HTGeometry.doubledParityClock J) ^ n)
-    (HTGeometry.doubledOddObservable A (HTGeometry.doubledParitySource J ψ)))
+  observer (((HTGeometry.doubledParityClock (1 : E →L[ℝ] E)) ^ n)
+    (HTGeometry.doubledOddObservable (1 : E →L[ℝ] E)
+      (HTGeometry.doubledParitySource (1 : E →L[ℝ] E) ψ)))
 
 /-- Every real observer sees the paper's exact `(-1)^n` period-doubled signal. -/
-theorem doubledParityClockResponse_eq_periodDoubledSignal
+theorem identityDoubledParityClockResponse_eq_periodDoubledSignal
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    (J A : E →L[ℝ] E) (hJsq : J ^ 2 = 1)
-    (hcomm : J * A = A * J)
     (observer : WithLp 2 (E × E) →L[ℝ] ℝ)
     (ψ : E) (n : ℕ) :
-    doubledParityClockResponse J A observer ψ n =
+    identityDoubledParityClockResponse observer ψ n =
       periodDoubledSignal
-        (observer (HTGeometry.doubledOddObservable A
-          (HTGeometry.doubledParitySource J ψ))) n := by
-  unfold doubledParityClockResponse periodDoubledSignal
-  rw [doubledParityClock_iterate_oddObservable J A hJsq hcomm ψ n,
+        (observer (HTGeometry.doubledOddObservable (1 : E →L[ℝ] E)
+          (HTGeometry.doubledParitySource (1 : E →L[ℝ] E) ψ))) n := by
+  unfold identityDoubledParityClockResponse periodDoubledSignal
+  rw [identityDoubledParityClock_iterate_oddObservable ψ n,
     map_smul]
   rfl
 
 /-- The paper's finite DTC demodulator exactly extracts every doubled-clock observer amplitude. -/
-theorem finiteDTCIndicator_doubledParityClockResponse
+theorem finiteDTCIndicator_identityDoubledParityClockResponse
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    (J A : E →L[ℝ] E) (hJsq : J ^ 2 = 1)
-    (hcomm : J * A = A * J)
     (observer : WithLp 2 (E × E) →L[ℝ] ℝ)
     (ψ : E) (N : ℕ) :
-    finiteDTCIndicator N (doubledParityClockResponse J A observer ψ) =
-      observer (HTGeometry.doubledOddObservable A
-        (HTGeometry.doubledParitySource J ψ)) := by
-  have hsignal : doubledParityClockResponse J A observer ψ =
+    finiteDTCIndicator N (identityDoubledParityClockResponse observer ψ) =
+      observer (HTGeometry.doubledOddObservable (1 : E →L[ℝ] E)
+        (HTGeometry.doubledParitySource (1 : E →L[ℝ] E) ψ)) := by
+  have hsignal : identityDoubledParityClockResponse observer ψ =
       periodDoubledSignal
-        (observer (HTGeometry.doubledOddObservable A
-          (HTGeometry.doubledParitySource J ψ))) := by
+        (observer (HTGeometry.doubledOddObservable (1 : E →L[ℝ] E)
+          (HTGeometry.doubledParitySource (1 : E →L[ℝ] E) ψ))) := by
     funext n
-    exact doubledParityClockResponse_eq_periodDoubledSignal
-      J A hJsq hcomm observer ψ n
+    exact identityDoubledParityClockResponse_eq_periodDoubledSignal observer ψ n
   rw [hsignal, finiteDTCIndicator_periodDoubledSignal]
 
 end

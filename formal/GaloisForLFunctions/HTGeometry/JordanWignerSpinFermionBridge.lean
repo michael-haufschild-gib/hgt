@@ -445,87 +445,6 @@ theorem jordanWignerMajoranaX_left_mul_majoranaY_right
     jordanWignerMajorana, jordanWignerMajorana,
     pauliMat_mul_closed, hphase, hxor]
 
-/-- Phase-free Jordan--Wigner fermions carry a minus sign on nearest-neighbor hopping. -/
-theorem jordanWignerPhaseFreeNearestNeighborHopping_eq_neg_transverseExchange
-    {n : ℕ} (j : Fin (n - 1)) :
-    jordanWignerCreation (QuantumAlg.TFIM.leftSite j) *
-          jordanWignerAnnihilation (QuantumAlg.TFIM.rightSite j) +
-        jordanWignerCreation (QuantumAlg.TFIM.rightSite j) *
-          jordanWignerAnnihilation (QuantumAlg.TFIM.leftSite j) =
-      -((2 : ℂ)⁻¹ •
-        (pauliMat (QuantumAlg.TFIM.xxLabel j) +
-          pauliMat (jordanWignerYYLabel j))) := by
-  let l := QuantumAlg.TFIM.leftSite j
-  let r := QuantumAlg.TFIM.rightSite j
-  have hlr : l < r := by simp [l, r, QuantumAlg.TFIM.leftSite,
-    QuantumAlg.TFIM.rightSite]
-  have hXX : jordanWignerMajoranaX r * jordanWignerMajoranaX l =
-      -(jordanWignerMajoranaX l * jordanWignerMajoranaX r) := by
-    exact jordanWignerMajorana_anticommutes (by
-      intro h
-      exact (ne_of_lt hlr) (congrArg Prod.fst h).symm)
-  have hXY : jordanWignerMajoranaX r * jordanWignerMajoranaY l =
-      -(jordanWignerMajoranaY l * jordanWignerMajoranaX r) := by
-    exact jordanWignerMajorana_anticommutes (by
-      intro h
-      exact (ne_of_lt hlr) (congrArg Prod.fst h).symm)
-  have hYX : jordanWignerMajoranaY r * jordanWignerMajoranaX l =
-      -(jordanWignerMajoranaX l * jordanWignerMajoranaY r) := by
-    exact jordanWignerMajorana_anticommutes (by
-      intro h
-      exact (ne_of_lt hlr) (congrArg Prod.fst h).symm)
-  have hYY : jordanWignerMajoranaY r * jordanWignerMajoranaY l =
-      -(jordanWignerMajoranaY l * jordanWignerMajoranaY r) := by
-    exact jordanWignerMajorana_anticommutes (by
-      intro h
-      exact (ne_of_lt hlr) (congrArg Prod.fst h).symm)
-  change jordanWignerCreation l * jordanWignerAnnihilation r +
-      jordanWignerCreation r * jordanWignerAnnihilation l = _
-  unfold jordanWignerCreation jordanWignerAnnihilation
-  simp_rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul,
-    Matrix.add_mul, Matrix.mul_add]
-  rw [hXX, hXY, hYX, hYY,
-    show jordanWignerMajoranaY l * jordanWignerMajoranaX r =
-        Complex.I • pauliMat (QuantumAlg.TFIM.xxLabel j) by
-      simpa [l, r] using jordanWignerMajoranaY_left_mul_majoranaX_right j,
-    show jordanWignerMajoranaX l * jordanWignerMajoranaY r =
-        (-Complex.I) • pauliMat (jordanWignerYYLabel j) by
-      simpa [l, r] using jordanWignerMajoranaX_left_mul_majoranaY_right j]
-  module
-
-/-- Nearest-neighbor hopping in paper gauge equals the spin transverse exchange exactly. -/
-theorem paperJordanWignerNearestNeighborHopping_eq_transverseExchange
-    {n : ℕ} (j : Fin (n - 1)) :
-    paperJordanWignerCreation (QuantumAlg.TFIM.leftSite j) *
-          paperJordanWignerAnnihilation (QuantumAlg.TFIM.rightSite j) +
-        paperJordanWignerCreation (QuantumAlg.TFIM.rightSite j) *
-          paperJordanWignerAnnihilation (QuantumAlg.TFIM.leftSite j) =
-      (2 : ℂ)⁻¹ •
-        (pauliMat (QuantumAlg.TFIM.xxLabel j) +
-          pauliMat (jordanWignerYYLabel j)) := by
-  let l := QuantumAlg.TFIM.leftSite j
-  let r := QuantumAlg.TFIM.rightSite j
-  have hg : jordanWignerOccupationGauge l * jordanWignerOccupationGauge r = -1 := by
-    simpa [l, r] using jordanWignerOccupationGauge_left_mul_right j
-  have hgr : jordanWignerOccupationGauge r * jordanWignerOccupationGauge l = -1 := by
-    rw [mul_comm]
-    exact hg
-  change paperJordanWignerCreation l * paperJordanWignerAnnihilation r +
-      paperJordanWignerCreation r * paperJordanWignerAnnihilation l = _
-  unfold paperJordanWignerCreation paperJordanWignerAnnihilation
-  rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul,
-    Matrix.smul_mul, Matrix.mul_smul, smul_smul, hg, hgr]
-  simp only [neg_smul, one_smul]
-  rw [← neg_add_rev,
-    show jordanWignerCreation l * jordanWignerAnnihilation r +
-        jordanWignerCreation r * jordanWignerAnnihilation l =
-      -((2 : ℂ)⁻¹ •
-        (pauliMat (QuantumAlg.TFIM.xxLabel j) +
-          pauliMat (jordanWignerYYLabel j))) by
-        simpa [l, r] using
-          jordanWignerPhaseFreeNearestNeighborHopping_eq_neg_transverseExchange j]
-  simp
-
 /-- Raising plus lowering recovers local Pauli `X`. -/
 theorem jordanWignerLocalSpinRaising_add_lowering {n : ℕ} (j : Fin n) :
     jordanWignerLocalSpinRaising j + jordanWignerLocalSpinLowering j =
@@ -640,6 +559,94 @@ theorem jordanWignerAnnihilation_creation_anticommutes_of_ne
   all_goals intro h
   all_goals exact hij (congrArg Prod.fst h)
 
+/-- Phase-free Jordan--Wigner fermions carry a minus sign on nearest-neighbor hopping. -/
+theorem jordanWignerPhaseFreeNearestNeighborHopping_eq_neg_transverseExchange
+    {n : ℕ} (j : Fin (n - 1)) :
+    jordanWignerCreation (QuantumAlg.TFIM.leftSite j) *
+          jordanWignerAnnihilation (QuantumAlg.TFIM.rightSite j) +
+        jordanWignerCreation (QuantumAlg.TFIM.rightSite j) *
+          jordanWignerAnnihilation (QuantumAlg.TFIM.leftSite j) =
+      -((2 : ℂ)⁻¹ •
+        (pauliMat (QuantumAlg.TFIM.xxLabel j) +
+          pauliMat (jordanWignerYYLabel j))) := by
+  let l := QuantumAlg.TFIM.leftSite j
+  let r := QuantumAlg.TFIM.rightSite j
+  have hlr : l < r := by simp [l, r, QuantumAlg.TFIM.leftSite,
+    QuantumAlg.TFIM.rightSite]
+  have hmix := jordanWignerAnnihilation_creation_anticommutes_of_ne
+    (i := l) (j := r) (ne_of_lt hlr)
+  have hreverse : jordanWignerCreation r * jordanWignerAnnihilation l =
+      -(jordanWignerAnnihilation l * jordanWignerCreation r) := by
+    simpa using (congrArg Neg.neg hmix).symm
+  change jordanWignerCreation l * jordanWignerAnnihilation r +
+      jordanWignerCreation r * jordanWignerAnnihilation l = _
+  have halgebra : jordanWignerCreation l * jordanWignerAnnihilation r +
+        jordanWignerCreation r * jordanWignerAnnihilation l =
+      (Complex.I / 2) •
+          (jordanWignerMajoranaY l * jordanWignerMajoranaX r) +
+        (-Complex.I / 2) •
+          (jordanWignerMajoranaX l * jordanWignerMajoranaY r) := by
+    rw [hreverse]
+    unfold jordanWignerCreation jordanWignerAnnihilation
+    simp_rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul,
+      Matrix.add_mul, Matrix.mul_add]
+    simp
+    module
+  rw [halgebra]
+  rw [show jordanWignerMajoranaY l * jordanWignerMajoranaX r =
+      Complex.I • pauliMat (QuantumAlg.TFIM.xxLabel j) by
+    simpa [l, r] using jordanWignerMajoranaY_left_mul_majoranaX_right j]
+  rw [show jordanWignerMajoranaX l * jordanWignerMajoranaY r =
+      (-Complex.I) • pauliMat (jordanWignerYYLabel j) by
+    simpa [l, r] using jordanWignerMajoranaX_left_mul_majoranaY_right j]
+  simp only [smul_smul]
+  have hcoefX : (Complex.I / 2) * Complex.I = -(2 : ℂ)⁻¹ := by
+    calc
+      Complex.I / 2 * Complex.I = Complex.I * Complex.I / 2 := by ring
+      _ = -(2 : ℂ)⁻¹ := by rw [Complex.I_mul_I]; norm_num
+  have hcoefY : (-Complex.I / 2) * (-Complex.I) = -(2 : ℂ)⁻¹ := by
+    calc
+      (-Complex.I / 2) * (-Complex.I) = Complex.I * Complex.I / 2 := by ring
+      _ = -(2 : ℂ)⁻¹ := by rw [Complex.I_mul_I]; norm_num
+  rw [hcoefX, hcoefY]
+  module
+
+/-- Nearest-neighbor hopping in paper gauge equals the spin transverse exchange exactly. -/
+theorem paperJordanWignerNearestNeighborHopping_eq_transverseExchange
+    {n : ℕ} (j : Fin (n - 1)) :
+    paperJordanWignerCreation (QuantumAlg.TFIM.leftSite j) *
+          paperJordanWignerAnnihilation (QuantumAlg.TFIM.rightSite j) +
+        paperJordanWignerCreation (QuantumAlg.TFIM.rightSite j) *
+          paperJordanWignerAnnihilation (QuantumAlg.TFIM.leftSite j) =
+      (2 : ℂ)⁻¹ •
+        (pauliMat (QuantumAlg.TFIM.xxLabel j) +
+          pauliMat (jordanWignerYYLabel j)) := by
+  let l := QuantumAlg.TFIM.leftSite j
+  let r := QuantumAlg.TFIM.rightSite j
+  have hg : jordanWignerOccupationGauge l * jordanWignerOccupationGauge r = -1 := by
+    simpa [l, r] using jordanWignerOccupationGauge_left_mul_right j
+  have hgr : jordanWignerOccupationGauge r * jordanWignerOccupationGauge l = -1 := by
+    rw [mul_comm]
+    exact hg
+  change paperJordanWignerCreation l * paperJordanWignerAnnihilation r +
+      paperJordanWignerCreation r * paperJordanWignerAnnihilation l = _
+  unfold paperJordanWignerCreation paperJordanWignerAnnihilation
+  rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul,
+    Matrix.smul_mul, Matrix.mul_smul, smul_smul, hg, hgr]
+  simp only [neg_smul, one_smul]
+  rw [show -(jordanWignerCreation l * jordanWignerAnnihilation r) +
+      -(jordanWignerCreation r * jordanWignerAnnihilation l) =
+    -(jordanWignerCreation l * jordanWignerAnnihilation r +
+      jordanWignerCreation r * jordanWignerAnnihilation l) by module]
+  rw [show jordanWignerCreation l * jordanWignerAnnihilation r +
+      jordanWignerCreation r * jordanWignerAnnihilation l =
+    -((2 : ℂ)⁻¹ •
+      (pauliMat (QuantumAlg.TFIM.xxLabel j) +
+        pauliMat (jordanWignerYYLabel j))) by
+      simpa [l, r] using
+        jordanWignerPhaseFreeNearestNeighborHopping_eq_neg_transverseExchange j]
+  simp
+
 /-- Concrete finite-chain canonical anticommutation system. -/
 def jordanWignerFermionSystem (n : ℕ) :
     FermionSystem ℂ (Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) (Fin n) where
@@ -666,6 +673,28 @@ def jordanWignerFermionSystem (n : ℕ) :
       simpa [sub_eq_add_neg, add_comm] using (eq_sub_of_add_eq h)
     · rw [if_neg hij]
       simpa using jordanWignerAnnihilation_creation_anticommutes_of_ne hij
+
+/-- The concrete fermionic field `c†_j + c_j` is the first Jordan--Wigner Majorana. -/
+theorem jordanWignerFermionSystem_field_eq_majoranaX
+    (n : ℕ) (j : Fin n) :
+    (jordanWignerFermionSystem n).field j = jordanWignerMajoranaX j := by
+  unfold FermionSystem.field jordanWignerFermionSystem
+    jordanWignerCreation jordanWignerAnnihilation
+  module
+
+/-- Unconditional Wick expansion for ordered products of concrete chain Majoranas. -/
+theorem jordanWignerMajoranaX_prod_eq_signedPairingExpand
+    (n : ℕ) (l : List (Fin n)) :
+    (l.map jordanWignerMajoranaX).prod =
+      signedPairingExpand ℂ (fun i j : Fin n => if i = j then 1 else 0)
+        (jordanWignerFermionSystem n).nordField l := by
+  have hwick := (jordanWignerFermionSystem n).prod_field_eq_signedPairingExpand l
+  have hfield : (jordanWignerFermionSystem n).field =
+      (fun j => jordanWignerMajoranaX j) := by
+    funext j
+    exact jordanWignerFermionSystem_field_eq_majoranaX n j
+  rw [hfield] at hwick
+  simpa [jordanWignerFermionSystem] using hwick
 
 /-- Occupation number at `j`. -/
 def jordanWignerNumber {n : ℕ} (j : Fin n) :
@@ -730,6 +759,66 @@ theorem jordanWignerDensityDensity_eq_spinZZ_add_corrections
   simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_smul,
     Matrix.smul_mul, Matrix.mul_one, Matrix.one_mul]
   module
+
+/-- Occupation number built from paper-gauge fermions. -/
+def paperJordanWignerNumber {n : ℕ} (j : Fin n) :
+    Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ :=
+  paperJordanWignerCreation j * paperJordanWignerAnnihilation j
+
+/-- Site gauge cancels from number operators. -/
+theorem paperJordanWignerNumber_eq_jordanWignerNumber
+    {n : ℕ} (j : Fin n) :
+    paperJordanWignerNumber j = jordanWignerNumber j := by
+  unfold paperJordanWignerNumber paperJordanWignerCreation
+    paperJordanWignerAnnihilation
+  rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul,
+    jordanWignerOccupationGauge_sq, one_smul]
+  rfl
+
+/-- Open-chain spinless-fermion Hamiltonian from Eq. (18). -/
+def paperJordanWignerFermionHamiltonian
+    (n : ℕ) (t V : ℂ) (H : Fin n → ℂ) :
+    Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ :=
+  (∑ j : Fin (n - 1), (-t) •
+    (paperJordanWignerCreation (QuantumAlg.TFIM.leftSite j) *
+        paperJordanWignerAnnihilation (QuantumAlg.TFIM.rightSite j) +
+      paperJordanWignerCreation (QuantumAlg.TFIM.rightSite j) *
+        paperJordanWignerAnnihilation (QuantumAlg.TFIM.leftSite j))) +
+  (∑ j : Fin (n - 1), V •
+    (paperJordanWignerNumber (QuantumAlg.TFIM.leftSite j) *
+      paperJordanWignerNumber (QuantumAlg.TFIM.rightSite j))) +
+  ∑ i : Fin n, H i • paperJordanWignerNumber i
+
+/-- Exact spin image of Eq. (18), retaining interaction-induced field shifts and scalar offsets. -/
+def paperJordanWignerCorrectedSpinHamiltonian
+    (n : ℕ) (t V : ℂ) (H : Fin n → ℂ) :
+    Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ :=
+  (∑ j : Fin (n - 1), (-t / 2) •
+    (pauliMat (QuantumAlg.TFIM.xxLabel j) +
+      pauliMat (jordanWignerYYLabel j))) +
+  (∑ j : Fin (n - 1), V •
+    (jordanWignerLocalSpinZ (QuantumAlg.TFIM.leftSite j) *
+        jordanWignerLocalSpinZ (QuantumAlg.TFIM.rightSite j) +
+      (2 : ℂ)⁻¹ • jordanWignerLocalSpinZ (QuantumAlg.TFIM.leftSite j) +
+      (2 : ℂ)⁻¹ • jordanWignerLocalSpinZ (QuantumAlg.TFIM.rightSite j) +
+      (4 : ℂ)⁻¹ • (1 : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ))) +
+  ∑ i : Fin n, H i •
+    (jordanWignerLocalSpinZ i +
+      (2 : ℂ)⁻¹ • (1 : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ))
+
+/-- Complete paper-gauge Jordan--Wigner Hamiltonian identity. -/
+theorem paperJordanWignerFermionHamiltonian_eq_correctedSpinHamiltonian
+    (n : ℕ) (t V : ℂ) (H : Fin n → ℂ) :
+    paperJordanWignerFermionHamiltonian n t V H =
+      paperJordanWignerCorrectedSpinHamiltonian n t V H := by
+  classical
+  unfold paperJordanWignerFermionHamiltonian
+    paperJordanWignerCorrectedSpinHamiltonian
+  simp_rw [paperJordanWignerNearestNeighborHopping_eq_transverseExchange,
+    paperJordanWignerNumber_eq_jordanWignerNumber,
+    jordanWignerDensityDensity_eq_spinZZ_add_corrections,
+    jordanWignerNumber_eq_spinZ_add_half, smul_smul]
+  congr 2
 
 /-- Total fermion number. -/
 def jordanWignerTotalNumber (n : ℕ) :

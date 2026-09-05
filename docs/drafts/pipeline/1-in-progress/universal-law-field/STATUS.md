@@ -1,15 +1,12 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-04
+Updated: 2026-09-05
 
-Scope: compressed facts and logically forced design constraints extracted from audited positive
-theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
+Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
 ## Hard facts
 
-F01 — Receiver abundance. Corpus has many exact RH equivalences: positivity, flatness, finite
-action, recurrence descent, formation properness, source-dagger descent, boundary absence. They
-are readouts, not independent evidence or producers.
+F01 — Receiver abundance. Corpus has many exact RH equivalences: positivity, flatness, finite action, recurrence descent, formation properness, source-dagger descent, boundary absence. They are readouts, not independent evidence or producers.
 
 HARD LOCK P — Positivity alone does not supply the missing arithmetic inequality. All-test Weil
 positivity is RH-equivalent; generic finite Gram/CP/KMS constructions are nonselective; the stated
@@ -19,14 +16,11 @@ producer: being positive, quadratic, or contractive is not itself a mathematical
 In particular, Gamma--Hankel PSD supplies a lower covariance floor, not the missing upper ceiling
 (`MobiusLaplaceGammaHankelWall`: `finiteMobiusGammaHankelOffDiagonalCovariance_lower_floor`).
 
-F02 — Finite local exactness is nonselective. Arbitrary finite packets, jets, multiplicities,
-indices, Grams, KMS systems, homology, determinants, and recoveries coexist with off-line charge.
+F02 — Finite local exactness is nonselective. Arbitrary finite packets, jets, multiplicities, indices, Grams, KMS systems, homology, determinants, and recoveries coexist with off-line charge.
 
-F03 — Finite arithmetic syzygy route is closed. Every positive finite prime-valuation window is
-differentially independent; proved tail relations are explicit factorization/coface relations.
+F03 — Finite arithmetic syzygy route is closed. Every positive finite prime-valuation window is differentially independent; proved tail relations are explicit factorization/coface relations.
 
-F04 — Source/receiver firewall. A construction can land exactly on Xi data while its final
-continuity, sign, descent, properness, or bound is still literally RH.
+F04 — Source/receiver firewall. A construction can land exactly on Xi data while its final continuity, sign, descent, properness, or bound is still literally RH.
 
 F05 — Large fused subcorpus has one signed current
 
@@ -35,17 +29,11 @@ F05 — Large fused subcorpus has one signed current
 Gamma-six residue, Möbius prime-normal growth, Green codiagonal, Wold/Fisher response, affine Xi
 residue, and several Hellinger/Kakutani readers recover `a`, `a²`, or its support.
 
-F06 — Functional equation transports; it does not select. Common recovery lifts FE without
-information or formation-capital loss. FE-symmetric entire positive countermodels can have
-off-line zeros.
+F06 — Functional equation transports; it does not select. Common recovery lifts FE without information or formation-capital loss. FE-symmetric entire positive countermodels can have off-line zeros.
 
-F07 — Faithful recovery conserves obstruction. Split/injective recovery preserves information,
-Hellinger affinity, formation capital, and completion boundary. Strict improvement requires
-erasure.
+F07 — Faithful recovery conserves obstruction. Split/injective recovery preserves information, Hellinger affinity, formation capital, and completion boundary. Strict improvement requires erasure.
 
-F08 — Formation and completion do not commute. Off-line current appears as completion boundary,
-Roos `lim¹`, and physical transport. Boundary absence is RH-equivalent; finite formation never
-sees class.
+F08 — Formation and completion do not commute. Off-line current appears as completion boundary, Roos `lim¹`, and physical transport. Boundary absence is RH-equivalent; finite formation never sees class.
 
 F09 — Bounded presentation changes are genuine gauges. Mutually bounded dictionaries preserve
 saturation and completion boundary. Ordinary naturality across bounded gauges cannot kill
@@ -4979,7 +4967,7 @@ CANNOT-288 — It cannot be a short-interval mean-square rate: no bound of Menon
 MUST-201 — It must derive actual theta admission, not prescribe prime-only contrast: that declared two-prime relation closes to its scalar graph when `p=q` or `a=0`, and to all `H×H` otherwise (`primeOnlyBurnolContrastRelation_closure`, Lean). This classifies the stated scalar action, not the full matrix frame or actual Xi completion.
 F640 — Tail-rounding law (Lean): if a norm-summable sequence retains dense real span after every finite deletion, its integer span is dense; finite rounding error is bounded by the norm tail independently of coefficient size (`IntegralTailCompletion.dense_integer_span_of_summable_tail_dense`).
 CANNOT-289 — It cannot recover discrete prime sectors by restricting Burnol coefficients to integers: every single prime's literal unsquared Euler depth columns still have dense integer span in real `L²(0,∞)` (`PrimeBurnolIntegralDepthCompletion.dense_integer_primeBurnolRealDepthSpan`, Lean). This retires unrestricted integer-combination repair, not bounded coefficients, multiplicative formation, or source-labelled graph topology.
-F642 — The literal interacting squarefree Gibbs source already exists: prime insertion is `J_(S+p)(x)=J_S(x)−J_S(px)`, and finite-prime sections approximate `sum μ(n)e^(−nx)` with error at most `e^(−x(y+1))/(1−e^(−x))` for primes through `y` (`GibbsScaleContraction`, `GibbsInfiniteVolume`). Reconstructing this gas is not a new mechanism.
+F642 — The literal interacting squarefree Gibbs source already exists: prime insertion is `J_(S+p)(x)=J_S(x)−J_S(px)`, and finite-prime sections approximate `sum μ(n)e^(−nx)` with error at most `e^(−x(y+1))/(1−e^(−x))` for primes through `y` (`GibbsScaleContraction`, `GibbsInfiniteVolume`). Reconstructing this gas is not a new mechanism. The complete signed source is strictly negative on `[log(2)/5,log(4/3)]` (`mobiusDiscreteLaplaceTransform_re_neg_on_explicit_interval`, Lean): it cannot itself equal a nonnegative partition sum. This does not exclude signed observables or a two-copy representation.
 F643 — Exact Gibbs energy balance loses only same-sign dilation coherence; dissipation vanishes exactly when normalized currents at `x,px` are opposites (`GibbsSignedCovarianceAccumulation`, `GibbsCriticalDissipationAntiscaleResonance`). Actual terminal-prime Mellin blocks have simultaneous gain at `t=π/log y`; generic insertion is not strict contraction.
 CANNOT-290 — It cannot obtain cancellation by renaming covariance accumulation: its difference from the contraction baseline is exactly the endpoint current. Scalar first-trace normalization leaves antiscale coherence unchanged (`gibbsPrimeInsertion_accumulation_bound_iff_current_bound`, `routeEScalarFirstTrace_antiscale`).
 CANNOT-291 — It cannot infer square-root cancellation from successor–dilation subdivision alone: its joint-eigenvector law holds for every completely multiplicative sequence, including logarithmic characters (`CCMFirstClockBlockSubdivisionTransfer`).
@@ -4989,10 +4977,21 @@ F645 — Born probabilities and every diagonal-energy Born variance can remain u
 F646 — Indeterminate Hamburger completions can share all local-time jets yet have incompatible recurrence; compact positive-spectrum families can separately share all perturbative jets yet differ nonperturbatively (`exists_infiniteJetQuantumRecurrenceSeparation`, `quantumRecurrenceGlobalCompletionWitness`, Lean). Neither theorem contradicts compact moment determinacy.
 F647 — A finite observer's return is weighted edge-phase energy; its exact visible capacity is vertices minus coherence components (`finite_quantum_observer_coherence_law`, Lean). Observed recurrence need not be full-state or full-channel recurrence.
 F648 — Generic static nearest-neighbour qudit paths attain maximal projective rank, both clock exponents and every positive-weight replica floor (`exists_quditPath_everyChart_sameDraw_recurrenceCollisionLaw`, Lean). Spatial locality alone supplies no low-rank or rapid-return bound.
-F649 — Collective pure-generator QFI equals four times the complete covariance sum (`pureGeneratorQuantumFisher_collective_eq_four_mul_sum`, Lean). Its positivity does not bound cross terms by diagonal terms or pay coherent preparation cost.
+F649 — Collective pure-generator QFI equals four times the complete covariance sum (`pureGeneratorQuantumFisher_collective_eq_four_mul_sum`, Lean). Its positivity does not bound cross terms by diagonal terms or pay coherent preparation cost. Equal SLD QFI and Hilbert--Schmidt speed under one fixed Hamiltonian coexist with exact tick returns versus strictly positive inverse-tick return defects (`qutrit_equal_information_global_recurrence_separation`, Lean); local information does not determine recurrence.
 MUST-203 — It must distinguish cutoff returns `N->infinity` from time recurrence at fixed `N`; the quantum-recurrence manuscript's completed-time-then-size laws supply no joint-limit transfer. Any physics mechanism must retain the unnormalized arithmetic signal and prove that transfer or a direct cofinal estimate.
 F650 — Literal cutoff-scale transfers `T_p F(N,x)=F(N div p,px)` still commute; `D_p=I+T_p` commutes with signed insertion `I-T_q`. Integer birth instead obeys `Delta T_p F=1_(p divides N+1) T_p Delta F` (`GibbsHardCutoffTransport`, Lean). The floors alone do not create noncommuting mixing.
 F651 — For `p>=2`, zero-boundary cutoff histories are determined by same-sign seams through exact finite alternating reconstruction. Nevertheless one history has `|D_p F|<=1` everywhere and `|F(p^K,x)|=K+1` (`exists_hardCutoff_unit_seam_logarithmic_escape`, Lean); injectivity does not imply uniform control.
 CANNOT-292 — It cannot bound all unnormalized cutoff histories using a zero initial boundary and uniformly bounded one-prime seams (`not_hardCutoff_unit_seam_uniform_bound`, Lean). This is a generic sup-bound obstruction, not a counterexample for Möbius coefficients, a Gamma--Hankel norm theorem, or a no-go for variable-hazard/adjoint/additional-source dynamics.
-F652 — For every fixed `1/2<=sigma<1`, complete prime-cutoff energy `integral_(-1)^1 |Gamma(sigma+it)|² product_(p<=Y)|1-p^(-sigma-it)|² dt` tends to `+infinity` along all apertures. Every continuous nonnegative weight positive at zero has the same escape, not merely a pointwise spike (`GibbsFullPrimeGammaEscape.fullPrimeEulerGammaEnergy_tendsto`, `fullEuler_weighted_energy_tendsto`, Lean; declarations in `RHTower`).
+F652 — For every fixed `1/2<=sigma<1`, complete prime-cutoff energy `E(Y)=integral_(-1)^1 |Gamma(sigma+it)|² product_(p<=Y)|1-p^(-sigma-it)|² dt` tends to `+infinity` along all apertures; indeed `E(Y)/Y^b -> +infinity` for every real `b`. Every continuous nonnegative weight positive at zero has the same escape (`GibbsFullPrimeGammaEscape`; `GibbsPrimeIntegerFootprint`: `RHTower.fullEuler_weighted_energy_div_rpow_tendsto`, Lean).
 CANNOT-293 — It cannot obtain bounded integer-prefix Gamma--Hankel returns by uniformly bounding unchanged complete prime products: those products have no bounded-energy cofinal subsequence even on a fixed bounded-height window (`not_fullPrimeEulerGammaEnergy_bounded_returns`, Lean). This rules out that approximation, not the Möbius integer-prefix estimate or cancellation between a prime product and its discarded integer tail; pointwise Gibbs recovery is not an energy bound.
+F653 — The normalized divisor channel `C_eta f`, as its parameter `eta` decreases to `1`, is weakly null and killed by every fixed compact synthesis, but retains limiting squared norm `||f||²/zeta(2)` (`mobiusChannelPaper_weakly_null`, `mobiusChannelPaper_compact_synthesis_kills`, `mobiusChannelPaper_total_energy`, Lean). It cannot identify vanishing fixed observations with vanishing total mass; this channel parameter is not the critical Mellin abscissa.
+F654 — It cannot repair full-prime Gamma energy by subtracting any fixed bounded-coefficient integer section of length `floor(Y)^k`: residual energy divided by full-prime energy tends to `1`, for every fixed natural `k` and `1/2<=sigma<1` (`fullPrimeEulerGamma_integer_section_residual_ratio_one`, `fullPrimeEulerGamma_mobius_section_residual_ratio_one`, `GibbsPrimeIntegerFootprint`, Lean). It must distinguish prime aperture from integer height. For `k>1` the full integer section is a correction, not the literal discarded prime-product tail; this does not bound or disprove bounded Möbius-prefix returns.
+F655 — It must control the moving integer boundary layer: for every `r>1, delta>0`, `C_N(r)-integral_((N+1)^(-2))^delta x^(r-1) F_N(x)^2 dx -> T(r,delta)-D(r)`, where `T` is the genuinely integrable infinite-source exterior above `delta` and `D` the convergent diagonal. Energy below `(N+1)^(-2)` tends to zero; if total prefix energy escapes, the moving layer carries asymptotic fraction `1` (`MobiusIntegerCuspConfinement`: `tendsto_mobiusCovariance_sub_movingCusp`, `tendsto_mobiusMovingCusp_energy_ratio_one`, Lean). Fixed interior control cannot exclude boundary concentration; no moving-layer bound or RH proof follows.
+
+## 2026-09-05 — Riemann–Siegel phase locking (card `1-in-progress/rs-phase-locking-geometric-mean-law.md`)
+
+F640 — [Lean] The random-phase model of the approximate functional equation has an exact log-mean law: `⨍_φ log|2 Re(e^{iφ} w)| = log ‖w‖` (`RHTower.circleAverage_log_norm_two_re_mul`, via Jensen's max identity `circleAverage_log_norm_const_add` and doubling invariance `circleAverage_comp_sq`). Hence the torus model predicts `E log|ζ(1/2+it)| = E log|D(t)|`, the log-mean of the Riemann–Siegel amplitude.
+F641 — [NUMERICAL, pod 2026-09-05; not Lean] The Steinhaus torus log-mean `c₀(N) = E log|∑_{n≤N} X_n n^{-1/2}|` is `≈ (1/8) log log N` (`0.200` at `N=10²`, `0.310` at `2·10⁵`), with log-variance slope `≈ 1/4`; the flow mean of `log|D(t)|` at RS length tracks it (`0.198, 0.216, 0.233` at `T = 10⁵, 10⁶, 10⁷`) while the flow mean of `log|ζ(1/2+it)|` is `0` (RH regime). The AFE phase `θ − arg D` is not uniform: `E log|cos| ≈ −0.93` against `−log 2`.
+CANNOT-289 — It cannot be a torus/random-phase model of the critical line: that model's geometric mean of `|ζ|` grows like `(log t)^{1/8}` and its log-variance is `(1/4) log log t`, while Littlewood's lemma under RH gives geometric mean `1` and Selberg gives variance `(1/2) log log t`. Every statistic that transfers from the torus (mean square, MV, low moments) transfers the wrong log-mean; the RH content sits entirely in the phase law.
+MUST-202 — An AFE-based producer must derive, from the arithmetic of `θ(t)` and `∑_{n≤√(t/2π)} n^{-1/2-it}`, the phase law `(1/T)∫ log|cos(θ − arg D)| = −log 2 − c₀(N(T)) + o(1)`; this is exactly `(L)`: `∑_{β>1/2}(β − 1/2) = o(T)`, a signed first-moment target strictly between the known `41 %` line proportion and RH, consistent as an open problem with a `1/log T` cluster of off-line pairs.
+F642 — [Lean] Prime cutoff versus size cutoff: the Steinhaus torus log-mean of a prime-truncated random Euler product `∏_j (1 − r_j z_j)⁻¹` (`0 ≤ r_j < 1`) is exactly `0` (`RHTower.torusAverage_log_norm_eulerProduct`), while the size-truncated amplitude `1 + z₂/√2 + z₃/√3` has strictly positive torus log-mean (`RHTower.torusAverage_log_norm_three_pos`). The two random models of the critical line already differ in geometric mean at length three; the Riemann–Siegel phase is what converts one into the other, exactly under RH.

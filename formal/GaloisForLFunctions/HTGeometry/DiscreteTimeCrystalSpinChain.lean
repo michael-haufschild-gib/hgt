@@ -418,12 +418,12 @@ theorem globalXPauliKick_conj_finiteDisorderedXXZFreeEvolution
   rw [Matrix.mul_smul, Matrix.smul_mul,
     globalXPauliKick_conj_finiteDisorderedXXZHamiltonian]
 
-/-- One-cycle perfect-pulse Floquet propagator, with free evolution followed by global X. -/
+/-- One-cycle perfect-pulse Floquet propagator `Rₓ exp(-iHT)` from Eq. (4). -/
 def finiteDisorderedXXZPerfectFloquet
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (edges : Finset (σ × σ)) (Jperp Jz : ℂ) (h : σ → ℂ) (T : ℝ) :
     Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ :=
-  finiteDisorderedXXZFreeEvolution edges Jperp Jz h T * globalXPauliKick σ
+  globalXPauliKick σ * finiteDisorderedXXZFreeEvolution edges Jperp Jz h T
 
 /-- Two perfect-pulse Floquet cycles factor into free evolutions with opposite disorder fields. -/
 theorem finiteDisorderedXXZPerfectFloquet_sq
@@ -431,19 +431,19 @@ theorem finiteDisorderedXXZPerfectFloquet_sq
     (edges : Finset (σ × σ)) (Jperp Jz : ℂ) (h : σ → ℂ) (T : ℝ) :
     finiteDisorderedXXZPerfectFloquet edges Jperp Jz h T *
         finiteDisorderedXXZPerfectFloquet edges Jperp Jz h T =
-      finiteDisorderedXXZFreeEvolution edges Jperp Jz h T *
-        finiteDisorderedXXZFreeEvolution edges Jperp Jz (fun i => -h i) T := by
+      finiteDisorderedXXZFreeEvolution edges Jperp Jz (fun i => -h i) T *
+        finiteDisorderedXXZFreeEvolution edges Jperp Jz h T := by
   unfold finiteDisorderedXXZPerfectFloquet
   calc
-    (finiteDisorderedXXZFreeEvolution edges Jperp Jz h T * globalXPauliKick σ) *
-        (finiteDisorderedXXZFreeEvolution edges Jperp Jz h T * globalXPauliKick σ) =
-      finiteDisorderedXXZFreeEvolution edges Jperp Jz h T *
-        (globalXPauliKick σ *
+    (globalXPauliKick σ * finiteDisorderedXXZFreeEvolution edges Jperp Jz h T) *
+        (globalXPauliKick σ * finiteDisorderedXXZFreeEvolution edges Jperp Jz h T) =
+      (globalXPauliKick σ *
           finiteDisorderedXXZFreeEvolution edges Jperp Jz h T *
-            globalXPauliKick σ) := by
+            globalXPauliKick σ) *
+        finiteDisorderedXXZFreeEvolution edges Jperp Jz h T := by
       simp only [Matrix.mul_assoc]
-    _ = finiteDisorderedXXZFreeEvolution edges Jperp Jz h T *
-        finiteDisorderedXXZFreeEvolution edges Jperp Jz (fun i => -h i) T := by
+    _ = finiteDisorderedXXZFreeEvolution edges Jperp Jz (fun i => -h i) T *
+        finiteDisorderedXXZFreeEvolution edges Jperp Jz h T := by
       rw [globalXPauliKick_conj_finiteDisorderedXXZFreeEvolution]
 
 /-- Staggered longitudinal imbalance on an `N`-site chain, with totalized normalization at
@@ -644,8 +644,8 @@ def pureKickLongitudinalConnectedAutocorrelation
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (ψ : FiniteQubitConfiguration σ → ℂ) (i : σ) (n : ℕ) : ℝ :=
   QuantumAlg.qCov ψ
-    (globalXKickHeisenbergIterate (localZPauliObservable i) n)
     (localZPauliObservable i)
+    (globalXKickHeisenbergIterate (localZPauliObservable i) n)
 
 /-- Under the ideal kick, every connected local autocorrelation alternates exactly with its
 initial covariance. -/
@@ -657,7 +657,7 @@ theorem pureKickLongitudinalConnectedAutocorrelation_eq_periodDoubled
         (longitudinalSpinConnectedCorrelation ψ i i) n := by
   rw [pureKickLongitudinalConnectedAutocorrelation,
     globalXKickHeisenbergIterate_localZ,
-    QuantumAlg.qCov_ofReal_smul_left]
+    QuantumAlg.qCov_ofReal_smul_right]
   rfl
 
 /-- Consequently the finite-window DTC demodulator returns the exact local connected variance
@@ -680,8 +680,29 @@ def pureKickStaggeredImbalanceConnectedAutocorrelation
     (sites : ℕ) (ψ : FiniteQubitConfiguration (Fin sites) → ℂ)
     (n : ℕ) : ℝ :=
   QuantumAlg.qCov ψ
-    (globalXKickHeisenbergIterate (finiteSpinStaggeredImbalance sites) n)
     (finiteSpinStaggeredImbalance sites)
+    (globalXKickHeisenbergIterate (finiteSpinStaggeredImbalance sites) n)
+
+/-- Raw two-time imbalance correlation `G₂(0,n)` from Eq. (6). -/
+def pureKickStaggeredImbalanceTwoTimeCorrelation
+    (sites : ℕ) (ψ : FiniteQubitConfiguration (Fin sites) → ℂ)
+    (n : ℕ) : ℂ :=
+  QuantumAlg.expval ψ
+    (finiteSpinStaggeredImbalance sites *
+      globalXKickHeisenbergIterate (finiteSpinStaggeredImbalance sites) n)
+
+/-- Under ideal kick-only evolution, raw imbalance correlation alternates with the initial second
+moment. -/
+theorem pureKickStaggeredImbalanceTwoTimeCorrelation_eq_alternating
+    (sites : ℕ) (ψ : FiniteQubitConfiguration (Fin sites) → ℂ) (n : ℕ) :
+    pureKickStaggeredImbalanceTwoTimeCorrelation sites ψ n =
+      ((((-1 : ℝ) ^ n : ℝ) : ℂ) *
+        QuantumAlg.expval ψ
+          (finiteSpinStaggeredImbalance sites * finiteSpinStaggeredImbalance sites)) := by
+  rw [pureKickStaggeredImbalanceTwoTimeCorrelation,
+    globalXKickHeisenbergIterate_finiteSpinStaggeredImbalance,
+    Matrix.mul_smul, QuantumAlg.expval_smul]
+  rfl
 
 /-- The ideal staggered connected autocorrelation is exactly period doubled. -/
 theorem pureKickStaggeredImbalanceConnectedAutocorrelation_eq_periodDoubled
@@ -692,7 +713,7 @@ theorem pureKickStaggeredImbalanceConnectedAutocorrelation_eq_periodDoubled
           (finiteSpinStaggeredImbalance sites)) n := by
   rw [pureKickStaggeredImbalanceConnectedAutocorrelation,
     globalXKickHeisenbergIterate_finiteSpinStaggeredImbalance,
-    QuantumAlg.qCov_ofReal_smul_left]
+    QuantumAlg.qCov_ofReal_smul_right]
   rfl
 
 /-- Every finite observation window recovers the full initial staggered connected variance. -/
