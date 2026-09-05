@@ -1,6 +1,6 @@
 # Chronological tensor geometry: a formalized research seed
 
-**Status:** twenty individual Lean builds passed; all 230 declarations axiom-audited (173 theorems, 57 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
+**Status:** thirty-three individual Lean builds passed; all 375 declarations axiom-audited (274 theorems, 101 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
 
 **Question.** What geometric information becomes visible when alternating tensors are tested by an ordered probe with a limited budget for changing its value?
 
@@ -279,6 +279,52 @@ Multiplication by `S^(d(d−1))` cancels the denominator exactly and leaves `M V
 
 `SegmentExtrapolation.lean` builds the actual segment polynomial and checks its degree, evaluation, and norm bound, including M=0. `DegreeSealing.lean` proves the Jordan identity, (4), depth monotonicity, and the cubic depth-six corollary. General polynomial growth is established mathematics; this enclosure specialization is being developed as a structural ingredient of the research program.
 
+## The degree bound is sharp for finite windows
+
+For d≥2, let `p_d(t)=T_d(2t−1)` and define the genuine homogeneous polynomial
+
+\[
+H_d(x,y)=\sum_{i=0}^d [t^i]p_d(t)\,x^i(x+y)^{d-i}.
+\]
+
+This definition is valid even at x+y=0. Away from that line it equals
+`(x+y)^d T_d((x−y)/(x+y))`. Each monomial is a product of d allowed windows: i copies of the singleton window `{0}` and d−i copies of the full two-gap window. `BinaryWindows.lean` constructs these windows recursively and proves their evaluation and homogenization formulas for arbitrary univariate polynomials.
+
+On x,y≥0 with x+y≤1, write S=x+y. If S>0, the Chebyshev argument is in `[-1,1]`, giving `|H_d(x,y)|≤S^d≤1`; S=0 gives x=y=0. The probe (1,0) attains one. `ChebyshevWindows.lean` therefore proves that the actual monotone capacity is exactly one, including the normalized-supremum definition.
+
+For any k<d(d−1), put `Q(t)=T_d(t)−t^(d+k)`. The classical endpoint identities give
+
+\[
+Q(1)=0,\qquad Q'(1)=d^2-d-k>0.
+\]
+
+Consequently some t>1 has `T_d(t)>t^(d+k)`. At the signed probe
+
+\[
+(x,y)=\left(\frac{t+1}{2t},\frac{1-t}{2t}\right)
+\]
+
+variation is exactly one, displacement is 1/t, and enclosed response is
+`t^(−d−k)T_d(t)>1`. Thus the capacity cannot have stabilized at depth k. Together with (4), this proves
+
+\[
+\boxed{N(H_d)=d(d-1),\qquad C_k(H_d)=1\iff k\ge d(d-1).}
+\]
+
+Its enclosure curvature is positive precisely at `k=0,…,d(d−1)−1`. `SharpDepth.lean` proves the endpoint existence argument through real derivatives and neighborhood filters, builds the signed probe, and establishes exact depth and curvature support. All three leaf builds and all eighteen declaration axiom audits passed. No computation was needed.
+
+This establishes optimality in the unrestricted finite-window class. The repeated windows do not assert a presentation by perfect matchings of distinct ordered endpoints. Sharpness for those more structured spaces remains a separate question. The Chebyshev polynomial and its extremal mechanisms are classical; this result is an enclosure-depth application, with priority still under review.
+
+**Perfect-pairing separation in degree two.** The three pairings of four ordered endpoints give `D=uw`, `N=v(u+v+w)`, and `X=(u+v)(v+w)=D+N`. Hence every coefficient triple c has response `(c₀+c₂)D+(c₁+c₂)N`. The four-endpoint capacity formula is attained by monotone unit probes, so every enclosed capacity is already equal to monotone capacity and every such form has depth zero. `PairingDepth.lean` proves the exact capacities, depth zero for all three-generator combinations, and the explicit contrast with `N(H₂)=2`. Its final build and all nine declaration axiom audits passed. Thus the sharp generic degree bound is demonstrably not sharp in the perfect-pairing subspace in degree two.
+
+## Reversal has a sharp three-gap activation threshold
+
+For every nonempty perfect-pairing family, a signed probe that exceeds monotone capacity must have at least three nonzero increments. This bound is attained by the six-endpoint reversal form and its unit probe `(1/3,0,−1/3,0,1/3)` of response `−28/27`.
+
+The structural reason is incidence rigidity. Two active gaps split the endpoints into three consecutive blocks of sizes a,b,c. A pairing with an intrablock chord vanishes. Every other pairing has exactly `d−c` chords between the first two blocks, `d−a` between the last two, and `d−b` between the first and last. Thus all nonzero restrictions share the monomial `u^(d−c) v^(d−a) (u+v)^(d−b)`. Arbitrary coefficient cancellation reduces to a common scalar. Replacing u,v by their absolute values increases absolute response while preserving variation.
+
+`ThreeBlock.lean` derives these incidence identities from actual endpoint bijections. `TwoGap.lean` connects them to interval windows and the normalized capacity. `Activation.lean` handles arbitrary supports of size at most two and constructs the sharp three-gap witness with genuine pairings. All three final builds and all 53 declaration axiom audits passed. The [complete proof and representation details](chronological-two-gap-rigidity.md) distinguish consecutive chronological blocks from repeated visits to three spatial values.
+
 ## One enclosure: an exact cubic depth
 
 **Theorem.** For arbitrary signed gaps,
@@ -358,31 +404,38 @@ The last gap equals `|p|⁴+4|p|³V+6|p|²V²+(20/7)|p|V³`, termwise nonnegativ
 
 For a family of outer chords, let q be their padding gaps. Every outer factor has the form `S+Σ_(i∈W_j)q_i`. If the windows share a padding cut, each absolute factor is at most `|S|+Σ|q_i|`. Concentrating all padding variation in the shared cut, with sign aligned to S, attains every such bound simultaneously and preserves cost. Fully nested outer chords have such a cut immediately outside the original history.
 
-The Lean presentation generates each outer window as `{0}∪succ(W_j)`, so the common cut is built into the object without an external assumption. `CommonCut` is being scratch-checked for the cost-preserving domination and simultaneous attainment. The resulting capacity should equal the padded enclosed capacity independently of the remaining outer-window arrangement. `OuterCapacity` has a scratch implementation of the joint normalization and both supremum comparisons; it is not yet checked. This is the bridge needed before transferring the earlier enclosure results to freely variable outer endpoints.
+The Lean presentation generates each outer window as `{0}∪succ(W_j)`, so the common cut is built into the object without an external assumption. `CommonCut.lean` proves cost-preserving domination and simultaneous attainment. `OuterCapacity.lean` constructs the full capacity with a shared normalization factor `max(1,V_payload+V_padding)` and proves
+
+`outerCapacity(D,c,W)=sealedCapacity(padWindows(D),c,k)`.
+
+For the upper bound, concentrate the normalized padding at the shared cut and apply the padded capacity bound; the resulting combined probe still has variation at most one. For the reverse bound, take any normalized padded probe and insert its padding coordinate at the shared cut, setting all other padding gaps to zero. Joint normalization then fixes the probe and reproduces its response exactly. Both leaf builds and all declaration axiom audits passed.
+
+Consequently the detailed outer-window arrangement is invisible to this capacity whenever a shared padding cut exists. The positive statement is the exact reduced model, with its degree bound and curvature reconstruction; the cubic remains depth one with free padding. The formalization covers the generated finite outer windows. An explicit constructor connecting them to the corpus ChordData record has not yet been added.
 
 ## Relation to existing mathematics and novelty limits
 
 - The ambient geometry is polynomial sup-norm geometry, an established subject. García et al. study explicit polynomial norm balls and their extreme points in [Geometry of homogeneous polynomials in ℝ²](https://arxiv.org/html/2408.01741v1). Pérez-García and Villanueva study norm attainment over ℓ₁ balls in [Where do homogeneous polynomials on ℓ₁ⁿ attain their norm?](https://doi.org/10.1016/j.jat.2004.01.001). Our chronological restriction is additional structure; the word “curvature” by itself supplies no novelty.
 - Alternating tensor contractions, chord descriptions, and Plücker identities are standard algebraic ingredients. In particular, chord products identify, up to orientation sign, with classical Specht polynomials for the two-row partition (r,r), by Definition 8 of Moustrou–Riener–Verdure, [Symmetric ideals, Specht polynomials and solutions to symmetric systems of equations](https://arxiv.org/pdf/1912.05266). Their chronological norm is the extra structure being investigated. The corpus supplies `KnotTheory/ChordData.lean`; no claim of a new braid or knot invariant is made.
 - An earlier switching-only proposal overlapped directly with Lotter and Preiß's [Piecewise Symmetric Tensors](https://arxiv.org/html/2607.04712v1). It was rejected as a novelty claim.
-- Single-diagram optimization is closely related to products of interval masses and graph entropy. This connection still needs a precise equivalence audit; it is not claimed as an invention.
+- Single-diagram optimization has a close predecessor in interval entropy. Van der Hoog et al., [Sorting under partial (interval order) information, §3.1](https://jocg.org/index.php/jocg/article/download/3924/3645/15790), explicitly optimize products of interval lengths over embeddings preserving an induced partial order, following Cardinal et al. Their admissible embeddings need not preserve the full endpoint order fixed here. Equality of those suprema remains to prove; this primitive is not claimed as an invention.
 - The extrapolation ingredient is classical polynomial growth, reviewed by Révész in [Some polynomial inequalities on real normed spaces](https://arxiv.org/pdf/math/0703386). The enclosure proof uses that theorem rather than claiming a new extrapolation principle.
 - Finite stabilization is related to established exact-penalty theory: Jane J. Ye, [Exact Penalty Principle](https://web.uvic.ca/~janeye/hosted/papers/ExactPenaltyFinal.pdf), presents Lipschitz/error-bound mechanisms enforcing constraints at a finite penalty weight. Our multiplicative enclosure bound is an explicit application of the same general mechanism, rather than evidence that finite penalties were invented here.
 - The specific package of chronological capacities, the exact displayed constants, reversal witnesses, and graded comparisons are candidates for further novelty review. Searches have not established priority. A research field would require substantially more than naming this package.
 
 ## Next mathematical questions
 
-1. Classify the full signed six-endpoint coefficient ball, including negative relative coefficients.
-2. Determine sharp stabilization depths. The universal upper bound `r(r−1)` is formalized for r≥2. A homogenized Chebyshev family should establish sharpness for unrestricted window forms; representation and lower-bound details remain to be checked. Sharpness for actual endpoint pairings remains open; the original cubic now has exact depth one.
+1. Classify the full signed six-endpoint coefficient ball, using the now formalized [sharp activation threshold](chronological-two-gap-rigidity.md). The [coalescence paper proof](../2-fully-proven/chronological-monotone-coalescence.md) reduces monotone probes to nonadjacent support of size ≤d and gives the full five-generator monotone norm. Endpoint affinity and adjacent transfer identities are now formalized; the finite reduction remains in progress. A [bounded numerical search](../2-fully-proven/computations/chronological-chord-capacity/PAIRING-DEPTH-REPORT.md) found no robust failure of depth one in degrees three or four; this is not a universal proof.
+2. Determine sharp stabilization depths for actual endpoint pairings. The unrestricted finite-window bound `d(d−1)` is now sharp in every degree d≥2. Its extremizer need not be a perfect-pairing form; the original six-endpoint cubic has exact depth one.
 3. Prove general fusion and nesting laws for arbitrary chord forms, beyond the repeated family above.
 4. Identify order-preserving maps, their contraction constants, and invariants of the resulting graded spaces. Determine which facts survive comparison with polynomial Banach spaces, planar algebras, and graph entropy.
+5. Prove the [topological spectrum construction](../1-in-progress/chronological-topological-spectrum.md): the sparse norming complexes across all pairing degrees would yield a graded eta response, with exactly the zeta zeros in the open critical strip. Path-complex topology and eta analysis are classical. The actual geometry-to-homology bridge and an observation-sensitive refinement remain to formalize; this is outside RH research.
 
 ## Artifacts and verification
 
-Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Twenty modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`, `ChebyshevGrowth`, `SegmentExtrapolation`, `DegreeSealing`, `OneEnclosure`, `EnclosureCone`, `EnclosureCurvature`, `CurvatureDepth`. All are wired into `HTGeometry.lean`.
+Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Thirty-three modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`, `ChebyshevGrowth`, `SegmentExtrapolation`, `DegreeSealing`, `OneEnclosure`, `EnclosureCone`, `EnclosureCurvature`, `CurvatureDepth`, `Padding`, `PaddedCubic`, `CommonCut`, `OuterCapacity`, `BinaryWindows`, `ChebyshevWindows`, `SharpDepth`, `PairingDepth`, `ThreeBlock`, `TwoGap`, `Activation`, `EndpointAffinity`, `GapTransfer`. All are wired into `HTGeometry.lean`.
 
-All development checks used foreground `lake env lean` on scratch files, sequentially. All twenty individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 230 declarations (173 theorems and 57 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
+All development checks used foreground `lake env lean` on scratch files, sequentially. All thirty-three individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 375 declarations (274 theorems and 101 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
 
-`scripts/formal_tools.py index` completed. The latest authoritative repository-wide `scripts/formal_tools.py lint` passed, with existing large-file warnings only. Other researchers' files were not modified.
+The last completed index and repository-wide lint predate `EndpointAffinity` and `GapTransfer`. That lint reports eight unrelated `Arxiv2608BellmanShoreline*` modules awaiting umbrella imports (details in `/tmp/chronological-activation-lint.txt`). All 33 chronological leaves are wired and individually audited. Other researchers' files were not modified.
 
 Numerical leads and reproducible sources: [computation report](../2-fully-proven/computations/chronological-chord-capacity/REPORT.md). No numerical results enter any Lean proof. Symbolic proofs use algebraic identities, inequalities, differentiation rules, and finite AM–GM.

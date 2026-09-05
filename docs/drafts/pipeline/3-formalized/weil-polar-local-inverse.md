@@ -1,6 +1,6 @@
 # Exact local inverse of the Weil pole multiplier
 
-**Status:** compact inverse, uniqueness, and exact constrained-floor criterion pass Lean; first-zero boundary refinement and final integration audit in progress.
+**Status:** formalized. Both production leaves pass named builds; all 21 public theorem dependency audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
 
 **Proof chain:** literal prime–Gamma quadratic form on the two-pole constrained sector → nonnegative constrained ground at every aperture → `riemannHypothesis_of_polarGroundEnergy_nonneg` → RH. This card closes the exact description of the smooth constrained sector; the arithmetic positivity inequality remains open.
 
@@ -24,11 +24,17 @@ The moment constraints make both primitives vanish outside `[-r,r]`. Since `A_s'
 
 **Fail and pivot:** injectivity of `D`, or strict positivity of each smooth nonzero test at a single aperture, does not provide a uniform positive Rayleigh floor. At a first constrained zero, every such test is strictly positive because its compact support fits an earlier positive aperture. Yet smooth near-minimizers, pulled back through the exact inverse, give strictly positive multiplier-image Rayleigh quotients below every positive tolerance. The survivor is an exact description of how zero ground can appear through completion; no smooth null vector may be assumed.
 
-## Verification plan
+## Exact Lean surface
 
-1. Check required local theorem signatures in a temporary Lean file.
-2. Prove the explicit inverse, support control, uniqueness, and exact source-image classification in scratch.
-3. Prove the constrained floor criterion on multiplier images and its existing RH landing.
-4. Check production leaves, audit all new theorem axioms, run only named leaf builds, wire imports, run formal lint, update current-state frontier and route-independent constraints only where justified.
+- `CCMRestrictedWeilPolarInverse` proves smooth exponential primitives, their exact derivative and exterior support laws, the Green right inverse, a zero compact homogeneous kernel, injectivity, and `isPolarConstrained_iff_existsUnique_polarMultiplier_preimage`.
+- `RHTower.le_polarGroundEnergy_iff_polarMultiplier_floor` in `CCMRestrictedWeilPolarMultiplierCriterion` is exact for every real floor `m` at each fixed aperture. The theorem names below are in namespace `RHTower`, rather than a module-named namespace.
+- `riemannHypothesis_iff_polarMultiplier_nonnegative` and `riemannHypothesis_iff_polarGroundEnergy_nonneg` prove both directions. `not_riemannHypothesis_iff_exists_negative_polarMultiplier` gives the exact negative-witness counterpart.
+- `polarMultiplier_firstZero_no_uniform_positive_floor` gives positive image-core Rayleigh quotients below every positive tolerance at a first zero. `riemannHypothesis_or_polar_firstZero_core_boundary` is a closed, hypothesis-free alternative retaining a normalized constrained null vector and positivity of every nonzero smooth constrained interior test.
+
+The first-zero alternative does not establish the existence of a zero threshold, and no theorem here excludes one. The translation argument above remains an unformalized next conjecture; no claim of strict negativity above a threshold is made.
+
+## Verification
+
+Temporary signature checks and complete scratch proofs used `lake env lean <file>`. The production leaves passed the named commands `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarInverse` and `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarMultiplierCriterion`; each built only its requested leaf. Both are wired into `RHTower.lean`. An importing scratch file audited all 21 public theorems and printed the actual `RiemannHypothesis` definition, retaining zeta zeros, trivial-zero exclusion, the point `1`, and the conclusion `s.re=1/2`. No custom axiom or computational reduction oracle occurs. No umbrella or full build was run. `scripts/formal_tools.py lint` and `git diff --check` passed; lint reported only existing large-file warnings. The adjusted forward-multiplier module documentation also passed a direct Lean check. All owned Lean commands terminated.
 
 No numerical experiment or computational proof certificate is used.

@@ -1,0 +1,42 @@
+# Topological spectrum of chronological observation
+
+**Status:** new research branch requested by the user: zeta zeros should emerge within chronological geometry, without studying RH. The mechanism below is a paper-level construction, not yet a Lean theorem or an established novelty claim. No numerical experiment is needed.
+
+## Candidate mechanism
+
+For degree d pairings, pointwise monotone coalescence leaves the independence complex K_d of the path on 2d−1 physical gaps. The coalescence proof is in `../2-fully-proven/chronological-monotone-coalescence.md`; its formalization is the first dependency.
+
+The classical path-complex classification gives:
+
+- K_(3k+1) contractible;
+- K_(3k+2) homotopy equivalent to S^(2k);
+- K_(3k+3) homotopy equivalent to S^(2k+1).
+
+Consequently the direct sum, over all pairing degrees d≥1, of reduced rational homology has exactly one generator in every homological degree r≥0. This is a derived multiplicity, not a chosen list of zeta zeros. Grade by r+1 (the number of vertices of an r-simplex), and use the usual Euler sign (−1)^r. Pairing successive even and odd homological degrees yields the convergent response
+
+`T(s) = Σ_(k≥0) [(2k+1)^(−s) − (2k+2)^(−s)]`, Re s>0.
+
+Pairing is essential in this half-plane. Each difference is an integral of `s x^(−s−1)` over [2k+1,2k+2], so its absolute value is at most `|s|(2k+1)^(−Re s−1)`. The series converges locally uniformly. On Re s>1, separating even terms in the absolutely convergent zeta series gives `T(s)=(1−2^(1−s))ζ(s)`. Analytic continuation gives the identity on Re s>0, with the removable value at s=1 interpreted by T. Inside 0<Re s<1 the prefactor cannot vanish: its exponential term has modulus `2^(1−Re s)>1`. Thus T vanishes exactly at the zeta zeros there, with the same multiplicities. Nothing restricts the real parts of those zeros.
+
+Equivalent heat trace: `Σ_(r≥0)(−1)^r exp(−(r+1)t)=1/(exp(t)+1)` for t>0. Its Mellin transform is Γ(s)T(s). This is the classical Fermi/eta identity; the proposed geometric contribution is deriving the graded trace from the norming complexes of endpoint-pairing observations.
+
+## What makes this a substantive target, and what does not
+
+The chain to prove is **pairing products → cost-preserving coalescence → norming complexes → graded topological classes → exact response divisor**. Merely defining T using the displayed series would formalize eta, not this chain. An Euler-characteristic recurrence alone also does not establish the individual homology groups or their grading.
+
+The grading is homological degree plus one, not pairing degree or physical energy. Weighting by pairing degree instead produces a different combination of residue-class Dirichlet series; it must not be silently replaced by this grading. The zeros are cancellations of a complex graded response, not eigenvalues of a self-adjoint operator.
+
+The established cubic retraction loses the curved observation plane while preserving topology. A useful next question is which observation-sensitive refinement distinguishes this lost metric data while retaining the topological zeta divisor. No such refinement is currently proved, and arbitrary multiplication by eta would not answer it.
+
+## Prior art and novelty boundary
+
+The path topology and hard-core fermion interpretation are known. [Przytycki–Silvero, §3.1, Proposition 3.6](https://arxiv.org/pdf/2305.18648) states the path homotopy classification (their path length counts edges). [Huijse–Schoutens, §5.1, Theorem 2](https://arxiv.org/abs/0903.0784) states the open-chain cohomology by chain length and fermion number. [Fendley–Schoutens–de Boer](https://doi.org/10.1103/PhysRevLett.90.120402) constructs supersymmetric hard-core lattice models. These are substantial overlaps; the topological tower or its Fermi interpretation cannot be advertised as invented here.
+
+Corpus searches: exact phrase `"independence complex"` returned only unrelated symbol-name coincidences. Existing `SalemFermiModeIntegral.lean` and eta-pair modules contain the classical analytic identity; their RH equivalence endpoints are outside this branch. Broad literature searches did not establish priority for the coupling to chronological observation norms. Absence of a search hit is not evidence of novelty.
+
+## Next proof work
+
+1. Finish endpoint affinity, arbitrary-gap bridge, and finite coalescence in Lean.
+2. Define actual sparse face complexes; prove path reduction and graded homology, or explicitly keep that dependency unformalized. A recurrence-defined surrogate is insufficient.
+3. Reuse or prove the paired-series analytic identity, then connect its coefficients to the actual homology theorem. State strip-wide zero equivalence without RH assumptions.
+4. Investigate an observation-sensitive invariant coupling the erased curved subspace to this topological response. Keep this distinction visible in the compact working notes.

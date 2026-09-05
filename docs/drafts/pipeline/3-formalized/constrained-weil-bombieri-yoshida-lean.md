@@ -44,8 +44,10 @@ the corpus cannot currently formalize it").
 Every constrained-Weil statement of the corpus (Theorems C/D, the log-soft entry law, the degeneracy
 alternative, Connes–Consani's √2 inequality) now lands at `RiemannHypothesis` in Lean; the O route
 has a complete Lean chain from "positivity at all apertures" to RH.  The converse
-(RH ⇒ constrained ground energy ≥ 0) follows on paper from Suzuki's smooth-test positivity under RH and
-density of smooth sources; it is not yet in Lean (only the unconstrained ¬RH witness is).
+(RH ⇒ constrained ground energy ≥ 0) is formal in `CCMRestrictedWeilPolarMultiplierCriterion`:
+Suzuki smooth-test positivity and the exact same-aperture pole-multiplier image criterion give
+`riemannHypothesis_iff_polarGroundEnergy_nonneg`. The support-preserving inverse and the
+first-zero completion boundary are described in [the local-inverse card](weil-polar-local-inverse.md).
 
 ## Traps recorded
 
