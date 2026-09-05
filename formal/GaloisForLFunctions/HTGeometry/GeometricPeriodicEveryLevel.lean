@@ -38,7 +38,6 @@ theorem exists_pos_finset_strictUpper_gap
   · refine ⟨1, zero_lt_one, fun a haS hva => ?_⟩
     exact (hC ⟨a, Finset.mem_filter.mpr ⟨haS, hva⟩⟩).elim
 
-set_option maxHeartbeats 3000000 in
 theorem exists_periodicGeometric_targetLevelPolynomial_eq_zero
     {F : PowerSeries ℂ} {u : ℕ → ℂ}
     {A lam c : ℝ} (hA : 0 < A) (hlam : 1 < lam)

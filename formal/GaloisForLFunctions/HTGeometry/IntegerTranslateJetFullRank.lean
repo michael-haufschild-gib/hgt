@@ -42,7 +42,6 @@ theorem exists_row_packet_of_linearIndependent_box {κ row : Type*} [Fintype κ]
   rw [hsub]
   exact hz₀rank
 
-set_option maxHeartbeats 4000000 in
 /-- **The translated jet box under the shift order, with companions differentiated and allowed to
 vanish.**  Only separation of the exponents is left. -/
 theorem linearIndependent_integerTranslateJets_of_shiftOrder
@@ -88,7 +87,6 @@ theorem linearIndependent_integerTranslateJets_of_shiftOrder
     (κ := κ) (q := q) (S := upperHalfPlane) (Z := Z) (exponent := exponent)
     θ m σ k₀ V hZ hS hzero hfin hV hsep
 
-set_option maxHeartbeats 4000000 in
 /-- **The full-rank datum for the moving canonical jets, companions differentiated and allowed to
 vanish.**  A node packet in the upper half-plane, pairwise distinct, on which the expanded evaluation
 map is injective. -/

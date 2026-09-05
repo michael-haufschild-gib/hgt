@@ -15,7 +15,6 @@ open GaloisForLFunctions Bottcher
 
 noncomputable section
 
-set_option maxHeartbeats 2000000
 set_option synthInstance.maxHeartbeats 2000000
 
 attribute [local instance] cascadeUnitCostDomain cascadeUnitCostRatFuncAlgebra

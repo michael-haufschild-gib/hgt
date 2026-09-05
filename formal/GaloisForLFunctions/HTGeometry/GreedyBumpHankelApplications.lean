@@ -23,12 +23,24 @@ def greedyBumpArcsineMetric (D : ℕ) : PositiveTemplateMetric D where
   matrix := _root_.HTGeometry.momentHankelMatrix normalizedCentralBinom D
   posDef := normalizedCentralBinom_momentHankelMatrix_posDef D
 
+/-- Complete optimizer, volume, trace, and bias laws for every arcsine block. -/
+theorem greedyBumpArcsine_laws (D : ℕ) (Q : PositiveSignal) :
+    GreedyBumpMetricLaws Q (greedyBumpArcsineMetric D) :=
+  greedyBumpMetricLaws_closed Q (greedyBumpArcsineMetric D)
+
 /-- Signal scaling multiplies the arcsine Hankel volume determinant by `Q^D`. -/
 theorem greedyBumpArcsineHessian_det (D : ℕ) (Q : PositiveSignal) :
     (greedyBumpHessian Q (greedyBumpArcsineMetric D)).det =
       (Q : ℝ) ^ D *
         (_root_.HTGeometry.momentHankelMatrix normalizedCentralBinom D).det :=
   greedyBumpHessian_det Q (greedyBumpArcsineMetric D)
+
+/-- Arcsine trials volume scales by exactly `Q^(D/2)`. -/
+theorem greedyBumpArcsineHessian_sqrt_det (D : ℕ) (Q : PositiveSignal) :
+    Real.sqrt (greedyBumpHessian Q (greedyBumpArcsineMetric D)).det =
+      (Q : ℝ) ^ ((D : ℝ) / 2) *
+        Real.sqrt (_root_.HTGeometry.momentHankelMatrix normalizedCentralBinom D).det :=
+  greedyBumpHessian_sqrt_det Q (greedyBumpArcsineMetric D)
 
 /-- The arcsine Hankel metric has matched inverse-trace penalty `D/Q`. -/
 theorem greedyBumpArcsine_tracePenalty (D : ℕ) (Q : PositiveSignal) :
@@ -52,6 +64,11 @@ def greedyBumpBlackHoleJetMetric (scaleLog : ℂ) (D : ℕ) : PositiveTemplateMe
     (_root_.HTGeometry.normalizedBlackHoleFarZoneJet scaleLog) D
   posDef := _root_.HTGeometry.normalizedBlackHoleFarZoneJet_hankel_posDef scaleLog D
 
+/-- Complete optimizer, volume, trace, and bias laws for every black-hole zeta-jet block. -/
+theorem greedyBumpBlackHoleJet_laws (scaleLog : ℂ) (D : ℕ) (Q : PositiveSignal) :
+    GreedyBumpMetricLaws Q (greedyBumpBlackHoleJetMetric scaleLog D) :=
+  greedyBumpMetricLaws_closed Q (greedyBumpBlackHoleJetMetric scaleLog D)
+
 /-- Signal scaling multiplies the black-hole jet Hankel determinant by `Q^D`. -/
 theorem greedyBumpBlackHoleJetHessian_det (scaleLog : ℂ) (D : ℕ)
     (Q : PositiveSignal) :
@@ -60,6 +77,15 @@ theorem greedyBumpBlackHoleJetHessian_det (scaleLog : ℂ) (D : ℕ)
         (_root_.HTGeometry.momentHankelMatrix
           (_root_.HTGeometry.normalizedBlackHoleFarZoneJet scaleLog) D).det :=
   greedyBumpHessian_det Q (greedyBumpBlackHoleJetMetric scaleLog D)
+
+/-- Black-hole zeta-jet trials volume scales by exactly `Q^(D/2)`. -/
+theorem greedyBumpBlackHoleJetHessian_sqrt_det (scaleLog : ℂ) (D : ℕ)
+    (Q : PositiveSignal) :
+    Real.sqrt (greedyBumpHessian Q (greedyBumpBlackHoleJetMetric scaleLog D)).det =
+      (Q : ℝ) ^ ((D : ℝ) / 2) *
+        Real.sqrt (_root_.HTGeometry.momentHankelMatrix
+          (_root_.HTGeometry.normalizedBlackHoleFarZoneJet scaleLog) D).det :=
+  greedyBumpHessian_sqrt_det Q (greedyBumpBlackHoleJetMetric scaleLog D)
 
 /-- The black-hole zeta-jet metric has matched inverse-trace penalty `D/Q`. -/
 theorem greedyBumpBlackHoleJet_tracePenalty (scaleLog : ℂ) (D : ℕ)
@@ -94,12 +120,25 @@ def GreedyBumpAtomicDesign.metric {N D : ℕ}
   posDef := atomicHankel_posDef A.positiveDimension A.weight A.node
     A.weight_pos A.enoughNodes
 
+/-- Complete optimizer, volume, trace, and bias laws for every admissible atomic design. -/
+theorem greedyBumpAtomic_laws {N D : ℕ} (A : GreedyBumpAtomicDesign N D)
+    (Q : PositiveSignal) : GreedyBumpMetricLaws Q A.metric :=
+  greedyBumpMetricLaws_closed Q A.metric
+
 /-- Signal scaling multiplies every admissible atomic Hankel determinant by `Q^D`. -/
 theorem greedyBumpAtomicHessian_det {N D : ℕ} (A : GreedyBumpAtomicDesign N D)
     (Q : PositiveSignal) :
     (greedyBumpHessian Q A.metric).det =
       (Q : ℝ) ^ D * (atomicHankel A.weight A.node D).det :=
   greedyBumpHessian_det Q A.metric
+
+/-- Every admissible atomic trials volume scales by exactly `Q^(D/2)`. -/
+theorem greedyBumpAtomicHessian_sqrt_det {N D : ℕ} (A : GreedyBumpAtomicDesign N D)
+    (Q : PositiveSignal) :
+    Real.sqrt (greedyBumpHessian Q A.metric).det =
+      (Q : ℝ) ^ ((D : ℝ) / 2) *
+        Real.sqrt (atomicHankel A.weight A.node D).det :=
+  greedyBumpHessian_sqrt_det Q A.metric
 
 /-- Every admissible atomic Hankel metric has matched inverse-trace penalty `D/Q`. -/
 theorem greedyBumpAtomic_tracePenalty {N D : ℕ} (A : GreedyBumpAtomicDesign N D)

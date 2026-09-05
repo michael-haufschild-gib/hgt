@@ -50,7 +50,6 @@ def periodicADEOutsideRemainder
       ((Real.exp (-atomValuation (fun i => A * lam ^ i + c) ν) : ℝ) : ℂ) *
         normalizedAtomPhase F (fun i => A * lam ^ i + c) ν
 
-set_option maxHeartbeats 2000000 in
 theorem periodicGeometricLevelPolynomial_eq_zero_of_activeComplement_gap
     {F : PowerSeries ℂ} {u : ℕ → ℂ}
     {A lam c : ℝ} (hA : 0 < A) (hlam : 1 < lam)

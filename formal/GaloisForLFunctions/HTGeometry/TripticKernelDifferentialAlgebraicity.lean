@@ -145,7 +145,6 @@ theorem realizedDA_const (c : ℂ) : RealizedDA (fun _ : ℂ ↦ c) := by
   · simp
   · exact daOverRatFuncField.algebraMap_mem c
 
-set_option maxHeartbeats 1000000 in
 /-- **A mixed-constraint source with vanishing orbital divisor is differentially algebraic.**  This
 is the kernel of the triptic orbit-residue divisor: the source agrees, off a countable set, with an
 explicit finite combination of theta-source jets plus a constant, every one of which is
@@ -174,7 +173,6 @@ theorem differentiallyAlgebraic_toMeromorphicNFOn_of_vanishing_orbital_divisor
   exact RealizedDA.differentiallyAlgebraic ⟨x, hx, hxmem⟩
 
 
-set_option maxHeartbeats 1000000 in
 /-- **A mixed-constraint source with vanishing orbital divisor agrees, off a countable set, with a
 realized differentially algebraic function.**  This is the kernel theorem in the form that keeps the
 realizing germ, so that differential algebraicity can be transported through sums of functions

@@ -36,7 +36,6 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
 /-! ### Free exponents on the star of a direction -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Free translates on the star of a direction.**  Distinct exponents give distinct elements of
 the star: inside one face by faithful labelling, across faces by packet separation. -/
@@ -99,7 +98,6 @@ theorem facePacketSlice_zpow_injective_of_two_le {μ : ℂ} {rad : ι → ℝ} (
 
 /-! ### Off-star translates are differentially algebraic over the deeper field -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- Every integer translate of a packet element in a surviving direction differs from it by an
 element of the deeper face field. -/
@@ -214,7 +212,6 @@ theorem differentialAlgebraicOver_of_mem_differentialAdjoin
 
 /-! ### One layer of the hierarchy -/
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 /-- **Joint independence of a uniform face layer over the deeper face field.** -/
 theorem sineFaceStar_diffIndepOn_deeper {μ : ℂ} {rad : ι → ℝ} (hrad : ∀ k, 0 < rad k)

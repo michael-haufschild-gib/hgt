@@ -16,7 +16,7 @@ open CategoryTheory AlgebraicGeometry GaloisForLFunctions.HTGeometry Topological
 
 noncomputable section
 
-set_option maxHeartbeats 3000000
+set_option maxHeartbeats 400000
 set_option synthInstance.maxHeartbeats 1000000
 
 /-- Pullback of the standard slope chart to the projective relative normalization. -/

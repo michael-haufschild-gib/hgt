@@ -114,7 +114,6 @@ theorem cosetFacePacketUnion_le_free_adjoin (τ : ι → ℂ) (hτ : ∀ i, 0 < 
     exact E.mul_mem hy hw
 
 set_option synthInstance.maxHeartbeats 800000 in
-set_option maxHeartbeats 1000000 in
 /-- **No simultaneous telescoper on a free labelled deeper face field.** -/
 theorem cosetFacePacket_no_telescoping_of_free (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (A : Set ℂ)
     {S : Set (Finset ι)} (hS : ∀ L ∈ S, ∀ p : ι, p ∉ L → insert p L ∈ S)

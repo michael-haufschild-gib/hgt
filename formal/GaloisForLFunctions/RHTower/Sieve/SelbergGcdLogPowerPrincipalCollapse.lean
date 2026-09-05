@@ -627,7 +627,6 @@ theorem selbergGcdLogPowerPrincipalScaledModel_two_two_one_sub_harmonicMain
   intro d _
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- Harmonic replacement for `log(gcd)^2 log(N/m)^2 log(N/n)`. -/
 theorem tendsto_selbergGcdLogPowerPrincipalScaledModel_two_two_one_sub_harmonic_div_log_four_zero
     {A B : ℕ} (hA : 0 < A) (hB : 0 < B) :

@@ -12,7 +12,6 @@ the adjacent branch is at most `2/3 + o(1)`, while the unique overweight branch 
 -/
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 2000000
 
 noncomputable section
 namespace RHTower.Sieve

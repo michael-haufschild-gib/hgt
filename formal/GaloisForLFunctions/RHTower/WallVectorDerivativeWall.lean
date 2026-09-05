@@ -64,7 +64,6 @@ theorem rayShiftConst_mul_rpow_le {a x : ℝ} (hx : 1 ≤ x) :
       _ = (2 * x) ^ a := by rw [Real.mul_rpow (by norm_num) hx0.le]
       _ ≤ (1 + x) ^ a := Real.rpow_le_rpow_of_nonpos (by linarith) (by linarith) ha.le
 
-set_option maxHeartbeats 1000000 in
 /-- **The vector derivative wall.**  On a terminal ray the frequency-weighted propagated datum has
 infinite squared mass unless the datum vanishes. -/
 theorem lintegral_sq_freq_stripPropagator_eq_top {σ K₂ Y : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)

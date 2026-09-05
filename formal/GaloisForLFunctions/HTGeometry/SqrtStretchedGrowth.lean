@@ -16,7 +16,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 /-- The fourth term of the exponential series: `exp √n ≥ n²/24`. -/
 theorem sq_div_le_exp_sqrt (n : ℕ) : ((n : ℝ) ^ 2) / 24 ≤ Real.exp (Real.sqrt n) := by
@@ -174,7 +173,6 @@ noncomputable section
 
 open Filter Asymptotics
 
-set_option maxHeartbeats 1000000
 
 theorem isLittleO_log_sq_id : (fun x : ℝ => Real.log x ^ 2) =o[atTop] fun x : ℝ => x := by
   have hlog : Real.log =o[atTop] fun x : ℝ => x ^ (1 / 2 : ℝ) :=

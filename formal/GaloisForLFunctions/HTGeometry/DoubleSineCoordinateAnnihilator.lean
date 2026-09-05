@@ -35,7 +35,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
 variable {l : Fin 2 → ℂ}
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **Base change from the coordinate field to the two-cylinder field.**  Differential
 algebraicity over `ℂ(z)` implies differential algebraicity over `ℂ(u₁)(u₂)`: the coordinate `z`
 satisfies `z'' = 0`, so it is differentially algebraic over the two-cylinder field, and `ℂ(z)` lies
@@ -69,7 +68,6 @@ theorem differentialAlgebraicOver_twoCylinder_of_ratFunc (hl : LinearIndependent
   exact differentialAlgebraicOver_trans (differentialAlgebraicOver_coordinateMero hl) hy
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The double-sine source is hypertranscendental over the coordinate field.**  Hypertranscendence
 over the two-cylinder field transfers along the base change. -/
 theorem not_differentialAlgebraicOver_doubleSine_source (hl : LinearIndependent ℚ l)
@@ -110,7 +108,6 @@ theorem differentialAlgebraicOver_doubleSine_defect (ω : Fin 2 → ℂ)
     exact differentialAlgebraicOver_algebraMap_complex cst
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The augmentation-ideal annihilator of the double-sine source.**  For a two-period frame whose
 cylinder frequencies are rationally independent and whose second dilation is non-torsion, a
 meromorphic source with the exact cotangent defects has translation annihilator, modulo the
@@ -137,7 +134,6 @@ theorem daTranslationAnnihilator_doubleSine_eq_augIdeal (hl : LinearIndependent 
     (not_differentialAlgebraicOver_doubleSine_source hl ω hω0 hω1 hl0 hl1 hper0 hper1 htor hfix M cst h0 h1)
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **Total exponent is the complete invariant for the double sine.**  A translation operator sends
 the source into the differentially algebraic sector exactly when its coefficients sum to zero. -/
 theorem differentialAlgebraicOver_transApply_doubleSine_iff (hl : LinearIndependent ℚ l)
@@ -162,7 +158,6 @@ theorem differentialAlgebraicOver_transApply_doubleSine_iff (hl : LinearIndepend
     (not_differentialAlgebraicOver_doubleSine_source hl ω hω0 hω1 hl0 hl1 hper0 hper1 htor hfix M cst h0 h1) Q
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **Every structural translate of the double-sine source is hypertranscendental.** -/
 theorem not_differentialAlgebraicOver_transApply_doubleSine_monomial (hl : LinearIndependent ℚ l)
     (ω : Fin 2 → ℂ) (hω0 : ω 0 ≠ 0) (hω1 : ω 1 ≠ 0)

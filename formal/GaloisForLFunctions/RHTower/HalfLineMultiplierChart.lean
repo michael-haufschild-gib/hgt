@@ -19,7 +19,6 @@ namespace RHTower
 
 open MeasureTheory Set
 
-set_option maxHeartbeats 1000000
 
 noncomputable section
 

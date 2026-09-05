@@ -103,7 +103,6 @@ theorem additiveOrbitalDivisorAt_shiftDiffFun {G : ℂ → ℂ} {σ c p : ℂ} {
 
 /-! ## Finitely many nonzero classes -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The depth-two orbital divisor has finitely many nonzero classes modulo the period group.** -/
 theorem exists_finset_orbitalDivisor_classes {G : ℂ → ℂ} {τ σ : ℂ}
     (hG : MeromorphicOn G (Set.univ : Set ℂ)) (hper : PeriodicOneGerm G)
@@ -210,7 +209,6 @@ theorem mixedConstGerm_comp_add' {G : ℂ → ℂ} {τ σ Cst : ℂ}
     show w + σ + t = w + t + σ from by ring]
   exact hw
 
-set_option maxHeartbeats 1000000 in
 /-- **The signature descends one depth.**  If the `t`-difference of a depth-two source has
 vanishing orbital divisor, and `t` has infinite order modulo the period group, then the source
 itself has vanishing orbital divisor. -/

@@ -83,7 +83,6 @@ theorem analytic_neg_two_le_meromorphicOrderAt {f : ℂ → ℂ} {p : ℂ} (hf :
     have hle : ((-2 : ℤ)) ≤ (m : ℤ) := by omega
     exact_mod_cast WithTop.coe_le_coe.mpr hle
 
-set_option maxHeartbeats 1000000 in
 /-- **The continuation has exact order `-2` above a strip zero of `ξ`.** -/
 theorem meromorphicOrderAt_continuation_eq_neg_two {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : ρ.re < 1)
     (hz : xi ρ = 0) :

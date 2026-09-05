@@ -84,7 +84,6 @@ theorem mixedConstGerm_comm {F : ℂ → ℂ} {a b Cst : ℂ} (h : MixedConstGer
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The three pair-face signatures of a triple have one common pushforward.** -/
 theorem pairSig_triple_compat (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)

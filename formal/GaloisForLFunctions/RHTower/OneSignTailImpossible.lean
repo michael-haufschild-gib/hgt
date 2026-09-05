@@ -46,7 +46,6 @@ theorem countable_shifted_xi_zeroSet :
   have hinj : Function.Injective (fun s : ℂ => s - 1 / 2) := fun a b h => sub_left_inj.mp h
   exact xi_zeroSet_countable.preimage hinj
 
-set_option maxHeartbeats 2000000 in
 /-- **No one-sign tail.**  A profile whose transform continues with a genuine double pole above a
 Xi zero cannot be eventually nonnegative. -/
 theorem no_oneSign_tail {g : ℝ → ℝ} (hgc : Continuous g) {Gc : ℂ → ℂ}

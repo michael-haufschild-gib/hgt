@@ -99,7 +99,6 @@ theorem boundedDen_truncPowerSeries {F : PowerSeries ℂ}
 
 /-! ### The denominator recursion -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Pólya's denominator bound.**  For a nondegenerate Euler differential equation with
 bounded-denominator coefficients, the denominators of the coefficients of a formal solution divide
 the Mahler weight built from any denominators `A q` of the inverse indicial values. -/

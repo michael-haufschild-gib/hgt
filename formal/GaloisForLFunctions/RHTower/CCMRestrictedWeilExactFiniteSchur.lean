@@ -211,7 +211,7 @@ theorem ccmRestrictedWeilForm_nonneg_iff_finiteSchurBlocks
     rw [hblock f m, hsum] at h
     exact h
 
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 800000
 
 /-- The actual CCM restricted-Weil form admits an exact finite-dimensional Schur reduction. -/
 theorem exists_ccmRestrictedWeil_exactFiniteSchurComplement
@@ -311,7 +311,7 @@ theorem exists_ccmRestrictedWeil_exactFiniteSchurComplement
     exact add_nonneg (hschur f)
       (le_trans (mul_nonneg (by norm_num) (sq_nonneg _)) (hDcoercive _))
 
-set_option maxHeartbeats 200000
+set_option maxHeartbeats 800000
 
 end RHTower
 

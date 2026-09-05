@@ -113,7 +113,6 @@ theorem inter_simplex_ext
   rw [hj]
   exact hobj
 
-set_option maxHeartbeats 4000000 in
 /-- **Solomon's theorem in the smallest rank**, for the frames containing the chosen atom. -/
 theorem epi_pointedFrame_classes_base (hN : Nat.card ι = 0 + 3) (e₀ : Fin (0 + 3) ≃ ι)
     (hp : ∀ a, IsAtom (p a)) (hpW : ∀ a, p a ≤ W a) [Nonempty (famCoverIndex W p)]

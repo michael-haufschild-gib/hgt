@@ -15,7 +15,6 @@ namespace RHTower
 noncomputable section
 
 set_option maxRecDepth 20000 in
-set_option maxHeartbeats 6000000 in
 /-- At scale `1391/384`, exact Taylor certificate absorbs `61/20` dominant pairs. -/
 theorem sixtyOneTwentieths_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul_singleCore_of_1391Over384_le
     {A : ℝ} (hA : (1391 / 384 : ℝ) ≤ A) :

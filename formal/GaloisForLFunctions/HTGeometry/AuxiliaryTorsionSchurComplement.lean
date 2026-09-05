@@ -35,9 +35,8 @@ theorem auxiliaryTorsionSchurComplement_apply (logKappa source : ℝ) :
     auxiliaryTorsionSchurComplement logKappa source = Real.exp logKappa * source := by
   rw [auxiliaryTorsionSchurComplement, schurComplement_apply]
   simp [auxiliaryTorsionCoupling, auxiliaryTorsionBoundary]
-  rw [← mul_assoc, ← Real.exp_add]
-  congr 1
-  ring
+  rw [← mul_assoc, ← Real.exp_add,
+    show logKappa / 2 + logKappa / 2 = logKappa by ring]
 
 /-- Schur-complement quadratic energy equals the completed-square contact Lagrangian. -/
 theorem auxiliaryTorsionSchurQuadratic_eq_contact (logKappa source : ℝ) :

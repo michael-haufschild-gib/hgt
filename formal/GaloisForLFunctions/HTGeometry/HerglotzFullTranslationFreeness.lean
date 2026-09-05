@@ -19,7 +19,6 @@ open scoped ENNReal
 
 noncomputable section
 
-set_option maxHeartbeats 2000000
 
 /-- Factorial multiplier on a family jet coordinate; the spectral base coordinate has multiplier
 one. -/

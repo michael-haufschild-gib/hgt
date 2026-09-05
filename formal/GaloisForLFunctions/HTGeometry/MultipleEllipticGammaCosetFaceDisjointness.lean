@@ -51,7 +51,6 @@ theorem cosetFaceShiftSet_add_subsetSum
   obtain ⟨α, hα, u, hu, rfl⟩ := hg
   exact ⟨α, hα, u + ∑ i ∈ E, τ i, faceShiftLattice_add_subsetSum τ K E hEK hu, by ring⟩
 
-set_option maxHeartbeats 3000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Difference cubes over distinct labelled bottom faces never agree.** -/
 theorem cosetFaceDifferenceCube_ne_of_distinct_bottom_faces
@@ -220,7 +219,6 @@ theorem cosetFaceDifferenceCube_ne_of_distinct_bottom_faces
     (S0.smul_mem_iff hcoeff).mp hsmul_mem
   exact (linearIndependent_iff_notMem_span.mp hlin i0) hi0_mem
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- A labelled translate of a bottom face coordinate is never a difference cube of another
 labelled translate, once one cube term is already known to differ. -/
@@ -332,7 +330,6 @@ theorem cosetBottom_translate_ne_faceDifferenceCube_of_term_ne
     (S0.smul_mem_iff hcoeff).mp hsmul_mem
   exact (linearIndependent_iff_notMem_span.mp hlin i0) hi0_mem
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- A labelled translate of a bottom face coordinate is never a nonempty difference cube of
 another labelled translate. -/
@@ -398,7 +395,6 @@ theorem cosetBottom_translate_ne_faceDifferenceCube
     exact cosetBottom_translate_ne_faceDifferenceCube_of_term_ne τ hτ hQ hA K
       haK hbK hab hK hperiods V hVK hg hh {q} hsingleV hne1
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- Labelled strict face-depth rigidity, relative to a bottom extension. -/
 theorem cosetFace_translate_ne_of_nested_of_bottom_extension
@@ -484,7 +480,6 @@ theorem cosetFace_translate_ne_of_nested_of_bottom_extension
   exact (cosetBottom_translate_ne_faceDifferenceCube τ hτ hQ hA K haK hbK hab hK hperiods
     V hVK hV hgK hhK) hcube
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Labelled strict face-depth rigidity.** -/
 theorem cosetFace_translate_ne_of_ssubset
@@ -529,7 +524,6 @@ theorem cosetFace_translate_ne_of_ssubset
       (linearIndependent_ellipticGammaSourcePeriods_of_periodsIntegrallyIndependent τ hQ hab)
       hg hh
 
-set_option maxHeartbeats 3000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Complete labelled face-packet disjointness.**  Labelled translates of any two distinct
 deletion faces are distinct. -/

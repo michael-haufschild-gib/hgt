@@ -117,7 +117,6 @@ theorem coeff_wSeries_pow (k : Type*) [Field k] (p : ℕ) (γ : ℚ) :
     rw [HahnSeries.coeff_single_same, if_pos rfl]
   · rw [if_neg h, HahnSeries.coeff_single_of_ne h]
 
-set_option maxHeartbeats 1000000 in
 /-- **The reduced trace satisfies its Mahler equation** `K(w) = (p−2)w + w^p + p·K(w^p)`. -/
 theorem traceSeries_mahler_equation [CharZero k] (p : ℕ) (hp : 1 < p) :
     traceSeries (k := k) p hp
@@ -237,7 +236,6 @@ theorem mahlerPEmbed_traceIncrement [CharZero k] (p : ℕ) (hp : 1 < p) :
   rw [traceIncrement, map_mul, mahlerPEmbed_algebraMap_perfect, mahlerPEmbed_X_inv,
     traceCoeff_zero_coe]
 
-set_option maxHeartbeats 1000000 in
 /-- **The trace germ is an additive primitive** of a base increment for the Mahler
 substitution. -/
 theorem traceGerm_shift [CharZero k] (p : ℕ) (hp : 1 < p) :
@@ -268,7 +266,6 @@ theorem traceGerm_shift [CharZero k] (p : ℕ) (hp : 1 < p) :
         + HahnSeries.C (-(HahnSeries.C (((p : k)) - 2) * wSeries k + (wSeries k) ^ p))
           * mahlerCoordInv k := by ring
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The reduced one-particle trace of the `p`-adic Neumann-to-Dirichlet spectrum is
 hypertranscendental** over the two-variable perfect base, for every `p ≥ 2`. -/
@@ -289,7 +286,6 @@ theorem hypertranscendentalOver_traceGerm [CharZero k] (p : ℕ) (hp : 1 < p) :
     (traceIncrement (k := k) p hp) (traceGerm_shift p hp)
     (fun c hc y => no_traceIncrement_telescoper p hp c hc y)
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The reduced trace itself is hypertranscendental for the Euler derivation** `w d/dw`, over
 the two-variable perfect base. -/

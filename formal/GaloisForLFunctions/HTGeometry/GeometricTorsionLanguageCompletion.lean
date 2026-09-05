@@ -52,7 +52,6 @@ theorem hypertranscendental_of_geometricTLU_lockedFace
     (input.torsionFaceVanishes_of_differentiallyAlgebraic hDA)
   exact hweight (hall e he)
 
-set_option maxHeartbeats 2000000 in
 /-- **Unconditional geometric TLU hypertranscendence.**  An exact geometric Taylor
 log-magnitude with a convergent additive correction and a torsion-language-universal unit phase
 admits no algebraic differential equation.  The balanced survivor, finite locked face,
@@ -105,7 +104,6 @@ theorem hypertranscendental_of_geometric_torsionLanguageUniversal
     (n := n') (D := D) (K₀ := K) (τ := 0) (M₀ := M)
     Q hrel hD hDmax p hpcount hpweight
 
-set_option maxHeartbeats 1200000 in
 /-- Eventual paper form of geometric TLU hypertranscendence.  An arbitrary finite Taylor prefix is
 removed by a polynomial correction; the geometric correction and phase are changed only on that
 finite prefix, so convergence and torsion-language universality are preserved. -/

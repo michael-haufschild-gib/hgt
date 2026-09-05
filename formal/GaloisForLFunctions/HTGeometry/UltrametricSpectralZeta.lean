@@ -53,7 +53,6 @@ theorem oneSubPX_ne_zero (p : ℕ) :
   rw [if_pos trivial, HahnSeries.coeff_single_of_ne (by norm_num : (0 : ℤ) ≠ 1), sub_zero] at h3
   exact one_ne_zero h3
 
-set_option maxHeartbeats 1000000 in
 /-- **The Dirichlet reporter is rational**: the spectral zeta series is the expansion of a
 rational function of `u = p^(-s)`. -/
 theorem zetaSeries_eq_algebraMap [CharZero k] (p : ℕ) (hp : 1 < p) :

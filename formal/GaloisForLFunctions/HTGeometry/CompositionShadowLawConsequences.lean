@@ -26,7 +26,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
   relativeGaugeComplexAlgebraAnalytic
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **An algebraic generator adds no transcendence degree.** -/
 theorem trdeg_adjoin_insert_eq_of_isAlgebraic
     {S : Set (meroField (Set.univ : Set ℂ))} {x : meroField (Set.univ : Set ℂ)}
@@ -76,7 +75,6 @@ theorem jetSet_eq_insert {u : ℂ → ℂ} (hu : Differentiable ℂ u) :
     · exact Set.mem_insert_of_mem _ ⟨j + 1, rfl⟩
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The primitive defect is zero or one.**  The differential rank exceeds the shadow rank by at
 most the single state contributed by the function itself. -/
 theorem daRank_eq_shadowRank_or_succ {u : ℂ → ℂ} (hu : Differentiable ℂ u) :
@@ -90,7 +88,6 @@ theorem daRank_eq_shadowRank_or_succ {u : ℂ → ℂ} (hu : Differentiable ℂ 
     rw [daRank, jetSet_eq_insert hu, trdeg_adjoin_insert_eq_add_one halg, shadowRank']
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The differential order law.**  Composing with an autonomous first-order cap gives the shadow
 rank of the input plus one. -/
 theorem daRank_comp {f g : ℂ → ℂ} (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
@@ -129,7 +126,6 @@ theorem compression_ledger {h : ℕ → ℂ → ℂ} (hh : ∀ k, Differentiable
         _ = daRank (hh 0) + ((N + 1 : ℕ) : Cardinal) := by push_cast; ring
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The hypertranscendental transfer.**  If the coordinate and the derivatives of positive order
 of the inner function are algebraically independent, the coordinate and the jets of the composition
 up to order `n` have transcendence degree `n + 2`. -/

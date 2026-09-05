@@ -449,7 +449,6 @@ open Filter Topology
 
 noncomputable section
 
-set_option maxHeartbeats 1000000 in
 /-- **The normalised ladder slope is below its majorant.** -/
 theorem eventually_slope_quotient_le {A delta Ctot β γ : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1)
     (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) (hCtot : 0 ≤ Ctot) :

@@ -92,7 +92,6 @@ theorem coeff_mahlerDilationInv [CharZero k] (p : ℕ) (hp : 1 < p) (f : MahlerA
       = (HahnSeries.C ((p : k)) : HahnSeries ℚ k) ^ n * mahlerHomInv p (by omega) (f.coeff n) := by
   simp [mahlerDilationInv]
 
-set_option maxHeartbeats 1000000 in
 theorem mahlerDilation_mahlerDilationInv [CharZero k] (p : ℕ) (hp : 1 < p) (f : MahlerAmbient k) :
     mahlerDilation p hp (mahlerDilationInv p hp f) = f := by
   have hpk : ((p : k)) ≠ 0 := by
@@ -103,7 +102,6 @@ theorem mahlerDilation_mahlerDilationInv [CharZero k] (p : ℕ) (hp : 1 < p) (f 
     mahlerHom_mahlerHomInv, ← mul_assoc, ← mul_zpow, ← map_mul, inv_mul_cancel₀ hpk, map_one,
     one_zpow, one_mul]
 
-set_option maxHeartbeats 1000000 in
 theorem mahlerDilationInv_mahlerDilation [CharZero k] (p : ℕ) (hp : 1 < p) (f : MahlerAmbient k) :
     mahlerDilationInv p hp (mahlerDilation p hp f) = f := by
   have hpk : ((p : k)) ≠ 0 := by
@@ -193,7 +191,6 @@ theorem mahlerPEmbed_algebraMap_const [CharZero k] (p : ℕ) (hp : 1 < p) (c : k
 
 /-! ## The criterion -/
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The differential Ostrowski criterion in the Mahler model.**  An additive primitive of a base
 increment for the substitution `w ↦ w^p`, `h ↦ p⁻¹h` is differentially transcendental over the

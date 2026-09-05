@@ -89,7 +89,6 @@ theorem integral_affineExp {a b c σ : ℝ} (h : c < σ) :
   field_simp
 
 
-set_option maxHeartbeats 1000000 in
 /-- **The archimedean layer's Laplace transform.** -/
 theorem integral_suzukiFreeArchPositionTorque_mul_exp {σ : ℝ} (hσ : 3 / 2 < σ) :
     (∫ L in Ioi (0 : ℝ), suzukiFreeArchPositionTorque L * Real.exp (-σ * L))

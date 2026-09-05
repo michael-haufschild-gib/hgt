@@ -109,6 +109,36 @@ theorem logMonomialHessian_eq_entries (coefficient p q x y : ℝ) :
       logMonomialDxy, logMonomialDyy]
   all_goals ring
 
+/-- Every individual log-monomial Hessian has zero determinant. -/
+theorem logMonomialHessian_det (coefficient p q x y : ℝ) :
+    (logMonomialHessian coefficient p q x y).det = 0 := by
+  rw [logMonomialHessian_eq_entries, Matrix.det_fin_two]
+  change
+    logMonomialDxx coefficient p q x y * logMonomialDyy coefficient p q x y -
+      logMonomialDxy coefficient p q x y * logMonomialDxy coefficient p q x y = 0
+  unfold logMonomialDxx logMonomialDxy logMonomialDyy
+  ring
+
+/-- The vector perpendicular to the exponent vector is a canonical Hessian null direction. -/
+theorem logMonomialHessian_mulVec_perp (coefficient p q x y : ℝ) :
+    logMonomialHessian coefficient p q x y *ᵥ ![q, -p] = 0 := by
+  funext i
+  rw [logMonomialHessian_eq_entries]
+  fin_cases i <;> norm_num [Matrix.mulVec, Fin.sum_univ_two]
+  all_goals simp only [logMonomialDxx, logMonomialDxy, logMonomialDyy]
+  all_goals ring
+
+/-- Quadratic form of a monomial Hessian is one weighted square. -/
+theorem logMonomialHessian_quadratic
+    (coefficient p q x y : ℝ) (z : Fin 2 → ℝ) :
+    star z ⬝ᵥ (logMonomialHessian coefficient p q x y *ᵥ z) =
+      logMonomial coefficient p q x y * (p * z 0 + q * z 1) ^ 2 := by
+  have hstar : star z = z := by ext i; simp
+  rw [hstar, logMonomialHessian_eq_entries]
+  norm_num [dotProduct, Matrix.mulVec, Fin.sum_univ_two]
+  unfold logMonomialDxx logMonomialDxy logMonomialDyy
+  ring
+
 /-- Every positive exponential monomial has positive-semidefinite log Hessian. -/
 theorem logMonomialHessian_exp_posSemidef (gamma p q x y : ℝ) :
     (logMonomialHessian (Real.exp gamma) p q x y).PosSemidef := by
@@ -235,6 +265,48 @@ theorem twoModulusFluxLogHessian_posSemidef (logB logQ m n x y : ℝ) :
     apply (HankelNormalization.posSemidef_rankOne (logMonomialExponentVector 2 8)).smul
     unfold logMonomial
     positivity
+
+/-- With nonzero fluxes encoded exponentially, the two non-collinear flux exponent vectors span
+both radion directions and make the flux Hessian positive definite. -/
+theorem twoModulusFluxLogHessian_exp_posDef
+    (logB logQ logM logN x y : ℝ) :
+    (twoModulusFluxLogHessian logB logQ (Real.exp logM) (Real.exp logN) x y).PosDef := by
+  refine Matrix.PosDef.of_dotProduct_mulVec_pos
+    (twoModulusFluxLogHessian_posSemidef logB logQ (Real.exp logM)
+      (Real.exp logN) x y).isHermitian ?_
+  intro z hz
+  let alpha := logMonomial (Real.exp logB * Real.exp logM ^ 2 / 2) 6 4 x y
+  let beta := logMonomial
+    (Real.exp logB * Real.exp logQ * Real.exp logN ^ 2) 2 8 x y
+  have halpha : 0 < alpha := by unfold alpha logMonomial; positivity
+  have hbeta : 0 < beta := by unfold beta logMonomial; positivity
+  have hquad :
+      star z ⬝ᵥ (twoModulusFluxLogHessian logB logQ (Real.exp logM)
+          (Real.exp logN) x y *ᵥ z) =
+        alpha * (6 * z 0 + 4 * z 1) ^ 2 +
+          beta * (2 * z 0 + 8 * z 1) ^ 2 := by
+    rw [twoModulusFluxLogHessian, Matrix.add_mulVec, dotProduct_add,
+      logMonomialHessian_quadratic, logMonomialHessian_quadratic]
+  rw [hquad]
+  have hspan : 6 * z 0 + 4 * z 1 ≠ 0 ∨ 2 * z 0 + 8 * z 1 ≠ 0 := by
+    by_contra h
+    push Not at h
+    have hz0 : z 0 = 0 := by linarith [h.1, h.2]
+    have hz1 : z 1 = 0 := by linarith [h.1, h.2]
+    apply hz
+    funext i
+    fin_cases i <;> assumption
+  rcases hspan with hfirst | hsecond
+  · have hpos : 0 < alpha * (6 * z 0 + 4 * z 1) ^ 2 :=
+      mul_pos halpha (sq_pos_of_ne_zero hfirst)
+    have hnonneg : 0 ≤ beta * (2 * z 0 + 8 * z 1) ^ 2 :=
+      mul_nonneg hbeta.le (sq_nonneg _)
+    linarith
+  · have hnonneg : 0 ≤ alpha * (6 * z 0 + 4 * z 1) ^ 2 :=
+      mul_nonneg halpha.le (sq_nonneg _)
+    have hpos : 0 < beta * (2 * z 0 + 8 * z 1) ^ 2 :=
+      mul_pos hbeta (sq_pos_of_ne_zero hsecond)
+    linarith
 
 /-- Attractive curvature and torsion part of the logarithmic Hessian. -/
 def twoModulusAttractiveLogHessian (logA logC family x y : ℝ) :

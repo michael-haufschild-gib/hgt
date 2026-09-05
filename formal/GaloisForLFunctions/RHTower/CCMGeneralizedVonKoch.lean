@@ -850,7 +850,8 @@ theorem chebyshevErrorPowerSpectrum_of_half_le {alpha : ℝ} (halpha : 1 / 2 ≤
   have hlinear := hC x hx
   have herr : |chebyshevPsiReal x - x| ≤ (C + 1) * x := by
     rw [abs_le]
-    constructor <;> nlinarith
+    constructor <;>
+      linarith only [hlinear, hpsi0, hx0.le, mul_nonneg hC0.le hx0.le]
   have hexponent : (1 : ℝ) ≤ 1 / 2 + alpha + epsilon := by linarith
   have hpow : x ≤ x ^ (1 / 2 + alpha + epsilon) := by
     calc

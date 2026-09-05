@@ -148,7 +148,6 @@ theorem laurentCoeff_diffCube (τ : ι → ℂ) (s : Finset ι) {G : ℂ → ℂ
 
 /-! ## Realizing a prescribed charge -/
 
-set_option maxHeartbeats 1600000 in
 /-- **Every prescribed bottom charge is realized by an atom sum.**  A divisor on the elliptic
 quotient, concentrated in finitely many orders and with vanishing line sums in every transverse
 direction, is the full difference cube of the principal-part data of a finite atom sum. -/

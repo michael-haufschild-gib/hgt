@@ -17,7 +17,6 @@ derivative tower:
   boundary test function vanishing at the endpoint.
 -/
 
-set_option maxHeartbeats 1600000
 
 open Filter Topology Set MeasureTheory
 

@@ -214,7 +214,6 @@ theorem inner_gradedPiece_eq_zero (A : Fin (m + 2) → Submodule ℂ E) {i j : F
   · exact inner_gradedPiece_eq_zero_of_lt A h hx hy
   · exact inner_eq_zero_comm (inner_gradedPiece_eq_zero_of_lt A h hy hx)
 
-set_option maxHeartbeats 1000000 in
 theorem sup_gradedPiece (A : Fin (m + 2) → Submodule ℂ E) (hA : Monotone A) (j : Fin (m + 2)) :
     (⨆ i ∈ {i : Fin (m + 2) | i < j}, A i) ⊔ gradedPiece A j = A j := by
   have hle : (⨆ i ∈ {i : Fin (m + 2) | i < j}, A i) ≤ A j := iSup₂_le fun i hi => hA (le_of_lt hi)

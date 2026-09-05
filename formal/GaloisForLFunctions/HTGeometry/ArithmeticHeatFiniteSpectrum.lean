@@ -283,7 +283,6 @@ theorem infinite_chartBall : (Metric.ball (1 : ℂ) (1 / 2)).Infinite := by
 
 /-! ### The finite-spectrum theorem -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Algebraic entire-heat differentially algebraic fibres have finite spectrum.**  A one-sided
 periodic heat orbit with algebraic Fourier amplitudes that converges for every complex time and
 place has only finitely many nonzero amplitudes as soon as its spatial fibre at time zero is

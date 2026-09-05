@@ -93,7 +93,6 @@ theorem sameClass_out_iff (a b p : ℂ) (g : ℂ ⧸ tripticPeriodGroup a b) :
   rw [QuotientAddGroup.out_eq']
   exact eq_comm
 
-set_option maxHeartbeats 1600000 in
 theorem additiveOrbitalDivisorAt_tripticOperatorCarrier {a b : ℂ}
     (ha : 0 < a.im) (hb : 0 < b.im) (hindep : IndepPeriods a b)
     (D : TripticDifferentialGroupAlgebra a b) (p : ℂ) (i : ℕ) :
@@ -256,7 +255,6 @@ theorem additiveOrbitalDivisorAt_eq_gammaCorrection_of_vanishing
   rw [hsplit] at hz
   exact sub_eq_zero.mp hz
 
-set_option maxHeartbeats 1600000 in
 theorem additiveOrbitalDivisorAt_tripticConstraintOperatorCarrier_eq
     {F : ℂ → ℂ} {a b Cst : ℂ} (hF : MeromorphicOn F Set.univ)
     (hper : PeriodicOneGerm F) (hmixed : MixedConstGerm F a b Cst)
@@ -308,7 +306,6 @@ theorem additiveOrbitalDivisorAt_tripticConstraintOperatorCarrier_eq
       hF hper hmixed ha hb hindep P J hvanish p i] at hgamma
     exact hgamma.symm
 
-set_option maxHeartbeats 2000000 in
 theorem exists_tripticOperator_normalForm
     {F : ℂ → ℂ} {a b Cst : ℂ} (hF : MeromorphicOn F Set.univ)
     (hper : PeriodicOneGerm F) (hmixed : MixedConstGerm F a b Cst)
@@ -345,7 +342,6 @@ theorem exists_tripticOperator_normalForm
   exact (differentiallyAlgebraic_toMeromorphicNFOn_of_vanishing_orbital_divisor
     hGmero hGper hGmixed ha hb (indepTriple_of_indepPeriods hindep) hindepA hindepB hzero).2
 
-set_option maxHeartbeats 2400000 in
 theorem tripticOperator_normalForm_unique
     {F : ℂ → ℂ} {a b Cst : ℂ} (hF : MeromorphicOn F Set.univ)
     (hper : PeriodicOneGerm F) (hmixed : MixedConstGerm F a b Cst)
@@ -487,7 +483,6 @@ theorem mem_finiteSupportTranslationStabilizer_iff_coeff_add
     rw [sub_add_cancel] at htrans hpoly
     exact htrans.trans hpoly.symm
 
-set_option maxHeartbeats 2400000 in
 theorem differentiallyAlgebraic_shiftDiff_iff_operator_stabilizer
     {F : ℂ → ℂ} {a b Cst : ℂ} (hF : MeromorphicOn F Set.univ)
     (hper : PeriodicOneGerm F) (hmixed : MixedConstGerm F a b Cst)
@@ -757,7 +752,6 @@ def tripticDifferentialActionConst (P : TripticDifferentialGroupAlgebra a b) (Cs
   ∑ g ∈ P.coeff.support, ∑ j ∈ (P.coeff g).support,
     (P.coeff g).coeff j * if j = 0 then Cst else 0
 
-set_option maxHeartbeats 800000 in
 theorem meromorphicOn_tripticDifferentialAction {a b : ℂ} {F : ℂ → ℂ}
     (hF : MeromorphicOn F Set.univ) (P : TripticDifferentialGroupAlgebra a b) :
     MeromorphicOn (tripticDifferentialAction a b P F) Set.univ := by
@@ -772,7 +766,6 @@ theorem meromorphicOn_tripticDifferentialAction {a b : ℂ} {F : ℂ → ℂ}
             (meromorphicAt_comp_add (f := F) (a := z) (h := -Quotient.out g)).mpr
               (hF (z + -Quotient.out g) (Set.mem_univ _))) j) _
 
-set_option maxHeartbeats 800000 in
 theorem periodicOneGerm_tripticDifferentialAction {a b : ℂ} {F : ℂ → ℂ}
     (hF : MeromorphicOn F Set.univ) (hper : PeriodicOneGerm F)
     (P : TripticDifferentialGroupAlgebra a b) :
@@ -789,7 +782,6 @@ theorem periodicOneGerm_tripticDifferentialAction {a b : ℂ} {F : ℂ → ℂ}
               (hF (z + -Quotient.out g) (Set.mem_univ _)))
           (by simpa [sub_eq_add_neg] using periodicOneGerm_comp_add hper (-Quotient.out g)) j) _
 
-set_option maxHeartbeats 800000 in
 theorem mixedConstGerm_tripticDifferentialAction {a b Cst : ℂ} {F : ℂ → ℂ}
     (hF : MeromorphicOn F Set.univ) (hmixed : MixedConstGerm F a b Cst)
     (P : TripticDifferentialGroupAlgebra a b) :
@@ -885,7 +877,6 @@ theorem finiteOrbitSupport_iteratedDeriv_comp_sub
   exact finite_support_orbitalDivisorTerm hjmero hjper hjmixed ha
     (indepSwap_of_indepPeriods hindep) p (by omega)
 
-set_option maxHeartbeats 1200000 in
 theorem additiveOrbitalDivisorAt_tripticDifferentialAction
     {F : ℂ → ℂ} {a b Cst : ℂ} (hF : MeromorphicOn F Set.univ)
     (hper : PeriodicOneGerm F) (hmixed : MixedConstGerm F a b Cst)
@@ -1007,7 +998,6 @@ theorem AddMonoidAlgebra.coeff_mul_eq_sum_support
           simpa [add_assoc] using heq
         simpa [this] using hh))]
 
-set_option maxHeartbeats 2000000 in
 theorem additiveOrbitalDivisorAt_tripticDifferentialAction_eq_mul_coeff
     {F : ℂ → ℂ} {a b Cst : ℂ} (hF : MeromorphicOn F Set.univ)
     (hper : PeriodicOneGerm F) (hmixed : MixedConstGerm F a b Cst)
@@ -1066,7 +1056,6 @@ theorem additiveOrbitalDivisorAt_tripticDifferentialAction_eq_mul_coeff
       (by exact_mod_cast (by omega : -(j : ℤ) ≤ -((i : ℤ) + 1))) (by omega)]
     simp
 
-set_option maxHeartbeats 2400000 in
 /-- **Exact mixed differential-translation annihilator.**  For a source with intrinsic divisor
 `D`, an actual finite differential-translation operator `P` has DA output exactly when the literal
 group-algebra product `P * D` vanishes. -/
@@ -1281,7 +1270,6 @@ theorem tripticDifferentialGroupAlgebraRowMatroid_indep_iff
     differentialOperatorRowMatroid_indep_iff,
     linearIndependent_restrict_tripticPreferredOperatorRows_iff]
 
-set_option maxHeartbeats 2400000 in
 /-- **Complete nonlinear triptic operator-row matroid.**  Every finite family of polynomial rows
 on the literal quotient `ℂ/H₃` acts on a preferred finite packet of elliptic-gamma translates, and
 its genuine differential matroid over `ℂ(z)` is exactly its localized `ℂ(δ)` row matroid. -/
@@ -1309,7 +1297,6 @@ theorem tripticPreferredOperatorRows_differentialMatroid
     (differentialFamilyMatroid_differentialOperatorRows_rationalBase_eq
       (tripticPreferredOperatorRows Q) x hxR)
 
-set_option maxHeartbeats 2400000 in
 /-- Numerical `ℂ(δ)`-rank form of the complete finite-family theorem. -/
 theorem tripticPreferredOperatorRows_differentialRank
     {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)

@@ -53,7 +53,7 @@ theorem sum_afeDirectCoeff_eq (x : ℝ) (N : ℕ) (τ : ℝ) :
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [afeDirectTerm_eq x n τ]
 
-set_option maxHeartbeats 1600000 in
+set_option maxHeartbeats 400000 in
 /-- **The truncation bound for the direct edge.**  The tail beyond `N` is dominated by the
 `3/2`-power tail, uniformly in the height. -/
 theorem exists_norm_smoothAFEDirectSeries_sub_dirPoly_le :

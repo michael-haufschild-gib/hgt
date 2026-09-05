@@ -133,7 +133,7 @@ end Ring
 
 section YangBaxter
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 /-- **The adjacent spectral braid equation holds for arbitrary flip-diagonal coefficients.**  No
 symmetry, regularity or analyticity of the coefficient functions is needed: both sides send
 `e_a ⊗ e_b ⊗ e_c` to the same multiple of `e_c ⊗ e_b ⊗ e_a`. -/

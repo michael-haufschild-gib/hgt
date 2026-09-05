@@ -299,7 +299,6 @@ theorem inv_natCast_zpow_ne_one [CharZero k] {p : ℕ} (hp : 1 < p) {n : ℤ} (h
   intro h
   exact natCast_zpow_ne_one_local hp hn (inv_eq_one.mp h)
 
-set_option maxHeartbeats 2000000 in
 theorem no_resolvent_telescoper [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 0 < m)
     (c : (Unit × ℕ) →₀ k) (hc : c ≠ 0) (y : RatFunc k) :
     letI := cylinderDifferential (1 : k)
@@ -485,7 +484,6 @@ theorem resolventGerm_shift [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 
   rw [resolventGerm]
   linear_combination -h
 
-set_option maxHeartbeats 2000000 in
 /-- **The one-loop resolvent germ is differentially transcendental** over `k(x)` in the twisted
 coordinate. -/
 theorem differentialIndependent_resolventGerm [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ}
@@ -533,7 +531,6 @@ theorem resolventGerm_eq_trace_mul [CharZero k] (p m : ℕ) :
   rw [resolventTrace, mul_comm (resolventGerm (k := k) p m), ← mul_assoc,
     mul_inv_cancel₀ (algebraMap_X_pow_ne_zero (m - 1)), one_mul]
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 /-- **The one-loop resolvent trace is hypertranscendental** over `k(x)` for the Euler
 derivation. -/
@@ -619,7 +616,6 @@ theorem innerDilation_algebraMap_X_pow (b : k) (hb : b ≠ 0) (j : ℕ) :
     rw [HahnSeries.coeff_single_same, zpow_natCast]
   · rw [HahnSeries.coeff_single_of_ne h, mul_zero, mul_zero]
 
-set_option maxHeartbeats 1000000 in
 /-- **The exact scale-defect theorem**: `Q(x) = (p−2)/(x+1)^m + 1/(x+p)^m + p^(1−m)·Q(x/p)`. -/
 theorem resolventTrace_constraint [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 1 < m) :
     resolventTrace (k := k) p m

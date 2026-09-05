@@ -139,7 +139,6 @@ theorem notMem_sineBottomSpan {μ : ℂ} {rad : ι → ℝ} (hrad : ∀ k, 0 < r
 
 /-! ### A translate is never a nontrivial difference cube of the same bottom coordinate -/
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **A translate is not a difference cube with a separated term.**  If some term of the cube
 differs from the given translate, the two cannot agree modulo the rational coordinate field. -/
@@ -265,7 +264,6 @@ theorem bottom_translate_sub_cube_notMem_rational {μ : ℂ} {rad : ι → ℝ} 
 
 /-! ### Difference cubes over distinct bottom faces are separated -/
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Difference cubes over distinct bottom faces never agree modulo the rational coordinate
 field.** -/

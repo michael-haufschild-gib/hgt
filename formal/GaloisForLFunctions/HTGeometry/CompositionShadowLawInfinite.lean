@@ -41,7 +41,6 @@ theorem jetGen_zero_eq_coordElem {g : ℂ → ℂ} (hg : Differentiable ℂ g) (
   simp [jetGenFun]
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The shadow law for the full jet field.**  For a transcendental entire `f` satisfying an
 autonomous first-order relation and a transcendental entire `g`, the coordinate together with the
 complete jet family of `f ∘ g` generates a field of transcendence degree one more than the

@@ -1,4 +1,4 @@
-import Mathlib
+import GaloisForLFunctions.HTGeometry.AuxiliaryTorsionElimination
 
 /-!
 # Spin-torsion correlator scaling
@@ -46,6 +46,22 @@ theorem vacuumSpinTorsionCorrelator_family_scale
       scale ^ 2 * vacuumSpinTorsionCorrelator dR family volume separation := by
   unfold vacuumSpinTorsionCorrelator
   ring
+
+/-- Separated interaction-energy density obtained from the exact `κ/32` Hamiltonian coefficient. -/
+def separatedSpinTorsionEnergyDensity
+    (logKappa dR family volume separation : ℝ) : ℝ :=
+  spinTorsionInteractionHamiltonian (Real.exp logKappa)
+    (vacuumSpinTorsionCorrelator dR family volume separation)
+
+/-- Positive gravitational coupling and positive physical scales make the separated vacuum energy
+strictly attractive. -/
+theorem separatedSpinTorsionEnergyDensity_exp_neg (kappa d n v r : ℝ) :
+    separatedSpinTorsionEnergyDensity kappa (Real.exp d) (Real.exp n)
+      (Real.exp v) (Real.exp r) < 0 := by
+  unfold separatedSpinTorsionEnergyDensity spinTorsionInteractionHamiltonian
+  exact div_neg_of_neg_of_pos
+    (mul_neg_of_pos_of_neg (Real.exp_pos kappa)
+      (vacuumSpinTorsionCorrelator_exp_neg d n v r)) (by norm_num)
 
 /-- A log-separation translation acts with weight `-6`. -/
 theorem vacuumSpinTorsionCorrelator_logSeparationShift

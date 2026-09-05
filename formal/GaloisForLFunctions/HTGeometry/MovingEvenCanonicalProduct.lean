@@ -19,7 +19,6 @@ open Complex Set Topology
 open scoped ComplexConjugate
 
 noncomputable section
-set_option maxHeartbeats 2000000
 
 def movingEvenCanonicalProduct
     (θ : BoundedRealSequence) (z : ℂ) : ℂ :=

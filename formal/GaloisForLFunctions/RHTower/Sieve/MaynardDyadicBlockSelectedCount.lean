@@ -4,7 +4,6 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardSelectedCellRouteTFixedCutoffCou
 import GaloisForLFunctions.RHTower.Sieve.MaynardTwoAlternativeGapReceiver
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1500000
 
 noncomputable section
 

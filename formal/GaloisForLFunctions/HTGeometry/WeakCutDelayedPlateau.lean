@@ -210,7 +210,6 @@ section Capstone
 
 variable (k : ℕ) {a b : ℕ}
 
-set_option maxHeartbeats 1000000 in
 /-- **Theorem C: a weak cut delays the onset while the later plateau, the recurrence and the
 locality are unaffected.**  One product cubic-phase seed and one unit shell direction can be fixed
 together so that the split synthesis cap survives the whole prescribed delay, the evolution is hard

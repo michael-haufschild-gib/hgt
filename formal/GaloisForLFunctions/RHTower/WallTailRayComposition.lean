@@ -84,7 +84,7 @@ theorem continuousOn_invFamilyProduct_pair {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ
     hA.mul (((hA.mul hD1).mul hA).neg)
   exact h
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 omit [Nontrivial X] in
 theorem aestronglyMeasurable_firstBoundaryBlock {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m : ℝ} {A : Set ℝ} (hA : MeasurableSet A)
@@ -131,7 +131,7 @@ theorem aestronglyMeasurable_firstBoundaryBlock {σ : ℝ} (hσ0 : 0 < σ) (hσ1
           • (invFamily (wallGeneratorShift T σ L) x (g L))) (μ.prod ν) := hph.smul hev
   exact hjoint.integral_prod_right'
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 omit [Nontrivial X] in
 theorem aestronglyMeasurable_secondBoundary {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m : ℝ} {A : Set ℝ} (hA : MeasurableSet A)

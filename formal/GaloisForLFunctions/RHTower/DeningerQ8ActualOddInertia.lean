@@ -19,7 +19,6 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1600000
 set_option synthInstance.maxHeartbeats 800000
 
 local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField

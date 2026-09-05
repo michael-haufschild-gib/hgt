@@ -4,6 +4,39 @@ Updated: 2026-09-05
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
+## RH: route-independent research constraints
+
+- **Must exclude even one off-line zero.** A density estimate allowing a sparse exceptional set,
+  however small, is not yet RH. The missing step is elimination of the exceptions, not another
+  interpretation of the proportion.
+- **Cannot obtain selection from reflection alone.** Reflection pairs opposite horizontal
+  displacements; it does not identify each zero with its reflected partner. Symmetry-compatible
+  countermodels still have off-line zeros. Evidence: F06, F14.
+- **Must retain the information the conclusion needs.** A transformation that forgets real parts,
+  multiplicities, or signs must recover them by a proved identity before it can constrain those
+  data. A self-adjoint operator listing zero ordinates does not locate the original complex zeros.
+  Evidence: F10, F13, F664.
+- **Must derive the decisive property for the fixed arithmetic object.** Positivity, boundedness,
+  recurrence, or regularity taken as an RH-equivalent input is an endpoint, not a source proof.
+  Fitting a new positive model separately to each hypothetical zero does not exclude any zero.
+  Evidence: F01, F04, F19.
+- **Cannot spend positivity as an upper bound.** A positive quadratic form can be arbitrarily
+  large. An energy argument needs an independently proved arithmetic ceiling and must account for
+  signed cross terms and any energy moved into an unobserved component. Evidence: HARD LOCK P, F15.
+- **Must justify the actual limiting operation.** Control at each fixed cutoff need not control
+  a cutoff moving with the zero, height, or deformation. A proof using such a limit must control
+  that joint dependence and the retained tail. Evidence: F08, F11, F17.
+- **Cannot discard infinite-dimensional charge using finite-dimensional cyclicity.** The trace
+  of a commutator can be nonzero when only the commutator, not its separate products, is trace
+  class. Every trace rearrangement needs its own ideal hypotheses. For the specific cubic
+  `(R-P)^3-(R-Q)^3-(Q-P)^3` of orthogonal projections, a complete eigenbasis of `P+Q+R` forces
+  zero trace; this does not settle the remaining spectral sector.
+  Evidence: `CubicAggregateSpectralCurrent.opTrace_cubicAssociator_eq_zero_of_aggregate_eigenbasis`
+  (declaration namespace `RHTower`).
+- **Must keep impossibility claims within their proved premises.** Failure of one positive,
+  linear, continuous, or spectral construction does not forbid all such RH proofs. No theorem
+  here requires every solution to be nonlinear, singular, nonclassical, or absent from literature.
+
 ## Hard facts
 
 F01 — Receiver abundance. Corpus has many exact RH equivalences: positivity, flatness, finite action, recurrence descent, formation properness, source-dagger descent, boundary absence. They are readouts, not independent evidence or producers.
@@ -55,95 +88,51 @@ F17 — Cofinal order is law data. Fixed cutoffs, convergent scalar prefixes, co
 
 F18 — No-go survivors are systematic: completion boundary, connecting rank, nilpotent tangent, signed orientation, hidden capacity, quantized residue, unbounded domain, or singular comparison. Calling all of them curvature loses information.
 
-F19 — Adaptive laws absorb displacement. Every horizontal grade admits fitted covariant/positive
-systems. Only descent to one fixed law detects neutrality; that descent is usually RH-equivalent.
+F19 — Adaptive laws absorb displacement. Every horizontal grade admits fitted covariant/positive systems. Only descent to one fixed law detects neutrality; that descent is usually RH-equivalent.
 
-F20 — Algebraic relation and executed relation differ. Additive source cancellation can acquire an
-exact nonlinear character, determinant, square, or completion defect.
+F20 — Algebraic relation and executed relation differ. Additive source cancellation can acquire an exact nonlinear character, determinant, square, or completion defect.
 
-F21 — Execution/observation is lax in two independent places. Source histories can fail to splice;
-a later noninjective observer can create an additional false splice.
+F21 — Execution/observation is lax in two independent places. Source histories can fail to splice; a later noninjective observer can create an additional false splice.
 
-F22 — Grammar is graded and reflexive. Repairing one failure can generate next legal failure
-context. Finite or set-level reflexivity has not generated arithmetic cofinal selection.
+F22 — Grammar is graded and reflexive. Repairing one failure can generate next legal failure context. Finite or set-level reflexivity has not generated arithmetic cofinal selection.
 
-F23 — Compact recurrence converts drift to carry. Nonzero character forces cofinal linear carry
-traffic; recurrence alone does not bound traffic.
+F23 — Compact recurrence converts drift to carry. Nonzero character forces cofinal linear carry traffic; recurrence alone does not bound traffic.
 
-F24 — Finite source recovery can be injective while cofinal map collapses. Faithful normal
-recovery can have singular/full vertical fibre. Regular observers are not enough.
+F24 — Finite source recovery can be injective while cofinal map collapses. Faithful normal recovery can have singular/full vertical fibre. Regular observers are not enough.
 
-F25 — Exact mass transport closes quantity but leaves ordered incidence current. Conservation of
-mass is weaker than cancellation of signed node-cell transport.
+F25 — Exact mass transport closes quantity but leaves ordered incidence current. Conservation of mass is weaker than cancellation of signed node-cell transport.
 
-F26 — Routes are not equivalent gauges. Singular transitions can enlarge admission exactly by
-killing obstruction classes; injective transitions preserve admission. Any universal field must
-retain first-loss data rather than declare all route carriers isomorphic.
+F26 — Routes are not equivalent gauges. Singular transitions can enlarge admission exactly by killing obstruction classes; injective transitions preserve admission. Any universal field must retain first-loss data rather than declare all route carriers isomorphic.
 
-F27 — Generic failure-to-test, obstruction-promotion, and diagonal grammar-genesis mechanisms are
-already formalized. They generate new laws and unbounded primitive degrees, but do not by
-themselves turn a literal arithmetic source defect into a vanishing theorem.
+F27 — Generic failure-to-test, obstruction-promotion, and diagonal grammar-genesis mechanisms are already formalized. They generate new laws and unbounded primitive degrees, but do not by themselves turn a literal arithmetic source defect into a vanishing theorem.
 
-F28 — Additive horizontal information already has a literal group-theoretic form. Gamma-six
-source atoms live in an infinite cyclic group algebra; physical evaluation is an exponential
-character with parameter `(2 Re(s)-1) log 6`. Its descent through the source boundary holds exactly
-at neutral grade.
+F28 — Additive horizontal information already has a literal group-theoretic form. Gamma-six source atoms live in an infinite cyclic group algebra; physical evaluation is an exponential character with parameter `(2 Re(s)-1) log 6`. Its descent through the source boundary holds exactly at neutral grade.
 
-F29 — Nonabelian perfect source algebra exists in corpus. Steinberg and elementary groups in rank
-at least three are perfect; every root generator is a chained commutator. Their kernel is the
-formal `K₂` carrier. This machinery has not been coupled to horizontal Xi formation.
+F29 — Nonabelian perfect source algebra exists in corpus. Steinberg and elementary groups in rank at least three are perfect; every root generator is a chained commutator. Their kernel is the formal `K₂` carrier. This machinery has not been coupled to horizontal Xi formation.
 
-F30 — Perfectification cannot mean scalar trace erasure. Ordinary trace kills split-leg
-commutators at every grade while graded corner traces recover positive off-centre curvature.
-Therefore a valid nonabelian fusion must transgress lost `H₁` current into a retained central/
-`K₂` class and then control that class; merely calling current a commutator is false progress.
+F30 — Perfectification cannot mean scalar trace erasure. Ordinary trace kills split-leg commutators at every grade while graded corner traces recover positive off-centre curvature. Therefore a valid nonabelian fusion must transgress lost `H₁` current into a retained central/ `K₂` class and then control that class; merely calling current a commutator is false progress.
 
-F31 — The EWQ/Gamma fusion is already exact. The two-gauge interaction quotient is
-one-dimensional; the normalized Euler--Wick packet spans it; opposite Gamma-six characters land
-in exactly that class with coefficient `curvature/8`. Its radical is exactly `a=0`.
+F31 — The EWQ/Gamma fusion is already exact. The two-gauge interaction quotient is one-dimensional; the normalized Euler--Wick packet spans it; opposite Gamma-six characters land in exactly that class with coefficient `curvature/8`. Its radical is exactly `a=0`.
 
-F32 — Hypertranscendental decoration makes the full Laurent quadratic ghost independent of both
-analytic marginals, so its descent is exactly `a=0`. This proves non-absorption, not annihilation;
-global descent remains exactly RH.
+F32 — Hypertranscendental decoration makes the full Laurent quadratic ghost independent of both analytic marginals, so its descent is exactly `a=0`. This proves non-absorption, not annihilation; global descent remains exactly RH.
 
-F33 — Actual arithmetic has a degree-lowering operation. A depth-dependent cubic polynomial in
-the Kummer derivation sends an honest Steinberg cell in augmentation order two to its oriented
-normal edge in order one. Kummer regulator reads the nonzero lost order exactly.
+F33 — Actual arithmetic has a degree-lowering operation. A depth-dependent cubic polynomial in the Kummer derivation sends an honest Steinberg cell in augmentation order two to its oriented normal edge in order one. Kummer regulator reads the nonzero lost order exactly.
 
-F34 — That oriented edge is not a Steinberg/Milnor boundary and its multiplier `K₁` cycle is not a
-Hochschild degree-two boundary. The two-sided Gamma-six normal has the same non-membership. Thus a
-literal `H₁ -> K₂` perfectification contradicts the source algebra.
+F34 — That oriented edge is not a Steinberg/Milnor boundary and its multiplier `K₁` cycle is not a Hochschild degree-two boundary. The two-sided Gamma-six normal has the same non-membership. Thus a literal `H₁ -> K₂` perfectification contradicts the source algebra.
 
-F35 — Formation order already has an integral spectrum. On `I^r/I^(r+1)`, formation number acts
-by integer `r`, reflection acts by `(-1)^r`, and closed period `p` leaves first-grade residue `p`.
-The positive Rees completion has compact formation resolvent, but no Xi occurrence theorem.
+F35 — Formation order already has an integral spectrum. On `I^r/I^(r+1)`, formation number acts by integer `r`, reflection acts by `(-1)^r`, and closed period `p` leaves first-grade residue `p`. The positive Rees completion has compact formation resolvent, but no Xi occurrence theorem.
 
-F36 — Existing source-normal equicontinuity, bounded formation work, and global properness
-predicates select `a=0` exactly. None is known unconditionally on the Xi source; assuming one is
-only another RH receiver.
+F36 — Existing source-normal equicontinuity, bounded formation work, and global properness predicates select `a=0` exactly. None is known unconditionally on the Xi source; assuming one is only another RH receiver.
 
-F37 — Literal completed Weyl/Clifford action is impossible: its orbit of the Xi sector runs through
-three auxiliary completed `L` sectors, so kernel invariance requires four simultaneous zeros. A
-surviving scale action must live before completed Fourier-sector diagonalization.
+F37 — Literal completed Weyl/Clifford action is impossible: its orbit of the Xi sector runs through three auxiliary completed `L` sectors, so kernel invariance requires four simultaneous zeros. A surviving scale action must live before completed Fourier-sector diagonalization.
 
-F38 — Source algebra already has integral Frobenius/Adams structure: prime-packet units identify
-with multiplicative automorphisms of the algebraic prime fibre, and arithmetic Frobenius is literal
-`p`-power. What is absent is a zero-independent prime--Gamma/Xi comparison making horizontal
-physical character an algebraic weight of this action.
+F38 — Source algebra already has integral Frobenius/Adams structure: prime-packet units identify with multiplicative automorphisms of the algebraic prime fibre, and arithmetic Frobenius is literal `p`-power. What is absent is a zero-independent prime--Gamma/Xi comparison making horizontal physical character an algebraic weight of this action.
 
-F39 — Formation-scale quantization is not a new mechanism. The scalar HT clock programme already
-proves polynomial multiplicative characters are monomials and develops the common Möbius clock
-toward integral weights. Its open source/clock realization is the same semantic bridge that the
-quantization proposal would have renamed.
+F39 — Formation-scale quantization is not a new mechanism. The scalar HT clock programme already proves polynomial multiplicative characters are monomials and develops the common Möbius clock toward integral weights. Its open source/clock realization is the same semantic bridge that the quantization proposal would have renamed.
 
-F40 — Reduced rational-Witt descent loses orientation. At the cyclotomic Gamma-six denominator,
-forward and reciprocal residues coincide, their odd difference is zero, and Frobenius-fixed residue
-retains only parity. Ramified top-conormal stages restore a coefficient-faithful oriented grade, but
-the corpus explicitly does not prove that completed Xi/Gamma intrinsically supplies that grade.
+F40 — Reduced rational-Witt descent loses orientation. At the cyclotomic Gamma-six denominator, forward and reciprocal residues coincide, their odd difference is zero, and Frobenius-fixed residue retains only parity. Ramified top-conormal stages restore a coefficient-faithful oriented grade, but the corpus explicitly does not prove that completed Xi/Gamma intrinsically supplies that grade.
 
-F41 — Infinitesimal rigidity is already a receiver. Off-line Xi placement gives a faithful
-dual-number arc and a formally ramified transverse image; formal unramifiedness of that image is
-equivalent to critical-line placement. Declaring the tangent direction illegal is circular.
+F41 — Infinitesimal rigidity is already a receiver. Off-line Xi placement gives a faithful dual-number arc and a formally ramified transverse image; formal unramifiedness of that image is equivalent to critical-line placement. Declaring the tangent direction illegal is circular.
 
 F42 — Complete positivity cannot be the higher law. The physical two-leg first-jet landing is
 complex and orientation-sensitive; replacing it by `L* (.) L` makes a CP channel while deleting
@@ -4991,9 +4980,13 @@ CANNOT-295 — It cannot lower the `(L)` ceiling with mean values alone: mean an
 F661 — [Lean] The mollified deviation `W_M = ζΨ_M − 1` (linear mollifier of length `M`) has Dirichlet coefficients `Λ(k)/log M` for `1 < k ≤ M` (`mollifiedProductDirichletCoeff_eq_vonMangoldt`): its head is the truncated logarithmic derivative `−(1/log M)(ζ'/ζ)_{≤M}`. The head's critical-line variance is `1/2` independently of the length exponent: `∑_{k≤N}Λ(k)²/k/(log N)² → 1/2` (`tendsto_sum_vonMangoldt_sq_div_div_log_sq`) and the window mean square of the head is within `ε` of `1/2` on every window of length `≥ M²` (`exists_mollifiedDeviationHead_meanSquare_close`). With Conrey's `E|ζΨ|² → 1 + 1/θ` (not Lean), the tail plus cross term carries exactly `1/θ − 1/2`.
 F662 — [Lean] Complex-Gaussian log-mean identity: for `W ~ CN(0,σ²)`, `E log|1+W|² = E₁(1/σ²)` in polar form (`complexGaussianLogMeanRadial_eq_expIntegralE1`, via Jensen's circle identity, one integration by parts and `u = r²/σ²`). Under the conjectured law `W_M → CN(0,1/θ)` this gives `E log|ζΨ|² → E₁(θ)` and the `(L)` ceiling `½E₁(4/7) ≈ 0.241` in place of Jensen's `0.506`; under RH it also gives the Möbius mollifier's own log-mean `E log|Ψ_M|² → E₁(θ) > 0`.
 MUST-206 — The Gaussian law for `ζΨ − 1` must pass the fourth-moment test `lim E|ζΨ|⁴ = 1 + 4/θ + 2/θ²` against the Hughes–Young / Bettin–Bui–Li–Radziwiłł mollified fourth moment; its head is provably Gaussian only to order `2⌊1/θ⌋` (large primes carry the variance), and its tail is a long Dirichlet polynomial with Selberg-sieve coefficients beyond current mean-value technology. Any proof of the log-moment consequence must supply a small-ball or tail law, not moments (CANNOT-295).
-F674 — [Lean] Fixed-frequency rank-one theta coefficient sewing, normalized at integer zero with nonvanishing integer amplitudes, has exactly `(a,b)=(1,1)` or `(1,-1)`; its all-one normalized amplitude tangent is zero and every all-one-based formal amplitude family is constant. Heat-rate sewing is exactly `q(n)=n²q(1)`, `h(n)=(n+1/2)²q(1)` (`HTGeometry.ThetaLatticeSewingRigidity`: `thetaLatticeAmplitudeSewing_iff`, `thetaLatticeAmplitudeTangent_iff`, `thetaLattice_formal_amplitudes_rigid`, `thetaLatticeRateSewing_iff`). Positive survivor: complete coefficient/rate classification. Classical theta/parallelogram bridge; the analytic theta addition formula and Fourier-coefficient extraction are not certified by this module.
-CANNOT-297 — It cannot realize a nonzero normalized Xi deformation mode inside F674's amplitude tangent: that tangent is already zero before any second-order obstruction. Allowing the specified heat-rate fields adds only one scalar scale. This retires the fixed-frequency, time-independent-amplitude/Gaussian-rate realization of the proposed Taub mechanism, not all nonlinear lattice laws, time-dependent coefficient families, or an RH proof architecture in general.
-MUST-209 — It must separately construct the zero-to-exact-arithmetic-family map. `XiTransverseDualNumberArc` supplies an algebra map, not such a family. `ThetaCuspHawkingNonlinearDivisorTransportEndpoint` does preserve Xi divisor multiplicity under small nonlinear source coupling, but allows motion in complex frequency. Neither that persistence nor F674 supplies a lattice-derived obstruction whose vanishing forces horizontal neutrality; that RH-chain edge remains unproved.
+F674 — [Lean] Fixed-frequency rank-one theta coefficient sewing has exactly normalized nonvanishing amplitudes `(a,b)=(1,±1)`, zero all-one normalized tangent, constant all-one-based formal amplitude families, and rates `q(n)=n²q(1)`, `h(n)=(n+1/2)²q(1)` (`HTGeometry.ThetaLatticeSewingRigidity`). Independently, `ThetaLatticeAddition.thetaLattice_addition` now proves the analytic identity `θ(z+w,τ)θ(z-w,τ)=θ(2z,2τ)θ(2w,2τ)+θh(2z,2τ)θh(2w,2τ)` for arbitrary complex `z,w` and upper-half-plane `τ`; `θh` is the half-integer series. Proof: explicit bijection of `Z²` with its two parity sectors, Gaussian atom identities, absolute convergence; `thetaLattice_duplication` specializes `w=0`. Positive survivor: actual nonlinear source equation plus separate coefficient/rate classification. Classical theta/parallelogram mathematics; Fourier-coefficient extraction and the Xi-zero-to-exact-arithmetic-deformation map remain unproved. No RH selection follows.
+CANNOT-297 — It cannot substitute rigidity for a connection to Xi: a deformation space with zero tangent contains no nonzero Xi deformation to obstruct. For fixed integer/half-integer theta frequencies, normalized time-independent amplitudes are already rigid; allowing Gaussian heat rates adds only a common scale. This excludes that choice of deformation space, not all nonlinear arithmetic laws or time-dependent families. Evidence: `HTGeometry.ThetaLatticeSewingRigidity`, F674.
+MUST-209 — It must connect actual Xi zeros to exact solutions of an independently specified arithmetic system, proving which integer operations and boundary conditions survive the deformation. Different mechanisms may cover different zeros, or one collective mechanism may cover the spectrum; either needs exhaustive coverage and control of cancellation between sectors. An algebraic tangent or nonlinear continuation of a zero is not that preservation theorem. At second order, `DE(u0)u''+D²E(u0)[v,v]=0`; forcing the quadratic term to vanish requires a proved operation annihilating the first term, with boundary/domain conditions checked. Evidence: exact source/Xi identification in `HedenmalmThetaSourceSpectrumExact`; multiplicity-preserving continuation, without arithmetic preservation or confinement, in `ThetaCuspHawkingNonlinearDivisorTransportEndpoint`.
+MUST-210 — It must distinguish dynamics generating the arithmetic source from dynamics whose deformation modes are Xi zeros. The literal integer theta sum already follows a nonlinear polynomial ODE; Xi is the Fourier transform of an explicit observable along that trajectory. This is an exact source identity, not an identification of Xi zeros with solutions of the linearized ODE or with exact deformations. Finding another nonlinear source equation alone does not fill that gap. Evidence: `hasDerivAt_thetaCuspModularODEState`, `ofReal_thetaCuspFullSource_eq_completedThetaProfile_mul_modularFactor` in `PrimeArchThetaModularDifferentialClosure`; `thetaCuspFourierLaplace_eq_XiC_all` in `HedenmalmThetaSourceSpectrumExact` (Lean).
+CANNOT-298 — It cannot infer an actual Xi zero from an exponentially small mode residual or an exponentially large source resolvent: both occur for the literal theta source outside the unconditional Xi zero strip. Unit approximate modes have exponentially small adjoint residual while their reciprocal parameters stay at least an inverse-quadratic distance from every true spectral point. A numerical or perturbative interaction mechanism therefore needs exact spectral identification or a quantitative error-to-spectrum theorem valid in its chosen norm; small residual alone is insufficient. Evidence: `HedenmalmThetaExteriorPseudospectralSeparation.thetaExterior_pseudospectral_separation`, `exists_exponential_thetaComplexResolvent_lower` (Lean); these bounds do not prohibit every approximation scheme or constrain arithmetic-preserving perturbations.
 F663 — [Lean] Head fourth moment: `(1/(T₂−T₁))∫|H_M(1/2+it)|⁴ → 1/2 = 2(1/2)²` on windows with `8M²(1+log M²) ≤ (ε/4)(T₂−T₁)` (`exists_head_fourthMoment_close`; θ < 1/2); coefficient energy of `H_M²` tends to `1/2` (`tendsto_headFourthEnergy`) via the prime-power orientation classification (`primePow_quad_classification`) and `O(1/log⁴M)` one-prime exceptions. First rigorous Gaussian-moment law for `ζΨ − 1`.
 CANNOT-296 — [numerical, pod 2026-09-05; not Lean] The full deviation `ζΨ − 1` is not `CN(0,1/θ)`: at `T = 10⁶` its kurtosis is `2.55/2.04/1.77` at `θ = 0.3/0.4/0.5` and `E log|ζΨ|² ≈ 0` at all three `θ` (Gaussian would give `E₁ ≈ 0.45–0.73`); the head is Gaussian (`kurt 1.96–1.99`, variance `≈ 1/2`) as proven. The mollified product is numerically an outer function: `E log|ζΨ|² ≈ 0 = E log|ζ|² + E log|Ψ|²`, i.e. `(L)` plus vanishing right-zero mass of the mollifier. Do not use `½E₁(θ)` as a target.
 MUST-207 — The `(L)` residue is the outer law `E log|ζΨ_M(1/2+it)|² → 0` (equivalently `∑_{ζΨ(ρ)=0, β>1/2}(β−1/2) = o(T)`), a joint statement about `ζ`'s off-line zeros and the mollifier's own zeros right of the line; its head part is Gaussian and carries exactly half a unit of variance, its tail is a long sieve-weighted Dirichlet polynomial. Any producer must control the tail's small values, not its moments.
+F664 — [ratios recipe + symbolic residues; not Lean] Mollified fourth moment `c₄(θ) = lim (1/T)∫_T^{2T}|ζΨ_M|⁴ = 1 + 8/(3θ) + 2/θ² + 2/(3θ³)` for the linear mollifier of length `T^θ` (`2-fully-proven/computations/mollified-fourth-moment-recipe/`); engine validated on Conrey's `1+1/θ`, the unmollified `L⁴/12`, and the rigorous head moments `1/2, 1/2, 1/12, 1/72` (Lean-proven; the recipe reproduces them only with closure sides decided in the regime θ<1/2). Not `CN(0,1/θ)`'s `1 + 4/θ + 2/θ²`; the `1/θ³` term is super-Gaussian. Numerics at `T ≤ 10⁷` rise toward it (ratio `2.11 → 2.185` at θ = 1/2).
+MUST-208 — Any distributional law for `ζΨ − 1` must reproduce `c₄(θ) = 1 + 8/(3θ) + 2/θ² + 2/(3θ³)` together with `E log|ζΨ|² → 0` (outer identity) and the Gaussian head `CN(0,1/2)`; the tail `Tail_M = W_M − H_M` must carry the `(2/3)/θ³` fourth-moment growth and the dips at the zeros (`P(|ζΨ|² < ε) ≍ √ε/(πθ)`).

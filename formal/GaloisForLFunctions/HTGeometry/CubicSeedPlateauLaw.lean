@@ -122,7 +122,6 @@ theorem sphereLaw_simpleLocus_compl (k : ℕ) :
     (toSphere_degenerate_eq_zero (chainPauliFin_isHermitian (k + 3))
       (spectralDiscriminantPoly_chainPauliFin_succ_ne_zero k))
 
-set_option maxHeartbeats 1000000 in
 /-- **`(24)` in summed form.**  Summed over the cubic eighth-root phase seeds, the shell mass of the
 directions failing the collision cap `(2+κ)/D` is at most `|P₃| · 96/(κ²D)`. -/
 theorem sum_sphereLaw_cubicSeed_goodSet_compl_le (k : ℕ) {kap : ℝ} (hkap : 0 < kap) :

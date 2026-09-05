@@ -23,7 +23,6 @@ theorem HasShiftTubeDatum.congr_tube {M lam : ℝ} {φ ψ : ℝ → ℝ → ℂ}
     HasShiftTubeDatum M lam ψ d ω b c :=
   ⟨h.1, h.2.congr (T₀ := T₀) fun σ t hσ hσM ht => by rw [heq σ t hσ hσM ht]⟩
 
-set_option maxHeartbeats 2000000 in
 /-- **The boundary datum of a dominance fibre.** -/
 theorem exists_hasShiftTubeDatum_gammaFiberSum {M : ℝ} (hM : 0 < M) {K Mm : ℕ}
     (lam : Fin r → ℝ) (hlam : ∀ i, 0 ≤ lam i)

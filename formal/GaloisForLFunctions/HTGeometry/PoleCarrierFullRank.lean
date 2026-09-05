@@ -125,7 +125,6 @@ theorem analyticOrderAt_jet_eq (r : ℕ) {σ ζ : ℂ} (hζ : -σ.im < ζ.im) :
 
 /-! ## The blow-up datum -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The blow-up datum with a whole group at the distinguished shift.** -/
 theorem exists_groupBlowUp_at {n : ℕ} (m : Fin n → ℕ) (σ : Fin n → ℂ) (k₀ : Fin n) (V : Fin n → ℕ)
     {S : Set ℂ} {ζ : ℂ} {ε : ℝ} (hε : 0 < ε)
@@ -216,7 +215,6 @@ theorem pointwiseData {κ : Type*} {n : ℕ} (m : Fin n → ℕ) (σ : Fin n →
   exact ⟨u, t, c, integerTranslateJetGroupRate m σ k₀ (V ζ),
     humem, htne, hu, ht, hcne, hsep ζ hζ, hlim⟩
 
-set_option maxHeartbeats 1000000 in
 /-- **Full-rank node packets in a prescribed sampled set, for an arbitrary pole carrier.** -/
 theorem exists_row_packet_in_set
     {κ row : Type*} [Fintype κ] [DecidableEq κ] [LinearOrder κ] [Fintype row] {n q : ℕ}
@@ -323,7 +321,6 @@ theorem spacedRayNodes_im_lt {σ₀ : ℂ} {K : ℕ} {ε : ℝ} {w : ℂ}
     Complex.ofReal_re, Complex.I_im, Complex.I_re, mul_one, mul_zero, add_zero]
   linarith
 
-set_option maxHeartbeats 800000 in
 /-- **The separation dichotomy.**  Two distinct sampled nodes are either closer than the truncation
 height or farther apart than the spacing: the middle band is empty. -/
 theorem spacedRayNodes_dichotomy (σ₀ : ℂ) {K : ℕ} {ε : ℝ} (hK : 0 < K)

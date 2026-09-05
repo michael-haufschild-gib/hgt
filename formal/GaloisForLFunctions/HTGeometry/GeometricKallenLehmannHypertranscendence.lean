@@ -92,7 +92,6 @@ theorem no_resonance_of_multIndependent {a b : k} (ha : a ≠ 0)
 
 /-! ## The hypertranscendence of the geometric response -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The response of a geometric spectrum is hypertranscendental.**  For multiplicatively
 independent multipliers, the unique Laurent solution of `R - a R(bz) = w/(1-z)` with `w ≠ 0` is
 differentially transcendental over `k(z)`. -/
@@ -194,7 +193,6 @@ theorem propagator_inhomogeneity_eq (w : k) :
         show toRF (-(Polynomial.C w)) = -toRF (Polynomial.C w) from map_neg _ _]]
   ring_nf
 
-set_option maxHeartbeats 1000000 in
 /-- **The Euclidean propagator of the geometric spectrum is hypertranscendental.**  Reciprocal
 inversion turns the response equation into the same shape with multiplier `a/b` and a reflected
 simple pole, so the criterion applies again. -/
@@ -258,7 +256,6 @@ theorem complex_zpow_real_ne_one {β : ℝ} (hβ₀ : 0 < β) (hβ₁ : β ≠ 1
   · exact hn (by exact_mod_cast h')
   · exact hlogβ h'
 
-set_option maxHeartbeats 1000000 in
 /-- **The response of a geometric Källén--Lehmann spectrum is hypertranscendental, for every pair
 of multipliers in `(0,1)`.**  Either the multipliers are multiplicatively independent, and the
 two-variable model applies, or both are powers of a common positive real, and the ramified
@@ -354,7 +351,6 @@ theorem innerDilation_propagatorGerm (R : LaurentSeries k) :
       rw [map_neg, map_one]]
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- **Hypertranscendence of the response gives hypertranscendence of the propagator.**  Reciprocal
 inversion is a dilation followed by multiplication by the coordinate, and both preserve
 differential transcendence over `k(z)`. -/
@@ -496,7 +492,6 @@ theorem coeff_geometricResponseLaurent (a b : ℝ) (n : ℤ) :
   · simp [h]
   · simp [h, PowerSeries.coeff_map, _root_.HTGeometry.geometricKallenLehmannResponse]
 
-set_option maxHeartbeats 1000000 in
 /-- **The complex response satisfies the exact self-similarity constraint.** -/
 theorem geometricResponseLaurent_equation (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1) (hb₀ : 0 < b)
     (hb₁ : b < 1) (hbC : ((b : ℂ)) ≠ 0) :
@@ -532,7 +527,6 @@ theorem geometricResponseLaurent_equation (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a
 
 /-! ## The card's statements -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The mass-resolvent response of a geometric Källén--Lehmann spectrum is hypertranscendental
 over `ℂ(z)`**, for every pair of multipliers in `(0,1)`, for the Euler derivation. -/
 theorem hypertranscendentalOver_geometricResponseLaurent (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1)
@@ -553,7 +547,6 @@ theorem hypertranscendentalOver_geometricResponseLaurent_ordinary (a b : ℝ) (h
   hypertranscendentalOver_ordinary_of_euler
     (hypertranscendentalOver_geometricResponseLaurent a b ha₀ ha₁ hb₀ hb₁)
 
-set_option maxHeartbeats 1000000 in
 /-- **The Euclidean momentum propagator of the geometric spectrum is hypertranscendental**, for
 every pair of multipliers in `(0,1)`, for both derivations. -/
 theorem hypertranscendentalOver_geometricPropagator (a b : ℝ) (ha₀ : 0 < a) (ha₁ : a < 1)

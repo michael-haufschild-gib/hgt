@@ -116,7 +116,6 @@ theorem thetaCuspReflectedEighthPolynomial_compactReserve_le
   rw [hexact]
   linarith
 
-set_option maxHeartbeats 6000000 in
 /-- Actual native D1 dominates the explicit nonlinear compact reserve on the full source
 half-line. -/
 theorem thetaCuspFullReflectionEighthCompactReserve_le_hankelCurvature

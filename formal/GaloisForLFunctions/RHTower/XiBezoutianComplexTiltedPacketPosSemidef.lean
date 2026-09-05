@@ -135,7 +135,6 @@ private theorem fin_erase_sum_eq {n : ℕ} (j : Fin n) (g : ℕ → ℝ) :
   have h3 := Fin.sum_univ_eq_sum_range g n
   linarith
 
-set_option maxHeartbeats 1600000 in
 /-- **Tilted separated packets give positive semidefinite critical-kernel matrices.**
 An arbitrary-rank unconditional stratum of the RH-critical kernel family at genuinely
 complex nodes: real parts form a separated packet, imaginary parts obey the tilt budget. -/

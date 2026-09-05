@@ -135,7 +135,6 @@ theorem infinite_shiftAdmissibleNodes {n : ℕ} (σ : Fin n → ℂ) (k₀ : Fin
     · have := hshift k hk
       linarith
 
-set_option maxHeartbeats 1000000 in
 /-- **Full-rank node packets for an arbitrary strictly minimal shift.**  No shift is required to be
 real, none is required to be zero, and the companions are differentiated to arbitrary orders and may
 vanish anywhere.  The only conditions are on the configuration itself: the distinguished shift has

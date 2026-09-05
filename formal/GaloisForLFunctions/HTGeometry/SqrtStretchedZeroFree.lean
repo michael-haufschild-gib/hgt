@@ -18,7 +18,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 /-- The function is dominated by its magnitude series. -/
 theorem norm_sqrtStretchedPhaseFunction_le (θ : ℕ → ℝ) (z : ℂ) :
@@ -89,7 +88,6 @@ noncomputable section
 
 open Filter Metric
 
-set_option maxHeartbeats 1000000
 
 /-- **A zero-free entire function of order zero is constant.**  Hadamard writes it as `exp ∘ p`;
 Borel–Carathéodory bounds `p` on every circle by `K + 4 ε r`, and the Cauchy estimate for the first

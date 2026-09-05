@@ -225,7 +225,6 @@ def PencilCompletionFibre (p d : ℕ) : Set ((Fin d → (H →L[ℂ] H)) × ((Fi
 
 variable {H}
 
-set_option maxHeartbeats 1000000 in
 /-- **Necessity in several variables.**  Every member of the pencil graph closure lies in the
 completion fibre. -/
 theorem pencilGraphClosure_subset_pencilCompletionFibre {p d : ℕ} (hp : 0 < p) :
@@ -321,7 +320,6 @@ private theorem eval_smul_of_isHomogeneous {d n : ℕ} {φ : MvPolynomial (Fin d
     Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- **Sufficiency in several variables.**  Every member of the completion fibre lies in the pencil
 graph closure. -/
 theorem pencilCompletionFibre_subset_pencilGraphClosure {p d : ℕ}

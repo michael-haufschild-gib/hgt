@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.RydbergProjectorDephasing
 import GaloisForLFunctions.RHTower.DQPTProbeDensityMatrix
+import GaloisForLFunctions.RHTower.RydbergFirstOrderChannelAdditivity
 
 open scoped BigOperators Matrix
 
@@ -173,5 +174,115 @@ theorem rydberg_decay_sigmaZ :
     norm_num [rydbergDecayJump, rydbergOccupation, dqptSigmaZ,
       Matrix.conjTranspose_apply, Matrix.vecMul, dotProduct,
       Fin.sum_univ_two]
+
+/-- Decay and dephasing damp the same transverse `σ_x` mode at half their respective rates. -/
+theorem rydberg_decay_sigmaX :
+    finiteLindbladDissipator rydbergDecayJump dqptSigmaX =
+      -(2 : ℂ)⁻¹ • dqptSigmaX := by
+  rw [finiteLindbladDissipator, finiteLindbladGain, finiteLindbladDrain,
+    rydbergDecayJump_effect]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [rydbergDecayJump, rydbergOccupation, dqptSigmaX,
+      Matrix.conjTranspose_apply, Matrix.vecMul, dotProduct,
+      Fin.sum_univ_two]
+
+/-- Exact matching transverse law for `σ_y`. -/
+theorem rydberg_decay_sigmaY :
+    finiteLindbladDissipator rydbergDecayJump dqptSigmaY =
+      -(2 : ℂ)⁻¹ • dqptSigmaY := by
+  rw [finiteLindbladDissipator, finiteLindbladGain, finiteLindbladDrain,
+    rydbergDecayJump_effect]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [rydbergDecayJump, rydbergOccupation, dqptSigmaY,
+      Matrix.conjTranspose_apply, Matrix.vecMul, dotProduct,
+      Fin.sum_univ_two]
+
+/-- Operational two-channel occupation damage: only decay removes population. -/
+theorem rydberg_twoChannel_occupation_damage
+    (decayRate dephasingRate : ℝ) (ρ : QuantumMatrix 2) :
+    finiteTwoChannelObservableDamage decayRate dephasingRate
+        rydbergDecayJump rydbergOccupation rydbergOccupation ρ =
+      decayRate * (ρ 1 1).re := by
+  rw [finiteTwoChannelObservableDamage_eq,
+    rydberg_decay_occupation_damage, rydberg_dephasing_occupation_damage]
+  ring
+
+/-- Transverse coherence sees the sum `Γ + γ`, with the universal half-rate factor. -/
+theorem rydberg_twoChannel_sigmaX
+    (decayRate dephasingRate : ℝ) :
+    finiteTwoChannelLindbladDissipator decayRate dephasingRate
+        rydbergDecayJump rydbergOccupation dqptSigmaX =
+      -(((decayRate + dephasingRate) / 2 : ℝ) : ℂ) • dqptSigmaX := by
+  rw [finiteTwoChannelLindbladDissipator,
+    rydberg_decay_sigmaX, rydberg_dephasing_sigmaX]
+  push_cast
+  module
+
+theorem rydberg_twoChannel_sigmaY
+    (decayRate dephasingRate : ℝ) :
+    finiteTwoChannelLindbladDissipator decayRate dephasingRate
+        rydbergDecayJump rydbergOccupation dqptSigmaY =
+      -(((decayRate + dephasingRate) / 2 : ℝ) : ℂ) • dqptSigmaY := by
+  rw [finiteTwoChannelLindbladDissipator,
+    rydberg_decay_sigmaY, rydberg_dephasing_sigmaY]
+  push_cast
+  module
+
+/-- Longitudinal mode separates the channels: only decay contributes. -/
+theorem rydberg_twoChannel_sigmaZ
+    (decayRate dephasingRate : ℝ) :
+    finiteTwoChannelLindbladDissipator decayRate dephasingRate
+        rydbergDecayJump rydbergOccupation dqptSigmaZ =
+      -(decayRate : ℂ) • dqptSigmaZ := by
+  rw [finiteTwoChannelLindbladDissipator,
+    rydberg_decay_sigmaZ, rydberg_dephasing_sigmaZ]
+  module
+
+/-! ## DQPT rotated-projector applications -/
+
+@[simp] theorem dqptPP_conjTranspose : dqptPPᴴ = dqptPP := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [dqptPP, Matrix.conjTranspose_apply]
+
+@[simp] theorem dqptPP_mul_self : dqptPP * dqptPP = dqptPP := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [dqptPP, Matrix.mul_apply, Fin.sum_univ_two]
+
+/-- The paper's centered-jump gauge also holds for the existing DQPT `|+⟩` projector. -/
+theorem dqptPP_centered_dephasing_gauge (X : QuantumMatrix 2) :
+    finiteLindbladDissipator (dqptPP - ((1 / 2 : ℝ) : ℂ) • 1) X =
+      finiteLindbladDissipator dqptPP X := by
+  exact finiteLindbladDissipator_sub_real_smul_one
+    dqptPP X (1 / 2) dqptPP_conjTranspose
+
+/-- `|+⟩` dephasing preserves the DQPT longitudinal axis `σ_x`. -/
+theorem dqptPP_dephasing_sigmaX :
+    finiteLindbladDissipator dqptPP dqptSigmaX = 0 := by
+  rw [finiteLindbladDissipator, finiteLindbladGain, finiteLindbladDrain,
+    dqptPP_conjTranspose, dqptPP_mul_self]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [dqptPP, dqptSigmaX, Matrix.mul_apply, Fin.sum_univ_two]
+
+/-- Orthogonal DQPT modes are damped at the universal projector half-rate. -/
+theorem dqptPP_dephasing_sigmaY :
+    finiteLindbladDissipator dqptPP dqptSigmaY = -(2 : ℂ)⁻¹ • dqptSigmaY := by
+  rw [finiteLindbladDissipator, finiteLindbladGain, finiteLindbladDrain,
+    dqptPP_conjTranspose, dqptPP_mul_self]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [dqptPP, dqptSigmaY, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+theorem dqptPP_dephasing_sigmaZ :
+    finiteLindbladDissipator dqptPP dqptSigmaZ = -(2 : ℂ)⁻¹ • dqptSigmaZ := by
+  rw [finiteLindbladDissipator, finiteLindbladGain, finiteLindbladDrain,
+    dqptPP_conjTranspose, dqptPP_mul_self]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [dqptPP, dqptSigmaZ, Matrix.mul_apply, Fin.sum_univ_two]
 
 end RHTower

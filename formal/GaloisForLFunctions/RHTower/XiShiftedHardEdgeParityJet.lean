@@ -452,7 +452,6 @@ theorem linearIndependent_prod_blocks {M N : Type*} [AddCommGroup M] [Module ℝ
   | inr j => exact hb (fun k => g (Sum.inr k)) hsnd j
 
 
-set_option maxHeartbeats 1000000 in
 /-- **(HPJI.11) for a single root.**  The state, its `m-1` nonterminal even descendants and their
 `m-1` odd twins are `2m-1` linearly independent parity directions. -/
 theorem linearIndependent_routeUParityDirections (r : ℝ) (G : ℝ → ℝ) (m : ℕ)

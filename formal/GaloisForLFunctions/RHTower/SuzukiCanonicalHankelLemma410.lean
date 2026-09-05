@@ -27,7 +27,6 @@ noncomputable section
 
 namespace RHTower
 
-set_option maxHeartbeats 1000000
 
 /-! ## Shrinking-support and fixed-window bounds -/
 

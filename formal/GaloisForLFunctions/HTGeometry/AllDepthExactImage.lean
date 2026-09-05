@@ -81,7 +81,6 @@ theorem mixedConstGermSet_of_erase (τ : ι → ℂ) (s : Finset ι) {k : ι} (h
 
 /-! ## The realization -/
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 1600000 in
 /-- **Every compatible family of finite class divisors is a pair-face signature.** -/
 theorem exists_class_member_with_prescribed_pairSig
@@ -538,7 +537,6 @@ theorem exists_class_member_with_prescribed_pairSig
 
 /-! ## The exact image -/
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The exact image of the pair-face signature.**  A family of divisors is the pair-face
 signature of a member of the all-depth mixed-constraint class exactly when each component is a

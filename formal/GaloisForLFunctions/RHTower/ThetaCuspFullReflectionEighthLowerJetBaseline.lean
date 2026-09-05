@@ -32,7 +32,6 @@ def thetaCuspFirstAtomEighthNoSixthLossBaseline (q : ℝ) : ℝ :=
     (thetaCuspFirstAtomSixthProfile q)
     (thetaCuspFirstAtomEighthProfile q)
 
-set_option maxHeartbeats 4000000 in
 /-- The exact no-sixth-loss baseline is strictly positive from the physical support edge. -/
 theorem thetaCuspFirstAtomEighthNoSixthLossBaseline_pos
     {q : ℝ} (hq : (41 / 25 : ℝ) ≤ q) :
@@ -51,7 +50,6 @@ theorem thetaCuspFirstAtomEighthNoSixthLossBaseline_pos
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 4000000 in
 /-- The curvature derivative bracket is positive at the worst admissible curvature. -/
 theorem thetaCuspFirstAtomEighthCurvatureDerivativeBracket_pos
     {q : ℝ} (hq : (41 / 25 : ℝ) ≤ q) :
@@ -81,7 +79,6 @@ theorem thetaCuspFirstAtomEighthCurvatureDerivativeBracket_pos
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 4000000 in
 /-- The fourth-jet displacement constant is positive at the worst admissible curvature. -/
 theorem thetaCuspFirstAtomEighthFourthDisplacementConstant_pos
     {q : ℝ} (hq : (41 / 25 : ℝ) ≤ q) :
@@ -107,7 +104,6 @@ theorem thetaCuspFirstAtomEighthFourthDisplacementConstant_pos
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 4000000 in
 /-- The exact linear coefficient of the sixth likelihood loss is already positive at the worst
 admissible curvature. -/
 theorem thetaCuspFirstAtomEighthSixthLossCoefficient_pos
@@ -229,7 +225,6 @@ def thetaCuspFullReflectionEighthNoSixthLikelihoodBaseline (x : ℝ) : ℝ :=
     (thetaCuspBornWittenLogSixthDerivative 1 x)
     (thetaCuspBornWittenLogEighthDerivative 1 x)
 
-set_option maxHeartbeats 4000000 in
 /-- Full second/fourth likelihood perturbations preserve a strict eighth baseline globally. -/
 theorem thetaCuspFullReflectionEighthNoSixthLikelihoodBaseline_pos
     {x : ℝ} (hx : 0 ≤ x) :

@@ -20,7 +20,6 @@ The two derivative towers are built here: `coshTestTower` and `waveTower`, the l
 single phase-shifted cosine so that one derivative computation covers all orders.
 -/
 
-set_option maxHeartbeats 1600000
 
 open Filter Topology Set MeasureTheory
 

@@ -25,7 +25,6 @@ def thetaCuspFirstAtomEighthScaleElevenHalvesSpectralLossBaseline (q : ℝ) : �
     1800 * thetaCuspFullReflectionEighthCompactEighthCoefficient q *
       (1 / 69) * (q + 3 / 2) ^ 2
 
-set_option maxHeartbeats 6000000 in
 /-- The compensated local-loss baseline is strict from weight `4`. -/
 theorem thetaCuspFirstAtomEighthScaleElevenHalvesSpectralLossBaseline_pos_of_four_le
     {q : ℝ} (hq : (4 : ℝ) ≤ q) :
@@ -46,7 +45,6 @@ theorem thetaCuspFirstAtomEighthScaleElevenHalvesSpectralLossBaseline_pos_of_fou
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- Curvature bracket for the scale-eleven-halves loss is strict from weight `4`. -/
 theorem thetaCuspFirstAtomEighthScaleElevenHalvesLossCurvatureBracket_pos_of_four_le
     {q : ℝ} (hq : (4 : ℝ) ≤ q) :
@@ -76,7 +74,6 @@ theorem thetaCuspFirstAtomEighthScaleElevenHalvesLossCurvatureBracket_pos_of_fou
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- Derivative bracket for scale-eleven-halves curvature transport is strict from weight `4`. -/
 theorem thetaCuspFirstAtomEighthScaleElevenHalvesLossCurvatureBracketDerivative_pos_of_four_le
     {q : ℝ} (hq : (4 : ℝ) ≤ q) :
@@ -109,7 +106,6 @@ def thetaCuspFirstAtomEighthScaleElevenHalvesSpectralEffectiveSixthCoefficient
     thetaCuspFullReflectionEighthCompactEighthCoefficient q *
       (1 / 69) * (q + 3 / 2) ^ 2
 
-set_option maxHeartbeats 6000000 in
 /-- The effective loss coefficient is strict on the bridge strip `4 ≤ q < 9/2`. -/
 theorem thetaCuspFirstAtomEighthScaleElevenHalvesSpectralEffectiveSixthCoefficient_pos
     {q : ℝ} (hq : (4 : ℝ) ≤ q) (hqUpper : q < 9 / 2) :
@@ -139,7 +135,6 @@ theorem thetaCuspFirstAtomEighthScaleElevenHalvesSpectralEffectiveSixthCoefficie
     nlinarith [htail]
   nlinarith [pow_pos hqpos 6]
 
-set_option maxHeartbeats 6000000 in
 /-- Native D1 is strict whenever first-atom weight is at least `4`. -/
 theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_four_le_weight
     {x : ℝ} (hx : 0 ≤ x)

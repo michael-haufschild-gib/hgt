@@ -102,7 +102,6 @@ theorem norm_sub_le_shiftSpread {ι : Type*} [Fintype ι] (shift : ι → ℂ) (
 
 /-! ## Packets that meet every interface condition -/
 
-set_option maxHeartbeats 1000000 in
 /-- **A node packet meeting every condition of the translation-rank interface.**  The jets are
 grouped by their shift slots; the distinguished slot has strictly least imaginary part; the box
 rises on that slot's fibre and falls off it. -/
@@ -165,7 +164,6 @@ theorem exists_row_packet_spacedRays_combined
 
 /-! ## The interface, discharged for every phase -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The expanded full-rank witness holds for every parameter sequence.**  No genericity in `θ` is
 needed: the blow-up at the carrier's own zeros produces the packet directly.  The hypotheses are
 conditions on the interface's configuration — a strictly lowest shift slot, a box rising on that
@@ -223,7 +221,6 @@ noncomputable def groundFibreBox {ι : Type*} [Fintype ι] [DecidableEq ι] (ord
       = if combinedJetIndex orders k = i₀ then (a : ℕ) else N - (a : ℕ) := by
   simp [groundFibreBox]
 
-set_option maxHeartbeats 1000000 in
 /-- **Unconditional.**  For every parameter sequence, height count, jet multiplicities, degree budget
 and box size, the expanded full-rank witness of the translation-rank interface holds at the integer
 shift configuration and the ground-fibre box.

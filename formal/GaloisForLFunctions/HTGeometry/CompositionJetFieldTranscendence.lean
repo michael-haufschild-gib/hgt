@@ -20,7 +20,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
   relativeGaugeCharZeroBase relativeGaugeCharZero relativeGaugeComplexAlgebra
 
 set_option synthInstance.maxHeartbeats 1000000
-set_option maxHeartbeats 1000000
 
 /-- **The composition is transcendental over the full jet field of the inner function.** -/
 theorem not_isAlgebraic_comp_over_jetField {f g : ℂ → ℂ} (hf : Differentiable ℂ f)

@@ -6,7 +6,6 @@ noncomputable section
 
 open scoped NormedField ValuativeRel Valued
 
-set_option maxHeartbeats 2000000
 
 /-- Frobenius-normalized invariant on the directed supremum of factorial Brauer slices. -/
 noncomputable def canonicalNonarchimedeanLocalBrauerISupInvariant

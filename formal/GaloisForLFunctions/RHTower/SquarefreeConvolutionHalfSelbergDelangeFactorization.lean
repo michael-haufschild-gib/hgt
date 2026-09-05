@@ -353,7 +353,6 @@ private theorem arithmeticFunction_eq_of_LSeries_eq_real_gt_one
       exact hfg x hx)
     hn
 
-set_option maxHeartbeats 1000000 in
 /-- Dilation commutes with the required convolution square.  The proof uses uniqueness of
 Dirichlet coefficients on a far-right ray, avoiding a separate finite divisor reindexing lemma. -/
 theorem squareDilatedMoebiusBinomialHalf_mul_self :

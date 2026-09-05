@@ -130,7 +130,6 @@ theorem differentialAdjoin_jetPow_le_velocityField (n : ℕ) :
 instance charZeroMeromorphicPlane : CharZero MeromorphicPlane :=
   charZero_of_injective_algebraMap constPlane_injective
 
-set_option maxHeartbeats 1000000 in
 /-- **The rotation-invariant part of the velocity field is the power current field.**  An element of
 the velocity field fixed by a rotation of exact order `n` is a differential rational function of the
 `n`-th power of the velocity. -/

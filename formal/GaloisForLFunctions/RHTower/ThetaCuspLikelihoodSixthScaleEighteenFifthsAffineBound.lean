@@ -235,7 +235,6 @@ theorem exp_neg_fiftyFourFifths_lt_oneOverFortyNineThousand :
   nlinarith [Real.exp_pos (-1), Real.exp_pos (-(4 / 5 : ℝ)),
     show (0.3678794412 : ℝ) ^ 10 * (899 / 2000 : ℝ) < 1 / 49000 by norm_num]
 
-set_option maxHeartbeats 6000000 in
 /-- Cleared degree-fifteen certificate for the dominant affine budget. -/
 theorem thetaCuspLikelihoodSixthScale18Over5DominantPolynomial_lt
     {d : ℝ} (hd : 0 ≤ d) (hdhi : d ≤ 43 / 1920) :

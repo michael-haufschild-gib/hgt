@@ -257,7 +257,6 @@ theorem exists_indicial_denominator {K : IntermediateField ℚ ℂ} (hKfin : Fin
 
 /-! ### Popken's lower bound -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Popken's lower bound.**  A nonzero coefficient of a formal solution of a nondegenerate
 integral Euler differential equation whose coefficients lie in a number field has modulus at least
 `exp(-K n (log n)^2)`. -/

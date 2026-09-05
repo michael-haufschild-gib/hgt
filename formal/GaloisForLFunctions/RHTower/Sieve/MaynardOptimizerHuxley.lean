@@ -161,7 +161,6 @@ def IsMaynardSelectedHuxleyBound
                 2 ^ (r : ℕ) : ℕ) : ℝ)) / delta) *
               ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1)))
 
-set_option maxHeartbeats 1000000 in
 /-- Exact length-form count extracted from canonical Huxley, before any height specialization. -/
 theorem card_le_of_selected_huxley_with_fixed_polylog_raw
     {L X K : ℕ} {c alpha delta : ℝ}

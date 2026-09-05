@@ -176,7 +176,6 @@ theorem radiationScaleConst_pos (a σ : ℝ) (ha : 0 < a) (m : ℕ) :
   have hlast : (0 : ℝ) < 2 * (Real.sqrt 2 - 1) := by linarith
   positivity
 
-set_option maxHeartbeats 1600000 in
 /-- **The exact scale of the order-`m` radiation remainder.** -/
 theorem tendsto_norm_massBesselDyadicRadiationRemainder_scale (a σ : ℝ) (ha : 0 < a)
     (hσ : 0 < σ) (m : ℕ) :

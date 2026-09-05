@@ -146,7 +146,6 @@ theorem volume_patchAnnulus_cap_pos (k : ℕ) {ρ : ℝ} (hρ : 0 < ρ) :
     0 < volume (patchAnnulus (sphericalCap (uniformDir (2 * (k + 1) + 3)) ρ)) :=
   volume_patchAnnulus_sphericalCap_pos (norm_uniformDir (by omega)) hρ
 
-set_option maxHeartbeats 1000000 in
 /-- **Theorem B: the fully coupled sleeping-chaos family.**  One cubic-phase seed serves all but a
 `96/(κ²D)` fraction of the tube over the diagonal cap, and every nondegenerate direction of that
 part is easy through the whole prescribed delay, has maximally projective spectrum and small seed

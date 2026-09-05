@@ -177,7 +177,6 @@ theorem indepPeriods_of_periodsIntegrallyIndependent (τ : ι → ℂ)
   rw [if_neg hij, if_pos rfl] at hi
   exact ⟨hp, by omega, by omega⟩
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The forward half of the all-depth pair-face theorem.**  A differentially algebraic member of
 the all-depth mixed-constraint class has vanishing pair-face signature at every pair. -/

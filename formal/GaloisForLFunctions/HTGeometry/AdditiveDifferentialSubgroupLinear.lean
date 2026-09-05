@@ -49,7 +49,6 @@ omit [CharZero C] in
 @[simp] theorem jetVecHom_apply (n : ℕ) (v : C) (i : Fin (n + 1)) :
     jetVecHom n v i = differentialJet (i : ℕ) v := rfl
 
-set_option maxHeartbeats 1200000 in
 /-- **Cassidy's additive classification, elementary form.**  An additive subgroup of a differential
 field of characteristic zero lying in the zero set of a nonzero differential polynomial satisfies a
 nonzero linear relation among the jets.

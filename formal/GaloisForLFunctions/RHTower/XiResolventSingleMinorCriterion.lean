@@ -42,7 +42,6 @@ theorem xiPolyMoment_X_pow_mul (m : ℕ) (p : Polynomial ℝ) (k : ℕ) (X : ℝ
   rw [evalRealPolynomial_mul, evalRealPolynomial_pow, evalRealPolynomial_X]
   ring
 
-set_option maxHeartbeats 1600000 in
 /-- **Single-minor spectral descent**: the index-`0` polynomial Turán minors alone, at one
 shift, place the entire divisor on the critical line. -/
 theorem forall_criticalLine_of_forall_polyTuranMinor_zero_re_nonneg {X : ℝ} (hX : 0 ≤ X)

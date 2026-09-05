@@ -232,7 +232,6 @@ theorem crossCollision_stabSeed (k : ℕ)
   rw [stabSeed_comp]
   rfl
 
-set_option maxHeartbeats 1000000 in
 /-- **`(11)`: the seed-averaged plateau bound.**  Summed over the stabilizer seeds, the long-time
 shell density of the directions whose evolution reaches the dictionary is at most
 `|Stab| (2^{-r/2} + 1/L)`. -/

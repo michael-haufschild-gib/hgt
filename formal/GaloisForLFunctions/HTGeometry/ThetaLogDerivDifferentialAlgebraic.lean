@@ -33,7 +33,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
 
 attribute [local instance] meromorphicEllipticCompositumComplexAlgebraMero
 
-set_option maxHeartbeats 1000000 in
 /-- **The theta logarithmic derivative is differentially algebraic over `ℂ(z)`.**  Its derivative is
 elliptic, and differential algebraicity passes to antiderivatives. -/
 theorem differentialAlgebraicOver_ratFunc_thetaLogDerivMero (τ : ℂ) (hτ : 0 < τ.im) :
@@ -42,7 +41,6 @@ theorem differentialAlgebraicOver_ratFunc_thetaLogDerivMero (τ : ℂ) (hτ : 0 
     (differentialAlgebraicOver_of_mem_ellipticMeroField (linearIndependent_one_of_im_pos hτ)
       (thetaLogDerivMero_deriv_mem_ellipticMeroField τ hτ))
 
-set_option maxHeartbeats 1000000 in
 /-- Differential algebraicity over the rational coordinate field passes to every jet. -/
 theorem differentialAlgebraicOver_ratFunc_differentialJet
     {x : meroField (Set.univ : Set ℂ)} (hx : DifferentialAlgebraicOver (RatFunc ℂ) x) (j : ℕ) :
@@ -60,7 +58,6 @@ theorem differentialAlgebraicOver_ratFunc_differentialJet_thetaLogDerivMero
   differentialAlgebraicOver_ratFunc_differentialJet
     (differentialAlgebraicOver_ratFunc_thetaLogDerivMero τ hτ) j
 
-set_option maxHeartbeats 1000000 in
 /-- **Every translate of the theta logarithmic derivative is differentially algebraic over
 `ℂ(z)`.** -/
 theorem differentialAlgebraicOver_ratFunc_addTranslationMeroEquiv_thetaLogDerivMero

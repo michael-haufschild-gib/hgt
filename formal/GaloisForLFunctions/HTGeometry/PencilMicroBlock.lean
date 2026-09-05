@@ -89,7 +89,6 @@ theorem blockOp_pencil {m d : ℕ} (e : Fin m → H) (μ : Fin m → ((Fin d →
 
 /-! ## The several-variable micro-spectrum block -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The several-variable micro-spectrum block.**  Beside a family of greedy truncations there is a
 finite-rank *pencil* which annihilates the truncated pencil in both orders, whose power traces below
 the order are exactly the prescribed homogeneous defects, and whose Schatten cost is arbitrarily

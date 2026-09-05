@@ -19,7 +19,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 open scoped IntermediateField
 
-set_option maxHeartbeats 1000000
 set_option synthInstance.maxHeartbeats 400000
 
 variable {K : Type*} [Field K] [CharZero K] [IsAlgClosed K] {d : ℕ}

@@ -60,7 +60,6 @@ theorem cosetFaceShiftSetSlice_zsmul_eq
     cosetFaceShiftSet_label_unique τ hA J hα hα' hmem hmem' hsplit
   exact faceShiftLatticeSlice_zsmul_eq τ hQ J q hu hu' (by linear_combination hlat)
 
-set_option maxHeartbeats 1000000 in
 /-- **Star exponents on one labelled bottom face.** -/
 theorem cosetFacePacketSlice_exponent_eq_bottom
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
@@ -86,7 +85,6 @@ theorem cosetFacePacketSlice_exponent_eq_bottom
     hperiods hmem hmem' heq
   exact cosetFaceShiftSetSlice_zsmul_eq τ hQ hA J hq hg hg' hshift
 
-set_option maxHeartbeats 1000000 in
 /-- **Cross-face star exponents at the labelled bottom layer.** -/
 theorem cosetFacePacketSlice_exponent_eq_bottom_cross
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
@@ -112,7 +110,6 @@ theorem cosetFacePacketSlice_exponent_eq_bottom_cross
   exact multipleEllipticGammaFace_translate_ne_bottom τ hτ hQ J J' haJ hbJ hab hJ
     haJ' hbJ' hab' hJ' hperiods hperiods' haa' hab'' _ _ heq
 
-set_option maxHeartbeats 1000000 in
 /-- **Off-star displacements at the labelled bottom layer are differentially algebraic.** -/
 theorem differentialAlgebraicOver_cosetOffStar_displacement_bottom
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (A : Set ℂ) (J : Finset ι) {a b : ι}
@@ -142,7 +139,6 @@ theorem differentialAlgebraicOver_cosetOffStar_displacement_bottom
     · exact ⟨0, n, 0, by push_cast; ring⟩
   exact differentialAlgebraicOver_translate_resonant_defect (hτ a) (hτ b) hperiods hres
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **Off-star translates are differentially algebraic over any generated field containing the
 point.** -/
@@ -173,7 +169,6 @@ theorem differentialAlgebraicOver_cosetOffStar_translate_bottom
   have hsum := differentialAlgebraicOver_add hd hyD
   simpa using hsum
 
-set_option maxHeartbeats 1500000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Joint independence of the whole labelled bottom layer.** -/
 theorem cosetFaceStar_diffIndepOn_bottom
@@ -237,7 +232,6 @@ theorem cosetFaceStar_diffIndepOn_bottom
       (linearIndependent_ellipticGammaSourcePeriods_of_periodsIntegrallyIndependent τ hQ hab)
       hqJ n hyJ (Finset.mem_coe.mpr hyt)
 
-set_option maxHeartbeats 800000 in
 /-- **The labelled bottom layer over a differentially algebraic extension.** -/
 theorem cosetFaceStar_diffIndepOn_bottom_daExtension
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
@@ -253,7 +247,6 @@ theorem cosetFaceStar_diffIndepOn_bottom_daExtension
   diffIndepOn_differentialAdjoin_of_differentialAlgebraicOver
     (cosetFaceStar_diffIndepOn_bottom τ hτ hQ hA faces s huniform hbottom) hG
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Joint independence of an arbitrary finite family of labelled bottom faces.** -/
 theorem cosetFaceStar_diffIndepOn_bottom_family

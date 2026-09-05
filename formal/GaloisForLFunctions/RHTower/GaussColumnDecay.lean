@@ -74,7 +74,6 @@ theorem exists_norm_gaussSampleValue_pow_mul_natAbs_le (hm : 1 ≤ m) (k : Fin m
 
 /-! ## The column decay -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Column decay of the critical power.**  For every `ρ > 0` the columns of `G^m` in the Fourier
 basis satisfy `‖G^m e_n‖ ≤ C |n|^{-1+ρ}`. -/
 theorem exists_norm_gaussQuasiInnerG_pow_fourierLp_le (hm : 1 ≤ m) (hm2 : 2 ≤ m) (k : Fin m)

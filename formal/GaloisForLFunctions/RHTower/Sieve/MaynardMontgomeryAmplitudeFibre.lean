@@ -208,7 +208,6 @@ theorem montgomery_maynardEligibleSelection_fibre_at_amplitude
       hdelta hH hV hgap hband hlarge'
   exact ⟨ell, hell, hell90, hYlo, hYhi, by simpa [Y] using hMont⟩
 
-set_option maxHeartbeats 1000000 in
 /-- **Rho-free Montgomery amplitude count.**  Once the raised lower edge dominates the height,
 the two Montgomery length terms and fixed coefficient energy give exponent `2-2*alpha`; the
 Perron abscissa cancels exactly. -/

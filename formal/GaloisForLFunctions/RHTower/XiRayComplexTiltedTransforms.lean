@@ -266,7 +266,7 @@ open HedenmalmThetaSource
 
 /-! ## The second-moment comparison -/
 
-set_option maxHeartbeats 1600000 in
+set_option maxHeartbeats 400000 in
 theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
     xiRayLaplaceSecondMoment b ≤ (Real.log b + 3) ^ 2 * xiRayLaplace b := by
   have hR := xiRayPacketBase_ge
@@ -803,7 +803,7 @@ theorem xiRayTiltBudget_pos {b : ℝ} (hb : 1 ≤ b) : 0 < xiRayTiltBudget b := 
   have h := Real.log_nonneg hb
   positivity
 
-set_option maxHeartbeats 1600000 in
+set_option maxHeartbeats 400000 in
 private theorem logDeriv_tilted_re_norm {b t : ℝ} (hb : xiRayPacketBase ≤ b)
     (ht : |t| ≤ xiRayTiltBudget b) :
     Real.log b / 16 ≤ (logDeriv xiCent ((b : ℂ) + (t : ℂ) * Complex.I)).re ∧

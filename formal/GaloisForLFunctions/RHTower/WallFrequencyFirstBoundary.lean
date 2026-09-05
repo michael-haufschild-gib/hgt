@@ -193,7 +193,6 @@ theorem measurable_semigroup_freqCutSlice {g : ℝ → X} (hgm : StronglyMeasura
   rw [heq]
   exact habs.mul hbase
 
-set_option maxHeartbeats 1000000 in
 /-- **The frequency-weighted first boundary term.**  Multiplication by the frequency is physical
 differentiation, so the estimate costs the block's derivative energy and one more power of the
 floor. -/

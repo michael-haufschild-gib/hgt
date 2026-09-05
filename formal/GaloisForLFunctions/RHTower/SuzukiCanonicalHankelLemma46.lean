@@ -17,7 +17,6 @@ noncomputable section
 namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
-set_option maxHeartbeats 1000000
 
 /-- Restriction from a physical interval `(0,b)` to `(0,a)`, routed through the common positive
 half-line carrier. -/

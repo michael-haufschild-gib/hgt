@@ -47,7 +47,6 @@ theorem shiftExponentSeparating_of_noIntegerRelation {rr Mm : ℕ} {lamf : Fin r
   have hk := hzero k
   omega
 
-set_option maxHeartbeats 1000000 in
 /-- **The boundary datum of a normal-form Gamma sum, from separation alone.**  Strictly generalizes
 `exists_hasShiftTubeDatum_jetGammaNormalForm`: the `NoIntegerRelation` hypothesis is replaced by the
 separation it is only ever used to provide. -/

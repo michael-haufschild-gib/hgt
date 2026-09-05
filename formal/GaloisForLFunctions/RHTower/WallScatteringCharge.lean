@@ -97,7 +97,6 @@ def wallScatteringRemainder (E : ℂ → ℂ) (T : X →L[ℂ] X) (g : ℝ → X
 
 variable [Nontrivial X]
 
-set_option maxHeartbeats 1000000 in
 /-- **The forced profile is the propagated charge plus point-dependent terms.** -/
 theorem forcedProfile_eq_charge_add_remainder {σ Y x μ₀ K₂ m : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))

@@ -19,7 +19,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 open MvPolynomial
 
-set_option maxHeartbeats 1000000
 
 noncomputable section
 

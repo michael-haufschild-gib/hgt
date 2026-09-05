@@ -35,7 +35,6 @@ theorem partialSum_ofScalars (a : ℕ → ℂ) (M : ℕ) (z : ℂ) :
   exact Finset.sum_congr rfl fun i _ => by
     rw [FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul]
 
-set_option maxHeartbeats 1000000 in
 theorem continuous_partialSumSource_gafCoeff (M : ℕ) :
     Continuous (fun x : ℕ → ℂ => partialSumSource (gafCoeff x) M) := by
   set cm : (ℕ → ℂ) → C(Fin 1 → ℂ, ℂ) := fun x => (partialSumSource (gafCoeff x) M).1 with hcm

@@ -107,7 +107,6 @@ theorem exists_algebraic_spectrum_package {ι : Type} [Fintype ι] [DecidableEq 
 
 /-! ### The window law in physical form -/
 
-set_option maxHeartbeats 2000000 in
 /-- **Theorem B for an integer matrix, in physical form.**  A traceless integer Hermitian matrix
 whose characteristic polynomial is irreducible with the full symmetric Galois group robustly avoids
 every finite target family on a definite fraction of every long enough window. -/
@@ -228,7 +227,6 @@ theorem half_mul_le_measureReal_hardWindow_physical
     rw [← hbridge]
     exact ht c
 
-set_option maxHeartbeats 1000000 in
 /-- **Theorem B's recurrence half for an integer matrix, in physical form.**  A traceless integer
 Hermitian matrix whose characteristic polynomial is irreducible with the full symmetric Galois group
 returns projectively to its initial state on a definite fraction of every long enough window. -/

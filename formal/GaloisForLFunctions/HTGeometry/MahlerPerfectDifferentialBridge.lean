@@ -30,7 +30,6 @@ theorem coeff_mahlerPEmbed_algebraMap (p : ℕ) (hp : 1 < p)
   · simp [h]
   · simp [h]
 
-set_option maxHeartbeats 1000000 in
 /-- The coefficient derivation of the base is the restriction of the ambient Euler derivation, on
 polynomials in the twisting coordinate. -/
 theorem mahlerPEmbed_twoCylDerivation_algebraMap [CharZero k] (p : ℕ) (hp : 1 < p)
@@ -49,7 +48,6 @@ theorem mahlerPEmbed_twoCylDerivation_algebraMap [CharZero k] (p : ℕ) (hp : 1 
   · simp [h]
   · rw [if_neg h, if_neg h, coeffDeriv_coeff, perfectDifferential_deriv, perfectBaseDeriv_coe]
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 /-- **The coefficient derivation of the base is the restriction of the ambient Euler
 derivation.** -/

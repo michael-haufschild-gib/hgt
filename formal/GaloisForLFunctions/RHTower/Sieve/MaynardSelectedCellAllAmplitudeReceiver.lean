@@ -14,7 +14,6 @@ reserve.  No additive-energy `R*` alternative is needed.
 -/
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1500000
 
 noncomputable section
 namespace RHTower.Sieve

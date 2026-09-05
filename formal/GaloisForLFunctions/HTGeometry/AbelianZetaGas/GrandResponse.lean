@@ -17,7 +17,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Filter Topology
 
-set_option maxHeartbeats 1000000
 
 noncomputable section
 

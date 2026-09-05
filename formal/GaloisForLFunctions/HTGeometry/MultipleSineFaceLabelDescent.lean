@@ -65,7 +65,6 @@ theorem exists_exponent_of_mem_facePacketSlice (ω : ι → ℂ) (hω : ∀ k, 0
 
 /-! ### Faithful labelling modulo the rational coordinate field -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- Faithful labelling for a face whose complement has a prescribed size, by induction on the
 number of surviving periods beyond the second. -/
@@ -199,7 +198,6 @@ theorem facePacket_label_injective {μ : ℂ} {rad : ι → ℝ} (hrad : ∀ k, 
     (faceShift_mem_faceShiftLattice ω J α) (faceShift_mem_faceShiftLattice ω J β) hαβ
   exact faceShift_injective_of_two_survivors hind hij hi hj hshift
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **The bilateral palette of any face is faithful.**  Distinct slice points or distinct exponents
 give distinct elements of the packet. -/

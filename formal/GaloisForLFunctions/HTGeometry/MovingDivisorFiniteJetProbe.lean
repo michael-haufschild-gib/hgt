@@ -15,7 +15,6 @@ open Set Topology Filter
 open scoped ENNReal
 
 noncomputable section
-set_option maxHeartbeats 2000000
 
 namespace MovingDivisor
 

@@ -78,7 +78,6 @@ theorem analyticAt_evenTranslate_jet (θ : BoundedRealSequence) (r : ℕ) (σ : 
     AnalyticAt.comp (g := iteratedDeriv r (movingEvenCanonicalCarrier θ)) houter hinner
   simpa [Function.comp_def] using hcomp
 
-set_option maxHeartbeats 1000000 in
 /-- **The even carrier blows up at every zero with the same leading value as the carrier.**  The
 reflected summand is analytic at `-ζ_p`, hence bounded there, so it is annihilated by the vanishing
 factor. -/

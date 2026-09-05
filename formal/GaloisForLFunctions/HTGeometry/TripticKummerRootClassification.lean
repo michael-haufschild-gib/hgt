@@ -32,7 +32,6 @@ variable {τ σ : ℂ} {Y : ℂ → ℂ} {Cst : ℂ}
 
 /-! ### The kernel theorem for class members -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The kernel of the orbital charge, for class members.**  A member of the multiplicative
 triptic class whose orbital charge vanishes on every orbit has vanishing mixed constant and a
 differentially algebraic logarithmic derivative. -/

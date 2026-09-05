@@ -37,7 +37,6 @@ theorem jetElem_one_ne_zero {g : ℂ → ℂ} (hg : Differentiable ℂ g)
   exact fun z => is_const_of_deriv_eq_zero hg hderiv z 0
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **Every composed jet is algebraic over the composition.**  With the pullback derivation the
 relative algebraic closure of `ℂ(f∘g)` is derivation-closed, and it contains every `f⁽ⁱ⁾∘g`. -/
 theorem isAlgebraic_compJetElem_of_autonomous {f g : ℂ → ℂ} (hf : Differentiable ℂ f)

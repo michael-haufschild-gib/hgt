@@ -26,7 +26,6 @@ def thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline (q : ℝ) : ℝ :=
     62928 * thetaCuspFullReflectionEighthCompactEighthCoefficient q *
       (1 / 69) * (q + 3 / 2) ^ 2
 
-set_option maxHeartbeats 6000000 in
 /-- The spectrally compensated uniform-loss baseline is strict from weight `467/100`. -/
 theorem thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline_pos_of_fourHundredSixtySevenHundredths_le
     {q : ℝ} (hq : (467 / 100 : ℝ) ≤ q) :
@@ -47,7 +46,6 @@ theorem thetaCuspFirstAtomEighthWorstSixthSpectralLossBaseline_pos_of_fourHundre
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- The worst-sixth curvature bracket remains strict at the spectrally refined boundary. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos_of_fourHundredSixtySevenHundredths_le
     {q : ℝ} (hq : (467 / 100 : ℝ) ≤ q) :
@@ -77,7 +75,6 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos_of_fourHundre
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- The derivative bracket needed for curvature transport is strict from weight `467/100`. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracketDerivative_pos_of_fourHundredSixtySevenHundredths_le
     {q : ℝ} (hq : (467 / 100 : ℝ) ≤ q) :
@@ -110,7 +107,6 @@ def thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient (q : ℝ) : ℝ :=
     thetaCuspFullReflectionEighthCompactEighthCoefficient q *
       (1 / 69) * (q + 3 / 2) ^ 2
 
-set_option maxHeartbeats 6000000 in
 /-- The effective loss coefficient is positive throughout the only new chamber. -/
 theorem thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient_pos
     {q : ℝ} (hq : (467 / 100 : ℝ) ≤ q) (hqUpper : q < 19 / 4) :
@@ -140,7 +136,6 @@ theorem thetaCuspFirstAtomEighthSpectralEffectiveSixthCoefficient_pos
     nlinarith [htail]
   nlinarith [pow_pos hqpos 6]
 
-set_option maxHeartbeats 6000000 in
 /-- Native D1 is strict whenever first-atom weight is at least `467/100`. -/
 theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_fourHundredSixtySevenHundredths_le_weight
     {x : ℝ} (hx : 0 ≤ x)

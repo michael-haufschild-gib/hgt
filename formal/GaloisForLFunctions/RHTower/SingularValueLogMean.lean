@@ -212,7 +212,6 @@ theorem sum_band_re_inner_le_sum_singVal (b : HilbertBasis ℤ ℂ H) {T : H →
 
 /-! ## The two-sided logarithmic comparison -/
 
-set_option maxHeartbeats 2000000 in
 /-- **From the diagonal logarithmic mean to the singular-value logarithmic mean.**  A positive
 compact operator whose columns in a `ℤ`-indexed Hilbert basis decay faster than `|n|^(-1+δ)` for
 every `δ > 0` has singular-value logarithmic mean equal to the logarithmic mean of its symmetric

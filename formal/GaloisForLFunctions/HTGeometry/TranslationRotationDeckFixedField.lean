@@ -121,7 +121,6 @@ theorem coe_mem_differentialAdjoin_of_subfield
 
 /-! ### The composite deck fixed field -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Invariance under the translation and the rotation forces membership in the current field.**
 An element fixed by the unit translation `q ↦ q + 1` and by the scaling `q ↦ ζ·q` of a root of
 unity of exact order `n` is a differential rational function of `(q′)^n`. -/
@@ -315,7 +314,6 @@ theorem mem_differentialAdjoin_derivPow_of_translation_rotation_invariant
     rw [SubmonoidClass.coe_pow]
   rwa [hcoepow] at hdown
 
-set_option maxHeartbeats 800000 in
 /-- **The deck fixed field of a compact parabolic signature.**  The elements fixed by the unit
 translation and by the rotation of exact order `n` are exactly the differential rational functions
 of the `n`-th power of the cover velocity. -/
@@ -363,7 +361,6 @@ theorem setOf_translation_rotation_invariant_eq_differentialAdjoin_derivPow
         rw [hpow, map_one, one_mul]
       exact scalingAutomorphism_fixes_differentialAdjoin hF (Units.ne_zero ζ) hyq hgen hfix hx
 
-set_option maxHeartbeats 800000 in
 /-- **The complete tail of any affine deck tower through the two generators.**  For a family of
 deck transformations that contains the unit translation and the order-`n` rotation and whose
 members all fix the current field pointwise, the common invariants are exactly the differential

@@ -15,7 +15,6 @@ open GaloisForLFunctions
 
 noncomputable section
 
-set_option maxHeartbeats 1000000 in
 /-- **The periodized Gaussian is damped on a transverse translate.**  Each lattice copy carries the
 factor `exp(-rate·B)` because the transverse translate keeps it away from the centre, and the
 residual Gaussians sum. -/

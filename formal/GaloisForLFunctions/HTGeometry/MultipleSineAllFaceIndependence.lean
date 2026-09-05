@@ -56,7 +56,6 @@ theorem toEquiv_addTranslationMeroDifferentialAlgEquiv (q : ℂ) :
     (addTranslationMeroDifferentialAlgEquiv q).toAlgEquiv.toEquiv
       = meroTranslationPerm q := rfl
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Joint atomicity of the top face layer.**  For a ray period family with rationally independent
 periods, the union of the external packets of all maximal faces is differentially independent over
@@ -100,7 +99,6 @@ theorem multipleSineMaximalFaces_diffIndepOn {μ : ℂ} {rad : ι → ℝ} (hrad
     exact differentialAlgebraicOver_differentialAdjoin_of_sub (↑t : Set (meroField Set.univ))
       (subset_differentialAdjoin ℂ (↑t : Set (meroField Set.univ)) hyt) hstep
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Joint atomicity over the natural rational base.**  The same union is differentially
 independent over the embedded rational coordinate field: adjoining the coordinate is a purely

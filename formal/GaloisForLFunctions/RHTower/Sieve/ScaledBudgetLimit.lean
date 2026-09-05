@@ -56,7 +56,7 @@ theorem spectral_terms_le' {sx h W G T0 δ αL βL Ec B0 : ℝ}
 
 /-! ## The four normalised quotients at a shrunk window -/
 
-set_option maxHeartbeats 800000 in
+set_option maxHeartbeats 400000 in
 /-- **The slope quotient vanishes at a shrunk window.** -/
 theorem tendsto_slope_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
     (hβ0 : 9 / 10 < β) (hβ1 : β < 1) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ0 : 9 / 10 < γ * β)
@@ -161,7 +161,7 @@ theorem scaledLength_le_cardLength {c : ℝ} (hc1 : c ≤ 1) (β x : ℝ) :
   rw [scaledLength]
   nlinarith [h0, hc1]
 
-set_option maxHeartbeats 800000 in
+set_option maxHeartbeats 400000 in
 /-- **The energy quotient vanishes at a shrunk window.** -/
 theorem tendsto_energy_quotientS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (hβ0 : 0 < β)
     (hβ1 : β < 1) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) :
@@ -232,7 +232,7 @@ theorem tendsto_energy_quotientS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (
             * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
           field_simp
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 /-- **The constant quotient vanishes at a shrunk window.** -/
 theorem tendsto_const_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
     (hβ0 : 9 / 10 < β) (hβ1 : β < 1) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ0 : 9 / 10 < γ * β)
@@ -324,7 +324,7 @@ theorem tendsto_const_quotientS {A delta Ctot c β γ : ℝ} (hc0 : 0 < c) (hc1 
             * (mertensS (ladderTop β γ x) - mertensS (siftStart (γ * β) x)) ^ 2)) := by
           field_simp
 
-set_option maxHeartbeats 800000 in
+set_option maxHeartbeats 400000 in
 /-- **The non-spectral budget vanishes at a shrunk window.** -/
 theorem tendsto_nonSpectralBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) (hβ0 : 0 < β)
     (hβ1 : β < 1) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ : γ * β < 1) :
@@ -410,7 +410,7 @@ theorem tendsto_nonSpectralBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
           * (cardLength β x) ^ 2 * Real.sqrt x)) by field_simp]
     gcongr
 
-set_option maxHeartbeats 2000000 in
+set_option maxHeartbeats 400000 in
 /-- **The normalised spectral budget vanishes at every shrunk window.** -/
 theorem tendsto_normalised_omegaBudgetS {c β γ : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1)
     (hβ0 : 9 / 10 < β) (hβ1 : β < 1) (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ0 : 9 / 10 < γ * β)

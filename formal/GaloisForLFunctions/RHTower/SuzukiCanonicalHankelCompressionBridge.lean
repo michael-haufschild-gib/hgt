@@ -21,7 +21,6 @@ noncomputable section
 namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
-set_option maxHeartbeats 1000000
 
 /-! ## Isometric zero extension from `L²(0,a)` to the positive ray -/
 

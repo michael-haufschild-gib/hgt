@@ -24,7 +24,6 @@ noncomputable section
 
 /-! ## The depth-one principal-step bound -/
 
-set_option maxHeartbeats 2000000 in
 /-- At depth one the principal step on the constant Fourier vector has sub-power growth. -/
 theorem exists_norm_gaussPrincipalStep_pow_one_le (k : Fin 1) (p : Nat.Primes)
     (hp : (1 : ℝ) < (p : ℝ)) {ρ : ℝ} (hρ : 0 < ρ) :
@@ -96,7 +95,6 @@ theorem exists_norm_gaussPrincipalStep_pow_one_le (k : Fin 1) (p : Nat.Primes)
 
 /-! ## Depth-one column decay -/
 
-set_option maxHeartbeats 1000000 in
 /-- The actual depth-one Gauss block has columns `O(|n|⁻¹⁺ρ)` for every `ρ > 0`. -/
 theorem exists_norm_gaussQuasiInnerG_one_fourierLp_le (k : Fin 1) (p : Nat.Primes)
     (hp : (1 : ℝ) < (p : ℝ)) {ρ : ℝ} (hρ : 0 < ρ) :
@@ -228,7 +226,6 @@ theorem exists_norm_gaussChannelOperator_one_fourierBasis_le (k : Fin 1) (p : Na
 
 /-! ## Fourier and singular-value logarithmic means -/
 
-set_option maxHeartbeats 1000000 in
 /-- The symmetric Fourier diagonal of the actual depth-one channel has the arithmetic residue. -/
 theorem tendsto_gaussChannelOperator_one_band_logMean (k : Fin 1) (p : Nat.Primes) :
     Tendsto (fun M : ℕ =>
@@ -312,7 +309,6 @@ theorem isDixmier_gaussChannelOperator_one (k : Fin 1) (p : Nat.Primes) :
     ContinuousLinearMap.IsDixmier (gaussChannelOperator (le_refl 1) k p) :=
   isDixmier_of_tendsto_logMean (tendsto_sum_singVal_gaussChannelOperator_one k p)
 
-set_option maxHeartbeats 1000000 in
 /-- The actual depth-one channel is measurable with the exact arithmetic residue. -/
 theorem hasSchattenLogResidue_gaussChannelOperator_one (k : Fin 1) (p : Nat.Primes) :
     HasSchattenLogResidue 1 (gaussChannelOperator (le_refl 1) k p)

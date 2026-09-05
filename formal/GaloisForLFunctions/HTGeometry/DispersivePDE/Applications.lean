@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.ScalarSolitons
 import GaloisForLFunctions.HTGeometry.DispersivePDE.NLSSolitons
 import GaloisForLFunctions.HTGeometry.DispersivePDE.FDNLSApplications
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaApplications
+import GaloisForLFunctions.HTGeometry.DispersivePDE.MondalElectronAcousticKP
 import GaloisForLFunctions.HTGeometry.BelinskiZakharovJacobiTodaBridge
 import GaloisForLFunctions.HTGeometry.KerrNewmanBelinskiZakharovTwoPoleBridge
 
@@ -29,6 +30,25 @@ structure ClosedDispersiveAtlas : Prop where
   linearKawahara : SolvesLinearKawahara kawaharaLinearWaveJet
   kpI : SolvesKP (-1) kpLineSolitonJet
   kpII : SolvesKP 1 kpLineSolitonJet
+  mondalGeneralKP : ∀ α δ ρ k slope shift : ℝ,
+    SolvesGeneralKP α δ ρ (mondalSolitonJet α δ ρ k slope shift)
+  mondalOneTauHirota : ∀ δ ρ k slope shift : ℝ,
+    SolvesHirotaKP δ ρ
+      (mondalOneExponentialTauJet (mondalFrequency δ ρ k slope) k (k * slope) shift)
+  mondalLumpHirota : ∀ beta gammaLog r b d m : ℝ,
+    SolvesHirotaKP beta (-Real.exp gammaLog)
+      (mondalCorrectedLumpTauJet beta gammaLog r b d m)
+  mondalPrintedRightTimeReverse : ∀ β γ k slope shift : ℝ,
+    SolvesHirotaKPTimeReversed (-β) γ
+      (mondalOneExponentialTauJet
+        (mondalPrintedRightFrequency β γ k slope) k (k * slope) shift)
+  mondalPrintedLeftTimeReverse : ∀ β γ k slope shift : ℝ,
+    SolvesHirotaKPTimeReversed β (-γ)
+      (mondalOneExponentialTauJet
+        (mondalPrintedLeftFrequency β γ k slope) k (k * slope) shift)
+  mondalPhysicalLumpTauZero : ∀ q p s : ℝ,
+    mondalPhysicalLumpTau q p s 0
+      (Real.sqrt (-mondalPhysicalLumpOffset q p s)) 0 = 0
   shriraPesenson : ∀ α β γ₁ γ₂ ε : ℝ,
     SolvesShriraPesenson α β γ₁ γ₂ ε shriraPesensonTiltJet
   brightNLS : SolvesFocusingNLS nlsBrightSolitonJet
@@ -71,6 +91,12 @@ theorem closedDispersiveAtlas : ClosedDispersiveAtlas where
   linearKawahara := kawaharaLinearWave_solves
   kpI := kpLineSoliton_solves_KPI
   kpII := kpLineSoliton_solves_KPII
+  mondalGeneralKP := mondalSoliton_solves
+  mondalOneTauHirota := mondalOneExponentialTau_corrected_solvesHirota
+  mondalLumpHirota := mondalCorrectedLumpTau_solvesHirota
+  mondalPrintedRightTimeReverse := mondalPrintedRightOneTau_solvesTimeReversedHirota
+  mondalPrintedLeftTimeReverse := mondalPrintedLeftOneTau_solvesTimeReversedHirota
+  mondalPhysicalLumpTauZero := mondalPhysicalLumpTau_has_zero
   shriraPesenson := shriraPesensonTilt_solves_all
   brightNLS := nlsBrightSoliton_solves
   darkNLS := nlsDarkSoliton_solves

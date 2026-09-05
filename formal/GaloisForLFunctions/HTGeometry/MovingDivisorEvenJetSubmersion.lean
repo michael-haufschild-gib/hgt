@@ -16,7 +16,6 @@ open ClassicalAnalyticNevanlinnaCarrierFamily
 open scoped ComplexConjugate
 
 noncomputable section
-set_option maxHeartbeats 2000000
 
 namespace MovingDivisor
 

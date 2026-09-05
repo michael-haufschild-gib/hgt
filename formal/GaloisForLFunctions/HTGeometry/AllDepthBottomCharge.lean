@@ -140,7 +140,6 @@ theorem shiftConstGerm_bottomWitnessFun (τ : ι → ℂ) (s : Finset ι) (k : �
   rw [HTGeometry.diffCube_singleton] at hw'
   exact hw'
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The kernel of the bottom charge is the next class.**  A bottom witness with no principal
 part is entire; being `1`-periodic with a constant `τ k`-step it is constant, and the class
@@ -213,7 +212,6 @@ theorem exists_mixedConstGermSet_erase_of_bottomCharge_eq_zero
 
 /-! ## The bottom charge is a divisor on the elliptic quotient -/
 
-set_option maxHeartbeats 800000 in
 /-- **The bottom charge is invariant under the unit period.** -/
 theorem laurentCoeff_bottomWitnessFun_add_one (τ : ι → ℂ) (s : Finset ι) (k : ι)
     {f : ℂ → ℂ} (hmero : MeromorphicOn f (Set.univ : Set ℂ))
@@ -230,7 +228,6 @@ theorem laurentCoeff_bottomWitnessFun_add_one (τ : ι → ℂ) (s : Finset ι) 
     _ = laurentCoeff V a ℓ :=
         laurentCoeff_congr hmero (periodicOneGerm_bottomWitnessFun τ s k hper a) ℓ
 
-set_option maxHeartbeats 800000 in
 /-- **The bottom charge is invariant under the distinguished period.** -/
 theorem laurentCoeff_bottomWitnessFun_add_tau (τ : ι → ℂ) (s : Finset ι) (k : ι) (hk : k ∈ s)
     {Cst : ℂ} {f : ℂ → ℂ} (hmero : MeromorphicOn f (Set.univ : Set ℂ))
@@ -251,7 +248,6 @@ theorem laurentCoeff_bottomWitnessFun_add_tau (τ : ι → ℂ) (s : Finset ι) 
     _ = laurentCoeff (fun z => V z + Cst) a ℓ := laurentCoeff_congr hmero hstep ℓ
     _ = laurentCoeff V a ℓ := laurentCoeff_add_const (hVmero a (Set.mem_univ a)) Cst hℓ
 
-set_option maxHeartbeats 1000000 in
 /-- **The bottom charge has finite support on the elliptic quotient.**  Its poles are invariant
 under `Λ_k = ℤ + ℤ τ k`, so they meet only finitely many classes. -/
 theorem exists_finset_bottomCharge_pole_classes (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)

@@ -16,7 +16,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxHeartbeats 6000000 in
 /-- The exact moving fourth/sixth baseline leaves a strict reserve throughout the new chamber. -/
 theorem thetaCuspFirstAtomEighthScaleFifteenFourthsAffineJointReserve_pos_at_baseline
     {q : ℝ} (hqlo : (9 / 4 : ℝ) ≤ q) (hqhi : q ≤ 7 / 3) :
@@ -42,7 +41,6 @@ theorem thetaCuspFirstAtomEighthScaleFifteenFourthsAffineJointReserve_pos_at_bas
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- The joint reserve is increasing above its moving fourth-jet floor. -/
 theorem thetaCuspFirstAtomEighthScaleFifteenFourthsAffineJointReserve_mono_fourth
     {q e4 e6 : ℝ} (hqlo : (9 / 4 : ℝ) ≤ q) (hqhi : q ≤ 7 / 3)
@@ -74,7 +72,6 @@ theorem thetaCuspFirstAtomEighthScaleFifteenFourthsAffineJointReserve_mono_fourt
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- The factored sixth-loss coefficient remains positive along the moving baseline. -/
 theorem thetaCuspFirstAtomEighthScaleFifteenFourthsAffine_sixthLossCoefficient_pos
     {q : ℝ} (hqlo : (9 / 4 : ℝ) ≤ q) (hqhi : q ≤ 7 / 3) :

@@ -73,7 +73,6 @@ theorem exists_verticalApproach {S : Set ℂ} {ζ : ℂ} {ε : ℝ} (hε : 0 < �
   · have h := hulim.sub (tendsto_const_nhds (x := ζ))
     simpa using h
 
-set_option maxHeartbeats 1000000 in
 /-- **The blow-up datum at one translated zero.**  Approaching the zero vertically, the distinguished
 jet blows up at rate `m k₀ + 1` with the factorial leading value, and every companion is renormalized
 by its own vanishing order there. -/

@@ -153,7 +153,6 @@ def atomSumMero (σ : ℂ) (hσ : 0 < σ.im) (N : ℕ) (R : Finset ℂ) (c : ℕ
     algebraMap ℂ (meroField (Set.univ : Set ℂ)) (c j q / ((-1 : ℂ) ^ j * (j.factorial : ℂ))) *
       differentialJet j (addTranslationMeroEquiv (thetaHalfPeriod σ - q) (thetaLogDerivMero σ hσ))
 
-set_option maxHeartbeats 800000 in
 /-- **The atom sum germ is realized by the atom sum function.** -/
 theorem realizesMero_atomSumMero (σ : ℂ) (hσ : 0 < σ.im) (N : ℕ) (R : Finset ℂ)
     (c : ℕ → ℂ → ℂ) :
@@ -199,7 +198,6 @@ theorem realizesMero_atomSumMero (σ : ℂ) (hσ : 0 < σ.im) (N : ℕ) (R : Fin
     simp only [multiAtomRealization, Finset.sum_apply]
   rwa [hfun] at h
 
-set_option maxHeartbeats 800000 in
 /-- **The bottom witness of the carrier jet combination is an atom sum up to a constant.** -/
 theorem exists_bottomWitnessMero_carrierAtomCombination (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
     (s : Finset ι) {k : ι} (hk : k ∈ s) {a : ι} (hak : a ≠ k)
@@ -228,7 +226,6 @@ theorem exists_bottomWitnessMero_carrierAtomCombination (τ : ι → ℂ) (hτ :
 
 /-! ## Surjectivity of the bottom charge -/
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The bottom-charge map is surjective onto atom-sum divisors.**  Every finite divisor of
 bounded order on the elliptic quotient of the surviving direction is the bottom charge of a member

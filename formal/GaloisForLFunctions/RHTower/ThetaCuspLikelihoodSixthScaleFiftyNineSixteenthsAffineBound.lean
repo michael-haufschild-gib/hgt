@@ -22,7 +22,6 @@ def thetaCuspLikelihoodSixthScale59Over16DominantPolynomial (d : ℝ) : ℝ :=
       thetaLikelihoodSixthScoreRayTransformPolynomial
         ((59 / 16 + d) / (35 / 16 + d)) (33 / 16 + 3 * d)
 
-set_option maxHeartbeats 6000000 in
 /-- Cleared degree-fifteen certificate for the dominant affine budget. -/
 theorem thetaCuspLikelihoodSixthScale59Over16DominantPolynomial_lt
     {d : ℝ} (hd : 0 ≤ d) (hdhi : d ≤ 1 / 48) :

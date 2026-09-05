@@ -110,7 +110,6 @@ def deSitterTrace [CharZero k] (p : ℕ) (hp : 1 < p) : BoltzmannField k :=
 
 attribute [local instance] wBoltzmannAlgebra
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 /-- **The trace germ stays hypertranscendental in the extended field**, over the Boltzmann
 coordinate's own base `k(w)`. -/
@@ -324,7 +323,6 @@ theorem kHToBoltzmann_mem_twoCoordField [CharZero k] (r : RatFunc k) :
 
 /-! ## The coordinate change -/
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The detailed-balance trace is hypertranscendental in the Hubble coordinate.**  The Boltzmann
 change of variable is differentially algebraic in both directions, so hypertranscendence over

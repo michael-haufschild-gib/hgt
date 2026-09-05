@@ -103,7 +103,6 @@ theorem fiberNode_injective (lam : Fin L → ℂ) (src : ι → Fin L) (sh : ι 
 
 /-! ### The density theorem -/
 
-set_option maxHeartbeats 2000000 in
 /-- **Density of the good sources.**  For every finite family of distinct jet monomials and every
 prescribed frozen prefix of the coefficients, some source family agreeing on that prefix has a
 nonsingular evaluation matrix. -/

@@ -29,7 +29,7 @@ open MeasureTheory Set Complex Filter Topology
 
 namespace RHTower
 
-set_option maxHeartbeats 2000000
+set_option maxHeartbeats 400000
 
 theorem re_peak_term_le {δ : ℝ} {x y : ℂ} (hx : ‖x‖ ≤ δ) (hy : ‖y‖ ≤ δ) :
     ((I - I * x) * (starRingEnd ℂ) (I * y - I)).re ≤ -1 + 2 * δ + δ ^ 2 := by

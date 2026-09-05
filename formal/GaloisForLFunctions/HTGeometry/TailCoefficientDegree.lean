@@ -20,7 +20,6 @@ open MvPolynomial
 
 open scoped IntermediateField
 
-set_option maxHeartbeats 1000000
 
 variable {K : Type*} [Field K] [CharZero K] {n : ℕ}
 

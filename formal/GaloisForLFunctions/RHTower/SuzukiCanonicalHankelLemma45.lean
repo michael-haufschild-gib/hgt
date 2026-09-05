@@ -20,7 +20,6 @@ noncomputable section
 namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
-set_option maxHeartbeats 1000000
 
 /-- The two signs in Suzuki's integral equations. -/
 inductive SuzukiHankelSign

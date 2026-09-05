@@ -43,7 +43,6 @@ theorem gammaProd_eq_gammaMonomial (lamf : Fin r → ℝ) (e : Fin r → ℕ) (�
     ring
   rw [hval, zpow_natCast]
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 /-- **The boundary datum of a nonzero balanced block, indexed by a finite set.** -/
 theorem exists_hasShiftTubeDatum_balancedBlockFinset (lam : Fin r → ℝ) (hlam : ∀ i, 0 ≤ lam i)

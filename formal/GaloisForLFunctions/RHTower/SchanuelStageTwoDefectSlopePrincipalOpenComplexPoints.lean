@@ -20,7 +20,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 3000000
+set_option maxHeartbeats 400000
 set_option synthInstance.maxHeartbeats 1000000
 
 /-- Canonical complex point of the common coordinate principal open obtained from the literal

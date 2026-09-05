@@ -16,7 +16,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 open HahnSeries
 
-set_option maxHeartbeats 1000000 in
 /-- **Coordinate branch data force the full ramified Puiseux specialization.**  The source field
 is algebraic over the displayed coordinates.  If an embedding sends those coordinates to the
 ramified Hahn coordinates, sends their time derivatives to the selected suffix products, and the

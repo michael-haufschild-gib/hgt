@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.HardyHorizontalLayerLeakage
 
 open Filter Topology
 
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 800000
 
 namespace GaloisForLFunctions.HTGeometry
 

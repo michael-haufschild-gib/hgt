@@ -20,7 +20,6 @@ open GaloisForLFunctions
 
 noncomputable section
 
-set_option maxHeartbeats 1000000 in
 /-- **The damped coset Poincaré series converges locally normally.** -/
 theorem summableLocallyUniformlyOn_poincareTerm_dampedFlatSeed {d c : ℕ}
     {Γ : AddSubgroup (Fin d → ℂ)}

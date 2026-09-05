@@ -22,7 +22,6 @@ noncomputable section
 
 variable {n q : ℕ}
 
-set_option maxHeartbeats 1000000 in
 /-- **The time-uniform shortcut floor on the coefficient box.**  For every coefficient vector within
 `ε²/(16m)` of the diagonal centre and every time, the evolved all-zero configuration stays within
 projective trace distance `ε/2` of where it started. -/

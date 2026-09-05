@@ -121,7 +121,6 @@ theorem wallScatteringRemainder_eq (E : ℂ → ℂ) (T : X →L[ℂ] X) (g : �
   rw [wallScatteringRemainder, wallRestPart]
   module
 
-set_option maxHeartbeats 1000000 in
 /-- **The three remaining point-dependent terms decay like `x^{-1}` after multiplication by the
 frequency.** -/
 theorem norm_freq_smul_wallRestPart_le {σ x μ₀ K₁ K₂ m : ℝ}
@@ -174,7 +173,6 @@ theorem norm_freq_smul_wallRestPart_le {σ x μ₀ K₁ K₂ m : ℝ}
 variable [Nontrivial X]
 
 omit [Nontrivial X] in
-set_option maxHeartbeats 1000000 in
 /-- **All point-dependent terms of the three-fold expansion are square integrable after
 multiplication by the frequency.** -/
 theorem lintegral_sq_freq_wallScatteringRemainder_ne_top {σ Y μ₀ K₁ K₂ m : ℝ}
@@ -285,7 +283,6 @@ theorem lintegral_sq_freq_wallScatteringRemainder_ne_top {σ Y μ₀ K₁ K₂ m
   exact ENNReal.mul_ne_top (by simp) (ENNReal.add_ne_top.mpr ⟨h1, hrest⟩)
 
 
-set_option maxHeartbeats 1000000 in
 /-- **`(47)`: the Gamma derivative scattering criterion, on the outward ray.**  The frequency-weighted
 profile is square integrable on a terminal ray exactly when the outgoing charge vanishes. -/
 theorem lintegral_sq_freq_forcedProfile_ray_ne_top_iff {σ Y μ₀ K₁ K₂ m : ℝ}

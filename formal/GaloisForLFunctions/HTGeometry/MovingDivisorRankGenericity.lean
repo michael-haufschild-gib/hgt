@@ -17,7 +17,6 @@ open ClassicalAnalyticNevanlinnaCarrierFamily
 open scoped ENNReal
 
 noncomputable section
-set_option maxHeartbeats 2000000
 
 /-- The reciprocal-square majorant with an arbitrary constant. -/
 def natMajorant (M : ℝ) (a : ℕ) : ℝ := M / ((a : ℝ) + 1) ^ 2

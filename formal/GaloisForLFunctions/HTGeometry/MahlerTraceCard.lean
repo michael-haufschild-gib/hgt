@@ -43,7 +43,7 @@ theorem kwToPerfect_eulerOp [CharZero k] (p : ℕ) (hp : 1 < p) (r : RatFunc k) 
   show ratFuncToHahn (ratFuncEulerOp r) = hahnQEuler (ratFuncToHahn r)
   exact ratFuncToHahn_eulerOp r
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 theorem kwBase_differential_compat [CharZero k] (p : ℕ) (hp : 1 < p) (r : RatFunc k) :
     letI := perfectAlgebra (k := k) p hp
     letI := perfectDifferential (k := k) p hp
@@ -65,7 +65,7 @@ theorem kwBase_differential_compat [CharZero k] (p : ℕ) (hp : 1 < p) (r : RatF
     cylDeriv_one_eq_ratFuncEulerOp, kwToPerfect_eulerOp]
   rfl
 
-set_option maxHeartbeats 4000000 in
+set_option maxHeartbeats 400000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The reduced one-particle trace of the `p`-adic Neumann-to-Dirichlet spectrum is
 hypertranscendental over `k(w)` for the Euler derivation `w d/dw`**, for every `p ≥ 2`. -/

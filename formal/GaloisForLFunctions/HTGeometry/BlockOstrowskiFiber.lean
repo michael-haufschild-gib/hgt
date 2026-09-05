@@ -63,7 +63,6 @@ theorem eq_zero_of_slotPermSum_combination {M : ℕ} (blk : Fin M → κ) {K : F
 
 /-! ### From a vanishing fibre amplitude to a polynomial identity -/
 
-set_option maxHeartbeats 1600000 in
 /-- **A vanishing fibre amplitude of a several-carrier relation is a polynomial identity.**  Each
 monomial contributes its amplitude product times its blockwise symmetrisation; the amplitude product
 is common and nonzero, so it divides out. -/

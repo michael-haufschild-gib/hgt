@@ -34,7 +34,6 @@ attribute [local instance] ellipticGammaRationalBaseDomain
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **Descending face-lifting for the multiple sine.**  If no nonzero constant jet form of the
 displacements is a simultaneous defect in the deeper face field, the translation block of the face
 is differentially algebraically independent over that field. -/

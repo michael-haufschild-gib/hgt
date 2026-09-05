@@ -67,7 +67,6 @@ theorem jet_ellipticGamma_mem_carrierSpan (τ : ι → ℂ) (hτ : ∀ i, 0 < (�
     show b + (1 + τ i) / 2 + -(1 + τ i) / 2 = b from by ring] at hmem
   exact hmem
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The depth-two normal form.** -/
 theorem exists_carrierSpan_normal_form_pair
@@ -121,7 +120,6 @@ theorem exists_carrierSpan_normal_form_pair
       (differentialAlgebraicOver_of_realizesMero (f := fun z =>
         f z - gammaCorrection (τ j) (τ i) f P J z) (realizesMero_sub hf hyreal) hDA)
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The universal cyclic normal form.**  Every member of the all-depth mixed-constraint class
 differs, by a differentially algebraic germ, from a finite constant-coefficient

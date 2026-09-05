@@ -16,8 +16,8 @@ Their normalized first-order deformation space is zero; the same rigidity
 holds to every formal order. Heat rates have exactly one scalar parameter.
 These statements concern the specified rank-one coefficient model, not
 deformations of completed arithmetic correspondences or a zeta-zero theorem.
-The analytic theta addition formula and extraction of its Fourier coefficients
-are not formalized here. This is a classical theta/parallelogram bridge, not
+The analytic theta addition formula is proved separately in `ThetaLatticeAddition`;
+extraction of its Fourier coefficients is not formalized here. This is a classical theta/parallelogram bridge, not
 a claim of a new arithmetic obstruction.
 -/
 

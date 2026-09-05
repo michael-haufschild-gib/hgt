@@ -165,19 +165,48 @@ are at `w_i = 0` and `w_i = −w_j` (opposite side).
 `1/ζ(2)`, i.e. `L⁴/(2π²)`); `(1,1,1,1)` gives `1 + 1/θ` (Levinson/Conrey) — reproduced by
 `R = 1 + Lγδ/(γ+δ)` and the two residues `w₂ = 0, −w₁`, as in the hand computation.
 
-**Result.** For `(2,2,2,2)` the residues (kept: `w₄ ∈ {0,−w₁,−w₂}`, `w₃ ∈ {0,−w₁,−w₂}`,
-`w₂ = 0` — the pole at `w₂ = +w₁` lies to the right and, in any case, carries zero residue —
-`w₁ = 0`) give
+**Result (validated engine, `2-fully-proven/computations/mollified-fourth-moment-recipe/`).**
+The residue engine was validated on `(1,1,0,0) → 1`, `(2,2,0,0) → 1/12`, `(1,1,1,1) → 1 + 1/θ`,
+and on the *rigorous* head moments `E|H|² = 1/2`, `E|H|⁴ = 1/2` (sharp) and `1/12`, `1/72`
+(smooth), which it reproduces exactly once each term is closed on the side where its exponential
+decays in the regime `θ < 1/2`. (A first engine built on `sympy.residue` returned `(1+1/θ)²`; that
+value is excluded by the outer identity `E log|ζΨ|² → 0` — concentration of `|ζΨ|²` would force
+`E log|ζΨ|² → log(1+1/θ)` — and was a bug at merged higher-order poles.) Twelve recomputations
+(shift limit before/after the residues, three integration orders, two shift directions) agree:
 
 ```text
-c₄(θ) = 1 + 2/θ + 1/θ² = (1 + 1/θ)².
+c₄(θ) = 1 + 8/(3θ) + 2/θ² + 2/(3θ³)  =  (3θ³ + 8θ² + 6θ + 2)/(3θ³).
 ```
 
-So at leading order the recipe's mollified fourth moment is the **square of the mollified second
-moment**: `E|ζΨ|⁴ = (E|ζΨ|²)²`, i.e. `Var(|ζΨ|²) = 0` to leading order. Compared with the Gaussian
-value `1 + 4/θ + 2/θ²` this is far smaller (`9` versus `17` at `θ = 1/2`), confirming the refutation
-of `CN(0,1/θ)` for the full deviation, but the numerics at `T = 10⁶` (`E|ζΨ|⁴/(E|ζΨ|²)² ≈ 2.05` at
-`θ = 1/2`) are far *above* `1`. Either the leading-order recipe misses the true limit of the
-mollified fourth moment (cancellation among the leading terms promoting lower-order pieces — the
-same phenomenon that makes `E log|ζΨ|²` invisible to mean values), or the approach to the limit is
-extremely slow. This is being tested by the `T`-scaling run (§(iv)).
+Consequences.
+- `c₄ ≠ 1 + 4/θ + 2/θ²` (the `CN(0,1/θ)` value): the full deviation is not Gaussian; the two agree
+  only at `θ = 1/√2`. The `1/θ³` term is super-Gaussian: `E|1+W|⁴/(E|1+W|²)² → c₄/(1+1/θ)²`,
+  `= 2.185` at `θ = 1/2`, `2.498` at `θ = 0.4`, `→ ∞` like `2/(3θ)` as `θ → 0` (the unmollified
+  regime), `→ 1.58` at `θ = 1`.
+- Numerics (Riemann–Siegel, `T = 10⁵, 10⁶, 10⁷`, `2–3·10⁵` heights each): the ratio is
+  `1.997, 2.060, 2.110` (θ = 1/2) and `2.265, 2.346, 2.417` (θ = 0.4), rising toward the recipe values
+  with deficits `9%, 6%, 3%`, as `E|ζΨ|²` rises `2.58, 2.64, 2.70 → 3`.
+- Writing `E|1+W|⁴ = 1 + 4σ² + E|W|⁴ + 2Re E W² + 4Re E[W|W|²]` with `σ² = 1/θ` and `E W² → 0`,
+  `E|W|⁴ + 4Re E[W|W|²] = 2σ⁴ + (2/3)σ⁶ − (4/3)σ²`: the head contributes `2·(1/2)² = 1/2` to `E|W|⁴`
+  (Lean), so the tail carries the `σ⁶` growth.
+- Status: `c₄(θ)` is a ratios-recipe value; in Hughes–Young's range `θ < 1/11` it is the value of
+  the rigorous twisted-fourth-moment main terms (extraction not carried out here). Not in the
+  literature as far as searched (Conrey–Snaith treat only mollified second moments).
+
+## 2026-09-05 (iv) — `T`-scaling numerics (pod, `moll_scaling.py`)
+
+| T | θ | E|ζΨ|² | E|ζΨ|⁴ | ratio | recipe ratio | E log|ζΨ|² | P(|ζΨ|²<0.1) |
+|---|---|---|---|---|---|---|---|
+| 10⁵ | 0.4 | 2.929 | 19.43 | 2.265 | 2.498 | −0.007 | 0.127 |
+| 10⁶ | 0.4 | 3.016 | 21.33 | 2.346 | 2.498 | 0.003 | 0.127 |
+| 10⁷ | 0.4 | 3.080 | 22.93 | 2.417 | 2.498 | 0.000 | 0.130 |
+| 10⁵ | 0.5 | 2.580 | 13.29 | 1.997 | 2.185 | −0.006 | 0.119 |
+| 10⁶ | 0.5 | 2.644 | 14.40 | 2.060 | 2.185 | 0.002 | 0.119 |
+| 10⁷ | 0.5 | 2.696 | 15.33 | 2.110 | 2.185 | 0.001 | 0.121 |
+
+The stable dip proportion `P(|ζΨ|² < 0.1) ≈ 0.12` is the zero-density count: near a simple zero
+`|ζΨ|² ≈ |ζ'(ρ)Ψ(ρ)|²(t−γ)²` with `|ζ'Ψ(ρ)| ≍ θL`, so the dips of depth `ε` occupy a proportion
+`≍ √ε/(πθ)` independent of `T`. It gives the unconditional-in-spirit bound
+`Var(|ζΨ|²) ≥ P(|ζΨ|²<ε)(E|ζΨ|² − ε)²`, i.e. `c₄ ≥ (1+1/θ)²(1 + 0.1)`, and the outer identity gives
+more: `E log|ζΨ|² → 0` with `E|ζΨ|² → 1 + 1/θ` forces a Jensen gap `log(1+1/θ)`, so `|ζΨ|²` never
+concentrates.

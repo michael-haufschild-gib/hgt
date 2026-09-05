@@ -25,7 +25,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
   relativeGaugeCharZeroBase relativeGaugeCharZero relativeGaugeComplexAlgebra
 
 set_option synthInstance.maxHeartbeats 1000000
-set_option maxHeartbeats 1000000
 
 /-! ### A polynomial relation witnesses algebraicity -/
 

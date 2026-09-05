@@ -14,7 +14,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxHeartbeats 4000000 in
 /-- The worst uniform sixth-jet loss still leaves a strict first-atom baseline from weight
 `19/4`. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossBaseline_pos_of_nineteen_fourths_le
@@ -34,7 +33,6 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossBaseline_pos_of_nineteen_fourths_l
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 4000000 in
 /-- The curvature derivative bracket for the worst uniform sixth loss is positive from weight
 `19/4`. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos_of_nineteen_fourths_le
@@ -65,7 +63,6 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos_of_nineteen_f
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 4000000 in
 /-- The derivative of the refined worst-loss curvature bracket is positive from weight
 `19/4`. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracketDerivative_pos_of_nineteen_fourths_le
@@ -91,7 +88,6 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracketDerivative_pos_of_
     positivity
   nlinarith [pow_pos hqpos 10]
 
-set_option maxHeartbeats 4000000 in
 /-- Full Born-top baseline is strict whenever the first-atom weight is at least `19/4`. -/
 theorem thetaCuspFullReflectionEighthBornTopBaseline_pos_of_nineteen_fourths_le_weight
     {x : ℝ} (hx : 0 ≤ x)

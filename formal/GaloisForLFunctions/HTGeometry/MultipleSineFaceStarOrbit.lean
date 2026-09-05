@@ -106,7 +106,6 @@ theorem facePacketSlice_eq (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im) {J : F
           (frameSourceMero ω hω (Jᶜ : Finset ι) h)} := by
   rw [facePacketSlice, dif_pos h]
 
-set_option maxHeartbeats 1000000 in
 /-- **A face packet is the full orbit of its slice** along any direction of the face. -/
 theorem facePacket_eq_orbitUnion (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im) {J : Finset ι} {q : ι}
     (hq : q ∈ J) :
@@ -158,7 +157,6 @@ theorem orbitUnion_biUnion {Ω : Type*} [DecidableEq Ω] (σ : Equiv.Perm Ω)
     obtain ⟨n, y, hy, rfl⟩ := hxi
     exact ⟨n, y, Set.mem_iUnion₂.mpr ⟨i, hi, hy⟩, rfl⟩
 
-set_option maxHeartbeats 1000000 in
 /-- **The star of a direction is an orbit union.** -/
 theorem faceStar_eq_orbitUnion (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
     (faces : Finset (Finset ι)) (A : Finset ι) (q : ι) :
@@ -173,7 +171,6 @@ theorem faceStar_eq_orbitUnion (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
 
 /-! ### Distinct exponents give distinct elements -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Free translates on the star.**  Distinct exponents of a direction give distinct elements of
 the star: inside one face because the packet family is injective, across faces because distinct

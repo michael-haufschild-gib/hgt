@@ -35,7 +35,6 @@ theorem eq_const_mul_pow_of_unique_root {c : ℂ[X]} (hc0 : c ≠ 0) {a : ℂ}
     _ = Polynomial.C c.leadingCoeff * (Polynomial.X - Polynomial.C a) ^ c.natDegree := by
         rw [hrep, hcard, Multiset.map_replicate, Multiset.prod_replicate]
 
-set_option maxHeartbeats 1000000 in
 /-- **The Briot–Bouquet no-go, all degrees at least two.**  An entire solution of `F' = c(F)` with
 `deg c ≥ 2` is constant.  Over `ℂ` the coefficient has a root; either two distinct ones, and the
 second main theorem applies, or exactly one, and `c` is a constant times a pure power. -/

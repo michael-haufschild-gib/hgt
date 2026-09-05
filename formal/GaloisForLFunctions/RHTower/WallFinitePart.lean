@@ -83,7 +83,6 @@ def wallFinitePart (E : ℂ → ℂ) (T : X →L[ℂ] X) (σ L Y : ℝ) : X →L
         (wallGeneratorShift T σ L) (wallGeneratorD1 X σ) (wallGeneratorD2 X σ)
         (wallGeneratorD3 X σ) t
 
-set_option maxHeartbeats 1000000 in
 /-- **The transported source, with the finite part isolated.**  Everything that depends on the
 evaluation point is either a boundary term at that point or the absolutely convergent tail. -/
 theorem wall_phase_finitePart_decomposition {σ L μ₀ K₂ : ℝ}

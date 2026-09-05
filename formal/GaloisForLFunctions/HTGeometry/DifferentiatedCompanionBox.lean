@@ -113,7 +113,6 @@ theorem pointwiseIntegerMultiBlowUpData_translateJets {κ : Type*} {n : ℕ}
   exact ⟨u, t, c, integerTranslateJetRate m k₀ (V ζ),
     humem, htne, hu, ht, hcne, hsep ζ hζ, hlim⟩
 
-set_option maxHeartbeats 1000000 in
 /-- **Unconditional, with a differentiated companion.**  For every parameter sequence, pair of
 differentiation orders, degree budget and box size there is a node packet in the open upper
 half-plane, with pairwise distinct nodes, on which the expanded evaluation map of the binomial box

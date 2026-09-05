@@ -31,7 +31,6 @@ variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteS
 
 variable {E : ℂ → ℂ} {T : X →L[ℂ] X}
 
-set_option maxHeartbeats 1000000 in
 /-- **The propagated remainder is square integrable on the inward ray.** -/
 theorem exists_bound_lintegral_sq_negRay_tailRemainder {σ μ₀ : ℝ}
     (hT : IsSelfAdjoint T) (hEbr : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)

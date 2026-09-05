@@ -4,7 +4,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from any subfolder within docs/drafts/pipeline/2-fully-proven/universal-law-field/ 
+else: pick a card from any subfolder within docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/02-analytic-da-entire-functions
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
@@ -34,8 +34,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card: 
-- docs/drafts/pipeline/2-fully-proven/universal-law-field/bilateral-wiener-hopf-envelope-properness/bilateral-wiener-hopf-envelope-properness.md
-  
+- docs/drafts/pipeline/2-fully-proven/universal-law-field/formation-blowup-geometry
+
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -60,7 +60,7 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WH
 
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
-do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds. every agent can run exactly 1 build process at a time.
 
 do not add hypotheses. always use our custom search tool check first what the lean corpus already contains, to not duplicate existing work.
 
@@ -289,7 +289,7 @@ how would a fields medal mathematician approach this problem? what our corpus is
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlatires from https://arxiv.org/abs/2608.25870 formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlatires from https://arxiv.org/abs/2608.27883 formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -303,7 +303,7 @@ Lean rules:
 Non-negotiable working mode rules:
 1. If an idea would be interesting, but is missing lean infrastructure, build it no matter the effort, instead of pivoting.
 2. use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.
-3. Missing mathematical knowledge: create it with the hgtl7 or hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+3. Missing mathematical knowledge: create it with the hgtl7  skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
    
 use the search tool for the lean corpus to check what already was formalized so you do not duplicate existing work.
 
@@ -386,3 +386,11 @@ Use computations and formalize lean to discover new routes, kill routes, sharpen
 5. Do not run hours long computations.
 
 goal is met when RH proof is formalized.
+
+
+## create new RH knowledge
+create significant novel knowledge towards the riemann hypothesis, riemann zetas, that answers an important question no literature up to september 2026 has answered yet (check arxiv and journals).
+
+Missing mathematical knowledge: create it with the hgtl7  skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+
+write down high level interpretation of significant facts about the RH problem and solution in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. it is not a diary or working log, but key points of guiding future research agents where to look and where to not look for a solution of the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", "Must have this", "Must be able to do this". If the entry cannot be understood without first researching a specific route, it is not valid.

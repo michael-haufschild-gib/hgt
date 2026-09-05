@@ -24,7 +24,6 @@ noncomputable section
 
 variable {m : ℕ}
 
-set_option maxHeartbeats 2000000 in
 /-- **The logarithmic mean of the two-sided iterated Fourier diagonal**, at every `m ≥ 2`. -/
 theorem tendsto_gaussFourierDiagonal_pow_logResidue (hm2 : 2 ≤ m) (k : Fin m) (p : Nat.Primes) :
     Tendsto (fun N : ℕ =>

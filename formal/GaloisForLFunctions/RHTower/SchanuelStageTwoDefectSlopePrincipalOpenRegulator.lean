@@ -21,7 +21,6 @@ open GaloisForLFunctions.HTGeometry Set
 
 noncomputable section
 
-set_option maxHeartbeats 3000000
 set_option synthInstance.maxHeartbeats 1000000
 
 /-- Complexification of an `AlgNum`-valued point of the common coordinate principal open. -/

@@ -92,7 +92,6 @@ theorem tsum_ofReal_gaussCubicTripleDominatingKernel_ne_top (p : Nat.Primes) :
     (ENNReal.mul_ne_top ENNReal.ofReal_ne_top
       (tsum_intPowWeight_ne_top (by norm_num))) htotal
 
-set_option maxHeartbeats 2000000 in
 theorem tendsto_gaussCubicTripleDominatingBound (k : Fin 3) (p : Nat.Primes) :
     Tendsto (fun I : ℕ => gaussCubicTripleDominatingBound k p (I : ℤ))
       atTop (nhds 0) := by

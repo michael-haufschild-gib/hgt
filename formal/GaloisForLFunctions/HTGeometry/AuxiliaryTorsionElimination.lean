@@ -57,4 +57,27 @@ theorem eliminatedContactHamiltonian_nonpos (logKappa source : ℝ) :
     -eliminatedContactLagrangian logKappa source ≤ 0 := by
   exact neg_nonpos.mpr (eliminatedContactLagrangian_nonneg logKappa source)
 
+/-- Quartic invariant corresponding to a contracted torsion current square. -/
+def spinTorsionQuarticInvariant (currentSquare : ℝ) : ℝ := -16 * currentSquare
+
+/-- Exact paper normalization of the quartic contact Lagrangian. -/
+def spinTorsionContactLagrangian (kappa quartic : ℝ) : ℝ := -kappa * quartic / 32
+
+/-- Derivative-free interaction Hamiltonian obtained by reversing the contact-Lagrangian sign. -/
+def spinTorsionInteractionHamiltonian (kappa quartic : ℝ) : ℝ := kappa * quartic / 32
+
+/-- The current-square and quartic normalizations give the exact coefficient `-κ/32`. -/
+theorem spinTorsionContactLagrangian_eq_currentSquare (kappa currentSquare : ℝ) :
+    kappa / 2 * currentSquare =
+      spinTorsionContactLagrangian kappa (spinTorsionQuarticInvariant currentSquare) := by
+  unfold spinTorsionContactLagrangian spinTorsionQuarticInvariant
+  ring
+
+/-- Exact Lorentzian sign flip between contact Lagrangian and interaction Hamiltonian. -/
+theorem spinTorsionInteractionHamiltonian_eq_neg_contact (kappa quartic : ℝ) :
+    spinTorsionInteractionHamiltonian kappa quartic =
+      -spinTorsionContactLagrangian kappa quartic := by
+  unfold spinTorsionInteractionHamiltonian spinTorsionContactLagrangian
+  ring
+
 end GaloisForLFunctions.HTGeometry

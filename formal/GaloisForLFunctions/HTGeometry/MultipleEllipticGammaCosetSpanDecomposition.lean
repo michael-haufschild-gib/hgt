@@ -94,7 +94,6 @@ theorem cosetLogDerivMero_mem_cosetTotalPacket (τ : ι → ℂ) (hτ : ∀ i, 0
   show addTranslationMeroEquiv a (multipleEllipticGammaLogDerivFaceMero τ hτ ∅) = _
   rw [multipleEllipticGammaLogDerivFaceMero_empty]
 
-set_option maxHeartbeats 1000000 in
 /-- A surviving direction moves a labelled packet element inside the labelled total span. -/
 theorem cosetFacePacket_zsmul_sub_mem_span (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (A : Set ℂ)
     (J : Finset ι) {p : ι} (hp : p ∉ J) (m : ℤ) {y : meroField (Set.univ : Set ℂ)}
@@ -138,7 +137,6 @@ theorem cosetFacePacket_zsmul_sub_mem_span (τ : ι → ℂ) (hτ : ∀ i, 0 < (
       rw [hsplit]
       exact Submodule.sub_mem _ ih (hmemK (-(k : ℤ) - 1))
 
-set_option maxHeartbeats 1000000 in
 /-- **The labelled total packet span is translation stable.** -/
 theorem cosetTotalPacket_span_translate_mem (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (A : Set ℂ)
     (p : ι) (m : ℤ) {x : meroField (Set.univ : Set ℂ)}
@@ -165,7 +163,6 @@ theorem cosetTotalPacket_span_translate_mem (τ : ι → ℂ) (hτ : ∀ i, 0 < 
       rw [hsmul]
       exact Submodule.smul_mem _ c ih
 
-set_option maxHeartbeats 1000000 in
 /-- **Every labelled structural translate of the top primitive lies in the labelled packet
 span.** -/
 theorem cosetTranslate_mem_span (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
@@ -201,7 +198,6 @@ theorem cosetTotalPacket_eq_union (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
       omega
   · rintro (⟨J, -, hyJ⟩ | ⟨J, -, hyJ⟩) <;> exact ⟨J, hyJ⟩
 
-set_option maxHeartbeats 1000000 in
 /-- Every element of the span of the labelled boundary packets is differentially algebraic. -/
 theorem differentialAlgebraicOver_mem_span_cosetBoundaryPacket
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
@@ -220,7 +216,6 @@ theorem differentialAlgebraicOver_mem_span_cosetBoundaryPacket
       rw [Algebra.smul_def]
       exact differentialAlgebraicOver_mul (differentialAlgebraicOver_algebraMap c) ih
 
-set_option maxHeartbeats 1500000 in
 /-- **Universal cyclic carrier reduction, arbitrary complex translation.**  Modulo a
 differentially algebraic error, every labelled translate of the top primitive is a finite
 `ℂ`-linear combination of the jointly independent labelled deep face-packet coordinates. -/

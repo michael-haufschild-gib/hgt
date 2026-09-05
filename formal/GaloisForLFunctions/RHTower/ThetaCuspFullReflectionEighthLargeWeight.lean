@@ -21,7 +21,6 @@ def thetaCuspFirstAtomEighthWorstSixthLossBaseline (q : ℝ) : ℝ :=
     (thetaCuspFirstAtomSixthProfile q - 63232)
     (thetaCuspFirstAtomEighthProfile q)
 
-set_option maxHeartbeats 4000000 in
 /-- Above weight five, even the uniform worst sixth loss leaves a strict baseline. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossBaseline_pos {q : ℝ} (hq : 5 ≤ q) :
     0 < thetaCuspFirstAtomEighthWorstSixthLossBaseline q := by
@@ -38,7 +37,6 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossBaseline_pos {q : ℝ} (hq : 5 ≤
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 4000000 in
 /-- The curvature derivative bracket survives the uniform worst sixth loss. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos {q : ℝ} (hq : 5 ≤ q) :
     let Aw := thetaCuspFirstAtomCurvatureProfile q - 13 / 10
@@ -67,7 +65,6 @@ theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracket_pos {q : ℝ} (hq
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 4000000 in
 /-- The derivative of the curvature bracket is positive at the worst curvature. -/
 theorem thetaCuspFirstAtomEighthWorstSixthLossCurvatureBracketDerivative_pos {q : ℝ} (hq : 5 ≤ q) :
     let Aw := thetaCuspFirstAtomCurvatureProfile q - 13 / 10
@@ -169,7 +166,6 @@ theorem thetaCuspReflectedEighthPolynomial_mono_curvature_of_lower_sixth
         (hGpos t hAwt.le))
   exact hstrict.monotoneOn (by simp) (by simpa using hAwA) hAwA
 
-set_option maxHeartbeats 4000000 in
 /-- Full Born-top baseline is strict whenever the first-atom weight is at least five. -/
 theorem thetaCuspFullReflectionEighthBornTopBaseline_pos_of_five_le_weight
     {x : ℝ} (hx : 0 ≤ x) (hq5 : (5 : ℝ) ≤ thetaCuspBornWittenWeight 1 x) :

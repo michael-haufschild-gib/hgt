@@ -24,7 +24,6 @@ noncomputable section
 namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
-set_option maxHeartbeats 1000000
 
 /-! ## Part (i): the inner interval is killed -/
 

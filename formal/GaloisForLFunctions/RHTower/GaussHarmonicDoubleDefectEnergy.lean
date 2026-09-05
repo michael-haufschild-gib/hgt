@@ -53,7 +53,6 @@ theorem tendsto_gaussHarmonicDoubleDefectBound_comp
   refine h.congr fun n => ?_
   exact (gaussHarmonicDoubleDefectBound_eq_scaled C k p hp (ι n)).symm
 
-set_option maxHeartbeats 1000000 in
 /-- Weighted Cauchy plus the sharp `3/4` harmonic convolution transfers a coefficientwise
 one-index double defect into the generic lattice energy. -/
 theorem ofReal_norm_gaussMovingDefectVector_sq_le_harmonicDouble

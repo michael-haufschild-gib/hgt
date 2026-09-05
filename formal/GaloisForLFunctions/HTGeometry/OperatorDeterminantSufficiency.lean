@@ -111,7 +111,6 @@ theorem schattenNorm_greedy_sub_rpow_le {p : ℝ} (hp : 0 < p) (hcpt : IsCompact
 
 /-! ## The sufficiency half of `(DC)` on the operator side -/
 
-set_option maxHeartbeats 2000000 in
 /-- **The sufficiency half of `(DC)` on the operator side.**  For every Schatten-`p` operator on an
 infinite-dimensional Hilbert space and every jet of degree below `p` with vanishing constant term
 there are finite-rank operators converging to it in the Schatten norm whose *plain* determinants

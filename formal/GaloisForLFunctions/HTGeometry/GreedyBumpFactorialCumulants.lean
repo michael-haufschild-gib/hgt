@@ -64,6 +64,10 @@ theorem FinitePointCountLaw.voidMass_eq_alternating_choose
 /-- Probability parameter, with admissibility carried as data. -/
 abbrev ProbabilityParameter := {p : ℝ // 0 ≤ p ∧ p ≤ 1}
 
+/-- Hellinger affinity of two one-point hard-exclusion count laws. -/
+def greedyBumpBernoulliHellingerAffinity (p q : ProbabilityParameter) : ℝ :=
+  Real.sqrt ((1 - (p : ℝ)) * (1 - (q : ℝ))) + Real.sqrt ((p : ℝ) * (q : ℝ))
+
 /-- One possible extremum in a cell: a finite hard-exclusion law. -/
 def greedyBumpBernoulliExclusion (p : ProbabilityParameter) :
     FinitePointCountLaw Bool where
@@ -100,4 +104,3 @@ theorem greedyBumpBernoulli_voidMass (p : ProbabilityParameter) :
 end
 
 end GaloisForLFunctions.HTGeometry
-

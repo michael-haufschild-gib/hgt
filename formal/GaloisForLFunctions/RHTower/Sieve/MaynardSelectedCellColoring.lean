@@ -61,7 +61,6 @@ def IsMaynardWindowRelevantSelectedCell
             ((c : ℂ) + (y : ℝ) * Complex.I)‖ ∧
     IsMaynardSelectedCellBranch T mu alpha label
 
-set_option maxHeartbeats 1000000 in
 theorem eventually_exists_maynardWindowRelevantSelectedCell_label :
     ∀ᶠ T : ℝ in Filter.atTop,
       ∀ X : ℕ, 1 ≤ X → ∀ mu : ℝ, 4 / 3 ≤ mu → mu ≤ 19 / 9 →
@@ -106,7 +105,6 @@ theorem eventually_exists_maynardWindowRelevantSelectedCell_label :
       HeathBrownSelectedFactor] using hlarge
   · simpa [IsMaynardSelectedCellBranch, maynardSubHeightSelectedExponent, label] using hbranch
 
-set_option maxHeartbeats 1000000 in
 /-- Uniform finite coloring of any ordinate set by complete selected-cell labels. -/
 theorem eventually_exists_maynardWindowRelevantSelectedCell_coloring :
     ∀ᶠ T : ℝ in Filter.atTop,

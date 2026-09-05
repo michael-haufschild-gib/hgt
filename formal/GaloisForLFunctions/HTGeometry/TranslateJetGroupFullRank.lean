@@ -162,7 +162,6 @@ noncomputable def groupStaircaseBox {n : ℕ} (heights : Fin (n + 1) → ℕ) (N
       = if groupStaircaseHeight heights k = 0 then (a : ℕ) else N - (a : ℕ) := by
   simp [groupStaircaseBox]
 
-set_option maxHeartbeats 1000000 in
 /-- **Unconditional, arbitrarily many jets at arbitrarily many heights.**  For every parameter
 sequence, tuple of differentiation orders, tuple of heights, degree budget and box size there is a
 node packet in the open upper half-plane, with pairwise distinct nodes, on which the expanded

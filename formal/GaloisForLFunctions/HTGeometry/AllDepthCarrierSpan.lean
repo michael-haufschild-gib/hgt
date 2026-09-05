@@ -91,7 +91,6 @@ theorem carrierSpan_erase_le (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (s :
 
 /-! ## An atom sum with a prescribed divisor -/
 
-set_option maxHeartbeats 1200000 in
 /-- **Every lattice-invariant divisor of bounded order with finitely many classes is the exact
 Laurent datum of an atom sum.** -/
 theorem exists_multiAtomRealization_matching {σ : ℂ} (hσ : 0 < σ.im) (D : ℤ → ℂ → ℂ) (N : ℕ)

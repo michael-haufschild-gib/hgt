@@ -134,7 +134,6 @@ end Factor
 
 /-! ## The unconditional necessity half of `(DC)` -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The necessity half of `(DC)`, unconditionally.**  If finite-rank -- or merely Schatten --
 operators converge in the Schatten `p`-norm and their plain determinants converge locally uniformly
 on a disc, then on a possibly smaller disc the limit is the order-`p` regularized determinant of the

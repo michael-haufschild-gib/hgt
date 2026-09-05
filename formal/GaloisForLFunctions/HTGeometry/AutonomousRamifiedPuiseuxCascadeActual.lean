@@ -57,7 +57,6 @@ private theorem autonomousActual_deriv_leibniz
   ring
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 private noncomputable def autonomousActualComplexDerivation :
     Derivation ℂ (meroField (Set.univ : Set ℂ)) (meroField (Set.univ : Set ℂ)) where
   toLinearMap :=
@@ -150,7 +149,6 @@ theorem algebraicIndependent_autonomousRamifiedCascadeState
     autonomousRamifiedCascadeState hfan (0 : Fin (m + 1)) = cascadeMero hfan (m + 1) := by
   simp [autonomousRamifiedCascadeState, Fin.rev]
 
-set_option maxHeartbeats 1000000 in
 theorem exists_autonomousRamifiedCascade_lawCoordinateFrame
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
     (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {N : ℕ}
@@ -239,7 +237,6 @@ theorem exists_autonomousRamifiedCascade_lawCoordinateFrame
       simp
     · simp
 
-set_option maxHeartbeats 1000000 in
 theorem transcendental_clock_over_autonomousRamifiedCascadeBranchField
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
     (hall : ∀ i : ℕ, TranscendentalEntire (f i)) (N : ℕ) :
@@ -283,7 +280,6 @@ theorem transcendental_clock_over_autonomousRamifiedCascadeBranchField
   intro hzB
   exact hzE (hzB.restrictScalars E)
 
-set_option maxHeartbeats 1000000 in
 theorem algebraicIndependent_autonomousRamifiedCascadeOutputJets
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
     (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {n : ℕ}
@@ -351,7 +347,6 @@ theorem algebraicIndependent_autonomousRamifiedCascadeOutputJets
   congr 1
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 theorem algebraicIndependent_ratFunc_autonomousRamifiedCascadeOutputJets
     {f : ℕ → ℂ → ℂ} (hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
     (hall : ∀ i : ℕ, TranscendentalEntire (f i)) {n : ℕ}

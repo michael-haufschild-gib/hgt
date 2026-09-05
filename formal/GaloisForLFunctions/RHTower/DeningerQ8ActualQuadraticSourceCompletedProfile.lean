@@ -241,7 +241,7 @@ theorem q8QuadraticSourceCentralChosenLocalSubgroup_le_localLower_of_le_two
       intro x
       exact Ideal.pow_le_pow_right (by omega)
         (q8QuadraticSourceCentralChosenDecomposition_displacement_mem_cube v hv x))
-  simpa [q8QuadraticSourceCentralChosenLocalEquiv] using hlocal
+  simpa only [q8QuadraticSourceCentralChosenLocalEquiv] using hlocal
 
 theorem q8QuadraticSourceChosenActualLocalLower_eq_central_of_le_two
     (v : HeightOneSpectrum (𝓞 S))

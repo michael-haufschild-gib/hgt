@@ -67,7 +67,6 @@ attribute [local instance] ellipticGammaRationalBaseDomain
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The multiplicative all-depth theorem.**  A nonzero multiplicative solution of the all-depth
 constraint is differentially algebraic exactly when every pair-face residue of its logarithmic

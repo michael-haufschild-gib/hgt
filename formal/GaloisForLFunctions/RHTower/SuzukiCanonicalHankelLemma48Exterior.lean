@@ -19,7 +19,6 @@ namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
 
-set_option maxHeartbeats 1000000
 
 /-! ## The arithmetic term in equation (4.24) -/
 

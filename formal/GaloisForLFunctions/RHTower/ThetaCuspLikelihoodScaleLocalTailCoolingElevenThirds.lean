@@ -88,7 +88,7 @@ theorem oneThousandFiveHundredNinetySix_mul_thetaCuspLikelihoodTailProbability_l
   have hpSmall : 1596 * p < 1 := by nlinarith
   simpa only [p, B] using hpSmall
 
-set_option maxHeartbeats 3000000 in
+set_option maxHeartbeats 400000 in
 /-- Scale-local Bell losses consume less than eleven thousandths of the ordinary fourth score. -/
 theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_11Over3_le
     {x : ℝ} (hx : 0 ≤ x)

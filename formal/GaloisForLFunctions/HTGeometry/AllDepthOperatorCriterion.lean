@@ -55,7 +55,6 @@ section Deriv
 
 variable [Fintype ι]
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The signature turns the derivation into the order shift with the jet factor.** -/
 theorem pairSig_deriv (τ : ι → ℂ) (s : Finset ι) (i j : ι)
@@ -249,7 +248,6 @@ theorem mixedConstGermSet_finsetSum (τ : ι → ℂ) (s : Finset ι) {κ : Type
       rw [harg]
       exact hw
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The signature is additive over finite families.** -/
 theorem pairSig_finsetSum (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
@@ -358,7 +356,6 @@ theorem diffCubeMero_transOpTerm (τ : ι → ℂ) (s : Finset ι) {κ : Type*} 
     hmixed, addTranslationMeroEquiv_algebraMap_complex, differentialJet_algebraMap_apply,
     ← map_mul]
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The signature of an operator output is the operator applied to the signature.** -/
 theorem pairSig_transOp (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
@@ -422,7 +419,6 @@ theorem diffCubeMero_transOp (τ : ι → ℂ) (s : Finset ι) {κ : Type*} (M :
   rw [transOpMero, diffCubeMero_finsetSum, map_sum]
   exact Finset.sum_congr rfl fun m _ => diffCubeMero_transOpTerm τ s c jj hh hmixed m
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The constant-coefficient differential-translation criterion.**  A finite operator applied to
 a member of the all-depth class is differentially algebraic exactly when the corresponding operator

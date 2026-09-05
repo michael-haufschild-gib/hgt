@@ -141,7 +141,6 @@ theorem exists_dilate_jet_algebraicWitness {φ : ℂ → ℂ} (hφ : Differentia
 
 
 set_option synthInstance.maxHeartbeats 800000 in
-set_option maxHeartbeats 1600000 in
 /-- The witness family of a differentially algebraic entire function, in the global instance
 stack. -/
 theorem exists_univ_witness_family {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f (Set.univ : Set ℂ))
@@ -159,7 +158,6 @@ theorem exists_univ_witness_family {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f (
 
 
 set_option synthInstance.maxHeartbeats 800000 in
-set_option maxHeartbeats 1600000 in
 /-- **Uniform order bound along a Schröder conjugacy.**  If `φ` is a differentially algebraic
 nonconstant entire function with nonvanishing realized derivative, then every entire `g` with
 `g ∘ φ = φ(c ·)` for some nonzero `c` satisfies an algebraic differential equation of one and the

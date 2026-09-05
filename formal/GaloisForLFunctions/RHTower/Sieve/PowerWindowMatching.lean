@@ -67,7 +67,7 @@ theorem log_succ_sub_log_pos {k : ℕ} (hk : 1 ≤ k) :
   have := Real.log_lt_log (by linarith : (0:ℝ) < (k : ℝ)) (by linarith : (k : ℝ) < (k : ℝ) + 1)
   linarith
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 /-- **The block occupies a positive proportion of a window of length `X^{(k+1)/(2k)}`.**  For every
 `k ≥ 2` and every sufficiently large `N`, the marker block of scale `N^k` and ratio `N` fills a
 fixed fraction of the window of length `N^{k+1}` at height `N^{2k} − N^{k+1}`. -/

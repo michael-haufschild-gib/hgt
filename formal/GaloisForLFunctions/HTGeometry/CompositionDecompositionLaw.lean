@@ -35,7 +35,6 @@ theorem AlgebraicWitness.extend {L : Type*} [Field L] {K : Type*} [Field K] [Alg
     rw [MvPolynomial.aeval_rename, hs]
 
 set_option synthInstance.maxHeartbeats 800000 in
-set_option maxHeartbeats 1600000 in
 /-- **The composition-decomposition law.**  If `φ` is nonconstant entire with nonvanishing realized
 derivative and both `φ` and `g ∘ φ` are differentially algebraic, then so is `g`. -/
 theorem differentiallyAlgebraic_of_comp {g φ : ℂ → ℂ}

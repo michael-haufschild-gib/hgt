@@ -16,7 +16,7 @@ open Filter Topology
 
 noncomputable section
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 /-- **The normalised spectral budget vanishes.** -/
 theorem tendsto_normalised_omegaBudget {β γ : ℝ} (hβ0 : 9 / 10 < β) (hβ1 : β < 1)
     (hγ0 : 0 < γ) (hγ1 : γ < 1) (hγβ0 : 9 / 10 < γ * β) (hγβ1 : γ * β < 1) :

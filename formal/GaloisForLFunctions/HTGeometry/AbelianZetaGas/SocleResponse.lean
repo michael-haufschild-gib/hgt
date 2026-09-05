@@ -324,7 +324,6 @@ theorem differentiableOn_depthProduct {σ b : ℝ} (hσ : 0 < σ) (hb : 1 - σ <
     exact (differentiableAt_const _).add differentiableAt_id
   exact (((differentiableAt_riemannZeta hne).comp v haff)).differentiableWithinAt
 
-set_option maxHeartbeats 1000000 in
 /-- **The socle ladder is zero-free on the socle chamber.** -/
 theorem socleLadder_ne_zero_of_mem {σ : ℝ} (hσ : 0 < σ) {v : ℂ} (hv : v ∈ socleChamber σ) :
     socleLadder σ v ≠ 0 := by
@@ -335,7 +334,6 @@ theorem socleLadder_ne_zero_of_mem {σ : ℝ} (hσ : 0 < σ) {v : ℂ} (hv : v �
   exact SocleTail.tprod_zeta_socleTail_ne_zero (J := J + 1) hσ
     (le_trans hJ (Nat.le_succ J)) le_rfl
 
-set_option maxHeartbeats 1000000 in
 /-- **The socle ladder is holomorphic on the socle chamber.** -/
 theorem differentiableOn_socleLadder {σ : ℝ} (hσ : 0 < σ) :
     DifferentiableOn ℂ (socleLadder σ) (socleChamber σ) := by

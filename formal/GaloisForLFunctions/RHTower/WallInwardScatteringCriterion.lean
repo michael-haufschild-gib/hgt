@@ -120,7 +120,6 @@ theorem wallScatteringRemainderNeg_eq (E : ℂ → ℂ) (T : X →L[ℂ] X) (g :
   rw [wallScatteringRemainderNeg, wallRestPartNeg]
   module
 
-set_option maxHeartbeats 1000000 in
 /-- **The three remaining inward point-dependent terms decay like `|x|^{-1}` after multiplication by
 the frequency.** -/
 theorem norm_freq_smul_wallRestPartNeg_le {σ x μ₀ K₁ K₂ m : ℝ}
@@ -193,7 +192,6 @@ theorem lintegral_ofReal_rpow_Iio_eq_top {a W : ℝ} (hW : W < 0) (ha : -1 ≤ a
   have := (integrableOn_Ioi_rpow_iff (by linarith : (0 : ℝ) < -W)).mp hfin2
   linarith
 
-set_option maxHeartbeats 1000000 in
 /-- **The vector derivative wall on the inward ray.** -/
 theorem lintegral_sq_freq_stripPropagator_negRay_eq_top {σ K₂ W : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
@@ -310,7 +308,6 @@ theorem lintegral_sq_freq_stripPropagator_negRay_eq_top {σ K₂ W : ℝ} (hσ0 
 variable [Nontrivial X]
 
 omit [Nontrivial X] in
-set_option maxHeartbeats 1000000 in
 /-- **All inward point-dependent terms are square integrable after multiplication by the
 frequency.** -/
 theorem lintegral_sq_freq_wallScatteringRemainderNeg_ne_top {σ Y μ₀ K₁ K₂ m : ℝ}
@@ -423,7 +420,6 @@ theorem lintegral_sq_freq_wallScatteringRemainderNeg_ne_top {σ Y μ₀ K₁ K�
   rw [lintegral_const_mul' _ _ (by simp : (4 : ℝ≥0∞) ≠ ⊤), lintegral_add_left' hmeasFB]
   exact ENNReal.mul_ne_top (by simp) (ENNReal.add_ne_top.mpr ⟨h1, hrest⟩)
 
-set_option maxHeartbeats 1000000 in
 /-- **`(47)`: the Gamma derivative scattering criterion, on the inward ray.** -/
 theorem lintegral_sq_freq_forcedProfile_negRay_ne_top_iff {σ Y μ₀ K₁ K₂ m : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))

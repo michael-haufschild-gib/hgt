@@ -45,7 +45,6 @@ def DetCompletionFibre (p : ℕ) : Set ((H →L[ℂ] H) × (ℂ → ℂ)) :=
 
 variable {H}
 
-set_option maxHeartbeats 1000000 in
 /-- **`(DC)`, the determinant-defect completion law.**  On an infinite-dimensional Hilbert space the
 closure of the finite-rank determinant graph over the Schatten `p`-class is exactly the completion
 fibre: the regularized determinant times the exponential of a jet of degree below `p` with vanishing

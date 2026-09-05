@@ -64,7 +64,6 @@ theorem exp_mul_sum_natAbs_le {d : ℕ} (a : ℝ) (k : Fin d → ℤ) :
 
 /-! ## The reduction -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Abe's positivity growth condition supplies the polynomial-Gaussian majorant.**  The seed side
 is unconditional; the factor side is exactly the exponential growth bound, and half of the Gaussian
 absorbs it. -/

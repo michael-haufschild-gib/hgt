@@ -104,7 +104,6 @@ theorem inversionAutomorphism_logDeriv
 
 /-! ### The dihedral fixed field -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Invariance under every scaling and the inversion forces membership in the square-current
 field.**  An element fixed by all scalings `w ↦ a·w` and by the inversion `w ↦ w⁻¹` is a
 differential rational function of `(w′/w)²`. -/

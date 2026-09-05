@@ -48,6 +48,8 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 - `PrimeBurnolDepthCompletion` proves dense prime-depth output span, not admission into that scalar coupling. The existing Hawking–Suzuki KMS amplitude bridge recovers the unchanged signed wall current; it supplies no source order.
 - `PrimeBurnolThetaCubicTraceCancellation`: literal `(sigma(q),q,p)` has fixed `p`; every total compatible sigma-trace kills its cubic defect/anomaly. Every finite prime-depth scalar-reweighted density trace is also zero, even without global sigma-cyclicity.
 - Exact survivor: reference-drift/trace-defect decomposition and `c*A=[(q-p)^3,c]-[q,c*(sigma(q)-q)^2]`. Nontrivial holonomy alone cannot supply unit index. Nonadmitted singular-domain passage remains open; no RH producer follows.
+- Quotient/index distinction: `burnol_completed_two_prime_no_common_zero` holds on all `ℂ`; `thetaShiftedWeightedDerivative_index_eq_neg_one` also holds on all `ℂ`. Xi occurrence is separately `thetaSourceForcingHasseClass_eq_zero_iff`. No proved conservation law couples these facts to off-line exclusion; calling that missing coupling an identity does not construct it.
+- `HedenmalmThetaExteriorPseudospectralSeparation`: exterior Esscher unit pseudomodes have exponential residual but inverse-quadratic spectral separation; inverse pencils grow exponentially without RH. Verified BRIDGE, not an RH producer or established significant novelty.
 
 ## HCF facts
 

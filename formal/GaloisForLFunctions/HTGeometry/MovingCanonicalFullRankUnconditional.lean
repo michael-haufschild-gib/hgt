@@ -64,7 +64,6 @@ theorem exists_row_packet_movingCanonicalSingleJet
 noncomputable def twoJetBox : Fin 2 → (Fin 2 →₀ ℕ) :=
   ![Finsupp.single 1 1, Finsupp.single 0 1]
 
-set_option maxHeartbeats 1000000 in
 /-- **Unconditional, two jets.**  For every parameter sequence, differentiation order and degree
 budget there is a node packet in the open upper half-plane, with pairwise distinct nodes, on which
 the expanded evaluation map of the pair `(L^{(m)}, L(· + i))` is injective.
@@ -140,7 +139,6 @@ theorem binomialJetBox_apply_one (N : ℕ) (a : Fin (N + 1)) :
     binomialJetBox N a 1 = N - (a : ℕ) := by
   simp [binomialJetBox]
 
-set_option maxHeartbeats 1000000 in
 /-- **Unconditional, box of arbitrary size.**  For every parameter sequence, differentiation order,
 degree budget and box size there is a node packet in the open upper half-plane, with pairwise
 distinct nodes, on which the expanded evaluation map of the binomial box in the two jets

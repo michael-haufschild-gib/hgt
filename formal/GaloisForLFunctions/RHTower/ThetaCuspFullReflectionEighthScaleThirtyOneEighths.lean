@@ -22,7 +22,6 @@ def thetaCuspFirstAtomEighthScaleThirtyOneEighthsLossBaseline (q : ℝ) : ℝ :=
     (thetaCuspFirstAtomSixthProfile q - 13100)
     (thetaCuspFirstAtomEighthProfile q)
 
-set_option maxHeartbeats 6000000 in
 /-- The scale-thirty-one-eighths loss baseline is strict from first-atom weight `19/8`. -/
 theorem thetaCuspFirstAtomEighthScaleThirtyOneEighthsLossBaseline_pos_of_nineteenEighths_le
     {q : ℝ} (hq : (19 / 8 : ℝ) ≤ q) :
@@ -41,7 +40,6 @@ theorem thetaCuspFirstAtomEighthScaleThirtyOneEighthsLossBaseline_pos_of_ninetee
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- Curvature transport bracket for the scale-thirty-one-eighths loss is strict from weight `19/8`. -/
 theorem thetaCuspFirstAtomEighthScaleThirtyOneEighthsLossCurvatureBracket_pos_of_nineteenEighths_le
     {q : ℝ} (hq : (19 / 8 : ℝ) ≤ q) :
@@ -71,7 +69,6 @@ theorem thetaCuspFirstAtomEighthScaleThirtyOneEighthsLossCurvatureBracket_pos_of
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- Derivative bracket for scale-thirty-one-eighths curvature transport is strict from weight `19/8`. -/
 theorem thetaCuspFirstAtomEighthScaleThirtyOneEighthsLossCurvatureBracketDerivative_pos_of_nineteenEighths_le
     {q : ℝ} (hq : (19 / 8 : ℝ) ≤ q) :
@@ -96,7 +93,6 @@ theorem thetaCuspFirstAtomEighthScaleThirtyOneEighthsLossCurvatureBracketDerivat
     positivity
   nlinarith [pow_pos hqpos 10]
 
-set_option maxHeartbeats 6000000 in
 /-- Full Born-top determinant is strict throughout the scale-thirty-one-eighths weight chamber. -/
 theorem thetaCuspFullReflectionEighthBornTopBaseline_pos_of_nineteenEighths_le_weight
     {x : ℝ} (hx : 0 ≤ x)

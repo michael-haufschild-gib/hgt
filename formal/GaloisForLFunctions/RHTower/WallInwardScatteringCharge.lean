@@ -89,7 +89,6 @@ def wallScatteringRemainderNeg (E : ℂ → ℂ) (T : X →L[ℂ] X) (g : ℝ �
 
 variable [Nontrivial X]
 
-set_option maxHeartbeats 1000000 in
 /-- **The forced profile is the propagated inward charge plus point-dependent terms.** -/
 theorem forcedProfile_eq_chargeNeg_add_remainderNeg {σ W x μ₀ K₂ m : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))

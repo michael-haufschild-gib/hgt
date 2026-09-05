@@ -121,7 +121,6 @@ theorem translateSineProduct_ne_zero (ω : ι → ℂ) (hω : ∀ i, 0 < (ω i).
     translateSineProduct ω hω hne c ≠ 0 :=
   Finset.prod_ne_zero_iff.mpr fun n _ => zpow_ne_zero _ (translateSine_ne_zero ω hω hne n)
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Logarithmic derivative of a translate product.**  It is the exponent operator applied to the
 multiple-sine coordinate. -/
@@ -146,7 +145,6 @@ theorem logDeriv_translateSineProduct (ω : ι → ℂ) (hω : ∀ i, 0 < (ω i)
 
 /-! ### The multiplicative classification -/
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 /-- **Multiplicative classification.**  A finite product of integer powers of structurally
 translated multiple sines is differentially algebraic exactly when its exponent operator lies in the

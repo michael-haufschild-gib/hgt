@@ -16,7 +16,6 @@ open scoped Differential
 
 noncomputable section
 
-set_option maxHeartbeats 1200000
 
 /-! ## The support algebra of an additive monoid -/
 

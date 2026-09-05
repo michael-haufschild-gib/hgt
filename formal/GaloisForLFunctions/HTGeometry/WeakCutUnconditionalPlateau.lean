@@ -28,7 +28,6 @@ theorem card_finiteQubitConfiguration_fin (n : ℕ) :
     Fintype.card (FiniteQubitConfiguration (Fin n)) = 2 ^ n := by
   simp only [FiniteQubitConfiguration, Fintype.card_fun, Fintype.card_fin, Fintype.card_bool]
 
-set_option maxHeartbeats 1000000 in
 /-- **The weak-cut delayed plateau, with the gate model supplied.**  For every tolerance there is a
 finite alphabet and a reference state for which the split synthesis cap is twice the register
 dimension, the cap survives the whole prescribed delay, the evolution is hard at every instant of

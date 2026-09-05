@@ -15,7 +15,6 @@ noncomputable section
 
 namespace RHTower
 
-set_option maxHeartbeats 1000000
 
 attribute [local instance] Measure.Subtype.measureSpace
 

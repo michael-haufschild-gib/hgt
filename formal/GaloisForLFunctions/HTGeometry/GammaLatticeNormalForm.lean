@@ -48,7 +48,6 @@ theorem HasShiftTubeDatum.const_mul {M lam : ℝ} {φ : ℝ → ℝ → ℂ} {d 
   refine hm.congr (T₀ := 0) fun σ t _ _ _ => ?_
   rw [mul_div_assoc]
 
-set_option maxHeartbeats 4000000 in
 /-- **The normal-form datum over a lattice of shifts.** -/
 theorem exists_hasShiftTubeDatum_jetGammaLatticeSum {M : ℝ} (hM : 0 < M) {K Mm : ℕ}
     (hMm : 0 < Mm) (lam : Fin r → ℝ) (hlam : ∀ i, 0 ≤ lam i)

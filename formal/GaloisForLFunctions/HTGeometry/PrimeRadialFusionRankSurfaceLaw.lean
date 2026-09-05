@@ -17,7 +17,6 @@ open scoped Differential
 
 noncomputable section
 
-set_option maxHeartbeats 1200000
 
 /-! ## Leading orders of an arbitrary profile subspace -/
 

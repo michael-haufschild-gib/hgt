@@ -22,7 +22,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
   relativeGaugeComplexAlgebraAnalytic
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **A transcendental generator adds exactly one transcendence degree.** -/
 theorem trdeg_adjoin_insert_eq_add_one
     {S : Set (meroField (Set.univ : Set ℂ))} {x : meroField (Set.univ : Set ℂ)}

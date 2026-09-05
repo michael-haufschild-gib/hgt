@@ -116,7 +116,6 @@ theorem norm_thresholdOperator_le {σ K₂ μ₀ : ℝ} (hσ0 : 0 < σ) (hσ1 : 
 
 /-! ## The decomposition -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The moving part of the propagated tail splits into four block averages.**  The two boundary
 terms at the moving endpoint lose their transport and become the resolvent averages; the two at the
 threshold are a fixed vector propagated by the transport; the remaining integral is the Hardy

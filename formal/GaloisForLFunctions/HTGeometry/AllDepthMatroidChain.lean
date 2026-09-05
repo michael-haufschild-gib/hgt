@@ -116,7 +116,6 @@ theorem differentialAlgebraicOver_differentialJet
       rw [differentialJet_succ]
       exact derivationClosed_differentialAdjoin F ({y} : Set E) ihm
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **A jet of a complex translate of the carrier is a finite combination of jets of labelled deep
 coordinates, modulo a differentially algebraic error.** -/
@@ -142,7 +141,6 @@ theorem exists_deepCombination_of_jet_translate (τ : ι → ℂ) (hτ : ∀ i, 
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [Algebra.smul_def, differentialJet_smul_complex]
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1600000 in
 /-- **Every member of the all-depth class is a finite combination of jets of labelled deep
 coordinates, modulo a differentially algebraic error.** -/
@@ -212,7 +210,6 @@ theorem exists_deepRow_of_class (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
     exact differentialAlgebraicOver_mul
       (HTGeometry.differentialAlgebraicOver_algebraMap _) (hddDA i)
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 1600000 in
 /-- **Every finite family in the all-depth class is an operator row family on the labelled deep
 coordinates, modulo differentially algebraic errors.** -/
@@ -292,7 +289,6 @@ theorem exists_operatorRow_of_class_family (τ : ι → ℂ) (hτ : ∀ i, 0 < (
     rw [hval]
     exact hDA r
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 1600000 in
 /-- **The complete all-depth differential matroid.**  Every finite family in the all-depth
 mixed-constraint class has the differential matroid of an operator row family on the labelled deep
@@ -325,7 +321,6 @@ theorem allDepth_completeDifferentialRank (τ : ι → ℂ) (hτ : ∀ i, 0 < (�
   rw [← hmat]
   exact cosetCompleteDifferentialRank τ hτ hQ hι hA xc hxmem hxinj L I
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 1600000 in
 /-- **The complete all-depth differential matroid over the natural rational base `ℂ(z)`.** -/
 theorem allDepth_completeDifferentialRank_rationalBase (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)

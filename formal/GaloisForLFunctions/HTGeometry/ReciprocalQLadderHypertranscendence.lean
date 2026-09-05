@@ -39,7 +39,6 @@ theorem qLadder_increment_eq :
       rw [hX]; exact map_neg _ _, zpow_one]
   field_simp
 
-set_option maxHeartbeats 1000000 in
 /-- **The reciprocal `q`-ladder resolvent is hypertranscendental.**  Every Laurent solution of
 `R(x) - β R(βx) = 1/(1+x)`, for a dilation parameter that is not a root of unity, is
 differentially transcendental over `k(x)`. -/
@@ -88,7 +87,6 @@ theorem qLadder_increment_eq_general (c₀ c₁ : k) :
   rw [zpow_one (RatFunc.X : RatFunc k)]
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The one-pole `q`-ladder response is hypertranscendental.**  Every Laurent solution of
 `R(x) - β R(βx) = c₀/(c₁ + x)` with `c₀, c₁ ≠ 0` and `β` not a root of unity is differentially
 transcendental over `k(x)`, both for the Euler derivation and for the ordinary one. -/

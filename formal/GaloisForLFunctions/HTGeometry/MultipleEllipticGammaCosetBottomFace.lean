@@ -107,7 +107,6 @@ theorem cosetFacePacket_eq_translateOrbit_bottom
   · rintro ⟨s, ⟨g, hg, rfl⟩, rfl⟩
     exact ⟨g, hg, hbridge g⟩
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **Labelled bottom atomicity.**  The labelled packet of a face with exactly two surviving
 parameters is differentially independent over every differentially algebraic extension of the
@@ -131,7 +130,6 @@ theorem cosetFacePacket_diffIndepOn_bottom
   rw [hdiff]
   exact thetaTranslationNonresonant_cosetFaceShiftSet_sub τ hQ hA J haJ hbJ hab hg hg' hgne
 
-set_option maxHeartbeats 800000 in
 /-- **Faithful labelling of the bottom packet.**  Distinct labelled shifts give distinct
 translates: a coincidence would make a nonresonant order-one defect vanish. -/
 theorem cosetFaceShiftSet_translate_injective_bottom

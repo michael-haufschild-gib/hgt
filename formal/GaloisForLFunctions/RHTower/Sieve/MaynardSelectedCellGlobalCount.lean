@@ -12,7 +12,6 @@ larger, and the positive label count cancels after the finite sum.
 -/
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1000000
 
 noncomputable section
 namespace RHTower.Sieve

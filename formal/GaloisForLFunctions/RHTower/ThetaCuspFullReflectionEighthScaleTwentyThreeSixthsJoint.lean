@@ -26,7 +26,6 @@ def thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve
       (1 / 69) * (q + 3 / 2) ^ 2 -
       (thetaCuspFullReflectionEighthCompactSixthCoefficient q + e6))
 
-set_option maxHeartbeats 6000000 in
 theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_pos_at_baseline
     {q : ℝ} (hq : (7 / 3 : ℝ) ≤ q) :
     0 < thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve q 28 14200 := by
@@ -49,7 +48,6 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_pos_at_baseli
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixths_fourthLinearCoefficient_pos
     {q : ℝ} (hq : (7 / 3 : ℝ) ≤ q) :
     0 < 304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
@@ -67,7 +65,6 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixths_fourthLinearCoefficient_p
     positivity
   nlinarith [pow_pos hqpos 8]
 
-set_option maxHeartbeats 6000000 in
 theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_mono_fourth
     {q e4 e6 : ℝ} (hq : (7 / 3 : ℝ) ≤ q)
     (he4 : 28 ≤ e4) (he6zero : 0 ≤ e6) :
@@ -96,7 +93,6 @@ theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixthsJointReserve_mono_fourth
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 theorem thetaCuspFirstAtomEighthScaleTwentyThreeSixths_sixthLossCoefficient_pos
     {q : ℝ} (hq : (7 / 3 : ℝ) ≤ q) (hqhi : q ≤ 19 / 8) :
     0 < thetaCuspFullReflectionEighthCompactSixthCoefficient q + 14200 -

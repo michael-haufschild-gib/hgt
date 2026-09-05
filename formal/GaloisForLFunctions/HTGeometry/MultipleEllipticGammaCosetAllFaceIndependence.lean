@@ -35,7 +35,6 @@ attribute [local instance] ellipticGammaRationalBaseDomain
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 theorem cosetFacePalette_differentialIndependent_of_deeper
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
@@ -85,7 +84,6 @@ theorem cosetFacePalette_differentialIndependent_of_deeper
       (Subtype.val : P → meroField (Set.univ : Set ℂ)) from hrel).comp e he
   simpa [e, K, P, B] using! hfamily
 
-set_option maxHeartbeats 1600000 in
 theorem cosetFaceLayer_star_exponent_eq
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
     {A : Set ℂ} (hA : CosetSeparated τ A)
@@ -136,7 +134,6 @@ theorem cosetFaceLayer_star_exponent_eq
     cosetFaceShiftSet_translate_injective τ hτ hQ hA J (hfaces J hJfaces) hgJ hhL htrans
   exact cosetFaceShiftSetSlice_zsmul_eq τ hQ hA J hqJ hg hh hshift
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- Labelled packets of faces below the hypertranscendental range are differentially
 algebraic. -/
@@ -161,7 +158,6 @@ theorem differentialAlgebraicOver_cosetFacePacket_of_compl_lt_two
   exact (HTGeometry.DifferentialAlgEquiv.differentialAlgebraicOver_map_iff
     (addTranslationMeroDifferentialAlgEquiv g) _).mpr hbase
 
-set_option maxHeartbeats 2500000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 theorem cosetFacePalette_differentialIndependent_of_deeper_with_boundary
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
@@ -234,7 +230,6 @@ theorem cosetFacePalette_differentialIndependent_of_deeper_with_boundary
       (Subtype.val : P → meroField (Set.univ : Set ℂ)) from hsetUnion).comp e he
   simpa [e, K, P] using! hfamily
 
-set_option maxHeartbeats 3000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 theorem cosetFaceLayer_diffIndepOn_with_boundary
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
@@ -289,7 +284,6 @@ theorem cosetFaceLayer_diffIndepOn_with_boundary
       (differentialAlgebraicOver_cosetOffStar_translate_deeper
         τ hτ A J hqJ hqS' n hyJ (Finset.mem_coe.mpr hyt))
 
-set_option maxHeartbeats 3000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 theorem cosetFaceLayer_diffIndepOn_with_boundary_auto
     [Nonempty ι]
@@ -345,7 +339,6 @@ theorem cosetFaceLayer_diffIndepOn_with_boundary_auto
         have := hthree J hJ
         omega)
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 1500000 in
 /-- **All labelled proper face packets are jointly differentially independent.**  Under integral
 period independence and coset separation of the labels, the union of the labelled external

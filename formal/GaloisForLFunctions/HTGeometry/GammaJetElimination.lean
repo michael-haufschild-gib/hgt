@@ -87,7 +87,6 @@ theorem gammaShiftFactor_add (lam : Fin r → ℝ) (a b : Fin r → ℤ) :
     exact RatFunc.algebraMap_ne_zero (Polynomial.X_add_C_ne_zero _)
   rw [zpow_add₀ hne]
 
-set_option maxHeartbeats 1000000 in
 /-- **The shift elimination.**  A negligible combination of jet polynomials against Gamma monomials
 with distinct balanced exponent vectors has every coefficient zero. -/
 theorem eq_zero_of_isGermNegligible_gammaCombination (lam : Fin r → ℝ) (hlam : ∀ i, 0 ≤ lam i)

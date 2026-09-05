@@ -115,7 +115,6 @@ theorem faceDifferenceCube_reduce (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
 
 /-! ### Separation of nested faces -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Nested faces are separated.**  A translate of a deeper face coordinate never agrees, modulo
 the rational coordinate field, with a translate of the coordinate of a strictly shallower face. -/
@@ -253,7 +252,6 @@ theorem frameSource_translate_sub_notMem_rational_of_ssubset {μ : ℂ} {rad : �
 
 /-! ### Separation of incomparable faces -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Incomparable faces are separated.** -/
 theorem frameSource_translate_sub_notMem_rational_of_incomparable {μ : ℂ} {rad : ι → ℝ}

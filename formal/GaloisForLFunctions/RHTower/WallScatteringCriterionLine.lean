@@ -40,7 +40,6 @@ theorem lintegral_sq_enorm_Icc_ne_top {f : ℝ → X} (hf : Continuous f) (a b :
 
 variable [Nontrivial X]
 
-set_option maxHeartbeats 1000000 in
 /-- **`(47)`: the Gamma derivative scattering criterion on the whole line.**  The frequency-weighted
 profile is square integrable exactly when both outgoing charges vanish. -/
 theorem lintegral_sq_freq_forcedProfile_line_ne_top_iff {σ Y μ₀ K₁ K₂ m : ℝ}

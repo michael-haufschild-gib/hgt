@@ -11,7 +11,6 @@ already-proved all-kind endpoint amplitude exclusion, so the ordinate set is emp
 -/
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1000000
 
 noncomputable section
 namespace RHTower.Sieve

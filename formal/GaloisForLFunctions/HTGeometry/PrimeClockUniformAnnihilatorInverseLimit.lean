@@ -22,7 +22,6 @@ open scoped Differential
 
 noncomputable section
 
-set_option maxHeartbeats 1200000
 
 /-! ## Complete meets in the prime-profile Grassmann representation -/
 

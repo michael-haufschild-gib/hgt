@@ -193,7 +193,6 @@ theorem norm_gaussChannelOperator_fourierLp (hm : 1 ≤ m) (k : Fin m) (p : Nat.
 
 /-! ## The band logarithmic mean -/
 
-set_option maxHeartbeats 1000000 in
 theorem tendsto_gaussChannelOperator_band_logMean (hm2 : 2 ≤ m) (k : Fin m) (p : Nat.Primes) :
     Tendsto (fun M : ℕ =>
       (∑ j ∈ Finset.Icc (-(M : ℤ)) (M : ℤ),
@@ -345,7 +344,6 @@ theorem isDixmier_gaussChannelOperator (hm2 : 2 ≤ m) (k : Fin m) (p : Nat.Prim
     ContinuousLinearMap.IsDixmier (gaussChannelOperator (le_trans one_le_two hm2) k p) :=
   isDixmier_of_tendsto_logMean (tendsto_sum_singVal_gaussChannelOperator hm2 k p)
 
-set_option maxHeartbeats 1000000 in
 /-- **The Dixmier trace of the Gauss channel operator.**  The logarithmic mean of the singular
 values of `((p-1)/p)^{2m} · G_full^m` is the arithmetic residue
 `2 (p-1)^{2m} (p^m-1)^2 / (p^{2m} m^2 log p)`. -/

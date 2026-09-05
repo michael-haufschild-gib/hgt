@@ -16,7 +16,6 @@ with exact discriminant support of the maximal abelian subfield proves the
 same support inclusion for the full top field over `ℚ`.
 -/
 
-set_option maxHeartbeats 1600000
 
 namespace RHTower
 

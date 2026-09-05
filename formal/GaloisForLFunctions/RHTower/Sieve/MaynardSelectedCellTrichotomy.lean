@@ -13,7 +13,6 @@ namespace RHTower.Sieve
 
 open Finset ArithmeticFunction
 
-set_option maxHeartbeats 1000000 in
 /-- **Complete pointwise Route-T cell classification.**  No selected exponent or equality seam
 remains outside one of the three proved count regimes. -/
 theorem eventually_exists_windowRelevant_subHeight_cell_trichotomy :

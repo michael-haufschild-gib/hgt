@@ -17,7 +17,6 @@ noncomputable section
 
 namespace RHTower
 
-set_option maxHeartbeats 1000000
 
 /-! ## The literal normalization `m(a)` from equation (4.17) -/
 

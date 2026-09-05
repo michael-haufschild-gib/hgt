@@ -30,7 +30,6 @@ theorem polynomialGaussianLatticeWeight_zero_deg {k : ℕ} (s : ℝ) (n : Fin k 
   rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
   exact Finset.sum_congr rfl fun j _ => by ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The periodized Gaussian converges absolutely at every point of a compact set.** -/
 theorem summable_norm_scaledGaussian_lattice {d k : ℕ} (emb : (Fin k → ℤ) →+ (Fin d → ℂ))
     (vec : (Fin k → ℤ) → Fin d → ℝ) (hvec : ∀ n i, emb n i = ((vec n i : ℝ) : ℂ))

@@ -153,7 +153,6 @@ noncomputable def integerHeightBox {M n : ℕ} (height : Fin (M + 1) → Fin (n 
 
 namespace PoleCarrier
 
-set_option maxHeartbeats 1000000 in
 /-- **A node packet meeting every condition of the translation-rank interfaces, for any pole
 carrier.**  The nodes are pairwise distinct, the whole row-by-shift family is collision-free, every
 shifted node lies in the open upper half-plane, and the expanded evaluation map of the height box is

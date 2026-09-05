@@ -59,7 +59,6 @@ theorem isAlgebraic_of_gradedJetRing {f g : ℂ → ℂ} (hf : Differentiable �
   exact mem_algebraicClosure_iff.mp (hle hy)
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The finite-jet shadow law.**  For a transcendental entire `f` satisfying an autonomous
 first-order relation and a transcendental entire `g`, the coordinate together with the jets of
 `f ∘ g` up to order `n` has transcendence degree one more than the coordinate together with the

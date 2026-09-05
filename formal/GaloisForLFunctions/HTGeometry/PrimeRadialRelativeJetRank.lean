@@ -17,7 +17,6 @@ open scoped Differential
 
 noncomputable section
 
-set_option maxHeartbeats 2400000
 
 /-! ## Profile spans generate exactly their radial differential fields -/
 

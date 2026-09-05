@@ -10,7 +10,6 @@ colour fibres are summed and the positive label count is cancelled.
 -/
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1000000
 
 noncomputable section
 namespace RHTower.Sieve

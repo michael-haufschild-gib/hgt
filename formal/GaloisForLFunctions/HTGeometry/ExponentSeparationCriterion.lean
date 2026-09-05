@@ -102,7 +102,6 @@ theorem injective_integerBlowUpOrder_of_dominant_rate {κ : Type*} {n : ℕ}
   linarith [hlow, hhigh, hbig]
 
 
-set_option maxHeartbeats 4000000 in
 /-- **The full-rank datum for the moving canonical jets, with every hypothesis explicit.**  The
 configuration data are: the distinguished shift real and the others strictly above it, the
 companions' analytic orders at the sampled points, a bound on the exponents, and a differentiation

@@ -46,7 +46,6 @@ theorem ratFuncShift_X (c : K) :
     RatFunc.algebraMap_X, RatFunc.algebraMap_C]
   rfl
 
-set_option maxHeartbeats 1000000 in
 /-- **The Euler operator on principal parts.** -/
 theorem polePart_eulerOp (f : RatFunc K) (c : K) (d : ℕ) :
     polePart (ratFuncEulerOp f) c (d + 1)

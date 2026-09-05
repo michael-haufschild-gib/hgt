@@ -93,7 +93,6 @@ def radiationShellBound (a σ c : ℝ) (n' m : ℕ) (u M : ℝ) : ℝ :=
       * (carrierTruncConst a c (n' + 1) m * max 1 (M ^ 2) ^ m * (u⁻¹) ^ m)
     + 8 * a * (((a * u) ^ ((1 : ℝ) / 2))⁻¹ * (rayRemConst (n' + 1) / (a * u) ^ (n' + 1)))
 
-set_option maxHeartbeats 1200000 in
 open GaloisForLFunctions.HTGeometry in
 /-- **The order-`m` radiation remainder is bounded by the prime mass times a shell-uniform
 constant.** -/

@@ -18,7 +18,7 @@ open CategoryTheory AlgebraicGeometry GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 3000000
+set_option maxHeartbeats 400000
 set_option synthInstance.maxHeartbeats 1000000
 
 private theorem affine_app_finite (x : Fin 2 → ℂ)

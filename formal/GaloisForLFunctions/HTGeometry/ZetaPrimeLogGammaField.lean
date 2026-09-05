@@ -25,7 +25,6 @@ def gammaFieldQuotientFun {r K Mn Md : ℕ} (lam : Fin r → ℝ) (idx : Fin K �
     / ∑ i : Fin Md, jetFieldPolyFun lam idx (P' i) s
       * gammaMonomial (fun k => ((lam k : ℝ) : ℂ)) (fun k => (ee' i k : ℤ)) s
 
-set_option maxHeartbeats 1000000 in
 /-- **Zeta satisfies no relation with coefficients in the prime-log shifted Gamma field.** -/
 theorem zeta_no_primeLogGammaShift_relation {n N : ℕ} {σ R rr ρ : ℝ} (hσ : 1 < σ)
     (hN : 0 < N) (hr : 0 < rr) (hρ : 0 < ρ) (hrρ : rr + ρ < R) (hR : 0 < R) (hRσ : R ≤ σ - 1)

@@ -59,7 +59,6 @@ theorem logDeriv_mem_differentialAdjoin_pow {v : E} (hv0 : v ≠ 0) {n : ℕ} (h
   exact (differentialAdjoin C ({v ^ n} : Set E)).div_mem hderiv
     ((differentialAdjoin C ({v ^ n} : Set E)).mul_mem hnat hmem)
 
-set_option maxHeartbeats 1000000 in
 /-- **Invariance under a root-of-unity scaling forces membership in the power field.**  An element
 of a freely generated rank-one differential field fixed by the scaling automorphism of a root of
 unity of exact order `n` is a differential rational function of `v ^ n`. -/

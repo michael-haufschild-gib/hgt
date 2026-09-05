@@ -53,7 +53,6 @@ theorem pencilOperator_add {d : ℕ} (X Y : Fin d → (H →L[ℂ] H)) (v : Fin 
   rw [pencilOperator, pencilOperator, pencilOperator, ← Finset.sum_add_distrib]
   exact Finset.sum_congr rfl fun j _ => by rw [smul_add]
 
-set_option maxHeartbeats 1000000 in
 /-- **The several-variable sufficiency step.**  Beside a truncated pencil there is a finite-rank
 pencil whose power traces below the order are the truncation's own plus exactly the prescribed
 homogeneous defects, at arbitrarily small Schatten distance from the truncation. -/

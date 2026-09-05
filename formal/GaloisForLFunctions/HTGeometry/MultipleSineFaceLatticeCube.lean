@@ -156,7 +156,6 @@ theorem frameSource_translation_defect_mem (ω : ι → ℂ) (hω : ∀ k, 0 < (
 /-! ### The difference cube collapses a face coordinate to a deeper one -/
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The difference cube of a face coordinate.**  Differencing along a set of surviving directions
 collapses a translate of a face coordinate to the same translate of the deeper face coordinate, with
 the parity sign, modulo the rational coordinate field. -/

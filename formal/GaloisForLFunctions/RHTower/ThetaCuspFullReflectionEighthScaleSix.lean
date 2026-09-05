@@ -22,7 +22,6 @@ def thetaCuspFirstAtomEighthScaleSixLossBaseline (q : ℝ) : ℝ :=
     (thetaCuspFirstAtomSixthProfile q - 3700)
     (thetaCuspFirstAtomEighthProfile q)
 
-set_option maxHeartbeats 6000000 in
 /-- The scale-six loss baseline is strict from first-atom weight `9/2`. -/
 theorem thetaCuspFirstAtomEighthScaleSixLossBaseline_pos_of_nineHalves_le
     {q : ℝ} (hq : (9 / 2 : ℝ) ≤ q) :
@@ -41,7 +40,6 @@ theorem thetaCuspFirstAtomEighthScaleSixLossBaseline_pos_of_nineHalves_le
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- Curvature transport bracket for the scale-six loss is strict from weight `9/2`. -/
 theorem thetaCuspFirstAtomEighthScaleSixLossCurvatureBracket_pos_of_nineHalves_le
     {q : ℝ} (hq : (9 / 2 : ℝ) ≤ q) :
@@ -71,7 +69,6 @@ theorem thetaCuspFirstAtomEighthScaleSixLossCurvatureBracket_pos_of_nineHalves_l
     positivity
   nlinarith [pow_pos hqpos 16]
 
-set_option maxHeartbeats 6000000 in
 /-- Derivative bracket for scale-six curvature transport is strict from weight `9/2`. -/
 theorem thetaCuspFirstAtomEighthScaleSixLossCurvatureBracketDerivative_pos_of_nineHalves_le
     {q : ℝ} (hq : (9 / 2 : ℝ) ≤ q) :
@@ -96,7 +93,6 @@ theorem thetaCuspFirstAtomEighthScaleSixLossCurvatureBracketDerivative_pos_of_ni
     positivity
   nlinarith [pow_pos hqpos 10]
 
-set_option maxHeartbeats 6000000 in
 /-- Full Born-top determinant is strict throughout the scale-six weight chamber. -/
 theorem thetaCuspFullReflectionEighthBornTopBaseline_pos_of_nineHalves_le_weight
     {x : ℝ} (hx : 0 ≤ x)

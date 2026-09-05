@@ -35,7 +35,6 @@ attribute [local instance] ellipticGammaStructuralGeneratorRestrictedDifferentia
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-set_option maxHeartbeats 1000000 in
 /-- Faithful labelling for a labelled face whose complement has a prescribed size. -/
 theorem cosetFaceShiftSet_translate_injective_aux
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)

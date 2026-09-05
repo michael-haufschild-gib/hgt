@@ -28,7 +28,6 @@ local instance jetCobRatAlgebra : Algebra (RatFunc ℂ) (meroField (Set.univ : S
 variable {r : ℕ}
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **No cross-multiplied multiplicative coboundary between jet polynomials.** -/
 theorem no_jetPoly_multiplicative_coboundary (lam : Fin r → ℂ)
     (hincong : ∀ i i', i ≠ i' → ∀ n : ℤ, lam i - lam i' ≠ (n : ℂ))

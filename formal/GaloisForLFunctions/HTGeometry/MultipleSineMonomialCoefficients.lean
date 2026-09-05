@@ -157,7 +157,6 @@ theorem meroShiftDiff_sineNatSynth_notMem (ω : ι → ℂ) (hω : ∀ k, 0 < (�
 
 /-! ### The iterated difference, modulo the rational coordinate field -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **The monomial synthesis identity.**  Iterating the structural differences along a list of
 directions produces, modulo `ℂ(z)`, the signed synthesis of the combinatorial coefficient function

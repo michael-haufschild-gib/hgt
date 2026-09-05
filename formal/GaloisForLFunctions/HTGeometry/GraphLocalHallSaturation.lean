@@ -85,7 +85,6 @@ theorem linearFamilyShadow_completed_eq (G : SimpleGraph I)
         U.map (graphLocalKernelProjection I R G) :=
   linearFamilyShadow_completed G U
 
-set_option maxHeartbeats 1000000 in
 /-- The canonical greatest obstruction of the completed family has nonpositive deficiency. -/
 theorem graphLocalCompleted_defect_nonpos (G : SimpleGraph I) :
     linearFamilyDefect (graphLocalCompleted I R G)
@@ -162,7 +161,6 @@ theorem graphLocal_finrank_le_shadow_of_le_orthogonal (G : SimpleGraph I)
   rw [hzero, sup_bot_eq] at h
   exact h
 
-set_option maxHeartbeats 1000000 in
 /-- **Equation (8): the sharp one-step Hall law, paying exactly the intersection with the exact
 collective commutant.** -/
 theorem graphLocal_finrank_le_shadow_add_commonKernel (G : SimpleGraph I)
@@ -207,7 +205,6 @@ theorem graphLocal_finrank_le_shadow_add_commonKernel (G : SimpleGraph I)
   rw [ker_graphLocalComplementProjection G] at hsplit
   omega
 
-set_option maxHeartbeats 1000000 in
 /-- **On a connected graph the simultaneous kernel is the exact global collective commutant.** -/
 theorem graphLocalCommonKernel_eq_collectiveCommutant (G : SimpleGraph I) (hconn : G.Connected) :
     graphLocalCommonKernel I R G = collectiveCommutantSubspace I R := by

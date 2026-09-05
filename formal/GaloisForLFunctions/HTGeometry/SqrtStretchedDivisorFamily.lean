@@ -18,7 +18,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 /-- The card's family: only the phase of the constant term varies. -/
 def phaseFamily (t : ℝ) : ℂ → ℂ :=
@@ -97,7 +96,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 theorem summable_phaseFamily_terms (t : ℝ) (z : ℂ) :
     Summable (fun n : ℕ => (Real.exp (-Real.exp (Real.sqrt n)) : ℂ) *
@@ -180,7 +178,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 theorem exp_I_inj_on_Ico {t s : ℝ} (ht : t ∈ Set.Ico (0 : ℝ) (2 * Real.pi))
     (hs : s ∈ Set.Ico (0 : ℝ) (2 * Real.pi)) (hne : t ≠ s) :

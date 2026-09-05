@@ -53,7 +53,6 @@ theorem analyticFunctionElement_congr_eqOn {U : Set ℂ} {f g : ℂ → ℂ} (hf
 /-! ## Witness families for the jets of a differentially algebraic germ -/
 
 set_option synthInstance.maxHeartbeats 800000 in
-set_option maxHeartbeats 1600000 in
 /-- **All jets of a differentially algebraic analytic function are algebraic over one finite
 family.**  Differential algebraicity caps the transcendence degree of the differential field it
 generates, and a transcendence basis of that field witnesses every jet. -/
@@ -150,7 +149,6 @@ theorem analyticMeroElement_congr_eqOn {W : Set ℂ} {F G : ℂ → ℂ} (hF : A
 /-! ## The tower theorem -/
 
 set_option synthInstance.maxHeartbeats 800000 in
-set_option maxHeartbeats 4000000 in
 /-- **One autonomous equation for a linearized tower.**  If the outer germ and the inner germ are
 differentially algebraic and the substitutions are faithful, then a single nonzero constant
 coefficient polynomial annihilates the jets of every composite `Φ ∘ (μ_n · κ)`. -/

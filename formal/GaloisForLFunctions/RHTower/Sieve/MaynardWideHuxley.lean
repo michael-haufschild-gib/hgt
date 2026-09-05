@@ -10,7 +10,6 @@ width and coefficient energy fixed, so Huxley's finite-set inequality extends wi
 -/
 
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1000000
 
 noncomputable section
 namespace RHTower.Sieve

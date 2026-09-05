@@ -30,7 +30,6 @@ attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
   relativeGaugeComplexAlgebraAnalytic
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The double-sine translation annihilator, unconditionally.**  For periods `i a`, `i b` on the
 positive imaginary ray with `a/b` irrational there is a meromorphic source whose two structural
 translation defects are the cotangents of the other period, up to a constant, and whose translation

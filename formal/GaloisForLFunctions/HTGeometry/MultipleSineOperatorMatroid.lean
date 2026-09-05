@@ -72,7 +72,6 @@ theorem differentialOperatorApply_mem_rationalCoordinateField (a : Polynomial �
 
 /-! ### One monomial, modulo the rational coordinate field -/
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- The pair row of a single narrow monomial reproduces the operator action on it, modulo the
 rational coordinate field. -/
@@ -128,7 +127,6 @@ theorem xMonomial_sub_pairRow_mem (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
 
 /-! ### The whole operator, modulo the differentially algebraic locus -/
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **The operator action is a pair row, modulo differential algebraicity.** -/
 theorem xDiffApply_sub_pairRowSum_differentialAlgebraic (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
@@ -212,7 +210,6 @@ def sinePairIndex {ρ : Type} [Fintype ρ] (P : ρ → MvPolynomial ι (Polynomi
     Finset (Finset ι × (ι →₀ ℕ)) :=
   Finset.univ.biUnion (fun k => (sinePairRow (P k)).support)
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 /-- **The complete matroid law for difference-differential operators on the multiple sine.**  For
 every finite family of operators, the nonlinear differential matroid of the outputs is the ordinary

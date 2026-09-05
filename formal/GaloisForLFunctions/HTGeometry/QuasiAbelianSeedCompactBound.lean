@@ -94,7 +94,6 @@ theorem exists_norm_scaledGaussian_realTranslate_le {d : ℕ} (σ : Fin d → �
   rw [hA]
   linarith
 
-set_option maxHeartbeats 1000000 in
 /-- **The damped seed on an arbitrary compact set.**  At a fixed scale the constant may depend on
 the compact set and on the scale, so no smallness hypothesis is needed; this is what local normal
 convergence of the Poincaré series consumes. -/

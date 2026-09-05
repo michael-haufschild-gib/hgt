@@ -23,7 +23,6 @@ open GaloisForLFunctions Bottcher
 
 noncomputable section
 
-set_option maxHeartbeats 1000000 in
 /-- **The kernel of the multiplicative orbital charge.**  A member of the multiplicative triptic
 class whose orbital charge vanishes on every orbit has a differentially algebraic logarithmic
 derivative, and its mixed constant is zero. -/

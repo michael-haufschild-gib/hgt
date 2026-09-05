@@ -101,7 +101,6 @@ theorem sub_facet_denominator_eq {ω : α → E} {G : E → ℂ} {A : Finset α}
 
 /-! ### One facet: the row is the difference operator of the facet restriction -/
 
-set_option maxHeartbeats 2000000 in
 /-- **The Laurent row of one facet acts as the difference operator of the facet restriction.** -/
 theorem facetRowSum_eq_seedCarrier (ω : α → E) {A : Finset α} (G : ℕ → E → ℂ)
     (hG : ∀ r, ∀ v ∉ A, ∀ z, G r (z + ω v) = G r z)
@@ -160,7 +159,6 @@ theorem facetRowSum_eq_seedCarrier (ω : α → E) {A : Finset α} (G : ℕ → 
 
 variable {facets : Finset (Finset α)} {ι : Type} [Fintype ι]
 
-set_option maxHeartbeats 2000000 in
 /-- **The finite coordinate packet of a Stanley--Reisner Laurent family reproduces the operator.**
 Summing each row against the pencil orbit gives the operator applied to the sum of the facet
 sources, translated by the common denominator. -/

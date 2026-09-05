@@ -180,7 +180,6 @@ theorem jetElem_comp_mem_gradedJetRing {f g : ℂ → ℂ} (hf : Differentiable 
       exact deriv_mem_gradedJetRing_succ hf hg m ih
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The inner jets are algebraic over the outer jet field.**  Solving the leading-term identity for
 `g⁽ʲ⁾` expresses it through the outer jets and the composed jets, all algebraic over the field the
 outer jets generate. -/

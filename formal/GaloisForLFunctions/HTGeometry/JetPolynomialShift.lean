@@ -43,7 +43,6 @@ def jetShiftPoly {M : ℕ} (rj : Fin M → RatFunc ℂ) :
   rw [jetShiftPoly, MvPolynomial.eval₂Hom_X']
 
 set_option synthInstance.maxHeartbeats 1000000 in
-set_option maxHeartbeats 1000000 in
 /-- **The polynomial shift induces the unit shift on jet values.** -/
 theorem aeval_jetShiftPoly (lam : Fin r → ℂ) {M : ℕ} (idx : Fin M → Fin r × ℕ)
     (P : MvPolynomial (Fin M) (RatFunc ℂ)) :

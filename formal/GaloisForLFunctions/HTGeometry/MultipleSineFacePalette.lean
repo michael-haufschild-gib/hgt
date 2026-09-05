@@ -74,7 +74,6 @@ theorem range_facePalette (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im) {J : Fi
     refine ⟨(⟨y, hy⟩, n), ?_⟩
     rw [facePalette_apply, meroTranslationPerm_zpow_apply]
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **The palette is injective.**  Distinct slice points or distinct exponents give distinct
 elements of the packet. -/

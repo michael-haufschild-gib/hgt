@@ -16,7 +16,6 @@ open Filter Finset MvPolynomial Polynomial PowerSeries Topology
 
 noncomputable section
 
-set_option maxHeartbeats 2000000 in
 theorem exists_periodicGeometric_leastLevelPolynomial_eq_zero
     {F : PowerSeries ℂ} {u : ℕ → ℂ}
     {A lam c : ℝ} (hA : 0 < A) (hlam : 1 < lam)

@@ -24,7 +24,6 @@ open Complex MeasureTheory Filter Topology GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1600000 in
 /-- **Route-T four-edge Perron bound for the damped twisted Möbius sum, at every frequency.** -/
 theorem exists_norm_tsum_dampedTwist_smoothWeight_le_routeT_allHeights :
     ∃ (A C C' M δ : ℝ), 0 ≤ C ∧ 0 ≤ C' ∧ 0 ≤ M ∧ 0 < δ ∧

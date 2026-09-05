@@ -132,7 +132,6 @@ theorem selbergGcdLogPrincipalScaledLogPowerModel_sub_harmonicMain
   intro d _
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- **Harmonic replacement for the gcd-logarithmic principal model.** -/
 theorem tendsto_selbergGcdLogPrincipalScaledLogPowerModel_sub_harmonic_div_log_pow_zero
     (q r : ℕ) {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :

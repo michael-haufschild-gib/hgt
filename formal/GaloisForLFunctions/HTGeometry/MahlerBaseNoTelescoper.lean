@@ -56,7 +56,6 @@ theorem coeff_baseExp_increment (p : ℕ) (hp : 1 < p) (B : perfectBase (k := k)
 
 /-! ## The telescoper obstruction in the two-variable base -/
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **No nonzero constant-coefficient combination of the reduced-trace increment's jets is a
 coboundary of the Mahler substitution in the two-variable base.** -/

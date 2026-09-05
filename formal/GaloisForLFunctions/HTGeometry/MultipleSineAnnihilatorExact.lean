@@ -78,7 +78,6 @@ theorem differentialAlgebraicOver_sineNatSynth_of_compl_card_one (ω : ι → �
   exact differentialAlgebraicOver_complexMul (c n)
     (differentialAlgebraicOver_sineFaceTranslate_of_compl_card_one ω hω h1 n)
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **Wide monomials annihilate.**  An iterated difference along a list of directions leaving at
 most one surviving period sends the source into the differentially algebraic locus. -/
@@ -210,7 +209,6 @@ def sinePairSynth (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
     (C : (Finset ι × (ι →₀ ℕ)) →₀ ℂ) : meroField (Set.univ : Set ℂ) :=
   Finsupp.linearCombination ℂ (sinePairTranslate ω hω) C
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in
 /-- **A nonzero admissible pair coefficient synthesizes a hypertranscendental germ.** -/
 theorem hypertranscendentalOver_sinePairSynth {μ : ℂ} {rad : ι → ℝ} (hrad : ∀ k, 0 < rad k)
@@ -260,7 +258,6 @@ theorem sineNatSynth_eq_pairSynth (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
 
 /-! ### The exact annihilator -/
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 /-- **Reverse inclusion of the annihilator.**  If some monomial of a difference operator leaves at
 least two surviving periods, the operator does not send the multiple-sine source into the
@@ -444,7 +441,6 @@ theorem hypertranscendentalOver_xApply_multipleSine_of_notMem_veroneseIdeal
     simpa using hdiff
   exact hnarrowHT (HTGeometry.differentialAlgebraicOver_complex_of_ratFunc hpairDA)
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 /-- **The exact squarefree annihilator of the multiple sine.**  For a ray period family of `r + 1`
 members with rationally independent radii, a difference operator sends the multiple-sine source into

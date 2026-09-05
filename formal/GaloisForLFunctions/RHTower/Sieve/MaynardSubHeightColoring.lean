@@ -15,7 +15,6 @@ namespace RHTower.Sieve
 
 open Finset ArithmeticFunction
 
-set_option maxHeartbeats 1000000 in
 /-- Pointwise literal group selection from positive sub-height mass and over-height excision. -/
 theorem exists_heathBrown_box_subHeight_group_of_mass
     (L X k : ℕ) (box : HeathBrownBoxChoice L X k)
@@ -118,7 +117,6 @@ theorem exists_heathBrown_box_subHeight_group_of_mass
       (by simpa [w, q] using hsubTotal) s
       (by simpa [w, q, heathBrownBoxFactorValue] using hover) hlarge
 
-set_option maxHeartbeats 1000000 in
 /-- Aggregate selector with no all-short hypothesis.  Every high-amplitude window-relevant
 aggregate selects one literal sub-height group. -/
 theorem eventually_exists_windowRelevant_subHeight_group :

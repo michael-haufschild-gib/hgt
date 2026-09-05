@@ -122,7 +122,6 @@ theorem coeff_coe_powerSeries_nat (f : PowerSeries k) (n : ℕ) :
   rw [PowerSeries.coeff_coe, if_neg (by omega : ¬ ((n : ℤ)) < 0),
     show ((n : ℤ)).natAbs = n from by omega]
 
-set_option maxHeartbeats 1000000 in
 /-- **The Taylor coefficients of the two-shell defect.** -/
 theorem coeff_algebraMap_resolventDefect [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 0 < m)
     (n : ℕ) :
@@ -155,7 +154,6 @@ theorem coeff_algebraMap_X_pow_mul (j : ℕ) (f : LaurentSeries k) (n : ℤ) :
   rw [map_pow, algebraMap_ratFuncX, laurentCoord, HahnSeries.single_pow, one_pow,
     show (j • (1 : ℤ)) = (j : ℤ) from by simp, HahnSeries.coeff_single_mul, one_mul]
 
-set_option maxHeartbeats 1000000 in
 /-- **The Taylor coefficients of the resolvent trace** are the defect coefficients divided by the
 scale resonance. -/
 theorem coeff_resolventTrace [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm : 1 < m) (n : ℤ) :
@@ -190,7 +188,6 @@ theorem coeff_resolventTrace [CharZero k] {p : ℕ} (hp : 1 < p) {m : ℕ} (hm :
   rw [← hcoeff, resolventGerm, coeff_qDifferenceSolution, HahnSeries.coeff_neg, hinc, one_mul]
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The displayed Taylor coefficient**: the germ selected by the scale-defect equation has the
 coefficients recorded by the formal susceptibility. -/
 theorem coeff_resolventTrace_eq_susceptibility {p m : ℕ} (hp : 1 < p) (hm : 1 < m) (n : ℕ) :

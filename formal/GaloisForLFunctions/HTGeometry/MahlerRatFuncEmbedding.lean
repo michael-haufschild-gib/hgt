@@ -115,7 +115,6 @@ theorem coeff_mahlerEmbed_algebraMap (P : Polynomial (RatFunc k)) (n : ℤ) :
   · simp [h]
   · simp [h]
 
-set_option maxHeartbeats 1000000 in
 /-- **The base derivation is the restriction of the ambient one**, on polynomials in the twisting
 coordinate. -/
 theorem mahlerEmbed_twoCylDerivation_algebraMap [CharZero k] (P : Polynomial (RatFunc k)) :
@@ -134,7 +133,6 @@ theorem mahlerEmbed_twoCylDerivation_algebraMap [CharZero k] (P : Polynomial (Ra
   · rw [if_neg h, if_neg h, coeffDeriv_coeff, cylinderDifferential_deriv,
       cylDeriv_one_eq_ratFuncEulerOp, ratFuncToHahn_eulerOp]
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 /-- **The base derivation of `k(w)(h)` is the restriction of the derivation of the Mahler
 ambient.** -/

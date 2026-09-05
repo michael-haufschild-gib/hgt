@@ -328,7 +328,6 @@ theorem pairSig_realizable_iff_admissible {ι : Type} [Fintype ι] [DecidableEq 
   simpa only [PairSigAdmissible] using
     exists_class_member_with_prescribed_pairSig_iff τ hτ hQ s hs D
 
-set_option maxHeartbeats 2400000 in
 set_option synthInstance.maxHeartbeats 900000 in
 /-- Exact fixed-submodule image of reflection-symmetric all-depth constrained functions. -/
 theorem reflectionSymmetricPairSigRealizable_iff

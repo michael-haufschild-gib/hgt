@@ -100,7 +100,6 @@ namespace GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions Polynomial IsDedekindDomain IsDedekindDomain.HeightOneSpectrum IsLocalRing WithZero
 open UniqueFactorizationMonoid
 
-set_option maxHeartbeats 1000000
 set_option synthInstance.maxHeartbeats 1000000
 
 variable (m : ℕ) (p : Polynomial CascadeField) [Fact (Irreducible p)]

@@ -25,7 +25,6 @@ open scoped ENNReal FourierTransform
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 namespace RHTower
 

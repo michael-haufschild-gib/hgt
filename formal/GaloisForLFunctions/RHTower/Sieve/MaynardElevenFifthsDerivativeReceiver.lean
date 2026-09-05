@@ -170,7 +170,6 @@ theorem eventually_routeT_elevenFifths_derivativeExcised_box_first (qReceiver : 
     hT.le (by positivity) hmuHi halphaLo halphaHi htau hs hcount hcostQ
 
 
-set_option maxHeartbeats 1000000 in
 /-- Every fixed over-height zeta/log box fibre satisfies the `11/5` first receiver. The
 Kuzmin--Landau premise and its complete polylogarithmic coefficient are discharged internally. -/
 theorem eventually_routeT_elevenFifths_overHeight_box_first (qReceiver : ℕ) :

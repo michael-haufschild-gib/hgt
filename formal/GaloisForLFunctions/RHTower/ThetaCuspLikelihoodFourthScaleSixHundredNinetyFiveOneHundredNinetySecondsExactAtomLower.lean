@@ -59,7 +59,6 @@ theorem thetaCuspLikelihoodFourthScale695Over192_expAffine_lt_exp_neg_three_mul
       dsimp only [d]
       ring
 
-set_option maxHeartbeats 6000000 in
 /-- Cleared exact-ray certificate for the continued affine fourth floor. -/
 theorem exactFourth695Over192AffineFloor_lt_atomEnvelope
     {d : ℝ} (hd : 0 ≤ d) (hdhi : d ≤ 1 / 384) :

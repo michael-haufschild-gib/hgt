@@ -28,7 +28,6 @@ open Bottcher HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 1600000 in
 /-- **Depth-two realization.**  Every finite class divisor of bounded order is the orbital divisor
 of a member of the depth-two class. -/
 theorem exists_depthTwo_member_with_prescribed_divisor {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
@@ -111,7 +110,6 @@ theorem tripticPeriodGroup_comm (a b : ℂ) : tripticPeriodGroup a b = tripticPe
   · rintro ⟨c, q, r, rfl⟩
     exact ⟨c, r, q, by ring⟩
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The signature is symmetric in its pair.** -/
 theorem pairSig_symm (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
@@ -138,7 +136,6 @@ theorem pairSig_symm (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
   rw [pairSig, pairSig, hswap]
   exact triptic_orbit_residue_reciprocity hWmero hWper hWmixed (hτ j) (hτ i) hindep p hℓ
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The depth-`d` signature is the `τ k`-displacement of the depth-`(d−1)` signature.** -/
 theorem pairSig_descent (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
@@ -194,7 +191,6 @@ theorem pairSig_descent (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
   rw [pairSig, pairSig, pairSig, hshift]
   exact additiveOrbitalDivisorAt_shiftDiffFun hWmero hs1 hs2
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The signature is additive.** -/
 theorem pairSig_add (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
@@ -231,7 +227,6 @@ theorem pairSig_add (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)
 
 /-! ## Realizing the components through one distinguished direction -/
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 1600000 in
 /-- **The components of a compatible family through one distinguished direction are realized.** -/
 theorem exists_bottom_realizer (τ : ι → ℂ) (hτ : ∀ m, 0 < (τ m).im)

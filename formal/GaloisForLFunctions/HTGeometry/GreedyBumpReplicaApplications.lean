@@ -33,6 +33,13 @@ def PositivePureStateModel.templateMetric {α : Type*} [Fintype α] {v : ℕ}
   matrix := finitePureStateProjectiveGram model.state model.tangent
   posDef := model.gram_posDef
 
+/-- Complete metric optimizer and look-elsewhere laws for a positive replica model. -/
+theorem greedyBump_replica_metric_laws
+    {α : Type*} [Fintype α] {v : ℕ}
+    (model : PositivePureStateModel α v) (r : PositiveReplicaOrder) :
+    GreedyBumpMetricLaws r.signal model.templateMetric :=
+  greedyBumpMetricLaws_closed r.signal model.templateMetric
+
 /-- Replica projective Gram is exactly the paper's matched Hessian. -/
 theorem greedyBump_replicaGram_eq_matchedHessian
     {α : Type*} [Fintype α] {v : ℕ}
@@ -52,6 +59,17 @@ theorem greedyBump_replicaGram_det_volume
         (finitePureStateProjectiveGram model.state model.tangent).det := by
   exact det_finitePureStateReplicaProjectiveGram
     (r : ℕ) model.state model.tangent model.normalized
+
+/-- Replica trials volume scales by exactly `r^(v/2)`. -/
+theorem greedyBump_replicaGram_sqrt_det_volume
+    {α : Type*} [Fintype α] {v : ℕ}
+    (model : PositivePureStateModel α v) (r : PositiveReplicaOrder) :
+    Real.sqrt (finitePureStateReplicaProjectiveGram
+        r model.state model.tangent).det =
+      (r : ℕ) ^ ((v : ℝ) / 2) *
+        Real.sqrt (finitePureStateProjectiveGram model.state model.tangent).det := by
+  rw [greedyBump_replicaGram_eq_matchedHessian]
+  exact greedyBumpHessian_sqrt_det r.signal model.templateMetric
 
 /-- Replica matched trace penalty is exactly `v/r`. -/
 theorem greedyBump_replica_trace_penalty

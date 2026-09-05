@@ -77,7 +77,6 @@ theorem wallFloor_mono {σ Y t : ℝ} (hY : 0 ≤ Y) (hYt : Y ≤ t) :
     Real.log_le_log (by linarith) (by linarith)
   linarith
 
-set_option maxHeartbeats 1000000 in
 /-- **The four ray estimates compose.**  The moving part of the propagated tail is bounded by four
 times the sum of the four terms' ray masses. -/
 theorem lintegral_sq_movingTail_region_le

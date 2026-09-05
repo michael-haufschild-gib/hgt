@@ -23,7 +23,6 @@ noncomputable section
 
 open scoped UnivMeroFieldInstances
 
-set_option maxHeartbeats 1000000 in
 /-- **The archimedean product of the finite Gamma-product boundary law is hypertranscendental.**
 Positive integer scales, arbitrary complex shifts, positive charges, and an arbitrary linear
 exponential gauge. -/

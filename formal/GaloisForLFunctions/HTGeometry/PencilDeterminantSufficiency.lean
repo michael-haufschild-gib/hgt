@@ -59,7 +59,6 @@ theorem exists_uniform_schattenNorm_bound {p : ℝ} (hp : 0 < p) {X : ℕ → H 
     _ ≤ K ^ (1 / p) := Real.rpow_le_rpow (Real.rpow_nonneg hnn _) hXK (by positivity)
     _ ≤ C := by rw [hCdef]; exact le_trans (le_max_left _ _) (le_max_right _ _)
 
-set_option maxHeartbeats 4000000 in
 /-- **The several-variable sufficiency half of `(DC)`.**  At every parameter the plain determinants
 of the finite-rank pencils converge to the exponential of the prescribed jet times the order-`p`
 regularized determinant of the given pencil. -/

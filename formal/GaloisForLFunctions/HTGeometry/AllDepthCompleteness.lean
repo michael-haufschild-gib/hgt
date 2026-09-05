@@ -37,7 +37,6 @@ attribute [local instance] ellipticGammaRationalBaseDomain
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **The converse half of all-depth pair-face completeness.**  A member of the all-depth
 mixed-constraint class whose pair-face signatures all vanish is differentially algebraic. -/

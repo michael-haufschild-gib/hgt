@@ -49,7 +49,6 @@ theorem routeTDampedAllHeightsSmoothBound_eq (A C C' M δ : ℝ) (P : Finset ℕ
   rw [routeTDampedAllHeightsSmoothBound, routeTMoebiusAllHeightsSmoothBound]
   ring
 
-set_option maxHeartbeats 1200000 in
 /-- **The Ramaré cofactor sum, uniformly over every frequency below the cutoff.** -/
 theorem exists_norm_sum_dampedTwist_le_rate :
     ∃ (A δ K : ℝ), 0 < δ ∧ 0 < K ∧ ∀ᶠ N : ℝ in atTop,

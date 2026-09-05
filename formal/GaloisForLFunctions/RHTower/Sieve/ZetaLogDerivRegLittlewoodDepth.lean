@@ -112,7 +112,6 @@ theorem exists_zeta_uniform_littlewood_depth_zero_free :
       linarith
     exact hbox s (by linarith) hx1.le (le_of_lt hsmall) hne
 
-set_option maxHeartbeats 1000000 in
 /-- **The regular part on the strip whose width grows with the height.** -/
 theorem exists_bound_zetaLogDerivReg_littlewood_depth :
     ∃ c C L₀ : ℝ, 0 < c ∧ 0 < C ∧ Real.exp 1 ≤ L₀ ∧

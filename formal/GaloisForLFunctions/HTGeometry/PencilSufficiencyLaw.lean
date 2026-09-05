@@ -153,7 +153,6 @@ theorem tendsto_schattenNorm_of_rpow_le {p : ℝ} (hp : 0 < p) {X : ℕ → H �
 
 /-! ## The several-variable sufficiency construction -/
 
-set_option maxHeartbeats 4000000 in
 /-- **The several-variable sufficiency construction.**  For every Schatten-`p` pencil and every jet
 of homogeneous defects below the order there are finite-rank pencils converging to it in the
 Schatten norm at every parameter whose power traces below the order are *exactly* the jet, at every

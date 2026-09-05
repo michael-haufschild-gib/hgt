@@ -92,7 +92,6 @@ theorem heathBrownSelected_raisedUpper_le_montgomeryWidth
       rw [Nat.cast_mul]
       rfl
 
-set_option maxHeartbeats 1000000 in
 /-- **Lower-edge fixed-polylog energy for the Montgomery height crossing.** -/
 theorem heathBrownSelectedRaisedEnergy_le_lower_montgomery_fixed_polylog
     {L X : ℕ} (label : HeathBrownSelectionLabel L X 60)
