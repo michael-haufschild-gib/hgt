@@ -124,7 +124,7 @@ theorem mvChainSnd_f (n : ℕ) :
 
 /-- In each degree it is the split short complex of coproducts. -/
 noncomputable def mvChainShortComplexIso (n : ℕ) :
-    mvShortComplex R (A.obj (op ⦋n⦌)) (B.obj (op ⦋n⦌))
+    coproductMVShortComplex R (A.obj (op ⦋n⦌)) (B.obj (op ⦋n⦌))
       ≅ (mvChainShortComplex X R A B).map (HomologicalComplex.eval C _ n) := by
   refine ShortComplex.isoMk (Iso.refl _)
     (HomologicalComplex.biprodXIso ((A : SSet.{w}).chainComplex R)

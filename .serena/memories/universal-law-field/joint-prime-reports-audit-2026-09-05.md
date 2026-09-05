@@ -1,0 +1,14 @@
+# Joint-prime reports audit
+RH and cofinal bounded C_N(r) returns remain OPEN. No new RH mechanism or theorem produced this turn.
+
+Rejected narrow attempt: stack one-prime-deleted window energies to constrain hypothetical Möbius escape. Existing `mobiusMertens_primeWindowReversalEnergyUniversality` says all those energies equal the same Mertens palindromic energy. Existing `mobiusLaplaceUnitTwistedMellinContinuationWall_iff` says analytic nowhere-zero multiplier preserves continuation wall. Existing `canonicalFinitePrimeApertureSecondCesaroSubpowerUpperBound_iff` says included-prime aperture covering all primes through integer cutoff is exactly the old upper-bound source predicate. These do NOT forbid arbitrary joint source dynamics or uniform coupled-limit theorems; those were not constructed.
+
+STATUS gained F651a; lossless line-wrap compression of F630/CANNOT-282/MUST-196/MUST-197 kept document at 4998 lines. Preserve concurrent additions: another agent added F658/CANNOT-294/MUST-204 and theta-completion retirement section during this turn. Some scope claims there are broader than this audit checked; not independently endorsed.
+
+Verification: `/tmp/hgt_joint_prime_source_audit.lean`, `lake env lean` from formal, session46271 EXIT0. Three named theorem signatures checked and #print axioms gave only propext/Classical.choice/Quot.sound. No new Lean leaf, no duplicate wrapper, no full build, no missing olean build needed. git diff --check EXIT0. All owned processes terminal.
+
+Relevant directly read Lean: MobiusLaplaceCriticalDilationPrimeEscapeLaw (full); MobiusMertensPrimeRemovalTentLaw 1-270; MobiusMertensPrimeWindowReversalEnergyUniversalityLaw (full); MobiusLaplaceCriterionFrontier 380-650 (Lambert exact law, prime divisibility table); MobiusEnergyAnalyticUnitWallUniversalityLaw full; MobiusLiouvilleSquareDilationWall full; MobiusFinitePrimeApertureSourceConsumption full; EulerSquarefreeWickCompleteResolutionCofinalRigidity full; MobiusBlockDefectEnergyInterpolation full. The critical prime escape theorem is FREQUENT small values on cofinite filter (not eventual); shifting y-log p goes to UV/exterior, not the desired y→+∞ boundary.
+
+Literature: Gonek arXiv0704.3448 abstract checked, finite Euler approximants and conditional RH comparisons already studied. Inoue arXiv1805.05015 search found explicit prime-deleted/finite Euler factors; full HTML fetch failed; do not claim full paper audit. No novelty claim based on absence in search. User requests radical architecture; age of a route or existence of AI is not proof of impossibility.
+
+Next work must obtain genuinely extra source restriction, not another equivalent report. No surviving concrete conjecture was justified by this audit. Goal remains active; do not mark complete or blocked. No computations; direct Lean corpus only (no research cards); one foreground Lean process; scratch checks; no umbrella builds; use corpus search.

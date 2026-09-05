@@ -30,6 +30,12 @@ C1 already has finite adelic bands, finite trace formula, positive trace-class n
 
 ## Current open core
 
+**Scoped RH retirement (2026-09-05):** Lean now excludes this literal global-mean carrier's exact
+all-moment completed prime--Gamma landing, using its nuclear positive root and a factor-two,
+multiplicity-exact ordered-moment bridge. See [audited source law and exclusion](../3-formalized/c1-global-mean-nuclear-root-firewall.md).
+The isolated first-trace question below remains undecided in Lean; resolving it can no longer make
+this carrier an RH producer. Wider class-space C1 is not retired.
+
 C1-GMP-TR.1--4e are closed in Lean. Prove or refute the remaining explicit scalar identity
 `rawFirstMoment - ∑u physicalNode(u) * occupation(u)^2 = thetaCuspNormalizedEvenMoment 1 / 2`;
 do not claim a completed Weil landing before this comparison closes.

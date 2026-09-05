@@ -111,14 +111,14 @@ theorem mvFst_comp_mvSnd : mvFst R S₁ S₂ ≫ mvSnd R S₁ S₂ = 0 := by
   simp [mvFst, mvSnd, biprod.lift_desc]
 
 /-- The Mayer--Vietoris short complex of coproducts. -/
-noncomputable def mvShortComplex : ShortComplex C :=
+noncomputable def coproductMVShortComplex : ShortComplex C :=
   ShortComplex.mk _ _ (mvFst_comp_mvSnd R S₁ S₂)
 
 omit [HasZeroObject C] in
-@[simp] theorem mvShortComplex_f : (mvShortComplex R S₁ S₂).f = mvFst R S₁ S₂ := rfl
+@[simp] theorem coproductMVShortComplex_f : (coproductMVShortComplex R S₁ S₂).f = mvFst R S₁ S₂ := rfl
 
 omit [HasZeroObject C] in
-@[simp] theorem mvShortComplex_g : (mvShortComplex R S₁ S₂).g = mvSnd R S₁ S₂ := rfl
+@[simp] theorem coproductMVShortComplex_g : (coproductMVShortComplex R S₁ S₂).g = mvSnd R S₁ S₂ := rfl
 
 /-- The retraction: project to the second summand and keep only the basis elements of the
 intersection. -/
@@ -189,7 +189,7 @@ theorem mv_splitting_id :
         ι_inclCop_assoc]
 
 /-- **The Mayer--Vietoris sequence of coproducts is split.** -/
-noncomputable def mvSplitting : (mvShortComplex R S₁ S₂).Splitting where
+noncomputable def mvSplitting : (coproductMVShortComplex R S₁ S₂).Splitting where
   r := mvRetraction R S₁ S₂
   s := mvSection R S₁ S₂
   f_r := mvFst_comp_mvRetraction R S₁ S₂
@@ -197,7 +197,7 @@ noncomputable def mvSplitting : (mvShortComplex R S₁ S₂).Splitting where
   id := mv_splitting_id R S₁ S₂
 
 /-- **And therefore short exact.** -/
-theorem mvShortExact : (mvShortComplex R S₁ S₂).ShortExact :=
+theorem mvShortExact : (coproductMVShortComplex R S₁ S₂).ShortExact :=
   (mvSplitting R S₁ S₂ hcover).shortExact
 
 end

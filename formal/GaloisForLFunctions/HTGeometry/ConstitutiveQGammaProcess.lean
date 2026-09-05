@@ -969,23 +969,23 @@ theorem IsCompactOperator.congr_fun' {f g : QGammaSpace → QGammaSpace}
   rwa [hfg] at hf
 
 /-- The `n`-th coordinate injection `ℂ → ℓ²`, as a bounded operator. -/
-def lpSingleCLM (n : ℕ) : ℂ →L[ℂ] QGammaSpace :=
+def qGammaSingleCLM (n : ℕ) : ℂ →L[ℂ] QGammaSpace :=
   LinearMap.mkContinuous (lp.lsingle (E := fun _ : ℕ => ℂ) (𝕜 := ℂ) 2 n) 1 (fun a => by
     rw [one_mul]
     show ‖lp.single (E := fun _ : ℕ => ℂ) 2 n a‖ ≤ ‖a‖
     rw [lp.norm_single (by norm_num)])
 
-@[simp] theorem lpSingleCLM_apply (n : ℕ) (a : ℂ) : lpSingleCLM n a = lp.single (E := fun _ : ℕ => ℂ) 2 n a := rfl
+@[simp] theorem qGammaSingleCLM_apply (n : ℕ) (a : ℂ) : qGammaSingleCLM n a = lp.single (E := fun _ : ℕ => ℂ) 2 n a := rfl
 
-theorem isCompactOperator_lpSingleCLM (n : ℕ) : IsCompactOperator (lpSingleCLM n) :=
+theorem isCompactOperator_qGammaSingleCLM (n : ℕ) : IsCompactOperator (qGammaSingleCLM n) :=
   isCompactOperator_of_locallyCompactSpace_rng _
 
 /-- Every rank-one coordinate operator on `ℓ²` is compact: it factors through `ℂ`. -/
 theorem isCompactOperator_rankOne (n : ℕ) (c : ℂ) :
     IsCompactOperator (fun f : QGammaSpace => lp.single (E := fun _ : ℕ => ℂ) 2 n (c * (f : ℕ → ℂ) n)) := by
-  have hc : IsCompactOperator ((lpSingleCLM n) ∘
+  have hc : IsCompactOperator ((qGammaSingleCLM n) ∘
       (c • (lp.evalCLM ℂ (fun _ : ℕ => ℂ) 2 n))) :=
-    (isCompactOperator_lpSingleCLM n).comp_clm _
+    (isCompactOperator_qGammaSingleCLM n).comp_clm _
   refine IsCompactOperator.congr_fun' hc fun f => ?_
   rfl
 

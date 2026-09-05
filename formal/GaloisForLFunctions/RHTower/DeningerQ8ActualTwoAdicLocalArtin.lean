@@ -23,34 +23,34 @@ local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualTwoAdicLocalArtinLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-local instance : CharZero K3 :=
+local instance deningerQ8ActualTwoAdicLocalArtinLocalInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
 
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst7 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst8 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst9 : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst10 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
-noncomputable local instance : IsGalois K2 K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst11 : IsGalois K2 K3 :=
   IsGalois.tower_top_of_isGalois ℚ K2 K3
-noncomputable local instance : IsCyclic Gal(K3/K2) := by
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst12 : IsCyclic Gal(K3/K2) := by
   apply isCyclic_of_prime_card (p := 2)
   rw [IsGalois.card_aut_eq_finrank,
     deningerQ8RootNumberNegOneTopField_finrank_over_second]
-noncomputable local instance : IsAbelianGalois K2 K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicLocalArtinLocalInst13 : IsAbelianGalois K2 K3 :=
   IsAbelianGalois.of_isCyclic K2 K3
 
 /-- The literal completed dyadic unit is in the actual finite-place tensor-norm

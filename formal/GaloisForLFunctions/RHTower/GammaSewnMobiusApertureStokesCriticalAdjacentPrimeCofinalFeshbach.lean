@@ -437,7 +437,7 @@ theorem gammaSewnCriticalAdjacentPrime_DenominatorTerm_pos (z : ℕ × ℕ) :
   exact mul_pos (gammaSewnCriticalAdjacentPrime_Partition_pos z.1 z.2)
     (gammaSewnCriticalAdjacentPrime_Total_pos z.1 z.2)
 
-private theorem criticalAdjacent_denominatorTerm_le (z : ℕ × ℕ) :
+theorem criticalAdjacent_denominatorTerm_le (z : ℕ × ℕ) :
     gammaSewnCriticalAdjacentPrime_DenominatorTerm z ≤
       (368640 * gammaSewnCriticalAdjacentPrime_aperture ^ 2 /
           gammaSewnCriticalAdjacentPrime_gap ^ 4) *

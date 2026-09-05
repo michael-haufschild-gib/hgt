@@ -52,7 +52,7 @@ theorem jetSubstitution_jetNabla (R : RatFunc C) (hR : substitutionDeriv R ≠ 0
 /-! ## The Schwarzian coordinate -/
 
 /-- The Schwarzian coordinate. -/
-def schwarzianJet : JetField C Unit :=
+private def schwarzianJet : JetField C Unit :=
   (jetRatio 3 : JetField C Unit) - (3 / 2 : JetField C Unit) * (jetRatio 2 : JetField C Unit) ^ 2
 
 /-- The Schwarzian of the map, as an order-zero element. -/

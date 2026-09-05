@@ -54,7 +54,7 @@ theorem exists_greedy_parts (d : ℕ) : ∀ (a b : ℕ), b ≤ d * a →
     · rw [Fin.sum_cons, hsum']
       omega
 
-theorem prod_monomial_one {σ ι : Type*} (s : Finset ι) (g : ι → (σ →₀ ℕ)) :
+private theorem prod_monomial_one {σ ι : Type*} (s : Finset ι) (g : ι → (σ →₀ ℕ)) :
     ∏ i ∈ s, MvPolynomial.monomial (g i) (1 : K) = MvPolynomial.monomial (∑ i ∈ s, g i) 1 := by
   classical
   induction s using Finset.induction with

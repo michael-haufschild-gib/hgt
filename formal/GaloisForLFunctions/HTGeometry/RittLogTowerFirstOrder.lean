@@ -681,10 +681,14 @@ theorem towerRest1_of_succ (Fr : RittFrame K L) (b : K) {j i : Fin n}
     Fr.towerRest1 b n j = C (Fr.logCoeff (j : ℕ) (i : ℕ)) * X i := by
   classical
   rw [towerRest1, if_neg (by omega), add_zero]
-  refine Finset.sum_eq_single i (fun i' _ hne => ?_) (fun hc => absurd (Finset.mem_univ i) hc)
-  rw [if_neg]
-  intro hc
-  exact hne (Fin.ext (by omega))
+  have hsingle : ∀ i' ∈ (Finset.univ : Finset (Fin n)), i' ≠ i →
+      (if (i' : ℕ) + 1 = (j : ℕ) then C (Fr.logCoeff (j : ℕ) (i' : ℕ)) * X i'
+        else 0) = (0 : MvPolynomial (Fin n) K) := by
+    intro i' _ hne
+    rw [if_neg]
+    intro hc
+    exact hne (Fin.ext (by omega))
+  rw [Finset.sum_eq_single_of_mem i (Finset.mem_univ i) hsingle, if_pos hij]
 
 end RittFrame
 

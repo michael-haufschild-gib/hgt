@@ -107,7 +107,7 @@ theorem realCombJetCLM_apply (m D : ℕ) (Gp Kp : Fin D → Polynomial ℂ) (ν 
   rw [eval_iterate_derivative_realCombPoly]
   rfl
 
-theorem contDiff_of_entire {f : ℂ → ℂ} (hf : Differentiable ℂ f) : ContDiff ℝ ⊤ f := by
+private theorem contDiff_of_entire {f : ℂ → ℂ} (hf : Differentiable ℂ f) : ContDiff ℝ ⊤ f := by
   have hC : ContDiff ℂ ⊤ f := by
     rw [contDiff_iff_contDiffAt]
     intro x

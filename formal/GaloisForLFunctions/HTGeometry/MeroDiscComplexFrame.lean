@@ -29,7 +29,7 @@ theorem meroComplexAlgebra_algebraMap (U : Set ℂ) [IsDomain (analyticSubring U
     algebraMap ℂ (meroField U) a
       = algebraMap (analyticSubring U) (meroField U) (constToAnalytic U a) := rfl
 
-theorem analyticSubringDeriv_constToAnalytic {U : Set ℂ} (hUo : IsOpen U) (a : ℂ) :
+private theorem analyticSubringDeriv_constToAnalytic {U : Set ℂ} (hUo : IsOpen U) (a : ℂ) :
     analyticSubringDeriv hUo (constToAnalytic U a) = 0 := by
   apply Subtype.ext
   change analyticGermDeriv hUo ((constToAnalytic U a : analyticSubring U) : Germ (𝓟 U) ℂ) = 0
@@ -67,20 +67,20 @@ theorem scaleMero_algebraMap_complex {U : Set ℂ} {mu : ℂ} (hmu : mu ≠ 0)
     Bottcher.precompMeroMap_algebraMap, Bottcher.precompAnalyticMap_constToAnalytic]
 
 /-- The coordinate germ of a domain. -/
-def coordMero (U : Set ℂ) [IsDomain (analyticSubring U)] : meroField U :=
+def discCoordMero (U : Set ℂ) [IsDomain (analyticSubring U)] : meroField U :=
   analyticMeroElement (fun w : ℂ => w) (fun _ _ => analyticAt_id)
 
 /-- **The scaling acts on the coordinate by the scaling constant.** -/
-theorem scaleMero_coordMero {U : Set ℂ} {mu : ℂ} (hmu : mu ≠ 0)
+theorem scaleMero_discCoordMero {U : Set ℂ} {mu : ℂ} (hmu : mu ≠ 0)
     (hmaps : Set.MapsTo (scaleMap mu) U U)
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) :
     letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
     letI := meroComplexAlgebra U
-    scaleMero hmu hmaps hUo hUc hUne (coordMero U)
-      = algebraMap ℂ (meroField U) mu * coordMero U := by
+    scaleMero hmu hmaps hUo hUc hUne (discCoordMero U)
+      = algebraMap ℂ (meroField U) mu * discCoordMero U := by
   letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
   letI := meroComplexAlgebra U
-  rw [coordMero, analyticMeroElement, scaleMero, Bottcher.precompMeroMap_algebraMap,
+  rw [discCoordMero, analyticMeroElement, scaleMero, Bottcher.precompMeroMap_algebraMap,
     meroComplexAlgebra_algebraMap, ← map_mul]
   congr 1
 

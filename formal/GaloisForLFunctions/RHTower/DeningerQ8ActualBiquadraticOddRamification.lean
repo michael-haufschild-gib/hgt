@@ -100,19 +100,19 @@ theorem prime_dvd_numberField_discr_of_integral_square
 local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualBiquadraticOddRamificationLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
 
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualBiquadraticOddRamificationLocalInst2 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
 
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualBiquadraticOddRamificationLocalInst3 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
 
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualBiquadraticOddRamificationLocalInst4 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
 
-noncomputable local instance : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualBiquadraticOddRamificationLocalInst5 : NumberField K2 := NumberField.mk
 
 /-- Literal integral `√5` in the actual maximal abelian subfield. -/
 noncomputable def q8BiquadFiveRoot : 𝓞 K2 :=

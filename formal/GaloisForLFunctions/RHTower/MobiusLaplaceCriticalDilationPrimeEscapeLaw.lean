@@ -4,9 +4,13 @@ import GaloisForLFunctions.RHTower.MobiusLaplaceCriticalDilationNoGo
 # Critical Möbius renewal prime escape
 
 Bare critical renewal weights are nonsummable already on prime dilations, while the actual
-Möbius--Laplace renewal series is absolutely summable. Consequently transform-value cancellation
-cannot stay uniformly away from zero: at every log coordinate, the critical profile falls below
-every positive threshold along cofinitely many prime dilations.
+Möbius--Laplace renewal series is absolutely summable. Consequently the transform values
+cannot stay uniformly away from zero: at every fixed log coordinate, the critical profile falls
+below every positive threshold for infinitely many prime dilations. The theorem uses `Frequently`,
+not an eventual/cofinite conclusion. The observations `y-log p` approach the left end of the
+profile (Laplace scale `p*exp(-y)` tends to infinity), not the critical end `y` tending to infinity.
+`MobiusCriticalProfileReturnSeparation` identifies the stronger left-tail damping law separately;
+neither assertion supplies bounded integer-prefix energy returns.
 -/
 
 open Complex Filter

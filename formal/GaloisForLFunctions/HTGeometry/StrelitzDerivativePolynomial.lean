@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.StrelitzMaximumModulusSet
+import GaloisForLFunctions.HTGeometry.StrelitzHeatLeadingDecay
 import GaloisForLFunctions.HTGeometry.LastVariableJetLift
 
 /-!

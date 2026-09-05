@@ -26,23 +26,23 @@ local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 local notation "S" => q8BiquadQuadraticSourceField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-local instance : CharZero K3 :=
+local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional S K2 := by infer_instance
-noncomputable local instance : NumberField S := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst6 : FiniteDimensional S K2 := by infer_instance
+noncomputable local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst7 : NumberField S := NumberField.mk
 
-noncomputable local instance : Algebra.IsQuadraticExtension ℚ S where
+noncomputable local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst8 : Algebra.IsQuadraticExtension ℚ S where
   finrank_eq_two' := q8BiquadQuadraticSourceField_finrank
 
-noncomputable local instance : IsGalois ℚ S := by
+noncomputable local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst9 : IsGalois ℚ S := by
   rw [isGalois_iff]
   constructor <;> infer_instance
 
@@ -52,7 +52,7 @@ noncomputable local instance q8BaseIsGaloisGroup :
     IsGaloisGroup Gal(S/ℚ) ℚ S := IsGaloisGroup.of_isGalois ℚ S
 noncomputable local instance q8BaseIntegralAction :
     MulSemiringAction Gal(S/ℚ) (𝓞 S) := inferInstance
-local instance : Fact (Nat.Prime 2) := ⟨by norm_num⟩
+local instance deningerQ8ActualQuadraticSourceDyadicCompletionLocalInst10 : Fact (Nat.Prime 2) := ⟨by norm_num⟩
 
 /-- A dyadic source prime has trivial ideal decomposition group over `ℚ`. -/
 theorem q8QuadraticSource_dyadic_idealStabilizer_eq_bot

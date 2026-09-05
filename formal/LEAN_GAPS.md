@@ -12,8 +12,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | Lines | File |
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
-| 14917 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 13144 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 15465 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 13581 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
@@ -28,7 +28,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 4251 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/StructuredCircuit.lean` |
 | 3980 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3871 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean` |
-| 3726 | `formal/GaloisForLFunctions/PNTPlus/MediumPNT.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3711 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3689 | `formal/GaloisForLFunctions/PNTPlus/Wiener.lean` |
@@ -36,6 +35,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3594 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3532 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
+| 3337 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean` |
 
 ## Gap Markers
 

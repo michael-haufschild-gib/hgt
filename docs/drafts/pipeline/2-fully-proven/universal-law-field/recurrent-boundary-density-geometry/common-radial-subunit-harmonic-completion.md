@@ -278,3 +278,12 @@ finite covariance to a horizon on another carrier. `ULF-TRDS-001` is updated to 
 - `[FALSIFIER]` If the functional-equation completion does not factor through the common radial
   covariance by a contraction, or its relative harmonic symbol is not positive, this source
   completion class is not physical.
+
+## 10. Note (2026-09-05): the selection statement of §8 is refuted on this carrier
+
+The anomaly-subtracted theta/Xi divisor side on `H_rad` is the Hankel form `pole − S_base`
+(rate measure `du − ν_E`), which is indefinite: Lean
+`RHTower.poleHankelEnergy_radialSpike_lt_re_inner_baseNuclearSource`
+(`RadialCarrierPoleHankelEulerSourceIndefinite`). No source-forced contraction `V` realizes it as
+`W_d V S_base V* W_d*`. Theorems CRSHC-A/B/C stand as bridge structures. See ULF-TRDS-001 §9
+(`5-failed`).

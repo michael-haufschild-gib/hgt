@@ -188,3 +188,86 @@ Xi copies and whose failure is independently falsifiable before divisor speciali
 No Lean is written until the source construction is paper-closed. Existing Lean modules certify
 the inputs named above. ULF-RPBDT-001 is the next formalization target only after paper audit under
 the project's closed-proof rules.
+
+## 9. Kill section (2026-09-05): the carrier explicit-formula reading refutes the selection
+
+**Verdict: FALSE on the common radial carrier** (falsifiers 1 and 3 of §7 triggered; retired to
+`5-failed`).
+
+### 9.1 Attack-programme step 1, executed: every theta/Xi-side object on the carrier is a Hankel form
+
+On `H_rad = L²((0,∞), dL)` the lane's only frame is the real-rate conormal family
+`φ_u(L) = L e^{-uL}`, `u > 0`, with `⟨φ_u, φ_v⟩ = 2/(u+v)³`. Every operator built from real rates is
+a *Hankel* form `H_ν = ∫ |φ_u⟩⟨φ_u| dν(u)` with kernel `L₁L₂ k(L₁+L₂)`, `k = Laplace(ν)`, and
+quadratic form `⟨h, H_ν h⟩ = ∫ |F_h(u)|² dν(u)`, where `F_h(u) = ∫ L e^{-uL} h(L) dL` is the
+real-rate report. Positivity of `H_ν` on the conormal span is complete monotonicity of `k`, i.e.
+`ν ≥ 0` (Bernstein–Widder, uniqueness of the Laplace representation).
+
+Rate measures forced by the theta functional equation (prime-density explicit formula,
+`ψ'(x) = 1 − ∑_ρ x^{ρ−1} − 1/(x(x²−1))`, `x = e^u`):
+
+```text
+source      S_base :  ν_E  = ∑_n Λ(n)/n · δ_{log n}      k_E(x) = −ζ'/ζ(1+x)       [Lean]
+pole        Main   :  du                                  k(x)   = 1/x   (Carleman)
+trivial     Triv   :  du/(e^u(e^{2u}−1)) = ∑_{k≥1} e^{-(2k+1)u} du
+zeros       Zero   :  ∑_ρ e^{(ρ−1)u} du   (conjugate-paired; ~ −1/(2u) at u → 0)
+identity    Zero + Triv = Main − S_base,   i.e.   ∑_ρ e^{(ρ−1)u} + a(u) = 1 − ν_E.
+```
+
+The polar–Gamma term `½ψ((1+x)/2) − ½log π` has **no finite radial form of its own**: it grows like
+`½log x`, is not a Laplace transform of any locally finite rate measure, and its would-be density
+`−1/(2 sinh u)` is non-integrable at `u = 0`; only the sum with the zero density is finite. So the
+"phase-resolved counterterm field" of step 1 does not exist as an autonomous object; the
+anomaly-subtracted divisor side is exactly `Main − S_base` (`Zero + Triv`), whose rate measure is the
+signed measure `du − ν_E`.
+
+### 9.2 Attack-programme step 2, executed: the divisor side is indefinite — no source-forced contraction
+
+`Main − S_base` is not positive. Lean (`RadialCarrierPoleHankelEulerSourceIndefinite`):
+
+```text
+poleHankelEnergy_radialSpike_lt_re_inner_baseNuclearSource :
+  ∫_0^∞ |F_h(u)|² du  <  Re ⟨h, S_base h⟩          for h = radialSpikeLogTwo,
+```
+
+with `h(L) = e^{-(log 2)L} · p(L)` an explicit polynomial–exponential whose report is the Landau
+kernel `F_h(u) = (4u log 2)^n/(u + log 2)^{2n+1}`, `n = 6144`
+(`radialRateReport_radialSpike`, `radialRateReport_radialSpike_self`,
+`poleHankelEnergy_radialSpike_le`, `radialSpike_budget_lt`,
+`norm_sq_inner_baseField_le_re_inner_baseNuclearSource`). The Carleman energy is below the single
+`p = 2` atom `(log 2/2)|F_h(log 2)|²`. Mechanism: point evaluation of a half-line Laplace transform at
+an interior rate is unbounded relative to the ray `L²` norm (the Mellin symbol `π/cosh πτ` of the
+Carleman operator against the Gamma envelope), while `S_base` is a positive sum of exactly such
+evaluations. Hence `pole − source` is unbounded below on the carrier and, a fortiori, on finitely
+supported vectors of the prime frame `W_d` (Müntz density of `{(u+λ_p)^{-3}}`).
+
+Consequently no member of the source-factored class `C_{d,V} = W_d V S_base V* W_d*`
+(positive, `Tr < B_base < 1`) can be the grade-zero covariance of the anomaly-subtracted theta/Xi
+completion, and no strict-right projection can be extracted from a positive remainder that does not
+exist. `(TRDS.2)`, `(TRDS.3)`, `(TRDS.6)` fail together. Including or excluding the pole changes
+nothing: without it the divisor side is `−S_base ≤ 0`.
+
+Also Lean: the source's Hankel kernel is the log-derivative,
+`∑_pe f_pe(L₁) f_pe(L₂) = −L₁L₂ · (ζ'/ζ)(1+L₁+L₂)` for `L₁, L₂ > 0`
+(`tsum_routePPrimitiveBurnolWindowFeature_mul_eq_neg_logDeriv_zeta`,
+`routePPrimitiveBurnolWindowFeature_mul_eq_term`).
+
+### 9.3 Structural law behind the kill: the Hankel–Toeplitz dichotomy of the radial carrier
+
+Real-rate (Hankel) forms see only the explicit-formula rate measure. Its Jordan decomposition
+`(du, ν_E)` — positive Lebesgue pole against negative Euler atoms — does not depend on where the
+zeros are; a strict-right zero only changes the *decay rate* of the absolutely continuous component
+`e^{(ρ−1)u}`, never its sign structure, and never produces a point mass (a rank-one conormal
+projection). Real-rate Hankel positivity is therefore RH-blind. The positivity that *is* RH is
+Weil's: Toeplitz in the ordinate (`Bochner` positivity of `∑_γ e^{iγu}`), i.e. complex rates. On this
+carrier there is no third option: Hankel = RH-blind, Toeplitz = RH-equivalent receiver. The
+"aperture-covariance breaking" demanded by `XiWardCubicApertureIntertwiningRateNoGo` is exactly the
+Hankel (not Toeplitz) structure, and it is blind.
+
+### 9.4 Pivot per §7
+
+"Seek a Krein index density rather than repair positivity by absolute values." The canonical signed
+structure is now explicit: `Zero + Triv = Main − S_base` with negative part `ν_E` (atomic, prime
+side) and positive part `du` (pole). A Krein-type producer would have to read the zero density's
+*rate of decay* (`e^{-(1−β)u}` versus `e^{-u/2}`) from `du − ν_E` — which is the prime number theorem
+error term, i.e. RH itself. No successor card is opened on this carrier.

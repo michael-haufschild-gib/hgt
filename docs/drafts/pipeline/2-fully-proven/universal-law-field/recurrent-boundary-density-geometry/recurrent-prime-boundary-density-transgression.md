@@ -311,3 +311,10 @@ Then `(RPBDT.18)--(RPBDT.19)` close the contradiction. The separate live card
   subtraction, if the relative remainder is not positive, or if strict-right incidence is not
   its grade-zero projection.
 
+
+## 11. Note (2026-09-05): the divisor-facing steps of §9 are closed negatively on the radial carrier
+
+`(RPBDT.21)` asks for a positive `X` derived from theta self-duality with `Ex(X) ≤ B_base`. On the
+common radial carrier the theta-forced divisor side is `pole − S_base`, an indefinite Hankel form
+(Lean `RHTower.poleHankelEnergy_radialSpike_lt_re_inner_baseNuclearSource`); its rate measure
+`du − ν_E` has RH-independent sign structure. ULF-TRDS-001 is retired (`5-failed`, §9).

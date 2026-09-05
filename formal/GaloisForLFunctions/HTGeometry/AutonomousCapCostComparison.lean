@@ -49,7 +49,7 @@ theorem jetElem_mem_coordField_of_poly {u : ℂ → ℂ} (hu : Differentiable �
     have hu' : u = fun z : ℂ => p.eval z := funext hp
     rw [hu', iteratedDeriv_polynomial]
   have hjet : jetElem hu k = Polynomial.aeval coordElem (Polynomial.derivative^[k] p) := by
-    rw [jetElem, coordElem, aeval_analyticMeroElement analyticOnNhd_coord]
+    rw [jetElem, coordElem, aeval_analyticMeroElement_univ analyticOnNhd_coord]
     exact analyticMeroElement_congr _ _ hfun
   rw [hjet]
   have hmem : Polynomial.aeval coordElem (Polynomial.derivative^[k] p)

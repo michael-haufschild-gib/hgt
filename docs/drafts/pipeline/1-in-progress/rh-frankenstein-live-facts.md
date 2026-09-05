@@ -4,7 +4,7 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 
 ## Status
 
-- Corpus has no unconditional `RiemannHypothesis` theorem.
+- No audited unconditional `RiemannHypothesis` proof chain.
 - Primitive gates: `ORD`, `COF`, `LAND`, `COMP`, `ORIENT`, `DYN`.
 - New work counts only if one source law discharges multiple shared gates.
 
@@ -19,15 +19,9 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 
 ## Route-E exact seam
 
-- Finite collision recurrence and divisor square lift are coefficient-faithful.
-- `HeathBrownSparseMeanValueSelfBound` closes height/length return and scalar absorption.
-- `HeathBrownSparseMeanValueSqrtScale` selects exact first-branch integer scale.
-- `HeathBrownSparseMeanValueFirstBranch` closes floor/divisor/rpow artifacts.
-- `integral_Icc_normSq_heathBrown_fullUnit_le_firstBranchRegime` absorbs `T√N` under `T√N≤N²`.
-- `integral_Icc_normSq_heathBrown_fullUnit_le_firstBranchPublishedRegime` supplies that condition from `T^(2/3)≤N`.
-- `integral_Icc_normSq_heathBrown_factors_le_twoStepSelfBound` closes coefficient-faithful second recurrence/square-lift iteration at `N0²`.
-- Remaining: two-step integer parameter/exponent algebra, Theorem 4(iii) union, then Proposition-2.2 routing.
-- This is literature closure toward `ORD+COF`, not yet RH or a cross-route producer.
+- Full Heath--Brown sparse mean value, both recurrence scales, Proposition 2.2, and constructed Lemma-3.5 ranges are closed; do not rebuild.
+- Kloosterman complete-period, Parseval, time-transform, and pair-local layers are closed. Surviving quantity: source-scale fourth moment of the response-mass defect.
+- Moving Ramaré front still needs collective half-power control of activation-seam polarization, seam norm, and normalized incidence-energy variation.
 
 ## Verified shared topology-2 carrier
 
@@ -60,11 +54,16 @@ Current state only. Exact identifiers require `formal_tools.py research` confirm
 - Compact recurrence descent and integrable-potential descent are already equivalent to critical-line placement.
 - No corpus theorem amplifies one off-line zero into positive zero density.
 
+## Admission source facts
+
+- `XiShiftedCanonicalAdmissionGaussBulkEffectivityCoercivity`: literal adaptive bulk pays squared log-norm rate with strict low-edge reserve; this is not an upper budget for that bulk.
+- `XiShiftedCanonicalAdmissionCofinalScheduleNoGo`: actual positive mass--degree schedules exist above every lower escape floor. Missing control is an upper mass rate, not schedule existence or fixed-degree recession.
+
 ## Audit rule
 
 - Multiword research queries are OR-ranked and cannot establish intersections.
 - Search exact identifiers first; verify intersections with references, imports, and theorem bodies before conjecturing.
 
-## Current target
+## Open verification debt
 
-Close Heath--Brown regime/parameter algebra and Theorem 4(iii); then test Route-E supply against shared `ORD+COF` endpoint.
+Literal theta D1 box certificate is positive; actual-orbit admission, clean source jets 0–8, and full determinant normal form pass Lean in scratch. Box-substitution identity remains unverified. Closing it would prove a finite source sign, not cofinal incidence or RH. No new multi-gate source law established.

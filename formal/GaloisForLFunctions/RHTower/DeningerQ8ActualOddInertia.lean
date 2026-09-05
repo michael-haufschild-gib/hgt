@@ -27,32 +27,32 @@ local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 local notation "M" => deningerQ8ActualBiquadraticField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualOddInertiaLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-local instance : CharZero K3 :=
+local instance deningerQ8ActualOddInertiaLocalInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
 
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst7 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : FiniteDimensional ℚ M :=
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst8 : FiniteDimensional ℚ M :=
   LinearEquiv.finiteDimensional
     (IntermediateField.equivMap (⊤ : IntermediateField ℚ K2)
       (IsScalarTower.toAlgHom ℚ K2 K3)).toLinearEquiv
 
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : NumberField M := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst9 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst10 : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst11 : NumberField M := NumberField.mk
+noncomputable local instance deningerQ8ActualOddInertiaLocalInst12 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
 
 /-- Transport an algebraic integer of the literal biquadratic presentation into the actual

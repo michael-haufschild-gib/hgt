@@ -22,13 +22,13 @@ noncomputable section
 
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 
-local instance : CharZero K2 :=
+local instance deningerQ8FroehlichTheoremSixApplicabilityLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
 
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8FroehlichTheoremSixApplicabilityLocalInst2 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
 
-noncomputable local instance : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8FroehlichTheoremSixApplicabilityLocalInst3 : NumberField K2 := NumberField.mk
 
 /-- The literal SST quaternion field satisfies every arithmetic hypothesis
 of Fröhlich Theorem 6(i), and its finite formula side is `-1`. -/

@@ -37,9 +37,9 @@ namespace RHTower
 
 noncomputable section
 
-noncomputable local instance : Encodable XiZeroCopy := Encodable.ofCountable _
+noncomputable local instance primeArchThermalKrylovEquivalenceLocalInst1 : Encodable XiZeroCopy := Encodable.ofCountable _
 
-noncomputable local instance : Infinite XiDivisorSupport :=
+noncomputable local instance primeArchThermalKrylovEquivalenceLocalInst2 : Infinite XiDivisorSupport :=
   Set.infinite_coe_iff.mpr xiDivisorSupport_infinite
 
 private noncomputable def xiFirstZeroCopyForThermal
@@ -53,11 +53,11 @@ private theorem xiFirstZeroCopyForThermal_injective :
   intro rho sigma h
   exact congrArg Sigma.fst h
 
-noncomputable local instance : Infinite XiZeroCopy :=
+noncomputable local instance primeArchThermalKrylovEquivalenceLocalInst3 : Infinite XiZeroCopy :=
   Infinite.of_injective xiFirstZeroCopyForThermal
     xiFirstZeroCopyForThermal_injective
 
-noncomputable local instance : Denumerable XiZeroCopy :=
+noncomputable local instance primeArchThermalKrylovEquivalenceLocalInst4 : Denumerable XiZeroCopy :=
   Denumerable.ofEncodableOfInfinite XiZeroCopy
 
 /-- The real reciprocal-square coordinate used as both mass and node in the thermal truncation. -/

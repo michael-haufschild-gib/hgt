@@ -148,7 +148,7 @@ theorem analyticMeroElement_eulerComp {f g : ℂ → ℂ} (hf : Differentiable �
     analyticMeroElement_mul hgan hderivan
   have hpoly : analyticMeroElement (fun z : ℂ => (C k).eval (f (g z))) hpolyan
       = Polynomial.aeval (analyticMeroElement (fun w : ℂ => f (g w)) hcompan) (C k) :=
-    (aeval_analyticMeroElement hcompan (C k)).symm
+    (aeval_analyticMeroElement_univ hcompan (C k)).symm
   rw [hh, hG, ha, hmul, hpow, hbase, hpoly]
 
 /-! ### The substituted relation forces a polynomial -/

@@ -139,7 +139,7 @@ theorem multiIndexJetEvalCLM_poincareTermEntire_eq_zero_of_seed_power
     x hh a ha
 
 /-- Pointwise Poincare sum over the complete translation lattice. -/
-def poincareSeries {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
+def latticePoincareSeries {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
     (ψ : AutomorphicFactor d Γ) (seed : MultivariateEntire d)
     (x : Fin d → ℂ) : ℂ :=
   ∑' γ, poincareTerm ψ seed γ x
@@ -161,12 +161,12 @@ theorem poincareTerm_shift {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
   simp [add_comm, add_left_comm]
 
 /-- Reindexing the complete sum gives the fixed-factor automorphy law. -/
-theorem poincareSeries_shift {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
+theorem latticePoincareSeries_shift {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
     (ψ : AutomorphicFactor d Γ) (seed : MultivariateEntire d)
     (δ : Γ) (x : Fin d → ℂ) :
-    poincareSeries ψ seed (x + δ.1) =
-      (ψ.factor δ).1 x * poincareSeries ψ seed x := by
-  simp_rw [poincareSeries, poincareTerm_shift ψ seed]
+    latticePoincareSeries ψ seed (x + δ.1) =
+      (ψ.factor δ).1 x * latticePoincareSeries ψ seed x := by
+  simp_rw [latticePoincareSeries, poincareTerm_shift ψ seed]
   rw [tsum_mul_left]
   exact congrArg ((ψ.factor δ).1 x * ·)
     ((Equiv.addRight δ).tsum_eq (fun γ => poincareTerm ψ seed γ x))
@@ -177,7 +177,7 @@ theorem continuous_poincareSeries_of_summableLocallyUniformly
     (ψ : AutomorphicFactor d Γ) (seed : MultivariateEntire d)
     (hnormal : SummableLocallyUniformlyOn
       (fun γ => poincareTerm ψ seed γ) Set.univ) :
-    Continuous (poincareSeries ψ seed) := by
+    Continuous (latticePoincareSeries ψ seed) := by
   rw [← continuousOn_univ]
   apply hnormal.hasSumLocallyUniformlyOn.continuousOn
   exact (Filter.Eventually.of_forall fun S =>
@@ -190,7 +190,7 @@ theorem lineEntire_poincareSeries_of_summableLocallyUniformly
     (ψ : AutomorphicFactor d Γ) (seed : MultivariateEntire d)
     (hnormal : SummableLocallyUniformlyOn
       (fun γ => poincareTerm ψ seed γ) Set.univ) :
-    LineEntire ⟨poincareSeries ψ seed,
+    LineEntire ⟨latticePoincareSeries ψ seed,
       continuous_poincareSeries_of_summableLocallyUniformly ψ seed hnormal⟩ := by
   intro x v
   let line := affineComplexLine x v
@@ -204,7 +204,7 @@ theorem lineEntire_poincareSeries_of_summableLocallyUniformly
         (Differentiable.fun_sum fun γ _ =>
           lineEntire_poincareTerm ψ seed γ x v).differentiableOn
     · exact isOpen_univ
-  simpa [poincareSeries, line, affineComplexLine] using
+  simpa [latticePoincareSeries, line, affineComplexLine] using
     (differentiableOn_univ.mp hd)
 
 /-- A locally normally convergent Poincare series as a line-entire source. -/
@@ -213,7 +213,7 @@ def poincareSeriesEntire {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
     (hnormal : SummableLocallyUniformlyOn
       (fun γ => poincareTerm ψ seed γ) Set.univ) :
     MultivariateEntire d :=
-  ⟨⟨poincareSeries ψ seed,
+  ⟨⟨latticePoincareSeries ψ seed,
       continuous_poincareSeries_of_summableLocallyUniformly ψ seed hnormal⟩,
     lineEntire_poincareSeries_of_summableLocallyUniformly ψ seed hnormal⟩
 
@@ -241,7 +241,7 @@ theorem hasSum_poincareTermEntire_of_summableLocallyUniformly
   · ext s x
     simp [poincareTermEntire]
   · ext x
-    simp [poincareSeriesEntire, poincareSeries]
+    simp [poincareSeriesEntire, latticePoincareSeries]
 
 /-- Every mixed jet of a locally normally convergent Poincare series is the sum of the
 corresponding mixed jets of its actual terms. -/
@@ -290,7 +290,7 @@ def poincareSeriesAutomorphicForm {d : ℕ}
     (hnormal : SummableLocallyUniformlyOn
       (fun γ => poincareTerm ψ seed γ) Set.univ) : ψ.forms :=
   ⟨poincareSeriesEntire ψ seed hnormal,
-    fun γ x => poincareSeries_shift ψ seed γ x⟩
+    fun γ x => latticePoincareSeries_shift ψ seed γ x⟩
 
 end
 

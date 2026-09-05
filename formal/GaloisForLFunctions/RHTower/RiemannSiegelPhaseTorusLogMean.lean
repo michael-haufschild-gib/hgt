@@ -6,10 +6,11 @@ import Mathlib.MeasureTheory.Integral.CircleAverage
 
 On the critical line the Riemann–Siegel formula writes Hardy's function as
 `Z(t) = 2 Re (e^{iθ(t)} D(t)) + O(t^{-1/4})` with `D(t) = ∑_{n ≤ √(t/2π)} n^{-1/2-it}`, so that
-`|ζ(1/2+it)| = 2 |D(t)| |cos (θ(t) - arg D(t))|` up to that error.  The "torus model" of the
+`|ζ(1/2+it)| = 2 |D(t)| |cos (θ(t) + arg D(t))|` up to that additive error. This does not
+give a logarithmic-mean error bound near zeros. The "torus model" of the
 critical line replaces the arithmetic phases `(θ(t), t log p)_p` by independent uniform phases.
-This file certifies the exact identities fixing what that model predicts for the **geometric
-mean** of `|ζ|`:
+This file certifies exact identities for the **geometric mean of the randomized main term**,
+not deterministic flow transfer or a logarithmic remainder estimate for zeta:
 
 * `circleAverage_log_norm_const_add` — Jensen: the circle average of `log ‖a + z‖` over `‖z‖ = R`
   is `log (max R ‖a‖)`; in particular a fresh uniform phase never lowers a log-mean
@@ -20,13 +21,9 @@ mean** of `|ζ|`:
 * `circleAverage_log_norm_two_re_mul` — hence the average over the AFE phase of
   `log |2 Re (e^{iφ} w)|` is exactly `log ‖w‖`.
 
-So in the torus model `E log |ζ(1/2+it)| = E log |D|`: the factor `2 cos ψ` has geometric mean
-one, and the model's geometric mean of `|ζ|` is the geometric mean of the Riemann–Siegel amplitude
-`|D|`.  Numerically (pod runs, 2026-09-05) that amplitude has torus log-mean
-`c₀(N) ≈ (1/8) log log N`, matched by the flow mean of `log |D(t)|`, while the flow mean of
-`log |ζ(1/2+it)|` is `0` (as RH forces through Littlewood's lemma).  The identities here are the
-exact, computation-free part of that comparison; they contain no zero, no `ζ`, and no
-computation.
+Thus independent-phase averaging of the main term leaves the amplitude log-mean unchanged.
+No growth law for that amplitude, deterministic phase-locking law, zeta log-mean limit or RH
+equivalence is proved here. The identities contain no zeta divisor and use no computation.
 -/
 
 open Real Complex
@@ -138,8 +135,7 @@ theorem circleAverage_log_norm_conj_add_mul (w : ℂ) :
 
 /-- **The torus-model AFE identity.**  Averaging over an independent uniform phase `φ`, the
 log-mean of `|2 Re (e^{iφ} w)|` is exactly `log ‖w‖`: the phase factor `2 cos ψ` has geometric mean
-one, so the torus model predicts `E log |ζ(1/2+it)| = E log |D(t)|` for the Riemann–Siegel amplitude
-`D`. -/
+one. This is a randomized main-term identity; no zeta remainder or deterministic flow occurs. -/
 theorem circleAverage_log_norm_two_re_mul (w : ℂ) :
     circleAverage (fun z : ℂ => Real.log |2 * (z * w).re|) 0 1 = Real.log ‖w‖ := by
   have hsphere : Set.EqOn (fun z : ℂ => Real.log |2 * (z * w).re|)

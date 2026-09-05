@@ -103,7 +103,7 @@ theorem exists_floor_relation_or_exit_of_tower (Fr : RittFrame K L) {τ : L} {q 
       · exact Or.inl ⟨m, hFm, by omega, h2⟩
       · obtain ⟨w, N, A', hw0, hwmem, hN, hAsh, hconn⟩ := h3
         exact Or.inr (Or.inl ⟨m, w, N, A', hFm, by omega, hw0, hwmem, hN, hAsh, hconn⟩)
-      · obtain ⟨v, -, hv0, hvmem, -, -, hveq, -⟩ := h4
+      · obtain ⟨v, -, -, hv0, hvmem, -, -, -, hveq, -, -⟩ := h4
         have hc'val : c / (q / Fr.ρ ^ m) ^ 2
             = q ^ (i - ((2 : ℕ) : ℤ)) * Fr.ρ ^ (k + (m : ℤ) * ((2 : ℕ) : ℤ)) :=
           div_level_multiplier_pow hq hρ0 hcik m 2

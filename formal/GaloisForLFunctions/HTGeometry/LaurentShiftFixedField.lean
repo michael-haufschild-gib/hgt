@@ -69,24 +69,24 @@ theorem coeff_one_pow_inv (h : ℂ) : ∀ m : ℕ,
       push_cast
       ring
 
-theorem shiftSubst_pow (h : ℂ) (m : ℕ) :
-    (shiftSubst h) ^ m
+theorem laurentShiftSubst_pow (h : ℂ) (m : ℕ) :
+    (laurentShiftSubst h) ^ m
       = PowerSeries.X ^ m * ((1 + PowerSeries.C h * PowerSeries.X : PowerSeries ℂ)⁻¹) ^ m := by
-  rw [shiftSubst, mul_pow]
+  rw [laurentShiftSubst, mul_pow]
 
 theorem coeff_shiftSubst_pow_of_lt (h : ℂ) {n d : ℕ} (hnd : n < d) :
-    PowerSeries.coeff n ((shiftSubst h) ^ d) = 0 := by
-  rw [shiftSubst_pow, PowerSeries.coeff_X_pow_mul']
+    PowerSeries.coeff n ((laurentShiftSubst h) ^ d) = 0 := by
+  rw [laurentShiftSubst_pow, PowerSeries.coeff_X_pow_mul']
   rw [if_neg (by omega)]
 
 theorem coeff_shiftSubst_pow_self (h : ℂ) (m : ℕ) :
-    PowerSeries.coeff m ((shiftSubst h) ^ m) = 1 := by
-  rw [shiftSubst_pow, PowerSeries.coeff_X_pow_mul' , if_pos (le_refl m), Nat.sub_self,
+    PowerSeries.coeff m ((laurentShiftSubst h) ^ m) = 1 := by
+  rw [laurentShiftSubst_pow, PowerSeries.coeff_X_pow_mul' , if_pos (le_refl m), Nat.sub_self,
     coeff_zero_pow_inv]
 
 theorem coeff_shiftSubst_pow_succ (h : ℂ) (m : ℕ) :
-    PowerSeries.coeff (m + 1) ((shiftSubst h) ^ m) = -((m : ℂ) * h) := by
-  rw [shiftSubst_pow, PowerSeries.coeff_X_pow_mul', if_pos (by omega)]
+    PowerSeries.coeff (m + 1) ((laurentShiftSubst h) ^ m) = -((m : ℂ) * h) := by
+  rw [laurentShiftSubst_pow, PowerSeries.coeff_X_pow_mul', if_pos (by omega)]
   have : m + 1 - m = 1 := by omega
   rw [this, coeff_one_pow_inv]
 
@@ -120,7 +120,7 @@ theorem eq_C_of_shiftPS_eq {h : ℂ} (hh : h ≠ 0) {A : PowerSeries ℂ} (hA : 
     · exact h0
   -- the coefficient of `X^{m+1}` in the translate
   have hsupp : (Function.support fun d : ℕ =>
-      PowerSeries.coeff d B • PowerSeries.coeff (m + 1) ((shiftSubst h) ^ d))
+      PowerSeries.coeff d B • PowerSeries.coeff (m + 1) ((laurentShiftSubst h) ^ d))
       ⊆ (({m, m + 1} : Finset ℕ) : Set ℕ) := by
     intro d hd
     simp only [Function.mem_support, ne_eq] at hd

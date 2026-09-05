@@ -9,7 +9,6 @@ module
 public import GaloisForLFunctions.QuantumAlg.Init
 public import GaloisForLFunctions.QuantumAlg.Algorithms.OrderFinding.Resource
 public import GaloisForLFunctions.QuantumAlg.Algorithms.OrderFinding.Probability
-public import GaloisForLFunctions.QuantumAlg.Algorithms.OrderFinding.SupercriticalSharpnessRetry
 public import GaloisForLFunctions.QuantumAlg.Algorithms.QPE
 public import GaloisForLFunctions.QuantumAlg.Core.Circuit
 public import GaloisForLFunctions.QuantumAlg.Primitives.MAU.ModularMultiplicationGate

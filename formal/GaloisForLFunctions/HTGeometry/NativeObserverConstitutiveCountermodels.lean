@@ -15,7 +15,7 @@ noncomputable section
 /-! ### 1. Same observer, different exact winding cost -/
 
 /-- Strictly positive real parameters, carrying positivity as data rather than theorem premises. -/
-abbrev PositiveReal := {x : ℝ // 0 < x}
+private abbrev PositiveReal := {x : ℝ // 0 < x}
 
 /-- Unit relative winding in the two-phase presentation of a circle fibre. -/
 def nativeCircleUnitWinding : Fin 2 → ℤ := ![1, -1]

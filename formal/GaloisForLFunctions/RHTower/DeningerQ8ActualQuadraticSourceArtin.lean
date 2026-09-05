@@ -30,31 +30,31 @@ local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 local notation "S" => q8BiquadQuadraticSourceField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualQuadraticSourceArtinLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-local instance : CharZero K3 :=
+local instance deningerQ8ActualQuadraticSourceArtinLocalInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional S K2 := by infer_instance
-noncomputable local instance : FiniteDimensional S K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst7 : FiniteDimensional S K2 := by infer_instance
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst8 : FiniteDimensional S K3 :=
   FiniteDimensional.trans S K2 K3
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst9 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField S := NumberField.mk
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst10 : NumberField S := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst11 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst12 : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst13 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
-noncomputable local instance : IsGalois S K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst14 : IsGalois S K3 :=
   IsGalois.tower_top_of_isGalois ℚ S K3
 
 theorem q8BiquadQuadraticSource_top_finrank :
@@ -107,25 +107,25 @@ noncomputable def q8QuadraticSourceGalEquivCyclicSubgroup :
     ⟨q8QuadraticSourceRestrictHom_injective,
       q8QuadraticSourceRestrictHom_surjective⟩
 
-noncomputable local instance : IsCyclic deningerQ8ActualCyclicSubgroup := by
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst15 : IsCyclic deningerQ8ActualCyclicSubgroup := by
   have hq8 : IsCyclic q8CyclicSubgroup :=
     (MulEquiv.isCyclic q8CyclicSourceEquiv).mp inferInstance
   exact (MulEquiv.isCyclic deningerQ8ActualCyclicSubgroupEquiv).mpr hq8
 
-noncomputable local instance : IsCyclic Gal(K3/S) :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst16 : IsCyclic Gal(K3/S) :=
   (MulEquiv.isCyclic q8QuadraticSourceGalEquivCyclicSubgroup).mpr
     (inferInstance : IsCyclic deningerQ8ActualCyclicSubgroup)
 
-noncomputable local instance : IsAbelianGalois S K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst17 : IsAbelianGalois S K3 :=
   IsAbelianGalois.of_isCyclic S K3
 
-noncomputable local instance : IsGalois K2 K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst18 : IsGalois K2 K3 :=
   IsGalois.tower_top_of_isGalois ℚ K2 K3
-noncomputable local instance : IsCyclic Gal(K3/K2) := by
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst19 : IsCyclic Gal(K3/K2) := by
   apply isCyclic_of_prime_card (p := 2)
   rw [IsGalois.card_aut_eq_finrank,
     deningerQ8RootNumberNegOneTopField_finrank_over_second]
-noncomputable local instance : IsAbelianGalois K2 K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceArtinLocalInst20 : IsAbelianGalois K2 K3 :=
   IsAbelianGalois.of_isCyclic K2 K3
 
 noncomputable def q8BiquadTwoAdicUUnit : K2ˣ where

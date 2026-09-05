@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.CommonRadialSubunitHarmonicCompletion
 import GaloisForLFunctions.RHTower.JointAncestryHilbertMultiplicityHaarVacuumSuperselection
 import GaloisForLFunctions.HTGeometry.FourierCircleTruncation
+import GaloisForLFunctions.HTGeometry.ProjectivePhaseHaarStatistic
 import GaloisForLFunctions.HTGeometry.HarmonicLogEquidistribution
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtLyapunovInverse
 import GaloisForLFunctions.HTGeometry.SchattenOneBanach
@@ -1464,19 +1465,18 @@ theorem norm_comp_five_le
     ‖A ∘L B ∘L C ∘L D ∘L E‖ ≤
       ‖A‖ * ‖B‖ * ‖C‖ * ‖D‖ * ‖E‖ := by
   calc
-    ‖A ∘L B ∘L C ∘L D ∘L E‖ ≤
-        ‖A ∘L B ∘L C ∘L D‖ * ‖E‖ :=
+    ‖A ∘L B ∘L C ∘L D ∘L E‖ ≤ ‖A‖ * ‖B ∘L C ∘L D ∘L E‖ :=
       ContinuousLinearMap.opNorm_comp_le _ _
-    _ ≤ (‖A ∘L B ∘L C‖ * ‖D‖) * ‖E‖ := by
+    _ ≤ ‖A‖ * (‖B‖ * ‖C ∘L D ∘L E‖) := by
       gcongr
       exact ContinuousLinearMap.opNorm_comp_le _ _
-    _ ≤ ((‖A ∘L B‖ * ‖C‖) * ‖D‖) * ‖E‖ := by
+    _ ≤ ‖A‖ * (‖B‖ * (‖C‖ * ‖D ∘L E‖)) := by
       gcongr
       exact ContinuousLinearMap.opNorm_comp_le _ _
-    _ ≤ (((‖A‖ * ‖B‖) * ‖C‖) * ‖D‖) * ‖E‖ := by
+    _ ≤ ‖A‖ * (‖B‖ * (‖C‖ * (‖D‖ * ‖E‖))) := by
       gcongr
       exact ContinuousLinearMap.opNorm_comp_le _ _
-    _ = _ := by ring
+    _ = ‖A‖ * ‖B‖ * ‖C‖ * ‖D‖ * ‖E‖ := by ring
 
 theorem norm_commonRadialPrimeSynthesis_eq_reachability
     (a : {d : ℝ // 0 < d}) :
@@ -1551,9 +1551,11 @@ theorem ae_norm_commonRadialPhaseSourceDensity_sub_le
       ring
     _ ≤ ‖commonRadialPrimeReachability a‖ ^ 2 *
           ‖routePPrimitiveBurnolBaseNuclearSource‖ * (ε * 1 + 1 * ε) := by
-      gcongr
-      · exact mul_le_mul hdiff hV (norm_nonneg _) hε
-      · exact mul_le_mul hZ hdiff (norm_nonneg _) (by norm_num)
+      have h₁ : ‖V z - Z z‖ * ‖V z‖ ≤ ε * 1 :=
+        mul_le_mul hdiff hV (norm_nonneg _) hε
+      have h₂ : ‖Z z‖ * ‖V z - Z z‖ ≤ 1 * ε :=
+        mul_le_mul hZ hdiff (norm_nonneg _) zero_le_one
+      exact mul_le_mul_of_nonneg_left (add_le_add h₁ h₂) (by positivity)
     _ = 2 * ‖commonRadialPrimeReachability a‖ ^ 2 *
         ‖routePPrimitiveBurnolBaseNuclearSource‖ * ε := by ring
 
@@ -1571,7 +1573,6 @@ theorem lpBoundedOperatorFamilyCLM_sub_eq
         lpBoundedOperatorFamilyCLM hB hCB0 hCB =
       lpBoundedOperatorFamilyCLM (hA.sub hB) hD0 hD := by
   ext f
-  apply Lp.ext
   filter_upwards [
     Lp.coeFn_sub
       (lpBoundedOperatorFamilyCLM hA hCA0 hCA f)
@@ -1585,7 +1586,7 @@ theorem lpBoundedOperatorFamilyCLM_sub_eq
         lpBoundedOperatorFamilyCLM hB hCB0 hCB) f : Lp H 2 μ) : X → H) x) =
       (((lpBoundedOperatorFamilyCLM (hA.sub hB) hD0 hD f :
         Lp H 2 μ) : X → H) x)
-  rw [ContinuousLinearMap.sub_apply, hsub, hAf, hBf, hABf]
+  rw [_root_.sub_apply, hsub, Pi.sub_apply, hAf, hBf, hABf]
   rfl
 
 theorem norm_lpBoundedOperatorFamilyCLM_sub_le
@@ -1757,9 +1758,10 @@ theorem commonRadialPhaseHistoryCompletion_homotopy
     (a : {d : ℝ // 0 < d})
     (P : CommonRadialPhaseContractionHomotopy) :
     (∀ s : ℝ,
-      recurrentPrimeDisplacement
-          (commonRadialPhaseHistoryCompletion a (P s)).operator =
-        recurrentPrimeDefect a.property) ∧
+      (commonRadialPhaseHistoryCompletion a (P s)).operator -
+          recurrentHistoryConjugate
+            (commonRadialPhaseHistoryCompletion a (P s)).operator =
+        primeHodgeHistoryDefectOperator a.property) ∧
     (∀ s : ℝ,
       recurrentTotalBoundaryExcess a
           (commonRadialPhaseHistoryCompletion a (P s)).operator <
@@ -1824,7 +1826,7 @@ theorem commonRadialPhaseToeplitzLift_constant
     (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex)
   rintro ⟨m, q⟩
   apply (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex).repr.injective
-  rintro ⟨n, p⟩
+  ext ⟨n, p⟩
   rw [(HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex).repr_apply_apply,
     (HilbertSchmidt.lpBasis PrimeHodgeHistoryIndex).repr_apply_apply,
     inner_basis_commonRadialPhaseToeplitzLift_basis,

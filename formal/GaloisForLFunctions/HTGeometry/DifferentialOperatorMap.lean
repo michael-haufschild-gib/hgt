@@ -88,7 +88,7 @@ theorem mapCoeffs_mul (f : K →+* E)
   rfl
 
 /-- The coefficientwise map as a ring homomorphism. -/
-def mapRingHom (f : K →+* E)
+def mapCoeffsRingHom (f : K →+* E)
     (hderiv : ∀ a, f (Differential.deriv a) = Differential.deriv (f a)) :
     DiffOp K →+* DiffOp E where
   toFun := mapCoeffs f

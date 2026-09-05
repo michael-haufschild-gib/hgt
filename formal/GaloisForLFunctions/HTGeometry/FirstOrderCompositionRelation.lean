@@ -145,7 +145,7 @@ theorem analyticMeroElement_rowComp {f g : ℂ → ℂ} (hf : Differentiable ℂ
     analyticMeroElement_pow hderivan k
   have hpoly : analyticMeroElement (fun z : ℂ => (c i k).eval (f (g z))) hpolyan
       = Polynomial.aeval (analyticMeroElement (fun w : ℂ => f (g w)) hcompan) (c i k) :=
-    (aeval_analyticMeroElement hcompan (c i k)).symm
+    (aeval_analyticMeroElement_univ hcompan (c i k)).symm
   rw [hh, ha, hmul, hpow, hpoly]
 
 /-- **The substituted first-order relation.**  A first-order equation for `f` becomes a polynomial

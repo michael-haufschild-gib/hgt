@@ -17,7 +17,7 @@ variable {A : Type*} [CommRing A] [IsDomain A]
 variable {K : Type*} [Field K] [Algebra A K] [IsFractionRing A K]
 
 omit [IsDomain A] in
-theorem algebraMap_ne_zero_of_ne_zero {b : A} (hb : b ≠ 0) :
+theorem algebraMap_fractionRing_ne_zero_of_ne_zero {b : A} (hb : b ≠ 0) :
     algebraMap A K b ≠ 0 :=
   fun h => hb (IsFractionRing.injective A K (by rw [map_zero]; exact h))
 
@@ -60,7 +60,7 @@ theorem fracDeg_eq {d : A → WithBot ℤ} (hd : IsDegree d) {x : K} {a b : A}
     (ha : a ≠ 0) (hb : b ≠ 0) (hrep : x * algebraMap A K b = algebraMap A K a) :
     fracDeg d x = ((degZ d a - degZ d b : ℤ) : WithBot ℤ) := by
   classical
-  have hbK : algebraMap A K b ≠ 0 := algebraMap_ne_zero_of_ne_zero hb
+  have hbK : algebraMap A K b ≠ 0 := algebraMap_fractionRing_ne_zero_of_ne_zero hb
   have hx : x ≠ 0 := by
     intro h0
     rw [h0, zero_mul] at hrep
@@ -69,7 +69,7 @@ theorem fracDeg_eq {d : A → WithBot ℤ} (hd : IsDegree d) {x : K} {a b : A}
   have hb0 : ((IsLocalization.sec (nonZeroDivisors A) x).2 : A) ≠ 0 :=
     nonZeroDivisors.coe_ne_zero _
   have hb0K : algebraMap A K ((IsLocalization.sec (nonZeroDivisors A) x).2 : A) ≠ 0 :=
-    algebraMap_ne_zero_of_ne_zero hb0
+    algebraMap_fractionRing_ne_zero_of_ne_zero hb0
   have ha0 : (IsLocalization.sec (nonZeroDivisors A) x).1 ≠ 0 := by
     intro h0
     rw [h0, map_zero] at hs
@@ -131,13 +131,13 @@ theorem isDegree_fracDeg {d : A → WithBot ℤ} (hd : IsDegree d) :
       rw [h0, map_zero] at hab
       rcases mul_eq_zero.mp hab with h | h
       · exact hx h
-      · exact algebraMap_ne_zero_of_ne_zero hb h
+      · exact algebraMap_fractionRing_ne_zero_of_ne_zero hb h
     have hc : c ≠ 0 := by
       intro h0
       rw [h0, map_zero] at hce
       rcases mul_eq_zero.mp hce with h | h
       · exact hy h
-      · exact algebraMap_ne_zero_of_ne_zero he h
+      · exact algebraMap_fractionRing_ne_zero_of_ne_zero he h
     have hmul : (x * y) * algebraMap A K (b * e) = algebraMap A K (a * c) := by
       rw [map_mul, map_mul]
       calc x * y * (algebraMap A K b * algebraMap A K e)
@@ -170,13 +170,13 @@ theorem isDegree_fracDeg {d : A → WithBot ℤ} (hd : IsDegree d) :
       rw [h0, map_zero] at hab
       rcases mul_eq_zero.mp hab with h | h
       · exact hx h
-      · exact algebraMap_ne_zero_of_ne_zero hb h
+      · exact algebraMap_fractionRing_ne_zero_of_ne_zero hb h
     have hc : c ≠ 0 := by
       intro h0
       rw [h0, map_zero] at hce
       rcases mul_eq_zero.mp hce with h | h
       · exact hy h
-      · exact algebraMap_ne_zero_of_ne_zero he h
+      · exact algebraMap_fractionRing_ne_zero_of_ne_zero he h
     have hsum : (x + y) * algebraMap A K (b * e) = algebraMap A K (a * e + c * b) := by
       rw [map_add, map_mul, map_mul, map_mul]
       calc (x + y) * (algebraMap A K b * algebraMap A K e)
@@ -189,7 +189,7 @@ theorem isDegree_fracDeg {d : A → WithBot ℤ} (hd : IsDegree d) :
       rw [h0, map_zero] at hsum
       rcases mul_eq_zero.mp hsum with h | h
       · exact hxy h
-      · exact algebraMap_ne_zero_of_ne_zero (mul_ne_zero hb he) h
+      · exact algebraMap_fractionRing_ne_zero_of_ne_zero (mul_ne_zero hb he) h
     rw [fracDeg_eq hd hnum (mul_ne_zero hb he) hsum, fracDeg_eq hd ha hb hab,
       fracDeg_eq hd hc he hce, degZ_mul hd hb he]
     have hbound : d (a * e + c * b) ≤ max (d (a * e)) (d (c * b)) := hd.map_add_le _ _

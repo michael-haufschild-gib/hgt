@@ -73,7 +73,7 @@ theorem cascadeDeg_fpderiv_add_le (w : ℕ → ℕ) (k : ℕ) (x : CascadeField)
   obtain ⟨a, b, hb, hab⟩ := IsFractionRing.div_surjective (A := MvPolynomial ℕ ℂ) x
   have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
   have hbK : algebraMap (MvPolynomial ℕ ℂ) CascadeField b ≠ 0 :=
-    algebraMap_ne_zero_of_ne_zero hb0
+    algebraMap_fractionRing_ne_zero_of_ne_zero hb0
   have hxrep : x * algebraMap (MvPolynomial ℕ ℂ) CascadeField b
       = algebraMap (MvPolynomial ℕ ℂ) CascadeField a := by
     rw [← hab]
@@ -115,7 +115,7 @@ theorem cascadeDeg_fpderiv_add_le (w : ℕ → ℕ) (k : ℕ) (x : CascadeField)
     rw [h0, map_zero] at hquot
     rcases mul_eq_zero.mp hquot with h | h
     · exact hdx h
-    · exact (algebraMap_ne_zero_of_ne_zero (mul_ne_zero hb0 hb0)) h
+    · exact (algebraMap_fractionRing_ne_zero_of_ne_zero (mul_ne_zero hb0 hb0)) h
   -- the weighted-degree estimate on the numerator
   have hbound : wdeg w N + ((w k : ℤ) : WithBot ℤ) ≤ wdeg w a + wdeg w b := by
     have hsplit : wdeg w N ≤ max (wdeg w (pderiv k a * b)) (wdeg w (a * pderiv k b)) := by

@@ -109,16 +109,16 @@ theorem finiteHankelChainIdeal_eq_inf (K : Type u) [Field K] (N r : ℕ) :
 /-! ## The dimension of the degeneration -/
 
 /-- The squarefree exponent of a finite set of variables. -/
-noncomputable def indicatorExponent {N : ℕ} (S : Finset (Fin N)) : Fin N →₀ ℕ :=
+private noncomputable def indicatorExponent {N : ℕ} (S : Finset (Fin N)) : Fin N →₀ ℕ :=
   ∑ i ∈ S, Finsupp.single i 1
 
-@[simp] theorem indicatorExponent_apply {N : ℕ} (S : Finset (Fin N)) (i : Fin N) :
+@[simp] private theorem indicatorExponent_apply {N : ℕ} (S : Finset (Fin N)) (i : Fin N) :
     indicatorExponent S i = if i ∈ S then 1 else 0 := by
   classical
   rw [indicatorExponent, Finsupp.finsetSum_apply]
   simp [Finsupp.single_apply, Finset.sum_ite_eq']
 
-theorem support_indicatorExponent {N : ℕ} (S : Finset (Fin N)) :
+private theorem support_indicatorExponent {N : ℕ} (S : Finset (Fin N)) :
     (indicatorExponent S).support = S := by
   classical
   ext i

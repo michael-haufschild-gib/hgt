@@ -49,38 +49,38 @@ theorem twoPiI_div_expStepRate (c : ℂ) :
 omit [DecidableEq α] in
 /-- The seed of a step is annihilated by that step's difference operator. -/
 theorem shiftAlgHom_stepVar_expSeed (step : α → ℂ) {v : α} (hv : step v ≠ 0) :
-    shiftAlgHom (stepVar step v) (expSeed (expStepRate (step v))) = 0 := by
-  have hper := periodic_expSeed (expStepRate_ne_zero hv)
+    shiftAlgHom (stepVar step v) (doubleExpSeed (expStepRate (step v))) = 0 := by
+  have hper := periodic_doubleExpSeed (expStepRate_ne_zero hv)
   rw [twoPiI_div_expStepRate] at hper
   funext z
   rw [shiftAlgHom_stepVar]
-  show expSeed (expStepRate (step v)) (z + step v) - expSeed (expStepRate (step v)) z = 0
+  show doubleExpSeed (expStepRate (step v)) (z + step v) - doubleExpSeed (expStepRate (step v)) z = 0
   rw [hper z, sub_self]
 
 /-- **The block seed:** one exponential seed per block vertex. -/
 def blockSeedFun (B : Finset α) (step : α → ℂ) : ℂ → ℂ :=
-  fun z => ∑ v ∈ B, expSeed (expStepRate (step v)) z
+  fun z => ∑ v ∈ B, doubleExpSeed (expStepRate (step v)) z
 
 omit [DecidableEq α] in
 theorem differentiable_blockSeedFun (B : Finset α) (step : α → ℂ) :
     Differentiable ℂ (blockSeedFun B step) :=
-  Differentiable.fun_sum fun _ _ => differentiable_expSeed _
+  Differentiable.fun_sum fun _ _ => differentiable_doubleExpSeed _
 
 /-- The full block product of difference operators annihilates the block seed. -/
 theorem seedAnnihilates_blockSeedFun_prod (B : Finset α) (step : α → ℂ)
     (hne : ∀ v ∈ B, step v ≠ 0) :
     shiftAlgHom (∏ v ∈ B, stepVar step v) (blockSeedFun B step) = 0 := by
   have hzero : ∀ v ∈ B,
-      shiftAlgHom (∏ u ∈ B, stepVar step u) (expSeed (expStepRate (step v))) = 0 := by
+      shiftAlgHom (∏ u ∈ B, stepVar step u) (doubleExpSeed (expStepRate (step v))) = 0 := by
     intro v hv
     have hfac : (∏ u ∈ B, stepVar step u)
         = (∏ u ∈ B.erase v, stepVar step u) * stepVar step v := by
       rw [mul_comm, Finset.mul_prod_erase B _ hv]
     rw [hfac, map_mul]
     show shiftAlgHom (∏ u ∈ B.erase v, stepVar step u)
-      (shiftAlgHom (stepVar step v) (expSeed (expStepRate (step v)))) = 0
+      (shiftAlgHom (stepVar step v) (doubleExpSeed (expStepRate (step v)))) = 0
     rw [shiftAlgHom_stepVar_expSeed step (hne v hv), map_zero]
-  have hfun : blockSeedFun B step = ∑ v ∈ B, expSeed (expStepRate (step v)) := by
+  have hfun : blockSeedFun B step = ∑ v ∈ B, doubleExpSeed (expStepRate (step v)) := by
     funext w
     rw [Finset.sum_apply]
     rfl
@@ -94,20 +94,20 @@ of the block seed survives. -/
 theorem seedCarrierPoly_blockSeedFun_isolate (B : Finset α) (step : α → ℂ)
     (hne : ∀ v ∈ B, step v ≠ 0) {k : α} (hk : k ∈ B) (P : MvPolynomial α ℂ) (z : ℂ) :
     seedCarrierPoly step (blockSeedFun B step) ((∏ j ∈ B.erase k, X j) * P) z
-      = seedCarrierPoly step (expSeed (expStepRate (step k))) ((∏ j ∈ B.erase k, X j) * P) z := by
+      = seedCarrierPoly step (doubleExpSeed (expStepRate (step k))) ((∏ j ∈ B.erase k, X j) * P) z := by
   have hfun : blockSeedFun B step
-      = fun w => ∑ v ∈ B, expSeed (expStepRate (step v)) w := rfl
+      = fun w => ∑ v ∈ B, doubleExpSeed (expStepRate (step v)) w := rfl
   rw [hfun, seedCarrierPoly_sum]
   rw [← Finset.add_sum_erase B _ hk]
   have hzero : ∀ v ∈ B.erase k,
-      seedCarrierPoly step (expSeed (expStepRate (step v))) ((∏ j ∈ B.erase k, X j) * P) z = 0 := by
+      seedCarrierPoly step (doubleExpSeed (expStepRate (step v))) ((∏ j ∈ B.erase k, X j) * P) z = 0 := by
     intro v hv
     have hfac : (∏ j ∈ B.erase k, X j) * P
         = ((∏ j ∈ (B.erase k).erase v, X j) * P) * X v := by
       rw [← Finset.mul_prod_erase (B.erase k) _ hv]
       ring
-    have hz : seedCarrierPoly step (expSeed (expStepRate (step v))) (X v) = 0 := by
-      show shiftAlgHom (polyShift step (X v)) (expSeed (expStepRate (step v))) = 0
+    have hz : seedCarrierPoly step (doubleExpSeed (expStepRate (step v))) (X v) = 0 := by
+      show shiftAlgHom (polyShift step (X v)) (doubleExpSeed (expStepRate (step v))) = 0
       rw [polyShift_X, shiftAlgHom_stepVar_expSeed step (hne v (Finset.mem_of_mem_erase hv))]
     rw [hfac, seedCarrierPoly_mul, hz, map_zero]
     rfl
@@ -129,8 +129,8 @@ theorem blockSeed_symb_vanishing (B : Finset α) (step : α → ℂ)
   set D : MvPolynomial α ℂ := ∏ j ∈ B.erase k, X j with hD
   set a := expStepRate (step k) with ha
   have hDconst : ∀ z z' : ℂ,
-      seedCarrierPoly step (expSeed a) (D * P) z
-        = seedCarrierPoly step (expSeed a) (D * P) z' := by
+      seedCarrierPoly step (doubleExpSeed a) (D * P) z
+        = seedCarrierPoly step (doubleExpSeed a) (D * P) z' := by
     have hC : seedCarrierPoly step (blockSeedFun B step) P
         = fun _ => seedCarrierPoly step (blockSeedFun B step) P 0 := by
       funext z

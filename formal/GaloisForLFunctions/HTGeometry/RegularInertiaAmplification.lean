@@ -205,7 +205,7 @@ theorem addOrderOf_intCast {n : ℕ} (hn : n ≠ 0) (q : ℤ) :
       rw [Int.cast_negSucc, addOrderOf_neg]
       simpa [recurrencePeriod, chargeGcd] using ZMod.addOrderOf_coe (a + 1) hn
 
-def translationSubgroup (n : ℕ) (q : ℤ) : AddSubgroup (ZMod n) :=
+private def translationSubgroup (n : ℕ) (q : ℤ) : AddSubgroup (ZMod n) :=
   AddSubgroup.zmultiples (q : ZMod n)
 
 abbrev regularCycleClass (n : ℕ) (q : ℤ) :=

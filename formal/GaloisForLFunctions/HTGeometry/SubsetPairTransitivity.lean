@@ -57,7 +57,7 @@ theorem image_eq_of_mapsTo {U V : Finset β} (σ : Equiv.Perm β)
 cardinalities and the same intersection cardinality are in the same orbit of the symmetric group:
 first move the left members onto each other, then correct inside and outside the common left member
 with `Equiv.Perm.subtypeCongr`. -/
-theorem exists_perm_image_pair {S T S' T' : Finset β}
+private theorem exists_perm_image_pair {S T S' T' : Finset β}
     (hS : S.card = S'.card) (hT : T.card = T'.card)
     (hI : (S ∩ T).card = (S' ∩ T').card) :
     ∃ σ : Equiv.Perm β, S.image σ = S' ∧ T.image σ = T' := by

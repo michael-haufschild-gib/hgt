@@ -33,7 +33,7 @@ state means transcendence degree one, so the two jets `g, g′` are algebraicall
 
 ## Main results
 
-* `aeval_analyticMeroElement` — polynomial composition transfers to the meromorphic field;
+* `aeval_analyticMeroElement_univ` — polynomial composition transfers to the meromorphic field;
 * `drift_finite_zeroSet`, `finiteOrderEnvelope_drift` — the analytic input to Hadamard;
 * `exists_state_algebraic_of_polynomial_drift` — the single hyperexponential state;
 * `polynomial_drift_rigidity` — the card's theorem;
@@ -76,7 +76,7 @@ theorem analyticOnNhd_polyComp {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h (Set.
       exact analyticOnNhd_const.mul (hh.pow k)
 
 /-- **Polynomial composition transfers to the field.** -/
-theorem aeval_analyticMeroElement {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h (Set.univ : Set ℂ))
+theorem aeval_analyticMeroElement_univ {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h (Set.univ : Set ℂ))
     (P : Polynomial ℂ) :
     Polynomial.aeval (analyticMeroElement h hh) P
       = analyticMeroElement (fun z => P.eval (h z)) (analyticOnNhd_polyComp hh P) := by
@@ -251,7 +251,7 @@ theorem exists_state_algebraic_of_polynomial_drift
     rw [hx, hAm]
     exact (analyticMeroElement_add hgan hAan).symm
   have hfield : Polynomial.aeval (x + Am) P - Polynomial.aeval x P = qm := by
-    rw [hxA, hx, aeval_analyticMeroElement hgA P, aeval_analyticMeroElement hgan P,
+    rw [hxA, hx, aeval_analyticMeroElement_univ hgA P, aeval_analyticMeroElement_univ hgan P,
       ← analyticMeroElement_sub (analyticOnNhd_polyComp hgA P)
         (analyticOnNhd_polyComp hgan P), hqm]
     refine analyticMeroElement_congr _ _ ?_

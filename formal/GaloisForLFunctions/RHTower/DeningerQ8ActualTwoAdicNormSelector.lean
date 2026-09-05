@@ -28,15 +28,15 @@ noncomputable section
 local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualTwoAdicNormSelectorLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualTwoAdicNormSelectorLocalInst2 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicNormSelectorLocalInst3 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicNormSelectorLocalInst4 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicNormSelectorLocalInst5 : NumberField K2 := NumberField.mk
 
 noncomputable def q8BiquadTwoAdicV : 𝓞 K2 :=
   ⟨q8BiquadV, q8BiquadV_isIntegral⟩

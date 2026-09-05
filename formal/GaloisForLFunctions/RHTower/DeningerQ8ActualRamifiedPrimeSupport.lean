@@ -29,29 +29,29 @@ local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 
-local instance : CharZero K3 :=
+local instance deningerQ8ActualRamifiedPrimeSupportLocalInst1 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-local instance : CharZero K2 :=
+local instance deningerQ8ActualRamifiedPrimeSupportLocalInst2 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
 
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualRamifiedPrimeSupportLocalInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_firstQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualRamifiedPrimeSupportLocalInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_secondQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualRamifiedPrimeSupportLocalInst5 : FiniteDimensional ℚ K2 :=
   FiniteDimensional.trans ℚ K1 K2
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualRamifiedPrimeSupportLocalInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualRamifiedPrimeSupportLocalInst7 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualRamifiedPrimeSupportLocalInst8 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualRamifiedPrimeSupportLocalInst9 : NumberField K3 := NumberField.mk
 
 theorem q8LiteralTwoAdic_branchFactor_mul_conjugate :
     ((q8LiteralTwoAdicU + 2) * (35 + 12 * q8LiteralTwoAdicV)) *

@@ -4,12 +4,12 @@ import GaloisForLFunctions.HTGeometry.CompExpDescent
 /-!
 # The exponential seed and its difference-operator carriers
 
-`expSeed a z = exp (exp (a z))` is entire and has period `2πi / a`, so a step `c` with
+`doubleExpSeed a z = exp (exp (a z))` is entire and has period `2πi / a`, so a step `c` with
 `a = 2πi / c` is annihilated by the difference operator it generates.  Translating the argument
 dilates the inner exponential, so the carrier of a polynomial is a finite combination of dilates of
 `exp`, read at `exp (a z)`:
 
-`seedCarrierPoly step (expSeed a) P z = dilateSum (polyShift step P) a (exp (a z))`.
+`seedCarrierPoly step (doubleExpSeed a) P z = dilateSum (polyShift step P) a (exp (a z))`.
 
 Because `exp (a ·)` is onto `ℂ ∖ {0}`, a constant carrier forces the dilate combination to be
 constant on the whole plane, and its Taylor coefficients at the origin are exactly the values of the
@@ -18,7 +18,7 @@ vanishing of a whole arithmetic progression of symbol values.
 
 * `symb step t P` — the symbol of `P` at the parameter `t`;
 * `evAlg_polyShift` — the symbol is the character `⟨γ⟩ ↦ exp (t γ)` applied to the operator;
-* `seedCarrierPoly_expSeed` — the carrier as a dilate combination;
+* `seedCarrierPoly_doubleExpSeed` — the carrier as a dilate combination;
 * `symb_eq_zero_of_carrier_const` — a constant carrier kills every symbol at `t = m a`, `m ≥ 1`.
 -/
 
@@ -31,13 +31,13 @@ noncomputable section
 /-! ### The seed -/
 
 /-- The exponential seed: entire, with period `2πi / a`. -/
-def expSeed (a : ℂ) : ℂ → ℂ := fun z => Complex.exp (Complex.exp (a * z))
+def doubleExpSeed (a : ℂ) : ℂ → ℂ := fun z => Complex.exp (Complex.exp (a * z))
 
-theorem differentiable_expSeed (a : ℂ) : Differentiable ℂ (expSeed a) :=
+theorem differentiable_doubleExpSeed (a : ℂ) : Differentiable ℂ (doubleExpSeed a) :=
   Complex.differentiable_exp.comp (Complex.differentiable_exp.comp (differentiable_id.const_mul a))
 
-theorem periodic_expSeed {a : ℂ} (ha : a ≠ 0) :
-    Function.Periodic (expSeed a) (2 * Real.pi * Complex.I / a) :=
+theorem periodic_doubleExpSeed {a : ℂ} (ha : a ≠ 0) :
+    Function.Periodic (doubleExpSeed a) (2 * Real.pi * Complex.I / a) :=
   periodic_comp_exp Complex.exp ha
 
 /-! ### The character of a shift parameter -/
@@ -97,9 +97,9 @@ theorem differentiable_dilateSum (A : AddMonoidAlgebra ℂ ℂ) (a : ℂ) :
 
 /-- **The carrier of the exponential seed.**  Translating the argument dilates the inner
 exponential. -/
-theorem seedCarrierPoly_expSeed {α : Type*} (step : α → ℂ) (a : ℂ) (P : MvPolynomial α ℂ)
+theorem seedCarrierPoly_doubleExpSeed {α : Type*} (step : α → ℂ) (a : ℂ) (P : MvPolynomial α ℂ)
     (z : ℂ) :
-    seedCarrierPoly step (expSeed a) P z
+    seedCarrierPoly step (doubleExpSeed a) P z
       = dilateSum (polyShift step P) a (Complex.exp (a * z)) := by
   rw [seedCarrierPoly, shiftAlgHom_apply, dilateSum]
   refine Finset.sum_congr rfl fun γ _ => ?_
@@ -167,8 +167,8 @@ Composition with `exp (a ·)` covers the punctured plane, so the dilate combinat
 all of `ℂ`, and its `m`-th derivative at the origin is the symbol at `m a`. -/
 theorem symb_eq_zero_of_carrier_const {α : Type*} (step : α → ℂ) {a : ℂ} (ha : a ≠ 0)
     (P : MvPolynomial α ℂ)
-    (hconst : ∀ z z' : ℂ, seedCarrierPoly step (expSeed a) P z
-      = seedCarrierPoly step (expSeed a) P z')
+    (hconst : ∀ z z' : ℂ, seedCarrierPoly step (doubleExpSeed a) P z
+      = seedCarrierPoly step (doubleExpSeed a) P z')
     {m : ℕ} (hm : 1 ≤ m) : symb step ((m : ℂ) * a) P = 0 := by
   set A := polyShift step P with hA
   set C := dilateSum A a (Complex.exp (a * 0)) with hC
@@ -176,7 +176,7 @@ theorem symb_eq_zero_of_carrier_const {α : Type*} (step : α → ℂ) {a : ℂ}
     intro w hw
     obtain ⟨z, hz⟩ : ∃ z : ℂ, Complex.exp (a * z) = w :=
       ⟨Complex.log w / a, by rw [mul_div_cancel₀ _ ha, Complex.exp_log hw]⟩
-    rw [← hz, hC, ← seedCarrierPoly_expSeed, ← seedCarrierPoly_expSeed]
+    rw [← hz, hC, ← seedCarrierPoly_doubleExpSeed, ← seedCarrierPoly_doubleExpSeed]
     exact hconst z 0
   have hall : ∀ w, dilateSum A a w = C :=
     eq_of_eq_on_punctured (differentiable_dilateSum A a) hpunct

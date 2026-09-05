@@ -72,7 +72,7 @@ theorem binaryFirstDisagreement_comm (x y : BinaryStream) :
       exact Nat.find_min' (exists_binary_index_ne_of_ne hyx)
         (Ne.symm (binaryFirstDisagreement_apply_ne hxy))
 
-def binaryPrefix (d : ℕ) (x : BinaryStream) : BinaryWord d := fun i => x i
+private def binaryPrefix (d : ℕ) (x : BinaryStream) : BinaryWord d := fun i => x i
 
 def binaryExtend (d : ℕ) (z : BinaryWord d) : BinaryStream := fun n =>
   if h : n < d then z ⟨n, h⟩ else false

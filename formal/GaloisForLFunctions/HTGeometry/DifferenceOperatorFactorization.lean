@@ -20,7 +20,7 @@ noncomputable section
 variable {K : Type*} [Field K]
 
 /-- A first-order difference operator `y ↦ σ y - r y`. -/
-def firstOrderOp (σ : K →+* K) (r y : K) : K := σ y - r * y
+private def firstOrderOp (σ : K →+* K) (r y : K) : K := σ y - r * y
 
 /-- A second-order difference operator in normal form. -/
 def secondOrderOp (σ : K →+* K) (a₁ a₀ y : K) : K := σ (σ y) - a₁ * σ y - a₀ * y

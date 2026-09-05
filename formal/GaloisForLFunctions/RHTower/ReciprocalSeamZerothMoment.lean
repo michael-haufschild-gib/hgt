@@ -72,7 +72,7 @@ theorem summable_reciprocalSeamAtom_pow {k : ℕ} (hk : 1 ≤ k) :
     Summable (fun q : XiZeroCopy => reciprocalSeamAtom q ^ k) :=
   Summable.of_norm (summable_norm_reciprocalSeamAtom_pow hk)
 
-instance : Infinite XiZeroCopy := by
+instance reciprocalSeamZerothMomentLocalInst1 : Infinite XiZeroCopy := by
   have hbase : Infinite XiDivisorSupport :=
     Set.infinite_coe_iff.mpr xiDivisorSupport_infinite
   refine Infinite.of_injective

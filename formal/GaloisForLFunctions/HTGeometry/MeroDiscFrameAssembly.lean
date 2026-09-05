@@ -43,13 +43,13 @@ theorem ratFuncEval_congr_eq {E : Type*} [Field E] [Algebra ℂ E] {y y' : E}
   rfl
 
 /-- The coordinate germ of a disc is nonzero. -/
-theorem coordMero_ne_zero {ρ : ℝ} (hρ : 0 < ρ) :
+theorem discCoordMero_ne_zero {ρ : ℝ} (hρ : 0 < ρ) :
     letI := Bottcher.isDomain_analyticSubring (Metric.ball (0 : ℂ) ρ) Metric.isOpen_ball
       (convex_ball (0 : ℂ) ρ).isPreconnected (Metric.nonempty_ball.mpr hρ)
-    coordMero (Metric.ball (0 : ℂ) ρ) ≠ 0 := by
+    discCoordMero (Metric.ball (0 : ℂ) ρ) ≠ 0 := by
   letI := Bottcher.isDomain_analyticSubring (Metric.ball (0 : ℂ) ρ) Metric.isOpen_ball
     (convex_ball (0 : ℂ) ρ).isPreconnected (Metric.nonempty_ball.mpr hρ)
-  rw [coordMero]
+  rw [discCoordMero]
   intro h
   have hall := (analyticMeroElement_eq_zero_iff (U := Metric.ball (0 : ℂ) ρ)
     (fun _ _ => analyticAt_id)).mp h
@@ -85,7 +85,7 @@ theorem no_ritt_relation_poincare_tree_interior {p : ℕ} (hp : 2 ≤ p) {u v : 
       letI := meroFieldDifferential Metric.isOpen_ball
         (convex_ball (0 : ℂ) ρ).isPreconnected (Metric.nonempty_ball.mpr hρ)
       ((analyticMeroElement Φ hΦ)′) ^ r
-        = (coordMero (Metric.ball (0 : ℂ) ρ)) ^ j
+        = (discCoordMero (Metric.ball (0 : ℂ) ρ)) ^ j
           * ratFuncEval (analyticMeroElement Φ hΦ)
             (transcendental_analyticMeroElement_of_nonconstant_on Metric.isOpen_ball
               (convex_ball (0 : ℂ) ρ).isPreconnected (Metric.nonempty_ball.mpr hρ) hΦ hΦnc) A) :
@@ -137,10 +137,10 @@ theorem no_ritt_relation_poincare_tree_interior {p : ℕ} (hp : 2 ≤ p) {u v : 
       (transcendental_analyticMeroElement_of_nonconstant_on hUo hUc hUne hΦμ hΦμnc) hden hpoin
     exact h.trans (ratFuncEval_congr_eq _ _ hTyval.symm _)
   refine no_ritt_relation_treeRG_interior_contracting hp hv huv hu dC TC hmu0
-    (coordMero_ne_zero hρ) ?_ ?_ hy hTy (hR := hR) hPoin hA hr hritt
-  · show scaleMero hmu0 hmaps hUo hUc hUne (coordMero (Metric.ball (0 : ℂ) ρ))
-      = algebraMap ℂ (meroField (Metric.ball (0 : ℂ) ρ)) mu * coordMero (Metric.ball (0 : ℂ) ρ)
-    exact scaleMero_coordMero hmu0 hmaps hUo hUc hUne
+    (discCoordMero_ne_zero hρ) ?_ ?_ hy hTy (hR := hR) hPoin hA hr hritt
+  · show scaleMero hmu0 hmaps hUo hUc hUne (discCoordMero (Metric.ball (0 : ℂ) ρ))
+      = algebraMap ℂ (meroField (Metric.ball (0 : ℂ) ρ)) mu * discCoordMero (Metric.ball (0 : ℂ) ρ)
+    exact scaleMero_discCoordMero hmu0 hmaps hUo hUc hUne
   · intro x
     show Differential.deriv (scaleMero hmu0 hmaps hUo hUc hUne x)
       = algebraMap ℂ (meroField (Metric.ball (0 : ℂ) ρ)) mu

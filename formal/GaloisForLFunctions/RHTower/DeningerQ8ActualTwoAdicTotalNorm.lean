@@ -19,7 +19,7 @@ open scoped NumberField Pointwise ValuativeRel Polynomial WithZero WithZeroMulIn
 local notation "K1" => deningerQ8RootNumberNegOneFirstQuadraticField
 local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualTwoAdicTotalNormLocalInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
 
 noncomputable def q8FirstConjugationSecondRingEquiv : K2 ≃+* K2 :=
@@ -67,24 +67,24 @@ theorem q8BiquadTwoAdicU_mul_conjugate :
 
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 
-local instance : CharZero K3 :=
+local instance deningerQ8ActualTwoAdicTotalNormLocalInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
 
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst7 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst8 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst9 : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicTotalNormLocalInst10 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
 
 noncomputable def q8BiquadContractedTwoPrime

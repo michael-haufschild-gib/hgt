@@ -221,10 +221,18 @@ theorem level_three_seed (Fr : RittFrame K L) {τ : L} {q : K}
       have hqL : algebraMap K L q ≠ 0 := hκL q hq
       have hρL : algebraMap K L Fr.ρ ≠ 0 := hκL Fr.ρ hρ0
       have hκvL : algebraMap K L κv ≠ 0 := hκL κv hκv0
+      set g3 : K := q * γ / (Fr.ρ * κv) with hg3def
+      have hPg3 : P g3 := by
+        have hrw : g3 = q * γ * Fr.ρ ^ (-1 : ℤ) * κv⁻¹ := by
+          rw [hg3def, zpow_neg_one]
+          field_simp
+        rw [hrw]
+        exact hPreg.mul (hPreg.mul (hPreg.mul hPreg.q_mem hPγ) (hPreg.rzpow _)) hPκvinv
       have hyrel0 : Fr.σ y = algebraMap K L ((q / Fr.ρ ^ 2) ^ 2) * y
           - algebraMap K L (q / Fr.ρ ^ 2 * lam2) * Fr.d τ * z
-          + algebraMap K L c2 * (Fr.d τ) ^ 2 := by
-        rw [hyeq, hδ2, hvinv, hc2def]
+          + algebraMap K L c2 * (Fr.d τ) ^ 2
+          + algebraMap K L g3 * τ ^ (-1 : ℤ) * (Fr.d τ) ^ (3 : ℕ) := by
+        rw [hyeq, hδ2, hvinv, hc2def, hg3def]
         simp only [map_add, map_sub, map_mul, map_div₀, map_pow]
         field_simp
         ring
@@ -233,60 +241,41 @@ theorem level_three_seed (Fr : RittFrame K L) {τ : L} {q : K}
         have h2 : (Fr.ρ : K) ^ (-(4 : ℤ)) = (Fr.ρ ^ (4 : ℕ))⁻¹ := by rw [zpow_neg]; norm_cast
         rw [h1, h2, div_pow, ← pow_mul]
         norm_num [div_eq_mul_inv]
-      by_cases hz0 : z = 0
-      · -- the middle coefficient vanishes: the constant-term equation carries the whole datum
-        have hyrel : Fr.σ y = algebraMap K L ((q / Fr.ρ ^ 2) ^ 2) * y
-            + algebraMap K L c2 * τ ^ (0 : ℕ) * (Fr.d τ) ^ (2 : ℕ) := by
-          rw [hyrel0, hz0, pow_zero]
-          ring
-        have hy0 : y ≠ 0 := by
-          intro h
-          rw [h, map_zero, mul_zero, zero_add, pow_zero, mul_one] at hyrel
-          rcases mul_eq_zero.mp hyrel.symm with hh | hh
-          · exact hc20 ((map_eq_zero_iff _ (algebraMap K L).injective).mp hh)
-          · exact (pow_ne_zero 2 hdτ) hh
-        exact level_two_win_of_monomial_inhom Fr hPreg hqconst hshift hq htr0 htr1 hy0 hymem
-          (pow_ne_zero 2 ha20) hcik4 hc20 hPc2 0 2 hyrel
-      · -- the middle coefficient is a monomial: clearing its pole gives a polynomial datum
-        have hzhom : Fr.σ z = algebraMap K L (q / Fr.ρ ^ 2) * z
-            + (algebraMap K L (0 : K) * Fr.d τ
-              + (algebraMap K L (0 : K) * τ + algebraMap K L (0 : K))) := by
-          rw [map_zero, zero_mul, zero_mul, add_zero, add_zero, add_zero, hzrel, hμz, map_zero]
-          ring
-        rcases level_two_classification_const Fr hqconst hshift hq htr0 htr1 hz0 hzmem
-            ha20 hcik2 hzhom with hritt | ⟨hne, -⟩ |
-            ⟨κz, f₀, f₁, hκz0, hψκz, -, -, -, -, hzform, hj, hl⟩
-        · exact Or.inl hritt
-        · exact absurd ⟨rfl, rfl, rfl⟩ hne
-        have hf₁ : f₁ = 2 := by omega
-        have hf₀ : f₀ = -1 := by omega
-        rw [hf₀, hf₁] at hzform
-        have hzτ : z * τ = algebraMap K L κz * (Fr.d τ) ^ (2 : ℕ) := by
-          rw [hzform, zpow_neg_one]
-          field_simp
-        set μ3 : K := -(q * (q / Fr.ρ ^ 2) * lam2 * κz) with hμ3def
+      have hcik34 : q * (q / Fr.ρ ^ 2) ^ 2 = q ^ (3 : ℤ) * Fr.ρ ^ (-(4 : ℤ)) := by
+        have h3 : (q : K) ^ (3 : ℤ) = q * q ^ (2 : ℤ) := by
+          rw [show (3 : ℤ) = 1 + 2 by norm_num, zpow_add₀ hq, zpow_one]
+        rw [hcik4, h3]
+        ring
+      -- Clearing the pole in `τ` turns `y` into the level-two datum `τ · y`, whose inhomogeneity
+      -- is `μ₃ (dτ)³ + ν₂ τ (dτ)²`.  The middle coefficient `z` contributes through the single
+      -- base scalar `κz` with `z · τ = κz (dτ)²`; `z = 0` is the case `κz = 0`.
+      have key : ∀ κz : K, P κz →
+          z * τ = algebraMap K L κz * (Fr.d τ) ^ (2 : ℕ) →
+          (∃ (u : K) (I J : ℤ), u ≠ 0 ∧ ¬(I = 0 ∧ J = 0) ∧ Fr.ψ u = q ^ I * Fr.ρ ^ J * u) ∨
+          (∃ (u h : K) (I J : ℤ), u ≠ 0 ∧ h ≠ 0 ∧ P h ∧
+            Fr.ψ u = q ^ I * Fr.ρ ^ J * u + h) := by
+        intro κz hPκz hzτ
+        set μ3 : K := -(q * (q / Fr.ρ ^ 2) * lam2 * κz) + q * g3 with hμ3def
         set ν2 : K := q * c2 with hν2def
-        have hμ30 : μ3 ≠ 0 := by
-          rw [hμ3def, neg_ne_zero]
-          exact mul_ne_zero (mul_ne_zero (mul_ne_zero hq ha20) hlam20) hκz0
+        have hν20 : ν2 ≠ 0 := by
+          rw [hν2def]
+          exact mul_ne_zero hq hc20
         have hPμ3 : P μ3 := by
           rw [hμ3def]
-          exact hPreg.neg (hPreg.mul (hPreg.mul (hPreg.mul hPreg.q_mem hPa2) hPlam2)
-            (hPreg.fixed κz hψκz))
+          exact hPreg.add
+            (hPreg.neg (hPreg.mul (hPreg.mul (hPreg.mul hPreg.q_mem hPa2) hPlam2) hPκz))
+            (hPreg.mul hPreg.q_mem hPg3)
         have hPν2 : P ν2 := by rw [hν2def]; exact hPreg.mul hPreg.q_mem hPc2
-        have hτmem : τ ∈ Fr.jetPrefixField τ 2 := by
-          have h := Fr.jet_mem_jetPrefixField (τ := τ) (j := 0) (n := 2) (by omega)
-          simpa using h
         have hYmem : τ * y ∈ Fr.jetPrefixField τ 2 := mul_mem hτmem hymem
         have hYrel : Fr.σ (τ * y) = algebraMap K L (q * (q / Fr.ρ ^ 2) ^ 2) * (τ * y)
             + (algebraMap K L μ3 * τ ^ (0 : ℕ) * (Fr.d τ) ^ (3 : ℕ)
               + algebraMap K L ν2 * τ ^ (1 : ℕ) * (Fr.d τ) ^ (2 : ℕ)) := by
           have hστ : Fr.σ τ = algebraMap K L q * τ := hshift
-          rw [map_mul, hστ, hyrel0, hμ3def, hν2def]
           have hzv : z = algebraMap K L κz * (Fr.d τ) ^ (2 : ℕ) / τ := by
             rw [eq_div_iff hτ0]; exact hzτ
-          rw [hzv]
-          simp only [map_mul, map_neg, map_pow, map_div₀, pow_zero, pow_one, mul_one]
+          rw [map_mul, hστ, hyrel0, hμ3def, hν2def, hzv]
+          simp only [map_add, map_neg, map_mul, map_pow, map_div₀, pow_zero, pow_one, mul_one,
+            zpow_neg_one]
           field_simp
           ring
         have hY0 : τ * y ≠ 0 := by
@@ -304,17 +293,40 @@ theorem level_three_seed (Fr : RittFrame K L) {τ : L} {q : K}
               Function.iterate_zero_apply, Function.iterate_one]
             linear_combination hbr
           have hc := jet_coeffs_eq_zero_of_sum_eq_zero Fr 2 hjetind
-            (fun j : ℕ => if j = 0 then ν2 else μ3) hsum 1 (by omega)
-          simp only [if_neg (by omega : ¬ (1 : ℕ) = 0)] at hc
-          exact hμ30 hc
-        have hcik34 : q * (q / Fr.ρ ^ 2) ^ 2 = q ^ (3 : ℤ) * Fr.ρ ^ (-(4 : ℤ)) := by
-          have h3 : (q : K) ^ (3 : ℤ) = q * q ^ (2 : ℤ) := by
-            rw [show (3 : ℤ) = 1 + 2 by norm_num, zpow_add₀ hq, zpow_one]
-          rw [hcik4, h3]
+            (fun j : ℕ => if j = 0 then ν2 else μ3) hsum 0 (by omega)
+          exact hν20 (by simpa using hc)
+        by_cases hμ30 : μ3 = 0
+        · -- the cubic jet coefficient cancels: a single monomial in `τ (dτ)²` remains
+          have hYrel' : Fr.σ (τ * y) = algebraMap K L (q * (q / Fr.ρ ^ 2) ^ 2) * (τ * y)
+              + algebraMap K L ν2 * τ ^ (1 : ℕ) * (Fr.d τ) ^ (2 : ℕ) := by
+            rw [hYrel, hμ30, map_zero, zero_mul, zero_mul, zero_add]
+          exact level_two_win_of_monomial_inhom Fr hPreg hqconst hshift hq htr0 htr1 hY0 hYmem
+            (mul_ne_zero hq (pow_ne_zero 2 ha20)) hcik34 hν20 hPν2 1 2 hYrel'
+        · exact level_two_win_of_two_monomials Fr hPreg hqconst hshift hq htr0 htr1 hY0 hYmem
+            (mul_ne_zero hq (pow_ne_zero 2 ha20)) hcik34 hμ30 hPμ3 hPν2
+            (by omega : (2 : ℕ) ≠ 3) hYrel
+      by_cases hz0 : z = 0
+      · -- the middle coefficient vanishes: this is `κz = 0`
+        refine key 0 hPreg.zero ?_
+        rw [hz0, zero_mul, map_zero, zero_mul]
+      · -- the middle coefficient is a monomial: clearing its pole gives a polynomial datum
+        have hzhom : Fr.σ z = algebraMap K L (q / Fr.ρ ^ 2) * z
+            + (algebraMap K L (0 : K) * Fr.d τ
+              + (algebraMap K L (0 : K) * τ + algebraMap K L (0 : K))) := by
+          rw [map_zero, zero_mul, zero_mul, add_zero, add_zero, add_zero, hzrel, hμz, map_zero]
           ring
-        exact level_two_win_of_two_monomials Fr hPreg hqconst hshift hq htr0 htr1 hY0 hYmem
-          (mul_ne_zero hq (pow_ne_zero 2 ha20)) hcik34 hμ30 hPμ3 hPν2
-          (by omega : (2 : ℕ) ≠ 3) hYrel
+        rcases level_two_classification_const Fr hqconst hshift hq htr0 htr1 hz0 hzmem
+            ha20 hcik2 hzhom with hritt | ⟨hne, -⟩ |
+            ⟨κz, f₀, f₁, hκz0, hψκz, -, -, -, -, hzform, hj, hl⟩
+        · exact Or.inl hritt
+        · exact absurd ⟨rfl, rfl, rfl⟩ hne
+        have hf₁ : f₁ = 2 := by omega
+        have hf₀ : f₀ = -1 := by omega
+        rw [hf₀, hf₁] at hzform
+        have hzτ : z * τ = algebraMap K L κz * (Fr.d τ) ^ (2 : ℕ) := by
+          rw [hzform, zpow_neg_one]
+          field_simp
+        exact key κz (hPreg.fixed κz hψκz) hzτ
     · -- the middle equation leaves a nonzero multiple of the first jet
       have hz0 : z ≠ 0 := by
         intro h0

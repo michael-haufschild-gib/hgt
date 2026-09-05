@@ -25,7 +25,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {K L : Type*} [Field K] [CharZero K] [Field L] [CharZero L] [Algebra K L]
 
 /-- The jet prefix fields increase with the order. -/
-theorem jetPrefixField_mono (Fr : RittFrame K L) (τ : L) {a b : ℕ} (hab : a ≤ b) :
+private theorem jetPrefixField_mono (Fr : RittFrame K L) (τ : L) {a b : ℕ} (hab : a ≤ b) :
     Fr.jetPrefixField τ a ≤ Fr.jetPrefixField τ b := by
   rw [RittFrame.jetPrefixField, RittFrame.jetPrefixField]
   refine IntermediateField.adjoin.mono K _ _ ?_

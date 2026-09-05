@@ -16,26 +16,26 @@ noncomputable section
 
 /-- The power series `X / (1 + h X)`: the coordinate `X = s⁻¹` seen after the translation
 `s ↦ s + h`. -/
-def shiftSubst (h : ℂ) : PowerSeries ℂ :=
+def laurentShiftSubst (h : ℂ) : PowerSeries ℂ :=
   PowerSeries.X * (1 + PowerSeries.C h * PowerSeries.X)⁻¹
 
 theorem constantCoeff_one_add (h : ℂ) :
     PowerSeries.constantCoeff (1 + PowerSeries.C h * PowerSeries.X : PowerSeries ℂ) = 1 := by
   simp
 
-theorem shiftSubst_mul (h : ℂ) :
-    shiftSubst h * (1 + PowerSeries.C h * PowerSeries.X) = PowerSeries.X := by
+theorem laurentShiftSubst_mul (h : ℂ) :
+    laurentShiftSubst h * (1 + PowerSeries.C h * PowerSeries.X) = PowerSeries.X := by
   have hne : PowerSeries.constantCoeff (1 + PowerSeries.C h * PowerSeries.X : PowerSeries ℂ) ≠ 0 := by
     rw [constantCoeff_one_add]
     exact one_ne_zero
-  rw [shiftSubst, mul_assoc, mul_comm ((1 + PowerSeries.C h * PowerSeries.X : PowerSeries ℂ)⁻¹),
+  rw [laurentShiftSubst, mul_assoc, mul_comm ((1 + PowerSeries.C h * PowerSeries.X : PowerSeries ℂ)⁻¹),
     PowerSeries.mul_inv_cancel _ hne, mul_one]
 
 theorem constantCoeff_shiftSubst (h : ℂ) :
-    PowerSeries.constantCoeff (shiftSubst h) = 0 := by
-  rw [shiftSubst, map_mul, PowerSeries.constantCoeff_X, zero_mul]
+    PowerSeries.constantCoeff (laurentShiftSubst h) = 0 := by
+  rw [laurentShiftSubst, map_mul, PowerSeries.constantCoeff_X, zero_mul]
 
-theorem hasSubst_shiftSubst (h : ℂ) : PowerSeries.HasSubst (shiftSubst h) :=
+theorem hasSubst_shiftSubst (h : ℂ) : PowerSeries.HasSubst (laurentShiftSubst h) :=
   PowerSeries.HasSubst.of_constantCoeff_zero (constantCoeff_shiftSubst h)
 
 /-- The translation substitution as an algebra homomorphism of power series. -/
@@ -43,10 +43,10 @@ def shiftPS (h : ℂ) : PowerSeries ℂ →ₐ[ℂ] PowerSeries ℂ :=
   PowerSeries.substAlgHom (hasSubst_shiftSubst h)
 
 theorem shiftPS_apply (h : ℂ) (F : PowerSeries ℂ) :
-    shiftPS h F = PowerSeries.subst (shiftSubst h) F := by
+    shiftPS h F = PowerSeries.subst (laurentShiftSubst h) F := by
   rw [shiftPS, PowerSeries.coe_substAlgHom]
 
-theorem shiftPS_X (h : ℂ) : shiftPS h PowerSeries.X = shiftSubst h := by
+theorem shiftPS_X (h : ℂ) : shiftPS h PowerSeries.X = laurentShiftSubst h := by
   rw [shiftPS_apply]
   exact PowerSeries.subst_X (hasSubst_shiftSubst h)
 
@@ -62,18 +62,18 @@ theorem powerSeries_inv_eq_of_mul_eq_one {u v : PowerSeries ℂ}
   refine mul_left_cancel₀ hu0 ?_
   rw [huv, PowerSeries.mul_inv_cancel u hu]
 
-theorem shiftSubst_mul_neg (h : ℂ) :
-    shiftSubst (-h) * (1 - PowerSeries.C h * PowerSeries.X) = PowerSeries.X := by
-  have := shiftSubst_mul (-h)
+theorem laurentShiftSubst_mul_neg (h : ℂ) :
+    laurentShiftSubst (-h) * (1 - PowerSeries.C h * PowerSeries.X) = PowerSeries.X := by
+  have := laurentShiftSubst_mul (-h)
   rw [map_neg, neg_mul, ← sub_eq_add_neg] at this
   exact this
 
 theorem one_add_C_mul_shiftSubst_neg (h : ℂ) :
-    (1 + PowerSeries.C h * shiftSubst (-h)) * (1 - PowerSeries.C h * PowerSeries.X) = 1 := by
-  have hb := shiftSubst_mul_neg h
-  calc (1 + PowerSeries.C h * shiftSubst (-h)) * (1 - PowerSeries.C h * PowerSeries.X)
+    (1 + PowerSeries.C h * laurentShiftSubst (-h)) * (1 - PowerSeries.C h * PowerSeries.X) = 1 := by
+  have hb := laurentShiftSubst_mul_neg h
+  calc (1 + PowerSeries.C h * laurentShiftSubst (-h)) * (1 - PowerSeries.C h * PowerSeries.X)
       = (1 - PowerSeries.C h * PowerSeries.X)
-        + PowerSeries.C h * (shiftSubst (-h) * (1 - PowerSeries.C h * PowerSeries.X)) := by ring
+        + PowerSeries.C h * (laurentShiftSubst (-h) * (1 - PowerSeries.C h * PowerSeries.X)) := by ring
     _ = 1 := by rw [hb]; ring
 
 theorem map_inv_of_constantCoeff_ne_zero (φ : PowerSeries ℂ →ₐ[ℂ] PowerSeries ℂ)
@@ -83,29 +83,29 @@ theorem map_inv_of_constantCoeff_ne_zero (φ : PowerSeries ℂ →ₐ[ℂ] Power
   rw [← map_mul, PowerSeries.mul_inv_cancel u hu, map_one]
 
 /-- **The translation substitutions compose to the identity.** -/
-theorem shiftPS_shiftSubst (h : ℂ) : shiftPS (-h) (shiftSubst h) = PowerSeries.X := by
+theorem shiftPS_shiftSubst (h : ℂ) : shiftPS (-h) (laurentShiftSubst h) = PowerSeries.X := by
   have hunit : PowerSeries.constantCoeff
       (1 + PowerSeries.C h * PowerSeries.X : PowerSeries ℂ) ≠ 0 := by
     rw [constantCoeff_one_add]
     exact one_ne_zero
   have himg : shiftPS (-h) (1 + PowerSeries.C h * PowerSeries.X)
-      = 1 + PowerSeries.C h * shiftSubst (-h) := by
+      = 1 + PowerSeries.C h * laurentShiftSubst (-h) := by
     rw [map_add, map_one, map_mul, shiftPS_C, shiftPS_X]
   have hcc : PowerSeries.constantCoeff (shiftPS (-h) (1 + PowerSeries.C h * PowerSeries.X)) ≠ 0 := by
     rw [himg, map_add, map_one, map_mul, constantCoeff_shiftSubst, mul_zero, add_zero]
     exact one_ne_zero
-  rw [shiftSubst, map_mul, shiftPS_X,
+  rw [laurentShiftSubst, map_mul, shiftPS_X,
     map_inv_of_constantCoeff_ne_zero (shiftPS (-h)) hunit hcc, himg]
-  have hinv : (1 + PowerSeries.C h * shiftSubst (-h))⁻¹
+  have hinv : (1 + PowerSeries.C h * laurentShiftSubst (-h))⁻¹
       = 1 - PowerSeries.C h * PowerSeries.X := by
     have h1 := one_add_C_mul_shiftSubst_neg h
     have hcc2 : PowerSeries.constantCoeff
-        (1 + PowerSeries.C h * shiftSubst (-h) : PowerSeries ℂ) ≠ 0 := by
+        (1 + PowerSeries.C h * laurentShiftSubst (-h) : PowerSeries ℂ) ≠ 0 := by
       rw [map_add, map_one, map_mul, constantCoeff_shiftSubst, mul_zero, add_zero]
       exact one_ne_zero
     exact (powerSeries_inv_eq_of_mul_eq_one hcc2 h1).symm
   rw [hinv]
-  exact shiftSubst_mul_neg h
+  exact laurentShiftSubst_mul_neg h
 
 theorem shiftPS_comp (h : ℂ) (F : PowerSeries ℂ) : shiftPS (-h) (shiftPS h F) = F := by
   rw [shiftPS_apply, shiftPS_apply,
@@ -127,7 +127,7 @@ def shiftPSEquiv (h : ℂ) : PowerSeries ℂ ≃+* PowerSeries ℂ where
 @[simp] theorem shiftPSEquiv_apply (h : ℂ) (F : PowerSeries ℂ) :
     shiftPSEquiv h F = shiftPS h F := rfl
 
-theorem map_nonZeroDivisors_of_ringEquiv {R : Type*} [CommRing R] [IsDomain R] (e : R ≃+* R) :
+private theorem map_nonZeroDivisors_of_ringEquiv {R : Type*} [CommRing R] [IsDomain R] (e : R ≃+* R) :
     Submonoid.map e.toMonoidHom (nonZeroDivisors R) = nonZeroDivisors R := by
   ext x
   simp only [Submonoid.mem_map, mem_nonZeroDivisors_iff_ne_zero]
@@ -195,12 +195,12 @@ theorem shiftLaurent_coordS (h : ℂ) :
       (1 + PowerSeries.C h * PowerSeries.X : PowerSeries ℂ) ≠ 0 := by
     rw [constantCoeff_one_add]; exact one_ne_zero
   have hshift : shiftLaurent h laurentX
-      = algebraMap (PowerSeries ℂ) (LaurentSeries ℂ) (shiftSubst h) := by
+      = algebraMap (PowerSeries ℂ) (LaurentSeries ℂ) (laurentShiftSubst h) := by
     rw [laurentX, shiftLaurent_algebraMap, shiftPS_X]
-  have hs : algebraMap (PowerSeries ℂ) (LaurentSeries ℂ) (shiftSubst h)
+  have hs : algebraMap (PowerSeries ℂ) (LaurentSeries ℂ) (laurentShiftSubst h)
       = laurentX * (algebraMap (PowerSeries ℂ) (LaurentSeries ℂ)
         (1 + PowerSeries.C h * PowerSeries.X))⁻¹ := by
-    rw [shiftSubst, map_mul, algebraMap_powerSeries_inv _ hunit, laurentX]
+    rw [laurentShiftSubst, map_mul, algebraMap_powerSeries_inv _ hunit, laurentX]
   rw [coordS, map_inv₀, hshift, hs, mul_inv, inv_inv, map_add, map_one, map_mul,
     ← laurentC, ← laurentX, ← coordS]
   have hcs := coordS_mul_laurentX
@@ -213,10 +213,10 @@ theorem shiftLaurent_coordS (h : ℂ) :
 /-- **The substitution `X ↦ X/(1+hX)` satisfies `X² a′ = a²`**, the identity that makes the
 translation commute with the derivation `d/ds = -X² d/dX`. -/
 theorem sq_mul_derivative_shiftSubst (h : ℂ) :
-    PowerSeries.X ^ 2 * (d⁄dX ℂ) (shiftSubst h) = (shiftSubst h) ^ 2 := by
-  set a : PowerSeries ℂ := shiftSubst h with ha
+    PowerSeries.X ^ 2 * (d⁄dX ℂ) (laurentShiftSubst h) = (laurentShiftSubst h) ^ 2 := by
+  set a : PowerSeries ℂ := laurentShiftSubst h with ha
   set u : PowerSeries ℂ := 1 + PowerSeries.C h * PowerSeries.X with hu
-  have hau : a * u = PowerSeries.X := shiftSubst_mul h
+  have hau : a * u = PowerSeries.X := laurentShiftSubst_mul h
   have hdu : (d⁄dX ℂ) u = PowerSeries.C h := by
     rw [hu, map_add, Derivation.map_one_eq_zero, zero_add, Derivation.leibniz]
     simp
@@ -256,11 +256,11 @@ theorem shiftPS_coordDerivPS (h : ℂ) (F : PowerSeries ℂ) :
   have hkey := sq_mul_derivative_shiftSubst h
   rw [coordDerivPS, coordDerivPS, map_mul, map_neg, map_pow, shiftPS_X, shiftPS_apply,
     shiftPS_apply, hchain]
-  calc -(shiftSubst h) ^ 2 * PowerSeries.subst (shiftSubst h) ((d⁄dX ℂ) F)
-      = -(PowerSeries.X ^ 2 * (d⁄dX ℂ) (shiftSubst h))
-        * PowerSeries.subst (shiftSubst h) ((d⁄dX ℂ) F) := by rw [hkey]
+  calc -(laurentShiftSubst h) ^ 2 * PowerSeries.subst (laurentShiftSubst h) ((d⁄dX ℂ) F)
+      = -(PowerSeries.X ^ 2 * (d⁄dX ℂ) (laurentShiftSubst h))
+        * PowerSeries.subst (laurentShiftSubst h) ((d⁄dX ℂ) F) := by rw [hkey]
     _ = -PowerSeries.X ^ 2 *
-        (PowerSeries.subst (shiftSubst h) ((d⁄dX ℂ) F) * (d⁄dX ℂ) (shiftSubst h)) := by ring
+        (PowerSeries.subst (laurentShiftSubst h) ((d⁄dX ℂ) F) * (d⁄dX ℂ) (laurentShiftSubst h)) := by ring
 
 end
 

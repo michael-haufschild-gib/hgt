@@ -29,7 +29,7 @@ theorem algebraMap_deriv (a : K) :
 
 /-- A differential extension as a module over the lower-field Ore ring. -/
 @[reducible] def extensionModule : Module (DiffOp K) E :=
-  Module.compHom E (mapRingHom (algebraMap K E) algebraMap_deriv)
+  Module.compHom E (mapCoeffsRingHom (algebraMap K E) algebraMap_deriv)
 
 local instance extensionModuleInstance : Module (DiffOp K) E := extensionModule
 
