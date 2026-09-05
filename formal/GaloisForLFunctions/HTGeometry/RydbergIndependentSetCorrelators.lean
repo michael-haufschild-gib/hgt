@@ -95,6 +95,61 @@ theorem sum_single_decay_normalizedScore_damage
   simp_rw [hdamage]
   simp [normalizedScore, div_eq_mul_inv]
 
+/-- Delete an arbitrary set of atoms. Independence survives every loss pattern. -/
+def deleteSet (C : RydbergIndependentConfiguration G) (lost : Finset V) :
+    RydbergIndependentConfiguration G where
+  sites := C.sites \ lost
+  independent := by
+    apply Set.Pairwise.mono _ C.independent
+    intro x hx
+    exact Finset.sdiff_subset hx
+
+omit [Fintype V] [DecidableRel G.Adj] in
+@[simp] theorem sites_deleteSet (C : RydbergIndependentConfiguration G)
+    (lost : Finset V) : (C.deleteSet lost).sites = C.sites \ lost := rfl
+
+omit [Fintype V] [DecidableRel G.Adj] in
+/-- Exact cardinality damage from an arbitrary loss pattern is the number of
+actually occupied atoms in that pattern. -/
+theorem card_deleteSet_add_inter (C : RydbergIndependentConfiguration G)
+    (lost : Finset V) :
+    (C.deleteSet lost).sites.card + (C.sites ∩ lost).card = C.sites.card := by
+  exact Finset.card_sdiff_add_card_inter C.sites lost
+
+omit [Fintype V] [DecidableRel G.Adj] in
+theorem deleteSet_cardinality_damage (C : RydbergIndependentConfiguration G)
+    (lost : Finset V) :
+    (C.sites.card : ℝ) - ((C.deleteSet lost).sites.card : ℝ) =
+      ((C.sites ∩ lost).card : ℝ) := by
+  have h : ((C.deleteSet lost).sites.card : ℝ) +
+      ((C.sites ∩ lost).card : ℝ) = (C.sites.card : ℝ) := by
+    exact_mod_cast C.card_deleteSet_add_inter lost
+  linarith
+
+omit [Fintype V] [DecidableRel G.Adj] in
+theorem deleteSet_normalizedScore_damage
+    (C : RydbergIndependentConfiguration G) (lost : Finset V) (benchmark : ℕ) :
+    C.normalizedScore benchmark - (C.deleteSet lost).normalizedScore benchmark =
+      (C.sites ∩ lost).card / ((benchmark : ℝ) + 1) := by
+  rw [normalizedScore, normalizedScore]
+  calc
+    (C.sites.card : ℝ) / ((benchmark : ℝ) + 1) -
+        ((C.deleteSet lost).sites.card : ℝ) / ((benchmark : ℝ) + 1) =
+        ((C.sites.card : ℝ) - ((C.deleteSet lost).sites.card : ℝ)) /
+          ((benchmark : ℝ) + 1) := by ring
+    _ = (C.sites ∩ lost).card / ((benchmark : ℝ) + 1) := by
+      rw [C.deleteSet_cardinality_damage lost]
+
+omit [Fintype V] [DecidableRel G.Adj] in
+/-- Independent decay losses compose by set union, hence their order is irrelevant. -/
+theorem deleteSet_deleteSet (C : RydbergIndependentConfiguration G)
+    (lost₁ lost₂ : Finset V) :
+    (C.deleteSet lost₁).deleteSet lost₂ = C.deleteSet (lost₁ ∪ lost₂) := by
+  cases C
+  simp [deleteSet]
+  ext v
+  simp [and_assoc]
+
 end RydbergIndependentConfiguration
 
 /-- A graph edge packaged as a blockade pair, eliminating adjacency hypotheses downstream. -/

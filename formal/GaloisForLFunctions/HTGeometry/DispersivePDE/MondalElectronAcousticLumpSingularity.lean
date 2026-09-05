@@ -20,7 +20,9 @@ theorem mondalNegativeBetaLumpOffset_neg (betaLog gammaLog r : ℝ) :
   have hgamma : 0 < Real.exp gammaLog := Real.exp_pos gammaLog
   have hbeta : 0 < Real.exp betaLog := Real.exp_pos betaLog
   have hnorm : 0 < 1 + r ^ 2 := by nlinarith [sq_nonneg r]
-  positivity
+  have hleft : 3 * (-Real.exp betaLog) / Real.exp gammaLog < 0 :=
+    div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by norm_num) (neg_lt_zero.mpr hbeta)) hgamma
+  exact mul_neg_of_neg_of_pos hleft (pow_pos hnorm 3)
 
 noncomputable def mondalLumpZeroRadius (betaLog gammaLog r : ℝ) : ℝ :=
   Real.sqrt (-mondalNegativeBetaLumpOffset betaLog gammaLog r)
@@ -30,7 +32,7 @@ noncomputable def mondalLumpZeroX
   mondalLumpH r b * (mondalLumpZeroRadius betaLog gammaLog r - d) + b * m
 
 noncomputable def mondalLumpZeroY
-    (betaLog gammaLog r b d m : ℝ) : ℝ :=
+    (betaLog gammaLog r _b d m : ℝ) : ℝ :=
   -r * (mondalLumpZeroRadius betaLog gammaLog r - d) - m
 
 theorem mondalLumpZero_affineF (betaLog gammaLog r b d m : ℝ) :
@@ -57,9 +59,9 @@ theorem mondalCorrectedNegativeBetaLumpTau_has_zero
     le_of_lt (neg_pos.mpr (mondalNegativeBetaLumpOffset_neg betaLog gammaLog r))
   simp only [mondalCorrectedLumpTauJet, mondalQuadraticTauJet, mondalQuadraticTau]
   rw [mondalLumpZero_affineF, mondalLumpZero_affineG]
-  simp only [zero_pow, zero_add]
-  unfold mondalLumpZeroRadius mondalNegativeBetaLumpOffset
+  unfold mondalLumpZeroRadius
   rw [Real.sq_sqrt hnonneg]
+  unfold mondalNegativeBetaLumpOffset
   ring
 
 noncomputable def mondalPrintedLumpWitness : RealEvolutionJetKP :=

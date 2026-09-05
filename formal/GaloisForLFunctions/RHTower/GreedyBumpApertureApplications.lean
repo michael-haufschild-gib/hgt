@@ -11,7 +11,7 @@ finite Gram metrics already built from Möbius aperture and valuation packets.
 
 open Matrix
 
-namespace GaloisForLFunctions.RHTower
+namespace RHTower
 
 open GaloisForLFunctions.HTGeometry
 
@@ -101,4 +101,4 @@ theorem greedyBump_apertureMetric_bias_radicalInvariant
 
 end
 
-end GaloisForLFunctions.RHTower
+end RHTower

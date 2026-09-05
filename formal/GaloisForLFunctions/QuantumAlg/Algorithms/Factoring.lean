@@ -11,6 +11,7 @@ public import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.Common
 public import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.ShorStyle
 public import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.EkeraHastadStyle
 public import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.FormulaEnvelope
+public import GaloisForLFunctions.QuantumAlg.Algorithms.Factoring.RydbergShotBudgetBridge
 
 /-!
 # RSA-style factoring resource adapters

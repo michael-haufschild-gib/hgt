@@ -12,6 +12,8 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaSquareLattice
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaSquareNondegenerate
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaHalfUniformization
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaNegativeOneUniformization
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaComplementTransport
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTwoUniformization
 
 /-!
 # Closed application atlas for arXiv:2607.21750
@@ -165,6 +167,27 @@ structure ClosedAtlas : Prop where
   transportedCurve : ∀ (m : NegativeModulus) (q₀ : ℝˣ),
     weierstrassCurve (transportedClassicalParameters m q₀) =
       weierstrassCurve (negativeParameters m q₀)
+  complementInvolutive : ∀ P : Parameters,
+    complementParameters (complementParameters P) = P
+  complementRoot₁ : ∀ P : Parameters,
+    e₁ (complementParameters P) = -e₃ P
+  complementRoot₂ : ∀ P : Parameters,
+    e₂ (complementParameters P) = -e₂ P
+  complementRoot₃ : ∀ P : Parameters,
+    e₃ (complementParameters P) = -e₁ P
+  complementInvariant₂ : ∀ P : Parameters,
+    g₂ (complementParameters P) = g₂ P
+  complementInvariant₃ : ∀ P : Parameters,
+    g₃ (complementParameters P) = -g₃ P
+  complementDiscriminant : ∀ P : Parameters,
+    discriminant (complementParameters P) = discriminant P
+  quarterTurnInvariant₂ : ∀ L : PeriodPair,
+    (scalePeriodPair complexIUnit L).g₂ = L.g₂
+  quarterTurnInvariant₃ : ∀ L : PeriodPair,
+    (scalePeriodPair complexIUnit L).g₃ = -L.g₃
+  quarterTurnDiscriminant : ∀ L : PeriodPair,
+    (analyticWeierstrassCurve (scalePeriodPair complexIUnit L)).Δ =
+      (analyticWeierstrassCurve L).Δ
   squareLatticeQuarterTurn :
     (scalePeriodPair complexIUnit squarePeriodPair).lattice = squarePeriodPair.lattice
   squareLatticeInvariant₃ : squarePeriodPair.g₃ = 0
@@ -258,6 +281,34 @@ structure ClosedAtlas : Prop where
         (halfShiftWeierstrass (negativeOneUniformizationPeriodPair q₀) x)
         (halfShiftWeierstrassPrime (negativeOneUniformizationPeriodPair q₀) x /
           (2 * (negativeOneUniformizationPeriodPair q₀).ω₁))
+  twoIsComplementNegativeOne : ∀ q₀ : ℝˣ,
+    twoParameters q₀ = complementParameters (negativeParameters negativeOneModulus q₀)
+  twoNegativeOneInvariant₂ : ∀ q₀ : ℝˣ,
+    g₂ (twoParameters q₀) = g₂ (negativeParameters negativeOneModulus q₀)
+  twoInvariant₃Zero : ∀ q₀ : ℝˣ, g₃ (twoParameters q₀) = 0
+  twoUniformizedInvariant₂ : ∀ q₀ : ℝˣ,
+    (twoUniformizationPeriodPair q₀).g₂ = (g₂ (twoParameters q₀) : ℂ)
+  twoUniformizedInvariant₃ : ∀ q₀ : ℝˣ,
+    (twoUniformizationPeriodPair q₀).g₃ = (g₃ (twoParameters q₀) : ℂ)
+  twoUniformizedCurve : ∀ q₀ : ℝˣ,
+    analyticWeierstrassCurve (twoUniformizationPeriodPair q₀) =
+      (weierstrassCurve (twoParameters q₀)).map Complex.ofRealHom
+  twoUniformizedNonsingular : ∀ q₀ : ℝˣ,
+    (analyticWeierstrassCurve (twoUniformizationPeriodPair q₀)).Δ ≠ 0
+  twoUniformizedEquation : ∀ (q₀ : ℝˣ) (x : ℝ),
+    halfShiftWeierstrassPrime (twoUniformizationPeriodPair q₀) x ^ 2 =
+      (twoUniformizationPeriodPair q₀).ω₁ ^ 2 *
+        (4 * halfShiftWeierstrass (twoUniformizationPeriodPair q₀) x ^ 3 -
+          (g₂ (twoParameters q₀) : ℂ) *
+            halfShiftWeierstrass (twoUniformizationPeriodPair q₀) x -
+          (g₃ (twoParameters q₀) : ℂ))
+  twoUniformizedPeriodicity : ∀ q₀ : ℝˣ,
+    Function.Periodic (halfShiftWeierstrass (twoUniformizationPeriodPair q₀)) 1
+  twoUniformizedTracePoint : ∀ (q₀ : ℝˣ) (x : ℝ),
+    ((weierstrassCurve (twoParameters q₀)).map Complex.ofRealHom).toAffine.Equation
+      (halfShiftWeierstrass (twoUniformizationPeriodPair q₀) x)
+      (halfShiftWeierstrassPrime (twoUniformizationPeriodPair q₀) x /
+        (2 * (twoUniformizationPeriodPair q₀).ω₁))
   modulusLeftInverse : ∀ m : NegativeModulus,
     classicalToExtended (extendedToClassical m) = m
   modulusRightInverse : ∀ n : ClassicalModulus,
@@ -370,6 +421,16 @@ theorem closedAtlas : ClosedAtlas where
   transportedInvariant₃ := transported_g₃
   transportedDiscriminant := transported_discriminant
   transportedCurve := transported_weierstrassCurve
+  complementInvolutive := complementParameters_involutive
+  complementRoot₁ := complement_e₁
+  complementRoot₂ := complement_e₂
+  complementRoot₃ := complement_e₃
+  complementInvariant₂ := complement_g₂
+  complementInvariant₃ := complement_g₃
+  complementDiscriminant := complement_discriminant
+  quarterTurnInvariant₂ := scaleIPeriodPair_g₂
+  quarterTurnInvariant₃ := scaleIPeriodPair_g₃
+  quarterTurnDiscriminant := scaleIPeriodPair_discriminant
   squareLatticeQuarterTurn := scaleI_square_lattice
   squareLatticeInvariant₃ := squarePeriodPair_g₃_zero
   halfModulusInvariant₃ := brizard_half_modulus_g₃_zero
@@ -408,6 +469,16 @@ theorem closedAtlas : ClosedAtlas where
   negativeOneUniformizedEquation := negativeOneUniformization_trace_equation
   negativeOneUniformizedPeriodicity := negativeOneUniformization_trace_periodic
   negativeOneUniformizedTracePoint := negativeOneUniformization_trace_on_brizard_curve
+  twoIsComplementNegativeOne := twoParameters_eq_complement_negativeOne
+  twoNegativeOneInvariant₂ := twoParameters_g₂_eq_negativeOne
+  twoInvariant₃Zero := twoParameters_g₃_zero
+  twoUniformizedInvariant₂ := twoUniformizationPeriodPair_g₂
+  twoUniformizedInvariant₃ := twoUniformizationPeriodPair_g₃
+  twoUniformizedCurve := twoUniformization_curve
+  twoUniformizedNonsingular := twoUniformization_curve_discriminant_ne_zero
+  twoUniformizedEquation := twoUniformization_trace_equation
+  twoUniformizedPeriodicity := twoUniformization_trace_periodic
+  twoUniformizedTracePoint := twoUniformization_trace_on_brizard_curve
   modulusLeftInverse := classicalToExtended_extendedToClassical
   modulusRightInverse := extendedToClassical_classicalToExtended
   modulusComplement := transformedComplement
