@@ -25,7 +25,7 @@ open GaloisForLFunctions.HTGeometry.FDNLS
 
 /-- Closed atlas spanning the new PDE profiles and pre-existing corpus soliton structures. -/
 structure ClosedDispersiveAtlas : Prop where
-  brizardElastica : BrizardElastica.ClosedAtlas
+  brizardElastica : BrizardElastica.ClosedAtlas.{0}
   kdv : SolvesKdV kdvSolitonJet
   potentialKdV : SolvesPotentialKdV potentialKdVPulseJet
   modifiedKdV : SolvesModifiedKdV modifiedKdVKinkJet

@@ -84,6 +84,8 @@ F20e — Must distinguish an infinite nonlinear history from its vanishing. In a
 
 F20f — Must distinguish control of every interaction depth from a relation between arithmetic histories. For each fixed modulus `p≥1` and `Re s>1/2`, the literal jumps `(1−p·1_(p divides n))n^(−s)` generate one operator-norm convergent history on bounded functions of all finite words, retaining every strict iterated word in their real/imaginary parts. A single cutoff controls all word lengths simultaneously; phase encoding is injective and its two letter actions do not commute (`ArithmeticWordHistory.all_word_lengths_uniform`, `phaseLetters_injective`, `letters_do_not_commute` in `EulerDeletionWordHistory`, Lean). This uses the actual discrete factors `1+L(jump)`, not replacement by exponentials. A zeta zero closes its first level (`zeta_zero_closes_first_level`); no higher-level vanishing, uniformity in modulus/exponent, or cross-modulus selection law is proved. In this construction, merely adding arbitrarily high interaction orders is no longer a missing existence theorem.
 
+F20g — Must preserve movement of the source argument when transferring an arithmetic law. Literal integer carries `c_n(x)=floor(nx)−n floor(x)` have zero-or-one additive defects and `0≤c_n(x)≤n`, but obey `c_(mn)(x)=c_m(nx)+m c_n(x)`. The untwisted rule `c_(mn)=m c_n+n c_m` holds for all integer inputs iff `x` is an integer, when every carry is zero. Their quadratic lift retains the transported argument and weight `m²`; their exact phase family `exp(i t c_n(x))` has norm one at every scale. Thus this bounded-carry construction cannot supply a nonzero instance of F20b by freezing its argument or using bounded phase as a bound on the unwrapped response. This does not exclude transport-aware laws or identify `x` with a Xi parameter. Evidence: `carry_add_defect`, `carry_bounds`, `untwisted_leibniz_iff_integer`, `second_mul`, `phase_mul`, `norm_phase` in `IntegerCarryTransport` (namespace `HTGeometry.IntegerCarryTransport`, Lean).
+
 F21 — Execution/observation is lax in two independent places. Source histories can fail to splice; a later noninjective observer can create an additional false splice.
 
 F22 — Grammar is graded and reflexive. Repairing one failure can generate next legal failure context. Finite or set-level reflexivity has not generated arithmetic cofinal selection.
@@ -263,127 +265,45 @@ F99 — Paired irregular unitarity is strictly weaker than constituentwise purit
 
 F100 — Smooth completion can hide two exact relative characters. The raw Stokes current and its polar countercurrent complete to a wall-continuous codiagonal while their difference tends to `8m`, with exact Xi multiplicity `m`. At second order, Laurent ghost and cyclic anomaly have zero codiagonal for every Xi divisor, while their relative Ward character vanishes exactly on the critical line (`XiResolvedStokesWardCharacter`).
 
-F101 — A nonzero all-orders-flat boundary charge is genuinely nonanalytic in augmentation scale.
-For analytic germs, flatness beyond every Rees grade is equivalent to local zero. The actual
-positive-charge reflected prime–Wold gauge is nonzero and all-orders flat, hence cannot be the
-boundary sampling of a holomorphic augmentation germ (`ReesAnalyticQuasianalyticity`).
+F101 — A nonzero all-orders-flat boundary charge is genuinely nonanalytic in augmentation scale. For analytic germs, flatness beyond every Rees grade is equivalent to local zero. The actual positive-charge reflected prime–Wold gauge is nonzero and all-orders flat, hence cannot be the boundary sampling of a holomorphic augmentation germ (`ReesAnalyticQuasianalyticity`).
 
-F102 — Nested source formation performs a legal cancellation that external centering cannot.
-Subtracting two nested literal Ramaré aperture forms cancels all scalar mass already present at the
-smaller aperture. The exact remainder consists only of polarization against newly activated
-integers, the activation-seam norm, and old-minus-new normalized incidence energy; the integrated
-physical off-diagonal obeys the same identity (`RouteERamareNestedApertureScalarLocalization`).
+F102 — Nested source formation performs a legal cancellation that external centering cannot. Subtracting two nested literal Ramaré aperture forms cancels all scalar mass already present at the smaller aperture. The exact remainder consists only of polarization against newly activated integers, the activation-seam norm, and old-minus-new normalized incidence energy; the integrated physical off-diagonal obeys the same identity (`RouteERamareNestedApertureScalarLocalization`).
 
-F103 — Literal nonabelian depth data can survive completion exactly. In the actual Q8 quadratic
-source, the central involution is detected by the coefficient-faithful character as `-1`, occupies
-lower ramification levels zero through two, disappears at level three, and has the same break after
-adic completion and local-CFT comparison (`DeningerQ8ActualQuadraticSourceHigherRamification`).
-This is a source-depth/orientation fragment, not a completed-Xi occurrence law.
+F103 — Literal nonabelian depth data can survive completion exactly. In the actual Q8 quadratic source, the central involution is detected by the coefficient-faithful character as `-1`, occupies lower ramification levels zero through two, disappears at level three, and has the same break after adic completion and local-CFT comparison (`DeningerQ8ActualQuadraticSourceHigherRamification`). This is a source-depth/orientation fragment, not a completed-Xi occurrence law.
 
-F104 — A pole-clearing gauge is exactly invisible to the relevant rectangle boundary functional
-when its zero lies outside the rectangle. Multiplying a detector by that gauge changes neither the
-weighted Littlewood boundary charge nor its height growth; detector, mollifier, and horizontal
-boundary terms remain (`LittlewoodPoleGaugeCancellation`, `LevinsonMollifiedEdges`).
+F104 — A pole-clearing gauge is exactly invisible to the relevant rectangle boundary functional when its zero lies outside the rectangle. Multiplying a detector by that gauge changes neither the weighted Littlewood boundary charge nor its height growth; detector, mollifier, and horizontal boundary terms remain (`LittlewoodPoleGaugeCancellation`, `LevinsonMollifiedEdges`).
 
-F105 — Refinement conserves rather than annihilates defect in the abstract corpus. Binary fusion
-splits total defect into local block defects plus defect between block resultants; fine formation
-energy is coarse endpoint energy plus centred fluctuation energy. The nested Ramaré law is a
-literal arithmetic instance with activation seam and incidence-energy variation
-(`NormingFaceFusion`, `SourceFormationHarmonicMechanics`,
-`RouteERamareNestedApertureScalarLocalization`).
+F105 — Refinement conserves rather than annihilates defect in the abstract corpus. Binary fusion splits total defect into local block defects plus defect between block resultants; fine formation energy is coarse endpoint energy plus centred fluctuation energy. The nested Ramaré law is a literal arithmetic instance with activation seam and incidence-energy variation (`NormingFaceFusion`, `SourceFormationHarmonicMechanics`, `RouteERamareNestedApertureScalarLocalization`).
 
-F106 — A zeta zero removes one base observation, not the lifted hierarchy. In the strict right
-half of the critical strip, the heat–aperture echo ladder has nonzero source coefficients and every
-positive-depth value is nonzero; `zeta(s)=0` is exactly disappearance of rung zero. Even and odd
-subsequences separately obey closed rising-factorial laws from their initial rungs
-(`HeatApertureEchoParity`).
+F106 — A zeta zero removes one base observation, not the lifted hierarchy. In the strict right half of the critical strip, the heat–aperture echo ladder has nonzero source coefficients and every positive-depth value is nonzero; `zeta(s)=0` is exactly disappearance of rung zero. Even and odd subsequences separately obey closed rising-factorial laws from their initial rungs (`HeatApertureEchoParity`).
 
-F107 — FE and Schwarz comparison already gives a complete one-coordinate orientation detector.
-For every prime, the heat–aperture coefficient difference is the canonical prime seam up to an
-explicit nonzero factor; equality at one prime is equivalent to `Re(s)=1/2`, and checking all primes
-adds nothing beyond prime two. Equality of the actual degree-one Euler local fluxes and equality of
-the actual Euler-point tangents have the same zero locus. Pointwise existence of a radially
-calibrated dagger-confluent repair is likewise equivalent to `Re(s)=1/2`
-(`HeatAperturePrimeSeamReflection`, `ConstitutiveDaggerConfluence`).
+F107 — FE and Schwarz comparison already gives a complete one-coordinate orientation detector. For every prime, the heat–aperture coefficient difference is the canonical prime seam up to an explicit nonzero factor; equality at one prime is equivalent to `Re(s)=1/2`, and checking all primes adds nothing beyond prime two. Equality of the actual degree-one Euler local fluxes and equality of the actual Euler-point tangents have the same zero locus. Pointwise existence of a radially calibrated dagger-confluent repair is likewise equivalent to `Re(s)=1/2` (`HeatAperturePrimeSeamReflection`, `ConstitutiveDaggerConfluence`).
 
-F108 — Monotone Schrödinger dynamics does not orient rank-three reflected Hankel curvature. The
-positive even entire profile `exp(-z²-z⁴/6)` satisfies `f''=Vf`, has `V(0)<0`, and has strictly
-increasing `V` on the positive ray, yet its central signed rank-three determinant is `-87040`
-(`TCDMonotoneSchrodingerD1NoGo`). Thus the proved monotonicity of the actual theta Schrödinger
-potential cannot by itself settle the remaining TCD sign.
+F108 — Monotone Schrödinger dynamics does not orient rank-three reflected Hankel curvature. The positive even entire profile `exp(-z²-z⁴/6)` satisfies `f''=Vf`, has `V(0)<0`, and has strictly increasing `V` on the positive ray, yet its central signed rank-three determinant is `-87040` (`TCDMonotoneSchrodingerD1NoGo`). Thus the proved monotonicity of the actual theta Schrödinger potential cannot by itself settle the remaining TCD sign.
 
-F109 — Formation, source-generated execution, completion genealogy, operation descent, history,
-properness, and intervention grammar are already explicit universal-law programmes with exact
-calibrations. Their selection gates all retain an unproved literal-source premise. Naming one of
-those mechanisms again does not change the logical frontier.
+F109 — Formation, source-generated execution, completion genealogy, operation descent, history, properness, and intervention grammar are already explicit universal-law programmes with exact calibrations. Their selection gates all retain an unproved literal-source premise. Naming one of those mechanisms again does not change the logical frontier.
 
-F110 — Audited operations fall into three anomaly-support classes. Faithful recovery, gauge, and
-functional-equation transport retain horizontal grade; positive, scalar, and recurrent observers
-forget part of it; admissible Gamma-cell multiplication can introduce arbitrary off-line divisor
-without violating the ambient structural laws. Corpus search found no literal pre-divisor
-operation that both restricts which horizontal grades occur in the Xi divisor and is proved before
-occurrence specialization.
+F110 — Audited operations fall into three anomaly-support classes. Faithful recovery, gauge, and functional-equation transport retain horizontal grade; positive, scalar, and recurrent observers forget part of it; admissible Gamma-cell multiplication can introduce arbitrary off-line divisor without violating the ambient structural laws. Corpus search found no literal pre-divisor operation that both restricts which horizontal grades occur in the Xi divisor and is proved before occurrence specialization.
 
-F111 — Base-preserving does not mean support-preserving. In `Set/A`, the base-preserving maps
-`f(a,*)=(a,a)` and `g(a,*)=(a,0)` have equalizer supported exactly at `a=0`. Products, split
-recoveries, and fibrewise surjections preserve inhabited support, but equalizers and compatibility
-loci can select a fibre. The unresolved issue is source generation of the relation, not whether its
-maps are vertical.
+F111 — Base-preserving does not mean support-preserving. In `Set/A`, the base-preserving maps `f(a,*)=(a,a)` and `g(a,*)=(a,0)` have equalizer supported exactly at `a=0`. Products, split recoveries, and fibrewise surjections preserve inhabited support, but equalizers and compatibility loci can select a fibre. The unresolved issue is source generation of the relation, not whether its maps are vertical.
 
-F112 — “Endogenous compatibility” is not a restriction unless its generation grammar is fixed.
-`SourceCoherentInterventionSynchronization` already packages source response equalizers and proves
-zero selection from triviality plus compatibility. Conversely,
-`ConstitutiveEndogenousCompatibility` proves that one state-indexed test can realize every
-transition system, naturally under relabelling. Thus an unconstrained source-indexed relation can
-hide the desired conclusion verbatim.
+F112 — “Endogenous compatibility” is not a restriction unless its generation grammar is fixed. `SourceCoherentInterventionSynchronization` already packages source response equalizers and proves zero selection from triviality plus compatibility. Conversely, `ConstitutiveEndogenousCompatibility` proves that one state-indexed test can realize every transition system, naturally under relabelling. Thus an unconstrained source-indexed relation can hide the desired conclusion verbatim.
 
-F113 — Finitary-versus-cofinal birth and compact escape are already closed mechanics, not a new
-field pivot. Finite words, even from arbitrarily many monotone extensive finitary formations,
-retain finite ancestry and cannot realize the concrete cofinal-birth closure. The corpus already
-retired bare compact-counterwitness escape after identifying formation depth as its diverging
-resource (`ConstitutiveFinitaryFormation`; `ULF-GTM-FAILED-2`).
+F113 — Finitary-versus-cofinal birth and compact escape are already closed mechanics, not a new field pivot. Finite words, even from arbitrarily many monotone extensive finitary formations, retain finite ancestry and cannot realize the concrete cofinal-birth closure. The corpus already retired bare compact-counterwitness escape after identifying formation depth as its diverging resource (`ConstitutiveFinitaryFormation`; `ULF-GTM-FAILED-2`).
 
-F114 — Passing from one zero to the whole divisor does not cross the frontier. Corpus already has
-complete Xi-divisor tomography, global all-zero energy criteria, and the canonical proposition
-`XiSourceForcedHorizontalVanishing`; its entropy, Gamma/co-Poisson, Gaussian-Wronskian, and RH
-forms are proved equivalent. The missing assertion remains global source-forced vanishing itself.
+F114 — Passing from one zero to the whole divisor does not cross the frontier. Corpus already has complete Xi-divisor tomography, global all-zero energy criteria, and the canonical proposition `XiSourceForcedHorizontalVanishing`; its entropy, Gamma/co-Poisson, Gaussian-Wronskian, and RH forms are proved equivalent. The missing assertion remains global source-forced vanishing itself.
 
-F115 — Source scale escape is already an exact horizontal-grade coordinate. Every nonzero grade
-has unbounded nonlinear prime-clock work, while bounded work is equivalent pointwise and globally
-to critical placement and RH (`SourceHorizontalWoldPrimeClockProfile`). Scale covariance therefore
-supplies a sharp receiver/properness endpoint but not the unconditional boundedness producer.
+F115 — Source scale escape is already an exact horizontal-grade coordinate. Every nonzero grade has unbounded nonlinear prime-clock work, while bounded work is equivalent pointwise and globally to critical placement and RH (`SourceHorizontalWoldPrimeClockProfile`). Scale covariance therefore supplies a sharp receiver/properness endpoint but not the unconditional boundedness producer.
 
-F116 — Geometry of incompatible cofinal directions is already present. Formation/completion
-exchange defects, noncommuting sequential observer-time limits, mixed prime/depth filters, and
-`InterfinityGeometry` model stable primitives, death regions, and source-marked exactness. The
-source-marked Lawson topology is proved to join loss of exactness with acquisition of stable
-primitives (`SourceMarkedInterfinityBridge`). This explains order-of-limits shadows but does not
-annihilate their literal arithmetic class.
+F116 — Geometry of incompatible cofinal directions is already present. Formation/completion exchange defects, noncommuting sequential observer-time limits, mixed prime/depth filters, and `InterfinityGeometry` model stable primitives, death regions, and source-marked exactness. The source-marked Lawson topology is proved to join loss of exactness with acquisition of stable primitives (`SourceMarkedInterfinityBridge`). This explains order-of-limits shadows but does not annihilate their literal arithmetic class.
 
-F117 — Additive/multiplicative half-density unitarity is already an exact selector interface.
-Normalized dilation becomes additive translation, the prime/Gamma source character has modulus
-one exactly at neutral horizontal grade, and fixed Gamma boundary is equivalent to Meyer-character
-unitarity on retained Xi copies. Existing ax+b, dilation/translation, and semilocal spectral
-constructions do not prove that Xi occurrence must enter this unitary sector.
+F117 — Additive/multiplicative half-density unitarity is already an exact selector interface. Normalized dilation becomes additive translation, the prime/Gamma source character has modulus one exactly at neutral horizontal grade, and fixed Gamma boundary is equivalent to Meyer-character unitarity on retained Xi copies. Existing ax+b, dilation/translation, and semilocal spectral constructions do not prove that Xi occurrence must enter this unitary sector.
 
-F118 — Countermodels isolate exact occurrence, not asymptotic density, as arithmetic information.
-An entire order-one, FE-symmetric, nonnegative generalized Euler system can have prescribed
-off-line zeros while differing from zeta in pole order; a Beurling system restores a simple pole
-and achieves `N(x) = rho*x + O(x^theta)` for every `theta > 0` while retaining arbitrary off-line
-zeros. The surviving literal distinction is which integers occur: `N(x) = floor x`, not its error
-scale (`EntireFunctionalEquationOffLine`, `BeurlingRegularIntegersOffLineZeros`).
+F118 — Countermodels isolate exact occurrence, not asymptotic density, as arithmetic information. An entire order-one, FE-symmetric, nonnegative generalized Euler system can have prescribed off-line zeros while differing from zeta in pole order; a Beurling system restores a simple pole and achieves `N(x) = rho*x + O(x^theta)` for every `theta > 0` while retaining arbitrary off-line zeros. The surviving literal distinction is which integers occur: `N(x) = floor x`, not its error scale (`EntireFunctionalEquationOffLine`, `BeurlingRegularIntegersOffLineZeros`).
 
-F119 — Integral multiplicativity plus a nonvanishing strip completion factor still does not select.
-`GammaFECell` contains zeta, is closed under convolution by an integral multiplicative finite
-Dirichlet polynomial, and thereby contains `zeta*dzo` with a simple off-line zero. Exact coefficients
-`a_n = 1` distinguish zeta from that cell, but this coefficient identity names the literal source;
-it does not constrain the divisor.
+F119 — Integral multiplicativity plus a nonvanishing strip completion factor still does not select. `GammaFECell` contains zeta, is closed under convolution by an integral multiplicative finite Dirichlet polynomial, and thereby contains `zeta*dzo` with a simple off-line zero. Exact coefficients `a_n = 1` distinguish zeta from that cell, but this coefficient identity names the literal source; it does not constrain the divisor.
 
-F120 — Additive and multiplicative readings separate at a Xi zero. Euler--Maclaurin additive data
-contains a nonempty local zero certificate while every pinned finite-prime source map, finite Euler
-atlas divisor, and multiplicative sigma jet is trivial there
-(`additive_carrier_multiplicative_source_mismatch_positive`). Divisor occurrence is therefore a
-joint-operation effect invisible to either finite multiplicative marginal alone.
+F120 — Additive and multiplicative readings separate at a Xi zero. Euler--Maclaurin additive data contains a nonempty local zero certificate while every pinned finite-prime source map, finite Euler atlas divisor, and multiplicative sigma jet is trivial there (`additive_carrier_multiplicative_source_mismatch_positive`). Divisor occurrence is therefore a joint-operation effect invisible to either finite multiplicative marginal alone.
 
 F121 — Multiplicative ancestry first becomes visible in interaction order. A pure prime tone has
 zero cubic moment, while the multiplicatively forced prime-square harmonic gives a strictly
@@ -2790,11 +2710,8 @@ the internal Xi class, and incompatible with arbitrary compensators. It must exp
 covariance is legitimately broken or replaced. Defining the module over `Z[T,T^-1]/(curvature)`,
 postulating a null-homotopy, or assuming support on the neutral fibre is circular.
 
-F349 — Literal prime-residue formation is bigraded by valuation depth and interaction support.
-Every finite rectangle is jointly differentially independent, each support sector is relatively
-hypertranscendental over its complement, fusion adds depth and unions support, and overlap lowers
-interaction breadth. Completion creates an unbounded next valuation layer; it does not collapse
-the grading.
+F349 — Must distinguish differential-algebraic independence from freedom to choose arithmetic layers independently. Literal prime-residue formation is bigraded by valuation depth and interaction support: finite rectangles are jointly differentially independent, each support sector is relatively hypertranscendental over its complement, fusion adds depth and unions support, and overlap lowers breadth.
+For tail-complete finite residue profiles, fusing with the fixed depth-zero source-unit carrier determines the entire next layer, although that layer is relatively hypertranscendental over the complete preceding differential field. The canonical minimal derivation- and carrier-fusion-closed field containing depth zero already exists and contains every layer (`PrimeValuationFusionCompletionLaw`). For actual pairwise-coprime unit residues its finite depth-`d` rectangles have exact rank `d * product_i phi(q_i)`. This is closure of upper-end meromorphic germs, not a norm estimate or an admissibility theorem for completed Xi; it creates unbounded depth without collapsing the grading.
 
 F350 — The corrected completed-Xi `+2` shift is hypertranscendental over the field generated by
 the genuine coordinate and every prime-zeta valuation layer. No finite or bounded-order transport
@@ -4744,7 +4661,7 @@ MUST-202 — It must prove the covariance-return bound, not another transfer: bo
 F645 — Born probabilities and every diagonal-energy Born variance can remain unchanged under unimodular Euler twists carrying prescribed Helson zeros (`exists_phase_fisher_blind_with_prescribed_zero`, Lean). This does not exclude phase-sensitive interferometry or all possible QFI experiments.
 F646 — Indeterminate Hamburger completions can share all local-time jets yet have incompatible recurrence; compact positive-spectrum families can separately share all perturbative jets yet differ nonperturbatively (`exists_infiniteJetQuantumRecurrenceSeparation`, `quantumRecurrenceGlobalCompletionWitness`, Lean). Neither theorem contradicts compact moment determinacy.
 F647 — A finite observer's return is weighted edge-phase energy; its exact visible capacity is vertices minus coherence components (`finite_quantum_observer_coherence_law`, Lean). Observed recurrence need not be full-state or full-channel recurrence.
-F648 — Generic static nearest-neighbour qudit paths attain maximal projective rank, both clock exponents and every positive-weight replica floor (`exists_quditPath_everyChart_sameDraw_recurrenceCollisionLaw`, Lean). Spatial locality alone supplies no low-rank or rapid-return bound.
+F648 — Must distinguish propagation bounds from exact recurrence constraints. Generic static nearest-neighbour qudit paths attain maximal projective rank, both clock exponents and every positive-weight replica floor (`exists_quditPath_everyChart_sameDraw_recurrenceCollisionLaw`, Lean). One fixed absolutely summable infinite spin field simultaneously has exponentially distance-suppressed flip commutators and maximal local-flip temporal rank `2^|F|` in every finite environment `F` (`quasiLocalInfiniteLBit_fullRank_and_commutatorBound`, Lean). Spatial locality, even with this infinite-volume influence bound, supplies no low-rank bound; these certificates supply no arithmetic rapid-return estimate.
 F649 — Collective pure-generator QFI equals four times the complete covariance sum (`pureGeneratorQuantumFisher_collective_eq_four_mul_sum`, Lean). Its positivity does not bound cross terms by diagonal terms or pay coherent preparation cost. Equal SLD QFI and Hilbert--Schmidt speed under one fixed Hamiltonian coexist with exact tick returns versus strictly positive inverse-tick return defects (`qutrit_equal_information_global_recurrence_separation`, Lean); local information does not determine recurrence.
 MUST-203 — It must distinguish cutoff returns `N->infinity` from time recurrence at fixed `N`; the quantum-recurrence manuscript's completed-time-then-size laws supply no joint-limit transfer. Any physics mechanism must retain the unnormalized arithmetic signal and prove that transfer or a direct cofinal estimate.
 F650 — Literal cutoff-scale transfers `T_p F(N,x)=F(N div p,px)` still commute; `D_p=I+T_p` commutes with signed insertion `I-T_q`. Integer birth obeys `Delta T_p F=1_(p divides N+1) T_p Delta F` for every cutoff history, not only Mobius (`GibbsHardCutoffTransport`, Lean). The floors alone do not create noncommuting mixing; the birth identity alone supplies no Mobius-specific cancellation.
@@ -4920,6 +4837,7 @@ The existence of a different, selective comparison remains unproved; this does n
 type of replacement mechanism.
 
 MDFGT-SCHEDULE-001 — [Lean] Must retain diagonal charge when changing summation order. If closed-prefix and jump norms decay as `(n+1)^(-sigma)`, `sigma>1/2`, every row-stabilizing moving cutoff with `K_N(n)+1>=c(n+1)` for fixed `c>0` preserves its ordered limit. No upper cutoff bound is needed. For literal integer-deletion singleton/interaction signals, inclusive-minus-strict order retains the strictly positive original Mellin charge even at a hypothetical right-half zero (`source_schedule_boundary`, `canonical_source_boundary`). Cofinal schedule independence therefore does not supply annihilation; collapsing-ratio and higher-index constructions are not classified.
+WORD-CARRY-001 — [Lean] Cannot treat a longer conditional sum as a new anomaly without evaluating its boundary. At a hypothetical right-half zeta zero, every finite mixed-label/conjugation word of literal integer-deletion jumps converges and has an absolutely summable latest-letter formula (`source_word_normal_form`). Its terminal factor is a vanishing single-letter prefix times a convergent shorter word. This closes the natural middle-index regrouping of three letters, not higher-word vanishing, bounds uniform in length, or associativity of a different arithmetic-label operation.
 
 F691 — [Lean] Cofactor insertion is a flat multiplicative action before chronological summation:
 `I_P(I_Q x)=I_(PQ)x=I_Q(I_P x)` for every coefficient stream. Nested scalar cutoffs are equally
@@ -4954,6 +4872,71 @@ MUST-220 — Any remaining schedule-based deletion selector must begin at depth 
 exhibit a conditional factorization-tree grouping law not fixed by quasi-shuffle associativity.
 Every required limit and rearrangement must be proved; treating two bracketings of an associative
 quasi-shuffle product as distinct is invalid.
+
+F693 — [Lean] Any finite same-clock weighted bilinear pairing has zero additive four-term
+associator: `B(x,y)+B(x+y,z)-B(y,z)-B(x,y+z)=0`. Increasing from two inputs to three therefore
+does not create order information when the operation remains additive and bilinear
+(`deletionWeightedPairingPrefix_additive_associator_zero`).
+
+F694 — [Lean] A nonzero higher defect can survive when composition acts on arithmetic labels rather
+than by source addition. For pairwise-coprime integers `P,Q,R>1`, let
+`D_alpha(P,Q)=Z(alpha)(1-P P^(-alpha))(1+Q(Q-2)Q^(-alpha))` and define
+`K_alpha=D_alpha(P,Q)+D_alpha(PQ,R)-D_alpha(Q,R)-D_alpha(P,QR)`. For `alpha>1`,
+`K_alpha=Z(alpha)(Q Q^(-alpha))(1-P P^(-alpha))(Q-1)(1-R^(2-alpha))`; hence it is negative on
+`1<alpha<2`, zero exactly at `alpha=2`, and positive for `alpha>2`
+(`deletionFactorizationGradeCurvature_eq_of_pairwise_coprime`,
+`deletionFactorizationGradeCurvature_eq_zero_iff`).
+
+CANNOT-318 — Adding a third input cannot rescue a selector whose only operation is a bilinear
+pairing and source addition. Its factorization-tree associator vanishes algebraically before any
+analytic or zero-specific information enters.
+
+MUST-221 — A surviving higher-order selector must identify the operation that carries nontrivial
+curvature and prove that operation is the one controlled by the analytic closure data. Changing
+from additive source composition to multiplication of arithmetic labels may create curvature, but
+the change of operation itself does not prove a closure theorem.
+
+MUST-222 — A sign-definite nonzero invariant is not a contradiction. To exclude an analytic object,
+one must independently prove that the object's defining closure forces that same invariant to
+vanish; assuming equality of the compared factorization trees merely assumes the missing theorem.
+
+F695 — [Lean] If an associative label product is centrally lifted by a binary correction `D`, the
+lift need not remain associative: its associator is the four-term curvature of `D`. For the explicit
+deletion correction in F694, `(P,a)⋆(Q,b)=(PQ,a+b+D_alpha(P,Q))` has associator `K_alpha(P,Q,R)`
+and is provably nonassociative for pairwise-coprime `P,Q,R>1` throughout `1<alpha<2`
+(`deletionFactorizationGradedMul_associator_second`,
+`deletionFactorizationGradedMul_not_associative_of_pairwise_coprime`).
+
+CANNOT-319 — Associativity of a base operation cannot justify equality of two factorization trees
+after a non-cocyclic correction coordinate is attached. The correction must satisfy its own
+cocycle law; nonzero four-term curvature is the exact obstruction.
+
+MUST-223 — To annihilate a nonzero correction curvature on a special analytic fibre, one must
+construct an observation or quotient, prove the correction is admitted by it, and derive that
+admission from the fibre's actual closure data. Merely declaring the two lifted products coherent
+assumes the result.
+
+CANNOT-MODEL1 — An inequality between assigned exponents for several named methods cannot rule
+out every method in a family. Likewise a predicate defined as `False` proves no obstruction for
+an arithmetic object that never appears in its definition. Such bookkeeping needs a separate
+theorem connecting the model to the actual functions and estimates before it can exclude a proof
+architecture. The corrected [method-model audit](../corpus-method-model-semantics-audit.md)
+identifies a concrete corpus instance; it supplies no new analytic method.
+
+CANNOT-BP1 — Cancellation of every linear divisor test in a finite arithmetic period cannot by
+itself determine the sign of an arbitrary quadratic observation of the same coefficients. Give
+the two occurrences of each residue weights `1+h` and `1-h`: every linear sum stays fixed, while
+the corresponding squared-weight sum changes by `2 sum f h^2`. Lean gives two strictly positive
+weight assignments on integers `1,...,60` with all divisor-of-30 endpoints zero and opposite signs
+for one fixed quadratic observation. This is a finite counterexample; it makes no claim about the
+actual infinite weights in the zeta function.
+
+MUST-BP1 — A proof that passes from zero weighted sums to a sign or vanishing statement involving
+squared weights must justify that passage for the actual weights. Merely retaining the same
+arithmetic coefficients, adding more finite divisor tests, or keeping weights positive does not
+supply the missing relation. Exact freedom formula and closed countermodels:
+[balanced-period theorem](../../3-formalized/euler-deletion-balanced-period-freedom.md),
+`RHTower.DeletionBalancedPeriods.positive_weights_closed_endpoints_opposite_curvatures`.
 
 CANNOT-304 — No Littlewood weight beats the Levinson shift. Every weighted Littlewood identity for `log|ζΨ|` on the critical line is Green's identity `∫_line log|F| = (1/2π)∫_{∂Ω} log|F| β − Σ_{ρ∈Ω} φ_Ω(ρ)` with `φ_Ω` the Green potential of the line measure in a domain `Ω ⊇ line` and `β` its balayage onto `∂Ω`; the shift is the right half-plane (`φ̂ = 2πR`, `β` on `σ₀`), the disc method is the chord potential, the strip `{−R < x < R'}` gives `φ̂ = 2πRR'/(R+R')`. With the unconditional inputs (mean squares `c(x)` on lines `½ + x/log T`, on-line proportion `κ`, the `ρ ↔ 1−ρ̄` symmetry), the bound is `(1/4π)[log E_β c − credit]` and: (i) only translation-invariant `Ω` give every zero the same credit (else only `min_t φ` is usable); (ii) only right-unbounded `Ω` credit the off-line pairs (right member capped at `φ̂`), while for bounded symmetric `Ω` the pair credit decreases with the offset and, if kept, cancels the off-line mass identically (a consistency inequality `log E_β c ≥ φ̂/π`, no bound); (iii) the left half-plane is excluded since the far-left boundary term of Green's identity carries the functional-equation growth; (iv) `log c(−x) = log c₀ + x + c₂x² + …` with slope exactly `1` and `c₂ = 0.426` (`θ = 4/7`), so the half-plane's net is `κR/2 − c₂R²/2` while the symmetric strip's is `κρ/2 − (c₂ + ½)ρ²/2` — same first order, the convexity of `e^{−x}` doubles the second-order cost. Numbers (`θ = 4/7`, `κ = 0.4`, fixed coefficients): Jensen `0.0805T`; half-plane `0.0732T` (`R = 0.46`; `0.0714T` with the σ₀-renormalised mollifier); symmetric strip `0.0771T` (`ρ = 0.22`); asymmetric strip `0.0770T` (`R = 0.20, R' = 0.25`); disc `0.0783T` (`a = 0.30`). Zero-density bounds cannot credit off-line zeros in bounded domains (`p_T(s) = 1` for `s < 0.449`). The Littlewood-weight lever is exhausted: the corpus constant `0.0714T` is optimal in this family up to the mollifier profile (Conrey's `P, Q`) and renormalisation.
 

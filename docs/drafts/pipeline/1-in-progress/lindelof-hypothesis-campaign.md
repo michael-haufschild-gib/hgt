@@ -9476,42 +9476,42 @@ Axioms `[propext, Classical.choice, Quot.sound]`; build green.
 Theorem 54 observed five independent tools each stationary at the object. Cycle 148 explains why, and
 the explanation unifies all fifty-four results.
 
-### C385 — `n^{−it}` has two properties, and every tool uses one `[STRUCTURAL]`
+### C385 — two properties used to organize recorded examples `[HEURISTIC; EXHAUSTIVE CLAIM WITHDRAWN]`
 
 `n ↦ n^{−it}` is simultaneously
 
 * **completely multiplicative** — `(mn)^{−it} = m^{−it}n^{−it}`;
 * **archimedean-smooth** — the restriction to `ℤ⁺` of a smooth function of a real variable.
 
-Every method for bounding `Σ_{n∼N}n^{−it}` uses one property, never both:
+The following table organized selected examples. It is not an exhaustive classification of methods:
 
 | family | uses | members | extremal at |
 |---|---|---|---|
 | **smooth** | derivatives of the phase | van der Corput, stationary phase, exponent pairs, theta resonances, decoupling | the self-dual block `N = √t` |
 | **multiplicative** | the Euler product | Halász / pretentious theory, moments, resonance, amplification | **characters** — and `n^{−it}` is a character |
 
-> **`[THEOREM 55]` The subject's tools partition into a smooth family and a multiplicative family. Each
-> is extremal at `n^{−it}` for its own reason — the smooth family at the self-dual block, the
-> multiplicative family at characters. **No tool uses both properties simultaneously**, and a mechanism
-> proving the Lindelöf hypothesis must.**
+> **The exhaustive interpretation previously labelled THEOREM 55 is withdrawn.** The cited Lean
+> module stores family labels and rational exponents; it contains no analytic method type or
+> completeness theorem for this table. It proves neither that every method uses only one property
+> nor that every proof of Lindelöf must combine the two. See the
+> [source-semantics audit](corpus-method-model-semantics-audit.md).
 
 ### C386 — the bookkeeping `[PROVED, LEAN-CERTIFIED]`
 
 `HTGeometry/SmoothMultiplicativeDichotomy.lean`:
 
-    smooth family, best (Bourgain):   saving 4/21 = 0.1905
-    multiplicative family, all:       saving 0     (`multiplicative_family_zero`)
-    Lindelöf requirement:             saving 1/2
-    shortfall of the best method:     **13/42** (`best_shortfall`)
+    named Bourgain record:           assigned saving 4/21
+    two multiplicative records:      assigned saving 0 (`multiplicative_family_zero`)
+    model target:                    assigned saving 1/2
+    difference for the named record: 13/42 (`best_shortfall`)
 
-* `neither_family_suffices` — no member of either family reaches `1/2`;
-* **`families_do_not_add_up`** — even the smooth family's best *plus* the entire multiplicative family
-  is still below the target. **The two families cannot be combined additively; they must be combined
-  structurally.**
+* `neither_family_suffices` compares the three named records only.
+* `families_do_not_add_up` compares the sum of two assigned exponents with the assigned target.
+  It proves no obstruction to combining actual mathematical methods.
 
 ### C387 — how this unifies the campaign
 
-Every earlier result is an instance:
+The following were motivating connections, not consequences of the scalar bookkeeping theorem:
 
 * **E29** (the exponent-pair formalism is uniform over phases and discards multiplicativity) — the
   smooth family's blind spot;
@@ -9523,10 +9523,9 @@ Every earlier result is an instance:
 * **D55–D57, Theorems 41–42** (the Euler-product instantiations) — the multiplicative family's
   failures, computed.
 
-> **After 148 cycles the fifty-five results reduce to one statement: `n^{−it}` is smooth and
-> multiplicative, every tool is built on one of those properties, each family is exactly stationary at
-> the object for its own structural reason, and the two cannot be added. The Lindelöf hypothesis is
-> the assertion that the two properties interact — and no theorem in the subject sees both at once.**
+> The two properties suggest a way to organize questions. The cited module does not establish
+> the former claim that all fifty-five results reduce to one exhaustive obstruction. Its successful
+> axiom audit certifies the stated rational comparisons, not that broader interpretation.
 
 Axioms `[propext, Classical.choice, Quot.sound]`; build green at 826 jobs.
 
@@ -9536,8 +9535,8 @@ Axioms `[propext, Classical.choice, Quot.sound]`; build green at 826 jobs.
 
 ## Cycle 149 — **THEOREM 56: the coupling exists, is essentially unique, and is exhausted**
 
-Theorem 55 demanded a tool seeing both smoothness and multiplicativity at once. Cycle 149 asks whether
-mathematics contains one.
+The heuristic in C385 suggested seeking an operation using both properties. This was a research
+choice, not a necessity proved by Theorem 55. Cycle 149 asks about such operations.
 
 ### C388 — it does, and there are exactly two `[STRUCTURAL]`
 

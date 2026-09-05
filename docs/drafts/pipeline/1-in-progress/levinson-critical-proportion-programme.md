@@ -3538,3 +3538,5 @@ untouched.
 
 with `c` the Levinson/Young constant of the chosen mollifier profile and abscissa.  Items 2–6 of
 the revised gate list are the pieces of this one inequality on one block.
+- 2026-09-05 (session B) — high-block bricks B8: `HighBlockDirectTail` (free-exponent direct tail) and `HighBlockDualWeightRightShift` (dual weight decay `‖W_{d,τ}(Y)‖ ≤ C(1+|τ|)^{K+1/2}‖χ(s)^{-1}‖Y^{-(1/2-d+K)}` by a right contour shift). See `high-block-dyadic-law-session-b.md`.
+- 2026-09-05 (session B) — STRUCTURAL: brick 5ba item 4 is not closed for the actual cross term. The reflected head is `conj` of a `−τ` polynomial, so the cross term matches `norm_integral_archimedeanCross_le` only with `x = L²N ≥ τ M/(2π)`, where the gap hypothesis fails; the phase has interior stationary points at the corner `rn = (τ/2π)(m₂/m₁)` for every split. The cross term is `Θ(a)` and part of `c` (5af was right). See `high-block-dyadic-law-session-b.md` for the two exits (corner stationary phase / product AFE for the sharp `c`; Cauchy–Schwarz plus energy upper bounds for an explicit non-sharp `c`).

@@ -31,6 +31,7 @@ import dataclasses
 import hashlib
 import re
 import sqlite3
+from collections import Counter
 from pathlib import Path
 from typing import Callable, Iterable, Sequence
 
@@ -46,6 +47,39 @@ _SPLIT_RE = re.compile(r"[._\s]+")
 # `Λ`, `θ`) instead of silently dropping them, while `_` still separates.
 _TERM_RE = re.compile(r"[^\W_]+(?:['’][^\W_]*)*")
 _PHRASE_RE = re.compile(r'"([^"]+)"')
+
+
+def query_parts(query: str) -> list[tuple[tuple[str, ...], bool]]:
+    """One shared, literal query grammar for FTS and the scan fallback."""
+    if query.count('"') % 2:
+        raise ValueError('unclosed phrase: use matching double quotes inside shell quotes')
+    rest = _PHRASE_RE.sub(" ", query)
+    if any(t in {"AND", "OR", "NOT", "NEAR"} for t in _TERM_RE.findall(rest)):
+        raise ValueError('Boolean syntax is not supported: spaces mean AND; use --any for OR')
+    parts = []
+    for phrase in _PHRASE_RE.findall(query):
+        terms = tuple(t.casefold() for t in _TERM_RE.findall(phrase))
+        if terms:
+            parts.append((terms, True))
+    parts.extend(((t.casefold(),), False) for t in _TERM_RE.findall(rest))
+    return list(dict.fromkeys(parts))
+
+
+def matches_fields(parts: list[tuple[tuple[str, ...], bool]], fields: Sequence[str],
+                   *, any_terms: bool = False, exact: bool = False) -> bool:
+    """Token/phrase matching for machines without FTS5; phrases cannot cross fields."""
+    columns = [tuple(t.casefold() for t in _TERM_RE.findall(f)) for f in fields]
+    matches = []
+    for terms, phrase in parts:
+        if phrase:
+            found = any(column[i:i + len(terms)] == terms
+                        for column in columns for i in range(len(column) - len(terms) + 1))
+        else:
+            term = terms[0]
+            found = any(token == term or (not exact and len(term) >= 2 and token.startswith(term))
+                        for column in columns for token in column)
+        matches.append(found)
+    return bool(matches) and (any(matches) if any_terms else all(matches))
 
 
 def split_identifier(name: str) -> str:
@@ -107,6 +141,62 @@ class MarkerHit:
 
 
 @dataclasses.dataclass(frozen=True)
+class SearchResults:
+    declarations: list[DeclHit]
+    exploration: list[DeclHit]
+    total: int
+    modules: int
+    eligible: int
+
+
+def module_family(module: str) -> str:
+    """Directory plus two leading filename words: a cheap, explicit topic proxy."""
+    parent, _, leaf = module.rpartition(".")
+    return parent + "." + " ".join(split_identifier(leaf).casefold().split()[:2])
+
+
+def select_results(hits: Sequence[DeclHit], *, limit: int, per_module: int,
+                   offset: int, explore: int, total: int | None = None) -> SearchResults:
+    """Cap modules before paging; discover across ALL matching module representatives."""
+    ordered = sorted(hits, key=lambda h: (h.score, h.module, h.line, h.name))
+    counts: Counter[str] = Counter()
+    eligible = []
+    representatives: dict[str, DeclHit] = {}
+    for hit in ordered:
+        representatives.setdefault(hit.module, hit)
+        counts[hit.module] += 1
+        if not per_module or counts[hit.module] <= per_module:
+            eligible.append(hit)
+    direct = eligible[offset:offset + limit]
+    shown = {h.module for h in direct}
+    families = Counter(module_family(m) for m in representatives)
+    used = Counter(module_family(m) for m in shown)
+    candidates = [h for m, h in representatives.items() if m not in shown]
+    discovery = []
+    for _ in range(explore):
+        if not candidates:
+            break
+        # Scores are negative (better is smaller). Dampen families with many
+        # matching modules; prefer families not already displayed. No random
+        # unrelated modules and no top-N candidate cutoff that buries the tail.
+        hit = min(candidates, key=lambda h: (
+            used[module_family(h.module)],
+            h.score / families[module_family(h.module)] ** 0.5,
+            h.module, h.line, h.name,
+        ))
+        discovery.append(hit)
+        used[module_family(hit.module)] += 1
+        candidates.remove(hit)
+    return SearchResults(direct, discovery, len(hits) if total is None else total,
+                         len(representatives), len(eligible))
+
+
+def module_matches(module: str, include: str = "", exclude: Sequence[str] = ()) -> bool:
+    folded = module.casefold()
+    return include.casefold() in folded and not any(s.casefold() in folded for s in exclude)
+
+
+@dataclasses.dataclass(frozen=True)
 class RefreshStats:
     changed: int
     removed: int
@@ -140,24 +230,25 @@ CREATE TABLE decl(
   tokens  TEXT NOT NULL,
   doc     TEXT NOT NULL,
   module  TEXT NOT NULL,
+  module_tokens TEXT NOT NULL,
   kind    TEXT NOT NULL,
   line    INTEGER NOT NULL
 );
 CREATE INDEX decl_by_file ON decl(relpath);
 
 CREATE VIRTUAL TABLE decl_fts USING fts5(
-  name, tokens, doc, module, kind,
+  name, tokens, doc, module, kind, module_tokens,
   content='decl', content_rowid='id',
   tokenize="unicode61 remove_diacritics 0"
 );
 
 CREATE TRIGGER decl_ai AFTER INSERT ON decl BEGIN
-  INSERT INTO decl_fts(rowid, name, tokens, doc, module, kind)
-  VALUES (new.id, new.name, new.tokens, new.doc, new.module, new.kind);
+  INSERT INTO decl_fts(rowid, name, tokens, doc, module, kind, module_tokens)
+  VALUES (new.id, new.name, new.tokens, new.doc, new.module, new.kind, new.module_tokens);
 END;
 CREATE TRIGGER decl_ad AFTER DELETE ON decl BEGIN
-  INSERT INTO decl_fts(decl_fts, rowid, name, tokens, doc, module, kind)
-  VALUES ('delete', old.id, old.name, old.tokens, old.doc, old.module, old.kind);
+  INSERT INTO decl_fts(decl_fts, rowid, name, tokens, doc, module, kind, module_tokens)
+  VALUES ('delete', old.id, old.name, old.tokens, old.doc, old.module, old.kind, old.module_tokens);
 END;
 
 CREATE TABLE marker(
@@ -188,7 +279,7 @@ END;
 # declaration name outweighs one in its docstring, and the exploded-identifier
 # column sits just under the raw name so a multi-word query still lands on the
 # declaration it describes rather than on some file that merely mentions it.
-_DECL_WEIGHTS = (12.0, 8.0, 1.0, 0.6, 0.2)
+_DECL_WEIGHTS = (12.0, 8.0, 1.0, 0.6, 0.2, 0.6)
 _MARKER_WEIGHTS = (4.0, 1.0)
 
 # The stored fingerprint is derived from the schema text rather than a
@@ -206,28 +297,16 @@ def _fts5_available(con: sqlite3.Connection) -> bool:
     return True
 
 
-def build_match_expression(query: str) -> str:
-    """Translate a plain user query into an FTS5 MATCH expression.
-
-    Quoted runs stay phrases.  Every other term is emitted twice, once exact
-    and once as a prefix, so `ladder` still finds `ladderLattice` and a
-    half-typed identifier still resolves — while a document matching the exact
-    term matches two clauses instead of one and therefore outranks documents
-    that only satisfy the prefix.  Without that, `sum` would rank `summable`
-    alongside `sum`.  Terms are OR-ed: a Lean search is usually "these
-    concepts, best match first", not a conjunctive filter.
-    """
-    phrases = [p.strip() for p in _PHRASE_RE.findall(query)]
-    rest = _PHRASE_RE.sub(" ", query)
-    clauses = [f'"{p.replace(chr(34), "")}"' for p in phrases if p.strip()]
-    for term in _TERM_RE.findall(rest):
-        token = term.replace('"', "")
-        if not token:
-            continue
-        clauses.append(f'"{token}"')
-        if len(token) >= 2:
-            clauses.append(f'"{token}"*')
-    return " OR ".join(clauses)
+def build_match_expression(query: str, *, any_terms: bool = False, exact: bool = False) -> str:
+    """Require every term/phrase by default; prefix alternatives stay grouped."""
+    clauses = []
+    for terms, phrase in query_parts(query):
+        text = " ".join(terms)
+        clause = f'"{text}"'
+        if not phrase and not exact and len(text) >= 2:
+            clause = f'({clause} OR "{text}"*)'
+        clauses.append(clause)
+    return (" OR " if any_terms else " AND ").join(clauses)
 
 
 class LeanSearchIndex:
@@ -245,30 +324,42 @@ class LeanSearchIndex:
 
     def _open(self) -> sqlite3.Connection:
         con = sqlite3.connect(self.db_path)
-        con.execute(f"PRAGMA busy_timeout={self.busy_timeout_ms}")
-        if not _fts5_available(con):
+        try:
+            con.execute(f"PRAGMA busy_timeout={self.busy_timeout_ms}")
+            if not _fts5_available(con):
+                raise SearchIndexUnavailable("this SQLite build has no FTS5 module")
+            con.execute("PRAGMA journal_mode=WAL")
+            con.execute("PRAGMA synchronous=NORMAL")
+        except (sqlite3.DatabaseError, SearchIndexUnavailable):
             con.close()
-            raise SearchIndexUnavailable("this SQLite build has no FTS5 module")
-        con.execute("PRAGMA journal_mode=WAL")
-        con.execute("PRAGMA synchronous=NORMAL")
+            raise
         return con
 
     def _connect(self) -> sqlite3.Connection:
         if self._con is not None:
             return self._con
+        con = None
         try:
             con = self._open()
             current = self._schema_current(con)
-        except SearchIndexUnavailable:
-            raise
-        except sqlite3.DatabaseError:
-            # Not a database at all — a truncated or half-written file from an
-            # interrupted run.  The index is derivable, so discard it.
+        except sqlite3.DatabaseError as error:
+            if con is not None:
+                con.close()
+            # Python <3.11 does not expose sqlite_errorcode or result constants.
+            corrupt = getattr(error, "sqlite_errorcode", None) in (11, 26) or str(error) in (
+                "file is not a database", "database disk image is malformed"
+            )
+            if not corrupt:
+                raise
             self._unlink()
             con = self._open()
             current = False
-        if not current:
-            con = self._create_schema(con)
+        try:
+            if not current:
+                con = self._create_schema(con)
+        except sqlite3.DatabaseError:
+            con.close()
+            raise
         self._con = con
         return con
 
@@ -282,10 +373,9 @@ class LeanSearchIndex:
             self._con = None
 
     def _schema_current(self, con: sqlite3.Connection) -> bool:
-        try:
-            row = con.execute("SELECT value FROM meta WHERE key='schema_fingerprint'").fetchone()
-        except sqlite3.DatabaseError:
+        if not con.execute("SELECT 1 FROM sqlite_master WHERE name='meta'").fetchone():
             return False
+        row = con.execute("SELECT value FROM meta WHERE key='schema_fingerprint'").fetchone()
         return bool(row) and row[0] == SCHEMA_FINGERPRINT
 
     # Order matters: triggers reference the FTS tables, and dropping an FTS5
@@ -304,27 +394,29 @@ class LeanSearchIndex:
     )
 
     def _create_schema(self, con: sqlite3.Connection) -> sqlite3.Connection:
-        """(Re)create the schema, discarding any older layout.
-
-        Dropping in dependency order keeps other processes' open handles valid.
-        Only if the existing file is too damaged for that does it get replaced
-        outright.
-        """
+        """Migrate atomically; lock contention must never unlink a live index."""
         try:
-            for kind, name in self._DROP_ORDER:
-                con.execute(f"DROP {kind} IF EXISTS {name}")
-            con.executescript(_SCHEMA)
+            con.execute("BEGIN IMMEDIATE")
+            # Another process may have completed migration while we waited.
+            if not self._schema_current(con):
+                for kind, name in self._DROP_ORDER:
+                    con.execute(f"DROP {kind} IF EXISTS {name}")
+                # executescript implicitly commits, so execute complete SQL
+                # statements individually to keep DDL and fingerprint atomic.
+                statement = ""
+                for line in _SCHEMA.splitlines(keepends=True):
+                    statement += line
+                    if sqlite3.complete_statement(statement):
+                        con.execute(statement)
+                        statement = ""
+                con.execute(
+                    "INSERT INTO meta(key, value) VALUES('schema_fingerprint', ?)",
+                    (SCHEMA_FINGERPRINT,),
+                )
+            con.commit()
         except sqlite3.DatabaseError:
-            con.close()
-            self._unlink()
-            con = self._open()
-            con.executescript(_SCHEMA)
-        con.execute(
-            "INSERT OR REPLACE INTO meta(key, value) VALUES('schema_fingerprint', ?)",
-            (SCHEMA_FINGERPRINT,),
-        )
-        con.commit()
-        self._con = con
+            con.rollback()
+            raise
         return con
 
     # -- writing -------------------------------------------------------------
@@ -383,8 +475,8 @@ class LeanSearchIndex:
                         self._drop_file(con, relpath)
                         decls, markers = extract(source)
                         con.executemany(
-                            "INSERT INTO decl(relpath, name, tokens, doc, module, kind, line)"
-                            " VALUES (?,?,?,?,?,?,?)",
+                            "INSERT INTO decl(relpath, name, tokens, doc, module, kind, line, module_tokens)"
+                            " VALUES (?,?,?,?,?,?,?,?)",
                             [
                                 (
                                     relpath,
@@ -394,6 +486,7 @@ class LeanSearchIndex:
                                     d.module,
                                     d.kind,
                                     d.line,
+                                    split_identifier(d.module),
                                 )
                                 for d in decls
                             ],
@@ -445,46 +538,82 @@ class LeanSearchIndex:
 
     # -- reading -------------------------------------------------------------
 
-    def search_declarations(self, query: str, limit: int = 20) -> list[DeclHit]:
-        match = build_match_expression(query)
+    def search_declarations(self, query: str, limit: int = 20, **options) -> list[DeclHit]:
+        return self.search(query, limit=limit, explore=0, **options).declarations
+
+    def search(self, query: str, *, limit: int = 20, any_terms: bool = False,
+               exact: bool = False, per_module: int = 0, offset: int = 0,
+               explore: int = 5, module: str = "",
+               exclude_modules: Sequence[str] = ()) -> SearchResults:
+        if min(limit, per_module, offset, explore) < 0:
+            raise ValueError("search limits and offset must be nonnegative")
+        match = build_match_expression(query, any_terms=any_terms, exact=exact)
         if not match:
-            return []
+            return SearchResults([], [], 0, 0, 0)
         con = self._connect()
-        exact = query.strip().lower()
         weights = ", ".join(str(w) for w in _DECL_WEIGHTS)
+        filters, params = self._module_filter("d.module", module, exclude_modules)
+        params.update(match=match, identifier=query.strip().lower(), cap=per_module)
         rows = con.execute(
             f"""
-            SELECT d.name, d.kind, d.module, d.relpath, d.line, d.doc,
-                   bm25(decl_fts, {weights})
-                     - (CASE WHEN lower(d.name) = :exact THEN 400.0 ELSE 0.0 END)
-                     - (CASE WHEN instr(lower(d.name), :exact) > 0 THEN 120.0 ELSE 0.0 END)
-                     AS score
-            FROM decl_fts JOIN decl d ON d.id = decl_fts.rowid
-            WHERE decl_fts MATCH :match
-            ORDER BY score
-            LIMIT :limit
-            """,
-            {"match": match, "exact": exact, "limit": limit},
+            WITH scored AS MATERIALIZED (
+              SELECT d.id, d.module, d.line, d.name,
+                     bm25(decl_fts, {weights})
+                       - CASE WHEN lower(d.name) = :identifier THEN 400.0 ELSE 0.0 END
+                       - CASE WHEN instr(lower(d.name), :identifier) > 0 THEN 120.0 ELSE 0.0 END
+                       AS score
+              FROM decl_fts JOIN decl d ON d.id = decl_fts.rowid
+              WHERE decl_fts MATCH :match {filters}
+            ), ranked AS (
+              SELECT *, row_number() OVER (
+                PARTITION BY module ORDER BY score, line, name, id
+              ) AS module_rank, count(*) OVER () AS total
+              FROM scored
+            )
+            SELECT d.name, d.kind, d.module, d.relpath, d.line, d.doc, r.score, r.total
+            FROM ranked r JOIN decl d ON d.id = r.id
+            WHERE :cap = 0 OR r.module_rank <= :cap
+            """, params,
         ).fetchall()
-        return [DeclHit(r[0], r[1], r[2], r[3], r[4], r[5], r[6]) for r in rows]
+        hits = [DeclHit(*row[:7]) for row in rows]
+        return select_results(hits, limit=limit, per_module=per_module,
+                              offset=offset, explore=explore,
+                              total=rows[0][7] if rows else 0)
 
-    def search_markers(self, query: str, limit: int = 20) -> list[MarkerHit]:
-        match = build_match_expression(query)
+    @staticmethod
+    def _module_filter(column: str, module: str, excludes: Sequence[str]) -> tuple[str, dict]:
+        # Literal substrings, not LIKE patterns: underscores and % stay literal.
+        sql = f" AND instr(lower({column}), :module) > 0"
+        params = {"module": module.lower()}
+        for i, value in enumerate(excludes):
+            sql += f" AND instr(lower({column}), :exclude{i}) = 0"
+            params[f"exclude{i}"] = value.lower()
+        return sql, params
+
+    def search_markers(self, query: str, limit: int = 20, *, any_terms: bool = False,
+                       exact: bool = False, module: str = "",
+                       exclude_modules: Sequence[str] = ()) -> list[MarkerHit]:
+        if limit < 0:
+            raise ValueError("marker limit must be nonnegative")
+        match = build_match_expression(query, any_terms=any_terms, exact=exact)
         if not match:
             return []
         con = self._connect()
         weights = ", ".join(str(w) for w in _MARKER_WEIGHTS)
+        # Markers have a path, not a module. Normalize separators for the same
+        # dotted module filters used on declarations (also covers prose files).
+        filters, params = self._module_filter("replace(m.relpath, '/', '.')", module, exclude_modules)
+        params.update(match=match, limit=limit)
         rows = con.execute(
             f"""
             SELECT m.relpath, m.line, m.text, bm25(marker_fts, {weights}) AS score
             FROM marker_fts JOIN marker m ON m.id = marker_fts.rowid
-            WHERE marker_fts MATCH :match
-            ORDER BY score
+            WHERE marker_fts MATCH :match {filters}
+            ORDER BY score, m.relpath, m.line
             LIMIT :limit
-            """,
-            {"match": match, "limit": limit},
+            """, params,
         ).fetchall()
-        return [MarkerHit(r[0], r[1], r[2], r[3]) for r in rows]
+        return [MarkerHit(*r) for r in rows]
 
     def counts(self) -> dict[str, int]:
         con = self._connect()

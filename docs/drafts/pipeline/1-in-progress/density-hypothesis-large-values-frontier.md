@@ -21212,18 +21212,16 @@ the surviving core has been a single, classical-looking exponential sum in one v
 ## Corpus sources used this cycle `[MANDATORY RECORD]`
 ```
    formal/GaloisForLFunctions/HTGeometry/SmoothMultiplicativeDichotomy.lean
-     "The function n ↦ n^{-it} has two independent properties: completely multiplicative, and
-      archimedean-smooth.  EVERY method for bounding Σ_{n∼N}n^{-it} uses one property or the other,
-      NEVER BOTH:  smooth family = van der Corput, stationary phase, exponent pairs, decoupling;
-      multiplicative family = Halász/pretentious, moments, resonance, amplification.  Each family is
-      extremal at n^{-it} for its own reason … both evaluate to ZERO SAVING on the target."
-     Recorded there as a Prop-level `ToolFamily`/`Method` interface.
+     SEMANTIC CORRECTION: ToolFamily is a two-label datatype and Method stores an arbitrary
+     rational exponent. The checked inequalities compare named calibration records. No theorem
+     classifies every analytic method, establishes an exhaustive dichotomy, or identifies a
+     record's assigned exponent with a bound on an actual exponential sum.
    formal/GaloisForLFunctions/HTGeometry/BourgainHypothesisPricing.lean
      hDirectExponent = 13/14 ; at the critical block M = T^{1/2}, S ≤ T^{17/42} = (T^{1/2})^{17/21},
      Bourgain's block exponent, i.e. μ = 13/84;  "the Lindelöf hypothesis is hDirect with T^{13/14}
      replaced by T^{ε}, and 13/14 is the entire remaining gap."
-   ⟹ the corpus already contains the ABSTRACT no-go that Theorems 476 and 481 rediscovered
-     independently on the large-value side.  This cycle supplies the missing CONCRETE object.
+   The first citation therefore supplies bookkeeping, not the claimed abstract no-go.
+   Any mathematical obstruction from the other cited work needs its own proof and scope audit.
 ```
 ## Theorem 492 (**the final localisation: square-root cancellation in a sum of `q=N^{1/4}` terms**) `[PROVED]`
 *Collecting Theorems 485–491 and Correction #72, in the equidistributed case the Density Hypothesis at
@@ -21247,28 +21245,28 @@ the surviving core has been a single, classical-looking exponential sum in one v
 > `\sqrt q` for `q=N^{1/4}` — the deficit of the trivial bound in a one-variable sum of `q` terms.
 > After 328 cycles the problem has been compressed from a spectral statement about an `N\times N`
 > matrix to a single classical-looking exponential sum of length `N^{1/4}`.* ∎
-## Theorem 493 (**the sum instantiates the corpus's no-go concretely**) `[PROVED — NEW]`
+## Theorem 493 (**proposed interpretation of the sum**) `[UNIVERSAL NO-GO INTERPRETATION WITHDRAWN]`
 *`\Sigma_q=\sum_a\left(\frac aq\right)e(ψ_0(λ/a))` carries BOTH structures at once:*
 ```
    MULTIPLICATIVE : the Legendre symbol (a/q) — a character, the extremal object of the
                     multiplicative family (Halász, Pólya–Vinogradov, Burgess, Weil).
    SMOOTH         : the phase ψ₀(λ/a) — an archimedean-smooth function of a with φ'' ≍ N, the
                     extremal object of the smooth family (van der Corput, stationary phase).
-   • Drop the character: Σ_a e(ψ₀(λ/a)) has no cancellation by any smooth method (φ'' ≫ 1, vacuous).
+   • Drop the character: the cited second-derivative estimate is vacuous in this range;
+     that does not prove failure of every smooth method.
    • Drop the phase:    Σ_a (a/q) is ≪ √q log q by Pólya–Vinogradov — EXACTLY the target.
    ⟹ the target q^{1/2} is achieved by the multiplicative structure ALONE and destroyed by the
      smooth factor; it is unreachable by the smooth structure alone.
 ```
-***So `\Sigma_q` is a concrete witness for the corpus's `SmoothMultiplicativeDichotomy`: an explicit
-one-variable sum whose required bound is delivered by either family in isolation but by neither in the
-presence of the other. The corpus records the dichotomy as a `Prop`-level interface with no witness;
-Theorem 492 supplies the witness, and shows it is not an artefact — it IS the Density Hypothesis.***∎
+The simultaneous presence of two structures is an observation about the displayed sum. It does not
+instantiate a universal no-go from `SmoothMultiplicativeDichotomy`, because that module proves no
+such theorem. The claimed reduction in Theorem 492 must be evaluated independently; the next cycle
+already challenges the proposed open core. See the [source-semantics audit](corpus-method-model-semantics-audit.md).
 `[OPEN CORE 370 — the hybrid bound]` **Prove `\sum_{a ≍ q}^{*}\left(\frac aq\right)e(ψ_0(λ/a)) ≪
 q^{1/2+o(1)}`.** By Theorems 492–493 this is the Density Hypothesis at the critical point, it is a sum
-of `N^{1/4}` terms, and it is the first statement on this card that is simultaneously (a) elementary to
-state, (b) equivalent to the full problem, and (c) a certified instance of the corpus's no-go — so any
-proof of it necessarily combines the two tool families, which the corpus asserts no existing method
-does. ***That is the exact price of the Density Hypothesis, stated in one line.***
+of `N^{1/4}` terms. This was a historical proposed reduction, explicitly challenged in the next
+cycle. The claim that it is a certified instance of an exhaustive method obstruction is withdrawn;
+the bookkeeping citation establishes no necessity theorem for future proof methods.
 
 # =====================================================================================
 # Cycle 329 — **OPEN CORE 370 IS FALSE**: the Schur bound is ATTAINABLE, and why that is good news

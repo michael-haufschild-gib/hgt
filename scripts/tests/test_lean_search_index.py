@@ -55,25 +55,24 @@ class SplitIdentifierTests(unittest.TestCase):
 
 class MatchExpressionTests(unittest.TestCase):
     def test_emits_exact_and_prefix_clause_per_term(self) -> None:
-        self.assertEqual(build_match_expression("clock jet"), '"clock" OR "clock"* OR "jet" OR "jet"*')
+        self.assertEqual(build_match_expression("clock jet"), '("clock" OR "clock"*) AND ("jet" OR "jet"*)')
 
     def test_preserves_quoted_phrases(self) -> None:
         self.assertEqual(
             build_match_expression('"critical line" zero'),
-            '"critical line" OR "zero" OR "zero"*',
+            '"critical line" AND ("zero" OR "zero"*)',
         )
 
     def test_strips_fts5_operators_from_free_text(self) -> None:
         # `-`, `(`, `^` and `*` are FTS5 syntax; leaking them raises a query error.
         expression = build_match_expression("de-Branges (space) ^rank a*b")
         self.assertNotIn("-", expression)
-        self.assertNotIn("(", expression)
         self.assertNotIn("^", expression)
         # Single letters stay exact: `a*` would match the whole corpus.
         self.assertEqual(
             expression,
-            '"de" OR "de"* OR "Branges" OR "Branges"* OR "space" OR "space"*'
-            ' OR "rank" OR "rank"* OR "a" OR "b"',
+            '("de" OR "de"*) AND ("branges" OR "branges"*) AND ("space" OR "space"*)'
+            ' AND ("rank" OR "rank"*) AND "a" AND "b"',
         )
 
     def test_keeps_non_ascii_terms(self) -> None:
@@ -81,7 +80,7 @@ class MatchExpressionTests(unittest.TestCase):
         # `research "ξ zero"` silently return nothing for the ξ half.
         self.assertEqual(
             build_match_expression("ξ Λ_pos"),
-            '"\u03be" OR "\u039b" OR "pos" OR "pos"*',
+            '"ξ" AND "λ" AND ("pos" OR "pos"*)',
         )
 
     def test_keeps_subscripted_identifiers_whole(self) -> None:
@@ -89,7 +88,7 @@ class MatchExpressionTests(unittest.TestCase):
         # has to reach the index intact rather than split at the subscript.
         self.assertEqual(
             build_match_expression("deckMap\u2081_leftInverse"),
-            '"deckMap\u2081" OR "deckMap\u2081"* OR "leftInverse" OR "leftInverse"*',
+            '("deckmap₁" OR "deckmap₁"*) AND ("leftinverse" OR "leftinverse"*)',
         )
 
     def test_empty_query_yields_no_expression(self) -> None:
@@ -169,7 +168,7 @@ class IndexLifecycleTests(unittest.TestCase):
         stats = self._refresh()
         self.assertEqual(stats.changed, 1)
         self.assertEqual(self._names("alpha"), [])
-        self.assertEqual(sorted(self._names("beta gamma")), ["beta", "gamma"])
+        self.assertEqual(sorted(h.name for h in self.index.search_declarations("beta gamma", any_terms=True)), ["beta", "gamma"])
         self.assertEqual(self.index.counts()["declarations"], 2)
 
     def test_deleted_file_drops_out_of_the_index(self) -> None:

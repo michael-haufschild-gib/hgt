@@ -184,4 +184,41 @@ theorem deletionFactorizationGradeCurvature_neg_of_half_lt_sigma_lt_one
   exact deletionFactorizationGradeCurvature_neg_of_pairwise_coprime
     (by linarith) (by linarith) hp hq hr hpq hpr hqr
 
+/-- Central lift of modulus multiplication by the Mellin grade defect. -/
+noncomputable def deletionFactorizationGradedMul
+    (α : ℝ) (x y : ℕ × ℝ) : ℕ × ℝ :=
+  (x.1 * y.1, x.2 + y.2 + deletionFactorizationGradeCross α x.1 y.1)
+
+/-- The associator of the central lift is exactly the multiplicative curvature. -/
+theorem deletionFactorizationGradedMul_associator_second
+    (α : ℝ) (p q r : ℕ) (a b c : ℝ) :
+    (deletionFactorizationGradedMul α
+          (deletionFactorizationGradedMul α (p, a) (q, b)) (r, c)).2 -
+        (deletionFactorizationGradedMul α (p, a)
+          (deletionFactorizationGradedMul α (q, b) (r, c))).2 =
+      deletionFactorizationGradeCurvature α p q r := by
+  simp only [deletionFactorizationGradedMul,
+    deletionFactorizationGradeCurvature]
+  ring
+
+/-- In the doubled critical strip the natural defect-graded multiplication cannot associate. -/
+theorem deletionFactorizationGradedMul_not_associative_of_pairwise_coprime
+    {α : ℝ} (hα : 1 < α) (hα2 : α < 2) {p q r : ℕ}
+    (hp : 1 < p) (hq : 1 < q) (hr : 1 < r)
+    (hpq : Nat.Coprime p q) (hpr : Nat.Coprime p r)
+    (hqr : Nat.Coprime q r) :
+    ¬ ∀ x y z : ℕ × ℝ,
+      deletionFactorizationGradedMul α
+          (deletionFactorizationGradedMul α x y) z =
+        deletionFactorizationGradedMul α x
+          (deletionFactorizationGradedMul α y z) := by
+  intro hassoc
+  have hpair := hassoc (p, 0) (q, 0) (r, 0)
+  have hsecond := congrArg Prod.snd hpair
+  have hzero : deletionFactorizationGradeCurvature α p q r = 0 := by
+    rw [← deletionFactorizationGradedMul_associator_second α p q r 0 0 0]
+    exact sub_eq_zero.mpr hsecond
+  exact (ne_of_lt (deletionFactorizationGradeCurvature_neg_of_pairwise_coprime
+    hα hα2 hp hq hr hpq hpr hqr)) hzero
+
 end RHTower

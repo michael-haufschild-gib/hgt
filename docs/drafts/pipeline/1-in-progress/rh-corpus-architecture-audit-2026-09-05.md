@@ -6,15 +6,20 @@
 - **Source:** `scripts/formal_tools.py research`; current frontier map; audited Lean declarations; primary literature.
 - **Statement:** Find a source-derived operation whose exact arithmetic constraints can distinguish horizontal displacement without importing an RH-equivalent estimate or selecting the desired zeros in its definition.
 
-**Current result: NO QUALIFYING NOVEL RH ARCHITECTURE VERIFIED.** Higher conditional Mellin
-schedule transgression remains an unconstructed candidate. Its finite scaling core, conditional zero landing, convergent complex second levels,
-squarefree cylinder closure, exact factorization grading, uniform grade orthogonality, and strictly
-positive Mellin grade-mixing defect are proved. Static associated-grade descent is rejected:
-unweighting and arithmetic averaging recover factor `p` at every exponent, so that quotient is
-selection-blind, and scalar cofactor insertion/cutoff order is exactly flat. The remaining producer
-must be genuinely weighted and preserve strict multi-index order regions: derive from zero closure a
-source-first depth-three schedule transgression that kills the positive grade-mixing defect for any
-hypothetical zero with `Re(rho)>1/2`. Two-index schedules are already quasi-shuffle tautologies.
+**Current result: NO QUALIFYING NOVEL RH ARCHITECTURE VERIFIED.** One unusual concrete successor is
+now formalized: multiplicative factorization curvature of the Mellin grade defect. Ordinary
+additive depth-three rebracketing is exactly flat, but composing the moduli themselves leaves
+
+`K_alpha(P,Q,R)=D_alpha(P,Q)+D_alpha(PQ,R)-D_alpha(Q,R)-D_alpha(P,QR)`
+
+`=Z(alpha)(Q Q^(-alpha))(1-P P^(-alpha))(Q-1)(1-R^(2-alpha))`.
+
+For pairwise-coprime `P,Q,R>1` and `alpha>1`, this curvature is negative on `1<alpha<2`, zero
+exactly at `alpha=2`, and positive above `2`. Hence `K_(2 Re(rho))<0` for every hypothetical
+right-half critical-strip zero. Its natural central lift of modulus multiplication has associator
+exactly `K` and is therefore provably nonassociative in that chamber. Tree equality cannot be
+borrowed from associativity of integer multiplication. This is only a signed source invariant: no
+theorem yet derives `K=0` from zero closure. That zero-fibre annihilation is the next kill gate.
 There is no RH implication or global novelty certificate.
 
 ## Binding research scope
@@ -37,6 +42,11 @@ Search the full indexed corpus, including the non-RH theorem areas. Ranked searc
 
 ## Current evidence
 
+- **Source-scope correction:** `SmoothMultiplicativeDichotomy` compares named records with assigned
+  rational exponents and contains assigned applicability flags. It does not prove that all methods
+  fall into two exhausted families. Source comments and the exact downstream citations were
+  corrected; no theorem body changed. Such bookkeeping must not exclude possible architectures.
+  [Definitions, scope, and Lean validation](corpus-method-model-semantics-audit.md).
 - Existing source/receiver boundaries forbid treating an RH equivalence as a producer.
 - The earlier normalized rank-one theta sewing realization has zero tangent already at first order; it supplies no selective nonlinear obstruction. The arithmetic formal-deformation obstruction still lacks an independently constructed Xi-linked source satisfying its bounds.
 - Existing working-tree changes predate this audit and are preserved.
@@ -69,14 +79,26 @@ Search the full indexed corpus, including the non-RH theorem areas. Ranked searc
 
 ## Open obligations
 
+**Finite endpoint-to-curvature inference falsified:** `EulerDeletionBalancedPeriodFreedom` proves
+that the apparent cubic coefficient is exactly
+`k=(Q-1)(a_(PQ)-a_Q+R(a_(QR)-a_(PQR)))`. Its single-weight sum is therefore controlled by the
+original endpoints; its squared-weight sum is a different observation. On the literal integers
+`1,...,60`, two strictly positive weight assignments keep every divisor-of-30 deletion endpoint
+zero but give quadratic `2×3×5` curvature `+3` and `-3`. The general positive survivor is exact:
+opposite weight perturbations on two copies preserve every periodic linear observation and change
+the quadratic observation by `2 sum f h^2`. This rejects a finite algebraic annihilation inference,
+not a theorem using the actual infinite Mellin weights. The extra property distinguishing those
+weights must be stated and proved. [Proof, countermodels, corpus audit, and Lean certificate](../3-formalized/euler-deletion-balanced-period-freedom.md).
+
 **Complete finite static audit:** every real function of finitely many positive pairwise-coprime divisibility bits has exactly the product-distribution expectation with one-coordinate probabilities `p^(-alpha)`, under the actual normalized Dirichlet weight for `alpha>1`. Lean now proves the full atom law, arbitrary-observable formula, summability, and vanishing of all nonempty centered products. This mechanism is published zeta-distribution independence: Golomb (1970), and Cranston–Peltzer, equations (5)–(9). It supplies no unexplained higher static coupling. Chronological dependence is outside the theorem, not established as a new mechanism by eliminating static alternatives. Proof and precise scope: [finite-statistic classification](../3-formalized/euler-deletion-finite-statistic-law.md).
 
 No RH-producing theorem has passed the gates. Current candidate is a source-construction program,
-not an asserted RH criterion. Finite squarefree factorization grading is now constructed. Immediate
-obligation is sharper: define a **weighted depth-three schedule transgression** whose boundary is the
-proved positive Mellin grade-mixing term, and derive its vanishing from simultaneous zero closure
-without unweighting, centering, analytic continuation of a constant channel, or assuming
-factorization-order invariance. Failure to produce this zero-specific chain law retires the route.
+not an asserted RH criterion. Its first depth-three object is now exact: additive pairing trees are
+flat, while multiplicative modulus trees have signed curvature `K_alpha`. Immediate obligation is
+sharper: construct a zero-defined chronological realization whose two boundary evaluations differ
+by this exact `K_(2 Re(rho))`, then derive equality of those evaluations from simultaneous zero
+closure without assuming factorization-order invariance. Failure to produce this zero-fibre
+annihilation retires the route.
 
 **All-depth finite-period audit:** every nonempty unweighted chronological word with positive pairwise-coprime labels has an exactly periodic prefix and is zero at complete product periods, even with independent phase shifts of the letters. The proof works for arbitrary zero-mean periodic sources. Thus complete-period observations on disjoint prime supports cannot produce a nonzero class; weighted within-period variation and overlapping supports remain separate obligations. This reinforces the need to retain weighting, but supplies no zero-specific transgression. Exact statement, proof, and Lean evidence: [coprime-word periodicity](../3-formalized/euler-deletion-coprime-word-periodicity.md).
 
@@ -253,7 +275,33 @@ survivor is that the Mellin defect is a literal diagonal boundary between the tw
 selector must operate at depth at least three and detect a conditional grouping anomaly not forced
 by ordinary quasi-shuffle associativity.
 
-### Provisional successor: higher conditional Mellin schedule transgression
+**C12: ordinary additive depth-three associator. Rejected; multiplicative curvature survives.** For
+the finite same-clock weighted pairing `B_alpha,N(x,y)=sum_(n<N)x(n)y(n)n^(-alpha)`, bilinearity
+forces
+
+`B(x,y)+B(x+y,z)-B(y,z)-B(x,y+z)=0`.
+
+The corpus promotion-associator and central-admission laws predict the same flatness for every
+bilinear carry. The pivot is to rebracket the *modulus multiplication* inside the already proved
+Mellin grade defect `D`, not source addition. For pairwise-coprime `P,Q,R`, direct expansion gives
+
+`K_alpha(P,Q,R)=Z(alpha)(Q Q^(-alpha))(1-P P^(-alpha))(Q-1)(1-R^(2-alpha))`.
+
+This is strictly negative on the full convergence chamber relevant to a right-half zero,
+`alpha=2 Re(rho) in (1,2)`. The strongest survivor is an exact, source-specific multiplicative
+curvature with a complete sign classification. It does not yet constrain zeros: endpoint closure
+has not been shown to annihilate `K`. Status: formalized, live only through that kill gate.
+
+The most direct coherence interpretation was then tested and rejected. On `Nat × Real`, define
+
+`(P,a) star_alpha (Q,b)=(PQ,a+b+D_alpha(P,Q))`.
+
+The second-coordinate associator of `star_alpha` is exactly `K_alpha(P,Q,R)`, so `star_alpha` is
+provably nonassociative for `1<alpha<2`. Associativity of the base modulus product therefore does
+not make the defect-graded lift associative. Any successful zero argument needs a separately
+constructed quotient or observation that kills `K` on the zero fibre.
+
+### Provisional successor: multiplicative factorization-curvature transgression
 
 1. Treat every periodic deletion `a_P(n)=1-P[P∣n]` as a deterministic chronological path and keep
    its diagonal quasi-shuffle bracket.
@@ -264,18 +312,16 @@ by ordinary quasi-shuffle associativity.
    deforms it by the proved cross term
    `D_(P,Q)(alpha)=Z(alpha)(1-P P^(-alpha))(1+Q(Q-2)Q^(-alpha))`, positive for
    `alpha>1` and `P,Q>1`.
-4. At a hypothetical zero `rho` with `Re(rho)>1/2`, every squarefree grade endpoint closes and all
-   depth-two chronological levels converge. The two-index schedule is exhausted by polarized
-   quasi-shuffle, so retain three-index strict regions and their factorization-tree groupings.
-5. Construct a source-defined **depth-three schedule transgression** between two conditionally
-   grouped strict-order simplices. Its finite definition must exist before choosing a zero; only
-   convergence may use zero landing.
-6. Prove **MDFGT:** the schedule boundary equals
-   `D_(P,Q)(2 Re(rho))`, while a separately derived squarefree closure law forces the same boundary
-   to be zero. Because the right side is strictly positive, no such right-half zero can exist.
-7. Reject immediately if the transgression is merely polarized quasi-shuffle, commutativity of
-   pointwise deletion, weight recovery, a generic bar boundary, or an assumption of order
-   invariance. Those mechanisms are already proved tautological or exponent-blind.
+4. Rebracket modulus multiplication inside `D`, obtaining the source-defined curvature
+   `K_alpha(P,Q,R)=D(P,Q)+D(PQ,R)-D(Q,R)-D(P,QR)` before choosing any zero.
+5. Use the proved formula and sign law: `K_alpha<0` for `1<alpha<2`, `K_alpha=0` iff `alpha=2`, and
+   `K_alpha>0` for `alpha>2`, under pairwise coprimality and nontrivial moduli.
+6. At a hypothetical zero `rho` with `Re(rho)>1/2`, construct a chronological three-channel object
+   whose two factorization-tree boundary evaluations differ by `K_(2 Re(rho))`.
+7. Prove **MDFGT-1d:** simultaneous squarefree endpoint closure makes those two evaluations equal.
+   The proved strict negativity would then exclude every right-half critical-strip zero.
+8. Reject immediately if equality is assumed from associativity, if additive bilinearity makes the
+   boundary zero before modulus composition, or if a conditional rearrangement is left unproved.
 
 ### Live falsification gates
 
@@ -314,12 +360,18 @@ by ordinary quasi-shuffle associativity.
 - **MDFGT-1b — rejected at depth two:** complementary strict regions plus their diagonal are exactly
   polarized quasi-shuffle. Zero closure identifies their symmetrization with the negative nonzero
   weighted defect; it does not annihilate it.
-- **MDFGT-1c — next:** construct or kill a depth-three conditional grouping transgression. Reject
-  it if quasi-shuffle associativity already fixes the alleged anomaly or if its limits require an
-  unproved rearrangement.
-- **MDFGT-2 — later:** prove simultaneous deletion-cylinder closure at a zero annihilates that
-  boundary. If MDFGT-1 is only a quasi-shuffle tautology, or MDFGT-2 needs order invariance as a
-  premise, retire the architecture.
+- **MDFGT-1c — partially proved and pivoted:** every additive factorization-tree associator built
+  only from the same-clock weighted pairing is zero. Rebracketing modulus multiplication inside the
+  defect instead produces exact curvature `K_alpha`, negative for `1<alpha<2`, zero exactly at `2`,
+  and positive above `2`.
+- **MDFGT-1d — next kill gate:** construct a three-channel chronological realization whose two
+  factorization-tree boundaries differ by `K_(2 Re(rho))`, and prove zero closure makes them equal.
+  If equality requires factorization-order invariance as a premise, retire the architecture.
+- **MDFGT-1e — rejected as an automatic bridge:** central extension by `D_alpha` has associator
+  exactly `K_alpha` and is nonassociative on `1<alpha<2`. Associativity of ordinary modulus
+  multiplication supplies no equality after the defect coordinate is added.
+- **MDFGT-2 — later:** extend a successful right-half exclusion to a complete RH argument without
+  importing a banned classical route. No such extension is claimed.
 
 ### Producer pivot: Euler-deletion cylinder-signature pro-system
 
@@ -368,17 +420,19 @@ actual Dirichlet form has a strictly positive grade-mixing defect on `Re(s)>1/2`
 successor must therefore retain the Mellin weight and construct a chronological transgression whose
 boundary is that explicit defect. Generic Magnus, Chen-signature, bar, augmentation, Walsh, and
 interaction-cohomology machinery is known and already present in the corpus; novelty could only
-lie in a source-derived zero-annihilation law for this exact weighted defect.
+lie in a source-derived zero-annihilation law for this exact weighted defect. The first higher
+candidate is now concrete: additive pairing associators are flat, but modulus multiplication leaves
+the exact signed curvature `K_alpha`. Nonzero curvature alone is not a contradiction; the route now
+lives or dies on an independent zero-fibre annihilation theorem.
 
 Two tempting substitutes are already rejected. The corpus reset-and-carry tomography has
 order-dependent intermediate states, but its iterated prime differences depend only on the final
 winning face, so its higher source closure is flat. Standard analytic continuation is also flat by
 uniqueness. Numerical scans retire universal sign and universal vanishing: self and cross carries
 take both signs at known zeros, and no cross-modulus logarithmic drift was observed. The next cycle
-must construct or kill MDFGT-1c: a depth-three conditional schedule transgression with boundary
-equal to the weighted cross-grade defect. Scalar insertion and nested floors are proved flat, and
-depth-two strict schedules are exhausted by polarized quasi-shuffle. Ordinary quasi-shuffle
-associativity is also a failure, not the missing theorem.
+must construct or kill MDFGT-1d: a zero-fibre chronological realization of multiplicative curvature.
+Scalar insertion, nested floors, additive bilinear associators, and depth-two strict schedules are
+proved flat or tautological. Ordinary quasi-shuffle associativity cannot supply the needed equality.
 
 ## Rejected proposal: ordered unequal-time lattice responses
 
@@ -408,7 +462,7 @@ The proposed residual operation was never constructed. Its ancestry and intended
 - `EulerDeletionCoprimeWordPeriodicity` passed scratch compilation, its targeted leaf build, and an imported audit of six capstones. It is wired into `RHTower.lean`; all audited dependencies are only `propext`, `Classical.choice`, and `Quot.sound`. The subsequent repository-wide formal lint run passed, with existing large-file warnings. The all-depth finite residue classification and independent-phase vanishing supply a boundary test, not a weighted refinement law.
 - `EulerDeletionCylinderReconstruction` passed scratch compilation, a targeted leaf build, and an imported audit of eight capstones. All audited dependencies are only `propext`, `Classical.choice`, and `Quot.sound`. It is wired into `RHTower.lean`. The source equivalence, every-length word transport, arbitrary conjugation choices, exact coefficient costs, and zero-endpoint equivalence are closed; no associated-graded RH descent was proved.
 - Index snapshot: 32,233 files, 392,125 declarations, 3,855 gap markers. All-index search scope is not a proof-body audit of all declarations.
-- 168 saved numbered corpus queries. Query wording and capped hit counts are in the adjacent search manifest. Search terms are OR-ed; ranked results can omit relevant low-ranked declarations. Exact `rg` searches supplied definition and proof-body checks. No absence or completeness theorem follows from search misses.
+- 196 saved numbered corpus queries. Query wording and capped hit counts are in the adjacent search manifest. Search terms are OR-ed; ranked results can omit relevant low-ranked declarations. Exact `rg` searches supplied definition and proof-body checks. No absence or completeness theorem follows from search misses.
 - Lean modules `CoprimeBlockCarryTransgression`, `CoprimeBlockMultiplicationFiber`, `EulerDeletionQuasiShuffleScaling`, `EulerDeletionQuasiShuffleConvergence`, `EulerDeletionQuasiShuffleZeroLanding`, `EulerDeletionQuasiShuffleSecondShadow`, `EulerDeletionQuasiShuffleSecondConvergence`, `EulerDeletionQuasiShuffleCylinderClosure`, `EulerDeletionQuasiShuffleCylinderSquareNoGo`, and `EulerDeletionNoncommutativeAbelianShadow` compile directly; targeted leaf builds cover the new leaves, and all are wired into `RHTower.lean`. Capstones prove exact finite dilation, positive-half-plane zero landing, positive energy, cutoff-independent complex self/cross levels, nonvanishing self level, limiting polarized quasi-shuffle, squarefree cylinder closure, repeated-generator obstruction, and commutative-shadow collapse. `/tmp/hgt_edqs_axioms.lean` reports only standard Lean axioms `propext`, `Classical.choice`, and `Quot.sound` for audited capstones. No full build ran.
 - `EulerDeletionQuasiShuffleCrossDomain` and `EulerDeletionQuasiShuffleOrderedDilation` also passed scratch checks and targeted leaf builds. They are wired into `RHTower.lean`. The imported audit `/tmp/hgt-deletion-cross-limit-VJDXsM/FinalAudit.lean` checked seven capstones and reported only `propext`, `Classical.choice`, and `Quot.sound`. These close the zero-independent chronological domain and exact grouped dilation formula; they do not supply refinement coherence.
 - `EulerDeletionFactorizationGraded` passed scratch and direct compilation and is wired into
@@ -419,17 +473,28 @@ The proposed residual operation was never constructed. Its ancestry and intended
   structure is exponent-blind. A targeted leaf build passed; `/tmp/hgt_edfg_axioms.lean` reports
   only `propext`, `Classical.choice`, and `Quot.sound` for nine capstones. These results reject
   static FGQD and define MDFGT's exact target.
+- `EulerDeletionFactorizationCurvature` passed scratch and direct compilation, a targeted leaf
+  build, and an imported nine-capstone axiom audit. It is wired into `RHTower.lean`; audited
+  dependencies are only `propext`, `Classical.choice`, and `Quot.sound`. It proves additive
+  associator flatness, the exact multiplicative curvature formula, and its negative/zero/positive
+  trichotomy. It also proves that the natural central defect lift has associator `K` and is
+  nonassociative throughout `1<alpha<2`. It does not prove zero-fibre annihilation or an RH
+  implication.
+- A primary-literature collision screen found the generic quasi-shuffle associativity framework and
+  adjacent zeta-distribution work, but no exact match for this four-term Euler-deletion curvature.
+  Search misses are not a novelty certificate; the construction remains a candidate, not a
+  literature-priority claim.
 - The repository-wide formal lint scan passes, with large-file warnings only. Owned Lean files have
   no `sorry`, `admit`, `axiom`, `opaque`, `unsafe`, `decide`, or `native_decide`; an earlier finite
   proof's `decide` was replaced by an explicit singleton-cardinality argument.
 - Multicore Runpod scans at the supplied endpoint tested self and cross chronological levels for the first 12 known zeros, four moduli, and cutoffs through two million. Quasi-shuffle residuals stayed below `4.27e-14`; raw self and cross carries were nonzero with both signs, while fitted tail drift was small. This kills universal sign/vanishing as producer but is not proof of convergence and says nothing about hypothetical off-line zeros. Scripts, raw JSON, and interpretation are in `2-fully-proven/computations/euler-deletion-quasi-shuffle-second-level/REPORT.md`.
 - `universal-law-field/STATUS.md` records only route-independent finite source facts, retired mechanisms, and the live refinement-coherence requirement.
-- The goal remains active. Higher conditional Mellin schedule transgression is the
-  sole provisional successor. It has finite scaling, conditional zero landing, complex second
-  levels, squarefree cylinder closure, literal factorization grading, uniform source orthogonality,
-  and an explicit positive weighted defect. Scalar insertion/cutoff order is flat, and two-index
-  strict schedules are quasi-shuffle tautologies; it has no constructed depth-three schedule
-  transgression and
-  no RH implication. Rejected C1--C9, raw-sign, analytic-continuation holonomy, ordinary
+- The goal remains active. Multiplicative factorization curvature is the sole provisional successor.
+  It has finite scaling, conditional zero landing, complex second levels, squarefree cylinder
+  closure, literal factorization grading, uniform source orthogonality, an explicit positive
+  weighted defect, and a signed multiplicative third-order curvature. Scalar insertion/cutoff and
+  additive pairing order are flat, while two-index strict schedules are quasi-shuffle tautologies;
+  it has no zero-fibre annihilation theorem and no RH implication. Rejected C1--C12 additive branch,
+  raw-sign, analytic-continuation holonomy, ordinary
   commutative development, independent replication, unweighted mean descent, and full-algebra
   branches are not approved continuations.

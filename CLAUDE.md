@@ -7,9 +7,15 @@ Card template: docs/drafts/pipeline/_card-template.md
 5. Publication-ready pre-prints → docs/drafts/pipeline/4-publication-ready
 6. Failed/retired → docs/drafts/pipeline/5-failed
 
-## Check prior research before any new topic
-- Current ledger of the major routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
-- Always use `scripts/formal_tools.py research "<query>"` to search in the lean corpus.
+## Check prior research before any new topic or writing new lean code
+- Current ledger of the major RH proof routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md (ignore if you are not working on RH)
+- Search: `scripts/formal_tools.py research "clock inverse"`. Spaces mean AND; `--any` means OR.
+- Use inner quotes for phrases: `research '"critical line" zero'`. `--exact` disables prefix expansion.
+- Default: 20 hits, at most 2 per module, plus 5 exploration hits matching the same query.
+  Use `--per-module 0` to remove the cap, `--explore 0` to hide extras, `--offset 20` for the next page.
+- Filter with `--module <substring>` or `--exclude-module <substring>`; `--json` gives structured results.
+- Searches own-tree names, module names, full docstrings, and gap markers. Use `rg` for statements,
+  proof bodies, mathlib, or pipeline text. `--no-refresh` searches the cached index without updating it.
 
 ## Lean discipline
 - Verify every mathlib name against THIS toolchain in a /tmp scratch file
@@ -17,7 +23,6 @@ Card template: docs/drafts/pipeline/_card-template.md
 - `#print axioms` via a /tmp scratch file, never by editing the tree.
 - The formal lint gate is authoritative: run `scripts/formal_tools.py lint`; currently no active
   `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is allowed.
-- Always use `scripts/formal_tools.py research "<query>"` for reusable lean code and avoiding duplicating existing work.
 
 ## No-go closure discipline
 - A no-go is not finished when only its negative statement is proved.

@@ -157,3 +157,52 @@ associativity.
 Lean ingredients: `endpoint_mul_star_endpoint_eq_cross_add_reverse_add_bracket`,
 `eulerDeletionCrossLimits_quasiShuffle_zero`, and
 `deletionFactorizationGradeCross_pos_of_coprime`.
+
+## 8. Additive flatness and multiplicative curvature
+
+For the finite same-clock weighted pairing
+
+`B_alpha,N(x,y)=sum_(n<N)x(n)y(n)n^(-alpha)`,
+
+bilinearity makes the usual four-term additive associator identically zero:
+
+`B(x,y)+B(x+y,z)-B(y,z)-B(x,y+z)=0`.
+
+Thus merely moving to three additive inputs cannot evade the depth-two no-go. A different object
+survives when the multiplication of deletion moduli is retained. Define
+
+`K_alpha(P,Q,R)=D_alpha(P,Q)+D_alpha(PQ,R)-D_alpha(Q,R)-D_alpha(P,QR)`,
+
+where `D_alpha` is the Mellin grade-one/grade-two cross term from Section 5. For positive
+pairwise-coprime `P,Q,R`, Lean proves
+
+`K_alpha(P,Q,R)`
+
+`=Z(alpha)(Q Q^(-alpha))(1-P P^(-alpha))(Q-1)(1-R^(2-alpha))`.
+
+If `P,Q,R>1` and `alpha>1`, every factor except the last is positive. Consequently `K_alpha<0`
+for `1<alpha<2`, `K_alpha=0` exactly when `alpha=2`, and `K_alpha>0` for `alpha>2`. In particular,
+if `1/2<sigma<1`, then `K_(2 sigma)<0`.
+
+This is an unconditional signed factorization boundary, not an RH criterion. A hypothetical zeta
+zero supplies closed deletion endpoints, but no proved theorem currently forces this curvature to
+vanish there. Any continuation must construct that zero-fibre annihilation independently; assuming
+equality of the two factorization trees would assume the missing step.
+
+This last warning has a closed algebraic form. Give `Nat × Real` the defect-graded product
+
+`(P,a) star_alpha (Q,b)=(PQ,a+b+D_alpha(P,Q))`.
+
+Its second-coordinate associator is exactly `K_alpha(P,Q,R)`. Consequently this natural central
+lift is not associative for pairwise-coprime nontrivial moduli when `1<alpha<2`. Associativity of
+ordinary modulus multiplication does not descend through the added defect coordinate. A future
+annihilation theorem must construct and justify a zero-fibre observation or quotient; it cannot
+cite base associativity.
+
+Lean: `EulerDeletionFactorizationCurvature.lean`, especially
+`deletionWeightedPairingPrefix_additive_associator_zero`,
+`deletionFactorizationGradeCurvature_eq_of_pairwise_coprime`,
+`deletionFactorizationGradeCurvature_eq_zero_iff`, and
+`deletionFactorizationGradeCurvature_neg_of_half_lt_sigma_lt_one`,
+`deletionFactorizationGradedMul_associator_second`, and
+`deletionFactorizationGradedMul_not_associative_of_pairwise_coprime`.

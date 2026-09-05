@@ -41,3 +41,32 @@ here and mirrored on `levinson-critical-proportion-programme.md`.
 ## Log
 - 2026-09-05 — card opened after F681/F682 (gate from the dyadic law, low blocks). Next: B8 (tails)
   and B1 in the displaced tsum form, then B4.
+- 2026-09-05 — B8 direct tail: `HighBlockDirectTail` (free-exponent tail `K x^A L^{1-(1/2-d+A)}/((1/2-d+A)-1)` for every `A > 1`, uniform in `d ∈ [0, 1/4]`, `τ`, `x`).
+- 2026-09-05 — B8 dual decay: `HighBlockDualWeightRightShift` — right contour shift of the displaced dual weight to `Re w = 1/2 - d + K`; `exists_norm_smoothAFEZetaDisplacedDualWeight_le_rightShift`: for every `K ≥ 1` one constant gives `‖W_{d,τ}(Y)‖ ≤ C (1+|τ|)^{K+1/2} ‖χ(s)^{-1}‖ Y^{-(1/2-d+K)}` for all `0 < d ≤ 1/4`, `τ`, `Y > 0`. Ingredients: analyticity on `Re w > 1/2`, rectangle Cauchy, Titchmarsh sharp line bound on `Re = -K` extended to all heights, polynomial strip growth against the Gaussian on the horizontal edges. Next: dual tail beyond `L` (term-wise `|χ(s)||χ(s)^{-1}| = 1`, tail `≍ (1+|τ|)^{K+1/2} x^{-(1/2-d+K)} L^{-K}/K`).
+- 2026-09-05 — B8 dual tail: `HighBlockDualTail` (`exists_norm_highBlockDual_tail_le`: tail `≤ C(1+|τ|)^{K+1/2} x^{-(1/2-d+K)} L^{-K}/K`, uniform). B1: `HighBlockTruncatedAFE` — `riemannZeta_displaced_eq_truncated` (`ζ = D_L + Dual_L − Pole + Tail_L`, exact) and `exists_norm_highBlockAFETail_le` (uniform two-term tail bound, free exponents `A > 1`, `K ≥ 1`). Next: B3 split and B4 direct energy.
+- 2026-09-05 — B4: `HighBlockDirectMeanSquare` — `edPoly_Icc_eq_dirPoly` (the gate mollifier `Ψ` on the displaced line as a `dirPoly` at frequency `−τ`), `highBlockDirectHead_mul_edPoly_eq_dirPoly` (`D_L·Ψ` = one `dirPoly` of length `LN`, coefficients `dirConv`), `highBlockDirectEnergy`, and `abs_integral_normSq_highBlockDirect_sub_le`: `|∫_{T₁}^{T₂}‖D_LΨ‖² − (T₂−T₁)E| ≤ 8LN(1+log LN)E`. Next: B5 (dual×dual with frozen weight: conjugate the `+τ` head so `|χ|²·|dirPoly|²`, then weight transfer), B6 cross, B7 pole, B3/B9 assembly.
+- 2026-09-05 — `HighBlockChiModulus`: sharp modulus of `χ` on the moving displaced line, `‖χ(1/2−d+iτ)‖ = (τ/2π)^d e^{e}` with `|e| ≤ d(π/τ + 5/τ²)` uniformly for `0 ≤ d ≤ 1/4` (`abs_log_norm_zetaChi_displacedLinePt_sub_le`, `exists_norm_zetaChi_displacedLinePt_eq_weight_mul_exp`, squared form with `chiModulusWeight (2d)`). This is the exact `e^{2R}` weight of the dual×dual term. Convention decision for the assembly: the mollifier is `Sieve.levinsonLinearMollifier M` (critical-line coefficients `w_m/(√m log M)`), i.e. gate coefficients `b_m = (w_m/log M) m^{−d}`, so that the direct energy is exactly the lane object `smoothAFEZetaDisplacedDirectMollifiedCoeff 0 d x L M`.
+- 2026-09-05 — B5: `HighBlockDualMeanSquare` — frozen reflected head `H_T` (`highBlockDualHeadFrozen`, weight frozen at `T`), its conjugate `dirPoly` form (`norm_highBlockDualHeadFrozen_eq`), `highBlockDualEnergy`, and `integral_normSq_chi_mul_highBlockDualFrozen_le`: `∫_{T₁}^{T₂}‖χ H_T Ψ‖² ≤ e^{2d(π/T₁+5/T₁²)}[E_dual ∫(τ/2π)^{2d} + 16LN(1+log LN)E_dual (T₂/2π)^{2d}]` for any Fin-indexed mollifier `Ψ = dirPoly N a (−τ)`. Next: B6 cross (Abel summation with the slowly varying weight `conj χ(s) e^{−2iθ}` against the corpus first-derivative test), freezing error, B7 pole, B3/B9 assembly.
+
+## Structural finding (2026-09-05, session B): the cross term is not covered by the corpus cross lemma
+
+The cross term of `|D_LΨ + χ H_T Ψ|²` is `2Re ∫ conj(χ(s)) · (D_LΨ)(τ) · conj(H_T(τ)) · conj(Ψ(τ)) dτ`.
+Its frequencies: `D_L` and `Ψ` carry `r^{−iτ}`, `conj(H_T)` carries `n^{−iτ}` (the reflected head has `n^{+iτ}`),
+`conj(Ψ)` carries `m₂^{+iτ}`. So the only way to match `norm_integral_archimedeanCross_le` (one `−τ` polynomial
+with indices `≤ x` times `conj` of one `−τ` polynomial, gap `2π x K ≤ a`) is `x = L²N` (direct × mollifier × conjugated
+dual head), and then `2π x K ≤ a` forces `K ≤ a/(2π L² N) ≈ a^{−2δ}/N < 1`: the hypothesis `0 < log K − …` fails.
+Correspondingly the phase derivative `log(τ m₂ /(2π r n m₁))` vanishes at `r n = (τ/2π)(m₂/m₁)`, which is inside the
+ranges `r ≤ L`, `n ≤ L` (the corner `r ≈ n ≈ √(τ/2π)` for `m₁ = m₂`), for every split `xy = τ/2π`.
+So the cross term has interior stationary points and is `Θ(a)` on a block: it is part of the constant `c`
+(the `−1` of `2γ − 1` in the unmollified case), exactly as brick 5af said. Brick 5ba item 4 ("no stationary point,
+first-derivative test suffices") treats the dual head as a `−τ` polynomial, which it is not; it is `conj` of one.
+
+**Consequences.**
+* The sharp `c(P,θ,R)` needs either the corner stationary-phase evaluation (bricks 5ar–5av) or a product AFE for
+  `ζ(s)ζ(s̄)` (Young route; the corpus `SmoothAFEZetaSquare*` modules are for `ζ(½+iτ)²`, not the product).
+* An explicit non-sharp constant needs only upper bounds: `|D + χH|² ≤ (1+η)|D|² + (1+1/η)|χH|²`, so
+  `c = (√c_dir + e^{R}√c_dual)²`, and the arithmetic input reduces to upper bounds on the mollified energies.
+* Session B route: reduce every smooth displaced energy (direct `V`, frozen dual `W_T`, freezing derivative `∂_uW_u`)
+  to the sharp-cutoff Barban–Vehov energy by Abel summation in the head variable plus Cauchy–Schwarz:
+  `Σ_r r^{−1}|Σ_{m|r} λ_m g(r/m)|² ≤ ‖Δg‖₁² · sup_u Σ_r r^{−1}|Σ_{m|r, r/m ≤ u} λ_m|²` (no arithmetic in the transfer),
+  then one classical input: the sharp-cutoff energy is `O(1)` uniformly in the head length `u ≤ L`.

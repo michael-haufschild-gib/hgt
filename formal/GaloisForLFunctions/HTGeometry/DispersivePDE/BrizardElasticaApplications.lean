@@ -131,6 +131,8 @@ transport, cubic first integrals, and the resulting Weierstrass curve.
 
 namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
+universe u
+
 set_option maxHeartbeats 1000000
 
 /-- Assumption-free atlas of the paper's applications in the local Lean corpus. -/
@@ -1033,7 +1035,7 @@ structure ClosedAtlas : Prop where
         g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val = 0 ↔
       nuSq P.val = 0
   frenetForceDerivative :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (E : FrenetElasticaData V) (s : ℝ),
         HasDerivAt (elasticaForce E)
           ((-(3 * E.curvature s * E.curvature₁ s + E.lagrange₁ s)) • E.tangent s +
@@ -1043,32 +1045,32 @@ structure ClosedAtlas : Prop where
               (E.curvature s ^ 2 + E.torsion s ^ 2 + E.lagrange s)) • E.normal s) s :=
     hasDerivAt_elasticaForce
   stationaryFrenetForce :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (E : StationaryElasticaData V) (s : ℝ),
         HasDerivAt (elasticaForce E.toFrenetElasticaData) 0 s :=
     stationaryElasticaForce_hasDerivAt_zero
   stationaryFrenetForceConservation :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (E : StationaryElasticaData V) (s : ℝ),
         elasticaForce E.toFrenetElasticaData s = elasticaForce E.toFrenetElasticaData 0 :=
     stationaryElasticaForce_constant
   stationaryMultiplierLaw :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (E : StationaryElasticaData V) (s : ℝ),
         E.lagrange s = -3 / 2 * E.curvature s ^ 2 + elasticaLambdaScale E / 2 :=
     stationaryElastica_lagrange_eq
   stationaryTorsionCharge :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (E : StationaryElasticaData V) (s : ℝ),
         E.curvature s ^ 2 * E.torsion s = E.curvature 0 ^ 2 * E.torsion 0 :=
     stationaryElastica_curvatureSq_mul_torsion_constant
   stationaryTorsionReconstruction :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (E : StationaryElasticaData V) (s : ℝ),
         E.torsion s = E.curvature 0 ^ 2 * E.torsion 0 / E.curvature s ^ 2 :=
     stationaryElastica_torsion_eq
   stationaryCurvatureODE :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (E : StationaryElasticaData V) (s : ℝ),
         E.curvature₂ s = -1 / 2 * E.curvature s ^ 3 +
           E.curvature 0 ^ 4 * E.torsion 0 ^ 2 / E.curvature s ^ 3 +
@@ -1081,12 +1083,12 @@ structure ClosedAtlas : Prop where
   polarTravelingResidualSplit := travelingPolar_residual_split
   polarTravelingNLSSolutionCompiler := travelingPolarNLSData_solves
   hasimotoPhaseAcceleration :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (H : HasimotoTravelingElasticaData V) (s : ℝ),
         H.phase₂ s = H.geometry.torsion₁ s :=
     hasimoto_phase₂_eq_torsion₁
   hasimotoRealBalance :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (H : HasimotoTravelingElasticaData V) (s : ℝ),
         H.speed * H.geometry.curvature s * H.phase₁ s +
           (H.dispersion : ℝ) *
@@ -1095,7 +1097,7 @@ structure ClosedAtlas : Prop where
               H.geometry.curvature s ^ 3 / 2) = 0 :=
     hasimoto_real_balance
   hasimotoImaginaryBalance :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (H : HasimotoTravelingElasticaData V) (s : ℝ),
         -H.speed * H.geometry.curvature₁ s +
           (H.dispersion : ℝ) *
@@ -1103,7 +1105,7 @@ structure ClosedAtlas : Prop where
               H.geometry.curvature s * H.phase₂ s) = 0 :=
     hasimoto_imaginary_balance
   hasimotoElasticaNLSSolution :
-      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [NormedSpace ℝ V]
         (H : HasimotoTravelingElasticaData V),
         SolvesNLS (H.dispersion : ℝ)
           (travelingPolarJet H.toPolarProfile H.speed) :=
@@ -1114,7 +1116,7 @@ structure ClosedAtlas : Prop where
   printedLameAmplitudeMismatch := elasticaAmplitudeSq_sub_dnSq
   printedPlanarLameFailure := planar_printedLameReducedResidual_ne_zero
   frenetForcePythagoreanMagnitude :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : OrthonormalStationaryElasticaData V) (s : ℝ),
         ‖elasticaForce E.geometry.toFrenetElasticaData s‖ ^ 2 =
           E.geometry.curvature₁ s ^ 2 +
@@ -1122,40 +1124,40 @@ structure ClosedAtlas : Prop where
             (E.geometry.curvature s ^ 2 + E.geometry.lagrange s) ^ 2 :=
     elasticaForce_norm_sq
   centeredForceMagnitude :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ ^ 2 =
           E.frame.geometry.curvature 0 ^ 4 / 4 *
             ((1 + E.gamma ^ 2 / 2) ^ 2 + E.nu ^ 2) :=
     centered_elasticaForce_norm_sq
   spatialRadiusForceNormalization :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         spatialRadiusFourth E.curvatureUnit E.gamma E.nu *
           ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ ^ 2 = 1 :=
     spatialRadiusFourth_mul_force_norm_sq
   centeredForceNonvanishing :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         0 < ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ :=
     centered_elasticaForce_norm_pos
   intrinsicVerticalAxisConservation :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         elasticaVerticalAxis E s = elasticaVerticalAxis E 0 :=
     elasticaVerticalAxis_constant
   intrinsicVerticalAxisUnitNorm :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         ‖elasticaVerticalAxis E s‖ = 1 :=
     norm_elasticaVerticalAxis
   intrinsicVerticalAxisDerivative :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         HasDerivAt (elasticaVerticalAxis E) 0 s :=
     elasticaVerticalAxis_hasDerivAt_zero
   verticalTangentCoordinate :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         verticalTangentCoefficient E s =
           normalizedForceScale E *
@@ -1163,13 +1165,13 @@ structure ClosedAtlas : Prop where
               E.gamma ^ 2 * E.frame.geometry.curvature 0 ^ 2 / 2) / 2 :=
     verticalTangentCoefficient_eq
   verticalNormalCoordinate :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         verticalNormalCoefficient E s =
           normalizedForceScale E * E.frame.geometry.curvature₁ s :=
     verticalNormalCoefficient_eq
   verticalBinormalCoordinate :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         verticalBinormalCoefficient E s =
           normalizedForceScale E *
@@ -1177,7 +1179,7 @@ structure ClosedAtlas : Prop where
               E.frame.geometry.curvature s) :=
     verticalBinormalCoefficient_eq
   verticalAxisFrenetExpansion :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         elasticaVerticalAxis E s =
           verticalTangentCoefficient E s • E.frame.geometry.tangent s +
@@ -1185,38 +1187,38 @@ structure ClosedAtlas : Prop where
             verticalBinormalCoefficient E s • E.frame.geometry.binormal s :=
     elasticaVerticalAxis_eq_frenetExpansion
   verticalAxisTangentProjection :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         inner ℝ (elasticaVerticalAxis E s) (E.frame.geometry.tangent s) =
           verticalTangentCoefficient E s :=
     inner_verticalAxis_tangent
   verticalAxisNormalProjection :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         inner ℝ (elasticaVerticalAxis E s) (E.frame.geometry.normal s) =
           verticalNormalCoefficient E s :=
     inner_verticalAxis_normal
   verticalAxisBinormalProjection :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         inner ℝ (elasticaVerticalAxis E s) (E.frame.geometry.binormal s) =
           verticalBinormalCoefficient E s :=
     inner_verticalAxis_binormal
   verticalCoordinatesUnitSphere :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         verticalTangentCoefficient E s ^ 2 +
             verticalNormalCoefficient E s ^ 2 +
             verticalBinormalCoefficient E s ^ 2 = 1 :=
     verticalCoefficients_unitSphere
   intrinsicVerticalPositionDerivative :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (P : PositionedCenteredElastica V) (s : ℝ),
         HasDerivAt (intrinsicVerticalPosition P)
           (verticalTangentCoefficient P.normalization s) s :=
     intrinsicVerticalPosition_hasDerivAt
   intrinsicVerticalPositionClosedDerivative :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (P : PositionedCenteredElastica V) (s : ℝ),
         HasDerivAt (intrinsicVerticalPosition P)
           (normalizedForceScale P.normalization *
@@ -1225,64 +1227,64 @@ structure ClosedAtlas : Prop where
                 P.normalization.frame.geometry.curvature 0 ^ 2 / 2) / 2) s :=
     intrinsicVerticalPosition_hasDerivAt_closedFormula
   intrinsicVerticalPositionAtOrigin :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (P : PositionedCenteredElastica V),
         P.position 0 = 0 → intrinsicVerticalPosition P 0 = 0 :=
     intrinsicVerticalPosition_zero
   intrinsicVerticalPositionOdd :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (P : PositionedCenteredElastica V),
         (∀ s, P.position (-s) = -P.position s) →
           ∀ s, intrinsicVerticalPosition P (-s) = -intrinsicVerticalPosition P s :=
     intrinsicVerticalPosition_neg
   curvatureEnergyFromConservedForce :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         E.frame.geometry.curvature₁ s ^ 2 =
           curvatureEnergy (E.frame.geometry.curvature 0) E.gamma E.nu
             (E.curvatureUnitAt s) :=
     stationaryElastica_curvature₁_sq_eq_energy
   forceScaleSpatialRadius :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         normalizedForceScale E ^ 2 =
           spatialRadiusFourth E.curvatureUnit E.gamma E.nu :=
     normalizedForceScale_sq
   actualTangentWeight :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         verticalTangentCoefficient E s ^ 2 =
           spatialAcoefSq E.curvatureUnit E.gamma E.nu (E.curvatureUnitAt s) :=
     verticalTangentCoefficient_sq_eq_spatialA
   actualNormalWeight :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         verticalNormalCoefficient E s ^ 2 =
           spatialBcoefSq E.curvatureUnit E.gamma E.nu (E.curvatureUnitAt s) :=
     verticalNormalCoefficient_sq_eq_spatialB
   actualBinormalWeight :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         verticalBinormalCoefficient E s ^ 2 =
           spatialCcoefSq E.curvatureUnit E.gamma E.nu (E.curvatureUnitAt s) :=
     verticalBinormalCoefficient_sq_eq_spatialC
   centeredNormalWeightVanishing :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         verticalNormalCoefficient E 0 = 0 :=
     verticalNormalCoefficient_zero
   centeredBinormalOmegaWeight :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         verticalBinormalCoefficient E 0 ^ 2 = spatialOmegaSq E.gamma E.nu :=
     verticalBinormalCoefficient_sq_zero
   centeredTangentOmegaComplement :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         verticalTangentCoefficient E 0 ^ 2 = 1 - spatialOmegaSq E.gamma E.nu :=
     verticalTangentCoefficient_sq_zero
   actualSquaredCurvatureDerivative :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         HasDerivAt (fun x => E.frame.geometry.curvature x ^ 2)
           (squaredCurvatureVelocity E s) s :=
@@ -1290,14 +1292,14 @@ structure ClosedAtlas : Prop where
   physicalSquaredCurvatureFactorization := squaredCurvatureCubic_factor
   initialSquaredCurvatureRoot := squaredCurvatureCubic_initial_root
   actualSquaredCurvatureCubic :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         squaredCurvatureVelocity E s ^ 2 =
           squaredCurvatureCubic (E.frame.geometry.curvature 0) E.gamma E.nu
             (E.frame.geometry.curvature s ^ 2) :=
     stationaryElastica_squaredCurvature_cubic
   actualSquaredCurvatureFactored :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (s : ℝ),
         squaredCurvatureVelocity E s ^ 2 =
           (E.frame.geometry.curvature 0 ^ 2 - E.frame.geometry.curvature s ^ 2) *
@@ -1307,29 +1309,29 @@ structure ClosedAtlas : Prop where
               E.frame.geometry.curvature 0 ^ 4 * E.nu ^ 2) :=
     stationaryElastica_squaredCurvature_factorized
   centeredSquaredCurvatureVelocity :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         squaredCurvatureVelocity E 0 = 0 :=
     squaredCurvatureVelocity_zero
   physicalToDimensionlessCubic := squaredCurvatureCubic_to_dimensionless
   dimensionlessCurvatureDerivative :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (q₀ : ℝˣ) (s : ℝ),
         HasDerivAt (dimensionlessSquaredCurvature E q₀)
           (dimensionlessSquaredCurvatureVelocity E q₀ s) s :=
     dimensionlessSquaredCurvature_hasDerivAt
   dimensionlessCurvatureInitialValue :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (q₀ : ℝˣ),
         dimensionlessSquaredCurvature E q₀ 0 = (q₀ : ℝ) :=
     dimensionlessSquaredCurvature_zero
   dimensionlessCurvatureInitialVelocity :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (q₀ : ℝˣ),
         dimensionlessSquaredCurvatureVelocity E q₀ 0 = 0 :=
     dimensionlessSquaredCurvatureVelocity_zero
   dimensionlessCurvatureArclengthEquation :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V) (q₀ : ℝˣ) (s : ℝ),
         dimensionlessSquaredCurvatureVelocity E q₀ s ^ 2 =
           E.frame.geometry.curvature 0 ^ 2 / (4 * (q₀ : ℝ)) *
@@ -1342,29 +1344,29 @@ structure ClosedAtlas : Prop where
   regionIIImaginaryDimensionlessFactor := regionII_dimensionlessArclengthFactor_neg
   regionIINoRealDimensionlessJacobian := regionII_no_real_dimensionlessJacobian
   regionICurvatureProfileDerivative :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (R : RegionICenteredElastica V) (v : ℝ),
         HasDerivAt (regionICurvatureProfile R) (regionICurvatureProfileVelocity R v) v :=
     regionICurvatureProfile_hasDerivAt
   regionICurvatureProfileInitialValue :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (R : RegionICenteredElastica V),
         regionICurvatureProfile R 0 = (R.parameter.val.q₀ : ℝ) :=
     regionICurvatureProfile_zero
   regionICurvatureProfileInitialVelocity :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (R : RegionICenteredElastica V),
         regionICurvatureProfileVelocity R 0 = 0 :=
     regionICurvatureProfileVelocity_zero
   regionICurvatureEquation :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (R : RegionICenteredElastica V) (v : ℝ),
         regionICurvatureProfileVelocity R v ^ 2 =
           dimensionlessCurvatureRHS (R.parameter.val.q₀ : ℝ)
             R.normalization.gamma R.normalization.nu (regionICurvatureProfile R v) :=
     regionICurvatureProfile_equation
   regionIParameterCurvatureEquation :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (R : RegionICenteredElastica V) (v : ℝ),
         regionICurvatureProfileVelocity R v ^ 2 =
           4 * ((R.parameter.val.q₀ : ℝ) - regionICurvatureProfile R v) *
@@ -1450,35 +1452,35 @@ structure ClosedAtlas : Prop where
   cylindricalTangentAzimuthalComponent := tangent_azimuthal_component
   cylindricalTangentVerticalComponent := tangent_vertical_component_direct
   normalizedForceScalePositive :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         0 < normalizedForceScale E :=
     normalizedForceScale_pos
   centeredVerticalTangentPositive :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         0 < verticalTangentCoefficient E 0 :=
     verticalTangentCoefficient_zero_pos
   centeredCylindricalDenominator :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         cylindricalDenominator (centeredVerticalCoefficients E) =
           verticalTangentCoefficient E 0 :=
     centeredCylindricalDenominator_eq_tangent
   centeredRadialAxis :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         radialInFrenet (centeredVerticalCoefficients E) = ⟨0, -1, 0⟩ :=
     centeredRadialInFrenet_eq
   centeredAzimuthalAxis :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         azimuthalInFrenet (centeredVerticalCoefficients E) =
           ⟨verticalBinormalCoefficient E 0, 0,
             -verticalTangentCoefficient E 0⟩ :=
     centeredAzimuthalInFrenet_eq
   centeredVerticalAxis :
-      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      ∀ {V : Type u} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
         (E : CenteredElasticaNormalization V),
         verticalInFrenet (centeredVerticalCoefficients E) =
           ⟨verticalTangentCoefficient E 0, 0,

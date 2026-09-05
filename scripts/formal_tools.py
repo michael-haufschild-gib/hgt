@@ -23,11 +23,20 @@ import time
 from pathlib import Path
 
 from lean_search_index import (
+    DeclHit,
     DeclRow,
     LeanSearchIndex,
     MarkerRow,
+    MarkerHit,
+    SearchResults,
     SearchIndexUnavailable,
     SourceFile,
+    build_match_expression,
+    matches_fields,
+    module_matches,
+    query_parts,
+    select_results,
+    split_identifier,
 )
 # `research_brief` and `subprocess` are imported inside the two commands that
 # need them.  Every `research` query pays for this module's imports, and those
@@ -458,7 +467,7 @@ def unreachable_owned_modules(
     return unreachable
 
 
-def doc_before(lines: list[str], index: int) -> str:
+def doc_before(lines: list[str], index: int, *, limit: int | None = 180) -> str:
     """Return the first useful line of the docstring immediately above index."""
     j = index - 1
     while j >= 0 and lines[j].strip() == "":
@@ -482,7 +491,7 @@ def doc_before(lines: list[str], index: int) -> str:
         for line in block
     )
     text = re.sub(r"\s+", " ", text).strip()
-    return text[:180]
+    return text[:limit]
 
 
 def attribute_free_index(lines: list[str], index: int) -> int:
@@ -931,7 +940,7 @@ def index_rows(source: SourceFile) -> tuple[list[DeclRow], list[MarkerRow]]:
                 kind=kind,
                 module=module,
                 line=i + 1,
-                doc=doc_before(raw, attribute_free_index(raw, i)),
+                doc=doc_before(raw, attribute_free_index(raw, i), limit=None),
             )
         )
     return decls, markers
@@ -944,15 +953,72 @@ def refresh_search_index(*, rebuild: bool = False) -> tuple[LeanSearchIndex, obj
     return index, stats
 
 
+def research_options(args: argparse.Namespace) -> dict:
+    return {
+        "any_terms": getattr(args, "any_terms", False),
+        "exact": getattr(args, "exact", False),
+        "per_module": getattr(args, "per_module", 2),
+        "offset": getattr(args, "offset", 0),
+        "explore": getattr(args, "explore", 5),
+        "module": getattr(args, "module", ""),
+        "exclude_modules": getattr(args, "exclude_module", []),
+    }
+
+
+def render_search(args: argparse.Namespace, result: SearchResults,
+                  markers: list[MarkerHit], *, backend: str = "fts5") -> None:
+    query = " ".join(args.query).strip()
+    options = research_options(args)
+    expression = build_match_expression(query, any_terms=options["any_terms"], exact=options["exact"])
+    if getattr(args, "json", False):
+        print(json.dumps({"query": query, "match": expression, "backend": backend,
+                          "options": options, **dataclasses.asdict(result),
+                          "markers": [dataclasses.asdict(m) for m in markers]}, ensure_ascii=False))
+        return
+    mode = "OR (any term/phrase)" if options["any_terms"] else "AND (every term/phrase)"
+    print(f"Query: {mode}; {'exact tokens' if options['exact'] else 'prefix expansion'}; {backend}")
+    print(f"Matches: {result.total} declarations in {result.modules} modules; "
+          f"{result.eligible} after module cap ({options['per_module'] or 'off'}).")
+    print(f"Declarations (offset {options['offset']}, showing {len(result.declarations)}):")
+
+    def show(hit: DeclHit) -> None:
+        print(f"- {hit.name} ({hit.kind}) {hit.module} {hit.relpath}:{hit.line}")
+        if hit.doc:
+            print(f"  {hit.doc[:240]}{'…' if len(hit.doc) > 240 else ''}")
+
+    for hit in result.declarations:
+        show(hit)
+    if result.exploration:
+        print("\nExplore other modules (same query; favors less represented filename families):")
+        for hit in result.exploration:
+            show(hit)
+    if markers:
+        print("\nGap markers (text mentions, not verified open obligations):")
+        for hit in markers:
+            print(f"- {hit.relpath}:{hit.line}: {hit.text}")
+    if options["offset"] + len(result.declarations) < result.eligible:
+        print(f"\nMore: --offset {options['offset'] + len(result.declarations)}; "
+              "--module <substring> to focus; --per-module 0 to show all matches per module.")
+    if not result.total:
+        print("No declarations matched. Try fewer terms or --any, alternate names, and rg on Lean sources.")
+    print("Reuse check: inspect candidate statements/hypotheses; search results do not prove absence or equivalence.")
+
+
 def research(args: argparse.Namespace) -> int:
     query = " ".join(args.query).strip()
-    if not query:
-        print("provide a search query", file=sys.stderr)
+    try:
+        if not build_match_expression(query):
+            raise ValueError("provide a search query containing words or an identifier")
+        options = research_options(args)
+        if min(args.limit, options["per_module"], options["offset"], options["explore"]) < 0:
+            raise ValueError("search limits and offset must be nonnegative")
+    except ValueError as error:
+        print(str(error), file=sys.stderr)
         return 2
 
     if not getattr(args, "scan", False):
+        index = LeanSearchIndex(SEARCH_DB)
         try:
-            index = LeanSearchIndex(SEARCH_DB)
             if not getattr(args, "no_refresh", False):
                 stats = index.refresh(search_sources(), index_rows)
                 if stats.stale:
@@ -961,51 +1027,61 @@ def research(args: argparse.Namespace) -> int:
                         " searching the last committed index",
                         file=sys.stderr,
                     )
-            decl_hits = index.search_declarations(query, args.limit)
-            marker_hits = index.search_markers(query, args.limit)
+            if getattr(args, "no_refresh", False) and not index.counts()["files"]:
+                print("index is empty or requires rebuilding; rerun without --no-refresh", file=sys.stderr)
+                return 2
+            result = index.search(query, limit=args.limit, **options)
+            marker_hits = index.search_markers(
+                query, args.limit, **{k: options[k] for k in
+                ("any_terms", "exact", "module", "exclude_modules")}
+            )
         except (SearchIndexUnavailable, sqlite3.DatabaseError) as error:
             print(f"search index unavailable ({error}); scanning instead", file=sys.stderr)
         else:
-            print("Declarations:")
-            for hit in decl_hits:
-                print(f"- {hit.name} ({hit.kind}) {hit.module} {hit.relpath}:{hit.line}")
-                if hit.doc:
-                    print(f"  {hit.doc}")
-            if marker_hits:
-                print("\nGap markers:")
-                for hit in marker_hits:
-                    print(f"- {hit.relpath}:{hit.line}: {hit.text}")
+            render_search(args, result, marker_hits)
             return 0
+        finally:
+            index.close()
 
     return research_scan(args)
 
 
 def research_scan(args: argparse.Namespace) -> int:
-    """Index-free fallback: substring scoring over the in-memory declaration list."""
-    query = " ".join(args.query).strip().lower()
-    scored: list[tuple[int, Declaration]] = []
-    for d in declarations():
-        hay = f"{d.name} {d.kind} {d.module} {d.relpath} {d.doc}".lower()
-        score = sum(3 if token in d.name.lower() else 1 for token in query.split() if token in hay)
-        if score:
-            scored.append((score, d))
-    scored.sort(key=lambda item: (-item[0], item[1].module, item[1].line))
-
-    print("Declarations:")
-    for _, d in scored[: args.limit]:
-        print(f"- {d.name} ({d.kind}) {d.module} {d.relpath}:{d.line}")
-        if d.doc:
-            print(f"  {d.doc}")
-
-    gap_hits = [
-        f
-        for f in marker_findings(limit=500, include_status_logs=True)
-        if query in f.text.lower() or any(t in f.text.lower() for t in query.split())
-    ]
-    if gap_hits:
-        print("\nGap markers:")
-        for f in gap_hits[: args.limit]:
-            print(f"- {f.relpath}:{f.line}: {f.text}")
+    """Index-free fallback, using the same extractor, query grammar and diversity."""
+    query = " ".join(args.query).strip()
+    options = research_options(args)
+    parts = query_parts(query)
+    match_options = {k: options[k] for k in ("any_terms", "exact")}
+    hits: list[DeclHit] = []
+    markers: list[MarkerHit] = []
+    for source in search_sources():
+        # Match paths first to avoid reading entire excluded subtrees.
+        path_module = source.relpath.replace("/", ".")
+        if not module_matches(path_module, options["module"], options["exclude_modules"]):
+            continue
+        decls, gap_rows = index_rows(source)
+        for d in decls:
+            if not module_matches(d.module, options["module"], options["exclude_modules"]):
+                continue
+            name_fields = [d.name, split_identifier(d.name)]
+            fields = [*name_fields, d.doc, d.module, d.kind, split_identifier(d.module)]
+            if matches_fields(parts, fields, **match_options):
+                score = -sum(3 if matches_fields([p], name_fields, **match_options) else 1
+                             for p in parts if matches_fields([p], fields, **match_options))
+                if query.lower() == d.name.lower():
+                    score -= 400
+                if query.lower() in d.name.lower():
+                    score -= 120
+                hits.append(DeclHit(d.name, d.kind, d.module, source.relpath, d.line, d.doc, score))
+        for m in gap_rows:
+            fields = [m.text, split_identifier(source.relpath)]
+            if matches_fields(parts, fields, **match_options):
+                score = -sum(matches_fields([p], fields, **match_options) for p in parts)
+                markers.append(MarkerHit(source.relpath, m.line, m.text, score))
+    result = select_results(hits, limit=args.limit, **{k: options[k] for k in
+                            ("per_module", "offset", "explore")})
+    markers.sort(key=lambda m: (m.score, m.relpath, m.line))
+    render_search(args, result, markers[:args.limit], backend="scan (approximate ranking)")
     return 0
 
 
@@ -1138,9 +1214,22 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("status", help="print theorem-area and proof-debt summary").set_defaults(func=status)
 
-    research_parser = sub.add_parser("research", help="search declarations and gap markers")
-    research_parser.add_argument("query", nargs="+")
+    research_parser = sub.add_parser(
+        "research", help="search Lean declarations: spaces mean AND; --any means OR",
+        description='Require every term/phrase by default. Use 2–4 concepts, not a keyword dump. '
+                    'Shell quotes group arguments; inner double quotes require a phrase. '
+                    'Inspect candidate Lean statements before deciding to reuse or write code.',
+    )
+    research_parser.add_argument("query", nargs="+", help='words, identifier, or inner-quoted phrase')
     research_parser.add_argument("--limit", type=int, default=20)
+    research_parser.add_argument("--any", dest="any_terms", action="store_true", help="match any term/phrase (OR)")
+    research_parser.add_argument("--exact", action="store_true", help="disable automatic token prefixes")
+    research_parser.add_argument("--per-module", type=int, default=2, help="declarations per module before paging; 0 disables cap")
+    research_parser.add_argument("--explore", type=int, default=5, help="append this many other matching modules; 0 disables")
+    research_parser.add_argument("--offset", type=int, default=0, help="page through results after module cap")
+    research_parser.add_argument("--module", default="", help="literal substring of dotted module name")
+    research_parser.add_argument("--exclude-module", action="append", default=[], help="exclude module substring; repeatable")
+    research_parser.add_argument("--json", action="store_true", help="structured hits, match counts, query interpretation")
     research_parser.add_argument(
         "--no-refresh",
         action="store_true",
