@@ -6,33 +6,13 @@ Scope: compressed facts and logically forced design constraints extracted from a
 
 ## RH: route-independent research constraints
 
-- **Must exclude even one off-line zero.** A density estimate allowing a sparse exceptional set,
-  however small, is not yet RH. The missing step is elimination of the exceptions, not another
-  interpretation of the proportion.
-- **Cannot obtain selection from reflection alone.** Reflection pairs opposite horizontal
-  displacements; it does not identify each zero with its reflected partner. Symmetry-compatible
-  countermodels still have off-line zeros. Evidence: F06, F14.
-- **Must retain the information the conclusion needs.** A transformation that forgets real parts,
-  multiplicities, or signs must recover them by a proved identity before it can constrain those
-  data. A self-adjoint operator listing zero ordinates does not locate the original complex zeros.
-  Evidence: F10, F13, F664.
-- **Must derive the decisive property for the fixed arithmetic object.** Positivity, boundedness,
-  recurrence, or regularity taken as an RH-equivalent input is an endpoint, not a source proof.
-  Fitting a new positive model separately to each hypothetical zero does not exclude any zero.
-  Evidence: F01, F04, F19.
-- **Cannot spend positivity as an upper bound.** A positive quadratic form can be arbitrarily
-  large. An energy argument needs an independently proved arithmetic ceiling and must account for
-  signed cross terms and any energy moved into an unobserved component. Evidence: HARD LOCK P, F15.
-- **Must justify the actual limiting operation.** Control at each fixed cutoff need not control
-  a cutoff moving with the zero, height, or deformation. A proof using such a limit must control
-  that joint dependence and the retained tail. Evidence: F08, F11, F17.
-- **Cannot discard infinite-dimensional charge using finite-dimensional cyclicity.** The trace
-  of a commutator can be nonzero when only the commutator, not its separate products, is trace
-  class. Every trace rearrangement needs its own ideal hypotheses. For the specific cubic
-  `(R-P)^3-(R-Q)^3-(Q-P)^3` of orthogonal projections, a complete eigenbasis of `P+Q+R` forces
-  zero trace; this does not settle the remaining spectral sector.
-  Evidence: `CubicAggregateSpectralCurrent.opTrace_cubicAssociator_eq_zero_of_aggregate_eigenbasis`
-  (declaration namespace `RHTower`).
+- **Must exclude even one off-line zero.** A density estimate allowing a sparse exceptional set, however small, is not yet RH. The missing step is elimination of the exceptions, not another interpretation of the proportion.
+- **Cannot obtain selection from reflection alone.** Reflection pairs opposite horizontal displacements; it does not identify each zero with its reflected partner. Symmetry-compatible countermodels still have off-line zeros. Evidence: F06, F14.
+- **Must retain the information the conclusion needs.** A transformation that forgets real parts, multiplicities, or signs must recover them by a proved identity before it can constrain those data. A self-adjoint operator listing zero ordinates does not locate the original complex zeros. Evidence: F10, F13, F664.
+- **Must derive the decisive property for the fixed arithmetic object.** Positivity, boundedness, recurrence, or regularity taken as an RH-equivalent input is an endpoint, not a source proof. Fitting a new positive model separately to each hypothetical zero does not exclude any zero. Evidence: F01, F04, F19.
+- **Cannot spend positivity as an upper bound.** A positive quadratic form can be arbitrarily large. An energy argument needs an independently proved arithmetic ceiling and must account for signed cross terms and any energy moved into an unobserved component. Evidence: HARD LOCK P, F15.
+- **Must justify the actual limiting operation.** Control at each fixed cutoff need not control a cutoff moving with the zero, height, or deformation. A proof using such a limit must control that joint dependence and the retained tail. Evidence: F08, F11, F17.
+- **Cannot discard infinite-dimensional charge using finite-dimensional cyclicity.** The trace of a commutator can be nonzero when only the commutator, not its separate products, is trace class. Every trace rearrangement needs its own ideal hypotheses. For the specific cubic `(R-P)^3-(R-Q)^3-(Q-P)^3` of orthogonal projections, a complete eigenbasis of `P+Q+R` forces zero trace; this does not settle the remaining spectral sector. Evidence: `CubicAggregateSpectralCurrent.opTrace_cubicAssociator_eq_zero_of_aggregate_eigenbasis` (declaration namespace `RHTower`).
 - **Must account for boundary charge after compression.** For three source projections `A,B,C`,
   put `S=A+B+C` and `K=[A,B]+[B,C]+[C,A]`. Under trace-class commutators with an orthogonal
   cutoff `E`, source commutation `[S,K]=0` allows genuine rounded compressed projections whose
@@ -40,6 +20,15 @@ Scope: compressed facts and logically forced design constraints extracted from a
   of this form must annihilate the boundary pairing; establishing source commutation supplies
   admission, not that final vanishing step.
   Evidence: `RHTower.exists_rounded_cubic_with_boundary_trace` in `CubicBoundaryChargeTransport`.
+- **Cannot rule out ordinary cubic charge from trace-class admission alone.** There exist three
+  genuine orthogonal projections with trace-class
+  `C=(R-P)^3-(R-Q)^3-(Q-P)^3` and `Tr C=3√3/(2π)≠0`, obtained from smooth matrix-valued
+  Hardy sources. Cancellation proved for commuting projections, separately admitted products,
+  or a complete aggregate eigenbasis cannot exclude this noncommuting infinite-dimensional
+  mechanism. A proof using it must still derive the required charge and its arithmetic
+  identification; the example alone does not locate zeta zeros.
+  Evidence: `RHTower.exists_projections_with_nonzero_cubic_trace` and
+  `RHTower.not_cubic_trace_conservation_of_combined_nuclearity` in `CubicBoundaryNonzeroCharge`.
 - **Must keep impossibility claims within their proved premises.** Failure of one positive,
   linear, continuous, or spectral construction does not forbid all such RH proofs. No theorem
   here requires every solution to be nonlinear, singular, nonclassical, or absent from literature.
@@ -62,9 +51,7 @@ F03 — Finite arithmetic syzygy route is closed. Every positive finite prime-va
 
 F04 — Source/receiver firewall. A construction can land exactly on Xi data while its final continuity, sign, descent, properness, or bound is still literally RH.
 
-F05 — Large fused subcorpus has one signed current
-
-`a(s) = 2 Re(s) - 1`, with functional-equation reflection sending `a` to `-a`.
+F05 — Large fused subcorpus has one signed current `a(s) = 2 Re(s) - 1`, with functional-equation reflection sending `a` to `-a`.
 
 Gamma-six residue, Möbius prime-normal growth, Green codiagonal, Wold/Fisher response, affine Xi
 residue, and several Hellinger/Kakutani readers recover `a`, `a²`, or its support.
@@ -79,6 +66,8 @@ F09 — Bounded presentation changes are genuine gauges. Mutually bounded dictio
 
 F10 — Quotients erase typed data differently. Positive squares erase sign/phase; reduced quotients erase nilpotent tangents; scalar fusion erases homology; compact observation erases lifted history.
 
+F10a — Must distinguish global phase choice from relative-phase information. On an infinite locally finite connected graph, Boolean edge coherences modulo finite defects determine vertex phases modulo finite changes and one global flip iff every finite-edge-boundary cut has a finite side; products of two infinite connected graphs satisfy this condition (`CoherenceTailQuotient.coherenceTailMap_injective_iff_finiteBoundaryOneEnded`, `CoherenceEndReconstruction.finiteBoundaryOneEnded_boxProd`; declaration namespace `HTGeometry`). Finite-boundary cuts modulo finite sets are exactly the clopen end-space ring, preserving symmetric-difference addition and intersection multiplication (`CoherenceEndClopen.finiteBoundaryBooleanRingQuotientEquivClopens`). These are topology/reconstruction laws, not an identification with arithmetic sum/product or an RH selector.
+
 F11 — Observer recurrence and source return differ. Compact observer can recur while source lift escapes linearly. Faithful recurrence descent is an RH receiver.
 
 F12 — Hypertranscendence supplies independent directions and noncompactness, not vanishing. Unbounded rank/depth is necessary for several completion births and insufficient for selection.
@@ -90,6 +79,10 @@ F14 — External polarization can retain what internal multiplication erases. Re
 F15 — Escape is conserved as capacity in proved models. Visible cancellation moves exact energy to hidden ports. Any proposed annihilation needs a closed accounting identity.
 
 F16 — Quantization detects; it does not prohibit. Integer, rank, and `π`-scaled residues encode multiplicity but do not imply absence.
+
+F16a — Must distinguish arbitrary finite depth from a finite source cutoff. For a holomorphic function nonzero somewhere on a connected open domain, existence of a holomorphic `2^k`-th root on that entire domain for every `k` already forces nonvanishing: a positive finite zero order cannot be divisible by every `2^k`. No compatibility between roots or limiting estimate is needed; on a simply connected domain a coherent tower follows. The unproved arithmetic input would be the global finite-depth roots, not their coherence (`RHTower.CoherentTower.nonvanishing_of_exists_roots_all_two_powers_preconnected`, `coherentTower_iff_exists_roots_all_two_powers_preconnected`; declaration namespace `RHTower`).
+
+F16b — Cannot infer integral vanishing from all modular observations without excluding invisible divisible components. Adjoining a nonzero rational vector space to an abelian group preserves its mod-`m` quotient data and torsion subgroup, and every homomorphism to a direct sum of finite groups kills that added space. Finite generation supplies additional information: non-torsion then gives a surjective map to the integers (`HTGeometry.DivisibilityFirewall.divisibility_firewall`, `exists_int_surjection_of_not_isTorsion`; declaration namespace `HTGeometry`).
 
 F17 — Cofinal order is law data. Fixed cutoffs, convergent scalar prefixes, compact subsequences, and local positivity do not control moving heads, apertures, domains, or retained infinite tails.
 
@@ -5002,3 +4995,7 @@ F666 — [Lean] Torus upper law for Dirichlet polynomials: continuous Bohr trans
 CANNOT-297 — [numerical + heuristic; not Lean] The mollifier's right-zero mass is the torus Jensen mass `J_M = E_χ log|∑_{h≤M}μ(h)P(h)χ(h)h^{-1/2}|²`: for the linear mollifier `J_M ≤ 0.005` up to `M = 10⁴` (torus Monte Carlo) and `ℓ_Ψ(1/2) ≈ 0.003` at `T = 10⁵–10⁶`; for the sharp Möbius sum `J_M = 0.34, 0.43, 0.50` at `M = 10², 10³, 10⁴` (≍ log log M). `J_M > 0` strictly for large `M` (real diagonal zero at `r* ≈ log M/(2√M)`, conditional on `∑_{h≤M}μ(h)P(h)/√h → 1/ζ(1/2) < 0`), but exponentially small. The outer law `ℓ_{ζΨ_M} → 0` therefore holds iff `(L)` and `J_M → 0`; do not state it without the `J_M` correction.
 MUST-209 — `(L) ⟺ ∀a>0: N(1/2 + a/log T, T) = o(T log T)` (fixed multiples of the mean spacing off the line carry a vanishing proportion of zeros); Selberg's density gives only `e^{−a/4}·T log T`. Any producer must control zeros at the mean-spacing scale; the mollified log-mean `ℓ_{ζΨ}` is its analytic avatar, and the mollifier's part is the deterministic torus quantity `J_M`.
 MUST-210 — To turn the receiver direction of the outer law into the equivalence `(L) ⟺ lim ℓ_{ζΨ_M}(T,2T)/T = J_M`, prove the lower torus law `liminf ℓ_Ψ/T ≥ J_M` (uniform integrability of `log⁻|Ψ|` on the line via Poisson–Jensen with the `≪_M T` strip zeros). The producer direction needs nothing more.
+F667 — [Lean] Small values of a mollifier on the line: `∫_{T₁}^{T₂} max(log ε − log|Ψ(1/2+it)|, 0) ≤ (C₁(T₂−T₁) + C₂(1+|T₁|+|T₂|))/log(1/ε)` (`exists_line_smallValues_bound`), via the interior lower bound `log|Ψ(w)| ≥ −C + ∑ m_a log|(w−c₀)−a|` (`exists_interior_log_lower_bound`; corpus cofactor factorization + minimum modulus) and the linear strip zero count. Lower torus law `(1/T)∫_T^{2T} log|Ψ_M| ≥ J_M(ε) − η − D_M/log(1/ε)` (`exists_eventually_window_logMean_linearMollifier_ge`).
+F668 — [Lean] **`(L) ⟺ outer law for ζΨ_M`**: `zetaLine_logMean_le_iff_mollifiedProduct_logMean_le` (every `M > 1`), squeeze `exists_mollifiedProduct_logMean_squeeze_of_L`, ζ floor at all heights `exists_zetaLine_logMean_floor_all_heights`. The mollified log-mean converges to the torus Jensen mass `J_M` iff `∑(β−1/2)⁺ = o(T)`.
+CANNOT-298 — [structural] The fixed-`M` equivalence `(L) ⟺ ℓ_{ζΨ_M}/T → J_M` (F668) is the decomposition `ℓ_{ζΨ_M} = ℓ_ζ + ℓ_{Ψ_M}` plus the two-sided torus law for the single Dirichlet polynomial `Ψ_M`; it carries no information about `ζ` beyond `(L)` itself. Do not cite it as progress on `(L)`; its content is the window-uniform Jessen–Tornehave law with explicit constants.
+MUST-211 — The `(L)`-productive outer law is at `M = T^θ`: `ℓ_{ζΨ_{T^θ}}(T)/T ≤ J_{T^θ}(ε) + o(1)` would give `(L)`. Its torus side needs the log-mean of `Ψ_{T^θ}` uniformly in `M`: the small-values estimate is already uniform (`(log M)^4 T`), the missing piece is an effective Bohr transfer for `log max(|Ψ|², ε²)` (Weierstrass forces degree `≫ M ε^{-2}`, far beyond the mean-value range). Any producer must replace Weierstrass by a structural argument (e.g. Littlewood's identity on the torus side, or the peeling identity `E_z log|A + zB| = log max(|A|,|B|)` transported to the flow).

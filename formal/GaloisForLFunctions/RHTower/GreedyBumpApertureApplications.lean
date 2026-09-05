@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GreedyBumpLocalGeometry
+import GaloisForLFunctions.HTGeometry.ComplexHermitianRealification
 import GaloisForLFunctions.RHTower.XiMobiusContinuousApertureSzegoMetric
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianRadicalConnector
 
@@ -77,6 +78,46 @@ theorem greedyBump_valuationGaussian_laws {N : ℕ}
     (A : GreedyBumpValuationGaussianData N) (Q : PositiveSignal) :
     GreedyBumpMetricLaws Q A.metric :=
   greedyBumpMetricLaws_closed Q A.metric
+
+/-- Distinct positive integral shifts for the finite true valuation/Szegő Gram. -/
+structure GreedyBumpValuationSzegoData (N : ℕ) where
+  shift : Fin N → ℕ
+  prime : Nat.Primes
+  injective : Function.Injective shift
+  positive : ∀ j, 0 < shift j
+
+/-- Doubled-real finite true valuation/Szegő Gram. -/
+def GreedyBumpValuationSzegoData.realifiedMatrix {N : ℕ}
+    (A : GreedyBumpValuationSzegoData N) :
+    Matrix (Fin (N + N)) (Fin (N + N)) ℝ :=
+  (complexMatrixRealification
+      (xiTransversePrimeValuationGramMatrix A.shift A.prime)).submatrix
+    finSumFinEquiv.symm finSumFinEquiv.symm
+
+/-- Finite true valuation/Szegő Gram as a positive template metric. -/
+def GreedyBumpValuationSzegoData.metric {N : ℕ}
+    (A : GreedyBumpValuationSzegoData N) : PositiveTemplateMetric (N + N) where
+  matrix := A.realifiedMatrix
+  posDef := (complexMatrixRealification_posDef
+    (xiTransversePrimeValuationGramMatrix_posDef A.injective A.positive
+      A.prime)).submatrix finSumFinEquiv.symm.injective
+
+/-- All fourteen local-search laws hold on finite true valuation/Szegő packets. -/
+theorem greedyBump_valuationSzego_laws {N : ℕ}
+    (A : GreedyBumpValuationSzegoData N) (Q : PositiveSignal) :
+    GreedyBumpMetricLaws Q A.metric :=
+  greedyBumpMetricLaws_closed Q A.metric
+
+/-- `N` complex valuation channels contribute exact leading bias `N / Q`. -/
+theorem greedyBump_valuationSzego_bias {N : ℕ}
+    (A : GreedyBumpValuationSzegoData N) (Q : PositiveSignal) :
+    (1 / 2 : ℝ) * Matrix.trace
+        ((greedyBumpHessian Q A.metric)⁻¹ * A.metric.matrix) =
+      (N : ℝ) / (Q : ℝ) := by
+  rw [greedyBump_matched_bias]
+  push_cast
+  field_simp [ne_of_gt Q.property]
+  ring
 
 /-- Prime and Gaussian bandwidth change volume, but not matched bias. -/
 theorem greedyBump_valuationGaussian_bias_prime_bandwidth_invariant

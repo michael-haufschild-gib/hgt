@@ -415,6 +415,101 @@ theorem greedyBumpGaussian_heightMode_ratio_six_tendsto :
   have hx0 : x ≠ 0 := by simpa using hx
   field_simp [hx0, hp]
 
+/-! ## Singular two-slope density -/
+
+/-- Determinant of the two derivative-covariance principal modes. -/
+def greedyBumpGaussianDerivativeDeterminant (x : ℝ) : ℝ :=
+  greedyBumpGaussianDPlus x * greedyBumpGaussianDMinus x
+
+/-- Joint density of the two slopes at zero in the unit-width Gaussian model. -/
+def greedyBumpGaussianZeroSlopeDensity (x : ℝ) : ℝ :=
+  1 / (2 * Real.pi * Real.sqrt (greedyBumpGaussianDerivativeDeterminant x))
+
+/-- The nondegenerate derivative mode tends to unit variance at coincidence. -/
+theorem greedyBumpGaussianDPlus_tendsto_right :
+    Tendsto greedyBumpGaussianDPlus (𝓝[>] 0) (𝓝 1) := by
+  have hc : ContinuousAt greedyBumpGaussianDPlus 0 := by
+    unfold greedyBumpGaussianDPlus greedyBumpGaussianOverlap
+    fun_prop
+  have h := hc.tendsto.mono_left
+    (show 𝓝[>] (0 : ℝ) ≤ 𝓝 0 from nhdsWithin_le_nhds)
+  convert h using 1 <;> norm_num [greedyBumpGaussianDPlus, greedyBumpGaussianOverlap]
+
+/-- The vanishing derivative mode has normalized limit `3/8` on positive separations. -/
+theorem greedyBumpGaussianDMinus_ratio_sq_tendsto_right :
+    Tendsto (fun x : ℝ => greedyBumpGaussianDMinus x / x ^ 2)
+      (𝓝[>] 0) (𝓝 (3 / 8 : ℝ)) := by
+  exact greedyBumpGaussianDMinus_ratio_sq_tendsto.mono_left
+    (nhdsWithin_mono 0 (by
+      intro x hx
+      simp only [Set.mem_Ioi] at hx
+      simp [ne_of_gt hx]))
+
+/-- The derivative determinant divided by `x²` tends to `3/8`. -/
+theorem greedyBumpGaussianDerivativeDeterminant_ratio_sq_tendsto :
+    Tendsto (fun x : ℝ => greedyBumpGaussianDerivativeDeterminant x / x ^ 2)
+      (𝓝[>] 0) (𝓝 (3 / 8 : ℝ)) := by
+  have h := greedyBumpGaussianDPlus_tendsto_right.mul
+    greedyBumpGaussianDMinus_ratio_sq_tendsto_right
+  simpa only [greedyBumpGaussianDerivativeDeterminant, mul_div_assoc, one_mul] using h
+
+/-- Square root of the derivative determinant, after division by positive separation. -/
+theorem greedyBumpGaussianSqrtDerivativeDeterminant_ratio_tendsto :
+    Tendsto (fun x : ℝ =>
+      Real.sqrt (greedyBumpGaussianDerivativeDeterminant x) / x)
+      (𝓝[>] 0) (𝓝 (Real.sqrt (3 / 8))) := by
+  have hroot : Tendsto
+      (fun x : ℝ => Real.sqrt
+        (greedyBumpGaussianDerivativeDeterminant x / x ^ 2))
+      (𝓝[>] 0) (𝓝 (Real.sqrt (3 / 8))) :=
+    Real.continuous_sqrt.continuousAt.tendsto.comp
+      greedyBumpGaussianDerivativeDeterminant_ratio_sq_tendsto
+  refine hroot.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with x hx
+  have hx0 : x ≠ 0 := ne_of_gt hx
+  have hdiv : greedyBumpGaussianDerivativeDeterminant x / x ^ 2 =
+      (1 / x ^ 2) * greedyBumpGaussianDerivativeDeterminant x := by ring
+  rw [hdiv, Real.sqrt_mul (by positivity : 0 ≤ (1 / x ^ 2 : ℝ)),
+    Real.sqrt_div (by positivity : 0 ≤ (1 : ℝ)), Real.sqrt_sq (le_of_lt hx)]
+  norm_num
+  field_simp [hx0]
+
+/-- Exact radical identity for the paper's zero-slope coefficient. -/
+theorem greedyBumpGaussianZeroSlopeCoefficient_eq :
+    1 / (2 * Real.pi * Real.sqrt (3 / 8)) =
+      Real.sqrt 6 / (3 * Real.pi) := by
+  have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
+  have hs38 : Real.sqrt (3 / 8 : ℝ) ≠ 0 := by positivity
+  have hm : Real.sqrt (3 / 8 : ℝ) * Real.sqrt 6 = Real.sqrt (9 / 4) := by
+    rw [← Real.sqrt_mul (by positivity : 0 ≤ (3 / 8 : ℝ))]
+    congr 1
+    norm_num
+  have hs94 : Real.sqrt (9 / 4 : ℝ) = 3 / 2 := by
+    rw [show (9 / 4 : ℝ) = (3 / 2) ^ 2 by norm_num,
+      Real.sqrt_sq (by norm_num)]
+  rw [hs94] at hm
+  field_simp [hpi, hs38]
+  nlinarith
+
+/-- Appendix B, Eq. (222): the two-slope density has its exact `1/x` coefficient. -/
+theorem greedyBumpGaussianZeroSlopeDensity_scaled_tendsto :
+    Tendsto (fun x : ℝ => x * greedyBumpGaussianZeroSlopeDensity x)
+      (𝓝[>] 0) (𝓝 (Real.sqrt 6 / (3 * Real.pi))) := by
+  have hroot := greedyBumpGaussianSqrtDerivativeDeterminant_ratio_tendsto
+  have hquot : Tendsto
+      (fun x : ℝ => 1 / (2 * Real.pi *
+        (Real.sqrt (greedyBumpGaussianDerivativeDeterminant x) / x)))
+      (𝓝[>] 0) (𝓝 (1 / (2 * Real.pi * Real.sqrt (3 / 8)))) := by
+    exact tendsto_const_nhds.div
+      ((tendsto_const_nhds.mul tendsto_const_nhds).mul hroot)
+      (by positivity)
+  rw [greedyBumpGaussianZeroSlopeCoefficient_eq] at hquot
+  refine hquot.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with x hx
+  have hx0 : x ≠ 0 := ne_of_gt hx
+  simp only [greedyBumpGaussianZeroSlopeDensity]
+  field_simp [hx0]
+
 end
 
 end GaloisForLFunctions.HTGeometry

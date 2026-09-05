@@ -80,3 +80,4 @@ This umbrella owns metric and Hilbert-space laws that are mathematically indepen
 Gaussian feature-determinant layer built on top of it.
 -/
 import GaloisForLFunctions.HilbertMetric.GreedyBumpBernoulliCompletion
+import GaloisForLFunctions.HilbertMetric.GreedyBumpGaussianCoherentApplications

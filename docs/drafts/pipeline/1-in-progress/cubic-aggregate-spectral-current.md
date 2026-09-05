@@ -1,12 +1,14 @@
 # Cubic aggregate spectral current
 
-**Open question:** For arbitrary orthogonal projections `P,Q,R`, does nuclearity of
+**Resolved question:** For arbitrary orthogonal projections `P,Q,R`, does nuclearity of
 `C=(R-P)^3-(R-Q)^3-(Q-P)^3` alone force `Tr C=0`?
 
-**Status:** OPEN in Lean. Existing commuting-source and nuclear-adjacent-product theorems do not
-answer this question. A continuous-symbol counterexample is under hostile audit below. This is a
-scoped operator question within the source/index comparison, not an RH producer. No universal
-retirement is justified.
+**Answer: NO — unconditional Lean counterexample.** On the orthogonal sum of two copies of
+`L²(ℝ;ℂ)`, three genuine orthogonal projections have trace-class combined cubic and
+`Tr C=3√3/(2π)≠0`. The source symbols are smooth and their aggregate/current commute before
+compression. Existing commuting-source and nuclear-adjacent-product theorems remain valid.
+This settles the scoped operator question, not Xi source admission or RH. Beyond-literature
+priority/significance remains unconfirmed; targeted searches are not an exhaustive absence proof.
 
 **Checked sources:** `CommutingSourceCubicConservation`,
 `MixedNuclearSourceCubicConservation`, `ModularCubicProjectionTransgression`,
@@ -47,15 +49,21 @@ derives the spectral cut internally, and proves nuclear commutator-perturbation 
 `CubicBoundaryChargeTransport.exists_rounded_cubic_with_boundary_trace` constructs the three
 rounded projections and proves `2 Tr C = Tr(S[E,K])` from source projections, nuclear cutoff
 commutators, and `[S,K]=0`. All three modules are wired and pass individual Lean checks.
-The explicit nonzero source instance is still to be formalized.
+`CubicBoundaryLoopPulse` proves the explicit smooth source and exact `8/3` pairing;
+`CubicTwoChannelHardySource` realizes the literal matrix multipliers and nuclear Hardy boundary;
+`CubicBoundaryNonzeroCharge.exists_projections_with_nonzero_cubic_trace` constructs the nonzero
+example. Its `not_cubic_trace_conservation_of_combined_nuclearity` refutes unrestricted
+conservation. All six leaf modules pass individual checks and are wired; no umbrella build.
+The main source pairing and counterexample depend only on `propext`, `Classical.choice`, and
+`Quot.sound`, as checked with `#print axioms` in scratch.
 
 ## Novelty gate
 
-BRIDGE: the identities above are algebra plus the standard basis trace formula. They are not the
-significant beyond-literature result requested by the user. Keep the general question unchanged;
-do not promote the discrete-sector theorem to an unconditional answer for all projections.
+BRIDGE: aggregate algebra, basis traces, Hardy calculus, and projection rounding are known parent
+machinery. The explicit combined-only three-projection realization answers the previously open
+corpus question. Its independent scientific priority is not established merely by this Lean proof.
 
-## Primary conjecture: a continuous cubic charge survives
+## Realized primary conjecture: a continuous cubic charge survives
 
 **Exact target:** there exist three orthogonal projections on a separable complex Hilbert space
 whose combined cubic associator is trace class and has trace `3√3/(2π)`. No individual cubic or
@@ -80,15 +88,13 @@ Hence `[s,k]=0`, but `∮ tr(s dk)=6i√3`. Smooth Hardy Toeplitz compression fo
 trace-class projection correction would give genuine projections. If both steps preserve the
 trace-class commutator charge, `2 Tr C = (2πi)⁻¹ ∮ tr(s dk)=3√3/π`.
 
-**Formal open core:** instantiate the smooth projection-symbol loop on the corpus Hardy carrier,
-round its three compressions, and transfer the exact trace. The paper argument below addresses
-the projection-correction and trace-transfer hypotheses without splitting inadmissible products.
-The circle trace formula is known mathematics, not a novelty claim. External audit has not found
-this exact three-projection realization, but does not establish exhaustive priority.
+**Formal core: CLOSED.** The real-line construction, projection corrections, and exact trace
+transfer are proved without splitting inadmissible products. The circle trace formula is known
+mathematics, not a novelty claim. External audit has not found this exact three-projection
+realization, but does not establish exhaustive priority.
 
-**Verdict:** SURVIVES PRELIMINARY ATTACK; paper construction below, not yet a Lean theorem or an
-RH source law. Falsification tests: an obstruction to smooth gluing, projection lifting, or trace
-transfer; cancellation of the two orientations; or a known stronger theorem.
+**Verdict:** PROVED in Lean; novelty gate remains provisional. Smooth gluing, projection lifting,
+trace transfer, and retention of both orientations are checked. This is not an RH source law.
 
 ## Dependency-closed paper construction
 
@@ -190,6 +196,14 @@ coordinates `(b,0)`, `(-b/2,√3c/2)`, `(-b/2,-√3c/2)`. Their sum/current are 
 the last two labels for the positive target charge: the corpus real-line Hardy convention has
 `Tr(M_f[Q,M_g])=i/(2π)∫f g'`, opposite to the circle convention used in the paper presentation.
 
-Remaining formal statements: explicit Schwartz pulse and its integral; two-channel multiplier
-projection identities and nuclear cutoff admission; exact evaluation of the already proved
-source boundary pairing. The generic source-to-projection producer itself is no longer missing.
+All statements in this real-line construction are formalized. The remaining RH-facing question
+is different: can a fixed coefficient- and multiplicity-faithful completed arithmetic source land
+in such a charged noncommuting carrier with its required boundary-index normalization? This
+construction neither supplies that landing nor proves it impossible. Do not prescribe singular
+or domain-defective trace theory solely from the scoped cubic cancellation theorems.
+
+Additional external comparison: [Peller, Russian Mathematical Surveys 79 (2024), §7.10](https://www.mathnet.ru/php/archive.phtml?jrnid=rm&option_lang=eng&paperid=10140&wshow=paper)
+surveys trace-class commutator/area formulas; [Thiang--Xia, arXiv:2401.07449v2](https://arxiv.org/abs/2401.07449)
+uses ordinary trace and Helton--Howe--Carey--Pincus theory to identify Hall conductance with an
+index. Thus nonzero ordinary commutator trace and its topological role are explicitly known
+parents, not discoveries here. Searches checked through 2026-09-05, not future September papers.

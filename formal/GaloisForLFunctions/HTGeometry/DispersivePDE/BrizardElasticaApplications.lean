@@ -25,6 +25,24 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaScalingClosur
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaWeierstrassSecond
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaPrintedScaling
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaGalileanOrbit
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaGalileanClosure
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiQuartic
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCylindricalGap
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaFrameRotation
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTravelingPhase
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLameSpectrum
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTravelingHydrodynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaScalingAction
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaGalileanAction
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaGalileanPlane
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaGalileanSoliton
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaClosureFunction
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaClosureBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaEllipticIntegralOrder
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLemniscaticClosure
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaVerticalClosure
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaClosureParameters
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaClosureWalls
 
 /-!
 # Closed application atlas for arXiv:2607.21750
@@ -62,6 +80,32 @@ structure ClosedAtlas : Prop where
       (1 - jacobiSnOne x ^ 2) * (1 - jacobiSnOne x ^ 2)
   jacobiInitialData :
     jacobiSnOne 0 = 0 ∧ jacobiCnOne 0 = 1 ∧ jacobiDnOne 0 = 1
+  jacobiSubstitutionResidual : ∀ a q₀ γ ν X Y : ℝ,
+    (-2 * a * X * Y) ^ 2 -
+        dimensionlessCurvatureRHS q₀ γ ν (q₀ - a * X ^ 2) =
+      4 * a * X ^ 2 * clearedJacobiResidual a q₀ (γ ^ 2) (ν ^ 2) X Y
+  jacobiSnQuartic : ∀ m X : ℝ,
+    m * X ^ 4 - (1 + m) * X ^ 2 + 1 =
+      (1 - X ^ 2) * (1 - m * X ^ 2)
+  jacobiScQuartic : ∀ m X : ℝ,
+    (1 - m) * X ^ 4 + (2 - m) * X ^ 2 + 1 =
+      (1 + X ^ 2) * (1 + (1 - m) * X ^ 2)
+  jacobiSdQuartic : ∀ m X : ℝ,
+    -m * (1 - m) * X ^ 4 + (2 * m - 1) * X ^ 2 + 1 =
+      (1 - (1 - m) * X ^ 2) * (1 + m * X ^ 2)
+  parameterJacobiQuartic : ∀ (P : Parameters) (X Y : ℝ),
+    clearedJacobiResidual P.modulus (P.q₀ : ℝ) (gammaSq P) (nuSq P) X Y =
+      P.modulus * (Y ^ 2 - (1 - X ^ 2) * (1 - P.modulus * X ^ 2))
+  parameterJacobiInitial : ∀ P : Parameters,
+    clearedJacobiResidual P.modulus (P.q₀ : ℝ) (gammaSq P) (nuSq P) 0 1 = 0
+  parameterJacobiNonzero : ∀ (P : NonzeroModulusParameters) (X Y : ℝ),
+    clearedJacobiResidual P.val.modulus (P.val.q₀ : ℝ)
+        (gammaSq P.val) (nuSq P.val) X Y = 0 ↔
+      Y ^ 2 = (1 - X ^ 2) * (1 - P.val.modulus * X ^ 2)
+  parameterJacobiZeroCollapse : ∀ (q₀ : ℝˣ) (X Y : ℝ),
+    clearedJacobiResidual 0 (q₀ : ℝ)
+        (gammaSq { modulus := 0, q₀ := q₀ })
+        (nuSq { modulus := 0, q₀ := q₀ }) X Y = 0
   degenerateJacobiCurvature : ∀ k₀ s : ℝ,
     degenerateJacobiCurvatureSq k₀ s =
       (k₀ * jacobiDnOne (k₀ * s / 2)) ^ 2
@@ -95,6 +139,16 @@ structure ClosedAtlas : Prop where
   scaledDensity : ∀ (a : ℝ) (J : ComplexEvolutionJet2) (t x : ℝ),
     ‖(nlsScaleJet a J).u t x‖ ^ 2 =
       a ^ 2 * ‖J.u (a ^ 2 * t) (a * x)‖ ^ 2
+  scalingJetIdentity : ∀ J : ComplexEvolutionJet2, nlsScaleJet 1 J = J
+  scalingJetComposition : ∀ (a b : ℝ) (J : ComplexEvolutionJet2),
+    nlsScaleJet a (nlsScaleJet b J) = nlsScaleJet (a * b) J
+  scalingJetZero : ∀ J : ComplexEvolutionJet2,
+    nlsScaleJet 0 J = zeroComplexEvolutionJet2
+  scalingSolutionComposition : ∀ (D a b : ℝ) (S : BrizardSolutionJet D),
+    scaleBrizardSolution D a (scaleBrizardSolution D b S) =
+      scaleBrizardSolution D (a * b) S
+  scalingSolutionZero : ∀ (D : ℝ) (S : BrizardSolutionJet D),
+    scaleBrizardSolution D 0 S = zeroBrizardSolution D
   printedScalingDensity : ∀ (a : ℝˣ) (J : ComplexEvolutionJet2) (t x : ℝ),
     ‖(printedInverseScaleJet a J).u t x‖ ^ 2 =
       ((a : ℝ)⁻¹) ^ 2 * ‖J.u ((a : ℝ) ^ 2 * t) ((a : ℝ) * x)‖ ^ 2
@@ -119,6 +173,38 @@ structure ClosedAtlas : Prop where
       envelopeSoliton D k (v + w) t x
   galileanOptical : ∀ D k v t x : ℝ,
     galileanField D v (opticalSoliton D k) t x = envelopeSoliton D k v t x
+  galileanJetDensity : ∀ (D v : ℝ) (J : TransportCompatibleJet2) (t x : ℝ),
+    ‖(galileanJet D v J).u t x‖ ^ 2 = ‖J.u t (x - 2 * D * v * t)‖ ^ 2
+  galileanSolutionClosure : ∀ (D v : ℝ)
+      (S : TransportCompatibleBrizardSolution D),
+    SolvesNLS D (galileanBrizardSolution D v S).val
+  galileanCertifiedField : ∀ (D v : ℝ)
+      (S : TransportCompatibleBrizardSolution D) (t x : ℝ),
+    (galileanBrizardSolution D v S).val.u t x = galileanField D v S.val.u t x
+  galileanCompatibleClosure : ∀ (D v : ℝ)
+      (S : TransportCompatibleBrizardSolution D),
+    SolvesNLS D (galileanCompatibleBrizardSolution D v S).val.toComplexEvolutionJet2
+  galileanCompatibleComposition : ∀ (D v w : ℝ)
+      (S : TransportCompatibleBrizardSolution D) (t x : ℝ),
+    (galileanCompatibleBrizardSolution D v
+        (galileanCompatibleBrizardSolution D w S)).val.u t x =
+      (galileanCompatibleBrizardSolution D (v + w) S).val.u t x
+  galileanPlaneCompatible : ∀ D a k : ℝ,
+    SolvesNLS D (planeWaveCompatibleSolution D a k).val.toComplexEvolutionJet2
+  galileanPlaneCertifiedOrbit : ∀ D a k v t x : ℝ,
+    (galileanCompatibleBrizardSolution D v
+        (planeWaveCompatibleSolution D a k)).val.u t x =
+      planeWave D a (k + v) t x
+  galileanSolitonCompatible : ∀ D k v : ℝ,
+    SolvesNLS D (envelopeSolitonCompatibleSolution D k v).val.toComplexEvolutionJet2
+  galileanSolitonCertifiedOrbit : ∀ D k v w t x : ℝ,
+    (galileanCompatibleBrizardSolution D w
+        (envelopeSolitonCompatibleSolution D k v)).val.u t x =
+      envelopeSoliton D k (w + v) t x
+  galileanOpticalCertifiedOrbit : ∀ D k v t x : ℝ,
+    (galileanCompatibleBrizardSolution D v
+        (envelopeSolitonCompatibleSolution D k 0)).val.u t x =
+      envelopeSoliton D k v t x
   breatherEndpointSolution : SolvesFocusingNLS breatherLatticeEndpoint
   breatherEndpointIdentification : ∀ t x : ℝ,
     breatherLatticeEndpoint.u t x =
@@ -145,6 +231,24 @@ structure ClosedAtlas : Prop where
   sechBohmPotential : ∀ x : ℝ, sechBohmTerm x = 1 - 2 * solitonQ x
   sechHydrodynamicPotential : ∀ x : ℝ,
     sechDensity x + 2 * sechBohmTerm x = 2 - 3 * solitonQ x
+  travelingDensityTimeDerivative : ∀ (K : CurvatureProfileJet) (c t s : ℝ),
+    HasDerivAt (fun r : ℝ => travelingDensity K c r s)
+      (travelingDensityT K c t s) t
+  travelingDensitySpaceDerivative : ∀ (K : CurvatureProfileJet) (c t s : ℝ),
+    HasDerivAt (travelingDensity K c t) (travelingDensityX K c t s) s
+  travelingMassCurrentLaw : ∀ (D k₀ τ₀ c : ℝ)
+      (K : CurvatureProfileJet) (t s : ℝ),
+    travelingMassCurrent D k₀ τ₀ c K t s =
+      c * travelingDensity K c t s + 2 * D * k₀ ^ 2 * τ₀
+  travelingContinuity : ∀ (D k₀ τ₀ c : ℝ)
+      (K : CurvatureProfileJet) (t s : ℝ),
+    travelingDensityT K c t s + c * travelingDensityX K c t s = 0 ∧
+      HasDerivAt (fun r : ℝ => travelingDensity K c r s)
+        (travelingDensityT K c t s) t ∧
+      HasDerivAt (travelingMassCurrent D k₀ τ₀ c K t)
+        (c * travelingDensityX K c t s) s
+  unboostedContinuityDefect : ∀ (K : CurvatureProfileJet) (c t s : ℝ),
+    travelingDensityT K c t s + 0 = -c * travelingDensityX K c t s
   halfShiftAvoidsPoles : ∀ (L : PeriodPair) (x : ℝ),
     halfShiftArgument L x ∉ L.lattice
   halfShiftDerivative : ∀ (L : PeriodPair) (x : ℝ),
@@ -391,12 +495,42 @@ structure ClosedAtlas : Prop where
   travelingTorsionless : ∀ (m : TravelingModulus) (γ : ℝ),
     nuSq (travelingParameters m γ) = 0 ↔
       (m : ℝ) = travelingMu γ ∨ (m : ℝ) = 1 / travelingMu γ
+  travelingPhaseDecomposition : ∀ (c τ₀ : ℝ) (D k₀ κ : ℝˣ),
+    travelingPhaseSlope c τ₀ D k₀ κ =
+      c / (2 * (D : ℝ)) + torsion (k₀ : ℝ) τ₀ κ
+  travelingPhaseCurvatureForce : ∀ (c τ₀ : ℝ) (D k₀ κ : ℝˣ),
+    -(c / (D : ℝ)) * (κ : ℝ) * travelingPhaseSlope c τ₀ D k₀ κ +
+        (κ : ℝ) * travelingPhaseSlope c τ₀ D k₀ κ ^ 2 =
+      -(c ^ 2) / (4 * (D : ℝ) ^ 2) * (κ : ℝ) +
+        (k₀ : ℝ) ^ 4 * τ₀ ^ 2 / (κ : ℝ) ^ 3
+  travelingSelectedSpeedZero : ∀ (D k₀ : ℝˣ) (γ : ℝ),
+    selectedWaveSpeed D k₀ γ = 0 ↔ γ = 0
+  travelingSelectedPhase : ∀ (D k₀ κ : ℝˣ) (γ τ₀ : ℝ),
+    travelingPhaseSlope (selectedWaveSpeed D k₀ γ) τ₀ D k₀ κ =
+      (k₀ : ℝ) * γ / 2 + torsion (k₀ : ℝ) τ₀ κ
+  travelingSelectedLambda : ∀ (D k₀ : ℝˣ) (γ : ℝ),
+    -(selectedWaveSpeed D k₀ γ) ^ 2 /
+        (2 * (k₀ : ℝ) ^ 2 * (D : ℝ) ^ 2) = waveLambda γ
+  lameSpectrumSign : ∀ P : Parameters,
+    0 ≤ lameEpsilonSq P ↔
+      (0 < (P.q₀ : ℝ) ∧ P.modulus ≤ 2 * (P.q₀ : ℝ)) ∨
+      ((P.q₀ : ℝ) < 0 ∧ 2 * (P.q₀ : ℝ) ≤ P.modulus)
+  classicalLameSpectrum : ∀ P : ClassicalLameParameters,
+    1 / 2 ≤ lameEpsilonSq P.val ∧ lameEpsilonSq P.val < 1
+  torsionlessLameSpectrum : ∀ m : ℝˣ,
+    lameEpsilonSq { modulus := (m : ℝ), q₀ := m } = 1 / 2
+  regionILameSpectrum : ∀ P : PhysicalRegionI, 1 / 2 < lameEpsilonSq P.val
+  regionIILameSpectrum : ∀ P : PhysicalRegionII, lameEpsilonSq P.val < 1 / 2
+  regionIILameReality : ∀ P : PhysicalRegionII,
+    0 ≤ lameEpsilonSq P.val ↔ 2 * (P.val.q₀ : ℝ) ≤ P.val.modulus
   invariant₃Factor : ∀ P : Parameters,
     g₃ P =
       4 * (2 * P.modulus - 1) * (P.modulus + 1) * (P.modulus - 2) /
         (27 * (P.q₀ : ℝ) ^ 3)
   invariant₃ZeroClassification : ∀ P : Parameters,
     g₃ P = 0 ↔ P.modulus = -1 ∨ P.modulus = 1 / 2 ∨ P.modulus = 2
+  invariant₂Positive : ∀ P : Parameters, 0 < g₂ P
+  discriminantNonnegative : ∀ P : Parameters, 0 ≤ discriminant P
   positiveDiscriminantClassification : ∀ P : Parameters,
     0 < discriminant P ↔ P.modulus ≠ 0 ∧ P.modulus ≠ 1
   realModularLowerBound : ∀ P : NonsingularParameters, 1728 ≤ parameterJ P
@@ -449,12 +583,130 @@ structure ClosedAtlas : Prop where
     spatialCcoefSq k₀ γ ν k₀ = spatialOmegaSq γ ν
   spatialInitialTangent : ∀ (k₀ : ℝˣ) (γ ν : ℝ),
     spatialAcoefSq k₀ γ ν k₀ = 1 - spatialOmegaSq γ ν
+  spatialCylindricalWeight : ∀ (k₀ : ℝˣ) (γ ν : ℝ) (κ : ℝˣ),
+    spatialCcoefSq k₀ γ ν κ =
+      (k₀ : ℝ) ^ 2 * spatialOmegaSq γ ν / (κ : ℝ) ^ 2
+  spatialCylindricalGap : ∀ (k₀ : ℝˣ) (γ ν : ℝ) (κ : ℝˣ),
+    1 - spatialCcoefSq k₀ γ ν κ =
+      ((κ : ℝ) ^ 2 - (k₀ : ℝ) ^ 2 * spatialOmegaSq γ ν) / (κ : ℝ) ^ 2
+  spatialCylindricalRegularity : ∀ (k₀ : ℝˣ) (γ ν : ℝ) (κ : ℝˣ),
+    0 < 1 - spatialCcoefSq k₀ γ ν κ ↔
+      (k₀ : ℝ) ^ 2 * spatialOmegaSq γ ν < (κ : ℝ) ^ 2
+  spatialCylindricalNonnegative : ∀ (k₀ : ℝˣ) (γ ν : ℝ) (κ : ℝˣ),
+    0 ≤ spatialCcoefSq k₀ γ ν κ
+  spatialCylindricalTorsionless : ∀ (k₀ : ℝˣ) (γ ν : ℝ) (κ : ℝˣ),
+    spatialCcoefSq k₀ γ ν κ = 0 ↔ ν = 0
+  spatialInitialCylindricalRegularity : ∀ (k₀ : ℝˣ) (γ ν : ℝ),
+    spatialCcoefSq k₀ γ ν k₀ < 1
+  frenetTangentUnit : ∀ α β : ℝ,
+    frameDot (tangentCoordinates α β) (tangentCoordinates α β) = 1
+  frenetNormalUnit : ∀ α β : ℝ,
+    frameDot (normalCoordinates α β) (normalCoordinates α β) = 1
+  frenetBinormalUnit : ∀ β : ℝ,
+    frameDot (binormalCoordinates β) (binormalCoordinates β) = 1
+  frenetTangentNormalOrthogonal : ∀ α β : ℝ,
+    frameDot (tangentCoordinates α β) (normalCoordinates α β) = 0
+  frenetTangentBinormalOrthogonal : ∀ α β : ℝ,
+    frameDot (tangentCoordinates α β) (binormalCoordinates β) = 0
+  frenetNormalBinormalOrthogonal : ∀ α β : ℝ,
+    frameDot (normalCoordinates α β) (binormalCoordinates β) = 0
+  frenetTangentCrossNormal : ∀ α β : ℝ,
+    frameCross (tangentCoordinates α β) (normalCoordinates α β) =
+      binormalCoordinates β
+  frenetNormalCrossBinormal : ∀ α β : ℝ,
+    frameCross (normalCoordinates α β) (binormalCoordinates β) =
+      tangentCoordinates α β
+  frenetBinormalCrossTangent : ∀ α β : ℝ,
+    frameCross (binormalCoordinates β) (tangentCoordinates α β) =
+      normalCoordinates α β
+  frenetCylindricalOrientation : ∀ α β : ℝ,
+    frameDot
+        (frameCross (tangentCoordinates α β) (normalCoordinates α β))
+        (binormalCoordinates β) = 1
   modulusLeftInverse : ∀ m : NegativeModulus,
     classicalToExtended (extendedToClassical m) = m
   modulusRightInverse : ∀ n : ClassicalModulus,
     extendedToClassical (classicalToExtended n) = n
   modulusComplement : ∀ m : NegativeModulus,
     1 - (extendedToClassical m : ℝ) = 1 / (1 - (m : ℝ))
+  completeKAtZero : completeEllipticK 0 = Real.pi / 2
+  completeEAtZero : completeEllipticE 0 = Real.pi / 2
+  completeKPositive : ∀ m : SubcriticalModulus, 0 < completeEllipticK m
+  completeEPositive : ∀ m : SubcriticalModulus, 0 < completeEllipticE m
+  completeKExtendedTransport : ∀ m : NegativeModulus,
+    completeEllipticK m =
+      Real.sqrt (1 - (extendedToClassical m : ℝ)) *
+        completeEllipticK (extendedToClassical m)
+  completeEExtendedTransport : ∀ m : NegativeModulus,
+    completeEllipticE m =
+      completeEllipticE (extendedToClassical m) /
+        Real.sqrt (1 - (extendedToClassical m : ℝ))
+  closureAtZero : closureQ 0 = 1
+  closureExtendedTransport : ∀ m : NegativeModulus,
+    closureQ m =
+      (1 - (extendedToClassical m : ℝ))⁻¹ *
+        classicalClosureCore (extendedToClassical m)
+  closureExtendedZero : ∀ m : NegativeModulus,
+    closureQ m = 0 ↔
+      2 * completeEllipticE (extendedToClassical m) =
+        completeEllipticK (extendedToClassical m)
+  closureOrbitEquivalence : ∀ m : NegativeModulus,
+    closureQ m = 0 ↔
+      closureQ (extendedToClassical m) = (extendedToClassical m : ℝ)
+  closureClassicalIntegralBound : ∀ m : ClassicalModulus,
+    (1 - (m : ℝ)) * completeEllipticK m ≤ completeEllipticE m
+  closureClassicalPositive : ∀ m : ClassicalModulus, 0 < closureQ m
+  completeEClassicalUpper : ∀ m : ClassicalModulus,
+    completeEllipticE m ≤ Real.pi / 2
+  completeKClassicalLower : ∀ m : ClassicalModulus,
+    Real.pi / 2 ≤ completeEllipticK m
+  completeKNegativeUpper : ∀ m : NegativeModulus,
+    completeEllipticK m ≤ Real.pi / 2
+  completeENegativeLower : ∀ m : NegativeModulus,
+    Real.pi / 2 ≤ completeEllipticE m
+  closureClassicalUpper : ∀ m : ClassicalModulus, closureQ m < 2
+  lemniscaticModulusTransport :
+    extendedToClassical negativeOneModulus = halfClassicalModulus
+  lemniscaticKTransport :
+    completeEllipticK (-1) =
+      (Real.sqrt 2)⁻¹ * completeEllipticK (1 / 2)
+  lemniscaticETransport :
+    completeEllipticE (-1) = Real.sqrt 2 * completeEllipticE (1 / 2)
+  lemniscaticClosureTransport :
+    closureQ (-1) = 0 ↔ closureQ (1 / 2) = 1 / 2
+  verticalClosureDriftFormula : ∀ P : Parameters,
+    verticalClosureDrift P =
+      (closureQ P.modulus - (P.q₀ : ℝ)) / (2 * (P.q₀ : ℝ))
+  verticalClosureCriterion : ∀ P : Parameters,
+    verticalClosureDrift P = 0 ↔ closureQ P.modulus = (P.q₀ : ℝ)
+  verticalClosureClassicalLower : ∀ m : ClassicalModulus,
+    1 - (m : ℝ) ≤ closureQ m
+  verticalClosureNegativeLower : ∀ m : NegativeModulus,
+    1 + (m : ℝ) ≤ closureQ m
+  physicalRegionIVerticalExclusion : ∀ P : PhysicalRegionI,
+    verticalClosureDrift P.val ≠ 0
+  classicalClosureZeroDrift : ∀ m : ClassicalModulus,
+    verticalClosureDrift (classicalClosureParameters m) = 0
+  classicalClosureRegionIExclusion : ∀ m : ClassicalModulus,
+    ¬ (0 < ((classicalClosureParameters m).q₀ : ℝ) ∧
+      (classicalClosureParameters m).modulus <
+        ((classicalClosureParameters m).q₀ : ℝ) ∧
+      3 * ((classicalClosureParameters m).q₀ : ℝ) <
+        1 + (classicalClosureParameters m).modulus)
+  extendedClosureZeroDrift : ∀ M : ExtendedTravelingClosure,
+    verticalClosureDrift (extendedTravelingClosureParameters M) = 0
+  extendedClosureSpeedPositive : ∀ M : ExtendedTravelingClosure,
+    0 < gammaSq (extendedTravelingClosureParameters M)
+  extendedClosureTorsionPositive : ∀ M : ExtendedTravelingClosure,
+    0 < nuSq (extendedTravelingClosureParameters M)
+  closureSpeedIntegralWall : ∀ m : SubcriticalModulus,
+    closureQ m = (1 + (m : ℝ)) / 3 ↔
+      3 * completeEllipticE m =
+        (2 - (m : ℝ)) * completeEllipticK m
+  closureSpeedWallTransport : ∀ m : NegativeModulus,
+    closureQ m = (1 + (m : ℝ)) / 3 ↔
+      closureQ (extendedToClassical m) =
+        (1 + (extendedToClassical m : ℝ)) / 3
   parameterReconstruction₁ : ∀ P : Parameters,
     P.modulus = (P.q₀ : ℝ) * (3 + gammaSq P) - 1
   parameterReconstruction₂ : ∀ P : Parameters,
@@ -510,6 +762,14 @@ theorem closedAtlas : ClosedAtlas where
   jacobiQuadratic₂ := jacobiDnOne_sq_add_jacobiSnOne_sq
   jacobiFirstIntegral := jacobiSnOne_firstIntegral
   jacobiInitialData := jacobiOne_initial
+  jacobiSubstitutionResidual := curvatureSubstitution_residual
+  jacobiSnQuartic := jacobiCaseSn
+  jacobiScQuartic := jacobiCaseSc
+  jacobiSdQuartic := jacobiCaseSd
+  parameterJacobiQuartic := parameterJacobiResidual_factor
+  parameterJacobiInitial := parameterJacobiResidual_initial
+  parameterJacobiNonzero := parameterJacobiResidual_eq_zero_iff
+  parameterJacobiZeroCollapse := zeroModulusJacobiResidual
   degenerateJacobiCurvature := degenerateJacobiCurvatureSq_eq_sech
   opticalEnvelopeJacobiBoundary := opticalEnvelope_eq_degenerateJacobiCurvature
   opticalDensityIsElasticaCurvature :=
@@ -526,6 +786,11 @@ theorem closedAtlas : ClosedAtlas where
   scalingZero := nlsScaleJet_u_zero
   scalingComposition := nlsScaleJet_u_mul
   scaledDensity := norm_nlsScaleJet_sq
+  scalingJetIdentity := nlsScaleJet_one_full
+  scalingJetComposition := nlsScaleJet_mul_full
+  scalingJetZero := nlsScaleJet_zero_full
+  scalingSolutionComposition := scaleBrizardSolution_mul
+  scalingSolutionZero := scaleBrizardSolution_zero
   printedScalingDensity := norm_printedInverseScaleJet_sq
   printedScalingResidual := printedInverseScale_residual
   printedScalingCounterexample := printedInverseScale_two_plane_not_solves
@@ -535,6 +800,16 @@ theorem closedAtlas : ClosedAtlas where
   galileanPlaneWave := galileanField_planeWave
   galileanEnvelope := galileanField_envelopeSoliton
   galileanOptical := galileanField_opticalSoliton
+  galileanJetDensity := galileanJet_norm_sq
+  galileanSolutionClosure := galileanBrizardSolution_solves
+  galileanCertifiedField := galileanBrizardSolution_field
+  galileanCompatibleClosure := galileanCompatibleBrizardSolution_solves
+  galileanCompatibleComposition := galileanCompatibleBrizardSolution_add_field
+  galileanPlaneCompatible := planeWaveCompatibleSolution_solves
+  galileanPlaneCertifiedOrbit := galileanCompatible_planeWave_field
+  galileanSolitonCompatible := envelopeSolitonCompatibleSolution_solves
+  galileanSolitonCertifiedOrbit := galileanCompatible_envelopeSoliton_field
+  galileanOpticalCertifiedOrbit := galileanCompatible_opticalSoliton_field
   breatherEndpointSolution := breatherLatticeEndpoint_solves
   breatherEndpointIdentification := breatherLatticeEndpoint_eq
   sechCurvatureDensity := sechDensity_eq
@@ -547,6 +822,11 @@ theorem closedAtlas : ClosedAtlas where
   sechMomentumBalance := sechMomentumEquation
   sechBohmPotential := sechBohmTerm_eq
   sechHydrodynamicPotential := sechHydrodynamicPotential_eq
+  travelingDensityTimeDerivative := hasDerivAt_travelingDensity_time
+  travelingDensitySpaceDerivative := hasDerivAt_travelingDensity_space
+  travelingMassCurrentLaw := travelingMassCurrent_eq
+  travelingContinuity := travelingContinuityEquation
+  unboostedContinuityDefect := unboostedContinuityResidual
   halfShiftAvoidsPoles := halfShiftArgument_not_mem_lattice
   halfShiftDerivative := hasDerivAt_halfShiftWeierstrass
   halfShiftSecondDerivative := hasDerivAt_halfShiftWeierstrassPrime
@@ -650,8 +930,21 @@ theorem closedAtlas : ClosedAtlas where
   travelingEndpointEquality := one_div_travelingMu_eq_half_iff
   travelingTorsionNonnegative := traveling_nuSq_nonneg_iff
   travelingTorsionless := traveling_nuSq_eq_zero_iff
+  travelingPhaseDecomposition := travelingPhaseSlope_eq_drift_add_torsion
+  travelingPhaseCurvatureForce := travelingPhase_curvatureForce
+  travelingSelectedSpeedZero := selectedWaveSpeed_eq_zero_iff
+  travelingSelectedPhase := selected_travelingPhaseSlope
+  travelingSelectedLambda := selectedWaveSpeed_lambda
+  lameSpectrumSign := lameEpsilonSq_nonneg_iff
+  classicalLameSpectrum := classical_lameEpsilonSq_bounds
+  torsionlessLameSpectrum := torsionless_lameEpsilonSq
+  regionILameSpectrum := physicalRegionI_lameEpsilonSq_gt_half
+  regionIILameSpectrum := physicalRegionII_lameEpsilonSq_lt_half
+  regionIILameReality := physicalRegionII_lameEpsilonSq_nonneg_iff
   invariant₃Factor := g₃_factor
   invariant₃ZeroClassification := g₃_eq_zero_iff
+  invariant₂Positive := g₂_pos
+  discriminantNonnegative := discriminant_nonneg
   positiveDiscriminantClassification := discriminant_pos_iff
   realModularLowerBound := parameterJ_ge_1728
   realModularEqualityClassification := parameterJ_eq_1728_iff
@@ -677,9 +970,58 @@ theorem closedAtlas : ClosedAtlas where
   spatialInitialNormalZero := spatialBcoefSq_initial
   spatialInitialBinormal := spatialCcoefSq_initial
   spatialInitialTangent := spatialAcoefSq_initial
+  spatialCylindricalWeight := spatialCcoefSq_eq_omega
+  spatialCylindricalGap := one_sub_spatialCcoefSq
+  spatialCylindricalRegularity := one_sub_spatialCcoefSq_pos_iff
+  spatialCylindricalNonnegative := spatialCcoefSq_nonneg
+  spatialCylindricalTorsionless := spatialCcoefSq_eq_zero_iff
+  spatialInitialCylindricalRegularity := initial_spatialCcoefSq_lt_one
+  frenetTangentUnit := tangentCoordinates_unit
+  frenetNormalUnit := normalCoordinates_unit
+  frenetBinormalUnit := binormalCoordinates_unit
+  frenetTangentNormalOrthogonal := tangent_dot_normal
+  frenetTangentBinormalOrthogonal := tangent_dot_binormal
+  frenetNormalBinormalOrthogonal := normal_dot_binormal
+  frenetTangentCrossNormal := tangent_cross_normal
+  frenetNormalCrossBinormal := normal_cross_binormal
+  frenetBinormalCrossTangent := binormal_cross_tangent
+  frenetCylindricalOrientation := frenetCylindrical_orientation
   modulusLeftInverse := classicalToExtended_extendedToClassical
   modulusRightInverse := extendedToClassical_classicalToExtended
   modulusComplement := transformedComplement
+  completeKAtZero := completeEllipticK_zero
+  completeEAtZero := completeEllipticE_zero
+  completeKPositive := completeEllipticK_pos
+  completeEPositive := completeEllipticE_pos
+  completeKExtendedTransport := completeEllipticK_negative_transform
+  completeEExtendedTransport := completeEllipticE_negative_transform
+  closureAtZero := closureQ_zero
+  closureExtendedTransport := closureQ_negative_transform
+  closureExtendedZero := closureQ_negative_eq_zero_iff
+  closureOrbitEquivalence := closureQ_negative_zero_iff_classical_torsionless
+  closureClassicalIntegralBound := one_sub_mul_completeK_le_completeE
+  closureClassicalPositive := closureQ_classical_pos
+  completeEClassicalUpper := completeEllipticE_classical_le_pi_div_two
+  completeKClassicalLower := pi_div_two_le_completeEllipticK_classical
+  completeKNegativeUpper := completeEllipticK_negative_le_pi_div_two
+  completeENegativeLower := pi_div_two_le_completeEllipticE_negative
+  closureClassicalUpper := closureQ_classical_lt_two
+  lemniscaticModulusTransport := negativeOne_to_halfClassical
+  lemniscaticKTransport := completeEllipticK_negativeOne
+  lemniscaticETransport := completeEllipticE_negativeOne
+  lemniscaticClosureTransport := closureQ_negativeOne_zero_iff_half_torsionless
+  verticalClosureDriftFormula := verticalClosureDrift_eq
+  verticalClosureCriterion := verticalClosureDrift_eq_zero_iff
+  verticalClosureClassicalLower := one_sub_modulus_le_closureQ_classical
+  verticalClosureNegativeLower := one_add_modulus_le_closureQ_negative
+  physicalRegionIVerticalExclusion := physicalRegionI_verticalClosureDrift_ne_zero
+  classicalClosureZeroDrift := classicalClosureParameters_verticalDrift
+  classicalClosureRegionIExclusion := classicalClosureParameters_not_regionI
+  extendedClosureZeroDrift := extendedTravelingClosure_verticalDrift
+  extendedClosureSpeedPositive := extendedTravelingClosure_gammaSq_pos
+  extendedClosureTorsionPositive := extendedTravelingClosure_nuSq_pos
+  closureSpeedIntegralWall := closureQ_eq_speedWall_iff
+  closureSpeedWallTransport := closureQ_negative_speedWall_iff_classical
   parameterReconstruction₁ := modulus_eq_q₀_mul_gammaSq
   parameterReconstruction₂ := modulus_eq_q₀_sq_mul_gammaSq_sub_nuSq
   torsionWalls := nuSq_eq_zero_iff

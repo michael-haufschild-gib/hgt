@@ -104,3 +104,55 @@ weak); (iii) the **lower** torus law `liminf ℓ_Ψ(T,2T)/T ≥ J_M` (needs unif
 `log⁻|Ψ|` on the line: Poisson–Jensen on discs with the `≪_M T` zeros of the strip gives
 `∫(log⁻|Ψ|)² ≪_M T`; not formalized), which would upgrade the receiver direction to the exact
 equivalence `(L) ⟺ lim ℓ_{ζΨ_M}(T,2T)/T = J_M` for each fixed `M`.
+
+## 8. Cycle 2 (2026-09-05): the equivalence is proven
+
+**Theorem (Lean, `OuterLawMollifiedProductEquivalence`, axiom-clean).** For every `M > 1`,
+
+```text
+(L)   [∀η>0, eventually (1/T)∫_T^{2T} log|ζ(1/2+it)| ≤ η]
+  ⟺  [∀ε∈(0,1), ∀η>0, eventually (1/T)∫_T^{2T} log|ζΨ_M(1/2+it)| ≤ J_M(ε) + η]
+```
+(`zetaLine_logMean_le_iff_mollifiedProduct_logMean_le`), with `J_M(ε) = linearMollifierTorusLogMean
+M ε`. Under `(L)` the mollified log-mean is squeezed: eventually
+`J_M(ε) − D_M/log(1/ε) − η ≤ (1/T)∫ log|ζΨ_M| ≤ J_M(ε) + η`
+(`exists_mollifiedProduct_logMean_squeeze_of_L`). The lower side of `(L)` is automatic:
+`−(C + K log 2T) ≤ ∫_T^{2T} log|ζ|` for **every** `T ≥ 20`
+(`exists_zetaLine_logMean_floor_all_heights`: the admissible heights are dense, both sides are
+continuous in `T`, `le_on_closure`).
+
+The new input is the **lower torus law** `exists_eventually_window_logMean_linearMollifier_ge`,
+`(1/T)∫_T^{2T} log|Ψ_M| ≥ J_M(ε) − η − D_M/log(1/ε)`, from the small-values estimate
+(`DirichletPolynomialLineSmallValues`):
+* interior lower bound `log|Ψ(w)| ≥ −C + ∑ m_a log|(w−c₀)−a|` for `‖w − c₀‖ ≤ 15/2` on the ball
+  `‖·−c₀‖ ≤ 9`, `c₀ = 8 + it` (corpus zero-free cofactor factorization
+  `exists_zero_free_cofactor_bounds` + minimum modulus `norm_lower_bound_of_anchor`; total
+  multiplicity `≤ log(2Mf)/log 2`, all zeros of the ball are in the factor set);
+* `∫_{T₁}^{T₂} max(log ε − log|Ψ(1/2+it)|, 0) ≤ (C₁(T₂−T₁) + C₂(1+|T₁|+|T₂|))/log(1/ε)`
+  (`exists_line_smallValues_bound`): pointwise `(log⁻|Ψ|)² ≤ 2C₀² + 2N³∑_{u∈Z}(log⁻|w−u|)²` over
+  the finite strip zero set, `(log(1/x))² ≤ 16x^{-1/2}` majorant with `∫ ≤ 64` per zero, and the
+  corpus linear zero count `exponentialType_zeroCount_linear` for the strip.
+
+So the outer law is now an *equivalence*: `(L)` holds iff the linear-mollified log-mean converges
+to the torus Jensen mass `J_M = lim_ε J_M(ε)`. Torus MC at `M = 10⁵, 3·10⁵`: `J_M = 0.018 ± 0.007,
+−0.002 ± 0.012` — consistent with `J_M ≈ 0`.
+
+## 9. Open core (after cycle 2)
+
+`[OPEN CORE]` `(L)`; and `J_M → 0` (numerically supported, not proven). Everything else in the
+law is a theorem.
+
+## 10. Honesty note (cycle 3): what the fixed-`M` equivalence does and does not say
+
+For fixed `M`, `ℓ_{ζΨ_M} = ℓ_ζ + ℓ_{Ψ_M}` and `ℓ_{Ψ_M}/T → J_M` is the (window-uniform, quantitative)
+Jessen–Tornehave law for one Dirichlet polynomial; so the equivalence of §8 is exactly
+`(L) ⟺ (L)` dressed by that law — a fixed-length mollifier cannot mollify. The regime in which the
+outer law could *produce* `(L)` is `M = T^θ`, where `E|ζΨ_M|² → 1 + 1/θ` makes `ζΨ_M` close to `1`;
+there the needed statement is the **uniform torus law** `ℓ_{Ψ_{T^θ}}(T)/T − J_{T^θ} → 0`. What is
+uniform already: the small-values constants are polynomial in `log M` (`C₀ ≍ log M`,
+`N_max ≍ log M`, strip zero count `≍ (log M)·T`), so `∫_T^{2T}(log⁻|Ψ|)² ≪ (log M)⁴ T` holds for
+`M = T^θ`. What is not: the continuous Bohr transfer of the truncated `log max(|F|², ε²)` goes
+through Weierstrass approximation on `[0, (∑|a_n|)²]` with Lipschitz constant `ε^{-2}`, so the
+polynomial degree needed is `≫ M ε^{-2}` and the even-moment transfer at that degree needs
+`T ≥ M^{2d}` — impossible for `M = T^θ`. A uniform torus law for `log|Ψ_{T^θ}|` is a
+"mollifier CLT" question (long Dirichlet polynomials beyond the mean-value range).

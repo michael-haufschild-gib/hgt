@@ -70,6 +70,41 @@ theorem complexMatrixRealification_posDef
       (x ⬝ᵥ (complexMatrixRealification A).mulVec x)
     simpa [complexMatrixRealification_quadratic] using hre
 
+/-! ## Converse positivity transfer -/
+
+/-- Split a complex vector into its real and imaginary channels. -/
+def doubledRealOfComplex (z : n → ℂ) : n ⊕ n → ℝ
+  | Sum.inl i => (z i).re
+  | Sum.inr i => (z i).im
+
+/-- Recombining the split real channels recovers the complex vector. -/
+@[simp] theorem complexOfDoubledReal_doubledRealOfComplex (z : n → ℂ) :
+    complexOfDoubledReal (doubledRealOfComplex z) = z := by
+  funext i
+  apply Complex.ext <;> rfl
+
+/-- Positive semidefiniteness of a Hermitian realification reflects back to the complex matrix. -/
+theorem complexMatrix_posSemidef_of_realification_posSemidef
+    {A : Matrix n n ℂ} (hA : A.IsHermitian)
+    (hR : (complexMatrixRealification A).PosSemidef) :
+    A.PosSemidef := by
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hA fun z => ?_
+  rw [Complex.nonneg_iff]
+  constructor
+  · have hr := hR.dotProduct_mulVec_nonneg (doubledRealOfComplex z)
+    change 0 ≤ doubledRealOfComplex z ⬝ᵥ
+      (complexMatrixRealification A).mulVec (doubledRealOfComplex z) at hr
+    rw [complexMatrixRealification_quadratic] at hr
+    simpa using hr
+  · exact (hA.im_star_dotProduct_mulVec_self z).symm
+
+/-- For Hermitian matrices, a non-positive complex form cannot acquire positivity by realifying. -/
+theorem complexMatrixRealification_not_posDef_of_not_posSemidef
+    {A : Matrix n n ℂ} (hA : A.IsHermitian) (hAneg : ¬ A.PosSemidef) :
+    ¬ (complexMatrixRealification A).PosDef := by
+  intro hR
+  exact hAneg (complexMatrix_posSemidef_of_realification_posSemidef hA hR.posSemidef)
+
 end
 
 end GaloisForLFunctions.HTGeometry
