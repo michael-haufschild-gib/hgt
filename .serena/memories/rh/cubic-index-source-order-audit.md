@@ -1,0 +1,11 @@
+# Cubic arithmetic index: source-order audit
+
+Verified endpoint remains `RHTower.exists_faithful_arithmetic_rectangle_cubic` in CubicArithmeticRectangleSource: literal Xi rectangle source, pointwise recovery, genuine Hardy-rounded projections, ordinary cubic trace = enclosed multiplicity-copy count. No new independent arithmetic order law or RH proof obtained in this audit.
+
+Checked cross-route lead: pole-removal constraints plus positivity-improving/Perron-Frobenius structure might bound the pole-free source's negative index. This inference is invalid without an independent higher-eigenvalue bound: H=[[-2,-1],[-1,-2]] has positive simple even ground (1,1), eigenvalue -3, but odd eigenvector (1,-1), eigenvalue -1. Ground simplicity/positivity is not an inertia bound.
+
+Exact literal source inspected: CCMRestrictedWeilFriedrichsOperator.lean:106 `ccmRestrictedWeilSourceQuadratic` is archimedean energy + 2 Re(conj(Pminus) Pplus) - finite Mangoldt translation energy. The pole contribution is a cross term, NOT the sum of two nonnegative squares. Pole-free sources satisfy Pplus=Pminus=0; pointwise modulus does not preserve this constrained sector (a nonzero nonnegative source has strictly positive exponential moments). Do not claim generic modulus contraction proves its nonnegativity.
+
+Relevant already-closed source/gate machinery: CCMRestrictedWeilMixedSourceForm, CCMRestrictedWeilPolarGroundEnergy, SuzukiPolarTranslateMultiplier; source head/coercive exterior and exact RH landing are in frontier-map Route O. SuzukiPrimeArchDefectShiftSelection assumes a cofinal simple-even-ground endpoint; the above shortcut does not produce it for the literal full polar form. Literature parent verified: Suzuki arXiv:2606.09096v2 (2026-08-17), unified ground/operator framework. This audit is not a new theorem or a beyond-literature result. No numerical question was isolated that computation would settle; no new RunPod job or Lean process launched.
+
+Current frontier is still independent coefficient-derived order/cancellation, not another realization, normalization, finite seed, or source-free ground-state argument. No new STATUS mathematical fact added. Goal remains active, not externally blocked.

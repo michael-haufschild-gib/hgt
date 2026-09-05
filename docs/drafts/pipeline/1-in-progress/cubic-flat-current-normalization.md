@@ -4,8 +4,10 @@
 Lean-proved in `CubicCirculantWindingIntegral.exists_faithful_circulant_winding_cubic`
 (declaration namespace `RHTower`), retaining exact source recovery, genuine
 doubled/reversed Hardy compression, and ordinary cubic trace `(2πi)⁻¹∫f'/f`.
-Literal arithmetic contour specialization remains Lean-open; independent
-arithmetic zero-charge control remains mathematically unproved.
+Literal arithmetic contour specialization is Lean-proved in
+`CubicArithmeticRectangleSource.exists_faithful_arithmetic_rectangle_cubic`:
+the ordinary cubic trace is exactly the enclosed Xi multiplicity-copy count.
+Independent arithmetic zero-charge control remains mathematically unproved.
 
 **RH chain:** literal completed prime–Gamma source → noncommuting flat source
 triple → Hardy cubic boundary charge → multiplicity-normalized Xi index.
@@ -41,9 +43,11 @@ the candidate polynomial residual separately. Floating-point acceptance is
 not proof. If a violation survives, reconstruct an exact witness before Lean.
 If no violation appears, no inference of truth or arithmetic admission follows.
 
-**[FORMALIZATION GAP]:** specialize the source-loop theorem to a smooth
-traversal of the literal arithmetic rectangle and use the already-proved completed
-prime–Gamma argument principle. No prescribed index may enter the source construction.
+**[CLOSED BRIDGE]:** `cubicArithmeticRectangleSource_integral` transports the
+literal source `XiC ∘ cubicSmoothRectangle` to the continued prime–Gamma
+rectangle current; `exists_faithful_arithmetic_rectangle_cubic` identifies its
+genuine Hardy cubic with the enclosed multiplicity-copy count. No prescribed
+index enters the path, source, or fixed normalization constants.
 **[OPEN CORE]:** independent arithmetic control forcing the resulting strict-right
 charge to vanish. Admission, recovery, and exact normalization hold for every
 eligible smooth source; those properties alone cannot supply this selection.
@@ -159,9 +163,29 @@ projections whose combined cubic has ordinary trace `(2πi)⁻¹∫f'/f`. Its nu
 corrections are relative to the explicitly doubled source compressions with
 labels `0,2,1`. Neither the trace nor the winding is a premise.
 
-**Remaining Lean obligation:** literal arithmetic contour specialization.
-The winding leaf passed scratch/published checks, is wired without an umbrella
-build, and its five principal axiom audits contain only `propext`,
-`Classical.choice`, `Quot.sound`. These are standard analytic bridges, not new
-arithmetic conservation or budget theorems. Do not report the requested Xi
-operator-index identification as Lean-proved until contour specialization closes.
+**Literal arithmetic specialization, Lean-closed:** four translated smooth
+transition ramps traverse bottom, right, top, left, stationary outside `[0,4]`.
+Real change of variables on each edge proves the exact positively oriented
+rectangle integral. Composing with `XiC` gives smooth, compact-deviation,
+nowhere-zero boundary data under the existing edge admissibility hypotheses.
+The chain rule, source logarithmic-derivative identity, and existing copied
+divisor argument principle yield
+
+`Tr((R-P)^3-(R-Q)^3-(Q-P)^3) = #xiZeroCopyClosedRectangle`.
+
+`exists_faithful_arithmetic_rectangle_cubic` retains exact pointwise Xi recovery
+from the same precompression source aggregate, all three nuclear source
+corrections, fixed constants, orientation, and analytic multiplicity. Recovery
+is nonlinear and pointwise; this is not a new bounded inverse or linear
+prime-label transport through compression. The current uses the existing
+literal prime–Gamma coefficients without reweighting.
+
+The arithmetic leaf passed scratch/published checks and is wired without an
+umbrella build. Five principal axiom audits contain only `propext`,
+`Classical.choice`, `Quot.sound`. Scoped diff checks pass; the latest global lint
+reports an unrelated unwired `HTGeometry.DispersivePDE.BrizardElasticaFrenetConservation`.
+Standard contour/index theory supplies this bridge; no new
+arithmetic conservation or budget theorem is claimed. **Remaining mathematics:**
+an independent property of the fixed arithmetic source forcing this charge to
+vanish on contours isolating off-critical zeros. Universal source admission
+does not provide that property.

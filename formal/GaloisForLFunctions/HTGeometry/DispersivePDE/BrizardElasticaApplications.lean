@@ -65,6 +65,24 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCurvatureEqui
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRadialSolution
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAngularCubic
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaPlanarJump
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaFrenetConservation
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTravelingPolar
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaHasimotoBridge
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLameResidual
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaForceMagnitude
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaForceCoordinates
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaVerticalPosition
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCurvatureEnergyDerived
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaSquaredCurvatureDynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaDimensionlessDynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaDimensionlessReality
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIEquation
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiSystem
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiEndpoints
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaZeroModulus
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLamePhysicalFailure
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiAmplitude
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiSecondOrder
 
 /-!
 # Closed application atlas for arXiv:2607.21750
@@ -975,6 +993,119 @@ structure ClosedAtlas : Prop where
     4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
         g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val = 0 ↔
       nuSq P.val = 0
+  frenetForceDerivative := hasDerivAt_elasticaForce
+  stationaryFrenetForce := stationaryElasticaForce_hasDerivAt_zero
+  stationaryFrenetForceConservation := stationaryElasticaForce_constant
+  stationaryMultiplierLaw := stationaryElastica_lagrange_eq
+  stationaryTorsionCharge := stationaryElastica_curvatureSq_mul_torsion_constant
+  stationaryTorsionReconstruction := stationaryElastica_torsion_eq
+  stationaryCurvatureODE := stationaryElastica_curvature_ode
+  polarPhaseUnitNorm := norm_polarPhase
+  polarAmplitudeNorm := norm_polarProfile_sq
+  polarProfileFirstDerivative := hasDerivAt_polarProfile
+  polarProfileSecondDerivative := hasDerivAt_polarProfile₁
+  polarTravelingResidualSplit := travelingPolar_residual_split
+  polarTravelingNLSSolutionCompiler := travelingPolarNLSData_solves
+  hasimotoPhaseAcceleration := hasimoto_phase₂_eq_torsion₁
+  hasimotoRealBalance := hasimoto_real_balance
+  hasimotoImaginaryBalance := hasimoto_imaginary_balance
+  hasimotoElasticaNLSSolution := hasimotoTravelingElastica_solves
+  printedLameResidualDecomposition := printedLameReducedResidual_decomposition
+  printedLameResidualDefect := printedLameReducedResidual_eq_defect
+  printedLameResidualZeroClassification := printedLameReducedResidual_eq_zero_iff
+  printedLameAmplitudeMismatch := elasticaAmplitudeSq_sub_dnSq
+  printedPlanarLameFailure := planar_printedLameReducedResidual_ne_zero
+  frenetForcePythagoreanMagnitude := elasticaForce_norm_sq
+  centeredForceMagnitude := centered_elasticaForce_norm_sq
+  spatialRadiusForceNormalization := spatialRadiusFourth_mul_force_norm_sq
+  centeredForceNonvanishing := centered_elasticaForce_norm_pos
+  intrinsicVerticalAxisConservation := elasticaVerticalAxis_constant
+  intrinsicVerticalAxisUnitNorm := norm_elasticaVerticalAxis
+  intrinsicVerticalAxisDerivative := elasticaVerticalAxis_hasDerivAt_zero
+  verticalTangentCoordinate := verticalTangentCoefficient_eq
+  verticalNormalCoordinate := verticalNormalCoefficient_eq
+  verticalBinormalCoordinate := verticalBinormalCoefficient_eq
+  verticalAxisFrenetExpansion := elasticaVerticalAxis_eq_frenetExpansion
+  verticalAxisTangentProjection := inner_verticalAxis_tangent
+  verticalAxisNormalProjection := inner_verticalAxis_normal
+  verticalAxisBinormalProjection := inner_verticalAxis_binormal
+  verticalCoordinatesUnitSphere := verticalCoefficients_unitSphere
+  intrinsicVerticalPositionDerivative := intrinsicVerticalPosition_hasDerivAt
+  intrinsicVerticalPositionClosedDerivative :=
+    intrinsicVerticalPosition_hasDerivAt_closedFormula
+  intrinsicVerticalPositionAtOrigin := intrinsicVerticalPosition_zero
+  intrinsicVerticalPositionOdd := intrinsicVerticalPosition_neg
+  curvatureEnergyFromConservedForce := stationaryElastica_curvature₁_sq_eq_energy
+  forceScaleSpatialRadius := normalizedForceScale_sq
+  actualTangentWeight := verticalTangentCoefficient_sq_eq_spatialA
+  actualNormalWeight := verticalNormalCoefficient_sq_eq_spatialB
+  actualBinormalWeight := verticalBinormalCoefficient_sq_eq_spatialC
+  centeredNormalWeightVanishing := verticalNormalCoefficient_zero
+  centeredBinormalOmegaWeight := verticalBinormalCoefficient_sq_zero
+  centeredTangentOmegaComplement := verticalTangentCoefficient_sq_zero
+  actualSquaredCurvatureDerivative := stationaryElastica_curvatureSq_hasDerivAt
+  physicalSquaredCurvatureFactorization := squaredCurvatureCubic_factor
+  initialSquaredCurvatureRoot := squaredCurvatureCubic_initial_root
+  actualSquaredCurvatureCubic := stationaryElastica_squaredCurvature_cubic
+  actualSquaredCurvatureFactored := stationaryElastica_squaredCurvature_factorized
+  centeredSquaredCurvatureVelocity := squaredCurvatureVelocity_zero
+  physicalToDimensionlessCubic := squaredCurvatureCubic_to_dimensionless
+  dimensionlessCurvatureDerivative := dimensionlessSquaredCurvature_hasDerivAt
+  dimensionlessCurvatureInitialValue := dimensionlessSquaredCurvature_zero
+  dimensionlessCurvatureInitialVelocity := dimensionlessSquaredCurvatureVelocity_zero
+  dimensionlessCurvatureArclengthEquation :=
+    dimensionlessSquaredCurvature_arclength_equation
+  regionIRealDimensionlessFactor := regionI_dimensionlessArclengthFactor_pos
+  regionIRealDimensionlessJacobian := regionIDimensionlessJacobian_pos
+  regionIRealDimensionlessJacobianSq := regionIDimensionlessJacobian_sq
+  regionIIImaginaryDimensionlessFactor := regionII_dimensionlessArclengthFactor_neg
+  regionIINoRealDimensionlessJacobian := regionII_no_real_dimensionlessJacobian
+  regionICurvatureProfileDerivative := regionICurvatureProfile_hasDerivAt
+  regionICurvatureProfileInitialValue := regionICurvatureProfile_zero
+  regionICurvatureProfileInitialVelocity := regionICurvatureProfileVelocity_zero
+  regionICurvatureEquation := regionICurvatureProfile_equation
+  regionIParameterCurvatureEquation := regionICurvatureProfile_parameter_equation
+  generalJacobiFirstIntegral := JacobiEllipticSystem.sn_firstIntegral
+  generalJacobiLameEquation := JacobiEllipticSystem.dnVelocity_hasDerivAt
+  squaredParameterCurvatureRHS := dimensionlessCurvatureRHS_eq_withSquares
+  squaredParameterJacobiResidual := curvatureSubstitution_residual_withSquares
+  jacobiCurvatureDerivative := jacobiSquaredCurvature_hasDerivAt
+  jacobiCurvatureInitialValue := jacobiSquaredCurvature_zero
+  jacobiCurvatureInitialVelocity := jacobiSquaredCurvatureVelocity_zero
+  jacobiCurvatureEquation := jacobiSquaredCurvature_equation
+  trigonometricJacobiCurvature := zeroJacobiSquaredCurvature_eq
+  trigonometricJacobiCurvatureVelocity := zeroJacobiSquaredCurvatureVelocity_eq
+  trigonometricJacobiCurvatureEquation := zeroJacobiSquaredCurvature_equation
+  hyperbolicJacobiCurvature := oneJacobiSquaredCurvature_eq
+  hyperbolicEndpointGammaSq := oneUnitParameters_gammaSq
+  hyperbolicEndpointNuSq := oneUnitParameters_nuSq
+  hyperbolicEndpointNoRealSpeed := oneUnitParameters_no_real_gamma
+  hyperbolicJacobiCurvatureEquation := oneJacobiSquaredCurvature_equation
+  zeroModulusSpeedWallGammaSq := zeroSpeedHelix_gammaSq
+  zeroModulusSpeedWallNuSq := zeroSpeedHelix_nuSq
+  zeroModulusSpeedWall := zeroSpeedHelix_on_speedWall
+  zeroModulusRealInvariants := zeroSpeedHelix_real_invariants
+  zeroModulusConstantCurvature := zeroSpeedHelixCurvatureSq_eq
+  zeroModulusPlaneWaveDensity := planeWave_normSq_eq_zeroSpeedHelixCurvatureSq
+  zeroModulusNoMotion := zeroSpeedHelix_no_motion
+  physicalRegionILameScaleMismatch := nonzeroPhysicalRegionI_q₀_ne_one
+  physicalRegionILameResidualFailure := physicalRegionI_printedLameResidual_ne_zero
+  physicalRegionILameAmplitudeFailure := physicalRegionI_elasticaAmplitude_ne_dnSq
+  physicalRegionILameSpectrumInsufficient :=
+    physicalRegionI_realSpectrum_but_nonzeroResidual
+  generalJacobiSnBound := JacobiEllipticSystem.sn_sq_le_one
+  physicalJacobiCurvaturePositive := physicalRegionI_jacobiSquaredCurvature_pos
+  correctedJacobiAmplitudePositive := correctedJacobiAmplitude_pos
+  correctedJacobiAmplitudeSquare := correctedJacobiAmplitude_sq
+  correctedJacobiAmplitudeInitial := correctedJacobiAmplitude_zero
+  correctedJacobiDnMismatch := correctedJacobiAmplitude_sq_sub_dnSq
+  correctedJacobiCurvaturePositive := correctedJacobiCurvature_pos
+  correctedJacobiCurvatureSquare := correctedJacobiCurvature_sq
+  jacobiCurvatureAccelerationDerivative :=
+    jacobiSquaredCurvatureVelocity_hasDerivAt
+  jacobiCurvatureSecondOrderEquation :=
+    jacobiSquaredCurvature_secondOrderEquation
+  jacobiCurvatureInitialAcceleration := jacobiSquaredCurvatureAcceleration_zero
   parameterReconstruction₁ : ∀ P : Parameters,
     P.modulus = (P.q₀ : ℝ) * (3 + gammaSq P) - 1
   parameterReconstruction₂ : ∀ P : Parameters,

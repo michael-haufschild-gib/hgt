@@ -13618,3 +13618,4 @@ import GaloisForLFunctions.HTGeometry.ThetaLatticeAddition
 import GaloisForLFunctions.HTGeometry.Arxiv2026Applications
 import GaloisForLFunctions.HTGeometry.ArithmeticControlledLeibniz
 import GaloisForLFunctions.HTGeometry.ArithmeticSecondOrderObstruction
+import GaloisForLFunctions.HTGeometry.IntegerPrimeCarryComplexExtension

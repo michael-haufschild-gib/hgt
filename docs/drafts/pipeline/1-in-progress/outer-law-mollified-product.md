@@ -156,3 +156,12 @@ through Weierstrass approximation on `[0, (∑|a_n|)²]` with Lipschitz constant
 polynomial degree needed is `≫ M ε^{-2}` and the even-moment transfer at that degree needs
 `T ≥ M^{2d}` — impossible for `M = T^θ`. A uniform torus law for `log|Ψ_{T^θ}|` is a
 "mollifier CLT" question (long Dirichlet polynomials beyond the mean-value range).
+
+## §11. MUST-211 attacked (2026-09-05): the torus transfer is not the missing piece
+
+The peeling identity cannot be transported to the flow (no separation of scales; transfer stops at
+moments of order `1/θ`; CANNOT-301). More importantly the diagnosis in MUST-211 was wrong: the lower
+torus law is free up to `J_M` (the log-mean floor is `T`-free), the upper law is unnecessary, and
+the `(L)`-productive statement is `ℓ_{ζΨ_{T^θ}}/T ≤ o(1)`, which is `(L)` plus the vanishing of
+the mollifier's flow right-zero mass — stronger than `(L)`. Survivors: the credited ceiling and the
+Steinhaus Jensen floor (F676, F677; card `3-formalized/steinhaus-jensen-floor-credited-ceiling.md`).

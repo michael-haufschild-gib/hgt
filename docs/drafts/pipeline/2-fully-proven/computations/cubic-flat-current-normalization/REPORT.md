@@ -83,13 +83,17 @@ The resulting smooth-loop operator charge theorem is Lean-proved in
 `CubicCirculantWindingIntegral.exists_faithful_circulant_winding_cubic`
 (namespace `RHTower`): fixed source constants, exact pre-compression recovery,
 genuine doubled/reversed Hardy projections, and ordinary cubic trace
-`(2πi)⁻¹∫f'/f`. Arithmetic contour specialization remains separate.
+`(2πi)⁻¹∫f'/f`. Its arithmetic specialization is also Lean-proved in
+`CubicArithmeticRectangleSource.exists_faithful_arithmetic_rectangle_cubic`:
+the input is literal `XiC` along a smooth rectangle, and the resulting ordinary
+cubic trace equals the enclosed Xi multiplicity-copy count. Exact source values
+are recoverable before compression; no index enters the source definition.
 
-**Limit:** this does not establish arithmetic Hardy admission, equality of
-the resulting operator trace with a Xi divisor index, any subunit nuclear
-budget, or a law annihilating off-line charge. Scalar source winding and
-its multiplicity normalization already exist in the corpus. The experiment
-does not itself derive the requested arithmetic charge or prove RH.
+**Limit:** the computation supplied the finite algebraic discriminator, not
+the analytic proof. The subsequent formal construction proves arithmetic
+Hardy admission and the exact operator/divisor index identity for this source,
+but no subunit nuclear budget or law annihilating off-line charge. It does not
+prove RH or bounded inverse/linear prime-label recovery after compression.
 
 Known parents are Toeplitz commutator/area and relative-index theory; see
 [Blower–Doust, IEOT 98 (2026), Prop. 3.13](https://link.springer.com/article/10.1007/s00020-025-02818-6)
