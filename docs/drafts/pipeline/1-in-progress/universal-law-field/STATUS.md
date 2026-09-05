@@ -35,37 +35,25 @@ F07 — Faithful recovery conserves obstruction. Split/injective recovery preser
 
 F08 — Formation and completion do not commute. Off-line current appears as completion boundary, Roos `lim¹`, and physical transport. Boundary absence is RH-equivalent; finite formation never sees class.
 
-F09 — Bounded presentation changes are genuine gauges. Mutually bounded dictionaries preserve
-saturation and completion boundary. Ordinary naturality across bounded gauges cannot kill
-off-line class.
+F09 — Bounded presentation changes are genuine gauges. Mutually bounded dictionaries preserve saturation and completion boundary. Ordinary naturality across bounded gauges cannot kill off-line class.
 
-F10 — Quotients erase typed data differently. Positive squares erase sign/phase; reduced quotients
-erase nilpotent tangents; scalar fusion erases homology; compact observation erases lifted history.
+F10 — Quotients erase typed data differently. Positive squares erase sign/phase; reduced quotients erase nilpotent tangents; scalar fusion erases homology; compact observation erases lifted history.
 
-F11 — Observer recurrence and source return differ. Compact observer can recur while source lift
-escapes linearly. Faithful recurrence descent is an RH receiver.
+F11 — Observer recurrence and source return differ. Compact observer can recur while source lift escapes linearly. Faithful recurrence descent is an RH receiver.
 
-F12 — Hypertranscendence supplies independent directions and noncompactness, not vanishing.
-Unbounded rank/depth is necessary for several completion births and insufficient for selection.
+F12 — Hypertranscendence supplies independent directions and noncompactness, not vanishing. Unbounded rank/depth is necessary for several completion births and insufficient for selection.
 
-F13 — Provenance and multiplicity survive only in typed landings. Prime labels, valuation depth,
-Xi multiplicity, reflection orientation, and ancestry cannot be replaced by total mass or norm.
+F13 — Provenance and multiplicity survive only in typed landings. Prime labels, valuation depth, Xi multiplicity, reflection orientation, and ancestry cannot be replaced by total mass or norm.
 
-F14 — External polarization can retain what internal multiplication erases. Reflected pairing
-cancels signed current and doubles unsigned escape; higher arity alone does not select.
+F14 — External polarization can retain what internal multiplication erases. Reflected pairing cancels signed current and doubles unsigned escape; higher arity alone does not select.
 
-F15 — Escape is conserved as capacity in proved models. Visible cancellation moves exact energy
-to hidden ports. Any proposed annihilation needs a closed accounting identity.
+F15 — Escape is conserved as capacity in proved models. Visible cancellation moves exact energy to hidden ports. Any proposed annihilation needs a closed accounting identity.
 
-F16 — Quantization detects; it does not prohibit. Integer, rank, and `π`-scaled residues encode
-multiplicity but do not imply absence.
+F16 — Quantization detects; it does not prohibit. Integer, rank, and `π`-scaled residues encode multiplicity but do not imply absence.
 
-F17 — Cofinal order is law data. Fixed cutoffs, convergent scalar prefixes, compact subsequences,
-and local positivity do not control moving heads, apertures, domains, or retained infinite tails.
+F17 — Cofinal order is law data. Fixed cutoffs, convergent scalar prefixes, compact subsequences, and local positivity do not control moving heads, apertures, domains, or retained infinite tails.
 
-F18 — No-go survivors are systematic: completion boundary, connecting rank, nilpotent tangent,
-signed orientation, hidden capacity, quantized residue, unbounded domain, or singular comparison.
-Calling all of them curvature loses information.
+F18 — No-go survivors are systematic: completion boundary, connecting rank, nilpotent tangent, signed orientation, hidden capacity, quantized residue, unbounded domain, or singular comparison. Calling all of them curvature loses information.
 
 F19 — Adaptive laws absorb displacement. Every horizontal grade admits fitted covariant/positive
 systems. Only descent to one fixed law detects neutrality; that descent is usually RH-equivalent.
@@ -4997,3 +4985,15 @@ F659 — [Lean] First-moment reading of the Levinson budget at `λ = 0`: for a b
 MUST-205 — `(L)` (`∑_{γ≤T}(β−1/2)⁺ = o(T)`, equivalently vanishing log-mean of `|ζ|` on the line) is now pinned between `0` and the Jensen ceiling `½ log(1 + 1/θ)`: `0.5058` with Conrey's `θ = 4/7`, `0.5493` with Levinson's `θ < 1/2` (paper corollary; mean-value theorems not in Lean). Any producer for `(L)` must beat Jensen on the left edge, i.e. control the log-moment `E log|ζΨ|²` of a mollified product below `log E|ζΨ|²`; no mean-value theorem does this, and Farmer's `θ → ∞` conjecture is exactly the statement that the ceiling tends to `0`.
 F660 — [Lean] Littlewood's lemma for `ζ` on `[1/2,15/2]×[T₁,T₂]` with explicit-constant edges: `|∫ log|ζ(1/2+it)| − 2π∑ m_ρ(β−1/2)| ≤ C + K log T₂` (`exists_zetaLine_littlewood_edge_budget`); hence the floor `∫ log|ζ(1/2+it)| ≥ −C − K log T₂` and the two-sided sandwich with the mollified mean-square ceiling (`exists_zetaLine_logMean_sandwich`). The `(L)` gate is now a fully two-sided Lean statement whose only non-Lean input is one mean value.
 CANNOT-295 — It cannot lower the `(L)` ceiling with mean values alone: mean and variance of `Y = |ζΨ|²/E|ζΨ|²` (the mollified second and fourth moments) never force a positive Jensen gap — a two-point law with mean `1`, any variance `v`, and gap `< ε` exists for every `ε` (`exists_twoPoint_mean_one_variance_jensen_gap_lt`, Lean). Twisted fourth-moment theorems (Hughes–Young, Bettin–Bui–Li–Radziwiłł) are therefore inert for `(L)`; what is needed is an eighth moment, a small-ball/tail law for `ζΨ`, or the conjectural Gaussian limit of `ζΨ − 1` (which would give the ceiling `½E₁(θ) ≈ 0.24`).
+
+## 2026-09-05 — distributional laws for `ζΨ − 1` (MOLL-DEV-001)
+
+F661 — [Lean] The mollified deviation `W_M = ζΨ_M − 1` (linear mollifier of length `M`) has Dirichlet coefficients `Λ(k)/log M` for `1 < k ≤ M` (`mollifiedProductDirichletCoeff_eq_vonMangoldt`): its head is the truncated logarithmic derivative `−(1/log M)(ζ'/ζ)_{≤M}`. The head's critical-line variance is `1/2` independently of the length exponent: `∑_{k≤N}Λ(k)²/k/(log N)² → 1/2` (`tendsto_sum_vonMangoldt_sq_div_div_log_sq`) and the window mean square of the head is within `ε` of `1/2` on every window of length `≥ M²` (`exists_mollifiedDeviationHead_meanSquare_close`). With Conrey's `E|ζΨ|² → 1 + 1/θ` (not Lean), the tail plus cross term carries exactly `1/θ − 1/2`.
+F662 — [Lean] Complex-Gaussian log-mean identity: for `W ~ CN(0,σ²)`, `E log|1+W|² = E₁(1/σ²)` in polar form (`complexGaussianLogMeanRadial_eq_expIntegralE1`, via Jensen's circle identity, one integration by parts and `u = r²/σ²`). Under the conjectured law `W_M → CN(0,1/θ)` this gives `E log|ζΨ|² → E₁(θ)` and the `(L)` ceiling `½E₁(4/7) ≈ 0.241` in place of Jensen's `0.506`; under RH it also gives the Möbius mollifier's own log-mean `E log|Ψ_M|² → E₁(θ) > 0`.
+MUST-206 — The Gaussian law for `ζΨ − 1` must pass the fourth-moment test `lim E|ζΨ|⁴ = 1 + 4/θ + 2/θ²` against the Hughes–Young / Bettin–Bui–Li–Radziwiłł mollified fourth moment; its head is provably Gaussian only to order `2⌊1/θ⌋` (large primes carry the variance), and its tail is a long Dirichlet polynomial with Selberg-sieve coefficients beyond current mean-value technology. Any proof of the log-moment consequence must supply a small-ball or tail law, not moments (CANNOT-295).
+F674 — [Lean] Fixed-frequency rank-one theta coefficient sewing, normalized at integer zero with nonvanishing integer amplitudes, has exactly `(a,b)=(1,1)` or `(1,-1)`; its all-one normalized amplitude tangent is zero and every all-one-based formal amplitude family is constant. Heat-rate sewing is exactly `q(n)=n²q(1)`, `h(n)=(n+1/2)²q(1)` (`HTGeometry.ThetaLatticeSewingRigidity`: `thetaLatticeAmplitudeSewing_iff`, `thetaLatticeAmplitudeTangent_iff`, `thetaLattice_formal_amplitudes_rigid`, `thetaLatticeRateSewing_iff`). Positive survivor: complete coefficient/rate classification. Classical theta/parallelogram bridge; the analytic theta addition formula and Fourier-coefficient extraction are not certified by this module.
+CANNOT-297 — It cannot realize a nonzero normalized Xi deformation mode inside F674's amplitude tangent: that tangent is already zero before any second-order obstruction. Allowing the specified heat-rate fields adds only one scalar scale. This retires the fixed-frequency, time-independent-amplitude/Gaussian-rate realization of the proposed Taub mechanism, not all nonlinear lattice laws, time-dependent coefficient families, or an RH proof architecture in general.
+MUST-209 — It must separately construct the zero-to-exact-arithmetic-family map. `XiTransverseDualNumberArc` supplies an algebra map, not such a family. `ThetaCuspHawkingNonlinearDivisorTransportEndpoint` does preserve Xi divisor multiplicity under small nonlinear source coupling, but allows motion in complex frequency. Neither that persistence nor F674 supplies a lattice-derived obstruction whose vanishing forces horizontal neutrality; that RH-chain edge remains unproved.
+F663 — [Lean] Head fourth moment: `(1/(T₂−T₁))∫|H_M(1/2+it)|⁴ → 1/2 = 2(1/2)²` on windows with `8M²(1+log M²) ≤ (ε/4)(T₂−T₁)` (`exists_head_fourthMoment_close`; θ < 1/2); coefficient energy of `H_M²` tends to `1/2` (`tendsto_headFourthEnergy`) via the prime-power orientation classification (`primePow_quad_classification`) and `O(1/log⁴M)` one-prime exceptions. First rigorous Gaussian-moment law for `ζΨ − 1`.
+CANNOT-296 — [numerical, pod 2026-09-05; not Lean] The full deviation `ζΨ − 1` is not `CN(0,1/θ)`: at `T = 10⁶` its kurtosis is `2.55/2.04/1.77` at `θ = 0.3/0.4/0.5` and `E log|ζΨ|² ≈ 0` at all three `θ` (Gaussian would give `E₁ ≈ 0.45–0.73`); the head is Gaussian (`kurt 1.96–1.99`, variance `≈ 1/2`) as proven. The mollified product is numerically an outer function: `E log|ζΨ|² ≈ 0 = E log|ζ|² + E log|Ψ|²`, i.e. `(L)` plus vanishing right-zero mass of the mollifier. Do not use `½E₁(θ)` as a target.
+MUST-207 — The `(L)` residue is the outer law `E log|ζΨ_M(1/2+it)|² → 0` (equivalently `∑_{ζΨ(ρ)=0, β>1/2}(β−1/2) = o(T)`), a joint statement about `ζ`'s off-line zeros and the mollifier's own zeros right of the line; its head part is Gaussian and carries exactly half a unit of variance, its tail is a long sieve-weighted Dirichlet polynomial. Any producer must control the tail's small values, not its moments.

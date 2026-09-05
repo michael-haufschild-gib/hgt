@@ -181,3 +181,10 @@ for the mollified mean square `Msq` of `ζΨ` on the critical line
 left edge is a possible place to improve this bound: control the log-moment of the mollified
 product below its mean-square ceiling. The theorem supplies neither that improvement nor a
 necessary characterization of every possible producer for `(L)`.
+
+## 2026-09-05 (vi) — the `(L)` residue as a distributional law for `ζΨ − 1`
+
+`1-in-progress/mollified-deviation-distributional-law.md` (MOLL-DEV-001): head identification and
+head variance law in Lean (F661), the Gaussian `E₁` consequence in Lean (F662). The conjectured law
+`ζΨ − 1 → CN(0,1/θ)` would lower the `(L)` ceiling to `½E₁(θ) ≈ 0.24` and would give the Möbius
+mollifier a positive log-mean `E₁(θ)`. Falsifier: the mollified fourth moment (MUST-206).

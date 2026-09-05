@@ -1,0 +1,22 @@
+# Current task and verified boundary
+User rejected Möbius grinding, projection/cubic trace no-go work, and generic detector restatements. Current request: attack a literal-lattice nonlinear arithmetic equation, construct an exact family from each Xi zero, derive a source-independent nonlinear obstruction forcing horizontal neutrality; either close RH or kill the realization and pivot. Do not present another conjectural bridge as established.
+
+RH remains unproved. Existing goal is paused (tool observation); do not alter goal status. No external blocker or reason to claim mathematical impossibility of the broad architecture.
+
+## Verified rank-one realization
+New leaf formal/GaloisForLFunctions/HTGeometry/ThetaLatticeSewingRigidity.lean, wired into HTGeometry.lean and HTGeometry/UniversalLawField.lean. Checked with foreground lake env lean in scratch and promoted leaf, exit 0. Scratch /tmp/hgt_theta_lattice_sewing.lean has four #print axioms audits: only propext/Classical.choice/Quot.sound. No owned Lean processes remain. Lint passed (existing size warnings); git diff --check passed. No full or umbrella builds, no remote computation, no commits.
+
+Exact model: a0=1, integer amplitudes nonzero, a(i+j)a(i-j)=a(i)a(j), a(i+j+1)a(i-j)=b(i)b(j). Complete classification (over a domain): a=1, b=1 or -1. Normalized all-one amplitude tangent is zero already at first order. Power-series families based at all-one source are constant to every order. Heat-rate sewing q(i+j)+q(i-j)=2qi+2qj and odd-sector analogue gives exactly qn=n²q1, hn=(n+1/2)²q1; fix q1 and rates fixed. This is a classical theta/parallelogram bridge, not a claimed new RH mechanism.
+
+Scope critical: fixed spatial frequencies, time-independent amplitudes, Gaussian-rate ansatz. Analytic theta addition and Fourier coefficient extraction are NOT formalized by this leaf (only index-square identities and exact coefficient laws). Do not claim rigidity of all nonlinear lattice laws, arbitrary time-dependent families, completed correspondences, or zero exclusion. A Xi zero has NOT been shown to give a nonzero source deformation. The proposed Taub-style interpretation fails in this realization because its tangent is already zero; it does not provide selective second-order obstruction.
+
+STATUS.md updated with F674, CANNOT-297, MUST-209 and lossless line wrapping of F09–F18 to stay under 5000 lines (4996 at check). Shared dirty tree contains other agents' edits and duplicate older IDs; preserve them.
+
+## Corpus checks / pivot state
+XiTransverseDualNumberArc is an algebra map, not an exact arithmetic moduli family. Actual nonlinear theta susceptibility already exists in ThetaCuspHawkingNonlinearDivisorTransportEndpoint. Verified full proof of exists_thetaCuspHawkingNonlinearCarrier_divisorTransport at lines 477–579: every Xi zero retains total local multiplicity at small real background coupling; individual complex-frequency roots may move. This is not the proposed source sewing family, and does not select the critical line. Do NOT reinvent small-coupling nonlinear continuation.
+HedenmalmThetaSourceSpectrumExact.xiC_thetaSource_all identifies the full theta source transform with Xi on all C; exact source inverse point spectrum already exists. XiThetaSourceSeam's simpler pole-subtracted kernel is NOT immediately the Xi density; use correct full source. XiCompactPrimitive is unrelated prolate-Bessel notation, not a Xi-zero primitive.
+Ramanujan/Chazy nonlinear modular equations already formalized in Bottcher.RamanujanChazy and HTGeometry.EisensteinSeriesDiskChazy. Merely naming those is not a new mechanism.
+
+Pivot under consideration: keep literal source fixed and seek a genuinely arithmetic nonlinear law on its exact resonant responses, instead of postulating that a Mellin zero deforms a rigid Gaussian source. No such interaction law has yet been constructed. Conjugate-resonance fusion into a real channel is only an unproved idea; restricted to one character it risks being merely RH in disguise, and unrestricted product closure would wrongly require differences of critical ordinates to be zeros. Do not promote it as theorem or a completed pivot. Need concrete source-derived operation before further abstract Lean wrappers.
+
+Primary literature checked: DLMF20.7.E14 (classical theta addition); Altas–Tekin arxiv1903.11982 (Taub constraints require cokernel/boundary conditions); Hintz LMP114:94 (2024), support conditions essential to Einstein obstruction. No arithmetic transfer follows from physics analogy.

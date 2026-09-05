@@ -492,6 +492,7 @@ import GaloisForLFunctions.RHTower.SteinbergKummerCofinalSplittingBlowup
 import GaloisForLFunctions.RHTower.SteinbergKummerSecondJetUnitSaturation
 import GaloisForLFunctions.RHTower.VacuumIndexCancellationDeterminantTorsion
 import GaloisForLFunctions.RHTower.LiteralEulerHalfDensityContractionNoGo
+import GaloisForLFunctions.HTGeometry.ThetaLatticeSewingRigidity
 
 /-!
 # Universal-law-field Lean umbrella
