@@ -11,6 +11,9 @@ unit rather than by a theorem hypothesis.
 
 namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
+/-- Positive curvature scale, packaged so downstream theorems remain assumption-free. -/
+abbrev PositiveCurvatureScale := {q : ℝ // 0 < q}
+
 /-- Extended Jacobi range used by the paper. -/
 abbrev NegativeModulus := Set.Iio (0 : ℝ)
 

@@ -81,3 +81,4 @@ Gaussian feature-determinant layer built on top of it.
 -/
 import GaloisForLFunctions.HilbertMetric.GreedyBumpBernoulliCompletion
 import GaloisForLFunctions.HilbertMetric.GreedyBumpGaussianCoherentApplications
+import GaloisForLFunctions.HilbertMetric.PseudospectrumSimilarity

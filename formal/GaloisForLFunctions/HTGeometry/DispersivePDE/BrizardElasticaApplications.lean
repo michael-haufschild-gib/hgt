@@ -110,6 +110,16 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAmplitudeHydr
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIHydrodynamics
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIBounds
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIFlowBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIFlowBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaPhaseMonotonicity
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaQuantumStressBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTurningPoints
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTurningCurvature
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaHydrodynamicPotentialBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaPhaseSecantBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaPhaseGlobalCoordinates
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaNLSIntensityBounds
 
 /-!
 # Closed application atlas for arXiv:2607.21750
@@ -120,6 +130,8 @@ transport, cubic first integrals, and the resulting Weierstrass curve.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
+
+set_option maxHeartbeats 1000000
 
 /-- Assumption-free atlas of the paper's applications in the local Lean corpus. -/
 structure ClosedAtlas : Prop where
@@ -1020,80 +1032,356 @@ structure ClosedAtlas : Prop where
     4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
         g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val = 0 ↔
       nuSq P.val = 0
-  frenetForceDerivative := hasDerivAt_elasticaForce
-  stationaryFrenetForce := stationaryElasticaForce_hasDerivAt_zero
-  stationaryFrenetForceConservation := stationaryElasticaForce_constant
-  stationaryMultiplierLaw := stationaryElastica_lagrange_eq
-  stationaryTorsionCharge := stationaryElastica_curvatureSq_mul_torsion_constant
-  stationaryTorsionReconstruction := stationaryElastica_torsion_eq
-  stationaryCurvatureODE := stationaryElastica_curvature_ode
+  frenetForceDerivative :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (E : FrenetElasticaData V) (s : ℝ),
+        HasDerivAt (elasticaForce E)
+          ((-(3 * E.curvature s * E.curvature₁ s + E.lagrange₁ s)) • E.tangent s +
+           (2 * E.curvature₁ s * E.torsion s +
+              E.curvature s * E.torsion₁ s) • E.binormal s +
+           (E.curvature₂ s - E.curvature s *
+              (E.curvature s ^ 2 + E.torsion s ^ 2 + E.lagrange s)) • E.normal s) s :=
+    hasDerivAt_elasticaForce
+  stationaryFrenetForce :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (E : StationaryElasticaData V) (s : ℝ),
+        HasDerivAt (elasticaForce E.toFrenetElasticaData) 0 s :=
+    stationaryElasticaForce_hasDerivAt_zero
+  stationaryFrenetForceConservation :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (E : StationaryElasticaData V) (s : ℝ),
+        elasticaForce E.toFrenetElasticaData s = elasticaForce E.toFrenetElasticaData 0 :=
+    stationaryElasticaForce_constant
+  stationaryMultiplierLaw :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (E : StationaryElasticaData V) (s : ℝ),
+        E.lagrange s = -3 / 2 * E.curvature s ^ 2 + elasticaLambdaScale E / 2 :=
+    stationaryElastica_lagrange_eq
+  stationaryTorsionCharge :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (E : StationaryElasticaData V) (s : ℝ),
+        E.curvature s ^ 2 * E.torsion s = E.curvature 0 ^ 2 * E.torsion 0 :=
+    stationaryElastica_curvatureSq_mul_torsion_constant
+  stationaryTorsionReconstruction :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (E : StationaryElasticaData V) (s : ℝ),
+        E.torsion s = E.curvature 0 ^ 2 * E.torsion 0 / E.curvature s ^ 2 :=
+    stationaryElastica_torsion_eq
+  stationaryCurvatureODE :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (E : StationaryElasticaData V) (s : ℝ),
+        E.curvature₂ s = -1 / 2 * E.curvature s ^ 3 +
+          E.curvature 0 ^ 4 * E.torsion 0 ^ 2 / E.curvature s ^ 3 +
+          elasticaLambdaScale E / 2 * E.curvature s :=
+    stationaryElastica_curvature_ode
   polarPhaseUnitNorm := norm_polarPhase
   polarAmplitudeNorm := norm_polarProfile_sq
   polarProfileFirstDerivative := hasDerivAt_polarProfile
   polarProfileSecondDerivative := hasDerivAt_polarProfile₁
   polarTravelingResidualSplit := travelingPolar_residual_split
   polarTravelingNLSSolutionCompiler := travelingPolarNLSData_solves
-  hasimotoPhaseAcceleration := hasimoto_phase₂_eq_torsion₁
-  hasimotoRealBalance := hasimoto_real_balance
-  hasimotoImaginaryBalance := hasimoto_imaginary_balance
-  hasimotoElasticaNLSSolution := hasimotoTravelingElastica_solves
+  hasimotoPhaseAcceleration :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (H : HasimotoTravelingElasticaData V) (s : ℝ),
+        H.phase₂ s = H.geometry.torsion₁ s :=
+    hasimoto_phase₂_eq_torsion₁
+  hasimotoRealBalance :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (H : HasimotoTravelingElasticaData V) (s : ℝ),
+        H.speed * H.geometry.curvature s * H.phase₁ s +
+          (H.dispersion : ℝ) *
+            (H.geometry.curvature₂ s -
+              H.geometry.curvature s * H.phase₁ s ^ 2 +
+              H.geometry.curvature s ^ 3 / 2) = 0 :=
+    hasimoto_real_balance
+  hasimotoImaginaryBalance :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (H : HasimotoTravelingElasticaData V) (s : ℝ),
+        -H.speed * H.geometry.curvature₁ s +
+          (H.dispersion : ℝ) *
+            (2 * H.geometry.curvature₁ s * H.phase₁ s +
+              H.geometry.curvature s * H.phase₂ s) = 0 :=
+    hasimoto_imaginary_balance
+  hasimotoElasticaNLSSolution :
+      ∀ {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+        (H : HasimotoTravelingElasticaData V),
+        SolvesNLS (H.dispersion : ℝ)
+          (travelingPolarJet H.toPolarProfile H.speed) :=
+    hasimotoTravelingElastica_solves
   printedLameResidualDecomposition := printedLameReducedResidual_decomposition
   printedLameResidualDefect := printedLameReducedResidual_eq_defect
   printedLameResidualZeroClassification := printedLameReducedResidual_eq_zero_iff
   printedLameAmplitudeMismatch := elasticaAmplitudeSq_sub_dnSq
   printedPlanarLameFailure := planar_printedLameReducedResidual_ne_zero
-  frenetForcePythagoreanMagnitude := elasticaForce_norm_sq
-  centeredForceMagnitude := centered_elasticaForce_norm_sq
-  spatialRadiusForceNormalization := spatialRadiusFourth_mul_force_norm_sq
-  centeredForceNonvanishing := centered_elasticaForce_norm_pos
-  intrinsicVerticalAxisConservation := elasticaVerticalAxis_constant
-  intrinsicVerticalAxisUnitNorm := norm_elasticaVerticalAxis
-  intrinsicVerticalAxisDerivative := elasticaVerticalAxis_hasDerivAt_zero
-  verticalTangentCoordinate := verticalTangentCoefficient_eq
-  verticalNormalCoordinate := verticalNormalCoefficient_eq
-  verticalBinormalCoordinate := verticalBinormalCoefficient_eq
-  verticalAxisFrenetExpansion := elasticaVerticalAxis_eq_frenetExpansion
-  verticalAxisTangentProjection := inner_verticalAxis_tangent
-  verticalAxisNormalProjection := inner_verticalAxis_normal
-  verticalAxisBinormalProjection := inner_verticalAxis_binormal
-  verticalCoordinatesUnitSphere := verticalCoefficients_unitSphere
-  intrinsicVerticalPositionDerivative := intrinsicVerticalPosition_hasDerivAt
-  intrinsicVerticalPositionClosedDerivative :=
+  frenetForcePythagoreanMagnitude :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : OrthonormalStationaryElasticaData V) (s : ℝ),
+        ‖elasticaForce E.geometry.toFrenetElasticaData s‖ ^ 2 =
+          E.geometry.curvature₁ s ^ 2 +
+            (E.geometry.curvature s * E.geometry.torsion s) ^ 2 +
+            (E.geometry.curvature s ^ 2 + E.geometry.lagrange s) ^ 2 :=
+    elasticaForce_norm_sq
+  centeredForceMagnitude :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ ^ 2 =
+          E.frame.geometry.curvature 0 ^ 4 / 4 *
+            ((1 + E.gamma ^ 2 / 2) ^ 2 + E.nu ^ 2) :=
+    centered_elasticaForce_norm_sq
+  spatialRadiusForceNormalization :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        spatialRadiusFourth E.curvatureUnit E.gamma E.nu *
+          ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ ^ 2 = 1 :=
+    spatialRadiusFourth_mul_force_norm_sq
+  centeredForceNonvanishing :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        0 < ‖elasticaForce E.frame.geometry.toFrenetElasticaData 0‖ :=
+    centered_elasticaForce_norm_pos
+  intrinsicVerticalAxisConservation :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        elasticaVerticalAxis E s = elasticaVerticalAxis E 0 :=
+    elasticaVerticalAxis_constant
+  intrinsicVerticalAxisUnitNorm :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        ‖elasticaVerticalAxis E s‖ = 1 :=
+    norm_elasticaVerticalAxis
+  intrinsicVerticalAxisDerivative :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        HasDerivAt (elasticaVerticalAxis E) 0 s :=
+    elasticaVerticalAxis_hasDerivAt_zero
+  verticalTangentCoordinate :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        verticalTangentCoefficient E s =
+          normalizedForceScale E *
+            (E.frame.geometry.curvature s ^ 2 +
+              E.gamma ^ 2 * E.frame.geometry.curvature 0 ^ 2 / 2) / 2 :=
+    verticalTangentCoefficient_eq
+  verticalNormalCoordinate :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        verticalNormalCoefficient E s =
+          normalizedForceScale E * E.frame.geometry.curvature₁ s :=
+    verticalNormalCoefficient_eq
+  verticalBinormalCoordinate :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        verticalBinormalCoefficient E s =
+          normalizedForceScale E *
+            (E.frame.geometry.curvature 0 ^ 2 * E.frame.geometry.torsion 0 /
+              E.frame.geometry.curvature s) :=
+    verticalBinormalCoefficient_eq
+  verticalAxisFrenetExpansion :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        elasticaVerticalAxis E s =
+          verticalTangentCoefficient E s • E.frame.geometry.tangent s +
+            verticalNormalCoefficient E s • E.frame.geometry.normal s +
+            verticalBinormalCoefficient E s • E.frame.geometry.binormal s :=
+    elasticaVerticalAxis_eq_frenetExpansion
+  verticalAxisTangentProjection :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        inner ℝ (elasticaVerticalAxis E s) (E.frame.geometry.tangent s) =
+          verticalTangentCoefficient E s :=
+    inner_verticalAxis_tangent
+  verticalAxisNormalProjection :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        inner ℝ (elasticaVerticalAxis E s) (E.frame.geometry.normal s) =
+          verticalNormalCoefficient E s :=
+    inner_verticalAxis_normal
+  verticalAxisBinormalProjection :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        inner ℝ (elasticaVerticalAxis E s) (E.frame.geometry.binormal s) =
+          verticalBinormalCoefficient E s :=
+    inner_verticalAxis_binormal
+  verticalCoordinatesUnitSphere :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        verticalTangentCoefficient E s ^ 2 +
+            verticalNormalCoefficient E s ^ 2 +
+            verticalBinormalCoefficient E s ^ 2 = 1 :=
+    verticalCoefficients_unitSphere
+  intrinsicVerticalPositionDerivative :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (P : PositionedCenteredElastica V) (s : ℝ),
+        HasDerivAt (intrinsicVerticalPosition P)
+          (verticalTangentCoefficient P.normalization s) s :=
+    intrinsicVerticalPosition_hasDerivAt
+  intrinsicVerticalPositionClosedDerivative :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (P : PositionedCenteredElastica V) (s : ℝ),
+        HasDerivAt (intrinsicVerticalPosition P)
+          (normalizedForceScale P.normalization *
+            (P.normalization.frame.geometry.curvature s ^ 2 +
+              P.normalization.gamma ^ 2 *
+                P.normalization.frame.geometry.curvature 0 ^ 2 / 2) / 2) s :=
     intrinsicVerticalPosition_hasDerivAt_closedFormula
-  intrinsicVerticalPositionAtOrigin := intrinsicVerticalPosition_zero
-  intrinsicVerticalPositionOdd := intrinsicVerticalPosition_neg
-  curvatureEnergyFromConservedForce := stationaryElastica_curvature₁_sq_eq_energy
-  forceScaleSpatialRadius := normalizedForceScale_sq
-  actualTangentWeight := verticalTangentCoefficient_sq_eq_spatialA
-  actualNormalWeight := verticalNormalCoefficient_sq_eq_spatialB
-  actualBinormalWeight := verticalBinormalCoefficient_sq_eq_spatialC
-  centeredNormalWeightVanishing := verticalNormalCoefficient_zero
-  centeredBinormalOmegaWeight := verticalBinormalCoefficient_sq_zero
-  centeredTangentOmegaComplement := verticalTangentCoefficient_sq_zero
-  actualSquaredCurvatureDerivative := stationaryElastica_curvatureSq_hasDerivAt
+  intrinsicVerticalPositionAtOrigin :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (P : PositionedCenteredElastica V),
+        P.position 0 = 0 → intrinsicVerticalPosition P 0 = 0 :=
+    intrinsicVerticalPosition_zero
+  intrinsicVerticalPositionOdd :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (P : PositionedCenteredElastica V),
+        (∀ s, P.position (-s) = -P.position s) →
+          ∀ s, intrinsicVerticalPosition P (-s) = -intrinsicVerticalPosition P s :=
+    intrinsicVerticalPosition_neg
+  curvatureEnergyFromConservedForce :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        E.frame.geometry.curvature₁ s ^ 2 =
+          curvatureEnergy (E.frame.geometry.curvature 0) E.gamma E.nu
+            (E.curvatureUnitAt s) :=
+    stationaryElastica_curvature₁_sq_eq_energy
+  forceScaleSpatialRadius :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        normalizedForceScale E ^ 2 =
+          spatialRadiusFourth E.curvatureUnit E.gamma E.nu :=
+    normalizedForceScale_sq
+  actualTangentWeight :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        verticalTangentCoefficient E s ^ 2 =
+          spatialAcoefSq E.curvatureUnit E.gamma E.nu (E.curvatureUnitAt s) :=
+    verticalTangentCoefficient_sq_eq_spatialA
+  actualNormalWeight :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        verticalNormalCoefficient E s ^ 2 =
+          spatialBcoefSq E.curvatureUnit E.gamma E.nu (E.curvatureUnitAt s) :=
+    verticalNormalCoefficient_sq_eq_spatialB
+  actualBinormalWeight :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        verticalBinormalCoefficient E s ^ 2 =
+          spatialCcoefSq E.curvatureUnit E.gamma E.nu (E.curvatureUnitAt s) :=
+    verticalBinormalCoefficient_sq_eq_spatialC
+  centeredNormalWeightVanishing :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        verticalNormalCoefficient E 0 = 0 :=
+    verticalNormalCoefficient_zero
+  centeredBinormalOmegaWeight :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        verticalBinormalCoefficient E 0 ^ 2 = spatialOmegaSq E.gamma E.nu :=
+    verticalBinormalCoefficient_sq_zero
+  centeredTangentOmegaComplement :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        verticalTangentCoefficient E 0 ^ 2 = 1 - spatialOmegaSq E.gamma E.nu :=
+    verticalTangentCoefficient_sq_zero
+  actualSquaredCurvatureDerivative :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        HasDerivAt (fun x => E.frame.geometry.curvature x ^ 2)
+          (squaredCurvatureVelocity E s) s :=
+    stationaryElastica_curvatureSq_hasDerivAt
   physicalSquaredCurvatureFactorization := squaredCurvatureCubic_factor
   initialSquaredCurvatureRoot := squaredCurvatureCubic_initial_root
-  actualSquaredCurvatureCubic := stationaryElastica_squaredCurvature_cubic
-  actualSquaredCurvatureFactored := stationaryElastica_squaredCurvature_factorized
-  centeredSquaredCurvatureVelocity := squaredCurvatureVelocity_zero
+  actualSquaredCurvatureCubic :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        squaredCurvatureVelocity E s ^ 2 =
+          squaredCurvatureCubic (E.frame.geometry.curvature 0) E.gamma E.nu
+            (E.frame.geometry.curvature s ^ 2) :=
+    stationaryElastica_squaredCurvature_cubic
+  actualSquaredCurvatureFactored :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (s : ℝ),
+        squaredCurvatureVelocity E s ^ 2 =
+          (E.frame.geometry.curvature 0 ^ 2 - E.frame.geometry.curvature s ^ 2) *
+            (E.frame.geometry.curvature s ^ 4 +
+              E.frame.geometry.curvature 0 ^ 2 * (1 + E.gamma ^ 2) *
+                E.frame.geometry.curvature s ^ 2 -
+              E.frame.geometry.curvature 0 ^ 4 * E.nu ^ 2) :=
+    stationaryElastica_squaredCurvature_factorized
+  centeredSquaredCurvatureVelocity :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        squaredCurvatureVelocity E 0 = 0 :=
+    squaredCurvatureVelocity_zero
   physicalToDimensionlessCubic := squaredCurvatureCubic_to_dimensionless
-  dimensionlessCurvatureDerivative := dimensionlessSquaredCurvature_hasDerivAt
-  dimensionlessCurvatureInitialValue := dimensionlessSquaredCurvature_zero
-  dimensionlessCurvatureInitialVelocity := dimensionlessSquaredCurvatureVelocity_zero
-  dimensionlessCurvatureArclengthEquation :=
+  dimensionlessCurvatureDerivative :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (q₀ : ℝˣ) (s : ℝ),
+        HasDerivAt (dimensionlessSquaredCurvature E q₀)
+          (dimensionlessSquaredCurvatureVelocity E q₀ s) s :=
+    dimensionlessSquaredCurvature_hasDerivAt
+  dimensionlessCurvatureInitialValue :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (q₀ : ℝˣ),
+        dimensionlessSquaredCurvature E q₀ 0 = (q₀ : ℝ) :=
+    dimensionlessSquaredCurvature_zero
+  dimensionlessCurvatureInitialVelocity :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (q₀ : ℝˣ),
+        dimensionlessSquaredCurvatureVelocity E q₀ 0 = 0 :=
+    dimensionlessSquaredCurvatureVelocity_zero
+  dimensionlessCurvatureArclengthEquation :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V) (q₀ : ℝˣ) (s : ℝ),
+        dimensionlessSquaredCurvatureVelocity E q₀ s ^ 2 =
+          E.frame.geometry.curvature 0 ^ 2 / (4 * (q₀ : ℝ)) *
+            dimensionlessCurvatureRHS (q₀ : ℝ) E.gamma E.nu
+              (dimensionlessSquaredCurvature E q₀ s) :=
     dimensionlessSquaredCurvature_arclength_equation
   regionIRealDimensionlessFactor := regionI_dimensionlessArclengthFactor_pos
   regionIRealDimensionlessJacobian := regionIDimensionlessJacobian_pos
   regionIRealDimensionlessJacobianSq := regionIDimensionlessJacobian_sq
   regionIIImaginaryDimensionlessFactor := regionII_dimensionlessArclengthFactor_neg
   regionIINoRealDimensionlessJacobian := regionII_no_real_dimensionlessJacobian
-  regionICurvatureProfileDerivative := regionICurvatureProfile_hasDerivAt
-  regionICurvatureProfileInitialValue := regionICurvatureProfile_zero
-  regionICurvatureProfileInitialVelocity := regionICurvatureProfileVelocity_zero
-  regionICurvatureEquation := regionICurvatureProfile_equation
-  regionIParameterCurvatureEquation := regionICurvatureProfile_parameter_equation
-  generalJacobiFirstIntegral := JacobiEllipticSystem.sn_firstIntegral
-  generalJacobiLameEquation := JacobiEllipticSystem.dnVelocity_hasDerivAt
+  regionICurvatureProfileDerivative :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (R : RegionICenteredElastica V) (v : ℝ),
+        HasDerivAt (regionICurvatureProfile R) (regionICurvatureProfileVelocity R v) v :=
+    regionICurvatureProfile_hasDerivAt
+  regionICurvatureProfileInitialValue :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (R : RegionICenteredElastica V),
+        regionICurvatureProfile R 0 = (R.parameter.val.q₀ : ℝ) :=
+    regionICurvatureProfile_zero
+  regionICurvatureProfileInitialVelocity :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (R : RegionICenteredElastica V),
+        regionICurvatureProfileVelocity R 0 = 0 :=
+    regionICurvatureProfileVelocity_zero
+  regionICurvatureEquation :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (R : RegionICenteredElastica V) (v : ℝ),
+        regionICurvatureProfileVelocity R v ^ 2 =
+          dimensionlessCurvatureRHS (R.parameter.val.q₀ : ℝ)
+            R.normalization.gamma R.normalization.nu (regionICurvatureProfile R v) :=
+    regionICurvatureProfile_equation
+  regionIParameterCurvatureEquation :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (R : RegionICenteredElastica V) (v : ℝ),
+        regionICurvatureProfileVelocity R v ^ 2 =
+          4 * ((R.parameter.val.q₀ : ℝ) - regionICurvatureProfile R v) *
+            (regionICurvatureProfile R v ^ 2 +
+              (1 + gammaSq R.parameter.val) * (R.parameter.val.q₀ : ℝ) *
+                regionICurvatureProfile R v -
+              (R.parameter.val.q₀ : ℝ) ^ 2 * nuSq R.parameter.val) :=
+    regionICurvatureProfile_parameter_equation
+  generalJacobiFirstIntegral :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (x : ℝ),
+        (J.cn x * J.dn x) ^ 2 =
+          (1 - J.sn x ^ 2) * (1 - m * J.sn x ^ 2) :=
+    JacobiEllipticSystem.sn_firstIntegral
+  generalJacobiLameEquation :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (x : ℝ),
+        HasDerivAt J.dnVelocity ((2 * m * J.sn x ^ 2 - m) * J.dn x) x :=
+    JacobiEllipticSystem.dnVelocity_hasDerivAt
   squaredParameterCurvatureRHS := dimensionlessCurvatureRHS_eq_withSquares
   squaredParameterJacobiResidual := curvatureSubstitution_residual_withSquares
   jacobiCurvatureDerivative := jacobiSquaredCurvature_hasDerivAt
@@ -1120,8 +1408,10 @@ structure ClosedAtlas : Prop where
   physicalRegionILameAmplitudeFailure := physicalRegionI_elasticaAmplitude_ne_dnSq
   physicalRegionILameSpectrumInsufficient :=
     physicalRegionI_realSpectrum_but_nonzeroResidual
-  generalJacobiSnBound := JacobiEllipticSystem.sn_sq_le_one
-  physicalJacobiCurvaturePositive := physicalRegionI_jacobiSquaredCurvature_pos
+  generalJacobiSnBound :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (v : ℝ), J.sn v ^ 2 ≤ 1 :=
+    JacobiEllipticSystem.sn_sq_le_one
+  physicalJacobiSquaredCurvaturePositive := physicalRegionI_jacobiSquaredCurvature_pos
   correctedJacobiAmplitudePositive := correctedJacobiAmplitude_pos
   correctedJacobiAmplitudeSquare := correctedJacobiAmplitude_sq
   correctedJacobiAmplitudeInitial := correctedJacobiAmplitude_zero
@@ -1159,12 +1449,41 @@ structure ClosedAtlas : Prop where
   cylindricalTangentRadialComponent := tangent_radial_component
   cylindricalTangentAzimuthalComponent := tangent_azimuthal_component
   cylindricalTangentVerticalComponent := tangent_vertical_component_direct
-  normalizedForceScalePositive := normalizedForceScale_pos
-  centeredVerticalTangentPositive := verticalTangentCoefficient_zero_pos
-  centeredCylindricalDenominator := centeredCylindricalDenominator_eq_tangent
-  centeredRadialAxis := centeredRadialInFrenet_eq
-  centeredAzimuthalAxis := centeredAzimuthalInFrenet_eq
-  centeredVerticalAxis := centeredVerticalInFrenet_eq
+  normalizedForceScalePositive :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        0 < normalizedForceScale E :=
+    normalizedForceScale_pos
+  centeredVerticalTangentPositive :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        0 < verticalTangentCoefficient E 0 :=
+    verticalTangentCoefficient_zero_pos
+  centeredCylindricalDenominator :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        cylindricalDenominator (centeredVerticalCoefficients E) =
+          verticalTangentCoefficient E 0 :=
+    centeredCylindricalDenominator_eq_tangent
+  centeredRadialAxis :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        radialInFrenet (centeredVerticalCoefficients E) = ⟨0, -1, 0⟩ :=
+    centeredRadialInFrenet_eq
+  centeredAzimuthalAxis :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        azimuthalInFrenet (centeredVerticalCoefficients E) =
+          ⟨verticalBinormalCoefficient E 0, 0,
+            -verticalTangentCoefficient E 0⟩ :=
+    centeredAzimuthalInFrenet_eq
+  centeredVerticalAxis :
+      ∀ {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+        (E : CenteredElasticaNormalization V),
+        verticalInFrenet (centeredVerticalCoefficients E) =
+          ⟨verticalTangentCoefficient E 0, 0,
+            verticalBinormalCoefficient E 0⟩ :=
+    centeredVerticalInFrenet_eq
   lowerJacobiAngularReserve := lowerJacobiAmplitudeSq_sub_angularOmegaSq
   physicalLowerJacobiAngularReserve := physicalRegionI_lowerJacobiAmplitude_gap_pos
   physicalJacobiCylindricalRegularity :=
@@ -1185,21 +1504,51 @@ structure ClosedAtlas : Prop where
     jacobiCorotatingAngularMomentum_pos
   jacobiCorotatingAngularMomentumDerivative :=
     jacobiCorotatingAngularMomentum_hasDerivAt_zero
-  jacobiScDerivative := jacobiSc_hasDerivAt
-  jacobiScFirstIntegral := jacobiSc_firstIntegral
-  jacobiScInitialValue := jacobiSc_zero
-  jacobiScInitialVelocity := jacobiScVelocity_zero
-  jacobiSdDerivative := jacobiSd_hasDerivAt
-  jacobiSdFirstIntegral := jacobiSd_firstIntegral
-  jacobiSdInitialValue := jacobiSd_zero
-  jacobiSdInitialVelocity := jacobiSdVelocity_zero
+  jacobiScDerivative :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (x : JacobiCnRegularPoint J),
+        HasDerivAt (jacobiSc J) (jacobiScVelocity J x.val) x.val :=
+    jacobiSc_hasDerivAt
+  jacobiScFirstIntegral :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (x : JacobiCnRegularPoint J),
+        jacobiScVelocity J x.val ^ 2 =
+          (1 + jacobiSc J x.val ^ 2) *
+            (1 + (1 - m) * jacobiSc J x.val ^ 2) :=
+    jacobiSc_firstIntegral
+  jacobiScInitialValue :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m), jacobiSc J 0 = 0 :=
+    jacobiSc_zero
+  jacobiScInitialVelocity :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m), jacobiScVelocity J 0 = 1 :=
+    jacobiScVelocity_zero
+  jacobiSdDerivative :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (x : JacobiDnRegularPoint J),
+        HasDerivAt (jacobiSd J) (jacobiSdVelocity J x.val) x.val :=
+    jacobiSd_hasDerivAt
+  jacobiSdFirstIntegral :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (x : JacobiDnRegularPoint J),
+        jacobiSdVelocity J x.val ^ 2 =
+          (1 - (1 - m) * jacobiSd J x.val ^ 2) *
+            (1 + m * jacobiSd J x.val ^ 2) :=
+    jacobiSd_firstIntegral
+  jacobiSdInitialValue :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m), jacobiSd J 0 = 0 :=
+    jacobiSd_zero
+  jacobiSdInitialVelocity :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m), jacobiSdVelocity J 0 = 1 :=
+    jacobiSdVelocity_zero
   scCurvatureDerivative := scSquaredCurvature_hasDerivAt
   scCurvatureInitialValue := scSquaredCurvature_zero
-  scCurvatureInitialVelocity := scSquaredCurvatureVelocity_zero
+  scCurvatureInitialVelocity :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m),
+        scSquaredCurvatureVelocity J 0 = 0 :=
+    scSquaredCurvatureVelocity_zero
   scCurvatureEquation := scSquaredCurvature_equation
   sdCurvatureDerivative := sdSquaredCurvature_hasDerivAt
   sdCurvatureInitialValue := sdSquaredCurvature_zero
-  sdCurvatureInitialVelocity := sdSquaredCurvatureVelocity_zero
+  sdCurvatureInitialVelocity :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m),
+        sdSquaredCurvatureVelocity J 0 = 0 :=
+    sdSquaredCurvatureVelocity_zero
   sdCurvatureEquation := sdSquaredCurvature_equation
   scBranchSpeedTransport := scTransport_gammaSq
   scBranchTorsionTransport := scTransport_nuSq
@@ -1402,6 +1751,151 @@ structure ClosedAtlas : Prop where
   regionIIFluidVelocityPeakMinimum := regionIIPhysicalFluidVelocity_at_peak
   regionIIMassCurrentCenterMinimum := regionIIPhysicalMassCurrent_center_is_min
   regionIIMassCurrentPeakMaximum := regionIIPhysicalMassCurrent_at_peak
+  regionIAmplitudeEndpointPositive := regionIAmplitudeEndpoint_pos
+  regionINonnegativeAmplitudeLower := regionINonnegativeAmplitude_sq_lower
+  regionINonnegativeAmplitudeUpper := regionINonnegativeAmplitude_sq_upper
+  regionINegativeAmplitudeLower := regionINegativeAmplitude_sq_lower
+  regionINegativeAmplitudeUpper := regionINegativeAmplitude_sq_upper
+  regionIAmplitudePeakValue := correctedJacobiAmplitude_sq_at_sn_peak
+  regionINonnegativeDensityLower := regionINonnegativeDensity_lower
+  regionINonnegativeDensityUpper := regionINonnegativeDensity_upper
+  regionINegativeDensityLower := regionINegativeDensity_lower
+  regionINegativeDensityUpper := regionINegativeDensity_upper
+  regionIDensityCenterValue := correctedJacobiDensity_at_center
+  regionIPhysicalPeakArgument := regionIPhysicalPeak_argument
+  regionITravelingPeakCoordinate := regionITravelingPeak_comovingCoordinate
+  regionIDensityPeakValue := correctedJacobiDensity_at_peak
+  regionIPhysicalDensityFormula := regionIPhysicalDensity_eq
+  regionIPhysicalVelocityPhase := regionIPhysicalVelocity_eq_phaseSlope
+  regionIPhysicalMassCurrentFormula := regionIPhysicalMassCurrent_eq
+  regionINonnegativePhaseSlopeLower := regionINonnegativePhaseSlope_lower
+  regionINonnegativePhaseSlopeUpper := regionINonnegativePhaseSlope_upper
+  regionINegativePhaseSlopeLower := regionINegativePhaseSlope_lower
+  regionINegativePhaseSlopeUpper := regionINegativePhaseSlope_upper
+  regionINonnegativeVelocityLower := regionINonnegativeFluidVelocity_lower
+  regionINonnegativeVelocityUpper := regionINonnegativeFluidVelocity_upper
+  regionINegativeVelocityLower := regionINegativeFluidVelocity_lower
+  regionINegativeVelocityUpper := regionINegativeFluidVelocity_upper
+  regionINonnegativeCurrentLower := regionINonnegativeMassCurrent_lower
+  regionINonnegativeCurrentUpper := regionINonnegativeMassCurrent_upper
+  regionINegativeCurrentLower := regionINegativeMassCurrent_lower
+  regionINegativeCurrentUpper := regionINegativeMassCurrent_upper
+  regionIVelocityCenterValue := regionIPhysicalFluidVelocity_at_center
+  regionIVelocityPeakValue := regionIPhysicalFluidVelocity_at_peak
+  regionICurrentCenterValue := regionIPhysicalMassCurrent_at_center
+  regionICurrentPeakValue := regionIPhysicalMassCurrent_at_peak
+  regionIPhaseSlopePositive := physicalJacobiPhaseSlope_pos
+  regionIPhaseStrictlyMonotone := physicalJacobiPhase_strictMono
+  regionIPhaseInjective := physicalJacobiPhase_injective
+  regionIPhasePositiveIff := physicalJacobiPhase_pos_iff
+  regionIPhaseNegativeIff := physicalJacobiPhase_neg_iff
+  regionIPhaseZeroIff := physicalJacobiPhase_eq_zero_iff
+  regionIIPhaseDerivative := regionIIPhysicalPhase_hasDerivAt
+  regionIIPhaseStrictlyMonotone := regionIIPhysicalPhase_strictMono
+  regionIIPhaseInjective := regionIIPhysicalPhase_injective
+  regionIIPhaseInitial := regionIIPhysicalPhase_zero
+  regionIIPhasePositiveIff := regionIIPhysicalPhase_pos_iff
+  regionIIPhaseNegativeIff := regionIIPhysicalPhase_neg_iff
+  regionIIPhaseZeroIff := regionIIPhysicalPhase_eq_zero_iff
+  compiledQuantumStressFormula := compiledTravelingQuantumStress_eq
+  compiledQuantumStressDensityProduct := compiledQuantumStress_mul_density
+  compiledQuantumStressNonnegative := compiledTravelingQuantumStress_nonneg
+  regionIQuantumStressFormula := regionIQuantumStress_eq
+  regionIQuantumStressDensityProduct := regionIQuantumStress_mul_density
+  regionIIQuantumStressFormula := regionIIQuantumStress_eq
+  regionIIQuantumStressDensityProduct := regionIIQuantumStress_mul_density
+  regionINonnegativeQuantumStressLower := regionINonnegativeQuantumStress_lower
+  regionINonnegativeQuantumStressUpper := regionINonnegativeQuantumStress_upper
+  regionINegativeQuantumStressLower := regionINegativeQuantumStress_lower
+  regionINegativeQuantumStressUpper := regionINegativeQuantumStress_upper
+  regionIIQuantumStressLower := regionIIQuantumStress_lower
+  regionIIQuantumStressUpper := regionIIQuantumStress_upper
+  regionIQuantumStressCenterValue := regionIQuantumStress_at_center
+  regionIQuantumStressPeakValue := regionIQuantumStress_at_peak
+  regionIIQuantumStressCenterValue := regionIIQuantumStress_at_center
+  regionIIQuantumStressPeakValue := regionIIQuantumStress_at_peak
+  compiledTurningComovingCoordinate := compiledTurning_comovingCoordinate
+  compiledTurningArgument := compiledTurning_argument
+  compiledCurvatureTurningVelocity := compiledCurvatureVelocity_at_turning
+  compiledTurningDensitySpaceDerivative := compiledDensityX_at_turning
+  compiledTurningDensityTimeDerivative := compiledDensityT_at_turning
+  compiledTurningFluidVelocitySpaceDerivative := compiledHydroVelocityX_at_turning
+  compiledTurningFluidVelocityTimeDerivative := compiledHydroVelocityT_at_turning
+  compiledTurningAccelerationForce := compiledHydroAccelerationForce_at_turning
+  compiledTurningQuantumStressDerivative := compiledQuantumStressX_at_turning
+  compiledTurningMomentumDensityDerivative := compiledMomentumDensityT_at_turning
+  compiledTurningMomentumFluxDerivative := compiledMomentumFluxX_at_turning
+  jacobiPeakCnZero :
+      ∀ {m : ℝ} (J : JacobiEllipticSystem m) (x : JacobiSnPeakPoint J),
+        J.cn x.val = 0 :=
+    jacobiSnPeak_cn_zero
+  regionIAmplitudeVelocityPeakZero := correctedJacobiAmplitudeVelocity_at_peak
+  regionIIAmplitudeVelocityPeakZero := regionIIJacobiAmplitudeVelocity_at_peak
+  regionICompiledPeakPosition := regionICompiledPeakPosition_eq
+  regionIICompiledPeakPosition := regionIICompiledPeakPosition_eq
+  regionIJacobiCurvaturePeakVelocity := jacobiSquaredCurvatureVelocity_at_peak
+  regionIJacobiCurvaturePeakAcceleration := jacobiSquaredCurvatureAcceleration_at_peak
+  regionIAmplitudePeakAcceleration := correctedJacobiAmplitudeAcceleration_at_peak
+  regionIPositiveCenterAccelerationNegative :=
+    regionIPositiveAmplitudeAcceleration_center_neg
+  regionIPositivePeakAccelerationPositive :=
+    regionIPositiveAmplitudeAcceleration_peak_pos
+  regionINegativeCenterAccelerationPositive :=
+    regionINegativeAmplitudeAcceleration_center_pos
+  regionINegativePeakAccelerationNegative :=
+    regionINegativeAmplitudeAcceleration_peak_neg
+  regionIIJacobiSdPeakVelocity := jacobiSdVelocity_at_peak
+  regionIIJacobiCurvaturePeakAcceleration :=
+    regionIIJacobiSquaredCurvatureAcceleration_at_peak
+  regionIIAmplitudePeakAcceleration := regionIIJacobiAmplitudeAcceleration_at_peak
+  regionIIAmplitudePeakAccelerationNegative :=
+    regionIIJacobiAmplitudeAcceleration_peak_neg
+  regionIPositivePhysicalCenterCrest :=
+    regionIPositivePhysicalCurvature_center_acceleration_neg
+  regionIPositivePhysicalPeakTrough :=
+    regionIPositivePhysicalCurvature_peak_acceleration_pos
+  regionINegativePhysicalCenterTrough :=
+    regionINegativePhysicalCurvature_center_acceleration_pos
+  regionINegativePhysicalPeakCrest :=
+    regionINegativePhysicalCurvature_peak_acceleration_neg
+  regionIIPhysicalPeakCrest := regionIIPhysicalCurvature_peak_acceleration_neg
+  compiledHydrodynamicPotentialAmplitudeFormula :=
+    compiledHydrodynamicPotential_eq_amplitude
+  compiledHydrodynamicPotentialReciprocity :=
+    compiledHydrodynamicPotential_gap_mul_curvature_fourth
+  compiledHydrodynamicPotentialBand := compiledHydrodynamicPotential_band
+  regionINonnegativeHydrodynamicPotentialBounds :=
+    regionINonnegativeHydrodynamicPotential_bounds
+  regionINegativeHydrodynamicPotentialBounds :=
+    regionINegativeHydrodynamicPotential_bounds
+  regionIIHydrodynamicPotentialBounds := regionIIHydrodynamicPotential_bounds
+  regionIHydrodynamicPotentialCenter := regionIHydrodynamicPotential_center
+  regionIHydrodynamicPotentialPeak := regionIHydrodynamicPotential_peak
+  regionIIHydrodynamicPotentialCenter := regionIIHydrodynamicPotential_center
+  regionIIHydrodynamicPotentialPeak := regionIIHydrodynamicPotential_peak
+  regionINonnegativePhaseSecantBounds := regionINonnegativePhase_secant_bounds
+  regionINegativePhaseSecantBounds := regionINegativePhase_secant_bounds
+  regionIIPhaseSecantBounds := regionIIPhase_secant_bounds
+  coercivePhaseSurjective := CoercivePhase.surjective
+  coercivePhaseBijective := CoercivePhase.bijective
+  coercivePhaseUniqueLevel := CoercivePhase.existsUnique_level
+  regionINonnegativePhaseSurjective := regionINonnegativePhase_surjective
+  regionINegativePhaseSurjective := regionINegativePhase_surjective
+  regionIIPhaseSurjective := regionIIPhase_surjective
+  regionINonnegativePhaseBijective := regionINonnegativePhase_bijective
+  regionINegativePhaseBijective := regionINegativePhase_bijective
+  regionIIPhaseBijective := regionIIPhase_bijective
+  regionINLSIntensityPositive := correctedJacobiNLS_intensity_pos
+  regionINLSNodeFree := correctedJacobiNLS_ne_zero
+  regionIINLSIntensityPositive := regionIINLS_intensity_pos
+  regionIINLSNodeFree := regionIINLS_ne_zero
+  regionINonnegativeNLSIntensityBounds := regionINonnegativeNLS_intensity_bounds
+  regionINegativeNLSIntensityBounds := regionINegativeNLS_intensity_bounds
+  regionIINLSIntensityBounds := regionIINLS_intensity_bounds
+  regionINLSIntensityCenter := correctedJacobiNLS_intensity_center
+  regionINLSIntensityPeak := correctedJacobiNLS_intensity_peak
+  regionIINLSIntensityCenter := regionIINLS_intensity_center
+  regionIINLSIntensityPeak := regionIINLS_intensity_peak
   parameterReconstruction₁ : ∀ P : Parameters,
     P.modulus = (P.q₀ : ℝ) * (3 + gammaSq P) - 1
   parameterReconstruction₂ : ∀ P : Parameters,

@@ -14,7 +14,7 @@ threshold and every condition-number rescaling remain premise-free at call sites
 -/
 
 open Set
-open scoped MatrixOrder
+open scoped MatrixOrder Matrix.Norms.L2Operator
 
 namespace GaloisForLFunctions.HilbertMetric
 
@@ -198,6 +198,53 @@ theorem normResolventPseudospectrum_similarity_sandwich
       apply lt_of_mul_lt_mul_left _ hk.le
       rw [mul_inv_rev, ← mul_assoc, mul_inv_cancel₀ hk.ne', one_mul]
       exact hmain
+
+/-- Positive matrix square root bundled as a unit. -/
+def matrixSqrtUnit
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (M : Matrix ι ι ℝ) (hM : M.PosDef) : (Matrix ι ι ℝ)ˣ :=
+  ((CFC.isUnit_sqrt_iff M hM.posSemidef.nonneg).mpr hM.isUnit).unit
+
+@[simp] theorem coe_matrixSqrtUnit
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (M : Matrix ι ι ℝ) (hM : M.PosDef) :
+    (matrixSqrtUnit M hM : Matrix ι ι ℝ) = CFC.sqrt M := by
+  exact ((CFC.isUnit_sqrt_iff M hM.posSemidef.nonneg).mpr hM.isUnit).unit_spec
+
+@[simp] theorem coe_matrixSqrtUnit_inv
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (M : Matrix ι ι ℝ) (hM : M.PosDef) :
+    (((matrixSqrtUnit M hM)⁻¹ : (Matrix ι ι ℝ)ˣ) : Matrix ι ι ℝ) =
+      (CFC.sqrt M)⁻¹ := by
+  calc
+    (((matrixSqrtUnit M hM)⁻¹ : (Matrix ι ι ℝ)ˣ) : Matrix ι ι ℝ) =
+        (matrixSqrtUnit M hM : Matrix ι ι ℝ)⁻¹ :=
+      Matrix.coe_units_inv (matrixSqrtUnit M hM)
+    _ = (CFC.sqrt M)⁻¹ := by rw [coe_matrixSqrtUnit]
+
+/-- Every positive-square-root similarity has exactly the spectrum of its seed matrix. -/
+theorem matrixSqrtSimilarity_spectrum_eq
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (M : Matrix ι ι ℝ) (hM : M.PosDef) (D : Matrix ι ι ℝ) :
+    spectrum ℝ (matrixSqrtSimilarity M D) = spectrum ℝ D := by
+  simpa [matrixSqrtSimilarity] using
+    (spectrum.units_conjugate
+      (R := ℝ) (A := Matrix ι ι ℝ) (u := matrixSqrtUnit M hM) (a := D))
+
+/-- Equation (8) for every similarity by a positive matrix square root. -/
+theorem matrixSqrtSimilarity_pseudospectrum_sandwich
+    {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+    (ε : PseudospectralScale) (M : Matrix ι ι ℝ) (hM : M.PosDef)
+    (D : Matrix ι ι ℝ) :
+    normResolventPseudospectrum ℝ
+          (ε.divConditionNumber (matrixSqrtUnit M hM)) D ⊆
+        normResolventPseudospectrum ℝ ε (matrixSqrtSimilarity M D) ∧
+      normResolventPseudospectrum ℝ ε (matrixSqrtSimilarity M D) ⊆
+        normResolventPseudospectrum ℝ
+          (ε.mulConditionNumber (matrixSqrtUnit M hM)) D := by
+  simpa [matrixSqrtSimilarity] using
+    normResolventPseudospectrum_similarity_sandwich
+      (𝕜 := ℝ) ε (matrixSqrtUnit M hM) D
 
 /-- Proposition 2 metric identity for every positive-square-root similarity. -/
 theorem matrixSqrtSimilarity_metric_relation

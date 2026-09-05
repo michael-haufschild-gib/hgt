@@ -73,9 +73,6 @@ theorem correctedJacobiAmplitude_sq_sub_dnSq
   field_simp [hq]
   linear_combination (-(P.val.q₀ : ℝ)) * hdn
 
-/-- Positive physical curvature scale, packaged without theorem-side hypotheses. -/
-abbrev PositiveCurvatureScale := {k : ℝ // 0 < k}
-
 noncomputable def correctedJacobiCurvature
     (k₀ : PositiveCurvatureScale) (P : PhysicalRegionI)
     (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) : ℝ :=

@@ -300,6 +300,16 @@ def hermiteRankTwoExponentialMetric : Matrix (Fin 2) (Fin 2) ℝ :=
     (finiteGaussianDistanceGram (hermiteEvenRealGramCoordinates 2) 1)
     (fun j => (hermiteEvenStepFourDegree j : ℝ)) (2 * 1)
 
+/-- The concrete Hermite exponential Gram is strictly positive. -/
+theorem hermiteRankTwoExponentialMetric_posDef :
+    hermiteRankTwoExponentialMetric.PosDef := by
+  have hbase :
+      (finiteGaussianDistanceGram (hermiteEvenRealGramCoordinates 2) 1).PosDef :=
+    finiteGaussianDistanceGram_one_posDef_of_injective
+      (hermiteEvenRealGramCoordinates 2)
+      (hermiteEvenRealGramCoordinates_injective 2)
+  exact rankOneSchurExponentialPath_posDef _ _ hbase _ (by norm_num)
+
 /-- Step-four degree observable underlying the concrete rank-two Hermite similarity. -/
 def hermiteRankTwoDegreeObservable : Matrix (Fin 2) (Fin 2) ℝ :=
   rankOneLabelDiagonal (fun j => (hermiteEvenStepFourDegree j : ℝ))
@@ -310,18 +320,44 @@ theorem hermiteRankTwoGaussianSimilarity_metric_relation :
         hermiteEvenStepFourGaussianSimilarity 2 1 =
       (hermiteEvenStepFourGaussianSimilarity 2 1).transpose *
         hermiteRankTwoExponentialMetric⁻¹ := by
-  have hbase :
-      (finiteGaussianDistanceGram (hermiteEvenRealGramCoordinates 2) 1).PosDef :=
-    finiteGaussianDistanceGram_one_posDef_of_injective
-      (hermiteEvenRealGramCoordinates 2)
-      (hermiteEvenRealGramCoordinates_injective 2)
-  have hmetric : hermiteRankTwoExponentialMetric.PosDef := by
-    exact rankOneSchurExponentialPath_posDef _ _ hbase _ (by norm_num)
   simpa [hermiteRankTwoExponentialMetric, hermiteRankTwoDegreeObservable,
     hermiteEvenStepFourGaussianSimilarity] using
-    matrixSqrtSimilarity_metric_relation hermiteRankTwoExponentialMetric hmetric
+    matrixSqrtSimilarity_metric_relation hermiteRankTwoExponentialMetric
+      hermiteRankTwoExponentialMetric_posDef
       hermiteRankTwoDegreeObservable
       (rankOneLabelDiagonal_transpose _)
+
+/-- The concrete Hermite similarity has exactly the spectrum of its degree observable. -/
+theorem hermiteRankTwoGaussianSimilarity_spectrum_eq_degreeObservable :
+    spectrum ℝ (hermiteEvenStepFourGaussianSimilarity 2 1) =
+      spectrum ℝ hermiteRankTwoDegreeObservable := by
+  simpa [hermiteRankTwoExponentialMetric, hermiteRankTwoDegreeObservable,
+    hermiteEvenStepFourGaussianSimilarity] using
+    matrixSqrtSimilarity_spectrum_eq hermiteRankTwoExponentialMetric
+      hermiteRankTwoExponentialMetric_posDef hermiteRankTwoDegreeObservable
+
+/-- Equation (8) for the concrete rank-two Hermite Gaussian similarity. -/
+theorem hermiteRankTwoGaussianSimilarity_pseudospectrum_sandwich
+    (ε : PseudospectralScale) :
+    normResolventPseudospectrum ℝ
+          (ε.divConditionNumber
+            (matrixSqrtUnit hermiteRankTwoExponentialMetric
+              hermiteRankTwoExponentialMetric_posDef))
+          hermiteRankTwoDegreeObservable ⊆
+        normResolventPseudospectrum ℝ ε
+          (hermiteEvenStepFourGaussianSimilarity 2 1) ∧
+      normResolventPseudospectrum ℝ ε
+          (hermiteEvenStepFourGaussianSimilarity 2 1) ⊆
+        normResolventPseudospectrum ℝ
+          (ε.mulConditionNumber
+            (matrixSqrtUnit hermiteRankTwoExponentialMetric
+              hermiteRankTwoExponentialMetric_posDef))
+          hermiteRankTwoDegreeObservable := by
+  simpa [hermiteRankTwoExponentialMetric, hermiteRankTwoDegreeObservable,
+    hermiteEvenStepFourGaussianSimilarity] using
+    matrixSqrtSimilarity_pseudospectrum_sandwich ε
+      hermiteRankTwoExponentialMetric hermiteRankTwoExponentialMetric_posDef
+      hermiteRankTwoDegreeObservable
 
 /-- The same rank-two Hermite operator is nonnormal in its displayed Euclidean coordinates. -/
 theorem hermiteRankTwoGaussianSimilarity_isNonnormal :

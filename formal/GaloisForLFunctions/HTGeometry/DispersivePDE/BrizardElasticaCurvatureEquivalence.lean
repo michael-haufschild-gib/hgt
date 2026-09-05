@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLemniscaticClosure
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAlgebra
 import Mathlib.Tactic
 
 /-!
@@ -11,8 +12,6 @@ the exact pair `m=-1 ↔ n=1/2`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
-
-abbrev PositiveCurvatureScale := {q : ℝ // 0 < q}
 
 /-- Scale paired with `q` by maximum-curvature normalization. -/
 noncomputable def transportedNegativeCurvatureScale

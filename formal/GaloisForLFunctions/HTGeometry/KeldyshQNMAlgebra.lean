@@ -89,6 +89,56 @@ theorem keldyshModalSynthesis_apply {n : ℕ} (V : KeldyshGL n)
   simp only [dotProduct]
   ring
 
+/-- Rank-one residue projector associated with mode `i`. -/
+def keldyshModeProjector {n : ℕ} (V : KeldyshGL n)
+    (i : Fin n) (u : Fin n → ℂ) : Fin n → ℂ :=
+  fun r => (∑ j, V.inv i j * u j) * V.val r i
+
+/-- Modal projectors resolve the identity. -/
+theorem sum_keldyshModeProjector {n : ℕ} (V : KeldyshGL n)
+    (u : Fin n → ℂ) :
+    ∑ i, keldyshModeProjector V i u = u := by
+  funext r
+  have h := congrFun (keldysh_basis_reconstruction V u) r
+  simpa [keldyshModeProjector, Matrix.mulVec, dotProduct, mul_comm] using h
+
+/-- Rank-one modal projectors are mutually orthogonal idempotents. -/
+theorem keldyshModeProjector_comp {n : ℕ} (V : KeldyshGL n)
+    (i j : Fin n) (u : Fin n → ℂ) :
+    keldyshModeProjector V i (keldyshModeProjector V j u) =
+      if i = j then keldyshModeProjector V i u else 0 := by
+  funext r
+  unfold keldyshModeProjector
+  have hsum :
+      (∑ k, V.inv i k * ((∑ l, V.inv j l * u l) * V.val k j)) =
+        (∑ l, V.inv j l * u l) * (∑ k, V.inv i k * V.val k j) := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k _
+    ring
+  rw [hsum, keldysh_basis_biorthogonal]
+  by_cases hij : i = j
+  · subst j
+    simp
+  · simp [hij]
+
+/-- Totalized finite-rank Keldysh resolvent. At a pole its corresponding scalar inverse is zero,
+matching Lean's total division while retaining the exact partial-fraction identity. -/
+def keldyshResolvent {n : ℕ} (V : KeldyshGL n)
+    (omega : Fin n → ℂ) (z : ℂ) (u : Fin n → ℂ) : Fin n → ℂ :=
+  keldyshModalSynthesis V (fun i => (z - omega i)⁻¹) u
+
+/-- Keldysh resolvent as a sum of frequency-pole-weighted rank-one residues. -/
+theorem keldyshResolvent_apply {n : ℕ} (V : KeldyshGL n)
+    (omega : Fin n → ℂ) (z : ℂ) (u : Fin n → ℂ) (r : Fin n) :
+    keldyshResolvent V omega z u r =
+      ∑ i, (z - omega i)⁻¹ * keldyshModeProjector V i u r := by
+  rw [keldyshResolvent, keldyshModalSynthesis_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  simp only [keldyshModeProjector]
+  ring
+
 /-- Generalized-pencil generator `L = B V diag(omega) V⁻¹`. -/
 def keldyshPencilGenerator {n : ℕ} (B V : KeldyshGL n)
     (omega : Fin n → ℂ) : Matrix (Fin n) (Fin n) ℂ :=
@@ -153,6 +203,38 @@ theorem keldyshPencil_reconstruction {n : ℕ} (B V : KeldyshGL n)
     V.val *ᵥ (keldyshPencilLeftComodes B V *ᵥ (B.val *ᵥ u)) = u := by
   rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec,
     basis_mul_keldyshPencilLeftComodes_mul_mass, Matrix.one_mulVec]
+
+/-- Generalized-pencil modal synthesis with mass-weighted left coefficients. -/
+def keldyshPencilModalSynthesis {n : ℕ} (B V : KeldyshGL n)
+    (multiplier : Fin n → ℂ) (u : Fin n → ℂ) : Fin n → ℂ :=
+  V.val *ᵥ (Matrix.diagonal multiplier *ᵥ
+    (keldyshPencilLeftComodes B V *ᵥ (B.val *ᵥ u)))
+
+theorem keldyshPencilModalSynthesis_one {n : ℕ} (B V : KeldyshGL n)
+    (u : Fin n → ℂ) :
+    keldyshPencilModalSynthesis B V (fun _ => 1) u = u := by
+  have hdiag (x : Fin n → ℂ) : Matrix.diagonal (fun _ : Fin n => (1 : ℂ)) *ᵥ x = x := by
+    funext i
+    simp [Matrix.mulVec, dotProduct, Matrix.one_apply]
+  rw [keldyshPencilModalSynthesis, hdiag]
+  exact keldyshPencil_reconstruction B V u
+
+/-- Rank-one generalized-pencil expansion with coefficients `W B u`. -/
+theorem keldyshPencilModalSynthesis_apply {n : ℕ} (B V : KeldyshGL n)
+    (multiplier : Fin n → ℂ) (u : Fin n → ℂ) (r : Fin n) :
+    keldyshPencilModalSynthesis B V multiplier u r =
+      ∑ i, multiplier i *
+        (∑ j, keldyshPencilLeftComodes B V i j * (∑ k, B.val j k * u k)) *
+          V.val r i := by
+  have hdiag (x : Fin n → ℂ) :
+      Matrix.diagonal multiplier *ᵥ x = fun i => multiplier i * x i := by
+    funext i
+    simp [Matrix.mulVec]
+  rw [keldyshPencilModalSynthesis, hdiag]
+  simp only [Matrix.mulVec, dotProduct]
+  apply Finset.sum_congr rfl
+  intro i _
+  ring
 
 /-- Paper's normalized excitation coefficient `alpha(u) / alpha(mode)`. -/
 def keldyshExcitationCoefficient {X : Type*} [AddCommGroup X] [Module ℂ X]

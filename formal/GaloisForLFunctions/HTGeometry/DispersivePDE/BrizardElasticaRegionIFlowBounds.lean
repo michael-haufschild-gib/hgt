@@ -79,7 +79,7 @@ theorem regionINonnegativePhaseSlope_lower
     _ ≤ (k₀ : ℝ) * physicalGamma P.val / 2 +
         ((k₀ : ℝ) * physicalNu P.val / 2) /
           correctedJacobiAmplitude P.val J (physicalJacobiArgument k₀ P.val s) ^ 2 :=
-      add_le_add_left hdiv _
+      add_le_add_right hdiv _
 
 theorem regionINonnegativePhaseSlope_upper
     (k₀ : PositiveCurvatureScale) (P : PhysicalRegionINonnegativeModulus)
@@ -103,7 +103,7 @@ theorem regionINonnegativePhaseSlope_upper
           correctedJacobiAmplitude P.val J (physicalJacobiArgument k₀ P.val s) ^ 2 ≤
       (k₀ : ℝ) * physicalGamma P.val / 2 +
         ((k₀ : ℝ) * physicalNu P.val / 2) / regionIAmplitudeEndpoint P.val :=
-      add_le_add_left hdiv _
+      add_le_add_right hdiv _
     _ = (k₀ : ℝ) *
         (physicalGamma P.val + physicalNu P.val / regionIAmplitudeEndpoint P.val) / 2 := by ring
 
@@ -131,7 +131,7 @@ theorem regionINegativePhaseSlope_lower
     _ ≤ (k₀ : ℝ) * physicalGamma P.val / 2 +
         ((k₀ : ℝ) * physicalNu P.val / 2) /
           correctedJacobiAmplitude P.val J (physicalJacobiArgument k₀ P.val s) ^ 2 :=
-      add_le_add_left hdiv _
+      add_le_add_right hdiv _
 
 theorem regionINegativePhaseSlope_upper
     (k₀ : PositiveCurvatureScale) (P : PhysicalRegionINegativeModulus)
@@ -155,7 +155,7 @@ theorem regionINegativePhaseSlope_upper
         ((k₀ : ℝ) * physicalNu P.val / 2) /
           correctedJacobiAmplitude P.val J (physicalJacobiArgument k₀ P.val s) ^ 2 ≤
       (k₀ : ℝ) * physicalGamma P.val / 2 +
-        (k₀ : ℝ) * physicalNu P.val / 2 := add_le_add_left hdiv _
+        (k₀ : ℝ) * physicalNu P.val / 2 := add_le_add_right hdiv _
     _ = (k₀ : ℝ) * (physicalGamma P.val + physicalNu P.val) / 2 := by ring
 
 theorem regionINonnegativeFluidVelocity_lower
@@ -241,12 +241,22 @@ theorem regionINonnegativeMassCurrent_lower
     (D : ℝ) * (k₀ : ℝ) ^ 3 *
         (physicalGamma P.val * regionIAmplitudeEndpoint P.val + physicalNu P.val) ≤
       regionIPhysicalMassCurrent (positiveDispersionUnit D) k₀ P.val J t s := by
-  rw [regionIPhysicalMassCurrent_eq, physicalJacobiWaveSpeed]
+  rw [regionIPhysicalMassCurrent_eq, regionIPhysicalDensity, physicalJacobiWaveSpeed]
   have hd := regionINonnegativeDensity_lower (positiveDispersionUnit D) k₀ P J t s
-  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val := by positivity
+  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val :=
+    mul_nonneg (mul_nonneg D.property.le k₀.property.le) (physicalGamma_pos P.val).le
   have hm := mul_le_mul_of_nonneg_left hd hc
   simp only [positiveDispersionUnit_val]
-  nlinarith
+  calc
+    (D : ℝ) * (k₀ : ℝ) ^ 3 *
+        (physicalGamma P.val * regionIAmplitudeEndpoint P.val + physicalNu P.val) =
+      ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) *
+          ((k₀ : ℝ) ^ 2 * regionIAmplitudeEndpoint P.val) +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val := by ring
+    _ ≤ ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) *
+          travelingDensity (correctedJacobiCurvatureProfileJet k₀ P.val J)
+            (physicalJacobiWaveSpeed (positiveDispersionUnit D) k₀ P.val) t s +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val := add_le_add_left hm _
 
 theorem regionINonnegativeMassCurrent_upper
     (D : PositiveDispersionScale) (k₀ : PositiveCurvatureScale)
@@ -254,12 +264,21 @@ theorem regionINonnegativeMassCurrent_upper
     (J : JacobiEllipticSystem P.val.val.modulus) (t s : ℝ) :
     regionIPhysicalMassCurrent (positiveDispersionUnit D) k₀ P.val J t s ≤
       (D : ℝ) * (k₀ : ℝ) ^ 3 * (physicalGamma P.val + physicalNu P.val) := by
-  rw [regionIPhysicalMassCurrent_eq, physicalJacobiWaveSpeed]
+  rw [regionIPhysicalMassCurrent_eq, regionIPhysicalDensity, physicalJacobiWaveSpeed]
   have hd := regionINonnegativeDensity_upper (positiveDispersionUnit D) k₀ P J t s
-  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val := by positivity
+  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val :=
+    mul_nonneg (mul_nonneg D.property.le k₀.property.le) (physicalGamma_pos P.val).le
   have hm := mul_le_mul_of_nonneg_left hd hc
   simp only [positiveDispersionUnit_val]
-  nlinarith
+  calc
+    ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) *
+          travelingDensity (correctedJacobiCurvatureProfileJet k₀ P.val J)
+            (physicalJacobiWaveSpeed (positiveDispersionUnit D) k₀ P.val) t s +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val ≤
+      ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) * (k₀ : ℝ) ^ 2 +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val := add_le_add_left hm _
+    _ = (D : ℝ) * (k₀ : ℝ) ^ 3 *
+        (physicalGamma P.val + physicalNu P.val) := by ring
 
 theorem regionINegativeMassCurrent_lower
     (D : PositiveDispersionScale) (k₀ : PositiveCurvatureScale)
@@ -267,12 +286,20 @@ theorem regionINegativeMassCurrent_lower
     (J : JacobiEllipticSystem P.val.val.modulus) (t s : ℝ) :
     (D : ℝ) * (k₀ : ℝ) ^ 3 * (physicalGamma P.val + physicalNu P.val) ≤
       regionIPhysicalMassCurrent (positiveDispersionUnit D) k₀ P.val J t s := by
-  rw [regionIPhysicalMassCurrent_eq, physicalJacobiWaveSpeed]
+  rw [regionIPhysicalMassCurrent_eq, regionIPhysicalDensity, physicalJacobiWaveSpeed]
   have hd := regionINegativeDensity_lower (positiveDispersionUnit D) k₀ P J t s
-  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val := by positivity
+  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val :=
+    mul_nonneg (mul_nonneg D.property.le k₀.property.le) (physicalGamma_pos P.val).le
   have hm := mul_le_mul_of_nonneg_left hd hc
   simp only [positiveDispersionUnit_val]
-  nlinarith
+  calc
+    (D : ℝ) * (k₀ : ℝ) ^ 3 * (physicalGamma P.val + physicalNu P.val) =
+      ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) * (k₀ : ℝ) ^ 2 +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val := by ring
+    _ ≤ ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) *
+          travelingDensity (correctedJacobiCurvatureProfileJet k₀ P.val J)
+            (physicalJacobiWaveSpeed (positiveDispersionUnit D) k₀ P.val) t s +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val := add_le_add_left hm _
 
 theorem regionINegativeMassCurrent_upper
     (D : PositiveDispersionScale) (k₀ : PositiveCurvatureScale)
@@ -281,12 +308,22 @@ theorem regionINegativeMassCurrent_upper
     regionIPhysicalMassCurrent (positiveDispersionUnit D) k₀ P.val J t s ≤
       (D : ℝ) * (k₀ : ℝ) ^ 3 *
         (physicalGamma P.val * regionIAmplitudeEndpoint P.val + physicalNu P.val) := by
-  rw [regionIPhysicalMassCurrent_eq, physicalJacobiWaveSpeed]
+  rw [regionIPhysicalMassCurrent_eq, regionIPhysicalDensity, physicalJacobiWaveSpeed]
   have hd := regionINegativeDensity_upper (positiveDispersionUnit D) k₀ P J t s
-  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val := by positivity
+  have hc : 0 ≤ (D : ℝ) * (k₀ : ℝ) * physicalGamma P.val :=
+    mul_nonneg (mul_nonneg D.property.le k₀.property.le) (physicalGamma_pos P.val).le
   have hm := mul_le_mul_of_nonneg_left hd hc
   simp only [positiveDispersionUnit_val]
-  nlinarith
+  calc
+    ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) *
+          travelingDensity (correctedJacobiCurvatureProfileJet k₀ P.val J)
+            (physicalJacobiWaveSpeed (positiveDispersionUnit D) k₀ P.val) t s +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val ≤
+      ((D : ℝ) * (k₀ : ℝ) * physicalGamma P.val) *
+          ((k₀ : ℝ) ^ 2 * regionIAmplitudeEndpoint P.val) +
+        (D : ℝ) * (k₀ : ℝ) ^ 3 * physicalNu P.val := add_le_add_left hm _
+    _ = (D : ℝ) * (k₀ : ℝ) ^ 3 *
+        (physicalGamma P.val * regionIAmplitudeEndpoint P.val + physicalNu P.val) := by ring
 
 theorem regionIPhysicalFluidVelocity_at_center
     (D : PositiveDispersionScale) (k₀ : PositiveCurvatureScale) (P : PhysicalRegionI)
@@ -295,6 +332,7 @@ theorem regionIPhysicalFluidVelocity_at_center
         (physicalJacobiWaveSpeed (positiveDispersionUnit D) k₀ P * t) =
       (D : ℝ) * (k₀ : ℝ) * (physicalGamma P + physicalNu P) := by
   rw [regionIPhysicalFluidVelocity, correctedJacobiHydroVelocity_center]
+  simp only [positiveDispersionUnit_val]
 
 theorem regionIPhysicalFluidVelocity_at_peak
     (D : PositiveDispersionScale) (k₀ : PositiveCurvatureScale) (P : PhysicalRegionI)
@@ -306,6 +344,7 @@ theorem regionIPhysicalFluidVelocity_at_peak
   rw [regionIPhysicalVelocity_eq_phaseSlope, regionITravelingPeak_comovingCoordinate,
     physicalJacobiPhaseSlope, regionIPhysicalPeak_argument,
     correctedJacobiAmplitude_sq_at_sn_peak]
+  simp only [positiveDispersionUnit_val]
   ring
 
 theorem regionIPhysicalMassCurrent_at_center
@@ -314,7 +353,8 @@ theorem regionIPhysicalMassCurrent_at_center
     regionIPhysicalMassCurrent (positiveDispersionUnit D) k₀ P J t
         (physicalJacobiWaveSpeed (positiveDispersionUnit D) k₀ P * t) =
       (D : ℝ) * (k₀ : ℝ) ^ 3 * (physicalGamma P + physicalNu P) := by
-  rw [regionIPhysicalMassCurrent_eq, correctedJacobiDensity_at_center,
+  rw [regionIPhysicalMassCurrent_eq, regionIPhysicalDensity,
+    correctedJacobiDensity_at_center,
     physicalJacobiWaveSpeed]
   simp only [positiveDispersionUnit_val]
   ring
@@ -326,7 +366,8 @@ theorem regionIPhysicalMassCurrent_at_peak
         (regionITravelingPeakPosition (positiveDispersionUnit D) k₀ P J x t) =
       (D : ℝ) * (k₀ : ℝ) ^ 3 *
         (physicalGamma P * regionIAmplitudeEndpoint P + physicalNu P) := by
-  rw [regionIPhysicalMassCurrent_eq, correctedJacobiDensity_at_peak,
+  rw [regionIPhysicalMassCurrent_eq, regionIPhysicalDensity,
+    correctedJacobiDensity_at_peak,
     physicalJacobiWaveSpeed]
   simp only [positiveDispersionUnit_val]
   ring
