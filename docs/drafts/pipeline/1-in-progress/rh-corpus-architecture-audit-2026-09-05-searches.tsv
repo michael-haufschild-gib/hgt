@@ -113,3 +113,45 @@ query_id	query	declaration_hits	gap_hits
 112	summable norm partialSum mul term two sigma greater one	20	20
 113	Euler deletion coefficient partial sum remainder modulo	20	20
 114	sum one minus q divides n equals mod remainder	20	20
+115	Euler deletion coefficient partial sums Dirichlet convergence (1 - q^(1-s)) zeta	20	20
+116	finite Dirichlet partial sum delete multiples q equals harmonic sum q power floor N div q	20	20
+117	analytic continuation Euler deletion Dirichlet sum equals one minus p power one minus s times riemann zeta re positive	20	20
+118	summable norm square Dirichlet terms coefficient bounded re greater one half	20	20
+119	commuting Euler deletion operators second level quasi shuffle holonomy central cocycle coprime square	20	20
+120	depth two multiple zeta distribution relation Euler deletion quasi shuffle double Dirichlet strict ordered sum	20	20
+121	ordered double Dirichlet sum dilation inequality floor carry reciprocity coprime	20	20
+122	quasi shuffle distribution relation strict ordered double series dilation anomaly	20	20
+123	commuting periodic deletion chronological cross area cocycle	20	20
+124	floor sum lattice wedge reciprocity Dirichlet dilation carry	20	20
+125	divisibility cylinder algebra dense weighted l2 profinite integers	20	20
+126	all modulus deletion products separating points interpolation delta divisibility	20	20
+127	incidence algebra divisibility zeta zero annihilates cylinder functions	20	20
+128	periodic zero mean Dirichlet series finite products Euler deletion zeta factor	20	20
+129	martingale differences divisibility profinite integers weighted Hilbert	20	20
+130	feature map divisibility lcm Gram density completeness	20	20
+131	ordinary zeta Dirichlet series diverges real part less equal one	20	20
+132	not DirichletConvergesAt constant one coefficient re less equal one	20	20
+133	harmonic complex power partial sum divergence strip	20	20
+134	block deletion coefficient square dyadic equals one	20	20
+135	centered product subtract mean associator covariance	20	20
+136	mean zero functions product projection nonassociative algebra	20	20
+137	conditional expectation centered multiplication associator	20	20
+138	profinite divisibility cylinder Hoeffding ANOVA decomposition	20	20
+139	squarefree Walsh chaos divisibility prime independent	20	20
+140	Euler deletion coefficient martingale difference prime coordinates	20	20
+141	Wick product centered Bernoulli variables refinement	20	20
+142	Hoeffding interaction decomposition product independent coordinates	20	20
+143	squarefree tensor product deletion coefficient independent primes	20	20
+144	augmentation ideal nonunital algebra quotient constants	20	20
+145	bar construction augmentation ideal iterated signature	20	20
+146	shuffle Hopf algebra primitive centered cylinder	20	20
+147	composite Euler deletion interleaving associativity factorization order	20	20
+148	deletion inserted source negative interference	20	20
+149	Euler deletion composite energy refinement equality	20	20
+150	multiplication modulus chronological source interference	20	20
+151	noncommutative Euler deletion composite factorization signature	20	20
+152	prime factorization order chronological exponential holonomy	20	20
+153	closed deletion loops commutator degree four	20	20
+154	factorization tree Chen signature arithmetic deletion	20	20
+155	Euler factor deletion Magnus expansion zeta zero	20	20
+156	noncommutative Dirichlet series deletion factorization	20	20

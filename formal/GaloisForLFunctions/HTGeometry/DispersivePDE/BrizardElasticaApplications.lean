@@ -32,6 +32,7 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaFrameRotation
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTravelingPhase
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLameSpectrum
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTravelingHydrodynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaTravelingMomentum
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaScalingAction
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaGalileanAction
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaGalileanPlane
@@ -83,6 +84,32 @@ import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaZeroModulus
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaLamePhysicalFailure
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiAmplitude
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiSecondOrder
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiAmplitudeDynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiAmplitudeEnergy
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaFrameInverse
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCylindricalFrame
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCenteredCylindricalFrame
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiRadialGap
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiAngularMomentum
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiQuotients
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiAlternativeCurvature
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiBranchTransport
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiQuotientEndpoints
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCorrectedJacobiNLS
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCorrectedJacobiHydrodynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCorrectedJacobiMomentum
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaCorrectedJacobiPhaseHydrodynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaJacobiSdGlobal
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIJacobi
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIAmplitude
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAmplitudeCompiler
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAmplitudeEnergyCompiler
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAmplitudeInstances
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAmplitudeEnergyInstances
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaAmplitudeHydrodynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIHydrodynamics
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIBounds
+import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRegionIIFlowBounds
 
 /-!
 # Closed application atlas for arXiv:2607.21750
@@ -1106,6 +1133,275 @@ structure ClosedAtlas : Prop where
   jacobiCurvatureSecondOrderEquation :=
     jacobiSquaredCurvature_secondOrderEquation
   jacobiCurvatureInitialAcceleration := jacobiSquaredCurvatureAcceleration_zero
+  correctedJacobiAmplitudeDerivative := correctedJacobiAmplitude_hasDerivAt
+  correctedJacobiAmplitudeAccelerationDerivative :=
+    correctedJacobiAmplitudeVelocity_hasDerivAt
+  correctedJacobiAmplitudeCurvatureBridge := correctedJacobiAmplitude_curvature
+  correctedJacobiAmplitudeEquation := correctedJacobiAmplitude_secondOrderEquation
+  correctedJacobiAmplitudeInitialVelocity := correctedJacobiAmplitudeVelocity_zero
+  correctedJacobiAmplitudeInitialAcceleration := correctedJacobiAmplitudeAcceleration_zero
+  correctedJacobiAmplitudeVelocitySquare := correctedJacobiAmplitudeVelocity_sq
+  correctedJacobiAmplitudeEnergyConservation := correctedJacobiAmplitudeEnergy_eq
+  correctedJacobiAmplitudeEnergyInitial := correctedJacobiAmplitudeEnergy_zero
+  correctedJacobiAmplitudeEnergyDerivative :=
+    correctedJacobiAmplitudeEnergy_hasDerivAt_zero
+  inverseRadialFrameRotation := radialAxis_frenetExpansion
+  inverseAzimuthalFrameRotation := azimuthalAxis_frenetExpansion
+  inverseVerticalFrameRotation := verticalAxis_frenetExpansion
+  verticalTangentProjection := verticalAxis_tangentProjection
+  verticalNormalProjection := verticalAxis_normalProjection
+  verticalBinormalProjection := verticalAxis_binormalProjection
+  cylindricalDenominatorPositive := cylindricalDenominator_pos
+  cylindricalDenominatorSquare := cylindricalDenominator_sq
+  cylindricalVerticalUnit := verticalInFrenet_unit
+  cylindricalRadialUnit := radialInFrenet_unit
+  cylindricalFrameOrientation := radial_cross_azimuthal
+  cylindricalTangentRadialComponent := tangent_radial_component
+  cylindricalTangentAzimuthalComponent := tangent_azimuthal_component
+  cylindricalTangentVerticalComponent := tangent_vertical_component_direct
+  normalizedForceScalePositive := normalizedForceScale_pos
+  centeredVerticalTangentPositive := verticalTangentCoefficient_zero_pos
+  centeredCylindricalDenominator := centeredCylindricalDenominator_eq_tangent
+  centeredRadialAxis := centeredRadialInFrenet_eq
+  centeredAzimuthalAxis := centeredAzimuthalInFrenet_eq
+  centeredVerticalAxis := centeredVerticalInFrenet_eq
+  lowerJacobiAngularReserve := lowerJacobiAmplitudeSq_sub_angularOmegaSq
+  physicalLowerJacobiAngularReserve := physicalRegionI_lowerJacobiAmplitude_gap_pos
+  physicalJacobiCylindricalRegularity :=
+    physicalRegionI_correctedAmplitude_sq_sub_angularOmegaSq_pos
+  jacobiRadialAmplitudePositive := jacobiRadialAmplitude_pos
+  jacobiRadialAmplitudeSquare := jacobiRadialAmplitude_sq
+  jacobiRadialAmplitudeDerivative := jacobiRadialAmplitude_hasDerivAt
+  physicalAngularOmegaPositive := physicalAngularOmega_pos
+  physicalAngularOmegaSquare := physicalAngularOmega_sq
+  physicalAngularOmegaUpperBound := physicalAngularOmega_lt_one
+  jacobiAngularVelocityRadialForm := jacobiAngularVelocity_eq_radial
+  jacobiAngularVelocityPositive := jacobiAngularVelocity_pos
+  jacobiAngularVelocityDerivative := jacobiAngularVelocity_hasDerivAt
+  jacobiAngularInitialAcceleration := jacobiAngularAcceleration_zero
+  jacobiCorotatingAngularMomentumConservation :=
+    jacobiCorotatingAngularMomentum_eq
+  jacobiCorotatingAngularMomentumPositive :=
+    jacobiCorotatingAngularMomentum_pos
+  jacobiCorotatingAngularMomentumDerivative :=
+    jacobiCorotatingAngularMomentum_hasDerivAt_zero
+  jacobiScDerivative := jacobiSc_hasDerivAt
+  jacobiScFirstIntegral := jacobiSc_firstIntegral
+  jacobiScInitialValue := jacobiSc_zero
+  jacobiScInitialVelocity := jacobiScVelocity_zero
+  jacobiSdDerivative := jacobiSd_hasDerivAt
+  jacobiSdFirstIntegral := jacobiSd_firstIntegral
+  jacobiSdInitialValue := jacobiSd_zero
+  jacobiSdInitialVelocity := jacobiSdVelocity_zero
+  scCurvatureDerivative := scSquaredCurvature_hasDerivAt
+  scCurvatureInitialValue := scSquaredCurvature_zero
+  scCurvatureInitialVelocity := scSquaredCurvatureVelocity_zero
+  scCurvatureEquation := scSquaredCurvature_equation
+  sdCurvatureDerivative := sdSquaredCurvature_hasDerivAt
+  sdCurvatureInitialValue := sdSquaredCurvature_zero
+  sdCurvatureInitialVelocity := sdSquaredCurvatureVelocity_zero
+  sdCurvatureEquation := sdSquaredCurvature_equation
+  scBranchSpeedTransport := scTransport_gammaSq
+  scBranchTorsionTransport := scTransport_nuSq
+  scBranchRoot₁Transport := scTransport_e₁
+  scBranchRoot₂Transport := scTransport_e₂
+  scBranchRoot₃Transport := scTransport_e₃
+  scBranchInvariant₂ := scTransport_g₂
+  scBranchInvariant₃ := scTransport_g₃
+  scBranchCurveTransport := scTransport_weierstrassCurve
+  sdBranchSpeedTransport := sdTransport_gammaSq
+  sdBranchTorsionTransport := sdTransport_nuSq
+  sdBranchRoot₁Transport := sdTransport_e₁
+  sdBranchRoot₂Transport := sdTransport_e₂
+  sdBranchRoot₃Transport := sdTransport_e₃
+  sdBranchInvariant₂ := sdTransport_g₂
+  sdBranchInvariant₃ := sdTransport_g₃
+  sdBranchCurveTransport := sdTransport_weierstrassCurve
+  zeroScTrigonometricEndpoint := jacobiZeroSc_eq_tan
+  zeroSdTrigonometricEndpoint := jacobiZeroSd_eq_sin
+  oneScHyperbolicEndpoint := jacobiOneSc_eq_sinh
+  oneSdHyperbolicEndpoint := jacobiOneSd_eq_sinh
+  zeroSdConstantCurvature := zeroSdSquaredCurvature_eq
+  oneScConstantCurvature := oneScSquaredCurvature_eq
+  oneSdConstantCurvature := oneSdSquaredCurvature_eq
+  classicalScSpeedNegative := classicalSc_gammaSq_neg
+  classicalScNoRealSpeed := classicalSc_no_real_gamma
+  physicalGammaPositive := physicalGamma_pos
+  physicalNuPositive := physicalNu_pos
+  jacobiArclengthScalePositive := jacobiArclengthScale_pos
+  physicalJacobiCurvaturePositive := physicalJacobiCurvature_pos
+  physicalJacobiCurvatureDerivative := physicalJacobiCurvature_hasDerivAt
+  physicalJacobiCurvatureAccelerationDerivative :=
+    physicalJacobiCurvatureVelocity_hasDerivAt
+  physicalJacobiCurvatureEquation := physicalJacobiCurvature_equation
+  physicalJacobiPhaseSlopeDerivative := physicalJacobiPhaseSlope_hasDerivAt
+  physicalJacobiPhaseDerivative := physicalJacobiPhase_hasDerivAt
+  correctedJacobiNLSRealBalance := correctedJacobi_real_balance
+  correctedJacobiNLSImaginaryBalance := correctedJacobi_imaginary_balance
+  correctedJacobiNLSSolution := correctedJacobiNLS_solves
+  physicalJacobiCurvatureInitial := physicalJacobiCurvature_zero
+  physicalJacobiCurvatureInitialVelocity := physicalJacobiCurvatureVelocity_zero
+  physicalJacobiPhaseInitial := physicalJacobiPhase_zero
+  physicalJacobiWaveSpeedNonzero := physicalJacobiWaveSpeed_ne_zero
+  correctedJacobiNLSModulus := correctedJacobiPolarProfile_normSq
+  correctedJacobiHydroDensityCurvature :=
+    correctedJacobiTravelingDensity_eq_curvature_sq
+  correctedJacobiHydroDensityAmplitude :=
+    correctedJacobiTravelingDensity_eq_amplitude_sq
+  correctedJacobiNLSHydroDensity :=
+    correctedJacobiNLS_normSq_eq_travelingDensity
+  correctedJacobiHydroVelocityPhase :=
+    correctedJacobiHydroVelocity_eq_phaseSlope
+  correctedJacobiHydroMassCurrent := correctedJacobiTravelingMassCurrent_eq
+  correctedJacobiHydroPhaseCurrent :=
+    correctedJacobiTravelingMassCurrent_eq_phaseCurrent
+  correctedJacobiHydroUnboostedCurrent :=
+    correctedJacobiUnboostedMassCurrent_eq
+  correctedJacobiHydroContinuity := correctedJacobiContinuityEquation
+  correctedJacobiHydroMomentumFlux := correctedJacobiMomentumFlux_eq
+  correctedJacobiHydroCenterDensity := correctedJacobiTravelingDensity_center
+  correctedJacobiHydroCenterVelocity := correctedJacobiHydroVelocity_center
+  travelingHydroVelocitySpaceDerivative :=
+    hasDerivAt_travelingHydroVelocity_space
+  travelingHydroVelocityTimeDerivative :=
+    hasDerivAt_travelingHydroVelocity_time
+  travelingHydroAcceleration := travelingHydroAccelerationEquation
+  travelingMomentumFluxDecomposition := travelingMomentumFlux_eq
+  travelingMomentumBalance := travelingMomentumEquation
+  correctedJacobiAccelerationForce := correctedJacobiAccelerationForce_eq
+  correctedJacobiAccelerationBalance := correctedJacobiAccelerationEquation
+  correctedJacobiQuantumStress := correctedJacobiQuantumStress_eq
+  correctedJacobiQuantumStressDerivative := correctedJacobiQuantumStressX_eq
+  correctedJacobiMomentumBalance := correctedJacobiMomentumEquation
+  correctedJacobiCenterQuantumStress := correctedJacobiQuantumStress_center
+  correctedJacobiCenterAcceleration := correctedJacobiAccelerationForce_center
+  correctedJacobiCenterMomentumDensity := correctedJacobiMomentumDensity_center
+  correctedJacobiBohmPotential := correctedJacobiBohmTerm_eq
+  correctedJacobiHydrodynamicPotential := correctedJacobiHydrodynamicPotential_eq
+  correctedJacobiHydroPhaseTimeDerivative :=
+    hasDerivAt_correctedJacobiHydroPhase_time
+  correctedJacobiHydroPhaseSpaceDerivative :=
+    hasDerivAt_correctedJacobiHydroPhase_space
+  correctedJacobiHydroVelocityPhaseDerivative :=
+    correctedJacobiHydroVelocity_eq_phaseDerivative
+  correctedJacobiHydroPhaseBalance := correctedJacobiHydroPhaseEquation
+  correctedJacobiHydroCenterPhase := correctedJacobiHydroPhase_center
+  classicalJacobiDnSquarePositive := classicalJacobiDn_sq_pos
+  classicalJacobiDnNonzero := classicalJacobiDn_ne_zero
+  globalJacobiSdDerivative := jacobiSd_hasDerivAt_global
+  globalJacobiSdFirstIntegral := jacobiSd_firstIntegral_global
+  globalJacobiSdSecondDerivative := jacobiSdVelocity_hasDerivAt_global
+  regionIIComplementClassical := regionIIComplementModulus_val
+  regionIITransformedModulus := regionIITransformedModulus_eq
+  regionIITransformedModulusPositive := regionIITransformedModulus_pos
+  regionIIRealScalePositive := regionIIRealScale_pos
+  regionIISdSpeedTransport := regionII_sdGammaSq
+  regionIISdTorsionTransport := regionII_sdNuSq
+  regionIIJacobiCurvatureExplicit := regionIIJacobiSquaredCurvature_explicit
+  regionIIJacobiCurvaturePositive := regionIIJacobiSquaredCurvature_pos
+  regionIIJacobiCurvatureDerivative := regionIIJacobiSquaredCurvature_hasDerivAt
+  regionIIJacobiCurvatureInitial := regionIIJacobiSquaredCurvature_zero
+  regionIIJacobiCurvatureInitialVelocity :=
+    regionIIJacobiSquaredCurvatureVelocity_zero
+  regionIIJacobiCurvatureEquation := regionIIJacobiSquaredCurvature_equation
+  regionIIJacobiCurvatureSecondDerivative :=
+    regionIIJacobiSquaredCurvatureVelocity_hasDerivAt
+  regionIIJacobiCurvatureSecondOrderEquation :=
+    regionIIJacobiSquaredCurvature_secondOrderEquation
+  regionIIJacobiAmplitudePositive := regionIIJacobiAmplitude_pos
+  regionIIJacobiAmplitudeSquare := regionIIJacobiAmplitude_sq
+  regionIIJacobiAmplitudeInitial := regionIIJacobiAmplitude_zero
+  regionIIJacobiAmplitudeDerivative := regionIIJacobiAmplitude_hasDerivAt
+  regionIIJacobiAmplitudeSecondDerivative :=
+    regionIIJacobiAmplitudeVelocity_hasDerivAt
+  regionIIJacobiAmplitudeEquation := regionIIJacobiAmplitude_secondOrderEquation
+  regionIIJacobiAmplitudeInitialVelocity := regionIIJacobiAmplitudeVelocity_zero
+  regionIIJacobiAmplitudeInitialAccelerationPositive :=
+    regionIIJacobiAmplitudeAcceleration_zero_pos
+  regionIIJacobiAmplitudeVelocitySquare := regionIIJacobiAmplitudeVelocity_sq
+  regionIIJacobiAmplitudeEnergy := regionIIJacobiAmplitudeEnergy_eq
+  compiledArclengthScalePositive := compiledArclengthScale_pos
+  compiledCurvaturePositive := compiledCurvature_pos
+  compiledCurvatureDerivative := compiledCurvature_hasDerivAt
+  compiledCurvatureSecondDerivative := compiledCurvatureVelocity_hasDerivAt
+  compiledCurvatureEquation := compiledCurvature_equation
+  compiledPhaseDerivative := compiledPhase_hasDerivAt
+  compiledNLSRealBalance := compiled_real_balance
+  compiledNLSImaginaryBalance := compiled_imaginary_balance
+  amplitudeOscillatorNLSSolution := compiledNLS_solves
+  amplitudeOscillatorNLSModulus := compiledPolarProfile_normSq
+  amplitudeOscillatorEnergyDerivative := amplitudeOscillatorEnergy_hasDerivAt_zero
+  amplitudeOscillatorEnergyConservation := amplitudeOscillatorEnergy_const
+  compiledAmplitudeEnergyDerivative := compiledAmplitudeEnergy_hasDerivAt_zero
+  compiledAmplitudeEnergyConservation := compiledAmplitudeEnergy_const
+  regionIAmplitudeEnergyIdentification := regionIAmplitudeOscillatorEnergy_eq
+  regionIAmplitudeEnergyConservation := regionIAmplitudeOscillatorEnergy_const
+  regionIIAmplitudeEnergyIdentification := regionIIAmplitudeOscillatorEnergy_eq
+  regionIIAmplitudeEnergyConservation := regionIIJacobiAmplitudeEnergy_const
+  regionIIAmplitudeEnergyDerivative := regionIIJacobiAmplitudeEnergy_hasDerivAt_zero
+  regionICompilerCurvatureIdentification := regionI_compiledCurvature_eq
+  regionICompilerPhaseIdentification := regionI_compiledPhase_eq
+  regionICompilerProfileIdentification := regionI_compiledPolarProfile_eq
+  regionICompilerSolution := regionI_compiledNLS_solves
+  regionIIGammaPositive := regionIIGamma_pos
+  regionIINuPositive := regionIINu_pos
+  regionIIPhysicalCurvaturePositive := regionIIPhysicalCurvature_pos
+  regionIIPhysicalCurvatureSquare := regionIIPhysicalCurvature_sq
+  regionIIPhysicalCurvatureEquation := regionIIPhysicalCurvature_equation
+  regionIIPhysicalCurvatureInitial := regionIIPhysicalCurvature_zero
+  regionIIPhysicalCurvatureInitialVelocity := regionIIPhysicalCurvatureVelocity_zero
+  regionIIPhysicalCurvatureInitialAccelerationPositive :=
+    regionIIPhysicalCurvatureAcceleration_zero_pos
+  regionIIPhysicalWaveSpeedNonzero := regionIIPhysicalWaveSpeed_ne_zero
+  regionIIJacobiNLSSolution := regionIIJacobiNLS_solves
+  compiledHydroDensityCurvature := compiledTravelingDensity_eq_curvature_sq
+  compiledHydroDensityAmplitude := compiledTravelingDensity_eq_amplitude_sq
+  compiledNLSHydroDensity := compiledNLS_normSq_eq_travelingDensity
+  compiledHydroVelocityPhase := compiledHydroVelocity_eq_phaseSlope
+  compiledHydroMassCurrent := compiledTravelingMassCurrent_eq
+  compiledHydroUnboostedCurrent := compiledUnboostedMassCurrent_eq
+  compiledHydroContinuity := compiledContinuityEquation
+  compiledHydroAcceleration := compiledAccelerationEquation
+  compiledHydroMomentum := compiledMomentumEquation
+  compiledBohmPotential := compiledBohmTerm_eq
+  compiledHydrodynamicPotential := compiledHydrodynamicPotential_eq
+  compiledHydroPhaseTimeDerivative := hasDerivAt_compiledHydroPhase_time
+  compiledHydroPhaseSpaceDerivative := hasDerivAt_compiledHydroPhase_space
+  compiledHydroVelocityPhaseDerivative := compiledHydroVelocity_eq_phaseDerivative
+  compiledHydroPhaseBalance := compiledHydroPhaseEquation
+  regionIIHydroDensityExplicit := regionIIPhysicalDensity_eq
+  regionIINLSHydroDensity := regionIINLS_normSq_eq_density
+  regionIIHydroVelocityPhase := regionIIPhysicalVelocity_eq_phaseSlope
+  regionIIHydroMassCurrent := regionIIPhysicalMassCurrent_eq
+  regionIIHydroUnboostedCurrent := regionIIPhysicalUnboostedCurrent_eq
+  regionIIHydroContinuity := regionIIPhysicalContinuityEquation
+  regionIIHydroAcceleration := regionIIPhysicalAccelerationEquation
+  regionIIHydroMomentum := regionIIPhysicalMomentumEquation
+  regionIIHydroPhaseBalance := regionIIPhysicalHydroPhaseEquation
+  classicalJacobiSdUpperBound := classicalJacobiSd_sq_le
+  classicalJacobiSdPeakCharacterization := classicalJacobiSd_sq_eq_upper_iff
+  regionIIJacobiAmplitudeLowerBound := regionIIJacobiAmplitude_sq_lower
+  regionIIJacobiAmplitudeUpperBound := regionIIJacobiAmplitude_sq_upper
+  regionIIPhysicalCurvatureLowerBound := regionIIPhysicalCurvature_sq_lower
+  regionIIPhysicalCurvatureUpperBound := regionIIPhysicalCurvature_sq_upper
+  regionIIPhysicalDensityLowerBound := regionIIPhysicalDensity_lower
+  regionIIPhysicalDensityUpperBound := regionIIPhysicalDensity_upper
+  regionIIPhysicalPeakValue := regionIIPhysicalCurvature_sq_at_peak
+  regionIIAmplitudeUpperPositive := regionIIAmplitudeUpper_pos
+  regionIIPhaseSlopeLowerBound := regionIICompiledPhaseSlope_lower
+  regionIIPhaseSlopeUpperBound := regionIICompiledPhaseSlope_upper
+  regionIIPhaseSlopePositive := regionIICompiledPhaseSlope_pos
+  regionIIFluidVelocityLowerBound := regionIIPhysicalFluidVelocity_lower
+  regionIIFluidVelocityUpperBound := regionIIPhysicalFluidVelocity_upper
+  regionIIMassCurrentLowerBound := regionIIPhysicalMassCurrent_lower
+  regionIIMassCurrentUpperBound := regionIIPhysicalMassCurrent_upper
+  regionIIFluidVelocityCenterMaximum := regionIIPhysicalFluidVelocity_center_is_max
+  regionIIJacobiAmplitudePeakValue := regionIIJacobiAmplitude_sq_at_peak
+  regionIITravelingPeakCoordinate := regionIITravelingPeak_comovingCoordinate
+  regionIIPhysicalDensityPeakValue := regionIIPhysicalDensity_at_peak
+  regionIIFluidVelocityPeakMinimum := regionIIPhysicalFluidVelocity_at_peak
+  regionIIMassCurrentCenterMinimum := regionIIPhysicalMassCurrent_center_is_min
+  regionIIMassCurrentPeakMaximum := regionIIPhysicalMassCurrent_at_peak
   parameterReconstruction₁ : ∀ P : Parameters,
     P.modulus = (P.q₀ : ℝ) * (3 + gammaSq P) - 1
   parameterReconstruction₂ : ∀ P : Parameters,

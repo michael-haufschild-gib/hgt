@@ -198,3 +198,23 @@ Why the half-plane wins:
 
 Verdict: the Littlewood-weight lever is exhausted (CANNOT-304). Together with CANNOT-300–303 the
 whole mollified-Littlewood family is closed at `0.0714T` up to the mollifier profile.
+
+## 8. The slope law (2026-09-05, last): the swap structure fixes the first-order cost
+
+Young's functional for the mean square of `ζΨ_P` on `Re s = ½ − R/log T`:
+
+    c_P(R) = 1 + (1/θ) E(R) ∫₀¹ (RθP(u) + P'(u))² du,   E(R) = ∫₀¹ e^{2Rv} dv = (e^{2R} − 1)/(2R).
+
+Expanding, `∫(RθP + P')² = ∫P'² + R·θ(P(1)² − P(0)²) + R²θ²∫P²` and `E(R) = 1 + R + …`, so with
+`P(0) = 0`, `P(1) = 1`: `c_P'(0) = (1/θ)(∫P'² + θ) = c_P(0)`. **The slope of `log c_P(−x)` at `0`
+is `1` for every profile** (`youngMeanSquare_slope_law`, Lean). Hence the Levinson first-order
+balance `(1+κ)R/2 − R/2 = κR/2` is universal and the family's optimum is decided by second-order
+terms and by `κ(P)` alone. Structurally, the twisted second moment on the shifted line is
+`A(x) + e^{−2x}B(x)` with `A, B` singular at `x = 0` and equal residues, so the functional-equation
+factor `e^{−2x}` contributes exactly half its slope.
+
+Torus versus flow at the mean square: `E_torus|ζΨ|² = (1/θ)·E|ζ_{≤M}Ψ|²` with
+`E|ζ_{≤M}Ψ_lin|² = 1 + Σ_{n≤M}Λ(n)²/(n log²M) + Σ_{pq>M}(u+v−1)²/(pq) + … = 3/2 + 0.0725 + …`
+(`∫_0^1 s² log s/(1−s) ds = −(ζ(2) − 5/4)`), against the flow's `1 + 1/θ`: torus `≈ 1.6/θ`, flow
+`1 + 1/θ`, equal near `θ = 0.6`. The swap term is negative at the second moment. Recorded as
+CANNOT-305 / F679. The family CANNOT-300–305 is closed.

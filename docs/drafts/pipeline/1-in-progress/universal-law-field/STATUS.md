@@ -80,6 +80,8 @@ F20c — Must test exact deformation beyond first order. In any reduced real nor
 
 F20d — Cannot infer a complex location constraint from all prime-carry identities and preservation of integers alone. The single family `δ_p(z)=(z−z^p)/p` satisfies the nonlinear addition/product carry rules for every prime on all of `ℂ`, maps integers to integers, and reconstructs `z^p+pδ_p(z)=z`. An infinite family of these exact arithmetic identities is therefore still nonselective; this does not exclude additional conditions on an integral completion. Evidence: `HTGeometry.IntegerPrimeCarry.all_prime_carry_laws_on_complex_plane` in `IntegerPrimeCarryComplexExtension`.
 
+F20e — Must distinguish an infinite nonlinear history from its vanishing. In a complete real normed algebra with `‖1‖=1`, bounded real coefficient sums and a vanishing algebra-valued weight with summable successive differences force the chronological exponential product to converge to an invertible limit, without commutation between times (`ordered_exponential_converges_to_unit` in `HTGeometry/NoncommutativeAbelDevelopment`, Lean). Literal integer-deletion coefficients `1−p·1_(p divides n)`, `p≥1`, weighted by `n^(−s)`, satisfy these conditions for every `Re s>0` after any continuous real-linear map into that algebra; their limits respect continuous algebra homomorphisms (`eulerDeletionDevelopment_converges_to_unit`, `map_eulerDeletionDevelopmentLimit`). This constructs each separate exponential history without zero input; no identification with the raw discrete quasi-shuffle lift, cross-modulus coherence, identity limit, or critical-line selection is proved.
+
 F21 — Execution/observation is lax in two independent places. Source histories can fail to splice; a later noninjective observer can create an additional false splice.
 
 F22 — Grammar is graded and reflexive. Repairing one failure can generate next legal failure context. Finite or set-level reflexivity has not generated arithmetic cofinal selection.
@@ -122,138 +124,67 @@ F40 — Reduced rational-Witt descent loses orientation. At the cyclotomic Gamma
 
 F41 — Infinitesimal rigidity is already a receiver. Off-line Xi placement gives a faithful dual-number arc and a formally ramified transverse image; formal unramifiedness of that image is equivalent to critical-line placement. Declaring the tangent direction illegal is circular.
 
-F42 — Complete positivity cannot be the higher law. The physical two-leg first-jet landing is
-complex and orientation-sensitive; replacing it by `L* (.) L` makes a CP channel while deleting
-global phase and the reflection-odd second-Cartier class.
+F42 — Complete positivity cannot be the higher law. The physical two-leg first-jet landing is complex and orientation-sensitive; replacing it by `L* (.) L` makes a CP channel while deleting global phase and the reflection-odd second-Cartier class.
 
-F43 — Formal-group structure explains but does not select. Corpus already proves the multiplicative
-law `F(X,Y)=X+Y+XY`, its logarithmic linearization, the exact inverse relation between forward and
-reflected defects, and the resulting positive curvature for every horizontal grade.
+F43 — Formal-group structure explains but does not select. Corpus already proves the multiplicative law `F(X,Y)=X+Y+XY`, its logarithmic linearization, the exact inverse relation between forward and reflected defects, and the resulting positive curvature for every horizontal grade.
 
-F44 — Ordinary reciprocity conserves displacement. Product formula balances a nonzero archimedean
-logarithm against finite valuations for every real exponent. Torsion Brauer data cannot faithfully
-receive continuous horizontal charge.
+F44 — Ordinary reciprocity conserves displacement. Product formula balances a nonzero archimedean logarithm against finite valuations for every real exponent. Torsion Brauer data cannot faithfully receive continuous horizontal charge.
 
-F45 — The source has ingredients of a cyclotomic law but not the law. It has a genuine nonzero
-K1-style unit cycle `u_p^-1 tensor u_p` in Hochschild-one homology, detected by Kummer and Stokes
-regulators, exact rational-Witt Frobenius/Verschiebung operations, and a strict Xi-resolved landing.
-Corpus does not yet construct an algebraic `K_1` lift whose Dennis trace is this cycle. THH/TC and
-cyclotomic trace occur only as parent machinery in one programme; no number-field cyclotomic
-realization or archimedean Gamma comparison is constructed.
+F45 — The source has ingredients of a cyclotomic law but not the law. It has a genuine nonzero K1-style unit cycle `u_p^-1 tensor u_p` in Hochschild-one homology, detected by Kummer and Stokes regulators, exact rational-Witt Frobenius/Verschiebung operations, and a strict Xi-resolved landing. Corpus does not yet construct an algebraic `K_1` lift whose Dennis trace is this cycle. THH/TC and cyclotomic trace occur only as parent machinery in one programme; no number-field cyclotomic realization or archimedean Gamma comparison is constructed.
 
-F46 — Gamma/EWQ curvature is the product of two first-order comparison defects. For
-`q = exp(a)`, set `D+ = q-1`, `D- = q^-1-1`. Corpus proves
+F46 — Gamma/EWQ curvature is the product of two first-order comparison defects. For `q = exp(a)`, set `D+ = q-1`, `D- = q^-1-1`. Corpus proves
 
 `D+ + D- = -(D+ D-) = 2(cosh(a)-1)`
 
-and identifies this scalar, modulo the two marginals, with the unique EWQ interaction class. This
-is exactly the algebraic shape of a second cross-effect of a failed equalizer.
+and identifies this scalar, modulo the two marginals, with the unique EWQ interaction class. This is exactly the algebraic shape of a second cross-effect of a failed equalizer.
 
-F47 — Plain cyclotomic equalization fails its own collision test. Gamma cover composition at
-`p=2,3` is coherent for every grade; finite rational-Witt orbit traces are Frobenius fixed while
-the signed orientation is erased. A coefficient-faithful `TC^- -> TP -> Gamma` comparison would
-have to restore precisely the existing scale-zero/rational-Cartier producer. Standard p-typical
-`TC` does not make that restoration automatic.
+F47 — Plain cyclotomic equalization fails its own collision test. Gamma cover composition at `p=2,3` is coherent for every grade; finite rational-Witt orbit traces are Frobenius fixed while the signed orientation is erased. A coefficient-faithful `TC^- -> TP -> Gamma` comparison would have to restore precisely the existing scale-zero/rational-Cartier producer. Standard p-typical `TC` does not make that restoration automatic.
 
-F48 — Stabilization/additivity also erases the needed defect. Corpus proves the physical
-degree-one product trace does not descend through ordinary Hochschild boundaries. A localizing or
-1-excisive invariant can kill the nonlinear cross-effect, but cannot then recover Gamma/EWQ
-curvature coefficient-faithfully.
+F48 — Stabilization/additivity also erases the needed defect. Corpus proves the physical degree-one product trace does not descend through ordinary Hochschild boundaries. A localizing or 1-excisive invariant can kill the nonlinear cross-effect, but cannot then recover Gamma/EWQ curvature coefficient-faithfully.
 
-F49 — Every Xi divisor has a canonical transverse algebra map from dual numbers into the summable
-Hadamard corona. Its image is scalar on the line and is an embedded dual-number algebra off the
-line. FE reflection acts on the framed arc by `eps -> -eps`; forgetting the frame makes direct and
-reflected image algebras identical at every grade.
+F49 — Every Xi divisor has a canonical transverse algebra map from dual numbers into the summable Hadamard corona. Its image is scalar on the line and is an embedded dual-number algebra off the line. FE reflection acts on the framed arc by `eps -> -eps`; forgetting the frame makes direct and reflected image algebras identical at every grade.
 
-F50 — Corpus already contains the relevant formation Hopf source. The packet generator `t` is
-group-like. The monoid bialgebra `k[t]` has no antipode; its Laurent group completion
-`k[t,t^-1]` is a Hopf algebra with `S(t)=t^-1`. This is the exact algebraic shape needed to combine
-formation, splitting, and FE reflection.
+F50 — Corpus already contains the relevant formation Hopf source. The packet generator `t` is group-like. The monoid bialgebra `k[t]` has no antipode; its Laurent group completion `k[t,t^-1]` is a Hopf algebra with `S(t)=t^-1`. This is the exact algebraic shape needed to combine formation, splitting, and FE reflection.
 
-F51 — Existing common recovery proves action-level naturality only: FE lifts through formation and
-is information-neutral. Corpus search found no theorem saying the Xi occurrence kernel is stable
-under packet splitting/comultiplication. This distinction is the new frontier.
+F51 — Existing common recovery proves action-level naturality only: FE lifts through formation and is information-neutral. Corpus search found no theorem saying the Xi occurrence kernel is stable under packet splitting/comultiplication. This distinction is the new frontier.
 
-F52 — Formation-congruence leakage is already formalized. `RouteRExternalTensorMonodromy` proves
-group-like formation equals primitive formation plus external tensor curvature, curvature survives
-exactly off wall, diagonal multiplication erases it, and source equality of the two formations is
-the unproved RH-strength operation. A coideal-kernel formulation is the same endpoint.
+F52 — Formation-congruence leakage is already formalized. `RouteRExternalTensorMonodromy` proves group-like formation equals primitive formation plus external tensor curvature, curvature survives exactly off wall, diagonal multiplication erases it, and source equality of the two formations is the unproved RH-strength operation. A coideal-kernel formulation is the same endpoint.
 
-F53 — Every current drift/recurrence model is generated on cyclic, abelian, amenable, or freely
-fitted symmetry. Those symmetries admit unbounded one-cocycles. Existing scale--Mautner theory
-shows pure-point recurrence erases formation and compact-resolvent same-fibre dilation is
-impossible, but cross-fibre histories still escape.
+F53 — Every current drift/recurrence model is generated on cyclic, abelian, amenable, or freely fitted symmetry. Those symmetries admit unbounded one-cocycles. Existing scale--Mautner theory shows pure-point recurrence erases formation and compact-resolvent same-fibre dilation is impossible, but cross-fibre histories still escape.
 
-F54 — Corpus has unused higher-rank source grammar: rank-three Steinberg and elementary groups,
-perfectness, finite generation over finitely generated rings, torus words `h(u)`, exact torus
-conjugation weights, Weyl inversion, and explicit central `K_2` relation defects.
+F54 — Corpus has unused higher-rank source grammar: rank-three Steinberg and elementary groups, perfectness, finite generation over finitely generated rings, torus words `h(u)`, exact torus conjugation weights, Weyl inversion, and explicit central `K_2` relation defects.
 
-F55 — Corpus has no Kazhdan property-(T), fixed-point-(FH), or higher-rank affine-cocycle
-realization. It also proves the Gamma-six oriented normal is not Steinberg/Milnor incidence, so a
-valid higher-rank law must extend its action as cocycle data rather than falsely making it a
-Steinberg boundary.
+F55 — Corpus has no Kazhdan property-(T), fixed-point-(FH), or higher-rank affine-cocycle realization. It also proves the Gamma-six oriented normal is not Steinberg/Milnor incidence, so a valid higher-rank law must extend its action as cocycle data rather than falsely making it a Steinberg boundary.
 
-F56 — Kazhdan extension is dead. Physical half-density transport is nonunitary, the Gamma normal
-lies outside the Steinberg ideal, and extending a cyclic current to a rigid group is unconstrained
-law insertion. Property (T) would only kill a cocycle after the RH-strength extension existed.
+F56 — Kazhdan extension is dead. Physical half-density transport is nonunitary, the Gamma normal lies outside the Steinberg ideal, and extending a cyclic current to a rigid group is unconstrained law insertion. Property (T) would only kill a cocycle after the RH-strength extension existed.
 
-F57 — Path coherence is dead. The Gamma cover composes coherently at every grade, including
-off-line grades. FE-compatible parallel transport does not imply criticality.
+F57 — Path coherence is dead. The Gamma cover composes coherently at every grade, including off-line grades. FE-compatible parallel transport does not imply criticality.
 
-F58 — Compact/filtration lowering is already generic corpus infrastructure. The source-normal
-depth-lowering admission and compact aggregate needed at Xi fibres are RH-equivalent endpoints;
-renaming them properness or quasinilpotence adds no mechanism.
+F58 — Compact/filtration lowering is already generic corpus infrastructure. The source-normal depth-lowering admission and compact aggregate needed at Xi fibres are RH-equivalent endpoints; renaming them properness or quasinilpotence adds no mechanism.
 
-F59 — Raw cubic source channel is not summable; only a renormalized correction is. Therefore no
-global trace law may silently assign nuclearity to every source-generated interaction.
+F59 — Raw cubic source channel is not summable; only a renormalized correction is. Therefore no global trace law may silently assign nuclearity to every source-generated interaction.
 
-F60 — Linear source-reversal defect is mixed-cobar exact even off line, while its quadratic mate
-curvature survives. Exactification moves information to higher interaction order; it does not
-annihilate it.
+F60 — Linear source-reversal defect is mixed-cobar exact even off line, while its quadratic mate curvature survives. Exactification moves information to higher interaction order; it does not annihilate it.
 
-F61 — Gamma-six forward/reflected defects form an odd visible law `D(a)` with
-`D(a)^2 = -K(a) I`, `K(a) >= 0`, and `K(a)=0 <-> a=0`. For `a != 0` this curved law has an explicit
-contracting homotopy. Thus ordinary cohomology/Hodge contraction accepts exactly the wrong sector.
+F61 — Gamma-six forward/reflected defects form an odd visible law `D(a)` with `D(a)^2 = -K(a) I`, `K(a) >= 0`, and `K(a)=0 <-> a=0`. For `a != 0` this curved law has an explicit contracting homotopy. Thus ordinary cohomology/Hodge contraction accepts exactly the wrong sector.
 
-F62 — Bare `L_infinity`, Maurer--Cartan, Cartan contraction, Gauss--Codazzi, cofinal filtration,
-and obstruction-degree lowering already exist in Lean. Rephrasing corpus in any of these languages
-is not a conjecture.
+F62 — Bare `L_infinity`, Maurer--Cartan, Cartan contraction, Gauss--Codazzi, cofinal filtration, and obstruction-degree lowering already exist in Lean. Rephrasing corpus in any of these languages is not a conjecture.
 
-F63 — A flat total block law can hide nonzero observed curvature as a product of two complementary
-couplings. Existing Gauss--Codazzi proves this abstractly. Hence `total law squares to zero` alone
-does not select; it permits curvature leakage.
+F63 — A flat total block law can hide nonzero observed curvature as a product of two complementary couplings. Existing Gauss--Codazzi proves this abstractly. Hence `total law squares to zero` alone does not select; it permits curvature leakage.
 
-F64 — Completion phantom, source tail, divisor current, and nearby-cycle defect carry the same
-off-line Noether charge. This classifies survival after completion; it does not force vanishing.
+F64 — Completion phantom, source tail, divisor current, and nearby-cycle defect carry the same off-line Noether charge. This classifies survival after completion; it does not force vanishing.
 
-F65 — Cross-route fusion is not the missing theorem. Corpus already proves that one signed
-source-history defect is exactly normalized compact-theta Green flux, inverse-Cayley Gamma-frame
-skew, logarithmic duality--dagger curvature, shell-transfer entropy, and multiplicity-weighted
-affine Xi residue (`XiHistoryThetaGammaAmbidexterityTransgression`,
-`XiSourceHistoryResidueTransgression`, `XiDualityDaggerHistoryTransgression`).
+F65 — Cross-route fusion is not the missing theorem. Corpus already proves that one signed source-history defect is exactly normalized compact-theta Green flux, inverse-Cayley Gamma-frame skew, logarithmic duality--dagger curvature, shell-transfer entropy, and multiplicity-weighted affine Xi residue (`XiHistoryThetaGammaAmbidexterityTransgression`, `XiSourceHistoryResidueTransgression`, `XiDualityDaggerHistoryTransgression`).
 
-F66 — The fused defect has explicit exchange rates. If `a = 2 Re(s)-1`, its coordinates include
-`a`, `m a`, `log(p) a`, `exp(±log(p)a)`, a quadratic formation cost proportional to `a²`, and a
-positive entropy-production coordinate. These are nonlinear presentations of one anomaly, not
-independent constraints on it.
+F66 — The fused defect has explicit exchange rates. If `a = 2 Re(s)-1`, its coordinates include `a`, `m a`, `log(p) a`, `exp(±log(p)a)`, a quadratic formation cost proportional to `a²`, and a positive entropy-production coordinate. These are nonlinear presentations of one anomaly, not independent constraints on it.
 
-F67 — Existing positive proofs mostly reconstruct or conserve the anomaly. Existing no-gos mostly
-show that hiding it forces payment in rank, conditioning, sign variation, singular domain,
-interaction order, provenance loss, or open history. The corpus therefore distinguishes an
-intrinsic signed anomaly from the multi-resource debt created by attempts to suppress it.
+F67 — Existing positive proofs mostly reconstruct or conserve the anomaly. Existing no-gos mostly show that hiding it forces payment in rank, conditioning, sign variation, singular domain, interaction order, provenance loss, or open history. The corpus therefore distinguishes an intrinsic signed anomaly from the multi-resource debt created by attempts to suppress it.
 
-F68 — Resource currencies cannot yet be collapsed to one scalar. Exact lower bounds are proved in
-different categories, and corpus has no universal exchange theorem converting rank growth,
-condition-number growth, noncompact Calkin class, negative capacity, sign variation, singularity,
-and horizon escape into one another.
+F68 — Resource currencies cannot yet be collapsed to one scalar. Exact lower bounds are proved in different categories, and corpus has no universal exchange theorem converting rank growth, condition-number growth, noncompact Calkin class, negative capacity, sign variation, singularity, and horizon escape into one another.
 
-F69 — A cost is evidence only when fixed before choosing a repair. Every repair selector is the
-unique minimizer of a manufactured positive cost (`ConstitutiveRepairTorsorSelectorNoGo`), so an
-optimized correction proves nothing unless both cost and admissible class are source-generated.
+F69 — A cost is evidence only when fixed before choosing a repair. Every repair selector is the unique minimizer of a manufactured positive cost (`ConstitutiveRepairTorsorSelectorNoGo`), so an optimized correction proves nothing unless both cost and admissible class are source-generated.
 
-F70 — Algebraic existence and executable control are different layers. A two-prime Bezout identity
-can exist while every bounded synthesis fails (`HedenmalmTwoPrimeBezoutGrowthNoGo`); exact finite
-formation does not imply a bounded, continuous, or cofinal execution.
+F70 — Algebraic existence and executable control are different layers. A two-prime Bezout identity can exist while every bounded synthesis fails (`HedenmalmTwoPrimeBezoutGrowthNoGo`); exact finite formation does not imply a bounded, continuous, or cofinal execution.
 
 F71 — Almost-everywhere topology is too coarse for divisor semantics. An isolated resonance can be
 changed pointwise without changing its `L²` class, while Hardy/RKHS or distributional structure
@@ -5001,7 +4932,7 @@ F675 — [Lean] Zero density at scale `Δ` on any abscissa `1/4 ≤ σ₀ < 2` (
 
 F679 — [Lean] Two zero-marginal arithmetic sources can leave a nonzero interaction under multiplication-fibre stabilization. The literal dyadic–triadic deletion grid has every row and column sum `0`; its source-retaining odometer records one opposite-sign unit cancellation in the product-`2` fibre, while collapsing `(m,n)` by `mn` changes squared integer mass from `12` to `10`, leaving exact defect `2` (`coprimeBlockMultiplicationFiber_closed`).
 CANNOT-304 — An origin-labelled block moment is not intrinsic arithmetic orientation. For the literal `2×3` pointwise deletion carrier, cyclic origin change alters the integer first moment, while the apparent orientation charge is `0` in `ZMod 6` (`coprimeBlockMomentOrientation_noGo`). Do not use such moments or their Möbius–Laplace derivative analogue as selectors.
-CANNOT-305 — Multiplication-fibre cancellation of Euler-deletion grids is not an independent producer. Its retained count is the generic Jordan overlap `min(positive mass, negative mass)` already formalized by finite signed-quotient/reserve/odometer machinery, while the proposed cofinal scalar count factors through a Dirichlet polynomial times `ζ²`. Keep the exact `2×3` certificate as finite source behavior; retire the architecture.
+CBMF-002 — [Lean] Cannot infer a new arithmetic constraint merely by recording how many opposite-sign pairs were cancelled. Such a record can be reconstructed from familiar coefficients even when the residual signed value is zero. For the literal dyadic–triadic source, every fixed multiplication fibre stabilizes, and its full cancellation count equals eight explicit shifted divisor counts; the corresponding Dirichlet series is a fixed polynomial times `ζ²`. The coefficient classification and stabilization are closed in `RHTower.CoprimeFiberStabilization.coprimeFiberStabilization_closed`; proof and precise scope: `3-formalized/coprime-fibre-stabilization-collapse.md`. This retires the specified count, not every possible labelled-history construction.
 
 CANNOT-301 — The peeling identity `E_z log|A + zB| = log max(|A|,|B|)` (corpus: `circleAverage_log_norm_const_add_mul`) cannot be transported from the Steinhaus torus to the flow `t ↦ (p^{-it})_p` for a mollifier `Ψ_{T^θ}`: transport would freeze the cofactors `A_p, B_p` while `p^{-it}` completes a period, but their spectra reach `log M ≥ log p` for every prime `p | n ≤ M` (no separation of scales), and the distributional transfer at length `T^θ` reaches only moments of order `< 1/θ` (the Montgomery–Vaughan diagonal range); beyond it the flow carries the swap terms (`c₄(θ)`), and the resonant modes `n/(n+1)` with `n ≤ T` smooth have positive density `ρ(1/θ)`. A uniform torus law for `log|Ψ_{T^θ}|` is a Steinhaus transfer of a log-mean at length `T^θ`, the same kind of statement as `(L)` (transfer for `log|ζ|` at length `T`). MUST-211 was misdiagnosed: the lower torus law is free up to `J_M` (`exists_edPoly_line_logMean_floor` is `T`-free), the upper one is not needed, and the `(L)`-productive statement is the mollified upper bound `ℓ_{ζΨ_{T^θ}}/T ≤ o(1)`, which equals `(L)` plus `RZM_flow(Ψ_{T^θ}) = o(T)` — strictly stronger than `(L)`. Verdict on the route: BRIDGE between two transfer statements; positive survivors F676, F677.
 
@@ -5025,4 +4956,30 @@ F680 — [Lean] A full modulus-`P` Euler-deletion jump block `(1,…,1,1−P)` c
 CANNOT-306 — Vanishing scalar endpoint does not identify higher path signatures or brackets. A zeta zero makes every Euler-deletion level-one endpoint vanish, but closed paths may retain arbitrary nontrivial higher signature; treating closure alone as refinement coherence assumes the missing producer.
 MUST-215 — A deletion-signature producer must construct cutoff-independent chronological refinement maps from the all-modulus integer deletion system and prove that zero-valued level-one endpoints force replication–Euler-dilation coherence for a nonzero bracket. This coherence must be derived before exponent comparison and without a zero-dependent renormalization, functional equation, reflection, Gamma/theta/spectral input, Möbius inversion, or Weil positivity.
 
+## 2026-09-05 — Euler-deletion zero landing and second shadow (EDQS-002)
+
+F681 — [Lean] Every positive-real-part zeta zero closes every modulus Euler-deletion Dirichlet path under ordinary chronological cutoffs. The proof uses bounded periodic coefficient sums, exact finite dilation, and pole-cleared analytic uniqueness; it needs no functional equation, reflection, or completed zeta (`eulerDeletionDirichletSum_eq_zero_of_riemannZeta_eq_zero`).
+F682 — [Lean] At any hypothetical zeta zero with `Re rho > 1/2`, every nontrivial Euler-deletion path has finite positive diagonal energy and a canonical real chronological second shadow equal to exactly `-energy/2`, hence strictly negative (`eulerDeletionQuadraticEnergy_pos`, `tendsto_re_chronologicalSecondPrefix_eulerDeletion_of_zeta_zero`).
+F683 — [Lean] At the same hypothetical zero, the full complex chronological self level and every ordered cross-modulus level converge absolutely under ordinary cutoffs. The self limit is nonzero, and all cross limits obey `H(P,Q)+conjugate(H(Q,P))+E(P,Q)=0` (`eulerDeletionChronologicalSecondLimit_ne_zero`, `eulerDeletionCrossLimits_quasiShuffle_zero`).
+F684 — [Lean] Every nonempty finite product of pairwise-coprime deletion channels is the alternating sum `prod_(P∈B)a_P = sum_(empty≠S⊆B)(-1)^(|S|+1)a_(prod S)`. Therefore every positive-half-plane zeta zero closes every such cylinder path under one common chronological cutoff (`prod_blockDeletionCoefficient_eq_alternating`, `tendsto_eulerDeletionCylinder_prefix_of_zeta_zero`).
+EDQS-DOMAIN-001 — [Lean] Cannot use existence of an auxiliary ordered sum to isolate a zero when the sum already exists throughout an open region. For the explicit coefficients `a_P(n)=1-P[P divides n]`, the complex sum over `m<n` of `a_P(m)m^(-s)` times the conjugate of `a_Q(n)n^(-t)` converges under chronological cutoffs whenever both real parts are positive and their sum exceeds one, with no zero assumption. Thus existence of its self limit for `Re(s)>1/2` adds no restriction on zero location (`tendsto_chronologicalCrossPrefix_eulerDeletion_domain`, `tendsto_chronologicalSecondPrefix_eulerDeletion_domain`).
+EDQS-ORDER-001 — [Lean] Must retain the changed ordering boundary when replacing integer indices by multiples. The strict condition `m<n` becomes `pm<qn`, with inner cutoff `floor((qn-1)/p)`. Deleting multiples in both coordinates gives four exact contributions, including the term where both coordinates are dilated. Their complete expression equals the original ordered sum for arbitrary inputs; the identity imposes no additional zero-specific condition. Its grouped limit can exist without separate limits of the four contributions (`ordered_deletion_eq_wedges`, `ordered_hermitian_deletion_eq_wedges`, `hermitianDilationCombination_converges`).
+CANNOT-307 — Level-one closure and formal commutation of scalar deletion operators cannot determine depth-two coherence. Closed paths with the same zero endpoint can have distinct chronological second levels, while fully expanding a pointwise commuting deletion square yields only a tautology (`closed_endpoint_does_not_determine_chronologicalSecond`).
+CANNOT-308 — [numerical, pod 2026-09-05; not Lean] Raw self-area and raw cross-modulus carry are neither universally zero nor sign-definite at the first 12 known zeros for moduli `2,3,5,7`; both signs occur, and no cross logarithmic drift appeared through cutoff `2,000,000`. They cannot serve as a bare positivity/vanishing producer.
+CANNOT-309 — Comparing two analytic continuations of one ordered deletion sum cannot produce zero-specific rigidity: agreement on a common absolute-convergence region forces agreement throughout any connected continuation domain. A floor/lattice-wedge reindexing identity is then an identity for every exponent, not an RH selector.
+CANNOT-310 — Order-dependent intermediate reset-and-carry states do not suffice when all higher source differences are already flat. If iterated differences depend only on the final winning face, changing prime order supplies no holonomy (`iteratedPrimeDifference_tropicalShellIndicator`).
+F685 — [Lean] The finite deletion cylinders are only squarefree multilinear, not a pointwise algebra: `a_P²=(P−1)+(2−P)a_P`; in particular `a_2²=1`, and the first `N` dyadic square coefficients sum to exactly `N` (`blockDeletionCoefficient_sq_eq`, `sum_blockDeletionCoefficient_two_sq`). Repeating a generator destroys bounded-prefix cancellation.
+CANNOT-311 — Ordinary chronological deletion channels cannot form a unital pointwise algebra inside the bounded-prefix Abel class. Repeated generators introduce the constant stream; importing that stream through analytic continuation would move zeta continuation into the source and cannot supply source-first refinement coherence.
+MUST-216 — A deletion-signature producer must derive replication–dilation coherence from F684's finite squarefree multilinear identities before analytic continuation, without requiring a repeated generator. It must define source-fixed cofinal signature refinement and prove a non-tautological higher relation; endpoints, flat commuting differences, continuation uniqueness, and analytic admission of the constant channel cannot provide that relation.
+
 CANNOT-304 — No Littlewood weight beats the Levinson shift. Every weighted Littlewood identity for `log|ζΨ|` on the critical line is Green's identity `∫_line log|F| = (1/2π)∫_{∂Ω} log|F| β − Σ_{ρ∈Ω} φ_Ω(ρ)` with `φ_Ω` the Green potential of the line measure in a domain `Ω ⊇ line` and `β` its balayage onto `∂Ω`; the shift is the right half-plane (`φ̂ = 2πR`, `β` on `σ₀`), the disc method is the chord potential, the strip `{−R < x < R'}` gives `φ̂ = 2πRR'/(R+R')`. With the unconditional inputs (mean squares `c(x)` on lines `½ + x/log T`, on-line proportion `κ`, the `ρ ↔ 1−ρ̄` symmetry), the bound is `(1/4π)[log E_β c − credit]` and: (i) only translation-invariant `Ω` give every zero the same credit (else only `min_t φ` is usable); (ii) only right-unbounded `Ω` credit the off-line pairs (right member capped at `φ̂`), while for bounded symmetric `Ω` the pair credit decreases with the offset and, if kept, cancels the off-line mass identically (a consistency inequality `log E_β c ≥ φ̂/π`, no bound); (iii) the left half-plane is excluded since the far-left boundary term of Green's identity carries the functional-equation growth; (iv) `log c(−x) = log c₀ + x + c₂x² + …` with slope exactly `1` and `c₂ = 0.426` (`θ = 4/7`), so the half-plane's net is `κR/2 − c₂R²/2` while the symmetric strip's is `κρ/2 − (c₂ + ½)ρ²/2` — same first order, the convexity of `e^{−x}` doubles the second-order cost. Numbers (`θ = 4/7`, `κ = 0.4`, fixed coefficients): Jensen `0.0805T`; half-plane `0.0732T` (`R = 0.46`; `0.0714T` with the σ₀-renormalised mollifier); symmetric strip `0.0771T` (`ρ = 0.22`); asymmetric strip `0.0770T` (`R = 0.20, R' = 0.25`); disc `0.0783T` (`a = 0.30`). Zero-density bounds cannot credit off-line zeros in bounded domains (`p_T(s) = 1` for `s < 0.449`). The Littlewood-weight lever is exhausted: the corpus constant `0.0714T` is optimal in this family up to the mollifier profile (Conrey's `P, Q`) and renormalisation.
+
+F679 — [Lean] The slope law of the Levinson mean square (`LevinsonMeanSquareSlopeLaw.lean`, `youngMeanSquare_slope_law`): for Young's functional `c_P(R) = 1 + (1/θ)·E(R)·∫₀¹(RθP + P')²`, `E(R) = ∫₀¹e^{2Rv}dv`, and every `C¹` profile with `P(0) = 0`, `P(1) = 1`: `c_P'(0) = c_P(0)`. Ingredients: `E(R) = (e^{2R}−1)/(2R)` (`youngE_eq`), `E'(0) = 1` from the third-order exponential bound (`hasDerivAt_youngE_zero`), the mollifier integral is the quadratic `∫P'² + R·2θ∫PP' + R²θ²∫P²` (`integral_shiftedProfile_sq`), and `∫₀¹2θPP' = θ(P(1)² − P(0)²) = θ` (`integral_two_theta_mul_profile_deriv`). So the left-shifted mean square grows at first order exactly like `e^{R}` for every mollifier, and the Levinson net gain `(1+κ)R/2 − R/2 = κR/2` is universal.
+
+CANNOT-305 — The swap terms cannot reopen the mollified-Littlewood family through the slope: `d/dR log c_P(R)|₀ = 1` for every profile (F679), structurally because the twisted second moment is `A(x) + e^{−2x}B(x)` with the two singular terms sharing the functional-equation factor evenly at zero shift. Correction to the earlier "flow = torus at the mean square": the Steinhaus mean square of the linear-mollified product is `(1/θ)(3/2 + ½∫∫_{u+v>1}(u+v−1)²/(uv) + …) = (1/θ)(1.5725 + …)` against the flow's `1 + 1/θ`; they cross near `θ = 0.6`, so at `θ = 4/7` they nearly coincide (`2.8` vs `2.75`) and for smaller `θ` the torus overestimates — the swap term is negative at second-moment level. With CANNOT-300–304 the family is closed at `0.0714T` up to the profile optimisation; no further cycle should be spent inside it.
+
+F680 — [Lean] The single-input explicit `(L)` constant (`SingleInputOffLineMomentConstant.lean`, `eventually_offLineMoment_le_of_gates`): from the two mollified mean-square gates on the same Levinson abscissa `σ₀ = ½ − R/log T` — `ZetaMollifiedMeanSquareGate R c₁` (mean square of `ζΨ` eventually `≤ (c₁+ε)(T₂−T₁)`) and the corpus `LevinsonMeanSquareGate R c₂` (mean square of `(ζ+λζ')Ψ`) — and any target `κ₀ + 2δ < 1 − log c₂/R`: for every `η > 0`, eventually `4π·Σ_{Im ρ ≤ V} m_ρ(Re ρ − ½) ≤ (log c₁ − (1+κ₀)R + η)·V`; letting `κ₀ → 1 − log c₂/R` the density of the off-line first moment is at most `(log c₁ + log c₂ − 2R)/(4π)`. Bricks: the census bridges (`OffLineMomentCensusBridge`: `2·Right = N + N₀` from `window_identity`, `xiOddFiberCount ≤ N₀`, window comparisons of the ceiling's zero finset with the census), Levinson's proportion at an arbitrary target (`LevinsonOddFiberDensityGeneral`, `eventually_oddFiber_ge_of_gate_general`: the corpus density proof with `1/3` freed; the only bound used is `κ₀ + δ ≤ 1`, slack `η ≤ 1/40`), the credited line-count ceiling, Riemann–von Mangoldt, and one window arithmetic lemma (`offLineMoment_window_arith`). Both external inputs are now instances of one theorem type — the twisted mollified mean square on the Levinson line (MUST-212 sharpened: `c₁ = c(P, 1, R, θ)`, `c₂ = c(P, Q, R, θ)` with Levinson's `Q`). With the paper values `R = 0.6`, `log c₁ = 1.735`, `log c₂ = 0.36`: `0.0712T`, the corpus constant.
+
+F681 — [Lean] Item 7 of the mollified mean-square programme is closed as bookkeeping (`LevinsonGateFromDyadicMeanSquare.lean`, `levinsonReciprocalLogMeanSquareGate_of_dyadicLaw`): the exact interface the analytic lane must deliver is `DyadicDetectorMeanSquareLaw R c` — for every `ε > 0` and all large `U`, a mollifier of the gate's class and, for every `σ₀ = ½ − R/log T` with `T ∈ [U−1, U]` and every dyadic block `[a, v] ⊆ [20, U]` (`a ≤ v ≤ 2a`), `∫_a^v ‖(ζ + λζ')Ψ(σ₀+it)‖² ≤ (c+ε)(v−a) + ε(a + U/log U)` with `λ = 1/log U`. From it: zero-free edges `T₁ ∈ (20,21)`, `T₂ ∈ (U−1,U)` via `exists_horizontal_slices_avoiding_entire_zeros` on the entire detector times the mollifier; the dyadic decomposition `[T₁2^k, T₁2^{k+1}]` plus a partial last block (`Nat.find`, `sum_integral_adjacent_intervals`); `Σ_k T₁2^k ≤ 2T₂`, at most `3 log U` blocks, and `U ≤ 2(T₂−T₁)`, giving `(c + 11ε/13)(T₂−T₁)`. With F680 the whole chain from the dyadic law to the single-input `(L)` constant and the two cards' densities is Lean; the dyadic law is the single remaining analytic input (Conrey/Levinson twisted mean square on blocks).
+
+F682 — [Lean] The `λ = 0` twin and the low blocks (`ZetaGateFromDyadicMeanSquare.lean`, `DyadicLawLowBlocks.lean`): `zetaMollifiedMeanSquareGate_of_dyadicLaw` turns `ZetaDyadicMeanSquareLaw R c` (the same per-block law for `‖ζΨ(σ₀+it)‖²`) into the `ζΨ` gate of F680, so the single-input `(L)` constant now rests on the two dyadic laws (`λ = 0` and `λ = 1/log U`) and nothing else; `integral_normSq_mollifiedDetector_low_block_le` bounds any block `[a, v] ⊆ [20, 2T₀]` by `(v−a)(C(T₀)·N)²` with `C(T₀)` the detector's bound on `[¼,½] × [20, 2T₀]` (`exists_detector_bound_low`) and `‖Ψ‖ ≤ N` (`norm_edPoly_le_card`), so with `N = U^θ`, `θ < ½`, every block below a fixed height is covered by the law's slack `ε U/log U` alone: the analytic input is needed only on blocks `[a, 2a]` with `a ≥ T₀(ε)`.

@@ -133,7 +133,12 @@ theorem coprimeDeletionProductFiberTotalCancellation_eq_one :
   rw [coprimeDeletionProductFiberTotalCancellation]
   simp_rw [coprimeDeletionProductFiberCancellation_eq_expected]
   norm_num [coprimeDeletionProductFiberCancellationExpected, Fin.sum_univ_succ]
-  all_goals decide
+  all_goals
+    have htwo : ({k | (k : ℕ) = 2} : Finset (Fin 7)) = {⟨2, by omega⟩} := by
+      ext k
+      fin_cases k <;> simp
+    rw [htwo]
+    simp
 
 /-- Exact pre-collapse square mass. -/
 theorem coprimeDeletionGridSquareMass_eq_twelve :

@@ -133,6 +133,15 @@ theorem endpoint_normSq_eq_quadraticBracket_add_second (xs : List ℂ) :
       simp [chronologicalQuadraticBracket, chronologicalHermitianSecond]
       ring
 
+/-- Equal closed endpoints do not determine the chronological second level. -/
+theorem closed_endpoint_does_not_determine_chronologicalSecond :
+    ∃ xs ys : List ℂ,
+      xs.sum = ys.sum ∧
+      chronologicalHermitianSecond xs ≠ chronologicalHermitianSecond ys := by
+  refine ⟨[1, -1], [2, -2], ?_, ?_⟩
+  · norm_num
+  · norm_num [chronologicalHermitianSecond]
+
 /-- Concatenation law, including the exact cross-endpoint term. -/
 theorem chronologicalHermitianSecond_append (xs ys : List ℂ) :
     chronologicalHermitianSecond (xs ++ ys) =

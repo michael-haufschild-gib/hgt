@@ -3477,3 +3477,64 @@ multiplicative.  So `G_1 = ∑_b b Λ(b) ∑_a φ(a) S(ab)²` — a prime-power-
 
 **That single family is the whole of what remains of gate item 3.**  Items 6 (block freezing of the
 moving AFE cutoff) and 7 (assembly into `LevinsonMeanSquareGate`) are unchanged.
+
+## Brick 7g — item 7 closed as bookkeeping; the dyadic law is the interface (2026-09-05, session B)
+
+`RHTower/LevinsonGateFromDyadicMeanSquare.lean` (axiom-clean, wired, exact leaf build):
+
+* **`DyadicDetectorMeanSquareLaw R c`** — for every `ε > 0` and all large `U`: a mollifier
+  `(b, N, Mb)` of the gate's class with `log Mb ≤ 5 log(U−1)`, and for every abscissa
+  `σ₀ ∈ [¼, ½)` with `(½−σ₀) log(U−1) ≤ R ≤ (½−σ₀) log U` and every dyadic block `[a, v]`,
+  `20 ≤ a ≤ v ≤ min(2a, U)`:
+
+  ```text
+  ∫_a^v ‖levinsonMollifiedDetector (1/log U) b (Icc 1 N) (σ₀ + it)‖² dt
+      ≤ (c + ε)(v − a) + ε (a + U/log U).
+  ```
+
+* **`levinsonReciprocalLogMeanSquareGate_of_dyadicLaw`** — `0 < R → DyadicDetectorMeanSquareLaw R c
+  → LevinsonReciprocalLogMeanSquareGate R c`.  Window selection: the entire product
+  `levinsonGEntire(λ)·Ψ` is nonzero at `15/2` (`levinsonGEntire_ne_zero_of_four_le`,
+  `norm_edPoly_sub_one_le_half_of_six_le`), so `exists_horizontal_slices_avoiding_entire_zeros`
+  gives `T₁ ∈ (20,21)`, `T₂ ∈ (U−1,U)` with both edge conditions over `[¼, 15/2]`.  Abscissa
+  `σ₀ = ½ − R/log T₂` (`¼ ≤ σ₀` from `U ≥ e^{4R}+1`).  Blocks `A k = T₁ 2^k`, `K = Nat.find`
+  of `T₂ < A (K+1)`; `∫_{T₁}^{T₂} = Σ_{k<K} ∫_{A k}^{A(k+1)} + ∫_{A K}^{T₂}`; the slack sums to
+  `ε(Σ_{k≤K} A k + (K+1) U/log U) ≤ ε(2U + 3U)` (`2^K ≤ U/20` gives `K ≤ 2 log U`), and
+  `U ≤ 2(T₂−T₁)` turns it into `(c + 11ε/13)(T₂ − T₁)`.
+
+**Consequence.** Everything downstream of the dyadic law is now Lean: the gate, the general-`κ₀`
+proportion (`eventually_oddFiber_ge_of_gate_general`), the two card densities
+(`LevinsonProportionGate`), and the single-input `(L)` constant
+(`eventually_offLineMoment_le_of_gates`, F680).  What remains of the programme is exactly the
+dyadic law, i.e. items 2–6 assembled on one block: the direct×direct mean value, the frozen
+reflected head with the `χ`-weight, the cross term, the approximation and pole remainders, and
+the coefficient-energy limits — with the additive slack `ε(a + U/log U)` absorbing every
+`o(a)` and every `o(U/log U)` per block (blocks below any fixed height `T₀(ε)` are covered by
+the slack alone, since `a·N² ≪ U/log U` for `N = U^θ`, `θ < ½`).
+
+Session B works only in new modules downstream of the gate; the `SmoothAFEZeta*`/`Sieve` lane is
+untouched.
+
+## Brick 7h — the `ζΨ` twin and the low blocks (2026-09-05, session B)
+
+* `RHTower/ZetaGateFromDyadicMeanSquare.lean`: `ZetaDyadicMeanSquareLaw R c` (per-block law for
+  `‖ζΨ(σ₀+it)‖²`) and `zetaMollifiedMeanSquareGate_of_dyadicLaw`, the `λ = 0` copy of brick 7g.
+  With it the single-input `(L)` constant (`eventually_offLineMoment_le_of_gates`) consumes exactly
+  the two dyadic laws.
+* `RHTower/DyadicLawLowBlocks.lean`: `norm_edPoly_le_card` (`‖Ψ(z)‖ ≤ N` for `Re z ≥ 0`),
+  `exists_detector_bound_low` (the detector is bounded on `[¼,½] × [20, 2T₀]`), and
+  `integral_normSq_mollifiedDetector_low_block_le`:
+  `∫_a^v ‖(ζ+λζ')Ψ(σ₀+it)‖² ≤ (v−a)(C N)²` for `20 ≤ a ≤ v ≤ 2T₀`.  At `N = U^θ`, `θ < ½`, this
+  is `≪ T₀ C² U^{2θ} ≤ ε U/log U` for large `U`, so the dyadic law needs analytic input only on
+  blocks `[a, 2a]` with `a ≥ T₀(ε)` — exactly where the `SmoothAFEZetaDisplaced*` dyadic bounds
+  live.
+
+**Residue of the programme after session B:** the two dyadic laws on high blocks, i.e. for
+`a ≥ T₀(ε)`, `[a, v] ⊆ [a, 2a]`, `σ₀ = ½ − R/log T`, `T ∈ [U−1, U]`:
+
+```text
+∫_a^v ‖(ζ + λζ')Ψ(σ₀+it)‖² dt ≤ (c + ε)(v − a) + ε (a + U/log U),    λ ∈ {0, 1/log U},
+```
+
+with `c` the Levinson/Young constant of the chosen mollifier profile and abscissa.  Items 2–6 of
+the revised gate list are the pieces of this one inequality on one block.
