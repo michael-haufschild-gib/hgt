@@ -1,0 +1,2166 @@
+{
+  "prediction": "T_p(N)-T_p(infinity) ~ (p^2-1)/(12*N^(2*Re(s))) at complete cells",
+  "status": "asymptotic prediction tested numerically, not a Lean theorem",
+  "records": [
+    {
+      "label": "zero-1",
+      "cell_corrected_insertion_errors": [
+        2.4309386794404526e-06,
+        1.5436484874354468e-07,
+        9.455637054708178e-09
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1782770114171503,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.0971326480982773,
+              "rank": 2,
+              "condition": 20.35829147918673
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.09785573086093251,
+              "rank": 2,
+              "condition": 126.92532187373942
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.15565957999040161,
+              "rank": 2,
+              "condition": 8.31606134390896
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.16835488316472758,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.06783966175761692,
+              "rank": 2,
+              "condition": 10.806904471171867
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.0884012677908119,
+              "rank": 2,
+              "condition": 91.1885845734953
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.16156613020975708,
+              "rank": 2,
+              "condition": 7.13015164478293
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1352184970442495,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.02817386280184483,
+              "rank": 2,
+              "condition": 10.007138595581926
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.045406892112075735,
+              "rank": 2,
+              "condition": 89.10122252403028
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.09808359915573045,
+              "rank": 2,
+              "condition": 13.69867748498752
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.122622980165135,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.02165114021284683,
+              "rank": 2,
+              "condition": 9.09255943579601
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.03774033292129146,
+              "rank": 2,
+              "condition": 81.59044874480561
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.11763786522970135,
+              "rank": 2,
+              "condition": 6.912326117033279
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08144198564480735,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.007771788727715881,
+              "rank": 2,
+              "condition": 7.119167092417979
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.019680347759619653,
+              "rank": 2,
+              "condition": 41.332909019993586
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.07843038416788821,
+              "rank": 2,
+              "condition": 6.736004052508237
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "zero-2",
+      "cell_corrected_insertion_errors": [
+        3.6277970228929364e-06,
+        2.2963437386241653e-07,
+        1.4554746412757179e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.18369700514174978,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.07212679413230816,
+              "rank": 2,
+              "condition": 7.80395816058442
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.10757626944321844,
+              "rank": 2,
+              "condition": 66.87563205200078
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.17906594723381472,
+              "rank": 2,
+              "condition": 2.6123730203286115
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.09827638490877644,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.08790280669379119,
+              "rank": 2,
+              "condition": 11.778639375161204
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.07752525839938242,
+              "rank": 2,
+              "condition": 100.21265792205041
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.05354239760039732,
+              "rank": 2,
+              "condition": 3.0713462693572287
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.09216704597735953,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.03498937586586462,
+              "rank": 2,
+              "condition": 6.669077086750146
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.037483391208077234,
+              "rank": 2,
+              "condition": 63.00830990817979
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.08492719108098434,
+              "rank": 2,
+              "condition": 2.5115976705677685
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08354521492415021,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.022439808899345746,
+              "rank": 2,
+              "condition": 6.025831529121269
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.026185143224254397,
+              "rank": 2,
+              "condition": 57.266770696235085
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.07119721804410467,
+              "rank": 2,
+              "condition": 2.173503675803296
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.05220368097593631,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.008630699108946687,
+              "rank": 2,
+              "condition": 4.722576130862581
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.013204981416392175,
+              "rank": 2,
+              "condition": 28.121449694787742
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.02477014755284415,
+              "rank": 2,
+              "condition": 4.352887283931996
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "zero-3",
+      "cell_corrected_insertion_errors": [
+        4.328139172763813e-06,
+        2.7319871258427493e-07,
+        1.7138526642681018e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.4318009743214392,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.22772036458368844,
+              "rank": 2,
+              "condition": 5.86688835826323
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.30080151959017637,
+              "rank": 2,
+              "condition": 50.673434737186845
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.32560231997356387,
+              "rank": 2,
+              "condition": 3.0866065260082998
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.18054386529318533,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.11836546865518152,
+              "rank": 2,
+              "condition": 10.638582288311888
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.15804123468210016,
+              "rank": 2,
+              "condition": 94.20879102422387
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.1596226448276403,
+              "rank": 2,
+              "condition": 4.03294410076347
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.07697139567394158,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.04153514994147835,
+              "rank": 2,
+              "condition": 5.046077924183147
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.045758859577732035,
+              "rank": 2,
+              "condition": 48.16788563501552
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.06170766739008665,
+              "rank": 2,
+              "condition": 2.8142041458996085
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.0626382711151716,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.022642604718214096,
+              "rank": 2,
+              "condition": 4.645699515533106
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.027133383077815765,
+              "rank": 2,
+              "condition": 44.79694947004286
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.027695149254374034,
+              "rank": 2,
+              "condition": 3.6881943946154725
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.04029064671125707,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.008057133660150368,
+              "rank": 2,
+              "condition": 3.57001438824921
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.012330911761086246,
+              "rank": 2,
+              "condition": 21.463017830416835
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.027557995439692298,
+              "rank": 2,
+              "condition": 2.5416503944475415
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "zero-4",
+      "cell_corrected_insertion_errors": [
+        5.28923849746305e-06,
+        3.3236578286851805e-07,
+        2.0893844763019582e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.2896105063905627,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.24092556607526594,
+              "rank": 2,
+              "condition": 7.680202260596443
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.2746194377771091,
+              "rank": 2,
+              "condition": 66.3566265586845
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.24154452404958454,
+              "rank": 2,
+              "condition": 3.1507589550273134
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.3174436494904182,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.20116100821426736,
+              "rank": 2,
+              "condition": 6.0640127777910955
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.242237512346411,
+              "rank": 2,
+              "condition": 52.2054742346109
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.30541388996716473,
+              "rank": 2,
+              "condition": 3.297834477805546
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08096794410261046,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.07610008032303202,
+              "rank": 2,
+              "condition": 6.625946130261015
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.07814225124945708,
+              "rank": 2,
+              "condition": 66.61694882934579
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.044166714198657336,
+              "rank": 2,
+              "condition": 3.9193017654264755
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.05543852014029541,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.03202083434199007,
+              "rank": 2,
+              "condition": 5.02184058448573
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.0340849373791462,
+              "rank": 2,
+              "condition": 49.30293276949632
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.03055619968002037,
+              "rank": 2,
+              "condition": 3.3917178801077346
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.031917084141599085,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.0100642859734625,
+              "rank": 2,
+              "condition": 3.9950130602510634
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.014580255182851148,
+              "rank": 2,
+              "condition": 25.124279732051164
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.02206974441685967,
+              "rank": 2,
+              "condition": 2.501519125272062
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "zero-5",
+      "cell_corrected_insertion_errors": [
+        5.739596659528411e-06,
+        3.5983591618338235e-07,
+        2.2625108891758147e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.20695424857853104,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.1379071918373934,
+              "rank": 2,
+              "condition": 7.388572194348679
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.16783926996684437,
+              "rank": 2,
+              "condition": 68.93288569279152
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.18663679609285067,
+              "rank": 2,
+              "condition": 3.024685921497556
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.30505635721099206,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.13549443506581163,
+              "rank": 2,
+              "condition": 6.075814890936146
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.15598361585915607,
+              "rank": 2,
+              "condition": 53.34055390949583
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.27630280041680627,
+              "rank": 2,
+              "condition": 3.223139379923305
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.11037419972500451,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.09009764957685402,
+              "rank": 2,
+              "condition": 5.963577269731836
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.09675320076280014,
+              "rank": 2,
+              "condition": 61.88660362423456
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.10719812860306271,
+              "rank": 2,
+              "condition": 2.709395610290233
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.06368198213594711,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.03443825542291384,
+              "rank": 2,
+              "condition": 4.716443663658388
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.038418017895014436,
+              "rank": 2,
+              "condition": 47.634853665802964
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.044943893493992255,
+              "rank": 2,
+              "condition": 3.181056927571176
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.03784522875513292,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.010880458890096905,
+              "rank": 2,
+              "condition": 3.577214378959756
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.015377105173245748,
+              "rank": 2,
+              "condition": 23.063365509079684
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.037659162962925444,
+              "rank": 2,
+              "condition": 3.0921142439573015
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "zero-6",
+      "cell_corrected_insertion_errors": [
+        6.582971014361844e-06,
+        4.107600883006404e-07,
+        2.5792910643389494e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.4181905042413044,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.18757477517337398,
+              "rank": 2,
+              "condition": 3.63109974696054
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.21120066888608596,
+              "rank": 2,
+              "condition": 30.625082091500943
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.334172454852538,
+              "rank": 2,
+              "condition": 2.8619706038746893
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.16049669546517292,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.10749956640786414,
+              "rank": 2,
+              "condition": 4.622723064873924
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.13130948913355606,
+              "rank": 2,
+              "condition": 41.820291941170815
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.14245540229047174,
+              "rank": 2,
+              "condition": 2.7095137099900226
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.09330683331103339,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.08125722103903756,
+              "rank": 2,
+              "condition": 3.5019126878307696
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.08712887716311875,
+              "rank": 2,
+              "condition": 33.98813492655883
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.08303938438840586,
+              "rank": 2,
+              "condition": 2.627265055229627
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.03377478186950664,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.025824598138439573,
+              "rank": 2,
+              "condition": 2.9330316773040064
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.026693510980752892,
+              "rank": 2,
+              "condition": 27.63066440388695
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.030071181128074373,
+              "rank": 2,
+              "condition": 2.4627959101009824
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.01751931311243203,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.006805142223428095,
+              "rank": 2,
+              "condition": 2.708809019496821
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.0084538810349176,
+              "rank": 2,
+              "condition": 13.95063001522724
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.005796876982205778,
+              "rank": 2,
+              "condition": 4.481433633969895
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "zero-7",
+      "cell_corrected_insertion_errors": [
+        7.195096262673008e-06,
+        4.4729885295180055e-07,
+        2.8081973316431797e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.2559794323164833,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.20237299164477207,
+              "rank": 2,
+              "condition": 5.006238042378957
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.2151821746292229,
+              "rank": 2,
+              "condition": 43.46540818482561
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.23802070234146722,
+              "rank": 2,
+              "condition": 4.062189567689489
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1785865086683913,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.16407355563984474,
+              "rank": 2,
+              "condition": 4.661122529038719
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.16679756247906427,
+              "rank": 2,
+              "condition": 41.34932391567219
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.15365951144997833,
+              "rank": 2,
+              "condition": 4.128873859438302
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1202798114041046,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.1197601306445166,
+              "rank": 2,
+              "condition": 8.81037000522329
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.11960529714106784,
+              "rank": 2,
+              "condition": 76.87448096262915
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.11121134389397463,
+              "rank": 2,
+              "condition": 4.697344137853958
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.05190539031688452,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.044781373395795694,
+              "rank": 2,
+              "condition": 4.345535022573085
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.046475880689069396,
+              "rank": 2,
+              "condition": 40.35761755965941
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.040751258954998454,
+              "rank": 2,
+              "condition": 3.277620375171577
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.021940103588456394,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.010553424053085445,
+              "rank": 2,
+              "condition": 3.8262047211970076
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.013150894712158724,
+              "rank": 2,
+              "condition": 21.104237872359096
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.01847590058730675,
+              "rank": 2,
+              "condition": 3.7111640348931774
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "zero-8",
+      "cell_corrected_insertion_errors": [
+        7.641867530485298e-06,
+        4.7369866205496066e-07,
+        2.9695730964076195e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.43399402720638874,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.2987057879535626,
+              "rank": 2,
+              "condition": 3.4896151300748186
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.3467345786306978,
+              "rank": 2,
+              "condition": 28.931299363299054
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.2251335133650498,
+              "rank": 2,
+              "condition": 2.0259188240919097
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1942823846591068,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.13535803010006917,
+              "rank": 2,
+              "condition": 3.770643768871531
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.1585649695391036,
+              "rank": 2,
+              "condition": 31.9441760050969
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.13230074743674855,
+              "rank": 2,
+              "condition": 1.8575400820031884
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1371716788490902,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.08527648275699301,
+              "rank": 2,
+              "condition": 4.932383885970194
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.09695207335258589,
+              "rank": 2,
+              "condition": 46.24476156860835
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.10563192134084665,
+              "rank": 2,
+              "condition": 4.046564576979885
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.04525067159936759,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.03805085282403069,
+              "rank": 2,
+              "condition": 2.9869764765014777
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.04110109081690048,
+              "rank": 2,
+              "condition": 26.906099883614992
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.042117298373243156,
+              "rank": 2,
+              "condition": 1.8308674290644047
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.01866017282376478,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.00772141254030139,
+              "rank": 2,
+              "condition": 2.6801615444773486
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.010267776803390137,
+              "rank": 2,
+              "condition": 13.61645577239908
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.016263303715594868,
+              "rank": 2,
+              "condition": 2.538916281420211
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "shift-0.65-1",
+      "cell_corrected_insertion_errors": [
+        1.0420075792795208e-07,
+        4.378709501272013e-09,
+        1.91807342631172e-10
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.143478522675245,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.073375073048055,
+              "rank": 2,
+              "condition": 20.154882860424983
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.07928350236191402,
+              "rank": 2,
+              "condition": 132.55388727170202
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.11900303426913157,
+              "rank": 2,
+              "condition": 8.497294856949251
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.14918121471890528,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.06253602500321477,
+              "rank": 2,
+              "condition": 11.920011579555407
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.08132688192603914,
+              "rank": 2,
+              "condition": 100.76439840792953
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.14329508818340495,
+              "rank": 2,
+              "condition": 7.666631364302948
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.11857364607198163,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.02649733000327981,
+              "rank": 2,
+              "condition": 10.892838031567612
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.044122679346666215,
+              "rank": 2,
+              "condition": 97.38318231132482
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.09505857207155362,
+              "rank": 2,
+              "condition": 15.533011737584774
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.10764261785153946,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.017516346271790658,
+              "rank": 2,
+              "condition": 9.851725148236945
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.034872345232276974,
+              "rank": 2,
+              "condition": 88.76809267546322
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.10466052099467449,
+              "rank": 2,
+              "condition": 7.6619512783458275
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.07451945305233894,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.0069912747046877236,
+              "rank": 2,
+              "condition": 7.892356086197902
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.019020022375998542,
+              "rank": 2,
+              "condition": 45.45733190839902
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.07283062560439006,
+              "rank": 2,
+              "condition": 7.597941020222069
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "shift-0.65-2",
+      "cell_corrected_insertion_errors": [
+        1.5545657029495293e-07,
+        6.509857859666879e-09,
+        2.739717919774012e-10
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.17993103953731515,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.09204797999068266,
+              "rank": 2,
+              "condition": 9.279839170127483
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.11859855501955383,
+              "rank": 2,
+              "condition": 78.33295996662812
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.15783572998247553,
+              "rank": 2,
+              "condition": 2.8891660850746157
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.10440688079841526,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.08355459961084297,
+              "rank": 2,
+              "condition": 13.417906003835991
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.0775588842228974,
+              "rank": 2,
+              "condition": 111.03912112866564
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.05584353384108866,
+              "rank": 2,
+              "condition": 3.2979944064087117
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08641379795379663,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.02925508550373371,
+              "rank": 2,
+              "condition": 8.000067194282591
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.03277983343674637,
+              "rank": 2,
+              "condition": 74.92948199434969
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.07417335300448898,
+              "rank": 2,
+              "condition": 2.88756129445552
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08451232920868733,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.015190218453779113,
+              "rank": 2,
+              "condition": 7.20727986858859
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.02383346949524784,
+              "rank": 2,
+              "condition": 68.20212186816147
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.06421766689087123,
+              "rank": 2,
+              "condition": 2.5002431850544817
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.051298729843146616,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.013301188256669693,
+              "rank": 2,
+              "condition": 5.8858537298303
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.016736084700254717,
+              "rank": 2,
+              "condition": 34.52168562605231
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.024725182736282065,
+              "rank": 2,
+              "condition": 5.201689913106822
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "shift-0.65-3",
+      "cell_corrected_insertion_errors": [
+        1.8545054520234535e-07,
+        7.745873537422607e-09,
+        3.21585726462997e-10
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.41744261364245366,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.2289389995404173,
+              "rank": 2,
+              "condition": 7.3353375172175905
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.2991230479103025,
+              "rank": 2,
+              "condition": 62.679780974767766
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.3016681228912545,
+              "rank": 2,
+              "condition": 3.6167317603567066
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1842067511277252,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.12438337432003979,
+              "rank": 2,
+              "condition": 13.562766055165907
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.1620181058638497,
+              "rank": 2,
+              "condition": 112.89634875831543
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.15447723228720342,
+              "rank": 2,
+              "condition": 4.507487356976108
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.06714180233252709,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.05285766739950191,
+              "rank": 2,
+              "condition": 6.4682257232305025
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.055263410059473876,
+              "rank": 2,
+              "condition": 61.413946544455605
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.06097697261450558,
+              "rank": 2,
+              "condition": 3.319658892359967
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.06060319139625118,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.027288152514003856,
+              "rank": 2,
+              "condition": 5.900079706925204
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.03294925446720833,
+              "rank": 2,
+              "condition": 55.98909912316892
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.032607170860229504,
+              "rank": 2,
+              "condition": 4.6502498260392615
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.0337768770528779,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.012931198175597979,
+              "rank": 2,
+              "condition": 4.559539296883888
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.015737474283230107,
+              "rank": 2,
+              "condition": 27.35335660243113
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.027815131781389568,
+              "rank": 2,
+              "condition": 3.116151602951434
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "shift-0.85-1",
+      "cell_corrected_insertion_errors": [
+        1.5539833320163363e-09,
+        3.7675058232280365e-11,
+        1.041592520869718e-12
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.10569422939241975,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.054992212922769144,
+              "rank": 2,
+              "condition": 18.848183268748247
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.06202007280131806,
+              "rank": 2,
+              "condition": 131.51623488399082
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.07133224722522648,
+              "rank": 2,
+              "condition": 9.422149551999063
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.12000980341186988,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.056909239936211393,
+              "rank": 2,
+              "condition": 12.690945724808383
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.06698419586758843,
+              "rank": 2,
+              "condition": 107.3790237631741
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.10245039243136077,
+              "rank": 2,
+              "condition": 9.18225565049669
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.09060519839929382,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.020417481930566896,
+              "rank": 2,
+              "condition": 11.316677087158526
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.03535351944987863,
+              "rank": 2,
+              "condition": 101.56616247927029
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.07625765752270862,
+              "rank": 2,
+              "condition": 19.076149830754527
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08225898434535776,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.02159902050162408,
+              "rank": 2,
+              "condition": 10.192508922106063
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.026720214217528848,
+              "rank": 2,
+              "condition": 92.25508915578185
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.07568469388106448,
+              "rank": 2,
+              "condition": 9.465109402182005
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.06100139288212605,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.0249953898442031,
+              "rank": 2,
+              "condition": 8.36118970131382
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.02557499553603803,
+              "rank": 2,
+              "condition": 47.639490565498484
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.056292220252949096,
+              "rank": 2,
+              "condition": 9.442214965387368
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "shift-0.85-2",
+      "cell_corrected_insertion_errors": [
+        2.3172198452113314e-09,
+        5.5965926127115135e-11,
+        2.4580904704530758e-12
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.19509932843661296,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.13073221811088173,
+              "rank": 2,
+              "condition": 10.164935354362838
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.14204686751054468,
+              "rank": 2,
+              "condition": 85.34471154752192
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.10601227925116484,
+              "rank": 2,
+              "condition": 3.7421570811385663
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.12006988402836553,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.07462739153133452,
+              "rank": 2,
+              "condition": 13.089205605816023
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.07366316800594568,
+              "rank": 2,
+              "condition": 109.09970135013688
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.05017576705627753,
+              "rank": 2,
+              "condition": 4.15901275119615
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.1188531659564365,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.060398959945398116,
+              "rank": 2,
+              "condition": 8.849037270123429
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.058600766191323254,
+              "rank": 2,
+              "condition": 82.58421597594176
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.051627149962868144,
+              "rank": 2,
+              "condition": 3.9003957852833535
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.12361087281554257,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.050552439309811105,
+              "rank": 2,
+              "condition": 7.967307592921134
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.05626972736921335,
+              "rank": 2,
+              "condition": 75.83757909882154
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.04490890549614536,
+              "rank": 2,
+              "condition": 3.3932602980272644
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.07199478076745656,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.046154094153625,
+              "rank": 2,
+              "condition": 7.073065949126066
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.04876412630638912,
+              "rank": 2,
+              "condition": 40.23517458504555
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.023068183062905017,
+              "rank": 2,
+              "condition": 6.874239123957483
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "shift-0.85-3",
+      "cell_corrected_insertion_errors": [
+        2.7639555005964707e-09,
+        6.655719948894563e-11,
+        2.6253586285284694e-12
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.33624742808163394,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.19188964414862217,
+              "rank": 2,
+              "condition": 8.718914710745493
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.245818412260804,
+              "rank": 2,
+              "condition": 73.31322045304717
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.20235947776219793,
+              "rank": 2,
+              "condition": 4.912155684228056
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.16663093233090576,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.11451519161988241,
+              "rank": 2,
+              "condition": 14.945940151921182
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.14408019047223802,
+              "rank": 2,
+              "condition": 119.42254661504273
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.11926067525176122,
+              "rank": 2,
+              "condition": 5.71686974290428
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08679280831195194,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.07976335485990269,
+              "rank": 2,
+              "condition": 7.982846444033348
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.08460133405300539,
+              "rank": 2,
+              "condition": 74.91210075414179
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.0471310897131328,
+              "rank": 2,
+              "condition": 4.497971558501981
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.0885117914232201,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.05182546891986591,
+              "rank": 2,
+              "condition": 7.097994870957116
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.059014265170491235,
+              "rank": 2,
+              "condition": 65.24132499738826
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.033476472194894864,
+              "rank": 2,
+              "condition": 6.75161666000882
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.06630326316796081,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.04756839478150857,
+              "rank": 2,
+              "condition": 5.512975444824844
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.04536317745017182,
+              "rank": 2,
+              "condition": 32.38175704086833
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.022115629204631504,
+              "rank": 2,
+              "condition": 4.384208274053467
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "absolute-real",
+      "cell_corrected_insertion_errors": [
+        1.3811174426336947e-13,
+        4.027889133340068e-13,
+        3.786970736996409e-13
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.06620119137696737,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.014829634690000796,
+              "rank": 2,
+              "condition": 17.07481042417196
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.022265817259258535,
+              "rank": 2,
+              "condition": 77.60270449513511
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.002890142182912675,
+              "rank": 2,
+              "condition": 63.59549313868254
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.07017979500511456,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.02212326833210813,
+              "rank": 2,
+              "condition": 18.443181665932833
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.03038071834710797,
+              "rank": 2,
+              "condition": 84.28220715424524
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.0041799288421368935,
+              "rank": 2,
+              "condition": 63.19721158925867
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.0919035667488192,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.026842144048823346,
+              "rank": 2,
+              "condition": 17.703217187772154
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.03987317435563708,
+              "rank": 2,
+              "condition": 90.26974000336304
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.002897607312774737,
+              "rank": 2,
+              "condition": 51.2564660458132
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.10670111174403309,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.025840055090735094,
+              "rank": 2,
+              "condition": 14.590996221870329
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.03532906577604246,
+              "rank": 2,
+              "condition": 78.6100588937081
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.0028624766243054178,
+              "rank": 2,
+              "condition": 45.37080606896461
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.08091045097786902,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.01804984303417945,
+              "rank": 2,
+              "condition": 18.68765980546313
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.026726515219653815,
+              "rank": 2,
+              "condition": 53.51583972644143
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.001501078830022572,
+              "rank": 2,
+              "condition": 57.45176509417056
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "line-nonzero",
+      "cell_corrected_insertion_errors": [
+        2.9271758935274976e-06,
+        1.8559243115740883e-07,
+        1.2103000804094797e-08
+      ],
+      "repairs": [
+        {
+          "p": 2,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.06212255172928368,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.03270315674277009,
+              "rank": 2,
+              "condition": 4.359302857149334
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.04555355046368292,
+              "rank": 2,
+              "condition": 8.27821625518299
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.008739542530363343,
+              "rank": 2,
+              "condition": 59.039545873911585
+            }
+          }
+        },
+        {
+          "p": 3,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.09775433175422081,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.06467754766613212,
+              "rank": 2,
+              "condition": 4.8225672050195785
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.07979797681266633,
+              "rank": 2,
+              "condition": 8.609834165412437
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.01488791999850063,
+              "rank": 2,
+              "condition": 68.60190567865548
+            }
+          }
+        },
+        {
+          "p": 5,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.029493454726639494,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.017588721480649792,
+              "rank": 2,
+              "condition": 3.8398718053661565
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.021978290090372214,
+              "rank": 2,
+              "condition": 9.675119103729372
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.0040129482369580475,
+              "rank": 2,
+              "condition": 46.61731825189411
+            }
+          }
+        },
+        {
+          "p": 7,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.03286784944094004,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.02187883533401219,
+              "rank": 2,
+              "condition": 4.771700494999166
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.02874983959047396,
+              "rank": 2,
+              "condition": 10.161506676868605
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.004643978295787666,
+              "rank": 2,
+              "condition": 48.56732276360436
+            }
+          }
+        },
+        {
+          "p": 11,
+          "fits": {
+            "scalar": {
+              "relative_residual": 0.023129000490920256,
+              "rank": 1,
+              "condition": 1.0
+            },
+            "plus_mean": {
+              "relative_residual": 0.012923045678878278,
+              "rank": 2,
+              "condition": 5.064989594752583
+            },
+            "plus_cell_variance": {
+              "relative_residual": 0.017582567972526362,
+              "rank": 2,
+              "condition": 5.723232445811237
+            },
+            "plus_euler_amplitude": {
+              "relative_residual": 0.0024292008436316835,
+              "rank": 2,
+              "condition": 40.13445066142495
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

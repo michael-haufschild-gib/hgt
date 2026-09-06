@@ -2,6 +2,8 @@
 
 **Status:** 107 final leaf builds passed; all 1134 declarations axiom-audited (843 theorems, 291 definitions). All leaves wired; index refreshed. Latest global lint is blocked by another active researcher's unwired RHTower module, `CCMRestrictedWeilPoleDiagonalSharpConstant`; no chronological module was flagged. New-field novelty and priority remain unestablished. Goal active.
 
+**Active full geometric formalization:** penultimate-coefficient preservation, sharp finite-grid duality, actual planar domains, and positive attained geometric quotient norms now have passing scratch checks and individual leaf builds. `RecoverySurgeryCosts` additionally proves the exact unchanged prefix and two-sided first-drop bounds in scratch; its final leaf audit is next. Five leaves extend the 107-leaf audited checkpoint above; their combined axiom audit remains pending. Remaining main mathematics: strict adjacent curvature, negative-square witness and exact first failure/inertia, Hausdorff convergence, and the actual geometric completion-to-zeta identification. No numerical calculations used.
+
 **Aim:** develop a coherent theory of ordered tensor observation, with unconditional Lean proofs and an intrinsic appearance of zeta zeros outside RH research. Main account: [chronological tensor geometry](../3-formalized/chronological-tensor-geometry.md). Completed zeta branch: [fusion response](../3-formalized/chronological-fusion-zeta-response.md).
 
 ## Primitive
