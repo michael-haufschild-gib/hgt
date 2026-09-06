@@ -30,7 +30,9 @@ The unconditional signed hyperbola estimate gives
 where `C_d=mu(d)K_d`. Exact periodic cancellation is taken inside each time channel;
 complete quotient blocks and the clipped final block are all retained.
 `RHTower.sum_mobiusDivisorDilationChannel_sq_le_quadratic` in
-`MobiusDivisorAbelQuadraticDiagonal` certifies the second inequality.
+`MobiusDivisorAbelQuadraticDiagonal` certifies the second inequality. The complete
+[paper proof and Lean audit](../3-formalized/ccm-fu-signed-divisor-hyperbola-cancellation.md)
+record the signed hyperbola argument.
 
 Thus SD1 would directly imply `|S(M)/M|<=sqrt(722)` for M>=1. The existing
 `riemannHypothesis_iff_mobiusDivisorSquareRootAbelBounded` receiver then applies; no

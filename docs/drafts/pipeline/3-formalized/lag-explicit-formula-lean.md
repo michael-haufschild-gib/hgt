@@ -185,3 +185,23 @@ from the `k`-th power modules. STATUS MUST-253.
 `primeOnlyCoeff`/`properCoeff` with `primeLagCoeff = primeOnlyCoeff + properCoeff`, `properCoeff_LSeriesSummable`
 (`Re s > θ − 1`), `differentiableAt_LSeries_properCoeff`, `primeOnlyG M = landauG M − LSeries properCoeff`,
 `differentiableOn_primeOnlyG`, `primesOnly_transfer_step`, the ray bound `‖W₀‖/t − (C + B_T)`. STATUS MUST-254.
+
+## The prime growth-exponent law (added 2026-09-06, Lean, `PrimeLagGrowthExponent`)
+
+`exists_prime_gt_primeLag_gt_rpow_of_not_rh (hRH : ¬RH) (ha : a < zeroReSup − 1/2) (M X) : ∃ p prime, X < p ∧
+M + p^a < integerLag p`. Bricks: `shiftedVonMangoldt a n = Λ(n) n^a / n` with `LSeries_shiftedVonMangoldt_eq`
+(`= −ζ'/ζ(1 + s − a)` on `Re s > a`), `properShift`/`primeShiftCoeff` split, `properShift_LSeriesSummable` (`Re s > a − ½`),
+`primeGrowthCoeff a M n = (M + n^a − a_n)Λ(n)/n` at primes, `growthG a M = primeOnlyG M + (−ζ'/ζ(1+s−a) − T_a)`,
+`differentiableOn_growthG`, `exists_growth_bound_of_primeLag_le_rpow` (`Φ(L) ≤ M₃ e^{max(a,¼) L}` from a power
+ceiling at primes), `re_le_half_add_max_of_primeLag_le_rpow`, `growth_transfer_step`. STATUS MUST-255.
+
+## The attained-case ratio law (added 2026-09-06, Lean)
+
+`RHTower.LagRatioLawAttained.exists_lag_gt_of_attainedTop_of_logDense`: attained top `β₀ > ½` plus eventual log-density of
+`N` at every scale ⟹ `a_n` unbounded above on `N`. Generic toolkit `HTGeometry.TrigonometricSumWindowMean`
+(namespace `TrigSum`): `trigSum`, `norm_trigSum_le`, `norm_trigSum_sub_le` (Lipschitz `Σ‖w‖|γ|`),
+`norm_integral_trigSum_le` (window mean `≤ Σ ‖w‖·2/|γ|`), `pairTerm`/`pairMain`/`pairError`, `integral_pairTerm_ge`,
+`integral_re_trigSum_sq_ge` (hypotheses: `pairMain ≥ 0`, `pairMain q q ≥ ‖w q‖²`), `exists_ge_of_integral_bounds`
+(positivity extraction). Lag side: `lagTopCoeff`, `topTail` (tends to 0 along `Finset` atTop), `lowerTerm`/`lowerTailReal`
+(dominated convergence), `scaledTerm`, `abs_scaledLag_sub_trigSum_le` (decomposition `≤ topTail + 2 lowerTail`),
+`pairMain_lagTopCoeff_nonneg` (conjugation symmetry of the top level), `pairMain_lagTopCoeff_self`. STATUS MUST-256.

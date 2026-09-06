@@ -4,18 +4,27 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** rh-current-frontier-map.md · route TCD
-- **Statement:** For every aperture `a > 0`, the equispaced five-node Gram matrix of the theta center-mixed density is positive definite on a punctured neighborhood of the coalesced node.
-- **Status:** `[RANK-FIVE SOURCE SEAM LEAN-PROVED] [OPEN D1 CHAMBER LEAN-PROVED] [ORDER-EIGHT LIKELIHOOD LADDER LEAN-PROVED] [FULL EVEN-FOCK BUDGET ABSORPTION LEAN-PROVED] [ORDINARY SOURCE LANDING LEAN-PROVED] [EXACT BELL-GRADE DECOMPOSITION LEAN-PROVED] [HIGHER EVEN BELL GRADES ABSORBED] [GRADE-TWO PAIR TRACE OPEN] [GLOBAL D1 OPEN]`
+- **Statement:** For every critical aperture `0 < a < 1/2`, the equispaced five-node Gram matrix of the theta center-mixed density is positive definite on a punctured neighborhood of the coalesced node.
+- **Status:** `[GLOBAL NATIVE D1 LEAN-PROVED] [ACTUAL RANK-THREE MIXTURE LEAN-PROVED] [ACTUAL EQUISPACED FIVE-POINT CUSP LEAN-PROVED] [GENERAL-PACKET/COFINAL CONTINUATION OPEN]`
 
 ## Goal
 
-Close rank five in the TCD cofinal positive-definiteness programme. The target is source-pure: it uses the already formalized theta cusp source and center-mixture representation, not RH or a zero-free hypothesis. Rank five is the first step not controlled by the proved second--sixth reflected Hankel curvature.
+**Current dependency state.** D1, D2, and D3 are Lean-proved. See the dependency-closed cards
+`../3-formalized/clg-ttf-global-native-d1.md`,
+`../3-formalized/clg-ttf-rank-three-center-mixture.md`, and
+`../3-formalized/clg-ttf-five-point-cusp.md`. The actual equispaced five-node matrix is positive
+definite for every sufficiently small nonzero spacing at every critical aperture. Exact central
+finite differences reduce the smoothness burden to the already proved C8 theorem. General-packet
+extension, theta-specific all-packet incidence, and cofinal no-escape remain. The source investigations
+below retain their scoped statements; their former D1/D2/D3 gaps are discharged by these capstones.
+
+The finite rank-five target is complete. This notebook retains the source investigations supporting that theorem; active continuation is the general-packet/cofinal programme. The cusp uses the literal theta source and center-mixture representation with every sign input discharged.
 
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, targeted `lake build` green, axiom audit PASS
+- [x] 1 → 2 fully-proven: finite cusp has a dependency-closed proof in the linked formalized card
+- [x] 2 → 3 formalized: finite cusp passes direct `lake env lean`, with new-capstone axiom audit PASS; no cascading or umbrella rebuild
 - [ ] 3 → 4 publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Corpus-driven decomposition
@@ -101,11 +110,11 @@ The exact logarithmic connector is therefore reduced to one theorem: normalized 
 
 ### D2 — strict three-by-three mixture law
 
-If D1 holds pointwise for the reflected source field, integrate its quadratic forms against the positive center-mixed radial weight. Prove strict positivity of the integrated matrix, then its determinant. This generalizes the corpus theorem `integral_twoByTwo_det_pos` by one rank.
+**Closed.** `HedenmalmCenterMixedEighthHankelClosure` integrates the globally strict source form through an exact cofactor-vector identity and identifies every entry with a literal center derivative through order eight.
 
 ### D3 — five-point parity cusp
 
-Formalize reversal-parity congruence, Taylor jets through the first nonzero even and odd block determinants, and positivity on a punctured right neighborhood. Expected smoothness burden is order twelve. Build generic center-product jets if explicit differentiation becomes duplicative.
+**Closed.** `ThetaCuspCenterMixedFivePointCusp` proves the literal matrix positive definite throughout a punctured neighborhood. `FivePointFiniteDifferenceCusp` gives the exact parity-adapted congruence and normalized-entry convergence. Only C8 regularity is required; determinant differentiation through order twelve is unnecessary.
 
 ### Pivot criteria
 
@@ -113,7 +122,7 @@ If D1 is false, prove the exact sign obstruction and audit D2 directly: pointwis
 
 ## Novelty collision audit
 
-Closest August 2026 item is Planat--Solé's second-level concavity theorem for the classical Xi kernel. Its inequality uses derivatives through order eight and may be algebraically related to one principal-minor expression. Before any novelty claim, compare its exact transformed kernel and determinant polynomial with D1 and with the center-mixture theorem. No corpus theorem currently proves D1--D3.
+Closest August 2026 item is Planat--Solé's second-level concavity theorem for the classical Xi kernel. Its inequality uses derivatives through order eight and may be algebraically related to one principal-minor expression. Before any novelty claim, compare its exact transformed kernel and determinant polynomial with D1 and with the center-mixture theorem. D1--D3 now have the corpus proofs named above; no external novelty claim is made here.
 
 Exact comparison now separates the statements. Planat--Solé prove negativity of the successive-derivative Hankel determinant `det(s^(i+j))_(0≤i,j≤2)` for `s(t)=Φ(√t)` in radial-square coordinate, equivalently strict log-concavity of `s'²-ss''`. D1 is positivity of the signed even reflected-product jet determinant of `u↦Φ(x+u)Φ(x-u)` in logarithmic source coordinate, for every center `x`. Derivative order overlaps, but kernel, coordinate, determinant, and sign differ. The seam theorem above is therefore not obtained from their result.
 

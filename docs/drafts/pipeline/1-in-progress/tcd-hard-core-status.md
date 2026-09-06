@@ -1,9 +1,7 @@
 # TCD
 
-`actual singular flux > 0 ⇔ global rank-three D1 > 0 → finite TCD/S6F gate`; RH still needs cofinal all-order landing → Weil positivity.
+`global native rank-three D1 > 0` is proved in `ThetaCuspFullReflectionEighthGlobal`. The literal compact orbit has `−1≤S≤0`, `17≤A≤20`, `0≤W≤1`; its complete mass-normalized determinant is at least `10^9` by a symbolic polynomial reserve. Existing outer positivity covers the remaining ray.
 
-Facts: open interval `0<x<137/2000`; `D1=HK-q²`, with actual `H,K>0`, `q<0`. On `D1=0`, flux = projective drift = ninth-jet crossing and is independent of eighth-jet value. In adapted source coordinates `r=Rz`, `b=R(z-v)/3`, `k=X(1-z²)/16`; scale variation is the positive weighted-Euler/Cartan field. Actual orbit lies in the refined parabolic cone and starts on a positive seam.
+Proof chain: global D1 → actual strict rank-three center mixture → five-point parity cusp → theta-specific all-packet incidence and cofinal no-escape → Weil positivity → RH. Rank-three mixing is proved by `HedenmalmCenterMixedEighthHankelClosure`, with all entries identified as actual center derivatives through order eight; the actual equispaced five-point cusp is proved in `ThetaCuspCenterMixedFivePointCusp`. Exact central differences and a C8 matrix limit give strict positivity throughout one punctured neighborhood at every critical aperture. General-packet extension and global landing remain open. D1 alone does not imply C5 orientation or RH.
 
-Killed: static/generic Hankel, depth-8 entire, Lévy, contravariant, raw Gram, atom-pair, product-fibre Wigner, and scalar-angle-concavity→five-point-PSD arguments. Global angle law gives only three-point PSD; D1 is five-point coalescence.
-
-Open: prove drift positive on `X>191/10+(37/5)z²`, `0<z<3/10`, `13/32+z²/32<v/z<33/80+z²/16`; a nonpositive actual singular flux kills TCD.
+The generic static-Hankel, depth-eight, monotone-potential, second-level-concavity, regular contravariance, and complete reflected-Hankel real-rootedness no-gos retain their stated scopes. None contradicts the new literal-source D1 theorem.

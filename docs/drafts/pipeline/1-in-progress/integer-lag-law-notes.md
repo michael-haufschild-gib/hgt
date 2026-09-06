@@ -349,3 +349,10 @@ a zero of maximal real part. When `Θ` is attained by a single conjugate pair th
 the criterion holds; in general it depends on additive coincidences `ρ + ρ' = ρ'' + ρ'''` in the zero set (sumset
 structure), which no positivity argument controls. Verdict: the two-sided prime criterion is a conditional receiver
 (additive genericity of the top zeros); not pursued further.
+
+## Growth exponent at the primes (Lean, 2026-09-06)
+
+`PrimeLagGrowthExponent.exists_prime_gt_primeLag_gt_rpow_of_not_rh`: under `¬RH`, `a_p > M + p^a` for infinitely many
+primes, for every `a < Θ − ½`; with `|a_p| ≤ W p^{Θ−½}` the one-sided growth exponent along primes is exactly `Θ − ½`.
+STATUS MUST-255. This quantifies MUST-254 and is the sampled-at-primes analogue of the classical Ω-results for
+`ψ(x) − x`; the mechanism is unchanged (power ceiling absorbed into `−ζ'/ζ(1 + s − a)`).
