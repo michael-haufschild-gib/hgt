@@ -31,3 +31,23 @@ The positive survivor to prove is the exact constant classification and the exha
 Corpus searches: `unit remainder`, `finite recurrence`, `boundary selection`, `recurrence cone`, `backward invariant`, `boundary uniqueness`, `signed transport`, `maximum principle`, `affine recurrence`, `unit discrepancy`, `head tail`, `two zeros`, `infinitely many zeros`, `holomorphic real constant`, `phase factorization`. Actual statements and proofs were inspected with rg and bounded reads, notably ArithmeticPrimeSievePhase, ArithmeticSuccessorCellPhase, ArithmeticMinimumPhaseCompleteness, and HTGeometry.GeometricCDDBoundarySelection. The known existence of multiple critical-line zeros is available in the corpus for falsification; no unproved zero location or simplicity premise is intended.
 
 No computation is needed for the predicted algebraic and analytic obstruction. No novel architecture or literature-absence claim is made. U1 and U2 remain frozen until their exact proofs or refutations are audited.
+
+## Independently frozen local survivor S1
+
+The constant classification predicts an additional constraint, beyond distinct-height separation: any positive-height zero lying in such a domain must be simple and on the critical line. At a zero rho, differentiating `G+zeta*H=c` predicts
+
+`zeta'(rho)*(H(rho)-1/[rho*(rho+1)])=-(1-2*rho)/[2*(rho*(1-rho))^2]`.
+
+The right side is nonzero at positive height. Thus even an infinite collection of these local holomorphic identities would implicitly require simplicity, an additional unproved property of all zeros. Freeze the tangent identity and its consequence independently; they do not weaken U1 or U2. On a zero-free domain, every real c supplies the exact solution `H=(c-G)/zeta`, so the obstruction is not absence of analytic solutions away from zeros. All statements still require Lean audit.
+
+## Independently frozen local survivor S2 and proof plan
+
+**S2:** at a positive-height strip zero rho, a holomorphic germ H satisfying the phase identity throughout a neighborhood of rho exists **if and only if** rho lies on the critical line and is simple. The proposed constructive direction divides the analytic divided difference of `c-G` by the divided difference of zeta, with `c=G(rho)` real. Simplicity makes the latter denominator nonzero near rho. This is an exact local classification, not a simplicity or RH assertion.
+
+- [ ] Derive the source identity, analyticity, constant classification, and exhaustive rational-boundary equality cases in Lean.
+- [ ] Prove the tangent identity and both directions of S2, including the removable quotient at rho.
+- [ ] Refute U1 and U2 using the corpus's analytic Hardy theorem; preserve the positive classification.
+- [ ] Audit leaf builds, axioms, umbrella wiring, and formal lint; update current-state ledgers.
+- [ ] Produce an independent head-orientation law and complete the unconditional RH proof. This final goal remains open regardless of the factorization audit.
+
+Adversarial checks: the source is conjugated, so its imaginary part changes sign; a local germ does not imply a global multiplier; a double zero must be handled explicitly; a finite-cover obstruction must cover every chart and every positive-height strip zero. No numerical zero locations or computational certificates enter these proofs.

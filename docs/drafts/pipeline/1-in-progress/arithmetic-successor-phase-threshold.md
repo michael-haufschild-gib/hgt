@@ -15,7 +15,7 @@ and `g_s(n)=n^(-s)conjugate(R_s(n))/[conjugate(s)(conjugate(s)+1)]`.
 
 **R:** If `t < 2*pi*n`, then `Im(g_s(n)) < 0`.
 
-This conjecture concerns the literal source at all parameters, not only zeros. It would confine exceptional signs to a finite head proportional to height. It would not bound the unit value at high zeros, where the hypothesis fails, and is not an RH implication. The earlier fixed-parameter eventual sign theorem does not prove this uniform threshold.
+This conjecture concerns the literal source at all parameters, not only zeros. It would confine exceptional signs to a finite head proportional to height. It would not bound the unit value at high zeros, where the hypothesis fails, and is not an RH implication. The earlier fixed-parameter eventual sign theorem does not prove this uniform threshold. The separately proved [quartic remainder cutoff](../3-formalized/edq-quartic-remainder-phase-cutoff.md) now gives `Im(g_s(n))<0` simultaneously for `0<sigma<=1`, `t>=1`, and `t^3<=n^2`. Its superlinear cutoff is weaker than R and leaves the unit term uncontrolled at high zeros; R is unchanged.
 
 ## Corpus origin and proof attack
 

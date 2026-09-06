@@ -36,3 +36,9 @@ derivatives lie strictly below13 and14. Then `(A+300x²+x)' >0`, so
 `A>=A(0)-300x²-x>17` on the same interval. This places the actual trajectory in B1's box.
 This would close the compact D1 gap if the polynomial certificate is verified. All-order
 incidence remains a separate unsolved RH producer even after that closure.
+
+The exact source admission theorem is checked in scratch and by the named-leaf audit of
+`GaloisForLFunctions.RHTower.ThetaCuspModularCompactTube` (only this leaf compiled).
+The remaining formal work is the explicit jet expansion, the positive algebraic identities,
+and their transfer back to raw and native D1. Candidate coefficients are not imported as
+numerical premises.

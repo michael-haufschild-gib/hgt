@@ -88,4 +88,6 @@ L and L+ are fully proved in Lean, including their source integral identities an
 
 The boundary term vanishes by the displayed linear bound. Multiplying by the positive factor `n^(-2*sigma-1)` recovers `Im(g_s(n))`. Thus the undamped clock inequality is a concrete candidate sufficient for R, and even predicts a larger real-part range. Its proof is missing. The finite constant-speed law does not supply it: the map `x=n*exp(v)` changes the spacing of every arithmetic cell.
 
+The independent [quartic remainder theorem](../3-formalized/edq-quartic-remainder-phase-cutoff.md) gives a full-tail negative phase on the explicit region `0<sigma<=1`, `t>=1`, `n^2>=t^3`. It does not establish B2 or C, or the proposed linear threshold, and retains the exceptional head.
+
 **RH remains open even if C is proved.** Its condition `t<2*pi*n` reaches cutoffs beyond the height-dependent head. At a zero, the required sign is the unit quantity `Im(g_s(1))=t*(2*sigma-1)/(2*|conjugate(s)*(1-conjugate(s))|^2)`. No new arithmetic identity forces that unit sign. Neither finite-prefix regrouping nor the proposed tail estimate justifies discarding the head. No radical new RH architecture or literature novelty was established.

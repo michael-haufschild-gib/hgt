@@ -48,3 +48,16 @@ Attack the exact polynomial on the whole box by rational Bernstein conversion. A
 of one coefficient test is not a counterexample. If B1 has a closed algebraic proof, prove
 from the actual source ODE that its compact trajectory lies in this box; neither admission
 nor the final source sign may be supplied as a premise.
+
+## Independent cofinal-direction falsification probe
+
+The compact B1 work does not imply any higher-rank sign. Probe that leap directly at the
+self-dual seam, using the same exact ODE jet recurrence at 80 digits: for ranks 1 through 12,
+form moments `c_k=(-1)^k (d/dt)^(2k)[f(t)f(-t)] at t=0` and their Hankel matrices.
+This is exploratory discrimination, not an assumption that these are all positive for theta.
+Compare the actual seam against a broad initial-scale grid and perturbations down to 1e-12.
+Record normalized LDL pivots. A negative pivot is a numerical candidate obstruction; a finite
+pass does not prove all-rank positivity or an RH implication. Audit any first failure at 120
+digits and against a direct theta-shell derivative recurrence. Outcomes can distinguish:
+already-false actual higher-rank positivity, broad nonselective finite-rank admission, or
+increasing sensitivity that might motivate a separate source-rigidity conjecture.

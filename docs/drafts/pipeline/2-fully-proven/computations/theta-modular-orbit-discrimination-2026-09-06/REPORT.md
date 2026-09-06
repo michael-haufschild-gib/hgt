@@ -50,6 +50,12 @@ These identities come from the checked corpus, not a fitted model.
    the norm cap at approximately `3.62597`, and theta scale multiplied by `1.0001` at
    approximately `4.76368`. This is a possible rigidity lead. No blow-up, uniqueness,
    asymptotic classification, or zero-location theorem follows from these integrations.
+   A second event audit (`events.json`, 34 runs, about 1.58 seconds) compares tolerances
+   `2e-12` and `5e-14`. The `X=18` crossing of `S=0` near `2.08108313832` and the `X=20`
+   crossing of `S=-3` near `.397000351248` are stable. Apparent `S=-3` crossings for the
+   theta value move from about `1.19068` to `1.23256`; terminal A also has tiny signed
+   roundoff artifacts. Those latter events are numerical instability, not physical
+   violations of the exact theta source's constraints.
 
 ## Analytic proof exposed by the data
 
@@ -92,7 +98,7 @@ precision audits use 8 workers with BLAS/OpenMP threads set to 1. Individual job
 (slice compression), and .03 seconds (independent precision audit). No hour-long job ran.
 
 Run `experiment.py`, `bernstein.py`, `structure.py`, `slices.py`, `audit.py`, `emit_lean.py`,
-and `plot.py` in that order. JSON records retain raw values and rational coefficients;
+`events.py`, and `plot.py` in that order. JSON records retain raw values and rational coefficients;
 `box.npz` retains the sampled region. Generated Lean files are candidate proof source,
 not trusted certificates or imported numerical evidence. Final checked modules and their
 audit status are authoritative.

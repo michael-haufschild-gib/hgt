@@ -22,15 +22,20 @@ No novelty or proof claim is made.
 
 ## Why this strength would suffice
 
-The corpus bound `|D(q)|<=24sqrt(q)` gives
+The unconditional signed hyperbola estimate gives
 
-`|K_d(M)| <= (24/sqrt(d)) sum_(k=d)^(M-1) sqrt(k)/(sqrt(k+1)+sqrt(k)) <=12 M/sqrt(d)`.
+`C_d(M)^2 <= 361 M sqrt(floor((M-1)/d))`,
+`Q(M)=sum_(d<=M) C_d(M)^2 <= 722 M^2`,
 
-Consequently the diagonal divided by M^2 is at most `144 sum_(d<=M)1/d`.
-SD1 would give the normalized complete Abel source `O(sqrt(log M))`. Mellin/Abel continuation
-would then exclude every fixed exponent beyond the critical one. This implication uses the
-same actual signed source, and must be wired to the corpus receiver before claiming Lean closure.
-The arithmetic content is SD1 itself, not the elementary diagonal envelope.
+where `C_d=mu(d)K_d`. Exact periodic cancellation is taken inside each time channel;
+complete quotient blocks and the clipped final block are all retained.
+`RHTower.sum_mobiusDivisorDilationChannel_sq_le_quadratic` in
+`MobiusDivisorAbelQuadraticDiagonal` certifies the second inequality.
+
+Thus SD1 would directly imply `|S(M)/M|<=sqrt(722)` for M>=1. The existing
+`riemannHypothesis_iff_mobiusDivisorSquareRootAbelBounded` receiver then applies; no
+subpower-loss continuation is needed. The remaining arithmetic content is SD1 itself.
+The quadratic diagonal bound does not establish it.
 
 ## Attacks
 
@@ -71,9 +76,11 @@ The positive residue is an exact evolution retaining the signed mixed term. With
 
 where Q is the complete arithmetic diagonal and the new terminal channel is zero.
 [MobiusDivisorAbelDiagonalBound.lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorAbelDiagonalBound.lean)
-also proves `Q(M)<=144M^2 sum_(d<=M)1/d` unconditionally. No experimental result is used.
+proves the exact successor laws and a harmonic envelope. The sharper
+`Q(M)<=722M^2` is closed in `MobiusDivisorAbelQuadraticDiagonal.lean`, using signed
+hyperbola summation. No experimental result is used in either proof.
 The numerical SD2 counterexample itself is not a Lean certificate. The signed total
-off-diagonal upper bound and the subpower-loss continuation bridge remain open.
+off-diagonal upper bound remains open; the diagonal needs no subpower-loss continuation.
 
 
 **Other proposed producers:** arbitrary nonnegative decreasing time weights fail in Lean,

@@ -9,13 +9,19 @@ import json, math
 import sympy as sy
 ROOT=Path(__file__).resolve().parent
 
+def balanced(terms):
+    if not terms:return '0'
+    if len(terms)==1:return terms[0]
+    m=len(terms)//2
+    return '('+balanced(terms[:m])+' +\n    '+balanced(terms[m:])+')'
+
 def scalar(rows,variables=('S','A','W'),typ='ℝ'):
     terms=[]
     for e,c in rows:
         c=Q(str(c));fs=[f'({c.numerator} / {c.denominator} : {typ})']
         fs += [f'{v}^{n}' for v,n in zip(variables,e) if n]
         terms.append(' * '.join(fs))
-    return ' +\n    '.join(terms) or '0'
+    return balanced(terms)
 
 def mv(rows):
     terms=[]
@@ -57,8 +63,12 @@ set_option linter.unusedSimpArgs false
     show (Finset.univ : Finset ModularThetaLyapunovState) = {{.S, .A, .W}} by decide]
   <;> ring
 ''')
+    partnames=[]
+    for j,offset in enumerate(range(0,len(P),30)):
+        name=f'modularThetaCompactD1Part{j}';partnames.append(name)
+        out.append(f'/-- Monomial group {j} of the exact D1 expansion. -/\ndef {name} (S A W : ℝ) : ℝ :=\n  '+scalar(P[offset:offset+30])+'\n')
     out.append('/-- Explicit real polynomial for the mass-normalized reflected rank-three determinant. -/\n')
-    out.append('def modularThetaCompactD1 (S A W : ℝ) : ℝ :=\n  '+scalar(P)+'\n')
+    out.append('def modularThetaCompactD1 (S A W : ℝ) : ℝ :=\n  '+balanced([n+' S A W' for n in partnames])+'\n')
     out.append('''/-- Exact symbolic expansion; no source or positivity assumption. -/
 theorem modularThetaLyapunovReflectedEighthPolynomial_eval_ofReal (S A W : ℝ) :
     MvPolynomial.eval (fun i : ModularThetaLyapunovState =>
@@ -71,9 +81,9 @@ theorem modularThetaLyapunovReflectedEighthPolynomial_eval_ofReal (S A W : ℝ) 
     out.append('  rw ['+', '.join(f'compactH{n}_eq' for n in range(11))+']\n')
     out.append('  simp only ['+', '.join(f'compactH{n}' for n in range(11))+''', map_add, map_sub, map_mul, map_pow,
     MvPolynomial.eval_C, MvPolynomial.eval_X]
-  dsimp only
-  unfold modularThetaCompactD1
-  push_cast
+  try dsimp only
+''')
+    out.append('  unfold modularThetaCompactD1 '+' '.join(partnames)+'''\n  push_cast
   ring
 end
 end HTGeometry
@@ -156,7 +166,7 @@ theorem modularThetaCompactD1_pos (S A W : ℝ) (hS : -1 ≤ S) (hS0 : S ≤ 0)
 ''')
     for j in range(13):out.append(f'  have h{j} := compactSlice{j}_lower (-S) (5*W/6) ht ht1 hz hz1\n')
     out.append('  have hid : modularThetaCompactD1 S A W =\n    '+' +\n    '.join(f'(A-17)^{j} * compactSlice{j} (-S) (5*W/6)' for j in range(13))+' := by\n')
-    out.append('    unfold modularThetaCompactD1 '+' '.join(f'compactSlice{j}' for j in range(13))+'\n    ring\n')
+    out.append('    unfold modularThetaCompactD1 '+' '.join(partnames)+' '+' '.join(f'compactSlice{j}' for j in range(13))+'\n    ring\n')
     out.append('  rw [hid]\n  have hpos : 0 < compactSlice0 (-S) (5*W/6) := by linarith\n  positivity\nend\nend HTGeometry\n')
     (ROOT/'BoxCandidate.lean').write_text('\n'.join(out))
     print('emitted',len((ROOT/'JetCandidate.lean').read_text()),len((ROOT/'BoxCandidate.lean').read_text()))

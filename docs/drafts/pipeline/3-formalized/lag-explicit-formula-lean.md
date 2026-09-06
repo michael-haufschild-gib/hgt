@@ -146,3 +146,31 @@ Quot.sound]`):
   `σ₁ = Θ−½+η`, `h = η`, `R = 5η/2`), `exists_bound_neg_logDeriv_zeta_sub_inv`, `aliasedWeight` (finite sum over the
   near copies with the same support point, `Re > 0`), `landauG_ray_lower_bound`, `exists_pos_le_ordinate_gap`, the
   maximal-zero + ray identity-theorem contradiction.
+
+## The `k`-th power criterion (added 2026-09-06, Lean, `PowerLagLandau*`)
+
+`riemannHypothesis_iff_powLag_bddAbove (hk : 1 ≤ k) : RH ↔ ∃ M, ∀ m ≥ 1, integerLag (m ^ k) ≤ M`
+(`PowerLagLandauCriterion`), for every `k ≥ 1`; no prime-gap input. Modules (wired, axioms clean):
+- `PowerLagLandauSeries`: `summable_lagWeight_mul_sqrt` (`Σ ‖w_q‖ √(2+|γ_q|) < ∞`, windows + `winLog_le_rpow_quarter`
+  + majorant `powMajorant k = 16(240+K₀) k^{−5/4}`), `powLagCoeff k M m = (M − a_{m^k})/m^k`, `powAbscissa k θ =
+  k(θ−3/2)+1`, `powLagCoeff_LSeriesSummable`, `powShift k q u = u + 3k/2 − kρ_q`, `LSeries_powLagCoeff_eq`.
+- `PowerLagLandauContinuation`: `powTerm`, `powLandauG`, `sameOrdinate t₀` (finite), `powBox`, `norm_powTerm_le_far`
+  (exponent-½ bound `norm_riemannZeta_le_sqrt_norm_add_two_half` with `d = kg/2`), `differentiableOn_powLandauG`
+  (hypotheses: `Re u ≥ abscissa − η`, `|Im u − k t₀| ≤ kg/2`, `‖u‖ ≤ B`, `k + u ≠ 1`, same-ordinate arguments `≠ 1`).
+- `PowerLagLandauCriterion`: `exists_pos_le_abs_ordinate_all`, `exists_norm_riemannZeta_ge_inv` (`‖ζ(1+t)‖ ≥ 1/(2t)`),
+  `powLandau_transfer_step`, `powPole k q₀ = k(ρ₀ − 3/2) + 1`, `powAliasedWeight`, `powLandauG_ray_lower_bound`,
+  `exists_small_ray_parameter`, the maximal-zero ray contradiction.
+Traps: `field_simp`/`positivity`/`linarith` time out in `set`-heavy contexts — factor scalar steps into standalone lemmas
+(`exists_small_ray_parameter`) and introduce constants with `obtain ⟨Bd, hBd⟩ : ∃ Bd, Bd = …`.
+
+## The counting-function law (added 2026-09-06, Lean, `LagCountingFunctionLaw`)
+
+`structure LagWeightSystem` (`c ≥ 0`, `F`, `α`, `η₀`, `A < 1`; fields `hasSum`, `differentiableAt_right`, `far`,
+`blowup`) and `LagWeightSystem.riemannHypothesis_iff_lag_bddAbove : RH ↔ ∃ M, ∀ n, c n ≠ 0 → integerLag n ≤ M`.
+Internals: `summable_lagWeight_mul_rpow (hA0 : 0 ≤ A) (hA : A < 1)` (`Σ ‖w_q‖ (2+|γ_q|)^A < ∞`, window majorant
+`lagRpowMajorant A k = (240+K₀)(2/ε)·4·k^{−(2−A−ε)}`, `ε = (1−A)/4`), `coeff M n = c n (M − a_n)`, `shift q s = s − ρ_q + ½`,
+`absc θ = α + θ − ½`, `LSeries_coeff_eq`, `coeff_LSeriesSummable`, `term`, `G`, `norm_term_le_far`, `exists_far_const`,
+`differentiableOn_G` (hypotheses: `absc θ − η ≤ Re s ≤ α + 3/2`, `|Im s − t₀| ≤ g/2`, `F` differentiable at `s` and at
+the same-ordinate shifts), `transfer_step`, `pole q₀ = α + ρ₀ − ½`, `G_ray_lower_bound` (`‖W₀‖‖F(α+t)‖ − C`), the
+final contradiction via `blowup`. Reuses `powAliasedWeight`, `sameOrdinate`, `powBox`, `exists_pos_le_ordinate_gap_all`
+from the `k`-th power modules. STATUS MUST-253.

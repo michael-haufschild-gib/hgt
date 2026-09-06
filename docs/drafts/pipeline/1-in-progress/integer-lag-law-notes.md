@@ -304,3 +304,27 @@ quantitative Ω-rate at prime powers under `¬RH` (the argument gives unboundedn
 powers — that would need a Landau–Ingham oscillation theorem at prime powers rather than a summability transfer).
 What this settles: the RH content of the lag sequence sits entirely in its prime-power values; the sequence
 `a_{p^k}` is the one-sided observable, and the Landau argument is the only tool used beyond MUST-246/247.
+
+## The `k`-th power criterion and the counting-function law (Lean, 2026-09-06)
+
+`riemannHypothesis_iff_powLag_bddAbove`: for every `k ≥ 1`, `RH ⟺ sup_m a_{m^k} < ∞`. The proof is the Landau
+assembly with `ζ(kw)` in place of `−ζ'/ζ`: series `Σ (M − a_{m^k}) m^{−k−u} = M ζ(k+u) − Σ_ρ w_ρ ζ(u + 3k/2 − kρ)`,
+poles at `kρ − 3k/2 + 1` (imaginary part `kγ ≠ 0`), far terms by the exponent-½ vertical bound and
+`Σ |w_ρ| √(2+|γ|) < ∞`, residue `‖ζ(1+t)‖ ≥ 1/(2t)`. STATUS MUST-252. The structural lesson: the gap law of
+MUST-250 (gaps `≤ n^θ` decide `Re ρ ≤ θ`) is only what the Lipschitz route sees; the Landau route sees the analytic
+continuation of the counting series `F_N` of the subsequence, and decides RH whenever `F_N` continues past its
+abscissa with real poles only and sub-linear vertical growth. Bases fail exactly because `1/(1 − b^{−w})` has the
+non-real poles `2πij/log b` on its abscissa (the shadow law). Open: (a) the general statement with an abstract `F_N`
+(a `Prop` interface: meromorphic continuation, real poles, growth exponent `< 1`); (b) Beatty-type and other sparse
+sets whose counting series is known; (c) a producer remains absent — the criteria certify that these subsequences see
+every off-line zero, nothing more.
+
+## The counting-function law as a theorem (Lean, 2026-09-06)
+
+`LagWeightSystem.riemannHypothesis_iff_lag_bddAbove` (STATUS MUST-253): the abstract form of MUST-251/252 with the
+generating function `F` of the weight as data and four hypotheses (series identity right of `α`, differentiability
+right of `α`, continuation with growth exponent `A < 1` on `α − η₀ ≤ Re w ≤ α + 2` away from the real axis,
+`‖F(α + t)‖ → ∞`). Only the last two carry arithmetic content. Next instance to build: `c = 1_{primes}`, `F = P`
+(prime zeta), which needs a bound `|log ζ(w)| ≪ log|Im w|` on `Re w ≥ 1 − η₀`, `|Im w| ≥ g`, under `Θ ≤ ¾`
+(MUST-250 supplies `Θ ≤ ¾` from the same hypothesis `a_p ≤ M`); the `j ≥ 2` terms of `P(w) = Σ μ(j)/j · log ζ(jw)`
+are bounded. Outcome would be `RH ⟺ sup_p a_p < ∞` with no prime powers.
