@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# Two barriers: lattice systems, and modifications that cannot create zeros
+# Geometric-lattice discrepancy and nonvanishing in a convergence region
 
 Two elementary obstructions to building a Beurling number system whose integers are
 better-than-square-root regular and whose zeta has a certified zero off the critical line.
@@ -109,7 +109,7 @@ theorem tprod_one_sub_ne_zero {ι : Type*} (z : ι → ℂ)
   rw [← Complex.cexp_tsum_eq_tprod hne hlog]
   exact Complex.exp_ne_zero _
 
-/-- **A modification cannot create a zero.**  If the modifying generalized primes `q i` exceed `1`
+/-- **Convergent modification factors are nonzero.**  If the generalized primes `q i` exceed `1`
 and satisfy `∑ (q i)^{-σ} < ∞`, then the Euler factor `∏ (1 - (q i)^{-s})` is nonzero at every `s`
 with `Re s ≥ σ`.  Hence inserting, deleting or rescaling such a family multiplies the zeta function
 by an analytic, zero-free factor: in that half plane the modified system's zeros are exactly the base

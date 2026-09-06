@@ -1,9 +1,15 @@
 # Theta-cusp sixth-moment Hankel minor
 
 - **ID:** theta-cusp-sixth-moment-hankel-minor
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE]`
+- **Stage:** 3-formalized (retained as route context)
+- **Type:** `[PROVED IN LEAN]`
 - **Statement:** The first nonconstant two-by-two Hankel minor of the normalized completed prime--Gamma trace is nonnegative because the exact theta-cusp density satisfies a sixth-order raw-moment inequality.
+
+## Current closure
+
+The exact sixth-moment inequality and every linear-polynomial completed source Hankel test are unconditional theorems in `ThetaGibbsSteinSourceMinor.lean`. Four global exponential-polynomial Stein remainders give direct first-atom Ward bounds; the existing all-order theta-atom comparison transfers them to the full source. This bypasses the older Morse-energy and tightly rounded essential-moment certificates.
+
+The dependency-closed proof and current audit status are in [Exact theta-source sixth-moment inequality](../3-formalized/theta-gibbs-stein-source-minor.md). The higher-degree source Hankel cone remains open. The proposed mechanisms below are background, not additional premises of the completed finite-block proof.
 
 ## Object
 

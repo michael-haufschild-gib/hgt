@@ -84,11 +84,25 @@ Sum all visible terms to obtain nonnegative budgets `B_odd=sum J_odd t_n`, `B_ev
 
 The admitted diagonal bound proves a fixed threshold `R_0=max(2,log(K_A+17))`. Above it, ordinary odd curvature is negative and even curvature positive between active entries. On each entire closed prime-power gap above this threshold, the actual odd profile is strictly concave and even profile strictly convex. There is one unique actual even-energy minimum, whose sign decides that whole gap; if interior it has zero derivative in the exact incoming expression. This supplies an even checkpoint with a different location rule from the odd endpoints. [Closed paper proof and Lean audit](../3-formalized/weil-pole-entry-age-balance.md).
 
+## Stationary locations and the unresolved value moment
+
+The exact first jets retain both arithmetic masses and the full Gamma boundary derivative. For `L(t)=-log(1-exp(-t))`,
+
+`A_ch,a'(a)=2kappa cosh(a)+(3-2E_M(2a))exp(a)+(2a-3-2psi(X))exp(-a)+B1'(a)`,
+
+`C_ch,a'(a)=2[kappa+X-psi(X)-exp(-2a)+L(2a)-E_M(2a)]`.
+
+The bound `|B1'|≤(K_B+4)exp(a)` gives `|A_ch,a'|≤K_J exp(a)` for `a≥2`, with `K_J=2|kappa|+K_B+12+2(log 4+5)+2(log 4+4)`. Every stationary even test therefore satisfies `|X-psi(X)|≤K_S sqrt(X)`, `K_S=K_J/2+|kappa|+log 4+7`. This is proved for the actual source and every actual interior gap minimum; it gives no bound at arbitrary radii and no minimum-value sign.
+
+Let `H(a)=sum Lambda(n)(1+1/n)log n` over the original visible range. The actual even value is nonnegative exactly when `H(a)≥2a[psi(X)+M1(X)]-A(a)-C_sm(a)`. The two instantaneous mass totals alone do not determine `H`: a fully classified positive-weight family on prime powers 2,3,4 preserves both totals, the entire diagonal response and the cross derivative while its cross values fill an explicit nondegenerate interval. That family is a generic recovery obstruction, not an alteration of the actual Mangoldt source. [Paper proof, sharp survivor and Lean audit](../3-formalized/weil-pole-stationary-error-and-value-moment.md).
+
 ## Live conjecturing obligations
 1. Find arithmetic control coupling the explicit tent cross entry to its diagonal. In odd parity this is the exact comparison `O≤G_odd+R` between the classified prime budgets and Gamma–pole balance. Separate absolute estimates prove the correct scale but not `|C|≤A`.
 2. Test a proposed comparison on both parity energies, retaining the full boundary mass and every prime power. Any failure must yield its strongest positive survivor before a shortcut is retired.
 3. Relate a successful source comparison to the selected-ground inequality `4|F(u)|²≤(mu-lambda)[2(A+rC)-2lambda(N+rM)]` when useful; the fixed-pole criterion can also close RH directly.
 4. Prove arithmetic control of actual odd values at genuine prime-power entries above radius two and actual even minimum values on prime-power gaps above `R_0`. Full boundary handoff, support reduction, ordinary parity curvature and existence/uniqueness of the even minimum are closed. Remaining bounded-radius ranges also need proof.
 5. Use the exact common-loss balance to test a proposed arithmetic estimate: it must control `V≤2(A_sm-C_sm)+B_odd` and `B_even+V≤2(A_sm+C_sm)`. Positive entry slopes and separate nonnegativity of the three budgets do not supply either comparison.
+
+6. Couple the stationary prime-error estimate to the actual weighted logarithmic moment. Prove the displayed lower threshold for `H` at even minima, including a separate treatment of boundary minima. Equal derivative profiles and positivity of abstract arithmetic weights cannot recover this value comparison.
 
 The original constrained-ground route remains open and is not retired. No numerical computation, additional axiom, or oracle supplies these results.

@@ -1,6 +1,6 @@
 # Actual stationary pole error and the independent value moment
 
-Status: formalized mathematical statements; final audit recorded below. RH remains open.
+Status: formalized and audited. RH remains open.
 
 Leaves: `CCMRestrictedWeilPoleFirstJets`, `CCMRestrictedWeilPoleStationaryError`, `CCMRestrictedWeilPoleLogMoment`, namespace `RHTower`.
 
@@ -111,4 +111,8 @@ Adding a common smooth source and subtracting these atom responses preserves equ
 
 ## Verification
 
-Pending final axiom and lint audit. All three scratch files and named leaf builds are tracked on the active stationary-value card; the finished leaves are wired into `RHTower.lean`. No full or umbrella build is requested.
+- Foreground `lake env lean` passed for `/tmp/hgt-pole-stationary.HKnfTH/Jet.lean`, `Bounds.lean`, and `Moment.lean`.
+- All three named leaf builds passed with `lake --old --log-level=error build GaloisForLFunctions.RHTower.<leaf>`. The leaves are wired into `RHTower.lean`; no full or umbrella build was run.
+- `lake env lean /tmp/hgt-pole-stationary.HKnfTH/Axioms.lean` audited all 34 public declarations (26 theorems, 8 definitions): exactly `[propext, Classical.choice, Quot.sound]`. No added axiom or computation oracle.
+- `python3 scripts/formal_tools.py lint` passed, with existing large-file warnings. `git diff --check` passed. All owned Lean/Lake sessions completed; an unrelated concurrent `ThetaTiltLogDensity.lean` check was left untouched.
+- No numerical experiment, remote computation, background build, subagent, or commit.

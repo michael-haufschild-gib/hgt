@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.OneDimBrascampLieb
 import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
-import GaloisForLFunctions.RHTower.HedenmalmThetaPrimeTranslationFixedFibre
+import GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSeamJets
 
 /-!
@@ -46,7 +46,7 @@ theorem hasDerivAt_deriv_thetaCuspLogSource (x : ℝ) :
   exact h
 
 theorem continuous_deriv_thetaCuspLogSource : Continuous (deriv thetaCuspLogSource) := by
-  have := contDiff_thetaCuspLogSource.continuous_iteratedDeriv 1 (by exact_mod_cast le_top)
+  have := contDiff_thetaCuspLogSource.continuous_iteratedDeriv 1 (WithTop.coe_le_coe.mpr le_top)
   simpa [iteratedDeriv_one] using this
 
 theorem continuous_iteratedDeriv_two_thetaCuspLogSource :

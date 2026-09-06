@@ -1,0 +1,20 @@
+{
+  "initial_entry": 2767,
+  "initial_barrier": 5.769825559771941,
+  "first_negative_budget_without_positive_jumps": {
+    "n": 4733,
+    "budget": -0.009535337312485126,
+    "negative_jump_debt": 5.805426272145362,
+    "continuous_production": 0.02606537506093609,
+    "positive_jump_credit": 5.390340822602141,
+    "actual_outgoing_barrier": 5.38080548528966
+  },
+  "final_entry": 1999993,
+  "total_positive_jump_credit": 548.0681828131122,
+  "total_negative_jump_debt": 396.9589641077271,
+  "net_jump_credit": 151.10921870538405,
+  "total_continuous_production": 0.30689145846687715,
+  "final_outgoing_barrier": 157.1859357236209,
+  "negative_between_entry_increments": 0,
+  "maximum_balance_residual": 7.474909580196254e-12
+}

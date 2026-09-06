@@ -137,3 +137,76 @@ satisfiable, but it demands a **lower** bound on `D_k` matching the upper bound 
   `−3b < −b−s < −b < −b+s < 0`, `s = √(3(1−D₀b)b)`). Constants are deliberately loose; the sharp
   diagonal threshold is `D₀b < 1`. Interface for Theorem B: two-sided dispersion control with
   relative precision `O(1/b)`, i.e. third and fourth cumulant bounds of the tilted log variable.
+
+## 2026-09-06 — external SOTA audit: Holland, arXiv:2608.08682 (9 Aug 2026)
+
+**Verdict on this card's paper content: REDISCOVERED.** Jonathan Holland, "A new hyperbolicity wedge
+and a joint semicircle limit for Jensen polynomials of Riemann's ξ-function" (arXiv:2608.08682,
+math.NT, 9 Aug 2026) works in exactly the objects of this card and goes much further:
+
+- Same coordinates: `γ(n) = n!/(2n)!·M_n` with `M_n = ∫Φ(u)u^{2n}du`; `γ(n+j)/γ(n) =
+  E_n[U^{2j}]/(4^j (n+½)_j)` (his (11)); quotient invariants `q_k = R_{k+1}²/(R_k R_{k+2})`, i.e.
+  `q_k = (b+k+1)/((b+k)(1+D_k))` in our dispersions; the Laguerre family `S^j/(B)_j` is the
+  "diagonal" (Gamma-renormalised) reference, realised as a beta–Sonine dilation of the baseline.
+- Same defect sizes: `δ₀ = Δ² log M = 2/(n 𝓛_n)(1+O(1/𝓛_n))` (so `D₀ b → 0` like `2/log n`),
+  first defect `𝒟_n = 2/(n² 𝓛_n)` (our `ε₁`), second defect `𝒬_n = 2/(n³ 𝓛_n)` (our `ε₂`), from the
+  sectorial saddle `h''(x) = 2/(x𝓛_x)`, `h''' = −2/(x²𝓛_x)`, `h⁗ = 4/(x³𝓛_x)` (his Lemma 4.2), with
+  `𝓛_x = L_{2x−2}` the Lambert-type solution of `x = L(πe^L + ¾)`. This is the paper proof of
+  Theorem B (MUST-224's inputs) at every order, with the sign pattern of the log-moment derivatives.
+- Strictly stronger theorem: matching `R₀..R₄` exactly by a finite-free product of two Jacobi
+  factors (Laguerre → Jacobi → `₃F₂` model), then a fifth-order multiplier stability principle
+  (his Prop. 2.2: `c(0)=…=c(4)=1`, `sup_Ω|c−1| ≤ ε < 1/6`, critical-point ratio bounds
+  `|y^k p^{(k)}/p| ≤ r^k`) gives `J^{d,n}` hyperbolic whenever `n³ log²(n+2) ≥ K d⁵`; for `d ≤ 4`
+  the model matches all coefficients and hyperbolicity is automatic for large `n`. Joint semicircle
+  law for the zeros along the wedge.
+
+**What survives here (corpus assets, not literature novelty):**
+- `hyperbolic_quarticPoly` / `quartic_signs`: an explicit-constant degree-four certificate
+  (`b ≥ 2000`, `D₀b ≤ ½`, `|ε₁| b^{3/2} ≤ 1/8`, `|ε₂| b² ≤ 1/5`) by sign alternation at five points —
+  the anisotropic tolerance (`ε₁` direction gains `√b` over an isotropic `o(δ⁴)` condition because the
+  linear response `L₁` vanishes at `z = −b` to leading order) is not stated by Holland, but it changes
+  nothing for `Ξ` (his defects sit far inside both boxes).
+- `JensenQuarticXi.lean`: `J^{4,n}(X) = γ(n)/(b)₄ · quartic(b, D₀, D₁, D₂, tX/4)` and the
+  conditional capstone for `Ξ`; dispersions are the corpus Pearson chi-squares (nonnegative).
+- The 1-D Brascamp–Lieb / Cramér–Rao module and the tilted theta log-density calculus.
+
+**Consequence for the programme.** Theorem B (two-sided cumulant bounds of the tilted theta
+measures with relative precision `O(1/n)`) is now a formalisation of Holland's Lemmas 4.2–5.4, not
+new mathematics; it is deprioritised. The regime `d = o(n)` is perturbative and RH-blind by theorem
+(unconditional hyperbolicity). The fixed-`n`, all-`d` regime is `F₀^{(n)} ∈ LP` for
+`F₀(x) = Σ γ(j)x^j/j!` (`Ξ(t) = F₀(−t²)`), which by Kim / Ki–Kim (Pólya–Wiman, Fourier–Pólya for
+order `< 2`) holds for some `n` iff `Ξ` has only finitely many non-real zeros. The model-matching
+method cannot pass `d ≍ n log n`: with `K` Jacobi factors the Hermite–Genocchi residual is
+`≍ (d+2r)^{2K+1}/(n^{2K}(2K+1)! log n)`, `r ≍ √(nd)`, so `d ≲ 2nK/e` with `K ≲ log n/log log n`
+factors at most, and below the saddle threshold the coefficients are arithmetic (the low-lying zeros).
+The lane is a receiver in both regimes; next cycle pivots.
+
+## 2026-09-06 — Lean close-out
+
+- `HTGeometry.QuarticJensenDispersionTransfer`: refactored; `quartic_signs` exports the five sign
+  facts (`0 < s < b`, signs at `−3b, −b−s, −b, −b+s, 0`) and `hyperbolic_quarticPoly` is its corollary.
+  Rebuilt, axioms `[propext, Classical.choice, Quot.sound]`.
+- `RHTower.JensenQuarticXi` (new, wired after `ThetaTiltLogDensity` in `RHTower.lean`; imports only the
+  transfer module and `XiCTaylorThetaTailMomentLogConvex`): `xiJensenCoeff k = k!·m(k)/(2k)!`,
+  `thetaDispersion k = m(k)m(k+2)/m(k+1)² − 1 ≥ 0` (from `thetaCuspRawEvenMoment_sq_le_adjacent`),
+  `thetaMomentRatio`, the chain `xiJensenCoeff_succ`, the exact identity
+  `eval_jensenPoly_xi_four : (jensenPoly xiJensenCoeff 4 n).eval X = γ(n)/((b)(b+1)(b+2)(b+3)) ·
+  quartic b D₀ D₁ D₂ (tX/4)` (`b = n+½`, `t = m(n+1)/m(n)`; `field_simp; ring` after expanding the
+  five binomial terms and the factorial chain), and the capstone
+  `hyperbolic_jensenPoly_xi_four (hn : 2000 ≤ b) (hK : D₀ b ≤ ½) (hε₁ : |D₀−D₁| b√b ≤ 1/8)
+  (hε₂ : |D₀−2D₁+D₂| b² ≤ 1/5) : Hyperbolic (jensenPoly xiJensenCoeff 4 n)` (sign alternation at
+  `X_i = 4y_i/t`). Built (`lake build`), axioms clean.
+- `RHTower.ThetaTiltLogDensity`: imports trimmed to `OneDimBrascampLieb`, `ThetaCuspKernelLogConcavity`,
+  `ThetaCuspGlobalReflectedRiccati`, `XiCTaylorThetaTailSeamJets`; built, axioms clean.
+- Not built (dropped after the Holland audit): the Brascamp–Lieb integrability discharge for the tilted
+  theta density and the cumulant bounds of Theorem B — these are Holland's Lemmas 4.2–5.4 and would be
+  formalisation of literature, not research. The capstone's three hypotheses are therefore *not*
+  discharged in Lean; the theorem is an explicit-constant certificate, conditional on the dispersion
+  box, and the box is known (paper, Holland) to hold for all large `n`.
+- Traps met: `Polynomial.eval_finset_sum` is deprecated (`eval_finsetSum`), but the sum evaluates via
+  `Finset.sum_range_succ` + `eval_add` anyway; `simp [altPoints]` rewrites `0 < √a` into `0 < a` and
+  breaks `linarith` against hypotheses stated with `√a` — abstract the root as a variable first
+  (`obtain ⟨s, hs⟩ : ∃ s, s = √…`); `lake env lean` reads stale `.olean`s of a refactored dependency,
+  so `lake build` the dependency before compiling a consumer; oleans in the shared tree can vanish
+  under concurrent agents' builds (`PrimeArchThermalKrylovRH.olean` did) — rebuild the target with
+  `lake build <module>` rather than chasing.

@@ -35,6 +35,6 @@ The single half-retraction forces the required orthogonality. On the original al
 | CubicHilbertMellin | 7 | Operator-trace response; absolute Mellin convergence; strip zeta zeros and orders |
 | CubicHilbertRigidity | 6 | Costs and one symmetric half-flow uniquely force the algebraic inner form |
 
-Next: [multiplication by u](chronological-recovery-shift.md) retains the successive recovery-cost ratios that cancel from the normalized heat trace. The physical bound δ_(k+1)≤δ_k/4 and the resulting bounded weighted shift are paper-only. Its self-commutator, log-convexity, and moment-measure questions provide concrete further targets. No explicit higher-weight δ_k formula or optimizer uniqueness is used in the completed trace construction.
+[Multiplication by u](chronological-recovery-shift.md) now formally retains the successive recovery-cost ratios that cancel from the normalized heat trace: five leaves prove the gap bound, unique bounded shift, nonzero self-commutator, and its positivity/log-convexity equivalence. The hard unresolved target is actual all-degree moment positivity. An [exact exponential gap rate](chronological-recovery-exponential-rate.md) is now proved on paper using classical potential theory; this result is not yet formalized.
 
 All 102 Hilbert declarations and the 36 prerequisites use only Lean/mathlib's standard logical axioms. Final aggregate audit: `/tmp/chronological-hilbert-trace-audit-summary.txt`. No numerical certificate was used.

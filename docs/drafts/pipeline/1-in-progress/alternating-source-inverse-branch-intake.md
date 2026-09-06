@@ -65,6 +65,15 @@ with no independent construction or novelty case established. The coefficient ob
 does not prove that F_s has a second zero inside the disk, nor does it reject every
 possible argument about its distinguished boundary value.
 
+The proposed fallback using zero motion of `F_s(r)=-Li_s(-r)` for real `0<r<1` has not
+established a new architecture. [Vepstas, *The Polylog and the Riemann Hypothesis*
+(2023)](https://www.linas.org/math/polylog.pdf), pages 5–7, already proposes zero-motion,
+bracketing, and zero-variety questions connected with RH. That note studies a different
+argument boundary and is used here only as evidence of prior proposals, not as a proved
+mathematical input. No exact equivalence with the negative-argument conjecture is claimed.
+The corpus's existing ordered-second-level identities also do not supply a new branch
+restriction. No numerical experiment or additional formal theorem resulted from this intake.
+
 ## Formal positive result and verification
 
 `formal/GaloisForLFunctions/RHTower/AlternatingInverseCoefficientBoundary.lean`, namespace

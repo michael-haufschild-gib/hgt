@@ -355,8 +355,8 @@ theorem power_helper {κ : ℝ} (hκ0 : 0 ≤ κ) (hκle : κ ≤ 1 / 4000) :
   · have := pow_le_pow_left₀ hp0 hp1' 5; norm_num at this ⊢; linarith
 
 /-- The four small products appearing in the quadratic term, with `ε₁ ≤ 1/(8br)`, `ε₂ ≤ 1/(5b²)`. -/
-theorem quad_tail_le {b r c : ℝ} (hb : 2000 ≤ b) (hr : r ^ 2 = b) (hr44 : 44 ≤ r)
-    (hc0 : 0 ≤ c) (hc : c ≤ 6 / 5) :
+theorem quad_tail_le {b r c : ℝ} (hb : 2000 ≤ b) (_hr : r ^ 2 = b) (hr44 : 44 ≤ r)
+    (_hc0 : 0 ≤ c) (hc : c ≤ 6 / 5) :
     c * b ^ 4 * (5 * (1 + 1 / 4000) * (1 / (64 * b ^ 3)) + 2 * (1 + 1 / 4000) * (1 / (40 * b ^ 3 * r)) +
       2 * (1 / (512 * b ^ 4 * r)) + 1 / (320 * b ^ 5)) ≤ 1 / 10 * b := by
   have hbpos : 0 < b := by linarith
@@ -768,47 +768,49 @@ def altPoints (b s : ℝ) : ℕ → ℝ
   | 3 => -b + s
   | _ => 0
 
-/-- **Quartic Jensen hyperbolicity from three dispersions.** If `b ≥ 2000`, the dispersions are
-nonnegative with `D₀ b ≤ 1/2`, and the first and second differences satisfy
-`|D₀ − D₁| ≤ b^{−3/2}/8`, `|D₀ − 2D₁ + D₂| ≤ b^{−2}/5`, then the monic quartic has four distinct
-real roots. -/
-theorem hyperbolic_quarticPoly {b D₀ D₁ D₂ : ℝ} (hb : 2000 ≤ b)
+/-- **The five sign conditions.** With `s = √(3(1 − D₀b)b)`: `0 < s < b`, and the quartic is
+positive at `−3b`, negative at `−b − s`, positive at `−b`, negative at `−b + s`, positive at `0`. -/
+theorem quartic_signs {b D₀ D₁ D₂ : ℝ} (hb : 2000 ≤ b)
     (h0 : 0 ≤ D₀) (h1 : 0 ≤ D₁) (h2 : 0 ≤ D₂) (hK : D₀ * b ≤ 1 / 2)
     (hε₁ : |D₀ - D₁| * (b * Real.sqrt b) ≤ 1 / 8)
     (hε₂ : |D₀ - 2 * D₁ + D₂| * b ^ 2 ≤ 1 / 5) :
-    Hyperbolic (quarticPoly b D₀ D₁ D₂) := by
+    0 < Real.sqrt (3 * (1 - D₀ * b) * b) ∧ Real.sqrt (3 * (1 - D₀ * b) * b) < b ∧
+      0 < quartic b D₀ D₁ D₂ (-3 * b) ∧
+      quartic b D₀ D₁ D₂ (-b - Real.sqrt (3 * (1 - D₀ * b) * b)) < 0 ∧
+      0 < quartic b D₀ D₁ D₂ (-b) ∧
+      quartic b D₀ D₁ D₂ (-b + Real.sqrt (3 * (1 - D₀ * b) * b)) < 0 ∧
+      0 < quartic b D₀ D₁ D₂ 0 := by
   have hbpos : 0 < b := by linarith
-  set r := Real.sqrt b with hr_def
-  have hr : r ^ 2 = b := Real.sq_sqrt hbpos.le
-  have hr0 : 0 ≤ r := Real.sqrt_nonneg b
+  obtain ⟨r, hr_def⟩ : ∃ r : ℝ, r = Real.sqrt b := ⟨_, rfl⟩
+  rw [← hr_def] at hε₁
+  have hr : r ^ 2 = b := by rw [hr_def]; exact Real.sq_sqrt hbpos.le
+  have hr0 : 0 ≤ r := by rw [hr_def]; exact Real.sqrt_nonneg b
   have hr44 : 44 ≤ r := by nlinarith
   -- deviations
-  set ε₁ := D₀ - D₁ with hε₁def
-  set ε₂ := D₀ - 2 * D₁ + D₂ with hε₂def
+  obtain ⟨ε₁, hε₁def⟩ : ∃ ε₁ : ℝ, ε₁ = D₀ - D₁ := ⟨_, rfl⟩
+  obtain ⟨ε₂, hε₂def⟩ : ∃ ε₂ : ℝ, ε₂ = D₀ - 2 * D₁ + D₂ := ⟨_, rfl⟩
+  rw [← hε₁def] at hε₁
+  rw [← hε₂def] at hε₂
   have hD₁ : D₁ = D₀ - ε₁ := by rw [hε₁def]; ring
   have hD₂ : D₂ = D₀ - 2 * ε₁ + ε₂ := by rw [hε₂def, hε₁def]; ring
   have hF : ∀ z, quartic b D₀ D₁ D₂ z =
       refQuartic b D₀ z + ε₁ * linOne b D₀ z + ε₂ * linTwo D₀ z + quadTerm D₀ ε₁ ε₂ z := by
     intro z
     rw [← quartic_eq_ref_add, ← hD₁, ← hD₂]
-  -- the outer scale
   have hu : 1 / 2 ≤ 1 - D₀ * b := by linarith
-  set s := Real.sqrt (3 * (1 - D₀ * b) * b) with hs_def
-  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-  have hs2 : s ^ 2 = 3 * (1 - D₀ * b) * b := Real.sq_sqrt (by positivity)
+  obtain ⟨s, hs_def⟩ : ∃ s : ℝ, s = Real.sqrt (3 * (1 - D₀ * b) * b) := ⟨_, rfl⟩
+  rw [← hs_def]
+  have hs0 : 0 ≤ s := by rw [hs_def]; exact Real.sqrt_nonneg _
+  have hs2 : s ^ 2 = 3 * (1 - D₀ * b) * b := by rw [hs_def]; exact Real.sq_sqrt (by positivity)
   have hspos : 0 < s := by
     rw [hs_def]; apply Real.sqrt_pos.mpr; positivity
   have hs_lt : s < b := by
     have : s ^ 2 < b ^ 2 := by rw [hs2]; nlinarith
     exact (pow_lt_pow_iff_left₀ hs0 hbpos.le (by norm_num)).mp this
-  -- `δ = ± s/b`
   have hδ : (s / b) ^ 2 = 3 * (1 - D₀ * b) / b := by
     rw [div_pow, hs2]; field_simp
   have hδ' : (-(s / b)) ^ 2 = 3 * (1 - D₀ * b) / b := by rw [neg_sq]; exact hδ
-  -- the small-dispersion bounds for the far-left point
   have hε₁abs : |ε₁| ≤ 1 / (8 * (b * r)) := by
-    rw [le_div_iff₀ (by positivity)]; linarith
-  have hε₂abs : |ε₂| ≤ 1 / (5 * b ^ 2) := by
     rw [le_div_iff₀ (by positivity)]; linarith
   have hε₁small : |ε₁| * b ≤ 1 / 10 := by
     have h := mul_le_mul_of_nonneg_right hε₁abs hbpos.le
@@ -820,38 +822,44 @@ theorem hyperbolic_quarticPoly {b D₀ D₁ D₂ : ℝ} (hb : 2000 ≤ b)
   have hD1b : D₁ * b ≤ 3 / 5 := by
     have := mul_le_mul_of_nonneg_right (neg_abs_le ε₁) hbpos.le
     rw [hD₁, sub_mul]; linarith
-  -- apply the sign-alternation certificate with `d = 4`
+  refine ⟨hspos, hs_lt, ?_, ?_, ?_, ?_, quartic_zero_pos hbpos⟩
+  · exact quartic_far_left_pos hb h0 h1 h2 (by linarith) hD1b
+  · have h := outer_neg (δ := s / b) hb h0 hK hr hr0 hε₁ hε₂ hδ
+    rw [← hF] at h
+    have e : -b * (1 + s / b) = -b - s := by field_simp; ring
+    rwa [e] at h
+  · have h := center_pos hb h0 hK hr hr0 hε₁ hε₂
+    rwa [← hF] at h
+  · have h := outer_neg (δ := -(s / b)) hb h0 hK hr hr0 hε₁ hε₂ hδ'
+    rw [← hF] at h
+    have e : -b * (1 + -(s / b)) = -b + s := by field_simp; ring
+    rwa [e] at h
+
+/-- **Quartic Jensen hyperbolicity from three dispersions.** If `b ≥ 2000`, the dispersions are
+nonnegative with `D₀ b ≤ 1/2`, and the first and second differences satisfy
+`|D₀ − D₁| ≤ b^{−3/2}/8`, `|D₀ − 2D₁ + D₂| ≤ b^{−2}/5`, then the monic quartic has four distinct
+real roots. -/
+theorem hyperbolic_quarticPoly {b D₀ D₁ D₂ : ℝ} (hb : 2000 ≤ b)
+    (h0 : 0 ≤ D₀) (h1 : 0 ≤ D₁) (h2 : 0 ≤ D₂) (hK : D₀ * b ≤ 1 / 2)
+    (hε₁ : |D₀ - D₁| * (b * Real.sqrt b) ≤ 1 / 8)
+    (hε₂ : |D₀ - 2 * D₁ + D₂| * b ^ 2 ≤ 1 / 5) :
+    Hyperbolic (quarticPoly b D₀ D₁ D₂) := by
+  have hbpos : 0 < b := by linarith
+  obtain ⟨hspos, hs_lt, hA, hB, hC, hD, hE⟩ := quartic_signs hb h0 h1 h2 hK hε₁ hε₂
+  obtain ⟨s, hs⟩ : ∃ s : ℝ, s = Real.sqrt (3 * (1 - D₀ * b) * b) := ⟨_, rfl⟩
+  rw [← hs] at hspos hs_lt hB hD
   refine hyperbolic_of_alternating (d := 4) (y := altPoints b s)
     (natDegree_quarticPoly_le b D₀ D₁ D₂) ?_ ?_
   · intro i hi
-    interval_cases i <;> simp [altPoints] <;> linarith
+    interval_cases i <;> simp only [altPoints] <;> linarith
   · intro i hi
     rw [eval_quarticPoly]
     interval_cases i
-    · simp only [altPoints, pow_zero, one_mul]
-      exact quartic_far_left_pos hb h0 h1 h2 (by linarith) hD1b
-    · simp only [altPoints, pow_one]
-      have h := outer_neg (δ := s / b) hb h0 hK hr hr0 hε₁ hε₂ hδ
-      rw [← hF] at h
-      have e : -b * (1 + s / b) = -b - s := by field_simp; ring
-      rw [e] at h
-      linarith
-    · simp only [altPoints]
-      have h := center_pos hb h0 hK hr hr0 hε₁ hε₂
-      rw [← hF] at h
-      norm_num
-      exact h
-    · simp only [altPoints]
-      have h := outer_neg (δ := -(s / b)) hb h0 hK hr hr0 hε₁ hε₂ hδ'
-      rw [← hF] at h
-      have e : -b * (1 + -(s / b)) = -b + s := by field_simp; ring
-      rw [e] at h
-      norm_num
-      linarith
-    · simp only [altPoints]
-      have h := quartic_zero_pos (D₀ := D₀) (D₁ := D₁) (D₂ := D₂) hbpos
-      norm_num
-      exact h
+    · simp only [altPoints, pow_zero, one_mul]; exact hA
+    · simp only [altPoints, pow_one]; linarith
+    · simp only [altPoints]; norm_num; exact hC
+    · simp only [altPoints]; norm_num; linarith
+    · simp only [altPoints]; norm_num; exact hE
 
 end QuarticDispersionTransfer
 

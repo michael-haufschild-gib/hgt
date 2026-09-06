@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# A zero of finite order cannot absorb a divergent Euler deficit
+# An exponential deficit cannot satisfy a polynomial lower bound
 
 Deleting from the rational primes a set `B` with `π_B(t) ≍ t^γ` multiplies the zeta function by the
 Euler deficit `Φ(s) = ∏_{p ∈ B}(1 - p^{-s})`, which satisfies

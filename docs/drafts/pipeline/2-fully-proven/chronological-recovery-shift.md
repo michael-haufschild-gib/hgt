@@ -1,6 +1,6 @@
 # Multiplication preserves recovery geometry that the heat trace forgets
 
-**Status:** paper proof. No new Lean module yet. Inputs: the formal physical homogeneous norms, attained positive gaps, actual cusp quotient, and graded Hilbert completion. Weighted-shift identities and their hyponormality interpretation are classical; novelty of this physically selected example is unestablished.
+**Status:** physical gap bound, actual quotient multiplication, unique bounded Hilbert shift, exact adjoint/self-commutator, nonnormality, and positivity/log-convexity equivalence formalized in five leaves (45 declarations). Moment identities remain paper-only. Inputs: the formal physical homogeneous norms, attained positive gaps, actual cusp quotient, and graded Hilbert completion. Weighted-shift identities and their hyponormality interpretation are classical; novelty of this physically selected example is unestablished.
 
 ## Construction and bound
 
@@ -31,4 +31,4 @@ The moments of the weighted shift U are γ_n=(δ_n/δ_0)². For the complexified
 
 [Benhida–Curto–Exner, Geometrically regular weighted shifts, arXiv:2309.05888v2, §1.1](https://arxiv.org/pdf/2309.05888) defines positive weighted shifts, their product moments, the Berger-measure criterion, and the monotone-weight characterization of hyponormality. Their studied weights are sqrt((p^n+N)/(p^n+D)); no identification with our recovery ratios is known. The corpus's HTGeometry/WeightedShiftEnergy proves generic bilateral lattice energy bounds; it is not yet the required unilateral operator on our actual quotient.
 
-First formalize the physical u bound, multiplication on homogeneous spaces, and δ_(k+1)≤δ_k/4. Then construct the bounded multiplication operator and exact weight/commutator formulas. Test log-convexity or the moment condition only after establishing this bridge; any numerical exploration is guidance, must run on the designated Runpod, and cannot enter Lean proofs.
+The five final-built and axiom-audited leaves are CubicRecoveryMultiplier, CubicCuspMultiplier, CubicHilbertShift, CubicRecoveryCommutator, and CubicRecoveryPositivity. The user explicitly redirected work toward the hardest unresolved mathematics. Current target: [all-degree gap log-convexity and moment positivity](../1-in-progress/chronological-recovery-moment-problem.md). A new [paper proof gives the exact exponential rate](chronological-recovery-exponential-rate.md), forcing the support endpoint of any compact representing measure. Numerical exploration is retained in [the Runpod report](computations/chronological-recovery-gaps/REPORT.md); it does not enter Lean.

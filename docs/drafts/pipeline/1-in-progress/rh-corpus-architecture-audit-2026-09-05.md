@@ -957,3 +957,108 @@ reachability failures are not resolved or claimed to pass by this documentation 
 The next architecture must supply an actual relation at a zeta zero. It is premature to require
 that relation to hold as an identity for every parameter, or to exclude it using functional
 independence alone. No particular such relation has yet been constructed or selected.
+
+## Thin-deletion boundary: failed rejection and published ancestry
+
+The next intake searched zero specialization, point relations, zero congruences, arithmetic
+endpoints, algebraic zeta families, and cancellation. `rg` checked the retrieved definitions
+and references. `SpecializationFaithfulnessBoundary` supplies a generic polynomial evaluation
+kernel, not an arithmetic relation. `ArithmeticDilationDeterminantZeros` explicitly uses a
+Fredholm/spectral construction and was rejected on source restrictions. No candidate was
+selected from either.
+
+`ThinDeletionEssentialSingularity` suggested testing whether a deletion could create a boundary
+defect that a finite-order zero could not absorb. Reading both its exact hypotheses and the
+parent card uncovered a failed rejection instead: the proposal counts deleted primes on the
+scale `x^gamma/log x`, while its alleged no-go switches to `x^gamma`. These produce logarithmic
+and reciprocal-distance divergence respectively. The proved scalar inequality applies only
+to the latter, exponentially flat bound.
+
+The conjecture that mere divergent logarithmic deficit prevents analytic extension is false:
+`exp(-m*log(1/t))=t^m` for t>0. A symbolic scratch Lean proof closes that precise positive
+boundary. No deletion set is claimed to realize this scalar model. The existing finite sieve
+identity and exponential-versus-power theorem remain valid; neither proves the random error
+bounds. A same-order uncontrolled remainder also prevents the card's positive-tail argument
+from supplying a lower bound for the complete counting error.
+
+The primary paper already uses thin random prime deletion; its section 5 distinguishes
+logarithmic singularities from zeros after exponentiation and retains an RH-dependent
+reciprocal-zeta estimate. [Broucke–Debruyne–Révész](https://arxiv.org/html/2309.01567v2#S5).
+Thus the proposal fails the novelty requirement, while the claimed universal mathematical
+rejection is also unsupported. This is not an approved RH successor.
+
+The [parent card](thin-random-deletion-beurling-alpha-beta.md) now states the original unproved
+random bounds, exact source mismatch, published ancestry, and strongest existing positive
+results. Its [downstream formalized card](../3-formalized/beurling-zero-certification-barriers.md)
+now distinguishes a fixed geometric lattice from arbitrary self-similarity and restricts
+modification nonvanishing to the actual convergence region. Claims of an exhaustive
+classification and a universal `beta>=gamma` implication were removed. Only comments changed
+in the three cited Lean modules; no theorem statement or proof changed. STATUS F186 records
+the self-contained logarithm-versus-function boundary distinction.
+
+Scratch `/tmp/hgt-thin-deletion-scope-tOIrDU/Audit.lean` passed with `lake env lean`: the scalar
+identity and seven existing declarations use only `propext`, `Classical.choice`, and
+`Quot.sound`. All three direct source checks passed. The final foreground command
+`LEAN_NUM_THREADS=1 lake build --old` with exactly those three leaves passed; its only newly
+built modules were those leaves. Existing umbrella imports remain in place. Index refresh
+and `scripts/formal_tools.py lint` passed. All owned Lean processes finished. Logs are in
+the scratch directory. No numerical experiment was run. Both decisive RH links remain
+missing; these corrections do not constitute progress on the missing implication.
+
+The subsequent direct attack on ordered products returned to an already established boundary.
+`EulerDeletionQuasiShuffleSecondShadow` proves that a hypothetical strict-right zero forces
+the real second ordered level to equal minus half the positive diagonal energy. It does not
+force that level to vanish. In `EulerDeletionQuasiShuffleScaling`, the equality between
+replication and arithmetic dilation is explicitly the `hcoherence` premise. No derivation
+of that premise was obtained. This is an unresolved proof obligation, not a new architecture.
+
+A proposed fallback through zero motion of the literal Abel-damped alternating series was
+also not admitted. A primary-source search located earlier polylogarithm zero-motion and
+bracketing proposals. The precise negative-argument family differs from the branch-point
+family in that note; the evidence establishes ancestry, not equivalence of every conjecture.
+See the additional source assessment in
+[the alternating-source card](alternating-source-inverse-branch-intake.md).
+
+## Alternating replacement: a sharp coefficient-growth obstruction
+
+The next proposed producer used `eta(rho)=0` to repeat the replacement represented by
+`1-eta`, seeking uniform control from square summability in the strict half-strip.
+The needed coefficient estimate is false. Odd product outputs receive contributions of
+one common sign. For `r` odd labels of total positive weight `A`, their depth-`k`
+coefficient energy lies between `A^(2k)/(k+1)^r` and `A^(2k)`.
+
+The exact odd-sector survivor is closed in `RHTower/OddDirichletPowerGrowth.lean`:
+a finite exponential bound uniform in cutoff and depth exists iff `sigma>1`, while
+the initial square-sum threshold is `sigma>1/2`. It includes actual integer-product
+grouping and literal replacement-coefficient sign laws. This is an obstruction to the
+proposed coefficient completion, with no zero-location conclusion or scientific novelty
+claim. [Paper proof, ancestry rejection, and precise formal scope](../5-failed/alternating-substitution-collision-growth.md).
+
+All 19 public declarations passed the scratch axiom audit with only the standard three
+logical axioms. Scratch and direct leaf checks, the serialized build of this one new leaf,
+umbrella wiring, index refresh, and global lint passed. No computation was run and no
+owned Lean process remains. STATUS records the self-contained threshold distinction as
+ODD-POWER-001. The missing implication from a zeta zero to a contradiction remains open.
+
+## Reflected closure and finite real coefficients: intake boundary
+
+The attempted chain was simultaneous closure of the literal deletion sums at `s` and
+`1-conj(s)`, followed by an arithmetic identity exchanging their two chronological orders,
+then exclusion of unequal real parts. The jump sequences differ by the positive weight
+`n^(2*Re(s)-1)`. The existing endpoint-tail theorem supplies closure and decay; the polarized
+quasi-shuffle identity supplies the **sum** of the complementary ordered terms and their
+diagonal correction. Neither inspected theorem identifies the two ordered terms. No proof
+of that additional arithmetic identity was obtained. This is not an approved RH architecture.
+
+Corpus intake used `research 'zero tail'`, `research 'simultaneous zero'`,
+`research 'positive reweight'`, `research 'ordered reflection'`, and
+`research 'weighted summation'`, followed by `rg` of the deletion modules and existing audit.
+The actual prefix bound and polarized identity were read in
+`EulerDeletionQuasiShuffleSecondConvergence.lean`. Broad searches had result caps; no complete
+proof-body audit or novelty conclusion is claimed.
+
+The fallback that real, finite-range, integral coefficients might escape known Euler-product
+counterexamples is contradicted by [Bochkov, Theorem 2(2), page 3](https://arxiv.org/pdf/2207.08659).
+Its exact scope is recorded as MUST-SIGN1 in STATUS. This is published source evidence,
+not a newly proved theorem or a Lean premise. No general obstruction to the literal all-one
+sequence follows. No qualifying successor or new Lean proof of the RH implication was obtained.
