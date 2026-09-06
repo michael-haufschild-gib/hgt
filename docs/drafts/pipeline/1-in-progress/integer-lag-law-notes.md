@@ -233,3 +233,27 @@ Continuity of `Φ` + density: RH ⟺ `Φ` bounded above on `{k log p + l log q}`
 Single-base, prime, and arithmetic-progression lag sets are discrete: continuity gives nothing; the prime case is not
 trivial (prime gaps `p^{0.525}` too large for the interval bound), it needs the Landau route with the prime zeta function.
 STATUS MUST-244.
+
+## The prime criterion: exact route and missing bricks (analysis, not built)
+
+**Claim (paper route, not yet Lean):** RH ⟺ `sup_p a_p < ∞` over primes. With `c_p = (M − a_p)(log p)/p ≥ 0` the Laplace
+transform of `Σ_p c_p δ_{log p}` is `M·(−ζ'/ζ)(1+s) − Σ_ρ w_ρ (−ζ'/ζ)(s + 3/2 − ρ)` up to prime-power tails analytic for
+`Re s > −½`. Its poles are at `s = ρ − ½` (residue `m_ρ w_ρ ≠ 0`, never real, no finite accumulation since zeros are
+discrete with ordinates bounded away from `0`), at `s = ρ + ρ'' − 3/2` (real part `≤ 2Θ − 3/2 < Θ − ½`), and at `s = 0`,
+`s = ρ' − 1` (real part `< 0`). Hence the abscissa of the nonnegative series is exactly `Θ − ½` (a pole at `ρ − ½` with
+`β > max(2Θ−1, Θ−½)` cannot be cancelled), Landau forces a real singularity at `Θ − ½`, and the right side is analytic
+there provided `Σ_ρ w_ρ ζ'/ζ(s + 3/2 − ρ)` converges locally uniformly, which needs `|ζ'/ζ(w)| ≪ log|Im w|` on a fixed
+half-plane `Re w ≥ Θ' > Θ`. Missing corpus bricks: (i) polynomial growth of `ζ` in a vertical strip through the
+critical strip (needs vertical Stirling decay of `Γ` and Phragmén–Lindelöf; Mathlib has `PhragmenLindelof.vertical_strip`,
+the corpus has no complex-Gamma vertical decay); (ii) the local zero count `N(t+1) − N(t) ≪ log t` (corpus has Jensen for
+`ξ`, `xi_zeroCount_disc_le`, but no polynomial bound for `ξ` on spheres); (iii) the partial-fraction bound for `ζ'/ζ` from
+the corpus explicit formula. Dual-use: these are the same bricks any Lean zero-free-region argument beyond PNTPlus needs.
+Not started: it is a receiver and a multi-week build.
+
+## Brick built: local zero count (Lean, `ZetaLocalZeroCount`)
+
+`card_le_of_ordinates_in_window : |t| ≥ 4 → (∀ q ∈ F, |Im ρ_q − t| ≤ 1) → F.card ≤ 40 log(180|t|)` for finite sets of
+zero copies. Route: Jensen for `ζ` on `closedBall (2+it) 1.85` (outer 1.95), sphere bound from Zeta23's Euler–Maclaurin
+at `N = 1`, centre `‖ζ(2+it)‖ ≥ 1/3`, order transfer `ξ = xiUnit · ζ`, reflection for `β < ½`. No Gamma decay, no PL.
+Next bricks for the prime criterion: `ζ'/ζ(s) ≪ log|t|/δ` at distance `δ` from all zeros on `½ ≤ Re s ≤ 2` (partial
+fractions from `xi_explicitFormula_logDeriv` + this count), then the Landau assembly.

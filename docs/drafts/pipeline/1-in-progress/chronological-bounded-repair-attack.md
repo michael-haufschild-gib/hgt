@@ -5,8 +5,8 @@ of k,N, and full L²(0,∞) convergence e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0,
 where h(t)=1/t−1/(e^t−1). Derive everything without RH. The target has not changed.
 [Classical RH interface](chronological-rh-recovery-interface.md).
 
-**Verified:** eight individual Lean leaf builds; 110 public declarations audited,
-only propext/Classical.choice/Quot.sound. All eight umbrella imports wired.
+**Verified:** ten individual Lean leaf builds; 130 public declarations audited,
+only propext/Classical.choice/Quot.sound. All ten umbrella imports wired.
 Current authoritative lint passes with existing file-size warnings. [Proofs and certificate](../3-formalized/chronological-arithmetic-repair-boundary.md).
 
 ## What works
@@ -44,10 +44,9 @@ For 0≤ε≤1/2 define
 F_ε(q)=q/(1+εq),
 b_(n,ε)=Σ_(d|n) μ(n/d)(−ε)^(d−1).
 
-Candidate arrays are b_(n,ε_N), n≤N, with ε_N→0. Lean now proves their
-full L² convergence is equivalent to raw Möbius convergence: [B] below.
-Retired as a distinct convergence mechanism, not disproved as an approximation
-statement independently of the raw sequence.
+Candidate arrays are b_(n,ε_N), n≤N, with ε_N→0. **[A] is now disproved.**
+Their full L² convergence is equivalent to raw Möbius convergence [B], and
+the direct heat obstruction [F] below rules out raw convergence unconditionally.
 
 **[BRIDGE, proved in Lean]** F_ε is the damped fixed point
 F=g(1+(1−ε)F). Its formal Lambert inverse is exactly b, and
@@ -63,8 +62,8 @@ D_(N,ε)(t)=e^(−t)−Σ_(d≤N)(−ε)^(d−1)e^(−dt)
 +Σ_(d≤N)(−ε)^(d−1)R_floor(N/d)(dt).
 
 The exponential part is controlled by a finite geometric sum. The last sum
-contains R_N itself with coefficient one. The missing lemma is full L² control
-of this sum for a concrete ε_N→0. No bound of that kind has been proved.
+contains R_N itself with coefficient one. No ε_N→0 in the stated range can
+make this finite remainder tend to zero in full L².
 
 ## Attacks, limits, and next hard question
 
@@ -72,17 +71,11 @@ of this sum for a concrete ε_N→0. No bound of that kind has been proved.
   not control error concentrating at t→0.
 - Fake proof: rapid nonlinear recovery → bounded arithmetic linearization →
   finite L² recovery. Finite powers fail the middle step. Damped infinite depth
-  repairs that step but leaves the last implication entirely open.
-- Reversing [A] succeeded: exact full L² equivalence to raw convergence is
-  formalized. This is a rigidity result, not an assertion of raw heat divergence.
-- Do not transfer the known unsmoothed Nyman–Beurling raw-prefix no-go through
-  exponential smoothing without proof: its inverse is unbounded.
-- Unproved direct attack on the raw sequence: pair a block (N,λN] with
-  √N φ(Nt). Strong Cauchy convergence would force
-  Σ_(N<k≤λN)μ(k)K(k/N)=o(√N), K(r)=∫h(ru)φ(u)du.
-  The window's Mellin transform should expose 1/ζ without undoing smoothing.
-  Real-cutoff interpolation and the boundary-pole argument need a complete
-  audit; no raw heat nonconvergence theorem is claimed.
+  repairs that step, but [F] now disproves the final implication for [A].
+- Reversing [A] gave exact full L² equivalence to raw convergence. The direct
+  positive-Abel transfer now closes raw nonconvergence without inverse smoothing.
+- [F]'s obstruction is arithmetic coherence across cutoffs. It does not extend
+  to arbitrary bounded arrays; those may add a correction of persistent L² size.
 - Unrestricted density via analytic dilation pairing/Blaschke uniqueness is
   another possible [BRIDGE], not yet dependency-closed or formalized. It supplies
   no coefficient budget and does not prove [R].
@@ -103,7 +96,22 @@ error by one C; the perturbation then vanishes. The converse follows from
 boundedness of a convergent sequence. All finite errors are proved to belong
 to L², with the norm identified as the square root of their squared integral.
 
-## Numerical evidence and next test
+## Frozen [F], proved: raw heat obstruction and positive survivor
+
+Raw Möbius heat errors cannot tend to zero in full L². Average the dyadic Fermi
+response to get K(r)=∫₀¹g(ru)du. The weights exp(−r)/K(r) are positive,
+decreasing and at most two. Abel summation turns any raw tail bound δ into
+sqrt(t)|Σμ(k)exp(−kt)|≤6δ+(6+M)sqrt(t). Raw convergence would kill the critical
+Möbius–Laplace profile, contradicting the corpus's closed critical-zero theorem.
+This also excludes every vanishing geometric-damping schedule [A].
+
+**Positive survivor, Lean complete:** one c>0 works for every successful
+arithmetic array: ||r_N(a)−R_N||₂≥c at arbitrarily large N. Genuine repair must
+supply a correction of nonvanishing full norm; coordinatewise rigidity [E]
+and localization of that correction to a growing tail remain open.
+[Direct proof and certificate](../3-formalized/chronological-raw-heat-obstruction.md).
+
+## Numerical evidence and current construction gap
 
 Runpod N=16,...,512: retained box-C=1 errors decrease from 1.31e−4 to 4.12e−9;
 raw error at N=512 is 8.37e−2. These are feasible-vector measurements, not
@@ -112,10 +120,24 @@ residual spot checks differ from float by at most 1.62e−14. Initial optimizer
 failures were exposed by monotonicity checks and corrected by retaining feasible
 vectors and comparing active-set and singular-mode constructions.
 
-At N=512, zeroing nonsquarefree coefficients of the C=1 vector raises error to
-0.913; resetting its first eight coefficients to μ raises error to 0.140.
-Those interventions break this vector's cancellation; they do not rule out
-reoptimizing under either restriction. Next hard test: can a coefficient
-construction maintain its budget while repairing the small-t error at every
-cutoff? Finite fits and damping equivalence do not supply that estimate.
-[Results, checks, coefficients, code](../2-fully-proven/computations/chronological-bounded-repair-2026-09-06/REPORT.md).
+**Reoptimization corrects the earlier ablation interpretation.** At N=512,
+fixing *all first 128* coefficients exactly to μ and reoptimizing the tail with
+C=1 gives error 4.35e−9. Early rewriting is not necessary at this finite scale.
+The quarter-prefix construction slows to 8.71e−10 at N=4096; C=2 gives 6.79e−10.
+Neither retained vectors nor floating-point projection diagnostics certify
+optima. Independent quadratures, 80-digit residual checks and extended-precision
+profiles agree. At N=4096, widening the tail to m=16 fixed coefficients improves
+C=1 error to 3.51e−10; m=128 gives 4.19e−10. Their largest logarithmic-frequency
+peaks are 14.10 and 14.125, near the first zero ordinate 14.1347, without zero
+data in fitting. The proved Mellin invariant is reproduced. These are finite
+spectral diagnostics, not zero localization or an asymptotic estimate.
+[Fixed-prefix protocols, outputs and limitations](../2-fully-proven/computations/chronological-fixed-prefix-2026-09-06/REPORT.md).
+
+**Failed proof step:** averaging cutoffs to cancel finitely many scalar zero
+phases does not cancel the moving L² profiles: the Mellin contribution depends
+on N^(ρ−s) for an entire line of s, not just N^(ρ−1/2). No estimate follows.
+This tail-only construction needs simultaneous control of coefficient budget,
+growing frozen history and full error; [R] itself requires no frozen prefix.
+Fixed-rank feasibility cannot be diagonally
+upgraded without a quantitative bound linking rank and cutoff. No new Lean
+theorem or asymptotic convergence is claimed from these experiments.

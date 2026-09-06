@@ -13,9 +13,10 @@ For every 0≤ε_N≤1/2 tending to zero,
 
 ||D_(N,ε_N)||_(L²(0,∞))→0 ⇔ ||R_N||_(L²(0,∞))→0.
 
-This does not assert that either side holds or fails. The original bounded-array
-RH endpoint remains open. It rules out geometric depth damping as a distinct
-way around the raw convergence problem.
+The equivalence alone does not decide convergence. The separately formalized
+[direct raw heat obstruction](chronological-raw-heat-obstruction.md) now excludes
+both sides and every admissible vanishing damping schedule. The original
+arbitrary bounded-array RH endpoint remains open.
 
 ## Dependency-closed paper proof
 

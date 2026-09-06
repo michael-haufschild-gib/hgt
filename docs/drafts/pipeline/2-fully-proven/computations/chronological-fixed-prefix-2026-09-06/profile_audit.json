@@ -1,0 +1,202 @@
+[
+  {
+    "N": 512,
+    "m": 128,
+    "C": 1,
+    "mesh_order": 60,
+    "l2_norm": 4.347074278526113e-09,
+    "longdouble_profile_l2_norm": 4.3470742831831994e-09,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 1.1032751158098875e-14,
+    "blind_peak_frequency_on_2_to_30": 2.0,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455561312102488e-10,
+      -5.522792132000521e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 1.0844628371071555e-06
+  },
+  {
+    "N": 512,
+    "m": 128,
+    "C": 2,
+    "mesh_order": 60,
+    "l2_norm": 4.25933437476805e-09,
+    "longdouble_profile_l2_norm": 4.259334323398959e-09,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0203783292800412,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 9.908424567994812e-15,
+    "blind_peak_frequency_on_2_to_30": 2.5,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455441617132407e-10,
+      -5.522781779520857e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 1.6876226875877775e-06
+  },
+  {
+    "N": 1024,
+    "m": 256,
+    "C": 1,
+    "mesh_order": 60,
+    "l2_norm": 1.0100312166248594e-09,
+    "longdouble_profile_l2_norm": 1.0100311549979709e-09,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 2.3738188587105292e-14,
+    "blind_peak_frequency_on_2_to_30": 12.65,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455519655641173e-10,
+      -5.52278852812718e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 1.1960380089406263e-07
+  },
+  {
+    "N": 1024,
+    "m": 256,
+    "C": 2,
+    "mesh_order": 60,
+    "l2_norm": 8.350329132022447e-10,
+    "longdouble_profile_l2_norm": 8.350329258399031e-10,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.6724053495636226,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 2.0764010693032277e-14,
+    "blind_peak_frequency_on_2_to_30": 13.100000000000001,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455495242943632e-10,
+      -5.522786416944952e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 4.4575150304838366e-07
+  },
+  {
+    "N": 2048,
+    "m": 512,
+    "C": 1,
+    "mesh_order": 60,
+    "l2_norm": 9.529186327521287e-10,
+    "longdouble_profile_l2_norm": 9.529186819267003e-10,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 3.990301708074385e-14,
+    "blind_peak_frequency_on_2_to_30": 12.55,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455515640626419e-10,
+      -5.522788180810273e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 2.661142175950201e-08
+  },
+  {
+    "N": 2048,
+    "m": 512,
+    "C": 2,
+    "mesh_order": 60,
+    "l2_norm": 7.624662158028771e-10,
+    "longdouble_profile_l2_norm": 7.624660103966915e-10,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.4777150627310616,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 6.181292130495319e-14,
+    "blind_peak_frequency_on_2_to_30": 12.950000000000001,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455541779204268e-10,
+      -5.522790444049236e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 6.322563183124869e-07
+  },
+  {
+    "N": 4096,
+    "m": 1024,
+    "C": 1,
+    "mesh_order": 60,
+    "l2_norm": 8.714758749733926e-10,
+    "longdouble_profile_l2_norm": 8.714759409821875e-10,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 1.0983050860274462e-13,
+    "blind_peak_frequency_on_2_to_30": 12.4,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455510667845537e-10,
+      -5.522787750935294e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 8.853068526935267e-08
+  },
+  {
+    "N": 4096,
+    "m": 1024,
+    "C": 2,
+    "mesh_order": 60,
+    "l2_norm": 6.794535089995423e-10,
+    "longdouble_profile_l2_norm": 6.79453456963636e-10,
+    "longdouble_mantissa_bits": 63,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.3473210834824703,
+    "point_count": 112,
+    "mpmath_digits": 80,
+    "max_residual_discrepancy": 1.6393404343688773e-13,
+    "blind_peak_frequency_on_2_to_30": 13.200000000000001,
+    "first_zero_ordinate_reference": 14.134725141734695,
+    "mellin_at_first_zero": [
+      -1.4455497065402787e-10,
+      -5.522786576782379e-10
+    ],
+    "gamma_reference": [
+      -1.445551448817952e-10,
+      -5.522788081823301e-10
+    ],
+    "mellin_invariant_relative_error": 4.032907131330327e-07
+  }
+]

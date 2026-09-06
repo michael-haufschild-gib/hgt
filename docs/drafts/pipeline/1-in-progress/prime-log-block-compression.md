@@ -58,3 +58,7 @@ It supplies no estimate excluding zeros of the compressed source. Replacing the 
 Module: `formal/GaloisForLFunctions/RHTower/PrimeLogBlockCompression.lean`, imported by `RHTower.lean`.
 
 Fifteen public theorems, including `quarticPrimeFirstDiscrepancy_bound`, `quarticPrimeEulerDiscrepancy_bound`, `summable_quarticPrimeEulerDiscrepancy`, `differentiableOn_quarticPrimeEulerDiscrepancySum`, `quarticPrimeCompressionFinite_eq_exp`, and `tendsto_quarticPrimeCompressionFinite`. Scratch and source checks use `lake env lean`; named leaf build passes. Numerical results are not proof inputs. Axiom and repository lint results are recorded in the formal card.
+
+## Discrimination of retained-source mechanisms
+
+[Prime-block feedback experiments](prime-block-feedback.md) leave the missing source estimate open. Eight-lag count/centroid prediction and uniform contraction at each dyadic merge fail their frozen tests. Whole-block mean-square suppression survives initial prescribed boundary shifts and held-out ranges, while individual blocks expand by as much as 3.77018 times their mean fine-cell square. Its fixed average margin also fails the final larger-scale test. These finite numerical obstructions rule out treating the observed average as pointwise contraction or the tested fixed margin as uniform; they are not Lean no-gos or a rejection of source compression.

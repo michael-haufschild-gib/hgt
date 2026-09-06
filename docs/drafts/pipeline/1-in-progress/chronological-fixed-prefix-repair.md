@@ -28,7 +28,7 @@ This is not yet proved or formalized. If true, fixing any *finite* prefix has
 no asymptotic cost, by replacing its vanishing coefficient deviations; choosing
 a growing prefix still requires a quantitative estimate.
 
-**[D] preliminary result, independently checked next.** At N=512, m=128,
+**[D] result, independently validated.** At N=512, m=128,
 C=1, retained tail gives measured full error 4.3471e−9, versus 4.1182e−9
 for the earlier unrestricted vector. A proportional exact prefix is feasible
 at this scale; the earlier reset ablation did not reveal a necessary rewrite.
@@ -47,6 +47,28 @@ Use both exact singular-mode cancellation and balanced higher-mode residuals.
 This tests repair-window width after the quarter-prefix fit's measured decay
 slowed; it does not extrapolate a fixed-prefix test to a growing-prefix theorem.
 
+**[D3] measured result.** At N=4096, C=1, retained errors are 3.50601e−10
+for m=16 and 4.18541e−10 for m=128, versus 8.71476e−10 for m=1024.
+Widening the adjustable tail improves these finite constructions. Independent
+quadrature, 63-bit-mantissa profiles and 80-digit spot checks agree. The largest
+logarithmic-frequency peaks are 14.10 (m=16) and 14.125 (m=128), near the first
+zero ordinate 14.1347; no zero data entered fitting. The known Mellin invariant
+is reproduced to relative errors below 6.1e−7. This is an expected spectral
+constraint, not zero localization, optimality or an asymptotic theorem.
+
+**Named missing estimate.** In the actual Hilbert space set
+f_m=e^(−t)+Σ_(k≤m)μ(k)h(kt) and T_(m,N)x=Σ_(m<k≤N)x_k h(kt).
+For an orthogonal projection P onto selected singular modes, exact cancellation
+P(f_m+Tx)=0 gives the elementary upper bound
+||f_m+Tx||≤||(I−P)f_m||+sqrt(N−m)||((I−P)T)|| when |x_k|≤1.
+The open source problem is to prove *both* bounded-coordinate feasibility and
+vanishing of this full remainder for one growing sequence of cutoffs and mode
+ranks. Numerically feasible fixed ranks do not supply that joint estimate.
+This identifies the missing proof; it is not a new formalized result.
+
+All numerical outputs, checks and interpretation are in the compact
+[computation report](../2-fully-proven/computations/chronological-fixed-prefix-2026-09-06/REPORT.md).
+
 **Analytic construction attack: averaging cutoffs.** Positive averages of raw
 Möbius residuals preserve the coefficient bound one. A tempting argument is to
 choose a logarithmic averaging filter that cancels finitely many zero modes,
@@ -56,3 +78,5 @@ over the entire integration line, not only N^(ρ−1/2). Cancelling a finite lis
 of scalar phases does not cancel their moving L² profiles. This attempt does
 not establish an estimate. Positive averaging is not retired; its full norm
 control remains the original analytic difficulty.
+
+**Analytic constraint now proved.** The [direct raw heat obstruction](../3-formalized/chronological-raw-heat-obstruction.md) excludes raw Möbius convergence and vanishing geometric-response damping. Every successful array must add a correction with cofinally positive L² norm. This permits the tested adjustable tails; it does not establish their all-scale feasibility or convergence. Coordinatewise rigidity [E] remains open.

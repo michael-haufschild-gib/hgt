@@ -1,0 +1,421 @@
+[
+  {
+    "N": 4096,
+    "m": 16,
+    "C": 1,
+    "origin": "balanced_36_to_47",
+    "l2_norm": 3.506010475519415e-10,
+    "training_energy": 1.2292117856101579e-19,
+    "validation_energy": 1.2292109454451875e-19,
+    "mesh_difference": 8.401649703597622e-26,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "rank_limit": 47,
+    "costs": [
+      {
+        "rank": 1,
+        "lp_box": 0.0017307887618894255,
+        "corrected_box": 0.0017307887618894246
+      },
+      {
+        "rank": 2,
+        "lp_box": 0.00706339221738633,
+        "corrected_box": 0.007063392217386331
+      },
+      {
+        "rank": 3,
+        "lp_box": 0.016858843176880262,
+        "corrected_box": 0.01685884317688037
+      },
+      {
+        "rank": 4,
+        "lp_box": 0.03061086622537504,
+        "corrected_box": 0.030610866225375163
+      },
+      {
+        "rank": 5,
+        "lp_box": 0.04785122335228442,
+        "corrected_box": 0.04785122335228454
+      },
+      {
+        "rank": 6,
+        "lp_box": 0.06832286323050774,
+        "corrected_box": 0.06832286323050785
+      },
+      {
+        "rank": 7,
+        "lp_box": 0.09192005202346216,
+        "corrected_box": 0.09192005202346228
+      },
+      {
+        "rank": 8,
+        "lp_box": 0.11860931717827612,
+        "corrected_box": 0.11860931717827666
+      },
+      {
+        "rank": 9,
+        "lp_box": 0.14839305317694076,
+        "corrected_box": 0.14839305317694373
+      },
+      {
+        "rank": 10,
+        "lp_box": 0.18123921203884172,
+        "corrected_box": 0.18123921203884238
+      },
+      {
+        "rank": 11,
+        "lp_box": 0.21706477659636783,
+        "corrected_box": 0.21706477659636875
+      },
+      {
+        "rank": 12,
+        "lp_box": 0.255721016043194,
+        "corrected_box": 0.255721016043195
+      },
+      {
+        "rank": 13,
+        "lp_box": 0.29661381185613855,
+        "corrected_box": 0.296613811856139
+      },
+      {
+        "rank": 14,
+        "lp_box": 0.33998460604022895,
+        "corrected_box": 0.33998460604023073
+      },
+      {
+        "rank": 15,
+        "lp_box": 0.3845417399443555,
+        "corrected_box": 0.38454173994435864
+      },
+      {
+        "rank": 16,
+        "lp_box": 0.42884973803794846,
+        "corrected_box": 0.42884973803795406
+      },
+      {
+        "rank": 17,
+        "lp_box": 0.47501495153215406,
+        "corrected_box": 0.4750149515321588
+      },
+      {
+        "rank": 18,
+        "lp_box": 0.5178484117213278,
+        "corrected_box": 0.5178484117213293
+      },
+      {
+        "rank": 19,
+        "lp_box": 0.5606086700688873,
+        "corrected_box": 0.5606086700688938
+      },
+      {
+        "rank": 20,
+        "lp_box": 0.5966161912907093,
+        "corrected_box": 0.5966161912907116
+      },
+      {
+        "rank": 21,
+        "lp_box": 0.629558085867673,
+        "corrected_box": 0.6295580858676771
+      },
+      {
+        "rank": 22,
+        "lp_box": 0.6608354981484199,
+        "corrected_box": 0.6608354981484212
+      },
+      {
+        "rank": 23,
+        "lp_box": 0.6862494673866535,
+        "corrected_box": 0.6862494673866546
+      },
+      {
+        "rank": 24,
+        "lp_box": 0.7052165452725843,
+        "corrected_box": 0.7052165452725858
+      },
+      {
+        "rank": 25,
+        "lp_box": 0.7207586599743321,
+        "corrected_box": 0.7207586599743356
+      },
+      {
+        "rank": 26,
+        "lp_box": 0.7334373973847327,
+        "corrected_box": 0.7334373973847358
+      },
+      {
+        "rank": 27,
+        "lp_box": 0.7442731889879339,
+        "corrected_box": 0.74427318898794
+      },
+      {
+        "rank": 28,
+        "lp_box": 0.7565461771242549,
+        "corrected_box": 0.7565461771242564
+      },
+      {
+        "rank": 29,
+        "lp_box": 0.7754513021860919,
+        "corrected_box": 0.7754513021872823
+      },
+      {
+        "rank": 30,
+        "lp_box": 0.7973365832173939,
+        "corrected_box": 0.7973365832173995
+      },
+      {
+        "rank": 31,
+        "lp_box": 0.8175043231806371,
+        "corrected_box": 0.8175043231806532
+      },
+      {
+        "rank": 32,
+        "lp_box": 0.8344813096175906,
+        "corrected_box": 0.8344813096175981
+      },
+      {
+        "rank": 33,
+        "lp_box": 0.8457995546492604,
+        "corrected_box": 0.8457995546492663
+      },
+      {
+        "rank": 34,
+        "lp_box": 0.8472845100228115,
+        "corrected_box": 0.8472845100228131
+      },
+      {
+        "rank": 35,
+        "lp_box": 0.8534182397873598,
+        "corrected_box": 0.8534182397873621
+      },
+      {
+        "rank": 36,
+        "lp_box": 0.8615954872079599,
+        "corrected_box": 0.8615954872138798
+      },
+      {
+        "rank": 37,
+        "lp_box": 0.8651602491677393,
+        "corrected_box": 0.8651602491677439
+      },
+      {
+        "rank": 38,
+        "lp_box": 0.9087781121087674,
+        "corrected_box": 0.9087781121087705
+      },
+      {
+        "rank": 39,
+        "lp_box": 1.174645835334839,
+        "corrected_box": 1.1746458353348432
+      }
+    ],
+    "balanced_diagnostics": [
+      {
+        "lo": 32,
+        "hi": 47,
+        "status": 0,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "training_norm": 3.620966856794826e-10,
+        "preclip_tail_bound": 0.9999999900000016
+      },
+      {
+        "lo": 34,
+        "hi": 47,
+        "status": 0,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "training_norm": 3.511699574204936e-10,
+        "preclip_tail_bound": 0.9999999900000023
+      },
+      {
+        "lo": 36,
+        "hi": 47,
+        "status": 0,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "training_norm": 3.506011673697277e-10,
+        "preclip_tail_bound": 0.9999999900000016
+      }
+    ],
+    "seconds": 136.74720215797424
+  },
+  {
+    "N": 4096,
+    "m": 128,
+    "C": 1,
+    "origin": "exact_modes_27",
+    "l2_norm": 4.1854082721032885e-10,
+    "training_energy": 1.7517639280425392e-19,
+    "validation_energy": 1.7517642404190636e-19,
+    "mesh_difference": 3.123765243861048e-26,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "rank_limit": 34,
+    "costs": [
+      {
+        "rank": 1,
+        "lp_box": 1.9719897316391762e-05,
+        "corrected_box": 1.9719897316391745e-05
+      },
+      {
+        "rank": 2,
+        "lp_box": 0.0001227474955766647,
+        "corrected_box": 0.00012274749557666633
+      },
+      {
+        "rank": 3,
+        "lp_box": 0.0004186766623665528,
+        "corrected_box": 0.0004186766623665591
+      },
+      {
+        "rank": 4,
+        "lp_box": 0.0010479790924741528,
+        "corrected_box": 0.0010479790924741539
+      },
+      {
+        "rank": 5,
+        "lp_box": 0.0021722675780253427,
+        "corrected_box": 0.0021722675780253514
+      },
+      {
+        "rank": 6,
+        "lp_box": 0.003960371693821721,
+        "corrected_box": 0.003960371693821755
+      },
+      {
+        "rank": 7,
+        "lp_box": 0.006565224048265907,
+        "corrected_box": 0.006565224048265967
+      },
+      {
+        "rank": 8,
+        "lp_box": 0.0100852651140674,
+        "corrected_box": 0.01008526511406743
+      },
+      {
+        "rank": 9,
+        "lp_box": 0.014508936956675536,
+        "corrected_box": 0.014508936956675688
+      },
+      {
+        "rank": 10,
+        "lp_box": 0.01964830094714188,
+        "corrected_box": 0.019648300947142035
+      },
+      {
+        "rank": 11,
+        "lp_box": 0.025079690614825696,
+        "corrected_box": 0.025079690614825755
+      },
+      {
+        "rank": 12,
+        "lp_box": 0.030140660917533875,
+        "corrected_box": 0.030140660917533906
+      },
+      {
+        "rank": 13,
+        "lp_box": 0.03405843582987628,
+        "corrected_box": 0.03405843582987644
+      },
+      {
+        "rank": 14,
+        "lp_box": 0.03627349103311282,
+        "corrected_box": 0.036273491033112955
+      },
+      {
+        "rank": 15,
+        "lp_box": 0.03688409718807608,
+        "corrected_box": 0.03688409718807617
+      },
+      {
+        "rank": 16,
+        "lp_box": 0.042989597571252,
+        "corrected_box": 0.04298959757125209
+      },
+      {
+        "rank": 17,
+        "lp_box": 0.06273163457529343,
+        "corrected_box": 0.0627316345752936
+      },
+      {
+        "rank": 18,
+        "lp_box": 0.08177627576272899,
+        "corrected_box": 0.08177627576272938
+      },
+      {
+        "rank": 19,
+        "lp_box": 0.0944804354046167,
+        "corrected_box": 0.094480435404617
+      },
+      {
+        "rank": 20,
+        "lp_box": 0.09803499397262161,
+        "corrected_box": 0.09803499397262191
+      },
+      {
+        "rank": 21,
+        "lp_box": 0.11429376259760672,
+        "corrected_box": 0.11429376259760735
+      },
+      {
+        "rank": 22,
+        "lp_box": 0.14980987511557797,
+        "corrected_box": 0.14980987511557853
+      },
+      {
+        "rank": 23,
+        "lp_box": 0.15913535657376263,
+        "corrected_box": 0.1591353565737635
+      },
+      {
+        "rank": 24,
+        "lp_box": 0.16746865315036036,
+        "corrected_box": 0.1674686531503609
+      },
+      {
+        "rank": 25,
+        "lp_box": 0.19955063579486298,
+        "corrected_box": 0.19955063579486393
+      },
+      {
+        "rank": 26,
+        "lp_box": 0.22404041345965175,
+        "corrected_box": 0.2240404134596527
+      },
+      {
+        "rank": 27,
+        "lp_box": 0.670911831298105,
+        "corrected_box": 0.6709118312981084
+      },
+      {
+        "rank": 28,
+        "lp_box": 1.1960243445128735,
+        "corrected_box": 1.1960243445128818
+      }
+    ],
+    "balanced_diagnostics": [
+      {
+        "lo": 21,
+        "hi": 34,
+        "status": 0,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "training_norm": 4.708204417650084e-10,
+        "preclip_tail_bound": 0.9999999900000014
+      },
+      {
+        "lo": 23,
+        "hi": 34,
+        "status": 0,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "training_norm": 4.3834078978706444e-10,
+        "preclip_tail_bound": 0.9999999900000043
+      },
+      {
+        "lo": 25,
+        "hi": 34,
+        "status": 0,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "training_norm": 4.3264240823077265e-10,
+        "preclip_tail_bound": 0.9999999900000017
+      }
+    ],
+    "seconds": 54.788994789123535
+  }
+]

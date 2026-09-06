@@ -30,12 +30,13 @@ def case(m):
     costs, balanced = [], []
     hi = min(55, int(np.sum(s > 2e-15*s[0])))
     best_rank = 1
-    options = {'primal_feasibility_tolerance': 1e-10, 'dual_feasibility_tolerance': 1e-10}
+    options = {'primal_feasibility_tolerance': 1e-10, 'dual_feasibility_tolerance': 1e-10,
+               'ipm_optimality_tolerance': 1e-10, 'time_limit': 60}
     for rank in range(1, hi+1):
         target = -projection[:rank]/s[:rank]
         fit = linprog(np.r_[np.zeros(nf), 1.], A_ub=ub, b_ub=np.zeros(2*nf),
                       A_eq=np.column_stack([vh[:rank], np.zeros(rank)]), b_eq=target,
-                      bounds=[(None, None)]*nf+[(0, None)], method='highs', options=options)
+                      bounds=[(None, None)]*nf+[(0, None)], method='highs-ipm', options=options)
         if not fit.success:
             costs.append({'rank': rank, 'status': int(fit.status), 'message': fit.message})
             break
@@ -43,6 +44,7 @@ def case(m):
         a += vh[:rank].T@(target-vh[:rank]@a)
         actual = float(np.max(np.abs(a)))
         costs.append({'rank': rank, 'lp_box': float(fit.x[-1]), 'corrected_box': actual})
+        print(json.dumps({'event': 'rank_done', 'm': m, 'rank': rank, 'cost': actual}), flush=True)
         if actual <= 1+1e-10:
             pool.append(('exact_modes_%d' % rank, np.r_[mu[:m], np.clip(a, -1, 1)]))
             best_rank = rank
@@ -58,7 +60,7 @@ def case(m):
                       b_ub=np.r_[-target, target],
                       A_eq=np.column_stack([vh[:lo], np.zeros(lo)]),
                       b_eq=-projection[:lo]/s[:lo],
-                      bounds=[(-1+1e-8, 1-1e-8)]*nf+[(0, None)], method='highs', options=options)
+                      bounds=[(-1+1e-8, 1-1e-8)]*nf+[(0, None)], method='highs-ipm', options=options)
         diag = {'lo': lo, 'hi': hi, 'status': int(fit.status), 'message': fit.message}
         if fit.success:
             a = fit.x[:nf]

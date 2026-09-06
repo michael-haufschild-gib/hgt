@@ -1,0 +1,98 @@
+[
+  {
+    "N": 128,
+    "m": 32,
+    "C": 1,
+    "mesh_order": 52,
+    "l2_norm": 2.3566886396599306e-07,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 3.4116261964644774e-15
+  },
+  {
+    "N": 128,
+    "m": 32,
+    "C": 2,
+    "mesh_order": 52,
+    "l2_norm": 2.171909752274833e-07,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 2.0,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 6.244158355825019e-15
+  },
+  {
+    "N": 256,
+    "m": 64,
+    "C": 1,
+    "mesh_order": 52,
+    "l2_norm": 3.3032282155819954e-08,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 7.004863333720489e-15
+  },
+  {
+    "N": 256,
+    "m": 64,
+    "C": 2,
+    "mesh_order": 52,
+    "l2_norm": 3.3032282155819954e-08,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 7.004863333720489e-15
+  },
+  {
+    "N": 512,
+    "m": 128,
+    "C": 1,
+    "mesh_order": 52,
+    "l2_norm": 4.347074328350965e-09,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 8.953589602790109e-15
+  },
+  {
+    "N": 512,
+    "m": 128,
+    "C": 2,
+    "mesh_order": 52,
+    "l2_norm": 4.259334373235505e-09,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0203783292800412,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 1.2130978925910095e-14
+  },
+  {
+    "N": 512,
+    "m": 8,
+    "C": 1,
+    "mesh_order": 52,
+    "l2_norm": 4.154369071544577e-09,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.0,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 1.2887772699535867e-14
+  },
+  {
+    "N": 512,
+    "m": 8,
+    "C": 2,
+    "mesh_order": 52,
+    "l2_norm": 3.890163316132086e-09,
+    "fixed_prefix_exact": true,
+    "max_abs_coefficient": 1.9224370709354892,
+    "mpmath_digits": 80,
+    "point_count": 112,
+    "max_residual_discrepancy": 2.2865788612186256e-14
+  }
+]

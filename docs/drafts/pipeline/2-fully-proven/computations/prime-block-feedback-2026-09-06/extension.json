@@ -1,0 +1,77 @@
+{
+  "candidate": "E3",
+  "range": [
+    128,
+    159
+  ],
+  "results": [
+    {
+      "phase_eighths": 0,
+      "fine_mean_square": 0.2502084388087132,
+      "whole_mean_square": 0.11155406241683086,
+      "ratio": 0.44584452446112355,
+      "max_whole_absolute": 1.1669623548990147,
+      "passes": true
+    },
+    {
+      "phase_eighths": 1,
+      "fine_mean_square": 0.2587136873244077,
+      "whole_mean_square": 0.10890906758019665,
+      "ratio": 0.42096368656225286,
+      "max_whole_absolute": 1.0189271440290586,
+      "passes": true
+    },
+    {
+      "phase_eighths": 2,
+      "fine_mean_square": 0.2613796353317065,
+      "whole_mean_square": 0.10553144362656725,
+      "ratio": 0.40374776517168787,
+      "max_whole_absolute": 1.0259903079607007,
+      "passes": true
+    },
+    {
+      "phase_eighths": 3,
+      "fine_mean_square": 0.23835932843456992,
+      "whole_mean_square": 0.10268609819024888,
+      "ratio": 0.4308037737169427,
+      "max_whole_absolute": 1.0317026577427355,
+      "passes": true
+    },
+    {
+      "phase_eighths": 4,
+      "fine_mean_square": 0.22711081777898115,
+      "whole_mean_square": 0.10810841984961514,
+      "ratio": 0.4760161620959143,
+      "max_whole_absolute": 0.971325397629578,
+      "passes": true
+    },
+    {
+      "phase_eighths": 5,
+      "fine_mean_square": 0.24007144712114326,
+      "whole_mean_square": 0.10334681847470076,
+      "ratio": 0.4304835902561564,
+      "max_whole_absolute": 0.7625843966701575,
+      "passes": true
+    },
+    {
+      "phase_eighths": 6,
+      "fine_mean_square": 0.24592492744011657,
+      "whole_mean_square": 0.09243206249516714,
+      "ratio": 0.37585479218114076,
+      "max_whole_absolute": 0.7062469175280593,
+      "passes": true
+    },
+    {
+      "phase_eighths": 7,
+      "fine_mean_square": 0.25101899749820455,
+      "whole_mean_square": 0.11616654451243902,
+      "ratio": 0.4627798918417317,
+      "max_whole_absolute": 1.0100234795886496,
+      "passes": true
+    }
+  ],
+  "advance": true,
+  "quadrature_max_relative_error": 4.4099423740951994e-16,
+  "workers": 8,
+  "wall_seconds": 0.37036120891571045
+}
