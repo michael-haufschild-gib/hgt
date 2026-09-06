@@ -1,0 +1,78 @@
+[
+  {
+    "N": 128,
+    "power": {
+      "l2_norm": 0.0025150095004811655,
+      "mp80_max_residual_difference": 1.4859249279757464e-15,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 1.2274166061851947e-08,
+      "below_1_over_N_energy": 2.5746152062608394e-08,
+      "correction_from_raw_norm": 0.0024658817989196757
+    },
+    "averaged": {
+      "l2_norm": 6.550053252078248e-07,
+      "mp80_max_residual_difference": 8.960176159339582e-16,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 3.962918216642417e-19,
+      "below_1_over_N_energy": 1.9305803926553595e-13,
+      "correction_from_raw_norm": 0.003522317579550189
+    }
+  },
+  {
+    "N": 512,
+    "power": {
+      "l2_norm": 0.0677148529472853,
+      "mp80_max_residual_difference": 3.311017151805283e-15,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 6.546869777394423e-06,
+      "below_1_over_N_energy": 0.0010734221075366398,
+      "correction_from_raw_norm": 0.04830842528879282
+    },
+    "averaged": {
+      "l2_norm": 1.682428469729922e-08,
+      "mp80_max_residual_difference": 1.6464432935224266e-15,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 7.65042218763077e-23,
+      "below_1_over_N_energy": 1.2958110185474602e-16,
+      "correction_from_raw_norm": 0.08374656105632189
+    }
+  },
+  {
+    "N": 2048,
+    "power": {
+      "l2_norm": 0.1517290657366687,
+      "mp80_max_residual_difference": 8.097348570345759e-15,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 2.2872837167172947e-05,
+      "below_1_over_N_energy": 0.004684779407627594,
+      "correction_from_raw_norm": 0.06887627527199787
+    },
+    "averaged": {
+      "l2_norm": 1.2939677989397136e-09,
+      "mp80_max_residual_difference": 2.8691871001144966e-15,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 3.643206958267704e-22,
+      "below_1_over_N_energy": 1.38720945718245e-19,
+      "correction_from_raw_norm": 0.1712978615497611
+    }
+  },
+  {
+    "N": 8192,
+    "power": {
+      "l2_norm": 0.17068552269727655,
+      "mp80_max_residual_difference": 1.7323004338466897e-14,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 4.9955614707150875e-05,
+      "below_1_over_N_energy": 0.004840783913069448,
+      "correction_from_raw_norm": 0.13027159229786595
+    },
+    "averaged": {
+      "l2_norm": 1.7470678929088978e-09,
+      "mp80_max_residual_difference": 1.0900252709231141e-14,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 1.7723110997120677e-22,
+      "below_1_over_N_energy": 2.7756515317587134e-20,
+      "correction_from_raw_norm": 0.22940476723406644
+    }
+  }
+]

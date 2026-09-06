@@ -85,3 +85,12 @@ built in is closed in Lean: any bound `|Φ| ≤ M` proves RH and then improves i
 
 Statement: `RH ⟺ ∀ n ≥ 2: (n − ψ(n)) + n(Σ_{m≤n}Λ(m)/m − log n + γ) − log 2π + Σ_{k≥1} n^{−2k}/(2k(2k+1)) ≤ (2+γ−log 4π)√n`,
 and under RH the inequality is tight along `b^m` for every base `b`. Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+- `RHTower.ZetaLogDerivZeroDistance` — the partial-fraction bound for `ζ'/ζ`: `summable_partialFractionTerm`,
+  `logDeriv_xi_sub_eq_tsum` (anchor difference `Σ'_ρ ((s−ρ)⁻¹ − (s₀−ρ)⁻¹)`), `logDeriv_zeta_eq_logDeriv_xi`
+  (`ζ'/ζ = ξ'/ξ − 1/s − 1/(s−1) − Γ_ℝ'/Γ_ℝ`), `norm_logDeriv_zeta_three_le` (`≤ 2` on `Re s = 3`),
+  `norm_logDeriv_Gammaℝ_le` (`≤ log t + 2 + 2π + log 2` on `½ ≤ σ ≤ 3`, `t ≥ 4`), `smallHeightCopies_finite` /
+  `smallHeightCount` (`K₀`), `card_zeroWindow_le` (`≤ 80 log(180(t+k+1)) + K₀` on `|t−γ| ∈ [k,k+1)`), the telescoping
+  tails `sum_inv_sq_Ico_le`, `sum_log_div_sq_Ico_le` (`≤ 7`), `windowIndex`/`windowWeight`, `norm_term_le_windowWeight`,
+  `sum_norm_partialFractionDiff_le`, and **`norm_logDeriv_zeta_le`**: `½ ≤ σ ≤ 2`, `t ≥ 4`, `0 < δ ≤ 1`,
+  `∀ ρ, ‖s − ρ‖ ≥ δ` ⟹ `‖ζ'/ζ(σ+it)‖ ≤ (3700 + 5K₀) log t / δ`. STATUS MUST-247.

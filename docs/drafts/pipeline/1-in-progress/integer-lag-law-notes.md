@@ -257,3 +257,10 @@ zero copies. Route: Jensen for `ζ` on `closedBall (2+it) 1.85` (outer 1.95), sp
 at `N = 1`, centre `‖ζ(2+it)‖ ≥ 1/3`, order transfer `ξ = xiUnit · ζ`, reflection for `β < ½`. No Gamma decay, no PL.
 Next bricks for the prime criterion: `ζ'/ζ(s) ≪ log|t|/δ` at distance `δ` from all zeros on `½ ≤ Re s ≤ 2` (partial
 fractions from `xi_explicitFormula_logDeriv` + this count), then the Landau assembly.
+
+## Brick built: `ζ'/ζ ≪ log t / δ` (Lean, `ZetaLogDerivZeroDistance`)
+
+`norm_logDeriv_zeta_le`: `½ ≤ σ ≤ 2`, `t ≥ 4`, `0 < δ ≤ 1`, all zero copies at distance `≥ δ` ⟹
+`‖ζ'/ζ(σ+it)‖ ≤ (3700 + 5K₀) log t/δ`, `K₀ = #{copies with |γ| ≤ 6}`. Anchor `3+it`, windows `k = ⌊|t−γ|⌋`, window count
+from `card_le_of_ordinates_in_window` on both sides of `t` (the lower window may dip below height 4: absorbed by `K₀`),
+tails `Σ 1/k² ≤ 1`, `Σ log(k+2)/k² ≤ 7`. STATUS MUST-247. Remaining for the prime criterion: the Landau assembly.
