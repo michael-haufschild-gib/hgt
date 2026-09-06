@@ -67,3 +67,10 @@ suffice by weak convergence and convexification; cofinal bounded recurrence
 is itself unproved. A decreasing minimum over all earlier raw prefixes does
 not establish such recurrence. The corpus already has a related bounded-return
 Fatou route; this observation is not a new proof architecture.
+
+
+**Growing-prefix check:** restricting positive cutoff support to [N/2,N] has
+substantial finite cost; releasing monotonicity while keeping the same frozen
+prefix and coefficient budget reduces that cost. Neither family is retired.
+The new closed harmonic-charge normalization removes the far tail but leaves
+the near-zero estimate open. [Current attack and exact outcomes](chronological-escaping-averages.md).

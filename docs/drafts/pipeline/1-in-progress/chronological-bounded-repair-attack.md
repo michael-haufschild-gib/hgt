@@ -5,8 +5,8 @@ of k,N, and full L²(0,∞) convergence e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0,
 where h(t)=1/t−1/(e^t−1). Derive everything without RH. The target has not changed.
 [Classical RH interface](chronological-rh-recovery-interface.md).
 
-**Verified:** eleven individual Lean leaf builds; 142 public declarations audited,
-only propext/Classical.choice/Quot.sound. All eleven umbrella imports wired.
+**Verified:** twelve individual Lean leaf builds; 154 public declarations audited,
+only propext/Classical.choice/Quot.sound. All twelve umbrella imports wired.
 Current authoritative lint passes with existing file-size warnings. [Proofs and certificate](../3-formalized/chronological-arithmetic-repair-boundary.md).
 
 ## What works
@@ -82,19 +82,14 @@ make this finite remainder tend to zero in full L².
 
 No numerical result enters Lean. No new RH proof or novelty/priority claim.
 
-## Frozen test [B], now proved: full L² convergence equivalence
+## Frozen test [B], proved: full L² convergence equivalence
 
-For every schedule 0≤ε_N≤1/2 tending to zero,
-D_(N,ε_N)→0 in full L² if and only if R_N→0 in full L².
+Every schedule 0≤ε_N≤1/2 tending to zero has damped convergence iff raw
+convergence. If strict earlier raw norms are ≤C, then
+||D_(N,ε)−R_N||₂≤2ε(1+C); only indices N/d<N occur. Volterra induction
+supplies raw boundedness from damped convergence, then the discrepancy vanishes.
 `ChronologicalDampingRigidity.chronologicalDampedHeat_converges_iff_raw`
-(namespace RHTower) proves this on the actual half-line measure.
-
-**Positive residue.** If all earlier raw error norms are ≤C, then
-||D_(N,ε)−R_N||₂≤2ε(1+C). Only strict earlier indices N/d, d≥2, occur.
-If the damped errors tend to zero, strong induction first bounds every raw
-error by one C; the perturbation then vanishes. The converse follows from
-boundedness of a convergent sequence. All finite errors are proved to belong
-to L², with the norm identified as the square root of their squared integral.
+proves this for the actual half-line norm, without assuming raw boundedness.
 
 ## Frozen [F], proved: raw heat obstruction and positive survivor
 
@@ -122,22 +117,29 @@ Volterra induction. Every successful power schedule must have a cofinally
 positive ε_N log N floor. This is not an eventual floor or a refutation of [G].
 [Exact theorem, positive survivors and certificate](../3-formalized/chronological-arithmetic-averaging-scale.md).
 
-Runpod positive cutoff averages, with a_k=μ(k)w_k and
-1=w_1≥...≥w_N≥0, achieve measured errors 6.55e−7, 1.68e−8, 1.29e−9,
-1.02e−9 at N=128,512,2048,8192. They preserve all Möbius signs and
-nonsquarefree zeros. Best scalar power fits found are much worse. Shifted
-quadratures and 80-digit residual checks agree; no certified optimum or
-asymptotic rate follows. [Report and vectors](../2-fully-proven/computations/chronological-arithmetic-averaging-2026-09-06/REPORT.md).
+**[BRIDGES Q/Q+], Lean complete:** S_N=Σa_(k,N)/k→0 for every successful
+bounded array. Uniformly in cutoff, for T≥1,
+|S_N|≤(T+1)(||r_N||₂+(1+4C)exp(−T)). Adjusting a_(1,N) by −S_N removes
+the charge exactly and changes the residual by −S_N h. For every η>0 one
+obtains exact zero charge with budget C+η and the same convergence, choosing
+finitely many initial rows zero. This does not preserve exact C or a frozen
+Möbius prefix. [Proof and certificate](../3-formalized/chronological-harmonic-charge.md).
 
-Earlier unrestricted C=1 tail reoptimization at N=4096 gives 3.51e−10
-with 16 frozen Möbius coefficients, 4.19e−10 with 128 frozen, and 8.71e−10
-with 1024 frozen. Early rewriting is not necessary at those finite scales.
-Logarithmic-frequency peaks near 14.1 occur without zero data in fitting;
-these are finite spectral diagnostics, not a zero localization or norm limit.
-[Earlier protocol and limitations](../2-fully-proven/computations/chronological-fixed-prefix-2026-09-06/REPORT.md).
+Runpod positive averages reach 1.01503e−9 at N=8192. Freezing the first half
+of the coefficients increases the positive-average error to 5.93328e−6;
+its quadrature primal/dual values nearly coincide. Releasing monotonicity
+while preserving Möbius signs gives 1.29339e−8; the full unit box gives
+6.05440e−9 with the same 4096 frozen coefficients. The predeclared
+sign-preserving ≤1e−8 prediction was not attained, nor refuted by a certified
+lower bound. Independent quadrature and high-precision checks agree.
+[Current source investigation and report](chronological-escaping-averages.md).
 
-**Unclosed source estimate:** construct positive cutoff distributions with
-vanishing full average norm. Fixed-rank feasibility gives no uniform bound
+Earlier N=4096 C=1 fits reached 3.51e−10 with 16 frozen coefficients and
+8.71e−10 with 1024 frozen. Peaks near logarithmic frequency 14.1 arose without
+zero inputs; these remain finite diagnostics. [Earlier report](../2-fully-proven/computations/chronological-fixed-prefix-2026-09-06/REPORT.md).
+
+**Unclosed source estimate:** construct bounded arrays with vanishing full
+norm; positive cutoff distributions remain a more restrictive open option. Fixed-rank feasibility gives no uniform bound
 linking rank and cutoff. Cancelling finitely many scalar zero phases fails to
 control moving L² profiles, whose Mellin dependence is N^(ρ−s) on an entire
 line. A dual proof must rule out a uniformly positive separating L² test;

@@ -102,3 +102,21 @@ and under RH the inequality is tight along `b^m` for every base `b`. Axioms: `[p
   `exists_attainedTop_of_finite_offLine`, `exists_pow_integerLag_gt_of_finite_offLine`,
   `riemannHypothesis_of_forall_xiZeroCopy_re_eq_half` (public), **`riemannHypothesis_or_infinite_offLine_of_forall_le`**,
   **`riemannHypothesis_or_not_attained_of_forall_le`**. STATUS MUST-248.
+
+- `RHTower.WeilLagFunctionShadow` — nodes `baseNode b q = b^{ρ−½}` with bounds `nodeBound`, generating function
+  `lagGen` (analytic on the unit disc under `|a_{b^m}| ≤ M`, `differentiableOn_lagGen`), node series `nodeSeries` with
+  the double-series interchange `tsum_tsum_lagWeight_mul_pow` and `lagGen_eq_nodeSeries` near `0`, `aliasSet`/
+  `aliasWeight` (`aliasWeight_re_pos`), `regularPart` (`differentiableOn_regularPart` off the poles), the split
+  `nodeSeries_split`, `shadowPoles`, **`not_bounded_of_clean_shadow`** (identity theorem on a convex tube around the
+  segment `[0, 1/z_{q₀}]`), **`exists_segment_mem_closure_shadowPoles`** (the shadow law), and
+  `riemannHypothesis_of_forall_abs_le_of_clean_shadows`. STATUS MUST-249.
+
+- `RHTower.RingRecursionWitness` — the structural counterexample to single-base sufficiency, with rate parameter `l`:
+  rings at radii `ringRadius N = e^{−5/√N}`, seeds `ringSeed l m = e^{−lm}`, the divisor recursion
+  `ringStep`/`ringPrefix`/`ringData` (`ringWeight l`, `ringFlag l`), the cancellation identity `ringS_add_self`/
+  `ringTotal_eq` (`|ringTotal l m| ≤ e^{−lm}`), the bounds `ringRadius_ratio_le` (`(ρ_N/ρ_m)^m ≤ e^{−2√m}`),
+  `exp_seed_cost_le` (`e^{5√m−lm} ≤ e^{25/(4l)}`), `exp_seed_cost_le_geom`, `ringWeight_step_le`, `ringWeight_le_bound`
+  (`≤ 2e^{25/(4l)}`), `ringWeight_le_majorant`, `summable_ringWeight`; nodes `ringNode l`/`ringNodeWeight l`,
+  `sum_rootsOfUnity_pow`, `ring_powerSum`, `tsum_powerSum`, **`exists_positive_configuration_powerSums_le`**
+  (unit disc, sums `≤ e^{−lm}`) and **`exists_positive_configuration_bounded_powerSums`** (`R > 1`, sums `≤ 1`).
+  STATUS CANNOT-327.

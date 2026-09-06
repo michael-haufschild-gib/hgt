@@ -49,3 +49,28 @@ after complete renewal collapses to `exp(-ax)`, while SD1 concerns the unresolve
 See the frozen [experiment protocol](../2-fully-proven/computations/mobius-divisor-diagonal-dominance-2026-09-06/PROTOCOL.md).
 No finite pass will be called an all-scale proof, and the factor one will not be adjusted after
 a counterexample. The elementary diagonal bound alone is not recorded as new RH progress.
+
+## Current evidence and formal boundary
+
+SD1 survives exhaustive floating-point testing at all integers through 2,097,152. M=2 is exact
+equality; the largest other ratio is 0.77306365027833565955 at M=17, independently checked at
+60 and 100 digits. These checks do not prove SD1. Full data and audits are in the
+[computation report](../2-fully-proven/computations/mobius-divisor-diagonal-dominance-2026-09-06/REPORT.md).
+
+**SD2, independent stronger [BRIDGE], numerically rejected:** the margin
+`E(M)=sum_d mu(d)^2 K_d(M)^2-S(M)^2` is nondecreasing for all M>=1. The first decrease is
+M=4 to 5, about -0.01312330656601420691. There are 21,863 recorded decreases; the largest
+absolute one occurs at M=1,851,018. Rejecting this monotone producer does not reject SD1 or
+this RH branch. No damped monotonicity statement replaces the frozen claim.
+
+The positive residue is an exact evolution retaining the signed mixed term. With
+`C_d=mu(d)K_d`, `v_d=mu(d)D(floor(M/d))`, and `w=sqrt(M+1)-sqrt(M)`, Lean proves
+
+`C_d(M+1)=C_d(M)+w v_d`,
+`Q(M+1)-Q(M)=2w sum_d C_d(M)v_d+w^2 sum_d v_d^2`,
+
+where Q is the complete arithmetic diagonal and the new terminal channel is zero.
+[MobiusDivisorAbelDiagonalBound.lean](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorAbelDiagonalBound.lean)
+also proves `Q(M)<=144M^2 sum_(d<=M)1/d` unconditionally. No experimental result is used.
+The numerical SD2 counterexample itself is not a Lean certificate. The signed total
+off-diagonal upper bound and the subpower-loss continuation bridge remain open.

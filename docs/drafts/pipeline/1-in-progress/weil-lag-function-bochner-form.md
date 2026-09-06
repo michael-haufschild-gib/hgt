@@ -193,3 +193,41 @@ unbounded for every base (top level has positive real weight `Re w_ρ > 0`; Diri
 levels are `o(b^{m(β₀−½)})` by dominated convergence — no gap needed). Bounded `a_{b^m}` ⟹ RH ∨ (sup of real parts not
 attained) ⟹ RH ∨ infinitely many off-line zeros. Remaining open core for one-prime-orbit sufficiency: real parts
 accumulating at `Θ` from below with no zero at `Θ`, the near-aliasing regime `ρ_q ≈ ρ₁ + 2πik/log b`, `β_q → β₁`.
+
+## §12 Shadow law (Lean, `WeilLagFunctionShadow`; STATUS MUST-249)
+
+Generating-function form of the single-base question: `P(t) = Σ_m a_{b^m} t^m` analytic on `|t| < 1` if bounded;
+`P = Σ_q w_q/(1 − z_q t)` near `0`; every `1/z_q` is a genuine pole (aliased residues add with positive real part).
+Identity theorem along the segment `[0, 1/z_{q₀}]` (convex tube, `AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`)
+⟹ the other poles accumulate on the segment. Remaining open core (one-prime-orbit sufficiency): the sealed case —
+the derived set of `{1/z_q}` contains a closed curve around `0` inside the unit disc, i.e. a belt of accumulation of
+zeros mod `2πi/log b` above every isolated off-line zero. Abstract question: can a positive discrete measure on an
+annulus with non-attained outer radius `R > 1` have bounded moments? Continuous rotation-invariant measures do
+(all moments vanish); on a single circle Wiener's lemma forbids it; with radii accumulating at `R` it is open here.
+
+## §13 The sealed belt exists (Lean, `RingRecursionWitness`; STATUS CANNOT-327)
+
+Verdict on the sealed-belt conjecture of §12: **FALSE as a structural statement**. Explicit witness: rings of `N`-th
+roots of unity at radius `e^{−5/√N}`, rotation flag and weight chosen by recursion over proper divisors so that all
+power sums at `m` cancel to `±e^{−λm}` (any rate `λ > 0`). Positive summable weights, moduli `→ 1` not attained;
+scaling by `R = e^{λ}` gives top modulus `R` not attained and all power sums of modulus `≤ 1`. Note: sub-exponential
+decay would not suffice (scaling multiplies the `m`-th sum by `R^m`); the geometric seed is essential.
+Hence one-prime-orbit sufficiency needs arithmetic input about the zeros; the lag front of Route O is closed on the
+structural side: MUST-248 (attained top), MUST-249 (shadow law), CANNOT-327 (no structural proof beyond them).
+
+## §14 Distributional constraints do not rescue the single-base criterion (analysis, 2026-09-06)
+
+Question: does the weight–height tie `w = 1/(ρ(1−ρ))` plus unconditional zero-distribution facts exclude the ring
+witness of §13? Answer (paper level): no. Ring `N` can be realised by `N` zeros at real part `β_N = Θ − 5/(√N log b)`
+with ordinates `(π(s+2j)/N + 2πK_j)/log b`, `K_j ≈ N³` spread over a window of relative width `N^{−2}` so that the
+weights are nearly equal (relative deviation `N^{−2}`); the recursion only needs ring totals within a window of huge
+slack (`M/(Rρ_m)^m = M e^{5√m}`) and the sign, which conjugate symmetry keeps real; deviations of ring `N` at non-multiple
+exponents feed later rings with ratio `(ρ_N/ρ_m)^m ≈ e^{−2.5(m−N)/√m}`, total `≲ √m · max δ_N ≲ m^{−3/2}`, summable.
+Local count (`N` zeros in a height window `≳ 2πN/(3 log N)` at height `N³` — allowed by MUST-246 and Riemann–von
+Mangoldt), Bohr–Landau `N(σ,T) = O(T)` (rings give `T^{2/3}`), and Ingham-type bounds (raise the height exponent)
+are all satisfied. Landau's formula `Σ_{γ≤T} b^{iγ} = −(T/2π)Λ(b) + O(log T)` is insensitive to the sparse rings.
+Two independent bases: the same construction with `K_j` also chosen (Dirichlet, window `N^{a−2} ≥ N³`, `a ≥ 5`) to make
+the base-2 angles approximate roots of unity appears to work too, so no finite set of bases decides RH structurally.
+Lacunary lags `b^{2^k}` with one-sided (upper) boundedness are blind even to a single off-line pair (`γ log b ≡ 2π/3`).
+Conclusion: the only inputs that can close one-prime-orbit sufficiency are the Euler product / functional equation
+identities (the prime side of Φ), not zero statistics. Not formalised; recorded as the lane's terminal analysis.

@@ -68,3 +68,24 @@ Möbius signs permits error ≤1e−8 at this finite cutoff. Keep this numerical
 prediction separate from [H-test], [G] and [R]; a failure does not change it.
 Retain feasible incumbents across the nested families, independently validate
 the actual full norm, and do not interpret an optimizer failure as a lower bound.
+
+
+## Outcome and positive residue
+
+H-test: at N=8192, positive averages have norm 1.01503e−9 for M=1,
+2.52826e−9 for M=128, 9.24296e−9 for M=512, 7.15486e−8 for M=2048,
+and 5.93328e−6 for M=4096. The half-prefix finite quadrature primal/dual
+values nearly coincide at N=512,2048,8192. No asymptotic floor is established.
+
+J-test: keeping N=8192, M=4096 and C=1, sign-preserving nonmonotone weights
+reach 1.29339e−8, signed squarefree weights 1.20479e−8, and the full box
+6.05440e−9. The frozen sign-preserving ≤1e−8 prediction was not attained;
+zero dual lower bounds leave it unresolved. It is not rescued by the full-box
+result. All vectors passed independent quadrature and 80-digit residual checks.
+[Protocol, all cases and limitations](../2-fully-proven/computations/chronological-escaping-averages-2026-09-06/REPORT.md).
+
+**[BRIDGES Q/Q+], proved in Lean:** successful bounded arrays have
+Σa_(k,N)/k→0. Any such array can be normalized to exact zero charge with an
+arbitrarily small fixed budget increase C+η. This removes the algebraic tail;
+it does not control concentration near zero or construct successful arrays.
+[Exact proof and certificate](../3-formalized/chronological-harmonic-charge.md).

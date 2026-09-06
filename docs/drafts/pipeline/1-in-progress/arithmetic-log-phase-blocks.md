@@ -46,7 +46,7 @@ Prove or refute B1 and B2 without weakening their quantifiers. If either fails, 
 
 ## Independent positive survivor L [BRIDGE]
 
-The first scan suggests B1 fails while B2 survives. Freeze a distinct, exact constant-speed statement before pursuing the actual logarithmic phase further:
+The first scan suggests B1 fails while B2 survives. The following distinct constant-speed statement was frozen before its proof:
 
 For `0<lambda<2*pi`, integer `K>=0`, `A=2*pi*K/lambda`, and `r=fract(A)`,
 
@@ -60,7 +60,7 @@ Paper derivation: integrate twice on each integer cell. The continuous quadratic
 
 `sin(r*x)*sin((1-r)*x) > x*r*(1-r)*sin(x)`.
 
-For each `0<y<pi`, `sin(y)-y*cos(y)>0`, because its derivative is `y*sin(y)>0` and its value at zero is zero. Multiply this inequality at `r*x` and `(1-r)*x` by the respective positive complementary sine and weight; add, then use the sine addition identity. Endpoint cases are exact zeros. The finite integral identity still requires a source-level Lean proof; the inequality alone is not its formal certificate.
+For each `0<y<pi`, `sin(y)-y*cos(y)>0`, because its derivative is `y*sin(y)>0` and its value at zero is zero. Multiply this inequality at `r*x` and `(1-r)*x` by the respective positive complementary sine and weight; add, then use the sine addition identity. Endpoint cases are exact zeros. The full finite integral identity, all turn numbers, and exact equality classification are now proved in `ArithmeticLinearPhasePrefix`; the proof is not limited to the final trigonometric inequality.
 
 The next attack on B2 must test fractional endpoints near integer coincidence, where L's strict margin vanishes. This boundary cannot be passed by a uniform absolute perturbation estimate with a positive fixed margin.
 
@@ -75,3 +75,17 @@ The next attack on B2 must test fractional endpoints near integer coincidence, w
 This drops the exponential damping in phase coordinates as a separately named, stronger conjecture. If true, integration by parts against `exp(-(sigma+1)*v)` would imply the nonpositive weighted prefixes needed by B2 for `sigma>-1`. It does not change B2's definition. For a first attack, test complete-turn endpoints with `sigma=-1` in the finite x-integral; no infinite-tail formula at that real part is required. Failure would identify the damping as essential to this proposed proof, rather than refute B2.
 
 The additional numerical attack uses finite polynomial-power primitives directly, with `sigma in {-1,-0.5,0,0.001,0.5,8}`, `n in {1,16,256,4096}`, `t/(2*pi*n) in {0.25,0.5,0.75,0.99,0.9999}`, and first through eighth complete turns. Retain the distinction between in-domain B2 tests and the out-of-domain clock test.
+
+## Established results and exact open cut
+
+The main Runpod scan found 43 positive complete turns among 504 tested turns, in 21 of 64 parameter triples. Every tested prefix was negative. A separate boundary scan found 882 negative prefixes, including 147 undamped-clock tests at `sigma=-1`. Twelve selected cases were independently checked by integer-split quadrature at 150 digits; method differences were below `9e-144`. The [report](../2-fully-proven/computations/arithmetic-log-phase-blocks/REPORT.md) retains all data and numerical limitations. B1 has strong numerical counterevidence; no formal refutation of the logarithmic B1 is claimed. B2 and C remain conjectures.
+
+L and L+ are fully proved in Lean, including their source integral identities and complete equality classification. Lean also proves that the second constant-speed turn at `lambda=4*pi/3`, over `[3/2,3]`, is positive. The [formal certificate](../3-formalized/arithmetic-linear-phase-prefix.md) and [closed model no-go](../5-failed/arithmetic-linear-block-sign.md) delimit this result.
+
+**Conditional paper implication, not a proved producer:** C would give strict negativity of the complete weighted tail for every `sigma>-1`. Write `H(V)=integral_(0..V)b(n*exp(v))*sin(t*v) dv`. If C holds, `H<=0`; it is strictly negative on a small initial interval because the quadratic and sine have strict opposite signs there. Also `|H(V)|<=V/8`. For `a=sigma+1>0`, integration by parts gives
+
+`integral_(0..infinity) exp(-a*v)*H'(v) dv = a*integral_(0..infinity)exp(-a*v)*H(v) dv < 0`.
+
+The boundary term vanishes by the displayed linear bound. Multiplying by the positive factor `n^(-2*sigma-1)` recovers `Im(g_s(n))`. Thus the undamped clock inequality is a concrete candidate sufficient for R, and even predicts a larger real-part range. Its proof is missing. The finite constant-speed law does not supply it: the map `x=n*exp(v)` changes the spacing of every arithmetic cell.
+
+**RH remains open even if C is proved.** Its condition `t<2*pi*n` reaches cutoffs beyond the height-dependent head. At a zero, the required sign is the unit quantity `Im(g_s(1))=t*(2*sigma-1)/(2*|conjugate(s)*(1-conjugate(s))|^2)`. No new arithmetic identity forces that unit sign. Neither finite-prefix regrouping nor the proposed tail estimate justifies discarding the head. No radical new RH architecture or literature novelty was established.

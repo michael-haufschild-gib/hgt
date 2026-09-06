@@ -1,0 +1,368 @@
+{
+  "search": [
+    {
+      "kind": "sign_preserving",
+      "selected": "exact_9",
+      "norm": 1.2933899128863137e-08,
+      "variables": 2491,
+      "hi": 15,
+      "best_exact_rank": 9,
+      "diagnostics": [
+        {
+          "phase": "exact",
+          "rank": 1,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 0.8782436205964267
+        },
+        {
+          "phase": "exact",
+          "rank": 2,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 0.002676336246490871
+        },
+        {
+          "phase": "exact",
+          "rank": 3,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 0.00018565490651312872
+        },
+        {
+          "phase": "exact",
+          "rank": 4,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.384807894474328e-05
+        },
+        {
+          "phase": "exact",
+          "rank": 5,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.3652489203701433e-06
+        },
+        {
+          "phase": "exact",
+          "rank": 6,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.249950427091914e-07
+        },
+        {
+          "phase": "exact",
+          "rank": 7,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.217699916109167e-07
+        },
+        {
+          "phase": "exact",
+          "rank": 8,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.532882587841345e-08
+        },
+        {
+          "phase": "exact",
+          "rank": 9,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.2933899128863137e-08
+        },
+        {
+          "phase": "exact",
+          "rank": 10,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)"
+        },
+        {
+          "phase": "balanced",
+          "lo": 3,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 2.6140081466939102e-08
+        },
+        {
+          "phase": "balanced",
+          "lo": 5,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 2.2154377182224837e-08
+        },
+        {
+          "phase": "balanced",
+          "lo": 7,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.727166537343672e-08
+        }
+      ],
+      "seconds": 1.4331326484680176
+    },
+    {
+      "kind": "squarefree_box",
+      "selected": "balanced_7",
+      "norm": 1.2047894874600749e-08,
+      "variables": 2491,
+      "hi": 15,
+      "best_exact_rank": 9,
+      "diagnostics": [
+        {
+          "phase": "exact",
+          "rank": 1,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.7295880277446172
+        },
+        {
+          "phase": "exact",
+          "rank": 2,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 0.002415029691208106
+        },
+        {
+          "phase": "exact",
+          "rank": 3,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 0.00018832726942893816
+        },
+        {
+          "phase": "exact",
+          "rank": 4,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 5.8501684760280045e-06
+        },
+        {
+          "phase": "exact",
+          "rank": 5,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.3553806223011693e-06
+        },
+        {
+          "phase": "exact",
+          "rank": 6,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.350260895758235e-07
+        },
+        {
+          "phase": "exact",
+          "rank": 7,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.0847251888241074e-07
+        },
+        {
+          "phase": "exact",
+          "rank": 8,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.4563211327381305e-08
+        },
+        {
+          "phase": "exact",
+          "rank": 9,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.2896309992624591e-08
+        },
+        {
+          "phase": "exact",
+          "rank": 10,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)"
+        },
+        {
+          "phase": "balanced",
+          "lo": 3,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.806604663254904e-08
+        },
+        {
+          "phase": "balanced",
+          "lo": 5,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.5353121077194004e-08
+        },
+        {
+          "phase": "balanced",
+          "lo": 7,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.2047894874600749e-08
+        }
+      ],
+      "seconds": 1.4832394123077393
+    },
+    {
+      "kind": "full_box",
+      "selected": "balanced_7",
+      "norm": 6.05439740708289e-09,
+      "variables": 4096,
+      "hi": 15,
+      "best_exact_rank": 9,
+      "diagnostics": [
+        {
+          "phase": "exact",
+          "rank": 1,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 2.824772530217632
+        },
+        {
+          "phase": "exact",
+          "rank": 2,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 0.0016910630695764054
+        },
+        {
+          "phase": "exact",
+          "rank": 3,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 0.000262443329595168
+        },
+        {
+          "phase": "exact",
+          "rank": 4,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 3.0101056336889544e-06
+        },
+        {
+          "phase": "exact",
+          "rank": 5,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 2.0009239666923517e-06
+        },
+        {
+          "phase": "exact",
+          "rank": 6,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.5653287628241017e-07
+        },
+        {
+          "phase": "exact",
+          "rank": 7,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.1333267103440477e-07
+        },
+        {
+          "phase": "exact",
+          "rank": 8,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.4324213330553648e-08
+        },
+        {
+          "phase": "exact",
+          "rank": 9,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 1.2932761742438226e-08
+        },
+        {
+          "phase": "exact",
+          "rank": 10,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)"
+        },
+        {
+          "phase": "balanced",
+          "lo": 3,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 8.581500214990451e-09
+        },
+        {
+          "phase": "balanced",
+          "lo": 5,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 7.424022630350899e-09
+        },
+        {
+          "phase": "balanced",
+          "lo": 7,
+          "hi": 15,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "actual_norm": 6.05439740708289e-09
+        }
+      ],
+      "seconds": 1.895632266998291
+    }
+  ],
+  "results": [
+    {
+      "kind": "sign_preserving",
+      "retained_from": "sign_preserving",
+      "norm": 1.293389917175543e-08,
+      "training_norm": 1.2933899128863137e-08,
+      "quadrature_dual_norm": 0.0,
+      "max_mp80_difference": 3.177532960988382e-14,
+      "mp_spots": 32,
+      "head_exact": true,
+      "coefficient_bound": 1.0,
+      "sign_preserving": true,
+      "nonsquarefree_zero": true,
+      "positive_envelope_increments": 636,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 3.764438168787375e-22
+    },
+    {
+      "kind": "squarefree_box",
+      "retained_from": "squarefree_box",
+      "norm": 1.204789476439255e-08,
+      "training_norm": 1.2047894874600749e-08,
+      "quadrature_dual_norm": 0.0,
+      "max_mp80_difference": 3.823394059909195e-14,
+      "mp_spots": 32,
+      "head_exact": true,
+      "coefficient_bound": 1.0,
+      "sign_preserving": false,
+      "nonsquarefree_zero": true,
+      "positive_envelope_increments": 626,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 1.2205810951638585e-21
+    },
+    {
+      "kind": "full_box",
+      "retained_from": "full_box",
+      "norm": 6.054397430761458e-09,
+      "training_norm": 6.05439740708289e-09,
+      "quadrature_dual_norm": 0.0,
+      "max_mp80_difference": 5.398862894634556e-14,
+      "mp_spots": 32,
+      "head_exact": true,
+      "coefficient_bound": 1.0,
+      "sign_preserving": false,
+      "nonsquarefree_zero": false,
+      "positive_envelope_increments": 627,
+      "left_tail_energy_bound": 1e-30,
+      "harmonic_tail_energy": 1.6145263003051107e-22
+    }
+  ],
+  "seconds": 12.593245506286621,
+  "status": "exploratory_not_certified"
+}

@@ -21,3 +21,13 @@ No sign determined numerically may be imported into Lean as a proof certificate.
 Record the entire ratio/source/diagonal vectors, not only a selected maximum. Download scripts,
 results, audit and a compact report. Mathematical attacks on the all-scale inequality proceed
 separately; a finite pass does not establish SD1.
+
+## Frozen second attack: SD2
+
+SD2 proposes that the raw compensating margin
+`E(M)=sum_d mu(d)^2 K_d(M)^2-S(M)^2` is nondecreasing at every integer M>=1.
+This is an independent stronger [BRIDGE], motivated by treating the exact next-time update as
+a possible invariant barrier. If true it would produce SD1 from E(1)=0. Test all recorded
+adjacent endpoints, without removing initial indices. Report the first failure, the largest
+drop, and their full exact channel-update terms. A failure retires SD2; it does not retire SD1.
+No damping factor will be added to rescue monotonicity.
