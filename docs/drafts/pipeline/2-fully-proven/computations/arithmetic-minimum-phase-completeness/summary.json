@@ -1,0 +1,10 @@
+{
+  "successes": 41,
+  "failures": 7,
+  "matching_finite_XY_labels": 36,
+  "matching_reference_X_labels": 33,
+  "max_abs_projected_residual": "2.24231002247553e-58",
+  "min_abs_zeta": "0.0919355634975877",
+  "max_W_drift": 2.586832745780659e-12,
+  "max_X_drift": 3.60998648163524e-13
+}

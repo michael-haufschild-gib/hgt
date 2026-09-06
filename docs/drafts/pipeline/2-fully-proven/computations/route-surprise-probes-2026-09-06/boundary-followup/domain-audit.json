@@ -1,0 +1,24 @@
+{
+  "left_scale_at_least_six": {
+    "curvature_specs": 270,
+    "curvature_executed": 270,
+    "curvature_crossings": 372,
+    "curvature_side_evaluations": 4464,
+    "curvature_admissible": 1840,
+    "slope_specs": 162,
+    "slope_bracketed": 162,
+    "slope_admissible": 162,
+    "smallest_slope_reserve": "312401375.767477393150329589844"
+  },
+  "extended_left_scale": {
+    "curvature_specs": 180,
+    "curvature_executed": 30,
+    "curvature_crossings": 0,
+    "curvature_side_evaluations": 0,
+    "curvature_admissible": 0,
+    "slope_specs": 108,
+    "slope_bracketed": 105,
+    "slope_admissible": 90,
+    "smallest_slope_reserve": "82158.4182535871514119207859039"
+  }
+}

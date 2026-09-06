@@ -1,0 +1,344 @@
+[
+  {
+    "N": 16,
+    "norms": {
+      "raw": 0.21464977101524704,
+      "log_taper": 0.5583489980688153,
+      "geometric_depth": 0.21464977101524704,
+      "arithmetic_abel": 0.21464977101524704,
+      "box1": 0.00013054247038326173,
+      "box2": 0.00010890063071644116
+    },
+    "box1": {
+      "max_abs_coefficient": 1.0,
+      "mesh_energy_difference": 1.8727369068200547e-20,
+      "first_eight_coefficients": [
+        0.9999027252996543,
+        -1.0,
+        -1.0,
+        -0.03835446724141722,
+        -0.44711109046613307,
+        -0.9838512878492189,
+        1.0,
+        1.0
+      ],
+      "harmonic_coefficient_sum": -7.535258246760268e-06,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        8.003904364414481e-09,
+        8.758959133845684e-09,
+        2.7847307550459725e-10
+      ],
+      "quadrature_primal_dual_gap": 2.0108730780313153e-15,
+      "quadrature_dual_lower_bound": 1.7041334562910404e-08,
+      "relative_mesh_energy_difference": 1.0989378084951058e-12
+    },
+    "box2": {
+      "max_abs_coefficient": 2.0,
+      "mesh_energy_difference": 1.454514389113244e-20,
+      "first_eight_coefficients": [
+        0.9993620048784676,
+        -0.9830172428728764,
+        -1.115754715030086,
+        0.14363509006200464,
+        -0.04201662665376726,
+        -2.0,
+        0.6050459946762023,
+        1.9999999999999998
+      ],
+      "harmonic_coefficient_sum": -7.8691414719112e-06,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        5.862520857474542e-09,
+        5.777917980908136e-09,
+        2.1890853205600786e-10
+      ],
+      "quadrature_primal_dual_gap": 6.628658915362145e-14,
+      "quadrature_dual_lower_bound": 1.1859281083864078e-08,
+      "relative_mesh_energy_difference": 1.2264708534795538e-12
+    }
+  },
+  {
+    "N": 32,
+    "norms": {
+      "raw": 0.30943309545710274,
+      "log_taper": 0.448337803822882,
+      "geometric_depth": 0.18667787249930265,
+      "arithmetic_abel": 0.0687897521581718,
+      "box1": 1.4443916539406354e-05,
+      "box2": 1.2565375082523374e-05
+    },
+    "box1": {
+      "max_abs_coefficient": 1.0,
+      "mesh_energy_difference": 6.424608420122797e-22,
+      "first_eight_coefficients": [
+        0.9999847888367724,
+        -1.0,
+        -0.9977477130677455,
+        -0.008794410399757157,
+        -1.0,
+        0.9182753064604936,
+        -0.3674505947859052,
+        -1.0
+      ],
+      "harmonic_coefficient_sum": -4.965923812161321e-07,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        1.1190672829368722e-10,
+        9.566028582094544e-11,
+        1.0597108827037187e-12
+      ],
+      "quadrature_primal_dual_gap": 2.076134562830399e-15,
+      "quadrature_dual_lower_bound": 2.0862464886341608e-10,
+      "relative_mesh_energy_difference": 3.079475278253456e-12
+    },
+    "box2": {
+      "max_abs_coefficient": 2.0,
+      "mesh_energy_difference": 1.7735786308902605e-21,
+      "first_eight_coefficients": [
+        0.99993193665907,
+        -0.9969483350153828,
+        -1.0421287551910567,
+        0.24463838975795163,
+        -1.562919574290209,
+        0.8938883511872145,
+        1.3321814756587174,
+        -2.0
+      ],
+      "harmonic_coefficient_sum": -5.402727700776211e-07,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        8.788769925718613e-11,
+        6.89390633046716e-11,
+        1.0618884026415558e-12
+      ],
+      "quadrature_primal_dual_gap": 1.5000091485115354e-14,
+      "quadrature_dual_lower_bound": 1.5787365087478775e-10,
+      "relative_mesh_energy_difference": 1.1233097629601278e-11
+    }
+  },
+  {
+    "N": 64,
+    "norms": {
+      "raw": 0.1104922923413635,
+      "log_taper": 0.37802757920572505,
+      "geometric_depth": 0.1104922923413635,
+      "arithmetic_abel": 0.09253146704386803,
+      "box1": 1.760800180785505e-06,
+      "box2": 1.5711376603135296e-06
+    },
+    "box1": {
+      "max_abs_coefficient": 1.0,
+      "mesh_energy_difference": 4.009887266321513e-23,
+      "first_eight_coefficients": [
+        0.9999990342092949,
+        -1.0,
+        -0.9998397627192612,
+        -0.0003682826435110868,
+        -1.0,
+        0.9491775998853371,
+        -0.6184224603516607,
+        -1.0
+      ],
+      "harmonic_coefficient_sum": -2.777032592771178e-08,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        1.8354488371943684e-12,
+        1.2609660548402126e-12,
+        4.002384619687029e-15
+      ],
+      "quadrature_primal_dual_gap": 1.615346900456955e-14,
+      "quadrature_dual_lower_bound": 3.084263807689797e-12,
+      "relative_mesh_energy_difference": 1.2933379311602457e-11
+    },
+    "box2": {
+      "max_abs_coefficient": 2.0,
+      "mesh_energy_difference": 1.1093590613587148e-22,
+      "first_eight_coefficients": [
+        0.9999975258989061,
+        -0.9998917786283483,
+        -1.001100574037917,
+        -0.002443088207876898,
+        -0.9009344932808712,
+        0.3758250792842773,
+        0.7270310772587134,
+        -2.0
+      ],
+      "harmonic_coefficient_sum": -1.8514016209003614e-08,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        1.5139130210125043e-12,
+        9.517074944699952e-13,
+        2.8530321729710897e-15
+      ],
+      "quadrature_primal_dual_gap": 1.4995155831590546e-13,
+      "quadrature_dual_lower_bound": 2.3185219894505024e-12,
+      "relative_mesh_energy_difference": 4.4941095780117694e-11
+    }
+  },
+  {
+    "N": 128,
+    "norms": {
+      "raw": 0.003522318312699742,
+      "log_taper": 0.32355526256306105,
+      "geometric_depth": 0.0019933220911317784,
+      "arithmetic_abel": 0.002385379824345046,
+      "box1": 2.2570335755390422e-07,
+      "box2": 2.2224651473892156e-07
+    },
+    "box1": {
+      "max_abs_coefficient": 0.9999999205486128,
+      "mesh_energy_difference": 4.407447919003936e-24,
+      "first_eight_coefficients": [
+        0.9999999205484196,
+        -0.9999962279013515,
+        -0.9999999205484188,
+        -0.0015853673642087609,
+        -0.9757747190688624,
+        0.8382748546220626,
+        -0.43781510230751575,
+        -0.9999999205484239
+      ],
+      "harmonic_coefficient_sum": -4.2420331136661105e-10,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        3.1185514286236126e-14,
+        1.974125031337016e-14,
+        1.5241011499244583e-17
+      ],
+      "quadrature_primal_dual_gap": 7.154036767951541e-14,
+      "quadrature_dual_lower_bound": -2.0598362072817327e-14,
+      "relative_mesh_energy_difference": 8.651893199201205e-11
+    },
+    "box2": {
+      "max_abs_coefficient": 1.1921702788456001,
+      "mesh_energy_difference": 1.1011027800157993e-23,
+      "first_eight_coefficients": [
+        0.9999981447687543,
+        -0.9998842630792715,
+        -1.002341321235208,
+        0.021661097162733674,
+        -1.099197704777851,
+        1.19217027884546,
+        -0.9078559693655935,
+        -0.9839294014365472
+      ],
+      "harmonic_coefficient_sum": -1.0985693243981132e-08,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        2.890180172019492e-14,
+        2.009680697225411e-14,
+        3.949046211486631e-16
+      ],
+      "quadrature_primal_dual_gap": 1.6187907232073893e-13,
+      "quadrature_dual_lower_bound": -1.1248555901815229e-13,
+      "relative_mesh_energy_difference": 2.2292457169931134e-10
+    }
+  },
+  {
+    "N": 256,
+    "norms": {
+      "raw": 0.05915153976473762,
+      "log_taper": 0.28464342475576737,
+      "geometric_depth": 0.05915153976473762,
+      "arithmetic_abel": 0.03486914262505354,
+      "box1": 3.143166977419347e-08,
+      "box2": 2.9988778264976086e-08
+    },
+    "box1": {
+      "max_abs_coefficient": 0.9999998791397456,
+      "mesh_energy_difference": 4.655201716417399e-24,
+      "first_eight_coefficients": [
+        0.9999998791397335,
+        -0.9999952220340452,
+        -0.9999998791397067,
+        -0.0016520180303602743,
+        -0.9759086903991813,
+        0.8427916253866299,
+        -0.4535743581025532,
+        -0.9999998791397064
+      ],
+      "harmonic_coefficient_sum": -8.695399955627181e-10,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        5.042773920037329e-16,
+        4.768356108356255e-16,
+        6.836861954588827e-18
+      ],
+      "quadrature_primal_dual_gap": 5.959163682378727e-14,
+      "quadrature_dual_lower_bound": -5.860368696364853e-14,
+      "relative_mesh_energy_difference": 4.711981733393238e-09
+    },
+    "box2": {
+      "max_abs_coefficient": 1.0805882400269462,
+      "mesh_energy_difference": 2.0140762758605002e-24,
+      "first_eight_coefficients": [
+        1.0000003831753028,
+        -1.0000317512355592,
+        -0.9991189203193835,
+        -0.011766021490797916,
+        -0.9134375033124218,
+        0.6313079413359726,
+        -0.10619757445191824,
+        -1.0805882400263127
+      ],
+      "harmonic_coefficient_sum": 1.7487859216291923e-09,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        5.323371732242573e-16,
+        3.565125020206804e-16,
+        1.0477146580964068e-17
+      ],
+      "quadrature_primal_dual_gap": 1.3835301032612188e-13,
+      "quadrature_dual_lower_bound": -1.3745368350631005e-13,
+      "relative_mesh_energy_difference": 2.239537648583997e-09
+    }
+  },
+  {
+    "N": 512,
+    "norms": {
+      "raw": 0.08374656105652657,
+      "log_taper": 0.2517249369498637,
+      "geometric_depth": 0.07466879728604844,
+      "arithmetic_abel": 0.016666959912390145,
+      "box1": 4.118183945437152e-09,
+      "box2": 4.026104584321441e-09
+    },
+    "box1": {
+      "max_abs_coefficient": 0.9999999940514069,
+      "mesh_energy_difference": 1.37946698256023e-25,
+      "first_eight_coefficients": [
+        0.9999999940513137,
+        -0.9999996659736186,
+        -0.9999999940513119,
+        -0.0002270587952683006,
+        -0.99535920284925,
+        0.9569224835013869,
+        -0.779244864000482,
+        -0.6457195459306347
+      ],
+      "harmonic_coefficient_sum": -2.9769020581937866e-11,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        1.013370796472451e-17,
+        6.792234757643894e-18,
+        3.3496286087906376e-20
+      ],
+      "quadrature_primal_dual_gap": 4.7234600550134565e-14,
+      "quadrature_dual_lower_bound": -4.7217641111264055e-14,
+      "relative_mesh_energy_difference": 8.13391870964836e-09
+    },
+    "box2": {
+      "max_abs_coefficient": 1.3459335417979525,
+      "mesh_energy_difference": 1.92127711334575e-25,
+      "first_eight_coefficients": [
+        1.0000000072877977,
+        -1.000001167740231,
+        -0.9999432204229088,
+        -0.00125652600503113,
+        -0.9850136023582784,
+        0.8954676872522017,
+        -0.5613597673848651,
+        -1.0776525000922812
+      ],
+      "harmonic_coefficient_sum": 1.4285572724759277e-11,
+      "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+        9.428763851333527e-18,
+        6.732518577448111e-18,
+        4.823569511248848e-20
+      ],
+      "quadrature_primal_dual_gap": 1.282591293901765e-13,
+      "quadrature_dual_lower_bound": -1.2824291987186049e-13,
+      "relative_mesh_energy_difference": 1.1852771307949211e-08
+    }
+  }
+]

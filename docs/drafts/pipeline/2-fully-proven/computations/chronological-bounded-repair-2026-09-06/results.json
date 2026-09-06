@@ -1,0 +1,2053 @@
+{
+  "status": "exploratory_not_proof",
+  "kernel_validation": {
+    "mpmath_digits": 80,
+    "sample_count": 100,
+    "maximum_absolute_kernel_error": 3.455087746431312e-16
+  },
+  "sizes": [
+    16,
+    32,
+    64,
+    128,
+    256,
+    512
+  ],
+  "workers": 4,
+  "blas_threads_per_worker": 4,
+  "total_seconds": 2.606571674346924,
+  "results": [
+    {
+      "N": 16,
+      "quadrature_rows": 1661,
+      "validation_rows": 3745,
+      "target_energy_check": 0.5,
+      "seconds": 0.08288168907165527,
+      "models": {
+        "raw": {
+          "l2_norm": 0.21464977101524704,
+          "energy": 0.04607452419689799,
+          "training_energy": 0.04607452419689803,
+          "mesh_energy_difference": 4.163336342344337e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.013071042680708555,
+            0.029314224030156467,
+            0.0036892574860329604
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.06073926073926074
+        },
+        "log_taper": {
+          "l2_norm": 0.5583489980688153,
+          "energy": 0.31175360364445,
+          "training_energy": 0.31175360364445004,
+          "mesh_energy_difference": 5.551115123125783e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.025041255408370856,
+            0.17409517230236232,
+            0.11261717593371678
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.158103119289179,
+          "harmonic_coefficient_sum": 0.35370020150448367
+        },
+        "geometric_depth": {
+          "l2_norm": 0.21464977101524704,
+          "energy": 0.04607452419689799,
+          "training_energy": 0.04607452419689803,
+          "mesh_energy_difference": 4.163336342344337e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.013071042680708555,
+            0.029314224030156467,
+            0.0036892574860329604
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.06073926073926074,
+          "epsilon": 0.0
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.21464977101524704,
+          "energy": 0.04607452419689799,
+          "training_energy": 0.04607452419689803,
+          "mesh_energy_difference": 4.163336342344337e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.013071042680708555,
+            0.029314224030156467,
+            0.0036892574860329604
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.06073926073926074,
+          "tau": 0.0
+        },
+        "box1": {
+          "l2_norm": 0.00013054247038326173,
+          "energy": 1.7041336573764764e-08,
+          "training_energy": 1.704133657378349e-08,
+          "mesh_energy_difference": 1.8727369068200547e-20,
+          "max_abs_coefficient": 1.0,
+          "coefficient_bound": 1,
+          "origin": "bvls_scale_1",
+          "quadrature_primal_dual_gap": 2.0108730780313153e-15,
+          "quadrature_dual_lower_bound": 1.7041334562910404e-08,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            8.003904364414481e-09,
+            8.758959133845684e-09,
+            2.7847307550459725e-10
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.009612935485440732,
+          "first_eight_coefficients": [
+            0.9999027252996543,
+            -1.0,
+            -1.0,
+            -0.03835446724141722,
+            -0.44711109046613307,
+            -0.9838512878492189,
+            1.0,
+            1.0
+          ],
+          "first_eight_mobius_deviations": [
+            -9.72747003457064e-05,
+            0.0,
+            0.0,
+            -0.03835446724141722,
+            0.5528889095338669,
+            -1.983851287849219,
+            2.0,
+            1.0
+          ],
+          "harmonic_coefficient_sum": -7.535258246760268e-06,
+          "bound_active_count": 9,
+          "left_tail_energy_bound": 1e-30
+        },
+        "box2": {
+          "l2_norm": 0.00010890063071644116,
+          "energy": 1.1859347370438686e-08,
+          "training_energy": 1.1859347370453231e-08,
+          "mesh_energy_difference": 1.454514389113244e-20,
+          "max_abs_coefficient": 2.0,
+          "coefficient_bound": 2,
+          "origin": "bvls_scale_1",
+          "quadrature_primal_dual_gap": 6.628658915362145e-14,
+          "quadrature_dual_lower_bound": 1.1859281083864078e-08,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            5.862520857474542e-09,
+            5.777917980908136e-09,
+            2.1890853205600786e-10
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.06925263933518665,
+          "first_eight_coefficients": [
+            0.9993620048784676,
+            -0.9830172428728764,
+            -1.115754715030086,
+            0.14363509006200464,
+            -0.04201662665376726,
+            -2.0,
+            0.6050459946762023,
+            1.9999999999999998
+          ],
+          "first_eight_mobius_deviations": [
+            -0.0006379951215323976,
+            0.016982757127123604,
+            -0.11575471503008594,
+            0.14363509006200464,
+            0.9579833733462327,
+            -3.0,
+            1.6050459946762023,
+            1.9999999999999998
+          ],
+          "harmonic_coefficient_sum": -7.8691414719112e-06,
+          "bound_active_count": 7,
+          "left_tail_energy_bound": 1e-30
+        }
+      },
+      "refinement": {
+        "N": 16,
+        "best_labels": {
+          "1": "bvls_scale_1",
+          "2": "bvls_scale_1"
+        },
+        "solver_diagnostics": [
+          {
+            "C": 1,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 20,
+            "energy": 1.704133657378349e-08
+          },
+          {
+            "C": 1,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 21,
+            "energy": 1.7041336573787422e-08
+          },
+          {
+            "C": 2,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 18,
+            "energy": 1.1859347370453231e-08
+          },
+          {
+            "C": 2,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 19,
+            "energy": 1.1859347370462198e-08
+          }
+        ],
+        "singular_prefix_costs": [
+          {
+            "rank": 1,
+            "lp_minimum_box": 0.11455052421854184,
+            "corrected_box": 0.1145505242185422,
+            "singular_value": 1.5317577182891764,
+            "constraint_residual": 0.0
+          },
+          {
+            "rank": 2,
+            "lp_minimum_box": 0.1900802050293077,
+            "corrected_box": 0.19008020502930834,
+            "singular_value": 0.458876696923744,
+            "constraint_residual": 1.1102230246251565e-16
+          },
+          {
+            "rank": 3,
+            "lp_minimum_box": 0.5436673623137543,
+            "corrected_box": 0.5436673623137566,
+            "singular_value": 0.1173248365598766,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 4,
+            "lp_minimum_box": 0.8471818564902551,
+            "corrected_box": 0.8471818564904434,
+            "singular_value": 0.030175527571473515,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 5,
+            "lp_minimum_box": 0.9568306667854295,
+            "corrected_box": 0.956830666816259,
+            "singular_value": 0.007793643792128853,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 6,
+            "lp_minimum_box": 0.9905384837089164,
+            "corrected_box": 0.9905384838125613,
+            "singular_value": 0.001966689260477868,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 7,
+            "lp_minimum_box": 0.9967709158377872,
+            "corrected_box": 0.9967709158378043,
+            "singular_value": 0.0004726380148551136,
+            "constraint_residual": 3.3306690738754696e-16
+          },
+          {
+            "rank": 8,
+            "lp_minimum_box": 1.0053917477888255,
+            "corrected_box": 1.005391747788827,
+            "singular_value": 0.00010594419335635565,
+            "constraint_residual": 3.469446951953614e-16
+          },
+          {
+            "rank": 9,
+            "lp_minimum_box": 1.806096675282564,
+            "corrected_box": 1.8060966752825653,
+            "singular_value": 2.1765797181750542e-05,
+            "constraint_residual": 8.881784197001252e-16
+          },
+          {
+            "rank": 10,
+            "lp_minimum_box": 6.36968341797154,
+            "corrected_box": 6.369683417971546,
+            "singular_value": 4.0330324860781825e-06,
+            "constraint_residual": 3.552713678800501e-15
+          }
+        ],
+        "design_condition_ratio": 2.9161211330730798e-12,
+        "rank_limit": 16
+      }
+    },
+    {
+      "N": 32,
+      "quadrature_rows": 1681,
+      "validation_rows": 3781,
+      "target_energy_check": 0.49999999999999994,
+      "seconds": 0.18935084342956543,
+      "models": {
+        "raw": {
+          "l2_norm": 0.30943309545710274,
+          "energy": 0.09574884056416447,
+          "training_energy": 0.0957488405641645,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.02643107068561602,
+            0.06538232384929761,
+            0.003935446029250834
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": -0.06273313342445813
+        },
+        "log_taper": {
+          "l2_norm": 0.448337803822882,
+          "energy": 0.20100678633672506,
+          "training_energy": 0.20100678633672503,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.008035689841432025,
+            0.11964961629606186,
+            0.0733214801992311
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.25521419854127925,
+          "harmonic_coefficient_sum": 0.2854562595648009
+        },
+        "geometric_depth": {
+          "l2_norm": 0.18667787249930265,
+          "energy": 0.0348486280808659,
+          "training_energy": 0.03484862808086592,
+          "mesh_energy_difference": 2.0816681711721685e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.5,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.014265372876979036,
+            0.018028566913755182,
+            0.0025546882901316867
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.1923828125,
+          "harmonic_coefficient_sum": -0.06796055474842433,
+          "epsilon": 0.5
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.0687897521581718,
+          "energy": 0.004732030001982702,
+          "training_energy": 0.004732030001982706,
+          "mesh_energy_difference": 3.469446951953614e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9697546173080832,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0011528765674612969,
+            0.0021973007305284577,
+            0.0013818527039929482
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.08524134859517132,
+          "harmonic_coefficient_sum": 0.03288470224122672,
+          "tau": 0.9827907627142599
+        },
+        "box1": {
+          "l2_norm": 1.4443916539406354e-05,
+          "energy": 2.086267249973364e-10,
+          "training_energy": 2.0862672499797886e-10,
+          "mesh_energy_difference": 6.424608420122797e-22,
+          "max_abs_coefficient": 1.0,
+          "coefficient_bound": 1,
+          "origin": "bvls_scale_100000",
+          "quadrature_primal_dual_gap": 2.076134562830399e-15,
+          "quadrature_dual_lower_bound": 2.0862464886341608e-10,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.1190672829368722e-10,
+            9.566028582094544e-11,
+            1.0597108827037187e-12
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.21566700090610505,
+          "first_eight_coefficients": [
+            0.9999847888367724,
+            -1.0,
+            -0.9977477130677455,
+            -0.008794410399757157,
+            -1.0,
+            0.9182753064604936,
+            -0.3674505947859052,
+            -1.0
+          ],
+          "first_eight_mobius_deviations": [
+            -1.5211163227557556e-05,
+            0.0,
+            0.0022522869322545436,
+            -0.008794410399757157,
+            0.0,
+            -0.0817246935395064,
+            0.6325494052140948,
+            -1.0
+          ],
+          "harmonic_coefficient_sum": -4.965923812161321e-07,
+          "bound_active_count": 21,
+          "left_tail_energy_bound": 1e-30
+        },
+        "box2": {
+          "l2_norm": 1.2565375082523374e-05,
+          "energy": 1.5788865096449928e-10,
+          "training_energy": 1.5788865096627286e-10,
+          "mesh_energy_difference": 1.7735786308902605e-21,
+          "max_abs_coefficient": 2.0,
+          "coefficient_bound": 2,
+          "origin": "bvls_scale_100000",
+          "quadrature_primal_dual_gap": 1.5000091485115354e-14,
+          "quadrature_dual_lower_bound": 1.5787365087478775e-10,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            8.788769925718613e-11,
+            6.89390633046716e-11,
+            1.0618884026415558e-12
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.6613874465045334,
+          "first_eight_coefficients": [
+            0.99993193665907,
+            -0.9969483350153828,
+            -1.0421287551910567,
+            0.24463838975795163,
+            -1.562919574290209,
+            0.8938883511872145,
+            1.3321814756587174,
+            -2.0
+          ],
+          "first_eight_mobius_deviations": [
+            -6.806334093001354e-05,
+            0.003051664984617175,
+            -0.042128755191056744,
+            0.24463838975795163,
+            -0.5629195742902089,
+            -0.10611164881278545,
+            2.332181475658717,
+            -2.0
+          ],
+          "harmonic_coefficient_sum": -5.402727700776211e-07,
+          "bound_active_count": 19,
+          "left_tail_energy_bound": 1e-30
+        }
+      },
+      "refinement": {
+        "N": 32,
+        "best_labels": {
+          "1": "bvls_scale_100000",
+          "2": "bvls_scale_100000"
+        },
+        "solver_diagnostics": [
+          {
+            "C": 1,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 46,
+            "energy": 2.0862672499824896e-10
+          },
+          {
+            "C": 1,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 47,
+            "energy": 2.0862672499797886e-10
+          },
+          {
+            "C": 2,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 35,
+            "energy": 1.5788865096642113e-10
+          },
+          {
+            "C": 2,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 36,
+            "energy": 1.5788865096627286e-10
+          }
+        ],
+        "singular_prefix_costs": [
+          {
+            "rank": 1,
+            "lp_minimum_box": 0.08060236563090703,
+            "corrected_box": 0.08060236563090784,
+            "singular_value": 1.6483417846325257,
+            "constraint_residual": 0.0
+          },
+          {
+            "rank": 2,
+            "lp_minimum_box": 0.09178266401779753,
+            "corrected_box": 0.09178266401779848,
+            "singular_value": 0.5793207310490741,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 3,
+            "lp_minimum_box": 0.3295216830585186,
+            "corrected_box": 0.3295216830585481,
+            "singular_value": 0.17651406121464114,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 4,
+            "lp_minimum_box": 0.6552142857972032,
+            "corrected_box": 0.6552142857972578,
+            "singular_value": 0.05476612257141828,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 5,
+            "lp_minimum_box": 0.866475299137372,
+            "corrected_box": 0.8664752991373732,
+            "singular_value": 0.017479802470314075,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 6,
+            "lp_minimum_box": 0.9549857425355147,
+            "corrected_box": 0.9549857425355813,
+            "singular_value": 0.005638898537132523,
+            "constraint_residual": 3.3306690738754696e-16
+          },
+          {
+            "rank": 7,
+            "lp_minimum_box": 0.9851131840792217,
+            "corrected_box": 0.9851131840792628,
+            "singular_value": 0.0018056098979098664,
+            "constraint_residual": 2.7755575615628914e-16
+          },
+          {
+            "rank": 8,
+            "lp_minimum_box": 0.9948404824826413,
+            "corrected_box": 0.9948404824903238,
+            "singular_value": 0.0005656810800186627,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 9,
+            "lp_minimum_box": 0.9984271000326317,
+            "corrected_box": 0.9984271000326339,
+            "singular_value": 0.00017149464515878665,
+            "constraint_residual": 1.1102230246251565e-16
+          },
+          {
+            "rank": 10,
+            "lp_minimum_box": 0.9996747138128094,
+            "corrected_box": 0.9996747139267537,
+            "singular_value": 4.987949564379056e-05,
+            "constraint_residual": 2.7755575615628914e-16
+          },
+          {
+            "rank": 11,
+            "lp_minimum_box": 0.9998571009632281,
+            "corrected_box": 0.9998571009632553,
+            "singular_value": 1.3821035435766133e-05,
+            "constraint_residual": 2.7755575615628914e-16
+          },
+          {
+            "rank": 12,
+            "lp_minimum_box": 1.0045706645503378,
+            "corrected_box": 1.004570664550516,
+            "singular_value": 3.626536036963643e-06,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 13,
+            "lp_minimum_box": 2.6012850186265015,
+            "corrected_box": 2.601285018626514,
+            "singular_value": 8.961835087507043e-07,
+            "constraint_residual": 4.440892098500626e-16
+          }
+        ],
+        "design_condition_ratio": 7.44003539908516e-17,
+        "rank_limit": 22
+      }
+    },
+    {
+      "N": 64,
+      "quadrature_rows": 1721,
+      "validation_rows": 3853,
+      "target_energy_check": 0.5,
+      "seconds": 0.1656203269958496,
+      "models": {
+        "raw": {
+          "l2_norm": 0.1104922923413635,
+          "energy": 0.012208546666849333,
+          "training_energy": 0.012208546666849335,
+          "mesh_energy_difference": 1.734723475976807e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0033140534932229815,
+            0.008639029081308265,
+            0.00025546409231808634
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.01598324411119595
+        },
+        "log_taper": {
+          "l2_norm": 0.37802757920572505,
+          "energy": 0.14290485064014075,
+          "training_energy": 0.14290485064014075,
+          "mesh_energy_difference": 0.0,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0030436285750061287,
+            0.08815673977563496,
+            0.051704482289499615
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.2957231052260927,
+          "harmonic_coefficient_sum": 0.23968068929064862
+        },
+        "geometric_depth": {
+          "l2_norm": 0.1104922923413635,
+          "energy": 0.012208546666849333,
+          "training_energy": 0.012208546666849335,
+          "mesh_energy_difference": 1.734723475976807e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0033140534932229815,
+            0.008639029081308265,
+            0.00025546409231808634
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.01598324411119595,
+          "epsilon": 0.0
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.09253146704386803,
+          "energy": 0.008562072393290434,
+          "training_energy": 0.00856207239329043,
+          "mesh_energy_difference": 3.469446951953614e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.989877738328766,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.001417270372911306,
+            0.006269155697419066,
+            0.0008756463229600605
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.052416615838820645,
+          "harmonic_coefficient_sum": 0.02819299297952882,
+          "tau": 0.6511257675167482
+        },
+        "box1": {
+          "l2_norm": 1.760800180785505e-06,
+          "energy": 3.1004172766542674e-12,
+          "training_energy": 3.1004172766943663e-12,
+          "mesh_energy_difference": 4.009887266321513e-23,
+          "max_abs_coefficient": 1.0,
+          "coefficient_bound": 1,
+          "origin": "bvls_scale_100000",
+          "quadrature_primal_dual_gap": 1.615346900456955e-14,
+          "quadrature_dual_lower_bound": 3.084263807689797e-12,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.8354488371943684e-12,
+            1.2609660548402126e-12,
+            4.002384619687029e-15
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.32426780459251303,
+          "first_eight_coefficients": [
+            0.9999990342092949,
+            -1.0,
+            -0.9998397627192612,
+            -0.0003682826435110868,
+            -1.0,
+            0.9491775998853371,
+            -0.6184224603516607,
+            -1.0
+          ],
+          "first_eight_mobius_deviations": [
+            -9.65790705076408e-07,
+            0.0,
+            0.00016023728073877308,
+            -0.0003682826435110868,
+            0.0,
+            -0.05082240011466288,
+            0.3815775396483393,
+            -1.0
+          ],
+          "harmonic_coefficient_sum": -2.777032592771178e-08,
+          "bound_active_count": 50,
+          "left_tail_energy_bound": 1e-30
+        },
+        "box2": {
+          "l2_norm": 1.5711376603135296e-06,
+          "energy": 2.468473547655472e-12,
+          "training_energy": 2.468473547766408e-12,
+          "mesh_energy_difference": 1.1093590613587148e-22,
+          "max_abs_coefficient": 2.0,
+          "coefficient_bound": 2,
+          "origin": "bvls_scale_100000",
+          "quadrature_primal_dual_gap": 1.4995155831590546e-13,
+          "quadrature_dual_lower_bound": 2.3185219894505024e-12,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.5139130210125043e-12,
+            9.517074944699952e-13,
+            2.8530321729710897e-15
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.9787650090021338,
+          "first_eight_coefficients": [
+            0.9999975258989061,
+            -0.9998917786283483,
+            -1.001100574037917,
+            -0.002443088207876898,
+            -0.9009344932808712,
+            0.3758250792842773,
+            0.7270310772587134,
+            -2.0
+          ],
+          "first_eight_mobius_deviations": [
+            -2.4741010938855723e-06,
+            0.00010822137165167334,
+            -0.0011005740379170792,
+            -0.002443088207876898,
+            0.09906550671912884,
+            -0.6241749207157228,
+            1.7270310772587134,
+            -2.0
+          ],
+          "harmonic_coefficient_sum": -1.8514016209003614e-08,
+          "bound_active_count": 47,
+          "left_tail_energy_bound": 1e-30
+        }
+      },
+      "refinement": {
+        "N": 64,
+        "best_labels": {
+          "1": "bvls_scale_100000",
+          "2": "bvls_scale_100000"
+        },
+        "solver_diagnostics": [
+          {
+            "C": 1,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 85,
+            "energy": 3.1208758433588197e-12
+          },
+          {
+            "C": 1,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 88,
+            "energy": 3.1004172766943663e-12
+          },
+          {
+            "C": 2,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 56,
+            "energy": 2.5328085192449668e-12
+          },
+          {
+            "C": 2,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 70,
+            "energy": 2.468473547766408e-12
+          }
+        ],
+        "singular_prefix_costs": [
+          {
+            "rank": 1,
+            "lp_minimum_box": 0.05681100025960129,
+            "corrected_box": 0.05681100025960223,
+            "singular_value": 1.7480328430969796,
+            "constraint_residual": 0.0
+          },
+          {
+            "rank": 2,
+            "lp_minimum_box": 0.07176546474190447,
+            "corrected_box": 0.07176546474190652,
+            "singular_value": 0.6968506827987211,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 3,
+            "lp_minimum_box": 0.19349025152031143,
+            "corrected_box": 0.19349025152034838,
+            "singular_value": 0.24237407733919838,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 4,
+            "lp_minimum_box": 0.4614203571433887,
+            "corrected_box": 0.46142035714354207,
+            "singular_value": 0.085853641416162,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 5,
+            "lp_minimum_box": 0.722634174361879,
+            "corrected_box": 0.7226341743620117,
+            "singular_value": 0.03153275922508819,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 6,
+            "lp_minimum_box": 0.8795101978715338,
+            "corrected_box": 0.8795101978726318,
+            "singular_value": 0.011868724037392033,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 7,
+            "lp_minimum_box": 0.9519313360849785,
+            "corrected_box": 0.95193133608498,
+            "singular_value": 0.004513374626633214,
+            "constraint_residual": 3.3306690738754696e-16
+          },
+          {
+            "rank": 8,
+            "lp_minimum_box": 0.9809695519520335,
+            "corrected_box": 0.9809695519520362,
+            "singular_value": 0.00171361664067552,
+            "constraint_residual": 1.6653345369377348e-16
+          },
+          {
+            "rank": 9,
+            "lp_minimum_box": 0.9922764389995179,
+            "corrected_box": 0.9922764389995202,
+            "singular_value": 0.0006436803281080914,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 10,
+            "lp_minimum_box": 0.9970635537017353,
+            "corrected_box": 0.9970635537017442,
+            "singular_value": 0.00023752598313845792,
+            "constraint_residual": 2.498001805406602e-16
+          },
+          {
+            "rank": 11,
+            "lp_minimum_box": 0.9989249758268379,
+            "corrected_box": 0.9989249758268879,
+            "singular_value": 8.562840062545839e-05,
+            "constraint_residual": 4.718447854656915e-16
+          },
+          {
+            "rank": 12,
+            "lp_minimum_box": 0.9996538540560121,
+            "corrected_box": 0.9996538540560401,
+            "singular_value": 3.001952827423253e-05,
+            "constraint_residual": 3.7470027081099033e-16
+          },
+          {
+            "rank": 13,
+            "lp_minimum_box": 0.9998806321407554,
+            "corrected_box": 0.9998806321407611,
+            "singular_value": 1.0194353489766808e-05,
+            "constraint_residual": 2.7755575615628914e-16
+          },
+          {
+            "rank": 14,
+            "lp_minimum_box": 0.9999649512696311,
+            "corrected_box": 0.9999649512700644,
+            "singular_value": 3.3414404653750683e-06,
+            "constraint_residual": 3.885780586188048e-16
+          },
+          {
+            "rank": 15,
+            "lp_minimum_box": 0.9999841350218918,
+            "corrected_box": 0.9999841350219169,
+            "singular_value": 1.0534943179056732e-06,
+            "constraint_residual": 4.440892098500626e-16
+          },
+          {
+            "rank": 16,
+            "lp_minimum_box": 1.0004251625550677,
+            "corrected_box": 1.0004251625551221,
+            "singular_value": 3.1836364175012997e-07,
+            "constraint_residual": 4.440892098500626e-16
+          },
+          {
+            "rank": 17,
+            "lp_minimum_box": 2.096961893440655,
+            "corrected_box": 2.0969618934407452,
+            "singular_value": 9.186183157480353e-08,
+            "constraint_residual": 8.881784197001252e-16
+          }
+        ],
+        "design_condition_ratio": 7.308240844874463e-17,
+        "rank_limit": 26
+      }
+    },
+    {
+      "N": 128,
+      "quadrature_rows": 1741,
+      "validation_rows": 3925,
+      "target_energy_check": 0.5,
+      "seconds": 0.3950958251953125,
+      "models": {
+        "raw": {
+          "l2_norm": 0.003522318312699742,
+          "energy": 1.2406726295979956e-05,
+          "training_energy": 1.2406726295980729e-05,
+          "mesh_energy_difference": 7.724940478959219e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.0345183159856064e-07,
+            1.1979422012670535e-05,
+            3.2385245171086354e-07
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": -0.0005690803561106961
+        },
+        "log_taper": {
+          "l2_norm": 0.32355526256306105,
+          "energy": 0.10468800793225136,
+          "training_energy": 0.10468800793225139,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0010664468916900555,
+            0.06555882530780041,
+            0.038062735732760915
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.310330218424377,
+          "harmonic_coefficient_sum": 0.20565683848687383
+        },
+        "geometric_depth": {
+          "l2_norm": 0.0019933220911317784,
+          "energy": 3.973332958993965e-06,
+          "training_energy": 3.9733329589940246e-06,
+          "mesh_energy_difference": 5.929230630780102e-20,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0065461451677042,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            2.236744818874892e-08,
+            3.766530277715495e-06,
+            1.8443523308972146e-07
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0022542373023658213,
+          "harmonic_coefficient_sum": -0.0006213576632491946,
+          "epsilon": 0.0065461451677041645
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.002385379824345046,
+          "energy": 5.690036906392403e-06,
+          "training_energy": 5.690036906392259e-06,
+          "mesh_energy_difference": 1.4399560103323106e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9993631026213007,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            4.4591178880229084e-08,
+            5.016683264061871e-06,
+            6.287624634503028e-07
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0060318711174691154,
+          "harmonic_coefficient_sum": 0.0007046138369148358,
+          "tau": 0.08154883635106204
+        },
+        "box1": {
+          "l2_norm": 2.2570335755390422e-07,
+          "energy": 5.0942005611105534e-14,
+          "training_energy": 5.0942005606698086e-14,
+          "mesh_energy_difference": 4.407447919003936e-24,
+          "max_abs_coefficient": 0.9999999205486128,
+          "coefficient_bound": 1,
+          "origin": "singular_prefix_rank_20",
+          "quadrature_primal_dual_gap": 7.154036767951541e-14,
+          "quadrature_dual_lower_bound": -2.0598362072817327e-14,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            3.1185514286236126e-14,
+            1.974125031337016e-14,
+            1.5241011499244583e-17
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.5004462038340194,
+          "first_eight_coefficients": [
+            0.9999999205484196,
+            -0.9999962279013515,
+            -0.9999999205484188,
+            -0.0015853673642087609,
+            -0.9757747190688624,
+            0.8382748546220626,
+            -0.43781510230751575,
+            -0.9999999205484239
+          ],
+          "first_eight_mobius_deviations": [
+            -7.945158042588218e-08,
+            3.7720986485467733e-06,
+            7.94515812030383e-08,
+            -0.0015853673642087609,
+            0.024225280931137627,
+            -0.16172514537793736,
+            0.5621848976924843,
+            -0.9999999205484239
+          ],
+          "harmonic_coefficient_sum": -4.2420331136661105e-10,
+          "bound_active_count": 109,
+          "left_tail_energy_bound": 1e-30
+        },
+        "box2": {
+          "l2_norm": 2.2224651473892156e-07,
+          "energy": 4.939351331359767e-14,
+          "training_energy": 4.9393513302586643e-14,
+          "mesh_energy_difference": 1.1011027800157993e-23,
+          "max_abs_coefficient": 1.1921702788456001,
+          "coefficient_bound": 2,
+          "origin": "singular_prefix_rank_21",
+          "quadrature_primal_dual_gap": 1.6187907232073893e-13,
+          "quadrature_dual_lower_bound": -1.1248555901815229e-13,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            2.890180172019492e-14,
+            2.009680697225411e-14,
+            3.949046211486631e-16
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.5988714599792256,
+          "first_eight_coefficients": [
+            0.9999981447687543,
+            -0.9998842630792715,
+            -1.002341321235208,
+            0.021661097162733674,
+            -1.099197704777851,
+            1.19217027884546,
+            -0.9078559693655935,
+            -0.9839294014365472
+          ],
+          "first_eight_mobius_deviations": [
+            -1.8552312457398301e-06,
+            0.00011573692072852637,
+            -0.002341321235207916,
+            0.021661097162733674,
+            -0.09919770477785095,
+            0.19217027884546,
+            0.09214403063440646,
+            -0.9839294014365472
+          ],
+          "harmonic_coefficient_sum": -1.0985693243981132e-08,
+          "bound_active_count": 0,
+          "left_tail_energy_bound": 1e-30
+        }
+      },
+      "refinement": {
+        "N": 128,
+        "best_labels": {
+          "1": "singular_prefix_rank_20",
+          "2": "singular_prefix_rank_21"
+        },
+        "solver_diagnostics": [
+          {
+            "C": 1,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 66,
+            "energy": 8.044746339554441e-14
+          },
+          {
+            "C": 1,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 82,
+            "energy": 6.412842684421837e-14
+          },
+          {
+            "C": 2,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 37,
+            "energy": 1.2431839117052789e-13
+          },
+          {
+            "C": 2,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 55,
+            "energy": 5.981873346412649e-14
+          }
+        ],
+        "singular_prefix_costs": [
+          {
+            "rank": 1,
+            "lp_minimum_box": 0.04005475912314877,
+            "corrected_box": 0.040054759123150395,
+            "singular_value": 1.8335127226708021,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 2,
+            "lp_minimum_box": 0.0700366342793101,
+            "corrected_box": 0.07003663427931102,
+            "singular_value": 0.8094772784880258,
+            "constraint_residual": 7.37257477290143e-17
+          },
+          {
+            "rank": 3,
+            "lp_minimum_box": 0.11429314410677399,
+            "corrected_box": 0.11429314410677413,
+            "singular_value": 0.31266441082463214,
+            "constraint_residual": 4.0766001685454967e-17
+          },
+          {
+            "rank": 4,
+            "lp_minimum_box": 0.3091093174903104,
+            "corrected_box": 0.3091093174903107,
+            "singular_value": 0.12244341374423777,
+            "constraint_residual": 3.3306690738754696e-16
+          },
+          {
+            "rank": 5,
+            "lp_minimum_box": 0.5594262328286672,
+            "corrected_box": 0.5594262328286693,
+            "singular_value": 0.04978573463541895,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 6,
+            "lp_minimum_box": 0.7656642660291173,
+            "corrected_box": 0.7656642660291189,
+            "singular_value": 0.020865420833418774,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 7,
+            "lp_minimum_box": 0.8880862358404917,
+            "corrected_box": 0.8880862358404931,
+            "singular_value": 0.008911220920963324,
+            "constraint_residual": 3.3306690738754696e-16
+          },
+          {
+            "rank": 8,
+            "lp_minimum_box": 0.9493129347648401,
+            "corrected_box": 0.9493129347648434,
+            "singular_value": 0.003839345578057995,
+            "constraint_residual": 3.157196726277789e-16
+          },
+          {
+            "rank": 9,
+            "lp_minimum_box": 0.9769397174213932,
+            "corrected_box": 0.9769397174214022,
+            "singular_value": 0.0016554591721237972,
+            "constraint_residual": 4.822531263215524e-16
+          },
+          {
+            "rank": 10,
+            "lp_minimum_box": 0.9896448858638606,
+            "corrected_box": 0.9896448858638915,
+            "singular_value": 0.0007099530081661261,
+            "constraint_residual": 4.822531263215524e-16
+          },
+          {
+            "rank": 11,
+            "lp_minimum_box": 0.9950360747447594,
+            "corrected_box": 0.9950360747447717,
+            "singular_value": 0.00030135554186185774,
+            "constraint_residual": 7.771561172376096e-16
+          },
+          {
+            "rank": 12,
+            "lp_minimum_box": 0.998021771857322,
+            "corrected_box": 0.9980217718573374,
+            "singular_value": 0.00012611504628123126,
+            "constraint_residual": 5.551115123125783e-16
+          },
+          {
+            "rank": 13,
+            "lp_minimum_box": 0.9991780537947055,
+            "corrected_box": 0.9991780537947117,
+            "singular_value": 5.18650637433607e-05,
+            "constraint_residual": 4.440892098500626e-16
+          },
+          {
+            "rank": 14,
+            "lp_minimum_box": 0.9996782801863042,
+            "corrected_box": 0.9996782801863399,
+            "singular_value": 2.0901198168474633e-05,
+            "constraint_residual": 4.996003610813204e-16
+          },
+          {
+            "rank": 15,
+            "lp_minimum_box": 0.9998754066355576,
+            "corrected_box": 0.9998754066356013,
+            "singular_value": 8.232542509091727e-06,
+            "constraint_residual": 5.273559366969494e-16
+          },
+          {
+            "rank": 16,
+            "lp_minimum_box": 0.9999492940929412,
+            "corrected_box": 0.9999492940930232,
+            "singular_value": 3.161461955916698e-06,
+            "constraint_residual": 4.440892098500626e-16
+          },
+          {
+            "rank": 17,
+            "lp_minimum_box": 0.9999805019007998,
+            "corrected_box": 0.9999805019023549,
+            "singular_value": 1.1807103854782433e-06,
+            "constraint_residual": 6.106226635438361e-16
+          },
+          {
+            "rank": 18,
+            "lp_minimum_box": 0.9999935243616703,
+            "corrected_box": 0.9999935243616949,
+            "singular_value": 4.2769129908845934e-07,
+            "constraint_residual": 1.1275702593849246e-15
+          },
+          {
+            "rank": 19,
+            "lp_minimum_box": 0.999997358894713,
+            "corrected_box": 0.9999973588947397,
+            "singular_value": 1.498026252124594e-07,
+            "constraint_residual": 5.655198531684391e-16
+          },
+          {
+            "rank": 20,
+            "lp_minimum_box": 0.9999999205484201,
+            "corrected_box": 0.9999999205486128,
+            "singular_value": 5.0549608782368374e-08,
+            "constraint_residual": 5.412337245047638e-16
+          },
+          {
+            "rank": 21,
+            "lp_minimum_box": 1.1921702788454553,
+            "corrected_box": 1.1921702788456001,
+            "singular_value": 1.6358402448719746e-08,
+            "constraint_residual": 4.440892098500626e-16
+          },
+          {
+            "rank": 22,
+            "lp_minimum_box": 2.6677507764169253,
+            "corrected_box": 2.667750776419712,
+            "singular_value": 5.04785037020988e-09,
+            "constraint_residual": 1.0658141036401503e-14
+          }
+        ],
+        "design_condition_ratio": 7.143455104653721e-17,
+        "rank_limit": 30
+      }
+    },
+    {
+      "N": 256,
+      "quadrature_rows": 1761,
+      "validation_rows": 3961,
+      "target_energy_check": 0.49999999999999994,
+      "seconds": 0.8171255588531494,
+      "models": {
+        "raw": {
+          "l2_norm": 0.05915153976473762,
+          "energy": 0.0034989046565393365,
+          "training_energy": 0.003498904656539337,
+          "mesh_energy_difference": 4.336808689942018e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0008480175735974458,
+            0.002630184588108582,
+            2.0702494833309056e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.004549999432231531
+        },
+        "log_taper": {
+          "l2_norm": 0.28464342475576737,
+          "energy": 0.0810218792566922,
+          "training_energy": 0.08102187925669223,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.000464064880395206,
+            0.051290108944462946,
+            0.029267705431834056
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.34062735781243086,
+          "harmonic_coefficient_sum": 0.1803268503263988
+        },
+        "geometric_depth": {
+          "l2_norm": 0.05915153976473762,
+          "energy": 0.0034989046565393365,
+          "training_energy": 0.003498904656539337,
+          "mesh_energy_difference": 4.336808689942018e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0008480175735974458,
+            0.002630184588108582,
+            2.0702494833309056e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.004549999432231531,
+          "epsilon": 0.0
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.03486914262505354,
+          "energy": 0.001215857107406326,
+          "training_energy": 0.001215857107406324,
+          "mesh_energy_difference": 1.951563910473908e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9947773725519903,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.00012534889735314327,
+            0.0009356613191922429,
+            0.00015484689086093958
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.08798404852414177,
+          "harmonic_coefficient_sum": 0.011723557071285386,
+          "tau": 1.3404961375639612
+        },
+        "box1": {
+          "l2_norm": 3.143166977419347e-08,
+          "energy": 9.879498647939474e-16,
+          "training_energy": 9.879498601387457e-16,
+          "mesh_energy_difference": 4.655201716417399e-24,
+          "max_abs_coefficient": 0.9999998791397456,
+          "coefficient_bound": 1,
+          "origin": "singular_prefix_rank_24",
+          "quadrature_primal_dual_gap": 5.959163682378727e-14,
+          "quadrature_dual_lower_bound": -5.860368696364853e-14,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            5.042773920037329e-16,
+            4.768356108356255e-16,
+            6.836861954588827e-18
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.6718219651557471,
+          "first_eight_coefficients": [
+            0.9999998791397335,
+            -0.9999952220340452,
+            -0.9999998791397067,
+            -0.0016520180303602743,
+            -0.9759086903991813,
+            0.8427916253866299,
+            -0.4535743581025532,
+            -0.9999998791397064
+          ],
+          "first_eight_mobius_deviations": [
+            -1.2086026646151993e-07,
+            4.777965954771979e-06,
+            1.2086029332891712e-07,
+            -0.0016520180303602743,
+            0.024091309600818733,
+            -0.15720837461337012,
+            0.5464256418974468,
+            -0.9999998791397064
+          ],
+          "harmonic_coefficient_sum": -8.695399955627181e-10,
+          "bound_active_count": 233,
+          "left_tail_energy_bound": 1e-30
+        },
+        "box2": {
+          "l2_norm": 2.9988778264976086e-08,
+          "energy": 8.993268218259021e-16,
+          "training_energy": 8.993268198118259e-16,
+          "mesh_energy_difference": 2.0140762758605002e-24,
+          "max_abs_coefficient": 1.0805882400269462,
+          "coefficient_bound": 2,
+          "origin": "singular_prefix_rank_26",
+          "quadrature_primal_dual_gap": 1.3835301032612188e-13,
+          "quadrature_dual_lower_bound": -1.3745368350631005e-13,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            5.323371732242573e-16,
+            3.565125020206804e-16,
+            1.0477146580964068e-17
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.8400600228463386,
+          "first_eight_coefficients": [
+            1.0000003831753028,
+            -1.0000317512355592,
+            -0.9991189203193835,
+            -0.011766021490797916,
+            -0.9134375033124218,
+            0.6313079413359726,
+            -0.10619757445191824,
+            -1.0805882400263127
+          ],
+          "first_eight_mobius_deviations": [
+            3.8317530282050427e-07,
+            -3.175123555920756e-05,
+            0.0008810796806164589,
+            -0.011766021490797916,
+            0.0865624966875782,
+            -0.36869205866402743,
+            0.8938024255480818,
+            -1.0805882400263127
+          ],
+          "harmonic_coefficient_sum": 1.7487859216291923e-09,
+          "bound_active_count": 0,
+          "left_tail_energy_bound": 1e-30
+        }
+      },
+      "refinement": {
+        "N": 256,
+        "best_labels": {
+          "1": "singular_prefix_rank_24",
+          "2": "singular_prefix_rank_26"
+        },
+        "solver_diagnostics": [
+          {
+            "C": 1,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 67,
+            "energy": 1.423691921864289e-14
+          },
+          {
+            "C": 1,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 68,
+            "energy": 4.0585947768171445e-15
+          },
+          {
+            "C": 2,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 77,
+            "energy": 1.401681683159095e-14
+          },
+          {
+            "C": 2,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 80,
+            "energy": 1.0422660339120682e-14
+          }
+        ],
+        "singular_prefix_costs": [
+          {
+            "rank": 1,
+            "lp_minimum_box": 0.02823869597572227,
+            "corrected_box": 0.02823869597572381,
+            "singular_value": 1.9071444158059812,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 2,
+            "lp_minimum_box": 0.06288931396293465,
+            "corrected_box": 0.0628893139629363,
+            "singular_value": 0.9161694511849398,
+            "constraint_residual": 5.551115123125783e-17
+          },
+          {
+            "rank": 3,
+            "lp_minimum_box": 0.07119681250693632,
+            "corrected_box": 0.07119681250693645,
+            "singular_value": 0.38562215677413114,
+            "constraint_residual": 1.6653345369377348e-16
+          },
+          {
+            "rank": 4,
+            "lp_minimum_box": 0.2034482194142934,
+            "corrected_box": 0.2034482194142944,
+            "singular_value": 0.16355421643881335,
+            "constraint_residual": 1.6653345369377348e-16
+          },
+          {
+            "rank": 5,
+            "lp_minimum_box": 0.4108746869424687,
+            "corrected_box": 0.4108746869424775,
+            "singular_value": 0.07190351163639022,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 6,
+            "lp_minimum_box": 0.6287465932052837,
+            "corrected_box": 0.6287465932052871,
+            "singular_value": 0.03264727533463878,
+            "constraint_residual": 7.771561172376096e-16
+          },
+          {
+            "rank": 7,
+            "lp_minimum_box": 0.793901712165475,
+            "corrected_box": 0.7939017121857276,
+            "singular_value": 0.015169589752044722,
+            "constraint_residual": 5.551115123125783e-16
+          },
+          {
+            "rank": 8,
+            "lp_minimum_box": 0.893571692711118,
+            "corrected_box": 0.8935716927866587,
+            "singular_value": 0.00715096824974583,
+            "constraint_residual": 6.38378239159465e-16
+          },
+          {
+            "rank": 9,
+            "lp_minimum_box": 0.9468009205486315,
+            "corrected_box": 0.9468009205486349,
+            "singular_value": 0.0033957788682298547,
+            "constraint_residual": 9.272096979096034e-16
+          },
+          {
+            "rank": 10,
+            "lp_minimum_box": 0.9731116810698818,
+            "corrected_box": 0.9731116810698831,
+            "singular_value": 0.0016153642667741,
+            "constraint_residual": 4.579669976578771e-16
+          },
+          {
+            "rank": 11,
+            "lp_minimum_box": 0.9869731151916964,
+            "corrected_box": 0.9869731151917023,
+            "singular_value": 0.0007663875859596107,
+            "constraint_residual": 9.43689570931383e-16
+          },
+          {
+            "rank": 12,
+            "lp_minimum_box": 0.9932408483195085,
+            "corrected_box": 0.9932408483195224,
+            "singular_value": 0.0003613662308613681,
+            "constraint_residual": 5.551115123125783e-16
+          },
+          {
+            "rank": 13,
+            "lp_minimum_box": 0.9967586295520366,
+            "corrected_box": 0.996758629552052,
+            "singular_value": 0.00016885673634018782,
+            "constraint_residual": 7.494005416219807e-16
+          },
+          {
+            "rank": 14,
+            "lp_minimum_box": 0.9984871886079787,
+            "corrected_box": 0.9984871886080205,
+            "singular_value": 7.800209551984639e-05,
+            "constraint_residual": 8.604228440844963e-16
+          },
+          {
+            "rank": 15,
+            "lp_minimum_box": 0.9993173728159161,
+            "corrected_box": 0.999317372815919,
+            "singular_value": 3.554586571420136e-05,
+            "constraint_residual": 7.355227538141662e-16
+          },
+          {
+            "rank": 16,
+            "lp_minimum_box": 0.9996973173715262,
+            "corrected_box": 0.9996973173715327,
+            "singular_value": 1.5948810645867955e-05,
+            "constraint_residual": 6.800116025829084e-16
+          },
+          {
+            "rank": 17,
+            "lp_minimum_box": 0.9998673478180778,
+            "corrected_box": 0.9998673478181225,
+            "singular_value": 7.032789194805897e-06,
+            "constraint_residual": 8.604228440844963e-16
+          },
+          {
+            "rank": 18,
+            "lp_minimum_box": 0.999939877450328,
+            "corrected_box": 0.9999398774503325,
+            "singular_value": 3.042249584196654e-06,
+            "constraint_residual": 1.0824674490095276e-15
+          },
+          {
+            "rank": 19,
+            "lp_minimum_box": 0.9999734335602681,
+            "corrected_box": 0.9999734335602922,
+            "singular_value": 1.2885537934209227e-06,
+            "constraint_residual": 1.1102230246251565e-15
+          },
+          {
+            "rank": 20,
+            "lp_minimum_box": 0.9999890082092695,
+            "corrected_box": 0.9999890082093142,
+            "singular_value": 5.332638733333415e-07,
+            "constraint_residual": 5.828670879282072e-16
+          },
+          {
+            "rank": 21,
+            "lp_minimum_box": 0.9999954191116281,
+            "corrected_box": 0.9999954191154365,
+            "singular_value": 2.1511237528075213e-07,
+            "constraint_residual": 8.881784197001252e-16
+          },
+          {
+            "rank": 22,
+            "lp_minimum_box": 0.9999984693591099,
+            "corrected_box": 0.999998469374165,
+            "singular_value": 8.43342560853125e-08,
+            "constraint_residual": 1.4988010832439613e-15
+          },
+          {
+            "rank": 23,
+            "lp_minimum_box": 0.9999994439291596,
+            "corrected_box": 0.9999994439291697,
+            "singular_value": 3.201524755550671e-08,
+            "constraint_residual": 1.1102230246251565e-15
+          },
+          {
+            "rank": 24,
+            "lp_minimum_box": 0.9999998791397067,
+            "corrected_box": 0.9999998791397456,
+            "singular_value": 1.171222632872823e-08,
+            "constraint_residual": 6.661338147750939e-16
+          },
+          {
+            "rank": 25,
+            "lp_minimum_box": 0.9999999212629458,
+            "corrected_box": 0.9999999221464382,
+            "singular_value": 4.103468178768274e-09,
+            "constraint_residual": 9.71445146547012e-16
+          },
+          {
+            "rank": 26,
+            "lp_minimum_box": 1.0805882400264382,
+            "corrected_box": 1.0805882400269462,
+            "singular_value": 1.3673236582123042e-09,
+            "constraint_residual": 1.7763568394002505e-15
+          },
+          {
+            "rank": 27,
+            "lp_minimum_box": 2.892430231179349,
+            "corrected_box": 2.892430231180326,
+            "singular_value": 4.3313968550490666e-10,
+            "constraint_residual": 7.105427357601002e-15
+          }
+        ],
+        "design_condition_ratio": 2.0371368422773916e-17,
+        "rank_limit": 35
+      }
+    },
+    {
+      "N": 512,
+      "quadrature_rows": 1801,
+      "validation_rows": 4033,
+      "target_energy_check": 0.49999999999999994,
+      "seconds": 2.4126534461975098,
+      "models": {
+        "raw": {
+          "l2_norm": 0.08374656105652657,
+          "energy": 0.007013486488794534,
+          "training_energy": 0.007013486488794547,
+          "mesh_energy_difference": 1.3010426069826053e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0016963068016942627,
+            0.005296350687366974,
+            2.082899973329701e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": -0.004563879899087932
+        },
+        "log_taper": {
+          "l2_norm": 0.2517249369498637,
+          "energy": 0.06336544388241286,
+          "training_energy": 0.06336544388241287,
+          "mesh_energy_difference": 1.3877787807814457e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0001413231948073384,
+            0.04014452898976074,
+            0.023079591697844775
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.3724880053293664,
+          "harmonic_coefficient_sum": 0.16014367239023106
+        },
+        "geometric_depth": {
+          "l2_norm": 0.07466879728604844,
+          "energy": 0.005575429288144995,
+          "training_energy": 0.005575429288144997,
+          "mesh_energy_difference": 2.6020852139652106e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.082725360687865,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0015617803646069434,
+            0.00399882311190298,
+            1.4825811635071785e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.025930111972231877,
+          "harmonic_coefficient_sum": -0.004749571168780515,
+          "epsilon": 0.08272536068786501
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.016666959912390145,
+          "energy": 0.0002777875527212201,
+          "training_energy": 0.0002777875527212151,
+          "mesh_energy_difference": 5.041540102057596e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9959598807333402,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            3.5318426680723586e-05,
+            0.00018137219742505646,
+            6.109692861544012e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.1309196850973132,
+          "harmonic_coefficient_sum": 0.007258520988272807,
+          "tau": 2.0727309296784395
+        },
+        "box1": {
+          "l2_norm": 4.118183945437152e-09,
+          "energy": 1.695943900845631e-17,
+          "training_energy": 1.695943887050961e-17,
+          "mesh_energy_difference": 1.37946698256023e-25,
+          "max_abs_coefficient": 0.9999999940514069,
+          "coefficient_bound": 1,
+          "origin": "singular_prefix_rank_30",
+          "quadrature_primal_dual_gap": 4.7234600550134565e-14,
+          "quadrature_dual_lower_bound": -4.7217641111264055e-14,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.013370796472451e-17,
+            6.792234757643894e-18,
+            3.3496286087906376e-20
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 1.0109980970764212,
+          "first_eight_coefficients": [
+            0.9999999940513137,
+            -0.9999996659736186,
+            -0.9999999940513119,
+            -0.0002270587952683006,
+            -0.99535920284925,
+            0.9569224835013869,
+            -0.779244864000482,
+            -0.6457195459306347
+          ],
+          "first_eight_mobius_deviations": [
+            -5.948686321310959e-09,
+            3.3402638144330865e-07,
+            5.948688097667798e-09,
+            -0.0002270587952683006,
+            0.004640797150750053,
+            -0.04307751649861313,
+            0.22075513599951802,
+            -0.6457195459306347
+          ],
+          "harmonic_coefficient_sum": -2.9769020581937866e-11,
+          "bound_active_count": 484,
+          "left_tail_energy_bound": 1e-30
+        },
+        "box2": {
+          "l2_norm": 4.026104584321441e-09,
+          "energy": 1.6209518123894125e-17,
+          "training_energy": 1.6209518316021836e-17,
+          "mesh_energy_difference": 1.92127711334575e-25,
+          "max_abs_coefficient": 1.3459335417979525,
+          "coefficient_bound": 2,
+          "origin": "singular_prefix_rank_32",
+          "quadrature_primal_dual_gap": 1.282591293901765e-13,
+          "quadrature_dual_lower_bound": -1.2824291987186049e-13,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            9.428763851333527e-18,
+            6.732518577448111e-18,
+            4.823569511248848e-20
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 1.3359613231033958,
+          "first_eight_coefficients": [
+            1.0000000072877977,
+            -1.000001167740231,
+            -0.9999432204229088,
+            -0.00125652600503113,
+            -0.9850136023582784,
+            0.8954676872522017,
+            -0.5613597673848651,
+            -1.0776525000922812
+          ],
+          "first_eight_mobius_deviations": [
+            7.287797698651843e-09,
+            -1.1677402309562268e-06,
+            5.677957709115944e-05,
+            -0.00125652600503113,
+            0.014986397641721605,
+            -0.10453231274779828,
+            0.43864023261513485,
+            -1.0776525000922812
+          ],
+          "harmonic_coefficient_sum": 1.4285572724759277e-11,
+          "bound_active_count": 0,
+          "left_tail_energy_bound": 1e-30
+        }
+      },
+      "refinement": {
+        "N": 512,
+        "best_labels": {
+          "1": "singular_prefix_rank_30",
+          "2": "singular_prefix_rank_32"
+        },
+        "solver_diagnostics": [
+          {
+            "C": 1,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 58,
+            "energy": 3.951931870155297e-15
+          },
+          {
+            "C": 1,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 99,
+            "energy": 3.235217099085605e-16
+          },
+          {
+            "C": 2,
+            "scale": 1.0,
+            "method": "bvls",
+            "status": 1,
+            "iterations": 46,
+            "energy": 1.5621512579202875e-14
+          },
+          {
+            "C": 2,
+            "scale": 100000.0,
+            "method": "bvls",
+            "status": 2,
+            "iterations": 72,
+            "energy": 4.2642255562553743e-16
+          }
+        ],
+        "singular_prefix_costs": [
+          {
+            "rank": 1,
+            "lp_minimum_box": 0.019906149265199246,
+            "corrected_box": 0.019906149265202233,
+            "singular_value": 1.970904054234972,
+            "constraint_residual": 0.0
+          },
+          {
+            "rank": 2,
+            "lp_minimum_box": 0.05363193452940917,
+            "corrected_box": 0.05363193452941097,
+            "singular_value": 1.016490532635534,
+            "constraint_residual": 1.1102230246251565e-16
+          },
+          {
+            "rank": 3,
+            "lp_minimum_box": 0.06127031925510924,
+            "corrected_box": 0.061270319255110256,
+            "singular_value": 0.4598920856490035,
+            "constraint_residual": 8.326672684688674e-17
+          },
+          {
+            "rank": 4,
+            "lp_minimum_box": 0.13379381137572563,
+            "corrected_box": 0.13379381137573776,
+            "singular_value": 0.2082956594115462,
+            "constraint_residual": 1.1102230246251565e-16
+          },
+          {
+            "rank": 5,
+            "lp_minimum_box": 0.29335246151906674,
+            "corrected_box": 0.2933524615190844,
+            "singular_value": 0.09748729548909948,
+            "constraint_residual": 2.220446049250313e-16
+          },
+          {
+            "rank": 6,
+            "lp_minimum_box": 0.4926550654388141,
+            "corrected_box": 0.49265506543882565,
+            "singular_value": 0.04712173683006756,
+            "constraint_residual": 5.551115123125783e-16
+          },
+          {
+            "rank": 7,
+            "lp_minimum_box": 0.6779523986280003,
+            "corrected_box": 0.6779523986280122,
+            "singular_value": 0.02335397253614535,
+            "constraint_residual": 8.881784197001252e-16
+          },
+          {
+            "rank": 8,
+            "lp_minimum_box": 0.8133203047449247,
+            "corrected_box": 0.8133203047449366,
+            "singular_value": 0.011779397149679882,
+            "constraint_residual": 3.608224830031759e-16
+          },
+          {
+            "rank": 9,
+            "lp_minimum_box": 0.8971726939909579,
+            "corrected_box": 0.8971726939909729,
+            "singular_value": 0.006008377058176083,
+            "constraint_residual": 9.992007221626409e-16
+          },
+          {
+            "rank": 10,
+            "lp_minimum_box": 0.9445382488537732,
+            "corrected_box": 0.9445382488537827,
+            "singular_value": 0.0030835596660769853,
+            "constraint_residual": 1.0824674490095276e-15
+          },
+          {
+            "rank": 11,
+            "lp_minimum_box": 0.9696697280863539,
+            "corrected_box": 0.969669728086404,
+            "singular_value": 0.0015858161857512678,
+            "constraint_residual": 7.771561172376096e-16
+          },
+          {
+            "rank": 12,
+            "lp_minimum_box": 0.984243595155865,
+            "corrected_box": 0.9842435951558867,
+            "singular_value": 0.0008146199370212363,
+            "constraint_residual": 6.38378239159465e-16
+          },
+          {
+            "rank": 13,
+            "lp_minimum_box": 0.9913933369568042,
+            "corrected_box": 0.9913933369568256,
+            "singular_value": 0.00041688707519509815,
+            "constraint_residual": 9.922618282587337e-16
+          },
+          {
+            "rank": 14,
+            "lp_minimum_box": 0.9951077422801465,
+            "corrected_box": 0.9951077422801562,
+            "singular_value": 0.00021207802279565467,
+            "constraint_residual": 8.326672684688674e-16
+          },
+          {
+            "rank": 15,
+            "lp_minimum_box": 0.9976137949675439,
+            "corrected_box": 0.9976137949676062,
+            "singular_value": 0.00010704808922684286,
+            "constraint_residual": 8.326672684688674e-16
+          },
+          {
+            "rank": 16,
+            "lp_minimum_box": 0.9987527673192357,
+            "corrected_box": 0.9987527673192743,
+            "singular_value": 5.352524375097675e-05,
+            "constraint_residual": 6.938893903907228e-16
+          },
+          {
+            "rank": 17,
+            "lp_minimum_box": 0.9994055608271754,
+            "corrected_box": 0.9994055608272445,
+            "singular_value": 2.647224995581158e-05,
+            "constraint_residual": 1.27675647831893e-15
+          },
+          {
+            "rank": 18,
+            "lp_minimum_box": 0.9997102202934861,
+            "corrected_box": 0.9997102202949864,
+            "singular_value": 1.2932117864391311e-05,
+            "constraint_residual": 1.609823385706477e-15
+          },
+          {
+            "rank": 19,
+            "lp_minimum_box": 0.9998606135187785,
+            "corrected_box": 0.9998606135189794,
+            "singular_value": 6.2316448209316136e-06,
+            "constraint_residual": 1.27675647831893e-15
+          },
+          {
+            "rank": 20,
+            "lp_minimum_box": 0.9999312841412573,
+            "corrected_box": 0.9999312841413083,
+            "singular_value": 2.957922739102703e-06,
+            "constraint_residual": 1.0547118733938987e-15
+          },
+          {
+            "rank": 21,
+            "lp_minimum_box": 0.9999652399189098,
+            "corrected_box": 0.9999652399190015,
+            "singular_value": 1.3809617097998967e-06,
+            "constraint_residual": 9.08995101411847e-16
+          },
+          {
+            "rank": 22,
+            "lp_minimum_box": 0.9999842490043512,
+            "corrected_box": 0.9999842490045933,
+            "singular_value": 6.331077454124908e-07,
+            "constraint_residual": 9.992007221626409e-16
+          },
+          {
+            "rank": 23,
+            "lp_minimum_box": 0.9999927987705142,
+            "corrected_box": 0.999992798774756,
+            "singular_value": 2.8448199524003453e-07,
+            "constraint_residual": 1.3322676295501878e-15
+          },
+          {
+            "rank": 24,
+            "lp_minimum_box": 0.9999968676878652,
+            "corrected_box": 0.9999968677019305,
+            "singular_value": 1.2500435190638693e-07,
+            "constraint_residual": 1.5543122344752192e-15
+          },
+          {
+            "rank": 25,
+            "lp_minimum_box": 0.9999987824306611,
+            "corrected_box": 0.9999987824482756,
+            "singular_value": 5.356111819419744e-08,
+            "constraint_residual": 1.2212453270876722e-15
+          },
+          {
+            "rank": 26,
+            "lp_minimum_box": 0.9999995628372811,
+            "corrected_box": 0.9999995628374013,
+            "singular_value": 2.229546155580096e-08,
+            "constraint_residual": 2.3314683517128287e-15
+          },
+          {
+            "rank": 27,
+            "lp_minimum_box": 0.9999998343497769,
+            "corrected_box": 0.9999998346973831,
+            "singular_value": 8.971636064420195e-09,
+            "constraint_residual": 1.609823385706477e-15
+          },
+          {
+            "rank": 28,
+            "lp_minimum_box": 0.9999999443013726,
+            "corrected_box": 0.9999999443013864,
+            "singular_value": 3.46696837076028e-09,
+            "constraint_residual": 3.1086244689504383e-15
+          },
+          {
+            "rank": 29,
+            "lp_minimum_box": 0.9999999727937254,
+            "corrected_box": 0.9999999727941076,
+            "singular_value": 1.276798915557696e-09,
+            "constraint_residual": 1.7763568394002505e-15
+          },
+          {
+            "rank": 30,
+            "lp_minimum_box": 0.9999999940513044,
+            "corrected_box": 0.9999999940514069,
+            "singular_value": 4.4762369097990043e-10,
+            "constraint_residual": 1.3322676295501878e-15
+          },
+          {
+            "rank": 31,
+            "lp_minimum_box": 1.0000184576136075,
+            "corrected_box": 1.0000184576164861,
+            "singular_value": 1.5769082161807005e-10,
+            "constraint_residual": 1.7763568394002505e-15
+          },
+          {
+            "rank": 32,
+            "lp_minimum_box": 1.3459335417964218,
+            "corrected_box": 1.3459335417979525,
+            "singular_value": 7.015516252179158e-11,
+            "constraint_residual": 1.0658141036401503e-14
+          },
+          {
+            "rank": 33,
+            "lp_minimum_box": 2.028054528483528,
+            "corrected_box": 2.0280545284871425,
+            "singular_value": 4.0261460747365956e-11,
+            "constraint_residual": 1.0658141036401503e-14
+          }
+        ],
+        "design_condition_ratio": 6.052584045425079e-18,
+        "rank_limit": 39
+      }
+    }
+  ],
+  "refinement_seconds": 2.7126526832580566,
+  "interpretation": "Validated feasible upper bounds; optimality is not certified."
+}

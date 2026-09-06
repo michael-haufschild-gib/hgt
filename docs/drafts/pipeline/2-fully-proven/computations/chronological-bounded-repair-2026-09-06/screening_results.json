@@ -1,0 +1,723 @@
+{
+  "status": "exploratory_not_proof",
+  "kernel_validation": {
+    "mpmath_digits": 80,
+    "sample_count": 100,
+    "maximum_absolute_kernel_error": 3.455087746431312e-16
+  },
+  "sizes": [
+    16,
+    32,
+    64,
+    128,
+    256,
+    512
+  ],
+  "workers": 4,
+  "blas_threads_per_worker": 4,
+  "total_seconds": 2.606571674346924,
+  "results": [
+    {
+      "N": 16,
+      "quadrature_rows": 1661,
+      "validation_rows": 3745,
+      "target_energy_check": 0.5,
+      "seconds": 0.08288168907165527,
+      "models": {
+        "raw": {
+          "l2_norm": 0.21464977101524704,
+          "energy": 0.04607452419689799,
+          "training_energy": 0.04607452419689803,
+          "mesh_energy_difference": 4.163336342344337e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.013071042680708555,
+            0.029314224030156467,
+            0.0036892574860329604
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.06073926073926074
+        },
+        "log_taper": {
+          "l2_norm": 0.5583489980688153,
+          "energy": 0.31175360364445,
+          "training_energy": 0.31175360364445004,
+          "mesh_energy_difference": 5.551115123125783e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.025041255408370856,
+            0.17409517230236232,
+            0.11261717593371678
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.158103119289179,
+          "harmonic_coefficient_sum": 0.35370020150448367
+        },
+        "geometric_depth": {
+          "l2_norm": 0.21464977101524704,
+          "energy": 0.04607452419689799,
+          "training_energy": 0.04607452419689803,
+          "mesh_energy_difference": 4.163336342344337e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.013071042680708555,
+            0.029314224030156467,
+            0.0036892574860329604
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.06073926073926074,
+          "epsilon": 0.0
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.21464977101524704,
+          "energy": 0.04607452419689799,
+          "training_energy": 0.04607452419689803,
+          "mesh_energy_difference": 4.163336342344337e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.013071042680708555,
+            0.029314224030156467,
+            0.0036892574860329604
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.06073926073926074,
+          "tau": 0.0
+        },
+        "box1": {
+          "l2_norm": 0.000148487543294222,
+          "energy": 2.204855051355345e-08,
+          "training_energy": 2.2048550513565254e-08,
+          "mesh_energy_difference": 1.1805521702356811e-20,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9999998805485065,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            8.845912050379345e-09,
+            1.1128075793109221e-08,
+            2.0745626700648803e-09
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.11478145638703209,
+          "harmonic_coefficient_sum": -5.197479662528981e-05,
+          "coefficient_bound": 1.0,
+          "solver_status": 0,
+          "solver_iterations": 160,
+          "solver_optimality": 1.649543369377971e-08,
+          "quadrature_dual_lower_bound": -1.5815660854843198e-07,
+          "quadrature_primal_dual_gap": 1.8020515906199724e-07,
+          "bound_active_count": 2,
+          "solve_seconds": 0.05423092842102051
+        },
+        "box2": {
+          "l2_norm": 0.00010890083456687911,
+          "energy": 1.1859391769362773e-08,
+          "training_energy": 1.1859391769386196e-08,
+          "mesh_energy_difference": 2.3422446225051532e-20,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.9999999999999998,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            5.862468866866185e-09,
+            5.777954112056093e-09,
+            2.1896879044049576e-10
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0692925468558952,
+          "harmonic_coefficient_sum": -7.870901539752673e-06,
+          "coefficient_bound": 2.0,
+          "solver_status": 1,
+          "solver_iterations": 51,
+          "solver_optimality": 5.680452689196738e-14,
+          "quadrature_dual_lower_bound": 1.1858936830903243e-08,
+          "quadrature_primal_dual_gap": 4.549384829528416e-13,
+          "bound_active_count": 3,
+          "solve_seconds": 0.014912605285644531
+        }
+      }
+    },
+    {
+      "N": 32,
+      "quadrature_rows": 1681,
+      "validation_rows": 3781,
+      "target_energy_check": 0.49999999999999994,
+      "seconds": 0.18935084342956543,
+      "models": {
+        "raw": {
+          "l2_norm": 0.30943309545710274,
+          "energy": 0.09574884056416447,
+          "training_energy": 0.0957488405641645,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.02643107068561602,
+            0.06538232384929761,
+            0.003935446029250834
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": -0.06273313342445813
+        },
+        "log_taper": {
+          "l2_norm": 0.448337803822882,
+          "energy": 0.20100678633672506,
+          "training_energy": 0.20100678633672503,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.008035689841432025,
+            0.11964961629606186,
+            0.0733214801992311
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.25521419854127925,
+          "harmonic_coefficient_sum": 0.2854562595648009
+        },
+        "geometric_depth": {
+          "l2_norm": 0.18667787249930265,
+          "energy": 0.0348486280808659,
+          "training_energy": 0.03484862808086592,
+          "mesh_energy_difference": 2.0816681711721685e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.5,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.014265372876979036,
+            0.018028566913755182,
+            0.0025546882901316867
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.1923828125,
+          "harmonic_coefficient_sum": -0.06796055474842433,
+          "epsilon": 0.5
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.0687897521581718,
+          "energy": 0.004732030001982702,
+          "training_energy": 0.004732030001982706,
+          "mesh_energy_difference": 3.469446951953614e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9697546173080832,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0011528765674612969,
+            0.0021973007305284577,
+            0.0013818527039929482
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.08524134859517132,
+          "harmonic_coefficient_sum": 0.03288470224122672,
+          "tau": 0.9827907627142599
+        },
+        "box1": {
+          "l2_norm": 1.4830674254043318e-05,
+          "energy": 2.1994889882954332e-10,
+          "training_energy": 2.1994889883062535e-10,
+          "mesh_energy_difference": 1.082029789401787e-21,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9999999997910504,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.144899916099727e-10,
+            1.0140176305512136e-10,
+            4.057144164449241e-12
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.2928334821400558,
+          "harmonic_coefficient_sum": -1.5333885223789423e-06,
+          "coefficient_bound": 1.0,
+          "solver_status": 0,
+          "solver_iterations": 160,
+          "solver_optimality": 2.291952467121956e-11,
+          "quadrature_dual_lower_bound": -1.27234733995751e-09,
+          "quadrature_primal_dual_gap": 1.4922962387881354e-09,
+          "bound_active_count": 3,
+          "solve_seconds": 0.07907438278198242
+        },
+        "box2": {
+          "l2_norm": 2.0488498935781807e-05,
+          "energy": 4.197785886415322e-10,
+          "training_energy": 4.197785886428573e-10,
+          "mesh_energy_difference": 1.3250916425216658e-21,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.9999999898973193,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.4743842993529645e-10,
+            1.5451425722592087e-10,
+            1.1782590148031493e-10
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.4116650395219261,
+          "harmonic_coefficient_sum": 9.003680255720292e-06,
+          "coefficient_bound": 2.0,
+          "solver_status": 0,
+          "solver_iterations": 160,
+          "solver_optimality": 2.8726905236861234e-09,
+          "quadrature_dual_lower_bound": -3.521536882415654e-08,
+          "quadrature_primal_dual_gap": 3.5635147412799394e-08,
+          "bound_active_count": 2,
+          "solve_seconds": 0.09136080741882324
+        }
+      }
+    },
+    {
+      "N": 64,
+      "quadrature_rows": 1721,
+      "validation_rows": 3853,
+      "target_energy_check": 0.5,
+      "seconds": 0.1656203269958496,
+      "models": {
+        "raw": {
+          "l2_norm": 0.1104922923413635,
+          "energy": 0.012208546666849333,
+          "training_energy": 0.012208546666849335,
+          "mesh_energy_difference": 1.734723475976807e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0033140534932229815,
+            0.008639029081308265,
+            0.00025546409231808634
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.01598324411119595
+        },
+        "log_taper": {
+          "l2_norm": 0.37802757920572505,
+          "energy": 0.14290485064014075,
+          "training_energy": 0.14290485064014075,
+          "mesh_energy_difference": 0.0,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0030436285750061287,
+            0.08815673977563496,
+            0.051704482289499615
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.2957231052260927,
+          "harmonic_coefficient_sum": 0.23968068929064862
+        },
+        "geometric_depth": {
+          "l2_norm": 0.1104922923413635,
+          "energy": 0.012208546666849333,
+          "training_energy": 0.012208546666849335,
+          "mesh_energy_difference": 1.734723475976807e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0033140534932229815,
+            0.008639029081308265,
+            0.00025546409231808634
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.01598324411119595,
+          "epsilon": 0.0
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.09253146704386803,
+          "energy": 0.008562072393290434,
+          "training_energy": 0.00856207239329043,
+          "mesh_energy_difference": 3.469446951953614e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.989877738328766,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.001417270372911306,
+            0.006269155697419066,
+            0.0008756463229600605
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.052416615838820645,
+          "harmonic_coefficient_sum": 0.02819299297952882,
+          "tau": 0.6511257675167482
+        },
+        "box1": {
+          "l2_norm": 2.4868575092250878e-06,
+          "energy": 6.184460271189207e-12,
+          "training_energy": 6.184460271198827e-12,
+          "mesh_energy_difference": 9.620013588763678e-24,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9999999999978644,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            2.7467236457182853e-12,
+            2.393789479420156e-12,
+            1.0439471460507653e-12
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.5274413488358924,
+          "harmonic_coefficient_sum": -8.196878718280676e-07,
+          "coefficient_bound": 1.0,
+          "solver_status": 0,
+          "solver_iterations": 160,
+          "solver_optimality": 2.2722013776641164e-12,
+          "quadrature_dual_lower_bound": -5.167593370717725e-10,
+          "quadrature_primal_dual_gap": 5.229437973429713e-10,
+          "bound_active_count": 5,
+          "solve_seconds": 0.11903858184814453
+        },
+        "box2": {
+          "l2_norm": 1.7059428366002846e-06,
+          "energy": 2.910240961747825e-12,
+          "training_energy": 2.9102409617524215e-12,
+          "mesh_energy_difference": 4.5963453959245385e-24,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.9999999999999039,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.7067235865651016e-12,
+            1.1867123495892449e-12,
+            1.6805025593478417e-14
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.6194378572531196,
+          "harmonic_coefficient_sum": 8.516304750294523e-08,
+          "coefficient_bound": 2.0,
+          "solver_status": 1,
+          "solver_iterations": 14,
+          "solver_optimality": 3.160300984344721e-14,
+          "quadrature_dual_lower_bound": 1.896750050150289e-12,
+          "quadrature_primal_dual_gap": 1.0134909116021323e-12,
+          "bound_active_count": 2,
+          "solve_seconds": 0.015316247940063477
+        }
+      }
+    },
+    {
+      "N": 128,
+      "quadrature_rows": 1741,
+      "validation_rows": 3925,
+      "target_energy_check": 0.5,
+      "seconds": 0.3950958251953125,
+      "models": {
+        "raw": {
+          "l2_norm": 0.003522318312699742,
+          "energy": 1.2406726295979956e-05,
+          "training_energy": 1.2406726295980729e-05,
+          "mesh_energy_difference": 7.724940478959219e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            1.0345183159856064e-07,
+            1.1979422012670535e-05,
+            3.2385245171086354e-07
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": -0.0005690803561106961
+        },
+        "log_taper": {
+          "l2_norm": 0.32355526256306105,
+          "energy": 0.10468800793225136,
+          "training_energy": 0.10468800793225139,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0010664468916900555,
+            0.06555882530780041,
+            0.038062735732760915
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.310330218424377,
+          "harmonic_coefficient_sum": 0.20565683848687383
+        },
+        "geometric_depth": {
+          "l2_norm": 0.0019933220911317784,
+          "energy": 3.973332958993965e-06,
+          "training_energy": 3.9733329589940246e-06,
+          "mesh_energy_difference": 5.929230630780102e-20,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0065461451677042,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            2.236744818874892e-08,
+            3.766530277715495e-06,
+            1.8443523308972146e-07
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0022542373023658213,
+          "harmonic_coefficient_sum": -0.0006213576632491946,
+          "epsilon": 0.0065461451677041645
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.002385379824345046,
+          "energy": 5.690036906392403e-06,
+          "training_energy": 5.690036906392259e-06,
+          "mesh_energy_difference": 1.4399560103323106e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9993631026213007,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            4.4591178880229084e-08,
+            5.016683264061871e-06,
+            6.287624634503028e-07
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0060318711174691154,
+          "harmonic_coefficient_sum": 0.0007046138369148358,
+          "tau": 0.08154883635106204
+        },
+        "box1": {
+          "l2_norm": 3.3740341960240576e-07,
+          "energy": 1.1384106755939708e-13,
+          "training_energy": 1.1384106754783256e-13,
+          "mesh_energy_difference": 1.1564524165697264e-23,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9999999992798309,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            4.9764576870450716e-14,
+            3.682925967873331e-14,
+            2.7247231010213045e-14
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.7365849669949114,
+          "harmonic_coefficient_sum": -1.2259790797830572e-07,
+          "coefficient_bound": 1.0,
+          "solver_status": 1,
+          "solver_iterations": 59,
+          "solver_optimality": 2.0947943573866366e-14,
+          "quadrature_dual_lower_bound": -4.635789428713871e-13,
+          "quadrature_primal_dual_gap": 5.774200104192197e-13,
+          "bound_active_count": 1,
+          "solve_seconds": 0.12190675735473633
+        },
+        "box2": {
+          "l2_norm": 2.650079975036405e-07,
+          "energy": 7.022923874088953e-14,
+          "training_energy": 7.022923876484579e-14,
+          "mesh_energy_difference": 2.3956254187496522e-23,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.9999999999998406,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            4.096078151355612e-14,
+            2.4310213983994658e-14,
+            4.9582432433387766e-15
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.7672440863699823,
+          "harmonic_coefficient_sum": 5.6680330484670804e-08,
+          "coefficient_bound": 2.0,
+          "solver_status": 1,
+          "solver_iterations": 122,
+          "solver_optimality": 4.873736691597022e-14,
+          "quadrature_dual_lower_bound": -2.636024605429089e-13,
+          "quadrature_primal_dual_gap": 3.338316993077547e-13,
+          "bound_active_count": 1,
+          "solve_seconds": 0.23079156875610352
+        }
+      }
+    },
+    {
+      "N": 256,
+      "quadrature_rows": 1761,
+      "validation_rows": 3961,
+      "target_energy_check": 0.49999999999999994,
+      "seconds": 0.8171255588531494,
+      "models": {
+        "raw": {
+          "l2_norm": 0.05915153976473762,
+          "energy": 0.0034989046565393365,
+          "training_energy": 0.003498904656539337,
+          "mesh_energy_difference": 4.336808689942018e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0008480175735974458,
+            0.002630184588108582,
+            2.0702494833309056e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.004549999432231531
+        },
+        "log_taper": {
+          "l2_norm": 0.28464342475576737,
+          "energy": 0.0810218792566922,
+          "training_energy": 0.08102187925669223,
+          "mesh_energy_difference": 2.7755575615628914e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.000464064880395206,
+            0.051290108944462946,
+            0.029267705431834056
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.34062735781243086,
+          "harmonic_coefficient_sum": 0.1803268503263988
+        },
+        "geometric_depth": {
+          "l2_norm": 0.05915153976473762,
+          "energy": 0.0034989046565393365,
+          "training_energy": 0.003498904656539337,
+          "mesh_energy_difference": 4.336808689942018e-19,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0008480175735974458,
+            0.002630184588108582,
+            2.0702494833309056e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": 0.004549999432231531,
+          "epsilon": 0.0
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.03486914262505354,
+          "energy": 0.001215857107406326,
+          "training_energy": 0.001215857107406324,
+          "mesh_energy_difference": 1.951563910473908e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9947773725519903,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.00012534889735314327,
+            0.0009356613191922429,
+            0.00015484689086093958
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.08798404852414177,
+          "harmonic_coefficient_sum": 0.011723557071285386,
+          "tau": 1.3404961375639612
+        },
+        "box1": {
+          "l2_norm": 2.1715504776731506e-06,
+          "energy": 4.715631477082488e-12,
+          "training_energy": 4.7156314770533525e-12,
+          "mesh_energy_difference": 2.913549837261973e-23,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9999999999999999,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            9.457223471427086e-16,
+            1.7885448877309853e-12,
+            2.9261408670043607e-12
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.7702014063632032,
+          "harmonic_coefficient_sum": -1.4970222265570099e-06,
+          "coefficient_bound": 1.0,
+          "solver_status": 0,
+          "solver_iterations": 160,
+          "solver_optimality": 8.280020796167614e-10,
+          "quadrature_dual_lower_bound": -8.257897019115359e-08,
+          "quadrature_primal_dual_gap": 8.258368582263065e-08,
+          "bound_active_count": 4,
+          "solve_seconds": 0.6343436241149902
+        },
+        "box2": {
+          "l2_norm": 1.9452397741098332e-07,
+          "energy": 3.7839577787788755e-14,
+          "training_energy": 3.783957777597098e-14,
+          "mesh_energy_difference": 1.1817773759822175e-23,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.9999999999968079,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            2.305713826285491e-15,
+            1.2978946089895727e-14,
+            2.2554917871607533e-14
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.9033206574800876,
+          "harmonic_coefficient_sum": 1.0291143307666895e-07,
+          "coefficient_bound": 2.0,
+          "solver_status": 1,
+          "solver_iterations": 23,
+          "solver_optimality": 4.907646389746415e-14,
+          "quadrature_dual_lower_bound": -1.068935036231934e-12,
+          "quadrature_primal_dual_gap": 1.106774614007905e-12,
+          "bound_active_count": 3,
+          "solve_seconds": 0.0995938777923584
+        }
+      }
+    },
+    {
+      "N": 512,
+      "quadrature_rows": 1801,
+      "validation_rows": 4033,
+      "target_energy_check": 0.49999999999999994,
+      "seconds": 2.4126534461975098,
+      "models": {
+        "raw": {
+          "l2_norm": 0.08374656105652657,
+          "energy": 0.007013486488794534,
+          "training_energy": 0.007013486488794547,
+          "mesh_energy_difference": 1.3010426069826053e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0016963068016942627,
+            0.005296350687366974,
+            2.082899973329701e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.0,
+          "harmonic_coefficient_sum": -0.004563879899087932
+        },
+        "log_taper": {
+          "l2_norm": 0.2517249369498637,
+          "energy": 0.06336544388241286,
+          "training_energy": 0.06336544388241287,
+          "mesh_energy_difference": 1.3877787807814457e-17,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.0,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0001413231948073384,
+            0.04014452898976074,
+            0.023079591697844775
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.3724880053293664,
+          "harmonic_coefficient_sum": 0.16014367239023106
+        },
+        "geometric_depth": {
+          "l2_norm": 0.07466879728604844,
+          "energy": 0.005575429288144995,
+          "training_energy": 0.005575429288144997,
+          "mesh_energy_difference": 2.6020852139652106e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.082725360687865,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            0.0015617803646069434,
+            0.00399882311190298,
+            1.4825811635071785e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.025930111972231877,
+          "harmonic_coefficient_sum": -0.004749571168780515,
+          "epsilon": 0.08272536068786501
+        },
+        "arithmetic_abel": {
+          "l2_norm": 0.016666959912390145,
+          "energy": 0.0002777875527212201,
+          "training_energy": 0.0002777875527212151,
+          "mesh_energy_difference": 5.041540102057596e-18,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9959598807333402,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            3.5318426680723586e-05,
+            0.00018137219742505646,
+            6.109692861544012e-05
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.1309196850973132,
+          "harmonic_coefficient_sum": 0.007258520988272807,
+          "tau": 2.0727309296784395
+        },
+        "box1": {
+          "l2_norm": 1.9794867655612288e-07,
+          "energy": 3.9183678550320554e-14,
+          "training_energy": 3.9183678490392615e-14,
+          "mesh_energy_difference": 5.99279391232274e-23,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 0.9999999999999425,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            2.2999611587251506e-17,
+            4.553899582153634e-15,
+            3.4606779356579666e-14
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 0.840142089897026,
+          "harmonic_coefficient_sum": -1.5115481082073057e-07,
+          "coefficient_bound": 1.0,
+          "solver_status": 1,
+          "solver_iterations": 129,
+          "solver_optimality": 5.682484830365302e-14,
+          "quadrature_dual_lower_bound": -1.3665348608862516e-12,
+          "quadrature_primal_dual_gap": 1.4057185393766442e-12,
+          "bound_active_count": 4,
+          "solve_seconds": 1.4639744758605957
+        },
+        "box2": {
+          "l2_norm": 1.9846630739547074e-07,
+          "energy": 3.9388875171193485e-14,
+          "training_energy": 3.938887523241133e-14,
+          "mesh_energy_difference": 6.121784661012134e-23,
+          "left_tail_energy_bound": 1e-30,
+          "max_abs_coefficient": 1.999999999941471,
+          "energy_regions_t_lt_1_over_n__middle__t_ge_1": [
+            2.465151399822579e-15,
+            3.6609613988888365e-14,
+            3.1410978248253988e-16
+          ],
+          "first_quarter_mean_abs_deviation_from_mu": 1.0085092065913397,
+          "harmonic_coefficient_sum": 5.857811986344219e-09,
+          "coefficient_bound": 2.0,
+          "solver_status": 1,
+          "solver_iterations": 68,
+          "solver_optimality": 7.025791543601465e-14,
+          "quadrature_dual_lower_bound": -4.994580447315776e-12,
+          "quadrature_primal_dual_gap": 5.033969322548187e-12,
+          "bound_active_count": 2,
+          "solve_seconds": 0.7948596477508545
+        }
+      }
+    }
+  ]
+}

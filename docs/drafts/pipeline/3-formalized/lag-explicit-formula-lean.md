@@ -9,6 +9,7 @@
   - `HTGeometry.PerronRationalKernels` — Mellin-inversion evaluations on vertical lines: `perron_twoPole` (`(1/2π)∫ X^{σ+it}/((s−a)(s−b)) = (X^a − X^b)/(a−b)` for `X > 1`, `0` for `X ≤ 1`), `perron_doublePole` (`X^a log X`, as the limit `b → a` by dominated convergence), the line-`2` specialisations `perron_lineTwo_basic/_sq/_sub_one_sq/_shift/_threePole`, the integrable majorant `(1+t²)^{−3/4}` and the `two_centre_majorant` `1/((1+|t−γ|)(1+|t|)) ≤ √2(1+|γ|)^{−1/2}((1+t²)^{−3/4} + (1+(t−γ)²)^{−3/4})`.
   - `RHTower.LagExplicitFormula` — constants (`tsum_halfShift_reflect`, `tsum_halfShift_pole`, `hasSum_inv_succ_mul_two_add_three`), the partial-fraction form of `Σ Λ(n)n^{−s}` on `Re s = 2` (`lseries_vonMangoldt_lineTwo`), the Dirichlet side (`dirichlet_side`), the termwise bounds and interchanges (`norm_kTerm_le`, `norm_zTerm_le_majorant`, `integrable_tsum_of_summable_integral_norm'`), and **`lag_explicit_formula`**.
   - `RHTower.WeilLagFunction` — `weilLagFunction`, `weilLagFunction_zero`, `weilLagFunction_neg`, `weilLagFunction_eq_prime_side`, `norm_weilLagFunction_le_of_riemannHypothesis`, `prime_side_lag_bound_of_riemannHypothesis`.
+  - `RHTower.WeilLagFunctionOneSided` — `Φ` is real (`weilLagFunction_im_eq_zero`, `weilLagFunctionReal`), the Laplace transform of `Φ` on `Re s > ½` (`integral_weilLagFunction_mul_cexp`), the one-sided measure `(M ∓ Φ)du + du` with its abscissa (`isAbscissa_oneSided`, `abscissa_oneSided_eq_zero` via the corpus Landau theorem), and **`riemannHypothesis_iff_weilLagFunctionReal_bddAbove` / `…_bddBelow`**.
   - `RHTower.WeilLagFunctionCriterion` — zero-set facts (`xi_zero_isolated`, `isDiscrete_xiZeroSet`, `finite_xiZeroSet_inter`, `exists_xiZeroCopy_of_xi_eq_zero`, `exists_xiZeroCopy_re_gt_half_of_not_rh`), the Mittag-Leffler series `lagPoleSeries` (`differentiableAt_lagPoleSeries` off the poles, `norm_lagPoleSeries_ge` at a pole), the window Mellin transform (`mellin_lagWindow` on `Re s > ½`, `differentiableAt_mellin_lagWindow` on `0 < Re s < 2` for bounded `Φ`), and **`riemannHypothesis_iff_weilLagFunction_bounded : RH ↔ ∃ M, ∀ L, ‖Φ L‖ ≤ M`**.
 
 ## Statement
@@ -33,7 +34,11 @@ Constants: `Σ_ρ 1/(ρ(1−ρ)) = 2+γ−log 4π`, `Σ_ρ[1/(ρ−½) − 1/ρ]
 
 ## The criterion
 
-`RH ⟺ Φ bounded` (`riemannHypothesis_iff_weilLagFunction_bounded`), with the bound `Φ(0) = 2+γ−log 4π` under RH. Converse
+`RH ⟺ Φ bounded` (`riemannHypothesis_iff_weilLagFunction_bounded`), with the bound `Φ(0) = 2+γ−log 4π` under RH; and
+the one-sided sharpening `RH ⟺ Φ bounded above ⟺ Φ bounded below` (`WeilLagFunctionOneSided`), by Landau's theorem
+applied to the nonnegative density `M ∓ Φ` (the corpus's `false_of_analyticAt_abscissa`) and the absence of real
+zeros of `ξ` (`xi_pos_on_real_anchor`). The analytic-extension core is the reusable
+`riemannHypothesis_of_lagPoleSeries_extension`. Converse
 mechanism: Mellin holomorphy of the bounded window on `0 < Re s < 2` (`mellin_differentiableAt_of_isBigO_rpow`), the
 identity with the Mittag-Leffler series on `Re s > ½`, an off-line zero of maximal real part on its horizontal line
 (finitely many zeros on a compact segment: `IsCompact.finite` with `isDiscrete_iff_nhdsNE`), and the real-analytic identity
@@ -43,3 +48,25 @@ theorem along the pole-free horizontal ray; no planar connectivity argument is n
 
 Every sharp-cutoff prime criterion of Route O now has a certified prime side, and the criterion form with the sharp constant
 built in is closed in Lean: any bound `|Φ| ≤ M` proves RH and then improves itself to `M = Φ(0)`.
+
+## The integer lag law (added)
+
+- `RHTower.WeilLagFunctionInteger` — real prime side `weilLagFunctionReal_eq_prime_side`, the integer lags
+  `integerLag n = Φ(log n)` with the explicit formula `integerLag_eq`, `integerLag_one = 2+γ−log 4π`, the interval
+  bound `|Φ(L) − a_{⌊e^L⌋}| ≤ 30` for `L ≥ log 2` (`weilLagFunctionReal_integerLag_interval`, via the five monotone
+  prime-side pieces, `ψ(n) ≤ 2n log n`, `Σ_{m≤n}Λ(m)/m ≤ log n(1+log n)`, `(log n + 2)² ≤ 36√n`, `S(n) ≤ S(1) = 1 − log 2`),
+  and the criteria **`riemannHypothesis_iff_integerLag_bddAbove`**, **`…_bddBelow`**,
+  **`riemannHypothesis_iff_integerLag_le_sharp`** (`RH ↔ ∀ n ≥ 2, a_n ≤ 2+γ−log 4π`),
+  **`riemannHypothesis_iff_integerLag_le_one`** (`RH ↔ ∀ n ≥ 1, a_n ≤ a_1`),
+  **`riemannHypothesis_iff_integerLagInequality`** (the inequality written out), and the dichotomy
+  **`integerLag_dichotomy`** (all `|a_n| ≤ a_1`, or unbounded above and below).
+- `RHTower.WeilLagFunctionRecurrence` — under RH `Φ(L) = Σ' cos(γL)/(¼+γ²)` (`weilLagFunctionReal_eq_cos_series`,
+  `tsum_cosWeight = a_1`), the recurrence **`exists_pow_integerLag_gt_of_riemannHypothesis`** (`∀ b, ∀ ε>0, ∃ m ≥ 1,
+  a_1 − ε < a_{b^m}`; corpus `exists_simultaneous_dirichlet` on the ordinates), **`isLUB_integerLag_of_riemannHypothesis`**
+  (`a_1` is the exact supremum of `{a_n : n ≥ 2}`), the tail version `isLUB_integerLag_tail_of_riemannHypothesis`
+  (every tail `{a_n : n ≥ N}` has supremum `a_1`), the unconditional limit-point theorem
+  **`frequently_integerLag_gt`** (`∀ ε > 0, ∃ᶠ n, a_1 − ε < a_n`; so `limsup a_n ≥ a_1` always, `= a_1` iff RH),
+  and the package **`integerLag_law`**. Numerics (no proof use): `computations/integer-lag-records/`.
+
+Statement: `RH ⟺ ∀ n ≥ 2: (n − ψ(n)) + n(Σ_{m≤n}Λ(m)/m − log n + γ) − log 2π + Σ_{k≥1} n^{−2k}/(2k(2k+1)) ≤ (2+γ−log 4π)√n`,
+and under RH the inequality is tight along `b^m` for every base `b`. Axioms: `[propext, Classical.choice, Quot.sound]`.

@@ -383,9 +383,14 @@ theorem differentiableAt_mellin_lagWindow {M : ℝ} (hM : ∀ L, ‖weilLagFunct
 
 /-! ## The criterion -/
 
-/-- **Bounded lag function implies RH.** -/
-theorem riemannHypothesis_of_weilLagFunction_bounded {M : ℝ}
-    (hM : ∀ L, ‖weilLagFunction L‖ ≤ M) : RiemannHypothesis := by
+/-- **Analytic extension to the right of the poles is impossible off RH.**  If `F` is
+holomorphic on `0 < Re z < 2` and agrees with the Mittag-Leffler series on `Re s > ½`, then RH holds:
+otherwise an off-line zero of maximal real part on its horizontal line gives a pole of the series
+whose right horizontal ray is pole-free, and the identity theorem along the ray forces `F` to be
+unbounded at the pole. -/
+theorem riemannHypothesis_of_lagPoleSeries_extension {F : ℂ → ℂ}
+    (hFd : ∀ z : ℂ, 0 < z.re → z.re < 2 → DifferentiableAt ℂ F z)
+    (hFG : ∀ s : ℂ, 1 / 2 < s.re → F s = lagPoleSeries s) : RiemannHypothesis := by
   by_contra hRH
   obtain ⟨q₁, hq₁⟩ := exists_xiZeroCopy_re_gt_half_of_not_rh hRH
   set ρ₁ : ℂ := (q₁.1 : ℂ) with hρ₁
@@ -433,16 +438,15 @@ theorem riemannHypothesis_of_weilLagFunction_bounded {M : ℝ}
   set V : Set ℂ := {z : ℂ | 0 < z.re ∧ z.re < 2} with hV
   have hVopen : IsOpen V := (isOpen_lt continuous_const Complex.continuous_re).inter
     (isOpen_lt Complex.continuous_re continuous_const)
-  have hFdiff : DifferentiableOn ℂ (mellin lagWindow) V := fun z hz =>
-    (differentiableAt_mellin_lagWindow hM hz.1 hz.2).differentiableWithinAt
+  have hFdiff : DifferentiableOn ℂ F V := fun z hz => (hFd z hz.1 hz.2).differentiableWithinAt
   set U : Set ℝ := Ioo (0:ℝ) (2 - p₀.re) with hU
   have hℓV : ∀ t ∈ U, ℓ t ∈ V := by
     intro t ht
     simp only [hℓ, hV, Set.mem_setOf_eq, Complex.add_re, Complex.ofReal_re]
     constructor <;> linarith [ht.1, ht.2]
-  have hF : AnalyticOnNhd ℝ (fun t : ℝ => mellin lagWindow (ℓ t)) U := by
+  have hF : AnalyticOnNhd ℝ (fun t : ℝ => F (ℓ t)) U := by
     intro t ht
-    have hFz : AnalyticAt ℂ (mellin lagWindow) (ℓ t) :=
+    have hFz : AnalyticAt ℂ (F) (ℓ t) :=
       hFdiff.analyticAt (hVopen.mem_nhds (hℓV t ht))
     exact hFz.restrictScalars.comp (hℓan t)
   have hG : AnalyticOnNhd ℝ (fun t : ℝ => lagPoleSeries (ℓ t)) U := by
@@ -458,22 +462,21 @@ theorem riemannHypothesis_of_weilLagFunction_bounded {M : ℝ}
     exact hGz.restrictScalars.comp (hℓan t)
   have hUconn : IsPreconnected U := isPreconnected_Ioo
   have h1U : (1 : ℝ) ∈ U := ⟨one_pos, by linarith⟩
-  have hfg : (fun t : ℝ => mellin lagWindow (ℓ t)) =ᶠ[𝓝 (1:ℝ)]
+  have hfg : (fun t : ℝ => F (ℓ t)) =ᶠ[𝓝 (1:ℝ)]
       (fun t : ℝ => lagPoleSeries (ℓ t)) := by
     refine Filter.eventuallyEq_of_mem (Ioo_mem_nhds (by norm_num : (1/2 : ℝ) < 1) (by norm_num : (1:ℝ) < 3/2))
       fun t ht => ?_
-    apply mellin_lagWindow
+    apply hFG
     simp only [hℓ, Complex.add_re, Complex.ofReal_re]
     linarith [ht.1]
   have heq := hF.eqOn_of_preconnected_of_eventuallyEq hG hUconn h1U hfg
   -- continuity of `F` at `p₀`
-  have hFcont : ContinuousAt (mellin lagWindow) p₀ :=
-    (differentiableAt_mellin_lagWindow hM hp₀pos (by linarith)).continuousAt
+  have hFcont : ContinuousAt F p₀ := (hFd p₀ hp₀pos (by linarith)).continuousAt
   have hℓ0 : Tendsto ℓ (𝓝 0) (𝓝 p₀) := by
     have : Tendsto (fun t : ℝ => p₀ + (t : ℂ)) (𝓝 0) (𝓝 (p₀ + ((0:ℝ) : ℂ))) :=
       tendsto_const_nhds.add (Complex.continuous_ofReal.tendsto 0)
     simpa using this
-  have hcomp : Tendsto (fun t : ℝ => mellin lagWindow (ℓ t)) (𝓝 0) (𝓝 (mellin lagWindow p₀)) :=
+  have hcomp : Tendsto (fun t : ℝ => F (ℓ t)) (𝓝 0) (𝓝 (F p₀)) :=
     hFcont.tendsto.comp hℓ0
   obtain ⟨δ, hδ, hδF⟩ := Metric.eventually_nhds_iff.mp
     (Metric.tendsto_nhds.mp hcomp 1 one_pos)
@@ -484,7 +487,7 @@ theorem riemannHypothesis_of_weilLagFunction_bounded {M : ℝ}
   have hC'' : ∀ t : ℝ, 0 < t → t < ε →
       ‖lagWeight q₀‖ / t - C' ≤ ‖lagPoleSeries (lagPole q₀ + t)‖ :=
     fun t ht htε => le_trans (by linarith [le_max_left C 0]) (hC t ht htε)
-  set B : ℝ := ‖mellin lagWindow p₀‖ + 1 with hB
+  set B : ℝ := ‖F p₀‖ + 1 with hB
   have hw : 0 < ‖lagWeight q₀‖ := by
     rw [norm_pos_iff]
     unfold lagWeight
@@ -504,17 +507,17 @@ theorem riemannHypothesis_of_weilLagFunction_bounded {M : ℝ}
   have ht₀ε : t₀ < ε := by rw [ht₀]; linarith
   have ht₀U : t₀ ∈ U := ⟨ht₀pos, by rw [ht₀]; linarith⟩
   -- `F` is bounded by `B` at `ℓ t₀`
-  have hFb : ‖mellin lagWindow (ℓ t₀)‖ ≤ B := by
+  have hFb : ‖F (ℓ t₀)‖ ≤ B := by
     have hd : dist t₀ 0 < δ := by
       rw [Real.dist_eq, sub_zero, abs_of_pos ht₀pos]; exact ht₀δ
     have := hδF hd
     rw [dist_eq_norm] at this
-    calc ‖mellin lagWindow (ℓ t₀)‖
-        = ‖(mellin lagWindow (ℓ t₀) - mellin lagWindow p₀) + mellin lagWindow p₀‖ := by
+    calc ‖F (ℓ t₀)‖
+        = ‖(F (ℓ t₀) - F p₀) + F p₀‖ := by
           congr 1; ring
-      _ ≤ ‖mellin lagWindow (ℓ t₀) - mellin lagWindow p₀‖ + ‖mellin lagWindow p₀‖ :=
+      _ ≤ ‖F (ℓ t₀) - F p₀‖ + ‖F p₀‖ :=
           norm_add_le _ _
-      _ ≤ 1 + ‖mellin lagWindow p₀‖ := by linarith
+      _ ≤ 1 + ‖F p₀‖ := by linarith
       _ = B := by rw [hB]; ring
   -- `G` exceeds `B` at `ℓ t₀`
   have hGb : B < ‖lagPoleSeries (ℓ t₀)‖ := by
@@ -528,9 +531,17 @@ theorem riemannHypothesis_of_weilLagFunction_bounded {M : ℝ}
     have hℓt : ℓ t₀ = lagPole q₀ + t₀ := rfl
     rw [hℓt]
     linarith
-  have hEq : mellin lagWindow (ℓ t₀) = lagPoleSeries (ℓ t₀) := heq ht₀U
+  have hEq : F (ℓ t₀) = lagPoleSeries (ℓ t₀) := heq ht₀U
   rw [hEq] at hFb
   linarith
+
+
+/-- **Bounded lag function implies RH.** -/
+theorem riemannHypothesis_of_weilLagFunction_bounded {M : ℝ}
+    (hM : ∀ L, ‖weilLagFunction L‖ ≤ M) : RiemannHypothesis :=
+  riemannHypothesis_of_lagPoleSeries_extension
+    (fun _ hz0 hz2 => differentiableAt_mellin_lagWindow hM hz0 hz2)
+    (fun _ hs => mellin_lagWindow hs)
 
 /-- **The lag criterion.**  `RH ⟺ Φ is bounded`; under RH the bound is `Φ(0) = 2 + γ − log 4π`. -/
 theorem riemannHypothesis_iff_weilLagFunction_bounded :

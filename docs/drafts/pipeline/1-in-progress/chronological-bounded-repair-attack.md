@@ -68,6 +68,12 @@ of this sum for a concrete ε_N→0. No bound of that kind has been proved.
   formalized. This is a rigidity result, not an assertion of raw heat divergence.
 - Do not transfer the known unsmoothed Nyman–Beurling raw-prefix no-go through
   exponential smoothing without proof: its inverse is unbounded.
+- Unproved direct attack on the raw sequence: pair a block (N,λN] with
+  √N φ(Nt). Strong Cauchy convergence would force
+  Σ_(N<k≤λN)μ(k)K(k/N)=o(√N), K(r)=∫h(ru)φ(u)du.
+  The window's Mellin transform should expose 1/ζ without undoing smoothing.
+  Real-cutoff interpolation and the boundary-pole argument need a complete
+  audit; no raw heat nonconvergence theorem is claimed.
 - Unrestricted density via analytic dilation pairing/Blaschke uniqueness is
   another possible [BRIDGE], not yet dependency-closed or formalized. It supplies
   no coefficient budget and does not prove [R].
@@ -88,11 +94,19 @@ error by one C; the perturbation then vanishes. The converse follows from
 boundedness of a convergent sequence. All finite errors are proved to belong
 to L², with the norm identified as the square root of their squared integral.
 
-## Experiment under validation
+## Numerical evidence and next test
 
-Runpod compares N=16,...,512: raw, geometric-depth, arithmetic Abel, logarithmic
-taper, and coefficient boxes C=1,2. Initial solver output violated the required
-monotonicity under increasing N/C. Those are optimization failures, not
-mathematical counterexamples. Testing objective rescaling before interpreting
-results; training and validation quadratures differ. Results and reproducible
-code live in ../2-fully-proven/computations/chronological-bounded-repair-2026-09-06/.
+Runpod N=16,...,512: retained box-C=1 errors decrease from 1.31e−4 to 4.12e−9;
+raw error at N=512 is 8.37e−2. These are feasible-vector measurements, not
+certified optima or a convergence theorem. Different quadratures agree; 80-digit
+residual spot checks differ from float by at most 1.62e−14. Initial optimizer
+failures were exposed by monotonicity checks and corrected by retaining feasible
+vectors and comparing active-set and singular-mode constructions.
+
+At N=512, zeroing nonsquarefree coefficients of the C=1 vector raises error to
+0.913; resetting its first eight coefficients to μ raises error to 0.140.
+Those interventions break this vector's cancellation; they do not rule out
+reoptimizing under either restriction. Next hard test: can a coefficient
+construction maintain its budget while repairing the small-t error at every
+cutoff? Finite fits and damping equivalence do not supply that estimate.
+[Results, checks, coefficients, code](../2-fully-proven/computations/chronological-bounded-repair-2026-09-06/REPORT.md).

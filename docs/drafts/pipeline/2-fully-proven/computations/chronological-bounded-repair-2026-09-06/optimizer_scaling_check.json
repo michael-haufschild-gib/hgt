@@ -1,0 +1,122 @@
+[
+  {
+    "N": 32,
+    "C": 1.0,
+    "scale": 1.0,
+    "validated_norm": 1.4516990326833618e-05,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 1.0628292883291494e-11,
+    "mesh_energy_difference": 1.248241393736661e-21
+  },
+  {
+    "N": 32,
+    "C": 1.0,
+    "scale": 1000000.0,
+    "validated_norm": 1.4500047796513848e-05,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 5.302697293929354e-10,
+    "mesh_energy_difference": 3.5056948335763004e-22
+  },
+  {
+    "N": 32,
+    "C": 2.0,
+    "scale": 1.0,
+    "validated_norm": 2.0488443307346257e-05,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 5.132157494319538e-08,
+    "mesh_energy_difference": 2.2072280670211852e-21
+  },
+  {
+    "N": 32,
+    "C": 2.0,
+    "scale": 1000000.0,
+    "validated_norm": 1.2569881048128749e-05,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 1.7888140902871375e-11,
+    "mesh_energy_difference": 1.6979174542358007e-21
+  },
+  {
+    "N": 256,
+    "C": 1.0,
+    "scale": 1.0,
+    "validated_norm": 2.1711706296259223e-06,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 1.2204706034816346e-07,
+    "mesh_energy_difference": 1.4302146661497916e-22
+  },
+  {
+    "N": 256,
+    "C": 1.0,
+    "scale": 1000000.0,
+    "validated_norm": 1.6403921718205856e-07,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 4.88686448854354e-13,
+    "mesh_energy_difference": 1.6597021289787637e-23
+  },
+  {
+    "N": 256,
+    "C": 2.0,
+    "scale": 1.0,
+    "validated_norm": 9.60963062728132e-08,
+    "iterations": 27,
+    "status": 1,
+    "quadrature_primal_dual_gap": 1.4998129245580065e-13,
+    "mesh_energy_difference": 5.507036401626073e-24
+  },
+  {
+    "N": 256,
+    "C": 2.0,
+    "scale": 1000000.0,
+    "validated_norm": 3.605048014312342e-08,
+    "iterations": 45,
+    "status": 2,
+    "quadrature_primal_dual_gap": 1.4100402560654661e-14,
+    "mesh_energy_difference": 6.860273641991164e-25
+  },
+  {
+    "N": 512,
+    "C": 1.0,
+    "scale": 1.0,
+    "validated_norm": 1.9365441694677862e-07,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 6.645113113461312e-10,
+    "mesh_energy_difference": 2.4963749470321348e-23
+  },
+  {
+    "N": 512,
+    "C": 1.0,
+    "scale": 1000000.0,
+    "validated_norm": 3.971190466904528e-05,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 1.9320914356825866e-06,
+    "mesh_energy_difference": 5.416792241303502e-21
+  },
+  {
+    "N": 512,
+    "C": 2.0,
+    "scale": 1.0,
+    "validated_norm": 1.7778808590056225e-08,
+    "iterations": 69,
+    "status": 1,
+    "quadrature_primal_dual_gap": 9.105397806891965e-14,
+    "mesh_energy_difference": 3.852219165612993e-24
+  },
+  {
+    "N": 512,
+    "C": 2.0,
+    "scale": 1000000.0,
+    "validated_norm": 3.6422383141910736e-06,
+    "iterations": 300,
+    "status": 0,
+    "quadrature_primal_dual_gap": 9.365981699589174e-10,
+    "mesh_energy_difference": 1.8334652147693926e-22
+  }
+]

@@ -4,11 +4,17 @@
 Only propext, Classical.choice and Quot.sound occur; no added axioms or placeholders.
 One private combinatorial helper is covered transitively by the public theorem audit.
 All four modules are wired into RHTower; no umbrella or full build was run.
-Global lint reports two unrelated pre-existing unwired HTGeometry modules,
-DigammaMittagLeffler and PerronRationalKernels; none of the new leaves has a lint error.
+The original lint audit reported two unrelated unwired HTGeometry modules,
+DigammaMittagLeffler and PerronRationalKernels. Those imports have since been
+resolved; the subsequent authoritative lint audit passes with size warnings.
 **Scope:** unconditional bridges and exact obstructions for specific repair operations.
 The original bounded-array L² approximation, and hence an RH proof, remain open.
 [Active compact notes](../1-in-progress/chronological-bounded-repair-attack.md).
+
+**Subsequent result:** two more leaves prove full L² convergence equivalence of
+damped and raw residuals, for every vanishing schedule in [0,1/2]. The exact
+perturbation bound and reverse boundedness induction are now formalized.
+[Rigidity certificate](chronological-damping-convergence-rigidity.md).
 
 ## Proven statements and paper proofs
 

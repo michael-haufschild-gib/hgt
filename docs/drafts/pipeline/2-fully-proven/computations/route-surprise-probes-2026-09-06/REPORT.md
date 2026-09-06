@@ -1,6 +1,6 @@
 # RH source-intervention experiments
 
-**Status:** new numerical mechanisms and an exact algebraic bridge with eight proved theorems; no RH solution, no route retired. The central Hankel proof attack is paused. Numerical counterfactuals below change the source and do not disprove RH.
+**Status:** numerical source obstructions and two algebraic modules with eighteen proved theorems; no RH solution, no route retired. The central Hankel proof attack is paused. Numerical counterfactuals below change the source and do not disprove RH.
 
 The route survey exposed recurring gaps in signed arithmetic cancellation, propagation across scales, and preservation of orientation. We tested mechanisms at three different source interfaces, then let failures determine the next experiments. The frozen statements and adaptive protocols are in [EXPERIMENTS.md](EXPERIMENTS.md). This is exploratory evidence, not a finite certificate for an infinite inequality.
 
@@ -33,13 +33,13 @@ with normalized weights
 
 The result is **`−5.39469231966272532956021325032690… × 10⁻³³`**. These nodes and weights come from the moment equations, not a tolerance-based optimizer. The equations and independent differentiation were checked at 80/120 digits, and the theta cutoff was doubled from 40 to 80; displayed digits were unchanged. See `moment-witness-validation.json`.
 
-**Interpretation:** low-order mass statistics can conceal a direction that changes orientation. The actual theta source satisfies additional differential shape laws. Every negative compensation found in the moment dissection also had negative lower-transport curvature `H''`; the literal source has a Lean proof of `H''>0`. The counterfactuals therefore identify information erased by the intervention, not a failure of the source theorem. Preserving three normalized moments yielded no negative value among 112 admissible probes; this does not establish sufficiency.
+**Interpretation:** low-order mass statistics can conceal a direction that changes orientation. The actual theta source satisfies additional differential shape laws. Every negative compensation in that initial moment-dissection batch had negative lower-transport curvature `H''`; the literal source has a Lean proof of `H''>0`. The counterfactuals therefore identify information erased by the intervention, not a failure of the source theorem. Preserving three normalized moments yielded no negative value among 112 admissible probes; this does not establish sufficiency.
 
 ### 2. The surviving balance uses different combinations of terms in different regions
 
 Write `M'''=−W'''H−3W''H'−3W'H''`. The candidate bridge “the first two terms have nonnegative sum and `W'≤0`” survived the moment dissection but failed in **477 of 5,472** adversarial multi-atom evaluations. These failures retained positive action, the basic positive source jets, `H<0`, `H'>0`, and `H''>0`.
 
-The complete compensation stayed positive in those cases: the negative two-term sum was extremely small relative to the positive third term. Its largest observed adverse ratio was **`2.162 × 10⁻¹¹`**. All observed negative two-term sums had action at least **27.988**; positive sums also occurred at larger action, so action is not a complete classifier. No case with `H''>0` and `M'''<0` was found. This observation is a new adversarial-search target, not a theorem.
+The complete compensation stayed positive in those cases: the negative two-term sum was extremely small relative to the positive third term. Its largest observed adverse ratio was **`2.162 × 10⁻¹¹`**. All observed negative two-term sums had action at least **27.988**; positive sums also occurred at larger action, so action is not a complete classifier. That bounded batch found no case with `H''>0` and `M'''<0`. The [escaping-atom attack](boundary-followup/ESCAPE-REPORT.md) now supplies such a counterfactual even at left scale six with actual mass and first moment preserved; B1 is rejected numerically.
 
 An exact algebraic residue makes the missing boundary explicit. In the nondegenerate physical domain, set
 
@@ -98,15 +98,15 @@ Finite Galerkin norms, optimizer output, and high-precision values are numerical
 
 Formal audit: `ThetaCuspC5BoseHyperbolicReserve.lean` passes scratch and source `lake env lean` checks and its named-module final build. Its eight algebraic theorems have only the standard `propext`, `Classical.choice`, and `Quot.sound` dependencies. The module is wired into `RHTower.lean`; no umbrella build was run. Only missing prerequisite oleans were supplied, in separate foreground checks. The final follow-up build compiled the needed `SuzukiCriticalRootedBianchiCofinalNoGo` dependency and then the reserve leaf. This verifies the algebraic bridge, not the experimental inequalities.
 
-Repository-wide lint currently fails on one module outside this change that is unreachable from its umbrella: `ChronologicalHeatL2`. It reports no error for the reserve module. That other module was not modified or wired by this run.
+Repository-wide `scripts/formal_tools.py lint` passes after index regeneration, with existing large-file warnings. The follow-up moment-transport module also passes its ten theorem axiom audits and named-module build; see [the scoped audit](boundary-followup/ESCAPE-REPORT.md).
 
 Corpus starting points: `MobiusLaplaceGammaHankelWall`, `MobiusIntegerCuspConfinement`, `CCMRestrictedWeilPrimeInterference`, `ThetaCuspLikelihoodSpectralMeasure`, `ThetaCuspFixedActionC5LikelihoodHomotopyCurvatureReduction`, `ThetaCuspLikelihoodHomotopyLowerTransport`, `ThetaCuspLikelihoodHomotopySeamRatioOrientation`, and `ThetaCuspLikelihoodHomotopyCurvatureEnergy`. Global corpus searches also explored interference, source births, cubic polarization, modulation, and transport ratios in `HTGeometry`, including `NilpotentContractionInterference` and `ConstraintMotiveRelativity/PrimePhasePortRecurrence`. The scientific-method guide and both RH ledgers determined the experimental scope. No literature or pretrained assertion is used as a claimed discovery.
 
-No new route-independent Must/Cannot law is asserted: the strongest numerical failures concern counterfactual sources, while the proved residue concerns a specific compensation representation. The universal-law ledger therefore receives no speculative entry.
+The numerical source failures are not universal no-go theorems. The exact moment family does prove that fixed positive mass and first moment alone cannot bound a second moment; its scope is recorded with the escaping-atom result.
 
 ## Current mathematical next steps
 
-1. Attack the exact threshold `h≥hcrit` with source-faithful inequalities or positive-measure representation. The [conditioned follow-up](boundary-followup/REPORT.md) places the tested `H''=0` crossings deep in the favorable two-channel region, while forcing `r=β/2` gives a sampled curvature reserve of at least about 82,158. The intervening region and other positive measures remain open; a quantitative source separation must replace these observations.
+1. The actual threshold `h>=hcrit` remains open. Generic positive mass and first-moment constraints, even with positive lower-transport curvature, are insufficient in the enlarged source class ([validated witness and formal residue](boundary-followup/ESCAPE-REPORT.md)). This positivity investigation is paused; the active experiment inspects exact signed arithmetic remainders without a PSD or energy producer.
 2. Test prime classifications by stability under basis refinement and source interventions, then identify what cross-group estimate a proof would require. Current residue-class evidence is insufficient.
 3. Find a source-specific recurrence mechanism for signed Möbius block interactions; squarefree support and preserved block charges do not distinguish the observed cancellation adequately.
 

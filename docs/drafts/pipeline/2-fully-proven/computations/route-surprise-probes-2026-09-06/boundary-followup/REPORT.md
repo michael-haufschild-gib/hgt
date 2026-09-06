@@ -1,6 +1,6 @@
 # Two source-realizable boundaries of the compensation inequality
 
-**Status:** numerical separation of two compensation mechanisms, plus four additional exact Lean algebraic theorems. No RH proof, no zero classification, and no proof of the positive-measure implication B1. The frozen protocols are in [EXPERIMENTS.md](EXPERIMENTS.md).
+**Status:** the two bounded boundary scans below are retained as scoped observations. The [escaping-atom experiment](ESCAPE-REPORT.md) rejects B1 numerically, preserving positive curvature and actual mass/mean. No RH proof or zero classification. The frozen protocols are in [EXPERIMENTS.md](EXPERIMENTS.md).
 
 ## Question and intervention
 
@@ -18,13 +18,13 @@ Interventions keep the actual theta tail's Laplace mass at the left endpoint. Po
 
 | Conditioned surface | Work performed | Result |
 |---|---|---|
-| `H''=0` | 450 specifications, 300 inside the structural chamber, 372 bracketed crossings; 4,464 side evaluations, 1,840 with all B1 gates | No negative complete compensation in the evaluated sides |
+| `H''=0` | 450 specifications, 270 in the actual left-scale structural chamber, 372 bracketed crossings (all structural); 4,464 side evaluations, 1,840 with all B1 gates | No negative complete compensation in the evaluated sides |
 | Same surface, recomputed at 100 digits | 920 center evaluations passing the gates other than curvature | All retained-coordinate zero-curvature base gaps positive; minimum about `5.0465304 × 10^6` |
 | `r=β/2` | 270 specifications, 267 bracketed roots, 252 admissible evaluations | All required positive curvature; smallest curvature/critical-curvature ratio about `82,158.4183` |
 
 Repeated endpoint mixtures occur among these specifications; these are evaluation counts, not counts of distinct source measures. The first surface used 75-digit arithmetic and the second 90 digits. Root grids and finite brackets are exploratory and need not find every crossing.
 
-The second surface forces the first-two-channel normalized contribution to be `-(β²-1)`. The exact critical curvature there is `(β²-1)/(3(3β+2))`. Thus positivity in those cases necessarily uses the third channel. The weakest observed case is the pure lowest-atom replacement at left scale `π`, homotopy parameter zero, and displacement
+The second surface forces the first-two-channel normalized contribution to be `-(β²-1)`. The exact critical curvature there is `(β²-1)/(3(3β+2))`. Thus positivity in those cases necessarily uses the third channel. This minimum lies outside the actual left-scale structural chamber; that chamber has 162 admissible slope roots and a minimum ratio about `3.12e8`. The weakest extended-domain case is the pure lowest-atom replacement at left scale `π`, homotopy parameter zero, and displacement
 
 `t = 0.4764189778893174436406670677965802786666…`.
 

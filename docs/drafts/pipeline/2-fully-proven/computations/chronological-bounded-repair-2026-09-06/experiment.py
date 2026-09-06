@@ -163,8 +163,8 @@ def make_plot(rows):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     fig, axes = plt.subplots(1,2,figsize=(11,4.3),layout='constrained')
-    for key,label in [('raw','Raw Möbius'),('geometric_depth','Best geometric depth'),
-                      ('log_taper','Log taper'),('arithmetic_abel','Best arithmetic Abel'),
+    for key,label in [('raw','Raw Möbius'),('geometric_depth','Tuned geometric depth'),
+                      ('log_taper','Log taper'),('arithmetic_abel','Tuned arithmetic Abel'),
                       ('box1','Box |a|≤1'),('box2','Box |a|≤2')]:
         axes[0].loglog([r['N'] for r in rows], [r['models'][key]['l2_norm'] for r in rows],
                       marker='o',markersize=4,label=label)

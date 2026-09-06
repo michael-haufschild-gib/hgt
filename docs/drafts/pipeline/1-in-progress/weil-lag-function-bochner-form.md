@@ -82,3 +82,41 @@ residue calculus on the Mittag-Leffler expansion with the kernel `1/(s(s−1))` 
 input); `Φ`, its evenness, `Φ(0)`, the prime side and `RH ⇒ |Φ| ≤ Φ(0)` are in `WeilLagFunction`. The converse `Φ bounded ⇒ RH` is
 `WeilLagFunctionCriterion.riemannHypothesis_of_weilLagFunction_bounded`; the criterion
 `riemannHypothesis_iff_weilLagFunction_bounded` is closed.
+
+## 7. The integer lag law (paper proof; Lean-closed in `WeilLagFunctionInteger`, `WeilLagFunctionRecurrence`)
+
+**Definition.** `a_n := Φ(log n)`. By §3 at `X = n ≥ 2`:
+`a_n = [(n − ψ(n)) + n(M(n) − log n + γ) − log 2π + S(n)]/√n`, `M(n) = Σ_{m≤n}Λ(m)/m`, `S(n) = Σ_{k≥1} n^{−2k}/(2k(2k+1))`;
+`a_1 = Φ(0) = 2 + γ − log 4π` (§1), since `S(1) = 1 − log 2`.
+
+**Lemma 7.1 (interval bound).** For `L ≥ log 2`, `n = ⌊e^L⌋`: `|Φ(L) − a_n| ≤ 30`.
+*Proof.* Write `X = e^L`, `s_X = √X`, `s_n = √n`, and note `ψ(X) = ψ(n)`, `⌊X⌋ = n`. Then
+`Φ(L) − a_n = (s_X − s_n) + ψ(n)(1/s_n − 1/s_X) + (s_X − s_n)(M(n) − L + γ) + s_n(log n − L) + log 2π (1/s_n − 1/s_X) + (S(X)/s_X − S(n)/s_n)`.
+Pieces: `0 ≤ s_X − s_n ≤ 1/(2s_n) ≤ 1`; `0 ≤ ψ(n)(1/s_n − 1/s_X) ≤ 2n log n · 1/(2n s_n) = log n/s_n ≤ 2` (using `ψ(n) ≤ (n+1)log n`,
+`1/s_n − 1/s_{n+1} ≤ 1/(2 n s_n)`, `log n ≤ 2√n`); `|M(n) − L + γ| ≤ (log n + 2)²` (`M(n) ≤ log n · H_n ≤ log n(1 + log n)`,
+`log n ≤ L ≤ log n + 1/n`, `γ ≤ 1`) and `(log n + 2)² ≤ 36√n` (`log n ≤ 4n^{1/4}`), so `|(s_X − s_n)(M(n) − L + γ)| ≤ 18`;
+`−1 ≤ s_n(log n − L) ≤ 0`; `0 ≤ log 2π(1/s_n − 1/s_X) ≤ 6`; `−1 ≤ S(X)/s_X − S(n)/s_n ≤ 0` (`S` decreasing, `0 ≤ S ≤ S(1) < 1`).
+Sum: `−20 ≤ Φ(L) − a_n ≤ 27`. ∎
+
+**Theorem 7.2 (integer criterion).** `RH ⟺ (a_n)_{n≥2}` bounded above `⟺ (a_n)_{n≥2}` bounded below `⟺ ∀ n ≥ 1, a_n ≤ a_1`.
+*Proof.* RH ⇒ `|a_n| ≤ a_1` by §4. Conversely, if `a_n ≤ M` for `n ≥ 2`: for `L ≥ log 2`, `Φ(L) ≤ M + 30` (7.1); for `|L| ≤ log 2`,
+`|Φ(L)| ≤ e^{|L|/2} Σ_ρ|ρ(1−ρ)|^{−1} ≤ √2 W`; `Φ` is even; so `Φ` is bounded above and §4 (one-sided, MUST-237) gives RH.
+Bounded below: same with the lower half of 7.1. ∎
+
+**Theorem 7.3 (dichotomy).** Either `|a_n| ≤ a_1` for all `n`, or `(a_n)` is unbounded above and unbounded below. (7.2 both ways.)
+
+**Theorem 7.4 (recurrence to the ceiling).** Assume RH. For every base `b` and `ε > 0` there is `m ≥ 1` with `a_1 − ε < a_{b^m} ≤ a_1`;
+hence `sup_{n≥2} a_n = a_1`.
+*Proof.* Under RH `ρ = ½ + iγ`, `ρ(1−ρ) = ¼ + γ²`, so `Φ(L) = Σ_ρ w_ρ cos(γL)` with `w_ρ = (¼+γ²)^{−1} > 0`, `Σ w_ρ = a_1`
+(absolutely convergent; the imaginary parts cancel because `Φ` is real). Pick a finite set `F` of zeros with `Σ_{ρ∉F} w_ρ < ε/4`,
+put `Q = ⌈8π²a_1/ε⌉ + 1`, and apply simultaneous Dirichlet approximation to the `|F|` numbers `γ log b/2π`: some `m ∈ [1, Q^{|F|}]`
+has `‖mγ log b/2π‖ < 1/Q` for all `ρ ∈ F`, hence `cos(γ m log b) ≥ 1 − (2π/Q)²/2 =: 1 − δ` with `δ a_1 ≤ ε/4`. Then
+`a_{b^m} = Φ(m log b) ≥ (Σ_F w_ρ)(1 − δ) − Σ_{ρ∉F} w_ρ ≥ (a_1 − ε/4) − ε/4 − ε/4 > a_1 − ε`. ∎
+
+**Remarks.** (i) The ceiling is attained by no `n ≥ 2` under RH (all `cos(γ log n) = 1` would make the ordinates commensurable,
+contradicting `N(T) ∼ (T/2π)log T`), but it is the exact supremum along every geometric progression. (ii) The floor is
+asymmetric: `inf a_n = −a_1` needs all `cos(γ log n) ≈ −1` simultaneously, a ℚ-independence property of the ordinates that
+Dirichlet approximation cannot give; only `inf a_n < 0` is forced (`Φ` has Bohr mean `0` under RH). (iii) For a producer this is
+the zero-margin law at integer lags: a proof of `a_n ≤ a_1` cannot lose any constant along `b^m`, and it must know the joint
+distribution of the phases `γ log b` exactly — the same obstruction as `fixed-pole-zero-margin-law`, now with the sharp
+recurrence set identified.
