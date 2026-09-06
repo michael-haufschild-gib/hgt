@@ -3,19 +3,19 @@
 - **ID:** `BEURLING-REGULAR-INTEGERS-NO-CONSTRAINT-001`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (paper + Lean) / FIREWALL, and a retraction
-- **Parent:** `rh-sensitivity-threshold-of-the-prime-measure.md` §6 (whose design rule this refutes)
+- **Parent:** `rh-sensitivity-threshold-of-the-prime-measure.md` §6 (whose universal design rule is withdrawn)
 - **RH used:** no · **Computation used:** no
-- **Scientific status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN CERTIFIED] [NOT RH]
-  [NOVELTY: BOUNDED AUDIT — the qualitative phenomenon is consistent with the [α,β]-system
-  literature; the explicit rational-zeta form and the `θ → 0` sharpness are the contribution]`
+- **Scientific status:** density positivity, rational transform and zero are Lean certified;
+  the counting estimate in §2(b) is paper-only. Classical continuous Beurling construction;
+  no novelty or RH proof claimed.
 
 ## One sentence
 
-For every `β ∈ (1/2, 1)`, every `γ ≠ 0` and every `θ > 0` there is an explicit Beurling
-generalized number system whose integer-counting function is *more* regular than the Riemann
-hypothesis claims for `ℤ` — `N(x) = ρx + O(x^{θ})` for every `θ > 0` — and whose zeta function
-nevertheless vanishes at `β ± iγ`; so no asymptotic regularity of the integer-counting function
-implies RH, and the design rule of the parent card is false.
+For each `β ∈ (1/2,1)`, `γ != 0` and selected `θ > 0`, there is a continuous positive-density
+model with a genuine zeta zero at `β+iγ`; its paper counting estimate is `N(x)=ρx+O(x^θ)`.
+The model depends on `θ`. This refutes sufficiency of that counting estimate in this continuous
+class, not its necessity or usefulness in a proof with additional arithmetic hypotheses.
+Ordinary integer counting is unconditionally `floor x=x+O(1)`; RH does not assert a bound for it.
 
 ## 1. The construction
 
@@ -32,7 +32,7 @@ w(t) = ( e^{t} + A e^{δ t} − (A − 1) − 2 e^{β t} cos(γ t) ) / t.
 **Coefficient balance.**  The numerator at `t = 0` is `1 + A − (A−1) − 2 = 0`, so `w` is bounded
 near the origin: the system is locally finite.  (This balance is exactly the statement that the
 zeta function below has as many zeros as poles counted with multiplicity, hence tends to `1` at
-`s = ∞`, as the Laplace transform of a finite measure must.)
+`s = ∞`, as the Laplace transform of a locally finite counting measure with unit mass at the origin must.)
 
 **Positivity.**  Since `cos ≤ 1`,
 
@@ -79,42 +79,41 @@ so that
 genuine zeros, with `β > 1/2` arbitrary in `(1/2, 1)`.  **RH fails for this system, arbitrarily
 badly.**
 
-**(b) Integers as regular as one likes.**  `ζ` is a rational function whose only pole with
-`Re s > δ` is the simple pole at `s = 1`, with residue `((1−β)²+γ²)/((1−δ)^A)` > 0.  Since
-`ζ(s) = s∫_1^∞ N(x) x^{-s-1} dx` on `Re s > 1` and `ζ` is rational (so `O(1)` on vertical lines,
-`ζ(∞) = 1`), Mellin inversion with a contour at `Re s = δ + ε` gives
+**(b) A counting bound at the selected exponent — paper only.** The rational function has
+residue `ρ=((1−β)^2+γ^2)/(1−δ)^A > 0` at `1`. Partial fractions of `ζ(s)/s` give a counting
+function of the form
 
 ```
-N(x) = ρ x + O( x^{δ+ε} ),        ρ = residue at s = 1.
+N(x) = ρx + x^δ P(log x) + C,       deg P <= A-1,       x>=1.
 ```
 
-`δ ∈ (0,1)` is free, so for every `θ > 0` we may take `δ < θ` and obtain
-`N(x) = ρ x + O(x^{θ})`.  For `ℤ` itself, `N(x) = ⌊x⌋ = x + O(1)`, which satisfies the same bound
-for every `θ > 0`.  **The two systems are indistinguishable at every power scale of `N`, and they
-disagree about RH.**
+Here a constant term can occur from the origin. For each `θ>δ`, the polynomial factor is
+`O(x^(θ−δ))`, giving `N(x)=ρx+O(x^θ)`. Choosing `δ<θ` constructs a suitable model for each
+requested exponent. The pole at the positive number `δ` prevents this argument from yielding all
+positive error exponents for that one model. The Lean capstone has no counting-function clause.
 
-**(c) The primes pay for it.**  `Π(x) = ∫_0^{log x} w(t) dt/t · …`, and the oscillatory term
-contributes `π(x) = Li(x) + Θ(x^{β}/log x)`.  So the prime counting error exponent is `β > 1/2`
-while the integer counting error exponent is `δ ≈ 0`; `max{β, δ} = β ≥ 1/2`, consistent with the
-Broucke–Vindas constraint `max{α,β} ≥ 1/2` for `[α,β]`-systems.  Regularity is *transferred* from
-the primes to the integers, not created.
+A separate fixed-model repair with zeros `2/3±ig` and a quadratic logarithmic remainder is
+tracked in `not_new_scientific_knowledge/continuous-beurling-logarithmic-error-audit.md`. It uses a different
+rational function with compensating poles at zero; it does not change this theorem's quantifiers.
 
-## 3. Consequence: the retraction
+**(c) Prime and integer measures are distinct.** The continuous logarithmic-prime counting
+measure here has `Π(x)=∫_0^(log x) w(t) dt`. No estimate for a discrete prime sequence `π(x)` is
+proved by the Lean theorem. In particular, a discretization theorem cannot be inferred from the
+rational transform alone.
 
-The parent card's §6 concluded that an RH criterion must control `N(x) − ρx` at the scale
-`x^{1/2}`.  Part (b) refutes this: control of `N` at *every* power scale is compatible with the
-worst possible zero placement.  The corrected statement is
+## 3. Consequence and scope correction
 
-> An RH proof must use **which** integers occur, not how many.  Neither reciprocal-weight prime
-> data (`1/p`, `Λ(n)/n`, Mertens constants, prime log-jet Grams — parent card) nor any asymptotic
-> regularity of `N(x)` (this card) can decide RH.  The load-bearing input is the exact identity
-> `N(x) = ⌊x⌋`, i.e. the multiplicative structure of `ℤ`, not any asymptotic shadow of it.
+The parent card's proposed universal requirement that an RH proof must control integer-counting
+error at a specified scale was unsupported and remains withdrawn. These examples instead show
+that the selected counting estimate is **insufficient by itself in the continuous class**.
+A counterexample to sufficiency does not refute necessity. It also does not prove that every RH
+proof must use exact integer occurrence, distributivity, or any particular combination of operations.
 
-Where the Landau obstruction of the parent card does bite is only the *relative* problem: if one
-insists on **adjoining** primes to `ℤ` (positive perturbation, so that the comparison object is
-`ζ` itself), then a new off-line zero forces a real singularity of `ζ_ℬ/ζ` at abscissa `≥ β`.  In
-the absolute Beurling category that compensating singularity is placed at `s = δ ≈ 0`, where it
-costs nothing.
+Before applying this obstruction, check every hypothesis of the proposed criterion against the
+same model. These examples are continuous and assert no functional equation. They cannot exclude
+a criterion using additional discrete or arithmetic hypotheses they fail to satisfy. The positive
+adjunction problem in the parent card has its own assumptions; changing to an absolute continuous
+system changes that comparison class.
 
 ## 4. Sharpness of the coefficient balance
 
@@ -152,18 +151,17 @@ Not formalized, and stated as classical Mellin inversion only: the passage from 
 its only `Re s > δ` pole simple at `s = 1`" to "`N(x) = ρx + O(x^{δ+ε})`".  The Lean statement
 carries the analytic form, which is the checkable content.
 
-## 6. Open, and worth attacking
+## 6. Separate discrete question — not established here
 
-**[CONJECTURE — discrete realization]** The system above is *continuous*.  The Diamond–Montgomery–
-Vorhauer/Broucke–Debruyne–Vindas technology discretizes continuous Beurling systems while
-preserving counting asymptotics.  Conjecture: there is a **discrete** Beurling system (a genuine
-sequence `1 < p₁ ≤ p₂ ≤ …`) with `N(x) = ρx + O(x^{θ})` for every `θ > 0` and a zeta zero with real
-part `> 1/2`.  Falsity would be far more interesting than truth: it would mean discreteness itself
-— the integrality of the generalized integers — is the missing arithmetic input, and would give the
-first structural reason why `ℤ` is special beyond its counting function.
+The earlier card conjectured a discrete Beurling system with a nonreal zero right of `1/2` and
+`N(x)=ρx+O(x^θ)` for every `θ>0` in the **same** system. That is a separate assertion, not a
+consequence of this continuous construction. No discretization preserving those exact properties
+has been supplied here. This audit makes no claim about its current literature status and does
+not adopt it as an RH proof route.
 
-**Why this is the right next question.**  Both firewalls in this pair rule out classes of criteria
-by exhibiting continuous Beurling counterexamples.  Discreteness is the one hypothesis neither
-counterexample respects.  If discreteness cannot be added, the whole Beurling-counterexample method
-is exhausted and the firewalls are final; if it can, the method extends and RH is provably immune to
-an even larger class of arguments.
+## Audit outcome
+
+The positive survivor is the explicit continuous density and rational transform with a prescribed
+zero, with the original theorem's quantifiers retained. The fixed-model logarithmic counting
+construction is a separate auxiliary result. Neither supplies a new zero-forced relation for
+ordinary zeta. **NO POSITIVE SALVAGE FOUND as a novel RH architecture.**

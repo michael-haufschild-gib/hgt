@@ -83,16 +83,15 @@ Corollaries: `FESchwarz` soft (recovers the banked witness); every polynomial-mu
 class containing ξ (Hadamard-type growth classes included — polynomial × order-1 is order-1) fails
 `ForcesRHParity`. Hence:
 
-> **The RH cut** — the softness/rigidity boundary in the constraint lattice — **lies strictly above
-> every multiplication-stable constraint.** A constraint that decides parity must break stability
-> under polynomial multiplication, i.e. must couple to the coefficient/arithmetic side. The banked
-> `dirichlet_surgery_rigid` shows the Dirichlet-series constraint does exactly that: the cut is
-> squeezed into (mult-stable, Dirichlet-series].
+> **Necessary exclusion of one planting operation.** Under the stated source-membership
+> hypotheses, polynomial-multiplication stability prevents a class from forcing parity.
+> `dirichlet_surgery_rigid` proves that the ordinary Dirichlet-series class excludes the
+> specified polynomial multiplier of ζ. It supplies neither a sufficient parity condition
+> nor an upper boundary for a minimal RH constraint. Failure of multiplication stability
+> does not by itself identify a new arithmetic mechanism.
 
-This answers the conjecture's motivating question ("the conservation law the Goldilocks cell
-lacks") negatively for an entire lattice region at once: no conservation law readable below
-multiplicativity-coupling can decide the parity — matching, from a new axis, the invariant-collision
-barrier of `DeciderBarrier`.
+This excludes the proved multiplication-stable families. It does not classify every possible
+constraint or construct the proposed conservation law.
 
 **The two ends of the lattice meet (`forcesRHParity_xiScalarClass_iff_rhLadder_one`, proved):**
 parity-forcing of the rigid endpoint — the ξ-scalar class `{c·ξ : c ∈ ℝ}` — is EXACTLY the base
@@ -128,15 +127,17 @@ family:
    off-line charge, so this class certainly carries charge and is not categorical.
 
 The banked `dirichlet_surgery_rigid` blocks only engine 2 for the Dirichlet class — it does NOT
-classify that class as parity-forcing, since engine 3 survives. The only known constraint dodging
-all three engines at once is **coefficient multiplicativity — the Euler product**: a polynomial or
-pencil combination of Euler products is no Euler product, and a bump is no Dirichlet series.
+classify that class as parity-forcing. These three engines do not classify the class of
+multiplicative coefficients either. Without the additional functional-equation constraints,
+the corpus's Helson theorem realizes prescribed divisors by unimodular completely
+multiplicative coefficients. Its flexibility and the polynomial-multiplier obstruction are
+compatible: the Helson construction includes a nonvanishing analytic factor.
 
 > `[CONJECTURE]` **The RH cut is pinned at the Euler product**: the minimal constraint (over the
 > FE + Schwarz base) that empties the nontrivial right-half defect components is multiplicativity
 > of the coefficients — the arithmetic pillar of the weld, exactly the constraint-side object the
-> branch's founding metaphor points at. Every constraint below it is soft by one of the three
-> engines.
+> branch's founding metaphor points at. Neither this minimality claim nor softness of every
+> weaker constraint has been proved by the three planting examples.
 
 **On `SignedReflectionParity`:** the seam conservation law named (but nowhere defined) by
 `GoldilocksTrichotomy` and `ChargeMotion` as "what the Goldilocks cell still needs" is now

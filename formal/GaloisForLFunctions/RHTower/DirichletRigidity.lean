@@ -1,13 +1,13 @@
 /-
-Finite-divisor rigidity for Dirichlet series (MWM lane; 08-population-and-local-returns §5.3,
-the "surgery no-go" fragment of the droves dichotomy).
+Polynomial-multiplier rigidity for Dirichlet series (MWM lane;
+08-population-and-local-returns §5.3, the polynomial-surgery fragment).
 
-Main result: `RHTower.no_polynomial_surgery` — a somewhere-convergent L-series can never agree
-on a right half-line with P(s)·(another somewhere-convergent L-series) for a polynomial P of
-positive degree. Consequence for the lane: the divisor of a member of the Dirichlet-series
-class cannot be modified by finite surgery (e.g. inserting a lone off-line zero quadruple
-(s−ρ)(s−ρ̄)(1−s−ρ)(1−s−ρ̄) into ζ) without leaving the class — the class axiom itself is a
-rigidity constraint.
+Main result: `RHTower.no_polynomial_surgery` — two ordinary L-series with finite
+absolute-convergence abscissae, the second nonzero, cannot agree on a right half-line as
+F(s)=P(s)G(s) for a polynomial P of positive degree. This excludes that exact multiplier,
+including direct multiplication of ζ by an off-line-zero quartic. It does not exclude every
+finite change of divisor: the ratio of two functions with those divisors may also contain a
+nonvanishing analytic factor. No zero-location or class-level divisor-rigidity claim follows.
 
 Engine: mathlib's first-coefficient asymptotic `LSeries.tendsto_cpow_mul_atTop`
 (n₀^x · LSeries f x → first nonzero coefficient), plus polynomial-vs-exponential asymptotics.
@@ -107,8 +107,8 @@ private lemma norm_natCast_cpow (n : ℕ) (x : ℝ) :
 /-- **No polynomial surgery on Dirichlet series.** If `f` and `g` are coefficient sequences
 whose L-series converge somewhere, `g` is not (essentially) zero, and `P` is a polynomial of
 positive degree, then `LSeries f` cannot agree with `P · LSeries g` on any right half-line.
-In particular the divisor of an L-series admits no modification by a polynomial factor
-within the class. -/
+This excludes the specified polynomial factor within the class; it does not classify
+divisors obtainable with additional nonvanishing factors. -/
 theorem no_polynomial_surgery
     {P : Polynomial ℂ} (hP : 0 < P.natDegree)
     {g : ℕ → ℂ} (hga : abscissaOfAbsConv g < ⊤) (hgne : ∃ n, n ≠ 0 ∧ g n ≠ 0)
@@ -260,10 +260,10 @@ namespace RHTower
 
 open Filter LSeries
 
-/-- **ζ-instance of the surgery no-go**: no somewhere-convergent L-series agrees on a right
-half-line with P(s)·ζ(s) for a polynomial P of positive degree. One cannot insert finitely
-many zeros into (or excise them from) the divisor of ζ by a polynomial factor — e.g. a lone
-off-line zero quadruple (s−ρ)(s−ρ̄)(1−s−ρ)(1−s−ρ̄) — and remain a Dirichlet series. -/
+/-- **ζ-instance of polynomial-multiplier rigidity**: no ordinary L-series with finite
+absolute-convergence abscissa agrees on a right half-line with P(s)·ζ(s) for a polynomial
+P of positive degree. The multiplier itself is prescribed; a general divisor-preserving
+or divisor-changing nonvanishing normalization is outside this theorem. -/
 theorem no_polynomial_surgery_zeta
     {P : Polynomial ℂ} (hP : 0 < P.natDegree)
     {f : ℕ → ℂ} (hfa : abscissaOfAbsConv f < ⊤)

@@ -1,0 +1,31 @@
+query	exclude_module	per_module	limit	explore
+arithmetic obstruction	RHTower	1	40	8
+integer cancellation	RHTower	1	35	8
+factorization order	RHTower	1	25	5
+positive characteristic	RHTower	1	25	5
+integer rigidity	RHTower	1	25	5
+arithmetic descent	RHTower	1	25	5
+"positive characteristic"	RHTower	1	20	0
+"factorization" "order"	RHTower	1	20	0
+nonlinear zero	RHTower	1	25	5
+arithmetic compatibility		1	25	5
+PrimeSparseCoherenceSaturation		0	20	0
+factorial	RHTower	1	30	7
+growing prime		1	30	7
+nonperiodic		1	30	7
+integer rewrite		1	20	3
+Euclidean	RHTower	1	30	5
+carry source	RHTower	1	25	5
+binomial zeta		1	25	5
+ordered prime		1	25	5
+prime braid		1	25	5
+factorization commutator		1	25	5
+SubdirectConstraintWitnesses		0	20	0
+prime syzygy		1	20	4
+integer mutation		1	20	4
+source rigidity	RHTower	1	30	8
+arithmetic coupling	RHTower	1	30	5
+prime permutation		1	25	5
+multiplicative permutation		1	20	5
+integer rearrangement		1	20	5
+arithmetic exchange	RHTower	1	25	5

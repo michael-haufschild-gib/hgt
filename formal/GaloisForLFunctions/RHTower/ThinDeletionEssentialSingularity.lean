@@ -14,9 +14,11 @@ So `Φ(σ) → 0` at least as fast as `exp(-c/(σ-γ))`, faster than every power
 perturbed zeta analytic across the real point `γ`, it would vanish there to some finite order `m`,
 forcing `Φ(σ) ≥ K (σ-γ)^m`.  The two demands are incompatible.
 
-This module proves that incompatibility as real analysis.  Its arithmetic consequence is that the
-deleted system's zeta has an essential singularity at `s = γ`, so its generalized integers admit no
-power saving with exponent below `γ`: deletion cannot buy integer regularity.
+This module proves only the incompatibility of the two displayed real bounds.  An arithmetic
+application must separately prove those bounds and the continuation/counting implications.
+Nonextendibility across a boundary point does not by itself classify an isolated essential
+singularity.  In particular, a deletion count of size `t^γ / log t` does not supply the displayed
+`1 / (σ - γ)` deficit: logarithmic divergence can exponentiate to a finite-order zero.
 
 The only input is `log v ≤ v - 1`.
 -/
@@ -88,9 +90,10 @@ neighbourhood of `γ`, no such `Φ` exists.
 
 In the arithmetic application `Φ` is the Euler deficit `∏_{p∈B}(1 - p^{-σ})` of a deleted set of
 primes of counting exponent `γ`: the upper bound is the divergence `∑_{p∈B}p^{-σ} ≫ 1/(σ-γ)`, and
-the lower bound is what analyticity of the perturbed zeta at the real point `γ` would force, since
-`ζ(γ) ≠ 0` for `γ ∈ (0,1)`.  Hence that zeta is not analytic at `γ`, and the deleted system's
-integer-counting function admits no power saving with exponent below `γ`. -/
+the lower bound would follow from a nonzero analytic extension of the perturbed zeta at `γ`,
+together with the required quotient identity and `ζ(γ) ≠ 0`.  Those arithmetic and analytic bridges
+are not formalized by this theorem.  No conclusion for logarithmically thinner deletions follows
+without the stated exponential upper bound. -/
 theorem no_finite_order_zero_absorbs_exponential_deficit
     {γ c K : ℝ} (hc : 0 < c) (hK : 0 < K) (m : ℕ) (Φ : ℝ → ℝ)
     (hupper : ∀ σ ∈ Ioo γ (γ + 1), Φ σ ≤ Real.exp (-(c / (σ - γ))))

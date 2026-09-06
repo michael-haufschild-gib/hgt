@@ -14,18 +14,17 @@ The three cells partition every class (`goldilocks_trichotomy`, `trichotomy_disj
 * **Soft** (`PlantsArbitrary`): too flexible — bump surgery plants an off-line odd zero anywhere, so
   the class cannot force RH-grade parity.  The FE + Schwarz class is soft (`feSchwarz_isSoft`), using
   the `V₄`-orbit witness `exists_feSchwarz_carrier_odd_charge`.
-* **Categorical** (`¬ CarriesOffLineCharge`): collapsed — no off-line charge at all.  Witnessed by any
-  nonvanishing class (`const_isCategorical`); the rigidity mechanism is the Dirichlet-series surgery
-  no-go (`dirichlet_surgery_rigid`, from `no_polynomial_surgery_zeta`).
+* **Categorical** (`¬ CarriesOffLineCharge`): no off-line charge at all. Witnessed by the singleton
+  constant-one class (`const_isCategorical`). The separate `dirichlet_surgery_rigid` theorem
+  excludes a polynomial multiplier of ζ; it does not place the Dirichlet-series class in this cell.
 * **Goldilocks** (`CarriesOffLineCharge ∧ ¬ PlantsArbitrary`): charge-carrying yet rigid.  Nonempty —
   the single-zero class `{s ↦ s − ρ₀}` is Goldilocks (`linGap_isGoldilocks`).
 
 `forcesRHParity_iff_categorical` is the payoff: forcing RH-grade parity by charge alone is *exactly*
 the categorical collapse (no off-line charge).  The Goldilocks cell carries charge and does *not* force
-parity by charge alone — the seam input (`SignedReflectionParity`, the conservation law) is precisely
-what the middle cell still needs.  This is why the program cannot hope for a class to "prove RH" by
-softness or rigidity: only the Goldilocks cell is viable, and there charge is necessary but not
-sufficient.
+parity by charge alone. A proposed additional conservation law needs its own definition and proof;
+the taxonomy does not supply one. It also does not establish that only the middle cell can support
+an arithmetic proof, or classify the ordinary Dirichlet-series class as a whole.
 -/
 import GaloisForLFunctions.RHTower.CarrierChargeSoftness
 import GaloisForLFunctions.RHTower.DirichletRigidity
@@ -141,9 +140,9 @@ theorem const_isCategorical : IsCategorical (fun f => f = fun _ => (1 : ℂ)) :=
     apply analyticOrderAt_eq_zero.mpr; right; norm_num
   rw [carrierCharge_one_eq_neg_one_pow, hord]; norm_num
 
-/-- **Categorical theorem (Deliverable 2), the rigidity mechanism.**  The Dirichlet-series class is
-surgery-rigid: no finite polynomial factor `P·ζ` (degree ≥ 1) is again a Dirichlet series — the class
-membership condition blocks zero-planting by finite surgery, forcing rigidity. -/
+/-- **Polynomial-multiplier obstruction.** No `P·ζ` with polynomial `P` of positive degree is an
+ordinary Dirichlet series with finite absolute-convergence abscissa. This excludes the specified
+planting operation and proves no categorical or general finite-divisor rigidity assertion. -/
 theorem dirichlet_surgery_rigid {P : Polynomial ℂ} (hP : 0 < P.natDegree)
     {f : ℕ → ℂ} (hfa : LSeries.abscissaOfAbsConv f < ⊤) :
     ¬ (∀ᶠ x : ℝ in Filter.atTop, LSeries f (x : ℂ) = P.eval (x : ℂ) * riemannZeta (x : ℂ)) :=

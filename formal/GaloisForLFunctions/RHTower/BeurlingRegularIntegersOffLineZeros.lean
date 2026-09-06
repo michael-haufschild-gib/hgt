@@ -14,17 +14,15 @@ positive density whose zeta function is the rational function
 ζ(s) = ( (s - β)² + γ² ) · s^{A-1} / ( (s - 1) · (s - δ)^A ),        0 < δ < θ,
 ```
 
-so that
+The formal statements prove positivity, the exponential integral identity, a genuine zero at
+`β + iγ`, and nonvanishing of the denominator when `Re s > δ` and `s ≠ 1`.
+The quantifiers are `∀ θ > 0, ∃ δ A`: the constructed model depends on `θ`.
+This module does not define an integer-counting function or prove a counting asymptotic.
+The accompanying paper argument gives `N(x) = ρ x + O(x^θ)` for the selected exponent;
+it does not give that estimate for every positive exponent in one fixed model.
 
-* `ζ` has a **simple pole at `s = 1`** and no other singularity with `Re s > δ`; since `δ < θ` is
-  arbitrarily small, the generalized integers satisfy `N(x) = ρ x + O(x^{θ})` for every `θ > 0`,
-  which is *more* regularity than the Riemann hypothesis asserts for the rational integers;
-* `ζ` **vanishes at `β ± iγ`**, a pair of points with real part `β > 1/2` that may be taken
-  arbitrarily close to `1`.
-
-So the size of `N(x) - ρ x` carries no information whatsoever about the location of the zeros: an
-arbitrarily regular integer-counting function coexists with zeta zeros arbitrarily far to the right
-of the critical line.
+These are continuous positive-density examples. They constrain only proposed criteria whose
+full hypotheses the examples satisfy; they do not prescribe the architecture of every RH proof.
 
 The density is
 
@@ -48,7 +46,7 @@ noncomputable section
 
 /-! ## Choosing the compensating coefficient -/
 
-/-- For `0 < δ < β < 1/2 < β < 1` there is a coefficient making the derivative of the density
+/-- For `0 < δ` and `1/2 < β < 1` there is a coefficient making the derivative of the density
 numerator nonnegative on `[0, ∞)`.  Threshold: past `t₀ = log (2β)/(1-β)` the pole term `e^t`
 already dominates `2β e^{βt}`; before it, the constant `A δ` does. -/
 theorem exists_regularCoefficient {β δ : ℝ} (hδ0 : 0 < δ) (hβhalf : 1 / 2 < β) (hβ1 : β < 1) :
@@ -327,7 +325,7 @@ theorem regularZeta_denom_ne_zero_at_zero {β γ δ : ℝ} {A : ℕ} (hγ : γ �
     simp at this
     exact hγ this.symm
 
-/-- **The only singularity with real part above `δ` is the simple pole at `s = 1`.** -/
+/-- The denominator is nonzero when `Re s > δ` and `s ≠ 1`. -/
 theorem regularZeta_denom_ne_zero {δ : ℝ} {A : ℕ} {s : ℂ}
     (hs : δ < s.re) (hne : s ≠ 1) :
     (s - 1) * (s - (δ : ℂ)) ^ A ≠ 0 := by
@@ -347,13 +345,10 @@ For every `β` strictly between `1/2` and `1`, every `γ ≠ 0`, and every `θ >
 ζ(s) = ( (s-β)² + γ² ) s^{A-1} / ( (s-1)(s-δ)^A ),
 ```
 
-with the exponential identity valid on `Re s > 1`.  This `ζ` is holomorphic apart from the simple
-pole at `s = 1` on the whole half plane `Re s > δ`, and it vanishes at `β + iγ`.
-
-Since `δ` can be taken below any prescribed `θ > 0`, the generalized integers of the system are
-as regular as one likes — `N(x) = ρ x + O(x^θ)` for every `θ > 0` — while the zeta zeros sit at
-real part `β`, arbitrarily close to `1`.  So no asymptotic regularity of the integer-counting
-function implies the Riemann hypothesis. -/
+with the exponential identity valid on `Re s > 1`. The denominator is nonzero on
+`Re s > δ` away from `s = 1`, and the numerator vanishes at `β + iγ`, where the denominator
+is nonzero. The witness `δ, A` depends on `θ`. No integer-counting asymptotic is part of this
+Lean statement, and the system is continuous rather than a discrete prime sequence. -/
 theorem regular_integers_do_not_constrain_zeros
     {β : ℝ} (hβhalf : 1 / 2 < β) (hβ1 : β < 1) {γ : ℝ} (hγ : γ ≠ 0) {θ : ℝ} (hθ : 0 < θ) :
     ∃ (δ : ℝ) (A : ℕ), 0 < δ ∧ δ < θ ∧ 1 ≤ A ∧

@@ -24,9 +24,32 @@ Scope: compressed facts and logically forced design constraints extracted from a
 
 - **Must rule out the unique possible transition to negative Weil energy.** For tests whose two exponential moments vanish, the least normalized Weil energy strictly decreases as their allowed support interval grows. The proved alternatives are a positive floor at every finite radius, equivalent to RH, or exactly one zero radius with positive floors below and negative floors above. This classification does not select its positive branch. Evidence: `RHTower.strictAnti_ccmRestrictedWeilPolarGroundEnergy`, `RHTower.riemannHypothesis_iff_polarGroundEnergy_pos`, and `RHTower.riemannHypothesis_or_unique_polarGroundZero` in `CCMRestrictedWeilPolarStrictDomain`.
 
-- **Must retain constraint forces in a variational operator equation.** A minimum taken over tests with two vanishing exponential moments satisfies the full Weil operator equation with two uniquely determined pole-forcing terms. A ground can be chosen with pure reflection parity, reducing those terms to one even or odd profile. Operator-domain membership is proved, but the scalar forcing cannot be discarded without a further source theorem. Evidence: `RHTower.exists_normalized_polarGround_operator_forcing` and `RHTower.exists_polarGround_singleProfile_forcing` in `CCMRestrictedWeilPolarGroundForcing` and `CCMRestrictedWeilPolarGroundParityForcing`.
+- **Must determine constraint forces from the actual source.** A minimum taken over tests with two vanishing exponential moments satisfies the full Weil operator equation with two uniquely determined pole-forcing terms. Reflection reduces them to one even or odd profile. Its scalar is exactly the boundary–arithmetic source moment divided by a strictly positive pole Gram entry. This determination retains actual operator-domain membership; it does not set the scalar to zero or select the ground's source moment. Evidence: `RHTower.polarSingleForcing_coefficient_eq_source_div` and `RHTower.exists_polarGround_boundarySource_forcing` in `CCMRestrictedWeilPolarGroundSourceMoment`.
+
+- **Cannot discard constraint forcing through invariance or parity.** At every finite positive support radius, the actual Weil operator sends an exponential pole profile outside the entire span of the two pole profiles. The surviving source moment takes every complex value separately on even and odd functions with both exponential moments zero. On their sum, the original and reflected source moments can be prescribed independently. Endpoint divergence establishes this despite the exact arithmetic cancellations. A comparison based on these constrained moments must use the selected ground's additional variational properties; parity alone supplies neither zero coupling nor a universal linear sign. Evidence: `RHTower.ccmRestrictedWeilOperator_polarPlus_ne_forcing` in `CCMRestrictedWeilPolarSourceNonvanishing`; `RHTower.exists_polarParity_boundarySource_eq` and `RHTower.polarConstrained_jointBoundarySource_surjective` in `CCMRestrictedWeilPolarParitySourceCoupling`.
+
+- **Cannot exclude zero constrained energy from a nonzero constraint force alone.** A minimizing test with vanishing exponential moments has an exact full-operator residual whose squared size is the source moment squared divided by a positive Gram factor. Its variational bound compares that force with the gap to the unrestricted minimum and the full shifted pole energy. Nonzero forcing requires a strictly lower unrestricted minimum; it does not force the constrained minimum positive. A proved Hermitian two-coordinate example has zero constrained minimum and nonzero forcing while satisfying the shifted positivity bound. An RH argument using this comparison must supply additional arithmetic control. Evidence: `RHTower.polarSingleForcing_residual_norm_sq`, `RHTower.polarGround_source_gap_bound`, and `RHTower.zeroGround_nonzeroSource_shiftedPositive_model` in `CCMRestrictedWeilPolarGroundVariance`.
+
+- **Must control the integrated prime-counting error at square-root scale.** Let `psi(X)` sum `log p` over prime powers `p^k≤X`. RH is exactly the existence of a finite constant `K≥0` such that `|integral_0^T [exp(t)-psi(exp(t))]dt|≤K exp(T/2)` for every `T≥0`. No additional logarithmic factor is required for this primitive. Absolutely continuous integration by parts transfers this bound to a bounded completed Chebyshev resolvent and its actual zeta continuation. Evidence: `RHTower.riemannHypothesis_iff_logChebyshevDeficitPrimitive_bound` and `RHTower.unitRieszChebyshevRayIntegral_eq_deficitPrimitive` in `CCMRestrictedWeilPoleCompressionRHCriterion`.
+
+- **Must retain mixed arithmetic correlations when testing positivity.** A compactly supported exponential and its reflection have equal full Weil self energies `A`, but positivity of every complex combination requires the separate comparison `|C|≤A` for their cross energy `C`. That cross energy contains the integral of the difference between exponential growth and the actual weighted prime-power counting function. Its reciprocal-prime correction is bounded linearly in support radius, its Gamma boundary mass is uniformly bounded, and its diagonal has a uniform exponential bound. The all-radius comparison `|C|≤A` is exactly RH; separate diagonal estimates leave this mixed arithmetic sign to prove. Evidence: `RHTower.ccmWeilPoleCompression_nonneg_iff`, `RHTower.ccmWeilPoleCross_eq_integratedError`, and `RHTower.abs_integratedChebyshevDeficit_sub_weilPoleCross_le` in `CCMRestrictedWeilPoleCompression` and `CCMRestrictedWeilPoleIntegratedPrimeError`.
+- **Cannot propagate positivity from the signs of newly entering prime terms.** In the actual test `1_[-a,a](exp(x/2)-exp(-x/2))`, every fixed prime power contributes positively at one support radius and negatively at a larger radius. Positive arithmetic weights do not prevent this reversal. An all-radius comparison must retain older losses, recent gains, and the full Gamma and pole terms. Evidence: `ccmOddPole_primePower_contribution_changes_sign` and `ccmWeilOddPole_eq_prime_budgets` in `CCMRestrictedWeilOddPrimeBudget`. The replacement must compare the full moving energy: above radius two, nonnegative endpoints force strictly positive interior values across any gap containing no prime-power entry. New atoms vanish at entry and zero-Mangoldt integers have no effect. All odd energies on a tail are nonnegative exactly when the starting energy and every later genuine prime-power entry energy are nonnegative; any negative tail value forces a negative value in that set. Those signs still require arithmetic control (`ccmWeilOddPole_nonneg_tail_iff_primePower_entries`, `ccmWeilOddPole_negative_tail_iff_primePower_entry`).
+
+- **Must distinguish parity in the response to a new prime term.** For the actual exponential-cutoff odd and even tests, the new prime-power energy corrections both vanish at entry `b=log(n)/2`. Their slopes are respectively `4Lambda(n)(1-exp(-b))²>0` and `-4Lambda(n)(1+exp(-b))²<0`. These exact entry responses have opposite signs, while each older odd contribution can later reverse its sign. Evidence: `hasDerivAt_ccmWeilOddPole_entry_atom`, `hasDerivAt_ccmWeilEvenPole_entry_atom`, and the strict-sign classifications in `CCMRestrictedWeilPoleEntrySlopes`.
+
+- **Must retain the loss accumulated after a prime term enters.** In both actual exponential-cutoff parity tests, a prime-power contribution equals its entry slope times elapsed aperture minus the same strictly positive later loss. The loss is proportional to `sinh(t)-t=integral_0^t sinh(t-u)u du`. Summing entry tangents alone therefore overestimates both complete energies; it cannot serve as a lower bound for positivity. The exact source balance retains this common loss and both Gamma–polar terms (`ccmWeilOddPole_eq_entry_age_balance`, `ccmWeilEvenPole_eq_entry_age_balance`).
+
+- **Must distinguish endpoint control from minimum control in opposite parity.** Beyond a fixed explicit support radius, the full odd exponential-test energy is strictly concave and the even energy strictly convex between consecutive prime-power entries. The even energy has one unique actual minimum on each closed gap, possibly at a boundary; its sign decides the whole gap, and an interior minimum is stationary. These shape laws provide no minimum-value sign (`ccmWeilPole_primePower_gap_strict_shape`, `exists_unique_ccmWeilEvenPole_gap_minimum`).
 
 - **Cannot assign a fixed sign to an individual prime contribution from the two pole constraints.** Even with `∫exp(x/2)f(x)dx=∫exp(-x/2)f(x)dx=0`, nonzero form-domain tests realize both signs of an outer-shell prime translation. Its optimal contraction constant is exactly one after removing the prime weight; no smaller constant follows from those constraints alone. The resulting literal prime norm bound is `21(exp(a)+exp(a/2))`, but combined arithmetic–Gamma positivity remains a separate obligation. Evidence: `RHTower.exists_polarConstrained_outerShell_eigenvectors`, `RHTower.polarConstrained_outerShell_bound_iff`, and `RHTower.norm_ccmFinitePrimeOperator_le_twoScaleExp` in `CCMRestrictedWeilPrimeOuterShell`.
+
+- **Must test compatibility before combining sharp estimates.** For two distinct prime shifts lying between the radius and diameter of a bounded support interval, a nonzero test with both exponential moments zero can preserve both individual norms. Yet every positive weighted sum of those restricted shifts has norm strictly below the sum of the separate bounds: their output directions cannot align at the maxima. Repeated products move support out of the interval and give an explicit quantitative gap. Evidence: `RHTower.exists_polarConstrained_common_outerShift_norm`, `RHTower.ccmOuterShiftPair_opNorm_sq_bound`, and `RHTower.ccmOuterShiftPair_norm_lt_sum` in `CCMRestrictedWeilPrimeInterference`.
+
+- **Must combine the exact arithmetic and boundary terms before estimating constraint forces.** In the full Weil action on an exponential profile restricted to a finite interval, the radius, spatial ramp, and exponential main contributions cancel exactly. Pairing against a function with both exponential moments zero leaves only the logarithmic boundary term minus the genuine Chebyshev and reciprocal-prime errors. The reciprocal-prime error is uniformly bounded, but neither that bound nor positivity of the boundary term determines the pairing against a sign-changing function. Evidence: `RHTower.ccmRestrictedWeilOperator_polarPlus_coeFn` and `RHTower.inner_polarWeil_on_constrained_eq_boundaryArithmetic_integral` in `CCMRestrictedWeilPolarSourceCancellation`; `RHTower.abs_ccmReciprocalMangoldtError_le` in `CCMRestrictedWeilPrimePolarArithmeticAction`.
+
+- **Must retain boundary contributions created by restricting support.** Applying the actual Gamma operator to an exponential profile cut off at two endpoints produces a linear bulk term, a fixed constant, and two strictly positive logarithmic boundary tails. The complete integral is evaluated through an integrable core. Its equality to the physical operator is proved by absolute integrability against compact interior tests, Fubini, and smooth-test separation of locally integrable coefficients. Existing operator-domain membership supplies the global L² representative; no extra endpoint regularity is required. Evidence: `RHTower.ccmPolarGammaImage_coeFn` in `CCMRestrictedWeilGammaPolarAction`, supported by `CCMRestrictedWeilGammaMixedJump` and `CCMRestrictedWeilGammaPolarAbsoluteBound`.
+
+- **Cannot reject a Weil test solely because its cutoff has a jump.** Every real exponential restricted to a finite interval belongs to the actual unrestricted Weil operator domain. Its Fourier transform retains both endpoint terms, yet multiplication by the exact Gamma weight still gives an L² function. The full operator value is proved by representing its complete form pairing and adding the literal prime and pole terms; boundary discontinuity alone is therefore no domain obstruction. Evidence: `RHTower.memLp_ccmFormWeight_mul_fourier_polarVector` in `CCMRestrictedWeilPolarFourierRegularity`, and `RHTower.ccmPolarApertureVector_mem_weilOperator_domain`, `RHTower.ccmRestrictedWeilOperator_polar_apply` in `CCMRestrictedWeilPolarOperatorDomain`.
 
 ## Hard facts
 
@@ -36,7 +59,7 @@ HARD LOCK P — Positivity alone does not supply the missing arithmetic inequali
 
 F02 — Finite local exactness is nonselective. Arbitrary finite packets, jets, multiplicities, indices, Grams, KMS systems, homology, determinants, and recoveries coexist with off-line charge.
 
-F03 — Finite arithmetic syzygy route is closed. Every positive finite prime-valuation window is differentially independent; proved tail relations are explicit factorization/coface relations.
+F03 — Must distinguish identities between functions from relations at one point. Differential independence excludes nonzero polynomial identities in the functions and their derivatives over the stated coefficient field; it does not exclude a common zero. For a finite family analytic at `a` and differentially independent over a coefficient field containing `C(s)`, multiplying every function by `s-a` preserves that independence and makes every value at `a` zero. Thus independence of arithmetic function families cannot by itself retire a proposed relation forced only at a zeta zero. The finite-family gauge law is Lean-proved as `HTGeometry.differentialIndependent_mulBase_iff`; an actual zeta-dilation application is `AdjacentDilation.adjacentDilationGauge_differentialIndependent_over_zeta`. Any proposed relation at a zero still needs its own arithmetic proof.
 
 F04 — Source/receiver firewall. A construction can land exactly on Xi data while its final continuity, sign, descent, properness, or bound is still literally RH.
 
@@ -95,9 +118,15 @@ F20d — Cannot infer a complex location constraint from all prime-carry identit
 
 F20e — Must distinguish an infinite nonlinear history from its vanishing. In a complete real normed algebra with `‖1‖=1`, bounded real coefficient sums and a vanishing algebra-valued weight with summable successive differences force the chronological exponential product to converge to an invertible limit, without commutation between times (`ordered_exponential_converges_to_unit` in `HTGeometry/NoncommutativeAbelDevelopment`, Lean). Literal integer-deletion coefficients `1−p·1_(p divides n)`, `p≥1`, weighted by `n^(−s)`, satisfy these conditions for every `Re s>0` after any continuous real-linear map into that algebra; their limits respect continuous algebra homomorphisms (`eulerDeletionDevelopment_converges_to_unit`, `map_eulerDeletionDevelopmentLimit`). This constructs each separate exponential history without zero input; no identification with the raw discrete quasi-shuffle lift, cross-modulus coherence, identity limit, or critical-line selection is proved.
 
-F20f — Must distinguish control of every interaction depth from a relation between arithmetic histories. For each fixed modulus `p≥1` and `Re s>1/2`, the literal jumps `(1−p·1_(p divides n))n^(−s)` generate one operator-norm convergent history on bounded functions of all finite words, retaining every strict iterated word in their real/imaginary parts. A single cutoff controls all word lengths simultaneously; phase encoding is injective and its two letter actions do not commute (`ArithmeticWordHistory.all_word_lengths_uniform`, `phaseLetters_injective`, `letters_do_not_commute` in `EulerDeletionWordHistory`, Lean). This uses the actual discrete factors `1+L(jump)`, not replacement by exponentials. A zeta zero closes its first level (`zeta_zero_closes_first_level`); no higher-level vanishing, uniformity in modulus/exponent, or cross-modulus selection law is proved. In this construction, merely adding arbitrarily high interaction orders is no longer a missing existence theorem.
+F20f — Must distinguish control of every interaction depth from a relation between arithmetic histories. For each fixed modulus `p≥1` and `Re s>1/2`, the literal jumps `(1−p·1_(p divides n))n^(−s)` generate one operator-norm convergent history on bounded functions of all finite words, retaining every strict iterated word in their real/imaginary parts. A single cutoff controls all word lengths simultaneously; phase encoding is injective and its two letter actions do not commute (`ArithmeticWordHistory.all_word_lengths_uniform`, `phaseLetters_injective`, `letters_do_not_commute` in `EulerDeletionWordHistory`, Lean). This uses the actual discrete factors `1+L(jump)`, not replacement by exponentials. A zeta zero closes its first level (`zeta_zero_closes_first_level`); no higher-level vanishing or cross-modulus selection law is proved. F20h gives the exact scalar boundary for growing moduli. In this construction, merely adding arbitrarily high interaction orders is no longer a missing existence theorem.
 
 F20g — Must preserve movement of the source argument when transferring an arithmetic law. Literal integer carries `c_n(x)=floor(nx)−n floor(x)` have zero-or-one additive defects and `0≤c_n(x)≤n`, but obey `c_(mn)(x)=c_m(nx)+m c_n(x)`. The untwisted rule `c_(mn)=m c_n+n c_m` holds for all integer inputs iff `x` is an integer, when every carry is zero. Their quadratic lift retains the transported argument and weight `m²`; their exact phase family `exp(i t c_n(x))` has norm one at every scale. Thus this bounded-carry construction cannot supply a nonzero instance of F20b by freezing its argument or using bounded phase as a bound on the unwrapped response. This does not exclude transport-aware laws or identify `x` with a Xi parameter. Evidence: `carry_add_defect`, `carry_bounds`, `untwisted_leibniz_iff_integer`, `second_mul`, `phase_mul`, `norm_phase` in `IntegerCarryTransport` (namespace `HTGeometry.IntegerCarryTransport`, Lean).
+
+F20h — Cannot replace convergence for each integer modulus by one ordinary cutoff controlling all moduli in `0<Re s≤1`. For the literal prefixes `P_q(s,N)=sum_(1≤n≤N) (1−(q+1)·1_(q+1 divides n))n^(−s)`, uniform Cauchy tails over `q≤A(N)` exist exactly when `A(N)(N+1)^(−Re s)→0`, for every natural-valued budget `A`, without a monotonicity assumption. A deletion within the next block forces the matching lower bound; periodic Abel summation supplies the upper bound. The criterion holds independently of whether zeta vanishes and supplies no relation between completed histories. Evidence: `DeletionModulusBoundary.uniformTails_iff_budget_decay_critical` and `not_all_moduli_uniform` in `EulerDeletionGrowingModulus` (Lean); [proof and scope](../../3-formalized/not_new_scientific_knowledge/euler-deletion-growing-modulus-boundary.md).
+
+F20i — Must recompute a quotient at a vanishing scalar before using a description obtained by dividing that scalar away. Over any commutative ring R, the two-coordinate boundary generated by `(-c,cq)` and `(cq,-cq)` has quotient `R/(c) × R/(cq(q−1))`. At `c=0` its boundary is zero and both coordinates survive for every q. Therefore setting `c=ζ(ρ)=0` cannot select q through nonvanishing of this quotient. The conclusion concerns this literal construction; it is not a restriction on all homological approaches to RH. Evidence: `quotientEquiv`, `quotientZeroEquiv`, and `field_finrank_classification` in `DerivedSelectionGeometry.SourceScalarBoundary` (Lean); [proof and scope](../../3-formalized/not_new_scientific_knowledge/cyclic-source-nonunit-scalar-audit.md).
+
+F20j — Cannot infer uniform geometric coefficient control from formal invertibility of the literal arithmetic series. The series `F_s(z)=sum_(n≥1) (-1)^(n−1)n^(−s)z^n` has a two-sided formal compositional inverse for every complex s. Its third coefficient defect is `a3−a2²=3^(−s)−4^(−s)`, whose maximum over all imaginary parts at fixed real part sigma is exactly `3^(−sigma)+4^(−sigma)`. This maximum crosses one at a unique real cutoff strictly between 1/2 and 1, so the unit coefficient ceiling already fails at some points strictly right of the critical line. Formal inversion supplies no such ceiling and no zeta zero-location restriction. Evidence: `formalSeries_subst_inverse`, `formalInverse_subst_series`, `horizontal_unit_bound_iff`, and `exists_strict_half_strip_violation` in `AlternatingInverseCoefficientBoundary` (Lean); [proof and limits](../alternating-source-inverse-branch-intake.md).
 
 F21 — Execution/observation is lax in two independent places. Source histories can fail to splice; a later noninjective observer can create an additional false splice.
 
@@ -312,11 +341,18 @@ F116 — Geometry of incompatible cofinal directions is already present. Formati
 
 F117 — Additive/multiplicative half-density unitarity is already an exact selector interface. Normalized dilation becomes additive translation, the prime/Gamma source character has modulus one exactly at neutral horizontal grade, and fixed Gamma boundary is equivalent to Meyer-character unitarity on retained Xi copies. Existing ax+b, dilation/translation, and semilocal spectral constructions do not prove that Xi occurrence must enter this unitary sector.
 
-F118 — Countermodels isolate exact occurrence, not asymptotic density, as arithmetic information. An entire order-one, FE-symmetric, nonnegative generalized Euler system can have prescribed off-line zeros while differing from zeta in pole order; a Beurling system restores a simple pole and achieves `N(x) = rho*x + O(x^theta)` for every `theta > 0` while retaining arbitrary off-line zeros. The surviving literal distinction is which integers occur: `N(x) = floor x`, not its error scale (`EntireFunctionalEquationOffLine`, `BeurlingRegularIntegersOffLineZeros`).
+F118 — Must keep the model and its quantifiers fixed when applying a counterexample.
+Continuous positive prime and counting densities can share a rational zeta function with a
+nonreal zero at `2/3+i`, while one fixed counting function has an explicit quadratic logarithmic
+remainder, hence error smaller than every positive power of `x` (`BeurlingLogarithmicCounting`).
+The older arbitrary-zero construction chooses a different model for each error exponent and
+formalizes no counting bound (`BeurlingRegularIntegersOffLineZeros`). Neither construction asserts
+a discrete prime sequence or a functional equation. These examples test criteria sharing their
+full hypotheses; they do not force every RH proof to use exact integer occurrence or distributivity.
 
 F119 — Integral multiplicativity plus a nonvanishing strip completion factor still does not select. `GammaFECell` contains zeta, is closed under convolution by an integral multiplicative finite Dirichlet polynomial, and thereby contains `zeta*dzo` with a simple off-line zero. Exact coefficients `a_n = 1` distinguish zeta from that cell, but this coefficient identity names the literal source; it does not constrain the divisor.
 
-F120 — Additive and multiplicative readings separate at a Xi zero. Euler--Maclaurin additive data contains a nonempty local zero certificate while every pinned finite-prime source map, finite Euler atlas divisor, and multiplicative sigma jet is trivial there (`additive_carrier_multiplicative_source_mismatch_positive`). Divisor occurrence is therefore a joint-operation effect invisible to either finite multiplicative marginal alone.
+F120 — Additive and multiplicative readings separate at a Xi zero. Euler--Maclaurin additive data contains a nonempty local zero certificate while every pinned finite-prime source map, finite Euler atlas divisor, and multiplicative sigma jet is trivial there (`additive_carrier_multiplicative_source_mismatch_positive`). Those finite multiplicative local data do not reconstruct this additive zero certificate. The theorem does not require every RH proof to use a particular joint-operation architecture.
 
 F121 — Multiplicative ancestry first becomes visible in interaction order. A pure prime tone has
 zero cubic moment, while the multiplicatively forced prime-square harmonic gives a strictly
@@ -950,28 +986,30 @@ that narrows the literal source model class. Route equivalence, full-divisor agg
 completion, and properness can expose the exact missing proposition without supplying new evidence
 for it.
 
-MUST-40 — Any claimed radical reinterpretation must exhibit an unconditional narrowing of the
-pre-divisor literal-source model class. A new carrier, topology, limit order, unitary realization,
-or route dictionary without that narrowing is explanatory only.
+MUST-40 — A claimed proof advance must identify the exact previously unproved statement it
+establishes and its place in the proposed chain. New terminology, an equivalent formulation, or a
+new realization alone does not establish that statement. A speculative architecture may precede
+such a theorem, but must identify its missing links.
 
-MUST-41 — It must use exact occurrence/distributive structure of ordinary integers, not an
-asymptotic counting law or a multiplicative Dirichlet-series class. Known off-line countermodels
-match the latter shadows and fail only the literal source specification.
+MUST-41 — Must check that the same countermodel satisfies every hypothesis before excluding a
+proposed proof mechanism. A continuous example does not eliminate methods requiring discrete
+ordinary integers. Matching selected asymptotic estimates does not establish that exact integer
+occurrence or addition–multiplication distributivity is mandatory for all RH proofs.
 
-MUST-42 — It must expose a non-marginal invariant of the coupled additive-successor and
-multiplicative-prime-power histories. Finite prime marginals miss divisor occurrence, while cubic
-resonance proves that higher interaction can retain multiplicative ancestry; generic quotient
-positivity is unavailable.
+MUST-42 — A proposal claiming new information from combined arithmetic operations must exhibit
+what their joint use adds. Separate marginal identities do not by themselves prove a joint
+constraint. Existing finite-prime blindness and higher-interaction examples do not establish that
+every possible RH proof must use an additive-successor/prime-power history invariant.
 
 MUST-43 — Any decisive capacity must be nonhomogeneous under source-respecting rescaling, invariant
 under presentation by routes or replicas, and impossible to manufacture by matrix amplification or
 erase by balanced reflection. Its finite total budget must be proved from literal source formation,
 not assumed at the Xi divisor.
 
-MUST-44 — It must treat additive-successor and multiplicative-Dirichlet formation as distinct
-operations with a source-forced cross-effect. The decisive law must constrain the nonsummable
-balanced-wall interaction or its renormalization; direct sums, marginal positivity, and algebraic
-flatness are provably insufficient.
+MUST-44 — A proposal using interaction between additive and multiplicative constructions must
+prove the claimed interaction law for its actual arithmetic objects. Compatibility of separate
+models, marginal positivity, or a formal direct sum cannot substitute for that law. This is a
+requirement on such proposals, not a universal prescription for RH proof architecture.
 
 MUST-45 — A cross-effect selector must retain the two oriented legs and at least one asymmetric
 third incidence before codiagonal pairing. Any law depending only on the paired sum, total trace,
@@ -1090,9 +1128,10 @@ CANNOT-88 — It cannot obtain new selection by combining functional-equation in
 Wiener/C-star completion, positive representation, closed-loop holonomy, or two-sided power
 boundedness. Corpus already proves each rigidity implication; asserting Xi admission is RH-equivalent.
 
-MUST-63 — Next narrowing mechanism must operate in literal pre-divisor integer execution before
-choosing a completion: it must use non-marginal addition--multiplication distributivity and derive,
-not assume, any summation, continuity, positivity, boundedness, or descent property it needs.
+MUST-63 — Must derive every summation, continuity, positivity, boundedness, or passage-to-limit
+claim needed by the chosen proof, with its hypotheses satisfied by ordinary zeta. Countermodels
+for broader source classes do not require every new mechanism to use a prescribed integer
+execution, a particular pair of operations, or a fixed order of analytic completion.
 
 F163 — Categorical-dimension/integrality and singular multivalued-correspondence pivots are already
 represented. Integral centered monodromy is a wall receiver; closed relations can become fully
@@ -4947,9 +4986,97 @@ critical line if they already hold on an open region crossing it. For the litera
 `a_p(n)=1-p[p divides n]`, the products of `exp(n^(-s)*(a_2(n)X+a_3(n)Y))` converge to a
 unit for every `Re(s)>1/5` and arbitrary `X,Y` in a complete complex normed unital algebra.
 This includes noncommuting `X,Y` and every partial prefix, with no zeta-zero assumption.
+For one fixed explicit target, convergence on the positive real axis holds exactly above `1/5`.
 Any critical-line argument using this object must establish an additional relation derived
 from the zero condition; convergence alone supplies none.
-[Closed Lean convergence theorem](../../3-formalized/euler-deletion-joint-product-one-fifth.md).
+[Closed Lean convergence theorem](../../3-formalized/euler-deletion-joint-product-one-fifth.md) and
+[actual-product sharpness](../../3-formalized/euler-deletion-joint-product-sharpness.md).
+
+CANNOT-CM1 — Complete multiplicativity and exact finite arithmetic cancellation cannot by
+themselves force a sign for a quadratic observation. There are strictly positive functions on
+all positive integers, each satisfying `w(ab)=w(a)w(b)` and `w(1)=1`, with the same zero
+deletion sums for every divisor of thirty through the same cutoff, but opposite quadratic
+curvature signs. Opposite changes at two large prime values preserve those linear sums
+exactly. Every scalar observation of these examples is controlled by its values at just three
+weights and a shorter coefficient sum. This finite obstruction does not cover the literal
+infinite weights `n^(-s)`; using their extra structure requires a separate proved relation.
+[Exact classification and unconditional Lean countermodels](../../3-formalized/euler-deletion-paired-prime-freedom.md).
+
+MUST-ATT1 — A change of arithmetic weights must preserve convergence of the original ordered
+series before its analytic continuation can be used as a countermodel for that series.
+Multiplying the weight at `p^k*m`, with `p` prime and `p` not dividing `m`, by `c^k` for
+`0<c<1` preserves positivity and complete multiplicativity. Yet the unchanged deletion
+coefficient `1-p[p divides n]` then gives a divergent ordinary series at every `Re(s)<1`.
+The unique bounded-prefix repair replaces the multiplier `p` by `p/c`; it recovers
+convergence for `Re(s)>0` but changes the source operation. Any curvature or compatibility
+comparison using that repair must account for the changed coefficient.
+[Exact digit remainder, normalization classification, and Lean admission theorem](../../3-formalized/euler-deletion-prime-attenuation-admission.md).
+
+MUST-ATT2 — A proposed reduction of an arithmetic obstruction must include the normalization
+needed to keep the changed source meaningful. Smaller input weights alone do not ensure a
+smaller obstruction: reciprocal changes in the coefficients can cancel that reduction exactly.
+In the proved deletion example, compensating a prime attenuation preserves the entire sign
+boundary of the quadratic obstruction. If the first two test weights stay one, the obstruction
+divided by total mass is exactly unchanged, even as the third and other prime weights vary.
+This repair therefore requires a different proved identity or observable; shrinking the inputs
+and reusing the old comparison cannot supply one. This restriction concerns the specified
+repair, not every possible arithmetic deformation.
+[Actual infinite-sum identity, full sign boundary, and Lean certificate](../../3-formalized/euler-deletion-compatible-curvature.md).
+
+CANNOT-LIN1 — A different description of the same linear generators cannot bypass the open
+approximation problem of a classical RH route. The first `N` terms of `1-p*[p divides n]`
+sum to `N mod p`; division by `p` gives the published fractional-part sequence `fract(N/p)`.
+Consequently all finite linear combinations, and their closures in the same carrier, agree
+after an explicit coefficient rescaling. Increasing the family of moduli or calling the sums
+arithmetic histories does not change this identification. A departure from this classical
+route must use an additional proved operation or constraint; linear completion alone does
+not supply it. This says nothing against nonlinear chronological information that is actually
+retained and independently connected to the zero condition.
+[Exact source dictionary, Lean certificate, and primary literature](../../3-formalized/euler-deletion-linear-span-audit.md).
+
+MUST-AREA1 — A rank constraint must concern the actual accumulated quantity, not a different
+object with similar notation. The alternating product of two endpoint vectors has rank at most
+two. An ordered area instead adds alternating products from many pairs of times, so that
+endpoint identity supplies no rank bound for it. In the literal arithmetic deletion paths,
+remote calculations at three approximate zeta zeros strongly disfavor the proposed rank-two
+area law. These are numerical diagnostics, not certified infinite counterexamples. A replacement
+must provide an independent identity for the weighted ordered sums; rescaling channels or
+quoting unweighted period cancellation supplies none.
+[Exact candidate, scope of the second pass, and downloaded computation report](../euler-deletion-mixed-area-rank.md).
+
+MUST-SURG1 — An obstruction to one way of inserting zeros must not be used to prohibit every
+function with the resulting zero set. Multiplying a nonzero ordinary Dirichlet series by a specified
+nonconstant polynomial leaves that class, but an additional analytic factor with no zeros can
+change this conclusion. Lean verifies an ordinary Dirichlet series with unimodular completely
+multiplicative coefficients whose continued divisor has just one simple zero at `3/4+i`.
+Consequently Dirichlet-series membership and coefficient multiplicativity alone do not prohibit
+finite divisors or off-line zeros. A proof concerning the literal zeta coefficients needs an
+additional proved constraint. This correction does not impose a functional equation on the
+counterexample and does not assert that arbitrary surgery preserves zeta's other properties.
+[Exact scope correction and unconditional Lean witness](../dirichlet-polynomial-surgery-scope-audit.md).
+
+MUST-PREFIX1 — A finite exact coefficient prefix needs a proved constraint on the unseen
+coefficients before it can exclude off-line zeros. For every cutoff `N`, Lean constructs a
+globally completely multiplicative coefficient sequence of unit modulus, equal to one at
+every integer from one through `N`, whose ordinary Dirichlet series has a meromorphic
+continuation with one simple zero at `3/4+i` and no other divisor in `Re(s)>0`.
+The function can change with `N`; this does not give one counterexample agreeing with all
+zeta coefficients at once. No functional equation is imposed. Thus even exact finite
+agreement plus those global properties cannot supply the missing constraint. A verified
+tail bound or a theorem using the full literal sequence remains outside this obstruction.
+[Exact construction, scope, and proof status](../../3-formalized/not_new_scientific_knowledge/helson-finite-prefix-zero-freedom.md).
+
+MUST-TAIL1 — Controlling coefficients must come with a proved control of their continued
+function before passing to a limit after continuation. Strictly positive completely multiplicative
+coefficients, bounded by one and agreeing with arbitrarily long exact zeta prefixes, can
+converge to the all-one sequence in every weighted square distance
+`sum |a_n-1|^2/n^(2 sigma)`, `sigma>1/2`, while their ordinary Dirichlet series continue to
+zero-free analytic functions on `Re(s)>0` and fail to converge to zeta at every real point in
+`(0,1)`. Thus these coefficient controls do not justify interchanging continuation and limits.
+The failure occurs at regular, nonzero values of zeta and cannot alone distinguish its zeros.
+No functional equation is imposed on these approximants; stronger arithmetic control is outside
+this obstruction.
+[Exact construction and closed Lean proof](../../3-formalized/not_new_scientific_knowledge/positive-prime-tail-translation.md).
 
 CANNOT-AFF1 — Applying an arbitrary nonlinear rule to finitely many fixed congruence tests of
 `a*n+b` cannot escape periodic coefficients: the result depends only on `n` modulo the product
@@ -4996,4 +5123,10 @@ F682 — [Lean] The `λ = 0` twin and the low blocks (`ZetaGateFromDyadicMeanSqu
 ## MUST-215 (2026-09-05)
 MUST: prove `RHTower.SharpEnergyInput C` for some explicit `C` (`HighBlockParameters.lean`): the sharp-cutoff critical mollified energy against the displaced gate mollifier `b_d(m) = μ(m) log(N/m)/log N · m^{−1/2+d}` is bounded uniformly in the head length `u < ⌈a^{51/100}⌉`, in `0 < d ≤ 1/4`, and in `1 ≤ a ≤ U`, for all large `U` (`N = ⌊U^{1/20}⌋`). With it, `RHTower.exists_zetaDyadicMeanSquareLaw_of_sharpEnergyInput` gives `ZetaDyadicMeanSquareLaw R c` and hence the `ζΨ` gate of the single-input `(L)` constant. This is Graham/Barban–Vehov uniformity in upper-bound form with the `m^{d}` weight; the corpus bound `sum_harmonic_sq_barbanVehovCoeff_le` carries an `M² log³ M` defect and does not suffice.
 
-CANNOT-320 — The mean square of a mollified half of the approximate functional equation cannot be bounded independently of the mollifier length. With a Barban–Vehov mollifier of length `N` and any head cutoff (sharp or smooth), the coefficient energy is `≍ log N`, because the diagonal kernel `log min(m₁,m₂)` carries a sharp cutoff whose Selberg diagonalisation is bounded below by a Dress–Iwaniec–Tenenbaum constant; only the full sum with the reflected half and the cross term is `O(1)`. Splitting the second moment into direct, dual and cross pieces and bounding each in absolute value therefore loses a factor `log N`; the bounded constant needs the product functional equation (twisted second moment). Paper proof on `1-in-progress/high-block-dyadic-law-session-b.md` (2026-09-05 audit entry); the literal Lean hypothesis `RHTower.SharpEnergyInput C` (`HighBlockParameters.lean`) is false for every `C` by the head of length one alone.
+CANNOT-320 — The mean square of a mollified half of the approximate functional equation cannot be bounded independently of the mollifier length. With a Barban–Vehov mollifier of length `N` and any head cutoff, sharp or smooth, the coefficient energy of the mollified half-sum is `≍ log N`: the diagonal kernel `log min(m₁,m₂)` carries a sharp cutoff whose Selberg diagonalisation is bounded below by the Dress–Iwaniec–Tenenbaum constant `lim Σ_{d,e≤y} μ(d)μ(e)/[d,e] > 0`. Only the full sum of the two halves and the cross term is `O(1)`; splitting the second moment into direct, dual and cross pieces and bounding each in absolute value loses a factor `log N`. A bounded constant needs the product functional equation (twisted second moment).
+
+## 2026-09-06 — degree-four Jensen certificates
+
+CANNOT-321 — A quartic Jensen polynomial cannot be certified from independent bounds on the three dispersions `D_l = m(n+l)m(n+l+2)/m(n+l+1)² − 1` of its five moments. Along the equal-dispersion (log-normal) diagonal the tolerance is `≍ 1/b`, `b = n + ½`, and the exact log-normal reference is a rescaled Hermite quartic hyperbolic for every `D·b < 1`; transverse to the diagonal (a change of `D_{n+1}` alone, equivalently of the second difference `D₀ − 2D₁ + D₂`) the tolerance is `≍ 1/b²`, because the individual perturbation terms at `z = −b` are `≍ b⁴|ε|` against a reference value `≍ b²` and only the correlated log-normal structure cancels them. Any box sandwich on the moment ratios is therefore useless at degree four, and the previously recorded diagonal tolerance `2/(3b)` was an artefact of a dropped same-order term.
+
+MUST-224 — A dispersion certificate of degree-four Jensen hyperbolicity for `Ξ` must supply two-sided control of the size-biased theta dispersions with relative precision `O(1/n)`: bounds `Var(log s)·b ≤ 1/2`, `|κ₃(log s)| ≲ b^{−3/2}`, `|κ₄(log s)| ≲ b^{−2}` for the tilted measures `x^{2κ}Φ(x)dx` at real tilts `κ ≥ n`. Curvature-infimum bounds cannot deliver this precision (in the logarithmic variable the curvature infimum is zero); the estimates must be localised at the tilted mode. With these inputs and `b ≥ 2000` the quartic is hyperbolic (Lean, sign alternation at five explicit points).

@@ -85,7 +85,7 @@ For each no-go family, record:
 
 | Mechanism family | Positive residue | Disposition |
 |---|---|---|
-| `DirichletRigidity.no_polynomial_surgery` | Ordinary Dirichlet-series membership is rigid under multiplication by a nonconstant polynomial; finite divisor surgery leaves the class. | `[NOVELTY UNVERIFIED]` as an exact statement, but likely a routine consequence of first-coefficient asymptotics; significance gate currently fails. |
+| `RHTower.no_polynomial_surgery` | Multiplication by a specified nonconstant polynomial leaves the ordinary Dirichlet-series class. This does not exclude finite divisor changes with an additional nonvanishing factor or imply class-level zero rigidity. | Routine first-coefficient asymptotics; no new mechanism. See the [scope correction](dirichlet-polynomial-surgery-scope-audit.md) and the existing prescribed-divisor Helson theorem. |
 | `FESchwarzGermGluingTrivialization` | Scalar gluing data are classified up to gauge solely by fixed versus free orbit shape. | `[SEARCH]` / `[BRIDGE]` via rank-one Hilbert 90 and a flat scalar square. |
 | `QuadrantRamifiedCover` | Equivariant ramification data descend to the orbit quotient and are constant on each orbit. | `[SEARCH]`; standard orbit descent. |
 | `SeamVerticalDecay.xi_antiholo_axis_eq_half` | The critical line is the unique vertical anti-holomorphic symmetry axis of xi. | `[BRIDGE]`; follows from the known axis plus nonperiodicity, so it is not a new mechanism. |

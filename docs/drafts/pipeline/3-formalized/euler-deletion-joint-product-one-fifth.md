@@ -1,7 +1,8 @@
 # Literal joint deletion product above one fifth
 
 **Stage:** 3-formalized for actual moduli two and three. **RH implication:** none.
-**Novelty:** not certified. General coprime moduli and sharpness remain separate obligations.
+**Novelty:** not certified. General coprime moduli remain a separate obligation;
+[fixed-target sharpness](euler-deletion-joint-product-sharpness.md) is now Lean-closed.
 
 For `a_p(n)=1-p[p divides n]`, arbitrary `X,Y` in any complete complex normed unital
 algebra, and every complex `s` with `Re(s)>1/5`, Lean proves that
@@ -31,5 +32,5 @@ The module is wired into its umbrella; no umbrella build ran. Repository-wide
 `scripts/formal_tools.py lint` passed. No numerical computation or external certificate was used.
 
 Convergence on a region crossing the critical line is not a critical-line selector. The
-[paper theorem](../2-fully-proven/euler-deletion-joint-product-one-fifth.md) also gives a fixed
-sharpness witness and a general coprime-modulus extension; those parts are not yet Lean-closed.
+[paper theorem](../2-fully-proven/euler-deletion-joint-product-one-fifth.md) also gives the now-formalized
+fixed sharpness witness and a general coprime-modulus extension. Only the latter remains paper-only.

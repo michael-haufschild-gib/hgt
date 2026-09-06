@@ -1636,3 +1636,15 @@ That transfer is the only thing in this card that is neither built nor known, an
 - [x] fourth-order source Turán `160 < (log Φ)⁗ + 4((log Φ)″)²`: **corpus, unconditional**
 - [ ] transfer: source-side order-four inequality ⟹ `J^(4,n)` hyperbolic — the actual open step
 - [ ] `κ*(b)` rigorous (§15) — still the algebra that would consume such a transfer
+
+## 23. Correction to §15.3 (2026-09-06): `κ*(b) = 1/(2b)`, not `2/(3b)`
+
+§15.3's expansion `A(−b(1+δ)) = δ⁴ − (6/b)(1+δ)²δ² + O(b⁻²)` drops the `+3/b²` term of §14.2's own
+`δ⁴ − 6δ²/b + 3/b²`, which is of the same order as the two it keeps at `δ ≍ b^{−1/2}`; the critical points
+`w = 1 ± √(2/b)` and the value `2/(3b)` are artefacts of that omission. Exactly, `(b)₄·A(−b) = 3b² − 18b`, and
+in the variable `δ = t/√b` the leading-order perturbed quartic is `He₄(t) + 6K·He₂(t) = t⁴ − 6(1−K)t² +
+3(1−2K)`, `K = κb`, which is hyperbolic iff `K ≤ 1/2` (inner roots collide at `z = −b`). Hence
+`κ*(b) = 1/(2b)(1 + O(b^{−1/2}))`, and §15.4's "`n ≥ 5`" becomes `u_n ≥ 3/2`, i.e. `n ≳ 90` at leading
+order. The general law is `He_d + (K/2)He_d''` with threshold `K*(d) = 1/⌊d/2⌋`. Successor card:
+`jensen-quartic-dispersion-transfer.md`, which also records that the transfer is anisotropic (transverse
+tolerance `≍ 1/b²`), so §18's box sandwich cannot be used and a two-sided dispersion bound is required.

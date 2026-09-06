@@ -1,6 +1,6 @@
 # Mixed Euler-deletion polygon: first surviving polynomial moment
 
-**Stage:** finite arithmetic identity and full moduli-two-and-three convergence formalized; sharpness and general-pair convergence have paper proofs.
+**Stage:** finite arithmetic identity and sharp moduli-two-and-three convergence formalized; general-pair convergence remains paper-only.
 **RH status:** no implication. **Novelty:** arithmetic specialization unverified; generic ancestry published.
 This is an arithmetic source-construction test, not a qualifying proof architecture yet.
 
@@ -164,7 +164,7 @@ to a unit for the joint product in every complete complex normed algebra when `R
 It includes a summable error estimate for the actual varying weights, all partial prefixes,
 and a fixed finite-dimensional truncated-algebra witness of divergence for real `0<s<=1/5`.
 For actual moduli two and three, the full convergence assertion is now Lean-closed. The
-remaining general-pair extension and sharpness assertion are still paper-only. Convergence is
+remaining general-pair extension is still paper-only; sharpness for the fixed two-and-three target is Lean-closed. Convergence is
 nonselective with respect to zeta zeros; no RH implication has appeared.
 
 `EulerDeletionJointExponentialRemainder` proves the actual six-factor derivatives vanish through
@@ -173,6 +173,9 @@ error for the actual varying weights, convergence to a unit, exact regrouping, a
 of every partial prefix. Both scratches and their axiom audits passed, followed by successful
 narrow leaf builds. The generic ring cancellation uses no commutation hypothesis.
 
-The exact next obligation is the fixed sharpness witness, with actual varying weights controlled
-also at the boundary. General coprime-modulus convergence remains a separate paper-to-Lean
-obligation. Neither convergence nor its sharpness supplies the missing zero-specific relation.
+`EulerDeletionJointNilpotentWitness` proves the fixed six-coordinate block is exactly
+`1-(z^5/60)E_05`. `EulerDeletionJointProductSharpness` controls the actual varying weights
+and proves convergence in that target, on the positive real axis, exactly when `s>1/5`.
+Both modules passed scratch, axiom, and narrow build audits. General coprime-modulus convergence
+remains a paper-to-Lean obligation. Neither convergence nor its sharpness supplies the missing
+zero-specific relation. That relation is the next research gate for the RH candidate.

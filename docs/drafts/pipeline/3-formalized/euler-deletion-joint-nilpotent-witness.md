@@ -24,9 +24,9 @@ audits report only `propext`, `Classical.choice`, and `Quot.sound`. Production m
 the audited scratch body. The narrow final
 `lake build GaloisForLFunctions.RHTower.EulerDeletionJointNilpotentWitness` passed.
 The umbrella import is wired; no umbrella build ran. No numerical experiment or external
-certificate was used. Repository-wide lint will be rerun with the continuing sharpness module.
+certificate was used. Repository-wide `scripts/formal_tools.py lint` passed after the sharpness module was added.
 
 These finite identities alone do not prove divergence of the original varying-weight product.
 The [exact paper proof](../2-fully-proven/euler-deletion-joint-product-one-fifth.md) removes
 this coordinate, proves the remaining block errors summable, and derives actual-product
-divergence. Formalization of that last argument remains in progress.
+divergence. That argument is now [Lean-closed](euler-deletion-joint-product-sharpness.md).

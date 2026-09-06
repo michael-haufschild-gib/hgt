@@ -1,6 +1,6 @@
 # Monotone coalescence and sparse pairing probes
 
-**Status:** dependency-closed paper proof below; Lean formalization pending. Corpus searches for `multiaffine` found no declarations; ordered-simplex hits concern integration. No priority claim is established. Affinity in one variable and convexity of its absolute value are classical mechanisms.
+**Status:** pointwise coalescence is now formalized and audited in Lean, including preservation of every initially zero gap. The physical section, strong deformation retraction, diamond homeomorphism, and exact readout loss are now formalized and audited. The full cubic norm formula, product unit ball, norm laws, and physical maximum attainment are now formalized and audited in CubicPairings, CubicArcNorm, CubicNorm, and CubicNormLaws (51 declarations). Corpus searches for `multiaffine` found no declarations; ordered-simplex hits concern integration. No priority claim is established. Affinity in one variable and convexity of its absolute value are classical mechanisms.
 
 ## Pointwise coalescence theorem
 
@@ -55,7 +55,7 @@ we obtain the exact formula
 
 The maxima of xy² and x²y on x+y=1 are 4/27, attained at (1/3,2/3) or its reverse; xy has maximum 1/4. These follow by one-variable differentiation or elementary factorization. All four faces are actual monotone probes, proving both inequalities in the displayed capacity formula. The entire monotone unit ball is therefore the product of the two-dimensional J-ball and three intervals. J is a norm: evaluation at t=1 forces E=0 in its kernel, and then t=1/3 forces A=0.
 
-The coalescence theorem and the formula remain to be formalized. Explicit case formulas for the scalar maximum J, and the signed five-generator capacity, are further work.
+The coalescence theorem and full capacity formula are formalized. Explicit case formulas for the scalar maximum J and the signed five-generator capacity remain open here.
 
 ## A norming complex that retracts to a ring
 
@@ -74,12 +74,12 @@ The endpoint subcomplex is a four-edge cycle. The map `(g₀,g₁,0,g₃,g₄)�
 
 This retraction preserves the B,C,D observations and annihilates the A,E observations at t=1. Indeed, whenever g₂ is positive the adjacent coordinates g₁,g₃ vanish; when g₂=0 the retraction fixes the point. The retained norm is precisely the three-interval factor above, and the lost observation space is exactly the two-dimensional J-factor, whose curved boundary was already identified in the earlier work.
 
-This gives a concrete limitation of topology as a proxy for observation: the homotopy-equivalent cycle loses an entire normed subspace. The positive survivor is the exact norm decomposition and the explicit lost subspace. The unit norm ball itself remains convex; it is the sparse probe complex that retracts to a ring. The retraction and observation decomposition have complete paper proofs here, but no Lean proofs yet. The intermediate maps H_t need not preserve the five-dimensional observation space, so no such stronger claim is made.
+This gives a concrete limitation of topology as a proxy for observation: the homotopy-equivalent cycle loses an entire normed subspace. The positive survivor is the exact norm decomposition and the explicit lost subspace. The unit norm ball itself remains convex; it is the sparse probe complex that retracts to a ring. CubicRetraction, CubicDiamond, and CubicObservation now prove the actual homotopy, homeomorphism, and exact readout restriction kernel. The intermediate maps H_t need not preserve the five-dimensional observation space, so no such stronger claim is made.
 
 ## Exact Lean target
 
-**Formalized dependencies:** `EndpointAffinity.lean` proves the arbitrary-gap endpoint/window bridge and endpoint-update affinity by isolating the unique incident chord. `GapTransfer.lean` proves that adjacent transfers move only their shared endpoint, hence are affine for every pairing family. Both endpoint merges preserve the sum of gaps and kill the designated gap. Both final leaf builds and all 28 declaration axiom audits passed.
+**Formalized:** `EndpointAffinity.lean` proves the arbitrary-gap bridge and endpoint-update affinity. `GapTransfer.lean` proves adjacent transfer identities. `MonotoneMerge.lean` proves nonnegativity, variation preservation, strict support reduction, and a response-improving merge choice. `Coalescence.lean` iterates by strong induction and proves the support bound. All four final leaf builds and 39 declaration axiom audits passed.
 
-Next prove variation and nonnegativity preservation and decrease `activeGapCount` when both merged entries are nonzero. Finite induction on that count produces separated support. The implementation may retain the existing terminal unused gap coordinate: a path of 2d gap coordinates still has independent-set size at most d. For the topological spectrum, explicitly preserve a zero terminal gap and use the 2d−1 physical-gap complex; the two complexes have different topology and are not interchangeable.
+SparseCapacity and UnitCapacity now identify the exact supremum on the physical sparse cone and on its unit section. CubicFaces and CubicRealization now prove the actual face classification; CubicNorm proves the exact five-generator norm formula. The implementation retains a terminal unused coordinate and proves that every initially zero coordinate stays zero. The topological spectrum must use the 2d−1 physical-gap complex, rather than the 2d-coordinate auxiliary complex; their topology differs. Terminal-gap deletion and the supremum bridges now formalize this distinction.
 
 Keep general pointwise coalescence separate from maximum attainment and the cubic face classification. No computation is needed for this proof.

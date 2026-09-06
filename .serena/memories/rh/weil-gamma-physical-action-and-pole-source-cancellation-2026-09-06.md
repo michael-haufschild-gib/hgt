@@ -1,0 +1,29 @@
+# Actual Gamma physical image and full pole-source cancellation
+
+RH goal remains ACTIVE and UNPROVED. Full chain: exact prime–Gamma action → signed control of constrained ground forcing → exclude unique possible zero ground → all finite-aperture positive floors → weighted pole exclusion → RH. Physical action and exact cancellation are now closed; the signed comparison remains open.
+
+## Four new leaves, 14 public theorems
+- `RHTower.CCMRestrictedWeilGammaMixedJump`: 5. Complex four-term polarization upgrades actual quadratic Gamma energy to absolutely integrable mixed pairing for all complete form-domain u,v. Integral rho(h)<U_h Ju-Ju,U_h Jv-Jv> = <u,v>form-<Ju,Jv>L2. Translation unitarity/adjoint compression gives actual compressed symmetric-jump pairing.
+- `RHTower.CCMRestrictedWeilGammaPolarAbsoluteBound`: 2. J(R,L,h)≥-1_(0,R](h), h>0. Thus ∫|J|≤∫C+R+B for positive R,L. Full jump with t=e^(-h/2) is -(1-t)/[(1+t)(1+t²)]≥-1; h>R gives nonnegative jump.
+- `RHTower.CCMRestrictedWeilGammaPolarAction`: 2, 1 definition. `ccmPolarGammaImage` is actual compressed weighted Fourier representative plus normalization scalar. `ccmPolarGammaImage_coeFn`: A_a p+ = cutoff exp(x/2)[-(a-x)-EulerGamma-log(2pi)+B(a-x,a+x)] AE. `ccmRestrictedWeilOperator_polarHalf_eq_gamma_polar_prime` gives actual unrestricted H p+=GammaImage+polarOp p+-primeOp p+; actual domain membership comes from previous operator-domain leaf.
+- `RHTower.CCMRestrictedWeilPolarSourceCancellation`: 5, 2 definitions. Opposite slope cross-Gram inner(p_-s,p_s)=2a for every real s. Rank-two polarOp p+=2a p++2sinh(a)p-. Actual `ccmRestrictedWeilOperator_polarPlus_coeFn`:
+  H p+ = p+[kappa+B-Epsi(exp(a-x))-EM(a+x)]-exp(-a)p-, kappa=-EulerGamma-log(2pi).
+  `ccmPolarBoundaryArithmeticProfile` is exp(x/2)[B-Epsi-EM]. `ccmPolarWeilBoundaryDefect` removes kappa p+ and adds exp(-a)p- from actual H p+; its AE coefficient is the cutoff profile. `inner_polarWeil_on_constrained_eq_boundaryArithmetic_integral` identifies <H p+,f> with ∫cutoffProfile*f for EVERY completed constrained form vector. The genuine two L² representatives supply product integrability.
+
+## Successful proof pivot
+Do not require global candidate logarithmic-profile L² before operator identification: actual pole domain membership already supplies an L² representative. Absolute J bound and bounded continuous endpoint tails on compact strict-interior test support give jointly measurable absolutely integrable (h,x) test kernel. Fubini plus complete mixed-form identity identifies all smooth real test pairings. Both actual coefficient and proposed profile are locally integrable in open aperture. `isOpen_Ioo.ae_eq_zero_of_integral_contDiff_smul_eq_zero` identifies them there; support and null endpoints finish global AE equality. Restore 2 phase(0)=Re digamma(1/4)-log pi. This closes the physical identification left open in `mem:rh/weil-gamma-polar-boundary-and-operator-domain-2026-09-06`.
+
+## Exact cancellation
+Prior prime leaf gives Pp+=exp(x/2)[psi(exp(a-x))+M(exp(a+x))], all prime powers retained. EM(t)=M(exp t)-t, |EM|≤log4+5 for t≥0. Use exp(x/2)exp(a-x)=exp(a)exp(-x/2), 2sinh(a)-exp(a)=-exp(-a), and -(a-x)+2a-(a+x)=0. No estimates precede cancellation. Positive B alone cannot sign pairing against a constrained, sign-changing ground.
+
+## Next concrete work
+Extract forcing scalar using source integral and exact Gram entries in ground equation Hf=mu0 f+c(p++p-) or c(p+-p-). Need actual joint boundary/arithmetic comparison on same ground to exclude zero energy. No vanishing coefficient, sign, parity selection, or RH may be assumed. Search corpus before new conjectures. Active card `docs/drafts/pipeline/1-in-progress/weil-gamma-pole-boundary-action.md` now retains SIGNED control only. Formal card `3-formalized/weil-gamma-physical-action-and-pole-source-cancellation.md`. Frontier O and universal STATUS updated as current state.
+
+## Audits
+All four named leaf builds PASS (foreground, one at a time), all wired RHTower. Scratch `/tmp/hgt-gamma-mixed.f4pHe7EZ/`; FinalAudit.lean prints all14 axioms exactly [propext, Classical.choice, Quot.sound], plus actual mathlib RH. No experiment or oracle. Final whole `python3 scripts/formal_tools.py lint` PASS in FinalLintRepaired.txt/.err, only existing size warnings. git diff --check PASS. Own processes terminal; no full/umbrella builds or commit.
+
+## Secondary gate repair
+Initial lint failed on unrelated existing ThetaTiltLogDensity untracked/unwired leaf. It had 2 Lean bound errors: differentiable_iteratedDeriv1 requires strict bound (fixed by simp); continuous_iteratedDeriv2 requires WithTop.coe_le_coe.mpr (le_top : (2:ℕ∞)≤⊤). Fixed only those bodies, wired RHTower, named leaf build PASS. ThetaRepairAudit.lean: all16 existing public theorems standard three axioms. Previous other-task lint failure snapshots are superseded by current global PASS. Source belongs to other ongoing theta work; no new mathematical ownership claim.
+
+## Lean cautions
+Explicit `(𝕜:=ℂ)` needed for inner_self_eq_norm_sq_to_K here. Congruent displayed norm instances may require `convert congrArg (fun r:ℝ => (r:ℂ)) normSquaredLemma using 1; simp only [Complex.ofReal_pow]; rfl` instead of exact_mod_cast. Annotate FULL sums/differences `:SoninL2` before function coercion; otherwise Lean infers pointwise sums. `lintegral_ofReal_ne_top_iff_integrable` is MeasureTheory, not ENNReal. Use explicit measures for local integrability. Need explicit ite measurability and `integral_integral_swap (f:=...)`. Avoid broad simp on real exp/log inside complex conjugation; exact `simp only [starRingEnd_self_apply, profileDef, Complex.conj_ofReal]` works. Serena symbol retrieval ignores formal files, so narrowly read/checked file edits were necessary for secondary repair.

@@ -6,21 +6,18 @@
 - **Source:** `scripts/formal_tools.py research`; current frontier map; audited Lean declarations; primary literature.
 - **Statement:** Find a source-derived operation whose exact arithmetic constraints can distinguish horizontal displacement without importing an RH-equivalent estimate or selecting the desired zeros in its definition.
 
-**Current result: NO QUALIFYING NOVEL RH ARCHITECTURE VERIFIED.** One unusual concrete successor is
-now formalized: multiplicative factorization curvature of the Mellin grade defect. Ordinary
-additive depth-three rebracketing is exactly flat, but composing the moduli themselves leaves
+**Current result: NO QUALIFYING NOVEL RH ARCHITECTURE VERIFIED.** The intended chain is a literal
+arithmetic construction, a new relation forced by a zeta zero, and an independently proved
+incompatibility of that relation with an off-line zero. The last two links remain missing.
 
-`K_alpha(P,Q,R)=D_alpha(P,Q)+D_alpha(PQ,R)-D_alpha(Q,R)-D_alpha(P,QR)`
-
-`=Z(alpha)(Q Q^(-alpha))(1-P P^(-alpha))(Q-1)(1-R^(2-alpha))`.
-
-For pairwise-coprime `P,Q,R>1` and `alpha>1`, this curvature is negative on `1<alpha<2`, zero
-exactly at `alpha=2`, and positive above `2`. Hence `K_(2 Re(rho))<0` for every hypothetical
-right-half critical-strip zero. Its natural central lift of modulus multiplication has associator
-exactly `K` and is therefore provably nonassociative in that chamber. Tree equality cannot be
-borrowed from associativity of integer multiplication. This is only a signed source invariant: no
-theorem yet derives `K=0` from zero closure. That zero-fibre annihilation is the next kill gate.
-There is no RH implication or global novelty certificate.
+The earlier multiplicative curvature is a proved source invariant, but its unrestricted
+annihilation at zeros is false: the continued ordered charge is nonzero even at genuine
+critical-line zeros. A proposed restriction to the strict right half-plane would still need
+its own arithmetic proof. Finite endpoint closure, complete multiplicativity, compatible
+attenuation, and linear completion have not supplied it. The later mixed-area rank proposal
+is numerically disfavored, without a certified infinite counterexample. No successor has
+passed both the source and novelty gates. The chronological account below retains earlier
+conjectures for reference; their provisional wording does not supersede these outcomes.
 
 ## Binding research scope
 
@@ -46,8 +43,11 @@ Search the full indexed corpus, including the non-RH theorem areas. Ranked searc
   polynomial one-form of coefficient degree at most three integrates to zero. Nevertheless
   `integral x*y^3 dx=P(P-1)Q(Q-1)(Q-2)/120`; the moduli-2-and-3 value is `1/10`.
   Lean proves the general formula from the actual source, not an assigned scalar invariant.
-  Standard polynomial-moment/signature machinery is published. The proposed joint weighted
-  exponential product still lacks its infinite-norm and zero-specific arithmetic theorems.
+  Standard polynomial-moment/signature machinery is published. Lean now constructs the actual
+  two-and-three joint exponential product in every complete complex normed unital algebra for
+  `Re(s)>1/5`, including every prefix and a unit limit. A fixed six-coordinate target has exact
+  positive-real convergence boundary `1/5`; its actual varying-weight sharpness proof is closed.
+  The zero-specific arithmetic relation remains missing. Convergence cannot select the critical line.
   [Exact construction, formal certificate, and ancestry audit](euler-deletion-joint-polygon-moment.md).
 
 - **Adjacent nonperiodic digital extension rejected:** the published Thue–Morse two-column zeta
@@ -94,6 +94,37 @@ Search the full indexed corpus, including the non-RH theorem areas. Ranked searc
 - Noncommutative ordered exponential development exists for every deletion channel on `Re(s)>0`. Its commutative shadow is exactly the exponential of the mapped scalar deletion prefix, hence equals the unit at every positive-half-plane zeta zero. Any remaining information must live beyond commutative observation; ordinary scalar or commutative development is exhausted.
 - A concurrent corpus module, `EulerDeletionDirichletGram.lean`, computes the absolutely convergent source Gram law and coprime centered orthogonality. This confirms that pointwise covariance is standard `lcm` arithmetic; it cannot replace chronological carry or supply QSR.
 
+## Transfer gate after the joint-product theorem
+
+The completed two-modulus product and its exact one-fifth boundary establish an arithmetic
+object with higher interaction information. They do not establish a relation forced by a zeta
+zero. A usable successor must specify that relation on the literal weighted object and prove
+it from zero data; an abstract theorem accepting the desired relation as a hypothesis does
+not supply the missing step.
+
+Three further corpus mechanisms were checked in their definitions and proof bodies:
+
+- `ConstitutiveCentralAdmissionExchange.compensatorAdmitted_iff_carrierClosed` equates closure
+  under a corrected operation with the correction lying in a supplied quotient kernel.
+  `admittedPromotedBinary_associative_of_ambient` explicitly requires that admission hypothesis.
+  The module's integer/parity countermodel shows ambient associativity does not provide it.
+  Applying this result to the arithmetic curvature still requires constructing and proving the
+  zero-defined admission map; no such map is obtained from the product convergence theorem.
+- `Octonion.CayleySecondaryObstruction` inserts an arbitrary real `grade` in an explicit
+  two-by-two matrix, then detects that same grade in a higher obstruction. Its vanishing
+  equivalence is verified, but contains no arithmetic producer for the grade and no zero-forced
+  extension theorem. Relabelling an off-line displacement as this grade supplies neither.
+- `TateFractureObstructionBianchiAmplitudeLaw` proves that a literally supported bigraded
+  family has no components beyond its support width. `BundledHasVerticalAmplitude` means
+  every type outside a finite vertical interval is a subsingleton. It is not a norm bound or
+  an analytic convergence statement. The new Banach-algebra product cannot be fed into that
+  theorem as finite support without a separate arithmetic construction and proof.
+
+These are scope audits of possible transfers, not exclusions of their whole mathematical
+families. None supplies the missing zero-forced relation. Additional searches for scissors,
+Dehn, Fox derivative, and conjugacy-reconstruction mechanisms returned no own-tree matches;
+those misses establish no novelty or impossibility claim.
+
 ## Open obligations
 
 **Finite endpoint-to-curvature inference falsified:** `EulerDeletionBalancedPeriodFreedom` proves
@@ -107,15 +138,120 @@ the quadratic observation by `2 sum f h^2`. This rejects a finite algebraic anni
 not a theorem using the actual infinite Mellin weights. The extra property distinguishing those
 weights must be stated and proved. [Proof, countermodels, corpus audit, and Lean certificate](../3-formalized/euler-deletion-balanced-period-freedom.md).
 
+**Complete multiplicativity does not repair that finite inference.** The new
+`EulerDeletionPairedPrimeFreedom` constructs global strictly positive completely multiplicative
+weights with every divisor-of-thirty deletion endpoint zero through 930, yet quadratic
+curvature `-72` or `3`. The negative example changes only prime values 59 and 61; the positive
+example changes 251 and 257. Their multiples have matched cofactor cutoffs. The strongest
+positive survivor classifies every scalar observation `F`: its weighted sum is the baseline
+times `F(1)`, plus a shorter coefficient sum times
+`F(1+t)+F(1-t)-2F(1)`. This identity and the unconditional countermodels are Lean-closed;
+the exploratory Runpod matrices are not proof certificates. The actual infinite Mellin
+weights still require an additional source-specific relation.
+[Proof and validation](../3-formalized/euler-deletion-paired-prime-freedom.md).
+
+**The proposed infinite prime-perturbation extension fails its admission gate.** For the literal
+global coefficients `b(n)=c^(v_p(n))`, the exact digit remainder
+`R(N)=(p-c)*sum_(n<=N)b(n)-(p-1)*N` lies in `[0,p-1]`. A deletion multiplier `ell` gives
+bounded coefficient prefixes exactly when `ell*c=p`, and the repaired prefix is exactly
+`N mod p-R(floor(N/p))`. For `0<=c<1`, retaining the original multiplier `p` leaves a
+positive harmonic drift and excludes ordinary Dirichlet convergence at every `Re(s)<1`.
+The repaired multiplier recovers convergence throughout `Re(s)>0`. Thus preserving an
+analytic zero divisor under an Euler-factor quotient does not preserve the original
+conditionally convergent source. This is a proved domain distinction, not a new RH mechanism.
+[Exact source proof and certificate](../3-formalized/euler-deletion-prime-attenuation-admission.md).
+
+**Compatible attenuation also fails to change the curvature obstruction.** With actual
+coefficients `A_d(n)=1-(d/b(d))*[d|n]` and mass `b(n)^2*n^(-alpha)`, Lean proves the exact
+four-channel factorization for positive contractive completely multiplicative `b`. Its final
+factor remains `1-r^(2-alpha)`: the changed coefficient cancels the attenuation at the third
+label. The curvature stays strictly negative on `1<alpha<2`, vanishes exactly at two, and is
+strictly positive above two. If `b(p)=b(q)=1`, curvature divided by its actual total mass is
+identical to the original normalized curvature. This includes all `c^(v_5(n))`, `0<c<=1`,
+with the compatible `2,3,5` coefficients. This is an exact positive invariant of the failed
+repair, not a zero-forced identity or an RH architecture. General ordinary admission is not
+claimed for arbitrary `b`. [Proof and certificate](../3-formalized/euler-deletion-compatible-curvature.md).
+
 **Complete finite static audit:** every real function of finitely many positive pairwise-coprime divisibility bits has exactly the product-distribution expectation with one-coordinate probabilities `p^(-alpha)`, under the actual normalized Dirichlet weight for `alpha>1`. Lean now proves the full atom law, arbitrary-observable formula, summability, and vanishing of all nonempty centered products. This mechanism is published zeta-distribution independence: Golomb (1970), and Cranston–Peltzer, equations (5)–(9). It supplies no unexplained higher static coupling. Chronological dependence is outside the theorem, not established as a new mechanism by eliminating static alternatives. Proof and precise scope: [finite-statistic classification](../3-formalized/euler-deletion-finite-statistic-law.md).
 
-No RH-producing theorem has passed the gates. Current candidate is a source-construction program,
-not an asserted RH criterion. Its first depth-three object is now exact: additive pairing trees are
-flat, while multiplicative modulus trees have signed curvature `K_alpha`. Immediate obligation is
-sharper: construct a zero-defined chronological realization whose two boundary evaluations differ
-by this exact `K_(2 Re(rho))`, then derive equality of those evaluations from simultaneous zero
-closure without assuming factorization-order invariance. Failure to produce this zero-fibre
-annihilation retires the route.
+**Linear completion is also a classical identification.** The literal deletion prefix is
+`N mod p=p*fract(N/p)`. `EulerDeletionLinearSpanAudit` proves the exact source dictionary,
+finite-combination coefficient change, both span inclusions, equality of closures in any
+fixed topology on the sequence carrier, and the tail-cell identity with the actual
+Báez-Duarte generator. The weighted sequence formulation is published in Bagchi (2005),
+Theorem 1. Growing the modulus family and nonzero scalar reweighting therefore do not make
+this linear approximation problem new. No new positive architectural salvage was found in
+that completion; the exact dictionary is audit evidence, not a claimed novel theorem.
+[Formal identification and primary sources](../3-formalized/euler-deletion-linear-span-audit.md).
+
+**Other source candidates inspected in the same broad search do not supply the missing law.**
+`FormationPotentialCriterion.riemannHypothesis_tfae_divisibleLift` explicitly leaves an
+RH-equivalent global lift/potential condition. `InvolutiveProjectiveWedgeTransportLaw`
+requires the logarithmic jet to factor through the proposed quotient. Those conclusions
+cannot be imported without proving their source hypotheses. `HighExponentShellHypertranscendence`
+does retain a positive coefficient partition and joint differential independence, but the
+actual shell parent proves `S_m(s)=zeta(s)*(1/zeta((m+1)s)-1/zeta(ms))`. For `m>=12` its
+multiplier is analytic and nonzero throughout the strict right half-plane, so its zero
+divisor is exactly the old zeta divisor. Finite differential independence is therefore
+compatible with the same common zero information; it does not supply the missing new
+constraint. The shell route was not adopted. Search hits using spectral, theta, Gamma,
+Möbius, or other excluded mechanisms were not used as candidates.
+
+**Holomorphic mixed-area rank gate is computationally disfavored.** The literal four-channel
+area for moduli 2,3,5,7 was tested at approximate zeta zeros 1,2,5 on the specified Runpod.
+Its Pfaffian remains substantially nonzero through cutoff 860,160, with independent recurrence
+and precision checks. This is numerical evidence against zero-forced decomposability, not a
+formal counterexample. Endpoint Pluecker identities, scalar rescaling, unweighted coprime-word
+cancellation, and the existing four-wedge dilation identity supply no repair. A second pass
+found no new positive survivor. The general Pfaffian/iterated-integral representation is itself
+published mathematics; it cannot be promoted as a new RH mechanism.
+[Candidate, exact limits, primary sources, and computation artifacts](euler-deletion-mixed-area-rank.md).
+
+**A false class-level barrier was corrected.** `no_polynomial_surgery` excludes the specified
+multiplier `P(s)G(s)`; it does not exclude all finite divisor changes with an extra nonvanishing
+factor. The current prescribed-divisor Helson theorem gives a premise-free Lean instance with
+unimodular completely multiplicative coefficients and continued divisor exactly one simple
+zero at `3/4+i`. Source comments and every direct downstream citation that broadened the
+polynomial theorem were corrected. This uses published mathematics to repair the research
+map; it is not a new RH architecture. [Verified scope audit](dirichlet-polynomial-surgery-scope-audit.md).
+
+**Exact finite zeta coefficients do not remove that freedom.** For every cutoff, the new
+premise-free `HelsonFinitePrefixDivisor.finite_prefix_singleton_divisor` constructs globally
+completely multiplicative unit-modulus coefficients equal to one through that cutoff. Their
+ordinary Dirichlet series admits meromorphic continuation with just the simple divisor at
+`3/4+i` in the positive half-plane. A finite Euler correction fixes the initial prime values
+and is analytic and nonzero throughout that half-plane. The witness may change with the cutoff;
+no functional equation, full literal coefficient identity, or analytic tail control is assumed.
+This is a formalized consequence of published Helson flexibility, not a new proof architecture.
+[Paper construction, precise quantifiers, and validation](../3-formalized/not_new_scientific_knowledge/helson-finite-prefix-zero-freedom.md).
+
+**Positive coefficients and weighted convergence still do not control continuation limits.**
+`PrimeTailTranslation.positive_zero_free_tail_approximation` gives strictly positive bounded
+completely multiplicative coefficients, exact zeta prefixes of every prescribed length, and
+convergence to all-one coefficients in every weighted square distance with exponent `sigma>1/2`.
+Their ordinary series continue to analytic zero-free functions on `Re(s)>0`, yet fail to
+converge to zeta at every real point of `(0,1)`. The sign difference at these nonzero values
+proves failure of the limit; zero-freeness alone would not. This is a classical shifted-Euler
+audit witness, not a qualifying successor. The capstone and all 26 public theorems passed
+the imported axiom audit; direct checking, the serialized leaf build, and formal lint passed.
+[Exact construction, proof, ancestry, and limits](../3-formalized/not_new_scientific_knowledge/positive-prime-tail-translation.md).
+
+**Prime-factor relabelling does not produce a new scalar zero relation.** A further
+[30-query discovery pass](rh-corpus-architecture-audit-2026-09-06-prime-permutation-searches.tsv)
+checked exact deformation, sparse prime encodings, coupled prime profiles, and prime-word
+constructions before testing actual prime-factor permutations. Unique factorization extends
+each such permutation to a multiplicative positive-integer bijection. Its norm-summable scalar
+series is exactly zeta on `Re(s)>1`, so comparing two scalar continuations adds no zero-specific
+identity. A second pass retains the finite boundary: only entering and exiting integers remain,
+and composition necessarily transports the cutoff. These exact positive identities are classical
+and closed in Lean; no zero-forced boundary law or qualifying architecture follows.
+[Source definitions, complete scope, and no-go closure](../5-failed/prime-permutation-scalar-source-audit.md).
+
+No RH-producing theorem has passed the gates. In particular, a generic zero-closure argument
+cannot be used to annihilate the old multiplicative curvature: the corpus already proves
+`DeletionCriticalCurvature.not_global_zero_curvature_annihilation`. A strict-right-only
+replacement has no source proof here. The continuing objective is to construct and test a
+different zero-forced relation, not to treat this missing condition as established or novel.
 
 **All-depth finite-period audit:** every nonempty unweighted chronological word with positive pairwise-coprime labels has an exactly periodic prefix and is zero at complete product periods, even with independent phase shifts of the letters. The proof works for arbitrary zero-mean periodic sources. Thus complete-period observations on disjoint prime supports cannot produce a nonzero class; weighted within-period variation and overlapping supports remain separate obligations. This reinforces the need to retain weighting, but supplies no zero-specific transgression. Exact statement, proof, and Lean evidence: [coprime-word periodicity](../3-formalized/euler-deletion-coprime-word-periodicity.md).
 
@@ -473,6 +609,113 @@ The proposed residual operation was never constructed. Its ancestry and intended
 | Arithmetic differential curvature | Exact-phrase corpus queries for Fermat quotient, p-derivation, delta ring, Wieferich, and arithmetic curvature, followed by `rg` of candidate source files. | Search misses did not establish novelty. Barrett–Buium already construct curvature from Fermat quotient operations: [arXiv:1512.02525](https://arxiv.org/abs/1512.02525). Rejected as a new field claim. |
 | Second-kind arithmetic cohomology | Primary abstract of Efimov, [arXiv:1506.00257](https://arxiv.org/abs/1506.00257). | This is published mathematics. Its displayed all-localization nontriviality condition is equivalent to infinitude of Wieferich primes, so assuming that condition would introduce another unresolved arithmetic question. No such premise adopted. |
 
+## Arithmetic fusion, nested sums, and radix transfer: intake audit
+
+**Outcome:** no qualifying successor. These checks test whether existing source laws provide the
+missing zero-forced relation. They establish neither a new impossibility theorem nor a general
+exclusion of these mathematical areas.
+
+| Proposed transfer | Exact source check | Consequence for this search |
+|---|---|---|
+| Treat prime-ray fusion as a new arithmetic multiplication | `HTGeometry/PrimeRadialFusionNaturality.lean:133`, `primeRadialFusion_eq_positivePrimePowerProjection_mul`, identifies it with projected Dirichlet convolution when both inputs are supported on positive prime powers. | This operation alone supplies no new zero-forced relation. The support conditions must be retained. |
+| Use chronological fusion to change the zeta zero condition | `HTGeometry/ChronologicalTensor/FusionDivisor.lean` defines an explicit Gamma prefactor, proves it analytic and nonzero on its open strip, and proves equality of zero multiplicities there. | Outside the user's allowed source ancestry; its scalar response also preserves the existing divisor. No such construction is adopted. |
+| Derive linear growth from rational-Hurwitz mesh refinement | `RHTower/XiRationalHurwitzDyadicRefinement.lean:824` proves `E(n^2)=4E(n)(1+E(n))` throughout the open unit strip. Lines 855–864 identify linear refinement at a modulus greater than one with real part one-half; lines 891–913 give the all-zero RH equivalence. | Removing the quadratic remainder is precisely the missing assertion. Neither finite residue refinement nor changing the modulus proves it. |
+| Convert closed endpoints of two nested sums into cancellation | Existing `EulerDeletionQuasiShuffleSecondConvergence` gives the sum of the two complementary orderings as minus their diagonal bracket at closed endpoints; `STATUS.md`, F692/CANNOT-317, records the positive diagonal for the specified deletion grades. | The existing depth-two argument cannot be restarted as a new zero-annihilation law. This says nothing general about all deeper sums. |
+| Apply homogeneous radix-substitution rigidity | `HTGeometry/MahlerHomogeneousRigidity.lean:21` requires a formal-series identity `Y(X^k)=cY`. `MahlerInhomogeneousSolve.lean:41` instead constructs a unique solution for every forcing series when `k>=2` and `c` differs from zero and one. | No literal zeta source was shown to satisfy the required homogeneous identity at a zero. General solvability with arbitrary forcing supplies no missing restriction. |
+
+The independent mixed-radix card
+`universal-law-field/mixed-radix-formation-geometry/mixed-radix-gauge-critical-normal-geometry-conjecture.md`
+concerns digits of **prime multiplicities**, a limiting statistical kernel, and localization of the
+divisor in the first factor. It explicitly does not eliminate that divisor. It is not a source
+theorem about changing the additive radix of the integer index.
+
+There is also a retrieval ambiguity to avoid: the shifted powers in
+`Hurwitz/NonRationality.lean:372` are `n^(-(s+i))`, with shifts in the **exponent**. That theorem does
+not establish independence of arithmetic subsequences `(bn+r)^(-s)`, which shift the **argument**.
+No finite-dimensional radix-kernel collapse or its negation was proved in this intake audit.
+
+Automatic Dirichlet-series methods have established predecessors:
+[Allouche–Mendès France–Peyrière's 1999 preprint record](https://www.imo.universite-paris-saclay.fr/~biblio/pub/1999/abs/ppo1999_40.html),
+[Allouche–Shallit–Stipulanti, revised March 2025](https://arxiv.org/abs/2401.13524v4), and
+[Li's multivariable construction, revised 2019](https://arxiv.org/abs/1701.08603v2).
+The latter two abstracts cover digit/block restrictions and polynomial-denominator multivariable
+series respectively. This establishes ancestry for those ideas, not absence of every possible
+radix-based RH architecture. The publisher's full 2000 article returned HTTP 403; it was not read.
+
+[The 53-query snapshot](rh-corpus-architecture-audit-2026-09-06-arithmetic-transfer-searches.tsv)
+rechecks the discovery terms against the cached index with common settings: AND/prefix matching,
+one result per module, 25 ranked hits, five exploration hits, and no module exclusions. These
+normalized snapshots are not the exact settings of every earlier exploratory call. `rg` supplied
+statement, proof-body, mathlib, and pipeline checks. Returned declarations are discovery locations,
+not a claim that every returned proof was read. Some broad outputs were truncated. Search misses
+for terms such as `stuffle`, `Beatty`, and `quadrature rigidity` establish no novelty.
+
+No new mathematical statement reached paper closure or Lean admission. No new Lean file, build,
+numerical experiment, or `STATUS.md` entry is associated with this intake audit. Its useful result
+is the exact list of unsupported transfers above; the two missing links in the target RH chain
+remain missing.
+
+## Scope correction for continuous countermodels
+
+The addition/multiplication intake exposed an unsupported search restriction: the old Beurling
+countermodel had been used to make exact integer occurrence and coupled arithmetic execution
+mandatory for every RH architecture. Its theorem instead chooses its continuous model separately
+for each error exponent and proves no counting estimate. Matching selected assumptions does not
+show that a countermodel satisfies every hypothesis of an arbitrary candidate.
+
+The [completed auxiliary audit](../3-formalized/not_new_scientific_knowledge/continuous-beurling-logarithmic-error-audit.md)
+repairs the mathematical evidence with one explicit pair of positive continuous densities. Their
+common rational transform has a zero at `2/3+i`; the same counting function has an exact quadratic
+logarithmic remainder and `o(x^e)` error for every `e>0`. These statements, both integrability and
+transform identities, and an instantiated capstone are closed in Lean. No discrete realization or
+functional equation is asserted. The repair cannot be used to restore the withdrawn universal
+restriction on RH proof architecture.
+
+The positive survivor is this exact density/counting decomposition. No novel zero-forced relation
+or off-line contradiction for ordinary zeta was found. This correction changes which candidates
+may be excluded by the existing evidence; it supplies no RH proof step.
+
+## Relation, arithmetic-family, and code intake after the scope correction
+
+**Outcome:** no qualifying architecture and no new RH proof step. The following checks concern
+specific proposed transfers. They do not rule out their mathematical fields or reinstate a
+universal prescription that every proof must use one pair of arithmetic operations.
+
+| Proposed transfer | Current source evidence | Disposition and strongest surviving content |
+|---|---|---|
+| A zero gives a polynomial relation; pointwise jet nondegeneracy should contradict it | `HTGeometry/PatternRelationConfinement.lean:29` assumes an expanded pattern relation before placing evaluation packets. The definition at line 78 asks each point to avoid every nonzero polynomial over `ℂ`; its own preceding comment explains why `X_j-C(a_j)` defeats that condition for a nonempty coordinate set. | Reject this pointwise nondegeneracy input. The surviving placement theorem transports an already supplied relation. Global independence or a nonvanishing evaluation minor cannot be silently substituted for pointwise avoidance of every polynomial. No relation on literal zeta was constructed. |
+| Certify off-line impossibility by growing arithmetic circuit cost | `HTGeometry/ExactPenaltyCircuitBellman.lean:501` identifies approximate complexity with the greatest value of a Bellman subsolution, under isometry, inverse, compact-gate/continuity and reachability assumptions. Its penalty threshold is defined using the very approximate complexity to recover. | Exact duality survives, but gives no arithmetic lower bound or zeta-zero-to-state map. Declaring a large calibration would leave the desired lower bound unproved. |
+| Use permanent coefficients to extract a forbidden finite relation from the zeta source | `HTGeometry/PermanentCoefficientIdentity.lean:83` requires a series supported on a super-increasing gap set. The resulting uniqueness of source multisets reduces its coefficient proof to surviving permutation assignments. | The exact coefficient identity remains available for those sparse sources. Ordinary all-one Dirichlet coefficients do not establish these formal-power-series support hypotheses; no faithful encoding preserving a zeta zero was supplied. |
+| Use simultaneous reflected admission of arithmetic shells | `HTGeometry/ConstitutiveReflectedShellCofinalSelection.lean` defines admission as summability of both real tilts at every base point above one and proves it equivalent to zero tilt for the specified shell family. | The exact summability boundary is already closed. No zero of ordinary zeta is shown to satisfy this global admission condition. This is an existing conditional endpoint, not a new zero-forced law. |
+| Assemble complete divisor packets into an RH selector | `HTGeometry/MultiplicativeCenteredDivisorOrientation.lean:87` identifies prime-power packets; the later finite-product current formula proves orientation from that of the factors. | Finite product orientation is the positive content. No corresponding infinite arithmetic limit or joint zero constraint was obtained. The identity cannot itself justify replacing a product by a sum of packets. |
+| Use Hasse rows as a fresh zero-forced relation | `RHTower/HasseSondowRowMellin.lean:337` already gives the relation, derived through Gamma-normalized Mellin integrals and the Fermi kernel. The packet-formation cards already formalize its observer consequences. | Existing construction with excluded ancestry. No Hasse/Fermi architecture adopted. |
+| Use visible-coprime mixed jets as a fresh relation | `RHTower/VisibleCoprimeZetaZeroJet.lean:129` defines the continued symbol as `ζ(s)ζ(t)invZeta(s+t)`. Its top mixed jet is the squared leading zeta jet times the reciprocal at twice the real part. The current frontier map already records the finite jet extension as a rank-one endpoint. | Existing quotient/jet construction, with excluded Möbius and spectral ancestry in its source chain. No new arithmetic restriction follows merely from its exact sign formula. |
+| Build finite codes whose zero-location theorem passes to zeta | `RHTower/DuursmaDoubleRepetition.lean` proves the degree-two extraction and critical-circle law for `(1+2T^2)/3`; it constructs no ordinary-zeta source code. The existing card `prime-syndrome-duursma-code-zeta-limit-rh.md` already proposes a cofinal code limit but requires Gamma/theta marking and leaves source realization, the code-zero theorem and the limit unproved. | Reject this existing proposal under the present exclusions. The finite nonmultiplicativity example is already formalized and labelled not new scientific knowledge. Removing forbidden names would not prove its missing inputs. No replacement source-code family was constructed. |
+
+The code-theoretic ancestry is independently confirmed by
+[Duursma's primary paper](https://arxiv.org/abs/math/0302172) and
+[Chinen's explicit invariant-polynomial construction](https://arxiv.org/abs/0704.3903).
+The opened abstracts concern code enumerators, duality and finite zero-location constructions;
+they supply no limit from ordinary zeta coefficients. Duursma's 2001 publisher page returned 403,
+so its full text was not read. These checks establish ancestry, not an exhaustive novelty result
+or the current status of every code-RH conjecture.
+
+[Four saved query snapshots](rh-corpus-architecture-audit-2026-09-06-source-intake-searches.jsonl)
+retain actual indexed results and options: `zero relation` (830 hits in 465 modules), both pages
+of `arithmetic` restricted to `HTGeometry` (665 hits in 208 modules), and the phrase `"zeta zero"`
+with named-module exclusions (218 hits in 93 modules). Module caps and keyword exclusions are
+retrieval settings, not evidence of mathematical independence. In particular, files without a
+forbidden word in their name can import forbidden machinery. Some display output was truncated;
+the snapshots retain the returned rows. This is declaration discovery, not a proof-body audit of
+all those modules. Supplementary targeted queries and `rg` supplied the statement, proof, import,
+and prior-card checks summarized above.
+
+No new theorem reached paper closure in this intake. Existing positive statements and their
+hypotheses are retained; no new Lean module or numerical experiment was warranted. `STATUS.md`
+receives no new mathematical restriction from this pass. The next candidate must supply an
+actual construction and a proposed transfer beyond those explicitly missing here; repeated
+retrieval of these endpoints is not a new architecture.
+
 ## Coverage and verification
 
 - `EulerDeletionFiniteStatisticLaw` passed scratch compilation, a targeted leaf build, an imported five-capstone axiom audit, and repository-wide formal lint. It is wired into `RHTower.lean`. The capstones use only `propext`, `Classical.choice`, and `Quot.sound`. The full finite static law is closed and explicitly attributed to its classical ancestry; it is not a novel RH architecture.
@@ -506,12 +749,211 @@ The proposed residual operation was never constructed. Its ancestry and intended
   proof's `decide` was replaced by an explicit singleton-cardinality argument.
 - Multicore Runpod scans at the supplied endpoint tested self and cross chronological levels for the first 12 known zeros, four moduli, and cutoffs through two million. Quasi-shuffle residuals stayed below `4.27e-14`; raw self and cross carries were nonzero with both signs, while fitted tail drift was small. This kills universal sign/vanishing as producer but is not proof of convergence and says nothing about hypothetical off-line zeros. Scripts, raw JSON, and interpretation are in `2-fully-proven/computations/euler-deletion-quasi-shuffle-second-level/REPORT.md`.
 - `universal-law-field/STATUS.md` records only route-independent finite source facts, retired mechanisms, and the live refinement-coherence requirement.
-- The goal remains active. Multiplicative factorization curvature is the sole provisional successor.
-  It has finite scaling, conditional zero landing, complex second levels, squarefree cylinder
-  closure, literal factorization grading, uniform source orthogonality, an explicit positive
-  weighted defect, and a signed multiplicative third-order curvature. Scalar insertion/cutoff and
-  additive pairing order are flat, while two-index strict schedules are quasi-shuffle tautologies;
-  it has no zero-fibre annihilation theorem and no RH implication. Rejected C1--C12 additive branch,
-  raw-sign, analytic-continuation holonomy, ordinary
-  commutative development, independent replication, unweighted mean descent, and full-algebra
-  branches are not approved continuations.
+- The goal remains active; no qualifying novel RH architecture or sole successor is established.
+  The finite scaling, conditional zero landing, complex second levels, squarefree cylinder
+  closure, factorization grading, weighted defect, and curvature theorems remain closed auxiliary
+  results. They do not supply a new zero-forced relation or an off-line contradiction.
+  Unrestricted zero-curvature annihilation is already refuted, and the mixed-area replacement
+  is computationally disfavored. The positive prime-tail approximation above adds a closed
+  constraint on coefficient-only continuation arguments. Rejected additive, raw-sign,
+  analytic-continuation holonomy, ordinary commutative development, independent replication,
+  unweighted mean descent, and full-algebra branches are not approved continuations.
+
+
+## Growing-modulus scalar admission boundary
+
+The fixed-modulus all-depth history theorem does not extend to one ordinary cutoff controlling
+all deletion moduli. `EulerDeletionGrowingModulus` now proves the exact replacement: for every
+`0<Re(s)<=1` and arbitrary natural-valued budget `A(N)`, uniform Cauchy tails of the literal
+modulus-`q+1` prefixes over `q<=A(N)` hold iff `A(N)(N+1)^(-Re(s)) -> 0`. No monotonicity of A
+and no zeta-zero premise enters. A finite Abel block estimate and the next literal deletion
+supply matching upper/lower rates. In particular all-modulus uniformity fails in the critical
+strip. The positive classification, not only that failure, is closed in Lean.
+
+This rejects this uniformity demand as the missing cross-modulus relation. It does not reject
+separate relations between completed histories, and does not establish a new RH architecture.
+The derivation uses classical periodic Abel theory; there is no literature-novelty claim.
+Ten theorem axiom audits, direct Lean check, and serialized narrow leaf build passed.
+[Exact theorem, paper proof, source audit, and scope](../3-formalized/not_new_scientific_knowledge/euler-deletion-growing-modulus-boundary.md).
+STATUS F20h records the self-contained admission fact. No new zero-forced relation or off-line
+contradiction was obtained.
+
+## Zero-relation intake and the vanishing-source classification
+
+The next intake searched both RH and non-RH areas for arithmetic relations, nonlinear
+cancellation, semirings, cyclic sources, divisibility, and contracting homotopies. Corpus
+searches were paired with `rg` on candidate statements, proof bodies, imports, and pipeline
+cards. The uncapped phrase query `research '"zeta zero"' --limit 1000 --per-module 0
+--explore 0 --json --no-refresh`, excluding the module substrings Suzuki, Hedenmalm, Weil,
+Connes, Burnol, HilbertPolya, Spectral, Gamma, Mobius, Theta, and Xi, returned 277 declarations
+in 117 modules. [The complete retrieval snapshot](rh-corpus-architecture-audit-2026-09-06-zero-relation-search.json)
+is saved. This counts retrieval, not inspection of every proof. Filename filters do not remove
+excluded dependencies; those still require import and definition checks.
+
+The inspected proposals fail at different, explicit gates:
+
+- **Associator as a boundary.** A scalar identity `K(s)=ζ(s)H(s)` would force zero curvature,
+  but defining H by division away from zeros supplies no independent construction of H at a
+  zero. `EulerDeletionCurvatureCriticalBoundary.exists_actual_zero_with_nonzero_charge`
+  already refutes a globally regular realization of this identity for the literal curvature.
+  The arithmetic curvature's zero wall is Re(s)=1, not 1/2. A construction only in the strict
+  right half of the strip remains unproved. The abstract associator/homotopy identity itself
+  is standard: [Keller, *A-infinity algebras, modules and functor categories*, section 2.1](https://webusers.imj-prg.fr/~bernhard.keller/publ/ainffun.pdf).
+  The corpus's `FormationAnchoredCubicHomotopyDefect` uses operator ideals and therefore fails
+  the user's source restrictions as well. The strongest available positive survivor is the
+  already formalized exact curvature and its nonzero critical-line boundary; this intake
+  produces no additional positive theorem for the scalar homotopy proposal.
+- **Alternating-prefix decay rate.** `DQPTPartialSumRate` distinguishes zero and nonzero
+  values by a logarithmic rate, but that criterion is already the subject of
+  [*The Riemann Hypothesis manifested in dynamical quantum phase transitions*](https://www.nature.com/articles/s41467-026-74935-8).
+  Its engineered energy spectrum also fails the user's restrictions. The local
+  `dqpt-rh-paper-lean-formalization` card and failed `nature-dqpt-alternating-tail-rh-route`
+  card already distinguish the valid rate theorem from the false ordinary-coherence
+  selector. These existing exact rate results supply the positive survivor; no new RH
+  mechanism is obtained by renaming them.
+- **Missing echo coefficient.** `HeatApertureEchoParity.riemannZeta_eq_zero_iff_echoLadder`
+  detects a zero by a missing initial coefficient, but its defining `HeatApertureEchoLadder`
+  explicitly uses Gamma factors and backward shifts. This is excluded ancestry, not a new
+  arithmetic zero relation. The existing coefficient classification remains the positive
+  theorem; this intake adds none.
+- **Negative Euler sheet.** `ProjectiveEulerCanonicalPolarity` defines the response as
+  `ζ(2s)/ζ(s)` and proves its pole multiplicity at a zeta zero. The identity transports the
+  divisor to poles; it does not independently exclude those poles. Its already proved exact
+  divisor-order classification is the positive survivor, with no new regularity producer.
+- **Vanishing cyclic source.** `SourceOrientation.srcIncompatEquiv` and
+  `annihilator_srcIncompatModule` require both q and c to be units. Substituting c=ζ(s)
+  precisely loses that premise at a zero. The original theorem is correct. The new
+  `SourceScalarBoundary` now classifies the literal quotient without either unit assumption:
+  `R/(c) × R/(cq(q−1))`, with annihilator `(cq(q−1))`. The same result holds for every
+  invariant surjective source trace. Over a field its dimension is 2 at c=0 for every q,
+  1 at nonzero c and q in {0,1}, and 0 otherwise. Thus quotient survival at a zeta zero
+  cannot select q in this construction.
+
+The last classification is the closed positive survivor of that proposed substitution.
+Fourteen public theorems, four definitions, and two abbreviations passed direct Lean checking,
+the standard-axiom audit, and the serialized narrow leaf build; the umbrella import is wired.
+It is elementary module algebra, filed under `not_new_scientific_knowledge`, with no claim
+of absence from literature. [Paper proof, exact formal statements, and verification](../3-formalized/not_new_scientific_knowledge/cyclic-source-nonunit-scalar-audit.md).
+STATUS F20i records the self-contained scalar-specialization fact. No numerical experiment
+was needed. None of these intakes supplies a qualifying architecture, a new zero-forced
+relation, or an off-line contradiction; the RH goal remains open.
+
+## Literal alternating source and inverse-branch intake
+
+The next search covered arithmetic obstruction, nonlinear relations, additive/multiplicative
+compatibility, deformation, integer rigidity, confluence, coefficient operations, and formal
+compositional inversion. These queries range across the indexed tree; capped results are
+discovery only. Exact bodies were inspected for `TwoProductDiagonalGaugeRigidity`,
+`TwoRecordResolvedConnection`, `ConstitutiveBiFormationInterference`, the initial source
+and imports of `PrimeValuationNormalCornerDuality`, and the construction and specialization
+of `FormalCompositionalInverseFreeness`.
+
+The first three constructions do not supply zero-forced laws: simultaneous preservation of
+two packet products is an assumption; a normalized two-record connection is generically a
+coboundary; bounded copies of a nonzero cubic current require an independent bound. The
+prime-valuation tomography module explicitly uses Gamma coordinates and spectral machinery,
+so it fails the user's source restrictions. Its finite coefficient partition alone gives
+no zero-location relation. The previously audited word-rewriting toy remains a separation
+of execution and equivalence, without a new literal arithmetic realization.
+
+Formal compositional inversion suggested a specific new intake test on the actual coefficients:
+`F_s(z)=sum_(n>=1) (-1)^(n-1)n^(-s)z^n`. Its distinguished radial boundary value is eta(s).
+The proposed first conjecture was global disk injectivity for every Re(s)>1/2, as a possible
+precursor to an obstruction to the boundary collision F_s(0)=F_s(1)=0. The classical exterior
+area theorem rejects this stronger conjecture: the necessary bound `|a3-a2^2|<=1` fails
+at the explicit height `pi/(log4-log3)` for real parts in an interval immediately right
+of 1/2. Open-disk injectivity and boundary injectivity must in any case be distinguished.
+
+The positive scalar result is now closed in `AlternatingInverseCoefficientBoundary`: the
+literal formal series has both inverse identities at every complex parameter, while its
+third coefficient defect has the sharp attained horizontal maximum
+`3^(-sigma)+4^(-sigma)`. The unit ceiling has a unique cutoff strictly between 1/2 and 1.
+This is elementary coefficient analysis, not a qualifying novel RH architecture. The full
+geometric noninjectivity conclusion remains a paper application of the published area
+theorem; it is not claimed as a Lean result. A smaller inverse corridor aimed only at z=1
+has no independently constructed arithmetic control yet and is not an approved successor.
+
+[Exact conjecture, falsification, classical sources, formal positive theorem, and limits](alternating-source-inverse-branch-intake.md).
+STATUS F20j records only the self-contained formal-inversion/coefficient-control separation.
+No numerical experiment was required. The new zero-forced relation and off-line contradiction
+remain missing.
+
+## Arithmetic incidence and zero-transfer intake
+
+**Outcome: no qualifying successor architecture.** This intake tested whether an actual integer
+operation could send a hypothetical zero to another arithmetic scale, or force a finite incidence
+relation with an independently impossible boundary. It did not construct either implication.
+
+[Complete retrieval for seven precise cached queries](rh-corpus-architecture-audit-2026-09-06-incidence-transfer-searches.json)
+records the query arguments and all returned declarations, with no per-module cap or exploration
+extras. Counts are: `arithmetic incidence` 7 declarations/6 modules; `integer compatibility` 1/1;
+`zero propagation` 28/21; `zeta dilation` 108/26; `arithmetic automaton` 0/0; `prime word` 124/21;
+`nonlinear` 231/127. Counts overlap. These are complete retrievals for the saved filename filters,
+not proof audits of every hit or evidence that an idea is absent from literature. Additional
+discovery used arithmetic outside RHTower/HTGeometry, finite obstruction, reciprocity, integer
+transport, multiplicative/additive compatibility, coefficient ideals and reconstruction, and
+shuffle queries. `rg` then located the relevant statements, definitions, and imports.
+
+The concrete source checks give these decisions:
+
+- `RHProofLab.EulerProductArithmetic` proves the finite subset expansion and disjoint-product
+  identities for arbitrary coefficients in a commutative ring. The inspected portion of
+  `RHProofLab.PositivitySelector` encodes zero defect as a sum of squares for an already supplied
+  finite point family. Neither supplies a new relation forced by a zero of literal zeta.
+- `BigWittArakelovSourceEndomorphismTerminal` was inspected to detect excluded ancestry, not
+  adopted. Its coordinate power law does not preserve the analytic source: the induced square
+  map is `rho^2/(2*rho-1)` and has a pole at `1/2`; actual cover maps and Euler jet dilation are
+  different operations. Its requested zero-divisor stability is already RH-equivalent. The
+  existing positive results are the exact reporter power law and the source-correct jet
+  dilation `X -> nX`. They supply no new zero-transfer theorem.
+- `PowerSievedLiouvilleRecurrence.LSeries_sievedLiouville_mul_riemannZeta` requires `Re(s)>1`.
+  The identity `L(a_m,s)*zeta(s)=zeta(ms)` therefore cannot be specialized to a hypothetical
+  strip zero using its stated hypotheses. Extending the quotient regularly there would be a
+  new obligation; the quotient identity does not establish it. This is the existing
+  Liouville/divisor-quotient route, not a radical successor. The exact convolution/Dirichlet
+  identity is the already formalized positive survivor.
+- `ProjectiveHorizonCausticQSystem.qSystem_zero_propagation` assumes both the quadratic relation
+  `center^2=left*right+up*down` and two neighboring zeros, `center=left=0`. It then gives
+  `up=0` or `down=0`. The arithmetic realization and second zero are absent from this intake;
+  one zeta zero cannot be substituted for both hypotheses. Its determinant identity remains
+  the existing positive statement, without a new arithmetic construction.
+- `PerfectComplexDoublingDerivedLimitCountermodel` starts with the integer tower whose maps
+  multiply by two. Ordinary-limit vanishing and a nontrivial derived-limit class are real
+  integer phenomena, but no literal zeta coefficient or zero-to-class map was constructed.
+  Only its initial tower and explicit obstruction proof were inspected here.
+- `CoprimeBlockMultiplicationFiber` retains an exact finite multiplication collision invisible
+  to row and column sums. Its six-cell coefficient and cancellation classification is already
+  formalized and already covered by the earlier multiplication-fibre intake. No new infinite
+  source law follows from rereading it.
+- `PrimeWordSupportSelector` and `PrimeWordMatchingIncidenceNoGo` retain finite support and
+  incidence distinctions. The downstream `PrimeWordSynchronizedCluster` instead uses explicit
+  two-state ferromagnetic blocks and does not identify their product with zeta. Its initial
+  definitions and norm/localization proof expose that missing identification. This returns to
+  an existing Lee--Yang construction and fails the requested novelty gate.
+- `SourceZeroHorizontalCarrier` explicitly takes Xi-zero copies as inputs and uses Gamma
+  coefficients. The inspected adjacent-tail reader gives exactly
+  `(1/2-Re(rho))*log(2)`. It measures the horizontal position and does not prove its vanishing;
+  it also fails the user's source restrictions. The finite Euler-flux tangent map inspected in
+  `PrimeExponentialHolomorphicDeterminingSourceImage` allows arbitrary complex coefficients
+  and proves density of their images, not an identity for the fixed all-one coefficients.
+
+**Scope correction, not another no-go.** `AdjacentDilationZetaBase` gives differential
+independence over the zeta differential field, preserved under nonzero base gauges. This excludes
+certain identities of functions, not relations at an individual zero. For a finite analytic
+family independent over a field containing `C(s)`, the common factor `s-a` preserves differential
+independence while making all values at `a` vanish. The triangular Leibniz law in
+`BaseGaugeDifferentialIndependence.differentialIndependent_mulBase_iff` supplies the independence
+statement; evaluation at `a` supplies the common zero. No assertion that these altered functions
+are the original arithmetic source is made.
+
+STATUS F03 now replaces the overbroad “finite arithmetic syzygy route is closed” assertion with
+this distinction. `/tmp/hgt-zero-transfer-audit-b1fbXR/ExistingDeclarations.lean` checked the
+generic gauge theorem and its actual zeta-dilation application with `lake env lean`; both axiom
+reports contain only `propext`, `Classical.choice`, and `Quot.sound`. This verifies existing
+declarations, not a new formal RH theorem. No Lean source changed, no build or numerical experiment
+was needed, and no Lean process remains owned by this intake. The previous unrelated global-lint
+reachability failures are not resolved or claimed to pass by this documentation change.
+
+The next architecture must supply an actual relation at a zeta zero. It is premature to require
+that relation to hold as an identity for every parameter, or to exclude it using functional
+independence alone. No particular such relation has yet been constructed or selected.

@@ -1,6 +1,6 @@
 # Chronological tensor geometry: a formalized research seed
 
-**Status:** thirty-three individual Lean builds passed; all 375 declarations axiom-audited (274 theorems, 101 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
+**Status:** 101 individual Lean builds passed; all 1049 declarations axiom-audited (771 theorems, 278 definitions). This is a candidate research program, not an established new field. Neither its overall novelty nor priority for its individual results has been established.
 
 **Question.** What geometric information becomes visible when alternating tensors are tested by an ordered probe with a limited budget for changing its value?
 
@@ -323,7 +323,7 @@ For every nonempty perfect-pairing family, a signed probe that exceeds monotone 
 
 The structural reason is incidence rigidity. Two active gaps split the endpoints into three consecutive blocks of sizes a,b,c. A pairing with an intrablock chord vanishes. Every other pairing has exactly `d−c` chords between the first two blocks, `d−a` between the last two, and `d−b` between the first and last. Thus all nonzero restrictions share the monomial `u^(d−c) v^(d−a) (u+v)^(d−b)`. Arbitrary coefficient cancellation reduces to a common scalar. Replacing u,v by their absolute values increases absolute response while preserving variation.
 
-`ThreeBlock.lean` derives these incidence identities from actual endpoint bijections. `TwoGap.lean` connects them to interval windows and the normalized capacity. `Activation.lean` handles arbitrary supports of size at most two and constructs the sharp three-gap witness with genuine pairings. All three final builds and all 53 declaration axiom audits passed. The [complete proof and representation details](chronological-two-gap-rigidity.md) distinguish consecutive chronological blocks from repeated visits to three spatial values.
+`ThreeBlock.lean` derives these incidence identities from actual endpoint bijections. `TwoGap.lean` connects them to interval windows and the normalized capacity. `Activation.lean` handles arbitrary supports of size at most two and constructs the sharp three-gap witness with genuine pairings. All three final builds and all 55 declaration axiom audits passed. The [complete proof and representation details](chronological-two-gap-rigidity.md) distinguish consecutive chronological blocks from repeated visits to three spatial values.
 
 ## One enclosure: an exact cubic depth
 
@@ -412,6 +412,94 @@ For the upper bound, concentrate the normalized padding at the shared cut and ap
 
 Consequently the detailed outer-window arrangement is invisible to this capacity whenever a shared padding cut exists. The positive statement is the exact reduced model, with its degree bound and curvature reconstruction; the cubic remains depth one with free padding. The formalization covers the generated finite outer windows. An explicit constructor connecting them to the corpus ChordData record has not yet been added.
 
+## The exact cubic norm and the information lost by retraction
+
+The five genuine noncrossing pairing coordinates on the physical gaps are
+
+`ace`, `ad(c+d+e)`, `be(a+b+c)`, `Sbd`, `Sc(b+c+d)`,
+
+where S is the total gap sum. CubicPairings supplies explicit endpoint bijections and identifies their actual monotone capacity with the supremum on the physical sparse section. Define
+
+`J(A,E)=max_(0≤t≤1) |(A/4)t(1−t)²+Et²|`.
+
+CubicArcNorm and CubicNorm prove the exact formula
+
+`M(A,B,C,D,E)=max(J(A,E),4|B|/27,4|C|/27,|D|/4)`.
+
+The physical complex has one triangular face with support {0,2,4} and three additional edges. Fixing the middle coordinate t on the triangle, the product of the outer coordinates lies between zero and (1−t)²/4. The absolute affine response is bounded by its two endpoint values; the first is at most |E|, which the balanced arc already attains at t=1. The three edges have sharp constants 4/27, 4/27, and 1/4, attained by the explicitly formalized probes. This proves both sides of the actual supremum formula.
+
+The unit ball is therefore the J-ball in (A,E) times the intervals |B|≤27/4, |C|≤27/4, |D|≤4. CubicNormLaws proves absolute homogeneity, triangle inequalities, trivial kernels, and actual maximum attainment. The five observations are independent on the physical section.
+
+The ring retraction induces the coefficient projection (A,B,C,D,E)↦(0,B,C,D,0). It has norm at most one and retains exactly the three interval factors. Its kernel is the entire curved J-plane, and
+
+`M(A,B,C,D,E)=max(M(A,0,0,0,E),M(0,B,C,D,0))`.
+
+Thus this homotopy equivalence loses a precisely classified normed subspace. The full paper proof is in [monotone coalescence](../2-fully-proven/chronological-monotone-coalescence.md).
+
+## Zeta from the algebra of lost observations
+
+The [observation cusp](../2-fully-proven/chronological-observation-cusp.md) now has a second complete geometry-to-zeta chain. Let W be the smallest linear space containing the original five pairing observations and preserved by every intermediate retraction. Let L=W∩ker T₀, where T₀ is pullback by the final ring retraction. These definitions refer only to the original observations and their physical flow.
+
+CubicInvariantSpace proves dim W=6 and its minimality; CubicCanonicalLoss proves dim L=3. With c the middle gap, its basis is
+
+`u=ace+c²/2−c³/4`, `v=c²`, `w=c³`.
+
+The algebra generated by L is precisely A=ℝ[u,c²,c³] as actual functions on the physical section. CubicPolynomial proves that u and c are algebraically independent using two infinite-root arguments. CubicCuspAlgebra identifies A with the polynomials whose coefficient of c is zero. Hence the algebra was selected by the lost observations, and its presentation is faithful.
+
+CubicCuspNormalization proves that B=ℝ[u,c] is the integral closure of A in their common fraction field. CubicCuspQuotient constructs the actual vector-space equivalence B/A≃ℝ[u] and its basis `[u^n c]`, n≥0. CubicCuspFlow proves that polynomial substitution agrees with physical pullback, descends to this quotient, and acts on the nth basis vector by q^(n+1).
+
+CubicCuspHeat defines each heat summand as the corresponding diagonal coefficient of this actual quotient operator. For τ>0 their sum and its continuous reference are
+
+`H(τ)=Σ_(n≥1)exp(−nτ)=1/(exp τ−1)`, `C(τ)=∫_(x>0)exp(−xτ)dx=1/τ`.
+
+CubicCuspMellin proves absolute Mellin convergence of C−H on 0<Re s<1, and
+
+`∫_(τ>0)τ^(s−1)(C(τ)−H(τ))dτ=−Γ(s)ζ(s)`.
+
+It proves equality with zeta's zero locus and every zero multiplicity on that strip. The construction contains no prime data or zeta zeros in its definitions. The explicit three-variable ideal quotient ℝ[U,V,W]/(W²−V³) remains a paper presentation; the equivalent concrete subalgebra and all bridges needed for this response are formal.
+
+This identifies a precise mechanism, not a priority claim. Cusp normalization is classical. In particular, the normalization quotient underlying the delta invariant and its related series are established singularity theory; see [Cogolludo-Agustín et al. (2024), §2.3](https://doi.org/10.1007/s40687-024-00457-8). He [§4.1.2](https://arxiv.org/pdf/1003.2986) has the identical weighted Hilbert series, and [He–McKay, §5](https://arxiv.org/pdf/1308.5233) already connect Hilbert coefficients and Dirichlet series. The candidate contribution is the canonical chronological selection and its consequences.
+
+The [observation-repair extension](../2-fully-proven/chronological-observation-repair.md) is now formalized in eleven additional leaves. Every intermediate algebra corresponds to an ideal of ℝ[u], and B remains its integral closure in the same fraction field. Preserving the single half-retraction already forces the complete list A and A_k=ℝ[u,c²,c³,u^k c], with unique k. The actual quotient B/A_k has dimension k and physical flow weights 1,…,k. Adding any polynomial observation P and taking the least invariant algebra yields A when coeff_c(P)=0, otherwise A_ord₀(coeff_c(P)).
+
+Its actual finite heat and matching continuum integral satisfy
+
+`H_k(τ)=(1−exp(−kτ))/(exp τ−1)`, `C_k(τ)=∫_0^k exp(−xτ)dx=(1−exp(−kτ))/τ`.
+
+Thus the finite response kernel is b_k=(1−exp(−kτ))b. CubicRepairLimit proves an exact exponential kernel error, absolute Mellin convergence, and `lim_k mellin(b_k)(s)=−Γ(s)ζ(s)` throughout the open unit strip. No statement identifies each finite response's zeros with zeta's zeros. The explicit finite Gamma/power-sum expression remains paper-only. Novelty remains unestablished.
+
+CubicRecovery resolves the [uniform-recovery stress test](../2-fully-proven/chronological-observation-recovery.md). It constructs P₀=0 and P_(n+1)=P_n+(c²−P_n²)/2 inside A, proves physical uniform error ≤2/(n+2), and rules out any positive uniform separation of c from A. This distinguishes exact algebraic loss from finite-accuracy recovery. The positive survivor is an explicit recovery family with a certified rate. The [flow-compatible recovery theorem](../2-fully-proven/chronological-equivariant-recovery.md) is now formal in four additional leaves. Define admissibility directly on observed functions f in the lost algebra by T_(1/2)f=f/2. Such functions are exactly αu. Their minimum physical uniform error for recovering c is
+
+`δ=(17√17−55)/118>0`, uniquely at `α=(126+34√17)/59`.
+
+The two realizing probes have c=1 and c=(√17−3)/4 on the physical edge (1−c,0,c,0,0). CubicRecoveryGeometry proves the matching global bound and uniqueness; CubicEquivariantRecovery transfers them to the intrinsic set of actual observed functions. This supplies a positive separation when recovery must preserve the physical scaling, despite unrestricted recovery having error tending to zero.
+
+The [general homogeneous-boundary reduction](../2-fully-proven/chronological-homogeneous-boundary.md) is now formal in seven leaves, 66 declarations. Every physical (u,c) pair is a contraction of a realized edge point, including the degenerate corners. Every homogeneous physical capacity is an attained edge maximum; its seminorm has zero kernel. The weight-k polynomial space is explicitly equivalent to ℝ^(k+1), and cusp membership excludes exactly the u^(k−1)c coefficient for positive k.
+
+For k≥1, the set of every possible homogeneous recovery error for u^(k−1)c is exactly the set of values
+
+`max_(0≤r≤1/4) (1−√(1−4r))^k |R(r)|`, with `deg R≤k`, `coeff_(k−1)R=1`.
+
+Both the coefficient correspondence and the inverse change of variable are formal; this is not merely an upper bound. The [weighted coefficient-duality paper](../2-fully-proven/chronological-weighted-coefficient-duality.md) derives the unique optimizer from classical weighted Chebyshev alternation and interpolation. The general Chebyshev optimizer and uniqueness remain paper-only; positive optimal gaps and attainment are now formal via finite-dimensional compactness.
+
+The [graded Hilbert construction](../2-fully-proven/chronological-graded-hilbert-defect.md) adds eight leaves and 79 declarations. At weight k+1, the normalized residuals form a nonempty closed affine hyperplane in a proper finite-dimensional normed space. The physical norm attains a strictly positive minimum δ_k there. The sharp bound δ_k|λ_k(P)|≤‖P‖ is attained at every coefficient. The actual quotient by available homogeneous observations therefore has the attained infimum norm δ_k|λ_k|.
+
+Each quotient becomes a complete real Hilbert line with inner product δ_k²λ_k(x)λ_k(y). Their orthogonal sum H is complete. The original normalization quotient B/A embeds into H with exact missing-coefficient recovery, injectivity, and dense range. Pulling back the norm and inner product equips B/A with the graded physical geometry
+
+`‖x‖²=Σ_(k≥0) δ_k² |coeff_k(cubicCuspDefectEquiv x)|²`.
+
+The embedding is an isometry, and CubicDefectCompletion constructs an actual AbstractCompletion with carrier H. In particular ‖[u^k c]‖=δ_k. This topology preserves each grade's optimal physical recovery cost; the unrestricted uniform quotient seminorm still vanishes on c. Six further leaves, 59 declarations, now complete the analytic trace and rigidity bridges. The physical flow has a unique continuous extension to H, is positive and symmetric, satisfies T_qT_r=T_(qr), and has exact operator norm q. The physically normalized vectors b_k=[u^k c]/δ_k form an actual Hilbert basis.
+
+For 0≤q<1, T_q is Hilbert–Schmidt and factors as T_(√q)T_(√q). The corpus's basis-independent analytic ContinuousLinearMap.opTrace then gives
+
+`tr(T_q)=q/(1−q)`, hence `tr(T_(exp(−τ)))=1/(exp τ−1)` for τ>0.
+
+CubicHilbertTrace also proves that the diagonal sum converges to this value in every Hilbert basis. CubicHilbertMellin forms the response from this operator trace and the actual continuous reference integral. Its absolutely convergent Mellin transform on 0<Re s<1 is −Γ(s)ζ(s), with exactly the zeta zero locus and every zero multiplicity there.
+
+CubicHilbertRigidity characterizes the graded inner product directly on original B/A: among real bilinear forms, the physical diagonal values B(e_k,e_k)=δ_k² and symmetry of the single half-flow select exactly one form. Orthogonality and positive definiteness follow from that characterization.
+
+The [next multiplication-operator lead](../2-fully-proven/chronological-recovery-shift.md) is paper-only. Multiplication by the actual mode u should retain the ratios δ_(k+1)/δ_k that cancel from the heat trace. The physical bound gives weights at most 1/4; the shift's self-commutator tests log-convexity of recovery gaps. Weighted shifts and this test are classical; their behavior for the selected recovery sequence is unknown. No explicit higher-weight constants or asymptotics are claimed.
+
 ## Relation to existing mathematics and novelty limits
 
 - The ambient geometry is polynomial sup-norm geometry, an established subject. García et al. study explicit polynomial norm balls and their extreme points in [Geometry of homogeneous polynomials in ℝ²](https://arxiv.org/html/2408.01741v1). Pérez-García and Villanueva study norm attainment over ℓ₁ balls in [Where do homogeneous polynomials on ℓ₁ⁿ attain their norm?](https://doi.org/10.1016/j.jat.2004.01.001). Our chronological restriction is additional structure; the word “curvature” by itself supplies no novelty.
@@ -420,22 +508,23 @@ Consequently the detailed outer-window arrangement is invisible to this capacity
 - Single-diagram optimization has a close predecessor in interval entropy. Van der Hoog et al., [Sorting under partial (interval order) information, §3.1](https://jocg.org/index.php/jocg/article/download/3924/3645/15790), explicitly optimize products of interval lengths over embeddings preserving an induced partial order, following Cardinal et al. Their admissible embeddings need not preserve the full endpoint order fixed here. Equality of those suprema remains to prove; this primitive is not claimed as an invention.
 - The extrapolation ingredient is classical polynomial growth, reviewed by Révész in [Some polynomial inequalities on real normed spaces](https://arxiv.org/pdf/math/0703386). The enclosure proof uses that theorem rather than claiming a new extrapolation principle.
 - Finite stabilization is related to established exact-penalty theory: Jane J. Ye, [Exact Penalty Principle](https://web.uvic.ca/~janeye/hosted/papers/ExactPenaltyFinal.pdf), presents Lipschitz/error-bound mechanisms enforcing constraints at a finite penalty weight. Our multiplicative enclosure bound is an explicit application of the same general mechanism, rather than evidence that finite penalties were invented here.
+- Coalescence has a classical comparison in [Hefetz–Keevash, Lemma 2.3](https://people.maths.ox.ac.uk/keevash/papers/lagrangian-journal.pdf), where a minimal-support hypergraph Lagrangian optimizer must cover pairs. Our signed gap polynomials use endpoint transfer affinity; the elementary mass-transfer principle is not claimed as new.
 - The specific package of chronological capacities, the exact displayed constants, reversal witnesses, and graded comparisons are candidates for further novelty review. Searches have not established priority. A research field would require substantially more than naming this package.
 
 ## Next mathematical questions
 
-1. Classify the full signed six-endpoint coefficient ball, using the now formalized [sharp activation threshold](chronological-two-gap-rigidity.md). The [coalescence paper proof](../2-fully-proven/chronological-monotone-coalescence.md) reduces monotone probes to nonadjacent support of size ≤d and gives the full five-generator monotone norm. Endpoint affinity and adjacent transfer identities are now formalized; the finite reduction remains in progress. A [bounded numerical search](../2-fully-proven/computations/chronological-chord-capacity/PAIRING-DEPTH-REPORT.md) found no robust failure of depth one in degrees three or four; this is not a universal proof.
+1. Classify the full signed six-endpoint coefficient ball, using the now formalized [sharp activation threshold](chronological-two-gap-rigidity.md). The [coalescence paper proof](../2-fully-proven/chronological-monotone-coalescence.md) reduces monotone probes to nonadjacent support of size ≤d and gives the full five-generator monotone norm. The finite coalescence reduction and physical unit-capacity bridge are formalized. The actual strong deformation, diamond homeomorphism, and exact readout loss are formalized. The full five-generator monotone norm, its product unit ball, norm laws, and physical maximum attainment are now formalized. A [bounded numerical search](../2-fully-proven/computations/chronological-chord-capacity/PAIRING-DEPTH-REPORT.md) found no robust failure of depth one in degrees three or four; this is not a universal proof.
 2. Determine sharp stabilization depths for actual endpoint pairings. The unrestricted finite-window bound `d(d−1)` is now sharp in every degree d≥2. Its extremizer need not be a perfect-pairing form; the original six-endpoint cubic has exact depth one.
 3. Prove general fusion and nesting laws for arbitrary chord forms, beyond the repeated family above.
 4. Identify order-preserving maps, their contraction constants, and invariants of the resulting graded spaces. Determine which facts survive comparison with polynomial Banach spaces, planar algebras, and graph entropy.
-5. Prove the [topological spectrum construction](../1-in-progress/chronological-topological-spectrum.md): the sparse norming complexes across all pairing degrees would yield a graded eta response, with exactly the zeta zeros in the open critical strip. Path-complex topology and eta analysis are classical. The actual geometry-to-homology bridge and an observation-sensitive refinement remain to formalize; this is outside RH research.
+5. The [fusion zeta response](chronological-fusion-zeta-response.md) now has a closed capacity→actual faces→join Euler heat→continuous-reference integral→Mellin divisor chain. Extend beyond the single cubic seed and audit novelty. The separate [topological spectrum construction](../1-in-progress/chronological-topological-spectrum.md): the sparse norming complexes across all pairing degrees would yield a graded eta response, with exactly the zeta zeros in the open critical strip. Path-complex topology and eta analysis are classical. The actual geometry-to-homology bridge and an observation-sensitive refinement remain to formalize; this is outside RH research.
 
 ## Artifacts and verification
 
-Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. Thirty-three modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`, `ChebyshevGrowth`, `SegmentExtrapolation`, `DegreeSealing`, `OneEnclosure`, `EnclosureCone`, `EnclosureCurvature`, `CurvatureDepth`, `Padding`, `PaddedCubic`, `CommonCut`, `OuterCapacity`, `BinaryWindows`, `ChebyshevWindows`, `SharpDepth`, `PairingDepth`, `ThreeBlock`, `TwoGap`, `Activation`, `EndpointAffinity`, `GapTransfer`. All are wired into `HTGeometry.lean`.
+Lean directory: `formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor/`. 101 modules: `Foundations`, `FourPoint`, `SixPoint`, `Curvature`, `Transition`, `Reversal`, `Fusion`, `Amplification`, `Enclosure`, `Models`, `ProbeComparison`, `Sealing`, `SealingExamples`, `ChebyshevGrowth`, `SegmentExtrapolation`, `DegreeSealing`, `OneEnclosure`, `EnclosureCone`, `EnclosureCurvature`, `CurvatureDepth`, `Padding`, `PaddedCubic`, `CommonCut`, `OuterCapacity`, `BinaryWindows`, `ChebyshevWindows`, `SharpDepth`, `PairingDepth`, `ThreeBlock`, `TwoGap`, `Activation`, `EndpointAffinity`, `GapTransfer`, `MonotoneMerge`, `Coalescence`, `SparseCapacity`, `UnitCapacity`, `CubicComplex`, `CubicFaces`, `CubicRealization`, `CubicRetraction`, `CubicDiamond`, `CubicObservation`, `CubicPairings`, `CubicArcNorm`, `CubicNorm`, `CubicNormLaws`, `CubicFlow`, `CubicExtended`, `CubicInvariantSpace`, `CubicPolynomial`, `CubicCuspAlgebra`, `CubicCanonicalLoss`, `CubicCuspQuotient`, `CubicCuspNormalization`, `CubicCuspFlow`, `CubicCuspHeat`, `CubicCuspMellin`, `FusionCapacity`, `FusionHeat`, `CubicJoin`, `FusionMellin`, `FusionDivisor`, `GeometricFusion`, `CubicRepairAlgebra`, `CubicRepairQuotient`, `CubicRepairPower`, `CubicRepairBasis`, `CubicRepairRigidity`, `CubicRepairClassification`, `CubicRepairNormalization`, `CubicRepairFlow`, `CubicRepairHeat`, `CubicRepairLimit`, `CubicRepairClosure`, `CubicRecovery`, `CubicEquivariantAlgebra`, `CubicRecoveryConstants`, `CubicRecoveryGeometry`, `CubicEquivariantRecovery`, `CubicRadialCoordinates`, `CubicHomogeneousBoundary`, `CubicHomogeneousNorm`, `CubicHomogeneousCoordinates`, `CubicWeightedProfile`, `CubicWeightedRecovery`, `CubicWeightedInterval`, `CubicHomogeneousMetric`, `CubicGradedRecovery`, `CubicGradedCoefficient`, `CubicGradedDefect`, `CubicGradedLine`, `CubicDefectHilbert`, `CubicDefectEmbedding`, `CubicDefectCompletion`, `CubicHilbertFlow`, `CubicHilbertExtension`, `CubicHilbertBasis`, `CubicHilbertTrace`, `CubicHilbertMellin`, `CubicHilbertRigidity`. All are wired into `HTGeometry.lean`.
 
-All development checks used foreground `lake env lean` on scratch files, sequentially. All thirty-three individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 375 declarations (274 theorems and 101 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
+All development checks used foreground `lake env lean` on scratch files, sequentially. All 101 individual `lake build GaloisForLFunctions.HTGeometry.ChronologicalTensor.<Module>` targets passed without warnings; no umbrella or full build was run. Scratch `#print axioms` audits checked every one of the 1049 declarations (771 theorems and 278 definitions). Every declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder occurs. These are Lean/mathlib's standard logical foundations, not an axiom-free foundational system.
 
-The last completed index and repository-wide lint predate `EndpointAffinity` and `GapTransfer`. That lint reports eight unrelated `Arxiv2608BellmanShoreline*` modules awaiting umbrella imports (details in `/tmp/chronological-activation-lint.txt`). All 33 chronological leaves are wired and individually audited. Other researchers' files were not modified.
+The index was refreshed and final authoritative repository-wide lint passed. Existing file-size warnings remain. Results: `/tmp/chronological-hilbert-trace-index.txt` and `/tmp/chronological-hilbert-trace-lint.txt`. All 101 chronological leaves are wired and individually audited. Other researchers' files were not modified.
 
 Numerical leads and reproducible sources: [computation report](../2-fully-proven/computations/chronological-chord-capacity/REPORT.md). No numerical results enter any Lean proof. Symbolic proofs use algebraic identities, inequalities, differentiation rules, and finite AM–GM.

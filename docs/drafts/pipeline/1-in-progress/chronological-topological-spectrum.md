@@ -4,7 +4,7 @@
 
 ## Candidate mechanism
 
-For degree d pairings, pointwise monotone coalescence leaves the independence complex K_d of the path on 2d−1 physical gaps. The coalescence proof is in `../2-fully-proven/chronological-monotone-coalescence.md`; its formalization is the first dependency.
+For degree d≥1 pairings, coalescence leaves nonadjacent physical gaps. On the **unit-variation section**, this is the independence complex K_d of the path on 2d−1 gaps. The sparse set with variation **at most** one is a contractible cone and must not be used for this homology claim. Positive-degree homogeneity gives the same capacity on the unit section. Coalescence and preservation of the zero terminal coordinate are now formalized; the unit-section normalization and actual face/cohomology bridges are next.
 
 The classical path-complex classification gives:
 
@@ -28,6 +28,20 @@ The grading is homological degree plus one, not pairing degree or physical energ
 
 The established cubic retraction loses the curved observation plane while preserving topology. A useful next question is which observation-sensitive refinement distinguishes this lost metric data while retaining the topological zeta divisor. No such refinement is currently proved, and arbitrary multiplication by eta would not answer it.
 
+## A sharper consequence: fusion removes every strip zero
+
+For independently fused blocks, fixing the separating gap to zero makes the sparse probe complex the join of the two block complexes. Over the rationals, reduced homology of a join has grading `r=r₁+r₂+1`; occupation numbers `r+1` add. Thus the tower of ordered pairs has exactly j−1 classes at occupation j≥2. With the Euler-sign convention used above, its heat trace is **−H(t)²**, not H(t)²: reduced Euler characteristic acquires a minus sign under join.
+
+Since `H(t)=1/(exp(t)+1)` satisfies `H²=H+H′`, integration by parts first on Re s>1 gives
+
+`T_join(s) = η(s−1)−η(s)`.
+
+Here T_join means the Mellin transform of −H² divided by Γ(s). The heat integral is holomorphic on Re s>0 (bounded at zero, exponentially decreasing at infinity), so the identity continues throughout that half-plane. At infinity the integration boundary vanishes exponentially; at zero it vanishes for Re s>1. The usual Γ recurrence supplies the coefficient of η(s−1).
+
+For any zero ρ of ζ in 0<Re ρ<1, this yields `T_join(ρ)=η(ρ−1)≠0`. Indeed −1<Re(ρ−1)<0 contains no zeta zeros by the classical functional equation and zero-free right half-plane; the trivial negative-even zeros are outside this strip. The eta prefactor is also nonzero there. Therefore the single-block and two-block joined traces have **no common zero anywhere in the open critical strip**.
+
+This is a concrete role for the zeros: a mode cancelled in the single-block topological response becomes visible after fusion. It is not a claim about their real parts. The heat identity is classical algebra and Mellin analysis; the remaining geometric obligation is the actual join/cohomology realization for the norming complexes. These statements have paper proofs here but no Lean proof yet. Higher fusion powers give finite combinations of shifted eta functions; their common-zero behavior remains open here.
+
 ## Prior art and novelty boundary
 
 The path topology and hard-core fermion interpretation are known. [Przytycki–Silvero, §3.1, Proposition 3.6](https://arxiv.org/pdf/2305.18648) states the path homotopy classification (their path length counts edges). [Huijse–Schoutens, §5.1, Theorem 2](https://arxiv.org/abs/0903.0784) states the open-chain cohomology by chain length and fermion number. [Fendley–Schoutens–de Boer](https://doi.org/10.1103/PhysRevLett.90.120402) constructs supersymmetric hard-core lattice models. These are substantial overlaps; the topological tower or its Fermi interpretation cannot be advertised as invented here.
@@ -36,7 +50,8 @@ Corpus searches: exact phrase `"independence complex"` returned only unrelated s
 
 ## Next proof work
 
-1. Finish endpoint affinity, arbitrary-gap bridge, and finite coalescence in Lean.
+1. Coalescence is formalized. Finish the physical unit-section capacity and actual path-face bridges; exclude the cone and auxiliary terminal coordinate from the topological claim.
 2. Define actual sparse face complexes; prove path reduction and graded homology, or explicitly keep that dependency unformalized. A recurrence-defined surrogate is insufficient.
 3. Reuse or prove the paired-series analytic identity, then connect its coefficients to the actual homology theorem. State strip-wide zero equivalence without RH assumptions.
-4. Investigate an observation-sensitive invariant coupling the erased curved subspace to this topological response. Keep this distinction visible in the compact working notes.
+4. Prove the independent-block join bridge and the two-trace disjoint-zero theorem; distinguish Euler signs from occupation parity.
+5. Investigate an observation-sensitive invariant coupling the erased curved subspace to this topological response. Keep this distinction visible in the compact working notes.

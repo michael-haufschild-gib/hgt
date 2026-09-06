@@ -10,8 +10,8 @@ better-than-square-root regular and whose zeta has a certified zero off the crit
 function `N` is constant on each interval `[q^n, q^{n+1})` while `a x` grows by the factor `q`
 across it.  So `N(x) - a x` is bounded below by a fixed proportion of `x` somewhere in every such
 interval, for every candidate density `a > 0`: a lattice system admits **no power saving at all**.
-Self-similar constructions are lattice constructions, so they are excluded before any analysis of
-their zeta functions.
+This applies to the stated fixed geometric lattice; it does not classify all self-similar or
+fractal constructions.
 
 **Modification barrier.**  If a system is modified by inserting, deleting or rescaling a family of
 generalized primes whose reciprocal `σ`-sum converges for `σ > γ`, the zeta function is multiplied by
@@ -19,8 +19,9 @@ an absolutely convergent Euler product each of whose factors is nonzero on `Re s
 product is nonzero, so the modification is analytic and **zero-free** on `Re s > max(γ, 0)`: it
 cannot create a zeta zero that the base system did not already have.
 
-Together: an off-line zero must be inherited from the base system, and the base cannot be a lattice
-system.  Both statements are unconditional.
+Zeros strictly inside this convergence region are inherited from the base.  Boundary zeros and
+continuations beyond the region are not covered.  Neither result proves a general inequality
+between the modification's counting exponent and the integer-counting error exponent.
 -/
 
 open Set Filter Topology
@@ -112,7 +113,7 @@ theorem tprod_one_sub_ne_zero {ι : Type*} (z : ι → ℂ)
 and satisfy `∑ (q i)^{-σ} < ∞`, then the Euler factor `∏ (1 - (q i)^{-s})` is nonzero at every `s`
 with `Re s ≥ σ`.  Hence inserting, deleting or rescaling such a family multiplies the zeta function
 by an analytic, zero-free factor: in that half plane the modified system's zeros are exactly the base
-system's zeros.  An off-line zero cannot be manufactured by a modification; it must be inherited. -/
+system's zeros.  This nonvanishing conclusion applies only in the stated convergence region. -/
 theorem modification_factor_ne_zero {ι : Type*} (q : ι → ℝ) (σ : ℝ) (hσ : 0 < σ)
     (hq : ∀ i, 1 < q i) (hsum : Summable fun i => (q i) ^ (-σ)) {s : ℂ} (hs : σ ≤ s.re) :
     ∏' i, (1 - (q i : ℂ) ^ (-s)) ≠ 0 := by

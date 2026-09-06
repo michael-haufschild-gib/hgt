@@ -262,28 +262,24 @@ real singularity at the same abscissa, hence a change of the generalized-integer
 > ~~The arithmetic input any RH proof must consume is control of `N(x) − ρx` at the power scale
 > `x^{1/2}`.~~
 
-**That rule is false and is retracted.**  It is refuted, unconditionally and explicitly, by the
-companion card `regular-beurling-integers-do-not-constrain-the-zeros`: for every `β ∈ (1/2,1)`,
-every `γ ≠ 0` and every `θ > 0` there is a Beurling system whose zeta is the rational function
-`((s−β)² + γ²)s^{A−1}/((s−1)(s−δ)^A)` with `0 < δ < θ` — so its generalized integers satisfy
-`N(x) = ρx + O(x^{θ})` for *every* `θ > 0`, better regularity than RH claims for `ℤ` — while its
-zeta vanishes at `β ± iγ`.  The Landau obstruction of §3 applies only to *adjoining* primes to
-`ℤ` (where the comparison is with `ζ` itself); in the absolute Beurling category the compensating
-real singularity may be placed arbitrarily close to `s = 0`, at no cost to `N`.
+**That universal design rule is unsupported and is retracted.** The companion card
+`regular-beurling-integers-do-not-constrain-the-zeros` constructs a continuous model for each
+chosen `β∈(1/2,1)`, `γ!=0` and `θ>0`, with rational zeta
+`((s−β)^2+γ^2)s^(A−1)/((s−1)(s−δ)^A)` and `0<δ<θ`. Its paper counting estimate uses that
+selected `θ`; its Lean theorem proves density positivity, the transform and zero, not the
+counting estimate. The witnesses depend on `θ`. This establishes insufficiency of the estimate
+in that continuous class; it does not refute a necessity claim or settle a criterion with extra
+arithmetic hypotheses. Ordinary integer counting `floor x=x+O(1)` is unconditional.
 
-What survives, and is the corrected statement:
+The Landau argument above concerns positive adjunctions to the ordinary primes. An absolute
+continuous model is a different comparison class. Apply either obstruction only after checking
+that the **same countermodel satisfies all hypotheses** of the candidate criterion. A weighting
+such as `1/p` alone does not identify those hypotheses, and these examples do not establish that
+every RH proof must use exact occurrence or addition–multiplication coupling.
 
-> **Reciprocal-weight data — `1/p`, `Λ(n)/n`, Mertens constants, `ℓ²` prime energies, log-jet
-> Grams — cannot decide RH (this card).  Neither can any asymptotic regularity of the
-> generalized-integer counting function (companion card).  An RH proof must use *which* integers
-> occur, not how many: the input is the exact multiplicative structure `N(x) = ⌊x⌋`, not any
-> `N(x) = ρx + O(x^{θ})`.**
-
-Every corpus lane whose prime weights are `1/p`-type (Wold–Jordan carriers, Big-Witt `1/(pq)` rows,
-harmonic singular graphs, Mertens-window Grams) is dead by this card.  Lanes whose prime weights are
-`Λ(n) n^{-1/2}`-type (explicit formula, Weil quadratic form, restricted-aperture CCM) are not
-touched by either card — but note that they are also *not* protected by the retracted rule; their
-survival has to be argued on other grounds.
+The separate fixed-model construction with a quadratic logarithmic counting remainder is tracked
+in `not_new_scientific_knowledge/continuous-beurling-logarithmic-error-audit.md`. It remains continuous and
+asserts no functional equation.
 
 ## 7. Lean
 

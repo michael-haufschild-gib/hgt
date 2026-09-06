@@ -11,9 +11,8 @@ over the squarefree products of elements of `B`:
 #{ n ≤ x : no p ∈ B divides n }  =  ∑_{S ⊆ B} (-1)^{|S|} ⌊x / ∏_{p ∈ S} p⌋.
 ```
 
-This is the identity on which the error analysis of a thin deletion rests: the right-hand side is a
-signed sum over the squarefree `B`-products only, a set far thinner than `[1,x]`, which is what
-allows the cancellation exponent to fall below `1/2`.
+This finite identity is an input to deletion error analysis.  It supplies no asymptotic bound on
+the squarefree products, no probabilistic cancellation estimate, and no exponent below `1/2`.
 
 The proof is induction on `B`; the only arithmetic input is that the multiples of `d` in `[1,x]`
 number `x / d`, and that for `q ∉ S` the map `m ↦ q * m` identifies the `S`-free integers `≤ x / q`
@@ -103,9 +102,8 @@ theorem freeCount_insert {q : ℕ} (hq : 0 < q) {B : Finset ℕ}
 /-- **The deletion sieve identity.**  For a finite set `B` of pairwise coprime moduli, the number of
 `B`-free integers in `[1, x]` is the alternating sum over subsets of `B` of `⌊x / ∏ S⌋`.
 
-The right-hand side ranges over the squarefree `B`-products only.  When `B` is thin, that index set
-is far smaller than `[1, x]`, which is what makes cancellation in the error term cheaper than the
-square-root of `x`. -/
+The right-hand side ranges over subset products of `B`.  A sparsity or cancellation estimate for
+an increasing family of such sets is a separate obligation. -/
 theorem freeCount_eq_sum :
     ∀ B : Finset ℕ, (∀ p ∈ B, 0 < p) → ((B : Set ℕ).Pairwise Nat.Coprime) →
       ∀ x : ℕ, (freeCount B x : ℤ) =

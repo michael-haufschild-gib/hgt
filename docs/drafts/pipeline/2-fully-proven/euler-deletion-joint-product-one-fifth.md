@@ -1,6 +1,6 @@
 # A sharp one-fifth boundary for the joint deletion exponential product
 
-**Stage:** dependency-closed paper proof. Convergence for actual moduli two and three is Lean-closed; general coprime moduli and sharpness remain paper-only.
+**Stage:** dependency-closed paper proof. Convergence and sharpness for actual moduli two and three are Lean-closed; the general coprime-modulus extension remains paper-only.
 **RH status:** no implication. **Novelty:** arithmetic specialization not certified; standard
 signature and Banach-algebra arguments are explicitly reused.
 
@@ -160,7 +160,8 @@ remaining triple Y integral `(-y)^3/3!`. Thus the frozen block is exactly
 Step 5, with negative rather than positive divergence. This realizes the same paper proof
 in a smaller fixed target. These finite identities and the literal-source identification are now
 Lean-closed in `EulerDeletionJointNilpotentWitness`, with a clean axiom audit and successful
-narrow leaf build. The infinite corrected-product argument remains the Lean sharpness objective.
+narrow leaf build. The infinite corrected-product argument is also Lean-closed in
+`EulerDeletionJointProductSharpness`.
 
 In this realization put `Z=E_05`, `q_k=z_k^5/60`, and `E_k=B_k+q_k Z`.
 Since `Z^2=0` and every actual block satisfies `B_k Z=Z B_k=Z`, one has
@@ -186,9 +187,17 @@ error, proves convergence of the block inverse products, identifies exact source
 and handles every unfinished prefix. The scratch proof and six axiom audits passed; the narrow
 leaf build passed. The source has no supplied zero, commutation, or cancellation premise.
 
-The general-pair signature bridge and truncated-algebra sharpness theorem remain to be
-formalized. The next exact objective is the fixed sharpness witness, including the effect of
-varying weights. Proving only divergence of frozen blocks would not close that objective.
+`EulerDeletionJointProductSharpness` proves the exact corrected-product decomposition for the
+actual weights, summability of the correction error throughout `Re(s)>0`, and nonconvergence
+in the fixed six-coordinate target for every real `0<s<=1/5`. Its
+`positive_real_convergence_iff` classifies convergence in this target exactly by `s>1/5`.
+The boundary theorem `oneFifth_sourceProduct_not_convergent` has no supplied premise.
+Seven axiom audits and the narrow leaf build passed. The actual-product sharpness obligation
+is closed; the general coprime-pair signature bridge and convergence extension remain paper-only.
+
+The RH-producing relation is still missing. Further work must obtain a relation forced by an
+actual zeta zero and show why an off-line zero cannot satisfy it. Neither the verified product's
+existence nor its now-sharp one-fifth boundary supplies that relation.
 
 No numerical computation was needed. No global novelty certificate or qualifying RH proof
 architecture is claimed. Convergence here reaches strictly left of the critical line and holds

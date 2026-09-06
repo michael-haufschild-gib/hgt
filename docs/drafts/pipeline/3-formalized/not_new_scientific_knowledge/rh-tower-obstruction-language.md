@@ -49,8 +49,8 @@ New reusable helper: `natCast_dvd_natCast_of_enat` (ℕ∞ dvd descent — absen
   analyticOrderAt equivariance under conjugation and s ↦ 1−s; pairings xi_orderAt_conj,
   xi_orderAt_one_sub). All five axiom-clean [propext, Classical.choice, Quot.sound];
   umbrella + MainTheorems green; lint green (index regenerated).
-- 2026-07-03 (night) — DirichletRigidity.lean added: `no_polynomial_surgery` (finite-divisor
-  rigidity of the Dirichlet-series class; droves-dichotomy fragment), axiom-clean
+- 2026-07-03 (night) — DirichletRigidity.lean added: `no_polynomial_surgery` (exclusion of a
+  specified nonconstant polynomial multiplier, not general finite-divisor rigidity), axiom-clean
   [propext, Classical.choice, Quot.sound], umbrella + MainTheorems + lint green.
 
 2026-07-03 — extended: `RHTower/LogIndependence.lean` — the principal wall's arithmetic

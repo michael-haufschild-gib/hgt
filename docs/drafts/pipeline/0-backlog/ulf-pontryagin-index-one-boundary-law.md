@@ -71,7 +71,7 @@ equation is boost inversion `a ↦ −a`; a Xi zero at grade `a ≠ 0` is an ext
 | Unique common additive/multiplicative diagonal gauge is the identity; `n ↦ n^a` preserves `+` only at `a = 0` | `TwoProductDiagonalGaugeRigidity`, `positiveRadialWeight_map_add_iff` (F135, F136) | the timelike direction is the density class `n^0`; a boost is not an additive symmetry |
 | Weld trilemma: finite ⊕ positive ⊕ Hankel impossible; W1 "positivity must be created" | `stuck-route-obstruction-matrix.md` W1, W3 | a Lorentzian form cannot be made Euclidean by finite/positive/Hankel welds; the demand was for the wrong sign |
 | Countermodel with Euler product + FE + entire + `Λ ≥ 0` and off-line quartet; only difference: pole order three | `EntireFunctionalEquationOffLine` (F118, F119) | a larger pole block = room for a second hyperbolic plane |
-| Beurling system with simple pole, `N(x) = ρx + O(x^θ)` ∀θ, arbitrary off-line zeros | `regular_integers_do_not_constrain_zeros` | additive discrepancy modes not resummed by any Gamma factor = extra boundary |
+| Continuous Beurling model chosen separately for each error exponent, with prescribed off-line zero; counting estimate paper-only | `regular_integers_do_not_constrain_zeros` | proposed boundary interpretation; theorem alone establishes no boundary identification |
 | Adjoined prime mass of abscissa `β > 1/2` and reciprocal mass `→ 0` creates a zero at `β ± iγ`; mass of abscissa `≤ 1/2` moves nothing; mass-continuous functionals cannot decide RH | `exists_small_reciprocalMass_zero_off_line`, `zeros_unchanged_of_mass_abscissa_le_half` | the index is discontinuous in mass and stable under "compact" (abscissa `≤ 1/2`) perturbations: Fredholm-type stability |
 | Additive Euler–Maclaurin carrier sees a zero atom while every pinned prime-local map and multiplicative sigma jet is trivial | `additive_carrier_multiplicative_source_mismatch_positive` (F120) | occurrence is a joint-operation (boundary) effect, invisible to either marginal |
 | Off-line current appears as completion boundary / Roos `lim¹` / horizon charge; boundary absence ⟺ RH | F08, MUST-10, Route R, TMD | the anomaly lives on the completion boundary because that is where the second hyperbolic plane sits |
@@ -180,7 +180,8 @@ literal).
   boundary (`COMP`), and it fails for the Bost–Connes/KMS family as required by the AOC verdict
   because that family has no successor and no additive boundary resummation.
 - Pre-divisor (MUST-01); two legs + mixed interaction = successor, dilation, and their conjugation
-  relation (MUST-08); uses exact occurrence (MUST-41); predicts an exact quantitative theorem outside
+  relation (MUST-08); uses exact occurrence as this proposal's choice, not a universal consequence
+  of countermodels (MUST-41); predicts an exact quantitative theorem outside
   the transgression web (MUST-16); fits nothing per zero (CANNOT-25); admissible-class fixed before
   any repair (MUST-23).
 

@@ -71,27 +71,26 @@ Balance fails, so `h` is not the Euler factor of any positive generalized-prime 
 not the completed zeta of any Beurling system obtained from `ℤ` by adjoining primes.  Lean:
 `symmetric_quadratic_factor_not_balanced`.
 
-Note how the two constraints interact with the functional equation.  Symmetry about `Re s = 1/2`
-forces zeros and poles into pairs `{s, 1−s}`, so **Trace** reads `∑ p_i = #poles/2 = #zeros/2 = ∑ z_j`
-— equality, the boundary case.  A Beurling zeta has exactly one pole, at `s = 1`.  So a symmetric
-rational deformation would have to supply its compensating poles somewhere other than `{1}`, which no
-Beurling system provides.  **The functional equation and positivity are jointly rigid and separately
-blind.**
+The imbalance argument excludes this particular pure quadratic factor as a locally finite
+positive adjunction. It does not establish rigidity for all rational deformations with compensating
+poles. Continuous Beurling systems can have additional poles, as the explicit family in
+`regular-beurling-integers-do-not-constrain-the-zeros` demonstrates. No general theorem combining
+functional-equation symmetry and positive prime measure follows from this factor-balance test.
 
 ## 3. The completed picture
 
 | input | status |
 |---|---|
-| prime-counting data at any scale (reciprocal, Mertens, log-jet Grams) | blind — `rh-sensitivity-threshold-of-the-prime-measure` |
-| integer-counting regularity at any power scale | blind — `regular-beurling-integers-do-not-constrain-the-zeros` |
+| specified reciprocal-weight observables in the positive-adjunction comparison | apply the exact hypotheses in `rh-sensitivity-threshold-of-the-prime-measure`; not an exclusion of all prime-counting data |
+| selected integer-counting power bound in the continuous class | insufficient alone; model depends on exponent, counting estimate paper-only — `regular-beurling-integers-do-not-constrain-the-zeros` |
 | discreteness of the system | barred in all three construction regimes — `beurling-zero-certification-barriers` |
 | functional equation + order + reality | **blind — this card §1** |
-| functional equation **and** positive prime measure | jointly rigid — this card §2 |
+| the specific unbalanced rational adjunction in §2 | excluded by coefficient balance; no general joint-rigidity theorem |
 
-So the arithmetic content of RH is not any one of these hypotheses but exactly their *conjunction*.
-Every criterion that drops either half is provably incapable of deciding RH; every criterion that
-keeps both is, by the degree-1 rigidity philosophy, a restatement of RH for `ζ` itself.  That is the
-precise sense in which the four-card programme closes.
+These examples test different sets of assumptions. They do not establish that the arithmetic
+content of RH is exactly one conjunction, or exclude every criterion omitting one named feature.
+For each proposed criterion, a countermodel must satisfy its full assumptions simultaneously;
+continuous counterexamples cannot exclude criteria requiring additional discrete arithmetic data.
 
 ## 4. Lean
 
