@@ -1,6 +1,6 @@
 # Arbitrarily delayed moment obstruction in semialgebraic recovery geometries
 
-**Status:** the geometric negative-square theorem is now formalized: actual planar domains, faithful polynomial evaluation, attained geometric quotient norms, exact protected costs and first-drop bounds, strict adjacent log-convexity, exact first negative-square degree, absence of a representing measure, Hankel inertia, and Hausdorff convergence. Individual leaf checks pass; the full new axiom audit remains pending. The actual graded completion is formalized; its radial-flow trace/Mellin identification and the base wedge's explicit representing measure are in scratch. No numerical input. The original cubic numerical sign problem and novelty/priority remain open.
+**Status:** the [full geometric theorem is formalized and audited](../3-formalized/chronological-delayed-moment-obstruction.md): 15 new individual leaf builds, all 219 new declarations axiom-audited, umbrella wiring and authoritative lint passed. This includes actual domains and quotient norms, exact first square failure, strict adjacent curvature, Hankel inertia, Hausdorff convergence, an explicit representing measure for the limiting wedge, and the actual geometric completion-to-zeta chain. No numerical input. The original cubic numerical sign problem and novelty/priority remain open.
 
 ## Statement
 

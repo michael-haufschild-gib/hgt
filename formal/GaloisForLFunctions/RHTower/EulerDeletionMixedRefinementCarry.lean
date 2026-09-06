@@ -139,4 +139,89 @@ theorem cellCorrection_cocycle (s Z : ℂ) {p q : ℕ}
   rw [mixedPrefix_mul s Z hq r N] at hright
   linear_combination hright - hleft
 
+
+/-- Strict ordinary mixed prefix with a fixed centering value. -/
+def ordinaryMixedPrefix (s Z : ℂ) (N : ℕ) : ℂ :=
+  ∑ k ∈ Finset.range N, (rawPrefix s k - Z) * star (kernel s (k + 1))
+
+/-- Ordinary source paired with the endpoint of its dilated block. -/
+def dilationEndpointPairing (s : ℂ) (p N : ℕ) : ℂ :=
+  ∑ k ∈ Finset.range N, kernel s (k + 1) * star (rawPrefix s (p * (k + 1)))
+
+private theorem rawPrefix_succ (s : ℂ) (N : ℕ) :
+    rawPrefix s (N + 1) = rawPrefix s N + kernel s (N + 1) := by
+  exact Finset.sum_range_succ _ _
+
+private theorem rawPrefix_block (s : ℂ) (p N : ℕ) :
+    (∑ r ∈ Finset.range p, star (kernel s (p * N + r + 1))) =
+      star (rawPrefix s (p * (N + 1))) - star (rawPrefix s (p * N)) := by
+  rw [Nat.mul_succ, rawPrefix, Finset.sum_range_add]
+  simp [rawPrefix]
+
+/-- Finite summation by parts keeps the terminal ordinary-source product. -/
+theorem centeredBlockSum_eq_endpoint_sub_pairing (s Z : ℂ) (p N : ℕ) :
+    (∑ k ∈ Finset.range N, (rawPrefix s k - Z) *
+      ∑ r ∈ Finset.range p, star (kernel s (p * k + r + 1))) =
+      (rawPrefix s N - Z) * star (rawPrefix s (p * N)) -
+        dilationEndpointPairing s p N := by
+  induction N with
+  | zero => simp [rawPrefix, dilationEndpointPairing]
+  | succ N ih =>
+      rw [Finset.sum_range_succ, ih, rawPrefix_block, rawPrefix_succ]
+      simp only [dilationEndpointPairing, Finset.sum_range_succ]
+      ring
+
+/-- Exact ordinary-source decomposition of the mixed deletion prefix. -/
+theorem mixedPrefix_eq_ordinary_endpoint_pairing (s Z : ℂ) {p : ℕ}
+    (hp : 0 < p) (N : ℕ) :
+    mixedPrefix s Z p (p * N) = ordinaryMixedPrefix s Z (p * N) -
+      amplitude s p * (rawPrefix s N - Z) * star (rawPrefix s (p * N)) +
+        amplitude s p * dilationEndpointPairing s p N := by
+  have hsplit (k : ℕ) : centeredTail s Z p k =
+      (rawPrefix s k - Z) - amplitude s p * (rawPrefix s (k / p) - Z) := by
+    simp only [centeredTail]
+    ring
+  have hblocks :
+      (∑ k ∈ Finset.range (p * N),
+        (rawPrefix s (k / p) - Z) * star (kernel s (k + 1))) =
+      ∑ k ∈ Finset.range N, (rawPrefix s k - Z) *
+        ∑ r ∈ Finset.range p, star (kernel s (p * k + r + 1)) := by
+    rw [sum_blocks]
+    apply Finset.sum_congr rfl
+    intro k hk
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro r hr
+    rw [Nat.mul_add_div hp, Nat.div_eq_of_lt (Finset.mem_range.mp hr), Nat.add_zero]
+  calc
+    _ = ordinaryMixedPrefix s Z (p * N) - amplitude s p *
+        ∑ k ∈ Finset.range (p * N),
+          (rawPrefix s (k / p) - Z) * star (kernel s (k + 1)) := by
+      simp only [mixedPrefix, hsplit, sub_mul, Finset.sum_sub_distrib,
+        ordinaryMixedPrefix, mul_assoc]
+      simp only [mul_sub, Finset.sum_sub_distrib, Finset.mul_sum]
+    _ = _ := by
+      rw [hblocks, centeredBlockSum_eq_endpoint_sub_pairing]
+      ring
+
+/-- The centered ordinary prefix has an exact quadratic endpoint law. -/
+theorem ordinaryMixedPrefix_quadratic_identity (s Z : ℂ) (N : ℕ) :
+    Complex.normSq (rawPrefix s N - Z) = Complex.normSq Z +
+      (∑ k ∈ Finset.range N, Complex.normSq (kernel s (k + 1))) +
+        2 * (ordinaryMixedPrefix s Z N).re := by
+  induction N with
+  | zero => simp [rawPrefix, ordinaryMixedPrefix]
+  | succ N ih =>
+      rw [rawPrefix_succ, show rawPrefix s N + kernel s (N + 1) - Z =
+        (rawPrefix s N - Z) + kernel s (N + 1) by ring, Complex.normSq_add, ih]
+      have ho : ordinaryMixedPrefix s Z (N + 1) = ordinaryMixedPrefix s Z N +
+          (rawPrefix s N - Z) * star (kernel s (N + 1)) := by
+        exact Finset.sum_range_succ _ _
+      rw [ho, Finset.sum_range_succ, Complex.add_re]
+      change Complex.normSq Z +
+          (∑ k ∈ Finset.range N, Complex.normSq (kernel s (k + 1))) +
+          2 * (ordinaryMixedPrefix s Z N).re + Complex.normSq (kernel s (N + 1)) +
+          2 * ((rawPrefix s N - Z) * star (kernel s (N + 1))).re = _
+      ring
+
 end RHTower.DeletionMixedRefinement

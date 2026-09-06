@@ -292,8 +292,8 @@ how would a fields medal mathematician approach this problem? what our corpus is
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed arxiv papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2609.03951
-- https://arxiv.org/abs/2609.03958
+- https://arxiv.org/abs/2608.29060
+
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -408,9 +408,11 @@ download results and document them in a subfolder in docs/drafts/pipeline/2-full
 
 
 ## new idea
-Create significant progress across all our RH proof routes and route candidates and finalize a formal proof of RH in lean: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+Create significant knowledge and progress across all our RH proof routes and route candidates and finalize a formal proof of RH in lean: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
 
-Do not just search, but als o create missing mathematical knowledge with a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+Use the search tool for the lean corpus, not to find ready solutions but new ideas to brainstorm and conjecture about. Do not just search, but also create missing mathematical knowledge with a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+
+Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
 
 **Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -425,6 +427,7 @@ Do not just search, but als o create missing mathematical knowledge with a heavy
 2. Document high level knowledge about the problem as a whole independent of routes in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. Entries document compact knowledge about RH and its solution in the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", Cannot have this", "Cannot be able to do this". If the entry cannot be understood without first researching a specific route, it does not belong here.
 3. Update docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md only as a current state, no history, no diary, not logging - only document the current state of all routes and route candidates.
 4. Any new turn starts with you stating in chat what the full proof chain is that you are working on and how your new work will deliver significant progress for it.
+5. Missing in our Lean corpus or mathlib - Build no matter the effort.
 
 **Computations:**
 if computations can help you to find new leads or answer questions which you truly could not find or answer by reasoning, then computations are allowed.
@@ -437,3 +440,27 @@ Goal is met when RH is proven or disproven in lean.
 again: a radical new proof architecture. no suzuki, no hedenmalm, no weyl positivity, no connes, no burnol, no hilbert-polyia, no spectral shit, no theta shit, no gamma, none of these and other usual suspects.
 
 and use the search tool for our lean corpus
+
+
+## computations
+lets stop the specific work here for a while and admit that we do not know how to solve this or any hard problem around the RH proof yet.
+
+have a wide look at our routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+also look at the high level knowledge: docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md
+
+then design computation experiments that can suprise you and lead to new insights and ideas and approaches to solve the hard open mathematical problems we are stuck at.
+
+do not run hour long computation and do not run computations whose result you could also predict by reasoning.
+
+use the scientific methods to design experiments: docs/meta/scientific-method.md 
+
+run the computations on this runpod: ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519
+download results and document them in a subfolder in docs/drafts/pipeline/2-fully-proven/computations. optimize python code for multicore. once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+
+Use the search tool for the lean corpus, not to find ready solutions but new ideas to brainstorm and conjecture about. Do not just search, but also create missing mathematical knowledge with a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
+
+Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
+
+goal is met when you have found a solution to the rh proof on any existing or new route.
+
+be a real scientist here. we do not even have an idea for an approach to use to solve these open problems we face. be creative, use the scientific method, interrogate data, likely we need a completely new approach for each problem that neither we nor literature nor anything in your training data have thought of, so do explorativy experimental computations, try to "make the numbers talk"

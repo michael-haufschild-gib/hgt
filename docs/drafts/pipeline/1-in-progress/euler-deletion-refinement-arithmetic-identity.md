@@ -24,7 +24,7 @@ Corpus search supplies mechanisms for conjectures; actual statements and proof b
 
 ## Current status
 
-Missing arithmetic identity remains open. No new theorem or novelty claim is made by this card.
+The arithmetic identity forcing annihilation remains open. Exact finite decomposition identities are formalized; the growing-modulus analytic decomposition has a paper derivation only. No RH proof, impossibility result, or novelty claim follows.
 
 ## Conjecture loop: mixed ordinary-sum primitive
 
@@ -102,3 +102,11 @@ This is a conjecture, including at `sigma=1/2`, not a proved limit. The candidat
 **Conjecture G1:** after removing this leading term, the growing contribution is `|zeta(s)|^2 p^(1-s)`. Determine whether the coefficient or exponent is wrong before using it. **Conjecture G2:** at literal zeros the remaining modulus-dependent term is bounded. **Conjecture G3:** if G2 survives, the large-source-modulus correction `J_(p,q)` has an exact zero-specific limiting law that supplies more than the original endpoint equation. G3 is the desired implication to investigate, not a consequence asserted from G1 or G2.
 
 The Runpod test will compare zeros, horizontal shifts, and a nonzero critical-line control. It retains multiple ordinary cutoffs and records every subtraction. Numerical agreement will not establish any of these conjectures or enter a Lean proof.
+
+### Growing-modulus outcome
+
+G1 led to the complete decomposition in [the growing-modulus derivation](euler-deletion-growing-modulus-decomposition.md). The predicted `|zeta(s)|² p^(1-s)` term survives the independent checks and follows in that paper argument. G2, when asserted at critical-line zeros, failed: a universal real term `-(1/2)log p` remains. For strict-right zeros the remainder is bounded but its real limit is `-zeta(2 Re(s))/2`, not zero. G3 therefore produced a zero detector rather than a new location constraint: boundedness of `J_(p,q)` as `q` grows is equivalent to the original zero condition in that strip, and its limiting constant is retained.
+
+The new finite Lean statements are `centeredBlockSum_eq_endpoint_sub_pairing`, `mixedPrefix_eq_ordinary_endpoint_pairing`, and `ordinaryMixedPrefix_quadratic_identity`, in the existing `EulerDeletionMixedRefinementCarry` module. The exact infinite decomposition is formalized in `EulerDeletionInfiniteDecomposition` (`infiniteMixed_eq_decomposition`), including ordinary-cutoff convergence, absolute convergence of its actual remainder series, and the critical logarithm. Its growing-modulus asymptotics and the separate real-part identity remain paper results; the decomposition is a [BRIDGE] and does not replace the missing arithmetic vanishing conjecture. [Runpod report](../2-fully-proven/computations/euler-deletion-growing-modulus/REPORT.md) preserves numerical evidence separately. The missing RH implication remains open; neither an annihilating identity nor a proof of its impossibility was obtained.
+
+Verification: scratch and published-source `lake env lean` passed; the serialized final leaf build passed; the three new theorems and the two existing mixed-refinement capstones use only `propext`, `Classical.choice`, and `Quot.sound`. The existing umbrella import remains in place; index refresh and global formal lint passed, with existing large-file warnings. No owned Lean process or Runpod experiment process remained after checks. The companion `euler-deletion-growing-modulus-searches.json` retains 19 of the mechanism searches from this loop, including their caps; it is not an exhaustive corpus audit.
