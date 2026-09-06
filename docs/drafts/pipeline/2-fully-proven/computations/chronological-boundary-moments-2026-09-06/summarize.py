@@ -42,7 +42,7 @@ report='''# Exact boundary-moment repair: finite experiment
 
 Exploratory numerical data, not a proof or a certified continuum bound.
 The frozen K-test and its mathematical constraints are in
-`../../1-in-progress/chronological-boundary-moment-repair.md`.
+`../../../1-in-progress/chronological-boundary-moment-repair.md`.
 
 At N=512,2048,8192, freeze the first N/2 coefficients to Möbius. For each
 m=0,…,8, impose exact harmonic charge zero, coefficient sum −2, and the first

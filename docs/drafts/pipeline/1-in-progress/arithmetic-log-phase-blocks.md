@@ -42,7 +42,7 @@ Differentiate the displayed primitive on each integer cell to check the formula.
 
 ## Open obligations
 
-Prove or refute B1 and B2 without weakening their quantifiers. If either fails, retain R unchanged and examine the actual cancellation or endpoint invariant exposed by failure. A counterexample to this grouping would not disprove R or RH. No literature novelty is asserted.
+B1 is refuted by the literal-source theorem described below; its frozen quantifiers remain unchanged. Prove or refute B2. Retain R unchanged and use the exact source-scaling survivor to study cumulative cancellation. A counterexample to this grouping would not disprove R or RH. No literature novelty is asserted.
 
 ## Independent positive survivor L [BRIDGE]
 
@@ -62,7 +62,7 @@ Paper derivation: integrate twice on each integer cell. The continuous quadratic
 
 For each `0<y<pi`, `sin(y)-y*cos(y)>0`, because its derivative is `y*sin(y)>0` and its value at zero is zero. Multiply this inequality at `r*x` and `(1-r)*x` by the respective positive complementary sine and weight; add, then use the sine addition identity. Endpoint cases are exact zeros. The full finite integral identity, all turn numbers, and exact equality classification are now proved in `ArithmeticLinearPhasePrefix`; the proof is not limited to the final trigonometric inequality.
 
-The next attack on B2 must test fractional endpoints near integer coincidence, where L's strict margin vanishes. This boundary cannot be passed by a uniform absolute perturbation estimate with a positive fixed margin.
+The source-scaling theorem transfers every fixed strict negative case of L to an eventual strict negative logarithmic prefix as the cutoff and height grow proportionally. The [proved first-variation identity](../3-formalized/arithmetic-clock-first-variation.md) now covers the exact integer coincidences too: the leading value is zero, but the exact first-order coefficient is strictly negative. Thus every fixed positive complete endpoint is covered. B2 still needs control over every turn number at one finite cutoff, including changing fractional endpoints close to integer coincidence. Neither of the present pointwise asymptotic theorems is uniform in the turn count.
 
 **L+ [BRIDGE], independently frozen after L's proof:** for `0<lambda<2*pi` and every real `A>=0`, the constant-speed prefix `integral_(0..A) b(y)*sin(lambda*y) dy` is nonpositive, even if A is not a complete-turn endpoint. In the first half of each turn the prefix decreases, because `b<=0` and `sin>=0`; in the second half it increases, because both factors are nonpositive. Its maximum on that turn is therefore at one of the two complete-turn endpoints already controlled by L. This exposes a sign-preserving primitive for a constant-speed model. It does not prove that a nonlinear change of phase preserves the sign.
 
@@ -78,7 +78,7 @@ The additional numerical attack uses finite polynomial-power primitives directly
 
 ## Established results and exact open cut
 
-The main Runpod scan found 43 positive complete turns among 504 tested turns, in 21 of 64 parameter triples. Every tested prefix was negative. A separate boundary scan found 882 negative prefixes, including 147 undamped-clock tests at `sigma=-1`. Twelve selected cases were independently checked by integer-split quadrature at 150 digits; method differences were below `9e-144`. The [report](../2-fully-proven/computations/arithmetic-log-phase-blocks/REPORT.md) retains all data and numerical limitations. B1 has strong numerical counterevidence; no formal refutation of the logarithmic B1 is claimed. B2 and C remain conjectures.
+The main Runpod scan found 43 positive complete turns among 504 tested turns, in 21 of 64 parameter triples. Every tested prefix was negative. A separate boundary scan found 882 negative prefixes, including 147 undamped-clock tests at `sigma=-1`. Twelve selected cases were independently checked by integer-split quadrature at 150 digits; method differences were below `9e-144`. The [report](../2-fully-proven/computations/arithmetic-log-phase-blocks/REPORT.md) retains all data and numerical limitations. The separate module `ArithmeticLogarithmicPhaseScaling` now formally refutes the literal logarithmic B1, independently of these numerical results. At height `t=(4*pi/3)*N`, its second actual fixed-anchor turn is positive for arbitrarily large integer N, still with `t<2*pi*N`. The proof transfers the positive model segment by an exact source change of variables and dominated convergence, including the complex phase anchor. B2 and C remain conjectures. See [the actual-source certificate](../3-formalized/arithmetic-logarithmic-phase-scaling.md) and [the closed no-go with its positive survivor](../5-failed/arithmetic-logarithmic-block-sign.md).
 
 L and L+ are fully proved in Lean, including their source integral identities and complete equality classification. Lean also proves that the second constant-speed turn at `lambda=4*pi/3`, over `[3/2,3]`, is positive. The [formal certificate](../3-formalized/arithmetic-linear-phase-prefix.md) and [closed model no-go](../5-failed/arithmetic-linear-block-sign.md) delimit this result.
 

@@ -5,8 +5,8 @@ of k,N, and full L²(0,∞) convergence e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0,
 where h(t)=1/t−1/(e^t−1). Derive everything without RH. The target has not changed.
 [Classical RH interface](chronological-rh-recovery-interface.md).
 
-**Verified:** twelve individual Lean leaf builds; 154 public declarations audited,
-only propext/Classical.choice/Quot.sound. All twelve umbrella imports wired.
+**Verified:** fourteen individual Lean leaf builds; 167 public declarations audited,
+only propext/Classical.choice/Quot.sound. All thirteen umbrella imports wired.
 Current authoritative lint passes with existing file-size warnings. [Proofs and certificate](../3-formalized/chronological-arithmetic-repair-boundary.md).
 
 ## What works
@@ -145,3 +145,39 @@ control moving L² profiles, whose Mellin dependence is N^(ρ−s) on an entire
 line. A dual proof must rule out a uniformly positive separating L² test;
 compact-test identities alone do not extend without the required norm control.
 [Compact current attack card](chronological-arithmetic-averaging.md).
+
+## Current boundary-moment attack
+
+**Two new paper proofs, Lean pending.** A fixed smooth finite-dimensional
+tail space cannot repair an exact proportional Möbius prefix, even with
+unbounded tail coefficients: exact discrete annihilators force a forbidden
+weighted Möbius critical limit. The positive invariant is the nonzero distance
+of a critical heat profile from that tail space; a uniform observation
+inequality gives a cofinal full-norm floor.
+
+**[BRIDGE K-growing-jet]:** PNT and a finite Gram construction do supply
+unit-bounded arrays with an exact half-prefix, zero charge and an increasing
+number of matched odd derivatives. They converge in L²([δ,∞)) for every
+δ>0. Their full L² norm is still uncontrolled. The missing estimate must
+link growing moment order, inverse Gram cost and the approaching-zero
+remainder. Fixed-order feasibility alone does not provide that link.
+
+Runpod tested 27 exact-moment candidates. Best unit-budget norms at
+N=512,2048,8192: 4.05e−6, 1.28e−6, 5.20e−7. More moments can worsen
+full error and exceed the coefficient budget; near-zero Taylor accuracy
+does not control the rest of the boundary layer.
+[Compact proof/experiment map](chronological-boundary-moment-repair.md).
+
+**[BRIDGE K-window], paper proved:** every zero-charge unit row with an exact
+half-prefix has ||r_N||_(L²([log(N)/N,∞)))≤8/log(N), N≥4. For the growing-jet
+source, [R] therefore reduces exactly to N⁻¹∫₀^(log N)|r_N(u/N)|²du→0.
+That growing interval cannot be replaced by a fixed compact interval.
+
+**New Lean component:** the actual weighted source Σμ(n)w(nt) has an
+absolutely convergent Mellin transform M(w)/ζ on Re s>1, with measurable,
+finite-cutoff and local-integrability properties for compact bounded weights.
+[Certificate](../3-formalized/chronological-weighted-mellin.md).
+The actual weighted critical-zero obstruction is also audited, including its
+Abel boundary limit, pole-removed continuation and positive cofinal source
+height. [Boundary certificate](../3-formalized/chronological-weighted-boundary.md).
+The full fixed-tail obstruction and growing-jet construction remain paper-only.

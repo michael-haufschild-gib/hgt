@@ -74,3 +74,12 @@ where Q is the complete arithmetic diagonal and the new terminal channel is zero
 also proves `Q(M)<=144M^2 sum_(d<=M)1/d` unconditionally. No experimental result is used.
 The numerical SD2 counterexample itself is not a Lean certificate. The signed total
 off-diagonal upper bound and the subpower-loss continuation bridge remain open.
+
+
+**Other proposed producers:** arbitrary nonnegative decreasing time weights fail in Lean,
+including some positive strictly decreasing geometric weights. Mixed positivity against every
+flat prefix fails numerically at M=17,t=6; mixed positivity against every geometric kernel
+fails numerically at M=1802,q=1/1000000, despite passing the initial grid through512. The
+[obstruction card](../5-failed/mobius-divisor-decreasing-weight-producer.md) retains the exact
+all-scale Abel prefix representation and states the separate proof statuses. These failures
+do not refute SD1. A source proof must still control the total signed half-order pairing.

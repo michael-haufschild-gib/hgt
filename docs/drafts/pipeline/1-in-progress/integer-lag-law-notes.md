@@ -277,3 +277,30 @@ Landau argument (corpus `landau_local_summability_transfer` on the Dirichlet ser
 data: any prime-restricted transform of `Σ_ρ w_ρ p^{ρ−½}` is a `ρ`-sum of prime series at shift `ρ`, whose
 singularities sit at `ρ + ρ'`. Not built in Lean (a receiver with a known hole; the two-prime criterion MUST-244 is
 unconditional). Real poles at `2β − 3/2` with residue `2m Re w_ρ > 0` are a side remark.
+
+## Correction and upgrade (2026-09-06): prime lags decide a zero-free strip; the Θ = 1 blind spot is gone
+
+Earlier notes said the interval route fails for primes because prime gaps `p^{0.525}` exceed `√p`. That is true for
+RH but not for strips: over a gap `g` the lag function moves by `≤ 11(g+1)(log 2n+2)²/√n` (Lean `abs_integerLag_sub_le`,
+`abs_weilLagFunctionReal_sub_integerLag_le_of_gap`), so with the corpus Hoheisel exponent `71/100`, `a_p ≤ M` on primes
+gives `Φ(L) ≤ M + C e^{0.23 L}`, and the growth criterion (`re_le_half_add_of_weilLagFunctionReal_le_exp`) gives
+`Re ρ ≤ 3/4` for all zeros (`re_le_three_quarters_of_primeLag_le`). Hence in the Landau route above, `Θ ≤ 3/4 < 1`:
+every off-line pole `ρ₀ − ½` is visible (`β₀ > 2Θ − 1` holds since `2Θ − 1 ≤ ½ < β₀`), `G` is meromorphic on
+`Re s > 2Θ − 3/2 ≥ ... ≤ 0`, and the assembly would close **`RH ⟺ sup_p a_p < ∞`** (prime powers first, avoiding the
+tail `T(w)`; primes with the tail). Bricks: MUST-246/247, corpus `landau_local_summability_transfer`,
+`LSeries_vonMangoldt_eq_deriv_riemannZeta_div`, summability of `Σ_q |w_q| log(2+|γ_q|)` (dyadic windows via
+MUST-246), residue of `−ζ'/ζ` at `1`, a convex-tube identity-theorem step as in `WeilLagFunctionShadow`.
+
+## The prime-power criterion is closed (Lean, 2026-09-06): `RH ⟺ sup_{p^k} a_{p^k} < ∞`
+
+`PrimeLagLandauCriterion.riemannHypothesis_iff_primePowerLag_bddAbove`. The assembly follows the route above with
+`Θ ≤ 3/4` from MUST-250: nonnegative series `Σ (M − a_n)Λ(n)n^{−1−s}` = `M(−ζ'/ζ)(1+s) − Σ_ρ w_ρ(−ζ'/ζ)(s+3/2−ρ)` on
+`Re s > Θ−½`; analytic continuation of the right side to the box `Θ−½−η < Re s < ¾`, `|Im s| < 3η` (η below a sixth of
+the least `|γ|`, so no near pole meets the box); `landau_local_summability_transfer` moves the abscissa to
+`Θ−½−η/4`; a maximal zero `ρ₀` on its horizontal line with `Re ρ₀ > Θ−η/8` has a ray `ρ₀−½+t` on which the right side
+is `≥ ‖W₀‖/t − C`; the real-analytic identity theorem along the ray meets the continuity of the series at `ρ₀−½`.
+STATUS MUST-251. What is not yet done: primes only (subtract the `k ≥ 2` part, analytic on `Re s > Θ−1`); a
+quantitative Ω-rate at prime powers under `¬RH` (the argument gives unboundedness, not `Ω(n^{Θ−½−ε})` along prime
+powers — that would need a Landau–Ingham oscillation theorem at prime powers rather than a summability transfer).
+What this settles: the RH content of the lag sequence sits entirely in its prime-power values; the sequence
+`a_{p^k}` is the one-sided observable, and the Landau argument is the only tool used beyond MUST-246/247.

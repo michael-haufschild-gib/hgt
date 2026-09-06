@@ -144,11 +144,21 @@ zero. Every estimate above retains the actual integer cutoff and half-line
 L² norm. No continuous model replaces the discrete tail: ψ_N annihilates it
 exactly, and only the bounded Möbius head pays the projection error.
 
-Lean dependencies not yet implemented: the weighted Möbius critical-zero
-obstruction for compact C¹ weights; heat-transform separation; quantitative
-Gram projection under this Riemann discretization; the actual residual
-observation inequality. Existing raw-Laplace obstruction is not a substitute
-for these general weighted dependencies. Do not mark this result formalized
+**Lean component completed:** the actual weighted series now has a checked
+absolute Mellin interchange theorem, exact finite-cutoff identity,
+measurability, inverse-time bound and local integrability.
+[Eight-declaration certificate](../3-formalized/chronological-weighted-mellin.md).
+The full theorem above is still paper-only.
+
+**Weighted boundary now Lean-complete:** bounded measurable weights, including
+the truncated C¹ weight used here, satisfy the critical-zero obstruction and
+its positive cofinal source-height conclusion. The proof includes the actual
+Mellin continuation and critical Abel limit, without assuming continuity of
+the arithmetic source. [Five-theorem certificate](../3-formalized/chronological-weighted-boundary.md).
+
+Lean dependencies not yet implemented: heat-transform separation; quantitative
+Gram projection under this Riemann discretization; integer-scale transfer;
+the actual residual observation inequality. Do not mark this result formalized
 until the entire theorem and the invariant/observation survivor are checked.
 
 No route is retired on the strength of this paper-only result. Growing m

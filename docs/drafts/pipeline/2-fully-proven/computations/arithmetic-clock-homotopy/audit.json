@@ -1,0 +1,27 @@
+{
+  "homotopy_initial": 96,
+  "homotopy_noninteger": 48,
+  "restricted_evaluations": 108,
+  "restricted_positive": 0,
+  "large_positive": 7,
+  "layer_evaluations": 290,
+  "layer_controls": 58,
+  "layer_negative": 0,
+  "method_comparisons": [
+    {
+      "h": "0.37",
+      "ratio": "0.99",
+      "difference": "8.34490842e-84"
+    },
+    {
+      "h": "0.83",
+      "ratio": "0.5",
+      "difference": "7.915023e-85"
+    },
+    {
+      "h": "1",
+      "ratio": "0.99",
+      "difference": "1.21138804e-83"
+    }
+  ]
+}

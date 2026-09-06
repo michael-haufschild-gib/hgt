@@ -72,3 +72,61 @@ moment order, PNT makes its least-norm tail coefficients tend uniformly to
 zero. A finite admissibility search can therefore increase the order slowly.
 This gives no full L² estimate; it is not [R]. Prove the actual source
 construction and identify precisely the missing quantitative growth bound.
+
+**Paper audit outcome:** fixed-m Gram convergence plus unconditional harmonic
+Möbius cancellation proves the bounded growing-jet source. It has an explicit
+exponential residual bound on every [δ,∞), δ>0, but no full-norm estimate.
+[Construction, exact proof and remaining gap](../2-fully-proven/chronological-growing-moment-source.md).
+Both new paper results still require Lean formalization.
+
+**K-test complete:** best unit-budget errors at N=512,2048,8192 are
+4.04774603e−6 (m=3), 1.28472776e−6 (m=7), 5.20263969e−7 (m=5).
+N=512,m=8 needs budget 10.2558158 and has worse error 1.59427516e−5.
+All 27 vectors passed independent quadrature and high-precision checks.
+The remaining error lies predominantly beyond t=1/N; matching more moments
+need not reduce it. [Data, figures and report](../2-fully-proven/computations/chronological-boundary-moments-2026-09-06/REPORT.md).
+
+**Next hard step:** quantify the growing moment family at t→0, including
+the interval beyond its Taylor radius; formalize the actual weighted Möbius
+Mellin obstruction and discrete projection survivor. Do not replace the
+missing bound by fixed-m PNT convergence or diagonal feasibility alone.
+
+**Independently frozen [BRIDGE K-window].** For every unit-bounded row with
+exact zero charge and an exact half-length Möbius prefix, the residual norm
+on [log(N)/N,∞) is at most 8/log(N), for N≥4. Thus [R] for the growing-jet
+source is equivalent to controlling the actual rescaled interval
+
+    N⁻¹ ∫₀^(log N) |r_N(u/N)|² du →0.
+
+This is an equivalent moving-window target for those rows, not a weaker
+replacement of [R]. The proof uses the sharper geometric bound with separate
+denominators (1−exp(−t))(1−exp(−(M+1)t)). This window bound is paper-proved.
+
+**Lean progress:** eight weighted-Mellin declarations and five weighted-boundary
+theorems are audited. For bounded measurable compact weights, critical-scale
+little-o decay of the actual Möbius sum forces the weight's Mellin moment to
+vanish at every critical zero. A nonzero moment gives a positive source height
+cofinally. Geometry, discrete projection, integer-scale transfer and the norm
+observation still need formalization. [Latest certificate](../3-formalized/chronological-weighted-boundary.md).
+
+**Direct remainder attack.** Freeze the stronger quantitative test of the
+actual moment family: after cancellation, bound the exact Bose partial-fraction
+remainder on 0≤u≤log N, rather than infer convergence from jets. On 0≤u≤1
+the direct absolute bound pays sqrt(N)(2π)^(−2m), so mere m_N→∞ is insufficient.
+On the full logarithmic window the same bound instead contains
+(log(N)/(2π))^(2m) and eventually worsens with m. This rejects that absolute
+estimate as a proof strategy; it does not refute the coefficients or [R].
+The remaining signed arithmetic remainder must be estimated before taking
+absolute values term by term. The exact expansion and surviving local bound
+are recorded in the growing-moment paper; they are not yet Lean proofs.
+
+**Signed projection attack:** the exact Gram formula rewrites the residual as
+target forcing plus a Möbius sum against the heat kernel minus its tail-sample
+projection. That projection generally introduces an x⁻¹ term outside the
+tail interval. Subtracting this pole isolates the exact channel
+−N d_(-1)(u) Σ_(k≤M)μ(k)/k and leaves a smooth kernel for Abel summation.
+PNT controls that harmonic sum only as o(1); after L² rescaling its factor is
+sqrt(N), so this does not close the window estimate. The remaining target is
+joint cancellation of these explicit terms, not separate convergence of their
+factors. The exact identity is paper-proved in the growing-moment paper;
+its Lean formalization and a useful uniform bound remain pending.

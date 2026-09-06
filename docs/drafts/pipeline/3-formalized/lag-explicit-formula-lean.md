@@ -120,3 +120,29 @@ and under RH the inequality is tight along `b^m` for every base `b`. Axioms: `[p
   `sum_rootsOfUnity_pow`, `ring_powerSum`, `tsum_powerSum`, **`exists_positive_configuration_powerSums_le`**
   (unit disc, sums `≤ e^{−lm}`) and **`exists_positive_configuration_bounded_powerSums`** (`R > 1`, sums `≤ 1`).
   STATUS CANNOT-327.
+
+- `RHTower.WeilLagFunctionGrowth` — `re_le_half_add_of_lagPoleSeries_extension` (extension of the lag pole series to
+  `Re z > a` ⟹ `Re ρ ≤ ½ + a`), the growth measure `growthMeasure a M` (density `M e^{au} − Φ` plus `e^{au}du`),
+  `laplaceMass_growthShift`, `isAbscissa_growth`, `growthContinuation`, `complexLaplace_growth_eq`, `abscissa_growth_eq`
+  (Landau), **`re_le_half_add_of_weilLagFunctionReal_le_exp`**. STATUS MUST-250 (i).
+- `RHTower.WeilLagFunctionPrimeGap` — gap sums `psi_sub_psi_le`, `mertensSum_sub_le`, the bracket `lagBracket` with
+  `abs_lagBracket_le` (`≤ 4k(log k+2)²`) and `abs_lagBracket_sub_le`, **`abs_integerLag_sub_le`** (Lipschitz law),
+  `abs_weilLagFunctionReal_sub_integerLag_le_of_gap`, `exists_prime_short_gap` (corpus Hoheisel + Bertrand),
+  `gap_factor_le` (`≤ 457776 p^{23/100}`), `exists_growth_bound_of_primeLag_le`, **`re_le_three_quarters_of_primeLag_le`**,
+  `one_quarter_le_re_of_primeLag_le`. STATUS MUST-250 (ii)–(iii).
+
+## The prime-power criterion (added 2026-09-06, Lean, `PrimeLagLandauCriterion`)
+
+`riemannHypothesis_iff_primePowerLag_bddAbove : RH ↔ ∃ M, ∀ n, Λ(n) ≠ 0 → integerLag n ≤ M`, and
+`riemannHypothesis_of_primePowerLag_le`. Modules (all wired in `RHTower.lean`, axioms `[propext, Classical.choice,
+Quot.sound]`):
+- `PrimeLagLandauWeights`: `summable_lagWeight_mul_log` (`Σ_q ‖w_q‖ log(2+|γ_q|) < ∞` from the local zero count), the
+  two-sided `norm_logDeriv_zeta_le_abs`, `zeroOrdinate_ne_zero'` (unconditional, from `xi_pos_on_real_anchor`).
+- `PrimeLagLandauSeries`: `primeLagCoeff M n = (M − a_n)Λ(n)/n`, nonnegative under the hypothesis, `abs_integerLag_le_rpow`
+  (`|a_n| ≤ W n^{θ−½}`), `lagCoeff_LSeriesSummable` on `Re s > θ − ½`, the identity `LSeries_lagCoeff_eq`.
+- `PrimeLagLandauContinuation`: `landauG`, the box, far-term bound `norm_landauTerm_le_far` (MUST-247), `nearSet`
+  finite, `differentiableOn_landauG` on open subsets of the box avoiding the near poles.
+- `PrimeLagLandauCriterion`: `zeroReSup`, `landau_transfer_step` (corpus `landau_local_summability_transfer` with
+  `σ₁ = Θ−½+η`, `h = η`, `R = 5η/2`), `exists_bound_neg_logDeriv_zeta_sub_inv`, `aliasedWeight` (finite sum over the
+  near copies with the same support point, `Re > 0`), `landauG_ray_lower_bound`, `exists_pos_le_ordinate_gap`, the
+  maximal-zero + ray identity-theorem contradiction.
