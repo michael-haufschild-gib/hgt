@@ -39,4 +39,7 @@ for PH1 or GH1. Neither is substituted for DW1 or SD1 after failure.
 
 The [report](../2-fully-proven/computations/mobius-divisor-decreasing-weights-2026-09-06/REPORT.md)
 contains protocols, full results, analytic proof outline, and limitations. The actual half-order
-SD1 sign and the explicit continuation bridge absorbing the harmonic diagonal loss remain open.
+SD1 sign remains open. The unconditional signed hyperbola bound
+`sum_(d<=M) C_d(M)^2<=722M²` is closed in
+`RHTower.sum_mobiusDivisorDilationChannel_sq_le_quadratic`; it removes the diagonal
+harmonic loss, so SD1 would feed the existing boundedness-to-RH receiver directly.

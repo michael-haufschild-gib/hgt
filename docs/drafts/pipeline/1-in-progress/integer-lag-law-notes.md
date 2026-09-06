@@ -328,3 +328,24 @@ right of `α`, continuation with growth exponent `A < 1` on `α − η₀ ≤ Re
 (prime zeta), which needs a bound `|log ζ(w)| ≪ log|Im w|` on `Re w ≥ 1 − η₀`, `|Im w| ≥ g`, under `Θ ≤ ¾`
 (MUST-250 supplies `Θ ≤ ¾` from the same hypothesis `a_p ≤ M`); the `j ≥ 2` terms of `P(w) = Σ μ(j)/j · log ζ(jw)`
 are bounded. Outcome would be `RH ⟺ sup_p a_p < ∞` with no prime powers.
+
+## Primes only (Lean, 2026-09-06): `RH ⟺ sup_p a_p < ∞`, sharp constant `a_1`
+
+`PrimeLagLandauPrimesOnly.riemannHypothesis_iff_primeLag_le_sharp`. No prime-zeta continuation was needed: the proper
+prime powers contribute a Dirichlet series analytic on `Re s > Θ − 1`, subtracted from the prime-power continuation.
+STATUS MUST-254. The lag route's sampling question is now completely answered: primes, prime powers, `k`-th powers,
+all integers, and every weight covered by the counting-function law are RH-complete; bases are shadowed.
+
+## Two-sided prime sampling is not configuration-free (analysis, 2026-09-06)
+
+The one-sided criteria (MUST-251–254) are Bohr–Landau theorems: the contradiction comes from the pole `α + ρ₀ − ½`
+of `Σ_ρ w_ρ F(s − ρ + ½)`, which no other zero can share, with residue of positive real part. The mean-square prime
+criterion `Σ_{p≤x} (a_1 − a_p)² log p / p ≪ x^ε ⟹ RH` (Cramér-type; its continuous version `∫ Φ(L)² e^{−2aL} dL < ∞
+∀ a > 0 ⟹ RH` is a Plancherel statement and configuration-free) goes through the double sum
+`Σ_{ρ,ρ'} w_ρ w_ρ' (−ζ'/ζ)(s + 2 − ρ − ρ')`, whose poles `ρ + ρ' − 1` are shared by every pair with the same sum.
+Landau plus the box argument give exactly: if the prime mean-square series converges at some `σ₁ < 2Θ − 1`, then
+`Σ_{ρ+ρ'=z} w_ρ w_ρ' = 0` for every `z` with `Re z > σ₁ + 1` (all residues cancel), in particular at `z = 2ρ₀` for
+a zero of maximal real part. When `Θ` is attained by a single conjugate pair the residue `w₀² ≠ 0` cannot cancel and
+the criterion holds; in general it depends on additive coincidences `ρ + ρ' = ρ'' + ρ'''` in the zero set (sumset
+structure), which no positivity argument controls. Verdict: the two-sided prime criterion is a conditional receiver
+(additive genericity of the top zeros); not pursued further.

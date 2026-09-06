@@ -1,8 +1,8 @@
 # HB canonical source-level spin-two amputation
 
 - **ID:** HB-SPIN-TWO-SOURCE-AMPUTATION
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE / source construction
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / source construction
 - **Objective:** unconditional RH proof/falsification through HB; this card constructs the
   angular source before divisor selection and does not claim the missing extinction law.
 
@@ -29,13 +29,13 @@ Whole-corpus searches include `spin two radial`, `third order source actual`, `t
 ward`, `coefficient phase centralizer`, `spin two quotient`, `amputated source normalized`,
 `projecting side factor`, `analytic quotient nonzero source`, and `XiC analytic dense nonzero`.
 
-## Exact proposed source
+## Exact source
 
 For the actual repeated Eisenstein parameter `s=2`, define for every complex `z`
 
 `U(z)=((4z²+1)(4z²+25)/32) * XiC(z-3i) * XiC(-z-3i)`.
 
-The proposed theorem package is:
+The closed theorem package is:
 
 1. `U` is the unique entire function satisfying
    `V(3/2,iz)=XiC(z)^2 U(z)` everywhere.
@@ -90,6 +90,48 @@ points, not on any Xi zero or fitted radial target.
 ## Tracking
 
 - [x] Audit source factorization and prior amputation theorems.
-- [ ] Complete paper proof and scratch Lean proof.
-- [ ] Direct leaf check, umbrella wiring, final leaf build, all-theorem axiom audit.
-- [ ] Update current route state and compact route-independent knowledge where new.
+- [x] Complete paper proof and scratch Lean proof.
+- [x] Direct leaf check, umbrella wiring, final leaf build, all-theorem axiom audit.
+- [x] Update current route state and compact route-independent knowledge where new.
+
+## Formal verification
+
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalSpinTwoAmputation.lean`.
+Imported by `formal/GaloisForLFunctions/RHTower.lean`; generated indexes refreshed.
+
+- Scratch `lake env lean /tmp/hb-source-amputation.qB7SLP/Amputation.lean`: passed.
+- Direct `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalSpinTwoAmputation.lean`:
+  passed without warnings.
+- Final `lake --old build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCanonicalSpinTwoAmputation`:
+  passed, exactly one leaf compiled (49 seconds). The preceding `--old --no-build` preflight
+  listed only this leaf. Cached dependency warnings were replayed; the leaf emitted none.
+  Ordinary preflight listed 38 stale targets. This audit uses existing dependency artifacts;
+  it does not claim a fresh validation of those transitive sources. No full/umbrella build ran.
+- Two missing imported artifacts were repaired sequentially with `lake env lean -o ...`:
+  `BoseZipfCumulants` and `ExpansionParameterIsTheShift`. The former also required its own
+  single-leaf `lake --old build` to restore Lake's trace (passed, 5.2 seconds). Other shared
+  artifact replacements were performed by a concurrent task, whose processes were untouched.
+- Scratch `#print axioms` for all 17 public theorems: only `propext`, `Classical.choice`,
+  and `Quot.sound`. The private quadratic helper is included through dependency closure.
+  No added axiom, `Lean.ofReduceBool`, computational certificate, or unresolved proof premise.
+- Formal lint: the final refreshed snapshot reports only the two unrelated unreachable modules
+  `RHTower.ThetaCuspModularCompactTube` and `HTGeometry.PolynomialODEJetRankThreeCompactExpansion`.
+  This leaf is reachable; proof-debt and generated-index checks report no error.
+- `git diff --check` passed for the edited shared ledgers and umbrella.
+- No owned Lean process remains running.
+
+Logs and name-verification scratch files: `/tmp/hb-source-amputation.qB7SLP`.
+No commit or push was performed by this task.
+
+## Exact remaining RH obligation
+
+The canonical angular source and its geometric singular boundary are fixed before divisor
+selection. No radial operator, physical left-QNM action, maximal causal domain, causal
+cut, or extinction theorem is constructed here. The full source still contains `XiC²`,
+whose zero locations remain unresolved.
+
+A live HB radiative proof must derive physical action on the retained angular source outside
+the excluded reciprocal same-pole classes, and then prove extinction on the fixed Hawking
+clock. Choosing a target response or renaming the reciprocal source as a Green function
+would not discharge that arrow. The alternative coefficient-faithful phase-sensitive
+static KMS producer also remains open. RH is neither proved nor falsified by this module.

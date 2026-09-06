@@ -34,17 +34,21 @@ theorem exists_unitPhase_positive_zero_above (T : ℝ) :
       (Complex.Gammaℝ_ne_zero_of_re_pos hs.1)] at hxi
     exact (mul_eq_zero.mp hxi).resolve_left (RHTower.archFactor_ne_zero_strip hs)
 
-/-- No finite family of connected holomorphic phase charts covers all positive strip zeros. -/
+/-- No finite family of connected holomorphic phase charts covers all positive strip zeros.
+Empty domains are allowed through `IsPreconnected`. -/
 theorem not_finite_unitPhaseIdentity_cover (n : ℕ) :
     ¬ ∃ (U : Fin n → Set ℂ) (H : Fin n → ℂ → ℂ),
-      (∀ i, U i ⊆ minimumStrip ∧ IsOpen (U i) ∧ IsConnected (U i) ∧
+      (∀ i, U i ⊆ minimumStrip ∧ IsOpen (U i) ∧ IsPreconnected (U i) ∧
         AnalyticOnNhd ℂ (H i) (U i) ∧ UnitPhaseIdentity (U i) (H i)) ∧
       (∀ s ∈ minimumStrip, 0 < s.im → riemannZeta s = 0 → ∃ i, s ∈ U i) := by
   rintro ⟨U, H, hcharts, hcover⟩
   let S : Set ℂ := ⋃ i, {s | s ∈ U i ∧ 0 < s.im ∧ riemannZeta s = 0}
-  have hfinite : S.Finite := Set.finite_iUnion fun i =>
-    (unitPhaseIdentity_positive_zeros_subsingleton (hcharts i).1 (hcharts i).2.1
-      (hcharts i).2.2.1 (hcharts i).2.2.2.1 (hcharts i).2.2.2.2).finite
+  have hfinite : S.Finite := Set.finite_iUnion fun i => by
+    by_cases hne : (U i).Nonempty
+    · exact (unitPhaseIdentity_positive_zeros_subsingleton (hcharts i).1 (hcharts i).2.1
+        ⟨hne, (hcharts i).2.2.1⟩ (hcharts i).2.2.2.1 (hcharts i).2.2.2.2).finite
+    · have he : U i = ∅ := Set.not_nonempty_iff_eq_empty.mp hne
+      simp [he]
   obtain ⟨b, hb⟩ := (hfinite.image Complex.im).bddAbove
   obtain ⟨s, hs, hgt, ht, hz⟩ := exists_unitPhase_positive_zero_above b
   obtain ⟨i, hi⟩ := hcover s hs ht hz
@@ -59,7 +63,7 @@ theorem not_unitPhaseIdentity_strip :
   apply not_finite_unitPhaseIdentity_cover 1
   refine ⟨fun _ => minimumStrip, fun _ => H, ?_, ?_⟩
   · intro i
-    exact ⟨Set.Subset.rfl, unitPhaseStrip_open, unitPhaseStrip_connected, hH, hi⟩
+    exact ⟨Set.Subset.rfl, unitPhaseStrip_open, unitPhaseStrip_connected.isPreconnected, hH, hi⟩
   · intro s hs ht hz
     exact ⟨0, hs⟩
 

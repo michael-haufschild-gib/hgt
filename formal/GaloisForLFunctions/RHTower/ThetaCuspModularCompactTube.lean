@@ -124,4 +124,13 @@ theorem thetaCuspModularLyapunovState_compact_box {x : ℝ}
   have ha20 := a_lt_twenty hx.1
   dsimp [u,a,w] at *
   refine ⟨?_,by linarith,ha,ha20.le,hw0,?_⟩ <;> linarith [hx.2]
+
+/-- The differential shear estimate stays below one throughout the compact interval. -/
+theorem thetaCuspModularTransverseShear_le_one_on_compact {x : ℝ}
+    (hx : x ∈ Icc (0 : ℝ) (137 / 2000)) :
+    thetaCuspModularTransverseShear x ≤ 1 := by
+  have hw := w_le_linear hx
+  dsimp only [w] at hw
+  linarith [hx.2]
+
 end RHTower

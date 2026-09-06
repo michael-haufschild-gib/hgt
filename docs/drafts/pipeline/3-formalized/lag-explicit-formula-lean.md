@@ -174,3 +174,14 @@ Internals: `summable_lagWeight_mul_rpow (hA0 : 0 ≤ A) (hA : A < 1)` (`Σ ‖w_
 the same-ordinate shifts), `transfer_step`, `pole q₀ = α + ρ₀ − ½`, `G_ray_lower_bound` (`‖W₀‖‖F(α+t)‖ − C`), the
 final contradiction via `blowup`. Reuses `powAliasedWeight`, `sameOrdinate`, `powBox`, `exists_pos_le_ordinate_gap_all`
 from the `k`-th power modules. STATUS MUST-253.
+
+## The prime-only criterion (added 2026-09-06, Lean, `PrimeLagLandauPrimesOnly`)
+
+`riemannHypothesis_iff_primeLag_bddAbove : RH ↔ ∃ M, ∀ p, p.Prime → integerLag p ≤ M` and the sharp
+`riemannHypothesis_iff_primeLag_le_sharp` (constant `poleSharpConstant = 2 + γ − log 4π`). Bricks: `IsProperPrimePow`,
+`isProperPrimePow_iff` (`∃ p prime, ∃ j, n = p^(j+2)`), `properPowMap` injective (`Nat.Prime.pow_inj`),
+`rpow_neg_le_three_quarters`, `summable_shifted_geometric`, `properLogTerm`, `summable_properMajorant`
+(`summable_prod_of_nonneg` over `Nat.Primes × ℕ`), `summable_properPrimePow_log_rpow (hx : 1/2 < x)`,
+`primeOnlyCoeff`/`properCoeff` with `primeLagCoeff = primeOnlyCoeff + properCoeff`, `properCoeff_LSeriesSummable`
+(`Re s > θ − 1`), `differentiableAt_LSeries_properCoeff`, `primeOnlyG M = landauG M − LSeries properCoeff`,
+`differentiableOn_primeOnlyG`, `primesOnly_transfer_step`, the ray bound `‖W₀‖/t − (C + B_T)`. STATUS MUST-254.

@@ -97,12 +97,13 @@ SD1 is equivalent to a nonpositive total off-diagonal sum. Gcd reindexing retain
 negative two-prime renewal determinant likewise supplies no inverse-source norm estimate.
 Neither identity currently controls the required total.
 
-The harmonic diagonal bound would combine with SD1 to give `S(M)/M=O(sqrt(log M))`.
-Passing that subpower loss through the source Mellin/Abel continuation still needs an explicit
-formal bridge; the existing exact uniform-boundedness RH receiver must not be claimed to accept
-this loss without that proof. A separate possible improvement is to bound the Abel average of
-D before squaring, thereby obtaining a uniform diagonal ceiling. No such improvement or
-cross-term sign is proved here. No RH route is retired by the SD2 rejection.
+The harmonic diagonal bound alone combines with SD1 to give `S(M)/M=O(sqrt(log M))`;
+the exact uniform-boundedness RH receiver does not automatically accept that loss. The
+source-average improvement is now closed independently of this experiment:
+`RHTower.sum_mobiusDivisorDilationChannel_sq_le_quadratic` proves `Q(M)<=722M²` by
+signed hyperbola summation before squaring. Consequently SD1 would give
+`|S(M)/M|<=sqrt(722)` and feed the existing receiver directly. The cross-term sign
+remains open. No numerical result enters that proof, and no RH route is retired by SD2.
 
 ## Reproduction and audit
 
