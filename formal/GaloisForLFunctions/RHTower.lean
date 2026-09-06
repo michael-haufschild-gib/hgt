@@ -15652,4 +15652,5 @@ import GaloisForLFunctions.RHTower.JensenQuarticXi
 import GaloisForLFunctions.RHTower.PoleBoundaryLogSharpConstant
 import GaloisForLFunctions.RHTower.MertensVonMangoldtEulerConstant
 import GaloisForLFunctions.RHTower.PoleSelfEnergyLimit
+import GaloisForLFunctions.RHTower.ArchimedeanGenusZeroSum
 import GaloisForLFunctions.RHTower.ThetaFiniteShellFourierBoundary

@@ -8,6 +8,7 @@
 2. **Connected expansion.** The corpus's all-order hard-exclusion cumulant law collapses every nondiscrete partition and leaves a signed factorial times a positive product. Seek an actual source incidence with this property, or identify the nonvanishing connected terms that prevent it. Positivity of the raw theta density alone does not establish the required cumulant sign.
 3. **Source Schur induction.** The vacuum/Feshbach identity isolates the next quadratic remainder after a positive block. Seek an integration-by-parts identity that expresses this remainder as a positive source norm at every degree. Reasserting positivity of the remainder as a hypothesis is not progress.
 4. **Stability-preserving source representation.** The corpus's finite Ising/FK expansion gives positive synchronized-cluster representations. A useful application must construct the actual theta source in a class preserving the entire logarithmic-moment cone; arbitrary positive mixtures do not supply that property.
+5. **Denominator-cleared source Gram comparison.** Put `F(q)=Σ c_j q^j`, `c_j=(-1)^j μ_j/(2j)!`, with `μ_j` the normalized full-source even moments. Clearing both factors of `F` from the Hankel generating kernel gives `B(q,r)=-2(qF'(q)F(r)-rF'(r)F(q))/(q-r)`. Its sign-adjusted coefficient matrix has entries `B⁺_ij=2Σ_(k≤min(i,j))(i+j+1-2k)μ_(i+j+1-k)μ_k/((2(i+j+1-k))!(2k)!)`. Compare it with the positive raw-source Gram matrix `D⁺_ij=μ_(i+j+1)/((2i+1)!(2j+1)!)`. Their first rows agree. Seek a source-derived positive operator realizing `B⁺` in this Gram space. Neither positive entries nor a bound above by `D⁺` proves the required lower bound. The all-rank operator comparison is under investigation; numerical finite-shell tests are diagnostics only.
 
 ## Evidence rules
 
@@ -24,6 +25,10 @@ All conjectures require source-specific proof or a concrete failure before pivot
 **Pivot toward the producer:** retain the full arithmetic tail before attempting a positive decomposition, or prove a joint cutoff/degree estimate that controls the nonlinear logarithmic-moment transform and its small eigenvalues. Neither an entrywise raw-moment bound nor the existing fixed factor `3005/2997` establishes this by itself. Exact cancellation is now available, but its remaining sign is not proved.
 
 The connected-partition and Ising/FK mechanisms remain unconstructed for the actual density. The source Schur identity isolates the required remainder but gives no sign. None is labelled a successful producer or a formally retired route.
+
+**Conjecture: the cleared kernel is the literal odd-monomial source Gram matrix.** The row indexed by `1` would force `(2n+7) μ_(n+3) = 3(2n+5) μ_1 μ_(n+2)` for every `n`. This bounds all subsequent raw moment ratios by `3 μ_1`. But positivity of the complete source on every positive interval supplies geometric lower moment bounds with arbitrarily large bases. Hence this literal identification is impossible. The all-order growth obstruction is being checked in Lean. This rules out that representation, not the Hankel route or other source-derived Gram representations.
+
+**Pivot: a positive contraction in the odd source Gram space.** Runpod diagnostics of the generalized `B⁺/D⁺` spectrum retain the full stored six-shell density approximation, rather than testing a fixed first-atom foundation. Through degree 12 the tested eigenvalues lie in `[1.2447e-19,1]`; the upper bound also survives in the first- and second-shell examples with negative lower eigenvalues. Thus upper domination cannot be used as the missing positivity producer. The infinite-source lower bound remains open.
 
 ## Current mathematical result
 

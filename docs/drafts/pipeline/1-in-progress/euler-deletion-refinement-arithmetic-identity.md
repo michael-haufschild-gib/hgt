@@ -88,3 +88,17 @@ The centering can be any complex number `Z`, with `D_p=(1-c_p)Z`. Thus this law 
 The companion `euler-deletion-refinement-arithmetic-identity-searches.json` preserves 49 mechanism searches with their query interpretations, totals, module caps, and exploration hits. This is broad brainstorming coverage, not an exhaustive corpus audit or proof of novelty. Selected proof bodies were inspected with `rg` and direct reads, including two-product rigidity, orbit-charge exactness, geometric primitives, star-defect composition, scalar insertion ratios, and finite sign-pairing mechanisms. Search hits belonging to excluded RH machinery were not adopted as proof steps.
 
 [Runpod report, scripts and results](../2-fully-proven/computations/euler-deletion-mixed-refinement-carry/REPORT.md) retain the tested formulas, parameters, controls, cutoff diagnostics, and independent high-precision check.
+
+## Growing-modulus conjectures
+
+The next test retains the literal centered primitive and varies its deletion modulus. The corpus mechanisms inspected for this question include invariant carry current, finite scaling stabilizers, and discrete second-difference rigidity. Their proofs require, respectively, an invariant measure with an integrable lift, a rational function fixed by the scalings, or integer-valued traces. None of those source requirements has been established here. They are not imported as RH premises.
+
+For `0<sigma=Re(s)<1`, define `alpha=2-2 sigma`. A direct rescaling of the literal sum suggests
+
+`T_p(s)/p^alpha -> K(s) = zeta(2 sigma-1)/(1-conj(s))`.
+
+This is a conjecture, including at `sigma=1/2`, not a proved limit. The candidate continuum remainder is `E_s(x)=x^(1-s)/(1-s)-S_floor(x)(s)+zeta(s)`. Its jumps must remain in an integration-by-parts argument; discarding them changes the proposed constant. The leading constant is expected at nonzeros as well, so it cannot itself be the missing zero-specific law.
+
+**Conjecture G1:** after removing this leading term, the growing contribution is `|zeta(s)|^2 p^(1-s)`. Determine whether the coefficient or exponent is wrong before using it. **Conjecture G2:** at literal zeros the remaining modulus-dependent term is bounded. **Conjecture G3:** if G2 survives, the large-source-modulus correction `J_(p,q)` has an exact zero-specific limiting law that supplies more than the original endpoint equation. G3 is the desired implication to investigate, not a consequence asserted from G1 or G2.
+
+The Runpod test will compare zeros, horizontal shifts, and a nonzero critical-line control. It retains multiple ordinary cutoffs and records every subtraction. Numerical agreement will not establish any of these conjectures or enter a Lean proof.

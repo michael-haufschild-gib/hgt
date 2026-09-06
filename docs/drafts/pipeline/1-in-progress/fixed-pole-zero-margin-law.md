@@ -116,3 +116,14 @@ Mathlib-only module; declarations listed in the Log entry below. The bridge to t
   `Real.hasDerivAt_rpow_const` wants `x ≠ 0` via `ne_of_gt`; `rw [show -s = 1 + (-s-1) …]` also
   rewrites inside `-s - 1` (use a helper `t * t^(-s-1) = t^(-s)`); `field_simp` may close a goal
   so a trailing `ring` errors; `div_eq_div_iff` argument order matches the goal's denominators.
+- 2026-09-06 (v) — Bridge to the corpus entry parked (not in the tree): the module
+  `PoleDiagonalCorpusBridge.lean` (imports `CCMRestrictedWeilFullPoleMatrix`,
+  `CCMRestrictedWeilPoleBoundaryPrimitives`, `PoleSelfEnergyLimit`; proves
+  `ccmWeilPoleDiagonal a = poleDiagonalExplicit a.1` by
+  `rw [ccmWeilPoleDiagonal_eq_error, ccmGammaPoleSelfBoundaryMass_eq_primitive]; rfl`, then the
+  genus limit and `∃ a₀, ∀ a, a₀ ≤ a.1 → 0 < ccmWeilPoleDiagonal a`) is correct as written but its
+  import closure is the ~12 000-module CCM stack, whose oleans were being deleted and rebuilt by
+  concurrent agents; two rebuild attempts (3500 s timeout, then a memory kill at 11 972/12 203 jobs)
+  did not finish. Compile it when that stack is stable; the definitions coincide syntactically, so no
+  proof work remains. STATUS CANNOT-325 records the reflection-pairing law (self-pairings pair `ρ`
+  with `1 − ρ̄` and are exponent-blind; only reflection pairings see `e^{2aβ}`).
