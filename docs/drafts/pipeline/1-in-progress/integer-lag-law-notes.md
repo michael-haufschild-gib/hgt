@@ -264,3 +264,16 @@ fractions from `xi_explicitFormula_logDeriv` + this count), then the Landau asse
 `‖ζ'/ζ(σ+it)‖ ≤ (3700 + 5K₀) log t/δ`, `K₀ = #{copies with |γ| ≤ 6}`. Anchor `3+it`, windows `k = ⌊|t−γ|⌋`, window count
 from `card_le_of_ordinates_in_window` on both sides of `t` (the lower window may dip below height 4: absorbed by `K₀`),
 tails `Σ 1/k² ≤ 1`, `Σ log(k+2)/k² ≤ 7`. STATUS MUST-247. Remaining for the prime criterion: the Landau assembly.
+
+## Prime criterion: the Landau assembly has a blind spot at Θ = 1 (analysis, 2026-09-06)
+
+With `Θ := sup β`, the transform `F(s) = Σ_p (M − a_p) log p · p^{−1−s}` (nonnegative coefficients when `a_p ≤ M`)
+equals `M P(1+s) − Σ_ρ w_ρ P(s + 3/2 − ρ)` (+ prime-power tails), `P = −ζ'/ζ`, for `Re s > Θ − ½`. The `ρ`-term has
+its pole at `s = ρ − ½` (from the pole of `ζ` at `1`) and singularities at `s = ρ + ρ' − 3/2` (zeros of `ζ`), real
+part `≤ 2Θ − 3/2`; the sum over `ρ` converges locally uniformly only on `Re s > 2Θ − 3/2` (needs MUST-247). The pole
+of the zero `ρ₀` is visible iff `β₀ − ½ > 2Θ − 3/2`, i.e. `β₀ > 2Θ − 1`: such zeros exist iff `Θ < 1`. Hence the
+Landau argument (corpus `landau_local_summability_transfer` on the Dirichlet series over primes) gives exactly:
+**`sup_p a_p < ∞ ⟹ RH ∨ Θ = 1`**, i.e. `RH ⟺ (sup_p a_p < ∞ ∧ Θ < 1)`. The blind spot is intrinsic to prime-only
+data: any prime-restricted transform of `Σ_ρ w_ρ p^{ρ−½}` is a `ρ`-sum of prime series at shift `ρ`, whose
+singularities sit at `ρ + ρ'`. Not built in Lean (a receiver with a known hole; the two-prime criterion MUST-244 is
+unconditional). Real poles at `2β − 3/2` with residue `2m Re w_ρ > 0` are a side remark.

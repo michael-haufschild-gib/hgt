@@ -94,3 +94,11 @@ and under RH the inequality is tight along `b^m` for every base `b`. Axioms: `[p
   tails `sum_inv_sq_Ico_le`, `sum_log_div_sq_Ico_le` (`≤ 7`), `windowIndex`/`windowWeight`, `norm_term_le_windowWeight`,
   `sum_norm_partialFractionDiff_le`, and **`norm_logDeriv_zeta_le`**: `½ ≤ σ ≤ 2`, `t ≥ 4`, `0 < δ ≤ 1`,
   `∀ ρ, ‖s − ρ‖ ≥ δ` ⟹ `‖ζ'/ζ(σ+it)‖ ≤ (3700 + 5K₀) log t / δ`. STATUS MUST-247.
+
+- `RHTower.WeilLagFunctionSingleBase` — `lagWeight_re_pos` (`Re(1/(ρ(1−ρ))) > 0`), `AttainedTop β₀`, `topLevel`,
+  `topWeight` (`> 0` when attained), `lowerTail` + `tendsto_lowerTail` (dominated convergence), `abs_re_lowerPart_le`,
+  `norm_exp_phase_sub_one_le` (Dirichlet phase within `2π/Q`), **`exists_pow_integerLag_gt_of_attainedTop`**
+  (attained `β₀ > ½` ⟹ `a_{b^m}` unbounded for every `b ≥ 2`), `not_attainedTop_of_forall_le`, `offLineCopies`,
+  `exists_attainedTop_of_finite_offLine`, `exists_pow_integerLag_gt_of_finite_offLine`,
+  `riemannHypothesis_of_forall_xiZeroCopy_re_eq_half` (public), **`riemannHypothesis_or_infinite_offLine_of_forall_le`**,
+  **`riemannHypothesis_or_not_attained_of_forall_le`**. STATUS MUST-248.

@@ -185,3 +185,11 @@ avoids the issue because poles `ρ − ½` cannot accumulate at a real point (`�
 
 **What its truth would show.** RH would be a statement about one geometric progression of the explicit sequence; its
 falsity would exhibit a resonance between the base and the off-line zeros, a new invariant of a hypothetical counterexample.
+
+## §11 Single-base detection (Lean, `WeilLagFunctionSingleBase`; STATUS MUST-248)
+
+The `b`-resonance open core of §10 is now localised: if the maximal real part `β₀ > ½` is attained, `a_{b^m}` is
+unbounded for every base (top level has positive real weight `Re w_ρ > 0`; Dirichlet on the top ordinates; lower
+levels are `o(b^{m(β₀−½)})` by dominated convergence — no gap needed). Bounded `a_{b^m}` ⟹ RH ∨ (sup of real parts not
+attained) ⟹ RH ∨ infinitely many off-line zeros. Remaining open core for one-prime-orbit sufficiency: real parts
+accumulating at `Θ` from below with no zero at `Θ`, the near-aliasing regime `ρ_q ≈ ρ₁ + 2πik/log b`, `β_q → β₁`.

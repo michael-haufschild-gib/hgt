@@ -53,7 +53,7 @@ The formal source connection proves that the complex cell is
 
 Every finite cell sum retains the terminal remainder. Their ordinary infinite-cutoff limit recovers `conjugate(R_s(m))/[conjugate(s)(conjugate(s)+1)]`. Thus the alternating contributions are part of the literal source, not a perturbed model. The fixed height in this counterexample is not asserted to be a zero. It refutes an all-parameter cellwise proof strategy, not every zero-specific argument.
 
-The next unresolved proof obligation for R is an estimate retaining cancellation across cells uniformly in `t/n`. Even that result would leave the RH producer open: the finite exceptional head must obey an independent constraint forcing the required unit-boundary sign at every zero. No new constraint of that strength was established in this investigation. See the [S closure](../5-failed/arithmetic-cellwise-phase-sign.md) and [formal certificate](../3-formalized/arithmetic-successor-cell-phase.md).
+The next unresolved proof obligation for R is an estimate retaining cancellation across cells uniformly in `t/n`. Even that result would leave the RH producer open: the finite exceptional head must obey an independent constraint forcing the required unit-boundary sign at every zero. No new constraint of that strength was established in this investigation. The S/S+ source module passed its serialized leaf build, all twelve public axiom checks, and `lint --check-generated`; no full or umbrella build ran. See the [S closure](../5-failed/arithmetic-cellwise-phase-sign.md) and [formal certificate](../3-formalized/arithmetic-successor-cell-phase.md).
 
 ## Literature boundary
 

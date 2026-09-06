@@ -5,8 +5,8 @@ of k,N, and full L²(0,∞) convergence e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0,
 where h(t)=1/t−1/(e^t−1). Derive everything without RH. The target has not changed.
 [Classical RH interface](chronological-rh-recovery-interface.md).
 
-**Verified:** ten individual Lean leaf builds; 130 public declarations audited,
-only propext/Classical.choice/Quot.sound. All ten umbrella imports wired.
+**Verified:** eleven individual Lean leaf builds; 142 public declarations audited,
+only propext/Classical.choice/Quot.sound. All eleven umbrella imports wired.
 Current authoritative lint passes with existing file-size warnings. [Proofs and certificate](../3-formalized/chronological-arithmetic-repair-boundary.md).
 
 ## What works
@@ -111,33 +111,35 @@ supply a correction of nonvanishing full norm; coordinatewise rigidity [E]
 and localization of that correction to a growing tail remain open.
 [Direct proof and certificate](../3-formalized/chronological-raw-heat-obstruction.md).
 
-## Numerical evidence and current construction gap
+## Arithmetic averaging and the current construction gap
 
-Runpod N=16,...,512: retained box-C=1 errors decrease from 1.31e−4 to 4.12e−9;
-raw error at N=512 is 8.37e−2. These are feasible-vector measurements, not
-certified optima or a convergence theorem. Different quadratures agree; 80-digit
-residual spot checks differ from float by at most 1.62e−14. Initial optimizer
-failures were exposed by monotonicity checks and corrected by retaining feasible
-vectors and comparing active-set and singular-mode constructions.
+**[G], OPEN:** μ(k)k^(−ε_N) with ε_N≥0 tending to zero. The exact positive
+Abel decomposition retains exp(−ε_N log N)R_N and earlier raw prefixes.
+**[BRIDGE G0], Lean complete:** ε_N log N→0 cannot succeed. More generally,
+positive decreasing row weights whose terminal value tends to one have
+exactly the raw convergence condition. The proof obtains raw boundedness by
+Volterra induction. Every successful power schedule must have a cofinally
+positive ε_N log N floor. This is not an eventual floor or a refutation of [G].
+[Exact theorem, positive survivors and certificate](../3-formalized/chronological-arithmetic-averaging-scale.md).
 
-**Reoptimization corrects the earlier ablation interpretation.** At N=512,
-fixing *all first 128* coefficients exactly to μ and reoptimizing the tail with
-C=1 gives error 4.35e−9. Early rewriting is not necessary at this finite scale.
-The quarter-prefix construction slows to 8.71e−10 at N=4096; C=2 gives 6.79e−10.
-Neither retained vectors nor floating-point projection diagnostics certify
-optima. Independent quadratures, 80-digit residual checks and extended-precision
-profiles agree. At N=4096, widening the tail to m=16 fixed coefficients improves
-C=1 error to 3.51e−10; m=128 gives 4.19e−10. Their largest logarithmic-frequency
-peaks are 14.10 and 14.125, near the first zero ordinate 14.1347, without zero
-data in fitting. The proved Mellin invariant is reproduced. These are finite
-spectral diagnostics, not zero localization or an asymptotic estimate.
-[Fixed-prefix protocols, outputs and limitations](../2-fully-proven/computations/chronological-fixed-prefix-2026-09-06/REPORT.md).
+Runpod positive cutoff averages, with a_k=μ(k)w_k and
+1=w_1≥...≥w_N≥0, achieve measured errors 6.55e−7, 1.68e−8, 1.29e−9,
+1.02e−9 at N=128,512,2048,8192. They preserve all Möbius signs and
+nonsquarefree zeros. Best scalar power fits found are much worse. Shifted
+quadratures and 80-digit residual checks agree; no certified optimum or
+asymptotic rate follows. [Report and vectors](../2-fully-proven/computations/chronological-arithmetic-averaging-2026-09-06/REPORT.md).
 
-**Failed proof step:** averaging cutoffs to cancel finitely many scalar zero
-phases does not cancel the moving L² profiles: the Mellin contribution depends
-on N^(ρ−s) for an entire line of s, not just N^(ρ−1/2). No estimate follows.
-This tail-only construction needs simultaneous control of coefficient budget,
-growing frozen history and full error; [R] itself requires no frozen prefix.
-Fixed-rank feasibility cannot be diagonally
-upgraded without a quantitative bound linking rank and cutoff. No new Lean
-theorem or asymptotic convergence is claimed from these experiments.
+Earlier unrestricted C=1 tail reoptimization at N=4096 gives 3.51e−10
+with 16 frozen Möbius coefficients, 4.19e−10 with 128 frozen, and 8.71e−10
+with 1024 frozen. Early rewriting is not necessary at those finite scales.
+Logarithmic-frequency peaks near 14.1 occur without zero data in fitting;
+these are finite spectral diagnostics, not a zero localization or norm limit.
+[Earlier protocol and limitations](../2-fully-proven/computations/chronological-fixed-prefix-2026-09-06/REPORT.md).
+
+**Unclosed source estimate:** construct positive cutoff distributions with
+vanishing full average norm. Fixed-rank feasibility gives no uniform bound
+linking rank and cutoff. Cancelling finitely many scalar zero phases fails to
+control moving L² profiles, whose Mellin dependence is N^(ρ−s) on an entire
+line. A dual proof must rule out a uniformly positive separating L² test;
+compact-test identities alone do not extend without the required norm control.
+[Compact current attack card](chronological-arithmetic-averaging.md).

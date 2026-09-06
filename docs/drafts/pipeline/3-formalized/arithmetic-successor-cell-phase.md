@@ -38,6 +38,12 @@ The ordinary representation and integration identities are classical; the precis
 
 ## Validation
 
-Scratch `/tmp/rh_cell_phase.lean` and source `lake env lean` checks passed. The module is wired into `GaloisForLFunctions.RHTower`. Final serialized leaf build, twelve public declaration axiom checks, and repository lint: pending at certificate creation.
+Scratch `/tmp/rh_cell_phase.lean` and source `lake env lean` checks passed without warnings. The module is wired into `GaloisForLFunctions.RHTower`.
+
+- Serialized `LEAN_NUM_THREADS=1 lake build --old GaloisForLFunctions.RHTower.ArithmeticSuccessorCellPhase`: passed; only this leaf was rebuilt. No full or umbrella build ran.
+- `/tmp/rh_cell_axioms.lean`, checked with `lake env lean`: all twelve public declarations report only `propext`, `Classical.choice`, and `Quot.sound`.
+- Corpus index refreshed; research search retrieves the new sign law.
+- `scripts/formal_tools.py lint --check-generated`: passed, with 132 existing large-file warnings. Standard output is retained in `/tmp/rh_cell_lint.txt`.
+- No owned Lean or Runpod computation remained running. All mathematical computation outputs are retained in the computation folder and are absent from the Lean proof dependencies.
 
 Related records: [research card](../1-in-progress/arithmetic-successor-phase-threshold.md), [failed strategy and positive survivor](../5-failed/arithmetic-cellwise-phase-sign.md), [Runpod report](../2-fully-proven/computations/arithmetic-successor-phase-threshold/REPORT.md).

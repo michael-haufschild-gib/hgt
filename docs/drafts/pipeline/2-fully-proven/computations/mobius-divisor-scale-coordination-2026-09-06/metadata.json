@@ -1,0 +1,8 @@
+{
+  "limit": 2097152,
+  "prime_count": 155611,
+  "seconds": 0.6188549101352692,
+  "numpy": "1.24.4",
+  "workers": 8,
+  "script_sha256": "0180b93fe3f575ab0a381333662e20a167ba4fd359117c270a52875eceee6d51"
+}

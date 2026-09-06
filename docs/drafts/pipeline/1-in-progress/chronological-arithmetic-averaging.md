@@ -6,8 +6,10 @@ this card concerns arithmetic weights, a different family.
 **Frozen [G].** There exist ε_N≥0 tending to zero for which
 exp(−t)+Σ_(k≤N)μ(k)k^(−ε_N)h(kt) tends to zero in full L². Coefficients are
 bounded by one. No RH assumption may enter an attempted proof. This is a
-classical candidate, not a novelty claim; published conditional approximation
-arguments explicitly use RH to control truncation and shifted zeta quotients.
+classical candidate, not a novelty claim.
+[Balazard–de Roton](https://arxiv.org/pdf/0812.1689) explicitly use RH to
+control truncation and shifted zeta quotients for these weights in the classical
+Nyman–Beurling setting; their rates have not been transferred to this heat norm.
 
 **Frozen finite diagnostic [G-test].** Compare arithmetic power damping with
 the entire convex hull of the raw residuals R_1,...,R_N at N=128,512,2048,8192.
@@ -26,14 +28,15 @@ Weights are positive and sum to one. This exposes the interaction between
 ε_N and log N; passing ε_N→0 without controlling the growing cutoff is invalid.
 The target is a full norm estimate for this actual moving average.
 
-**[BRIDGE G0], frozen before formalization.** If ε_N≥0 and
+**[BRIDGE G0], proved in Lean.** If ε_N≥0 and
 ε_N log N→0, arithmetic power damping cannot converge in full L². Finite Abel
 summation has terminal weight exp(−ε_N log N)→1; after division by that weight,
 the discrepancy is a vanishing positive combination of strict earlier raw
-prefixes. The existing Volterra induction would force raw convergence, already
-excluded. This is a necessary scale condition, not a proof or refutation of [G].
-Its positive survivor is the exact convex decomposition and quantitative norm
-estimate for the earlier-prefix contribution.
+prefixes. Volterra induction forces raw convergence, already excluded. This is a necessary scale condition, not a proof or refutation of [G].
+Its positive survivors are the exact convex decomposition, quantitative
+earlier-prefix norm estimate, and a cofinal positive ε_N log N floor for
+every successful nonnegative power schedule. This is not an eventual floor.
+[Proof and twelve-declaration certificate](../3-formalized/chronological-arithmetic-averaging-scale.md).
 
 The finite scalar search uses ε∈[0,4], a mixed linear/logarithmic grid and local
 refinement. The convex-hull search uses fully corrective minimum-norm column
@@ -46,3 +49,21 @@ For compact tests away from zero with ∫v(t)/t dt=0, the Möbius/Lambert identi
 gives the inequality directly. Extending this to all tests with summable
 correlations requires density in the graph norm, not merely L² density.
 Fatou has the wrong direction for that extension. No closure claim is made.
+
+**Finite outcome.** At N=128,512,2048,8192, positive-average errors are
+6.55e−7, 1.68e−8, 1.29e−9, 1.02e−9. Best power errors found are
+2.52e−3, 6.77e−2, 1.52e−1, 1.71e−1. All average coefficients satisfy C=1,
+preserve Möbius signs and vanish at nonsquarefree indices. Shifted quadratures
+and 80-digit residual checks agree; no certified optima or asymptotic claim.
+At larger cutoffs, dual diagnostics give no positive lower bound.
+[Reproducible report and vectors](../2-fully-proven/computations/chronological-arithmetic-averaging-2026-09-06/REPORT.md).
+
+**Current hardest source statement.** Show that zero lies in the closed convex
+hull of {R_N:N≥1}. Equivalently, rule out an L² test v and c>0 with
+⟨R_N,v⟩≥c for every N. Finite mode cancellation supplies no bound for the
+remaining modes as cutoff and rank grow. A uniformly norm-bounded raw
+subsequence at unbounded cutoffs, together with local convergence, would
+suffice by weak convergence and convexification; cofinal bounded recurrence
+is itself unproved. A decreasing minimum over all earlier raw prefixes does
+not establish such recurrence. The corpus already has a related bounded-return
+Fatou route; this observation is not a new proof architecture.
