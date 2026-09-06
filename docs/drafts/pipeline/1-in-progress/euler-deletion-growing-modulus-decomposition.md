@@ -1,6 +1,6 @@
 # Growing deletion moduli: the retained arithmetic terms
 
-Status: [BRIDGE] the exact infinite decomposition, ordinary-cutoff convergence, and absolute convergence of its remainder series are proved in Lean. The sharper growing-modulus asymptotic and the real-part identity for `W_1` below retain paper-proof status. No RH implication or literature novelty is claimed. This is an analysis of the existing mixed-source candidate, not a replacement proof architecture.
+Status: [BRIDGE] the exact infinite decomposition, ordinary-cutoff convergence, and absolute convergence of its remainder series are proved in Lean. The uniform bound `W_p=O_s(p^(-2 Re(s)))` and its resulting decay are also formalized in `EulerDeletionRemainderRefinementObstruction`; [arithmetic reconstruction](euler-deletion-remainder-mobius-inversion.md) records the further exact inverse and nonvanishing consequences. The sharper growing-modulus asymptotic and the real-part identity for `W_1` below retain paper-proof status. No RH implication or literature novelty is claimed. This is an analysis of the existing mixed-source candidate, not a replacement proof architecture.
 
 ## Statement
 

@@ -65,6 +65,16 @@ Classical ingredients are acknowledged: Specht polynomials, Chebyshev interpolat
 
 [Interface assessment](chronological-rh-recovery-interface.md): h(t)=1/t−1/(e^t−1) is exactly minus the classical Müntz transform of e^(−t), also an exponentially smoothed Nyman–Beurling kernel. The smoothing multiplier Γ(s+1) has squared modulus π(τ²+1/4)/cosh(πτ) on Re(s)=1/2; it preserves zeros but has no bounded inverse on its L² range. A known sufficient RH endpoint is a uniformly bounded coefficient array a_(k,N) with e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0 in L². Novel work would have to construct that array and both estimates from actual chronological repair. The existing compact-domain polynomial recovery bound supplies neither this arithmetic family nor a norm comparison. No novel RH architecture is established by the scalar bridge; the original geometric program remains open.
 
+[Bounded arithmetic repair attack](chronological-bounded-repair-attack.md): four additional
+RHTower leaves now prove rapid nonlinear Fermi repair, unbounded prime coefficients
+for every nonlinear response power, and an exact Möbius-prefix classification for
+bounded truncations of finite repair. A separate damped infinite-depth response
+q/(1+εq) has literal formal Lambert coefficients bounded uniformly by two and
+response squared L² error ≤ε²/4. The finite arithmetic remainder is proved exactly
+as a weighted combination of raw Möbius errors at N/d. Its full L² decay is still
+open; the original RH endpoint is not proved. All 76 new public declarations have
+standard-only axiom audits. [Certificate](../3-formalized/chronological-arithmetic-repair-boundary.md).
+
 ## Verification and resources
 
 Source directory: formal/GaloisForLFunctions/HTGeometry/ChronologicalTensor. Final new audit checked all 219 declarations with only propext, Classical.choice, Quot.sound. Raw outputs and compact summary: /tmp/recovery_surgery_geometric_axioms.txt and /tmp/recovery_surgery_geometric_axiom_summary.json. Index and lint: /tmp/recovery_surgery_geometric_index.txt and /tmp/recovery_surgery_geometric_lint.txt.

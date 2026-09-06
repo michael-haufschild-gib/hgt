@@ -24,7 +24,7 @@ Corpus search supplies mechanisms for conjectures; actual statements and proof b
 
 ## Current status
 
-The arithmetic identity forcing annihilation remains open. Exact finite decomposition identities are formalized; the growing-modulus analytic decomposition has a paper derivation only. No RH proof, impossibility result, or novelty claim follows.
+The arithmetic identity forcing the requested replication equality remains open. The exact finite and infinite mixed decompositions are formalized; sharper growing-modulus asymptotics retain paper status. [Arithmetic reconstruction](euler-deletion-remainder-mobius-inversion.md) now proves that the retained modulus remainder recovers every ordinary cutoff error. At every positive-real-part zero different from one its Möbius-weighted mass is nonzero; for every fixed nontrivial dilation, some corrected remainder refinement survives when `Re(s)<=1`. This supplies the nonvanishing side of a possible contradiction, not the missing strict-right arithmetic vanishing theorem, an RH proof, or impossibility of all such identities. No literature novelty is claimed.
 
 ## Conjecture loop: mixed ordinary-sum primitive
 

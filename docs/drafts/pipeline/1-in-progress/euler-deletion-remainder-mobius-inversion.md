@@ -1,7 +1,7 @@
 # Arithmetic inversion of the retained mixed remainder
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE LOOP; [BRIDGE] to the unresolved arithmetic refinement law
+- **Type:** completed reconstruction [BRIDGE]; arithmetic RH refinement law remains unresolved
 - **Frozen RH target:** a source-derived refinement equality, not merely another zero detector.
 
 ## Source and candidate tests
@@ -18,9 +18,13 @@ The proposed proof regroups the actual product index `pn`; the sum of `mu(p)` ov
 
 **Conjecture C — surviving nonzero mass.** At a zeta zero with `Re(s)>0`, the `m=1` reconstructed value is `(1/2)-1/(1-conj(s))`, whose norm is strictly greater than `1/2`. Consequently the complete remainder family cannot vanish and its weighted absolute mass must exceed `1/2`. This is a candidate obstruction to Test A, not an exclusion of zeros.
 
-## Proof status
+## Exact outcomes
 
-Conjectures are frozen before new Lean code. Exact reconstruction, analytic admission, the explicit zero specialization, and its norm consequence require paper and Lean closure. A successful [BRIDGE] will not be relabelled as the arithmetic RH implication. No route is retired and no claim about all possible annihilators is made.
+B and C are proved in Lean. The complete weighted remainder family reconstructs each original cutoff error, with every infinite regrouping justified by absolute convergence. Thus Test A cannot hold at a positive-real-part zero different from one: its left side has norm greater than `1/2`. The positive survivor is the full reconstruction identity, not merely rejection of cancellation.
+
+D is also proved in Lean, including the boundary extension `Re(s)=1`, `s!=1`. The multiplier only needs norm at least one; strict expansion is unnecessary. The extension follows from the same decay and iteration argument below. This is a pointwise theorem about any zero, including hypothetical off-line zeros; it is not a proof that such zeros exist or that a contradiction argument is impossible.
+
+An independently proved vanishing law restricted to hypothetical strict-right zeros would contradict D and exclude those zeros. That additional source theorem is still missing. Consequently the original arithmetic RH target is not retired, and no RH implication or proof of impossibility of all arithmetic identities is claimed.
 
 No numerical experiment is planned for these algebraic identities: divisor regrouping decides them by reasoning. Computations will be used only if a further question has an outcome not determined by that reasoning.
 
@@ -30,8 +34,22 @@ No numerical experiment is planned for these algebraic identities: divisor regro
 
 `C_(p,q)=W_(pq)-W_p-A_p W_q+A_p W_1`.
 
-For every zeta zero with `0<Re(s)<1` and every integer `p>1`, there is a positive integer `q` with `C_(p,q)!=0`. This does not rename Test A: it is a stronger independent claim about the entire source-modulus family. Proposed proof: the actual remainder estimate gives `W_q->0`. If every correction for one fixed `p` vanished, first taking `q->infinity` and then iterating `q->pq` would force the whole `W` family to vanish, contradicting the reconstructed unit boundary. This is a precise obstruction to this scalar refinement law, not to all possible arithmetic identities.
+For every zeta zero with `0<Re(s)<1` and every integer `p>1`, there is a positive integer `q` with `C_(p,q)!=0`. This does not rename Test A: it is a stronger independent claim about the entire source-modulus family. The theorem concerns the displayed remainder expression; its interpretation inside the earlier mixed-sum decomposition uses that decomposition's admitted domain `1/2<=Re(s)<1`.
+
+## Dependency-closed paper proof
+
+Put `sigma=Re(s)>0`, `s!=1`, `g(n)=n^(-s) conjugate(R_s(n))`, and `K=|s(s+1)|/(sigma+1)`. The previously proved ordinary remainder estimate gives `|g(n)|<=K n^(-2 sigma-1)` for every positive integer `n`. Exactly `W_m/m=sum_(n>=1)g(mn)`. For fixed `m`, the double series of `|g(mpn)|` is bounded by `K m^(-2 sigma-1) (sum_(n>=1)n^(-2 sigma-1))^2`, a finite quantity. Since `|mu(p)|<=1`, the signed double series is absolutely convergent too. Grouping by `k=pn` and using `sum_(p|k)mu(p)=1` for `k=1`, zero otherwise, yields `sum_(p>=1)mu(p) W_(mp)/(mp)=g(m)`. Multiplying by `m` gives B.
+
+At unit cutoff, `g(1)=1/2-conjugate(zeta(s))-1/(1-conjugate(s))`. At a zero it becomes `-(1+conjugate(s))/(2(1-conjugate(s)))`. The difference of squared numerator and denominator norms before the factor two is `|1+conjugate(s)|^2-|1-conjugate(s)|^2=4 sigma>0`. This proves C and, by the triangle inequality, `sum_(p>=1)|W_p/p|>1/2`. Absolute convergence of this outer norm sum follows from the same product majorant.
+
+The row majorant also proves `|W_m|<=K (sum_(n>=1)n^(-2 sigma-1)) m^(-2 sigma)`, hence `W_m->0`. If `C_(p,q)=0` for every positive `q`, taking `q->infinity` gives `W_p=A_p W_1`, so the identity reduces to `W_(pq)=A_p W_q`. Iteration gives `W_(p^n q)=A_p^n W_q`. For `sigma<=1`, `|A_p|>=1`; the left side tends to zero while its norm is at least `|W_q|`. Hence every positive-index `W_q` is zero, contradicting C. This proves D and its closed boundary extension. No sharper remainder asymptotic or conjectural cancellation estimate is used.
+
+## Corpus and novelty scope
+
+[Search evidence](euler-deletion-remainder-mobius-inversion-searches.json) retains 31 mechanism queries, including unsuccessful queries, caps and exploration hits. This is broad brainstorming, not exhaustive corpus coverage. The finite multiples-coordinate inverse supplied the mechanism; the actual analytic remainder bound supplied its admission. Generic Möbius inversion is already present in the corpus and in [Forster's analytic-number-theory notes, chapter 3](https://www.mathematik.uni-muenchen.de/~forster/v/ann/annth_all.pdf). No literature-wide novelty claim is made for this specialization or its refinement consequence.
+
+[Formal certificate](../3-formalized/euler-deletion-remainder-reconstruction.md) records the precise checked declarations and audit scope. The original RH implication remains missing.
 
 ## Grouping primes or zeros
 
-A proof by classes remains possible if the classes exhaust the nontrivial zeros and each class has its own proved exclusion of off-line zeros. Prime classes do not automatically give zero classes. The inspected corpus `CoefficientDecimationSieve` makes finite prime-group filters exact projections onto integers coprime to the associated primorial; its divisor expansion retains products involving several prime choices. Thus dropping cross-group terms would change the source. The obstruction in Conjecture D is pointwise in the zero: if proved, dividing zeros into groups cannot restore this particular vanishing law. It does not rule out a different classification-based proof.
+A proof by classes remains possible if the classes exhaust the nontrivial zeros and each class has its own proved exclusion of off-line zeros. Prime classes do not automatically give zero classes. The inspected corpus `CoefficientDecimationSieve` makes finite prime-group filters exact projections onto integers coprime to the associated primorial; its divisor expansion retains products involving several prime choices. Thus dropping cross-group terms would change the source. D applies to each zero separately, so subdivision does not remove the nonvanishing obligation. A class-specific contradictory vanishing law would still need an independent arithmetic proof; no such classification or law was constructed here.

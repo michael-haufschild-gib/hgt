@@ -34,6 +34,7 @@ ax[1].axhline(0,color="black",lw=.8)
 ax[1].set(xscale="log",yscale="symlog",xlabel="Fraction of tail mass at node 255",ylabel="M''' / (tail mass)³",
     title="Mixture can lose and regain the sign")
 ax[1].set_yscale("symlog",linthresh=.01)
+ax[1].set_ylim(float(np.min(c3[idx]))*1.5,float(np.max(c3[idx]))*1.3)
 ax[1].text(.03,.95,"t = %.5g; nodes 3 and 255"%t[idx],transform=ax[1].transAxes,va="top",fontsize=10)
 fig.suptitle("Counterfactual theta tails: a narrow failure missed by coarse mixture weights",fontsize=14)
 fig.savefig("theta-contamination.png",dpi=170)
@@ -48,7 +49,7 @@ for ax,r in zip(axes.flat,controls):
     ax.axvline(r["residue"]["capture"],color="#bb4f31",lw=2,label="Residue classes modulo 6")
     ax.set(title=f"Basis {r['basis']}; {r['control'].replace('_',' ')}",ylabel="Random balanced partitions")
     ax.text(.03,.9,f"Residue grouping: {100*r['residue_empirical_percentile']:.1f}th percentile",transform=ax.transAxes,fontsize=10)
-    ax.legend(fontsize=8,frameon=False)
+    ax.legend(loc="lower left",fontsize=8,frameon=True,facecolor="white",framealpha=.9)
 for ax in axes[-1]:
     ax.set_xlabel("Fraction of collective norm saving captured")
 fig.suptitle("Grouping primes: the apparent arithmetic advantage is not stable",fontsize=14)

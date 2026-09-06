@@ -1,0 +1,17 @@
+# Conditioned source-boundary follow-up
+
+User asked whether different prime/zero classes could require different RH proof mechanisms. Answer: logically legitimate, but classes must be independently defined and exhaustive, with a location proof for every class; prime partitions do not automatically partition zeros and cross-group contributions must remain controlled. Do not claim discovery of intrinsic prime or zero types.
+
+Active broad RH scientific-discovery goal remains unmet and active. This turn made mathematical/exploratory progress, so it is not a no-progress or blocked turn. Narrow central-Hankel work remains paused.
+
+Completed work: docs/drafts/pipeline/2-fully-proven/computations/route-surprise-probes-2026-09-06/boundary-followup/REPORT.md and EXPERIMENTS.md. All numerical work on authorized Runpod /root/rh-route-surprise-20260906/boundary-followup, eight workers maximum, 120s caps. Source and all results downloaded. Main scripts boundary_search.py, interrogate_boundary.py, slope_boundary.py, verify_boundary.py.
+
+H''=0 boundary: 450 specs, 300 structural, 372 bracketed crossings, 4464 side evaluations, 1840 with B1 gates; no negative complete compensation. Recompute at100dps: 920 admissible centers, minimum retained-coordinate base gap 5.04653e6. Therefore these tested curvature crossings are far from the adverse two-channel regime.
+
+Adaptive r=beta/2 boundary: 270 specs,267 bracketed,252 admissible evaluations, no counterexample. At this surface two-channel budget equals -(beta^2-1), critical curvature=(beta^2-1)/(3(3beta+2)). Minimum observed h/hcrit=82158.418253587..., pure atom3 mass-matched at left A=pi, l=0, t=.47641897788931744364066706779658. Independently differentiated at90/140dps with cutoff40/80: M'''=.00195941373156947696418234469384739, agreement~5e-91/8e-141. These are counterfactual source samples, not certificates or zero classifications. B1 positive-measure implication remains open, as does the region between the surfaces.
+
+Formal positive residue added to owned ThetaCuspC5BoseHyperbolicReserve.lean: c5BoseCurvatureCoefficient Q=(6+4b)r^2-4(b^2-1)r+b(b^2-1); square identity (6+4b)Q=lowerSlope^2+(b^2-1)(6b+4); division-free curvature incidence retaining residual2r(s-r-k)+h; cleared substitution for k=s-r+h/(2r), includingr=0; unconditional0<=Q(1+x^2,r). Thus curvature increases the budget at fixed b,r,k whenb>1,r>0, but actual source deformation need not fix them. Four new theorems, eight in leaf total, no numerical input.
+
+Scratch and direct source lake env lean passed; named lake --old --log-level=error build leaf passed, compiling only needed SuzukiCriticalRootedBianchiCofinalNoGo dependency then leaf. #print axioms in /tmp: onlypropext,Classical.choice,Quot.sound. Existing umbrella import remains. Index refreshed. Global lint fails only foreign unwired ChronologicalHeatL2 at audit snapshot; do not wire foreign unfinished work. git diff --check clean. No own Lean or remote experimental processes remain.
+
+Frontier current-state paragraph and parent reports updated. No speculative universal-law entry. Corpus ideas inspected: AffineGammaMomentCurvature exact inward-boundary identity; SuzukiShiftSpectralMonotoneRatio two-sample cross-Wronskian. Neither automatically gives theta source incidence. Next useful hard target: quantitative source separation of simultaneous curvature shortage and adverse mixed budget, rather than more one-boundary positivity sampling.

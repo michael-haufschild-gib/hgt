@@ -1,8 +1,8 @@
 # The Weil lag function: Bochner form of the fixed-pole criterion, and prime rigidity
 
 - **ID:** `weil-lag-function-bochner-form`
-- **Stage:** 1-in-progress (paper proofs complete for every statement below; Lean: zero-side value `Φ(0)` certified,
-  prime side blocked on the sharp-cutoff explicit formula, which the corpus lacks)
+- **Stage:** 1-in-progress (paper proofs complete for every statement below; Lean: §1–§4 certified, including
+  `RH ⟺ Φ bounded`, see `3-formalized/lag-explicit-formula-lean.md`; open on paper: §6 Krein determinacy)
 - **Parents:** `fixed-pole-zero-margin-law.md`, `3-formalized/archimedean-genus-zero-sum-lean.md`
 - **STATUS entries:** CANNOT-325 (corrected), MUST-232, MUST-233, MUST-234
 - **Computations:** `2-fully-proven/computations/lag-function-pd-horizon/`, `lag-function-pd-rigidity/`
@@ -77,6 +77,8 @@ MUST-234 (marginal positivity, no spectral gap; no approximate prime input). `[O
 Krein determinacy of the archimedean germ (uniqueness of the PD extension of `Φ_arch|[−log 2, log 2]`) is open and
 expected false; a proof either way would decide whether the archimedean place plus positivity determines the primes.
 
-**Lean.** Zero side: `Φ(0)` certified. The prime side of §3 needs the sharp-cutoff explicit formulas for `ψ` and
-`Σ Λ(n)/n`, absent from the corpus and Mathlib (PNTPlus stops at the zero-free region); this is the infrastructure
-blocker for every sharp-cutoff prime criterion in the corpus (Cramér, von Koch converse, lag, horizon).
+**Lean.** The prime side of §3 is now a theorem (`LagExplicitFormula.lag_explicit_formula`), proved by termwise
+residue calculus on the Mittag-Leffler expansion with the kernel `1/(s(s−1))` (no truncated Perron, no zero-density
+input); `Φ`, its evenness, `Φ(0)`, the prime side and `RH ⇒ |Φ| ≤ Φ(0)` are in `WeilLagFunction`. The converse `Φ bounded ⇒ RH` is
+`WeilLagFunctionCriterion.riemannHypothesis_of_weilLagFunction_bounded`; the criterion
+`riemannHypothesis_iff_weilLagFunction_bounded` is closed.

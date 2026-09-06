@@ -1,0 +1,2258 @@
+{
+  "scope": "Corpus-first mechanism brainstorming. Capped query results, not an exhaustive corpus or literature audit. Mathematical statements and proof bodies were separately inspected with rg. Excluded RH mechanisms were not adopted.",
+  "queries": [
+    {
+      "query": "dilation finite difference rigidity",
+      "match": "(\"dilation\" OR \"dilation\"*) AND (\"finite\" OR \"finite\"*) AND (\"difference\" OR \"difference\"*) AND (\"rigidity\" OR \"rigidity\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "multiplicative remainder inversion",
+      "match": "(\"multiplicative\" OR \"multiplicative\"*) AND (\"remainder\" OR \"remainder\"*) AND (\"inversion\" OR \"inversion\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "carry averaging invariant",
+      "match": "(\"carry\" OR \"carry\"*) AND (\"averaging\" OR \"averaging\"*) AND (\"invariant\" OR \"invariant\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "cohomology bounded contraction",
+      "match": "(\"cohomology\" OR \"cohomology\"*) AND (\"bounded\" OR \"bounded\"*) AND (\"contraction\" OR \"contraction\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "renormalization fixed uniqueness",
+      "match": "(\"renormalization\" OR \"renormalization\"*) AND (\"fixed\" OR \"fixed\"*) AND (\"uniqueness\" OR \"uniqueness\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "summation reciprocity arithmetic",
+      "match": "(\"summation\" OR \"summation\"*) AND (\"reciprocity\" OR \"reciprocity\"*) AND (\"arithmetic\" OR \"arithmetic\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "dilation rigidity",
+      "match": "(\"dilation\" OR \"dilation\"*) AND (\"rigidity\" OR \"rigidity\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "dilationWeight_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.SecularWeldRigidity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/SecularWeldRigidity.lean",
+          "line": 66,
+          "doc": "",
+          "score": -29.205518896201013
+        },
+        {
+          "name": "dilationWeight_add",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.SecularWeldRigidity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/SecularWeldRigidity.lean",
+          "line": 69,
+          "doc": "",
+          "score": -29.205518896201013
+        },
+        {
+          "name": "matrixEntry_eq_zero_of_rectangularEvenDilationGramCombination_tendsto_stageCompact",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.RouteRNormConvergentCalkinCoefficientRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RouteRNormConvergentCalkinCoefficientRigidity.lean",
+          "line": 152,
+          "doc": "Stage-dependent compact rigidity.** Every stabilized off-diagonal coefficient vanishes if coherent rectangular Sonin Gram sections approach arbitrary compact counterterms in operator norm. The compact counterterms need not converge or be uniformly bounded.",
+          "score": -25.89933587727342
+        },
+        {
+          "name": "routeJFiveCoeffDilationDerivative",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.XiCTaylorSignedContinuumFiveTranslateRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/XiCTaylorSignedContinuumFiveTranslateRigidity.lean",
+          "line": 28,
+          "doc": "Dilation-derivative row `x A'(x)` of a five-tap translate-mask symbol.",
+          "score": -25.467064430526577
+        },
+        {
+          "name": "varyingRectangularEvenDilationGramCombination",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.RouteRNormConvergentCalkinCoefficientRigidity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RouteRNormConvergentCalkinCoefficientRigidity.lean",
+          "line": 70,
+          "doc": "Finite Sonin Gram stage with a coefficient matrix allowed to vary arbitrarily with cutoff.",
+          "score": -25.176554073710264
+        },
+        {
+          "name": "adamsDilation_quasiUnipotent_forces_simple",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.LocalDivisorJetAdamsMonodromy",
+          "relpath": "formal/GaloisForLFunctions/RHTower/LocalDivisorJetAdamsMonodromy.lean",
+          "line": 35,
+          "doc": "Quasi-unipotent Adams rigidity.** A genuine Adams dilation cannot be quasi-unipotent on a nonreduced positive-length local jet: the surviving cotangent weight would be the integer `n ≥ 2`, which has no positive power equal to one.",
+          "score": -24.91016762292371
+        },
+        {
+          "name": "bounded_bilateral_clockDilation_norm_eq_one",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/HypertranscendentalClockBoundary.lean",
+          "line": 1140,
+          "doc": "Bilateral single-carrier rigidity.** A bounded implementation of both directions of the full grading action on one carrier is possible only for the unit-norm subgroup. Nonunit source dilations must move between different positive topologies.",
+          "score": -24.824695011956116
+        },
+        {
+          "name": "adamsDilation_powerBounded_forces_simple",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.LocalDivisorJetAdamsMonodromy",
+          "relpath": "formal/GaloisForLFunctions/RHTower/LocalDivisorJetAdamsMonodromy.lean",
+          "line": 59,
+          "doc": "Power-bounded Adams rigidity.** A nonreduced jet contains the weight `n`, whose iterates escape every fixed bound for `n ≥ 2`. Thus any Banach, Markov, KMS, or operator realization that makes the genuine local Adams semigroup power-bounded forces the jet to be reduced.",
+          "score": -23.912796009872636
+        },
+        {
+          "name": "natDegree_comp_C_mul_X",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ScalingShiftRigidity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ScalingShiftRigidity.lean",
+          "line": 27,
+          "doc": "The scaling substitution is a coefficientwise dilation.",
+          "score": -17.464766485229603
+        },
+        {
+          "name": "HasScalarDifferentialOrder.map_semilinear",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.SemilinearJetCovariance",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/SemilinearJetCovariance.lean",
+          "line": 93,
+          "doc": "Semilinear order rigidity.** A semilinear clock dilation preserves exact scalar differential order: `HasScalarDifferentialOrder C y z n → HasScalarDifferentialOrder C (e y) (e z) n`.",
+          "score": -16.833077982903276
+        }
+      ],
+      "exploration": [
+        {
+          "name": "deningerRectangularCoefficient_eq_const_div",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.DeningerArithmeticRectangularHalfDensity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticRectangularHalfDensity.lean",
+          "line": 113,
+          "doc": "Half-density rigidity. If a scalar metric coefficient has weight one under every positive moving-modulus dilation, then it is the inverse modulus times one constant.",
+          "score": -16.007847383029205
+        },
+        {
+          "name": "clockSemilinearAlgEquiv_generator_order_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ClockSemilinearOrderZeroMobius",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ClockSemilinearOrderZeroMobius.lean",
+          "line": 31,
+          "doc": "Semilinear order-zero rigidity.** A semilinear clock dilation of a scalar free differential field sends its generator, and the inverse sends the generator, by exact order-zero differential rational functions.",
+          "score": -15.259748241106063
+        }
+      ],
+      "total": 30,
+      "modules": 12,
+      "eligible": 16,
+      "markers": []
+    },
+    {
+      "query": "multiples inversion",
+      "match": "(\"multiples\" OR \"multiples\"*) AND (\"inversion\" OR \"inversion\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "sum_moebius_mul_selbergMultiplesInner",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.SelbergDiagonalLowerAsymptotic",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/SelbergDiagonalLowerAsymptotic.lean",
+          "line": 18,
+          "doc": "Möbius inversion recovers the first coefficient from the multiples-coordinates.",
+          "score": -34.95292141012412
+        },
+        {
+          "name": "sum_divisors_interval_moebius",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.SelbergInversion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/SelbergInversion.lean",
+          "line": 113,
+          "doc": "Divisor-interval Möbius sum.** The alternating sum over the divisors of `k` that are multiples of `l` detects `k = l`.",
+          "score": -18.546664297256072
+        },
+        {
+          "name": "dampedMultipleStandardTwistTerm_eq_smul_integral_mellinBarnesGeneralLine",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.SelbergClass.MultipleStandardTwistMellinBarnesGeneralLine",
+          "relpath": "formal/GaloisForLFunctions/SelbergClass/MultipleStandardTwistMellinBarnesGeneralLine.lean",
+          "line": 104,
+          "doc": "Termwise Mellin inversion on an arbitrary positive vertical line.",
+          "score": -12.574939440916701
+        },
+        {
+          "name": "dampedMultipleStandardTwistTerm_eq_smul_integral_mellinBarnes",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.SelbergClass.MultipleStandardTwistMellinBarnesFubini",
+          "relpath": "formal/GaloisForLFunctions/SelbergClass/MultipleStandardTwistMellinBarnesFubini.lean",
+          "line": 254,
+          "doc": "Termwise Mellin inversion rewritten as a scalar multiple of the real-line integral used by the Fubini theorem.",
+          "score": -11.775149475949743
+        }
+      ],
+      "exploration": [],
+      "total": 4,
+      "modules": 4,
+      "eligible": 4,
+      "markers": []
+    },
+    {
+      "query": "carry invariant",
+      "match": "(\"carry\" OR \"carry\"*) AND (\"invariant\" OR \"invariant\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "cyclicGaloisH2Inflation_carrySplitValuationInvariant",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2CarryInflation",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/CyclicGaloisH2CarryInflation.lean",
+          "line": 148,
+          "doc": "Genuine inflation is orientation multiplication followed by finite-torsion inclusion in carry-normalized split-valuation coordinates.",
+          "score": -37.50489569287023
+        },
+        {
+          "name": "nonarchimedeanLocalFieldAdjoinRootFractionField_carryH2Invariant_apply",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanLocalFieldCarryH2Invariant",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldCarryH2Invariant.lean",
+          "line": 109,
+          "doc": "The concrete invariant sends the literal carry class of a base unit to its norm-quotient valuation coordinate.",
+          "score": -37.4212854550662
+        },
+        {
+          "name": "cyclicGaloisCarryH2ProfileInvariantSumAddHom_single",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2CarryReciprocityProfile",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/CyclicGaloisH2CarryReciprocityProfile.lean",
+          "line": 40,
+          "doc": "A singleton carry profile sums to its local torsion invariant.",
+          "score": -37.29348719917468
+        },
+        {
+          "name": "cyclicGaloisCarryH2HeterogeneousInvariantSum_exact",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2CarryHeterogeneousReciprocity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/CyclicGaloisH2CarryHeterogeneousReciprocity.lean",
+          "line": 87,
+          "doc": "Heterogeneous carry reciprocity is exact at the local-profile term.",
+          "score": -37.204160226048664
+        },
+        {
+          "name": "cyclicGaloisCarryH2HeterogeneousInvariantSumAddHom",
+          "kind": "noncomputable def",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2CarryHeterogeneousReciprocity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/CyclicGaloisH2CarryHeterogeneousReciprocity.lean",
+          "line": 52,
+          "doc": "Sum of place-dependent literal carry classes in `ℚ/ℤ`.",
+          "score": -37.11081234077924
+        },
+        {
+          "name": "cyclicGaloisCarryH2ProfileInvariantSum_zeroSum_exact",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2CarryReciprocityProfile",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/CyclicGaloisH2CarryReciprocityProfile.lean",
+          "line": 167,
+          "doc": "Finite literal-carry reciprocity sequence is exact at the local-profile term.",
+          "score": -36.7420870120196
+        },
+        {
+          "name": "carryGauge_integral_current_eq",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.TopologicallyAdmittedLatticeCarryCurrent",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/TopologicallyAdmittedLatticeCarryCurrent.lean",
+          "line": 117,
+          "doc": "An integrable lattice gauge changes carry by a coboundary but preserves invariant current.",
+          "score": -29.961256000872712
+        },
+        {
+          "name": "compensatedLift_neutral_of_zero_carry",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.TopologicallyAdmittedLatticeCarryCurrent",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/TopologicallyAdmittedLatticeCarryCurrent.lean",
+          "line": 95,
+          "doc": "With finite invariant probability mass and no lattice carry, an integrable exact lift is neutral. This is the zero-current chamber of compensated descent.",
+          "score": -29.252473895610116
+        },
+        {
+          "name": "cyclicGaloisCarryH2SplitValuationEquiv_apply",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.CyclicGaloisH2CarryNormQuotient",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/CyclicGaloisH2CarryNormQuotient.lean",
+          "line": 719,
+          "doc": "Explicit carry parameter is read by the finite local invariant as valuation modulo `n`.",
+          "score": -28.312711243060146
+        },
+        {
+          "name": "cyclicGaloisCarryH2Heterogeneous_congr_hasse_iff",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.HeterogeneousReciprocityHasseClassification",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/HeterogeneousReciprocityHasseClassification.lean",
+          "line": 102,
+          "doc": "Literal cyclic carry profiles have equal all-place invariant sum exactly modulo heterogeneous reciprocity.",
+          "score": -28.275131206342937
+        }
+      ],
+      "exploration": [
+        {
+          "name": "cyclicGaloisCarryH2Heterogeneous_not_congr_hasse_iff",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.ReciprocityFailureClassification",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/ReciprocityFailureClassification.lean",
+          "line": 73,
+          "doc": "Heterogeneous cyclic carry profiles fail reciprocity congruence exactly when their invariant sums differ.",
+          "score": -28.275131206342937
+        },
+        {
+          "name": "homogeneousChargeGate_power_invariant",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.XiHomogeneousChargeGateSaturation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/XiHomogeneousChargeGateSaturation.lean",
+          "line": 77,
+          "doc": "Power-invariant saturation law.** Any two positive integral powers of the same charge budget carry identical squared-height information.",
+          "score": -28.14288352264953
+        }
+      ],
+      "total": 83,
+      "modules": 51,
+      "eligible": 63,
+      "markers": [
+        {
+          "relpath": "formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean",
+          "line": 3835,
+          "text": "argument is exactly the missing word-level carry invariant: on clean work and",
+          "score": -34.444698360616464
+        }
+      ]
+    },
+    {
+      "query": "bounded cocycle",
+      "match": "(\"bounded\" OR \"bounded\"*) AND (\"cocycle\" OR \"cocycle\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "integrable_superpositionCocycle",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.BoundedConservationBlindness",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/BoundedConservationBlindness.lean",
+          "line": 319,
+          "doc": "",
+          "score": -29.970096324102606
+        },
+        {
+          "name": "superpositionCocycle",
+          "kind": "def",
+          "module": "GaloisForLFunctions.HTGeometry.BoundedConservationBlindness",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/BoundedConservationBlindness.lean",
+          "line": 295,
+          "doc": "The formed modular cocycle of the depth-`m` superposition pair.",
+          "score": -28.799390624051615
+        },
+        {
+          "name": "quiet_crossing_cocycle_kill_tpoly",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.QuietCrossingCocycleTPoly",
+          "relpath": "formal/GaloisForLFunctions/RHTower/QuietCrossingCocycleTPoly.lean",
+          "line": 514,
+          "doc": "Bounded depth aspect plus a zero still kills the carrier.** With sub-critical height growth (`m < 1`) and uniformly bounded depth constants `H(M) ≤ C`, a zero of the reflection factor annihilates every coefficient: the support collapses to the constant `a₁`, the identity principle spreads it, and the functional equation at the zero evaluates it to `0`.",
+          "score": -28.407212400643015
+        },
+        {
+          "name": "quiet_crossing_cocycle_kill",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.QuietCrossingCocycle",
+          "relpath": "formal/GaloisForLFunctions/RHTower/QuietCrossingCocycle.lean",
+          "line": 406,
+          "doc": "Bounded-flank reflection factors with a zero are quiet-unrealizable.** If the flank bounds `H(M)` are uniformly bounded (`H(M) ≤ C`) — as for any finite Blaschke-type quotient whose poles avoid the closed flank region — then the support radius is `1`, so every coefficient with `n ≥ 2` dies and the carrier is the constant `a₁`. Evaluating the functional equation at a zero `ρ₀` of the reflection factor then kills the constant: `a₁ = F(ρ₀) = h(ρ₀)·F(1−ρ₀) = 0`. The minimal non-conductor divisor — a single zero/pole pair `(ρ₀, 1−ρ₀)` — therefore carries no nonzero quiet Dirichlet series: **realizable divisors are either empty or force unbounded flank growth.**",
+          "score": -25.640098303705035
+        },
+        {
+          "name": "bounded_history_classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ConstitutiveRecoveryCocycleHolonomy",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutiveRecoveryCocycleHolonomy.lean",
+          "line": 529,
+          "doc": "",
+          "score": -25.575638372157204
+        },
+        {
+          "name": "no_boundedWeldSpectralPrimitive",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.WeldBoundedSpectralGauge",
+          "relpath": "formal/GaloisForLFunctions/RHTower/WeldBoundedSpectralGauge.lean",
+          "line": 156,
+          "doc": "A nonzero weld cocycle has no primitive realized by bounded affine operators on spectral `L²`.",
+          "score": -25.453406355720215
+        },
+        {
+          "name": "LedgerHistoriesBounded",
+          "kind": "def",
+          "module": "GaloisForLFunctions.HTGeometry.ConstitutiveRecoveryCocycleHolonomy",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutiveRecoveryCocycleHolonomy.lean",
+          "line": 490,
+          "doc": "",
+          "score": -25.175802966224605
+        },
+        {
+          "name": "deningerBoundedHilbertComplex_range_le_ker",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.DeningerArithmeticBoundedHilbertComplex",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticBoundedHilbertComplex.lean",
+          "line": 31,
+          "doc": "Nilpotence puts every boundary in the cocycle subspace.",
+          "score": -25.111679887252265
+        },
+        {
+          "name": "deningerBoundedHilbertComplex_closure_range_le_ker",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.DeningerArithmeticBoundedHilbertComplex",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticBoundedHilbertComplex.lean",
+          "line": 40,
+          "doc": "The closure of the boundary subspace remains inside the cocycle subspace.",
+          "score": -24.32617738948065
+        },
+        {
+          "name": "quiet_crossing_cocycle_bound",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.QuietCrossingCocycle",
+          "relpath": "formal/GaloisForLFunctions/RHTower/QuietCrossingCocycle.lean",
+          "line": 49,
+          "doc": "Quiet-crossing coefficient bound with an abstract reflection cocycle.** Let `F` be entire, agree with an absolutely convergent Dirichlet series on `Re s ≥ c` (`½ ≤ c`), be bounded by `B` there, and satisfy `F(s) = h(s)·F(1−s)`. Along a quiet height sequence, at any contour depth `M ≥ max(2, c)` where the reflection factor obeys the flank bound `‖h(s)‖ ≤ H(M)` on `−M ≤ Re s ≤ 1−c`, every coefficient with `n ≥ 2` satisfies `‖aₙ‖ ≤ 4·H(M)·B·(n−½)^{1−M}`. The functional equation transports the right-flank bound `B` across the strip at the price of the factor `H(M)`; the smoothed-Perron rectangle then reads the coefficient on the deep line `Re s = −M`, where the kink numerator contributes `(n−½)^{1−M}`.",
+          "score": -22.82584879633075
+        }
+      ],
+      "exploration": [
+        {
+          "name": "ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_sub_eq_wallCofinalCocycle",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeAnchoredWallTransport",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAnchoredWallTransport.lean",
+          "line": 143,
+          "doc": "Exact cofinal wall cocycle.** For two fixed positive anchors, the difference of the RH-bearing signed currents is not merely bounded: it is exactly an affine function of `H⁻¹`. Thus every fixed-anchor current represents the same cofinal germ modulo `span {1, H ↦ H⁻¹}` while retaining the literal completed prime--polar coefficients.",
+          "score": -22.720351630310986
+        },
+        {
+          "name": "CCMCircleBoundedSymbol",
+          "kind": "structure",
+          "module": "GaloisForLFunctions.RHTower.CCMArchimedeanCircleTraceCocycle",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanCircleTraceCocycle.lean",
+          "line": 36,
+          "doc": "A bounded measurable circle symbol, with all analytic data intrinsic to the object.",
+          "score": -22.481210640329078
+        }
+      ],
+      "total": 31,
+      "modules": 16,
+      "eligible": 23,
+      "markers": []
+    },
+    {
+      "query": "refinement cancellation",
+      "match": "(\"refinement\" OR \"refinement\"*) AND (\"cancellation\" OR \"cancellation\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "hasseFiniteDifference_packet",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ConstitutiveHassePacketFormation",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutiveHassePacketFormation.lean",
+          "line": 105,
+          "doc": "A finite Hasse row forms its cancellation packet before any infinite refinement.",
+          "score": -24.406941867571707
+        },
+        {
+          "name": "scaledGammaAlienChargeZero_naturalScale_iff_orbitCharge_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ScaledGammaNaturalOrbitCompleteness",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ScaledGammaNaturalOrbitCompleteness.lean",
+          "line": 418,
+          "doc": "Automatic common-scale completeness.** For every finite positive natural-scale Gamma family, vanishing of the actual scaled residue character is equivalent to cancellation of every canonical shift-orbit charge produced by simultaneous Gauss refinement. No reduced-block or chosen-representative hypothesis remains.",
+          "score": -16.336263321919372
+        },
+        {
+          "name": "re_soninApertureResidualTrace_chain_corrected",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SoninBurnolApertureCancellation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SoninBurnolApertureCancellation.lean",
+          "line": 72,
+          "doc": "Corrected chain law.** After the counterterm is removed at every step, the chain law of the refinement has no principal term left: the corrected total is the sum of the corrected steps minus the accumulated coupling energy.",
+          "score": -15.500316832863543
+        }
+      ],
+      "exploration": [],
+      "total": 3,
+      "modules": 3,
+      "eligible": 3,
+      "markers": []
+    },
+    {
+      "query": "reciprocity",
+      "match": "(\"reciprocity\" OR \"reciprocity\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "reciprocity_neutral",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.AcrossClassReciprocity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/AcrossClassReciprocity.lean",
+          "line": 84,
+          "doc": "Reciprocity is exponent-neutral**: trivial bound, second-derivative parameter and all.",
+          "score": -147.04452678651575
+        },
+        {
+          "name": "seamFluxCochain_reciprocity",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SeamFluxCompletion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SeamFluxCompletion.lean",
+          "line": 57,
+          "doc": "The completed flux cochain is reciprocity-invariant: `Ω_+^Δ(1 − s) = −Ω_+^Δ(s)`.",
+          "score": -146.8544222459102
+        },
+        {
+          "name": "numberFieldGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity",
+          "kind": "private theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.RestrictedInvariantSupportHasse",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/RestrictedInvariantSupportHasse.lean",
+          "line": 194,
+          "doc": "Global number-field reciprocity forces any locally nonzero global class to have two distinct nonsplit localizations.",
+          "score": -146.83325799708524
+        },
+        {
+          "name": "rationalFunctionGlobalReciprocity_exists_two_nonSplit_places_of_reciprocity",
+          "kind": "private theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.RestrictedInvariantSupportHasse",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/RestrictedInvariantSupportHasse.lean",
+          "line": 228,
+          "doc": "Global function-field reciprocity forces any locally nonzero global class to have two distinct nonsplit localizations.",
+          "score": -146.83325799708524
+        },
+        {
+          "name": "deningerFinitePlaceLogProfile_global_reciprocity",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.DeningerAdelicFiniteLogProfile",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerAdelicFiniteLogProfile.lean",
+          "line": 28,
+          "doc": "The finite local profile and weighted archimedean logarithms satisfy global reciprocity.",
+          "score": -146.76197528698506
+        },
+        {
+          "name": "heterogeneousTorsionProfile_exists_unique_mod_reciprocity",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.HeterogeneousReciprocityHasseClassification",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/HeterogeneousReciprocityHasseClassification.lean",
+          "line": 70,
+          "doc": "Every realized heterogeneous finite-torsion invariant has a profile representative unique modulo reciprocity.",
+          "score": -146.65387835040087
+        },
+        {
+          "name": "milnorPolynomialTotalResidue_reciprocity",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.MilnorPolynomialGlobalReciprocity",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/MilnorPolynomialGlobalReciprocity.lean",
+          "line": 58,
+          "doc": "Global reciprocity on `F(t)`.** The sum of the normed finite residues is the negative of the residue at infinity.",
+          "score": -146.65387835040087
+        },
+        {
+          "name": "heterogeneousRatModIntProfile_exists_unique_mod_reciprocity",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.HeterogeneousReciprocityHasseClassification",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/HeterogeneousReciprocityHasseClassification.lean",
+          "line": 40,
+          "doc": "Every realized heterogeneous invariant has a profile representative, unique modulo reciprocal profiles.",
+          "score": -146.5473910081976
+        },
+        {
+          "name": "reciprocityFailureClassificationDecidableEq",
+          "kind": "local instance",
+          "module": "GaloisForLFunctions.HTGeometry.ABHN.ReciprocityFailureClassification",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/ReciprocityFailureClassification.lean",
+          "line": 68,
+          "doc": "",
+          "score": -146.47327988898226
+        },
+        {
+          "name": "reciprocity_closed_uniformly",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ScaleWindowIncompatibility",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ScaleWindowIncompatibility.lean",
+          "line": 149,
+          "doc": "Uniform closure of the reciprocity route.** Whatever Farey order is chosen inside the quadratic window, completion in the numerator carries a deficit of at least `N^(1/3)`.",
+          "score": -146.42838084731756
+        }
+      ],
+      "exploration": [
+        {
+          "name": "rankTwo_mixedOrthant_reciprocity",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.SourceConstraintHeight",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/SourceConstraintHeight.lean",
+          "line": 157,
+          "doc": "With two source directions, vanishing on the two mixed orthants permits a nonzero boundary jump, but forces the two jumps to agree. This is the algebraic core of triptic reciprocity.",
+          "score": -146.3091264580744
+        },
+        {
+          "name": "leeYangPair_reciprocity_does_not_force_circle",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.LeeYangQuadraticBlock",
+          "relpath": "formal/GaloisForLFunctions/RHTower/LeeYangQuadraticBlock.lean",
+          "line": 81,
+          "doc": "Positive no-go boundary: reciprocal symmetry survives at `c = 2`, but circle localization does not. The missing datum is the coefficient chamber, not another functional equation.",
+          "score": -146.1238087682264
+        }
+      ],
+      "total": 636,
+      "modules": 121,
+      "eligible": 190,
+      "markers": [
+        {
+          "relpath": "formal/GaloisForLFunctions/RHTower/FrankensteinThetaPrimeTranslationPluckerLanding.lean",
+          "line": 133,
+          "text": "reciprocity unconditionally; the missing source law must supply both inequalities. -/",
+          "score": -23.198989002965025
+        },
+        {
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/RestrictedInvariantSum.lean",
+          "line": 10,
+          "text": "is the global-reciprocity target of ABHN; the missing local class-field-theory results are only",
+          "score": -22.589149800803934
+        },
+        {
+          "relpath": "formal/GaloisForLFunctions/RHTower/RouteRPrimeLogEssentialCapRadialPhasePolarization.lean",
+          "line": 15,
+          "text": "Krein/determinant reciprocity is not the missing law: equality in the positive polarization is.",
+          "score": -22.152404327351977
+        },
+        {
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ABHN/CyclicGaloisH2CarryHeterogeneousReciprocity.lean",
+          "line": 12,
+          "text": "This is the place-dependent finite layer missing from the homogeneous carry profile: every place",
+          "score": -12.537797993024835
+        }
+      ]
+    },
+    {
+      "query": "remainder injective",
+      "match": "(\"remainder\" OR \"remainder\"*) AND (\"injective\" OR \"injective\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "gammaPoleScaleAndFinitePartJetLaurentEval_injective",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GammaPoleScalePrincipalRemainderUniversalityLaw",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GammaPoleScalePrincipalRemainderUniversalityLaw.lean",
+          "line": 158,
+          "doc": "Laurent scale--principal-remainder reflection.** No nonzero finite Laurent relation in the Gamma factorial scale with polynomial finite-part-jet coefficients can vanish across the pole tower, even over the moving-center field `ℂ(N)`.",
+          "score": -28.069135878342692
+        },
+        {
+          "name": "gammaPoleFinitePartJetRationalEval_injective",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GammaPolePrincipalRemainderFreeness",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GammaPolePrincipalRemainderFreeness.lean",
+          "line": 125,
+          "doc": "",
+          "score": -27.556270212641568
+        },
+        {
+          "name": "universalTangentInverseCoefficientRationalMap_injective",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GammaPoleScalePrincipalRemainderUniversalityLaw",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GammaPoleScalePrincipalRemainderUniversalityLaw.lean",
+          "line": 382,
+          "doc": "",
+          "score": -27.393716436629095
+        }
+      ],
+      "exploration": [],
+      "total": 7,
+      "modules": 2,
+      "eligible": 3,
+      "markers": []
+    },
+    {
+      "query": "averaging fixed",
+      "match": "(\"averaging\" OR \"averaging\"*) AND (\"fixed\" OR \"fixed\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "deningerBigWittCrossPairAlgebraicOneLegTrace_fixedLeftAveragingPacket",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.FrankensteinBigWittSingularGammaReporterDescent",
+          "relpath": "formal/GaloisForLFunctions/RHTower/FrankensteinBigWittSingularGammaReporterDescent.lean",
+          "line": 86,
+          "doc": "",
+          "score": -41.49381657090047
+        },
+        {
+          "name": "tendsto_deningerBigWittCrossPairFinitePacketAdmission_fixedLeftAveragingPacket",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.FrankensteinBigWittSingularGammaReporterDescent",
+          "relpath": "formal/GaloisForLFunctions/RHTower/FrankensteinBigWittSingularGammaReporterDescent.lean",
+          "line": 132,
+          "doc": "",
+          "score": -41.38940451216893
+        },
+        {
+          "name": "deningerGammaSixCofinalFiniteActualGammaTransport_averagingPacket",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.DeningerGammaSixCofinalSingularGraphSoninTransport",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerGammaSixCofinalSingularGraphSoninTransport.lean",
+          "line": 389,
+          "doc": "Every uniform finite average has the same actual fixed-Sonin value even though its ambient `ell^2` realization tends to zero.",
+          "score": -33.59194201674112
+        },
+        {
+          "name": "physicalState_iff_finiteCyclicGaugeAverage_fixed",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/FiniteConstraintGroupAverage.lean",
+          "line": 382,
+          "doc": "For a nonempty finite-period action, physicality is exactly fixedness under averaging.",
+          "score": -28.136252786863096
+        },
+        {
+          "name": "soninLogFourierInvariantAverage_additiveTranslation_of_fixed",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SoninLogCoordinateScattering",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SoninLogCoordinateScattering.lean",
+          "line": 315,
+          "doc": "On a scattering-invariant state, group averaging a translated state produces the exact forward/backward logarithmic-translation pair. This is the static cosine-channel relation used by the Mellin/dilation corpus, with no extra projection hypothesis.",
+          "score": -24.649350250949336
+        },
+        {
+          "name": "map_averageMap",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.HaarAveragingExactness",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/HaarAveragingExactness.lean",
+          "line": 72,
+          "doc": "The averaging projector is natural in the representation**: it commutes with every equivariant map, being a fixed linear combination of the group elements.",
+          "score": -23.596542686899415
+        },
+        {
+          "name": "two_mul_integral_xiWardSlidingHalfCellAnnulusEnergy_eq_triangular",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.XiWardTriangularSourceRectangle",
+          "relpath": "formal/GaloisForLFunctions/RHTower/XiWardTriangularSourceRectangle.lean",
+          "line": 539,
+          "doc": "Exact triangular averaging identity.** Averaging the fixed half-unit window over all translations gives exactly the deterministic triangular Ward annulus, including every off-diagonal term with its autocorrelation weight.",
+          "score": -21.520171977022503
+        },
+        {
+          "name": "polynomialRealEvenAverage_preserves_compatible_jets",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.FiniteHermiteCRT",
+          "relpath": "formal/GaloisForLFunctions/RHTower/FiniteHermiteCRT.lean",
+          "line": 245,
+          "doc": "A compatible finite jet packet is fixed by real-even averaging.",
+          "score": -21.29392103636575
+        },
+        {
+          "name": "finiteCyclicObservableTwirl_eq_self_iff_commutes",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.FiniteClockObservableFixedPoint",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/FiniteClockObservableFixedPoint.lean",
+          "line": 23,
+          "doc": "Finite-clock observable fixed-point theorem.** For a nonempty periodic clock, the fixed algebra of cyclic observable averaging is exactly the commutant of one clock step.",
+          "score": -20.977306596446123
+        },
+        {
+          "name": "criticalSchwarzAverage_mem_real_span",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.CriticalDiscSchwarzCompleteness",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CriticalDiscSchwarzCompleteness.lean",
+          "line": 273,
+          "doc": "Schwarz averaging sends the complex span of Schwarz-fixed generators into their real span. This is the algebraic descent that prevents complex coefficients from creating spurious real directions.",
+          "score": -17.779054135633924
+        }
+      ],
+      "exploration": [
+        {
+          "name": "intervalIntegral_criticalFeatureCompactSourceBoundaryAliasAtPhase_eq_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureBoundaryPhaseSelection",
+          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureBoundaryPhaseSelection.lean",
+          "line": 215,
+          "doc": "Haar-cell averaging survives the Plemelj boundary limit exactly. This is proved after the source limit has been fixed, so no moving-phase interchange is used.",
+          "score": -16.80030212844008
+        },
+        {
+          "name": "exists_integral_Icc_normSq_inghamSmoothedCriticalDivisorPolynomial_le_polylog",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.InghamSmoothedDivisorPolylog",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/InghamSmoothedDivisorPolylog.lean",
+          "line": 519,
+          "doc": "Uniform affine mean square with no fixed power loss. Cumulative divisor-square averaging is performed before exponential smoothing, so both coefficient prices remain polylogarithmic.",
+          "score": -16.647558426957076
+        }
+      ],
+      "total": 20,
+      "modules": 14,
+      "eligible": 15,
+      "markers": []
+    },
+    {
+      "query": "multiples decay",
+      "match": "(\"multiples\" OR \"multiples\"*) AND (\"decay\" OR \"decay\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "inverse contraction",
+      "match": "(\"inverse\" OR \"inverse\"*) AND (\"contraction\" OR \"contraction\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "dist_gammaExteriorInverseBranch_le_half_contraction",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GammaDimensionZeroHorizon",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GammaDimensionZeroHorizon.lean",
+          "line": 66,
+          "doc": "Reciprocal compression supplies a global diameter bound for one actual Gamma sheet.",
+          "score": -38.28507947523771
+        },
+        {
+          "name": "ReciprocalContractionSection.inverseLift",
+          "kind": "noncomputable def",
+          "module": "GaloisForLFunctions.HTGeometry.BooleanSoninFullHistory",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/BooleanSoninFullHistory.lean",
+          "line": 217,
+          "doc": "The algebraic inverse lift dictated by the eigenray relation.",
+          "score": -37.89163905450985
+        },
+        {
+          "name": "rapidity_eq_zero_of_contraction_pair",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.RationalHurwitzLorentzBoost",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RationalHurwitzLorentzBoost.lean",
+          "line": 189,
+          "doc": "Positive-metric rigidity.** A boost and its inverse are simultaneously contractive for one positive-definite metric exactly when the rapidity vanishes.",
+          "score": -29.96624662932857
+        },
+        {
+          "name": "gammaExteriorContraction_eq",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GammaExteriorInverseBranches",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GammaExteriorInverseBranches.lean",
+          "line": 133,
+          "doc": "",
+          "score": -29.8629617450708
+        },
+        {
+          "name": "gammaSewnMobiusValuationContractionMultiplier",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.GammaSewnMobiusValuationContraction",
+          "relpath": "formal/GaloisForLFunctions/RHTower/GammaSewnMobiusValuationContraction.lean",
+          "line": 46,
+          "doc": "Gamma sewing of the inverse Möbius dressing, normalized to have boundary norm one.",
+          "score": -29.665625772769094
+        },
+        {
+          "name": "exists_abs_sub_eulerFactor_mul_log_sq_rate_of_div_contraction",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.CoprimeLogMoebiusRate",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/CoprimeLogMoebiusRate.lean",
+          "line": 18,
+          "doc": "A bounded divided-argument contraction preserves an eventual inverse-log-square rate.",
+          "score": -29.66266196403458
+        },
+        {
+          "name": "gammaExteriorContraction_le_half",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GammaBaireInverseCoding",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GammaBaireInverseCoding.lean",
+          "line": 90,
+          "doc": "",
+          "score": -29.472925279182913
+        },
+        {
+          "name": "re_eq_half_of_contraction_pair",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.RationalHurwitzLorentzBoost",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RationalHurwitzLorentzBoost.lean",
+          "line": 218,
+          "doc": "The exact critical-line selector.** For a modulus `n ≥ 2`, simultaneous contractivity of the seam boost and its inverse in one positive metric is equivalent to `Re ρ = 1/2`.",
+          "score": -29.131886551245262
+        }
+      ],
+      "exploration": [
+        {
+          "name": "routePPrimitiveGammaJuliaStokesCubicRankMagnitudePreservingMovingLanding_coverWeightedTerminalEnergy_contraction",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.RoutePPrimitiveGammaJuliaStokesCubicCoverWeightedTerminalDissipation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaStokesCubicCoverWeightedTerminalDissipation.lean",
+          "line": 144,
+          "doc": "Rank-magnitude-preserving moving cubic Xi transport contracts terminal energy by at least the strictly positive inverse-cover-weighted terminal energy visible at unit Rees scale.",
+          "score": -28.24166818195035
+        },
+        {
+          "name": "norm_ringInverse_one_add_le",
+          "kind": "lemma",
+          "module": "GaloisForLFunctions.HTGeometry.CFCSqrtPerturbation",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CFCSqrtPerturbation.lean",
+          "line": 33,
+          "doc": "The inverse of `1 + x` is a contraction for nonnegative `x`.",
+          "score": -26.772240712238013
+        }
+      ],
+      "total": 30,
+      "modules": 22,
+      "eligible": 28,
+      "markers": []
+    },
+    {
+      "query": "dilation recurrence",
+      "match": "(\"dilation\" OR \"dilation\"*) AND (\"recurrence\" OR \"recurrence\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "unitaryCosineRecurrence_soninPrimeDilationSignal_eq_primePower",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SoninPrimePowerRegularization",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SoninPrimePowerRegularization.lean",
+          "line": 216,
+          "doc": "Every retained prime-power dilation observable is therefore a polynomial recurrence value of the single signal belonging to its underlying prime.",
+          "score": -36.72040489996112
+        },
+        {
+          "name": "unitaryCosineRecurrence_soninPrimeDilationSignal",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SoninPrimePowerRegularization",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SoninPrimePowerRegularization.lean",
+          "line": 178,
+          "doc": "Rapidity/Chebyshev dilation law.** The symmetric observable at scale `pⁿ` is the denominator-free cosine recurrence of the one-prime signal. Thus a whole prime-power tower has one operator generator.",
+          "score": -36.2819791746502
+        },
+        {
+          "name": "bourgain_subpower_of_dilated_twoThirds_recurrence",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.BourgainDilatedPowerScaleSubpower",
+          "relpath": "formal/GaloisForLFunctions/RHTower/BourgainDilatedPowerScaleSubpower.lean",
+          "line": 26,
+          "doc": "A fixed dilation in Bourgain's two-thirds recurrence does not change the subpower conclusion.",
+          "score": -29.01844131206512
+        }
+      ],
+      "exploration": [],
+      "total": 4,
+      "modules": 2,
+      "eligible": 3,
+      "markers": []
+    },
+    {
+      "query": "tail reconstruction",
+      "match": "(\"tail\" OR \"tail\"*) AND (\"reconstruction\" OR \"reconstruction\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "cofiniteEvaluationHilbertReconstruction_iff_tailCoefficientIndependent",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.CofiniteTailHilbertReconstruction",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CofiniteTailHilbertReconstruction.lean",
+          "line": 54,
+          "doc": "Universal cofinite complex Hilbert reconstruction law.** Complete reconstruction survives every finite deletion exactly when no nonzero coefficient combination has finite support.",
+          "score": -34.39533296655565
+        },
+        {
+          "name": "exists_injective_cofiniteComplexRealChannelHilbertReconstruction_of_tailCoefficientIndependent",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ContinuousCofiniteRealHilbertReconstruction",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ContinuousCofiniteRealHilbertReconstruction.lean",
+          "line": 126,
+          "doc": "Tail-to-real cofinite Hilbert bridge.** A finite complex family independent modulo finite support admits exact tagged real/imaginary reconstruction after every finite tagged deletion, with a positive-definite real Gram and positive Hilbert volume. This requires no topology or continuity.",
+          "score": -32.348168991219396
+        },
+        {
+          "name": "suzukiCausalWeilRobinReconstruction_delayedHinge",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SuzukiCausalWeilRobinGreenIdentity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCausalWeilRobinGreenIdentity.lean",
+          "line": 71,
+          "doc": "The Robin reconstruction with hinge endpoint moments equals the already proved hinge boundary--tail exterior.",
+          "score": -27.585680184438644
+        },
+        {
+          "name": "cofiniteEvaluationHilbertReconstruction_imp_finite",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.CofiniteTailHilbertReconstruction",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CofiniteTailHilbertReconstruction.lean",
+          "line": 72,
+          "doc": "Complete reconstruction after every finite deletion always supplies one finite reconstruction packet. No topology or continuity is needed for this direction.",
+          "score": -25.88558956663587
+        },
+        {
+          "name": "primeTailLocallyConstantQuotientEquiv",
+          "kind": "def",
+          "module": "GaloisForLFunctions.HTGeometry.PrimeWalshStoneReconstruction",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/PrimeWalshStoneReconstruction.lean",
+          "line": 118,
+          "doc": "Prime-Walsh Stone reconstruction: cylinder observables modulo eventual tail-vanishing are canonically the full locally constant algebra of the compact tail constraint.",
+          "score": -25.734519346699933
+        },
+        {
+          "name": "finiteApertureMobiusReconstruction",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.ConstrainedProlateTrueApertureMetric",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedProlateTrueApertureMetric.lean",
+          "line": 147,
+          "doc": "Möbius reconstruction of the base value from all finite dilation tails.",
+          "score": -25.299579170918843
+        },
+        {
+          "name": "xiZeroHurwitzJetCofiniteHilbertReconstruction_iff_injective",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.XiZeroHurwitzJetCofiniteHilbertReconstruction",
+          "relpath": "formal/GaloisForLFunctions/RHTower/XiZeroHurwitzJetCofiniteHilbertReconstruction.lean",
+          "line": 101,
+          "doc": "Cofinite Xi-zero Hurwitz jet reconstruction classification.** Exact dual reconstruction, strict Gram positivity, and positive volume survive every finite complex deletion iff the finite support/order dictionary is collision-free. No tail-independence, differential-independence, or positivity hypothesis remains in the interface.",
+          "score": -25.072236914828
+        },
+        {
+          "name": "finiteApertureMobiusReconstruction_eq",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.ConstrainedProlateTrueApertureMetric",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedProlateTrueApertureMetric.lean",
+          "line": 152,
+          "doc": "Exact finite Möbius inversion: the aperture dilation tails recover the base source value.",
+          "score": -24.608916731162978
+        }
+      ],
+      "exploration": [
+        {
+          "name": "finiteEvaluationHilbertReconstruction_iff_cofinite_of_continuous",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ContinuousFiniteSupportTailIndependence",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ContinuousFiniteSupportTailIndependence.lean",
+          "line": 156,
+          "doc": "Continuous finite/cofinite Hilbert phase law.** For finite continuous complex function families on a perfect T₁ domain, one complete finite reconstruction packet exists exactly when complete reconstruction survives every finite deletion.",
+          "score": -24.357790436243178
+        },
+        {
+          "name": "fixingSubgroup_nonautonomousTail_eq_deckClosure",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.NonautonomousDeckClosureReconstructionUniversalityLaw",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/NonautonomousDeckClosureReconstructionUniversalityLaw.lean",
+          "line": 36,
+          "doc": "Nonautonomous deck reconstruction law.** The full Galois fixing subgroup of the phase tail is exactly the topological closure of the group generated by all finite-prefix deck groups.",
+          "score": -23.99553568673051
+        }
+      ],
+      "total": 73,
+      "modules": 34,
+      "eligible": 52,
+      "markers": [
+        {
+          "relpath": "formal/GaloisForLFunctions/RHTower/XiMobiusContinuousApertureDyadicCofiniteHilbertReconstruction.lean",
+          "line": 221,
+          "text": "cofinite recovery from every tail of the remaining dyadic-depth features detects exactly",
+          "score": -20.297544269354862
+        }
+      ]
+    },
+    {
+      "query": "finite difference nonzero",
+      "match": "(\"finite\" OR \"finite\"*) AND (\"difference\" OR \"difference\"*) AND (\"nonzero\" OR \"nonzero\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "log_isLittleO_abs_logWeibullFiniteDifference",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.LogWeibullFiniteDifference",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/LogWeibullFiniteDifference.lean",
+          "line": 836,
+          "doc": "Every nonzero log-Weibull difference packet dominates the logarithm.",
+          "score": -32.218385804115165
+        },
+        {
+          "name": "finiteModelValue_innerDifferenceCoordinate",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.RiemannGaussian.FiniteModelSpace",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/RiemannGaussian/FiniteModelSpace.lean",
+          "line": 163,
+          "doc": "The coordinate evaluates to the literal rational difference quotient where all three displayed denominators are nonzero.",
+          "score": -31.86593306944604
+        },
+        {
+          "name": "tendsto_logWeibullFiniteDifference_fixedShift_ratio",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.LogWeibullFiniteDifference",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/LogWeibullFiniteDifference.lean",
+          "line": 740,
+          "doc": "A finite-difference packet with nonzero leading moment is stable under every fixed shift.",
+          "score": -31.76856435171036
+        },
+        {
+          "name": "HurwitzHzetaShiftRelationFiniteDifferenceTarget",
+          "kind": "def",
+          "module": "GaloisForLFunctions.FullyProvenNewTargets",
+          "relpath": "formal/GaloisForLFunctions/FullyProvenNewTargets.lean",
+          "line": 2760,
+          "doc": "Polynomial-coefficient finite-difference transform for actual shifted-Hurwitz values. This is the actual-value analogue of `HurwitzHarmonicTailRelationFiniteDifferenceTarget`, with the nonzero phase factors made explicit.",
+          "score": -31.0349691615702
+        },
+        {
+          "name": "polynomialPowerFiniteDifference_isEquivalent",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.PolynomialPowerFiniteDifference",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/PolynomialPowerFiniteDifference.lean",
+          "line": 182,
+          "doc": "A fixed finite-difference packet with first nonzero moment `j` has the exact real-power asymptotic prescribed by the `j`-th falling factorial of the exponent.",
+          "score": -30.74763545753996
+        },
+        {
+          "name": "resolventDividedDifference_ne_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ConstitutivePrimitiveFormationProperness",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ConstitutivePrimitiveFormationProperness.lean",
+          "line": 126,
+          "doc": "Resolvent divided differences are nonzero at every finite packet size.",
+          "score": -28.765280461195495
+        },
+        {
+          "name": "primeLogUniformDifferenceClockSample_isInfiniteTorusRayRajchman",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.CaiChenFangGuoRajchman",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CaiChenFangGuoRajchman.lean",
+          "line": 1750,
+          "doc": "Difference-of-uniforms observation time suppresses every nonzero finite prime-log character ray.",
+          "score": -27.326593719100874
+        },
+        {
+          "name": "lowerTruncationX_dividedDifference_eq_zero_of_two_eval_D_eq_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.Bottcher.RelativeTranscendenceBridge",
+          "relpath": "formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean",
+          "line": 1647,
+          "doc": "Dividing Grok's two-branch finite-difference cancellation by the nonzero branch separation `y₁-y₂` gives the new divided-difference relation.",
+          "score": -25.473457295575265
+        }
+      ],
+      "exploration": [
+        {
+          "name": "finiteProductTupleDiff_nondegenerate",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.FiniteProductTupleNondegeneracy",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/FiniteProductTupleNondegeneracy.lean",
+          "line": 61,
+          "doc": "Finite-product difference nondegeneracy.** If every coordinate offers pairwise distinct complex exponents and every option coefficient is nonzero, then the zero-exponent coefficient of the product expansion multiplied by its exponent-negated copy is nonzero.",
+          "score": -23.87788858074036
+        },
+        {
+          "name": "finiteContraction_pair_persistent_memory_iff",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.FiniteContractionOperationalMemoryLaw",
+          "relpath": "formal/GaloisForLFunctions/RHTower/FiniteContractionOperationalMemoryLaw.lean",
+          "line": 150,
+          "doc": "The exact surviving pairwise memory is positive precisely when the initial difference has a nonzero peripheral component.",
+          "score": -23.00316763133125
+        }
+      ],
+      "total": 32,
+      "modules": 28,
+      "eligible": 32,
+      "markers": []
+    },
+    {
+      "query": "moment annihilator",
+      "match": "(\"moment\" OR \"moment\"*) AND (\"annihilator\" OR \"annihilator\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 2,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "exists_nonzero_clusteredMoment_annihilator",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ClusteredExponentialMomentAnnihilator",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ClusteredExponentialMomentAnnihilator.lean",
+          "line": 36,
+          "doc": "Rectangular Vandermonde annihilator.** Any `n + 1` complex offsets have a nonzero coefficient vector annihilating all monomial moments of degree below `n`.",
+          "score": -38.53082059118219
+        },
+        {
+          "name": "annihilator_unique",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.CubicMomentEqualityChord",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CubicMomentEqualityChord.lean",
+          "line": 94,
+          "doc": "The chord form is the unique linear form killing both models.** Any `(α, β, γ)` annihilating the exponential and the half-Gaussian triples acts as a scalar multiple of `chordFunctional`.",
+          "score": -29.461897695373818
+        },
+        {
+          "name": "clusteredMomentMatrix",
+          "kind": "def",
+          "module": "GaloisForLFunctions.HTGeometry.ClusteredExponentialMomentAnnihilator",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ClusteredExponentialMomentAnnihilator.lean",
+          "line": 26,
+          "doc": "Rectangular Vandermonde moment matrix for `n + 1` offsets and moments `0, …, n - 1`.",
+          "score": -23.299596823682034
+        },
+        {
+          "name": "momentHankelMatrix_posDef_of_reflectionPositiveGram",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ReflectionPositiveHankel",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ReflectionPositiveHankel.lean",
+          "line": 106,
+          "doc": "Linear independence of one finite reflected packet upgrades Hankel semidefiniteness to strict positive definiteness. This is the algebraic form of a state orbit having no polynomial annihilator below degree `n`.",
+          "score": -23.135513411960197
+        }
+      ],
+      "exploration": [],
+      "total": 6,
+      "modules": 3,
+      "eligible": 4,
+      "markers": []
+    },
+    {
+      "query": "moebius infinite inversion",
+      "match": "(\"moebius\" OR \"moebius\"*) AND (\"infinite\" OR \"infinite\"*) AND (\"inversion\" OR \"inversion\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "multiples reconstruction",
+      "match": "(\"multiples\" OR \"multiples\"*) AND (\"reconstruction\" OR \"reconstruction\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "lightRayHorizon_sup_inf",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ScalarHorizonCelestialBoundary",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ScalarHorizonCelestialBoundary.lean",
+          "line": 46,
+          "doc": "Boundary-pair reconstruction.** Two light rays that are not positive multiples of each other are the two endpoints of an oriented geodesic, and their horizons join to the whole differential field generated by the scalar and meet exactly in the differential field generated by its Schwarzian.",
+          "score": -17.71131114418444
+        }
+      ],
+      "exploration": [],
+      "total": 1,
+      "modules": 1,
+      "eligible": 1,
+      "markers": []
+    },
+    {
+      "query": "tsum divisors",
+      "match": "(\"tsum\" OR \"tsum\"*) AND (\"divisors\" OR \"divisors\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "tsum_fiber_eq_sum_divisorsAntidiagonal",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.ConstrainedProlatePrimeShiftDoubleSum",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedProlatePrimeShiftDoubleSum.lean",
+          "line": 113,
+          "doc": "",
+          "score": -47.47202791132621
+        },
+        {
+          "name": "tsum_fiber_eq_sum_divisorsAntidiagonal_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.ConstrainedProlatePrimeShiftDoubleSum",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ConstrainedProlatePrimeShiftDoubleSum.lean",
+          "line": 128,
+          "doc": "",
+          "score": -47.315263827234155
+        },
+        {
+          "name": "tsum_coprime_eq_sum_divisors_moebius",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.CommonProfileAnchorResponseMobius",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CommonProfileAnchorResponseMobius.lean",
+          "line": 130,
+          "doc": "Primitivity by Möbius inversion.** A frequency sum restricted to frequencies coprime to a modulus is the Möbius transform of the unrestricted sums over its divisor sublattices.",
+          "score": -46.906387645523814
+        },
+        {
+          "name": "tsum_divisorStationaryIncidenceMellinTerm_row",
+          "kind": "private theorem",
+          "module": "GaloisForLFunctions.RHTower.DivisorStationaryKernelMellinSymbol",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DivisorStationaryKernelMellinSymbol.lean",
+          "line": 188,
+          "doc": "",
+          "score": -34.20124712397681
+        },
+        {
+          "name": "divisorStationaryMellinTerm_eq_incidence_tsum",
+          "kind": "private theorem",
+          "module": "GaloisForLFunctions.RHTower.DivisorStationaryKernelMellinSymbol",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DivisorStationaryKernelMellinSymbol.lean",
+          "line": 272,
+          "doc": "",
+          "score": -34.151171477763214
+        },
+        {
+          "name": "tsum_divisorSquare_rpow_le_near_one",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.InghamDivisorSquareNearPole",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/InghamDivisorSquareNearPole.lean",
+          "line": 61,
+          "doc": "",
+          "score": -33.95218640594961
+        },
+        {
+          "name": "tsum_shift_divisorSquare_log_sq_div_sq_le",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.DivisorSquareLogTail",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/DivisorSquareLogTail.lean",
+          "line": 348,
+          "doc": "Sharp logarithmically weighted divisor-square tail.",
+          "score": -33.56202335528748
+        },
+        {
+          "name": "tsum_shift_divisorSquare_log_sq_div_cube_le",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.DivisorSquareLogTail",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/DivisorSquareLogTail.lean",
+          "line": 387,
+          "doc": "Cubic logarithmically weighted divisor-square tail.",
+          "score": -33.56202335528748
+        }
+      ],
+      "exploration": [
+        {
+          "name": "prod_primesBelow_eq_tsum_smoothNumbers",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.MobiusPrimeApertureRetainedMass",
+          "relpath": "formal/GaloisForLFunctions/RHTower/MobiusPrimeApertureRetainedMass.lean",
+          "line": 89,
+          "doc": "Card `(5)`.** The squarefree channel mass carried by the `N`-smooth divisors is the finite Euler product over the primes below `N`.",
+          "score": -31.885252564955856
+        }
+      ],
+      "total": 16,
+      "modules": 8,
+      "eligible": 12,
+      "markers": []
+    },
+    {
+      "query": "moebius summable",
+      "match": "(\"moebius\" OR \"moebius\"*) AND (\"summable\" OR \"summable\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "summable_moebius_cpow",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.BeurlingSystemMellin",
+          "relpath": "formal/GaloisForLFunctions/RHTower/BeurlingSystemMellin.lean",
+          "line": 103,
+          "doc": "",
+          "score": -42.19557954506812
+        },
+        {
+          "name": "summable_moebius_rpow",
+          "kind": "private theorem",
+          "module": "GaloisForLFunctions.RHTower.ShiftedEulerMobiusSynthesis",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ShiftedEulerMobiusSynthesis.lean",
+          "line": 299,
+          "doc": "",
+          "score": -42.09231475858561
+        },
+        {
+          "name": "summable_moebius_shift",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.ShiftedEulerFloorMobiusTailCoupling",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ShiftedEulerFloorMobiusTailCoupling.lean",
+          "line": 98,
+          "doc": "",
+          "score": -42.040871672797515
+        },
+        {
+          "name": "summable_moebius_visibleCoprimeMobiusLaplaceSum_pair",
+          "kind": "private theorem",
+          "module": "GaloisForLFunctions.RHTower.VisibleCoprimeMobiusLaplaceAddition",
+          "relpath": "formal/GaloisForLFunctions/RHTower/VisibleCoprimeMobiusLaplaceAddition.lean",
+          "line": 376,
+          "doc": "",
+          "score": -41.73483452301858
+        },
+        {
+          "name": "summable_moebius_div_sq",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.SquarefreeCount",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeCount.lean",
+          "line": 29,
+          "doc": "The Möbius series against inverse squares converges absolutely.",
+          "score": -41.633809877221275
+        },
+        {
+          "name": "summable_moebiusTerm",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.BeurlingSystemZetaSeries",
+          "relpath": "formal/GaloisForLFunctions/RHTower/BeurlingSystemZetaSeries.lean",
+          "line": 138,
+          "doc": "",
+          "score": -41.54553671861166
+        },
+        {
+          "name": "summable_deningerMoebiusPair",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.DeningerPoissonMoebius",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerPoissonMoebius.lean",
+          "line": 91,
+          "doc": "",
+          "score": -41.039464144344244
+        },
+        {
+          "name": "summable_norm_complexCoeff_moebiusZetaDefect_damped",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.InghamRightEdgeMeanSquare",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/InghamRightEdgeMeanSquare.lean",
+          "line": 99,
+          "doc": "",
+          "score": -40.790045614329465
+        }
+      ],
+      "exploration": [
+        {
+          "name": "summable_localizedReciprocalMoebiusAmplitude",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.LocalizedReciprocalMoebiusAmplitude",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/LocalizedReciprocalMoebiusAmplitude.lean",
+          "line": 278,
+          "doc": "",
+          "score": -40.7034871457876
+        }
+      ],
+      "total": 34,
+      "modules": 24,
+      "eligible": 30,
+      "markers": []
+    },
+    {
+      "query": "weighted transform injective",
+      "match": "(\"weighted\" OR \"weighted\"*) AND (\"transform\" OR \"transform\"*) AND (\"injective\" OR \"injective\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [],
+      "exploration": [],
+      "total": 0,
+      "modules": 0,
+      "eligible": 0,
+      "markers": []
+    },
+    {
+      "query": "coprime remainder",
+      "match": "(\"coprime\" OR \"coprime\"*) AND (\"remainder\" OR \"remainder\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "kloostermanCrossModulusCorrelation_Icc_eq_coprime_remainder",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.KloostermanCoprimeProductPeriodCompletion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/KloostermanCoprimeProductPeriodCompletion.lean",
+          "line": 243,
+          "doc": "Exact zero-bulk completion for the stored ordinary-index carrier.",
+          "score": -45.218925783542055
+        },
+        {
+          "name": "coprimeUnitChineseRemainderEquiv",
+          "kind": "noncomputable def",
+          "module": "GaloisForLFunctions.HTGeometry.CoprimePrimeResidueInteraction",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CoprimePrimeResidueInteraction.lean",
+          "line": 46,
+          "doc": "",
+          "score": -44.4246814736407
+        },
+        {
+          "name": "pairwiseCoprimeUnitChineseRemainderEquiv",
+          "kind": "noncomputable def",
+          "module": "GaloisForLFunctions.HTGeometry.PrimeResidueInteractionSpectrum",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/PrimeResidueInteractionSpectrum.lean",
+          "line": 909,
+          "doc": "",
+          "score": -43.476892791825414
+        },
+        {
+          "name": "kloostermanCoprimeCrossPhaseFrequency_chineseRemainder",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.KloostermanCoprimeCrossPhaseFrequency",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/KloostermanCoprimeCrossPhaseFrequency.lean",
+          "line": 62,
+          "doc": "",
+          "score": -43.15917216919971
+        },
+        {
+          "name": "kloostermanCrossIntervalColumnCorrelation_eq_remainder",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.KloostermanCoprimeProductPeriodCompletion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/KloostermanCoprimeProductPeriodCompletion.lean",
+          "line": 170,
+          "doc": "For coprime nontrivial moduli, whole interval correlation equals its product-period boundary discrepancy; there is no cross-modulus bulk term.",
+          "score": -33.93303787881712
+        },
+        {
+          "name": "outerTest_remainder_summable",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.EulerDeletionCoprimeCrossCompletion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/EulerDeletionCoprimeCrossCompletion.lean",
+          "line": 138,
+          "doc": "The Abel correction retains its literal residue and is absolutely summable.",
+          "score": -29.765109591109272
+        },
+        {
+          "name": "stdAddChar_mul_complement_chineseRemainder",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.ReducedFrequencyMobiusAliasCollapse",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ReducedFrequencyMobiusAliasCollapse.lean",
+          "line": 147,
+          "doc": "Pulling the standard character at frequency `a * d` through CRT deletes the coprime `d` coordinate exactly. No coprimality assumption on `a` and `q` is needed.",
+          "score": -28.347374664523915
+        },
+        {
+          "name": "stdAddChar_mul_left_complement_chineseRemainder",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.KloostermanCoprimeCrossPhaseFrequency",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/KloostermanCoprimeCrossPhaseFrequency.lean",
+          "line": 105,
+          "doc": "Complementary-modulus lifting to the product sends the second CRT coordinate to its own standard additive character.",
+          "score": -25.953907231255418
+        }
+      ],
+      "exploration": [
+        {
+          "name": "causalPairSet",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.CausallyAnchoredFutureAliasRegrouping",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CausallyAnchoredFutureAliasRegrouping.lean",
+          "line": 74,
+          "doc": "Pairs `(d, u)` of a complementary divisor `d ∣ m` and a nonzero frequency `u` coprime to the future remainder `m / d`. These index the reduced form of an arbitrary nonzero frequency.",
+          "score": -18.702940569214107
+        }
+      ],
+      "total": 12,
+      "modules": 7,
+      "eligible": 10,
+      "markers": []
+    },
+    {
+      "query": "zero partition",
+      "match": "(\"zero\" OR \"zero\"*) AND (\"partition\" OR \"partition\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "FiniteGKSPrimeSpinModel.neg_re_iteratedDeriv_two_partition_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.PrimeIsingArbitraryGraphGKSNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeIsingArbitraryGraphGKSNoGo.lean",
+          "line": 191,
+          "doc": "",
+          "score": -31.928701767291525
+        },
+        {
+          "name": "partition_monotone_of_deriv_ne_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.DarbouxMonotoneCell",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/DarbouxMonotoneCell.lean",
+          "line": 51,
+          "doc": "The same, phrased for a monotone partition index: if the derivative avoids zero on the interior of every cell, every cell is monotone in one direction.",
+          "score": -31.474449536523068
+        },
+        {
+          "name": "finiteExpPartition_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ComplexTimeGenerativeMechanics",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ComplexTimeGenerativeMechanics.lean",
+          "line": 35,
+          "doc": "",
+          "score": -31.243254248290707
+        },
+        {
+          "name": "squarefreePartition_ne_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SquarefreeFixedCurrentLocalization",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SquarefreeFixedCurrentLocalization.lean",
+          "line": 32,
+          "doc": "",
+          "score": -31.16769288795911
+        },
+        {
+          "name": "zetaPartition_ne_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.AbelianZetaGas.Response",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/Response.lean",
+          "line": 101,
+          "doc": "",
+          "score": -31.09253078021621
+        },
+        {
+          "name": "iteratedDeriv_finiteComplexPartition_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.ComplexTimeGenerativeMechanics",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/ComplexTimeGenerativeMechanics.lean",
+          "line": 277,
+          "doc": "",
+          "score": -31.017764618557557
+        },
+        {
+          "name": "balancedPrimeIsingTreePartition_zero",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.PrimeIsingTreeBalancedCentering",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeIsingTreeBalancedCentering.lean",
+          "line": 138,
+          "doc": "",
+          "score": -31.017764618557557
+        }
+      ],
+      "exploration": [
+        {
+          "name": "measure_cdfPartitionPiece_ne_zero",
+          "kind": "lemma",
+          "module": "GaloisForLFunctions.HTGeometry.AtomlessProjectivePositiveAperture",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/AtomlessProjectivePositiveAperture.lean",
+          "line": 98,
+          "doc": "",
+          "score": -30.943391133684123
+        }
+      ],
+      "total": 191,
+      "modules": 94,
+      "eligible": 130,
+      "markers": [
+        {
+          "relpath": "formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiPositiveCriticalStripEtaFiniteLaplacePartition.lean",
+          "line": 19,
+          "text": "Their purpose is to turn the remaining zero-location problem into a concrete",
+          "score": -23.001927001054195
+        }
+      ]
+    },
+    {
+      "query": "zero classification",
+      "match": "(\"zero\" OR \"zero\"*) AND (\"classification\" OR \"classification\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "schwarzschildBRReciprocalConformalSq_zero_classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.KerrNewmanBRGlobalStructure",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/KerrNewmanBRGlobalStructure.lean",
+          "line": 245,
+          "doc": "Full Schwarzschild--BR conformal zero locus on the physical polar interval.",
+          "score": -29.918586517265453
+        },
+        {
+          "name": "commGroupWithZeroClassification",
+          "kind": "noncomputable def",
+          "module": "GaloisForLFunctions.HTGeometry.FieldOneCyclotomicExtensions",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/FieldOneCyclotomicExtensions.lean",
+          "line": 28,
+          "doc": "Every commutative group with zero is zero adjoined to its unit group.",
+          "score": -27.960292883463907
+        },
+        {
+          "name": "classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.PermutationInvariantSubspace",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/PermutationInvariantSubspace.lean",
+          "line": 155,
+          "doc": "The classification.** A permutation-invariant subspace is zero, the constants, the sum-zero hyperplane, or everything.",
+          "score": -27.377307102129915
+        },
+        {
+          "name": "fzzPunctureBoxRankOneEigenEquation_classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.FZZCigarPunctureBoxRankOneNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/FZZCigarPunctureBoxRankOneNoGo.lean",
+          "line": 91,
+          "doc": "Exact classification: regular box rank-one equation has only zero coefficient and zero state.",
+          "score": -26.616277502682852
+        },
+        {
+          "name": "field_finrank_classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.DerivedSelectionGeometry.SourceScalarBoundary",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/DerivedSelectionGeometry/SourceScalarBoundary.lean",
+          "line": 216,
+          "doc": "Complete field-valued dimension classification, including every zero-source fibre.",
+          "score": -25.681683035621692
+        },
+        {
+          "name": "unitizedRealReservoirDeterminant_sign_classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.SourceHorizontalHolomorphicParitySymmetrizedPolarityNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/SourceHorizontalHolomorphicParitySymmetrizedPolarityNoGo.lean",
+          "line": 97,
+          "doc": "Exact positive/zero/negative classification by the rank-one polarity index.",
+          "score": -25.319366378136507
+        },
+        {
+          "name": "falseFlatness_classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.ObserverCurvature",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverCurvature.lean",
+          "line": 136,
+          "doc": "Exact two-mechanism classification: represented false flatness forces either class erasure or failure of effective zero-branch lifting.",
+          "score": -25.25026800507818
+        }
+      ],
+      "exploration": [
+        {
+          "name": "routeERamareFiniteCentering_classification",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.RouteERamareSourceFaithfulFiniteCenteringNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/RouteERamareSourceFaithfulFiniteCenteringNoGo.lean",
+          "line": 92,
+          "doc": "Exact finite-centering classification. Vanishing on one nondegenerate interval forces the unique counterterm: coefficientwise negation on the literal source and zero off the source.",
+          "score": -24.37901327527757
+        }
+      ],
+      "total": 377,
+      "modules": 247,
+      "eligible": 309,
+      "markers": [
+        {
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/MixedProjectionTensorKernel.lean",
+          "line": 13,
+          "text": "that it has zero intersection with either pure factor.  Thus all remaining subgroup-classification",
+          "score": -26.6058462271308
+        },
+        {
+          "relpath": "formal/GaloisForLFunctions/RHTower/CoshPolynomialPeriodClassification.lean",
+          "line": 9,
+          "text": "absorb only finitely many translated zeros.  Three consecutive remaining envelope zeros force the",
+          "score": -15.52978412394886
+        }
+      ]
+    },
+    {
+      "query": "prime partition",
+      "match": "(\"prime\" OR \"prime\"*) AND (\"partition\" OR \"partition\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "primeProfileSum_partition",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.Sieve.PrimeProfilePartitionSum",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Sieve/PrimeProfilePartitionSum.lean",
+          "line": 67,
+          "doc": "The exact partition of a prime profile sum at equally spaced exponents.**",
+          "score": -32.19887703250352
+        },
+        {
+          "name": "FiniteGKSPrimeSpinModel.differentiable_partition",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.PrimeIsingArbitraryGraphGKSNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeIsingArbitraryGraphGKSNoGo.lean",
+          "line": 223,
+          "doc": "",
+          "score": -32.104414485472006
+        },
+        {
+          "name": "FiniteGKSPrimeSpinModel.iteratedDeriv_partition",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.PrimeIsingArbitraryGraphGKSNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeIsingArbitraryGraphGKSNoGo.lean",
+          "line": 181,
+          "doc": "",
+          "score": -32.053852855901845
+        },
+        {
+          "name": "gammaSewnCriticalAdjacentPrime_Partition",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesCriticalAdjacentPrimeCofinalFeshbach",
+          "relpath": "formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCriticalAdjacentPrimeCofinalFeshbach.lean",
+          "line": 350,
+          "doc": "",
+          "score": -32.0245666953508
+        },
+        {
+          "name": "gammaSewnCriticalAdjacentPrime_Partition_pos",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesCriticalAdjacentPrimeCofinalFeshbach",
+          "relpath": "formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCriticalAdjacentPrimeCofinalFeshbach.lean",
+          "line": 365,
+          "doc": "",
+          "score": -31.922830260676882
+        },
+        {
+          "name": "gammaSewnCriticalPrimeDepthPacket_Partition",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesCriticalFinitePacketFeshbachAssembly",
+          "relpath": "formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCriticalFinitePacketFeshbachAssembly.lean",
+          "line": 44,
+          "doc": "",
+          "score": -31.90574563470455
+        },
+        {
+          "name": "gammaSewnCriticalOrderedPrimePlucker_partition_pos",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesCriticalOrderedPrimePluckerChirality",
+          "relpath": "formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCriticalOrderedPrimePluckerChirality.lean",
+          "line": 192,
+          "doc": "",
+          "score": -31.872241975104927
+        }
+      ],
+      "exploration": [
+        {
+          "name": "independentPrimeLeeYangPartition",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.PrimeLeeYangPolydisk",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeLeeYangPolydisk.lean",
+          "line": 87,
+          "doc": "Zero-interaction finite prime-spin partition function.",
+          "score": -30.908837665102986
+        }
+      ],
+      "total": 216,
+      "modules": 69,
+      "eligible": 100,
+      "markers": []
+    },
+    {
+      "query": "prime group",
+      "match": "(\"prime\" OR \"prime\"*) AND (\"group\" OR \"group\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "primeAFAlgebraicLimitNormedAddCommGroup",
+          "kind": "noncomputable instance",
+          "module": "GaloisForLFunctions.RHTower.PrimeUHFCStarAlgebra",
+          "relpath": "formal/GaloisForLFunctions/RHTower/PrimeUHFCStarAlgebra.lean",
+          "line": 232,
+          "doc": "",
+          "score": -26.11589356712083
+        },
+        {
+          "name": "integerSaturated_of_preconnected_groupAlgebra_primeSpectrum",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GroupAlgebraConnectedSaturation",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GroupAlgebraConnectedSaturation.lean",
+          "line": 197,
+          "doc": "Preconnectedness of the quotient group algebra proves integral saturation of the relation subgroup.",
+          "score": -26.05871117334879
+        },
+        {
+          "name": "eq_zero_of_nsmul_eq_zero_of_preconnected_groupAlgebra_primeSpectrum",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.GroupAlgebraConnectedSaturation",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/GroupAlgebraConnectedSaturation.lean",
+          "line": 186,
+          "doc": "A character group whose group algebra has preconnected prime spectrum is torsion-free.",
+          "score": -25.87509680657628
+        },
+        {
+          "name": "deningerPrimeArithmeticMulAutIsTopologicalGroup",
+          "kind": "noncomputable instance",
+          "module": "GaloisForLFunctions.RHTower.DeningerPrimeMultiplicativeAutomorphismTopology",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerPrimeMultiplicativeAutomorphismTopology.lean",
+          "line": 62,
+          "doc": "",
+          "score": -25.78542134590238
+        },
+        {
+          "name": "deningerPrimeLogPeriodGroup",
+          "kind": "def",
+          "module": "GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean",
+          "line": 141,
+          "doc": "Integer span of the signed two-prime Kummer frequencies.",
+          "score": -25.392561413120095
+        },
+        {
+          "name": "deningerPrimeLogPeriodGroup_not_discrete",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange",
+          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean",
+          "line": 145,
+          "doc": "The two-prime signed Kummer frequency group is nondiscrete.",
+          "score": -25.37450391611842
+        },
+        {
+          "name": "multiplierToKummerGroupRing_decoratedPrimeForward",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.RouteRPreDivisorRationalAdelicCorrectedMultiplierXiLanding",
+          "relpath": "formal/GaloisForLFunctions/RHTower/RouteRPreDivisorRationalAdelicCorrectedMultiplierXiLanding.lean",
+          "line": 119,
+          "doc": "",
+          "score": -25.361129393300274
+        }
+      ],
+      "exploration": [
+        {
+          "name": "ccmArithmeticJacobianPrimeFibre_isTopologicalAddGroup",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniArithmeticJacobianPrimeFibre",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniArithmeticJacobianPrimeFibre.lean",
+          "line": 56,
+          "doc": "Connes--Consani Proposition 7.3 at the mapping-torus presentation: the universal prime fibre has its canonical topological abelian group structure.",
+          "score": -24.591514299062066
+        }
+      ],
+      "total": 243,
+      "modules": 118,
+      "eligible": 158,
+      "markers": [
+        {
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/PrimeDirichletTailGroupoid.lean",
+          "line": 16,
+          "text": "Finite overwrites meet every finite cylinder while remaining eventually equal to the original",
+          "score": -10.077700428641812
+        }
+      ]
+    },
+    {
+      "query": "coprime projection",
+      "match": "(\"coprime\" OR \"coprime\"*) AND (\"projection\" OR \"projection\"*)",
+      "backend": "fts5",
+      "options": {
+        "any_terms": false,
+        "exact": false,
+        "per_module": 2,
+        "offset": 0,
+        "explore": 1,
+        "module": "",
+        "exclude_modules": []
+      },
+      "declarations": [
+        {
+          "name": "subgroup_prod_eq_prod_maps_of_card_coprime",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.RHTower.ArtinBrauerElementary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ArtinBrauerElementary.lean",
+          "line": 93,
+          "doc": "A subgroup of a finite direct product of a cyclic `p'` group and a `p`-group is the direct product of its two projection images. This is the subgroup-closure step needed when passing from a Brauer-elementary group to one of its subgroups.",
+          "score": -30.018969657974466
+        },
+        {
+          "name": "sieveOffMultiple",
+          "kind": "def",
+          "module": "GaloisForLFunctions.HTGeometry.CoefficientDecimationSieve",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CoefficientDecimationSieve.lean",
+          "line": 84,
+          "doc": "The off-multiple sieve of a finite set of primes: the coordinate projection onto the integers coprime to the primorial.",
+          "score": -20.616103796584632
+        },
+        {
+          "name": "sieveOffMultiple_eq_sum_divisors",
+          "kind": "theorem",
+          "module": "GaloisForLFunctions.HTGeometry.CoefficientDecimationSieve",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/CoefficientDecimationSieve.lean",
+          "line": 134,
+          "doc": "Möbius expansion of the off-multiple sieve.** The coordinate projection onto the integers coprime to the primorial is the finite alternating sum of the multiple-projections at the divisors of the primorial.",
+          "score": -18.81087291531397
+        }
+      ],
+      "exploration": [],
+      "total": 3,
+      "modules": 2,
+      "eligible": 3,
+      "markers": []
+    }
+  ]
+}
