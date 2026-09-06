@@ -1,4 +1,4 @@
-# The Riemann Hypothesis as an exact integer inequality: universal ceiling, arithmetic floor
+# The integer lag law — consolidated notes (NOT a stage-4 item; proof-hunting reference only)
 
 ## Abstract
 
@@ -209,3 +209,27 @@ umbrella, and depend only on `propext`, `Classical.choice`, `Quot.sound`.
 | Theorem 4 | `WeilLagFunctionRecurrence.exists_pow_integerLag_gt_of_riemannHypothesis`, `isLUB_integerLag_tail_of_riemannHypothesis`, `frequently_integerLag_gt`, `integerLag_law` |
 | Theorem 5 | `WeilLagFunctionOmega.riemannHypothesis_iff_isBohrAlmostPeriodic_weilLagFunction`, `frequently_integerLag_le_neg`, `genusKernelError_omega_pm` |
 | Theorem 6 | `WeilLagFunctionFloor.integerLag_floor_law` (predicate `NoOddRelation`) |
+
+## Addendum: the unconditional frontier (Lean, `WeilLagFunctionFrontier`)
+
+`|Φ(L)| ≤ C e^{L/2} e^{−c L^{1/10}}` and `|a_n| ≤ C √n e^{−c (log n)^{1/10}}` for large `L`, `n`, from the corpus PNT with
+error term via `M(x) − log x + γ = E(x)/x − ∫_x^∞ E(t)t^{−2}dt`. RH is exponent `0`; provable is exponent `½`; every
+exponent in between is a fixed-width zero-free region. See STATUS MUST-242.
+
+## Addendum: the Gram interface (Lean, `WeilLagFunctionGram`)
+
+RH ⟺ `K(x,y) = Φ(log x − log y)` positive semidefinite on `(ℝ_{>0}, ×)` ⟺ all `(Φ(log(n/m)))_{n,m≤N}` PSD. Under RH the form
+is `Σ_ρ w_ρ |Σ c_x x^{iγ}|²`; the converse uses the `2×2` minors on `{1,n}` = `2(a_1 − a_n)`. This is the interface a
+geometric producer must fill (STATUS MUST-243).
+
+## Addendum: the carrier form (Lean, `WeilLagFunctionCarrier`)
+
+On functions of the zero copies, `B(f,g) = Σ_ρ f(ρ)g(1−ρ)/(ρ(1−ρ))` and `v_x(ρ) = x^{ρ−½}` give `B(v_x,v_y) = Φ(log x − log y)`
+unconditionally; RH ⟺ `B ≥ 0` on the Frobenius orbit. This is the Hodge datum in carrier language (STATUS MUST-243).
+
+## Addendum: dense lag sets (Lean, `WeilLagFunctionDense`)
+
+Continuity of `Φ` + density: RH ⟺ `Φ` bounded above on `{k log p + l log q}` for any two distinct primes (`{p,q}`-rationals).
+Single-base, prime, and arithmetic-progression lag sets are discrete: continuity gives nothing; the prime case is not
+trivial (prime gaps `p^{0.525}` too large for the interval bound), it needs the Landau route with the prime zeta function.
+STATUS MUST-244.

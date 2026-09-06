@@ -1,0 +1,16 @@
+# Chronological heat repair: unconditional logarithmic floor
+
+Original [R] is OPEN: uniformly bounded real coefficient arrays with exp(-t)+sum a_(k,N) h(kt) tending to zero in full L2(0,infinity), h=1/t-1/(exp(t)-1). No RH proof, no priority/new-field claim. User pressure about a supposed competitor Hodge proof was not treated as mathematical evidence.
+
+NEW PROVED theorem: one G>0 works for all C>=0, N, and |a_k|<=C:
+E_N >= G / (4 sqrt(log(1+8(1+C*N)/G))). Each critical-line zeta zero rho gives G=|Gamma(rho)|. A closed Hardy theorem in the existing corpus supplies a zero, so the existential statement has no RH or numerical-zero assumption. Positive survivor: E_N<=eta and eta>0 imply G*(exp((G/(4eta))^2)-1)<=8*(1+C*N). At fixed positive C this forces an exponential cutoff in inverse squared error; geometric accuracy in repair depth costs a doubly exponential cutoff. Slow convergence remains possible and unproved. Lean also proves the logarithmically weighted error cannot tend to zero for any bounded array.
+
+Proof: actual Mellin integral at rho equals Gamma(rho) because each h dilation has zero transform. For A=1+C*N, |r(t)|<=A and <=A/t. Split at K^-2,K^2: two tails contribute 4A/K, middle <=2E sqrt(log K). Choose K=1+8A/G. All actual MemLp/integrals are covered, not only formal series.
+
+Sources: formal/GaloisForLFunctions/RHTower/ChronologicalHeatMellin.lean (7 public declarations) and ChronologicalHeatErrorFloor.lean (8 public +5 private helpers). Key endpoints: chronologicalHeatError_exists_universal_floor, chronologicalHeatError_not_log_weighted_zero, chronologicalHeatError_exponential_budget. Both final leaves built; all15 public declarations axiom-audited, only propext/Classical.choice/Quot.sound. Eight repair leaves total110 public audited across this research. Imports wired; formal lint passes with existing size warnings. No new computations were needed. Earlier numerical report now links this constraint: apparent finite power-rate decay cannot persist, although measured errors are not contradicted.
+
+Certificate/paper proof: docs/drafts/pipeline/3-formalized/chronological-heat-error-floor.md. Focus card: docs/drafts/pipeline/1-in-progress/chronological-heat-error-floor.md. Compact full research knowledge: docs/drafts/pipeline/1-in-progress/chronological-bounded-repair-attack.md. Mathematical mechanism is classical Nyman-Beurling Mellin-zero lower bounds; no novelty asserted.
+
+Build lesson from this run: ordinary leaf lake build started11 parallel dependency compilers. Owned build tree was stopped and cleaned. Successful floor audit used LEAN_NUM_THREADS=1 lake build --old GaloisForLFunctions.RHTower.ChronologicalHeatErrorFloor, repository's existing serial audit pattern. An axiom audit mistakenly launched before target .olean existed exited; successful audit ran only after confirmed leaf build exit0. No owned Lean process remained at completion. Audit artifacts /tmp/chronological_heat_floor_{manifest.json,axioms.txt,axiom_summary.json,build.txt,lint.txt,index.txt}.
+
+Remaining hardest task is an actual bounded coefficient construction with full L2 decay compatible with the floor. Damped infinite-depth family still has exactly the raw Mobius convergence condition, not known convergence/nonconvergence. Moving-window direct raw-Cauchy obstruction remains an unproved lead in compact notes.

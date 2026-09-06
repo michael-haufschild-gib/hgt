@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress
 - **Frozen objective:** independently defined, exhaustive arithmetic zero classes with a proved location constraint in every class. No classification alone counts as an RH proof.
 
-**Current result:** A and B are formalized, including exact analytic admission, unique coverage of all complex exponents, squarefree positive labels, the class-specific minimum/mean constraint, and a proved critical-line undershoot. C fails: the undershoot is now proved without numerical input; together with the existing paper remainder asymptotic it forces negative minimum attainment at critical-line zeros. D fails numerically, with an independent 80-digit witness. The objective's third requirement is unresolved for the finite-label classes. No RH proof, novel proof architecture, or impossibility of other classifications is claimed.
+**Current result:** A and B are formalized, including exact analytic admission, unique coverage of all complex exponents, squarefree positive labels, the class-specific minimum/mean constraint, and a proved critical-line undershoot. C fails pointwise at critical-line zeros in Lean: the actual scaled remainder limit and the strict finite undershoot now prove negative global minimum attainment. The global audit also determines the coarse class patterns at every parameter in either open half-strip, including nonzeros. D fails numerically, with an independent 80-digit witness. The objective's third requirement is unresolved for the finite-label classes. No RH proof, novel proof architecture, or impossibility of other classifications is claimed.
 
 ## Source and frozen conjectures
 
@@ -73,7 +73,7 @@ which is strictly larger. Thus every critical-line zero has some positive modulu
 
 `X_p < -S2/[8(t^2+9/4)]`.
 
-This finite undershoot is a Lean theorem. The existing paper asymptotic `W_p=-u zeta(2)/(12p)+O_s(p^(-3))` on the line makes the displayed threshold the lower tail boundary of `X`, because `|mu(p)|<=1`. The strict finite undershoot then forces an attained negative minimum on paper. That asymptotic-to-attainment step is not formalized in the new module. The positive survivor of C is therefore an exact arithmetic mean obstruction and mandatory finite undershoot, not a renamed vanishing conjecture.
+This finite undershoot is a Lean theorem. The actual scaled limit `p W_p -> -u S2/12` is now proved in Lean and makes the displayed threshold the limiting lower boundary of `X`, because `|mu(p)|<=1`. The strict finite undershoot forces an attained negative global minimum in Lean. The [global audit](../3-formalized/arithmetic-global-minimum-classes.md) closes this step and determines both strict-side class patterns. Its formal limit does not claim the sharper paper error `O_s(p^(-3))`. The positive survivor of C is therefore an exact arithmetic mean obstruction and mandatory finite undershoot, not a renamed vanishing conjecture.
 
 ## Remaining hard problem
 

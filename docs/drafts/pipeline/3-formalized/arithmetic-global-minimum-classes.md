@@ -68,4 +68,4 @@ The complete scratch files and published sources passed `lake env lean`. Each ne
 
 All 21 public declarations (18 theorems, 3 definitions) passed a separate `/tmp` `#print axioms` audit. Only `propext`, `Classical.choice`, and `Quot.sound` were reported. No added mathematical axiom or computational certificate is used.
 
-Index and global lint verification are recorded after the final repository audit.
+The corpus index was refreshed and retrieves `arithmeticMinimumClass_both_positive_iff`. `scripts/formal_tools.py lint --check-generated` passed with exit code 0; it reported the existing large-file warnings. No owned Lean process remained after the audit.

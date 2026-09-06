@@ -37,7 +37,7 @@ Neither definition branches on zero location. A profile's label is the least pos
 
    `X_p < -S2/[8(t^2+9/4)]`, where `t=Im(s)`.
 
-The last claim is a symbolic consequence of the exact mean and a telescoping reciprocal-square bound. It uses neither a computed zero nor a numerical inequality involving pi. Matching this threshold to the asymptotic lower tail boundary, and concluding critical-line minimum attainment, uses the existing paper remainder asymptotic; that additional implication is not formalized here.
+The last claim is a symbolic consequence of the exact mean and a telescoping reciprocal-square bound. It uses neither a computed zero nor a numerical inequality involving pi. Matching this threshold to the limiting lower boundary and concluding critical-line minimum attainment are now formalized in [the global audit](arithmetic-global-minimum-classes.md), which also determines the coarse labels at every parameter in either open half-strip, including nonzeros.
 
 ## Lean certificate
 
