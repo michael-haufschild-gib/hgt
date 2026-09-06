@@ -5,11 +5,20 @@ of k,N, and full L²(0,∞) convergence e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0,
 where h(t)=1/t−1/(e^t−1). Derive everything without RH. The target has not changed.
 [Classical RH interface](chronological-rh-recovery-interface.md).
 
-**Verified:** six individual Lean leaf builds; 95 public declarations audited,
-only propext/Classical.choice/Quot.sound. All six umbrella imports wired.
+**Verified:** eight individual Lean leaf builds; 110 public declarations audited,
+only propext/Classical.choice/Quot.sound. All eight umbrella imports wired.
 Current authoritative lint passes with existing file-size warnings. [Proofs and certificate](../3-formalized/chronological-arithmetic-repair-boundary.md).
 
 ## What works
+
+**[C, proved] Universal error floor.** One G>0 works for every coefficient
+budget C≥0, every N and every vector with |a_k|≤C:
+||r_N||₂≥G/[4 sqrt(log(1+8(1+CN)/G))]. If ||r_N||₂≤η, then
+G(exp((G/(4η))²)−1)≤8(1+CN). The proof uses the invariant Mellin value Γ(ρ)
+at a critical zero and a three-region integral estimate. Hardy supplies a zero
+unconditionally. Fixed budgets exclude persistent power-rate decay in N,
+but permit [R]. No numerical ordinate or RH assumption enters Lean.
+[Exact proof and consequences](../3-formalized/chronological-heat-error-floor.md).
 
 **[BRIDGE] Nonlinear response repair.** Put q=e^(−t) and
  g=2h(2t)−h(t)=q/(1+q). The recurrence P₀=0, P_(m+1)=g(1+P_m) has

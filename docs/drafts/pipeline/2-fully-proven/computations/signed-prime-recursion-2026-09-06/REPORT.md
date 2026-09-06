@@ -1,8 +1,20 @@
 # Signed prime recursion and changing arithmetic alignment
 
-**Status:** two empirical hunches falsified; a signed cofactor transport identity formalized. No new all-scale cancellation bound and no RH proof. Numerical results are exploratory, despite this folder's pipeline location.
+**Status:** two empirical hunches falsified; exact signed cofactor transport and a divisor information audit formalized. No new all-scale cancellation bound and no RH proof. Numerical results are exploratory, despite this folder's pipeline location.
 
 Positivity is suspended as the proposed producer in this investigation. This is a research constraint, not a theorem that all positive or spectral methods fail. Corpus starting points, frozen predictions, controls, and adaptive decisions are in [PROTOCOL.md](PROTOCOL.md).
+
+## What the algebraic audit establishes
+
+The actual observable is exactly
+
+`R(N)=-sum(n<=N) lambda(n) w(n) - N sum(n<=N) lambda(n)/n`,
+
+where `w(n)=sum(p prime dividing n) log p` counts each distinct prime divisor once. Expanding theta and reindexing the finite product region proves this: complete multiplicativity and the prime value -1 give `lambda(m)=-lambda(pm)`.
+
+`LiouvillePrimeErrorDivisorAudit.lean` proves both the theta-pairing collapse and the full error identity, unconditionally and without computational premises. Scratch/direct checks and the named leaf build pass; both axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. The alignment observable therefore re-expresses weighted Liouville cancellation; it does not supply a second independent arithmetic constraint. A representation may still expose a useful estimate, but that estimate has not been found.
+
+The cyclic-shift controls break complete multiplicativity. Their ranks discriminate from the chosen coarse-data controls, but cannot establish a mechanism beyond the multiplicative identity they destroy. The generic signed dilation theorem also holds for every ratio kernel, so that theorem alone does not distinguish the literal counting-error kernel. **Further alignment scans are paused.** A new experimental target must state a source-specific property or estimate, distinguish it from these identities, and specify controls that retain the properties it claims to use.
 
 ## What changed our understanding
 
@@ -69,7 +81,7 @@ For the actual, uncentered R, Lean proves for every prime p and every N:
 
 The divisible cofactors cancel exactly. The right side is retained; setting it to zero or bounding it by coarse sign counts would invent the missing producer. More generally, every positive integer a gives `R(aN)-lambda(a)R(N)` equal to the nondivisible cofactor sum. The proof works for every real-ratio kernel and is then specialized to the literal theta counting error.
 
-`LiouvilleSignedCofactorDilation.lean` contains four unconditional finite-sum theorems. This is a derived bridge, not a claimed novel universal law or an RH equivalence. No numerical result enters its proofs. Scratch and direct source checks pass, as does the named-module final build; the module is wired into `RHTower.lean`. No umbrella build was run. Scratch axiom audits report only `propext`, `Classical.choice`, and `Quot.sound` for all four theorems. [Formal statement and proof scope](../../../3-formalized/liouville-signed-cofactor-dilation.md).
+`LiouvilleSignedCofactorDilation.lean` contains four unconditional finite-sum theorems. This is a derived bridge, not a claimed novel universal law or an RH equivalence. No numerical result enters its proofs. Scratch and direct source checks pass, as does the named-module final build; the module is wired into `RHTower.lean`. No umbrella build was run. Scratch axiom audits report only `propext`, `Classical.choice`, and `Quot.sound` for all four theorems. Current repository `scripts/formal_tools.py lint` reports the separately added `ChronologicalHeatMellin` module as unreachable from its umbrella. The signed-cofactor and divisor-audit leaves are wired; neither is the reported wiring error. [Formal statement and proof scope](../../../3-formalized/liouville-signed-cofactor-dilation.md).
 
 The intended chain remains exact arithmetic → deterministic signed cancellation at all scales → all strict half-power Möbius bounds → the corpus's closed Mertens criterion → RH. The new cancellation law and its propagation are missing. The experiments do not settle whether this route can supply them; renaming the retained remainder would not count as progress on those obligations.
 

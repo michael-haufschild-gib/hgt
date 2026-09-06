@@ -26,3 +26,14 @@ All carry the literal Liouville coefficients. The prime theorem quantifies over 
 Scratch and direct source checks passed with `lake env lean`. The named leaf final build passed; the module is wired into `RHTower.lean`, with no umbrella build. `#print axioms` in a scratch file reports only `propext`, `Classical.choice`, and `Quot.sound` for all four theorems.
 
 The [experiments](../2-fully-proven/computations/signed-prime-recursion-2026-09-06/REPORT.md) numerically falsify two stronger fixed-direction explanations. Their signs, ranks, and finite bounds are not Lean results. The exact positive residue of that attack is the retained nondivisible-cofactor identity above. An all-scale bound on its right side remains missing. This bridge does not retire or close the arithmetic RH route.
+
+## Divisor information audit
+
+Companion module `formal/GaloisForLFunctions/RHTower/LiouvillePrimeErrorDivisorAudit.lean` adds two unconditional theorems:
+
+- `RHTower.liouville_theta_quotient_sum`
+- `RHTower.liouvillePrimeCountingError_eq_weighted_liouville`
+
+They identify `R(N)` exactly with `-sum(n<=N) lambda(n) w(n) - N sum(n<=N) lambda(n)/n`, where `w(n)=sum(p in n.divisors, p prime) log p`. No radical-function API or numerical approximation is needed. The proof expands the literal Chebyshev sum, uses the existing finite divisor swap and divisor-pair symmetry, and applies `lambda(pm)=-lambda(m)`.
+
+This audits the information in the experiment: unusual ranks against nonmultiplicative controls are not evidence of a new constraint beyond complete multiplicativity. The observable remains potentially useful for estimates, but no new cancellation estimate follows from this identity. Its scratch/direct checks and named leaf final build pass; no umbrella build is used. Both theorem axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.

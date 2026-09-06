@@ -102,6 +102,12 @@ Neither the raw sequence nor the one-parameter families reproduce these finite
 fits. The hard missing theorem is a construction and full L² estimate uniform
 over all cutoffs. Nothing here controls a limit or proves RH.
 
+**Subsequent analytic result:** the [unconditional Lean error floor](../../../3-formalized/chronological-heat-error-floor.md)
+is G/[4 sqrt(log(1+8(1+CN)/G))] for one G>0 and every vector bounded by C.
+Thus a persistent power-rate extrapolation of this table is impossible, even
+though the measured finite errors are compatible with the theorem. The bound
+permits slow convergence and supplies no coefficient construction.
+
 All numerical work ran on the authorized Runpod, in
 `/root/chronological-bounded-repair-20260906`, with up to four worker processes
 and four BLAS threads per worker. Run scripts in this order:

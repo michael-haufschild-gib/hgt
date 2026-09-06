@@ -60,3 +60,11 @@ H1 failed at four of five withheld cutoffs. Exact charge centering at N=2^21,2^2
 Corpus input: `LiouvilleDyadicGramLaw.liouvilleC_two_mul` and `LiouvilleDirichletSeries.liouvilleC_mul`/`liouvilleC_prime_pow` give exact coefficient reversal under any prime dilation. They do not prove the same reversal of the counting-error pairing after cutoff and charge centering.
 
 Freeze the risky empirical extension H2: the exact charge-centered counting-error excess C(N) satisfies `C(pN)*C(N)<0` for every p in `{2,3,5,7}` and N in `{2^19,2^20,2^21}`. Compute these twelve comparisons, retaining the full visible final block. One failure rejects H2; do not rescue it by restricting primes after seeing results. The response identity `R(pN)+R(N)=sum(p does not divide n, n<=pN) lambda(n)(theta(pN/n)-pN/n)` is an exact derived bridge, but controlling its right side is still open and may carry the original difficulty.
+
+## Algebraic audit before further experiments
+
+Pause new scans. The controls destroy complete multiplicativity, so unusual literal ranks may reflect a law already built into the source. The divisor-swap theorem and the literal prime sign suggest the derived identity
+
+`R(N)=-sum(n<=N) lambda(n) sum(p prime dividing n) log p - N sum(n<=N) lambda(n)/n`.
+
+This is a `[BRIDGE]` audit target, not a new hunch: expand the actual theta sum, reindex products, and use `lambda(pm)=-lambda(m)`. Verify it in Lean before interpreting the experiment as a new source of arithmetic information. The exact dilation identity also holds for every ratio kernel, so it cannot by itself distinguish the actual counting-error kernel. A subsequent producer must use additional properties of that kernel or prove an estimate that the existing identities do not already encode. No new numerical batch is justified until such a discriminating question is stated.

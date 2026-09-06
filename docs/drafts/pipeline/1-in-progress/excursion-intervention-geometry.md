@@ -65,7 +65,7 @@ Classical ingredients are acknowledged: Specht polynomials, Chebyshev interpolat
 
 [Interface assessment](chronological-rh-recovery-interface.md): h(t)=1/t−1/(e^t−1) is exactly minus the classical Müntz transform of e^(−t), also an exponentially smoothed Nyman–Beurling kernel. The smoothing multiplier Γ(s+1) has squared modulus π(τ²+1/4)/cosh(πτ) on Re(s)=1/2; it preserves zeros but has no bounded inverse on its L² range. A known sufficient RH endpoint is a uniformly bounded coefficient array a_(k,N) with e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0 in L². Novel work would have to construct that array and both estimates from actual chronological repair. The existing compact-domain polynomial recovery bound supplies neither this arithmetic family nor a norm comparison. No novel RH architecture is established by the scalar bridge; the original geometric program remains open.
 
-[Bounded arithmetic repair attack](chronological-bounded-repair-attack.md): six additional
+[Bounded arithmetic repair attack](chronological-bounded-repair-attack.md): eight additional
 RHTower leaves now prove rapid nonlinear Fermi repair, unbounded prime coefficients
 for every nonlinear response power, and an exact Möbius-prefix classification for
 bounded truncations of finite repair. A separate damped infinite-depth response
@@ -76,13 +76,18 @@ as a weighted combination of raw Möbius errors at N/d. For every ε_N→0 in
 Möbius convergence. The positive survivor is the actual perturbation estimate
 ||D_(N,ε)−R_N||₂≤2ε(1+C) when earlier raw norms are ≤C; strong induction
 closes the reverse implication. This retires damping as a distinct convergence
-mechanism. The original RH endpoint remains open. All 95 public declarations
+mechanism. The original RH endpoint remains open. All 110 public declarations
 have standard-only axiom audits; current lint passes.
 [Arithmetic certificate](../3-formalized/chronological-arithmetic-repair-boundary.md),
 [L² rigidity certificate](../3-formalized/chronological-damping-convergence-rigidity.md).
 Runpod finds finite coefficient vectors bounded by one with measured error
 4.12e−9 at N=512. Their cancellation depends on broad coefficient changes;
 no asymptotic rate or convergence follows. [Numerical report](../2-fully-proven/computations/chronological-bounded-repair-2026-09-06/REPORT.md).
+The subsequent [unconditional error floor](../3-formalized/chronological-heat-error-floor.md)
+proves E_N≥G/[4 sqrt(log(1+8(1+CN)/G))] for all bounded coefficient vectors.
+Error ≤η costs at least exp(c/η²) in arithmetic cutoff at fixed positive C.
+The numerical power-rate trend therefore cannot persist; slow convergence
+remains possible and unproved.
 
 ## Verification and resources
 

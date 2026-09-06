@@ -68,5 +68,20 @@ built in is closed in Lean: any bound `|Φ| ≤ M` proves RH and then improves i
   **`frequently_integerLag_gt`** (`∀ ε > 0, ∃ᶠ n, a_1 − ε < a_n`; so `limsup a_n ≥ a_1` always, `= a_1` iff RH),
   and the package **`integerLag_law`**. Numerics (no proof use): `computations/integer-lag-records/`.
 
+- `RHTower.WeilLagFunctionOmega` — `Φ` as the corpus Bohr exponential series (`weilLagFunction_eq_expSeriesCarrier`,
+  `isBohrAlmostPeriodic_weilLagFunction`, `bohrMean_weilLagFunction = 0` via `bohrCoefficient_expSeriesCarrier_of_ne`),
+  the non-eventual-nonnegativity `exists_weilLagFunctionReal_le_neg_of_riemannHypothesis` (vanishing lemma +
+  `eq_zero_of_bohrMean_eq_zero_of_nonneg`), the sharp interval bound `abs_weilLagFunctionReal_sub_integerLag_le`
+  (`≤ 3(log n+2)²/√n`, `tendsto_lagGap`), the unconditional **`frequently_integerLag_le_neg`**, the package
+  **`genusKernelError_omega_pm`** (`Ω±(√n)` with the exact positive ceiling), unconditional continuity
+  `continuous_weilLagFunction_unconditional`, and **`riemannHypothesis_iff_isBohrAlmostPeriodic_weilLagFunction`**.
+
+- `RHTower.WeilLagFunctionFloor` — `NoOddRelation` (every integer relation among distinct ordinates has even
+  coefficient sum), unimodular product bounds (`norm_prod_zpow_sub_one_le`, `norm_prod_zpow_sub_prod_zpow_le`),
+  the excess identity `cosWeight_mul_one_add_cos_le`, `noOddRelation_of_forall_exists_lt` (odd relations obstruct the
+  floor), `exists_weilLagFunctionReal_lt_of_noOddRelation` and `exists_integerLag_lt_of_noOddRelation` (corpus
+  `exists_rat_independent_intSpanning` + `kronecker_approx` + almost periodicity), and the **floor law**
+  **`integerLag_floor_law : RH → (IsGLB {a_n : n ≥ 2} (−a_1) ↔ NoOddRelation)`**.
+
 Statement: `RH ⟺ ∀ n ≥ 2: (n − ψ(n)) + n(Σ_{m≤n}Λ(m)/m − log n + γ) − log 2π + Σ_{k≥1} n^{−2k}/(2k(2k+1)) ≤ (2+γ−log 4π)√n`,
 and under RH the inequality is tight along `b^m` for every base `b`. Axioms: `[propext, Classical.choice, Quot.sound]`.

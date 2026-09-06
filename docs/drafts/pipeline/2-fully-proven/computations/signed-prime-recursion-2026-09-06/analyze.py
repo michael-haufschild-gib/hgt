@@ -76,5 +76,7 @@ heat.set_title('Charge-centered contributions retain both signs across cofactor 
 fig.colorbar(im,ax=heat,label='Signed contribution / sqrt(N)',shrink=.85)
 fig.savefig('signed-reversal.png',dpi=180)
 fig.savefig('signed-reversal.svg')
+svg=Path('signed-reversal.svg')
+svg.write_text('\n'.join(line.rstrip() for line in svg.read_text().splitlines())+'\n')
 Path('analysis.json').write_text(json.dumps(summary,indent=2))
 print('identity residuals',summary['identity_max_abs'],summary['reverse_identity_max_abs'])
