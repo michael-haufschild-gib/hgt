@@ -19,8 +19,11 @@ retains the nonzero angular coefficient through analytic external-leg cancellati
 `V(u,v)=thetaXi(v)^2 * side(u,v)` and entire analyticity of `side`.
 `ThetaCuspHawkingBMCompletedBalancedSpinTwoFirstLiveJet` proves nonvanishing of this side
 factor at supplied Xi copies for `u=3/2`, and the exact multiplicity-matched first-live jet.
-The next source theorem should hold on a whole domain, with no zero copy or multiplicity in
-its definition.
+The source theorem is extended to a whole domain, with no zero copy or multiplicity in
+its definition. The exact delta is global analytic uniqueness, strip-wide invertibility,
+agreement with all normalized first-live jets, and the source-defined simple boundary poles.
+The arguments use existing factorization, analytic uniqueness, zero-free half-planes, and
+product differentiation. No claim of external mathematical novelty is made.
 
 Whole-corpus searches include `spin two radial`, `third order source actual`, `theta source
 ward`, `coefficient phase centralizer`, `spin two quotient`, `amputated source normalized`,
