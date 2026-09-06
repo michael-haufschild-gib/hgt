@@ -413,6 +413,18 @@ theorem exists_lag_gt_of_attainedTop_of_logDense (hβ : 1 / 2 < β₀) (h : Atta
   unfold integerLag
   linarith
 
+/-- **Bounded lags on a log-dense set force RH or a non-attained supremum of real parts.** -/
+theorem riemannHypothesis_or_not_attained_of_logDense_bddAbove {N : Set ℕ}
+    (hN : ∀ δ : ℝ, 0 < δ → ∃ X : ℝ, ∀ L : ℝ, X ≤ L → ∃ n ∈ N, |Real.log n - L| ≤ δ)
+    {M : ℝ} (hM : ∀ n ∈ N, integerLag n ≤ M) :
+    RiemannHypothesis ∨ ¬ ∃ β₀ : ℝ, 1 / 2 < β₀ ∧ AttainedTop β₀ := by
+  by_cases hRH : RiemannHypothesis
+  · exact Or.inl hRH
+  · right
+    rintro ⟨β₀, hβ, h⟩
+    obtain ⟨n, hn, hlt⟩ := exists_lag_gt_of_attainedTop_of_logDense hβ h hN M
+    linarith [hM n hn]
+
 end
 
 end RHTower

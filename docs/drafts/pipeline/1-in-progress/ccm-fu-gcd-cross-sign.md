@@ -33,3 +33,10 @@ Analytic witness plan: use existing decimal-nine logarithm bounds for 2,3,5, har
 A short rational box suffices: C_1(11) in [0.15,0.18], -C_2 in [0.20,0.21], -C_3 in [0.19,0.20], -C_5 in [0.14,0.15], -C_7 in [0.10,0.11], C_6 in [0.13,0.14], C_10 in [0.023,0.025]. Other channels vanish. In this box the gcd-one sum is strictly positive and the complete off-diagonal is strictly negative (paper interval arithmetic to be certified). To obtain the box, harmonic n=16 gives gamma>0.5768; the existing corrected upper gives gamma<0.57722. `log_le_half_sub_inv` at 8/7 and `Real.log_le_sub_one_of_pos` at 7/8 give `3 log2 -15/112 <= log7 <= 3 log2 -1/8`. Existing log2/log3/log5 decimal-nine inequalities and rational square-root sandwiches then bound the literal finite sums. This uses analytic inequalities, not the screened values, as proof inputs.
 
 Current homothety scratch: `/tmp/ccm_fu_gcd_transport.lean`. It proves the natural floor identity `(r*M-1)/(r*d)=(M-1)/d` for positive r,d, then exact `C_(rd)(rM)=sqrt(r)*mu(r)*C_d(M)` when r and d are coprime. Only direct Lean checks are being used.
+
+## Formal checkpoint
+
+- `MobiusDivisorAbelHomothety.lean` is in the tree, checked directly, olean produced, and wired once. Public theorem `mobiusDivisorDilationChannel_mul_coprime` includes empty cutoffs and the literal last quotient block.
+- `/tmp/ccm_fu_gcd_witness.lean` now passes: its analytic gamma/log/root/defect boxes imply all seven channel boxes and exact zero channels. These proofs have been copied to `MobiusDivisorElevenChannelBounds.lean` for its direct source check and reusable olean.
+- `/tmp/ccm_fu_gcd_cross.lean` contains the definition of the ordered gcd-r cross term and its exact complete reconstruction; this scratch is next to check.
+- Remaining: certify positive gcd-one and negative complete cross sum at eleven; prove exact prime dilation for gcd components and the resulting unbounded sequence of positive components; then audit only the new public declarations, wire all finished modules, refresh index, and update the current frontier. No large or umbrella builds.

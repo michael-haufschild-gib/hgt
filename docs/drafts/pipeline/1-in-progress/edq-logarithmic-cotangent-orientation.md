@@ -92,3 +92,5 @@ The actual unit source identity is `sourcePhaseDefect_eq`, with `s=sigma-it`. It
 The next proof obligation is a source comparison for this **entire weighted expression**, including the initial head. An unweighted defect sign, the finite-head transport inequality, and eventual normalized-remainder negativity do not discharge it. R, B2, C, and RH remain open. No positive-height restriction or zeta-zero premise is smuggled into the universal source identity.
 
 Validation: both new leaf builds passed; all 39 new declarations use only `propext`, `Classical.choice`, and `Quot.sound`; formal lint passed with existing large-file warnings. No numerical results or computational certificates were used.
+
+The independent [signed Fourier tail theorem](../3-formalized/edq-linear-remainder-cutoff.md) controls the complete actual weighted remainder for every `n>=t>=1` in `0<sigma<=1`. Thus the remaining comparison concerns the finite head `n<t` and its zero-bearing unit value; it does not require another tail-convergence proof or another unweighted prefix identity.

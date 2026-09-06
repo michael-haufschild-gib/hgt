@@ -1,7 +1,7 @@
 # HB continuous radial Green action
 
 - **ID:** HB-BM-CONTINUOUS-RADIAL-GREEN
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** exact source-action construction
 - **Goal:** unconditional closed Lean RH proof/falsification through HB; not achieved here.
 
@@ -10,13 +10,14 @@
 Literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal
 radial/left-QNM action → extinction on the fixed Hawking clock → RH.
 
-## Corpus gap and intended advance
+## Exact advance over the prior kernel construction
 
 `ThetaCuspHawkingBMSecondHarmonicHorizonBasisGreenKrein` supplies exact regular/normalizable
 and complementary/normalizable kernels, nonzero denominators, derivative jumps, and finite
 packet actions. `ThetaCuspHawkingBMSecondHarmonicFiniteSourceGreenRadical` classifies the
-finite packet moment. A continuous radial source still needs an actual integral response,
-its forced differential equation, and its selected boundary branches. The time-support
+finite packet moment. `ThetaCuspHawkingBMSecondHarmonicContinuousGreenAction` supplies the
+actual integral response for continuous radial sources, proves its forced differential
+equation, and verifies its selected boundary branches. The time-support
 audit prevents identifying radial basis exchange with reversal of causal time by assumption.
 
 Corpus searches: `hawking physical causal`, `causal green reality`, `green conjugate`,
@@ -64,11 +65,45 @@ source and left-QNM projection, or prove extinction. The canonical spin-two sour
 still be shown to belong to the required radial domain; compact-support control is not
 asserted for that physical source. No route is retired by this construction.
 
+## Lean result and verification
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicContinuousGreenAction.lean`
+contains 15 new public theorems. Its only direct import is the existing horizon-basis
+Green--Krein leaf. The central theorem `d4BMPlusPlusContinuousGreenResponse_forcedEquation`
+uses actual first and second derivatives, not only declared formal jets. The last theorem
+specializes it to every Xi fibre without a supplied nondegeneracy premise.
+
+- Scratch and direct `lake env lean <file>` checks passed without warnings.
+- Main-workspace build preflight stopped at the unrelated
+  `XiCenteredOrderTwentyOneSourceBudgetClosure`, whose existing 82 MB olean lacked required
+  build metadata. No dependency rebuild was started.
+- Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicContinuousGreenAction`
+  passed in **12 seconds** in an isolated leaf package using this exact source, the same
+  toolchain, and existing corpus/mathlib oleans. The package declared only this module;
+  local packages with no source targets supplied the cached import directories through
+  `leanLibDir`. Preflight and build contained only the leaf and bookkeeping job. No
+  umbrella or transitive rebuild ran; a fresh transitive source audit is not claimed.
+- The audited source was byte-compared with the canonical file. Only this new leaf's
+  `.olean` and `.ilean` artifacts were installed in the corpus build directory; no existing
+  dependency traces or hashes were altered to suppress rebuilding.
+- One scratch `#print axioms` audit of all 15 new public theorems passed from the main
+  workspace. Each uses only `propext`, `Classical.choice`, and `Quot.sound`; no added axiom
+  or computational certificate is used. Previously audited declarations were not rechecked.
+- The leaf is wired into `GaloisForLFunctions/RHTower.lean`. Corpus index refresh and
+  `scripts/formal_tools.py lint --check-generated` passed; existing large-file warnings remain.
+- All owned Lean processes exited. Temporary scratch sources and the isolated audit package
+  are removed after recording these results.
+
+The current frontier records the constructed radial action and its exact remaining producer.
+Universal ledger F20i-d distinguishes full-field inversion from extinction of a boundary
+coefficient. The full nonlinear source domain, time-causal identification, left-QNM boundary
+projection, and fixed-clock extinction remain open. RH is not proved or falsified here.
+
 ## Tracking
 
 - [x] Whole-corpus and exact boundary-kernel audit.
 - [x] Dependency-closed paper construction.
-- [ ] Scratch and direct Lean proof of integral response and forced equation.
-- [ ] Boundary branch verification and source-domain statement.
-- [ ] Umbrella wiring, leaf-only final build, new-only axiom audit, lint snapshot.
-- [ ] Current frontier and route-independent ledger update.
+- [x] Scratch and direct Lean proof of integral response and forced equation.
+- [x] Boundary branches, cutoff independence, faithfulness, and source-domain statement.
+- [x] Umbrella wiring, isolated leaf build, new-only axiom audit, and passing lint snapshot.
+- [x] Current frontier and route-independent ledger update.
