@@ -57,3 +57,14 @@ whether a growing width suffices. No such theorem is presumed.
    theorem is claimed; the literal arithmetic covariance remains the problem.
 
 No RH proof, new asymptotic estimate, or route retirement is claimed.
+
+## Independently frozen follow-up [J-test]
+
+At N=8192 with M=4096 frozen coefficients, compare the positive-average family
+with (i) arbitrary sign-preserving unit weights on squarefree tail indices,
+(ii) signed unit weights on those indices, and (iii) the full unit box.
+Prediction frozen before running: removing monotonicity while preserving
+Möbius signs permits error ≤1e−8 at this finite cutoff. Keep this numerical
+prediction separate from [H-test], [G] and [R]; a failure does not change it.
+Retain feasible incumbents across the nested families, independently validate
+the actual full norm, and do not interpret an optimizer failure as a lower bound.

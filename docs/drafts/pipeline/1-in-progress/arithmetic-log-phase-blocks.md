@@ -64,6 +64,8 @@ For each `0<y<pi`, `sin(y)-y*cos(y)>0`, because its derivative is `y*sin(y)>0` a
 
 The next attack on B2 must test fractional endpoints near integer coincidence, where L's strict margin vanishes. This boundary cannot be passed by a uniform absolute perturbation estimate with a positive fixed margin.
 
+**L+ [BRIDGE], independently frozen after L's proof:** for `0<lambda<2*pi` and every real `A>=0`, the constant-speed prefix `integral_(0..A) b(y)*sin(lambda*y) dy` is nonpositive, even if A is not a complete-turn endpoint. In the first half of each turn the prefix decreases, because `b<=0` and `sin>=0`; in the second half it increases, because both factors are nonpositive. Its maximum on that turn is therefore at one of the two complete-turn endpoints already controlled by L. This exposes a sign-preserving primitive for a constant-speed model. It does not prove that a nonlinear change of phase preserves the sign.
+
 ## Independently frozen clock test C [BRIDGE]
 
 **C:** for integer `n>=1`, `0<t<2*pi*n`, and every `V>=0`,
