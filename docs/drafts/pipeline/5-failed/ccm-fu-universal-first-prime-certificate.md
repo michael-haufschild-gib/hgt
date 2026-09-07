@@ -73,6 +73,15 @@ argument must select its admissible first primes or retain sharper actual
 signed overlaps; it cannot certify every initial prime through this radius.
 No universal comparison for later already-certified fields follows here.
 
+The [exact-overlap recovery](../3-formalized/ccm-fu-exact-overlap-recovery.md)
+proves a stronger positive property of this same infinite family: at12p,
+every sufficiently large prime p allows **every** available second prime
+under the original diagonal, despite failing the geometric certificate.
+All original four-cofactor blocks contract. The proof uses the new global
+unsigned ceiling `3sqrt(M)/5`, the exact mean, and analytic quotient-twelve
+bounds. Thus failure of this sufficient certificate need not signal even
+one inadmissible next prime. Complete adaptive iteration remains open.
+
 ## Lean certificate
 
 `formal/GaloisForLFunctions/RHTower/MobiusDivisorFirstPrimeCertificateObstruction.lean`,

@@ -525,6 +525,80 @@ theorem montgomery_mittagLeffler_side {x : ℝ} (hx : 1 < x) (t : ℝ) :
       (montgomeryPoleUp_ne_one t).symm (montgomeryPoleDown_ne_one t).symm,
     perron_montgomery_basic hx t, smul_tsum_eq, smul_tsum_eq, Complex.cpow_one]
 
+
+/-! ## Assembly -/
+
+/-- The zero-side summand `2x^{ρ}/((ρ−a)(ρ−b))`. -/
+def montgomeryZeroTerm (x t : ℝ) (q : XiZeroCopy) : ℂ :=
+  2 * (x : ℂ) ^ (q.1 : ℂ) / (((q.1 : ℂ) - montgomeryPoleUp t) * ((q.1 : ℂ) - montgomeryPoleDown t))
+
+/-- The trivial-zero summand `x^{c_k}/((c_k−a)(c_k−b))`, `c_k = −2(k+1)`. -/
+def montgomeryTrivialTerm (x t : ℝ) (k : ℕ) : ℂ :=
+  (x : ℂ) ^ trivialPole k / ((trivialPole k - montgomeryPoleUp t) * (trivialPole k - montgomeryPoleDown t))
+
+/-- The shifted digamma summand `1/(k+2) − 2/(s + 2(k+1))`. -/
+def digammaShiftTerm (s : ℂ) (k : ℕ) : ℂ := 1 / ((k : ℂ) + 2) - 2 / (s + 2 * ((k : ℂ) + 1))
+
+theorem norm_cpow_xiZeroCopy_le {x : ℝ} (hx : 1 ≤ x) (q : XiZeroCopy) :
+    ‖(x : ℂ) ^ (q.1 : ℂ)‖ ≤ x := by
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos (by linarith)]
+  calc x ^ ((q.1 : ℂ)).re ≤ x ^ (1 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le hx (xiZeroCopy_re_lt_one q).le
+    _ = x := Real.rpow_one x
+
+/-- `‖ρ(1−ρ)‖ ≤ 16(1+t²)‖(ρ−a)(ρ−b)‖`: the Montgomery denominators dominate the genus kernel. -/
+theorem norm_mul_one_sub_le_montgomery (t : ℝ) (q : XiZeroCopy) :
+    ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖ ≤ 16 * (1 + t ^ 2) *
+      ‖((q.1 : ℂ) - montgomeryPoleUp t) * ((q.1 : ℂ) - montgomeryPoleDown t)‖ := by
+  set ρ : ℂ := (q.1 : ℂ) with hρ
+  set γ : ℝ := ρ.im with hγ
+  have h0 := xiZeroCopy_re_pos q
+  have h1 := xiZeroCopy_re_lt_one q
+  -- upper bound for the genus denominator
+  have hA : ‖ρ‖ ≤ 1 + |γ| := by
+    have := Complex.norm_le_abs_re_add_abs_im ρ
+    have hre : |ρ.re| ≤ 1 := by rw [abs_le]; constructor <;> linarith
+    linarith
+  have hB : ‖1 - ρ‖ ≤ 1 + |γ| := by
+    have := Complex.norm_le_abs_re_add_abs_im (1 - ρ)
+    have hre : |(1 - ρ).re| ≤ 1 := by
+      simp only [Complex.sub_re, Complex.one_re]; rw [abs_le]; constructor <;> linarith
+    have him : |(1 - ρ).im| = |γ| := by simp [hγ]
+    rw [him] at this
+    linarith
+  have hAB : ‖ρ * (1 - ρ)‖ ≤ (1 + |γ|) ^ 2 := by
+    rw [norm_mul]
+    calc ‖ρ‖ * ‖1 - ρ‖ ≤ (1 + |γ|) * (1 + |γ|) := by gcongr
+      _ = (1 + |γ|) ^ 2 := by ring
+  -- lower bound for the Montgomery denominators
+  have hup : ((1 / 2 : ℝ) + (γ - t) ^ 2) / 1 ≤ ‖(ρ - montgomeryPoleUp t) * (ρ - montgomeryPoleDown t)‖ := by
+    rw [norm_mul]
+    have e1 : ‖ρ - montgomeryPoleUp t‖ = Real.sqrt ((ρ.re - 3 / 2) ^ 2 + (γ - t) ^ 2) := by
+      have : ρ - montgomeryPoleUp t = ((ρ.re - 3 / 2 : ℝ) : ℂ) + ((γ - t : ℝ) : ℂ) * I := by
+        apply Complex.ext <;> simp [montgomeryPoleUp, hγ]
+      rw [this, Complex.norm_add_mul_I]
+    have e2 : ‖ρ - montgomeryPoleDown t‖ = Real.sqrt ((ρ.re + 1 / 2) ^ 2 + (γ - t) ^ 2) := by
+      have : ρ - montgomeryPoleDown t = ((ρ.re + 1 / 2 : ℝ) : ℂ) + ((γ - t : ℝ) : ℂ) * I := by
+        apply Complex.ext <;> simp [montgomeryPoleDown, hγ] <;> ring
+      rw [this, Complex.norm_add_mul_I]
+    rw [e1, e2, div_one]
+    have hq1 : (1 / 4 : ℝ) + (γ - t) ^ 2 ≤ (ρ.re - 3 / 2) ^ 2 + (γ - t) ^ 2 := by nlinarith
+    have hq2 : (1 / 4 : ℝ) + (γ - t) ^ 2 ≤ (ρ.re + 1 / 2) ^ 2 + (γ - t) ^ 2 := by nlinarith
+    have hs1 := Real.sqrt_le_sqrt hq1
+    have hs2 := Real.sqrt_le_sqrt hq2
+    have hsq : Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2) * Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2)
+        = (1 / 4 : ℝ) + (γ - t) ^ 2 := Real.mul_self_sqrt (by positivity)
+    calc (1 / 2 : ℝ) + (γ - t) ^ 2 ≤ 2 * ((1 / 4 : ℝ) + (γ - t) ^ 2) := by linarith
+      _ ≤ 2 * (Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2) * Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2)) := by
+          rw [hsq]
+      _ ≤ 2 * (Real.sqrt ((ρ.re - 3 / 2) ^ 2 + (γ - t) ^ 2) *
+          Real.sqrt ((ρ.re + 1 / 2) ^ 2 + (γ - t) ^ 2)) := by gcongr
+      _ = _ := by
+          -- `2·√A·√B ≥ √A·√B` is not what we want; rewrite the target instead
+          ring_nf
+          sorry
+  sorry
+
 end
 
 end RHTower

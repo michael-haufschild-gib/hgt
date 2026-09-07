@@ -18,3 +18,11 @@ The [formal quantitative defect transport](../3-formalized/ccm-fu-parity-defect-
 The [source-local block candidate](ccm-fu-two-prime-local-blocks.md) isolates a sharper comparison: `K_p(N)<=2 K_1(N)` for every prime and cutoff. The [formal sharp criterion](../3-formalized/ccm-fu-two-prime-local-criterion.md) retains every four-coefficient block and proves an unconditional alternative: a two-prime ceiling failure at M forces a unit-channel factor-two failure for one of those same primes at `r<N<=M`. The factor two is sharp for the nonnegative local comparison class. The actual unit comparison remains open.
 
 All 6562 stored cofactor blocks through32 pass. Extending only first-prime diagnostics to cutoffs33..1024 gives 617453 passing active source-pair factor-two comparisons and 95747 passing first-prime geometric reserve tests. The latter would suffice for all second extensions at those cutoffs, but these remain numerical checks. The saved one-dimensional source table permits further analysis without regenerating it; no computed result enters Lean.
+
+An infinite source family now has an unconditional two-prime ceiling:
+at M=12p, every sufficiently large prime p permits every available second
+prime q under the original diagonal. The [formal exact-overlap proof](../3-formalized/ccm-fu-exact-overlap-recovery.md)
+retains every four-cofactor block and is uniform in q. This includes states
+whose first geometric certificate fails. The proof also supplies the global
+unsigned ceiling `K_d(M)<=3sqrt(M)/5`. The unrestricted all-cutoff two-prime
+comparison and complete prime orders remain open.

@@ -380,3 +380,12 @@ are closed in Lean without numerical premises. The extension conjecture
 asks for some successful successor of a certified state, so this result
 does not refute it. It excludes certifying every initial prime by the
 geometric radius; a complete proof must preserve that selection distinction.
+
+The [exact-overlap recovery](../3-formalized/ccm-fu-exact-overlap-recovery.md)
+shows why that distinction matters: throughout this same12p family, all
+available second primes meet the actual diagonal once p is large. The source
+proof controls every original four-cofactor block using a global3/5 unsigned
+ceiling and the exact parent mean. Thus the geometric certificate rejects
+some states that already bound every immediate successor. An exact-overlap
+induction can use a larger class, but its complete signed comparison and
+closure under repeated mergers have not been proved.

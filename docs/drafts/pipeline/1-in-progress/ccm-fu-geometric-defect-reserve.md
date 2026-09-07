@@ -31,6 +31,12 @@ certification, including the version using B in place of G, is therefore
 retired. Complete certified-path existence and extension from already
 certified states remain separate open questions.
 
+The [exact-overlap recovery theorem](../3-formalized/ccm-fu-exact-overlap-recovery.md)
+now proves that every available second prime actually stays below B in this
+same12p family once p is large. Hence the geometric certificate is not
+necessary even for bounding **all** immediate successors. Its failure alone
+must not exclude such states from an argument using exact arithmetic overlaps.
+
 The [direct extension induction](ccm-fu-reserve-extension-induction.md)
 tests the stronger local property that every certified proper state has a
 certified successor or can complete. All 7350 certified proper saved states

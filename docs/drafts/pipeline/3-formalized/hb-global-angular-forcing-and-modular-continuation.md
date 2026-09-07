@@ -1,6 +1,6 @@
 # HB full angular forcing and modular continuation
 
-Stage: formalized in Lean 4; final leaf audit pending. Type: `[BRIDGE]`.
+Stage: formalized in Lean 4. Type: `[BRIDGE]`.
 RH remains open.
 
 Chain: literal theta cusp → Xi occurrence → retained spin-two source → physical
@@ -128,9 +128,21 @@ All modules are under `formal/GaloisForLFunctions/RHTower/`.
 | `ThetaCuspHawkingBMAngularSpectralContinuation` | 3 | Entire arithmetic coefficients; locally uniform majorant; entire full tail |
 | `ThetaCuspHawkingBMGlobalAngularModularity` | 7 | Entire normalized field and inversion; actual Xi inversion; residual seam laws |
 
-All scratch checks passed without warnings using `lake env lean`. Final audit
-status is pending. No experimental computation or numerical proof certificate is
-used. Each finished leaf is imported once by RHTower; no umbrella build is needed.
+All scratch checks passed without warnings using `lake env lean`. Each final
+`lake build <leaf>` passed in an exact-source cache-only audit package, compiling
+only the requested new leaf: 4.9s, 9.7s, 7.9s, and 5.5s respectively. No dependency,
+full, or umbrella build ran. Source bytes were compared; only the eight new
+olean/ilean artifacts were installed. Each leaf is imported once by RHTower.
+
+All 23 new public theorem axioms were checked exactly once in a scratch file.
+Every result uses only `propext`, `Classical.choice`, and `Quot.sound`; no added
+axiom, unresolved proof, experimental result, or numerical certificate is used.
+Existing theorem axioms were not rechecked. The index was refreshed and scoped
+whitespace checks passed. Global `formal_tools.py lint --check-generated` reports
+two unrelated concurrent modules missing their umbrella imports:
+`RHTower.DivisorSmoothSquareMaximum` and `RHTower.MontgomeryLemmaOne`, plus existing
+large-file warnings. These HB leaves are reachable; unrelated work was preserved.
+The frontier map was not edited.
 
 ## Remaining physical response obligation
 
