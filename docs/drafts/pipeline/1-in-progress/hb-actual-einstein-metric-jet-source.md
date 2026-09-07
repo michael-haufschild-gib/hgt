@@ -49,8 +49,11 @@ branches have nonreal angular parameters, and the full squared cusp principal
 part has an explicit audited differential response. The full cusp-subtracted
 forcing now belongs to the actual modular hyperbolic L² space. The entire
 Xi-normalized scalar continues modular inversion to every actual Xi occurrence;
-the full residual matches the modular seams. The actual closed global angular
-energy domain, smooth resolvent response and physical causal admission remain open;
+the full residual matches the modular seams. The actual modular energy domain
+now has a dense injective embedding, proved by full-core periodization and local
+integration by parts through the completed differential graph. Its constructed
+self-adjoint operator gives a unique full-forcing weak response on both actual Xi
+branches. Smooth global reconstruction and physical causal admission remain open;
 see [the angular resolvent card](hb-global-angular-resolvent.md).
 
 The corpus now contains actual second/third Einstein variations, complete metric

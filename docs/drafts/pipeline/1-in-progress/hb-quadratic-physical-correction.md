@@ -97,16 +97,20 @@ full scalar's modular inversion at every Xi occurrence, and the complete residua
 matches the modular seams. The proof retains all infinite-tail interactions and
 cutoff derivatives; see
 [the full forcing and continuation card](../3-formalized/hb-global-angular-forcing-and-modular-continuation.md).
-The actual global form domain, smooth resolvent response and physical causal
-admission remain open. No fixed-clock extinction claim follows from these results.
+The actual modular energy domain now has a proved dense injective embedding,
+with the full weighted derivative graph retained. Its constructed self-adjoint
+operator gives a unique finite-energy weak response to the original full forcing
+at every actual Xi occurrence on both branches; see
+[the energy-domain and response card](../3-formalized/hb-modular-energy-domain-and-weak-response.md).
+Smooth global reconstruction and physical causal admission remain open. No
+fixed-clock extinction claim follows from weak solvability.
 
 ## Work required
 
-1. Construct the actual quotient-compatible closed angular energy form and its
-   dense injective embedding into the proved forcing's L² space. Identify its weak
-   operator with the actual Laplacian and obtain the smooth global resolvent
-   response. Establish the physical causal prescription for the complete forced
-   vector response.
+1. Obtain the smooth global representative of the proved weak response and its
+   literal hyperbolic equation across the modular charts. Construct the global
+   cusp-cutoff extension and assemble the full angular response. Establish the
+   physical causal prescription for the complete forced vector metric.
 2. Construct the remaining SS and VV responses and the complete constrained
    physical response. Retain the correction's linear image in the original left
    pairing until the physical domain and its boundary terms justify annihilation.

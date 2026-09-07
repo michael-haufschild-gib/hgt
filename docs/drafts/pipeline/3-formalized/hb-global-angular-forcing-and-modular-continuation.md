@@ -146,13 +146,13 @@ The frontier map was not edited.
 
 ## Remaining physical response obligation
 
-Construct the quotient-compatible closed hyperbolic energy form and its dense,
-injective embedding into this actual L² space. The existing Friedrichs-form
-operator and nonreal resolvent results become applicable only after those actual
-objects and properties are proved. Identify the weak operator with the literal
-hyperbolic Laplacian, obtain the smooth global response, and prove its physical
-causal prescription. Arbitrary cell boundary conditions or an assumed
-self-adjoint operator cannot discharge this construction.
+The actual quotient-compatible energy domain, dense injective embedding,
+self-adjoint form operator and unique full-forcing weak response are constructed
+in [the energy-domain proof](hb-modular-energy-domain-and-weak-response.md).
+Obtain its smooth global representative and literal differential equation across
+the modular charts, construct the global cusp-cutoff extension, and prove the
+physical causal prescription. The weak inverse alone does not discharge these
+remaining physical conditions.
 
 The complete SS/VV sectors, original left-QNM pairing, and independent fixed-clock
 extinction law remain open. Neither source admission nor modularity proves RH.

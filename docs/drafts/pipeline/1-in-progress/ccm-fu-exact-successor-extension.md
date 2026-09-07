@@ -89,3 +89,22 @@ Lean. With two primes left, successor admission also includes the terminal
 complete-source square. Thus the implication still has to prove the SD1
 endpoint and cannot borrow it as an induction premise. No new generic
 receiver or repeated finite screen supplies that arithmetic estimate.
+
+## Proved support-localized bounds
+
+The [localized mixed-interaction theorem](../3-formalized/ccm-fu-localized-mixed-interactions.md)
+now controls every already mixed state without a current energy or parity
+premise. With `A=2^(max(card(P)-1,0))`, it gives
+`|Delta_q|<=(18/25)*A^2*M*floor((M-1)/q)` and
+`|2*C_pq|<=(18/25)*A^2*M*`
+`(floor((M-1)/(p*q))+floor((M-1)/max(p,q)))`.
+Distinct retained labels have distinct prime products, and only the
+displayed quotient supports contribute. The first prime difference does
+not amplify the original unsigned amplitude interval.
+
+This improves the inverse-prime dependence without discarding the joint
+child or cross-child term. It does not prove successor selection: A^2 can
+grow along the order, and absolute values lose the signs needed to pay
+the remaining cost. Its unconditional positive consequence is a universal
+separated-prime two-merger ceiling, paid by the smaller prime's existing
+arithmetic reserve. A complete mixed-field reserve comparison remains open.

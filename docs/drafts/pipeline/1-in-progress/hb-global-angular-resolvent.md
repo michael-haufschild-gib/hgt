@@ -8,7 +8,9 @@ causal response and left-QNM pairing → independent fixed-clock extinction → 
 The complete mixed source forces `(Delta-L)H=(L/2)S²`, with
 `L=(2s+1)(2s+2)`. Its full squared cusp principal part has the explicit response
 proved in `ThetaCuspHawkingBMQuadraticMixedCurrent`. Both physical Xi branches
-have nonreal L. The current obstacle is the actual global angular realization.
+have nonreal L. The actual modular energy domain and its unique full-forcing
+weak response are constructed. Smooth global reconstruction and physical causal
+admission remain open.
 
 ## Proved source admission and modular matching
 
@@ -28,30 +30,37 @@ circular seam. No critical-line, source-integrability, or modularity assumption 
 supplied. Detailed proof and audit status:
 [full angular forcing and continuation](../3-formalized/hb-global-angular-forcing-and-modular-continuation.md).
 
-## Operator and physical obligations
+## Constructed energy domain and full weak response
 
-Construct the quotient-compatible closed energy form and its dense embedding into
-this actual L² space. Apply the corpus's constructed Friedrichs operator and
-nonreal resolvent theorem only after proving that embedding's density and
-injectivity. Identify the weak operator with the actual hyperbolic Laplacian,
-prove smoothness and global gluing, and establish the physical causal prescription.
-Generic operator hypotheses cannot substitute for this construction.
+Periodization of compact interior tests supplies actual smooth modular extensions
+and proves density of the full globally modular core in L². Both literal weighted
+derivatives `y*partial_x` and `y*partial_y` have proved finite energy on that core.
+The complete value-plus-gradient graph is closed in its Hilbert norm. The native
+measure transport gives the exact local integration-by-parts identity; smooth-test
+separation proves that scalar projection of this completion is injective. It is
+also continuous and dense. The full core imposes no vanishing condition on the
+joined modular sides.
 
-SS/VV response sectors, the original left-QNM pairing, and independent Hawking-clock
-extinction remain open. The frontier map is read-only. No experiment is planned:
-the source estimates and continuation are proved symbolically from the corpus.
+The constructed Friedrichs operator is self-adjoint. Its actual shift at `1-L`
+is bijective for both physical Xi branches. Applied to the original vector -F,
+it gives a unique h in the completed energy domain satisfying
 
-## Actual form-domain construction
+`sum_i <D_i v,D_i h> + L*<v,h> = -<v,F>`
 
-Use the closure of the graph of the literal weighted derivatives `y*partial_x`
-and `y*partial_y` on smooth modular functions with compact support in the quotient.
-Its projection to the existing scalar L² space must be proved injective and dense.
-Local distributional testing can prove injectivity; density requires constructing
-smooth modular extensions of compact functions supported in the cell interior.
-The corpus proves the cell boundary has zero invariant measure and the modular
-action is properly discontinuous. Periodizing each interior function over PSL2Z
-is consequently locally finite and agrees with that original function on the cell.
-These extensions are candidates inside the full modular core, not a replacement
-by the closure of interior-supported functions in the energy norm. Integration by
-parts, graph closability, the complete energy closure and operator identification
-are still proof obligations.
+for every energy-domain test v. The final existence theorem has no supplied
+form-domain, closability, inverse or critical-line hypothesis. Exact definitions,
+proof and audit:
+[modular energy domain and weak response](../3-formalized/hb-modular-energy-domain-and-weak-response.md).
+
+## Physical obligations
+
+Obtain a smooth global representative of the weak response and its literal
+hyperbolic equation across the modular charts. Construct the global cusp-cutoff
+extension and assemble `chi*H0+h`. Establish the physical causal prescription for
+the complete forced vector metric, including its horizon, radial boundary, gauge
+and original left-pairing conditions.
+
+The SS/VV response sectors, original left-QNM pairing, and independent Hawking-clock
+extinction law remain open. Weak solvability does not establish causal admission
+or extinction. The frontier map is read-only. No numerical experiment supplies
+proof evidence.

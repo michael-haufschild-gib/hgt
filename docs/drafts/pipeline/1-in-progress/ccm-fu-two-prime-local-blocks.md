@@ -47,3 +47,13 @@ The [large first-prime orientation theorem](../3-formalized/ccm-fu-large-prime-o
 The [signed terminal modular mean](../3-formalized/ccm-fu-terminal-modular-mean.md) sharpens the unit coefficient band to the exact limit `c=log(2*pi)/2-gamma-1/4`. The complete terminal residue is `o(M)`, and the centered hyperbola has coefficient `-1/24`. One common quotient threshold gives `|K_d(M)-c*sqrt(M)|<=epsilon*sqrt(M)` for every positive dilation d with sufficiently large `M/d`, including clipped endpoints. The actual unit coefficient is therefore determined; no source coefficient or computed value is assumed.
 
 The [remaining middle quotient profiles](ccm-fu-bounded-quotient-profiles.md), finite parent regime and all-cutoff ceiling remain open. A saved-vector diagnostic supports the candidate global `K_1(N)<=sqrt(N)/8` bound through1024 but rejects the sufficient prefix envelope at 16 cutoffs. The exact limit above does not establish that global ceiling. None of those data is a Lean premise and no channels were regenerated.
+
+The [support-localized interaction estimate](../3-formalized/ccm-fu-localized-mixed-interactions.md)
+supplies a separate uniform source comparison. Universal D>1 and T>=1
+give `Q_{p,q}(M)<=Q_empty(M)` whenever p,q are prime, `p<M`, `p>=D*q`
+and `M/q>=T`. After prime q the amplitude ceiling remains `(3/5)*sqrt(M)`,
+so the larger prime's possible gain is at most `(18/25)*M^2/p`. The
+smaller prime's established reserve `c*M^2/q` pays that gain with
+`D=2+1/c`. No factor-two channel premise or geometric certificate is used.
+Thus a failure with sufficiently large smaller-prime quotient must have
+prime ratio below D. The comparable-prime and full-order cases remain open.
