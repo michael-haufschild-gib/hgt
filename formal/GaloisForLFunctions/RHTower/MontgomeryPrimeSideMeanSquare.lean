@@ -101,27 +101,27 @@ theorem integral_normSq_primePhasePartial_sub_le (x : ℝ) (N : ℕ) (T : ℝ) :
 
 /-- `|∫_0^T |P|² − ∫_0^T |P_N|²| ≤ T τ_N (2 S₀ + τ_N)`. -/
 theorem abs_integral_normSq_sub_partial_le {x : ℝ} (hx : 1 ≤ x) {T : ℝ} (hT : 0 ≤ T) (N : ℕ) :
-    |(∫ t in (0 : ℝ)..T, ‖primePhaseSum x t‖ ^ 2)
+    |(∫ t in (0 : ℝ)..T, ‖primeAmpPhaseSum x t‖ ^ 2)
         - ∫ t in (0 : ℝ)..T, ‖primePhasePartial x N t‖ ^ 2|
       ≤ T * (primeAmpTail x N * (2 * primeAmpTotal x + primeAmpTail x N)) := by
-  have hcont : Continuous (fun t : ℝ => ‖primePhaseSum x t‖ ^ 2) :=
-    (continuous_primePhaseSum hx).norm.pow 2
+  have hcont : Continuous (fun t : ℝ => ‖primeAmpPhaseSum x t‖ ^ 2) :=
+    (continuous_primeAmpPhaseSum hx).norm.pow 2
   have hcontN : Continuous (fun t : ℝ => ‖primePhasePartial x N t‖ ^ 2) := by
     unfold primePhasePartial
     exact (continuous_finsetSum _ fun n _ => by fun_prop).norm.pow 2
   rw [← intervalIntegral.integral_sub (hcont.intervalIntegrable _ _) (hcontN.intervalIntegrable _ _)]
   have hbound : ∀ t ∈ Set.uIoc (0 : ℝ) T,
-      ‖‖primePhaseSum x t‖ ^ 2 - ‖primePhasePartial x N t‖ ^ 2‖
+      ‖‖primeAmpPhaseSum x t‖ ^ 2 - ‖primePhasePartial x N t‖ ^ 2‖
         ≤ primeAmpTail x N * (2 * primeAmpTotal x + primeAmpTail x N) := by
     intro t _
     rw [Real.norm_eq_abs]
     have hkey := abs_normSq_add_sub_normSq_le (primePhasePartial x N t)
-      (primePhaseSum x t - primePhasePartial x N t)
+      (primeAmpPhaseSum x t - primePhasePartial x N t)
     rw [add_sub_cancel] at hkey
     refine hkey.trans ?_
-    have h1 := norm_primePhaseSum_sub_partial_le hx N t
+    have h1 := norm_primeAmpPhaseSum_sub_partial_le hx N t
     have h2 := norm_primePhasePartial_le hx N t
-    have h0 := norm_nonneg (primePhaseSum x t - primePhasePartial x N t)
+    have h0 := norm_nonneg (primeAmpPhaseSum x t - primePhasePartial x N t)
     have h0' := norm_nonneg (primePhasePartial x N t)
     exact mul_le_mul h1 (by linarith) (by positivity) (primeAmpTail_nonneg (by linarith) N)
   have := intervalIntegral.norm_integral_le_of_norm_le_const hbound
@@ -132,22 +132,22 @@ theorem abs_integral_normSq_sub_partial_le {x : ℝ} (hx : 1 ≤ x) {T : ℝ} (h
 
 /-- **The mean square of the prime-side Dirichlet series.**  For `x ≥ 1`, `T ≥ 0`,
 `|∫_0^T ‖Σ_n d_n e^{it log n}‖² dt − T Σ_n d_n²| ≤ 104 Σ_n n d_n²`. -/
-theorem integral_normSq_primePhaseSum_sub_le {x : ℝ} (hx : 1 ≤ x) {T : ℝ} (hT : 0 ≤ T) :
-    |(∫ t in (0 : ℝ)..T, ‖primePhaseSum x t‖ ^ 2) - T * ∑' n : ℕ, primeAmp x n ^ 2|
+theorem integral_normSq_primeAmpPhaseSum_sub_le {x : ℝ} (hx : 1 ≤ x) {T : ℝ} (hT : 0 ≤ T) :
+    |(∫ t in (0 : ℝ)..T, ‖primeAmpPhaseSum x t‖ ^ 2) - T * ∑' n : ℕ, primeAmp x n ^ 2|
       ≤ 104 * ∑' n : ℕ, (n : ℝ) * primeAmp x n ^ 2 := by
   have hx0 : (0 : ℝ) ≤ x := by linarith
   -- the bound at level `N`
   have hstep : ∀ N : ℕ,
-      |(∫ t in (0 : ℝ)..T, ‖primePhaseSum x t‖ ^ 2)
+      |(∫ t in (0 : ℝ)..T, ‖primeAmpPhaseSum x t‖ ^ 2)
           - T * ∑ n ∈ Finset.range (N + 1), primeAmp x n ^ 2|
         ≤ T * (primeAmpTail x (N + 1) * (2 * primeAmpTotal x + primeAmpTail x (N + 1)))
           + 104 * ∑ n ∈ Finset.range (N + 1), (n : ℝ) * primeAmp x n ^ 2 := by
     intro N
     have h1 := abs_integral_normSq_sub_partial_le hx hT (N + 1)
     have h2 := integral_normSq_primePhasePartial_sub_le x N T
-    calc |(∫ t in (0 : ℝ)..T, ‖primePhaseSum x t‖ ^ 2)
+    calc |(∫ t in (0 : ℝ)..T, ‖primeAmpPhaseSum x t‖ ^ 2)
           - T * ∑ n ∈ Finset.range (N + 1), primeAmp x n ^ 2|
-        ≤ |(∫ t in (0 : ℝ)..T, ‖primePhaseSum x t‖ ^ 2)
+        ≤ |(∫ t in (0 : ℝ)..T, ‖primeAmpPhaseSum x t‖ ^ 2)
             - ∫ t in (0 : ℝ)..T, ‖primePhasePartial x (N + 1) t‖ ^ 2|
           + |(∫ t in (0 : ℝ)..T, ‖primePhasePartial x (N + 1) t‖ ^ 2)
             - T * ∑ n ∈ Finset.range (N + 1), primeAmp x n ^ 2| := abs_sub_le _ _ _
@@ -155,9 +155,9 @@ theorem integral_normSq_primePhaseSum_sub_le {x : ℝ} (hx : 1 ≤ x) {T : ℝ} 
   -- the limits of the two sides
   have hsq := summable_primeAmp_sq hx
   have hnsq := summable_mul_primeAmp_sq hx
-  have hL : Tendsto (fun N : ℕ => |(∫ t in (0 : ℝ)..T, ‖primePhaseSum x t‖ ^ 2)
+  have hL : Tendsto (fun N : ℕ => |(∫ t in (0 : ℝ)..T, ‖primeAmpPhaseSum x t‖ ^ 2)
       - T * ∑ n ∈ Finset.range (N + 1), primeAmp x n ^ 2|) atTop
-      (nhds |(∫ t in (0 : ℝ)..T, ‖primePhaseSum x t‖ ^ 2) - T * ∑' n : ℕ, primeAmp x n ^ 2|) := by
+      (nhds |(∫ t in (0 : ℝ)..T, ‖primeAmpPhaseSum x t‖ ^ 2) - T * ∑' n : ℕ, primeAmp x n ^ 2|) := by
     refine Filter.Tendsto.abs ?_
     refine tendsto_const_nhds.sub (tendsto_const_nhds.mul ?_)
     exact hsq.tendsto_sum_tsum_nat.comp (Filter.tendsto_add_atTop_nat 1)
@@ -177,9 +177,9 @@ theorem integral_normSq_primePhaseSum_sub_le {x : ℝ} (hx : 1 ≤ x) {T : ℝ} 
 theorem integral_normSq_primeSide_sub_le {x : ℝ} (hx : 1 ≤ x) {T : ℝ} (hT : 0 ≤ T) :
     |(∫ t in (0 : ℝ)..T, ‖primeSide x t‖ ^ 2) - T * ∑' n : ℕ, primeAmp x n ^ 2|
       ≤ 104 * ∑' n : ℕ, (n : ℝ) * primeAmp x n ^ 2 := by
-  have : (fun t : ℝ => ‖primeSide x t‖ ^ 2) = fun t => ‖primePhaseSum x t‖ ^ 2 := by
+  have : (fun t : ℝ => ‖primeSide x t‖ ^ 2) = fun t => ‖primeAmpPhaseSum x t‖ ^ 2 := by
     funext t; rw [norm_primeSide_eq hx]
   rw [this]
-  exact integral_normSq_primePhaseSum_sub_le hx hT
+  exact integral_normSq_primeAmpPhaseSum_sub_le hx hT
 
 end RHTower

@@ -55,7 +55,7 @@ theorem integrableOn_cexp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
   congr 1
   simp [Complex.mul_re]
 
-theorem integral_cexp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
+theorem integral_cexp_neg_mul_Ioi_montgomery {c : ℂ} (hc : 0 < c.re) :
     ∫ ξ in Ioi (0 : ℝ), cexp (-(c * ξ)) = 1 / c := by
   have hc0 : c ≠ 0 := by
     intro h
@@ -142,13 +142,13 @@ theorem integral_exp_neg_two_abs_mul_cexp {u : ℂ} (hu : |u.re| < 2) :
   rw [Set.compl_Iio] at hsplit
   have hA : ∫ ξ in Ici (0 : ℝ), f ξ = 1 / (2 + u) := by
     rw [integral_Ici_eq_integral_Ioi, setIntegral_congr_fun measurableSet_Ioi h1]
-    exact integral_cexp_neg_mul_Ioi (by simp; linarith)
+    exact integral_cexp_neg_mul_Ioi_montgomery (by simp; linarith)
   have hB : ∫ ξ in Iio (0 : ℝ), f ξ = 1 / (2 - u) := by
     rw [← integral_Iic_eq_integral_Iio]
     have hcomp := integral_comp_neg_Iic (0 : ℝ) (fun ξ => f (-ξ))
     simp only [neg_neg, neg_zero] at hcomp
     rw [hcomp, setIntegral_congr_fun measurableSet_Ioi h2]
-    exact integral_cexp_neg_mul_Ioi (by simp; linarith)
+    exact integral_cexp_neg_mul_Ioi_montgomery (by simp; linarith)
   have h2u : (2 : ℂ) + u ≠ 0 := by
     intro h
     have := congrArg Complex.re h

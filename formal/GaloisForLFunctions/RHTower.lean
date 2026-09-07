@@ -10839,6 +10839,7 @@ import GaloisForLFunctions.RHTower.MontgomeryPrimeSideMeanSquare
 import GaloisForLFunctions.RHTower.PNTFirstLogMoment
 import GaloisForLFunctions.RHTower.PNTTailLogMoment
 import GaloisForLFunctions.RHTower.VonMangoldtSquarePowerMoments
+import GaloisForLFunctions.RHTower.MontgomeryPrimeAmpMoments
 import GaloisForLFunctions.RHTower.DualCarrierWeightRightShift
 import GaloisForLFunctions.RHTower.SmoothDiagonalMellin
 import GaloisForLFunctions.RHTower.SmoothDiagonalContour

@@ -14,6 +14,8 @@ The normalized clipped channel is a convex combination of the two normalized adj
 
 Current status: the candidate global envelope and the remaining bounded quotient comparisons are unproved. The universal large-quotient comparison remains closed; no all-cutoff ceiling or SD1 conclusion is claimed.
 
+The [signed smooth square-block ceiling](../3-formalized/ccm-fu-signed-smooth-block-ceiling.md) is closed in Lean: every complete block satisfies `sum R(n)<=(2s+1)*a`, where `a=log(2*pi)/2-gamma-1/6`, with no additive upper error. The coefficient is optimal. Symmetric pairing, a second geometric harmonic correction, and exact Stirling bounds prove the sign. Varying Abel weights and the terminal partial block still require source control before this ceiling can settle the global normalized envelope or the remaining unit-channel factor-two comparison.
+
 ## Saved-data outcome and analytic continuation
 
 All 1024 saved unit endpoints satisfy the proposed one-eighth channel envelope. The largest normalized value is about 0.111093 at cutoff120. The sufficient prefix envelope fails at 16 saved cutoffs, with worst deficit about 2.28849 at119. These are numerical diagnostics only. A second summation must retain the original terminal prefix multiplied by the endpoint clock; it cannot silently replace the failed first-prefix bound.

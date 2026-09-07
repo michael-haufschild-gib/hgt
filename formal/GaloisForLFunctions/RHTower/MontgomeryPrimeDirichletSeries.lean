@@ -110,7 +110,7 @@ theorem primeAmpTotal_nonneg {x : ℝ} (hx : 0 ≤ x) : 0 ≤ primeAmpTotal x :=
 /-! ## The phase series -/
 
 /-- The phase series `Σ_n d_n e^{it log n}`. -/
-noncomputable def primePhaseSum (x t : ℝ) : ℂ :=
+noncomputable def primeAmpPhaseSum (x t : ℝ) : ℂ :=
   ∑' n : ℕ, (primeAmp x n : ℂ) * Complex.exp (((t * Real.log n : ℝ) : ℂ) * I)
 
 /-- The conjugate phase series `Σ_n d_n e^{−it log n}`. -/
@@ -142,8 +142,8 @@ theorem primeSide_eq_conjSum {x : ℝ} (hx : 1 ≤ x) (t : ℝ) :
   rw [primeSide, primeConjSum, ← tsum_mul_left]
   exact tsum_congr fun n => primeSideTerm_eq_amp (by linarith) t n
 
-theorem conj_primeConjSum (x t : ℝ) : (starRingEnd ℂ) (primeConjSum x t) = primePhaseSum x t := by
-  rw [primeConjSum, primePhaseSum, Complex.conj_tsum]
+theorem conj_primeConjSum (x t : ℝ) : (starRingEnd ℂ) (primeConjSum x t) = primeAmpPhaseSum x t := by
+  rw [primeConjSum, primeAmpPhaseSum, Complex.conj_tsum]
   refine tsum_congr fun n => ?_
   rw [map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
   congr 2
@@ -151,23 +151,37 @@ theorem conj_primeConjSum (x t : ℝ) : (starRingEnd ℂ) (primeConjSum x t) = p
 
 /-- `‖primeSide x t‖ = ‖Σ_n d_n e^{it log n}‖`. -/
 theorem norm_primeSide_eq {x : ℝ} (hx : 1 ≤ x) (t : ℝ) :
-    ‖primeSide x t‖ = ‖primePhaseSum x t‖ := by
+    ‖primeSide x t‖ = ‖primeAmpPhaseSum x t‖ := by
   rw [primeSide_eq_conjSum hx, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul,
     ← Complex.norm_conj, conj_primeConjSum]
 
-theorem norm_primePhaseSum_le {x : ℝ} (hx : 1 ≤ x) (t : ℝ) :
-    ‖primePhaseSum x t‖ ≤ primeAmpTotal x := by
-  rw [primePhaseSum, primeAmpTotal]
+theorem norm_primeAmpPhaseSum_le {x : ℝ} (hx : 1 ≤ x) (t : ℝ) :
+    ‖primeAmpPhaseSum x t‖ ≤ primeAmpTotal x := by
+  rw [primeAmpPhaseSum, primeAmpTotal]
   have hx0 : (0 : ℝ) ≤ x := by linarith
   refine (norm_tsum_le_tsum_norm ?_).trans ?_
   · simp_rw [norm_phaseTerm hx0]; exact summable_primeAmp hx
   · simp_rw [norm_phaseTerm hx0]; exact le_rfl
 
-theorem continuous_primePhaseSum {x : ℝ} (hx : 1 ≤ x) : Continuous (primePhaseSum x) := by
-  unfold primePhaseSum
+theorem continuous_primeAmpPhaseSum {x : ℝ} (hx : 1 ≤ x) : Continuous (primeAmpPhaseSum x) := by
+  unfold primeAmpPhaseSum
   refine continuous_tsum (fun n => ?_) (summable_primeAmp hx)
     (fun n t => (norm_phaseTerm (by linarith) t n).le)
   fun_prop
+
+theorem continuous_primeConjSum {x : ℝ} (hx : 1 ≤ x) : Continuous (primeConjSum x) := by
+  unfold primeConjSum
+  refine continuous_tsum (fun n => ?_) (summable_primeAmp hx)
+    (fun n t => (norm_conjTerm (by linarith) t n).le)
+  fun_prop
+
+/-- The prime side is continuous in the height. -/
+theorem continuous_primeSide {x : ℝ} (hx : 1 ≤ x) : Continuous (primeSide x) := by
+  have : primeSide x = fun t => Complex.exp (((t * Real.log x : ℝ) : ℂ) * I) * primeConjSum x t :=
+    funext fun t => primeSide_eq_conjSum hx t
+  rw [this]
+  exact (by fun_prop : Continuous fun t : ℝ => Complex.exp (((t * Real.log x : ℝ) : ℂ) * I)).mul
+    (continuous_primeConjSum hx)
 
 /-! ## Truncation -/
 
@@ -185,11 +199,11 @@ theorem tendsto_primeAmpTail (x : ℝ) : Tendsto (primeAmpTail x) atTop (nhds 0)
   tendsto_sum_nat_add (primeAmp x)
 
 /-- `‖P(t) − P_N(t)‖ ≤ τ_N`. -/
-theorem norm_primePhaseSum_sub_partial_le {x : ℝ} (hx : 1 ≤ x) (N : ℕ) (t : ℝ) :
-    ‖primePhaseSum x t - primePhasePartial x N t‖ ≤ primeAmpTail x N := by
+theorem norm_primeAmpPhaseSum_sub_partial_le {x : ℝ} (hx : 1 ≤ x) (N : ℕ) (t : ℝ) :
+    ‖primeAmpPhaseSum x t - primePhasePartial x N t‖ ≤ primeAmpTail x N := by
   have hs := summable_phaseTerm hx t
   have hsplit := hs.sum_add_tsum_nat_add N
-  rw [primePhaseSum, primePhasePartial, ← hsplit, add_sub_cancel_left, primeAmpTail]
+  rw [primeAmpPhaseSum, primePhasePartial, ← hsplit, add_sub_cancel_left, primeAmpTail]
   have hx0 : (0 : ℝ) ≤ x := by linarith
   have hs' : Summable (fun k : ℕ => ‖(primeAmp x (k + N) : ℂ)
       * Complex.exp (((t * Real.log (k + N : ℕ) : ℝ) : ℂ) * I)‖) := by

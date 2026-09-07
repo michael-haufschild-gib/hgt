@@ -26,7 +26,7 @@ theorem logSucc_fin_injective (N : ℕ) :
   exact Fin.ext (by exact_mod_cast this)
 
 /-- `log y ≥ 1 − 1/y` for `y > 0`. -/
-theorem one_sub_inv_le_log {y : ℝ} (hy : 0 < y) : 1 - 1 / y ≤ Real.log y := by
+theorem one_sub_inv_le_log_of_pos {y : ℝ} (hy : 0 < y) : 1 - 1 / y ≤ Real.log y := by
   have := Real.log_le_sub_one_of_pos (inv_pos.mpr hy)
   rw [Real.log_inv] at this
   rw [one_div]; linarith
@@ -43,7 +43,7 @@ theorem gap_log_succ {m n : ℕ} (h : m ≠ n) :
       Real.log_le_log (by positivity) hle
     have h2 : 1 - 1 / ((((m : ℕ) : ℝ) + 2) / (((m : ℕ) : ℝ) + 1))
         ≤ Real.log ((((m : ℕ) : ℝ) + 2) / (((m : ℕ) : ℝ) + 1)) :=
-      one_sub_inv_le_log (by positivity)
+      one_sub_inv_le_log_of_pos (by positivity)
     rw [Real.log_div (by positivity) (by positivity)] at h2
     have h3 : 1 - 1 / ((((m : ℕ) : ℝ) + 2) / (((m : ℕ) : ℝ) + 1)) = 1 / (((m : ℕ) : ℝ) + 2) := by
       field_simp; ring
@@ -62,7 +62,7 @@ theorem gap_log_succ {m n : ℕ} (h : m ≠ n) :
       Real.log_le_log (by positivity) hle
     have h2 : 1 - 1 / ((((m : ℕ) : ℝ) + 1) / ((m : ℕ) : ℝ))
         ≤ Real.log ((((m : ℕ) : ℝ) + 1) / ((m : ℕ) : ℝ)) :=
-      one_sub_inv_le_log (by positivity)
+      one_sub_inv_le_log_of_pos (by positivity)
     rw [Real.log_div (by positivity) (by positivity)] at h2
     have h3 : 1 - 1 / ((((m : ℕ) : ℝ) + 1) / ((m : ℕ) : ℝ)) = 1 / (((m : ℕ) : ℝ) + 1) := by
       field_simp; ring
@@ -74,7 +74,7 @@ theorem gap_log_succ {m n : ℕ} (h : m ≠ n) :
     linarith
 
 /-- The off-diagonal double sum with `erase` equals the `if r = s then 0` form. -/
-theorem sum_erase_eq_sum_ite {N : ℕ} (f : Fin N → Fin N → ℂ) :
+theorem sum_erase_eq_sum_ite_offDiag {N : ℕ} (f : Fin N → Fin N → ℂ) :
     ∑ m : Fin N, ∑ n ∈ (Finset.univ : Finset (Fin N)).erase m, f m n
       = ∑ m : Fin N, ∑ n : Fin N, if m = n then 0 else f m n := by
   classical
@@ -100,7 +100,7 @@ theorem dirichlet_meanValue_sharp (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
     rw [intervalIntegral.integral_ofReal, ← Complex.ofReal_sum, ← Complex.ofReal_mul,
       ← Complex.ofReal_sub]
   rw [← Real.norm_eq_abs, ← Complex.norm_real, ← hcast, integral_normSq_dirPoly_sub_diag,
-    sum_erase_eq_sum_ite]
+    sum_erase_eq_sum_ite_offDiag]
   -- the off-diagonal phase integrals
   have hterm : ∀ m n : Fin N, m ≠ n →
       (a m * (starRingEnd ℂ) (a n))

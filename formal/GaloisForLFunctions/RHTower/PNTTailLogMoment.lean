@@ -64,11 +64,11 @@ theorem log_le_two_mul_rpow_half {t : ℝ} (ht : 0 ≤ t) : Real.log t ≤ 2 * t
   linarith
 
 /-- The tail primitive `G(t) = −((k+2) log t/(k+1) + 1/(k+1)²)/t^{k+1}`, with `G' = t · (−f')`. -/
-noncomputable def tailPrimitive (k : ℕ) (t : ℝ) : ℝ :=
+noncomputable def logTailPrimitive (k : ℕ) (t : ℝ) : ℝ :=
   -((((k : ℝ) + 2) * Real.log t) / ((k : ℝ) + 1) + 1 / ((k : ℝ) + 1) ^ 2) / t ^ (k + 1)
 
-theorem hasDerivAt_tailPrimitive (k : ℕ) {t : ℝ} (ht : 0 < t) :
-    HasDerivAt (tailPrimitive k) ((((k : ℝ) + 2) * Real.log t - 1) / t ^ (k + 2)) t := by
+theorem hasDerivAt_logTailPrimitive (k : ℕ) {t : ℝ} (ht : 0 < t) :
+    HasDerivAt (logTailPrimitive k) ((((k : ℝ) + 2) * Real.log t - 1) / t ^ (k + 2)) t := by
   have hk1 : ((k : ℝ) + 1) ≠ 0 := by positivity
   have hA : HasDerivAt (fun s : ℝ => (((k : ℝ) + 2) * Real.log s) / ((k : ℝ) + 1) + 1 / ((k : ℝ) + 1) ^ 2)
       ((((k : ℝ) + 2) * t⁻¹) / ((k : ℝ) + 1)) t := by
@@ -76,9 +76,9 @@ theorem hasDerivAt_tailPrimitive (k : ℕ) {t : ℝ} (ht : 0 < t) :
       (1 / ((k : ℝ) + 1) ^ 2)
     exact this
   have h := (hA.div (hasDerivAt_pow (k + 1) t) (pow_ne_zero _ ht.ne')).neg
-  have hfun : tailPrimitive k = -((fun s : ℝ => (((k : ℝ) + 2) * Real.log s) / ((k : ℝ) + 1)
+  have hfun : logTailPrimitive k = -((fun s : ℝ => (((k : ℝ) + 2) * Real.log s) / ((k : ℝ) + 1)
       + 1 / ((k : ℝ) + 1) ^ 2) / fun s : ℝ => s ^ (k + 1)) := by
-    funext s; simp only [tailPrimitive, Pi.neg_apply, Pi.div_apply]; ring
+    funext s; simp only [logTailPrimitive, Pi.neg_apply, Pi.div_apply]; ring
   rw [hfun]
   refine h.congr_deriv ?_
   have hne : t ≠ 0 := ht.ne'
@@ -99,7 +99,7 @@ theorem tendsto_log_div_pow_succ (k : ℕ) :
     calc t = t ^ 1 := (pow_one t).symm
       _ ≤ t ^ (k + 1) := pow_le_pow_right₀ ht (by omega)
 
-theorem tendsto_tailPrimitive (k : ℕ) : Tendsto (tailPrimitive k) atTop (𝓝 0) := by
+theorem tendsto_logTailPrimitive (k : ℕ) : Tendsto (logTailPrimitive k) atTop (𝓝 0) := by
   have h1 := (tendsto_log_div_pow_succ k).const_mul (((k : ℝ) + 2) / ((k : ℝ) + 1))
   have h2 : Tendsto (fun t : ℝ => (1 / ((k : ℝ) + 1) ^ 2) * (t ^ (k + 1))⁻¹) atTop (𝓝 0) := by
     have := (tendsto_inv_atTop_zero.comp (tendsto_pow_atTop (Nat.succ_ne_zero k))).const_mul
@@ -110,7 +110,7 @@ theorem tendsto_tailPrimitive (k : ℕ) : Tendsto (tailPrimitive k) atTop (𝓝 
   simp only [mul_zero, add_zero, neg_zero] at h
   refine h.congr' ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
-  unfold tailPrimitive
+  unfold logTailPrimitive
   field_simp
 
 /-- `2 log 2 ≥ 1`. -/
@@ -125,11 +125,11 @@ theorem integral_Ioi_tailWeightMul (k : ℕ) {x : ℝ} (hx : 2 ≤ x) :
     IntegrableOn (fun t : ℝ => (((k : ℝ) + 2) * Real.log t - 1) / t ^ (k + 2)) (Ioi x) ∧
       ∫ t in Ioi x, (((k : ℝ) + 2) * Real.log t - 1) / t ^ (k + 2)
         = ((((k : ℝ) + 2) * Real.log x) / ((k : ℝ) + 1) + 1 / ((k : ℝ) + 1) ^ 2) / x ^ (k + 1) := by
-  have hcont : ContinuousWithinAt (tailPrimitive k) (Ici x) x :=
-    (hasDerivAt_tailPrimitive k (by linarith)).continuousAt.continuousWithinAt
-  have hderiv : ∀ t ∈ Ioi x, HasDerivAt (tailPrimitive k)
+  have hcont : ContinuousWithinAt (logTailPrimitive k) (Ici x) x :=
+    (hasDerivAt_logTailPrimitive k (by linarith)).continuousAt.continuousWithinAt
+  have hderiv : ∀ t ∈ Ioi x, HasDerivAt (logTailPrimitive k)
       ((((k : ℝ) + 2) * Real.log t - 1) / t ^ (k + 2)) t :=
-    fun t ht => hasDerivAt_tailPrimitive k (by simp only [mem_Ioi] at ht; linarith)
+    fun t ht => hasDerivAt_logTailPrimitive k (by simp only [mem_Ioi] at ht; linarith)
   have hnonneg : ∀ t ∈ Ioi x, 0 ≤ (((k : ℝ) + 2) * Real.log t - 1) / t ^ (k + 2) := by
     intro t ht
     simp only [mem_Ioi] at ht
@@ -140,10 +140,10 @@ theorem integral_Ioi_tailWeightMul (k : ℕ) {x : ℝ} (hx : 2 ≤ x) :
     have ht0 : 0 < t := by linarith
     apply div_nonneg _ (pow_pos ht0 _).le
     nlinarith
-  have htend := tendsto_tailPrimitive k
+  have htend := tendsto_logTailPrimitive k
   refine ⟨integrableOn_Ioi_deriv_of_nonneg hcont hderiv hnonneg htend, ?_⟩
   rw [integral_Ioi_of_hasDerivAt_of_nonneg hcont hderiv hnonneg htend]
-  unfold tailPrimitive
+  unfold logTailPrimitive
   ring
 
 /-! ## The tail moment -/

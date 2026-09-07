@@ -16,7 +16,7 @@ namespace RHTower
 
 private lemma paired_log_bound {s j : ℝ} (hs : 1 ≤ s) (hj0 : 0 ≤ j) (hjs : j ≤ s) :
     let c := s*(s+1)
-    (c-j+1/2)*Real.log ((c-j)/c)+(c+j+1/2)*Real.log ((c+j)/c) ≤ 
+    (c-j+1/2)*Real.log ((c-j)/c)+(c+j+1/2)*Real.log ((c+j)/c) ≤
       j^2*(1/c-1/(2*c^2)+1/(6*c*s*(s+2))) := by
   let c := s*(s+1)
   have hs0 : 0 < s := by linarith
@@ -75,7 +75,7 @@ private lemma paired_log_bound {s j : ℝ} (hs : 1 ≤ s) (hj0 : 0 ≤ j) (hjs :
 private lemma smooth_upper {s n : ℕ} (hs : 1 ≤ s)
     (hn : n ∈ Ico (s*s) ((s+1)*(s+1))) :
     let c : ℝ := s*(s+1)
-    divisorHyperbolaSmoothRemainder n ≤ 
+    divisorHyperbolaSmoothRemainder n ≤
       Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant+
         ((n:ℝ)+1/2)*Real.log ((n:ℝ)/c)-(n:ℝ)+c-
         (2*(n:ℝ)+1)*(1/(6*c)-1/(30*c^2))+1/(12*(n:ℝ)) := by
@@ -97,7 +97,7 @@ private lemma smooth_upper {s n : ℕ} (hs : 1 ≤ s)
 
 private lemma smooth_center_upper {s : ℕ} (hs : 1 ≤ s) :
     let c : ℝ := s*(s+1)
-    divisorHyperbolaSmoothRemainder (s*(s+1)) ≤ 
+    divisorHyperbolaSmoothRemainder (s*(s+1)) ≤
       Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant-
         (2*c+1)*(1/(6*c)-1/(30*c^2))+1/(12*(s:ℝ)^2) := by
   have hm : s*(s+1) ∈ Ico (s*s) ((s+1)*(s+1)) := mem_Ico.mpr ⟨by nlinarith,by nlinarith⟩
@@ -114,7 +114,7 @@ private lemma smooth_center_upper {s : ℕ} (hs : 1 ≤ s) :
 private lemma smooth_pair_upper {s j : ℕ} (hs : 1 ≤ s) (hj : j ≤ s) :
     let c : ℝ := s*(s+1)
     divisorHyperbolaSmoothRemainder (s*(s+1)-j)+
-      divisorHyperbolaSmoothRemainder (s*(s+1)+j) ≤ 
+      divisorHyperbolaSmoothRemainder (s*(s+1)+j) ≤
         2*(Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant-
           (2*c+1)*(1/(6*c)-1/(30*c^2))+1/(12*(s:ℝ)^2))+
         (j:ℝ)^2*(1/c-1/(2*c^2)+1/(6*c*s*(s+2))) := by
@@ -175,7 +175,7 @@ private lemma correction_nonpos {s : ℝ} (hs : 2 ≤ s) :
   · positivity
 
 private lemma block_upper_of_two {s : ℕ} (hs : 2 ≤ s) :
-    (∑ n ∈ Ico (s*s) ((s+1)*(s+1)),divisorHyperbolaSmoothRemainder n) ≤ 
+    (∑ n ∈ Ico (s*s) ((s+1)*(s+1)),divisorHyperbolaSmoothRemainder n) ≤
       (2*(s:ℝ)+1)*divisorHyperbolaSmoothMean := by
   have hs1 : 1 ≤ s := by omega
   have hjc : s ≤ s*(s+1) := by nlinarith

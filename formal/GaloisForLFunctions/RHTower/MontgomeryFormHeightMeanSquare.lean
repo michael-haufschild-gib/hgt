@@ -88,14 +88,14 @@ noncomputable def lorentzPairIntegrand {ι : Type*} (ρ : ι → ℂ) (x : ℝ) 
   (x : ℂ) ^ (ρ j + (starRingEnd ℂ) (ρ k) - 1) *
     (lorentzShift (lorentzCentre (ρ j)) t * lorentzShift ((starRingEnd ℂ) (lorentzCentre (ρ k))) t)
 
-theorem conj_ofReal_cpow {x : ℝ} (hx : 0 < x) (w : ℂ) :
+theorem conj_ofReal_cpow_pos {x : ℝ} (hx : 0 < x) (w : ℂ) :
     (starRingEnd ℂ) ((x : ℂ) ^ w) = (x : ℂ) ^ ((starRingEnd ℂ) w) := by
   rw [Complex.cpow_conj, Complex.conj_ofReal]
   rw [Complex.arg_ofReal_of_nonneg hx.le]; exact Real.pi_ne_zero.symm
 
-theorem cpow_mul_conj_cpow {x : ℝ} (hx : 0 < x) (u v : ℂ) :
+theorem ofReal_cpow_mul_conj_cpow {x : ℝ} (hx : 0 < x) (u v : ℂ) :
     (x : ℂ) ^ u * (starRingEnd ℂ) ((x : ℂ) ^ v) = (x : ℂ) ^ (u + (starRingEnd ℂ) v) := by
-  rw [conj_ofReal_cpow hx, Complex.cpow_add _ _ (by exact_mod_cast hx.ne')]
+  rw [conj_ofReal_cpow_pos hx, Complex.cpow_add _ _ (by exact_mod_cast hx.ne')]
 
 /-- `|Σ_j c_j(t)|²` expanded as the double sum of pair integrands. -/
 theorem normSq_lorentzZeroSum_eq {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {x : ℝ} (hx : 0 < x)
@@ -104,7 +104,7 @@ theorem normSq_lorentzZeroSum_eq {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) 
   rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, lorentzZeroSum, map_sum, Finset.sum_mul_sum]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
   rw [lorentzPairIntegrand, map_mul, conj_lorentzShift]
-  have := cpow_mul_conj_cpow hx (ρ j - 1 / 2) (ρ k - 1 / 2)
+  have := ofReal_cpow_mul_conj_cpow hx (ρ j - 1 / 2) (ρ k - 1 / 2)
   have hexp : ρ j - 1 / 2 + (starRingEnd ℂ) (ρ k - 1 / 2) = ρ j + (starRingEnd ℂ) (ρ k) - 1 := by
     rw [map_sub, map_div₀, map_one, map_ofNat]; ring
   rw [hexp] at this

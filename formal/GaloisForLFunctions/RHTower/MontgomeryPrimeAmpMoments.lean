@@ -27,13 +27,14 @@ theorem primeAmp_sq_eq {x : ℝ} (hx : 1 ≤ x) {n : ℕ} (hn : 0 < n) :
   have hy : 0 < x / n := by positivity
   unfold primeAmp
   split_ifs with h
-  · rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hy.le]
-    norm_num
-    rw [Real.rpow_neg_one, inv_div]
+  · have hsq : ((x / n) ^ (-(1 / 2 : ℝ))) ^ 2 = (x / n) ^ (-1 : ℝ) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hy.le]; norm_num
+    rw [mul_pow, hsq, Real.rpow_neg_one, inv_div]
     ring
-  · rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hy.le]
-    norm_num
-    rw [Real.rpow_natCast, div_pow]
+  · have hsq : ((x / n) ^ ((3 / 2 : ℝ))) ^ 2 = (x / n) ^ 3 := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hy.le, show ((3 / 2 : ℝ) * ((2 : ℕ) : ℝ)) = ((3 : ℕ) : ℝ) by
+        norm_num, Real.rpow_natCast]
+    rw [mul_pow, hsq, div_pow]
     ring
 
 theorem summable_primeAmp_sq_le_part {x : ℝ} (hx : 1 ≤ x) :
@@ -78,8 +79,7 @@ theorem tsum_primeAmp_sq_eq {x : ℝ} (hx : 1 ≤ x) :
     refine tsum_congr fun n => ?_
     by_cases h : x < (n : ℝ)
     · rw [if_pos h, if_pos h]
-      have hn0 : 0 < n := by
-        by_contra hz; push_neg at hz; interval_cases n; simp at h; linarith
+      have hn0 : 0 < n := Nat.pos_of_ne_zero (by rintro rfl; simp at h; linarith)
       rw [primeAmp_sq_eq hx hn0, if_neg (not_le.mpr h)]; ring
     · rw [if_neg h, if_neg h, mul_zero]
 
@@ -122,12 +122,10 @@ theorem tsum_mul_primeAmp_sq_eq {x : ℝ} (hx : 1 ≤ x) :
     refine tsum_congr fun n => ?_
     by_cases h : x < (n : ℝ)
     · rw [if_pos h, if_pos h]
-      have hn0 : 0 < n := by
-        by_contra hz; push_neg at hz; interval_cases n; simp at h; linarith
+      have hn0 : 0 < n := Nat.pos_of_ne_zero (by rintro rfl; simp at h; linarith)
       have hn' : (0 : ℝ) < n := by exact_mod_cast hn0
       rw [primeAmp_sq_eq hx hn0, if_neg (not_le.mpr h)]
       field_simp
-      ring
     · rw [if_neg h, if_neg h, mul_zero]
 
 /-! ## The asymptotics -/
@@ -144,7 +142,6 @@ theorem tendsto_tsum_primeAmp_sq_div :
   rw [tsum_primeAmp_sq_eq (by linarith)]
   have hlx : 0 < Real.log x := Real.log_pos (by linarith)
   have hx0 : 0 < x := by linarith
-  simp only [Nat.cast_one]
   field_simp
   ring
 
@@ -169,14 +166,14 @@ theorem eventually_tsum_mul_primeAmp_sq_le :
     have hnx : (n : ℝ) ≤ x := (Nat.le_floor_iff hx0.le).mp hn.2
     have hn0 := Nat.cast_nonneg (α := ℝ) n
     rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ hx0]
-    have := sq_nonneg (vonMangoldt n)
-    nlinarith
+    calc vonMangoldt n ^ 2 * (n : ℝ) ^ 2 = (vonMangoldt n ^ 2 * n) * n := by ring
+      _ ≤ (vonMangoldt n ^ 2 * n) * x := mul_le_mul_of_nonneg_left hnx (by positivity)
   have hA' : ∑ n ∈ Finset.Icc 0 ⌊x⌋₊, vonMangoldt n ^ 2 * n ≤ x ^ 2 * Real.log x := by
     rwa [div_le_iff₀ hpos, one_mul] at hA
   -- the tail
   have hB' : x ^ 3 * ∑' n : ℕ, (if x < (n : ℝ) then vonMangoldt n ^ 2 / (n : ℝ) ^ 2 else 0)
       ≤ 2 * (x ^ 2 * Real.log x) := by
-    simp only [Nat.cast_zero, zero_add, pow_one] at hB
+    simp only [zero_add, pow_one] at hB
     have := hB
     rw [div_mul_eq_mul_div, div_le_iff₀ hlx] at this
     nlinarith
