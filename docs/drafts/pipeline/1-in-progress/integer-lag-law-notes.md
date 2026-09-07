@@ -403,3 +403,50 @@ rate `1` (Chebyshev); the compression by the two exponential moments removes the
 uncompressed operator but no estimate of the compressed norm is available: it is the zero side in
 disguise (`Q = Σ_ρ û(ρ) conj û(1 − ρ̄)` on `V₀`). Verdict: FAILED, reduces to the zero-free-strip question in
 operator form (STATUS MUST-261).
+
+### Attempts F–H on the sub-exponential ground endpoint (after MUST-262/263)
+
+The O-lane endpoint is now: prove `μ₀(B) ≥ −C_ε e^{εB}` for every `ε > 0` (equivalently the
+one-sided prime hinge law of MUST-263 at every rate). Trivial rate is `1` for `μ₀` and `½` for the
+hinge sum. Three further source-side attempts, all failed or downgraded:
+
+- **F. Zero-density estimates cannot lower the rate.** The zero side of `Q(u)` for a unit test of
+  aperture `A` is bounded below by `−Σ_off |û(ρ)|² ≤ −Σ_θ e^{2θA} N_loc(½+θ)`, and Ingham-type
+  `N(σ,T) ≪ T^{(3/2)(1−σ)+ε}` only controls the number of zeros of each excess up to height `T`,
+  summing over dyadic heights to `C e^{2Θ_max A}`. The rate is set by the top excess alone; the
+  count of such zeros affects constants only. Verdict: no gain (FALSE as a mechanism).
+- **G. Band-limited exact rate law (possible BRIDGE, not built).** For tests with
+  `‖u‖_{H^{1/2}} ≤ K‖u‖` the zero side gives `Q(u) ≥ −C(A) e^{(2Θ_K)A} K² ‖u‖²` via a
+  Plancherel–Pólya sampling inequality weighted by the local zero count `≪ log T`; together with
+  MUST-260 this would make the growth rate of the band-limited ground energy exactly `2Θ_K`, where
+  `Θ_K` is the top excess in the frequency band. Needs: Plancherel–Pólya for Paley–Wiener functions
+  (not in mathlib/corpus), an `H^{1/2}`-type lower bound for the archimedean form. It is a two-sided
+  dictionary excess ↔ rate; it does not touch source order, so it is not an RH step. Deferred.
+- **H. Multiplicity of attained-top zeros (heuristic, blocked).** With a window length `L` chosen
+  proportional to the far-field total `D/(m c₁)` instead of `B³`, the attained-top negativity
+  scales with the multiplicity `m` of the top zero and `μ₀ ≥ −C e^{B+L}` gives
+  `m ≤ C'(Θ, ε)(1 + D_others/m)` whenever `m ≥ ε log γ₀`, i.e. `m = o(log γ₀)` if
+  `D_others ≍ log γ₀`. The near-field part of `D` is `Σ 1/|γ_q − γ₀|` over neighbouring copies and
+  can exceed `log γ₀` for clustered zeros, so the statement is only `m ≤ ε·max(log γ₀, D_others)`;
+  it applies to zeros of excess exactly `Θ` and is vacuous under RH. Not pursued.
+
+Cluster coherence (several same-excess copies within `1/a` of the twist frequency) does not give a
+local zero-density law: the copies at other heights contribute oscillating terms of comparable size
+`e^{2Θa}/|z|²` whose window means decay only like `1/(L·gap)`, and with `L ≍ 1/w` the sum over the
+rest of the spectrum is of the same order as the cluster term. No local Bohr–Landau statement follows.
+
+### Sharp cap and attempt I (after MUST-264)
+
+MUST-264 halves the cap of MUST-262: translation invariance of the screw form on zero-mean tests
+lets the two-bump test sit at aperture `|t|/2 + 6`, so `μ₀ ≥ −C e^{εB}` gives `|Im z_q| ≤ ε/2` and
+the exponential order of `−μ₀` is exactly `2Θ` when the top excess is attained, at least `2Θ_sup`
+always. The zero-side upper bound `rate ≤ 2Θ_sup` is the open half.
+
+- **I. Local Bohr–Landau from frequency-concentrated tests (FALSE as a mechanism).** For
+  `u = e^{iωx}B(x/A)` the off-line terms are `A² B̂(A(γ_j − ω) − iAθ_j)² |z_j|²/z_j²` with a common
+  rotating factor `e^{2iAω}` and fixed phases `e^{−2iAγ_j}`; the unconditional floor
+  `Q ≥ −C e^{A}‖u‖²` would bound coherent near-top clusters, but a configuration of near-top copies
+  paired at spacing `π/(2A)` cancels to leading order, and no fixed test family is configuration-free
+  (the same obstruction as the two-sided prime sampling note above). Pointwise tests cannot replace
+  the Laplace/positivity engine here; a rate upper bound needs a sampling inequality against the
+  zero measure, which is not a statement about a single test.

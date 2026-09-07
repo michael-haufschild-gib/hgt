@@ -93,3 +93,13 @@ the continuation on the punctured half-plane `{Re s > ε} ∖ spectralPoleSet`, 
 μ₀(A) ≥ −Ce^{εA}` (sub-exponential negativity criterion); with MUST-260 the growth rate of `−μ₀` is exactly
 `2Θ` when `Θ` is attained and lies in `[2Θ, 2Θ]`… i.e. equals `2Θ` in general modulo the factor `½`/`1`
 of the two-bump aperture accounting.
+
+## Quantitative Bombieri–Yoshida: CLOSED in Lean (2026-09-08)
+
+The `[OPEN CORE]` above is closed: `riemannHypothesis_of_polarGroundEnergy_subexponential` and
+`abs_im_xiSpectralPoint_le_of_polarGroundEnergy_ge` (STATUS MUST-262). The engine was generalised with a
+threshold parameter (halving towards `ε`, pole-free balls of radius `min(r/2, (r − ε)/2)`, the extra real pole
+`C₀/(s − ε)`), exactly as planned; the transfer through the two-bump sequence costs the factor `1` (aperture
+`|t| + 6`) and a polynomial factor absorbed by `(1 + t) ≤ e^{δt}/δ`. The Bohr-mean conjecture's direction
+"bounded means ⟹ RH" is now a corollary in the stronger form "sub-exponential means ⟹ RH" once means are
+replaced by the ground energy; the mean-value form for the single twisted family remains a receiver refinement.

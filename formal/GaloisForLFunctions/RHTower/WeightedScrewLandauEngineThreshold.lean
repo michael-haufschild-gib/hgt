@@ -252,7 +252,7 @@ theorem integral_Ioi_cexp_neg_mul_exp {s : ℂ} (hs : ε < s.re) :
     simp [Complex.mul_re]
   rw [integral_Ioi_of_hasDerivAt_of_tendsto' hderiv (integrableOn_cexp_mul_Ioi hcre) hlim]
   simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, zero_sub]
-  rw [hcdef, show (ε : ℂ) - s = -(s - (ε : ℂ)) by ring, one_div_neg, neg_neg]
+  rw [hcdef, show (ε : ℂ) - s = -(s - (ε : ℂ)) by ring, div_neg, neg_neg]
 
 theorem integrableOn_cexp_mul_weightedXiScrewDivisor {C : ℝ} (hC : 0 ≤ C) (hW : ∀ q, ‖W q‖ ≤ C)
     {s : ℂ} (hsHalf : 1 / 2 < s.re) :

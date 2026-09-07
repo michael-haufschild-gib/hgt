@@ -1,27 +1,33 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapLowCoefficients
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm0Slice4
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm1Slice4
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm2Slice4
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm3Slice4
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm4Slice4
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm5Slice4
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm6Slice4
 
 namespace HTGeometry
 noncomputable section
-open GaloisForLFunctions.HTGeometry
 set_option maxHeartbeats 500000
 set_option maxRecDepth 10000
 set_option pp.deepTerms false
 set_option pp.maxSteps 1000
 
-attribute [local irreducible] evenCompactGapSourceZeroPolynomial evenCompactGapReflectedTwoPolynomial evenCompactGapReflectedFourPolynomial evenCompactGapReflectedSixPolynomial evenCompactGapReflectedEightPolynomial evenCompactGapReflectedTenPolynomial evenCompactGapReflectedTwelvePolynomial
-
-/-- Exact degree-4 identity with every source and correction coefficient retained. -/
+/-- Degree four assembled from independently checked cofactor identities. -/
 theorem evenCompactGapDetPolynomial_coeff_four (u w : ℝ) :
     (evenCompactGapDetPolynomial u w).coeff 4 = evenCompactRawGapGrade4 u w := by
-  norm_num [evenCompactGapDetPolynomial, hankelFourDet,
-    pow_succ,
-    Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
-    Polynomial.coeff_mul_C, Polynomial.coeff_C_mul, Polynomial.coeff_C,
-    Polynomial.mul_coeff_zero, Polynomial.mul_coeff_one,
-    evenCompactGapCoeff_mul_2, evenCompactGapCoeff_mul_3, evenCompactGapCoeff_mul_4]
-  norm_num [evenCompactGapSourceZeroPolynomial_coeff, evenCompactGapReflectedTwoPolynomial_coeff, evenCompactGapReflectedFourPolynomial_coeff, evenCompactGapReflectedSixPolynomial_coeff, evenCompactGapReflectedEightPolynomial_coeff, evenCompactGapReflectedTenPolynomial_coeff, evenCompactGapReflectedTwelvePolynomial_coeff,
-    evenCompactGapSourceZeroCoeff, evenCompactGapReflectedTwoCoeff, evenCompactGapReflectedFourCoeff, evenCompactGapReflectedSixCoeff, evenCompactGapReflectedEightCoeff, evenCompactGapReflectedTenCoeff, evenCompactGapReflectedTwelveCoeff]
-  unfold evenCompactRawGapGrade4
+  rw [evenCompactGapDetPolynomial_cofactor_eq]
+  simp only [Polynomial.coeff_mul_C, Polynomial.coeff_sub, Polynomial.coeff_add,
+    evenCompactGapCofactorTerm0_coeff_slice4,
+    evenCompactGapCofactorTerm1_coeff_slice4,
+    evenCompactGapCofactorTerm2_coeff_slice4,
+    evenCompactGapCofactorTerm3_coeff_slice4,
+    evenCompactGapCofactorTerm4_coeff_slice4,
+    evenCompactGapCofactorTerm5_coeff_slice4,
+    evenCompactGapCofactorTerm6_coeff_slice4]
+  unfold evenCompactRawGapGrade4 evenCompactGapCofactorTerm0Slice4 evenCompactGapCofactorTerm1Slice4 evenCompactGapCofactorTerm2Slice4 evenCompactGapCofactorTerm3Slice4 evenCompactGapCofactorTerm4Slice4 evenCompactGapCofactorTerm5Slice4 evenCompactGapCofactorTerm6Slice4
+  dsimp only [evenCompactGapCofactorTerm4Slice4Certificate,
+    evenCompactGapCofactorTerm5Slice4Certificate, evenCompactGapCofactorTerm6Slice4Certificate]
   ring1
 
 end

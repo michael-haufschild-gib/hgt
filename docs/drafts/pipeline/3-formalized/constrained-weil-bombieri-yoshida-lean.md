@@ -214,3 +214,73 @@ multiplicative constant is not visibly nonnegative (keep `hM` in the signature o
 `−C e^{εB} ≤ μ₀(B)` for every aperture `B`, then every attained excess `Θ` satisfies `2Θ ≤ ε`
 (from MUST-260 and `exists_cube_mul_exp_neg_lt`: `B³e^{−δB} → 0`). STATUS MUST-261. The non-attained
 case is the quantitative Bombieri–Yoshida, planned on `lag-ratio-law.md`.
+
+## Quantitative Bombieri–Yoshida (added 2026-09-08, Lean)
+
+Three modules (wired into `RHTower.lean`, axioms clean):
+
+* `WeightedScrewLandauEngineThreshold` — `thrDivisor W C₀ ε t = Φ_W(t) + C₀e^{εt}`, `thrDensity`, `thrMeasure`,
+  `ThrMomentsAbove W C₀ ε b`; `thrLaplace`, `thrContinuation = weightedScrewLaplaceContinuation + C₀/(s − ε)`;
+  `integral_Ioi_cexp_neg_mul_exp : ∫₀^∞ e^{−st}e^{εt} = 1/(s − ε)` (`Re s > ε`);
+  `thrLaplace_eq_continuation` (`Re s > ½`); `thrRadius ε r = min(r/2, (r−ε)/2)`,
+  `differentiableOn_thrContinuation_ball`; `thrStrip ε b` (convex, hence preconnected);
+  `thr_landau_integrable_transfer`, `thrMomentsAbove_half : b ↦ (b + ε)/2`, `thrThreshold ε n = ε + (½ − ε)/2ⁿ`,
+  `thrMomentsAbove_eps`, **`analyticOnNhd_thrLaplace_gt_eps`** (analytic on `Re s > ε`).
+* `WeightedScrewPoleContradictionThreshold` — `thrPunctured ε = {Re s > ε} ∖ spectralPoleSet`, connected via
+  the shifted chart `thrChart ε u = ε + rightHalfPlaneChart u`; `thrLaplace_eqOn_punctured`;
+  **`neg_le_im_of_thr`** (no copy with `Im z_q < −ε`, by the corpus pole-contradiction pattern with the extra
+  term `c_n C₀/(s_n − ε) → 0`), **`abs_im_le_of_thr`** (both signs by `xiZeroCopyReflectEquiv`).
+* `CCMRestrictedWeilPolarBombieriYoshidaQuantitative` — `norm_zeroMeanPrimitive_le_integral_norm`;
+  `twoBumpSource t n` (polar translate of the primitive of the two-bump test at aperture `|t| + 3`, enlarged to
+  `|t| + 6`), `norm_twoBumpSource_le` (pointwise `10(1 + cosh ½)`), `norm_sq_twoBumpSource_le`
+  (`≤ 200(1 + cosh ½)²(|t| + 4)`); `re_smoothForm_twoBump_ge` (ground-energy transfer with the exponential
+  bound), `re_weightedXiScrewDivisor_polar_ge` (limit `n → ∞`), `one_add_le_exp_div`;
+  `abs_im_le_add_of_polarGroundEnergy_ge`, **`abs_im_xiSpectralPoint_le_of_polarGroundEnergy_ge`**,
+  **`riemannHypothesis_of_polarGroundEnergy_subexponential`**. STATUS MUST-262.
+
+Traps: `Filter.Tendsto.const_mul_atTop_of_neg` for `e^{ct} → 0` with `Re c < 0`; `integral_Ioi_of_hasDerivAt_of_tendsto'`
+wants `HasDerivAt` on `Ici`; `-(1/(ε − s)) = 1/(s − ε)` via `show ε − s = −(s − ε)` then `div_neg, neg_neg`;
+`fin_cases k <;> simp [...] <;> first | (constructor <;> linarith) | linarith` needs both `cosh (1/2)` and
+`cosh 2⁻¹` forms of `one_le_cosh` in context; `rw [h]` closes `≤`/`=` goals by `rfl`, so a following `<;> simp`
+is flagged — use bullets.
+
+## Prime-side landing: `RHTower/SuzukiScrewSubexponentialCriterion.lean`
+
+The threshold engine with the constant weight `W ≡ 1` lands on Suzuki's unweighted screw function
+`Ψ(t) = Σ'_q (1 − cos(z_q t))/z_q²`, which is real (`xiScrewDivisor_im_eq_zero`) and equals the
+explicit smooth part minus the prime hinge sum on `t ≥ 0`
+(`suzukiPsi_eq_smoothPart_sub_screwPrimeSum`).
+
+- `weightedXiScrewDivisor_one`; `abs_im_xiSpectralPoint_le_of_suzukiPsi_ge` (rate `ε < 1/2`),
+  `abs_im_xiSpectralPoint_le_of_suzukiPsi_ge'` (any `ε ≥ 0`, via `|Im z_q| < 1/2`);
+  `SuzukiPsiSubexponentialBelow`; `riemannHypothesis_of_suzukiPsiSubexponentialBelow`,
+  `suzukiPsiSubexponentialBelow_of_riemannHypothesis`, **`riemannHypothesis_iff_suzukiPsiSubexponentialBelow`**;
+  **`abs_im_xiSpectralPoint_le_of_screwPrimeSum_le`** (one-sided hinge-sum bound of rate `ε` ⟹ every zero
+  in `|Re ρ − 1/2| ≤ ε`), **`riemannHypothesis_iff_screwPrimeSum_subexponential`**. STATUS MUST-263.
+
+Trap: `screwPrimeSum` lives in `GaloisForLFunctions.RHTower`, not `RHTower`; qualify it fully.
+Axioms `[propext, Classical.choice, Quot.sound]`; built as a leaf of `RHTower` (12332 jobs).
+
+## Sharp cap: `RHTower/CCMRestrictedWeilPolarBombieriYoshidaSharp.lean`
+
+Translation invariance of the screw form halves the two-bump aperture and the excess cap.
+
+- `SuzukiSmoothZeroMeanTest.translate φ s hsupp hfit` (`x ↦ φ(x + s)` at any aperture containing the
+  shifted support), `integral_exp_sub_one_mul_translate` (exponential moments of a zero-integral
+  compactly supported function under translation), `suzukiTestRayCoef_translate` (factor `e^{i z_q s}`),
+  `suzukiTestRayCoefBar_translate` (factor `e^{−i z_q s}`), **`suzukiScrewSmoothForm_translate`**,
+  `coe_polarTranslateTest_translate` (the multiplier commutes with translation),
+  `suzukiScrewSmoothForm_polarTranslateTest_translate`.
+- `twoBumpSeq_support_subset` (support within one unit of the bump segment), `twoBumpFit`, `twoBumpSeqC`
+  (centred test at aperture `|t|/2 + 2`), `twoBumpApertureC = |t|/2 + 3`, `twoBumpSourceC` (aperture
+  `|t|/2 + 6`), `suzukiScrewSmoothForm_twoBumpSeqC`, `integral_norm_twoBumpSeqC_le`,
+  `norm_twoBumpSourceC_le`, `twoBumpSourceC_support_subset`, `norm_sq_twoBumpSourceC_le`
+  (`≤ 200(1 + cosh ½)²(|t|/2 + 4)`).
+- `re_smoothForm_twoBump_ge_half`, `re_weightedXiScrewDivisor_polar_ge_half`,
+  `abs_im_le_half_add_of_polarGroundEnergy_ge`, **`abs_im_xiSpectralPoint_le_half_of_polarGroundEnergy_ge`**
+  (`|Im z_q| ≤ ε/2`), **`two_mul_abs_im_xiSpectralPoint_le_of_polarGroundEnergy_ge`**. STATUS MUST-264.
+
+Traps: in `have hfun : (fun u : ℝ => …) = fun u => …` annotate the second binder too, otherwise
+`w * u` elaborates `u : ℂ`; `push_neg` is deprecated in this toolchain (`push Not`); membership in
+`Function.support` of a translate is closed by `simpa [Function.mem_support] using hx`.
+Axioms `[propext, Classical.choice, Quot.sound]`.

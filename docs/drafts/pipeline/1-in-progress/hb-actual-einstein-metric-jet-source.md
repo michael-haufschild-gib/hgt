@@ -21,9 +21,15 @@ The complete first Einstein variation now equals the actual field-source amplitu
 The scalar metric has an exact generally nonzero normalized boundary coefficient despite its
 vanishing master. The complete literal scalar-plus-vector metric now satisfies all sixteen
 first-order Einstein components at both fundamental QNM branches, with independent
-amplitudes and all angular assumptions discharged. Nonlinear field/gauge corrections,
-complete source reduction, physical causal action, and final left-QNM projection remain
-to be derived.
+amplitudes and all angular assumptions discharged. The actual corrected family
+`g+epsilon*h+epsilon^2*k+epsilon^3*l` now has proved complete spatial jets, exact
+quadratic/cubic source coefficients, and the full mixed `++-` coefficient with both
+quadratic responses and the cubic correction's linear residual retained. Construction
+of those correction fields with physical boundary/gauge conditions, retained spin-two
+source reduction, causal action, and final left-QNM projection remains open. Full
+differential Bianchi is proved for the actual literal metric near zero amplitude,
+with every finite spatial regularity order discharged. Contracted Einstein-source
+conservation and its quadratic forcing constraint remain to be derived.
 
 Corpus searches `einstein variation`, `metric perturbation`, `ricci coordinate`, `inverse series
 matrix`, and `christoffel derivative` locate the coordinate curvature definitions, smooth metric
@@ -474,8 +480,8 @@ do not select spectral parameters or establish physical boundary admission.
 
 The original KI vector reconstruction gives h_tA=-s*B*V_A/r and
 h_rA=-s*B*V_A/(r^2-1), with symmetric partners and no other vector entries.
-Its common B is the same actual temporal/radial exponential already identified in
-the scalar proof. The complete vector jet retains the coordinate derivatives of
+Here B=aV*exp(s*t)*z^(s/2), with the actual temporal/radial shape already
+identified in the scalar proof. The complete vector jet retains the coordinate derivatives of
 both blocks and every horizon covector derivative.
 
 Set L=(s+1)*(s+2), A=V_0, C=V_1, P=partial_x V_0, Q=partial_y V_0,
@@ -504,16 +510,113 @@ components. No field-equation or regularity premises remain in these two theorem
 This closes first-order compatibility of the literal complete reconstructed metric.
 It does not assert nonlinear solvability, boundary admission or spectral extinction.
 
+## Closed corrected-family and mixed source coefficients
+
+`HTGeometry.ComplexCubicPathChainRule` proves the actual first, second and third
+parameter derivatives of a locally C3 complex source along a cubic path. Its proof
+differentiates the path and the continuous multilinear derivative maps, uses local
+neighborhood equalities for iterated derivatives, and proves the Hessian symmetry
+needed to collect the three correction couplings.
+
+`HTGeometry.CoordinateEinsteinCubicPath` applies this chain to the literal complete
+metric-jet Einstein contraction with its fixed cosmological term. For the actual
+corrected path, its normalized coefficients are
+
+- order one: `L h`;
+- order two: `L k + B(h,h)/2`;
+- order three: `L l + B(h,k) + C(h,h,h)/6`.
+
+Here L is the cosmological Einstein first variation; B and C are the previously
+constructed actual complex Einstein derivatives. The cosmological contribution
+enters L k and L l even though it contributes no Hessian or third derivative.
+
+`RHTower.ThetaCuspHawkingBMCorrectedMetricSource` starts with the actual field
+`g+epsilon*h+epsilon^2*k+epsilon^3*l`, takes its complete coordinate jet, and proves
+that this jet equals the cubic path in the actual field jets. All first and ordered
+second spatial derivatives commute with the field additions and constant amplitude
+scalings by the proved scalar-jet calculus. The literal Einstein source therefore
+has the displayed coefficients, with zero constant term from the actual background
+vacuum equation. The full literal plus/minus first-order equation persists for any
+C2 correction fields. Its two cancellation equivalences give exactly
+`L k=-B(h,h)/2` and `L l=-B(h,k)-C(h,h,h)/6`; they do not assert solutions exist.
+
+`RHTower.ThetaCuspHawkingBMMixedCorrectedSource` retains four mode slots in each
+of the first, second and third field coefficients. It differentiates the actual
+normalized cubic source coefficient in the independent mode parameter. For
+`H=(p,m,0,0)`, `K=(k_pp,k_pm,k_mm,0)` and
+`L=(l_ppp,l_ppm,l_pmm,l_mmm)`, the actual `epsilon^3*z` / `++-` coefficient is
+
+`L l_ppm + B(p,k_pm) + B(m,k_pp) + C(p,p,m)/2`.
+
+The higher mode slots remain in the actual family; differentiation proves their
+absence from this particular coefficient. Both quadratic correction couplings
+remain. The proved symmetry of the actual third Einstein derivative supplies the
+factor 1/2. The exact zero equivalence retains the cubic correction's linear
+residual. Dropping that residual requires the physical augmented left-cokernel
+identity, including the boundary data.
+
+## Closed actual differential Bianchi identity
+
+`HTGeometry.ConnectionJetBianchi` derives the cyclic Bianchi identity directly from
+connection values and first/second coordinate jets in a noncommutative ring. With
+`R_ij=D_i A_j-D_j A_i+[A_i,A_j]`, the sum of the three actual product-rule
+curvature derivatives plus their commutators with A vanishes when ordered second
+coordinate derivatives commute. No curvature tensor is supplied independently.
+
+`HTGeometry.ComplexCoordinateDerivativeRules` proves the complex-valued real
+coordinate product/sum rules, smoothness descent, and commuting C2 partials.
+`HTGeometry.ComplexCoordinateConnectionBianchi` uses these to identify every jet
+term with the actual derivative of a connection field. It then proves the full
+tensor Bianchi identity, retaining connection action on both endomorphism indices
+and both curvature-form indices. Torsion-free symmetry and alternating curvature
+cancel the extra form-index terms in the cyclic sum; they are not discarded.
+
+`HTGeometry.ComplexMetricFieldBianchi` constructs the connection from the actual
+complex metric field. Local C3 regularity and nonzero metric determinant give the
+required C2 connection regularity. Differentiating the local inverse identity
+proves `partial_k G=-G(partial_k g)G`. The actual connection derivative and Riemann
+curvature then equal the existing complete metric-jet contractions. Actual metric
+symmetry supplies torsion-freeness, giving full differential Bianchi for this
+literal metric-derived curvature.
+
+`RHTower.ThetaCuspHawkingBMLiteralMetricBianchi` proves every finite spatial
+smoothness order of the complete literal scalar-plus-vector metric reconstruction.
+The proof retains the entire cusp series and one additional master derivative
+where reconstruction differentiates the master. Its `twoJet_eq_sourceJet` identifies
+the generic Bianchi carrier with the original source's full coordinate jet.
+`literal_bianchi_near_zero` derives a genuine nondegenerate amplitude neighborhood
+of the actual vacuum and proves full differential Bianchi there for every complex
+spectral parameter, frequency and independent scalar/vector amplitudes. No
+regularity or symmetry premise remains in that theorem.
+
+This closes differentiated curvature compatibility for the actual literal metric.
+The contracted Einstein conservation identity, its quadratic coefficient extraction,
+physical correction solutions, and causal boundary/source projection remain open.
+
 ## Next physical source evaluation
 
-First-order compatibility is closed. The next source target retains higher-order
-field corrections: for the actual metric family g+epsilon*h+epsilon^2*k+epsilon^3*l,
-identify the complete quadratic and cubic coefficients with the actual first,
-second and third Einstein variations. Derive the forced correction equations and
-connect their mixed sectors to the retained spin-two source and the existing
-augmented-source expression. This is a `[BRIDGE]` to the frozen physical causal
-source, not a replacement selection conjecture. The straight-line B,C coefficients
-alone do not supply the correction fields or their physical boundary conditions.
+First-order compatibility and actual corrected quadratic/cubic/mixed coefficient
+identification are closed. Solve the displayed correction equations, reduce their
+complete B,C evaluations, and identify the retained spin-two source. In particular,
+construct the physical `k_pp` and `k_pm` responses before identifying the local bulk
+formula with the existing augmented Schur source. This is a `[BRIDGE]` to the frozen
+physical causal source, not a replacement selection conjecture. No response map,
+source extinction, or spectral constraint was inferred from these coefficient
+identities.
+
+The correction-equation compatibility gate now has the actual full differential
+Bianchi identity and literal metric regularity. The next `[BRIDGE]` is its metric
+contraction and parameter variation: derive the quadratic Einstein forcing's
+background conservation constraint from the proved first-order field equation.
+This supplies a necessary source constraint for correction solvability; it does
+not assert a causal inverse.
+
+The contraction proof first derives actual metric and inverse-metric compatibility.
+Differentiating compatibility forces curvature to be skew with respect to the metric.
+That skew identity, its covariant derivative, and the proved differential Bianchi
+identity supply the two contractions; a separately assumed conservation law is not
+an admissible substitute. Full pair-exchange symmetry is unnecessary if these
+endomorphism-skew contractions are carried through directly.
 
 Derive the physical metric boundary condition with the nonzero scalar boundary
 coefficient retained. Any required spectral/spatial derivative interchange for
@@ -807,3 +910,102 @@ No numerical experiment ran: the remaining checks here were symbolic identities.
 
 All owned Lean/Lake processes completed. The exact 77-entry owned scratch tree was
 removed after checking for symlinks; other tasks' processes and files were preserved.
+
+
+## Current full first-order tensor validation
+
+The new vector and full-source leaves passed foreground scratch `lake env lean`.
+The vector contraction's one unused simplifier argument was removed; final builds
+passed without proof warnings. Each exact-source cache-only build compiled only
+its requested new leaf:
+
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorLinearizedRicciJet`: 164 seconds; 93 lines, 2 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorLinearEinsteinEquation`: 15 seconds; 350 lines, 7 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullLinearEinsteinEquation`: 8.1 seconds; 102 lines, 6 new public theorems.
+
+Scratch, canonical and audit bytes match; each leaf is wired once in `RHTower.lean`.
+Only new olean/ilean artifacts were installed. No dependency source or trace metadata
+changed; no full or umbrella build ran. One owned foreground Lean/Lake process ran
+at a time. Only the fifteen new public theorems were axiom-audited, once each; all
+use solely `propext`, `Classical.choice`, and `Quot.sound`.
+
+Corpus index generation passed. Global formal lint reports two unrelated concurrent
+modules missing theorem-area umbrella imports: `RHTower.RetainedPrimeLandauCarrier`
+and `RHTower.WeightedScrewLandauEngineThreshold`, plus 141 existing large-file warnings.
+The new HB leaves are reachable. Other tasks' modules were not modified.
+
+No numerical experiment ran. The complete first-order scalar-plus-vector equation is
+proved at both fundamental branches; nonlinear corrections, metric boundary admission,
+retained spin-two/source identification and causal extinction remain open. RH remains
+unproved/unfalsified, and the goal remains active.
+
+All owned Lean/Lake processes completed. The exact 75-entry scratch tree was removed
+after a non-symlink inventory. Other tasks' processes and files were preserved.
+
+## Current corrected-family and mixed-coefficient validation
+
+All four new leaves passed foreground scratch `lake env lean` checks. Two deprecated
+simplifier names were replaced by the toolchain's indicated names before the final
+builds. Each exact-source cache-only final audit compiled only its requested leaf:
+
+- `lake build GaloisForLFunctions.HTGeometry.ComplexCubicPathChainRule`: 2.1 seconds; 131 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.HTGeometry.CoordinateEinsteinCubicPath`: 2.3 seconds; 107 lines, 4 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCorrectedMetricSource`: 4.4 seconds; 178 lines, 11 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedCorrectedSource`: 6.7 seconds; 151 lines, 3 new public theorems.
+
+Final builds passed without proof warnings. Scratch, canonical and audit source bytes
+match; each new leaf has exactly one theorem-area umbrella import. Only the new
+olean/ilean artifacts were installed. No dependency source or trace metadata changed;
+no full or umbrella build ran. One owned foreground Lean/Lake process ran at a time.
+One scratch audit checked only the 24 new public theorems, once each; every result
+uses solely `propext`, `Classical.choice`, and `Quot.sound`.
+
+Corpus index generation and scoped whitespace checks passed. Global formal lint
+reports one unrelated concurrent missing umbrella import:
+`RHTower.RetainedPrimeStateTransport`, plus 141 existing large-file warnings. All
+four new HB leaves are reachable. Other tasks' modules were preserved.
+
+No numerical experiment ran. The actual corrected-family coefficients and mixed
+`++-` coefficient are proved. Construction of the physical correction fields,
+retained spin-two identification, augmented boundary/gauge source, physical response
+domain and final causal extinction remain open. RH is unproved/unfalsified; the goal
+remains active.
+
+All owned Lean/Lake processes completed. The exact 87-entry scratch tree was removed
+after a non-symlink inventory. Other tasks' files and processes were preserved.
+
+## Current actual differential Bianchi validation
+
+All five new leaves passed foreground scratch `lake env lean` checks. The literal
+instantiation's single unused simplifier argument was removed before its final
+build. Exact-source cache-only final audits compiled only their requested leaves:
+
+- `lake build GaloisForLFunctions.HTGeometry.ConnectionJetBianchi`: 1.0 seconds; 48 lines, 2 new public theorems.
+- `lake build GaloisForLFunctions.HTGeometry.ComplexCoordinateDerivativeRules`: 1.8 seconds; 59 lines, 7 new public theorems.
+- `lake build GaloisForLFunctions.HTGeometry.ComplexCoordinateConnectionBianchi`: 1.7 seconds; 120 lines, 4 new public theorems.
+- `lake build GaloisForLFunctions.HTGeometry.ComplexMetricFieldBianchi`: 1.0 seconds; 180 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralMetricBianchi`: 9.6 seconds; 133 lines, 3 new public theorems.
+
+Final builds passed without proof warnings. Scratch, canonical and audit source
+bytes match; each leaf is wired once in its theorem-area umbrella. Only new
+olean/ilean artifacts were installed. No dependency source or trace metadata
+changed; no full or umbrella build ran. One owned foreground Lean/Lake process
+ran at a time. Only the 22 new public theorems were axiom-audited, once each.
+The two algebraic theorems use only `propext`; the other twenty use solely
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+Corpus index generation and scoped whitespace checks passed. Global formal lint
+reports two unrelated concurrent missing umbrella imports:
+`RHTower.RectangleThreePoleResidue` and `RHTower.RetainedPrimeSupportThreshold`,
+plus 141 existing large-file warnings. All five new leaves are reachable. Other
+tasks' modules were preserved.
+
+No numerical experiment ran. Full actual differential Bianchi and all finite
+literal reconstruction regularity are proved. Metric contraction to Einstein-source
+conservation, quadratic forcing compatibility, physical correction solutions and
+the full causal boundary/source/extinction chain remain open. RH remains
+unproved/unfalsified; the goal remains active.
+
+All owned Lean/Lake processes completed. The exact 97-entry scratch tree was
+removed after a non-symlink inventory. Other tasks' files and processes remain
+untouched.

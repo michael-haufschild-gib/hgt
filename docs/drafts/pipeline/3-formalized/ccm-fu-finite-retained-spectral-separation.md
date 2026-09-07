@@ -11,8 +11,9 @@ Guinand–Weil source → marked rectangular current → affine Suzuki checkpoin
 → signed curvature → prime–polar–Gamma/unit-Riesz boundary → Xi-screw Green
 → RH. The primary obligation remains complete compatible source coverage
 under a uniform energy budget. This theorem supplies the spectral part of a
-proposed proof of full source cones on arbitrary finite retained fields.
-Neither the full cone theorem nor the primary obligation is proved here.
+proof of finite clipping-stable directional control on arbitrary retained
+fields, closed by the [source certificate](ccm-fu-finite-retained-directional-control.md).
+The primary cofinal coverage obligation remains open.
 
 ## Exact statement
 
@@ -90,17 +91,16 @@ and `Quot.sound` occur. No computational premise or numerical experiment
 was used. Global formal lint passed with existing large-file warnings;
 the generated formal indexes and research search index were refreshed.
 
-## Remaining transport and coverage
+## Transport and cofinal scope
 
-The [exact retained-source transport](ccm-fu-retained-source-mellin-transport.md)
-closes the infinite weighted Euler identity, literal source convolution,
-source-specific growth and Mellin admission on Re(s)>2, and exact integer
-and one-sided interpolation. Positive-measure construction, MGF germ
-identification, Landau continuation and analytic continuation identity remain
-open. Once those close, the surviving poles can contradict a nonzero
-one-sided retained functional. Finite-dimensional compactness must then
-produce actual cutoff witnesses and margins.
+The [exact source transport](ccm-fu-retained-source-mellin-transport.md) closes
+the infinite weighted Euler identity, actual source convolution, absolute
+Mellin admission on Re(s)>2 and exact one-sided interpolation. The
+[finite-field source certificate](ccm-fu-finite-retained-directional-control.md)
+closes positive-carrier continuation and its pole contradiction, excluding
+every nonzero one-sided functional. Finite actual cutoff witnesses, uniform
+directional margins and common clipping tolerances are formal for each field.
 
-Even full cone control at each fixed S does not bound witness cutoffs,
-clipping tolerances, prime-pool capacity or preparation energy uniformly as
-S changes. Complete compatible coverage, PE4/PE4G/PE4C, SD1 and RH remain open.
+No uniform bound on these witnesses or their preparation cost is proved as
+the retained field changes. Complete compatible coverage, PE4/PE4G/PE4C,
+SD1 and RH remain open.

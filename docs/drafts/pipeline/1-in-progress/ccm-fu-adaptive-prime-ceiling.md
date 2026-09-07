@@ -252,18 +252,29 @@ PE4, PE4G, PE4C, SD1 and RH remain open.
 
 ## Arbitrary finite retained fields
 
-The [finite retained-source spectral bridge](../3-formalized/ccm-fu-finite-retained-spectral-separation.md)
-is unconditional in Lean. Every nonzero functional on any finite retained
-prime field has a literal Möbius subset numerator that is nonzero at simple
-critical Xi zeros beyond every height. Its candidate Mellin expression
-retains exact simple poles after division by finite Euler and integration
-factors, while satisfying the low-height analyticity needed for Landau's
-closed-ball transfer.
+The [finite retained-source certificate](../3-formalized/ccm-fu-finite-retained-directional-control.md)
+is unconditional in Lean. Every nonzero real functional on any finite retained
+prime field has actual cutoffs with both strict signs. There are finitely many
+actual cutoff witnesses and one uniform directional margin, preserved under
+independent sufficiently small adjacent-cutoff clipping. The proof closes
+literal Euler/divisor-convolution/Mellin transport, positive-measure and MGF
+identification, Landau continuation and the surviving-pole contradiction.
 
-The [full source-cone bridge](ccm-fu-finite-source-cone-exhaustion.md) still
-needs positive-measure/MGF identification and Landau continuation. The
-[exact transport](../3-formalized/ccm-fu-retained-source-mellin-transport.md)
-closes the infinite Euler identity, actual source convolution, source-specific
-Mellin admission on Re(s)>2 and exact one-sided interpolation. No source cone for arbitrary fields is yet
-proved. Uniform propagation of its witnesses and energy budget as the
-retained field changes remains a further coverage obligation.
+The [actual arbitrary-field batches](../3-formalized/ccm-fu-arbitrary-retained-prime-batches.md)
+identify every prepared child coordinate with the complete retained profile
+and retain the exact full-energy merger pairing. Common-parent prime windows
+supply arbitrarily long distinct batches for every fixed finite retained
+field at cofinal parent cutoffs. Every preparation subset obeys
+`722*2^|core|*M^2`, and every batch prefix stays below the prepared energy.
+The [coverage bridge](ccm-fu-finite-source-cone-exhaustion.md) must still
+coordinate changing fields and exhaustive processing under one budget. No
+uniform bound on witness cutoffs, margins, prime-pool resources or preparation
+costs as the field changes is proved. Complete cofinal coverage, PE4/PE4G/PE4C,
+SD1 and RH remain open.
+The [support and common-head identity](../3-formalized/ccm-fu-retained-support-and-common-head.md)
+retains the full actual energy on at most M-1 possible labels. Every retained
+coordinate is a signed subset-product-scale sample of the same coprime head
+for that field; energy is the exact product-weighted sum of their squares.
+Complete full-field directional witnesses must pass the initial coprime-gap
+sign chamber, forcing an explicit parent aperture. Joint control of the head
+as the field changes and of its entire scale sum remains open.

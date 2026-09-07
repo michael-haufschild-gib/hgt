@@ -11,8 +11,9 @@ Guinand–Weil source → marked rectangular current → affine Suzuki checkpoin
 → signed curvature → prime–polar–Gamma/unit-Riesz boundary → Xi-screw Green
 → RH. This theorem supplies the arithmetic and integral transport for the
 [spectral separation bridge](ccm-fu-finite-retained-spectral-separation.md).
-Positive-carrier continuation, arbitrary finite-field cone fullness and
-complete compatible source coverage under one uniform energy budget remain open.
+The [finite-field source certificate](ccm-fu-finite-retained-directional-control.md)
+closes positive continuation and finite clipping-stable directional control.
+Complete compatible source coverage under one uniform energy budget remains open.
 
 ## Exact statements
 
@@ -121,15 +122,14 @@ occur. Global formal lint passed with existing large-file warnings. Generated
 formal indexes and the research search index were refreshed. Owned Lean
 processes completed and temporary scratch/audit files were removed.
 
-## Remaining proof gates
+## Continuation and cofinal scope
 
-Construct the positive measure for a real retained functional, identify its
-complex MGF germ with the literal Mellin expression centered at four, apply
-the existing low-height Landau balls, and prove continuation identity across
-the resulting half-plane. The surviving high poles should then exclude a
-nonzero one-sided functional. That implication and the finite-dimensional
-compactness producing actual cutoff witnesses and margins are not yet formal.
+The [finite retained-source certificate](ccm-fu-finite-retained-directional-control.md)
+closes the positive measure, MGF germ, Landau continuation and meromorphic
+identity. Every nonzero retained functional has both strict source signs;
+finite-dimensional compactness gives finite actual cutoff witnesses with a
+uniform directional margin and one common clipping tolerance.
 
-Even a proof for each fixed S supplies no uniform control on witness cutoffs,
-clipping tolerances, prime-pool capacity or preparation energy as S grows.
-Complete compatible cofinal coverage, PE4/PE4G/PE4C, SD1 and RH remain open.
+These witnesses depend on the retained field. Their cutoffs, inverse margins,
+prime-window capacity and preparation energy have no uniform cofinal bound.
+Complete compatible source coverage, PE4/PE4G/PE4C, SD1 and RH remain open.

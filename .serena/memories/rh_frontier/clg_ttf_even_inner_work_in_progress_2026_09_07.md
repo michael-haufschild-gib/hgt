@@ -1,48 +1,21 @@
-# CLG/TTF inner determinant checkpoint, 2026-09-07
+# CLG/TTF current checkpoint and priority correction
 
-Mission remains unconditional closed Lean RH proof/falsification. RH is unproved; goal stays ACTIVE.
-Full chain: literal theta source → every signed center-mixed Hankel section nonnegative → Fourier-current sign → Xi Bezoutian orientation → RH.
+Goal ACTIVE: unconditional closed Lean RH proof/falsification, still unproved. Full chain: literal theta source → all signed center-mixed Hankel sections nonnegative → Fourier-current sign → Xi Bezoutian orientation → RH.
 
-## Current mathematical gate
-Missing: HTGeometry.evenCompactRawDet u a w = evenCompactRawPolynomial u a w.
-All 21 shear identities, 22 Horner stages, 12 block grades and landing in T≥1/1000 remain checked. UnitDet(u²,t,v)=RawDet(u,A,u(1+v/4)), RawPolynomial shear/gap transports and exact actual source normalization are checked. Inner positivity for 0≤x≤8/95 is STILL A TARGET. Current proved near-zero endpoint is existential; x≥6/5 is proved. Middle, rank-seven integral and all-order signs remain open.
+USER STEERING: asked whether coefficient work was significant RH progress or busywork and demanded Lean optimization rather than heartbeat increases. Candid assessment: useful finite bridge engineering, but over-prioritized relative to the missing mathematical producer. Do not describe each scalar coefficient as significant progress on the hard RH step. Bulk coefficient queue STOPPED. Next priority is corpus-based research on a noncircular all-order source-sign propagation/compensation mechanism, not automatic continuation of finite coefficient templates. Completing this bridge would prove a proposed compact inner interval; middle comparison, rank-seven integrated sign and all-order positivity would still remain.
 
-## Fifteen new checked gap modules; total inner manifest 113
-Under formal/GaloisForLFunctions/HTGeometry:
-PolynomialODEEvenCompactGapLift, GapDet, GapSourceCoefficients, GapConvolution, GapTop, GapReflection, GapReversedDet, GapLowCoefficients (each prefixed PolynomialODEEvenCompact); GapCoefficient0,1,16,17,18,19,20.
-Each separately checked by foreground lake env lean in /tmp staging, exact bytes installed, exactly one HTGeometry umbrella import, needed olean emitted. No umbrella/full/cascade builds.
+Authoritative files: docs/drafts/pipeline/1-in-progress/clg-ttf-even-compact-incidence/STATUS.md and checked-modules.json. Main clg-ttf-center-integration-compensation.md and RH frontier record 13/21 determinant coefficients closed: 0,1,2,3,12,13,14,15,16,17,18,19,20. OPEN4–11 plus extensional assembly. RH and explicit inner0≤x≤8/95 remain unproved. Actual explicit tail x≥6/5 proved earlier; near-zero endpoint remains existential. Universal ledger unchanged: no route-independent mathematical advance here.
 
-GapLift copies existing source expression syntax into Polynomial ℝ in gap a; no coefficient arithmetic. All 7 source eval identities/degrees 1,3,…,8 are proved.
-GapDet gives exact determinant/table evaluations and natDegree≤20 for both. Its cofactor degree proof is manual; compute_degree on abstract polynomials timed out.
-GapSourceCoefficients copies monomial expressions into scalar coefficient expressions with index tests, separately proves all 7 extraction identities.
-GapTop proves weighted top coefficient of H4 from degree pattern2,3,…,8. Coeff20 is the existing negative rational RawGapGrade20, checked.
-GapReflection proves entire weighted polynomial reflection of H4. GapReversedDet proves reflect20 GapDet=ReversedDet, coeff(20−n)=reversed coeffn for n≤20. Correction degree≤2, first six reflected coefficients vanish.
-GapLowCoefficients proves exact unrolled product formulas for indices2..5.
+159 checked inner modules. This interrupted/steered work installed17 new modules and audited17 NEW theorems once; cubicQuarticAudit records them. Earlier sourceCofactorAudit94 and gapCapstoneAudit19 and earlier source/grade/Horner audits were NOT repeated. All new theorem axioms only propext,Classical.choice,Quot.sound. Every new source exactly matched successful staging bytes, has one HTGeometry umbrella import and required olean. Only foreground lake env lean checks, one process at a time. No full/umbrella builds, no raised heartbeat limits, no numerical/Runpod experiments. Global lint currently flags five FOREIGN unwired RHTower modules: ProductAFEContour, ProductAFEIntegrand, RectangleThreePoleResidue, RetainedPrimeSupportThreshold, RetainedPrimeTopHomothety. Recorded exact errors; foreign files/wiring preserved.
 
-Checked determinant-to-RawGapGrade coefficient identities: 0,1,16,17,18,19,20. OPEN: 2–15 and final polynomial-extensional assembly. Raw table coefficient simplification/assembly is not yet a final theorem.
+Current algebra: exact gap polynomial lifts/evaluations/degree≤20 for full corrected H4 determinant and raw table of2460 monomials. All21 target-table coefficient identities checked. Full correction10^12 Q(3Q−6/19), Q=u²/24+a/16−3/8, denominator100^12. All41 normalized source coefficients and7 above-degree lemmas checked. Source degreesQ1, reflectedTwo/Four/Six/Eight/Ten/Twelve3/4/5/6/7/8. Exact seven-term cofactor model: GapDet=(T0−sum(T1..T6))*C((100^12)^−1), T0=H(P12+correction). Head coefficients0..4 checked. All cubic contributions and final coefficient3 proved. Quartic contributions0..4 proved;5/6 and final coefficient4 remain open.
 
-## Efficient proof shape
-Use local irreducible attributes on seven source polynomial definitions to prevent accidental expansion.
-First norm_num extracts coefficients using Polynomial.mul_coeff_zero, Polynomial.mul_coeff_one, the unrolled mul_2..mul_5 lemmas and pow_succ; source coefficients remain named.
-Second norm_num uses the seven source-coefficient lemmas and scalar coefficient functions.
-Then unfold exact RawGapGradeN and ring1.
-Do NOT globally replace substring coeff_one when templating: it corrupts Polynomial.mul_coeff_one.
-Generic convolution inside symbolic Finset indices causes huge terms. Split phases and use fixed-index formulas.
-For reversed checks, prove local hcorr (n)(2<n): correction.coeff n=0 using its degree bound and include hcorr in first norm_num; the reflected-zero lemma alone may be rewritten away before its condition is discharged.
+VERIFIED OPTIMIZATION: old scalar/cofactor normalizers returned only normalized rhs, discarding Conv.mkConvGoalFor equality proof, then the following theorem repeated normalization. New PolynomialODEEvenCompactGapCertifiedNormalizer defines CompactGapNormalForm(source:ℝ) with value:ℝ and eq_value:source=value. Syntax compactGapCertified% <conv> => <expr> retains instantiated rhs AND g proof as CompactGapNormalForm.mk. Supports parenthesized multi-command conv sequences. Kernel-checked on scratch examples including direct rfl projection after add_comm, then an ACTUAL previously unfinished cofactor: PolynomialODEEvenCompactGapCofactorTerm4Slice4.
 
-## Remaining resource failures / no unchanged retries
-Full raw unfold;ring1 hit57.4GB; dsimp variant12.6GB: already stopped previous turn.
-Coefficient1 now PASSES at500000 heartbeats, measured1.6GB footprint.
-Coefficient2 with direct formulas reaches expensive FoldConsts/partitionPreDefs traversal,4.4GB. as_aux_lemma around final ring1 bypasses that phase and reaches kernel checking,6.4GB, but did not finish within3minutes. Both interrupted, exit130. No Coeff2 installed/checked.
-Coefficient15 direct reversed form fails500000-heartbeat whnf. No Coeff15 installed.
-Need split these algebraic identities further into smaller coefficients/cofactors; no blind limit increases.
-Pending degree2 plain/aux forms, degree15, and untested degrees3–5 are preserved in incidence/pending-lean outside formal, along with old raw/main determinant and actual-source capstone candidates.
+That module defines evenCompactGapCofactorTerm4Slice4Certificate using one coefficient/source/scalar normalization, defines Slice4 as certificate.value, and proves evenCompactGapCofactorTerm4_coeff_slice4 by certificate.eq_value. Redundant normalization removed; NO quantified wall-clock speedup established. Both helper and actual cofactor checked and wired. No old-module rebuild/audit needed. New capstone catches certificate dependencies in axiom audit. Use this retained-certificate pattern if finite bridge resumes; do not blindly reuse old double-normalization templates.
 
-## Audit and docs
-Nineteen NEW capstones audited ONCE using /tmp scratch; every result only [propext,Classical.choice,Quot.sound]. Exact names stored in checked-modules.json gapCapstoneAudit. Do NOT re-audit them or earlier98 again.
-Static formal lint exit1: unrelated unwired RHTower.ConstrainedWeilPolarDerivativeTest, RetainedPrimeDivisorConvolution, RetainedPrimeMobiusEulerIdentity. No new owned module among errors. Do not wire unverified foreign work.
-Current docs updated: incidence/STATUS.md, incidence/checked-modules.json, clg-ttf-center-integration-compensation.md, rh-current-frontier-map.md. Frontier has concurrent maintainers: read exact current paragraph and patch narrowly. Universal STATUS unchanged: existing finite/all-order and full-source rules cover this bridge; compiler notes do not belong there.
+GapCofactorHigherNormalizer supports fixed indices0..10 (still discards proof; avoid expanding its use). GapHigherCoefficients product formulas6..10; oldLow2..5, mathlib0/1. Pending-lean holds optimized untested Term5Slice4/Term6Slice4 drafts and updated finalCoefficient4 with dsimp of certificate projections. They are OUTSIDE formal and unproved; no automatic checking planned. Also retained old directCoefficient5, reversedCoefficient10/11 and raw/unit/actual-source capstones. Superseded pendingCoefficient3 removed; pendingCoefficient4 replaced by cofactor assembly. No positive source/RH conclusion from pending files.
 
-## Computation and process discipline
-No new numerical/external symbolic experiments. User permits only surprising hypothesis-discriminating short experiments on Runpod, with multicore Python and downloaded records; read scientific-method.md before any. No more predictable coefficient-generation runs. All earlier owned Runpod dirs removed.
-One foreground Lean at a time. All checks/audits and interrupted processes have exited. All owned /tmp/clg_even_inner* staging, scratch and profiling files are removed. No owned Lean process or incomplete build output remains. Checked bytes and pending candidates are persisted in repo. No commits/push.
+Resource exclusions: whole raw ring proof57.4GB; dsimp12.6GB; directDegree2/as_aux4.4/6.4GB stalled; grind on expandedDegree2 failed500000 heartbeats. Cached reversed12..15 passed, but12 reached12GB in module serialization CollectAxioms/FoldConsts. Do NOT resume reversed11/10 unchanged or raise limits. All3 cofactor pieces stayed bounded. All relative-shear21,22 Horner,12 block identities,H0=T,T≥1/1000,unit/raw source transport and source coordinates/correction were proved/audited earlier; full raw identity remains necessary for inner positivity.
+
+Cleanup COMPLETE after user interruption: orchestrator exec cell1608 was gone; authoritative ps showed no owned Lean/lake processes. Cubic and quarticTerm3Slice4 had installed successfully before interruption; confirmed exact source/olean/import and new axiom audit. Finished only one optimized representative cofactor afterward, then17-new-theorem audit. All six owned /tmp/clg_even_inner* scratch paths removed. Needed successful oleans kept; no uninstalled build artifacts found. No live owned jobs, no new remote work, no commit/push. Keep full RH goal ACTIVE.
