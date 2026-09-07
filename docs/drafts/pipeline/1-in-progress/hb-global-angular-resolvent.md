@@ -10,8 +10,9 @@ The complete mixed source forces `(Delta-L)H=(L/2)S²`, with
 proved in `ThetaCuspHawkingBMQuadraticMixedCurrent`. Both physical Xi branches
 have nonreal L. The actual modular energy domain and its unique full-forcing
 weak response are constructed. Every compact interior localization of that actual
-response has proved planar H² regularity. Smooth global reconstruction and
-physical causal admission remain open.
+response has every integer Sobolev order and a constructed smooth representative
+on the open modular cell, equal to the actual response in its native measure.
+Smooth reconstruction across modular seams and physical causal admission remain open.
 
 ## Proved source admission and modular matching
 
@@ -66,18 +67,28 @@ an L¹ representative of each localized Fourier transform. No regularity premise
 is supplied. Proof and audit:
 [actual interior elliptic regularity](../3-formalized/hb-interior-elliptic-regularity.md).
 
+The literal full forcing now has proved smoothness, and every actual localized
+forcing distribution has a constructed Schwartz representative. Height-weighted
+tests give `T(g,D_i h)=partial_i T(y*g,Jh)-T(partial_i(y*g),Jh)`. This identity and
+the complete cutoff equation bootstrap the actual scalar response and both
+original gradients to every localized integer Sobolev order. All Fourier moments,
+inverse Fourier reconstruction, pointwise overlap compatibility and a countable
+cover then construct a smooth representative throughout the open cell. Exact
+measure transport identifies it with the original response in native L².
+No regularity or gluing premise is supplied. Proof and audit:
+[smooth interior response](../3-formalized/hb-interior-smooth-response.md).
+
 ## Physical obligations
 
-The higher-order bootstrap can use the full family of compact interior tests:
-`T(g,D_i h)=partial_i T(y*g,Jh)-T(partial_i(y*g),Jh)`. Once scalar localizations
-have order s, this identity gives gradient localizations order s-1. The complete
-cutoff Laplacian then raises scalar order to s+1, provided the actual localized
-full forcing has every Sobolev order. Prove that forcing property from its literal
-smooth field and native-measure representative; it is not a new premise.
+Arbitrary compact tests already have smooth locally finite modular periodizations,
+including across seams. Their compact quotient support and admission to the
+actual energy core are the next test-domain obligations. An orbit-height bound
+puts every nonzero periodized value on the closed cell inside a compact truncated
+cell; this would admit the seam-crossing tests without an interior-support premise.
 
-Bootstrap higher interior regularity, then obtain a smooth global representative
-of the weak response and its literal
-hyperbolic equation across the modular charts. Construct the global cusp-cutoff
+Extend the actual weak equation and smooth representative across modular side
+identifications and stabilizer charts, obtaining the literal hyperbolic equation
+on all modular charts. Construct the global cusp-cutoff
 extension and assemble `chi*H0+h`. Establish the physical causal prescription for
 the complete forced vector metric, including its horizon, radial boundary, gauge
 and original left-pairing conditions.

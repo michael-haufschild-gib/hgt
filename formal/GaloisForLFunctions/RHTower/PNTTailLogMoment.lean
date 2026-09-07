@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PNTFirstLogMoment
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 /-!
 # Logarithmic tail moments of a sequence with linear partial sums
@@ -75,6 +76,10 @@ theorem hasDerivAt_tailPrimitive (k : ℕ) {t : ℝ} (ht : 0 < t) :
       (1 / ((k : ℝ) + 1) ^ 2)
     exact this
   have h := (hA.div (hasDerivAt_pow (k + 1) t) (pow_ne_zero _ ht.ne')).neg
+  have hfun : tailPrimitive k = -((fun s : ℝ => (((k : ℝ) + 2) * Real.log s) / ((k : ℝ) + 1)
+      + 1 / ((k : ℝ) + 1) ^ 2) / fun s : ℝ => s ^ (k + 1)) := by
+    funext s; simp only [tailPrimitive, Pi.neg_apply, Pi.div_apply]; ring
+  rw [hfun]
   refine h.congr_deriv ?_
   have hne : t ≠ 0 := ht.ne'
   field_simp
@@ -96,8 +101,11 @@ theorem tendsto_log_div_pow_succ (k : ℕ) :
 
 theorem tendsto_tailPrimitive (k : ℕ) : Tendsto (tailPrimitive k) atTop (𝓝 0) := by
   have h1 := (tendsto_log_div_pow_succ k).const_mul (((k : ℝ) + 2) / ((k : ℝ) + 1))
-  have h2 : Tendsto (fun t : ℝ => (1 / ((k : ℝ) + 1) ^ 2) * (t ^ (k + 1))⁻¹) atTop (𝓝 0) :=
-    (tendsto_inv_atTop_zero.comp (tendsto_pow_atTop (Nat.succ_ne_zero k))).const_mul _
+  have h2 : Tendsto (fun t : ℝ => (1 / ((k : ℝ) + 1) ^ 2) * (t ^ (k + 1))⁻¹) atTop (𝓝 0) := by
+    have := (tendsto_inv_atTop_zero.comp (tendsto_pow_atTop (Nat.succ_ne_zero k))).const_mul
+      (1 / ((k : ℝ) + 1) ^ 2)
+    rw [mul_zero] at this
+    exact this
   have h := (h1.add h2).neg
   simp only [mul_zero, add_zero, neg_zero] at h
   refine h.congr' ?_
@@ -129,7 +137,8 @@ theorem integral_Ioi_tailWeightMul (k : ℕ) {x : ℝ} (hx : 2 ≤ x) :
     have h1 := one_le_two_mul_log_two
     have hk : (2 : ℝ) ≤ (k : ℝ) + 2 := by linarith [Nat.cast_nonneg (α := ℝ) k]
     have hlog0 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-    apply div_nonneg _ (by positivity)
+    have ht0 : 0 < t := by linarith
+    apply div_nonneg _ (pow_pos ht0 _).le
     nlinarith
   have htend := tendsto_tailPrimitive k
   refine ⟨integrableOn_Ioi_deriv_of_nonneg hcont hderiv hnonneg htend, ?_⟩
@@ -154,7 +163,7 @@ theorem tendsto_tail_log_moment {c : ℕ → ℝ} (hc0 : c 0 = 0) (hc : ∀ n, 0
   have hderiv_eq : EqOn (deriv (tailWeight k)) (tailDeriv k) (Ici 1) :=
     fun t ht => deriv_tailWeight k (by simp only [mem_Ici] at ht; linarith)
   have hf_int : LocallyIntegrableOn (deriv (tailWeight k)) (Ici 1) :=
-    ((continuousOn_tailDeriv k).congr hderiv_eq.symm).locallyIntegrableOn measurableSet_Ici
+    ((continuousOn_tailDeriv k).congr hderiv_eq).locallyIntegrableOn measurableSet_Ici
   -- the boundary term tends to zero
   have h_lim : Tendsto (fun n : ℕ => tailWeight k n * ∑ i ∈ Finset.Icc 0 n, c i) atTop (𝓝 0) := by
     have hbound : ∀ n : ℕ, 1 ≤ n →
@@ -180,7 +189,7 @@ theorem tendsto_tail_log_moment {c : ℕ → ℝ} (hc0 : c 0 = 0) (hc : ∀ n, 0
     have hlogn : Tendsto (fun n : ℕ => C * (Real.log n / n)) atTop (𝓝 0) := by
       have h := (Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero).comp
         tendsto_natCast_atTop_atTop
-      simp only [pow_one, one_mul, add_zero, Function.comp] at h
+      simp only [pow_one, one_mul, add_zero] at h
       simpa using h.const_mul C
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlogn ?_ ?_
     · filter_upwards [eventually_ge_atTop (1 : ℕ)] with n hn
@@ -196,6 +205,7 @@ theorem tendsto_tail_log_moment {c : ℕ → ℝ} (hc0 : c 0 = 0) (hc : ∀ n, 0
     filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
     have ht0 : 0 < t := by linarith
     rw [hderiv_eq (mem_Ici.mpr ht), Real.norm_eq_abs, Real.norm_eq_abs, abs_mul,
+      show (∑ i ∈ Finset.Icc 0 ⌊t⌋₊, c i) = partialSumReal c t from rfl,
       abs_of_nonneg (hS0 t), abs_of_nonneg (Real.rpow_nonneg ht0.le _)]
     have hSt := hCle t ht
     unfold tailDeriv
@@ -203,25 +213,25 @@ theorem tendsto_tail_log_moment {c : ℕ → ℝ} (hc0 : c 0 = 0) (hc : ∀ n, 0
     have hnum := abs_one_sub_mul_log_le k ht
     have hlog := log_le_two_mul_rpow_half ht0.le
     have hhalf : (1 : ℝ) ≤ t ^ ((1 / 2 : ℝ)) := Real.one_le_rpow ht (by norm_num)
-    have hpow : t ^ 2 ≤ t ^ (k + 3) := pow_le_pow_right₀ ht (by omega)
+    have hpow : t ^ 3 ≤ t ^ (k + 3) := pow_le_pow_right₀ ht (by omega)
     have hkey : |1 - ((k : ℝ) + 2) * Real.log t| * partialSumReal c t
         ≤ (2 * ((k : ℝ) + 2) + 1) * t ^ ((1 / 2 : ℝ)) * (C * t) := by
       have h1 : |1 - ((k : ℝ) + 2) * Real.log t| ≤ (2 * ((k : ℝ) + 2) + 1) * t ^ ((1 / 2 : ℝ)) := by
         refine hnum.trans ?_
         have hk : (0 : ℝ) ≤ (k : ℝ) + 2 := by positivity
+        have := mul_le_mul_of_nonneg_left hlog hk
         nlinarith
       exact mul_le_mul h1 hSt (hS0 t) (by positivity)
-    have hrpow : t ^ ((1 / 2 : ℝ)) * t / t ^ 2 = t ^ (-(3 / 2 : ℝ)) := by
-      rw [show t ^ 2 = t ^ (2 : ℝ) by norm_cast, show t = t ^ (1 : ℝ) by rw [Real.rpow_one],
-        ← Real.rpow_add ht0, ← Real.rpow_sub ht0]
-      norm_num
+    have hrpow : t ^ ((1 / 2 : ℝ)) * t / t ^ 3 = t ^ (-(3 / 2 : ℝ)) := by
+      rw [show (-(3 / 2 : ℝ)) = 1 / 2 + 1 + (-3) by norm_num, Real.rpow_add ht0, Real.rpow_add ht0,
+        Real.rpow_one, Real.rpow_neg ht0.le, show t ^ (3 : ℝ) = t ^ 3 by norm_cast, div_eq_mul_inv]
     calc |1 - ((k : ℝ) + 2) * Real.log t| / t ^ (k + 3) * partialSumReal c t
         = |1 - ((k : ℝ) + 2) * Real.log t| * partialSumReal c t / t ^ (k + 3) := by ring
       _ ≤ (2 * ((k : ℝ) + 2) + 1) * t ^ ((1 / 2 : ℝ)) * (C * t) / t ^ (k + 3) := by
           gcongr
-      _ ≤ (2 * ((k : ℝ) + 2) + 1) * t ^ ((1 / 2 : ℝ)) * (C * t) / t ^ 2 := by
+      _ ≤ (2 * ((k : ℝ) + 2) + 1) * t ^ ((1 / 2 : ℝ)) * (C * t) / t ^ 3 := by
           gcongr
-      _ = C * (2 * ((k : ℝ) + 2) + 1) * (t ^ ((1 / 2 : ℝ)) * t / t ^ 2) := by ring
+      _ = C * (2 * ((k : ℝ) + 2) + 1) * (t ^ ((1 / 2 : ℝ)) * t / t ^ 3) := by ring
       _ = C * (2 * ((k : ℝ) + 2) + 1) * t ^ (-(3 / 2 : ℝ)) := by rw [hrpow]
   have hg_int : IntegrableAtFilter (fun t : ℝ => t ^ (-(3 / 2 : ℝ))) atTop :=
     ⟨Ioi 1, Ioi_mem_atTop 1, integrableOn_Ioi_rpow_of_lt (by norm_num) one_pos⟩
@@ -268,9 +278,14 @@ theorem tendsto_tail_log_moment {c : ℕ → ℝ} (hc0 : c 0 = 0) (hc : ∀ n, 0
     have hsplit : ∑' n : ℕ, tailWeight k n * c n
         = (∑ i ∈ Finset.Icc 0 ⌊x⌋₊, tailWeight k i * c i)
           + ∑' n : ℕ, (if x < (n : ℝ) then c n * Real.log n / (n : ℝ) ^ (k + 2) else 0) := by
-      have hle : Summable (fun n : ℕ => if (n : ℝ) ≤ x then tailWeight k n * c n else 0) :=
-        Summable.of_nonneg_of_le (fun n => by split_ifs <;> simp [hterm_nonneg n])
-          (fun n => by split_ifs <;> simp [hterm_nonneg n]) hsum
+      have hle : Summable (fun n : ℕ => if (n : ℝ) ≤ x then tailWeight k n * c n else 0) := by
+        refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) hsum
+        · split_ifs
+          · exact hterm_nonneg n
+          · exact le_rfl
+        · split_ifs
+          · exact le_rfl
+          · exact hterm_nonneg n
       have hgt : Summable (fun n : ℕ => if x < (n : ℝ) then c n * Real.log n / (n : ℝ) ^ (k + 2)
           else 0) := by
         refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) hsum
@@ -280,27 +295,122 @@ theorem tendsto_tail_log_moment {c : ℕ → ℝ} (hc0 : c 0 = 0) (hc : ∀ n, 0
         · split_ifs with h
           · unfold tailWeight; ring_nf; exact le_rfl
           · exact hterm_nonneg n
-      rw [← hle.tsum_add hgt]
-      · congr 1
-        · rw [tsum_eq_sum (s := Finset.Icc 0 ⌊x⌋₊) fun n hn => ?_]
-          · refine Finset.sum_congr rfl fun n hn => ?_
-            rw [if_pos]
-            simp only [Finset.mem_Icc] at hn
-            exact (Nat.le_floor_iff (by linarith)).mp hn.2
-          · rw [if_neg]
-            simp only [Finset.mem_Icc, Nat.zero_le, true_and, not_le] at hn
-            intro hle'
-            exact absurd (Nat.le_floor hle') (not_le.mpr hn)
-        · refine tsum_congr fun n => ?_
-          split_ifs with h1 h2
-          · exact absurd h2 (not_lt.mpr h1)
-          · rfl
-          · rfl
-          · exact absurd (le_of_not_gt h2) h1
+      have hfinite : ∑' n : ℕ, (if (n : ℝ) ≤ x then tailWeight k n * c n else 0)
+          = ∑ i ∈ Finset.Icc 0 ⌊x⌋₊, tailWeight k i * c i := by
+        rw [tsum_eq_sum (s := Finset.Icc 0 ⌊x⌋₊) fun n hn => ?_]
+        · refine Finset.sum_congr rfl fun n hn => ?_
+          rw [if_pos]
+          simp only [Finset.mem_Icc] at hn
+          exact (Nat.le_floor_iff (by linarith)).mp hn.2
+        · rw [if_neg]
+          simp only [Finset.mem_Icc, Nat.zero_le, true_and, not_le] at hn
+          intro hle'
+          exact absurd (Nat.le_floor hle') (not_le.mpr hn)
+      rw [← hfinite, ← hle.tsum_add hgt]
+      refine tsum_congr fun n => ?_
+      by_cases h1 : (n : ℝ) ≤ x
+      · rw [if_pos h1, if_neg (not_lt.mpr h1), add_zero]
+      · rw [if_neg h1, if_pos (lt_of_not_ge h1), zero_add]
+        unfold tailWeight; ring
     -- the finite Abel summation up to `x`
+    have hint_Icc : IntegrableOn (deriv (tailWeight k)) (Icc 1 x) :=
+      ((continuousOn_tailDeriv k).mono Icc_subset_Ici_self).integrableOn_Icc.congr_fun
+        (fun t ht => (hderiv_eq (Icc_subset_Ici_self ht)).symm) measurableSet_Icc
     have hfin := sum_mul_eq_sub_integral_mul₀ c hc0 x (fun t ht => hf_diff t (mem_Ici.mpr ht.1))
-      (hFS.mono_set (Icc_subset_Ici_self) |>.integrableOn_of ?_)
-    all_goals sorry
-  sorry
+      hint_Icc
+    -- split the half-line integral at `x`
+    have hunion : ∫ t in Ioi 1, deriv (tailWeight k) t * ∑ i ∈ Finset.Icc 0 ⌊t⌋₊, c i
+        = (∫ t in Ioc 1 x, deriv (tailWeight k) t * ∑ i ∈ Finset.Icc 0 ⌊t⌋₊, c i)
+          + ∫ t in Ioi x, deriv (tailWeight k) t * ∑ i ∈ Finset.Icc 0 ⌊t⌋₊, c i := by
+      rw [← Set.Ioc_union_Ioi_eq_Ioi hx1]
+      exact setIntegral_union Set.Ioc_disjoint_Ioi_same measurableSet_Ioi
+        (hFS.mono_set (Set.Ioc_subset_Icc_self.trans Icc_subset_Ici_self))
+        (hFS.mono_set (Ioi_subset_Ici_self.trans (Ici_subset_Ici.mpr hx1)))
+    have hIoi : ∫ t in Ioi x, deriv (tailWeight k) t * ∑ i ∈ Finset.Icc 0 ⌊t⌋₊, c i
+        = -∫ t in Ioi x, partialSumReal c t * (-tailDeriv k t) := by
+      rw [← integral_neg]
+      refine setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
+      simp only [mem_Ioi] at ht
+      rw [hderiv_eq (mem_Ici.mpr (by linarith)), partialSumReal]
+      ring
+    have hfx : tailWeight k x * ∑ i ∈ Finset.Icc 0 ⌊x⌋₊, c i
+        = tailWeight k x * partialSumReal c x := rfl
+    linarith [hsplit, htsum, hfin, hunion, hIoi, hfx]
+  -- the weight `w = −f'` and its half-line integrals
+  set w : ℝ → ℝ := fun t => -tailDeriv k t with hw
+  have hw_eq : ∀ t : ℝ, 0 < t → t * w t = (((k : ℝ) + 2) * Real.log t - 1) / t ^ (k + 2) := by
+    intro t ht
+    simp only [hw, tailDeriv]
+    have hne : t ≠ 0 := ht.ne'
+    field_simp
+    ring
+  have hw0 : ∀ t : ℝ, 2 ≤ t → 0 ≤ w t := by
+    intro t ht
+    simp only [hw, tailDeriv]
+    have hlog : Real.log 2 ≤ Real.log t := Real.log_le_log (by norm_num) (by linarith)
+    have h1 := one_le_two_mul_log_two
+    have hk : (2 : ℝ) ≤ (k : ℝ) + 2 := by linarith [Nat.cast_nonneg (α := ℝ) k]
+    have hlog0 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+    rw [neg_nonneg]
+    apply div_nonpos_of_nonpos_of_nonneg _ (by positivity)
+    nlinarith
+  have hint : ∀ x : ℝ, 2 ≤ x → IntegrableOn (fun t => t * w t) (Ioi x) := by
+    intro x hx
+    refine (integral_Ioi_tailWeightMul k hx).1.congr_fun (fun t ht => ?_) measurableSet_Ioi
+    simp only [mem_Ioi] at ht
+    exact (hw_eq t (by linarith)).symm
+  have hWval : ∀ x : ℝ, 2 ≤ x → ∫ t in Ioi x, t * w t
+      = ((((k : ℝ) + 2) * Real.log x) / ((k : ℝ) + 1) + 1 / ((k : ℝ) + 1) ^ 2) / x ^ (k + 1) := by
+    intro x hx
+    rw [← (integral_Ioi_tailWeightMul k hx).2]
+    refine setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
+    simp only [mem_Ioi] at ht
+    exact hw_eq t (by linarith)
+  have hWpos : ∀ x : ℝ, 2 ≤ x → 0 < ∫ t in Ioi x, t * w t := by
+    intro x hx
+    rw [hWval x hx]
+    have hlog : 0 ≤ Real.log x := Real.log_nonneg (by linarith)
+    have hk1 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+    positivity
+  have hSint : ∀ x : ℝ, 2 ≤ x → IntegrableOn (fun t => partialSumReal c t * w t) (Ioi x) := by
+    intro x hx
+    refine Integrable.mono' ((hint x hx).const_mul C) ?_ ?_
+    · exact (hS.measurable.mul (measurable_tailDeriv k).neg).aestronglyMeasurable
+    · refine ae_restrict_of_forall_mem measurableSet_Ioi fun t ht => ?_
+      simp only [mem_Ioi] at ht
+      have hwt := hw0 t (by linarith)
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (hS0 t) hwt)]
+      have := hCle t (by linarith)
+      calc partialSumReal c t * w t ≤ C * t * w t := by gcongr
+        _ = C * (t * w t) := by ring
+  have hratio := tendsto_integral_Ioi_mul_div_of_tendsto_div hlim (t₀ := 2) (by norm_num)
+    hw0 hint hSint hWpos
+  -- the explicit factor `(x^{k+1}/log x) ∫_x^∞ t w`
+  have hfactor : Tendsto (fun x : ℝ => ((k : ℝ) + 2) / ((k : ℝ) + 1)
+      + 1 / ((k : ℝ) + 1) ^ 2 * (Real.log x)⁻¹) atTop (𝓝 (((k : ℝ) + 2) / ((k : ℝ) + 1))) := by
+    have h := (Real.tendsto_log_atTop.inv_tendsto_atTop).const_mul (1 / ((k : ℝ) + 1) ^ 2)
+    rw [mul_zero] at h
+    simpa using (tendsto_const_nhds (x := ((k : ℝ) + 2) / ((k : ℝ) + 1))).add h
+  have hmain := (hlim.neg).add (hratio.mul hfactor)
+  rw [one_mul] at hmain
+  have hlimit : -(1 : ℝ) + ((k : ℝ) + 2) / ((k : ℝ) + 1) = 1 / ((k : ℝ) + 1) := by
+    have hk1 : ((k : ℝ) + 1) ≠ 0 := by positivity
+    field_simp
+    ring
+  rw [hlimit] at hmain
+  refine hmain.congr' ?_
+  filter_upwards [eventually_ge_atTop (2 : ℝ)] with x hx
+  rw [htail x hx]
+  have hlx : 0 < Real.log x := Real.log_pos (by linarith)
+  have hx0 : 0 < x := by linarith
+  have hWx := hWval x hx
+  have hWpos' := hWpos x hx
+  simp only [tailWeight]
+  rw [show (∫ t in Ioi x, partialSumReal c t * w t)
+      = ((∫ t in Ioi x, partialSumReal c t * w t) / ∫ t in Ioi x, t * w t)
+        * ∫ t in Ioi x, t * w t by field_simp, hWx]
+  have hk1 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  field_simp
+  ring
 
 end RHTower

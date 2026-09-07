@@ -11,7 +11,9 @@ response has planar Sobolev order two. Its actual localized Laplacian belongs to
 L², and its Fourier transform has an L¹ representative. The proof derives these
 properties from the original modular energy domain and the complete forcing;
 it supplies no regularity or differential-equation hypothesis on the response.
-Higher regularity and reconstruction across modular seams remain open.
+Higher interior regularity and smooth reconstruction on the open cell are proved
+in [smooth interior response](hb-interior-smooth-response.md). Reconstruction across
+modular seams remains open.
 
 ## Actual tests and distributional equation
 
@@ -143,8 +145,9 @@ lint is therefore not claimed to pass.
 
 ## Remaining bridge
 
-Bootstrap higher local regularity and construct the smooth representative. Extend
-the weak equation and regularity proof across the modular side identifications
+The [smooth interior response](hb-interior-smooth-response.md) supplies every local
+Sobolev order and a smooth representative of the actual native class on the open
+cell. Extend the weak equation and regularity proof across the modular side identifications
 and stabilizer charts. Construct the global cusp-cutoff extension and assemble
 the full angular field. Then prove the physical causal prescription, horizon and
 radial boundary conditions, gauge conditions, and original left-QNM pairing.

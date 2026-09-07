@@ -65,7 +65,7 @@ noncomputable def primeSideTerm (x t : ℝ) (n : ℕ) : ℂ :=
 /-- The prime side `Σ_n Λ(n) · ((x/n)^b if n ≤ x else (x/n)^a)`. -/
 noncomputable def primeSide (x t : ℝ) : ℂ := ∑' n : ℕ, primeSideTerm x t n
 
-theorem ofReal_div_cpow {x : ℝ} (hx : 0 < x) {n : ℕ} (hn : 0 < n) (s : ℂ) :
+theorem ofReal_div_natCast_cpow {x : ℝ} (hx : 0 < x) {n : ℕ} (hn : 0 < n) (s : ℂ) :
     ((x / n : ℝ) : ℂ) ^ s = (x : ℂ) ^ s / (n : ℂ) ^ s := by
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   rw [div_eq_mul_inv, Complex.ofReal_mul, Complex.ofReal_inv,
@@ -83,7 +83,7 @@ theorem cpow_mul_LSeries_vonMangoldt {x : ℝ} (hx : 0 < x) (s : ℂ) :
   refine tsum_congr fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [LSeries.term_zero]
-  · rw [LSeries.term_of_ne_zero hn.ne', ofReal_div_cpow hx hn]
+  · rw [LSeries.term_of_ne_zero hn.ne', ofReal_div_natCast_cpow hx hn]
     ring
 
 theorem summable_vonMangoldt_mul_cpow {x : ℝ} (hx : 0 < x) {s : ℂ} (hs : 1 < s.re) :
@@ -92,7 +92,7 @@ theorem summable_vonMangoldt_mul_cpow {x : ℝ} (hx : 0 < x) {s : ℂ} (hs : 1 <
   refine h.congr fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [LSeries.term_zero]
-  · rw [LSeries.term_of_ne_zero hn.ne', ofReal_div_cpow hx hn]
+  · rw [LSeries.term_of_ne_zero hn.ne', ofReal_div_natCast_cpow hx hn]
     ring
 
 theorem primeSideTerm_eq (x t : ℝ) (n : ℕ) :
