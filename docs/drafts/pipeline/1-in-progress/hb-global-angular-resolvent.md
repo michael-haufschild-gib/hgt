@@ -68,6 +68,13 @@ is supplied. Proof and audit:
 
 ## Physical obligations
 
+The higher-order bootstrap can use the full family of compact interior tests:
+`T(g,D_i h)=partial_i T(y*g,Jh)-T(partial_i(y*g),Jh)`. Once scalar localizations
+have order s, this identity gives gradient localizations order s-1. The complete
+cutoff Laplacian then raises scalar order to s+1, provided the actual localized
+full forcing has every Sobolev order. Prove that forcing property from its literal
+smooth field and native-measure representative; it is not a new premise.
+
 Bootstrap higher interior regularity, then obtain a smooth global representative
 of the weak response and its literal
 hyperbolic equation across the modular charts. Construct the global cusp-cutoff

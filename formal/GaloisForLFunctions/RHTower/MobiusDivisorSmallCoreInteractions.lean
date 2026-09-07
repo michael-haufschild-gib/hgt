@@ -35,7 +35,9 @@ private lemma fibre_filter_cutoff (n N : ℕ) (P R : Finset ℕ) (hn : n≤N) :
     _ = _ := mobiusDivisorSelectionFibre_union_inactive n _ _ R
       (fun r hr => hn.trans (mem_filter.mp hr).2)
 
-private lemma partner_filter_cutoff (M N : ℕ) (P R : Finset ℕ) {p : ℕ}
+/-- An unprocessed prime-containing fibre ignores processed primes outside
+its two adjacent quotient cutoffs, with no retained-sign condition. -/
+theorem mobiusDivisorSelectionFibre_partner_filter_cutoff (M N : ℕ) (P R : Finset ℕ) {p : ℕ}
     (hp : p.Prime) (hpP : p∉P) (hpR : p∉R) (hN : M/p+1≤N) :
     mobiusDivisorSelectionFibre M P (insert p R)=
       mobiusDivisorSelectionFibre M (P.filter (fun r => r<N)) (insert p R) := by
@@ -87,8 +89,8 @@ theorem mobiusDivisorSelectionEnergy_mixed_eq_filter_cutoff
   rw [joint_zero M P R hpR hqR hpq hprod hprime,
     joint_zero M (P.filter (fun r => r<N)) R hpR hqR hpq hprod hprime,
     mul_zero,mul_zero,zero_add,zero_add,
-    partner_filter_cutoff M N P R hp hpP hpR hpN,
-    partner_filter_cutoff M N P R hq hqP hqR hqN]
+    mobiusDivisorSelectionFibre_partner_filter_cutoff M N P R hp hpP hpR hpN,
+    mobiusDivisorSelectionFibre_partner_filter_cutoff M N P R hq hqP hqR hqN]
 
 /-- The mixed interaction costs only the active small-prime core, regardless
 of the number and signs of all other already processed coordinates. -/

@@ -1,6 +1,6 @@
 # HB actual interior elliptic regularity
 
-Stage: formalized in Lean 4; final leaf audit pending. Type: `[BRIDGE]`.
+Stage: formalized in Lean 4; final leaf audits passed. Type: `[BRIDGE]`.
 RH remains open.
 
 Chain: literal theta cusp → Xi occurrence → retained spin-two source → physical
@@ -126,8 +126,20 @@ Sobolev Fourier estimate also gives an L¹ representative of its Fourier transfo
 | `RHTower.ThetaCuspHawkingBMInteriorEllipticRegularity` | 11 | Original local derivatives and current, complete cutoff commutator, actual local H² and Fourier L¹ |
 
 All seven development scratch modules passed `lake env lean` without diagnostics.
-Final exact-source leaf builds and the single audit of these 28 new public theorem
-axiom sets are pending. No numerical experiment or numerical certificate is used.
+The four canonical leaves passed their individual `lake build <module>` audits
+in a cache-only package: 6.8s, 22s, 2.5s and 10s in table order. Only these four
+leaves compiled; existing dependencies were reused. Audited and canonical source
+bytes match. Exactly eight new olean/ilean artifacts are installed, and each leaf
+is wired once into its theorem-area umbrella. No umbrella build ran.
+
+One scratch `lake env lean` audit checked exactly these 28 new public theorem
+axiom sets. All contain only `propext`, `Classical.choice` and `Quot.sound`, with
+no diagnostics. Scoped whitespace checks passed. No numerical experiment or
+numerical certificate is used. The generated source index was refreshed. The
+final global `lint --check-generated` reports an unrelated missing umbrella import
+for `RHTower.MontgomeryPrimeSideBounds` and a stale `formal/LEAN_API.md` during
+concurrent source edits. It reports no errors in these four new leaves. Global
+lint is therefore not claimed to pass.
 
 ## Remaining bridge
 

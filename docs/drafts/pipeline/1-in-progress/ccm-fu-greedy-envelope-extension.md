@@ -51,3 +51,32 @@ Download and hash script, inputs and results in the computation ledger;
 remove all owned remote files and processes. A finite pass supplies a
 selection target for proof, never a numerical premise in Lean. No larger
 repeat screen is planned.
+
+## Closed source comparison
+
+For `N>=M/p+1`, let S be P restricted below N and let
+`J_p=sum_R F_P(R+p)^2` over p-free labels. Exact quotient localization
+and product support give
+`J_p<=(9/25)*4^(max(card(S)-1,0))*M*floor((M-1)/p)`.
+The full signed gain is `Delta_p=2 sum_R F_P(R)F_P(R+p)`.
+Cauchy--Schwarz on this actual pairing therefore yields
+`Delta_p^2<=(36/25)*4^(max(card(S)-1,0))*M*floor((M-1)/p)*Q_P`.
+At quotient depth at most L, its right side is at most
+`(36/25)*4^L*L*M*Q_P`. This removes total processed-cardinality growth
+from first-gain magnitude, leaving current energy explicit. It supplies
+no sign and does not prove the least-energy extension candidate.
+
+## Current evidence
+
+The [completed RunPod screen](../2-fully-proven/computations/ccm-fu-greedy-envelope-extension-2026-09-07/README.md)
+reads all8860 states. All8176 eligible proper states preserve the envelope
+under the least-energy choice. No near-minimum candidate fails, so the
+prescribed independent80-digit audit is not triggered. The original
+energy tables agree within the fixed tolerance. This finite result does
+not prove the candidate; no larger repeat screen is planned.
+
+The [small-core first-gain theorem](../3-formalized/ccm-fu-small-core-first-gains.md)
+formalizes the displayed source bounds. Together with small-core mixed
+localization, it removes full processed-cardinality growth from first
+and nonoverlapping mixed gains at fixed quotient depth. It does not
+supply the signed simultaneous comparison needed for greedy selection.

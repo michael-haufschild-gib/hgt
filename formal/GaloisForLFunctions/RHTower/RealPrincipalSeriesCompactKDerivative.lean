@@ -45,6 +45,45 @@ theorem realSphericalKTypeCharacter_rotation (m : ℤ) (t : ℝ) :
   rw [← Circle.coe_zpow, ← Circle.exp_zsmul, Circle.coe_exp]
   simp only [zsmul_eq_mul]
 
+/-- Smoothness along the rotation subgroup, sufficient for the compact infinitesimal action. -/
+def IsRotationSmoothCompactVector {σ : ℝ} (φ : realCompactPictureSpace σ) : Prop :=
+  ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => φ.1 (realSphericalRotation t))
+
+theorem realCompactKType_isRotationSmooth (σ : ℝ) (m : ℤ) :
+    IsRotationSmoothCompactVector (realCompactKType σ m) := by
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+    (realCompactKType σ m).1 (realSphericalRotation t))
+  rw [show (fun t : ℝ =>
+      (realCompactKType σ m).1 (realSphericalRotation t)) =
+      (fun t : ℝ => Complex.exp
+        (((((2 * m : ℤ) : ℝ) * t : ℝ) : ℂ) * Complex.I)) by
+    funext t
+    exact realSphericalKTypeCharacter_rotation m t]
+  exact ((Complex.ofRealCLM.contDiff.comp
+    (contDiff_const.mul contDiff_id)).mul contDiff_const).cexp
+
+/-- Every finite Fourier vector is smooth along the compact rotation subgroup. -/
+theorem realCompactKFiniteEmbedding_isRotationSmooth (σ : ℝ)
+    (v : SphericalKFiniteModel) :
+    IsRotationSmoothCompactVector (realCompactKFiniteEmbedding σ v) := by
+  induction v using Finsupp.induction_linear with
+  | zero =>
+      change ContDiff ℝ (⊤ : ℕ∞) (fun _ : ℝ => (0 : ℂ))
+      exact contDiff_const
+  | add v w hv hw =>
+      change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+        (realCompactKFiniteEmbedding σ v).1 (realSphericalRotation t)) at hv
+      change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+        (realCompactKFiniteEmbedding σ w).1 (realSphericalRotation t)) at hw
+      change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ =>
+        (realCompactKFiniteEmbedding σ (v + w)).1 (realSphericalRotation t))
+      simpa only [map_add, AddMemClass.coe_add, Pi.add_apply] using hv.add hw
+  | single m z =>
+      rw [realCompactKFiniteEmbedding_single]
+      change ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => z *
+        (realCompactKType σ m).1 (realSphericalRotation t))
+      exact contDiff_const.mul (realCompactKType_isRotationSmooth σ m)
+
 /-- Differential of the weight-`2m` character along the standard rotation subgroup. -/
 theorem hasDerivAt_realSphericalKTypeCharacter_rotation (m : ℤ) (t : ℝ) :
     HasDerivAt
@@ -103,14 +142,14 @@ theorem compactRotation_hasDerivAt_eq_I_H_single (s : ℝ) (m : ℤ) (z : ℂ)
     (k : upperHalfPlaneStabilizer) :
     HasDerivAt
       (fun t : ℝ =>
-        (compactRealPrincipalSeries (s + 1) (realSphericalRotation t : SL2R)
+        (compactRealPrincipalSeries (s - 1) (realSphericalRotation t : SL2R)
           (sphericalModelCompactKFiniteEquiv s (Finsupp.single m z))).1 k)
       (Complex.I *
         (compactSphericalPrincipalH s
           (sphericalModelCompactKFiniteEquiv s (Finsupp.single m z))).1.1 k) 0 := by
   rw [sphericalModelCompactKFiniteEquiv_apply_coe,
     realCompactKFiniteEmbedding_single]
-  convert hasDerivAt_compactRealPrincipalSeries_rotation (s + 1) m z k using 1
+  convert hasDerivAt_compactRealPrincipalSeries_rotation (s - 1) m z k using 1
   rw [compactSphericalPrincipalH_single,
     sphericalModelCompactKFiniteEquiv_single_apply]
   push_cast

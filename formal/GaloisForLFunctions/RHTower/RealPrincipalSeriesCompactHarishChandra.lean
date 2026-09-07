@@ -8,7 +8,7 @@ subspace of the normalized compact principal series.  It transports the raising,
 weight, and Casimir operators to that concrete function space and proves the `sl₂` relations
 and Casimir scalar there.
 
-The normalization uses Borel exponent `s + 1`, matching the coefficients
+The normalization uses Borel exponent `s - 1`, matching the coefficients
 `(s - 1 ∓ 2m) / 2` in the explicit Harish-Chandra model.  The compact rotation derivative is
 identified with the weight operator in `RealPrincipalSeriesCompactKDerivative`; identifying the
 raising and lowering operators with noncompact infinitesimal translations remains analytic work.
@@ -20,15 +20,15 @@ noncomputable section
 
 /-- Finite even-Fourier subspace of the normalized compact principal series. -/
 abbrev normalizedRealCompactKFiniteSubmodule (s : ℝ) :
-    Submodule ℂ (realCompactPictureSpace (s + 1)) :=
-  LinearMap.range (realCompactKFiniteEmbedding (s + 1))
+    Submodule ℂ (realCompactPictureSpace (s - 1)) :=
+  LinearMap.range (realCompactKFiniteEmbedding (s - 1))
 
 /-- The explicit spherical Harish-Chandra model is linearly equivalent to the finite
 even-Fourier compact-picture subspace. -/
 def sphericalModelCompactKFiniteEquiv (s : ℝ) :
     SphericalKFiniteModel ≃ₗ[ℂ] normalizedRealCompactKFiniteSubmodule s :=
-  LinearEquiv.ofInjective (realCompactKFiniteEmbedding (s + 1))
-    (realCompactKFiniteEmbedding_injective (s + 1))
+  LinearEquiv.ofInjective (realCompactKFiniteEmbedding (s - 1))
+    (realCompactKFiniteEmbedding_injective (s - 1))
 
 /-- Finite normalized compact-picture K-types are stable under the actual principal-series
 action restricted to `K`. -/
@@ -36,18 +36,18 @@ theorem normalizedRealCompactKFiniteSubmodule_K_invariant (s : ℝ)
     (q : upperHalfPlaneStabilizer) :
     normalizedRealCompactKFiniteSubmodule s ≤
       (normalizedRealCompactKFiniteSubmodule s).comap
-        (compactRealPrincipalSeries (s + 1) (q : SL2R)) := by
+        (compactRealPrincipalSeries (s - 1) (q : SL2R)) := by
   rintro _ ⟨v, rfl⟩
   refine ⟨sphericalKTypeRepresentation q v, ?_⟩
   exact LinearMap.congr_fun
-    (realCompactKFiniteEmbedding_intertwines_K (s + 1) q) v
+    (realCompactKFiniteEmbedding_intertwines_K (s - 1) q) v
 
 /-- Actual restricted K-representation on the finite compact-picture subspace. -/
 def normalizedRealCompactKFiniteRepresentation (s : ℝ) :
     Representation ℂ upperHalfPlaneStabilizer
       (normalizedRealCompactKFiniteSubmodule s) :=
   Representation.subrepresentation
-    ((compactRealPrincipalSeries (s + 1)).comp upperHalfPlaneStabilizer.subtype)
+    ((compactRealPrincipalSeries (s - 1)).comp upperHalfPlaneStabilizer.subtype)
     (normalizedRealCompactKFiniteSubmodule s)
     (normalizedRealCompactKFiniteSubmodule_K_invariant s)
 
@@ -60,13 +60,13 @@ theorem sphericalModelCompactKFiniteEquiv_intertwines_K (s : ℝ)
       sphericalModelCompactKFiniteEquiv s (sphericalKTypeRepresentation q v) := by
   apply Subtype.ext
   exact (LinearMap.congr_fun
-    (realCompactKFiniteEmbedding_intertwines_K (s + 1) q) v).symm
+    (realCompactKFiniteEmbedding_intertwines_K (s - 1) q) v).symm
 
 @[simp]
 theorem sphericalModelCompactKFiniteEquiv_apply_coe (s : ℝ)
     (v : SphericalKFiniteModel) :
     ((sphericalModelCompactKFiniteEquiv s v : normalizedRealCompactKFiniteSubmodule s) :
-      realCompactPictureSpace (s + 1)) = realCompactKFiniteEmbedding (s + 1) v :=
+      realCompactPictureSpace (s - 1)) = realCompactKFiniteEmbedding (s - 1) v :=
   rfl
 
 @[simp]
@@ -74,7 +74,7 @@ theorem sphericalModelCompactKFiniteEquiv_single_apply (s : ℝ) (m : ℤ) (z : 
     (k : upperHalfPlaneStabilizer) :
     ((((sphericalModelCompactKFiniteEquiv s) (Finsupp.single m z) :
         normalizedRealCompactKFiniteSubmodule s) :
-      realCompactPictureSpace (s + 1)) : upperHalfPlaneStabilizer → ℂ) k =
+      realCompactPictureSpace (s - 1)) : upperHalfPlaneStabilizer → ℂ) k =
       z * realSphericalKTypeCharacter m k := by
   rw [sphericalModelCompactKFiniteEquiv_apply_coe,
     realCompactKFiniteEmbedding_single]

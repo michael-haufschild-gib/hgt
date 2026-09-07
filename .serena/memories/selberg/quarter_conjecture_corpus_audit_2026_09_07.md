@@ -1,26 +1,36 @@
-# Selberg quarter conjecture / Chain A formalization (2026-09-07)
+Selberg quarter-conjecture Chain A formalization status (2026-09-07).
 
-User requires custom corpus search `python3 scripts/formal_tools.py research ...` before each new theorem family/module; all new families below were searched first.
+Always run `python3 scripts/formal_tools.py research "<query>" --no-refresh` before adding a theorem family. User explicitly requires corpus-first searches.
 
-Closed Lean infrastructure now includes prior Maass/automorphic, local spherical, complementary-series, packet, and exceptional-scalar modules, plus:
-- `RealPrincipalSeriesCompactPicture.lean`: canonical Iwasawa B/K factors and linear equivalence between Borel coinduction and twisted compact-picture functions.
-- `RealPrincipalSeriesCompactAction.lean`: conjugated principal-series representation with explicit Iwasawa action formula.
-- `RealPrincipalSeriesKTypes.lean`: explicit `K ≃* Circle`, distinct/linearly independent even characters, compact K-type vectors, injective finite Fourier embedding.
-- `RealPrincipalSeriesCompactKAction.lean`: K-type eigenvector theorem, diagonal K representation on Finsupp, actual K-action intertwining.
-- `RealPrincipalSeriesKFiniteCoinduction.lean`: injective normalized K-finite embedding into algebraic coinduction, explicit basis/Iwasawa formula, K-action intertwining and invariant range.
-- `RealPrincipalSeriesCompactHarishChandra.lean`: finite compact submodule, actual restricted K-representation, transported H/E/F with exact coefficients, sl2 relations, Casimir and shifted Laplacian scalars.
-- `RealPrincipalSeriesCompactIrreducibility.lean`: compact K-type projections and irreducibility for |s|<1.
-- `RealPrincipalSeriesCompactUnitarity.lean`: transported positive Hermitian form and exact compact unitarity locus (-1,1), proved both directions.
-- `SelbergExceptionalCompactModel.lean`: every 0<λ<1/4 gives unitarizable irreducible compact complementary model with shifted Casimir λ.
+Formalized closed, unconditional infrastructure:
+- Maass homogeneous-space, congruence, spectral transport, analytic cusp/automorphic correspondence, cyclic automorphic representation.
+- Algebraic Borel coinduction, explicit Iwasawa compact picture, transported action.
+- Explicit K ≃ Circle, even K-characters, finite K-type embeddings, actual restricted K-action.
+- Explicit spherical Harish-Chandra H/E/F, sl2 relations, Casimir/Laplacian, complementary-series positive form, exact unitarity and irreducibility.
+- Finite exponent packets and exact generic half-strip; symmetric-power amplification and exceptional local models.
+- New: RealPrincipalSeriesCompactKDerivative.lean constructs rotation subgroup, proves finite Fourier vectors rotation-smooth, differentiates actual K action, and identifies derivative pointwise with iH on basis K-types.
+- New: RealPrincipalSeriesDiagonalDerivative.lean constructs positive diagonal subgroup, differentiates compact action at K identity, and identifies it with transported E+F on basis K-types there.
+- New factorization theorem compactRealPrincipalSeries_factor_apply in RealPrincipalSeriesCompactAction.lean.
 
-All are wired into `GaloisForLFunctions/RHTower.lean`. Targeted `lake env lean` and `lake build <modules>` pass. Capstone #print axioms shows only propext, Classical.choice, Quot.sound. Targeted forbidden-token scan is empty.
+Normalization correction:
+- Existing Harish-Chandra coefficients (s-1∓2m)/2 require inducing Borel exponent s-1, not s+1.
+- Corrected RealPrincipalSeriesKFiniteCoinduction.lean, RealPrincipalSeriesCompactHarishChandra.lean, and RealPrincipalSeriesCompactKDerivative.lean.
+- Closed theorem positiveDiagonal_matches_spherical_E_add_F_at_one verifies the normalization through actual differentiation.
 
-Remaining known-math formalization gaps:
-1. smooth vectors and proof transported H/E/F equal derivatives of explicit compact right action;
-2. coordinate positive hyperbolic Laplacian equals derived right-regular Casimir;
-3. quotient L²/Fourier zero-term correspondence and automorphic irreducible/local factor decomposition;
-4. arbitrary generic GL(n,R) unitary classification/exponent theorem and local symmetric-power parameter compatibility.
+Verification:
+- Direct `lake env lean` passed for all changed/new files.
+- Targeted builds passed for compact action, normalized coinduction, compact HC, compact irreducibility/unitarity, K derivative, diagonal derivative, and exceptional compact model.
+- Nine derivative capstone `#print axioms` checks show only propext, Classical.choice, Quot.sound.
+- Targeted forbidden-token scan empty; git diff check clean; global `python3 scripts/formal_tools.py lint` passed with only large-file warnings.
+- Umbrella imports include RealPrincipalSeriesCompactKDerivative and RealPrincipalSeriesDiagonalDerivative.
+- Do not commit/push unless user explicitly asks.
 
-Remaining open math: compatible automorphic symmetric-power lifts of unbounded degree for general weight-zero Maass forms, with infinity compatibility and constituent control. This is the actual obstruction to Selberg 1/4 via Chain A.
+Remaining genuine gaps:
+1. Extend positive-diagonal derivative from K identity to all K, add second noncompact subgroup, separate E and F, derive Casimir.
+2. Coordinate hyperbolic Laplacian = derived right-regular Casimir.
+3. Fourier zero-term ↔ cusp decay/quotient L2 and Hilbert completion/irreducible decomposition/local factor.
+4. Generic unitary GL(n,R) classification bridge; current exact half-strip theorem is only for explicit rank-one product model.
+5. Compatible automorphic symmetric-power lifts in unbounded degree/local compatibility; this is open mathematics and would imply Selberg.
+6. Arithmetic exclusion of exceptional complementary-series cusp representations remains Selberg itself.
 
-Latest global lint exit 1 only because unrelated concurrent `MontgomeryTruncationIntegrals.lean` is unreachable and contains a sorry at line 97; Chain A files are clean.
+Audit report: docs/drafts/pipeline/1-in-progress/selberg-quarter-conjecture-corpus-audit.md.

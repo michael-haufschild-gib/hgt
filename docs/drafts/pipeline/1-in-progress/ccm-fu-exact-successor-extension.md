@@ -124,3 +124,20 @@ The growth in total processed-set size is therefore removed from this
 sector. The missing simultaneous comparison still includes first gains,
 pairs with p*q<M, and unbounded quotient depths. These remain arithmetic
 obligations; the fixed-depth mixed bound does not close extension.
+
+## First gains and a concrete selection rule
+
+The [small-core first-gain theorem](../3-formalized/ccm-fu-small-core-first-gains.md)
+now gives `Delta_p^2<=(36/25)*4^L*L*M*Q_P` whenever `floor(M/p)<=L`,
+with no energy or sign hypothesis. Its child-energy count depends only
+on the processed quotient core; the current actual energy Q_P controls
+the parent pairing. First-gain magnitudes therefore avoid growth in
+card(P) at fixed quotient depth as well. Signs and unbounded depths
+still require the missing reserve comparison.
+
+The separately frozen [least-energy selection candidate](ccm-fu-greedy-envelope-extension.md)
+asks whether the p minimizing the first gain preserves Psi admission at
+every admitted state. Its RunPod screen passes all8176 eligible saved
+states through32, including states outside the empty-state greedy path.
+No near-minimum failure triggers the prescribed80-digit audit. This is
+finite evidence for a concrete choice of p, not a proof of selection.

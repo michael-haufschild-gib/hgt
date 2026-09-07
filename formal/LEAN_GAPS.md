@@ -5,17 +5,14 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/RHTower/MontgomeryPrimeSideBounds.lean:137` | `theorem tsum_inv_sq_two_mul_add_le` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/RHTower/MontgomeryPrimeSideBounds.lean:139` | `theorem tsum_inv_sq_two_mul_add_le` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 
 | Lines | File |
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
-| 16135 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 16139 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 14025 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |

@@ -64,6 +64,30 @@ theorem compactRealPrincipalSeries_apply (σ : ℝ) (g : SL2R)
         φ.1 (realIwasawaK ((k : SL2R) * g)) := by
   rfl
 
+/-- Evaluate the compact-picture action using any explicit `B K` factorization of `k g`. -/
+theorem compactRealPrincipalSeries_factor_apply (σ : ℝ) (g : SL2R)
+    (k : upperHalfPlaneStabilizer) (φ : realCompactPictureSpace σ)
+    (b : realUpperBorel) (q : upperHalfPlaneStabilizer)
+    (hfactor : (b : SL2R) * (q : SL2R) = (k : SL2R) * g) :
+    ((compactRealPrincipalSeries σ g) φ).1 k =
+      realUpperBorelRpowCharacter σ b * φ.1 q := by
+  have hintertwine := realPrincipalSeriesRestrictToK_intertwines σ g
+    (realCompactPictureExtend σ φ)
+  have heval := congrArg
+    (fun ψ : realCompactPictureSpace σ => ψ.1 k) hintertwine
+  rw [realPrincipalSeriesRestrictToK_extend] at heval
+  rw [← heval]
+  change (realCompactPictureExtend σ φ).1 ((k : SL2R) * g) = _
+  rw [← hfactor]
+  have hq : (realCompactPictureExtend σ φ).1 (q : SL2R) = φ.1 q := by
+    have hrestrict := congrArg
+      (fun ψ : realCompactPictureSpace σ => ψ.1 q)
+      (realPrincipalSeriesRestrictToK_extend σ φ)
+    exact hrestrict
+  have hproperty := (realCompactPictureExtend σ φ).property b (q : SL2R)
+  rw [hq] at hproperty
+  simpa [realUpperBorelExponentRepresentation] using hproperty
+
 /-- Identity acts trivially in the explicit compact-picture formula. -/
 @[simp]
 theorem compactRealPrincipalSeries_one_apply (σ : ℝ)
