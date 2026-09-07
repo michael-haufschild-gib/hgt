@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ConstrainedWeilApertureConstantTerm
+import GaloisForLFunctions.RHTower.XiZeroBandFinite
 
 /-!
 # Decay norms of the normalised ray-term polynomials
@@ -84,6 +85,142 @@ theorem shiftedPairPoly_pairSum_norm_ge {Θ g γ : ℝ} (hΘ : 0 < Θ) (hg : 0 <
     | exact norm_ge_of_abs_im ((abs_of_nonneg hm0).symm.le.trans (sq_le_sq.mp (by
         simp only [Complex.add_im, Complex.neg_im, Complex.ofReal_im, rayFreq₁_im, rayFreq₂_im]
         nlinarith [hν₁sq, hν₂sq, hzsq, hγsq, hm1sq, hmgsq])))
+
+/-! ## Coefficient sums and decay norms of far copies -/
+
+theorem norm_rayFreq₁_ge_one (γ : ℝ) {q : XiZeroCopy} (hfar : FarFromCentre γ q) :
+    1 ≤ ‖rayFreq₁ γ q‖ :=
+  le_trans (by rw [rayFreq₁_im]; exact hfar.1) (Complex.abs_im_le_norm _)
+
+theorem norm_rayFreq₂_ge_one (γ : ℝ) {q : XiZeroCopy} (hfar : FarFromCentre γ q) :
+    1 ≤ ‖rayFreq₂ γ q‖ :=
+  le_trans (by rw [rayFreq₂_im]; exact hfar.2) (Complex.abs_im_le_norm _)
+
+/-- A coefficient bound `M e^{|Re c|/4}/‖c‖` gives `M e^{Θ/4}` when `‖c‖ ≥ 1` and `|Re c| ≤ Θ`. -/
+theorem coeff_bound_far {M Θ : ℝ} (hM : 0 ≤ M) {c : ℂ} (hc : 1 ≤ ‖c‖) (hre : |c.re| ≤ Θ) {x : ℂ}
+    (hx : ‖x‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖) : ‖x‖ ≤ M * Real.exp (Θ / 4) := by
+  refine hx.trans ?_
+  have h1 : Real.exp (|c.re| / 4) ≤ Real.exp (Θ / 4) := Real.exp_le_exp.mpr (by linarith)
+  calc M * Real.exp (|c.re| / 4) / ‖c‖ ≤ M * Real.exp (|c.re| / 4) / 1 := by
+        gcongr
+    _ = M * Real.exp (|c.re| / 4) := div_one _
+    _ ≤ M * Real.exp (Θ / 4) := mul_le_mul_of_nonneg_left h1 hM
+
+/-- **Coefficient sum of a far copy**: at most `8 M e^{Θ/4}`. -/
+theorem coeffSum_shiftedPairPoly_le {Θ M : ℝ} (hM : 0 ≤ M)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖)
+    (γ : ℝ) {q : XiZeroCopy} (hq : |(xiSpectralPoint q).im| ≤ Θ) (hfar : FarFromCentre γ q) :
+    ExpPoly.coeffSum (shiftedPairPoly Θ γ q) ≤ 8 * (M * Real.exp (Θ / 4)) := by
+  have h1 := norm_rayFreq₁_ge_one γ hfar
+  have h2 := norm_rayFreq₂_ge_one γ hfar
+  have hc₁ : rayFreq₁ γ q ≠ 0 := by
+    intro h; rw [h, norm_zero] at h1; linarith
+  have hc₂ : rayFreq₂ γ q ≠ 0 := by
+    intro h; rw [h, norm_zero] at h2; linarith
+  have hre₁ : |(rayFreq₁ γ q).re| ≤ Θ := by rw [rayFreq₁_re, abs_neg]; exact hq
+  have hre₂ : |(rayFreq₂ γ q).re| ≤ Θ := by rw [rayFreq₂_re, abs_neg]; exact hq
+  have hnre₁ : |(-rayFreq₁ γ q).re| ≤ Θ := by rw [Complex.neg_re, abs_neg]; exact hre₁
+  have hnre₂ : |(-rayFreq₂ γ q).re| ≤ Θ := by rw [Complex.neg_re, abs_neg]; exact hre₂
+  have hn₁ : 1 ≤ ‖-rayFreq₁ γ q‖ := by rw [norm_neg]; exact h1
+  have hn₂ : 1 ≤ ‖-rayFreq₂ γ q‖ := by rw [norm_neg]; exact h2
+  have b1 := coeff_bound_far hM h1 hre₁ (hMb _ hc₁).1
+  have b2 := coeff_bound_far hM h1 hre₁ (hMb _ hc₁).2
+  have b3 := coeff_bound_far hM hn₁ hnre₁ (hMb _ (neg_ne_zero.mpr hc₁)).1
+  have b4 := coeff_bound_far hM hn₁ hnre₁ (hMb _ (neg_ne_zero.mpr hc₁)).2
+  have b5 := coeff_bound_far hM h2 hre₂ (hMb _ hc₂).1
+  have b6 := coeff_bound_far hM h2 hre₂ (hMb _ hc₂).2
+  have b7 := coeff_bound_far hM hn₂ hnre₂ (hMb _ (neg_ne_zero.mpr hc₂)).1
+  have b8 := coeff_bound_far hM hn₂ hnre₂ (hMb _ (neg_ne_zero.mpr hc₂)).2
+  rw [shiftedPairPoly_explicit Θ γ hc₁ hc₂]
+  simp only [ExpPoly.coeffSum, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, norm_neg]
+  linarith
+
+/-- **Decay norm of a far copy**: `≤ (8 M e^{Θ/4})² / (4 m₀ ‖z_q‖²)`. -/
+theorem decayNorm_normalizedRayTermPoly_le_far {Θ g γ M : ℝ} (hΘ : 0 < Θ) (hg : 0 < g) (hM : 0 ≤ M)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖)
+    {q : XiZeroCopy} (hq : |(xiSpectralPoint q).im| ≤ Θ) (hz : g ≤ |(xiSpectralPoint q).re|)
+    (hγ : g ≤ |γ|) (hfar : FarFromCentre γ q) :
+    ExpPoly.decayNorm (normalizedRayTermPoly Θ γ q)
+      ≤ (8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g) * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)) := by
+  have hm0 : 0 < min 1 (min Θ g) := lt_min one_pos (lt_min hΘ hg)
+  have hpair := shiftedPairPoly_pairSum_norm_ge hΘ hg hq hz hγ hfar
+  rw [normalizedRayTermPoly_eq, ExpPoly.decayNorm_smul]
+  have hmul := ExpPoly.decayNorm_mul_le (shiftedPairPoly Θ γ q) (shiftedPairPoly Θ γ q) hm0 hpair
+  have hcs := coeffSum_shiftedPairPoly_le hM hMb γ hq hfar
+  have hcs0 := ExpPoly.coeffSum_nonneg (shiftedPairPoly Θ γ q)
+  have hw : ‖-(1 / 4 : ℂ) / xiSpectralPoint q ^ 2‖ = 1 / (4 * ‖xiSpectralPoint q‖ ^ 2) := by
+    rw [norm_div, norm_neg, norm_div, norm_one, norm_pow, Complex.norm_ofNat]
+    ring
+  rw [hw]
+  have hsq : ExpPoly.coeffSum (shiftedPairPoly Θ γ q) * ExpPoly.coeffSum (shiftedPairPoly Θ γ q)
+      ≤ (8 * (M * Real.exp (Θ / 4))) ^ 2 := by
+    rw [← sq]
+    exact pow_le_pow_left₀ hcs0 hcs 2
+  have hz0 : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
+  calc 1 / (4 * ‖xiSpectralPoint q‖ ^ 2)
+        * ExpPoly.decayNorm (ExpPoly.mul (shiftedPairPoly Θ γ q) (shiftedPairPoly Θ γ q))
+      ≤ 1 / (4 * ‖xiSpectralPoint q‖ ^ 2)
+        * (ExpPoly.coeffSum (shiftedPairPoly Θ γ q) * ExpPoly.coeffSum (shiftedPairPoly Θ γ q)
+          / min 1 (min Θ g)) := mul_le_mul_of_nonneg_left hmul (by positivity)
+    _ ≤ 1 / (4 * ‖xiSpectralPoint q‖ ^ 2) * ((8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g)) := by
+        gcongr
+    _ = (8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g) * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)) := by
+        ring
+
+/-! ## Summability of the decay norms over the copies -/
+
+theorem xiSpectralPoint_re_eq_im (q : XiZeroCopy) : (xiSpectralPoint q).re = (q.1 : ℂ).im := by
+  simp [xiSpectralPoint]
+
+/-- Copies that are not far from the centre lie in one of two ordinate bands, hence are finite. -/
+theorem finite_not_farFromCentre (γ : ℝ) : {q : XiZeroCopy | ¬ FarFromCentre γ q}.Finite := by
+  have h1 := finite_xiZeroCopy_band γ (zero_le_one)
+  have h2 := finite_xiZeroCopy_band (-γ) (zero_le_one)
+  refine (h1.union h2).subset ?_
+  intro q hq
+  simp only [FarFromCentre, mem_setOf_eq, not_and_or, not_le] at hq
+  simp only [mem_union, mem_setOf_eq, ← xiSpectralPoint_re_eq_im]
+  rcases hq with hq | hq
+  · left; exact hq.le
+  · right; rw [sub_neg_eq_add]; exact hq.le
+
+/-- **Summability of the decay norms.**  If `|Im z_q| ≤ Θ` for all copies, `g ≤ |Re z_q|` for all
+copies and `g ≤ |γ|`, then `Σ_q decayNorm (normalizedRayTermPoly Θ γ q) < ∞`. -/
+theorem summable_decayNorm_normalizedRayTermPoly {Θ g γ : ℝ} (hΘ : 0 < Θ) (hg : 0 < g)
+    (hall : ∀ q : XiZeroCopy, |(xiSpectralPoint q).im| ≤ Θ)
+    (hord : ∀ q : XiZeroCopy, g ≤ |(xiSpectralPoint q).re|) (hγ : g ≤ |γ|) :
+    Summable (fun q : XiZeroCopy => ExpPoly.decayNorm (normalizedRayTermPoly Θ γ q)) := by
+  classical
+  obtain ⟨M, hM, hMb⟩ := exists_plateau_coeff_bound
+  set K : ℝ := (8 * (M * Real.exp (Θ / 4))) ^ 2 / min 1 (min Θ g) with hK
+  have hK0 : 0 ≤ K := by
+    have : 0 < min 1 (min Θ g) := lt_min one_pos (lt_min hΘ hg)
+    positivity
+  set F : Finset XiZeroCopy := (finite_not_farFromCentre γ).toFinset with hF
+  have hsum1 : Summable (fun q : XiZeroCopy => K * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2))) := by
+    have := xiSpectralPoint_inv_sq_summable.mul_left (K / 4)
+    refine this.congr fun q => ?_
+    ring
+  have hsum2 : Summable (fun q : XiZeroCopy =>
+      if q ∈ F then ExpPoly.decayNorm (normalizedRayTermPoly Θ γ q) else 0) := by
+    refine summable_of_ne_finset_zero (s := F) fun q hq => ?_
+    simp [hq]
+  refine Summable.of_nonneg_of_le (fun q => ExpPoly.decayNorm_nonneg _) (fun q => ?_)
+    (hsum1.add hsum2)
+  by_cases hfar : FarFromCentre γ q
+  · have hqF : q ∉ F := by
+      simp only [hF, Set.Finite.mem_toFinset, mem_setOf_eq, not_not]
+      exact hfar
+    rw [if_neg hqF, add_zero]
+    exact decayNorm_normalizedRayTermPoly_le_far hΘ hg hM hMb (hall q) (hord q) hγ hfar
+  · have hqF : q ∈ F := by
+      simp only [hF, Set.Finite.mem_toFinset, mem_setOf_eq]
+      exact hfar
+    rw [if_pos hqF]
+    have : 0 ≤ K * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)) := by positivity
+    linarith
 
 end
 
