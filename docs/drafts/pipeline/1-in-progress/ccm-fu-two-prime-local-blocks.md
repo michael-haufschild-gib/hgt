@@ -19,6 +19,13 @@ The bounded screen extends only the first-prime questions to M=33..1024: every a
 
 That bounded screen passes all 617453 source pairs and all 95747 first-prime reserve states. Every original diagonal agrees with the saved greedy data. The maximum observed dilation ratio is again about 1.31933, now at M=371,p=2,d=53, an exact dilation of the cutoff-seven shape. The table and all first-prime states are saved; no repeat run is needed without a different question.
 
+Universal first-prime geometric certification is nevertheless
+[false analytically](../5-failed/ccm-fu-universal-first-prime-certificate.md):
+at M=12p it fails for every sufficiently large prime p, while ordinary
+first-prime energy still contracts. This rejects that sufficient reserve
+estimate, not the factor-two channel comparison or the actual two-prime
+energy ceiling. Their all-cutoff proofs remain open.
+
 ## Exact paper reduction
 
 For nonnegative a,b,c,e satisfying `b,c<=2a` and `e<=2b,2c`, put x=b+c. Then `e<=x` and `bc<=ax`. If a<=x, the needed cross reserve is `ax-bc+e(x-a)>=0`. If x<=a, it is `(a-x)(x-e)+x^2-bc>=0`. Thus `(a-b-c+e)^2<=a^2+b^2+c^2+e^2`.

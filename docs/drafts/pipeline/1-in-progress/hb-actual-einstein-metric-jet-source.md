@@ -42,8 +42,16 @@ has a proved smooth radial horizon extension and zero radial boundary limit afte
 the actual ingoing coordinate change. The complete vector-stream Einstein operator
 is reduced to its forced master curl. The next specific response target is the
 angular resolvent of S² described in
-[the physical correction card](hb-quadratic-physical-correction.md); its all-height
-nonlinear-source identity, angular domain and causal admission remain open.
+[the physical correction card](hb-quadratic-physical-correction.md). Its complete
+all-height mixed nonlinear source is now proved equal to the original amplitude
+cut, with the exact forced current and angular defect retained. Both actual Xi
+branches have nonreal angular parameters, and the full squared cusp principal
+part has an explicit audited differential response. The full cusp-subtracted
+forcing now belongs to the actual modular hyperbolic L² space. The entire
+Xi-normalized scalar continues modular inversion to every actual Xi occurrence;
+the full residual matches the modular seams. The actual closed global angular
+energy domain, smooth resolvent response and physical causal admission remain open;
+see [the angular resolvent card](hb-global-angular-resolvent.md).
 
 The corpus now contains actual second/third Einstein variations, complete metric
 jets, the corrected-family source coefficients and the constrained vector master

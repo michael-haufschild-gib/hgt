@@ -52,8 +52,8 @@ E_rA = -w*X_A/(2*r²*f).
 Only these entries and their symmetric partners survive. No homogeneous radial
 equation or angular eigen-equation is assumed. The actual scalar contraction
 vanishes and the cosmological term is retained. This supplies the operator needed
-for a forced response; it does not identify the nonlinear forcing or select the
-physical inverse.
+for a forced response. The nonlinear forcing is now identified below; the physical
+inverse still needs construction.
 
 Restoring an envelope with logarithmic radial rate `w/(r*f)` gives the remaining
 factor F the master operator
@@ -62,33 +62,51 @@ The constant factor exposes the shifted angular resolvent. The inverse-square
 factor has exact image `6+[Delta-(w+3)*(w+4)]/r²`. These identities also passed
 independent scratch checks.
 
-## Nonlinear source and response candidate
+## Complete nonlinear mixed source and angular response
 
-The [39.63-second RunPod experiment](../2-fully-proven/computations/hb-quadratic-physical-source-2026-09-07/REPORT.md)
-evaluates every corrected source component at y=1 after all derivatives. Third
-angular derivatives cancel throughout. The SV source has only mixed components;
-its candidate all-height current potential W is recorded in the report. The
-all-height nonlinear source identity remains unproved.
+The complete all-height scalar–vector source is now proved to equal the literal
+mixed amplitude cut of the original corrected nonlinear Einstein path. Every
+component, the inverse–Ricci cross terms and the correction's linear cosmological
+image are retained. Third angular derivatives cancel symbolically. The exact
+source tensor and audit are in
+[the formalized source and response card](../3-formalized/hb-complete-mixed-einstein-source-and-cusp-response.md).
 
-The independently derived vector master normalization requires `X=2W` to cancel
-that nonlinear source. Put `P=S²`, `w=2s`, `b=s*(s-1)/8`. Combining the candidate
-source current with the exact inverse-square master identity suggests the stream
+With `J=coexact d(S²)/2` and `K=coexact d[y²(Sx²+Sy²)]/2`, its current is
 
 ```
-Omega = coexact d [B²*(H-b*P/r²)]
-[Delta-(2s+1)*(2s+2)]*H = (s+1)*(2s+1)*P.
+W = B²*[(5s²+15s+4)/4+s*(s-1)*(s+2)²/(4*r²)]*J
+    -B²*s*(s-1)/(4*r²)*K.
 ```
 
-Thus the candidate SV response needs one specific angular resolvent of S², with
-its domain, constant terms, continuum and endpoint conditions retained. This is
-a derived response candidate, not an assumed solution or a replacement for the
-fixed-clock extinction target. Its nonlinear-source identification, angular
-resolvent realization and physical causal admission remain open.
+The complete product jet proves `r²*f*E_rA=partial_t W_A` and
+`r²*E_tA/f=partial_r W_A`. Setting the vector master to `X=2W` cancels this
+source. The exact master defect yields the sufficient angular equation
+
+```
+Omega = coexact d [B²*(H-s*(s-1)*S²/(8*r²))]
+[Delta-(2s+1)*(2s+2)]*H = (s+1)*(2s+1)*S².
+```
+
+Both physical Xi branches have a nonreal angular parameter, unconditionally.
+The full square of both Weyl cusp powers, including `2*A*D*y`, has an explicit
+response to the actual hyperbolic differential operator. All three response
+denominators are proved nonzero at every actual Xi occurrence. The forcing
+amplitude is retained. The actual cusp-subtracted full forcing now has a proved
+L² vector under the invariant modular measure. Analytic continuation proves the
+full scalar's modular inversion at every Xi occurrence, and the complete residual
+matches the modular seams. The proof retains all infinite-tail interactions and
+cutoff derivatives; see
+[the full forcing and continuation card](../3-formalized/hb-global-angular-forcing-and-modular-continuation.md).
+The actual global form domain, smooth resolvent response and physical causal
+admission remain open. No fixed-clock extinction claim follows from these results.
 
 ## Work required
 
-1. Prove the complete all-height nonlinear SV source identity, construct the actual
-   angular resolvent and establish the physical forced vector response.
+1. Construct the actual quotient-compatible closed angular energy form and its
+   dense injective embedding into the proved forcing's L² space. Identify its weak
+   operator with the actual Laplacian and obtain the smooth global resolvent
+   response. Establish the physical causal prescription for the complete forced
+   vector response.
 2. Construct the remaining SS and VV responses and the complete constrained
    physical response. Retain the correction's linear image in the original left
    pairing until the physical domain and its boundary terms justify annihilation.

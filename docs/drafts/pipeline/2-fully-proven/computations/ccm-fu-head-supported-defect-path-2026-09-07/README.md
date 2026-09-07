@@ -1,8 +1,13 @@
 # Complete paths with defects confined to the head
 
 Numerical diagnostic only. No result here is a Lean premise or formal
-nonexistence theorem. The [questions](../../../1-in-progress/ccm-fu-head-supported-defect-path.md)
+nonexistence theorem. The [questions](../../../5-failed/ccm-fu-head-supported-defect-path.md)
 and original energy budget were frozen before execution.
+
+The separate [analytic triangle proof](../../../3-formalized/ccm-fu-twenty-one-defect-triangle.md)
+now proves the cutoff21 obstruction for every prime order, even without an
+energy budget. It uses no numerical result from this record. The other
+cutoffs and finite optimum counts below remain numerical findings.
 
 All 8860 saved subset states through cutoff 32 were processed. Complete
 certified paths with no negative nonempty oriented coordinates fail to

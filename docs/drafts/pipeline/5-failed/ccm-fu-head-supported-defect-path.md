@@ -1,9 +1,31 @@
-# CCM-FU: can complete certified paths confine defects to the head?
+# CCM-FU: complete paths cannot confine defects to the head
 
-- **Stage:** 1-in-progress
-- **Type:** [BRIDGE] / hostile test of the source domain of a proved compensation law
-- **Parent:** [complete reserve extension](ccm-fu-reserve-extension-induction.md)
+- **Stage:** 5-failed
+- **Type:** unconditional actual-source obstruction; positive compensation survivor formalized
+- **Parent:** [complete reserve extension](../1-in-progress/ccm-fu-reserve-extension-induction.md)
 - **Boundary:** The original uniform signed source bound, complete reserve extension, and RH remain open.
+
+## Closed analytic obstruction
+
+At cutoff21, every list containing primes2,3,5 has a proper prefix at
+which an unprocessed singleton is below -1/50 in the oriented field.
+No energy-budget hypothesis, order restriction, or numerical source premise
+enters this theorem. In particular no complete prime order can confine all
+defects to the head, even if its energy is unrestricted.
+
+The [formal triangle certificate](../3-formalized/ccm-fu-twenty-one-defect-triangle.md)
+retains all squarefree cofactors. Before the last first occurrence among
+2,3,5, its other two primes are processed. The three singleton remainders
+are bounded above by `K_2-K_6-K_10`, `K_3-K_6-K_15`, and
+`K_5-K_10-K_15`, all strictly below -1/50 by analytic channel bounds.
+The only further possible pair,14, contributes nonpositively.
+
+This retires the universal head-supported path strategy. The stronger
+restricted extension assertion also fails: if it held at every admissible
+proper state, finite induction from the empty state would construct the
+excluded path. The exact local contraction classification below is the
+nontrivial positive survivor, with both paper proof and Lean certificate
+closed. Subsequent mixed-field arithmetic control remains open.
 
 ## Frozen arithmetic questions
 
@@ -58,8 +80,9 @@ The saved-data test rejects question1 at21..29 and31..32. All183 failures
 of question2 are reachable through the restricted class. Independent
 80-digit reconstruction of every state at each affected cutoff reproduces
 both graph results. The optimum in question3 is one at these cutoffs and
-zero elsewhere through32. These are numerical findings, not formal
-nonexistence theorems. The [complete output](../2-fully-proven/computations/ccm-fu-head-supported-defect-path-2026-09-07/summary.json)
+zero elsewhere through32. These ranges and optimum counts are numerical
+findings; the separate cutoff21 all-order theorem above is formal.
+The [complete output](../2-fully-proven/computations/ccm-fu-head-supported-defect-path-2026-09-07/summary.json)
 retains all failures, outgoing fields, paths and independent audits.
 
 The first stalled field has M=21, P={7,11,13,19}. Its certificate is below

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.RealSphericalUnitarity
+import GaloisForLFunctions.RHTower.RealSphericalComplementarySeries
 
 /-!
 # Finite local exponent packets and positivity
@@ -8,9 +8,9 @@ of real exponents.  The resulting block-diagonal form is positive definite exact
 exponent lies in `(-1/2, 1/2)`.  Applying this to symmetric-power exponent packets turns the
 generic-unitary strip condition into an explicit positivity certificate.
 
-The theorem is a closed finite-dimensional calculation.  It does not assert that every generic
-unitary representation supplies this quadratic form; that identification is the remaining local
-classification step.
+The packet theorems use the explicit positive invariant complementary-series forms, so the
+rank-one spherical unitarizability criterion is an equivalence.  Identifying arbitrary generic
+`GL(n, ℝ)` representations with these rank-one blocks remains the local classification step.
 -/
 
 namespace GaloisForLFunctions.RHTower
@@ -88,6 +88,26 @@ theorem rankOneUnitarizableExponentPacket_pointwise_bound {ι : Type*} [Fintype 
   rcases unitarizableSphericalExponentParameter_subset (h i) with ⟨hleft, hright⟩
   constructor <;> linarith
 
+/-- A finite packet of explicit spherical rank-one models is unitarizable exactly in the open
+half-strip. -/
+theorem rankOneUnitarizableExponentPacket_iff {ι : Type*} [Fintype ι]
+    (μ : ι → ℝ) :
+    RankOneUnitarizableExponentPacket μ ↔ ∀ i, |μ i| < 1 / 2 := by
+  constructor
+  · exact rankOneUnitarizableExponentPacket_pointwise_bound μ
+  · intro h i
+    have hi : μ i ∈ Set.Ioo (-1 / 2) (1 / 2) := by
+      rcases abs_lt.mp (h i) with ⟨hleft, hright⟩
+      constructor <;> linarith
+    rw [← unitarizableSphericalExponentParameter_eq_Ioo] at hi
+    exact hi
+
+/-- Explicit rank-one unitarizability and positivity of the finite packet form are equivalent. -/
+theorem rankOneUnitarizableExponentPacket_iff_positive {ι : Type*} [Fintype ι]
+    (μ : ι → ℝ) :
+    RankOneUnitarizableExponentPacket μ ↔ LocalExponentPacketPositive μ := by
+  rw [rankOneUnitarizableExponentPacket_iff, localExponentPacketPositive_iff]
+
 /-- Rank-one unitarizability of every exponent makes the finite packet form positive definite. -/
 theorem rankOneUnitarizableExponentPacket_implies_positive {ι : Type*} [Fintype ι]
     (μ : ι → ℝ) :
@@ -152,6 +172,14 @@ theorem symmetricPowerRankOneUnitarizable_implies_positive (ν : ℝ) (d : ℕ) 
   intro h
   exact rankOneUnitarizableExponentPacket_implies_positive _ h
 
+/-- Exact unitarity locus for every rank-one block in one symmetric-power exponent packet. -/
+theorem symmetricPowerRankOneUnitarizable_iff (ν : ℝ) (d : ℕ) :
+    SymmetricPowerRankOneUnitarizable ν d ↔
+      ν ∈ genericUnitarySymPowerLocus d := by
+  rw [SymmetricPowerRankOneUnitarizable,
+    rankOneUnitarizableExponentPacket_iff]
+  rfl
+
 /-- If every positive-degree symmetric-power packet passes the rank-one unitarity obstruction,
 the original exponent is zero. -/
 theorem all_degree_symmetricPowerRankOneUnitarizable_subset :
@@ -176,6 +204,32 @@ theorem all_even_degree_symmetricPowerRankOneUnitarizable_subset :
       SymmetricPowerLocalExponentPositive ν (2 * (d + 1))} := hpositive
   rw [all_even_degree_symmetricPowerLocalExponentPositive] at hmem
   exact hmem
+
+/-- Explicit rank-one unitarizability in every positive symmetric-power degree has exact locus
+`{0}`. -/
+theorem all_degree_symmetricPowerRankOneUnitarizable :
+    {ν : ℝ | ∀ d : ℕ, SymmetricPowerRankOneUnitarizable ν (d + 1)} = {0} := by
+  calc
+    {ν : ℝ | ∀ d : ℕ, SymmetricPowerRankOneUnitarizable ν (d + 1)} =
+        {ν : ℝ | ∀ d : ℕ, ν ∈ genericUnitarySymPowerLocus (d + 1)} := by
+      ext ν
+      simp only [Set.mem_setOf_eq]
+      exact forall_congr' fun d ↦ symmetricPowerRankOneUnitarizable_iff ν (d + 1)
+    _ = {0} := all_degree_genericUnitarySymPowerLocus
+
+/-- Even symmetric-power degrees already give exact rank-one unitarizability locus `{0}`. -/
+theorem all_even_degree_symmetricPowerRankOneUnitarizable :
+    {ν : ℝ | ∀ d : ℕ,
+      SymmetricPowerRankOneUnitarizable ν (2 * (d + 1))} = {0} := by
+  calc
+    {ν : ℝ | ∀ d : ℕ, SymmetricPowerRankOneUnitarizable ν (2 * (d + 1))} =
+        {ν : ℝ | ∀ d : ℕ,
+          ν ∈ genericUnitarySymPowerLocus (2 * (d + 1))} := by
+      ext ν
+      simp only [Set.mem_setOf_eq]
+      exact forall_congr' fun d ↦
+        symmetricPowerRankOneUnitarizable_iff ν (2 * (d + 1))
+    _ = {0} := all_even_degree_genericUnitarySymPowerLocus
 
 end
 

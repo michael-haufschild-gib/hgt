@@ -831,3 +831,137 @@ estimate for the balanced complementary Möbius rectangle. No numerical
 experiment is warranted for these algebraic consequences, and no new
 receiver or restatement of the existing regularization theorem is being
 formalized as a substitute for the missing arithmetic estimate.
+
+## Full-flux Fourier truncation: logarithmic error formalized
+
+For Q>=1 retain the actual finite-frequency primitive
+
+```
+P_(e,Q)(k)=e/(2*pi^2)*sum_(m=1..Q)
+  (cos(2*pi*m*k/e)-1)/m^2.
+```
+
+The corpus's absolutely convergent Bernoulli cosine series identifies its
+complete sum with P_e(k). The omitted frequencies cost at most
+`e/(pi^2*Q)`, uniformly in k. Applying the actual Möbius coefficients and
+all divisor-channel times proves
+
+```
+|reciprocalFlux(N)-truncatedReciprocalFlux(N,Q)|
+ <= (N+1)*harmonic(N)/(pi^2*Q).
+```
+
+`DeletionFlux.flux_fourier_cutoff_error` specializes to Q=N+1 and proves
+the unconditional bound `harmonic(N)/pi^2` for every N, including zero.
+All time tails remain present. Here m is the Bernoulli frequency; the
+product m*j after expanding a divisor channel is not being truncated.
+The proof establishes absolute convergence of the new and error channels
+before subtracting their infinite sums.
+[Definitions, paper proof and validation](../3-formalized/edq-flux-fourier-truncation.md).
+The scratch check, single-leaf build and five-new-declaration axiom audit
+passed. No numerical input, added axiom or umbrella build was used.
+
+### What the bilinear attempt still has to bound
+
+The complete-kernel expansion also has the exact paper form
+
+```
+K(d,e)=-e/(2*pi^2*d^2)*sum_(r>=1)
+  tau(r)*(1-cos(2*pi*r*d/e))/r^2.
+```
+
+Here tau(r) counts positive divisors. Insert the Bernoulli expansion into
+the complete j series and group r=m*j; absolute convergence follows from
+the product of two inverse-square sums. This r expansion is a separate
+paper identity, not the definition of the new Lean truncation.
+
+Already the m=j=1 summand has phase 2*pi*d/e. On the balanced rectangle
+N<d<=2N, N/2<e<=N its phase lies between 2*pi and 8*pi, independently of
+N. Increasing N therefore supplies no growing phase variation for this
+fixed summand. After d=N*x,e=N*y its amplitude is N^(-1) times a fixed
+smooth function on [1,2]x[1/2,1]. Two finite summations by parts bound
+that summand by a constant times N^(-1) times the two maximal Möbius block
+partial sums. The available arbitrary logarithmic savings in those partial
+sums leave an N times logarithmic-saving allowance, not subpower growth.
+This diagnoses this particular estimate; it does not give a lower bound
+for the signed block or exclude a different arithmetic argument.
+
+The inspected `TypeIIEnergyBound` treats a different curved phase, and
+`VinogradovTaylorPerturbation` needs its stated rational-approximation and
+denominator conditions. Neither supplies this low-frequency bound merely
+because the sum is bilinear. `MRFibreReduction` retains an averaged
+short-interval hypothesis. The source-specific complete block must still
+be bounded. The inspected [Maier--Rassias theorem](https://arxiv.org/pdf/1806.05070)
+also retains D>=2 in Theorem 2.1, leaving the comparable-modulus range.
+[Chavez's fractional-part correlation statement](https://arxiv.org/pdf/2402.09343)
+uses direct integer dilations averaged uniformly over an integer number
+of periods; it is not the reciprocal-dilation, physically weighted EDQ
+source. No transfer of that statement to the present norm is asserted.
+
+The proved new frequency-tail bound is a correction bound. The remaining
+finite-frequency signed arithmetic flux and its full energy comparison
+are still open; no RH proof or falsification has been obtained.
+
+## Modulus-ratio test and complete reduced-denominator head
+
+The direct cutoff recurrence does not remove the unknown correlation. Since
+K(N,N)=0, the complete-kernel formula gives
+
+```
+R_N-R_(N-1) = mu(N)*(1-1/N)/2
+             +mu(N)*sum_(e<N)mu(e)*(K(N,e)+K(e,N)).
+```
+
+Using complete first-column inversion on the reverse term gives
+`R_N-R_(N-1)=mu(N)*(sum_(e<N)mu(e)K(N,e)-sum_(d>N)mu(d)K(d,N))`.
+The boundary cancels exactly; the two signed source sums still need a bound.
+No new ceiling follows from this recurrence.
+
+The frozen RunPod diagnostic decomposes the literal one-complement formula
+by d/e. The prediction that d/e<=4 approximates the complete flux within 25%
+failed at N=48,64,96 among the nine frozen cutoffs. Its predeclared outcome is
+MIXED; no ratio-four relative discrepancy exceeds one. Every tested (16,32]
+band is negative and every (32,64] band positive. A separately frozen
+attribution test found that reduced denominators b=2,3 have the wrong sign
+for the former band at all nine cutoffs. Thus its stable signs cannot be
+attributed to those selected rays alone. Both experiments retain the complete
+infinite time kernels and obtain their complete omitted parts by subtracting
+from existing full-flux intervals. These are floating evaluations of analytic
+bounds, not certified intervals or Lean evidence.
+[Protocols, complete results, controls and hashes](../2-fully-proven/computations/edq-modulus-ratio-locality-2026-09-07/REPORT.md).
+
+The exact reduced-pair coordinates are d=r*a,e=r*b, gcd(a,b)=1. They satisfy
+
+```
+K(r*a,r*b)=K(a,b)/r,
+mu(r*a)*mu(r*b)=mu(a)*mu(b)*mu(r)^2*[gcd(r,a*b)=1].
+```
+
+An entire fixed reduced pair has constant sign and a nonnegative harmonic
+common-factor mass over N/a<r<=N/b. This is an exact paper identity; it does
+not by itself show that finitely many pairs determine a complete band.
+
+The positive quantitative result is stronger than bounding finitely many
+pairs: retain every numerator and time coordinate and restrict only b<=B.
+Define J(N,B) by the literal coprime a tail a>floor(N/r), with r<=floor(N/b),
+actual coefficients mu(r*a)mu(r*b), and b<=min(B,N). The primitive bound and
+the first reciprocal-square estimate give |K(d,e)|<=e/(4*d^2). Summing the
+entire numerator tail costs at most b/(4*r*floor(N/r))<=b/(2*N). Summing
+the admitted r then costs at most 1/2 for each b. Consequently
+
+```
+|J(N,B)| <= B/2   for every natural N,B.
+```
+
+`DeletionFlux.reducedHead_bound` in `EulerDeletionReducedDenominatorHead`
+formalizes this unconditional bound, including N=0 and B=0, with summability
+proved before infinite sums are used. The scratch check, single-leaf build and
+four-new-declaration axiom audit passed. Only the new leaf compiled; no umbrella
+build or numerical Lean input was used. The exact statement and remaining
+source-identification boundary are [documented](../3-formalized/edq-reduced-denominator-head.md).
+
+Thus a subpower-sized reduced-denominator head has a proved subpower cost.
+The source with b>B remains signed and uncontrolled; the experiments rule out
+discarding it at the tested small cutoff. The paper identification J(N,N)=R_N
+has not been added as a Lean theorem. Neither the new head bound nor the finite
+diagnostics proves the complete EDQ ceiling or RH. No frontier-map edit was made.

@@ -1,0 +1,1130 @@
+{
+  "question": "Certified extension selecting from the union of negative nonempty labels.",
+  "input_sha256": {
+    "defect-reserve-reanalysis.json": "c6542367707c793fcf00675252e0b67e7bf7786a7a87769971dd4c2bcc944ff5",
+    "subset-states.csv": "ba22442cb19cf20b5df1e9cc07d57c67d4105963a2a7cb75b5ab96c53e225fd9"
+  },
+  "script_sha256": "2f169a224374bf2de43100c80fc261f66589208100b72c3661f94eaebae228c8",
+  "workers": 8,
+  "elapsed_seconds": 0.0858849436044693,
+  "states": 8860,
+  "eligible": 3949,
+  "failures": 0,
+  "failed_path_cutoffs": [],
+  "results": [
+    {
+      "M": 1,
+      "primes": [],
+      "initial_energy": 0.0,
+      "states": 1,
+      "max_reconstruction_error": 0.0,
+      "audit": null,
+      "failures": [],
+      "path": [],
+      "original_path": [],
+      "eligible": 0,
+      "ordinary_reachable": 1,
+      "policy_reachable": 1
+    },
+    {
+      "M": 2,
+      "primes": [],
+      "initial_energy": 0.004091847614167744,
+      "states": 1,
+      "max_reconstruction_error": 0.0,
+      "audit": null,
+      "failures": [],
+      "path": [],
+      "original_path": [],
+      "eligible": 0,
+      "ordinary_reachable": 1,
+      "policy_reachable": 1
+    },
+    {
+      "M": 3,
+      "primes": [
+        2
+      ],
+      "initial_energy": 0.0065832227370489676,
+      "states": 2,
+      "max_reconstruction_error": 0.0,
+      "audit": null,
+      "failures": [],
+      "path": [
+        2
+      ],
+      "original_path": [
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 2,
+      "policy_reachable": 2
+    },
+    {
+      "M": 4,
+      "primes": [
+        2,
+        3
+      ],
+      "initial_energy": 0.02757107562321607,
+      "states": 4,
+      "max_reconstruction_error": 3.469446951953614e-17,
+      "audit": null,
+      "failures": [],
+      "path": [
+        3,
+        2
+      ],
+      "original_path": [
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 4,
+      "policy_reachable": 4
+    },
+    {
+      "M": 5,
+      "primes": [
+        2,
+        3
+      ],
+      "initial_energy": 0.021508693362718552,
+      "states": 4,
+      "max_reconstruction_error": 3.469446951953614e-18,
+      "audit": null,
+      "failures": [],
+      "path": [
+        3,
+        2
+      ],
+      "original_path": [
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 4,
+      "policy_reachable": 4
+    },
+    {
+      "M": 6,
+      "primes": [
+        2,
+        3,
+        5
+      ],
+      "initial_energy": 0.06339881015940782,
+      "states": 8,
+      "max_reconstruction_error": 6.938893903907228e-17,
+      "audit": null,
+      "failures": [],
+      "path": [
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        5,
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 8,
+      "policy_reachable": 8
+    },
+    {
+      "M": 7,
+      "primes": [
+        2,
+        3,
+        5
+      ],
+      "initial_energy": 0.04877599598810301,
+      "states": 8,
+      "max_reconstruction_error": 2.0816681711721685e-17,
+      "audit": null,
+      "failures": [],
+      "path": [
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        5,
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 8,
+      "policy_reachable": 8
+    },
+    {
+      "M": 8,
+      "primes": [
+        2,
+        3,
+        5,
+        7
+      ],
+      "initial_energy": 0.10787676463273002,
+      "states": 16,
+      "max_reconstruction_error": 4.163336342344337e-17,
+      "audit": null,
+      "failures": [],
+      "path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 16,
+      "policy_reachable": 16
+    },
+    {
+      "M": 9,
+      "primes": [
+        2,
+        3,
+        5,
+        7
+      ],
+      "initial_energy": 0.09634780339235291,
+      "states": 16,
+      "max_reconstruction_error": 2.7755575615628914e-17,
+      "audit": null,
+      "failures": [],
+      "path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 16,
+      "policy_reachable": 16
+    },
+    {
+      "M": 10,
+      "primes": [
+        2,
+        3,
+        5,
+        7
+      ],
+      "initial_energy": 0.12590305985078518,
+      "states": 16,
+      "max_reconstruction_error": 1.1102230246251565e-16,
+      "audit": null,
+      "failures": [],
+      "path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 16,
+      "policy_reachable": 16
+    },
+    {
+      "M": 11,
+      "primes": [
+        2,
+        3,
+        5,
+        7
+      ],
+      "initial_energy": 0.15744069331278204,
+      "states": 16,
+      "max_reconstruction_error": 6.938893903907228e-17,
+      "audit": null,
+      "failures": [],
+      "path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 16,
+      "policy_reachable": 16
+    },
+    {
+      "M": 12,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11
+      ],
+      "initial_energy": 0.31893455646803903,
+      "states": 32,
+      "max_reconstruction_error": 1.942890293094024e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 0,
+      "ordinary_reachable": 32,
+      "policy_reachable": 32
+    },
+    {
+      "M": 13,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11
+      ],
+      "initial_energy": 0.1950279523306075,
+      "states": 32,
+      "max_reconstruction_error": 2.498001805406602e-16,
+      "audit": null,
+      "failures": [],
+      "path": [
+        11,
+        7,
+        3,
+        5,
+        2
+      ],
+      "original_path": [
+        11,
+        7,
+        3,
+        5,
+        2
+      ],
+      "eligible": 4,
+      "ordinary_reachable": 31,
+      "policy_reachable": 31
+    },
+    {
+      "M": 14,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13
+      ],
+      "initial_energy": 0.20591137965550846,
+      "states": 64,
+      "max_reconstruction_error": 1.942890293094024e-16,
+      "audit": null,
+      "failures": [],
+      "path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 16,
+      "ordinary_reachable": 64,
+      "policy_reachable": 64
+    },
+    {
+      "M": 15,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13
+      ],
+      "initial_energy": 0.2627980850364015,
+      "states": 64,
+      "max_reconstruction_error": 2.7755575615628914e-16,
+      "audit": null,
+      "failures": [],
+      "path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 24,
+      "ordinary_reachable": 64,
+      "policy_reachable": 64
+    },
+    {
+      "M": 16,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13
+      ],
+      "initial_energy": 0.37020153783286097,
+      "states": 64,
+      "max_reconstruction_error": 1.0547118733938987e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 4,
+      "ordinary_reachable": 64,
+      "policy_reachable": 64
+    },
+    {
+      "M": 17,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13
+      ],
+      "initial_energy": 0.3621784446009543,
+      "states": 64,
+      "max_reconstruction_error": 6.106226635438361e-16,
+      "audit": null,
+      "failures": [],
+      "path": [
+        13,
+        11,
+        2,
+        7,
+        5,
+        3
+      ],
+      "original_path": [
+        13,
+        11,
+        2,
+        7,
+        5,
+        3
+      ],
+      "eligible": 4,
+      "ordinary_reachable": 56,
+      "policy_reachable": 56
+    },
+    {
+      "M": 18,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17
+      ],
+      "initial_energy": 0.5058571282154829,
+      "states": 128,
+      "max_reconstruction_error": 3.552713678800501e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 16,
+      "ordinary_reachable": 128,
+      "policy_reachable": 128
+    },
+    {
+      "M": 19,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17
+      ],
+      "initial_energy": 0.4686379390195635,
+      "states": 128,
+      "max_reconstruction_error": 1.27675647831893e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        17,
+        13,
+        11,
+        2,
+        7,
+        5,
+        3
+      ],
+      "original_path": [
+        17,
+        13,
+        11,
+        2,
+        7,
+        5,
+        3
+      ],
+      "eligible": 8,
+      "ordinary_reachable": 111,
+      "policy_reachable": 111
+    },
+    {
+      "M": 20,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19
+      ],
+      "initial_energy": 0.6024315956895191,
+      "states": 256,
+      "max_reconstruction_error": 8.215650382226158e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "original_path": [
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 96,
+      "ordinary_reachable": 256,
+      "policy_reachable": 240
+    },
+    {
+      "M": 21,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19
+      ],
+      "initial_energy": 0.5305858519824452,
+      "states": 256,
+      "max_reconstruction_error": 5.384581669432009e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        19,
+        17,
+        13,
+        11,
+        5,
+        3,
+        2,
+        7
+      ],
+      "original_path": [
+        19,
+        17,
+        13,
+        11,
+        5,
+        3,
+        7,
+        2
+      ],
+      "eligible": 156,
+      "ordinary_reachable": 250,
+      "policy_reachable": 228
+    },
+    {
+      "M": 22,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19
+      ],
+      "initial_energy": 0.5512212625149415,
+      "states": 256,
+      "max_reconstruction_error": 5.88418203051333e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        19,
+        17,
+        13,
+        5,
+        2,
+        3,
+        11,
+        7
+      ],
+      "original_path": [
+        19,
+        17,
+        13,
+        2,
+        11,
+        7,
+        5,
+        3
+      ],
+      "eligible": 134,
+      "ordinary_reachable": 202,
+      "policy_reachable": 170
+    },
+    {
+      "M": 23,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19
+      ],
+      "initial_energy": 0.6929038505156754,
+      "states": 256,
+      "max_reconstruction_error": 5.662137425588298e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        19,
+        17,
+        13,
+        2,
+        11,
+        7,
+        3,
+        5
+      ],
+      "original_path": [
+        19,
+        17,
+        13,
+        2,
+        11,
+        7,
+        5,
+        3
+      ],
+      "eligible": 113,
+      "ordinary_reachable": 208,
+      "policy_reachable": 194
+    },
+    {
+      "M": 24,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23
+      ],
+      "initial_energy": 1.064953864051536,
+      "states": 512,
+      "max_reconstruction_error": 3.6637359812630166e-14,
+      "audit": null,
+      "failures": [],
+      "path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "original_path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "eligible": 224,
+      "ordinary_reachable": 512,
+      "policy_reachable": 512
+    },
+    {
+      "M": 25,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23
+      ],
+      "initial_energy": 0.8400369426807117,
+      "states": 512,
+      "max_reconstruction_error": 9.769962616701378e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        23,
+        19,
+        17,
+        5,
+        13,
+        3,
+        2,
+        11,
+        7
+      ],
+      "original_path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        11,
+        7,
+        5,
+        3
+      ],
+      "eligible": 273,
+      "ordinary_reachable": 438,
+      "policy_reachable": 374
+    },
+    {
+      "M": 26,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23
+      ],
+      "initial_energy": 0.8057896520204599,
+      "states": 512,
+      "max_reconstruction_error": 2.7755575615628914e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        11,
+        7,
+        3,
+        5
+      ],
+      "original_path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        11,
+        7,
+        5,
+        3
+      ],
+      "eligible": 223,
+      "ordinary_reachable": 366,
+      "policy_reachable": 335
+    },
+    {
+      "M": 27,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23
+      ],
+      "initial_energy": 0.907355228040408,
+      "states": 512,
+      "max_reconstruction_error": 2.9976021664879227e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        11,
+        5,
+        3,
+        7
+      ],
+      "original_path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        11,
+        5,
+        7,
+        3
+      ],
+      "eligible": 211,
+      "ordinary_reachable": 380,
+      "policy_reachable": 351
+    },
+    {
+      "M": 28,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23
+      ],
+      "initial_energy": 1.0843514210378065,
+      "states": 512,
+      "max_reconstruction_error": 1.2434497875801753e-14,
+      "audit": null,
+      "failures": [],
+      "path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        11,
+        7,
+        3,
+        5
+      ],
+      "original_path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        11,
+        7,
+        5,
+        3
+      ],
+      "eligible": 234,
+      "ordinary_reachable": 425,
+      "policy_reachable": 395
+    },
+    {
+      "M": 29,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23
+      ],
+      "initial_energy": 1.1064632812617892,
+      "states": 512,
+      "max_reconstruction_error": 6.217248937900877e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        3,
+        7,
+        5,
+        11
+      ],
+      "original_path": [
+        23,
+        19,
+        17,
+        2,
+        13,
+        3,
+        11,
+        7,
+        5
+      ],
+      "eligible": 193,
+      "ordinary_reachable": 356,
+      "policy_reachable": 345
+    },
+    {
+      "M": 30,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23,
+        29
+      ],
+      "initial_energy": 1.3433399306676124,
+      "states": 1024,
+      "max_reconstruction_error": 5.81756864903582e-14,
+      "audit": null,
+      "failures": [],
+      "path": [
+        29,
+        23,
+        19,
+        17,
+        13,
+        2,
+        11,
+        7,
+        5,
+        3
+      ],
+      "original_path": [
+        29,
+        23,
+        19,
+        17,
+        13,
+        2,
+        11,
+        7,
+        5,
+        3
+      ],
+      "eligible": 437,
+      "ordinary_reachable": 935,
+      "policy_reachable": 934
+    },
+    {
+      "M": 31,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23,
+        29
+      ],
+      "initial_energy": 1.2054143800561994,
+      "states": 1024,
+      "max_reconstruction_error": 7.105427357601002e-15,
+      "audit": null,
+      "failures": [],
+      "path": [
+        29,
+        23,
+        19,
+        2,
+        17,
+        7,
+        3,
+        5,
+        13,
+        11
+      ],
+      "original_path": [
+        29,
+        23,
+        19,
+        3,
+        17,
+        2,
+        13,
+        11,
+        7,
+        5
+      ],
+      "eligible": 452,
+      "ordinary_reachable": 708,
+      "policy_reachable": 651
+    },
+    {
+      "M": 32,
+      "primes": [
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23,
+        29,
+        31
+      ],
+      "initial_energy": 1.2888540635627828,
+      "states": 2048,
+      "max_reconstruction_error": 4.884981308350689e-14,
+      "audit": null,
+      "failures": [],
+      "path": [
+        31,
+        29,
+        23,
+        19,
+        2,
+        17,
+        13,
+        7,
+        3,
+        5,
+        11
+      ],
+      "original_path": [
+        31,
+        29,
+        23,
+        19,
+        2,
+        17,
+        13,
+        7,
+        5,
+        11,
+        3
+      ],
+      "eligible": 1127,
+      "ordinary_reachable": 1704,
+      "policy_reachable": 1567
+    }
+  ]
+}

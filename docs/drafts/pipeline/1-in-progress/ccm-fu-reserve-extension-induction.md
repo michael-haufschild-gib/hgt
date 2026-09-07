@@ -282,12 +282,15 @@ preserve the sign class after the merger. Selecting such primes along a
 complete order, and paying for the other necessary steps from the original
 reserve, remain open; the numerical witness is not a Lean input.
 
-The [complete-path sign-class diagnostic](ccm-fu-head-supported-defect-path.md)
-shows numerically that the restriction to nonnegative nonempty coordinates
-cannot cover complete certified paths at eleven saved cutoffs through32,
-first at21. All183 restricted extension failures and the exhaustive graphs
-at affected cutoffs were independently reconstructed at80 digits. This does
-not refute unrestricted reserve extension.
+The [head-supported path strategy](../5-failed/ccm-fu-head-supported-defect-path.md)
+is formally refuted: at cutoff21 every list containing2,3,5 has a proper
+prefix with an unprocessed oriented singleton below -1/50, independently
+of any energy budget. Exact source support and analytic bounds prove the
+three-prime obstruction without enumerating orders. Saved diagnostics also
+find restricted path failures at ten other cutoffs through32, with all183
+restricted extension failures independently reconstructed at80 digits.
+Those additional numerical results are not Lean premises. Unrestricted
+reserve extension remains open.
 
 The [formal mixed transverse comparison](../3-formalized/ccm-fu-mixed-transverse-compensation.md)
 retains newly created defects when leaving that class. For current head -b,
@@ -352,3 +355,28 @@ though the complete cross sum there is strictly negative. The omitted
 compensation is exactly the released pairs at odd cofactors three and five.
 Thus the full reserve must remain available across odd gcd classes; this
 test supplies no new Lean premise, formal no-go, or full source bound.
+
+The [negative-support extension candidate](ccm-fu-defect-supported-extension.md)
+allows already mixed fields. At every saved cutoff through32, all3949
+certified proper states with negative nonempty coordinates have a certified
+or terminal exit using a prime in the union of those labels. Every saved
+cutoff has a complete certified path following this rule whenever that
+union is nonempty. These are finite numerical results. The separate
+[analytic transport theorem](../3-formalized/ccm-fu-negative-support-transport.md)
+proves that an active prime outside this union can only decrease good energy
+and increase defect energy; every strict defect decrease must use the union.
+Inside the union, new defects may appear elsewhere in the same merger.
+Controlling their complete geometric cost under the original budget remains
+the missing arithmetic step, and no complete extension theorem follows yet.
+
+The [fixed-quotient source calculation](../5-failed/ccm-fu-universal-first-prime-certificate.md)
+now refutes universal first-prime geometric certification. At M=12p, the
+actual quotient-twelve profile exceeds the proved unsigned mean. For all
+sufficiently large primes this gives `D_{p}>=p/2000000`, whereas
+`D_{p}<=122018p`, `B-Q_{p}<=14112p` and `G_{p}>=b*p^2-136130p` for one b>0.
+Consequently `Phi({p})-B` exceeds every prescribed linear multiple of p,
+despite `Q_{p}<=B`. The source estimates and arbitrary-large-prime failure
+are closed in Lean without numerical premises. The extension conjecture
+asks for some successful successor of a certified state, so this result
+does not refute it. It excludes certifying every initial prime by the
+geometric radius; a complete proof must preserve that selection distinction.
