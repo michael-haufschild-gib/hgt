@@ -117,7 +117,9 @@ checks; only their needed oleans were emitted. All five imports are wired
 into RHTower. No umbrella or dependency build was run. No numerical
 experiment or computational premise was used. All 43 new public declarations
 were axiom-audited once: only `propext`, `Classical.choice` and `Quot.sound`
-occur. Global formal lint passed with existing large-file warnings.
+occur. Global formal lint passed with existing large-file warnings. Generated
+formal indexes and the research search index were refreshed. Owned Lean
+processes completed and temporary scratch/audit files were removed.
 
 ## Remaining proof gates
 

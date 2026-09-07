@@ -489,6 +489,73 @@ theorem polarGroundEnergy_le_neg_exp_of_attainedTop {Θ : ℝ} (hΘ : 0 < Θ) (q
     _ ≤ (c / 2 * Real.exp (2 * Θ * a)) / (2 * a * (|γ| + 4 * K + (2 * a + 1) / 4) ^ 2) :=
         div_le_div_of_nonneg_right hX' hNpos.le
 
+/-! ## Exponential lower bounds on the ground energy cap the attained excess -/
+
+/-- Exponentials beat cubes: for `δ > 0` and `c > 0` there is `B ≥ B₀` with `B³ e^{−δB} < c`. -/
+theorem exists_cube_mul_exp_neg_lt {δ c B₀ : ℝ} (hδ : 0 < δ) (hc : 0 < c) :
+    ∃ B : ℝ, B₀ ≤ B ∧ 1 ≤ B ∧ B ^ 3 * Real.exp (-(δ * B)) < c := by
+  have h1 : Filter.Tendsto (fun x : ℝ => x ^ 3 * Real.exp (-x)) Filter.atTop (nhds 0) :=
+    Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 3
+  have h2 : Filter.Tendsto (fun B : ℝ => δ * B) Filter.atTop Filter.atTop :=
+    Filter.tendsto_id.const_mul_atTop hδ
+  have h3 := (h1.comp h2).const_mul (1 / δ ^ 3)
+  rw [mul_zero] at h3
+  have h4 := h3.eventually_lt_const hc
+  obtain ⟨B, hB₀, hB1, hB⟩ := ((Filter.eventually_ge_atTop B₀).and
+    ((Filter.eventually_ge_atTop 1).and h4)).exists
+  refine ⟨B, hB₀, hB1, ?_⟩
+  have : B ^ 3 * Real.exp (-(δ * B)) = 1 / δ ^ 3 * ((δ * B) ^ 3 * Real.exp (-(δ * B))) := by
+    field_simp
+  rw [this]
+  simpa [Function.comp_def] using hB
+
+/-- **Exponential lower bounds on `μ₀` cap the attained excess.**  If
+`μ₀(B) ≥ −C e^{εB}` at every aperture, then no attained excess exceeds `ε/2`. -/
+theorem two_mul_attainedExcess_le_of_polarGroundEnergy_ge {C ε : ℝ}
+    (h : ∀ B : SuzukiPositiveAperture,
+      -(C * Real.exp (ε * B.1)) ≤ ccmRestrictedWeilPolarGroundEnergy B)
+    {Θ : ℝ} (hΘ : 0 < Θ) (q₀ : XiZeroCopy) (hq₀ : |(xiSpectralPoint q₀).im| = Θ)
+    (hall : ∀ q : XiZeroCopy, |(xiSpectralPoint q).im| ≤ Θ) :
+    2 * Θ ≤ ε := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨c', hc', B₀, hB₀, hdecay⟩ := polarGroundEnergy_le_neg_exp_of_attainedTop hΘ q₀ hq₀ hall
+  -- `C` must be positive: at `B₀` the ground energy is negative
+  have hCpos : 0 < C := by
+    have hB : (0 : ℝ) < B₀ := by linarith
+    have h1 := h ⟨B₀, hB⟩
+    have h2 := hdecay ⟨B₀, hB⟩ le_rfl
+    have h3 : 0 < c' * Real.exp (2 * Θ * B₀) / B₀ ^ 3 := by positivity
+    have h4 : 0 < C * Real.exp (ε * B₀) := by
+      simp only at h1 h2
+      rw [neg_div] at h2
+      linarith
+    exact pos_of_mul_pos_left h4 (Real.exp_pos _).le
+  obtain ⟨B, hBB₀, hB1, hB⟩ := exists_cube_mul_exp_neg_lt (δ := 2 * Θ - ε) (c := c' / C)
+    (B₀ := B₀) (by linarith) (by positivity)
+  have hBpos : (0 : ℝ) < B := by linarith
+  have h1 := h ⟨B, hBpos⟩
+  have h2 := hdecay ⟨B, hBpos⟩ hBB₀
+  simp only at h1 h2
+  rw [neg_div] at h2
+  -- `c' e^{2ΘB} / B³ ≤ C e^{εB}`, i.e. `c'/C ≤ B³ e^{−(2Θ−ε)B}`
+  have h5 : c' * Real.exp (2 * Θ * B) / B ^ 3 ≤ C * Real.exp (ε * B) := by linarith
+  have hexp : Real.exp (2 * Θ * B) = Real.exp (ε * B) * Real.exp ((2 * Θ - ε) * B) := by
+    rw [← Real.exp_add]; congr 1; ring
+  have hE : 0 < Real.exp (ε * B) := Real.exp_pos _
+  have hB3 : 0 < B ^ 3 := by positivity
+  have h6 : c' * Real.exp ((2 * Θ - ε) * B) ≤ C * B ^ 3 := by
+    rw [hexp] at h5
+    rw [div_le_iff₀ hB3] at h5
+    nlinarith
+  have h7 : c' / C ≤ B ^ 3 * Real.exp (-((2 * Θ - ε) * B)) := by
+    rw [div_le_iff₀ hCpos]
+    have hE' : 0 < Real.exp ((2 * Θ - ε) * B) := Real.exp_pos _
+    have hprod : Real.exp (-((2 * Θ - ε) * B)) * Real.exp ((2 * Θ - ε) * B) = 1 := by
+      rw [← Real.exp_add]; ring_nf; exact Real.exp_zero
+    nlinarith [mul_le_mul_of_nonneg_left h6 (Real.exp_pos (-((2 * Θ - ε) * B))).le]
+  linarith
+
 end
 
 end RHTower

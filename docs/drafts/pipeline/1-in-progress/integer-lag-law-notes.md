@@ -395,3 +395,11 @@ Every global identity for `log|Ξ|` against a kernel is Jensen/Littlewood, i.e. 
 `Σ_{γ≤T} (β − ½)_+`, whose unconditional ceiling is `O(T)` (Selberg density) and whose vanishing `o(T)` is
 itself open (it is "almost all zeros within `o(1/log T)` of the line"). Verdict: FAILED — reduces to the
 `(L)` receiver; no new mechanism.
+
+**Attempt E (2026-09-08): prime-side lower bound for the ground energy.** `μ₀(A) ≥ −Ce^{εA}` with `ε < 1`
+⟺ operator-norm growth `< e^{A}` for the pole-compressed prime translation operator `P_{V₀}TP_{V₀}`,
+`T = Σ Λ(n)n^{−½}τ_{log n}` on `L²(−A, A)`. Termwise bounds `|g(log n)| ≤ ‖u‖²` give exactly the trivial
+rate `1` (Chebyshev); the compression by the two exponential moments removes the `e^{A}` main term of the
+uncompressed operator but no estimate of the compressed norm is available: it is the zero side in
+disguise (`Q = Σ_ρ û(ρ) conj û(1 − ρ̄)` on `V₀`). Verdict: FAILED, reduces to the zero-free-strip question in
+operator form (STATUS MUST-261).

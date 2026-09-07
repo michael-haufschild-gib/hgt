@@ -207,3 +207,10 @@ versions once both namespaces are open — qualify them; `HasDerivAt.comp_neg` d
 `(hd1.add hd2).deriv` needs the lambda-sum form stated explicitly; `gcongr` side goals `0 ≤ M` appear when a
 multiplicative constant is not visibly nonnegative (keep `hM` in the signature only where such a goal arises);
 `linear_combination (-(1/16)) * hinv` with `hinv : (z²)⁻¹ * z² = 1` closes the weight identity.
+
+## Exponential lower bounds cap the attained excess (added 2026-09-08, Lean)
+
+`ConstrainedWeilPolarGroundDecay.two_mul_attainedExcess_le_of_polarGroundEnergy_ge`: if
+`−C e^{εB} ≤ μ₀(B)` for every aperture `B`, then every attained excess `Θ` satisfies `2Θ ≤ ε`
+(from MUST-260 and `exists_cube_mul_exp_neg_lt`: `B³e^{−δB} → 0`). STATUS MUST-261. The non-attained
+case is the quantitative Bombieri–Yoshida, planned on `lag-ratio-law.md`.

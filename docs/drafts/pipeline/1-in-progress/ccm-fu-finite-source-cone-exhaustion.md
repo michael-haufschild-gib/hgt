@@ -93,6 +93,19 @@ Positive-measure construction, its complex MGF germ, Landau continuation
 and the analytic identity needed for the pole contradiction remain open.
 The arbitrary finite retained-source cone theorem is not yet claimed.
 
+### Positive-carrier construction target
+
+Use the absolute center-four density `norm(x^(-5)*H_y(x))` on the positive
+ray and logarithmic variable `log(x)`. The density vanishes below one and
+is integrable by the exact Mellin theorem, so the resulting measure is
+finite and its logarithmic variable is nonnegative almost everywhere.
+Real retained coordinates give a real primitive. Under the hypothesized
+one-sided integer functional, exact interpolation makes the primitive
+nonnegative, identifying the absolute density with the signed source.
+Real exponential tilts then translate the Mellin exponent, and the complex
+MGF germ is the existing continuation evaluated at `4-z`. This is the next
+proof-facing bridge; no numerical experiment is needed for these identities.
+
 ### Closed arithmetic transport
 
 For p outside S, set y0(R)=y(R) and y1(R)=y(insert p R).

@@ -19,10 +19,11 @@ quadratic and direct cubic Einstein coefficients, including the full KI reconstr
 The fundamental radial profiles and literal scalar/coexact-vector cusp fields are instantiated.
 The complete first Einstein variation now equals the actual field-source amplitude derivative.
 The scalar metric has an exact generally nonzero normalized boundary coefficient despite its
-vanishing master. The literal scalar sector now satisfies all sixteen first-order Einstein
-components at both fundamental QNM branches, with all angular assumptions discharged.
-The vector-sector equation, nonlinear field/gauge corrections, complete source reduction,
-physical causal action, and final left-QNM projection remain to be derived.
+vanishing master. The complete literal scalar-plus-vector metric now satisfies all sixteen
+first-order Einstein components at both fundamental QNM branches, with independent
+amplitudes and all angular assumptions discharged. Nonlinear field/gauge corrections,
+complete source reduction, physical causal action, and final left-QNM projection remain
+to be derived.
 
 Corpus searches `einstein variation`, `metric perturbation`, `ricci coordinate`, `inverse series
 matrix`, and `christoffel derivative` locate the coordinate curvature definitions, smooth metric
@@ -469,18 +470,54 @@ amplitude, exterior point and component, with vector amplitude zero and no suppl
 field-equation premise. All Fourier modes and Weyl terms remain. These local equations
 do not select spectral parameters or establish physical boundary admission.
 
+## Closed vector and full first-order Einstein equation
+
+The original KI vector reconstruction gives h_tA=-s*B*V_A/r and
+h_rA=-s*B*V_A/(r^2-1), with symmetric partners and no other vector entries.
+Its common B is the same actual temporal/radial exponential already identified in
+the scalar proof. The complete vector jet retains the coordinate derivatives of
+both blocks and every horizon covector derivative.
+
+Set L=(s+1)*(s+2), A=V_0, C=V_1, P=partial_x V_0, Q=partial_y V_0,
+R=partial_x V_1, U=partial_x^2 V_0 and W=partial_x partial_y V_0. Actual zero
+divergence gives partial_y V_1=-P. Its identity on the open positive-height chart,
+differentiated with the proved regularity, gives V_1,xy=-U and V_1,yy=-W.
+The two actual rough-Laplacian equations give
+V_0,yy=(L*A-2*y*(Q-R))/y^2-U and V_1,xx=W+L*C/y^2.
+Both ordered mixed derivatives are retained and identified by proved symmetry.
+Thus no pointwise constraint is silently differentiated.
+
+`ThetaCuspHawkingBMVectorLinearizedRicciJet` verifies deltaRicci+3*h=0 in every
+coordinate component of that jet, then derives the complete cosmological equation.
+`ThetaCuspHawkingBMVectorLinearEinsteinEquation` proves the actual original field
+has this jet. Its literal plus/minus theorems substitute the full coexact cusp
+covector and discharge its regularity, divergence, and rough-Laplacian equations.
+These identities hold for every complex spectral parameter and exterior point.
+
+`ThetaCuspHawkingBMFullLinearEinsteinEquation` proves actual metric-jet addition
+and additivity of the first Einstein-source amplitude derivative, including the
+fixed cosmological term. The literal KI field splits exactly into scalar and vector
+sectors. Its `literal_plus_source_first_zero` and `literal_minus_source_first_zero`
+(namespace `RHTower.D4BMFullLinearEquation`) therefore prove the full tensor equation
+for independent scalar/vector amplitudes, every complex parameter and all sixteen
+components. No field-equation or regularity premises remain in these two theorems.
+This closes first-order compatibility of the literal complete reconstructed metric.
+It does not assert nonlinear solvability, boundary admission or spectral extinction.
+
 ## Next physical source evaluation
 
-The scalar-sector first-order target is proved. The next exact target is the analogous
-zero amplitude derivative for the literal coexact-vector sector, retaining its full
-angular covector jet and actual rough-Laplacian/divergence equations. The source formula
-reduces to h_tA=-s*B*V_A/r and h_rA=-s*B*V_A/(r^2-1). Its complete angular
-jet must also retain both differentiated divergence equations. The separated vector
-jet and its actual-field identification are `[BRIDGE]` targets to the same fixed tensor
-equation; no response or spectral selection law is introduced. Then combine the
-sectors through the actual linearized operator. Derive the physical metric boundary
-condition with the nonzero scalar boundary coefficient retained. Any required
-spectral/spatial derivative interchange for retained angular jets remains explicit.
+First-order compatibility is closed. The next source target retains higher-order
+field corrections: for the actual metric family g+epsilon*h+epsilon^2*k+epsilon^3*l,
+identify the complete quadratic and cubic coefficients with the actual first,
+second and third Einstein variations. Derive the forced correction equations and
+connect their mixed sectors to the retained spin-two source and the existing
+augmented-source expression. This is a `[BRIDGE]` to the frozen physical causal
+source, not a replacement selection conjecture. The straight-line B,C coefficients
+alone do not supply the correction fields or their physical boundary conditions.
+
+Derive the physical metric boundary condition with the nonzero scalar boundary
+coefficient retained. Any required spectral/spatial derivative interchange for
+retained angular jets remains explicit.
 
 The fundamental ingoing/Dirichlet radial inputs and matching horizon geometry are proved;
 the mixed dressed monodromy's outgoing incidence remains explicit in the scattering basis.

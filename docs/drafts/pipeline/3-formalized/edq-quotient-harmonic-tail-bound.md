@@ -1,6 +1,6 @@
 # EDQ quotient decomposition and harmonic tail-depth cost
 
-Stage: 1-in-progress. [BRIDGE] from exact arithmetic and corpus estimates; RH remains the primary objective.
+Stage: 3-formalized. [BRIDGE] from exact arithmetic and corpus estimates, with dependency-closed paper and Lean proofs; RH remains the primary objective.
 Full chain: Euler deletion → exact complex zero balance → signed arithmetic separation → off-line exclusion → RH.
 Objective: improve the actual full-source bound by summing signed Mertens increments across quotient scales before taking absolute values.
 
@@ -49,6 +49,26 @@ defect, and complete complementary tail still need a sufficiently strong joint
 bound. No numerical experiment is warranted for this visible deduction. No
 numerical result is used in Lean, and this bridge does not replace the RH goal.
 
-## Status
+## Lean result and validation
 
-Dependency-closed paper derivation above; scratch Lean proof and targeted audits pending.
+`EulerDeletionQuotientHarmonicBound.lean`, namespace `RHTower.DeletionQuotientTail`,
+contains ten public theorems. `truncated_floor_hyperbola` handles arbitrary real
+signed coefficients; `floorResidual_eq_quotient_mertens` and
+`error_eq_quotient_sum` identify the complete actual source. The two residual
+bounds and `primitive_extended_prefix_le` give the harmonic-depth improvement.
+`primitiveEnergy_le_harmonic_depth`, `primitiveEnergy_le_log_depth`, and
+`modular_norm_sq_le_log_depth` retain the entire infinite tail.
+`exists_primitiveEnergy_uniform_log_depth_bound` instantiates the unconditional
+Mertens saving with one constant and one cutoff threshold for every L>=1.
+
+The complete scratch proof passed `lake env lean` without diagnostics. The final
+`lake build --old GaloisForLFunctions.RHTower.EulerDeletionQuotientHarmonicBound`
+built only this new leaf, in 7.6 seconds. All ten new public declarations were
+audited once in a temporary `lake env lean` file: their dependencies are exactly
+`propext`, `Classical.choice`, and `Quot.sound`. No admission, added axiom, or
+numerical certificate is used. The leaf is wired into `RHTower.lean`; no full or
+umbrella build was run. Formal lint passed and the search index was refreshed.
+Scoped whitespace, declaration coverage, unique umbrella import, and documentation
+links passed. All owned Lean processes exited; temporary proof/API/audit sources
+were removed. No numerical experiment was run.
+

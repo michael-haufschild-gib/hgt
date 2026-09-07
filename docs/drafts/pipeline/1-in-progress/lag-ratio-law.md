@@ -75,3 +75,21 @@ residue `−(1/4)κ(c₁)²/z_q²`, nonzero for generic `γ` since `κ` is a non
 and the corpus Widder–Landau engine transported from the test parameter to the aperture. Verdict: BRIDGE
 (same mechanism class as Bombieri–Yoshida with a weaker hypothesis on one explicit family); not pursued as a
 build because it adds a receiver, not a source sign. See STATUS CANNOT-331.
+
+## Quantitative Bombieri–Yoshida: the plan (2026-09-08)
+
+Target: `(∀ t ≥ 0, −C e^{εt} ≤ Re Φ_h(t)) → ∀ q, |Im z_q| ≤ ε` for the polar-weighted screw divisor
+`Φ_h = Σ' M(z_q)²(1 − cos(z_q t))/z_q²`, and the transfer `μ₀(A) ≥ −Ce^{εA} ∀A ⟹ Φ_h(t) ≥ −C'e^{εt}` through
+the two-bump sequence (its aperture is `≈ t + 2h + 2`, so the constant `1` rather than `½` appears).
+Mechanism: `Φ_h(t) + C e^{εt} ≥ 0`; its Laplace transform is the atom series `+ C/(s − ε)`; the Landau
+measure `e^{−rt}(Φ_h + Ce^{εt})dt` is positive; the halving argument of `WeightedScrewLandauEngine`
+(`weightedScrewMomentsAbove_half`) descends the abscissa of exponential moments from `½` towards the
+first real singularity, now `ε` instead of `0`; the Laplace transform is then analytic on `Re s > ε`, equals
+the continuation on the punctured half-plane `{Re s > ε} ∖ spectralPoleSet`, and the pole contradiction of
+`WeightedScrewPoleContradiction` applies to any spectral pole `s₀ = i z_q` with `Re s₀ = −Im z_q > ε`
+(and to `−i z_q` for the other sign). Lean plan: generalise the engine by a threshold parameter `σ₀`
+(`WeightedScrewMomentsAbove W b` for `b > σ₀`, halving `b ↦ (b + σ₀)/2`, continuation with the extra term
+`C/(s − σ₀)`), ~1000 lines by transcription of the two modules. Consequence: `RH ⟺ ∀ ε > 0, ∃ C, ∀ A,
+μ₀(A) ≥ −Ce^{εA}` (sub-exponential negativity criterion); with MUST-260 the growth rate of `−μ₀` is exactly
+`2Θ` when `Θ` is attained and lies in `[2Θ, 2Θ]`… i.e. equals `2Θ` in general modulo the factor `½`/`1`
+of the two-bump aperture accounting.
