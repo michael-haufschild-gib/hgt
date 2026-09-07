@@ -55,3 +55,30 @@ first-zero completion boundary are described in [the local-inverse card](weil-po
 `HasCompactSupport.mul_left` unification stalls (use `.mono`); `integral_sub_right_eq_self` needs the
 function and measure explicit; zsh does not word-split `$VAR` (use arrays) — the first collision sweep
 silently checked nothing; macOS `sed` has no `\b`.
+
+## The twisted odd test law (added 2026-09-08, Lean, `ConstrainedWeilTwistedOddTest`)
+
+For a real smooth odd profile `ψ` supported in `[−a, a]` (`OddSmoothProfile a`) and a centre `γ`, the
+test `cos(γx)ψ(x)` is a `SuzukiSmoothZeroMeanTest a` (`twistedOddTest`; zero mean by oddness). With the
+twisted moments `twistedMoment ψ b μ = ∫ e^{(b+iμ)u} ψ(u) du` and the pair moment
+`twistedPairMoment ψ γ q = A(−Im z_q, Re z_q − γ) + A(−Im z_q, Re z_q + γ)` (`z_q = xiSpectralPoint q`,
+`−Im z_q = Re ρ_q − ½`):
+
+* `suzukiTestRayCoef_twistedOddTest : Coef_q = −½ · pairMoment`,
+  `suzukiTestRayCoefBar_twistedOddTest : Bar_q = ½ · pairMoment` (odd symmetry
+  `twistedMoment_neg_neg : A(−b, −μ) = −A(b, μ)`, conjugation `conj_twistedMoment : conj A(b, μ) = A(b, −μ)`).
+* `suzukiScrewSmoothForm_twistedOddTest : Q(cos(γ·)ψ) = Σ'_q −(1/4) pairMoment_q² / z_q²` (exact,
+  unconditional); `summable_suzukiTestRayEnergy` (any smooth zero-mean test) and
+  `re_suzukiScrewSmoothForm_twistedOddTest` (real part termwise).
+* Critical-line copies (`Im z_q = 0`): `twistedOddTest_rayTerm_of_im_eq_zero` — the term equals the real
+  number `(Im pairMoment_q)²/(4 (Re z_q)²) ≥ 0`; hence
+  `re_suzukiScrewSmoothForm_twistedOddTest_nonneg_of_forall_im_eq_zero`.
+* Centred off-line copy: `twistedPairMoment_centre` — at `γ = Re z_q` the pair moment is
+  `A(Re ρ_q − ½, 0) + A(Re ρ_q − ½, 2 Re z_q)` with the first term real (`twistedMoment_centre_im`).
+
+This is the exact zero-side content of STATUS CANNOT-330: an off-line copy contributes
+`−(1/4)(A + A')²/z_q²`, whose real part at the centre is `≈ −(1/4)(∫ e^{(Re ρ − ½)u} ψ)²/|z_q|²`, against
+nonnegative critical-line terms. The transfer inequalities (isolated rate `(log log|γ| + log a + C)/(2a)`,
+clustered Turán rate) remain paper. Trap: rewriting `xiSpectralPoint q = ↑re + ↑im·I` must be scoped with
+`conv_lhs`, since the right-hand side mentions `(xiSpectralPoint q).re`; the exponent identities close by
+`linear_combination (±↑im·↑u) * Complex.I_sq`.

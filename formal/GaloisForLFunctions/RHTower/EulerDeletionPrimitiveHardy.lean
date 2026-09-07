@@ -59,7 +59,7 @@ private theorem rectangular_schur (I J : Finset ℕ) (T : ℕ → ℕ → ℝ)
        _ = _ := by rw [Finset.mul_sum]
 
 private theorem power_head {delta : ℝ} (hd : 0 < delta) (hd' : delta < 1) (n : ℕ) :
-    (∑ k ∈ Finset.range (n+1), ((k : ℝ)+1)^(delta-1))  ≤ 
+    (∑ k ∈ Finset.range (n+1), ((k : ℝ)+1)^(delta-1))  ≤
       (1+1/delta)*((n : ℝ)+1)^delta := by
   have h := sum_rpow_neg_head_le (c := 1-delta) (by linarith) (by linarith) (n+1)
   have heq : (∑ k ∈ Finset.range (n+1), ((k : ℝ)+1)^(delta-1)) =
@@ -81,7 +81,7 @@ private theorem power_head {delta : ℝ} (hd : 0 < delta) (hd' : delta < 1) (n :
        _ = _ := by ring
 
 private theorem power_tail {delta : ℝ} (hd : 0 < delta) (k M : ℕ) :
-    (∑ n ∈ (Finset.range M).filter (fun n => k ≤ n), ((n : ℝ)+1)^(-delta-1))  ≤ 
+    (∑ n ∈ (Finset.range M).filter (fun n => k ≤ n), ((n : ℝ)+1)^(-delta-1))  ≤
       (1+1/delta)*((k : ℝ)+1)^(-delta) := by
   have hsub : (Finset.range M).filter (fun n => k ≤ n) ⊆
       (Finset.range (M+1)).image (fun j => k+j) := by
@@ -117,7 +117,7 @@ private theorem kernel_nonneg (sigma : ℝ) (k n : ℕ) : 0 ≤ tailKernel sigma
   split_ifs <;> positivity
 
 private theorem row_bound {sigma : ℝ} (hs : 1/2 < sigma) (k M : ℕ) :
-    (∑ n ∈ Finset.range M, tailKernel sigma k n*((n : ℝ)+1)^(-(1/2 : ℝ)))  ≤ 
+    (∑ n ∈ Finset.range M, tailKernel sigma k n*((n : ℝ)+1)^(-(1/2 : ℝ)))  ≤
       schurConstant sigma*((k : ℝ)+1)^(-(1/2 : ℝ)) := by
   have heq : (∑ n ∈ Finset.range M, tailKernel sigma k n*((n : ℝ)+1)^(-(1/2 : ℝ))) =
       ((k : ℝ)+1)^(sigma-1)*
@@ -142,7 +142,7 @@ private theorem row_bound {sigma : ℝ} (hs : 1/2 < sigma) (k M : ℕ) :
          rfl
 
 private theorem column_bound {sigma : ℝ} (hs : 1/2 < sigma) (hs' : sigma < 1) (n L : ℕ) :
-    (∑ k ∈ Finset.range L, tailKernel sigma k n*((k : ℝ)+1)^(-(1/2 : ℝ)))  ≤ 
+    (∑ k ∈ Finset.range L, tailKernel sigma k n*((k : ℝ)+1)^(-(1/2 : ℝ)))  ≤
       schurConstant sigma*((n : ℝ)+1)^(-(1/2 : ℝ)) := by
   have heq : (∑ k ∈ Finset.range L, tailKernel sigma k n*((k : ℝ)+1)^(-(1/2 : ℝ))) =
       ((n : ℝ)+1)^(-sigma)*
@@ -178,7 +178,7 @@ private theorem column_bound {sigma : ℝ} (hs : 1/2 < sigma) (hs' : sigma < 1) 
 /-- Every finite triangular section has one critical square-energy bound, independent of both cutoffs. -/
 theorem finite_tail_energy_le {sigma : ℝ} (hs : 1/2 < sigma) (hs' : sigma < 1)
     (b : ℕ → ℝ) (L M : ℕ) :
-    (∑ k ∈ Finset.range L, (∑ n ∈ Finset.range M, tailKernel sigma k n*b n)^2)  ≤ 
+    (∑ k ∈ Finset.range L, (∑ n ∈ Finset.range M, tailKernel sigma k n*b n)^2)  ≤
       schurConstant sigma^2*∑ n ∈ Finset.range M, b n^2 := by
   apply rectangular_schur (Finset.range L) (Finset.range M) (tailKernel sigma)
     (fun n : ℕ => ((n : ℝ)+1)^(-(1/2 : ℝ))) b
@@ -205,7 +205,7 @@ theorem summable_tail_row {sigma : ℝ} (hs : 1/2 < sigma) (hs' : sigma < 1)
   apply summable_of_sum_range_le (fun n => mul_nonneg (kernel_nonneg _ _ _) (hb n))
     (c := 1+schurConstant sigma^2*(∑' n, b n^2))
   intro M
-  have hpoint : (∑ n ∈ Finset.range M, tailKernel sigma k n*b n)^2  ≤ 
+  have hpoint : (∑ n ∈ Finset.range M, tailKernel sigma k n*b n)^2  ≤
       ∑ j ∈ Finset.range (k+1), (∑ n ∈ Finset.range M, tailKernel sigma j n*b n)^2 :=
     Finset.single_le_sum (fun j _ => sq_nonneg (∑ n ∈ Finset.range M, tailKernel sigma j n*b n))
       (Finset.mem_range.mpr (Nat.lt_succ_self k))
@@ -218,7 +218,7 @@ theorem tail_energy_summable_le {sigma : ℝ} (hs : 1/2 < sigma) (hs' : sigma < 
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) (hbs : Summable (fun n => b n^2)) :
     Summable (fun k => tailTransform sigma b k^2) ∧
       (∑' k, tailTransform sigma b k^2) ≤ schurConstant sigma^2*(∑' n, b n^2) := by
-  have hfinite (L : ℕ) : (∑ k ∈ Finset.range L, tailTransform sigma b k^2)  ≤ 
+  have hfinite (L : ℕ) : (∑ k ∈ Finset.range L, tailTransform sigma b k^2)  ≤
       schurConstant sigma^2*(∑' n, b n^2) := by
     have ht := tendsto_finsetSum (Finset.range L) (fun k _ =>
       ((summable_tail_row hs hs' hb hbs k).hasSum.tendsto_sum_nat).pow 2)

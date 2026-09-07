@@ -16,9 +16,9 @@ extensions of the real forms. The full covariant KI reconstruction now has a com
 two-jet proved equal to its actual coordinate derivatives. The upper-half-plane BM background
 and its vacuum equation are proved. Actual affine variation of a C2 tensor field realizes the
 quadratic and direct cubic Einstein coefficients, including the full KI reconstruction.
-The remaining source task is to instantiate the physical profiles, derive the nonlinear
-field/gauge corrections, and connect the complete source to the physical causal action and
-final left-QNM projection.
+The fundamental radial profiles and literal scalar/coexact-vector cusp fields are instantiated.
+The reconstructed first-order Einstein equation, nonlinear field/gauge corrections, complete
+source reduction, physical causal action, and final left-QNM projection remain to be derived.
 
 Corpus searches `einstein variation`, `metric perturbation`, `ricci coordinate`, `inverse series
 matrix`, and `christoffel derivative` locate the coordinate curvature definitions, smooth metric
@@ -290,23 +290,101 @@ that they obey the required harmonic equations or that the reconstructed perturb
 solves the linearized Einstein equation. Seventeen radial and five metric/source public
 theorems close this construction.
 
+## Closed joint angular regularity
+
+For fixed arithmetic parameter u, Bessel order nu, real height power a, index degree d
+and Fourier sign, the full infinite family is
+`F(u,nu,a,d,sign)(x,Y)=sum_(n>=1) a_u(n)*n^d*exp(sign*2*pi*i*n*x)*Y^a*K_nu(2*pi*n*Y)`.
+The polynomial arithmetic envelope and positive-argument Bessel envelope give a locally
+uniform summable majorant on every compact positive-height interval, for arbitrary fixed
+complex parameters. All degree-shifted families converge absolutely there.
+
+The actual joint Frechet derivative is proved by differentiating each summand, bounding
+both coordinate derivatives by a common summable sequence on a positive-height ball,
+and applying the infinite-series derivative theorem. Its horizontal coefficient is
+`sign*2*pi*i*F(u,nu,a,d+1,sign)`. Its vertical coefficient is exactly
+`a*F(u,nu,a-1,d,sign)-pi*(F(u,nu+1,a,d+1,sign)+F(u,nu-1,a,d+1,sign))`.
+The summed derivative is identified with these four shifted full families. Induction on
+finite derivative order proves joint C-infinity regularity on `Y>0`.
+
+The pre-existing signed square-root Whittaker tail is identically this family at
+`a=m+1/2`. Both two-step Maass words are finite combinations of these exact tails.
+Both Weyl constant terms are smooth through their literal complex height powers.
+Consequently the scalar, raised, and lowered full cusp legs and the complete balanced
+boundary current `Y^(-1)*raised(u)*lowered(u)*scalar(v)` have all finite joint spatial
+jets at every positive height. No finite Fourier replacement or spectral half-plane
+assumption enters these theorems.
+
+This closes spatial regularity of the literal fixed-parameter cusp functions. It does
+not yet identify the required KI scalar/vector harmonic types, commute spectral jets
+with spatial differentiation, or prove the reconstructed first-order Einstein equation.
+The generic field-to-source theorem above still states its angular C2 hypotheses;
+these new cusp-regularity theorems are available for the correctly matched profiles.
+
+## Closed actual scalar cusp equation
+
+`ThetaCuspHawkingBMAngularScalarEquation` identifies actual `ScalarTwoJet.coordDeriv`
+first derivatives and both pure second derivatives of the full infinite family.
+Three Schlaefli order recurrences give
+`s^2/4*(K_(nu+2)-2*K_nu+K_(nu-2))-s/2*(K_(nu+1)+K_(nu-1))=nu^2*K_nu`.
+The real half-power shifts then yield the exact equation of every weighted signed
+summand at every positive height. Absolute convergence of all shifted families
+passes this identity to their complete infinite sum. Both literal Weyl monomials
+satisfy the same actual differential equation, and the operator respects their
+local germs and linear combination.
+
+Thus the pre-existing literal scalar cusp leg E_u satisfies
+`Y^2*(partial_x partial_x E_u + partial_Y partial_Y E_u)=(u^2-1/4)*E_u`
+for every complex u and every Y>0. The derivatives are taken from the actual field;
+no supplied second-jet hypothesis or Y>=1 restriction remains. This theorem closes
+the scalar chart equation. It does not by itself identify the coexact vector,
+the reconstructed Einstein perturbation, or a selection law for u.
+
+## Closed actual horizon covector geometry [BRIDGE]
+
+`ThetaCuspHawkingBMHorizonCovectorEquation` derives the literal horizon metric
+`g=Y^(-2)*diag(1,1)` and every connection entry from actual coordinate derivatives.
+The nonzero entries are `Gamma^x_xy=Gamma^x_yx=-1/Y`, `Gamma^y_xx=1/Y`, and
+`Gamma^y_yy=-1/Y`. The inverse in every contraction is the actual matrix inverse.
+Both lower-index connection terms remain in the second covariant derivative:
+
+- `nabla^2 V_x = Y^2*(V_x,xx+V_x,YY)+2Y*(V_x,Y-V_Y,x)-V_x`;
+- `nabla^2 V_Y = Y^2*(V_Y,xx+V_Y,YY)+2Y*(V_Y,Y+V_x,x)-V_Y`;
+- `div V = Y^2*(partial_x V_x+partial_Y V_Y)`.
+
+The actual area-form/inverse-metric contraction gives
+`V=(partial_Y S,-partial_x S)`. Actual second/third derivative symmetry proves
+`div V=0` and `nabla^2 V=coexact(Delta S)-V`. Hence `Delta S=-q*S` implies
+`nabla^2 V=-(q+1)*V`, retaining the curvature contribution. These are sixteen
+kernel-checked public geometric theorems. They supply a bridge to the literal cusp
+field, not a new independent selection conjecture or a spectral restriction.
+
+## Closed literal cusp metric-source insertion [BRIDGE]
+
+`ThetaCuspHawkingBMLiteralCuspMetricSource` uses the complete scalar cusp leg
+`S_u=E_u` and its actual coexact covector `V_u`. Their scalar and rough vector
+field equations have eigenvalues `q=1/4-u^2` and `q+1`; the vector is covariantly
+divergence-free. The matched radial momentum `chi=-i*u` obeys `1/4+chi^2=q`.
+All finite scalar/vector spatial derivatives follow from the literal infinite series.
+No harmonic equation or angular regularity certificate is supplied as a premise.
+
+Substitution into the fundamental reconstruction proves that its explicit full jet
+equals the actual coordinate metric jet. The direct second and third derivatives of
+the actual affine cosmological Einstein source are respectively the constructed
+B and C forms evaluated on that literal full jet, with factors 1/2 and 1/6. Nine
+public theorems close this insertion. These field identities hold for every complex
+u and do not establish nonvanishing, global quotient admission, the reconstructed
+first-order Einstein equation, or retained spin-two source identification.
+
 ## Next physical source evaluation
 
-Joint angular regularity is being derived from the literal signed Fourier--Bessel family,
-not from separate partial derivatives alone. For fixed arithmetic parameter u, Bessel order nu,
-real height power a, index degree d and Fourier sign, retain the full infinite sum of
-`a_u(n)*n^d*exp(sign*2*pi*i*n*x)*Y^a*K_nu(2*pi*n*Y)`.
-Horizontal differentiation increases d by one. Vertical differentiation is the sum of
-`a` times the family at `(a-1,d,nu)` and `-pi` times the two families at
-`(a,d+1,nu+1)` and `(a,d+1,nu-1)`. The corpus's polynomial arithmetic envelope and
-positive-argument Bessel envelope provide locally uniform summable bounds on every
-positive-height neighborhood. Prove the actual joint Frechet derivative, then induct on
-smoothness using this derivative-stable family. Finally identify the existing scalar and
-finite Maass-word cusp legs with these literal sums and their constant terms. No stronger
-spectral convergence chamber or finite-mode replacement is intended.
+Derive the reconstructed first-order Einstein equation. The exact next
+on-shell target is the zero amplitude derivative of `D4BMActualMetricSource.source`
+for each complete reconstructed tensor component at either matched fundamental
+frequency. Proving radial and horizon equations separately does not yet establish
+this tensor identity. Any required spectral/spatial derivative interchange for retained
+angular jets also remains explicit.
 
-Instantiate the literal scalar/vector horizon profiles with multivariate regularity and the
-correct harmonic equations, and verify the reconstructed first-order Einstein equation.
 The fundamental ingoing/Dirichlet radial inputs and matching horizon geometry are proved;
 the mixed dressed monodromy's outgoing incidence remains explicit in the scattering basis.
 Reduce the complete B,C source evaluations, identify second- and third-order field corrections,
@@ -472,3 +550,39 @@ checks, and `scripts/formal_tools.py lint` passed; lint retains 132 existing lar
 All owned processes completed and the owned scratch directory was removed. No numerical
 experiment ran. The full RH objective remains active with the analytical and physical
 obligations listed above.
+
+## Current joint angular validation
+
+Three exact-source leaves passed scratch `lake env lean` without warnings:
+`ThetaCuspHawkingBMAngularSeriesBounds` (126 lines, four public theorems),
+`ThetaCuspHawkingBMAngularSeriesSmooth` (192 lines, six), and
+`ThetaCuspHawkingBMEisensteinCuspJointSmooth` (140 lines, fourteen).
+Their isolated final `lake build GaloisForLFunctions.RHTower.<leaf>` audits reused
+cached dependencies and compiled only the requested new leaves, in 6.8, 8.0, and
+8.6 seconds respectively. Source copies were byte-checked; only the new olean/ilean
+files were installed, without dependency trace metadata. All three leaves are wired
+once into `RHTower.lean`; no umbrella or full build ran.
+
+One scratch axiom audit covered these 24 new public theorems only. Every result uses
+only `propext`, `Classical.choice`, and `Quot.sound`; no computation certificate or
+added axiom occurs. Corpus index generation, scoped whitespace checks, and formal
+lint passed; lint retains 132 existing large-file warnings. Owned Lean processes
+completed, and the owned scratch directory was removed. No numerical experiment ran.
+The full RH objective remains active; the next physical obligations are stated above.
+
+## Current actual scalar equation validation
+
+The 301-line `ThetaCuspHawkingBMAngularScalarEquation` passed scratch `lake env lean`
+without warnings. Its isolated exact-source final
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularScalarEquation`
+passed in 5.2 seconds, compiling only this new leaf against existing cached dependencies.
+The source copies were byte-checked and only the new olean/ilean were installed;
+no dependency trace metadata was copied. The leaf is wired once into `RHTower.lean`.
+No full or umbrella build ran.
+
+One scratch axiom audit covered the 16 new public theorems only. All depend solely on
+`propext`, `Classical.choice`, and `Quot.sound`. Index generation, scoped whitespace
+checks and formal lint passed; lint retains 132 existing large-file warnings. Every
+owned Lean/Lake process completed, and the owned scratch directory was removed.
+No numerical experiment ran. The complete physical-source obligations above remain open;
+the RH objective remains active.

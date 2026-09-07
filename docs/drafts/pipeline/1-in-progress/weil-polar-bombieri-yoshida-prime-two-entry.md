@@ -198,3 +198,36 @@ Lean (both wired into `RHTower.lean`, axioms `[propext, Classical.choice, Quot.s
 
 Remaining Lean step of the chain: (F) the staircase assembly inequality (band projections, finite
 Legendre block, the `Ω`-form); the finite block stays a documented computation.
+
+## Aperture-to-zero-location transfer (paper, 2026-09-07)
+
+What a certified aperture buys. Let `Q_S ≥ 0` hold on `V₀` for supports in `[−S/2, S/2]`. For an
+off-line zero `ρ = ½ + a + iγ` with `|γ| ≥ e^S`, the test `u = e^{−iγx} φ` (`φ` real, odd, smooth, support
+`[−S/2, S/2]`, `|φ| ≤ 1`, `φ = 1` on `[δ, S/2 − δ]`) has zero-side value
+
+`Σ_ρ' û(ρ') conj û(1 − ρ̄') = −2Φ₊² + Σ_{on-line} |φ̂(γ' − γ)|² + (other off-line pairs) + O(e^{S/4}‖Q_S‖/|γ|)`,
+
+`Φ₊ = ∫ φ e^{ax} ≥ (e^{a(S/2−δ)} − 1)/a`. The on-line total is `≤ C S log|γ|` (Plancherel on the window of
+width `1/S` times the local zero count). Other off-line pairs `ρ_j` contribute `−2Re Ψ_j²` with
+`Ψ_j = ∫ φ e^{a_j x} e^{ix(γ_j − γ)}`; in the multiplier picture all off-line pairs add with the same sign
+to the envelope `Re Σ_j e^{a_j S}/(a_j − i(ξ − γ_j)) > 0` of the frequency-`S` ringing, so the negative
+lobes near `ξ = γ` are not cancelled. Hence `Q_S ≥ 0` forces `e^{aS} ≤ C a² S log|γ|`, i.e.
+
+`a ≤ (log log|γ| + log S + C)/S`  for every zero with `|γ| ≥ e^S`.
+
+Reading: aperture `S = 1` (certified) gives nothing; aperture `A log log T` would give excess `< 1/A` below
+height `T`, and its verification is band-limited at frequencies up to `exp(4e^{S/2})` (`= T⁴` for `A = 2`),
+where `m_S ≥ 0` becomes trivial because `Λ_S(ξ) ≥ log ξ − C` and `Σ_{n<e^S} 2Λ(n)/√n ≤ 4e^{S/2}`.
+STATUS CANNOT-330. Not formalized: it is a receiver-side transfer, not a source estimate; formalize only
+if a source argument for aperture positivity at growing `S` appears (the Lean ingredients exist:
+`suzukiRestrictedWeilForm_eq_integral_multiplier_of_moment_eq_zero`, the zero-side smooth form, and the
+local zero count `N(t+1) − N(t) ≪ log t`).
+
+**Correction (2026-09-08).** The "ringing envelope" argument above is invalid: the pointwise partial-sum
+expansion of `−ζ'/ζ` is formal, and the smoothed prime sum with the odd autocorrelation weight
+`w = φ⋆φ` has the opposite sign (`Σ_n Λ(n) n^{−½−iγ₀} w(log n) ⊃ +2Φ₊²`, consistent with the zero side
+`−2Φ₊²` through the minus sign of the prime block). The exact statement is the zero-side test law:
+`Q_S(e^{−iγ*x}φ) = ∓Σ_ρ Ψ_ρ(γ*)²` (odd/even `φ`), `Ψ_ρ = ∫φ e^{(a_ρ + i(γ_ρ−γ*))x}`. The rate
+`(log log|γ|)/S` holds for an isolated off-line zero; clustered off-line zeros (more than `1/a₀` in a
+unit window) can cancel the signal, and the local count only yields `a₀ ≲ (log|γ₀|)(log(a₀S))/S` via a
+Turán power-sum inequality. STATUS CANNOT-330 has been rewritten accordingly.

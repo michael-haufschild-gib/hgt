@@ -291,3 +291,22 @@ This is an unconditional source-produced growing partial schedule. It does not
 claim the original diagonal ceiling, complete prime coverage, or control of
 later middle-prime steps and their changed retained fields. Those remaining
 interactions, the full growing schedule, PE4, PE4G, SD1, and RH stay open.
+
+## Increasing middle order cannot be rescued by fixed scalar reserves
+
+The [analytic obstruction and positive survivor](../5-failed/ccm-fu-increasing-middle-scalar-reserves.md)
+are closed in Lean. At cutoff `M=64N²`, after all primes below `4N`, the
+complete energy divided by M² is at least `N/(52428800log(8N)^3)` even after
+**every possible selection** of scalar primes `M/8<q<M`. This lower bound
+tends to infinity, excluding every fixed quadratic multiplier for that
+increasing-middle scheduling class. The selections may depend on the cutoff
+and have unrestricted cardinality and mass.
+
+The mechanism is a whole family of retained singleton coordinates inherited
+from uniformly large child heads at the two clipped quotient endpoints.
+Consuming isolated primes leaves all disjoint nonempty coordinates unchanged,
+so scalar head balancing cannot alter this lower bound. A surviving complete
+order must move nonisolated primes across the middle front and control their
+coupled fields before this state occurs. The previous bounded growing signed
+batches remain valid partial schedules. General adaptive PE4, PE4G, PE4C,
+SD1 and RH remain open; the obstruction supplies no final signed-source bound.

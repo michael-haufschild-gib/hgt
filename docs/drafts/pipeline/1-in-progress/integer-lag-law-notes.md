@@ -387,3 +387,11 @@ Verdict: FAILED (reduction only, no source input).
 `weil-pole-direct-sign-attack` card. Not repeated.
 
 Hard obligation unchanged: a source-derived one-sided bound on `∫_1^x m(t) dt` at scale `√x`.
+
+**Attempt D (2026-09-07): zero-side product positivity.** `Ξ(t) = ξ(½+it)` is real, and in the Hadamard
+product each off-line quadruple contributes the non-vanishing factor `|1 − t²/z²|² = [(t² − (γ² − a²))² + 4γ²a²]/|z|⁴`
+(`z = γ − ia`), so all sign changes of `Ξ` are on-line zeros and all off-line information sits in `log|Ξ|`.
+Every global identity for `log|Ξ|` against a kernel is Jensen/Littlewood, i.e. the `(L)` first moment
+`Σ_{γ≤T} (β − ½)_+`, whose unconditional ceiling is `O(T)` (Selberg density) and whose vanishing `o(T)` is
+itself open (it is "almost all zeros within `o(1/log T)` of the line"). Verdict: FAILED — reduces to the
+`(L)` receiver; no new mechanism.

@@ -27,3 +27,13 @@ The scan uses 65 equally spaced centers from `8/95` through `6/5`. Every sampled
 `results.json` retains every center, both atom truncations, the normalized uncorrected Schur complement, correction and head determinant. The script supplies no certified tail or rounding bound. Positive samples do not prove positivity between centers or for the full infinite source.
 
 **Consequence for research:** Continue the finite two-atom comparison with the corpus's complete derivative/error bounds through twelve. A source-valid signed interval estimate must still pay the complete matrix and correction error. There is no sampled indication that the fixed coefficient band needs replacement.
+
+## Complete error-budget triage
+
+`error_budget.py` tests a different unknown: whether the already proved complete entry and correction majorants leave room for the finite two-atom lower comparison. It ran on the same Runpod host with 16 workers and 100 decimal digits in approximately 0.060 seconds. Outputs are in `error-budget-results.json`; remote scratch was removed after download.
+
+The script follows `ThetaCuspDeepTailCoolingTwelve`, `ThetaCuspTwoAtomSourceTwelve`, `ThetaCuspTwoAtomReflectedTwelve`, `ThetaCuspTwoAtomCompensationError` and `ThetaCuspEvenFourTwoAtomError`. It retains the exact first-atom derivatives, the two-atom likelihood-partition derivatives, both reflected cross terms, quadratic tail products and the complete correction error. Entry `k` is divided by `φ₁²(32q)^k`, a positive diagonal congruence and mass scaling.
+
+Let `L` be the retained matrix with last correction `min(10^12 G[T],3·10^12 G[T])`, and `E` the complete nonnegative error matrix. At every one of the 65 centers, all four leading principal minors of each `L−D_s E D_s` are numerically positive, for all eight sign vectors `s=(1,±1,±1,±1)`. Simultaneous reversal of all four signs gives the same matrix, so these represent all sign cases. This is a sufficient comparison for `vᵀL v−|v|ᵀE|v|>0`: choose the sign vector of `v`, up to simultaneous reversal.
+
+No sampled center failed this sufficient matrix comparison. This is stronger guidance than a scan of the retained or canonical determinant alone: the existing complete error majorants appear compatible with a proof. The script still supplies no certified arithmetic or between-center bound. The next mathematical obligation is uniform positivity of the finite signed comparison matrices over the entire middle interval.
