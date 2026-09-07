@@ -70,5 +70,10 @@ cutoff. The complete scratch passed without diagnostics; the final targeted leaf
 build compiled only this module. All nineteen new public declarations have been
 audited once and depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 The leaf is wired into `RHTower.lean`; no umbrella build or numerical experiment
-was run. Repository lint and final documentation audit follow the related period
-averaging investigation.
+was run. The search index and scoped source, umbrella, documentation-link, and whitespace
+checks are complete. Repository lint found one unrelated concurrent unwired module,
+`FiniteDirichletCriticalNonannihilation`; no new EDQ lint error was reported, and the
+global gate is not claimed to pass. All owned Lean processes exited and temporary
+proof/API/audit source files were removed. The [related averaging obstruction and
+formal positive survivor](../5-failed/edq-period-average-growth-obstruction.md) retain
+the actual progression weights identified here.

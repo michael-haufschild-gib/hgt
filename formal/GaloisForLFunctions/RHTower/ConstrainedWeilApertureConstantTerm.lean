@@ -101,7 +101,7 @@ theorem shiftedPairPoly_filter_of_neg {Θ : ℝ} (hΘ : 0 < Θ) (γ : ℝ) {q : 
   have habs : |(xiSpectralPoint q).im| = Θ := by rw [hq, abs_neg, abs_of_pos hΘ]
   rw [shiftedPairPoly_explicit Θ γ (rayFreq₁_ne_zero_of_im hΘ γ habs)
     (rayFreq₂_ne_zero_of_im hΘ γ habs)]
-  simp [List.filter_cons, rayFreq₁_re, rayFreq₂_re, hq, hΘ.ne']
+  simp [rayFreq₁_re, rayFreq₂_re, hq, hΘ.ne']
 
 /-- The filtered list when `Im z_q = Θ` (`Θ > 0`): the two entries `(−κ(−c_i), −c_i − Θ)`. -/
 theorem shiftedPairPoly_filter_of_pos {Θ : ℝ} (hΘ : 0 < Θ) (γ : ℝ) {q : XiZeroCopy}
@@ -112,7 +112,7 @@ theorem shiftedPairPoly_filter_of_pos {Θ : ℝ} (hΘ : 0 < Θ) (γ : ℝ) {q : 
   have habs : |(xiSpectralPoint q).im| = Θ := by rw [hq, abs_of_pos hΘ]
   rw [shiftedPairPoly_explicit Θ γ (rayFreq₁_ne_zero_of_im hΘ γ habs)
     (rayFreq₂_ne_zero_of_im hΘ γ habs)]
-  simp [List.filter_cons, rayFreq₁_re, rayFreq₂_re, hq, hΘ.ne']
+  simp [rayFreq₁_re, rayFreq₂_re, hq, hΘ.ne']
 
 /-! ## Constant terms of two-entry products -/
 
@@ -172,7 +172,7 @@ theorem constTerm_normalizedRayTermPoly_of_neg {Θ : ℝ} (hΘ : 0 < Θ) (γ : �
     linarith
   have hsum' : rayFreq₂ γ q + -(Θ : ℂ) + (rayFreq₁ γ q + -(Θ : ℂ)) ≠ 0 := by
     rw [add_comm]; exact hsum
-  simp only [hsum, hsum', if_false, add_zero, zero_add]
+  simp only [hsum, hsum', if_false, add_zero]
   have e1 : rayFreq₁ γ q + -(Θ : ℂ) + (rayFreq₁ γ q + -(Θ : ℂ)) = 0 ↔ (xiSpectralPoint q).re - γ = 0 := by
     constructor
     · intro h
@@ -181,7 +181,7 @@ theorem constTerm_normalizedRayTermPoly_of_neg {Θ : ℝ} (hΘ : 0 < Θ) (γ : �
         Complex.zero_im] at this
       linarith
     · intro h
-      apply Complex.ext <;> simp [rayFreq₁_re, rayFreq₁_im, rayFreq₂_re, rayFreq₂_im, hq, h]
+      apply Complex.ext <;> simp [rayFreq₁_re, rayFreq₁_im, hq, h]
   have e2 : rayFreq₂ γ q + -(Θ : ℂ) + (rayFreq₂ γ q + -(Θ : ℂ)) = 0 ↔ (xiSpectralPoint q).re + γ = 0 := by
     constructor
     · intro h
@@ -190,7 +190,7 @@ theorem constTerm_normalizedRayTermPoly_of_neg {Θ : ℝ} (hΘ : 0 < Θ) (γ : �
         Complex.zero_im] at this
       linarith
     · intro h
-      apply Complex.ext <;> simp [rayFreq₁_re, rayFreq₁_im, rayFreq₂_re, rayFreq₂_im, hq, h]
+      apply Complex.ext <;> simp [rayFreq₂_re, rayFreq₂_im, hq, h]
   have k1 : (xiSpectralPoint q).re - γ = 0 → rayFreq₁ γ q = (Θ : ℂ) := by
     intro h
     apply Complex.ext
@@ -231,25 +231,25 @@ theorem constTerm_normalizedRayTermPoly_of_pos {Θ : ℝ} (hΘ : 0 < Θ) (γ : �
     linarith
   have hsum' : -rayFreq₂ γ q + -(Θ : ℂ) + (-rayFreq₁ γ q + -(Θ : ℂ)) ≠ 0 := by
     rw [add_comm]; exact hsum
-  simp only [hsum, hsum', if_false, add_zero, zero_add]
+  simp only [hsum, hsum', if_false, add_zero]
   have e1 : -rayFreq₁ γ q + -(Θ : ℂ) + (-rayFreq₁ γ q + -(Θ : ℂ)) = 0 ↔ (xiSpectralPoint q).re - γ = 0 := by
     constructor
     · intro h
       have := congrArg Complex.im h
-      simp only [Complex.add_im, Complex.sub_im, Complex.neg_im, Complex.ofReal_im, sub_zero,
-        rayFreq₁_im, Complex.zero_im] at this
+      simp only [Complex.add_im, Complex.neg_im, Complex.ofReal_im, rayFreq₁_im,
+        Complex.zero_im] at this
       linarith
     · intro h
-      apply Complex.ext <;> simp [rayFreq₁_re, rayFreq₁_im, rayFreq₂_re, rayFreq₂_im, hq, h]
+      apply Complex.ext <;> simp [rayFreq₁_re, rayFreq₁_im, hq, h]
   have e2 : -rayFreq₂ γ q + -(Θ : ℂ) + (-rayFreq₂ γ q + -(Θ : ℂ)) = 0 ↔ (xiSpectralPoint q).re + γ = 0 := by
     constructor
     · intro h
       have := congrArg Complex.im h
-      simp only [Complex.add_im, Complex.sub_im, Complex.neg_im, Complex.ofReal_im, sub_zero,
-        rayFreq₂_im, Complex.zero_im] at this
+      simp only [Complex.add_im, Complex.neg_im, Complex.ofReal_im, rayFreq₂_im,
+        Complex.zero_im] at this
       linarith
     · intro h
-      apply Complex.ext <;> simp [rayFreq₁_re, rayFreq₁_im, rayFreq₂_re, rayFreq₂_im, hq, h]
+      apply Complex.ext <;> simp [rayFreq₂_re, rayFreq₂_im, hq, h]
   have k1 : (xiSpectralPoint q).re - γ = 0 → -rayFreq₁ γ q = (Θ : ℂ) := by
     intro h
     apply Complex.ext
