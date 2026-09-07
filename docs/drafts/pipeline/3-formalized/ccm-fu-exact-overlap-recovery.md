@@ -105,3 +105,17 @@ prove the unrestricted all-cutoff two-prime comparison or a complete adaptive
 order. Later changed fields still require their own full signed overlap
 control; the old geometric certificate cannot be treated as necessary for
 those actual admissible steps. The uniform signed Abel bound and RH remain open.
+
+## Validation
+
+Both scratch proofs and both exact module checks passed with `lake env lean`.
+Only these two modules' own oleans were emitted. The six new public declarations
+were audited once in a separate scratch file; each depends only on `propext`,
+`Classical.choice`, and `Quot.sound`. Both modules are wired into `RHTower.lean`.
+The corpus index refreshed successfully and `scripts/formal_tools.py lint`
+passed. No numerical experiment, dependency rebuild, full build, or umbrella
+build was run. The dependency-driven Lake build audit remains unperformed
+because the previously identified stale dependency traces would require
+broader rebuilding; that preflight was not repeated. Owned scratch files were
+removed and all owned foreground processes completed. The frontier map was
+read-only throughout.

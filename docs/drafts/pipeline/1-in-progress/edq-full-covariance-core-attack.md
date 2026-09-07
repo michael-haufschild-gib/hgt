@@ -965,3 +965,40 @@ The source with b>B remains signed and uncontrolled; the experiments rule out
 discarding it at the tested small cutoff. The paper identification J(N,N)=R_N
 has not been added as a Lean theorem. Neither the new head bound nor the finite
 diagnostics proves the complete EDQ ceiling or RH. No frontier-map edit was made.
+
+
+## Completed numerator columns: Euler main and absolute subpower remainder
+
+The literal complete coprime column
+`C(m,b)=sum_(a>=1,gcd(m,a)=1)mu(a)*K(a,b)` is now identified in Lean with
+`sum_(k>=1,prime-support(k) subset prime-support(m))P_b(k)/k^2`.
+Absolute two-index convergence justifies the divisor inversion. For positive
+m,b and 0<alpha<1, the new exact source estimate is
+
+```
+0 <= C(m,b)+E_1(m)/2 <= E_alpha(m)*b^(alpha-1)/2,
+E_alpha(m)=prod_(p|m)(1-p^(-alpha))^(-1).
+```
+
+At squarefree m, E_1(m)=m/phi(m). The proof uses
+`0<=P_b(k)+k/2<=min(k/2,k^2/(2*b))` and the corpus's exact finite-prime Euler
+mass. Its uniform subpower modulus bound then gives the stronger aggregate
+statement, for every epsilon>0,
+
+```
+sum_(1<=r,b<=N) |C(r*b,b)+E_1(r*b)/2|/r <= C_epsilon*N^epsilon.
+```
+
+This absolute bound covers the entire rectangle, hence the admitted triangle
+r*b<=N and every outer Möbius or coprimality mask of magnitude at most one.
+`EulerDeletionCompletedColumnMain` formalizes the column identity, its main
+term, and the aggregate bound. The scratch check, single-leaf build, and
+eight-new-declaration axiom audit passed; only the new leaf's olean changed.
+[Exact statements, proof and validation](../3-formalized/edq-completed-coprime-column-main.md).
+
+The actual numerator tail is C(r*b,b) minus the finite signed head
+`sum_(a<=floor(N/r),gcd(r*b,a)=1)mu(a)*K(a,b)`. The completed-column estimate
+does not bound this subtraction. The remaining task is a cutoff-dependent
+bound on those finite heads with their Euler mains and actual outer signs
+retained. No estimate of that hard term, complete EDQ ceiling, or RH proof is
+asserted. The frontier map remains read-only.

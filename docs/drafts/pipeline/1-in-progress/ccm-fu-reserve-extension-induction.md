@@ -389,3 +389,16 @@ ceiling and the exact parent mean. Thus the geometric certificate rejects
 some states that already bound every immediate successor. An exact-overlap
 induction can use a larger class, but its complete signed comparison and
 closure under repeated mergers have not been proved.
+
+The [exact successor-energy extension candidate](ccm-fu-exact-successor-extension.md)
+uses that larger class directly: current energy and every immediate
+successor energy must meet the original diagonal. Every initial state has
+this property. All8176 eligible proper saved states through32 have a
+successor with the same property, including826 states rejected by the
+geometric certificate; every saved cutoff has a complete path. This bounded
+RunPod reanalysis regenerates no channels and is numerical evidence only.
+The missing estimate retains all four-coordinate mixed terms
+`C_pq=sum_R(a_R*d_R+b_R*c_R)`: one p must satisfy
+`Delta_p+Delta_q+2*C_pq<=B-Q_P` for every other q. At two remaining primes,
+this still includes the unproved complete-source endpoint. No new Lean
+premise, all-cutoff closure, or RH proof is supplied by the finite passes.

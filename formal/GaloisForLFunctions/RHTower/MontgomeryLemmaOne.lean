@@ -534,7 +534,8 @@ def montgomeryZeroTerm (x t : ℝ) (q : XiZeroCopy) : ℂ :=
 
 /-- The trivial-zero summand `x^{c_k}/((c_k−a)(c_k−b))`, `c_k = −2(k+1)`. -/
 def montgomeryTrivialTerm (x t : ℝ) (k : ℕ) : ℂ :=
-  (x : ℂ) ^ trivialPole k / ((trivialPole k - montgomeryPoleUp t) * (trivialPole k - montgomeryPoleDown t))
+  (x : ℂ) ^ trivialPole k /
+    ((trivialPole k - montgomeryPoleUp t) * (trivialPole k - montgomeryPoleDown t))
 
 /-- The shifted digamma summand `1/(k+2) − 2/(s + 2(k+1))`. -/
 def digammaShiftTerm (s : ℂ) (k : ℕ) : ℂ := 1 / ((k : ℂ) + 2) - 2 / (s + 2 * ((k : ℂ) + 1))
@@ -550,54 +551,273 @@ theorem norm_cpow_xiZeroCopy_le {x : ℝ} (hx : 1 ≤ x) (q : XiZeroCopy) :
 theorem norm_mul_one_sub_le_montgomery (t : ℝ) (q : XiZeroCopy) :
     ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖ ≤ 16 * (1 + t ^ 2) *
       ‖((q.1 : ℂ) - montgomeryPoleUp t) * ((q.1 : ℂ) - montgomeryPoleDown t)‖ := by
-  set ρ : ℂ := (q.1 : ℂ) with hρ
-  set γ : ℝ := ρ.im with hγ
   have h0 := xiZeroCopy_re_pos q
   have h1 := xiZeroCopy_re_lt_one q
+  set γ : ℝ := ((q.1 : ℂ)).im with hγ
   -- upper bound for the genus denominator
-  have hA : ‖ρ‖ ≤ 1 + |γ| := by
-    have := Complex.norm_le_abs_re_add_abs_im ρ
-    have hre : |ρ.re| ≤ 1 := by rw [abs_le]; constructor <;> linarith
+  have hA : ‖(q.1 : ℂ)‖ ≤ 1 + |γ| := by
+    have := Complex.norm_le_abs_re_add_abs_im (q.1 : ℂ)
+    have hre : |((q.1 : ℂ)).re| ≤ 1 := by rw [abs_le]; constructor <;> linarith
     linarith
-  have hB : ‖1 - ρ‖ ≤ 1 + |γ| := by
-    have := Complex.norm_le_abs_re_add_abs_im (1 - ρ)
-    have hre : |(1 - ρ).re| ≤ 1 := by
+  have hB : ‖1 - (q.1 : ℂ)‖ ≤ 1 + |γ| := by
+    have := Complex.norm_le_abs_re_add_abs_im (1 - (q.1 : ℂ))
+    have hre : |(1 - (q.1 : ℂ)).re| ≤ 1 := by
       simp only [Complex.sub_re, Complex.one_re]; rw [abs_le]; constructor <;> linarith
-    have him : |(1 - ρ).im| = |γ| := by simp [hγ]
+    have him : |(1 - (q.1 : ℂ)).im| = |γ| := by simp [hγ]
     rw [him] at this
     linarith
-  have hAB : ‖ρ * (1 - ρ)‖ ≤ (1 + |γ|) ^ 2 := by
+  have hAB : ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖ ≤ 4 * (1 + t ^ 2) * (1 + (γ - t) ^ 2) := by
     rw [norm_mul]
-    calc ‖ρ‖ * ‖1 - ρ‖ ≤ (1 + |γ|) * (1 + |γ|) := by gcongr
-      _ = (1 + |γ|) ^ 2 := by ring
+    calc ‖(q.1 : ℂ)‖ * ‖1 - (q.1 : ℂ)‖ ≤ (1 + |γ|) * (1 + |γ|) := by gcongr
+      _ ≤ 2 * (1 + γ ^ 2) := by nlinarith [abs_nonneg γ, sq_abs γ, sq_nonneg (1 - |γ|)]
+      _ ≤ 4 * (1 + t ^ 2) * (1 + (γ - t) ^ 2) := by
+          nlinarith [sq_nonneg (2 * t - γ), sq_nonneg (t * (γ - t))]
   -- lower bound for the Montgomery denominators
-  have hup : ((1 / 2 : ℝ) + (γ - t) ^ 2) / 1 ≤ ‖(ρ - montgomeryPoleUp t) * (ρ - montgomeryPoleDown t)‖ := by
-    rw [norm_mul]
-    have e1 : ‖ρ - montgomeryPoleUp t‖ = Real.sqrt ((ρ.re - 3 / 2) ^ 2 + (γ - t) ^ 2) := by
-      have : ρ - montgomeryPoleUp t = ((ρ.re - 3 / 2 : ℝ) : ℂ) + ((γ - t : ℝ) : ℂ) * I := by
-        apply Complex.ext <;> simp [montgomeryPoleUp, hγ]
-      rw [this, Complex.norm_add_mul_I]
-    have e2 : ‖ρ - montgomeryPoleDown t‖ = Real.sqrt ((ρ.re + 1 / 2) ^ 2 + (γ - t) ^ 2) := by
-      have : ρ - montgomeryPoleDown t = ((ρ.re + 1 / 2 : ℝ) : ℂ) + ((γ - t : ℝ) : ℂ) * I := by
-        apply Complex.ext <;> simp [montgomeryPoleDown, hγ] <;> ring
-      rw [this, Complex.norm_add_mul_I]
-    rw [e1, e2, div_one]
-    have hq1 : (1 / 4 : ℝ) + (γ - t) ^ 2 ≤ (ρ.re - 3 / 2) ^ 2 + (γ - t) ^ 2 := by nlinarith
-    have hq2 : (1 / 4 : ℝ) + (γ - t) ^ 2 ≤ (ρ.re + 1 / 2) ^ 2 + (γ - t) ^ 2 := by nlinarith
-    have hs1 := Real.sqrt_le_sqrt hq1
-    have hs2 := Real.sqrt_le_sqrt hq2
+  have e1 : ‖(q.1 : ℂ) - montgomeryPoleUp t‖
+      = Real.sqrt ((((q.1 : ℂ)).re - 3 / 2) ^ 2 + (γ - t) ^ 2) := by
+    have : (q.1 : ℂ) - montgomeryPoleUp t
+        = ((((q.1 : ℂ)).re - 3 / 2 : ℝ) : ℂ) + ((γ - t : ℝ) : ℂ) * I := by
+      apply Complex.ext <;> simp [montgomeryPoleUp, hγ]
+    rw [this, Complex.norm_add_mul_I]
+  have e2 : ‖(q.1 : ℂ) - montgomeryPoleDown t‖
+      = Real.sqrt ((((q.1 : ℂ)).re + 1 / 2) ^ 2 + (γ - t) ^ 2) := by
+    have : (q.1 : ℂ) - montgomeryPoleDown t
+        = ((((q.1 : ℂ)).re + 1 / 2 : ℝ) : ℂ) + ((γ - t : ℝ) : ℂ) * I := by
+      apply Complex.ext <;> norm_num [montgomeryPoleDown, hγ]
+    rw [this, Complex.norm_add_mul_I]
+  have hden : (1 + (γ - t) ^ 2) / 4
+      ≤ ‖((q.1 : ℂ) - montgomeryPoleUp t) * ((q.1 : ℂ) - montgomeryPoleDown t)‖ := by
+    rw [norm_mul, e1, e2]
+    have hq1 : (1 / 4 : ℝ) + (γ - t) ^ 2 ≤ (((q.1 : ℂ)).re - 3 / 2) ^ 2 + (γ - t) ^ 2 := by
+      nlinarith
+    have hq2 : (1 / 4 : ℝ) + (γ - t) ^ 2 ≤ (((q.1 : ℂ)).re + 1 / 2) ^ 2 + (γ - t) ^ 2 := by
+      nlinarith
     have hsq : Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2) * Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2)
         = (1 / 4 : ℝ) + (γ - t) ^ 2 := Real.mul_self_sqrt (by positivity)
-    calc (1 / 2 : ℝ) + (γ - t) ^ 2 ≤ 2 * ((1 / 4 : ℝ) + (γ - t) ^ 2) := by linarith
-      _ ≤ 2 * (Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2) * Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2)) := by
-          rw [hsq]
-      _ ≤ 2 * (Real.sqrt ((ρ.re - 3 / 2) ^ 2 + (γ - t) ^ 2) *
-          Real.sqrt ((ρ.re + 1 / 2) ^ 2 + (γ - t) ^ 2)) := by gcongr
-      _ = _ := by
-          -- `2·√A·√B ≥ √A·√B` is not what we want; rewrite the target instead
-          ring_nf
-          sorry
-  sorry
+    calc (1 + (γ - t) ^ 2) / 4 ≤ (1 / 4 : ℝ) + (γ - t) ^ 2 := by nlinarith
+      _ = Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2) * Real.sqrt ((1 / 4 : ℝ) + (γ - t) ^ 2) := hsq.symm
+      _ ≤ Real.sqrt ((((q.1 : ℂ)).re - 3 / 2) ^ 2 + (γ - t) ^ 2) *
+          Real.sqrt ((((q.1 : ℂ)).re + 1 / 2) ^ 2 + (γ - t) ^ 2) :=
+          mul_le_mul (Real.sqrt_le_sqrt hq1) (Real.sqrt_le_sqrt hq2) (Real.sqrt_nonneg _)
+            (Real.sqrt_nonneg _)
+  calc ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖ ≤ 4 * (1 + t ^ 2) * (1 + (γ - t) ^ 2) := hAB
+    _ = 16 * (1 + t ^ 2) * ((1 + (γ - t) ^ 2) / 4) := by ring
+    _ ≤ _ := by gcongr
+
+theorem summable_montgomeryZeroTerm {x : ℝ} (hx : 1 ≤ x) (t : ℝ) :
+    Summable (montgomeryZeroTerm x t) := by
+  refine Summable.of_norm_bounded
+    (g := fun q : XiZeroCopy => (32 * x * (1 + t ^ 2)) * ‖1 / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))‖)
+    (summable_inv_mul_one_sub.norm.mul_left _) fun q => ?_
+  have hD : 0 < ‖((q.1 : ℂ) - montgomeryPoleUp t) * ((q.1 : ℂ) - montgomeryPoleDown t)‖ :=
+    norm_pos_iff.mpr (mul_ne_zero (sub_ne_zero.mpr (xiZeroCopy_ne_montgomeryPoleUp q t))
+      (sub_ne_zero.mpr (xiZeroCopy_ne_montgomeryPoleDown q t)))
+  have hG : 0 < ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖ :=
+    norm_pos_iff.mpr (mul_ne_zero (xiZeroCopy_ne_zero q) (xiZeroCopy_one_sub_ne_zero q))
+  have hkey := norm_mul_one_sub_le_montgomery t q
+  unfold montgomeryZeroTerm
+  rw [norm_div, norm_mul, norm_div, norm_one, show ‖(2 : ℂ)‖ = 2 by norm_num]
+  rw [div_le_iff₀ hD]
+  have hx' := norm_cpow_xiZeroCopy_le hx q
+  calc 2 * ‖(x : ℂ) ^ (q.1 : ℂ)‖ ≤ 2 * x := by gcongr
+    _ = (32 * x * (1 + t ^ 2)) * (1 / ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖) *
+          (16 * (1 + t ^ 2))⁻¹ * ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖ := by
+        field_simp
+        ring
+    _ ≤ (32 * x * (1 + t ^ 2)) * (1 / ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖) *
+          ((16 * (1 + t ^ 2))⁻¹ * (16 * (1 + t ^ 2) *
+            ‖((q.1 : ℂ) - montgomeryPoleUp t) * ((q.1 : ℂ) - montgomeryPoleDown t)‖)) := by
+        rw [mul_assoc (32 * x * (1 + t ^ 2) * (1 / ‖(q.1 : ℂ) * (1 - (q.1 : ℂ))‖))]
+        gcongr
+    _ = _ := by
+        field_simp
+
+theorem norm_montgomeryTrivialTerm_le {x : ℝ} (hx : 1 < x) (t : ℝ) (k : ℕ) :
+    ‖montgomeryTrivialTerm x t k‖ ≤ ((x ^ 2)⁻¹) ^ k := by
+  have hx0 : 0 < x := by linarith
+  unfold montgomeryTrivialTerm
+  rw [norm_div, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx0, trivialPole_re]
+  have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+  -- numerator `x^{−2(k+1)} ≤ x^{−2k}`
+  have hnum : x ^ (-(2 * ((k : ℝ) + 1))) ≤ ((x ^ 2)⁻¹) ^ k := by
+    have hcast : (2 * ((k : ℝ) + 1)) = ((2 * (k + 1) : ℕ) : ℝ) := by push_cast; ring
+    rw [Real.rpow_neg hx0.le, hcast, Real.rpow_natCast, pow_mul, ← inv_pow, pow_succ]
+    have hle : (x ^ 2)⁻¹ ≤ 1 := by rw [inv_le_one_iff₀]; right; nlinarith
+    calc ((x ^ 2)⁻¹) ^ k * (x ^ 2)⁻¹ ≤ ((x ^ 2)⁻¹) ^ k * 1 := by gcongr
+      _ = _ := mul_one _
+  -- denominator `≥ 1`
+  have hd1 : 1 ≤ ‖trivialPole k - montgomeryPoleUp t‖ := by
+    have := Complex.abs_re_le_norm (trivialPole k - montgomeryPoleUp t)
+    rw [Complex.sub_re, trivialPole_re, montgomeryPoleUp_re] at this
+    rw [abs_le] at this
+    linarith [this.1]
+  have hd2 : 1 ≤ ‖trivialPole k - montgomeryPoleDown t‖ := by
+    have := Complex.abs_re_le_norm (trivialPole k - montgomeryPoleDown t)
+    rw [Complex.sub_re, trivialPole_re, montgomeryPoleDown_re] at this
+    rw [abs_le] at this
+    linarith [this.1]
+  calc x ^ (-(2 * ((k : ℝ) + 1))) / (‖trivialPole k - montgomeryPoleUp t‖ *
+        ‖trivialPole k - montgomeryPoleDown t‖)
+      ≤ x ^ (-(2 * ((k : ℝ) + 1))) / 1 := by
+        gcongr
+        exact one_le_mul_of_one_le_of_one_le hd1 hd2
+    _ ≤ _ := by rw [div_one]; exact hnum
+
+theorem summable_montgomeryTrivialTerm {x : ℝ} (hx : 1 < x) (t : ℝ) :
+    Summable (montgomeryTrivialTerm x t) := by
+  have hr : (x ^ 2)⁻¹ < 1 := by
+    rw [inv_lt_one_iff₀]; right; nlinarith
+  exact Summable.of_norm_bounded (summable_geometric_of_lt_one (by positivity) hr)
+    (norm_montgomeryTrivialTerm_le hx t)
+
+theorem norm_digammaShiftTerm_le {s : ℂ} (hs : -1 / 2 ≤ s.re) (k : ℕ) :
+    ‖digammaShiftTerm s k‖ ≤ ‖s - 2‖ * (1 / ((k : ℝ) + 1) ^ 2) := by
+  unfold digammaShiftTerm
+  have hk2 : ((k : ℂ) + 2) ≠ 0 := by exact_mod_cast (Nat.succ_ne_zero (k + 1))
+  have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+  have hre : ((k : ℝ) + 1) ≤ (s + 2 * ((k : ℂ) + 1)).re := by
+    simp only [Complex.add_re, Complex.mul_re, Complex.natCast_re, Complex.one_re]
+    norm_num
+    linarith
+  have hs0 : s + 2 * ((k : ℂ) + 1) ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    rw [Complex.zero_re] at this
+    linarith
+  have hid : 1 / ((k : ℂ) + 2) - 2 / (s + 2 * ((k : ℂ) + 1))
+      = (s - 2) / (((k : ℂ) + 2) * (s + 2 * ((k : ℂ) + 1))) := by
+    field_simp
+    ring
+  rw [hid, norm_div, norm_mul]
+  have hn1 : ((k : ℝ) + 1) ≤ ‖(k : ℂ) + 2‖ := by
+    have : ‖(k : ℂ) + 2‖ = (k : ℝ) + 2 := by
+      rw [show (k : ℂ) + 2 = ((k + 2 : ℕ) : ℂ) by push_cast; ring, Complex.norm_natCast]
+      push_cast; ring
+    rw [this]; linarith
+  have hn2 : ((k : ℝ) + 1) ≤ ‖s + 2 * ((k : ℂ) + 1)‖ :=
+    hre.trans (Complex.re_le_norm _)
+  have hpos : (0 : ℝ) < (k : ℝ) + 1 := by linarith
+  calc ‖s - 2‖ / (‖(k : ℂ) + 2‖ * ‖s + 2 * ((k : ℂ) + 1)‖)
+      ≤ ‖s - 2‖ / (((k : ℝ) + 1) * ((k : ℝ) + 1)) := by
+        gcongr
+    _ = ‖s - 2‖ * (1 / ((k : ℝ) + 1) ^ 2) := by
+        field_simp
+
+theorem summable_digammaShiftTerm {s : ℂ} (hs : -1 / 2 ≤ s.re) :
+    Summable (digammaShiftTerm s) := by
+  have hb : Summable (fun k : ℕ => ‖s - 2‖ * (1 / ((k : ℝ) + 1) ^ 2)) := by
+    have h := (summable_nat_add_iff 1).mpr (Real.summable_nat_pow_inv.mpr (by norm_num : 1 < 2))
+    refine (h.mul_left ‖s - 2‖).congr fun k => ?_
+    push_cast
+    ring
+  exact Summable.of_norm_bounded hb (norm_digammaShiftTerm_le hs)
+
+/-- The `q`-th Mittag-Leffler value, rearranged: `−Z_q − x^a P_a(ρ) + x^b P_b(ρ)`. -/
+theorem integral_mzTerm_eq {x : ℝ} (hx : 1 < x) (t : ℝ) (q : XiZeroCopy) :
+    (1 / (2 * Real.pi) : ℝ) • ∫ τ : ℝ, mzTerm x t q τ =
+      -montgomeryZeroTerm x t q
+        - (x : ℂ) ^ montgomeryPoleUp t * (((q.1 : ℂ) - 1 / 2)⁻¹ + (montgomeryPoleUp t - (q.1 : ℂ))⁻¹)
+        + (x : ℂ) ^ montgomeryPoleDown t *
+          (((q.1 : ℂ) - 1 / 2)⁻¹ + (montgomeryPoleDown t - (q.1 : ℂ))⁻¹) := by
+  rw [integral_mzTerm hx t q]
+  unfold montgomeryZeroTerm
+  have h1 := xiZeroCopy_sub_half_ne_zero q
+  have h2 : (q.1 : ℂ) - montgomeryPoleUp t ≠ 0 := sub_ne_zero.mpr (xiZeroCopy_ne_montgomeryPoleUp q t)
+  have h3 : (q.1 : ℂ) - montgomeryPoleDown t ≠ 0 :=
+    sub_ne_zero.mpr (xiZeroCopy_ne_montgomeryPoleDown q t)
+  have h2' : montgomeryPoleUp t - (q.1 : ℂ) ≠ 0 := fun h => h2 (by rw [← neg_sub, h, neg_zero])
+  have h3' : montgomeryPoleDown t - (q.1 : ℂ) ≠ 0 := fun h => h3 (by rw [← neg_sub, h, neg_zero])
+  have hab := montgomeryPoleUp_sub_down t
+  have hab' : (q.1 : ℂ) - montgomeryPoleDown t = (q.1 : ℂ) - montgomeryPoleUp t + 2 := by
+    rw [← hab]; ring
+  have hab'' : montgomeryPoleDown t - (q.1 : ℂ) = -((q.1 : ℂ) - montgomeryPoleUp t + 2) := by
+    rw [← hab']; ring
+  have hup : montgomeryPoleUp t - (q.1 : ℂ) = -((q.1 : ℂ) - montgomeryPoleUp t) := by ring
+  rw [hab', hab'', hup]
+  have h4 : (q.1 : ℂ) - montgomeryPoleUp t + 2 ≠ 0 := by rw [← hab']; exact h3
+  field_simp
+  ring
+
+/-- The `k`-th Mittag-Leffler value, rearranged: `4 T_k − x^a d_k(a) + x^b d_k(b)`. -/
+theorem integral_mkTerm_eq {x : ℝ} (hx : 1 < x) (t : ℝ) (k : ℕ) :
+    (1 / (2 * Real.pi) : ℝ) • ∫ τ : ℝ, mkTerm x t k τ =
+      4 * montgomeryTrivialTerm x t k
+        - (x : ℂ) ^ montgomeryPoleUp t * digammaShiftTerm (montgomeryPoleUp t) k
+        + (x : ℂ) ^ montgomeryPoleDown t * digammaShiftTerm (montgomeryPoleDown t) k := by
+  rw [integral_mkTerm hx t k]
+  unfold montgomeryTrivialTerm digammaShiftTerm
+  have hk2 : ((k : ℂ) + 2) ≠ 0 := by exact_mod_cast (Nat.succ_ne_zero (k + 1))
+  have h2 : trivialPole k - montgomeryPoleUp t ≠ 0 :=
+    sub_ne_zero.mpr (trivialPole_ne_montgomeryPoleUp k t)
+  have h3 : trivialPole k - montgomeryPoleDown t ≠ 0 :=
+    sub_ne_zero.mpr (trivialPole_ne_montgomeryPoleDown k t)
+  have hca : montgomeryPoleUp t + 2 * ((k : ℂ) + 1) = -(trivialPole k - montgomeryPoleUp t) := by
+    unfold trivialPole; ring
+  have hcb : montgomeryPoleDown t + 2 * ((k : ℂ) + 1) = -(trivialPole k - montgomeryPoleDown t) := by
+    unfold trivialPole; ring
+  have hab := montgomeryPoleUp_sub_down t
+  have hab' : trivialPole k - montgomeryPoleDown t = trivialPole k - montgomeryPoleUp t + 2 := by
+    rw [← hab]; ring
+  rw [hca, hcb, hab']
+  have h4 : trivialPole k - montgomeryPoleUp t + 2 ≠ 0 := by rw [← hab']; exact h3
+  field_simp
+  ring
+
+theorem tsum_integral_mzTerm {x : ℝ} (hx : 1 < x) (t : ℝ) :
+    ∑' q : XiZeroCopy, (1 / (2 * Real.pi) : ℝ) • ∫ τ : ℝ, mzTerm x t q τ =
+      -(∑' q : XiZeroCopy, montgomeryZeroTerm x t q)
+        - (x : ℂ) ^ montgomeryPoleUp t * logDeriv xi (montgomeryPoleUp t)
+        + (x : ℂ) ^ montgomeryPoleDown t * logDeriv xi (montgomeryPoleDown t) := by
+  simp_rw [integral_mzTerm_eq hx t]
+  have hZ := summable_montgomeryZeroTerm hx.le t
+  have hPa := summable_partialFractionTerm (xi_montgomeryPoleUp_ne_zero t)
+  have hPb := summable_partialFractionTerm (xi_montgomeryPoleDown_ne_zero t)
+  rw [Summable.tsum_add ((hZ.neg).sub (hPa.mul_left _)) (hPb.mul_left _),
+    Summable.tsum_sub hZ.neg (hPa.mul_left _), tsum_neg, tsum_mul_left, tsum_mul_left,
+    ← logDeriv_xi_eq_partialFraction (xi_montgomeryPoleUp_ne_zero t),
+    ← logDeriv_xi_eq_partialFraction (xi_montgomeryPoleDown_ne_zero t)]
+
+theorem tsum_integral_mkTerm {x : ℝ} (hx : 1 < x) (t : ℝ) :
+    ∑' k : ℕ, (1 / (2 * Real.pi) : ℝ) • ∫ τ : ℝ, mkTerm x t k τ =
+      4 * (∑' k : ℕ, montgomeryTrivialTerm x t k)
+        - (x : ℂ) ^ montgomeryPoleUp t * (∑' k : ℕ, digammaShiftTerm (montgomeryPoleUp t) k)
+        + (x : ℂ) ^ montgomeryPoleDown t * (∑' k : ℕ, digammaShiftTerm (montgomeryPoleDown t) k) := by
+  simp_rw [integral_mkTerm_eq hx t]
+  have hT := summable_montgomeryTrivialTerm hx t
+  have hDa := summable_digammaShiftTerm (s := montgomeryPoleUp t) (by rw [montgomeryPoleUp_re]; norm_num)
+  have hDb := summable_digammaShiftTerm (s := montgomeryPoleDown t)
+    (by rw [montgomeryPoleDown_re])
+  rw [Summable.tsum_add ((hT.mul_left 4).sub (hDa.mul_left _)) (hDb.mul_left _),
+    Summable.tsum_sub (hT.mul_left 4) (hDa.mul_left _), tsum_mul_left, tsum_mul_left, tsum_mul_left]
+
+/-- **Montgomery's lemma, exact form.**  For `x > 1` and every height `t`, with `a = 3/2 + it`,
+`b = −1/2 + it`, `c_k = −2(k+1)`, `S(s) = Σ_k (1/(k+2) − 2/(s+2(k+1)))` and
+`c₁ = ½ − ½ log π − ½ γ`:
+
+`Σ_ρ 2x^{ρ}/((ρ−a)(ρ−b)) = −Σ_{n≤x} Λ(n)((x/n)^a − (x/n)^b) + ((x−x^a)/(1−a) − (x−x^b)/(1−b))
+  + c₁(x^a − x^b) − 2Σ_k x^{c_k}/((c_k−a)(c_k−b)) + ½x^a S(a) − ½x^b S(b) − x^a ξ'/ξ(a) + x^b ξ'/ξ(b)`.
+
+The zero sum is absolutely convergent; every zero of `ξ` counted with multiplicity. -/
+theorem montgomery_lemma_one {x : ℝ} (hx : 1 < x) (t : ℝ) :
+    ∑' q : XiZeroCopy, montgomeryZeroTerm x t q =
+      -(∑ n ∈ Finset.Icc 1 ⌊x⌋₊, ((vonMangoldt n : ℝ) : ℂ) *
+          (((x / n : ℝ) : ℂ) ^ montgomeryPoleUp t - ((x / n : ℝ) : ℂ) ^ montgomeryPoleDown t))
+        + (((x : ℂ) - (x : ℂ) ^ montgomeryPoleUp t) / (1 - montgomeryPoleUp t) -
+            ((x : ℂ) - (x : ℂ) ^ montgomeryPoleDown t) / (1 - montgomeryPoleDown t))
+        + ((1 : ℂ) / 2 - (Real.log Real.pi : ℂ) / 2 - (Real.eulerMascheroniConstant : ℂ) / 2) *
+            ((x : ℂ) ^ montgomeryPoleUp t - (x : ℂ) ^ montgomeryPoleDown t)
+        - 2 * (∑' k : ℕ, montgomeryTrivialTerm x t k)
+        + (1 / 2 : ℂ) * (x : ℂ) ^ montgomeryPoleUp t *
+            (∑' k : ℕ, digammaShiftTerm (montgomeryPoleUp t) k)
+        - (1 / 2 : ℂ) * (x : ℂ) ^ montgomeryPoleDown t *
+            (∑' k : ℕ, digammaShiftTerm (montgomeryPoleDown t) k)
+        - (x : ℂ) ^ montgomeryPoleUp t * logDeriv xi (montgomeryPoleUp t)
+        + (x : ℂ) ^ montgomeryPoleDown t * logDeriv xi (montgomeryPoleDown t) := by
+  have hD := montgomery_dirichlet_side hx t
+  have hM := montgomery_mittagLeffler_side hx t
+  rw [tsum_integral_mkTerm hx t, tsum_integral_mzTerm hx t] at hM
+  have hkey := hD.symm.trans hM
+  linear_combination -hkey
 
 end
 

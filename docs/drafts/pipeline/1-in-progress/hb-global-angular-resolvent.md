@@ -40,3 +40,18 @@ Generic operator hypotheses cannot substitute for this construction.
 SS/VV response sectors, the original left-QNM pairing, and independent Hawking-clock
 extinction remain open. The frontier map is read-only. No experiment is planned:
 the source estimates and continuation are proved symbolically from the corpus.
+
+## Actual form-domain construction
+
+Use the closure of the graph of the literal weighted derivatives `y*partial_x`
+and `y*partial_y` on smooth modular functions with compact support in the quotient.
+Its projection to the existing scalar L² space must be proved injective and dense.
+Local distributional testing can prove injectivity; density requires constructing
+smooth modular extensions of compact functions supported in the cell interior.
+The corpus proves the cell boundary has zero invariant measure and the modular
+action is properly discontinuous. Periodizing each interior function over PSL2Z
+is consequently locally finite and agrees with that original function on the cell.
+These extensions are candidates inside the full modular core, not a replacement
+by the closure of interior-supported functions in the energy norm. Integration by
+parts, graph closability, the complete energy closure and operator identification
+are still proof obligations.
