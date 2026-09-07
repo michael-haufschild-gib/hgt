@@ -53,3 +53,25 @@ log-dense `N` (ratio → 1 suffices), with the mean-value route above (no Kronec
 window mean square of a real trigonometric polynomial with the conjugation symmetry is bounded below by half the sum
 of squared moduli, and positivity is extracted from mean ≈ 0 and mean square ≥ m). The non-attained case remains the
 open core; the abstract obstruction stands.
+
+## Update 2026-09-08: the Weil-form analogue of the attained case is Lean
+
+`ConstrainedWeilApertureWindowMean.exists_aperture_twistedOddTest_neg_of_attainedTop` (STATUS MUST-259):
+if the top excess `Θ` is attained at `ρ₀ = ½ ± Θ + iγ₀`, the constrained Weil form of `cos(γ₀x)ψ_a` is
+`≤ −c e^{2Θa}` at some aperture of every window `[A, A + L₀]`, `A ≥ ½`. The mechanism is the aperture
+analogue of the Bohr window mean used here for integers: every ray term is an exact exponential polynomial
+in `a` (plateau profile), the constant term isolates the top copies, and everything else averages out at
+rate `2D/L`. The non-attained case is open in both settings, for the same reason (no constant term to isolate).
+
+## Bohr-mean conjecture for the twisted plateau family (2026-09-08, paper)
+
+**Conjecture.** For every centre `γ`, `sup_L |(1/L)∫_{½}^{½+L} Re Q(cos(γx)ψ_a) da| < ∞` if and only if RH.
+Under RH the mean converges to the Parseval sum `M(γ) = Σ_q (Σ_j |C_{q,j}|²)/(4 z_q²) > 0` over the on-line
+copies (each ray term is `(Im(A_q+A'_q))²/(4z_q²)` with `A_q + A'_q` an exponential polynomial with purely
+imaginary exponents; Bohr–Parseval for its window mean). If RH fails with an attained top, MUST-259 gives
+means `≍ −e^{2ΘL}`. `[OPEN CORE]`: the non-attained case, which needs the Laplace transform of `Q` in the
+aperture (poles at `2c₁(q) = 2θ_q + 2i(Re z_q − γ)`, isolated because zero ordinates are locally finite;
+residue `−(1/4)κ(c₁)²/z_q²`, nonzero for generic `γ` since `κ` is a nonzero entire function of the frequency)
+and the corpus Widder–Landau engine transported from the test parameter to the aperture. Verdict: BRIDGE
+(same mechanism class as Bombieri–Yoshida with a weaker hypothesis on one explicit family); not pursued as a
+build because it adds a receiver, not a source sign. See STATUS CANNOT-331.

@@ -140,3 +140,32 @@ limit and the form is negative for some aperture: **attained top excess ⟹ twis
 isolation or gap hypothesis** (the clustered-zero obstruction of CANNOT-330 (ii) is removed by averaging in
 the aperture instead of the centre). Remaining Lean steps: the constant-term identification (25 exponent-sum
 cases), `Σ_q decayNorm_q < ∞`, the interchange of `Σ'_q` with the window integral, and the assembly.
+
+## Recurrent exponential negativity for an attained top excess (added 2026-09-08, Lean)
+
+`ConstrainedWeilApertureWindowMean` (wired; imports `ConstrainedWeilApertureDecay` and
+`XiEndpointStrongHeightGap` for `|ordinate| > 9/2`):
+
+* `nine_halves_le_abs_re_xiSpectralPoint`, `xiSpectralPoint_re_ne_zero` (from `xiDivisorSupport_fortyOne_div_two_lt_im_sq`).
+* `profileMass_plateauProfile_le : ∫|ψ_a| ≤ 2a`.
+* `normalizedTwistedForm Θ γ a := Σ'_q Re eval(normalizedRayTermPoly Θ γ q) a`;
+  `normalizedTwistedForm_eq : S(a) = e^{−2Θa} Re Q(cos(γx)ψ_a)` for `a ≥ ½`;
+  `abs_re_eval_normalizedRayTermPoly_le` (uniform bound `4B²/‖z_q‖²` on `[½, B]`);
+  `continuousOn_normalizedTwistedForm`.
+* `integral_normalizedTwistedForm_eq_tsum` (interchange, via `integral_tsum_of_summable_integral_norm`),
+  `summable_integral_re_eval`, `integral_re_eval_le` (per copy: `∫_A^{A+L} Re eval ≤ L·Re constTerm + 2·decayNorm`).
+* `topCentreSet Θ γ` (top height, ordinate `±γ`), `finite_topCentreSet`; `topKappa`, `topConstant Θ γ =
+  (1/4)κ(Θ)²(γ² − Θ²)/(γ² + Θ²)²`, `topConstant_pos`; `re_inv_sq_of_sq_eq`;
+  `re_constTerm_of_mem_topCentreSet` (`= −topConstant`), `constTerm_eq_zero_of_not_mem_topCentreSet`;
+  `tsum_re_constTerm_le : Σ'_q Re constTerm_q ≤ −topConstant`.
+* `decayTotal`, `summable_decayNorm_top`; **`integral_normalizedTwistedForm_le`**:
+  `∫_A^{A+L} S ≤ −c L + 2D` for `A ≥ ½`, `L > 0`.
+* **`exists_normalizedTwistedForm_le_of_attainedTop`**: `L > 4D/c ⟹ ∃ a ∈ [A, A+L], S(a) ≤ −c/2`;
+  **`exists_aperture_twistedOddTest_neg_of_attainedTop`**: `∃ c > 0, ∃ L₀ > 0, ∀ A ≥ ½, ∀ L ≥ L₀, ∃ a ∈ [A, A+L],
+  Re Q(cos(γ₀x)ψ_a) ≤ −c e^{2Θa}`. STATUS MUST-259.
+
+Traps: `setIntegral_const` now yields `μ.real s • c` (unfold `Measure.real`, then `Real.volume_Icc`);
+`continuousOn_tsum` needs `(f := …)` and `(u := …)` explicitly; `integral_tsum_of_summable_integral_norm`
+works on `volume.restrict (Ioc A B)` after `simp_rw [intervalIntegral.integral_of_le]` on both sides;
+`lt_of_pow_lt_pow_left₀ 2 (abs_nonneg _)` turns `(9/2)² < |x|²` into `9/2 < |x|`; `hcont.intervalIntegrable_of_Icc`
+for a `ContinuousOn` on `Icc`. The ordinate bound `41/2 < (Im ρ)²` is corpus-owned (`XiEndpointStrongHeightGap`).

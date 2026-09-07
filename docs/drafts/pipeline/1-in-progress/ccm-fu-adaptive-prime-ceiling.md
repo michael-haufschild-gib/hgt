@@ -249,3 +249,19 @@ This controls two coupled retained coordinates with actual source supply.
 The list still leaves prime two and other source primes unprocessed.
 Propagation while changing the retained field, complete compatible coverage,
 PE4, PE4G, PE4C, SD1 and RH remain open.
+
+## Arbitrary finite retained fields
+
+The [finite retained-source spectral bridge](../3-formalized/ccm-fu-finite-retained-spectral-separation.md)
+is unconditional in Lean. Every nonzero functional on any finite retained
+prime field has a literal Möbius subset numerator that is nonzero at simple
+critical Xi zeros beyond every height. Its candidate Mellin expression
+retains exact simple poles after division by finite Euler and integration
+factors, while satisfying the low-height analyticity needed for Landau's
+closed-ball transfer.
+
+The [full source-cone bridge](ccm-fu-finite-source-cone-exhaustion.md) still
+needs the infinite weighted Euler identity, actual integral transport and
+positive-carrier continuation. No source cone for arbitrary fields is yet
+proved. Uniform propagation of its witnesses and energy budget as the
+retained field changes remains a further coverage obligation.

@@ -58,11 +58,13 @@ The proposed Mellin formula, initially for Re(s)>3/2, is
 `  *(-zeta'(s-1/2)/zeta(s-1/2)-zeta(s-1/2)+2*gamma)`
 `  /(2*s*(s-1/2))`.
 
-The right side is holomorphic near every real s>1/2: finite Euler factors
-do not vanish there, zeta has no positive-real zero, and the two poles at
-s=3/2 cancel. A nonnegative H_y would therefore have Mellin convergence
-through Re(s)>1/2 by Landau transfer. Every simple critical zero rho would
-force `P_y(rho)=0` by the pole of the logarithmic derivative.
+The candidate right side is formally analytic whenever Re(s)>1/2 and
+|Im(s)|<=4, including the cancelled pole at s=3/2. More precisely, its
+pullback by s=4-z is differentiable on every closed ball |z|<=R<7/2.
+For a positive carrier centered at Mellin abscissa four, those balls are
+the inputs to Landau transfer through Re(s)>1/2. Constructing that carrier
+and proving its initial Mellin germ are still necessary. The candidate
+right side formally has surviving simple critical poles at unbounded height.
 
 The corpus has an unconditional superlinear simple-critical-zero count and
 a linear zero-count bound for any nonzero entire function of finite
@@ -71,8 +73,34 @@ zero. Distinct products of subsets of S and independence of their real
 exponentials then force every coordinate of y to vanish. The same reasoning
 applies to a nonpositive functional by negation.
 
-Every formula and analytic passage above needs an exact proof; no unstated
-Mellin interchange, pole cancellation, or coefficient injectivity is admitted.
+The [spectral separation bridge](../3-formalized/ccm-fu-finite-retained-spectral-separation.md)
+is unconditional in Lean. It closes coefficient injectivity, the exact
+finite Möbius subset numerator, arbitrarily high simple-critical
+nonannihilation, pole survival through finite Euler and integration-clock
+denominators, and all required low-height Landau balls. Its 28 new public
+declarations use only foundational axioms and no computational premises.
+
+The infinite weighted Euler identity, literal source-to-Mellin equality,
+growth and interchange bounds, positive-carrier construction and analytic
+continuation identity remain open. These are the next transport gates;
+no full retained-source cone theorem is yet claimed.
+
+### Arithmetic transport target
+
+For p outside S, set y0(R)=y(R) and y1(R)=y(insert p R).
+Restrict each old weighted Möbius sequence to indices not divisible by p.
+The new sequence is the first restriction minus the p-dilation of the
+second. The old sequence itself is its restriction minus its p-dilation,
+because Möbius vanishes on the repeated-prime terms. This gives the exact
+recursion
+
+`L(a_(insert p S),y) = (L(a_S,y0)-p^(-w)*L(a_S,y1))/(1-p^(-w))`.
+
+The finite subset numerator has the matching recursion, and the empty
+retained set is the ordinary Möbius series times y(empty). Proving these
+identities with absolute convergence on Re(w)>1 is the selected route to
+the infinite Euler identity. No numerical test is needed for these exact
+coefficient and reindexing statements.
 
 ## Corpus inputs located
 
@@ -88,6 +116,10 @@ Mellin interchange, pole cancellation, or coefficient injectivity is admitted.
   census.
 - `XiSimpleCriticalSuperlinearConsumer`: incompatibility of linear upper
   and superlinear lower counting bounds.
+- `CCMSimplePrimeDivisorSource`: exact pole-filled `-zeta'/zeta-zeta`
+  continuation and cancellation at the arithmetic pole.
+- `FiniteDirichletCriticalNonannihilation`, `FiniteDirichletDivisorPoleSurvival`,
+  `RetainedPrimeDirichletNumerator`: closed finite numerator and pole bridge.
 
 ## Computation decision
 
