@@ -108,3 +108,19 @@ grow along the order, and absolute values lose the signs needed to pay
 the remaining cost. Its unconditional positive consequence is a universal
 separated-prime two-merger ceiling, paid by the smaller prime's existing
 arithmetic reserve. A complete mixed-field reserve comparison remains open.
+
+## Exact small-core cancellation for nonoverlapping pairs
+
+The [small-core theorem](../3-formalized/ccm-fu-small-core-mixed-interactions.md)
+proves that when p*q>=M, the full mixed difference E2=2*C_pq is exactly
+unchanged on replacing P by its primes below
+`max(floor(M/p),floor(M/q))+1`. The joint child is zero, so the parent
+field cancels, and both copied children ignore every larger processed
+prime. At quotient depth at most L this yields
+`|E2|<=(18/25)*4^L*L*M`, independently of card(P) and all current sign
+defects. Different quotient windows are allowed.
+
+The growth in total processed-set size is therefore removed from this
+sector. The missing simultaneous comparison still includes first gains,
+pairs with p*q<M, and unbounded quotient depths. These remain arithmetic
+obligations; the fixed-depth mixed bound does not close extension.

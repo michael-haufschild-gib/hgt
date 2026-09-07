@@ -1,35 +1,26 @@
-# Selberg quarter conjecture corpus audit and Chain A formalization (2026-09-07)
+# Selberg quarter conjecture / Chain A formalization (2026-09-07)
 
-Report: `docs/drafts/pipeline/1-in-progress/selberg-quarter-conjecture-corpus-audit.md`.
+User requires custom corpus search `python3 scripts/formal_tools.py research ...` before each new theorem family/module; all new families below were searched first.
 
-Conjecture remains open. Custom corpus search must precede each new theorem family/module: `python3 scripts/formal_tools.py research ...`.
+Closed Lean infrastructure now includes prior Maass/automorphic, local spherical, complementary-series, packet, and exceptional-scalar modules, plus:
+- `RealPrincipalSeriesCompactPicture.lean`: canonical Iwasawa B/K factors and linear equivalence between Borel coinduction and twisted compact-picture functions.
+- `RealPrincipalSeriesCompactAction.lean`: conjugated principal-series representation with explicit Iwasawa action formula.
+- `RealPrincipalSeriesKTypes.lean`: explicit `K ≃* Circle`, distinct/linearly independent even characters, compact K-type vectors, injective finite Fourier embedding.
+- `RealPrincipalSeriesCompactKAction.lean`: K-type eigenvector theorem, diagonal K representation on Finsupp, actual K-action intertwining.
+- `RealPrincipalSeriesKFiniteCoinduction.lean`: injective normalized K-finite embedding into algebraic coinduction, explicit basis/Iwasawa formula, K-action intertwining and invariant range.
+- `RealPrincipalSeriesCompactHarishChandra.lean`: finite compact submodule, actual restricted K-representation, transported H/E/F with exact coefficients, sl2 relations, Casimir and shifted Laplacian scalars.
+- `RealPrincipalSeriesCompactIrreducibility.lean`: compact K-type projections and irreducibility for |s|<1.
+- `RealPrincipalSeriesCompactUnitarity.lean`: transported positive Hermitian form and exact compact unitarity locus (-1,1), proved both directions.
+- `SelbergExceptionalCompactModel.lean`: every 0<λ<1/4 gives unitarizable irreducible compact complementary model with shifted Casimir λ.
 
-Chain A formalization now wired into `formal/GaloisForLFunctions/RHTower.lean`:
+All are wired into `GaloisForLFunctions/RHTower.lean`. Targeted `lake env lean` and `lake build <modules>` pass. Capstone #print axioms shows only propext, Classical.choice, Quot.sound. Targeted forbidden-token scan is empty.
 
-1. `MaassHomogeneousSpaceCorrespondence.lean`: exact Γ-invariant functions on ℍ ↔ left-Γ/right-K invariant functions ↔ spherical right-regular vectors.
-2. `MaassSpectralTransport.lean`: conjugates linear operators; preserves eigen-equations, nonzero eigenvectors, eigenvalues.
-3. `CongruenceMaassCorrespondence.lean`: Gamma/Gamma0/Gamma1 specializations.
-4. `MaassCuspAutomorphicCorrespondence.lean`: real C² predicate via `ContDiffOn ℝ 2`; positive hyperbolic Laplacian via real Fréchet derivatives on ℂ; nonzero eigenfunction and cusp decay after every integral scaling matrix; exact spherical automorphic equivalence; Gamma/Gamma0/Gamma1 specializations.
-5. `MaassCyclicAutomorphicRepresentation.lean`: group-algebra span of nonzero spherical Maass vector; actual cyclic right-regular subrepresentation and nonzero generator.
-6. `AutomorphicCoinduction.lean`: algebraic coinduction equivalence.
-7. `RealUpperBorelPrincipalSeries.lean`: real upper Borel, |a|^σ characters, exact unitary-character locus, algebraic principal series.
-8. `SymmetricPowerArchimedeanExponents.lean`: Sym^d exponent packets, exact strips, all/all-even degrees force ν=0.
-9. `RankOneComplementarySeriesBound.lean`: first rank-one norm obstruction.
-10. `RealSphericalHarishChandra.lean`: spherical K-finite model, sl₂ commutators, Casimir and shifted Laplacian.
-11. `RealSphericalIrreducibility.lean`: every (𝔤,K)-submodule is bottom/top for |s|<1.
-12. `RealSphericalUnitarity.lean`: invariant positive Hermitian forms and necessary |s|<1.
-13. `RealSphericalComplementaryWeights.lean`: positive product K-type weights and two-sided recurrence.
-14. `RealSphericalComplementarySeries.lean`: explicit diagonal Hermitian form, positivity, e†=-f invariance, exact unitarity loci (-1,1) and (-1/2,1/2).
-15. `GenericUnitaryExponentBounds.lean`: explicit rank-one packet unitarizable iff pointwise half-strip; symmetric-power all/all-even exact locus {0}.
-16. `SphericalExponentPacketUnitarity.lean`: one product Harish-Chandra model and one positive invariant Hermitian form for a finite exponent packet; exact iff pointwise half-strip; symmetric-power all/all-even exact locus {0}.
-17. `SelbergExceptionalSphericalModel.lean`: bundled 0<λ<1/4 gives ν=sqrt(1/4-λ)∈(0,1/2), unitarizable irreducible local model with shifted Casimir λ, and failure of explicit local unitarity in some positive even symmetric-power degree.
+Remaining known-math formalization gaps:
+1. smooth vectors and proof transported H/E/F equal derivatives of explicit compact right action;
+2. coordinate positive hyperbolic Laplacian equals derived right-regular Casimir;
+3. quotient L²/Fourier zero-term correspondence and automorphic irreducible/local factor decomposition;
+4. arbitrary generic GL(n,R) unitary classification/exponent theorem and local symmetric-power parameter compatibility.
 
-Verification: every changed/new module passed `lake env lean <file>` and its targeted `lake build <module>`; no full or umbrella build. Capstone `#print axioms` checks report only `propext`, `Classical.choice`, and `Quot.sound`. No sorry/admit/axiom/opaque/unsafe. Final `python3 scripts/formal_tools.py lint` passed with existing large-file warnings. No Lean processes started by this work remain.
+Remaining open math: compatible automorphic symmetric-power lifts of unbounded degree for general weight-zero Maass forms, with infinity compatibility and constituent control. This is the actual obstruction to Selberg 1/4 via Chain A.
 
-Remaining known-foundation boundary:
-- prove pointwise cusp decay equivalent to Fourier zero constant terms and quotient L²;
-- define derived right-regular Lie algebra action and prove coordinate positive Laplacian equals shifted Casimir;
-- identify algebraic coinduction with explicit spherical Harish-Chandra model;
-- formalize generic-unitary classification for arbitrary GL(n,ℝ), including local factor compatibility.
-
-Open mathematical boundary: compatible unbounded-degree symmetric-power lifts for arbitrary weight-zero Maass forms. Thus Selberg 1/4 is not proved.
+Latest global lint exit 1 only because unrelated concurrent `MontgomeryTruncationIntegrals.lean` is unreachable and contains a sorry at line 97; Chain A files are clean.

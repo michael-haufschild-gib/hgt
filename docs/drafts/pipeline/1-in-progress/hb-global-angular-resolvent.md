@@ -9,8 +9,9 @@ The complete mixed source forces `(Delta-L)H=(L/2)S²`, with
 `L=(2s+1)(2s+2)`. Its full squared cusp principal part has the explicit response
 proved in `ThetaCuspHawkingBMQuadraticMixedCurrent`. Both physical Xi branches
 have nonreal L. The actual modular energy domain and its unique full-forcing
-weak response are constructed. Smooth global reconstruction and physical causal
-admission remain open.
+weak response are constructed. Every compact interior localization of that actual
+response has proved planar H² regularity. Smooth global reconstruction and
+physical causal admission remain open.
 
 ## Proved source admission and modular matching
 
@@ -52,9 +53,23 @@ form-domain, closability, inverse or critical-line hypothesis. Exact definitions
 proof and audit:
 [modular energy domain and weak response](../3-formalized/hb-modular-energy-domain-and-weak-response.md).
 
+## Proved interior regularity
+
+Constructed periodized energy tests retain their actual derivatives. The completed
+derivative constraints therefore give the literal second-order distributional
+equation `Delta_Euclidean h=(L*h+F)/y²`. Exact native-density cancellation proves
+planar L² membership of every compact localization of the response, both original
+completed gradients, and the full forcing. The localized Laplacian retains both
+cutoff terms `2 grad(eta)·grad(h)+(Delta eta)*h`; every term is proved L².
+The Fourier-normalized Bessel identity then proves actual local H² regularity and
+an L¹ representative of each localized Fourier transform. No regularity premise
+is supplied. Proof and audit:
+[actual interior elliptic regularity](../3-formalized/hb-interior-elliptic-regularity.md).
+
 ## Physical obligations
 
-Obtain a smooth global representative of the weak response and its literal
+Bootstrap higher interior regularity, then obtain a smooth global representative
+of the weak response and its literal
 hyperbolic equation across the modular charts. Construct the global cusp-cutoff
 extension and assemble `chi*H0+h`. Establish the physical causal prescription for
 the complete forced vector metric, including its horizon, radial boundary, gauge

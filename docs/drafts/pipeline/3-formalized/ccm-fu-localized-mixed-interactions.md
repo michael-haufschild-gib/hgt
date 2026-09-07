@@ -83,3 +83,30 @@ amplitude estimates follow analytically from the literal source identities.
 All are in namespace `RHTower`. The first three require only prime-label
 and active-merger conditions, with no unproved analytic input. The final
 theorem supplies its own universal separation and quotient constants.
+
+## Validation and build limits
+
+The complete scratch proof and direct exact-module `lake env lean` check
+passed without warnings. The new leaf's olean was emitted. All four new
+public declarations were axiom-audited once from an external scratch file;
+each uses only `propext`, `Classical.choice`, and `Quot.sound`. The module
+is wired into `RHTower.lean`, and the corpus index refreshed successfully.
+
+The targeted final command was
+`LEAN_NUM_THREADS=1 lake build --old GaloisForLFunctions.RHTower.MobiusDivisorLocalizedInteractions:olean`.
+It expanded into prerequisite rebuilds despite `--old`, so it was stopped
+before reaching the new leaf. Six prerequisite modules completed before
+termination: `UniformPrimeSubsetEnergy`, `HarmonicSecondErrorBounds`,
+`HarmonicGeometricBounds`, `DivisorHyperbolaSharpBlocks`,
+`DivisorHyperbolaSmallPrefixes`, and `MobiusDivisorAbelHomothety`.
+The stopped build had removed `MobiusDivisorAbelQuadraticDiagonal.olean`;
+one exact-file Lean check restored that required cache artifact before
+the new leaf's successful check. The Lake audit remains incomplete and
+must not be reported as a passing build. No umbrella build was run.
+
+Global `scripts/formal_tools.py lint` reported one unrelated wiring error
+for the concurrently added `RHTower.MontgomeryZeroSumWindow`. This new
+CCM-FU module is reachable; the foreign module was left to its owner.
+No old declaration was axiom-audited again. No numerical experiment ran.
+Owned scratch/log files were removed, and all owned Lean/Lake processes
+ended. This task made no frontier-map edit.

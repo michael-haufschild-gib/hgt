@@ -9,8 +9,9 @@ weight, and Casimir operators to that concrete function space and proves the `sl
 and Casimir scalar there.
 
 The normalization uses Borel exponent `s + 1`, matching the coefficients
-`(s - 1 ∓ 2m) / 2` in the explicit Harish-Chandra model.  The remaining analytic step is to
-identify these transported operators with derivatives of right translation on smooth vectors.
+`(s - 1 ∓ 2m) / 2` in the explicit Harish-Chandra model.  The compact rotation derivative is
+identified with the weight operator in `RealPrincipalSeriesCompactKDerivative`; identifying the
+raising and lowering operators with noncompact infinitesimal translations remains analytic work.
 -/
 
 namespace GaloisForLFunctions.RHTower

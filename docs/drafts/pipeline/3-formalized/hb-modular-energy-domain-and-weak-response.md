@@ -161,6 +161,9 @@ experiment ran. The frontier map remains read-only.
 
 ## Remaining physical bridge
 
+The [interior regularity proof](hb-interior-elliptic-regularity.md) derives the actual
+local distributional equation and complete cutoff commutator and proves H² for
+every compact interior localization. Higher regularity remains necessary.
 Obtain a smooth global representative of the weak response and identify its actual
 hyperbolic differential equation across the modular charts. Construct the global
 cusp-cutoff extension and assemble `chi*H0+h` as the full angular response.

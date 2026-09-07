@@ -207,6 +207,20 @@ private lemma mixed_identity (M : ℕ) (P : Finset ℕ) {p q : ℕ}
   rw [insert_comm q p R]
   ring
 
+/-- Exact signed four-coordinate identity for a mixed second energy difference. -/
+theorem mobiusDivisorSelectionEnergy_mixed_eq (M : ℕ) (P : Finset ℕ) {p q : ℕ}
+    (hp : p.Prime) (hq : q.Prime) (hpM : p<M) (hqM : q<M)
+    (hpP : p∉P) (hqP : q∉P) (hpq : p≠q) :
+    mobiusDivisorSelectionEnergy M (insert q (insert p P))-
+      mobiusDivisorSelectionEnergy M (insert p P)-
+      mobiusDivisorSelectionEnergy M (insert q P)+mobiusDivisorSelectionEnergy M P =
+        2*∑ R∈(((mobiusDivisorSelectionPrimes M).erase q).erase p).powerset,
+          (mobiusDivisorSelectionFibre M P R*
+              mobiusDivisorSelectionFibre M P (insert p (insert q R))+
+            mobiusDivisorSelectionFibre M P (insert p R)*
+              mobiusDivisorSelectionFibre M P (insert q R)) :=
+  mixed_identity M P hp hq hpM hqM hpP hqP hpq
+
 private lemma mixed_overlap_bound (M : ℕ) (P : Finset ℕ) (hP : ∀ r∈P,r.Prime)
     {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p≠q) :
     |mixedOverlap M P p q|≤(9/25:ℝ)*4^(P.card-1)*(M:ℝ)*
