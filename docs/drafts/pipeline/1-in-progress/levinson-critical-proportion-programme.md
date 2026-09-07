@@ -3541,3 +3541,67 @@ the revised gate list are the pieces of this one inequality on one block.
 - 2026-09-05 (session B) — high-block bricks B8: `HighBlockDirectTail` (free-exponent direct tail) and `HighBlockDualWeightRightShift` (dual weight decay `‖W_{d,τ}(Y)‖ ≤ C(1+|τ|)^{K+1/2}‖χ(s)^{-1}‖Y^{-(1/2-d+K)}` by a right contour shift). See `high-block-dyadic-law-session-b.md`.
 - 2026-09-05 (session B) — STRUCTURAL: brick 5ba item 4 is not closed for the actual cross term. The reflected head is `conj` of a `−τ` polynomial, so the cross term matches `norm_integral_archimedeanCross_le` only with `x = L²N ≥ τ M/(2π)`, where the gap hypothesis fails; the phase has interior stationary points at the corner `rn = (τ/2π)(m₂/m₁)` for every split. The cross term is `Θ(a)` and part of `c` (5af was right). See `high-block-dyadic-law-session-b.md` for the two exits (corner stationary phase / product AFE for the sharp `c`; Cauchy–Schwarz plus energy upper bounds for an explicit non-sharp `c`).
 - 2026-09-05 (session B) — `λ = 0` dyadic law CLOSED modulo one arithmetic input: `RHTower.exists_zetaDyadicMeanSquareLaw_of_sharpEnergyInput` (`HighBlockLaw`) gives `ZetaDyadicMeanSquareLaw R c` from `SharpEnergyInput C` (`HighBlockParameters`: the sharp-cutoff critical energy `Σ_r‖((n+1)^{−1/2}1_{n≤u} ∗ b_d)(r)‖² ≤ C` for all head lengths `u < ⌈a^{51/100}⌉`, all `0<d≤1/4`, all `1≤a≤U`, `b_d(m) = μ(m)log(N/m)/log N · m^{−1/2+d}`, `N = ⌊U^{1/20}⌋`, eventually in `U`). 22 `HighBlock*` modules, axiom-clean, wired. The Levinson (`λ = 1/log U`) twin needs the differentiated AFE through the same skeleton.
+
+## Brick 5bh — the exact product approximate functional equation (Young's degree-two identity)
+
+The memory audits of bricks 5af/5ba/5bc concluded that the mollified mean square needs the twisted
+second moment through a **product** AFE for `ζ(s₁)ζ(s₂)` rather than a split of two degree-one
+AFEs, because the direct×reflected cross term of the split has an interior stationary point at the
+corner for every cutoff.  The product identity is now exact Lean, at every scale and every pair of
+base points in the open strip (six modules, all axiom-clean, wired into `RHTower`):
+
+* `RHTower/RectangleThreePoleResidue.lean` — `rectIntegral_eq_three_pole_residues`: a rectangle
+  integral of three scalar Cauchy kernels plus an entire remainder is `2πi` times the residue sum.
+* `RHTower/ProductAFEIntegrand.lean` — `productAFEIntegrand s₁ s₂ x w = ζ(s₁+w)ζ(s₂+w)x^w e^{w²}/w`;
+  entire numerator with both zeta poles filled (`regularizedRiemannZeta`), third divided difference
+  as entire remainder, `productAFEIntegrand_eq_three_poles_add_remainder` (`s_i ≠ 1`, `s₁ ≠ s₂`),
+  residues `ζ(s₁)ζ(s₂)` at `0` and `productAFEShiftedResidue s₁ s₂ x = x^{1−s₁}e^{(1−s₁)²}ζ(s₂+1−s₁)/(1−s₁)`
+  at `1−s₁` (and the symmetric one at `1−s₂`); `rectIntegral_productAFEIntegrand_eq`.
+* `RHTower/ProductAFEContour.lean` — the product integrand is `ζ(s₂+w)` times the degree-one
+  integrand, so every degree-one estimate multiplies by one polynomial; vertical integrability and
+  truncated-line limits on `Re w = ±1` off the pole abscissae, vanishing horizontal Gaussian edges,
+  `productAFE_finite_contour_shift`, **`productAFE_infinite_contour_shift`**
+  (`I•∫_{(1)} − I•∫_{(−1)} = 2πi(ζ(s₁)ζ(s₂) + Res₁ + Res₂)` for `0 < Re s_i < 2`, `s_i ≠ 1`, `s₁ ≠ s₂`).
+* `RHTower/ProductAFEDirect.lean` — on `Re w = c > 0` with `Re s_i + c > 1` the integrand is the
+  double series `productAFEMellinTerm` (a degree-one term times `(n+1)^{−s₂−w}`), termwise
+  integrable with the product majorant `(m+1)^{−Re s₁−c}(n+1)^{−Re s₂−c}`;
+  **`productAFEMellinAt_eq_tsum_smoothAFECutoff`**: the normalized right edge is
+  `Σ'_{m,n} (m+1)^{−s₁}(n+1)^{−s₂} V((m+1)(n+1)/x)`.
+* `RHTower/ProductAFEDual.lean` — on `Re w = −1` with `0 < Re s_i < 1` both factors reflect
+  (`riemannZeta_left_one_eq_chi_mul_tsum`), giving the double reflected series
+  `productAFEReflectedTerm`; bounds via the corpus general-point `χ` bound
+  `norm_zetaChi_add_left_one_le` on both factors, majorant `(2+|Im s₁|+|Im s₂|+|v|)^4 e^{−v²}`;
+  factorization through the two-ratio dual integrand
+  `productAFEDualRatioIntegrand = [χ(s₁+w)/χ(s₁)][χ(s₂+w)/χ(s₂)] y^{−w}e^{w²}/w` at the reciprocal
+  scale `1/((m+1)(n+1)x)`; **`productAFEDualMellinAt_eq_tsum`**.
+* `RHTower/ProductAFEExact.lean` — reflection `w ↦ −w` of the two-ratio cutoff
+  (`productAFEDualCutoff_eq_neg_dualWeight`, positive-line weight `productAFEDualWeight s₁ s₂ Y`), and
+  **`riemannZeta_mul_eq_productAFE`**: for `0 < Re s₁, Re s₂ < 1`, `s₁ ≠ s₂`, `x > 0`,
+
+  ```text
+  ζ(s₁)ζ(s₂) = Σ'_{m,n} (m+1)^{-s₁}(n+1)^{-s₂} V((m+1)(n+1)/x)
+             + Σ'_{m,n} χ(s₁)χ(s₂)(m+1)^{s₁-1}(n+1)^{s₂-1} W_{s₁,s₂}((m+1)(n+1)x)
+             − x^{1-s₁}e^{(1-s₁)²}ζ(s₂+1-s₁)/(1-s₁) − x^{1-s₂}e^{(1-s₂)²}ζ(s₁+1-s₂)/(1-s₂).
+  ```
+
+**Why it changes the gate.**  With `s₁ = σ₀+α+it`, `s₂ = 1−σ₀+β−it` and a scale `x` frozen on a
+dyadic block, the only `t`-oscillation of both double series is the twist `(m/n)^{−it}`: the direct
+weight is `t`-independent and the dual weight varies through the two `χ`-ratios, whose height
+derivatives the corpus already bounds (`SmoothAFEZetaChiShift*`).  Against the mollifier twist
+`(h/k)^{−it}` and a smooth block weight, every pair with `mh ≠ nk` is killed by integration by parts
+in `t`, since near-diagonal pairs satisfy `a|log(mh/nk)| ≫ a^{1/2−θ}` for `M = a^θ`, `θ < 1/2`.  No
+corner stationary point occurs.  The mean square of `ζΨ` on a block therefore reduces to the two
+diagonals `mh = nk` of the direct and dual series (Mellin/residue evaluation, for which the corpus
+owns `TwistedDiagonalAdapted`, `BchbDensityIntegral`, and `TwistedMainTermMerge`), plus explicit
+error terms.  The residue terms are `O(e^{−t²})`.
+
+**Remaining for the twisted moment on a block (next bricks).**  (i) `t`-derivative bounds of the
+positive-line two-ratio weight `W_{s₁,s₂}` along `s₁ = σ₀+α+it`, `s₂ = 1−σ₀+β−it` (product of two
+corpus ratio derivatives); (ii) the off-diagonal integration-by-parts bound with the near-diagonal
+separation `|mh − nk| ≥ 1`; (iii) the Mellin evaluation of the two smoothed diagonals; (iv) the
+`ζ'` detector via the `α,β`-derivatives of the identity; (v) assembly into
+`DyadicDetectorMeanSquareLaw`.
+
+Traps: `regularizedRiemannZeta` must be used for the entire numerator (Lean's `ζ(1)` is junk, so
+`(s−1)ζ(s)` is not the continuation at `s = 1`); iterated `dslope` needs `dslope_of_ne` followed by
+`slope_def_field`; `((((` — count parentheses in long calc steps; `push Not` replaces `push_neg`.

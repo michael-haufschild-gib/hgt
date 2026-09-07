@@ -163,6 +163,11 @@ Namespace `RHTower`:
 - `RetainedPrimeCoordinateHomothety`: every coordinate from one common
   coprime head, and the complete product-scale energy identity.
 
-Final exact-file check and the new-declaration axiom audit are pending.
+Scratch and exact-file Lean checks passed for all three modules. The single
+new-declaration axiom audit covered all 21 public declarations and found only
+`propext`, `Classical.choice`, and `Quot.sound`. All three modules are wired
+into `RHTower`; no umbrella or full build was run. Repository lint currently
+reports four unrelated, unwired modules: `ProductAFEContour`,
+`ProductAFEDirect`, `ProductAFEIntegrand`, and `RectangleThreePoleResidue`.
 No numerical experiment is required: all support and sign-chamber statements
 follow from the literal source algebra and established channel positivity.
