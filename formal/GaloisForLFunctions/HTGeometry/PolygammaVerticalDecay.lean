@@ -1,105 +1,189 @@
-import GaloisForLFunctions.HTGeometry.GammaProjectiveBoundary
+import GaloisForLFunctions.Hurwitz.PolygammaHurwitzValue
+import GaloisForLFunctions.HTGeometry.DigammaHypertranscendental
 
 /-!
-# Vertical decay of the polygamma tower
+# Explicit polygamma decay away from the real axis
 
-On a vertical line in the right half-plane the trigamma is bounded by `1/t² + π/(2t)`.  That bound
-holds on a whole disc of fixed radius around the point, so Cauchy's estimate for iterated derivatives
-transfers it to every higher polygamma with an extra factor `m!/(σ/2)^m`.
+From the Hurwitz-series representation `ψ^{(m+1)}(z) = (−1)^m (m+1)! ζ(m+2, z)` and the trivial
+lower bound `|k + z| ≥ |Im z|` one gets, for `Re z ≥ 0` and `|Im z| ≥ 1`,
 
-Hence every positive-order polygamma vanishes in the limit along vertical lines, while the digamma
-itself grows like `log`.  This is the analytic input for the valuation of the digamma differential
-field: in a jet monomial, any derivative factor kills the term.
+  `‖ψ^{(m+1)}(z)‖ ≤ 4 (m+1)! / |Im z|^{m+1}`,
+
+and the shift law `ψ^{(j)}(z+1) = ψ^{(j)}(z) + (−1)^j j!/z^{j+1}` extends this with constant `5` to
+`Re z > −1`.  These are the derivative inputs for the height derivatives of the archimedean factor
+`χ` along Levinson lines.
 -/
 
-open Filter Topology Metric Complex
+noncomputable section
 
-namespace GaloisForLFunctions
+namespace GaloisForLFunctions.HTGeometry
 
-/-- Points of a small ball around a vertical point stay in the right half-plane and keep a
-positive imaginary part. -/
-theorem mem_ball_re_im {σ t : ℝ} {ζ : ℂ}
-    (hζ : ζ ∈ Metric.closedBall ((σ : ℂ) + (t : ℂ) * Complex.I) (σ / 2)) :
-    σ / 2 ≤ ζ.re ∧ t - σ / 2 ≤ ζ.im := by
-  have hd : ‖ζ - ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ σ / 2 := by
-    rw [← dist_eq_norm]
-    exact hζ
-  have hre := abs_le.mp (le_trans (Complex.abs_re_le_norm _) hd)
-  have him := abs_le.mp (le_trans (Complex.abs_im_le_norm _) hd)
-  have h1 : (ζ - ((σ : ℂ) + (t : ℂ) * Complex.I)).re = ζ.re - σ := by simp
-  have h2 : (ζ - ((σ : ℂ) + (t : ℂ) * Complex.I)).im = ζ.im - t := by simp
-  rw [h1] at hre
-  rw [h2] at him
-  constructor
-  · linarith [hre.1]
-  · linarith [him.1]
+open Complex
 
-/-- **Cauchy estimate for the polygamma tower on a vertical line.**  The trigamma bound on a fixed
-disc around the point, differentiated `m` times, bounds the order-`m+1` polygamma. -/
-theorem norm_iteratedDeriv_succ_digamma_vertical_le {σ t : ℝ} (hσ : 0 < σ) (ht : σ < t) (m : ℕ) :
-    ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
-      ≤ (m.factorial : ℝ) * (1 / (t - σ / 2) ^ 2 + Real.pi / (2 * (t - σ / 2))) / (σ / 2) ^ m := by
-  have hr : (0 : ℝ) < σ / 2 := by linarith
-  have htpos : 0 < t - σ / 2 := by linarith
-  set c : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I with hc
-  have hsubset : Metric.closedBall c (σ / 2) ⊆ {z : ℂ | 0 < z.re} := by
-    intro ζ hζ
-    have := (mem_ball_re_im hζ).1
-    exact lt_of_lt_of_le hr this
-  have hdiff : DifferentiableOn ℂ (deriv Complex.digamma) {z : ℂ | 0 < z.re} := by
-    intro ζ hζ
-    exact ((RHTower.digamma_analyticOnNhd_re_pos.deriv) ζ hζ).differentiableAt.differentiableWithinAt
-  have hdcc : DiffContOnCl ℂ (deriv Complex.digamma) (Metric.ball c (σ / 2)) := by
-    refine DifferentiableOn.diffContOnCl ?_
-    rw [closure_ball c (ne_of_gt hr)]
-    exact hdiff.mono hsubset
-  have hbound : ∀ ζ ∈ Metric.sphere c (σ / 2),
-      ‖deriv Complex.digamma ζ‖ ≤ 1 / (t - σ / 2) ^ 2 + Real.pi / (2 * (t - σ / 2)) := by
-    intro ζ hζ
-    obtain ⟨hre, him⟩ := mem_ball_re_im (Metric.sphere_subset_closedBall hζ)
-    have hrepos : 0 < ζ.re := lt_of_lt_of_le hr hre
-    have himpos : 0 < ζ.im := lt_of_lt_of_le htpos him
-    have hz : ζ = (ζ.re : ℂ) + (ζ.im : ℂ) * Complex.I := (Complex.re_add_im ζ).symm
-    have hb := RHTower.norm_deriv_digamma_vertical_le hrepos himpos
-    rw [← hz] at hb
-    refine hb.trans ?_
-    have h1 : 1 / ζ.im ^ 2 ≤ 1 / (t - σ / 2) ^ 2 := by
-      apply one_div_le_one_div_of_le (by positivity)
-      exact pow_le_pow_left₀ (le_of_lt htpos) him 2
-    have h2 : Real.pi / (2 * ζ.im) ≤ Real.pi / (2 * (t - σ / 2)) := by
-      apply div_le_div_of_nonneg_left Real.pi_pos.le (by linarith) (by linarith)
+/-! ## A shifted `p`-series bound -/
+
+/-- Telescoping bound `∑_{k<n} 1/(T+k+1)² ≤ 1/T − 1/(T+n)`. -/
+theorem sum_range_inv_succ_sq_le {T : ℝ} (hT : 0 < T) (n : ℕ) :
+    ∑ k ∈ Finset.range n, (1 : ℝ) / (T + k + 1) ^ 2 ≤ 1 / T - 1 / (T + n) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Finset.sum_range_succ]
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    have hstep : (1 : ℝ) / (T + n + 1) ^ 2 ≤ 1 / (T + n) - 1 / (T + n + 1) := by
+      rw [div_sub_div _ _ (by positivity) (by positivity), div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    push_cast
+    rw [show T + ((n : ℝ) + 1) = T + n + 1 by ring]
     linarith
-  have hcauchy := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le m hr hdcc hbound
-  rw [iteratedDeriv_succ']
-  exact hcauchy
 
-/-- **Vertical decay of every positive-order polygamma.** -/
-theorem tendsto_iteratedDeriv_succ_digamma_vertical {σ : ℝ} (hσ : 0 < σ) (m : ℕ) :
-    Tendsto (fun t : ℝ =>
-      iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds 0) := by
-  have hbase : Tendsto (fun t : ℝ => t - σ / 2) atTop atTop :=
-    tendsto_atTop_add_const_right _ _ tendsto_id
-  have hA : Tendsto (fun t : ℝ => 1 / (t - σ / 2) ^ 2) atTop (nhds 0) := by
-    have hpow : Tendsto (fun t : ℝ => (t - σ / 2) ^ 2) atTop atTop :=
-      (tendsto_pow_atTop (by norm_num)).comp hbase
-    have hinv := hpow.inv_tendsto_atTop
-    have hfun : (fun t : ℝ => (t - σ / 2) ^ 2)⁻¹ = fun t : ℝ => 1 / (t - σ / 2) ^ 2 := by
-      funext t
-      simp [one_div]
-    rwa [hfun] at hinv
-  have hB : Tendsto (fun t : ℝ => Real.pi / (2 * (t - σ / 2))) atTop (nhds 0) := by
-    have hlin : Tendsto (fun t : ℝ => 2 * (t - σ / 2)) atTop atTop :=
-      Filter.Tendsto.const_mul_atTop (by norm_num) hbase
-    have hinv : Tendsto (fun t : ℝ => (2 * (t - σ / 2))⁻¹) atTop (nhds 0) :=
-      hlin.inv_tendsto_atTop
-    have := hinv.const_mul Real.pi
-    simpa [div_eq_mul_inv] using this
-  have hg : Tendsto (fun t : ℝ => (m.factorial : ℝ) *
-      (1 / (t - σ / 2) ^ 2 + Real.pi / (2 * (t - σ / 2))) / (σ / 2) ^ m) atTop (nhds 0) := by
-    have := ((hA.add hB).const_mul (m.factorial : ℝ)).div_const ((σ / 2) ^ m)
-    simpa using this
-  refine squeeze_zero_norm' ?_ hg
-  filter_upwards [eventually_gt_atTop σ] with t ht
-  exact norm_iteratedDeriv_succ_digamma_vertical_le hσ ht m
+theorem sum_range_inv_add_sq_le {T : ℝ} (hT : 0 < T) (n : ℕ) :
+    ∑ k ∈ Finset.range n, (1 : ℝ) / ((k : ℝ) + T) ^ 2 ≤ 1 / T ^ 2 + 1 / T := by
+  cases n with
+  | zero => simp; positivity
+  | succ n =>
+    rw [Finset.sum_range_succ']
+    have h1 := sum_range_inv_succ_sq_le hT n
+    have hsum : ∑ k ∈ Finset.range n, (1 : ℝ) / (((k + 1 : ℕ) : ℝ) + T) ^ 2
+        = ∑ k ∈ Finset.range n, (1 : ℝ) / (T + k + 1) ^ 2 := by
+      refine Finset.sum_congr rfl fun k _ => ?_
+      push_cast
+      ring_nf
+    rw [hsum]
+    simp only [Nat.cast_zero, zero_add]
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    have : (0 : ℝ) ≤ 1 / (T + n) := by positivity
+    linarith
 
-end GaloisForLFunctions
+theorem summable_inv_add_sq {T : ℝ} (hT : 0 < T) :
+    Summable fun k : ℕ => (1 : ℝ) / ((k : ℝ) + T) ^ 2 :=
+  summable_of_sum_range_le (fun k => by positivity) (sum_range_inv_add_sq_le hT)
+
+theorem tsum_inv_add_sq_le {T : ℝ} (hT : 0 < T) :
+    ∑' k : ℕ, (1 : ℝ) / ((k : ℝ) + T) ^ 2 ≤ 1 / T ^ 2 + 1 / T :=
+  Real.tsum_le_of_sum_range_le (fun k => by positivity) (sum_range_inv_add_sq_le hT)
+
+/-! ## The Hurwitz series off the real axis -/
+
+theorem norm_natCast_add_ge_abs_im (z : ℂ) (k : ℕ) : |z.im| ≤ ‖(k : ℂ) + z‖ := by
+  have := Complex.abs_im_le_norm ((k : ℂ) + z)
+  simpa using this
+
+theorem sq_norm_natCast_add_ge {z : ℂ} (hre : 0 ≤ z.re) (k : ℕ) :
+    ((k : ℝ) + |z.im|) ^ 2 ≤ 2 * ‖(k : ℂ) + z‖ ^ 2 := by
+  rw [Complex.sq_norm, Complex.normSq_apply]
+  simp only [Complex.add_re, Complex.add_im, Complex.natCast_re, Complex.natCast_im, zero_add]
+  have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+  have h1 : (k : ℝ) ^ 2 ≤ ((k : ℝ) + z.re) * ((k : ℝ) + z.re) := by nlinarith
+  have h2 : |z.im| ^ 2 = z.im * z.im := by rw [sq_abs]; ring
+  have h3 : 0 ≤ ((k : ℝ) - |z.im|) ^ 2 := sq_nonneg _
+  nlinarith [abs_nonneg z.im, h1, h2, h3]
+
+/-- Termwise bound for the Hurwitz series at integer exponent `m + 2`. -/
+theorem norm_hurwitzTerm_le {m : ℕ} {z : ℂ} (hre : 0 ≤ z.re) (him : 1 ≤ |z.im|) (k : ℕ) :
+    ‖((k : ℂ) + z) ^ (-((m + 2 : ℕ) : ℂ))‖
+      ≤ (1 / |z.im| ^ m) * (2 * (1 / ((k : ℝ) + |z.im|) ^ 2)) := by
+  have hT : (0 : ℝ) < |z.im| := by linarith
+  have hnorm : |z.im| ≤ ‖(k : ℂ) + z‖ := norm_natCast_add_ge_abs_im z k
+  have hpos : 0 < ‖(k : ℂ) + z‖ := lt_of_lt_of_le hT hnorm
+  rw [Complex.cpow_neg, Complex.cpow_natCast, norm_inv, norm_pow]
+  have hsplit : ‖(k : ℂ) + z‖ ^ (m + 2) = ‖(k : ℂ) + z‖ ^ m * ‖(k : ℂ) + z‖ ^ 2 := by ring
+  rw [hsplit, mul_inv]
+  have h1 : (‖(k : ℂ) + z‖ ^ m)⁻¹ ≤ 1 / |z.im| ^ m := by
+    rw [one_div]
+    exact inv_anti₀ (by positivity) (pow_le_pow_left₀ hT.le hnorm m)
+  have h2 : (‖(k : ℂ) + z‖ ^ 2)⁻¹ ≤ 2 * (1 / ((k : ℝ) + |z.im|) ^ 2) := by
+    have hk : (0 : ℝ) < (k : ℝ) + |z.im| := by positivity
+    have := sq_norm_natCast_add_ge hre k
+    rw [inv_le_iff_one_le_mul₀ (by positivity)]
+    rw [show (2 : ℝ) * (1 / ((k : ℝ) + |z.im|) ^ 2) * ‖(k : ℂ) + z‖ ^ 2
+        = (2 * ‖(k : ℂ) + z‖ ^ 2) / ((k : ℝ) + |z.im|) ^ 2 by ring]
+    rw [le_div_iff₀ (by positivity)]
+    linarith
+  exact mul_le_mul h1 h2 (by positivity) (by positivity)
+
+/-- **Hurwitz-series bound off the real axis**: `‖ζ(m+2, z)‖ ≤ 4 / |Im z|^{m+1}` for `Re z ≥ 0`,
+`|Im z| ≥ 1`. -/
+theorem norm_hzeta_le {m : ℕ} {z : ℂ} (hre : 0 ≤ z.re) (him : 1 ≤ |z.im|) :
+    ‖HurwitzZetaShift.hzeta ((m + 2 : ℕ) : ℂ) z‖ ≤ 4 / |z.im| ^ (m + 1) := by
+  have hT : (0 : ℝ) < |z.im| := by linarith
+  have hmaj : Summable fun k : ℕ => (1 / |z.im| ^ m) * (2 * (1 / ((k : ℝ) + |z.im|) ^ 2)) :=
+    ((summable_inv_add_sq hT).mul_left 2).mul_left _
+  have hnorm : Summable fun k : ℕ => ‖((k : ℂ) + z) ^ (-((m + 2 : ℕ) : ℂ))‖ :=
+    Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => norm_hurwitzTerm_le hre him k) hmaj
+  unfold HurwitzZetaShift.hzeta
+  refine (norm_tsum_le_tsum_norm hnorm).trans ?_
+  refine (hnorm.tsum_le_tsum (fun k => norm_hurwitzTerm_le hre him k) hmaj).trans ?_
+  rw [tsum_mul_left, tsum_mul_left]
+  have hsum := tsum_inv_add_sq_le hT
+  have hT1 : 1 / |z.im| ^ 2 ≤ 1 / |z.im| := by
+    rw [div_le_div_iff_of_pos_left one_pos (by positivity) hT]
+    nlinarith
+  have hbound : (1 / |z.im| ^ m) * (2 * ∑' k : ℕ, (1 : ℝ) / ((k : ℝ) + |z.im|) ^ 2)
+      ≤ (1 / |z.im| ^ m) * (2 * (2 / |z.im|)) := by
+    have h2 : (2 : ℝ) / |z.im| = 1 / |z.im| + 1 / |z.im| := by ring
+    gcongr
+    linarith
+  refine hbound.trans (le_of_eq ?_)
+  field_simp
+  ring
+
+/-! ## Polygamma decay -/
+
+/-- **Polygamma decay on the right half-plane**: for `Re z > 0` and `|Im z| ≥ 1`,
+`‖ψ^{(m+1)}(z)‖ ≤ 4 (m+1)! / |Im z|^{m+1}`. -/
+theorem norm_iteratedDeriv_digamma_le_of_re_pos {m : ℕ} {z : ℂ} (hre : 0 < z.re)
+    (him : 1 ≤ |z.im|) :
+    ‖iteratedDeriv (m + 1) Complex.digamma z‖ ≤ 4 * (m + 1).factorial / |z.im| ^ (m + 1) := by
+  rw [polygamma_eq_hzeta m hre, norm_mul, norm_mul, norm_pow, norm_neg, norm_one, one_pow,
+    one_mul, Complex.norm_natCast]
+  calc ((m + 1).factorial : ℝ) * ‖HurwitzZetaShift.hzeta ((m + 2 : ℕ) : ℂ) z‖
+      ≤ ((m + 1).factorial : ℝ) * (4 / |z.im| ^ (m + 1)) :=
+        mul_le_mul_of_nonneg_left (norm_hzeta_le hre.le him) (by positivity)
+    _ = _ := by ring
+
+/-- **Polygamma decay for `Re z > −1`**, with constant `5`, via the shift law. -/
+theorem norm_iteratedDeriv_digamma_le {m : ℕ} {z : ℂ} (hre : -1 < z.re) (him : 1 ≤ |z.im|) :
+    ‖iteratedDeriv (m + 1) Complex.digamma z‖ ≤ 5 * (m + 1).factorial / |z.im| ^ (m + 1) := by
+  have hT : (0 : ℝ) < |z.im| := by linarith
+  rcases lt_or_ge 0 z.re with hpos | hnonpos
+  · refine (norm_iteratedDeriv_digamma_le_of_re_pos hpos him).trans ?_
+    gcongr
+    norm_num
+  · have hz : ∀ p : ℕ, z ≠ -(p : ℂ) := by
+      intro p h
+      have := congrArg Complex.im h
+      simp at this
+      rw [this, abs_zero] at him
+      linarith
+    have hshift := digammaJet_shift (m + 1) hz
+    have hre1 : 0 < (z + 1).re := by simp; linarith
+    have him1 : 1 ≤ |(z + 1).im| := by simpa using him
+    have h1 := norm_iteratedDeriv_digamma_le_of_re_pos (m := m) hre1 him1
+    have him1' : |(z + 1).im| = |z.im| := by simp
+    rw [him1'] at h1
+    have hzn : |z.im| ≤ ‖z‖ := Complex.abs_im_le_norm z
+    have hzpow : |z.im| ^ (m + 2) ≤ ‖z‖ ^ (m + 2) := pow_le_pow_left₀ hT.le hzn _
+    have hterm : ‖(-1 : ℂ) ^ (m + 1) * ((m + 1).factorial : ℂ) / z ^ (m + 2)‖
+        ≤ (m + 1).factorial / |z.im| ^ (m + 1) := by
+      rw [norm_div, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul, norm_pow,
+        Complex.norm_natCast]
+      have hz0' : 0 < ‖z‖ := lt_of_lt_of_le hT hzn
+      have hz0 : 0 < ‖z‖ ^ (m + 2) := pow_pos hz0' _
+      rw [div_le_div_iff₀ hz0 (by positivity)]
+      have : |z.im| ^ (m + 1) ≤ |z.im| ^ (m + 2) := by
+        exact pow_le_pow_right₀ him (by omega)
+      have hf : (0 : ℝ) ≤ (m + 1).factorial := by positivity
+      nlinarith
+    have heq : iteratedDeriv (m + 1) Complex.digamma z
+        = iteratedDeriv (m + 1) Complex.digamma (z + 1)
+          - (-1 : ℂ) ^ (m + 1) * ((m + 1).factorial : ℂ) / z ^ (m + 2) := by
+      rw [hshift]; ring
+    rw [heq]
+    refine (norm_sub_le _ _).trans ?_
+    refine (add_le_add h1 hterm).trans (le_of_eq ?_)
+    ring
+
+end GaloisForLFunctions.HTGeometry
+
+end

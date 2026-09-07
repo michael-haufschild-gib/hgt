@@ -145,3 +145,10 @@ their moment bound and reflection invariance, and proves the uniform-threshold l
   Lean reuse boundary, and source-faithful index-amplification conjecture recorded.
 - 2026-08-10 -- hostile follow-up proved the requested moment-neutral source amplification already
   exists, falsified its claimed rank--trace contradiction, and formalized the packet/threshold wall.
+- 2026-09-07 -- public versions located: Alpöge--Furman arXiv:2608.13637 (13 Aug 2026, Lean in
+  `anthropics/formal-math/zeta23`, Lean v4.33.0-rc2) and Lamzouri arXiv:2609.02882 (2 Sep 2026), which
+  replaces the matrix rank--trace framework by the Hilbert-space inequality
+  `#{z real, simple} >= 2|Z| - sum_{z,s} K(z-s)^2`, `K = (hat eta)^2`, and records that the
+  Montgomery--Taylor constant is optimal for it (Carneiro--Chandee--Littmann--Milinovich) and that no
+  nonconstant entire kernel has `Re K >= 0` on `C`. Lean port `AxiomMath/ZetaZeros` assumes
+  Riemann--von Mangoldt and BGSTB as hypotheses. Disposition unchanged: no consumer, no port.

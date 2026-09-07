@@ -1,0 +1,28 @@
+M source diagonal norm_interval variation_interval V/D_interval C1_interval max_r_abs_Cr
+64 raw 2.04270323 [0.92076976, 0.94303481] [4.73770139, 4.78746010] [2.319329, 2.343689] [-1.78930668, -1.75496938] (3.2819511332008746, 2)
+  definite-positive 29 definite-negative 9 classification GROUPWISE_CANDIDATE
+64 averaged 1.42220179 [1.01225763, 1.03428865] [1.45431447, 1.50428421] [1.022580, 1.057715] [-0.22140828, -0.18712936] (1.4251918592199988, 2)
+  definite-positive 36 definite-negative 3 classification GROUPWISE_CANDIDATE
+128 raw 2.55787368 [1.04405157, 1.06570685] [4.89443452, 4.94443163] [1.913478, 1.933024] [-1.76399574, -1.73023754] (3.075125450514934, 2)
+  definite-positive 57 definite-negative 21 classification GROUPWISE_CANDIDATE
+128 averaged 1.89938953 [1.02534863, 1.04702071] [3.23899848, 3.28898622] [1.705284, 1.731602] [-1.08273357, -1.04888433] (2.5189560520176695, 2)
+  definite-positive 71 definite-negative 7 classification GROUPWISE_CANDIDATE
+256 raw 3.08324688 [0.99241727, 1.01383405] [5.14710755, 5.19710637] [1.669379, 1.685595] [-1.81054570, -1.77706679] (4.026001481529578, 6)
+  definite-positive 116 definite-negative 41 classification GROUPWISE_CANDIDATE
+256 averaged 2.39583616 [1.01758100, 1.03918918] [4.49840964, 4.54835534] [1.877595, 1.898442] [-1.69088299, -1.65718291] (2.928511542001381, 2)
+  definite-positive 143 definite-negative 12 classification GROUPWISE_CANDIDATE
+512 raw 3.60855615 [1.10100315, 1.12229996] [5.23978702, 5.28978650] [1.452045, 1.465901] [-0.86745198, -0.83414315] (7.661070280217206, 6)
+  definite-positive 230 definite-negative 84 classification GROUPWISE_CANDIDATE
+512 averaged 2.90785461 [1.02330604, 1.04479193] [4.49278459, 4.54278182] [1.545051, 1.562245] [-1.56779040, -1.53426637] (4.262297516469912, 6)
+  definite-positive 286 definite-negative 25 classification GROUPWISE_CANDIDATE
+controls {'moments_max_relative_error': 1.2042844635840374e-19, 'direct_energy_max_absolute_error': 1.0842021724855044e-19, 'diagonal_two_error': 3.1170812458958252e-19}
+wall 4.048204757273197
+analytic_series_remainder_bounds (excluding floating point):
+64 raw gcd_variation 2.5279365439719514e-22 diagonal 5.834970521635237e-25
+64 averaged gcd_variation 8.644174199601635e-23 diagonal 4.586436427254529e-25
+128 raw gcd_variation 1.0206266287536373e-21 diagonal 6.815770890046984e-25
+128 averaged gcd_variation 3.2360457626827636e-22 diagonal 5.551089391062775e-25
+256 raw gcd_variation 4.073342140981298e-21 diagonal 7.79336189140246e-25
+256 averaged gcd_variation 1.2171504954810552e-21 diagonal 6.507532922548814e-25
+512 raw gcd_variation 1.6353857367052124e-20 diagonal 8.758608226587764e-25
+512 averaged gcd_variation 4.740853010321301e-21 diagonal 7.46720855242811e-25

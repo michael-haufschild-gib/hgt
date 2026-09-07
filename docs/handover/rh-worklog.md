@@ -2396,8 +2396,10 @@ deviations |1 - delta_hat_k| <= eta still let S grow like eta*sqrt(n) by cancell
 contradiction arises. The definite spread must come from the SMALL-GAP results, not from moments of
 S. DO NOT RETRY THE MOMENT ROUTE.
 
-Machine-verified: `RHTower/FinitenessTransition.lean` (persistence of non-reality, both cases, the
-dichotomy, the transition statement, and the vacuity of the criterion; standard axioms only).
+Formal scope correction: `RHTower/FinitenessTransition.lean` proves conditional bookkeeping for
+an arbitrary extended-natural count. Monotonicity and the finite-count collision conclusion are
+premises; the actual flow and these inputs are not constructed there. Its declarations do not
+certify this cycle's claimed unconditional transition or vacuity.
 
 ### Cycle 48 target
 The dBN lane has now been fully mapped and every attack in it is capped or vacuous (C37 monotone,
@@ -8588,43 +8590,17 @@ is settled outright and the descent's first step closes.
 
 ---
 
-## Cycle 141 (2026-07-26) — THE POLYA-FREQUENCY PROPERTY OF Phi IS THE HYPOTHESIS ITSELF
+## Cycle 141 (2026-07-26) — Pólya-frequency identification retracted
 
-### The tool, applied — and it is the conclusion
-SCHOENBERG: a nonnegative f on R is a Polya frequency function exactly when the RECIPROCAL of its
-BILATERAL LAPLACE TRANSFORM lies in the Laguerre-Polya class.
+The former `PF is RH` claim confused the bilateral Laplace transform with its reciprocal.
+Schoenberg's characterization does not give that equivalence; see
+[Khare, footnote 3](https://arxiv.org/abs/2008.05121). Consequently the asserted classification
+of every descent level also does not follow from this argument.
 
-WHAT THAT TRANSFORM IS HERE. The theta remainder is EVEN, so
-
-    int_R Phi(t) e^{-st} dt  =  2 int_0^inf Phi(t) cosh(st) dt,
-
-and at s = i z the hyperbolic cosine becomes the cosine, giving 2 int_0^inf Phi(t) cos(zt) dt —
-THE COMPLETED ZETA FUNCTION ITSELF.
-
-    ==> Phi IS A POLYA FREQUENCY FUNCTION PRECISELY WHEN Xi HAS ONLY REAL ZEROS. THE POLYA-FREQUENCY
-        PROPERTY OF THE THETA REMAINDER *IS* THE RIEMANN HYPOTHESIS. THE CLASSICAL TOOL FOR ZERO-FREE
-        REGIONS OF SUCH TRANSFORMS IS, IN THIS INSTANCE, THE CONCLUSION.
-
-### AND THIS CORRECTS THE READING OF THE DESCENT
-Each level of the descent asks for a zero-free disc for a transform OF THE SAME SPECIES. So
-
-    EACH LEVEL IS A LOCALISATION OF THE HYPOTHESIS — on a smaller disc with better parameters —
-    NOT A WEAKER STATEMENT OF A DIFFERENT KIND.
-
-The descent IMPROVES THE PARAMETERS AND LOCALISES THE QUESTION; IT DOES NOT REDUCE IT TO SOMETHING
-ELSE. Entry 72's "favourable descent" stands as to parameters, and entry 71's "self-similar" stands as
-to species: BOTH WERE RIGHT, AND TOGETHER THEY SAY THE MECHANISM LOCALISES RH WITHOUT WEAKENING IT.
-
-Machine-verified: `RHTower/PolyaFrequencyIsTheHypothesis.lean` (the even-function reduction
-f(t)e^{-st} + f(-t)e^{st} = 2 f(t) cosh(st), the cosh/cos anchor at zero, positivity of the
-hyperbolic-cosine pairing for positive weights, and the tool-is-conclusion and
-localisation-not-weakening statements; standard axioms only, wired into RHTower).
-
-### SEVENTY-FIFTH ATLAS ENTRY
-    PF is RH   by Schoenberg, Phi is a Polya frequency function iff the reciprocal of its bilateral
-               Laplace transform is Laguerre-Polya; that transform is Xi. So the PF property of the
-               theta remainder IS the hypothesis, and every level of the descent is a localisation of
-               RH rather than a weaker species. The descent improves parameters, not the statement.
+Verified declaration scope: `RHTower/PolyaFrequencyIsTheHypothesis.lean` contains the pointwise
+even exponential pairing, equality of cosh and cos at zero, and positivity of a finite cosh sum.
+`tool_is_conclusion` returns an assumed equivalence; `localisation_not_weakening` applies an
+assumed implication. Neither proves a Pólya-frequency/RH equivalence or a converse localization.
 
 ### STATE AT CYCLE 141
 Seventy-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.

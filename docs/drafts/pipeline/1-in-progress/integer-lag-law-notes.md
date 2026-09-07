@@ -450,3 +450,17 @@ always. The zero-side upper bound `rate ≤ 2Θ_sup` is the open half.
   (the same obstruction as the two-sided prime sampling note above). Pointwise tests cannot replace
   the Laplace/positivity engine here; a rate upper bound needs a sampling inequality against the
   zero measure, which is not a statement about a single test.
+
+### Attempt J (2026-09-07): the zero-side rate bound is not the trivial ray estimate
+
+The corpus identity `ccmRestrictedWeilSourceQuadratic_toCCMFormVector_eq_smoothForm` gives the
+constrained form of a smooth source `u` as Suzuki's screw form of its *derivative* `u'`, and
+`le_polarGroundEnergy_iff_polarMultiplier_floor` reduces every lower bound on `μ₀` to the images
+`Dg`. The ray coefficients of `u'` are `iz_q û(z_q)`, so the ray terms are `|û(z_q)|²`-sized with no
+`1/|z_q|²` decay: the trivial bound `|û(z)| ≤ e^{a|Im z|}‖u‖₁` does not give a convergent sum, and
+the sum over zeros up to height `T` of `|û(γ_q)|²` is `≍ log T ‖u‖₂²` for tests concentrated at
+height `T`. The lower bound `μ₀(a) ≥ −C_δ e^{(2Θ+δ)a}` therefore needs the archimedean (or on-line)
+positivity to absorb the off-line high-frequency sampling: a comparison
+`Σ_off |û(z_q)|² ≤ e^{2Θa} Σ_on (positive ray terms) + C(a)‖u‖₂²`
+is the actual sampling statement, not a single-test estimate. Verdict: the "open half" of MUST-264
+stands as stated; no cheap route.

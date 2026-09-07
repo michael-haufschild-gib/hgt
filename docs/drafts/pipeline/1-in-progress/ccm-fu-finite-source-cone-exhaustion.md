@@ -110,6 +110,14 @@ nonisolated interleavings before that state forms. Existence of finite
 witnesses for each S does not by itself construct the required exhaustive
 cofinal schedule.
 
+The cutoff quantifier must remain explicit. The cited Möbius--Abel RH
+receiver requires one bound at every integer cutoff, not only at selected
+cofinal parent endpoints. A sufficient cofinal construction would control
+every earlier cutoff m<=M under a common bound normalized at m, for
+arbitrarily large M. Complete prime processing at selected parents alone
+does not establish that prefix requirement. The existing batch theorem
+has neither complete parent processing nor this simultaneous cutoff bound.
+
 ## Computation decision
 
 No numerical experiment is scheduled. The qualitative finite-field question

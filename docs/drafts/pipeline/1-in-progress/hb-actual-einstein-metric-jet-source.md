@@ -33,12 +33,23 @@ compatibility are proved; contracted Einstein conservation remains open. The sca
 boundary coefficient quotient now has one exact coordinate/Weyl invariant. Its
 original-source value tends to minus one. Tensor faithfulness and the scope of
 allowed global boundary gauges remain explicit in physical admission.
+The complete quadratic angular Einstein source is evaluated, and an explicit
+second-order correction jet removes its two Hessian channels. The actual corrected
+source retains one gradient-square term with a determined radial coefficient; full
+physical correction fields and causal projection remain open.
+An explicit replacement correction preserves that angular cancellation and now
+has a proved smooth radial horizon extension and zero radial boundary limit after
+the actual ingoing coordinate change. The complete vector-stream Einstein operator
+is reduced to its forced master curl. The next specific response target is the
+angular resolvent of S² described in
+[the physical correction card](hb-quadratic-physical-correction.md); its all-height
+nonlinear-source identity, angular domain and causal admission remain open.
 
-Corpus searches `einstein variation`, `metric perturbation`, `ricci coordinate`, `inverse series
-matrix`, and `christoffel derivative` locate the coordinate curvature definitions, smooth metric
-inverse, and the entrywise inverse-curve derivative. They do not locate an actual Einstein
-second/third-variation bridge. The restricted Plebanski spin-two jet cannot supply one: full
-two-coordinate reconstruction and nonlinear mixed sectors remain required.
+The corpus now contains actual second/third Einstein variations, complete metric
+jets, the corrected-family source coefficients and the constrained vector master
+operator. The missing bridge is the complete nonlinear physical response and its
+left pairing. A restricted Plebanski spin-two jet still cannot replace the full
+two-coordinate reconstruction or its nonlinear mixed sectors.
 
 ## Source-derived construction
 
@@ -613,6 +624,27 @@ The common direct cubic term cancels in this cut by the existing
 `ThetaCuspHawkingHBDirectThirdJetCausalCutRigidity`; general curvature identities do
 not evaluate the remaining source moment or force it to vanish.
 
+The [actual quadratic angular source and explicit correction](../3-formalized/hb-quadratic-angular-source-and-correction.md)
+are closed in Lean. With `H=(S Hess S)_TF`, `G=(dS tensor dS)_TF`, and oriented
+rotation, the complete scalar/coexact-vector jet gives
+`B²[aS² C(2H+G)+aS*aV F rotation(H+G)+aV² D G]`, where
+`C=s²((s+1)²-4r²)/(8r⁴)`, `D=s²(3s²+12s+11)/(2r⁴)`, and
+`F=s²(s+1)/r³`. This is the actual complex Einstein Hessian at arbitrary height;
+its vector sector has no surviving second/third scalar angular derivative. A fully
+specified second-order metric correction jet cancels both Hessian channels in the
+actual corrected nonlinear source, leaving exactly `B²(aV² D-aS² C)G`.
+
+The next calculation is the remaining Einstein components and the physical domain
+of this correction, followed by the constrained master-source reduction and actual
+left pairing. No complete second-order field solution or retarded/advanced map has
+been constructed. The original affine-source pairing still contains the correction's
+linear image unless the actual left test annihilates it with its boundary terms.
+Thus the corrected gradient remainder cannot yet replace the original source in
+the physical causal cut. Global field realization, gauge and endpoint admission,
+retained spin-two/AIME identification, and independent fixed-clock extinction remain.
+The [9.91-second RunPod experiment](../2-fully-proven/computations/hb-quadratic-angular-source-2026-09-07/REPORT.md)
+guided the factorization; no computational result enters the Lean proofs.
+
 Physical boundary admission is under direct attack. The [scalar boundary gauge
 charge](../3-formalized/hb-scalar-boundary-gauge-charge.md) is
 `Q_s=a+c-2*s*b+s²*d` for temporal, mixed, angular-trace and Hessian coefficients.
@@ -1039,3 +1071,60 @@ extinction, or establish RH. Corpus index generation, scoped whitespace, exact-s
 one-import checks passed. `scripts/formal_tools.py lint --check-generated` passed
 with 141 existing large-file warnings. All owned Lean/Lake checks are terminal.
 The exact owned scratch tree was inventoried without symlinks and removed; its absence is verified. Other tasks’ files and processes were preserved.
+
+## Current quadratic angular source and correction validation
+
+The [exact source and correction proof](../3-formalized/hb-quadratic-angular-source-and-correction.md)
+passed foreground scratch checks and three exact-source leaf audits:
+
+- `lake build GaloisForLFunctions.HTGeometry.CoordinateEinsteinComplexQuadratic`: 5.1 seconds; 9 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticAngularSource`: 221 seconds; 2 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticAngularCorrection`: 24 seconds; 3 new public theorems.
+
+Only those new leaves were compiled against cached dependencies. Main and audit
+sources match exactly, each leaf has one area-umbrella import, and only their new
+olean/ilean artifacts were installed. No full, umbrella, or existing dependency
+build ran. All fourteen new public theorems were axiom-audited once, using only
+`propext`, `Classical.choice`, and `Quot.sound`. Local chart nondegeneracy conditions
+remain explicit; none of these statements claims an unconditional RH result.
+
+The 9.91-second three-worker RunPod experiment supplied guidance only. Its results
+were downloaded and checksummed, and its exact remote scratch directory was
+removed. Lean derives the source independently at arbitrary height. The corrected
+metric-jet identity does not establish physical correction admission or discard
+its linear image from the original source pairing. Full constrained response and
+fixed-clock extinction remain open. The frontier map was read only.
+
+Corpus index generation, exact-source comparisons, umbrella-import checks, and
+scoped whitespace checks passed. Final global lint has one unrelated concurrent
+missing umbrella import, `HTGeometry.SmoothBlockWindow`, and 141 existing large-file
+warnings; generated files are current and all three new HB leaves are reachable.
+All owned Lean/Lake checks completed. The exact 95-entry local scratch tree was
+inventoried without symlinks and removed. Other tasks' files and processes were
+preserved.
+
+## Current ingoing correction and vector-master validation
+
+The [ingoing correction and full vector operator](../3-formalized/hb-ingoing-correction-and-vector-master.md)
+passed foreground scratch checks and four exact-source final leaf audits:
+
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticIngoingCorrection`: 26 seconds; 3 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMIngoingCoordinates`: 4.3 seconds; 7 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticIngoingEndpoints`: 18 seconds; 6 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorStreamEinstein`: 199 seconds; 6 public theorems.
+
+Only these new leaves were compiled against cached dependencies. Exact source
+bytes and single umbrella imports were verified; only their new olean/ilean pairs
+were installed. All 22 new public theorems were axiom-audited once, using solely
+`propext`, `Classical.choice`, and `Quot.sound`. No old axiom audit, full build,
+umbrella build or existing-dependency rebuild ran. Chart hypotheses remain explicit;
+the statements do not claim an unconditional RH result.
+
+The 39.63-second, three-worker RunPod calculation supplied guidance for the unknown
+complete nonlinear source. Its exact outputs were downloaded and checksummed;
+no computed result enters Lean. Its eight-file remote scratch directory and the
+89-entry local Lean scratch tree were inventoried without symlinks and removed.
+All owned processes completed. Corpus index generation, scoped whitespace checks
+and `scripts/formal_tools.py lint --check-generated` passed with only the 141
+existing large-file warnings. Other tasks' files and processes were preserved.
+The frontier map received no edits.

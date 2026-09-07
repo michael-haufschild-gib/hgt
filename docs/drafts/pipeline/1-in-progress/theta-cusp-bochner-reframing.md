@@ -1,148 +1,157 @@
-# Card: the center-mixed all-node wall is one Fourier sign, not a ladder
+# Center-mixed theta positivity: current Fourier formulation
 
-Status: Stage 1 (reframing + numerical determination). Topic: RH / Xi.
+Status: Fourier incidence and the complete signed-jet criterion are formalized. The required
+unconditional Fourier sign remains open. This card records the current mathematical statement;
+the [direct source-energy attempt](clg-ttf-all-polynomial-source-energy.md) contains the unresolved
+source estimates.
 
-## What the corpus has
+## Literal source and density
 
-`thetaCuspCenterMixedThreePointMatrix a x y = !![d,p,r; p,d,q; r,q,d]` with
-`d = D_a(0), p = D_a(x), q = D_a(y), r = D_a(x+y)`, where
+Use the corpus definitions `thetaCuspFullSource` and `thetaCuspCenterMixedDensity`:
 
-    D_a(t) = ∫_{0}^{∞} r · sinh(a r) · Φ(r/2 + t) · Φ(r/2 − t) dr,     0 < a < 1/2,
+```
+Φ(x) = Σ_(n≥1) (4π²n⁴exp(9x/2) - 6πn²exp(5x/2)) exp(-πn²exp(2x)),
+D_a(t) = ∫_(r>0) r sinh(ar) Φ(r/2+t) Φ(r/2-t) dr,
+0<a<1/2.
+```
 
-and `Φ = thetaCuspFullSource` is **twice the classical Riemann Ξ-kernel**
-`Φ(x) = Σ_{n≥1} (4π²n⁴e^{9x/2} − 6πn²e^{5x/2}) exp(−πn²e^{2x})` (verified even, numerically).
+The complete source is even and strictly positive. The density is even, nonnegative,
+integrable, smooth, and strictly decreasing on positive displacements. In particular, a negative
+numerical value for this literal density contradicts the proved source sign and cannot be used
+as evidence. Pointwise positivity of `D_a` does not imply positivity of its Fourier transform.
 
-Proved unconditionally in the corpus: 2-node PSD, and 3-node PSD for **all** admissible `(a,x,y)`
-(`thetaCuspCenterMixedThreePointMatrices_posSemidef`). All-node PSD is recorded as the RH wall.
+Current Lean sources:
 
-## [OBSERVATION] The wall is a Bochner condition
+- `ThetaWignerCenterMix`: `thetaCuspCenterMixedDensity_even`,
+  `thetaCuspCenterMixedDensity_nonneg`, `integrable_thetaCuspCenterMixedDensity`.
+- `ThetaCuspKernelLogConcavity`: complete-source logarithmic concavity and positivity.
+- `ThetaCuspCenterMixedFirstJetStrict`: `thetaCuspCenterMixedDensityFirstJet_lt_zero`
+  and `strictAntiOn_thetaCuspCenterMixedDensity`.
+- `ThetaCuspCenterMixedSignedJetCompleteness`:
+  `contDiff_infty_thetaCuspCenterMixedDensity`.
 
-The three-point matrix has entries `D_a(t_i − t_j)` at nodes `0, x, x+y`. So the matrix family is
-**translation-invariant**, and
+## Exact Fourier normalization
 
-    (all-node PSD, every node configuration)  ⟺  D_a is a positive-definite function on ℝ
-                                              ⟺  D̂_a ≥ 0    (Bochner).
+Define the unnormalized Fourier transform by
+`Dhat_a(s)=∫_ℝ D_a(t)exp(-ist)dt`. The corpus's autocorrelation tangent satisfies
+`F_a(2t)=D_a(t)`, and its current is
 
-This replaces an infinite ladder of determinant inequalities by the sign of a single function. It also
-makes the standard sufficient criteria available (Pólya convexity, Askey, complete monotonicity,
-Kuttner–Golubov) — none of which was in play in the node-by-node framing.
+```
+J_a(b) = ∫_ℝ F_a(u)exp(-ibu)du = 2 Dhat_a(2b),
+J_a(b) = 2 Im[XiC'(b-ia) conjugate(XiC(b-ia))]
+       = ∂_a |XiC(b-ia)|².
+```
 
-Note `D_a` is **not** an autocorrelation: the weight `r·sinh(ar)` couples the two arguments through
-`u+v`, which is precisely what stops `D̂ = |Φ̂|² ≥ 0` from being automatic.
+These identities hold at zeros as well as away from them. They are formal theorems, including
+the Fourier–Laplace integrability and source incidence. The relevant declarations are
+`ofReal_thetaCuspCenterMixedFourierCurrent` in
+`ThetaCuspCenterMixedSignedJetCompleteness`, and
+`thetaCuspCenterMixedFourierCurrent_eq_xiTransverseEnergyCurrent` with
+`hasDerivAt_normSq_XiC_transverse` in `ThetaCuspCenterMixedDivisorTomography`.
 
-## [NUMERICS] D̂_a > 0, and D_a changes sign
+When changing variables to separate the two source factors, retain those factors until absolute
+integrability has been justified. The isolated transform of `r sinh(ar)` is not an ordinary
+convergent Fourier integral. The existing proof handles the complete source integrand; no
+unproved contour shift or extra zero hypothesis remains in this Fourier identity.
 
-At `a = 1/4` (mp.dps = 40, Simpson on `[0,3]`, N = 240; `Φ` summed to machine-zero):
+## Complete sign criterion and its quantifiers
 
-- `D_a(0) = 7.8826×10⁻³`; `D_a` decays doubly exponentially and turns **negative** near `t ≈ 1.7`
-  (`D_a(2.0) ≈ −2.8×10⁻¹¹³`). So `D_a` is not a nonnegative kernel — positive-definiteness is genuine,
-  not a triviality.
-- `D̂_a(s) > 0` for every sampled `s ∈ [0,60]`: `2.86×10⁻³` at `s=0`, decreasing smoothly and
-  monotonically to `3.35×10⁻¹⁶` at `s=60`, **no sign change and no oscillation**.
+For a fixed aperture, positivity of all translation-invariant matrices
+`[D_a(t_i-t_j)]` is the positive-definiteness/Fourier-sign condition for `D_a`.
+The formal signed-jet formulation is
 
-So the wall is consistent with RH and worth attacking, not refuting.
+```
+s_(2k)(a)=(-1)^k D_a^(2k)(0),    s_(2k+1)(a)=0,
+m_n(a)=2π · 2^(-n) · s_n(a),
 
-## [MECHANISM] why `0 < a < 1/2`
+(∀ N,v, Σ_(i,j<N) v_i v_j s_(i+j)(a) ≥ 0)
+  ↔ (∀ b, J_a(b)≥0).
+```
 
-With `u = r/2+t`, `v = r/2−t` (so `r = u+v`), `sinh(a r) = ½(e^{au}e^{av} − e^{−au}e^{−av})`, hence
+Source-derived exponential decay supplies the determinacy needed for this equivalence.
+`thetaCuspCenterMixedSignedJetCone_at_iff_pointwise` proves the fixed-aperture statement;
+`thetaCuspCenterMixedSignedJetCone_iff_riemannHypothesis` proves
 
-    D_a(t) = ½ ∫_{u+v>0} (u+v) [ Φ_a(u)Φ_a(v) − Φ_{−a}(u)Φ_{−a}(v) ] ,   Φ_{±a}(x) = e^{±ax}Φ(x),
+```
+RH ↔ ∀ a∈(0,1/2), ∀ b∈ℝ, J_a(b)≥0.
+```
 
-and `Φ̂_{±a}(ξ) = Ξ(ξ ∓ ia)`. Therefore `D̂_a` is a **bilinear form in `Ξ` shifted off the critical
-line by `±ia`**, and admissibility `a < 1/2` is exactly the requirement that the shift stay inside the
-critical strip. Naive Fubini is illegitimate here: `∫_0^∞ r sinh(ar)e^{-irσ}dr` diverges, and the
-formal evaluation `2iaσ/(σ²+a²)²` is odd, which would force `D̂ ≡ 0` — contradicted by the numerics.
-The convergence comes from `Φ`'s doubly-exponential decay, so the contour must be shifted rather than
-the integrals exchanged. **That contour shift is where the zeros enter.**
+A sign at one fixed aperture is not this quantified RH criterion. Likewise, a nonnegative
+derivative at one aperture does not by itself give monotonicity on an interval of apertures.
+At each fixed real frequency, proving the derivative sign throughout that interval would give
+the required monotonicity of the squared modulus.
 
-## [OPEN CORE]
+The full signed rank-six mixed section is strictly positive. Larger sections remain obligations;
+the complete criterion supplies no induction from a finite section. A proof of a propagation
+law covering every order would be legitimate progress; recording more finite sections alone
+does not establish the universal statement.
 
-Establish `D̂_a(s) ≥ 0` for all real `s` and one admissible `a`, unconditionally — equivalently exhibit
-the shifted bilinear form as manifestly nonnegative. Sub-questions:
-1. Exact closed form for `D̂_a` as a contour integral in `Ξ(ξ±ia)`.
-2. Does `D_a` satisfy a Pólya-type criterion? (Corpus has **log-concavity**, which does *not* give
-   convexity, so Pólya does not apply directly — determine convexity of `D_a` on `[0,∞)` numerically.)
-3. Is `D̂_a` completely monotone in `s²`? The sampled decay is smooth and monotone.
+## Source obligation
 
----
+The missing result is an unconditional comparison for the complete source, valid for every
+frequency and every critical aperture. Equivalently it must prove every finite signed Hankel
+form nonnegative. The complex Fourier pair, differentiation under the integral, all-order jet
+incidence, and determinacy are already available and should not be rebuilt as substitutes for
+that sign.
 
-## [PAPER-PROVED + NUMERICALLY CERTIFIED] The closed form
+Generic source positivity, evenness, and logarithmic concavity are insufficient; the corpus's
+`HTGeometry.LaguerreKernelCounterexample` proves this. A convexity test of `D_a` on the whole
+positive ray is also inappropriate: smooth evenness forces `D_a'(0)=0`, while its derivative is
+strictly negative at positive displacements. A differentiable convex function on that ray would
+have a nondecreasing derivative. No numerical convexity scan is needed to resolve that conflict.
 
-**Theorem.** Let `Φ` be the Riemann Ξ-kernel (even, `Ξ(ζ) = ∫Φ(x)e^{iζx}dx`), and for `0 < a < 1/2`
-let `D_a(t) = ∫_0^∞ r·sinh(ar)·Φ(r/2+t)·Φ(r/2−t) dr`. Then for every real `s`, with `ζ = s/2 + ia`:
+The current direct work retains complete source pairings, all cross terms, and any correction's
+boundary values. Neither a numerical Fourier sample nor a reformulation of the same sign is
+an unconditional proof of RH.
 
-        D̂_a(s)  =  −Im[ Ξ'(ζ) · conj(Ξ(ζ)) ]  =  ½ ∂/∂a |Ξ(s/2 + ia)|² .
+## Audit of a claimed theta approximation closure
 
-*Proof.* The integrand is **even in `r`** (Φ even), so the half-line integral is half the full line;
-`r = 2w` gives `D_a(t) = 2∫_ℝ w·sinh(2aw)·Φ(w+t)Φ(w−t)dw`. Substituting `u = w+t`, `v = w−t`
-(`dw dt = ½ du dv`) and expanding `sinh(a(u+v)) = ½(e^{au}e^{av} − e^{−au}e^{−av})`, the double
-integral **factorises**:
+[Shi, arXiv:1706.08868v1](https://arxiv.org/html/1706.08868v1) asserts uniform convergence
+`H_n=H(14,n,·)→Xi` near zero (Theorem 3.6), uses the scaling
+`W_n(z)=H_n(2z/log n)` (3.46), and splits `W_n=U_n−V_n` into positive-kernel
+cosine transforms. Its claimed first positive roots satisfy
+`π/2<x_1(n)<y_1(n)<π` for all sufficiently large odd `n` (Theorem 4.4, (4.14)).
+The coefficients in (4.5) are half those in (3.48); this changes the normalization
+of `W_n` by a positive factor of two, and does not change the following contradiction.
 
-        D̂_a(s) = ¼ Σ_{±} ∓ [ (∫u f_±)(∫g_±) + (∫f_±)(∫v g_±) ],
-        f_±(u) = Φ(u)e^{±au}e^{−isu/2},   g_±(v) = Φ(v)e^{±av}e^{+isv/2}.
+**Analytic audit, not a Lean theorem:** these assertions are incompatible. Since `Xi(0)>0`,
+convergence gives `W_n(0)>0` eventually. Positivity of `V_n(0)` and the absence of its
+zeros before `y_1(n)` give `V_n(x_1(n))>0`. Therefore
 
-Because `Φ` decays **doubly exponentially**, `e^{±ax}Φ(x)` is integrable for *every* real `a`, so
-`∫f_+ = Ξ(s/2+ia)`, `∫g_+ = Ξ(s/2−ia)`, and `∫u f_+ = ∂_a Ξ(−s/2−ia) = iΞ'(s/2+ia)` (Ξ even ⟹
-`Ξ'(−z) = −Ξ'(z)`). The `−a` term equals minus the `+a` term, doubling it. This gives
-`D̂_a(s) = (i/2)[Ξ'(ζ)Ξ(ζ̄) − Ξ(ζ)Ξ'(ζ̄)]`; since Ξ has real Taylor coefficients, `Ξ(ζ̄) = conj Ξ(ζ)`,
-so the bracket is `W − conj W = 2i·Im W` with `W = Ξ'(ζ)conj(Ξ(ζ))`. The second form follows from
-`∂_a log|Ξ(z+ia)| = −Im(Ξ'/Ξ)(z+ia)`. ∎
+```
+W_n(x_1(n)) = -V_n(x_1(n)) < 0.
+```
 
-**TRAP (recorded so it is not re-walked).** Applying Fubini to the `r`-integral *alone* is illegitimate:
-`∫_0^∞ r sinh(ar)e^{−irσ}dr` diverges, and its formal value `2iaσ/(σ²+a²)²` is **odd**, which paired
-against the even factor `Ξ(σ+s/2)Ξ(σ−s/2)` would force `D̂_a ≡ 0` — contradicted by the numerics.
-Convergence comes from `Φ`, so one must factorise *after* the `(u,v)` substitution, never split the
-`r`-integral off by itself.
+The intermediate value theorem supplies a zero `w_n∈(0,π)` of `W_n`. Consequently
+`H_n(z_n)=0` with `z_n=2w_n/log n→0`. Uniform convergence near zero and continuity of
+`Xi` imply `H_n(z_n)→Xi(0)>0`, a contradiction. No numerical zero, global zero theorem,
+or use of Hurwitz is needed.
 
-**Numerical certification** (mp.dps = 30, `a = 1/4`): the three quantities — direct cosine transform of
-`D_a`, `−Im[Ξ'conj Ξ]`, and `½∂_a|Ξ|²` — agree to **10 significant digits** at
-`s = 0,1,2,4,6,8,10,14`, e.g. `s=0: 0.002862926847` and `s=14: 0.0003612677341` for all three.
-(Trap caught during certification: `Φ(x)` for `x ≲ −4` needs `n` up to `~e^{|x|}` series terms;
-truncating at `n<60` silently produces garbage. Evaluate `Φ` at `|x|` — Φ is even.)
+An explicit frequency pinpoints an incompatible sign claim without locating roots.
+Equation (4.20) and its `V_n` counterpart give
 
-## [CONSEQUENCE] Three of the ledger's faces are ONE face
+```
+W_n(x) = 2(u_2(n,x)−u_1(n,x)) cos x
+       + 2x(v_2(n,x)−v_1(n,x)) sin x.
+```
 
-Equivalent, for each `a ∈ (0,1/2)`:
-1. every center-mixed matrix (all node counts) is positive semidefinite — i.e. `D_a` is a
-   positive-definite function (Bochner);
-2. `Im (Ξ'/Ξ) ≤ 0` on the line `Im ζ = a`;
-3. `a ↦ |Ξ(z + ia)|` is non-decreasing, for every real `z`.
+At `x=π`, this is `W_n(π)=−2(u_2(n,π)−u_1(n,π))`. Convergence forces its left side
+eventually positive. Proposition 4.2, (4.4), claims `u_2(n,x)>u_1(n,x)` for every
+real `x` and sufficiently large odd `n`, which forces the right side negative.
+Thus, if the approximation convergence is retained, that uniform sign claim is false.
+More precisely, under the normalization of (4.5), convergence and the exact formula force
+`u_2(n,kπ)−u_1(n,kπ)→(−1)^k Xi(0)/4` for each fixed nonnegative integer `k`.
+This locates the incompatible claimed inequality; it does not independently validate
+every preceding approximation estimate or locate the erroneous intermediate step of its proof.
 
-Quantifying over `a ∈ (0,1/2)` and invoking the corpus's certified chain, each is equivalent to RH.
-So the theta-cusp positivity route is **not an independent route**: it is the `Im logDeriv Ξ ≤ 0`
-face and the `|Ξ| monotone in height` face, in Fourier coordinates.
+The positive constraint exposed by the audit is stronger than excluding this ordering:
+for every fixed `R`, the stated convergence forces the rescaled `W_n` to converge uniformly
+on `[-R,R]` to a positive constant (`Xi(0)` or `Xi(0)/2`, according to normalization).
+Thus its real zeros must escape every fixed compact interval. Proof: split the uniform error
+into `|H_n(2z/log n)−Xi(2z/log n)|` and `|Xi(2z/log n)−Xi(0)|`; both tend uniformly to zero.
+This is a paper-level consequence of the asserted approximation convergence, not an
+unconditional formal result for those unformalized approximants. It supplies no missing
+CLG/TTF source sign.
 
-## [ACTIONABLE] The node ladder has no top
-
-`n`-node PSD for every `n` is equivalent to a single Fourier-sign condition, and each finite `n` is a
-strictly weaker shadow of it; no finite rung implies the next. The programme of climbing
-2-node → 3-node → 4-node → … is therefore structurally incapable of reaching RH, however many rungs
-are proved. Each rung remains a genuine unconditional theorem about Ξ, but the route should not be
-labelled "approaching the wall". The Hermite–Biehler mechanism is explicit here: if all zeros `ρ` of Ξ
-are real then `Im(Ξ'/Ξ)(z+ia) = −Σ_ρ a/|z+ia−ρ|² < 0`, so `D̂_a > 0`; a single off-line zero reverses
-the sign near it.
-
-## [LEAN-PROVED] Formal bridge layer
-
-`HTGeometry/VerticalModulusDerivative.lean` (axiom-clean: propext/Classical.choice/Quot.sound;
-umbrella-wired; build green):
-
-- `hasDerivAt_normSq_vertical_general (f x a) (hf : DifferentiableAt ℂ f (x+ia))` :
-  `HasDerivAt (fun t => normSq (f (x+it))) (-2 * (deriv f (x+ia) * conj (f (x+ia))).im) a`.
-  **Strictly stronger than the corpus's `RHTower.hasDerivAt_normSq_vertical`**, which needs
-  `XiC z ≠ 0` because it routes through `logDeriv`. The `-2 Im (f' conj f)` form is defined
-  *at the zeros too*, where it vanishes — and the zeros are exactly where the criterion is sharp.
-- `neg_two_im_deriv_mul_conj_eq` : off the divisor the two forms agree
-  (`-2 Im (f' conj f) = -2 normSq(f) · Im (logDeriv f)`), via `Complex.inv_def`.
-- `monotoneOn_normSq_vertical_of_neg_im_nonneg` : the sign condition `0 ≤ -Im(f' conj f)` on a
-  convex set forces `MonotoneOn` of `t ↦ normSq (f (x+it))` — the zero-tolerant form of the
-  "modulus non-decreasing in height" face.
-
-This is the right-hand half of the main identity, formalized for an arbitrary analytic `f`.
-
-**Still paper-only (multi-session analytic build):** the Fourier half
-`D̂_a(s) = -Im[Ξ'(ζ) conj Ξ(ζ)]`. It needs (i) the Fourier pair `Ξ(ζ) = ∫Φ(x)e^{iζx}dx` at
-*complex* `ζ` (the corpus has real-axis pieces in `ThetaCuspFourierXi.lean`, not the complex-argument
-pair), (ii) Fubini on `ℝ²` after the `(u,v)` substitution, (iii) differentiation under the integral
-for `∫uΦ(u)e^{au}e^{-isu/2}du = ∂_a Ξ`. All three exist in mathlib; the work is the integrability
-side conditions, which are easy in principle because `Φ` decays doubly exponentially.
+There is also a direct scaling error in Lemma 3.11: a strip `|Im z|≤1/2` for `W_n`
+corresponds to `|Im z|≤1/log n` for `H_n`, rather than `|Im z|≤(log n)/4`.

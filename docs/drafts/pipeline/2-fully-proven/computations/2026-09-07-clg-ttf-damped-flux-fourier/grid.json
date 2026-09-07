@@ -1,0 +1,77 @@
+{
+  "aperture": 0.25,
+  "lambdas": [
+    1.75,
+    2.0,
+    3.0,
+    5.0
+  ],
+  "workers": 12,
+  "center_count": 161,
+  "frequency_count": 193,
+  "max_grid_discrepancy": 6.410150188429498e-14,
+  "provisional_threshold": 6.4101501884294976e-12,
+  "selected": [
+    {
+      "lambda": 1.75,
+      "frequency_index": 59,
+      "b": 14.75,
+      "positive_center_index": 18,
+      "negative_center_index": 19,
+      "x_positive": 0.225,
+      "x_negative": 0.2375,
+      "W_positive": -2.768001493653614e-06,
+      "W_negative": -1.7196527667958501e-06,
+      "h_positive": 0.09155919909770108,
+      "h_negative": -0.0379154708255344,
+      "margin": -2.0266520863672253e-06,
+      "provisional_conflict": true
+    },
+    {
+      "lambda": 2.0,
+      "frequency_index": 59,
+      "b": 14.75,
+      "positive_center_index": 18,
+      "negative_center_index": 19,
+      "x_positive": 0.225,
+      "x_negative": 0.2375,
+      "W_positive": -2.768001493653614e-06,
+      "W_negative": -1.7196527667958501e-06,
+      "h_positive": 0.036077970696268655,
+      "h_negative": -0.07959556376839998,
+      "margin": -2.4410270061696386e-06,
+      "provisional_conflict": true
+    },
+    {
+      "lambda": 3.0,
+      "frequency_index": 57,
+      "b": 14.25,
+      "positive_center_index": 16,
+      "negative_center_index": 17,
+      "x_positive": 0.2,
+      "x_negative": 0.2125,
+      "W_positive": -6.1332876798719875e-06,
+      "W_negative": -4.446931757392406e-06,
+      "h_positive": 0.06937565467504297,
+      "h_negative": -0.01612229863251195,
+      "margin": -4.7649268991605375e-06,
+      "provisional_conflict": true
+    },
+    {
+      "lambda": 5.0,
+      "frequency_index": 54,
+      "b": 13.5,
+      "positive_center_index": 14,
+      "negative_center_index": 15,
+      "x_positive": 0.175,
+      "x_negative": 0.1875,
+      "W_positive": -1.2830759713913502e-05,
+      "W_negative": -8.480865294481375e-06,
+      "h_positive": 0.01068372630737765,
+      "h_negative": -0.03783877435368844,
+      "margin": -1.1872996185446148e-05,
+      "provisional_conflict": true
+    }
+  ],
+  "grid_seconds": 0.42912403494119644
+}

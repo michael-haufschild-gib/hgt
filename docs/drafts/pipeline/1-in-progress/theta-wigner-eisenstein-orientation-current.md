@@ -198,6 +198,17 @@ RH iff O(a,b)>=0 for every 0<a<1/2 and b in R,            (19)
 up to the positive factor `4/a` produced by `r=2u`.  Formula `(18)` records only the sign-relevant
 normalization; `(15)`--`(16)` are the primary exact coordinates.
 
+The interchange in `(18)` is valid on the completed positive center ray, despite the failure
+of raw single-shell Mellin summation in the critical strip. For `u>=0` and `k>=1`, the radial
+argument is `c=2pi k exp(2u)>=2pi`. The absolute integral of the ordered radial profile is
+bounded by `C c^4 exp(-c/2)`: split its exponential into two halves, absorb the factor
+`1+cosh(2v)` into one half, and use `cosh(2v)>=1+2v^2` in the other. There are at most `k`
+ordered factor pairs. This bounds the complete absolute center integral by a summable
+Gaussian tail in `k`, even after multiplication by `u exp((1+2a)u)` and any fixed polynomial
+in `c`, `u`, or `log k`. It permits the stated regrouping and fixed parameter derivatives.
+Evenness of the *completed* source is used before restricting the center to `u>=0`; extending
+this absolute estimate to the negative center ray is not asserted.
+
 ### Ordered-pair Mellin signature `[PROVED ON PAPER; ALGEBRAIC CORE IN LEAN]`
 
 Before grouping by `r=nm`, the same atoms admit a second exact description which determines the
@@ -279,10 +290,23 @@ E*(x+iY,1/2+i b)_nonconstant
     tau_b(r) K_(i b)(2pi rY)cos(2pi r x).                (18a)
 ```
 
-For `b=0`, the completed Eisenstein series itself has the familiar central meromorphic singularity,
-but its polar part lies entirely in the constant term.  All identities below are first read for
-`b!=0`; after applying the constant-term-annihilating differential factor they extend to `b=0` by
-the resulting removable continuation.  No product `0*infinity` is being used.
+The completed Eisenstein series is regular at `s=1/2`, including `b=0`. Its two separately
+written constant terms have opposite poles which cancel before any differential operator is
+applied. Write `Lambda(z)=pi^(-z/2) Gamma(z/2) zeta(z)`. Its Laurent expansion
+`Lambda(1+epsilon)=1/epsilon+(gamma-log(4pi))/2+O(epsilon)` gives
+
+```text
+lim_(b->0) [Lambda(1+2ib)Y^(1/2+ib)+Lambda(1-2ib)Y^(1/2-ib)]
+ =sqrt(Y)[log(Y)+gamma-log(4pi)].                         (18a0)
+```
+
+The Fourier expansion and normalization agree with
+[Zagier, section 1](https://people.mpim-bonn.mpg.de/zagier/files/scanned/EisensteinRiemannZeta/eisenstein-zeta-978-3-662-00734-1_10.pdf)
+and [Goldfeld, equation (1) and its completed version](https://www.math.columbia.edu/~goldfeld/Exploring.pdf).
+The constant-term poles are at `s=0,1`, as stated in
+[Lagarias–Suzuki, equation (10)](https://arxiv.org/pdf/math/0412039).
+For `b=0`, `P_0(D)=(D-1/2)^2(D+1/2)^2` annihilates the logarithmic constant term
+in `(18a0)`. The formulas thus extend regularly to the center; there is no central pole to remove.
 
 For one Fourier mode `F_r(Y)=sqrt(Y)K_(i b)(2pi rY)`, the horizontal operator
 
@@ -446,6 +470,130 @@ Therefore the positive carrier obligation is sharper than `P_b(D)>=0`:
 This retires the naive positive-elliptic-operator proof while leaving `(18n)` as a concrete
 boundary-energy target.
 
+### Exact geodesic period and cancellation of its cusp correction
+
+The complete arithmetic sum can be tested against the classical Eisenstein norm mechanism
+without assuming a sign for either period in `(18n)`. The following derivation is on paper;
+it does not establish the missing source inequality.
+
+For `b!=0`, set `c=1/2+ib`, `A_b=Lambda(1+2ib)`, and
+
+```text
+C_b(t)=A_b exp(c t)+conj(A_b)exp(conj(c)t),
+N_b(t)=E*(i exp(t),c)-C_b(t),
+I(a,b)=integral_0^infinity cosh(a t)N_b(t)dt,
+Q(a,b)=4 Re[c A_b/(c^2-a^2)],
+R(a,b)=2 I(a,b)-Q(a,b).                                  (18p0)
+```
+
+The integral defining `I` is absolutely convergent, with every fixed aperture derivative,
+because the nonconstant Eisenstein modes decay exponentially in `exp(t)`. The subtraction
+`Q` is the complete cusp correction, not a positive norm term. The exact regularized geodesic
+period is
+
+```text
+R(a,b)=Lambda(c+a)Lambda(c-a)
+      =|Lambda(1/2+a+ib)|^2 >= 0.                         (18p1)
+```
+
+Here is a normalization and continuation proof. Initially take a general complex `s` with
+`Re(s)>1+|Re(a)|` and remove the two lattice axes from the completed Epstein series:
+
+```text
+M_s(Y)=E*(iY,s)-Lambda(2s)(Y^s+Y^(-s))
+      =2 Gamma(s)pi^(-s) sum_(m,n>=1) Y^s/(m^2Y^2+n^2)^s.
+```
+
+The absolutely convergent integral of `M_s(Y)Y^a dY/Y` separates by `Y=(n/m)v`.
+The beta integral for each pair contributes
+`Gamma((s+a)/2)Gamma((s-a)/2)/(2Gamma(s))`, and the two integer sums contribute
+`zeta(s+a)zeta(s-a)`. The result is exactly `Lambda(s+a)Lambda(s-a)`.
+Modular inversion makes `M_s(exp(t))` even in `t`. On `t>=0` it is
+
+```text
+N_s(t)+Lambda(2s-1)exp((1-s)t)-Lambda(2s)exp(-s t).
+```
+
+Integrating these two decaying exponentials gives
+
+```text
+2 integral_0^infinity cosh(a t)N_s(t)dt
+ +2(s-1)Lambda(2s-1)/((s-1)^2-a^2)
+ -2s Lambda(2s)/(s^2-a^2).
+```
+
+Meromorphic continuation to `s=c`, followed by the functional equation and conjugation,
+is `(18p0)`–`(18p1)`. For real `0<a<1/2`, `c^2-a^2` is nonzero, and neither factor
+in `(18p1)` meets a pole. At `b=0`, use the finite paired limit from `(18a0)`.
+This derivation retains the full arithmetic series; it does not interchange the inadmissible
+critical-strip single-shell Mellin integrals.
+
+The boundary term in `(18n)` now cancels exactly. Modular inversion gives
+`N_b'(0)=-2Re(c A_b)`, while
+
+```text
+P_b(a)=(c^2-a^2)(conj(c)^2-a^2),
+P_b(a)Q(a,b)=4Re[c A_b(conj(c)^2-a^2)],
+partial_a[P_b(a)Q(a,b)]=-8a Re(c A_b).                   (18p2)
+```
+
+Substitute `I=(R+Q)/2` and `partial_a I=(partial_a R+partial_a Q)/2` into `(18n)`.
+The result is
+
+```text
+B_X(a+ib,a+ib)=partial_a[P_b(a)R(a,b)]/(8a).              (18p3)
+```
+
+Since `P_b(a)R(a,b)=4|xi(1/2+a+ib)|^2`, this returns the original signed derivative.
+Positivity of the regularized period `(18p1)` supplies no monotonicity in `a`.
+The scattering boundary value and the rational cusp correction cannot be counted as separate
+positive reserves: their contributions to the completed derivative cancel identically.
+
+### Direct test of the Maass–Selberg norm
+
+The standard positive norm is over the two-dimensional modular surface. The current in
+`(18m)` is a signed linear period on its imaginary geodesic. To test a proposed identification,
+use the completed Maass–Selberg formula at `alpha=rho/2`, where `rho` is any nontrivial
+zeta zero. Write `sigma=Re(alpha)`, `tau=Im(alpha)`,
+`A=Lambda(2alpha)` and `B=Lambda(2alpha-1)`. For truncation height `T>=1`, the norm is
+
+```text
+||Lambda^T E*(.,alpha)||^2
+ =|A|^2 T^(2sigma-1)/(2sigma-1)
+  +A conj(B) T^(2i tau)/(2i tau)
+  +B conj(A) T^(-2i tau)/(-2i tau)
+  +|B|^2 T^(1-2sigma)/(1-2sigma).                        (18s0)
+```
+
+This is the completed form of
+[Goldfeld, Theorem 4.1](https://www.math.columbia.edu/~goldfeld/Exploring.pdf);
+the same boundary relation is used in
+[Lagarias–Suzuki, equation (47)](https://arxiv.org/pdf/math/0412039).
+At the indicated parameter, `A=0` and
+`B=Lambda(rho-1)=Lambda(2-rho)!=0`, the last inequality following from the Euler
+zero-free half-plane. Therefore
+
+```text
+||Lambda^T E*(.,rho/2)||^2
+ =|Lambda(2-rho)|^2 T^(1-Re(rho))/(1-Re(rho)) > 0.        (18s1)
+```
+
+Every denominator is legitimate: nontrivial zeta zeros are nonreal and have real part
+strictly between zero and one. Formula `(18s1)` holds throughout that strip, including
+the critical line. Thus applying norm positivity at a putative off-line zero gives no
+contradiction and no critical-line restriction. A further comparison or incidence theorem
+would still have to control `(18p3)`; the Maass–Selberg identity itself does not provide it.
+
+The positive horocycle integrals treated by Lagarias–Suzuki also do not directly evaluate
+this current. They select the constant Fourier coefficient, whereas the horizontal operator
+`A=-Y^2 partial_x^2` in `(18d)` annihilates that coefficient. Averaging that differentiated
+current over a complete horocycle gives zero. Its value at `x=0` retains the nonconstant
+divisor phases that the horocycle average removes.
+
+**Assessment:** this automorphic norm attempt has not improved the all-order source-sign
+bound. No new Lean receiver or numerical experiment follows from these identities. The
+source-specific sign of `(18p3)`, equivalently `(18)`, remains the open obligation.
+
 ## 5. Why this is a live source architecture
 
 The moment module uniquely reconstructs `k` and `X`; it does not orient the Bezoutian.  Equations
@@ -477,21 +625,26 @@ inside the `y`-fibers; it must arise from the complete radial/arithmetic couplin
 - [x] identify the fiberwise-positive producer as impossible by Hudson rigidity;
 - [x] formalize the center-mixed theta density, its exact Fubini phase identity, and its
       unconditional strict positivity, evenness, continuity, and integrability;
-- [ ] complete a primary-source audit for the precise theta-product/Eisenstein parent identity;
+- [x] audit the completed Eisenstein Fourier normalization against Zagier and Goldfeld;
+      the ordered-pair calculation `(10)`–`(14)` supplies the theta-product parent identity on paper;
 - [ ] formalize `(2)` and `(13)`--`(16)` in Lean without assuming RH or positivity;
 - [ ] formalize the analytic Mellin integral `(18o)`--`(18p)` and its differentiation/summation
       interchange in the absolute-convergence half-plane;
-- [ ] formalize the removable `b=0` specialization after annihilation of the Eisenstein polar
-      constant term;
-- [ ] determine the exact raising-operator relation between `Kcal_b` and the weight-zero
-      Eisenstein series, including normalization conventions in `(18a)`;
+- [ ] formalize the regular `b=0` specialization and the paired logarithmic constant term `(18a0)`;
+- [x] determine on paper the exact differential relation between `Kcal_b` and the weight-zero
+      Eisenstein series, including the audited normalization in `(18a)`;
 - [ ] prove a non-target-fed lower bound for the mixed current `(18)`, or retire it as another
       exact RH coordinate.
 
-## References under audit
+## References
 
 - R. L. Hudson, *When is the Wigner quasi-probability density non-negative?*, Reports on
   Mathematical Physics 6 (1974), 249--252.
 - H. Hedenmalm, *Spectral interpretation of Riemann zeta zeros*, arXiv:2606.17494.
 - Classical Fourier expansion of the real-analytic Eisenstein series and the integral
   representation of the modified Bessel function `K_nu`.
+- D. Zagier, *Eisenstein Series and the Riemann Zeta Function*, section 1.
+- D. Goldfeld, *Arthur's Truncated Eisenstein Series for SL(2,Z) and the Riemann Zeta
+  Function, a Survey*, equation (1), completed Fourier expansion, and Theorem 4.1.
+- J. C. Lagarias and M. Suzuki, *The Riemann Hypothesis for Certain Integrals of Eisenstein
+  Series*, arXiv:math/0412039, equations (10), (47) and Theorems 2–3.

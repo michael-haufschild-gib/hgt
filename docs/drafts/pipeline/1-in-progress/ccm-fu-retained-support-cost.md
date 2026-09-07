@@ -78,3 +78,9 @@ competing predictions under the scientific-method rules.
 `RetainedPrimeSupportThreshold`, `RetainedPrimeTopHomothety` and
 `RetainedPrimeCoordinateHomothety` contain the exact closed bridge.
 Complete cofinal coverage, PE4/PE4G/PE4C, SD1 and RH remain open.
+
+Here a successful cofinal construction must also discharge the receiver's
+bound at every cutoff: for example, by controlling all m<=M simultaneously
+with normalization at m at arbitrarily large M. Bounds only at the selected
+parent endpoints do not meet that quantifier. Exact support and homothety
+do not supply a transfer from such selected values to the full sequence.

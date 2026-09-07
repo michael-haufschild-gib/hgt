@@ -3605,3 +3605,388 @@ separation `|mh − nk| ≥ 1`; (iii) the Mellin evaluation of the two smoothed 
 Traps: `regularizedRiemannZeta` must be used for the entire numerator (Lean's `ζ(1)` is junk, so
 `(s−1)ζ(s)` is not the continuation at `s = 1`); iterated `dslope` needs `dslope_of_ne` followed by
 `slope_def_field`; `((((` — count parentheses in long calc steps; `push Not` replaces `push_neg`.
+
+## Brick 5bi — Gaussian block weight; plan for the block twisted moment (2026-09-08)
+
+**Search-first correction.** The corpus index (`scripts/formal_tools.py research … --any`) locates
+assets that name-guessing with `rg` missed; the plan below is written against what the index
+returned: `HTGeometry/PolygammaUniformLeadingAsymptotic` (all-order polygamma law on vertical tubes),
+`HTGeometry/GammaDigammaStirlingBound.norm_digammaStirlingDefect_le` (`‖ψ(z) − log z + 1/(2z)‖ ≤ 6/‖z‖²`
+on `Re z > 0`, `‖z‖ ≥ 2`), `Hurwitz/PolygammaHurwitzValue.polygamma_eq_hzeta` (`ψ^{(m+1)} =
+(−1)^{m}(m+1)!·ζ(m+2,·)` as the Hurwitz series), `SmoothAFEZetaChiShiftDerivative.logDeriv_zetaChi_off_poles`
+(`(log χ)'(z) = −ψ(z/2)/2 − ψ((1−z)/2)/2 + log π`), `Sieve/LogNormSegment.norm_sub_le_segment`,
+`HTGeometry/CutoffProductEstimate` (localised Leibniz), and in mathlib `norm_iteratedFDeriv_comp_le`,
+`norm_iteratedFDeriv_mul_le`, `Real.fourier_iteratedDeriv`.
+
+**Built:** `HTGeometry/GaussianBlockWeight.lean` (axiom-clean, wired). `gaussKernel η`, mass one,
+Fourier transform `e^{-η²ξ²/2}` (`integral_gaussKernel_mul_cexp`), tail
+`∫_{x}^∞ g ≤ η e^{-x²/2η²}/(x√(2π))`; `blockWeight p q η = 1_{[p,q]} ⋆ g_η`: values in `[0,1]`,
+continuous, integrable, at least `1 − 2e^{-K²/2}/(K√(2π))` on `[p+Kη, q−Kη]`
+(`blockWeight_ge_of_mem`), Gaussian decay outside `[p,q]`, total mass `q − p`, and the Fourier bound
+`‖∫ w(t) e^{-iξt}‖ ≤ 2e^{-η²ξ²/2}/|ξ|` (`norm_integral_blockWeight_mul_cexp_le`) via an explicit Fubini.
+
+**Why this weight.** With `s₁ = σ₀+it`, `s₂ = σ₀−it` the direct series of the product AFE has a
+height-independent weight, so its twisted block integral is exactly `ŵ(log(mh/nk))`; pairs with
+`mh ≠ nk` have `|log(mh/nk)| ≥ min(log 2, 1/(√2·√(mn)·M))`, and with `η ≍ εa`, `mn ≤ x^{1+ε''}`,
+`x ≍ a`, `M = a^θ`, the Gaussian factor is `≤ exp(−c a^{1−2θ−ε''})`: the direct off-diagonal dies
+with no integration by parts. Dominating `1_{[a,v]}` by `w/(1−2e^{-K²/2}/(K√2π))` costs only the
+mass `2Kη` and the factor `(1−2e^{-K²/2}/(K√2π))^{-1}`, absorbed by the `ε` of the dyadic law.
+
+**Remaining bricks (in order).**
+1. Separation lemma `|log(r/s)| ≥ min(log 2, 1/max(r,s))` for `r ≠ s ≥ 1` and the direct off-diagonal
+   sum (bulk via the Gaussian, tail `mn > x^{1+ε''}` via `norm_smoothAFECutoffAt_le` at a large contour).
+2. Direct diagonal: `Σ_d d^{-2σ₀} V(h'k'd²/x)` by the two-pole rectangle (`RectangleTwoPoleResidue`),
+   residues `ζ(1−2δ₀)` and `e^{δ₀²}(x/(h'k'))^{δ₀}/(2δ₀)`, remainder `O((x/(h'k'))^{-1/4})`.
+3. Dual term, all-order height derivatives: polygamma bound
+   `‖ψ^{(m+1)}(z)‖ ≤ (m+1)!(1+π/2)/|Im z|^{m+1}` from the Hurwitz series (`|k+z| ≥ |Im z|`), the shift
+   law for `−1 < Re z ≤ 0`, hence `‖(log χ)^{(n)}(z)‖ ≤ n!(1+π/2)/|Im z|^n`; the two-ratio product `F`
+   satisfies `F' = F·D` with `D` the digamma-increment difference, `‖D^{(j)}‖ ≤ C(1+|v|)/t^{j+1}` by the
+   segment mean value at order `j+1`, so `‖F^{(n)}‖ ≤ n!‖F‖(C(1+|v|)/t)^n` (`norm_iteratedFDeriv_comp_le`
+   with `exp`, or Leibniz induction). Then `∂_t^n W_t(y)` under the Gaussian integral.
+4. Dual off-diagonal: `Real.fourier_iteratedDeriv` gives `|∫ w A e^{-iξt}| ≤ (2π|ξ|)^{-K}∫|(wA)^{(K)}|`
+   with `‖w^{(j)}‖ ≤ C_j/η^{j}` (Cauchy on a disc of radius `η`, since `w` is entire with
+   `|w(t+iy)| ≤ (q−p)e^{y²/2η²}/(√2π η)`), so `(η|ξ|)^{-K}` with `η|ξ| ≫ a^{1/2−θ}`; `K = K(θ)` is chosen
+   at assembly since the bounds hold for every `K`.
+5. Dual diagonal (same Mellin structure with the exact `|χ(σ₀+it)|²` weight, `HighBlockChiModulus`) and
+   the two residues (`O(e^{-t²})`); assembly into `ZetaDyadicMeanSquareLaw`, then the `ζ'` shifts for
+   `DyadicDetectorMeanSquareLaw`.
+
+## Brick 5bj — explicit polygamma decay (2026-09-08)
+
+`HTGeometry/PolygammaVerticalDecay.lean` (axiom-clean, wired): from the corpus's Hurwitz
+representation `polygamma_eq_hzeta` and `|k + z| ≥ |Im z|`,
+
+* `norm_hzeta_le`: `‖ζ(m+2, z)‖ ≤ 4/|Im z|^{m+1}` for `Re z ≥ 0`, `|Im z| ≥ 1`
+  (telescoping `∑_{k≥0} 1/(k+T)² ≤ 1/T² + 1/T`, `(k+T)² ≤ 2|k+z|²`);
+* `norm_iteratedDeriv_digamma_le_of_re_pos`: `‖ψ^{(m+1)}(z)‖ ≤ 4(m+1)!/|Im z|^{m+1}` on `Re z > 0`;
+* **`norm_iteratedDeriv_digamma_le`**: the same with constant `5` on `Re z > −1`, via the corpus shift
+  law `digammaJet_shift`.
+
+This is the all-order input for the height derivatives of `(log χ)` along `s = σ + it` through
+`logDeriv_zetaChi_off_poles` (`−ψ(z/2)/2 − ψ((1−z)/2)/2 + log π`): both digamma arguments have real
+parts in `(−1/2, 1)` on the strip and imaginary parts `±t/2`, so
+`‖(log χ)^{(n)}(σ+it)‖ ≤ 5·n!·(1+…)/ (t/2)^n · 2^{-n}`-type bounds follow with explicit constants.
+Next: the affine-composition lemma for `iteratedDeriv`, the `n`-th derivative of `logDeriv χ`, the
+digamma-increment difference `D` along the Levinson line with `‖D^{(j)}‖ ≤ C(1+|v|)/t^{j+1}`
+(segment mean value, `norm_sub_le_segment`), then `F' = F·D` ⇒ `‖F^{(n)}‖ ≤ n!‖F‖(C(1+|v|)/t)^n`.
+
+## Brick 5bk — height jets of `χ'/χ` and of its increment along Levinson lines (2026-09-08)
+
+Search-first: the index gave `iteratedDeriv_comp_const_mul_of_ne` (hypothesis-free scaling of jets),
+`connes_iteratedDeriv_lineRestrict` (vertical-line jets, whole-line hypothesis), `analyticAt_digamma_of_offPoles`,
+`norm_sub_le_segment`; mathlib supplies `iteratedDeriv_comp_neg`, `iteratedDeriv_comp_const_add`,
+`Filter.EventuallyEq.iteratedDeriv_eq`.
+
+* `RHTower/ChiLogDerivHigherDerivatives.lean` (axiom-clean, wired): the closed form
+  `χ'/χ = −ψ(·/2)/2 − ψ((1−·)/2)/2 + log π` holds eventually near every `z` with `Im z ≠ 0`, so
+  `iteratedDeriv_logDeriv_zetaChi_eq`: `(χ'/χ)^{(n)}(z) = −2^{-(n+1)}ψ^{(n)}(z/2) − ½(−½)^n ψ^{(n)}((1−z)/2)`
+  (`n ≥ 1`), and **`norm_iteratedDeriv_logDeriv_zetaChi_le`**: `‖(χ'/χ)^{(n)}(z)‖ ≤ 5 n!/|Im z|^n` for
+  `−2 < Re z < 3`, `|Im z| ≥ 2`.
+* `RHTower/ChiIncrementDifferenceJets.lean` (axiom-clean, wired): `iteratedDeriv_line_of_analyticOnNhd`
+  (local vertical-line jet law: `(d/ds)^n f(c+si) = i^n f^{(n)}(c+si)` at points of an open set of
+  analyticity), analyticity of `χ'/χ` on `{1 < |Im z|}`, the increment `chiIncrementC w z = L(z+w) − L(z)`
+  with `iteratedDeriv_chiIncrement_eq`, and the segment bound
+  **`norm_iteratedDeriv_chiIncrement_le`**: for `¼ ≤ σ₀ ≤ ½`, `|τ| ≥ 4`, `2|v| ≤ |τ|`, `w = −(1+iv)`,
+  `‖(d/dt)^j[L(σ₀+w+ti) − L(σ₀+ti)]|_{t=τ}‖ ≤ 5(j+1)! 2^{j+1}(1+|v|)/|τ|^{j+1}`; and for
+  `D(t) = i·inc(t) − i·inc(−t)` (the logarithmic height derivative of the two-ratio product
+  `χ(s₁+w)χ(s₂+w)/(χ(s₁)χ(s₂))`, `s₁ = σ₀+it`, `s₂ = σ₀−it`):
+  **`norm_iteratedDeriv_chiIncrementDifference_le`**: `‖D^{(j)}(t)‖ ≤ 10(j+1)! 2^{j+1}(1+|v|)/t^{j+1}`
+  for `t ≥ 4`, `2|v| ≤ t`.
+
+Next: `F' = F·D` for the two-ratio product `F(t)` (from `hasDerivAt_smoothAFEZetaChiShiftRatio_displaced_logDeriv`
+at `displacedLinePt d (±t)`), then the Leibniz induction `‖F^{(n)}‖ ≤ n! ‖F‖ (C(1+|v|)/t)^n` with `C = 11·4`
+(`norm_iteratedFDeriv_mul_le`, `norm_iteratedFDeriv_eq_norm_iteratedDeriv`), then `∂_t^n W_t(y)` under the
+Gaussian integral.
+
+Traps: `iteratedDeriv_comp_neg` produces a **real** scalar `((-1:ℝ)^n) •` for `ℝ → ℂ` functions; `AnalyticAt.comp`
+needs `(g := …) (f := …)` explicitly (higher-order unification otherwise picks `HDiv.hDiv z`);
+`iteratedDeriv_const_mul` takes the constant explicitly before the hypothesis; `AnalyticAt.restrictScalars`
+takes the field implicitly; `hU.preimage hcont` for open preimages.
+
+## Brick 5bl — all-order height jets of the two-ratio product (2026-09-08)
+
+`RHTower/ChiRatioProductJets.lean` (axiom-clean, wired). With `F(t) = [χ(s₁+w)/χ(s₁)]·[χ(s₂+w)/χ(s₂)]`,
+`s₁ = ½−d+it`, `s₂ = ½−d−it`, `w = −(1+iv)`:
+
+* `zetaChi_shifted_ne_zero`: `χ(s₁+w) ≠ 0` for every `t` (real part `−½−d ∈ (−¾, −½]` is off the
+  zero set `{0,−2,…}`), so the corpus derivative law
+  `hasDerivAt_smoothAFEZetaChiShiftRatio_displaced_logDeriv` applies at every height;
+* **`hasDerivAt_chiRatioProduct`**: `F' = F·D` on all of `ℝ`, `D = chiIncrementDifference (½−d) v`
+  (product rule plus the reflected line via `HasDerivAt.scomp` with `hasDerivAt_neg`);
+* `contDiff_chiRatioProduct`: `F` is real-analytic at every height (each ratio is a quotient of
+  `χ ∘ (affine line)` with nonvanishing denominator), `contDiffOn_chiIncrementDifference` on the
+  window `{2|v| < t+1, 3 < t}`;
+* `leibniz_factorial_sum_le`: the combinatorial core — from `a_i ≤ i! K B^i` and
+  `b_j ≤ 10 (j+1)! (B/11)^{j+1}` one gets `∑ C(n,i) a_i b_{n−i} ≤ (n+1)! K B^{n+1}`, using
+  `C(n,i) i! (n−i)! = n!`, `(n−i+1) ≤ n+1`, and `∑_{k=1}^{n+1} 11^{-k} ≤ 1/10`;
+* **`norm_iteratedDeriv_chiRatioProduct_le`**: for `0 < d ≤ ¼`, `t ≥ 4`, `2|v| ≤ t`,
+  `‖F^{(n)}(t)‖ ≤ n!·‖F(t)‖·(22(1+|v|)/t)^n` for every `n`, by strong induction on `n` through
+  `iteratedDeriv_succ'`, `F' = F·D`, and `norm_iteratedFDerivWithin_mul_le` on the open window.
+
+Every height derivative of the exact archimedean carrier of the dual weight gains one power of `t`,
+at all orders and with explicit constants.  Next: `∂_t^n W_t(y)` for the two-ratio dual weight
+`W_t(y) = (1/2π)∫ F(t;v)·y^{-(1+iv)}e^{(1+iv)²}/(1+iv) dv` by differentiation under the Gaussian
+integral (dominating function `n!‖F‖(22(1+|v|)/t)^n·|kernel|`, with `‖F(t;v)‖` bounded by the
+corpus's ratio bounds), then the off-diagonal via `Real.fourier_iteratedDeriv` and the block weight.
+
+Traps: `HasDerivAt.comp` needs a same-field inner map, use `HasDerivAt.scomp` for `ℝ → ℂ` composed
+with a real map (its derivative is a real `•`, use `Complex.real_smul`); build the composite
+`HasDerivAt` without an expected type so the unifier is not asked to invert `Neg.neg`;
+`iteratedFDerivWithin_of_isOpen n hs hx` takes the order explicitly.
+
+## Bricks 5bm–5bq — the dual off-diagonal frequency-by-frequency (2026-09-07)
+
+**Correction to the 5bi plan (Young, *A short proof of Levinson's theorem*, Lemma 5).** The direct
+off-diagonal is *not* killed by a separation `1/(√(mn)·M)` on its own; the correct separation is
+`|log(hm/kn)| ≥ 1/(2√(hk·mn))` for `hm ≠ kn` (from `kn ≤ √(hm·kn)` when `hm ≥ kn+1`), and it is
+exactly what makes `θ < 1/2` the threshold: with `mn ≤ T^{1+ε}` (the cutoff kills the rest) and
+`hk ≤ T^{2θ}`, `√(hk·mn) ≤ T^{1/2+θ+ε/2} ≪ Δ = T/L`, so `K`-fold integration by parts against a
+window with `w^{(j)} ≪ Δ^{-j}` gives `(Δ|log|)^{-K} = O(T^{-A})`. Young's window is compactly
+supported in `[T/4, 2T]` with `w^{(j)} ≪ (T/L)^{-j}`: the Gaussian-mollified weight of 5bi is
+replaced by that window here, and the Gaussian tail issue for the dual term disappears.
+
+**Built (all axiom-clean, wired):**
+
+* `HTGeometry/SmoothBlockWindow.lean`: `blockWindow p q η = (1 − smoothWeight (p−η) η)·smoothWeight q η`
+  — `1` on `[p,q]`, `0` outside `[p−η, q+η]`, values in `[0,1]`, `C^∞`, compact support;
+  `abs_iteratedDeriv_blockWindow_le`: `|w^{(j)}| ≤ blockWindowConst j / η^j` (Leibniz over the two
+  steps, constants from the corpus's `exists_bound_iteratedDeriv_smoothWeight_uniform`);
+  complexified `blockWindowC`; `norm_fourier_blockWindowC_le` and
+  `norm_integral_blockWindowC_mul_cexp_le`: `‖∫ w e^{-iξt}‖ ≤ (q−p+2η)·blockWindowConst K/(η^K|ξ|^K)`.
+* `HTGeometry/FourierIteratedDerivDecay.lean`: `norm_integral_mul_cexp_le_of_iteratedDeriv`:
+  `‖∫ f e^{-iξt}‖ ≤ ‖f^{(K)}‖_{L¹}/|ξ|^K` for `C^K` `f` with integrable derivatives
+  (`Real.fourier_iteratedDeriv`); compact-support integrability; `integral_norm_le_of_forall_mem_Icc`.
+* `HTGeometry/GaussianPolynomialTail.lean`: `(1+|v|)^M ≤ e^{M²+v²/4}`; integrability of
+  `(1+|v|)^M e^{-v²}`; tail `∫_{|v|>V} ≤ e^{M²} e^{-V²/2} √(4π)`; `∫_S e^{-v²} ≤ √π`.
+* `RHTower/ChiPairWeightJets.lean`: the modulus weight `P(t) = χ(σ+it)χ(σ−it)` (`chiPairWeight d`),
+  `P' = P·E`, `E = i(L(σ+it) − L(σ−it))`; **`chiPairLogSlope_eq`**: `E = −(i/2)(A(t) − A(−t))` with
+  `A(t) = ψ(σ/2 + it/2) − ψ((1−σ)/2 + it/2)` a *horizontal* digamma increment of length `d`
+  (the closed form of `χ'/χ` regroups into two horizontal pairs at heights `±t/2`; no conjugation
+  symmetry needed); **`norm_iteratedDeriv_chiPairLogSlope_le`**: `‖E^{(n)}(t)‖ ≤ 10 d (n+1)!/t^{n+1}`;
+  **`norm_iteratedDeriv_chiPairWeight_le`**: `‖P^{(n)}(t)‖ ≤ n!‖P(t)‖(11/t)^n` for `t ≥ 4`.
+  (`iteratedDeriv_comp_const_mul_real`: hypothesis-free real scaling of jets for `ℝ → ℂ`; mathlib's
+  `iteratedDeriv_comp_const_mul` is `𝕜 → 𝕜` only and its `ContDiff ℝ ↑n` coercion does not unify
+  with `ContDiff ℝ n` stated with `n : ℕ`.)
+* `RHTower/ChiCarrierJets.lean`: `chiCarrier d v t = χ(s₁+w)χ(s₂+w) = P·F` (`chiCarrier_eq`);
+  **`norm_iteratedDeriv_chiCarrier_le`**: `‖G^{(n)}‖ ≤ n!‖G‖(33(1+|v|)/t)^n` for `t ≥ 4`, `2|v| ≤ t`
+  (Leibniz with `∑ aⁱbⁿ⁻ⁱ ≤ (a+b)ⁿ`); **`norm_chiCarrier_le`**: `‖G‖ ≤ e⁸(1+|t−v|)²(1+|t+v|)²`
+  (`norm_zetaChi_le_negative_one_strip` at the abscissa `−1/2−d`).
+* `RHTower/WindowCarrierOscillation.lean`: `windowCarrier = w·G(·;v)`; jets on the support
+  `≤ windowCarrierJetConst K η (p−η) v · ‖G‖` with
+  `windowCarrierJetConst K η L v = ∑_j C(K,j)(blockWindowConst j/η^j)((K−j)!(33(1+|v|)/L)^{K−j})`;
+  **`norm_integral_windowCarrier_mul_cexp_le`**:
+  `‖∫ w G e^{-iξt}‖ ≤ (q−p+2η)·J_K·e⁸(1+q+η+|v|)⁴/|ξ|^K` for `p−η ≥ 4`, `2|v| ≤ p−η`.
+* `RHTower/DualCarrierWeightOscillation.lean`: `dualCarrierWeight d y t = (1/2π)∫ G(t;v)k_y(v)dv`
+  **`= χ(s₁)χ(s₂)·productAFEDualWeight s₁ s₂ y`** (`dualCarrierWeight_eq`): the dual side's full
+  archimedean weight; joint continuity and a whole-plane envelope `‖G‖ ≤ C(1+|t−v|)²(1+|t+v|)²`
+  (`exists_bound_norm_zetaChi_vertical`); Fubini (`integral_integral_swap`) and the frequency split
+  at `|v| = (p−η)/2`; **`exists_norm_integral_blockWindow_dualCarrierWeight_le`**: for every `K`,
+  `∃ C(d)`, for all blocks with `p−η ≥ 4`, all `y > 0`, `ξ ≠ 0`:
+  `‖∫ w(t)A_y(t)e^{-iξt}dt‖ ≤ (1/2π)(e/y)(q−p+2η)[J_K(η,p−η,(p−η)/2)e⁸(1+q+η+(p−η)/2)⁴√π/|ξ|^K
+                                                  + C(1+q+η)⁴e^{16}e^{-(p−η)²/8}√(4π)]`.
+  No differentiation under the frequency integral is needed: Fubini first, then the per-frequency
+  integration by parts, then the Gaussian tail.
+
+**Remaining for the block twisted moment (in order).** (1) Separation `|log A − log B| ≥ 1/(2√(AB))`
+for distinct positive integers; (2) direct off-diagonal sum: window Fourier decay
+`(q−p+2η)C_K(2√(mnhk)/η)^K`, split `mn ≤ x^{1+ε}` (bounded cutoff, `∑_{mn≤X}(mn)^{K/2−σ₀} ≪ X^{K/2−σ₀+1}log X`)
+and `mn > x^{1+ε}` (`exists_norm_smoothAFECutoff_le_neg_rpow` with `A ≫ K/ε`); (3) dual off-diagonal
+sum: the same with the `y^{-1}` decay from the kernel and a contour shift by an even integer
+(`χ(s−2) = π^{-2}(1−s)(s−2)χ(s)/4` is exact) for `y ≫ t²`; (4) the two diagonals `hm = kn` (Mellin,
+`RectangleTwoPoleResidue`, the corpus's Selberg/Graham arithmetic layer, `TwistedDiagonalSqrtEvaluation`);
+(5) the residues `Res(s₁,s₂)+Res(s₂,s₁)` (`O(e^{-t²})`), the `ζ'` shifts, and assembly into
+`ZetaDyadicMeanSquareLaw`/`DyadicDetectorMeanSquareLaw`.
+
+## Brick 5br — the direct off-diagonal envelope, no range split (2026-09-07)
+
+`RHTower/DirectOffDiagonalEnvelope.lean` (axiom-clean, wired):
+
+* **`inv_two_sqrt_le_abs_log_sub_log`**: `1/(2√(AB)) ≤ |log A − log B|` for distinct positive
+  integers (`log(1+1/B) ≥ 1/(B+1) ≥ 1/(2B)` and `B ≤ √(AB)` when `B < A`) — Young's separation.
+* `directOffDiagTerm σ₀ x p q η h k (m,n)`: `(mnhk)^{-σ₀}·‖V(mn/x)‖·‖∫ w e^{-i(log(mh)−log(nk))t}‖`
+  off the diagonal, `0` on it.
+* **`directOffDiagTerm_le`**: `≤ directOffDiagConst K C_A A x p q η · (hk)^{K/2−σ₀} · (mn)^{-(A+σ₀−K/2)}`
+  with `directOffDiagConst = (q−p+2η)(blockWindowConst K/η^K) C_A 2^K x^A`.
+* **`tsum_directOffDiagTerm_le`**: summed over all `(m,n) ∈ ℕ×ℕ`, `≤ const·(hk)^{K/2−σ₀}·ζ(A+σ₀−K/2)²`
+  whenever `A + σ₀ − K/2 > 1` (`summable_prod_succ_rpow_neg`, `tsum_prod_succ_rpow_neg`).
+
+**Why no split is needed.** With `x ≍ a`, `η = a/log a`, `N = a^θ`, `‖b‖ ≤ 1` the total direct
+off-diagonal is `≪ a^{2+ε'+(2−2σ₀)θ+K(θ−1/2)}(log a)^K`, negative exponent for `θ < 1/2` and `K`
+large: the cutoff's `x^A(mn)^{-A}` at `A = K/2+1+ε'` absorbs the separation's `(mn)^{K/2}` and the
+Levinson threshold appears only through `(N/η)^K`.
+
+**Dual off-diagonal plan.** `mn ≤ a^{1+ε}/x`: the `Re w = 1` bound of 5bq (`1/y` decay suffices there);
+`mn > a^{1+ε}/x`: no oscillation, the right-shifted contour `Re w = 1/2 − d + K'` of the two-ratio
+dual weight (mirror `HighBlockDualWeightRightShift`, whose second factor is the same integrand at
+`−τ`) gives `‖χ(s₁)χ(s₂)W(y)‖ ≪ (1+τ)^{2K'+1} y^{-(1/2−d+K')}`, and `K' > 1/ε` closes it.
+
+## Brick 5bs — large-argument decay of the dual carrier weight (2026-09-07)
+
+`RHTower/DualCarrierWeightRightShift.lean` (axiom-clean, wired), mirroring
+`HighBlockDualWeightRightShift` for the carrier `J(w) = χ(s₁−w)χ(s₂−w)Y^{-w}e^{w²}/w` (no ratios,
+no `χ(s)⁻¹`): analyticity on `Re w > ½`, vanishing rectangle, both horizontal edges killed by the
+Gaussian against `hasStripPolyGrowthOffReal_zetaChi` (one lemma with `ε = ±1`), the shifted-line
+majorant from `exists_norm_zetaChi_negNat_line_le`, integrability on `Re w = 1` from the whole-plane
+carrier envelope, the shift identity `integral_carrierIntegrand_one_eq_right`, and
+
+**`exists_norm_dualCarrierWeight_le_rightShift`**: for every `K ≥ 1`, `∃ C`, for all `0 < d ≤ ¼`,
+`Y > 0`, `τ`: `‖χ(s₁)χ(s₂)W(Y)‖ ≤ C (1+|τ|)^{2K+1} Y^{-(½−d+K)}`.
+
+With 5bq this closes the dual off-diagonal analytically: `mn ≤ a^{1+ε}/x` by the `Re w = 1`
+oscillation bound, `mn > a^{1+ε}/x` by this decay with `K > 1/ε` (no oscillation needed). What
+remains for the dual side is the summation bookkeeping (as in 5br) and the diagonal `mk = nh`.
+
+## Brick 5bt — the smoothed direct diagonal: Mellin form, residues, asymptotic (2026-09-07)
+
+Along the reduced diagonal direction `m = jk'`, `n = jh'` the direct side of the product AFE is the
+quadratic smoothed sum `D(σ₀, c, x) = Σ_{j≥1} j^{-2σ₀} V(j²c/x)`, `c = h'k'`. Two modules, axiom-clean,
+wired:
+
+* `RHTower/SmoothDiagonalMellin.lean`: `smoothDiagonalIntegrand σ₀ c x w = ζ(2σ₀+2w)(x/c)^w e^{w²}/w`;
+  `smoothDiagonal_eq_integral`: `D = (1/2π)∫_{Re w = 1} F` (each term is `(j+1)^{-2σ₀}` times the
+  corpus kernel `dualFrequencyKernel`, `integral_tsum_of_summable_integral_norm`);
+  `smoothDiagonalIntegrand_eq_two_poles_add_remainder`: `F = ζ(2σ₀)/w + R₁/(w−δ₀) + entire`, with
+  `δ₀ = ½−σ₀` and `R₁ = (x/c)^{δ₀}e^{δ₀²}/(2δ₀)` (numerator `(x/c)^w e^{w²}·regζ(2σ₀+2w)/2`, two
+  `dslope`s, the corpus's `regularizedRiemannZeta`).
+* `RHTower/SmoothDiagonalContour.lean`: `exists_norm_riemannZeta_le_leftStrip` (`‖ζ(σ+it)‖ ≤ C(1+|t|)²`
+  on `0 ≤ σ ≤ ½`, all heights: compactness below height 2, the corpus strip bound above);
+  `norm_riemannZeta_le_of_two_le_re`; the rectangle `[−¼,1]×[−T,T]` via `rectIntegral_eq_two_pole_residues`;
+  horizontal edges → 0 (`exists_bound_norm_riemannZeta_strip 3` against the Gaussian);
+  **`smoothDiagonal_eq_residues_add_left`**: `D = ζ(2σ₀) + R₁ + (1/2π)∫_{Re w = −¼} F` for
+  `¼ ≤ σ₀ < ½`; **`exists_norm_smoothDiagonal_left_le`**: `‖(1/2π)∫_{Re w=−¼}F‖ ≤ K (x/c)^{-1/4}` with `K`
+  independent of `σ₀ ∈ [¼,½]`, `c`, `x`.
+
+So `D(σ₀, h'k', x) = ζ(2σ₀) + (x/(h'k'))^{½−σ₀} e^{(½−σ₀)²}/(1−2σ₀) + O((x/(h'k'))^{-1/4})` uniformly.
+The `1/(1−2σ₀)` term is the one that must cancel against the dual diagonal (the corpus's
+`TwistedMainTermMerge` records the same removable-singularity structure for the sharp cutoff).
+Next: the dual diagonal `Σ_{mk=nh}(mn)^{σ₀−1}·χ(s₁)χ(s₂)W(mnx)` in Mellin form (kernel at
+`Re w = 1`, `ζ(2−2σ₀+2w)`, the moving carrier `χ(s₁−w)χ(s₂−w)` under the block window), then the
+mollifier sums over `(h,k)` with `twisted_diagonal_reindex_gcd`.
+
+## Brick 5bu — the dual diagonal: Mellin form, residues, and the exact pole cancellation (2026-09-07)
+
+`RHTower/DualDiagonalMellin.lean` (axiom-clean, wired):
+
+* `rectIntegral_eq_two_pole_residues_of_analyticOnNhd`: the corpus's two-pole rectangle theorem with
+  the remainder analytic only on a set containing the rectangle (needed because `χ(s₁−w)` has poles
+  at `Re w = σ₀−1−2k`).
+* `dualDiagonal d c x τ = Σ_j (j+1)^{-(1+2d)} χ(s₁)χ(s₂)W((j+1)²cx)`; `dualDiagonal_eq_integral`:
+  `= (1/2π)∫_{Re w=1} χ(s₁−w)χ(s₂−w)(cx)^{-w}e^{w²}/w · ζ(1+2d+2w)` (interchange with the whole-plane
+  carrier envelope and the frequency kernel).
+* `dualDiagonalIntegrand_eq_two_poles_add_remainder`: residue `χ(s₁)χ(s₂)ζ(1+2d)` at `0`, residue
+  `−(cx)^d e^{d²}/(2d)` at `−d` — **height-independent, because the carrier at `w = −d` is
+  `χ(½+iτ)χ(½−iτ) = 1`** (`zetaChi_mul_one_sub_of_mem_strip`); remainder analytic on `Re w > −½−d`.
+* **`smoothDiagonalShiftedResidue_add_dual_cancel`**: with the diagonal prefactors
+  `c^{-σ₀}` (direct) and `c^{σ₀−1}` (dual), `c = h'k'`, the two zeta-pole residues cancel *exactly*:
+  `c^{-σ₀}(x/c)^{δ₀}e^{δ₀²}/(2δ₀) − c^{σ₀−1}(cx)^{δ₀}e^{δ₀²}/(2δ₀) = 0` (both are `c^{-1/2}x^{δ₀}e^{δ₀²}/(2δ₀)`).
+  So the `1/(1−2σ₀)` singular terms disappear before any mollifier sum; this is the exact form of
+  Young's "G vanishes at the pole" in the balanced product AFE with fixed `x`.
+
+**Diagonal main term per `(h,k)`** (what remains after the cancellation): 
+`(hk)^{-σ₀}[c^{-σ₀}ζ(2σ₀) + c^{σ₀−1}|χ(σ₀+it)|²ζ(2−2σ₀)]`, with `|χ(σ₀+it)|² = (t/2π)^{2δ₀}(1+O(1/t))`
+(`HighBlockChiModulus`). Next: the dual contour shift (mirror of `SmoothDiagonalContour` with the
+carrier on `Re w = −¼`, using the right-strip decay `norm_zetaChi_le_right_line_rpow` so the remainder
+is `≪ (cx)^{1/4}(1+|τ|)^{2d−½}`), then the window integrals of the main terms and the mollifier sums
+`S₁ = Σ b_h b_k (hk)^{-2σ₀}(h,k)^{2σ₀}`, `S₂ = Σ b_h b_k (hk)^{-1}(h,k)^{2−2σ₀}`.
+
+## Brick 5bv — the dual diagonal: contour shift and asymptotic (2026-09-07)
+
+`RHTower/DualDiagonalContour.lean` (axiom-clean, wired):
+
+* `exists_norm_zetaChi_le_rightStrip`: `‖χ(σ+it)‖ ≤ C(1+|t|)^{-(σ−½)}` on `½ ≤ σ ≤ ¾` at every height
+  (compactness below height 256, `norm_zetaChi_le_right_line_rpow` above, mirrored by
+  `norm_zetaChi_real_add_im_eq_abs`).
+* Horizontal edges killed by the Gaussian against `hasStripPolyGrowthOffReal_zetaChi (-1) 1` and
+  `exists_bound_norm_riemannZeta_strip 4`; left line `Re w = −¼` with both `χ` factors on the abscissa
+  `¾−d` and the decay transferred from the heights `τ∓v` to `τ` (`one_add_abs_sub_rpow_neg_le`).
+* **`dualDiagonal_eq_residues_add_left`** (`0 < d ≤ ⅛`): 
+  `Σ_j (j+1)^{-(1+2d)} χ(s₁)χ(s₂)W((j+1)²cx) = χ(s₁)χ(s₂)ζ(1+2d) − (cx)^d e^{d²}/(2d) + (1/2π)∫_{Re w=−¼}F̃`;
+  **`exists_norm_dualDiagonal_left_le`**: `‖(1/2π)∫_{Re w=−¼}F̃‖ ≤ K (cx)^{1/4} (1+|τ|)^{-(½−2d)}`, `K`
+  uniform in `d ∈ (0,⅛]`, `c`, `x`, `τ`.
+
+With 5bt and the exact cancellation of 5bu, the diagonal of the block twisted moment per `(h,k)` is
+`(hk)^{-σ₀}[c^{-σ₀}ζ(2σ₀) + c^{σ₀−1}|χ(σ₀+it)|²ζ(2−2σ₀)] + O((x/c)^{-1/4}) + O((cx)^{1/4}t^{2d−½})`,
+`c = h'k'`; the `(cx)^{1/4}t^{2d−½}` remainder summed over `h,k ≤ N` with `x ≍ t` is
+`≪ t^{θ/2−¼+2d}`, small exactly for `θ < ½`. Next: the window integrals of `|χ(σ₀+it)|²`
+(`HighBlockChiModulus`) and of the window itself, then the mollifier sums `S₁`, `S₂`.
+
+## Bricks 5bw–5bx — the mollifier quadratic forms: diagonalization, positivity, and the `S₂` bound (2026-09-07)
+
+The diagonal main term per `(h,k)` is `(hk)^{-σ₀}[c^{-σ₀}ζ(2σ₀) + c^{σ₀−1}|χ(σ₀+it)|²ζ(2−2σ₀)]`,
+`c = h'k'`, so the mollified main term is `ζ(2σ₀)·S₁ + ζ(2−2σ₀)(∫w|χ|²)·S₂` with
+`S₁ = Σ b_h b_k (h,k)^{2σ₀}/(hk)^{2σ₀}`, `S₂ = Σ b_h b_k (h,k)^{2−2σ₀}/(hk)` (note `(hk)^{-σ₀}(h'k')^{-σ₀}
+= (h,k)^{2σ₀}/(hk)^{2σ₀}` and `(hk)^{-σ₀}(h'k')^{σ₀−1} = (h,k)^{2−2σ₀}/(hk)`). Since `ζ(1−2d) < 0`, an
+upper bound for the mean square needs only `S₁ ≥ 0` and `S₂ ≪ N^{2d}/log N`.
+
+* `Sieve/GcdPowerDiagonalization.lean` (axiom-clean, wired): `gcdPowKernel s = μ ∗ n^s`,
+  `sum_gcdPowKernel_divisors` (`Σ_{e∣n} g_s(e) = n^s`), multiplicativity, `g_s(p^k) = p^{ks} − p^{(k−1)s}`,
+  `gcdPowKernel_nonneg` (`s ≥ 0`); **`sum_gcd_rpow_div_eq_kernel_diagonal`**:
+  `Σ_{h,k∈S} a_h a_k (h,k)^s/(hk) = Σ_e g_s(e)(Σ_{m∈S, e∣m} a_m/m)²`; **`sum_gcd_rpow_div_nonneg`**.
+  The `S₁` form is `(hk)^{-2σ₀}(h,k)^{2σ₀}` — apply the diagonalization to `a_h = b_h h^{1−2σ₀}`.
+* `Sieve/LevinsonGcdFormBound.lean` (axiom-clean, wired): `selbergMultiplesInner_barbanVehov_eq`
+  (`Σ_{e∣m≤N} w_m/m = (μ(e)/e)T_e(N/e)`, `w = barbanVehovWeight N`), `abs_selbergMultiplesInner_barbanVehov_le`
+  (`≤ C·μ²(e)/φ(e)` via the corpus `abs_coprimeLogMoebius_le`), the totient sums
+  `Σ_{d≤N} μ²(d)/φ(d)² ≤ 16` and `Σ_{e≤N}(e/φ(e))²/e ≤ 64(1+log N)` (from `sum_inv_totient_le`,
+  `sum_sqfreeTotientInv_div_le`, `sum_divisors_sqfreeTotientInv'`, super-multiplicativity of `φ`);
+  **`sum_barbanVehov_gcd_rpow_div_le`**: for `s ≥ 1`,
+  `Σ_{h,k≤N} w_h w_k (h,k)^s/(hk) ≤ C² N^{s−1}·64(1+log N)`, `C = 6+|γ|`.
+
+With `s = 2−2σ₀ = 1+2d` and `b = w/log N`: `S₂ ≤ 64C² N^{2d}(1+log N)/log²N`, and `ζ(1+2d)S₂ ≪ e^{2Rθ}/(d log N) = O(1)`.
+This is the arithmetic input that makes `ZetaDyadicMeanSquareLaw R c` closable with an explicit
+(large) `c`; no asymptotic evaluation of the twisted Selberg forms is needed for the upper bound.
+Remaining: window integrals of `|χ|²`, the interchange/assembly per `(h,k)`, the off-diagonal
+summation bookkeeping, the low blocks, and the `ζ'` twin.
+
+## Brick 5by — the dual off-diagonal envelope; CORRECTION on the arithmetic side; external SOTA (2026-09-07)
+
+**Dual off-diagonal (new, `RHTower/DualOffDiagonalEnvelope.lean`, axiom-clean, wired).**
+`dualOffDiagTerm d x p q η h k (m,n) = (mn)^{−(½+d)}(hk)^{−(½−d)}‖∫ w·A_{mnx}·e^{−i(log(nh)−log(mk))t}‖`
+off the dual diagonal `nh = mk`. Two bounds per term: oscillation
+(`dualOffDiagTerm_le_osc`, from `exists_norm_integral_blockWindow_dualCarrierWeight_le` and the
+separation `|ξ| ≥ 1/(2√(hk·mn))`): `≤ Osc·(hk)^{K/2−½+d}(mn)^{K/2−3/2−d}`; right shift
+(`dualOffDiagTerm_le_shift`, from `exists_norm_dualCarrierWeight_le_rightShift` and the window
+support, via `norm_integral_le_of_norm_le` — no integrability of the integrand needed):
+`≤ Shift·(hk)^{−(½−d)}(mn)^{−(1+K'')}`. The **uniform envelope** `dualOffDiagTerm_le_envelope` at a free
+threshold `Y₀`: `term ≤ Osc(hk)^{K/2−½+d}Y₀^{K/2+1}(mn)^{−(5/2+d)} + Shift(hk)^{−(½−d)}Y₀^{−(K''−1)}(mn)^{−2}`
+(multiply the regime bound by `(Y₀/mn)^{K/2+1} ≥ 1`, resp. `(mn/Y₀)^{K''−1} ≥ 1`), and the summed form
+`exists_tsum_dualOffDiagTerm_le` with sums `ζ(5/2+d)²`, `ζ(2)²`. With `Y₀ = a^{1+ε₁}`, `η ≍ a`, `x ≍ a`,
+`h,k ≤ a^θ`: first part `≍ a^{K(θ−½+ε₁/2)+O(1)}`, second `≍ a^{−ε₁K''+O(1)}` — the dual side of the
+`θ < 1/2` threshold. `Osc` carries `x⁻¹`, `η^{−K}` and `a⁴`; `Shift` carries `(1+q+η)^{2K''+1}x^{−(½−d+K'')}`.
+
+**CORRECTION to brick 5bw/5bx and to the plan of brick 5bi.** The consumer chain
+(`eventually_offLineMoment_le_of_gates`) needs `κ₀ + 2δ < 1 − log c₂/R`, i.e. the *sharp* detector
+constant with `log c₂ < R`. Every absolute bound on the mollifier forms gives `log c ≥ 2R(1+θ)+O(1) > R`,
+so the crude route ("`S₁ ≥ 0` drops the negative main term, `S₂ ≤ C²N^{2d}·64(1+log N)`") is **vacuous for
+the κ gate** and gives at best a weak unconditional `O(V)` ceiling on `Σ(β−½)⁺` (a Selberg-type bound,
+not new). Moreover the arithmetic side is corpus-owned in the sharp form: bricks 5ai–5bg already hold
+Graham's pure-log law and the gcd-log law (`Sieve/SelbergGcdLogAsymptotic`), the `a ≤ 3` gcd-log-power
+collapse (`Sieve/SelbergGcdLogPowerPrincipalCollapse`), and the lcm diagonalisation
+(`Sieve/LcmQuadraticDiagonalization`, the `s = 1` case). Brick 5bw's `sum_barbanVehov_gcd_rpow_div_le`
+is a weaker statement about the same forms and is **superseded** for the constant; the only surviving
+value of 5bw–5bx is the general-exponent kernel `μ∗n^s` diagonalisation (`Sieve/GcdPowerDiagonalization`,
+which specialises to the `s = 1` lcm case and to the `h = g(log g)^a` case written on brick 5bg).
+
+**What the sharp constant needs.** The diagonal main term per `(h,k)` (brick 5bu) pairs with
+`Σ b_h b_k (h,k)^{1−2d}/(hk)^{1−2d}` and `Σ b_h b_k (h,k)^{1+2d}/(hk)` at `2d log N = 2Rθ = O(1)`: all
+Taylor orders `a` of the gcd-log family at once, equivalently the asymptotic of
+`Σ_{e≤N} (μ∗n^s)(e)·S_e²`, `S_e = Σ_{e∣m} w_m/m = (μ(e)/e)T_e(N/e)` (brick 5bw's identity), uniformly for
+`s − 1 = O(1/log N)`. With `T_e(Y) → e/φ(e)` (`SmoothPrimeCoprimeLogUniformRate`) this is
+`Σ_{e≤N} μ²(e)Π_{p∣e}(p^s−1)/(p−1)² ~ log N·(N^{s−1}−1)/((s−1)log N)·(1+o(1))` — a Perron/Mellin evaluation
+uniform in `s` near `1`. This is the single arithmetic brick between the built analytic pieces and the
+sharp `c(R,θ)`; it is not built.
+
+**External SOTA (corpus audit of 2026-08-10 in `claude-zeta23-rank-trace-audit.md`; the rank–trace core is
+already ported in `HTGeometry/RiemannGaussian/HermitianRankTrace`, and the corpus-native `75%` programme is
+`zeta23-beyond-bandwidth-one-proportion.md` — the only new items on 2026-09-07 are the public arXiv versions).**
+Alpöge–Furman, arXiv 2608.13637 (Aug 2026), and Lamzouri, arXiv 2609.02882 (Sept 2026): unconditionally `≥ 2/3` (`0.6725`) of the zeros are simple and on the
+line, `≥ 5/6` (`0.8362`) distinct — by a finite compression of Weil's Hermitian form on a Gabor grid,
+the rank–trace inequality, Sylvester's law of inertia for off-line pairs, and the unconditional
+pair-correlation formula of Baluyot–Goldston–Suriajaya–Turnage-Butterbaugh (support `≤ 1`).
+Lean 4: `anthropics/formal-math/zeta23` (Apache-2.0, Lean 4.33.0-rc2, no hypotheses per its README);
+`AxiomMath/ZetaZeros` (Lamzouri's proof; RvM and BGSTB as hypotheses). Consequences for this card:
+Levinson's `1/3` (and Conrey's `0.41`) are no longer the proportion frontier; the consumer chain's `κ₀`
+should come from the `2/3` theorem (vendor `zeta23` like `PNTPlus`, toolchain gap `4.32.2 → 4.33.0-rc2`,
+or reproduce Lamzouri's Hilbert-space inequality plus BGSTB); the Levinson lane keeps only the role of
+`c₁` in the explicit `(L)` ceiling. The new mechanism is an RH receiver (support-1 ceiling `≈ 0.682`;
+off-line pairs enter only as an upper bound on the positive index of `Q`; no entire kernel with
+`Re K ≥ 0` on `ℂ`).

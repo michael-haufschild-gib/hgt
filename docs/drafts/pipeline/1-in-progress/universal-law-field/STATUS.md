@@ -95,6 +95,8 @@ HARD LOCK P — Positivity alone does not supply the missing arithmetic inequali
 
 F02 — Finite local exactness is nonselective. Arbitrary finite packets, jets, multiplicities, indices, Grams, KMS systems, homology, determinants, and recoveries coexist with off-line charge.
 
+Cannot infer real zeros for the Fourier transform of a positive, even, double-exponentially decaying source `(H''-H/4)/2` merely from positive definiteness of the mass logarithmic curvature `(log H)''`. These properties coexist with off-real zeros; transferring the sign requires further structure. [Paper counterexample and Lean-proved positive family](../../5-failed/clg-ttf-theta-power-curvature-transfer.md).
+
 F03 — Must distinguish identities between functions from relations at one point. Differential independence excludes nonzero polynomial identities in the functions and their derivatives over the stated coefficient field; it does not exclude a common zero. For a finite family analytic at `a` and differentially independent over a coefficient field containing `C(s)`, multiplying every function by `s-a` preserves that independence and makes every value at `a` zero. Thus independence of arithmetic function families cannot by itself retire a proposed relation forced only at a zeta zero. The finite-family gauge law is Lean-proved as `HTGeometry.differentialIndependent_mulBase_iff`; an actual zeta-dilation application is `AdjacentDilation.adjacentDilationGauge_differentialIndependent_over_zeta`. Any proposed relation at a zero still needs its own arithmetic proof.
 
 F04 — Source/receiver firewall. A construction can land exactly on Xi data while its final continuity, sign, descent, properness, or bound is still literally RH.
@@ -178,7 +180,7 @@ F20i-g — Must identify complex source variations with the extensions of the ac
 
 F20i-h — Must track derivative order through field reconstruction before evaluating a differential source. Reconstructing a field from a master's first derivative can make the field's second coordinate derivative depend on the master's third derivative and the coordinate change's second derivative. Must prove the relevant cancellation or field-equation reduction before deleting either contribution; cancellation in a selected scalar combination does not establish cancellation in the full tensor. This does not assert that higher derivatives are independent data once a field equation is imposed. Evidence: `ofField_comp` in `HTGeometry.ScalarTwoJetCalculus` (declaration namespace `GaloisForLFunctions.HTGeometry.ScalarTwoJet`), and `scalarZDerivative_jet`, `metricJet_of_masters` in `RHTower.ThetaCuspHawkingBMFullMetricTwoJet` (declaration namespace `RHTower.D4BMMetricReconstruction`, Lean).
 
-F20i-i — Must, when using a perturbative nonlinear equation, verify the reference object's zeroth-order equation and identify the operator's derivative data with the literal varying object. Independently prescribed arrays do not by themselves certify an actual family. Must retain corrections to the family when extracting source coefficients: for a C3 source F and actual path x+t*h+t²*k+t³*l, with L=DF(x), B=D²F(x), C=D³F(x), the normalized quadratic and cubic coefficients are L*k+B(h,h)/2 and L*l+B(h,k)+C(h,h,h)/6. Must prove that the specified projection kills the correction's linear image before discarding it. These coefficient identities specify forced correction equations; they do not construct their solutions or prove extinction. Evidence: `quadratic_coefficient` and `cubic_coefficient` in `HTGeometry.ComplexCubicPathChainRule` (namespace `GaloisForLFunctions.HTGeometry.ComplexCubicPath`); actual field realization in `correctedMetric_jet`, `source_quadratic_zero_iff`, and `source_cubic_zero_iff` in `RHTower.ThetaCuspHawkingBMCorrectedMetricSource` (namespace `RHTower.D4BMCorrectedMetricSource`); retained mixed corrections in `cubic_mixed_coefficient` and `cubic_mixed_zero_iff` in `RHTower.ThetaCuspHawkingBMMixedCorrectedSource` (namespace `RHTower.D4BMMixedCorrectedSource`, Lean).
+F20i-i — Must, when using a perturbative nonlinear equation, verify the reference object's zeroth-order equation and identify the operator's derivative data with the literal varying object. Independently prescribed arrays do not by themselves certify an actual family. Must retain corrections to the family when extracting source coefficients: for a C3 source F and actual path x+t*h+t²*k+t³*l, with L=DF(x), B=D²F(x), C=D³F(x), the normalized quadratic and cubic coefficients are L*k+B(h,h)/2 and L*l+B(h,k)+C(h,h,h)/6. Must prove that the specified projection kills the correction's linear image before discarding it. These coefficient identities specify forced correction equations; they do not construct their solutions or prove extinction. Evidence: `quadratic_coefficient` and `cubic_coefficient` in `HTGeometry.ComplexCubicPathChainRule` (namespace `GaloisForLFunctions.HTGeometry.ComplexCubicPath`); actual field realization in `correctedMetric_jet`, `source_quadratic_zero_iff`, and `source_cubic_zero_iff` in `RHTower.ThetaCuspHawkingBMCorrectedMetricSource` (namespace `RHTower.D4BMCorrectedMetricSource`); retained mixed corrections in `cubic_mixed_coefficient` and `cubic_mixed_zero_iff` in `RHTower.ThetaCuspHawkingBMMixedCorrectedSource` (namespace `RHTower.D4BMMixedCorrectedSource`, Lean). Must distinguish an explicit correction of selected components from a solution of the complete equation with physical endpoint conditions. A constructed correction can remove derivative channels while leaving a determined quadratic remainder; that remainder must still be propagated and paired. Exact source evaluation and constructive angular cancellation: `angularCoefficient_eq` in `RHTower.ThetaCuspHawkingBMQuadraticAngularSource` and `correctedAngularCoefficient_eq` in `RHTower.ThetaCuspHawkingBMQuadraticAngularCorrection` ([proof and scope](../../3-formalized/hb-quadratic-angular-source-and-correction.md), Lean). Must still prove angular-domain and causal admission after obtaining smooth radial endpoint data. Explicit endpoint and complete vector-operator realizations: `field_radius_boundary` in `RHTower.ThetaCuspHawkingBMQuadraticIngoingEndpoints` and `cosmological_component` in `RHTower.ThetaCuspHawkingBMVectorStreamEinstein` ([scope](../../3-formalized/hb-ingoing-correction-and-vector-master.md), Lean).
 
 F20i-j — Must restore every spatially varying factor removed when passing to an auxiliary differential equation before using its solution in field reconstruction. Must retain that factor's derivative terms and derive how it changes boundary incidence. Solving the transformed homogeneous equation does not itself establish the physical causal boundary condition. Higher derivatives may be eliminated only through the restored equation and its differentiated identities. Evidence: `radialJet_dressing`, `master_radial_equation`, `master_outgoing_time_phase`, and `exterior_master_higher_jets` in `RHTower.ThetaCuspHawkingBMPhysicalMonodromyMaster` (declaration namespace `RHTower.D4BMPhysicalMaster`, Lean). Positive realization: `radial_equation_iff`, `master_ingoing_normalization`, and `master_dirichlet_limit` in `RHTower.ThetaCuspHawkingBMFundamentalMetricSource` (declaration namespace `RHTower.D4BMFundamentalMaster`) separately prove the full profile equation, boundary normalization, and vanishing endpoint limit.
 
@@ -3364,8 +3366,10 @@ are the conclusion (F380).
 MUST-120 — Any surviving mechanism must either manufacture an anchor of unbounded length
 (the mollifier route, capped at `1 − c/θ` for finite `θ`) or anchor on the line itself. The
 first line-anchored target is the unconditional first Laguerre inequality of `Ξ` at every `t`
-(inner band `c/log γ`); it fails for every de Bruijn–Newman deformation `Ξ_s`, `s < 0`, so no
-kernel-positivity proof exists and a proof must use the arithmetic at `s = 0`.
+(inner band `c/log γ`). A proof must use properties of the literal arithmetic source beyond
+positivity, evenness and log-concavity: those three properties alone admit the formalized
+counterexample in `HTGeometry.LaguerreKernelCounterexample`. This does not exclude a
+source-specific theta-kernel proof.
 ## 2026-09-02 — scalar completion retired; full scale-history law proved (ULF-PSH-001/2)
 F398 — Literal valuation/Poisson fusion already preserves the unsquared Euler coefficients and
 reconstructs the scalar completed current `−a ξ′(a)/ξ(a)` for `a>1`; moving head–tail transgression
@@ -3395,15 +3399,50 @@ corpus's Mittag-Leffler expansion), the exact pair term `−2/δ²` at a real po
 band as an implication (`RHTower.XiLaguerreZeroSumIdentity`). Lean: a positive, even,
 log-concave kernel whose Fourier transform violates the first Laguerre inequality
 (`HTGeometry.LaguerreKernelCounterexample`).
-CANNOT-185 — It cannot anchor on the line: the first Laguerre inequality of `Ξ` at `γ` is
-equivalent to a pointwise lower bound on the on-line inverse-square zero sum near `γ`, which no
-unconditional input supplies (proportions and all-zero gap bounds only). Kernel positivity,
-evenness and log-concavity do not imply the inequality (F382), so no theta-kernel argument can.
-FAIL-72 — ULF-ANC-001's inner-band target retired. The anchor-law diagnosis stands.
-MUST-121 — Any surviving anchor must be neither convergence of a multiplicative series in the
-strip (F380) nor the on-line zero configuration itself (CANNOT-185); manufactured anchors are
-capped at `1 − c/θ`. A candidate must name an unconditional nonvanishing datum of a third kind
-before any reach argument is attempted.
+CANNOT-185 — It cannot infer a source's spectral Laguerre sign from positivity, evenness and
+log-concavity alone (F382). At the ordinate of an off-line pair, the exact inequality constrains
+the remaining inverse-square sum over all zero copies, not only on-line zeros; that conditional
+comparison supplies no unconditional lower bound. Neither obstruction excludes using further
+arithmetic identities of the literal theta source to prove its sign.
+It also cannot transport that sign backward along `Φ_τ(x)=exp(τx²)Φ(x)` merely from positive,
+smooth, even, strongly log-concave intermediate sources. The explicit Gaussian–cosh family
+has nonnegative transverse Fourier current at `τ=π/2` and negative current somewhere at
+`τ=0`. This deformation extension is proved on paper in
+[the direct source-energy attempt](../clg-ttf-all-polynomial-source-energy.md#test-the-proposed-backward-sign-propagation-exactly),
+not yet in Lean; it leaves theta-specific propagation open.
+CANNOT-THETA-SHELL-FUBINI — It cannot justify full-line shellwise Fourier integration by
+pointwise convergence of the theta series. For the raw logarithmic shells `φ_n` and
+`|a|<1/2`, `∫exp(ax)|φ_n(x)|dx=C_a n^(-a-1/2)` with `C_a>0`, so the sum of norms diverges.
+At zero frequency their signed integrals sum to negative infinity, whereas the completed
+positive source has positive integral. Modular cancellation must be retained before this
+integration, or an admissible replacement representation must be proved. This is a
+[paper deduction from the literal shell and Mellin identities](../clg-ttf-all-polynomial-source-energy.md#direct-arithmetic-integral-of-squares-attempt),
+not a new Lean theorem or an exclusion of all source-specific sign proofs.
+It must retain the full cross pairing even after repairing this interchange. Subtracting each
+unit interval's continuum of scales from its discrete shell gives an exact, absolutely
+summable representation in every fixed weighted derivative norm. Its Fourier transform is
+the continuum-subtracted zeta continuation. For every fixed nonzero polynomial filter,
+sufficiently large repaired shells still have negative individual signed current; absolute
+convergence supplies no sign for their full pairing. These are
+[paper calculations retaining the seed's zero mean](../clg-ttf-all-polynomial-source-energy.md#retain-the-seeds-zero-mean-inside-each-arithmetic-cell),
+not new Lean theorems or a retirement of the theta-source approach.
+CANNOT-FIXED-CENTER-PROFILE — It cannot extend finite derivative corrections to one nonzero
+fixed displacement profile merely by multiplying that profile by a center coefficient.
+For the literal reflected theta product and the aperture-independent coefficient
+`G=3Φ²+2xΦΦ′`, preserving the value at displacement zero and satisfying every positive-definite
+two-point bound forces `|G/Φ²| |C(t)|≤2`. Since `G/Φ²→−∞`, a center-independent `C` must vanish.
+A varying profile must obey the same quantitative bound and its proved sharper interval.
+This excludes only that kernel representation; formal moment sequences, different coefficients
+and center-dependent corrections need their own analysis. Evidence and positive survivor:
+[fixed center-profile compensation](../../5-failed/clg-ttf-fixed-center-profile-compensation.md),
+`ThetaCuspFixedCenterCorrectionRigidity` (Lean).
+FAIL-72 — The generic source-shape and unproved zero-sum anchors of ULF-ANC-001 supply no sign.
+The exact Laguerre identity and conditional pair bound are formalized; the arithmetic theta
+inequality remains open rather than refuted or excluded by the generic counterexample.
+MUST-121 — Any surviving anchor must supply an independent unconditional input. Convergence of
+a multiplicative series inside the strip (F380), or an unproved lower bound on the relevant zero
+sum (CANNOT-185), cannot be assumed as that input. Manufactured anchors retain their stated
+finite-length cap `1 − c/θ`; a reach argument must establish the datum it uses.
 ## 2026-09-02 — principal subtraction refuted; anomaly reclassified (ULF-PSH-002/3)
 F401 — In log-aperture coordinate, every Poisson clock history is a translate of one universal
 mother: `e^(x/2) ψ_t(e^x)=F(x+log t)`, `F(x)=2e^x e^(−e^x)`. Thus noncompactness is literal
@@ -5445,6 +5484,13 @@ MUST-TEST-SHARED-COEFFICIENTS-ACROSS-SCALES — Must test a shared cancelling co
 
 MUST-COMPARE-AT-THE-PRESERVED-SOURCE-SCALE — Must compare a growth upper bound with the scale on which the source's separating defect is preserved. An auxiliary support may be arbitrarily larger; a subpower bound in that support alone need not contradict a power lower bound in the smaller preserved scale. Must track uniformity in the auxiliary parameter before selecting it adaptively. The [exact cutoff-average current and uniform inner-scale power floor](../../3-formalized/edq-cutoff-averaging-transfer.md) are closed in Lean. Their adaptive subpower criterion still requires an independent full-source upper bound.
 
-MUST-RECOMPUTE-COVARIANCE-AFTER-ACCUMULATION — Must account for correlations between different increments when estimating an accumulated response. A sum of increment squares is not the same quantity as a sum of squared cumulative sums. For the weight 1/(n(n+1)) through T, accumulation produces the exact pair kernel 1/max(j,k)-1/(T+1), including every unequal pair. Must apply compensation before squaring, track the cost of any bound transferring increment energy to cumulative energy, and retain the complementary tail for a full-source claim. The [exact compensated arithmetic covariance and full-tail decomposition](../../3-formalized/edq-averaged-divisor-covariance.md) are closed in Lean; their representation alone provides no required growth ceiling.
+MUST-RECOMPUTE-COVARIANCE-AFTER-ACCUMULATION — Must account for correlations between different increments when estimating an accumulated response. A sum of increment squares is not the same quantity as a sum of squared cumulative sums. For the weight 1/(n(n+1)) through T, accumulation produces the exact pair kernel 1/max(j,k)-1/(T+1), including every unequal pair. Must apply compensation before squaring, track the cost of any bound transferring increment energy to cumulative energy, and retain the complementary tail for a full-source claim. Cannot assume that deleting distant pairs preserves positivity or gives an upper bound: must justify the truncation and control the signed omitted contribution. The [exact compensated arithmetic covariance and full-tail decomposition](../../3-formalized/edq-averaged-divisor-covariance.md) are closed in Lean; their representation alone provides no required growth ceiling.
 
 MUST-RETAIN-ACTUAL-SOURCE-SUPPORT — Must distinguish coordinates that can occur in the actual source from all directions in an ambient coordinate space. A complete direction test can require a larger source aperture than the current state carries. Must prove that every omitted coordinate is exactly zero and that the complete observable is unchanged before restricting support. Must retain exact correlations among the remaining coordinates when their values come from one common source at different scales. Cannot infer an energy lower bound from a witness-aperture lower bound. Evidence: [exact support, initial sign chambers and common-source energy](../../3-formalized/ccm-fu-retained-support-and-common-head.md).
+
+MUST-PRESERVE-CUTOFF-QUANTIFIERS — Must match a source construction to the cutoff quantifiers of its proved RH receiver. A bound required at every cutoff cannot be replaced by bounded values at selected cofinal endpoints without a proved propagation argument. A sufficient cofinal prefix construction must bound every earlier cutoff using that earlier cutoff's normalization and one common constant. Must distinguish exhaustion of source operations at selected endpoints from control of the whole cutoff sequence. Evidence: the literal every-cutoff `MobiusDivisorSquareRootAbelBounded` receiver and the [reserve-induction quantifier audit](../ccm-fu-reserve-extension-induction.md).
+
+
+MUST-RETAIN-COMPLETION-POLYNOMIALS — Must retain the exact deterministic terms introduced by completing a truncated signed sum before demanding a smaller bound on its remainder. Cannot transfer cancellation of a complete sum to its complementary tail: the tail can contain a quadratic leading term while the complete sum is bounded by every power greater than one. Must prove uniformity as the original cutoff grows. The [complete coprime-column bound and exact quadratic-tail identity](../../3-formalized/edq-coprime-column-cancellation.md) are closed in Lean; they do not supply the required bound for the complete compensated energy. Must retain the leading coefficient and later tail when only the corrected initial portion is controlled by every positive power. The [unconditional subpower initial remainder](../../3-formalized/edq-coprime-head-subpower.md) establishes precisely that distinction.
+
+MUST-AGGREGATE-CORRECTION-COSTS — Must bound the total absolute cost of corrections when transferring a growth estimate across a growing family of components. A bound for each fixed component does not control their growing sum. Cannot infer different power-growth behavior from a finite constant-budget failure when the total correction is already bounded by every positive cutoff power. The [unconditional aggregate remainder and total-variation comparison](../../3-formalized/edq-gcd-head-subpower.md) are closed in Lean. Must still control the retained leading terms and complete later tail.

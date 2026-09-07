@@ -953,20 +953,26 @@ smooth ODE alone.
    `Delta(0)=4(9 M_2^2-M_0 M_4)=+0.011157...`.  This is strong numerical evidence, not yet an
    unconditional theorem in this card: an exact symbolic inequality or certified interval proof is
    still required before the degree-4 claim can be promoted.
-2. **Fatal Defect:** Extending this reality to all degrees `d in N` by asserting that `Phi` is a
-   Pólya frequency function of infinite order (`Phi in PF_infinity`) is **strictly equivalent to RH**
-   by Schoenberg's Theorem (1951).
+2. **Unproved extension:** A fixed-degree numerical margin supplies no all-degree theorem.
+   The former appeal to Schoenberg confused a density's Laplace transform with its reciprocal;
+   it does not establish the claimed equivalence between `Phi in PF_infinity` and RH.
 
-- 2026-08-15 -- Recorded the positive degree-4 numerical margin; falsified the `PF_infinity`
-  extension as circular with RH.  Degree-4 exact certification remains separate.
+- Degree-4 exact certification and the all-degree extension both remain separate obligations.
 
-## Attack 14: Forensic audit of the Schoenberg equivalence `[CIRCULARITY RETRACTED]`
+## Attack 14: Scope of the Schoenberg claim `[TRANSFORM IDENTIFICATION RETRACTED]`
 
-Schoenberg's Theorem (1951) proves that an even density `Phi` satisfies `Phi in PF_infinity` if and
-only if `Xi in LP`.  Total positivity of all moment Hankel determinants is an equivalent restatement of
-RH, not an independent proof.
+Schoenberg's characterization places the reciprocal Laplace transform in a suitable
+Laguerre–Pólya class; it does not place the transform itself there. See
+[Khare, footnote 3](https://arxiv.org/abs/2008.05121). The literal theta transform has imaginary-axis
+zeros by the source identity and `HardyTheorem.exists_Xi_zero_gt`, incompatible with the zero-free
+Laplace transform of an integrable PF-infinity density. This is a paper consequence of the cited
+characterization, not a formalized Schoenberg theorem in this corpus.
 
-- 2026-08-15 -- Formalized Schoenberg no-go on all-degree Hankel total positivity.
+`PolyaFrequencyIsTheHypothesis.tool_is_conclusion` merely returns its assumed `PF ↔ Reality`.
+It proves neither a source-specific equivalence nor a Schoenberg no-go. Raw positive-source
+moment matrices are Gram matrices; their nonnegativity alone says nothing about the signed
+current-moment condition used by CLG/TTF. Density total positivity, coefficient-sequence total
+positivity, and signed current moments must not be identified with one another.
 
 ## Attack 15: Hadamard moment displacement `[LOCAL ALGEBRA; RH CLOSURE FALSIFIED]`
 
