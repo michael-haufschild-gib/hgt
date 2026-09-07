@@ -1,0 +1,336 @@
+{
+  "question": "Local certificate extension, every subset at M=33..64",
+  "input_sha256": {
+    "first-prime-unit-clock.csv": "7911603285ddb67bc420d35453280026e8e7d94e5b374a7637ea1a5708f839a2",
+    "greedy-summary.json": "5f4bee1172519f917f7b8575897ad2940be0248f40e0b059c0a5e39951c4e0eb"
+  },
+  "tolerance": "1e-12*max(1,initial_energy)",
+  "workers": 8,
+  "elapsed_seconds": 0.9675300866365433,
+  "states": 1746944,
+  "certified_proper": 999880,
+  "extension_failure_count": 0,
+  "first_extension_failure": null,
+  "results": [
+    {
+      "M": 33,
+      "states": 2048,
+      "certified_proper": 1492,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 13,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 4.26633554873046e-16
+    },
+    {
+      "M": 34,
+      "states": 2048,
+      "certified_proper": 1351,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 13,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 5.672545766444159e-16
+    },
+    {
+      "M": 35,
+      "states": 2048,
+      "certified_proper": 1551,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 13,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 2.1131100341742481e-16
+    },
+    {
+      "M": 36,
+      "states": 2048,
+      "certified_proper": 1808,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 13,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 4.5319650809894085e-17
+    },
+    {
+      "M": 37,
+      "states": 2048,
+      "certified_proper": 1240,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 13,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 1.979753166958531e-16
+    },
+    {
+      "M": 38,
+      "states": 4096,
+      "certified_proper": 2364,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 14,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 3.522572858405404e-16
+    },
+    {
+      "M": 39,
+      "states": 4096,
+      "certified_proper": 2645,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 14,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 6.613633252161577e-16
+    },
+    {
+      "M": 40,
+      "states": 4096,
+      "certified_proper": 3146,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 14,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 5.874207370526463e-16
+    },
+    {
+      "M": 41,
+      "states": 4096,
+      "certified_proper": 2511,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 14,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 4.590511998303626e-16
+    },
+    {
+      "M": 42,
+      "states": 8192,
+      "certified_proper": 5517,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 15,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 1.5178830414797062e-16
+    },
+    {
+      "M": 43,
+      "states": 8192,
+      "certified_proper": 4568,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 15,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 5.355958732078392e-17
+    },
+    {
+      "M": 44,
+      "states": 16384,
+      "certified_proper": 9754,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 16,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 2.387413183813081e-16
+    },
+    {
+      "M": 45,
+      "states": 16384,
+      "certified_proper": 9659,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 16,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 3.935653886122381e-16
+    },
+    {
+      "M": 46,
+      "states": 16384,
+      "certified_proper": 9024,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 16,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 3.7730235602495554e-17
+    },
+    {
+      "M": 47,
+      "states": 16384,
+      "certified_proper": 9395,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 16,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 1.0737938316296436e-15
+    },
+    {
+      "M": 48,
+      "states": 32768,
+      "certified_proper": 25630,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 17,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 4.119968255444917e-16
+    },
+    {
+      "M": 49,
+      "states": 32768,
+      "certified_proper": 20738,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 17,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 1.214306433183765e-15
+    },
+    {
+      "M": 50,
+      "states": 32768,
+      "certified_proper": 19767,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 17,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 5.984795992119984e-17
+    },
+    {
+      "M": 51,
+      "states": 32768,
+      "certified_proper": 18723,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 17,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 8.144526719711109e-16
+    },
+    {
+      "M": 52,
+      "states": 32768,
+      "certified_proper": 18671,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 17,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 1.6822480908285087e-15
+    },
+    {
+      "M": 53,
+      "states": 32768,
+      "certified_proper": 18035,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 17,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 1.4944642745540193e-15
+    },
+    {
+      "M": 54,
+      "states": 65536,
+      "certified_proper": 40243,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 18,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 2.194425197110661e-16
+    },
+    {
+      "M": 55,
+      "states": 65536,
+      "certified_proper": 40264,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 18,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 4.798678815420843e-16
+    },
+    {
+      "M": 56,
+      "states": 65536,
+      "certified_proper": 41932,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 18,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 7.892991815694472e-16
+    },
+    {
+      "M": 57,
+      "states": 65536,
+      "certified_proper": 37143,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 18,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 3.0357660829594124e-17
+    },
+    {
+      "M": 58,
+      "states": 65536,
+      "certified_proper": 34791,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 18,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 8.174884380540703e-16
+    },
+    {
+      "M": 59,
+      "states": 65536,
+      "certified_proper": 35288,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 18,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 4.106957829375091e-15
+    },
+    {
+      "M": 60,
+      "states": 131072,
+      "certified_proper": 82447,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 19,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 3.885780586188048e-16
+    },
+    {
+      "M": 61,
+      "states": 131072,
+      "certified_proper": 69832,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 19,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 3.6121279578527066e-15
+    },
+    {
+      "M": 62,
+      "states": 262144,
+      "certified_proper": 136974,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 20,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 7.598088824778415e-16
+    },
+    {
+      "M": 63,
+      "states": 262144,
+      "certified_proper": 144423,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 20,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 3.7903707950093235e-16
+    },
+    {
+      "M": 64,
+      "states": 262144,
+      "certified_proper": 148954,
+      "extension_failure_count": 0,
+      "failures": [],
+      "direct_audit_states": 20,
+      "max_direct_audit_error": 0.0,
+      "original_diagonal_error": 8.270294171719428e-16
+    }
+  ]
+}

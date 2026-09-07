@@ -166,8 +166,8 @@ Namespace `RHTower`:
 Scratch and exact-file Lean checks passed for all three modules. The single
 new-declaration axiom audit covered all 21 public declarations and found only
 `propext`, `Classical.choice`, and `Quot.sound`. All three modules are wired
-into `RHTower`; no umbrella or full build was run. Repository lint currently
-reports four unrelated, unwired modules: `ProductAFEContour`,
-`ProductAFEDirect`, `ProductAFEIntegrand`, and `RectangleThreePoleResidue`.
+into `RHTower`; no umbrella or full build was run. Repository lint passed
+after the separate task's four modules acquired their umbrella imports.
+The research index was refreshed once.
 No numerical experiment is required: all support and sign-chamber statements
 follow from the literal source algebra and established channel positivity.

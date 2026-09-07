@@ -2,6 +2,9 @@
 
 **Type:** mechanism discrimination, not RH proof and not a new primary conjecture.
 
+**Status:** paused, unrun. The current priority is the full all-polynomial integrated sign;
+this narrow mechanism test does not resolve that obligation. No numerical result exists.
+
 **Full chain:** literal theta source → all signed mixed Hankel sections nonnegative → Fourier-current sign → Xi Bezoutian orientation → RH.
 
 The fixed center-flux correction has one source-defined zero. Its aperture-dependent surplus

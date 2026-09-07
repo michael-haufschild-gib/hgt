@@ -28,8 +28,11 @@ quadratic responses and the cubic correction's linear residual retained. Constru
 of those correction fields with physical boundary/gauge conditions, retained spin-two
 source reduction, causal action, and final left-QNM projection remains open. Full
 differential Bianchi is proved for the actual literal metric near zero amplitude,
-with every finite spatial regularity order discharged. Contracted Einstein-source
-conservation and its quadratic forcing constraint remain to be derived.
+with every finite spatial regularity order discharged. Actual metric and inverse-metric
+compatibility are proved; contracted Einstein conservation remains open. The scalar
+boundary coefficient quotient now has one exact coordinate/Weyl invariant. Its
+original-source value tends to minus one. Tensor faithfulness and the scope of
+allowed global boundary gauges remain explicit in physical admission.
 
 Corpus searches `einstein variation`, `metric perturbation`, `ricci coordinate`, `inverse series
 matrix`, and `christoffel derivative` locate the coordinate curvature definitions, smooth metric
@@ -604,23 +607,29 @@ physical causal source, not a replacement selection conjecture. No response map,
 source extinction, or spectral constraint was inferred from these coefficient
 identities.
 
-The correction-equation compatibility gate now has the actual full differential
-Bianchi identity and literal metric regularity. The next `[BRIDGE]` is its metric
-contraction and parameter variation: derive the quadratic Einstein forcing's
-background conservation constraint from the proved first-order field equation.
-This supplies a necessary source constraint for correction solvability; it does
-not assert a causal inverse.
+The decisive open task is the literal quadratic source in the physical retarded/advanced
+response jump and its left-QNM pairing, followed by a source-derived extinction law.
+The common direct cubic term cancels in this cut by the existing
+`ThetaCuspHawkingHBDirectThirdJetCausalCutRigidity`; general curvature identities do
+not evaluate the remaining source moment or force it to vanish.
 
-The contraction proof first derives actual metric and inverse-metric compatibility.
-Differentiating compatibility forces curvature to be skew with respect to the metric.
-That skew identity, its covariant derivative, and the proved differential Bianchi
-identity supply the two contractions; a separately assumed conservation law is not
-an admissible substitute. Full pair-exchange symmetry is unnecessary if these
-endomorphism-skew contractions are carried through directly.
+Physical boundary admission is under direct attack. The [scalar boundary gauge
+charge](../3-formalized/hb-scalar-boundary-gauge-charge.md) is
+`Q_s=a+c-2*s*b+s²*d` for temporal, mixed, angular-trace and Hessian coefficients.
+The coordinate Lie/Weyl formula proves this is the complete coefficient-orbit
+invariant. The original normalized fundamental scalar matrix has
+`Q_s=-1-2*s/r²+s*(s+1)/(2*r⁴)`, hence limiting charge minus one. No separated scalar
+boundary gauge change removes it. Actual tensor faithfulness requires the displayed
+nonzero scalar/gradient/traceless-Hessian data; global gauge completeness and its
+literal infinite-cusp specialization are not assumed. A physical boundary action
+allowing this forcing must retain it in the conserved left-current pairing.
 
-Derive the physical metric boundary condition with the nonzero scalar boundary
-coefficient retained. Any required spectral/spatial derivative interchange for
-retained angular jets remains explicit.
+The compatibility background is available: full actual differential Bianchi, all
+finite literal metric regularity, and actual metric/inverse-metric compatibility
+are proved. The metric contraction and quadratic forcing conservation remain open
+supporting tasks. They are not substitutes for evaluating the source and deriving
+extinction. Any required spectral/spatial derivative interchange for retained
+angular jets remains explicit.
 
 The fundamental ingoing/Dirichlet radial inputs and matching horizon geometry are proved;
 the mixed dressed monodromy's outgoing incidence remains explicit in the scattering basis.
@@ -1009,3 +1018,24 @@ unproved/unfalsified; the goal remains active.
 All owned Lean/Lake processes completed. The exact 97-entry scratch tree was
 removed after a non-symlink inventory. Other tasks' files and processes remain
 untouched.
+
+## Current compatibility and boundary-charge validation
+
+Three leaves passed scratch checks and exact-source targeted final audits:
+
+- `lake build GaloisForLFunctions.HTGeometry.ComplexMetricCompatibility`: 2.1 seconds; 96 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.HTGeometry.ComplexMatrixDerivativeRules`: 1.6 seconds; 59 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarBoundaryGaugeCharge`: 7.5 seconds; 224 lines, 11 new public theorems.
+
+Each final build compiled only its requested leaf from exact source against cached
+dependencies. Each is wired once into its area umbrella. Only the new olean/ilean
+files were installed; no full, umbrella or dependency rebuild ran. All 23 new public
+theorems were axiom-audited once, using only `propext`, `Classical.choice`, and
+`Quot.sound`. No old theorem audit or numerical experiment ran.
+
+The boundary-charge result tests a physical-domain assumption in the open HC94
+calculation. It does not evaluate the complete physical source jump, prove universal
+extinction, or establish RH. Corpus index generation, scoped whitespace, exact-source byte comparisons and
+one-import checks passed. `scripts/formal_tools.py lint --check-generated` passed
+with 141 existing large-file warnings. All owned Lean/Lake checks are terminal.
+The exact owned scratch tree was inventoried without symlinks and removed; its absence is verified. Other tasks’ files and processes were preserved.

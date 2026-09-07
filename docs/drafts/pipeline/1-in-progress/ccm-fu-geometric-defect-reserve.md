@@ -21,4 +21,15 @@ The separate [bounded first-prime extension](ccm-fu-two-prime-local-blocks.md) c
 
 ## Source-derived reserve scale
 
+The [direct extension induction](ccm-fu-reserve-extension-induction.md)
+tests the stronger local property that every certified proper state has a
+certified successor or can complete. All 7350 certified proper saved states
+through32 pass. A complete all-state extension to cutoffs33..64 finds no
+failure among 999880 certified proper states. Homogeneous certificate
+descent, which would discard unused initial reserve, fails in 975 saved
+states through32. These finite numerical results leave the source-specific
+extension inequality open. Positivity, factor-two channel comparisons and
+first-prime reserve alone do not prove it; the card gives an explicit paper
+model and identifies the exact missing paired contraction/defect comparison.
+
 The [uniform channel square-root bound](../3-formalized/ccm-fu-uniform-channel-square-root-bound.md) proves `K_d(M)<=7 sqrt(M)` at every cutoff and dilation. An initial late block leaving its head above `-sqrt(M)` releases at most `57M` total energy, uniformly over the block, including removed singleton squares. This excludes treating the initial balancing reserve as quadratic. It does not bound the reserve released by subsequent smaller-prime contractions. The next missing input is an arithmetic comparison of actual paired contraction and created sign defects, compatible with a complete growing interleaving.

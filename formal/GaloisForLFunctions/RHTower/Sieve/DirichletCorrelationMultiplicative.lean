@@ -17,13 +17,15 @@ for every scale `d`, so `C(m,n) = g(m) conj(g(n)) · ⌊N / max(m,n)⌋`.
 
 Two consequences, both unconditional.
 
-* **The scale sum carries no cancellation.**  For `μ`, `λ`, or any Dirichlet character, the correlation
-  along a fixed primitive ratio is as large as the trivial bound allows — every term has the same phase.
+* **The scale sum carries no cancellation.**  For a completely multiplicative unimodular sequence,
+  the correlation along a fixed primitive ratio is as large as the trivial bound allows — every term
+  has the same phase. Möbius coefficients and Dirichlet characters with zeros do not satisfy these
+  hypotheses; their squarefree or coprimality restrictions must be retained separately.
   So no estimate of the inner sum can help; whatever cancellation the off-diagonal enjoys lives entirely
   in the outer sum over coprime pairs, where the kernel `K_T` sits.
 
 * **The correlation modulus is coefficient-blind.**  `‖C(m,n)‖ = ⌊N / max(m,n)⌋` for *every* unimodular
-  completely multiplicative `g`, so `‖C‖` is an invariant that cannot distinguish `μ` from `1`.  By
+  completely multiplicative `g`, so `‖C‖` is an invariant that cannot distinguish `λ` from `1`.  By
   `RHTower.le_bound_of_invariant_collision` any bound routed through `‖C‖` is capped at its value on the
   constant sequence — the same obstruction as `CoefficientFreeCap.le_of_coefficientFree_bound`, now one
   level deeper, inside the primitive-ratio decomposition.
@@ -102,7 +104,8 @@ theorem dirCorrelation_completelyMultiplicative (N : ℕ) (g : ℕ → ℂ)
   ring
 
 /-- **The correlation modulus is coefficient-blind.**  It is the same count for every unimodular
-completely multiplicative sequence — in particular `μ`, `λ` and `1` are indistinguishable through it. -/
+completely multiplicative sequence — in particular `λ` and `1` are indistinguishable through it.
+This theorem does not apply to the Möbius function. -/
 theorem norm_dirCorrelation_completelyMultiplicative (N : ℕ) (g : ℕ → ℂ)
     (hmul : ∀ a b : ℕ, g (a * b) = g a * g b)
     (hnorm : ∀ d : ℕ, 1 ≤ d → d ≤ N → ‖g d‖ = 1) {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n)

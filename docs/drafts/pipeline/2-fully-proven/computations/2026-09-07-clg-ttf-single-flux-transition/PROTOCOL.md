@@ -1,6 +1,8 @@
 # Single-flux transition: preregistered mechanism test
 
-Status: designed before execution; numerical guidance only, forbidden as a Lean sign premise.
+Status: paused, unrun; no numerical result exists. Current work targets the full all-polynomial
+integrated sign directly. This protocol is retained only as an unexecuted design; any future
+numerical output would be guidance only, forbidden as a Lean sign premise.
 
 ## Frozen question
 
