@@ -222,28 +222,50 @@ corrections, nonlinear gauge conditions, and physical boundary projection remain
 Global horizon quotient and causal boundary completion are not consequences of a local chart
 vacuum calculation.
 
+## Closed dressed physical mixed master
+
+`ThetaCuspHawkingBMPhysicalMonodromyMaster` distinguishes the reduced hypergeometric
+function F from the physical master `Phi=z^alpha*F`, with `alpha=-i*omega/2` and `beta=0`.
+These scalar/vector conventions and the physical equation are fixed by BM Eqs. (24)--(33)
+in [hep-th/0609028](https://arxiv.org/pdf/hep-th/0609028). The general KI reconstruction
+accepts a physical master function; its reduced-monodromy recovery identity is an algebraic
+identity and does not identify F with Phi.
+
+The master restores the principal-log factor, proves its actual first and second
+product-rule derivatives, and proves local complex smoothness to every order from the literal
+regular Gauss series. Exact differential conjugation gives the physical equation
+
+`z*(1-z)*Phi''+(1-3*z/2)*Phi'+(omega^2/(4*z)-(1/4+chi^2)/4)*Phi=0`.
+
+Here the derivatives are actual complex derivatives, not supplied jet values. Every static
+exterior point has `0<z<1`, so convergence, logarithm regularity, the equation, and all required
+radial smoothness follow unconditionally there. Differentiating the equation retains
+`-omega^2*Phi/(4*z^2)` and yields
+
+`z*(1-z)*Phi'''+(2-7*z/2)*Phi''+(-3/2+omega^2/(4*z)-(1/4+chi^2)/4)*Phi'-omega^2*Phi/(4*z^2)=0`.
+
+`exterior_master_higher_jets` reduces both Phi'' and Phi''' exactly to Phi and Phi' through
+`onShellSecond` and `onShellThird`. This supplies the radial third-jet reduction required by
+the full metric reconstruction; no selected-carrier cancellation is used.
+
+The same literal mode has a proved outgoing factorization. Its reduced power is `z^(N+1)`
+with `N+1=1-c`, so dressing changes the full exponent to `-alpha`. On the positive radial ray,
+its Fourier phase depends on `tau-log(z)/2`. Thus this homogeneous monodromy branch cannot
+be silently identified with an ingoing retarded mode merely because it solves the physical
+radial equation. No causal admissibility or global boundary completion is asserted.
+Nineteen public theorems close this dressed radial construction.
+
 ## Next physical source evaluation
 
-The corpus's `d4BMXiMixedHorizonExactMonodromyMode` is a solution of the reduced
-hypergeometric equation F. BM Eqs. (24)--(33) identify the physical four-dimensional scalar
-and vector master as `Phi=z^alpha*F`, with `alpha=-i*omega/2` and `beta=0`. The existing
-general KI reconstruction accepts a master function, so its physical instantiation must
-restore and differentiate this factor. The earlier recovery identity for the reduced
-monodromy input remains an algebraic identity, not a physical master-equation identification.
-The immediate construction will prove the dressed function's local regularity and exact
-radial equation, including the product-rule terms, before applying the full metric/source
-bridge. The physical equation in z is
-`z*(1-z)*Phi''+(1-3*z/2)*Phi'+(omega^2/(4*z)-(1/4+chi^2)/4)*Phi=0`.
-Differentiate this proved equation to reduce the required third radial jet on shell; do not
-delete it by borrowing the reduced carrier's cancellation.
-
-Match the reconstructed horizon metric entries to the proved background and instantiate the
-literal Xi/BM masters and horizon profiles with their required regularity. Reduce the derived
-B,C evaluations on these physical profiles, identify second- and third-order field corrections,
-nonlinear gauge completion and exceptional mixed-sector constraints, and retain causal turn-on
-and boundary terms. Then prove membership in the physical causal
-response domain and identify the final left-QNM projection. Neither local reconstruction nor
-radial uniqueness proves fixed Hawking-clock extinction. No route retired.
+Match the reconstructed horizon metric entries to the proved background and instantiate
+physical causal masters and literal horizon profiles with their required regularity. The
+mixed dressed monodromy's radial smoothness and higher-jet reductions are proved, while its
+outgoing incidence must be respected when selecting physical source and response branches.
+Reduce the derived B,C evaluations on those profiles, identify second- and third-order field
+corrections, nonlinear gauge completion and exceptional mixed-sector constraints, and retain
+causal turn-on and boundary terms. Then prove membership in the physical causal response
+domain and identify the final left-QNM projection. Neither local reconstruction nor radial
+uniqueness proves fixed Hawking-clock extinction. No route retired.
 
 ## Foundation validation
 
@@ -364,3 +386,23 @@ and `RHTower.ThetaCuspFirstAtomReflectionJets`. Both new leaves are reachable; t
 were not modified.
 The owned scratch directory and isolated audit package were removed; no owned Lean/Lake
 process remains.
+
+
+## Current dressed radial master validation
+
+The 368-line `ThetaCuspHawkingBMPhysicalMonodromyMaster` passed scratch `lake env lean`
+without warnings. An isolated package reused the existing dependency oleans and checked exact
+source bytes. Its preflight requested only the new leaf; final
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalMonodromyMaster`
+passed in 46 seconds, with only that leaf compiled. Only its olean/ilean were installed in the
+main cache; no dependency trace metadata was copied. The leaf is wired exactly once into
+`RHTower.lean`, which was not built. No full build ran.
+
+One scratch axiom audit checked all 19 new public theorems. Every result uses only
+`propext`, `Classical.choice`, and `Quot.sound`; existing theorem axioms were not rechecked.
+Corpus index generation and scoped whitespace checks passed. Global
+`scripts/formal_tools.py lint` reports one unrelated concurrent unwired module,
+`RHTower.MobiusDivisorPositivePrimeSupply`, and 132 existing large-file warnings. It reports
+no error in the new leaf. All owned process handles completed and the owned scratch directory
+was removed. The RH goal remains active; causal profile and angular completion, complete
+physical source/projection, and fixed-clock extinction remain open.
