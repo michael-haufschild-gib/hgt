@@ -5,16 +5,17 @@
 - **Type:** CANDIDATE
 - **Source:** rh-current-frontier-map.md · route TCD
 - **Statement:** For every critical aperture `0 < a < 1/2`, the equispaced five-node Gram matrix of the theta center-mixed density is positive definite on a punctured neighborhood of the coalesced node.
-- **Status:** `[GLOBAL NATIVE D1 LEAN-PROVED] [ACTUAL RANK-THREE MIXTURE LEAN-PROVED] [ACTUAL EQUISPACED FIVE-POINT CUSP LEAN-PROVED] [GENERAL-PACKET/COFINAL CONTINUATION OPEN]`
+- **Status:** `[GLOBAL NATIVE D1 LEAN-PROVED] [ACTUAL RANK-THREE MIXTURE LEAN-PROVED] [ACTUAL ARBITRARY FIVE-POINT CLUSTERS LEAN-PROVED] [GENERAL-PACKET/COFINAL CONTINUATION OPEN]`
 
 ## Goal
 
 **Current dependency state.** D1, D2, and D3 are Lean-proved. See the dependency-closed cards
 `../3-formalized/clg-ttf-global-native-d1.md`,
 `../3-formalized/clg-ttf-rank-three-center-mixture.md`, and
-`../3-formalized/clg-ttf-five-point-cusp.md`. The actual equispaced five-node matrix is positive
-definite for every sufficiently small nonzero spacing at every critical aperture. Exact central
-finite differences reduce the smoothness burden to the already proved C8 theorem. General-packet
+`../3-formalized/clg-ttf-five-point-cusp.md`. The actual five-node matrix is positive
+definite for every distinct configuration below one aperture-dependent diameter bound, independently
+of ordering and spacing ratios. See `../3-formalized/clg-ttf-arbitrary-five-point-clusters.md`.
+Mixed divided differences and the existing C8 theorem give uniform control of every cluster shape. General-packet
 extension, theta-specific all-packet incidence, and cofinal no-escape remain. The source investigations
 below retain their scoped statements; their former D1/D2/D3 gaps are discharged by these capstones.
 

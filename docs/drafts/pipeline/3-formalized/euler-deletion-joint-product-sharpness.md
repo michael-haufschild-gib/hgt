@@ -33,3 +33,9 @@ This closes the fixed-target sharpness claim in the
 [paper theorem](../2-fully-proven/euler-deletion-joint-product-one-fifth.md).
 The general coprime-modulus extension remains paper-only. No relation forced by a zeta zero,
 off-line contradiction, or qualifying RH proof architecture is established by this result.
+
+
+The [full complex successor](edq-joint-fifth-phase-asymptotic.md) now proves convergence exactly
+for `Re(s)>1/5` throughout the positive half-plane, retaining the explicit power/logarithmic
+asymptotic and the full summable correction. The two-prime phase clock closes every oscillatory
+boundary point. This extends the fixed-target classification without supplying an RH implication.

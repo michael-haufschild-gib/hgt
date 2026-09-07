@@ -19,7 +19,7 @@ For the literal theta source, global D1 supplies the pointwise determinant. The 
 
 ## RH scope
 
-Global native D1 and its actual rank-three mixture are closed. The actual equispaced five-point cusp is also proved in `ThetaCuspCenterMixedFivePointCusp`. Theta-specific general-packet incidence and cofinal no-escape remain before the Weil criterion proves RH. This theorem is not an all-packet or all-order positivity claim.
+Global native D1 and its actual rank-three mixture are closed. Uniform actual positivity for all sufficiently small distinct five-point clusters is also proved in `ThetaCuspCenterMixedFivePointCluster`. Theta-specific general-packet incidence and cofinal no-escape remain before the Weil criterion proves RH. This theorem is not an all-packet or all-order positivity claim.
 
 ## Verification
 

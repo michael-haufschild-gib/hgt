@@ -15,7 +15,7 @@ The exact positive-mass modular identity transfers this sign to the raw source d
 
 ## RH scope
 
-Full chain: completed theta source → Xi Bezoutian → every finite two-channel Weil packet positive semidefinite → RH. Global D1 closes one finite-rank source sign. The actual rank-three center mixture is also proved in `HedenmalmCenterMixedEighthHankelClosure`; the actual equispaced five-point cusp is proved in `ThetaCuspCenterMixedFivePointCusp`. Theta-specific general-packet incidence and cofinal no-escape remain. D1 alone proves neither completed C5 orientation nor RH.
+Full chain: completed theta source → Xi Bezoutian → every finite two-channel Weil packet positive semidefinite → RH. Global D1 closes one finite-rank source sign. The actual rank-three center mixture is also proved in `HedenmalmCenterMixedEighthHankelClosure`; uniform actual positivity for all sufficiently small distinct five-point clusters is proved in `ThetaCuspCenterMixedFivePointCluster`. Theta-specific general-packet incidence and cofinal no-escape remain. D1 alone proves neither completed C5 orientation nor RH.
 
 ## Verification
 

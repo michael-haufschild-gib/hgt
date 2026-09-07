@@ -1,0 +1,31 @@
+{
+  "full_path_limit": 32,
+  "greedy_limit": 1024,
+  "first_PE3_path_failure": {
+    "M": 7,
+    "prime_count": 3,
+    "states": 8,
+    "nonincreasing_edges": 5,
+    "reachable_states": 6,
+    "PE3_path_exists": false,
+    "initial": 0.04877599598810301,
+    "final": 0.031818993544190814
+  },
+  "first_greedy_failure": {
+    "M": 5,
+    "first_increase": {
+      "step": 2,
+      "p": 3,
+      "previous": 0.0060968958381286305,
+      "next": 0.007062143547565248
+    },
+    "order": [
+      2,
+      3
+    ],
+    "initial": 0.021508693362718552,
+    "final": 0.007062143547565248
+  },
+  "greedy_failed_cutoffs": 1019,
+  "seconds": 119.359844625
+}

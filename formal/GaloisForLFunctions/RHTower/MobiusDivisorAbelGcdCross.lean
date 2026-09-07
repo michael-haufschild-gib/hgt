@@ -73,4 +73,100 @@ theorem sum_mobiusDivisorGcdCross (M : ℕ) :
       exact hpoint d hd e he
     _ = _ := finite_cross_decomposition (Icc 1 M) (mobiusDivisorDilationChannel M)
 
+private def gcdCrossPairs (M r : ℕ) : Finset (ℕ × ℕ) :=
+  (Icc 1 M ×ˢ Icc 1 M).filter (fun p => Nat.gcd p.1 p.2 = r ∧ p.1 ≠ p.2)
+
+private theorem gcdCross_eq_pairs (M r : ℕ) :
+    mobiusDivisorGcdCross M r = ∑ p ∈ gcdCrossPairs M r,
+      mobiusDivisorDilationChannel M p.1*mobiusDivisorDilationChannel M p.2 := by
+  rw [gcdCrossPairs,sum_filter,sum_product]
+  rfl
+
+private theorem sum_gcdCrossPairs_mul {r : ℕ} (hr : 0 < r) (M : ℕ) (f : ℕ → ℕ → ℝ) :
+    (∑ p ∈ gcdCrossPairs (r*M) r, f p.1 p.2) =
+      ∑ p ∈ gcdCrossPairs M 1, f (r*p.1) (r*p.2) := by
+  have hquot (p : ℕ×ℕ) (hp : p ∈ gcdCrossPairs (r*M) r) :
+      r*(p.1/r)=p.1 ∧ r*(p.2/r)=p.2 := by
+    have hg := (mem_filter.mp hp).2.1
+    exact ⟨Nat.mul_div_cancel' (hg ▸ Nat.gcd_dvd_left _ _),
+      Nat.mul_div_cancel' (hg ▸ Nat.gcd_dvd_right _ _)⟩
+  refine sum_nbij' (i := fun p : ℕ×ℕ => (p.1/r,p.2/r))
+    (j := fun p : ℕ×ℕ => (r*p.1,r*p.2)) ?_ ?_ ?_ ?_ ?_
+  · intro p hp
+    obtain ⟨hm1,hm2⟩ := hquot p hp
+    rw [gcdCrossPairs,mem_filter,mem_product,mem_Icc,mem_Icc] at hp ⊢
+    obtain ⟨⟨⟨ha1,haM⟩,hb1,hbM⟩,hg,hne⟩ := hp
+    have h1 : 1 ≤ p.1/r := by nlinarith
+    have h2 : 1 ≤ p.2/r := by nlinarith
+    have h1M : p.1/r ≤ M := by nlinarith
+    have h2M : p.2/r ≤ M := by nlinarith
+    refine ⟨⟨⟨h1,h1M⟩,h2,h2M⟩,?_,?_⟩
+    · simpa only [hg] using Nat.coprime_div_gcd_div_gcd
+        (Nat.gcd_pos_of_pos_left p.2 ha1)
+    · intro h
+      change p.1/r = p.2/r at h
+      exact hne (by rw [← hm1,← hm2,h])
+  · intro p hp
+    rw [gcdCrossPairs,mem_filter,mem_product,mem_Icc,mem_Icc] at hp ⊢
+    obtain ⟨⟨⟨ha1,haM⟩,hb1,hbM⟩,hg,hne⟩ := hp
+    refine ⟨⟨⟨by nlinarith,Nat.mul_le_mul_left r haM⟩,
+      by nlinarith,Nat.mul_le_mul_left r hbM⟩,?_,?_⟩
+    · simp only [Nat.gcd_mul_left,hg,mul_one]
+    · intro h
+      exact hne (Nat.eq_of_mul_eq_mul_left hr h)
+  · intro p hp
+    obtain ⟨h1,h2⟩ := hquot p hp
+    exact Prod.ext h1 h2
+  · intro p _
+    exact Prod.ext (Nat.mul_div_cancel_left _ hr) (Nat.mul_div_cancel_left _ hr)
+  · intro p hp
+    obtain ⟨h1,h2⟩ := hquot p hp
+    rw [h1,h2]
+
+/-- Primitive cross terms with the exact prime exclusions imposed by a common dilation. -/
+def mobiusDivisorRestrictedCoprimeCross (M r : ℕ) : ℝ :=
+  ∑ p ∈ gcdCrossPairs M 1,
+    (if r.Coprime p.1 then mobiusDivisorDilationChannel M p.1 else 0)*
+      (if r.Coprime p.2 then mobiusDivisorDilationChannel M p.2 else 0)
+
+/-- Exact common-divisor homothety, retaining both shared-prime masks. -/
+theorem mobiusDivisorGcdCross_mul (r M : ℕ) :
+    mobiusDivisorGcdCross (r*M) r =
+      (r : ℝ)*((ArithmeticFunction.moebius r : ℤ) : ℝ)^2*
+        mobiusDivisorRestrictedCoprimeCross M r := by
+  by_cases hr : r = 0
+  · simp [hr,mobiusDivisorGcdCross]
+  rw [gcdCross_eq_pairs,sum_gcdCrossPairs_mul (by omega : 0 < r) M
+    (fun a b => mobiusDivisorDilationChannel (r*M) a*mobiusDivisorDilationChannel (r*M) b)]
+  unfold mobiusDivisorRestrictedCoprimeCross
+  rw [mul_sum]
+  apply sum_congr rfl
+  intro p _
+  rw [mobiusDivisorDilationChannel_mul_masked,mobiusDivisorDilationChannel_mul_masked]
+  have hs := Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) r)
+  calc
+    _ = (Real.sqrt r)^2*((ArithmeticFunction.moebius r : ℤ) : ℝ)^2*
+        ((if r.Coprime p.1 then mobiusDivisorDilationChannel M p.1 else 0)*
+          (if r.Coprime p.2 then mobiusDivisorDilationChannel M p.2 else 0)) := by ring
+    _ = _ := by rw [hs]
+
+/-- A prime beyond the base cutoff preserves the complete primitive component. -/
+theorem mobiusDivisorGcdCross_mul_prime {p M : ℕ} (hp : Nat.Prime p) (hMp : M < p) :
+    mobiusDivisorGcdCross (p*M) p = (p : ℝ)*mobiusDivisorGcdCross M 1 := by
+  have hcop (a : ℕ) (ha : a ∈ Icc 1 M) : p.Coprime a := by
+    apply hp.coprime_iff_not_dvd.mpr
+    intro hpa
+    have := Nat.le_of_dvd (mem_Icc.mp ha).1 hpa
+    have := (mem_Icc.mp ha).2
+    omega
+  have hrestricted : mobiusDivisorRestrictedCoprimeCross M p = mobiusDivisorGcdCross M 1 := by
+    rw [gcdCross_eq_pairs]
+    unfold mobiusDivisorRestrictedCoprimeCross
+    apply sum_congr rfl
+    intro q hq
+    have hmem := mem_product.mp (mem_filter.mp hq).1
+    rw [if_pos (hcop q.1 hmem.1),if_pos (hcop q.2 hmem.2)]
+  rw [mobiusDivisorGcdCross_mul,hrestricted,ArithmeticFunction.moebius_apply_prime hp]
+  norm_num
+
 end RHTower

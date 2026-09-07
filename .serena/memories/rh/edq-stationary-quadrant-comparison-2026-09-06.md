@@ -1,0 +1,22 @@
+# EDQ stationary quadrant comparison — verified component; RH open
+
+Goal remains an unconditional closed Lean proof or falsification of RH through EDQ. Neither has been established. Do not mark goal complete around this component.
+
+## New source
+`formal/GaloisForLFunctions/RHTower/ArithmeticStationaryQuadrantComparison.lean`: 536 lines, 37 declarations (35 theorems, 2 definitions); namespace `RHTower.DeletionMixedRefinement`; imports only `ArithmeticStationaryEndpointOrientation`. Wired in `RHTower.lean` immediately after endpoint import.
+
+For a>0, omega>0, beta>2, y=x-a and psi=omega*(x-a)-omega*a*(log x-log a), prove sharp cancellation bounds psi<=omega*y^2/x, |sin psi|<=omega*y^2/x and 1-cos psi<=omega^2*y^4/(2*x^2). Existing W=x^(1-beta)/(omega*y), D=-W'. Define H=stationaryCosWeight=x^(1-beta)*(beta*y+a)/(omega^2*y^3)=D/psi', and K=stationaryCosDissipation=-H'>0. Boundary W*sin psi and H*(1-cos psi) vanish both at a and infinity; D*sin psi and K*(1-cos psi) integrable by proved power bounds. Two exact integration-by-parts steps yield C_a=integral x^-beta*cos psi=integral D*sin psi=integral K*(1-cos psi)>0. Prior endpoint S_a=integral x^-beta*sin psi>0, so the actual complex tail integral x^-beta*exp(-psi*i) has strictly positive real and strictly negative imaginary parts (`integral_stationary_complex_tail_quadrant`).
+
+Interior stationary point b>=a, t=omega*b, theta=anchoredLogPhase a (omega*b) (-omega) b: exact phase phi_a=theta-psi_b. `integral_stationary_logSine_split` proves original source equals finite head on (a,b] plus sin(theta)*C_b-cos(theta)*S_b. Phase on head lies between zero and theta. If pi/2<=theta<=pi, head nonnegative and rotated tail strictly positive. `scaledBernoulliFourierAtom_neg_im_pos_of_phase_band` gives actual negative-frequency atom Im>0 for sigma>0, N>=1, k>0, strict interior 2*pi*k*N<t and theta in [pi/2,pi], without a zero premise.
+
+This supplies an actual positive interior source band, not an upper bound on the full stationary sum. Remaining RH gap: compare full strict stationary head against opposing infinite sectors and mean, or establish a joint source-signature law. Do not infer an off-line-zero exclusion from quadrant positivity or add zero-dependent hypotheses as a purported unconditional proof.
+
+## Audits completed — do not repeat
+Complete scratch passed without warnings. Targeted foreground `LEAN_NUM_THREADS=1 lake build --old GaloisForLFunctions.RHTower.ArithmeticStationaryQuadrantComparison` compiled exactly ONE leaf in 5.2 seconds; 9899 jobs refers to cached dependency traversal/replays. New-only /tmp axiom audit exact-matched all 37 declarations: only propext, Classical.choice, Quot.sound. No old declarations audited. Full own-tree declaration-basename collision search passed before creation. `git diff --check` passed.
+Global `python3 scripts/formal_tools.py lint` FAILED only on two concurrently added unwired modules outside this work: `GaloisForLFunctions.RHTower.MobiusDivisorPrimePairEnergy` and `GaloisForLFunctions.HTGeometry.AlternatingPairJetIntegral`. No failure for this leaf; do not edit/rebuild/re-audit unrelated work. Index refreshed once (32733 files, 399604 declarations, 3908 gap markers).
+All owned Lean/Lake handles terminal and PS check found none remaining. Removed `/tmp/edq_stationary_quadrant.lean` and `/tmp/edq_stationary_quadrant_axioms.lean`. Retained logs `/tmp/edq_stationary_quadrant_{build,axioms,lint,index}.log`.
+
+## Documentation
+Stage-3 certificate `docs/drafts/pipeline/3-formalized/edq-stationary-quadrant-comparison.md` promoted from in-progress; includes dependency-closed paper proof, precise scope, audits and unchecked RH/global lint items. Frontier updated only current EDQ state. Existing STATUS rule about phase normalization/reweighting now explicitly requires transporting both real and imaginary parts with exact rotation angle. Prior endpoint certificate links this companion. Preserve concurrent repo edits; no commits made.
+
+Process discipline: one owned foreground Lean process, scratch with lake env lean, final only targeted leaf build --old, no full/umbrella builds, new-only axiom audit, no numerical certificate. Previous endpoint/frequency dilation/frequency budget modules already audited; do not repeat.

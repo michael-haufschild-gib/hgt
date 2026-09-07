@@ -1,0 +1,407 @@
+{
+  "question": "Every nonempty-energy edge contracts; separately, existence of a complete contracting path.",
+  "method": "All stored subset states; heads recovered from isolated late-prime energy differences.",
+  "tolerance": "1e-12*max(1,initial_energy)",
+  "input_sha256": "ba22442cb19cf20b5df1e9cc07d57c67d4105963a2a7cb75b5ab96c53e225fd9",
+  "first_growing_edge": {
+    "M": 21,
+    "P": [
+      2
+    ],
+    "prime": 5,
+    "before": 0.0896410812874598,
+    "after": 0.09741929690042564,
+    "head_before": 0.07026250973107048,
+    "head_after": -0.0019584110320793316,
+    "initial_energy": 0.5305858519824452
+  },
+  "edges": 41409,
+  "growing_edges": 2472,
+  "first_path_failure": null,
+  "max_head_disagreement_between_late_anchors": 4.196643033083092e-14,
+  "minimum_reconstructed_nonempty_energy": -1.9817480989559044e-14,
+  "results": [
+    {
+      "M": 1,
+      "nonincreasing_path": [],
+      "edges": 0
+    },
+    {
+      "M": 2,
+      "nonincreasing_path": [],
+      "edges": 0
+    },
+    {
+      "M": 3,
+      "nonincreasing_path": [
+        2
+      ],
+      "edges": 1
+    },
+    {
+      "M": 4,
+      "nonincreasing_path": [
+        3,
+        2
+      ],
+      "edges": 4
+    },
+    {
+      "M": 5,
+      "nonincreasing_path": [
+        3,
+        2
+      ],
+      "edges": 4
+    },
+    {
+      "M": 6,
+      "nonincreasing_path": [
+        5,
+        3,
+        2
+      ],
+      "edges": 12
+    },
+    {
+      "M": 7,
+      "nonincreasing_path": [
+        5,
+        3,
+        2
+      ],
+      "edges": 12
+    },
+    {
+      "M": 8,
+      "nonincreasing_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 32
+    },
+    {
+      "M": 9,
+      "nonincreasing_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 32
+    },
+    {
+      "M": 10,
+      "nonincreasing_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 32
+    },
+    {
+      "M": 11,
+      "nonincreasing_path": [
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 32
+    },
+    {
+      "M": 12,
+      "nonincreasing_path": [
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 80
+    },
+    {
+      "M": 13,
+      "nonincreasing_path": [
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 80
+    },
+    {
+      "M": 14,
+      "nonincreasing_path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 192
+    },
+    {
+      "M": 15,
+      "nonincreasing_path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 192
+    },
+    {
+      "M": 16,
+      "nonincreasing_path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 192
+    },
+    {
+      "M": 17,
+      "nonincreasing_path": [
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 192
+    },
+    {
+      "M": 18,
+      "nonincreasing_path": [
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 448
+    },
+    {
+      "M": 19,
+      "nonincreasing_path": [
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 448
+    },
+    {
+      "M": 20,
+      "nonincreasing_path": [
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 1024
+    },
+    {
+      "M": 21,
+      "nonincreasing_path": [
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 1024
+    },
+    {
+      "M": 22,
+      "nonincreasing_path": [
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 1024
+    },
+    {
+      "M": 23,
+      "nonincreasing_path": [
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 1024
+    },
+    {
+      "M": 24,
+      "nonincreasing_path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        3,
+        2
+      ],
+      "edges": 2304
+    },
+    {
+      "M": 25,
+      "nonincreasing_path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 2304
+    },
+    {
+      "M": 26,
+      "nonincreasing_path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 2304
+    },
+    {
+      "M": 27,
+      "nonincreasing_path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 2304
+    },
+    {
+      "M": 28,
+      "nonincreasing_path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 2304
+    },
+    {
+      "M": 29,
+      "nonincreasing_path": [
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 2304
+    },
+    {
+      "M": 30,
+      "nonincreasing_path": [
+        29,
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 5120
+    },
+    {
+      "M": 31,
+      "nonincreasing_path": [
+        29,
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 5120
+    },
+    {
+      "M": 32,
+      "nonincreasing_path": [
+        31,
+        29,
+        23,
+        19,
+        17,
+        13,
+        11,
+        7,
+        5,
+        2,
+        3
+      ],
+      "edges": 11264
+    }
+  ]
+}

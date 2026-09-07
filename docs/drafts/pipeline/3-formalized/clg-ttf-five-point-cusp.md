@@ -27,7 +27,7 @@ The source supplies `J0>0` and `J2<0`. Existing strict fourth and second--sixth 
 
 ## RH scope
 
-Global native D1, actual rank-three center mixing, and the equispaced five-point cusp are closed. This theorem concerns a punctured local chamber for five equispaced samples. General configurations, higher packet ranks, theta-specific source-to-divisor incidence, and cofinal no-escape remain before all-packet Weil positivity and RH.
+Global native D1, actual rank-three center mixing, and the equispaced five-point cusp are closed. This theorem concerns a punctured local chamber for five equispaced samples. The stronger arbitrary-node local theorem is now proved in `ThetaCuspCenterMixedFivePointCluster`: one diameter bound covers every distinct five-node configuration. Higher packet ranks, global packet geometry, theta-specific source-to-divisor incidence, and cofinal no-escape remain before all-packet Weil positivity and RH.
 
 ## Verification
 

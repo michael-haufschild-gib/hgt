@@ -95,3 +95,35 @@ Candidate levers (unchanged from the 2026-08-13 log, plus the new ones):
 1. Formalize (C) as `RHTower/CriticalLocusWeightConeFullness.lean` — it is unconditional and short.
 2. Formalize the multiplicity-2 special case of Θ4 via (A) + (C).
 3. Attack the general case with the conjecture-attack toolkit.
+
+## Update 2026-09-06 — (C) formalized
+
+`RHTower/CriticalLocusWeightConeFullness.lean`, `criticalLocus_weight_cone_fullness`: for tests holomorphic on
+`criticalStrip θ`, decaying along the line, with linearly independent line restrictions, every `w ≠ 0` has a `γ`
+with `Σ wᵢ Re(iteratedDeriv 2 (Fᵢ))(1/2 + iγ) < 0`. Proof exactly as (C): the vertical restriction
+`v(γ) = Σ wᵢ Re Fᵢ(1/2+iγ)` has `v'' = −Σ wᵢ Re Fᵢ''(1/2+iγ)` (`hasDerivAt_vertical_re` twice), is concave by
+`concaveOn_univ_of_deriv2_nonpos`, and a concave function on `ℝ` tending to `0` at both ends is identically zero
+(`concaveOn_eq_zero_of_tendsto_zero`: its slopes are monotone, so it is monotone in both directions). No
+maximum principle, no Phragmén–Lindelöf, no `σ`-symmetry, no conjugation symmetry are used. Axioms clean.
+
+**Audit of next action 2 (multiplicity-2 case).** As written, the claim "(C) ⟹ the splitting moves positively
+span" is too quick: (C) gives cone fullness of the second-derivative directions over **all** `γ ∈ ℝ`, while the
+free splitting moves exist only at the support ordinates of multiplicity `≥ 2`, and each such ordinate can be
+split only as often as its multiplicity allows, so the moves are not repeatable at a fixed `γ`. The special case
+closes if either (a) the multiplicities at infinitely many ordinates are unbounded, or (b) the set of
+multiplicity-`≥2` ordinates is dense enough that the second-derivative vectors at those ordinates alone positively
+span `ℝ^k` (a concavity argument on a discrete set does not give this). Otherwise the assembly needs the
+insertion moves `P`, `V` as well, and one is back at the positive-type adversary of the open point.
+
+## Update 2026-09-06 — Θ4 for a single test is a theorem
+
+`RHTower/CriticalLocusSingleTestBlindness.lean`, `singleTest_blindness`: for one admissible test `F` (holomorphic on
+`criticalStrip θ`, both symmetries, decay in the substrip `|Re s − ½| ≤ t*`, line restriction not identically zero)
+and any support set `S ⊆ ℝ` of unbounded ordinates, there is `γ₀` such that the quadruple at `(γ₀, t*)` has value
+`0`, or its value is cancelled exactly by one deletion at some `α ∈ S`, one line-pair insertion, or one further
+quadruple at displacement `t*`. Mechanism: `criticalLocus_move_cone_fullness` for `k = 1` in both directions
+`w = ±1` at a far support ordinate `α` (where the pair value is smaller than `|q(γ₁)|` by decay), then the
+intermediate value theorem along the decaying quadruple value `γ ↦ 4 Re F(½ + t* + iγ)`
+(`exists_eq_of_tendsto_zero_of_pos/neg`). So **one spectral test never separates an RH configuration with
+unbounded support from one containing an off-line quadruple of prescribed displacement**. The general `k` case
+remains open at the far-field patch question above.

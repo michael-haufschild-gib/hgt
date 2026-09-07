@@ -1,0 +1,244 @@
+{
+  "full_subset_limit": 32,
+  "first_PE4_path_failure": null,
+  "first_PE4G_failure": null,
+  "PE4G_failed_stages": 0,
+  "max_greedy_ratio": [
+    0.773063650278327,
+    {
+      "M": "17",
+      "step": "6",
+      "prime": "11",
+      "previous_energy": "0.17920641925896852",
+      "next_energy": "0.27998699043534053",
+      "release": "-0.10078057117637201",
+      "initial_energy": "0.3621784446009543"
+    }
+  ],
+  "full_subset_results": [
+    {
+      "M": 1,
+      "initial_energy": 0.0,
+      "minimum_path_ceiling": 0.0,
+      "PE4_path_exists": true,
+      "states": 1
+    },
+    {
+      "M": 2,
+      "initial_energy": 0.004091847614167744,
+      "minimum_path_ceiling": 0.004091847614167744,
+      "PE4_path_exists": true,
+      "states": 1
+    },
+    {
+      "M": 3,
+      "initial_energy": 0.0065832227370489676,
+      "minimum_path_ceiling": 0.0065832227370489676,
+      "PE4_path_exists": true,
+      "states": 2
+    },
+    {
+      "M": 4,
+      "initial_energy": 0.02757107562321607,
+      "minimum_path_ceiling": 0.02757107562321607,
+      "PE4_path_exists": true,
+      "states": 4
+    },
+    {
+      "M": 5,
+      "initial_energy": 0.021508693362718552,
+      "minimum_path_ceiling": 0.021508693362718552,
+      "PE4_path_exists": true,
+      "states": 4
+    },
+    {
+      "M": 6,
+      "initial_energy": 0.06339881015940782,
+      "minimum_path_ceiling": 0.06339881015940782,
+      "PE4_path_exists": true,
+      "states": 8
+    },
+    {
+      "M": 7,
+      "initial_energy": 0.04877599598810301,
+      "minimum_path_ceiling": 0.04877599598810301,
+      "PE4_path_exists": true,
+      "states": 8
+    },
+    {
+      "M": 8,
+      "initial_energy": 0.10787676463273002,
+      "minimum_path_ceiling": 0.10787676463273002,
+      "PE4_path_exists": true,
+      "states": 16
+    },
+    {
+      "M": 9,
+      "initial_energy": 0.09634780339235291,
+      "minimum_path_ceiling": 0.09634780339235291,
+      "PE4_path_exists": true,
+      "states": 16
+    },
+    {
+      "M": 10,
+      "initial_energy": 0.12590305985078518,
+      "minimum_path_ceiling": 0.12590305985078518,
+      "PE4_path_exists": true,
+      "states": 16
+    },
+    {
+      "M": 11,
+      "initial_energy": 0.15744069331278204,
+      "minimum_path_ceiling": 0.15744069331278204,
+      "PE4_path_exists": true,
+      "states": 16
+    },
+    {
+      "M": 12,
+      "initial_energy": 0.31893455646803903,
+      "minimum_path_ceiling": 0.31893455646803903,
+      "PE4_path_exists": true,
+      "states": 32
+    },
+    {
+      "M": 13,
+      "initial_energy": 0.1950279523306075,
+      "minimum_path_ceiling": 0.1950279523306075,
+      "PE4_path_exists": true,
+      "states": 32
+    },
+    {
+      "M": 14,
+      "initial_energy": 0.20591137965550846,
+      "minimum_path_ceiling": 0.20591137965550846,
+      "PE4_path_exists": true,
+      "states": 64
+    },
+    {
+      "M": 15,
+      "initial_energy": 0.2627980850364015,
+      "minimum_path_ceiling": 0.2627980850364015,
+      "PE4_path_exists": true,
+      "states": 64
+    },
+    {
+      "M": 16,
+      "initial_energy": 0.37020153783286097,
+      "minimum_path_ceiling": 0.37020153783286097,
+      "PE4_path_exists": true,
+      "states": 64
+    },
+    {
+      "M": 17,
+      "initial_energy": 0.3621784446009543,
+      "minimum_path_ceiling": 0.3621784446009543,
+      "PE4_path_exists": true,
+      "states": 64
+    },
+    {
+      "M": 18,
+      "initial_energy": 0.5058571282154829,
+      "minimum_path_ceiling": 0.5058571282154829,
+      "PE4_path_exists": true,
+      "states": 128
+    },
+    {
+      "M": 19,
+      "initial_energy": 0.4686379390195635,
+      "minimum_path_ceiling": 0.4686379390195635,
+      "PE4_path_exists": true,
+      "states": 128
+    },
+    {
+      "M": 20,
+      "initial_energy": 0.6024315956895191,
+      "minimum_path_ceiling": 0.6024315956895191,
+      "PE4_path_exists": true,
+      "states": 256
+    },
+    {
+      "M": 21,
+      "initial_energy": 0.5305858519824452,
+      "minimum_path_ceiling": 0.5305858519824452,
+      "PE4_path_exists": true,
+      "states": 256
+    },
+    {
+      "M": 22,
+      "initial_energy": 0.5512212625149415,
+      "minimum_path_ceiling": 0.5512212625149415,
+      "PE4_path_exists": true,
+      "states": 256
+    },
+    {
+      "M": 23,
+      "initial_energy": 0.6929038505156754,
+      "minimum_path_ceiling": 0.6929038505156754,
+      "PE4_path_exists": true,
+      "states": 256
+    },
+    {
+      "M": 24,
+      "initial_energy": 1.064953864051536,
+      "minimum_path_ceiling": 1.064953864051536,
+      "PE4_path_exists": true,
+      "states": 512
+    },
+    {
+      "M": 25,
+      "initial_energy": 0.8400369426807117,
+      "minimum_path_ceiling": 0.8400369426807117,
+      "PE4_path_exists": true,
+      "states": 512
+    },
+    {
+      "M": 26,
+      "initial_energy": 0.8057896520204599,
+      "minimum_path_ceiling": 0.8057896520204599,
+      "PE4_path_exists": true,
+      "states": 512
+    },
+    {
+      "M": 27,
+      "initial_energy": 0.907355228040408,
+      "minimum_path_ceiling": 0.907355228040408,
+      "PE4_path_exists": true,
+      "states": 512
+    },
+    {
+      "M": 28,
+      "initial_energy": 1.0843514210378065,
+      "minimum_path_ceiling": 1.0843514210378065,
+      "PE4_path_exists": true,
+      "states": 512
+    },
+    {
+      "M": 29,
+      "initial_energy": 1.1064632812617892,
+      "minimum_path_ceiling": 1.1064632812617892,
+      "PE4_path_exists": true,
+      "states": 512
+    },
+    {
+      "M": 30,
+      "initial_energy": 1.3433399306676124,
+      "minimum_path_ceiling": 1.3433399306676124,
+      "PE4_path_exists": true,
+      "states": 1024
+    },
+    {
+      "M": 31,
+      "initial_energy": 1.2054143800561994,
+      "minimum_path_ceiling": 1.2054143800561994,
+      "PE4_path_exists": true,
+      "states": 1024
+    },
+    {
+      "M": 32,
+      "initial_energy": 1.2888540635627828,
+      "minimum_path_ceiling": 1.2888540635627828,
+      "PE4_path_exists": true,
+      "states": 2048
+    }
+  ]
+}

@@ -2,10 +2,10 @@ import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels
 import GaloisForLFunctions.RHTower.HarmonicHalfErrorBounds
 
 /-!
-# Analytic boxes for the literal half-order channels at cutoff eleven
+# Analytic boxes for the literal half-order channels at cutoffs eleven and seven
 
 Harmonic half-reciprocal corrections, analytic logarithm inequalities and rational
-square-root sandwiches bound all seven nonzero channels. Every other channel
+square-root sandwiches bound every nonzero channel at these cutoffs. Every other channel
 vanishes exactly. No numerical experiment is used as a proof input.
 -/
 
@@ -298,5 +298,76 @@ theorem mobiusDivisorDilationChannel_eleven_zero :
     simpa using ArithmeticFunction.moebius_apply_prime_pow Nat.prime_three
       (show (2:ℕ) ≠ 0 by norm_num)
   simp [mobiusDivisorDilationChannel,hm4,hm8,hm9]
+
+private def adaptiveActiveSeven : Finset ℕ := {1,2,3,5,6}
+private def adaptiveChannelLower : ℕ → ℝ
+  | 1 => 0.102 | 2 => 0.139 | 3 => 0.110 | 5 => 0.060 | 6 => 0.030 | _ => 0
+private def adaptiveChannelUpper : ℕ → ℝ
+  | 1 => 0.115 | 2 => 0.145 | 3 => 0.115 | 5 => 0.065 | 6 => 0.031 | _ => 0
+private def adaptiveUnsignedSeven (d : ℕ) : ℝ :=
+  ∑ k ∈ Icc d 6, gcdAbelStep k*primeFreeDivisorDefect (k/d)
+
+private theorem adaptive_unsigned_seven_box {d : ℕ} (hd : d ∈ adaptiveActiveSeven) :
+    adaptiveChannelLower d ≤ adaptiveUnsignedSeven d ∧
+      adaptiveUnsignedSeven d ≤ adaptiveChannelUpper d := by
+  have hd1 : 1 ≤ d := by
+    simp only [adaptiveActiveSeven,mem_insert,mem_singleton] at hd
+    rcases hd with rfl | rfl | rfl | rfl | rfl <;> omega
+  have hidx (k : ℕ) (hk : k ∈ Icc d 6) :
+      k ∈ Icc 1 10 ∧ k/d ∈ Icc 1 10 := by
+    obtain ⟨hdk,hk10⟩ := mem_Icc.mp hk
+    constructor
+    · exact mem_Icc.mpr ⟨hd1.trans hdk,by omega⟩
+    · apply mem_Icc.mpr
+      constructor
+      · exact (Nat.le_div_iff_mul_le (by omega : 0 < d)).mpr (by simpa using hdk)
+      · exact (Nat.div_le_self k d).trans (by omega : k ≤ 10)
+  have hlo : (∑ k ∈ Icc d 6, gcdTermLower k (k/d)) ≤ adaptiveUnsignedSeven d := by
+    apply sum_le_sum
+    intro k hk
+    exact (gcd_term_box (hidx k hk).1 (hidx k hk).2).1
+  have hhi : adaptiveUnsignedSeven d ≤ ∑ k ∈ Icc d 6, gcdTermUpper k (k/d) := by
+    apply sum_le_sum
+    intro k hk
+    exact (gcd_term_box (hidx k hk).1 (hidx k hk).2).2
+  simp only [adaptiveActiveSeven,mem_insert,mem_singleton] at hd
+  rcases hd with rfl | rfl | rfl | rfl | rfl
+  all_goals norm_num [sum_Icc_succ_top,gcdTermLower,gcdTermUpper,gcdNegativeDefects,
+    gcdWeightLower,gcdWeightUpper,gcdRootLower,gcdRootUpper,gcdDefectLower,gcdDefectUpper,
+    adaptiveChannelLower,adaptiveChannelUpper] at hlo hhi ⊢
+  all_goals constructor <;> linarith
+
+
+/-- Analytic channel boxes for the order-independent last-pair obstruction at seven. -/
+theorem mobiusDivisorDilationChannel_seven_box :
+    (0.102 ≤ mobiusDivisorDilationChannel 7 1 ∧ mobiusDivisorDilationChannel 7 1 ≤ 0.115) ∧
+    (0.139 ≤ -mobiusDivisorDilationChannel 7 2 ∧ -mobiusDivisorDilationChannel 7 2 ≤ 0.145) ∧
+    (0.110 ≤ -mobiusDivisorDilationChannel 7 3 ∧ -mobiusDivisorDilationChannel 7 3 ≤ 0.115) ∧
+    (0.060 ≤ -mobiusDivisorDilationChannel 7 5 ∧ -mobiusDivisorDilationChannel 7 5 ≤ 0.065) ∧
+    (0.030 ≤ mobiusDivisorDilationChannel 7 6 ∧ mobiusDivisorDilationChannel 7 6 ≤ 0.031) := by
+  have hm2 := ArithmeticFunction.moebius_apply_prime Nat.prime_two
+  have hm3 := ArithmeticFunction.moebius_apply_prime Nat.prime_three
+  have hm5 := ArithmeticFunction.moebius_apply_prime Nat.prime_five
+  have hm6 : ArithmeticFunction.moebius 6 = 1 := by
+    simpa [hm2,hm3] using ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime
+      (show Nat.gcd 2 3 = 1 by rfl)
+  have h1 := adaptive_unsigned_seven_box (d := 1) (by simp [adaptiveActiveSeven])
+  have h2 := adaptive_unsigned_seven_box (d := 2) (by simp [adaptiveActiveSeven])
+  have h3 := adaptive_unsigned_seven_box (d := 3) (by simp [adaptiveActiveSeven])
+  have h5 := adaptive_unsigned_seven_box (d := 5) (by simp [adaptiveActiveSeven])
+  have h6 := adaptive_unsigned_seven_box (d := 6) (by simp [adaptiveActiveSeven])
+  have heq (d : ℕ) : mobiusDivisorDilationChannel 7 d =
+      ((ArithmeticFunction.moebius d : ℤ):ℝ)*adaptiveUnsignedSeven d := rfl
+  simpa only [heq,hm2,hm3,hm5,hm6,ArithmeticFunction.moebius_apply_one,
+    Int.cast_one,Int.cast_neg,neg_mul,one_mul,neg_neg,adaptiveChannelLower,adaptiveChannelUpper]
+    using And.intro h1 (And.intro h2 (And.intro h3 (And.intro h5 h6)))
+
+/-- The squareful and terminal channels at seven vanish exactly. -/
+theorem mobiusDivisorDilationChannel_seven_zero :
+    mobiusDivisorDilationChannel 7 4 = 0 ∧ mobiusDivisorDilationChannel 7 7 = 0 := by
+  have hm4 : ArithmeticFunction.moebius 4 = 0 := by
+    simpa using ArithmeticFunction.moebius_apply_prime_pow Nat.prime_two
+      (show (2:ℕ) ≠ 0 by norm_num)
+  simp [mobiusDivisorDilationChannel,hm4]
 
 end RHTower

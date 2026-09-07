@@ -1,6 +1,6 @@
 # Mixed Euler-deletion polygon: first surviving polynomial moment
 
-**Stage:** finite arithmetic identity and sharp moduli-two-and-three convergence formalized; general-pair convergence remains paper-only.
+**Stage:** finite arithmetic identity and full complex moduli-two-and-three convergence classification formalized; general-pair convergence remains paper-only.
 **RH status:** no implication. **Novelty:** arithmetic specialization unverified; generic ancestry published.
 This is an arithmetic source-construction test, not a qualifying proof architecture yet.
 
@@ -179,3 +179,28 @@ and proves convergence in that target, on the positive real axis, exactly when `
 Both modules passed scratch, axiom, and narrow build audits. General coprime-modulus convergence
 remains a paper-to-Lean obligation. Neither convergence nor its sharpness supplies the missing
 zero-specific relation. That relation is the next research gate for the RH candidate.
+
+
+## Exact weighted fifth-word phase
+
+`EulerDeletionJointFifthPhase` retains the complete within-block averaging correction and proves
+an actual complete-prefix asymptotic with power counterterm
+`(6N)^(1-5s)/(360*(1-5s))*topWord`, and logarithmic counterterm `log(6N)/360*topWord`
+at `s=1/5`. The normalized source below the one-fifth line has nonzero limit
+`-topWord/(360*(1-5s))`. At every remaining point of that line, the injective two-prime
+phase clock excludes convergence. Thus the fixed six-coordinate source converges throughout
+the positive half-plane exactly for `Re(s)>1/5`. This extends the real-axis classification;
+it preserves a complex phase and supplies no zero-specific orientation. See the
+[paper derivation and formal certificate](../3-formalized/edq-joint-fifth-phase-asymptotic.md).
+
+
+## Actual weighted circulation and zero test
+
+`EulerDeletionWeightedFifthCirculation` proves the literal weighted polynomial-circulation
+identity at every cutoff, retaining all lower-word terminal terms. At zeta zeros with
+`Re(s)>1/5`, it identifies the fifth word of the actual unit product limit with minus one
+sixth of an absolutely convergent circulation. In `1/5<Re(s)<1`, absolute convergence of
+that circulation is equivalent to zeta vanishing: off zeros its full endpoint multiplier
+retains a nonsummable first-power tail. This gives the weighted source relation while leaving
+its signed orientation and zero-location restriction open. See the
+[paper proof and formal certificate](../3-formalized/edq-weighted-fifth-circulation.md).
