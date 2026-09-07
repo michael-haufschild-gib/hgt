@@ -348,6 +348,12 @@ theorem norm_xbBlock_le {x : ℝ} (hx : 1 ≤ x) (t : ℝ) :
     _ = xbBlockConstant + Real.log (|t| + 4) := by
         unfold xbBlockConstant; ring
 
+theorem xbBlockConstant_nonneg : 0 ≤ xbBlockConstant := by
+  unfold xbBlockConstant digammaLineOneConstant
+  have := vonMangoldtThreeHalvesMass_nonneg
+  have := Real.log_nonneg (by linarith [Real.pi_gt_three] : (1 : ℝ) ≤ Real.pi)
+  linarith [Real.pi_pos]
+
 /-! ## The combined remainder -/
 
 /-- The remainder `E = polarRemainder + xbBlock + trivialBlock`. -/

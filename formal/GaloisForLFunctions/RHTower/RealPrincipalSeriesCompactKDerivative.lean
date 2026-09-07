@@ -142,14 +142,14 @@ theorem compactRotation_hasDerivAt_eq_I_H_single (s : ℝ) (m : ℤ) (z : ℂ)
     (k : upperHalfPlaneStabilizer) :
     HasDerivAt
       (fun t : ℝ =>
-        (compactRealPrincipalSeries (s - 1) (realSphericalRotation t : SL2R)
+        (compactRealPrincipalSeries (1 - s) (realSphericalRotation t : SL2R)
           (sphericalModelCompactKFiniteEquiv s (Finsupp.single m z))).1 k)
       (Complex.I *
         (compactSphericalPrincipalH s
           (sphericalModelCompactKFiniteEquiv s (Finsupp.single m z))).1.1 k) 0 := by
   rw [sphericalModelCompactKFiniteEquiv_apply_coe,
     realCompactKFiniteEmbedding_single]
-  convert hasDerivAt_compactRealPrincipalSeries_rotation (s - 1) m z k using 1
+  convert hasDerivAt_compactRealPrincipalSeries_rotation (1 - s) m z k using 1
   rw [compactSphericalPrincipalH_single,
     sphericalModelCompactKFiniteEquiv_single_apply]
   push_cast

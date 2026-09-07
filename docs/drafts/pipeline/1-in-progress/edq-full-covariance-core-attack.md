@@ -1002,3 +1002,60 @@ does not bound this subtraction. The remaining task is a cutoff-dependent
 bound on those finite heads with their Euler mains and actual outer signs
 retained. No estimate of that hard term, complete EDQ ceiling, or RH proof is
 asserted. The frontier map remains read-only.
+
+
+## Complete-column coherence and the retained Bernoulli oscillation
+
+The frozen RunPod diagnostic keeps the complete actual numerator tail in
+`x_e(N)=-mu(e)*(P_e(1)-sum_(d<=N)mu(d)*K(d,e))`, so R(N)=sum_(e<=N)x_e(N).
+It reuses the archived infinite-kernel enclosures; no time or numerator tail
+is dropped. The proposed finite comparison `sum_e|x_e|<=4*R` fails at N=96,
+where its ratio lies between 6.0063 and 6.0140. It survives the other eight
+frozen cutoffs. This rejects that constant-four comparison, not a uniform
+subpower bound for the row variation.
+
+The parameter-free Bernoulli mean is
+
+```
+t_2(N)=6/pi^2-sum_(d<=N)mu(d)/d^2,
+y_e(N)=pi^2*mu(e)*e*t_2(N)/72.
+```
+
+The proposed 25% absolute row-approximation test fails at all nine cutoffs.
+At N=384 its residual retains over 99% of the actual absolute row mass.
+The mean's signed total is negative at eight cutoffs while the full flux
+is positive. Hence the tested mean-only reduction loses material signed
+arithmetic information. All cases, both positive/negative row masses,
+controls, frozen hashes, and limitations are in the
+[computation report](../2-fully-proven/computations/edq-column-coherence-2026-09-07/REPORT.md).
+The unchanged eight-worker run took 0.082191 seconds. These are numerical
+research observations, not formal counterexamples or asymptotic estimates.
+
+The ensuing direct upper-bound attempt keeps the mean exactly. For N>=1,
+write M(N)=sum_(n<=N)mu(n). Finite Abel summation and the absolutely
+convergent inverse-square tail give
+
+```
+sum_(e<=N)mu(e)*e=N*M(N)-sum_(0<=k<N)M(k),
+t_2(N)=-M(N)/N^2+sum_(k>=N)M(k)*(1/k^2-1/(k+1)^2).
+```
+
+The upper boundary in the second identity vanishes already from |M(k)|<=k.
+The corpus's arbitrary fixed logarithmic Mertens savings bound the first
+factor by O_A(N^2/log(N)^A) and the second by O_A(1/(N*log(N)^A)), after
+adjusting the arbitrary log power to handle the initial finite ranges.
+Their product still has an N times logarithmic-saving allowance. This
+calculation supplies no positive power improvement. The oscillatory
+remainder is also retained and has no independent subpower estimate.
+
+A second attempted transfer through the logarithmically weighted Selberg
+forms does not close the same source: their coefficient taper and gcd
+kernel are not the literal untapered, inverse-square-time EDQ kernel.
+The exact cutoff-average receiver retains its actual taper and full tail;
+no comparison from a period mean to that physical tail is supplied here.
+
+The hard signed finite-head estimate remains open. This attempt added no
+Lean theorem, no replacement RH equivalence, and no universal-law entry.
+No route is retired on the numerical tests, and the frontier map was not
+edited by this task. The experiment's remote files were removed only after
+all downloaded hashes were verified and its process check was empty.

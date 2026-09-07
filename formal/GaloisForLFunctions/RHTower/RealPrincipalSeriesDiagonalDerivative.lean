@@ -5,9 +5,9 @@ import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 # Positive-diagonal derivative in the real compact principal series
 
 This file constructs the positive diagonal one-parameter subgroup and differentiates its actual
-compact-picture action at the identity of `K`.  The calculation fixes the normalization: Borel
-exponent `s - 1` gives the sum of the raising and lowering coefficients in the spherical
-Harish-Chandra model.
+compact-picture action at the identity of `K`.  Full Iwasawa-coordinate differentiation and its
+identification with the raising and lowering operators are proved in
+`RealPrincipalSeriesDiagonalKTypeDerivative`.
 -/
 
 namespace GaloisForLFunctions.RHTower
@@ -66,45 +66,6 @@ theorem hasDerivAt_compactRealPrincipalSeries_positiveDiagonal_one
     hr.ofReal_comp
   simpa only [compactRealPrincipalSeries_positiveDiagonal_one_apply] using
     hc.mul_const (φ.1 1)
-
-/-- Borel exponent `s - 1` matches the total `E + F` coefficient of every spherical K-type at
-the identity.  This is the normalization check for the compact Harish-Chandra embedding. -/
-theorem positiveDiagonal_matches_spherical_E_add_F_at_one
-    (s : ℝ) (m : ℤ) (z : ℂ) :
-    HasDerivAt
-      (fun t : ℝ =>
-        ((compactRealPrincipalSeries (s - 1)
-          (realPositiveDiagonalBorel t : SL2R))
-          (realCompactKFiniteEmbedding (s - 1) (Finsupp.single m z))).1 1)
-      ((realCompactKFiniteEmbedding (s - 1)
-        ((sphericalPrincipalE (s : ℂ) + sphericalPrincipalF (s : ℂ))
-          (Finsupp.single m z))).1 1) 0 := by
-  have h := hasDerivAt_compactRealPrincipalSeries_positiveDiagonal_one (s - 1)
-    (realCompactKFiniteEmbedding (s - 1) (Finsupp.single m z))
-  convert h using 1
-  simp only [LinearMap.add_apply, sphericalPrincipalE_single,
-    sphericalPrincipalF_single, map_add, realCompactKFiniteEmbedding_single]
-  simp only [AddMemClass.coe_add, Pi.add_apply, SetLike.val_smul,
-    Pi.smul_apply, smul_eq_mul, realCompactKType_apply, map_one, mul_one]
-  push_cast
-  ring
-
-/-- In the normalized compact Harish-Chandra subspace, the positive-diagonal derivative agrees
-with transported `E + F` at the identity of `K` on every basis K-type. -/
-theorem compactPositiveDiagonal_hasDerivAt_eq_E_add_F_single_at_one
-    (s : ℝ) (m : ℤ) (z : ℂ) :
-    HasDerivAt
-      (fun t : ℝ =>
-        ((compactRealPrincipalSeries (s - 1)
-          (realPositiveDiagonalBorel t : SL2R))
-          (sphericalModelCompactKFiniteEquiv s (Finsupp.single m z))).1 1)
-      (((compactSphericalPrincipalE s + compactSphericalPrincipalF s)
-        (sphericalModelCompactKFiniteEquiv s (Finsupp.single m z))).1.1 1) 0 := by
-  rw [sphericalModelCompactKFiniteEquiv_apply_coe]
-  convert positiveDiagonal_matches_spherical_E_add_F_at_one s m z using 1
-  simp only [LinearMap.add_apply, compactSphericalPrincipalE_equiv_apply,
-    compactSphericalPrincipalF_equiv_apply, ← map_add,
-    sphericalModelCompactKFiniteEquiv_apply_coe]
 
 end
 end GaloisForLFunctions.RHTower
