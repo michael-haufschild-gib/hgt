@@ -1,6 +1,6 @@
 # EDQ full-source logarithmic saving
 
-Stage: 1-in-progress. [BRIDGE] derived theorem candidate; paper derivation below, Lean validation pending.
+Stage: 3-formalized. [BRIDGE] derived theorem; dependency-closed paper proof and Lean proof complete.
 Full chain: Euler deletion → exact complex zero balance → signed arithmetic separation → exclusion of off-line zeros → RH.
 Objective: derive an unconditional upper bound on the complete arithmetic energy and signed Gram cross sum, using actual Möbius cancellation with the entire tail retained.
 
@@ -77,3 +77,30 @@ uncertain, discriminating outcome capable of changing the approach to an
 open problem, follow the scientific-method document, run only on RunPod,
 use multicore code where appropriate, finish within bounded time, and have
 results downloaded and documented under the prescribed computations directory.
+
+## Lean result
+
+`EulerDeletionMobiusGlobalLogSaving.lean`, namespace `RHTower.DeletionMobiusGlobal`,
+contains 12 public theorems. `floorResidual_le_of_mertens` and
+`primitive_extended_prefix_le` retain the literal omitted floor sum.
+`primitiveEnergy_le_of_extended_prefix` gives the complete finite-head/tail
+bound for every positive integer T; `primitiveEnergy_le_of_mertens` specializes
+it to T=N*L. `modular_norm_sq_le_primitiveEnergy` closes the reverse carrier
+comparison. `primitiveEnergy_log_saving`, `modular_norm_log_saving`, and
+`abs_cross_log_saving` give the unconditional eventual bounds. The four
+`*_log_pow_div_tendsto_zero` theorems give the stated weighted limits, including
+the full real current at every actual nontrivial zero.
+
+Validation: the complete scratch file passed `lake env lean` without diagnostics.
+The final targeted `lake build --old GaloisForLFunctions.RHTower.EulerDeletionMobiusGlobalLogSaving`
+compiled only this new leaf. All 12 new public declarations were audited once
+via a temporary `lake env lean` file: dependencies are exactly `propext`,
+`Classical.choice`, and `Quot.sound`; no admission, added axiom, or numerical
+certificate is used. The module is wired into `RHTower.lean`; no umbrella
+build was run. The search index was refreshed. Repository-wide formal lint reported only three
+unwired modules from concurrent work: `MobiusDivisorCoupledTwoSourceCone`,
+`PartialSubsetEnergyOrder`, and `ThreePlaneSourceMargin`. The new EDQ leaf is
+wired and has no lint error; the repository-wide gate is not claimed to pass.
+Scoped whitespace, public-declaration coverage, umbrella, and documentation-link
+checks passed. Temporary proof/API/audit source files were removed after all
+owned Lean processes exited. No numerical experiment was run.

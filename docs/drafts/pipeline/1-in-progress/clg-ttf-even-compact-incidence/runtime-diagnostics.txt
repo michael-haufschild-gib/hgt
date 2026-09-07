@@ -1,0 +1,11 @@
+unfold; ring1
+Date/Time:       2026-09-07 11:22:10.344 +0200
+Launch Time:     2026-09-07 11:14:19.674 +0200
+Physical footprint:         57.4G
+Physical footprint (peak):  57.4G
+
+dsimp only; ring1
+Date/Time:       2026-09-07 11:26:25.892 +0200
+Launch Time:     2026-09-07 11:25:33.045 +0200
+Physical footprint:         12.6G
+Physical footprint (peak):  12.6G

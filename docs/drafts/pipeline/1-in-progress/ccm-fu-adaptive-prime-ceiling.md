@@ -228,3 +228,24 @@ order must move nonisolated primes across the middle front and control their
 coupled fields before this state occurs. The previous bounded growing signed
 batches remain valid partial schedules. General adaptive PE4, PE4G, PE4C,
 SD1 and RH remain open; the obstruction supplies no final signed-source bound.
+
+## Growing coupled prime batches
+
+The [coupled-batch certificate](../3-formalized/ccm-fu-coupled-prime-batches.md)
+is unconditional in Lean. A fixed core below fifteen excludes prime two, so
+copied fields retain both the head and the {2} coordinate. Actual child
+profiles at 2, 7 and 14 positively span this plane, with one margin stable
+under small independent clipping. Three macroscopic prime windows at
+`M=14(b+1)N`, for one fixed `b>=15`, realize these directions.
+
+Any partial selection leaves all child fields fixed. The exact full-energy
+increment is `-2 sqrt(p) dot(x,V_K(w))`, including the cancellation of removed
+copied squares with receiving squares. As long as each pool has an unused
+prime, one available step does not increase energy. The resulting distinct
+batch has length the smallest pool cardinality, with every prefix bounded
+by `2^15*722*M^2`; its guaranteed length tends to infinity.
+
+This controls two coupled retained coordinates with actual source supply.
+The list still leaves prime two and other source primes unprocessed.
+Propagation while changing the retained field, complete compatible coverage,
+PE4, PE4G, PE4C, SD1 and RH remain open.

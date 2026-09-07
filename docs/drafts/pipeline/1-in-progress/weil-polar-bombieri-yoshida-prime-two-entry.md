@@ -231,3 +231,29 @@ expansion of `−ζ'/ζ` is formal, and the smoothed prime sum with the odd auto
 `(log log|γ|)/S` holds for an isolated off-line zero; clustered off-line zeros (more than `1/a₀` in a
 unit window) can cancel the signal, and the local count only yields `a₀ ≲ (log|γ₀|)(log(a₀S))/S` via a
 Turán power-sum inequality. STATUS CANNOT-330 has been rewritten accordingly.
+
+## Negativity-witness theorem (plan, 2026-09-08; Lean in progress)
+
+Exact form of CANNOT-330 (i) on the zero side (`ConstrainedWeilTwistedOddTest` supplies the identity
+`Q(cos(γ*x)ψ) = Σ'_q −(1/4)(A_q + A'_q)²/z_q²`):
+
+**Statement.** Let `ψ_a` be the odd profile `ψ_a = b(x) − b(−x)` with `b` a smooth bump equal to `1` on
+`[1/4, a − 1/4]` and supported in `(0, a)` (so `|ψ_a| ≤ 1`, `‖ψ_a''‖₁ ≤ C_ψ` independent of `a`). Let `q₀`
+be a copy with `z₀ = γ₀ − i a₀`, `a₀ > 0`, `γ₀ ≥ 2`, and suppose every copy `q` with
+`|Re z_q − γ₀| ≤ e^{a}` satisfies `Im z_q = 0` or `z_q ∈ {z₀, conj z₀}`, while every other copy has
+`|Im z_q| ≤ a₀`. Then
+`Re Q(cos(γ₀x)ψ_a) ≤ −Φ₊²/(16 γ₀²) + C (a² + C_ψ²) K log γ₀ / γ₀² + C' e^{2a₀a} e^{−3a} K log γ₀ / γ₀²`,
+`Φ₊ = ∫ e^{a₀u}ψ_a ≥ (e^{a₀(a−1/4)} − e^{a₀/4})/a₀ − 1/a₀`; hence `Q < 0` once
+`e^{2a₀a} > C'' a₀² a² K log γ₀`, i.e. positivity at aperture `a` forces `a₀ ≤ (log log γ₀ + 2 log a + C)/(2a)`.
+
+**Ingredients (all corpus-owned).** `twistedMoment ψ b μ = testTransform ψ (μ − b i)`
+(`HTGeometry.CompactTestTransform`); two integrations by parts `testTransform_ibp_two` and the strip bound
+`norm_testTransform_le_exp` give `|A(b, ν)| ≤ e^{a|b|} ‖ψ''‖₁ / ν²`; the window count `card_absWindow_le'`
+(`PrimeLagLandauWeights`, `≤ (240 + smallHeightCount) winLog k` copies with `|ordinate| ∈ [k, k+1)`) bounds the
+critical-line total `Σ_on |A + A'|²/(4|z|²)` and the far off-line total; `Re(1/z₀²) ≥ 1/(2γ₀²)` for `γ₀ ≥ 2`,
+`|Im(1/z₀²)| ≤ 2a₀/γ₀³`. Split the ray energy as `term_{q₀} + Σ'_{q ≠ q₀}` (`Summable.sum_add_tsum_compl`),
+with mirror and repeated copies contributing `≤ 0`.
+
+**Why this and not the clustered case.** Clustered off-line zeros need a Turán power-sum inequality for
+exponential sums with slowly varying positive coefficients on the window `t ∈ [S − 1/a₀, S]`; that is the
+open formal item behind CANNOT-330 (ii).

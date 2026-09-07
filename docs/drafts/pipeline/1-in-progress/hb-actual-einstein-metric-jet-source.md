@@ -17,7 +17,9 @@ two-jet proved equal to its actual coordinate derivatives. The upper-half-plane 
 and its vacuum equation are proved. Actual affine variation of a C2 tensor field realizes the
 quadratic and direct cubic Einstein coefficients, including the full KI reconstruction.
 The fundamental radial profiles and literal scalar/coexact-vector cusp fields are instantiated.
-The reconstructed first-order Einstein equation, nonlinear field/gauge corrections, complete
+The complete first Einstein variation now equals the actual field-source amplitude derivative.
+The scalar metric has an exact generally nonzero normalized boundary coefficient despite its
+vanishing master. The reconstructed first-order Einstein equation, nonlinear field/gauge corrections, complete
 source reduction, physical causal action, and final left-QNM projection remain to be derived.
 
 Corpus searches `einstein variation`, `metric perturbation`, `ricci coordinate`, `inverse series
@@ -376,14 +378,73 @@ public theorems close this insertion. These field identities hold for every comp
 u and do not establish nonvanishing, global quotient admission, the reconstructed
 first-order Einstein equation, or retained spin-two source identification.
 
+## Closed first Einstein variation
+
+`HTGeometry.CoordinateEinsteinComplexLinearization` differentiates the literal complete
+jet. For background J, perturbation K, and G=J.metric^-1, its inverse variation is
+D=-G*K.metric*G. The spatial inverse derivative varies as
+`-(D*J.first[k]*G + G*K.first[k]*G + G*J.first[k]*D)`.
+All connection, spatial connection, Riemann, Ricci and scalar product-rule terms are retained.
+The final finite contraction is
+`deltaEinstein = deltaRicci - (deltaScalar*J.metric + J.scalar*K.metric)/2`.
+
+Twelve public theorems establish actual complex derivative identities, including
+`einstein_eq_fderiv` on the complete metric-jet space and the fixed cosmological term.
+`RHTower.ThetaCuspHawkingBMLinearizedEinsteinSource` then identifies
+`deltaEinstein-3*K.metric` with the actual amplitude derivative of
+`D4BMActualMetricSource.source`. Four public theorems include the full covariant
+reconstruction and the literal fundamental profiles with fixed horizon geometry.
+The first-order zero equation is exactly vanishing of this displayed finite contraction;
+its vanishing for the literal cusp tensor is not established by these identities.
+This is a proved bridge to the fixed tensor target, with no added selection conjecture.
+
+## Exact reconstructed boundary metric
+
+The boundary question is resolved directly from the corpus KI reconstruction, without a
+numerical experiment. Let A=z^(-i*omega/2), b=(1-z)^(1/2), and Phi=A*b. The actual
+fundamental derivative is `Phi'=Phi*(-i*omega/(2*z)-1/(2*(1-z)))`.
+The original scalar orbit therefore obeys
+`2*angularTrace = A*((q/2-i*omega)*(1-z)-z)`.
+For positive physical radius, b at z=1-r^-2 is exactly r^-1. The normalized coefficient
+tends to -1 at r→∞, while Phi tends to zero.
+
+`RHTower.ThetaCuspHawkingBMFundamentalMetricBoundary` proves this exact identity,
+the radius branch, and its insertion into the original full covariant tensor. Along
+fixed time tau and horizon point u, the actual component has limit
+`r^-2*h_22 → -aS*gamma_00(u)*S(u)*exp(-i*omega*tau)`.
+On the physical upper half-plane its zero-limit condition is exactly
+`aS=0 or S(u)=0`. Neither q nor omega nor vector amplitude aV cancels this leading
+scalar coefficient. Ten public theorems include both the nonzero-limit obstruction
+and its sharp positive vanishing classification.
+
+This does not impose metric Dirichlet data, establish a gravitational boundary domain,
+or retire HB. The surviving obligation is to derive the metric boundary observable and
+admission condition used by the physical causal response; a vanishing master alone
+cannot supply it. The scalar reconstruction agrees with equations 2.20–2.21 and
+3.9–3.10 of [Kodama–Ishibashi](https://arxiv.org/pdf/hep-th/0305147).
+The fundamental master equation and master Dirichlet convention are those in
+[Birmingham–Mokhtari](https://arxiv.org/pdf/hep-th/0609028), equations 24–36.
+These source checks support the formula identification; the boundary statements above
+are proved by Lean from the corpus definitions.
+
 ## Next physical source evaluation
 
 Derive the reconstructed first-order Einstein equation. The exact next
 on-shell target is the zero amplitude derivative of `D4BMActualMetricSource.source`
 for each complete reconstructed tensor component at either matched fundamental
 frequency. Proving radial and horizon equations separately does not yet establish
-this tensor identity. Any required spectral/spatial derivative interchange for retained
-angular jets also remains explicit.
+this tensor identity. Evaluate the explicit `D4BMLinearizedEinsteinSource.residual`
+on the actual full metric jet at the matched frequencies. Derive the physical metric
+boundary condition with the nonzero scalar boundary coefficient retained. Any required
+spectral/spatial derivative interchange for retained angular jets also remains explicit.
+
+The tensor evaluation proceeds through `deltaRicci+3*h` and its derived trace reversal.
+This is a `[BRIDGE]` to the fixed first-order equation, not a replacement target. With
+time rate s=-i*omega and fundamental dispersion q=-(s+1)*(s+2), simplify the actual
+scalar radial coefficients before expanding coordinate curvature. Retain the full
+angular two-jet, with only the proved scalar Laplacian relation used to eliminate
+one diagonal second derivative. Every finite jet identity must be connected back to
+the actual reconstructed field derivatives before declaring the tensor equation closed.
 
 The fundamental ingoing/Dirichlet radial inputs and matching horizon geometry are proved;
 the mixed dressed monodromy's outgoing incidence remains explicit in the scattering basis.
@@ -586,3 +647,59 @@ checks and formal lint passed; lint retains 132 existing large-file warnings. Ev
 owned Lean/Lake process completed, and the owned scratch directory was removed.
 No numerical experiment ran. The complete physical-source obligations above remain open;
 the RH objective remains active.
+
+
+## Current horizon and literal-source validation
+
+The 364-line `ThetaCuspHawkingBMHorizonCovectorEquation` and 110-line
+`ThetaCuspHawkingBMLiteralCuspMetricSource` passed scratch `lake env lean` checks.
+Their final exact-source, cache-only audits passed without proof warnings:
+
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMHorizonCovectorEquation`: 8.9 seconds.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralCuspMetricSource`: 203 seconds.
+
+Each build compiled only its requested new leaf. Scratch, canonical and audit source
+bytes were compared; only new olean/ilean artifacts were installed. Both leaves are
+wired exactly once into `RHTower.lean`. No full or umbrella build ran.
+
+A concurrent workspace build left five needed dependency oleans unavailable. Exact
+unchanged copies of those five sources were checked sequentially with foreground
+`lake env lean`, restoring only their missing oleans. No dependency source or trace
+metadata was changed, and no existing theorem axiom audit was repeated.
+
+One audit per new leaf checked its 16 and 9 public theorems, respectively. All 25
+use only `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or numerical
+certificate occurs. Corpus index generation passed. Global formal lint reports two
+unrelated concurrent modules missing their theorem-area umbrella imports:
+`RHTower.PartialSubsetEnergyOrder` and `RHTower.ThreePlaneSourceMargin`, plus large-file
+warnings. Both new HB leaves are reachable. Those other modules were not modified.
+
+All owned Lean/Lake processes completed. The 119 owned scratch entries, including
+both isolated audit packages and the required dependency-repair copies, were removed.
+No numerical experiment ran: the geometric identities were derived symbolically, so
+an experiment would not distinguish unresolved possibilities. The reconstructed
+first-order Einstein equation and the full causal-source/extinction chain remain open;
+the RH goal remains active.
+
+## Current linearization and boundary validation
+
+The new leaves passed scratch `lake env lean` without warnings. Exact-source,
+cache-only final audits each compiled only the requested new leaf:
+
+- `lake build GaloisForLFunctions.HTGeometry.CoordinateEinsteinComplexLinearization`: 5.0 seconds; 250 lines, 12 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLinearizedEinsteinSource`: 4.3 seconds; 89 lines, 4 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFundamentalMetricBoundary`: 5.1 seconds; 205 lines, 10 new public theorems.
+
+Scratch, canonical and audit source bytes were compared. Only the new olean/ilean
+artifacts were installed; dependency sources and trace metadata were not changed.
+All three leaves are wired exactly once into their respective umbrellas. No full or
+umbrella build ran. One foreground Lean/Lake process ran at a time.
+
+Only the 26 new public theorems received axiom audits, once each. All use solely
+`propext`, `Classical.choice`, and `Quot.sound`. Corpus index generation, scoped
+whitespace checks, and global formal lint passed; lint retains existing large-file
+warnings. All owned Lean/Lake processes completed, and the owned scratch directory
+was removed after an exact inventory. Other agents' processes were left untouched.
+No numerical experiment ran. The exact tensor zero equation, physical metric boundary
+admission, retained-source identification and causal extinction remain open; RH remains
+unproved in the corpus.

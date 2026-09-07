@@ -82,3 +82,61 @@ nonnegative critical-line terms. The transfer inequalities (isolated rate `(log 
 clustered Turán rate) remain paper. Trap: rewriting `xiSpectralPoint q = ↑re + ↑im·I` must be scoped with
 `conv_lhs`, since the right-hand side mentions `(xiSpectralPoint q).re`; the exponent identities close by
 `linear_combination (±↑im·↑u) * Complex.I_sq`.
+
+## The negativity witness (added 2026-09-08, Lean, `ConstrainedWeilNegativityWitness`)
+
+`re_suzukiScrewSmoothForm_twistedOddTest_le_of_topExcess`: for an odd profile `ψ` on `[−a, a]` and a copy
+`q₀` with `z₀ = xiSpectralPoint q₀`, `Re z₀ ≥ 2`, `|Im z₀| ≤ Re z₀/32`, `Φ₊ := (twistedMoment ψ (−Im z₀) 0).re ≥ 0`,
+second-frequency moment `‖twistedMoment ψ (−Im z₀) (2 Re z₀)‖ ≤ Φ₊/8`, and the gap hypothesis
+`∀ q, z_q ≠ z₀ → z_q ≠ conj z₀ → |Im z_q| ≤ −Im z₀ − δ`:
+
+`Re Q(cos(Re z₀ · x)ψ) ≤ −(9/50) Φ₊²/(Re z₀)² + e^{2a(−Im z₀ − δ)} · (∫|ψ|)² · S₂`, `S₂ = Σ_q ‖z_q‖⁻²` (`xiSpectralInvSqTotal`).
+
+Supporting lemmas: `twistedMoment_eq_testTransform` (twisted moment = `HTGeometry.testTransform` at `μ − b i`),
+`norm_twistedMoment_le` (trivial bound `e^{a|b|}∫|ψ|`), `norm_twistedMoment_le_div` (one integration by parts,
+`e^{a|b|}‖ψ'‖₁/|μ|`, via `testTransform_ibp` and `norm_testTransform_le_exp`), `norm_twistedRayTerm_le`,
+`twistedRayTerm_congr` / `twistedRayTerm_of_conj` (copies at `z₀` repeat the term, copies at `conj z₀` conjugate it),
+`re_sq_div_sq_ge` (`Re((Φ+E)²/z²) ≥ (18/25)Φ²/(Re z)²` for `|E| ≤ Φ/8`, `|Im z| ≤ Re z/32`),
+`re_twistedRayTerm_centre_le`. Reading: with `Φ₊ ≍ e^{a₀a}/a₀` and `∫|ψ| ≤ 2a`, the form is negative once
+`e^{2δa} ≳ a₀² a² (Re z₀)² S₂`, i.e. a top excess gap `δ` is detected at aperture `a ≈ (log γ₀ + log a)/δ`;
+this is the exact Lean content of CANNOT-330 (i) (with the global constant `S₂` in place of the local zero count).
+Remaining to instantiate: the aperture-uniform plateau profile (`Real.smoothTransition` construction) supplying
+`Φ₊ ≥ (e^{a₀(a−1/4)} − e^{a₀/4})/a₀ − 1/a₀`, `∫|ψ| ≤ 2a`, `‖ψ'‖₁ ≤ 4M₁`, and the discharge of the
+second-frequency hypothesis from `norm_twistedMoment_le_div` for `Re z₀ ≥ 32 M₁ a₀ e^{a₀/4}`.
+Traps: `linarith` treats `c * Φ^2 / r^2` with different `c` as unrelated atoms (state the scalar identity first);
+`Summable.tsum_subtype_le` takes `(f) (s) (hf : ∀ i, 0 ≤ f i) (hs : Summable f)` explicitly;
+`Complex.norm_ofReal` does not exist (use `Complex.norm_real` + `Real.norm_eq_abs`).
+
+## Aperture averaging: plateau profile, exact moments, exponential polynomials (added 2026-09-08, Lean)
+
+Modules (wired into `RHTower.lean` / `HTGeometry.lean`, axioms clean):
+
+* `ConstrainedWeilPlateauProfile` — the odd plateau profile `ψ_a = h_a − h_a(−·)`, `h_a(u) = τ(4u)τ(4(a−u))`
+  (`Real.smoothTransition`), as an `OddSmoothProfile a` (`plateauProfile`), with `|ψ_a| ≤ 1`, `ψ_a = h_a` on `u ≥ 0`,
+  `h_a = 1` on `[1/4, a − 1/4]`. **Exact moments** for `a ≥ 1/2`, `c ≠ 0`:
+  `∫ e^{cu} h_a = e^{ca} κ(c) + ρ(c)` (`integral_exp_mul_plateauBump`), hence
+  `twistedMoment ψ_a b μ = e^{ca}κ(c) + ρ(c) − e^{−ca}κ(−c) − ρ(−c)`, `c = b + iμ` (`twistedMoment_plateauProfile`),
+  with `κ(c) = ∫_0^{1/4} e^{−cs}τ(4s) + e^{−c/4}/c`, `ρ(c) = ∫_0^{1/4} e^{cu}τ(4u) − e^{c/4}/c`.
+* `ConstrainedWeilPlateauBounds` — one integration by parts on the edge: `κ(c) = (1/c)∫_0^{1/4}(edge)'e^{−cs}`,
+  `ρ(c) = −(1/c)∫_0^{1/4}(edge)'e^{cu}` (`plateauKappa_eq`, `plateauRho_eq`); `exists_plateau_coeff_bound`:
+  `∃ M ≥ 0, ∀ c ≠ 0, ‖κ(c)‖, ‖ρ(c)‖ ≤ M e^{|Re c|/4}/‖c‖`; `plateauKappa_ofReal`: `κ(b)` real, `≥ e^{−b/4}/b`.
+* `HTGeometry.ExponentialPolynomialWindowMean` — `ExpPoly = List (ℂ × ℂ)`, `eval`, `constTerm` (sum of
+  coefficients at exponent `0`), `decayNorm` (`Σ_{λ≠0}‖C‖/‖λ‖`), `Decaying` (all `Re λ ≤ 0`), `mul`, `smul`,
+  append; `norm_integral_sub_constTerm_le`: `‖∫_A^{A+L} eval − L·constTerm‖ ≤ 2·decayNorm` for `A ≥ 0`;
+  `abs_windowMean_re_sub_le`: the real window mean is within `2·decayNorm/L` of `Re constTerm`.
+* `ConstrainedWeilApertureAveraging` — `plateauMomentPoly c`, `rayPairPoly γ q`, `rayTermPoly γ q`,
+  `normalizedRayTermPoly Θ γ q`: for `a ≥ 1/2`, `twistedRayTerm ψ_a γ q = eval (rayTermPoly γ q) a` and
+  `eval (normalizedRayTermPoly Θ γ q) a = e^{−2Θa} · twistedRayTerm ψ_a γ q`; `decaying_normalizedRayTermPoly`
+  when `|Im z_q| ≤ Θ`.
+
+**Purpose.** In the aperture variable every ray term of the plateau profile is an exact exponential polynomial with
+exponents from `{±c₁ − Θ, ±c₂ − Θ, −Θ}` (`c₁ = −Im z_q + i(Re z_q − γ)`, `c₂ = −Im z_q + i(Re z_q + γ)`).
+When `Θ = max_q |Im z_q|` is attained at `q₀` and the test is centred at `γ = Re z₀`, the only exponent sums
+equal to `0` come from the four copies `±z₀, ±conj z₀`, each contributing the constant term
+`−(1/4)κ(Θ)²/z₀²` (real part `< 0`, since `κ(Θ) > 0` and `Re z₀⁻² > 0`); every other copy has constant term
+`0` and its window mean tends to `0` at rate `2·decayNorm/L`, with `Σ_q decayNorm_q < ∞` from the coefficient
+bounds and `Σ_q |z_q|⁻² < ∞`. Hence the window mean of `e^{−2Θa} Re Q(cos(Re z₀ · x)ψ_a)` tends to a negative
+limit and the form is negative for some aperture: **attained top excess ⟹ twisted-family negativity, with no
+isolation or gap hypothesis** (the clustered-zero obstruction of CANNOT-330 (ii) is removed by averaging in
+the aperture instead of the centre). Remaining Lean steps: the constant-term identification (25 exponent-sum
+cases), `Σ_q decayNorm_q < ∞`, the interchange of `Σ'_q` with the window integral, and the assembly.

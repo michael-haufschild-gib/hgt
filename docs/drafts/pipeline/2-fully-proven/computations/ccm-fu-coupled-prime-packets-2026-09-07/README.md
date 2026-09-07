@@ -15,7 +15,7 @@ finite diagnostic does not prove any of those strict inequalities in Lean,
 a growing coupled batch, complete source coverage, or RH.
 
 Artifacts: [screen.py](screen.py), [profiles.csv](profiles.csv),
-[summary.json](summary.json). The [research card](../../../1-in-progress/ccm-fu-coupled-prime-packet-balance.md)
+[summary.json](summary.json). The [formal research card](../../../3-formalized/ccm-fu-coupled-prime-batches.md)
 records the independent analytic construction selected from this evidence.
 
 Executed via `ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519`, using
