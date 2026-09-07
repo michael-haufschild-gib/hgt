@@ -268,3 +268,26 @@ uses two exact Abel summations, locally uniform kernel bounds and the literal
 L-series landing. A linear mean bound would contradict the [formal Euler/pole obstruction](../3-formalized/ccm-fu-half-selection-euler-pole-obstruction.md).
 The survivor is unbounded magnitude on every tail, without a sign or precise
 asymptotic assertion. Adaptive PE4, final SD1 and RH remain open.
+
+
+## Actual growing signed batches under a uniform quadratic ceiling
+
+The [growing signed-batch certificate](../3-formalized/ccm-fu-growing-signed-prime-batches.md)
+proves positive macroscopic source supply after the fixed prime core below eight.
+Clipped reflection of the negative complete source at seven gives a uniform
+positive singleton floor on one fixed quotient-seven window. The corpus prime
+count theorem makes its total positive mass superlinear; the actual negative
+late-prime supply is superlinear along the same cutoffs.
+
+All primes in both pools are isolated after that fixed core. Exact scalar
+transport retains the removed singleton-square reserve. Matching opposite
+subpools makes this reserve pay the final head square, and a complete distinct
+order stays below the starting core energy. For every real T and all sufficiently
+large cutoffs `M=7(b+1)(4N)` for one fixed b, the selected batch consumes at least
+TM of each sign while every prefix has energy at most `184832M²`. Every partial
+preparation of the fixed core has that same bound.
+
+This is an unconditional source-produced growing partial schedule. It does not
+claim the original diagonal ceiling, complete prime coverage, or control of
+later middle-prime steps and their changed retained fields. Those remaining
+interactions, the full growing schedule, PE4, PE4G, SD1, and RH stay open.

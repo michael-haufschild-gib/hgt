@@ -255,17 +255,65 @@ be silently identified with an ingoing retarded mode merely because it solves th
 radial equation. No causal admissibility or global boundary completion is asserted.
 Nineteen public theorems close this dressed radial construction.
 
+## Closed fundamental radial profiles and metric instantiation
+
+The unresolved cubic incidence uses the fundamental plus/minus pair
+(`ThetaCuspHawkingAIMECrossBranchTeukolskyResidue`).
+`ThetaCuspHawkingBMFundamentalMetricSource` constructs the full profile
+`Phi_omega(z)=z^(-i*omega/2)*(1-z)^(1/2)`, with the complex power's zero value retained
+at the Dirichlet endpoint. BM Eqs. (31)--(36) fix the boundary and frequency conventions.
+
+Its actual physical radial residual is exactly
+`(omega-omega_plus)*(omega-omega_minus)*Phi_omega/4`, where
+`omega_plus=chi-3*i/2` and `omega_minus=-chi-3*i/2` are the corpus's fundamental
+frequencies. The profile has no interior zeros, so `radial_equation_iff` proves these
+are exactly the frequencies at which this profile solves the physical equation.
+`exterior_fundamental_equations` specializes this conclusion to every exterior point.
+Actual first and second derivatives and all-order local smoothness are proved, including
+both the horizon-factor and Dirichlet-factor derivatives.
+
+Boundary conditions are established separately: dividing by the incoming horizon factor
+has limit one at zero; the Fourier phase has the incoming horizon coordinate; and the
+master has actual zero limit at the Dirichlet endpoint. These facts provide the fundamental
+ingoing/Dirichlet radial profiles. They do not identify a time-retarded nonlinear response.
+
+The fixed horizon metric is `y^(-2)*diag(1,1)`. Its angular block agrees identically with the
+proved background metric, and its required coordinate smoothness follows from `y>0`.
+The full KI recipe now substitutes the fundamental master with independent scalar/vector
+amplitudes and this fixed geometry. `fullJet_correct` proves its complete metric jet agrees
+with actual derivatives. `source_coefficients` identifies the resulting direct quadratic
+and cubic coefficients with actual B/2 and C/6 evaluations on that jet.
+
+Only scalar/vector angular C2 regularity remains explicit in this field-to-source
+instantiation. The identity holds for arbitrary such angular fields; it does not assert
+that they obey the required harmonic equations or that the reconstructed perturbation
+solves the linearized Einstein equation. Seventeen radial and five metric/source public
+theorems close this construction.
+
 ## Next physical source evaluation
 
-Match the reconstructed horizon metric entries to the proved background and instantiate
-physical causal masters and literal horizon profiles with their required regularity. The
-mixed dressed monodromy's radial smoothness and higher-jet reductions are proved, while its
-outgoing incidence must be respected when selecting physical source and response branches.
-Reduce the derived B,C evaluations on those profiles, identify second- and third-order field
-corrections, nonlinear gauge completion and exceptional mixed-sector constraints, and retain
-causal turn-on and boundary terms. Then prove membership in the physical causal response
-domain and identify the final left-QNM projection. Neither local reconstruction nor radial
-uniqueness proves fixed Hawking-clock extinction. No route retired.
+Joint angular regularity is being derived from the literal signed Fourier--Bessel family,
+not from separate partial derivatives alone. For fixed arithmetic parameter u, Bessel order nu,
+real height power a, index degree d and Fourier sign, retain the full infinite sum of
+`a_u(n)*n^d*exp(sign*2*pi*i*n*x)*Y^a*K_nu(2*pi*n*Y)`.
+Horizontal differentiation increases d by one. Vertical differentiation is the sum of
+`a` times the family at `(a-1,d,nu)` and `-pi` times the two families at
+`(a,d+1,nu+1)` and `(a,d+1,nu-1)`. The corpus's polynomial arithmetic envelope and
+positive-argument Bessel envelope provide locally uniform summable bounds on every
+positive-height neighborhood. Prove the actual joint Frechet derivative, then induct on
+smoothness using this derivative-stable family. Finally identify the existing scalar and
+finite Maass-word cusp legs with these literal sums and their constant terms. No stronger
+spectral convergence chamber or finite-mode replacement is intended.
+
+Instantiate the literal scalar/vector horizon profiles with multivariate regularity and the
+correct harmonic equations, and verify the reconstructed first-order Einstein equation.
+The fundamental ingoing/Dirichlet radial inputs and matching horizon geometry are proved;
+the mixed dressed monodromy's outgoing incidence remains explicit in the scattering basis.
+Reduce the complete B,C source evaluations, identify second- and third-order field corrections,
+nonlinear gauge completion and exceptional mixed-sector constraints, and retain causal
+turn-on and boundary terms. Then prove the complete source belongs to the physical causal
+response domain, identify the final left-QNM projection, and prove fixed Hawking-clock
+extinction. No route retired; RH remains open in the corpus.
 
 ## Foundation validation
 
@@ -406,3 +454,21 @@ Corpus index generation and scoped whitespace checks passed. Global
 no error in the new leaf. All owned process handles completed and the owned scratch directory
 was removed. The RH goal remains active; causal profile and angular completion, complete
 physical source/projection, and fixed-clock extinction remain open.
+
+
+## Current fundamental profile validation
+
+The 314-line `ThetaCuspHawkingBMFundamentalMetricSource` passed scratch `lake env lean`
+without warnings. An isolated exact-source package reused cached dependencies. Its preflight
+required only the new leaf, and final
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFundamentalMetricSource`
+passed in 5.0 seconds; only that leaf compiled. Its olean/ilean were installed without copying
+dependency trace metadata. The leaf is wired exactly once into `RHTower.lean`; no umbrella
+or full build ran.
+
+One scratch axiom audit covered the 22 new public theorems and no existing theorem. All use
+only `propext`, `Classical.choice`, and `Quot.sound`. Corpus index generation, scoped whitespace
+checks, and `scripts/formal_tools.py lint` passed; lint retains 132 existing large-file warnings.
+All owned processes completed and the owned scratch directory was removed. No numerical
+experiment ran. The full RH objective remains active with the analytical and physical
+obligations listed above.

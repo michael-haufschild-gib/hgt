@@ -555,6 +555,16 @@ theorem riemannHypothesis_iff_powLag_bddAbove {k : ℕ} (hk : 1 ≤ k) :
   · rintro ⟨M, hM⟩
     exact riemannHypothesis_of_powLag_le hk hM
 
+/-- **The sharp `k`-th power criterion.** RH holds iff `Φ(k log m) ≤ 2 + γ − log 4π` for every
+`m ≥ 1`: the lag on the `k`-th powers never exceeds its value at `m = 1`. -/
+theorem riemannHypothesis_iff_powLag_le_sharp {k : ℕ} (hk : 1 ≤ k) :
+    RiemannHypothesis ↔ ∀ m : ℕ, 1 ≤ m → integerLag (m ^ k) ≤ poleSharpConstant := by
+  constructor
+  · intro h m _
+    exact (abs_le.mp (abs_integerLag_le_of_riemannHypothesis h (m ^ k))).2
+  · intro hM
+    exact riemannHypothesis_of_powLag_le hk hM
+
 end
 
 end RHTower

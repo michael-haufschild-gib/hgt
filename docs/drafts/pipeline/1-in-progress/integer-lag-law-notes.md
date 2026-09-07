@@ -356,3 +356,34 @@ structure), which no positivity argument controls. Verdict: the two-sided prime 
 primes, for every `a < Θ − ½`; with `|a_p| ≤ W p^{Θ−½}` the one-sided growth exponent along primes is exactly `Θ − ½`.
 STATUS MUST-255. This quantifies MUST-254 and is the sampled-at-primes analogue of the classical Ω-results for
 `ψ(x) − x`; the mechanism is unchanged (power ceiling absorbed into `−ζ'/ζ(1 + s − a)`).
+
+## Direct source attempts on the ceiling `F(x) ≤ c√x` (paper, 2026-09-07, both failed)
+
+Notation: `c = 2 + γ − log 4π`, `F(x) = √x Φ(log x) = x m(x) + (x − ψ(x)) − log 2π + τ(x)`,
+`m(x) = Σ_{n≤x} Λ(n)/n − log x + γ`, `F' = m` a.e., `F'' + 1/x = Σ_n (Λ(n)/n) δ_n ≥ 0`.
+
+**Attempt A: Selberg-symmetry bootstrap.** Multiplying the Mellin identity `ζ · F̂ = R̂` (`R` elementary) through
+by `ζ'/ζ` gives the exact identity `F(x) log x + Σ_{n≤x} Λ(n) F(x/n) = (μ ∗ S)(x) =: T(x)` with `S` elementary,
+`T̂ = −F̂' − (ζ'/ζ) F̂`. Since `F = o(x)`, `F̂` is analytic at `s = 1`, so `T(x) ∼ K x` with
+`K = F̂(1) = ∫_1^∞ F(x) x^{−2} dx = Σ_ρ w_ρ/(1−ρ) = ½ Σ_ρ (ρ(1−ρ))^{−2} > 0`
+(the ρ ↔ 1−ρ symmetry averages `1/(1−ρ)` and `1/ρ`). The elementary-PNT bootstrap
+(lower ceiling `F ≥ −c√y` on `y < x` fed into the sieve term, `Σ_{n≤x} Λ(n)√(x/n) ≈ 2x`) yields only
+`F(x) log x ≤ (K + 2c) x + o(x)`: the two main terms carry the same sign and no cancellation to scale `√x` is
+available. Selberg's method gains one logarithm over its input precision `O(x)`; the ceiling needs `√x`.
+Verdict: FAILED, mechanism exhausted. Side product (not formalized, not RH-bearing): the second-genus identity
+`2γ₁ + γ² + 1 + γ − log 2π + Σ_{k≥1} 1/(2k(2k+1)²) = ½ Σ_ρ (ρ(1−ρ))^{−2} ≈ 4·10^{−5}`
+(numerically consistent: `0.18755 + 1.57722 − 1.83788 + 0.0732 ≈ 1·10^{−4}` against `½ Σ_γ (¼+γ²)^{−2} ≈ 4·10^{−5}`).
+
+**Attempt B: gap concavity.** `G = F − c√x` has `G'' = −1/x + c/(4x^{3/2}) < 0` on every prime-power gap, so on
+each gap the ceiling holds iff it holds at the endpoints and at the unique turning point `x*` with
+`m(x*) = c/(2√x*)`, where `a_{x*} = 2√x* m(x*)`. Hence the real-`x` ceiling is equivalent to the integer ceiling
+plus `√x* m(x*) ≤ c/2` at turning points — weaker than the already-formal integer ceiling (`RH ⟺ a_n ≤ a_1`).
+Verdict: FAILED (reduction only, no source input).
+
+**Attempt C (not pursued): Möbius/divisor renewal for `F`.** `Σ_{k≤X} F(X/k)` is elementary
+(`X[2Σ_{m≤X} log m/m − H_X(log X − γ)] + X H_X − log⌊X⌋! − ⌊X⌋ log 2π + Σ_k τ(X/k)`), so
+`F = μ ∗ (elementary)`; the absolute inverse is `≍ X` because `|F(y)|` is bounded away from zero on most of
+`[1,2)` (`F(1) = c > 0`, `F(2) ≈ −0.0246 < 0`), exactly the obstruction recorded for `D(X)` on the
+`weil-pole-direct-sign-attack` card. Not repeated.
+
+Hard obligation unchanged: a source-derived one-sided bound on `∫_1^x m(t) dt` at scale `√x`.

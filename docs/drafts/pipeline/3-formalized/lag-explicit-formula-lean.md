@@ -205,3 +205,9 @@ ceiling at primes), `re_le_half_add_max_of_primeLag_le_rpow`, `growth_transfer_s
 (positivity extraction). Lag side: `lagTopCoeff`, `topTail` (tends to 0 along `Finset` atTop), `lowerTerm`/`lowerTailReal`
 (dominated convergence), `scaledTerm`, `abs_scaledLag_sub_trigSum_le` (decomposition `≤ topTail + 2 lowerTail`),
 `pairMain_lagTopCoeff_nonneg` (conjugation symmetry of the top level), `pairMain_lagTopCoeff_self`. STATUS MUST-256.
+
+## The sharp `k`-th power endpoint (added 2026-09-07, Lean, `PowerLagLandauCriterion`)
+
+`riemannHypothesis_iff_powLag_le_sharp (hk : 1 ≤ k) : RH ↔ ∀ m, 1 ≤ m → integerLag (m ^ k) ≤ poleSharpConstant`.
+The forward direction is the Bochner ceiling `|a_n| ≤ a_1`; the converse is `riemannHypothesis_of_powLag_le`
+with `M = poleSharpConstant`. Built and wired (module already in the `RHTower` umbrella).
