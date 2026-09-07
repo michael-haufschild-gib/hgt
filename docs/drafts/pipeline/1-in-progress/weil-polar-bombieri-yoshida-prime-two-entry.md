@@ -257,3 +257,12 @@ with mirror and repeated copies contributing `≤ 0`.
 **Why this and not the clustered case.** Clustered off-line zeros need a Turán power-sum inequality for
 exponential sums with slowly varying positive coefficients on the window `t ∈ [S − 1/a₀, S]`; that is the
 open formal item behind CANNOT-330 (ii).
+
+## Quantitative strict-domain law (2026-09-08, Lean)
+
+`polarGroundEnergy_le_neg_exp_of_attainedTop` (STATUS MUST-260): under an attained top excess `Θ`, the
+pole-vanishing ground energy obeys `μ₀(B) ≤ −c' e^{2ΘB}/B³` for all `B ≥ B₀`. Combined with
+`riemannHypothesis_or_unique_polarGroundZero`, the degeneracy aperture `B*` of the O-lane ground form is
+`≤ 3/2 + 4D_w/c_D + 1`, explicit in the top zero and `Σ_q |z_q|⁻²`. The certified window `S ≤ 1` therefore says
+nothing about zeros unless `B₀ ≤ 1`, which needs `D_w/c_D` small, i.e. a top zero of enormous excess at low
+height — excluded by the known zero-free region. The lane remains a receiver.

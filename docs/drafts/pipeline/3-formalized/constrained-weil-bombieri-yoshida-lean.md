@@ -169,3 +169,41 @@ Traps: `setIntegral_const` now yields `μ.real s • c` (unfold `Measure.real`, 
 works on `volume.restrict (Ioc A B)` after `simp_rw [intervalIntegral.integral_of_le]` on both sides;
 `lt_of_pow_lt_pow_left₀ 2 (abs_nonneg _)` turns `(9/2)² < |x|²` into `9/2 < |x|`; `hcont.intervalIntegrable_of_Icc`
 for a `ContinuousOn` on `Icc`. The ordinate bound `41/2 < (Im ρ)²` is corpus-owned (`XiEndpointStrongHeightGap`).
+
+## Exponential decay of the pole-vanishing ground energy (added 2026-09-08, Lean)
+
+Five further modules (all wired into `RHTower.lean`, axioms clean):
+
+* `ConstrainedWeilPlateauSecondOrder` — the edge `τ(4·)` is flat at `0` and `1/4` (`deriv_plateauEdge_zero`,
+  `deriv_plateauEdge_quarter`, by `IsLocalMin/IsLocalMax.deriv_eq_zero`); second integration by parts
+  `plateauKappa_eq₂ : κ(c) = (1/c²)∫_0^{1/4}(edge)''e^{−cs}`, `plateauRho_eq₂`; `exists_plateau_coeff_bound₂ :
+  ∃ M₂ ≥ 0, ∀ c ≠ 0, ‖κ(c)‖, ‖ρ(c)‖ ≤ M₂e^{|Re c|/4}/‖c‖²`; global edge-derivative bound `K`; derivative of the
+  plateau profile `plateauProfileDeriv` with `|·| ≤ 4K`.
+* `ConstrainedWeilPolarDerivativeTest` — `SuzukiSmoothZeroMeanTest.polarDerivativeTest φ := φ'' − φ/4` (zero mean
+  since `∫φ'' = 0 = ∫φ`); `suzukiTestRayCoef_polarDerivativeTest : Coef(Dφ) = −(z² + ¼) Coef(φ)` and the `Bar`
+  version (two ibp via `testTransform_ibp_two`; conjugation commutes with `deriv` via `Complex.conjCLE`);
+  `suzukiScrewSmoothForm_polarDerivativeTest : Q(Dφ) = Σ'(z_q²+¼)² Bar·Coef/z_q²`; the source
+  `polarDerivativeSource φ A hA := (zeroMeanPrimitiveSource).polarMultiplier` (corpus `D`-operator source),
+  polar-constrained, with derivative test `Dφ` (`deriv_polarDerivativeSource`); **transfer**
+  `polarGroundEnergy_mul_le_re_smoothForm_polarDerivativeTest : μ₀(A)‖DΦ‖² ≤ Re Q(Dφ)`;
+  `norm_sq_toAperture_eq_integral` (aperture norm = `L²` norm); `norm_sq_twistedPlateau_polarDerivativeSource_le :
+  ‖DΦ_a‖² ≤ 2a(|γ| + 4K + (2a+1)/4)²`.
+* `ConstrainedWeilWeightedRayBounds` — `dWeight q = (z_q²+¼)²`, `freqConst γ q = 1/‖c₁‖² + 1/‖c₂‖²`;
+  second-order moment bound `norm_twistedMoment_plateau_le₂ : ‖A(b,μ)‖ ≤ 4M₂e^{Θ/4}e^{aΘ}/‖c‖²`;
+  `rayMajorant M Θ γ q = 4M₂²e^{Θ/2}‖w_q‖κ_q²/‖z_q‖²` bounds `‖Re eval(w_q P_q)(a)‖` uniformly in `a ≥ ½`
+  (`norm_re_eval_weightedRayPoly_le`); `summable_rayMajorant` (far copies `|Re z_q| ≥ 2|γ|`: `≤ 4096M₂²e^{Θ/2}/‖z_q‖²`;
+  the rest finite); `coeffSum_shiftedPairPoly_le₂`, `decayNorm_weightedRayPoly_le_far`, `summable_decayNorm_weightedRayPoly`.
+* `ConstrainedWeilPolarGroundDecay` — `weightedTwistedForm Θ γ a = Σ' Re eval(w_q P_q)(a) = e^{−2Θa}Re Q(D(cos γx ψ_a))`
+  (`weightedTwistedForm_eq`); interchange, per-copy window bound; weighted constant terms
+  `re_constTerm_weighted_of_mem_topCentreSet : = −topConstantD Θ γ` with
+  `topConstantD = (1/4)κ(Θ)²((γ²−Θ²) + ½ + (γ²−Θ²)/(16(γ²+Θ²)²))` (`dWeight_div_sq : (z²+¼)²/z² = z² + ½ + (1/16)(z²)⁻¹`);
+  `integral_weightedTwistedForm_le : ∫_A^{A+L} S_w ≤ −c_D L + 2D_w`; `exists_weightedTwistedForm_le_of_attainedTop`;
+  `polarGroundEnergy_apertureSucc_le : μ₀(a+1) ≤ −(c_D/2)e^{2Θa}/(2a(|γ|+4K+(2a+1)/4)²)` at the recurrent apertures;
+  **`polarGroundEnergy_le_neg_exp_of_attainedTop`**: `∃ c' > 0, ∃ B₀ ≥ 1, ∀ B, B₀ ≤ B.1 → μ₀(B) ≤ −c'e^{2ΘB.1}/B.1³`.
+  STATUS MUST-260.
+
+Traps: `MeasureTheory.integral_div`/`integral_const_mul`/`integral_congr_ae` are ambiguous with the `intervalIntegral`
+versions once both namespaces are open — qualify them; `HasDerivAt.comp_neg` does not exist (use `comp_const_sub 0`);
+`(hd1.add hd2).deriv` needs the lambda-sum form stated explicitly; `gcongr` side goals `0 ≤ M` appear when a
+multiplicative constant is not visibly nonnegative (keep `hM` in the signature only where such a goal arises);
+`linear_combination (-(1/16)) * hinv` with `hinv : (z²)⁻¹ * z² = 1` closes the weight identity.

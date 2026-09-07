@@ -45,13 +45,13 @@ At integer x=M, H_y(M) is exactly y paired with V_S(M). Between successive
 integers it is affine in sqrt(x), so nonnegative integer values imply
 nonnegativity on the whole real ray. No numerical source values enter.
 
-For Re(w)>1, the proposed exact Euler decomposition is
+For Re(w)>1, the exact Euler decomposition, now formal in Lean, is
 
 `sum_d a_y(d)/d^w = P_y(w)/(zeta(w)*E_S(w))`,
 `P_y(w)=sum_(R subset S) y(R)*mu(product R)*(product R)^(-w)`,
 `E_S(w)=product_(p in S)(1-p^(-w))`.
 
-The proposed Mellin formula, initially for Re(s)>3/2, is
+The exact Mellin formula is formal with absolute convergence for Re(s)>2:
 
 `integral_(1..infinity) H_y(x)*x^(-s-1) dx`
 `= P_y(s-1/2)/E_S(s-1/2)`
@@ -62,8 +62,8 @@ The candidate right side is formally analytic whenever Re(s)>1/2 and
 |Im(s)|<=4, including the cancelled pole at s=3/2. More precisely, its
 pullback by s=4-z is differentiable on every closed ball |z|<=R<7/2.
 For a positive carrier centered at Mellin abscissa four, those balls are
-the inputs to Landau transfer through Re(s)>1/2. Constructing that carrier
-and proving its initial Mellin germ are still necessary. The candidate
+the inputs to Landau transfer through Re(s)>1/2. The literal source transform and its initial domain are closed. Constructing
+the positive measure and identifying its complex MGF germ are still necessary. The candidate
 right side formally has surviving simple critical poles at unbounded height.
 
 The corpus has an unconditional superlinear simple-critical-zero count and
@@ -80,12 +80,20 @@ nonannihilation, pole survival through finite Euler and integration-clock
 denominators, and all required low-height Landau balls. Its 28 new public
 declarations use only foundational axioms and no computational premises.
 
-The infinite weighted Euler identity, literal source-to-Mellin equality,
-growth and interchange bounds, positive-carrier construction and analytic
-continuation identity remain open. These are the next transport gates;
-no full retained-source cone theorem is yet claimed.
+The [exact source-to-Mellin transport](../3-formalized/ccm-fu-retained-source-mellin-transport.md)
+is closed in Lean. It proves the full weighted Euler identity, exact divisor
+convolution and clipped square-root Abel pairing; the source-specific
+summatory bound `24*(sum_R norm(y(R)))*N^(3/2)`; the absolutely convergent
+Mellin identity on Re(s)>2; exact integer endpoints; and affine interpolation
+in sqrt(x). Nonnegative real parts at all integer cutoffs therefore imply
+nonnegative real part on the entire real ray. These are 43 public declarations
+in five modules, without numerical premises.
 
-### Arithmetic transport target
+Positive-measure construction, its complex MGF germ, Landau continuation
+and the analytic identity needed for the pole contradiction remain open.
+The arbitrary finite retained-source cone theorem is not yet claimed.
+
+### Closed arithmetic transport
 
 For p outside S, set y0(R)=y(R) and y1(R)=y(insert p R).
 Restrict each old weighted Möbius sequence to indices not divisible by p.
@@ -97,9 +105,8 @@ recursion
 `L(a_(insert p S),y) = (L(a_S,y0)-p^(-w)*L(a_S,y1))/(1-p^(-w))`.
 
 The finite subset numerator has the matching recursion, and the empty
-retained set is the ordinary Möbius series times y(empty). Proving these
-identities with absolute convergence on Re(w)>1 is the selected route to
-the infinite Euler identity. No numerical test is needed for these exact
+retained set is the ordinary Möbius series times y(empty). These identities
+and absolute convergence on Re(w)>1 prove the infinite Euler identity. No numerical test is needed for these exact
 coefficient and reindexing statements.
 
 ## Corpus inputs located

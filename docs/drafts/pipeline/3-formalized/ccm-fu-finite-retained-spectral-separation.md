@@ -92,12 +92,14 @@ the generated formal indexes and research search index were refreshed.
 
 ## Remaining transport and coverage
 
-The infinite weighted Möbius Euler identity, equality of the actual source
-integral with M_y,S,2gamma on its initial half-plane, integrability and
-interchange bounds, positive-carrier construction, and continuation identity
-are still open. Once those close, the surviving poles can contradict a
-nonzero one-sided retained functional. Finite-dimensional compactness must
-then produce actual cutoff witnesses and margins.
+The [exact retained-source transport](ccm-fu-retained-source-mellin-transport.md)
+closes the infinite weighted Euler identity, literal source convolution,
+source-specific growth and Mellin admission on Re(s)>2, and exact integer
+and one-sided interpolation. Positive-measure construction, MGF germ
+identification, Landau continuation and analytic continuation identity remain
+open. Once those close, the surviving poles can contradict a nonzero
+one-sided retained functional. Finite-dimensional compactness must then
+produce actual cutoff witnesses and margins.
 
 Even full cone control at each fixed S does not bound witness cutoffs,
 clipping tolerances, prime-pool capacity or preparation energy uniformly as

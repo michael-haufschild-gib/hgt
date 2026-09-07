@@ -19,8 +19,10 @@ quadratic and direct cubic Einstein coefficients, including the full KI reconstr
 The fundamental radial profiles and literal scalar/coexact-vector cusp fields are instantiated.
 The complete first Einstein variation now equals the actual field-source amplitude derivative.
 The scalar metric has an exact generally nonzero normalized boundary coefficient despite its
-vanishing master. The reconstructed first-order Einstein equation, nonlinear field/gauge corrections, complete
-source reduction, physical causal action, and final left-QNM projection remain to be derived.
+vanishing master. The literal scalar sector now satisfies all sixteen first-order Einstein
+components at both fundamental QNM branches, with all angular assumptions discharged.
+The vector-sector equation, nonlinear field/gauge corrections, complete source reduction,
+physical causal action, and final left-QNM projection remain to be derived.
 
 Corpus searches `einstein variation`, `metric perturbation`, `ricci coordinate`, `inverse series
 matrix`, and `christoffel derivative` locate the coordinate curvature definitions, smooth metric
@@ -427,24 +429,58 @@ The fundamental master equation and master Dirichlet convention are those in
 These source checks support the formula identification; the boundary statements above
 are proved by Lean from the corpus definitions.
 
+## Closed literal scalar first-order Einstein equation
+
+The full scalar tensor equation is closed through three source-identified leaves.
+Write s=-i*omega, q=-(s+1)*(s+2), f=r^2-1, and
+B=aS*exp(s*t)*z^(s/2), with z=1-r^-2 on the exterior. The original KI reconstruction equals
+B*S times the symmetric matrix with entries
+
+- tt: s*(s-3)/2+s*(s+1)/(2*r^2);
+- tr and rt: -s*(r^2-s)/(r*f);
+- rr: the tt entry divided by f^2;
+- xx and yy: (-r^2-s*(s+1)/2)/y^2;
+- all other entries: zero.
+
+`D4BMFundamentalScalarMetric.reconstruction_eq` proves equality with the
+original covariant recipe, including its actual master derivative. `envelope_jet` proves
+the actual full B jet by the coordinate and logarithm chain rules. In particular,
+B_r=s*B/(r*f) and B_rr=B*(s^2-s*(3*r^2-1))/(r^2*f^2); the temporal/radial mixed derivative
+is retained. The rational matrix entries also receive their actual complete jets.
+
+`ThetaCuspHawkingBMScalarLinearizedRicciJet` proves deltaRicci+3*h=0 in all sixteen
+components of the separated jet. Angular first derivatives and the traceless angular
+Hessian remain arbitrary; only the scalar Laplacian relation eliminates S_yy. The
+background Ricci identity derives deltaScalar=0 and hence the complete cosmological
+Einstein equation. This finite calculation is a `[BRIDGE]` to the fixed tensor target.
+
+`D4BMScalarLinearEquation.field_jet` in `ThetaCuspHawkingBMScalarLinearEinsteinEquation` closes that bridge: the solved
+jet is the actual complete coordinate jet of the scalar field. Its angular pullback
+retains both ordered mixed derivatives, with their equality proved from C2 regularity.
+Local equality of the reconstructed and separated fields identifies their full jets.
+`reconstructed_source_first_zero` therefore gives the actual zero amplitude derivative
+of `D4BMActualMetricSource.source`, rather than an independently assigned residual.
+
+Finally, `literal_plus_source_first_zero` and `literal_minus_source_first_zero` substitute
+the complete literal cusp scalar, using its proved regularity and scalar equation.
+The rates s=-u-3/2 and s=u-3/2 both give q=1/4-u^2 and exactly the existing fundamental
+QNM branches at radial momentum -i*u. Both theorems hold for every complex u, scalar
+amplitude, exterior point and component, with vector amplitude zero and no supplied
+field-equation premise. All Fourier modes and Weyl terms remain. These local equations
+do not select spectral parameters or establish physical boundary admission.
+
 ## Next physical source evaluation
 
-Derive the reconstructed first-order Einstein equation. The exact next
-on-shell target is the zero amplitude derivative of `D4BMActualMetricSource.source`
-for each complete reconstructed tensor component at either matched fundamental
-frequency. Proving radial and horizon equations separately does not yet establish
-this tensor identity. Evaluate the explicit `D4BMLinearizedEinsteinSource.residual`
-on the actual full metric jet at the matched frequencies. Derive the physical metric
-boundary condition with the nonzero scalar boundary coefficient retained. Any required
-spectral/spatial derivative interchange for retained angular jets also remains explicit.
-
-The tensor evaluation proceeds through `deltaRicci+3*h` and its derived trace reversal.
-This is a `[BRIDGE]` to the fixed first-order equation, not a replacement target. With
-time rate s=-i*omega and fundamental dispersion q=-(s+1)*(s+2), simplify the actual
-scalar radial coefficients before expanding coordinate curvature. Retain the full
-angular two-jet, with only the proved scalar Laplacian relation used to eliminate
-one diagonal second derivative. Every finite jet identity must be connected back to
-the actual reconstructed field derivatives before declaring the tensor equation closed.
+The scalar-sector first-order target is proved. The next exact target is the analogous
+zero amplitude derivative for the literal coexact-vector sector, retaining its full
+angular covector jet and actual rough-Laplacian/divergence equations. The source formula
+reduces to h_tA=-s*B*V_A/r and h_rA=-s*B*V_A/(r^2-1). Its complete angular
+jet must also retain both differentiated divergence equations. The separated vector
+jet and its actual-field identification are `[BRIDGE]` targets to the same fixed tensor
+equation; no response or spectral selection law is introduced. Then combine the
+sectors through the actual linearized operator. Derive the physical metric boundary
+condition with the nonzero scalar boundary coefficient retained. Any required
+spectral/spatial derivative interchange for retained angular jets remains explicit.
 
 The fundamental ingoing/Dirichlet radial inputs and matching horizon geometry are proved;
 the mixed dressed monodromy's outgoing incidence remains explicit in the scattering basis.
@@ -703,3 +739,34 @@ was removed after an exact inventory. Other agents' processes were left untouche
 No numerical experiment ran. The exact tensor zero equation, physical metric boundary
 admission, retained-source identification and causal extinction remain open; RH remains
 unproved in the corpus.
+
+
+## Current literal scalar tensor validation
+
+All three new leaves passed foreground scratch `lake env lean` checks without warnings.
+Final exact-source cache-only builds compiled only the requested leaf:
+
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarLinearizedRicciJet`: 198 seconds; 156 lines, 4 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFundamentalScalarMetric`: 18 seconds; 254 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarLinearEinsteinEquation`: 10 seconds; 320 lines, 6 new public theorems.
+
+Scratch, canonical and audit bytes match. Each leaf has exactly one `RHTower.lean`
+import. Only the new olean/ilean artifacts were installed; dependency sources and trace
+metadata were untouched. No full or umbrella build ran. Only one owned Lean/Lake
+process ran at a time. All sixteen new public theorems received one axiom audit each;
+all use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Corpus index generation and scoped whitespace checks passed. Global formal lint finds
+five unrelated concurrent modules missing their theorem-area umbrella imports:
+`ConstrainedWeilWeightedRayBounds`, `RetainedPrimeDivisorConvolution`,
+`RetainedPrimeMobiusEulerIdentity`, `RetainedPrimeSourceMellin`, and
+`SquareRootSummatoryMellin`, all in `RHTower`. The new HB leaves are reachable;
+those unrelated modules were not modified. Existing large-file warnings remain.
+
+The scalar tensor equation is proved at both fundamental branches. Vector-sector
+first-order compatibility, metric boundary admission, retained spin-two/AIME source
+identification, nonlinear/gauge completion and physical causal extinction remain open.
+No numerical experiment ran: the remaining checks here were symbolic identities.
+
+All owned Lean/Lake processes completed. The exact 77-entry owned scratch tree was
+removed after checking for symlinks; other tasks' processes and files were preserved.

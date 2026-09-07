@@ -25,6 +25,11 @@
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactBlockGrades8",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactBlockGrades9",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCoefficient0",
+    "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCoefficient1",
+    "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCoefficient16",
+    "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCoefficient17",
+    "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCoefficient18",
+    "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCoefficient19",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCoefficient20",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapConvolution",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapDet",
@@ -50,6 +55,7 @@
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapGrade8",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapGrade9",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapLift",
+    "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapLowCoefficients",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapReflection",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapReversedDet",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapSourceCoefficients",
@@ -111,7 +117,45 @@
   "pending": [
     "HTGeometry/PolynomialODEEvenCompactDeterminant.lean",
     "HTGeometry/PolynomialODEEvenCompactRawDeterminant.lean",
-    "RHTower/ThetaCuspEvenFourExplicitCompact.lean"
+    "RHTower/ThetaCuspEvenFourExplicitCompact.lean",
+    "HTGeometry/PolynomialODEEvenCompactGapCoefficient2.lean",
+    "HTGeometry/PolynomialODEEvenCompactGapCoefficient3.lean",
+    "HTGeometry/PolynomialODEEvenCompactGapCoefficient4.lean",
+    "HTGeometry/PolynomialODEEvenCompactGapCoefficient5.lean",
+    "HTGeometry/PolynomialODEEvenCompactGapCoefficient15.lean"
   ],
-  "errors": []
+  "errors": [],
+  "gapCapstoneAudit": {
+    "capstones": [
+      "HTGeometry.evenCompactGapDetPolynomial_eval",
+      "HTGeometry.evenCompactGapDetPolynomial_degree",
+      "HTGeometry.evenCompactGapTablePolynomial_eval",
+      "HTGeometry.evenCompactGapTablePolynomial_degree",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_zero",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_one",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_twenty",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_from_reverse",
+      "HTGeometry.evenCompactGapCorrectionPolynomial_reflect_coeff",
+      "HTGeometry.evenCompactGapCoeff_sq",
+      "HTGeometry.evenCompactGapCoeff_cube",
+      "HTGeometry.evenCompactGapCoeff_mul_2",
+      "HTGeometry.evenCompactGapCoeff_mul_3",
+      "HTGeometry.evenCompactGapCoeff_mul_4",
+      "HTGeometry.evenCompactGapCoeff_mul_5",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_nineteen",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_eighteen",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_seventeen",
+      "HTGeometry.evenCompactGapDetPolynomial_coeff_sixteen"
+    ],
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "globalLintErrors": [
+    "GaloisForLFunctions.RHTower.ConstrainedWeilPolarDerivativeTest",
+    "GaloisForLFunctions.RHTower.RetainedPrimeDivisorConvolution",
+    "GaloisForLFunctions.RHTower.RetainedPrimeMobiusEulerIdentity"
+  ]
 }

@@ -261,7 +261,9 @@ factors, while satisfying the low-height analyticity needed for Landau's
 closed-ball transfer.
 
 The [full source-cone bridge](ccm-fu-finite-source-cone-exhaustion.md) still
-needs the infinite weighted Euler identity, actual integral transport and
-positive-carrier continuation. No source cone for arbitrary fields is yet
+needs positive-measure/MGF identification and Landau continuation. The
+[exact transport](../3-formalized/ccm-fu-retained-source-mellin-transport.md)
+closes the infinite Euler identity, actual source convolution, source-specific
+Mellin admission on Re(s)>2 and exact one-sided interpolation. No source cone for arbitrary fields is yet
 proved. Uniform propagation of its witnesses and energy budget as the
 retained field changes remains a further coverage obligation.
