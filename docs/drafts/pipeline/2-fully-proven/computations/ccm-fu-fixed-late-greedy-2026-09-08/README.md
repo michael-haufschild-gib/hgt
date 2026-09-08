@@ -4,7 +4,7 @@ Numerical guidance only. No numerical result enters Lean. The containing
 pipeline directory is the required computation archive, not a claim that
 the selector or RH is proved.
 
-Protocol: [middle selection with prescribed late order](../../1-in-progress/ccm-fu-fixed-late-greedy.md).
+Protocol: [middle selection with prescribed late order](../../../1-in-progress/ccm-fu-fixed-late-greedy.md).
 Both fixed late relative orders retain every middle prime as an independent
 choice and select the least next **complete** raw energy. Every prime is
 processed. Every selected successor is regrouped directly; all signed
