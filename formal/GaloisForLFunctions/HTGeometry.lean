@@ -14336,3 +14336,4 @@ import GaloisForLFunctions.HTGeometry.RadialPolynomialCorrection
 import GaloisForLFunctions.HTGeometry.GomesSpinFourOuterSymmetry
 import GaloisForLFunctions.HTGeometry.GomesHiggsOrbitClassification
 import GaloisForLFunctions.HTGeometry.GomesWeakInvariantTensors
+import GaloisForLFunctions.HTGeometry.RadialPolynomialGravity
