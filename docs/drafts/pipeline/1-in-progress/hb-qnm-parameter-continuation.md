@@ -35,6 +35,16 @@ normalization, and the fixed smooth-onset correction are retained. This does not
 assert pole survival, identify a physical left residue, or establish extinction.
 Higher overtones require further endpoint Taylor orders.
 
+[Original continued forced radial master](../3-formalized/hb-original-continued-radial-master.md)
+contains eight audited leaves and 31 new public theorems. The continued native
+response satisfies the original forced radial equation with actual first and
+second spatial derivatives as a frequency germ at both fundamental QNMs for
+every Xi copy. The proof extends the exact physical Wronskian normalization
+across both nonreal half-planes, differentiates the restored horizon moment and
+the true outer moment, and derives punctured-neighborhood nonvanishing of the
+original connection coefficient. No nonresonance premise is supplied to the
+QNM germ theorem.
+
 ## Current hard target
 
 Transfer the proved radial continuation to the actual complete joint forcing
@@ -48,8 +58,9 @@ and physical left pairing. Current source definitions are concrete:
   explicit field's wave expression plus the cusp residual, retaining all cutoff
   derivatives.
 
-Continue those actual principal/cutoff coefficients using the proved original
-endpoint moments. Then establish the relevant weighted joint domain and angular
+Transport the proved continued radial equation through the tortoise chart to
+those actual principal/cutoff coefficients, retaining the full-square lift and
+all source terms. Then establish the relevant weighted joint domain and angular
 pairing for the continued correction; pointwise continuation of coefficients
 alone is insufficient. Identify the actual advanced/adjoint left residue of the
 complete source, including the restored horizon coefficient and all three cutoff

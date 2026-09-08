@@ -37,7 +37,8 @@
 - [x] Cycle 28: derive actual regularized trace curvature, integrate it on standard modular area with full boundary flux, and classify the surviving nodal curvature on all intervals.
 - [x] Cycle 29: construct smooth augmented source directions and exact mean/chord defect; prove actual path capacity and uniform variation costs; classify the nodal resistance singularity.
 - [x] Cycle 30: construct the actual regularized amplitude-mean equation, prove its top-current limit from original cusp decay and source forcing, and extend the standard-area curvature balance to the full modular domain.
-- [ ] Cycle 31: prove a regulator-uniform full-domain amplitude-mass bound and identify the limiting retained curvature without dropping nodal concentration; continue source-derived arithmetic/geometric quarter comparisons.
+- [x] Cycle 31: prove a regulator-uniform full-domain amplitude-mass bound and identify the limiting retained curvature without dropping nodal concentration.
+- [ ] Cycle 32: identify the actual limiting curvature on compact tests, with local Green regularity and nodal charge retained; continue the source-derived quarter comparison.
 - [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
@@ -524,15 +525,39 @@ The full Laplacian is integrable and has zero integral. Original nonvanishing ma
 
 Broad discovery used --any for secant/forcing mechanisms, then uniform tails, integrable majorants, and exhaustion. The broadest exhaustion query reached 2856 declarations in 1381 modules. Follow-up geometric/arithmetic discovery reached 3061 declarations in 541 modules. Counts describe index coverage, not reading every result. [Complete paper proof, source mechanisms, and audit](../3-formalized/selberg-regularized-cusp-and-full-curvature-budget.md).
 
-### Cycle 31 — regulator-uniform mass and retained nodal charge
+### Cycle 31 — quantitative regulator removal and total curvature monotonicity
 
-The fixed-e estimate uses 1/e and is not uniform in the regulator. Next prove integrability of sqrt(D)/y² from actual finite hyperbolic area and original source mass, then use D/sqrt(D+e²)<=sqrt(D) to identify the limit of the total curvature budget. Do not infer convergence of the curvature integrals from pointwise convergence: cycle 28 proves an explicit nodal charge.
+Actual full-domain amplitude mass is now proved integrable and strictly positive. The full modular domain lies in the unit strip above height one half. The literal primitive -1/y proves inverse-square ray integrability and its exact integral; genuine product integration gives strip hyperbolic area two, bounding full-domain hyperbolic area. Pointwise sqrt(D)<=(D+1)/2 then gives an integrable amplitude-mass majorant from original mass and this area.
 
-A candidate compact-test identity retains the distributional Laplacian of sqrt(D) plus lambda*sqrt(D)/y². Prove every test-function boundary condition and limit passage if pursuing it. The finite-packet Cheeger source read in this loop requires a constant bulk divergence and bounded edge current; no Maass instance has been supplied. Likewise, the projected-coarea source requires exact isotropy.
+The square-root conjecture is proved more strongly than the initial error-e proposal. For d>=0 and e>0, put a=sqrt(d), r=sqrt(d+e²). The exact identity
 
-Continue broad OR discovery and proof/fail/pivot loops toward a source-derived quarter lower comparison, including core and Bessel boundary costs. The exact full budget and fixed-path variation alone do not give that comparison. Selberg remains unproved and the main goal stays active.
+(a-d/r)*r*(r+a)=a*e²
+
+and 2ae<=r*(r+a) give 0<=a-d/r<=e/2, including original zeros. Applying this to the actual source gives full-domain spectral-density L¹ error at most e. Consequently,
+
+0 <= lambda*integral_Omega sqrt(D)/y² - integral_Omega R_e/rho_e <= lambda*e.
+
+The positive-regulator limit filter is proved nontrivial. Actual total retained curvature converges to lambda times the strictly positive full amplitude mass. It is also antitone in e: decreasing the regulator increases the total curvature budget. This is total-integral monotonicity, not a claim of pointwise curvature monotonicity.
+
+Broad --any discovery used the full corpus index: the first regularization/finite-volume/defect search reached 43095 declarations in 12403 modules; the next square-root/error/area search reached 2353 declarations in 1090 modules. Read mechanisms included exact square-root difference-of-squares remainder control and explicit retained regularization corrections. No numerical experiment or pointwise curvature-limit interchange was used. [Complete paper proof and audit](../3-formalized/selberg-quantitative-regulator-curvature-limit.md).
+
+### Cycle 32 — local weak curvature with the nodal contribution retained
+
+The total limiting curvature is now known; next locate it on actual compact tests. For a real C² test phi compactly supported inside the upper half-plane, the candidate is
+
+J(phi)=integral sqrt(D)*Delta phi + lambda*integral phi*sqrt(D)/y².
+
+Prove the actual regularized test identity by two integrations by parts. Corpus discovery found ComplexLaplacianGreenIdentity's twice-directional proof and mathlib's integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable. The latter only needs each function differentiable on the other function's topological support. Thus the source's actual upper-half-plane C² regularity can suffice; global smoothness of ofComplex extensions must not be assumed. Prove every compact-product integrability statement and every derivative-support inclusion.
+
+The checked scalar bounds suggest a quantitative test error at most e*(integral |Delta phi| + lambda/2*integral |phi|/y²). Positivity of regularized curvature would then give J(phi)>=0 for nonnegative phi, retaining distributional nodal charge. The local Green/test extension and any representing measure are still unproved.
+
+Additional OR discovery for distributional/Kato/compact tests reached 228 declarations in 90 modules; local Green/compact support/integration by parts/local regularity reached 664 declarations in 381 modules. Search counts are not claims to have read every hit.
+
+The essential unsolved step remains the actual source-derived quarter lower comparison. Total curvature, positive weak curvature, and a cost on one fixed path alone do not establish it. Continue broad OR discovery and proof/fail/pivot loops for arithmetic transport or a weighted geometric inequality on the actual congruence source, retaining core and Bessel boundary costs. Selberg remains unproved; the goal stays active.
 
 ## Verification log
+
+- Cycle 31: all three complete scratch checks and serialized final single-module builds passed, each rebuilding only its target. All 36 public declarations, including the regulator-filter instance, passed the scratch axiom audit with only the standard three axioms. All modules are wired/indexed, and task-source/card whitespace checks passed. **Repository lint failed only on unrelated HTGeometry.FokasLenellsScatteringContinuity and HTGeometry.FokasLenellsSpectralContinuity** (/tmp/selberg_regulator_mass_lint.log). All task-owned Lean/build handles are terminal. No task commit or push. [Exact paper proof and audit](../3-formalized/selberg-quantitative-regulator-curvature-limit.md). Quantitative regulator removal in the total curvature budget is proved; local weak curvature and the quarter comparison remain open. Selberg stays active.
 
 - Cycle 30: all complete scratch/source checks and four serialized single-module final builds passed. First three rebuilt only their target; the full-budget build rebuilt its needed SelbergMaassTraceMass dependency and target. All 42 public declarations passed the scratch axiom audit with only the standard three axioms. All four modules are wired/indexed; whitespace checks passed. **Repository lint failed only on unrelated untracked, unwired RHTower.MobiusDivisorFibreCoareaVariance and HTGeometry.FokasLenellsContourSymmetry** (/tmp/selberg_full_curvature_lint.log). Final process inspection found no Lean or Lake process; all task handles are terminal. No task commit or push. [Exact paper proof and complete audit](../3-formalized/selberg-regularized-cusp-and-full-curvature-budget.md). The full standard-area budget is proved; regulator-uniform passage and the quarter comparison remain open. Selberg stays active.
 
