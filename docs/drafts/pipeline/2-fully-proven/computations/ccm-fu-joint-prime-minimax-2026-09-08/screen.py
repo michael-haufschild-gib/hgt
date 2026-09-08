@@ -104,7 +104,7 @@ def path(M,primes,F0,edge,pairs,mode):
                 next_score_margin=float(np.partition(peak,1)[1]-peak[best]) if len(peak)>1 else None,
                 cross_child=2*float(cross[a,b]),joint_child=2*float(joint[a,b]),
                 order_conflict=conflict,cofactors=terms,
-                positive_first_then_nonpositive_total=(first[best]>Q+1e-10*max(1,Q0)
+                positive_first_then_nonpositive_total=bool(first[best]>Q+1e-10*max(1,Q0)
                     and end[best]<=Q+1e-10*max(1,Q0)))
             batches.append(batch)
         for pi in chosen:

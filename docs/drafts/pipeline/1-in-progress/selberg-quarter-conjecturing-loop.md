@@ -38,7 +38,8 @@
 - [x] Cycle 29: construct smooth augmented source directions and exact mean/chord defect; prove actual path capacity and uniform variation costs; classify the nodal resistance singularity.
 - [x] Cycle 30: construct the actual regularized amplitude-mean equation, prove its top-current limit from original cusp decay and source forcing, and extend the standard-area curvature balance to the full modular domain.
 - [x] Cycle 31: prove a regulator-uniform full-domain amplitude-mass bound and identify the limiting retained curvature without dropping nodal concentration.
-- [ ] Cycle 32: identify the actual limiting curvature on compact tests, with local Green regularity and nodal charge retained; continue the source-derived quarter comparison.
+- [x] Cycle 32: identify actual limiting curvature on compact tests, prove its positive linear order structure and local order-zero bound, with local Green regularity and nodal charge retained.
+- [ ] Cycle 33: construct the actual positive curvature measure from common-compact approximation; continue testing arithmetic transport or weighted geometric control for the source-derived quarter comparison.
 - [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
@@ -543,19 +544,33 @@ Broad --any discovery used the full corpus index: the first regularization/finit
 
 ### Cycle 32 — local weak curvature with the nodal contribution retained
 
-The total limiting curvature is now known; next locate it on actual compact tests. For a real C² test phi compactly supported inside the upper half-plane, the candidate is
+For every real eigenvalue and real C² compact test phi supported in the upper half-plane, the actual limiting curvature is now identified as
 
 J(phi)=integral sqrt(D)*Delta phi + lambda*integral phi*sqrt(D)/y².
 
-Prove the actual regularized test identity by two integrations by parts. Corpus discovery found ComplexLaplacianGreenIdentity's twice-directional proof and mathlib's integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable. The latter only needs each function differentiable on the other function's topological support. Thus the source's actual upper-half-plane C² regularity can suffice; global smoothness of ofComplex extensions must not be assumed. Prove every compact-product integrability statement and every derivative-support inclusion.
+The original source requires C² regularity only in the upper half-plane. Compact support localizes every test/source product to that open set, making it globally continuous and integrable. First and second test derivatives retain the original support. Two literal directional integrations by parts therefore prove the actual tested source identity without assuming global smoothness of an ofComplex extension.
 
-The checked scalar bounds suggest a quantitative test error at most e*(integral |Delta phi| + lambda/2*integral |phi|/y²). Positivity of regularized curvature would then give J(phi)>=0 for nonnegative phi, retaining distributional nodal charge. The local Green/test extension and any representing measure are still unproved.
+The scalar regulator bounds give the quantitative estimate
 
-Additional OR discovery for distributional/Kato/compact tests reached 228 declarations in 90 modules; local Green/compact support/integration by parts/local regularity reached 664 declarations in 381 modules. Search counts are not claims to have read every hit.
+|J_e(phi)-J(phi)| <= e*(integral |Delta phi| + |lambda|/2*integral |phi|/y²).
 
-The essential unsolved step remains the actual source-derived quarter lower comparison. Total curvature, positive weak curvature, and a cost on one fixed path alone do not establish it. Continue broad OR discovery and proof/fail/pivot loops for arithmetic transport or a weighted geometric inequality on the actual congruence source, retaining core and Bessel boundary costs. Selberg remains unproved; the goal stays active.
+The absolute eigenvalue strengthens the initial exceptional-only proposal to every real lambda. The actual nontrivial positive-regulator filter then gives convergence. Original nonnegative regularized curvature proves J(phi)>=0 on nonnegative tests. Actual integral linearity and test ordering pass to the limit, with all integral convergence established internally. No pointwise curvature-limit interchange is used.
+
+The wider positive-functional and cutoff searches exposed a further strengthening. If |phi|<=c*psi, then |J(phi)|<=c*J(psi). Every compact K inside the upper half-plane has an actual nonnegative compact C² cutoff chi equal to one on K: square the smooth cutoff constructed by CompactSmoothCutoff. Its source curvature C_K=J(chi) is finite and nonnegative. Hence every C² phi supported in K with |phi|<=c, c>=0, satisfies |J(phi)|<=c*C_K. Compact support of phi follows from K rather than being assumed separately. This is a source-derived local order-zero bound; it uses no representing measure.
+
+All broad discovery used --any. Local Green/nodal mechanisms reached 530 declarations in 95 modules; support/localization/product/continuity reached 26054 declarations in 7965 modules; positive functionals and local measures reached 182 declarations in 44 modules; order-zero/cutoff/domination reached 1088 declarations in 533 modules; compact smooth cutoffs reached 380 declarations in 217 modules. These are index-coverage counts, not claims to have read every result. Read proof mechanisms are recorded in the [dependency-closed proof and audit](../3-formalized/selberg-actual-weak-curvature.md).
+
+### Cycle 33 — positive curvature measure and the remaining quarter comparison
+
+The positive functional and compact order-zero bounds are proved. The next analytic conjecture is that common-compact smooth approximation constructs its actual positive representing measure on the upper half-plane. The corpus's SchwartzCompactPositiveFunctional gives an extension mechanism; its one-dimensional Schwartz space and source hypotheses must be replaced by the actual planar positive-height compact tests. Approximation independence, positivity, genuine integration, and recovery of the original source pairing remain to be proved.
+
+Current paper construction: choose one compact cutoff chi equal to one on the original continuous test support. Global smooth approximation exists by uniform continuity of compactly supported continuous functions. Multiplying by chi keeps every approximant in one common compact; a bound for chi rescales the requested accuracy. A second nonnegative smooth cutoff on that common compact has uniformly bounded actual tested curvature for small regulators, by its proved smooth-test limit. Positivity then bounds the difference between the original and approximating test pairings. A four-term metric Cauchy estimate gives a unique real limit for the original continuous test. This constructs the extension from the actual regulator integrals, rather than choosing an unrelated extension. The generic compact approximation and Cauchy lemmas have passed scratch; actual-source extension and measure representation are in progress.
+
+The essential unsolved step remains the actual source-derived quarter lower comparison. Total curvature, positive weak curvature, local order-zero bounds, and a cost on one fixed path alone do not establish it. Continue broad OR discovery and proof/fail/pivot loops for arithmetic transport or a weighted geometric inequality on the actual congruence source, retaining core and Bessel boundary costs. Selberg remains unproved; the goal stays active.
 
 ## Verification log
+
+- Cycle 32: both complete scratch proofs, needed source olean checks, and serialized final single-module builds passed without new warnings; each build rebuilt only its target. All 54 public declarations passed the scratch axiom audit with only the standard three axioms. Both modules are wired and all declarations indexed; task-source/card/umbrella whitespace checks passed. **Repository lint failed only on unrelated HTGeometry.FokasLenellsOrbitDecay, FokasLenellsOrbitEntries, FokasLenellsOscillatoryOrbit, and FokasLenellsScatteringDecay**, recorded in /tmp/selberg_weak_curvature_lint.log. All task-owned Lean/build handles are terminal; final inspection found no Lean or Lake process. No task commit or push. [Exact paper proof and audit](../3-formalized/selberg-actual-weak-curvature.md). Actual positive weak curvature and its compact order-zero bound are proved for every real eigenvalue; the representing measure and quarter comparison remain open. Selberg stays active.
 
 - Cycle 31: all three complete scratch checks and serialized final single-module builds passed, each rebuilding only its target. All 36 public declarations, including the regulator-filter instance, passed the scratch axiom audit with only the standard three axioms. All modules are wired/indexed, and task-source/card whitespace checks passed. **Repository lint failed only on unrelated HTGeometry.FokasLenellsScatteringContinuity and HTGeometry.FokasLenellsSpectralContinuity** (/tmp/selberg_regulator_mass_lint.log). All task-owned Lean/build handles are terminal. No task commit or push. [Exact paper proof and audit](../3-formalized/selberg-quantitative-regulator-curvature-limit.md). Quantitative regulator removal in the total curvature budget is proved; local weak curvature and the quarter comparison remain open. Selberg stays active.
 

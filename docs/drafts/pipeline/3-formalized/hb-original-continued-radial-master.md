@@ -91,6 +91,12 @@ artifacts match the audited bytes. Modules are wired into their area umbrellas;
 no umbrella or full build was run. No numerical experiment or computational
 certificate enters these proofs.
 
+Global `lint --check-generated` reports no errors in these leaves or generated
+index drift. Its remaining errors are the unrelated, concurrently unwired
+`HTGeometry.FokasLenellsScatteringContinuity` and
+`HTGeometry.FokasLenellsSpectralContinuity` modules; existing large-file warnings
+also remain. Those files are outside this change's scope.
+
 ## Remaining physical obligation
 
 Transport this actual radial equation through the tortoise chart into the

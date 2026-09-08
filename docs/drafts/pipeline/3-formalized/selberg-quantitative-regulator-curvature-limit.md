@@ -101,7 +101,7 @@ All three serialized final LEAN_NUM_THREADS=1 lake build <single-module> audits 
 
 Repository lint failed only on unrelated HTGeometry.FokasLenellsScatteringContinuity and HTGeometry.FokasLenellsSpectralContinuity, with existing large-file warnings (/tmp/selberg_regulator_mass_lint.log). Those sources were not modified by this task. The two cycle-30 lint errors are historical and did not occur in this audit.
 
-All task-owned Lean/build handles are terminal. No commit or push was made by this task.
+All task-owned Lean/build handles are terminal. Final process inspection found no Lean or Lake process. No commit or push was made by this task.
 
 ## Remaining source gap
 

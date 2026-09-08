@@ -45,33 +45,70 @@ the true outer moment, and derives punctured-neighborhood nonvanishing of the
 original connection coefficient. No nonresonance premise is supplied to the
 QNM germ theorem.
 
+## Closed complete residual admission
+
+[Complete continued cusp-source admission](../3-formalized/hb-complete-continued-cusp-source-admission.md)
+contains ten audited leaves and 40 public theorems. The actual continued radial
+response is transported through the tortoise chart into the original principal
+differences, full-square lift, and all three cutoff commutators. The explicit
+field has actual radial derivatives and its actual metric angular Laplacian.
+It agrees with the original explicit field in the source convergence chamber.
+
+Each principal difference satisfies its original forced ODE. The potential
+and native source obey `|p(t)| ≤ A exp(2t)` and
+`|f(t)| ≤ B exp((Re w+2)t)`. Weighted energy of the actual channels `U'±wU`
+gives `|U(t)| ≤ C exp(Re w*t)` from one interior value. This retains the
+Green/lift cancellation. Multiplication by the literal horizon coordinate
+recovers two powers of decay. Thus all three cutoff coefficients belong to the
+original radial L² space for nonreal `w` with `-2 < Re w ≤ 0`.
+
+Together with the already admitted native reduced coefficient and the actual
+angular L² bounds, this proves admission of the complete cusp residual in the
+joint L² space. `continuedOriginalSource_allXi_fundamental_admitted_germ`
+proves simultaneous admission and the full original source equation on one
+punctured frequency neighborhood of both fundamental QNMs for every Xi copy.
+No admission, endpoint, continuation, or nonresonance premise is supplied to
+that all-Xi capstone. Admission concerns the residual after subtracting the
+explicit field, not the unrenormalized original angular source.
+
 ## Current hard target
 
-Transfer the proved radial continuation to the actual complete joint forcing
-and physical left pairing. Current source definitions are concrete:
+Construct the complete source as a meromorphic family with values in the actual
+joint function space, then continue the original causal joint response in its
+outgoing weighted domain and identify the physical advanced/adjoint left
+residue. Pointwise meromorphy plus pointwise L² admission does not establish
+function-space meromorphy or the original causal continuation.
 
-- `principalDifference` is the original principal `tortoiseGreen` response minus
-  `radialLift * principalAmplitude`.
-- `cutoffRadialCoefficient` is `horizonCoordinate * principalDifference`.
-- `explicitField` retains the full-square lift and all three principal differences.
-- `originalForcing_explicitResidual` identifies the full original source as that
-  explicit field's wave expression plus the cusp residual, retaining all cutoff
-  derivatives.
+The next concrete source argument uses the exact common denominators, not
+independent pole orders chosen separately at each radius. For one principal
+channel let `c_i(w)` be its original connection coefficient and
+`S(w)=1+(w-2s)*onsetCorrection(2s,w)`. Away from the zeros, multiplying the
+principal difference by `-(w-2s)c_i(w)` clears its two Green moments and its
+lift. Define the resulting numerator by its explicit undivided formula; at a
+pole this need not equal the pointwise product of the totalized quotient.
+The two endpoint integrals and their interior spatial jets already have the
+required local frequency holomorphy.
 
-Transport the proved continued radial equation through the tortoise chart to
-those actual principal/cutoff coefficients, retaining the full-square lift and
-all source terms. Then establish the relevant weighted joint domain and angular
-pairing for the continued correction; pointwise continuation of coefficients
-alone is insufficient. Identify the actual advanced/adjoint left residue of the
-complete source, including the restored horizon coefficient and all three cutoff
-commutators. The corpus's normalized scalar Green residues provide comparison
-data, not an identification of this physical left source projection.
+Apply the proved energy argument to that undivided numerator. Bound its value
+and first spatial derivative at `t=-1` on a compact frequency disk. The forcing
+profile is continuous jointly on that disk times the compact radius interval,
+so it has a common bound. Choose the disk strictly inside `-2 < Re w < 0` and
+away from zero, retaining one positive decay margin. The energy estimate should
+then supply a common L² majorant for the cleared cutoff family. This uniform
+parameter step and the resulting complex L²-valued holomorphy are not yet
+proved. The corpus's `L2DominatedContinuity`, `L2DominatedDerivative`, and
+`CauchyDominatedIntegralHolomorphy` provide nearby building blocks; the existing
+L² derivative theorem is for a real parameter and does not itself give this
+complex local result.
+
+The energy inverse on the opposite frequency half-plane does not identify the
+original causal joint continuation. Retain the original outgoing endpoint
+condition while constructing that response; then identify the physical left
+source projection of the complete residual, including all cutoff commutators
+and the restored horizon contribution. Normalized scalar Green residues remain
+comparison data rather than an identification of this physical projection.
 
 Full joint angular/metric, spin-two/AIME identification, and independent
-Hawking-clock extinction remain open. Generic response existence, meromorphy,
-or nonzero scalar scattering factors do not discharge those obligations.
-
-The Mellin proof uses the corpus's Barnes endpoint-continuation techniques and
-Cauchy-dominated holomorphy, with the BM parameter-uniform source estimates now
-proved. No numerical experiment is indicated for the current source/domain and
-left-pairing obligations.
+Hawking-clock extinction remain open. No numerical experiment is indicated:
+the immediate unresolved assertions concern source/domain continuation and
+physical pairing, not an uncertain numerical pattern.
