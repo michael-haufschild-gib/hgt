@@ -1,3 +1,8 @@
+import GaloisForLFunctions.HTGeometry.FokasLenellsWeightedData
+import GaloisForLFunctions.HTGeometry.FokasLenellsSecondDecay
+import GaloisForLFunctions.HTGeometry.FokasLenellsCorrectedDecay
+import GaloisForLFunctions.HTGeometry.FokasLenellsCorrectedOrbit
+import GaloisForLFunctions.HTGeometry.FokasLenellsDiagonalTest
 import GaloisForLFunctions.HTGeometry.FokasLenellsInverseFrequency
 import GaloisForLFunctions.HTGeometry.FokasLenellsScatteringLipschitz
 import GaloisForLFunctions.HTGeometry.FokasLenellsEndpointLipschitz
@@ -14306,3 +14311,23 @@ import GaloisForLFunctions.HTGeometry.ThermalStepAmplification
 import GaloisForLFunctions.HTGeometry.ThermalAmplificationFluctuations
 
 import GaloisForLFunctions.HTGeometry.GaussBonnetCoexistence
+
+import GaloisForLFunctions.HTGeometry.GaussBonnetCriticalFreeEnergy
+
+import GaloisForLFunctions.HTGeometry.GaussBonnetClapeyron
+
+import GaloisForLFunctions.HTGeometry.GaussBonnetCriticalEndpoint
+
+import GaloisForLFunctions.HTGeometry.GomesClockMatterTransport
+
+import GaloisForLFunctions.HTGeometry.GomesElectroweakMass
+
+import GaloisForLFunctions.HTGeometry.GomesHiggsConjugate
+
+import GaloisForLFunctions.HTGeometry.GomesPolynomialGaugeRigidity
+
+import GaloisForLFunctions.HTGeometry.GomesScalarTensorReconstruction
+
+import GaloisForLFunctions.HTGeometry.GomesTensorConjugation
+
+import GaloisForLFunctions.HTGeometry.GomesWeylAlgebraicObstruction

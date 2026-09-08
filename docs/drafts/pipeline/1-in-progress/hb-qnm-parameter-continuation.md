@@ -213,16 +213,43 @@ full response has disappeared.
 
 The capstone gives the cutoff limit, meromorphy, and actual-current germ for
 both fundamental QNMs of every Xi divisor, using `chi=z/2+i/4` and no supplied
-endpoint, nonresonance, left-covector, or RH assumption. The complete joint
-source still requires all angular/cusp pairings and cutoff commutators, the
-outgoing inverse with its original causal overlap, and the physical
-advanced/adjoint residue.
+endpoint, nonresonance, left-covector, or RH assumption. The complete angular
+source integral, with every cutoff commutator, is constructed below. The
+outgoing inverse with its original causal overlap and the physical
+advanced/adjoint residue remain open.
+
+### Closed complete angular source integral
+
+[Complete angular source integral](../3-formalized/hb-complete-angular-source-pairing.md)
+contains five audited leaves and 13 public theorems. The literal completed
+scalar field times the native square residual, or any full cutoff
+commutator, belongs to the original angular L² space and is absolutely
+integrable at every complex testing parameter. This follows from weighted
+bounds for the complete Fourier--Bessel tail and compactness of the lower
+fundamental domain.
+
+The actual bilinear integral of the complete continued source over the
+modular fundamental domain equals its native residual period times the
+original radial coefficient, plus all three cutoff periods times their
+continued radial coefficients. Its actual radial L² class is meromorphic
+throughout the nonreal band `|Re w|<2`. The testing parameter `u=i*chi`
+satisfies the original angular separation eigenvalue `-(1/4+chi²)`.
+The capstone proves these statements at both fundamental frequencies of
+every Xi target, for every independently chosen Xi source, without supplied
+admission, projection-value, boundary, or RH premises.
+
+The integral and local eigenvalue identity do not yet identify the global
+physical advanced/adjoint left resonance. The next source-value target is
+the actual cutoff period: use the complete tail's proved zero Fourier mean,
+the actual cusp-strip measure, and integration by parts through the entire
+cutoff transition. All cutoff terms and boundary fluxes must remain in this
+evaluation; no period is assigned a sign or value.
 
 ### Wider horizon search
 
-The corpus-tool search `horizon` retrieved 11008 declarations in 1715 modules
+The corpus-tool search `horizon` retrieved 11120 declarations in 1734 modules
 with default prefix expansion, including `horizontal`; exact-token matching
-returned 5959 declarations in 824 modules. The linked proof card records
+returned 6057 declarations in 837 modules. The linked proof card records
 inspected mass-loss, Vaidya, redshift-winding, and mixed-horizon optical results.
 The mixed-horizon theorem gives an explicit downstream target: identify the
 actual retarded-minus-advanced source response, prove Einstein--Green
@@ -248,3 +275,10 @@ results include `DilatonSchwartzHamiltonian`'s actual adjoint factorization,
 bound, and `FokasLenellsHardyJump`'s sharp energy bound for its specified
 reflection data. Their BM operator, domain, or scattering-data identifications
 remain to be proved; those hypotheses cannot be imported as conclusions.
+
+The broad OR search `flux cutoff --any` also exposes the exact complementary
+cutoff cancellation in `SuzukiPrimitiveFluxNonnormalGraphReduction`.
+Its pointwise algebra retains the commutator before cancellation; it does
+not supply the BM boundary-flux identity or its endpoint limits. The actual
+cusp integration and zero-mean Fourier results supply the more direct
+source-specific starting point for evaluating the periods above.
