@@ -87,6 +87,18 @@ supplies the first condition with arbitrarily small quadratic constant;
 the second remains the critical arithmetic obligation. A small complete
 one-step envelope does not pay an arbitrary number of future insertions.
 
+## Constraint on weighted monotone completion
+
+The [weighted terminal head barrier](ccm-fu-weighted-terminal-head-barrier.md)
+proves that, for every fixed positive head weight, these actual cores
+exist arbitrarily far out with arbitrarily small quadratic successor
+envelope and **no** complete monotone continuation for `V+alpha H²`.
+The final signed source escapes every fixed square-root bound on the
+same integer grid, whereas bounded terminal singleton leaves cannot
+increase a small head beyond the sharp weighted amplitude ceiling.
+This restricts that proposed continuation strategy; the core-existence
+theorem and the O(M) RH endpoint question are unchanged.
+
 ## Validation
 
 Scratch Lean checks and exact leaf emission passed for both proof files.

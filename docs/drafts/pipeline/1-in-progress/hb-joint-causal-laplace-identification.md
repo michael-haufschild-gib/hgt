@@ -57,10 +57,10 @@ native transform plus all three constructed cutoff-response transforms.
 
 The immediate hard obligation is equality of the constructed principal
 Laplace transform with `principalDifference` at the original onset transform.
-The original second-order radial equation and endpoint trace must be proved
-first. Oddness of an L² class alone supplies no pointwise trace. Until this
-identification is closed, the assembled transform is not identified with
-`cuspResidualVector`.
+The original weak radial equation and continuous zero trace are proved for
+every actual time slice. The transformed response still needs its original
+radial domain and endpoint conditions. Until this identification is closed,
+the assembled transform is not identified with `cuspResidualVector`.
 
 The [second time derivative and spatial-range theorem](../3-formalized/hb-principal-causal-second-order-wave.md)
 proves that the actual native source is C¹ in the original L² norm. Its
@@ -72,16 +72,30 @@ proved zero data, establish continuous `U''` and
 is proved for every actual principal channel, without additional regularity
 premises.
 
-The next obligation is to identify this spatial range with the original
-radial differential expression and construct its continuous representative
-and endpoint trace. The existing Schwartz Fourier identity fixes the exact
-`4*pi^2` normalization. Then identify the negative-ray restriction of
-`principalTimeLaplace` with `principalDifference` at the original onset
-transform. This trace and Green comparison remains open. The immediate construction identifies
-`kgFreqInvOp` with the actual Bessel potential on tempered distributions.
-The second-order graph then gives the original distributional radial equation
-and Sobolev admission; Fourier L¹ synthesis will supply the continuous
-representative required to turn the proved spatial oddness into a zero trace.
+The [original radial equation and endpoint-trace theorem](../3-formalized/hb-principal-original-radial-equation-and-trace.md)
+identifies `kgFreqInvOp` with the actual distributional Bessel potential.
+The exact `4*pi^2` normalization turns the proved spatial graph into
+`U''-Delta U=F+V U`, with the original complex potential and no auxiliary
+mass. Every actual time slice belongs to spatial Sobolev order two and has a
+unique continuous representative. Its proved oddness gives zero pointwise
+trace and zero negative-ray boundary limit. Interior Schwartz tests recover
+the original negative-ray weak equation with the literal delayed source.
+
+The next obligation is to prove the transformed response's original radial
+domain, equation and endpoint conditions. Time-slice continuity alone does
+not justify exchanging the boundary trace with the improper time integral.
+Control the differentiated time boundary terms and then identify the
+negative-ray restriction of `principalTimeLaplace` with `principalDifference`
+at the original onset transform. This Laplace–Green comparison remains open.
+
+The next proof attempt pairs the established wave equation with each Schwartz
+test before taking its scalar Laplace transform. The spatial terms then depend
+only on the existing L² response and source bounds. After controlling both
+time boundary terms, identify the transformed Laplacian as an actual L²
+class. The existing `euclidean_sobolev_gain_two` theorem can then supply
+order-two admission of the transform itself; its existing oddness and the
+new continuous-representative theorem would give the transformed endpoint
+trace directly. This construction remains to be proved.
 
 Convolution of the complete source with the original joint causal response,
 metric finite propagation, modular patching and constrained Einstein sectors

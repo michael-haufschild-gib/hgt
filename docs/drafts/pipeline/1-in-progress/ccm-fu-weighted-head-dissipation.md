@@ -98,3 +98,13 @@ cutoffs together with a complete compatible path. Weights depending on
 cutoff and tending to zero would lose the needed uniform control of the
 terminal head. Neither the finite interval nor the exact local completion
 classifications establish that uniform lower bound.
+
+The [sharp terminal head barrier](../3-formalized/ccm-fu-weighted-terminal-head-barrier.md)
+now excludes completion through uniformly square-root-sized terminal
+heads with bounded remaining quotients, even eventually on any fixed
+positive integer grid. This follows from unconditional cofinal
+square-root escape of the actual complete signed source. The existing
+small-envelope cores occur arbitrarily far out where no such weighted
+monotone completion is possible. The main path claim is unchanged:
+a surviving path must avoid these small-head terminal states, retaining
+a larger head or unbounded remaining quotients at the escape cutoffs.
