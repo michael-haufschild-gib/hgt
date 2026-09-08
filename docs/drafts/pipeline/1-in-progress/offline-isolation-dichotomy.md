@@ -509,3 +509,24 @@ Formalisation route: Levin–Golovin for a lattice-completed finite set (explici
 bounds, biorthogonal family by contour integration, Bessel bound by the Cauchy-kernel Gram + MV as in the damped module);
 for non-lattice real parts the completion is a density-`1/g` separated set, whose generating function is Beurling–Seip
 territory — the genuinely hard part.
+
+## Block-length law — proved in Lean (2026-09-08)
+
+`RHTower/XiZeroCountLocalCeiling.lean` (built, wired, axiom-clean): from the corpus's Riemann–von Mangoldt remainder
+`exists_xiZeroCount_routeKSmoothRVMCount_log_remainder` and convexity of `u log u`
+(`mul_log_sub_mul_log_le`, `routeKSmoothRVMCount_add_sub_le`): `exists_xiZeroCount_window_le`
+(`N(t+H) − N(t) ≤ (H/2π)log(t+H) + 2C log(t+H)`), the copy-to-count bridge `card_le_xiZeroCount_sub`
+(a finset of copies with ordinates in `(t,t+H]` injects into the sigma-finset over the new supports, `Finset.card_sigma`),
+`exists_card_window_le`, and the **block-length law** `exists_card_block_le`: `L` copies spanning at most `(1−ε)(L−1)`
+mean gaps satisfy `L ≤ 2C log(t+H)/ε`. This is the quantitative half of the evader class: tapered blocks (CANNOT-332) are
+short, `O(log T/ε)` zeros each. CANNOT-340. Note: the corpus already owned the sharp count (`XiZeroCountRVMRemainder`,
+`RiemannVonMangoldt`); search first.
+
+## Wide dominant-band law — proved in Lean (2026-09-08)
+
+`RHTower/MontgomeryMultiBandWide.lean` (built, wired, axiom-clean): `mvWideBandUpperConstant a ℓ D τ =
+e^{2τ(a+ℓ)}(ℓ + 26/(πD) + 9τ/(π²D²))`, `band_inner_ge_wide`, `band_inner_le_wide`, `multiBand_inner_ge_wide`,
+`multiBand_block_window_ge_wide`, `eventually_card_dominantBand_le_wide`. Generated from the narrow-band proofs by
+replacing the Taylor band constants with the damped Montgomery–Vaughan bounds (`_ge_band`/`_le_band`); no `τ ≤ 1`,
+`a + ℓ ≤ 1` hypotheses. All three band laws (single, dominant, isolated-density-conditional) are now at the natural
+unit (isolation)/`log T`.

@@ -32,9 +32,12 @@ processed cardinality and does not provide reserve renewal.
 
 The [literal prime correlation](../3-formalized/ccm-fu-fixed-core-prime-correlation.md)
 now identifies kappa_P-kappa_(P+p) with an explicit absolutely convergent
-signed series. Its finite-prefix error is at most 2*C_P²/T. Prove a usable
-sign and size law for this actual series, then control it as P changes. A fixed-core
-limit does not produce a full admissible prime selection.
+signed series. Its finite-prefix error is at most 2*C_P²/T. The
+[physical identity and distant-prime orientation](../3-formalized/ccm-fu-discrete-physical-prime-release.md)
+are proved: the coefficient is exactly 2*rho_(P+p)*p^(-3/2)*W_P(p),
+with eventual strict sign (-1)^(card(P)+1) for each nonempty fixed core.
+Control as P and the cutoff change remains open. A fixed-core limit does
+not produce a full admissible prime selection.
 
 One proposed analytic representation is
 
@@ -50,11 +53,12 @@ p/(p+1), the diagonal terms would cancel to give
 
 `=2*rho_P*p*sqrt(p)/(p+1)*integral_1^infinity G_P(x)*G_P(x/p)/x^3 dx`.
 
-The continuous update and integral passage remain optional representation
-work. The direct arithmetic correlation series is already formalised, so
-these steps are not prerequisites for its sign problem. The essential
-missing arithmetic statement is a supply of signed reserve sufficient for
-renewal through changing cores; no positivity is assumed.
+The displayed one-head energy integral and continuous update remain
+optional representation work. The paired correlation integral has been
+proved directly from the original signed block series, and its distant
+sign is established without those alternative steps. The essential
+missing arithmetic statement is signed reserve sufficient for renewal
+through changing cores and cutoffs; no uniform positivity is assumed.
 
 No experiment is planned for the density, moments or block assembly: those
 steps follow from their displayed proofs. The completed fixed-core reserve

@@ -227,6 +227,14 @@ retarded propagation and its compatible transformed source remains open.
 Proof and audit: [native cusp response coefficients](../3-formalized/hb-native-cusp-response-coefficients.md)
 and [native energy selection and full frequency transport](../3-formalized/hb-native-energy-selection-and-frequency-transport.md).
 
+The normalized original stream now has its full radial time-evolution equation,
+and a fixed smooth ingoing onset gives the complete differentiated mixed source
+with both onset tensor terms. Its actual current transform converges in the
+right half-plane and has an entire regularization preserving the original
+physical-rate source coefficient. This is source continuation at fixed spatial
+geometry; the full retarded inverse and spatial admission remain open.
+[Original wave and ingoing source continuation](../3-formalized/hb-original-wave-and-ingoing-source-continuation.md).
+
 The SS/VV response sectors, higher-return response and independent Hawking-clock
 extinction law remain open. A forced mixed metric on the actual modular quotient
 with smooth ingoing endpoint data does not establish causal support, uniqueness,

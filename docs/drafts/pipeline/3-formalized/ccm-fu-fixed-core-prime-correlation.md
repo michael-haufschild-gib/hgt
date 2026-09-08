@@ -1,9 +1,10 @@
 # CCM-FU: complete signed prime-release correlation
 
-- **Stage:** 3-formalized; exact-file checks and new-declaration axiom audit passed; global lint blocked by unrelated unwired leaves; Lake packaging pending.
+- **Stage:** 3-formalized; exact-file checks, new-declaration axiom audit and current global lint passed; Lake packaging pending.
 - **Parent:** [fixed-core prime correlation](../1-in-progress/ccm-fu-fixed-core-prime-correlation.md).
 - **Closed:** Exact all-cutoff paired-source identity, explicit mixed-block limits, absolute convergence over all quotient depths, exact reserve coefficient series, rigorous finite-prefix error.
-- **Open:** Arithmetic sign and size law supplying reserve, renewal through changing cores, exhaustive selection, uniform signed Abel bound, RH.
+- **Physical identification and orientation:** [The exact physical integral and strict distant-prime coefficient sign](ccm-fu-discrete-physical-prime-release.md) are proved.
+- **Open:** Uniform reserve control through changing cores and cutoffs, exhaustive selection, uniform signed Abel bound, RH.
 
 ## Literal signed source
 
@@ -41,8 +42,10 @@ c_(P,p,n). The complete series is absolutely convergent and
 
 `kappa_P-kappa_(P+p)=sum_n c_(P,p,n)`.
 
-This is an explicit signed series in the literal head values. Its sign
-has not been established for arbitrary cores and primes.
+This is an explicit signed series in the literal head values. Its exact
+physical representation is 2*rho_(P+p)*p^(-3/2)*W_P(p). For every fixed
+nonempty core, sufficiently distant unprocessed primes give strict sign
+(-1)^(card(P)+1). No sign for every prime at every cutoff is asserted.
 
 For C_P=(3/5)*2^(card(P)-1), with natural truncated subtraction,
 
@@ -100,12 +103,8 @@ scratch audit of these seven new declarations reports only `propext`,
 No full or umbrella build is run. The known
 Lake packaging audit remains pending to avoid its broad prerequisite rebuild.
 
-The global lint run reports nine unrelated modules unreachable from the
-RHTower umbrella: ThetaCuspHawkingBMCuspHeightOperator, CuspHeightTest,
-CuspLogCoordinate, CuspLogTest, CuspNativeIntegral, CuspOperatorIntertwining,
-CuspPeriodization, CuspWindowDifferential, and ThetaCuspHawkingBMOperatorCore
-(the middle seven names share the ThetaCuspHawkingBM prefix). It reports
-no error in either new CCM-FU module. Those unrelated files are unchanged
-by this work; a global lint pass is not claimed.
+The current global formal lint passes. The companion physical bridge
+adds its own exact-file checks and new-declaration audits without
+re-auditing these existing seven theorems.
 
 Owned scratch files and validation logs are removed; no owned Lean process remains.

@@ -4,8 +4,7 @@
 
 - Pipeline stage: in progress
 - Route: T, but no commitment to one AFE representation
-- Open core: transfer a conductor-length critical divisor-carrier mean square to the actual
-  `∫|ζ(1/2+it)|⁴ dt`
+- Open core: none for the fourth moment itself (closed in Lean, see completion conditions); what remains for Route T is downstream of the density theorem
 - Exact target: an unconditional Lean theorem of shape
   `inghamCriticalZetaFourthMoment U V ≤ C · V · (1 + log V)^4` on the required positive-height range
 
@@ -95,7 +94,15 @@ compatible with the fixed short-interval target for all sufficiently large `X`.
 
 1. [x] Critical divisor coefficient masses bounded at exact logarithmic powers.
 2. [x] Conductor-length divisor carrier mean square formalized.
-3. [ ] Actual zeta square reduced to one or more such carriers with quantified remainder.
-4. [ ] Actual critical zeta fourth moment proved with `T log^4 T` scale.
-5. [ ] Substituted into `inghamCriticalErrorFourThirdMoment_le_of_mollifier`.
-6. [ ] Axiom audit, lint, umbrella build.
+3. [x] Actual zeta square reduced to three exact Gaussian-AFE summands on a natural conductor:
+   `smoothAFEZetaSquare_exact_afe_summands` (`SmoothAFEZetaSquareFourthMomentRouteTBudget.lean`).
+4. [x] Actual critical zeta fourth moment at `T log^4 T` scale on dyadic blocks:
+   `exists_integral_Icc_norm_riemannZeta_line_pow_four_le_polylog`,
+   `exists_inghamCriticalZetaFourthMoment_dyadic_le_polylog`, initial/symmetric forms
+   `exists_inghamCriticalZetaFourthMoment_initial_nat_le_polylog`,
+   `exists_inghamCriticalZetaFourthMoment_symmetric_nat_le_polylog`.
+5. [x] Mollifier second moment and `4/3` error moment at polylog scale:
+   `exists_inghamCriticalMollifierSecondMoment_symmetric_nat_le_polylog`,
+   `exists_inghamCriticalErrorFourThirdMoment_symmetric_nat_le_polylog`; uniform density with these
+   inputs: `exists_eventually_zetaZeroMass_le_uniformGabrielPolylog` (`InghamUniformDetectorDensityPolylog.lean`).
+6. [x] Built and wired in the corpus (checked 2026-09-08 by search; this card had not been updated).

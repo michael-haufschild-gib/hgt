@@ -181,3 +181,22 @@ prime safe, uniformly in the current processed state. This does not supply
 that reserve, ensure a large prime remains, control its renewal over a full
 order, or decide the zero-reserve boundary. Those remain the source-selection
 obligations; a growing additive batch cost is not a uniform total budget.
+
+## Source-derived pair reserve and its exact remaining scope
+
+The [changing-core source theorem](../3-formalized/ccm-fu-changing-core-pair-reserves.md)
+proves W_(P+p)(Y)=-sqrt(p)W_P(Y/p)+O_P(1), uniformly for every Y>=1.
+For even nonempty P, its negative actual residue yields a separated
+ratio window containing arbitrarily large prime pairs with a net
+coefficient release at least c_P/p. The enlarged core remains even, and
+the actual pair releases at least c_P*M^2/p at all sufficiently large M
+for that pair. Comparable pairs instead have a net positive cost of
+the same order. These are complete source comparisons, with no reserve
+or numerical premise.
+
+This supplies a repeatable pair-level source reserve with core-dependent
+constants. It does not prove Psi admission: the first merger may exceed
+the starting energy, other immediate successors are not bounded by a
+pair's endpoint, and selecting arbitrarily large pairs does not include
+every omitted prime. A complete proof still needs a common every-cutoff
+budget and an exhaustive schedule that pays those costs.

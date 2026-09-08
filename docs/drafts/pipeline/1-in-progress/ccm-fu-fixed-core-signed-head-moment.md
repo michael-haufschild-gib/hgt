@@ -41,27 +41,36 @@ Summable logarithmic deficits control all finite products.
 
 ## Remaining correlation estimate
 
-The distant-prime correlation needs an additional signed mean or averaged
-remainder estimate. The leading-mean theorem H_P(M)/sqrt(M)->0 does not
-prove H_P(M) tends a constant. A formal Mellin residue does not by itself
-justify such a pointwise limit. The source's existing summatory Mellin
-formula is a starting point for an averaged statement tailored to the
-actual correlation weight; no pointwise constant remainder is assumed.
+The distant-prime correlation now has a proved physical signed mean limit
+and strict eventual orientation. No pointwise constant head remainder is
+assumed: H_P(M)/sqrt(M)->0 by itself would not prove that stronger limit.
+The [exact discrete bridge](../3-formalized/ccm-fu-discrete-physical-prime-release.md)
+identifies the actual correlation with that physical average. Uniform
+control of its dependence on the changing core and cutoff remains open.
 
-The precise candidate is the signed dilation average
+The proved signed dilation average is
 
 `W_P(Y)=integral_1^infinity G_P(Y*x)*G_P(x)/x^3 dx`.
 
-Determine its asymptotic sign and size for a fixed nonempty core, then
-control its dependence on the core. The expected continuous representation
-of the already proved discrete correlation series would read
+Its asymptotic sign and size are known for each fixed nonempty core.
+The proved continuous representation of the discrete correlation series is
 
 `kappa_P-kappa_(P+p)=2*rho_(P+p)*p^(-3/2)*W_P(p)`.
 
-This integral identification and an asymptotic for W_P remain unproved.
-If a suitable signed mean yields W_P(Y)->A_P*J_P, the new theorem settles
-the sign and nonvanishing of J_P; existence and sign of A_P remain separate
-source obligations. A Mellin residue alone does not establish this limit.
+This discrete-to-continuous correlation identification is formalized,
+including every quotient block and the full absolute tail.
+The [literal paired Mellin contour](ccm-fu-fixed-core-correlation-contour.md)
+has a proved large-dilation limit, including its entire source,
+quadratic strip decay, justified contour shift and vanishing boundary
+remainder. Its residue is exactly -B(-1/2)*product(1-sqrt(p))*J_P.
+The [physical dilation theorem](../3-formalized/ccm-fu-fixed-core-physical-dilation-mean.md)
+identifies that contour with the absolutely convergent W_P and proves
+W_P(Y)->Re(-B(-1/2))*product(1-sqrt(p))*J_P for every fixed nonempty
+finite prime core. Mellin holomorphy and logarithmic L1/L2 source domains
+are proved. The [source scalar bound and physical orientation](../3-formalized/ccm-fu-divisor-source-residue-sign.md)
+are also formalized: B(-1/2)>1/(272*pi)>0, so W_P is eventually positive
+for odd card(P) and negative for even card(P). Uniform control as P changes
+remains open.
 
 No computation was used for the exact moment identities. The positive
 moment alone is not reserve renewal or a proof of RH.

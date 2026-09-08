@@ -121,21 +121,34 @@ with the original cosmological Einstein metric-jet pencil in Lean.
 The source, actual angular derivatives and both radial profiles remain visible.
 [Native energy selection and full frequency transport](../3-formalized/hb-native-energy-selection-and-frequency-transport.md).
 
-The live hard step is to derive the original causal convergence chamber with
-its compatible transformed source and initial terms, then continue the full
-radial/angular response with its physical boundary domain. The diagonal angular
-polynomial alone does not identify that family. The frozen-profile operator
-identity above does not supply an off-frequency causal field or justify holding
-the literal tensor source fixed under a causal transform. Determine the
-continued response's source-dependent cusp coefficient and any change from
-native B=0. The complete response must then enter the original metric and
-left-QNM pairing. Independent extinction and RH remain open. Frontier map is
-read-only.
+The original normalized stream psi=H/r now has its actual time-evolution
+operator in Lean. With f=r²-1 and original tortoise coordinate x'(r)=1/f,
+`partial_t²-D_x²` includes the differentiated radial coefficient, and the
+full normalized mixed source is exactly `-2*f*C/r³`. The angular slot remains
+the original rough Laplacian plus its curvature term.
 
-The direct construction target is the full radial time-evolution operator for
-the actual normalized stream H/r in the already differentiated tortoise
-coordinate. Its transformed source must include the original mixed current.
-The original envelope is regular in ingoing time; a cutoff in that time also
-differentiates into the temporal and radial source components. Construct these
-terms and a convergent transform of the actual current before asserting a
-causal response domain. These are pending targets, not a causal-inverse theorem.
+The full original mixed current has the proved factorization
+`C(t,r,z)=exp(v*(t+x(r)))*C0(r,z)` at fixed physical source rate v=2s.
+One fixed smooth onset chi(t+x(r)) is constructed for every Xi occurrence.
+Differentiating that current produces both required onset tensor blocks,
+`chi'*C/r²` and `chi'*C/(r²*f)`. The complete source vanishes before onset and
+equals the original literal tensor after its fixed transition interval.
+
+The actual smoothly switched current has an absolutely convergent static-time
+Laplace transform for Re(w)>0, with source rate and angular data held fixed.
+It equals `N(w)/(w-v)`, where N is explicitly entire and
+`N(v)=C(t=0,r,z)`. The compact onset correction is entire, so this regularized
+source coefficient is retained exactly. No nonvanishing or extinction is
+assumed. [Original wave equation and ingoing source continuation](../3-formalized/hb-original-wave-and-ingoing-source-continuation.md).
+
+The live hard step is the full original retarded inverse and its physical
+spatial domain for this source, including radial endpoints, global modular
+cusp terms and the remaining source constraints. The proved transform is a
+time integral at fixed geometry, not spatial admission or a continued inverse.
+The source extension is constructed in the current sector; admission to the
+full nonlinear problem remains separate. Existing reduced radial Green actions
+must be identified with this operator, independent frequency and complete
+source before use. Continue the actual response, determine its cusp coefficient
+and any change from native B=0, then insert the complete response into the
+original left-QNM pairing. Independent extinction and RH remain open.
+Frontier map is read-only.
