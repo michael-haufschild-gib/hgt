@@ -14,7 +14,7 @@ Remove point-charge uncertainty before descending actual curvature through modul
 
 - [x] 0 → 1: original source and constructed measure, precise point-mass assertion.
 - [x] 1 → 2: dependency-closed paper proof below, [PROVED HERE].
-- [ ] 2 → 3: complete scratch proofs passed; source and final targeted audits being recorded.
+- [x] 2 → 3: complete scratch/source proofs, both final targeted builds, all 27 declaration axiom audits, and repository formal lint passed.
 - [ ] 3 → 4: independent novelty/publication audit.
 
 ## Complete paper proof [PROVED HERE]
@@ -64,4 +64,9 @@ For the next quotient step, inspected ThetaCuspHawkingBMCompactTestUnfolding pro
 
 - formal/GaloisForLFunctions/RHTower/SelbergPlanarTestScaling.lean: 17 public declarations.
 - formal/GaloisForLFunctions/RHTower/SelbergMaassCurvatureNoAtoms.lean: 10 public declarations including the NullSingletonClass instance.
-- Complete scratch proofs passed without warnings. Modules wired into RHTower.lean. Final audit pending below.
+- Complete scratch proofs and needed source olean checks passed without warnings. Modules wired into RHTower.lean; no umbrella build ran.
+- Serialized final single-module builds passed, rebuilding only their named target: scaling (28s), atomlessness (10s). Logs: /tmp/selberg_planar_scaling35_build.log and /tmp/selberg_curvature_noatoms35_build.log. Both replayed the existing informational EvenL2LogUnitary tactic suggestion; neither new module emitted a warning.
+- /tmp/selberg_curvature_noatoms35_axioms.lean audits all 27 public declarations, including the NullSingletonClass instance. All report only standard Lean axioms; no added axioms, admissions, or audit warnings. Log: /tmp/selberg_curvature_noatoms35_axioms.log.
+- Generated indexes refreshed; all 27 declarations verified in /tmp/selberg_curvature_noatoms35_corpus_audit.json. Task-source/card/umbrella whitespace checks passed.
+- **Repository formal lint passed**, with existing large-file warnings. Full stdout/stderr log: /tmp/selberg_curvature_noatoms35_lint.log. This supersedes the previous turn's unrelated wiring failure.
+- Every task-owned process handle is terminal. Final inspection found no Lean or Lake process (/tmp/selberg_curvature_noatoms35_processes.log). No numerical experiments, full builds, task commits, or pushes.

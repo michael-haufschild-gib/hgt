@@ -127,12 +127,13 @@ warnings remain. That module is outside this change's scope.
 
 ## Remaining physical obligation
 
-Pointwise meromorphy together with membership in L² at each frequency does not
-prove meromorphy with values in L². Establish a common frequency-local majorant
-for analytic numerators with the actual connection/source denominators cleared,
-then construct the genuine function-space source germ. An explicit cleared
-numerator must supply the value at a pole; multiplying totalized quotients at
-that point need not give the analytic extension's value.
+The required common majorant and genuine function-space source germ are now
+proved in [complete source L² meromorphy](hb-complete-cusp-source-l2-meromorphy.md).
+The stronger theorem covers the nonreal band `|Re w|<2`, including an explicit
+corridor to the original Green chamber. It uses the explicit undivided
+numerators at poles, a two-sign energy estimate for the same original
+solution, and an actual complex L² slope-limit proof. Pointwise admission
+alone is not used as a substitute for that norm-valued argument.
 
 Continue the **original causal** joint response in the appropriate outgoing
 weighted domain and identify its physical advanced/adjoint left residue. The

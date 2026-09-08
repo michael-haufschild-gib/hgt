@@ -71,44 +71,83 @@ No admission, endpoint, continuation, or nonresonance premise is supplied to
 that all-Xi capstone. Admission concerns the residual after subtracting the
 explicit field, not the unrenormalized original angular source.
 
+## Closed complete source meromorphy
+
+[Complete source meromorphy in the original joint L² space](../3-formalized/hb-complete-cusp-source-l2-meromorphy.md)
+contains eighteen audited leaves and 52 public theorems. The explicit
+undivided source numerators and their actual interior jets are
+frequency-analytic. Compactness gives uniform bounds for those jets and the
+complete original forcing. A continuous explicit energy coefficient then
+bounds the same original principal solution by `C exp(-|Re w|t)`: the two
+signs of the free frequency are used only in the estimate of that solution.
+The actual cutoff coordinate restores two powers of horizon decay.
+
+One common L² majorant therefore controls each cleared cutoff family on a
+frequency neighborhood inside `Im w≠0`, `|Re w|<2`. A new complex-parameter
+Cauchy/dominated-convergence theorem proves differentiability in the actual L²
+norm, including the analytic numerators at connection zeros. Restoring the
+original denominators and applying the existing continuous separated-product
+map proves meromorphy of the **complete** residual in the original joint L²
+space. All three cutoff commutators and the native squared-source remainder
+are retained.
+
+`continuedCuspResidualL2_original_corridor` joins every point of that band to
+the original principal Green chamber while preserving imaginary part and
+ending at real part `7/4`. The exact continued source class equals the original
+`cuspResidualVector` in that chamber. The strict Xi strip places both
+fundamental QNMs in the band.
+`continuedOriginalSource_allXi_fundamental_meromorphic_germ` combines their
+actual joint L²-valued meromorphy with admission and the original field
+equation on one punctured germ, without additional admission, continuation,
+nonresonance, or RH premises.
+
 ## Current hard target
 
-Construct the complete source as a meromorphic family with values in the actual
-joint function space, then continue the original causal joint response in its
-outgoing weighted domain and identify the physical advanced/adjoint left
-residue. Pointwise meromorphy plus pointwise L² admission does not establish
-function-space meromorphy or the original causal continuation.
+Continue the **original causal joint response** to this now-constructed
+meromorphic source in its outgoing weighted domain, then identify the
+physical advanced/adjoint left residue. Start from the existing causal
+response and its proved operator-domain Laplace identity. Construct the
+outgoing continuation with the original radial endpoint condition and full
+modular angular operator retained; prove agreement with `jointWaveResponse`
+on its original positive-frequency overlap. Source meromorphy is available;
+meromorphy or continuation of the response inverse is not.
 
-The next concrete source argument uses the exact common denominators, not
-independent pole orders chosen separately at each radius. For one principal
-channel let `c_i(w)` be its original connection coefficient and
-`S(w)=1+(w-2s)*onsetCorrection(2s,w)`. Away from the zeros, multiplying the
-principal difference by `-(w-2s)c_i(w)` clears its two Green moments and its
-lift. Define the resulting numerator by its explicit undivided formula; at a
-pole this need not equal the pointwise product of the totalized quotient.
-The two endpoint integrals and their interior spatial jets already have the
-required local frequency holomorphy.
+The source corridor reaches the original Green convergence chamber. This
+batch does not add global L² holomorphy throughout the unbounded right
+half-plane or extend the existing causal Bochner identity's stated domain.
+The original pointwise source continuation and causal transform identities
+remain available when identifying the same physical response.
 
-Apply the proved energy argument to that undivided numerator. Bound its value
-and first spatial derivative at `t=-1` on a compact frequency disk. The forcing
-profile is continuous jointly on that disk times the compact radius interval,
-so it has a common bound. Choose the disk strictly inside `-2 < Re w < 0` and
-away from zero, retaining one positive decay margin. The energy estimate should
-then supply a common L² majorant for the cleared cutoff family. This uniform
-parameter step and the resulting complex L²-valued holomorphy are not yet
-proved. The corpus's `L2DominatedContinuity`, `L2DominatedDerivative`, and
-`CauchyDominatedIntegralHolomorphy` provide nearby building blocks; the existing
-L² derivative theorem is for a real parameter and does not itself give this
-complex local result.
+The energy inverse selected independently on the opposite half-plane does
+not identify the outgoing continuation. Its physical left-source projection
+must retain the complete residual, every cutoff commutator, and the restored
+horizon contribution. Neither pole survival nor vanishing of that projection
+has been proved. Normalized scalar residues alone do not supply the physical
+advanced/adjoint pairing.
 
-The energy inverse on the opposite frequency half-plane does not identify the
-original causal joint continuation. Retain the original outgoing endpoint
-condition while constructing that response; then identify the physical left
-source projection of the complete residual, including all cutoff commutators
-and the restored horizon contribution. Normalized scalar Green residues remain
-comparison data rather than an identification of this physical projection.
+Full joint angular/metric and spin-two/AIME reconstruction, independent
+Hawking-clock extinction, and RH remain open. No numerical experiment is
+indicated: the live obstacle is the actual outgoing operator domain and its
+source-dependent continuation and physical pairing. Frontier map remains
+read-only.
 
-Full joint angular/metric, spin-two/AIME identification, and independent
-Hawking-clock extinction remain open. No numerical experiment is indicated:
-the immediate unresolved assertions concern source/domain continuation and
-physical pairing, not an uncertain numerical pattern.
+### Outgoing horizon-domain construction in progress
+
+The original compact radial coordinate is `b=sech(t)^2`, with horizon `b=0`.
+For a full angular-dependent field, remove the literal original phase by
+`U=b^(w/2)V`. The full wave expression should become `-b^(w/2+1) P_w V`, where
+
+```text
+P_w V = 4b(1-b) V_bb + [4(w+1)-(4w+6)b] V_b
+        + Delta_H V - w(w+1)V.
+```
+
+This keeps the entire original modular angular operator. A fixed C² extension
+of V at the horizon admits the original Gauss branch. The opposite homogeneous
+branch has stripped form `b^(-w) H_(-w)(b)` with `H_(-w)(0)=1`; for nonreal
+`w` with `Re w>-2`, its second derivative prevents such an extension. The
+planned exact two-branch classification is a boundary-domain selection, not
+existence of the full forced joint inverse. Its proof and the displayed
+full-field conjugation are in progress. The joint existence, modular cusp
+condition, and agreement with the original causal transform still require
+proof after this radial domain is fixed.
