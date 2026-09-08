@@ -1,7 +1,8 @@
 # CCM-FU: positive gcd budget
 
 - Type: source-bound candidate and frozen discriminating experiment.
-- Status: unproved; experiment not yet run.
+- Status: constant-one candidate rejected by independent numerical evidence;
+  complete signed estimate remains open. No formal no-go or route retirement.
 - Full chain: actual divisor source → O(M) complete signed Abel head → CCM-FU → RH.
 - Frontier map read only.
 
@@ -83,3 +84,41 @@ uses four workers. It is numerical evidence, not an interval certificate.
 Download scripts and complete outputs. Do not enlarge the range to confirm
 a pass. A pass leaves the universal source estimate open; a failure rejects
 this particular constant-one producer without refuting RH.
+
+## Outcome and second pass
+
+The [complete experiment](../2-fully-proven/computations/ccm-fu-positive-gcd-budget-2026-09-08/README.md)
+finished in 1.683 seconds. At the first tested failure, M=115, independent
+80-digit reconstruction gives
+
+`D=15.4570632546571346693...`,
+`sum max(G_r,0)=16.0841565793869973922...`,
+`sum max(-G_r,0)=29.9652634592927361430...`,
+`S^2=1.5759563747513959185...`.
+
+The positive budget exceeds D by `0.6270933247298627229...`, while the
+complete signed source remains far below D. The audit uses every channel
+and every pair, independently of the screen's divisor inversion.
+
+At M=65536 the screen finds positive mass `4.8119121968...*D`; the primitive
+G_1 is negative there. Large positive groups include gcd 3, 2, 5, 7, 30,
+and 42. Controlling the primitive upper contribution alone therefore does
+not account for the observed masked groups. This larger cutoff was not
+independently audited at 80 digits. None of these finite observations
+excludes a bound with some other universal constant; no such constant is
+fitted or claimed.
+
+The second algebraic pass retains the exact survivor
+`S^2=D+P-N`, with `P=sum max(G_r,0)` and `N=sum max(-G_r,0)`.
+The useful remaining comparison is `P-N<=C*M^2-D`, retaining compensation
+between distinct gcd groups. It follows from the already formal complete
+gcd reconstruction, not from these computations. The new numeric witness
+shows actual compensation at M=115, but supplies no global upper bound.
+
+No new dependency-closed positive arithmetic bound was found in the second
+pass. Fixed binary packets already have their own recorded obstruction;
+discarding all negative groups now also fails this particular diagonal
+budget. The existing exact signed reconstruction is retained, without
+reformalizing it or promoting another receiver identity as progress on
+the bound. RH, the full signed producer, and larger joint compensation
+remain open.

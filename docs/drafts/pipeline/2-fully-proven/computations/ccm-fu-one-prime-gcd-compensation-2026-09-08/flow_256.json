@@ -1,0 +1,273 @@
+{
+  "M": 256,
+  "diagonal": "79.35555929992614213",
+  "U_over_D": 0.12617075705333364,
+  "cut_over_D": 0.1261707570533336,
+  "positive_over_D": 0.57687036421505,
+  "flow_over_D": 0.45069960716171636,
+  "isolated_over_D": 0.0,
+  "isolated_labels": [],
+  "cut_positive": [
+    6
+  ],
+  "cut_negative_neighbors": [
+    3,
+    30,
+    42
+  ],
+  "cut_min_positive": 6,
+  "residual_min_positive": 6,
+  "positive_count": 8,
+  "negative_count": 60,
+  "edges": 41,
+  "errors": {
+    "capacity": 0.0,
+    "flow_cut": 2.7755575615628914e-17,
+    "total_flow": 0.0,
+    "mass": 0.0,
+    "source_reconstruction": 0.0
+  },
+  "failure": false,
+  "residuals": [
+    {
+      "r": 2,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 6,
+      "residual_over_D": 0.12617075705333364
+    },
+    {
+      "r": 7,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 10,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 11,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 15,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 19,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 23,
+      "residual_over_D": 0.0
+    }
+  ],
+  "flows": [
+    {
+      "r": 2,
+      "s": 1,
+      "flow_over_D": 0.1532725905211187
+    },
+    {
+      "r": 2,
+      "s": 14,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 22,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 26,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 34,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 38,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 46,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 58,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 62,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 74,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 82,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 6,
+      "s": 3,
+      "flow_over_D": 0.18603527371089545
+    },
+    {
+      "r": 6,
+      "s": 30,
+      "flow_over_D": 0.006531641690139379
+    },
+    {
+      "r": 6,
+      "s": 42,
+      "flow_over_D": 0.0074055728968953185
+    },
+    {
+      "r": 7,
+      "s": 1,
+      "flow_over_D": 0.007381498391589573
+    },
+    {
+      "r": 7,
+      "s": 14,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 7,
+      "s": 21,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 7,
+      "s": 35,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 7,
+      "s": 77,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 7,
+      "s": 91,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 7,
+      "s": 119,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 10,
+      "s": 5,
+      "flow_over_D": 0.06639868722692892
+    },
+    {
+      "r": 10,
+      "s": 30,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 10,
+      "s": 70,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 11,
+      "s": 1,
+      "flow_over_D": 0.0015952167578602932
+    },
+    {
+      "r": 11,
+      "s": 22,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 11,
+      "s": 33,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 11,
+      "s": 55,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 11,
+      "s": 77,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 15,
+      "s": 3,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 15,
+      "s": 5,
+      "flow_over_D": 0.00011519453065467597
+    },
+    {
+      "r": 15,
+      "s": 30,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 15,
+      "s": 105,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 19,
+      "s": 1,
+      "flow_over_D": 0.007588371377199242
+    },
+    {
+      "r": 19,
+      "s": 38,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 19,
+      "s": 57,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 19,
+      "s": 95,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 23,
+      "s": 1,
+      "flow_over_D": 0.014375560058434824
+    },
+    {
+      "r": 23,
+      "s": 46,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 23,
+      "s": 69,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 23,
+      "s": 115,
+      "flow_over_D": 0.0
+    }
+  ],
+  "input_sha256": "bf76d78638ddc7fe36d9238c5c0e74d350ad3fa7c0c9038be01700e7b2499bd8"
+}

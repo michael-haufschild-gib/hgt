@@ -1,0 +1,160 @@
+{
+  "M": 151,
+  "diagonal": "27.454248968166692644",
+  "U_over_D": 0.06830257849267017,
+  "cut_over_D": 0.06830257849267017,
+  "positive_over_D": 0.8983907912900115,
+  "flow_over_D": 0.8300882127973414,
+  "isolated_over_D": 0.06830257849267017,
+  "isolated_labels": [
+    6
+  ],
+  "cut_positive": [
+    6
+  ],
+  "cut_negative_neighbors": [],
+  "cut_min_positive": 6,
+  "residual_min_positive": 6,
+  "positive_count": 4,
+  "negative_count": 36,
+  "edges": 22,
+  "errors": {
+    "capacity": 0.0,
+    "flow_cut": 0.0,
+    "total_flow": 0.0,
+    "mass": 1.3877787807814457e-17,
+    "source_reconstruction": 0.0
+  },
+  "failure": false,
+  "residuals": [
+    {
+      "r": 2,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 6,
+      "residual_over_D": 0.06830257849267017
+    }
+  ],
+  "flows": [
+    {
+      "r": 2,
+      "s": 1,
+      "flow_over_D": 0.7009578888467414
+    },
+    {
+      "r": 2,
+      "s": 10,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 14,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 22,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 26,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 34,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 38,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 46,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 1,
+      "flow_over_D": 0.06469400679616046
+    },
+    {
+      "r": 3,
+      "s": 15,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 21,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 33,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 39,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 51,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 57,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 69,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 1,
+      "flow_over_D": 0.0644363171544395
+    },
+    {
+      "r": 5,
+      "s": 10,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 15,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 35,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 55,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 65,
+      "flow_over_D": 0.0
+    }
+  ],
+  "input_sha256": "98f998f73d6fa7937dbe7f21d24e04abdfdc4560b212e75e9fe6e6779cf3373c"
+}

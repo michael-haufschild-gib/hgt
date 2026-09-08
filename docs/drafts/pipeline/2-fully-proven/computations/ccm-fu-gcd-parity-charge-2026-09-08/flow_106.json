@@ -1,0 +1,132 @@
+{
+  "M": 106,
+  "diagonal": "13.3500577787119668145",
+  "U_over_D": 0.0,
+  "cut_over_D": 0.0,
+  "positive_over_D": 0.7415087606505116,
+  "flow_over_D": 0.7415087606505117,
+  "isolated_over_D": 0.0,
+  "isolated_labels": [],
+  "cut_positive": [],
+  "cut_negative_neighbors": [],
+  "cut_min_positive": null,
+  "residual_min_positive": null,
+  "positive_count": 3,
+  "negative_count": 25,
+  "edges": 18,
+  "errors": {
+    "capacity": 0.0,
+    "flow_cut": 0.0,
+    "total_flow": 1.1102230246251565e-16,
+    "mass": 1.1102230246251565e-16,
+    "source_reconstruction": 0.0
+  },
+  "failure": false,
+  "residuals": [
+    {
+      "r": 2,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "residual_over_D": 0.0
+    }
+  ],
+  "flows": [
+    {
+      "r": 2,
+      "s": 1,
+      "flow_over_D": 0.608336126469865
+    },
+    {
+      "r": 2,
+      "s": 6,
+      "flow_over_D": 0.046094371729787274
+    },
+    {
+      "r": 2,
+      "s": 10,
+      "flow_over_D": 0.029145135374336585
+    },
+    {
+      "r": 2,
+      "s": 14,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 22,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 26,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 34,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 1,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 6,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 15,
+      "flow_over_D": 0.037185378489320076
+    },
+    {
+      "r": 3,
+      "s": 21,
+      "flow_over_D": 0.011014512611933078
+    },
+    {
+      "r": 3,
+      "s": 33,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 39,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 51,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 1,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 10,
+      "flow_over_D": 0.009733235975269657
+    },
+    {
+      "r": 5,
+      "s": 15,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 5,
+      "s": 35,
+      "flow_over_D": 0.0
+    }
+  ],
+  "input_sha256": "937b7feb4a22433452e819f79fce8ab95617634ff5f47615620f9ee3d3f88798"
+}

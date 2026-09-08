@@ -151,27 +151,100 @@ the opposite branch has stripped form `b^(-w) F_(-w)(b)`, with `F_(-w)(0)=1`,
 and cannot admit such an extension. The exact two-branch classification and
 original radial equation hold at both fundamental QNMs of every Xi copy.
 
-This classifies the displayed two-branch family; a representation theorem
-for all homogeneous solutions is not yet supplied. The next construction is
-the actual horizon Wronskian and source-dependent boundary pairing, followed
-by the full forced joint inverse. The joint domain, modular cusp and outer
-endpoint conditions, and agreement with the original causal transform remain
-unproved.
+The full representation and actual source-pairing results below extend this
+criterion beyond the displayed two-branch family. The joint domain, modular
+cusp and outer endpoint conditions, and agreement with the original causal
+transform remain unproved.
 
-### Active boundary-pairing proof
+### Closed original horizon basis and radial source pairing
 
-For the actual original radial operator, use the integrating factor
-`p(b)=b sqrt(1-b)` and bracket `p(U V'-U' V)`. Differentiation should give
-`p/(b(1-b)) * (U L_w V-V L_w U)`, with actual spatial jets. For the two
-horizon branches, the Gauss values at zero and cancellation of their opposite
-powers fix the constant bracket as `-w`. Nonzero determinant then gives the
-full homogeneous representation, so the C² criterion applies to every actual
-homogeneous solution. For a forced solution the same identity supplies its
-source-dependent phase through an actual interval integral. This construction
-is in progress; global joint outgoing inversion is still the hard target.
+[Original horizon basis and physical source pairing](../3-formalized/hb-original-horizon-basis-and-source-pairing.md)
+contains six new leaves and one corrected capstone. The original weighted
+Wronskian of `H(w)` and `H(-w)` is exactly `-w` at every nonreal frequency.
+Its proof uses their actual Gauss derivatives, Abel's identity for the
+original radial operator, and the actual horizon limit.
 
-The physical all-Xi specialization must use angular momentum `z/2+i/4`,
-the parameter in the original QNM formula. The earlier horizon-domain
-capstone used `z` in its radial factor instead; its general branch conclusion
-remains true, but that physical specialization is being corrected and audited.
-The new normalizable-domain criterion uses the matching angular parameter.
+Every actual homogeneous solution now has coefficients
+extracted from its physical jets at `b=1/2`, with an exact representation
+throughout `0<b<1`. The fixed C² horizon condition is exactly vanishing of the
+opposite coefficient. For the actual normalizable solution, that coefficient
+is `connection(w,chi)/(2w)`. Thus it satisfies the original horizon condition
+exactly when the original connection coefficient vanishes, throughout
+`Im w!=0`, `Re w>-2`.
+
+Both literal fundamental frequencies annihilate the connection coefficient.
+The all-Xi normalizable-domain capstone uses the matching physical angular
+momentum `chi=z/2+i/4`. The earlier all-Xi horizon-domain capstone has also been
+corrected to use that parameter consistently in its radial mode and operator;
+its changed statement and proof were audited again.
+
+For the actual normalized radial equation `L_w U=F`, the derived Green
+identity gives
+
+```text
+B(H(w),U)' = rho H(w) F,
+B(U,V) = b sqrt(1-b) (U V'-U' V),
+rho = sqrt(1-b)/(1-b).
+```
+
+The integral of this actual source pairing on every compact interior interval
+is exactly the difference of both physical boundary terms. The native radial
+horizon limit is now closed below. The outer endpoint, full cusp limits, and
+complete joint advanced/adjoint pairing remain open.
+
+### Closed original horizon finite part
+
+[Original horizon finite part and continued radial current](../3-formalized/hb-original-horizon-finite-part.md)
+contains four audited leaves and 12 new public theorems. For the actual
+normalized source, `rho H F=b^w G(w,b)T(w)/2`, where `G` is the original
+horizon-source core and `T` retains the fixed smooth onset. The actual source
+supplies `G(w,b)-G(w,0)=O(b)`, and the integrated remainder obeys
+`|R(b,w)|≤C b^(Re w+2)/(Re w+2)`. It therefore vanishes at the horizon for
+`Re w>-2`.
+
+The original cutoff pairing plus its exact endpoint term
+`G(w,0)e^(w+1)T(w)/(2(w+1))` tends to the restored source moment `P(b,w)`.
+The actual continued response satisfies `B(H,U)=P` away from connection zeros
+and as a punctured frequency germ through those zeros. Its subtracted horizon
+current tends to zero. The endpoint term is forced by the source, rather than
+an assigned zero boundary condition. The Wronskian cancels the connection
+denominator in this scalar bracket; this does not imply that a pole of the
+full response has disappeared.
+
+The capstone gives the cutoff limit, meromorphy, and actual-current germ for
+both fundamental QNMs of every Xi divisor, using `chi=z/2+i/4` and no supplied
+endpoint, nonresonance, left-covector, or RH assumption. The complete joint
+source still requires all angular/cusp pairings and cutoff commutators, the
+outgoing inverse with its original causal overlap, and the physical
+advanced/adjoint residue.
+
+### Wider horizon search
+
+The corpus-tool search `horizon` retrieved 11008 declarations in 1715 modules
+with default prefix expansion, including `horizontal`; exact-token matching
+returned 5959 declarations in 824 modules. The linked proof card records
+inspected mass-loss, Vaidya, redshift-winding, and mixed-horizon optical results.
+The mixed-horizon theorem gives an explicit downstream target: identify the
+actual retarded-minus-advanced source response, prove Einstein--Green
+reciprocity for its physical left pairing, and establish the required
+solvability. Those dynamical premises remain open.
+
+The `Einasto` search retrieved all 160 matching declarations across
+nine modules. `EinastoHorizonClassification` proves the complete zero/one/two
+horizon classification and critical quadratic contact (`f=0`, `f'=0`,
+`f''>0`). `EinastoHorizonExistence` derives the density-corrected temperature
+expression at actual horizon roots. `DilatonEinastoMoments` identifies the
+quartic ground-state squared amplitude exactly with an index-1/4 Einasto
+profile and transfers its Gamma moments and enclosed mass.
+`EinastoHorizonScaling` gives exact critical-density, mass, and temperature
+scaling. These provide
+source-dependent horizon and clock tools; identifying such a family with the
+original BM response remains a separate mathematical obligation.
+
+Broad single-term searches also cover `scattering`, `extinction`, `resolvent`,
+and `Fredholm`; multi-term discovery uses explicit `--any`. Read cross-route
+results include `DilatonSchwartzHamiltonian`'s actual adjoint factorization,
+`RangeObservabilityDuality`'s construction of a preimage from an observability
+bound, and `FokasLenellsHardyJump`'s sharp energy bound for its specified
+reflection data. Their BM operator, domain, or scattering-data identifications
+remain to be proved; those hypotheses cannot be imported as conclusions.

@@ -1,0 +1,108 @@
+{
+  "M": 103,
+  "diagonal": "12.354638047596651589",
+  "U_over_D": 0.0,
+  "cut_over_D": 0.0,
+  "positive_over_D": 0.6529540967340799,
+  "flow_over_D": 0.65295409673408,
+  "isolated_over_D": 0.0,
+  "isolated_labels": [],
+  "cut_positive": [],
+  "cut_negative_neighbors": [],
+  "cut_min_positive": null,
+  "residual_min_positive": null,
+  "positive_count": 2,
+  "negative_count": 26,
+  "edges": 14,
+  "errors": {
+    "capacity": 0.0,
+    "flow_cut": 0.0,
+    "total_flow": 1.1102230246251565e-16,
+    "mass": 1.1102230246251565e-16,
+    "source_reconstruction": 0.0
+  },
+  "failure": false,
+  "residuals": [
+    {
+      "r": 2,
+      "residual_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "residual_over_D": 0.0
+    }
+  ],
+  "flows": [
+    {
+      "r": 2,
+      "s": 1,
+      "flow_over_D": 0.4696330244762421
+    },
+    {
+      "r": 2,
+      "s": 6,
+      "flow_over_D": 0.017894496067776954
+    },
+    {
+      "r": 2,
+      "s": 10,
+      "flow_over_D": 0.06047336307174669
+    },
+    {
+      "r": 2,
+      "s": 14,
+      "flow_over_D": 0.04328652031330669
+    },
+    {
+      "r": 2,
+      "s": 22,
+      "flow_over_D": 0.0020215116440469305
+    },
+    {
+      "r": 2,
+      "s": 26,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 2,
+      "s": 34,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 1,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 6,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 15,
+      "flow_over_D": 0.03923128775572766
+    },
+    {
+      "r": 3,
+      "s": 21,
+      "flow_over_D": 0.02041389340523287
+    },
+    {
+      "r": 3,
+      "s": 33,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 39,
+      "flow_over_D": 0.0
+    },
+    {
+      "r": 3,
+      "s": 51,
+      "flow_over_D": 0.0
+    }
+  ],
+  "input_sha256": "85170967cef01790e79612c9e9846df6bb64641d32e17b836d3a751ad06ad102"
+}

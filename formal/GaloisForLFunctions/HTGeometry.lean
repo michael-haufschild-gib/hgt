@@ -11302,6 +11302,7 @@ import GaloisForLFunctions.HTGeometry.TwoLocalDiagonalBaseGenericity
 import GaloisForLFunctions.HTGeometry.TwoLocalEdgeMonodromy
 import GaloisForLFunctions.HTGeometry.TwoLocalEdgeSliceFamily
 import GaloisForLFunctions.HTGeometry.TwoLocalFullStarSpectrum
+import GaloisForLFunctions.HTGeometry.TwoLocalStarSpectralJetDetection
 import GaloisForLFunctions.HTGeometry.TwoLocalHypercubeCoordinateRelabel
 import GaloisForLFunctions.HTGeometry.TwoLocalIsolatedEdgeSpectrum
 import GaloisForLFunctions.HTGeometry.TwoLocalMonodromyRelationRigidity
@@ -14286,3 +14287,20 @@ import GaloisForLFunctions.HTGeometry.HawkingMassLossClock
 import GaloisForLFunctions.HTGeometry.EinastoHorizonExistence
 
 import GaloisForLFunctions.HTGeometry.EinastoHorizonBalance
+
+import GaloisForLFunctions.HTGeometry.EinastoHorizonClassification
+
+import GaloisForLFunctions.HTGeometry.EinastoHorizonScaling
+
+import GaloisForLFunctions.HTGeometry.ChargedWaveFlux
+
+import GaloisForLFunctions.HTGeometry.ReflectionlessWell
+
+import GaloisForLFunctions.HTGeometry.QNMNoetherFlux
+import GaloisForLFunctions.HTGeometry.FirstEndpointMellinLimit
+
+import GaloisForLFunctions.HTGeometry.ChargedStepScattering
+
+import GaloisForLFunctions.HTGeometry.ThermalStepAmplification
+
+import GaloisForLFunctions.HTGeometry.ThermalAmplificationFluctuations

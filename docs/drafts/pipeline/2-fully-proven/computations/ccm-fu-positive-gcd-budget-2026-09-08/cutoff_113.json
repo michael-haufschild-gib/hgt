@@ -1,0 +1,30 @@
+{
+  "M": 113,
+  "diagonal": "15.114810307905512517",
+  "head": "-1.7276258250286026146",
+  "positive": "12.574556202242636959",
+  "negative": "24.704675518842389622",
+  "absolute": "37.27923172108502658",
+  "positive_over_diagonal": 0.8319360908992524,
+  "positive_over_M_sq": 0.0009847721984683716,
+  "absolute_over_M_sq": 0.0029195106681090943,
+  "primitive": "-14.889476019781157531",
+  "violation": false,
+  "reconstruction_error": "8.673617379884035472e-19",
+  "direct_pair_error": null,
+  "direct_channel_error": null,
+  "positive_groups": [
+    {
+      "r": 2,
+      "value": "8.878928126909185159"
+    },
+    {
+      "r": 3,
+      "value": "2.398285308707322786"
+    },
+    {
+      "r": 5,
+      "value": "1.2973427666261290151"
+    }
+  ]
+}

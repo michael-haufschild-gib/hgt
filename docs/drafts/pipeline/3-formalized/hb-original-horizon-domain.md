@@ -21,10 +21,14 @@ OriginalHorizonC2(w, A*H(w)+B*H(-w))  iff  B=0.
 
 Here H is the actual existing Gauss solution of the original BM radial
 operator. This is an exact classification of the displayed two-branch family,
-not yet a representation theorem for every local homogeneous solution.
+with the full representation for every actual homogeneous solution supplied
+by [the original horizon-basis proof](hb-original-horizon-basis-and-source-pairing.md).
 `allXi_fundamental_original_horizon_domain` supplies this classification and
 the actual original radial equation at both fundamental QNMs for every Xi copy,
 without additional regularity, nonresonance, endpoint, or RH assumptions.
+Its physical angular parameter is `z/2+i/4`, consistent with the QNM formula;
+the corrected specialization and its separate audit are recorded in that
+horizon-basis proof.
 
 For an arbitrary full angular-dependent profile V with the stated actual
 radial and angular differentiability, restore `U(t,z)=b(t)^(w/2)V(b(t),z)`.
@@ -105,9 +109,10 @@ construction. The existing complete source L²-meromorphic germ is available.
 The scalar two-branch classification is not a replacement for those full
 joint assertions.
 
-A direct next step is the actual horizon Wronskian and source-dependent
-boundary map for P_w, followed by a jointly controlled inverse with the
-original modular cusp condition. The physical advanced/adjoint left-source
+The actual horizon Wronskian, full homogeneous representation, and compact
+interior radial source pairing are now supplied by the linked horizon-basis
+proof. A jointly controlled inverse with the original modular cusp condition
+and the full endpoint source pairing still require construction. The physical advanced/adjoint left-source
 projection, spin-two/AIME identification, and independent Hawking-clock
 extinction remain open. No numerical experiment or computational proof
 certificate is used.
