@@ -14331,3 +14331,5 @@ import GaloisForLFunctions.HTGeometry.GomesScalarTensorReconstruction
 import GaloisForLFunctions.HTGeometry.GomesTensorConjugation
 
 import GaloisForLFunctions.HTGeometry.GomesWeylAlgebraicObstruction
+
+import GaloisForLFunctions.HTGeometry.RadialPolynomialCorrection

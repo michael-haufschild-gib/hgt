@@ -1,9 +1,9 @@
 # Scalar modular curvature versus the quarter bound
 
 - **ID:** SELBERG-SCALAR-CURVATURE-FLEXIBILITY
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Parent:** [Selberg conjecturing loop](selberg-quarter-conjecturing-loop.md), cycle 39.
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Parent:** [Selberg conjecturing loop](../1-in-progress/selberg-quarter-conjecturing-loop.md), cycle 39.
 - **Previous goal turn:** progress: uniform original-source tails and exact compact-orbit mass proved and audited.
 - **Goal:** Test whether scalar modularity, positive curvature, cusp decay, and finite amplitude mass can force a spectral quarter lower bound; preserve the full Maass goal.
 
@@ -19,7 +19,7 @@ For t>0, try the literal function a=E^(-t). The chain rule predicts
 
 y²*Delta(a)+lambda*a = t*(t+1)*E^(-t-2)*y²*|grad E|² + (lambda-2t)*a.
 
-Thus t=lambda/4 makes curvature strictly positive for any lambda>0. E>=y² gives cusp decay of a. The first four modules below now prove these claims for the literal series. The complete Stokes limit must still be checked before claiming the same total-curvature budget as the actual Maass source. This is a candidate countermodel to the scalar shortcut, not to Selberg. The models have power-law cusp decay; stronger exponential or vector-valued Maass constraints are not supplied.
+Thus t=lambda/4 makes curvature strictly positive for any lambda>0. E>=y² gives cusp decay of a. The modules below prove these claims for the literal series and justify the complete Stokes limit and exact total-curvature budget. This is a proved countermodel to the stated scalar shortcut, not to Selberg. The models have power-law cusp decay; stronger exponential or vector-valued Maass constraints are not supplied.
 
 ## Source-derived proof progress
 
@@ -33,7 +33,7 @@ Thus t=lambda/4 makes curvature strictly positive for any lambda>0. E>=y² gives
 
 7. `SelbergScalarCurvatureFamily`: the actual hyperbolic Laplacian and curvature are modular invariant; both full integrals transport to the standard hyperbolic cell. The curvature/mass ratio is exactly lambda for every lambda>0. `no_positive_uniform_comparison` and `no_scalar_quarter_comparison` are closed negative statements about this literal family.
 
-All seven complete scratch proofs and all seven needed source oleans have passed without new warnings. The exact source family, its modularity, integrability, positive mass, and complete Stokes budget are now proved in Lean. Final build audits remain in progress below.
+All seven complete scratch proofs, seven needed source olean checks, and seven final single-module build audits passed without new module warnings. The exact source family, its modularity, integrability, positive mass, and complete Stokes budget are proved and audited in Lean.
 
 ## Dependency-closed paper argument
 
@@ -53,14 +53,16 @@ Conformal covariance of the actual C² Laplacian and modular invariance of a imp
 
 Only the scalar shortcut using smooth modularity, positive curvature, vanishing cusp values/current, finite positive mass, and the exact total-curvature identity is excluded. Exponential Maass cusp decay, the common component eigen-equation, permutation-equivariant source directions, amplitude-weighted component mean zero, and nodal constraints are not supplied by this family. No Maass eigenfunction or Selberg counterexample is asserted. A route retaining those source constraints remains active.
 
-## Positive survivor required before closure
+## Audited positive survivor
 
-If the candidate succeeds, formalize the exact power-transform identity and actual modular family, not merely a logical statement about arbitrary scalar data. The surviving lesson must identify which vector or arithmetic Maass constraint remains essential. Do not retire the full curvature route or infer a counterexample to Selberg from these scalar models.
+The positive survivor is the literal globally smooth modular Eisenstein power family, its exact pointwise curvature identity, actual source derivative bounds, full Stokes budget, and all-positive curvature/mass ratio classification. The closed negative theorem is supported by that complete construction. The full curvature route remains active with the original component, nodal, cusp, and arithmetic constraints; the next [source-current candidate](../1-in-progress/selberg-original-source-conserved-currents.md) retains the actual common eigen-equations and regulator forcing. The [failed-route record](../5-failed/selberg-scalar-quarter-comparison.md) retires only the stated scalar shortcut.
 
 ## Audit
 
-All seven modules are wired exactly once into RHTower. The refreshed corpus index contains the new capstones; there are 91 public declarations and 105 declarations including private helpers. The complete scratch axiom audit passed with only `propext`, `Classical.choice`, and `Quot.sound`, or none. Task whitespace checks passed. The initial repository lint failed only on nine unrelated unwired Fokas–Lenells modules; details are in `/tmp/selberg_eisenstein39_lint.log`. Those concurrent files were not edited or wired by this task.
+All seven modules are wired exactly once into RHTower. The refreshed corpus index contains the new capstones; there are 91 public declarations and 105 declarations including private helpers. The complete scratch axiom audit passed with only `propext`, `Classical.choice`, and `Quot.sound`, or none. Task whitespace and research-card links passed. **Final repository lint passed**, retaining existing large-file warnings (`/tmp/selberg_eisenstein39_lint_final.log`). The earlier nine unrelated Fokas–Lenells wiring errors no longer occur; those concurrent files were not edited or wired by this task.
 
-Final targeted audits are still running. The first invocation, `LEAN_NUM_THREADS=1 lake build GaloisForLFunctions.RHTower.SelbergPositiveEisenstein`, **passed** (12320 graph jobs, mostly cached, with needed transitive rebuilds). Its tool session **34342** is terminal exit 0. Log: `/tmp/selberg_eisenstein39_positive_build.log`. The second target, `SelbergEisensteinPlane`, is now being audited; the final five named-module audits remain pending. Builds are serial, with one Lean worker observed; no full or umbrella build is used. Re-poll exact live handles after interruptions, never restart based on elapsed time. Because the final audit rebuilt dependencies, repeat the axiom audit against final artifacts after the builds finish. Its scratch/log are `/tmp/selberg_eisenstein39_axioms.lean` and `/tmp/selberg_eisenstein39_axioms.log`. Seven source hashes are saved in `/tmp/selberg_eisenstein39_source_hashes.json`.
+All seven `LEAN_NUM_THREADS=1 lake build <module>` final audits passed, serialized. PositiveEisenstein rebuilt 104 needed transitive dependencies and its target; EisensteinPlane rebuilt five needed dependencies and its target. The remaining five audits rebuilt only their own target. Existing dependency warnings were retained; no new module warnings occurred. Target compilation times were respectively 3.4s, 3.6s, 4.6s, 4.5s, 6.0s, 5.1s, and 6.7s; these exclude dependency graph/rebuild time. Logs are `/tmp/selberg_eisenstein39_{positive,plane,power,bounds,boundary,mass,family}_build.log`, summarized in `/tmp/selberg_eisenstein39_build_audit.json`. No full or umbrella build ran. Every build handle is terminal.
+
+The post-build scratch audit again checked all 91 public declarations against final artifacts, with only standard axioms or none and no errors/warnings. Scratch: `/tmp/selberg_eisenstein39_axioms.lean`; final log: `/tmp/selberg_eisenstein39_axioms_final.log`. All seven source hashes still match `/tmp/selberg_eisenstein39_source_hashes.json`. No task commit or push occurred. Repository-wide lint status is recorded separately from the passing task proof/build audits.
 
 The explicit --any Eisenstein/power-Laplacian/positive-supersolution/reciprocal-curvature/ground-state-transform search reached 1736 declarations in 106 modules. A broad continuous-partial/negative-power search reached 166 declarations in 108 modules and exposed the actual joint-smoothness bridge. An additional OR search for modular potentials, full domains, power integrals, and positive measures reached 271 declarations in 125 modules; inspected the existing literal full-domain area and source exhaustion proofs. These are discovery counts, not claims that every hit's proof was read.
