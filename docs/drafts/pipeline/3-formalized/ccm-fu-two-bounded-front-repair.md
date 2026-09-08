@@ -1,13 +1,14 @@
 # CCM-FU: prescribed prime two with a bounded remaining front
 
-- **Stage:** Paper proof complete; Lean validation in progress.
+- **Stage:** 3-formalized.
 - **Type:** [BRIDGE], actual finite prime-batch construction.
 - **RH status:** Neither proof nor falsification of RH.
 
 ## Actual theorem
 
-There is a fixed b>=15 such that, for every fixed integer J>=0 and every C>0, there is A>0 with the
-following property for all sufficiently large N. Put M=14(b+1)N and let W
+There is a fixed b>=15 such that, for every fixed integer J>=0 and every
+C>0, there is A>0 with the following property for all sufficiently large N.
+Put M=14(b+1)N and let W
 be the existing three actual prime windows with floor(M/p)=2,7,14.
 Let P contain all odd primes below 15, exclude 2, and leave W unused.
 Assume Psi(M,P)<=C*M^2. Suppose every remaining prime OTHER THAN 2 has
@@ -16,8 +17,8 @@ floor(M/q)<=J. Then an actual finite set L satisfies
 `2 in L`, `L subset {2} union W`,
 `card(L)=ceil(A*sqrt(M))+1`, `Psi(M,P union L)+M <= Psi(M,P)`.
 
-A and the threshold depend on J and C, and are uniform in P, which may vary with N and have
-unbounded cardinality. The prescribed prime's own quotient floor(M/2)
+A and the threshold depend on J and C, and are uniform in P, which may
+vary with N and have unbounded cardinality. The prescribed prime's own quotient floor(M/2)
 is unrestricted. This is different from the earlier producer, which
 required the prescribed prime itself to have quotient at most 14.
 
@@ -115,8 +116,21 @@ exactly n+1. No numerical result enters any inequality in this proof.
 - `MobiusDivisorPrescribedWindowRepair.lean`:
   `exists_mobiusDivisor_two_bounded_front_repair`.
 
-Validation in progress. Only these two new declarations require axiom
-auditing; their predecessor lemmas were audited in earlier work.
+Scratch checks and exact `lake env lean` leaf emissions passed without
+warnings, including the arbitrary fixed J generalization. Only these two
+new declarations were axiom-audited, each once. Both depend solely on
+`propext`, `Classical.choice`, and `Quot.sound`; there is no added axiom,
+proof hole, or computational premise. The numerical cutoff-84 values are
+absent from the Lean proofs.
+
+The new transport leaf is wired into the RHTower umbrella and imported by
+the actual producer. Generated indexes were refreshed. The repository-wide
+`scripts/formal_tools.py lint --check-generated` check reports six unrelated
+unwired Coppo modules in HTGeometry and three stale generated indexes under
+concurrent work; it reports no proof-debt or RHTower wiring error. The
+`lake build` package audit remains pending because its known dependency
+expansion would rebuild broad stale prerequisites. No full or umbrella
+build was run. Owned scratch files and local/remote processes were cleaned.
 
 ## Remaining RH obligation
 

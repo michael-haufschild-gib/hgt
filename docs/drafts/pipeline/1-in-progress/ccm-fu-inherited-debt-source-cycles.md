@@ -92,8 +92,8 @@ existence of an exactly balanced finite prime batch.
 
 The full inherited-cost identity and an actual prescribed-prime repair
 producer are proved. Exhaustion still requires renewal after source windows
-are used, control of prescribed primes with unbounded quotients, and the
-overlapping child profiles that arise there. Fixed quotient windows have
+are used, control of several unresolved small primes, and the overlapping
+child profiles that arise there. Fixed quotient windows have
 limited prime capacity; their existence does not alone pay every future
 change of core under a uniform global budget.
 
@@ -135,20 +135,23 @@ finds a numerical failure of pointwise envelope monotonicity for inserting
 the full envelope. This is diagnostic evidence, not a Lean counterexample.
 The original diagonal budget is not violated in the scanned range.
 
-[BRIDGE target] Suppose all remaining primes other than 2 have M/q<=14,
-while the source windows stay unused and E=Psi(P)<=C*M^2. Inserting 2
-already has current energy at most E. The existing quotient transport law
-therefore bounds its new full successor envelope by
+[The prime-two producer](../3-formalized/ccm-fu-two-bounded-front-repair.md)
+handles any fixed bound J on all remaining quotients OTHER THAN M/2.
+Keep the source windows unused and E=Psi(P)<=C*M^2. Inserting 2 already
+has current energy at most E. The new general remaining-front transport
+law bounds its full successor envelope by
 
-`E + 17*sqrt(M)*sqrt(E)`.
+`E + (6/5)*J*sqrt(M*E)`.
 
-This is at most E+17*sqrt(C)*M^(3/2). A balanced actual source batch from
-2,7,14, chosen at P, remains a scalar-displacement batch after inserting
+This has order M^(3/2) under the quadratic budget, with J fixed. An actual
+batch with bounded displacement from quotient windows 2,7,14, chosen at P,
+remains a scalar-displacement batch after inserting
 2: its two copied coordinates merge, and its removed reserve is
-`sum p*(I_p,0+I_p,2)^2`. The existing common positive square reserve and
-window capacity can pay both the new-front cost and receiving error with
-ceil(A*sqrt(M)) source primes. Target a batch containing 2 with full
-endpoint envelope at most E-M. Constants and threshold must be uniform
-in the processed core. This handles an unbounded quotient at the prescribed
-prime itself, but assumes every other remaining quotient is bounded; it
-does not settle the general overlapping front or exhaustive processing.
+`sum p*(I_p,0+I_p,2)^2`. The common positive square reserve and window
+capacity pay both the new-front cost and receiving error with
+ceil(A*sqrt(M)) source primes. The resulting batch includes 2 and lowers
+the full endpoint envelope by at least M. Constants and threshold depend
+on J and C, uniformly in the processed core. No bound on M/2 is assumed.
+J must be fixed before the asymptotic cutoff; this does not prepare the
+required front, control a growing J uniformly, renew sources, or supply
+an exhaustive order.

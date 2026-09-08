@@ -84,4 +84,27 @@ theorem coppoPrintedCollectiveKerr_ne_rotated :
   exact (smul_ne_zero (by norm_num : (4 : ℂ) ≠ 0)
     (mul_ne_zero (MvPolynomial.X_ne_zero false) (MvPolynomial.X_ne_zero true))) hz
 
+/-- Normalization of the two orthogonal mode rotations fixes the mixed coefficient to `2ε`. -/
+theorem coppoRotatedKerr_normalized (epsilon : ℂ) :
+    (epsilon / 4) • coppoRotatedKerrNumerator =
+      (epsilon / 2) • coppoFockPairQuartic + (2 * epsilon) • coppoFockCrossNumber := by
+  rw [coppoRotatedKerrNumerator_eq]
+  module
+
+/-- Every occupation monomial diagonalizes the cross-number defect. -/
+theorem coppoFockCrossNumber_monomial (s : Bool →₀ ℕ) (c : ℂ) :
+    coppoFockCrossNumber (monomial s c) = (s false * s true) • (monomial s c : CoppoFock) := by
+  have hmode (i : Bool) :
+      (fockCre ℂ Bool i * fockAnn ℂ Bool i) (monomial s c) = s i • (monomial s c : CoppoFock) := by
+    exact MvPolynomial.X_mul_pderiv_monomial
+  rw [coppoFockCrossNumber_eq_number_product, Module.End.mul_apply, hmode true,
+    map_nsmul, hmode false, smul_smul, Nat.mul_comm]
+
+/-- The printed coefficient error has occupation eigenvalue `4 n₁ n₂` before normalization. -/
+theorem coppoPrintedCollectiveKerr_defect_monomial (s : Bool →₀ ℕ) (c : ℂ) :
+    (coppoRotatedKerrNumerator - coppoPrintedCollectiveKerrNumerator) (monomial s c) =
+      (4 * (s false * s true)) • (monomial s c : CoppoFock) := by
+  rw [coppoPrintedCollectiveKerr_defect]
+  simp only [LinearMap.smul_apply, coppoFockCrossNumber_monomial, smul_smul]
+
 end GaloisForLFunctions.HTGeometry

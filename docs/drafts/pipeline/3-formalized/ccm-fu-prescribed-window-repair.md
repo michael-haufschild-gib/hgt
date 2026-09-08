@@ -129,8 +129,10 @@ build was run. Owned scratch files and Lean processes were cleaned.
 The finite producer handles bounded quotients and initially unused windows.
 Its square-root batch size conserves most of the available window supply,
 but the theorem does not replenish consumed primes or assert that a later
-processed core still meets the untouched-window condition. It also does not
-handle a prescribed prime with unbounded M/q, especially the retained prime
-2, or the overlapping child profiles that appear there. The theorem bounds
+processed core still meets the untouched-window condition. The separate
+[prime-two producer](ccm-fu-two-bounded-front-repair.md) handles unbounded
+M/2 when every other remaining quotient has a fixed bound. Several
+unresolved small primes and their overlapping child profiles remain open.
+The theorem bounds
 the admitted endpoint; it does not itself give a full exhaustive order or
 its global signed Abel estimate. Those remain necessary for CCM-FU to prove RH.
