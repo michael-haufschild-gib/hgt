@@ -55,13 +55,15 @@ maps are retained. Their sum with the native square remainder is one admitted,
 continuous causal spatial source. Its Bochner transform is proved equal to the
 native transform plus all three constructed cutoff-response transforms.
 
-The immediate hard obligation is equality of the constructed principal
-Laplace transform with `principalDifference` at the original onset transform.
-The actual transformed response now has its original radial distributional
-equation, spatial Sobolev order-two domain and continuous zero endpoint trace.
-The endpoint Green uniqueness comparison is still required. Until that
-identification is closed, the assembled transform is not identified with
-`cuspResidualVector`.
+The [original causal cusp-source transform](../3-formalized/hb-original-causal-cusp-source-transform.md)
+closes the endpoint Green comparison. Each actual principal Laplace profile
+equals `principalDifference` at the original onset transform, pointwise on the
+negative ray and almost everywhere in the original L² class. Consequently the
+complete causal source's absolutely convergent Bochner transform equals
+`cuspResidualVector` throughout
+`Re(w)>max(causalPrincipalThreshold q, principalThreshold q)`.
+The original joint causal response to this identified complete time source is
+constructed below. Its physical QNM continuation and left pairing remain open.
 
 The [second time derivative and spatial-range theorem](../3-formalized/hb-principal-causal-second-order-wave.md)
 proves that the actual native source is C¹ in the original L² norm. Its
@@ -98,30 +100,50 @@ and negative-ray boundary limit. Its negative-ray weak frequency equation
 retains the literal source and spatial L² admission. No boundary limit is
 exchanged with an improper time integral.
 
-The next obligation is endpoint Green uniqueness on a common right half-plane.
-`principalDifference` already has the matching classical radial equation and
-negative-ray L² admission under `PrincipalChamber`. Transport its endpoint
-condition to the same coordinate, derive whatever regularity or horizon data
-the uniqueness argument requires, and prove equality with
-`principalLaplaceProfile` at the physical onset transform. This comparison,
-and thus identification of the complete source transform with
-`cuspResidualVector`, remains open.
+The endpoint uniqueness proof uses the actual transformed Sobolev profile and
+the original Green integrals. Compact Schwartz pairings and two local
+constant-function classifications give actual classical spatial derivatives.
+The Sobolev Fourier representation bounds the profile; the Green endpoint
+limits and the exact lift give a bounded comparison. Its original homogeneous
+equation and the componentwise Landau estimate bound its first jet near the
+horizon. The actual horizon mode and its first tortoise jet decay there, so
+their constant Wronskian with the comparison is zero. The second physical mode
+has exact Wronskian `-connection`. The Cramer identity, zero comparison endpoint
+trace and nonzero horizon-mode endpoint coefficient force the comparison to
+vanish. No horizon phase or derivative bound is assumed.
 
-The current uniqueness construction first subtracts a double primitive of the
-continuous interior forcing density. Two applications of the corpus's
-local distributional constant-function theorem should classify the remaining
-zero-second-derivative distribution as affine, giving actual classical
-interior jets. Then transport the endpoint Green trace and derive the horizon
-phase condition from the original L² norm before comparing the two solutions.
-These regularity and uniqueness steps remain to be proved.
+The actual cutoff operators preserve the original horizon factors, negative
+restriction and angular commutators. Product-measure equality and the finite
+three-channel sum identify the complete Bochner source transform. This source
+identity closes the causal-to-Green source comparison in the stated half-plane.
 
-Convolution of the complete source with the original joint causal response,
-metric finite propagation, modular patching and constrained Einstein sectors
-still need their physical identifications. Continue the resulting response to
-the physical left-QNM pairing and evaluate the retained spin-two/AIME source.
-Independent Hawking-clock extinction remains open. The Volterra estimate
-allows exponential growth; it supplies no Xi-zero selection. The enlarged
-native source chamber `Re(w)>-2` does not continue the response inverse there.
+The [original joint causal forced-response theorem](../3-formalized/hb-original-joint-causal-forced-response.md)
+constructs one frequency-independent spatial-vector response to the complete
+source. With `c=causalGreenThreshold q+1`, it vanishes almost everywhere before
+time zero and admits exponential time L² damping at `c+1`. Its Bochner Laplace
+transform converges absolutely for `Re(w)>c+1` and equals the original joint
+response to the literal residual at the original onset transform. The transformed
+vector belongs to the actual unbounded operator domain and solves its complete
+forced equation.
+
+Absolute convergence at one real frequency bounds the source transform and
+controls its frequency derivative through the strict exponential margin.
+Bochner holomorphy and the original inverse estimate provide vector vertical
+L² and scalar Hardy bounds. Fourier naturality and Bochner probe totality give
+one causal vector, and its absolutely convergent transform identifies the
+original source-resolvent product. No pointwise operator-valued representative
+of the fixed-datum kernel is required.
+
+The next physical obligation is continuation of this identified original
+response to the QNM divisor and construction of its advanced/adjoint left
+residue, with all source channels retained. Metric finite propagation, modular
+patching and constrained Einstein identifications remain to be discharged where
+needed for this continuation and spin-two/AIME evaluation. Pointwise time
+regularity does not follow merely from the new weighted L² statement.
+Independent Hawking-clock extinction remains open. The causal estimates supply
+no Xi-zero selection; the enlarged native source chamber `Re(w)>-2` does not
+continue the response inverse there. A different energy branch is not yet the
+physical continuation of the constructed causal response.
 
 No numerical experiment is indicated; the construction uses analytic estimates
 and the existing Fourier, Klein–Gordon and Volterra corpus. The frontier map

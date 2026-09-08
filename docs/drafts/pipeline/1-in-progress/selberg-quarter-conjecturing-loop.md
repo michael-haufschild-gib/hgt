@@ -3,7 +3,7 @@
 - **ID:** SELBERG-QUARTER-CONJECTURING
 - **Stage:** 1-in-progress
 - **Goal:** An unconditional Lean proof of the all-congruence Maass cusp quarter bound.
-- **Method:** Corpus-derived ingredients → precise conjecture → attempted proof or explicit failure → stronger surviving statement → pivot. Searches discover ingredients rather than stand in for mathematical work.
+- **Method:** Corpus-derived ingredients → precise conjecture → attempted proof or explicit failure → stronger surviving statement → pivot. Searches discover ingredients rather than stand in for mathematical work. Use wide `research ... --any` discovery batches; multiple terms without `--any` mean AND. Narrow AND queries follow specific leads, not replace wide discovery.
 
 ## Plan
 
@@ -33,7 +33,10 @@
 - [x] Cycle 24: construct integral translates of the actual C² Maass object, transport the boundary identity to every integral cusp, and construct the actual finite congruence trace with its exact unit-strip normalization and flux identities.
 - [x] Cycle 25: prove the pointwise finite-trace energy identity, standard-area truncated-core Green theorem, and complete actual core-plus-cusp Bessel quarter form.
 - [x] Cycle 26: prove strict physical mass and cutoff independence, test scalar-norm energy reconstruction, and formalize the exact actual radial/angular residual and its zero classification.
-- [ ] Cycle 27: construct the actual normalized congruence-family boundary constraints and test an estimate for the combined core/Bessel form that retains angular energy and the original mean constraints; do not assume a positive core response.
+- [x] Cycle 27: construct actual normalized congruence directions and modular transport, prove weighted means and squared-distance separation, and test the zero-mean angular-energy shortcut against exact nodal reversal.
+- [x] Cycle 28: derive actual regularized trace curvature, integrate it on standard modular area with full boundary flux, and classify the surviving nodal curvature on all intervals.
+- [x] Cycle 29: construct smooth augmented source directions and exact mean/chord defect; prove actual path capacity and uniform variation costs; classify the nodal resistance singularity.
+- [ ] Cycle 30: construct the actual regularized amplitude-mean equation, prove its top-current limit from original cusp decay and source forcing, and extend the standard-area curvature balance to the full modular domain.
 - [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
@@ -458,13 +461,67 @@ At `D>0`, its unique minimizing real slope is `c_v=C_v/(2D)`, with excess `D*(c-
 
 [Exact statements, paper proof, and audit](../3-formalized/selberg-positive-mass-and-radial-defect.md). [Failed shortcut and fully formalized positive survivor](../5-failed/selberg-scalar-norm-energy-reconstruction.md).
 
-### Cycle 27 — retain actual congruence directions and mean constraints
+### Cycle 27 — actual directions, weighted distance, and nodal reversal
 
-Strict total mass is now proved. The remaining Selberg target is a source-derived nonnegative lower bound for `Qcore+B`. Construct how the actual finite family direction, its residual, and its original zero Fourier means constrain the modular sides and inversion arc before attempting a core estimate. The scalar amplitude does not retain the original signed/complex mean constraint. Its derivatives across common trace zeros also require care; the multiplied identity above does not assert smoothness of the norm at those zeros.
+The zero-mean angular-energy conjecture fails. For a real differentiable profile, radial subtraction removes the full derivative away from its zeros. Exact cosine is smooth and periodic, has zero mean and positive squared mass, but its residual is integrable and zero almost everywhere. At a node the residual is one. Nodal reversal therefore defeats this angular-only inference. The toy is not claimed to be Maass, cuspidal, or inversion invariant.
 
-The previously read Schur/Dirichlet-to-Neumann corpus provides possible elimination identities only. Any such use must construct the actual response and prove its inverse/coercive complement, then retain the adverse Bessel channels. Test proposed estimates on exact symbolic source-independent toy forms before asserting them for the Maass family. Do not replace these obligations by an assumed positive matrix or conditional Selberg wrapper. The global conjecture remains active and unproved.
+The actual-source survivor succeeds. Normalize the literal finite congruence family by `rho=sqrt(D)`. Reconstruction and modular permutation covariance hold even at common zeros. On `D>0`, the actual derivative obeys `rho*partial_v u_q=partial_v F_q-c_v F_q`, so the retained residual is exactly `D*sum_q |partial_v u_q|²`. The original exceptional constant-term theorem gives `integral rho*u_q=0` on every shifted level period. In contrast, the amplitude mean is strictly positive around each positive source value.
+
+The continuous source correlation has zero period integral and a positive diagonal. It therefore takes a strictly negative value within the centered level period. Both endpoint densities are positive, and the normalized squared distance is strictly greater than two. Original nonvanishing supplies such an actual same-height pair. More strongly,
+
+`rho(w)*d(z,w)²=2*rho(w)-2*C(z,w)/rho(z)`
+
+holds even at common zeros of the moving source. This weighted squared-distance slice is continuous and its mean over every level period is exactly twice the amplitude mean. It retains nodal direction reversal without asserting differentiability there. [Dependency-closed proof and full audit](../3-formalized/selberg-source-directions-and-nodal-reversal.md). [Failed shortcut and positive survivor](../5-failed/selberg-zero-mean-angular-energy.md).
+
+The user renewed the requirement for wider searches and explicitly noted the default AND behavior. Subsequent discovery used `--any` for `nodal chord oscillation variance`, `coarea Cheeger conductance resistance`, `permutation transport holonomy expansion`, and grouped OR phrases for effective resistance, Dirichlet principles, spectral gaps, boundary transport, and zero mean. These spanned hundreds to thousands of modules. Exact result counts and the sources read are on the linked card; this does not claim every matching declaration was read.
+
+### Cycle 28 — actual regularized curvature and surviving nodal charge
+
+Broad OR searches (`--any`) for resistance/capacity, boundary transport, arithmetic amplification, and regularization reached `SchwartzPositiveCompactDiagonal.pointwiseMulConj_nonnegativeSquareRootRegularization_self`. Its retained cutoff error suggested adding a positive constant square to the actual trace. The resulting source conjecture is proved: `rho_e=sqrt(D+e²)` is C² and modular invariant through common zeros, its remainder is a sum of squares including the constant-coordinate correction, and
+
+`rho_e*Delta rho_e = R_e-lambda*D/y²`.
+
+The actual quarter density retains `R_e` and the explicit `e²/(4y²)` correction. Standard two-dimensional modular-area integration, with every side and circular current condition proved from the original source, gives
+
+`integral_{Omega_Y} R_e/rho_e = top_e(Y)+lambda*integral_{Omega_Y} D/(y²*rho_e)`.
+
+All integrability is proved; the right side is nonnegative. The original area module now shares the general C² Green slice proof, preserving its public statements.
+
+The proposed pointwise-limit removal of the defect fails in the exact local nodal profile `h(x)=x`. The literal curvature `e²/(x²+e²)^(3/2)` tends to zero almost everywhere, but its integral on `[-1,1]` tends to two. The stronger positive survivor classifies every oriented interval: the limiting curvature is `b/|b|-a/|a|`, including endpoints at the node. This toy is not claimed to be Maass, cuspidal, periodic, or inversion invariant.
+
+Further broad OR searches for nodal/curvature/defect measure/concentration/ground state returned 6310 declarations in 1042 modules. Sources read included the explicit square-root cutoff correction, approximate-identity concentration, and full logarithmic curvature decomposition. No Maass log-concavity or domination estimate was imported from those mechanisms. [Full paper proof and audit](../3-formalized/selberg-regularized-curvature-and-nodal-charge.md). [Failed shortcut and fully formalized positive survivor](../5-failed/selberg-dropping-nodal-curvature-by-pointwise-limit.md).
+
+### Cycle 29 — augmented source capacity and surviving variation
+
+The actual augmented source `(F_q,e)/rho_e` is now proved C² through original common zeros, with unit squared norm and literal modular permutation covariance. Its derivative energy is exactly the retained regularized remainder. Original coordinates retain amplitude-weighted mean zero; the added coordinate has the nonzero mean `e*(N+1)`. The exact weighted squared-chord mean includes the correction `-2e²*(N+1)/rho_e(z)`.
+
+Original source nonvanishing and zero means supply fixed same-height points whose augmented squared chord exceeds two for every sufficiently small positive regulator. Integral square completion and actual FTC prove the source path comparison
+
+`chord² <= (integral 1/rho_e)*(integral R_{e,1}/rho_e)`.
+
+Every continuity and integrability condition comes from the original source. On a fixed ordered nondegenerate path, the same small regulators satisfy both `pathEnergy > 2/pathResistance` and `sum_j (integral |partial_x U_j|)² > 2`. The latter is the literal squared coordinate-variation sum and does not introduce resistance.
+
+The proposed unqualified regulator-uniform resistance bound fails in the exact local nodal profile. Its resistance is `2arsinh(1/e)=2log(1+sqrt(1+e²))-2log(e)`, diverges, and has finite part `2log 2`; its capacity coefficient tends to zero. The strongest positive survivor includes that full singularity classification and the actual source's fixed variation cost. The toy is not claimed to be Maass, periodic, cuspidal, or modular invariant.
+
+Broad OR corpus searches spanned 3041 modules for weighted/chord/resistance mechanisms, then 88 modules for weighted Cauchy and path energy, 27 for reciprocal-radius primitives, and 85 for variation/coarea/isoperimetry. Read source mechanisms included exact finite resistance completion, complex weighted Cauchy, the rescaled arsinh primitive, and finite projected coarea with explicit isotropy. No unproved isotropy or uniform resistance was transferred to Maass data. [Dependency-closed proof and audit](../3-formalized/selberg-augmented-chord-capacity-and-nodal-resistance.md). [Failed shortcut and formalized positive survivor](../5-failed/selberg-regulator-uniform-resistance.md).
+
+### Cycle 30 — actual regularized cusp flux and full curvature budget
+
+A path cost alone does not control two-dimensional core energy. Next construct `M_e(y)=integral_{-1/2}^{1/2} rho_e(x+iy) dx` and prove its first derivative is the retained top current. Derive its second derivative by actual source differentiation and the curvature equation. The original `density_decay` is a uniform limit at the cusp; it is not a derivative-decay theorem and has no quantitative rate in its statement.
+
+Conjecture: for fixed positive `e`, source boundedness and `rho_e>=e` give `M_e''(y)>=-C/y²` while `M_e` remains bounded and tends to `e`. Test a general dyadic secant/convex argument for the top-current limit: `M_e-C*log y` has nonnegative second derivative, and boundedness of `M_e` should force its original derivative to zero. Prove every positivity, forcing, differentiation, and tail-integrability fact from the original source. If this closes, identify the full standard-area integral of the retained weighted remainder with the actual weighted spectral mass. No top limit or full-area integral is assumed.
+
+Continue broad `--any` corpus discovery for real derivative/convexity, source tail control, and projected variation; use AND only to follow concrete leads. The finite projected-coarea source read in cycle 29 requires exact isotropy and supplies no Maass instance. A regulator-limit passage and a source-derived quarter comparison, including the Bessel boundary costs, remain separate unproved work. The target is still `Qcore+B>=0`, hence the original unconditional Selberg theorem; the main goal stays active.
 
 ## Verification log
+
+- Cycle 29: all four complete scratch checks and four serialized single-module final builds passed without new warnings, each rebuilding only its named target. All four modules are wired/indexed. All 57 public declarations passed the scratch axiom audit with only the standard three axioms or none. Whitespace checks passed. **Repository lint failed only on unrelated untracked, unwired `HTGeometry.FokasLenellsUniformizedFrame`** (`/tmp/selberg_augmented_lint.log`). All task-owned handles are terminal; no task commit or push. [Full paper proof and audit](../3-formalized/selberg-augmented-chord-capacity-and-nodal-resistance.md). The unqualified uniform-resistance shortcut is retired with exact nodal and actual-source positive survivors. The global quarter estimate and Selberg remain unproved.
+
+
+- Cycle 28: all complete scratch/source checks and six serialized single-module final builds passed, each rebuilding only its named target. The five new modules are wired and indexed. All 88 public declarations across the six audited modules passed the axiom audit with only the standard three axioms or none. Whitespace checks passed. **Repository lint failed only on unrelated untracked, unwired `HTGeometry.FokasLenellsLeftJost` and `HTGeometry.FokasLenellsScattering`** (`/tmp/selberg_regularized_lint.log`). All task-owned handles are terminal; no task commit or push. [Full paper proof and audit](../3-formalized/selberg-regularized-curvature-and-nodal-charge.md). The nodal-limit shortcut is retired with its full positive survivor; the source quarter comparison and Selberg remain unproved.
+
+
+- Cycle 27: both complete scratch checks and both direct source checks passed without warnings. Both serialized `LEAN_NUM_THREADS=1 lake build <module>` audits passed, each rebuilding only its named target. All 35 public declarations passed the axiom audit with only the standard three axioms or none; modules are wired/indexed. **Latest repository lint failed only on unrelated untracked, unwired `HTGeometry.FokasLenellsSobolevEnergy`** (`/tmp/selberg_direction_nodal_lint.log`). Prior `FokasLenellsUniformization` lint error resolved concurrently. All task-owned handles are terminal; no task commit or push. [Full paper proof and audit](../3-formalized/selberg-source-directions-and-nodal-reversal.md). The combined core/Bessel lower bound and Selberg remain unproved.
 
 - Cycle 26: strict physical total mass, cutoff independence, actual radial/angular square completion and zero classification, full source Fisher identity, and a scoped smooth-periodic norm-only reconstruction counterexample are proved in three narrow modules. All scratch/source checks and all three serialized targeted final builds passed; each final build rebuilt only its target. All 46 public declarations passed the axiom audit with only the standard three axioms or none. Sources are wired/indexed; whitespace checks passed. **Latest repository lint failed only on unrelated untracked, unwired `HTGeometry.FokasLenellsUniformization`** (`/tmp/selberg_mass_radial_lint.log`). All task-owned Lean/build handles are terminal; no task commit was made. [Full proof and audit](../3-formalized/selberg-positive-mass-and-radial-defect.md). The scalar-norm toy is not claimed to be Maass/cuspidal and does not contradict recovery using the actual eigenvalue equation. The combined core/Bessel lower bound remains unproved; Selberg stays active.
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SelbergModularDomainSlices
+import GaloisForLFunctions.RHTower.SelbergModularPotentialGreen
 
 /-!
 # Actual modular-core Green theorem and full Maass quarter form
@@ -57,163 +57,31 @@ theorem current_arc_continuousOn (v : ℂ) :
   change 0 < (point x (arcHeight x)).im
   simpa [point] using arcHeight_pos hx
 
-variable {N f}
-
-private theorem fold_integral {B : ℝ → ℝ}
-    (hB : ContinuousOn B (Icc (-(1 / 2 : ℝ)) (1 / 2))) :
-    (∫ x in (-(1 / 2 : ℝ))..(1 / 2), B x) =
-      ∫ x in (0 : ℝ)..(1 / 2), B (-x) + B x := by
-  have hleft : IntervalIntegrable B volume (-(1 / 2 : ℝ)) 0 :=
-    (hB.mono (by
-      intro x hx
-      have hxI : x ∈ Icc (-(1 / 2 : ℝ)) 0 := by
-        simpa [uIcc_of_le (by norm_num : (-(1 / 2 : ℝ)) ≤ 0)] using hx
-      exact ⟨hxI.1, hxI.2.trans (by norm_num)⟩)).intervalIntegrable
-  have hright : IntervalIntegrable B volume 0 (1 / 2) :=
-    (hB.mono (by
-      intro x hx
-      have hxI : x ∈ Icc 0 (1 / 2 : ℝ) := by
-        simpa [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1 / 2)] using hx
-      exact ⟨by linarith [hxI.1], hxI.2⟩)).intervalIntegrable
-  have hnegCont : ContinuousOn (fun x => B (-x)) (Icc (0 : ℝ) (1 / 2)) :=
-    hB.comp continuous_neg.continuousOn (by intro x hx; constructor <;> linarith [hx.1, hx.2])
-  have hneg : IntervalIntegrable (fun x => B (-x)) volume 0 (1 / 2) := by
-    apply ContinuousOn.intervalIntegrable
-    simpa [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1 / 2)] using hnegCont
-  rw [intervalIntegral.integral_add hneg hright,
-    intervalIntegral.integral_comp_neg B]
-  simp only [neg_zero]
-  exact (intervalIntegral.integral_add_adjacent_intervals hleft hright).symm
-
-private theorem arcHeight_deriv {x : ℝ} (hx : x ∈ Ioo (0 : ℝ) (1 / 2)) :
-    HasDerivAt arcHeight (-x / arcHeight x) x := by
-  have hpos : 0 < 1 - x ^ 2 := by nlinarith [hx.1, hx.2, sq_nonneg (x + 1 / 2)]
-  have hi : HasDerivAt (fun q : ℝ => 1 - q ^ 2) (-2 * x) x := by
-    have h := (hasDerivAt_const x (1 : ℝ)).sub ((hasDerivAt_id x).pow 2)
-    have hfun : ((fun _ : ℝ => 1) - id ^ 2) = (fun q : ℝ => 1 - q ^ 2) := rfl
-    rw [hfun] at h
-    exact h.congr_deriv (by norm_num)
-  have hs := hi.sqrt hpos.ne'
-  unfold arcHeight
-  convert hs using 1
-  field_simp [Real.sqrt_ne_zero'.2 hpos]
-
-private theorem arc_change_of_variables (g : ℝ → ℝ) :
-    (∫ y in arcFloor..1, g y) =
-      ∫ x in (0 : ℝ)..(1 / 2), (x / arcHeight x) * g (arcHeight x) := by
-  have h := intervalIntegral.integral_comp_mul_deriv_of_deriv_nonpos
-    (g := g) (a := (0 : ℝ)) (b := (1 / 2 : ℝ))
-    (f := arcHeight) (f' := fun x => -x / arcHeight x)
-    continuous_arcHeight.continuousOn
-    (by intro x hx; exact arcHeight_deriv (by simpa using hx))
-    (by
-      intro x hx
-      have hxI : x ∈ Ioo (0 : ℝ) (1 / 2) := by simpa using hx
-      exact div_nonpos_of_nonpos_of_nonneg (by linarith [hxI.1])
-        (arcHeight_pos ⟨by linarith [hxI.1], hxI.2.le⟩).le)
-  have hzero : arcHeight 0 = 1 := by norm_num [arcHeight]
-  rw [hzero, show arcHeight (1 / 2) = arcFloor from rfl,
-    intervalIntegral.integral_symm arcFloor 1] at h
-  have he : (∫ x in (0 : ℝ)..(1 / 2), g (arcHeight x) * (-x / arcHeight x)) =
-      -(∫ x in (0 : ℝ)..(1 / 2), (x / arcHeight x) * g (arcHeight x)) := by
-    rw [← intervalIntegral.integral_neg]
-    apply intervalIntegral.integral_congr
-    intro x _
-    dsimp only
-    ring
-  simp only [Function.comp_apply] at h
-  rw [he] at h
-  exact (neg_inj.mp h).symm
-
-private theorem sideRadius_arcHeight {x : ℝ} (hx : x ∈ Icc (0 : ℝ) (1 / 2)) :
-    sideRadius (arcHeight x) = x := by
-  unfold sideRadius
-  rw [arcHeight_sq ⟨by linarith [hx.1], hx.2⟩]
-  ring_nf
-  exact Real.sqrt_sq hx.1
-
-variable (N f)
-
 /-- Horizontal Fubini, side FTC, and the exact circular substitution identify the area term. -/
 theorem horizontal_area_eq_arc {Y : ℝ} (hY : 1 ≤ Y) :
     (∫ p in domain Y, secondAt N f 1 1 p) =
       ∫ x in (0 : ℝ)..(1 / 2), x / arcHeight x *
         (currentAt N f 1 (-x) (arcHeight x) - currentAt N f 1 x (arcHeight x)) := by
-  let F := secondAt N f 1 1
-  let S : ℝ → ℝ := horizontalSliceIntegral F Y
-  let g : ℝ → ℝ := fun y => currentAt N f 1 (-sideRadius y) y - currentAt N f 1 (sideRadius y) y
-  have hi := secondAt_integrableOn N f 1 1 Y
-  have hS : Integrable S := integrable_horizontalSliceIntegral hi
-  have hfloor : arcFloor ≤ 1 := arcHeight_le_one ⟨by norm_num, le_rfl⟩
-  have he : (∫ p in domain Y, F p) = ∫ y in arcFloor..1, g y := by
-    rw [setIntegral_eq_horizontal hi, integral_horizontalSliceIntegral_eq_interval F hY]
-    change (∫ y in arcFloor..Y, S y) = _
-    rw [← intervalIntegral.integral_add_adjacent_intervals
-      (b := (1 : ℝ)) hS.intervalIntegrable hS.intervalIntegrable]
-    have hlow : (∫ y in arcFloor..1, S y) = ∫ y in arcFloor..1, g y := by
-      apply intervalIntegral.integral_congr
-      intro y hy
-      have hyI : y ∈ Icc arcFloor 1 := by simpa [uIcc_of_le hfloor] using hy
-      have hy0 := arcFloor_pos.trans_le hyI.1
-      change horizontalSliceIntegral F Y y = g y
-      rw [horizontalSliceIntegral_eq_sides F hY hyI (second_current_horizontal_continuous N f 1 1 hy0)]
-      change (∫ x in (-(1 / 2 : ℝ))..(-sideRadius y), dir 1 (dir 1 (density N f ∘ ofComplex)) (point x y)) +
-        (∫ x in sideRadius y..(1 / 2), dir 1 (dir 1 (density N f ∘ ofComplex)) (point x y)) = _
-      rw [horizontal_current_integral N f 1 hy0, horizontal_current_integral N f 1 hy0,
-        currentAt_side_cancellation N f hy0]
-      dsimp only [g]
-      ring
-    have hhigh : (∫ y in (1 : ℝ)..Y, S y) = 0 := by
-      rw [← intervalIntegral.integral_zero (a := (1 : ℝ)) (b := Y)]
-      apply intervalIntegral.integral_congr
-      intro y hy
-      have hyI : y ∈ Icc (1 : ℝ) Y := by simpa [uIcc_of_le hY] using hy
-      have hy0 : 0 < y := by linarith [hyI.1]
-      change horizontalSliceIntegral F Y y = 0
-      rw [horizontalSliceIntegral_eq_full F hyI]
-      change (∫ x in (-(1 / 2 : ℝ))..(1 / 2), dir 1 (dir 1 (density N f ∘ ofComplex)) (point x y)) = 0
-      rw [horizontal_current_integral N f 1 hy0, currentAt_side_cancellation N f hy0, sub_self]
-    rw [hlow, hhigh, add_zero]
-  rw [he, arc_change_of_variables g]
-  apply intervalIntegral.integral_congr
-  intro x hx
-  have hxI : x ∈ Icc (0 : ℝ) (1 / 2) := by simpa [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1 / 2)] using hx
-  dsimp only [g]
-  rw [sideRadius_arcHeight hxI]
+  exact SelbergModularPotentialGreen.horizontal_area_eq_arc
+    (density N f ∘ ofComplex) (density_contDiffOn N f)
+    (fun hy => currentAt_side_cancellation N f hy) hY
 
 /-- Inversion turns the horizontal area term into the full lower vertical current. -/
 theorem horizontal_area_eq_bottom {Y : ℝ} (hY : 1 ≤ Y) :
     (∫ p in domain Y, secondAt N f 1 1 p) =
       ∫ x in (-(1 / 2 : ℝ))..(1 / 2), currentAt N f Complex.I x (arcHeight x) := by
-  rw [horizontal_area_eq_arc N f hY, fold_integral (current_arc_continuousOn N f Complex.I)]
-  apply intervalIntegral.integral_congr
-  intro x hx
-  have hxI : x ∈ Icc (0 : ℝ) (1 / 2) := by simpa [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1 / 2)] using hx
-  have hxF : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2) := ⟨by linarith [hxI.1], hxI.2⟩
-  have hc := currentAt_arc_cancellation N f (x := x) (arcHeight_pos hxF)
-    (by rw [arcHeight_sq hxF]; ring)
-  have hneg : arcHeight (-x) = arcHeight x := by simp [arcHeight]
-  dsimp only
-  rw [hneg]
-  linarith
+  exact SelbergModularPotentialGreen.horizontal_area_eq_bottom
+    (density N f ∘ ofComplex) (density_contDiffOn N f)
+    (fun hy => currentAt_side_cancellation N f hy)
+    (fun hy hxy => currentAt_arc_cancellation N f hy hxy) hY
 
 /-- Vertical Fubini and actual FTC retain both the top and circular boundary terms. -/
 theorem vertical_area_eq_top_sub_bottom {Y : ℝ} (hY : 1 ≤ Y) :
     (∫ p in domain Y, secondAt N f Complex.I Complex.I p) =
       (∫ x in (-(1 / 2 : ℝ))..(1 / 2), currentAt N f Complex.I x Y) -
         ∫ x in (-(1 / 2 : ℝ))..(1 / 2), currentAt N f Complex.I x (arcHeight x) := by
-  rw [setIntegral_eq_vertical hY (secondAt_integrableOn N f Complex.I Complex.I Y)]
-  have hy : 0 < Y := by linarith
-  have hb : IntervalIntegrable (fun x => currentAt N f Complex.I x (arcHeight x))
-      volume (-(1 / 2 : ℝ)) (1 / 2) := by
-    apply ContinuousOn.intervalIntegrable
-    simpa [uIcc_of_le (by norm_num : (-(1 / 2 : ℝ)) ≤ 1 / 2)] using current_arc_continuousOn N f Complex.I
-  rw [← intervalIntegral.integral_sub ((currentAt_horizontal_continuous N f Complex.I hy).intervalIntegrable _ _) hb]
-  apply intervalIntegral.integral_congr
-  intro x hx
-  have hxI : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2) := by
-    simpa [uIcc_of_le (by norm_num : (-(1 / 2 : ℝ)) ≤ 1 / 2)] using hx
-  exact vertical_current_integral N f Complex.I x (arcHeight_pos hxI) hy
+  exact SelbergModularPotentialGreen.vertical_area_eq_top_sub_bottom
+    (density N f ∘ ofComplex) (density_contDiffOn N f) hY
 
 /-- The standard two-dimensional trace Laplacian integral equals twice the actual cusp flux. -/
 theorem area_stokes_flux {Y : ℝ} (hY : 1 ≤ Y) :
