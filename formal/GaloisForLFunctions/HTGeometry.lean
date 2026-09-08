@@ -14094,3 +14094,27 @@ import GaloisForLFunctions.HTGeometry.UnitWaveSine
 import GaloisForLFunctions.HTGeometry.UnitWaveDuhamel
 import GaloisForLFunctions.HTGeometry.UnitWavePotentialKernel
 import GaloisForLFunctions.HTGeometry.UnitWaveDuhamelDerivative
+
+import GaloisForLFunctions.HTGeometry.BistochasticMixingMajorization
+
+import GaloisForLFunctions.HTGeometry.FiniteNoiseMixingApplications
+
+import GaloisForLFunctions.HTGeometry.VolterraSourceRecovery
+
+import GaloisForLFunctions.HTGeometry.FiniteMemorySourceRecovery
+
+import GaloisForLFunctions.HTGeometry.ConservativeWeightedScaling
+
+import GaloisForLFunctions.HTGeometry.LorentzConeAdmissibility
+
+import GaloisForLFunctions.HTGeometry.FiniteEventTimingRecovery
+
+import GaloisForLFunctions.HTGeometry.FiniteNoiseInformationBoundary
+
+import GaloisForLFunctions.HTGeometry.RandomUnitarySpectralMixing
+
+import GaloisForLFunctions.HTGeometry.ConservativeLorentzLimiter
+
+import GaloisForLFunctions.HTGeometry.FutureObservationStateCompletion
+
+import GaloisForLFunctions.HTGeometry.VolterraSourceEquivalence

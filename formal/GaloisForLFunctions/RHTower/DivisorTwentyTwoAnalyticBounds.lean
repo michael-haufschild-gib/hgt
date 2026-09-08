@@ -695,4 +695,19 @@ theorem sum_divisorUnsignedDilationChannel_twentyFive_sq_lower :
       logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]
   simp only [← pow_two] at hlo
   exact hlower.trans hlo
+set_option maxHeartbeats 1000000 in
+/-- The actual remaining seven-fibre at cutoff twenty-five is strictly negative with analytic rational margins. -/
+theorem divisorUnsignedDilationChannel_twentyFive_seven_leaf_box :
+    (-0.020:ℝ) ≤ -divisorUnsignedDilationChannel 25 7+
+      divisorUnsignedDilationChannel 25 14+divisorUnsignedDilationChannel 25 21 ∧
+    -divisorUnsignedDilationChannel 25 7+
+      divisorUnsignedDilationChannel 25 14+divisorUnsignedDilationChannel 25 21 ≤ -0.017 := by
+  have h7 := twentyFive_channel_box (d:=7) (by omega)
+  have h14 := twentyFive_channel_box (d:=14) (by omega)
+  have h21 := twentyFive_channel_box (d:=21) (by omega)
+  norm_num [twentyFiveLower,twentyFiveUpper,Finset.sum_Icc_succ_top] at h7 h14 h21
+  norm_num [termLower,termUpper,weightLower,weightUpper,defectLower,defectUpper,
+    logLower,logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top] at h7 h14 h21
+  constructor <;> linarith only [h7.1,h7.2,h14.1,h14.2,h21.1,h21.2]
+
 end RHTower

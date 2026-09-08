@@ -1,7 +1,7 @@
 # CCM-FU: dissipation compatible with complete successor admission
 
-- Stage: 1-in-progress.
-- Type: [BRIDGE], source-specific selection candidate, unproved.
+- Stage: closed; [failed local extension and positive survivor](../5-failed/ccm-fu-dissipative-envelope-extension.md).
+- Type: frozen protocol for a source-specific selection candidate, now refuted analytically in Lean.
 - Target: exhaustive prime selection under one quadratic budget, hence the signed Abel bound and RH.
 
 ## Frozen mathematical question
@@ -74,6 +74,9 @@ negative and the other three fibres positive, so both full-energy paths
 contract despite unavoidable transverse growth. A general sharp boundary
 also survives: for any two remaining coordinates, one next nonempty
 energy is at most 3/2 of current nonempty energy; coordinates (1,1,2)
-attain that factor. The analytic source bounds at cutoff 25 have passed
-scratch Lean and exact leaf emission. The literal arithmetic trap and
-the sharp general boundary are being formalized before route retirement.
+attain that factor. The analytic source bounds, literal arithmetic trap
+and sharp general boundary are closed in Lean. The [formal certificate](../3-formalized/ccm-fu-transverse-dissipation-trap.md)
+proves admission margin greater than 1/5, both nonempty-energy increases
+greater than 1/500, and both envelope decreases greater than 1/250.
+Only this universal local extension rule is retired. Plain successor
+extension and existence of a specially chosen complete path remain open.

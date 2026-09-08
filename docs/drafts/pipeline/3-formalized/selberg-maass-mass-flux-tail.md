@@ -1,7 +1,7 @@
 # Actual Maass cusp mass decay and finite tail energy
 
 - **ID:** SELBERG-MAASS-MASS-FLUX-TAIL
-- **Stage:** 3-formalized; targeted final audit in progress.
+- **Stage:** 3-formalized.
 - **Parent:** [Constructive Selberg loop](../1-in-progress/selberg-quarter-conjecturing-loop.md), cycle 22.
 - **Scope:** Literal principal-congruence Maass cusp eigenforms, with positive sub-quarter eigenvalue for the decay and infinite-tail conclusions.
 
@@ -53,7 +53,11 @@ The candidate mass/flux chain survived proof. Lean exposed no additional source 
 - `GaloisForLFunctions.RHTower.SelbergMaassCuspDecay`: actual second-derivative lower bound, exponential mass decay, vanishing mass derivative and flux, integrable flux derivative.
 - `GaloisForLFunctions.RHTower.SelbergMaassTailEnergy`: finite physical mass and energy above every positive height, exact infinite-height gradient and quarter-energy balances.
 
-All three complete scratch files and direct source checks passed without warnings. All three modules are wired into `RHTower.lean`. Targeted final builds, axiom checks, index refresh, and the latest lint result are recorded after their completion.
+All three complete scratch files and direct source checks passed without warnings. All three targeted final builds passed: `/tmp/selberg_maass_flux_build.log`, `/tmp/selberg_maass_cusp_decay_build.log`, and `/tmp/selberg_maass_tail_energy_build.log`. The flux build rebuilt the needed `SelbergExceptionalCuspMean` dependency followed by its target; the other two rebuilt their target alone. The existing `EvenL2LogUnitary` informational tactic message was replayed. All task Lean/Lake invocations were serialized; no full or umbrella build ran.
+
+All 34 public theorem checks in `/tmp/selberg_maass_flux_decay_tail_axioms.lean` report only `propext`, `Classical.choice`, and `Quot.sound` (`/tmp/selberg_maass_flux_decay_tail_axioms.log`). All three modules are wired into `RHTower.lean` and indexed; corpus searches return the exponential-decay and tail-identity capstones. Tracked and new task-file whitespace checks passed. Final process audit found no remaining Lean/Lake process. This task made no commits.
+
+**Latest repository-wide lint failed on three unrelated unwired HTGeometry modules:** `BistochasticMixingMajorization`, `FiniteNoiseMixingApplications`, and `VolterraSourceRecovery`. No new Selberg module is named in an error. Existing large-file warnings also remain. Those unrelated modules were not modified or wired speculatively. Log: `/tmp/selberg_maass_flux_decay_tail_lint.log`.
 
 ## Remaining source question
 

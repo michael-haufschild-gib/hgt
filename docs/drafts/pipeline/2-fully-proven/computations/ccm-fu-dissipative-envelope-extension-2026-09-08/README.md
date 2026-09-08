@@ -84,6 +84,6 @@ existence of specially chosen dissipative paths, SD1 or RH.
 The positive survivor is compensation by the actual head square during
 forced transverse growth. A general two-coordinate bound gives a further
 sharp boundary: one next V is at most 3/2 of current V, and equality is
-attained by nonempty coordinates (1,1,2). An analytic Lean certificate
-for the literal arithmetic witness and this boundary is being completed.
-
+attained by nonempty coordinates (1,1,2). The [analytic Lean certificate](../../../3-formalized/ccm-fu-transverse-dissipation-trap.md)
+now proves the literal arithmetic witness and this sharp boundary without
+numerical premises. All five new public theorems passed their axiom audit.

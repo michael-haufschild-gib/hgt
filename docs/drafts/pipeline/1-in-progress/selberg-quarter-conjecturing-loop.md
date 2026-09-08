@@ -29,7 +29,8 @@
 - [x] Cycle 20: construct the actual Maass Fourier trace in the sequence-space boundary-form domain, using the proved frequency bound.
 - [x] Cycle 21: identify physical slice mass, both derivative energies, and quarter-energy by exact Parseval identities.
 - [x] Cycle 22: prove actual mass/flux derivatives, exponential cusp mass decay, vanishing terminal flux, and finite physical tail energy at every positive height.
-- [ ] Cycle 23: extend the critical Bessel square decomposition to actual complex noncompact Maass modes, then justify its mode sum against the physical tail energy.
+- [x] Cycle 23: prove the critical Bessel decomposition for actual noncompact complex Maass modes and its complete countable mode/height sum on the physical tail.
+- [ ] Cycle 24: construct integral translates of the actual C² Maass object and transport the full boundary-form identity to every integral cusp; then attempt the quotient-core Green assembly.
 - [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
@@ -402,17 +403,30 @@ The corpus-derived differential replacement for holomorphic frequency-gap decay 
 
 `(1/w)*integral_Y^infinity quarterSlice = -J(Y)+(lambda-1/4)*integral_Y^infinity M/y²`.
 
-No infinite-height Fourier interchange, terminal-flux assumption, or modal ansatz was used. Complete scratch and direct source checks passed for all three modules. Targeted final audits are in progress. [Exact result and dependency-closed paper proof](../3-formalized/selberg-maass-mass-flux-tail.md).
+No infinite-height Fourier interchange, terminal-flux assumption, or modal ansatz was used. Complete scratch/direct checks, three targeted final builds, and all 34 public theorem axiom audits passed. The latest global lint has three unrelated unwired HTGeometry errors, recorded below. [Exact result and dependency-closed paper proof](../3-formalized/selberg-maass-mass-flux-tail.md).
 
-### Cycle 23 — next actual Bessel remainder and mode-sum loop
+### Cycle 23 — actual noncompact Bessel squares and complete cusp boundary form: proved
 
-**Inspected interface mismatch:** `SelbergBesselBoundaryEnergy.critical_boundary_identity` and `.exact_boundary_lower_bound` apply to `Profile`, a compact real C¹ profile. Actual Maass coefficients are complex and noncompact. Their source derivatives, physical modal energies, exponential mass bound, and complete tail integrability are now available, so the compact-profile theorem must be extended rather than supplied a fabricated instance.
+The compact-real-profile interface mismatch was resolved directly in physical height. `SelbergMaassBesselRemainder` proves the actual Bessel response law `B'=B²-k²+1/(4*y²)` and limit `B->k`. Actual modal mass and derivative energy are integrable by physical Parseval domination. Expanding the complex square gives `|a'+B*a|²-energy=(B*|a|²)'`; actual coefficient decay kills the upper current. The improper FTC gives the exact single-mode infinite-tail identity. The exceptional constant coefficient and derivative are zero.
 
-**Candidate:** for each actual nonzero Maass mode at any lower height, derive a finite-interval critical Bessel square decomposition for its real and imaginary parts. Prove the upper Bessel boundary term tends to zero using the actual mode bound from slice mass and the already-proved Bessel slope envelope. Its nonnegative remainder should then be integrable. Sum these identities using the actual horizontal/vertical Parseval series and the newly established physical tail integrability. This should compare the actual infinite quarter-energy tail to the actual Bessel boundary form, with the nonnegative remainder explicit.
+`SelbergMaassBoundaryForm` proves the countable mode/height interchange with majorant whose literal Parseval sum is `G+M/(4*y²)`, already integrable. The signed modal tail integrals therefore sum to the actual physical tail quarter-energy. Subtracting the summable actual seam series proves the complete nonnegative square series and
 
-This is a next conjecturing target, not a proved or assumed theorem. Even if it survives, the compact quotient-core form must still be controlled. The global all-congruence Selberg quarter bound remains unproved.
+`quarterTail/w = boundaryForm(actualTrace) + sum_(n!=0) integral |a_n'+B_n*a_n|²`.
+
+Substituting the prior flux identity proves the same right side equals `-J(Y)+(lambda-1/4)*integral M/y²`. The full actual cusp comparison is now proved. Complete scratch and direct source checks passed for both modules; targeted final audits are in progress. [Exact statement and paper proof](../3-formalized/selberg-maass-bessel-boundary-form.md).
+
+### Cycle 24 — next all-cusp transport and core assembly loop
+
+A fresh corpus search found `ThetaCuspHawkingBMModularLaplacian.chartLaplacian_modular_pullback`. Its wrapper requires `ChartSmooth`, but the inspected proof only uses real C² regularity at the image point and the original holomorphic Möbius derivative and height laws. The actual Maass definition supplies C². Test and formalize the exact C² pullback covariance first; do not assume C∞ for the source.
+
+Then test construction of every integral translate of the actual principal-congruence Maass eigenform: normality must supply the same congruence invariance, pullback covariance the same eigenvalue, and composition of integral scaling matrices the defining cusp decay. Transport the completed boundary-form identity to those actual cusp representatives. This prepares a finite quotient-core Green assembly with the actual cusp boundary forms retained.
+
+The compact-core quarter-energy plus its cusp boundary responses must still be controlled to prove Selberg. The inspected finite-rank Schur/block-kernel corpus supplies elimination identities only; no actual Maass core block, inverse, or positive form certificate has been constructed. A generic matrix interface is not a substitute. These next statements are proposed source targets, not assumed or proved inputs. The global all-congruence Selberg quarter bound remains unproved.
 
 ## Verification log
+
+- Cycle 22: complete scratch and direct source checks passed for `SelbergMaassBoundaryFlux`, `SelbergMaassCuspDecay`, and `SelbergMaassTailEnergy` without warnings. All three targeted final builds passed, serialized; the flux build rebuilt the needed `SelbergExceptionalCuspMean` dependency followed by its target, and the other builds rebuilt one target each. Logs: `/tmp/selberg_maass_flux_build.log`, `/tmp/selberg_maass_cusp_decay_build.log`, `/tmp/selberg_maass_tail_energy_build.log`. All 34 public theorem checks in `/tmp/selberg_maass_flux_decay_tail_axioms.lean` report only `propext`, `Classical.choice`, and `Quot.sound`. All three modules are wired and indexed; tracked/new task-file whitespace checks passed. Every task-owned process finished; final process audit found no Lean/Lake process. This task made no commits. [Exact result and paper proof](../3-formalized/selberg-maass-mass-flux-tail.md). The full Selberg goal remains unproved.
+- **Latest cycle 22 repository-wide lint failed on three unrelated unwired HTGeometry modules:** `BistochasticMixingMajorization`, `FiniteNoiseMixingApplications`, and `VolterraSourceRecovery`. No new Selberg module is named in an error; those concurrent modules were not edited or wired speculatively. Existing large-file warnings remain. Log: `/tmp/selberg_maass_flux_decay_tail_lint.log`. The previous passing lint below is historical.
 
 - Cycles 20–21: complete scratch and direct source checks passed without warnings. Targeted final builds passed for `SelbergMaassBoundaryTrace` and `SelbergMaassParseval`, rebuilding one target each; logs `/tmp/selberg_maass_trace_build.log` and `/tmp/selberg_maass_parseval_build.log`. All task Lean invocations were serialized. Eighteen capstone checks in `/tmp/selberg_trace_parseval_axioms.lean` report only `propext`, `Classical.choice`, and `Quot.sound`. Both new modules are wired, and refreshed corpus searches return their capstones. Tracked and new task-file whitespace checks passed. **Latest repository-wide formal lint passed**, with existing large-file warnings (`/tmp/selberg_trace_parseval_lint.log`); the prior seven unwired-module errors were resolved outside this task. Every task-owned Lean/Lake handle finished. Other agents' Coppo/CCM processes were active during the process audit and were not touched. This task made no commits. The full Selberg goal remains unproved.
 
