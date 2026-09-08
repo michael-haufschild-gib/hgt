@@ -144,7 +144,7 @@ A scratch `lake env lean` audit printed axioms for all forty-eight new public
 theorems. Every result contains only `propext`, `Classical.choice`, and
 `Quot.sound`; no added axiom or computational certificate occurs. Missing older
 dependency caches were restored only as needed for this import check, without
-a dependency or umbrella build. Existing theorem axioms were not re-audited.
+a broad rebuild. Existing theorem axioms were not re-audited.
 
 The source index was refreshed. `scripts/formal_tools.py lint --check-generated`
 passed with 141 large-file warnings and no other findings. Scoped whitespace,

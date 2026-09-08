@@ -35,3 +35,11 @@ for every F supplies no Xi-zero selection by itself.
 
 No numerical experiment is indicated; the construction uses analytic estimates
 and the existing Fourier/Paley–Wiener corpus.
+
+Current source-identification target: expand the exact reduced radial
+polynomial in the independent transform frequency. Its quadratic terms cancel,
+leaving the original zero-frequency coefficient and one affine term. Identify
+that term with the derivative of the fixed delayed smooth onset in the time
+source, including the transition derivative, and prove the genuine convergent
+transform identity. The three cutoff principal Green responses remain part of
+the complete residual and must be handled in the same causal family.

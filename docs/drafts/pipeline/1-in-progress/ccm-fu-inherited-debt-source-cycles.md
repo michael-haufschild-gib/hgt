@@ -97,3 +97,19 @@ quotient window has limited prime capacity.
 A finite family of such windows does not alone pay a general cost of
 order M squared. Exhaustion still requires uniform control across growing
 quotients and processed cores, including overlap and clipping errors.
+
+## Current producer target
+
+Remove exact balance from the full-envelope reserve theorem. With
+E=Psi(P), D=|X|+|Y| and the two square reserves R,T above, the target is
+
+`Psi(P+L)+min(R,T) <= E+2*sqrt(E)*D+D^2`.
+
+The source-copy identities retain X,Y. Each parent successor's receiving
+coordinate is bounded by the square root of its complete energy, hence by
+sqrt(E). Prime 2 uses the merged displacement X+Y and the other successors
+use X,Y. This supplies a concrete route to the displayed error term without
+a processed-cardinality factor. This strengthened estimate has not yet been
+added to Lean. It must then be used to construct actual batches which pay
+a prescribed change of core; proving another finite-dimensional receiver
+alone does not meet the remaining exhaustion requirement.

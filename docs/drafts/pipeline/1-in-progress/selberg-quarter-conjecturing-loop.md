@@ -280,9 +280,23 @@ For `K_j(s)=realModifiedBesselKOrder s j`, test the dimensionless slope `q(s)=s*
 
 **Positive survivor and new proof mechanism:** in logarithmic argument, `Q'=Q^2-exp(2t)` and `Q>0`. If `Q>=d>0` everywhere, then for `t<=log(d/2)`, `Q'>=d^2/2`. The function `Q(t)-(d^2/2)t` is nondecreasing on that left interval. Comparing two explicitly separated points forces `Q` to be negative, a contradiction. Thus there is no positive lower bound; strict monotonicity, the bound `q(s)>s`, and the intermediate value theorem give exactly one point at every positive target value. This avoids assuming a small-argument Bessel asymptotic.
 
-**Current Lean status:** `SelbergBesselBoundarySlope` passes scratch and direct checks. It contains the actual derivative system, Riccati law, exact positive range, unique transition, critical mode differential equation, and full outgoing-sign classification. The exact compact-profile energy identity is in progress in scratch; it is not yet claimed as a theorem.
+**Lean status:** `SelbergBesselBoundarySlope` passes scratch/direct checks and its narrowed targeted final build (8659 dependency-graph jobs, one target rebuilt). It contains the actual derivative system, Riccati law, exact positive range, unique transition, critical mode differential equation, and full outgoing-sign classification. `SelbergBesselBoundaryEnergy` now passes its complete scratch and direct source checks. It proves actual integrability, the exact compact-profile boundary identity, the lower boundary estimate at every cutoff, the quarter inequality above the transition, and exact coverage of the sufficient cutoff range.
 
-**Build correction:** an initial targeted slope build expanded through the existing Eisenstein imports and spawned parallel Lean workers. It was stopped, and its child processes were cleaned up. A premature energy scratch check failed because the slope olean did not yet exist. The source argument derivative and strict order comparison are being extracted into small modules, preserving theorem names and existing wrapper imports; subsequent builds are serialized. The interrupted build is not a passing final audit.
+For a compact C¹ logarithmic-height profile `f`, put `r(t)=1/2-Q(a+t)` and `J(t)=exp(-t)*r(t)*f(t)^2`. The Riccati law gives
+
+`exp(-t)*(f'^2+(exp(2*(a+t))-1/4)*f^2)`
+
+`=exp(-t)*(f'-r*f)^2+J'`.
+
+Compact support gives `integral_T^infinity J'=-J(T)`. Thus the exact seam term is `(Q(a+T)-1/2)/exp(T)*f(T)^2`, and the nonnegative square gives the lower bound. The unique coefficient transition `tau` yields a sufficient tail cutoff `T>=tau-a`, or `k*Y>=exp(tau)`, where `0<exp(tau)<1/2` is proved symbolically.
+
+**Scope of sharpness:** the sign transition of the actual coefficient is exact. Necessity of the cutoff for nonnegativity of every compact test energy is not asserted: a negative seam coefficient alone does not construct a negative-energy test. Identifying arbitrary Maass nonzero Fourier coefficients, passing to their energy closure, and proving congruence-uniform core coupling remain open obligations in this route.
+
+**Build correction:** an initial targeted slope build expanded through the existing Eisenstein imports and spawned parallel Lean workers. It was stopped, and its child processes were cleaned up. A premature energy scratch check failed because the slope olean did not yet exist. The source argument derivative and strict order comparison were extracted unchanged into `HTGeometry.BesselArgumentDerivative` and `HTGeometry.BesselOrderPositiveComparison`, preserving theorem names and existing wrapper imports. Both extracted modules passed scratch/direct checks and targeted builds; exact source-text comparison against their original proofs passed. Both compatibility modules passed direct compilation, including refreshed needed oleans. Missing dependencies in the retained compatibility import chain were compiled serially with `lake env lean`; no mathematical source in those dependencies was changed. Subsequent builds were serialized. The interrupted build is not a passing final audit.
+
+### Next live attempt — isolate the finite set of adverse boundary modes
+
+The exact coefficient transition suggests testing a finite-dimensional reduction of the still-missing core coupling. At fixed cusp width and cutoff, the nonzero integer frequencies grow with `|n|`, while the transition argument is a fixed positive constant. Therefore only finitely many modal seam coefficients should be negative, with an exact cutoff given by the proved Bessel transition. The next task is to derive this finite set and its boundary-form decomposition from actual integer mode frequencies, then test what the core Schur complement does to those channels. This is a new proof target, not an assumed positivity statement about that complement.
 
 ## Verification log
 

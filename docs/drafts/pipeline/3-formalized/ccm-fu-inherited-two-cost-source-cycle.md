@@ -128,10 +128,14 @@ discharge that arithmetic requirement.
   envelope reserve for a balanced batch.
 
 Both new modules are imported by `GaloisForLFunctions.RHTower`. Scratch
-checks passed for the full new source and transport proofs. Final targeted
-emission, new-declaration axiom audit and formal lint are being completed.
-No umbrella or full build is authorized. The existing `lake build` packaging
-audit remains pending because it expands broad stale prerequisites.
+checks and exact `lake env lean` module emission passed for the new source
+and transport proofs and their two analytic enclosures. Exactly 18 new
+public declarations were audited, each once; their only axioms are
+`propext`, `Classical.choice` and `Quot.sound`. Generated indexes were
+refreshed and `scripts/formal_tools.py lint --check-generated` passed with
+existing large-file warnings. No umbrella or full build was run. The
+existing `lake build` packaging audit remains pending because it expands
+broad stale prerequisites.
 
 The [RunPod diagnostic](../2-fully-proven/computations/ccm-fu-inherited-debt-cycles-2026-09-08/README.md)
 selected the new support; all numerical inputs are absent from the proofs.
