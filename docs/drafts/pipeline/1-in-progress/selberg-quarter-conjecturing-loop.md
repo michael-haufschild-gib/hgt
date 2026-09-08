@@ -39,7 +39,8 @@
 - [x] Cycle 30: construct the actual regularized amplitude-mean equation, prove its top-current limit from original cusp decay and source forcing, and extend the standard-area curvature balance to the full modular domain.
 - [x] Cycle 31: prove a regulator-uniform full-domain amplitude-mass bound and identify the limiting retained curvature without dropping nodal concentration.
 - [x] Cycle 32: identify actual limiting curvature on compact tests, prove its positive linear order structure and local order-zero bound, with local Green regularity and nodal charge retained.
-- [ ] Cycle 33: construct the actual positive curvature measure from common-compact approximation; continue testing arithmetic transport or weighted geometric control for the source-derived quarter comparison.
+- [x] Cycle 33: construct the unique actual regular curvature measure through common-compact approximation, prove continuous-test convergence, and recover the original C² identity with its error bound.
+- [ ] Cycle 34: derive actual measure transport and a quotient budget with boundary concentration retained; test geometric/arithmetic lower control toward the quarter comparison.
 - [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
@@ -560,13 +561,26 @@ The wider positive-functional and cutoff searches exposed a further strengthenin
 
 All broad discovery used --any. Local Green/nodal mechanisms reached 530 declarations in 95 modules; support/localization/product/continuity reached 26054 declarations in 7965 modules; positive functionals and local measures reached 182 declarations in 44 modules; order-zero/cutoff/domination reached 1088 declarations in 533 modules; compact smooth cutoffs reached 380 declarations in 217 modules. These are index-coverage counts, not claims to have read every result. Read proof mechanisms are recorded in the [dependency-closed proof and audit](../3-formalized/selberg-actual-weak-curvature.md).
 
-### Cycle 33 — positive curvature measure and the remaining quarter comparison
+### Cycle 33 — actual positive curvature measure from original regulator integrals
 
-The positive functional and compact order-zero bounds are proved. The next analytic conjecture is that common-compact smooth approximation constructs its actual positive representing measure on the upper half-plane. The corpus's SchwartzCompactPositiveFunctional gives an extension mechanism; its one-dimensional Schwartz space and source hypotheses must be replaced by the actual planar positive-height compact tests. Approximation independence, positivity, genuine integration, and recovery of the original source pairing remain to be proved.
+The actual continuous-test limit and its representing measure are now constructed for every real eigenvalue. A fixed compact cutoff localizes global smooth approximants to one common compact inside the upper half-plane. Its bounded norm rescales the approximation tolerance. A second nonnegative compact C² cutoff has bounded actual curvature values for small regulators, by the already proved smooth-test limit. Positivity bounds the difference between original and approximate test pairings. A complete four-term metric Cauchy argument then proves convergence of the original continuous-test integrals along the actual nontrivial regulator filter.
 
-Current paper construction: choose one compact cutoff chi equal to one on the original continuous test support. Global smooth approximation exists by uniform continuity of compactly supported continuous functions. Multiplying by chi keeps every approximant in one common compact; a bound for chi rescales the requested accuracy. A second nonnegative smooth cutoff on that common compact has uniformly bounded actual tested curvature for small regulators, by its proved smooth-test limit. Positivity then bounds the difference between the original and approximating test pairings. A four-term metric Cauchy estimate gives a unique real limit for the original continuous test. This constructs the extension from the actual regulator integrals, rather than choosing an unrelated extension. The generic compact approximation and Cauchy lemmas have passed scratch; actual-source extension and measure representation are in progress.
+The resulting continuousCurvature is positive, real linear, monotone, and equals the original weakCurvature on admissible C² tests. Zero extension of every compact continuous upper-half-plane test is proved globally continuous and compactly supported at positive height. Restriction of a supported planar test is compact, and restriction followed by zero extension recovers it exactly. These constructions produce an actual positive linear functional on C_c(H,R), to which the current Riesz--Markov theorem applies.
 
-The essential unsolved step remains the actual source-derived quarter lower comparison. Total curvature, positive weak curvature, local order-zero bounds, and a cost on one fixed path alone do not establish it. Continue broad OR discovery and proof/fail/pivot loops for arithmetic transport or a weighted geometric inequality on the actual congruence source, retaining core and Bessel boundary costs. Selberg remains unproved; the goal stays active.
+The constructed curvatureMeasure is regular and finite on compact sets. Every compact continuous test is genuinely integrable, and its integral equals the actual regulator limit. The measure is unique among regular measures with those continuous-test source values. In particular, for every admissible C² planar test,
+
+integral_H phi dmu = integral_C Delta(phi)*sqrt(D) + lambda*integral_C phi*sqrt(D)/y²,
+|J_e(phi)-integral_H phi dmu| <= e*(integral |Delta phi|+|lambda|/2*integral |phi|/y²).
+
+All broad searches used --any. Distribution/measure/approximation discovery reached 432 declarations in 241 modules; positive extension/common-support mechanisms reached 2199 declarations in 250 modules; Cauchy/uniform-approximation mechanisms reached 230 declarations in 120 modules; zero-extension/open-embedding/positive-functional mechanisms reached 282 declarations in 112 modules. Counts describe index coverage, not reading every result. [Complete paper proof, source mechanisms, and audit](../3-formalized/selberg-actual-curvature-measure.md).
+
+### Cycle 34 — actual measure transport and quotient boundary concentration
+
+Next conjecture: original modular amplitude invariance induces invariance of the constructed measure, through literal change of variables on compact source tests. The checked radius_invariant source theorem is available. A broad modular-invariance/curvature-measure/boundary-charge/seam-crossing/coarea/transport query reached 8003 declarations in 2109 modules; promising mechanisms must be inspected and transferred with their source conditions proved.
+
+Vague convergence on compact continuous tests does not by itself permit replacement by a fundamental-domain indicator. Actual boundary concentration and stabilizer multiplicities must be retained in the quotient budget. Existing nodal curvature and endpoint classification provide evidence against silently deleting concentration, but do not classify the actual source's seam charge.
+
+The essential unsolved step remains the source-derived quarter lower comparison. A regular positive curvature measure, its compact finiteness, total regularized budgets, and one-path variation costs alone do not establish it. Continue wide corpus-derived conjecture/proof/fail/pivot work on actual congruence transport and spatial geometry, retaining original compact-core and cusp/Bessel boundary contributions. Selberg remains unproved; the goal stays active.
 
 ## Verification log
 

@@ -120,7 +120,10 @@ public theorem axiom checks use only `propext`, `Classical.choice`, and
 The leaves are wired into their area umbrellas; no full or umbrella build was
 run. No numerical experiment or computational certificate was used.
 
-LINT_PENDING
+Global `lint --check-generated` reports no errors in these ten leaves and no
+generated-index drift. Its remaining error is the unrelated, concurrently
+unwired `RHTower.SelbergCompactTestApproximation` module. Existing large-file
+warnings remain. That module is outside this change's scope.
 
 ## Remaining physical obligation
 

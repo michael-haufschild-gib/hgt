@@ -48,22 +48,23 @@ theorem smallMultiplier_bound (f : 𝓢(ℝ, ℂ)) (u : SoninL2) :
         (4*(1+S))⁻¹ * (S*‖u‖) := mul_le_mul_of_nonneg_left hM (by positivity)
     _ ≤ (1/4 : ℝ)*‖u‖ := by nlinarith [norm_nonneg u]
 
-/-- The signed negative Cauchy projection, built from the corpus's Fourier unitary. -/
+/-- Minus the lower-half-plane Hardy projection. The forward Fourier convention
+requires the positive datum ray; the negative ray would select the upper half-plane. -/
 def negativeCauchy : SoninL2 →L[ℂ] SoninL2 :=
   -(fourierUnitary.toLinearIsometry.toContinuousLinearMap ∘L
-    indicatorCutoff (Set.Iio 0) measurableSet_Iio ∘L
+    indicatorCutoff (Set.Ioi 0) measurableSet_Ioi ∘L
     fourierUnitary.symm.toLinearIsometry.toContinuousLinearMap)
 
 theorem negativeCauchy_bound (u : SoninL2) : ‖negativeCauchy u‖ ≤ ‖u‖ := by
-  change ‖-(fourierUnitary (indicatorCutoff (Set.Iio 0) measurableSet_Iio
+  change ‖-(fourierUnitary (indicatorCutoff (Set.Ioi 0) measurableSet_Ioi
     (fourierUnitary.symm u)))‖ ≤ ‖u‖
   rw [norm_neg, fourierUnitary.norm_map]
-  have hnorm : ‖indicatorCutoff (Set.Iio 0) measurableSet_Iio‖ ≤ 1 := by
+  have hnorm : ‖indicatorCutoff (Set.Ioi 0) measurableSet_Ioi‖ ≤ 1 := by
     rw [indicatorCutoff_eq_physicalForbidden_starProjection]
     exact Submodule.starProjection_norm_le _
-  have h := (indicatorCutoff (Set.Iio 0) measurableSet_Iio).le_opNorm (fourierUnitary.symm u)
+  have h := (indicatorCutoff (Set.Ioi 0) measurableSet_Ioi).le_opNorm (fourierUnitary.symm u)
   calc
-    _ ≤ ‖indicatorCutoff (Set.Iio 0) measurableSet_Iio‖ * ‖fourierUnitary.symm u‖ := h
+    _ ≤ ‖indicatorCutoff (Set.Ioi 0) measurableSet_Ioi‖ * ‖fourierUnitary.symm u‖ := h
     _ ≤ ‖u‖ := by simpa using mul_le_mul_of_nonneg_right hnorm (norm_nonneg (fourierUnitary.symm u))
 
 /-- Right multiplication by the two-channel nonlocal jump perturbation. -/

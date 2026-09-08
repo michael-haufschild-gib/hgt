@@ -47,12 +47,12 @@ theorem directJumpRow_ae (q : SchwartzMap ℝ ℂ) (t x : ℝ) (i : Fin 2) :
 
 /-- The signed Cauchy operator squares to its negative, as required by the Plemelj projection convention. -/
 theorem negativeCauchy_square (u : SoninL2) : negativeCauchy (negativeCauchy u) = -negativeCauchy u := by
-  have hi := DFunLike.congr_fun (indicatorCutoff_idempotent (Set.Iio 0) measurableSet_Iio)
+  have hi := DFunLike.congr_fun (indicatorCutoff_idempotent (Set.Ioi 0) measurableSet_Ioi)
     (fourierUnitary.symm u)
   simp only [mul_apply_eq_comp] at hi
-  change -fourierUnitary (indicatorCutoff (Set.Iio 0) measurableSet_Iio
-    (fourierUnitary.symm (-fourierUnitary (indicatorCutoff (Set.Iio 0) measurableSet_Iio (fourierUnitary.symm u))))) =
-    -(-fourierUnitary (indicatorCutoff (Set.Iio 0) measurableSet_Iio (fourierUnitary.symm u)))
+  change -fourierUnitary (indicatorCutoff (Set.Ioi 0) measurableSet_Ioi
+    (fourierUnitary.symm (-fourierUnitary (indicatorCutoff (Set.Ioi 0) measurableSet_Ioi (fourierUnitary.symm u))))) =
+    -(-fourierUnitary (indicatorCutoff (Set.Ioi 0) measurableSet_Ioi (fourierUnitary.symm u)))
   simp only [map_neg, fourierUnitary.symm_apply_apply, hi, neg_neg]
 
 def boundaryCauchy : Boundary →L[ℂ] Boundary := negativeCauchy.prodMap negativeCauchy

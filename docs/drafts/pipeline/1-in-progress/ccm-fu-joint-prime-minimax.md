@@ -148,6 +148,15 @@ unused source amplitudes and sufficient remaining budget continue to
 exist as interacting middle primes are consumed. A local minimax formula
 alone does not discharge that obligation or bound the terminal sum.
 
+For the weaker uniform-quadratic existence target needed by RH, the
+[global late-order rounding theorem](ccm-fu-late-order-rounding.md) removes
+late-prime permutation as an essential choice: any successful order can
+be transformed to any prescribed late-prime relative order, with another
+uniform quadratic constant and every intermediate stage controlled.
+Thus exact single-prime window supply remains relevant to the factor-one
+policy, while the RH search can fix late order and attack the interacting
+middle-core trajectory. Existence of that trajectory is still unproved.
+
 ## Formal certificate and scope
 
 [MobiusDivisorLatePairMinimax](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorLatePairMinimax.lean)
