@@ -76,8 +76,9 @@ theorem timeOnset_derivative_pair_bound (v : ℂ) (hv : v.re ≤ 0) :
         (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
       _ ≤ K+2*‖v‖*Λ+‖v‖^2 := by
         simp only [norm_mul,norm_pow,Complex.norm_ofNat]
-        nlinarith [mul_le_mul_of_nonneg_left hχ' (by positivity : 0 ≤ 2*‖v‖),
-          mul_le_mul_of_nonneg_left hχ (sq_nonneg ‖v‖)]
+        exact add_le_add (add_le_add hχ''
+          (mul_le_mul_of_nonneg_left hχ' (by positivity)))
+          ((mul_le_mul_of_nonneg_left hχ (sq_nonneg ‖v‖)).trans_eq (mul_one _))
   have hFirst : ‖timeOnset v u‖+‖timeOnsetFirst v u‖ ≤ B := by simpa using hb u
   linarith [norm_nonneg (timeOnset v u)]
 

@@ -1,0 +1,27 @@
+# HB actual principal response: C² time regularity and wave graph
+
+Goal ACTIVE and RH unproved. Frontier map remains READ ONLY. This turn made concrete progress; do not mark goal complete/blocked. No subagents authorized. Do not re-audit completed batches.
+
+Chain: literal theta cusp → Xi occurrence → retained spin-two source → original causal response and left-QNM pairing → independent Hawking-clock extinction → RH.
+
+Proof record: docs/drafts/pipeline/3-formalized/hb-principal-causal-second-order-wave.md. Active obligation card: docs/drafts/pipeline/1-in-progress/hb-joint-causal-laplace-identification.md (updated). No frontier/STATUS edits by this agent.
+
+Six canonical leaves, 22 public theorems, 513 lines, all final individual lake build audits passed with exactly the requested leaf compiled, no warnings. Existing dependency caches supplied via isolated local stub package; no dependencies/full/umbrella builds. All 12 installed .olean/.ilean files matched audited copies. Each leaf wired once. Scratch lake env lean #print axioms checked exactly these22 new public theorems: all exactly propext, Classical.choice, Quot.sound. NO re-audit needed. No added axioms, proof holes or computational certificates.
+
+Reusable leaves namespace GaloisForLFunctions.HTGeometry:
+- L2DominatedDerivative: hasDerivAt_toLp_two_of_dominated. Fixed L² bound on actual pointwise derivative, MVT bounds slopes, dominated convergence of squared errors gives true L² derivative.
+- UnitWaveTimeIntegration: unitWaveCosConvolution_eq retains D(tau)F(0); unitWaveDuhamel_deriv_eq_of_zero; unitWaveDuhamel_second_hasDerivAt. Uses hasDerivAt_strong_apply and exact Bochner FTC.
+- UnitWaveEllipticRange: unitWaveEllipticInv=(2*pi)^(-2) kgFreqInvOp² as real CLM. unitWaveDuhamel_elliptic_range proves U=A^-2[G(tau)-cos(A tau)G(0)-cosConvolution G']; unitWaveDuhamel_wave_graph proves U=A^-2[G-U''] when G0=0.
+
+Route leaf prefix GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSource, namespace RHTower.D4BMJointSource:
+- OnsetDerivativeBound: second onset continuous, zero for negative arrival, derivative pair globally bounded when Re v<=0. chi'' bounded by compactness; direct inequalities replaced slow nlinarith (audit62s→16s).
+- TimeDerivative: timeReducedFirst=C0 H'+2 B1 H'', exact scalar HasDerivAt; joint continuity; uniform C exp(2t) bound on negative ray; MemLp; timeRadialSourceFirst actual toLp; timeRadialSourceVector_hasDerivAt s a hs tau and derivative strong continuity. Generic hs:(2s).re<=0; actual principal leaf supplies it from physical currentRate_re_lt, no analytic premise remains there.
+- PrincipalTimeSecondDerivative: principalTimeForcing_differentiable/deriv_continuous; principalEffectiveForcing_hasDerivAt/deriv_continuous; principalTimeResponse_second_hasDerivAt/second_continuous; principalTimeResponse_wave_graph. All three actual principal responses have continuous acceleration and U=A^-2(F+WU-U'') with original amplitudes/source/potential.
+
+REMAINING HARD GAP: identify this twice-regularized spatial range with original radial differential expression, construct continuous representative and endpoint trace, then show negative-ray principalTimeLaplace equals principalDifference at original onset transform. Only then assembled source transform=cuspResidualVector. Left-QNM continuation, actual spin-two pairing and independent Hawking-clock extinction remain open. No Xi-zero selection follows from C²/wave graph.
+
+Useful verified corpus for next attack: HTGeometry/SchwartzSobolevEstimate.lean (namespace GaloisForLFunctions), sobolevOp f=f-(4*pi²)^-1 f'', weightSchwartz_fourierSCLM: (1+xi²)Fourier f=Fourier(sobolevOp f). This fixes physical A²=4*pi²-d_x² normalization for Schwartz testing. kgFreqInvOp_injective in KleinGordonRegularDense already established (do not re-audit); multiplier symmetry APIs in KleinGordonEnergyConservation. Need research whole corpus before new code.
+
+Lean details: mathlib ContinuousLinearMap.coe_restrictScalars' is verified; restrictScalars_apply DOES NOT exist. Old .smul_apply/.zero_apply deprecations use smul_apply/zero_apply. HasDerivAt instances (Complex/Lp group parents) often defeat simpa despite same mathematical function: convert h using 1 <;> first | rfl | simp works. set_option backward.isDefEq.respectTransparency false used in new source/wave leaves. Have interval integrability statements need explicit time functions and (μ:=volume), or explicit target type; untyped continuous_const leaves unresolved metavars. Normalize Function.comp_def in a separately bound integral_add equality before rw when comp lambdas obscure rewriting. Real map_smul through complex CLMs uses restrictScalars ℝ.
+
+Final scripts/formal_tools.py index refresh and lint --check-generated PASSED (141 pre-existing large-file warnings only). New sources/artifacts/whitespace/wiring verified. No numerical experiments. /tmp/hb-source-wave-equation.xs3IrT and /var/folders/h4/zrd73pg91clb__kg1kzrlcph0000gn/T/hb-source-wave-audit.aypz7c3l removed. No owned Lean/Lake left. Concurrent edits/processes preserved. Git HEAD changed concurrently during turn; this agent did not commit/push. Completed prior batch memory: mem:hawking_bm_principal_causal_evolution_cutoff_transform_2026_09_08.

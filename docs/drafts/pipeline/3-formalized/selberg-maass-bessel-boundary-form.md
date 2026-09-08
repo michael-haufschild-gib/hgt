@@ -1,7 +1,7 @@
 # Actual Maass cusp energy and the Bessel boundary form
 
 - **ID:** SELBERG-MAASS-BESSEL-BOUNDARY-FORM
-- **Stage:** 3-formalized; targeted final audit in progress.
+- **Stage:** 3-formalized.
 - **Parent:** [Constructive Selberg loop](../1-in-progress/selberg-quarter-conjecturing-loop.md), cycle 23.
 - **Scope:** Actual principal-congruence Maass cusp eigenforms with positive sub-quarter eigenvalue.
 
@@ -50,12 +50,16 @@ The proposed finite-interval/logarithmic-height approach was replaced by a simpl
 - `GaloisForLFunctions.RHTower.SelbergMaassBesselRemainder`, namespace `SelbergMaassBessel`: response Riccati law and limit, actual coefficient integrability, noncompact complex square identity, boundary lower bound, zero constant-channel energy.
 - `GaloisForLFunctions.RHTower.SelbergMaassBoundaryForm`, namespace `SelbergMaassBoundaryForm`: justified infinite mode/height interchange, exact actual trace/seam identification, convergent square series, full physical boundary-form and flux identities.
 
-Both complete scratch proofs and direct source checks passed without warnings. Both modules are wired into `RHTower.lean`. Targeted final builds, all public theorem axiom checks, current index/lint results, and process cleanup are recorded after completion.
+Both complete scratch proofs and direct source checks passed without warnings. Both serialized targeted final builds passed, each rebuilding its target alone: `/tmp/selberg_maass_bessel_remainder_build.log` and `/tmp/selberg_maass_boundary_form_build.log`. The existing `EvenL2LogUnitary` informational tactic message was replayed; neither new target produced a warning. No full or umbrella build ran.
+
+All 28 public theorem axiom checks in `/tmp/selberg_maass_bessel_form_axioms.lean` report only `propext`, `Classical.choice`, and `Quot.sound` (`/tmp/selberg_maass_bessel_form_axioms.log`). Both modules are wired and indexed, and corpus searches return their capstones. Tracked and new task-file whitespace checks passed. **Latest repository-wide lint passed**, with existing large-file warnings (`/tmp/selberg_maass_bessel_form_lint.log`); the prior three unrelated unwired-module failures were resolved outside this task.
+
+Every task-owned Lean/Lake invocation finished. A separate `DivisorTwentyTwoAnalyticBounds` Lean process was active at the final process audit and was not touched. This task made no commits.
 
 ## Remaining source question
 
 The full physical cusp comparison is proved. The compact quotient core must now be attached, retaining its quarter-energy and matching every cusp boundary form. No positivity of that combined core form has been proved.
 
-A fresh corpus search found `ThetaCuspHawkingBMModularLaplacian.chartLaplacian_modular_pullback`. Its public wrapper assumes `ChartSmooth`, while the inspected proof only uses real C² regularity at the image point and a holomorphic Möbius map. The actual Maass object provides C², not the stronger wrapper hypothesis. Next test a C² covariance theorem, then construct integral translates of the actual principal-congruence Maass object using normality. This would transport the completed cusp identity to every integral cusp before attempting the finite quotient-core Green assembly. The core inequality remains an additional mathematical obligation.
+A fresh corpus search found `ThetaCuspHawkingBMModularLaplacian.chartLaplacian_modular_pullback`. Its public wrapper assumes `ChartSmooth`, while the inspected proof only uses real C² regularity at the image point and a holomorphic Möbius map. The actual Maass object provides C², not the stronger wrapper hypothesis. Next test a C² covariance theorem, then construct integral translates of the actual principal-congruence Maass object using the normalization of the real congruence image by integral `SL2Z`. This would transport the completed cusp identity to every integral cusp before attempting the finite quotient-core Green assembly. The core inequality remains an additional mathematical obligation.
 
 The inspected finite-rank Schur and block-kernel corpus offers elimination identities, but no actual Maass core block, inverse, or positivity certificate is currently supplied. A matrix interface alone would not close this obligation, and none was added.

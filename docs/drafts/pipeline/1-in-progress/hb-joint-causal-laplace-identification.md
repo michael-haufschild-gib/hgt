@@ -62,13 +62,26 @@ first. Oddness of an L² class alone supplies no pointwise trace. Until this
 identification is closed, the assembled transform is not identified with
 `cuspResidualVector`.
 
-The specific next construction is the native source's continuous time
-derivative in the original L² space. Then the effective forcing
-`G=F+W*U` is C¹, and integration by parts with the bounded
-`A^(-2)cos(A*tau)`, `A=2*pi*<D>`, targets
-`U=A^(-2)[G(tau)-cos(A*tau)G(0)-integral_0^tau cos(A*(tau-sigma))G'(sigma)]`.
-This two-inverse-frequency upgrade and the resulting second-order equation
-are not yet Lean theorems.
+The [second time derivative and spatial-range theorem](../3-formalized/hb-principal-causal-second-order-wave.md)
+proves that the actual native source is C¹ in the original L² norm. Its
+derivative retains both onset jets and the full `exp(2t)` horizon bound.
+Consequently the effective forcing `G=F+W*U` is C¹. Two exact integrations by
+parts, with the initial boundary terms retained and then evaluated from the
+proved zero data, establish continuous `U''` and
+`U=A^(-2)[F+W*U-U'']`, where `A=2*pi*<D>`. This twice-regularized wave identity
+is proved for every actual principal channel, without additional regularity
+premises.
+
+The next obligation is to identify this spatial range with the original
+radial differential expression and construct its continuous representative
+and endpoint trace. The existing Schwartz Fourier identity fixes the exact
+`4*pi^2` normalization. Then identify the negative-ray restriction of
+`principalTimeLaplace` with `principalDifference` at the original onset
+transform. This trace and Green comparison remains open. The immediate construction identifies
+`kgFreqInvOp` with the actual Bessel potential on tempered distributions.
+The second-order graph then gives the original distributional radial equation
+and Sobolev admission; Fourier L¹ synthesis will supply the continuous
+representative required to turn the proved spatial oddness into a zero trace.
 
 Convolution of the complete source with the original joint causal response,
 metric finite propagation, modular patching and constrained Einstein sectors

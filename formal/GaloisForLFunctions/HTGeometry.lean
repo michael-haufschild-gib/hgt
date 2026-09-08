@@ -14118,3 +14118,8 @@ import GaloisForLFunctions.HTGeometry.ConservativeLorentzLimiter
 import GaloisForLFunctions.HTGeometry.FutureObservationStateCompletion
 
 import GaloisForLFunctions.HTGeometry.VolterraSourceEquivalence
+
+import GaloisForLFunctions.HTGeometry.FibreShuffleInformationLoss
+import GaloisForLFunctions.HTGeometry.L2DominatedDerivative
+import GaloisForLFunctions.HTGeometry.UnitWaveTimeIntegration
+import GaloisForLFunctions.HTGeometry.UnitWaveEllipticRange

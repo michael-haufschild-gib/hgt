@@ -86,6 +86,15 @@ Universal local descent is incompatible with every fixed weight already
 at cutoff 25. Two actual states expose the conflict: the core leaving
 only prime 7 requires a small head weight to absorb a same-sign leaf;
 the core leaving primes 3 and 5 requires a larger head weight to pay
-its forced nonempty-energy growth. Analytic certification and exact
-positive completion criteria are in progress. The main complete-path
-claim remains unchanged and open.
+its forced nonempty-energy growth. The [analytic certificate](../3-formalized/ccm-fu-weighted-head-state-selection.md)
+and exact positive completion criteria pass scratch Lean and exact leaf
+emission: the respective admissible intervals are alpha≤beta and
+alpha≥sigma, with `0<beta<1/20<sigma<1/5`. The
+[universal local rule](../5-failed/ccm-fu-universal-weighted-head-extension.md)
+is retired. The main complete-path claim remains unchanged and open.
+
+The remaining obligation is a positive weight valid uniformly over all
+cutoffs together with a complete compatible path. Weights depending on
+cutoff and tending to zero would lose the needed uniform control of the
+terminal head. Neither the finite interval nor the exact local completion
+classifications establish that uniform lower bound.

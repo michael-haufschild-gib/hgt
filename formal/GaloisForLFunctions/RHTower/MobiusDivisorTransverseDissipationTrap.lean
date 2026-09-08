@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.MobiusDivisorCoupledTwoSourceCone
 import GaloisForLFunctions.RHTower.DivisorTwentyTwoAnalyticBounds
 import GaloisForLFunctions.RHTower.MobiusDivisorNonemptyEnergy
 import GaloisForLFunctions.RHTower.TwoCoordinateMergerCeiling
@@ -14,6 +15,12 @@ Analytic source intervals certify all margins independently of computation.
 For arbitrary two-coordinate fields, the sharp uniform minimum next nonempty
 energy factor is three halves. This bounds unavoidable transverse growth;
 neither that boundary nor the arithmetic witness proves RH.
+
+A fixed weight on the head square cannot provide a contracting next operation
+at every actual state, already at cutoff twenty-five. Two source states have
+exact disjoint intervals of weights permitting their complete remaining orders.
+The weighted potential remains coercive at every fixed positive weight;
+existence of suitable complete paths from the initial source remains open.
 -/
 noncomputable section
 open Finset
@@ -342,4 +349,306 @@ theorem twoCoordinateNonemptyEnergy_factor_iff (K : ℝ) :
   · intro hk a b c
     exact (min_twoCoordinateNonemptyEnergy_le a b c).trans
       (mul_le_mul_of_nonneg_right hk (by positivity))
+
+/-- Retained energy with a fixed weight on the actual empty-label head square. -/
+def mobiusDivisorWeightedHeadEnergy (α : ℝ) (M : ℕ) (P : Finset ℕ) : ℝ :=
+  mobiusDivisorNonemptyEnergy M P+α*(mobiusDivisorSelectionFibre M P ∅)^2
+
+/-- Every positive head weight retains uniform control of the complete energy. -/
+theorem mobiusDivisorWeightedHeadEnergy_bounds (α : ℝ) (hα0 : 0 ≤ α) (hα1 : α ≤ 1)
+    (M : ℕ) (P : Finset ℕ) :
+    0 ≤ mobiusDivisorWeightedHeadEnergy α M P ∧
+    α*mobiusDivisorSelectionEnergy M P ≤ mobiusDivisorWeightedHeadEnergy α M P ∧
+      mobiusDivisorWeightedHeadEnergy α M P ≤ mobiusDivisorSelectionEnergy M P := by
+  have hn : 0 ≤ mobiusDivisorWeightedHeadEnergy α M P :=
+    add_nonneg (mobiusDivisorNonemptyEnergy_nonneg M P) (mul_nonneg hα0 (sq_nonneg _))
+  refine ⟨hn,?_⟩
+  have hv := mul_nonneg (sub_nonneg.mpr hα1) (mobiusDivisorNonemptyEnergy_nonneg M P)
+  have hh := mul_nonneg (sub_nonneg.mpr hα1) (sq_nonneg (mobiusDivisorSelectionFibre M P ∅))
+  unfold mobiusDivisorWeightedHeadEnergy mobiusDivisorNonemptyEnergy at *
+  constructor <;> nlinarith only [hv,hh]
+
+/-- Exact head weight at which the favorable five-then-three completion starts to contract. -/
+def mobiusDivisorTwentyFiveWeightThreshold : ℝ :=
+  let H := mobiusDivisorSelectionFibre 25 mobiusDivisorTwentyFiveCore ∅
+  let A := mobiusDivisorSelectionFibre 25 mobiusDivisorTwentyFiveCore {3}
+  let B := mobiusDivisorSelectionFibre 25 mobiusDivisorTwentyFiveCore {5}
+  let C := mobiusDivisorSelectionFibre 25 mobiusDivisorTwentyFiveCore {3,5}
+  (2*A*C-B^2)/(H^2-(H+B)^2)
+
+private def sevenCore : Finset ℕ := mobiusDivisorSelectionPrimes 25\{7}
+private def t : ℝ := -divisorUnsignedDilationChannel 25 7+
+  divisorUnsignedDilationChannel 25 14+divisorUnsignedDilationChannel 25 21
+private def g : ℝ := h+a+b+c-t
+private def w0 (α : ℝ) : ℝ := α*h^2+a^2+b^2+c^2
+private def w3 (α : ℝ) : ℝ := α*(h+a)^2+(b+c)^2
+private def w5 (α : ℝ) : ℝ := α*(h+b)^2+(a+c)^2
+private def wf (α : ℝ) : ℝ := α*(h+a+b+c)^2
+
+private lemma weighted_values (α : ℝ) :
+    mobiusDivisorWeightedHeadEnergy α 25 mobiusDivisorTwentyFiveCore=w0 α ∧
+    mobiusDivisorWeightedHeadEnergy α 25 (insert 3 mobiusDivisorTwentyFiveCore)=w3 α ∧
+    mobiusDivisorWeightedHeadEnergy α 25 (insert 5 mobiusDivisorTwentyFiveCore)=w5 α ∧
+    mobiusDivisorWeightedHeadEnergy α 25 (insert 3 (insert 5 mobiusDivisorTwentyFiveCore))=wf α := by
+  have hf : mobiusDivisorSelectionFibre 25 (insert 3 (insert 5 mobiusDivisorTwentyFiveCore)) ∅=h+a+b+c := by
+    rw [mobiusDivisorSelectionFibre_insert,mobiusDivisorSelectionFibre_insert,
+      mobiusDivisorSelectionFibre_insert]
+    simp only [notMem_empty,if_false,insert_empty_eq,heads.1,heads.2.1,heads.2.2.1]
+    have hn : 5∉({3}:Finset ℕ) := by norm_num
+    have hp : ({5,3}:Finset ℕ)={3,5} := by ext p; simp [or_comm]
+    simp [hn,hp,heads.2.2.2]
+    ring
+  have h3 : mobiusDivisorSelectionFibre 25 (insert 3 mobiusDivisorTwentyFiveCore) ∅=h+a := by
+    rw [mobiusDivisorSelectionFibre_insert]; simp [heads.1,heads.2.1]
+  have h5 : mobiusDivisorSelectionFibre 25 (insert 5 mobiusDivisorTwentyFiveCore) ∅=h+b := by
+    rw [mobiusDivisorSelectionFibre_insert]; simp [heads.1,heads.2.2.1]
+  unfold mobiusDivisorWeightedHeadEnergy
+  rw [nonempty_values.1,nonempty_values.2.1,nonempty_values.2.2,heads.1,h3,h5,hf]
+  refine ⟨by dsimp [w0]; ring,by dsimp [w3]; ring,by dsimp [w5]; ring,?_⟩
+  unfold mobiusDivisorNonemptyEnergy
+  rw [Finset.insert_comm 3 5,energies.2.2.2]
+  rw [← Finset.insert_comm 3 5,hf]
+  dsimp [wf]
+  ring
+
+private lemma head_square_decreases :
+    (h+a)^2 < h^2 ∧ (h+b)^2 < h^2 ∧
+    (h+a+b+c)^2 < (h+a)^2 ∧ (h+a+b+c)^2 < (h+b)^2 := by
+  obtain ⟨hh,ha,hb,hc⟩ := boxes
+  have h3 := mul_neg_of_pos_of_neg (show 0 < a by linarith) (show 2*h+a < 0 by linarith)
+  have h5 := mul_neg_of_pos_of_neg (show 0 < b by linarith) (show 2*h+b < 0 by linarith)
+  have hf3 := mul_neg_of_pos_of_neg (show 0 < b+c by linarith) (show 2*(h+a)+b+c < 0 by linarith)
+  have hf5 := mul_neg_of_pos_of_neg (show 0 < a+c by linarith) (show 2*(h+b)+a+c < 0 by linarith)
+  exact ⟨by nlinarith only [h3],by nlinarith only [h5],by nlinarith only [hf3],by nlinarith only [hf5]⟩
+
+private lemma weighted_small_increases {α : ℝ} (hα : α ≤ 1/20) :
+    w0 α < w3 α ∧ w0 α < w5 α := by
+  obtain ⟨hh,ha,hb,hc⟩ := boxes
+  have hha := mul_le_mul (show -h ≤ (0.75:ℝ) by linarith) ha.2
+    (by linarith : 0 ≤ a) (by norm_num : (0:ℝ) ≤ 0.75)
+  have hhb := mul_le_mul (show -h ≤ (0.75:ℝ) by linarith) hb.2
+    (by linarith : 0 ≤ b) (by norm_num : (0:ℝ) ≤ 0.75)
+  have hm3 := mul_nonneg (show 0 ≤ 1/20-α by linarith) (sub_nonneg.mpr head_square_decreases.1.le)
+  have hm5 := mul_nonneg (show 0 ≤ 1/20-α by linarith) (sub_nonneg.mpr head_square_decreases.2.1.le)
+  obtain ⟨hv3,hv5,_,_,_,_,_⟩ := arithmetic_inequalities
+  dsimp [w0,w3,w5]
+  constructor
+  · nlinarith only [hha,hm3,hv3,sq_nonneg a]
+  · nlinarith only [hhb,hm5,hv5,sq_nonneg b]
+
+private lemma weighted_five_at_fifth : w5 (1/5) < w0 (1/5) := by
+  obtain ⟨hh,ha,hb,hc⟩ := boxes
+  have hac := mul_le_mul ha.2 hc.2 (by linarith : 0 ≤ c) (by norm_num : (0:ℝ) ≤ 0.010)
+  have hhb := mul_le_mul (show (0.73:ℝ) ≤ -h by linarith) hb.1
+    (by norm_num : (0:ℝ) ≤ 0.013) (by linarith : 0 ≤ -h)
+  have hb2 := mul_le_mul hb.1 hb.1 (by norm_num : (0:ℝ) ≤ 0.013) (by linarith : 0 ≤ b)
+  dsimp [w5,w0]
+  nlinarith only [hac,hhb,hb2]
+
+private lemma weighted_five_preferred {α : ℝ} (hα : 0 ≤ α) : w5 α  <  w3 α := by
+  obtain ⟨hh,ha,hb,hc⟩ := boxes
+  have hs : α*(2*h+a+b) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hα (by linarith)
+  have hm := mul_pos_of_neg_of_neg (show a-b < 0 by linarith)
+    (show α*(2*h+a+b)-(a+b+2*c) < 0 by linarith)
+  dsimp [w5,w3]
+  nlinarith only [hm]
+
+private lemma weighted_final_decreases {α : ℝ} (hα : 0 ≤ α) : wf α < w3 α ∧ wf α < w5 α := by
+  obtain ⟨hh,ha,hb,hc⟩ := boxes
+  have h3 := mul_le_mul_of_nonneg_left head_square_decreases.2.2.1.le hα
+  have h5 := mul_le_mul_of_nonneg_left head_square_decreases.2.2.2.le hα
+  have hbcsq : 0 < (b+c)^2 := sq_pos_of_pos (by linarith)
+  have hacsq : 0 < (a+c)^2 := sq_pos_of_pos (by linarith)
+  dsimp [wf,w3,w5]
+  exact ⟨by linarith only [h3,hbcsq],by linarith only [h5,hacsq]⟩
+
+private lemma threshold_eq : mobiusDivisorTwentyFiveWeightThreshold=(2*a*c-b^2)/(h^2-(h+b)^2) := by
+  simp [mobiusDivisorTwentyFiveWeightThreshold,heads.1,heads.2.1,heads.2.2.1,heads.2.2.2]
+
+/-- The favorable completion requires weight strictly above one twentieth and starts strictly below one fifth. -/
+theorem mobiusDivisorTwentyFiveWeightThreshold_bounds :
+    1/20 < mobiusDivisorTwentyFiveWeightThreshold ∧ mobiusDivisorTwentyFiveWeightThreshold < 1/5 := by
+  rw [threshold_eq]
+  have hd : 0 < h^2-(h+b)^2 := sub_pos.mpr head_square_decreases.2.1
+  constructor
+  · apply (lt_div_iff₀ hd).mpr
+    have hw := (weighted_small_increases (α:=(1/20:ℝ)) le_rfl).2
+    dsimp [w5,w0] at hw
+    nlinarith only [hw]
+  · apply (div_lt_iff₀ hd).mpr
+    have hw := weighted_five_at_fifth
+    dsimp [w5,w0] at hw
+    nlinarith only [hw]
+
+/-- Exact feasibility of both complete remaining orders under a fixed nonnegative head weight; prime five is uniformly the better first choice. -/
+theorem mobiusDivisorTwentyFive_weighted_completion_iff (α : ℝ) (hα : 0 ≤ α) :
+    ((mobiusDivisorWeightedHeadEnergy α 25 (insert 3 mobiusDivisorTwentyFiveCore) ≤
+        mobiusDivisorWeightedHeadEnergy α 25 mobiusDivisorTwentyFiveCore ∧
+      mobiusDivisorWeightedHeadEnergy α 25 (insert 3 (insert 5 mobiusDivisorTwentyFiveCore)) ≤
+        mobiusDivisorWeightedHeadEnergy α 25 (insert 3 mobiusDivisorTwentyFiveCore)) ∨
+     (mobiusDivisorWeightedHeadEnergy α 25 (insert 5 mobiusDivisorTwentyFiveCore) ≤
+        mobiusDivisorWeightedHeadEnergy α 25 mobiusDivisorTwentyFiveCore ∧
+      mobiusDivisorWeightedHeadEnergy α 25 (insert 3 (insert 5 mobiusDivisorTwentyFiveCore)) ≤
+        mobiusDivisorWeightedHeadEnergy α 25 (insert 5 mobiusDivisorTwentyFiveCore))) ↔
+      mobiusDivisorTwentyFiveWeightThreshold ≤ α := by
+  rw [(weighted_values α).1,(weighted_values α).2.1,(weighted_values α).2.2.1,
+    (weighted_values α).2.2.2,threshold_eq,
+    div_le_iff₀ (sub_pos.mpr head_square_decreases.2.1)]
+  have hfinal := weighted_final_decreases hα
+  have hpref := weighted_five_preferred hα
+  constructor
+  · rintro (⟨h3,_⟩|⟨h5,_⟩)
+    · have hw := hpref.le.trans h3
+      dsimp [w5,w0] at hw
+      nlinarith only [hw]
+    · dsimp [w5,w0] at h5
+      nlinarith only [h5]
+  · intro hw
+    right
+    refine ⟨?_,hfinal.2.le⟩
+    dsimp [w5,w0]
+    nlinarith only [hw]
+
+private lemma seven_remaining : mobiusDivisorSelectionPrimes 25\sevenCore={7} := by
+  have hp : 7∈mobiusDivisorSelectionPrimes 25 := by norm_num [mobiusDivisorSelectionPrimes]
+  ext p
+  simp [sevenCore]
+  intro he
+  subst p
+  exact hp
+
+private lemma seven_fibre : mobiusDivisorSelectionFibre 25 sevenCore {7}=t := by
+  have hf := (mobiusDivisorSelectionFibre_one_remaining 25 7 sevenCore (by norm_num)
+    (by simp [sevenCore]) (by exact subset_rfl)).2
+  rw [hf]
+  have hs7 := signed_prime 7 (by norm_num)
+  have hs14 := signed_pair 2 7 Nat.prime_two (by norm_num) (by omega)
+  have hs21 := signed_pair 3 7 Nat.prime_three (by norm_num) (by omega)
+  norm_num only at hs14 hs21
+  norm_num [mobiusDivisorLastPrimeDivisible,sum_filter,Finset.sum_Icc_succ_top,hs7,hs14,hs21,t]
+
+private lemma total_value : (∑ d∈Icc 1 25,mobiusDivisorDilationChannel 25 d)=h+a+b+c := by
+  have hs := mobiusDivisorSelectionFibre_sum 25 mobiusDivisorTwentyFiveCore
+  simp_rw [source_profile] at hs
+  have h3 : ({3}:Finset ℕ)∈(mobiusDivisorSelectionPrimes 25).powerset := by
+    norm_num [mem_powerset,mobiusDivisorSelectionPrimes]
+  have h5 : ({5}:Finset ℕ)∈(mobiusDivisorSelectionPrimes 25).powerset := by
+    norm_num [mem_powerset,mobiusDivisorSelectionPrimes]
+  have h35 : ({3,5}:Finset ℕ)∈(mobiusDivisorSelectionPrimes 25).powerset := by
+    norm_num [mem_powerset,mobiusDivisorSelectionPrimes,Finset.insert_subset_iff]
+  simpa [profile,sum_add_distrib,h3,h5,h35] using hs.symm
+
+private lemma seven_head : mobiusDivisorSelectionFibre 25 sevenCore ∅=g := by
+  have hf := mobiusDivisorSelectionFibre_one_remaining 25 7 sevenCore (by norm_num)
+    (by simp [sevenCore]) (by exact subset_rfl)
+  have hs := mobiusDivisorLastPrime_add_eq_total 25 7
+  rw [← hf.1,← hf.2,seven_fibre,total_value] at hs
+  dsimp [g]
+  linarith only [hs]
+
+private lemma seven_weighted_values (α : ℝ) :
+    mobiusDivisorWeightedHeadEnergy α 25 sevenCore=α*g^2+t^2 ∧
+    mobiusDivisorWeightedHeadEnergy α 25 (insert 7 sevenCore)=α*(g+t)^2 := by
+  have hq : mobiusDivisorSelectionEnergy 25 sevenCore=g^2+t^2 := by
+    unfold mobiusDivisorSelectionEnergy
+    rw [subsetLabelEnergy_remaining,seven_remaining]
+    change (∑ R∈({7}:Finset ℕ).powerset,(mobiusDivisorSelectionFibre 25 sevenCore R)^2)=_
+    simpa only [powerset_empty,sum_singleton,insert_empty_eq,seven_head,seven_fibre] using
+      sum_powerset_insert (notMem_empty (7:ℕ)) (fun R => (mobiusDivisorSelectionFibre 25 sevenCore R)^2)
+  have hf : mobiusDivisorSelectionFibre 25 (insert 7 sevenCore) ∅=g+t := by
+    rw [mobiusDivisorSelectionFibre_insert]; simp [seven_head,seven_fibre]
+  have hqf : mobiusDivisorSelectionEnergy 25 (insert 7 sevenCore)=(g+t)^2 := by
+    unfold mobiusDivisorSelectionEnergy
+    rw [subsetLabelEnergy_remaining,sdiff_insert,seven_remaining]
+    simp only [erase_singleton,powerset_empty,sum_singleton]
+    change (mobiusDivisorSelectionFibre 25 (insert 7 sevenCore) ∅)^2=_
+    rw [hf]
+  unfold mobiusDivisorWeightedHeadEnergy mobiusDivisorNonemptyEnergy
+  rw [hq,seven_head,hqf,hf]
+  constructor  <;> ring
+
+private lemma seven_large_increases {α : ℝ} (hα : 1/20 ≤ α) :
+    mobiusDivisorWeightedHeadEnergy α 25 sevenCore  <
+      mobiusDivisorWeightedHeadEnergy α 25 (insert 7 sevenCore) := by
+  obtain ⟨hh,ha,hb,hc⟩ := boxes
+  have ht : (-0.020:ℝ) ≤ t ∧ t ≤ -0.017 := divisorUnsignedDilationChannel_twentyFive_seven_leaf_box
+  have hg : g ≤ (-0.51:ℝ) := by dsimp [g]; linarith only [hh.2,ha.2,hb.2,hc.2,ht.1]
+  have hgt := mul_le_mul (show (0.51:ℝ) ≤ -g by linarith) (show (0.017:ℝ) ≤ -t by linarith)
+    (by norm_num : (0:ℝ) ≤ 0.017) (by linarith : 0 ≤ -g)
+  have ht2 := mul_le_mul (show -t ≤ (0.020:ℝ) by linarith) (show -t ≤ (0.020:ℝ) by linarith)
+    (by linarith : 0 ≤ -t) (by norm_num : (0:ℝ) ≤ 0.020)
+  have hd : 0 ≤ (g+t)^2-g^2 := by nlinarith only [hgt,sq_nonneg t]
+  have hm := mul_nonneg (show 0 ≤ α-1/20 by linarith) hd
+  rw [(seven_weighted_values α).1,(seven_weighted_values α).2]
+  nlinarith only [hgt,ht2,hm]
+
+/-- No real fixed head weight provides a nonincreasing next operation at every proper actual state, already at one cutoff. -/
+theorem mobiusDivisorWeightedHeadEnergy_twentyFive_local_obstruction (α : ℝ) :
+    ∃ P : Finset ℕ,P ⊆ mobiusDivisorSelectionPrimes 25 ∧
+      (mobiusDivisorSelectionPrimes 25\P).Nonempty ∧
+      ∀ p∈mobiusDivisorSelectionPrimes 25\P,
+        mobiusDivisorWeightedHeadEnergy α 25 P  <  mobiusDivisorWeightedHeadEnergy α 25 (insert p P) := by
+  by_cases hα : α ≤ 1/20
+  · refine ⟨mobiusDivisorTwentyFiveCore,?_,?_,?_⟩
+    · norm_num [mobiusDivisorTwentyFiveCore,mobiusDivisorSelectionPrimes,Finset.insert_subset_iff]
+    · rw [remaining]; exact ⟨3,by simp⟩
+    · intro p hp
+      rw [remaining] at hp
+      rcases mem_insert.mp hp with rfl|hp
+      · rw [(weighted_values α).1,(weighted_values α).2.1]
+        exact (weighted_small_increases hα).1
+      · have he : p=5 := mem_singleton.mp hp
+        subst p
+        rw [(weighted_values α).1,(weighted_values α).2.2.1]
+        exact (weighted_small_increases hα).2
+  · refine ⟨sevenCore,sdiff_subset,?_,?_⟩
+    · rw [seven_remaining]; exact singleton_nonempty 7
+    · intro p hp
+      rw [seven_remaining,mem_singleton] at hp
+      subst p
+      exact seven_large_increases (le_of_not_ge hα)
+
+/-- Exact largest head weight permitting the literal final-seven absorption at cutoff twenty-five. -/
+def mobiusDivisorTwentyFiveSevenWeightThreshold : ℝ :=
+  let P := mobiusDivisorSelectionPrimes 25\{7}
+  let H := mobiusDivisorSelectionFibre 25 P ∅
+  let A := mobiusDivisorSelectionFibre 25 P {7}
+  A^2/((H+A)^2-H^2)
+
+private lemma seven_denominator_pos : 0 < (g+t)^2-g^2 := by
+  obtain ⟨hh,ha,hb,hc⟩ := boxes
+  have ht : (-0.020:ℝ) ≤ t ∧ t ≤ -0.017 := divisorUnsignedDilationChannel_twentyFive_seven_leaf_box
+  have hg : g < 0 := by dsimp [g]; linarith
+  have hgt := mul_pos_of_neg_of_neg hg (show t < 0 by linarith)
+  nlinarith only [hgt,sq_nonneg t]
+
+private lemma seven_threshold_eq : mobiusDivisorTwentyFiveSevenWeightThreshold=t^2/((g+t)^2-g^2) := by
+  change (mobiusDivisorSelectionFibre 25 sevenCore {7})^2/
+    ((mobiusDivisorSelectionFibre 25 sevenCore ∅+mobiusDivisorSelectionFibre 25 sevenCore {7})^2-
+      (mobiusDivisorSelectionFibre 25 sevenCore ∅)^2)=_
+  rw [seven_head,seven_fibre]
+
+/-- The terminal-seven state admits positive head weights only below a threshold strictly smaller than one twentieth. -/
+theorem mobiusDivisorTwentyFiveSevenWeightThreshold_bounds :
+    0 < mobiusDivisorTwentyFiveSevenWeightThreshold ∧ mobiusDivisorTwentyFiveSevenWeightThreshold < 1/20 := by
+  rw [seven_threshold_eq]
+  have htupper : t ≤ (-0.017:ℝ) := divisorUnsignedDilationChannel_twentyFive_seven_leaf_box.2
+  have ht : t < 0 := by linarith only [htupper]
+  have ht2 : 0 < t^2 := sq_pos_of_ne_zero (ne_of_lt ht)
+  refine ⟨div_pos ht2 seven_denominator_pos,(div_lt_iff₀ seven_denominator_pos).mpr ?_⟩
+  have hw := seven_large_increases (α:=(1/20:ℝ)) le_rfl
+  rw [(seven_weighted_values (1/20)).1,(seven_weighted_values (1/20)).2] at hw
+  nlinarith only [hw]
+
+/-- Exact admissible-weight classification for the other actual state; its interval is disjoint from the two-prime completion interval. -/
+theorem mobiusDivisorTwentyFive_seven_weighted_completion_iff (α : ℝ) :
+    mobiusDivisorWeightedHeadEnergy α 25 (insert 7 (mobiusDivisorSelectionPrimes 25\{7})) ≤
+      mobiusDivisorWeightedHeadEnergy α 25 (mobiusDivisorSelectionPrimes 25\{7}) ↔
+    α ≤ mobiusDivisorTwentyFiveSevenWeightThreshold := by
+  change mobiusDivisorWeightedHeadEnergy α 25 (insert 7 sevenCore) ≤
+    mobiusDivisorWeightedHeadEnergy α 25 sevenCore ↔ _
+  rw [(seven_weighted_values α).1,(seven_weighted_values α).2,seven_threshold_eq,
+    le_div_iff₀ seven_denominator_pos]
+  constructor <;> intro hw <;> nlinarith only [hw]
+
 end RHTower
