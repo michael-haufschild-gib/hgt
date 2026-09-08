@@ -22,9 +22,29 @@ of every auxiliary damping choice, removing the temporary restriction to a
 smaller half-plane. Classical coordinate regularity is not a prerequisite for
 this time-support and transform identity.
 
-Required further work is application to the actual vector-valued smooth-onset
-source: convolution and transform interchange, its frequency-dependent terms,
-all onset terms and the explicit cusp principal correction. A
+The [original time-source identification](../3-formalized/hb-original-time-source-onset-identification.md)
+retains the fixed delayed onset and its actual derivative. The original reduced
+frequency polynomial is affine; its slope is twice the explicit lift's radial
+derivative. The actual full angular time-source identity, its convergent
+Laplace transform, and the differentiated lift's transform are proved. The
+native square remainder is an admitted spatial L² vector at every time and
+vanishes before static time zero.
+
+The [horizon-decay and joint Bochner theorem](../3-formalized/hb-original-source-horizon-bochner-transform.md)
+proves that both reduced radial coefficients contain the exact horizon factor
+`exp(2t)`. The actual native source vector is strongly continuous and satisfies
+`||S(tau)|| <= C_c exp(-c tau)` for every `c<2`. Its Bochner Laplace integral
+converges in norm throughout `Re(w)>-2` and equals the literal frequency source
+with its original amplitude, physical onset transform and native angular
+remainder retained. Absolute Fubini against every radial L² test supplies the
+joint integral/completion interchange for this channel.
+
+Required further work is application to the complete vector-valued smooth-onset
+source. Construct the three cutoff-principal Green responses in the same
+causal time family, retain their commutators, and prove the full joint Bochner
+transform and convolution interchange. The native square-remainder channel is
+closed; the three cutoff-principal channels remain open. The enlarged source
+transform chamber does not continue the response inverse there. A
 frequency-dependent residual cannot be silently treated as a fixed spatial F.
 Classical/weak time equations, metric finite propagation, modular patching,
 radial endpoint traces and constrained Einstein sectors still need their
@@ -36,10 +56,18 @@ for every F supplies no Xi-zero selection by itself.
 No numerical experiment is indicated; the construction uses analytic estimates
 and the existing Fourier/Paley–Wiener corpus.
 
-Current source-identification target: expand the exact reduced radial
-polynomial in the independent transform frequency. Its quadratic terms cancel,
-leaving the original zero-frequency coefficient and one affine term. Identify
-that term with the derivative of the fixed delayed smooth onset in the time
-source, including the transition derivative, and prove the genuine convergent
-transform identity. The three cutoff principal Green responses remain part of
-the complete residual and must be handled in the same causal family.
+Current joint-transform target: construct the three cutoff-principal responses
+as one causal time family and retain their angular commutators, then apply the
+original causal response to the complete source with justified convolution.
+The final left-QNM pairing and independent extinction argument remain open.
+
+The current construction uses the corpus's strongly continuous Volterra
+evolution for the three actual complex radial potentials. Its whole-line
+realization must retain odd reflection to recover the original Dirichlet
+half-line and must restore the Fourier convention's `2*pi` factor. The
+retarded sine operator is `sin(2*pi*tau*<D>)/(2*pi*<D>)`; the bounded
+perturbation is multiplication by `(2*pi)^2+k*(k-1)*sech(t)^2` for each literal
+principal exponent k. The fixed onset source supplies the forcing. Required
+identifications are its original radial equation, endpoint trace, and equality
+of its convergent Laplace transform with the existing endpoint Green response.
+Those identities cannot be inferred from abstract Volterra existence alone.

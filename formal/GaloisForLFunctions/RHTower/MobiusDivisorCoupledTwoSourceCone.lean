@@ -334,3 +334,52 @@ theorem exists_mobiusDivisorCoupledTwo_clip_margin :
     linarith
 
 end RHTower
+
+namespace RHTower
+open Filter Topology
+/-- The three existing source windows have a common positive reserve before and after inserting two, stable under small clipping. -/
+theorem exists_mobiusDivisorCoupledTwo_clip_square_reserve :
+    ∃ ε d : ℝ,0<ε ∧ 0<d ∧ ∀ K∈({2,7,14}:Finset ℕ),∀ u : ℝ,|u|≤ε →
+      d≤(mobiusDivisorCoupledTwoInterpolatedProfile K u).1^2+
+        (mobiusDivisorCoupledTwoInterpolatedProfile K u).2^2 ∧
+      d≤((mobiusDivisorCoupledTwoInterpolatedProfile K u).1+
+        (mobiusDivisorCoupledTwoInterpolatedProfile K u).2)^2 := by
+  let f := fun K u => ((mobiusDivisorCoupledTwoInterpolatedProfile K u).1+
+    (mobiusDivisorCoupledTwoInterpolatedProfile K u).2)^2
+  let F := fun u => min (f 2 u) (min (f 7 u) (f 14 u))
+  have hf (K : ℕ) : ContinuousAt (f K) 0 := by
+    dsimp [f,mobiusDivisorCoupledTwoInterpolatedProfile]; fun_prop
+  have hF : ContinuousAt F 0 := (hf 2).min ((hf 7).min (hf 14))
+  have h14 : (mobiusDivisorCoupledTwoProfile 14).1+(mobiusDivisorCoupledTwoProfile 14).2<0 := by
+    obtain ⟨h0,h2⟩ := core_fibres (K:=14) (by omega)
+    have h := mobiusDivisorLastPrime_add_eq_total 14 2
+    rw [← h0,← h2] at h
+    dsimp only [mobiusDivisorCoupledTwoProfile]
+    linarith only [h,source_fourteen_neg]
+  obtain ⟨h2,h20,h7,h72,h140,h142⟩ := mobiusDivisorCoupledTwoProfile_three_signs
+  have hpos : 0<F 0 := by
+    dsimp [F,f]
+    simp only [mobiusDivisorCoupledTwoInterpolatedProfile,zero_smul,add_zero]
+    apply lt_min
+    · rw [h20,add_zero]; exact sq_pos_of_pos h2
+    · apply lt_min
+      · exact sq_pos_of_neg (by linarith only [h7,h72])
+      · exact sq_pos_of_neg h14
+  have he := hF.eventually (eventually_gt_nhds (show F 0/2<F 0 by linarith only [hpos]))
+  obtain ⟨r,hr,hnear⟩ := Metric.eventually_nhds_iff.mp he
+  refine ⟨r/2,F 0/4,by positivity,by positivity,?_⟩
+  intro K hK u hu
+  have hu' : dist u 0<r := by simpa only [Real.dist_eq,sub_zero] using hu.trans_lt (by linarith only [hr])
+  have hlo := hnear hu'
+  have hm : F u≤f K u := by
+    simp only [mem_insert,mem_singleton] at hK
+    rcases hK with rfl|rfl|rfl
+    · exact min_le_left _ _
+    · exact (min_le_right _ _).trans (min_le_left _ _)
+    · exact (min_le_right _ _).trans (min_le_right _ _)
+  dsimp only [f] at hm
+  constructor
+  · nlinarith only [hlo,hm,sq_nonneg ((mobiusDivisorCoupledTwoInterpolatedProfile K u).1-
+      (mobiusDivisorCoupledTwoInterpolatedProfile K u).2)]
+  · linarith only [hlo,hm,hpos]
+end RHTower

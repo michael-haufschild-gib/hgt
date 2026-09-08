@@ -90,26 +90,65 @@ existence of an exactly balanced finite prime batch.
 
 ## Remaining proof obligation
 
-The full inherited-cost identity is proved, including the receiving error.
-Real circuit weights still need realization by actual finite prime batches.
-Even a positive finite circuit supplies only local control: each fixed
-quotient window has limited prime capacity.
-A finite family of such windows does not alone pay a general cost of
-order M squared. Exhaustion still requires uniform control across growing
-quotients and processed cores, including overlap and clipping errors.
+The full inherited-cost identity and an actual prescribed-prime repair
+producer are proved. Exhaustion still requires renewal after source windows
+are used, control of prescribed primes with unbounded quotients, and the
+overlapping child profiles that arise there. Fixed quotient windows have
+limited prime capacity; their existence does not alone pay every future
+change of core under a uniform global budget.
 
-## Current producer target
+## Current actual producer
 
-Remove exact balance from the full-envelope reserve theorem. With
-E=Psi(P), D=|X|+|Y| and the two square reserves R,T above, the target is
+Exact balance is no longer required. With E=Psi(P), D=|X|+|Y| and the two
+square reserves R,T above, the Lean transport theorem proves
 
 `Psi(P+L)+min(R,T) <= E+2*sqrt(E)*D+D^2`.
 
-The source-copy identities retain X,Y. Each parent successor's receiving
-coordinate is bounded by the square root of its complete energy, hence by
-sqrt(E). Prime 2 uses the merged displacement X+Y and the other successors
-use X,Y. This supplies a concrete route to the displayed error term without
-a processed-cardinality factor. This strengthened estimate has not yet been
-added to Lean. It must then be used to construct actual batches which pay
-a prescribed change of core; proving another finite-dimensional receiver
-alone does not meet the remaining exhaustion requirement.
+Each parent successor's receiving coordinate is bounded by sqrt(E).
+Prime 2 uses the merged displacement X+Y; other successors use X,Y.
+The bound has no processed-cardinality factor.
+
+The [actual repair theorem](../3-formalized/ccm-fu-prescribed-window-repair.md)
+chooses fixed windows at quotients 2,7,14 and M=14(b+1)N. For every C>0,
+there is A>0 such that, for all sufficiently large N, every core containing
+P0, excluding 2, leaving those windows unused, and satisfying E<=C*M^2
+admits any prescribed available prime q with 15<=q<M and M/q<=14:
+
+`q in L`, `L subset {q} union windows`,
+`card(L)=ceil(A*sqrt(M))+1`, `Psi(P+L)+M <= Psi(P)`.
+
+The threshold and A are uniform in P and q. Start with q's normalized
+copied vector and greedily add actual unused source primes. Directional
+control bounds total receiving displacement by H*sqrt(M), while every
+added source supplies at least d*M to both square reserves. Window count
+divided by sqrt(M) tends to infinity, so only square-root many primes are
+needed to pay the error. No rounding of circuit weights and no numerical
+premise enter this construction. Its endpoint admission does not establish
+an exhaustive order, renewal of the untouched-window condition, or control
+of unbounded quotients.
+
+## Prescribed prime-two front
+
+The frozen [prepared-core diagnostic](../2-fully-proven/computations/ccm-fu-prepared-two-envelope-2026-09-08/README.md)
+finds a numerical failure of pointwise envelope monotonicity for inserting
+2 at M=84, P=P0. Current energy decreases, but the successor at 17 raises
+the full envelope. This is diagnostic evidence, not a Lean counterexample.
+The original diagonal budget is not violated in the scanned range.
+
+[BRIDGE target] Suppose all remaining primes other than 2 have M/q<=14,
+while the source windows stay unused and E=Psi(P)<=C*M^2. Inserting 2
+already has current energy at most E. The existing quotient transport law
+therefore bounds its new full successor envelope by
+
+`E + 17*sqrt(M)*sqrt(E)`.
+
+This is at most E+17*sqrt(C)*M^(3/2). A balanced actual source batch from
+2,7,14, chosen at P, remains a scalar-displacement batch after inserting
+2: its two copied coordinates merge, and its removed reserve is
+`sum p*(I_p,0+I_p,2)^2`. The existing common positive square reserve and
+window capacity can pay both the new-front cost and receiving error with
+ceil(A*sqrt(M)) source primes. Target a batch containing 2 with full
+endpoint envelope at most E-M. Constants and threshold must be uniform
+in the processed core. This handles an unbounded quotient at the prescribed
+prime itself, but assumes every other remaining quotient is bounded; it
+does not settle the general overlapping front or exhaustive processing.

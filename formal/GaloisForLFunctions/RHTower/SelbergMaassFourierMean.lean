@@ -29,38 +29,44 @@ def directional (v : ℂ) (F : ℂ → ℂ) (z : ℂ) : ℂ := fderiv ℝ F z v
 def periodIntegral (w : ℝ) (F : ℂ → ℂ) (y : ℝ) : ℂ :=
   ∫ x in Ioc 0 w, F (point x y)
 
-private theorem directional_contDiffOn {F : ℂ → ℂ} {n m : WithTop ℕ∞}
+/-- Directional differentiation lowers real chart regularity by one. -/
+theorem directional_contDiffOn {F : ℂ → ℂ} {n m : WithTop ℕ∞}
     (hf : ContDiffOn ℝ n F {z : ℂ | 0 < z.im}) (hmn : m + 1 ≤ n) (v : ℂ) :
     ContDiffOn ℝ m (directional v F) {z : ℂ | 0 < z.im} := by
   intro z hz
   exact (((hf.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds hz)).fderiv_right
     hmn).clm_apply contDiffAt_const).contDiffWithinAt
 
-private theorem point_vertical (x y : ℝ) : HasDerivAt (point x) Complex.I y := by
+/-- The real height coordinate has vertical complex velocity. -/
+theorem point_vertical (x y : ℝ) : HasDerivAt (point x) Complex.I y := by
   change HasDerivAt (fun t : ℝ => (x : ℂ) + (t : ℂ) * Complex.I) Complex.I y
   simpa only [Complex.ofRealCLM_apply, Complex.ofReal_one, one_mul] using
     ((Complex.ofRealCLM.hasDerivAt (x := y)).mul_const Complex.I).const_add (x : ℂ)
 
-private theorem point_horizontal (x y : ℝ) :
+/-- The real horizontal coordinate has unit complex velocity. -/
+theorem point_horizontal (x y : ℝ) :
     HasDerivAt (fun t => point t y) 1 x := by
   simpa [point] using
     (Complex.ofRealCLM.hasDerivAt (x := x)).add_const ((y : ℂ) * Complex.I)
 
-private theorem slice_vertical {F : ℂ → ℂ}
+/-- The chart directional derivative equals the actual height derivative. -/
+theorem slice_vertical {F : ℂ → ℂ}
     (hf : ContDiffOn ℝ 1 F {z : ℂ | 0 < z.im}) (x : ℝ) {y : ℝ} (hy : 0 < y) :
     HasDerivAt (fun t => F (point x t)) (directional Complex.I F (point x y)) y := by
   have hp : 0 < (point x y).im := by simpa [point] using hy
   exact ((hf.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds hp)).differentiableAt
     (by simp)).hasFDerivAt.comp_hasDerivAt y (point_vertical x y)
 
-private theorem slice_horizontal {F : ℂ → ℂ}
+/-- The chart directional derivative equals the actual horizontal derivative. -/
+theorem slice_horizontal {F : ℂ → ℂ}
     (hf : ContDiffOn ℝ 1 F {z : ℂ | 0 < z.im}) {y : ℝ} (hy : 0 < y) (x : ℝ) :
     HasDerivAt (fun t => F (point t y)) (directional 1 F (point x y)) x := by
   have hp : 0 < (point x y).im := by simpa [point] using hy
   exact ((hf.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds hp)).differentiableAt
     (by simp)).hasFDerivAt.comp_hasDerivAt x (point_horizontal x y)
 
-private theorem slice_continuous {F : ℂ → ℂ}
+/-- A continuous upper-half-plane chart function has continuous horizontal slices. -/
+theorem slice_continuous {F : ℂ → ℂ}
     (hf : ContinuousOn F {z : ℂ | 0 < z.im}) {y : ℝ} (hy : 0 < y) :
     Continuous (fun x => F (point x y)) := by
   apply continuous_iff_continuousAt.mpr
@@ -114,7 +120,8 @@ theorem periodIntegral_second_hasDerivAt (w : ℝ) {F : ℂ → ℂ}
   filter_upwards [Ioi_mem_nhds hy] with t ht
   exact (periodIntegral_hasDerivAt w (hf.of_le (by simp : (1 : WithTop ℕ∞) ≤ 2)) ht).deriv
 
-private theorem directional_periodic {F : ℂ → ℂ}
+/-- Horizontal differentiation preserves the actual slice periodicity. -/
+theorem directional_periodic {F : ℂ → ℂ}
     (hf : ContDiffOn ℝ 1 F {z : ℂ | 0 < z.im}) {y : ℝ} (hy : 0 < y) (w : ℝ)
     (hp : ∀ x, F (point (x + w) y) = F (point x y)) (x : ℝ) :
     directional 1 F (point (x + w) y) = directional 1 F (point x y) := by
