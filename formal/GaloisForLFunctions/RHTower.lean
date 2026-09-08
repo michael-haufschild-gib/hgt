@@ -16672,3 +16672,4 @@ import GaloisForLFunctions.RHTower.SelbergScatteringPolynomialXiObstruction
 
 import GaloisForLFunctions.RHTower.GomesKRealTensorObstruction
 import GaloisForLFunctions.RHTower.SelbergScatteringEntireTransform
+import GaloisForLFunctions.RHTower.GomesRankOneConnectionCharges

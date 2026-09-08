@@ -239,11 +239,33 @@ every Xi target, for every independently chosen Xi source, without supplied
 admission, projection-value, boundary, or RH premises.
 
 The integral and local eigenvalue identity do not yet identify the global
-physical advanced/adjoint left resonance. The next source-value target is
-the actual cutoff period: use the complete tail's proved zero Fourier mean,
-the actual cusp-strip measure, and integration by parts through the entire
-cutoff transition. All cutoff terms and boundary fluxes must remain in this
-evaluation; no period is assigned a sign or value.
+physical advanced/adjoint left resonance. The actual cutoff values are
+constructed below; the native square-residual period remains unevaluated.
+
+### Closed actual cutoff value and physical calibration
+
+[Actual cutoff-period value](../3-formalized/hb-cutoff-period-boundary-value.md)
+contains seven new audited leaves and 24 public theorems, with two existing
+callers updated to use the extracted integration and Laplacian helpers.
+The complete tail's zero Fourier mean and actual hyperbolic measure reduce
+the literal cutoff pairing to two finite height moments. Integrating its
+original Wronskian gives each moment as its exact endpoint flux plus an
+explicit eigenvalue-mismatch bulk integral. Substitution evaluates all
+three cutoff terms in the complete continued source without discarding
+those bulk contributions.
+
+On either testing Weyl root `k`, the actual cutoff pairing is `(2k-1)`
+times the opposite original coefficient. At every Xi target `q`, the
+physical angular parameter is `(q-1)/2`. Lean proves
+`K((q-1)/2,q/2)=(q-1)*Lambda(q-1)!=0` and
+`K((q-1)/2,1-q/2)=0`. The full original testing field also obeys modular
+inversion at this parameter. Nonvanishing follows from reflection to
+`2-q`, in the proved zero-free half-plane.
+
+The complete source's native square-residual period and its remaining
+cutoff bulk moments must now be evaluated together with the original
+radial endpoint pairing. This exact calibration does not identify a
+physical left resonance or determine the complete source's residue.
 
 ### Wider horizon search
 

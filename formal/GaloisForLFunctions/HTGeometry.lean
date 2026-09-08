@@ -14333,3 +14333,6 @@ import GaloisForLFunctions.HTGeometry.GomesTensorConjugation
 import GaloisForLFunctions.HTGeometry.GomesWeylAlgebraicObstruction
 
 import GaloisForLFunctions.HTGeometry.RadialPolynomialCorrection
+import GaloisForLFunctions.HTGeometry.GomesSpinFourOuterSymmetry
+import GaloisForLFunctions.HTGeometry.GomesHiggsOrbitClassification
+import GaloisForLFunctions.HTGeometry.GomesWeakInvariantTensors
