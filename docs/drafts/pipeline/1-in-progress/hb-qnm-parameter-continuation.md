@@ -131,23 +131,47 @@ indicated: the live obstacle is the actual outgoing operator domain and its
 source-dependent continuation and physical pairing. Frontier map remains
 read-only.
 
-### Outgoing horizon-domain construction in progress
+### Closed original horizon-domain criterion
 
-The original compact radial coordinate is `b=sech(t)^2`, with horizon `b=0`.
-For a full angular-dependent field, remove the literal original phase by
-`U=b^(w/2)V`. The full wave expression should become `-b^(w/2+1) P_w V`, where
+[Original horizon domain and full compactified wave](../3-formalized/hb-original-horizon-domain.md)
+contains four audited leaves and 13 public theorems. With the original compact
+coordinate `b=sech(t)^2` and literal phase `U=b^(w/2)V`, the entire original wave
+is exactly `-b^(w/2)*b*P_w V`, where
 
 ```text
 P_w V = 4b(1-b) V_bb + [4(w+1)-(4w+6)b] V_b
         + Delta_H V - w(w+1)V.
 ```
 
-This keeps the entire original modular angular operator. A fixed C² extension
-of V at the horizon admits the original Gauss branch. The opposite homogeneous
-branch has stripped form `b^(-w) H_(-w)(b)` with `H_(-w)(0)=1`; for nonreal
-`w` with `Re w>-2`, its second derivative prevents such an extension. The
-planned exact two-branch classification is a boundary-domain selection, not
-existence of the full forced joint inverse. Its proof and the displayed
-full-field conjugation are in progress. The joint existence, modular cusp
-condition, and agreement with the original causal transform still require
-proof after this radial domain is fixed.
+This retains actual radial derivatives and the full modular angular
+Laplacian. Its exact horizon trace is
+`4(w+1)V_b(0)+Delta_H V(0)-w(w+1)V(0)`. A genuine C² extension of V at the
+horizon admits the original Gauss branch. For nonreal `w` with `Re w>-2`,
+the opposite branch has stripped form `b^(-w) F_(-w)(b)`, with `F_(-w)(0)=1`,
+and cannot admit such an extension. The exact two-branch classification and
+original radial equation hold at both fundamental QNMs of every Xi copy.
+
+This classifies the displayed two-branch family; a representation theorem
+for all homogeneous solutions is not yet supplied. The next construction is
+the actual horizon Wronskian and source-dependent boundary pairing, followed
+by the full forced joint inverse. The joint domain, modular cusp and outer
+endpoint conditions, and agreement with the original causal transform remain
+unproved.
+
+### Active boundary-pairing proof
+
+For the actual original radial operator, use the integrating factor
+`p(b)=b sqrt(1-b)` and bracket `p(U V'-U' V)`. Differentiation should give
+`p/(b(1-b)) * (U L_w V-V L_w U)`, with actual spatial jets. For the two
+horizon branches, the Gauss values at zero and cancellation of their opposite
+powers fix the constant bracket as `-w`. Nonzero determinant then gives the
+full homogeneous representation, so the C² criterion applies to every actual
+homogeneous solution. For a forced solution the same identity supplies its
+source-dependent phase through an actual interval integral. This construction
+is in progress; global joint outgoing inversion is still the hard target.
+
+The physical all-Xi specialization must use angular momentum `z/2+i/4`,
+the parameter in the original QNM formula. The earlier horizon-domain
+capstone used `z` in its radial factor instead; its general branch conclusion
+remains true, but that physical specialization is being corrected and audited.
+The new normalizable-domain criterion uses the matching angular parameter.

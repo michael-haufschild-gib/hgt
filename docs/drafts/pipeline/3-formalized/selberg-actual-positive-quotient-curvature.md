@@ -14,7 +14,7 @@ Establish consistent positive descent while retaining every seam contribution an
 
 - [x] 0 → 1: actual source and precise compact orbit-test space.
 - [x] 1 → 2: dependency-closed paper proof below, [PROVED HERE].
-- [ ] 2 → 3: all complete scratch proofs passed; final source/build/axiom/lint audits pending.
+- [x] 2 → 3: all complete scratch/source proofs, serialized final module builds, and all 40 declaration axiom checks passed. Repository lint has two unrelated wiring errors, recorded below.
 - [ ] 3 → 4: independent novelty/publication audit.
 
 ## Complete paper proof [PROVED HERE]
@@ -70,4 +70,9 @@ For the next total-mass conjecture, inspected GoldstoneFabriPicassoCorpusApplica
 - formal/GaloisForLFunctions/RHTower/SelbergCompactPeriodization.lean: 17 public declarations.
 - formal/GaloisForLFunctions/RHTower/SelbergMaassCurvatureDescent.lean: 8 public declarations.
 - formal/GaloisForLFunctions/RHTower/SelbergQuotientCurvature.lean: 15 public declarations including the actual orbit-test submodule alias.
-- All three complete scratch proofs passed without warnings; finished modules are wired into RHTower.lean. Final audit pending below.
+- All three complete scratch proofs and needed source olean checks passed without warnings; finished modules are wired into RHTower.lean.
+- Serialized final single-module builds passed: CompactPeriodization 37s, CurvatureDescent 15s, QuotientCurvature 18s. Each rebuilt only its target; the existing EvenL2LogUnitary informational replay is unchanged. Logs: /tmp/selberg_compact_periodization36_build.log, /tmp/selberg_curvature_descent36_build.log, /tmp/selberg_quotient_curvature36_build.log.
+- All 40 public declarations, including the orbit-test submodule alias, passed /tmp/selberg_quotient_curvature36_axioms.lean. Every report lists only propext, Classical.choice, and Quot.sound. No added axiom or admission.
+- Refreshed corpus audit contains all 40 expected declarations, with no missing entry: /tmp/selberg_quotient_curvature36_corpus_audit.json. Source/card/umbrella whitespace checks passed.
+- Repository formal lint failed only on unrelated, unwired HTGeometry.HawkingMassLossClock and HTGeometry.InformationSurfacePacking. No new Selberg module is named: /tmp/selberg_quotient_curvature36_lint.log. Those concurrent files were not edited.
+- All task-owned Lean/build handles are terminal. Final inspection observed another task's hb-outgoing-domain axiom check, left untouched. No task commit or push. Selberg's quarter comparison remains unproved.

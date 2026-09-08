@@ -1,0 +1,29 @@
+{
+  "M": 3,
+  "primes": [
+    2
+  ],
+  "subsets": 2,
+  "feasible": true,
+  "Q0": 0.006583222737048969,
+  "D0": 0.0024092418475578584,
+  "tolerance": 1e-10,
+  "kernel_check_max_error": 2.710505431213761e-19,
+  "Q_rejected": 0,
+  "reachable": 2,
+  "Q_safe_unreachable": 0,
+  "final_cost": 0.0024092418475578584,
+  "steps": [
+    {
+      "P": 0,
+      "prime": 2,
+      "W": 0.0024092418475578584,
+      "J": 0.0,
+      "Q": 0.00024094256983189614,
+      "D": 0.0,
+      "cumulative_W": 0.0024092418475578584,
+      "cumulative_J": 0.0
+    }
+  ],
+  "seconds": 0.0005828961730003357
+}

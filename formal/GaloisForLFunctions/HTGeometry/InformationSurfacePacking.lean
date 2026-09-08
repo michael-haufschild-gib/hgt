@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GaussBonnetThermodynamicPrescriptions
+import GaloisForLFunctions.HTGeometry.SchwarzschildInformationScaling
 
 /-!
 # Exact information-surface packing constraints
@@ -99,5 +100,17 @@ theorem informationGrain_calibrated_area (l m : ℝ) :
     informationSurfaceArea (l - log 2) l
       (log (horizonRequiredPacking (l - log 2) l m)) m = 4 * egbEntropyB (2 * exp m) := by
   rw [informationSurfaceArea_horizon_iff, exp_log (horizonRequiredPacking_pos _ _ _)]
+
+/-- The calibrated grain expression equals the quantity extracted from the actual metric. -/
+theorem informationGrain_actual_metric (l m t polar : ℝ) :
+    exp l * informationGrainCount (l - log 2) m / exp t ^ 3 =
+      schwarzschildInformationCurvature (exp m) (exp t) polar := by
+  rw [informationGrain_half_mass, schwarzschildInformationCurvature_eq]
+
+/-- The actual metric forces precisely the same grain-mass calibration. -/
+theorem informationGrain_actual_metric_iff (g l m t polar : ℝ) :
+    exp l * informationGrainCount g m / exp t ^ 3 =
+      schwarzschildInformationCurvature (exp m) (exp t) polar ↔ exp g = exp l / 2 := by
+  rw [schwarzschildInformationCurvature_eq, informationGrain_curvature_calibration]
 
 end GaloisForLFunctions.HTGeometry

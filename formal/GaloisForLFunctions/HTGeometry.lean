@@ -1,3 +1,7 @@
+import GaloisForLFunctions.HTGeometry.FokasLenellsInverseFrequency
+import GaloisForLFunctions.HTGeometry.FokasLenellsScatteringLipschitz
+import GaloisForLFunctions.HTGeometry.FokasLenellsEndpointLipschitz
+import GaloisForLFunctions.HTGeometry.FokasLenellsSpectralComparison
 import GaloisForLFunctions.HTGeometry.FokasLenellsJumpContinuity
 import GaloisForLFunctions.HTGeometry.FokasLenellsZeroScattering
 import GaloisForLFunctions.HTGeometry.FokasLenellsZeroEnergy
@@ -14268,3 +14272,17 @@ import GaloisForLFunctions.HTGeometry.L2CauchyHolomorphy
 import GaloisForLFunctions.HTGeometry.L2FamilyCongruence
 import GaloisForLFunctions.HTGeometry.L2RestrictedHolomorphy
 import GaloisForLFunctions.HTGeometry.L2MeromorphicAlgebra
+
+import GaloisForLFunctions.HTGeometry.ComplexPowerC2Boundary
+
+import GaloisForLFunctions.HTGeometry.SchwarzschildInformationScaling
+
+import GaloisForLFunctions.HTGeometry.EinastoInformationCurvature
+
+import GaloisForLFunctions.HTGeometry.InformationSurfacePacking
+
+import GaloisForLFunctions.HTGeometry.HawkingMassLossClock
+
+import GaloisForLFunctions.HTGeometry.EinastoHorizonExistence
+
+import GaloisForLFunctions.HTGeometry.EinastoHorizonBalance
