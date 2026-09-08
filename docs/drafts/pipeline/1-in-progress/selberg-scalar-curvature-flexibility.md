@@ -19,7 +19,16 @@ For t>0, try the literal function a=E^(-t). The chain rule predicts
 
 y²*Delta(a)+lambda*a = t*(t+1)*E^(-t-2)*y²*|grad E|² + (lambda-2t)*a.
 
-Thus t=lambda/4 would make curvature strictly positive for any lambda>0. E>=y² would give cusp decay of a. Modular continuity and the standard finite-volume cell would then give finite amplitude mass; the complete Stokes limit must still be justified before claiming the same total-curvature budget as the actual Maass source. This is a candidate countermodel to the scalar shortcut, not to Selberg. Positivity, exact chain-rule transport, source regularity, and tail integration all remain to be proved for the literal series.
+Thus t=lambda/4 makes curvature strictly positive for any lambda>0. E>=y² gives cusp decay of a. The first four modules below now prove these claims for the literal series. The complete Stokes limit must still be checked before claiming the same total-curvature budget as the actual Maass source. This is a candidate countermodel to the scalar shortcut, not to Selberg. The models have power-law cusp decay; stronger exponential or vector-valued Maass constraints are not supplied.
+
+## Source-derived proof progress
+
+1. `SelbergPositiveEisenstein`: two actual primitive identity rows prove E>=y²>0. Real projections of the original differentiated series give the original eigen-equation.
+2. `SelbergEisensteinPlane`: the corpus's global Fourier uniqueness identifies the same original series with the smooth full Fourier–Bessel sum. This establishes actual Frechet derivatives and y²*Delta(E)=2E, rather than relying only on named formal jets.
+3. `SelbergPowerCurvature`: complete real-power chain rule, exact positive curvature decomposition for a=E^(-lambda/4), positive model values, original S/T invariance, and uniform power-law cusp decay.
+4. `SelbergEisensteinBounds`: actual derivative summands give |E_x|<=4E/y and |E_y|<=6E/y, hence y²|grad E|²<=52E². Curvature is bounded by [52(lambda/4)(lambda/4+1)+lambda/2]a. The actual vertical model derivative is bounded by (3lambda/2)y^(-lambda/2-1).
+
+Each of these four completed scratch proofs and needed source oleans has passed. The boundary scratch extends S/T to the full modular group and differentiates the actual invariance; its geometric simplifications are being checked. The mass scratch uses the corpus's proved finite full-domain hyperbolic area, followed by literal Stokes and exhaustion. It has not yet been checked.
 
 ## Positive survivor required before closure
 
@@ -27,4 +36,4 @@ If the candidate succeeds, formalize the exact power-transform identity and actu
 
 ## Audit
 
-No new Lean module or build yet. The explicit --any Eisenstein/power-Laplacian/positive-supersolution/reciprocal-curvature/ground-state-transform search reached 1736 declarations in 106 modules. Inspected actual Eisenstein convergence, derivative/eigen-equation, and generator-invariance sources; positivity and the power transform remain under investigation.
+Final single-module audits, umbrella wiring, axiom checks, refreshed index, and lint remain pending. The explicit --any Eisenstein/power-Laplacian/positive-supersolution/reciprocal-curvature/ground-state-transform search reached 1736 declarations in 106 modules. A broad continuous-partial/negative-power search reached 166 declarations in 108 modules and exposed the actual joint-smoothness bridge. An additional OR search for modular potentials, full domains, power integrals, and positive measures reached 271 declarations in 125 modules; inspected the existing literal full-domain area and source exhaustion proofs. These are discovery counts, not claims that every hit's proof was read.

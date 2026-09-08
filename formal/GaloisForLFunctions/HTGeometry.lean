@@ -14304,3 +14304,5 @@ import GaloisForLFunctions.HTGeometry.ChargedStepScattering
 import GaloisForLFunctions.HTGeometry.ThermalStepAmplification
 
 import GaloisForLFunctions.HTGeometry.ThermalAmplificationFluctuations
+
+import GaloisForLFunctions.HTGeometry.GaussBonnetCoexistence
