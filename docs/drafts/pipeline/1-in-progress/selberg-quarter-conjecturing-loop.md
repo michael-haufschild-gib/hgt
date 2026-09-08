@@ -28,7 +28,8 @@
 - [x] Cycle 19: derive every actual Maass modal equation, uniform coefficient decay at infinity, and the fixed-height inverse-square frequency bound.
 - [x] Cycle 20: construct the actual Maass Fourier trace in the sequence-space boundary-form domain, using the proved frequency bound.
 - [x] Cycle 21: identify physical slice mass, both derivative energies, and quarter-energy by exact Parseval identities.
-- [ ] Cycle 22: derive actual boundary-flux and mass-derivative identities, then test whether the first nonzero frequency forces quantitative cusp decay and finite tail energy.
+- [x] Cycle 22: prove actual mass/flux derivatives, exponential cusp mass decay, vanishing terminal flux, and finite physical tail energy at every positive height.
+- [ ] Cycle 23: extend the critical Bessel square decomposition to actual complex noncompact Maass modes, then justify its mode sum against the physical tail energy.
 - [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
@@ -391,17 +392,25 @@ The actual trace-domain proof leaves a concrete analytic identification to estab
 
 **Outcome:** `SelbergMaassParseval` proves the literal interval coefficient identification with the exact period normalization. The three physical Parseval identities are proved as `HasSum` statements, and adding/subtracting them proves the actual quarter-energy identity, including both derivative terms and the hyperbolic mass weight. The module is wired; scratch, direct source, targeted final build, axiom, index, lint, and whitespace audits passed. This closes the fixed-height physical mass and energy identification, not an interchange with an infinite height integral. [Exact proof](../3-formalized/selberg-maass-quarter-parseval.md).
 
-### Cycle 22 — next flux and quantitative cusp-decay loop
+### Cycle 22 — actual mass/flux and quantitative cusp decay: proved
 
-**Inspected cross-corpus ideas:** `HTGeometry.WaveEnergyFlux` differentiates source energy and uses the equation plus Green integration by parts to expose an exact flux identity. `HTGeometry.PeriodicCuspBoundaryGap` turns a first allowed Fourier frequency into quantitative cusp decay for holomorphic functions. Its holomorphic hypothesis does not apply to the current Maass data, so test a differential version using the just-proved physical Parseval identities.
+The corpus-derived differential replacement for holomorphic frequency-gap decay survived proof. `SelbergMaassBoundaryFlux` derives literal source Hermitian pairing and horizontal Green identities, then `M'=2J`, `J'=G-lambda*M/y²`, the physical quarter-slice identity, `M->0`, and `G>=k²*M` for actual positive sub-quarter eigenforms.
 
-Define normalized actual slice mass `M(y)=(1/w)*integral |f(x+iy)|^2 dx`, flux `J(y)=(1/w)*Re integral (partial_y f)*conj(f) dx`, and derivative energy `G(y)=(1/w)*integral (|partial_x f|^2+|partial_y f|^2) dx`.
+`SelbergMaassCuspDecay` proves `M''>=k²*M` above `A=1/k`, then derives `M(y)<=M(A)*exp(-k*(y-A))` by secants and an integrating factor. Backward unit secants force `M'->0`, so actual terminal flux vanishes. The flux derivative is integrable above the cutoff.
 
-**First new target:** derive `M'=2J` and `J'=G-lambda*M/y^2` from the actual C² chart, differentiation under the finite integral, and horizontal integration by parts with the already-proved periodic derivative. This gives the exact physical relation `quarterSlice/w=J'+(lambda-1/4)*M/y^2`. No boundary value is to be discarded.
+`SelbergMaassTailEnergy` proves physical mass, hyperbolic mass, flux derivative, gradient energy, and quarter-energy integrable above **every** positive height. Its exact capstone is
 
-**Candidate consequence to test after that identity:** for an exceptional form the already-proved zero constant coefficient and horizontal Parseval give `G>=k_1^2*M`, where `k_1=2*pi/w`. Beyond `Y=1/k_1`, the restriction `0<lambda<1/4` would imply `M''>=k_1^2*M`. Cusp decay already suggests `M->0`. Nonnegative convexity on this ray should force `M'<=0`; applying the integrating factor to `M'+k_1*M` then rules out any positive value, because it would grow while `M'+k_1*M<=k_1*M->0`. Therefore the candidate quantitative bound is `M(y)<=M(Y)*exp(-k_1*(y-Y))`.
+`(1/w)*integral_Y^infinity quarterSlice = -J(Y)+(lambda-1/4)*integral_Y^infinity M/y²`.
 
-This is a proposed proof chain, not a used theorem. If proved, it would supply actual cusp mass integrability. The same convexity should force `J->0`, so the exact flux identity could then prove finite tail derivative energy. The quotient-core estimate and the all-congruence Selberg conclusion remain separate, unproved obligations.
+No infinite-height Fourier interchange, terminal-flux assumption, or modal ansatz was used. Complete scratch and direct source checks passed for all three modules. Targeted final audits are in progress. [Exact result and dependency-closed paper proof](../3-formalized/selberg-maass-mass-flux-tail.md).
+
+### Cycle 23 — next actual Bessel remainder and mode-sum loop
+
+**Inspected interface mismatch:** `SelbergBesselBoundaryEnergy.critical_boundary_identity` and `.exact_boundary_lower_bound` apply to `Profile`, a compact real C¹ profile. Actual Maass coefficients are complex and noncompact. Their source derivatives, physical modal energies, exponential mass bound, and complete tail integrability are now available, so the compact-profile theorem must be extended rather than supplied a fabricated instance.
+
+**Candidate:** for each actual nonzero Maass mode at any lower height, derive a finite-interval critical Bessel square decomposition for its real and imaginary parts. Prove the upper Bessel boundary term tends to zero using the actual mode bound from slice mass and the already-proved Bessel slope envelope. Its nonnegative remainder should then be integrable. Sum these identities using the actual horizontal/vertical Parseval series and the newly established physical tail integrability. This should compare the actual infinite quarter-energy tail to the actual Bessel boundary form, with the nonnegative remainder explicit.
+
+This is a next conjecturing target, not a proved or assumed theorem. Even if it survives, the compact quotient-core form must still be controlled. The global all-congruence Selberg quarter bound remains unproved.
 
 ## Verification log
 

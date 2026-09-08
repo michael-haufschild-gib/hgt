@@ -59,3 +59,21 @@ successor extension. Extract the precise surviving source comparison
 before retiring it. A pass selects the signed overlap comparison for
 proof; it is not a proof of the comparison.
 
+## Current result and positive survivor
+
+The [completed RunPod diagnostic](../2-fully-proven/computations/ccm-fu-dissipative-envelope-extension-2026-09-08/README.md)
+finds one failure: M=25, P={2,7,11,13,17,19,23}, with only 3 and 5
+remaining. Both choices strictly increase V while strictly decreasing
+the complete successor envelope. The independent 80-digit source audit
+confirms both signs. The state is reachable under the proposed joint
+condition; specially chosen complete joint paths still exist at every
+stored cutoff through 32.
+
+The positive survivor is payment by the actual head square: the head is
+negative and the other three fibres positive, so both full-energy paths
+contract despite unavoidable transverse growth. A general sharp boundary
+also survives: for any two remaining coordinates, one next nonempty
+energy is at most 3/2 of current nonempty energy; coordinates (1,1,2)
+attain that factor. The analytic source bounds at cutoff 25 have passed
+scratch Lean and exact leaf emission. The literal arithmetic trap and
+the sharp general boundary are being formalized before route retirement.

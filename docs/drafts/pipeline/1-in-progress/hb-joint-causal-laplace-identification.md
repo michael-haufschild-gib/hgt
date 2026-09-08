@@ -39,35 +39,45 @@ with its original amplitude, physical onset transform and native angular
 remainder retained. Absolute Fubini against every radial L² test supplies the
 joint integral/completion interchange for this channel.
 
-Required further work is application to the complete vector-valued smooth-onset
-source. Construct the three cutoff-principal Green responses in the same
-causal time family, retain their commutators, and prove the full joint Bochner
-transform and convolution interchange. The native square-remainder channel is
-closed; the three cutoff-principal channels remain open. The enlarged source
-transform chamber does not continue the response inverse there. A
-frequency-dependent residual cannot be silently treated as a fixed spatial F.
-Classical/weak time equations, metric finite propagation, modular patching,
-radial endpoint traces and constrained Einstein sectors still need their
-physical identifications. Continue the resulting actual-source response to
+The [principal causal evolution and cutoff-source transform](../3-formalized/hb-principal-causal-evolution-and-cutoff-source.md)
+constructs all three principal time families from their actual amplitudes,
+native delayed forcing and complex potentials. The physical sine operator is
+`sin(2*pi*tau*<D>)/(2*pi*<D>)`; multiplication by
+`(2*pi)^2+k*(k-1)*sech(t)^2` supplies the bounded perturbation. The construction
+retains the original Fourier normalization and the exact odd extension of the
+negative-ray source. Each response is continuous, causal, unique among
+continuous integral solutions, C¹ in time, and has zero Cauchy data. It gains
+an exact spatial inverse-frequency factor and has a norm-convergent Bochner
+transform in a common nonempty right half-plane.
+
+All three original cutoff commutators, horizon factors and angular completion
+maps are retained. Their sum with the native square remainder is one admitted,
+continuous causal spatial source. Its Bochner transform is proved equal to the
+native transform plus all three constructed cutoff-response transforms.
+
+The immediate hard obligation is equality of the constructed principal
+Laplace transform with `principalDifference` at the original onset transform.
+The original second-order radial equation and endpoint trace must be proved
+first. Oddness of an L² class alone supplies no pointwise trace. Until this
+identification is closed, the assembled transform is not identified with
+`cuspResidualVector`.
+
+The specific next construction is the native source's continuous time
+derivative in the original L² space. Then the effective forcing
+`G=F+W*U` is C¹, and integration by parts with the bounded
+`A^(-2)cos(A*tau)`, `A=2*pi*<D>`, targets
+`U=A^(-2)[G(tau)-cos(A*tau)G(0)-integral_0^tau cos(A*(tau-sigma))G'(sigma)]`.
+This two-inverse-frequency upgrade and the resulting second-order equation
+are not yet Lean theorems.
+
+Convolution of the complete source with the original joint causal response,
+metric finite propagation, modular patching and constrained Einstein sectors
+still need their physical identifications. Continue the resulting response to
 the physical left-QNM pairing and evaluate the retained spin-two/AIME source.
-Independent Hawking-clock extinction remains open; causal linear existence
-for every F supplies no Xi-zero selection by itself.
+Independent Hawking-clock extinction remains open. The Volterra estimate
+allows exponential growth; it supplies no Xi-zero selection. The enlarged
+native source chamber `Re(w)>-2` does not continue the response inverse there.
 
 No numerical experiment is indicated; the construction uses analytic estimates
-and the existing Fourier/Paley–Wiener corpus.
-
-Current joint-transform target: construct the three cutoff-principal responses
-as one causal time family and retain their angular commutators, then apply the
-original causal response to the complete source with justified convolution.
-The final left-QNM pairing and independent extinction argument remain open.
-
-The current construction uses the corpus's strongly continuous Volterra
-evolution for the three actual complex radial potentials. Its whole-line
-realization must retain odd reflection to recover the original Dirichlet
-half-line and must restore the Fourier convention's `2*pi` factor. The
-retarded sine operator is `sin(2*pi*tau*<D>)/(2*pi*<D>)`; the bounded
-perturbation is multiplication by `(2*pi)^2+k*(k-1)*sech(t)^2` for each literal
-principal exponent k. The fixed onset source supplies the forcing. Required
-identifications are its original radial equation, endpoint trace, and equality
-of its convergent Laplace transform with the existing endpoint Green response.
-Those identities cannot be inferred from abstract Volterra existence alone.
+and the existing Fourier, Klein–Gordon and Volterra corpus. The frontier map
+remains read-only.

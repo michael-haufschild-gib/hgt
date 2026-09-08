@@ -100,6 +100,9 @@ private def logLower : ℕ → ℝ
   | 19 => 2.944438
   | 20 => 2*0.693147180+1.609437912
   | 21 => 1.098612288+1.945909
+  | 22 => 0.693147180+2.397894
+  | 23 => 3.135493
+  | 24 => 3*0.693147180+1.098612288
   | _ => 0
 private def logUpper : ℕ → ℝ
   | 1 => 0
@@ -123,6 +126,9 @@ private def logUpper : ℕ → ℝ
   | 19 => 2.944440
   | 20 => 2*0.693147182+1.609437914
   | 21 => 1.098612290+1.945911
+  | 22 => 0.693147182+2.397896
+  | 23 => 3.135495
+  | 24 => 3*0.693147182+1.098612290
   | _ => 0
 set_option maxHeartbeats 800000 in
 private lemma log_box {n : ℕ} (hn : n∈Icc 1 21) :
@@ -173,6 +179,9 @@ private def rootLower : ℕ → ℝ
   | 20 => 4.47213
   | 21 => 4.58257
   | 22 => 4.69041
+  | 23 => 4.7958
+  | 24 => 4.8989
+  | 25 => 5
   | _ => 0
 private def rootUpper : ℕ → ℝ
   | 1 => 1
@@ -197,6 +206,9 @@ private def rootUpper : ℕ → ℝ
   | 20 => 4.47214
   | 21 => 4.58258
   | 22 => 4.69042
+  | 23 => 4.7959
+  | 24 => 4.8990
+  | 25 => 5
   | _ => 0
 private lemma root_box {n : ℕ} (hn : n∈Icc 1 22) :
     rootLower n ≤ Real.sqrt n ∧ Real.sqrt n ≤ rootUpper n := by
@@ -531,4 +543,156 @@ theorem divisorUnsignedDilationChannel_fifteen_debt_profile_boxes :
   norm_num [termLower,termUpper,weightLower,weightUpper,defectLower,defectUpper,
     logLower,logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top] at h1 h2 h3 h5 h6 h7 h10 h11 h13 h14
   constructor <;> constructor <;> linarith only [h1.1,h1.2,h2.1,h2.2,h3.1,h3.2,h5.1,h5.2,h6.1,h6.2,h7.1,h7.2,h10.1,h10.2,h11.1,h11.2,h13.1,h13.2,h14.1,h14.2]
+end RHTower
+
+namespace RHTower
+private lemma log_twentyThree_box : (3.135493:ℝ) ≤ Real.log 23 ∧ Real.log 23 ≤ 3.135495 := by
+  have h := ratio_box (x:=(1/47:ℝ)) (by norm_num) (by norm_num)
+  norm_num at h
+  have he : Real.log (24:ℝ)=3*Real.log 2+Real.log 3 := by
+    rw [show (24:ℝ)=8*3 by norm_num,Real.log_mul (by norm_num) (by norm_num),
+      show Real.log (8:ℝ)=3*Real.log 2 by rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num]
+  rw [Real.log_div (by norm_num) (by norm_num),he] at h
+  constructor <;> linarith [Real.log_two_gt_d9,Real.log_two_lt_d9,Real.log_three_gt_d9,Real.log_three_lt_d9]
+
+private lemma log_box_twentyFour {n : ℕ} (hn : n∈Icc 1 24) :
+    logLower n ≤ Real.log n ∧ Real.log n ≤ logUpper n := by
+  by_cases h21 : n ≤ 21
+  · exact log_box (mem_Icc.mpr ⟨(mem_Icc.mp hn).1,h21⟩)
+  have he22 : Real.log (22:ℝ)=Real.log 2+Real.log 11 := by
+    rw [show (22:ℝ)=2*11 by norm_num,Real.log_mul (by norm_num) (by norm_num)]
+  have he24 : Real.log (24:ℝ)=3*Real.log 2+Real.log 3 := by
+    rw [show (24:ℝ)=8*3 by norm_num,Real.log_mul (by norm_num) (by norm_num),
+      show Real.log (8:ℝ)=3*Real.log 2 by rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num]
+  have h11 := prime_log_boxes.2.1
+  have h23 := log_twentyThree_box
+  have hlo : 22 ≤ n := by omega
+  have hhi := (mem_Icc.mp hn).2
+  interval_cases n
+  all_goals norm_num only [logLower,logUpper,Nat.cast_ofNat,he22,he24]
+  all_goals constructor <;> linarith [Real.log_two_gt_d9,Real.log_two_lt_d9,Real.log_three_gt_d9,Real.log_three_lt_d9]
+
+private lemma root_box_twentyFive {n : ℕ} (hn : n∈Icc 1 25) :
+    rootLower n ≤ Real.sqrt n ∧ Real.sqrt n ≤ rootUpper n := by
+  by_cases h22 : n ≤ 22
+  · exact root_box (mem_Icc.mpr ⟨(mem_Icc.mp hn).1,h22⟩)
+  have hs := Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) n)
+  have hp := Real.sqrt_nonneg (n:ℝ)
+  have hlo : 23 ≤ n := by omega
+  have hhi := (mem_Icc.mp hn).2
+  interval_cases n
+  all_goals norm_num only [Nat.cast_ofNat] at hs hp ⊢
+  all_goals norm_num [rootLower,rootUpper]
+  all_goals constructor <;> nlinarith only [hs,hp]
+
+private lemma defect_box_twentyFour {n : ℕ} (hn : n ≤ 24) :
+    defectLower n ≤ primeFreeDivisorDefect n ∧ primeFreeDivisorDefect n ≤ defectUpper n := by
+  have hl := sum_le_sum (fun k (hk : k∈Icc 1 n) =>
+    (log_box_twentyFour (mem_Icc.mpr ⟨(mem_Icc.mp hk).1,(mem_Icc.mp hk).2.trans hn⟩)).1)
+  have hu := sum_le_sum (fun k (hk : k∈Icc 1 n) =>
+    (log_box_twentyFour (mem_Icc.mpr ⟨(mem_Icc.mp hk).1,(mem_Icc.mp hk).2.trans hn⟩)).2)
+  have gl := mul_le_mul_of_nonneg_right gamma_box.1 (Nat.cast_nonneg (α:=ℝ) n)
+  have gu := mul_le_mul_of_nonneg_right gamma_box.2 (Nat.cast_nonneg (α:=ℝ) n)
+  dsimp [defectLower,defectUpper,primeFreeDivisorDefect]
+  constructor <;> linarith only [hl,hu,gl,gu]
+
+private lemma term_box_twentyFour {k n : ℕ} (hk : k∈Icc 1 24) (hn : n ≤ 24) :
+    termLower k n ≤ (Real.sqrt (k+1:ℕ)-Real.sqrt k)*primeFreeDivisorDefect n ∧
+      (Real.sqrt (k+1:ℕ)-Real.sqrt k)*primeFreeDivisorDefect n ≤ termUpper k n := by
+  have hk0 := (mem_Icc.mp hk).1
+  have hk1 := (mem_Icc.mp hk).2
+  have a := root_box_twentyFive (n:=k) (mem_Icc.mpr ⟨hk0,by omega⟩)
+  have b := root_box_twentyFive (n:=k+1) (mem_Icc.mpr ⟨by omega,by omega⟩)
+  apply product_box (sub_nonneg.mpr (Real.sqrt_le_sqrt (by exact_mod_cast Nat.le_succ k)))
+    (And.intro (by dsimp [weightLower]; linarith only [a.2,b.1])
+      (by dsimp [weightUpper]; linarith only [a.1,b.2])) (defect_box_twentyFour hn)
+
+private def twentyFiveLower (d : ℕ) : ℝ := ∑ k∈Icc d 24,termLower k (k/d)
+private def twentyFiveUpper (d : ℕ) : ℝ := ∑ k∈Icc d 24,termUpper k (k/d)
+private lemma twentyFive_channel_box {d : ℕ} (hd : 1 ≤ d) :
+    twentyFiveLower d ≤ divisorUnsignedDilationChannel 25 d ∧
+      divisorUnsignedDilationChannel 25 d ≤ twentyFiveUpper d := by
+  have hlo := sum_le_sum (fun k (hk : k∈Icc d 24) =>
+    (term_box_twentyFour (mem_Icc.mpr ⟨hd.trans (mem_Icc.mp hk).1,(mem_Icc.mp hk).2⟩)
+      ((Nat.div_le_self k d).trans (mem_Icc.mp hk).2)).1)
+  have hhi := sum_le_sum (fun k (hk : k∈Icc d 24) =>
+    (term_box_twentyFour (mem_Icc.mpr ⟨hd.trans (mem_Icc.mp hk).1,(mem_Icc.mp hk).2⟩)
+      ((Nat.div_le_self k d).trans (mem_Icc.mp hk).2)).2)
+  exact ⟨by simpa [twentyFiveLower,divisorUnsignedDilationChannel] using hlo,
+    by simpa [twentyFiveUpper,divisorUnsignedDilationChannel] using hhi⟩
+
+set_option maxHeartbeats 3000000 in
+/-- Analytic four-coordinate source bounds for the actual two-prime nonempty-energy trap at twenty-five. -/
+theorem divisorUnsignedDilationChannel_twentyFive_profile_boxes :
+    (-0.75 ≤ divisorUnsignedDilationChannel 25 1-divisorUnsignedDilationChannel 25 2-
+      divisorUnsignedDilationChannel 25 7-divisorUnsignedDilationChannel 25 11-
+      divisorUnsignedDilationChannel 25 13+divisorUnsignedDilationChannel 25 14-
+      divisorUnsignedDilationChannel 25 17-divisorUnsignedDilationChannel 25 19+
+      divisorUnsignedDilationChannel 25 22-divisorUnsignedDilationChannel 25 23 ∧
+      divisorUnsignedDilationChannel 25 1-divisorUnsignedDilationChannel 25 2-
+      divisorUnsignedDilationChannel 25 7-divisorUnsignedDilationChannel 25 11-
+      divisorUnsignedDilationChannel 25 13+divisorUnsignedDilationChannel 25 14-
+      divisorUnsignedDilationChannel 25 17-divisorUnsignedDilationChannel 25 19+
+      divisorUnsignedDilationChannel 25 22-divisorUnsignedDilationChannel 25 23 ≤ -0.73) ∧
+    (0.007 ≤ -divisorUnsignedDilationChannel 25 3+divisorUnsignedDilationChannel 25 6+
+      divisorUnsignedDilationChannel 25 21 ∧
+      -divisorUnsignedDilationChannel 25 3+divisorUnsignedDilationChannel 25 6+
+      divisorUnsignedDilationChannel 25 21 ≤ 0.010) ∧
+    (0.013 ≤ -divisorUnsignedDilationChannel 25 5+divisorUnsignedDilationChannel 25 10 ∧
+      -divisorUnsignedDilationChannel 25 5+divisorUnsignedDilationChannel 25 10 ≤ 0.015) ∧
+    (0.173 ≤ divisorUnsignedDilationChannel 25 15 ∧ divisorUnsignedDilationChannel 25 15 ≤ 0.175) := by
+  have h1 := twentyFive_channel_box (d:=1) (by omega)
+  have h2 := twentyFive_channel_box (d:=2) (by omega)
+  have h3 := twentyFive_channel_box (d:=3) (by omega)
+  have h5 := twentyFive_channel_box (d:=5) (by omega)
+  have h6 := twentyFive_channel_box (d:=6) (by omega)
+  have h7 := twentyFive_channel_box (d:=7) (by omega)
+  have h10 := twentyFive_channel_box (d:=10) (by omega)
+  have h11 := twentyFive_channel_box (d:=11) (by omega)
+  have h13 := twentyFive_channel_box (d:=13) (by omega)
+  have h14 := twentyFive_channel_box (d:=14) (by omega)
+  have h15 := twentyFive_channel_box (d:=15) (by omega)
+  have h17 := twentyFive_channel_box (d:=17) (by omega)
+  have h19 := twentyFive_channel_box (d:=19) (by omega)
+  have h21 := twentyFive_channel_box (d:=21) (by omega)
+  have h22 := twentyFive_channel_box (d:=22) (by omega)
+  have h23 := twentyFive_channel_box (d:=23) (by omega)
+  norm_num [twentyFiveLower,twentyFiveUpper,Finset.sum_Icc_succ_top]
+    at h1 h2 h3 h5 h6 h7 h10 h11 h13 h14 h15 h17 h19 h21 h22 h23
+  norm_num [termLower,termUpper,weightLower,weightUpper,defectLower,defectUpper,
+    logLower,logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top]
+    at h1 h2 h3 h5 h6 h7 h10 h11 h13 h14 h15 h17 h19 h21 h22 h23
+  constructor
+  · constructor <;> linarith only [h1.1,h1.2,h2.1,h2.2,h7.1,h7.2,h11.1,h11.2,h13.1,h13.2,
+      h14.1,h14.2,h17.1,h17.2,h19.1,h19.2,h22.1,h22.2,h23.1,h23.2]
+  constructor
+  · constructor <;> linarith only [h3.1,h3.2,h6.1,h6.2,h21.1,h21.2]
+  constructor
+  · constructor <;> linarith only [h5.1,h5.2,h10.1,h10.2]
+  · exact ⟨by linarith only [h15.1],by linarith only [h15.2]⟩
+
+set_option maxHeartbeats 3000000 in
+/-- A squarefree source subdiagonal already supplies four fifths of energy at cutoff twenty-five. -/
+theorem sum_divisorUnsignedDilationChannel_twentyFive_sq_lower :
+    (0.8:ℝ) ≤ ∑ d∈({1,2,3,5,6,7,10,11,13,14,15,17,19,21,22,23}:Finset ℕ),
+      (divisorUnsignedDilationChannel 25 d)^2 := by
+  let active : Finset ℕ := {1,2,3,5,6,7,10,11,13,14,15,17,19,21,22,23}
+  have hpos (d : ℕ) (hd : d∈active) : 1 ≤ d := by
+    simp only [active,mem_insert,mem_singleton] at hd
+    rcases hd with rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl <;> omega
+  have hl (d : ℕ) (hd : d∈active) : 0 ≤ twentyFiveLower d := by
+    simp only [active,mem_insert,mem_singleton] at hd
+    rcases hd with rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl
+    all_goals norm_num [twentyFiveLower,Finset.sum_Icc_succ_top]
+    all_goals norm_num [termLower,weightLower,weightUpper,defectLower,
+      logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]
+  have hlo := sum_le_sum (fun d (hd : d∈active) =>
+    mul_le_mul (twentyFive_channel_box (hpos d hd)).1 (twentyFive_channel_box (hpos d hd)).1
+      (hl d hd) ((hl d hd).trans (twentyFive_channel_box (hpos d hd)).1))
+  have hlower : (0.8:ℝ) ≤ ∑ d∈active,(twentyFiveLower d)^2 := by
+    norm_num [active,twentyFiveLower,Finset.sum_Icc_succ_top]
+    norm_num [termLower,weightLower,weightUpper,defectLower,
+      logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]
+  simp only [← pow_two] at hlo
+  exact hlower.trans hlo
 end RHTower
