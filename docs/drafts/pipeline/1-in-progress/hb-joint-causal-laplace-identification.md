@@ -57,10 +57,11 @@ native transform plus all three constructed cutoff-response transforms.
 
 The immediate hard obligation is equality of the constructed principal
 Laplace transform with `principalDifference` at the original onset transform.
-The original weak radial equation and continuous zero trace are proved for
-every actual time slice. The transformed response still needs its original
-radial domain and endpoint conditions. Until this identification is closed,
-the assembled transform is not identified with `cuspResidualVector`.
+The actual transformed response now has its original radial distributional
+equation, spatial Sobolev order-two domain and continuous zero endpoint trace.
+The endpoint Green uniqueness comparison is still required. Until that
+identification is closed, the assembled transform is not identified with
+`cuspResidualVector`.
 
 The [second time derivative and spatial-range theorem](../3-formalized/hb-principal-causal-second-order-wave.md)
 proves that the actual native source is C¹ in the original L² norm. Its
@@ -81,21 +82,38 @@ unique continuous representative. Its proved oddness gives zero pointwise
 trace and zero negative-ray boundary limit. Interior Schwartz tests recover
 the original negative-ray weak equation with the literal delayed source.
 
-The next obligation is to prove the transformed response's original radial
-domain, equation and endpoint conditions. Time-slice continuity alone does
-not justify exchanging the boundary trace with the improper time integral.
-Control the differentiated time boundary terms and then identify the
-negative-ray restriction of `principalTimeLaplace` with `principalDifference`
-at the original onset transform. This Laplace–Green comparison remains open.
+The [transformed equation, domain and endpoint theorem](../3-formalized/hb-principal-laplace-equation-domain-and-trace.md)
+proves `w^2*Uhat-Delta Uhat=Fhat+V Uhat` throughout the original strict
+Laplace half-plane. Each spatial Schwartz pairing has controlled acceleration
+from the literal wave equation. The mean value bound controls its velocity;
+weighted integrability derives the infinity boundary limits. Two integrations
+by parts retain the initial data and then use their proved zero values.
+Bounded probes commute with the actual Bochner integrals, and the original
+source transform keeps `onsetTransform(2*physicalRate,w)` exactly.
 
-The next proof attempt pairs the established wave equation with each Schwartz
-test before taking its scalar Laplace transform. The spatial terms then depend
-only on the existing L² response and source bounds. After controlling both
-time boundary terms, identify the transformed Laplacian as an actual L²
-class. The existing `euclidean_sobolev_gain_two` theorem can then supply
-order-two admission of the transform itself; its existing oddness and the
-new continuous-representative theorem would give the transformed endpoint
-trace directly. This construction remains to be proved.
+The transformed equation identifies `Delta Uhat` as an actual L² class.
+`euclidean_sobolev_gain_two` gives Sobolev order two; the actual transformed
+oddness gives a continuous representative with zero original endpoint trace
+and negative-ray boundary limit. Its negative-ray weak frequency equation
+retains the literal source and spatial L² admission. No boundary limit is
+exchanged with an improper time integral.
+
+The next obligation is endpoint Green uniqueness on a common right half-plane.
+`principalDifference` already has the matching classical radial equation and
+negative-ray L² admission under `PrincipalChamber`. Transport its endpoint
+condition to the same coordinate, derive whatever regularity or horizon data
+the uniqueness argument requires, and prove equality with
+`principalLaplaceProfile` at the physical onset transform. This comparison,
+and thus identification of the complete source transform with
+`cuspResidualVector`, remains open.
+
+The current uniqueness construction first subtracts a double primitive of the
+continuous interior forcing density. Two applications of the corpus's
+local distributional constant-function theorem should classify the remaining
+zero-second-derivative distribution as affine, giving actual classical
+interior jets. Then transport the endpoint Green trace and derive the horizon
+phase condition from the original L² norm before comparing the two solutions.
+These regularity and uniqueness steps remain to be proved.
 
 Convolution of the complete source with the original joint causal response,
 metric finite propagation, modular patching and constrained Einstein sectors

@@ -10,12 +10,14 @@ noncomputable section
 open Finset Filter Topology
 namespace RHTower
 
-private def packet (M p : ℕ) (P : Finset ℕ) : ℝ × ℝ :=
+/-- The two retained child coordinates normalized at the physical square-root scale. -/
+def mobiusDivisorTwoPlanePacket (M p : ℕ) (P : Finset ℕ) : ℝ × ℝ :=
   (Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅/Real.sqrt M,
    Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}/Real.sqrt M)
 
-private lemma packet_bound {M p : ℕ} (P : Finset ℕ) (hM : 2< M)
-    (hp : p.Prime) (hpP : p∉P) (hp2 : p≠2) (hquot : M/p≤ 14) : ‖packet M p P‖≤ 9 := by
+/-- Every available quotient-at-most-fourteen packet has a uniform product-norm bound. -/
+theorem norm_mobiusDivisorTwoPlanePacket_le_nine {M p : ℕ} (P : Finset ℕ) (hM : 2< M)
+    (hp : p.Prime) (hpP : p∉P) (hp2 : p≠2) (hquot : M/p≤ 14) : ‖mobiusDivisorTwoPlanePacket M p P‖≤ 9 := by
   have hr : 0< Real.sqrt (M:ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast (show 0< M by omega))
   have hcoord (R : Finset ℕ) (hR : R⊆(mobiusDivisorSelectionPrimes M).erase p) :
       |Real.sqrt p*mobiusDivisorInterpolatedFibre M p P R/Real.sqrt M|≤ 9 := by
@@ -29,8 +31,8 @@ private lemma packet_bound {M p : ℕ} (P : Finset ℕ) (hM : 2< M)
     nlinarith only [hs,hq,hr]
   rw [Prod.norm_def]
   apply max_le
-  · simpa only [packet,Real.norm_eq_abs] using hcoord ∅ (empty_subset _)
-  · simpa only [packet,Real.norm_eq_abs] using hcoord {2} (singleton_subset_iff.mpr
+  · simpa only [mobiusDivisorTwoPlanePacket,Real.norm_eq_abs] using hcoord ∅ (empty_subset _)
+  · simpa only [mobiusDivisorTwoPlanePacket,Real.norm_eq_abs] using hcoord {2} (singleton_subset_iff.mpr
       (mem_erase.mpr ⟨Ne.symm hp2,mem_filter.mpr ⟨mem_range.mpr hM,Nat.prime_two⟩⟩))
 
 private lemma core_profile {M p : ℕ} (P : Finset ℕ)
@@ -72,7 +74,8 @@ private lemma window_subset_pool (b N K : ℕ) (hK : K∈({2,7,14}:Finset ℕ)) 
   · exact subset_trans subset_union_left subset_union_right
   · exact subset_trans subset_union_right subset_union_right
 
-private lemma pool_data {b N p : ℕ} (hb : 15≤ b) (hN : 1≤ N)
+/-- Every actual reserve-window prime retains its exact quotient and clipping bound. -/
+theorem mobiusDivisorCoupledTwoPool_data {b N p : ℕ} (hb : 15≤ b) (hN : 1≤ N)
     (hp : p∈mobiusDivisorCoupledTwoPool b N) :
     ∃ K∈({2,7,14}:Finset ℕ),p∈mobiusDivisorCoupledTwoWindow b N K ∧
       p.Prime ∧ p<14*(b+1)*N ∧ 15≤ p ∧ (14*(b+1)*N)/p=K ∧
@@ -96,18 +99,20 @@ private lemma packet_scale_lower {M p : ℕ} (hM : 0< M) (hp : 0< p) (hq : M/p�
     nlinarith only [hmR,hsM,hsp,hrM,hrp]
   · exact hmR
 
-private lemma source_window_geometry :
+/-- Actual source windows supply a common inward margin, two positive square reserves,
+and fresh directions after any depletion smaller than their minimum cardinality. -/
+theorem exists_mobiusDivisorTwoPlaneWindowGeometry :
     ∃ b : ℕ,∃ c d : ℝ,15≤ b ∧ 0< c ∧ 0< d ∧
     ∀ N : ℕ,1≤ N → ∀ P : Finset ℕ,mobiusDivisorCoupledTwoCore⊆P → 2∉P →
       (∀ p∈mobiusDivisorCoupledTwoPool b N,p∉P) →
       let M := 14*(b+1)*N
-      (∀ p∈mobiusDivisorCoupledTwoPool b N,‖packet M p P‖≤ 9) ∧
+      (∀ p∈mobiusDivisorCoupledTwoPool b N,‖mobiusDivisorTwoPlanePacket M p P‖≤ 9) ∧
       (∀ p∈mobiusDivisorCoupledTwoPool b N,
         d*(M:ℝ)≤ (p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2) ∧
         d*(M:ℝ)≤ (p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2) ∧
       ∀ q : ℕ,∀ L : Finset ℕ,L.card< mobiusDivisorCoupledTwoCapacity b N-1 → ∀ z : ℝ × ℝ,
         ∃ p∈(mobiusDivisorCoupledTwoPool b N).erase q,p∉L ∧
-          z.1*(packet M p P).1+z.2*(packet M p P).2≤ -c*‖z‖ := by
+          z.1*(mobiusDivisorTwoPlanePacket M p P).1+z.2*(mobiusDivisorTwoPlanePacket M p P).2≤ -c*‖z‖ := by
   obtain ⟨ε₁,c,hε₁,hc,hmargin⟩ := exists_mobiusDivisorCoupledTwo_clip_margin
   obtain ⟨ε₂,d,hε₂,hd,hreserve⟩ := exists_mobiusDivisorCoupledTwo_clip_square_reserve
   let ε := min ε₁ ε₂
@@ -131,15 +136,15 @@ private lemma source_window_geometry :
     exact ⟨hpp,hpM,h15,hq,divisorPrimeClipWeight_nonneg M p hpp.pos,
       (by nlinarith only [hclip,hclipb,hbR])⟩
   have pdata (p : ℕ) (hp : p∈mobiusDivisorCoupledTwoPool b N) : p.Prime ∧ p< M ∧ 15≤ p ∧ M/p≤ 14 := by
-    obtain ⟨K,hK,_,hpr,hpM,h15,hq,_⟩ := pool_data hb hN hp
+    obtain ⟨K,hK,_,hpr,hpM,h15,hq,_⟩ := mobiusDivisorCoupledTwoPool_data hb hN hp
     have hk : K≤ 14 := by simp only [mem_insert,mem_singleton] at hK; rcases hK with rfl|rfl|rfl <;> omega
     exact ⟨hpr,hpM,h15,by change (14*(b+1)*N)/p≤14; omega⟩
   refine ⟨?_,?_,?_⟩
   · intro p hp
     obtain ⟨hpr,_,h15,hq⟩ := pdata p hp
-    exact packet_bound P hM hpr (hfresh p hp) (by omega) hq
+    exact norm_mobiusDivisorTwoPlanePacket_le_nine P hM hpr (hfresh p hp) (by omega) hq
   · intro p hp
-    obtain ⟨K,hK,hpK,_⟩ := pool_data hb hN hp
+    obtain ⟨K,hK,hpK,_⟩ := mobiusDivisorCoupledTwoPool_data hb hN hp
     obtain ⟨hpr,_,h15,hq,hw0,hw⟩ := window K p hK hpK
     have hk : M/p≤ 14 := by rw [hq]; simp only [mem_insert,mem_singleton] at hK; rcases hK with rfl|rfl|rfl <;> omega
     have hv := hreserve K hK (divisorPrimeClipWeight M p)
@@ -174,7 +179,7 @@ private lemma source_window_geometry :
         (hz : c*‖z‖≤ -z.1*(mobiusDivisorCoupledTwoInterpolatedProfile K (divisorPrimeClipWeight M t)).1+
           -z.2*(mobiusDivisorCoupledTwoInterpolatedProfile K (divisorPrimeClipWeight M t)).2) :
         ∃ p∈(mobiusDivisorCoupledTwoPool b N).erase q,p∉L ∧
-          z.1*(packet M p P).1+z.2*(packet M p P).2≤ -(c/4)*‖z‖ := by
+          z.1*(mobiusDivisorTwoPlanePacket M p P).1+z.2*(mobiusDivisorTwoPlanePacket M p P).2≤ -(c/4)*‖z‖ := by
       have htp := window_subset_pool b N K hK ht
       obtain ⟨htpr,_,_,htq⟩ := pdata t htp
       have htK := (window K t hK ht).2.2.2.1
@@ -190,7 +195,7 @@ private lemma source_window_geometry :
       have hd2 := mul_le_mul_of_nonpos_right hscale (show -c*‖z‖≤ 0 by nlinarith only [hc,norm_nonneg z])
       refine ⟨t,mem_erase.mpr ⟨fun h => htL (mem_insert.mpr (Or.inl h)),htp⟩,
         fun h => htL (mem_insert_of_mem h),?_⟩
-      dsimp only [packet]
+      dsimp only [mobiusDivisorTwoPlanePacket]
       calc
         _ = (Real.sqrt t/Real.sqrt M)*(z.1*mobiusDivisorInterpolatedFibre M t P ∅+z.2*mobiusDivisorInterpolatedFibre M t P {2}) := by ring
         _ ≤ (1/4)*(-c*‖z‖) := hd1.trans hd2
@@ -202,7 +207,9 @@ private lemma source_window_geometry :
       · exact finish s 14 hs hsL (by simp) hm
 
 
-private lemma repair_error_budget (E C H d m n D : ℝ)
+/-- A square-root number of positive square reserves pays the complete receiving error
+of a bounded physical displacement under a quadratic envelope budget. -/
+theorem mobiusDivisor_two_plane_repair_error_budget (E C H d m n D : ℝ)
     (hC : 0< C) (hH : 0< H) (hd : 0< d) (hm : 1≤ m)
     (hE : E≤ C*m^2) (hD0 : 0≤ D) (hD : D≤ H*Real.sqrt m)
     (hn : (2*Real.sqrt C*H+H^2+1)/d*Real.sqrt m≤ n) :
@@ -239,7 +246,7 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
         ∃ L : Finset ℕ,q∈L ∧ L⊆insert q (mobiusDivisorCoupledTwoPool b N) ∧
           L.card=⌈A*Real.sqrt M⌉₊+1 ∧
           mobiusDivisorSuccessorEnvelope M (P∪L)+(M:ℝ)≤ mobiusDivisorSuccessorEnvelope M P := by
-  obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := source_window_geometry
+  obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := exists_mobiusDivisorTwoPlaneWindowGeometry
   refine ⟨b,hb,?_⟩
   intro C hC
   let H : ℝ := 2*(9^2/c+9)
@@ -259,8 +266,8 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
   have hncap : n≤ mobiusDivisorCoupledTwoCapacity b N-1 := Nat.ceil_le.mpr hn
   have hnlow : A*Real.sqrt M≤(n:ℝ) := Nat.le_ceil _
   obtain ⟨l,hnd,hlen,hsub,hbound⟩ := exists_bounded_plane_displacement_batch
-    (fun p => packet M p P) U n (packet M q P) 9 c (by norm_num) hc
-    (packet_bound P hM hqprime hqP (by omega) hqquot)
+    (fun p => mobiusDivisorTwoPlanePacket M p P) U n (mobiusDivisorTwoPlanePacket M q P) 9 c (by norm_num) hc
+    (norm_mobiusDivisorTwoPlanePacket_le_nine P hM hqprime hqP (by omega) hqquot)
     (fun p hp => hv p (mem_erase.mp hp).2)
     (fun L _ hL z => hdir q L (hL.trans_le hncap) z)
   let S := l.toFinset
@@ -271,7 +278,7 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
   have pdata (p : ℕ) (hp : p∈L) : p.Prime ∧ p< M ∧ p∉P ∧ 15≤ p ∧ M/p≤ 14 := by
     rcases mem_insert.mp hp with rfl|hp
     · exact ⟨hqprime,hqM,hqP,hq15,hqquot⟩
-    · obtain ⟨K,hK,_,hpp,hpM,hp15,hpquot,_⟩ := pool_data hb hN (hSP hp)
+    · obtain ⟨K,hK,_,hpp,hpM,hp15,hpquot,_⟩ := mobiusDivisorCoupledTwoPool_data hb hN (hSP hp)
       have hk : K≤ 14 := by simp only [mem_insert,mem_singleton] at hK; rcases hK with rfl|rfl|rfl <;> omega
       exact ⟨hpp,hpM,hfresh p (hSP hp),hp15,by change (14*(b+1)*N)/p ≤ 14; omega⟩
   have hbase := mobiusDivisorSuccessorEnvelope_two_block_reserve_error M P L hM
@@ -284,8 +291,8 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
   let T : ℝ := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2
   change mobiusDivisorSuccessorEnvelope M (P∪L)+min R T≤
     mobiusDivisorSuccessorEnvelope M P+2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*(|X|+|Y|)+(|X|+|Y|)^2 at hbase
-  let x := (packet M q P).1+∑ p∈S,(packet M p P).1
-  let y := (packet M q P).2+∑ p∈S,(packet M p P).2
+  let x := (mobiusDivisorTwoPlanePacket M q P).1+∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).1
+  let y := (mobiusDivisorTwoPlanePacket M q P).2+∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).2
   have hxy : |x|+|y|≤ H := by
     change x^2+y^2≤ 2*(9^2/c+9)^2 at hbound
     have hx := sq_abs x
@@ -317,7 +324,7 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
       exact sum_le_sum_of_subset_of_nonneg (subset_insert q S) (fun p _ _ => by positivity)
     · apply hsum1.trans
       exact sum_le_sum_of_subset_of_nonneg (subset_insert q S) (fun p _ _ => by positivity)
-  have hpay := repair_error_budget (mobiusDivisorSuccessorEnvelope M P) C H d M n (|X|+|Y|)
+  have hpay := mobiusDivisor_two_plane_repair_error_budget (mobiusDivisorSuccessorEnvelope M P) C H d M n (|X|+|Y|)
     hC hH hd (by exact_mod_cast (show 1≤ M by omega)) hE (by positivity) hD hnlow
   have hmin := le_min hRS.1 hRS.2
   refine ⟨L,mem_insert_self q S,?_,?_,?_⟩
@@ -341,7 +348,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
         ∃ L : Finset ℕ,2∈L ∧ L⊆insert 2 (mobiusDivisorCoupledTwoPool b N) ∧
           L.card=⌈A*Real.sqrt M⌉₊+1 ∧
           mobiusDivisorSuccessorEnvelope M (P∪L)+(M:ℝ)≤ mobiusDivisorSuccessorEnvelope M P := by
-  obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := source_window_geometry
+  obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := exists_mobiusDivisorTwoPlaneWindowGeometry
   refine ⟨b,hb,?_⟩
   intro J C hC
   let H : ℝ := 2*(9^2/c+9)
@@ -395,7 +402,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
   have hncap : n≤ mobiusDivisorCoupledTwoCapacity b N-1 := Nat.ceil_le.mpr hn
   have hnlow : A*Real.sqrt M≤ (n:ℝ) := Nat.le_ceil _
   obtain ⟨l,hnd,hlen,hsub,hbound⟩ := exists_bounded_plane_displacement_batch
-    (fun p => packet M p P) U n (0,0) 9 c (by norm_num) hc (by simp)
+    (fun p => mobiusDivisorTwoPlanePacket M p P) U n (0,0) 9 c (by norm_num) hc (by simp)
     (fun p hp => hv p (mem_erase.mp hp).2)
     (fun L _ hL z => hdir 2 L (hL.trans_le hncap) z)
   let S := l.toFinset
@@ -403,7 +410,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
   have h2S : 2∉S := fun h => (mem_erase.mp (hsub h)).1 rfl
   have hcard : S.card=n := by dsimp only [S]; rw [List.toFinset_card_of_nodup hnd,hlen]
   have pdata (p : ℕ) (hp : p∈S) : p.Prime ∧ p< M ∧ p∉P' ∧ 15≤ p ∧ M/p≤ 14 := by
-    obtain ⟨K,hK,_,hpp,hpM,hp15,hpquot,_⟩ := pool_data hb hN (hSP hp)
+    obtain ⟨K,hK,_,hpp,hpM,hp15,hpquot,_⟩ := mobiusDivisorCoupledTwoPool_data hb hN (hSP hp)
     have hk : K≤ 14 := by simp only [mem_insert,mem_singleton] at hK; rcases hK with rfl|rfl|rfl <;> omega
     exact ⟨hpp,hpM,by simp only [P',mem_insert,not_or]; exact ⟨by omega,hfresh p (hSP hp)⟩,
       hp15,by change (14*(b+1)*N)/p≤ 14; omega⟩
@@ -423,8 +430,8 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
   dsimp only at hbase
   simp only [hfold,hzero,mul_zero,sum_const_zero,abs_zero,zero_pow (by norm_num : (2:ℕ)≠0),add_zero,min_self] at hbase
   change mobiusDivisorSuccessorEnvelope M (P'∪S)+T≤ E'+2*Real.sqrt E'*|Z|+|Z|^2 at hbase
-  let x : ℝ := ∑ p∈S,(packet M p P).1
-  let y : ℝ := ∑ p∈S,(packet M p P).2
+  let x : ℝ := ∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).1
+  let y : ℝ := ∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).2
   have hxy : |x|+|y|≤ H := by
     simp only [zero_add] at hbound
     change x^2+y^2≤ 2*(9^2/c+9)^2 at hbound
@@ -440,7 +447,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
     dsimp only [Z]
     simp only [mul_add,sum_add_distrib]
     rw [hsum ∅,hsum {2}]
-    dsimp only [x,y,packet]
+    dsimp only [x,y,mobiusDivisorTwoPlanePacket]
   have hZbound : |Z|≤ H*Real.sqrt M := by
     rw [hZ,abs_mul,abs_of_pos hr]
     have hh := (abs_add_le x y).trans hxy
@@ -453,7 +460,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
     (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hD.le) hr.le).trans hnlow
   have hnD : D*Real.sqrt M≤ (n:ℝ) :=
     (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hB.le) hr.le).trans hnlow
-  have hpay := repair_error_budget E' C' H (d/2) M n |Z| hC' hH (by positivity)
+  have hpay := mobiusDivisor_two_plane_repair_error_budget E' C' H (d/2) M n |Z| hC' hH (by positivity)
     hm1 hE' (abs_nonneg _) hZbound hnB
   have hpayFront := mul_le_mul_of_nonneg_right hnD (show 0≤ d/2*(M:ℝ) by positivity)
   have heFront : D*Real.sqrt M*(d/2*(M:ℝ))=2*((J:ℝ)+1)*Real.sqrt C*(M:ℝ)*Real.sqrt M := by

@@ -116,4 +116,60 @@ theorem taylorGreen_evolving_memory_at_quarter (tau : ℝ) :
   rw [taylorGreen_unsteadyViscoelastic_forcing]
   simp [taylorGreenEvolution, taylorGreenJet, taylorGreenSin, taylorGreenCos, mul_comm]
 
+/-- Full vertical material acceleration and pressure. -/
+def unsteadyEulerAccelerationY (J : ℝ → SteadyNavierStokesJet2) (t x y : ℝ) : ℝ :=
+  deriv (fun s => (J s).v x y) t + steadyEulerAccelerationY (J t) x y
+
+def unsteadyViscoelasticResidualY (nu tau : ℝ) (J : ℝ → SteadyNavierStokesJet2)
+    (t x y : ℝ) : ℝ :=
+  unsteadyEulerAccelerationY J t x y +
+    tau * fluidMaterialDerivative J (unsteadyEulerAccelerationY J) t x y -
+      nu * ((J t).vxx x y + (J t).vyy x y)
+
+theorem unsteadyEulerAccelerationY_taylorGreen (nu k dx dy t x y : ℝ) :
+    unsteadyEulerAccelerationY (taylorGreenEvolution nu k dx dy) t x y =
+      -2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).v x y := by
+  unfold unsteadyEulerAccelerationY
+  rw [(hasDerivAt_taylorGreenEvolution_v nu k dx dy t x y).deriv]
+  have he := taylorGreenJet_vertical_euler k
+    (Real.exp (-2 * nu * k ^ 2 * t)) dx dy x y
+  change steadyEulerAccelerationY (taylorGreenEvolution nu k dx dy t) x y = 0 at he
+  rw [he, add_zero]
+
+/-- The vertical material-memory forcing completes the exact vector GHD residual. -/
+theorem taylorGreen_unsteadyViscoelastic_forcing_y (nu tau k dx dy t x y : ℝ) :
+    unsteadyViscoelasticResidualY nu tau (taylorGreenEvolution nu k dx dy) t x y =
+      tau * (4 * nu ^ 2 * k ^ 4 * (taylorGreenEvolution nu k dx dy t).v x y +
+        2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).py x y) := by
+  have he : unsteadyEulerAccelerationY (taylorGreenEvolution nu k dx dy) =
+      fun t x y => -2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).v x y := by
+    funext t x y
+    exact unsteadyEulerAccelerationY_taylorGreen nu k dx dy t x y
+  have ht := (hasDerivAt_taylorGreenEvolution_v nu k dx dy t x y).const_mul (-2 * nu * k ^ 2)
+  have hx := ((taylorGreenEvolution nu k dx dy t).hasDerivAt_v_x x y).const_mul
+    (-2 * nu * k ^ 2)
+  have hy := ((taylorGreenEvolution nu k dx dy t).hasDerivAt_v_y x y).const_mul
+    (-2 * nu * k ^ 2)
+  unfold unsteadyViscoelasticResidualY fluidMaterialDerivative
+  rw [he, ht.deriv, hx.deriv, hy.deriv]
+  have hE := taylorGreenJet_vertical_euler k
+    (Real.exp (-2 * nu * k ^ 2 * t)) dx dy x y
+  dsimp only [taylorGreenEvolution, taylorGreenJet] at hE ⊢
+  linear_combination (-2 * tau * nu * k ^ 2) * hE
+
+/-- A concrete decaying vortex solves unforced GHD everywhere exactly at zero memory time. -/
+theorem taylorGreen_unforced_memory_iff (tau : ℝ) :
+    (∀ t x y,
+      unsteadyViscoelasticResidualX 1 tau (taylorGreenEvolution 1 1 0 0) t x y = 0 ∧
+      unsteadyViscoelasticResidualY 1 tau (taylorGreenEvolution 1 1 0 0) t x y = 0) ↔
+      tau = 0 := by
+  constructor
+  · intro h
+    have hx := (h 0 (Real.pi / 2) 0).1
+    rw [taylorGreen_evolving_memory_at_quarter] at hx
+    linarith
+  · rintro rfl t x y
+    rw [taylorGreen_unsteadyViscoelastic_forcing, taylorGreen_unsteadyViscoelastic_forcing_y]
+    simp
+
 end GaloisForLFunctions.HTGeometry
