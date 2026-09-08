@@ -91,6 +91,18 @@ private theorem smoothBlock_min {s k : ℕ} (hs : 1 ≤ s) (hk : 1 ≤ k) :
   · exact hdown ⟨hk,hkc⟩ ⟨hc,le_rfl⟩ hkc
   · exact hup (a := c) (b := k) (show c ∈ Set.Ici c by simp only [Set.mem_Ici]; exact le_rfl) hck hck
 
+/-- The geometric center is a minimum of the actual smooth square block. -/
+theorem divisorHyperbolaSmoothRemainder_center_le {N : ℕ} (hN : 1 ≤ N) :
+    divisorHyperbolaSmoothRemainder (Nat.sqrt N*(Nat.sqrt N+1)) ≤
+      divisorHyperbolaSmoothRemainder N := by
+  let s := Nat.sqrt N
+  have hs : 1 ≤ s := Nat.le_sqrt.mpr (by simpa using hN)
+  have hc : Nat.sqrt (s*(s+1))=s :=
+    (Nat.eq_sqrt.mpr ⟨by nlinarith,by nlinarith⟩).symm
+  have h := smoothBlock_min hs hN
+  rw [smoothBlock_eq hc,smoothBlock_eq (show Nat.sqrt N=s from rfl)] at h
+  exact h
+
 /-- Every smooth hyperbola remainder from the fifth square block onward is nonnegative. -/
 theorem divisorHyperbolaSmoothRemainder_nonneg_of_twentyFive {N : ℕ} (hN : 25 ≤ N) :
     0 ≤ divisorHyperbolaSmoothRemainder N := by

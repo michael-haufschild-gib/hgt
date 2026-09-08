@@ -50,11 +50,16 @@ No numerical experiment or computed source value is needed.
 
 ## Remaining obligations
 
-The complete-block sign alone does not bound a terminal partial block
-or its varying square-root weights. Those must be retained in any
-global unit-channel comparison. The target `K_p(N)<=2K_1(N)`, arbitrary
-mixed-state successor selection, complete extension and RH remain open.
-Do not promote an unweighted block sign into an Abel or RH bound.
+The [global unsigned envelope](ccm-fu-global-unsigned-envelope.md) closes
+the varying square-root weights and terminal partial block using additional
+source orientation, clock covariance, and global source positivity. It proves
+`K_p(N)<=2K_1(N)` simultaneously for all p at every sufficiently large N,
+and the actual original two-prime ceiling whenever both primes are sufficiently
+large. These conclusions require that additional source control; the
+unweighted block sign alone is insufficient.
+
+The finite unit-cutoff head, arbitrary mixed-state successor selection,
+complete extension, the full signed Abel bound, and RH remain open.
 
 ## Lean surface and validation
 

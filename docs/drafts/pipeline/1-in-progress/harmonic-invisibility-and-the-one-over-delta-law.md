@@ -6650,3 +6650,25 @@ positivity, and the second-order structure of `Φ` (Pólya's kernel), which is a
 not yet used anywhere in this card.
 
 This card's analytic branch is closed. Continuing it would produce more correct, worthless theorems.
+
+## Cross-confirmation from the pair-correlation and Gaussian-width lanes (2026-09-08, appended by a parallel session)
+
+Two worst-case detection thresholds computed independently of this card (STATUS CANNOT-332, CANNOT-333;
+cards `offline-isolation-dichotomy.md`, memory `gaussian-width-dictionary`) are instances of the `1/δ` law
+with the scale identified:
+
+- **Height-centered Gaussian family** `e^{−w(t−c)²}`, `c ≈ γ`. An *isolated* zero at displacement `δ` is seen at
+  width `w ≍ log log γ / δ²` (amplitude-limited: `e^{wδ²}` must beat the on-line background `log γ/√w`), which
+  is smaller than `1/δ`. The *worst configuration* — a tapered arithmetic-progression block of spacing
+  `2π/((1+Δ) log γ)` with an analytic displacement profile — is invisible until the first Poisson alias
+  `e^{(1+Δ)δ log γ − ((1+Δ) log γ)²/(4w)}` reaches `O(1)`, i.e. `w ≍ (log γ)/(4δ)`. So the family's worst-case
+  detection parameter is `λ_detect ≍ (log γ)/(4δ)`: the `1/δ` law with scale `(log γ)/4`.
+- **Montgomery pair form** at scale `x = T^α` (bandwidth `α ≤ 1`). The same tapered block is invisible at every
+  `α ≤ 1`; it is first seen at `log x ≥ (1+Δ) log T` with `Δ ≥ 2δ₀√α/w`, i.e. `α_detect − 1 ≍ δ`: here the
+  parameter is a *frequency excess* proportional to `δ` rather than `1/δ`, because the pair form's growth in
+  the displacement is `x^{δ}` (exponential type) rather than the Gaussian's `e^{wδ²}`.
+
+Both agree with §1: detection needs the alias/complex-growth term, never the harmonic main term. The
+prime-side cost is `e^{w}` (Gaussian) or `T^{1+Δ}` (pair form) in prime length, which is the wall recorded
+in CANNOT-332. The isolated-zero threshold `log log γ/δ²` shows the law's exponent is family- and
+configuration-dependent; the uniform statement holds for the worst configuration.

@@ -141,3 +141,43 @@ every admitted state. Its RunPod screen passes all8176 eligible saved
 states through32, including states outside the empty-state greedy path.
 No near-minimum failure triggers the prescribed80-digit audit. This is
 finite evidence for a concrete choice of p, not a proof of selection.
+
+## Uniform averaging obstruction and persistent source separation
+
+The [successor-average law](../5-failed/ccm-fu-successor-average-reserve.md)
+is analytically refuted in Lean at M=22, P={3,7,11,17,19}. This actual state
+has Psi(P)+1/250<=B, but the average of its three successor envelopes
+exceeds B+1/75. Thus a uniform average over available primes cannot prove
+the frozen universal extension statement by staying below the same B.
+
+The positive survivor is also source-certified: prime 2 separates all
+nonpositive free fibres from all nonnegative containing fibres. Other
+mergers preserve these sign classes, so processing 2 contracts after every
+additional subset T not containing 2, including overlapping labels. Prime
+2 is uniquely least in immediate energy and its successor remains admitted.
+This handles the first averaging obstruction but does not produce an
+admissible prime at arbitrary cutoffs. The cutoff-seven final increases
+already prevent persistent contraction from holding at every state; the
+simultaneous signed comparison above must still allow reserve-paid gains.
+
+## Uniform polynomial source cost and reserve-dependent prime threshold
+
+The [uniform successor transport theorem](../3-formalized/ccm-fu-uniform-successor-transport.md)
+now bounds the entire copied child energy by (9/25)M floor(M/p)^2 for every
+processed state, regardless of its size or signs. It counts original
+coefficients before merging; no fixed quotient depth is needed. The earlier
+small-core bound remains useful when that core is sparse.
+
+It gives the full simultaneous comparison
+`Psi(P+p)<=Psi(P)+(6/5)floor(M/p)sqrt(M Psi(P))` and additive square-root
+cost over every finite prime batch. All second successors, including
+overlapping labels, occur in this bound. The actual original diagonal has
+the sharper ceiling B<=(9/25)M^2. Consequently a failed successor from a
+state with Psi(P)+delta*M^2<=B and delta>0 must have
+`delta*p<(18/25)sqrt(M)`.
+
+Thus positive quadratic reserve makes every sufficiently large available
+prime safe, uniformly in the current processed state. This does not supply
+that reserve, ensure a large prime remains, control its renewal over a full
+order, or decide the zero-reserve boundary. Those remain the source-selection
+obligations; a growing additive batch cost is not a uniform total budget.

@@ -163,7 +163,7 @@ theorem tendsto_montgomeryForm_div_leadingOrder {α : ℝ} (hα0 : 0 < α) (hα1
         / (((T / 4) * (α * Real.log T)) * (2 / Real.pi)) - 1
       = (Real.pi / 2 * (montgomeryForm (zeroWindow T) (fun q : XiZeroCopy => (q.1 : ℂ)) (T ^ α)).re
         - (T / 4) * (α * Real.log T)) / ((T / 4) * (α * Real.log T)) := by
-    field_simp; ring
+    field_simp
   rw [hratio, abs_div, abs_of_pos hN0, div_lt_iff₀ hN0]
   calc |Real.pi / 2 * (montgomeryForm (zeroWindow T) (fun q : XiZeroCopy => (q.1 : ℂ)) (T ^ α)).re
         - (T / 4) * (α * Real.log T)|

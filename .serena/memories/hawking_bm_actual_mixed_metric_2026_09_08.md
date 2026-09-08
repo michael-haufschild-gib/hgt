@@ -1,0 +1,34 @@
+# HB actual mixed metric and endpoints — verified progress, RH open
+
+Current RH goal remains ACTIVE and UNPROVED. Chain: literal theta cusp → Xi occurrence → retained spin-two source → physical causal response/left-QNM pairing → independent fixed Hawking-clock extinction → RH. Frontier map READ ONLY. User demands efficient single foreground Lean/Lake job, scratch first, exact new-leaf final builds only, no full/dependency/umbrella builds, wire modules, audit only new theorem axioms once, clean owned scratch. No numerical experiments this turn; future experiments only short, surprising, RunPod-only. No subagents/commit/push.
+
+## Completed exact theorem
+
+For every actual XiZeroCopy q, both physical branches, amplitude a and exterior point p, constructed `RHTower.D4BMModularCore.forcedMetricField` has actual C2 metric components and satisfies all16 `CoordinateMetricTwoJet.Linearization.cosmological(background, ofMetricField forcedMetricField, -3) + literalMixedSource = 0`. `literalMixedSource_eq` identifies all components with original D4BMQuadraticMixedSource.tensor on literal S and actual first/second angular derivatives. No supplied inverse, angular/source equation, regularity or metric realization premise in final construction; no critical-line assumption.
+
+s=rho-2 or -rho-1, e=(s+1)(s+2), L=(2s+1)(2s+2), c=s(s-1)/4. S literal theta cusp, A=coexact(fullAngularField), J=S*coexactS, K original gradient covector. Actual P=S²/2 obeys DeltaP=2eP+G with G=y²(Sx²+Sy²), coexactP=J and coexactG=2K. Actual roughJ+J=2eJ+2K now proved, not assigned a slot. Both J and A are actual smooth divergence-free covectors. Full angular pullback jets proved without assuming homogeneous angular eigen equation. Actual radial fields B² and B²/r² and radial derivatives have full two-jets, including third radial derivative. Actual metric stream temporal=f*partial_rPsi, radial=2s/f*Psi, f=r²-1; Psi=B²(A-cJ/r²). Actual metric jets + current/currentFirst + cosmological linearization produce exact source cancellation all16. Envelope(2s,a²)=Envelope(s,a)² proved for actual exponential field.
+
+Actual static→ingoing and inverse-radius coordinate differentials/pullbacks are proved. u=1/r, E=a² exp(2s(v+log(1+u))). Complete metric in (v,u,x,y) has symmetric mixed blocks T_k=E[2su A_k+2cu(1-(s+1)u²)J_k], U_k=E[-2s/(1+u) A_k+2cu(1+(s+1)u)/(1+u)J_k]. Holomorphic in u when1+u in slitPlane, including neighborhoods0,1. Horizon u1: T=2sE(A-cJ), U=E(-sA+c(s+2)J). Boundary u0: T=0, U=-2s a²exp(2sv)A; retain exact unrescaled radial-angular term, DO NOT claim field vanishes or prove nonzeroA witness. Every component u²*metric tends0. Actual double tensor pullback equality checked. These endpoint facts do NOT identify original causal response/pairing.
+
+## New canonical leaves and audits
+
+Under formal/GaloisForLFunctions/RHTower/, prefix ThetaCuspHawkingBM:
+SquareSourceDifferential5; SquareSourceCovector5; StreamAngularJets4; StreamRadialProfiles2; StreamRadialFields5; StreamMetricField2; StreamForcedCurrent3; MetricLinearCombination2; StreamMetricEinstein1; ForcedMetricTensor2; ForcedMetricField2; InverseRadiusCoordinates2; ForcedMetricCompact2; ForcedMetricEndpoints5. TOTAL14leaves42publictheorems.
+
+All final scratch development checks empty logs. All14 exact canonical leaf `lake build <module>` final audits passed, each compiled only requested newleaf, cache-only isolated package; no dependency/umbrella/fullbuild. All28 olean/ilean artifacts installed and byte-matched; exact source bytes matched. Wired14imports once RHTower umbrella. One scratch `lake env lean` axiomaudit exactly42newpublictheorems once; only propext/Classical.choice/Quot.sound. Previous batches NOTreaudited. Source index and `lint --check-generated` passed, existinglargefilewarnings. Scopedwhitespace passed. Frontier unchanged in byte check. No addedaxioms/sorry/admit/opaque/unsafe/native_decide/computationalcertificates. AllownedLean/Lakejobs exited; final processcheck showednone. Own scratch /tmp/hb-forced-metric.3HDoRB and isolatedaudit removed after236item nosymlink inventory. No owned scratch/livejob remains.
+
+Do NOT re-audit these42, previous classical40, global smooth45, seam40, or older20/28/29/23/27batches.
+
+## Documentation
+
+New proofcard docs/drafts/pipeline/3-formalized/hb-actual-mixed-metric-and-endpoints.md. Current routecard docs/drafts/pipeline/1-in-progress/hb-global-angular-resolvent.md updated to actual metric closure and remaining physical gap. Prior classical proofcard physical-gap section updated linking newcard. STATUS untouched: existing F20i-i/F20i-m already cover actual operator/field/gauge requirements; no redundant route-specific entry. Frontier READ ONLY, no edits. Shared repo has much unrelated ongoing divisor/Montgomery/Selberg work; preserve it and all existing umbrella imports.
+
+## Next hard physical obstacle
+
+1. Actual modular covector/metric tensor descent. H and S pointwise modular scalar invariance proved. Need differentiate actual invariant fields and prove orientation-preserving conformal coexact pullback law, then mixed metric tensor descent. Whole-corpus rg this turn found no covector/coexact modular pullback theorem; do not treat component functions as invariant scalars.
+2. Original causal prescription (retarded source/domain or its continued resolvent), physical gauge and original left-QNM pairing. Smooth ingoing endpoints and conformalboundaryzero do not prove causal admission, uniqueness or pairing finiteness.
+3. SS/VV sectors, higher-return response, independent fixed Hawking-clock extinction remain. Full nonlinear response and RH not proved.
+
+## Lean efficiency findings
+
+Radial thirdjet giant raw expressions timedout. Split false base derivativejet then true inverse-squarecase reusesbase. Explicit ScalarTwoJet.ext (not recursive ext), normalize ←pow_two/←sub_eq_add_neg BEFORE field_simp thenring; maxHeartbeats400000 enough. Actual jet product rewrites require typed hU:ContDiffAtℝ2U and typed hFi for explicit inverse lambda, avoiding PiInv mismatch. Specify contDiffAt_const(c:=w)/(-2). Current radial cancellation afterrwforced_stream_master requires field_simp[hr,hf] before ring. Fin.one_ne_zero nonexistent; norm_num handles Fin comparisons. Actualinverse derivative: explicit HasDerivAt.comp_hasFDerivAt(𝕜:=ℝ)(𝕜':=ℝ)(f:=funz:Fin4ℝ=>z1), then convert! h using1; all_goals extv;all_goals simp. Plainconvert introduced instanceequalities; simpa mismatchednegsmulfunction. Endpoint horizonvalue proof: fin_cases both matrixindices; simp[compactForcedMetric,forcedHorizonMetric,compactEnvelope]; all_goals ring_nf. ring emitted informational hints on propositions aftersimp, norm_numonly timedout, broad dsimp triggered Lean panic despiteexit0; discardedthoseoutputs, final ring_nf check andcanonicalaudits EMPTYdiagnostics. Always inspect diagnostics notjustexitcode. Never start dependent check before prerequisite exit/log pass.

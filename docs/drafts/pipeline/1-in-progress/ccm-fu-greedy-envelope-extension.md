@@ -80,3 +80,34 @@ formalizes the displayed source bounds. Together with small-core mixed
 localization, it removes full processed-cardinality growth from first
 and nonoverlapping mixed gains at fixed quotient depth. It does not
 supply the signed simultaneous comparison needed for greedy selection.
+
+## Analytically certified choice at the first averaging obstruction
+
+The [uniform successor-average counterexample](../5-failed/ccm-fu-successor-average-reserve.md)
+has M=22 and P={3,7,11,17,19}. Its mean successor envelope exceeds B+1/75,
+even though Psi(P)+1/250<=B. The unique least-energy prime is 2, and Lean
+proves that this choice preserves admission. Its mechanism is persistent
+sign separation: every 2-free fibre is nonpositive, every 2-containing
+fibre nonnegative, and all other mergers preserve that separation.
+Therefore prime 2 contracts after every additional subset of other labels,
+including the live overlapping pair. All claims use analytic source bounds.
+
+This certifies a concrete prime-sensitive mechanism where uniform averaging
+fails. It does not establish that the least-energy choice always has such
+separation, nor that it always preserves admission. States with unavoidable
+positive gains still require the actual reserve comparison.
+
+## Uniform cost beyond fixed quotient depth
+
+The [uniform transport theorem](../3-formalized/ccm-fu-uniform-successor-transport.md)
+proves `Psi(P+p)<=Psi(P)+(6/5)floor(M/p)sqrt(M Psi(P))` for every processed
+state, with no sign or fixed-depth hypothesis. Its child-energy bound counts
+original coefficients before aggregation and avoids exponential growth in
+the processed quotient core. Square-root costs add over arbitrary finite
+batches. With reserve delta*M^2, any rejected next prime must satisfy
+`delta*p<(18/25)sqrt(M)`, using B<=(9/25)M^2 for the actual initial diagonal.
+
+This gives a source-certified range in which the least-energy choice could
+still fail. It neither proves that this choice leaves that range nor supplies
+a uniform positive reserve along its full path. The frozen greedy candidate
+remains open.

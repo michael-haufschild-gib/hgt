@@ -102,15 +102,20 @@ with the full weighted derivative graph retained. Its constructed self-adjoint
 operator gives a unique finite-energy weak response to the original full forcing
 at every actual Xi occurrence on both branches; see
 [the energy-domain and response card](../3-formalized/hb-modular-energy-domain-and-weak-response.md).
-Smooth global reconstruction and physical causal admission remain open. No
-fixed-clock extinction claim follows from weak solvability.
+The full global smooth response, actual mixed metric reconstruction, all sixteen
+forced mixed components and exact physical endpoint values are proved in
+[actual mixed metric and endpoints](../3-formalized/hb-actual-mixed-metric-and-endpoints.md).
+The actual tensor transformation laws and forced equation on the modular
+tangent-pair quotient are proved in
+[modular tensor descent](../3-formalized/hb-modular-tensor-descent.md).
+Physical causal admission remains open. No fixed-clock extinction claim follows
+from these differential and geometric results.
 
 ## Work required
 
-1. Obtain the smooth global representative of the proved weak response and its
-   literal hyperbolic equation across the modular charts. Construct the global
-   cusp-cutoff extension and assemble the full angular response. Establish the
-   physical causal prescription for the complete forced vector metric.
+1. Establish the original causal prescription for the complete forced vector
+   metric, including its response domain, physical gauge conditions and
+   parameter continuation. Identify its original left-QNM pairing.
 2. Construct the remaining SS and VV responses and the complete constrained
    physical response. Retain the correction's linear image in the original left
    pairing until the physical domain and its boundary terms justify annihilation.

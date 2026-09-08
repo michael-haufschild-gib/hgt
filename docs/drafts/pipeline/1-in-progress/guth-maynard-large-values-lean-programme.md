@@ -106,3 +106,230 @@ Notation: `D_N(t) = Σ_n w(n/N) b_n n^{it}` with `w` a fixed smooth bump on `[1,
   the form actually used in Prop. 4.6 (`s₁(M)⁶ = λ_max(MM*)³`).
 * Next: Lemma 4.1 (`‖Mb‖² ≤ λ_max(M*M)‖b‖²`, Rayleigh), then Prop. 4.6 conditional on an abstract
   bound for `Σ_{m≠0} I_m`; Lemmas 4.3–4.5 (non-stationary phase, Poisson summation).
+
+### Lean (2026-09-08): Lemma 4.1 and Proposition 4.6 (conditional on the trace asymptotics)
+
+* `RHTower/Sieve/GuthMaynardRayleigh.lean` (wired after `GuthMaynardTraceSingularValue`, axioms clean):
+  `re_star_dotProduct_mulVec_le` (Rayleigh bound `Re ⟨v, A v⟩ ≤ μ Σ‖v‖²` for Hermitian `A` with eigenvalues
+  `≤ μ`, via the corpus spectral factorisation `hermitian_eq_conj_diagonal`), `re_star_dotProduct_le_sqrt_mul_sqrt`
+  (Cauchy–Schwarz for `⬝ᵥ` through `EuclideanSpace`), and **Lemma 4.1** `sum_normSq_mulVec_le`:
+  `Σ_t ‖(M b)_t‖² ≤ λ_max(M Mᴴ) Σ‖b‖²` for rectangular `M`, proved without comparing the spectra of `Mᴴ M` and
+  `M Mᴴ` (`‖u‖² = Re⟨Mᴴ u, b⟩ ≤ ‖Mᴴ u‖‖b‖`, `‖Mᴴ u‖² ≤ λ_max ‖u‖²`).
+* `RHTower/Sieve/GuthMaynardPropFourSix.lean` (wired, axioms clean): `le_rpow_third_add_rpow_third`
+  (`y³ ≤ a + b ⇒ y ≤ a^{1/3} + b^{1/3}`), `prop46_abstract` (real-number assembly: the flat baseline
+  `(tr H)³/|W|²` cancels the main term of `tr H³` exactly; error terms `|E₁| ≤ 1/N²`, `|E₃| ≤ 1` cost only
+  `K = 3c² + 3c + 2`), and **Prop. 4.6** `card_le_of_trace_bounds`: for `M : Matrix W N ℂ`, `H = M Mᴴ`, if
+  `|W| n^{2σ} ≤ Σ_t ‖(M b)_t‖²`, `Σ‖b‖² ≤ C n`, `Re tr H = n|W|c + E₁`, `Re tr H³ = n³|W|c³ + S + E₃` with
+  `S ≥ 0`, `|E₁| ≤ 1/n²`, `|E₃| ≤ 1`, then `|W| ≤ C n^{1−2σ} ((4(S + K))^{1/3} + 2nc + 2)`.
+* Remaining inputs, in the order of the paper: Lemma 4.3 (non-stationary phase), Lemma 4.4 (Poisson summation
+  for `tr H`), Lemma 4.5 (the cubic trace as `N³|W|‖w‖⁶ + Σ_{m≠0} I_m`), then Sections 5–10 for `S`.
+* Traps: `posSemidef_self_mul_conjTranspose` over `ℂ` needs `open scoped ComplexOrder`; `set u := M *ᵥ b` lets
+  `rw [Matrix.star_mulVec]` rewrite through the abbreviation — use `obtain ⟨u, hu⟩ : ∃ u, u = …` and rewrite
+  standalone equations; `Finite.exists_max` for the top eigenvalue.
+
+### Cross-reference (2026-09-08): the Chen–Gupta–Li tower already carries this chain for character packets
+
+The corpus has ~250 modules `RHTower/ChenGuptaLi*.lean` (last commit 2026-08-22, no pipeline card) formalizing the
+Guth–Maynard method for Dirichlet-character packets: `cglLemma41_source_bound` (Lemma 4.1 with constant 36),
+`cglLemma42_source_bound` (Lemma 4.2), `cglLemma45_cubicTrace_eq_threeFrequencySums` and the `ChenGuptaLiLemma45*`
+family (the cubic trace by Poisson summation, zero mode and nonzero frequencies split), `cglProposition46_realAsymptotic_bound`
+(Prop. 4.6: `R+1 ≤ 288 (K^{1/3}+1) N^{2−2σ} + 288 N^{1−2σ} (max 0 Re S)^{1/3}`), `ChenGuptaLiProposition51*` (the axial
+residue, S₁), and the `ChenGuptaLiLemma62*` family (approximate functional equation for `L(s,χ)`). Smooth bumps:
+`CGLSmoothBump` (support `[1,2]`, plateau `[6/5,9/5]`), `cglSmoothBumpHt` (`h_t = w(u)² u^{it}` as a Schwartz map),
+`cglSmoothBumpHt_tsum_eq_tsum_fourier` (Poisson), `cglSmoothBumpHt_abs_pow_mul_norm_fourier_le` (Lemma 4.3 decay).
+`ChenGuptaLiHorizontalCollisionNoGo` records why that tower was built (the HC route's reflected-pair count) and why it
+cannot close that endpoint (`cglProposition46_rhs_ge_288`, reflection partners collapse to one row).
+
+Consequences for this programme:
+* `GuthMaynardRayleigh` / `GuthMaynardPropFourSix` (this date) are the *abstract, constant-free, index-type-generic*
+  forms of CGL's Lemma 4.1 and Prop. 4.6; they add nothing beyond generality. Do not build Lemmas 4.3–4.5 again:
+  instantiate the CGL bump and `cglSmoothBumpHt` Poisson/decay lemmas.
+* What neither tower has: Prop. 6.1 (the `S₂` bound through Heath-Brown's Theorem 1.6, whose Lean form is in the
+  corpus's `huxley_*`/`montgomery_heathBrown_*` large-values files), and Sections 7–10 (the `S₃` analysis, the genuinely
+  new Guth–Maynard content: Prop. 7.1 cancellation in `I_m`, the `R̃` moments, the small-closed-set argument, the energy
+  bound `E(W) ≲ |W|³N²/T²`). The `ζ` case is the principal character `q = 1` of the CGL packets, to be checked when the
+  chain is assembled.
+* The zero-density corollary (Thm 1.2, `N(σ,T) ≪ T^{15(1−σ)/(3+5σ)+o(1)}`) also needs the zero-detecting-polynomial
+  reduction, of which `ChenGuptaLiFiniteZeroDetector` and the corpus's `InghamDetector*` tower are the pieces.
+
+### Lean (2026-09-08, later): Proposition 6.1 assembly, from the paper's §6 read directly (pp. 16–20)
+
+* `RHTower/Sieve/GuthMaynardPropSixOne.lean` (wired after `GuthMaynardPropFourSix`, axioms clean):
+  `sum_pow_le_card_pow_mul_sum_pow` (power mean `(Σx)^k ≤ |s|^{k−1} Σ x^k`), `sum_le_card_rpow_mul_sum_pow_rpow`
+  (the scalar Hölder step (6.2): `Σ x ≤ |s|^{1−1/k} (Σ x^k)^{1/k}`), `rpow_inv_add_three_le`, and
+  **`prop61_abstract`**: from (6.1) `S₂ ≤ C (N²/M) X`, (6.2) `X ≤ (W²)^{1−1/k} Y^{1/k}`, (6.3)
+  `Y ≤ C' (W² M^k + W M^{2k} + W^{5/4} T^{1/2} M^k)` and `M ≤ T/N`:
+  `S₂ ≤ C C'^{1/k} (N² W² + T N W^{2−1/k} + N² W^{2−3/(4k)} T^{1/(2k)})`, with `third_term_eq` giving the paper's
+  form `N² W² (T^{1/2}/W^{3/4})^{1/k}` for the last term. This is (6.4) with explicit constants.
+* Exact statements now on file (paper pp. 4, 15–20): **Theorem 1.6 (Heath-Brown)**: `𝒯` 1-separated in an interval of
+  length `T`, `|a_n| ≤ T^{o(1)}`: `Σ_{t₁,t₂∈𝒯} |Σ_{n=N}^{2N} a_n n^{i(t₁−t₂)}|² ≤ T^{o(1)}(|𝒯|²N + |𝒯|N² + |𝒯|^{5/4}T^{1/2}N)`.
+  **Lemma 6.2 (AFE)**: for `|t| ∼ T₀ ≥ T^ε`, `|Σ_{m≠0} ĥ_t(mN)| ≪ T₀^{−1/2} ∫_{|u|≲1} |Σ_{m≲T₀/N} m^{−i(t+u)}| du + O(T^{−100})`,
+  proved by Mellin inversion of `w²` (`H(s) = ∫ w(u)² u^{s−1} du`, entire, `≪_j |s|^{−j}` for `|Re s| ≤ 10`), truncation
+  `|s| ≲ 1`, the substitution `v = Nmu`, and the van der Corput first/second derivative bounds
+  `∫_V^{2V} v^{−1+ir} e(−v) dv ≪ 1/|r|` (`V ≤ |r|/20` or `V ≥ 20|r|`) and `≪ |r|^{−1/2}` (`|r|/20 ≤ V ≤ 20|r|`).
+  **Reduction to (6.1)**: `S₂ = 3N³ ĥ₀(0) Σ_{t₁,t₂∈W} |Σ_{m≠0} ĥ_{t₁−t₂}(mN)|² + O(T^{−10})` using (5.1) for `t₁ ≠ t₃`,
+  the conjugation symmetry `ĥ_{−t}(ξ) = conj ĥ_t(−ξ)`, then a dyadic split in `|t₁−t₂| ∼ MN` and Lemma 6.2 with
+  Cauchy–Schwarz in `u`; the polynomial of (6.1) has length `M ≲ T/N` and `|a_m| ≤ 1`; the `k`-th power in (6.2) has
+  coefficients `b_m ≤ M^{o(1)}` by the divisor bound (corpus: `Sieve.DivisorBound.card_divisors_le_rpow`).
+* Remaining for Prop. 6.1: (i) Heath-Brown's Theorem 1.6 — **absent from the corpus** (the `huxley_*`,
+  `montgomery_heathBrown_*`, Bourgain double-large-sieve modules are the Montgomery–Huxley pointwise-count form, not
+  the pair-sum form); it is a sub-programme of its own. (ii) Lemma 6.2 for `ζ` (the CGL `ChenGuptaLiLemma62*`
+  family is the character version with conductor; specialise or port). (iii) The reduction to (6.1) on top of
+  `cglSmoothBumpHt` and (5.1)–(5.4). (iv) The `k`-fold Dirichlet convolution identity for finite polynomials with the
+  divisor-bound coefficient control.
+
+### Source audit for Heath-Brown's Theorem 1.6 (2026-09-08)
+
+* Guth–Maynard cite [HB] = D. R. Heath-Brown, *A large values estimate for Dirichlet polynomials*, J. London Math.
+  Soc. (2) 20 (1979), 8–18, Theorem 1 (paywalled: doi:10.1112/jlms/s2-20.1.8). Chen–Gupta–Li (arXiv:2507.08296, §2)
+  use the same estimate for characters, `Σ_{(t₁,χ₁),(t₂,χ₂)∈W} |Σ_{n∼N} b_n n^{i(t₁−t₂)} χ₁χ̄₂(n)|² ≲ |W|²N + |W|N² + (qT)^{1/2}|W|^{5/4}N`,
+  by citation only. The ANTEDB blueprint (Tao–Trudgian–Yang, `teorth.github.io/expdb`) records it as Lemma 10.18
+  ("if `(σ,τ,ρ,ρ*,s) ∈ 𝓔` then `s ≤ max(ρ+1, 2ρ, 5ρ/4 + τ/2) + 1`") with citation only: [HB 1979, Theorem 1] or
+  [Ivić, *The Riemann Zeta-Function*, Lemma 11.5]. No open-access proof was found (arXiv 1909.12075 Kerr, 2501.16779
+  Tao–Trudgian–Yang, 2403.13157 all cite it).
+* Consequence: this brick is **blocked on source access, not on mathematics**. It must not be reconstructed from memory.
+  Obtain HB 1979 or Ivić Ch. 11 (Lemma 11.5 and its proof) before any Lean on Theorem 1.6.
+* Bricks that are fully sourced from the Guth–Maynard text now on file and can proceed without Theorem 1.6:
+  Lemma 6.2 for `ζ` (pp. 19–20: Mellin inversion of `w²`, truncation `|s| ≲ 1`, substitution `v = Nmu`, and the van der
+  Corput first/second derivative bounds for `∫_V^{2V} v^{−1+ir} e(−v) dv`; the corpus has `norm_integral_oscillatory_le`
+  in `HTGeometry/OscillatoryIntegrationByParts` for the first-derivative case and no second-derivative test yet), and the
+  reduction of `S₂` to (6.1) (p. 17–18: (5.1) kills `t₁ ≠ t₃`, `ĥ_{−t}(ξ) = conj ĥ_t(−ξ)`, dyadic split in `|t₁−t₂| ∼ MN`,
+  Cauchy–Schwarz in `u`).
+
+### Corpus inventory for Lemma 6.2 (2026-09-08, later)
+
+* Van der Corput derivative tests are corpus-owned: `RHTower.firstDerivTest` (`ContDiff ℝ 2 φ`, `deriv (deriv φ) ≥ 0`,
+  `|deriv φ| ≥ λ` on `[a,b]`, `C¹` amplitude `A`: `‖∫ A e^{iφ}‖ ≤ 4(‖A b‖ + ‖A a‖ + ∫‖A'‖)/λ`) and
+  `RHTower.secondDerivTest` (`deriv (deriv φ) ≥ μ`: `≤ 32(…)/√μ`), in `RHTower/VanDerCorput.lean`; also
+  `VanDerCorputIBP` (frequency lower bound without monotonicity), `VanDerCorputSecond`, `VanDerCorputWeighted*`,
+  `DiscreteVanDerCorput`. Do not rebuild them.
+* The Chen–Gupta–Li Lemma 6.2 chain (`ChenGuptaLiLemma62*`, ~65 modules, last commit 2026-08-22) already carries the
+  Mellin inversion of the bump (`…InitialMellin`, `…MellinKernel`), the contour and horizontal-edge bounds, the
+  small-time and large-time source regimes with `X^{−200}` truncation errors (`cglLemma62_smallTime_finiteCritical_window_bound`,
+  `cglLemma62_largeTime_finiteCritical_window_bound`: `‖∫ contour integrand‖ ≤ C N^{1/2} ∫ ‖Dirichlet head‖`), the
+  principal-character residue and regularized contour (`…Principal*`), and the nonprincipal reassembly
+  (`cglLemma62_nonprincipal_smallTime_window_error_X200_bound`, `…largeTime…`). Moduli are `CGLPositiveModulus`
+  (`0 < q`), so `q = 1` is admissible. **A single assembled statement of the form `|Σ_{m≠0} ĥ_t(mN)| ≤ …` was not
+  found**; before writing Lemma 6.2 for `ζ`, trace this chain to its terminus (start from the two window bounds
+  and the `Principal*` modules) and record what is missing. Only then specialise to `q = 1`.
+
+### Terminus of the CGL Lemma 6.2 chain (2026-09-08, later)
+
+Reference count over all `ChenGuptaLi*` modules: 206 theorems in `ChenGuptaLiLemma62*`, of which 24 are referenced
+nowhere else. The unreferenced ones are the regime endpoints — `cglLemma62_nonprincipal_smallTime_window_error_X200_bound`,
+`cglLemma62_nonprincipal_largeTime_source_bound`, `cglLemma62_smallTime_finiteCritical_window_bound`,
+`cglLemma62_largeTime_truncated_conductor_tail_bound`, the `Principal*` residue/reflection/regularized-contour
+pieces, and `cglLemma62_smoothedCharacterSum_eq_scale_mul_raw` — so **the chain is unassembled**: no statement of the
+form `|Σ_{m≠0} ĥ_t(mN)| ≤ T₀^{−1/2} ∫ |Σ_{m ≲ T₀/N} m^{−i(t+u)}| du + O(T^{−100})` exists. Assembling it (even for `q = 1`)
+requires reading the definitions of the regimes (`CGLLemma62SmallTimeSourceRegime`, `…LargeTime…`,
+`CGLLemma62InducedCharacter`, the truncation radii and cutoffs) across ~60 modules; it is a multi-day task with
+the paper's pp. 19–20 as the only external input. Not started.
+
+### Lemma 6.2 for `ζ`: exact remaining list (2026-09-08, later)
+
+The reassembled nonprincipal branch is closed to `ζ`: `CGLLemma62InducedCharacter` carries `nonprincipal : character ≠ 1`.
+The principal branch (`Q : CGLPositiveModulus`, principal character; `q = 1` is `ζ`) has: the contour shift with the
+residue at the pole `1 + it` (`cglLemma62_principal_initialVerticalIntegral'_eq_residue_add_reflected`,
+`rectIntegral_cglLemma62PrincipalContourIntegrand`), the reflected split into finite head and tail
+(`cglLemma62_principal_reflected_eq_finite_add_tail`), the residue bound in the high-time regime
+(`cglLemma62_principal_highTime_residue_bound`: `‖residue‖ ≤ C X^{−100}` for `CGLLemma62PrincipalHighTimeSourceRegime`),
+the `L`-strip bounds and horizontal edges (`ChenGuptaLiLemma62PrincipalBounds`, `…PrincipalHorizontalEdges`), the
+regularized contour integrands and the Euler correction. Missing, in the order of the nonprincipal chain they mirror:
+1. `cglLemma62_principal_smallTime/largeTime_finiteCritical_window_bound` — `‖∫_{window} PrincipalFiniteContourIntegrand‖ ≤ C N^{1/2} ∫_{window} ‖Dirichlet head‖` (mirror of `ChenGuptaLiLemma62FiniteWindowBound`, `…LargeTimeFiniteWindowBound`);
+2. `cglLemma62_principal_smallTime/largeTime_farTail_truncation_error_X200_bound` (mirror of `…SmallTimeTailTruncation`, `…LargeTimeTailTruncation`);
+3. `cglLemma62_principal_reflected_truncation_error_X200_bound` and the reassembly
+   `2π·phase·SmoothedSum = residue + finite window + far-tail window + O(X^{−200})` (mirror of `…ReflectedReassembly`, `…NonprincipalReassembly`);
+4. the final inequality in Guth–Maynard's form: subtract the `m = 0` Poisson mode (`N ĥ_t(0)`, small for `|t| ≥ X^ε` by the
+   `ChenGuptaLiHtReciprocal*` decay) and divide by `N`, giving `|Σ_{m≠0} ĥ_t(mN)| ≤ C T₀^{−1/2} ∫ |Σ_{m ≲ T₀/N} m^{−i(t+u)}| du + O(T^{−100})`
+   (the normalizations `N^{1/2}` versus `T₀^{−1/2}` and the window widths must be reconciled against pp. 19–20 of the paper).
+Estimated size: four to six modules mirroring the nonprincipal ones (each 100–300 lines). Even when done, Proposition 6.1
+for `ζ` stays blocked on Heath-Brown's Theorem 1.6 (source access). Not started.
+
+### Lean (2026-09-08, later): the two modulus facts for the principal window bound
+
+* `HTGeometry/GammaCosineCriticalModulus.lean` (wired, axioms clean, mathlib-only imports):
+  `normSq_Gamma_half_sub_mul_I : |Γ(1/2 − iy)|² = π / cosh(πy)` (reflection formula + `Γ(conj z) = conj Γ(z)`),
+  `normSq_cos_pi_mul_half_sub_mul_I_div_two : |cos(π(1/2 − iy)/2)|² = cosh(πy)/2` (product-to-sum), and
+  **`norm_zetaFunctionalFactor_critical : ‖2 (2π)^{−(1/2−iy)} Γ(1/2−iy) cos(π(1/2−iy)/2)‖ = 1`** — the modulus of
+  `cglLemma62PrincipalRegularizedFunctionalFactor (1/2 + iy)` (same expression with `z = 1/2 + iy`, `1 − z = 1/2 − iy`).
+* `RHTower/ZetaChiCriticalModulus.lean` (wired after `ZetaCarrier`, axioms clean): `norm_zetaChi_critical :
+  ‖zetaChi (1/2 + iy)‖ = 1` from `zetaChi_conj` and the strip identity `χ(s)χ(1−s) = 1`.
+* These give the pointwise norm identity for the principal finite integrand on the critical line (mirror of
+  `cglLemma62_finiteCritical_norm_eq`): `‖PrincipalRegularizedFiniteContourIntegrand w N Q t M (1/2+iu)‖ =
+  ‖Mellin‖ · N^{1/2} · ‖EulerCorrectionAt Q (1/2 + i(u−t))‖ · ‖DirichletHead 1 M (1/2 − i(u−t))‖`, with
+  `‖EulerCorrectionAt Q‖ ≤ cglLemma62PrincipalEulerBudget Q` (`= 1` for `q = 1`). Still missing for the window bound:
+  the integrability of the principal finite integrand on the critical line (mirror of
+  `cglLemma62_finiteContourIntegrand_right_integrable`) and the assembly itself.
+
+### Lean (2026-09-08, later): principal branch on the critical line
+
+`RHTower/ChenGuptaLiLemma62PrincipalCriticalIntegrability.lean` (wired after `…PrincipalRegularizedContour`, axioms clean):
+`norm_cglLemma62PrincipalRegularizedFunctionalFactor_critical` (`= 1` on `Re z = 1/2`, via `norm_zetaFunctionalFactor_critical`),
+`cglLemma62_principalEulerRightFactorAt_critical_conj`, `cglLemma62_principalEulerLeftFactorAt_critical_ne_zero`,
+`norm_cglLemma62PrincipalEulerCorrectionAt_critical` (`= 1`), `norm_cglLemma62DirichletHead_le` (`≤ M + 1` on `Re s ≥ 0`, any
+character), the pointwise bound `‖PrincipalRegularizedFiniteContourIntegrand w N Q t M (1/2 + iv)‖ ≤ ‖H(1/2+iv)‖ · N^{1/2} · (M+1)`,
+continuity along the line, and **`cglLemma62PrincipalRegularizedFinite_critical_integrable`** (absolute integrability along
+`Re s = 1/2`, Mellin decay of order two against the bounded factors). This is the integrability input of the principal
+finite-window bound; the window bound itself (mirror of `cglLemma62_smallTime_finiteCritical_window_bound`, now a
+`norm_integral_le_integral_norm` + `integral_mono_on` assembly with the pointwise bound) and the truncation/reassembly
+mirrors remain.
+
+### Lean (2026-09-08, later): principal finite-window bound
+
+`RHTower/ChenGuptaLiLemma62PrincipalFiniteWindowBound.lean` (wired, axioms clean): the exact critical-line norm
+`‖F(1/2+iu)‖ = ‖H(1/2+iu)‖ · N^{1/2} · ‖D_M(1/2 − i(u−t))‖` and
+**`cglLemma62_principal_finiteCritical_window_bound (hR : 0 ≤ R) : ‖∫_{−R}^{R} F(1/2+iu) du‖ ≤ C · N^{1/2} · ∫_{−R}^{R} ‖D_M(…)‖ du`**,
+`C = cglLemma62MellinLineDecayBudget w (1/2) 0`, for every radius and cutoff (mirror 1 of the missing list, regime-free).
+Remaining mirrors: the contour shift of the principal finite integrand from `Re s = −1` to `Re s = 1/2` with its
+horizontal edges, the far-tail truncation, and the reassembly with the residue.
+
+### Lean (2026-09-08, later): principal reflected line reassembled (finite → critical line, tail → deep line)
+
+Seven wired modules (axioms `[propext, Classical.choice, Quot.sound]`), all `RHTower/ChenGuptaLiLemma62Principal*`:
+- `FiniteStripBounds`: `cglLemma62_exists_bound_principalRegularizedFactor_strip` (Gamma–cosine multiplier
+  `≤ C|Im z|^n` on `-1 ≤ Re z ≤ 1/2`, `|Im z| ≥ 1`: Stirling decay of `Γ(1−z)` against `‖cos‖ ≤ e^{π|Im|/2}`),
+  `norm_cglLemma62PrincipalEulerCorrectionAt_le_strip` (budget `∏_{p|q} 4(1+p)`; right factor `≥ (1/4)^{ω(q)}`
+  since `|p^{-(1-z)}| ≤ 2^{-1/2}`), `cglLemma62_exists_principalRegularizedFinite_strip_bound` (`‖F(x+iy)‖ ≤ C/y²`).
+- `FiniteShift`: horizontal edges vanish, vertical integrability on every line of the strip, and
+  **`cglLemma62_principalReflectedFinite_integral_eq_critical`**:
+  `∫ ReflectedFinite(−1 line) = ∫ F(1/2+iv) dv` (Cauchy on tall rectangles, no residue).
+- `TailContour`: `cglLemma62PrincipalTailContourIntegrand` (= `H·N^s·χ_reg·E·(L(1−s+it,χ₀) − D_M)`), its
+  identifications on `Re s = −1` (reflected tail) and `Re s = −2k` (`cglLemma62PrincipalFarTailIntegrand`,
+  literal complementary series), holomorphy on `−2k ≤ Re s ≤ −1`; `cglLemma62PrincipalEulerCorrectionAt_differentiableAt`
+  for every `Re z ≤ 1/2`.
+- `TailStripBounds`: `exists_bound_norm_Gamma_low_box` (compactness below unit height),
+  `cglLemma62_exists_bound_principalRegularizedFactor_all_heights` (`≤ C(1+|Im z|)^n` on any strip `Re ≤ b < 1`),
+  deep Euler budget `∏ 4(1+p^{2k})`, `norm_cglLemma62DirichletTail_one_le` (`≤ M^{-1}` for `Re s ≥ 2`),
+  `cglLemma62_exists_principalTail_strip_bound` (arbitrary polynomial decay on the deep strip).
+- `TailShift`: **`cglLemma62_principalReflectedTail_integral_eq_farTail`** (`∫ ReflectedTail = ∫ FarTail_k`),
+  `cglLemma62_principalFarTail_rapid_point_bound`, `cglLemma62_principalFarTail_integral_sub_truncation_le_power`.
+- `ReflectedReassembly`: **`cglLemma62_principal_reflected_integral_eq_finiteCritical_add_farTail`**
+  (`∫ ReflectedLine = ∫ F(1/2+iv) + ∫ FarTail_k`, every cutoff `M ≥ 1`, every depth `k ≥ 1`), and
+  `cglLemma62_principal_finiteCritical_integral_sub_truncation_le_power`.
+- `SmallTimeRegime`: `CGLLemma62PrincipalSmallTimeSourceRegime N Q t` (`X ≥ max(1,q)`, `|t| ≤ X^ε`,
+  `M = ⌊X^{2ε}q/N⌋`, depth `⌈(202+ε)/(2ε)⌉`, radius `X^{ε/2}`, rate `⌈2+400/ε⌉`) and
+  **`cglLemma62_principal_smallTime_reflected_truncation_error_X200_bound`**: reflected line = critical finite window
+  + deep tail window + `O(X^{-200})`.
+
+Tree repair on the way: commit `9b32e9bd1` (2026-09-07) rewrote `HTGeometry/PolygammaVerticalDecay.lean` and deleted
+`tendsto_iteratedDeriv_succ_digamma_vertical`, breaking `DigammaFieldValuation`, `LinePolyGrowth` and every
+`ChenGuptaLiLemma62Tail*` build. Restored (appended, namespace `GaloisForLFunctions`) from the new
+`norm_iteratedDeriv_digamma_le_of_re_pos`; closure rebuilt (11407 jobs).
+
+Remaining for the ζ (principal) Lemma 6.2: (i) the deep-window bound `‖∫_{|v|≤X^{ε/2}} FarTail_k‖ ≪ X^{-200}` — needs the
+**sharp** Stirling exponent `‖χ_reg(z)‖ ≤ C(1+|Im z|)^{2k+1/2}` on `Re z ∈ [−2k, −1]` (my strip bound has an
+existential exponent, which cannot be traded against `M^{-2k}N^{-2k}`); the nonprincipal chain owns this as
+`cglLemma62_primitiveFunctionalFactor_tail_all_factorized_bound` (`TailFunctionalCompact`) — mirror its Gamma input;
+(ii) assembly with `cglLemma62_principal_initialVerticalIntegral'_eq_residue_add_reflected`
+(`VerticalIntegral' … 2 = residue + (1/2πi)·i·∫ReflectedLine`) into
+`SmoothedSum = residue + (1/2π)·window + O(X^{-200})`; (iii) the GM-form inequality (subtract the Poisson `m=0` mode).
+
+### Heath-Brown Theorem 1.6, open-source audit (2026-09-08, later)
+
+Tao's 254A Notes 6 (2015, open) prove the mean-value large-values theorem (`Σ_j |D(σ_j+it_j)|² ≪ (T+N)Σ|a_n|²`, 1-separated
+points) and **Montgomery's** large-values bound (Proposition 9: after deleting `O(T^β)` unit intervals,
+`|D| ≪ N^{1−σ}(T^{−β/2} + T^{1/4}N^{−1/2}) log^{O(1)}`; ingredients: generalized Bessel inequality, Poisson summation,
+oscillatory integrals). They contain **no** Heath-Brown estimate (no `T^{1/2}` or `|𝒯|^{5/4}` term) and refer to
+Iwaniec–Kowalski Ch. 9–10 for the refinements. The block stands: HB 1979 JLMS Thm 1 / Ivić / Iwaniec–Kowalski are the
+only proofs on record and none is open-access. Montgomery's Proposition 9 is a possible weaker substitute for the `S₂`
+bound; whether GM's Theorem 1.1 survives with it is not examined.

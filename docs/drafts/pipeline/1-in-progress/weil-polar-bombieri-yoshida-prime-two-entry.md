@@ -266,3 +266,23 @@ pole-vanishing ground energy obeys `μ₀(B) ≤ −c' e^{2ΘB}/B³` for all `B 
 `≤ 3/2 + 4D_w/c_D + 1`, explicit in the top zero and `Σ_q |z_q|⁻²`. The certified window `S ≤ 1` therefore says
 nothing about zeros unless `B₀ ≤ 1`, which needs `D_w/c_D` small, i.e. a top zero of enormous excess at low
 height — excluded by the known zero-free region. The lane remains a receiver.
+
+## Upper half of the rate identity (2026-09-08 analysis)
+
+The zero-side representation of the polar screw form on a zero-mean test `φ` is
+`Σ_q |φ̂(z_q)|² − Σ_{off-line pairs} |φ̂(z) − φ̂(z̄)|²` (pole terms aside): each reflected pair contributes
+`2 Re[φ̂(z) conj φ̂(z̄)] = |φ̂(z)|² + |φ̂(z̄)|² − |φ̂(z) − φ̂(z̄)|²`, and
+`φ̂(z) − φ̂(z̄) = (φ · 2 sinh(δu))^(γ)`. For the twisted odd plateau this is the mechanism of the attained-top
+negativity (`C'(η)² − S(η)²` with `C'(0) = 0`), valid for every excess `δ > 0`, not only the top.
+Consequences: (i) the negative part is a log-density sampling sum at the off-line zeros, while the Rayleigh
+normalisation is plain `L²`; the balance against the archimedean `log|ξ|` growth is carried by the *positive*
+sum over all zeros, so `μ₀(B) ≥ −C e^{(2Θ_sup+ε)B}` cannot be proved by dropping the positive part; it needs the
+on-line zeros to carry the local density, i.e. local sparseness of off-line zeros (`o(log t)` per unit window,
+Lindelöf-type; unconditional local counts are only `O(log t)`). (ii) Conversely a positive local proportion of
+zeros at excess `δ` near height `t` forces `μ₀(a) ≤ −c (log t) e^{2δa}/(δ² a) + (far pairs)`, with the far pairs after
+aperture averaging bounded only by `e^{2δa}(log t) log(aδ)/(δ² a)`; the two are comparable, so no unconditional
+no-clustering law follows either. (iii) Clusters of `M` top copies within ordinate distance `1/a` add coherently
+(`−M S_δ(0)²`), but the on-line zeros near the same height add `+C a log t`, so height-uniform cluster bounds would
+need apertures `a ≫ log log t` and then the trivial rate `e^{a}` gives only `M ≪ (log t)^{(1−2Θ)/(2Θ)+ε}`, a
+saving over `log t` only for `Θ > 1/4`. Verdict: the upper half is a local zero-density statement; the frontier
+map's "sampling inequality" was too optimistic.

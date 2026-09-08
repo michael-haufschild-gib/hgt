@@ -111,7 +111,10 @@ private lemma smooth_center_upper {s : ℕ} (hs : 1 ≤ s) :
     nlinarith
   linarith only [h,hf]
 
-private lemma smooth_pair_upper {s j : ℕ} (hs : 1 ≤ s) (hj : j ≤ s) :
+/-- A reflected source pair has an explicit geometric quadratic ceiling,
+including the second harmonic correction and exact Stirling remainder. -/
+theorem divisorHyperbolaSmoothRemainder_pair_le_geometric_quadratic
+    {s j : ℕ} (hs : 1 ≤ s) (hj : j ≤ s) :
     let c : ℝ := s*(s+1)
     divisorHyperbolaSmoothRemainder (s*(s+1)-j)+
       divisorHyperbolaSmoothRemainder (s*(s+1)+j) ≤
@@ -184,7 +187,8 @@ private lemma block_upper_of_two {s : ℕ} (hs : 2 ≤ s) :
     omega
   have hb : s*(s+1)+s+1=(s+1)*(s+1) := by ring
   rw [← ha,← hb,sum_symmetric _ hjc]
-  have hpair := sum_le_sum (fun j (hj : j ∈ Icc 1 s) => smooth_pair_upper hs1 (mem_Icc.mp hj).2)
+  have hpair := sum_le_sum (fun j (hj : j ∈ Icc 1 s) =>
+    divisorHyperbolaSmoothRemainder_pair_le_geometric_quadratic hs1 (mem_Icc.mp hj).2)
   have hcenter := smooth_center_upper hs1
   dsimp only at hpair hcenter
   simp only [sum_add_distrib,sum_const,← sum_mul,sum_sq,

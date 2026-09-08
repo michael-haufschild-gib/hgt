@@ -187,3 +187,31 @@ theorem norm_iteratedDeriv_digamma_le {m : ℕ} {z : ℂ} (hre : -1 < z.re) (him
 end GaloisForLFunctions.HTGeometry
 
 end
+
+namespace GaloisForLFunctions
+
+open Filter
+
+/-- Every positive-order digamma jet vanishes along a vertical line in the right half-plane:
+the Hurwitz bound `4 (m+1)! / |Im z|^(m+1)` decays as the ordinate grows. -/
+theorem tendsto_iteratedDeriv_succ_digamma_vertical {σ : ℝ} (hσ : 0 < σ) (m : ℕ) :
+    Tendsto (fun t : ℝ =>
+      iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds 0) := by
+  have hg : Tendsto (fun t : ℝ => 4 * ((m + 1).factorial : ℝ) / t ^ (m + 1)) atTop (nhds 0) := by
+    have hpow : Tendsto (fun t : ℝ => t ^ (m + 1)) atTop atTop :=
+      tendsto_pow_atTop (Nat.succ_ne_zero m)
+    have := hpow.inv_tendsto_atTop.const_mul (4 * ((m + 1).factorial : ℝ))
+    simpa [div_eq_mul_inv] using this
+  refine squeeze_zero_norm' ?_ hg
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
+  have ht0 : 0 ≤ t := zero_le_one.trans ht
+  have hre : (0 : ℝ) < ((σ : ℂ) + (t : ℂ) * Complex.I).re := by simpa using hσ
+  have him' : ((σ : ℂ) + (t : ℂ) * Complex.I).im = t := by simp
+  have him : 1 ≤ |((σ : ℂ) + (t : ℂ) * Complex.I).im| := by
+    rw [him', abs_of_nonneg ht0]
+    exact ht
+  have h := HTGeometry.norm_iteratedDeriv_digamma_le_of_re_pos (m := m) hre him
+  rw [him', abs_of_nonneg ht0] at h
+  exact h
+
+end GaloisForLFunctions
