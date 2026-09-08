@@ -90,10 +90,14 @@ existence of an exactly balanced finite prime batch.
 
 ## Remaining proof obligation
 
-The full inherited-cost identity and an actual prescribed-prime repair
-producer are proved. Exhaustion still requires renewal after source windows
-are used, control of several unresolved small primes, and the overlapping
-child profiles that arise there. Fixed quotient windows have
+The full inherited-cost identity and actual prescribed-prime repair
+producers are proved. An [unconditional terminal-core construction](../3-formalized/ccm-fu-small-terminal-core.md)
+also processes every prime outside two signed windows, including every
+prime below the square-root threshold, with arbitrarily small quadratic
+successor envelope. Its construction supplies an endpoint; a bounded
+path reaching it and the final signed endpoint bound remain open.
+Exhaustion still requires renewal after source windows are used and
+control of overlapping child profiles along the complete path. Fixed quotient windows have
 limited prime capacity; their existence does not alone pay every future
 change of core under a uniform global budget.
 
