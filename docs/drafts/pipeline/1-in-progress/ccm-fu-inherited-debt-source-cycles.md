@@ -29,7 +29,9 @@ Its unnormalized positive weights are ((z*y-x*w)/A,w,-y). Their
 quadratic sum is `2*y*w*(x-z)`. Exact reflection gives w=-x and
 `z-x=S_14/sqrt(14)`, where the complete signed source S_14 is strictly
 negative by the existing analytic source bounds. Thus the quadratic sum
-is negative. This algebraic observation has not yet been added to Lean.
+is negative. This algebraic observation has not been added as a separate
+Lean theorem. It does not exclude energy contraction: the block also
+consumes source squares, as the complete transport law below shows.
 
 ## Frozen discriminating experiment
 
@@ -62,11 +64,36 @@ one-thread numerical libraries, 50-second internal and 60-second external
 limits. Download script, output and hashes into the computation ledger;
 remove owned remote files and processes. No larger or repeated screen.
 
+## Current result
+
+The [completed diagnostic](../2-fully-proven/computations/ccm-fu-inherited-debt-cycles-2026-09-08/README.md)
+finds a positive circuit at **2,11,15**. A separate
+[source and transport proof](../3-formalized/ccm-fu-inherited-two-cost-source-cycle.md)
+establishes its covariance sign analytically, stability under independent
+clipping, exact physical normalization, and the complete actual batch laws.
+No numerical result supplies a proof premise.
+
+If X,Y are the two receiving displacements and C is the sum of copied
+signed covariances, then
+
+`Delta_2(P+L)=Delta_2(P)-2*a*Y-2*b*X+2*X*Y-C`.
+
+For a balanced block the current energy decreases by
+`sum p*(x_p^2+y_p^2)` and its prime-two successor decreases by
+`sum p*(x_p+y_p)^2`. Hence either covariance sign can contract both
+energies; positive covariance additionally reduces their difference.
+This is why a cost-only sign obstruction cannot retire the older circuit.
+Every other remaining successor loses the same current-state square reserve,
+so a balanced actual block contracts the full successor envelope by the
+smaller of the two displayed reserves. This endpoint theorem does not assert
+existence of an exactly balanced finite prime batch.
+
 ## Remaining proof obligation
 
-First prove the exact change of the full inherited prime-two cost, not
-just the retained pair product. Even a positive finite circuit supplies
-only local control: each fixed quotient window has limited prime capacity.
+The full inherited-cost identity is proved, including the receiving error.
+Real circuit weights still need realization by actual finite prime batches.
+Even a positive finite circuit supplies only local control: each fixed
+quotient window has limited prime capacity.
 A finite family of such windows does not alone pay a general cost of
 order M squared. Exhaustion still requires uniform control across growing
 quotients and processed cores, including overlap and clipping errors.

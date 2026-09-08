@@ -18,6 +18,9 @@
 - [ ] Formalize the normalized translation-average limit and loss of correction from cycle 5.
 - [ ] Use that survivor to formulate and attempt the next arithmetic conjecture; keep the full Selberg goal unchanged.
 - [x] Cycles 9–10: distinguish logarithmic-scale rate loss from ordinary-scale rate recovery, with actual integrability, set-integral evaluations, and complete range classification.
+- [x] Cycle 12: derive the actual Maass constant-term Euler equation and decay at C² regularity, then prove constant-term vanishing throughout `0<lambda<1/4` at infinity.
+- [x] Cycle 13: test integral cusp relocation as a covering shortcut; formalize its failure on an open band and the sharp orbit-height maximum as the positive survivor.
+- [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
 
@@ -245,7 +248,41 @@ For a cusp of width `w`, the intended later assembly uses frequencies `2*pi*|n|/
 
 **Paper chain under test:** a compact positive-height rectangle bounds the first and second chart derivatives, justifying differentiation under the horizontal integral. The integral of the horizontal second derivative is the endpoint difference of the first derivative; periodicity makes it zero. The given hyperbolic eigen-equation then yields the Euler ODE. The actual cusp filter bounds the integrand uniformly in the horizontal coordinate, so the finite-width integral tends to zero.
 
-For `lambda=alpha*beta`, `alpha+beta=1`, `0<beta<alpha`, logarithmic height gives `H''-H'+lambda*H=0`. Differentiating the two coefficient expressions `(H'-beta*H)*exp(-alpha*t)` and `(alpha*H-H')*exp(-beta*t)` makes them constant. This would give a sum of two growing real exponentials; decay would force both coefficients to vanish. This is a proof plan to be checked, not an assumed solution formula or a Selberg conclusion.
+For `lambda=alpha*beta`, `alpha+beta=1`, `0<beta<alpha`, logarithmic height gives `H''-H'+lambda*H=0`. Differentiating `(H'-beta*H)*exp(-alpha*t)` makes it constant. Swapping the two roots supplies the other coefficient. Multiplication by the inverse integrating factors and subtraction give the exact two-exponential representation. Multiplying by `exp(-alpha*t)` and taking the decay limit first kills the faster coefficient; multiplication by `exp(-beta*t)` then kills the other. Division by the nonzero root difference gives `H=0`.
+
+**Paper outcome:** the conjectured vanishing is proved in the strictly positive sub-quarter interval. Choosing `nu=sqrt(1/4-lambda)` puts every `0<lambda<1/4` in the distinct-positive-root range. This proves zero constant term at the infinity cusp from the existing decay definition. It does not require a strengthened Maass record or an assumed ODE solution formula.
+
+**Lean status:** `SelbergMaassFourierMean` proves actual congruence periodicity, both differentiations at C² regularity, the Euler equation, and decay. `SelbergExceptionalCuspMean` proves integrating-factor constancy, the forced exponential representation, decay rigidity, and `maassMean_subquarter_zero` for every actual positive-level principal-congruence Maass eigenform in the target exceptional interval. Both scratch and direct source checks passed without warnings. Targeted final audits are recorded below. No Selberg spectral bound is asserted.
+
+**Remaining scope:** the current theorem concerns the infinity cusp. Covariance at other integral cusp scalings, nonzero-mode energy assembly, approximation beyond compact profiles, and a congruence-uniform compact-core gluing estimate remain to be proved.
+
+### Cycle 13 — can integral cusp changes cover the missing core?
+
+**Conjecture tested:** after removing the constant term, changing integral cusp coordinates can move every point into a height where the sufficient tail threshold applies.
+
+**Source-derived test:** `ThetaCuspHawkingBMCompactModularPeriodization.modular_orbit_height_le` bounds the height of every actual modular translate by `max(y,1/y)`. On the imaginary axis this bound is attained: identity gives `y`, and inversion gives `1/y`. Therefore the exact maximal orbit height is `max(y,1/y)`; at `i` it is one. No integral change of cusp can move `i` above any cutoff greater than one. More strongly, points with height between `1/M` and `M` stay below `M` under every such change, for `M>=1`.
+
+**Paper and Lean outcome:** the proposed covering shortcut fails for every cutoff greater than one. `SelbergCuspRelocation` proves the exact attained height maximum on the imaginary axis, a cutoff reachability equivalence, the reciprocal-band bound, and an explicit nonempty open set whose points remain strictly below the cutoff under every integral matrix. The positive survivor is an exact classification and a whole forbidden height band, rather than only a single uncovered point. This does not refute cusp-plus-core gluing or Selberg. It says a compact-core estimate cannot be replaced by integral cusp relocation alone.
+
+The formal frequency-to-width bridge is still absent, so no numeric level threshold is being asserted as an already-proved Maass energy theorem. The next proof route must couple the cusp estimate to genuine core or arithmetic control.
+
+[Exact positive survivor](../3-formalized/selberg-sharp-cusp-orbit-height.md); [failed covering shortcut](../5-failed/selberg-integral-cusp-relocation.md).
+
+### Cycle 14 — replace the sufficient tail slope by the actual Bessel slope
+
+**Conjecture under test:** the actual critical nonzero mode may supply a stronger boundary coefficient than cycle 11's elementary factorization, possibly removing its cutoff restriction.
+
+**Inspected ingredients:** the corpus Schlaefli integral `realModifiedBesselKOrder`, its strict positivity and `K_1>K_0`, the arbitrary-order argument derivative in `ThetaCuspHawkingBMBesselArgumentDerivative`, and the exact order recurrence. These give a concrete function to differentiate, rather than a postulated boundary operator.
+
+For `K_j(s)=realModifiedBesselKOrder s j`, test the dimensionless slope `q(s)=s*K_1(s)/K_0(s)`. The derivative and recurrence should give `q'(s)=(q(s)^2-s^2)/s`; the strict integral comparison then makes `q` strictly increasing. For the critical mode `g(y)=sqrt(y)*K_0(k*y)`, the proposed exact outgoing boundary slope is `(q(k*y)-1/2)/y`. The proof must establish these actual derivatives and their sign regimes before using a boundary-energy claim. No relationship to a general Maass nonzero Fourier mode is yet assumed.
+
+**First outcome:** actual differentiation and the recurrence prove the Riccati law and strict monotonicity. The stronger all-positive-boundary-slope conjecture fails: there is a unique transition argument strictly between zero and one half, below which the actual outgoing coefficient is negative and above which it is positive.
+
+**Positive survivor and new proof mechanism:** in logarithmic argument, `Q'=Q^2-exp(2t)` and `Q>0`. If `Q>=d>0` everywhere, then for `t<=log(d/2)`, `Q'>=d^2/2`. The function `Q(t)-(d^2/2)t` is nondecreasing on that left interval. Comparing two explicitly separated points forces `Q` to be negative, a contradiction. Thus there is no positive lower bound; strict monotonicity, the bound `q(s)>s`, and the intermediate value theorem give exactly one point at every positive target value. This avoids assuming a small-argument Bessel asymptotic.
+
+**Current Lean status:** `SelbergBesselBoundarySlope` passes scratch and direct checks. It contains the actual derivative system, Riccati law, exact positive range, unique transition, critical mode differential equation, and full outgoing-sign classification. The exact compact-profile energy identity is in progress in scratch; it is not yet claimed as a theorem.
+
+**Build correction:** an initial targeted slope build expanded through the existing Eisenstein imports and spawned parallel Lean workers. It was stopped, and its child processes were cleaned up. A premature energy scratch check failed because the slope olean did not yet exist. The source argument derivative and strict order comparison are being extracted into small modules, preserving theorem names and existing wrapper imports; subsequent builds are serialized. The interrupted build is not a passing final audit.
 
 ## Verification log
 
@@ -259,3 +296,6 @@ For `lambda=alpha*beta`, `alpha+beta=1`, `0<beta<alpha`, logarithmic height give
 - Final index refresh and formal lint passed after both modules; lint reports existing large-file warnings. Both new Lean files pass whitespace checks. The process audit found no remaining Lean or Lake process; no unrelated process was terminated.
 - Continuation: `SelbergPoissonScaleMoments` and `SelbergCuspHardyBoundary` each passed scratch and final direct checks without warnings, and each targeted final build passed. Both are wired into the umbrella. Fourteen further capstone axiom checks report only `propext`, `Classical.choice`, and `Quot.sound`.
 - Final continuation index refresh and whitespace checks passed. The process audit found no Lean/Lake process. **The continuation's repository-wide lint did not pass:** it reported 11 unrelated modules unreachable from their theorem-area umbrellas. None of the errors names a Selberg module. The failures are five `ThetaCuspHawkingBMJoint` modules (`AngularEnergyTests`, `RadialFamilyAdmission`, `RadialFamilyData`, `RadialFamilyGreen`, `RadialFamilyLift`) and six HTGeometry modules (`BochnerL2HilbertTensor`, `BochnerL2ProductIsometry`, `CompactUniformL2Convergence`, `HilbertCompactJetApproximation`, `HilbertFiniteProjectionCompact`, `HilbertFiniteProjectionL2`). Those files were not edited by this task. Detailed output: `/tmp/selberg_scale_hardy_lint.log`. The earlier passing lint entry concerns the earlier pair of modules and is historical.
+- Cycle 12: both complete scratch proofs and final direct checks passed without warnings. Targeted final builds passed for `SelbergMaassFourierMean` and `SelbergExceptionalCuspMean`, rebuilding one module each. Eleven capstone axiom checks in `/tmp/selberg_maass_mean_axioms.lean` report only `propext`, `Classical.choice`, and `Quot.sound`. Both modules are wired into the umbrella.
+- Cycle 12 index refresh and repository-wide lint passed. The earlier 11 unreachable-module failures no longer occur; they were resolved outside this task. Existing large-file warnings remain. Lint output: `/tmp/selberg_maass_mean_lint.log` (warnings were emitted on stderr). The process audit found no Lean/Lake process. [Exact result and paper proof](../3-formalized/selberg-exceptional-cusp-mean.md).
+- Cycle 13 scratch and direct source checks passed without warnings. Targeted `lake build GaloisForLFunctions.RHTower.SelbergCuspRelocation` passed (3547 dependency-graph jobs), rebuilding the target and two needed source dependencies. Six further axiom checks report only the standard three axioms. The module is wired into the umbrella. Final index refresh, repository-wide lint, and whitespace checks passed; lint retains existing large-file warnings. Final lint log: `/tmp/selberg_mean_relocation_final_lint.log`. No Lean/Lake process remained.

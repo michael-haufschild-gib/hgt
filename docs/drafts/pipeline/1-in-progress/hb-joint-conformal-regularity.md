@@ -15,6 +15,14 @@ inverse, Jacobian, and density coefficient. Transferring the completed weak
 response through this chart remains open; its classical representative and
 differential equation are not yet established.
 
+The [causal Laplace kernel](../3-formalized/hb-joint-causal-laplace-kernel.md)
+independently identifies each fixed-forcing spatial response with one
+time-causal Hilbert-valued kernel throughout the right half-plane. The
+coordinate transfer below is still needed for classical field equations,
+metric finite propagation and physical traces; it is not a prerequisite for
+that proved time-support identity. Actual time-dependent source application
+and left-QNM continuation remain open.
+
 ## Verified coordinate reduction
 
 For t<0 and y>0, put `u=-tanh(t)`, `a=sech(t)`, so `u²+a²=1`,

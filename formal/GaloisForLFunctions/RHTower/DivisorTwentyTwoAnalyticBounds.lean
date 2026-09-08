@@ -2,13 +2,14 @@ import GaloisForLFunctions.RHTower.HarmonicGeometricBounds
 import GaloisForLFunctions.RHTower.DivisorUniformSquareRootBound
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 /-!
-# Analytic source boxes at cutoffs seventeen and twenty-two
+# Analytic source boxes for signed reserve and repair witnesses
 
 Rational logarithm series bounds, harmonic Euler-constant corrections, and
 exact square inequalities enclose every source term. Signed interval products
 retain the full Abel sum. The public bounds certify the five retained
 coefficients and original diagonals needed for the successor-average and
-inherited-contraction witnesses.
+inherited-contraction witnesses, and the odd/even profiles at eleven and
+fifteen used by the inherited-debt source circuit.
 No numerical experiment is a proof premise.
 -/
 
@@ -463,4 +464,71 @@ theorem sum_divisorUnsignedDilationChannel_seventeen_sq_bounds :
       logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top]
   simp only [← pow_two] at hlo hhi
   exact ⟨hlow.trans hlo,hhi.trans hupp⟩
+end RHTower
+
+namespace RHTower
+private def debtChannelLower (M d : ℕ) : ℝ := ∑ k∈Icc d (M-1),termLower k (k/d)
+private def debtChannelUpper (M d : ℕ) : ℝ := ∑ k∈Icc d (M-1),termUpper k (k/d)
+private lemma debt_channel_box {M d : ℕ} (hM : M≤22) (hd : 1≤d) :
+    debtChannelLower M d ≤ divisorUnsignedDilationChannel M d ∧
+      divisorUnsignedDilationChannel M d ≤ debtChannelUpper M d := by
+  have hlo := sum_le_sum (fun k (hk : k∈Icc d (M-1)) =>
+    (term_box (mem_Icc.mpr ⟨hd.trans (mem_Icc.mp hk).1,by have := (mem_Icc.mp hk).2; omega⟩)
+      (show k/d≤21 by have := Nat.div_le_self k d; have := (mem_Icc.mp hk).2; omega)).1)
+  have hhi := sum_le_sum (fun k (hk : k∈Icc d (M-1)) =>
+    (term_box (mem_Icc.mpr ⟨hd.trans (mem_Icc.mp hk).1,by have := (mem_Icc.mp hk).2; omega⟩)
+      (show k/d≤21 by have := Nat.div_le_self k d; have := (mem_Icc.mp hk).2; omega)).2)
+  exact ⟨by simpa [debtChannelLower,divisorUnsignedDilationChannel] using hlo,
+    by simpa [debtChannelUpper,divisorUnsignedDilationChannel] using hhi⟩
+
+set_option maxHeartbeats 3000000 in
+/-- Analytic odd/even source boxes at eleven for the inherited-debt circuit. -/
+theorem divisorUnsignedDilationChannel_eleven_debt_profile_boxes :
+    (-0.273 ≤ divisorUnsignedDilationChannel 11 1-divisorUnsignedDilationChannel 11 3-
+      divisorUnsignedDilationChannel 11 5-divisorUnsignedDilationChannel 11 7 ∧
+      divisorUnsignedDilationChannel 11 1-divisorUnsignedDilationChannel 11 3-
+      divisorUnsignedDilationChannel 11 5-divisorUnsignedDilationChannel 11 7 ≤ -0.271) ∧
+    (-0.050 ≤ -divisorUnsignedDilationChannel 11 2+divisorUnsignedDilationChannel 11 6+
+      divisorUnsignedDilationChannel 11 10 ∧
+      -divisorUnsignedDilationChannel 11 2+divisorUnsignedDilationChannel 11 6+
+      divisorUnsignedDilationChannel 11 10 ≤ -0.047) := by
+  have h1 := debt_channel_box (M:=11) (d:=1) (by omega) (by omega)
+  have h2 := debt_channel_box (M:=11) (d:=2) (by omega) (by omega)
+  have h3 := debt_channel_box (M:=11) (d:=3) (by omega) (by omega)
+  have h5 := debt_channel_box (M:=11) (d:=5) (by omega) (by omega)
+  have h6 := debt_channel_box (M:=11) (d:=6) (by omega) (by omega)
+  have h7 := debt_channel_box (M:=11) (d:=7) (by omega) (by omega)
+  have h10 := debt_channel_box (M:=11) (d:=10) (by omega) (by omega)
+  norm_num [debtChannelLower,debtChannelUpper,Finset.sum_Icc_succ_top] at h1 h2 h3 h5 h6 h7 h10
+  norm_num [termLower,termUpper,weightLower,weightUpper,defectLower,defectUpper,
+    logLower,logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top] at h1 h2 h3 h5 h6 h7 h10
+  constructor <;> constructor <;> linarith only [h1.1,h1.2,h2.1,h2.2,h3.1,h3.2,h5.1,h5.2,h6.1,h6.2,h7.1,h7.2,h10.1,h10.2]
+
+set_option maxHeartbeats 3000000 in
+/-- Analytic odd/even source boxes at fifteen for the inherited-debt circuit. -/
+theorem divisorUnsignedDilationChannel_fifteen_debt_profile_boxes :
+    (-0.286 ≤ divisorUnsignedDilationChannel 15 1-divisorUnsignedDilationChannel 15 3-
+      divisorUnsignedDilationChannel 15 5-divisorUnsignedDilationChannel 15 7-
+      divisorUnsignedDilationChannel 15 11-divisorUnsignedDilationChannel 15 13 ∧
+      divisorUnsignedDilationChannel 15 1-divisorUnsignedDilationChannel 15 3-
+      divisorUnsignedDilationChannel 15 5-divisorUnsignedDilationChannel 15 7-
+      divisorUnsignedDilationChannel 15 11-divisorUnsignedDilationChannel 15 13 ≤ -0.283) ∧
+    (0.055 ≤ -divisorUnsignedDilationChannel 15 2+divisorUnsignedDilationChannel 15 6+
+      divisorUnsignedDilationChannel 15 10+divisorUnsignedDilationChannel 15 14 ∧
+      -divisorUnsignedDilationChannel 15 2+divisorUnsignedDilationChannel 15 6+
+      divisorUnsignedDilationChannel 15 10+divisorUnsignedDilationChannel 15 14 ≤ 0.058) := by
+  have h1 := debt_channel_box (M:=15) (d:=1) (by omega) (by omega)
+  have h2 := debt_channel_box (M:=15) (d:=2) (by omega) (by omega)
+  have h3 := debt_channel_box (M:=15) (d:=3) (by omega) (by omega)
+  have h5 := debt_channel_box (M:=15) (d:=5) (by omega) (by omega)
+  have h6 := debt_channel_box (M:=15) (d:=6) (by omega) (by omega)
+  have h7 := debt_channel_box (M:=15) (d:=7) (by omega) (by omega)
+  have h10 := debt_channel_box (M:=15) (d:=10) (by omega) (by omega)
+  have h11 := debt_channel_box (M:=15) (d:=11) (by omega) (by omega)
+  have h13 := debt_channel_box (M:=15) (d:=13) (by omega) (by omega)
+  have h14 := debt_channel_box (M:=15) (d:=14) (by omega) (by omega)
+  norm_num [debtChannelLower,debtChannelUpper,Finset.sum_Icc_succ_top] at h1 h2 h3 h5 h6 h7 h10 h11 h13 h14
+  norm_num [termLower,termUpper,weightLower,weightUpper,defectLower,defectUpper,
+    logLower,logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top] at h1 h2 h3 h5 h6 h7 h10 h11 h13 h14
+  constructor <;> constructor <;> linarith only [h1.1,h1.2,h2.1,h2.2,h3.1,h3.2,h5.1,h5.2,h6.1,h6.2,h7.1,h7.2,h10.1,h10.2,h11.1,h11.2,h13.1,h13.2,h14.1,h14.2]
 end RHTower

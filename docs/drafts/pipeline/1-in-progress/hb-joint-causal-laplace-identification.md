@@ -7,24 +7,31 @@
 Chain: literal theta cusp → Xi occurrence → retained spin-two source → original
 causal response and left-QNM pairing → independent Hawking-clock extinction → RH.
 
-The original joint wave response is constructed for every `Re(w)>0`, with
-`norm(Ju)<=norm(F)/(Re(w)*norm(w))`. Its graph-domain equation and nonseparated
-energy tests are proved. Causal identification may be obtained directly from
-this inverse, without first requiring classical coordinate regularity.
+The [causal Laplace kernel](../3-formalized/hb-joint-causal-laplace-kernel.md)
+is constructed in the original spatial Hilbert space. For every fixed spatial
+F, one frequency-independent K_F vanishes almost everywhere before time zero,
+admits every positive exponential L² damping on positive time, and has an
+absolutely convergent Bochner Laplace transform equal to the original spatial
+response throughout `Re(w)>0`.
 
-The active construction identifies the response with the inverse of its actual
-bounded form pencil `I+(w²-1)J*J`, proves holomorphy, and applies the corpus's
-half-plane Paley–Wiener theorem. For a fixed forcing F and continuous spatial
-probe, shifting frequency by a positive real delta gives a Hardy function:
-its product with `w+delta` is bounded by the original resolvent estimate.
-The resulting time kernel must have actual support in nonnegative time and
-reproduce the original measured response by its Laplace transform.
+The proof identifies the response with its actual form-pencil inverse,
+derives Hardy estimates from the proved resolvent bound, and applies the
+corpus's Paley–Wiener theorem. Fourier/probe compatibility and Bochner tensor
+totality assemble one vector kernel. Laplace injectivity proves independence
+of every auxiliary damping choice, removing the temporary restriction to a
+smaller half-plane. Classical coordinate regularity is not a prerequisite for
+this time-support and transform identity.
 
-Required further work includes coherent Hilbert-valued assembly, compatibility
-across shifts, the actual smooth-onset source and its frequency-dependent
-terms, and continuation to the physical left-QNM pairing. These steps cannot
-be replaced by a named causal interface or a supplied inverse. No causal
-existence statement alone supplies the independent extinction law.
+Required further work is application to the actual vector-valued smooth-onset
+source: convolution and transform interchange, its frequency-dependent terms,
+all onset terms and the explicit cusp principal correction. A
+frequency-dependent residual cannot be silently treated as a fixed spatial F.
+Classical/weak time equations, metric finite propagation, modular patching,
+radial endpoint traces and constrained Einstein sectors still need their
+physical identifications. Continue the resulting actual-source response to
+the physical left-QNM pairing and evaluate the retained spin-two/AIME source.
+Independent Hawking-clock extinction remains open; causal linear existence
+for every F supplies no Xi-zero selection by itself.
 
 No numerical experiment is indicated; the construction uses analytic estimates
 and the existing Fourier/Paley–Wiener corpus.
