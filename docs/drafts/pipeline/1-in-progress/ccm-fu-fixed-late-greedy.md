@@ -1,7 +1,7 @@
 # CCM-FU: middle selection with prescribed late order
 
 - Type: derived diagnostic for the unchanged quadratic-order/RH target.
-- Status: protocol frozen before execution.
+- Status: frozen screen and independent audit complete; uniform estimate open.
 - Chain: actual divisor source → complete quadratic raw-energy order →
   O(M) Abel bound → CCM-FU → RH. Frontier map read only.
 
@@ -67,8 +67,77 @@ audited state will determine whether the next proof attempt should bound
 transverse growth, head compensation, or the cost of postponing a middle
 prime. No unseen all-cutoff conclusion is asserted.
 
-All scripts and results will be downloaded under
-`2-fully-proven/computations`; owned remote jobs and files and local
-scratch will be removed. Broad corpus OR searches used `--any` for
+All scripts and results are downloaded under
+[`2-fully-proven/computations/ccm-fu-fixed-late-greedy-2026-09-08`](../2-fully-proven/computations/ccm-fu-fixed-late-greedy-2026-09-08/README.md).
+Hashes agree with RunPod. Owned remote jobs, remote directory and local
+scratch are removed. Broad corpus OR searches used `--any` for
 transverse dissipation, middle/child transport, and exhaustive histories.
 The scientific-method protocol was read before freezing this diagnostic.
+
+## Audited result
+
+Both policies complete every tested cutoff, with maximum energy equal to
+the initial diagonal. Screen: four workers, 2.705 seconds. Original time-sum
+audit: 80 digits, four workers, 0.093 seconds. These are floating diagnostics,
+not interval certificates or Lean premises. No new Lean declaration or
+build was needed.
+
+The frozen audit selects `M=512`, increasing-late policy, state index 20.
+All 41 allowed moves strictly increase raw energy. Its 43 active nonscalar
+labels coexist with the selected scalar-only move `p=131`. The selected
+gain is `0.0035562454474282`; its margin over the next best move is
+`0.0037358390855893`. This is a local rise below the original diagonal,
+not a ceiling failure.
+
+The saved trajectory then processes `131,137,139,149,151,157,13`.
+Energy rises from `35.0297470636` to `35.3128500025`, then returns to
+`35.0247365588`. The original diagonal is `311.5512693800`.
+Only the first state and every one-step alternative there were independently
+audited; continuation values are from the directly regrouped screen.
+
+## Direct proof attempt and remaining estimate
+
+Write a still-available interacting prime's full gain as `2 f a + T`,
+where `f` is the current head, `a` its singleton coefficient, and
+`T = 2 sum_{R nonempty} F_R F_{R union {q}}`, over labels avoiding `q`.
+If preceding operations merge isolated negative scalar leaves of total
+mass `t`, then this gain becomes `2(f-t)a+T`. All nonhead products stay
+in the formula. For `a>0`, making the head sufficiently negative can
+therefore turn a costly interacting step into a contracting one.
+
+At the audited state, prime 13 has `a=1.51416685499` and
+`T=1.48378516593`, while its head contribution is `-0.20074559169`.
+The six scalar moves change the head from `-0.06628912495` to
+`-0.58510678786`; the following prime-13 insertion contracts. These
+scalar labels have no interaction with 13, by their product cutoffs.
+The corresponding identities already follow from the literal merger
+and isolated-leaf transport laws; numerical values prove no general sign.
+
+The attempted source estimate must control **both** the quadratic cost
+of reaching this compensation head and the availability of a useful
+interacting packet before the scalar supply ends. Neither is supplied
+by the observed excursion. A tiny positive `a` can make `T/(2a)` large;
+the quotient transport bound controls the full gain, not this ratio.
+After a genuinely interacting insertion, all future `a` and `T` must
+be recomputed from the changed source. No fixed-head or fixed-packet
+induction is justified across that insertion.
+
+The broader corpus audit found these precise limits:
+
+- `MobiusDivisorUniformSuccessorTransport` bounds every complete move,
+  but its additive quotient sum is too large through the unbounded front.
+- `MobiusDivisorQuotientWindowOrder` controls a whole quotient window
+  by three source endpoints; it does not bound those endpoints globally.
+- `MobiusDivisorPrescribedWindowRepair` supplies actual compensators
+  while its bounded-quotient pools remain fresh. It does not exhaust the
+  unbounded middle front or replenish used primes.
+- `MobiusDivisorFixedCoreEnergyLimit` has a core-dependent error;
+  its limit cannot be applied uniformly to growing processed cores.
+- `PositivePrimeCubeEnergyBarrier` prevents a generic positivity plus
+  small-final-total argument from proving the original-diagonal ceiling.
+- `MobiusDivisorContinuousHeadMoment` gives a uniform signed moment,
+  but does not supply unused prime samples or a transverse gain bound.
+
+No selector is retired, and no all-cutoff conjecture is inferred from
+these finite passes. The missing uniform interacting-prime estimate,
+complete prime exhaustion, Abel bound and unconditional RH term remain open.

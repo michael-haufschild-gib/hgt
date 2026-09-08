@@ -89,7 +89,17 @@ For every compact continuous g on H, the original J_e(zeroExtend(g)) converges t
 
 ## Lean and verification
 
-Final serialized module builds, complete declaration axiom audit, corpus refresh, lint, and process audit are pending.
+Four modules are complete: SelbergCompactTestApproximation (2 declarations), SelbergUpperHalfPlaneCompactTests (13), SelbergMaassContinuousCurvature (10), and SelbergMaassCurvatureMeasure (15). All complete scratch proofs and all needed source olean-producing checks passed without warnings.
+
+All 40 public declarations, including both named measure instances, passed the scratch axiom audit. Only propext, Classical.choice, and Quot.sound occur; no added axioms or admissions. Full declaration list and audit: /tmp/selberg_curvature_measure_declarations.txt, /tmp/selberg_curvature_measure_axioms.lean, /tmp/selberg_curvature_measure_axioms.log.
+
+All four modules are wired into RHTower.lean. The refreshed full-corpus index returns all 40 declarations across the four modules (/tmp/selberg_curvature_measure_corpus_audit.json). Task-source, new-file, card, and umbrella whitespace checks passed.
+
+All four serialized final LEAN_NUM_THREADS=1 lake build <single-module> audits passed. Each rebuilt only its named target: compact approximation 3.2s, upper-half-plane compact tests 13s, continuous curvature 7.0s, curvature measure 10s. Logs: /tmp/selberg_compact_test_approximation_build.log, /tmp/selberg_upper_half_plane_compact_tests_build.log, /tmp/selberg_maass_continuous_curvature_build.log, and /tmp/selberg_maass_curvature_measure_build.log. Cached informational output from EvenL2LogUnitary was replayed; no new task-module warning or error occurred. No full or umbrella build ran.
+
+Repository lint exited 1 only for the unrelated, unwired RHTower.FokasLenellsHardyOrientation module, with existing large-file warnings (/tmp/selberg_curvature_measure_lint.log). This task did not modify that file. No Selberg lint error was emitted; repository lint as a whole did not pass.
+
+All task-owned Lean/build handles are terminal. The final filtered process inventory found no Lean or Lake executable (/tmp/selberg_curvature_measure_processes.log). No numerical experiment, task commit, or task push was performed.
 
 ## Remaining source gap and next conjecture
 
