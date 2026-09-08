@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergMaassBoundaryForm
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModularLaplacian
+import GaloisForLFunctions.HTGeometry.ComplexC2Laplacian
+import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 
 /-!
 # Integral cusp transport for actual C² Maass eigenforms
@@ -17,10 +18,13 @@ quotient-core estimate is not asserted.
 
 open Complex Set Filter Topology UpperHalfPlane ModularGroup
 open scoped MatrixGroups ContDiff
-open RHTower.D4BMModularCore
+open GaloisForLFunctions.HTGeometry.ComplexC2Laplacian
 
 namespace GaloisForLFunctions.RHTower.SelbergMaassCuspTransport
 noncomputable section
+
+private def chartLaplacian (f : ℍ → ℂ) (z : ℍ) : ℂ :=
+  (z.im : ℂ) ^ 2 * laplacian (f ∘ ofComplex) (z : ℂ)
 
 private theorem chart_contDiffAt {f : ℍ → ℂ} (hf : IsRealSmoothUpperHalfPlane f) (z : ℍ) :
     ContDiffAt ℝ 2 (f ∘ ofComplex) (z : ℂ) :=
@@ -37,7 +41,7 @@ private theorem chart_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)
     (UpperHalfPlane.analyticAt_smul (g := (A : GL (Fin 2) ℝ)) hdet z).contDiffAt
   have hF : ContDiffAt ℝ 2 (f ∘ ofComplex) (G (z : ℂ)) := by
     simpa only [G, ofComplex_apply, sl_moeb] using chart_contDiffAt hf (A • z)
-  have hc := planarLaplacian_holomorphic_comp hF hG
+  have hc := laplacian_holomorphic_comp hF hG
   have hfun : (f ∘ ofComplex) ∘ G = (fun w : ℍ => f (A • w)) ∘ ofComplex := by
     funext w
     simp only [G, Function.comp_apply, ofComplex_apply]
@@ -58,8 +62,7 @@ private theorem chart_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)
 
 private theorem positive_eq_neg_chart (f : ℍ → ℂ) (z : ℍ) :
     positiveHyperbolicLaplacian f z = -chartLaplacian f z := by
-  simp only [positiveHyperbolicLaplacian, chartLaplacian, planarLaplacian,
-    Fin.sum_univ_two, direction, Matrix.cons_val_zero, Matrix.cons_val_one, neg_mul]
+  simp only [positiveHyperbolicLaplacian, chartLaplacian, laplacian, neg_mul]
 
 /-- The positive hyperbolic Laplacian commutes with each integral Möbius pullback at real C² regularity. -/
 theorem positive_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)
@@ -82,7 +85,8 @@ theorem smooth_pullback (A : SL2Z) (f : ℍ → ℂ)
   have h := (hF.comp (z : ℂ) hG).contDiffWithinAt (s := {v : ℂ | 0 < v.im})
   simpa only [Function.comp_def, ofComplex_apply] using h
 
-@[simp]theorem integral_action (A : SL2Z) (z : ℍ) :
+/-- The real image and integral matrix actions agree on the upper half-plane. -/
+@[simp] theorem integral_action (A : SL2Z) (z : ℍ) :
     integralSL2ToReal A • z = A • z := rfl
 
 /-- The actual C² eigenfunction equation is preserved with the same eigenvalue. -/
@@ -113,7 +117,8 @@ def invariantPullback (N : ℕ) (A : SL2Z)
     have h := f.2 ⟨_, hr⟩ (A • z)
     simpa only [← he, integral_action, mul_smul, inv_smul_smul] using h⟩
 
-@[simp]theorem invariantPullback_apply (N : ℕ) (A : SL2Z)
+/-- The constructed invariant pullback evaluates by the original Möbius action. -/
+@[simp] theorem invariantPullback_apply (N : ℕ) (A : SL2Z)
     (f : upperHalfPlaneInvariantFunctions (realImage (CongruenceSubgroup.Gamma N))) (z : ℍ) :
     (invariantPullback N A f).1 z = f.1 (A • z) := rfl
 
@@ -137,7 +142,8 @@ def translate (N : ℕ) (A : SL2Z) {lam : ℝ}
     eigenfunction_pullback A lam f.1.1 f.2.2.1,
     cuspidal_pullback A f.1.1 f.2.2.2⟩
 
-@[simp]theorem translate_apply (N : ℕ) (A : SL2Z) {lam : ℝ}
+/-- The translated Maass object is the literal pullback of the source function. -/
+@[simp] theorem translate_apply (N : ℕ) (A : SL2Z) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma N)) lam) (z : ℍ) :
     (translate N A f).1.1 z = f.1.1 (A • z) := rfl
 
@@ -150,7 +156,8 @@ theorem translate_mul (N : ℕ) (A B : SL2Z) {lam : ℝ}
   funext z
   simp only [translate_apply, mul_smul]
 
-@[simp]theorem translate_one (N : ℕ) {lam : ℝ}
+/-- The identity scaling matrix leaves the Maass eigenform unchanged. -/
+@[simp] theorem translate_one (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma N)) lam) :
     translate N 1 f = f := by
   apply Subtype.ext

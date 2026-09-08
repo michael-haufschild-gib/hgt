@@ -1,7 +1,7 @@
 # Actual integral cusp transport and finite congruence trace
 
 - **ID:** SELBERG-MAASS-INTEGRAL-CUSPS-CONGRUENCE-TRACE
-- **Stage:** 3-formalized; final module audits pending below.
+- **Stage:** 3-formalized.
 - **Parent:** [Constructive Selberg loop](../1-in-progress/selberg-quarter-conjecturing-loop.md), cycle 24.
 - **Scope:** Actual C² Maass cusp eigenforms at every positive principal congruence level.
 
@@ -59,10 +59,22 @@ Fresh whole-corpus searches for truncated Stokes identities found `ThetaCuspHawk
 
 ## Lean audit
 
-- `GaloisForLFunctions.RHTower.SelbergMaassCuspTransport`: C² covariance, actual translates and their composition/inverse laws, and every integral cusp's constant coefficient and Bessel identities. Complete scratch and direct source checks passed without warnings.
-- `GaloisForLFunctions.RHTower.SelbergMaassCongruenceTrace`: finite quotient family, modular invariant density, physical unit-width mass normalization and derivatives, exact trace tail and boundary identities. Complete mathematical scratch proof passed; final exported-instance check and source audit pending.
+- `GaloisForLFunctions.HTGeometry.ComplexC2Laplacian`: the shared general C² holomorphic chain-rule proof, extracted from the existing specialized module into a narrow dependency surface.
+- `GaloisForLFunctions.RHTower.SelbergMaassCuspTransport`: C² covariance, actual translates and their composition/inverse laws, and every integral cusp's constant coefficient and Bessel identities.
+- `GaloisForLFunctions.RHTower.SelbergMaassCongruenceTrace`: finite quotient family, modular invariant density, physical unit-width mass normalization and derivatives, exact trace tail and boundary identities.
+- `ThetaCuspHawkingBMConformalLaplacian.planarLaplacian_holomorphic_comp`: the existing public statement is preserved and delegates to the shared lemma. Both its revised scratch wrapper and actual source check passed without warnings; its required olean was generated directly.
 
-Final targeted builds, axiom audits, index refresh, lint, whitespace, and process cleanup will be recorded here from their actual terminal outputs.
+All complete scratch and direct source checks passed. The three final targeted module builds passed, each rebuilding its target alone: `/tmp/selberg_complex_c2_laplacian_build.log` (1.0 s), `/tmp/selberg_cusp_transport_build.log` (5.8 s), and `/tmp/selberg_congruence_trace_build.log` (4.3 s). The latter two replayed an existing informational `EvenL2LogUnitary` tactic message; none of the new targets produced a warning. No full or umbrella build ran.
+
+**Build-process correction:** the first targeted transport audit, before narrowing its import, launched multiple transitive-dependency workers. This violated the requested one-worker discipline. The exact task-owned Lake process and all its inspected descendants were stopped, and its handle returned terminal exit 143. The aborted log is `/tmp/selberg_cusp_transport_parallel_aborted.log`. The shared-lemma extraction removed that broad dependency path. All subsequent final builds ran sequentially with `LEAN_NUM_THREADS=1` and each built only its named target. No unrelated source was changed to repair those dependencies.
+
+All **47 public declaration** checks, including definitions, the new shared theorem, and the preserved old wrapper, passed in `/tmp/selberg_cusp_trace_axioms.lean` and `/tmp/selberg_cusp_trace_axioms.log`. They report only `propext`, `Classical.choice`, and `Quot.sound`, or no axioms. No admissions or added axioms were introduced.
+
+All three new modules are wired into their area umbrellas. Index refresh passed (`/tmp/selberg_cusp_trace_index.log`), and refreshed corpus searches return both new Selberg capstones. Tracked and new task-file whitespace checks passed.
+
+**Latest repository-wide lint failed on one unrelated, currently untracked unwired module:** `GaloisForLFunctions.HTGeometry.GaussianDisplacedSpectralPole`. Log: `/tmp/selberg_cusp_trace_lint.log`. No new or modified task module is named in an error. Existing large-file warnings remain. The unrelated module was not edited or wired speculatively.
+
+Every task-owned process is terminal, including the stopped initial audit. The final process inspection found no Lean or Lake build process. This task made no commits; other work in the shared tree may have committed files during the proof work. The complete Selberg goal remains unproved.
 
 ## Remaining conjecture and next proof attempt
 

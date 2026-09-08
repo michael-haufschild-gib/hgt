@@ -1,4 +1,5 @@
 import Mathlib.Algebra.Order.Field.GeomSum
+import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
