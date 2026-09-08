@@ -1,6 +1,6 @@
 # CCM-FU: prescribed-prime inclusion and uniform pair source profile
 
-- **Stage:** 3-formalized; scratch checks passed. Exact leaf emission and new-closure audit in progress. Lake packaging audit remains pending.
+- **Stage:** 3-formalized; scratch and exact-file checks, new-closure axiom audit and global formal lint passed. Lake packaging audit remains pending.
 - **Proof chain:** Actual divisor source → renewable signed reserve → exhaustive prime selection → uniform signed Abel bound → RH.
 - **Closed:** Every sufficiently large prescribed prime has a reserve-producing partner after any nonempty even prime core. Complete pair changes have a uniform source profile on the entire ordered prime-ratio ray. A common far-ratio window gives opposite pair changes before and after a prescribed prime.
 - **Open:** Prescribed primes below the changing core threshold; intermediate payment; uniform physical cutoff and successor-envelope control through exhaustion; RH.
@@ -115,11 +115,14 @@ result or analytic sign assumption is an input to these arguments.
 - `MobiusDivisorPrimePairSourceOrientation.lean`: three public theorems for arbitrary tail windows, simultaneous source states and arbitrarily large debt-increasing pairs.
 - `MobiusDivisorPrescribedPrimePairReserve.lean`: two public theorems for every sufficiently large prescribed prime, at coefficient and actual energy level.
 
-All three imports are wired into RHTower. Scratch checks passed; exact
-leaf emission and one audit of these six new theorem closures are in
-progress. No umbrella or broad prerequisite build is authorized. The
-known Lake packaging audit is pending because its prerequisite graph
-would trigger a broad stale rebuild.
+All three imports are wired into RHTower. Each leaf passed a foreground
+scratch check and its exact source-file check with leaf olean emission.
+One external audit of these six new theorem closures found only
+propext, Classical.choice and Quot.sound; no old declaration was
+re-audited. Global formal lint and the scoped whitespace check passed.
+No umbrella or old prerequisite was built. The known Lake packaging
+audit remains pending because its prerequisite graph would trigger a
+broad stale rebuild. No computation was used as a proof premise.
 
 ## Remaining coverage problem and independent experiment
 

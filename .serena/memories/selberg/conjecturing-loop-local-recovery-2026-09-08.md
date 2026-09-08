@@ -1,0 +1,15 @@
+User resumed full unconditional Selberg quarter goal and explicitly rejected audit-only searches. Current workflow: corpus ingredients -> precise conjecture -> paper proof/failure -> strongest positive survivor -> actual Lean proof. Goal remains ACTIVE and UNPROVED; this resumption has genuine mathematical progress, not a blocking audit.
+
+Canonical active card: docs/drafts/pipeline/1-in-progress/selberg-quarter-conjecturing-loop.md. Eight cycles recorded. Paper-only survivors still pending: boundary-corrected Hardy (1), harmonic-mixture deficit (2), normalized translation-average loss of gain (5). Cycles 3-4 and 6-8 now formalized.
+
+New modules, wired into RHTower umbrella:
+- SelbergGeometricBlend: genuine positiveHyperbolicLaplacian identity for G_a=exp(log y/2-a log(x²+y²)/2), Delta G_a=(1/4+a(1-a)y²/(x²+y²))G_a; smoothness, endpoint IsMaassEigenfunction quarter (NOT automorphy/cuspidality), strict symmetric local surplus, failure under every positive integer translation. Exports log_realField_hasFDerivAt.
+- SelbergBoundaryMomentChannels: actual Frechet derivatives of four logarithmic quarter fields at boundary infinity,0,1,-1 and heights i,2i. First moment misses mean-zero vector (1,1,-1,-1). Exact centered coefficient norm=2*firstEnergy+4*directionalSecondMoment²=2*firstEnergy+(400/9)*heightDifference². Full kernel classification; no_positive_firstEnergy_bound. These are finite local identities, NOT an automorphic/cuspidal spectral gap.
+
+Both direct checks, targeted final builds, axiom audits passed (only propext, Classical.choice, Quot.sound). Final formal lint passed with existing large-file warnings; indexes regenerated; process audit no Lean/Lake process. No full umbrella builds, numerical experiments, added axioms, commits or push.
+
+Paper/verification cards: 3-formalized/selberg-local-geometric-interpolation.md; 3-formalized/selberg-boundary-moment-two-height-recovery.md. Specific failed proposal with positive survivor: 5-failed/selberg-first-gradient-covariance.md.
+
+Next live attempt is all-scale dyadic Poisson boundary recovery: candidate integral ||P_(2y)f-P_y f||_2² dy/y=log(9/8)||f||_2² on appropriate boundary space. Not proved/assumed. Read ingredients: HTGeometry.HalfPlanePoissonKernel (search-discovered convolution laws), FrullaniIntegral (search-discovered actual integral), RHTower.XiWardMultiscaleHellingerCauchySeparator (source read; proves explicit logarithmic kernel positivity/self-entry and nonnegative-multiplicity bounds, NOT a signed boundary norm identity), PoissonEulerSobolevNaturalCone (source read first105lines, boundary Fourier/Sobolev thresholds). Need prove actual operator/function-space bridge and then derive cusp energy comparison; neither assumed.
+
+Do not return to search-only open-input audits. Do not claim full Selberg proved. Do not modify other agents' concurrent files/imports. All long-term details on active card.

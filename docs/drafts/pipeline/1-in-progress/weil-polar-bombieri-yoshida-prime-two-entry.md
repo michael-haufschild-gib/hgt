@@ -303,3 +303,17 @@ no `+δ` since no polynomial factor), `screwFormL1Rate_iff` (`0 ≤ ε < 1`: rat
 **Lean (2026-09-08): `RHTower/SuzukiScrewFormConjugationDefect.lean`** — `xiZeroCopyPartner` (= reflect ∘ conj, involution,
 spectral point `z̄_q`, fixes on-line copies), `suzukiTestRayCoefBar_eq_conj_partner`, `re_mul_mul_conj_eq` (polarisation),
 `re_suzukiScrewSmoothForm_eq_sampling_sub_defect` (exact law, MUST-265), `re_suzukiScrewSmoothForm_eq_sampling_of_riemannHypothesis`.
+**Lean (2026-09-08): `RHTower/SuzukiPsiRateIdentity.lean`** — `norm_xiScrewDivisorTerm_le_of_im_le`, `suzukiPsi_ge_of_im_le`
+(`Ψ(t) ≥ −(e^{Θt}+1)Σ'‖z_q‖⁻²`), `SuzukiPsiRate`, `suzukiPsiRate_iff` (`ε ≥ 0`: rate `ε` ⟺ `Θ_sup ≤ ε`),
+`ScrewPrimeSumRate`, `screwPrimeSumRate_iff` (prime-side exact formula for `Θ_sup`, MUST-266). Lower half from the corpus
+`abs_im_xiSpectralPoint_le_of_suzukiPsi_ge'` (`SuzukiScrewSubexponentialCriterion.lean`).
+
+**Exact form of the `L²`-source upper half (paper, 2026-09-08).** For a pole-constrained source `Φ` at aperture `a`,
+`Re Q(Φ) = Σ_q |Φ̂(z_q)|² − ½ Σ_{off} |Φ̂(z) − Φ̂(z̄)|²` (unit weights), and
+`Φ̂(z) − Φ̂(z̄) = Σ_{k odd} (2δ^k/k!) (u^kΦ)^(γ)`, so with `F_k = (u^kΦ)^ ∈ PW_a`, `‖F_k‖ ≤ a^k‖Φ‖`, Cauchy–Schwarz gives
+`½Σ_{off}|Φ̂(z)−Φ̂(z̄)|² ≤ C sinh(Θ_sup a)·Σ_k (Θ_sup^k a^k/k!)·K_off(a)·‖Φ‖²`, where `K_off(a)` is the **Bessel constant of the
+off-line ordinates for `PW_a`** (`Σ_{off}|F(γ_z)|² ≤ K_off(a)‖F‖²`). Hence `μ₀(a) ≥ −C(a) e^{2Θ_sup a} K_off(a)`: the `L²` rate
+identity's upper half holds exactly when the off-line ordinates form a Bessel sequence for every `PW_a`, i.e. have bounded
+local multiplicity `ν_off = sup_t #{off-line zeros in [t,t+1]} < ∞` (Plancherel–Pólya: `K_off(a) ≤ C(1+a)ν_off`); in
+particular whenever there are finitely many off-line zeros. Unconditionally only `ν_off ≪ log t` is known, and the log is
+exactly the mismatch with the archimedean weight found earlier. This is the precise statement replacing "sampling inequality".

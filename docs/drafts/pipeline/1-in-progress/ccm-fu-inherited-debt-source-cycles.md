@@ -1,0 +1,72 @@
+# CCM-FU: source cycles and inherited prime-two debt
+
+- **Stage:** 1-in-progress.
+- **Type:** [BRIDGE], source-control mechanism; no RH theorem claimed.
+- **Goal:** Control the complete cost of a prescribed small prime while preparing its retained field.
+
+## Exact question
+
+At a fixed cutoff, the cost of inserting 2 includes every pair of fibres
+whose labels differ by 2. Controlling only the empty and `{2}` coordinates
+does not control pairs carrying other remaining primes. For a large
+available prime p whose copied profile is supported in these two retained
+coordinates, processing p moves that retained vector by minus its copied
+profile and removes that profile's pair product from the external cost of
+inserting 2. The latter signed change must be retained.
+
+Write V_K=(a_K,b_K) for the actual odd and even Mobius-divisor channel sums
+at cutoff K, and u_K=V_K/sqrt(K). A packet at p near M/K has retained
+displacement -sqrt(M)*u_K and removes prime-two cost M*2*u_K.1*u_K.2,
+up to its exact clipping correction. A positive zero-mean source circuit
+therefore controls a different quantity from a linear spanning cone:
+
+`w_K >= 0`, `sum w_K = 1`, `sum w_K*u_K = 0`,
+`sum w_K*2*u_K.1*u_K.2 > 0`.
+
+The existing 2,7,14 circuit has the opposite quadratic orientation.
+Indeed write u_2=(A,0), u_7=(x,y), u_14=(z,w), with A>0, x,y,z<0<w.
+Its unnormalized positive weights are ((z*y-x*w)/A,w,-y). Their
+quadratic sum is `2*y*w*(x-z)`. Exact reflection gives w=-x and
+`z-x=S_14/sqrt(14)`, where the complete signed source S_14 is strictly
+negative by the existing analytic source bounds. Thus the quadratic sum
+is negative. This algebraic observation has not yet been added to Lean.
+
+## Frozen discriminating experiment
+
+Reuse all 511 saved profiles at K=2..512 from
+`../2-fully-proven/computations/ccm-fu-coupled-prime-packets-2026-09-07/profiles.csv`
+(SHA256 `a8c93dfaec636b6f993f1e676e1e9ea744b699273cd66b0644afca4ffee8393d`).
+Do not recompute or extend the channel screen. These odd/even profiles
+are simultaneously realized by the common core consisting of every prime
+below 513 except 2; for K>15 they are not profiles of the original core
+of primes below 15 except 2.
+
+Solve the finite linear program maximizing the displayed quadratic sum
+under the displayed three equality constraints and nonnegative weights.
+Retain the optimizer, support, residuals, dual and solver status. A strict
+positive optimum identifies a debt-removing zero-displacement source
+cycle; a nonpositive optimum only excludes cycles in this saved finite
+profile set. Linear spanning alone does not predict the answer.
+
+Independently reconstruct each selected support profile from the original
+divisor defect and Abel sums at 80 decimal digits, with separate cutoff
+workers. For a three-point support, recover positive circuit weights by
+cross products and normalize them; retain all high-precision coordinates,
+weights, balance residuals and quadratic margin. Report near-degeneracy
+if any sign or margin is within 1e-60. If the optimizer has a degenerate
+support or its high-precision margin is nonpositive, report it without
+searching a larger range. Numerical output never enters a Lean proof.
+
+Run only on the supplied RunPod, at most eight independent audit workers,
+one-thread numerical libraries, 50-second internal and 60-second external
+limits. Download script, output and hashes into the computation ledger;
+remove owned remote files and processes. No larger or repeated screen.
+
+## Remaining proof obligation
+
+First prove the exact change of the full inherited prime-two cost, not
+just the retained pair product. Even a positive finite circuit supplies
+only local control: each fixed quotient window has limited prime capacity.
+A finite family of such windows does not alone pay a general cost of
+order M squared. Exhaustion still requires uniform control across growing
+quotients and processed cores, including overlap and clipping errors.

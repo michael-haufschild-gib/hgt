@@ -109,3 +109,20 @@ at every sufficiently large cutoff for the chosen pair. Its prime
 threshold depends on the current core. It does not yet cover a prescribed
 prime below that threshold, pay the first intermediate merger, or give
 one cutoff threshold through an exhaustive sequence.
+
+## Closed three-prime and intermediate-block components
+
+The [three-prime transport theorem](../3-formalized/ccm-fu-three-prime-late-block-transport.md)
+now identifies the complete third difference with the four complementary
+products in every eight-fibre block. For an arbitrary starting core,
+consuming a late-prime block changes this difference by exactly twice
+the signed block mass times its retained triple fibre. The difference
+is unchanged outside the joint triple support. At the original core,
+this gives an exact unsigned-mass threshold for preserving the negative
+third-order margin, including active overlaps.
+
+Lean also proves Psi(P+R)<=max(Psi(P),Psi(P+L)) for every subset R of an
+unprocessed late-prime block L. This pays all intermediate successor
+envelopes from the two endpoint envelopes without accumulated per-step
+cost. Selecting an admitted endpoint and handling nonisolated prime
+mergers remain the unproved repair obligations.

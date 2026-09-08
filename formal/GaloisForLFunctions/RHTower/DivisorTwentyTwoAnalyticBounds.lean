@@ -2,12 +2,13 @@ import GaloisForLFunctions.RHTower.HarmonicGeometricBounds
 import GaloisForLFunctions.RHTower.DivisorUniformSquareRootBound
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 /-!
-# Analytic source boxes at cutoff twenty-two
+# Analytic source boxes at cutoffs seventeen and twenty-two
 
 Rational logarithm series bounds, harmonic Euler-constant corrections, and
 exact square inequalities enclose every source term. Signed interval products
 retain the full Abel sum. The public bounds certify the five retained
-coefficients and original diagonal needed for the successor-average witness.
+coefficients and original diagonals needed for the successor-average and
+inherited-contraction witnesses.
 No numerical experiment is a proof premise.
 -/
 
@@ -372,4 +373,94 @@ theorem sum_divisorUnsignedDilationChannel_twentyTwo_sq_bounds :
       (divisorUnsignedDilationChannel 22 d)^2 ∧
     (∑ d∈({1,2,3,5,6,7,10,11,13,14,15,17,19,21}:Finset ℕ),
       (divisorUnsignedDilationChannel 22 d)^2) ≤ 0.553 := initial_unsigned_box
+end RHTower
+namespace RHTower
+
+private def seventeenLower (d : ℕ) : ℝ := ∑ k∈Icc d 16,termLower k (k/d)
+private def seventeenUpper (d : ℕ) : ℝ := ∑ k∈Icc d 16,termUpper k (k/d)
+private lemma seventeen_channel_box {d : ℕ} (hd : 1≤d) :
+    seventeenLower d ≤ divisorUnsignedDilationChannel 17 d ∧
+      divisorUnsignedDilationChannel 17 d ≤ seventeenUpper d := by
+  have hlo := sum_le_sum (fun k (hk : k∈Icc d 16) =>
+    (term_box (mem_Icc.mpr ⟨hd.trans (mem_Icc.mp hk).1,(mem_Icc.mp hk).2.trans (by omega)⟩)
+      (show k/d≤21 by have := Nat.div_le_self k d; have := (mem_Icc.mp hk).2; omega)).1)
+  have hhi := sum_le_sum (fun k (hk : k∈Icc d 16) =>
+    (term_box (mem_Icc.mpr ⟨hd.trans (mem_Icc.mp hk).1,(mem_Icc.mp hk).2.trans (by omega)⟩)
+      (show k/d≤21 by have := Nat.div_le_self k d; have := (mem_Icc.mp hk).2; omega)).2)
+  constructor
+  · simpa [seventeenLower,divisorUnsignedDilationChannel] using hlo
+  · simpa [seventeenUpper,divisorUnsignedDilationChannel] using hhi
+
+set_option maxHeartbeats 3000000 in
+/-- Analytic source boxes at cutoff seventeen after processing primes three,
+five and seven. The full retained source has one positive and three negative coordinates. -/
+theorem divisorUnsignedDilationChannel_seventeen_profile_boxes :
+    (-0.402 ≤ (divisorUnsignedDilationChannel 17 1-divisorUnsignedDilationChannel 17 3-
+      divisorUnsignedDilationChannel 17 5-divisorUnsignedDilationChannel 17 7+
+      divisorUnsignedDilationChannel 17 15) ∧
+      (divisorUnsignedDilationChannel 17 1-divisorUnsignedDilationChannel 17 3-
+      divisorUnsignedDilationChannel 17 5-divisorUnsignedDilationChannel 17 7+
+      divisorUnsignedDilationChannel 17 15) ≤ -0.401) ∧
+    (0.076 ≤ (-divisorUnsignedDilationChannel 17 2+divisorUnsignedDilationChannel 17 6+
+      divisorUnsignedDilationChannel 17 10+divisorUnsignedDilationChannel 17 14) ∧
+      (-divisorUnsignedDilationChannel 17 2+divisorUnsignedDilationChannel 17 6+
+      divisorUnsignedDilationChannel 17 10+divisorUnsignedDilationChannel 17 14) ≤ 0.078) ∧
+    (-0.125 ≤ -divisorUnsignedDilationChannel 17 11 ∧
+      -divisorUnsignedDilationChannel 17 11 ≤ -0.124) ∧
+    (-0.080 ≤ -divisorUnsignedDilationChannel 17 13 ∧
+      -divisorUnsignedDilationChannel 17 13 ≤ -0.079) := by
+  have h1 := seventeen_channel_box (d:=1) (by norm_num)
+  have h2 := seventeen_channel_box (d:=2) (by norm_num)
+  have h3 := seventeen_channel_box (d:=3) (by norm_num)
+  have h5 := seventeen_channel_box (d:=5) (by norm_num)
+  have h6 := seventeen_channel_box (d:=6) (by norm_num)
+  have h7 := seventeen_channel_box (d:=7) (by norm_num)
+  have h10 := seventeen_channel_box (d:=10) (by norm_num)
+  have h11 := seventeen_channel_box (d:=11) (by norm_num)
+  have h13 := seventeen_channel_box (d:=13) (by norm_num)
+  have h14 := seventeen_channel_box (d:=14) (by norm_num)
+  have h15 := seventeen_channel_box (d:=15) (by norm_num)
+  norm_num [seventeenLower,seventeenUpper,Finset.sum_Icc_succ_top] at h1 h2 h3 h5 h6 h7 h10 h11 h13 h14 h15
+  norm_num [termLower,termUpper,weightLower,weightUpper,defectLower,defectUpper,
+    logLower,logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top] at h1 h2 h3 h5 h6 h7 h10 h11 h13 h14 h15
+  constructor
+  · constructor <;> linarith only [h1.1,h1.2,h3.1,h3.2,h5.1,h5.2,h7.1,h7.2,h15.1,h15.2]
+  constructor
+  · constructor <;> linarith only [h2.1,h2.2,h6.1,h6.2,h10.1,h10.2,h14.1,h14.2]
+  constructor <;> constructor <;> linarith only [h11.1,h11.2,h13.1,h13.2]
+
+set_option maxHeartbeats 3000000 in
+/-- The actual original diagonal at seventeen has a strict analytic enclosure. -/
+theorem sum_divisorUnsignedDilationChannel_seventeen_sq_bounds :
+    (0.360:ℝ) ≤ ∑ d∈({1,2,3,5,6,7,10,11,13,14,15}:Finset ℕ),
+      (divisorUnsignedDilationChannel 17 d)^2 ∧
+    (∑ d∈({1,2,3,5,6,7,10,11,13,14,15}:Finset ℕ),
+      (divisorUnsignedDilationChannel 17 d)^2) ≤ 0.365 := by
+  let active : Finset ℕ := {1,2,3,5,6,7,10,11,13,14,15}
+  have hpos (d : ℕ) (hd : d∈active) : 1≤d := by
+    simp only [active,mem_insert,mem_singleton] at hd
+    rcases hd with rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl <;> omega
+  have hl (d : ℕ) (hd : d∈active) : 0 ≤ seventeenLower d := by
+    simp only [active,mem_insert,mem_singleton] at hd
+    rcases hd with rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl
+    all_goals norm_num [seventeenLower,Finset.sum_Icc_succ_top]
+    all_goals norm_num [termLower,weightLower,weightUpper,defectLower,
+      logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]
+  have hlo := sum_le_sum (fun d (hd : d∈active) =>
+    mul_le_mul (seventeen_channel_box (hpos d hd)).1 (seventeen_channel_box (hpos d hd)).1
+      (hl d hd) ((hl d hd).trans (seventeen_channel_box (hpos d hd)).1))
+  have hhi := sum_le_sum (fun d (hd : d∈active) =>
+    mul_le_mul (seventeen_channel_box (hpos d hd)).2 (seventeen_channel_box (hpos d hd)).2
+      (divisorUnsignedDilationChannel_nonneg 17 d)
+      ((divisorUnsignedDilationChannel_nonneg 17 d).trans (seventeen_channel_box (hpos d hd)).2))
+  have hlow : (0.360:ℝ) ≤ ∑ d∈active,(seventeenLower d)^2 := by
+    norm_num [active,seventeenLower,Finset.sum_Icc_succ_top]
+    norm_num [termLower,weightLower,weightUpper,defectLower,
+      logLower,rootLower,rootUpper,Finset.sum_Icc_succ_top]
+  have hupp : (∑ d∈active,(seventeenUpper d)^2) ≤ (0.365:ℝ) := by
+    norm_num [active,seventeenUpper,Finset.sum_Icc_succ_top]
+    norm_num [termUpper,weightLower,weightUpper,defectUpper,
+      logUpper,rootLower,rootUpper,Finset.sum_Icc_succ_top]
+  simp only [← pow_two] at hlo hhi
+  exact ⟨hlow.trans hlo,hhi.trans hupp⟩
 end RHTower

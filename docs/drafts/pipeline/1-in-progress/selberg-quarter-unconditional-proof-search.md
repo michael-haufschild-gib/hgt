@@ -8,6 +8,8 @@
 
 ## Goal and current status
 
+**Latest steering:** the user resumed the full goal with a constructive conjecture/proof/pivot workflow. Work is now active in [the conjecturing-loop card](selberg-quarter-conjecturing-loop.md). The blocked status below records the earlier search-only audit, not the current task state. The new loop has proved and formalized an exact local geometric-interpolation equation and its translation obstruction.
+
 The resumed objective does not prescribe a proof route. The full congruence spectral statement remains the goal; scalar analogues, finite-level results, and conditional implications are not substitutes. No proof has been obtained. The earlier symmetric-power search remains recorded in [its card](selberg-symmetric-power-unconditional-route.md); this resumption starts a fresh blocked audit.
 
 **Research status: blocked after three consecutive resumed turns; full goal unachieved.** The native modular cusp operator, character-twist estimate, trace/monodromy candidates, and a newly located July 2026 modular-symbol route all leave an arithmetic exclusion theorem unproved. The third turn revalidated current source changes and the declaration index without finding a viable proof step. This card remains in progress because no route has been proved impossible or retired.
