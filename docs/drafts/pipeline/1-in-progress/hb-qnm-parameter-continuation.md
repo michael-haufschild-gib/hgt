@@ -9,49 +9,58 @@ causal response and physical left-QNM pairing → independent Hawking-clock
 extinction → RH.
 
 The complete-source original joint causal response and its operator-domain
-Laplace identity are constructed. The next obligation is physical continuation
-of that response with its left pairing. Energy-space inversion on the opposite
-frequency half-plane does not establish the required causal continuation.
+Laplace identity are constructed. Its full physical continuation and left
+pairing remain open. Energy-space inversion on the opposite frequency
+half-plane does not establish the required causal continuation.
 
-## Closed frequency component
+## Closed radial continuation
 
 [Original radial Green germs at every Xi QNM](../3-formalized/hb-original-qnm-frequency-germs.md)
-records six audited Lean leaves and 25 public theorems. The original Gauss sums
-are holomorphic in frequency under explicit local denominator bounds, including
-terminating numerator parameters. The original dressed horizon solution and full
-connection coefficient are analytic off the real frequency axis; the dressed
-normalizable solution is entire at each physical interior radial point.
+contains the original Gauss-family frequency holomorphy, including terminating
+numerators, dressed solutions, connection coefficient, and pointwise normalized
+source-integrand germs at every Xi QNM.
 
-The actual normalized kernel and both source-weighted Green integrands have
-meromorphic germs at every Xi QNM on both branches. The original source amplitudes,
-angular coefficients, and fixed smooth-onset correction are retained. Equality to
-the original source transform is proved in its convergence chamber. This does not
-assert a pole, a nonzero residue, endpoint-integral continuation, or full joint
-response continuation.
+[Original endpoint Green response at fundamental Xi QNMs](../3-formalized/hb-original-fundamental-qnm-endpoint-continuation.md)
+contains eight audited leaves and 22 new public theorems. Both actual endpoint
+moments of the native radial source family are continued, with equality to the
+original Green response in its convergence chamber. The horizon moment uses
+first Taylor subtraction with its exact source coefficient restored; its
+remainder is analytic for `Re w > -2`, off the real axis. The actual outer
+endpoint integral is entire before connection/source-pole normalization.
 
-## Current analytic target
+The assembled original radial response is meromorphic on that larger nonreal
+strip and at both fundamental QNM frequencies for every Xi copy. Physical power
+factors, source amplitudes and angular coefficients, the full connection
+normalization, and the fixed smooth-onset correction are retained. This does not
+assert pole survival, identify a physical left residue, or establish extinction.
+Higher overtones require further endpoint Taylor orders.
 
-Continue the actual endpoint Green moments. For the horizon moment, retain the
-exact factorization of the integrand into `z^w` times the Gauss factor and source
-remainder, with the full connection normalization. Prove a parameter-uniform
-endpoint Taylor decomposition, integrate the finite Taylor terms with their
-actual coefficients, and bound the subtracted remainder in the larger frequency
-chamber. Every subtracted coefficient must be restored in the continued formula.
-Establish equality with the original convergent integral before identifying any
-QNM residue. Handle the outer moment's endpoint separately.
+## Current hard target
 
-Corpus starting points from broad OR discovery and focused AND searches:
-`BarnesSingleZetaContinuation` and `BarnesDoubleZetaDeepContinuation` construct
-actual Mellin continuations by analytic-slope Taylor remainders, retained polar
-terms, and endpoint integrability. Their fixed-kernel proofs supply techniques;
-the BM source depends on frequency, so the required uniformity must be proved.
-`HadamardFinitePart` concerns a different real Cauchy kernel and does not itself
-supply this continuation.
+Transfer the proved radial continuation to the actual complete joint forcing
+and physical left pairing. Current source definitions are concrete:
 
-Then identify the continued moments/spatial pairings with the complete-source
-joint causal response and its physical left residue. Full joint angular/metric,
-spin-two/AIME identification, and independent Hawking-clock extinction remain
-open. Local factor analyticity is not their completion.
+- `principalDifference` is the original principal `tortoiseGreen` response minus
+  `radialLift * principalAmplitude`.
+- `cutoffRadialCoefficient` is `horizonCoordinate * principalDifference`.
+- `explicitField` retains the full-square lift and all three principal differences.
+- `originalForcing_explicitResidual` identifies the full original source as that
+  explicit field's wave expression plus the cusp residual, retaining all cutoff
+  derivatives.
 
-No numerical experiment is indicated: coefficient estimates, endpoint remainder
-bounds, and complex analytic identities are the relevant proof obligations.
+Continue those actual principal/cutoff coefficients using the proved original
+endpoint moments. Then establish the relevant weighted joint domain and angular
+pairing for the continued correction; pointwise continuation of coefficients
+alone is insufficient. Identify the actual advanced/adjoint left residue of the
+complete source, including the restored horizon coefficient and all three cutoff
+commutators. The corpus's normalized scalar Green residues provide comparison
+data, not an identification of this physical left source projection.
+
+Full joint angular/metric, spin-two/AIME identification, and independent
+Hawking-clock extinction remain open. Generic response existence, meromorphy,
+or nonzero scalar scattering factors do not discharge those obligations.
+
+The Mellin proof uses the corpus's Barnes endpoint-continuation techniques and
+Cauchy-dominated holomorphy, with the BM parameter-uniform source estimates now
+proved. No numerical experiment is indicated for the current source/domain and
+left-pairing obligations.

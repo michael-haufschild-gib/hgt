@@ -1,8 +1,9 @@
 # CCM-FU: coarea mass-envelope selection
 
-- Status: monotone greedy candidate rejected by independently audited numerical evidence;
-  fixed-slope transport, actual initial slope growth, and general prime dissipation kernel checked.
-  Numerical rejection is not a Lean counterexample.
+- Status: the [all-orders mass-split theorem](ccm-fu-coarea-all-orders-mass-split.md)
+  now rules out a uniform quadratic envelope for every complete prime order.
+  The diagnostic evidence below is independent numerical guidance; the
+  obstruction, transport, growth, and dissipation statements are kernel checked.
 - Type: derived selection candidate and diagnostic experiment, not a primary universal conjecture.
 - Chain: actual source → exhaustive prime order with quadratic energy ceiling → O(M) Abel sum → CCM-FU → RH.
 - Frontier map read only. No unconditional selection theorem is asserted.
@@ -22,13 +23,13 @@ absolute-mass upper bound. At complete processing, `B=(Σ C_d)²`.
 Coarea makes J nonincreasing, whereas m is nondecreasing. The candidate
 is that choosing a prime minimizing the next B permits every step to be
 nonincreasing on the actual source. This candidate is stronger than a
-uniform peak bound, and a failure of monotonicity will not refute that
-separate peak bound.
+uniform peak bound. Failure of monotonicity alone does not refute that
+bound; the separate all-orders mass-split theorem does.
 
 The reason to test this quantity is specific: raw-energy greedy paths
 have transverse traps, while plain probability-normalized energy loses
 a factor M. B keeps the changing cell mass that the latter estimate
-omits. These facts do not imply the candidate. Its truth is uncertain.
+omits. These facts alone did not determine the frozen diagnostic's outcome.
 
 ## Frozen diagnostic
 
@@ -181,8 +182,13 @@ The proof keeps every actual source cell and handles zero-mass terms
 explicitly. Favourable head dominance and nonpositive slope appear as
 explicit conditions where needed; the source-growth capstone has no
 such premises and supplies the eventual opposite sign after prime two.
-An exhaustive order controlling the intervening mixed-cell transitions
-remains unproved. RH remains open.
+The all-orders mass-split obstruction excludes this uncorrected envelope
+even with arbitrary mixed-cell interleaving. The exact late-diagonal
+correction and its block law are formalized on the linked card. A further
+[signed-mass balance obstruction](ccm-fu-corrected-coarea-mass-balance.md)
+excludes uniform quadratic corrected action as well. Uniform quadratic
+raw retained energy remains unproved.
+RH remains open.
 
 ## Verification
 
@@ -201,11 +207,13 @@ Only these three new modules were compiled. Initial cache-package manifest
 warnings were packaging warnings; the Lean leaves produced no warnings.
 
 All three leaves are imported by RHTower. No full or umbrella build ran.
-Indexes were regenerated. Global formal lint currently fails solely on
-three unrelated modules missing umbrella reachability:
+Indexes were regenerated. That audit's global formal lint failed solely on
+three unrelated modules then missing umbrella reachability:
 `SelbergMaassAugmentedDirection`, `SelbergMaassChordEnergy`, and
 `SelbergWeightedPathEnergy`. Those files were not edited here. Thus no
-passing global lint gate is claimed. Own documentation links, source
+passing global lint gate was claimed. Those imports are now present;
+the current check is recorded on the all-orders mass-split card.
+Own documentation links, source
 copies, import wiring, and whitespace checks passed.
 
 Owned scratch files and the temporary audit package were removed, with

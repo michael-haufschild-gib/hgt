@@ -1,7 +1,8 @@
 # CCM-FU: the coarea envelope fails along every complete prime order
 
 - Type: derived obstruction and exact replacement comparison.
-- Status: dependency-closed paper proof below; Lean verification in progress.
+- Status: obstruction and positive survivor kernel checked; 22 new public
+  theorems, targeted final leaf builds passed. RH remains unproved.
 - Chain: actual divisor source → exhaustive prime processing with an O(M²)
   retained-energy ceiling → O(M) Abel bound → CCM-FU → RH.
 - This obstruction concerns the coarea majorant, not raw retained energy or RH.
@@ -64,9 +65,11 @@ For a fresh late block of total mass u and square reserve R=Σ b²,
     H_corrected(P union block)-H_corrected(P)
       = u (K_mixed(P)-2f(P)) + u²-R.
 
-This retains the receiving-head square and diagonal credit. It does
-not assert a uniform bound for the corrected action. That bound still
-requires quantitative control of the mixed-prime fibres and head.
+This retains the receiving-head square and diagonal credit. The
+[signed-mass balance obstruction](ccm-fu-corrected-coarea-mass-balance.md)
+also excludes a uniform quadratic bound for the corrected action along
+every complete prime order. The exact comparison and transport laws
+remain valid; uniform control of raw retained energy remains open.
 
 ## No-go closure
 
@@ -77,7 +80,8 @@ requires quantitative control of the mixed-prime fibres and head.
 - New insight: the old envelope creates a superquadratic comparison
   cost independently of actual signed cancellation. A viable proof must
   retain cell-specific late energy rather than multiply it by head mass.
-- Lean status: in progress. No unproved selection premise is discharged.
+- Lean status: exact obstruction, decomposition, comparison, and block law
+  formalized. No unproved selection premise is discharged.
 
 ## Corpus audit
 
@@ -89,3 +93,46 @@ out a fixed number of raw-energy late blocks. The present obstruction
 allows arbitrarily many blocks and concerns the different coarea
 majorant. Existing raw-energy block laws retain the receiving square;
 the corrected conditional-energy comparison above must do the same.
+
+## Formal certificates
+
+- [MobiusDivisorCoareaMassSplit](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCoareaMassSplit.lean):
+  eight theorems proving exact consumed/remaining conservation, both
+  one-sided source bounds, the product barrier, and the single-atom increment.
+- [MobiusDivisorCoareaOrderBarrier](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCoareaOrderBarrier.lean):
+  five theorems, including `exists_prefix_mass_product_ge`, the explicit
+  finite barrier, and
+  `eventually_every_mobiusDivisorCoarea_massEnvelope_exceeds_quadratic`.
+  The latter is an unconditional eventual statement quantifying over every
+  complete one-index insertion chain, including arbitrary interleaving.
+- [MobiusDivisorCorrectedCoareaAction](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCorrectedCoareaAction.lean):
+  nine theorems, including exact mixed and raw-energy decompositions,
+  `mobiusDivisorSelectionEnergy_le_correctedCoareaAction` under explicit
+  mixed-cell dominance, `mobiusDivisorRemainingLateEnergy_le_quadratic`,
+  and `mobiusDivisorCorrectedCoareaAction_late_block`.
+
+## Verification
+
+All new scratch files and installed leaves passed `lake env lean`.
+One external scratch audit checked each of the 22 new public theorems
+exactly once: only `propext`, `Classical.choice`, and `Quot.sound` occur.
+No old theorem was re-audited. No numerical calculation or certificate
+enters any new proof; no new experiment was run.
+
+Final exact-module `lake build` audits passed sequentially in an isolated
+temporary package with byte-identical sources and the repository toolchain.
+Existing dependency oleans were exposed by cache-only packages. Only the
+three new leaves compiled: mass split 8.5 seconds, order barrier 8.2 seconds,
+corrected action 6.4 seconds. Cache-package missing-manifest warnings
+were packaging warnings; the Lean leaves produced no warnings. No full
+or umbrella build ran. The leaves are wired into RHTower.
+
+Indexes were regenerated. That audit's `scripts/formal_tools.py lint --check-generated`
+failed solely on two unrelated new modules then missing umbrella
+reachability: `SelbergOneSidedCurvatureDecay` and
+`SelbergScalarHorizontalAverage`. Those imports are now present; the latest
+check is recorded on the corrected mass-balance card. No passing global
+lint gate was claimed.
+Own source-copy, link, wiring, and whitespace checks passed. Owned scratch
+files and the temporary audit package were removed, with no owned Lean
+process left running. The frontier map was read only.

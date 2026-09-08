@@ -1059,3 +1059,89 @@ Lean theorem, no replacement RH equivalence, and no universal-law entry.
 No route is retired on the numerical tests, and the frontier map was not
 edited by this task. The experiment's remote files were removed only after
 all downloaded hashes were verified and its process check was empty.
+
+## Wider corpus search and direct mixed-difference attempt
+
+The indexed search uses single terms or explicit `--any` for alternatives;
+multiple unqualified terms mean AND. The broad inventories for `bilinear`
+and `cancellation offdiagonal --any` contain respectively 401 and 987
+matching modules. These are search matches, not claims that every proof
+in those modules has been audited. Additional unfiltered searches cover
+`cotangent reciprocity --any`, `renewal`, `coboundary`, `antipodal`,
+`Landau`, `Graham`, `fractional`, `Davenport`, `dispersion`, `transport`,
+and `Bernoulli`. One declaration per module exposes different families
+before reading selected exact statements and their premises.
+
+The inspected candidate transfers have these precise boundaries:
+
+| Corpus source | Available result and missing EDQ transfer |
+| --- | --- |
+| `Sieve.BilinearMultiplier`, `Sieve.HilbertBilinear` | Bounded finite Fourier symbols control their own kernels. The harmonic symbol is bounded, but no such representation and symbol bound for the actual K is supplied. |
+| `Sieve.DirichletRow` | The bilinear inequality retains the Gram-row bound as a premise. It does not prove that premise for the reciprocal-dilation source. |
+| `HTGeometry.AcrossClassReciprocity`, `HTGeometry.CorrelationExponentBridge` | These concern specified square-root phases and their exponent budgets. Their conclusions cannot be transferred to d/e merely because both problems are bilinear. |
+| `Sieve.OffDiagonalShiftBound`, `Sieve.OffDiagonalUniformBound` | Exact reductions retain bounds for partial arithmetic correlations. Those are required inputs, not unconditional subpower bounds for EDQ. |
+| `Sieve.KloostermanCompleteColumnCorrelation`, `Sieve.KloostermanTerminalGeometricCancellation` | Complete-column orthogonality and unequal-modulus geometric-orbit bounds retain terminal windows and frequency-dependent denominators. No collective estimate for the present Möbius rectangle follows. |
+| `MobiusMultiplicativeRectangleCubature` | The exponential-kernel four-corner estimate is proved for prescribed Möbius rectangles. An actual covering and its uncovered residual remain required. Its smooth kernel is also different from K. |
+| `MobiusDivisorDilationMeanUniformRenewal` | Uniformity in dilation is for each fixed finite prime core. The bound depends on that core, so it cannot silently become uniform in the growing EDQ cutoff. |
+| `Sieve.MoebiusSmoothCancellation`, `Sieve.MoebiusTwistSharpLittleO`, `Sieve.RouteTMoebiusSharp` | Finite prime-product damping and sharp-prefix transfers preserve their support, twist range, and supplied prefix bound. None supplies the missing square-root-scale cancellation for the literal cutoff. |
+
+The newly present `MobiusDivisorCorrectedCoareaAction` was inspected
+read-only, without building or auditing another task's declarations.
+Its source text retains mixed-cell head dominance and gives an exact
+late-block action law; it does not assert a uniform corrected-action
+ceiling. No transfer from that action to EDQ is proved here.
+
+The direct estimate keeps the full kernel on a balanced rectangle. Write
+`d=N+i`, `e=floor(N/2)+j`, let u_i and v_j be their actual Möbius
+coefficients, and put A_i=sum_(a<=i)u_a, B_j=sum_(b<=j)v_b.
+If L,H are the two side lengths, applying finite Abel summation twice gives
+
+```
+sum_(i<=L,j<=H) u_i*v_j*K_ij
+ = A_L*B_H*K_LH
+   + sum_(i<L) A_i*B_H*(K_iH-K_(i+1,H))
+   + sum_(j<H) A_L*B_j*(K_Lj-K_(L,j+1))
+   + sum_(i<L,j<H) A_i*B_j*
+       (K_ij-K_(i+1,j)-K_(i,j+1)+K_(i+1,j+1)).
+```
+
+Indices in these finite sums start at one. No modulus, numerator, or
+time term is removed from K. Taking absolute values yields
+`max|A_i|*max|B_j|*V(K)`, where V is the sum of the absolute corner,
+boundary differences, and mixed differences displayed above.
+Reversing the same telescoping shows `V(K)>=max|K_ij|`.
+At N=8m, the actual interior pair d=9m,e=6m already contributes
+`P_(6m)(9m)/(9m)^2=-1/(108m)` at time j=1; all other time terms
+are nonpositive. Hence `V(K)>=2/(27N)` on these cutoffs.
+Using only the available envelopes `max|A|,max|B|<=C_A*N/log(N)^A`
+therefore cannot make this absolute-variation certificate subpower:
+the certificate itself retains at least a constant times
+`N/log(N)^(2A)` for each fixed A. This does not lower-bound the signed
+sum or the actual Möbius partial sums. It identifies the loss in this
+specific attempted upper bound.
+
+The full kernel also prevents an unproved scale-independent smoothness
+assumption. Let h_(e-1)=sum_(j=1..e-1)1/j be the ordinary harmonic sum.
+Periodicity gives, for e>=2,
+
+```
+K(2e,e)=0,
+K(2e+1,e)=K(1,e)/(2e+1)^2,
+(h_(e-1)-(e-1)/e)/2 <= -K(1,e) <= h_(e-1)/2+1/4.
+```
+
+For the bounds, sum the terms j<e exactly using
+`P_e(j)/j^2=1/(2e)-1/(2j)`. Every later term is nonpositive,
+and its total absolute mass is at most
+`(e/8)*sum_(j>=e)1/j^2<=e/(8(e-1))<=1/4`.
+Thus the adjacent jump at this resonance has order `log(e)/e^2`;
+a fixed bound C/e^2 fails. The positive local estimate also shows that
+the strip d=2e+1, N/2<e<N, costs only `O(log(N)/N)` in absolute value.
+The problem is therefore not that narrow strip by itself. The remaining
+bulk still needs a bound retaining the signs in the mixed-difference sum,
+or a different comparison that controls the same complete source.
+
+These are paper calculations for a failed direct transfer, not newly
+formalized theorems. No hard EDQ ceiling, RH proof, or falsification was
+obtained. No computation or Lean build was needed for these deterministic
+checks, and no universal-law or frontier-map entry was changed by this task.

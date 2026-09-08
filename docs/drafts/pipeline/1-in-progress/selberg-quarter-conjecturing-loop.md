@@ -36,7 +36,8 @@
 - [x] Cycle 27: construct actual normalized congruence directions and modular transport, prove weighted means and squared-distance separation, and test the zero-mean angular-energy shortcut against exact nodal reversal.
 - [x] Cycle 28: derive actual regularized trace curvature, integrate it on standard modular area with full boundary flux, and classify the surviving nodal curvature on all intervals.
 - [x] Cycle 29: construct smooth augmented source directions and exact mean/chord defect; prove actual path capacity and uniform variation costs; classify the nodal resistance singularity.
-- [ ] Cycle 30: construct the actual regularized amplitude-mean equation, prove its top-current limit from original cusp decay and source forcing, and extend the standard-area curvature balance to the full modular domain.
+- [x] Cycle 30: construct the actual regularized amplitude-mean equation, prove its top-current limit from original cusp decay and source forcing, and extend the standard-area curvature balance to the full modular domain.
+- [ ] Cycle 31: prove a regulator-uniform full-domain amplitude-mass bound and identify the limiting retained curvature without dropping nodal concentration; continue source-derived arithmetic/geometric quarter comparisons.
 - [ ] Derive the remaining Fourier/cusp interfaces and test a core-plus-cusp argument that retains boundary flux and supplies genuine congruence-uniform control.
 
 The unavailable `update_plan` tool is replaced by this card. No numerical experiments, unproved Lean assumptions, full builds, or commits are authorized.
@@ -507,13 +508,33 @@ Broad OR corpus searches spanned 3041 modules for weighted/chord/resistance mech
 
 ### Cycle 30 — actual regularized cusp flux and full curvature budget
 
-A path cost alone does not control two-dimensional core energy. Next construct `M_e(y)=integral_{-1/2}^{1/2} rho_e(x+iy) dx` and prove its first derivative is the retained top current. Derive its second derivative by actual source differentiation and the curvature equation. The original `density_decay` is a uniform limit at the cusp; it is not a derivative-decay theorem and has no quantitative rate in its statement.
+The actual real unit horizontal average is now differentiated twice using original C² source regularity. Source period one cancels the horizontal second derivative, so its second derivative is the mean planar Laplacian. Actual density decay gives radius and mean convergence to the positive regulator.
 
-Conjecture: for fixed positive `e`, source boundedness and `rho_e>=e` give `M_e''(y)>=-C/y²` while `M_e` remains bounded and tends to `e`. Test a general dyadic secant/convex argument for the top-current limit: `M_e-C*log y` has nonnegative second derivative, and boundedness of `M_e` should force its original derivative to zero. Prove every positivity, forcing, differentiation, and tail-integrability fact from the original source. If this closes, identify the full standard-area integral of the retained weighted remainder with the actual weighted spectral mass. No top limit or full-area integral is assumed.
+The stronger source forcing bound is proved with absolute eigenvalue, without a sign restriction:
 
-Continue broad `--any` corpus discovery for real derivative/convexity, source tail control, and projected variation; use AND only to follow concrete leads. The finite projected-coarea source read in cycle 29 requires exact isotropy and supplies no Maass instance. A regulator-limit passage and a source-derived quarter comparison, including the Bessel boundary costs, remain separate unproved work. The target is still `Qcore+B>=0`, hence the original unconditional Selberg theorem; the main goal stays active.
+Delta rho_e >= -abs(lambda)*rho_e/y².
+
+The general new secant lemma proves actual derivative decay when the function has a finite limit and its second derivative is bounded below by -C/y². Correcting the derivative by C/y makes it monotone; forward and backward unit secants squeeze the derivative to zero. Applied to the actual source, this proves the literal centered Stokes top current tends to zero.
+
+The actual full planar modular domain is constructed and its truncated domains are proved to exhaust its area. Original finite total mass bounds every core mass. Since rho_e>=e, the weighted mass D/(y²*rho_e) is genuinely integrable at fixed e. Source Stokes, the proved top-current limit, and nonnegative retained curvature then give full-domain remainder integrability and
+
+integral_Omega R_e/rho_e = lambda*integral_Omega D/(y²*rho_e).
+
+The full Laplacian is integrable and has zero integral. Original nonvanishing makes weighted mass and retained curvature strictly positive for every hypothetical exceptional source. This does not assert existence of exceptional sources.
+
+Broad discovery used --any for secant/forcing mechanisms, then uniform tails, integrable majorants, and exhaustion. The broadest exhaustion query reached 2856 declarations in 1381 modules. Follow-up geometric/arithmetic discovery reached 3061 declarations in 541 modules. Counts describe index coverage, not reading every result. [Complete paper proof, source mechanisms, and audit](../3-formalized/selberg-regularized-cusp-and-full-curvature-budget.md).
+
+### Cycle 31 — regulator-uniform mass and retained nodal charge
+
+The fixed-e estimate uses 1/e and is not uniform in the regulator. Next prove integrability of sqrt(D)/y² from actual finite hyperbolic area and original source mass, then use D/sqrt(D+e²)<=sqrt(D) to identify the limit of the total curvature budget. Do not infer convergence of the curvature integrals from pointwise convergence: cycle 28 proves an explicit nodal charge.
+
+A candidate compact-test identity retains the distributional Laplacian of sqrt(D) plus lambda*sqrt(D)/y². Prove every test-function boundary condition and limit passage if pursuing it. The finite-packet Cheeger source read in this loop requires a constant bulk divergence and bounded edge current; no Maass instance has been supplied. Likewise, the projected-coarea source requires exact isotropy.
+
+Continue broad OR discovery and proof/fail/pivot loops toward a source-derived quarter lower comparison, including core and Bessel boundary costs. The exact full budget and fixed-path variation alone do not give that comparison. Selberg remains unproved and the main goal stays active.
 
 ## Verification log
+
+- Cycle 30: all complete scratch/source checks and four serialized single-module final builds passed. First three rebuilt only their target; the full-budget build rebuilt its needed SelbergMaassTraceMass dependency and target. All 42 public declarations passed the scratch axiom audit with only the standard three axioms. All four modules are wired/indexed; whitespace checks passed. **Repository lint failed only on unrelated untracked, unwired RHTower.MobiusDivisorFibreCoareaVariance and HTGeometry.FokasLenellsContourSymmetry** (/tmp/selberg_full_curvature_lint.log). Final process inspection found no Lean or Lake process; all task handles are terminal. No task commit or push. [Exact paper proof and complete audit](../3-formalized/selberg-regularized-cusp-and-full-curvature-budget.md). The full standard-area budget is proved; regulator-uniform passage and the quarter comparison remain open. Selberg stays active.
 
 - Cycle 29: all four complete scratch checks and four serialized single-module final builds passed without new warnings, each rebuilding only its named target. All four modules are wired/indexed. All 57 public declarations passed the scratch axiom audit with only the standard three axioms or none. Whitespace checks passed. **Repository lint failed only on unrelated untracked, unwired `HTGeometry.FokasLenellsUniformizedFrame`** (`/tmp/selberg_augmented_lint.log`). All task-owned handles are terminal; no task commit or push. [Full paper proof and audit](../3-formalized/selberg-augmented-chord-capacity-and-nodal-resistance.md). The unqualified uniform-resistance shortcut is retired with exact nodal and actual-source positive survivors. The global quarter estimate and Selberg remain unproved.
 

@@ -99,4 +99,33 @@ theorem eventually_every_mobiusDivisorCoarea_order_exceeds_quadratic (C : ℝ) :
   refine ⟨n,hn,?_⟩
   nlinarith only [hb,hsq,hcM,hlin]
 
+/-- The proposed largest-cell-mass envelope for the full conditional energy. -/
+def mobiusDivisorCoareaMassEnvelope (M : ℕ) (P : Finset ℕ) : ℝ :=
+  (mobiusDivisorSelectionPrimes M).powerset.sup' ⟨∅,by simp⟩
+    (mobiusDivisorFibreAbsoluteMass M P) *
+  ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
+    (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R
+
+/-- The largest-cell coarea envelope always dominates the head action. -/
+theorem mobiusDivisorCoareaHeadAction_le_massEnvelope (M : ℕ) (P : Finset ℕ) :
+    mobiusDivisorCoareaHeadAction M P ≤ mobiusDivisorCoareaMassEnvelope M P := by
+  rw [mobiusDivisorCoareaHeadAction_eq_mass_mul_coarea]
+  unfold mobiusDivisorCoareaMassEnvelope
+  apply mul_le_mul_of_nonneg_right
+  · exact Finset.le_sup' (f:=mobiusDivisorFibreAbsoluteMass M P) (by simp)
+  · exact sum_nonneg (fun R _ => div_nonneg (sq_nonneg _)
+      (mobiusDivisorFibreAbsoluteMass_nonneg M P R))
+
+/-- No complete one-index order can keep the actual largest-cell coarea envelope quadratic. -/
+theorem eventually_every_mobiusDivisorCoarea_massEnvelope_exceeds_quadratic (C : ℝ) :
+    ∀ᶠ N : ℕ in atTop, ∀ (k : ℕ) (P : ℕ → Finset ℕ) (q : ℕ → ℕ),
+      Disjoint (mobiusDivisorActiveLatePrimes (4*N)) (P 0) →
+      mobiusDivisorActiveLatePrimes (4*N) ⊆ P k →
+      (∀ n<k, P (n+1)=insert (q n) (P n)) →
+      ∃ n≤k, C*(4*(N:ℝ))^2 < mobiusDivisorCoareaMassEnvelope (4*N) (P n) := by
+  filter_upwards [eventually_every_mobiusDivisorCoarea_order_exceeds_quadratic C] with N hN
+  intro k P q h0 hk hstep
+  obtain ⟨n,hn,hb⟩ := hN k P q h0 hk hstep
+  exact ⟨n,hn,hb.trans_le (mobiusDivisorCoareaHeadAction_le_massEnvelope (4*N) (P n))⟩
+
 end RHTower
