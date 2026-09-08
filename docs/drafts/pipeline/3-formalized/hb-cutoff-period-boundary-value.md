@@ -157,3 +157,11 @@ and `Quot.sound`. Nine installed sources and eighteen installed olean/ilean
 artifacts were byte-verified against the canonical audit. The seven new
 imports are wired into the RHTower umbrella. No numerical experiment or
 computational certificate was used. The frontier map was not edited.
+
+The index was refreshed. Global `lint --check-generated` returned exit code
+1 after one refresh/retry: its only errors were stale `LEAN_API.md`,
+`LEAN_GAPS.md`, and `LEAN_OVERVIEW.md` during concurrent source edits.
+It reported no proof-debt or unreachable-module error. The global generated
+freshness gate therefore remains unclean; individual proof audits passed.
+The temporary audit workspace was removed, with no owned Lean/Lake process
+left running.

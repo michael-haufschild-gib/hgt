@@ -1,0 +1,29 @@
+# SQB entire Casimir transform: closed construction, occurrence still open
+
+User goal is unconditional RH proof/falsification via SQB. Goal remains ACTIVE, UNPROVED. Frontier map READ ONLY for this task. Broad research with the corpus search tool is mandatory; no numerical proof inputs, no new axioms. One foreground Lean compiler process per agent; scratch/source via lake env lean, final audit via only lake build individual module, no umbrella/full builds.
+
+## Concrete progress
+
+Two new modules share namespace RHTower.SelbergScatteringEntireTransform:
+
+1. formal/GaloisForLFunctions/RHTower/SelbergScatteringEntireTransform.lean (222 lines, 16 public exports). casimirTransform F is evenEntireSquareFactor of w -> Complex.cosh(8*pi*w), evaluated at lam-1/4. Reuses HTGeometry.EvenEntireSquareFactor and previous polynomial classifier. Entire, F(1/4+w^2)=cosh(8*pi*w); F(k(z))=cosh(4*pi*z), where k(z)=3/16+z^2/4+i*z/4 is prior criticalCasimir. F is not any polynomial. For real lam>=quarter, F(lam)=cosh(8*pi*sqrt(lam-quarter)); for lam<=quarter, F(lam)=cos(8*pi*sqrt(quarter-lam)). Thus real-native values are real >=-1, and their real part >1 iff lam>quarter. F(quarter)=F(3/16)=1 is an exact alias. For z.re nonzero and -1/2<z.im<1/2, F(k(z)) real >=-1 iff z.im=0; same for >=1. Core APIs: differentiable_casimirTransform, casimirTransform_sq, casimirTransform_criticalCasimir, casimirTransform_of_ge_quarter, casimirTransform_of_le_quarter, casimirTransform_real_range, one_lt_casimirTransform_iff, casimirTransform_quarter, casimirTransform_alias, casimirTransform_native_quarter, casimirTransform_critical_real, casimirTransform_not_polynomial, casimirTransform_critical_components, critical_strip_range_iff, critical_strip_quarter_range_iff.
+
+2. SelbergScatteringEntirePreimage.lean (125 lines, 8 public exports), imports core + XiWardSpectralBudgetSumRule (reduced from larger scattering incidence import). nativePartner(t)=1/4+t^2/4, >quarter for nonzero t. Constructive equality F(nativePartner t)=F(k(t)). Exact real_native_preimage_iff: under the same elementary open-strip/nonzero-height conditions and any real lam, F(lam)=F(k(z)) iff z.im=0 AND lam=nativePartner(z.re). Necessity uses real-native range, strip classifier, strict >1, equality of absolute cosh arguments and squaring; sufficiency explicit square descent. casimirTransform_casimir: F(s(1-s))=cos(8*pi*(s-1/2)). criticalCasimir_centered_argument converts rho to actual s=rho/2 Casimir. xi_real_native_preimage_iff for every actual XiZeroCopy q, real lam: F(lam)=F((rho/2)(1-rho/2)) iff rho.re=1/2 AND lam=1/4+rho.im^2/4. xi_exists_real_native_preimage_iff gives pointwise existence iff critical placement. Uses source-pure xi_divisor_support_im_ne_zero and abs_im_xiSpectralPoint_lt_half, no RH assumptions.
+
+## Interpretation / next work
+
+Positive survivor outside the retired fixed-polynomial subclass is now actually constructed, not merely suggested. Its exact real-preimage classification shows precisely the still-missing content. No real preimage for all Xi zeros, automorphic eigenvalue admission, functional calculus/domain intertwiner, Maass source, or quarter inequality has been constructed. Do NOT report a proof of RH or treat the real-preimage condition as a supplied premise. The cos(8*pi*(s-1/2)) formula resembles doubled exponent monodromy; no actual source monodromy theorem was proved. A next producer must derive real preimages/admission from independent source identities. Other task was working on original complex Maass component conserved currents (avoid writing its card/modules); generic scalar quarter comparison is already disproved by positive Eisenstein powers for all positive lambda.
+
+## Artifacts
+
+Completed proof/audit card docs/drafts/pipeline/3-formalized/sqb-entire-casimir-transform.md, moved from in-progress. Prior failed polynomial card now cross-links this entire survivor. Added one route-independent Cannot bullet to universal-law-field/STATUS.md: polynomial obstruction cannot be generalized to entire maps, exact witness and remaining preimage content. Frontier map untouched by this task. Concurrent tasks committed shared-tree files while we worked; we did not commit or push.
+
+## Audit
+
+All scratch/source checks passed. Final lake build core built ONLY core (2.1s); final endpoint built ONLY endpoint (5.7s). Read-only lake --no-build build module preflights first confirmed only intended target stale. This avoids last turn's accidental parallel stale-dependency rebuild. Both imported exactly once in RHTower, no umbrella builds. No owned Lean processes remain; other tasks may have live compilers.
+
+/tmp/sqb_entire_axioms.lean and .log audit ALL 24 public exports, only propext/Classical.choice/Quot.sound. Export inventory /tmp/sqb_entire_exports.json; index audit /tmp/sqb_entire_index_audit.json contains all exports (27 metadata incl private helpers). New modules no warnings; existing dependency informational ring suggestions replayed. Forbidden/numerical proof token scan and whitespace pass. Full formal lint ran and FAILED ONLY on concurrent unrelated HTGeometry.FokasLenellsCompatibilityMoment missing from HTGeometry umbrella (plus old large-file warnings). Do not claim full lint passed; don't wire another task's unfinished source blindly. Log /tmp/sqb_entire_lint.log.
+
+## Broad searches
+
+All OR queries, full module scope/per-module0, metadata coverage != full proof reading. Source lifts 2895 decl/408 modules; automorphic periods 7502/1629; domains 1937/939; entire descent 5809/1391; operator mapping 508/139; square-factor/cosh/Casimir/monodromy 2891/621. Exact queries and counts preserved in completed card. Temp JSONs /tmp/sqb2_source_lifts.json, sqb2_automorphic_periods.json, sqb2_domains.json, sqb2_entire_descent.json, sqb2_operator_mapping.json, sqb2_transform_review.json. No runpod numerical computation performed.

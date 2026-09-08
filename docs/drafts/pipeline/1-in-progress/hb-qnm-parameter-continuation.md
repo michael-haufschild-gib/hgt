@@ -267,6 +267,32 @@ cutoff bulk moments must now be evaluated together with the original
 radial endpoint pairing. This exact calibration does not identify a
 physical left resonance or determine the complete source's residue.
 
+### Closed native square-residual unfolding
+
+[Native square-residual unfolding](../3-formalized/hb-native-square-residual-unfolding.md)
+contains eight audited leaves and 22 new public theorems. The literal
+half-square residual extends by its actual compatible closed-cell germs to
+an everywhere smooth modular field. This extension is exactly the full
+scalar half-square minus the full projective periodization of the original
+cutoff subtraction, including every nonparabolic image.
+
+Global boundedness and complete cusp decay admit its Mellin seed on the
+whole modular strip for `Re s>1`. Exact reindexing of the actual Eisenstein
+sum and proved norm-integral summability justify native unfolding:
+
+```text
+J(q,s-1/2) = Lambda(2s) * integral_0^infinity y^(s-2) *
+  [A_(q-1/2)(y)^2/2 + 4*sum_N amplitude(q-1/2,y,N)^2 - C_q(y)] dy.
+```
+
+`C_q` is the actual horizontal mean of the complete original cutoff orbit
+sum. This is a proved equality of original admitted integrals. Its combined
+Mellin integrand still needs evaluation; separate terms cannot be integrated
+independently before their convergence is proved. The existing defined
+four-Lambda source formula has not been identified with this integral.
+Continuation to the physical testing parameter `s=q/2`, the full source's
+physical left pairing, and outgoing response remain open.
+
 ### Wider horizon search
 
 The corpus-tool search `horizon` retrieved 11120 declarations in 1734 modules

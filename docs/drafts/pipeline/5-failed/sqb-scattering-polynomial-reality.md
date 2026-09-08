@@ -50,3 +50,14 @@ This is a quantitative positive separation theorem. It rules out bounded-error p
 - **New insight:** fixed finite-degree scalar changes of native scattering energy cannot even approximate real spectral occurrence with a bounded error. A new source construction must leave that class; no viable replacement is assumed.
 - **Status:** complete paper proof and three audited Lean modules, 19 exported declarations, standard axioms only. [Proof, exact source scope, and audit](../3-formalized/sqb-polynomial-scattering-separation.md). The entire SQB candidate is not retired; its quarter inequality and independent Xi occurrence remain open.
 - **Process qualification:** final Lake audit rebuilt some required Hardy dependencies in parallel before the remaining checks were serialized. The audit report records this departure from the requested process discipline and the existing dependency warning. No full build ran and no task-owned Lean process remains.
+
+## Constructed survivor outside the retired class
+
+An explicit nonpolynomial entire function now satisfies
+F(1/4+w²)=cosh(8πw) and F(k(t))=cosh(4πt) for every real t. Its complete
+real-native preimage classification on the open Xi strip is Lean-proved:
+F(lambda)=F(k(z)), for real lambda and Re z≠0, holds exactly when Im z=0 and
+lambda=1/4+(Re z)²/4. This is a genuine entire construction outside the excluded
+polynomial class. Its actual-Xi endpoint states that existence of a matching real
+parameter is exactly critical placement of the zero; no spectral occurrence is
+assumed or supplied. [Entire construction, sharp alias, and preimage proof](../3-formalized/sqb-entire-casimir-transform.md).
