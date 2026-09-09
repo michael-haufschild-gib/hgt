@@ -96,15 +96,30 @@ def classify_failures(reports):
     errors, deferred = [], []
     seen = set()
     for report in reports:
-        for failure in report.get('failures', []):
-            key = json.dumps(failure, sort_keys=True)
-            if key in seen:
-                continue
-            seen.add(key)
-            message = failure.get('error', '').lower()
-            target = deferred if 'deadline' in message or 'preempted' in message else errors
-            target.append(failure)
+        for collection in ('failures', 'deferred'):
+            for failure in report.get(collection, []):
+                key = json.dumps(failure, sort_keys=True)
+                if key in seen:
+                    continue
+                seen.add(key)
+                message = failure.get('error', '').lower()
+                retryable = (collection == 'deferred' or failure.get('reason') == 'maintenance_busy'
+                             or 'deadline' in message or 'preempted' in message)
+                (deferred if retryable else errors).append(failure)
     return errors[-5:], deferred[-5:]
+
+
+def small_shard_count(directory):
+    # This is a read probe, including while a bulk importer owns the writer.
+    with Corpus(directory, readonly=True) as corpus:
+        return corpus.con.execute('SELECT COUNT(*) FROM vector_shards s WHERE count<8192 '
+            'AND EXISTS(SELECT 1 FROM vectors WHERE shard=s.id)').fetchone()[0]
+
+
+def maintenance_contention(tail):
+    return any(message in tail for message in (
+        'database is locked', 'database table is locked',
+        'Another enrichment process owns the resumable queue.'))
 
 
 def run(root: Path, *, once=False) -> int:
@@ -173,7 +188,10 @@ def run(root: Path, *, once=False) -> int:
             if termination_reason == 'phase_deadline':
                 error = f'{name} exceeded its {seconds}-second budget and 15-second shutdown allowance'
             elif child.returncode and termination_reason != 'stop_requested':
-                error = tail[-1200:] or f'{name} exited with code {child.returncode}'
+                if maintenance_contention(tail):
+                    deferred.append(dict(stage=name, error=tail[-1200:], reason='maintenance_busy'))
+                else:
+                    error = tail[-1200:] or f'{name} exited with code {child.returncode}'
             phases = state.setdefault('phases', {})
             phases[name] = dict(at=time.time(), elapsed_seconds=time.monotonic()-started,
                                 exit_code=child.returncode, termination_reason=termination_reason,
@@ -194,8 +212,7 @@ def run(root: Path, *, once=False) -> int:
                     phase('embeddings', 90, ['--vectors'])
                     phase('methods', 45, ['--methods'])
                     if not stopped():
-                        with Corpus(directory) as corpus:
-                            small = corpus.con.execute('SELECT COUNT(*) FROM vector_shards s WHERE count<8192 AND EXISTS(SELECT 1 FROM vectors WHERE shard=s.id)').fetchone()[0]
+                        small = small_shard_count(directory)
                         if small > 256:
                             phase('compaction', 30, ['--compact'])
                 else:

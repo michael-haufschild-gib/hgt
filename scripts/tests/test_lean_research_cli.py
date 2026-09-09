@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import fcntl
+import io
 import os
 import sys
 import tempfile
@@ -9,13 +11,89 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 from pathlib import Path
+from contextlib import redirect_stdout, redirect_stderr
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lean_research_cli import default_mode, supervise, release, discovery
+from lean_research_cli import default_mode, supervise, release, discovery, corpus_index, refresh_main
 from lean_research_corpus import Corpus, cache_directory
 
 
 class SupervisionTests(unittest.TestCase):
+    def test_every_maintenance_mode_defers_before_sqlite_startup(self):
+        modes = ('corpus', 'compiler', 'methods', 'vectors', 'compact')
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            directory = cache_directory(root)
+            with Corpus(directory) as writer:
+                for lock_name in ('source.lock', 'compiler.lock', 'enrichment.lock'):
+                    with (directory / lock_name).open('a') as lock:
+                        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                        writer.con.execute('BEGIN IMMEDIATE')
+                        try:
+                            for selected in [(mode,) for mode in modes] + [modes]:
+                                with self.subTest(lock=lock_name, modes=selected):
+                                    args = SimpleNamespace(budget_seconds=1, module='',
+                                        **{mode: mode in selected for mode in modes})
+                                    output, errors = io.StringIO(), io.StringIO()
+                                    with patch('lean_research_cli.engine_python', return_value=sys.executable), \
+                                            patch('lean_research_cli.Corpus', wraps=Corpus) as constructor, \
+                                            redirect_stdout(output), redirect_stderr(errors):
+                                        self.assertEqual(corpus_index(root, args), 0)
+                                    constructor.assert_not_called()
+                                    report = json.loads(output.getvalue())
+                                    self.assertFalse(report['complete'])
+                                    self.assertEqual(report['reason'], 'maintenance_busy')
+                                    self.assertEqual(report['lock'], lock_name)
+                                    self.assertEqual({r['stage'] for r in report['deferred']}, set(selected))
+                                    self.assertEqual(errors.getvalue(), '')
+                        finally:
+                            writer.con.rollback()
+                    # A failed later lock must release every earlier lock.
+                    for released_name in ('source.lock', 'compiler.lock', 'enrichment.lock'):
+                        with (directory / released_name).open('a') as released:
+                            fcntl.flock(released, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_unlocked_source_and_compiler_run_under_one_lock_without_self_contention(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'formal').mkdir()
+            (root / 'formal/Alpha.lean').write_text('theorem alpha : True := trivial')
+            args = SimpleNamespace(budget_seconds=3, module='Alpha', corpus=True,
+                                   compiler=True, methods=False, vectors=False, compact=False)
+            output = io.StringIO()
+            def compile_probe(root, corpus, **kwargs):
+                self.assertEqual(kwargs['module'], 'Alpha')
+                for name in ('source.lock', 'compiler.lock', 'enrichment.lock'):
+                    with (corpus.directory / name).open('a') as lock:
+                        with self.assertRaises(BlockingIOError):
+                            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                self.assertEqual(corpus.con.execute('SELECT name FROM declarations').fetchone()[0], 'alpha')
+            with patch('lean_research_cli.compile_corpus', side_effect=compile_probe) as compiler, \
+                    redirect_stdout(output), redirect_stderr(io.StringIO()):
+                self.assertEqual(corpus_index(root, args), 0)
+            compiler.assert_called_once()
+            reports = [json.loads(line) for line in output.getvalue().splitlines()]
+            self.assertTrue(reports[0]['complete'])
+            self.assertEqual(reports[0]['changed'], 1)
+
+    def test_search_refresh_defers_before_sqlite_initialization(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            directory = cache_directory(root)
+            with Corpus(directory) as writer, (directory / 'enrichment.lock').open('a') as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                writer.con.execute('BEGIN IMMEDIATE')
+                request = io.StringIO(json.dumps(dict(root=str(root), budget_seconds=1)))
+                output = io.StringIO()
+                try:
+                    with patch('sys.stdin', request), redirect_stdout(output), \
+                            patch('lean_research_cli.Corpus', wraps=Corpus) as constructor:
+                        refresh_main()
+                    constructor.assert_not_called()
+                    self.assertEqual(json.loads(output.getvalue())['refresh']['reason'], 'maintenance_busy')
+                finally:
+                    writer.con.rollback()
+
     def test_busy_refresh_cannot_stop_readonly_query(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

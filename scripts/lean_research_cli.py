@@ -10,9 +10,29 @@ import sqlite3
 import subprocess
 import sys
 import time
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 
 from lean_research_corpus import Corpus, cache_directory, source_priority
+
+
+class MaintenanceBusy(RuntimeError):
+    """Another worker owns a corpus maintenance lock."""
+
+
+@contextmanager
+def maintenance_locks(directory: Path):
+    # Match the bulk importer's lock order. Hold all writer locks before even
+    # opening Corpus: schema initialization itself can start a transaction.
+    directory.mkdir(parents=True, exist_ok=True)
+    with ExitStack() as stack:
+        for name in ('source.lock', 'compiler.lock', 'enrichment.lock'):
+            lock = stack.enter_context((directory / name).open('a'))
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise MaintenanceBusy(name) from None
+        yield
 
 
 def compile_corpus(root: Path, corpus: Corpus, *, deadline: float, module="", progress=None):
@@ -256,9 +276,12 @@ def discovery(root: Path, args, options: dict) -> dict:
 def refresh_main():
     request = json.load(sys.stdin)
     root = Path(request['root'])
+    directory = cache_directory(root)
     try:
-        with Corpus(cache_directory(root)) as corpus:
-            refresh = corpus.refresh(root, deadline=time.monotonic() + request['budget_seconds'])
+        with maintenance_locks(directory), Corpus(directory) as corpus:
+            refresh = corpus._refresh(root, deadline=time.monotonic() + request['budget_seconds'])
+    except MaintenanceBusy as exc:
+        refresh = dict(complete=False, reason='maintenance_busy', lock=str(exc))
     except (sqlite3.DatabaseError, OSError) as exc:
         refresh = dict(complete=False, error=str(exc))
     print(json.dumps(dict(candidate_lemmas=[], refresh=refresh)), flush=True)
@@ -309,35 +332,30 @@ def corpus_index(root: Path, args) -> int:
     directory = cache_directory(root)
     deadline = time.monotonic() + args.budget_seconds
     progress = lambda value: print(json.dumps(value), file=sys.stderr, flush=True)
-    with Corpus(directory) as corpus:
-        if args.corpus:
-            print(json.dumps(corpus.refresh(root, deadline=deadline, progress=progress)))
-        if args.compiler and time.monotonic() < deadline:
-            with (directory / 'compiler.lock').open('a') as lock:
-                try:
-                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                except BlockingIOError:
-                    print('Another compiler extraction owns the foreground worker.', file=sys.stderr)
-                    return 2
+    try:
+        with maintenance_locks(directory), Corpus(directory) as corpus:
+            if args.corpus:
+                # The source lock is already held; refresh() would acquire it again.
+                print(json.dumps(corpus._refresh(root, deadline=deadline, progress=progress)))
+            if args.compiler and time.monotonic() < deadline:
                 compile_corpus(root, corpus, deadline=deadline, module=args.module, progress=progress)
-        if (args.methods or args.vectors) and time.monotonic() < deadline:
-            from lean_research_engine import runtime_for, enrich
-            runtime = runtime_for(directory)
-            if runtime is None:
-                print('Local models unavailable; run research-setup first.', file=sys.stderr)
-                return 2
-            with (directory / 'enrichment.lock').open('a') as lock:
-                try:
-                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                except BlockingIOError:
-                    print('Another enrichment process owns the resumable queue.', file=sys.stderr)
+            if (args.methods or args.vectors) and time.monotonic() < deadline:
+                from lean_research_engine import runtime_for, enrich
+                runtime = runtime_for(directory)
+                if runtime is None:
+                    print('Local models unavailable; run research-setup first.', file=sys.stderr)
                     return 2
                 print(json.dumps(enrich(corpus, runtime, deadline=deadline, methods=args.methods, vectors=args.vectors, progress=progress)))
-        if args.compact and time.monotonic() < deadline:
-            from lean_research_vectors import Vectors
-            for row in corpus.con.execute('SELECT DISTINCT model FROM vector_shards').fetchall():
-                print(json.dumps(Vectors(corpus).compact(row[0], deadline=deadline)))
-        print(json.dumps(dict(coverage=corpus.coverage()), ensure_ascii=False))
+            if args.compact and time.monotonic() < deadline:
+                from lean_research_vectors import Vectors
+                for row in corpus.con.execute('SELECT DISTINCT model FROM vector_shards').fetchall():
+                    print(json.dumps(Vectors(corpus).compact(row[0], deadline=deadline)))
+            print(json.dumps(dict(coverage=corpus.coverage()), ensure_ascii=False))
+    except MaintenanceBusy as exc:
+        deferred = [dict(stage=stage, reason='maintenance_busy', lock=str(exc))
+                    for stage in ('corpus', 'compiler', 'methods', 'vectors', 'compact')
+                    if getattr(args, stage, False)]
+        print(json.dumps(dict(complete=False, reason='maintenance_busy', lock=str(exc), deferred=deferred)))
     return 0
 
 

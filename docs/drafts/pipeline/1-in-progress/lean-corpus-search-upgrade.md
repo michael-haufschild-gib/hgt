@@ -45,11 +45,9 @@ Initial delegated scopes: compiler exporter, runtime/setup, benchmark fixtures/e
 - Isolated audit passed 167 tests before final guard addition; targeted vector suite then passed 7 tests including guard (168 current research tests total). Existing lexical tests passed 17 CLI + 24 index cases. Exporter audit included 37 tests with foreground Lean checks, no full builds.
 - Live progressive `entropy` query: 16.05 seconds, 20 candidates + 20 source arguments, no stage errors. Live vector-backed `bounded amplification` query: 22.88 seconds, 20 candidates + 15 source arguments, 256 available vectors, no stage errors. Both explicitly reported incomplete corpus/vector coverage; these are operational smoke tests, not retrieval quality acceptance.
 
-## Remaining rollout work
+## Authorized B200/B300 bootstrap, 2026-09-09
 
-## Authorized B200 bootstrap, 2026-09-09
-
-User selected one Runpod B200 for explicit initial embedding. Normal searches and
+User selected one Runpod B200, then B300 when B200 became unavailable, for explicit initial embedding. Normal searches and
 incremental enrichment remain local. Prepare before rental: immutable deduplicated
 input shards in RHTower → HTGeometry → rest order, pinned weights/preprocessing,
 CUDA runner with bounded batches and restart checkpoints, numerical compatibility
@@ -62,11 +60,60 @@ hash and recheck current IDs/hashes inside publication transactions. A different
 CUDA numerical mode must pass an explicit compatibility audit before joining the
 local model namespace. Checksums and atomic completion markers govern resume.
 
-- [ ] Portable runner, export/import and operator commands implemented.
-- [ ] Corruption, edits/deletions, compatibility and resume tests pass.
-- [ ] Complete local export, pinned model bundle and reference audit prepared.
-- [ ] User launches pod; validate actual B200 kernels, benchmark, then embed.
+- [x] Portable runner, export/import and operator commands implemented.
+- [x] Corruption, edits/deletions, compatibility and resume tests pass.
+- [x] Complete local export, pinned model bundle and reference audit prepared.
+- [x] User launches B300; validate actual GPU kernels, benchmark, then start embedding.
 - [ ] Download, validate and publish returned vectors; report measured throughput.
+
+Preparation snapshot: 55,914 indexed file outcomes, 1,460,037 eligible records,
+20,138 cached references excluded, 1,390,996 unique pending inputs in 340 shards.
+Priority: RHTower 417,127, HTGeometry 356,026, rest 617,843. CUDA-compatible source
+bundle before CUDA wheel addition: 1.60 GB; expected float32 vector output 5.70 GB.
+Portable encoder checked on all 96 saved real-source fixtures and four queries:
+minimum cosine 0.999999821, mean top-20 overlap 1.0 against local float32 output.
+This caught and repaired an extra query-prefix space; exact template now lives in
+the interchange spec and a regression test. CUDA numerical parity and throughput
+remain to be measured on the actual GPU. GPU metadata is published transactionally
+with each FAISS shard and retained through compaction parent references.
+
+The only available template is Runpod PyTorch 2.8.0 / CUDA 12.8.1. B300 setup
+installs pinned PyTorch 2.8.0+cu129 and its CUDA 12.9 wheel runtime in an isolated
+Python 3.12 environment (actual pod runs 3.12.3), preserving the template. No CUDA toolkit rebuild needed.
+Current prepared job directory: `formal/.lake/hgt-research/discovery-1/runpod/blackwell-initial`.
+
+Live B300 bootstrap: SSH works; driver 580.126.09, Python 3.12.3, isolated Torch
+2.8.0+cu129 / CUDA 12.9. Package consistency and a BF16 GPU kernel passed. The
+1.60 GB bundle uploaded in about 147 seconds. Remote numerical audit passed on
+96 real documents + 4 queries: minimum cosine 0.9998226, mixed local-query top-20
+overlap 0.9875. This authorizes numerical reuse, not a claim of theorem applicability.
+
+Pilot: 12,288 vectors in 14.78 seconds (~831/s, ~143k tokens/s, peak VRAM 3.35 GB).
+A larger batch pilot was slower (~635/s), so the full job uses 65,536 padded
+tokens / max batch 256. The 1,390,996-input job runs in one remote Python process.
+Connection and owned PIDs are in the private derived `connection.json`; validate
+process identity before signaling. The finite local `lean_research_batch_sync.py`
+worker downloads/imports every two minutes and exits on verified completion.
+`sync-status.json`, `results/local-import.json`, and `sync.log` record progress.
+GPU generation was ~704k/1.391m at the 13-minute snapshot; the first local pass
+published 248,786 document vectors (one unique hash can serve multiple documents).
+
+Bulk import exposed a background-indexer crash: its compaction COUNT opened a
+schema-writing connection. The probe is now read-only; lock contention is recorded
+as deferred maintenance. Restarted the existing local indexer. Also reproduced a
+poor SQLite join order scanning the entire missing corpus once per incoming shard;
+bounded incoming hashes now drive indexed lookups. A VM-instruction-budget test
+guards against reintroducing full scans. The sync worker was restarted to load
+this fix; committed imports remain intact.
+
+Targeted validation: batch/sync 21 tests, vectors 7, background 4 (32 total), plus
+all 100 real CPU reference inputs and the real B300 pilot. Live 10-second hybrid
+`entropy` search during import retained 20 candidates and 20 source arguments,
+no errors; deadline left semantic coverage unfinished. No Lean builds, subagents,
+instruction-file edits, or commits by this agent. Full GPU completion and final
+snapshot import remain in progress; retrieval-quality release gates remain separate.
+
+## Remaining rollout work
 
 - Background source migration, embeddings and validated method descriptions continue incrementally. First published vectors verified entirely under RHTower. Use `python3 scripts/formal_tools.py research-indexer status` for current progress rather than this snapshot.
 - Full measured five-way held-out benchmark and default-deep release gates remain pending. Do not claim quality improvement or proof applicability from these smoke tests.

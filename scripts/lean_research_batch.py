@@ -12,6 +12,7 @@ import gzip
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import sqlite3
 import time
@@ -24,12 +25,15 @@ from research_batch.format import (FORMAT, DIMENSIONS, SHARD_ROWS, atomic_bytes,
                                   parity, read_shard, sha_file, sha_text)
 
 BATCH_HOME = Path(__file__).resolve().parent / 'research_batch'
+MATCH_INCOMING_SQL = ('SELECT c.id,c.content_hash,i.position FROM batch_incoming i '
+                      'CROSS JOIN batch_current c INDEXED BY batch_hash ON c.content_hash=i.hash')
 
 
 def embedding_spec():
     return dict(repo=MODELS['embedding']['repo'], revision=MODELS['embedding']['revision'],
                 dimensions=DIMENSIONS, context_tokens=CONTEXT_TOKENS,
                 query_instruction=INSTRUCTION, document_instruction='', padding='right',
+                query_template=f'Instruct: {INSTRUCTION}\nQuery:{{text}}',
                 pooling='last_valid_token', normalization='l2_float32', format=FORMAT)
 
 
@@ -161,8 +165,9 @@ def saved_reference(model):
                               ('real-embedding-fixtures.json', 'embedding-runtime.json', 'embedding-cpu.json')])
 
 
-def prepare(cache, directory):
+def prepare(cache, directory, wheelhouse=None, *, download_runtime=False):
     cache, directory = cache.resolve(), directory.resolve()
+    wheelhouse = (wheelhouse or cache / 'runpod' / 'linux-wheels').resolve()
     directory.mkdir(parents=True, exist_ok=True)
     bundle = directory / 'bundle'
     bundle.mkdir(exist_ok=True)
@@ -218,11 +223,29 @@ def prepare(cache, directory):
             atomic_bytes(bundle / 'research_batch' / name, (BATCH_HOME / name).read_bytes())
             runner_files.append(descriptor(bundle / 'research_batch' / name))
         support_files = []
-        for name in ('setup.sh', 'run.sh', 'requirements.txt', 'README.md'):
+        for name in ('setup.sh', 'run.sh', 'requirements.txt', 'requirements-linux.lock', 'README.md'):
             atomic_bytes(bundle / name, (BATCH_HOME / name).read_bytes())
             support_files.append(descriptor(bundle / name))
+        required = dict(re.findall(r'^([\w-]+)==([^\s]+)',
+                                  (BATCH_HOME / 'requirements-linux.lock').read_text(), re.M))
+        available = {(p.name.split('-')[0].replace('_', '-'), p.name.split('-')[1]): p
+                     for p in wheelhouse.glob('*.whl') if '-cp311-cp311-' not in p.name}
+        wheel_files = []
+        pending_wheels = []
+        for package, version in required.items():
+            source = available.get((package, version))
+            if source is None:
+                if download_runtime:
+                    pending_wheels.append(f'{package}=={version}')
+                    continue
+                raise ValueError(f'Prefetch Linux wheel {package}=={version}; see research_batch/README.md')
+            wheel_files.append(copy_checked(source, bundle / 'wheelhouse' / source.name,
+                                           dict(size=source.stat().st_size, sha256=sha_file(source))))
         manifest = dict(meta, shards=shards, model_files=model_files, runner_files=runner_files,
-                        support_files=support_files, reference=descriptor(bundle / 'reference.json'),
+                        support_files=support_files, wheel_files=wheel_files,
+                        runtime_python='3.12', offline_setup_ready=not pending_wheels,
+                        pending_runtime_wheels=pending_wheels,
+                        reference=descriptor(bundle / 'reference.json'),
                         file_inventory=descriptor(bundle / 'file-outcomes.jsonl.gz'))
         atomic_json(bundle / 'manifest.json', manifest)
         verify_bundle(bundle)
@@ -233,7 +256,8 @@ def verify_bundle(bundle):
     manifest = load_manifest(bundle)
     if manifest['spec'] != embedding_spec():
         raise ValueError('Embedding preprocessing mismatch')
-    for name, folder in (('model_files', 'model'), ('runner_files', 'research_batch'), ('support_files', '')):
+    for name, folder in (('model_files', 'model'), ('runner_files', 'research_batch'),
+                         ('support_files', ''), ('wheel_files', 'wheelhouse')):
         for item in manifest[name]:
             checked_file(bundle / folder, item)
     checked_file(bundle, manifest['reference'])
@@ -305,8 +329,10 @@ def import_results(cache, bundle, output, *, budget_seconds=600, lock_seconds=15
             corpus.con.executemany('INSERT INTO batch_incoming VALUES(?,?)',
                                   [(row['hash'], i) for i, row in enumerate(rows)])
             corpus.con.commit()
-            matches = corpus.con.execute('SELECT c.id,c.content_hash,i.position '
-                'FROM batch_incoming i JOIN batch_current c ON c.content_hash=i.hash').fetchall()
+            # Fresh temp tables have no cardinality statistics. An ordinary JOIN
+            # picked a full corpus scan for EVERY shard on the production DB.
+            # Keep the bounded incoming shard outermost and probe the hash index.
+            matches = corpus.con.execute(MATCH_INCOMING_SQL).fetchall()
             # A duplicate hash can map to more than one declaration/view.
             installed = 0
             for offset in range(0, len(matches), MAX_SHARD_DOCUMENTS):
@@ -326,7 +352,11 @@ def import_results(cache, bundle, output, *, budget_seconds=600, lock_seconds=15
                             current.append(dict(id=row['id'], content_hash=row['content_hash']))
                             positions.append(row['position'])
                     if current:
-                        installed += vectors.publish(current, matrix[positions], model)
+                        installed += vectors.publish(current, matrix[positions], model, provenance=dict(
+                            kind='cuda_batch', manifest_sha256=manifest_sha,
+                            input_sha256=entry['sha256'], audit_sha256=audit_sha,
+                            environment=json.loads((output / 'audit.json').read_text())['environment'],
+                            numerical_compatibility=audit_report))
                     else:
                         corpus.con.commit()
                 except BaseException:
@@ -351,6 +381,9 @@ def main():
     commands = parser.add_subparsers(dest='command', required=True)
     command = commands.add_parser('prepare')
     command.add_argument('--directory', type=Path, required=True)
+    command.add_argument('--wheelhouse', type=Path)
+    command.add_argument('--download-runtime', action='store_true',
+                         help='Explicitly allow setup to fetch missing hash-pinned Linux wheels on the pod')
     command = commands.add_parser('verify')
     command.add_argument('--bundle', type=Path, required=True)
     command = commands.add_parser('import')
@@ -359,8 +392,8 @@ def main():
     command.add_argument('--budget-seconds', type=float, default=600)
     args = parser.parse_args()
     if args.command == 'prepare':
-        result = prepare(args.cache_dir, args.directory)
-        result = {k: v for k, v in result.items() if k not in ('shards', 'model_files', 'runner_files', 'support_files')}
+        result = prepare(args.cache_dir, args.directory, args.wheelhouse, download_runtime=args.download_runtime)
+        result = {k: v for k, v in result.items() if k not in ('shards', 'model_files', 'runner_files', 'support_files', 'wheel_files')}
     elif args.command == 'verify':
         result = verify_bundle(args.bundle.resolve())
     else:

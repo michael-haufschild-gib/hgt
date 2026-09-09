@@ -1,8 +1,10 @@
 # Lean corpus search
 
 `research` keeps the existing name/docstring search and adds local searches for
-mathematical statements, proof arguments and groups of premises. Corpus text,
-queries and generated descriptions stay on this machine.
+mathematical statements, proof arguments and groups of premises. Normal searches
+and incremental enrichment keep corpus text, queries and descriptions local.
+An explicitly authorized GPU bootstrap can export corpus chunks for batch
+embedding; see [B200/B300 batch operation](../scripts/research_batch/README.md).
 
 ```sh
 python3 scripts/formal_tools.py research 'uniform bound forces a growing parameter to vanish' --mode deep

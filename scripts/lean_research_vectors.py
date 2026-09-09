@@ -6,6 +6,7 @@ an unreferenced file, never a partly visible generation.
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
 import time
@@ -33,7 +34,7 @@ class Vectors:
         ready = self.corpus.con.execute("SELECT COUNT(*) FROM vectors v JOIN documents d ON d.id=v.doc_id WHERE d.view<>'lean' AND v.model=? AND v.content_hash=d.content_hash", (model,)).fetchone()[0]
         return dict(expected=expected, ready=ready, complete=expected > 0 and ready == expected)
 
-    def publish(self, documents: list[dict], embeddings: list[list[float]], model: str) -> int:
+    def publish(self, documents: list[dict], embeddings: list[list[float]], model: str, *, provenance=None) -> int:
         if len(documents) != len(embeddings):
             raise ValueError("embedding count does not match document count")
         if not documents:
@@ -55,6 +56,9 @@ class Vectors:
             os.replace(temporary, target)
             with self.corpus.con:
                 self.corpus.con.execute("INSERT INTO vector_shards VALUES(?,?,?,?,?)", (sid, target.name, model, len(documents), time.time()))
+                if provenance is not None:
+                    self.corpus.con.execute('INSERT INTO meta VALUES(?,?)',
+                        ('vector_provenance:' + sid, json.dumps(provenance, sort_keys=True)))
                 installed = 0
                 for position, doc in enumerate(documents):
                     current = self.corpus.con.execute("SELECT content_hash FROM documents WHERE id=?", (doc["id"],)).fetchone()
@@ -142,6 +146,7 @@ class Vectors:
         """Merge small immutable shards; never allocate more than one bounded batch."""
         shards = self.corpus.con.execute("SELECT * FROM vector_shards WHERE model=? AND count<? ORDER BY created", (model, MAX_SHARD_DOCUMENTS)).fetchall()
         docs, vectors, old = [], [], []
+        parents = set()
         total = 0
         for shard in shards:
             if time.monotonic() >= deadline:
@@ -149,15 +154,19 @@ class Vectors:
             index = self.faiss.read_index(str(self.directory / shard["filename"]))
             active = list(self.corpus.con.execute("SELECT d.* FROM vectors v JOIN documents d ON d.id=v.doc_id WHERE v.shard=? AND v.content_hash=d.content_hash", (shard["id"],)))
             for doc in active:
+                parents.add(shard['id'])
                 docs.append(dict(doc))
                 vectors.append(index.reconstruct(int(doc["id"])).tolist())
                 if len(docs) == MAX_SHARD_DOCUMENTS:
-                    total += self.publish(docs, vectors, model)
+                    total += self.publish(docs, vectors, model, provenance={
+                        'kind': 'compaction', 'parent_shards': sorted(parents)})
                     docs, vectors = [], []
+                    parents.clear()
             old.append(shard["id"])
             del index
         if docs:
-            total += self.publish(docs, vectors, model)
+            total += self.publish(docs, vectors, model, provenance={
+                'kind': 'compaction', 'parent_shards': sorted(parents)})
         # Keep old files: an already-open reader may still be using that
         # generation. A separate offline maintenance operation may remove them.
         with self.corpus.con:

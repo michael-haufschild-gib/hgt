@@ -21,7 +21,22 @@ from .format import (atomic_bytes, atomic_json, checked_file, checked_result, de
 
 for key in ('HF_HUB_OFFLINE', 'TRANSFORMERS_OFFLINE', 'HF_HUB_DISABLE_TELEMETRY'):
     os.environ[key] = '1'
-os.environ['TOKENIZERS_PARALLELISM'] = 'false'
+os.environ['TOKENIZERS_PARALLELISM'] = 'true'
+os.environ.setdefault('RAYON_NUM_THREADS', str(min(8, os.cpu_count() or 1)))
+
+
+def validate_cuda(torch):
+    if not torch.cuda.is_available():
+        raise RuntimeError('CUDA required; refusing CPU fallback')
+    if torch.cuda.device_count() != 1:
+        raise RuntimeError('Expose exactly one GPU with CUDA_VISIBLE_DEVICES')
+    capability = torch.cuda.get_device_capability(0)
+    if capability not in ((10, 0), (10, 3)):
+        raise RuntimeError('This prepared job requires B200 or B300')
+    if torch.version.cuda not in ('12.8', '12.9'):
+        raise RuntimeError('Expected the prepared CUDA 12.8/12.9 image')
+    if capability == (10, 3) and torch.version.cuda != '12.9':
+        raise RuntimeError('Use the prepared CUDA 12.9 image for B300')
 
 
 class Encoder:
@@ -30,16 +45,16 @@ class Encoder:
         import torch
         from transformers import AutoModel, AutoTokenizer
         self.torch = torch
+        for name, version in (('torch', '2.8.0'), ('transformers', '4.56.2'),
+                              ('tokenizers', '0.22.2'), ('numpy', '2.3.3'), ('safetensors', '0.8.0')):
+            if importlib.metadata.version(name).split('+')[0] != version:
+                raise RuntimeError(f'Expected pinned {name}=={version}; run setup.sh')
         self.device = 'cpu' if cpu_audit else 'cuda'
         if cpu_audit:
             dtype = 'float32'
             torch.set_num_threads(2)
-        elif not torch.cuda.is_available():
-            raise RuntimeError('CUDA required; refusing CPU fallback')
-        elif torch.cuda.device_count() != 1:
-            raise RuntimeError('Expose exactly one GPU with CUDA_VISIBLE_DEVICES')
-        if not cpu_audit and torch.cuda.get_device_capability(0) < (10, 0):
-            raise RuntimeError('This prepared job requires the selected B200 (compute capability >= 10)')
+        else:
+            validate_cuda(torch)
         torch.backends.cuda.matmul.allow_tf32 = False
         self.dtype = dtype
         self.spec = spec
@@ -54,7 +69,7 @@ class Encoder:
         import numpy as np
         torch = self.torch
         if query:
-            texts = [f"Instruct: {self.spec['query_instruction']}\nQuery: {text}" for text in texts]
+            texts = [self.spec['query_template'].format(text=text) for text in texts]
         tokens = self.tokenizer(texts, padding=False, truncation=True,
                                 max_length=self.spec['context_tokens'])['input_ids']
         if any(not ids for ids in tokens):
