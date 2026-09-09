@@ -1,7 +1,7 @@
 # HB: original physical response equation
 
-Goal: theta cusp → Xi occurrence → complete source → original outgoing
-response and physical adjoint residue → Hawking-clock extinction → RH.
+Goal: literal theta-cusp source → Xi occurrence → retained spin-two source →
+physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 RH is open; frontier map is read-only.
 
 Weighted admission of the original causal response is now proved for

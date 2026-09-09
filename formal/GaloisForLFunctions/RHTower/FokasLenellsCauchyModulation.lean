@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.FokasLenellsOperatorNormObstruction
 import GaloisForLFunctions.HTGeometry.FourierTranslationModulation
+import GaloisForLFunctions.HTGeometry.LinftyMultiplicationNorm
 
 /-!
 # Cauchy compression preserves actual multiplier norms
@@ -11,6 +12,7 @@ any multiplier operator-norm obstruction.
 -/
 
 open MeasureTheory Complex Matrix Filter Topology Set FourierTransform
+open scoped ENNReal
 open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
@@ -110,6 +112,13 @@ private theorem cauchy_compression_norm_of_multiplier (T : SoninL2 →L[ℂ] Son
     change ‖negativeCauchy (T (modulationMul a u))‖ ≤ _ at h
     rw [multiplier_commutes_modulation T φ hT,norm_modulationMul_eq] at h
     exact h
+
+/-- Cauchy compression preserves the full essential-supremum norm of every measurable bounded symbol. -/
+theorem norm_negativeCauchy_comp_lineLinftyMultiplier
+    (g : Lp ℂ ∞ (volume : Measure ℝ)) :
+    ‖negativeCauchy.comp (lineLinftyMultiplier g)‖ = ‖g‖ := by
+  rw [cauchy_compression_norm_of_multiplier _ _ (lineLinftyMultiplier_ae g),
+    norm_lineLinftyMultiplier]
 
 /-- The actual bounded scattering multiplier loses no operator norm under the signed Cauchy projection. -/
 theorem norm_negativeCauchy_comp_directMultiplier (q : SchwartzMap ℝ ℂ) (t x : ℝ) (reverse : Bool) :

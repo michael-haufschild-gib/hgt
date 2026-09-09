@@ -1,9 +1,11 @@
 # HB: actual fundamental radial source moment
 
-Goal: theta cusp → Xi occurrence → complete source → original physical
-response and adjoint residue → spin-two/AIME → Hawking-clock extinction → RH.
+Goal: literal theta-cusp source → Xi occurrence → retained spin-two source →
+physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 RH remains open. The frontier map is read-only.
 
+This scalar radial calculation supports the physical-action step; it does
+not identify the retained spin-two source with the full physical action.
 The complete scalar Laurent coefficient is already identified. Its angular
 factor has an exact four-Lambda evaluation on strict-right Xi copies.
 The remaining radial factor is the original cleared reduced Green numerator.
