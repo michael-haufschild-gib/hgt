@@ -112,6 +112,25 @@ modular angular operator retained; prove agreement with `jointWaveResponse`
 on its original positive-frequency overlap. Source meromorphy is available;
 meromorphy or continuation of the response inverse is not.
 
+[Bounded physical source testing](../3-formalized/hb-physical-weighted-source-testing.md)
+now constructs the physical angular functional on height-weighted sources
+and its radial extension. The complete original source is meromorphic in
+that stronger joint norm, and its bounded projection equals the original
+physical angular integral for every Xi source and target. The native
+physical field itself has divergent angular squared norm.
+
+[Weighted original causal response](../3-formalized/hb-weighted-causal-response.md)
+now proves height admission of the actual complete response throughout
+`Im w != 0`, `3/2 < Re w < 2`, with no imaginary-frequency restriction.
+Bounded smooth modular multipliers preserve the original closed differential
+domain. The full complex energy identity retains its imaginary commutator;
+rotation by `conj(w)` gives a uniform weighted estimate, and Fatou removes
+the truncation. The fixed physical projection of this response equals the
+literal integrable bilinear response pairing against every radial L2 test.
+This supplies the physical test on the original source corridor at real
+part `7/4`. Must still construct outgoing continuation beyond that causal
+overlap and derive its actual left resonance and residue.
+
 The source corridor reaches the original Green convergence chamber. This
 batch does not add global L² holomorphy throughout the unbounded right
 half-plane or extend the existing causal Bochner identity's stated domain.
@@ -293,6 +312,97 @@ four-Lambda source formula has not been identified with this integral.
 Continuation to the physical testing parameter `s=q/2`, the full source's
 physical left pairing, and outgoing response remain open.
 
+### Closed original cutoff orbit and reverse kernel
+
+[Original cutoff orbit and reverse kernel](../3-formalized/hb-native-cutoff-orbit-kernel.md)
+contains ten audited leaves and 43 new public theorems. The actual windowed
+projective cutoff sum has an exact coprime half-row decomposition, with
+pointwise finite support for the native high cutoff. Its full nonparabolic
+contribution vanishes at every height `y>=1/2`.
+
+The reverse lower-height Mellin kernel is an admitted orbit sum and has
+its actual reflected Eisenstein mean on the original high support. The
+native cutoff's quadratic bound also admits its reflected height moment
+for `Re s>2`. The complete two-sided pairing is now closed below.
+
+### Closed original cutoff Mellin pairing
+
+[Original reflected cutoff Mellin value](../3-formalized/hb-native-cutoff-orbit-mellin.md)
+contains ten audited leaves and 50 new public theorems. Nonnegative sums of
+the original transformed height powers bound the complex orbit norms.
+Their actual horizontal means give integrable lower and upper height
+bounds. Both original strip products are absolutely admitted; their
+half-row integral norms are summable, and both unfoldings are justified.
+
+For every Xi source and `Re s>2`, Lean proves
+
+```text
+Lambda(2s) integral_(0,1/2] y^(s-2) C_q(y) dy
+  = Lambda(2s-1) integral_(2,infinity) y^(-s-1) h_q(y) dy.
+```
+
+Both height integrals are admitted. `C_q` is the complete original cutoff
+orbit mean, and `h_q=eta A^2/2` retains both Weyl coefficients. The
+[combined native source value](hb-native-square-residual-mellin-value.md)
+has its exact constant/cutoff assembly and a source-identified continuation
+in the convergence chamber, as detailed below. Identification with the
+actual physical quotient pairing and the outgoing advanced/adjoint left
+pairing remain open.
+
+### Closed original Fourier–Mellin diagonal value
+
+[Original Fourier–Mellin value](../3-formalized/hb-native-fourier-mellin-value.md)
+contains eight audited leaves and 37 new public theorems. The actual
+scalar's Hermitian mean and full modular source bounds prove summability
+of the integrals of original Fourier mode norms for every Xi source and
+`Re s>2`. The complex sum/integral interchange preserves coefficient
+squares. Actual Bessel scaling and divisor identities give the original
+Gamma–L-series value.
+
+For right-half Xi sources, `Re q>1/2`, the divisor product theorem gives
+
+```text
+4 Lambda(2s) integral_0^infinity y^(s-2) sum_N amplitude(q-1/2,y,N)^2 dy
+  = Lambda(s+2q-1) Lambda(s)^2 Lambda(s-2q+1) / 2.
+```
+
+This is the diagonal contribution of the original half-square source.
+The complete original constant and cutoff terms are assembled in the
+continuation below. The physical response and advanced/adjoint pairing
+are not supplied by the diagonal identity.
+
+### Closed complete native period continuation
+
+[Complete native period continuation](../3-formalized/hb-native-period-continuation.md)
+contains eight audited leaves and 33 new public theorems. The actual
+principal remainder and full reflected cutoff moment are admitted and
+evaluated using the unchanged finite transition. With
+`W(w)=3^w/w-integral_(2,3] eta(y)y^(w-1)dy` and the original three
+principal coefficients and exponents, `M_q(t)=sum_j c_j W(t+p_j)`,
+the complete meromorphic expression is
+
+```text
+Jc_q(s) = Lambda(s+2q-1) Lambda(s)^2 Lambda(s-2q+1)/2
+          + Lambda(2s) M_q(s-1) + Lambda(2s-1) M_q(-s).
+```
+
+It equals the original quotient integral for `Re q>1/2` and `Re s>2`.
+It is analytic at `s=q/2`; the Xi zero removes the forward correction,
+but the reflected correction is `Lambda(q-1) M_q(-q/2)`, with its
+completion prefactor proved nonzero. Equality with the diagonal alone
+is exactly `M_q(-q/2)=0`, which is not proved.
+
+The [original physical quotient pairing](../3-formalized/hb-native-physical-quotient-pairing.md)
+is now identified in six audited leaves with 15 public theorems. A common
+majorant on parameter neighborhoods and the full original quotient
+domain proves the polynomial-cleared integral entire. Meromorphic germ
+identity, physical continuity and a nonzero clearing factor give
+`scalarResidualPeriod q ((q-1)/2)=Jc_q(q/2)` for `Re q>1/2`.
+`continuedAngularSourceProjection_physical_value` retains this full
+native value and all three original differential cutoff terms. Original
+outgoing response, physical advanced/adjoint pairing, pole survival and
+independent extinction remain open.
+
 ### Wider horizon search
 
 The corpus-tool search `horizon` retrieved 11120 declarations in 1734 modules
@@ -330,3 +440,40 @@ Its pointwise algebra retains the commutator before cancellation; it does
 not supply the BM boundary-flux identity or its endpoint limits. The actual
 cusp integration and zero-mean Fourier results supply the more direct
 source-specific starting point for evaluating the periods above.
+
+### Broad Fokas and Higgs searches
+
+Single-term corpus-tool searches, followed by uncapped retrieval, returned
+all 1727 `Fokas` declarations in 113 modules and all 285 `Higgs` declarations
+in 26 modules. These are indexed name/module/docstring matches, not counts
+of RH theorems. The Fokas `RH` modules concern Riemann–Hilbert problems.
+
+`FokasLenellsDirectResolvent.directSolution_existsUnique` constructs the
+inverse for its actual regularized two-channel scattering symbol. Its
+`4/9` contraction and `9/5` inverse bounds follow after the specified
+rescaling of a Schwartz potential. Identifying the original HB operator,
+domain, and scattering data with that construction is still required;
+the rescaling cannot silently change the original source.
+
+The forcing and boundary constructions go further in
+`FokasLenellsSquareIntegrableData.globalSmall_regularJump_sub_one_memLp`,
+`FokasLenellsRHBoundary.directHardyRHBoundary_existsUnique`, and
+`FokasLenellsAnalyticRH.directAnalyticRH_realizes_boundary`: the actual
+regularized jump supplies L² forcing, a unique Hardy boundary pair, and
+holomorphic slices with those boundary limits. These are source-derived
+constructions for the specified normalized potential. Their identification
+with the original HB response is still unproved.
+
+`FokasLenellsRawReflectionOrder.rawReflection_isLittleO_cubic_iff` identifies
+vanishing of an exact compatibility moment as precisely the extra condition
+for cancellation beyond cubic order. Its normalized Gaussian still fails
+the fifth-order bound. This supplies a concrete example where rescaling to
+small scattering data does not discharge a source-cancellation condition;
+it does not identify that moment with the HB extinction coefficient.
+
+`HiggsCausalOrbit` proves the exact quaternionic radial/orthogonal orbit
+decomposition. `CausalRayPolarityNonselection` proves that a doublet and
+its spin flip have positive null outer squares with equal scalar weight,
+yet can give distinct matrices. Those identities supply a precise
+limitation on using such data alone to select orientation. They do not
+identify the original HB response or its physical source polarity.

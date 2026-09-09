@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import GaloisForLFunctions.HTGeometry.GomesSpecialOrthogonalCommutant
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
@@ -152,5 +153,17 @@ theorem specialOrthogonal_linear_normalizer (n : ℕ)
   (specialOrthogonal_normalizer_gram n A).trans
     (invertible_scalar_gram_iff_positive_orthogonal n A)
 
+
+/-- Allowing arbitrary real field automorphisms does not enlarge the linear normalizer:
+real semilinear reconstruction still gives exactly a positive homothety and an orthogonal map. -/
+theorem specialOrthogonal_real_semilinear_normalizer (n : ℕ) (σ : ℝ ≃+* ℝ)
+    (A : (Matrix (Fin (n+3)) (Fin (n+3)) ℝ)ˣ) :
+    (∀ R : Matrix.specialOrthogonalGroup (Fin (n+3)) ℝ,
+      A.val * R.val.map σ * (A⁻¹).val ∈ Matrix.specialOrthogonalGroup (Fin (n+3)) ℝ) ↔
+    ∃ r : ℝ, 0 < r ∧ ∃ Q : Matrix.orthogonalGroup (Fin (n+3)) ℝ, A.val = r • Q.val := by
+  have hmap (M : Matrix (Fin (n+3)) (Fin (n+3)) ℝ) : M.map σ = M := by
+    ext i j
+    exact Real.ringHom_apply σ (M i j)
+  simpa only [hmap] using specialOrthogonal_linear_normalizer n A
 
 end GaloisForLFunctions.HTGeometry

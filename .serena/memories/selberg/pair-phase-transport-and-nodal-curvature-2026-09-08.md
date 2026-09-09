@@ -1,3 +1,5 @@
+UPDATE: The measure split and nodal residual support listed below as NEXT are now proved and audited in four more modules (47 public declarations). See `mem:selberg/current-measures-and-nodal-support-2026-09-08` for current status, exact certificates, and new frontier. The remainder of this memory records the earlier stage; its measure-split-open and lint-four-errors statements are historical.
+
 Global Selberg goal ACTIVE and UNPROVED. Previous goal turn classified PROGRESS. Cycle40 remains OPEN for the actual limiting source-measure split and quantitative quarter comparison. This memory supersedes the NEXT-work portions of `mem:selberg/source-currents-and-regulator-forcing-2026-09-08`; pair/phase energy, phase conservation, modular transport and full regularized source curvature are now PROVED, not pending.
 
 NEW THREE SOURCE MODULES, all under formal/GaloisForLFunctions/RHTower/ and wired exactly once immediately after SelbergMaassSourceCurrents:

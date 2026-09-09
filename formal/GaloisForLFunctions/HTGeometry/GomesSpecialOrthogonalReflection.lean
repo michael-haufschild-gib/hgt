@@ -118,4 +118,61 @@ theorem odd_specialOrthogonal_reflection_inner (m : ℕ) :
   change D * R.val * D = (-D) * R.val * (-D)ᵀ
   simp [ht]
 
+/-- In even dimension at least four, orthogonal conjugation is inner exactly for
+orientation-preserving implementers. -/
+theorem even_orthogonal_conjugation_inner_iff (m : ℕ)
+    (Q : Matrix.orthogonalGroup (Fin (2*m+4)) ℝ) :
+    (∃ S : Matrix.specialOrthogonalGroup (Fin (2*m+4)) ℝ,
+      ∀ R : Matrix.specialOrthogonalGroup (Fin (2*m+4)) ℝ,
+        Q.val * R.val * Q.valᵀ = S.val * R.val * S.valᵀ) ↔ Q.val.det = 1 := by
+  constructor
+  · rintro ⟨S,h⟩
+    let T : Matrix.orthogonalGroup (Fin (2*m+4)) ℝ :=
+      ⟨S.val,(Matrix.mem_specialOrthogonalGroup_iff.mp S.property).1⟩
+    have he := (orthogonal_conjugation_eq_iff_sign (2*m+1) Q T).mp h
+    have hdet := (Matrix.mem_specialOrthogonalGroup_iff.mp S.property).2
+    rcases he with he | he
+    · exact (congrArg Matrix.det he).trans hdet
+    · have hd := congrArg Matrix.det he
+      change Q.val.det = (-S.val).det at hd
+      rw [Matrix.det_neg,hdet,Fintype.card_fin] at hd
+      have hev : Even (2*m+4) := ⟨m+2,by omega⟩
+      simpa only [hev.neg_one_pow,one_mul] using hd
+  · intro h
+    refine ⟨⟨Q.val,Matrix.mem_specialOrthogonalGroup_iff.mpr ⟨Q.property,h⟩⟩,?_⟩
+    intro R
+    rfl
+
+/-- Every orthogonal conjugation is inner in odd dimension, including dimension one. -/
+theorem odd_orthogonal_conjugation_inner (m : ℕ)
+    (Q : Matrix.orthogonalGroup (Fin (2*m+1)) ℝ) :
+    ∃ S : Matrix.specialOrthogonalGroup (Fin (2*m+1)) ℝ,
+      ∀ R : Matrix.specialOrthogonalGroup (Fin (2*m+1)) ℝ,
+        Q.val * R.val * Q.valᵀ = S.val * R.val * S.valᵀ := by
+  have hQ := (Matrix.mem_orthogonalGroup_iff _ _).mp Q.property
+  have hQt := (Matrix.mem_orthogonalGroup_iff' _ _).mp Q.property
+  have hs : Q.val.det * Q.val.det = 1 := by
+    have he := congrArg Matrix.det hQ
+    simpa only [Matrix.det_mul,Matrix.det_transpose,Matrix.det_one] using he
+  have hsign : Q.val.det = 1 ∨ Q.val.det = -1 := by
+    have hp : (Q.val.det - 1) * (Q.val.det + 1) = 0 := by nlinarith [hs]
+    rcases mul_eq_zero.mp hp with hp | hp
+    · left; linarith
+    · right; linarith
+  rcases hsign with hp | hm
+  · exact ⟨⟨Q.val,Matrix.mem_specialOrthogonalGroup_iff.mpr ⟨Q.property,hp⟩⟩,fun _ => rfl⟩
+  · have hneg : -Q.val ∈ Matrix.specialOrthogonalGroup (Fin (2*m+1)) ℝ := by
+      rw [Matrix.mem_specialOrthogonalGroup_iff]
+      constructor
+      · rw [Matrix.mem_orthogonalGroup_iff',Matrix.transpose_neg,neg_mul_neg]
+        exact hQt
+      · rw [Matrix.det_neg,hm,Fintype.card_fin]
+        have hod : Odd (2*m+1) := ⟨m,rfl⟩
+        rw [hod.neg_one_pow]
+        ring
+    refine ⟨⟨-Q.val,hneg⟩,?_⟩
+    intro R
+    change Q.val * R.val * Q.valᵀ = (-Q.val) * R.val * (-Q.val)ᵀ
+    simp
+
 end GaloisForLFunctions.HTGeometry

@@ -1,7 +1,8 @@
 # SQB entire Casimir transform
 
-Status: formalized; targeted module and axiom audits passed. Repository-wide lint
-currently reports one unrelated concurrent wiring error. RH remains open.
+Status: formalized; targeted module and axiom audits passed. The subsequent
+[native operator construction](sqb-entire-native-operator.md) supplies the operator
+and domain and records the later repository lint audit. RH remains open.
 
 Intended chain: original Maass source → modular curvature and exact total mass →
 quarter domination → Selberg gap → independently constructed Xi occurrence → RH.
@@ -48,10 +49,12 @@ Conversely δ=0 gives a real value >1. Hence membership in the real half-line
 so does membership in [1,∞). This is an exact pointwise classifier, not an
 admitted spectral correspondence.
 
-The expression resembles a doubled trace of constant-term exponents. No source
-monodromy or operator functional calculus is claimed until explicitly constructed
-with its domains and occurrence map. In particular the above elementary entire
-function does not transport scattering poles into self-adjoint spectrum.
+The expression resembles a doubled trace of constant-term exponents. The subsequent
+[native operator construction](sqb-entire-native-operator.md) realizes this transform
+through the original modular covariance, with an actual dense self-adjoint graph
+domain and lower bound. No source monodromy or Xi occurrence map is constructed.
+The elementary entire function does not itself transport scattering poles into
+self-adjoint spectrum.
 
 ## Stronger real-preimage classification
 
@@ -111,7 +114,7 @@ introduced. Exact arithmetic tactics only normalize symbolic proof terms.
 The research index contains every public export. New modules emit no warnings;
 the endpoint build replays existing dependency tactic suggestions.
 
-Repository lint currently fails only because concurrent module
+At the scalar-module audit, repository lint failed only because concurrent module
 `HTGeometry.FokasLenellsCompatibilityMoment` is unreachable from its own umbrella.
 That unrelated in-progress source was not modified by this task. Existing large
 file warnings are also reported. The SQB modules have no lint errors.
@@ -136,8 +139,10 @@ square-descent, polynomial-period, native-coordinate, and Xi-strip sources.
 
 The SQB quarter domination inequality remains unproved here. This work supplies
 an entire transform compatible with critical scattering values and classifies its
-real preimages exactly. It supplies neither an automorphic source transporting
-those values nor an eigenfunction/domain admission theorem. Even existence of
+real preimages exactly. The subsequent [cusp-packet construction](sqb-entire-cusp-occurrence.md)
+supplies actual approximate occurrence at every transformed real cusp frequency,
+with an exact full-Xi residual defect vanishing precisely for critical copies.
+It supplies no occurrence theorem for all full complex Xi targets. Even existence of
 an arbitrary matching real parameter for every actual Xi zero is precisely the
 critical-placement assertion. Any next producer must derive that existence from
 independent source identities; it cannot take the preimage condition as a premise

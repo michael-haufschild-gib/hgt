@@ -49,7 +49,8 @@ Further OR discovery for monotone limits, positive functionals, supremum limits,
 - [x] Signed-test limits and positive functional split.
 - [x] Actual regular measure construction and exact sum.
 - [x] Residual measure concentrated on the original common-zero set.
-- [ ] Final serialized build, axiom, index, and repository lint audit.
+- [x] Final serialized single-module builds, all public-declaration axiom checks, and index/wiring audit.
+- [ ] Repository lint passes: the current run reports one unrelated concurrent unwired module, `HTGeometry.FokasLenellsRawPhase`.
 
 ## Lean modules and audit
 
@@ -66,13 +67,20 @@ The total is 47 public declarations, including four measure instances, and two p
 
 The sum-measure proof explicitly establishes finite mass on every compact before invoking regularity. No nonexistent additive regularity instance is assumed. The final support proof uses the ENNReal supremum-zero identity to avoid an order-instance mismatch. These fixes changed proof elaboration, not the mathematical statement.
 
+Final serialized `lake build` audits passed, each rebuilding only its named module: CurrentTests 3.4s, CurrentFunctional 3.1s, CurrentMeasures 3.0s, ResidualSupport 3.2s. Logs are `/tmp/selberg_{currenttests,currentfunctional,currentmeasures,residualsupport}41_build.log`. Cached dependencies replayed the existing EvenL2LogUnitary informational suggestion; the new modules emitted no warnings. No full or umbrella build ran.
+
+The post-build `/tmp/selberg_currentmeasure41_axioms.lean` check passed with `lake env lean`; all 47 expected public names report only `propext`, `Classical.choice`, and `Quot.sound`. Exact name coverage and unchanged source hashes were checked against `/tmp/selberg_currentmeasure41_counts.json` and `/tmp/selberg_currentmeasure41_hashes.json`. All 47 public declarations, including four named instances, are in the corpus search index. `LEAN_API.md` contains the other 43; its documented catalog parser excludes instances. Every module has exactly one umbrella import. Coverage artifact: `/tmp/selberg_currentmeasure41_coverage.json`; index log: `/tmp/selberg_currentmeasure41_index.log`.
+
+Repository-wide formal lint ran and failed only because the unrelated concurrent module `GaloisForLFunctions.HTGeometry.FokasLenellsRawPhase` is unreachable from its theorem-area umbrella. That untracked external source was left untouched. Existing large-file warnings remain. Log: `/tmp/selberg_currentmeasure41_lint.log`. This is not a passing repository lint certificate; the four task modules have no reported lint error.
+
 ## Remaining Selberg frontier
 
-This is an exact positive split with a proved nodal residual. Absolute continuity of the current measure and its explicit unregularized density have not yet been proved here; do not call this a full Lebesgue decomposition. Separate modular covariance/descent and quantitative control of both contributions remain relevant next tests. The exact measure split alone supplies no congruence-uniform quarter comparison. The full Selberg goal and the parent source-current route remain active and unproved.
+This is an exact positive split with a proved nodal residual. The [2026-09-09 continuation](selberg-current-density-identification.md) now proves the explicit current density, current absolute continuity, zero nodal current mass, mutual singularity of the two measures, exact carrier restrictions, and separate modular invariance. Residual singularity relative to volume remains unproved, so this is not claimed as a full Lebesgue decomposition. The exact measure split alone supplies no congruence-uniform quarter comparison. The full Selberg goal and the parent source-current route remain active and unproved.
 
 New broad OR discovery across coarea, isoperimetry, nodal length, and Cheeger mechanisms reached 564 declarations in 68 modules (`/tmp/selberg_currentnodalbudget41_discovery.json`). Inspected `FormationStokesFolnerSelection`: the boundary-capacity inequality requires the actual finite packet's constant bulk divergence and edge-current bound, both explicit fields of its source structure. Inspected `ReciprocalCoareaOptimality`: its optimized shell cost is tied to a specified cofactor-shell certificate, not an already identified Maass nodal cost. These suggest testing actual source flux/capacity or shell laws; neither supplies a uniform source comparison by renaming the new measures.
 
 ## Log
 
 - 2026-09-08 — Candidate recorded before source-measure proof work. Selberg remains active and unproved.
-- 2026-09-08 — All four source modules passed complete scratch and needed-source checks; exact positive measure split and nodal support proved. Final audits in progress.
+- 2026-09-08 — All four source modules passed complete scratch and needed-source checks; exact positive measure split and nodal support proved.
+- 2026-09-08 — Final single-module builds, all 47 public axiom checks, unchanged-source hashes, corpus coverage, and umbrella wiring passed. Repository lint reports the one unrelated external wiring error recorded above. All task-owned Lean/build handles are terminal; no task commit or push. Selberg remains unproved and active.
