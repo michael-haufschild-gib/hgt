@@ -119,7 +119,7 @@ Default hybrid search combines lexical matches with Qdrant vector retrieval
 across names, documentation, statements, proofs, proof-method descriptions,
 installed Lean dependencies and research notes. Use `--mode deep` for iterative
 lemma and proof-idea discovery, or `--mode lexical` for lexical search alone.
-The default request budget is 120 seconds; change it with `--budget-seconds`.
+The default request budget is 300 seconds; change it with `--budget-seconds`.
 
 ### What keeps it current
 
@@ -135,7 +135,7 @@ lexical index when needed. No manual reindex is needed for normal edits.
 
 ```bash
 ../scripts/formal_tools.py research "<query>"
-../scripts/formal_tools.py research "<query>" --mode deep --budget-seconds 120
+../scripts/formal_tools.py research "<query>" --mode deep --budget-seconds 300
 ../scripts/formal_tools.py research "<query>" --mode lexical
 ../scripts/formal_tools.py search-index --corpus   # explicitly refresh source content
 ```

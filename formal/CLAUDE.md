@@ -35,10 +35,14 @@ both are kept (see `PNTPlus/PROVENANCE.md` for the overlap map).  Parts of
 2. Read `LEAN_OVERVIEW.md` for the current map.
 3. Search before proving:
    `../scripts/formal_tools.py research "<query>"`
+   Run this command directly. Do not run `research --help` or read the search Python implementation
+   as preparation. Consult help/source only to diagnose a command execution failure or when explicitly
+   tasked with changing the search tool. Use available partial results; broaden or rephrase unhelpful queries.
    Start services with `../launch.sh`; use `../launch.sh --restart` or `../launch.sh --stop`
    to restart or stop them. New, edited and deleted Lean sources are indexed automatically.
    Default hybrid search includes statements and proof methods; `--mode deep` adds
-   iterative discovery. Spaces mean AND; `--any` means OR. See "How Search Works Here" in `README.md`.
+   iterative discovery. Default request budget: 300 seconds; override with `--budget-seconds`.
+   Spaces mean AND; `--any` means OR. See "How Search Works Here" in `README.md`.
 4. Use `rg` for exact syntax or for proof-body text the index does not cover:
    `rg "<name-or-concept>" GaloisForLFunctions`
 

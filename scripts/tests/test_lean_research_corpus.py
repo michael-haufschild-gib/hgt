@@ -124,6 +124,35 @@ class CorpusTests(unittest.TestCase):
         self.assertEqual(d['axioms'], [])
         self.assertIn(dict(target='Eq.refl', kind='proof'), d['dependencies'])
 
+    def test_compiler_generated_names_with_shared_suffix_remain_distinct(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        self.db.refresh(self.root)
+        sha = self.db.con.execute('SELECT source_hash FROM files').fetchone()[0]
+        rows = [dict(name=name, module='A', kind='theorem', type_text='True',
+                     proof_dependencies=[dependency]) for name, dependency in (
+            ('First.alpha._simp_1', 'First.witness'),
+            ('Second.alpha._simp_1', 'Second.witness'))]
+        self.db.install_compiler_rows('formal/A.lean', rows, source_hash=sha)
+        for row in rows:
+            declaration = self.db.con.execute('SELECT id FROM declarations WHERE name=?',
+                                              (row['name'],)).fetchone()
+            self.assertIsNotNone(declaration, row['name'])
+            actual = self.db.declaration(declaration['id'])
+            self.assertEqual(actual['compiler_metadata']['name'], row['name'])
+            self.assertIn(dict(target=row['proof_dependencies'][0], kind='proof'), actual['dependencies'])
+
+    def test_compiler_private_fallback_requires_full_source_name(self):
+        self.write('formal/A.lean', 'namespace First\nprivate theorem alpha : True := trivial\nend First')
+        self.db.refresh(self.root)
+        sha = self.db.con.execute('SELECT source_hash FROM files').fetchone()[0]
+        original = self.db.con.execute('SELECT id FROM declarations').fetchone()[0]
+        common = dict(module='A', kind='theorem', line=2, type_text='True')
+        rows = [dict(common, name='_private.A.0.Second.alpha'),
+                dict(common, name='_private.A.0.First.alpha')]
+        self.db.install_compiler_rows('formal/A.lean', rows, source_hash=sha)
+        self.assertEqual(self.db.declaration(original)['name'], rows[1]['name'])
+        self.assertEqual(self.db.con.execute('SELECT count(*) FROM compiler_metadata').fetchone()[0], 2)
+
     def test_methods_require_source_evidence_and_invalidate_dependents(self):
         self.write('formal/A.lean', 'theorem alpha : True := trivial')
         p = self.write('formal/B.lean', 'theorem beta : True := alpha')

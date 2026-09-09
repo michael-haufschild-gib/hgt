@@ -1145,3 +1145,119 @@ These are paper calculations for a failed direct transfer, not newly
 formalized theorems. No hard EDQ ceiling, RH proof, or falsification was
 obtained. No computation or Lean build was needed for these deterministic
 checks, and no universal-law or frontier-map entry was changed by this task.
+
+## Deep corpus search: contraction and literal prime deletion
+
+Four `research --mode deep --budget-seconds 120 --json` requests were
+executed on 2026-09-10. The first allowed an index refresh; the remaining
+three used `--no-refresh`. No module restriction was imposed. The queries
+were:
+
+1. `Bound the full signed Mobius bilinear reciprocal dilation kernel over complementary cutoffs d greater than N and e at most N by every positive power of N retaining finite subtracted coprime numerator heads Euler main and all time tails`
+2. `Mobius bilinear cancellation reciprocal dilation subpower` with `--any`.
+3. `Euler deletion signed Gram offdiagonal cofinal ceiling` with `--any`.
+4. `Bound signed Mobius sums by cancellation across prime scales while retaining cutoff boundary terms` with `--any`.
+
+| Request | Elapsed seconds | Candidate lemmas | Source arguments | Proof ideas / ingredient sets | Completion |
+| --- | ---: | ---: | ---: | --- | --- |
+| 1 | 70.125 | 13 | 20 | 0 / 0 | Partial; retrieval interrupted, model stages failed or expired, refresh deferred to running indexer |
+| 2 | 120.010 | 20 | 20 | 0 / 0 | Partial; deadline during decomposition |
+| 3 | 120.013 | 20 | 20 | 0 / 0 | Partial; deadline during decomposition |
+| 4 | 120.008 | 12 | 12 | 0 / 0 | Partial; deadline during filtering/judgment |
+
+Request 1's lexical AND stage found no declaration; its relaxed retrieval
+did return candidates. Requests 2 and 3 generated follow-up query terms,
+but their traces contain only round 1. Request 4's trace reaches round 2.
+Request 3 drifted to Euler characteristics and ordinary ceiling functions;
+those hits do not address Euler deletion. Empty proof-idea and ingredient
+sections are recorded as empty, not as evidence that no mathematical
+argument exists in the corpus.
+
+The first coverage snapshot inventoried 55,915 indexed files: 46,518 Lean
+and 9,397 prose files, with 719,312 declarations. Its compiler metadata
+listed every Lean file as pending. Later coverage snapshots were themselves
+pending. Semantic coverage was incomplete in every returned result; the
+last snapshot reports expected 2,166,650, ready 2,166,644 and pending 1,
+which does not itself reconcile the total. No complete-coverage claim is
+made. All 137 returned candidate/source-argument occurrences were checked
+against the current declaration-block hashes using the search extractor;
+all matched. This verifies source freshness, not Lean applicability or
+the truth of a model-suggested transfer. Returned applicability fields
+were unchecked and compiler status was `source_only`.
+
+Selected exact statements and bodies give these usable boundaries:
+
+- `RHTower.additive_floor_is_epsilon` in `RecurrenceTypeDichotomy` delegates to
+  `subpower_bound_of_dyadic_contraction`. This supplies the desired
+  conclusion only after proving the actual recurrence with q<1.
+- `GaloisForLFunctions.HTGeometry.mobiusLogInversion_ge` in
+  `MonotoneMobiusPositivity` assumes a nonnegative
+  monotone density and sums inverse-square dilates. The actual modular
+  source is not supplied with that monotonicity, and the conclusion is
+  a lower comparison, not the missing energy upper bound.
+- `RHTower.weightedLambertMobius_inversion` in `PrimeLambertMobiusInversion` preserves
+  the explicit double-series summability premise. Inversion alone does
+  not give a cutoff estimate for the retained finite numerator head.
+- `MenonFinalRangeRamareReduction` retains its literal bilinear energy;
+  `GhsBlockPlainMass` uses sigma>=1 and its own prime-block weights;
+  `DeningerMobiusPreimage` obtains its inverse-square bound by absolute
+  values. None supplies the EDQ cancellation rate.
+- `RHTower.Sieve.exists_gt_tsum_routeEStaticAntiscaleTerm_lt` in
+  `RouteEStaticAntiscaleFrameDichotomy`
+  gives small returns in a free frequency variable for fixed summable
+  diagonal weights. EDQ requires returns in the arithmetic cutoff for
+  its full signed source. No identification of these quantifiers exists
+  in this attempted transfer.
+- The private `primeScale_remainder_bound` in `PrimeLogBlockCompression` bounds the
+  higher-prime-power correction to an exponential first term; the
+  first term remains. The inspected Type-I prime-amplifier schedule and
+  prime-deletion harmonic-mass bounds likewise retain their own weights
+  and source assumptions.
+
+The direct contraction attempt uses the literal generator
+`b_d(u)=bdGenReal(1/d,u)=({u/d}-{u}/d)/u`. Its exact identity is
+
+```
+b_(p*d)(u) = p^(-1)*b_d(u/p) + d^(-1)*b_p(u).
+```
+
+For a prime p, define
+`A_N^p=sum_(d<=N,p not dividing d)mu(d)*b_d`,
+`h_M^p=sum_(d<=M,p not dividing d)mu(d)/d`, and M=floor(N/p).
+Splitting the original coefficients at p, including the zero coefficients
+at multiples of p^2, gives the exact paper identity
+
+```
+F_N = A_N^p - D_p A_M^p - h_M^p*b_p,
+F_N=sum_(d<=N)mu(d)*b_d,
+(D_p f)(u)=p^(-1)*f(u/p).
+```
+
+Here `||F_N||` is the norm of the actual raw modular approximant, whose
+sign convention is opposite. All integer generators vanish for 0<u<1.
+Consequently change of variables in the full integral on u>1 yields
+`||D_p A_M^p||^2=p^(-1)*||A_M^p||^2`; no lower-limit integral has been
+dropped. But the other two terms remain. In particular, with
+`Z=D_p A_M^p+h_M^p*b_p`, the full energy is
+
+```
+||F_N||^2 = ||A_N^p||^2 + ||Z||^2 - 2*<A_N^p,Z>.
+```
+
+The same-cutoff prime-free norm and this literal mixed pairing have no
+supplied recurrence bound. A contracting dilation therefore does not
+establish a contraction of the full arithmetic energy. Substituting the
+triangle inequality preserves the uncontrolled same-cutoff norm. This
+attempt has not proved the required q<1 recurrence or a subpower ceiling.
+
+A temporary `lake env lean` file checked both the generator identity and
+application of `subpower_bound_of_dyadic_contraction` to the actual
+`||bdMobiusModularApproximantVec N||^2`. The latter explicitly retained
+the unproved source recurrence as a premise; it is an applicability
+check, not a new arithmetic theorem. Broad initial imports encountered
+a missing unrelated olean; using the direct leaf imports completed the
+check with exit 0 and one unnecessary-sequence-focus style warning.
+No dependency rebuild, umbrella build, axiom audit, or new Lean module
+was performed. The finite prime split and integral norm calculation
+above remain paper calculations. RH and the hard signed ceiling remain
+unproved; no universal-law or frontier-map change is justified here.

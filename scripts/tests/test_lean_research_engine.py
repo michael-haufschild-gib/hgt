@@ -191,7 +191,8 @@ class EngineTests(unittest.TestCase):
         runtime = FakeRuntime()
         def rerank(query, documents, *, deadline):
             self.assertTrue(snapshots[-1]['candidate_lemmas'])
-            self.assertLess(deadline - time.monotonic(), 12)
+            self.assertGreater(deadline - time.monotonic(), 25)
+            self.assertLessEqual(deadline - time.monotonic(), 30)
             raise TimeoutError('reranking exhausted its stage budget')
         runtime.rerank = rerank
         r = Engine(self.db, runtime, vectors=vectors).search('unmatched', mode='hybrid',
@@ -199,6 +200,42 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(r['candidate_lemmas'][0]['name'], 'A.alpha')
         self.assertIn('reranking', r['unfinished_stages'])
         self.assertIn('reranking exhausted its stage budget', [e['error'] for e in r['errors']])
+
+    def test_longer_stage_budgets_still_respect_explicit_request_deadline(self):
+        for budget in (300, 1):
+            with self.subTest(budget=budget):
+                limits = {}
+                runtime = FakeRuntime()
+                vectors = EmptyVectors()
+                search = self.db.search
+                def text_search(*args, **kwargs):
+                    limits.setdefault('text', []).append(kwargs['deadline']-time.monotonic())
+                    return search(*args, **kwargs)
+                def embed(texts, *, query, deadline):
+                    limits['embedding'] = deadline-time.monotonic()
+                    return [[1., 0.]]
+                def rerank(query, documents, *, deadline):
+                    limits['reranking'] = deadline-time.monotonic()
+                    return [1.] * len(documents)
+                def generate(prompt, *, deadline, max_tokens):
+                    limits['judgment'] = deadline-time.monotonic()
+                    return '{"sufficient":true}'
+                runtime.embed, runtime.rerank, runtime.generate = embed, rerank, generate
+                engine = Engine(self.db, runtime, vectors=vectors)
+                retrieve = engine.retrieve
+                def capture(*args, **kwargs):
+                    limits['retrieval'] = kwargs['deadline']-time.monotonic()
+                    return retrieve(*args, **kwargs)
+                with patch.object(self.db, 'search', side_effect=text_search), \
+                        patch.object(engine, 'retrieve', side_effect=capture):
+                    result = engine.search('alpha', budget_seconds=budget)
+                self.assertTrue(result['candidate_lemmas'])
+                for stage, cap in (('embedding',30),('reranking',30),('judgment',60),('retrieval',90)):
+                    self.assertLessEqual(limits[stage], min(cap,budget))
+                    self.assertGreater(limits[stage], cap-1 if budget==300 else 0)
+                for left in limits['text']:
+                    self.assertLessEqual(left,min(10,budget))
+                    self.assertGreater(left,9 if budget==300 else 0)
 
     def test_long_deep_query_decomposes_into_explicit_short_queries(self):
         runtime = FakeRuntime([{'queries': ['growth AND bound', 'growth bound', 'beta']}, {'sufficient': True}])

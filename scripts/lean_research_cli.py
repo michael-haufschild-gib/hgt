@@ -68,7 +68,7 @@ def compile_corpus(root: Path, corpus: Corpus, *, deadline: float, module="", pr
         if len(set(modules)) != len(modules):
             batches[:0] = [[r] for r in batch]
             continue
-        result = export_modules(root / 'formal', modules, timeout_seconds=min(60, deadline - time.monotonic()),
+        result = export_modules(root / 'formal', modules, timeout_seconds=min(300, deadline - time.monotonic()),
                                 source_paths={row['module']: root / row['path'] for row in batch})
         status = result.get('status', 'failed')
         if status not in ('ok', 'partial'):

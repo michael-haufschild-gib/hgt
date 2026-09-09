@@ -19,6 +19,14 @@ from lean_research_corpus import Corpus, cache_directory
 
 
 class SupervisionTests(unittest.TestCase):
+    def test_search_budget_default_and_override_reach_command(self):
+        import formal_tools
+        for flags, expected in (([], 300), (['--budget-seconds', '17'], 17)):
+            with self.subTest(flags=flags), patch.object(formal_tools, 'research', return_value=0) as command, \
+                    patch.object(formal_tools, '_save_cache'):
+                self.assertEqual(formal_tools.main(['research', 'entropy', *flags]), 0)
+                self.assertEqual(command.call_args.args[0].budget_seconds, expected)
+
     def test_enrichment_does_not_repeat_corpus_coverage_scan(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

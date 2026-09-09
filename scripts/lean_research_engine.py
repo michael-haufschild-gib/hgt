@@ -23,7 +23,7 @@ from pathlib import Path
 from lean_research_corpus import Corpus, cache_directory, digest, PATH_PRIORITY_SQL, EvidenceChanged, mask_comments_strings
 from lean_search_index import module_matches, query_parts
 
-ENGINE_VERSION = "deep-3-qdrant"
+ENGINE_VERSION = "deep-4-qdrant"
 METHOD_PROMPT_VERSION = "method-3-code-lines"
 MAX_ROUNDS = 3
 MAX_QUERIES = 8
@@ -146,7 +146,7 @@ class Engine:
             stage('text:' + views[0])
             try:
                 hits = self.corpus.search(query, views=views, any_terms=options.get("any_terms", False), exact=options.get("exact", False),
-                                         **{**common, 'deadline': min(deadline, time.monotonic() + 3)})
+                                         **{**common, 'deadline': min(deadline, time.monotonic() + 10)})
                 target.append(hits)
             except (ValueError, sqlite3.DatabaseError) as exc:
                 self.fail("text_retrieval", exc)
@@ -158,7 +158,7 @@ class Engine:
             stage('text:lean')
             try:
                 prose.append(self.corpus.search(query, views=('lean',), any_terms=options.get('any_terms', False), exact=options.get('exact', False),
-                                                **{**common, 'deadline': min(deadline, time.monotonic() + 3)}))
+                                                **{**common, 'deadline': min(deadline, time.monotonic() + 10)}))
             except (ValueError, sqlite3.DatabaseError) as exc:
                 self.fail('source_retrieval', exc)
         publish()
@@ -178,7 +178,7 @@ class Engine:
         if self.runtime and self.vectors and (self.vector_coverage or {}).get('ready', 0) and time.monotonic() < deadline:
             try:
                 stage('query_embedding')
-                embedding = self.runtime.embed([query], query=True, deadline=min(deadline, time.monotonic() + 8))[0]
+                embedding = self.runtime.embed([query], query=True, deadline=min(deadline, time.monotonic() + 30))[0]
                 for views, target in lanes:
                     stage('vectors:' + views[0])
                     target.append(self.vectors.search(embedding, model=self.embedding_model, views=views, **common))
@@ -205,7 +205,7 @@ class Engine:
             try:
                 stage('reranking')
                 docs = [c["statement"] for c in candidates[:12]]
-                scores = self.runtime.rerank(query, docs, deadline=min(deadline, time.monotonic() + 8))
+                scores = self.runtime.rerank(query, docs, deadline=min(deadline, time.monotonic() + 30))
                 if len(scores) != len(docs) or not all(math.isfinite(s) for s in scores):
                     raise ValueError("invalid reranker scores")
                 reranked = []
@@ -321,7 +321,7 @@ class Engine:
                 sets.append(dict(description=str(group.get("description", "Proposed premise group")), steps=steps, status="not_verified"))
         return ideas, sets
 
-    def search(self, query: str, *, mode="deep", budget_seconds=120, options=None, progress=None) -> dict:
+    def search(self, query: str, *, mode="deep", budget_seconds=300, options=None, progress=None) -> dict:
         started = time.monotonic()
         deadline = started + max(0, budget_seconds)
         options = options or {}
@@ -408,7 +408,7 @@ class Engine:
                                               'Each search must contain only two to four plain keywords separated by spaces. No Boolean operators. '
                                               'Use source evidence and vary terminology. Do not assert mathematical conclusions.\nQUERY:\n' + query +
                                               '\nSOURCES:\n' + self._context(result['candidate_lemmas'], result['source_arguments']),
-                                              min(deadline, time.monotonic() + 10), max_tokens=256)
+                                              min(deadline, time.monotonic() + 30), max_tokens=256)
                         planned = plan.get('queries', [])
                         if not isinstance(planned, list):
                             raise ValueError('queries must be a list')
@@ -443,7 +443,7 @@ class Engine:
                                                   lexical_operator="OR" if options.get("any_terms") else "AND"))
                 try:
                     remaining = deadline - time.monotonic()
-                    retrieval_deadline = min(deadline, time.monotonic() + min(20, remaining * .5)) if mode == 'deep' and self.runtime else deadline
+                    retrieval_deadline = min(deadline, time.monotonic() + min(90, remaining * .5)) if mode == 'deep' and self.runtime else deadline
                     retrieve_options = {**options, 'lexical_only': True} if relaxed and expanded in initial_queries else options
                     candidates, methods, prose = self.retrieve(expanded, options=retrieve_options, deadline=retrieval_deadline,
                                                                on_partial=retain, on_stage=stage)
@@ -461,7 +461,7 @@ class Engine:
                             'Lean corpus searches for mathematical premises or transferable proof methods for this goal. '
                             'Each search must contain only two to four plain keywords separated by spaces. No Boolean operators. '
                             'Vary terminology; do not assert a proof.\nGOAL:\n' + query,
-                            min(deadline, time.monotonic() + 10), max_tokens=256)
+                            min(deadline, time.monotonic() + 30), max_tokens=256)
                         planned = plan.get('queries', [])
                         if not isinstance(planned, list):
                             raise ValueError('queries must be a list')
@@ -485,7 +485,7 @@ class Engine:
             try:
                 stage('filter_and_judge')
                 judgment = self._judge(query, result['candidate_lemmas'], result['source_arguments'],
-                                       min(deadline, time.monotonic() + 20))
+                                       min(deadline, time.monotonic() + 60))
                 ideas, sets = self._validated_judgment(judgment, list(all_candidates.values()), list(all_methods.values()))
                 known_ideas = {i["id"] for i in result["proof_ideas"]}
                 result["proof_ideas"].extend(i for i in ideas if i["id"] not in known_ideas)
@@ -718,7 +718,7 @@ def main():
         engine = Engine(corpus, runtime, vectors=vectors)
         try:
             result = engine.search(request["query"], mode=request.get("mode", "deep"),
-                                   budget_seconds=request.get("budget_seconds", 120), options=request.get("options", {}), progress=output)
+                                   budget_seconds=request.get("budget_seconds", 300), options=request.get("options", {}), progress=output)
         except KeyboardInterrupt:
             return 130
         output(result)

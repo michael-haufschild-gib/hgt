@@ -1275,8 +1275,8 @@ def main(argv: list[str] | None = None) -> int:
     research_parser.add_argument("--limit", type=int, default=20)
     research_parser.add_argument("--mode", choices=("deep", "hybrid", "lexical"), default=None,
                                  help="deep after acceptance; lexical preserves exact name/doc search")
-    research_parser.add_argument("--budget-seconds", type=float, default=120,
-                                 help="whole-request search budget (default: 120 seconds)")
+    research_parser.add_argument("--budget-seconds", type=float, default=300,
+                                 help="whole-request search budget (default: 300 seconds)")
     research_parser.add_argument("--retrieval-views", choices=("statements", "all"), default="all",
                                  help="statement-only retrieval ablation or full proof-method discovery")
     research_parser.add_argument("--max-rounds", type=int, choices=(1, 2, 3), default=3,

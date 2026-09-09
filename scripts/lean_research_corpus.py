@@ -571,13 +571,16 @@ class Corpus:
                 source = row.get('source') or {}
                 source_range = source.get('range') or {}
                 selection_range = source.get('selection_range') or source_range
-                line = row.get('line') or (selection_range.get('start') or {}).get('line') or 1
+                source_line = row.get('line') or (selection_range.get('start') or {}).get('line')
+                line = source_line or 1
                 end_line = (source_range.get('end') or {}).get('line') or line
                 if not match:
                     # Compiler-private names can carry a generated prefix; source
                     # line fallback is accepted only when unique and provided.
-                    candidates = self.con.execute("SELECT * FROM declarations WHERE path=? AND line=?", (path, line)).fetchall()
-                    candidates = [d for d in candidates if row['name'].endswith('.' + d['name']) or row['name'].endswith('.' + d['name'].rsplit('.', 1)[-1])]
+                    candidates = (self.con.execute(
+                        "SELECT * FROM declarations WHERE path=? AND line=? AND compiler_status='source_only'",
+                        (path, source_line)).fetchall() if source_line else [])
+                    candidates = [d for d in candidates if row['name'].endswith('.' + d['name'])]
                     if len(candidates) == 1:
                         match = candidates[0]
                     else:

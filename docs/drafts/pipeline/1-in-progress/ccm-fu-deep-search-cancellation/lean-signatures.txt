@@ -1,0 +1,34 @@
+RHTower.bourgain_subpower_of_twoThirds_recurrence : ∀ (b : ℝ → ℝ) {B γ : ℝ},
+  0 < B →
+    0 ≤ γ →
+      (∀ (x : ℝ), 1 ≤ x → b x ≤ B * x ^ γ) →
+        (∀ (δ : ℝ), 0 < δ → ∃ C, 0 < C ∧ ∀ (x : ℝ), 1 ≤ x → b x ≤ C * x ^ δ * b (x ^ (2 / 3))) →
+          ∀ (ε : ℝ), 0 < ε → ∃ D, 0 < D ∧ ∀ (x : ℝ), 1 ≤ x → b x ≤ D * x ^ ε
+@RHTower.bourgainSectionOne_recurrenceStep_subpower : ∀ {ε : ℝ},
+  0 < ε →
+    ∃ C,
+      0 < C ∧
+        ∀ (J H : ℕ),
+          0 < J →
+            0 < H →
+              6 * RHTower.bourgainSectionOneTaylorConstant * ↑H ^ 2 ≤ ↑J →
+                ∀ {q b : ℝ},
+                  0 < q →
+                    q ≤ 1 / 2 →
+                      RHTower.BourgainSectionOneLocalDecouplingAt J b →
+                        ∀ (c₁ c₂ : Fin (J * H) → ℂ),
+                          ∫⁻ (x : RHTower.BourgainPhaseSpace) in
+                              RHTower.bourgainSectionOnePhaseBall (RHTower.bourgainSectionOneBlockDenominator J H),
+                              RHTower.bourgainSectionOneFullBilinearIntegrand J H q c₁ c₂ x ≤
+                            256 * ENNReal.ofReal (b ^ 12 * RHTower.bourgainSectionOneCoarsePhysicalRadius J ^ 2) *
+                              (ENNReal.ofReal
+                                  (26001 ^ 2 * (131072 / 3) * RHTower.bourgainSectionOneBlockDenominator J H ^ 8) *
+                                ENNReal.ofReal ((C * ↑H ^ ε * ↑H ^ 4 * ∑ n, ‖c₁ n‖ ^ 6) * ∑ n, ‖c₂ n‖ ^ 6))
+@RHTower.DeletionCoprimeHead.exists_initialEnergy_remainder_subpower : ∀ {ε : ℝ},
+  0 < ε →
+    ∃ C,
+      0 < C ∧
+        ∀ (N : ℕ),
+          |RHTower.DeletionCoprimeHead.initialEnergy N -
+                RHTower.DeletionCoprimeHead.harmonicQuadratic N * RHTower.DeletionCoprimeHead.headMass N| ≤
+            C * ↑N ^ ε

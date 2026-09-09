@@ -186,12 +186,15 @@ private def exportModules (modules : Array Name) : MetaM Json := do
     paths := paths.insert moduleName (← modulePath moduleName)
   let mut declarations := #[]
   let mut errors : Array String := #[]
-  -- const2ModIdx also contains IR-only symbols (e.g. _boxed), which have no
-  -- elaborated ConstantInfo. Inventory actual declarations, not linker symbols.
-  let names := env.constants.toList.toArray.filterMap fun (name, _) => do
-    let index ← env.getModuleIdxFor? name
-    let moduleName ← env.header.moduleNames[index.toNat]?
-    if modules.contains moduleName then some (name, moduleName) else none
+  -- ModuleData.constNames lists actual ConstantInfo entries; extraConstNames
+  -- contains IR-only symbols. Avoid materializing the whole imported ConstMap.
+  let mut names : Array (Name × Name) := #[]
+  for index in [:env.header.moduleNames.size] do
+    let moduleName := env.header.moduleNames[index]!
+    if modules.contains moduleName then
+      for name in env.header.moduleData[index]!.constNames do
+        if (env.getModuleIdxFor? name).map (·.toNat) == some index then
+          names := names.push (name, moduleName)
   for (name, moduleName) in names.qsort (fun a b => Name.quickLt a.1 b.1) do
     try
       declarations := declarations.push (← inspectDeclaration moduleName

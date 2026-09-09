@@ -103,6 +103,7 @@ class _SnapshotValidator:
     def __init__(self, formal_dir: Path):
         self.formal = Path(formal_dir).resolve()
         self.files: dict[Path, dict] = {}
+        self.resolutions: dict[tuple[str, Path | None], dict] = {}
         self.scopes: dict[str, set[Path]] = {}
         self.roots: list[tuple[Path, list[Path], Path | None]] = []
         packages = [self.formal]
@@ -154,6 +155,9 @@ class _SnapshotValidator:
         return self.files[path]
 
     def resolve(self, module: str, source_path: Path | None = None) -> dict:
+        key = (module, source_path)
+        if key in self.resolutions:
+            return self.resolutions[key]
         relative = Path(*module.split("."))
         candidates = {}
         source_candidates = set()
@@ -172,9 +176,11 @@ class _SnapshotValidator:
             source = next(iter(source_candidates)) if len(source_candidates) == 1 else None
         artifact = next(iter(candidates)) if len(candidates) == 1 else None
         ir = candidates[artifact][1] if artifact else None
-        return {"artifact": artifact, "source": source,
-                "setup": ir / relative.with_suffix(".setup.json") if ir else None,
-                "candidates": [str(path) for path in sorted(candidates)]}
+        result = {"artifact": artifact, "source": source,
+                  "setup": ir / relative.with_suffix(".setup.json") if ir else None,
+                  "candidates": [str(path) for path in sorted(candidates)]}
+        self.resolutions[key] = result
+        return result
 
     def validate(self, module: str, source_path: Path | None = None) -> dict:
         scope: set[Path] = set()
