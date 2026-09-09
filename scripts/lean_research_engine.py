@@ -23,7 +23,7 @@ from pathlib import Path
 from lean_research_corpus import Corpus, cache_directory, digest, PATH_PRIORITY_SQL, EvidenceChanged, mask_comments_strings
 from lean_search_index import module_matches, query_parts
 
-ENGINE_VERSION = "deep-2-progress"
+ENGINE_VERSION = "deep-3-qdrant"
 METHOD_PROMPT_VERSION = "method-3-code-lines"
 MAX_ROUNDS = 3
 MAX_QUERIES = 8

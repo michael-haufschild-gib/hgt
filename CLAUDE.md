@@ -10,6 +10,8 @@ Card template: docs/drafts/pipeline/_card-template.md
 ## Check prior research before any new topic or writing new lean code
 - Current ledger of the major RH proof routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md (ignore if you are not working on RH)
 - High level facts about things the RH proof must or can not be like: docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md (ignore if not working on RH)
+- Start search services with `./launch.sh`; use `./launch.sh --restart` to restart them or `./launch.sh --stop` to stop them.
+- Leave services running for automatic indexing of new, edited and deleted Lean sources.
 - Search: `scripts/formal_tools.py research "clock inverse"`. Default hybrid searches names, docs,
   statements, proof bodies, installed Lean dependencies and research notes using available indexed content.
 - Use `--mode deep` for iterative lemma, toy-proof and premise-group discovery; describe the goal or

@@ -149,14 +149,14 @@ def run(root: Path, *, once=False) -> int:
                 return json.loads((directory / 'indexer-stop.json').read_text()).get('token') == token
             except (OSError, ValueError):
                 return False
-        def phase(name, seconds, flags):
+        def phase(name, seconds, flags, command=None):
             if stopped():
                 return
             record(phase=name)
             started = time.monotonic()
             report_file = directory / 'indexer-phase.log'
             with report_file.open('wb') as output:
-                child = subprocess.Popen([sys.executable, str(root / 'scripts/formal_tools.py'), 'search-index',
+                child = subprocess.Popen(command or [sys.executable, str(root / 'scripts/formal_tools.py'), 'search-index',
                                           '--budget-seconds', str(seconds), *flags],
                                          cwd=str(root), stdin=subprocess.DEVNULL, stdout=output,
                                          stderr=output, start_new_session=True)
@@ -205,13 +205,24 @@ def run(root: Path, *, once=False) -> int:
                 phase('sources', 25, ['--corpus'])
                 if stopped():
                     break
+                if (directory / 'qdrant.json').exists():
+                    phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
+                        '--cache-dir', str(directory), '--budget-seconds', '30'])
                 from lean_research_runtime import RuntimeClient
                 with RuntimeClient(directory) as client:
                     ready = client.status().get('available', False)
+                    if not ready and (directory / 'services.json').exists() and not (directory / 'services-stopped').exists():
+                        try:
+                            ready = client.start().get('available', False)
+                        except Exception as exc:
+                            record(last_error=str(exc))
                 if ready:
                     phase('embeddings', 90, ['--vectors'])
+                    if not stopped() and (directory / 'qdrant.json').exists():
+                        phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
+                            '--cache-dir', str(directory), '--budget-seconds', '30'])
                     phase('methods', 45, ['--methods'])
-                    if not stopped():
+                    if not stopped() and not (directory / 'qdrant.json').exists():
                         small = small_shard_count(directory)
                         if small > 256:
                             phase('compaction', 30, ['--compact'])

@@ -76,6 +76,8 @@ Construction and status never start the worker, import ML, or download anything.
             raise
 
     def _ensure_worker(self, deadline):
+        if (self.cache_dir / 'services-stopped').exists():
+            raise RuntimeUnavailable('Research services stopped; run ./launch.sh')
         if not installation_status(self.cache_dir)['ready']:
             raise RuntimeUnavailable('local runtime not installed; run scripts/lean_research_setup.py with this cache-dir')
         secure_directory(self.directory)
@@ -173,6 +175,10 @@ Construction and status never start the worker, import ML, or download anything.
             return self._request({'op': 'status'}, time.monotonic() + 0.3, start=False)
         except (RuntimeUnavailable, RuntimeDeadline, ValueError, KeyError):
             return status
+
+    def start(self) -> dict:
+        """Explicitly start the shared broker without loading a model."""
+        return self._request({'op': 'status'}, time.monotonic() + 10)
 
     def embed(self, texts: list[str], *, query: bool = False, deadline: float,
               priority: str = 'interactive') -> list[list[float]]:

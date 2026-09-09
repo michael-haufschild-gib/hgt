@@ -109,39 +109,35 @@ Regenerate agent-facing indexes after adding, moving, or renaming declarations:
 
 ## How Search Works Here
 
-`research` searches extracted declaration names, full adjacent docstrings,
-module names, and gap markers in `GaloisForLFunctions/`. The SQLite FTS5 cache
-is `formal/.lean_search-<fingerprint>.db` (git-ignored and derivable).
-Schema/extractor upgrades get separate database generations, so an agent
-using the previous version retains its own database and WAL files.
+From this directory, start the local search services with `../launch.sh`.
+Use `../launch.sh --restart` to restart or `../launch.sh --stop` to stop them.
+Docker Desktop starts automatically when needed. The launcher runs Qdrant,
+the shared local inference worker, background indexing and unfinished local
+GPU-result receivers. Remote Runpod jobs continue independently.
+
+Default hybrid search combines lexical matches with Qdrant vector retrieval
+across names, documentation, statements, proofs, proof-method descriptions,
+installed Lean dependencies and research notes. Use `--mode deep` for iterative
+lemma and proof-idea discovery, or `--mode lexical` for lexical search alone.
+The default request budget is 120 seconds; change it with `--budget-seconds`.
 
 ### What keeps it current
 
-Nothing watches the filesystem and no hook has to fire.  Every `research`
-invocation re-syncs before it searches:
+While services run, the indexer scans for added, edited and deleted sources.
+Changed content is reparsed and queued for local descriptions and embeddings;
+Qdrant updates resume after interruptions. Work is prioritized RHTower, then
+HTGeometry, then the remaining corpus. New content can be found lexically
+before its embeddings are ready. Source/compiler freshness and partial coverage
+remain visible in search results. No Lean builds run in the background.
 
-1. One `os.scandir` walk of `GaloisForLFunctions/` stamps every `.lean` and
-   `.md` file with `(size, mtime_ns)`.
-2. Those stamps are compared against the index's `file` table.  A file whose
-   stamp differs, or that has no row, is **changed**; a row with no file on disk
-   is **removed**.
-3. With nothing changed — the normal case — the query runs immediately.  No
-   write, no lock taken.
-4. Otherwise the changed files are reparsed and rewritten in batches of 512, and
-   removed files have their rows dropped.  Only the changed files are read.
-
-So an agent that adds a module or edits a proof sees it in the very next search,
-its own or another agent's.  Nothing needs regenerating by hand.
-
-The first query builds a missing generation. For a shared-tool upgrade, prepare
-the new generation before switching the entrypoint. A damaged cache is rebuilt;
-lock contention never causes deletion of a live database. `--no-refresh` uses
-cached contents and reports an error if that generation is empty.
+`--no-refresh` searches cached content. Ordinary searches also refresh the
+lexical index when needed. No manual reindex is needed for normal edits.
 
 ```bash
-../scripts/formal_tools.py search-index            # refresh and report
-../scripts/formal_tools.py search-index --rebuild  # discard and rebuild
-../scripts/formal_tools.py research "<query>" --scan   # bypass the index
+../scripts/formal_tools.py research "<query>"
+../scripts/formal_tools.py research "<query>" --mode deep --budget-seconds 120
+../scripts/formal_tools.py research "<query>" --mode lexical
+../scripts/formal_tools.py search-index --corpus   # explicitly refresh source content
 ```
 
 Spaces mean **AND**: every term or phrase must match. Shell quotes group an

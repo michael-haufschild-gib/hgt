@@ -5,6 +5,27 @@ Target: Apple M3 Pro / 18 GiB. Setup is explicit; all search and generation call
 are offline. The main corpus/engine/CLI can import the public client without
 installing any inference dependencies in their parent Python.
 
+## Start, restart and stop
+
+From the repository root:
+
+```sh
+./launch.sh
+./launch.sh --restart
+./launch.sh --stop
+```
+
+These manage Qdrant, the shared inference worker, automatic corpus indexing and
+unfinished local GPU-result receivers. New/edited/deleted sources are handled
+incrementally, in RHTower → HTGeometry → remaining-corpus order. Remote GPU jobs
+continue independently. Services continue after closing Codex while the Mac is awake.
+
+SQLite holds source metadata, lexical search and a durable Qdrant update queue.
+Qdrant serves vector queries. Bounded FAISS files remain as the audited vector
+archive for reuse, interrupted imports and recovery; searches do not scan them.
+Qdrant is bound to localhost, capped at 5 GiB, with cold original vectors and
+pinned int8 vectors. Its image is pinned in `scripts/lean_research_qdrant.py`.
+
 ## Setup and verification
 
 From repository root:

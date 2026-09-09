@@ -15,7 +15,7 @@ from lean_research_corpus import Corpus
 @unittest.skipUnless(importlib.util.find_spec('faiss'), 'requires dedicated research runtime')
 class VectorTests(unittest.TestCase):
     def setUp(self):
-        from lean_research_vectors import Vectors
+        from lean_research_vectors import FaissVectors as Vectors
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
@@ -97,7 +97,7 @@ class VectorTests(unittest.TestCase):
         self.assertTrue(all('/RHTower/' in d['path'] for d in pending[:4]))
 
     def test_conflicting_torch_process_is_rejected_before_openmp_initializes(self):
-        from lean_research_vectors import Vectors
+        from lean_research_vectors import FaissVectors as Vectors
         with patch.object(sys, 'platform', 'darwin'), patch.dict(sys.modules, {'torch': object()}):
             with self.assertRaisesRegex(ImportError, 'separately from Torch'):
                 Vectors(self.db)

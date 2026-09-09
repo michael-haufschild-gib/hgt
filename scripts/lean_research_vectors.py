@@ -1,4 +1,4 @@
-"""Bounded FAISS shards, with SQLite publication and source-hash validation.
+"""Qdrant retrieval with bounded FAISS files retained as durable vector archives.
 
 FAISS is optional for lexical users. A shard is immutable; publishing its
 metadata and document assignments is one transaction. Aborted writes can leave
@@ -20,7 +20,7 @@ MAX_SHARD_DOCUMENTS = 8192
 EMBED_VIEWS = ('statement', 'type', 'shape', 'proof', 'method', 'prose')
 
 
-class Vectors:
+class FaissVectors:
     def __init__(self, corpus: Corpus):
         if sys.platform == 'darwin' and 'torch' in sys.modules:
             raise ImportError('FAISS must run separately from Torch on macOS. Use research_runtime/audit.py for isolated tests; inference belongs in the shared model worker.')
@@ -173,3 +173,41 @@ class Vectors:
             for sid in old:
                 self.corpus.con.execute("DELETE FROM vector_shards WHERE id=? AND NOT EXISTS(SELECT 1 FROM vectors WHERE shard=?) AND NOT EXISTS(SELECT 1 FROM embedding_cache WHERE shard=?)", (sid, sid, sid))
         return dict(republished=total, old_shards=len(old))
+
+
+class Vectors:
+    """Queries use Qdrant; publication retains resumable, audited vector files."""
+    def __init__(self, corpus: Corpus):
+        self.corpus = corpus
+        self._archive = None
+
+    @property
+    def archive(self):
+        if self._archive is None:
+            self._archive = FaissVectors(self.corpus)
+        return self._archive
+
+    def publish(self, *args, **kwargs):
+        return self.archive.publish(*args, **kwargs)
+
+    def pending(self, *args, **kwargs):
+        return self.archive.pending(*args, **kwargs)
+
+    def reuse(self, *args, **kwargs):
+        return self.archive.reuse(*args, **kwargs)
+
+    def compact(self, *args, **kwargs):
+        return self.archive.compact(*args, **kwargs)
+
+    def coverage(self, model):
+        expected = self.corpus.con.execute("SELECT COUNT(*) FROM documents WHERE view<>'lean'").fetchone()[0]
+        ready = self.corpus.con.execute('SELECT COUNT(*) FROM qdrant_points p JOIN vectors v ON v.doc_id=p.doc_id '
+            'JOIN documents d ON d.id=v.doc_id WHERE p.model=? AND v.model=p.model '
+            'AND p.content_hash=v.content_hash AND p.content_hash=d.content_hash', (model,)).fetchone()[0]
+        pending = self.corpus.con.execute('SELECT COUNT(*) FROM qdrant_queue').fetchone()[0]
+        return dict(expected=expected, ready=ready, complete=expected>0 and ready==expected and not pending,
+                    backend='qdrant', pending=pending)
+
+    def search(self, embedding, **kwargs):
+        from lean_research_qdrant import search
+        return search(self.corpus, embedding, **kwargs)

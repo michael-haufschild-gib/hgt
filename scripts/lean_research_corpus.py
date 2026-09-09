@@ -93,6 +93,27 @@ CREATE TABLE IF NOT EXISTS vectors(
  shard TEXT NOT NULL REFERENCES vector_shards(id),position INTEGER NOT NULL,model TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS vector_shard ON vectors(shard);
 CREATE INDEX IF NOT EXISTS vector_content ON vectors(model,content_hash);
+CREATE TABLE IF NOT EXISTS qdrant_points(
+ doc_id INTEGER NOT NULL,model TEXT NOT NULL,content_hash TEXT NOT NULL,
+ PRIMARY KEY(doc_id,model));
+CREATE INDEX IF NOT EXISTS qdrant_points_model ON qdrant_points(model);
+CREATE TABLE IF NOT EXISTS qdrant_queue(
+ seq INTEGER PRIMARY KEY AUTOINCREMENT,doc_id INTEGER NOT NULL,model TEXT NOT NULL,
+ operation TEXT NOT NULL,UNIQUE(doc_id,model));
+CREATE TRIGGER IF NOT EXISTS qdrant_vector_old BEFORE INSERT ON vectors BEGIN
+ INSERT OR REPLACE INTO qdrant_queue(doc_id,model,operation)
+ SELECT old.doc_id,old.model,'delete' FROM vectors old
+ WHERE old.doc_id=new.doc_id AND old.model<>new.model; END;
+CREATE TRIGGER IF NOT EXISTS qdrant_vector_insert AFTER INSERT ON vectors BEGIN
+ INSERT OR REPLACE INTO qdrant_queue(doc_id,model,operation) VALUES(new.doc_id,new.model,'upsert'); END;
+CREATE TRIGGER IF NOT EXISTS qdrant_vector_delete AFTER DELETE ON vectors BEGIN
+ INSERT OR REPLACE INTO qdrant_queue(doc_id,model,operation) VALUES(old.doc_id,old.model,'delete'); END;
+CREATE TRIGGER IF NOT EXISTS qdrant_vector_update AFTER UPDATE ON vectors BEGIN
+ INSERT OR REPLACE INTO qdrant_queue(doc_id,model,operation) VALUES(old.doc_id,old.model,'delete');
+ INSERT OR REPLACE INTO qdrant_queue(doc_id,model,operation) VALUES(new.doc_id,new.model,'upsert'); END;
+CREATE TRIGGER IF NOT EXISTS qdrant_document_update AFTER UPDATE ON documents BEGIN
+ INSERT OR REPLACE INTO qdrant_queue(doc_id,model,operation)
+ SELECT new.id,v.model,'upsert' FROM vectors v WHERE v.doc_id=new.id; END;
 CREATE TABLE IF NOT EXISTS embedding_cache(
  content_hash TEXT NOT NULL,model TEXT NOT NULL,
  shard TEXT NOT NULL REFERENCES vector_shards(id),vector_id INTEGER NOT NULL,
