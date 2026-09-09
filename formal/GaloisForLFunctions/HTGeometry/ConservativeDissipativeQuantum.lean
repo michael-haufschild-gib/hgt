@@ -1,6 +1,15 @@
 import GaloisForLFunctions.HTGeometry.TwoReplicaPositiveGraphEdgeCasimir
 import GaloisForLFunctions.HTGeometry.RydbergProjectorDephasing
 
+set_option autoImplicit false
+
+/-!
+# Conservative–dissipative quantum laws
+
+Applications of Schaffer–Exl, arXiv:2609.04530, to constructed operators
+and the existing mathematical objects used below.
+-/
+
 open scoped Matrix InnerProductSpace
 open Matrix QuantumAlg
 namespace GaloisForLFunctions.HTGeometry.SchafferExl

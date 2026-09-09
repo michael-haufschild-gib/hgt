@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ConservativeDissipativeOperator
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 
+set_option autoImplicit false
+
 /-!
 # Spectral localization of constructed conservative–dissipative operators
 

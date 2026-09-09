@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.ConservativeDissipativeOperator
 import Mathlib.Analysis.SpecialFunctions.Exponential
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
+set_option autoImplicit false
+
 /-!
 # Exact quadratic-energy flow and contraction
 

@@ -3,6 +3,15 @@ import GaloisForLFunctions.HTGeometry.MvPolynomialGradient
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import GaloisForLFunctions.HTGeometry.PolynomialZeroSetDimension
 
+set_option autoImplicit false
+
+/-!
+# Conservative–dissipative polynomial laws
+
+Applications of Schaffer–Exl, arXiv:2609.04530, to constructed operators
+and the existing mathematical objects used below.
+-/
+
 open scoped InnerProductSpace
 namespace GaloisForLFunctions.HTGeometry.SchafferExl
 noncomputable section

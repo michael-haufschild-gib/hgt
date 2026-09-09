@@ -2,7 +2,9 @@
 
 Status: analytical construction and norm comparison in progress. The literal
 theta dilation profile and its two correlation transforms are proved in Lean
-in `SelbergThetaDilationTransform`; full modular Gram transport and normalized
+in `SelbergThetaDilationTransform`. Every actual theta zero mode has a globally
+positive real normalization and a canonical differentiable logarithm, proved
+in `SelbergThetaSourcePhase`. Full modular Gram transport and normalized
 full-Xi occurrence remain unproved. Frontier map is read-only; no numerical
 computations.
 
@@ -369,18 +371,119 @@ then feeding the existing SQB occurrence chain. Finite reflected-matrix
 positivity is available in the corpus; the all-source comparison has
 not been derived from it.
 
+### Positive phase construction: proved
+
+For an actual Xi multiplicity copy rho=beta+i gamma, put
+
+    z=(rho-1/2)(-i)=gamma+i(1/2-beta),
+    u(x)=hedenmalmCausalVolterra(z,x),
+    b=Re(z), c=Im(z), Q=Phi'/Phi.
+
+The corpus supplies b!=0, |c|<1 and XiC(z)=0. The original nonvanishing
+conjecture is proved in the stronger form
+
+    b Re(u(x)) < 0                 for every real x.         (19)
+
+This is unconditional at every actual divisor copy, without assuming
+critical-line placement. Define p(x)=-b u(x). Then Re(p(x))>0 globally.
+
+The analytical mechanism uses strict logarithmic concavity of the literal
+complete theta source. For a Schwartz real tail f with f'<0 on (x,infinity),
+
+    b integral_x^infinity f(t) sin(b(t-x)) dt
+      = integral_x^infinity [-f'(t)] [1-cos(b(t-x))] dt > 0
+
+for b>0. Both endpoint terms vanish; strict positivity follows near
+x+pi/b. Conjugation supplies the signed statement for b<0. For the actual
+tilt f(t)=exp(-c t)Phi(t), its logarithmic slope Q(t)-c is strictly decreasing.
+At every x either the right tilted tail decreases, or the reflected left
+tilted tail decreases. At an actual zero, causal and anti-causal tails agree.
+The factors i and exp(c x), with reflection z -> -z, give exactly (19).
+
+The next positive conjecture, a global source logarithmic coordinate, is
+also proved. With ell(x)=log(p(x)) using the principal complex logarithm,
+
+    L(x)=u'(x)/u(x)=-iz-i Phi(x)/u(x),
+    ell'(x)=L(x),
+    L'(x)=(Q(x)-L(x))(L(x)+iz),                              (20)
+    b (Im(L(x))+b)=Re(p(x)) Phi(x)/|u(x)|^2 > 0.              (21)
+
+All statements (19)--(21), including differentiability and nonzero
+denominators everywhere, are kernel-checked in `SelbergThetaSourcePhase`.
+There are 13 public declarations with no additional mathematical hypotheses
+or axioms. The [formal phase audit](../3-formalized/sqb-theta-source-phase.md)
+contains the dependency-closed proof and verification details.
+
+### Current analytical test of the retained term
+
+The positive density d=Re(p) satisfies, by taking real and imaginary parts
+of the actual first-order equation,
+
+    d''-2c d'+(b^2+c^2)d=b^2 Phi,       d>0.                  (22)
+
+This differential identity is established analytically here; it has not
+been added as a separate Lean theorem. Gauging D=exp(-c x)d gives the
+positive forced oscillator D''+b^2 D=b^2 exp(-c x)Phi. Both source tilt
+and transverse parameter remain explicit.
+
+To test the hardest term in (18), use v=exp(iz x/2)u/sqrt(Phi).
+This differs from the earlier v by only a nonzero constant. Its local
+logarithmic derivative is L+iz/2-Q/2. The exact equation is
+
+    [-d^2/dx^2+Q^2/4-Q'/2]v=(z^2/4-iz Q/2)v.                (23)
+
+If its full weighted domain and endpoint terms are justified, the imaginary
+part of the integrated equation would give
+
+    integral Q |v|^2 = c integral |v|^2.
+
+The proved sign (21) supplies a positive density in this calculation;
+it does not yet bound that weighted odd-source moment. The current proof
+attempt must derive the needed source comparison from the actual theta
+inequalities, while retaining c. Neither the weighted domain claims nor
+such a comparison have been proved. Equations (22)--(23) are not counted as
+native occurrence. No new conditional receiver or exclusion theorem was
+introduced. The SQB completion target remains the normalized bound (11).
+
+### Positive variance test of the weighted source term
+
+Conjecture under direct analytical/Lean verification: for a real tilt a,
+write f_a=exp(a x)Phi, w_a=exp(a x)|u|^2/Phi and h_a=z+ia. Then
+
+    integral (Q+a) w_a
+      =2(a+c) integral f_a |u/Phi+1/h_a|^2.                 (24)
+
+The proposed identity retains c and expresses the weighted source term
+through a positive variance. The proof calculation is: the tilted source
+ODE gives integral exp(a x)u=-integral f_a/h_a; expanding the squared
+deviation gives integral w_a-integral f_a/|h_a|^2. Integrating the derivative
+of w_a gives (24). The actual double-exponential theta tail should justify
+all integrals and boundary limits. Those estimates, strict positivity of
+the variance, and the resulting identity are being checked directly;
+they are not assumed. The initial Lean check uses |a|<1, which includes
+both the original weight a=0 and the required gauge weight a=-c.
+
+The reflected-product curvature theorem was inspected for a direct bound.
+Its potential applies to Phi(u+t)Phi(u-t); substituting it for the forced
+mode/source-ratio potential would omit terms. The variance identity is
+the current positive replacement, not an assertion that curvature already
+closes the native residual comparison.
+
 ## Verification boundary
 
 Equations (14) and (15), with the stated exponential integrability, are
-kernel-checked in `SelbergThetaDilationTransform.lean`. The original modular
-source admission, full Gram identity, Gaussian matrix comparison and
-replacement differential construction retain the analytical status stated
-above. No numerical experiment or new no-go module was performed. No
-normalized occurrence estimate or RH proof is claimed.
+kernel-checked in `SelbergThetaDilationTransform.lean`. The source-phase
+statements (19)--(21) are also kernel-checked, in
+`SelbergThetaSourcePhase.lean`. The original modular source admission, full
+Gram identity, Gaussian matrix comparison and remaining weighted differential
+construction retain the analytical status stated above. No numerical
+experiment or new no-go module was performed. No normalized occurrence
+estimate or RH proof is claimed.
 
 The [formal correlation audit](../3-formalized/sqb-theta-dilation-correlations.md)
 records source checking, the leaf build against existing dependency artifacts,
-all 36 axiom checks, and the unrelated repository lint failures.
+all 36 axiom checks, and the lint state at that audit. The phase audit has
+13 successful axiom checks and a later successful repository lint run.
 
 Discovery used broad OR corpus queries for intertwining/transmutation,
 source/resonance/synthesis, Mellin/Eisenstein/unfolding, theta kernels,

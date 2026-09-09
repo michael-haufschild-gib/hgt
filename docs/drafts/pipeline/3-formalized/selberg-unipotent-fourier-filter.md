@@ -1,6 +1,6 @@
 # Exact unipotent Fourier filter for the original Maass source
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** POSITIVE EXACT SOURCE IDENTITY
 - **Statement:** The complete upper-unipotent average is an exact spectral filter on the actual Maass Fourier coefficients. Its complementary energy is the mass of the discarded residue-frequency channels, with no path-length estimate.
 
@@ -26,7 +26,7 @@ The complete residue average of that character is one for the trivial residue ch
 - [x] Kernel-checked coefficient shift law and actual finite translation eigenspace law.
 - [x] Complete unipotent Fourier projection and physical Parseval identity.
 - [x] Final single-module build, axiom audit, unique umbrella wiring, and complete index/API coverage.
-- [ ] Repository-wide formal lint: nine unrelated `HTGeometry.ConservativeDissipative*` modules are currently unreachable from their umbrella. This card stays in progress until that shared-tree gate clears.
+- [x] Repository-wide formal lint. The initial nine unrelated umbrella errors were resolved outside this task; the subsequent successful lint is `/tmp/selberg_character46_lint.log`.
 
 The uniform comparison with the physical gradient is a subsequent proof target. The exact spectral filter is intended to retain the information lost by the path-moment bound.
 
@@ -58,7 +58,11 @@ Next positive candidate: construct every character-weighted upper-unipotent proj
 - All 20 public declarations passed the post-build `lake env lean /tmp/selberg_unipotent45_axioms.lean` check. Only `propext`, `Classical.choice`, and `Quot.sound` occur; the source hash stayed unchanged. Audit artifacts: `/tmp/selberg_unipotent45_axioms.log`, `_manifest.json`, and `_audit.json`.
 - Index refresh passed. All 20 public declarations and four private helpers are searchable; all 20 public API rows exist; the new umbrella import occurs exactly once. `/tmp/selberg_unipotent45_coverage.json` and `_index.log`.
 - `scripts/formal_tools.py lint` ran and reported nine unreachable modules in the unrelated `HTGeometry.ConservativeDissipative*` family: Compression, Constraints, Flow, Hodge, Operator, Polynomial, Quantum, Spectrum, Spin. No lint error names this Selberg module. Existing large-file warnings remain. `/tmp/selberg_unipotent45_lint.log`.
-- The positive source theorem is proved and individually audited. The global lint gate and the all-level quarter proof are not marked complete.
+- The positive source theorem is proved and individually audited. The subsequent cycle44 lint clears the shared-tree gate; the all-level quarter proof remains unproved.
 - No full or umbrella build, added axiom, admission, numerical experiment, commit, or push.
 
 The further OR projector search returned 48 declarations in 16 modules (`/tmp/selberg_unipotent45_projectors.json`). Inspected `ConnesCharacterProjection` proves finite character-average intertwining, idempotence, and the exact character-eigenspace fixed-point criterion. Reuse that construction for the next source instantiation. Its representation hypotheses must be discharged by the actual deck action; Hilbert orthogonality additionally uses the actual unitary action and must not be inferred from the file's introductory prose alone.
+
+## Gate resolution and completed next loop
+
+2026-09-09: original audited source hash revalidated unchanged. The external ConservativeDissipative modules were subsequently wired by other work, and `/tmp/selberg_character46_lint.log` records repository lint success. All gates for this exact source theorem are now complete. The full residue-character decomposition and actual inversion coupling have also been proved and audited: [44-declaration source certificate](selberg-character-inversion-coupling.md). Selberg's uniform quarter bound remains a separate active goal.

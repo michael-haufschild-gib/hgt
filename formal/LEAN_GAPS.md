@@ -12,8 +12,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | Lines | File |
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
-| 16906 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 14680 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 16915 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 14750 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |

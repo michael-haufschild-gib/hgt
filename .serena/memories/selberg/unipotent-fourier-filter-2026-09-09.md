@@ -1,0 +1,35 @@
+Latest continuation: `mem:selberg/character-inversion-coupling-2026-09-09` records completed cycle44:44 audited declarations identifying all original residue filters and actual finite inversion coupling. Repository lint now PASSES; the earlier9 unrelated wiring errors were resolved outside this task. BOTH source cards are now in docs/drafts/pipeline/3-formalized/. Full Selberg goal remains active and unproved.
+
+# Selberg exact original unipotent Fourier filter — 2026-09-09
+
+ACTIVE GOAL: unconditional all-level Selberg quarter proof remains UNPROVED. This turn is PROGRESS, not goal completion or genuine blockage. Previous source gap/deck cancellation: `mem:selberg/strip-gap-and-deck-cancellation-2026-09-09`.
+
+## New positive cycle 43
+
+New module `formal/GaloisForLFunctions/RHTower/SelbergMaassUnipotentFourier.lean`, namespace GaloisForLFunctions.RHTower.SelbergMaassUnipotentFourier. 20 public declarations, four private helpers, 297 lines. Exact integral kernel addition/periodicity/change-of-origin yields Fourier shift law. Original quotient-form upper translation identifies the actual coefficient vector as an eigenvector of the actual finite upper-block action with standard ZMod character. Complete character orthogonality proves the actual upperBlock average field keeps exactly n divisible by L=N+1; its complement keeps all other indices. Finite-source continuity and existing physical Parseval prove HasSum of total original coefficient norms over nondivisible indices equals L^-1 integral_0^L of the actual upper-block variance. All original deck coordinates and zeros are retained. Source identities hold for every original real eigenvalue; no exceptional restriction or gap/lift assumption.
+
+Main declarations: coefficient_upperAverageField182, coefficient_upperComplementField204, upperComplement_mass_hasSum217, upperAverageField_eq_blockAverage231, upperComplement_norm_sq244, upperBlock_variance_hasSum258, coefficientVector285, coefficientVector_upperBlock289. Reuse existing SelbergMaassCongruenceAverage.sourceVector (definitionally same as earlier DeckAverage.deckVector); don't construct a third copy. Original Blocks already supplies all-composite-level four-block factorization and uniform algebraic coefficient16. Original UnipotentPaths already proves exact parameter moment N(2N+1)/12 with physical path cost; don't redo that loss or call it new.
+
+## Verification
+
+All task-owned Lean handles terminal; no live owned worker. Complete scratch `/tmp/selberg_unipotent45.lean` and exact source lake env lean checks pass. Final serialized `lake build GaloisForLFunctions.RHTower.SelbergMaassUnipotentFourier` passed (7.3s); exactly ONE Built target; cached EvenL2LogUnitary informational output replayed. Build log /tmp/selberg_unipotent45_build.log. Post-build /tmp/selberg_unipotent45_axioms.lean passed: all20 public names; only propext, Classical.choice, Quot.sound. Source hash unchanged; unique umbrella import after UnipotentPaths. All20 public names searchable/API rows; research returns24 incl four private helpers. Index passed. Artifacts /tmp/selberg_unipotent45_{axioms.log,manifest.json,audit.json,coverage.json,index.log}.
+
+Repository formal lint DID RUN and currently FAILS on NINE unrelated unreachable HTGeometry.ConservativeDissipative modules: Compression, Constraints, Flow, Hodge, Operator, Polynomial, Quantum, Spectrum, Spin. No error names this new Selberg module. Don't modify others' active work. Log /tmp/selberg_unipotent45_lint.log. Card stays in 1-in-progress for that shared-tree gate; do not falsely report global lint success. Recheck only if new external wiring evidence justifies it. No full/umbrella build, numerical experiment, axiom/admission, commit or push. Scoped git diff --check passed.
+
+## Durable docs
+
+`docs/drafts/pipeline/1-in-progress/selberg-unipotent-fourier-filter.md`: dependency-closed positive paper proof, source certificate, all searches, exact current lint limitation, next positive candidate. Parent `selberg-quarter-conjecturing-loop.md` has cycle43 and verification record.
+
+## Corpus ideas for NEXT loop
+
+Current broad OR searches saved /tmp/selberg_uniform45_arithmetic.json (357/87), comparison.json (19/14), /tmp/selberg_unipotent45_fourier.json (61/11), uncertainty.json (1885/363; Kloosterman509/56), projectors.json (48/16). Spaces default AND; explicitly --any. Don't dump entire JSON—large output previously truncated; filter/name/module summaries.
+
+Next candidate: actual character-weighted upper-unipotent projectors for EVERY residue r, literal source coefficient filter n≡r modL, then actual S-conjugation transport to lower projectors and retained coupling. This distinguishes the small nonzero residue channels the trivial projector can't distinguish. Do not assume the uniform comparison needed for quarter, or assume finite Kloosterman operator equals actual Maass inversion coupling.
+
+Inspected whole `ConnesCharacterProjection.lean` (~177 lines): connesCharacterProjector = card^-1 sum conj chi(a) pi(a), linear-map average. connesCharacterProjector_apply; connes_characterProjector_intertwine, idem, fixed_iff. Discharge hpi (representation law), hchi multiplicative, conjchi*chi=1 from actual finite regular unitary action and ZMod.stdAddChar. Intro prose says orthogonal, but file's actual generic hypotheses supply only linear action; actual Hilbert orthogonality still needs unitary source proof. Do not re-prove generic idempotence. Inspected KloostermanTransform/Bilinear: actual two finite Fourier transforms with unit residue inversion, exact squared output energy q*unit Fourier energy and norm boundq; use only after original-source identification. ArchimedeanConcentrationGain.highFreq_mass_ge still takes a concentration inequality hsplit; not supplied for Maass by naming it.
+
+## Toolchain lessons
+
+Scalar coeff definition _root_.RHTower.deningerFourierCoeff; actual chart SelbergMaassMean.point; maassCoefficient in SelbergMaassFourier. ZMod.stdAddChar_coe identifies exp(2*pi*I*j/L), AddChar.sum_mulShift gives complete character sum. Use explicit lambda F in coefficient_shift and integral_comp_add_right to avoid rewrite under composition. Pi.mul_apply and Function.comp_def often required before rewrites. `intervalIntegral.integral_finsetSum` (camel S) and `continuousOn_finsetSum` are current names; underscore versions deprecated. Give integral sum explicit μ:=volume and explicit f lambda. `hasSum_sum` is finite sum theorem; HasSum.sum is disjoint sum, HasSum.congr nonexistent. `Equiv.sum_comp Multiplicative.toAdd` needed, not rfl across Fintype sums. For ZMod equality iff divisibility under ite use simp, not rw (Decidable motive failure). Reynolds namespace is root HTGeometry.ConstraintRelativity, not GaloisForLFunctions.HTGeometry.ConstraintRelativity.
+
+Continue under existing rules: one foreground owned Lean process; all Lean from formal; lake env lean scratch/source; final lake build single module; #print axioms only /tmp; wire only and no umbrella build; no numeric experiments; preserve shared dirty tree.

@@ -3,6 +3,15 @@ import Mathlib.LinearAlgebra.Matrix.DotProduct
 import Mathlib.Tactic.Linarith
 import Mathlib.Data.Real.Basic
 
+set_option autoImplicit false
+
+/-!
+# Conservative–dissipative spin laws
+
+Applications of Schaffer–Exl, arXiv:2609.04530, to constructed operators
+and the existing mathematical objects used below.
+-/
+
 open Matrix
 open scoped Matrix
 namespace GaloisForLFunctions.HTGeometry.SchafferExl

@@ -2,6 +2,8 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linarith
 
+set_option autoImplicit false
+
 /-!
 # Constructed conservative–dissipative Hilbert operators
 

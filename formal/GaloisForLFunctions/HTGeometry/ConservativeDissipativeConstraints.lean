@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ConservativeDissipativeOperator
 import GaloisForLFunctions.HTGeometry.ConstraintLaplacian
 
+set_option autoImplicit false
+
 /-!
 # Constraint observers as conservative–dissipative dynamics
 
