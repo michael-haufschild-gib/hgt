@@ -5,6 +5,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -52,6 +53,10 @@ class FusionTests(unittest.TestCase):
         self.assertEqual(json_object('```json\n{"queries":[]}\n```'), {'queries': []})
         with self.assertRaises(ValueError):
             json_object("__import__('os').system('false')")
+
+    def test_truncated_outer_judgment_is_not_replaced_by_valid_inner_step(self):
+        with self.assertRaisesRegex(ValueError, 'incomplete or malformed'):
+            json_object('{"ingredient_sets":[{"steps":[{"goal":"partial","candidate_ids":["c0"]}]},')
 
     def test_method_evidence_is_resolved_to_exact_source_and_invalid_ids_rejected(self):
         proof = 'by\n  exact h\n/-- Another declaration description -/\n'
@@ -153,6 +158,85 @@ class EngineTests(unittest.TestCase):
         self.assertIn('deadline', result['unfinished_stages'])
         self.assertFalse(runtime.calls)
 
+    def test_each_completed_lane_is_published_before_next_lane(self):
+        snapshots = []
+        search = self.db.search
+        def observed(query, **kwargs):
+            if kwargs['views'] == ('proof', 'method'):
+                self.assertTrue(snapshots[-1]['candidate_lemmas'])
+            return search(query, **kwargs)
+        with patch.object(self.db, 'search', side_effect=observed):
+            Engine(self.db).retrieve('alpha', options={}, deadline=time.monotonic() + 3,
+                on_partial=lambda candidates, methods, prose: snapshots.append({'candidate_lemmas': candidates}))
+
+    def test_candidates_precede_coverage_and_vector_setup(self):
+        snapshots = []
+        coverage = self.db.coverage
+        def checked_coverage():
+            self.assertTrue(any(r['candidate_lemmas'] for r in snapshots))
+            return coverage()
+        vectors = EmptyVectors()
+        def checked_vectors(model):
+            self.assertTrue(any(r['candidate_lemmas'] for r in snapshots))
+            return {'complete': True, 'ready': 1, 'expected': 1}
+        vectors.coverage = checked_vectors
+        with patch.object(self.db, 'coverage', side_effect=checked_coverage):
+            Engine(self.db, FakeRuntime(), vectors=vectors).search('alpha',
+                progress=lambda r: snapshots.append(json.loads(json.dumps(r))))
+
+    def test_semantic_candidates_are_published_before_reranking(self):
+        snapshots = []
+        vectors = EmptyVectors()
+        vectors.search = lambda embedding, **kw: self.db.search('alpha') if 'statement' in kw['views'] else []
+        runtime = FakeRuntime()
+        def rerank(query, documents, *, deadline):
+            self.assertTrue(snapshots[-1]['candidate_lemmas'])
+            self.assertLess(deadline - time.monotonic(), 12)
+            raise TimeoutError('reranking exhausted its stage budget')
+        runtime.rerank = rerank
+        r = Engine(self.db, runtime, vectors=vectors).search('unmatched', mode='hybrid',
+            progress=lambda r: snapshots.append(json.loads(json.dumps(r))))
+        self.assertEqual(r['candidate_lemmas'][0]['name'], 'A.alpha')
+        self.assertIn('reranking', r['unfinished_stages'])
+        self.assertIn('reranking exhausted its stage budget', [e['error'] for e in r['errors']])
+
+    def test_long_deep_query_decomposes_into_explicit_short_queries(self):
+        runtime = FakeRuntime([{'queries': ['growth AND bound', 'growth bound', 'beta']}, {'sufficient': True}])
+        result = Engine(self.db, runtime, vectors=EmptyVectors()).search('use a uniform growth bound to constrain a parameter')
+        self.assertIn('growth bound', [q['query'] for q in result['query_trace']])
+        self.assertTrue(result['candidate_lemmas'])
+        self.assertEqual(result['query_trace'][0]['lexical_operator'], 'AND')
+
+    def test_long_goal_retains_explicit_lexical_candidates_when_planner_unavailable(self):
+        runtime = FakeRuntime()
+        snapshots = []
+        def generate(prompt, **kwargs):
+            self.assertTrue(any(r['candidate_lemmas'] for r in snapshots))
+            raise TimeoutError('planner unavailable')
+        runtime.generate = generate
+        result = Engine(self.db, runtime).search('use a uniform growth bound to constrain a parameter',
+            progress=lambda r: snapshots.append(json.loads(json.dumps(r))))
+        self.assertTrue(result['candidate_lemmas'])
+        self.assertTrue(any(q['origin'] == 'keyword_relaxation' for q in result['query_trace']))
+        self.assertIn('planner unavailable', [e['error'] for e in result['errors']])
+
+    def test_compact_judgment_ids_resolve_to_real_evidence(self):
+        runtime = FakeRuntime([dict(sufficient=True, ingredient_sets=[dict(description='group',
+            steps=[dict(goal='reuse growth estimate', candidate_ids=['c0'], obligations='supply h')])],
+            proof_ideas=[dict(source_id='m0', transfer='reuse reflexivity', obligations='check the new goal', evidence='rfl')])])
+        result = Engine(self.db, runtime, vectors=EmptyVectors()).search('growth bound')
+        self.assertEqual(result['ingredient_sets'][0]['steps'][0]['candidate_ids'], [self.did])
+        self.assertEqual(result['ingredient_sets'][0]['steps'][0]['obligations'], ['supply h'])
+        self.assertEqual(result['proof_ideas'][0]['evidence'], ['rfl'])
+
+    def test_readonly_search_and_optional_cache_work_during_writer_transaction(self):
+        self.db.con.execute('BEGIN IMMEDIATE')
+        self.addCleanup(self.db.con.rollback)
+        with Corpus(self.db.directory, readonly=True) as reader:
+            result = Engine(reader, FakeRuntime(), vectors=EmptyVectors()).search('alpha')
+        self.assertTrue(result['candidate_lemmas'])
+        self.assertFalse(result['partial'])
+
     def test_complete_result_cached_without_rerunning_model(self):
         runtime = FakeRuntime()
         engine = Engine(self.db, runtime, vectors=EmptyVectors())
@@ -162,6 +246,18 @@ class EngineTests(unittest.TestCase):
         self.assertFalse(first['partial'])
         self.assertTrue(second['cache_hit'])
         self.assertEqual(len(runtime.calls), count)
+
+    def test_changed_generation_cannot_cache_old_retrieval_as_new(self):
+        runtime = FakeRuntime()
+        def generate(prompt, **kwargs):
+            with self.db.con:
+                self.db.bump(source=True)
+            return '{"sufficient":true}'
+        runtime.generate = generate
+        result = Engine(self.db, runtime, vectors=EmptyVectors()).search('alpha')
+        self.assertTrue(result['candidate_lemmas'])
+        self.assertNotEqual(result['index_generation'], self.db.generation)
+        self.assertEqual(self.db.con.execute('SELECT count(*) FROM cache').fetchone()[0], 0)
 
     def test_interrupted_multi_chunk_method_resumes_completed_chunks(self):
         from research_runtime.protocol import RuntimeDeadline

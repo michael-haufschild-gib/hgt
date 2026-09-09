@@ -210,6 +210,10 @@ def supervise(command: list[str], request: dict, *, deadline: float) -> dict:
                 process.wait()
         process.stdout.close()
         process.stderr.close()
+    if latest.get('partial') and latest.get('active_stage') not in (None, 'finished'):
+        latest.setdefault('unfinished_stages', []).append(latest['active_stage'])
+    if 'unfinished_stages' in latest:
+        latest['unfinished_stages'] = list(dict.fromkeys(s for s in latest['unfinished_stages'] if s != 'search_in_progress'))
     return latest
 
 
@@ -221,13 +225,20 @@ def discovery(root: Path, args, options: dict) -> dict:
         return empty_extra(args.mode, "corpus_not_initialized: run search-index --corpus")
     refresh = None
     if not args.no_refresh and time.monotonic() < deadline:
-        try:
-            with Corpus(directory) as corpus:
-                # Refresh has its own bounded share; expensive enrichment is an
-                # explicit indexing operation and never runs during a query.
-                refresh = corpus.refresh(root, deadline=min(deadline, time.monotonic() + 3))
-        except (sqlite3.DatabaseError, OSError) as exc:
-            refresh = dict(complete=False, error=str(exc))
+        from lean_research_background import status
+        if status(root).get('running'):
+            refresh = dict(complete=False, reason='background_indexer_running')
+        else:
+            # Inventory and coverage counts can exceed refresh's cooperative
+            # deadline. Supervise its entire lifetime; never spend the search
+            # budget waiting for a maintenance write lock.
+            refresh_seconds = min(3, max(0, (deadline - time.monotonic()) * .15))
+            command = [sys.executable, str(Path(__file__).resolve())]
+            refreshed = supervise(command, dict(root=str(root), mode='refresh', budget_seconds=refresh_seconds),
+                                   deadline=time.monotonic() + refresh_seconds)
+            refresh = refreshed.get('refresh', dict(complete=False, reason='refresh_deferred',
+                                                   unfinished_stages=refreshed.get('unfinished_stages', []),
+                                                   error=refreshed.get('engine_error')))
     request = dict(root=str(root), query=" ".join(args.query), mode=args.mode,
                    budget_seconds=max(0, deadline - time.monotonic()),
                    options={**options, "limit": args.limit, "retrieval_views": getattr(args, 'retrieval_views', 'all'),
@@ -240,6 +251,17 @@ def discovery(root: Path, args, options: dict) -> dict:
             result.setdefault("unfinished_stages", []).append("source_refresh")
     result["elapsed_seconds"] = time.monotonic() - start
     return result
+
+
+def refresh_main():
+    request = json.load(sys.stdin)
+    root = Path(request['root'])
+    try:
+        with Corpus(cache_directory(root)) as corpus:
+            refresh = corpus.refresh(root, deadline=time.monotonic() + request['budget_seconds'])
+    except (sqlite3.DatabaseError, OSError) as exc:
+        refresh = dict(complete=False, error=str(exc))
+    print(json.dumps(dict(candidate_lemmas=[], refresh=refresh)), flush=True)
 
 
 def render_discovery(extra: dict) -> None:
@@ -317,3 +339,7 @@ def corpus_index(root: Path, args) -> int:
                 print(json.dumps(Vectors(corpus).compact(row[0], deadline=deadline)))
         print(json.dumps(dict(coverage=corpus.coverage()), ensure_ascii=False))
     return 0
+
+
+if __name__ == '__main__':
+    refresh_main()

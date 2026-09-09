@@ -6,21 +6,45 @@ import sys
 import tempfile
 import time
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lean_research_cli import default_mode, supervise, release
-from lean_research_corpus import cache_directory
+from lean_research_cli import default_mode, supervise, release, discovery
+from lean_research_corpus import Corpus, cache_directory
 
 
 class SupervisionTests(unittest.TestCase):
+    def test_busy_refresh_cannot_stop_readonly_query(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'formal').mkdir()
+            (root / 'formal' / 'Alpha.lean').write_text('theorem alpha : True := trivial')
+            (root / 'scripts').symlink_to(Path(__file__).resolve().parents[1], target_is_directory=True)
+            with Corpus(cache_directory(root)) as writer:
+                writer.refresh(root)
+                writer.con.execute('BEGIN IMMEDIATE')
+                writer.con.execute('DELETE FROM declarations')
+                try:
+                    args = SimpleNamespace(query=['alpha'], mode='hybrid', no_refresh=False, limit=20,
+                                           budget_seconds=3, research_started=time.monotonic())
+                    with patch('lean_research_cli.engine_python', return_value=sys.executable):
+                        result = discovery(root, args, {})
+                    self.assertLess(result['elapsed_seconds'], 3.5)
+                    self.assertTrue(result['candidate_lemmas'], result)
+                    self.assertEqual(result['refresh']['error'], 'database is locked')
+                    self.assertNotIn('engine_failed', result['unfinished_stages'])
+                finally:
+                    writer.con.rollback()
+
     def test_deadline_returns_last_snapshot_and_terminates_owned_child(self):
         with tempfile.TemporaryDirectory() as tmp:
             pidfile = Path(tmp) / 'pid'
             script = ('import os,time,json,sys\n'
                       'request=json.load(sys.stdin)\n'
                       'open(request["pidfile"],"w").write(str(os.getpid()))\n'
-                      'print(json.dumps({"candidate_lemmas":[{"name":"retained"}],"partial":False,"unfinished_stages":[]}),flush=True)\n'
+                      'print(json.dumps({"candidate_lemmas":[{"name":"retained"}],"active_stage":"reranking","partial":True,"unfinished_stages":["search_in_progress"]}),flush=True)\n'
                       'time.sleep(30)\n')
             start = time.monotonic()
             result = supervise([sys.executable, '-c', script], {'mode': 'deep', 'pidfile': str(pidfile)}, deadline=start + .35)
@@ -28,6 +52,8 @@ class SupervisionTests(unittest.TestCase):
             self.assertEqual(result['candidate_lemmas'][0]['name'], 'retained')
             self.assertTrue(result['partial'])
             self.assertIn('deadline', result['unfinished_stages'])
+            self.assertIn('reranking', result['unfinished_stages'])
+            self.assertNotIn('search_in_progress', result['unfinished_stages'])
             with self.assertRaises(ProcessLookupError):
                 os.kill(int(pidfile.read_text()), 0)
 

@@ -17,12 +17,17 @@ python3 scripts/formal_tools.py research 'clock inverse' --mode lexical --exact
 - `hybrid`: additional statement, structural-expression and proof-source
   retrieval, using local embeddings and reranking when available.
 - `deep`: hybrid retrieval followed by up to three rounds of premise and method
-  discovery, with at most eight distinct queries in a round.
+  discovery, with at most eight distinct queries in a round. Long goals also
+  start with short literal keyword pairs, recorded as `keyword_relaxation` in
+  `query_trace`, so candidate retrieval can proceed while models are busy.
 
 `--budget-seconds` defaults to 120. The parent command supervises the search
 process and returns its latest snapshot on deadline or cancellation. Models
 never download during queries. An unavailable model/index is reported as an
 unfinished stage, alongside the available lexical results.
+Completed lexical lanes and semantic matches are retained before reranking or
+reasoning. Empty `ingredient_sets` means no validated grouping was produced;
+it does not establish that the corpus lacks the required premises.
 
 Existing JSON fields (`declarations`, `exploration`, counts, `markers`, `match`,
 `options`, `backend`) retain their lexical meaning. Additional fields are:
@@ -38,6 +43,7 @@ Existing JSON fields (`declarations`, `exploration`, counts, `markers`, `match`,
 | `query_trace` | Actual original and generated queries, rounds and lexical semantics |
 | `coverage`, `semantic_coverage` | File outcomes and how much enrichment is available |
 | `partial`, `unfinished_stages`, `errors` | Work not completed within this request |
+| `active_stage`, `stage_seconds`, `first_candidate_seconds` | Stage interrupted or completed, stage durations, and time to the first candidate snapshot |
 
 Module filters, exclusions and module diversity apply to the additional lanes.
 Exact identifiers remain prominent. `--offset` and `--limit` select each ranked
@@ -101,8 +107,11 @@ priority in the shared model worker. Restart it after reboot; no login service
 or automatic system startup is installed. `status` shows phase, latest completed
 coverage and errors. `stop` cancels/reaps its owned maintenance child.
 
-Ordinary hybrid/deep searches allocate at most three seconds to source refresh;
-`--no-refresh` uses committed records. Size/mtime changes or an extractor-version
+Search retrieval uses read-only SQLite connections. Optional result-cache writes
+skip a busy writer. While the background indexer runs, searches leave source
+refresh to it; otherwise refresh runs in an owned process capped at three
+seconds (less for short budgets). `--no-refresh` uses committed records without
+requesting refresh. Size/mtime changes or an extractor-version
 change enqueue source extraction. Each changed file publishes its replacement
 records transactionally. Content hashes reuse identical embeddings across
 renames, line shifts and edits to neighboring declarations. Changed/deleted

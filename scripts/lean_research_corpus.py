@@ -687,6 +687,22 @@ class Corpus:
         return json.loads(row[0]) if row else None
 
     def cache(self, key: str, result: dict):
-        with self.con:
-            self.con.execute("INSERT OR REPLACE INTO cache VALUES(?,?,?,?)", (key, self.generation, json.dumps(result), time.time()))
-            self.con.execute("DELETE FROM cache WHERE generation<>? OR created<?", (self.generation, time.time() - 86400))
+        # Caching is optional. A search reader never requests a schema/write
+        # lock; use a separate short-lived connection and skip a busy cache.
+        con = None
+        try:
+            con = sqlite3.connect(self.path.as_uri() + '?mode=rw', uri=True, timeout=0)
+            with con:
+                con.execute('BEGIN IMMEDIATE')
+                current = int(con.execute("SELECT value FROM meta WHERE key='generation'").fetchone()[0])
+                generation = result.get('index_generation', result.get('coverage', {}).get('generation', current))
+                if generation != current:
+                    return
+                con.execute("INSERT OR REPLACE INTO cache VALUES(?,?,?,?)", (key, generation, json.dumps(result), time.time()))
+                con.execute("DELETE FROM cache WHERE generation<>? OR created<?", (generation, time.time() - 86400))
+        except sqlite3.OperationalError as exc:
+            if not any(word in str(exc).lower() for word in ('locked', 'busy', 'readonly')):
+                raise
+        finally:
+            if con is not None:
+                con.close()

@@ -142,6 +142,7 @@ class ResearchCommandTests(unittest.TestCase):
     def run_cli(self, *args):
         out, err = io.StringIO(), io.StringIO()
         with patch.object(ft, 'SEARCH_DB', self.root / 'search.db'), \
+             patch.object(ft, 'ROOT', self.root), \
              patch.object(ft, 'search_sources', return_value=self.sources), \
              contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             code = ft.main(['research', *args])
