@@ -4,7 +4,10 @@ Status: analytical construction and norm comparison in progress. The literal
 theta dilation profile and its two correlation transforms are proved in Lean
 in `SelbergThetaDilationTransform`. Every actual theta zero mode has a globally
 positive real normalization and a canonical differentiable logarithm, proved
-in `SelbergThetaSourcePhase`. Full modular Gram transport and normalized
+in `SelbergThetaSourcePhase`. Its positive variance is proved in
+`SelbergThetaSourceVariance`; quantitative energy bounds and a strict
+pointwise disk bound are proved in `SelbergThetaSourceEnergy`.
+Full modular Gram transport and normalized
 full-Xi occurrence remain unproved. Frontier map is read-only; no numerical
 computations.
 
@@ -437,44 +440,157 @@ part of the integrated equation would give
 
     integral Q |v|^2 = c integral |v|^2.
 
-The proved sign (21) supplies a positive density in this calculation;
-it does not yet bound that weighted odd-source moment. The current proof
-attempt must derive the needed source comparison from the actual theta
-inequalities, while retaining c. Neither the weighted domain claims nor
-such a comparison have been proved. Equations (22)--(23) are not counted as
+The weighted balance and finite positive gauge mass are now justified
+independently by (24) below. Full second-order operator-domain admission
+and the native source comparison remain unproved. Equations (22)--(23) are not counted as
 native occurrence. No new conditional receiver or exclusion theorem was
 introduced. The SQB completion target remains the normalized bound (11).
 
-### Positive variance test of the weighted source term
+### Positive variance identity: proved
 
-Conjecture under direct analytical/Lean verification: for a real tilt a,
-write f_a=exp(a x)Phi, w_a=exp(a x)|u|^2/Phi and h_a=z+ia. Then
+For every real tilt |a|<1, write f_a=exp(a x)Phi, w_a=exp(a x)|u|^2/Phi,
+h_a=z+ia, and V_a=integral f_a |u/Phi+1/h_a|^2. Lean proves
 
-    integral (Q+a) w_a
-      =2(a+c) integral f_a |u/Phi+1/h_a|^2.                 (24)
+    0 < V_a,
+    integral (Q+a) w_a = 2(a+c)V_a,                        (24)
+    integral w_a = V_a + (integral f_a)/|h_a|^2.
 
-The proposed identity retains c and expresses the weighted source term
-through a positive variance. The proof calculation is: the tilted source
-ODE gives integral exp(a x)u=-integral f_a/h_a; expanding the squared
-deviation gives integral w_a-integral f_a/|h_a|^2. Integrating the derivative
-of w_a gives (24). The actual double-exponential theta tail should justify
-all integrals and boundary limits. Those estimates, strict positivity of
-the variance, and the resulting identity are being checked directly;
-they are not assumed. The initial Lean check uses |a|<1, which includes
-both the original weight a=0 and the required gauge weight a=-c.
+The actual two-ended mode/source ratio is globally bounded. The theta
+Schwartz source therefore supplies absolute integrability of w_a, the
+source current and the variance, and vanishing endpoint terms. Integrating
+the tilted first-order equation gives integral exp(a x)u=-integral f_a/h_a.
+Expanding the squared deviation gives the energy decomposition; integrating
+w_a' gives (24). Strict variance follows because a constant mode/source
+ratio contradicts the distinct logarithmic slopes at 0 and 1.
 
-The reflected-product curvature theorem was inspected for a direct bound.
-Its potential applies to Phi(u+t)Phi(u-t); substituting it for the forced
-mode/source-ratio potential would omit terms. The variance identity is
-the current positive replacement, not an assertion that curvature already
-closes the native residual comparison.
+At the original weight the full source current is 2cV_0. At the required
+gauge a=-c, the previously provisional source balance is now proved with
+its integrability and endpoints:
+
+    integral Q w_(-c) = c integral w_(-c),
+    0 < integral w_(-c) < infinity.
+
+`SelbergThetaSourceVariance.lean` contains 23 public declarations for these
+statements. Its [formal audit](../3-formalized/sqb-theta-source-variance.md)
+records the checks. The reflected-product curvature theorem was inspected
+for a direct bound; its potential concerns Phi(u+t)Phi(u-t), and was not
+substituted for the different forced-mode potential. The variance identity
+is the positive replacement. Native Gram transport remains unproved.
+
+### Quantitative positive continuation: gauge energy between one and two source units
+
+The variance calculation exposes the stronger source estimate
+
+    m/b^2 < M < 2m/b^2,                                    (25)
+    m=integral exp(-c x)Phi(x),
+    M=integral exp(-c x)|u(x)|^2/Phi(x).
+
+This is proved in Lean by the following closed calculation. The lower estimate
+is the strict variance formula at a=-c. Write f=exp(-c x)Phi, U=exp(-c x)u,
+w=exp(-c x)|u|^2/Phi. The original equation gives U'=-ibU-if, hence
+
+    integral U=-m/b,
+    integral x U=-(integral x f)/b+i m/b^2.
+
+The weighted energy derivative is w'=(c-Q)w-2 Im(U). Integrating this
+identity and its product with x gives
+
+    integral (Q-c)w=0,
+    integral x(Q-c)w=M-2m/b^2.
+
+The moments and endpoint terms used here are justified by the proved
+boundedness of u/Phi and the tilted theta Schwartz source. Put
+mu=(integral x w)/M. Since w>0 everywhere and Q is strictly decreasing,
+
+    P(x)=-(x-mu)(Q(x)-Q(mu))w(x) >= 0,
+    P(mu+1)>0,
+    integral P=-integral x(Q-c)w > 0.
+
+The last identity uses integral (x-mu)w=0 and the exact source balance.
+Thus M<2m/b^2. This is a uniform
+relative bound on the actual source energy, retaining the transverse
+parameter c in its weight. Its transport to the complete native Gram norm
+is still required before it can contribute an occurrence proof.
+
+### Stronger positive continuation: a strict pointwise disk
+
+The energy argument yields a stronger pointwise statement, also proved
+in `SelbergThetaSourceEnergy`:
+
+    |1+b u(x)/Phi(x)| < 1                   for every x.    (26)
+
+Use the same exact gauge U=exp(-c x)u and w=exp(-c x)|u|^2/Phi, and put
+
+    H(x)=w(x)+2 Re(U(x))/b.
+
+The literal first-order equations give H'=(c-Q)w. Both endpoint limits
+of H are zero by the bounded source ratio and Schwartz decay. At any
+fixed x, if Q(x)>=c then H is strictly decreasing on (-infinity,x];
+if Q(x)<=c then H is strictly increasing on [x,infinity). In either case
+the appropriate zero endpoint forces H(x)<0. Clearing positive factors
+gives b^2|u|^2+2b Phi Re(u)<0, exactly the disk inequality (26).
+
+It follows analytically that |u/Phi|<2/|b|. The phase consequence is
+separately formalized, with the exact source-density identity retained:
+
+    b (Im(L(x))+b/2) > 0.                                (27)
+
+Thus the phase current is positive in the half-spectral gauge required
+by (23), strengthening the previous full-shift statement (21).
+The two-ended source estimate now supplies an explicit pointwise bound;
+it does not remove the retained Q forcing or prove automorphic occurrence.
+The [energy and disk audit](../3-formalized/sqb-theta-source-energy.md)
+records the five public declarations and their verification.
+
+### Native positive-weight transfer: current construction
+
+The current conjecturing loop transfers the actual source disk through the
+complete primitive-row periodization. The native Casimir fixes the half-density
+profile: with x=log(y)/2 and z=b+ic, define literal seeds
+
+    h_f(y)=sqrt(y)Phi(x),
+    h_U(y)=sqrt(y)u(x),
+    P_f=periodize(h_f), P_U=periodize(h_U).
+
+The positive theta envelopes make both row sums absolute and both sources
+bounded on the native modular cell. The rowwise disk estimate survives
+positive summation with strictness retained at the identity row:
+
+    |P_f(z)+b P_U(z)| < P_f(z),       P_f(z)>0.
+
+Put h=z-i and m=2 integral exp(-x)Phi(x). Absolute strip unfolding and
+y=exp(2x) give integral P_f=m and integral P_U=-m/h. Weighted
+Cauchy--Schwarz, first within each complete row
+sum and then on the native cell, gives the positive norm comparison
+
+    m/|h|^2 <= integral_fd |P_U|^2/P_f
+             <= 2 integral exp(-x)|u|^2/Phi < 2m/|h|^2.
+
+This comparison includes all cross terms. Its averaging defect is the
+integral of the within-orbit weighted variance of u/Phi. The centered
+source V=P_U+P_f/h has zero native mean; its weighted norm equals the native
+middle quantity minus m/|h|^2. The complete half-density Casimir calculation
+retains the required e=5/4+z^2/4 and gives
+
+    (A-e)P_U = (1/4) periodize[sqrt(y)(z Phi+i Phi')],
+    (A-e)V = -1/(4(z-i)) periodize[sqrt(y)(D-1)(D-iz)Phi],
+
+where D differentiates the original x coordinate. Strict nonvanishing of
+V, full graph admission and a vanishing normalized residual still require
+proof. These statements are the
+current analytical construction, not yet counted as Lean theorems or
+normalized occurrence. Source admission and the norm comparison are being
+formalized together so they can be tested against the actual residual.
 
 ## Verification boundary
 
 Equations (14) and (15), with the stated exponential integrability, are
 kernel-checked in `SelbergThetaDilationTransform.lean`. The source-phase
 statements (19)--(21) are also kernel-checked, in
-`SelbergThetaSourcePhase.lean`. The original modular source admission, full
+`SelbergThetaSourcePhase.lean`; the exact variance and gauge-balance
+statements (24) are kernel-checked in `SelbergThetaSourceVariance.lean`.
+Energy bounds (25), the disk (26), and gauge phase current (27) are
+kernel-checked in `SelbergThetaSourceEnergy.lean`. The original modular source admission, full
 Gram identity, Gaussian matrix comparison and remaining weighted differential
 construction retain the analytical status stated above. No numerical
 experiment or new no-go module was performed. No normalized occurrence

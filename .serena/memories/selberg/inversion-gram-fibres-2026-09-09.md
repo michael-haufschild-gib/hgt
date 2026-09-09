@@ -1,3 +1,5 @@
+LATEST CONTINUATION: `mem:selberg/inversion-phase-full-gradient-2026-09-09` — cycle46 proves full triple phase displacement, actual Fourier single-block reduction, original complementary mass, and exact horizontal PLUS vertical gradient phase laws.47 public declarations in2modules pass source/build/axiom/index/wiring/final lint audits. Next is the level-independent full-domain physical comparison using original core/cusp inversion gluing; full Selberg remains ACTIVE / UNPROVED. All owned processes terminal; one interrupted overlap incident documented.
+
 # Selberg cycle45 — actual arithmetic Gram kernel audited
 
 Continuation of `mem:selberg/character-inversion-coupling-2026-09-09`. Active unbudgeted goal is the full unconditional Selberg 1/4 theorem: ACTIVE / UNPROVED. Do not mark complete or blocked. This continuation made positive proof progress.
