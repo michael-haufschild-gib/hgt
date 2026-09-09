@@ -156,6 +156,22 @@ For physical flux comparison, broad `Green`, `commutator`, `intertwiner` and `tr
 
 ## Next source-specific conjecture
 
+### Existing full-source constructions found by following hypotheses
+
+The principal-response hit is only the entrance to a larger construction. Following its uses and the complete source transform exposes these already proved ingredients:
+
+| Existing declaration | Actual scope and use |
+|---|---|
+| `ThetaCuspHawkingBMJointSourceCausalCuspSourceIdentification.causalCuspSourceVector_laplace_original` | The literal assembled causal source, including all three cutoff channels, has exactly the admitted cusp-residual transform above its explicitly constructed threshold. |
+| `ThetaCuspHawkingBMJointSourceForcedCausal.causalCuspSource_original_joint_response` | Constructs a frequency-independent response with causal support, weighted time `L²` admission and the original unbounded operator-domain equation. Its named Laplace identities hold in the stated right half-plane. |
+| `ThetaCuspHawkingBMPhysicalResponseGreenIdentification.physicalCuspProfile_eq_completePhysicalGreenProfile` | Identifies each actual physical angular projection with its complete endpoint Green integral, with source admission and endpoint currents discharged internally. The statement retains its frequency chamber `3/2<Re(w)<2`, `Im(w)≠0`, and exterior radial domain. |
+
+These entries identify modules and declaration names; their namespace is `RHTower.D4BMJointSource`. They remove the need to reconstruct those existing objects. They do not by themselves identify the newer native-circle integral with the whole unprojected response or evaluate its integrated action pairing. Different stated transform chambers must be connected by the actual continuation theorems, not treated as automatically overlapping.
+
+Broad `Abel`, `Mehler`, `Legendre`, `spherical`, `transmutation` and `Casimir` discovery did not yield an inspected theorem evaluating the full native-mean pairing. This is a result of the inspected hits, not an absence claim about the corpus. In particular, `LegendreLaplaceHeine` is an asymptotic theorem for integer-degree polynomials, not the required full-angular transform. Broad `autocorrelation` discovery exposed `HTGeometry.HalfLineAutocorrelationPrimitive` and `PairedContactAutocorrelation`; their finite-integral and contact proof mechanisms motivate a direct calculation with the actual HB clock rather than substituting their different source classes.
+
+That source-specific calculation is the [finite reduced-source clock transfer](hb-reduced-source-clock-transfer.md). It analytically transfers both original onset derivatives onto two explicit first-order native-kernel operators, retains the moving terminal contribution, and evaluates its characteristic contact using existing native jets. Its long-delay specialization reproduces the rational-tail coefficient; its zero-delay specialization uses the squared-onset clock. No new Lean theorem is claimed for that calculation.
+
 The sum of the explicit currents in (2), the original angular Green terms and the physical current corrections has fixed traces whose complete finite-domain balance cancels the retained compact onset contribution. Proving this requires the actual source coefficients and every face; the first nonzero optical coefficient identified in the optical source card is part of that calculation.
 
 The next search is for constructions that discharge this **specific trace comparison and remainder bound**. A general primitive, scalar Goursat solution or cyclic structure alone does not discharge it. If a candidate theorem has exactly that conclusion under auxiliary assumptions, each assumption becomes a separate source-specific search and proof obligation.
