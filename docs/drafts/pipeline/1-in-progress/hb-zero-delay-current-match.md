@@ -1,6 +1,6 @@
 # HB: exact radial evaluation of the zero-delay current
 
-Status: analytical source-specific evaluation; Lean verification in progress. Complete extinction and RH remain unproved. The frontier map is read only.
+Status: twelve closed Lean source and radial-contact theorems; [exact scope and validation](../3-formalized/hb-zero-delay-source-current.md). The finite-clock transfer, angular/current identification and complete physical cancellation remain analytical or open as specified below. Complete extinction and RH remain unproved. The frontier map is read only.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -56,6 +56,18 @@ A_D=(K_s J_t-J_s K_t)/2.                              (1)
 Proof for `A_Q`: its antisymmetrized integrand is symmetric under `u↔w`. Its two `alpha_s` terms combine into the product `I_s J_t`, the two `alpha_t` terms into `J_s I_t`, and the two `delta` terms into `J_s J_t`. Equivalently, after taking the inner integral, it is the derivative of
 `alpha_s I_s(u)H_t(u)-alpha_t H_s(u)I_t(u)+delta H_s(u)H_t(u)`, where `I_s(u)=integral_0^u p_s`.
 
+The remaining zeroth source moments also evaluate without dividing by a frequency polynomial:
+
+```
+alpha_s I_s=1+4s 2^(2s),
+A_Q=2 k_t 2^(2t)-2 k_s 2^(2s)
+      +delta(lambda-2)(lambda+2)/256,
+lambda=(s+1)(s+2).                                    (1a)
+```
+
+For the first identity, differentiate
+`(1+u)f_s(u)((2s+1)u-1)+1`. Its derivative is `alpha_s p_s(u)`, and its value at zero is zero. Substitution into (1), followed by `f_s(1)f_t(1)=1/64`, gives the second identity. Both identities include all exceptional frequencies; neither uses division by `alpha_s` or an eigenvalue polynomial.
+
 For `A_D`, the single outer integrand is exactly half the derivative of
 `K_s(u)H_t(u)-H_s(u)K_t(u)`, where `K_s(u)=integral_0^u x B_s(x)dx`. These proofs use finite integrals of the actual source functions, with no spectral or decay premise.
 
@@ -109,3 +121,9 @@ pairing(J,A J)=integral Q RQ
 ```
 
 Equations (4)–(5) identify coefficients of specified current components. They do not silently change the orientation of a physical boundary face or prove cancellation of the complete current. The remaining `alpha_s I_s J_t-alpha_t J_s I_t` and `A_D` terms are explicit endpoint moments for comparison with the lift/response cross-currents. The positive-delay bulk, positive characteristic delays, terminal integral and all other physical faces remain attached.
+
+## Formal scope
+
+`RHTower.D4BMZeroDelayCurrent` identifies the profile and onset coefficient with the existing original radial amplitude and full reduced time forcing. It proves the onset primitive at every nonnegative radius, both complete triangle identities in (1), the division-free endpoint and zeroth-jet formulas in (1a), the terminal density and closed integral in (2), and the horizon scalar coefficient in (4). All interval integrability and differentiation facts used by those identities are discharged for the actual functions.
+
+The finite-clock/native-kernel transfer used to obtain the input contact, restoration of the full physical angular pairing, orientation of the faces, comparison with lift/response cross-currents, and the positive-delay terms are not asserted as new Lean theorems. The new closed radial identities specify the exact quantities in that remaining comparison.

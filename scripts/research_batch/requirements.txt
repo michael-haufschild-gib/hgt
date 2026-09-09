@@ -1,0 +1,6 @@
+# Torch 2.8.0+cu128 comes from the pinned Runpod image, not the Mac uv environment.
+transformers==4.56.2
+huggingface-hub==0.35.3
+numpy==2.3.3
+safetensors==0.8.0
+tokenizers==0.22.2

@@ -47,6 +47,27 @@ Initial delegated scopes: compiler exporter, runtime/setup, benchmark fixtures/e
 
 ## Remaining rollout work
 
+## Authorized B200 bootstrap, 2026-09-09
+
+User selected one Runpod B200 for explicit initial embedding. Normal searches and
+incremental enrichment remain local. Prepare before rental: immutable deduplicated
+input shards in RHTower → HTGeometry → rest order, pinned weights/preprocessing,
+CUDA runner with bounded batches and restart checkpoints, numerical compatibility
+gate against local references, and hash-checked incremental FAISS import. No
+subagents, Lean builds, uploads, rental or private-key transfer during preparation.
+
+Review constraints: Mac runtime currently has no CUDA backend; keep the cloud
+runner separate. Document IDs can change/recur during edits; import by content
+hash and recheck current IDs/hashes inside publication transactions. A different
+CUDA numerical mode must pass an explicit compatibility audit before joining the
+local model namespace. Checksums and atomic completion markers govern resume.
+
+- [ ] Portable runner, export/import and operator commands implemented.
+- [ ] Corruption, edits/deletions, compatibility and resume tests pass.
+- [ ] Complete local export, pinned model bundle and reference audit prepared.
+- [ ] User launches pod; validate actual B200 kernels, benchmark, then embed.
+- [ ] Download, validate and publish returned vectors; report measured throughput.
+
 - Background source migration, embeddings and validated method descriptions continue incrementally. First published vectors verified entirely under RHTower. Use `python3 scripts/formal_tools.py research-indexer status` for current progress rather than this snapshot.
 - Full measured five-way held-out benchmark and default-deep release gates remain pending. Do not claim quality improvement or proof applicability from these smoke tests.
 - General compiler export is implemented and tested, but bulk extraction of available artifacts remains explicit foreground work. Missing/stale artifacts remain labeled; no source recompilation is implicit.
