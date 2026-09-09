@@ -987,10 +987,14 @@ def render_search(args: argparse.Namespace, result: SearchResults,
     query = " ".join(args.query).strip()
     options = research_options(args)
     expression = build_match_expression(query, any_terms=options["any_terms"], exact=options["exact"])
+    extra = {}
+    if getattr(args, "mode", "lexical") != "lexical":
+        from lean_research_cli import discovery
+        extra = discovery(ROOT, args, options)
     if getattr(args, "json", False):
         print(json.dumps({"query": query, "match": expression, "backend": backend,
                           "options": options, **dataclasses.asdict(result),
-                          "markers": [dataclasses.asdict(m) for m in markers]}, ensure_ascii=False))
+                          "markers": [dataclasses.asdict(m) for m in markers], **extra}, ensure_ascii=False))
         return
     mode = "OR (any term/phrase)" if options["any_terms"] else "AND (every term/phrase)"
     print(f"Query: {mode}; {'exact tokens' if options['exact'] else 'prefix expansion'}; {backend}")
@@ -1018,9 +1022,16 @@ def render_search(args: argparse.Namespace, result: SearchResults,
               "--module <substring> to focus; --per-module 0 to show all matches per module.")
     if not result.total:
         print("No declarations matched. Try fewer terms or --any, alternate names, and rg on Lean sources.")
+    if extra:
+        from lean_research_cli import render_discovery
+        render_discovery(extra)
 
 
 def research(args: argparse.Namespace) -> int:
+    args.research_started = time.monotonic()
+    if not getattr(args, "mode", None):
+        from lean_research_cli import default_mode
+        args.mode = default_mode(ROOT)
     query = " ".join(args.query).strip()
     try:
         if not build_match_expression(query):
@@ -1028,6 +1039,9 @@ def research(args: argparse.Namespace) -> int:
         options = research_options(args)
         if min(args.limit, options["per_module"], options["offset"], options["explore"]) < 0:
             raise ValueError("search limits and offset must be nonnegative")
+        import math
+        if not math.isfinite(args.budget_seconds) or args.budget_seconds <= 0:
+            raise ValueError("search budget must be a finite positive number")
     except ValueError as error:
         print(str(error), file=sys.stderr)
         return 2
@@ -1102,6 +1116,9 @@ def research_scan(args: argparse.Namespace) -> int:
 
 
 def search_index_cmd(args: argparse.Namespace) -> int:
+    if any(getattr(args, name, False) for name in ("corpus", "compiler", "methods", "vectors", "compact")):
+        from lean_research_cli import corpus_index
+        return corpus_index(ROOT, args)
     try:
         index, stats = refresh_search_index(rebuild=args.rebuild)
     except SearchIndexUnavailable as error:
@@ -1211,6 +1228,25 @@ def frontier_reports(args: argparse.Namespace) -> int:
     return 0
 
 
+def research_setup_cmd(args: argparse.Namespace) -> int:
+    from lean_research_corpus import cache_directory
+    from lean_research_setup import main as setup_main
+    flags = ["--cache-dir", str(cache_directory(ROOT))]
+    flags.extend("--" + name for name in ("status", "verify", "smoke") if getattr(args, name, False))
+    return setup_main(flags)
+
+
+def research_release_cmd(args: argparse.Namespace) -> int:
+    from lean_research_cli import release
+    try:
+        result = release(ROOT, args.report)
+    except (OSError, ValueError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result['accepted'] else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -1237,6 +1273,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     research_parser.add_argument("query", nargs="+", help='words, identifier, or inner-quoted phrase')
     research_parser.add_argument("--limit", type=int, default=20)
+    research_parser.add_argument("--mode", choices=("deep", "hybrid", "lexical"), default=None,
+                                 help="deep after acceptance; lexical preserves exact name/doc search")
+    research_parser.add_argument("--budget-seconds", type=float, default=120,
+                                 help="whole-request search budget (default: 120 seconds)")
+    research_parser.add_argument("--retrieval-views", choices=("statements", "all"), default="all",
+                                 help="statement-only retrieval ablation or full proof-method discovery")
+    research_parser.add_argument("--max-rounds", type=int, choices=(1, 2, 3), default=3,
+                                 help="deep retrieval rounds; use 1 for the single-round evaluation control")
     research_parser.add_argument("--any", dest="any_terms", action="store_true", help="match any term/phrase (OR)")
     research_parser.add_argument("--exact", action="store_true", help="disable automatic token prefixes")
     research_parser.add_argument("--per-module", type=int, default=2, help="declarations per module before paging; 0 disables cap")
@@ -1265,6 +1309,24 @@ def main(argv: list[str] | None = None) -> int:
         "--rebuild", action="store_true", help="discard and rebuild the index from scratch"
     )
     search_index_parser.set_defaults(func=search_index_cmd)
+    search_index_parser.add_argument("--corpus", action="store_true", help="refresh all Lean/dependency/prose sources")
+    search_index_parser.add_argument("--compiler", action="store_true", help="extract signatures from available fresh compiled modules")
+    search_index_parser.add_argument("--methods", action="store_true", help="resume local proof-method descriptions")
+    search_index_parser.add_argument("--vectors", action="store_true", help="resume local embeddings and FAISS publication")
+    search_index_parser.add_argument("--compact", action="store_true", help="combine small vector shards")
+    search_index_parser.add_argument("--module", default="", help="limit compiler extraction to module substring")
+    search_index_parser.add_argument("--budget-seconds", type=float, default=120,
+                                     help="bounded resumable indexing work budget")
+
+    setup_parser = sub.add_parser("research-setup", help="install pinned local search runtime and model weights")
+    setup_parser.add_argument("--status", action="store_true", help="read installation status without downloads")
+    setup_parser.add_argument("--verify", action="store_true", help="verify downloaded model hashes")
+    setup_parser.add_argument("--smoke", action="store_true", help="exercise actual local inference")
+    setup_parser.set_defaults(func=research_setup_cmd)
+
+    release_parser = sub.add_parser('research-release', help='activate deep default only after retrieval acceptance gates pass')
+    release_parser.add_argument('--report', type=Path, required=True)
+    release_parser.set_defaults(func=research_release_cmd)
 
     brief_parser = sub.add_parser(
         "brief",

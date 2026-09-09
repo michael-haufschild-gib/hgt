@@ -1,6 +1,6 @@
 # HB: optical-coordinate evaluation of the common-source pairing
 
-Status: analytical reduction of the mixed source pairing. The radial primitive is under Lean verification. Physical boundary transport, complete extinction and RH remain unproved. Frontier map is read only.
+Status: analytical reduction of the mixed source pairing. The actual radial primitive, its definite integral, logarithmic source factorization, and principal-cusp annihilation are [formalized in Lean](../3-formalized/hb-optical-source-tail.md). Physical boundary transport, complete extinction and RH remain unproved. Frontier map is read only.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -186,4 +186,88 @@ Here squares are complex bilinear contractions. To verify (11), use `Delta f=lam
 `Delta|grad f|²=2|Hess f|²+2(lambda-1)|grad f|²`, and
 `|Hess f|²=|Hess^TF f|²+lambda² Q`. This is an analytical identity for the actual smooth scalar; the corpus has the Bochner calculation for its convergent Poincare realization, while the needed continued-field identification must be discharged before claiming this exact form in Lean.
 
-The next hard test is cancellation of the explicit rational/logarithmic density (8)–(10) with the compact optical transition and retained boundaries. In particular, the logarithmic coefficient now exposes a specific traceless-Hessian/gradient/scalar combination to compare against the physical retained source. No coefficient of (9) has been proved zero, and SS/VV coefficients remain independent obligations.
+## Conjecture: the physical logarithmic channel removes the entire principal cusp source
+
+Let `rho=q.1`. The literal principal half-square is the already formalized sum
+
+```
+Q_principal=c_plus² y^(2rho)/2+c_plus c_minus y
+              +c_minus² y^(2-2rho)/2.
+```
+
+Each displayed height power has its actual geometric eigenvalue `p(p-1)`. The two roots of the fourth-order bracket in (10) are
+
+```
+2rho(2rho-1),     (2-2rho)(1-2rho).
+```
+
+It therefore kills the two extreme powers. The middle power has eigenvalue zero, so the physical weight `R=-Delta(Delta-2)` kills that term as well. With
+
+```
+T_lambda=-Delta^4+4(2lambda+1)Delta^3
+             -4(lambda+1)(4lambda+1)Delta²+8lambda(4lambda+1)Delta,
+```
+
+the result is the exact field identity
+
+```
+T_lambda Q_principal=0,
+T_lambda Q=T_lambda(Q-Q_principal).                      (12)
+```
+
+This proves the third conjecture analytically, using all three original coefficients, including the cross term. The logarithmic bulk channel is thus fixed by the complete Fourier remainder of the square. That remainder includes principal-times-tail and tail-times-tail terms; it is not set to zero. A smooth cutoff is not part of (12): applying the operator to a cutoff principal part also produces its explicit compact transition commutators.
+
+## Direct cancellation test after the radial evaluation
+
+There is a concrete differential test for the remaining density. At interior `Z>1`, direct differentiation of `Z=(L²+1-z²)/(2L)` gives
+
+```
+Z_L²-Z_z²=(Z²-1)/L²,   Z_LL-Z_zz=2Z/L².
+```
+
+The proved native Darboux equation therefore yields
+
+```
+Delta M_Z=L²(partial_L²-partial_z²)M_Z.
+```
+
+Under `dL dz`, its transpose on a scalar density is the explicit operator
+
+```
+D_star F=partial_L²(L²F)-partial_z²(L²F).                 (13)
+```
+
+Every angular polynomial in (9) can consequently be transferred to its now explicit radial/optical density on a finite interior domain, with its integration-by-parts edges retained. These edges include the characteristic `z=1-L`, the source edge `z=1`, the interface `z=-1` where `q_minus` changes formula, and the optical bounds. The characteristic right jets must be used at `Z=1`.
+
+This test has a finite algebraic structure. In coordinates `(L,d=L-z)`,
+
+```
+D_star[L^a f(d)]=(a+2)(a+1)L^a f(d)
+                     +2(a+2)L^(a+1)f'(d).              (14)
+```
+
+On `z<=-1`, both endpoints are `d±1`. Each of `F11`, `F13`, `F31/L²`, and `F33/L²`, evaluated between them, is a sum of just the powers `L^1,L^0,L^(-1),L^(-2)`, with explicit rational/logarithmic functions of `d` as coefficients. Thus the complete transferred density can be tested by a finite sequence of ordinary derivatives of these known coefficients. The logarithmic angular roots `delta(delta-1)` and `delta(delta+1)` are exactly the diagonal factors in (14) at powers `a=delta-2` and `a=delta-1`; no fitted parameter enters this match.
+
+The stronger guess that the transferred bulk vanishes identically does not survive this test. Its useful output is an explicit boundary-directed term. Define
+
+```
+H_nr(d)=integral_(-1)^1 u^n(d+u)^(r-6)du,  d>1.
+```
+
+Then `partial_d H_nr=(r-6)H_n,r-1`. In particular,
+
+```
+F31/L²=L^(-2)H_13-3L^(-1)H_12+3H_11-L H_10,
+H_12=-8d/[3(d²-1)^3].
+```
+
+Write `mu_s=delta(delta+1)`, `mu_t=delta(delta-1)`. Since `A_t=-k_t(Delta-mu_t)/2`, (14) shows that the coefficient of the lowest surviving power `L^(delta-1)` in the fully transferred ordered bulk `R(D_star)D_st(D_star)[L^delta]` is
+
+```
+16 k_t delta A0 mu_s(mu_s-2) d/(d²-1)^3
+ =-4 k_t delta A0 mu_s(mu_s-2) partial_d[(d²-1)^(-2)].    (15)
+```
+
+Here the notation means: expand (8) as a polynomial in `Delta`, multiply each scalar coefficient by `L^delta`, then replace each `Delta` by `D_star` acting on that product. The `A_s A_t` part loses its two lowest powers because of the two exact diagonal roots; the `A0 A_t F31/L²` part supplies (15). The reversed term is obtained by `delta→-delta`, `s↔t`. Thus pointwise bulk annihilation is not the needed mechanism. Its lowest survivor is a known null-coordinate derivative, exposing a specific primitive to assemble with the interface and characteristic edges.
+
+The active next conjecture is that the complete finite sequence of coefficients combines into an exact boundary reduction whose edge values cancel the compact optical transition and the retained physical boundaries. Equation (15) fixes the first coefficient of that proposed primitive; no boundary value is adjustable. This cancellation has not been proved. Equation (12) separately removes the principal cusp powers from the logarithmic bulk. Global bounds for the differentiated Fourier remainder and angular/temporal transport remain open, as do the independent SS/VV coefficients.

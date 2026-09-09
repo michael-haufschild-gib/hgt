@@ -1,7 +1,7 @@
 # SQB reflected pair with common theta forcing
 
-Status: reflected source, native L2 admission, mean, height equation, and analytic
-majorants are closed in Lean. Native graph equation remains in progress.
+Status: source construction, full native graph equation, true constant-mode
+centering, and analytic graph limits are closed and audited in Lean.
 RH and normalized full-Xi occurrence remain unproved. Frontier map is read-only;
 all work is analytical.
 
@@ -43,8 +43,9 @@ so the existing native admission proves W_q belongs to L2. With A=1+Delta and
 
     (A-e_q)W_q=-(1/4) positiveSource.                      (2)
 
-The complete weak equation, graph admission, and every periodization/derivative
-interchange must be proved before (2) is used as an operator identity.
+Equation (2) is proved for the actual native closed operator. Complete row regrouping
+and two native norm limits establish graph admission without a derivative-interchange
+or domain premise.
 
 Centering in the original native measure leaves the common forcing
 
@@ -96,9 +97,28 @@ operator image keeps every height row and has the exact residual
 
 The source majorants dominate both error sums by a fixed multiple of the admitted
 positiveSource. Row dominated convergence and then native L2 dominated convergence
-are the planned closure steps. Neither convergence nor equation (2) is being assumed.
+are proved. They identify the original source and its full image in the closed native
+graph. True constant-mode centering gives (3), also without a domain premise.
 
-Closed source leaf: formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcing.lean.
-Source check and named leaf build passed; all 28 public declarations still require
-the final axiom audit. Generic positive-height operator and two-ended cutoff proofs
-are being checked in /tmp/sqb36_positive_height.lean and /tmp/sqb36_cutoff.lean.
+Lean leaves:
+- formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcing.lean
+- formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPositiveHeightOperator.lean
+- formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingGraph.lean
+
+All three source checks and named leaf builds passed. All 73 public declarations
+passed the axiom audit using only propext, Classical.choice, and Quot.sound.
+The refreshed corpus passes formal lint. Full details are in
+[the native graph audit](../3-formalized/sqb-common-theta-forcing.md).
+
+The common-forcing constructions found in
+FrankensteinThetaPrimeTranslationCommonForcing and ThetaCuspHawkingBMCommonRadialSource
+retain their own source operators. They do not yet provide a cancellation law for
+this unchanged native equation. The remaining target is a concrete nonzero native
+family with vanishing normalized full residual; no such estimate is asserted.
+
+The [native Gram composition search](sqb-native-gram-composition-search.md) records
+existing small-image and one-sided norm-transfer constructions found across the
+corpus. The open join is an exact source/native augmented Gram identification,
+including mixed vector/operator-image entries, together with the source-specific
+small-image input. Target-space density is not required by the existing one-sided
+Gram isometry.

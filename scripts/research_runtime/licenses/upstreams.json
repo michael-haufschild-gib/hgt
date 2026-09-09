@@ -1,0 +1,40 @@
+[
+  {
+    "name": "LeanExplore",
+    "repository": "https://github.com/justincasher/lean-explore",
+    "revision": "6b25f8632cc3387cf85f7730375a690a1f1dfb79",
+    "spdx": "Apache-2.0",
+    "license_url": "https://raw.githubusercontent.com/justincasher/lean-explore/6b25f8632cc3387cf85f7730375a690a1f1dfb79/LICENSE",
+    "license_sha256": "97840bc35908bc43a3524b6698a9b877270ad44db8f50b36b360104d86cc5e96",
+    "upstream_notice_files": [],
+    "reference_sources_sha256": {
+      "src/lean_explore/util/embedding_client.py": "98bb8695fbefd8ebc28580a59ab1218bcce9895e16c2f8972e13c2b10d42745c",
+      "src/lean_explore/util/reranker_client.py": "8e470f425eced70863fec8d90af606b858ffeed4a5a789f269766fb7b0622796",
+      "src/lean_explore/search/scoring.py": "5641fe9291a1797d78fed7fcb896013a9d27ac6d39fc924b9afeffd1075f0109"
+    }
+  },
+  {
+    "name": "LeanSearch-v2",
+    "repository": "https://github.com/frenzymath/LeanSearch-v2",
+    "revision": "94f4888cbaf9f4322535755f86cbac690ec18080",
+    "spdx": "Apache-2.0",
+    "license_url": "https://raw.githubusercontent.com/frenzymath/LeanSearch-v2/94f4888cbaf9f4322535755f86cbac690ec18080/LICENSE",
+    "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "upstream_notice_files": [],
+    "reference_sources_sha256": {
+      "src/leansearchv2/reasoning/run.py": "40431193816dcbd03dcb5d18853726b900e44669474b52b2554d1df436e6e6bb"
+    }
+  },
+  {
+    "name": "MLX-LM",
+    "repository": "https://github.com/ml-explore/mlx-lm",
+    "revision": "v0.28.2",
+    "spdx": "MIT",
+    "license_url": "https://raw.githubusercontent.com/ml-explore/mlx-lm/v0.28.2/LICENSE",
+    "license_sha256": "ccfab7ccb2ea306f71531c8ca77bb55507606cd90768b1e32b8b52ab5b48cf01",
+    "reference_sources_sha256": {
+      "mlx_lm/models/qwen3.py": "a46dd79049ab40b032479a045b81e06debdef18d2fcde8f70030166ead9128bf",
+      "mlx_lm/models/base.py": "61330e1c065739cd712bfeb09d673f33797cde7e613e95bf6d9ebbee9006f373"
+    }
+  }
+]

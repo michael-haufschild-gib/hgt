@@ -677,6 +677,35 @@ construction must control this literal forcing together with its own
 native denominator; it cannot replace it by the scalar mean or by a
 source-only norm estimate.
 
+### Reflected pair: a common forcing in the actual native graph
+
+The source derivative cancels exactly between q and its reflected copy q*, whose
+spectral parameters are z and -z. Define
+
+    p_q=-(u_q-u_q*)/(2z),       p_q''+z^2 p_q=Phi,
+    S_q=-(W_q-W_q*)/(2z).
+
+Here S_q is the complete periodization of sqrt(y) p_q(log(y)/2). Its exact native
+mean is sourceMass/(1+z^2), and the actual native vector is nonzero. The source
+and first Euler derivative have fixed positive theta majorants. Both-ended
+compact seed cutoffs, complete integer-row cancellation of the horizontal
+second derivative, and two native norm limits prove original graph admission.
+The resulting exact identities are
+
+    (A-e) S_q=-P/4,
+    (A-e) centered(S_q)=-(1/4) centered(P),
+    e=5/4+z^2/4,       F(e-1)=xiEntireTarget(q).
+
+P is the original full positive theta periodization and is independent of q.
+Centering is the true native constant component. These are closed operator
+identities, not domain assumptions. The family with vanishing normalized full
+residual remains to be constructed; neither its existence nor nonvanishing of
+the centered pair is inferred from the forced equation.
+
+The [common-forcing proof](sqb-common-theta-forcing.md) gives the analytical
+construction and the [native graph audit](../3-formalized/sqb-common-theta-forcing.md)
+records its Lean boundary.
+
 ## Verification boundary
 
 Equations (14) and (15), with the stated exponential integrability, are

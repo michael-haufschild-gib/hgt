@@ -1,0 +1,56 @@
+{
+  "checked": "2026-09-09",
+  "tests": {
+    "command": "scripts/research_runtime/.venv/bin/python -m unittest scripts.tests.test_lean_research_runtime -q",
+    "passed": 26
+  },
+  "actual_smoke": {
+    "dimensions": 1024,
+    "rerank_scores": [
+      0.9921974539756775,
+      4.684916348196566e-05
+    ],
+    "generation": "local",
+    "devices": {
+      "embedding": "mps",
+      "reranker": "mps"
+    },
+    "generation_device": "metal"
+  },
+  "embedding_runtime_probe": {
+    "documents": 32,
+    "characters": 153424,
+    "elapsed_seconds_including_load": 48.26709233399015,
+    "documents_per_second": 0.662977578565786
+  },
+  "embedding_cpu_mps_parity_and_warm_probe": {
+    "mps_right_pad_finite": true,
+    "max_abs_error_vs_cpu": 3.501772880554199e-07,
+    "cosine_vs_cpu": [
+      0.9999999403953552,
+      1.0,
+      1.0,
+      0.9999998807907104
+    ],
+    "dtype": "float32",
+    "batch_size": 4,
+    "token_limit": 2048,
+    "documents": 32,
+    "total_characters": 153424,
+    "elapsed_seconds": 43.2908913330175,
+    "documents_per_second": 0.7391855195089029
+  },
+  "fingerprints": {
+    "models": {
+      "embedding": "12cdb187da80d94f4bd2d7f30a2566d8cac292c821a284bef5327fb72a43e918",
+      "reranker": "9c8aa05d5df17e8bab9c7fe5ffaf73144dcdec916ca6649887a134ad84d8abc8",
+      "generation": "301e57318bb0bf2c4a892147a90bbf89a6349358b171f0a922ec0d45e85ab857"
+    },
+    "runtime": "a8972e57e02a0e21fe76c435eff4990cea7bacdb2ced945904744fb9394a001c"
+  },
+  "limitations": [
+    "Synthetic Lean-like documents, not corpus-wide acceptance benchmark",
+    "2048 input token cap; observed throughput does not imply whole-index completion time",
+    "No Lean builds performed"
+  ]
+}
