@@ -2,7 +2,7 @@
 
 - **ID:** HB-TWO-SIDED-SOURCE-CURRENT
 - **Stage:** 1-in-progress
-- **Type:** analytical current reduction; physical causal boundary evaluation in progress
+- **Type:** analytical current reduction; [six exact source/clock/primitive theorems formalized](../3-formalized/hb-reduced-optical-source-tail.md); physical causal boundary evaluation in progress
 - **Source:** `ThetaCuspHawkingBMJointSourceTimeField.timeOriginalForcing_gradient_absorption`, the [complete physical current](hb-mixed-complete-current.md), and the [finite optical source identity](hb-optical-source-boundary-matching.md).
 - **Statement:** Use the existing actual source lift in both slots of the complete current; retain its fixed physical boundary terms and reduce the remaining forcing to scalar multiples of the full angular half-square.
 
@@ -42,7 +42,7 @@ T_s=F_s^0 [eta_s chi(v)
 Thus `T_s` contains the complete `J`, with no angular derivative of `J`. To check all coefficients, without differentiating or dividing the clock, first compute
 
 ```
-M((1+u)^(2s) exp(2s v) Q)=(Delta-eta_s)F_s^0 Q,
+M(F_s^0 Q)=F_s^0(Delta-eta_s)Q,
 M(u² F_s^0 Q)=6F_s^0 Q+u²F_s^0(Delta-2(s+2)delta)Q.
 ```
 
@@ -98,29 +98,71 @@ B^angular(H_s,H_t)=0.                                 (7)
 For the last identity, both angular arguments are scalar multiples of the same `J`, and the angular Green current is alternating. The coordinate transformation is `B^v=B^tau+B^r/f`, with unchanged radial component. Formula (7) follows by differentiating (1) at fixed static time before transforming. It is regular at the horizon and vanishes at the AdS endpoint. The time integral of (6) is
 
 ```
-delta (lambda-2)(lambda-6) a_s²a_t² J0/512
+delta (lambda-2)(lambda-6) a_s²a_t² J2/512
        times the actual angular pairing of J with A J, (8)
-J0=integral_0^infinity chi(v)² exp(-6v)dv.
+J2=integral_0^infinity chi(v)² exp(-6v)dv.
 ```
 
 This uses `k_s k_t=(lambda-2)(lambda-6)/16`. It does not assign a sign or zero to the angular pairing, and its finite angular boundary remains explicit if that pairing is transferred to `Q R Q`.
 
-## The reduced long-delay kernel to evaluate
+## Complete onset reduction on the long-delay region
 
-After the physical causal Green identification and boundary transport, use the same optical change of variables as in the optical source card. On the long-delay region, the `chi chi` part of (2) has source constants `eta_s,eta_t`. The master Green normalization `-1/(2uw)`, with both `u²du` measures, gives the reduced source-source bulk
+For the fixed clock, put `J0=∫_0^infinity chi(v)exp(-6v)dv`, as in the original optical card. This differs from `J2` in (8). Since `chi(0)=0`, `chi=1` from time one onward, and `chi'` is supported in `[0,1]`, integration by parts gives
 
 ```
--eta_s eta_t/2 * a_s²a_t² J0
-  integral Q R[(L^delta-L^(-delta)) h11(L,z) M_Z Q] dz dL,
-eta_s eta_t=4lambda(4lambda-3).                         (9)
+integral_0^infinity exp(-6v)chi'(v)dv=6J0.              (9)
 ```
 
-The time factors involving `chi'` in (2) remain separate, explicit source terms. On the long-delay domain a target derivative of the original onset is zero; a source derivative need not be zero. Its actual integral must be evaluated before reducing (9) to a final kernel. The compact optical transition and finite-terminal-time remainder also remain attached. Equation (9) names only the `chi chi` summand, not their complete sum.
+On the long-delay region `L>=2exp(1)`, every original delay is at least one. The later-time onset is exactly one and its derivative zero; the earlier onset and its derivative remain. Equation (9) evaluates their complete time integral. For the ordered branch the scalar source coefficient becomes
 
-The remaining direct test is to combine these fixed onset contributions and the physical lift currents in (3) with the single-row kernel. This can be compared with the earlier four-row `G_st` and corrected optical cross-section functional, using identical finite domains. Full causal admission, infinite-time/cusp transport and the independent SS/VV coefficients remain open.
+```
+eta_s [eta_t-12k_t w(3-delta w)/(1+w)] J0.              (10)
+```
+
+Thus the onset derivative does not disappear. It contributes the second term in (10), whose sign is fixed by (2). For a finite terminal bound, replace (9) by the exact identity, with `b=V-h>=0`,
+
+```
+integral_0^b exp(-6v)chi'(v)dv
+ =exp(-6b)chi(b)+6 integral_0^b exp(-6v)chi(v)dv.        (11)
+```
+
+The explicit first term of (11) and the truncated scalar clock are retained until their paired limits are justified.
+
+## A rational primitive for the complete reduced long-delay source
+
+After the physical causal Green identification and boundary transport, use the same optical change of variables as in the optical source card: `y=Lw`, `z=u-y`, `d=L-z`, and `q=L+y`. The original master kernel is `-1/(2uw)` and both master measures are `u²du`. Equation (10) therefore gives the radial density
+
+```
+D_st=eta_s[eta_t (q-L)(q-d)/q^6
+       -36k_t (q-L)^2(q-d)/q^7
+       +12k_t delta/L (q-L)^3(q-d)/q^7].               (12)
+```
+
+There is no angular source polynomial in (12); `R=-Delta(Delta-2)` still acts on the actual native mean. Every numerator degree is at most four and the respective denominator powers are six or seven. The complete density, including the onset contribution, has a rational primitive:
+
+```
+F11=-1/(3q^3)+(L+d)/(4q^4)-Ld/(5q^5),
+F21=-1/(3q^3)+(2L+d)/(4q^4)
+        -(L²+2Ld)/(5q^5)+L²d/(6q^6),
+F31=-1/(2q²)+(3L+d)/(3q^3)
+        -(3L²+3Ld)/(4q^4)+(L^3+3L²d)/(5q^5)-L^3d/(6q^6),
+K_st=eta_s[eta_t F11-36k_t F21+12k_t delta/L F31].       (13)
+```
+
+Differentiating the three displayed rational functions gives their three density rows exactly. Evaluate (13) at `q_plus=d+1` and `q_minus=max(L,d-1)`, and denote their difference by `[K_st]`. The opposite branch exchanges `s,t` and sends `delta` to `-delta`. The reduced infinite-clock long-delay expression, before proving its global limit, is
+
+```
+-a_s²a_t² J0/2 * integral Q *
+       (L^delta[K_st]-L^(-delta)[K_ts]) * (R M_Z Q) dz dL,
+eta_s eta_t=4lambda(4lambda-3).                         (14)
+```
+
+The logarithmic channel of the original four-row source has been carried into the exact lift/current transport and onset assembly; it is not discarded. The new radial bulk is rational. The compact optical transition, the terminal contribution (11), angular Green faces and the lift currents (3) remain required in the complete balance.
+
+The remaining direct test is to combine the explicit rational primitive (13) and the physical lift currents in (3), with (11) and the compact optical transition. This can be compared with the earlier four-row `G_st` and corrected optical cross-section functional, using identical finite domains. Full causal admission, infinite-time/cusp transport and the independent SS/VV coefficients remain open.
 
 ## Search and formal scope
 
 Broad searches used `Lagrange`, `Darboux`, `transmutation`, `Green`, `intertwiner`, and `commutator`, followed by source/absorption searches in the actual BM family. The existing `timeOriginalForcing_gradient_absorption` and actual lift jets provide (2); no new source decomposition is postulated. The deep search returned partial, source-only results with no proof ideas or ingredient sets for the requested Green mechanism, so none was treated as a checked producer.
 
-Equations (3)–(9) are analytical consequences and calculations, not new Lean theorems. No mathematical computations, new axioms, existing-module rebuilds or axiom rechecks were used.
+The existing reduced time-source coefficient, finite clock contact (11), identification of `J0` with the original half-line integral, the full-transition derivative integral, and the derivative and integral identities for the rational primitive with the actual native spin-two field are now proved in `RHTower.D4BMReducedOpticalTail`. See the [six exact statements and validation](../3-formalized/hb-reduced-optical-source-tail.md). The physical current transport (3)–(8), the full causal pairing identification and the optical integral transport remain analytical. No mathematical computations, new axioms, existing-module rebuilds, existing axiom rechecks or frontier-map changes were used.
