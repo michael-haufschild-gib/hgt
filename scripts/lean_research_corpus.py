@@ -621,7 +621,8 @@ class Corpus:
         return [dict(r) for r in self.con.execute(sql, [*ids, limit])]
 
     def save_method(self, did: str, payload: dict, *, model_version: str, prompt_version: str,
-                    expected_source_hash: str | None = None, expected_evidence_epoch: int | None = None) -> None:
+                    expected_source_hash: str | None = None, expected_evidence_epoch: int | None = None,
+                    batch_provenance: dict | None = None) -> None:
         d = self.declaration(did)
         if not d:
             raise ValueError("method references a missing declaration")
@@ -653,9 +654,13 @@ class Corpus:
                               json.dumps(payload["obligations"]), json.dumps(evidence)))
             self.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (did,))
             text = "\n".join(str(payload[k]) for k in ("description", "assumptions", "steps", "obligations"))
+            provenance = dict(kind="generated", source_hash=d["source_hash"], model=model_version,
+                              prompt=prompt_version, evidence=evidence)
+            if batch_provenance is not None:
+                provenance['batch'] = batch_provenance
             for part, _, _ in chunks(text):
                 self._document(did, d["path"], d["module"], "method", part, d["line"], d["end_line"],
-                               dict(kind="generated", source_hash=d["source_hash"], model=model_version, prompt=prompt_version, evidence=evidence))
+                               provenance)
             self.bump()
 
     def method_chunk(self, did: str, chunk_hash: str, model: str, prompt: str):

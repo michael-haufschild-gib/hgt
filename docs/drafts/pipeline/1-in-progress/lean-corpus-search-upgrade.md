@@ -115,6 +115,29 @@ snapshot import remain in progress; retrieval-quality release gates remain separ
 
 ## Remaining rollout work
 
+### GPU method-description batch, authorized 2026-09-09
+
+User authorized extending the B300 job to proof-method descriptions. Work stays
+single-agent, prioritizing RHTower, HTGeometry, then the remaining corpus.
+Measured starting coverage: 706,664 declarations with proof bodies; 120 ready
+method descriptions and 125 cached method chunks. Build a resumable prompt/result
+interchange with pinned CUDA generation, source-citation validation, explicit
+failure outcomes, and local freshness checks before publication. Measure a pilot
+before launching the full batch. Generated descriptions remain interpretations.
+Preserve producer provenance and prevent local enrichment from replacing valid
+GPU descriptions merely because the producer differs from the MLX runtime.
+
+Initial embedding GPU run completed all 340 shards / 1,390,996 unique inputs;
+final resumed run took 1,498.62 seconds (~912 new vectors/second). Local import
+is finishing. Fixed maintenance startup to acquire all writer locks before
+Corpus initialization; busy jobs now return structured deferrals without opening
+SQLite. Search refresh follows the same lock order. CLI/background 14 tests pass,
+including held SQLite transactions and all maintenance modes. Live methods job
+returned clean exit 0 / maintenance_busy / empty stderr. Fixed sync completion
+race when GPU exits after a downloaded snapshot but before local import finishes;
+remote completion triggers another download, with manifest identity checked.
+Batch/sync suite now 23 passing tests. No Lean builds or subagents.
+
 - Background source migration, embeddings and validated method descriptions continue incrementally. First published vectors verified entirely under RHTower. Use `python3 scripts/formal_tools.py research-indexer status` for current progress rather than this snapshot.
 - Full measured five-way held-out benchmark and default-deep release gates remain pending. Do not claim quality improvement or proof applicability from these smoke tests.
 - General compiler export is implemented and tested, but bulk extraction of available artifacts remains explicit foreground work. Missing/stale artifacts remain labeled; no source recompilation is implicit.

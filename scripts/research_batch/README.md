@@ -1,5 +1,7 @@
 # Explicit B200/B300 embedding bootstrap
 
+For the subsequent proof-method description and embedding job, see [METHODS.md](METHODS.md).
+
 This directory is copied into a self-contained corpus bundle. Upload that bundle,
 not the repository, live SQLite database, SSH private key, or local virtualenv.
 Normal `research` and background indexing continue locally.

@@ -589,11 +589,17 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
     generation_model = status.get("generation_model_version", status.get("fingerprints", {}).get("generation", status.get("generation_model", "Qwen3-4B-Instruct-2507-4bit")))
     report = dict(methods=0, vectors=0, failures=[])
     if methods:
+        record = corpus.con.execute("SELECT value FROM meta WHERE key='method_producers'").fetchone()
+        producers = json.loads(record[0]) if record else {}
+        reusable = [generation_model, *(model for model, provenance in producers.items()
+                     if provenance.get('prompt_version') == METHOD_PROMPT_VERSION)]
+        placeholders = ','.join('?' for _ in reusable)
         while time.monotonic() < deadline:
             evidence_epoch = corpus.evidence_epoch
             rows = corpus.con.execute("SELECT d.id FROM declarations d LEFT JOIN methods m ON m.decl_id=d.id JOIN files f ON f.path=d.path WHERE d.proof<>'' AND f.status='indexed' "
-                                      "AND (m.decl_id IS NULL OR m.status='stale' OR m.content_hash<>d.source_hash OR m.model_version<>? OR m.prompt_version<>?) "
-                                      "ORDER BY " + PATH_PRIORITY_SQL.replace('lower(path)', 'lower(d.path)') + ",d.path,d.line LIMIT 1", (generation_model, METHOD_PROMPT_VERSION)).fetchall()
+                                      "AND (m.decl_id IS NULL OR m.status='stale' OR m.content_hash<>d.source_hash OR "
+                                      f"(m.model_version<>? AND (m.status<>'ready' OR m.model_version NOT IN ({placeholders}))) OR m.prompt_version<>?) "
+                                      "ORDER BY " + PATH_PRIORITY_SQL.replace('lower(path)', 'lower(d.path)') + ",d.path,d.line LIMIT 1", (generation_model, *reusable, METHOD_PROMPT_VERSION)).fetchall()
             if not rows:
                 break
             d = corpus.declaration(rows[0][0])

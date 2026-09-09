@@ -58,8 +58,10 @@ def sync(directory, *, cache=DEFAULT_CACHE_DIR, interval=120, max_failures=5):
     # Check the recorded process command, not just a possibly recycled PID.
     probe = ('import json,sys; from pathlib import Path; p=Path(sys.argv[1]); '
              'pid=int((p/"embedding.pid").read_text()); c=Path(f"/proc/{pid}/cmdline"); '
-             'print(json.dumps({"pid":pid,"running":c.exists() and '
-             'b"research_batch.runner" in c.read_bytes()}))')
+             'running=c.exists() and b"research_batch.runner" in c.read_bytes(); '
+             'r=p/"results/run.json"; '
+             'print(json.dumps({"pid":pid,"running":running,"run":'
+             'json.loads(r.read_text()) if r.exists() else {}}))')
     status_command = ssh + [address, 'python -c ' + shlex.quote(probe) + ' ' + shlex.quote(remote)]
     state = dict(pid=os.getpid(), running=True, phase='starting', manifest_sha256=manifest_sha,
                  completed=False, total_published=0, failures=0)
@@ -92,7 +94,12 @@ def sync(directory, *, cache=DEFAULT_CACHE_DIR, interval=120, max_failures=5):
                     process = json.loads(owned_run(status_command, timeout=30))
                     state['remote_process'] = process
                     if not process['running'] and not gpu.get('complete'):
-                        raise ValueError('GPU worker stopped before completing; inspect remote embedding.log')
+                        # Import may take minutes: the worker can finish after
+                        # rsync's snapshot. Fetch its final shards next cycle.
+                        finished = process.get('run', {})
+                        if not (finished.get('complete') and finished.get('manifest_sha256') == manifest_sha
+                                and finished.get('completed_shards') == len(manifest['shards'])):
+                            raise ValueError('GPU worker stopped before completing; inspect remote embedding.log')
                     state.update(phase='waiting', failures=0, error=None, updated=time.time())
                 except TimeoutError as exc:
                     state.update(phase='waiting_for_maintenance', error=str(exc), updated=time.time())

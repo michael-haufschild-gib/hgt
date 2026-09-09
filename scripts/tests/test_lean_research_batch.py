@@ -363,6 +363,41 @@ class BatchTests(unittest.TestCase):
         self.assertEqual(state['phase'], 'failed')
         self.assertFalse(state['running'])
 
+    def test_sync_redownloads_when_gpu_finishes_after_previous_download(self):
+        self.make_bundle()
+        self.sync_connection()
+        atomic_json(self.output / 'run.json', dict(complete=False))
+        complete = dict(complete=True, manifest_sha256=sha_file(self.bundle / 'manifest.json'),
+                        completed_shards=len(self.manifest['shards']))
+        def next_download(*args, **kwargs):
+            atomic_json(self.output / 'run.json', complete)
+            return ''
+        responses = iter(['', json.dumps(dict(pid=123, running=False, run=complete))])
+        def command(*args, **kwargs):
+            return next(responses, None) if command.calls < 3 else next_download()
+        command.calls = 0
+        def dispatch(*args, **kwargs):
+            command.calls += 1
+            return command(*args, **kwargs)
+        reports = [dict(published=1, partial=True),
+                   dict(published=5, partial=False, checked_shards=len(self.manifest['shards']))]
+        with patch('lean_research_batch_sync.owned_run', side_effect=dispatch), \
+             patch('lean_research_batch_sync.import_results', side_effect=reports):
+            state = sync(self.root, cache=self.cache, interval=0)
+        self.assertTrue(state['completed'])
+        self.assertEqual(state['total_published'], 6)
+        self.assertEqual(command.calls, 3)
+
+    def test_sync_does_not_accept_another_jobs_remote_completion(self):
+        self.make_bundle()
+        self.sync_connection()
+        atomic_json(self.output / 'run.json', dict(complete=False))
+        remote = dict(pid=123, running=False, run=dict(complete=True, manifest_sha256='wrong'))
+        with patch('lean_research_batch_sync.owned_run', side_effect=['', json.dumps(remote)]), \
+             patch('lean_research_batch_sync.import_results', return_value=dict(published=0, partial=True)):
+            with self.assertRaisesRegex(ValueError, 'GPU worker stopped'):
+                sync(self.root, cache=self.cache, interval=0)
+
     def test_transfer_timeout_reaps_owned_process(self):
         original = subprocess.Popen
         children = []
