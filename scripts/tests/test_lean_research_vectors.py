@@ -5,6 +5,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -77,6 +78,29 @@ class VectorTests(unittest.TestCase):
         self.vectors.publish([self.docs[0]], [[1., 0.]], 'm1')
         with self.assertRaises(TimeoutError):
             self.vectors.search([1., 0.], model='m1', views=('statement',), deadline=time.monotonic() - 1)
+
+    def test_new_and_existing_pending_work_respects_folder_priority(self):
+        for folder in ('HTGeometry', 'RHTower'):
+            path = self.root / 'formal' / folder / 'A.lean'
+            path.parent.mkdir()
+            path.write_text('theorem sample : True := trivial')
+        self.db.refresh(self.root)
+        pending = self.vectors.pending('m1', limit=64)
+        paths = [d['path'] for d in pending]
+        self.assertEqual(paths[:2], ['formal/RHTower/A.lean'] * 2)
+        self.assertEqual(paths[2:4], ['formal/HTGeometry/A.lean'] * 2)
+        # The trigger keeps this order after queue initialization.
+        path = self.root / 'formal/RHTower/B.lean'
+        path.write_text('theorem newResult : True := trivial')
+        self.db.refresh(self.root)
+        pending = self.vectors.pending('m1', limit=64)
+        self.assertTrue(all('/RHTower/' in d['path'] for d in pending[:4]))
+
+    def test_conflicting_torch_process_is_rejected_before_openmp_initializes(self):
+        from lean_research_vectors import Vectors
+        with patch.object(sys, 'platform', 'darwin'), patch.dict(sys.modules, {'torch': object()}):
+            with self.assertRaisesRegex(ImportError, 'separately from Torch'):
+                Vectors(self.db)
 
 
 if __name__ == '__main__':

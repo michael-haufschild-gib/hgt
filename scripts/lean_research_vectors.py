@@ -7,6 +7,7 @@ an unreferenced file, never a partly visible generation.
 from __future__ import annotations
 
 import os
+import sys
 import time
 import uuid
 from pathlib import Path
@@ -20,6 +21,8 @@ EMBED_VIEWS = ('statement', 'type', 'shape', 'proof', 'method', 'prose')
 
 class Vectors:
     def __init__(self, corpus: Corpus):
+        if sys.platform == 'darwin' and 'torch' in sys.modules:
+            raise ImportError('FAISS must run separately from Torch on macOS. Use research_runtime/audit.py for isolated tests; inference belongs in the shared model worker.')
         import faiss
         import numpy as np
         self.faiss, self.np, self.corpus = faiss, np, corpus

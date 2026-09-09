@@ -1,8 +1,10 @@
 {
   "checked": "2026-09-09",
   "tests": {
-    "command": "scripts/research_runtime/.venv/bin/python -m unittest scripts.tests.test_lean_research_runtime -q",
-    "passed": 26
+    "command": "scripts/research_runtime/.venv/bin/python scripts/research_runtime/audit.py",
+    "runtime_passed": 31,
+    "isolated_audit_passed": 167,
+    "later_vector_guard_suite_passed": 7
   },
   "actual_smoke": {
     "dimensions": 1024,
@@ -52,5 +54,17 @@
     "Synthetic Lean-like documents, not corpus-wide acceptance benchmark",
     "2048 input token cap; observed throughput does not imply whole-index completion time",
     "No Lean builds performed"
-  ]
+  ],
+  "mlx_real_corpus_probe": {
+    "records_per_group": 32,
+    "statement_docs_per_second": 19.308213850118914,
+    "proof_docs_per_second": 10.475487133764508,
+    "long_proof_docs_per_second": 1.1639930781155328,
+    "dtype": "float32",
+    "backend": "shape-aware compiled MLX",
+    "minimum_cosine_vs_cpu": 0.999999852653194,
+    "max_abs_error_vs_cpu": 9.657815098762512e-07,
+    "includes_four_query_checks": true,
+    "scope": "fixed real-corpus throughput/reference probe; not retrieval acceptance"
+  }
 }

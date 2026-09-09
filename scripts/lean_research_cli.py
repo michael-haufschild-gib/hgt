@@ -87,12 +87,20 @@ def compile_corpus(root: Path, corpus: Corpus, *, deadline: float, module="", pr
 
 
 def default_mode(root: Path) -> str:
-    """Enable deep by default only after the recorded acceptance gate passes."""
+    """Progressive hybrid can run during enrichment; deep requires acceptance."""
     try:
         release = json.loads((cache_directory(root) / "release.json").read_text())
-        return "deep" if release.get("accepted") is True else "lexical"
+        if release.get("accepted") is True:
+            return 'deep'
     except (OSError, ValueError):
-        return "lexical"
+        pass
+    try:
+        directory = cache_directory(root)
+        if json.loads((directory / 'progressive.json').read_text()).get('enabled') and (directory / 'corpus.sqlite3').is_file():
+            return 'hybrid'
+    except (OSError, ValueError):
+        pass
+    return 'lexical'
 
 
 def release(root: Path, report_path: Path) -> dict:

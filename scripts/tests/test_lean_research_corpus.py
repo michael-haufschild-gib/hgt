@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lean_research_corpus import Corpus, chunks, inventory, mask_comments_strings, source_declarations
+from lean_research_corpus import Corpus, chunks, inventory, mask_comments_strings, source_declarations, EvidenceChanged
 
 
 class ExtractionTests(unittest.TestCase):
@@ -164,6 +164,19 @@ class CorpusTests(unittest.TestCase):
                        source={'range': {'start': {'line': 1}, 'end': {'line': 1}}})
         self.db.install_compiler_rows('formal/A.lean',[payload],source_hash=sha,status='compiled_snapshot')
         self.assertEqual({r[0] for r in self.db.con.execute('SELECT name FROM declarations')}, {'alpha','alpha.helper'})
+
+    def test_pending_method_cannot_publish_after_dependency_evidence_changes(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        self.write('formal/B.lean', 'theorem beta : True := alpha')
+        self.db.refresh(self.root)
+        did = self.db.search('beta')[0]['decl_id']
+        epoch = self.db.evidence_epoch
+        self.write('formal/A.lean', 'theorem alpha : True := by trivial')
+        self.db.refresh(self.root)
+        with self.assertRaises(EvidenceChanged):
+            self.db.save_method(did, dict(description='use witness', assumptions=[], steps=['apply alpha'],
+                obligations=[], evidence=['alpha']), model_version='m', prompt_version='v', expected_evidence_epoch=epoch)
+        self.assertIsNone(self.db.method(did))
 
 
 if __name__ == '__main__':

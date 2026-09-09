@@ -77,6 +77,45 @@ pending and failed files. Complete source chunks preserve material not recognize
 by provisional declaration extraction. Model enrichment is additional coverage;
 it does not block lexical access to pending sources.
 
+### Progressive operation
+
+```sh
+python3 scripts/formal_tools.py research-indexer start
+python3 scripts/formal_tools.py research-indexer status
+python3 scripts/formal_tools.py research-indexer stop
+```
+
+Starting the indexer enables progressive hybrid as the ordinary `research`
+default once the source database exists. Available statement, proof-body and
+research-note matches work immediately; completed embeddings join retrieval
+without waiting for full coverage. `--mode lexical` retains the old behavior.
+`--mode deep` explicitly requests the reasoning loop; its automatic promotion
+still requires measured retrieval acceptance.
+
+One local Python worker persists independently of the requesting terminal. It
+runs bounded source, embedding and method-description batches, with no Codex
+subagents or remote inference. Work order is **RHTower, then HTGeometry, then
+the rest**, across sources, vectors and method descriptions. It sleeps between
+cycles, preempted inference remains pending, and interactive searches take
+priority in the shared model worker. Restart it after reboot; no login service
+or automatic system startup is installed. `status` shows phase, latest completed
+coverage and errors. `stop` cancels/reaps its owned maintenance child.
+
+Ordinary hybrid/deep searches allocate at most three seconds to source refresh;
+`--no-refresh` uses committed records. Size/mtime changes or an extractor-version
+change enqueue source extraction. Each changed file publishes its replacement
+records transactionally. Content hashes reuse identical embeddings across
+renames, line shifts and edits to neighboring declarations. Changed/deleted
+records disappear from active vector mappings; cached vector values remain
+reusable but cannot produce stale search hits. Source/dependency changes
+invalidate descriptions; concurrent evidence changes reject pending generated
+descriptions. Model/prompt versions control enrichment reuse. The worker resumes
+pending batches rather than rebuilding the corpus on every cycle.
+
+Compiler extraction remains an explicit foreground operation. The background
+indexer never starts Lean, builds modules or downloads models. Pending and stale
+compiler evidence stays labeled in results.
+
 Compiler extraction uses cached oleans and foreground `lake env lean` scratch
 checks. It neither imports the project root umbrella nor builds missing modules.
 Private/generated declarations and all binder kinds remain in extracted data;
@@ -98,12 +137,39 @@ fixture validation and mode comparisons:
 ```sh
 python3 scripts/lean_research_benchmark.py --help
 python3 -m unittest discover -s scripts/tests -p 'test_research_search.py'
-scripts/research_runtime/.venv/bin/python -m unittest discover -s scripts/tests -p 'test_lean_research_*.py'
+scripts/research_runtime/.venv/bin/python scripts/research_runtime/audit.py
 ```
 
-The intended production default is deep search. It is activated only after the
-recorded release gates pass; until then, select `--mode deep` explicitly. The
+The intended final default is deep search. It is activated only after the
+recorded release gates pass; progressive hybrid can run during enrichment. The
 lexical mode remains available for immediate rollback. Benchmark labels measure
 retrieval on those cases, not completeness of the mathematical corpus or proof
 of a research conjecture. Quality and throughput must be reported from actual
 runs rather than inferred from upstream benchmark results.
+
+The audit isolates test modules in foreground processes because the macOS Torch
+and FAISS wheels use conflicting OpenMP libraries. Production already isolates
+inference from vector retrieval; the audit follows that separation.
+
+### Initial measurements, 2026-09-09
+
+Current extracted source corpus: about 639,000 declarations and 1.30 million
+embedding-eligible chunks. Full-file Lean chunks remain searchable lexically and
+are excluded from redundant embedding work. Exact hash deduplication removes
+about 39,000 source embeddings at this snapshot; it is not a tenfold reduction.
+
+Fixed real-corpus probe, 32 records per group on this M3 Pro:
+
+| Representation | Torch MPS records/s | MLX float32 records/s |
+| --- | ---: | ---: |
+| Statements | 11.03 | 19.31 |
+| Proof chunks | 5.88 | 10.48 |
+| Long proof chunks | 0.66 | 1.16 |
+
+MLX uses the original 0.6B weights and shape-aware compilation. Across the 96
+saved documents and four queries, minimum cosine against CPU reference exceeded
+0.9999998 and maximum coordinate error was below 0.000001. These small probe
+groups are throughput evidence, not a corpus-wide quality audit or a guaranteed
+completion ETA. Compiler-derived embeddings and generated method descriptions
+add work beyond this source count. Progressive operation avoids making search
+availability depend on full enrichment.

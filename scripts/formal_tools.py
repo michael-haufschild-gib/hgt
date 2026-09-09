@@ -1328,6 +1328,13 @@ def main(argv: list[str] | None = None) -> int:
     release_parser.add_argument('--report', type=Path, required=True)
     release_parser.set_defaults(func=research_release_cmd)
 
+    indexer_parser = sub.add_parser('research-indexer', help='control progressive local background enrichment')
+    indexer_parser.add_argument('action', choices=('start', 'status', 'stop'))
+    def research_indexer_cmd(args):
+        from lean_research_background import command
+        return command(ROOT, args.action)
+    indexer_parser.set_defaults(func=research_indexer_cmd)
+
     brief_parser = sub.add_parser(
         "brief",
         help="compute Lean-native minimal open cuts to a research target",
