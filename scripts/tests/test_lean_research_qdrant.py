@@ -69,5 +69,14 @@ class QdrantTests(unittest.TestCase):
   with patch('lean_research_vectors.FaissVectors',side_effect=AssertionError('archive loaded')):
    with self.assertRaises(TimeoutError):self.v.search([1.,0.],model='m1',views=('statement',),deadline=time.monotonic()-1)
    with patch.object(Qdrant,'request',side_effect=RuntimeError('offline')),self.assertRaisesRegex(RuntimeError,'offline'):self.search()
+ def test_coverage_uses_receipts_and_invalidates_them_at_source_change(self):
+  import sqlite3
+  self.v.publish(self.docs,[[1.,0.],[0.,1.]],'m1');self.flush()
+  self.c.con.set_authorizer(lambda action,table,column,*_:sqlite3.SQLITE_DENY
+   if action==sqlite3.SQLITE_READ and table=='documents' and column not in ('view','') else sqlite3.SQLITE_OK)
+  try:self.assertEqual(self.v.coverage('m1')['ready'],2)
+  finally:self.c.con.set_authorizer(None)
+  (self.root/'formal/A.lean').unlink();self.c.refresh(self.root)
+  self.assertEqual(self.v.coverage('m1')['ready'],1)
 
 if __name__=='__main__':unittest.main()

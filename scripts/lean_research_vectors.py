@@ -201,9 +201,9 @@ class Vectors:
 
     def coverage(self, model):
         expected = self.corpus.con.execute("SELECT COUNT(*) FROM documents WHERE view<>'lean'").fetchone()[0]
-        ready = self.corpus.con.execute('SELECT COUNT(*) FROM qdrant_points p JOIN vectors v ON v.doc_id=p.doc_id '
-            'JOIN documents d ON d.id=v.doc_id WHERE p.model=? AND v.model=p.model '
-            'AND p.content_hash=v.content_hash AND p.content_hash=d.content_hash', (model,)).fetchone()[0]
+        # Receipt triggers invalidate changed/deleted assignments immediately;
+        # coverage must not scan every proof document before the first query.
+        ready = self.corpus.con.execute('SELECT COUNT(*) FROM qdrant_points WHERE model=?', (model,)).fetchone()[0]
         pending = self.corpus.con.execute('SELECT COUNT(*) FROM qdrant_queue').fetchone()[0]
         return dict(expected=expected, ready=ready, complete=expected>0 and ready==expected and not pending,
                     backend='qdrant', pending=pending)

@@ -75,6 +75,8 @@ def stop(directory):
         existing=docker('inspect',name,check=False)
         if existing.returncode==0:
             docker('stop','--time','15',name,timeout=25)
+        if not docker('ps','-q').stdout.strip():
+            docker('desktop','stop','--timeout','30',timeout=40)
     atomic_json(directory/'services.json',dict(running=False,updated=time.time()))
     print('Stopped research indexer, inference worker, local GPU receivers and Qdrant.',flush=True)
 
@@ -105,7 +107,7 @@ def start_receivers(directory):
 def start(directory):
     config=settings(directory)
     if docker('info',check=False,timeout=5).returncode:
-        subprocess.run(['open','-a','Docker'],check=True)
+        docker('desktop','start','--detach',timeout=10)
         deadline=time.monotonic()+90
         while docker('info',check=False,timeout=5).returncode:
             if time.monotonic()>deadline:raise RuntimeError('Docker did not become ready; finish Docker Desktop setup')
@@ -132,6 +134,9 @@ def start(directory):
     from lean_research_qdrant import reconcile
     # A missing collection can be restored from the retained vector archives.
     # Normal restarts avoid scanning the corpus or repeating migration.
+    if not (directory/'corpus.sqlite3').exists():
+        with locks([directory/n for n in ('source.lock','compiler.lock','enrichment.lock')],seconds=150), Corpus(directory):
+            pass
     with Corpus(directory,readonly=True) as corpus:
         seeded=corpus.con.execute("SELECT value FROM meta WHERE key='qdrant_initialized'").fetchone()
         models=[r[0] for r in corpus.con.execute('SELECT DISTINCT model FROM vector_shards')]

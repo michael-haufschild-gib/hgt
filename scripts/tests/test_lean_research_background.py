@@ -11,6 +11,39 @@ from lean_research_corpus import Corpus
 
 
 class BackgroundTests(unittest.TestCase):
+    def test_running_worker_detects_added_edited_and_deleted_lean(self):
+        import sqlite3
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'scripts').mkdir();(root/'formal').mkdir()
+            scripts=Path(__file__).resolve().parents[1]
+            (root/'scripts/formal_tools.py').write_text(
+                f'import sys;sys.path.insert(0,{str(scripts)!r})\n'
+                'from pathlib import Path\nfrom lean_research_corpus import Corpus,cache_directory\n'
+                'root=Path.cwd()\nwith Corpus(cache_directory(root)) as c:c.refresh(root)\n')
+            from lean_research_corpus import cache_directory
+            def await_names(expected):
+                deadline=time.monotonic()+40
+                while time.monotonic()<deadline:
+                    try:
+                        with Corpus(cache_directory(root),readonly=True) as c:
+                            names=[r[0] for r in c.con.execute('SELECT name FROM declarations ORDER BY name')]
+                        if names==expected:return
+                    except sqlite3.OperationalError:pass
+                    time.sleep(.1)
+                self.fail(f'background source indexing did not reach {expected}')
+            source=root/'formal/A.lean';source.write_text('theorem alpha : True := True.intro')
+            running=start(root)
+            try:
+                await_names(['alpha'])
+                source.write_text('theorem beta : True := True.intro')
+                await_names(['beta'])
+                source.unlink();await_names([])
+                self.assertEqual(status(root)['pid'],running['pid'])
+            finally:
+                stop(root);deadline=time.monotonic()+3
+                while status(root)['running'] and time.monotonic()<deadline:time.sleep(.1)
+                self.assertFalse(status(root)['running'])
+
     def test_structured_busy_deferral_needs_no_traceback_or_failure_exit(self):
         busy = dict(stage='methods', reason='maintenance_busy', lock='enrichment.lock')
         malformed = dict(stage='method', error='local model did not return a JSON object')

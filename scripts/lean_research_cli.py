@@ -332,6 +332,7 @@ def corpus_index(root: Path, args) -> int:
     directory = cache_directory(root)
     deadline = time.monotonic() + args.budget_seconds
     progress = lambda value: print(json.dumps(value), file=sys.stderr, flush=True)
+    enriched = False
     try:
         with maintenance_locks(directory), Corpus(directory) as corpus:
             if args.corpus:
@@ -346,11 +347,13 @@ def corpus_index(root: Path, args) -> int:
                     print('Local models unavailable; run research-setup first.', file=sys.stderr)
                     return 2
                 print(json.dumps(enrich(corpus, runtime, deadline=deadline, methods=args.methods, vectors=args.vectors, progress=progress)))
+                enriched = True
             if args.compact and time.monotonic() < deadline:
                 from lean_research_vectors import Vectors
                 for row in corpus.con.execute('SELECT DISTINCT model FROM vector_shards').fetchall():
                     print(json.dumps(Vectors(corpus).compact(row[0], deadline=deadline)))
-            print(json.dumps(dict(coverage=corpus.coverage()), ensure_ascii=False))
+            if not enriched and time.monotonic() < deadline:
+                print(json.dumps(dict(coverage=corpus.coverage()), ensure_ascii=False))
     except MaintenanceBusy as exc:
         deferred = [dict(stage=stage, reason='maintenance_busy', lock=str(exc))
                     for stage in ('corpus', 'compiler', 'methods', 'vectors', 'compact')

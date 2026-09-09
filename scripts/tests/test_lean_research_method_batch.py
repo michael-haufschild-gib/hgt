@@ -234,6 +234,31 @@ class MethodBatchTests(unittest.TestCase):
         self.assertFalse(state['running'])
         self.assertEqual(commands.call_count,2)
 
+    def test_offline_sync_finishes_partial_import_without_contacting_pod(self):
+        self.sync_fixture()
+        connection = json.loads((self.job/'connection.json').read_text())
+        atomic_json(self.job/'connection.json', {**connection, 'offline': True})
+        report = dict(partial=False, checked_shards=len(self.manifest['shards']))
+        with patch('lean_research_method_sync.owned_run', side_effect=AssertionError('pod is shut down')), \
+             patch('lean_research_method_sync.import_methods', return_value=report), \
+             patch('lean_research_method_sync.import_vectors', side_effect=[dict(partial=True),dict(partial=False)]) as imports:
+            state = sync(self.job, cache=self.cache, root=self.root, interval=0)
+        self.assertTrue(state['completed'])
+        self.assertFalse(state['running'])
+        self.assertEqual(imports.call_count, 2)
+
+    def test_offline_sync_still_rejects_wrong_vector_snapshot(self):
+        self.sync_fixture()
+        connection = json.loads((self.job/'connection.json').read_text())
+        atomic_json(self.job/'connection.json', {**connection, 'offline': True})
+        path=self.job/'vectors/manifest.json';manifest=json.loads(path.read_text())
+        atomic_json(path, {**manifest, 'method_manifest_sha256': 'another-job'})
+        report=dict(partial=False,checked_shards=len(self.manifest['shards']))
+        with patch('lean_research_method_sync.owned_run', side_effect=AssertionError('pod is shut down')), \
+             patch('lean_research_method_sync.import_methods', return_value=report), \
+             self.assertRaisesRegex(ValueError, 'different method job'):
+            sync(self.job,cache=self.cache,root=self.root,interval=0)
+
     def test_sync_remote_completion_after_download_requires_another_snapshot(self):
         self.sync_fixture()
         atomic_json(self.output/'run.json',dict(complete=False))

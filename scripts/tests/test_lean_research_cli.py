@@ -19,6 +19,21 @@ from lean_research_corpus import Corpus, cache_directory
 
 
 class SupervisionTests(unittest.TestCase):
+    def test_enrichment_does_not_repeat_corpus_coverage_scan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            args = SimpleNamespace(budget_seconds=2, module='', corpus=False,
+                                   compiler=False, methods=True, vectors=False, compact=False)
+            report = dict(methods=1, vectors=0, coverage={'methods': {'ready': 1}})
+            output = io.StringIO()
+            with patch('lean_research_cli.engine_python', return_value=sys.executable), \
+                    patch('lean_research_engine.runtime_for', return_value=object()), \
+                    patch('lean_research_engine.enrich', return_value=report), \
+                    patch.object(Corpus, 'coverage', side_effect=AssertionError('duplicate scan')), \
+                    redirect_stdout(output):
+                self.assertEqual(corpus_index(root, args), 0)
+            self.assertEqual(json.loads(output.getvalue()), report)
+
     def test_every_maintenance_mode_defers_before_sqlite_startup(self):
         modes = ('corpus', 'compiler', 'methods', 'vectors', 'compact')
         with tempfile.TemporaryDirectory() as tmp:

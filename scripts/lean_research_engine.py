@@ -594,15 +594,26 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
         reusable = [generation_model, *(model for model, provenance in producers.items()
                      if provenance.get('prompt_version') == METHOD_PROMPT_VERSION)]
         placeholders = ','.join('?' for _ in reusable)
+        rows = []
         while time.monotonic() < deadline:
             evidence_epoch = corpus.evidence_epoch
-            rows = corpus.con.execute("SELECT d.id FROM declarations d LEFT JOIN methods m ON m.decl_id=d.id JOIN files f ON f.path=d.path WHERE d.proof<>'' AND f.status='indexed' "
+            if not rows:
+                corpus.con.set_progress_handler(lambda: time.monotonic() >= deadline, 10000)
+                try:
+                    rows = corpus.con.execute("SELECT d.id FROM declarations d LEFT JOIN methods m ON m.decl_id=d.id JOIN files f ON f.path=d.path WHERE d.proof<>'' AND f.status='indexed' "
                                       "AND (m.decl_id IS NULL OR m.status='stale' OR m.content_hash<>d.source_hash OR "
                                       f"(m.model_version<>? AND (m.status<>'ready' OR m.model_version NOT IN ({placeholders}))) OR m.prompt_version<>?) "
-                                      "ORDER BY " + PATH_PRIORITY_SQL.replace('lower(path)', 'lower(d.path)') + ",d.path,d.line LIMIT 1", (generation_model, *reusable, METHOD_PROMPT_VERSION)).fetchall()
+                                      "ORDER BY " + PATH_PRIORITY_SQL.replace('lower(path)', 'lower(d.path)') + ",d.path,d.line LIMIT 32", (generation_model, *reusable, METHOD_PROMPT_VERSION)).fetchall()
+                except sqlite3.OperationalError:
+                    if time.monotonic() < deadline:
+                        raise
+                    report.setdefault('deferred', []).append(dict(stage='methods', reason='deadline'))
+                    break
+                finally:
+                    corpus.con.set_progress_handler(None, 0)
             if not rows:
                 break
-            d = corpus.declaration(rows[0][0])
+            d = corpus.declaration(rows.pop(0)[0])
             proof_chunks = list(corpus.con.execute("SELECT text FROM documents WHERE decl_id=? AND view='proof' ORDER BY id", (d["id"],)))
             try:
                 # Every proof chunk is supplied. Long proofs are summarized in
@@ -614,12 +625,25 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
                     chunk_hash = digest(chunk[0])
                     summary = corpus.method_chunk(d['id'], chunk_hash, generation_model, METHOD_PROMPT_VERSION)
                     if summary is None:
-                        response = runtime.generate(method_prompt(d['statement'], chunk[0]),
+                        prompt = method_prompt(d['statement'], chunk[0])
+                        response = runtime.generate(prompt,
                                                     deadline=min(deadline, time.monotonic()+60), max_tokens=384, priority='enrichment')
                         try:
                             summary = method_payload(response, chunk[0])
                         except ValueError as exc:
-                            raise ValueError(str(exc) + '; output tail: ' + response[-400:]) from exc
+                            # One repair attempt, under the original deadline. Never
+                            # repair citations ourselves or accept unvalidated output.
+                            valid_lines = [i + 1 for i, line in enumerate(
+                                mask_comments_strings(chunk[0], mask_strings=False).splitlines()) if line.strip()]
+                            if time.monotonic() >= deadline:
+                                raise TimeoutError('method repair deferred at deadline') from exc
+                            response = runtime.generate(prompt + '\nPrevious attempt failed validation: ' + str(exc)
+                                + '. Return complete JSON. Valid evidence line numbers: ' + json.dumps(valid_lines),
+                                deadline=deadline, max_tokens=384, priority='enrichment')
+                            try:
+                                summary = method_payload(response, chunk[0])
+                            except ValueError as repair_error:
+                                raise ValueError(str(repair_error) + '; output tail: ' + response[-400:]) from repair_error
                         corpus.save_method_chunk(d, chunk_hash, summary, generation_model, METHOD_PROMPT_VERSION, evidence_epoch)
                     summaries.append(summary)
                 if not summaries:
@@ -662,7 +686,18 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
                 break
             if progress:
                 progress(report)
-    report["coverage"] = corpus.coverage()
+    # Coverage is a corpus-wide scan, so it must share the maintenance budget.
+    corpus.con.set_progress_handler(lambda: time.monotonic() >= deadline, 10000)
+    try:
+        if time.monotonic() >= deadline:
+            raise TimeoutError('coverage deferred at deadline')
+        report['coverage'] = corpus.coverage()
+    except (sqlite3.OperationalError, TimeoutError):
+        if time.monotonic() < deadline:
+            raise
+        report.setdefault('deferred', []).append(dict(stage='coverage', reason='deadline'))
+    finally:
+        corpus.con.set_progress_handler(None, 0)
     return report
 
 

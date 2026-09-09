@@ -19,6 +19,7 @@ from research_runtime.config import DEFAULT_CACHE_DIR
 
 def sync(directory, *, cache, root, interval=120):
     connection = json.loads((directory / 'connection.json').read_text())
+    offline = connection.get('offline', False)
     bundle, output = directory / 'bundle', directory / 'results'
     vectors = directory / 'vectors'
     output.mkdir(exist_ok=True)
@@ -49,7 +50,8 @@ def sync(directory, *, cache, root, interval=120):
                 try:
                     state.update(phase='method_download', updated=time.time())
                     atomic_json(target,state)
-                    download(connection['remote_directory']+'/results',output)
+                    if not offline:
+                        download(connection['remote_directory']+'/results',output)
                     state.update(phase='method_import', updated=time.time())
                     atomic_json(target,state)
                     report = import_methods(cache,bundle,output,root=root,budget_seconds=90,lock_seconds=150)
@@ -61,23 +63,25 @@ def sync(directory, *, cache, root, interval=120):
                     if methods_complete:
                         state.update(phase='vector_download',updated=time.time())
                         atomic_json(target,state)
-                        download(connection['remote_vector_directory'],vectors,vector=True)
+                        if not offline:
+                            download(connection['remote_vector_directory'],vectors,vector=True)
                         if (vectors/'manifest.json').exists() and (vectors/'results/audit.json').exists():
                             vm = json.loads((vectors/'manifest.json').read_text())
                             if vm.get('method_manifest_sha256') != source_sha:
                                 raise ValueError('description vectors belong to a different method job')
                             state.update(phase='vector_import',updated=time.time())
                             atomic_json(target,state)
-                            vr = import_vectors(cache,vectors,vectors/'results',budget_seconds=120,lock_seconds=150)
+                            vr = import_vectors(cache,vectors,vectors/'results',budget_seconds=300 if offline else 120,lock_seconds=150)
                             state['vectors'] = vr
                             run = json.loads((vectors/'results/run.json').read_text()) if (vectors/'results/run.json').exists() else {}
                             if run.get('complete') and run.get('manifest_sha256') == sha_file(vectors/'manifest.json') and not vr['partial']:
                                 state.update(completed=True,phase='complete',error=None)
                                 return state
-                    remote = json.loads(owned_run(ssh+[address,'python -c '+shlex.quote(probe)+' '+shlex.quote(connection['remote_directory'])],timeout=30))
-                    state['remote'] = remote
-                    if not remote['running'] and remote['pipeline'].get('status') != 'complete':
-                        raise ValueError('GPU method pipeline stopped before completion; inspect pipeline.log')
+                    if not offline:
+                        remote = json.loads(owned_run(ssh+[address,'python -c '+shlex.quote(probe)+' '+shlex.quote(connection['remote_directory'])],timeout=30))
+                        state['remote'] = remote
+                        if not remote['running'] and remote['pipeline'].get('status') != 'complete':
+                            raise ValueError('GPU method pipeline stopped before completion; inspect pipeline.log')
                     failures = 0
                     state.update(phase='waiting',error=None)
                 except TimeoutError as exc:
@@ -89,7 +93,7 @@ def sync(directory, *, cache, root, interval=120):
                         raise
                 state['updated'] = time.time()
                 atomic_json(target,state)
-                time.sleep(interval)
+                time.sleep(min(interval, 1) if offline else interval)
         except BaseException as exc:
             state.update(phase='stopped' if isinstance(exc,KeyboardInterrupt) else 'failed',error=str(exc))
             raise

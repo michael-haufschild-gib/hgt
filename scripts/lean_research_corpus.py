@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS documents(
  content_hash TEXT NOT NULL,provenance TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS document_decl ON documents(decl_id,view);
 CREATE INDEX IF NOT EXISTS document_path ON documents(path);
+CREATE INDEX IF NOT EXISTS document_view ON documents(view);
 CREATE TABLE IF NOT EXISTS embedding_queue(
  doc_id INTEGER PRIMARY KEY REFERENCES documents(id) ON DELETE CASCADE,
  content_hash TEXT NOT NULL,priority INTEGER NOT NULL);
@@ -114,6 +115,14 @@ CREATE TRIGGER IF NOT EXISTS qdrant_vector_update AFTER UPDATE ON vectors BEGIN
 CREATE TRIGGER IF NOT EXISTS qdrant_document_update AFTER UPDATE ON documents BEGIN
  INSERT OR REPLACE INTO qdrant_queue(doc_id,model,operation)
  SELECT new.id,v.model,'upsert' FROM vectors v WHERE v.doc_id=new.id; END;
+CREATE TRIGGER IF NOT EXISTS qdrant_receipt_insert AFTER INSERT ON vectors BEGIN
+ DELETE FROM qdrant_points WHERE doc_id=new.doc_id; END;
+CREATE TRIGGER IF NOT EXISTS qdrant_receipt_delete AFTER DELETE ON vectors BEGIN
+ DELETE FROM qdrant_points WHERE doc_id=old.doc_id AND model=old.model; END;
+CREATE TRIGGER IF NOT EXISTS qdrant_receipt_update AFTER UPDATE ON vectors BEGIN
+ DELETE FROM qdrant_points WHERE doc_id=old.doc_id OR doc_id=new.doc_id; END;
+CREATE TRIGGER IF NOT EXISTS qdrant_receipt_document AFTER UPDATE ON documents BEGIN
+ DELETE FROM qdrant_points WHERE doc_id=new.id; END;
 CREATE TABLE IF NOT EXISTS embedding_cache(
  content_hash TEXT NOT NULL,model TEXT NOT NULL,
  shard TEXT NOT NULL REFERENCES vector_shards(id),vector_id INTEGER NOT NULL,

@@ -112,6 +112,7 @@ def search(corpus, embedding, *, model, views, limit=100, module='', exclude_mod
             payload = hit.get('payload') or {}
             if (row and row['vector_model'] == model and row['vector_hash'] == row['content_hash']
                     and row['content_hash'] == payload.get('content_hash') and row['view'] in views
+                    and row['module'] == payload.get('module') and row['view'] == payload.get('view')
                     and module_matches(row['module'], module, exclude_modules)):
                 value = dict(row)
                 value.pop('vector_model'); value.pop('vector_hash')
@@ -164,8 +165,11 @@ def sync(corpus, *, deadline, batch_size=256):
                                deadline=deadline, missing_ok=True)
             with corpus.con:
                 for point in group['upserts']:
-                    corpus.con.execute('INSERT OR REPLACE INTO qdrant_points VALUES(?,?,?)',
-                        (point['id'], model, point['payload']['content_hash']))
+                    payload=point['payload']
+                    corpus.con.execute('INSERT OR REPLACE INTO qdrant_points SELECT d.id,v.model,d.content_hash '
+                        'FROM documents d JOIN vectors v ON v.doc_id=d.id WHERE d.id=? AND v.model=? '
+                        'AND v.content_hash=? AND d.content_hash=v.content_hash AND d.module=? AND d.view=?',
+                        (point['id'], model, payload['content_hash'], payload['module'], payload['view']))
                 for did in group['deletes']:
                     corpus.con.execute('DELETE FROM qdrant_points WHERE doc_id=? AND model=?', (did, model))
                 corpus.con.executemany('DELETE FROM qdrant_queue WHERE seq=?', [(e['seq'],) for e in group['entries']])
@@ -195,7 +199,11 @@ if __name__ == '__main__':
     parser.add_argument('--reconcile', action='store_true')
     args = parser.parse_args()
     directory = args.cache_dir.resolve()
-    with locks([directory/n for n in ('source.lock','compiler.lock','enrichment.lock')], seconds=5), Corpus(directory) as corpus:
-        if args.reconcile:
-            reconcile(corpus)
-        print(json.dumps(sync(corpus, deadline=time.monotonic()+args.budget_seconds)), flush=True)
+    try:
+        with locks([directory/n for n in ('source.lock','compiler.lock','enrichment.lock')], seconds=5), Corpus(directory) as corpus:
+            if args.reconcile:
+                reconcile(corpus)
+            print(json.dumps(sync(corpus, deadline=time.monotonic()+args.budget_seconds)), flush=True)
+    except TimeoutError as exc:
+        print(json.dumps(dict(complete=False, deferred=[dict(stage='qdrant',
+            reason='maintenance_busy' if str(exc).startswith('Maintenance busy:') else 'deadline', error=str(exc))])), flush=True)

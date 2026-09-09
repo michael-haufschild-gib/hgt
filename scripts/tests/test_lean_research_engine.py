@@ -283,6 +283,56 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(len(first_chunk_calls), 1)
         self.assertIsNotNone(self.db.method(self.did))
 
+    def test_invalid_evidence_retries_once_and_only_saves_valid_source_lines(self):
+        source = Path(self.tmp.name) / 'formal/Amplifier.lean'
+        source.write_text('private abbrev XiWeilCarrier := lp (fun _ : XiZeroCopy => ℂ) 2\n\n'
+                          '/-- Next declaration description. -/')
+        self.db.refresh(Path(self.tmp.name))
+        did = self.db.search('XiWeilCarrier')[0]['decl_id']
+        answers = []
+        def generate(prompt, **kwargs):
+            repair = 'Previous attempt failed validation:' in prompt
+            if 'XiWeilCarrier' in prompt:
+                answers.append(prompt)
+                if repair:
+                    self.assertIn('Valid evidence line numbers: [1]', prompt)
+            return json.dumps(dict(description='applies the displayed constant', assumptions=[],
+                steps=['apply the constant'], obligations=['check the target'], evidence_lines=[1 if repair else 2]))
+        runtime = FakeRuntime(); runtime.generate = generate
+        result = enrich(self.db, runtime, deadline=time.monotonic()+3, methods=True)
+        self.assertFalse(result['failures'])
+        self.assertEqual(len(answers), 2)
+        self.assertEqual(self.db.method(did)['evidence'], ['lp (fun _ : XiZeroCopy => ℂ) 2'])
+
+    def test_invalid_repair_stays_failed_without_unbounded_retries(self):
+        calls = []
+        def generate(prompt, **kwargs):
+            calls.append(prompt)
+            return json.dumps(dict(description='invalid reference', assumptions=[], steps=[],
+                obligations=[], evidence_lines=[999]))
+        runtime = FakeRuntime(); runtime.generate = generate
+        result = enrich(self.db, runtime, deadline=time.monotonic()+3, methods=True)
+        self.assertEqual(result['methods'], 0)
+        self.assertEqual(len(calls), 4)  # Two declarations, one retry each.
+        self.assertEqual(len(result['failures']), 2)
+        self.assertIsNone(self.db.method(self.did))
+
+    def test_expired_enrichment_does_not_start_coverage_scan(self):
+        with patch.object(self.db, 'coverage', side_effect=AssertionError('scan after deadline')):
+            result = enrich(self.db, FakeRuntime(), deadline=time.monotonic()-1, methods=True)
+        self.assertIn(dict(stage='coverage', reason='deadline'), result['deferred'])
+
+    def test_coverage_sql_is_interrupted_and_connection_remains_usable(self):
+        def slow_coverage():
+            return self.db.con.execute('WITH RECURSIVE n(x) AS (VALUES(1) UNION ALL '
+                'SELECT x+1 FROM n WHERE x<100000000) SELECT sum(x) FROM n').fetchone()
+        started = time.monotonic()
+        with patch.object(self.db, 'coverage', side_effect=slow_coverage):
+            result = enrich(self.db, FakeRuntime(), deadline=started+.05)
+        self.assertLess(time.monotonic()-started, .5)
+        self.assertIn(dict(stage='coverage', reason='deadline'), result['deferred'])
+        self.assertEqual(self.db.con.execute('SELECT 1').fetchone()[0], 1)
+
 
 if __name__ == '__main__':
     unittest.main()
