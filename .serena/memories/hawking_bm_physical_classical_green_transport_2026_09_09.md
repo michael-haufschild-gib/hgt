@@ -1,0 +1,28 @@
+# HB: actual classical physical response and finite Green transport
+
+RH remains unproved; goal active. Latest user requires frontier map READ ONLY, broad corpus research searches, one owned foreground Lean/Lake process, scratch `lake env lean`, individual final `lake build <module>`, no full/umbrella builds, only new-declaration axiom audits. Numerical experiments only Runpod and only surprising useful ones; none run. No agents used.
+
+Progress: seven new leaves installed, 22 public theorems + four definitions (469 lines), each passed scratch and warning-free individual final leaf audit in isolated cache-backed Lean 4.32.2 project. AxiomAudit checks all 26 new public declarations: only propext/Classical.choice/Quot.sound. All 21 source/olean/ilean artifacts SHA-256 matched final audited sources/binaries. Seven unique umbrella imports wired. Index regenerated; `scripts/formal_tools.py lint --check-generated` passed (141 existing large-file warnings). Owned scratch root and marker removed; no owned Lean/Lake process remains. No prior axioms or umbrella builds repeated. `git diff --check` passed; frontier hash unchanged; no owned Lean/Lake process at pre-lint check. Concurrent Selberg edits preserved.
+
+Files:
+- HTGeometry/ContinuousWeakSecondLocalRegularity.lean
+- RHTower/ThetaCuspHawkingBMCompleteAngularSourceContinuity.lean
+- RHTower/ThetaCuspHawkingBMPhysicalResponseWeakIntegral.lean
+- RHTower/ThetaCuspHawkingBMPhysicalResponseClassical.lean
+- RHTower/ThetaCuspHawkingBMPhysicalResponseBounds.lean
+- RHTower/ThetaCuspHawkingBMPhysicalRadialModeMatching.lean
+- RHTower/ThetaCuspHawkingBMPhysicalResponseGreenTransport.lean
+
+Canonical problem card: docs/drafts/pipeline/1-in-progress/hb-physical-response-radial-equation.md. Exact proof/audit/scope card: docs/drafts/pipeline/3-formalized/hb-physical-response-classical-green-transport.md. STATUS F20i-ab updated with route-independent classical-regularity and endpoint-fidelity requirements.
+
+Mathematics: for q,r Xi copies and original branch,a,w with 3/2<Rew<2, Imw!=0, actual P=physicalCuspProfile is continuous, zero-extended, globally L2 and uniformly bounded. Actual interior P',P'' exist, with P''=w²P-lambda*angularWeight²*P-F, lambda=physicalAngularParameter(r)²-1/4, F=literal continuedAngularSourceProjection q branch u a w. F is continuous on Iio0, equals the original L2 source class, and retains residual plus all three continued cutoff channels. Continuity holds even at totalized connection zeros. PhysicalRadialFrequency=-I*u equals original thetaCuspHawkingTopologicalBlackHoleAngularMomentum(xiSpectralPoint r), obeys 1/4+chi²=-lambda, and Chamber follows whenever Rew>1/2 from the proved Xi open strip. Matched original modes have the exact physical coefficient.
+
+Let H=tortoiseMode false w chi, N=tortoiseMode true w chi, c=connection w chi. Existing Wronskian H*N'-H'*N=-c. Actual currents J_H=H'*P-H*P', J_N=N'*P-N*P'. New actual capstones: physicalCuspModeCurrent_hasDerivAt gives J_H'=H*F and J_N'=N*F; physicalCuspModeCurrent_integral integrates on s<=t<0; physicalCuspProfile_modeCurrents gives c*P=N*J_H-H*J_N; physicalCuspProfile_green_transport substitutes both complete source integrals from every finite base point. No supplied profile or jet or boundary/current-vanishing premise at actual capstones.
+
+Next hard action: determine endpoint constants in that same finite formula. Complete F has radial L2 admission. Existing original mode bounds can supply integrable source pairings. At outer endpoint, if both currents have finite limits, N->0,H->c and actual P->0 force J_N->0 directly from reconstructed P, potentially avoiding an independent endpoint P' bound. At horizon, H decays; H*F is integrable if H L2. Use growing N and full source integral bounds together with actual P bounded to derive J_H->0. These arguments are proposals, not proved. Then recover outgoing endpoint Green integral for same complete F, identify P, continue observable. Physical residue, nonremovable complete-source pole, spin-two/AIME reconstruction, independent Hawking-clock extinction remain open.
+
+Existing corpus templates read: JointSourceHorizonModeJets (both original modes derivatives, ODE, W=-c); JointSourceHorizonModeLimits (H,H'->0 atBot; H->c at0); PrincipalGreenIdentification uses NegativeWronskianUniqueness on a DIFFERENT principal response with already proved bounded derivative. Do not substitute that principal source for full F. Fokas search: 2254 declarations/163 modules; Higgs:285/26. Fokas spatial uniqueness proves actual Volterra/original-equation identification; its Riemann–Hilbert resolvent is not RH and does not itself identify this response.
+
+Lean pitfalls resolved: `deriv.star'` works for real-domain complex codomain; test-first inner product is g*conj(f). Local continuous-density regularity uses clamp max l (min r t), not endpoint density continuity. `ψ.smooth ⊤`, not unscoped ∞. Avoid variable λ (parser keyword); use lambda. Give explicit ContinuousOn sets for have bindings. For integral_sub, construct a pointwise integrable difference with `convert ... using 1; rfl` rather than leave Pi.sub coercion. Wronskian reconstruction uses +P*hW in linear_combination. For a+(b-a), simp only [←add_sub_assoc,add_sub_cancel_left].
+
+Owned scratch root /tmp/hb-physical-classical.cjd_c85j and marker /tmp/hb-physical-classical-current were deleted after final audits and lint. All owned processes were confirmed terminal. Cache final leaf builds use globs=[exact module], roots=[exact module], empty-root/glob dependency stubs; globs=[] for new own targets would be a no-op. New oleans linked into stable before scratch axiom audit to respect prefix resolution.
