@@ -690,6 +690,84 @@ The original coefficient vector is now identified with its vector-valued normali
 
 **Next positive test:** attach these currents to the integrated characterwise core–cusp energy identity with the actual Bessel forms, complete modes, and angular remainder retained. Prove the resulting bulk comparison from the original source; the spectral coefficient four remains a target and is not an input assumption.
 
+### Cycle 48 — original projected dynamics, core Green identity, and complete observed cusp forms
+
+**Conjecture → proof:** fixed continuous linear observations commute with both original real derivatives, preserve the actual Maass scalar potential, and yield the full projected-mass Laplacian `Delta M_r=2(E_r-lambda*M_r/y²)`. Actual block commutation and T transport discharge the characterwise physical side-matching condition.
+
+**Integrated strengthening → proof:** ordinary two-dimensional Green integration retains the actual circular normal current. The original channel quarter energy is exactly `topCurrent/2 + pairedArcIntegral/2 + (lambda-1/4)*coreMass`, with all mass and derivative integrability proved from the source.
+
+**Cusp strengthening → proof:** every fixed observation retains original congruence invariance, eigenvalue, and decay at every integral cusp. It is zero or a genuine same-level Maass cusp eigenform. Both cases give the complete observed Bessel boundary-square identity, convergence of both series, and the matching outgoing-flux/spectral-tail-mass identity. Three modules supply52 audited public declarations. [Complete positive proof, certificate, and remaining assembly](selberg-character-core-green.md).
+
+**Next exact test:** sum over the actual character-coordinate observations and identify their total normalized outgoing flux with half the unit-period top current. Adjoin the proved core identity with its actual arc term, then test a source-derived quarter lower bound. The finite assembly and uniform quarter comparison remain unproved; no endpoint is assumed.
+
+### Cycle 49 — complete character core–cusp gluing and integrated arithmetic seam control
+
+**Normalization conjecture → proof:** summing every actual upper-character coordinate mass and using original unit-period transport removes the level-width normalization. Differentiating the physical mass equality proves `sum readoutFlux = topCurrent/2`. Genuine tail integrability, including zero observations, identifies the full observed tail sum with the literal unit-strip character mass.
+
+**Gluing conjecture → proof:** every complete cusp boundary-square identity now attaches to the original character core. The cutoff current cancels exactly, leaving
+`coreQuarter_r + boundarySum_r + squareSum_r = pairedArcIntegral_r/2 + (lambda-1/4)*(coreMass_r+tailMass_r)`.
+Finite coordinate/infinite mode exchange also identifies the boundary form with the literal original projected Fourier-vector series and precisely its residue-class modes.
+
+**Integrated estimate conjecture → proof:** source continuity supplies actual arc integrability. Square completion on the half-length arc and the exact phase-current bound prove `(pairedArcIntegral_r/2)^2 <= (2/3)*integral_arc(transferLoss_r*gradientDensity)`. Thus the full glued balance has a quantitative original-source seam estimate. One module supplies28 audited public declarations. [Full proof and audit](selberg-character-core-green.md).
+
+**Next positive target:** use the original residue Fourier form and phase/angular decomposition to compare this coherent seam response with the positive bulk terms. The full uniform quarter comparison remains unproved; no trace-to-area or coercivity premise has been inserted.
+
+### Cycle 50 — original conserved dilation stress and full physical Rellich identity
+
+**Stress conjecture → proof:** the original Maass inverse-square potential forces only the vertical stress divergence. Contraction with the physical dilation vector cancels that forcing against the tensor trace. The source's C² regularity gives a C¹ conserved current, including at source zeros.
+
+**Integration conjecture → proof:** both actual two-dimensional Fubini descriptions of the modular core yield the full Green formula with side jump, top, and complete curved arc. Applied to the conserved original stress, it proves `radialBoundary + lambda*massBoundary = angularBoundary + sideFlux(Y) + topFlux(Y)`. Angular energy and the inverse-cube spectral mass remain literal source quantities.
+
+**Positive estimate → proof:** positive exceptional lambda and actual weighted arc mass give `radialBoundary <= angularBoundary + sideFlux(1) + topFlux(1)`. Three modules supply45 audited public declarations. [Proof, corpus provenance, exact audit, and phase-loss continuation](selberg-maass-dilation-stress.md).
+
+**Next conjecture:** apply the exact identity to every original phased three-block displacement readout. Its full normalized norm and derivative sums recover inversion-transfer loss, providing an arithmetic radial/angular balance for the previous coherent-seam estimate. The sharp uniform full-domain quarter comparison remains unproved.
+
+### Cycle 51 — actual arithmetic phase-loss Rellich integrals
+
+**Fixed-observation conjecture → proof:** every three-block phase displacement and original deck coordinate is a fixed continuous linear readout. Its complete normalized squared sum is exactly inversion-transfer loss. Physical differentiation commutes with every readout, so the same arithmetic identity holds for the full radial and angular source derivatives.
+
+**Integral conjecture → proof:** sum every original Rellich identity and justify all finite-sum/integral exchanges using source regularity. This gives the literal integral identity `radialPhaseLoss + lambda*massPhaseLoss = angularPhaseLoss + sidePhaseFlux + topPhaseFlux`, retaining both paired arc points and every original side/top contribution. Positive exceptional spectral mass gives the corresponding radial phase-energy estimate.
+
+The module has25 public declarations and passed scratch/source, final targeted build, post-build standard-axiom, source-hash, API/search, and unique-wiring checks. Global lint initially caught two concurrently added, unrelated HTGeometry modules awaiting umbrella wiring. [Complete phase proof, audit status, and next mixed-loss square conjecture](selberg-maass-dilation-stress.md).
+
+**Next strengthening:** prove a source-and-derivative transfer-loss bound for the coherent character mismatch. The card records two precise candidate positive square decompositions and their proposed bilinear consequence. This connects the phase Rellich bound to the seam estimate; the full uniform quarter comparison remains unproved.
+
+### Cycle 52 — both transfer losses control the coherent seam and full quarter balance
+
+**Square conjecture → proof:** exact original projection corners give two positive square decompositions, bounding the coherent mismatch diagonal between minus the transfer loss and phi times that loss. Real polarization, scalar rescaling, and the corpus's nonnegative-quadratic lemma prove `mismatchPair(v,w)^2 <= phi^2*lossEnergy(v)*lossEnergy(w)` with no angle or nonzero-loss premise.
+
+**Original-source strengthening → proof:** the actual paired radial flux uses the same mismatch pairing. Its physical outward normal factor gives a nonnegative quadratic involving weighted source phase mass, the complete paired current, and radial phase energy. Both reflected arc points and their exact factor2 are retained. Source regularity proves all needed integrability.
+
+**Integrated strengthening → proof:** `(integral pairedArcCurrent / 2)^2 <= (phi^2/4)*massPhaseBoundary*radialPhaseBoundary`. Substituting the actual phase Rellich identity retains the positive spectral phase-mass term and all angular, side, and top stresses. The exact original core–cusp balance substitutes for the seam response without removing any Bessel square or original mode. One module provides26 fully checked public declarations. [Complete proof, audit, and next phase-stress target](selberg-character-mixed-loss.md).
+
+The full uniform quarter comparison remains unproved. Next identify aggregate phase stress and its actual unit-translation symmetry, evaluate the full vertical side flux, and connect that record to original cusp Fourier data.
+
+### Cycle 53 — full phase stress, translation symmetry, and exact physical side/top flux
+
+**Mixed Gram conjecture → proof:** polarizing the complete phase observation norm law recovers the original real mixed transfer loss. The actual transfer's input character gives exact upper-block covariance; both diagonal and mixed losses retain unitary invariance. All three physical phase stress components are thereby identified without dropping mixed derivative terms.
+
+**Boundary conjecture → proof:** original source/derivative transport proves unit-translation symmetry of the complete tensor. Its horizontal and mixed stresses match at both vertical sides. The full dilation side jump is exactly horizontal phase stress. Source regularity justifies every finite-sum/integral exchange, giving the actual side integral and the top integral of `x*phaseStressXY+Y*phaseStressYY`.
+
+**Original-source assembly → proof:** substitute this explicit physical boundary record into the exact phase Rellich identity and complete original core–cusp bound, retaining angular energy, spectral mass, Bessel squares, and every side/top term. One module supplies28 public declarations; full scratch/source/final/axiom/hash/API-search/wiring/index/lint audits passed. [Complete proof and next arithmetic kernel estimate](selberg-phase-stress-side-flux.md).
+
+The full quarter endpoint remains unproved. Next express the mixed boundary Gram loss through the actual arithmetic convolution kernel and test its phase-sensitive weighted Fourier/Bessel estimate, retaining exact annihilator fibres.
+
+### Cycle 54 — original arithmetic cross-frequency current and positive cusp-tail kernel
+
+**Complex kernel conjecture → proof:** actual projector adjoints identify the full complex transfer Gram form. Its convolution formula retains first-slot conjugation and every composite-level arithmetic fibre phase. Original coefficient residue eigenspaces give exact off-residue cancellation.
+
+**Wronskian conjecture → proof:** both actual modal ODEs cancel their shared Maass potential. The full complex mixed current has derivative `(k_n²-k_m²)*B(c_n,c_m)`. Original coefficient/derivative square integrability makes current and derivative integrable, proving current decay at infinity. Thus `W_nm(Y)=(k_m²-k_n²)*H_nm(Y)` for the actual infinite-tail kernel.
+
+**Quantitative conjecture → proof:** the full finite complex quadratic of `H` equals the literal integrated transfer-loss energy, hence is nonnegative. A two-mode phase test yields `norm(H_nm)² <= Re(H_nn)*Re(H_mm)`, and the exact boundary law gives the corresponding squared-frequency-weighted bound for every original mixed current. Zero-loss, diagonal, opposite-index, and composite-level cases are retained. One module supplies30 public declarations. [Complete proof, verification, and next weighted top-boundary comparison](selberg-kernel-wronskian.md).
+
+The full quarter endpoint remains unproved. Next derive the exact horizontal Fourier weight in the physical top stress and combine it with the new current/tail relation, retaining the complete signed-frequency quadratic.
+
+### Cycle 55 — duplication audit stops reconstruction-first detour
+
+The user challenged whether the route was repeating earlier work. Source inspection confirmed that actual Maass coefficient absolute summability (`SelbergMaassBoundaryTrace.coefficient_norm_summable`), complete horizontal/vertical readout Parseval and missing-channel gradient Fourier identities (cycle46), and full core–cusp gluing (cycle49 and earlier TraceArea) already exist. The new C1 helper was not shown to be an exact duplicate, but its necessity for the missing quarter estimate was not established. The unverified reconstruction scratch was not promoted or wired; no new Lean module or final build was produced in this attempt.
+
+The valid cycle54 intermediate identities remain checked. Their positivity/Cauchy bound has not been proved to control the complete frequency-weighted boundary/core form. Require a dependency-closed paper inequality that improves that remaining all-level estimate before adding more infrastructure. [Audit evidence and deferred-draft record](selberg-weighted-top-fourier.md). Full Selberg remains active and unproved.
+
 ### User-directed Einasto discovery — cycle 37 input
 
 The literal corpus query `research Einasto` returned 63 declarations across four modules; both result pages and all four source modules were inspected. EinastoGammaMoments contributes 16 declarations: exact Gamma evaluation of every natural moment, integrability, finite total mass, and the exact identity mass(r)=r^3*core(r), with a continuous unit-interval core. EinastoRadialGravity contributes 21: actual derivatives, exact density/slope curvature decompositions, and central limits. EinastoEnergyConditions contributes 18: logarithmic-coordinate slope/density comparison yields sharp necessary-and-sufficient radius thresholds. DilatonEinastoMoments contributes 8: the constructed quartic Schwartz ground-state squared norm equals einastoDensity 0 (-k/4) (-log 4) pointwise; this identity transfers every radial/absolute moment and its integrability.
@@ -717,6 +795,20 @@ Read the endpoint selector's exact geometric-load classification and its explici
 Read `ThermodynamicAffinityFisherBound.pseudoEntropyProductionValue_le_entropyProductionValue`, including its logarithm inequality proof: for positive p,q, `2*(p-q)^2/(p+q) <= (p-q)*log(p/q)`. Read `FiniteNoiseMixingApplications`' actual bistochastic construction, exact variance-deficit identity, and Shannon entropy monotonicity under finite mixing. These suggest testing a source-derived finite congruence mixing operator and identifying its variance loss or entropy production with an actual Maass-current quantity. The stochastic weights, source identification, and a uniform quantitative estimate must be proved; the scalar entropy inequality alone provides none of them. The existing radial/Fisher identity and new nodal residual must remain explicit rather than being renamed an entropy estimate. The finite-entropy plateau module's introductory definitions and replica-order-one identities were also inspected; its finite-dimensional entropy floor has not been identified with a Maass spectral bound.
 
 ## Verification log
+
+- 2026-09-09, cycle54: complete scratch/source checks passed cleanly; final single-module build rebuilt only `SelbergMaassKernelWronskian` (5.8s). All30 public declarations passed standard-axiom, unchanged-source-hash, complete API/search, and unique-umbrella audits. Index refresh and repository lint passed. Original-source improper endpoint, full complex tail positivity, and quantitative mixed-current bound are proved. Strictly serial foreground Lean; all owned handles terminal and no remaining owned worker. No full/umbrella build, numerical experiment, added axiom, commit, or push. Full Selberg remains active and unproved.
+
+- 2026-09-09, cycle53: complete scratch/source checks passed; final single-module build rebuilt only `SelbergMaassPhaseStress` (10s). All28 public declarations passed standard-axiom, unchanged-source-hash, exact-module API/search, and unique umbrella checks. Index refresh and repository formal lint passed; earlier unrelated concurrent wiring failures are historical. Strictly serial foreground Lean; all task-owned handles terminal. No full/umbrella build, numerical experiment, added axiom, commit, or push. Full Selberg remains active and unproved.
+
+- 2026-09-09, cycle52: complete scratch/source checks, final single-module build (6.9s; only MixedLoss rebuilt), all26 standard-axiom checks, unchanged source SHA256, exact-module API/search coverage, and unique umbrella wiring passed. Repository lint currently reports only unrelated concurrent HTGeometry modules `GomesPolynomialExponentialIntegrability` and `GomesPolynomialExponentialTails` awaiting their own wiring. Strictly serial foreground Lean; all task-owned handles terminal. No full/umbrella build or numerical experiment. Full Selberg remains active and unproved.
+
+- 2026-09-09, cycle51: complete phase-loss scratch/source checks passed; final single-module build rebuilt only `SelbergMaassPhaseRellich` (5.2s). All25 public declarations passed standard-axiom, unchanged-hash, full API/search, and unique-wiring audits. Final global lint reports only two unrelated concurrent HTGeometry modules awaiting their umbrella wiring (`GomesDilatonDensityShape`, `GomesDilatonMeasureReconstruction`). Every task-owned Lean handle is terminal; no remaining worker. Strictly serial cycle51 checks; no full/umbrella builds or numerical experiment. Full Selberg remains active and unproved.
+
+- 2026-09-09, cycle50: three complete scratch/source checks and targeted final builds passed;45 public declarations passed standard-axiom audit with unchanged source hashes. Exact API/search coverage, unique umbrella wiring, index refresh, and formal lint passed. Rellich audit was started before the prior Green handle had been confirmed terminal, causing a duplicate dependency build; both handles subsequently exited and process cleanup found no remaining task-owned worker. No full/umbrella build or numerical experiment. Full Selberg remains active and unproved.
+
+- 2026-09-09, cycle49: complete scratch and exact source checks passed. The final single-module build rebuilt only `SelbergMaassCharacterCuspGlue` (6.8s). All28 public declarations passed post-build axiom auditing with only standard Lean axioms and unchanged source hash. Exact-module API/search coverage, unique umbrella import, index refresh, and repository formal lint passed. All task-owned handles are terminal. No full/umbrella build, build overlap, numerical experiment, commit, or push. [Completed finite assembly and integrated seam estimate](selberg-character-core-green.md). Full Selberg remains active and unproved.
+
+- 2026-09-09, cycle48: all three complete scratch and exact source checks passed. Serialized final builds rebuilt only their named target (CharacterDynamics13s, CharacterCoreGreen10s, ReadoutCusp21s). All52 public declarations passed post-build axiom checks using only standard Lean axioms; all three source hashes stayed unchanged. Exact-module search/API coverage, single umbrella imports, index refresh, and repository formal lint passed. Every task-owned handle is terminal; no owned Lean/Lake worker remains. No full/umbrella build, build overlap, numerical experiment, commit, or push. [Actual core and observed cusp identities, with finite assembly still in progress](selberg-character-core-green.md). Full Selberg remains unproved and active.
 
 - 2026-09-09, cycle47: both complete scratch files and source checks passed. Final builds were serialized and rebuilt only their named target (ProjectionFlux11s; CharacterSeamFlux4.7s). All29 public declarations passed post-build axiom checks with only standard Lean axioms; both source hashes stayed unchanged. Exact-module search/API coverage, single umbrella imports, index refresh, and repository formal lint passed. All task-owned handles are terminal and no task-owned Lean worker remains. No full/umbrella build, build overlap, numerical experiment, commit, or push. [Actual coherent boundary flux and complete audit](../3-formalized/selberg-character-seam-flux.md). Full Selberg remains unproved and active.
 

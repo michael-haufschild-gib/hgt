@@ -1,6 +1,6 @@
 # HB: radial evaluation of the causal source and Einstein-current factor
 
-Status: five public theorems formalized. The complete physical tensor pairing and RH remain unproved.
+Status: the five source-adjoint theorems below and nine [circle-cancellation and regular-remainder theorems](hb-causal-circle-cancellation.md) are formalized. The complete physical tensor pairing and RH remain unproved.
 
 Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSourceAdjoint`.
 
@@ -59,9 +59,9 @@ Gamma_s,a(E)=-4a²E/(E²-1)[A-6k(E²+1)/(E²-1)].
 
 The corresponding full-angular paper identity uses the actual circle mean `M_Z Q` in place of `P_nu(Z)`, retaining the entire theta-square source. The circle term comes from moving the angular operator inside the horizon formula. It has not been identified with the complete four-dimensional AdS action flux. The displayed terms must remain assembled near zero delay, where their separate rational expressions have singular factors. No zero-delay or infinite-time interchange is claimed by the strict-positive-delay theorem.
 
-The next cancellation test substitutes this evaluated current factor and the literal source contacts into equation (8) of the horizon card. The remaining radial integrals, circle terms, angular boundary terms and other tensor sectors still require an assembled evaluation.
+The [assembled circle cancellation](hb-causal-circle-cancellation.md) eliminates the displayed circle coefficient through the actual constant and linear radial moments. Its regular Taylor remainder and the literal contacts have an analytical fixed-clock substitution in equation (13) of the linked calculation. The remaining bulk, contact, angular boundary, and other tensor-sector terms still require an assembled evaluation.
 
-## Verification
+## Verification of the five source-adjoint theorems
 
 The completed scratch file passed `lake env lean` without warnings. The exact leaf passed `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSourceAdjoint` in 8.7 seconds, three Lake jobs, with 3,972 existing own dependency caches frozen and external dependency caches reused. No dependency or umbrella build ran.
 

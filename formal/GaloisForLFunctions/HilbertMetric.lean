@@ -87,3 +87,5 @@ import GaloisForLFunctions.HilbertMetric.QNMBackwardError
 import GaloisForLFunctions.HilbertMetric.QNMMatrixBackwardError
 import GaloisForLFunctions.HilbertMetric.QNMModalResidue
 import GaloisForLFunctions.HilbertMetric.QNMPseudospectrum
+
+import GaloisForLFunctions.HilbertMetric.GomesReflectedQuarticTensor

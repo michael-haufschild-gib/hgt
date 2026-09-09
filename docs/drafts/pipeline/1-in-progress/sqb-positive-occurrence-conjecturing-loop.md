@@ -7,9 +7,11 @@ positive real normalization and a canonical differentiable logarithm, proved
 in `SelbergThetaSourcePhase`. Its positive variance is proved in
 `SelbergThetaSourceVariance`; quantitative energy bounds and a strict
 pointwise disk bound are proved in `SelbergThetaSourceEnergy`.
-Full modular Gram transport and normalized
-full-Xi occurrence remain unproved. Frontier map is read-only; no numerical
-computations.
+The full pointwise native Gram identity is proved in
+`SelbergThetaDilationRows` and `SelbergThetaDilationGram`, including every
+primitive row and the complete totient sum. The integrated packet residual
+and normalized full-Xi occurrence remain unproved. Frontier map is read-only;
+no numerical computations.
 
 Chain: original theta/Xi source -> native approximate vectors at the
 quarter-shifted energy -> actual entire-operator approximate vectors at the
@@ -205,8 +207,19 @@ gives the argument L+M of J. Every rearrangement is absolute, as follows
 by performing the same unfolding with absolute seeds and the rapid cusp
 majorants used above. This retains all primitive rows and all spatial modes.
 The inspected `ThetaCuspHawkingBMEisensteinPoincareRamanujanUnfolding`
-contains the corresponding reduced-residue unfolding for power seeds;
-(9) for this theta source is not yet a Lean theorem.
+contains the corresponding reduced-residue unfolding for power seeds.
+For this literal theta source, (9) is now kernel-checked by
+`SelbergThetaDilationGram.vector_inner`; `vector_norm_sq` identifies its
+diagonal with the squared norm of the actual native Hilbert vector.
+The proof uses `SelbergThetaDilationRows.source_pairing_height` for the
+complete native unfolding and exact reduced-residue mean. After logarithmic
+substitution, each reflected row has the absolute majorant
+
+    C c^(-4) |g(t+L)| exp(-3(t+L)/2) (1+x^2)^(-2).
+
+Its two real factors are integrable. Multiplying by phi(c)<=c leaves a
+summable c^(-3) bound, so Fubini and the full denominator interchange
+are proved without truncation or numerical input.
 
 Consequently the exact squared norm of `integral w(L)Q(L)dL` is
 
@@ -312,17 +325,44 @@ on the real line because c<=1<2. The remaining Xi factor is on the
 strict Euler side since beta>0. Thus the arithmetic cancellation of the
 mean and the positive source ordinate are both exact source facts.
 
-For the full totient term H, absolute unfolding in Re(s)>1/2 gives the
-analytical candidate transform
+For the full totient term H, absolute unfolding in Re(s)>1/2 gives
 
     integral H(v) exp(-s v) dv
       = [Lambda(2s)/Lambda(2s+1)] hat J(-is).                (16)
 
-The factors come from the full totient Dirichlet series and
-`integral (1+x^2)^(-s-1/2) dx`. Formula (16), its continuation to the real
-Fourier line, and the required contour and norm interchanges are not Lean
-theorems here. Equation (15) gives the source cancellation needed at the
-mean pole; it does not by itself justify that continuation.
+**Proved in Lean in `SelbergThetaTotientHankel.lean`:** the literal row
+weight equals `totient(q)/(q*sqrt(1+x^2))`; every exponentially weighted
+row is integrable; their full integral norms are summable. Translation
+invariance and Fubini evaluate each row. The zero Ramanujan coefficient,
+totient Dirichlet series and Cauchy integral then give (16). The proof
+retains every denominator and reflected cross term.
+
+The actual Xi source cancels the mean pole twice before the scattering
+factor removes one zero. Define
+
+    d_s = 2-exp((s-1/2)log(2)),
+    F_rho(s) = d_s xi(rho+1-2s),
+    B_rho(s) = d_s dslope(xi,rho)(rho+1-2s).
+
+At an actual Xi copy, `F_rho(s)=(1-2s)B_rho(s)`, and the same identity
+holds at its conjugate. Hence the complete transform has the explicit
+continuation
+
+    C_rho(s) = (2s-1)(2s+1) xi(2s)/xi(2s+1)
+                 * B_conj(rho)(s) B_rho(s).                (16a)
+
+**Also proved in Lean:** C is holomorphic on Re(s)>0, agrees with the
+actual full-kernel transform on Re(s)>1/2, and satisfies
+
+    C_rho(1/2)=0,
+    C_rho'(1/2)=2 |xi'(rho)|^2/xi(2).                      (16b)
+
+No simple-zero assumption is used. The actual Laplace integrals in
+(16) tend to zero as real s decreases to 1/2. This is a proved Abel
+limit of the full kernel. Actual kernel integrability on the additional
+half-plane, the real-frequency boundary identity, and the contour passage
+to a real-frequency representation of the native Gram norm remain open.
+The pointwise native Gram identity (9) has its own direct absolute proof above.
 
 The expected real-line factor, after those steps, is
 
@@ -542,45 +582,100 @@ it does not remove the retained Q forcing or prove automorphic occurrence.
 The [energy and disk audit](../3-formalized/sqb-theta-source-energy.md)
 records the five public declarations and their verification.
 
-### Native positive-weight transfer: current construction
+### Native positive-weight transfer: proved source and energy
 
-The current conjecturing loop transfers the actual source disk through the
-complete primitive-row periodization. The native Casimir fixes the half-density
-profile: with x=log(y)/2 and z=b+ic, define literal seeds
+With x=log(y)/2 and z=b+ic=xiSpectralPoint(q), use the original half-density
+seeds h_f(y)=sqrt(y)Phi(x) and h_U(y)=sqrt(y)u(x). Let P and W denote their
+complete primitive-row periodizations. `SelbergThetaNativeSource.lean`
+proves absolute row convergence, modular invariance, measurability, boundedness
+on the native cell, native L2 admission, and
 
-    h_f(y)=sqrt(y)Phi(x),
-    h_U(y)=sqrt(y)u(x),
-    P_f=periodize(h_f), P_U=periodize(h_U).
+    P>0,  |P+b W|<P,  |W|<2P/|b|,  W!=0,
+    integral_fd P=m,  integral_fd W=-m/h,
+    h=z-i,  m=2 integral exp(-x)Phi(x)>0.
 
-The positive theta envelopes make both row sums absolute and both sources
-bounded on the native modular cell. The rowwise disk estimate survives
-positive summation with strictness retained at the identity row:
+Both literal seeds have a bound C_r y^r for every real r. The constants
+come from the actual double exponential theta envelope, not numerics.
+Absolute strip unfolding includes the Jacobian y=exp(2x). The native
+half-density, rather than a source gauge, preserves the Casimir target.
 
-    |P_f(z)+b P_U(z)| < P_f(z),       P_f(z)>0.
+`SelbergThetaNativeEnergy.lean` proves the quantitative comparison
 
-Put h=z-i and m=2 integral exp(-x)Phi(x). Absolute strip unfolding and
-y=exp(2x) give integral P_f=m and integral P_U=-m/h. Weighted
-Cauchy--Schwarz, first within each complete row
-sum and then on the native cell, gives the positive norm comparison
+    m/|h|^2 <= E := integral_fd |W|^2/P < 2m/|h|^2.
 
-    m/|h|^2 <= integral_fd |P_U|^2/P_f
-             <= 2 integral exp(-x)|u|^2/Phi < 2m/|h|^2.
+Every primitive-row cross term remains present. Expanding the strict
+native disk proves the strict upper bound directly. The actual centered
+source V=W+P/h lies in native L2, has zero integral, and satisfies
 
-This comparison includes all cross terms. Its averaging defect is the
-integral of the within-orbit weighted variance of u/Phi. The centered
-source V=P_U+P_f/h has zero native mean; its weighted norm equals the native
-middle quantity minus m/|h|^2. The complete half-density Casimir calculation
-retains the required e=5/4+z^2/4 and gives
+    integral_fd |V|^2/P = E-m/|h|^2,
+    0 <= integral_fd |V|^2/P < m/|h|^2.
 
-    (A-e)P_U = (1/4) periodize[sqrt(y)(z Phi+i Phi')],
+The positive comparison weight P need not be constant. This is its exact
+weighted variance, not an assertion of orthogonal projection against the
+constant function in the unweighted native norm.
+
+### Proved positive construction: the centered source survives complete periodization
+
+`SelbergThetaNativeMoments.lean` proves all-real tilted mode integrability,
+endpoint limits and exact Mellin moments. `SelbergThetaNativePairing.lean`
+proves the following complete pairing, native nonvanishing, strict energy
+bound and original native unit normalization.
+
+Use the actual positive test E2=positiveCuspRows(2), with
+k=cuspReflectionNorm(2)>0. Its horizontal mean is y^2+k/y for every y>0.
+This follows from the complete two-Weyl mean and the already proved
+positive lower-row mean: evaluating the latter at any y>=2 identifies
+the completion ratio with the positive real k. Nonvanishing of both
+completion factors gives k>0; no numerical comparison is needed.
+
+For every real a, the original mode equation and its two vanishing
+endpoints give
+
+    integral exp(a x)u(x) = -integral exp(a x)Phi(x)/(z+i a).
+
+All these integrals are absolute: the source ratio u/Phi is bounded and
+Phi has every exponential moment. The all-rate envelope also bounds
+exp(a x)u(x) by decaying exponentials at both ends, so integrating its
+first-order equation is legitimate. Since Phi is even, put
+m3=2 integral exp(3x)Phi(x)=2 integral exp(-3x)Phi(x)>0.
+Unfolding the actual pairing gives
+
+    integral_fd V E2
+      = m3[(1/h-1/(z+3i))+k(1/h-1/(z-3i))]
+      = (2i m3/h)[2/(z+3i)-k/(z-3i)].
+
+The absolute-interchange proof retains all rows. The seed v=h_U+h_f/h
+has every height-power bound. The horizontal norm integral of v(y)E2
+is |v(y)|(y^2+k/y). After the hyperbolic y^-2 weight this is
+|v(y)|(1+k y^-3). Use the r=4 bound near zero and r=-2 bound near
+infinity; both resulting majorants are integrable. The modular strip
+unfolding then gives summability of the row norm integrals and the exact
+pairing above, even though E2 itself is not native L2.
+
+Every denominator is nonzero because b=Re(z)!=0. If the bracket vanished,
+its numerator (2-k)z-3i(2+k) would vanish. Its real part forces k=2;
+its imaginary part would then be -12=0. Thus the actual pairing is nonzero,
+V is not zero almost everywhere, and its integrable nonnegative weighted
+square has positive integral. The resulting strict lower native energy
+bound is E>m/|h|^2. These statements, including the absolute interchanges,
+are closed in Lean. The literal toLp representative `centeredVector(q)`
+is nonzero, retains zero native mean, and its reciprocal-norm rescaling
+`centeredUnit(q)` has original native norm exactly one. The unit vector
+is a fixed source; no approximate operator equation is claimed.
+
+### Hardest remaining step: unchanged target and complete residual
+
+The half-density Casimir calculation keeps e=5/4+z^2/4 and gives, on paper,
+
+    (A-e)W = (1/4) periodize[sqrt(y)(z Phi+i Phi')],
     (A-e)V = -1/(4(z-i)) periodize[sqrt(y)(D-1)(D-iz)Phi],
 
-where D differentiates the original x coordinate. Strict nonvanishing of
-V, full graph admission and a vanishing normalized residual still require
-proof. These statements are the
-current analytical construction, not yet counted as Lean theorems or
-normalized occurrence. Source admission and the norm comparison are being
-formalized together so they can be tested against the actual residual.
+where D differentiates the original x coordinate. Full graph admission
+and a family with vanishing residual after native normalization remain
+unproved. Nonzero V alone does not establish occurrence at e. The next
+construction must control this literal forcing together with its own
+native denominator; it cannot replace it by the scalar mean or by a
+source-only norm estimate.
 
 ## Verification boundary
 
@@ -590,11 +685,25 @@ statements (19)--(21) are also kernel-checked, in
 `SelbergThetaSourcePhase.lean`; the exact variance and gauge-balance
 statements (24) are kernel-checked in `SelbergThetaSourceVariance.lean`.
 Energy bounds (25), the disk (26), and gauge phase current (27) are
-kernel-checked in `SelbergThetaSourceEnergy.lean`. The original modular source admission, full
-Gram identity, Gaussian matrix comparison and remaining weighted differential
-construction retain the analytical status stated above. No numerical
+kernel-checked in `SelbergThetaSourceEnergy.lean`. Actual native source admission
+and its weighted energy comparison are now kernel-checked in
+`SelbergThetaNativeSource.lean` and `SelbergThetaNativeEnergy.lean`.
+All-real Mellin moments and the centered Eisenstein pairing, native
+nonvanishing and strict energy bound are kernel-checked in
+`SelbergThetaNativeMoments.lean` and `SelbergThetaNativePairing.lean`.
+The full totient transform (16), holomorphic continuation (16a), exact
+mean jet (16b), and actual right Abel limit are kernel-checked in
+`SelbergThetaTotientHankel.lean`.
+The complete pointwise native Gram formula (9), including its exact Hilbert
+norm identification, is kernel-checked in `SelbergThetaDilationRows.lean`
+and `SelbergThetaDilationGram.lean`. The integrated packet and its full
+differential residual retain the analytical status stated above. No numerical
 experiment or new no-go module was performed. No normalized occurrence
 estimate or RH proof is claimed.
+
+The [native Gram audit](../3-formalized/sqb-theta-native-gram.md) records
+both named leaf builds, all 21 successful public-declaration axiom checks,
+and a successful formal lint run.
 
 The [formal correlation audit](../3-formalized/sqb-theta-dilation-correlations.md)
 records source checking, the leaf build against existing dependency artifacts,
@@ -608,3 +717,14 @@ inspected and still requires the Hilbert realization; it was not used as
 an unconditional producer. The co-Poisson Fourier identity was inspected
 with its actual admission assumptions; it was not assumed to be a native
 modular intertwiner.
+
+The [native source and energy audit](../3-formalized/sqb-theta-native-source-energy.md)
+records 32 public axiom checks, both successful leaf builds and the successful
+repository formal lint. The [complete pairing audit](../3-formalized/sqb-theta-native-pairing.md)
+records the all-real moments, exact native pairing and actual unit source.
+
+The [full totient-Hankel audit](../3-formalized/sqb-theta-totient-hankel.md)
+records the absolute all-denominator transform, the actual double source
+cancellation, the exact mean jet, and the Abel limit. Its leaf build and all
+14 public axiom checks pass. That audit records the separate concurrent
+umbrella-wiring error reported by repository lint.

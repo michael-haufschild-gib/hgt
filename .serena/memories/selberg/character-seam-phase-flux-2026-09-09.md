@@ -1,5 +1,7 @@
 # Selberg cycle47 — original character seam flux, fully audited
 
+NEWEST CONTINUATION: read `mem:selberg/character-core-and-observed-cusp-2026-09-09` first. Cycle48 adds52 fully audited public declarations: actual projected dynamics and side matching, original characterwise core Green/quarter identity with circular current, and complete observed cusp boundary-square/summability/flux identities, retaining zero components. All3 final builds, axiom checks, index/API/wiring and repository lint passed; no owned Lean worker remains. Card `selberg-character-core-green.md` stays1-in-progress: next sum actual character-coordinate cusp fluxes and match top-current normalization, then test full quarter bound. Full Selberg remains active/unproved.
+
 Latest continuation of mem:selberg/inversion-phase-full-gradient-2026-09-09. Full unbudgeted Selberg1/4 goal remains ACTIVE / UNPROVED. Current turn is PROGRESS: new positive original-source mathematics. Do not mark goal complete or blocked. User insists on corpus-derived conjecture→proof/fail→pivot loops, not repeated negative wrappers. One owned foreground Lean worker at a time, lake env lean for scratch/source, serialized single-module lake build for final audits, no full/umbrella builds or numerical experiments. Shared dirty tree; preserve others' changes.
 
 ## Completed source modules and exact APIs

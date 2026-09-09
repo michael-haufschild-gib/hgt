@@ -1,6 +1,6 @@
 # HB: cancellation of the forced circle term
 
-Status: analytical cancellation and regular source-kernel formula; Lean verification in progress. The complete physical pairing and RH remain unproved.
+Status: the actual Legendre-kernel cancellation, Taylor integral remainder, explicit regular source numerator, and its joint continuity are [formalized in Lean](../3-formalized/hb-causal-circle-cancellation.md). Full-angular fixed-clock substitution is analytical. The complete physical pairing and RH remain unproved.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -92,3 +92,65 @@ I_j=integral_0^1 u^j(1+u)^(2s)du.
 ```
 
 For the full angular source, (11) replaces `P_nu(Z)` by `M_Z Q`. Its circle-jet factor is `(partial_q-1)M_(exp q)Q`, because `E partial_E=partial_q`. Thus the remaining circle contribution is a regular, explicitly weighted time derivative, available for integration against the already evaluated fixed clock. Its boundary and source-contact terms must be assembled with the remainder in (12), the cusp Green terms, and the other tensor sectors. Equation (11) cancels the forced circle coefficient; it does not establish extinction of that complete pairing.
+
+## Substitution into the fixed-clock pairing
+
+**Next conjecture under test:** the regular circle-jet term is a time divergence in the complete physical current. Its exact finite-domain integration is now available; whether its remaining bulk and contact terms cancel with the regular remainder and other tensor sectors is unresolved.
+
+Use the actual finite clock `T_V,B_V,E_V` from equation (8) of the source-only horizon construction. Write
+
+```
+kappa_s(q)=K_(s,0,a)(exp q),
+J_s(q)=coexact(M_(exp q)Q_s),
+R_s(q)=coexact(the signed regular radial remainder in (11)).
+```
+
+Thus the full-angular version of (11) is
+
+```
+A k_s(q)=2 kappa_s(q)(J_s'(q)-J_s(q))+R_s(q),  A=D-2.
+```
+
+For the circle-jet contribution to the symmetric double integral in (8), integration by parts in the corresponding delay variable gives
+
+```
+W_t(q,r)=-2[kappa_t(r) partial_r B_V(q,r)
+             +(kappa_t'(r)+kappa_t(r))B_V(q,r)],
+W_s(q,r)=-2[kappa_s(q) partial_q B_V(q,r)
+             +(kappa_s'(q)+kappa_s(q))B_V(q,r)].
+```
+
+The upper-delay edge terms vanish: the literal clock and its derivatives are zero at and before time zero, hence `B_V(q,V)=B_V(V,r)=0`. The lower edges combine with the original source contacts. Define the effective contact fixed by that combination,
+
+```
+S_hat_s=S_s+2 kappa_s(0)J_s(0),
+kappa_s(0)=-a²[A I_1+kB I_3].
+```
+
+The original finite horizon expression becomes exactly
+
+```
+integral_0^V integral_0^V
+  [ W_t(q,r) inner(k_s(q),J_t(r))
+   +W_s(q,r) inner(k_t(r),J_s(q))
+   +B_V(q,r){inner(k_s(q),R_t(r))+inner(k_t(r),R_s(q))}
+   +E_V(q,r)b_Omega(k_s(q),k_t(r))/2 ] dq dr
+
+ -integral_0^V
+   [ B_V(q,0)inner(k_s(q),S_hat_t)
+    +B_V(0,q)inner(k_t(q),S_hat_s) ] dq
+
+ +integral_0^V
+   [ -E_V(q,0)inner(k_s(q),S_t)/2
+     +E_V(0,q)inner(k_t(q),S_s)/2 ] dq.                    (13)
+```
+
+The edge signs use `partial_q T_V=-B_V-E_V/2` and `partial_r T_V=B_V-E_V/2`. Thus the source contact is changed by the *derived* lower-edge term; it is not freely adjustable. The same effective contact appears on both branches, and all finite-terminal-time and angular Green terms remain explicit.
+
+The radial coefficient in `W_s` is elementary. With `b=(exp q-1)/(exp q+1)`, differentiation of the exact original-source tail gives
+
+```
+kappa_s'(q)=(a²/2)b(1-b)(1+b)^(2s+1)[A+kB b²].           (14)
+```
+
+Equations (13)–(14) remove derivatives of the circle mean from the double integral and put them on the known clock and source tail. They are analytical identities for the constructed full-angular candidate on finite domains. They do not assert physical admission, the infinite-time/cusp interchange, or vanishing of (13). The remaining direct cancellation test is now the bulk combination containing `W_s,W_t,R_s,R_t`, the two derived effective contacts, and the independent SS/SV/VV action contributions.

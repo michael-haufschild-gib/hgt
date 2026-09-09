@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalRiemannKernel
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplaceSourceProfile
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.Analysis.Calculus.TaylorIntegral
+import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 
 /-!
 # Radial evaluation of the original causal BM source and its Einstein-current factor
@@ -8,12 +10,17 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 The actual Legendre kernel transfers the original source's angular factor onto
 explicit cubic radial weights. Both endpoints of the first adjoint flux vanish.
 A second transfer evaluates the angular operator in the Einstein horizon current
-and retains its forced, explicitly evaluated AdS-origin circle term.
+and evaluates its forced AdS-origin circle term. The actual constant and linear
+Legendre solutions cancel that coefficient against the retained radial moments.
+The remaining first-jet-subtracted kernel is its integral second Taylor remainder;
+its radial displacement cancels the apparent square pole of the source weight.
+An explicit numerator is jointly continuous even at zero direct slope.
 
 The source polynomial is identified with the corpus's original mixed-source
 remainder. All integral and endpoint identities are proved for the actual kernel,
 with arbitrary complex source rate and angular degree. The full angular circle
-construction, physical causal admission, complete tensor pairing and extinction
+construction, joint integral admission at zero delay, physical causal admission,
+complete tensor pairing and extinction
 remain separate obligations.
 -/
 
@@ -448,6 +455,278 @@ theorem originalDensity_sourceRemainder (s nu : ℂ) (E : Delay) (image : Bool) 
   dsimp [sourceA,sourceK,sourceB]
   push_cast
   ring
+
+open scoped ContDiff
+open GaloisForLFunctions.HTGeometry
+
+private theorem gauss_zero (z : ℂ) : (ordinaryHypergeometricSeries ℂ (0:ℂ) 0 1).sum z=1 := by
+  change (∑' n : ℕ, ordinaryHypergeometricSeries ℂ (0:ℂ) 0 1 n (fun _ => z))=1
+  rw [tsum_eq_single 0]
+  · rw [ordinaryHypergeometricSeries_apply_eq]
+    norm_num
+  · intro n hn
+    have hz := ordinaryHypergeometricSeries_eq_zero_of_neg_nat (𝔸 := ℂ)
+      (0:ℂ) 0 1 (k := 0) (Or.inl (by simp)) (Nat.pos_of_ne_zero hn)
+    rw [hz]
+    simp
+
+private theorem gauss_one (z : ℂ) : (ordinaryHypergeometricSeries ℂ (-1:ℂ) (-1) 1).sum z=1+z := by
+  change (∑' n : ℕ, ordinaryHypergeometricSeries ℂ (-1:ℂ) (-1) 1 n (fun _ => z))=1+z
+  rw [tsum_eq_sum (s := Finset.range 2)]
+  · simp only [Finset.sum_range_succ, Finset.sum_range_zero]
+    simp only [ordinaryHypergeometricSeries_apply_eq]
+    norm_num [ascPochhammer_succ_left]
+  · intro n hn
+    have hn2 : 1 < n := by
+      simp only [Finset.mem_range, not_lt] at hn
+      omega
+    have hz := ordinaryHypergeometricSeries_eq_zero_of_neg_nat (𝔸 := ℂ)
+      (-1:ℂ) (-1) 1 (k := 1) (Or.inl (by simp)) hn2
+    rw [hz]
+    simp
+
+/-- The constant Legendre kernel supplies the exact zeroth radial source moment. -/
+theorem legendre_zero (z : ℝ) : legendreKernel 0 z=1 := by
+  change power 0 ((z+1)/2)*(ordinaryHypergeometricSeries ℂ (-0) (-0) 1).sum (((z-1)/(z+1):ℝ):ℂ)=1
+  simp only [neg_zero,gauss_zero,power,Complex.cpow_zero,mul_one]
+
+/-- The linear Legendre kernel supplies the exact first radial source moment. -/
+theorem legendre_one {z : ℝ} (hz : 0 < z) : legendreKernel 1 z=(z:ℂ) := by
+  change power 1 ((z+1)/2)*(ordinaryHypergeometricSeries ℂ (-1:ℂ) (-1) 1).sum (((z-1)/(z+1):ℝ):ℂ)=(z:ℂ)
+  rw [gauss_one]
+  have hn : (z:ℂ)+1 ≠ 0 := by exact_mod_cast (show z+1 ≠ 0 by linarith)
+  simp only [power,Complex.cpow_one]
+  push_cast
+  field_simp [hn]
+  ring
+
+private theorem power_contDiffAt (a : ℂ) {x : ℝ} (hx : 0 < x) : ContDiffAt ℝ ∞ (power a) x := by
+  have he : power a =ᶠ[𝓝 x] fun y : ℝ => Complex.exp (a*(Real.log y:ℂ)) := by
+    filter_upwards [lt_mem_nhds hx] with y hy
+    rw [power,Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt hy)),
+      ← Complex.ofReal_log hy.le]
+    congr 1
+    ring
+  have hn : x ≠ 0 := ne_of_gt hx
+  have hh : ContDiffAt ℝ ∞ (fun y : ℝ => Complex.exp (a*(Real.log y:ℂ))) x := by
+    have hc : ContDiffAt ℝ ∞ (fun y : ℝ => (y:ℂ)) (Real.log x) := Complex.ofRealCLM.contDiff.contDiffAt
+    have hl : ContDiffAt ℝ ∞ Real.log x := by fun_prop (disch := assumption)
+    exact (contDiffAt_const.mul (hc.comp x hl)).cexp
+  exact hh.congr_of_eventuallyEq he
+
+/-- The actual positive-chart Riemann kernel is smooth, including at the characteristic value one. -/
+theorem legendre_contDiffAt (nu : ℂ) {z : ℝ} (hz : 0 < z) : ContDiffAt ℝ ∞ (legendreKernel nu) z := by
+  let p := ordinaryHypergeometricSeries ℂ (-nu) (-nu) 1
+  have hrad : 1 ≤ p.radius := hypergeometric_radius_one_le _ _ _
+  have hp : 0 < p.radius := lt_of_lt_of_le (by norm_num) hrad
+  have hden : 0 < z+1 := by linarith
+  have habs : |(z-1)/(z+1)| < 1 := by
+    rw [abs_lt]
+    constructor
+    · apply (lt_div_iff₀ hden).mpr
+      linarith
+    · apply (div_lt_iff₀ hden).mpr
+      linarith
+  have hn : ‖(((z-1)/(z+1):ℝ):ℂ)‖ < 1 := by simpa only [Complex.norm_real,Real.norm_eq_abs] using habs
+  have he : ‖(((z-1)/(z+1):ℝ):ℂ)‖ₑ < 1 := by
+    rw [← ENNReal.coe_one,enorm_lt_coe]
+    exact_mod_cast hn
+  have ha := (p.hasFPowerSeriesOnBall hp).analyticAt_of_mem
+    (show (((z-1)/(z+1):ℝ):ℂ) ∈ Metric.eball (0:ℂ) p.radius by
+      simpa only [Metric.mem_eball,edist_zero_right] using he.trans_le hrad)
+  have hs : ContDiffAt ℝ ∞ p.sum (((z-1)/(z+1):ℝ):ℂ) := ha.contDiffAt.restrict_scalars ℝ
+  have hx : ContDiffAt ℝ ∞ (fun x : ℝ => (((x-1)/(x+1):ℝ):ℂ)) z := by
+    have hc : ContDiffAt ℝ ∞ (fun y : ℝ => (y:ℂ)) ((z-1)/(z+1)) := Complex.ofRealCLM.contDiff.contDiffAt
+    have hr : ContDiffAt ℝ ∞ (fun x : ℝ => (x-1)/(x+1)) z := by fun_prop (disch := linarith)
+    exact hc.comp z hr
+  have hf := power_contDiffAt nu (by linarith : 0 < (z+1)/2)
+  change ContDiffAt ℝ ∞ (fun x : ℝ => power nu ((x+1)/2)*p.sum (((x-1)/(x+1):ℝ):ℂ)) z
+  have hy : ContDiffAt ℝ ∞ (fun x : ℝ => (x+1)/2) z := by fun_prop
+  exact (hf.comp z hy).mul (hs.comp z hx)
+
+/-- The actual Legendre kernel with its constant and linear circle jets removed. -/
+def circleRemainder (nu : ℂ) (E Z : ℝ) : ℂ :=
+  legendreKernel nu Z-legendreKernel nu E-
+    ((Z:ℂ)-(E:ℂ))*legendreKernelFirst nu E
+
+/-- Source action density after removal of the first circle jet. -/
+def actionRemainderDensity (s nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) : ℂ :=
+  actionDensity s 0 E image u*circleRemainder nu E.val (argument E image u)
+
+private theorem actionDensity_factor (s nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) :
+    actionDensity s nu E image u=actionDensity s 0 E image u*branchKernel nu E image u := by
+  simp only [actionDensity,branchKernel,legendre_zero,mul_one]
+
+private theorem actionRemainderDensity_eq (s nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
+    (hu : u ∈ Icc 0 (upper E image)) :
+    actionRemainderDensity s nu E image u = actionDensity s nu E image u+
+      ((E.val:ℂ)*legendreKernelFirst nu E.val-legendreKernel nu E.val)*actionDensity s 0 E image u-
+      legendreKernelFirst nu E.val*actionDensity s 1 E image u := by
+  have hz : 0 < argument E image u := lt_of_lt_of_le (by norm_num) (argument_ge_one E image hu)
+  rw [actionDensity_factor s nu, actionDensity_factor s 1]
+  simp only [actionRemainderDensity,circleRemainder,branchKernel,legendre_one hz]
+  ring
+
+private theorem action_remainder_integral (s nu : ℂ) (E : Delay) (image : Bool) :
+    (∫ u in (0:ℝ)..upper E image, actionRemainderDensity s nu E image u) =
+      (∫ u in (0:ℝ)..upper E image, actionDensity s nu E image u)+
+      ((E.val:ℂ)*legendreKernelFirst nu E.val-legendreKernel nu E.val)*
+        (∫ u in (0:ℝ)..upper E image, actionDensity s 0 E image u)-
+      legendreKernelFirst nu E.val*(∫ u in (0:ℝ)..upper E image, actionDensity s 1 E image u) := by
+  have hi (v : ℂ) : IntervalIntegrable (actionDensity s v E image) MeasureTheory.volume 0 (upper E image) := by
+    apply ContinuousOn.intervalIntegrable
+    rw [uIcc_of_le (upper_bounds E image).1.le]
+    exact fun u hu => (actionDensity_continuousAt s v E image hu).continuousWithinAt
+  rw [intervalIntegral.integral_congr (fun u hu => actionRemainderDensity_eq s nu E image
+    ((uIcc_of_le (upper_bounds E image).1.le) ▸ hu))]
+  rw [intervalIntegral.integral_sub ((hi nu).add ((hi 0).const_mul _)) ((hi 1).const_mul _),
+    intervalIntegral.integral_add (hi nu) ((hi 0).const_mul _)]
+  simp only [intervalIntegral.integral_const_mul]
+
+/-- The forced circle coefficient cancels exactly with the two actual radial moments.
+The remainder is the first-jet-subtracted kernel inside both original causal integrals. -/
+theorem sourceKernel_action_circle_cancel (s nu a : ℂ) (E : Delay) :
+    (nu*(nu+1)-2)*sourceKernel s nu a E =
+      2*sourceKernel s 0 a E*((E.val:ℂ)*legendreKernelFirst nu E.val-legendreKernel nu E.val)-
+      a^2*(∫ u in (0:ℝ)..upper E false, actionRemainderDensity s nu E false u)+
+      a^2*(∫ u in (0:ℝ)..upper E true, actionRemainderDensity s nu E true u) := by
+  have h0 := sourceKernel_action s 0 a E
+  have h1 := sourceKernel_action s 1 a E
+  have hn := sourceKernel_action s nu a E
+  simp only [legendre_zero,zero_add,zero_sub,mul_one] at h0
+  rw [legendre_one (by linarith [E.property])] at h1
+  norm_num at h1
+  rw [action_remainder_integral,action_remainder_integral]
+  linear_combination hn+
+    ((E.val:ℂ)*legendreKernelFirst nu E.val-legendreKernel nu E.val)*h0-
+    legendreKernelFirst nu E.val*h1
+
+private theorem legendre_iteratedDeriv_two (nu : ℂ) {z : ℝ} (hz : 0 < z) :
+    iteratedDeriv 2 (legendreKernel nu) z=legendreKernelSecond nu z := by
+  have he : deriv (legendreKernel nu) =ᶠ[𝓝 z] legendreKernelFirst nu := by
+    filter_upwards [lt_mem_nhds hz] with y hy
+    exact (legendreKernel_derivatives nu hy).1.deriv
+  rw [show 2=1+1 from rfl,iteratedDeriv_succ,iteratedDeriv_one]
+  exact ((legendreKernel_derivatives nu hz).2.congr_of_eventuallyEq he).deriv
+
+/-- Integral second remainder of the actual Riemann kernel; defined also on the diagonal. -/
+def circleSecondRemainder (nu : ℂ) (E Z : ℝ) : ℂ :=
+  ∫ t in (0:ℝ)..1, ((1-t:ℝ):ℂ)*legendreKernelSecond nu (E+t*(Z-E))
+
+/-- The cancelled circle remainder contains the square of the radial displacement exactly. -/
+theorem circleRemainder_eq_second (nu : ℂ) {E Z : ℝ} (hE : 0 < E) (hZ : 0 < Z) :
+    circleRemainder nu E Z=((Z:ℂ)-(E:ℂ))^2*circleSecondRemainder nu E Z := by
+  have hp (t : ℝ) (ht : t ∈ Icc 0 1) : 0 < E+t*(Z-E) := by
+    have h1 := mul_nonneg ht.1 hZ.le
+    have h2 := mul_nonneg (sub_nonneg.mpr ht.2) hE.le
+    by_cases h : t=0
+    · simp [h,hE]
+    · have h3 := mul_pos (lt_of_le_of_ne ht.1 (Ne.symm h)) hZ
+      nlinarith
+  have hf (t : ℝ) (ht : t ∈ Icc 0 1) : ContDiffAt ℝ (1+1:ℕ) (legendreKernel nu) (E+t • (Z-E)) :=
+    (legendre_contDiffAt nu (hp t ht)).of_le (by
+      change (↑(2:ℕ∞):WithTop ℕ∞) ≤ ↑(⊤:ℕ∞)
+      exact WithTop.coe_le_coe.mpr le_top)
+  have ht := map_add_eq_sum_add_integral_iteratedFDeriv (n := 1) (f := legendreKernel nu)
+    (x := E) (y := Z-E) hf
+  simp only [Finset.sum_range_succ,Finset.sum_range_zero,iteratedFDeriv_apply_eq_iteratedDeriv_mul_prod,
+    Finset.prod_const,Finset.card_univ,Fintype.card_fin,Nat.factorial_zero,Nat.factorial_one,
+    Nat.cast_one,inv_one,pow_zero,pow_one,one_smul,zero_add,iteratedDeriv_zero,iteratedDeriv_one,
+    smul_eq_mul,Nat.reduceAdd,add_sub_cancel] at ht
+  rw [(legendreKernel_derivatives nu hE).1.deriv] at ht
+  have hi : (∫ t in (0:ℝ)..1, (1-t) • ((Z-E)^2 • iteratedDeriv 2 (legendreKernel nu) (E+t*(Z-E)))) =
+      ((Z:ℂ)-(E:ℂ))^2*circleSecondRemainder nu E Z := by
+    rw [circleSecondRemainder,← intervalIntegral.integral_const_mul]
+    apply intervalIntegral.integral_congr
+    intro t ht
+    rw [uIcc_of_le (by norm_num : (0:ℝ) ≤ 1)] at ht
+    dsimp only
+    rw [legendre_iteratedDeriv_two nu (hp t ht)]
+    simp only [Complex.real_smul]
+    push_cast
+    ring
+  rw [hi] at ht
+  simp only [Complex.real_smul] at ht
+  push_cast at ht
+  dsimp [circleRemainder]
+  linear_combination ht
+
+/-- Both causal branches have a quadratic radial displacement after circle cancellation. -/
+theorem actionRemainderDensity_eq_second (s nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
+    (hu : u ∈ Icc 0 (upper E image)) :
+    actionRemainderDensity s nu E image u =
+      (u:ℂ)^2*((slope E image:ℂ)^2*actionDensity s 0 E image u)*
+        circleSecondRemainder nu E.val (argument E image u) := by
+  rw [actionRemainderDensity,circleRemainder_eq_second nu (by linarith [E.property])
+    (lt_of_lt_of_le (by norm_num) (argument_ge_one E image hu))]
+  simp only [argument]
+  push_cast
+  ring
+
+/-- Homogenized source cubic: it is defined when the direct slope is zero. -/
+def regularCubic (s : ℂ) (c d u : ℝ) : ℂ :=
+  (c:ℂ)*cubicPolynomial s 0 u+(d:ℂ)*(cubicPolynomial s 1 u-cubicPolynomial s 0 u)
+private def regularCubicFirst (s : ℂ) (c d u : ℝ) : ℂ :=
+  (c:ℂ)*cubicFirst s 0 u+(d:ℂ)*(cubicFirst s 1 u-cubicFirst s 0 u)
+private def regularCubicSecond (s : ℂ) (c d u : ℝ) : ℂ :=
+  (c:ℂ)*cubicSecond s 0 u+(d:ℂ)*(cubicSecond s 1 u-cubicSecond s 0 u)
+
+/-- Exact source-action numerator, with no division by the causal slope. -/
+def regularActionWeight (s : ℂ) (c d u : ℝ) : ℂ :=
+  (1-(u:ℂ))*((d:ℂ)-(c:ℂ)*u)*
+    (2*powerFirst (2*s-2) (1+u)*regularCubic s c d u+
+      (u:ℂ)*powerSecond (2*s-2) (1+u)*regularCubic s c d u+
+      2*power (2*s-2) (1+u)*regularCubicFirst s c d u+
+      2*(u:ℂ)*powerFirst (2*s-2) (1+u)*regularCubicFirst s c d u+
+      (u:ℂ)*power (2*s-2) (1+u)*regularCubicSecond s c d u)+
+  (2*(c:ℂ)*u-c-d)*
+    (power (2*s-2) (1+u)*regularCubic s c d u+
+      (u:ℂ)*powerFirst (2*s-2) (1+u)*regularCubic s c d u+
+      (u:ℂ)*power (2*s-2) (1+u)*regularCubicFirst s c d u)-
+  2*(c:ℂ)*(u:ℂ)*power (2*s-2) (1+u)*regularCubic s c d u
+
+private theorem regularCubic_eq (s : ℂ) (c d u : ℝ) (hc : c ≠ 0) :
+    regularCubic s c d u=(c:ℂ)*cubicPolynomial s ((d:ℂ)/(c:ℂ)) u ∧
+    regularCubicFirst s c d u=(c:ℂ)*cubicFirst s ((d:ℂ)/(c:ℂ)) u ∧
+    regularCubicSecond s c d u=(c:ℂ)*cubicSecond s ((d:ℂ)/(c:ℂ)) u := by
+  have hn : (c:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hc
+  dsimp [regularCubic,regularCubicFirst,regularCubicSecond,cubicPolynomial,cubicFirst,cubicSecond,c0,c1,c2,c3]
+  constructor
+  · field_simp [hn]
+    ring
+  constructor <;> field_simp [hn] <;> ring
+
+/-- The apparent square pole of the radial adjoint density has an explicit regular numerator. -/
+theorem regularActionWeight_eq (s : ℂ) (E : Delay) (image : Bool) (u : ℝ) :
+    regularActionWeight s (slope E image) (other E image) u=
+      (slope E image:ℂ)^2*actionDensity s 0 E image u := by
+  have hn : (slope E image:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (slope_pos E image))
+  obtain ⟨h0,h1,h2⟩ := regularCubic_eq s (slope E image) (other E image) u (ne_of_gt (slope_pos E image))
+  unfold regularActionWeight
+  rw [h0,h1,h2]
+  simp only [actionDensity,branchKernel,legendre_zero,mul_one,cubicWeight,cubicWeightFirst,
+    cubicWeightSecond,metricCoeff,metricFirst,ratio]
+  field_simp [hn]
+
+/-- Fully combined radial remainder; neither causal slope occurs in a denominator. -/
+theorem actionRemainderDensity_eq_regular (s nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
+    (hu : u ∈ Icc 0 (upper E image)) :
+    actionRemainderDensity s nu E image u=(u:ℂ)^2*
+      regularActionWeight s (slope E image) (other E image) u*
+      circleSecondRemainder nu E.val (argument E image u) := by
+  rw [actionRemainderDensity_eq_second s nu E image hu,regularActionWeight_eq]
+
+/-- The source numerator is jointly continuous at zero direct slope as well as positive slope. -/
+theorem regularActionWeight_continuousAt (s : ℂ) (c d u : ℝ) (hu : 0 < 1+u) :
+    ContinuousAt (fun v : ℝ × ℝ × ℝ => regularActionWeight s v.1 v.2.1 v.2.2) (c,d,u) := by
+  have hp : ContinuousAt (fun v : ℝ × ℝ × ℝ => power (2*s-2) (1+v.2.2)) (c,d,u) :=
+    by
+      have hc : ContinuousAt (fun v : ℝ × ℝ × ℝ => 1+v.2.2) (c,d,u) := by fun_prop
+      exact (power_derivatives (2*s-2) hu).1.continuousAt.comp_of_eq hc rfl
+  have hn : ((1+u:ℝ):ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hu)
+  unfold regularActionWeight regularCubic regularCubicFirst regularCubicSecond
+    cubicPolynomial cubicFirst cubicSecond powerFirst powerSecond
+  fun_prop (disch := first | assumption | exact pow_ne_zero 2 hn)
 
 end
 end RHTower.D4BMCausalSourceKernel
