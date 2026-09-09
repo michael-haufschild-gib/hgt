@@ -6,10 +6,18 @@ import time
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lean_research_background import start, status, stop
+from lean_research_background import start, status, stop, classify_failures
 
 
 class BackgroundTests(unittest.TestCase):
+    def test_expected_interruptions_are_distinct_from_invalid_model_output(self):
+        malformed = dict(stage='method', error='local model did not return a JSON object')
+        preempted = dict(stage='embedding', error='enrichment preempted by interactive search; retry later')
+        deadline = dict(stage='embedding', error='local runtime deadline expired')
+        errors, deferred = classify_failures([dict(failures=[malformed,preempted]), dict(failures=[malformed,preempted,deadline])])
+        self.assertEqual(errors, [malformed])
+        self.assertEqual(deferred, [preempted,deadline])
+
     def test_single_worker_stop_during_phase_reaps_only_owned_child(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

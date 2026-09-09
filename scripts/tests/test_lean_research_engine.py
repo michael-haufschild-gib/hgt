@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lean_research_corpus import Corpus
-from lean_research_engine import Engine, json_object, reciprocal_rank_fusion
+from lean_research_engine import Engine, json_object, reciprocal_rank_fusion, method_payload, enrich
 
 
 class FakeRuntime:
@@ -52,6 +52,14 @@ class FusionTests(unittest.TestCase):
         self.assertEqual(json_object('```json\n{"queries":[]}\n```'), {'queries': []})
         with self.assertRaises(ValueError):
             json_object("__import__('os').system('false')")
+
+    def test_method_evidence_is_resolved_to_exact_source_and_invalid_ids_rejected(self):
+        proof = 'by\n  exact h\n'
+        payload = dict(description='reuse a supplied witness', assumptions=['h'], steps=['apply h'], obligations=['supply h'], evidence_lines=[2])
+        self.assertEqual(method_payload(json.dumps(payload), proof)['evidence'], ['  exact h'])
+        for ids in ([0], [99], [True], [], ['2']):
+            with self.assertRaises(ValueError):
+                method_payload(json.dumps({**payload, 'evidence_lines': ids}), proof)
 
 
 class EngineTests(unittest.TestCase):
@@ -154,6 +162,30 @@ class EngineTests(unittest.TestCase):
         self.assertFalse(first['partial'])
         self.assertTrue(second['cache_hit'])
         self.assertEqual(len(runtime.calls), count)
+
+    def test_interrupted_multi_chunk_method_resumes_completed_chunks(self):
+        from research_runtime.protocol import RuntimeDeadline
+        d = self.db.declaration(self.did)
+        with self.db.con:
+            self.db.con.execute("DELETE FROM documents WHERE decl_id=? AND view='proof'", (self.did,))
+            for text in ('by\n  -- iterate growth bound', '  rfl'):
+                self.db._document(self.did, d['path'], d['module'], 'proof', text, 1, 2, {})
+        class Runtime(FakeRuntime):
+            def generate(inner, prompt, *, deadline, max_tokens, priority):
+                inner.calls.append(('generate', prompt))
+                if len(inner.calls) == 2:
+                    raise RuntimeDeadline('interrupted batch')
+                return json.dumps(dict(description='source operations', assumptions=[], steps=['reuse step'],
+                    obligations=['check the new goal'], evidence_lines=[1]))
+        runtime = Runtime()
+        first = enrich(self.db, runtime, deadline=time.monotonic()+3, methods=True)
+        self.assertEqual(first['methods'], 0)
+        self.assertEqual(self.db.con.execute('SELECT count(*) FROM method_chunks').fetchone()[0], 1)
+        second = enrich(self.db, runtime, deadline=time.monotonic()+3, methods=True)
+        self.assertGreaterEqual(second['methods'], 1)
+        first_chunk_calls = [p for op,p in runtime.calls if 'NUMBERED PROOF:\n1: by\n2:   -- iterate' in p]
+        self.assertEqual(len(first_chunk_calls), 1)
+        self.assertIsNotNone(self.db.method(self.did))
 
 
 if __name__ == '__main__':

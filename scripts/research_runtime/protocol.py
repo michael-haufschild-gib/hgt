@@ -98,3 +98,18 @@ def validate(request: dict) -> None:
         raise ValueError(f'texts must be strings of at most {MAX_TEXT} characters')
     if sum(map(len, strings)) > MAX_TOTAL_TEXT:
         raise ValueError('request exceeds total text limit')
+
+
+def receive_deadline(request: dict) -> dict:
+    """Rebase a wire duration onto the worker's own monotonic clock.
+
+    macOS Python 3.9's monotonic origin can be process-local. A client deadline
+    must never be compared directly with the Python 3.12 worker's clock.
+    The client independently enforces its original end-to-end deadline.
+    """
+    if request.get('op') == 'status' or 'remaining_seconds' not in request:
+        return request
+    seconds = request['remaining_seconds']
+    if isinstance(seconds, bool) or not isinstance(seconds, (int, float)) or not math.isfinite(seconds) or not 0 < seconds <= MAX_SECONDS + 1:
+        raise ValueError('invalid remaining runtime budget')
+    return {**request, 'deadline': time.monotonic() + seconds}

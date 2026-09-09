@@ -16,9 +16,11 @@ RH remains unproved. This card records no exhaustive audit of the corpus and mak
 
 ## What the search tool covers
 
-Inspection of `scripts/formal_tools.py:index_rows` establishes that declaration search indexes names, module names and adjacent full docstrings. It does **not** index theorem statements or proof bodies. Prose contributes matching gap-marker lines, not a general full-text prose index. A marker containing “missing” may describe a gap that the same file closes.
+The legacy lexical index (`scripts/formal_tools.py:index_rows`, selected by `--mode lexical`) indexes names, module names and adjacent full docstrings, excluding theorem statements and proof bodies. Its prose coverage consists of gap-marker lines. A marker containing “missing” may describe a gap that the same file closes.
 
-The default conjunction and result caps affect discovery separately:
+The current tool also has hybrid/deep discovery and `--retrieval-views statements|all`. Its inspected hybrid output includes actual theorem signatures and source-argument candidates, but reports incomplete source and semantic coverage. The inspected request reported 22571 indexed and 33302 stale/pending files among 55873 inventoried files; these are a changing indexing snapshot, not a theorem audit. Read the per-request coverage and `source_only`/compiler status before treating a result as validated. Lexical discovery remains useful for fast broad terms; hybrid/deep retrieval can then pursue the exact source equation within a bounded request budget.
+
+The lexical conjunction and result caps affect discovery separately:
 
 - Spaces mean AND; `--any` means OR. Exact phrases can miss equivalent terminology.
 - Default output is 20 declarations, at most two per module, plus five exploration results. The printed total is larger than the inspected page.
@@ -144,10 +146,16 @@ For the complete source, the `T(Delta)M` term is retained. Equation (2) also app
 
 On a finite smooth cell, the oriented boundary form is `J_L dz-J_z dL`. At `z=-1` the formula for `q_minus` changes; the two cell traces must be combined. The logarithmic and rational pieces must be combined before judging interface cancellation. At `z=1-L`, characteristic right jets are required. Optical lower/upper edges, source edge `z=1`, compact onset transition, angular Green faces and physical current corrections remain in the comparison. Interior identity (2) does not by itself justify their limits.
 
+## Source-specific use of the search results
+
+The [source-polynomial boundary calculation](hb-optical-source-boundary-matching.md) applies this construction with the spin-two weight retained on the angular field. Only the degree-two source polynomial is transferred. The actual four radial caps then have enough flatness to cancel the internal interface and source-edge currents; the moving characteristic becomes an explicit corner primitive. This is a finite-domain paper result, leaving the explicit bulk and corrected cross-section flux for physical comparison.
+
+A further broad jet search exposed `HTGeometry/IteratedDerivVanishing.lean`. Its actual derivative-factor and product theorems close the four [new scalar cap results](../3-formalized/hb-optical-source-boundary-caps.md), including the original moving target factor and both signs of cap length. This is an instantiated source identity obtained through corpus reuse, rather than a general theorem whose boundary premises are still supplied by hand.
+
 ## Next source-specific conjecture
 
 The sum of the explicit currents in (2), the original angular Green terms and the physical current corrections has fixed traces whose complete finite-domain balance cancels the retained compact onset contribution. Proving this requires the actual source coefficients and every face; the first nonzero optical coefficient identified in the optical source card is part of that calculation.
 
 The next search is for constructions that discharge this **specific trace comparison and remainder bound**. A general primitive, scalar Goursat solution or cyclic structure alone does not discharge it. If a candidate theorem has exactly that conclusion under auxiliary assumptions, each assumption becomes a separate source-specific search and proof obligation.
 
-This intake used analytical work and source inspection. No mathematical computations, Lean builds, existing axiom rechecks or frontier-map changes were made. No Lean axioms or premises were added.
+The initial search intake used source inspection and paper work. The subsequent four cap theorems passed scratch checks and one exact-module build against existing caches. No mathematical computations, existing-module rebuilds, existing axiom rechecks or frontier-map changes were made. No axioms were added.

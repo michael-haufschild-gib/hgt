@@ -92,6 +92,21 @@ def terminate_owned(child):
             child.wait()
 
 
+def classify_failures(reports):
+    errors, deferred = [], []
+    seen = set()
+    for report in reports:
+        for failure in report.get('failures', []):
+            key = json.dumps(failure, sort_keys=True)
+            if key in seen:
+                continue
+            seen.add(key)
+            message = failure.get('error', '').lower()
+            target = deferred if 'deadline' in message or 'preempted' in message else errors
+            target.append(failure)
+    return errors[-5:], deferred[-5:]
+
+
 def run(root: Path, *, once=False) -> int:
     directory = cache_directory(root)
     directory.mkdir(parents=True, exist_ok=True)
@@ -123,6 +138,7 @@ def run(root: Path, *, once=False) -> int:
             if stopped():
                 return
             record(phase=name)
+            started = time.monotonic()
             report_file = directory / 'indexer-phase.log'
             with report_file.open('wb') as output:
                 child = subprocess.Popen([sys.executable, str(root / 'scripts/formal_tools.py'), 'search-index',
@@ -134,6 +150,7 @@ def run(root: Path, *, once=False) -> int:
                     while child.poll() is None and time.monotonic() < deadline and not stopped():
                         time.sleep(.2)
                 finally:
+                    termination_reason = ('stop_requested' if stopped() else 'phase_deadline') if child.poll() is None else None
                     terminate_owned(child)
             # Keep a bounded tail; never read an arbitrarily large phase log.
             with report_file.open('rb') as output:
@@ -151,9 +168,19 @@ def run(root: Path, *, once=False) -> int:
                 if 'coverage' in value:
                     state['coverage'] = value['coverage']
             last = reports[-1] if reports else {}
-            errors = [e for value in reports for e in value.get('failures', [])][-5:]
+            errors, deferred = classify_failures(reports)
+            error = None
+            if termination_reason == 'phase_deadline':
+                error = f'{name} exceeded its {seconds}-second budget and 15-second shutdown allowance'
+            elif child.returncode and termination_reason != 'stop_requested':
+                error = tail[-1200:] or f'{name} exited with code {child.returncode}'
+            phases = state.setdefault('phases', {})
+            phases[name] = dict(at=time.time(), elapsed_seconds=time.monotonic()-started,
+                                exit_code=child.returncode, termination_reason=termination_reason,
+                                errors=errors, deferred=deferred, error=error,
+                                completed={k: last[k] for k in ('changed', 'vectors', 'methods') if k in last})
             record(last_phase=name, last_exit_code=child.returncode, last_result=last,
-                   errors=errors, last_error=tail[-1200:] if child.returncode else None)
+                   errors=errors, deferred=deferred, last_error=error)
         record()
         try:
             while not stopped():

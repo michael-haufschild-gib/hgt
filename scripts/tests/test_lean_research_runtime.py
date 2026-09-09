@@ -465,6 +465,10 @@ class WorkerTests(unittest.TestCase):
         self.assertEqual(state['models']['embedding']['revision'], config.MODELS['embedding']['revision'])
         self.assertIn('runtime', state['fingerprints'])
 
+    def test_client_with_process_local_clock_uses_worker_relative_budget(self):
+        with patch('time.monotonic', return_value=10.0):
+            self.assertEqual(self.client.embed(['ok'], deadline=12.0), [[2.0]])
+
     def test_deadline_returns_promptly_and_reaps_blocked_child(self):
         start = time.monotonic()
         with self.assertRaises(runtime.RuntimeDeadline):

@@ -120,7 +120,7 @@ Construction and status never start the worker, import ML, or download anything.
 
     def _request(self, request, deadline, *, start=True):
         remaining(deadline)
-        encoded = frame(request)
+        frame(request)  # Validate serialization/size before starting a worker.
         with self._guard:
             if self._closed:
                 raise RuntimeUnavailable('client closed')
@@ -138,7 +138,8 @@ Construction and status never start the worker, import ML, or download anything.
                     self._sockets.add(sock)
                 try:
                     sock.settimeout(remaining(deadline))
-                    sock.sendall(encoded)
+                    wire = request if request.get('op') == 'status' else {**request, 'remaining_seconds': remaining(deadline)}
+                    sock.sendall(frame(wire))
                     buffer = bytearray()
                     while True:
                         sock.settimeout(remaining(deadline))

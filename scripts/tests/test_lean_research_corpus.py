@@ -5,6 +5,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -177,6 +178,24 @@ class CorpusTests(unittest.TestCase):
             self.db.save_method(did, dict(description='use witness', assumptions=[], steps=['apply alpha'],
                 obligations=[], evidence=['alpha']), model_version='m', prompt_version='v', expected_evidence_epoch=epoch)
         self.assertIsNone(self.db.method(did))
+
+    def test_extractor_migration_does_not_walk_dependencies_of_unchanged_sources(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        self.db.refresh(self.root)
+        with self.db.con:
+            self.db.con.execute("UPDATE files SET extractor_version='old'")
+        with patch.object(self.db, '_invalidate_dependents', side_effect=AssertionError('unnecessary graph traversal')):
+            self.assertEqual(self.db.refresh(self.root)['changed'], 1)
+
+    def test_invalidation_deadline_marks_descriptions_stale_without_blocking(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        self.db.refresh(self.root)
+        did = self.db.search('alpha')[0]['decl_id']
+        self.db.save_method(did, dict(description='use witness', assumptions=[], steps=[], obligations=[], evidence=['trivial']), model_version='m', prompt_version='v')
+        with self.db.con:
+            self.db._invalidate_dependents(['alpha'], deadline=time.monotonic()-1)
+        self.assertIsNone(self.db.method(did))
+        self.assertFalse(self.db.search('witness', views=('method',)))
 
 
 if __name__ == '__main__':

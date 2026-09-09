@@ -1,8 +1,9 @@
 # SQB: native Gram and residual composition
 
-Status: corpus ingredients located and their statements inspected. The source-specific
-composition described below is open. This is a search map for the mathematical gap,
-not an additional RH criterion or a claimed occurrence proof.
+Status: the actual native common-forcing Gram reduction is proved and audited in
+Lean. Scratch, final source, named-leaf build, all 23 public axiom checks, and
+formal lint passed. The source-specific small-residual composition remains open.
+This is a search map for the mathematical gap, not a claimed occurrence proof.
 
 Proof chain: actual theta source -> unit vectors with vanishing full native residual
 at every full Xi target -> native occurrence -> real-preimage classification ->
@@ -58,6 +59,21 @@ The two concrete joins still being sought are:
 2. Alternatively, a source-specific estimate for the same native kernel that
    directly supplies the nonclosed-range or small-image input.
 
+The successful analytical conjecture uses the already proved common forcing directly.
+Write `G(q,r)=<U_q,U_r>` and `m(q)=<F_0,U_q>`. Self-adjointness and
+`A U_q=e_q U_q+F_0` give the exact displacement identity
+
+    (e_r-conj(e_q)) G(q,r) = m(r)-conj(m(q)).
+
+All mixed vector/image and image/image entries are now proved expressible through
+G, m, the energies, and the fixed squared norm of F_0. The exact numerator and
+denominator energies of every finite native domain packet are also proved.
+Off reflected energy collisions this reduces the two-variable Gram comparison to
+scalar source-pairing data. At collisions the cleared identity is retained without
+division. See the [native Gram proof](../3-formalized/sqb-common-theta-forcing-gram.md).
+The source-specific calculation of m, or a sufficient estimate on the resulting
+quadratic forms, remains open.
+
 The dilation Gram theorem uses the profile from `SelbergThetaDilationTransform`.
 The common-forcing graph uses the reflected first-order pair from
 `SelbergThetaCommonForcing`. An identity between these families, or a generalization
@@ -75,6 +91,13 @@ identify a native vector or its operator image.
 multiplier with dense nonclosed range. Its carrier is an arithmetic coefficient
 `ell^2` space. It supplies a concrete model for the first ingredient above; an
 equal-Gram and operator-action identification with SQB has not been found.
+
+Following uses of the small-image theorems through proof bodies also found
+`XiThetaConvolutionDefectTrilemma`: literal theta convolution is Fourier-conjugate
+to multiplication by XiC on the real axis, and has explicit unit packets whose
+images tend to zero. This is an actual source construction. Its small-image target
+is zero for that convolution operator; an identification with the full target in
+the native SQB operator is still needed.
 
 `CommonRadialSubunitHarmonicCompletion` supplies actual Hilbert--Schmidt prime
 synthesis and the exact covariance `W W* = A` on its stated half-line/prime carriers.
@@ -105,6 +128,15 @@ its producer.
 
 API check passed: `lake env lean /tmp/sqb37_corpus_interfaces.lean` imported the six
 principal modules and checked all nine selected declarations, exit 0. The exact
-types are in `/tmp/sqb37_corpus_interfaces.log`. This verifies the interfaces, not
-the missing composition. No new Lean theorem, numerical computation, full build,
-or frontier-map edit is part of this search.
+types are in `/tmp/sqb37_corpus_interfaces.log`. This verifies the interfaces.
+The subsequent native Gram theorem has its separate proof and audit linked above.
+No numerical computation, full build, or frontier-map edit was used.
+
+Deep-search coverage requires care. Three subsequent deep requests used both
+mechanism descriptions and a broad OR query. Each returned `partial=true`; the
+semantic inventory reported 1,376 ready records out of 1,302,085 expected, with
+compiler metadata pending for the returned source-only candidates. No proof ideas
+or ingredient sets were returned. The OR request did supply useful candidate
+lemmas and source arguments. Broad lexical discovery and direct proof-body searches
+therefore remain necessary, and no absence claim follows from these deep results.
+The native Gram proof above is validated by Lean independently of search metadata.

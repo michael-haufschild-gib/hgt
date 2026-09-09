@@ -81,6 +81,11 @@ CREATE TABLE IF NOT EXISTS methods(
  content_hash TEXT NOT NULL,model_version TEXT NOT NULL,prompt_version TEXT NOT NULL,
  description TEXT NOT NULL,assumptions TEXT NOT NULL,steps TEXT NOT NULL,obligations TEXT NOT NULL,
  evidence TEXT NOT NULL,status TEXT NOT NULL,error TEXT NOT NULL DEFAULT '');
+CREATE TABLE IF NOT EXISTS method_chunks(
+ decl_id TEXT NOT NULL REFERENCES declarations(id) ON DELETE CASCADE,
+ chunk_hash TEXT NOT NULL,source_hash TEXT NOT NULL,model_version TEXT NOT NULL,
+ prompt_version TEXT NOT NULL,payload TEXT NOT NULL,
+ PRIMARY KEY(decl_id,chunk_hash,model_version,prompt_version));
 CREATE TABLE IF NOT EXISTS vector_shards(
  id TEXT PRIMARY KEY,filename TEXT NOT NULL,model TEXT NOT NULL,count INTEGER NOT NULL,created REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS vectors(
@@ -365,7 +370,7 @@ class Corpus:
 
     def _refresh(self, root: Path, *, deadline: float, progress=None) -> dict:
         items, errors = inventory(root)
-        current = {r["path"]: r for r in self.con.execute("SELECT path,size,mtime_ns,status,extractor_version FROM files")}
+        current = {r["path"]: r for r in self.con.execute("SELECT path,size,mtime_ns,status,extractor_version,source_hash,toolchain,compile_status FROM files")}
         changed = failed = 0
         complete = True
         toolchain_file = root / "formal" / "lean-toolchain"
@@ -404,11 +409,18 @@ class Corpus:
                 if (before.st_size, before.st_mtime_ns) != (after.st_size, after.st_mtime_ns):
                     raise OSError("source changed during extraction; retry pending")
                 text = raw.decode("utf-8")
+                source_changed = not previous or previous['source_hash'] != digest(raw) or previous['toolchain'] != toolchain
+                if not source_changed and previous['extractor_version'] == EXTRACTION_VERSION:
+                    with self.con:
+                        self.con.execute("UPDATE files SET size=?,mtime_ns=?,status='indexed',error='',compile_status=?,updated=? WHERE path=?",
+                                         (after.st_size, after.st_mtime_ns, previous['compile_status'], time.time(), item['path']))
+                    continue
                 declarations = source_declarations(text, item["module"], item["path"]) if item["collection"] == "lean" else []
                 imports = [n for m in IMPORT.finditer(mask_comments_strings(text)) for n in m.group(1).split()]
                 with self.con:
                     old_names = [r[0] for r in self.con.execute("SELECT name FROM declarations WHERE path=?", (item["path"],))]
-                    self._invalidate_dependents(old_names)
+                    if source_changed:
+                        self._invalidate_dependents(old_names, deadline=deadline)
                     self.con.execute("DELETE FROM files WHERE path=?", (item["path"],))
                     self.con.execute("INSERT INTO files(path,module,package,collection,size,mtime_ns,source_hash,status,imports,toolchain,updated) "
                                      "VALUES(?,?,?,?,?,?,?,?,?,?,?)", (item["path"], item["module"], item["package"],
@@ -466,22 +478,41 @@ class Corpus:
         return dict(changed=changed, removed=removed, failed=failed, complete=complete,
                     inventory_errors=errors, coverage=self.coverage())
 
-    def _invalidate_dependents(self, names):
-        if not self.con.execute("SELECT 1 FROM methods WHERE status='ready' LIMIT 1").fetchone():
+    def _invalidate_dependents(self, names, *, deadline=float('inf')):
+        if not names or not self.con.execute("SELECT 1 FROM methods WHERE status='ready' UNION ALL SELECT 1 FROM method_chunks LIMIT 1").fetchone():
             return
+        stop = min(deadline, time.monotonic() + 2)
         pending = [variant for name in names for variant in (name, name.rsplit('.', 1)[-1])]
         seen = set()
-        while pending:
-            name = pending.pop()
-            if name in seen:
-                continue
-            seen.add(name)
-            rows = self.con.execute("SELECT d.id,d.name FROM declarations d JOIN dependencies e ON e.source=d.id WHERE e.target=?", (name,)).fetchall()
-            for row in rows:
-                self.con.execute("UPDATE methods SET status='stale' WHERE decl_id=?", (row["id"],))
-                self.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (row["id"],))
-                pending.append(row["name"])
-                pending.append(row["name"].rsplit('.', 1)[-1])
+        self.con.set_progress_handler(lambda: int(time.monotonic() >= stop), 1000)
+        try:
+            while pending:
+                if time.monotonic() >= stop:
+                    raise TimeoutError('dependency invalidation budget')
+                name = pending.pop()
+                if name in seen:
+                    continue
+                seen.add(name)
+                rows = self.con.execute("SELECT d.id,d.name FROM declarations d JOIN dependencies e ON e.source=d.id WHERE e.target=?", (name,)).fetchall()
+                for row in rows:
+                    self.con.execute("UPDATE methods SET status='stale' WHERE decl_id=?", (row['id'],))
+                    self.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (row['id'],))
+                    self.con.execute('DELETE FROM method_chunks WHERE decl_id=?', (row['id'],))
+                    pending.extend((row['name'], row['name'].rsplit('.', 1)[-1]))
+        except (TimeoutError, sqlite3.OperationalError) as exc:
+            if isinstance(exc, sqlite3.OperationalError) and 'interrupted' not in str(exc):
+                raise
+            self.con.set_progress_handler(None, 0)
+            # Conservative invalidation preserves correctness when a broad
+            # source-reference graph cannot be traversed within the file budget.
+            # Raw sources/vectors remain available while descriptions regenerate.
+            self.con.execute("UPDATE methods SET status='stale' WHERE status='ready'")
+            self.con.execute("DELETE FROM documents WHERE view='method'")
+            self.con.execute('DELETE FROM method_chunks')
+            self.con.execute("INSERT OR REPLACE INTO meta VALUES('invalidation_fallback',?)",
+                             (json.dumps(dict(reason='dependency_graph_budget', at=time.time())),))
+        finally:
+            self.con.set_progress_handler(None, 0)
 
     def coverage(self) -> dict:
         counts = lambda table, field: {r[0]: r[1] for r in self.con.execute(f"SELECT {field},COUNT(*) FROM {table} GROUP BY {field}")}
@@ -624,6 +655,21 @@ class Corpus:
                 self._document(did, d["path"], d["module"], "method", part, d["line"], d["end_line"],
                                dict(kind="generated", source_hash=d["source_hash"], model=model_version, prompt=prompt_version, evidence=evidence))
             self.bump()
+
+    def method_chunk(self, did: str, chunk_hash: str, model: str, prompt: str):
+        row = self.con.execute('SELECT c.payload FROM method_chunks c JOIN declarations d ON d.id=c.decl_id '
+                               'WHERE c.decl_id=? AND c.chunk_hash=? AND c.model_version=? AND c.prompt_version=? '
+                               'AND c.source_hash=d.source_hash', (did, chunk_hash, model, prompt)).fetchone()
+        return json.loads(row[0]) if row else None
+
+    def save_method_chunk(self, d: dict, chunk_hash: str, payload: dict, model: str, prompt: str, epoch: int):
+        with self.con:
+            self.con.execute("UPDATE meta SET value=value WHERE key='evidence_epoch'")
+            current = self.declaration(d['id'])
+            if epoch != self.evidence_epoch or not current or current['source_hash'] != d['source_hash'] or current['file_status'] != 'indexed':
+                raise EvidenceChanged('source or dependency evidence changed during method generation')
+            self.con.execute('INSERT OR REPLACE INTO method_chunks VALUES(?,?,?,?,?,?)',
+                             (d['id'], chunk_hash, d['source_hash'], model, prompt, json.dumps(payload)))
 
     def method(self, did: str) -> dict | None:
         row = self.con.execute("SELECT * FROM methods WHERE decl_id=? AND status='ready'", (did,)).fetchone()

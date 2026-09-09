@@ -122,3 +122,10 @@ corpus. The open join is an exact source/native augmented Gram identification,
 including mixed vector/operator-image entries, together with the source-specific
 small-image input. Target-space density is not required by the existing one-sided
 Gram isometry.
+
+The [common-forcing Gram reduction](../3-formalized/sqb-common-theta-forcing-gram.md)
+now computes the native augmented Gram and both finite-packet energies from the
+response Gram G and the scalar pairing m(q)=<F_0,U_q>. The exact identity
+`(e_r-conj(e_q)) G(q,r)=m(r)-conj(m(q))` determines G away from reflected energy
+collisions. The remaining source comparison can therefore target m and the fixed
+forcing mass, while retaining collision values and the native normalization.

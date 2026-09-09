@@ -21,7 +21,7 @@ import stat
 import time
 
 from .config import MAX_PENDING, PROTOCOL_VERSION, installation_status
-from .protocol import ChildChannel, RuntimeDeadline, RuntimeUnavailable, frame, pop_frame, validate
+from .protocol import ChildChannel, RuntimeDeadline, RuntimeUnavailable, frame, pop_frame, validate, receive_deadline
 
 POLL_SECONDS = 0.02
 IDLE_SECONDS = 300.0
@@ -173,6 +173,7 @@ class WorkerServer:
                 return
             if peer.incoming:
                 raise ValueError('one request per connection')
+            request = receive_deadline(request)
             validate(request)
             peer.request = request
             self.sequence += 1
