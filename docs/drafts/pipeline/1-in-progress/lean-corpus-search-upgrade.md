@@ -50,4 +50,13 @@ Initial delegated scopes: compiler exporter, runtime/setup, benchmark fixtures/e
 - Background source migration, embeddings and validated method descriptions continue incrementally. First published vectors verified entirely under RHTower. Use `python3 scripts/formal_tools.py research-indexer status` for current progress rather than this snapshot.
 - Full measured five-way held-out benchmark and default-deep release gates remain pending. Do not claim quality improvement or proof applicability from these smoke tests.
 - General compiler export is implemented and tested, but bulk extraction of available artifacts remains explicit foreground work. Missing/stale artifacts remain labeled; no source recompilation is implicit.
-- Long proof descriptions can exhaust a bounded batch and remain pending; malformed/unanchored descriptions are recorded as failed and excluded. Monitor coverage/errors during enrichment.
+- Long proof descriptions save completed chunk summaries and resume them after interruptions. Malformed/unanchored descriptions remain failed and excluded. Monitor coverage/errors during enrichment.
+
+## Indexing error repair, 2026-09-09
+
+- Reproduced source batches stuck in `_invalidate_dependents` while re-extracting unchanged files. Content hashes now skip this traversal for unchanged sources; real-edit traversal is bounded with conservative description invalidation as fallback. A repaired foreground source batch completed 655 files within its work budget.
+- Shorter JSON generation uses numbered code-line citations resolved to exact source text. Comments are excluded from model input/citation eligibility; one comment-only generated description was requeued. Prompt version `method-3-code-lines` retries earlier prompt-version failures automatically. Generated interpretations remain unverified, despite valid source citations.
+- `method_chunks` stores completed summaries across deadline/preemption retries and invalidates them with source/dependency changes.
+- Reproduced immediate runtime expiry from system Python 3.9 (`time.monotonic()` near zero) talking to Python 3.12 (clock near system uptime). Protocol 2 sends remaining duration and rebases it in worker; original client deadline still governs cancellation. Live system-Python embedding request passed in 2.00 seconds, 1024 dimensions.
+- Status retains per-phase errors and distinguishes normal budget/preemption deferrals. The resumed worker remains RHTower → HTGeometry → rest. No new agents or background Lean processes.
+- Targeted checks: corpus 16, engine 15, runtime 32, background 2, vector 7 tests passed (72 total). Live repaired methods and source batches passed; historical failures remain queued for the new prompt. No full Lean builds or instruction-file changes in this repair.

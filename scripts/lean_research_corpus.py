@@ -119,7 +119,7 @@ class EvidenceChanged(ValueError):
     """Source or dependencies changed while a generated description was pending."""
 
 
-def mask_comments_strings(text: str) -> str:
+def mask_comments_strings(text: str, *, mask_strings=True) -> str:
     """Mask nested comments and strings without moving source offsets."""
     out = list(text)
     depth = 0
@@ -142,14 +142,15 @@ def mask_comments_strings(text: str) -> str:
                 out[i] = " "
         elif string:
             if text[i] == "\\" and i + 1 < len(text):
-                out[i] = " "
-                if text[i + 1] != "\n":
-                    out[i + 1] = " "
+                if mask_strings:
+                    out[i] = " "
+                    if text[i + 1] != "\n":
+                        out[i + 1] = " "
                 i += 2
                 continue
             if text[i] == '"':
                 string = False
-            if text[i] != "\n":
+            if mask_strings and text[i] != "\n":
                 out[i] = " "
         elif pair == "/-":
             depth = 1
@@ -164,7 +165,8 @@ def mask_comments_strings(text: str) -> str:
             continue
         elif text[i] == '"':
             string = True
-            out[i] = " "
+            if mask_strings:
+                out[i] = " "
         i += 1
     return "".join(out)
 

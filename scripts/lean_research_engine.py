@@ -20,11 +20,11 @@ import sys
 import time
 from pathlib import Path
 
-from lean_research_corpus import Corpus, cache_directory, digest, PATH_PRIORITY_SQL, EvidenceChanged
+from lean_research_corpus import Corpus, cache_directory, digest, PATH_PRIORITY_SQL, EvidenceChanged, mask_comments_strings
 from lean_search_index import module_matches, query_parts
 
 ENGINE_VERSION = "deep-1"
-METHOD_PROMPT_VERSION = "method-2-lines"
+METHOD_PROMPT_VERSION = "method-3-code-lines"
 MAX_ROUNDS = 3
 MAX_QUERIES = 8
 
@@ -409,7 +409,8 @@ def embedding_version(status: dict) -> str:
 
 
 def method_prompt(statement: str, chunk: str) -> str:
-    numbered = '\n'.join(f'{i + 1}: {line}' for i, line in enumerate(chunk.splitlines()))
+    code = mask_comments_strings(chunk, mask_strings=False)
+    numbered = '\n'.join(f'{i + 1}: {line}' for i, line in enumerate(code.splitlines()) if line.strip())
     return ('Return only one valid JSON object, no Markdown or introductory text. '
             'Describe proof operations visible in the supplied Lean argument in at most 100 words total. '
             'Never guess the mathematical meaning of a named constant. '
@@ -431,7 +432,8 @@ def method_payload(response: str, chunk: str) -> dict:
             raise ValueError('method ' + key + ' must be a list of strings')
     ids = payload.get('evidence_lines')
     lines = chunk.splitlines()
-    if not isinstance(ids, list) or not ids or any(type(i) is not int or not 1 <= i <= len(lines) or not lines[i - 1].strip() for i in ids):
+    code_lines = mask_comments_strings(chunk, mask_strings=False).splitlines()
+    if not isinstance(ids, list) or not ids or any(type(i) is not int or not 1 <= i <= len(lines) or not code_lines[i - 1].strip() for i in ids):
         raise ValueError('method evidence_lines must reference existing nonempty source lines')
     # Resolve citations to the original bytes. These remain model-selected
     # evidence, not a verification of the generated mathematical interpretation.
@@ -460,6 +462,8 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
                 # stages, preserving source quotes through the final reduction.
                 summaries = []
                 for chunk in proof_chunks:
+                    if not mask_comments_strings(chunk[0], mask_strings=False).strip():
+                        continue
                     chunk_hash = digest(chunk[0])
                     summary = corpus.method_chunk(d['id'], chunk_hash, generation_model, METHOD_PROMPT_VERSION)
                     if summary is None:

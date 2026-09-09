@@ -13,6 +13,14 @@ from lean_research_corpus import Corpus, chunks, inventory, mask_comments_string
 
 
 class ExtractionTests(unittest.TestCase):
+    def test_comment_only_mask_retains_string_literals_and_line_positions(self):
+        source = '"/-- literal \\" --/"\n/- comment /- nested -/ -/\nby rfl -- note'
+        result = mask_comments_strings(source, mask_strings=False)
+        self.assertEqual(result.splitlines()[0], source.splitlines()[0])
+        self.assertEqual(result.count('\n'), source.count('\n'))
+        self.assertNotIn('nested', result)
+        self.assertIn('by rfl', result)
+
     def test_comments_strings_and_nested_comments_cannot_invent_declarations(self):
         text = '/- theorem fake : False := /- nested -/ sorry -/\n' \
                'def s := "theorem fake2 : False := sorry"\n' \

@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 199750 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 199758 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 159899 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -118034,6 +118034,14 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `centeredDomain_coe` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingGraph` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingGraph.lean:490` | The centered graph vector is exactly the original native orthogonal centering. |
 | theorem | `centeredDomain_mean` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingGraph` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingGraph.lean:494` | Exact zero native mean after subtracting the actual constant component. |
 | theorem | `centeredDomain_equation` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingGraph` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingGraph.lean:500` | The centered common forcing equation, in the unchanged original native graph. |
+| theorem | `positiveSource_globally_bounded` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:28` | The complete positive theta field is bounded on every modular translate. |
+| def | `horizontalWeight` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:92` | The fixed positive theta source, averaged over the complete horizontal period. |
+| theorem | `horizontalWeight_pos` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:107` | This scalar weight is strictly positive at every height, before any Xi parameter is chosen. |
+| def | `scalarResponse` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:118` | One positive, parameter-independent height weight controls the full scalar theta response. |
+| theorem | `scalarResponse_integrable` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:127` | The displayed scalar integral is absolutely admitted in the original height measure. |
+| theorem | `source_positive_pairing_eq_scalarResponse` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:142` | The native source pairing is the literal positive-weight scalar response. |
+| theorem | `nativePositive_inner_source` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:162` | Exact native Hilbert pairing, including all modular rows. |
+| theorem | `sourcePairing_eq_scalarResponse` | `GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing` | `formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingPairing.lean:184` | Full native scalar pairing with the true constant-mode correction. |
 | theorem | `source_pairing_gram` | `GaloisForLFunctions.RHTower.SelbergThetaDilationGram` | `formal/GaloisForLFunctions/RHTower/SelbergThetaDilationGram.lean:308` | The complete native Gram kernel of the literal theta dilation family. |
 | def | `vector` | `GaloisForLFunctions.RHTower.SelbergThetaDilationGram` | `formal/GaloisForLFunctions/RHTower/SelbergThetaDilationGram.lean:334` | The literal theta dilation source as an element of the original native Hilbert space. |
 | theorem | `vector_coe` | `GaloisForLFunctions.RHTower.SelbergThetaDilationGram` | `formal/GaloisForLFunctions/RHTower/SelbergThetaDilationGram.lean:338` | The Hilbert vector is represented almost everywhere by the full modular source. |

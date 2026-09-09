@@ -85,6 +85,9 @@ runtime_python(root: Path) -> Path
 
 `deadline` is absolute `time.monotonic()`, shared across all stages; never a
 relative timeout or wall clock. Invalid/beyond-limit arguments raise ValueError.
+The client keeps this end-to-end deadline locally and sends the remaining duration
+over the socket. Protocol 2 rebases it onto the worker's clock: macOS Python 3.9
+can use a process-local clock origin, unlike the dedicated Python 3.12 worker.
 `RuntimeDeadline` means the request expired. `RuntimeUnavailable` means missing
 setup, queue saturation, cancellation, preempted enrichment, transport failure,
 or a model failure. Empty embed/rerank batches return `[]` after validation.

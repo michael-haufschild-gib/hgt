@@ -129,3 +129,10 @@ response Gram G and the scalar pairing m(q)=<F_0,U_q>. The exact identity
 `(e_r-conj(e_q)) G(q,r)=m(r)-conj(m(q))` determines G away from reflected energy
 collisions. The remaining source comparison can therefore target m and the fixed
 forcing mass, while retaining collision values and the native normalization.
+
+The [literal scalar pairing formula](../3-formalized/sqb-common-theta-forcing-pairing.md)
+identifies m(q) with an absolutely convergent height integral against the fixed,
+strictly positive horizontal mean of the complete theta field. Its exact
+finite-volume constant-mode subtraction is retained. The formula and all eight
+public declarations are audited; the source estimate needed for normalized
+small residuals remains open.

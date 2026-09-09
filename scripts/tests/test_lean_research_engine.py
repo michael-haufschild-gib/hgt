@@ -54,10 +54,10 @@ class FusionTests(unittest.TestCase):
             json_object("__import__('os').system('false')")
 
     def test_method_evidence_is_resolved_to_exact_source_and_invalid_ids_rejected(self):
-        proof = 'by\n  exact h\n'
+        proof = 'by\n  exact h\n/-- Another declaration description -/\n'
         payload = dict(description='reuse a supplied witness', assumptions=['h'], steps=['apply h'], obligations=['supply h'], evidence_lines=[2])
         self.assertEqual(method_payload(json.dumps(payload), proof)['evidence'], ['  exact h'])
-        for ids in ([0], [99], [True], [], ['2']):
+        for ids in ([0], [99], [True], [], ['2'], [3]):
             with self.assertRaises(ValueError):
                 method_payload(json.dumps({**payload, 'evidence_lines': ids}), proof)
 
@@ -168,7 +168,7 @@ class EngineTests(unittest.TestCase):
         d = self.db.declaration(self.did)
         with self.db.con:
             self.db.con.execute("DELETE FROM documents WHERE decl_id=? AND view='proof'", (self.did,))
-            for text in ('by\n  -- iterate growth bound', '  rfl'):
+            for text in ('by', '  rfl'):
                 self.db._document(self.did, d['path'], d['module'], 'proof', text, 1, 2, {})
         class Runtime(FakeRuntime):
             def generate(inner, prompt, *, deadline, max_tokens, priority):
@@ -183,7 +183,7 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(self.db.con.execute('SELECT count(*) FROM method_chunks').fetchone()[0], 1)
         second = enrich(self.db, runtime, deadline=time.monotonic()+3, methods=True)
         self.assertGreaterEqual(second['methods'], 1)
-        first_chunk_calls = [p for op,p in runtime.calls if 'NUMBERED PROOF:\n1: by\n2:   -- iterate' in p]
+        first_chunk_calls = [p for op,p in runtime.calls if p.endswith('NUMBERED PROOF:\n1: by')]
         self.assertEqual(len(first_chunk_calls), 1)
         self.assertIsNotNone(self.db.method(self.did))
 

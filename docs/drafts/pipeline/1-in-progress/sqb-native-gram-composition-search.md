@@ -71,8 +71,16 @@ denominator energies of every finite native domain packet are also proved.
 Off reflected energy collisions this reduces the two-variable Gram comparison to
 scalar source-pairing data. At collisions the cleared identity is retained without
 division. See the [native Gram proof](../3-formalized/sqb-common-theta-forcing-gram.md).
-The source-specific calculation of m, or a sufficient estimate on the resulting
-quadratic forms, remains open.
+The [literal scalar pairing](../3-formalized/sqb-common-theta-forcing-pairing.md)
+is now proved as an absolutely convergent height integral. With J(y) the horizontal
+mean of the complete positive theta field, S(q)=integral y^-2 h_q(y)J(y) dy and
+
+    m(q) = -1/4 [S(q)-M^2/((1+z_q^2)V)].
+
+J is fixed and strictly positive; the actual constant-mode correction is retained.
+Scratch, source, named-leaf build, all eight public axiom checks, and lint passed.
+An estimate on these complex integrals sufficient for small normalized full residuals
+remains open.
 
 The dilation Gram theorem uses the profile from `SelbergThetaDilationTransform`.
 The common-forcing graph uses the reflected first-order pair from
