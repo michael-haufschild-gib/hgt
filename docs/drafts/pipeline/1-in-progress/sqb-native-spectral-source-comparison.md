@@ -365,33 +365,40 @@ Relative to `v^T*A_low*v-sum_ij |v_i|*E_band_ij*|v_j|`, its right side gains exa
 2*L*(max(-G_2(x),0)+e_G(x))*v_3^2.
 ```
 
-The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. For each fixed coefficient, the aperture-dependent matrix `thetaCuspCenterCorrectedEvenFour` integrates entrywise to the original native moments. Its correction dominates the weighted source correction, with a nonnegative diagonal remainder, as proved by `thetaCuspCenterCorrectedEvenFour_posDef_of_source`. This makes the coefficient choice admissible; the aperture-independent source matrix itself is not the exact zero-flux matrix. The complete-source tail theorem covers `L` on `pi*exp(2*x)>=21`, hence throughout `x>=1`, and seam positivity for `L` is proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
+The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. For each fixed coefficient, the aperture-dependent matrix `thetaCuspCenterCorrectedEvenFour` integrates entrywise to the original native moments. Its correction dominates the weighted source correction, with a nonnegative diagonal remainder, as proved by `thetaCuspCenterCorrectedEvenFour_posDef_of_source`. This makes the coefficient choice admissible; the aperture-independent source matrix itself is not the exact zero-flux matrix. The complete-source tail theorem covers `L` on `pi*exp(2*x)>=18`, hence throughout `x>=7/8`, and seam positivity for `L` is proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
 
-### Complete compensated outer region through center one
+### Complete compensated outer region through seven eighths
 
-The complete-source remainder estimate now retains the balancing factor in each even entry. Put `q=pi*exp(2*x)`, `f_1=thetaCuspSourceTerm x 1`, and `epsilon=regimeOneLikelihoodScale x`. For `0<=k<=6` and `q>=21`, the verified bound is
+The complete-source reflection estimate retains both likelihood-error contributions. Put `q=pi*exp(2*x)`, `f_1=thetaCuspSourceTerm x 1`, and `epsilon=regimeOneLikelihoodScale x`. The all-order balanced estimate, valid for `q>=2*k+6` and `x>0`, is
 
 ```text
 abs(nativeScaled_k-firstScaled_k)/32^k
-  <= 27*18^k*q^k*epsilon
-  <= 27*18^6*21^6*32/(1300000000)^3
-  <= 2/10^9.
+  <= 18*8^k*q^k*epsilon + 9*18^k*q^k*epsilon^2.
 ```
 
-The exponential calibration follows analytically by cubing the existing proved lower bound for `exp(21)`, together with polynomial-exponential monotonicity. The exact first-atom determinant certificate uses `z=1-30/q`. Its constant coefficient dominates the sum of its odd coefficients, so the same reserve floor `1/10000` holds whenever `q>=15`, since `abs(z)<=1` and every even power is nonnegative. First-atom balanced entries have absolute value at most four for `q>=21`; complete entries have absolute value at most five. The existing four-by-four determinant perturbation estimate costs at most `96*5^3*(2/10^9)`. Consequently the reserved complete determinant is at least `1/20000` throughout `q>=21`, and the actual native Schur coordinate divided by `f_1^2*q^6` exceeds `100000000`.
+This follows from the full reflected Leibniz estimate `18*(16*q)^(2*k)*epsilon + 9*(24*q)^(2*k)*epsilon^2`, before merging its linear and quadratic terms. For `k<=6` and `q>=18`, polynomial-exponential monotonicity and the analytically proved bound `exp(18)>65000000` give
 
-The complete mass/slope estimates `F<=(101/100)*f_1`, `abs(F')<=(201/100)*q*f_1`, and `16*x<=q` give
+```text
+B = 18^6*32/(65000000)^3,
+q^6*epsilon <= B,   epsilon <= B,   q^6*epsilon^2 <= B^2,
+abs(nativeScaled_k-firstScaled_k)/32^k
+  <= 18*8^6*B + 9*18^6*B^2 <= 2/10^8.
+```
+
+The exact first-atom determinant certificate uses `z=1-30/q`. On `q>=18`, its odd powers are bounded below by `-(2/3)^j`, its even powers are nonnegative, and its denominator obeys `(4-6/q)^2<=16`. Keeping these bounds in the existing degree-fourteen identity gives a first-atom reserved determinant floor `1/4000`. First-atom balanced entries have absolute value at most four; complete entries have absolute value at most five. The determinant perturbation costs at most `96*5^3*(2/10^8)`, leaving a complete reserved determinant at least `1/100000`. The actual native Schur coordinate divided by `f_1^2*q^6` therefore exceeds `100000000`.
+
+The complete mass/slope estimates `F<=(101/100)*f_1`, `abs(F')<=(201/100)*q*f_1`, and `16*x<=q` retain the compensation bound
 
 ```text
 G = 3*F^2+2*x*F*F' >= -(13/50)*q^2*f_1^2,
-G/(f_1^2*q^6) >= -(13/50)/21^4.
+G/(f_1^2*q^6) >= -(13/50)/18^4.
 ```
 
-Thus every fixed `0<=C<=3*10^12` has compensated normalized Schur coordinate strictly above `90000000` on `q>=21`. Since `x>=1` implies `q>=21`, the actual complete matrix `thetaCuspNativeEvenFourCompensated C x` is positive definite on `x>=1`. This includes the actual canonical coefficient. The literal weighted matrix is positive for every positive aperture and `r>=2`. Combining with the existing uniform seam theorem gives one `delta>0`, `delta<=1`, such that every `10^12<=C<=3*10^12` is covered on `0<=x<delta` or `x>=1`.
+Thus every fixed `0<=C<=3*10^12` has compensated normalized Schur coordinate strictly above `90000000` on `q>=18`. A finite Taylor lower bound proves `x>=7/8` implies `q>=18`. The actual complete matrix `thetaCuspNativeEvenFourCompensated C x` is consequently positive definite on `x>=7/8`, including the actual canonical coefficient. The literal weighted matrix is positive for every positive aperture and `r>=7/4`. Combining with the existing uniform seam theorem gives one `delta>0`, `delta<=7/8`, covering every `10^12<=C<=3*10^12` on `0<=x<delta` or `x>=7/8`.
 
-The exact statements are formalized in `HTGeometry/FirstAtomEvenTailExtendedReserve.lean` and `RHTower/ThetaCuspEvenFourExtendedTail.lean`. The full construction passes `lake env lean /tmp/sqb77_complete_extended.lean`; canonical source, weighted-source, and common outer-gap axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`. Both modules are wired into their umbrellas. The final narrow builds `lake build GaloisForLFunctions.HTGeometry.FirstAtomEvenTailExtendedReserve` and `lake build GaloisForLFunctions.RHTower.ThetaCuspEvenFourExtendedTail` pass in `/tmp/sqb77-first-extended-leaf-audit` and `/tmp/sqb77-even-extended-leaf-audit`, against actual repository source and cached dependencies. Formal lint passes (`/tmp/sqb77_formal_lint.txt`). No numerical experiment or numerical certificate enters these proofs. **The remaining compact source sign below one, compatibility with a fixed barrier coefficient, the global degree-six cutoff norm, and all-rank positivity remain open.** This is an even-block source theorem, not a global rank-seven theorem.
+The exact statements are formalized in `HTGeometry/FirstAtomEvenTailSharpReserve.lean` and `RHTower/ThetaCuspEvenFourTwoScaleTail.lean`. Both full constructions pass foreground scratch checks (`/tmp/sqb78_first_reserve.lean` and `/tmp/sqb78_complete_two_scale.lean`); canonical source, weighted-source, and common outer-gap axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`. Both modules are wired into their umbrellas. The final narrow builds `lake build GaloisForLFunctions.HTGeometry.FirstAtomEvenTailSharpReserve` and `lake build GaloisForLFunctions.RHTower.ThetaCuspEvenFourTwoScaleTail` pass in `/tmp/sqb78-first-sharp-leaf-audit` and `/tmp/sqb78-even-two-scale-leaf-audit`, against actual repository source and cached dependencies. Formal lint passes (`/tmp/sqb78_formal_lint.txt`). No numerical experiment or numerical certificate enters these proofs. **The remaining compact source sign below seven eighths, compatibility with a fixed barrier coefficient, the global degree-six cutoff norm, and all-rank positivity remain open.** This is an even-block source theorem, not a global rank-seven theorem. The present all-order error estimate needs `q>=18` at order twelve; extending it below that threshold requires a stronger source estimate.
 
-Broad deep searches through angular terms, Rankin--Cohen identities, complete Gaussian errors, and absorption inspected declarations, candidate lemmas, source arguments, methods, and proposed ingredient groups. Search coverage remains partial, including stale compiler metadata; no absence claim is inferred. The successful estimate uses the actual effective source-error theorem and the existing exact reserve identity. The independently chosen arXiv search `buckling` recovered [Scaling Inequalities and Limits for Clamped Plate Eigenvalues on Geodesic Disks](https://arxiv.org/html/2608.29498v1). Section 3 keeps separate scaling factors in a fixed-domain Rayleigh quotient before comparing its coefficients. That mechanism motivates retaining normalization through estimates; its geometric hypotheses and spectral conclusions are not used as theta-source premises.
+Broad deep searches through coercivity/defect/transport, Christoffel kernels, modular source-sign mechanisms, and Gaussian derivative-pair majorants inspected declarations, candidate lemmas, source arguments, methods, and proposed ingredient groups. Results retain partial coverage and stale compiler metadata; pending compact determinant declarations are not treated as proved source inputs. The useful error estimate was verified in Lean on the actual complete source. The independently chosen arXiv term `entrainment` recovered [On the Existence of Almost Periodic Solutions with Applications to Global Entrainment](https://arxiv.org/pdf/2607.10838). Its matrix-measure argument uses accumulated contraction and a uniformly bounded discounted time window on a bounded invariant region. This suggests comparing a complete signed forcing with the actual orbit's integrated gain, but no such theta contraction estimate has been obtained; no dynamical hypothesis from that paper enters Lean.
 
 ### Actual modular ratio bounds and next determinant target
 
