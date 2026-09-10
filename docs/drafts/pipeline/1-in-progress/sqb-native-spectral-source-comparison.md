@@ -310,6 +310,32 @@ Further broad deep retrieval across recurrence, adjoints, Jensen hyperbolicity, 
 
 For the separate adaptive deletion basis `P_j=R_a/(t-r_j)`, minimizer orthogonality also gives the exact analytical pairing `integral (R_a*F_a)'*conj(P_j*F_a)=integral |P_j*F_a|^2/2`. Its real part is an integration-by-parts identity and its imaginary part vanishes by signed-source orthogonality. This determines the projection onto the six deletion packets in their ordinary Gram metric; the remaining energy comparison is still open.
 
+### Fixed-coefficient middle comparison
+
+The exact zero-integral compensation identity permits every fixed real coefficient; the coefficient need not be the canonical seam coefficient. Set `L=10^12`, `G_2=thetaCuspTwoAtomCompensationSource`, and `e_G=thetaCuspTwoAtomCompensationErrorBound`. Write `A_full(C,x)` for `thetaCuspNativeEvenFourCompensated C x`, `A_2(L,x)` for `thetaCuspTwoAtomEvenFourCompensated L x`, `A_low(x)` for `thetaCuspTwoAtomEvenFourLower x`, and `E_band(x)` for `thetaCuspEvenFourTwoAtomErrorMatrix x`. A sharper error matrix for this single coefficient is
+
+```text
+E_L(x) = E_band(x) - 2*L*e_G(x)*e_3*transpose(e_3).
+```
+
+Here the reflection-entry errors are unchanged, while the last correction error is `L*e_G` instead of `3*L*e_G`. This follows directly by multiplying `abs_thetaCuspCenterCompensationSource_sub_two_le` by `L`; it does not discard the correction's mixed source terms. On the proved two-atom ray `pi*exp(2*x)>=37/10`, the analytical quadratic comparison is
+
+```text
+v^T*A_full(L,x)*v >= v^T*A_2(L,x)*v - sum_ij |v_i|*E_L(x)_ij*|v_j|.
+```
+
+Relative to `v^T*A_low*v-sum_ij |v_i|*E_band_ij*|v_j|`, its right side gains exactly
+
+```text
+2*L*(max(-G_2(x),0)+e_G(x))*v_3^2.
+```
+
+The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. Both corrected full matrices integrate entrywise to the same native moments, so this coefficient choice is admissible for the rank-seven target. The complete-source tail theorem already covers `L` on `pi*exp(2*x)>=30`, and seam positivity for `L` is already proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
+
+The unsigned-moment matrix conjecture above also remains open. Attempts to supply its source estimate from reciprocal-score positivity, coupled derivative energies, and Toda evolution have not produced the needed inequality. The retrieved Toda law requires coefficient equations not identified with these signed moments; positive reciprocal-moment measures use a different variable from `-x/(log Phi)'`. Broad deep searches through anharmonicity, score, compensation, Lee--Yang, reciprocity, moment flow, and lattice harmonics inspected statement, proof, method, source-argument, and proposed ingredient-group results. Coverage remains partial; some requests had interrupted or timed-out stages. No corpus-absence conclusion follows.
+
+Independently chosen recent-paper searches included hypocoercivity, orthogonality, and roughening. [Weighted L2 bounds for kinetic Fokker--Planck equations and hypocoercivity](https://arxiv.org/html/2608.28120v1) uses a joint power of entropy and a weighted norm whose differential cross terms cancel. [Sharp hypocoercive convergence estimates for underdamped Langevin dynamics with specular reflection](https://arxiv.org/html/2608.17022v1) retains Hessian and boundary terms in a weighted Reilly identity. Neither calculation has yet supplied a source-preserving evolution or the required theta derivative-energy bound; neither is used as a Lean premise.
+
 ### Adaptive deletion basis and modular Sturm coordinates
 
 At a fixed aperture, put `R(t)=Q_a(2*t)` and `P_j(t)=R(t)/(t-r_j)` for its six simple real roots. Orthogonality of the monic minimizer gives the analytical identities `integral P_i*P_j*partial_a(|F_a|^2)=0` for `i != j`, since `P_i*P_j` is `R` times a degree-four polynomial. Each diagonal integral is strictly positive by positivity below degree six. This diagonalizes the deletion basis for the signed aperture-derivative weight. The kinetic inequality above instead contains the ordinary weight `|F_a|^2`; controlling its deletion Gram form by `2*integral |(R*F_a)'|^2` is still the target. These integral identities have not been formalized.

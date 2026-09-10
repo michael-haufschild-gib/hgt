@@ -1836,8 +1836,25 @@ damping value and cutoff. This is stronger than a generic nonorthogonal
 matrix counterexample: it concerns the actual signed arithmetic source.
 It does not rule out a forcing-aware estimate at u=1 or retire EDQ. The
 positive survivor is the quantitative small-damping amplification law and
-its full quadratic remainder estimate. Paper proof complete; Lean audit in
-progress. The required absolute cofinal subpower source ceiling remains open.
+its full quadratic remainder estimate. Paper proof and Lean formalization
+are complete in `EulerDeletionPrimeCountAmplification.lean`, namespace
+`RHTower.PrimeCountDamping`. The required absolute cofinal subpower source
+ceiling remains open.
+
+The 15 public theorems include `source_add_prime_norm_le`,
+`aperture_energy_eventually_lower`,
+`source_relative_energy_log_pow_tendsto_zero`, `eventually_amplifies`, and
+`not_exists_uniform_damping_budget`. A scratch check passed, followed by the
+warning-free leaf audit
+`lake build --old GaloisForLFunctions.RHTower.EulerDeletionPrimeCountAmplification`.
+Only this leaf compiled in that final build (181 seconds); the 13,641-job
+display includes cached dependencies. Two missing dependency oleans were
+resolved beforehand using individual leaf targets. All 15 new public
+theorems were checked through a `/tmp` axiom-audit file and depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. The umbrella import is wired;
+no umbrella build was run. Generated indexes were refreshed and formal lint
+passed. No numerical experiment, frontier-map edit, or universal-law-ledger
+edit was made by this agent for this result.
 
 An additional algebraic observation, not needed for that proof, is
 sum_(d|n) mu(d)*u^omega(d)=(1-u)^omega(n) for n>=1. Integration over u in
@@ -1895,3 +1912,161 @@ and did not prove the requested inequalities. Exhaustive source-text follow-up
 located the actual prime-packet floor, global Möbius logarithmic saving,
 generator diagonal bound, reciprocal-square-root telescope, and squarefree
 prime-power classification used in the new direct proof.
+
+
+## Prime-count endpoint: prime-power forcing and spatial variance
+
+The current attack asks whether the count-damping path becomes inexpensive near
+its arithmetic endpoint u=1. Set J_N=H_N'(1), with the full Hilbert carrier from
+the preceding section. Finite divisor convolution gives, for n>=1,
+
+```
+sum_(d|n) mu(d)*u^omega(d) = (1-u)^omega(n),
+sum_(d|n) mu(d)*omega(d) = -1_(n is a prime power).
+```
+
+Consequently, writing Q(k)=#{1<=m<=k: m is a prime power} and
+h_N=sum_(n<=N) mu(n)*omega(n)/n, the exact cell numerator for k<=N is
+k*h_N+Q(k). The full energy therefore dominates
+
+```
+sum_(1<=k<=N) (k*h_N+Q(k))^2/(k*(k+1)).
+```
+
+Minimizing this finite quadratic over the scalar h leaves the explicit
+weighted spatial variance C-B^2/A, where
+A=sum k/(k+1), B=sum Q(k)/(k+1), C=sum Q(k)^2/(k*(k+1)).
+This variance includes cross-cell mismatch and is independent of h_N.
+The complete infinite tail is retained on the upper side of the inequality.
+
+The following asymptotic consequence has a paper proof; its Lean proof is
+pending. For each fixed 0<alpha<1, prime counting and the elementary bound
+O(sqrt(x)*log(x)) for proper prime powers give Q(x)~x/log(x). Uniformly on
+[N^alpha,2*N^alpha], Q(k)/k=(1/alpha+o(1))/log(N); uniformly on [N/2,N],
+Q(k)/k=(1+o(1))/log(N). The two ranges are eventually disjoint. For any real
+h, at least one range stays a fixed positive multiple of 1/log(N) away from
+-h. Its length is at least a fixed multiple of N^alpha, and k/(k+1)>=1/2.
+Thus ||J_N||^2>=c_alpha*N^alpha/(log N)^2 eventually, with c_alpha>0.
+This excludes a subpower absolute bound on the endpoint count derivative.
+It does not bound ||H_N(1)|| or its signed pairing with J_N. An energy
+transport proof must still exploit that pairing; bounding the forcing by
+its norm alone loses the needed cancellation.
+
+Two preliminary upper-bound attempts fail at identifiable estimates.
+The exact convolution mu(n)*(1-t)^omega(n)=(mu * t^omega)(n) transports
+smaller cutoffs, but its positive dilation majorant contains
+sum_(p<=N) t/sqrt(p), which grows at fixed t. Grouping the endpoint Taylor
+jets by exact distinct-prime count preserves the convolution support but
+supplies no bound uniform in jet order and cutoff. Neither calculation is
+an RH proof. No numerical experiment is needed for these deductions.
+
+Broad newest-first arXiv searches for `avalanche` and `screening` supplied
+two September premise checks. [Janssens--Moll--Schindler, 8 September 2026](https://arxiv.org/html/2609.08666v1)
+prove variance reduction for normalized positive cluster weights, using
+independent equal-variance cluster times and neglecting time-ordering
+correlations in that analytical proof. EDQ's signed physical Gram form does
+not satisfy those assumptions. [Huang--Breizman, 7 September 2026](https://arxiv.org/html/2609.08051v1)
+use a marginal-stability balance, a one-dimensional spectral-ridge assumption,
+and a capped regularized response in a reduced kinetic model. These are
+model closure assumptions, not a proof of EDQ's arithmetic covariance sign.
+No external result is imported into Lean.
+
+
+A stronger paper consequence uses the corpus theorem
+`Sieve.primeCounting_sub_logIntegral_isBigO`, whose current declaration hash
+was verified against the deep-search result. Integrating the logarithmic
+integral twice by parts and absorbing the proper prime powers gives
+Q(x)=x/log(x)+x/log(x)^2+O(x/log(x)^3). Uniformly for t in [1/4,1],
+Q(tN)/(tN)=1/L+(1-log(t))/L^2+O(L^-3), L=log(N).
+The values on [N/4,N/3] and [2N/3,N] have a gap at least
+log(2)/(2*L^2) eventually. Both windows have length proportional to N.
+Thus the sharper lower bound is ||J_N||^2>=c*N/(log N)^4 for some c>0.
+This asymptotic lower bound is paper-proved, not yet Lean-closed.
+
+It also yields a paper-proved local curvature statement. With K_N=H_N''(1),
+the elementary bound omega(n)<=log(N)/log(2) for squarefree n<=N and the
+already formalized sum of generator norms give ||K_N||=O(sqrt(N)*log(N)^2).
+The existing unconditional raw-source estimate gives
+||H_N(1)||*||K_N||=o(N/log(N)^4). Differentiating the finite Hilbert polynomial
+therefore yields
+
+```
+(d^2/du^2)||H_N(u)||^2 at u=1
+  = 2*||J_N||^2 + 2*Re <H_N(1),K_N>
+  = (2+o(1))*||J_N||^2 > 0 eventually.
+```
+
+This is curvature of the literal full-energy path, with its mixed term
+controlled rather than discarded. Its Lean proof is pending. It neither
+controls the first derivative nor bounds the energy height at u=1; local
+convexity therefore does not provide the missing RH producer.
+
+Four current deep searches covered endpoint count convolution, factorial
+jets/resolvents, prime-count curvature, and divisor/powerset methods. All
+returned partial results. Three coverage snapshots were pending; the resolved
+snapshot inventoried 56,124 files (46,699 Lean), with pending/stale compiler
+coverage. Candidate lemmas and source arguments were inspected. The proposed
+resolvent ingredient group remained unverified and had no physical source
+identification. The squarefree truncated-divisor theorem also had a verified
+current source hash, but its squarefree hypothesis does not establish the
+required identity for arbitrary n. The direct multiplicative arithmetic-
+function proof and derivative were used instead; their validation is listed below. Search metadata
+marked these external candidates `source_only`; no compiler closure is
+inferred from retrieval status.
+
+
+The positive invariant admits a sharper paper evaluation:
+
+```
+jetVariance(N) * (log N)^4 / N -> 1.
+```
+
+Here is a dependency-closed asymptotic argument from the preceding prime
+counting estimate. Put L=log N, t_k=k/N, w_k=k/(k+1), and
+r_k=L^2*(Q(k)/k-1/L). For k>=N*exp(-sqrt L), the two-term expansion above
+implies r_k=1-log(t_k)+O((1+log(t_k)^2)/L), uniformly in that range.
+For the omitted head, Q(k)/k<=1 bounds its normalized squared r-mass by
+O(exp(-sqrt L)*L^4). Its normalized log moments also tend to zero.
+The integral comparison for decreasing (-log t)^j gives bounded normalized
+fourth log moments and convergence of the first two moments to 1 and 2;
+these are the elementary integrals over (0,1). The weights w_k can be replaced
+by 1 with a vanishing error, using the same head split. Hence
+A/N->1, (sum w_k*r_k)/N->2, and (sum w_k*r_k^2)/N->5.
+Translation invariance of variance now gives the displayed limit as 5-2^2=1.
+This proves the intrinsic prime-power forcing scale with leading constant
+one, independent of the actual harmonic scalar. Formalization of this limit
+remains pending; the exact finite invariant and its physical lower bound are
+the statements formalized in the module listed below.
+
+A fifth deep/method query on second-order logarithmic variance returned
+partial results with pending coverage. Candidate and source-argument lanes
+were inspected. It found a bounded-variation Riemann-sum error theorem,
+ordinary covariance identities, and scalar log-weight telescopes, but no
+ready-made theorem identifying this prime-power variance asymptotic. These
+hits are not treated as verified applications.
+
+
+The exact finite part is now formalized in
+`EulerDeletionPrimeCountEndpointVariance.lean`, namespace
+`RHTower.PrimeCountDamping`. Its 13 public theorems prove the damped divisor
+identity, prime-power derivative support, full carrier derivative, exact
+infinite energy series, finite prefix bound, scalar square completion,
+sharp/nonnegative/monotone variance, and pairwise determinant identity.
+`jetVariance_le_endpointJet_energy N` is the unconditional actual-source
+lower bound. The full asymptotic limit and eventual strict curvature remain
+paper results, explicitly outside this module's claims.
+
+The scratch check and all 13 new-theorem axiom checks passed with only
+`propext`, `Classical.choice`, and `Quot.sound`. The final leaf command
+`lake build --old GaloisForLFunctions.RHTower.EulerDeletionPrimeCountEndpointVariance`
+passed in 133 seconds, compiling only that leaf; its 13,642-job count includes
+cached dependencies. The umbrella import is wired, with no umbrella build.
+The actual cofinal subpower bound on the undamped source remains open.
+The frontier map was not edited by this agent. The universal ledger already
+separates energy shape from the value at a minimum, so no duplicate entry was
+added. No numerical experiment was run.
+
+Generated indexes were refreshed and formal lint passed (existing large-file
+warnings only). The final source has no new warnings. All eight owned
+temporary files were removed, and all Lean/search processes started for
+this result have finished.
