@@ -1624,27 +1624,274 @@ source estimate and RH remain open. No numerical experiment was run.
 
 ## Adaptive prime window and the actual cofactor boundary
 
-**Active proof tests; no new source estimate claimed.** The receiver still needs
-a cofinal subpower bound for the complete signed physical source, including
-rough/prime mixed terms and the full tail. Two concrete conjectures are under
-examination.
+**Current obstruction: the literal all-prime cofactor has a logarithmic
+boundary layer.** Put omega(n)=card(n.primeFactors), a(n)=mu(n)/(1+omega(n)),
+and A(x)=sum_(1<=n<=x) a(n). The following paper argument proves
 
-1. The existing all-heights Perron theorem leaves its height U independent of
-   the coefficient cutoff N. With L=log N, try Q=exp(L^(19/20)),
-   U=exp(L^(19/18)), H=N exp(-L^(1/40)), d=1+1/L. The proposed proof must check
-   both displacement bounds, the correction, all four edges, and the smoothing
-   error, uniformly for P contained in primes up to Q and abs(tau)<=N.
-   This retains a rough packet; a cofactor bound alone does not close EDQ.
-2. For the all-prime coefficient a(n)=mu(n)/(1+omega(n)), where omega counts
-   distinct prime factors, test whether its actual Dirichlet series has a
-   logarithmic boundary layer at s=1. Absolute convergence for s>1 suggests
-   F(s)=integral_0^1 product_p(1-u*p^(-s)) du. Put
-   S(s)=sum_p p^(-s), B(s)=log zeta(s). Concavity of log gives the candidate
-   squeeze (1-exp(-B))/B <= F(s) <= (1-exp(-S))/S. If justified,
-   B-S=O(1) yields F(s)*log zeta(s)->1 as s decreases to 1.
-   Abel summation would then test, and potentially disprove, the proposed
-   super-polylogarithmic partial-sum saving for this literal cofactor.
+```
+F(s) = sum_(n>=1) a(n)*n^(-s),
+F(s)*log zeta(s) -> 1                         (real s -> 1+),
+A(x) is not O(x/(log x)^q)                    for every fixed q>1.
+```
 
-These are proof attempts, not formalized results. The second test concerns
-the actual signed coefficient, whereas the preceding correction-budget
-obstruction concerns an upper-bound formula. No route is retired.
+The statement is about the actual signed coefficient. It is stronger than
+failure of the preceding Euler-correction majorant. It does not assert a
+partial-sum asymptotic, a lower bound at every cutoff, or an obstruction to
+the complete signed EDQ source.
+
+**Dependency-closed paper proof.** For s>1, absolute convergence, boundedness
+of u^omega(n) on [0,1], and the Euler product give
+
+```
+H_s(u)=sum_n mu(n)*u^omega(n)*n^(-s)=product_p(1-u*p^(-s)),
+F(s)=integral_0^1 H_s(u) du.
+S(s)=sum_p p^(-s),  B(s)=sum_p -log(1-p^(-s))=log zeta(s).
+```
+
+For 0<=x<1 and 0<=u<=1, concavity of log gives
+u*log(1-x)<=log(1-u*x); the elementary exponential inequality gives
+1-u*x<=exp(-u*x). Multiply over finite prime sets and pass to their
+convergent products. Consequently
+
+```
+exp(-u*B(s)) <= H_s(u) <= exp(-u*S(s)),
+(1-exp(-B(s)))/B(s) <= F(s) <= (1-exp(-S(s)))/S(s).
+```
+
+For 0<=x<=1/2, the logarithm inequalities give
+0<=-log(1-x)-x<=2*x^2. Therefore
+0<=B(s)-S(s)<=2*sum_p p^(-2), uniformly for s>1. The pole of zeta at one
+implies B(s)->infinity and B(s)~log(1/(s-1)); alternatively, divergence of
+sum_p 1/p directly proves S(s)->infinity. The squeeze proves the displayed
+boundary asymptotic and F(s)->0.
+
+Suppose |A(x)|<=C*x/(log x)^q eventually, with q>1. Finite-prefix absorption
+and Abel summation give F(1+t)=(1+t)*integral_1^infinity A(x)*x^(-2-t) dx.
+The integral of |A(x)|/x^2 converges; dominated convergence identifies its
+value at t=0 with lim F(1+t)=0. Subtract this zero value. Since
+0<=1-exp(-t*log x)<=min(t*log x,1), the difference is bounded by a constant
+times t plus
+
+```
+integral_1^infinity v^(-q)*min(t*v,1) dv.
+```
+
+Split at v=1/t. This is O(t^(q-1)) for 1<q<2, O(t*log(1/t)) for q=2,
+and O(t) for q>2. Every bound is o(1/log(1/t)), contradicting the positive
+boundary asymptotic. Removing any fixed finite set of primes from the
+coefficients gives the same proof: remove those terms from S and B. In
+particular, imposing p not dividing m for a fixed Ramaré prime p does not
+repair the proposed super-polylogarithmic cofactor estimate.
+
+**Positive survivor and required cancellation.** The exact Laplace squeeze
+above identifies the cofactor's boundary scale without any assumption on RH.
+The fixed-prime exclusion version shows why independently bounding each
+all-prime cofactor by an arbitrary logarithmic saving is unavailable. The
+complete source still retains cancellations between prime packets and their
+cutoff-dependent counterparts. Neither replacing this source by its cofactor
+norms nor dropping its full tail is justified.
+
+**Lean status.** Scratch verifies the literal all-prime damped coefficient,
+its multiplicativity, absolute summability, Euler product, cofactor integral
+interchange, Laplace squeeze, and the unconditional boundary limit
+`tendsto_fullPrimeCofactorSeries_mul_log_zeta`. The coefficient identity
+`fullPrimeCofactor_eq_ramare` joins it to the existing cutoff-dependent
+Ramaré coefficient. The new leaf
+`RHTower.Sieve.FullPrimeCofactorBoundary` passes scratch checks and
+`lake build --old GaloisForLFunctions.RHTower.Sieve.FullPrimeCofactorBoundary`.
+It is wired into the RHTower umbrella without building that umbrella.
+All 16 new public theorems were audited in a temporary scratch file;
+they use only `propext`, `Classical.choice`, and `Quot.sound`. No added axiom
+or proof debt was introduced. Generated indexes are refreshed, and formal
+lint passes with existing file-size warnings. Its first run caught an
+unrelated concurrent module before its umbrella import appeared; the
+second run passed after that import was present. The partial-sum obstruction
+and the fixed-excluded-prime extension remain paper results; their Abel and
+exclusion transfers have not been formalized. No route is retired.
+
+**Adaptive-contour alternative, paper estimate.** The all-heights Perron theorem
+leaves height U independent of cutoff N. Let L=log N and choose
+Q=exp(L^(19/20)), U=exp(L^(19/18)), H=N*exp(-L^(1/40)), d=1+1/L.
+For abs(tau)<=N, its height argument lies between U and 2U eventually.
+The exact binary-shell definitions give
+
+```
+c1/((log U)^(9/10)*(log log U)^2) <= eta=1-c
+                                                <= c2/(log U)^(9/10).
+```
+
+The constants depend only on the fixed contour data. For the upper bound,
+clog bounds log U from below and nthRoot(10,L)+3 exceeds L^(1/10);
+the strip denominator and zero-free-budget denominator are bounded below by
+positive constants. The lower bound is the existing explicit contour-shift
+envelope. Thus eta*log Q is bounded, while
+eta*L is bounded below by a positive multiple of L^(1/20)/(log L)^2.
+For every prime p<=Q, p^(-c)<=exp(c2)/p, so Mertens' reciprocal-prime bound
+makes the correction polynomial in log Q. The logarithm of the contour-edge
+constant is O((log L)^2); d lies inside the right contour because
+1/L=o(eta). In the four-edge formula, the right-tail and both horizontal
+terms contain N/U times exp(O(L^(1/40)+(log L)^2)); the left edge is at most
+N*exp(-eta*L+2*L^(1/40)+O((log L)^2)); smoothing costs H+1.
+Each is O(N*exp(-L^(1/40))). This proves a uniform growing-prime-window
+cofactor estimate on paper. Its exact parameter substitutions are not
+formalized. It retains a rough packet, and its saving alone does not imply
+subpower growth of the complete physical source.
+
+**Broad recent-paper transfer tests.** Broad arXiv searches for `dephasing`,
+`renewal`, `hypocoercivity`, and `pinning` were sorted by announcement date;
+some endpoints return older cached pages, so dates were checked on papers.
+[Eberle--Lörler, 12 July 2026](https://arxiv.org/html/2607.10801v1), Theorem 18,
+uses an invariant probability measure, a contraction semigroup, a positive
+second-order collapse gap, and a bound on the interaction between two
+orthogonal subspaces. Its two-point generator distinguishes time-averaged
+relaxation from ordinary relaxation. In EDQ, damping is diagonal in the
+coefficient labels but the physical generators have a non-diagonal Gram
+matrix. Dissipativity in that physical norm requires controlling the mixed
+pairing with the prime-count generator; the paper does not establish that
+arithmetic inequality. Its theorem cannot currently supply the source bound.
+
+[Zhang--Shi--Wang--Yang, 6 September 2026](https://arxiv.org/html/2609.06632v1),
+Theorems 1 and 3, retains a weighted off-diagonal anomaly in its coherence
+identity and requires an explicit anomaly threshold for its logarithmic
+bound. The trajectory weights may be signed or complex. Normalizing the pure state of the coherent physical sum divides by its
+unknown energy. Normalizing the coefficient Gram instead retains
+E_N=D_N*1^*rho_N*1, where D_N is the known diagonal trace; the remaining
+coherent readout is not bounded by the paper's coherence-change theorem.
+An arithmetic channel and its anomaly bound are also unproved. Neither
+recent mechanism closes the covariance obstacle; the useful tests retain
+both the physical norm and its forcing/cross terms.
+
+
+**Corpus search and method audit.** Seven broad OR queries used `--mode deep`,
+two rounds, cached content, and bounded requests:
+
+```
+"multiplicative martingale" "Ramare covariance" "rough Mobius"
+"dilation square function" "bilinear cancellation" "signed covariance"
+"multiplicative difference" Cotlar "Moebius short interval" "bilinear Type II"
+"damped contour" "prime correction" "contour shift"
+deletion semigroup dissipation with affine forcing and mixed covariance
+inverse prime count damped Euler product logarithmic singularity Abel summation
+Abel summation logarithmic partial sum bound boundary Holder continuity
+```
+
+The first four completed argument assembly with partial indexing coverage;
+the last three returned deadline snapshots with interrupted retrieval/ranking
+stages and no assembled proof ideas or ingredient sets. Semantic coverage
+remained incomplete (the last snapshot had 2,183,768 of 2,333,081 items ready).
+All 168 candidate/source-argument occurrences matched current declaration-block
+hashes; their compiler metadata remained source-only. Generated ingredient
+sets in the completed searches did not discharge the covariance bounds.
+In particular, the adaptive-contour proposal misread a lower divergence bound
+as an upper bound and was rejected. Source inspection of
+`MobiusHalfSelectionEulerProduct` supplied the useful multiplicative Euler
+product method; the new proof changes the coefficient to full variable
+damping and verifies that transfer in Lean. The final Abel search returned
+finite summation-by-parts and power-bound receivers, without a completed
+logarithmic boundary-continuity transfer. No numerical experiment was run.
+
+## Prime-count damping: actual physical amplification
+
+The producer under test is contraction of the literal finite physical source
+under coefficient damping by the number of distinct prime factors. Write
+
+```
+H_N(u) = sum_(1<=n<=N) mu(n)*u^omega(n)*b_n,
+P_N = sum_(p<=N, p prime) b_p,
+t_N = ||P_N||/(8*sqrt(N)).
+```
+
+Thus H_N(1) is the negative of the existing modular approximant. All norms
+below are its full carrier norm, including the infinite physical tail.
+The following paper proof directly tests contraction on this actual source.
+
+Every nonzero nonprime coefficient other than n=1 has omega(n)>=2; b_1=0.
+For 0<=u<=1, the existing diagonal bound ||b_n||^2<=2/n and the telescoping
+sum of reciprocal square roots therefore give
+
+```
+sum_(1<=n<=N) ||b_n|| <= 4*sqrt(N),
+||H_N(u)+u*P_N|| <= 4*u^2*sqrt(N).
+```
+
+In particular 0<=t_N<=1/2. Reverse triangle inequality at this value gives
+
+```
+||P_N||^2 <= 16*sqrt(N)*||H_N(t_N)||,
+||P_N||^4 <= 256*N*||H_N(t_N)||^2.
+```
+
+All integer-generator Gram entries are nonnegative. Hence the all-prime
+packet dominates the existing upper-half packet in squared norm. With
+C=8*32768^2, its existing unconditional prime-shell bound gives eventually
+
+```
+N/(256*C^2*(log N)^4) <= ||H_N(t_N)||^2.
+```
+
+The already proved full-source estimate E_N=o(N/(log N)^q), for every fixed
+q, then implies E_N*(log N)^q/||H_N(t_N)||^2 -> 0 for every fixed q.
+Consequently no fixed multiplicative contraction budget works uniformly in
+damping value and cutoff. This is stronger than a generic nonorthogonal
+matrix counterexample: it concerns the actual signed arithmetic source.
+It does not rule out a forcing-aware estimate at u=1 or retire EDQ. The
+positive survivor is the quantitative small-damping amplification law and
+its full quadratic remainder estimate. Paper proof complete; Lean audit in
+progress. The required absolute cofinal subpower source ceiling remains open.
+
+An additional algebraic observation, not needed for that proof, is
+sum_(d|n) mu(d)*u^omega(d)=(1-u)^omega(n) for n>=1. Integration over u in
+[0,1] gives sum_(d|n) fullPrimeCofactor(d)=1/(1+omega(n)). Prime counting
+thus cancels this positive divisor-convolution bulk at u=1. This identifies
+the cancellation; it supplies no bound on the remaining truncated divisors.
+
+**Recent broad-paper intake and premise audit.** Broad `commutation` and
+`coagulation` arXiv searches were sorted by newest announcement, after broad
+web queries mostly returned older material. The following September papers
+were read at the relevant theorem/hypothesis level; none is used as an axiom
+or as evidence that the arithmetic estimate holds.
+
+- [Shen--Wang--Zhi, 9 September 2026](https://arxiv.org/html/2609.09938v1):
+  Theorem 1.1 permits freely chosen commutator factors. Theorem 1.2 gives
+  a dimension-dependent obstruction when a factor must be diagonal in a
+  prescribed basis. EDQ fixes the prime-count diagonal and the physical
+  Gram metric. The free-factor theorem therefore does not establish its
+  mixed-energy sign. Its reported Lean implementation was not imported.
+- [Bellavita--Stylogiannis, 8 September 2026](https://arxiv.org/html/2609.09453v1):
+  Theorem 4.8 bounds sampled Mellin product defects for the kernel classes
+  of Definition 4.3. That definition requires continuity away from a finite
+  exceptional set and a weighted variation estimate. The physical sampled
+  fractional-part kernel kappa(v)={1/v} has jumps at every v=1/k. Thus this
+  theorem cannot directly bound its defect. Even a bounded operator estimate
+  alone would retain the linear coefficient-energy scale.
+- [Shinoda, 2 September 2026](https://arxiv.org/html/2609.02960v1):
+  The scalar moment relation follows under an explicitly approximate local
+  scale-covariance reduction of parent-resolved stationary balance. No such
+  stationary positive transfer law has been established for the full signed
+  EDQ source. The paper retains transitions across the parent window boundary;
+  its moment relation gives no license to omit the arithmetic tail.
+- [Guo--Huang, 9 September 2026](https://arxiv.org/html/2609.09599v1):
+  The curvature identity splits a quantum Markov generator using the BKM
+  adjoint associated with a full-rank stationary state. Its Cauchy--Schwarz
+  bound retains both dissipative and transport activities. Coefficient
+  diagonality does not identify that adjoint with the physical Gram adjoint.
+  The amplification proof above supplies a direct arithmetic test against
+  silently assuming physical contraction.
+
+**Corpus search and method audit.** Four further requests used deep mode,
+180-second budgets, two rounds, cached content, and both declaration and
+source-argument lanes. Queries were `prime count generator Gram commutator
+physical damping energy`, `"nonorthogonal damping" "anticommutator positivity"
+"sampled ratio" "Mellin product"`, `"Möbius partial sum" "fractional part
+continuity" "prime count" "dissipativity"` (all OR), and the mechanism query
+`Möbius damping divisor convolution equals product over distinct prime
+divisors binomial expansion`. All 100 candidate/source-argument occurrences
+matched current declaration-block hashes; compiler metadata was source-only.
+The first hit its retrieval/reranking deadline; the last left filtering and
+judgment incomplete. Other inventories covered roughly 56,100 files and
+721,747 declarations with source/semantic gaps. Generated premise groups
+mixed unrelated damping, Floquet-density, measurability, or convolution facts
+and did not prove the requested inequalities. Exhaustive source-text follow-up
+located the actual prime-packet floor, global Möbius logarithmic saving,
+generator diagonal bound, reciprocal-square-root telescope, and squarefree
+prime-power classification used in the new direct proof.

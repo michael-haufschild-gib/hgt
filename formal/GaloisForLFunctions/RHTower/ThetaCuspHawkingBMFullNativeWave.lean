@@ -1803,5 +1803,144 @@ theorem nativeResidualTimePrimitive_radial_energy (q : XiZeroCopy) (s amplitude 
   simp_rw [he] at h
   linarith
 
+
+private theorem nativeWeighted_joint_continuous (f : ℝ → ℝ → ℝ → ℝ → ℂ)
+    (hf : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => f z.1.1 z.1.2 z.2.1 z.2.2)) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      ∫ u in (0:ℝ)..z.1.1, ((z.1.1-u:ℝ):ℂ)*f (u+z.1.2) (u-z.1.2) z.2.1 z.2.2) := by
+  have hc := hf.comp (show Continuous (fun p : ((ℝ × ℝ) × (ℝ × ℝ)) × ℝ =>
+    ((p.2+p.1.1.2,p.2-p.1.1.2),p.1.2)) by fun_prop)
+  have hw : Continuous (fun p : ((ℝ × ℝ) × (ℝ × ℝ)) × ℝ => ((p.1.1.1-p.2:ℝ):ℂ)) := by fun_prop
+  exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous
+    (μ := volume) (a₀ := 0) (hw.mul hc) (by fun_prop)
+
+private theorem residualEffective_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      residualEffective q s amplitude z.2.1 z.2.2 z.1.1 z.1.2) := by
+  have hQ : Continuous (fun z : ℝ × ℝ => fullSquarePotential q ![z.1,Real.exp z.2]) := by
+    apply continuous_iff_continuousAt.mpr
+    intro z
+    have hc : Continuous (fun z : ℝ × ℝ => (![z.1,Real.exp z.2] : Fin 2 → ℝ)) := by fun_prop
+    exact (fullSquarePotential_smooth q _ (by simpa using Real.exp_pos z.2) 0).continuousAt.comp
+      hc.continuousAt
+  have hA : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      responseAction q s amplitude z.1.1 z.1.2 z.2.1 z.2.2) := by
+    unfold responseAction
+    exact (((by fun_prop : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => (Real.exp z.2.2:ℂ)^2)).mul
+      (responseJet_continuous q s amplitude 2 2)).add (responseJet_continuous q s amplitude 3 2)).sub
+      (responseJet_continuous q s amplitude 3 1)
+  have hN : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => nullWeight z.1.1 z.1.2) :=
+    nullWeight_comp (fun z : (ℝ × ℝ) × (ℝ × ℝ) => z.1.1) (fun z => z.1.2)
+      (by fun_prop) (by fun_prop)
+  have hF : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      fullEffective q s amplitude z.2.1 z.2.2 z.1.1 z.1.2) := by
+    have h0 := (hQ.comp (continuous_snd : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => z.2))).mul
+      ((nullSource_continuous s amplitude).comp continuous_fst)
+    have h1 := h0.const_mul (1/4:ℂ)
+    have h2 := hN.mul hA
+    convert! h1.add h2 using 1
+  have hP : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      ∑ i : Fin 3, principalEffective q s amplitude i z.1.1 z.1.2*
+        cutoffLogPower (principalExponent q i) z.2.2) := by
+    apply continuous_finsetSum
+    intro i hi
+    have hp := (principalEffective_continuous q s amplitude i).comp
+      (continuous_fst : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => z.1))
+    have hk : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+        cutoffLogPower (principalExponent q i) z.2.2) :=
+      (((powerCutoffHeight_smooth (principalExponent q i)).continuous.comp Real.continuous_exp).comp
+        (continuous_snd.comp continuous_snd))
+    exact hp.mul hk
+  convert! hF.sub hP using 1
+
+private theorem nativePrimitive_radial_joint_second (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (deriv (fun x => nativeResidualTimePrimitive q s amplitude z.1.1 x z.2.1 z.2.2)) z.1.2) := by
+  have hV := (residual_joint_continuous q s amplitude).comp
+    (show Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      ((z.1.1+z.1.2,z.1.1-z.1.2),z.2)) by fun_prop)
+  have hE := nativeWeighted_joint_continuous
+    (fun p r X k => residualEffective q s amplitude X k p r)
+    (residualEffective_joint_continuous q s amplitude)
+  convert! hV.sub (hE.const_mul (4:ℂ)) using 1
+  funext z
+  exact (nativeResidualTimePrimitive_spatial q s amplitude z.1.1 z.1.2 z.2.1 z.2.2).deriv
+
+private theorem nativePrimitive_radial_left_deriv_zero (q : XiZeroCopy) (s amplitude : ℂ)
+    (t X k : ℝ) :
+    deriv (fun x => nativeResidualTimePrimitive q s amplitude t x X k) (-max t 0-1) = 0 := by
+  have he : (fun x => nativeResidualTimePrimitive q s amplitude t x X k) =ᶠ[𝓝 (-max t 0-1)]
+      fun _ => (0:ℂ) := by
+    filter_upwards [Iio_mem_nhds (by linarith : -max t 0-1 < -max t 0)] with x hx
+    change x < -max t 0 at hx
+    apply nativeResidualTimePrimitive_finite_propagation
+    have hm := le_max_right t (0:ℝ)
+    rw [abs_of_neg (by linarith : x < 0)]
+    linarith
+  rw [he.deriv_eq,deriv_const]
+
+private theorem nativePrimitive_radial_joint_first (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (fun x => nativeResidualTimePrimitive q s amplitude z.1.1 x z.2.1 z.2.2) z.1.2) := by
+  have hc := (nativePrimitive_radial_joint_second q s amplitude).comp
+    (show Continuous (fun p : ((ℝ × ℝ) × (ℝ × ℝ)) × ℝ => ((p.1.1.1,p.2),p.1.2)) by fun_prop)
+  have hi := integral_continuous
+    (fun (z : (ℝ × ℝ) × (ℝ × ℝ)) x =>
+      deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude z.1.1 y z.2.1 z.2.2)) x)
+    hc (fun z => -max z.1.1 0-1) (fun z => z.1.2) (by fun_prop) (by fun_prop)
+  convert! hi using 1
+  funext z
+  have h := intervalIntegral.integral_eq_sub_of_hasDerivAt
+    (a := -max z.1.1 0-1) (b := z.1.2)
+    (fun x _ => nativePrimitive_radial_second q s amplitude z.1.1 x z.2.1 z.2.2)
+    ((nativePrimitive_radial_second_continuous q s amplitude z.1.1 z.2.1 z.2.2).intervalIntegrable _ _)
+  rw [nativePrimitive_radial_left_deriv_zero,sub_zero] at h
+  exact h.symm
+
+/-- The actual radial first and second derivatives exist at every point, including
+source characteristics and the physical Dirichlet endpoint. -/
+theorem nativeResidualTimePrimitive_radial_hasDerivAt (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    HasDerivAt (fun y => nativeResidualTimePrimitive q s amplitude t y X k)
+      (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k) x) x ∧
+    HasDerivAt (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k))
+      (deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k)) x) x :=
+  ⟨nativePrimitive_radial_first q s amplitude t x X k,
+    nativePrimitive_radial_second q s amplitude t x X k⟩
+
+/-- Value and both pure spatial derivative orders of the literal native primitive
+are jointly continuous in time, radius, horizontal coordinate and logarithmic height.
+This supplies compact product integrability for the actual Green pairings. -/
+theorem nativeResidualTimePrimitive_joint_spatial_jets (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      nativeResidualTimePrimitive q s amplitude z.1.1 z.1.2 z.2.1 z.2.2) ∧
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (fun x => nativeResidualTimePrimitive q s amplitude z.1.1 x z.2.1 z.2.2) z.1.2) ∧
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (deriv (fun x => nativeResidualTimePrimitive q s amplitude z.1.1 x z.2.1 z.2.2)) z.1.2) ∧
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (fun X => nativeResidualTimePrimitive q s amplitude z.1.1 z.1.2 X z.2.2) z.2.1) ∧
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (deriv (fun X => nativeResidualTimePrimitive q s amplitude z.1.1 z.1.2 X z.2.2)) z.2.1) ∧
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (fun k => nativeResidualTimePrimitive q s amplitude z.1.1 z.1.2 z.2.1 k) z.2.2) ∧
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      deriv (deriv (fun k => nativeResidualTimePrimitive q s amplitude z.1.1 z.1.2 z.2.1 k)) z.2.2) := by
+  refine ⟨nativeWeighted_joint_continuous _ (residual_joint_continuous q s amplitude),
+    nativePrimitive_radial_joint_first q s amplitude,nativePrimitive_radial_joint_second q s amplitude,
+    ?_,?_,?_,?_⟩
+  · convert! nativeWeighted_joint_continuous _ (responseJet_continuous q s amplitude 2 1) using 1
+    funext z
+    exact (nativePrimitive_x q s amplitude z.1.1 z.1.2 z.2.1 z.2.2).deriv
+  · convert! nativeWeighted_joint_continuous _ (responseJet_continuous q s amplitude 2 2) using 1
+    funext z
+    exact nativePrimitive_xx q s amplitude z.1.1 z.1.2 z.2.1 z.2.2
+  · convert! nativeWeighted_joint_continuous _ (residualHeightJet_joint_continuous q s amplitude) using 1
+    funext z
+    exact (nativePrimitive_k q s amplitude z.1.1 z.1.2 z.2.1 z.2.2).deriv
+  · convert! nativeWeighted_joint_continuous _ (residualHeightSecond_joint_continuous q s amplitude) using 1
+    funext z
+    exact nativePrimitive_kk q s amplitude z.1.1 z.1.2 z.2.1 z.2.2
+
 end
 end RHTower.D4BMNativeResponse

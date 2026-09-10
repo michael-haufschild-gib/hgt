@@ -249,6 +249,67 @@ The broad corpus queries used real roots, Darboux transformations, compensation,
 
 Independently chosen arXiv terms included `polarization`, `coarsening`, and `renewal`. [Discrete time-multidimensional renewal theory and applications](https://arxiv.org/html/2606.31455v1) gives a coefficientwise finite convolution inverse when the nonconstant kernel has zero constant coefficient. A positive inverse additionally needs a nonnegative increment kernel. Constructing such a kernel from the signed theta source remains a conjecture; no numerical results or theorem from the paper is used in the Lean proof.
 
+### Unsigned-moment projection candidate
+
+There is an analytical lower bound for the hard derivative energy involving only eight unsigned moments. Use the same non-normalized Fourier transform `F_a` of `g_a=thetaCuspTiltedSource a`, and put
+
+```text
+mu_j = (1/(2*pi))*integral t^(2*j)*|F_a(t)|^2 dt,   0 <= j <= 7,
+E_ij = mu_(i+j),           O_ij = mu_(i+j+1),      0 <= i,j <= 3,
+B = diag(1,3,5,7),         T_ij = 2*j if i+1=j, otherwise 0,
+M_a = E*B*O^(-1)*B*E - transpose(T)*O*T.
+```
+
+Both `E` and `O` are positive definite: their quadratic forms are ordinary squared-polynomial integrals, and `F_a(0)>0` provides an interval on which the weight is positive. For `R(t)=sum_(k=0)^3 c_k*t^(2*k)`, set `psi=R*F_a`, and normalize all following integrals by `1/(2*pi)`. Integration by parts gives
+
+```text
+integral psi' * conj(t^(2*j+1)*F_a) = ell_j,
+ell = (O*T-B*E)*c/2.
+```
+
+The pairing is real because `F_a(-t)=conj(F_a(t))`. Projection onto the four odd monomials times `F_a` therefore gives `integral |psi'|^2 >= transpose(ell)*O^(-1)*ell`. Meanwhile
+
+```text
+J = integral (R'^2-R*R'')*|F_a|^2
+  = transpose(c)*(transpose(T)*O*T-E*B*T)*c,
+2*integral |psi'|^2-J >= transpose(c)*M_a*c/2.
+```
+
+The cancellation uses both cross terms; it does not estimate them separately. Its matrix identity passes `lake env lean /tmp/sqb67_unsigned_moment_check.lean`, with symmetry and inverse relations as the algebraic inputs. The integral/projection argument is a paper derivation, not a new Lean declaration.
+
+**New source conjecture:** `M_a` is positive semidefinite for every `0<a<1/2`. This would supply the derivative inequality for every even degree-six frequency polynomial, including the actual minimizer `R_a(t)=Q_a(2*t)`. Its sign has not been proved. Plancherel gives the independent physical inputs `mu_j=integral |D^j g_a|^2`; thus only source derivatives through seven enter this particular test. `iteratedDeriv_thetaCuspTiltedSource` supplies their exact finite binomial expansion in the full theta derivatives. The retrieved Gaussian-aperture moments instead integrate `x^(2*j)*exp(lambda*x^2)*Phi(x)` and cannot be substituted for these derivative norms. The next source comparison must bound the complete derivative norms sufficiently to orient `M_a`. No rank-seven or all-order positivity follows yet, and this fixed-size candidate supplies no all-order induction by itself.
+
+The Gaussian reference has an exact positive margin. If `mu_(j+1)=(2*j+1)*v*mu_j` for `0<=j<=6` and `v>0`, then `B*E=O*(v^(-1)*I-T)` and `v^(-1)*O=E+transpose(T)*O+O*T`. Substitution gives `M=v^(-1)*E`. This is an analytical toy proof, not an assertion that the theta moments satisfy the Gaussian recurrence.
+
+The comparison error has a direct full-source expression. For any `v>0`, define
+
+```text
+Z_ij = mu_(i+j+1)-v*(2*i+2*j+1)*mu_(i+j),
+e_(a,v)(x) = g_a'(x)+(2*v*x-a)*g_a(x)
+           = exp(a*x)*(Phi'(x)+2*v*x*Phi(x)).
+```
+
+The moment definitions give `B*E=E+transpose(T)*O`, `E*B=E+O*T`, and the symmetric error `Z=O-v*(E+transpose(T)*O+O*T)`. Keeping the full quadratic correction yields
+
+```text
+M_a = v^(-1)*E - v^(-2)*Z
+      + v^(-1)*(transpose(T)*Z+Z*T)
+      + v^(-2)*Z*O^(-1)*Z.
+```
+
+For `0<=j<=6`, integration by parts and `D^j(x*g)=x*D^j(g)+j*D^(j-1)(g)` give the actual-source identity
+
+```text
+mu_(j+1)-v*(2*j+1)*mu_j
+  = integral_R D^(j+1)(g_a) * D^j(e_(a,v)).
+```
+
+At `j=0`, the term with the negative derivative index is omitted. These are analytical identities, not additional Lean declarations. A sufficient estimate is `transpose(c)*(Z-v*(transpose(T)*Z+Z*T))*c <= v*transpose(c)*E*c` for every coefficient vector `c`; the remaining quadratic term is nonnegative. This estimate has not been proved for the full source. The exact all-order first-atom jet recurrence and complete likelihood-remainder decomposition are available, but their retrieved tail bounds do not establish this global matrix comparison. No Gaussian approximation of the actual source is assumed.
+
+Further broad deep retrieval across recurrence, adjoints, Jensen hyperbolicity, and localization recovered ordinary Favard identities, conditional quartic Jensen bounds, and qualitative Fourier uncertainty. The Jensen bounds concern a different moment family and retain dispersion hypotheses. The uncertainty statements do not provide the quantitative concentration bound for the degree-six native packets. Generated ingredient groups and source arguments were inspected; coverage remained partial, with interrupted stages in the recurrence and localization requests. These searches produced no additional native sign theorem.
+
+For the separate adaptive deletion basis `P_j=R_a/(t-r_j)`, minimizer orthogonality also gives the exact analytical pairing `integral (R_a*F_a)'*conj(P_j*F_a)=integral |P_j*F_a|^2/2`. Its real part is an integration-by-parts identity and its imaginary part vanishes by signed-source orthogonality. This determines the projection onto the six deletion packets in their ordinary Gram metric; the remaining energy comparison is still open.
+
 ### Adaptive deletion basis and modular Sturm coordinates
 
 At a fixed aperture, put `R(t)=Q_a(2*t)` and `P_j(t)=R(t)/(t-r_j)` for its six simple real roots. Orthogonality of the monic minimizer gives the analytical identities `integral P_i*P_j*partial_a(|F_a|^2)=0` for `i != j`, since `P_i*P_j` is `R` times a degree-four polynomial. Each diagonal integral is strictly positive by positivity below degree six. This diagonalizes the deletion basis for the signed aperture-derivative weight. The kinetic inequality above instead contains the ordinary weight `|F_a|^2`; controlling its deletion Gram form by `2*integral |(R*F_a)'|^2` is still the target. These integral identities have not been formalized.
