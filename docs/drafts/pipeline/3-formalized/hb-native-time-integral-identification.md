@@ -1,6 +1,6 @@
 # Native response: original Bochner time equation
 
-Stage: 3-formalized. Both exact leaf builds and the five-new-theorem axiom audit passed. RH, native/physical response equality and complete physical-current cancellation remain open.
+Stage: 3-formalized. Both exact leaf builds and the five-new-theorem axiom audit passed. [Native/physical response equality](hb-native-causal-equality.md) is now proved almost everywhere. RH and complete physical-current cancellation remain open.
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -40,18 +40,11 @@ gives product integrability on the finite time interval. Fubini exchanges time a
 
 For the forcing, `principalNullResponse_physical_ae` identifies each of the three original physical principal responses with its literal native coefficient. The actual cutoff map is multiplication by `horizonCoordinate` followed by restriction to the negative radial ray. The exact identity `horizonCoordinate(x)=1/cosh(x)^2` supplies the original geometric weight. Tensor-product representative identities include the original angular commutator. On the negative ray the odd source equals the original reduced coefficient. Adding these four contributions gives the actual physical source vector's literal native forcing representative. The same L2 integral argument then identifies its double time integral.
 
-## Remaining hard step
+## Completed causal comparison and remaining physical current
 
-Both original time equations are now proved. The [physical Volterra equation](hb-physical-volterra-equation.md) holds almost everywhere for the constructed causal response, obtained from its original Laplace-domain operator equation and weighted L1 uniqueness. It requires no norm continuity of that representative.
+The [physical Volterra equation](hb-physical-volterra-equation.md) gives the same bounded time equation almost everywhere for the constructed physical response. The [applied covariance-energy proof](hb-native-causal-equality.md) now identifies the native residual with that physical response almost everywhere in real time. It proves local integrability and integrated regularity from the actual data; no norm continuity of the physical representative or extra native growth premise is assumed.
 
-For their locally integrable difference `u`, subtract the equations to obtain `B u+(I-B)P2 u=0` almost everywhere. Integrating twice gives `B P2 u+(I-B)P4 u=0` everywhere. The fourth primitive `Z=P4 u` is C2, satisfies `Z''=P2 u`, and has zero position and velocity at time zero. The next proof target is conservation and nonnegativity of
-
-```
-E(t)=||J.adjoint Z'(t)||^2+||Z(t)||^2-||J.adjoint Z(t)||^2,
-J=jointEmbedding.
-```
-
-The actual embedding is contractive and dense, so zero energy should force `J.adjoint Z'=0`, then `Z'=0`, `Z=0`, and finally `u=0` almost everywhere by injectivity of B. This applied regularity and uniqueness argument remains to be formalized. Complete physical-current cancellation and Hawking-clock extinction remain open.
+The full Einstein/current pairing, its derivative and boundary transfer, fixed Hawking-clock extinction and RH remain open. All onset, horizon, AdS, temporal and cusp terms and independent tensor amplitudes must still be included in that action.
 
 ## Search and verification
 

@@ -1,6 +1,6 @@
 # Native primitive and the original joint operator
 
-Stage: 3-formalized. The literal native double time primitive belongs to the original Friedrichs operator domain, with its actual mass-plus-forcing as operator value. RH, native/physical causal-response equality, and complete physical-current cancellation remain open.
+Stage: 3-formalized. The literal native double time primitive belongs to the original Friedrichs operator domain, with its actual mass-plus-forcing as operator value. [Native/physical causal-response equality](hb-native-causal-equality.md) is now proved almost everywhere. RH and complete physical-current cancellation remain open.
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -26,13 +26,11 @@ All fields retain the original source, radial measure, angular modular measure, 
 4. [Native form admission](../3-formalized/hb-native-form-admission.md) gives `v` in the original completed graph with `J v=W`. `jointCoreDifferential_inner` converts the preceding equality to `inner (jointGraph f g) (v-J.adjoint(W+G))=0`. The original domain is the closure of the span of these exact graph generators. A continuous inner-product functional vanishing on those generators therefore vanishes on the whole domain, including its own representing vector. Consequently `v=J.adjoint(W+G)` and `B(W+G)=W`.
 5. The existing covariance-inverse construction of the actual Friedrichs operator gives its domain and value at `W`. Substituting the original `G=F2-U` gives the bounded covariance equation.
 
-## Remaining causal comparison
+## Completed causal comparison
 
-The [Bochner time identification](hb-native-time-integral-identification.md) now proves that the literal native primitive equals the double time integral of `nativeJointResidual` and that the literal integrated forcing at physical rates equals the double time integral of the original complete physical source. Thus `B U+(I-B)P2 U=B P2 F` holds in the original Hilbert space. Equality with the constructed causal joint response remains open. The [physical Volterra construction](hb-physical-volterra-equation.md) now gives the same bounded time equation almost everywhere for the exponentially weighted time-L2 response; norm continuity of that representative is not assumed.
+The [Bochner time identification](hb-native-time-integral-identification.md) identifies both literal native time integrals with their original-space Bochner integrals. The [physical Volterra construction](hb-physical-volterra-equation.md) proves the same equation almost everywhere for the constructed physical response. Finally, [applied covariance-energy uniqueness](hb-native-causal-equality.md) identifies the two time families almost everywhere. The physical response's norm continuity and a native global growth bound are not assumptions.
 
-A positive uniqueness mechanism to test is conservation of `inner(B Z',Z') + inner((I-B)Z,Z)` for a homogeneous difference satisfying `B Z''+(I-B)Z=0`, with zero initial data. Here `0<=B<=I` follows from the actual contractive form embedding, and `B` is injective. Zero conserved energy forces `B Z'=0`, hence `Z'=0` and `Z=0`, without a bounded inverse for `B`.
-
-There is a concrete way to handle the physical response's time-L2 regularity. Its bounded equation almost everywhere is now proved from the actual Laplace-domain equation and weighted vector Laplace uniqueness. For the locally integrable difference `u`, write `P2 u(t)=integral_0^t (t-s)u(s) ds`. Its bounded equation is `B u+(I-B)P2 u=0` almost everywhere. Integrate twice to obtain `B P2 u+(I-B)P4 u=0` everywhere. The fourth primitive `Z=P4 u` is C2 (indeed C3), `Z''=P2 u`, and has zero initial value and derivative. The preceding conserved energy therefore gives `P2 u=0`, then `B u=0` almost everywhere and finally `u=0` almost everywhere. The native Bochner primitive identities and physical forcing equality are now proved. The physical Laplace/primitive interchange is also proved. Applied conserved-energy uniqueness, including regularity of the integrated actual difference, remains to be formalized.
+The original full physical-current action, its derivative/trace transfer and all boundary limits remain to be evaluated. Native/physical time-class equality alone is not a proof of current cancellation or RH.
 
 ## Search and external method check
 

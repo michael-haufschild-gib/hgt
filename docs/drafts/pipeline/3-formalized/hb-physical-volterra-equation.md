@@ -1,6 +1,6 @@
 # HB: the physical causal time equation
 
-Stage: 3-formalized. The original physical causal response satisfies the bounded time equation almost everywhere on the whole real time line. The exact leaf build and new-theorem axiom audit passed. The [native original-space Bochner equation](hb-native-time-integral-identification.md) is also formalized. Native/physical response equality, complete-current cancellation and RH remain open. Frontier map read only.
+Stage: 3-formalized. The original physical causal response satisfies the bounded time equation almost everywhere on the whole real time line. The exact leaf build and new-theorem axiom audit passed. The [native original-space Bochner equation](hb-native-time-integral-identification.md) is also formalized. [Native/physical response equality](hb-native-causal-equality.md) is now proved almost everywhere. Complete-current cancellation and RH remain open. Frontier map read only.
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -34,10 +34,11 @@ No norm continuity of this physical representative is assumed.
 
 Every parameter, principal amplitude, cutoff commutator and original measure is inherited from the constructed physical source and operator. No response-identification premise is introduced.
 
-## Next hard step
+## Completed response comparison and next hard step
 
-Subtract the native and physical equations. For the locally integrable difference u, integrate its homogeneous covariance equation twice. Then `Z=P4 u` is C2 with `Z''=P2 u`, zero initial position and velocity, and `B Z''+(I-B)Z=0`. Prove conservation of `||J.adjoint Z'||^2+||Z||^2-||J.adjoint Z||^2`. Contractivity of J and injectivity of B force Z and then u to vanish. This applied uniqueness construction remains open, as does the complete physical-current cancellation required afterward.
+The [applied covariance-energy uniqueness proof](hb-native-causal-equality.md) now subtracts the two original equations and proves the native/physical time-class equality. Local integrability follows from existing admission theorems. A first-moment decomposition makes the double primitive continuous; integrating the equation twice gives a classical homogeneous equation with zero initial data. Contractivity and dense range of the actual embedding force its conserved energy, velocity and original difference to vanish.
 
+The full physical-current cancellation remains open. The next target is transferring the identified response into the complete finite-domain current and evaluating all its physical boundary terms before taking their limits.
 
 ## Search and method check
 
