@@ -645,5 +645,25 @@ theorem radialResponse_freeDuhamel (nu s amplitude : ℂ) {τ : ℝ} (hτ : 0 �
     rw [hi,mul_zero]
 
 
+/-- The literal radial source integral in the original null rectangle, with its exact
+Jacobian and physical Riemann kernel at every source point. -/
+theorem radialResponse_null_native (nu s amplitude : ℂ) {p r : ℝ}
+    (hp : 0 ≤ p) (hr : 0 ≤ r) :
+    radialResponse nu s amplitude ((p+r)/2) ((p-r)/2) =
+      (1/4:ℂ)*∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r,
+        riemannKernel nu ((p+r-a-b)/2) ((p-r)/2) ((a-b)/2)*
+          oddSource s amplitude ((a+b)/2) ((a-b)/2) := by
+  rw [radialResponse_null nu s amplitude hp hr]
+  unfold nullResponse nullSource
+  congr 1
+  apply intervalIntegral.integral_congr
+  intro a ha
+  apply intervalIntegral.integral_congr
+  intro b hb
+  have ha' : a ≤ p := (show a ∈ Icc 0 p by simpa [uIcc_of_le hp] using ha).2
+  have hb' : b ≤ r := (show b ∈ Icc 0 r by simpa [uIcc_of_le hr] using hb).2
+  dsimp only
+  rw [nullKernel_eq nu ha' hb']
+
 end
 end RHTower.D4BMNativeResponse

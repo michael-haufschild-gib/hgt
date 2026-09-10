@@ -1,6 +1,6 @@
 # HB: native cusp data in the physical inverse
 
-Stage: 1-in-progress. Native cusp transport and cutoff-subtracted angular L² admission are [formalized and audited](../3-formalized/hb-native-cusp-transport.md). The native height-power circle equals the actual physical Gauss kernel in Lean, including the full-source three-channel expansion. Its original forced integral is a [strongly continuous L² family](../3-formalized/hb-native-forced-integral.md), with exact causal support and Dirichlet trace. The actual response now satisfies its [forced Goursat, mixed null-derivative and whole-line retarded Duhamel equations](../3-formalized/hb-native-source-equation.md). The original native integrals now [equal the existing physical L² responses in all three principal channels](../3-formalized/hb-native-physical-identification.md). The [full native kernel Goursat equation and causal Dirichlet decomposition](../3-formalized/hb-native-goursat-integral.md) are also proved. Equality of the complete angular causal evolutions and RH remain unproved. Frontier map read only.
+Stage: 1-in-progress. Native cusp transport and cutoff-subtracted angular L² admission are [formalized and audited](../3-formalized/hb-native-cusp-transport.md). The native height-power circle equals the actual physical Gauss kernel in Lean, including the full-source three-channel expansion. Its original forced integral is a [strongly continuous L² family](../3-formalized/hb-native-forced-integral.md), with exact causal support and Dirichlet trace. The actual response now satisfies its [forced Goursat, mixed null-derivative and whole-line retarded Duhamel equations](../3-formalized/hb-native-source-equation.md). The original native integrals now [equal the existing physical L² responses in all three principal channels](../3-formalized/hb-native-physical-identification.md). The [full native kernel Goursat equation and causal Dirichlet decomposition](../3-formalized/hb-native-goursat-integral.md) are also proved. The integrated full source now has its [actual angular derivative interchange, forced null-wave equation and Dirichlet boundary](../3-formalized/hb-full-native-forced-wave.md) in Lean. Equality of the complete angular causal evolutions and RH remain unproved. Frontier map read only.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -180,7 +180,7 @@ u,v>=0.
 
 The proof uses the actual full-source Darboux equation and literal invariant derivatives in the open quadrant. At the characteristic, the interior angular derivative tends to half the full source Laplacian and the tangent invariant derivative tends to zero. FTC with that limit, followed by FTC with the original source value on the other axis, gives the displayed identity. It includes both zero-length edges. A private continuous extension is removed on every integrated point; no endpoint value is assigned by evaluating a singular quotient there.
 
-`nativeDirichletCausalKernel_volterra` retains the original direct-minus-image kernel, both causal supports and the factor one half. Its free impulse multiplies the complete theta half-square, and its correction is the direct-minus-image integral of the full angular action. The [two-theorem audit](../3-formalized/hb-native-goursat-integral.md) covers these identities. Their integration against the original radial forcing and the full residual's joint-domain admission remain to be proved.
+`nativeDirichletCausalKernel_volterra` retains the original direct-minus-image kernel, both causal supports and the factor one half. Its free impulse multiplies the complete theta half-square, and its correction is the direct-minus-image integral of the full angular action. The [two-theorem audit](../3-formalized/hb-native-goursat-integral.md) covers these identities. Their integration against the original radial forcing on the null source rectangle and the actual angular derivative interchange are now proved in `ThetaCuspHawkingBMFullNativeWave`. The cutoff residual's actual null-coordinate forcing equation and Dirichlet boundary are proved in the same module; joint-space admission and inverse identification remain open.
 
 ## Exact residual forcing to compare
 
@@ -200,7 +200,7 @@ wave(V_res)=b squareResidual
             +c(x) sum_i U_i cutoffCommutator(alpha_i).
 ```
 
-This is exactly the source shape already constructed in `causalCuspSourceVector` and `principalCutoffTimeVector`. The native `U_i` now equal `principalTimeResponse`, so the principal coefficients in this comparison are exactly the constructed ones. The full residual equation and domain admission still require proof.
+This is exactly the source shape already constructed in `causalCuspSourceVector` and `principalCutoffTimeVector`. The native `U_i` now equal `principalTimeResponse`, so the principal coefficients in this comparison are exactly the constructed ones. The actual null-coordinate residual equation and its closed-rectangle integral form are now proved by `fullNullResidual_wave` and `fullNullResidual_goursat`; joint-space admission and the weak operator comparison remain open.
 
 For fixed circle radius bounded by `T`, there is also a direct derivative estimate. At the image point `(X',Y')`, the basepoint invariant derivatives pull back as
 
@@ -263,7 +263,7 @@ the chain rule gives `Box_cone psi=T^(-3)(-partial_tau^2+Delta_3+1)Phi`. Thus th
 
 The next conjecture is that local causal uniqueness for this cone operator identifies the native residual with the constructed physical response after matching their weak equations. This requires proving the relevant weak regularity and boundary identifications; the displayed substitutions alone do not supply uniqueness. Radial reflection is compatible with the transformation because `cosh(x)` is even. The half-line Dirichlet trace, modular quotient and all physical current terms remain required. Broad Milne and Huygens/Kirchhoff search results did not supply this uniqueness statement; their semantic coverage was incomplete. This candidate has not been used in any formal proof or asserted to imply extinction.
 
-## Current forced-field conjecture
+## Formal full-source forced field
 
 For fixed nonnegative null endpoints `p,r`, integrate the original full kernel against the original odd source:
 
@@ -273,7 +273,7 @@ U(p,r;X,k)=1/4 integral_0^p integral_0^r
   oddSource(s,amplitude,(a+b)/2,(a-b)/2) db da.
 ```
 
-The target is the actual differentiated equation
+`ThetaCuspHawkingBMFullNativeWave.fullNullResponse_wave` proves the actual differentiated equation
 
 ```
 partial_r partial_p U
@@ -281,4 +281,48 @@ partial_r partial_p U
   +Delta_H2 U/(4 cosh((p-r)/2)^2),  p,r>0.
 ```
 
-Proof attempt: continuous angular derivatives of the complete smooth circle source permit two differentiations under each compact source integral using `hasDerivAt_parametric_intervalIntegral`; then the full-kernel Goursat identity and four-variable causal interchange give a double primitive of the displayed right side. FTC differentiates that primitive. The `max(1,Z)` extension is used only for global continuity and agrees with the actual kernel everywhere in the source rectangle. No angular eigenfunction replacement or supplied field equation is allowed. This conjecture is pending Lean verification.
+Proof: continuous angular derivatives of the complete smooth circle source permit two differentiations under each compact source integral using `hasDerivAt_parametric_intervalIntegral`; then the full-kernel Goursat identity and four-variable causal interchange give a double primitive of the displayed right side. FTC differentiates that primitive. The `max(1,Z)` extension is used only for global continuity and agrees with the actual kernel everywhere in the source rectangle. The proof uses no angular eigenfunction replacement or supplied field equation. `fullNullResponse_native` removes the extension on the full closed rectangle; `fullNullResponse_goursat` proves the integral equation with the actual angular derivatives; `fullNullResponse_boundary` gives the Dirichlet value `U(p,p)=0` by kernel reflection and odd-source cancellation. The [four-theorem audit](../3-formalized/hb-full-native-forced-wave.md) is complete. The exact cutoff-residual equation is also proved, as described below. Its identification with the constructed joint evolution and full physical-current cancellation remain open.
+
+## Next conjecture: uniqueness through the bounded unit-frequency resolvent
+
+The deep uniqueness search recovered the actual bounded-inverse energy mechanism in `KleinGordonStrongUniqueness`; its Euclidean Fourier operator is not the joint operator. The joint corpus supplies a concrete replacement: `J=jointEmbedding` is contractive and has dense range (`jointEmbedding_dense`). The actual `waveFormOperator J 1` is the identity, so `waveSpatialResolvent J 1=J J*` by its definition. Put `B=J J*`.
+
+For a continuous joint-L2 difference `u` with zero initial data, form `W(t)=integral_0^t (t-s)u(s) ds`, so `W''=u`. The next target is the actual time-integrated weak identity
+
+```
+B u(t)+(I-B)W(t)=0.
+```
+
+It is not yet established for the native residual. Once established, it has a direct paper uniqueness proof: `E=norm(J* W')^2+norm(W)^2-norm(J* W)^2` is nonnegative because `J*` is contractive. Its derivative equals `2 Re inner(W',B W''+(I-B)W)=0`. Zero initial data give `E=0`, hence `J* W'=0`. Density of `J` makes `J*` injective, so `W'=0`, then `W=0` and `u=0`. This argument needs no second time derivative of `u` and no bounded inverse of `B`.
+
+The unresolved mathematical work is to prove joint-L2 continuity of the literal cutoff residual and the displayed bounded-resolvent identity from its actual field equation, modular side identifications, cusp estimates and Dirichlet boundary. Those are construction obligations, not hypotheses supplied to a proposed RH proof. The Milne/cone conjugation remains another analytical candidate; no uniqueness or extinction conclusion has been claimed from either substitution alone.
+
+
+## Formal native cutoff-residual equation
+
+In `ThetaCuspHawkingBMFullNativeWave`, put
+
+```
+P_i(p,r)=A_i radialResponse(-alpha_i,s,amplitude,(p+r)/2,(p-r)/2),
+V=fullNullResponse-sum_i P_i cutoffPower(alpha_i),
+F=oddSource(s,amplitude,(p+r)/2,(p-r)/2).
+```
+
+The closed theorem `fullNullResidual_wave` proves
+
+```
+partial_r partial_p V
+ =squareResidual F/4
+  +(Delta_H2 V+sum_i P_i cutoffCommutator(alpha_i))
+    /(4 cosh((p-r)/2)^2),  p,r>0.
+```
+
+The proof subtracts the actual principal Goursat equations from the full-source equation, identifies every angular derivative of the difference and differentiates the resulting double primitive. `cutoffCommutator_height` and `principalSquare_expansion` cancel the exact eigenvalue terms while retaining all three Weyl amplitudes. `fullNullResidual_goursat` retains the closed rectangle including both characteristic edges. `fullNullResidual_boundary` proves `V(p,p)=0`. At the physical rate, `principalNullResponse_physical_ae` identifies these coefficients with the original `principalTimeResponse` in the actual radial L2 measure. The [four-new-theorem audit](../3-formalized/hb-native-cutoff-residual-wave.md) is complete.
+
+This closes the residual forcing equation in null coordinates. It does not yet establish the joint-L2/operator realization, a global static-coordinate classical equation across characteristics, or complete physical-current extinction.
+
+## Next construction: uniform bounded-time L2 admission
+
+For null endpoints in a bounded interval and source points in their rectangles, continuity of `nullRadius` on the enclosing compact box gives a common finite radius bound `D`. The literal circle/principal kernel equality expresses the cutoff residual as the integral of `nativeCutoffResidual` against the source. Above height `3+exp(D)`, `cuspMeanRemainder_rapid_bound q 0` bounds its kernel uniformly. Below that height, joint continuity on the truncated modular cell gives another common bound. The source and rectangle area are bounded on the same parameter box. The original radial support then supplies a bounded radial interval on each bounded time interval.
+
+These estimates give a proposed majorant `B_T indicator[-T,T](x)` in the product of radial measure and finite modular measure. The deep method search found the exact theorem `continuous_toLp_two_of_dominated`, including its application in `FokasLenellsSecondTimeForcing`. Once the residual integral identity, uniform bound and radial support are formalized, this theorem yields local strong L2 continuity from actual pointwise continuity. No uniform bound in unbounded time is claimed. Membership in the joint energy form domain, modular side compatibility and the bounded-resolvent weak identity still require their actual proofs.

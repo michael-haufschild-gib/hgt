@@ -1,6 +1,6 @@
 # SQB: actual spectral source comparison
 
-Status: the literal horizontal Mellin factorization, the all-complex actual response transform, their one-pole contour transfer, the native scalar Cauchy formula, and exact cancellation of its mean residue are formalized. The decisive remaining arithmetic source cancellation is open. RH remains unproved.
+Status: the literal horizontal Mellin factorization, the all-complex actual response transform, their one-pole contour transfer, the native scalar Cauchy formula, and exact cancellation of its mean residue are formalized. Finite native packets with distinct upper-half-plane energies now have an exact positive integral norm formula and nonzero mass for every nonzero coefficient vector. The decisive remaining arithmetic source cancellation and cofinal residual estimate are open. RH remains unproved.
 
 Full chain: theta source -> normalized full-native residual packets at each Xi target -> occurrence -> critical line -> RH. Hardest target: a source comparison retaining the signed arithmetic contribution, strong enough to orient the native scalar response. The current candidate uses the actual scattering phase rather than replacing the Möbius remainder by its absolute majorant.
 
@@ -154,6 +154,20 @@ An existing correction mechanism retains the complete source and exactly preserv
 
 The zero-integral correction, its all-order form identity, and the existing all-order sign/RH equivalence were checked by `lake env lean /tmp/sqb58_compensation_interfaces.lean`; all three axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`. This verifies retrieved ingredients, not a new sign theorem. The separate next-rank compact-source draft under `clg-ttf-even-compact-incidence/pending-lean/` is still unverified; its own status card retains both source-incidence and middle-interval obligations.
 
+The active all-order construction is a tilt-energy comparison. Write `g_a(x)=exp(a*x)*Phi(x)` and `C_a(t)=integral_R g_a(x+t/2)*g_a(x-t/2) dx`. Differentiating the tilt, pairing `x` with `-x`, and substituting `r=2*x` gives `partial_a C_a(t)=thetaCuspCenterMixedDensity a t`. Thus the Fourier-signed even and odd moment blocks are tilt derivatives of differential-polynomial energies. For a real polynomial `P` of one parity, put `u_a=P(D)g_a`. The analytical calculation is
+
+```text
+partial_a u_a = x*u_a + P'(D)g_a,
+integral_R u_a*P'(D)g_a = 0,
+partial_a integral_R u_a^2 = 2*integral_R x*u_a^2.
+```
+
+The middle identity follows by integration by parts: `P(D)^*P'(D)` is skew-adjoint because `P` and `P'` have opposite parity. The positive conjecture is `integral_R x*u_a^2 >= 0` for every such `P` and `0<a<1/2`. This comparison, including its formal identification with every signed block, remains open; the displayed calculation is analytical and is not a new Lean theorem. Ordinary energy positivity does not discharge the signed expectation.
+
+The full-source Ward equation provides a concrete input to this comparison. `ThetaCuspCofinalWardConvexity` identifies the complete Gibbs-shell sum `W` and proves `W'+W/2=-Phi/(2*pi)`, with strictly positive second derivative of `exp(a*x)*W(x)` for `0<=a<=1/4`, `x>0`. Both source identities were checked in `/tmp/sqb59_source_interfaces.lean`, with only `propext`, `Classical.choice`, and `Quot.sound`. The attempted use of this curvature has not oriented the two reflected transform branches. Their Gaussian boundary terms must stay in `thetaCuspShellEvenPhaseValue_eq_gammaRemainders`; the actual pair current is `2*Im(D_n*conj(A_m))`.
+
+For the rank-two theta reassembly, `ThetaWignerEisensteinCrossEnergy` supplies an exact positive completed square with both symbol-weighted energy and reciprocal-symbol dual energy. The missing construction is a bound for the actual arithmetic dual channel that controls the full mixed term. The positive archimedean symbol alone is not that bound. Likewise, the retrieved Hankel terminal-flux method retains its terminal vector, and the shifted Jacobi Toda identities require a frame for different moments. No all-order source-sign or forcing-cancellation theorem is claimed from these matches.
+
 Searches inspected candidate-lemma, source-argument, declaration, prose and source-passage views, with broad OR terms, mechanism descriptions and selected module filters. One all-order request returned a proposed ingredient group combining tilt differentiation with finite rational-gauge reflection; it supplies no native source-sign estimate. Other requests returned empty groups. Retrieval reports incomplete semantic/compiler coverage and, for some deep requests, interrupted stages. These results do not establish absence from the corpus. No computation or frontier-map edit was performed.
 
 ## Further source constructions under examination
@@ -189,7 +203,21 @@ For a finite combination of the actual centered responses, the existing graph id
 (A-z) sum_i c_i v_i = sum_i c_i (energy_i-z) v_i + (sum_i c_i) forcing.
 ```
 
-Zero-sum coefficients cancel the shared forcing exactly. The positive target is a source-derived coefficient family for which the remaining energy-weighted sum is small relative to the full packet norm. `SelbergThetaCommonForcingGram` already supplies both complete quadratic forms; an estimate relating them is still missing. Individual-vector mass from `SelbergThetaCommonForcingMass` does not supply a lower bound for arbitrary combinations.
+Zero-sum coefficients cancel the shared forcing exactly. The positive target is a source-derived coefficient family for which the remaining energy-weighted sum is small relative to the full packet norm. `SelbergThetaCommonForcingGram` supplies both complete quadratic forms; the required cofinal estimate relating them is still missing.
+
+`SelbergThetaCommonForcingPacketMass` proves finite packet mass in the upper spectral half-plane. Write `lambda_i = alpha_i^2`, `N(t)=Xi(t)^2*w(t)`, and `V=sum_i c_i*v_i`. For every finite family with `Im(lambda_i)>0`, its absolutely admitted native norm is
+
+```text
+norm(V)^2 = (1/pi) integral_R N(t) * normSq(sum_i c_i/(t^2-lambda_i)) dt.
+```
+
+The entrywise formula follows from the exact native source Cauchy transform and Gram displacement, with coefficient `1/pi`. When the `lambda_i` are distinct and `c` is nonzero, clearing denominators produces a nonzero polynomial: evaluating at `alpha_i` isolates `c_i` times the nonzero product of spectral gaps. Its real zero set is finite. A zero packet would force `N=0` almost everywhere, contrary to the native diagonal source flux and the already proved nonzero response. Thus `packet_ne_zero` applies also to nonzero coefficient vectors satisfying `sum_i c_i=0`.
+
+This statement is quantified over upper-half-plane packets; it does not assert that such Xi copies exist. It supplies neither the real-energy case nor a lower bound uniform over a cofinal family. The normalized full residual remains uncontrolled.
+
+The stronger mass candidate uses the complete positive Eisenstein pairings of the uncentered common-forcing profiles. For `r>1`, put `a=2*r-1`. The proposed pairing with `positiveCuspRows r` is the positive theta-source pairing divided by `alpha_q^2+a^2`. Both Weyl terms have this denominator because the response is reflected and `tiltedMass` is even. The corpus already proves all-real seed moments in `SelbergThetaNativeMoments.modeProfile_mellin` and full primitive-row unfolding at `r=2` in the private generic-profile lemmas of `SelbergThetaNativePairing`. Extending that admitted pairing to arbitrary `r>1` would give infinitely many rational probes. A zero centered packet first needs its constant component removed using the source cusp decay; these probes could then recover every coefficient for distinct squared parameters, including real ones. The general pairing, its absolute admission, and this extension of packet mass are unproved. The equivalent horizontal Mellin candidate is `M_q(z)=M_source(z)/(alpha_q^2+(z+1)^2)` for positive real `z`; all boundary and primitive-row terms must be retained.
+
+Scratch and source checks, the narrow leaf build, and formal lint pass. The module is wired into `RHTower.lean`. The separate `/tmp/sqb60_packet_mass_audit.lean` verifies the exact statements and audits six results; all use only `propext`, `Classical.choice`, and `Quot.sound`. Broad OR, deep, and proof-method searches supplied the Cauchy denominator-clearing argument used here. Their semantic/compiler coverage remains incomplete; retrieved unrelated Plancherel results are not a substitute for the native periodization join.
 
 A second candidate uses the actual entire divided response in a positive shifted de Branges space. Its two Hardy membership conditions and the boundary relation selecting the unshifted Xi function must be established together. The retrieved `SuzukiDeBrangesRepresentation` and Xi-vector membership results assume RH for the unshifted derivative-based space. The unconditional safe-shift canonical construction uses a different boundary function. No identification supplying the required native orthogonality has been proved.
 
