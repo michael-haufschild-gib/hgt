@@ -275,7 +275,9 @@ theorem tendsto_selbergGcdLogPrincipalScaledLogPowerModel_sub_harmonic_div_log_p
           have hcast : ((a * d : ℕ) : ℝ) = (a : ℝ) * (d : ℝ) := by push_cast; ring
           rw [hcast] at hNlt
           rw [div_le_div_iff₀ hdR hNR]
-          nlinarith [hdR, hNR, hKpos.le, hlogpos]
+          have hmul : K * ((a : ℝ) * (d : ℝ)) ≤ K * ((c : ℝ) * (d : ℝ)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right haR hdR.le) hKpos.le
+          linarith [hmul]
         · have hlt : (N : ℝ) / ((b * d : ℕ) : ℝ) < K := lt_of_not_ge hB'
           have hbd : (0 : ℝ) < ((b * d : ℕ) : ℝ) := by
             exact_mod_cast Nat.mul_pos hb hdpos
@@ -286,7 +288,9 @@ theorem tendsto_selbergGcdLogPrincipalScaledLogPowerModel_sub_harmonic_div_log_p
           have hcast : ((b * d : ℕ) : ℝ) = (b : ℝ) * (d : ℝ) := by push_cast; ring
           rw [hcast] at hNlt
           rw [div_le_div_iff₀ hdR hNR]
-          nlinarith [hdR, hNR, hKpos.le, hlogpos]
+          have hmul : K * ((b : ℝ) * (d : ℝ)) ≤ K * ((c : ℝ) * (d : ℝ)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hbR hdR.le) hKpos.le
+          linarith [hmul]
       have hglobal : |moebiusLogPowerKernelReal (q + 1) ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
               moebiusLogPowerKernelReal (r + 1) ((N : ℝ) / ((b * d : ℕ) : ℝ)) -
             cq * cr *

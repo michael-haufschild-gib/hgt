@@ -1,6 +1,6 @@
 # HB: original native form-domain admission
 
-Stage: 3-formalized. The literal untruncated native remainder's double time primitive belongs to the original joint form domain through its original value embedding. Complete operator identification, physical-current cancellation and RH remain open.
+Stage: 3-formalized. The literal untruncated native remainder's double time primitive belongs to the original joint form domain through its original value embedding. Its [original operator identity](hb-native-operator-identification.md) is also closed. Complete native/physical causal-response identification, physical-current cancellation and RH remain open.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -76,13 +76,13 @@ The final sources and their five emitted artifacts were installed byte for byte.
 
 ## Next mathematical target
 
-Native form admission is closed. The remaining immediate target is the original operator equation. `jointCoreDifferential_inner` already represents the full completed energy form on every original separated smooth core field. Prove the native transposed elliptic identity against those same tests, retaining the literal source G and all original seam and radial relations. Density then identifies the admitted form vector with `K*(W+G)`, giving
+Native form admission and the [original primitive operator equation](hb-native-operator-identification.md) are closed. Native radial and angular transposition against the original core, followed by `jointCoreDifferential_inner` and graph-generator closure, identify the admitted form vector with `K*(W+G)`, giving
 
 ```
 W = K K* (W+G).
 ```
 
-This is the bounded-resolvent identity needed for the complete native/physical causal inverse comparison. Admission alone does not prove this equation, the complete physical-current cancellation, fixed-clock extinction, or RH.
+The next target is complete native/physical causal inverse comparison through the proved bounded equation `B U+(I-B)W=B F2`. The physical response currently has a weighted time-L2 realization, so the proposed comparison uses its integrated equation and a fourth time primitive. Complete physical-current cancellation, fixed-clock extinction and RH remain open.
 
 ## Search evidence
 

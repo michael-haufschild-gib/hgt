@@ -429,9 +429,76 @@ The retained center inequality gives `k>=4*x/3+2/3` and `u*(2*k-5/3)>=8*x-1`. Co
 -Q_a'(x) >= (2/9)*sinh(2*a*x)*Psi(x) > 0,       x>=2/3.
 ```
 
-The source inequality `0<=Psi<=Phi^2` bounds `Q_a` by a polynomial multiple of the squared tilted theta source, so `Q_a` tends to zero at infinity and vanishes at zero. Its derivative is continuous on compact intervals and nonpositive on the displayed ray, which gives absolute integrability and `integral_0^infinity Q_a'=0`. These statements are being checked in `/tmp/sqb74_barrier_flux.lean`; they are not yet installed Lean results.
+The source inequality `0<=Psi<=Phi^2` bounds `Q_a` by a polynomial multiple of the squared tilted theta source, so `Q_a` tends to zero at infinity and vanishes at zero. Its derivative is continuous on compact intervals and nonpositive on the displayed ray, which gives absolute integrability and `integral_0^infinity Q_a'=0`. These statements pass `lake env lean /tmp/sqb74_barrier_flux.lean` and are installed in [ThetaCuspModularBarrierFlux.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularBarrierFlux.lean). The strict flux sign and exact zero-integral capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
 
-For the actual center weight `4*x*sinh(2*a*x)`, subtracting `K*Q_a'` from the last diagonal adds at least `K*Psi/(18*x)` to the source on `x>=2/3`. This is a positive candidate for repairing the upper part of the open middle interval while preserving every integrated moment. On the compact interval `[2/3,6/5]`, the actual positive head cofactor and this positive reserve allow a finite coefficient to dominate a continuous determinant deficit; the existing source tail is already strict beyond `6/5`. The coefficient's effect on `0<=x<2/3` still needs a separate sign estimate. No global rank-seven sign or all-rank propagation follows yet.
+For the actual center weight `4*x*sinh(2*a*x)`, subtracting `K*Q_a'` from the last diagonal adds at least `K*Psi/(18*x)` to the source on `x>=2/3`. This is a positive candidate for repairing the upper part of the open middle interval while preserving every integrated moment. On the compact interval `[2/3,6/5]`, the actual positive head cofactor and this positive reserve allow a finite coefficient to dominate a continuous determinant deficit; the existing source tail is already strict beyond `6/5`. The installed theorem `exists_barrierRepairedMatrix_posDef_on_upper_ray` proves existence of one fixed positive coefficient making the revised source matrix positive definite for every `x>=2/3`. Its exact determinant identity and axiom audit pass in the same scratch check. The module is wired once into the RHTower umbrella; the final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularBarrierFlux` passed in `/tmp/sqb74-barrier-flux-leaf-audit` against actual repository source and cached dependencies. The weighted reserve comparison is asserted only on this ray; outside it, this lower source matrix is not identified with the literal zero-flux correction. The coefficient's effect on `0<=x<2/3` still needs a separate sign estimate. The exact cost on that interval is `-K*Q_a(2/3)`, balanced by the same total gain on its complement. A coefficient obtained from compactness alone does not bound this cost. No global rank-seven sign or all-rank propagation follows yet.
+
+A sharper normalization is now proved for controlling that cost. Set `T=t*(k+1/3)` and `V=B-T/12`. Direct differentiation yields
+
+```text
+V' = 2*u*(k+2/3)*V
+       + (T/6)*[8-2*(3-u)*k+2*u/3-J].
+```
+
+The proved kinetic bound gives `(3-u)*k<19/5`; also `J<=u/3`. Thus the bracket is strictly positive on the entire actual half-orbit. If `V` were positive at a center, derivative fencing would keep it positive, and the increasing positive drift would give a fixed positive derivative lower bound on the complete later ray, contradicting `V<=B<=1`. Hence `V<=0`; equality at a positive center would be a local maximum with strictly positive derivative, while `V(0)<0`. This argument is formalized in [ThetaCuspModularGapScaledBarrier.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularGapScaledBarrier.lean). The capstones `barrierDefect_lt_gap` and `normalized_barrierDefect_bounds` prove `B<T/12` and `0<=B/T<1/12` on the complete half-orbit. Their foreground scratch check `/tmp/sqb74_gap_scaled_barrier.lean` passes with only `propext`, `Classical.choice`, and `Quot.sound`. The installed module is wired once into the RHTower umbrella. The final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularGapScaledBarrier` passed in `/tmp/sqb74-gap-scaled-barrier-leaf-audit`, using actual repository source and cached dependencies. Formal lint passed after both new modules were installed and wired; output is `/tmp/sqb74_formal_lint.txt`. All owned Lean/Lake and search processes are terminal.
+
+For `U=B/T`, a further analytical differentiation gives
+
+```text
+U' = 4/3-k + [4*u*(k+1/3)-2*J]*U,
+[(H*t/12)^2*U]' = (H*t/12)^2 * [4/3-k+(5*u/3-2*J)*U].
+```
+
+Replacing `Psi` by this normalized profile removes an unnecessary small gap factor from the reserve while keeping the pointwise bound `(H*t/12)^2*U<=(H*t/12)^2/12`. These derivative identities are analytical, not new Lean declarations. The normalized flux sign and the global coefficient compatibility still need proof. The positive upper-ray matrix alone does not settle the actual integrated rank-seven sign.
+
+### An explicit inner budget from the normalized drift
+
+The actual normalized defect now satisfies the closed bounds
+
+```text
+0 <= U(x) <= u(x)/36 <= x/3,                 x>=0.
+```
+
+For `W=U-u/36`, the actual equations give `W'=c*W+F`, where
+
+```text
+c = 4*u*(k+1/3)-2*J >= 0,
+F = 4/3-5*k*t/36+u^2/27-u*J/18,
+F' = u*t*(36*k^2-1)/162
+       +(u/3-J)*[t*(k/3+5/54)+u^2*(k+2/3)/9] >= 0.
+```
+
+If `W(b)>0` and `F(b)<0`, monotonicity of `F` makes the derivative strictly negative at every zero of `W` before `b`, contradicting `W(0)=0`. If `F(b)>=0`, a positive `W(b)` persists and gives a fixed positive derivative bound on the later complete ray, contradicting the already proved upper bound on `U`. Thus `W<=0`. The kinetic-gap bound also gives `u'<12`, so `u<=12*x`. This is an actual-source comparison, not an assumption about an arbitrary ODE solution.
+
+For the already admitted flux `Q_a=x*sinh(2*a*x)*Psi`, these bounds give
+
+```text
+Psi <= amp^2*T*x/3,
+Psi' <= amp^2*T/12,
+Q_a' <= (504/169)*(4*x*sinh(2*a*x))*Phi^2,   0<=a<=1/2, x>=0.
+```
+
+On `[0,2/3]`, the proof retains `T<=72/5`, `Phi^2>=169*amp^2/144`, and the hyperbolic weight derivative. On the later ray the already proved `Q_a'<=0` gives the same upper bound. Consequently subtracting `K*Q_a'`, for `K>=0`, costs at most `(504/169)*K*Phi^2` after division by the positive center weight. The flux remains the same full-source flux with its proved zero integral; no new endpoint admission is assumed. The three capstones in [ThetaCuspModularBarrierCost.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularBarrierCost.lean) pass the foreground scratch check `/tmp/sqb75_normalized_cost.lean` with only `propext`, `Classical.choice`, and `Quot.sound`. The module is wired into the RHTower umbrella. Its initial narrow leaf build passes in `/tmp/sqb75-barrier-cost-leaf-audit`; the sharper comparison below is undergoing its own scratch check before the final module audit.
+
+Retaining the sign instead of replacing the cost by its constant ceiling gives the analytical full-orbit candidate
+
+```text
+P = (T/12)*[6-3*k+(u*(k-2/3)-J)/4],
+Q_a' <= (4*x*sinh(2*a*x))*amp^2*P.
+```
+
+Here `Psi'<=amp^2*T*(4/3-k)` retains the actual negative derivative term, and `4*x<=u*(k-2/3)-J` removes the center from the upper polynomial. This comparison uses exactly the same modular coordinates as the seven native moments. For the fixed original `L=10^12` and one `K>=0`, the resulting sufficient determinant target is
+
+```text
+H^8*evenLowerDet
+  +amp^2*(L*compensationReserve-K*P)*det(nativeEvenHead) > 0
+```
+
+on the complete actual half-orbit. This displayed determinant implication is analytical; no sign for its left side has been proved. It retains both the original concavity reserve and the signed cost of the second flux. The separate inner budget target using the constant ceiling is `nativeEvenFourSchur+L*G>(504/169)*K*Phi^2` on `[0,2/3]`, together with the proved upper-ray repair for that **same** coefficient. Existence of a coefficient meeting both sides remains open. Neither the cost bound nor the upper-ray repair establishes the rank-seven integral sign; all-rank propagation is also open.
+
+Broad all-view deep searches through transport/redistribution, majorization, successor, confinement/Riccati, multiplier budgets, and star-shaped concavity inspected declarations, candidate lemmas, source arguments, and proposed ingredient groups. The retrieved Riccati identities retain derivative identifications; the radial-phase concavity result concerns a different actual equation; generic derivative budgets retain the estimate to be supplied. These results do not establish the displayed native determinant sign. Search coverage is partial, with stale source/compiler records; some earlier requests also had interrupted, malformed-judging, or deadline stages. No corpus-absence conclusion follows.
+
+An independently chosen broad arXiv search for pinning recovered [Networked Admissibility-Preserving Control for Directed Safe Coordination](https://arxiv.org/html/2609.09384v1), submitted September 8, 2026. Its exact cascade retains the initial realization mismatch and prices its positive and negative demands separately before applying a boundary-invariance argument. The mechanism suggests preserving the sign of the source correction when testing a compatible coefficient. Its graph and actuator assumptions have not been identified with theta data; it supplies no Lean premise or determinant sign. The elasticity search also recovered a September 2026 upload of a paper published in 2022, which is not treated as new 2026 research.
 
 ### Integrating before taking the Schur complement
 
@@ -444,7 +511,9 @@ Schur(integral nativeEvenFour(0,x) dmu_a)
 
 The bracket equals `c_x-2*rbar^T*b_x+rbar^T*H_x*rbar`, so it is integrable by the existing raw-entry estimates. This argument does not require separately splitting an integral of `s_x` and an integral of the nonnegative variance. The linear native successor source in `ThetaCuspCenterMixedSuccessorSource` has the same integral; it is not pointwise equal to this squared-polynomial source. A quantitative bound showing the variance offsets the negative part of `s_x` is still missing. The scalar finite-sum identity `schurComplement_sum_eq` in `HTGeometry/QuotientFusionProjectionGenesis.lean` and mathlib's matrix square-completion identities support the algebra; no theta variance domination is claimed.
 
-Broad deep searches through discriminants/interlacing, Hardy/uncertainty/coercivity, heterogeneity/variance/mixtures, and mechanism queries for continued fractions and averaged Schur complements inspected all retrieval views. Further all-view deep searches through Halphen/Chazy and subresultants/Bezoutians recovered modular differential identities and equivalent Xi kernel forms, without a sign-producing join to the seven native moments. A disconjugacy query returned unrelated disjointness results and does not establish absence of an oscillation method in the corpus. Returned recurrence theorems retain positive Jacobi data or unmatched evolution equations. Variance identities expose a positive gain without bounding the native deficit. Coverage remains partial, with source/compiler staleness and retrieval deadlines on some requests. No absence conclusion follows.
+Broad deep searches through discriminants/interlacing, Hardy/uncertainty/coercivity, heterogeneity/variance/mixtures, and mechanism queries for continued fractions and averaged Schur complements inspected all retrieval views. Current all-view searches through factorization/dissipation, zero-derivative multipliers, Schwartz/polynomial constructions, and virial identities inspected statements, source arguments, proof ideas, and ingredient groups. Returned virial/Stein receivers retain their own energy or moment hypotheses; none supplies the needed inner correction budget. The actual flux admission instead follows from the proved source-square domination and monotone tail derivative. Some searches were partial with interrupted stages, malformed local judging, or reranking deadlines; source/compiler coverage remains stale. Further all-view deep searches through Halphen/Chazy and subresultants/Bezoutians recovered modular differential identities and equivalent Xi kernel forms, without a sign-producing join to the seven native moments. A disconjugacy query returned unrelated disjointness results and does not establish absence of an oscillation method in the corpus. Returned recurrence theorems retain positive Jacobi data or unmatched evolution equations. Variance identities expose a positive gain without bounding the native deficit. Coverage remains partial, with source/compiler staleness and retrieval deadlines on some requests. No absence conclusion follows.
+
+An independent recent-paper search for metastability recovered [An Eyring–Kramers Law for the Hypoelliptic Third-Order Langevin Diffusion](https://arxiv.org/html/2607.20882v1). Its saddle reduction chooses a dual coordinate aligned with the single unstable eigenvalue, while its capacity argument keeps the full weak current until localization errors are controlled. The theta correction above is derived from the actual modular ODE; no Langevin small-noise asymptotic, stochastic premise, or Gaussian replacement is used. The paper supplies a comparison mechanism to examine, not a theta determinant theorem.
 
 Recent-paper searches used independently chosen rigidity, fragmentation, and capillarity terms. The direct arXiv search page sorted by announcement date recovered [Rigidity for capillary liquid drops of nearly circular section with constant vorticity](https://arxiv.org/html/2607.17844v1), submitted July 20, 2026. Its argument controls missing low Fourier modes quadratically using the area and barycenter constraints, then absorbs a cubic remainder through interpolation and regularity. This suggests retaining source constraints before estimating a degenerate quadratic form. Its smallness and elliptic estimates have not been identified with the theta determinant problem; the paper contributes no Lean premise.
 
