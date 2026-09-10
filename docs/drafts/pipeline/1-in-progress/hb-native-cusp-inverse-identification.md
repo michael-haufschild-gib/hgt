@@ -261,7 +261,7 @@ Box_cone=-partial_T^2-3/T partial_T+T^(-2) Delta_3,
 
 the chain rule gives `Box_cone psi=T^(-3)(-partial_tau^2+Delta_3+1)Phi`. Thus the original wave equation transforms to `Box_cone psi=-F/(c(x) T^3)`. These are paper identities derived from the actual operator; they are not yet Lean theorems.
 
-The next conjecture is that local causal uniqueness for this cone operator identifies the native residual with the constructed physical response after matching their weak equations. This requires proving the relevant weak regularity and boundary identifications; the displayed substitutions alone do not supply uniqueness. Radial reflection is compatible with the transformation because `cosh(x)` is even. The half-line Dirichlet trace, modular quotient and all physical current terms remain required. Broad Milne and Huygens/Kirchhoff search results did not supply this uniqueness statement; their semantic coverage was incomplete. This candidate has not been used in any formal proof or asserted to imply extinction.
+Native/physical time-class equality is now proved by the [original covariance-energy argument](../3-formalized/hb-native-causal-equality.md). It uses the completed graph and the actual bounded time equations. The cone-coordinate formulas remain available for the next physical-current transfer; radial reflection is compatible because `cosh(x)` is even. The half-line Dirichlet trace, modular quotient and all physical current terms remain required in that boundary evaluation.
 
 ## Formal full-source forced field
 
