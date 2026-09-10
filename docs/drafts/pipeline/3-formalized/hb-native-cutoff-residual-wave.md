@@ -54,7 +54,7 @@ The Dirichlet result uses the already proved full-source reflection cancellation
 
 The [native joint-admission extension](hb-native-residual-joint-admission.md) now proves the actual residual's joint-L2 membership, strong continuity, exact representative and zero before and at onset. Its global source-integral identity and bounded-time majorant cover the complete modular cell and the characteristic edges.
 
-The remaining comparison needs the time-integrated weak equation for the actual joint operator. Membership in the first-derivative energy form domain `jointDomain` and the actual modular side conditions remain construction obligations. The displayed null equation alone does not prove a global static-coordinate classical wave equation across the characteristic boundary. The bounded-unit-resolvent energy method on the active inverse-identification card still requires the actual weak operator identity.
+The remaining comparison needs the time-integrated weak equation for the actual joint operator. The [modular-transport extension](hb-native-modular-transport.md) proves the actual modular side conditions as full closed-cell germ agreement. Membership in the first-derivative energy form domain `jointDomain` remains a construction obligation. The displayed null equation alone does not prove a global static-coordinate classical wave equation across the characteristic boundary. The bounded-unit-resolvent energy method on the active inverse-identification card still requires the actual weak operator identity.
 
 ## Search evidence
 

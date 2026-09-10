@@ -164,11 +164,29 @@ partial_a integral_R u_a^2 = 2*integral_R x*u_a^2.
 
 The middle identity follows by integration by parts: `P(D)^*P'(D)` is skew-adjoint because `P` and `P'` have opposite parity. The positive conjecture is `integral_R x*u_a^2 >= 0` for every such `P` and `0<a<1/2`. This comparison, including its formal identification with every signed block, remains open; the displayed calculation is analytical and is not a new Lean theorem. Ordinary energy positivity does not discharge the signed expectation.
 
+A concrete multiplier for this comparison is determined by the complete source score. Set `s=(log Phi)'`, `K=-s'>0`, and
+
+```text
+w(x) = 1 / integral_0^1 K(t*x) dt.
+```
+
+The source's evenness and strict log-concavity make `w` positive and even, with `w(0)=1/K(0)` and `w(x)*s(x)=-x`. For `u=P(D)g_a`, the full commutator is `C=[P(D),s]g_a`, where `[P(D),s]g_a=P(D)(s*g_a)-s*P(D)g_a`. The product rule gives the finite-interval balance
+
+```text
+integral_l^r x*u^2
+  = a*integral_l^r w*u^2
+    + integral_l^r ((w'/2)*u^2+w*u*C) - [w*u^2]_l^r/2.
+```
+
+This retains every derivative of the actual score through `C`; Gaussian replacement would erase these terms. The positive construction target is the lower bound `lim_(R->infinity) integral_(-R)^R ((w'/2)*u^2+w*u*C) >= -a*integral_R w*u^2`, together with its boundary and native signed-block joins. The bound remains unproved for the full theta source at all degrees. The source positivity, the identity `w*s=-x` using the equivalent piecewise quotient, and the local product-rule balance were checked in `/tmp/sqb62_score_balance.lean`; this scratch verification does not establish the all-degree estimate or add a finished corpus module.
+
 The full-source Ward equation provides a concrete input to this comparison. `ThetaCuspCofinalWardConvexity` identifies the complete Gibbs-shell sum `W` and proves `W'+W/2=-Phi/(2*pi)`, with strictly positive second derivative of `exp(a*x)*W(x)` for `0<=a<=1/4`, `x>0`. Both source identities were checked in `/tmp/sqb59_source_interfaces.lean`, with only `propext`, `Classical.choice`, and `Quot.sound`. The attempted use of this curvature has not oriented the two reflected transform branches. Their Gaussian boundary terms must stay in `thetaCuspShellEvenPhaseValue_eq_gammaRemainders`; the actual pair current is `2*Im(D_n*conj(A_m))`.
 
 For the rank-two theta reassembly, `ThetaWignerEisensteinCrossEnergy` supplies an exact positive completed square with both symbol-weighted energy and reciprocal-symbol dual energy. The missing construction is a bound for the actual arithmetic dual channel that controls the full mixed term. The positive archimedean symbol alone is not that bound. Likewise, the retrieved Hankel terminal-flux method retains its terminal vector, and the shifted Jacobi Toda identities require a frame for different moments. No all-order source-sign or forcing-cancellation theorem is claimed from these matches.
 
 Searches inspected candidate-lemma, source-argument, declaration, prose and source-passage views, with broad OR terms, mechanism descriptions and selected module filters. One all-order request returned a proposed ingredient group combining tilt differentiation with finite rational-gauge reflection; it supplies no native source-sign estimate. Other requests returned empty groups. Retrieval reports incomplete semantic/compiler coverage and, for some deep requests, interrupted stages. These results do not establish absence from the corpus. No computation or frontier-map edit was performed.
+
+An analytical operator construction suggested by [the n-potent commutator paper](https://arxiv.org/html/2607.08139v1) uses the actual arithmetic phase. On `L2(R)`, set `Rf(t)=f(-t)`, `Jf(t)=beta(t)*f(-t)`, and `Q=(I+J)/2`. The proved `norm_boundaryPhase` and `boundaryPhase_neg` identities make `J` a unitary involution and `Q` an orthogonal projection. Since Xi is even and real on the real axis, `Q Xi=(1+beta)*Xi/2`, so the complete native density is exactly `Xi^2*w=2*|Q Xi|^2`. These operator statements are analytical deductions, not new Lean theorems. The paper's factorizations can therefore be tested on actual idempotents; applying them to the differential operator or source score would require separate potency identities. The remaining constructive target is a quantitative bound on the native residual. The retrieved `projection_commutator_decomposition` retains both polarized leakage terms, while `norm_sub_intersectionProjection_sq_le` requires a strict angle bound; neither input estimate has been established here.
 
 ## Further source constructions under examination
 

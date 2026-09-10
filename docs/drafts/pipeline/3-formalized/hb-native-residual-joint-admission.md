@@ -63,7 +63,7 @@ This majorant belongs to L2 of the original product measure: the radial interval
 
 ## Remaining mathematical construction
 
-The residual now inhabits the actual spatial Hilbert space continuously. Its membership in the closure of the first-derivative energy graph `jointDomain`, modular side compatibility and actual weak spatial action still need proofs. The interior mixed-null field equation and L2 admission alone do not establish those claims.
+The residual now inhabits the actual spatial Hilbert space continuously. The [modular-transport extension](hb-native-modular-transport.md) now proves a globally modular representative with full germ agreement on every closed-cell chart. Membership in the closure of the first-derivative energy graph `jointDomain` and actual weak spatial action still need proofs. The interior mixed-null field equation and L2 admission alone do not establish those claims.
 
 For the difference from the constructed joint evolution, the active analytical target is
 
@@ -74,7 +74,7 @@ B=jointEmbedding * adjoint(jointEmbedding).
 
 The existing contractivity and dense range of `jointEmbedding` give a bounded-resolvent energy method once this actual identity is proved. It has not been assumed as a replacement for the missing construction.
 
-Broad spherical-averaging search recovered the source-level Maass homogeneous-space dictionary and its section cocycle. Together with the original theta source's modular invariance, it suggests proving modular transport of the literal circle average through compact-stabilizer averaging. The exact native chart and Haar/angle normalization still need identification. That candidate is recorded on the active inverse-identification card; no native-mean modular-invariance theorem is claimed here.
+Broad spherical-averaging search recovered the source-level Maass homogeneous-space dictionary and its section cocycle. The modular-transport extension now identifies the actual native chart with the corpus rotation orbit and proves invariance by a shift of the original periodic angular integral. It also proves full closed-cell germ compatibility for the actual residual; no change of the angular measure is required.
 
 ## Search evidence
 

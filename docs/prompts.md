@@ -137,38 +137,35 @@ Lean rules:
 goal is met when the conjecture is proven or disproven unconditionally without hypotheses or other premises in lean.
 
 goal is met when paper is written and passes a hostile review that confirms that the paper is on a quality level to be published in Nature.
+HB — theta-cusp Hawking causal scattering
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge towards the lean formalized proof or falsification of the riemann hypothesis.
+create a formal proof of the riemann hypothesis via route/candidate interface SQB from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md 
 
-Current ledger of the major routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
-Current ledger of possible RH endpoints and their proof obligations: docs/reports/endpoints.md
+Current ledger of high level rules what a solution must and cannot be like independent of the route: docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md
 
-research rules:
-- do not get "married" to a single route. use the whole lean corpus for fresh and inovative ideas. look for hidden gems and for possibilities to solve problems using building blocks from several routes and the lean corpus not directly related to rh.
-- do not waste time on rediscovering what literature already proves - instead formalize what literature proves and only then start your own research to expand beyond that.
-- use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
-- always check that you do not play theatre and actually are creating and significant new knowledge
-- focus on hard problems, NO THEATRE, NO INFRASTRUCTURE, EVERY STEP MUST DELIVER PROGRESS
-- take a step back and look at the big picture and conjecture how you could reinterpret everything we know so far and where the reasons we got stuck are shadows of a higher universal principle
-- pivot when necessary.
-
-Lean rules:
+**Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
 2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use lake env lean \<file>. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-7. make sure you don't leave stale lean processes running - clean up after yourself.
+3. No computational results can be used in lean proof - computations only support ideas and guidance.
+4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
    
-Non-negotiable working mode rules:
-1. use the search tool for our lean corpus. do not read cards or anything, only work directly on lean.
-2. every action you take must be aimed at moving the actual frontier of our research and to create signficant knowledge that is not known to your training data or current SOTA literature in arxiv or similar platforms. always attack and overcome the research frontier.
-3. never pivot because of something is missing in our lean corpus. build the missing thing.
-4. be creative, for example see if you can reformulate your problem in a different framework like using Noether´s theorem to turn a conservation question into a question of symmetry, or ask what if - like "what if i treat prime packets as light-like physical entities, what property or laws about light and light cones could i test if they translate to my problem?" or "what if i make this finite thing infinite?" or "for this no-go, for what thing is this no-go actually a positive necessity and what other properties or constraints or laws for this thing could i translate for my actual problem?"
-5. use the scientific method tools.
+**Work rules:**
+1. Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
+2. Document high level knowledge about the problem as a whole independent of routes in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. Entries document compact knowledge about RH and its solution in the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", Cannot have this", "Cannot be able to do this". If the entry cannot be understood without first researching a specific route, it does not belong here.
+3. Update docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md only as a current state, no history, no diary, not logging - only document the current state of all routes and route candidates.
+4. Any new turn starts with you stating in chat what the full proof chain is that you are working on and how your new work will deliver significant progress for it.
+5. Missing in our Lean corpus or mathlib - Build no matter the effort.
       
+**Computations:**
+if computations can help you to find new leads or answer questions which you truly could not find or answer by reasoning, then computations are allowed.
+
+run the computations on this runpod: ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519
+download results and document them in a subfolder in docs/drafts/pipeline/2-fully-proven/computations. optimize python code for multicore. once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+
 goal is met when lean corpus has an uncondtional formal proof/falsification of the RH.
 
 
@@ -292,8 +289,7 @@ how would a fields medal mathematician approach this problem? what our corpus is
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed arxiv papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2608.29060
-
+- https://arxiv.org/abs/2609.05560
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -383,7 +379,7 @@ Use computations and formalize lean to discover new routes, kill routes, sharpen
 3. to create new knowledge use the hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...  
 
 **Mandatory computation rules:**
-1. Computations run always on runpod: ssh root\@216.81.151.68 -p 16020 -i \~/.ssh/id\_ed25519
+1. Computations run always on runpod: ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519
 2. optimize python code for multicore.
 3. download results and document them in docs/drafts/pipeline/2-fully-proven/computations.
 4. Only compute things you cannot already predict the result of.
@@ -464,3 +460,51 @@ Do not conjecture or judge or assume or anything on your training data. Your tra
 goal is met when you have found a solution to the rh proof on any existing or new route.
 
 be a real scientist here. we do not even have an idea for an approach to use to solve these open problems we face. be creative, use the scientific method, interrogate data, likely we need a completely new approach for each problem that neither we nor literature nor anything in your training data have thought of, so do explorativy experimental computations, try to "make the numbers talk"
+
+
+you are a scientist. use these and other methods to mingle and mangle your conjectures and experiments:
+1\. **\*\*Split it into subclaims.\*\*** Prove or test each part separately.
+2\. **\*\*Attack it as false.\*\*** Search for counterexamples and edge cases.
+3\. **\*\*Reverse it.\*\*** Ask whether the converse, contrapositive, or inverse is easier.
+4\. **\*\*Change the viewpoint.\*\*** Rotate it, reflect it, rephrase it, or look at it from another angle.
+5\. **\*\*Make it visual.\*\*** Turn it into a shape, machine, path, game, or physical object.
+6\. **\*\*Ask what action is happening.\*\*** Are you moving, preserving, compressing, cutting, joining, sorting, counting, or transforming something?
+7\. **\*\*Strip it to essentials.\*\*** Keep only the properties truly needed. Remove decoration.
+8\. **\*\*Look for similar objects.\*\*** Ask what else has the same key properties.
+9\. **\*\*Test small cases.\*\*** Work out the first few examples by hand.
+10\. **\*\*Test extreme cases.\*\*** Check zero, one, maximum, infinite, symmetric, degenerate, or pathological cases.
+11\. **\*\*Run experiments.\*\*** Generate examples, compute data, draw diagrams, and look for patterns.
+12\. **\*\*Find an invariant.\*\*** Ask what stays unchanged while the object changes.
+13\. **\*\*Find a monotone quantity.\*\*** Look for something that only increases, decreases, or cannot cross a boundary.
+14\. **\*\*Prove a weaker bridge.\*\*** Keep the frozen conjecture unchanged; label any easier statement
+&#x20;   \`[BRIDGE]\` rather than silently replacing the hunch.
+15\. **\*\*Form a new stronger hunch only independently.\*\*** If failure suggests a different statement,
+&#x20;   freeze it as a new conjecture before attacking it; do not add structure merely to rescue the old
+&#x20;   conjecture.
+16\. **\*\*Use a minimal counterexample.\*\*** Assume the smallest counterexample exists, then try to make it smaller.
+17\. **\*\*Change representation.\*\*** Rewrite it as algebra, geometry, graph theory, matrices, probability, order, or optimization.
+18\. **\*\*Look for the right theorem.\*\*** Ask what known technique the problem resembles.
+19\. **\*\*Write the fake proof.\*\*** Draft the proof you wish worked, then identify the exact gap.
+20\. **\*\*Name the missing lemma.\*\*** Turn repeated obstacles into smaller claims.
+21\. **\*\*Build a dependency chain.\*\*** Ask: “What would be enough to prove this?” until you reach something manageable.
+22\. **\*\*Compare nearby false statements.\*\*** Change assumptions until it breaks; the breaking point reveals the structure.
+23\. **\*\*Classify boundary cases.\*\*** Study when equality, failure, or sharpness occurs.
+24\. **\*\*Extract the positive residue.\*\*** After every no-go, seek the strongest positive theorem exposed
+&#x20;   by the obstruction, state the new insight exactly, and formalize it in Lean once its paper proof
+&#x20;   is dependency-closed. If none survives, record the serious attempts explicitly.
+
+
+only run computations that can suprise you and lead to new insights and ideas and approaches to solve the hard open mathematical problems we are stuck at.
+use the scientific methods to design experiments: docs/meta/scientific-method.md 
+do not run hour long computation and do not run computations whose result you could also predict by reasoning.
+
+h, also attack open problems using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... loops
+
+
+
+working rules:
+1. on every turn state the proof chain, what the hard mathematical obstacles are, how your last work has made progress and how your next steps will make progress solving these obstacles. 
+2. any work that does not attack and try to solve the hard mathematical obstacles is theatre and a waste of time
+3. use the search tool and deep search and method search extensively
+4. do not just search, also attack open problems using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... loops
+5. use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (june to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
