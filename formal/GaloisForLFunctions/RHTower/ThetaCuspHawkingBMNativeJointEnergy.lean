@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.L2DominatedDerivative
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeAngularLocalization
 
 /-! Exact joint cutoff energy for the literal native time primitive in the original
@@ -930,6 +931,293 @@ theorem nativeTimePrimitive_global_energy (q : XiZeroCopy) (s amplitude : ℂ) (
   change (∫ p, E p ∂μ) = L
   change (∫ p, E p ∂μ) ≤ L at hlower
   linarith only [hlower,hupper]
+
+private theorem continuous_toLp_compact_cell (f : ℝ → UpperHalfPlane → ℂ)
+    (hf : ∀ x, MemLp (f x) 2 D4BMModularCore.measure)
+    (F : ℝ × UpperHalfPlane → ℂ) (hF : Continuous F)
+    (heq : ∀ x z, z ∈ ModularGroup.fd → f x z = F (x,z))
+    (a b : ℝ) (K : Set UpperHalfPlane) (hK : IsCompact K)
+    (hz : ∀ x z, z ∈ ModularGroup.fd → (x ∉ Icc a b ∨ z ∉ K) → F (x,z) = 0) :
+    Continuous (fun x => (hf x).toLp (f x)) := by
+  obtain ⟨C,hC⟩ := (isCompact_Icc.prod hK).exists_bound_of_continuousOn hF.continuousOn
+  let M := max C 0
+  let B := K.indicator (fun _ : UpperHalfPlane => M)
+  have hB : MemLp B 2 D4BMModularCore.measure :=
+    memLp_indicator_const 2 hK.measurableSet M (Or.inr hK.measure_lt_top.ne)
+  apply GaloisForLFunctions.HTGeometry.continuous_toLp_two_of_dominated
+    D4BMModularCore.measure f hf B hB
+  · intro x
+    filter_upwards [ae_restrict_mem ModularGroup.isClosed_fd.measurableSet] with z hfd
+    rw [heq x z hfd]
+    by_cases hk : z ∈ K
+    · rw [show B z = M by exact indicator_of_mem hk _]
+      by_cases hx : x ∈ Icc a b
+      · exact (hC (x,z) ⟨hx,hk⟩).trans (le_max_left C 0)
+      · rw [hz x z hfd (Or.inl hx),norm_zero]
+        exact le_max_right C 0
+    · rw [show B z = 0 by exact indicator_of_notMem hk _,hz x z hfd (Or.inr hk),norm_zero]
+  · filter_upwards [ae_restrict_mem ModularGroup.isClosed_fd.measurableSet] with z hfd
+    have hc : Continuous (fun x : ℝ => F (x,z)) := hF.comp (continuous_id.prodMk continuous_const)
+    exact hc.congr (fun x => (heq x z hfd).symm)
+
+private def nativeAngularSlot (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (i : Fin 3) (x : ℝ) (z : UpperHalfPlane) : ℂ :=
+  ![(nativeTimePrimitiveCutoff q s amplitude t x n 0).field z,
+    weightedDeriv 1 (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z,
+    weightedDeriv Complex.I (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z] i
+
+private def nativeAngularJet (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (i : Fin 3) (p : ℝ × UpperHalfPlane) : ℂ :=
+  let η := modularCuspCutoff ((n:ℝ)+1)
+  ![η p.2*nativeJointTimePrimitiveField q s amplitude t p,
+    weightedDeriv 1 η p.2*nativeJointTimePrimitiveField q s amplitude t p+
+      η p.2*horizontalJet q s amplitude t p,
+    weightedDeriv Complex.I η p.2*nativeJointTimePrimitiveField q s amplitude t p+
+      η p.2*heightJet q s amplitude t p] i
+
+private theorem nativeAngularSlot_memLp (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (i : Fin 3) (x : ℝ) : MemLp (nativeAngularSlot q s amplitude t n i x) 2 D4BMModularCore.measure := by
+  let f := nativeTimePrimitiveCutoff q s amplitude t x n 0
+  fin_cases i
+  · exact core_field_memLp f.field f.smooth f.compact
+  · exact weightedDeriv_memLp 1 f.field f.smooth f.compact
+  · exact weightedDeriv_memLp Complex.I f.field f.smooth f.compact
+
+private theorem nativeAngularSlot_eq_jet (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (i : Fin 3) (x : ℝ) (z : UpperHalfPlane) (hz : z ∈ ModularGroup.fd) :
+    nativeAngularSlot q s amplitude t n i x z = nativeAngularJet q s amplitude t n i (x,z) := by
+  fin_cases i
+  · change modularCuspCutoff ((n:ℝ)+1) z^(0+1)*globalNativeTimePrimitive q s amplitude t x z = _
+    rw [(globalNativeTimePrimitive_germ q s amplitude t x z hz).eq_of_nhds]
+    simp only [Nat.zero_add,pow_one,nativeAngularJet]
+    rfl
+  · exact (native_cutoff_frame q s amplitude t x n z hz).1
+  · exact (native_cutoff_frame q s amplitude t x n z hz).2
+
+private theorem nativeAngularJet_continuous (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (i : Fin 3) : Continuous (nativeAngularJet q s amplitude t n i) := by
+  have hN : (1:ℝ) ≤ (n:ℝ)+1 := by
+    have hn : (0:ℝ) ≤ n := by positivity
+    linarith
+  have hη := (modularCuspCutoff_smooth _ hN).continuous.comp
+    (continuous_snd : Continuous (fun p : ℝ × UpperHalfPlane => p.2))
+  have hD (v : ℂ) := (weightedDeriv_continuous v _ (modularCuspCutoff_smooth _ hN)).comp
+    (continuous_snd : Continuous (fun p : ℝ × UpperHalfPlane => p.2))
+  have hj := jointJets_continuous q s amplitude t
+  fin_cases i
+  · exact hη.mul hj.1
+  · exact ((hD 1).mul hj.1).add (hη.mul hj.2.2.2.1)
+  · exact ((hD Complex.I).mul hj.1).add (hη.mul hj.2.2.2.2.1)
+
+private theorem nativeAngularJet_zero_outside (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (i : Fin 3) (x : ℝ) (z : UpperHalfPlane) (hz : z ∈ ModularGroup.fd)
+    (hp : x ∉ Icc (-max t 0-1) (max t 0+1) ∨
+      z ∉ {z : UpperHalfPlane | z ∈ ModularGroup.fd ∧ z.im ≤ 3*((n:ℝ)+1)}) :
+    nativeAngularJet q s amplitude t n i (x,z) = 0 := by
+  rcases hp with hx|hk
+  · have hx' : max t 0 ≤ |x| := by
+      have hm := le_max_right t (0:ℝ)
+      by_cases hh : x < -max t 0-1
+      · rw [abs_of_neg (by linarith : x < 0)]; linarith
+      · have hhi : max t 0+1 < x := lt_of_not_ge (fun he => hx ⟨le_of_not_gt hh,he⟩)
+        rw [abs_of_pos (by linarith : 0 < x)]; linarith
+    have hw (X k : ℝ) := nativeResidualTimePrimitive_finite_propagation q s amplitude t x X k hx'
+    have hX : (fun X => nativeResidualTimePrimitive q s amplitude t x X (Real.log z.im)) = fun _ => (0:ℂ) :=
+      funext (fun X => hw X _)
+    have hk : (fun k => nativeResidualTimePrimitive q s amplitude t x z.re k) = fun _ => (0:ℂ) :=
+      funext (fun k => hw _ k)
+    have hW : nativeJointTimePrimitiveField q s amplitude t (x,z) = 0 := hw _ _
+    have hH : horizontalJet q s amplitude t (x,z) = 0 := by simp only [horizontalJet,hX,deriv_const,mul_zero]
+    have hK : heightJet q s amplitude t (x,z) = 0 := by simp only [heightJet,hk,deriv_const]
+    fin_cases i <;> simp only [nativeAngularJet,hW,hH,hK,mul_zero,add_zero] <;> rfl
+  · have hy : 3*((n:ℝ)+1) < z.im := lt_of_not_ge (fun hy => hk ⟨hz,hy⟩)
+    have hN : (1:ℝ) ≤ (n:ℝ)+1 := by
+      have hn : (0:ℝ) ≤ n := by positivity
+      linarith
+    obtain ⟨hη,hD⟩ := cutoff_high_zero _ hN z hz hy
+    fin_cases i <;> simp only [nativeAngularJet,hη,hD,zero_mul,add_zero] <;> rfl
+
+private theorem nativeAngularSlot_continuous_L2 (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (i : Fin 3) : Continuous (fun x => (nativeAngularSlot_memLp q s amplitude t n i x).toLp
+      (nativeAngularSlot q s amplitude t n i x)) :=
+  continuous_toLp_compact_cell _ (nativeAngularSlot_memLp q s amplitude t n i)
+    _ (nativeAngularJet_continuous q s amplitude t n i)
+    (nativeAngularSlot_eq_jet q s amplitude t n i)
+    (-max t 0-1) (max t 0+1) _ (truncated_cell_compact (3*((n:ℝ)+1)))
+    (nativeAngularJet_zero_outside q s amplitude t n i)
+
+/-- The actual angular energy-domain element at each radius, supplied by its already
+constructed native angular core field. -/
+def nativeTimePrimitiveAngularEnergy (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (x : ℝ) : D4BMModularCore.energyDomain :=
+  ⟨frameGraph (nativeTimePrimitiveCutoff q s amplitude t x n 0),frameGraph_mem _⟩
+
+/-- The actual cusp-cutoff native primitive is a continuous radial family in the
+original angular energy norm, including the physical Dirichlet radius. -/
+theorem nativeTimePrimitiveAngularEnergy_continuous (q : XiZeroCopy) (s amplitude : ℂ)
+    (t : ℝ) (n : ℕ) : Continuous (nativeTimePrimitiveAngularEnergy q s amplitude t n) := by
+  apply Continuous.subtype_mk
+  change Continuous (fun x => WithLp.toLp 2 ![fieldVector (nativeTimePrimitiveCutoff q s amplitude t x n 0),
+    derivativeVector (nativeTimePrimitiveCutoff q s amplitude t x n 0) 1,
+    derivativeVector (nativeTimePrimitiveCutoff q s amplitude t x n 0) Complex.I])
+  apply (PiLp.continuous_toLp 2 _).comp
+  apply continuous_pi
+  intro i
+  fin_cases i
+  · exact nativeAngularSlot_continuous_L2 q s amplitude t n 0
+  · exact nativeAngularSlot_continuous_L2 q s amplitude t n 1
+  · exact nativeAngularSlot_continuous_L2 q s amplitude t n 2
+
+private theorem nativeTimePrimitiveAngularEnergy_zero_of_literal_zero (q : XiZeroCopy)
+    (s amplitude : ℂ) (t : ℝ) (n : ℕ) (x : ℝ)
+    (h : ∀ X k, nativeResidualTimePrimitive q s amplitude t x X k = 0) :
+    nativeTimePrimitiveAngularEnergy q s amplitude t n x = 0 := by
+  apply D4BMModularCore.embedding_injective
+  rw [map_zero]
+  change fieldVector (nativeTimePrimitiveCutoff q s amplitude t x n 0) = 0
+  let f := nativeTimePrimitiveCutoff q s amplitude t x n 0
+  apply Lp.ext
+  filter_upwards [(core_field_memLp f.field f.smooth f.compact).coeFn_toLp,
+    Lp.coeFn_zero ℂ 2 D4BMModularCore.measure] with z hz hzero
+  rw [show (fieldVector f : UpperHalfPlane → ℂ) z = f.field z from hz,hzero]
+  change modularCuspCutoff ((n:ℝ)+1) z^(0+1)*globalNativeTimePrimitive q s amplitude t x z = 0
+  simp only [globalNativeTimePrimitive,cellGermExtension,h,mul_zero]
+
+/-- The actual radial family has its Dirichlet trace in the full angular energy norm. -/
+theorem nativeTimePrimitiveAngularEnergy_boundary (q : XiZeroCopy) (s amplitude : ℂ)
+    (t : ℝ) (n : ℕ) : nativeTimePrimitiveAngularEnergy q s amplitude t n 0 = 0 :=
+  nativeTimePrimitiveAngularEnergy_zero_of_literal_zero q s amplitude t n 0
+    (nativeResidualTimePrimitive_boundary q s amplitude t)
+
+/-- Finite causal propagation gives compact support of the actual angular-energy-valued
+radial family. No mixed derivative estimate is used. -/
+theorem nativeTimePrimitiveAngularEnergy_compact (q : XiZeroCopy) (s amplitude : ℂ)
+    (t : ℝ) (n : ℕ) : HasCompactSupport (nativeTimePrimitiveAngularEnergy q s amplitude t n) := by
+  apply HasCompactSupport.of_support_subset_isCompact (K := Icc (-max t 0-1) (max t 0+1)) isCompact_Icc
+  intro x hx
+  by_contra hnot
+  have hm := le_max_right t (0:ℝ)
+  have hx' : max t 0 ≤ |x| := by
+    by_cases hl : x < -max t 0-1
+    · rw [abs_of_neg (by linarith : x < 0)]; linarith
+    · have hr : max t 0+1 < x := lt_of_not_ge (fun hr => hnot ⟨le_of_not_gt hl,hr⟩)
+      rw [abs_of_pos (by linarith : 0 < x)]; linarith
+  exact hx (nativeTimePrimitiveAngularEnergy_zero_of_literal_zero q s amplitude t n x
+    (fun X k => nativeResidualTimePrimitive_finite_propagation q s amplitude t x X k hx'))
+
+private def nativeCutoffRadial (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (x : ℝ) (z : UpperHalfPlane) : ℂ :=
+  modularCuspCutoff ((n:ℝ)+1) z*radialJet q s amplitude t (x,z)
+
+private theorem nativeCutoffRadial_continuous (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ) :
+    Continuous (fun p : ℝ × UpperHalfPlane => nativeCutoffRadial q s amplitude t n p.1 p.2) := by
+  have hN : (1:ℝ) ≤ (n:ℝ)+1 := by
+    have hn : (0:ℝ) ≤ n := by positivity
+    linarith
+  exact ((modularCuspCutoff_smooth _ hN).continuous.comp continuous_snd).mul
+    (jointJets_continuous q s amplitude t).2.1
+
+private theorem nativeCutoffRadial_zero_outside (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (x : ℝ) (z : UpperHalfPlane) (hz : z ∈ ModularGroup.fd)
+    (hp : x ∉ Icc (-max t 0-1) (max t 0+1) ∨
+      z ∉ {z : UpperHalfPlane | z ∈ ModularGroup.fd ∧ z.im ≤ 3*((n:ℝ)+1)}) :
+    nativeCutoffRadial q s amplitude t n x z = 0 := by
+  rcases hp with hx|hk
+  · have hx' : max t 0 < |x| := by
+      have hm := le_max_right t (0:ℝ)
+      by_cases hl : x < -max t 0-1
+      · rw [abs_of_neg (by linarith : x < 0)]; linarith
+      · have hr : max t 0+1 < x := lt_of_not_ge (fun hr => hx ⟨le_of_not_gt hl,hr⟩)
+        rw [abs_of_pos (by linarith : 0 < x)]; linarith
+    have he : (fun y => nativeResidualTimePrimitive q s amplitude t y z.re (Real.log z.im)) =ᶠ[𝓝 x]
+        fun _ => (0:ℂ) := by
+      filter_upwards [(isOpen_lt continuous_const continuous_abs).mem_nhds hx'] with y hy
+      exact nativeResidualTimePrimitive_finite_propagation q s amplitude t y z.re (Real.log z.im) hy.le
+    simp only [nativeCutoffRadial,radialJet,he.deriv_eq,deriv_const,mul_zero]
+  · have hy : 3*((n:ℝ)+1) < z.im := lt_of_not_ge (fun hy => hk ⟨hz,hy⟩)
+    have hN : (1:ℝ) ≤ (n:ℝ)+1 := by
+      have hn : (0:ℝ) ≤ n := by positivity
+      linarith
+    simp only [nativeCutoffRadial,(cutoff_high_zero _ hN z hz hy).1,zero_mul]
+
+private theorem nativeCutoffRadial_majorant (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ) :
+    ∃ B : UpperHalfPlane → ℝ, MemLp B 2 D4BMModularCore.measure ∧
+      ∀ᵐ z ∂D4BMModularCore.measure, ∀ x, ‖nativeCutoffRadial q s amplitude t n x z‖ ≤ B z := by
+  let K := {z : UpperHalfPlane | z ∈ ModularGroup.fd ∧ z.im ≤ 3*((n:ℝ)+1)}
+  have hK : IsCompact K := truncated_cell_compact _
+  have hP : IsCompact (Icc (-max t 0-1) (max t 0+1) ×ˢ K) := isCompact_Icc.prod hK
+  obtain ⟨C,hC⟩ := hP.exists_bound_of_continuousOn
+    (nativeCutoffRadial_continuous q s amplitude t n).continuousOn
+  let M := max C 0
+  refine ⟨K.indicator (fun _ => M),memLp_indicator_const 2 hK.measurableSet M
+    (Or.inr hK.measure_lt_top.ne),?_⟩
+  filter_upwards [ae_restrict_mem ModularGroup.isClosed_fd.measurableSet] with z hz
+  intro x
+  by_cases hk : z ∈ K
+  · rw [indicator_of_mem hk]
+    by_cases hx : x ∈ Icc (-max t 0-1) (max t 0+1)
+    · exact (hC (x,z) ⟨hx,hk⟩).trans (le_max_left C 0)
+    · rw [nativeCutoffRadial_zero_outside q s amplitude t n x z hz (Or.inl hx),norm_zero]
+      exact le_max_right C 0
+  · rw [indicator_of_notMem hk,nativeCutoffRadial_zero_outside q s amplitude t n x z hz (Or.inr hk),norm_zero]
+
+private theorem nativeCutoffRadial_memLp (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (x : ℝ) : MemLp (nativeCutoffRadial q s amplitude t n x) 2 D4BMModularCore.measure := by
+  obtain ⟨B,hB,hbound⟩ := nativeCutoffRadial_majorant q s amplitude t n
+  have hmap : Continuous (fun z : UpperHalfPlane => (x,z)) := continuous_const.prodMk continuous_id
+  have hc := (nativeCutoffRadial_continuous q s amplitude t n).comp hmap
+  dsimp only [Function.comp_def] at hc
+  change Continuous (nativeCutoffRadial q s amplitude t n x) at hc
+  exact hB.mono' hc.aestronglyMeasurable (hbound.mono (fun z hz => hz x))
+
+/-- The literal radial derivative of the actual cusp-cutoff primitive, admitted to the
+original angular L² space without requiring angular derivatives of this derivative. -/
+def nativeTimePrimitiveAngularRadial (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
+    (x : ℝ) : D4BMModularCore.Space :=
+  (nativeCutoffRadial_memLp q s amplitude t n x).toLp (nativeCutoffRadial q s amplitude t n x)
+
+private theorem nativeTimePrimitiveAngularRadial_continuous (q : XiZeroCopy) (s amplitude : ℂ)
+    (t : ℝ) (n : ℕ) : Continuous (nativeTimePrimitiveAngularRadial q s amplitude t n) :=
+  continuous_toLp_compact_cell _ (nativeCutoffRadial_memLp q s amplitude t n)
+    _ (nativeCutoffRadial_continuous q s amplitude t n) (fun _ _ _ => rfl)
+    (-max t 0-1) (max t 0+1) _ (truncated_cell_compact (3*((n:ℝ)+1)))
+    (nativeCutoffRadial_zero_outside q s amplitude t n)
+
+/-- Differentiation of the angular energy family after its original value embedding
+has the actual native radial derivative in L². No mixed derivative is assumed. -/
+theorem nativeTimePrimitiveAngularEnergy_value_hasDerivAt (q : XiZeroCopy) (s amplitude : ℂ)
+    (t : ℝ) (n : ℕ) (x : ℝ) :
+    HasDerivAt (fun y => D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n y))
+      (nativeTimePrimitiveAngularRadial q s amplitude t n x) x := by
+  obtain ⟨B,hB,hbound⟩ := nativeCutoffRadial_majorant q s amplitude t n
+  change HasDerivAt (fun y => (nativeAngularSlot_memLp q s amplitude t n 0 y).toLp
+    (nativeAngularSlot q s amplitude t n 0 y))
+    ((nativeCutoffRadial_memLp q s amplitude t n x).toLp (nativeCutoffRadial q s amplitude t n x)) x
+  apply GaloisForLFunctions.HTGeometry.hasDerivAt_toLp_two_of_dominated D4BMModularCore.measure
+    (nativeAngularSlot q s amplitude t n 0) (nativeCutoffRadial q s amplitude t n)
+    (nativeAngularSlot_memLp q s amplitude t n 0) (nativeCutoffRadial_memLp q s amplitude t n)
+    B hB ?_ hbound x
+  filter_upwards [ae_restrict_mem ModularGroup.isClosed_fd.measurableSet] with z hz
+  intro y
+  have he : (fun y => nativeAngularSlot q s amplitude t n 0 y z) =
+      fun y => modularCuspCutoff ((n:ℝ)+1) z*nativeResidualTimePrimitive q s amplitude t y z.re (Real.log z.im) := by
+    funext y
+    exact nativeAngularSlot_eq_jet q s amplitude t n 0 y z hz
+  rw [he]
+  exact (nativeResidualTimePrimitive_radial_hasDerivAt q s amplitude t y z.re (Real.log z.im)).1.const_mul _
+
+/-- The original scalar value of the actual angular energy family is C¹ in radius;
+this permits classical convolution differentiation inside the Dirichlet half-line. -/
+theorem nativeTimePrimitiveAngularEnergy_value_contDiff (q : XiZeroCopy) (s amplitude : ℂ)
+    (t : ℝ) (n : ℕ) :
+    ContDiff ℝ 1 (fun x => D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)) := by
+  rw [contDiff_one_iff_deriv]
+  refine ⟨fun x => (nativeTimePrimitiveAngularEnergy_value_hasDerivAt q s amplitude t n x).differentiableAt,?_⟩
+  have he : deriv (fun x => D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)) =
+      nativeTimePrimitiveAngularRadial q s amplitude t n :=
+    funext (fun x => (nativeTimePrimitiveAngularEnergy_value_hasDerivAt q s amplitude t n x).deriv)
+  rw [he]
+  exact nativeTimePrimitiveAngularRadial_continuous q s amplitude t n
 
 end
 end RHTower.D4BMNativeResponse

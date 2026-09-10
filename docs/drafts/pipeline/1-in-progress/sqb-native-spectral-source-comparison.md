@@ -330,7 +330,49 @@ Relative to `v^T*A_low*v-sum_ij |v_i|*E_band_ij*|v_j|`, its right side gains exa
 2*L*(max(-G_2(x),0)+e_G(x))*v_3^2.
 ```
 
-The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. Both corrected full matrices integrate entrywise to the same native moments, so this coefficient choice is admissible for the rank-seven target. The complete-source tail theorem already covers `L` on `pi*exp(2*x)>=30`, and seam positivity for `L` is already proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
+The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. For each fixed coefficient, the aperture-dependent matrix `thetaCuspCenterCorrectedEvenFour` integrates entrywise to the original native moments. Its correction dominates the weighted source correction, with a nonnegative diagonal remainder, as proved by `thetaCuspCenterCorrectedEvenFour_posDef_of_source`. This makes the coefficient choice admissible; the aperture-independent source matrix itself is not the exact zero-flux matrix. The complete-source tail theorem already covers `L` on `pi*exp(2*x)>=30`, and seam positivity for `L` is already proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
+
+### Actual modular ratio bounds and next determinant target
+
+Write `u=thetaCuspModularMassDrift`, `A=thetaCuspModularGapAmplitude`, and `w=thetaCuspModularTransverseShear`. The actual source ODE and the proved strict energy floor give, on `x>=0`,
+
+```text
+t = 9-u^2 > 0,  R = A/t,  k = 3R/4-1/3 > 2/3,
+J = u*k-w,     D = t-6/k-4/k^2,
+u' = k*t,      t' = -2*u*k*t,
+k' = 2*(k+1/3)*J,
+J' = k^2*D+2*u*(k+2/3)*J,
+D' = -2*u*k*t+2*(k+1/3)*(6/k^2+8/k^3)*J.
+```
+
+The formalized global comparison is `J>=0`, hence `R` nondecreasing and
+`A(x)>=A(0)*(9-u(x)^2)/9`, with the accompanying shear bound
+`w(x)<=u(x)*(3*A(x)/(4*(9-u(x)^2))-1/3)`.
+
+The analytical argument uses the complete actual orbit. If `J` has a negative component `(a,b)`, then `a>=0` and `J(a)=0`, since `J(0)=0`. Its right derivative at `a` is nonpositive, so `D(a)<=0`. Throughout that component `D'<0` and therefore `D<0`; the displayed equation then gives `J'<0`. Continuity excludes a finite right endpoint, so `b=infinity`. Fixing `c>a`, one obtains `J(x)<=J(c)<0` and `k'(x)<=2*J(c)` for every `x>=c`, contradicting the global floor `k>2/3` after integration. The complete argument is formalized in [ThetaCuspModularRatioMonotonicity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularRatioMonotonicity.lean), namespace `RHTower.ThetaCuspModularRatio`. Its public conclusions include `J_nonneg`, `ratio_mono`, `gap_lower`, and `shear_upper`.
+
+There is a stronger analytical bound `J<1`. The preceding comparison gives `k>=k(0)>5/4`; the last strict inequality uses the proved actual seam bound `A(0)>191/10`. The derivative equation rewrites exactly as
+
+```text
+J' = (3-u)*((u+3)*k^2-2*k-4/3)
+       +2*u*(k+2/3)*(J-1).
+```
+
+The first term is strictly positive: `3-u>0`, and the bracket is at least `41/48` for `u>=0`, `k>=5/4`. If `J(b)>=1`, then `b>0`, the derivative at the level `1` prevents return below it, and `u(x)>=u(b)>0` on the resulting ray. Also `J<=u*k<=3*k`, since `w>=0`. Consequently `J'>(2*u(b)/3)*(J-1)^2` there. Setting `c=2*u(b)/3` and `f=c*(1-J)` gives a nonpositive function on a complete ray with `f'<-f^2`, contradicting the already formalized complete-ray Riccati escape theorem. Thus the proposed actual shear interval is `u*k-1<w<=u*k`, and integration of `k'<=2*(k+1/3)` gives `k(x)+1/3<=(A(0)/12)*exp(2*x)`. These upper comparisons have paper proofs here, but are not yet new Lean theorems.
+
+The actual-source derivative equations and the global comparison pass foreground scratch Lean checks. The final four capstone audits in `/tmp/sqb71_modular_ratio_final_check.lean` use only `propext`, `Classical.choice`, and `Quot.sound`. Installed source bytes match the checked staging source, the module has exactly one RHTower umbrella import, and formal lint passes. The final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularRatioMonotonicity` passes in `/tmp/sqb71-ratio-leaf-audit`, using the actual repository source and existing compiled dependencies. This is a leaf audit against the compiled corpus, not a fresh full dependency rebuild.
+
+The intended use is to constrain the same shear variable appearing in all seven complete-source compact moments. No determinant lower bound has yet been deduced from these tighter orbit constraints. The rank-seven integral and all-order propagation remain open. Neither a generic Toda identity nor real-rootedness of an unrelated polynomial family supplies that missing estimate.
+
+A concrete next sign target retains the full source and removes the explicit center from a lower compensation model. The proved bound `w>=4*x+2*u/3`, together with `J>=0`, gives `4*x<=u*(k-2/3)`. Put `v=k-1/6`, `H=Bottcher.completedThetaProfile`, and define polynomials `P_0=v`, `P_(n+1)=V(P_n)+u*(1/6-2*k)*P_n`, where `V` is the polynomial vector field specified by the displayed equations for `u'`, `k'`, and `J'`, with `t=9-u^2`. Analytically, `Phi^(n)=(H*t/12)*P_n` and `P_1=u*(1/6-2*k)*v+2*(k+1/3)*J`. The existing inequality `w>=u` gives `J<=u*(k-1)` and hence `P_1<=-u*(5*k/6+25/36)`. Thus, using the literal source correction `G=3*Phi^2+2*x*Phi*Phi'`,
+
+```text
+G >= (H*t/12)^2 * Gstar,
+Gstar = 3*v^2 + (u*(k-2/3)/2)*v*P_1.
+B_n = (-1)^n * sum_(j=0)^(2*n) (-1)^j * choose(2*n,j)*P_j*P_(2*n-j).
+```
+
+For `L=10^12`, the new positive candidate is the determinant of the matrix with entries `B_(i+j)` (`i,j=0,...,3`) and last-entry addition `L*Gstar`, evaluated on the actual orbit. Its head is the already positive actual native head after positive normalization. A positive determinant would imply full compensated source positivity through the preceding lower comparison and then the existing aperture-dependent integration receiver. This determinant sign is unproved. The displayed derivative recurrence and compensation comparison have paper derivations here, without a new all-order Lean incidence theorem. The additional actual constraints include `k>151/120` and `(k-2/3)*(9-u^2)<27/5`; positivity on a larger box of unrelated triples is not being assumed.
 
 The unsigned-moment matrix conjecture above also remains open. Attempts to supply its source estimate from reciprocal-score positivity, coupled derivative energies, and Toda evolution have not produced the needed inequality. The retrieved Toda law requires coefficient equations not identified with these signed moments; positive reciprocal-moment measures use a different variable from `-x/(log Phi)'`. Broad deep searches through anharmonicity, score, compensation, Lee--Yang, reciprocity, moment flow, and lattice harmonics inspected statement, proof, method, source-argument, and proposed ingredient-group results. Coverage remains partial; some requests had interrupted or timed-out stages. No corpus-absence conclusion follows.
 

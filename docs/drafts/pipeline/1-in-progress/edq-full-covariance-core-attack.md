@@ -2070,3 +2070,289 @@ Generated indexes were refreshed and formal lint passed (existing large-file
 warnings only). The final source has no new warnings. All eight owned
 temporary files were removed, and all Lean/search processes started for
 this result have finished.
+
+
+## Endpoint signed pairing: full-tail profile coupling [BRIDGE]
+
+The target remains the signed physical covariance bound, not the size of an
+isolated derivative. The current derived question is whether the continuous
+prime-power forcing profile can be orthogonal to a right-half-plane source
+mode. This is a bridge question exposed by the finite endpoint variance;
+it is not a new primary RH conjecture.
+
+For x>0 define the real seed b(x)={x}/x and
+
+```
+j(x) = integral_x^infinity {v}/v^2 dv,
+f_rho(x) = x^(rho-1) integral_x^infinity {v} v^(-rho-1) dv,
+C_rho = integral_0^infinity f_rho(x) j(x) dx.
+```
+
+The coupling is linear in f_rho. In Lean's conjugate-linear-first convention
+it is `inner complex j f_rho`, not the reversed inner product. For
+Re(rho)>1/2 these are square integrable on the full positive ray. The same
+holds at Re(rho)=1/2 when zeta(rho)=0. The following identity is proved on
+paper below; it is not yet formalized:
+
+```
+Re(rho*C_rho) = (Re(rho)-1/2)*||f_rho||_2^2 + ||j||_2^2/2 > 0.
+```
+
+Here are the full boundary and regularity checks. Both tail primitives are
+locally absolutely continuous; their differential equations hold almost
+everywhere, with no differentiation of the fractional-part jumps:
+
+```
+x*j' = -b,       x*f_rho' = (rho-1)*f_rho-b.
+```
+
+At infinity, |f_rho(x)|<=1/(Re(rho)*x) and 0<=j(x)<=1/x. At zero, j(x)
+is -log(x)+j(1). For 1/2<Re(rho)<1 the full fractional Mellin identity gives
+f_rho(x)=-(zeta(rho)/rho)*x^(rho-1)-1/(1-rho) on (0,1).
+At a critical zero the first term vanishes. At Re(rho)=1 the elementary
+head integral gives O(1+|log x|); at Re(rho)>1 it gives O(1), with the
+exception rho=1 already covered by f_1=j. These estimates prove L2
+integrability and vanishing at both ends of x*|f_rho|^2, x*j^2, and
+x*f_rho*j. All product integrals below are absolutely integrable by
+Cauchy--Schwarz, since b also lies in L2.
+
+Integrate the derivative of x*f_rho*j on [epsilon,R], then pass to the
+endpoints. It gives rho*C_rho=integral f_rho*b+integral b*j. Integrating
+the derivatives of x*|f_rho|^2 and x*j^2 gives respectively
+Re(integral f_rho*b)=(Re(rho)-1/2)*||f_rho||^2 and
+integral b*j=||j||^2/2. Finally j>0 on (0,1), so its squared norm is
+strictly positive. In particular C_rho cannot vanish. The full tail is
+essential to this proof; no sign of a truncated mixed term is assumed.
+
+The finite-source transfer is still open. The derived asymptotic candidate
+is `(log N)^2*J_N(N*x) -> j(x)` in the rescaled L2 carrier, extending the
+physical source by zero below its original left endpoint. A proof must
+retain the harmonic correction and control both ends of the rescaled ray.
+The profile identity alone does not prove this convergence, the sign of
+`Re <H_N(1),J_N>`, or a subpower bound for `||H_N(1)||^2`. In particular a
+positive value of Re(rho*C_rho) does not fix the phase of an arithmetic
+coefficient multiplying the rho mode. The endpoint-optimization attempt
+therefore has not supplied the missing energy estimate.
+
+Broad recent arXiv searches for `entrainment` and `rejuvenation` led to
+[Massas--Margaliot, 28 July 2026](https://arxiv.org/html/2607.25435v1).
+Their translation-flow proof combines an exact weighted telescoping
+identity with periodic quadratic-energy balance; positivity uses positive
+rates and occupancies in a fixed interval. EDQ has no established
+identification satisfying those assumptions. The useful method was to
+keep the complete boundary term while deriving a mixed-energy identity,
+which produced the paper calculation above. No external theorem or
+numerical result is imported into Lean.
+
+
+### Derived arithmetic-to-carrier transfer: proof under audit
+
+A second bridge attack targets the missing norm transfer directly. Write
+A(x)=sum_(n<=x) mu(n)*omega(n), M(x)=sum_(n<=x) mu(n), and Q(x) for the
+prime-power count. Möbius inversion gives the exact identity
+
+```
+A(x) = -sum_(m<=y) mu(m)*Q(x/m)
+       -sum_(q prime power <= x/y) (M(x/q)-M(y)),
+```
+
+for integer 1<=y<=x. The second sum includes its boundary correction.
+With y=floor(exp(sqrt(log x))), the existing arbitrary logarithmic
+Mertens bound makes this second term O_R(x/(log x)^R) for any fixed R.
+Indeed its absolute value is bounded by
+C_K*x/(log y)^K * (1+sum_(q<=x/y)1/q), and the last sum is at most
+1+log x. The prime-counting error allows the logarithmic-integral
+expansion of Q(x/m) to any fixed order uniformly for m<=y. Expanding
+1/(log x-log m), retaining enough terms before estimating the remainder,
+and using the Möbius harmonic logarithmic moments gives an expansion
+
+```
+A(x) = x*sum_(2<=j<=R) c_j/(log x)^j + O_R(x/(log x)^(R+1)), c_2=1.
+```
+
+The zero-order moment is zero and the first logarithmic moment is -1;
+these account respectively for the absent 1/log x term and c_2=1.
+The higher moments exist by the corpus's arbitrary-logarithmic harmonic
+decay and Abel summation. The same argument supplies arbitrary-logarithmic
+rates for their tails. To justify the uniform Taylor remainder, expand
+beyond 2R+4 terms while log m<=sqrt(log x); the absolute harmonic sum
+costs only O(sqrt(log x)). Terms beyond the desired order have bounded
+signed logarithmic moments. This is a paper argument under audit, not a
+Lean-closed asymptotic statement.
+
+Here is the required full-carrier estimate, independently of that
+asymptotic. For real coefficients a_n supported on 1<=n<=N put
+P(k)=sum_(n<=k) a_n, W=sum_(n<=N)|a_n|, H=sum_(n<=N)1/n, and
+V=sum_(n<=N) a_n*b_n in the original physical carrier. If
+|P(k)|<=epsilon*k for k<=N, finite Abel summation with nonnegative
+antitone weights gives |sum a_n*w_n|<=epsilon*sum w_n. Apply it to 1/n
+and floor(k/n) to get the exact-cell estimate
+
+```
+|sum_(n<=N) a_n*(k mod n)/n| <= 2*epsilon*H*k.
+```
+
+The same numerator is at most W in absolute value. Its complete energy
+series, split after cell T, therefore gives
+
+```
+||V||^2 <= 4*T*(epsilon*H)^2 + W^2/(T+1).
+```
+
+This retains every cell of the infinite tail. It is the finite estimate
+being formalized next; no arithmetic error bound is assumed proved merely
+because this transfer estimate is available.
+
+The proposed application removes n<sqrt(N), whose generator-norm cost is
+O(N^(1/4)*log N), and subtracts the increments of the smooth R-term model
+for A on the remaining interval. For that error, epsilon=O_R((log N)^(-R-1))
+and W=O(N*log N). Taking T=floor(N*(log N)^8) makes its squared norm
+o(N/(log N)^4) when R is sufficiently large. The smooth model's increments
+can then be compared with the constant (log N)^(-2) in the weighted
+sum of generator norms: n>=sqrt(N) has bounded logarithmic ratio, and
+n/N away from zero has ratio tending to one. The residual lower segment
+is bounded by its reciprocal-square-root sum. Thus the intended full-norm
+consequence is
+
+```
+||J_N - (log N)^(-2)*sum_(n<=N) b_n|| = o(sqrt(N)/(log N)^2).
+```
+
+The constant-coefficient source has rescaled L2 limit j: its unbalanced
+fractional dilates form an L2 Riemann sum for
+integral_0^1 {x/u}/x du=j(x), with dilate norm proportional to u^(-1/2).
+The harmonic balance term has norm O(log N/sqrt N) after rescaling.
+Strong dilation continuity handles compact u intervals; the integrable
+u^(-1/2) bound controls the omitted head. This completes the proposed
+paper route to the full profile and energy constant ||j||_2^2, subject to
+formalization and proof audit of the displayed asymptotic transfers.
+
+Even this norm asymptotic has only a relative logarithmic error. It does
+not resolve a smaller power-scale signed pairing against the raw source.
+Multiplying a complex source mode by an uncontrolled arithmetic phase also
+prevents converting Re(rho*C_rho)>0 into a first-derivative sign. These are
+the precise remaining obstacles to endpoint energy transport.
+
+
+A further endpoint-optimization check does not require computation. The
+single-profile projection cannot remove a complete rho profile when
+1/2<=Re(rho)<1 in the admissible cases above. If f_rho=c*j in L2, local
+absolute continuity upgrades the equality to pointwise equality, and the
+two differential equations give (1-c)*b=(rho-1)*c*j almost everywhere.
+On (0,1), b=1 whereas j=-log x+j(1) is nonconstant. Since rho!=1, this
+forces c=0 and then 1=0. Thus f_rho is not in the complex span of j, and
+its orthogonal residual has strictly positive squared norm. Together with
+C_rho!=0, the projection removes a nonzero fraction but leaves a nonzero
+fraction. Neither fraction is claimed uniform in rho. This is a sharp
+paper classification of the one-profile correction, not a retirement of
+EDQ or a subpower bound for the uncorrected arithmetic source.
+
+
+The corpus searches for signed endpoint pairing, Schur projection,
+prime-power logarithmic moments, dilation/resolvent coupling, and full
+coefficient-error transfer all returned partial results with pending
+coverage (generations 822518--822539). Their declaration, candidate-lemma,
+and source-argument lanes were inspected; no proof-idea or ingredient-set
+closure was returned for these requests. The useful local dependencies
+were the actual Möbius logarithmic moments, finite divisor swap, full
+discrete Gram identity, and Abel summation by parts. The resolvent and
+Schur-complement candidates had additional source-identification or
+invertibility premises and supplied no arithmetic signed bound. Compiler
+metadata for the retrieved candidates was source-only; applicability of
+the finite identities used below is checked in the scratch proof.
+
+The universal ledger's existing `MUST-CONTROL-CANCELLATION-AT-THE-ABSOLUTE-SCALE`
+entry already covers the remaining precision issue, so no duplicate law
+was added. The frontier map remains read-only for this work.
+
+
+The coefficients in the proposed summatory expansion are explicit. If
+m_k=sum_(n>=1) mu(n)*(log n)^k/n, interpreted by its convergent partial
+sums, then
+
+```
+c_j = -(j-1)! * sum_(0<=k<j) m_k/k!.
+```
+
+This follows by expanding each logarithmic-integral term:
+(l-1)!/(L-log m)^l contributes
+(l-1)!*binomial(j-1,j-l)*(log m)^(j-l)/L^j.
+Setting k=j-l makes its scalar coefficient (j-1)!/k!.
+Thus c_1=0 and c_2=1 use only the two established normalizations m_0=0
+and m_1=-1. This formula fixes the model to be formalized and avoids
+hiding arbitrary fitted constants in the transfer argument.
+
+
+The Riemann-sum step has a direct full-ray domination check. For u in a
+compact subinterval of (0,infinity), Phi_u(x)={x/u}/x is pointwise
+continuous in u except on a countable set of x, and is bounded by
+min(1/u_min,1/x). The square of this bound is integrable on the positive
+ray, proving L2 continuity by dominated convergence. Moreover
+||Phi_u||_2=u^(-1/2)*||b||_2. Both the integral and the uniform-grid
+Riemann sum over 0<u<delta therefore have norm at most
+2*sqrt(delta)*||b||_2. This supplies the small-u control required by the
+proposed profile transfer; compact-interval convergence alone would not.
+
+
+The general transfer estimate is now Lean-closed in
+`EulerDeletionCoefficientPrefixEnergy.lean`:
+`RHTower.DeletionCoefficientTransfer.source_energy_le_envelope` bounds the
+complete physical energy using the actual finite maximum of normalized
+signed prefixes and the actual coefficient mass. Eight public theorems
+include the Abel comparison, both cell bounds, exact infinite energy
+series, and the finite maximum formulation. The scratch check passed
+without warnings. The leaf-only build passed, compiling only this module
+(477 seconds under shared machine load; 9,101 jobs include cached dependencies).
+The eight new core theorems passed their axiom audit with only `propext`,
+`Classical.choice`, and `Quot.sound`. The endpoint application remains pending.
+
+
+### Reflection test of the positive coupling [BRIDGE; paper]
+
+The next conjecture-to-test was that reflection plus the strict rotated
+coupling might force Re(rho)=1/2. The spectral calculation instead exposes
+a conservation identity, so this implication is not justified. At a
+nontrivial zero, the head cancellation makes f_rho square integrable even
+when 0<Re(rho)<1/2. The same holds for the reflected zero.
+
+Set B(y)=exp(y/2)*b(exp y), g_rho(y)=exp(y/2)*f_rho(exp y), and a=rho-1/2.
+Then g_rho'=a*g_rho-B in L2; this follows from the locally absolutely
+continuous physical functions and their differential equations. In the
+angular Fourier variable lambda, g_hat=B_hat/(a-i*lambda) almost everywhere.
+The possible exceptional frequency when Re(a)=0 is a null set. The real
+seed B has even |B_hat|^2. Parseval therefore gives
+
+```
+||f_rho||_2 = ||f_(1-conj rho)||_2,
+rho*C_rho + (1-rho)*C_(1-rho) = ||j||_2^2.
+```
+
+For the second formula, reflect lambda in the second integral. Its
+combined numerator is
+rho*(1/2-i*lambda)-(1-rho)*(1/2+i*lambda)=a-i*lambda,
+which cancels the shared denominator. What remains is exactly the
+Parseval integral for ||j||^2. All cross integrals exist by L2
+Cauchy--Schwarz. These are paper identities; the required concrete
+Fourier/domain identifications have not been formalized in this work.
+
+The reflected rotated couplings therefore add to a fixed positive mass;
+they are not forced equal. Their real-part difference is
+(2*Re(rho)-1)*||f_rho||^2. Consequently the positive-coupling argument
+survives as an exact flux decomposition, but supplies no sign
+contradiction for an off-line pair. This records the failed reflection
+implication and its positive survivor without retiring EDQ.
+
+
+The core import is wired into `RHTower.lean`; no umbrella build was run.
+Its generated index was refreshed and formal lint passed, with existing
+large-file warnings only. The five endpoint declarations are preserved as
+explicitly unchecked text in [the endpoint draft](edq-endpoint-transfer-draft.lean.txt),
+not as a formal module. Their latest scratch attempts stopped at unavailable
+imports before checking the declarations. Lake's recorded `importArts` list
+confirmed a moving set of missing artifacts during another process's active
+rebuild; no duplicate dependency build was launched. Final checks should
+resume when that imported closure is available. No numerical experiment was
+run, and the actual RH-producing signed covariance estimate remains open.
+
+All 14 owned temporary files were removed after preserving the draft.
+All Lean, search, index, and lint processes started for this work have ended.

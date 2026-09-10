@@ -38,9 +38,7 @@ The second Fatou pass excludes a defect from energy escaping into the cusp. It r
 
 ## Remaining domain construction
 
-Convergence in the original first-derivative graph is still required. For cusp localization, dominated convergence controls `(eta_n-1) grad(W)` using the newly available integrable E; the established e_n limit controls `W grad(eta_n)`. For every fixed cutoff and radius, `nativeTimePrimitiveCutoff` is already an actual angular `CoreField`. Joint continuity of its value and frame jets on compact support should give continuity of the radial family in the completed angular energy space. Zero extension at the actual Dirichlet trace, a shift into the negative half-line, and radial mollification in that Hilbert space must then produce smooth compact radial families. The radial derivative must converge after the original angular value embedding, using the zero-extended actual W_x and integration by parts; no mixed angular/radial derivative is needed. `RadialEnergyFamily.graph_mem` then admits those families. This construction uses the already available angular smoothness and invariance, so separate angular mollification is unnecessary. These approximation and convergence statements remain to be formalized.
-
-The found `radialDirichlet_zeroExtension_derivative` proves a property of an already admitted Dirichlet-domain element. It is not an admission theorem for the native field and cannot replace this construction. No mixed spatial derivative or second-order graph density is asserted.
+Convergence in the original first-derivative graph is still required. The [radial form-admission construction](../1-in-progress/hb-native-radial-form-admission.md) now has an audited actual angular energy family: continuity, compact radial support, zero trace, and C¹ regularity after the original value embedding with the literal radial derivative. The vanishing endpoint error and complete value/radial derivative convergence are also [audited](hb-native-radial-form-approximation.md). The remaining approximation convolves the endpoint-cutoff family inside the negative half-line. It uses the zero trace and a uniform weighted cutoff-derivative bound to control the endpoint error. Convergence in the four original graph slots must then establish native admission by closedness. Global energy and the already audited cusp-error limit supply the subsequent cusp-cutoff limit. Full native form admission and the physical inverse identification remain open.
 
 ## Search and outside-field comparison
 
@@ -56,7 +54,7 @@ All four public theorems are in [ThetaCuspHawkingBMNativeJointEnergy.lean](../..
 - Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeJointEnergy` passed: two jobs, 12 seconds reported build time. The isolated audit reused 4134 cached local modules and 11 cached dependency packages; no dependency or umbrella build ran.
 - `#print axioms` checked only the four new public theorems. Each uses only `propext`, `Classical.choice`, and `Quot.sound`.
 - Original-source equality was checked before installation. Audited source and five emitted artifacts were installed byte for byte.
-- `scripts/formal_tools.py lint` passed with existing large-file warnings; the extended leaf has 935 lines.
+- `scripts/formal_tools.py lint` passed with existing large-file warnings; that audit covered the 935-line global-energy version; the subsequent angular-family extension is documented in the [radial approximation report](hb-native-radial-form-approximation.md).
 - The existing `RHTower.lean` import already wires this extended module. No umbrella change or umbrella build was needed.
 - No mathematical computations, added axioms, or unfinished proof declarations enter this construction. Frontier map and universal-law ledger were not modified.
 - Owned scratch/audit files and all eight search-output files were removed after their process handles reached terminal status. No owned Lean or Lake process remained.

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.WeilLagFunctionGrowth
 import GaloisForLFunctions.RHTower.WeilLagFunctionSingleBase
 import GaloisForLFunctions.RHTower.WeilLagFunctionOneSided
-import GaloisForLFunctions.RHTower.SuzukiScrewFormConjugationDefect
+import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
 import GaloisForLFunctions.RHTower.XiEndpointStrongHeightGap
 
 /-!
@@ -35,8 +35,11 @@ noncomputable section
 
 /-! ## Partner coordinates -/
 
-theorem xiZeroCopyPartner_coe (q : XiZeroCopy) :
-    ((xiZeroCopyPartner q).1 : ℂ) = 1 - (starRingEnd ℂ) (q.1 : ℂ) := rfl
+/-- The partner copy `reflect (conj q)`, whose zero is `1 − ρ̄`. -/
+def lagPartner : XiZeroCopy ≃ XiZeroCopy := xiZeroCopyConjEquiv.trans xiZeroCopyReflectEquiv
+
+theorem lagPartner_coe (q : XiZeroCopy) :
+    ((lagPartner q).1 : ℂ) = 1 - (starRingEnd ℂ) (q.1 : ℂ) := rfl
 
 /-! ## The real inequality of a partner pair -/
 
@@ -93,7 +96,7 @@ theorem re_lagTerm_eq (q : XiZeroCopy) (s : ℂ) :
         Complex.normSq ((q.1 : ℂ) * (1 - (q.1 : ℂ)) * (s - ((q.1 : ℂ) - 1 / 2))) := by
   unfold lagWeight lagPole
   rw [div_div, Complex.div_re]
-  simp only [Complex.one_re, Complex.one_im, one_mul, zero_mul, add_zero]
+  simp only [Complex.one_re, Complex.one_im, one_mul, zero_mul, zero_div, add_zero]
 
 theorem lagZ_re (ρ s : ℂ) :
     (ρ * (1 - ρ) * (s - (ρ - 1 / 2))).re =
@@ -121,13 +124,13 @@ theorem re_lagTerm_add_partner_nonneg (q : XiZeroCopy) {s : ℂ}
         ≤ ((q.1 : ℂ).re * (1 - (q.1 : ℂ).re) + (q.1 : ℂ).im ^ 2) ^ 2
             * (s.re ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2)) :
     0 ≤ (lagWeight q / (s - lagPole q)).re
-        + (lagWeight (xiZeroCopyPartner q) / (s - lagPole (xiZeroCopyPartner q))).re := by
+        + (lagWeight (lagPartner q) / (s - lagPole (lagPartner q))).re := by
   have hu0 := xiZeroCopy_re_pos q
   have hu1 := xiZeroCopy_re_lt_one q
   rw [re_lagTerm_eq, re_lagTerm_eq, lagZ_re, lagZ_normSq, lagZ_re, lagZ_normSq,
-    xiZeroCopyPartner_coe]
+    lagPartner_coe]
   simp only [Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im, Complex.conj_re,
-    Complex.conj_im]
+    Complex.conj_im, zero_sub, neg_neg]
   set u : ℝ := (q.1 : ℂ).re with hu
   set γ : ℝ := (q.1 : ℂ).im with hγ
   set σ : ℝ := s.re with hσ
@@ -139,14 +142,8 @@ theorem re_lagTerm_add_partner_nonneg (q : XiZeroCopy) {s : ℂ}
   have hσ0 : 0 ≤ σ := le_trans (abs_nonneg _) ha.le
   have key := pairRatio_nonneg (X := u * (1 - u) + γ ^ 2) (a := u - 1 / 2) (γ := γ) (σ := σ)
     (A := t - γ) (N := (u * (1 - u) + γ ^ 2) ^ 2 + 4 * (u - 1 / 2) ^ 2 * γ ^ 2) hX hN hσ0 ha hcond
-  have e1 : (1 - u) * (1 - (1 - u)) + γ ^ 2 = u * (1 - u) + γ ^ 2 := by ring
-  have e2 : (1 - u - 1 / 2) = -(u - 1 / 2) := by ring
-  have e3 : (0 - -γ) = γ := by ring
-  rw [e1]
-  simp only [e2, e3, sub_neg_eq_add]
-  convert key using 2
-  · ring
-  · congr 1 <;> ring
+  convert key using 1
+  ring
 
 /-! ## Summability of the terms -/
 
@@ -167,7 +164,7 @@ theorem summable_lagTerm_of_lt_re {s : ℂ} {c : ℝ} (hc : ∀ q : XiZeroCopy, 
 theorem re_lagPoleSeries_nonneg_of_pairs {s : ℂ}
     (hsumm : Summable (fun q : XiZeroCopy => lagWeight q / (s - lagPole q)))
     (hpair : ∀ q : XiZeroCopy, 0 ≤ (lagWeight q / (s - lagPole q)).re
-        + (lagWeight (xiZeroCopyPartner q) / (s - lagPole (xiZeroCopyPartner q))).re) :
+        + (lagWeight (lagPartner q) / (s - lagPole (lagPartner q))).re) :
     0 ≤ (lagPoleSeries s).re := by
   unfold lagPoleSeries
   rw [Complex.re_tsum hsumm]
@@ -175,18 +172,19 @@ theorem re_lagPoleSeries_nonneg_of_pairs {s : ℂ}
     have := (hsumm.hasSum.mapL Complex.reCLM).summable
     simpa only [Complex.reCLM_apply] using this
   have hre' : Summable (fun q : XiZeroCopy =>
-      (lagWeight (xiZeroCopyPartner q) / (s - lagPole (xiZeroCopyPartner q))).re) :=
-    (xiZeroCopyPartner.summable_iff (f := fun q => (lagWeight q / (s - lagPole q)).re)).mpr hre
-  have e1 := Equiv.tsum_eq xiZeroCopyPartner (fun q : XiZeroCopy => (lagWeight q / (s - lagPole q)).re)
+      (lagWeight (lagPartner q) / (s - lagPole (lagPartner q))).re) :=
+    (lagPartner.summable_iff (f := fun q => (lagWeight q / (s - lagPole q)).re)).mpr hre
+  have e1 := Equiv.tsum_eq lagPartner (fun q : XiZeroCopy => (lagWeight q / (s - lagPole q)).re)
   have h2 : ∑' q : XiZeroCopy, ((lagWeight q / (s - lagPole q)).re
-      + (lagWeight (xiZeroCopyPartner q) / (s - lagPole (xiZeroCopyPartner q))).re)
+      + (lagWeight (lagPartner q) / (s - lagPole (lagPartner q))).re)
       = 2 * ∑' q : XiZeroCopy, (lagWeight q / (s - lagPole q)).re := by
     rw [hre.tsum_add hre']
-    have e1' : ∑' q : XiZeroCopy, (lagWeight (xiZeroCopyPartner q) /
-        (s - lagPole (xiZeroCopyPartner q))).re = ∑' q : XiZeroCopy, (lagWeight q / (s - lagPole q)).re :=
+    have e1' : ∑' q : XiZeroCopy, (lagWeight (lagPartner q) /
+        (s - lagPole (lagPartner q))).re = ∑' q : XiZeroCopy, (lagWeight q / (s - lagPole q)).re :=
       e1
     rw [e1']; ring
-  have h3 := tsum_nonneg hpair
+  have h3 : 0 ≤ ∑' q : XiZeroCopy, ((lagWeight q / (s - lagPole q)).re
+      + (lagWeight (lagPartner q) / (s - lagPole (lagPartner q))).re) := tsum_nonneg hpair
   linarith
 
 /-! ## The unconditional positive-real half-plane -/
@@ -209,7 +207,7 @@ theorem re_lagPoleSeries_nonneg {s : ℂ} (hs : 13 / 25 ≤ s.re) : 0 ≤ (lagPo
   have hA4 : 4 * (u - 1 / 2) ^ 4 ≤ 1 / 4 := by nlinarith [sq_nonneg ((u - 1 / 2) ^ 2)]
   have hXg : γ ^ 2 ≤ u * (1 - u) + γ ^ 2 := by nlinarith
   have hX2 : γ ^ 2 * γ ^ 2 ≤ (u * (1 - u) + γ ^ 2) ^ 2 := by
-    have := pow_le_pow_left (sq_nonneg γ) hXg 2
+    have := pow_le_pow_left₀ (sq_nonneg γ) hXg 2
     nlinarith [this]
   have hsa : 51 / 2500 ≤ σ ^ 2 - (u - 1 / 2) ^ 2 := by nlinarith
   have h1 : γ ^ 2 * γ ^ 2 * (51 / 2500) ≤ (u * (1 - u) + γ ^ 2) ^ 2 * (σ ^ 2 - (u - 1 / 2) ^ 2) :=
@@ -236,8 +234,169 @@ theorem re_lagPoleSeries_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis) {
   refine re_lagTerm_add_partner_nonneg q ?_ ?_
   · rw [hq]; simpa using hs
   · rw [hq]
-    simp only [sub_self]
+    norm_num
     positivity
+
+/-! ## The converse: a pole forces the real part below every bound -/
+
+/-- Near a pole from the left the real part is unbounded below:
+`Re G(p₀ − t) ≤ −Re w₀/t + C` for small `t > 0`, with `C` independent of `t`. -/
+theorem re_lagPoleSeries_le_of_lt_pole (q₀ : XiZeroCopy) :
+    ∃ ε > 0, ∃ C : ℝ, ∀ t : ℝ, 0 < t → t < ε →
+      (lagPoleSeries (lagPole q₀ - t)).re ≤ -((lagWeight q₀).re / t) + C := by
+  obtain ⟨ε, hε, hiso⟩ := xi_zero_isolated (xi_xiZeroCopy_eq_zero q₀)
+  refine ⟨ε / 2, by positivity, (2 / ε) * ∑' q : XiZeroCopy, ‖lagWeight q‖, fun t ht htε => ?_⟩
+  set S : Set XiZeroCopy := {q | q.1 = q₀.1} with hS
+  have hoff : ∀ q : XiZeroCopy, q ∉ S → ε / 2 ≤ ‖lagPole q₀ - t - lagPole q‖ := by
+    intro q hq
+    have hne : (q.1 : ℂ) ≠ (q₀.1 : ℂ) := fun h => hq (Subtype.ext h)
+    have hdist : ε ≤ dist (q.1 : ℂ) (q₀.1 : ℂ) := by
+      by_contra hlt
+      exact hne (hiso _ (xi_xiZeroCopy_eq_zero q) (not_le.mp hlt))
+    rw [Complex.dist_eq] at hdist
+    have e : lagPole q₀ - t - lagPole q = -((q.1 : ℂ) - (q₀.1 : ℂ)) - t := by unfold lagPole; ring
+    rw [e]
+    have h2 := norm_sub_norm_le (-((q.1 : ℂ) - (q₀.1 : ℂ))) (t : ℂ)
+    rw [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos ht] at h2
+    linarith
+  have hsumm : Summable (fun q : XiZeroCopy => lagWeight q / (lagPole q₀ - t - lagPole q)) := by
+    refine Summable.of_norm_bounded
+      (g := fun q => ‖lagWeight q‖ * max (1 / t) (2 / ε)) (summable_norm_lagWeight.mul_right _)
+      fun q => ?_
+    rw [norm_div]
+    by_cases hq : q ∈ S
+    · have hq' : (q.1 : ℂ) = (q₀.1 : ℂ) := congrArg (fun r : XiDivisorSupport => (r : ℂ)) hq
+      have e : lagPole q₀ - t - lagPole q = -t := by unfold lagPole; rw [hq']; ring
+      rw [e, norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos ht, div_eq_mul_one_div]
+      gcongr
+      exact le_max_left _ _
+    · have := hoff q hq
+      have hpos : 0 < ‖lagPole q₀ - t - lagPole q‖ := by linarith
+      rw [div_le_iff₀ hpos]
+      calc ‖lagWeight q‖ = ‖lagWeight q‖ * (2 / ε) * (ε / 2) := by field_simp
+        _ ≤ ‖lagWeight q‖ * max (1 / t) (2 / ε) * ‖lagPole q₀ - t - lagPole q‖ := by
+            gcongr
+            exact le_max_right _ _
+  unfold lagPoleSeries
+  rw [← hsumm.tsum_subtype_add_tsum_subtype_compl S, Complex.add_re]
+  have hfib : ∀ q : S, lagWeight q.1 / (lagPole q₀ - t - lagPole q.1) = -(lagWeight q₀ / t) := by
+    intro q
+    have hq' : (q.1.1 : ℂ) = (q₀.1 : ℂ) := congrArg (fun r : XiDivisorSupport => (r : ℂ)) q.2
+    have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast ht.ne'
+    unfold lagWeight lagPole
+    rw [hq']
+    field_simp
+    ring
+  rw [tsum_congr hfib, tsum_const]
+  have hfin : Finite S := by
+    refine Finite.of_injective
+      (fun x : S => (⟨(x.1.2 : ℕ), lt_of_lt_of_eq x.1.2.isLt (by
+        rw [show x.1.1 = q₀.1 from x.2])⟩ :
+          Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (q₀.1 : ℂ)))))
+      fun x y hxy => ?_
+    have hv : (x.1.2 : ℕ) = (y.1.2 : ℕ) := by
+      have := congrArg Fin.val hxy
+      simpa using this
+    apply Subtype.ext
+    apply Sigma.ext
+    · exact x.2.trans y.2.symm
+    · have hx : x.1.1 = q₀.1 := x.2
+      have hy : y.1.1 = q₀.1 := y.2
+      exact (Fin.heq_ext_iff (by rw [hx, hy])).mpr hv
+  have hne : Nonempty S := ⟨⟨q₀, rfl⟩⟩
+  have hcard : 1 ≤ Nat.card S := Nat.card_pos
+  have hcompl : ‖∑' q : ↑Sᶜ, lagWeight q.1 / (lagPole q₀ - t - lagPole q.1)‖ ≤
+      (2 / ε) * ∑' q : XiZeroCopy, ‖lagWeight q‖ := by
+    have hb : ∀ q : ↑Sᶜ, ‖lagWeight q.1 / (lagPole q₀ - t - lagPole q.1)‖ ≤
+        (2 / ε) * ‖lagWeight q.1‖ := by
+      intro q
+      have := hoff q.1 q.2
+      have hpos : 0 < ‖lagPole q₀ - t - lagPole q.1‖ := by linarith
+      rw [norm_div, div_le_iff₀ hpos]
+      calc ‖lagWeight q.1‖ = (2 / ε) * ‖lagWeight q.1‖ * (ε / 2) := by field_simp
+        _ ≤ (2 / ε) * ‖lagWeight q.1‖ * ‖lagPole q₀ - t - lagPole q.1‖ := by gcongr
+    have hs1 : Summable (fun q : ↑Sᶜ => ‖lagWeight q.1 / (lagPole q₀ - t - lagPole q.1)‖) :=
+      (hsumm.norm.subtype _)
+    have hs2 : Summable (fun q : ↑Sᶜ => (2 / ε) * ‖lagWeight q.1‖) :=
+      (summable_norm_lagWeight.mul_left _).subtype _
+    calc ‖∑' q : ↑Sᶜ, lagWeight q.1 / (lagPole q₀ - t - lagPole q.1)‖
+        ≤ ∑' q : ↑Sᶜ, ‖lagWeight q.1 / (lagPole q₀ - t - lagPole q.1)‖ :=
+          norm_tsum_le_tsum_norm hs1
+      _ ≤ ∑' q : ↑Sᶜ, (2 / ε) * ‖lagWeight q.1‖ := hs1.tsum_le_tsum hb hs2
+      _ = (2 / ε) * ∑' q : ↑Sᶜ, ‖lagWeight q.1‖ := tsum_mul_left
+      _ ≤ (2 / ε) * ∑' q : XiZeroCopy, ‖lagWeight q‖ := by
+          gcongr
+          exact Summable.tsum_subtype_le (fun q : XiZeroCopy => ‖lagWeight q‖) Sᶜ
+            (fun _ => norm_nonneg _) summable_norm_lagWeight
+  have hre_compl : (∑' q : ↑Sᶜ, lagWeight q.1 / (lagPole q₀ - t - lagPole q.1)).re ≤
+      (2 / ε) * ∑' q : XiZeroCopy, ‖lagWeight q‖ :=
+    le_trans (Complex.re_le_norm _) hcompl
+  have hfibre : (Nat.card S • -(lagWeight q₀ / (t : ℂ))).re =
+      -((Nat.card S : ℝ) * ((lagWeight q₀).re / t)) := by
+    rw [nsmul_eq_mul, Complex.mul_re, Complex.natCast_re, Complex.natCast_im, Complex.neg_re,
+      Complex.neg_im, Complex.div_ofReal_re]
+    ring
+  have hw := lagWeight_re_pos q₀
+  have hmain : -((Nat.card S : ℝ) * ((lagWeight q₀).re / t)) ≤ -((lagWeight q₀).re / t) := by
+    have h1 : (1 : ℝ) ≤ Nat.card S := by exact_mod_cast hcard
+    have h2 : 0 ≤ (lagWeight q₀).re / t := div_nonneg hw.le ht.le
+    nlinarith
+  rw [hfibre]
+  linarith
+
+/-- **Positive-real on a half-plane bounds the real parts.**  If `Re G(s) ≥ 0` for every `s` with
+`Re s > σ₀`, every zero copy has real part at most `½ + σ₀`. -/
+theorem re_le_half_add_of_lagPoleSeries_re_nonneg {σ₀ : ℝ}
+    (h : ∀ s : ℂ, σ₀ < s.re → 0 ≤ (lagPoleSeries s).re) (q₀ : XiZeroCopy) :
+    (q₀.1 : ℂ).re ≤ 1 / 2 + σ₀ := by
+  by_contra hlt
+  have hlt' : 1 / 2 + σ₀ < (q₀.1 : ℂ).re := not_le.mp hlt
+  have hp : σ₀ < (lagPole q₀).re := by
+    unfold lagPole
+    rw [Complex.sub_re]
+    norm_num
+    linarith
+  obtain ⟨ε, hε, C, hC⟩ := re_lagPoleSeries_le_of_lt_pole q₀
+  have hw := lagWeight_re_pos q₀
+  set δ : ℝ := (lagPole q₀).re - σ₀ with hδ
+  have hδ0 : 0 < δ := by rw [hδ]; linarith
+  have hCpos : 0 < 2 * (|C| + 1) := by positivity
+  set t : ℝ := min (ε / 2) (min (δ / 2) ((lagWeight q₀).re / (2 * (|C| + 1)))) with htdef
+  have ht : 0 < t := lt_min (half_pos hε) (lt_min (half_pos hδ0) (div_pos hw hCpos))
+  have htε : t < ε := lt_of_le_of_lt (min_le_left _ _) (by linarith)
+  have htδ : t ≤ δ / 2 := le_trans (min_le_right _ _) (min_le_left _ _)
+  have htC : t ≤ (lagWeight q₀).re / (2 * (|C| + 1)) := le_trans (min_le_right _ _) (min_le_right _ _)
+  have hs : σ₀ < (lagPole q₀ - t).re := by
+    rw [Complex.sub_re, Complex.ofReal_re]; linarith
+  have h1 := h _ hs
+  have h2 := hC t ht htε
+  have h3 : 2 * (|C| + 1) ≤ (lagWeight q₀).re / t := by
+    rw [le_div_iff₀ ht]
+    calc 2 * (|C| + 1) * t ≤ 2 * (|C| + 1) * ((lagWeight q₀).re / (2 * (|C| + 1))) := by gcongr
+      _ = (lagWeight q₀).re := by field_simp
+  have h4 := le_abs_self C
+  linarith
+
+/-- **The positive-real criterion.**  `RH ⟺ Re G(s) ≥ 0 on Re s > 0`: the lag pole series is a
+positive-real function exactly under RH. -/
+theorem riemannHypothesis_iff_lagPoleSeries_re_nonneg :
+    RiemannHypothesis ↔ ∀ s : ℂ, 0 < s.re → 0 ≤ (lagPoleSeries s).re := by
+  constructor
+  · intro hRH s hs
+    exact re_lagPoleSeries_nonneg_of_riemannHypothesis hRH hs
+  · intro h
+    have hre : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ 1 / 2 := fun q => by
+      have := re_le_half_add_of_lagPoleSeries_re_nonneg h q
+      linarith
+    refine riemannHypothesis_of_lagPoleSeries_extension (F := lagPoleSeries) ?_ fun _ _ => rfl
+    intro z hz0 _
+    refine differentiableAt_lagPoleSeries ?_
+    intro hxi
+    obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
+    have := hre q
+    rw [hq, Complex.add_re] at this
+    norm_num at this
+    linarith
 
 /-! ## The prime side: the damped lag function is positive-definite -/
 
@@ -262,7 +421,9 @@ theorem integral_weilLagFunctionReal_damped_cos_nonneg {σ t : ℝ} (hσ : 13 / 
       rw [Real.cos_neg]
   have hre : (∫ u in Ioi (0:ℝ), (weilLagFunctionReal u : ℂ) * Complex.exp (-s * (u : ℂ))).re
       = ∫ u in Ioi (0:ℝ), weilLagFunctionReal u * (Real.exp (-σ * u) * Real.cos (t * u)) := by
-    rw [← integral_re hint]
+    have h := integral_re (𝕜 := ℂ) hint
+    simp only [RCLike.re_to_complex] at h
+    rw [← h]
     exact integral_congr_ae (Filter.Eventually.of_forall fun u => hpt u)
   rw [← hre]
   have hΦ : ∫ u in Ioi (0:ℝ), (weilLagFunctionReal u : ℂ) * Complex.exp (-s * (u : ℂ)) =

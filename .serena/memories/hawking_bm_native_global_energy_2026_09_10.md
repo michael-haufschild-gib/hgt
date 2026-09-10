@@ -1,3 +1,5 @@
+CURRENT SUCCESSOR: `mem:hawking_bm_native_radial_endpoint_2026_09_10`. The actual angular energy family and Dirichlet endpoint value/radial-derivative convergence are now installed and audited. NativeJointEnergy is now 1223 lines; new NativeRadialEndpoint is 261 lines. Next: radial convolution and the original four-slot closed-graph admission. Full native domain admission and RH remain unproved. Do not repeat the completed global energy/family/endpoint audits.
+
 # HB native global gradient energy — 2026-09-10
 
 Goal ACTIVE: unconditional RH proof/falsification through literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. RH, complete current cancellation, complete inverse identification and native form-domain admission remain UNPROVED. Global native gradient energy and its exact source-response identity are now CLOSED, not an open target.
