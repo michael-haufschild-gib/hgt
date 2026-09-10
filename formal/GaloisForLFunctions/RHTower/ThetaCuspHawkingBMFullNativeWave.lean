@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeGoursat
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeForcedIntegral
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativePhysicalIdentification
@@ -1021,6 +1022,786 @@ theorem fullNullResidual_goursat (q : XiZeroCopy) (s amplitude : ℂ) {p r : ℝ
   rw [residualEffective_source,residualAction_derivatives]
   dsimp only [nullSource,nullWeight]
   ring
+
+
+private def scalarCLM (z : ℂ) : ℝ →L[ℝ] ℂ :=
+  ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) z
+
+private theorem chain {f A B : ℝ → ℝ → ℂ}
+    (hA : Continuous (fun z : ℝ × ℝ => A z.1 z.2))
+    (hB : Continuous (fun z : ℝ × ℝ => B z.1 z.2))
+    (dA : ∀ p r, HasDerivAt (fun a => f a r) (A p r) p)
+    (dB : ∀ p r, HasDerivAt (fun b => f p b) (B p r) r)
+    {p r : ℝ → ℝ} {p' r' x : ℝ} (hp : HasDerivAt p p' x) (hr : HasDerivAt r r' x) :
+    HasDerivAt (fun y => f (p y) (r y)) ((p':ℂ)*A (p x) (r x)+(r':ℂ)*B (p x) (r x)) x := by
+  have hc : Continuous scalarCLM :=
+    (ContinuousLinearMap.smulRightL ℝ ℝ ℂ (1 : ℝ →L[ℝ] ℝ)).continuous
+  have hd := hasStrictFDerivAt_uncurry_coprod (u := (p x,r x))
+    (f := f) (f₁ := fun a b => scalarCLM (A a b)) (f₂ := fun a b => scalarCLM (B a b))
+    (Eventually.of_forall fun z => (dA z.1 z.2).hasFDerivAt)
+    (Eventually.of_forall fun z => (dB z.1 z.2).hasFDerivAt)
+    (hc.comp hA).continuousAt (hc.comp hB).continuousAt
+  have hout := hd.hasFDerivAt.comp_hasDerivAt x (hp.prodMk hr)
+  convert! hout using 1
+
+private theorem movingIntegral {f df : ℝ → ℝ → ℂ}
+    (hf : Continuous (fun z : ℝ × ℝ => f z.1 z.2))
+    (hdf : Continuous (fun z : ℝ × ℝ => df z.1 z.2))
+    (hd : ∀ x a, HasDerivAt (fun y => f y a) (df x a) x)
+    {a b : ℝ → ℝ} {a' b' x : ℝ} (ha : HasDerivAt a a' x) (hb : HasDerivAt b b' x) :
+    HasDerivAt (fun y => ∫ s in a y..b y, f y s)
+      ((∫ s in a x..b x, df x s)+(b':ℂ)*f x (b x)-(a':ℂ)*f x (a x)) x := by
+  let P (y c : ℝ) := ∫ s in (0:ℝ)..c, f y s
+  let D (y c : ℝ) := ∫ s in (0:ℝ)..c, df y s
+  have hD : Continuous (fun z : ℝ × ℝ => D z.1 z.2) := by unfold D; fun_prop
+  have dP (y c : ℝ) : HasDerivAt (fun w => P w c) (D y c) y :=
+    hasDerivAt_parametric_intervalIntegral hf hdf hd 0 c y
+  have dC (y c : ℝ) : HasDerivAt (P y) (f y c) c := by
+    have h := hf.uncurry_left y
+    exact intervalIntegral.integral_hasDerivAt_right (h.intervalIntegrable 0 c)
+      (h.stronglyMeasurableAtFilter _ _) h.continuousAt
+  have h₁ := chain hD hf dP dC (hasDerivAt_id x) hb
+  have h₂ := chain hD hf dP dC (hasDerivAt_id x) ha
+  have he (y : ℝ) : P y (b y)-P y (a y) = ∫ s in a y..b y, f y s := by
+    exact intervalIntegral.integral_interval_sub_left ((hf.uncurry_left y).intervalIntegrable 0 (b y))
+      ((hf.uncurry_left y).intervalIntegrable 0 (a y))
+  have he' : D x (b x)-D x (a x) = ∫ s in a x..b x, df x s := by
+    exact intervalIntegral.integral_interval_sub_left ((hdf.uncurry_left x).intervalIntegrable 0 (b x))
+      ((hdf.uncurry_left x).intervalIntegrable 0 (a x))
+  convert! (h₁.sub h₂).congr_of_eventuallyEq (Eventually.of_forall (fun y => (he y).symm)) using 1
+  simp only [one_mul,Complex.ofReal_one] at *
+  rw [← he']
+  simp only [id_eq]
+  ring
+
+private def weighted (f : ℝ → ℝ → ℂ) (t x : ℝ) : ℂ :=
+  ∫ s in (0:ℝ)..t, ((t-s:ℝ):ℂ)*f (s+x) (s-x)
+
+private theorem characteristic_derivative {f g : ℝ → ℝ → ℂ}
+    (hf : Continuous (fun z : ℝ × ℝ => f z.1 z.2))
+    (hg : Continuous (fun z : ℝ × ℝ => g z.1 z.2))
+    (hd : ∀ a b, HasDerivAt (f a) (g a b) b) (t x : ℝ) :
+    HasDerivAt (weighted f t)
+      ((∫ s in (0:ℝ)..t, f (s+x) (s-x))-2*weighted g t x-(t:ℂ)*f x (-x)) x := by
+  let F (y a : ℝ) : ℂ := ((t+y-a:ℝ):ℂ)*f a (a-2*y)
+  let D (y a : ℝ) : ℂ := f a (a-2*y)-2*((t+y-a:ℝ):ℂ)*g a (a-2*y)
+  have hF : Continuous (fun z : ℝ × ℝ => F z.1 z.2) := by
+    dsimp only [F]
+    exact (show Continuous (fun z : ℝ × ℝ => ((t+z.1-z.2:ℝ):ℂ)) by fun_prop).mul
+      (hf.comp (show Continuous (fun z : ℝ × ℝ => (z.2,z.2-2*z.1)) by fun_prop))
+  have hD : Continuous (fun z : ℝ × ℝ => D z.1 z.2) := by
+    dsimp only [D]
+    exact (hf.comp (show Continuous (fun z : ℝ × ℝ => (z.2,z.2-2*z.1)) by fun_prop)).sub
+      ((show Continuous (fun z : ℝ × ℝ => (2:ℂ)*((t+z.1-z.2:ℝ):ℂ)) by fun_prop).mul
+        (hg.comp (show Continuous (fun z : ℝ × ℝ => (z.2,z.2-2*z.1)) by fun_prop)))
+  have dF (y a : ℝ) : HasDerivAt (fun w => F w a) (D y a) y := by
+    have harg : HasDerivAt (fun w : ℝ => a-2*w) (-2) y := by simpa using ((hasDerivAt_id y).const_mul 2).const_sub a
+    have hval := (hd a (a-2*y)).scomp y harg
+    have hweight := (((hasDerivAt_id y).const_add t).sub_const a).ofReal_comp
+    convert! hweight.mul hval using 1
+    dsimp [D]
+    simp only [Complex.ofReal_neg,Complex.ofReal_ofNat]
+    ring
+  have hmove := movingIntegral hF hD dF (hasDerivAt_id x) ((hasDerivAt_id x).const_add t)
+  have hchange (y : ℝ) : (∫ a in y..t+y, F y a) = weighted f t y := by
+    have hs := intervalIntegral.integral_comp_add_right (a := 0) (b := t) (F y) y
+    simp only [zero_add] at hs
+    rw [← hs]
+    unfold weighted
+    apply intervalIntegral.integral_congr
+    intro s hs
+    dsimp [F]
+    rw [show t+y-(s+y) = t-s by ring,show s+y-2*y = s-y by ring]
+  have hDchange : (∫ a in x..t+x, D x a) =
+      (∫ s in (0:ℝ)..t, f (s+x) (s-x))-2*weighted g t x := by
+    have hs := intervalIntegral.integral_comp_add_right (a := 0) (b := t) (D x) x
+    simp only [zero_add] at hs
+    rw [← hs]
+    have he (s : ℝ) : D x (s+x) = f (s+x) (s-x)-2*(((t-s:ℝ):ℂ)*g (s+x) (s-x)) := by
+      dsimp [D]; simp only [show s+x-2*x = s-x by ring,show t+x-(s+x) = t-s by ring]
+      ring
+    simp_rw [he]
+    rw [intervalIntegral.integral_sub,intervalIntegral.integral_const_mul]
+    · rfl
+    · exact (hf.comp (show Continuous (fun s : ℝ => (s+x,s-x)) by fun_prop)).intervalIntegrable 0 t
+    · exact ((show Continuous (fun s : ℝ => (2:ℂ)*(((t-s:ℝ):ℂ)*g (s+x) (s-x))) from
+        continuous_const.mul ((show Continuous (fun s : ℝ => ((t-s:ℝ):ℂ)) by fun_prop).mul (hg.comp (show Continuous (fun s : ℝ => (s+x,s-x)) by fun_prop))))).intervalIntegrable 0 t
+  convert! hmove.congr_of_eventuallyEq (Eventually.of_forall (fun y => (hchange y).symm)) using 1
+  simp only [id_eq,Complex.ofReal_one,one_mul]
+  rw [hDchange]
+  simp [F,show x-2*x = -x by ring]
+
+
+private theorem weighted_first {V A B : ℝ → ℝ → ℂ}
+    (hV : Continuous (fun z : ℝ × ℝ => V z.1 z.2))
+    (hA : Continuous (fun z : ℝ × ℝ => A z.1 z.2))
+    (hB : Continuous (fun z : ℝ × ℝ => B z.1 z.2))
+    (dA : ∀ p r, HasDerivAt (fun a => V a r) (A p r) p)
+    (dB : ∀ p r, HasDerivAt (fun b => V p b) (B p r) r)
+    (t x : ℝ) : HasDerivAt (weighted V t) (weighted A t x-weighted B t x) x := by
+  let F (y s : ℝ) := ((t-s:ℝ):ℂ)*V (s+y) (s-y)
+  let D (y s : ℝ) := ((t-s:ℝ):ℂ)*(A (s+y) (s-y)-B (s+y) (s-y))
+  have hc (f : ℝ → ℝ → ℂ) (hf : Continuous (fun z : ℝ × ℝ => f z.1 z.2)) :
+      Continuous (fun z : ℝ × ℝ => ((t-z.2:ℝ):ℂ)*f (z.2+z.1) (z.2-z.1)) :=
+    (show Continuous (fun z : ℝ × ℝ => ((t-z.2:ℝ):ℂ)) by fun_prop).mul
+      (hf.comp (show Continuous (fun z : ℝ × ℝ => (z.2+z.1,z.2-z.1)) by fun_prop))
+  have hD : Continuous (fun z : ℝ × ℝ => D z.1 z.2) := by
+    exact hc (fun a b => A a b-B a b) (hA.sub hB)
+  have hd (y s : ℝ) : HasDerivAt (fun z => F z s) (D y s) y := by
+    have hv := chain hA hB dA dB ((hasDerivAt_id y).const_add s) ((hasDerivAt_id y).const_sub s)
+    convert! hv.const_mul ((t-s:ℝ):ℂ) using 1
+    simp [D,sub_eq_add_neg]
+  have hout := hasDerivAt_parametric_intervalIntegral (hc V hV) hD hd 0 t x
+  convert! hout using 1
+  dsimp only [D,weighted]
+  simp_rw [mul_sub]
+  rw [intervalIntegral.integral_sub]
+  · exact ((hc A hA).comp (continuous_const.prodMk continuous_id)).intervalIntegrable 0 t
+  · exact ((hc B hB).comp (continuous_const.prodMk continuous_id)).intervalIntegrable 0 t
+
+private theorem weighted_second {V A B G : ℝ → ℝ → ℂ}
+    (hV : Continuous (fun z : ℝ × ℝ => V z.1 z.2))
+    (hA : Continuous (fun z : ℝ × ℝ => A z.1 z.2))
+    (hB : Continuous (fun z : ℝ × ℝ => B z.1 z.2))
+    (hG : Continuous (fun z : ℝ × ℝ => G z.1 z.2))
+    (dA : ∀ p r, HasDerivAt (fun a => V a r) (A p r) p)
+    (dB : ∀ p r, HasDerivAt (fun b => V p b) (B p r) r)
+    (dAB : ∀ p r, HasDerivAt (A p) (G p r) r)
+    (dBA : ∀ p r, HasDerivAt (fun a => B a r) (G p r) p)
+    (t x : ℝ) : HasDerivAt (deriv (weighted V t))
+      (V (t+x) (t-x)-V x (-x)-(t:ℂ)*(A x (-x)+B x (-x))-4*weighted G t x) x := by
+  have he : deriv (weighted V t) = fun y => weighted A t y-weighted B t y :=
+    funext (fun y => (weighted_first hV hA hB dA dB t y).deriv)
+  rw [he]
+  have hd₁ := characteristic_derivative hA hG dAB t x
+  have hfB : Continuous (fun z : ℝ × ℝ => B z.2 z.1) := hB.comp continuous_swap
+  have hfG : Continuous (fun z : ℝ × ℝ => G z.2 z.1) := hG.comp continuous_swap
+  have hd₂ := (characteristic_derivative hfB hfG (fun a b => dBA b a) t (-x)).scomp x (hasDerivAt_neg x)
+  have hflip (f : ℝ → ℝ → ℂ) (y : ℝ) : weighted (fun a b => f b a) t (-y) = weighted f t y := by
+    unfold weighted
+    simp only [sub_eq_add_neg,neg_neg]
+  have hdB : HasDerivAt (weighted B t)
+      (-((∫ s in (0:ℝ)..t, B (s+x) (s-x))-2*weighted G t x-(t:ℂ)*B x (-x))) x := by
+    convert! hd₂.congr_of_eventuallyEq (Eventually.of_forall (fun y => (hflip B y).symm)) using 1
+    rw [hflip G x]
+    simp only [sub_eq_add_neg,neg_neg,neg_one_smul]
+  have hc (f : ℝ → ℝ → ℂ) (hf : Continuous (fun z : ℝ × ℝ => f z.1 z.2)) :
+      Continuous (fun s : ℝ => f (s+x) (s-x)) := hf.comp (show Continuous (fun s : ℝ => (s+x,s-x)) by fun_prop)
+  have htotal : (∫ s in (0:ℝ)..t, A (s+x) (s-x))+(∫ s in (0:ℝ)..t, B (s+x) (s-x)) =
+      V (t+x) (t-x)-V x (-x) := by
+    rw [← intervalIntegral.integral_add ((hc A hA).intervalIntegrable 0 t) ((hc B hB).intervalIntegrable 0 t)]
+    have hd (s : ℝ) : HasDerivAt (fun y => V (y+x) (y-x)) (A (s+x) (s-x)+B (s+x) (s-x)) s := by
+      simpa only [Complex.ofReal_one,one_mul] using! chain hA hB dA dB ((hasDerivAt_id s).add_const x) ((hasDerivAt_id s).sub_const x)
+    simpa using intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hd s)
+      (((hc A hA).add (hc B hB)).intervalIntegrable 0 t)
+  convert! hd₁.sub hdB using 1
+  rw [← htotal]
+  ring
+
+
+private theorem actualOddSource_zero (s amplitude : ℂ) {tau x : ℝ} (h : tau < |x|) :
+    oddSource s amplitude tau x = 0 := by
+  by_cases hn : x ≤ 0
+  · simp only [oddSource,min_eq_left hn,min_eq_right (neg_nonneg.mpr hn),source_boundary,sub_zero]
+    apply timeReducedCoefficient_zero_before_onset
+    rw [abs_of_nonpos hn] at h
+    linarith
+  · have hp : 0 ≤ x := le_of_not_ge hn
+    simp only [oddSource,min_eq_right hp,min_eq_left (neg_nonpos.mpr hp),source_boundary,zero_sub]
+    apply neg_eq_zero.mpr
+    apply timeReducedCoefficient_zero_before_onset
+    rw [abs_of_nonneg hp] at h
+    linarith
+
+private theorem nullSource_left_zero (s amplitude : ℂ) {a : ℝ} (ha : a ≤ 0) (b : ℝ) :
+    nullSource s amplitude a b = 0 := by
+  have he : EqOn (fun a => nullSource s amplitude a b) (fun _ => 0) (Iio 0) := by
+    intro a ha
+    apply actualOddSource_zero
+    have := neg_le_abs ((a-b)/2)
+    change a < 0 at ha
+    linarith
+  have hc := Continuous.uncurry_right (f := nullSource s amplitude) b
+    (nullSource_continuous s amplitude)
+  exact he.closure hc continuous_const (by simpa only [closure_Iio,mem_Iic] using ha)
+
+private theorem nullSource_right_zero (s amplitude : ℂ) (a : ℝ) {b : ℝ} (hb : b ≤ 0) :
+    nullSource s amplitude a b = 0 := by
+  have he : EqOn (nullSource s amplitude a) (fun _ => 0) (Iio 0) := by
+    intro b hb
+    apply actualOddSource_zero
+    have := le_abs_self ((a-b)/2)
+    change b < 0 at hb
+    linarith
+  have hc := Continuous.uncurry_left (f := nullSource s amplitude) a
+    (nullSource_continuous s amplitude)
+  exact he.closure hc continuous_const (by simpa only [closure_Iio,mem_Iic] using hb)
+
+private theorem nullSource_integral_nonpositive (K : ℝ → ℝ → ℂ) (s amplitude : ℂ)
+    {p r : ℝ} (h : p ≤ 0 ∨ r ≤ 0) :
+    (∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r, K a b*nullSource s amplitude a b) = 0 := by
+  calc
+    _ = ∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r, (0:ℂ) := by
+      apply intervalIntegral.integral_congr
+      intro a ha
+      apply intervalIntegral.integral_congr
+      intro b hb
+      dsimp only
+      rcases h with hp | hr
+      · have ha0 : a ≤ 0 := (show a ∈ Icc p 0 by simpa only [uIcc_of_ge hp] using ha).2
+        rw [nullSource_left_zero s amplitude ha0 b,mul_zero]
+      · have hb0 : b ≤ 0 := (show b ∈ Icc r 0 by simpa only [uIcc_of_ge hr] using hb).2
+        rw [nullSource_right_zero s amplitude a hb0,mul_zero]
+    _ = 0 := by simp
+
+private theorem radialNull_nonpositive (nu s amplitude : ℂ) {p r : ℝ} (h : p ≤ 0 ∨ r ≤ 0) :
+    radialResponse nu s amplitude ((p+r)/2) ((p-r)/2) = 0 := by
+  have hz (a b : ℝ) (h : a < 0 ∨ b < 0) : radialResponse nu s amplitude ((a+b)/2) ((a-b)/2) = 0 := by
+    by_cases ht : (a+b)/2 ≤ 0
+    · exact radialResponse_zero_of_nonpos nu s amplitude _ _ ht
+    · apply radialResponse_zero_outside
+      rw [max_eq_left (by linarith : 0 ≤ (a+b)/2)]
+      rcases h with ha | hb
+      · have := neg_le_abs ((a-b)/2); linarith
+      · have := le_abs_self ((a-b)/2); linarith
+  rcases h with hp | hr
+  · have he : EqOn (fun a => radialResponse nu s amplitude ((a+r)/2) ((a-r)/2)) (fun _ => 0) (Iio 0) :=
+      fun a ha => hz a r (Or.inl ha)
+    have hc := (radialResponse_continuous nu s amplitude).comp
+      (show Continuous (fun a : ℝ => ((a+r)/2,(a-r)/2)) by fun_prop)
+    exact he.closure hc continuous_const (by simpa only [closure_Iio,mem_Iic] using hp)
+  · have he : EqOn (fun b => radialResponse nu s amplitude ((p+b)/2) ((p-b)/2)) (fun _ => 0) (Iio 0) :=
+      fun b hb => hz p b (Or.inr hb)
+    have hc := (radialResponse_continuous nu s amplitude).comp
+      (show Continuous (fun b : ℝ => ((p+b)/2,(p-b)/2)) by fun_prop)
+    exact he.closure hc continuous_const (by simpa only [closure_Iio,mem_Iic] using hr)
+
+private theorem responseJet_nonpositive (q : XiZeroCopy) (s amplitude : ℂ)
+    (i : Fin 4) (n : ℕ) {p r : ℝ} (h : p ≤ 0 ∨ r ≤ 0) (X k : ℝ) :
+    responseJet q s amplitude i n p r X k = 0 := by
+  unfold responseJet
+  rw [nullSource_integral_nonpositive _ s amplitude h,mul_zero]
+
+private theorem residual_nonpositive (q : XiZeroCopy) (s amplitude : ℂ)
+    {p r : ℝ} (h : p ≤ 0 ∨ r ≤ 0) (X k : ℝ) :
+    fullNullResidual q s amplitude p r X k = 0 := by
+  simp only [fullNullResidual,fullNullResponse,responseJet_nonpositive q s amplitude _ _ h,
+    principalNullResponse,radialNull_nonpositive _ s amplitude h,mul_zero,zero_mul,
+    Finset.sum_const_zero,sub_self]
+
+private theorem residualEffective_nonpositive (q : XiZeroCopy) (s amplitude : ℂ)
+    {p r : ℝ} (h : p ≤ 0 ∨ r ≤ 0) (X k : ℝ) :
+    residualEffective q s amplitude X k p r = 0 := by
+  have hs : nullSource s amplitude p r = 0 := by
+    rcases h with hp | hr
+    · exact nullSource_left_zero s amplitude hp r
+    · exact nullSource_right_zero s amplitude p hr
+  simp only [residualEffective,fullEffective,hs,mul_zero,responseAction,
+    responseJet_nonpositive q s amplitude _ _ h,add_zero,sub_zero,principalEffective,
+    principalNullResponse,radialNull_nonpositive _ s amplitude h,zero_mul,
+    Finset.sum_const_zero,zero_div]
+
+private theorem residual_global_primitive (q : XiZeroCopy) (s amplitude : ℂ)
+    (p r X k : ℝ) :
+    fullNullResidual q s amplitude p r X k =
+      ∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r, residualEffective q s amplitude X k a b := by
+  by_cases hp : 0 ≤ p
+  · by_cases hr : 0 ≤ r
+    · exact fullNullResidual_primitive q s amplitude hp hr X k
+    · have hr' := (le_of_not_ge hr)
+      rw [residual_nonpositive q s amplitude (Or.inr hr')]
+      symm
+      calc
+        _ = ∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r, (0:ℂ) := by
+          apply intervalIntegral.integral_congr
+          intro a ha
+          apply intervalIntegral.integral_congr
+          intro b hb
+          exact residualEffective_nonpositive q s amplitude (Or.inr
+            (show b ≤ 0 from (show b ∈ Icc r 0 by simpa [uIcc_of_ge hr'] using hb).2)) X k
+        _ = 0 := by simp
+  · have hp' := (le_of_not_ge hp)
+    rw [residual_nonpositive q s amplitude (Or.inl hp')]
+    symm
+    calc
+      _ = ∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r, (0:ℂ) := by
+        apply intervalIntegral.integral_congr
+        intro a ha
+        apply intervalIntegral.integral_congr
+        intro b hb
+        exact residualEffective_nonpositive q s amplitude (Or.inl
+          (show a ≤ 0 from (show a ∈ Icc p 0 by simpa [uIcc_of_ge hp'] using ha).2)) X k
+      _ = 0 := by simp
+
+private def residualNullP (q : XiZeroCopy) (s amplitude : ℂ) (X k p r : ℝ) : ℂ :=
+  ∫ b in (0:ℝ)..r, residualEffective q s amplitude X k p b
+
+private def residualNullR (q : XiZeroCopy) (s amplitude : ℂ) (X k p r : ℝ) : ℂ :=
+  ∫ a in (0:ℝ)..p, residualEffective q s amplitude X k a r
+
+private theorem residualNullP_continuous (q : XiZeroCopy) (s amplitude : ℂ) (X k : ℝ) :
+    Continuous (fun z : ℝ × ℝ => residualNullP q s amplitude X k z.1 z.2) := by
+  have h := residualEffective_continuous q s amplitude X k
+  unfold residualNullP
+  fun_prop
+
+private theorem residualNullR_continuous (q : XiZeroCopy) (s amplitude : ℂ) (X k : ℝ) :
+    Continuous (fun z : ℝ × ℝ => residualNullR q s amplitude X k z.1 z.2) := by
+  have h := residualEffective_continuous q s amplitude X k
+  unfold residualNullR
+  fun_prop
+
+private theorem residual_global_firstP (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) :
+    HasDerivAt (fun a => fullNullResidual q s amplitude a r X k)
+      (residualNullP q s amplitude X k p r) p := by
+  have hc := Continuous.uncurry_right (f := residualNullP q s amplitude X k) r (residualNullP_continuous q s amplitude X k)
+  have hd := intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable 0 p)
+    (hc.stronglyMeasurableAtFilter _ _) hc.continuousAt
+  exact hd.congr_of_eventuallyEq (Eventually.of_forall fun a => residual_global_primitive q s amplitude a r X k)
+
+private theorem residual_global_firstR (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) :
+    HasDerivAt (fun b => fullNullResidual q s amplitude p b X k)
+      (residualNullR q s amplitude X k p r) r := by
+  have hc := Continuous.uncurry_left (f := residualNullR q s amplitude X k) p (residualNullR_continuous q s amplitude X k)
+  have hd := intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable 0 r)
+    (hc.stronglyMeasurableAtFilter _ _) hc.continuousAt
+  apply hd.congr_of_eventuallyEq (Eventually.of_forall ?_)
+  intro b
+  rw [residual_global_primitive]
+  exact rectangle_swap (residualEffective q s amplitude X k) (residualEffective_continuous q s amplitude X k) 0 p 0 b
+
+private theorem residualNullP_firstR (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) :
+    HasDerivAt (residualNullP q s amplitude X k p)
+      (residualEffective q s amplitude X k p r) r := by
+  have hc := Continuous.uncurry_left (f := residualEffective q s amplitude X k) p (residualEffective_continuous q s amplitude X k)
+  exact intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable 0 r)
+    (hc.stronglyMeasurableAtFilter _ _) hc.continuousAt
+
+private theorem residualNullR_firstP (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) :
+    HasDerivAt (fun a => residualNullR q s amplitude X k a r)
+      (residualEffective q s amplitude X k p r) p := by
+  have hc := Continuous.uncurry_right (f := residualEffective q s amplitude X k) r (residualEffective_continuous q s amplitude X k)
+  exact intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable 0 p)
+    (hc.stronglyMeasurableAtFilter _ _) hc.continuousAt
+
+private theorem residualNullP_initial (q : XiZeroCopy) (s amplitude : ℂ) (X k x : ℝ) :
+    residualNullP q s amplitude X k x (-x) = 0 := by
+  unfold residualNullP
+  calc
+    _ = ∫ b in (0:ℝ)..(-x), (0:ℂ) := by
+      apply intervalIntegral.integral_congr
+      intro b hb
+      apply residualEffective_nonpositive
+      by_cases hx : x ≤ 0
+      · exact Or.inl hx
+      · right
+        have hn : -x ≤ 0 := by linarith
+        exact (show b ∈ Icc (-x) 0 by simpa [uIcc_of_ge hn] using hb).2
+    _ = 0 := by simp
+
+private theorem residualNullR_initial (q : XiZeroCopy) (s amplitude : ℂ) (X k x : ℝ) :
+    residualNullR q s amplitude X k x (-x) = 0 := by
+  unfold residualNullR
+  calc
+    _ = ∫ a in (0:ℝ)..x, (0:ℂ) := by
+      apply intervalIntegral.integral_congr
+      intro a ha
+      apply residualEffective_nonpositive
+      by_cases hx : x ≤ 0
+      · left
+        exact (show a ∈ Icc x 0 by simpa [uIcc_of_ge hx] using ha).2
+      · exact Or.inr (by linarith)
+    _ = 0 := by simp
+
+private theorem residual_continuous (q : XiZeroCopy) (s amplitude : ℂ) (X k : ℝ) :
+    Continuous (fun z : ℝ × ℝ => fullNullResidual q s amplitude z.1 z.2 X k) := by
+  have he := funext (fun z : ℝ × ℝ => residual_global_primitive q s amplitude z.1 z.2 X k)
+  rw [he]
+  have h := residualEffective_continuous q s amplitude X k
+  fun_prop
+
+/-- Double time primitive of the literal theta-cusp cutoff residual, with its original
+null-to-static coordinate map and source amplitudes. -/
+def nativeResidualTimePrimitive (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) : ℂ :=
+  ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*fullNullResidual q s amplitude (u+x) (u-x) X k
+
+private theorem nativeResidualTimePrimitive_spatial (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    HasDerivAt (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k))
+      (fullNullResidual q s amplitude (t+x) (t-x) X k-
+        4*weighted (residualEffective q s amplitude X k) t x) x := by
+  have h := weighted_second (residual_continuous q s amplitude X k)
+    (residualNullP_continuous q s amplitude X k) (residualNullR_continuous q s amplitude X k)
+    (residualEffective_continuous q s amplitude X k)
+    (fun p r => residual_global_firstP q s amplitude p r X k)
+    (fun p r => residual_global_firstR q s amplitude p r X k)
+    (fun p r => residualNullP_firstR q s amplitude p r X k)
+    (fun p r => residualNullR_firstP q s amplitude p r X k) t x
+  have hx : x ≤ 0 ∨ -x ≤ 0 := by
+    by_cases hx : x ≤ 0
+    · exact Or.inl hx
+    · exact Or.inr (by linarith)
+  simpa only [residual_nonpositive q s amplitude hx,residualNullP_initial,
+    residualNullR_initial,add_zero,mul_zero,sub_zero] using! h
+
+/-- Exact static radial equation for the native double time primitive. The source-cone
+edges and onset introduce no omitted initial-value terms; the original angular action
+and all three cutoff commutators remain in the forcing. -/
+theorem nativeResidualTimePrimitive_radial_equation (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k)) x =
+      fullNullResidual q s amplitude (t+x) (t-x) X k-
+      ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*
+        (squareResidual q ![X,Real.exp k]*oddSource s amplitude u x+
+          ((Real.exp k:ℂ)^2*deriv (deriv (fun y => fullNullResidual q s amplitude (u+x) (u-x) y k)) X+
+            deriv (deriv (fun y => fullNullResidual q s amplitude (u+x) (u-x) X y)) k-
+            deriv (fun y => fullNullResidual q s amplitude (u+x) (u-x) X y) k+
+            ∑ i : Fin 3, principalNullResponse q s amplitude i (u+x) (u-x)*
+              cutoffCommutator (principalExponent q i) ![X,Real.exp k])/(Real.cosh x:ℂ)^2) := by
+  rw [(nativeResidualTimePrimitive_spatial q s amplitude t x X k).deriv]
+  congr 1
+  unfold weighted
+  rw [← intervalIntegral.integral_const_mul]
+  apply intervalIntegral.integral_congr
+  intro u hu
+  dsimp only
+  rw [residualEffective_source,residualAction_derivatives]
+  dsimp only [nullSource,nullWeight]
+  rw [show (u+x+(u-x))/2 = u by ring,show (u+x-(u-x))/2 = x by ring]
+  ring
+
+/-- The time primitive retains the exact physical Dirichlet boundary. -/
+theorem nativeResidualTimePrimitive_boundary (q : XiZeroCopy) (s amplitude : ℂ) (t X k : ℝ) :
+    nativeResidualTimePrimitive q s amplitude t 0 X k = 0 := by
+  simp [nativeResidualTimePrimitive,fullNullResidual_boundary]
+
+private theorem nativeResidualTimePrimitive_first_time (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    HasDerivAt (fun v => nativeResidualTimePrimitive q s amplitude v x X k)
+      (∫ u in (0:ℝ)..t, fullNullResidual q s amplitude (u+x) (u-x) X k) t := by
+  let v (u : ℝ) := fullNullResidual q s amplitude (u+x) (u-x) X k
+  have hv : Continuous v := by
+    convert! (residual_continuous q s amplitude X k).comp
+      (show Continuous (fun u : ℝ => (u+x,u-x)) by fun_prop) using 1
+  have hf : Continuous (fun z : ℝ × ℝ => ((z.1-z.2:ℝ):ℂ)*v z.2) :=
+    (by fun_prop : Continuous (fun z : ℝ × ℝ => ((z.1-z.2:ℝ):ℂ))).mul (hv.comp continuous_snd)
+  have hd : ∀ a b : ℝ, HasDerivAt (fun y => ((y-b:ℝ):ℂ)*v b) (v b) a := by
+    intro a b
+    simpa using (((hasDerivAt_id a).sub_const b).ofReal_comp.mul_const (v b))
+  have h := movingIntegral (f := fun a b => ((a-b:ℝ):ℂ)*v b) (df := fun _ b => v b) hf (hv.comp continuous_snd) hd (hasDerivAt_const t (0:ℝ)) (hasDerivAt_id t)
+  simpa only [id_eq,nativeResidualTimePrimitive,v,sub_self,Complex.ofReal_zero,zero_mul,Complex.ofReal_one,one_mul,add_zero,sub_zero] using! h
+
+/-- The time primitive differentiates twice to the original native residual at every
+real time and radius, including the source characteristic edges. -/
+theorem nativeResidualTimePrimitive_second_time (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    deriv (deriv (fun v => nativeResidualTimePrimitive q s amplitude v x X k)) t =
+      fullNullResidual q s amplitude (t+x) (t-x) X k := by
+  have he : deriv (fun v => nativeResidualTimePrimitive q s amplitude v x X k) =
+      fun v => ∫ u in (0:ℝ)..v, fullNullResidual q s amplitude (u+x) (u-x) X k :=
+    funext (fun v => (nativeResidualTimePrimitive_first_time q s amplitude v x X k).deriv)
+  rw [he]
+  have hc := (residual_continuous q s amplitude X k).comp
+    (show Continuous (fun u : ℝ => (u+x,u-x)) by fun_prop)
+  exact (intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable 0 t)
+    (hc.stronglyMeasurableAtFilter _ _) hc.continuousAt).deriv
+
+private theorem cutoffLogJet_continuous (alpha : ℂ) : Continuous (cutoffLogJet alpha) := by
+  apply continuous_iff_continuousAt.mpr
+  intro k
+  exact (cutoffLogJet_first alpha k).continuousAt
+
+private theorem cutoffLogSecond_continuous (alpha : ℂ) :
+    Continuous (fun k => cutoffLogJet alpha k+(Real.exp k:ℂ)^2*
+      deriv (deriv (powerCutoffHeight alpha)) (Real.exp k)) := by
+  have h₁ := (contDiff_infty_iff_deriv.mp (powerCutoffHeight_smooth alpha)).2
+  have h₂ := (contDiff_infty_iff_deriv.mp h₁).2
+  exact (cutoffLogJet_continuous alpha).add
+    ((by fun_prop : Continuous (fun k : ℝ => (Real.exp k:ℂ)^2)).mul
+      (h₂.continuous.comp Real.continuous_exp))
+
+private theorem residual_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      fullNullResidual q s amplitude z.1.1 z.1.2 z.2.1 z.2.2) := by
+  change Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+    responseJet q s amplitude 2 0 z.1.1 z.1.2 z.2.1 z.2.2-
+      ∑ i : Fin 3, principalNullResponse q s amplitude i z.1.1 z.1.2*
+        cutoffLogPower (principalExponent q i) z.2.2)
+  refine (responseJet_continuous q s amplitude 2 0).sub (continuous_finsetSum _ (fun i _ => ?_))
+  exact ((principalNullResponse_continuous q s amplitude i).comp continuous_fst).mul
+    (((powerCutoffHeight_smooth (principalExponent q i)).continuous.comp Real.continuous_exp).comp
+      (continuous_snd.comp continuous_snd))
+
+private def residualHeightSecond (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) : ℂ :=
+  responseJet q s amplitude 3 2 p r X k-
+    ∑ i : Fin 3, principalNullResponse q s amplitude i p r*
+      (cutoffLogJet (principalExponent q i) k+(Real.exp k:ℂ)^2*
+        deriv (deriv (powerCutoffHeight (principalExponent q i))) (Real.exp k))
+
+private theorem residualHeightJet_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      residualHeightJet q s amplitude z.1.1 z.1.2 z.2.1 z.2.2) := by
+  unfold residualHeightJet
+  refine (responseJet_continuous q s amplitude 3 1).sub (continuous_finsetSum _ (fun i _ => ?_))
+  exact ((principalNullResponse_continuous q s amplitude i).comp continuous_fst).mul
+    ((cutoffLogJet_continuous (principalExponent q i)).comp (continuous_snd.comp continuous_snd))
+
+private theorem residualHeightSecond_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
+      residualHeightSecond q s amplitude z.1.1 z.1.2 z.2.1 z.2.2) := by
+  unfold residualHeightSecond
+  refine (responseJet_continuous q s amplitude 3 2).sub (continuous_finsetSum _ (fun i _ => ?_))
+  exact ((principalNullResponse_continuous q s amplitude i).comp continuous_fst).mul
+    ((cutoffLogSecond_continuous (principalExponent q i)).comp (continuous_snd.comp continuous_snd))
+
+private theorem timeIntegral_parameter {f df : ℝ → ℝ → ℂ}
+    (hf : Continuous (fun z : ℝ × ℝ => f z.1 z.2))
+    (hdf : Continuous (fun z : ℝ × ℝ => df z.1 z.2))
+    (hd : ∀ y u, HasDerivAt (fun z => f z u) (df y u) y) (t y : ℝ) :
+    HasDerivAt (fun z => ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*f z u)
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*df y u) y := by
+  have hw : Continuous (fun z : ℝ × ℝ => ((t-z.2:ℝ):ℂ)) := by fun_prop
+  exact hasDerivAt_parametric_intervalIntegral (hw.mul hf) (hw.mul hdf)
+    (fun a b => (hd a b).const_mul ((t-b:ℝ):ℂ)) 0 t y
+
+private theorem nativePrimitive_x (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
+    HasDerivAt (fun y => nativeResidualTimePrimitive q s amplitude t x y k)
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*responseJet q s amplitude 2 1 (u+x) (u-x) X k) X := by
+  have hc : Continuous (fun z : ℝ × ℝ => ((z.2+x,z.2-x),(z.1,k))) := by fun_prop
+  exact timeIntegral_parameter ((residual_joint_continuous q s amplitude).comp hc)
+    ((responseJet_continuous q s amplitude 2 1).comp hc)
+    (fun y u => fullNullResidual_x q s amplitude (u+x) (u-x) y k) t X
+
+private theorem nativePrimitive_xx (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
+    deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k)) X =
+      ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*responseJet q s amplitude 2 2 (u+x) (u-x) X k := by
+  rw [show deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k) =
+      fun y => ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*responseJet q s amplitude 2 1 (u+x) (u-x) y k from
+    funext (fun y => (nativePrimitive_x q s amplitude t x y k).deriv)]
+  have hc : Continuous (fun z : ℝ × ℝ => ((z.2+x,z.2-x),(z.1,k))) := by fun_prop
+  exact (timeIntegral_parameter ((responseJet_continuous q s amplitude 2 1).comp hc)
+    ((responseJet_continuous q s amplitude 2 2).comp hc)
+    (fun y u => responseJet_x q s amplitude 1 (u+x) (u-x) y k) t X).deriv
+
+private theorem nativePrimitive_k (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
+    HasDerivAt (fun y => nativeResidualTimePrimitive q s amplitude t x X y)
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualHeightJet q s amplitude (u+x) (u-x) X k) k := by
+  have hc : Continuous (fun z : ℝ × ℝ => ((z.2+x,z.2-x),(X,z.1))) := by fun_prop
+  exact timeIntegral_parameter ((residual_joint_continuous q s amplitude).comp hc)
+    ((residualHeightJet_joint_continuous q s amplitude).comp hc)
+    (fun y u => fullNullResidual_k q s amplitude (u+x) (u-x) X y) t k
+
+private theorem nativePrimitive_kk (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
+    deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y)) k =
+      ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualHeightSecond q s amplitude (u+x) (u-x) X k := by
+  rw [show deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y) =
+      fun y => ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualHeightJet q s amplitude (u+x) (u-x) X y from
+    funext (fun y => (nativePrimitive_k q s amplitude t x X y).deriv)]
+  have hc : Continuous (fun z : ℝ × ℝ => ((z.2+x,z.2-x),(X,z.1))) := by fun_prop
+  exact (timeIntegral_parameter ((residualHeightJet_joint_continuous q s amplitude).comp hc)
+    ((residualHeightSecond_joint_continuous q s amplitude).comp hc)
+    (fun y u => residualHeightJet_first q s amplitude (u+x) (u-x) X y) t k).deriv
+
+private theorem nativePrimitive_angular_action (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
+    (Real.exp k:ℂ)^2*deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k)) X+
+      deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y)) k-
+      deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y) k =
+      ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualAction q s amplitude (u+x) (u-x) X k := by
+  rw [nativePrimitive_xx,nativePrimitive_kk,(nativePrimitive_k q s amplitude t x X k).deriv]
+  have hc : Continuous (fun u : ℝ => ((u+x,u-x),(X,k))) := by fun_prop
+  have hw : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)) := by fun_prop
+  have hX : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*responseJet q s amplitude 2 2 (u+x) (u-x) X k) := by
+    convert! hw.mul ((responseJet_continuous q s amplitude 2 2).comp hc) using 1
+  have hK : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*residualHeightSecond q s amplitude (u+x) (u-x) X k) := by
+    convert! hw.mul ((residualHeightSecond_joint_continuous q s amplitude).comp hc) using 1
+  have hJ : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*residualHeightJet q s amplitude (u+x) (u-x) X k) := by
+    convert! hw.mul ((residualHeightJet_joint_continuous q s amplitude).comp hc) using 1
+  have hsum : Continuous (fun u : ℝ => (Real.exp k:ℂ)^2*(((t-u:ℝ):ℂ)*responseJet q s amplitude 2 2 (u+x) (u-x) X k)+
+      ((t-u:ℝ):ℂ)*residualHeightSecond q s amplitude (u+x) (u-x) X k) :=
+    (hX.const_mul ((Real.exp k:ℂ)^2)).add hK
+  rw [← intervalIntegral.integral_const_mul,
+    ← intervalIntegral.integral_add ((hX.const_mul ((Real.exp k:ℂ)^2)).intervalIntegrable 0 t) (hK.intervalIntegrable 0 t),
+    ← intervalIntegral.integral_sub (hsum.intervalIntegrable 0 t) (hJ.intervalIntegrable 0 t)]
+  apply intervalIntegral.integral_congr
+  intro u hu
+  dsimp only [residualAction,responseAction,residualHeightSecond,residualHeightJet]
+  simp only [mul_add,Finset.sum_add_distrib]
+  ring
+
+/-- The literal residual forcing in static coordinates, retaining every principal
+Weyl coefficient and the original cutoff commutators. -/
+def nativeResidualStaticForcing (q : XiZeroCopy) (s amplitude : ℂ) (u x X k : ℝ) : ℂ :=
+  squareResidual q ![X,Real.exp k]*oddSource s amplitude u x+
+    (∑ i : Fin 3, principalNullResponse q s amplitude i (u+x) (u-x)*
+      cutoffCommutator (principalExponent q i) ![X,Real.exp k])/(Real.cosh x:ℂ)^2
+
+private theorem nativeResidualStaticForcing_continuous (q : XiZeroCopy) (s amplitude : ℂ)
+    (x X k : ℝ) : Continuous (fun u => nativeResidualStaticForcing q s amplitude u x X k) := by
+  unfold nativeResidualStaticForcing
+  refine (continuous_const.mul ((actualSource_continuous s amplitude).comp
+    (continuous_id.prodMk continuous_const))).add ?_
+  exact (continuous_finsetSum _ (fun i _ =>
+    ((principalNullResponse_continuous q s amplitude i).comp
+      (show Continuous (fun u : ℝ => (u+x,u-x)) by fun_prop)).mul continuous_const)).div_const _
+
+private theorem residualAction_static_continuous (q : XiZeroCopy) (s amplitude : ℂ)
+    (x X k : ℝ) : Continuous (fun u => residualAction q s amplitude (u+x) (u-x) X k) := by
+  unfold residualAction
+  have hc : Continuous (fun u : ℝ => (u+x,u-x)) := by fun_prop
+  exact ((responseAction_continuous q s amplitude X k).comp hc).sub
+    (continuous_finsetSum _ (fun i _ =>
+      ((principalNullResponse_continuous q s amplitude i).comp hc).mul continuous_const))
+
+private theorem effective_time_split (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
+    4*weighted (residualEffective q s amplitude X k) t x =
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*nativeResidualStaticForcing q s amplitude u x X k)+
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualAction q s amplitude (u+x) (u-x) X k)/(Real.cosh x:ℂ)^2 := by
+  have hw : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)) := by fun_prop
+  have hF : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*nativeResidualStaticForcing q s amplitude u x X k) :=
+    hw.mul (nativeResidualStaticForcing_continuous q s amplitude x X k)
+  have hA : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*residualAction q s amplitude (u+x) (u-x) X k) :=
+    hw.mul (residualAction_static_continuous q s amplitude x X k)
+  unfold weighted
+  rw [← intervalIntegral.integral_const_mul,← intervalIntegral.integral_div,
+    ← intervalIntegral.integral_add (hF.intervalIntegrable 0 t) ((hA.div_const ((Real.cosh x:ℂ)^2)).intervalIntegrable 0 t)]
+  apply intervalIntegral.integral_congr
+  intro u hu
+  dsimp only
+  rw [residualEffective_source]
+  dsimp only [nullSource,nullWeight,nativeResidualStaticForcing]
+  rw [show (u+x+(u-x))/2 = u by ring,show (u+x-(u-x))/2 = x by ring]
+  ring
+
+/-- The actual positive spatial operator applied to the native double time primitive
+is its integrated literal forcing minus the original field. This is the pointwise
+elliptic equation required for the physical energy-domain admission, with no assumed
+wave equation, trace, source identification or regularity premise. -/
+theorem nativeResidualTimePrimitive_elliptic_equation (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    -deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k)) x-
+      ((Real.exp k:ℂ)^2*deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k)) X+
+        deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y)) k-
+        deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y) k)/(Real.cosh x:ℂ)^2 =
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*nativeResidualStaticForcing q s amplitude u x X k)-
+        fullNullResidual q s amplitude (t+x) (t-x) X k := by
+  rw [(nativeResidualTimePrimitive_spatial q s amplitude t x X k).deriv,
+    nativePrimitive_angular_action,effective_time_split]
+  ring
+
+
+/-- The literal time primitive has finite radial propagation, including the source
+characteristic edge and every nonpositive time. -/
+theorem nativeResidualTimePrimitive_finite_propagation (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) (hx : max t 0 ≤ |x|) :
+    nativeResidualTimePrimitive q s amplitude t x X k = 0 := by
+  unfold nativeResidualTimePrimitive
+  calc
+    _ = ∫ u in (0:ℝ)..t, (0:ℂ) := by
+      apply intervalIntegral.integral_congr
+      intro u hu
+      have hu' : u ≤ max t 0 := by
+        simpa only [uIcc,mem_Icc,max_comm] using hu.2
+      have hzero : u+x ≤ 0 ∨ u-x ≤ 0 := by
+        by_cases hx0 : 0 ≤ x
+        · right
+          rw [abs_of_nonneg hx0] at hx
+          linarith
+        · left
+          rw [abs_of_neg (lt_of_not_ge hx0)] at hx
+          linarith
+      dsimp only
+      rw [residual_nonpositive q s amplitude hzero,mul_zero]
+    _ = 0 := by simp
+
+private theorem nativePrimitive_radial_first (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    HasDerivAt (fun y => nativeResidualTimePrimitive q s amplitude t y X k)
+      (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k) x) x := by
+  have h := weighted_first (residual_continuous q s amplitude X k)
+    (residualNullP_continuous q s amplitude X k) (residualNullR_continuous q s amplitude X k)
+    (fun p r => residual_global_firstP q s amplitude p r X k)
+    (fun p r => residual_global_firstR q s amplitude p r X k) t x
+  exact h.differentiableAt.hasDerivAt
+
+private theorem nativePrimitive_radial_second (q : XiZeroCopy) (s amplitude : ℂ)
+    (t x X k : ℝ) :
+    HasDerivAt (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k))
+      (deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k)) x) x :=
+  (nativeResidualTimePrimitive_spatial q s amplitude t x X k).differentiableAt.hasDerivAt
+
+private theorem nativePrimitive_radial_second_continuous (q : XiZeroCopy) (s amplitude : ℂ)
+    (t X k : ℝ) :
+    Continuous (deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k))) := by
+  have he := funext (fun x => (nativeResidualTimePrimitive_spatial q s amplitude t x X k).deriv)
+  rw [he]
+  have hv : Continuous (fun x : ℝ => fullNullResidual q s amplitude (t+x) (t-x) X k) := by
+    convert! (residual_continuous q s amplitude X k).comp
+      (show Continuous (fun x : ℝ => (t+x,t-x)) by fun_prop) using 1
+  have hg : Continuous (fun z : ℝ × ℝ => ((t-z.2:ℝ):ℂ)*
+      residualEffective q s amplitude X k (z.2+z.1) (z.2-z.1)) := by
+    have hc := (residualEffective_continuous q s amplitude X k).comp
+      (show Continuous (fun z : ℝ × ℝ => (z.2+z.1,z.2-z.1)) by fun_prop)
+    exact (show Continuous (fun z : ℝ × ℝ => ((t-z.2:ℝ):ℂ)) by fun_prop).mul hc
+  exact hv.sub ((intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hg 0 t).const_mul 4)
+
+/-- Exact radial Green identity for the actual native primitive. The lower endpoint
+is outside its causal support and the upper endpoint is the physical Dirichlet boundary;
+no radial current or regularity assumption is supplied. -/
+theorem nativeResidualTimePrimitive_radial_green (q : XiZeroCopy) (s amplitude : ℂ)
+    (t X k : ℝ) :
+    let W := fun x => nativeResidualTimePrimitive q s amplitude t x X k
+    (∫ x in (-max t 0-1)..0, starRingEnd ℂ (W x)*deriv (deriv W) x) +
+      (∫ x in (-max t 0-1)..0, starRingEnd ℂ (deriv W x)*deriv W x) = 0 := by
+  let W := fun x => nativeResidualTimePrimitive q s amplitude t x X k
+  have hW : Continuous W := continuous_iff_continuousAt.mpr
+    (fun x => (nativePrimitive_radial_first q s amplitude t x X k).continuousAt)
+  have hdW : Continuous (deriv W) := continuous_iff_continuousAt.mpr
+    (fun x => (nativePrimitive_radial_second q s amplitude t x X k).continuousAt)
+  have hddW : Continuous (deriv (deriv W)) :=
+    nativePrimitive_radial_second_continuous q s amplitude t X k
+  have hparts := intervalIntegral.integral_mul_deriv_eq_deriv_mul
+    (a := -max t 0-1) (b := 0)
+    (fun x _ => Complex.conjCLE.toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt x
+      (nativePrimitive_radial_first q s amplitude t x X k))
+    (fun x _ => nativePrimitive_radial_second q s amplitude t x X k)
+    ((Complex.conjCLE.continuous.comp hdW).intervalIntegrable _ _) (hddW.intervalIntegrable _ _)
+  have hzero : W 0 = 0 := nativeResidualTimePrimitive_boundary q s amplitude t X k
+  have hleft : W (-max t 0-1) = 0 := by
+    apply nativeResidualTimePrimitive_finite_propagation
+    have hm := le_max_right t (0:ℝ)
+    rw [abs_of_neg (by linarith : -max t 0-1 < 0)]
+    linarith
+  change (∫ x in (-max t 0-1)..0, starRingEnd ℂ (W x)*deriv (deriv W) x) +
+    (∫ x in (-max t 0-1)..0, starRingEnd ℂ (deriv W x)*deriv W x) = 0
+  change (∫ x in (-max t 0-1)..0, starRingEnd ℂ (W x)*deriv (deriv W) x) =
+    starRingEnd ℂ (W 0)*deriv W 0-starRingEnd ℂ (W (-max t 0-1))*deriv W (-max t 0-1)-
+      ∫ x in (-max t 0-1)..0, starRingEnd ℂ (deriv W x)*deriv W x at hparts
+  rw [hparts,hzero,hleft]
+  simp
+
+/-- Positive radial energy of the literal primitive equals its actual radial forcing
+pairing, with both endpoint currents already discharged. -/
+theorem nativeResidualTimePrimitive_radial_energy (q : XiZeroCopy) (s amplitude : ℂ)
+    (t X k : ℝ) :
+    let W := fun x => nativeResidualTimePrimitive q s amplitude t x X k
+    (∫ x in (-max t 0-1)..0, ‖deriv W x‖^2) =
+      -(∫ x in (-max t 0-1)..0, starRingEnd ℂ (W x)*deriv (deriv W) x).re := by
+  let W := fun x => nativeResidualTimePrimitive q s amplitude t x X k
+  have hdW : Continuous (deriv W) := continuous_iff_continuousAt.mpr
+    (fun x => (nativePrimitive_radial_second q s amplitude t x X k).continuousAt)
+  have he (x : ℝ) : (starRingEnd ℂ (deriv W x)*deriv W x).re = ‖deriv W x‖^2 := by
+    rw [Complex.sq_norm]
+    simp [Complex.mul_re,Complex.normSq_apply]
+  have h := congrArg Complex.re (nativeResidualTimePrimitive_radial_green q s amplitude t X k)
+  change (∫ x in (-max t 0-1)..0, starRingEnd ℂ (W x)*deriv (deriv W) x).re +
+    (∫ x in (-max t 0-1)..0, starRingEnd ℂ (deriv W x)*deriv W x).re = 0 at h
+  have hr := Complex.reCLM.intervalIntegral_comp_comm
+    (((Complex.conjCLE.continuous.comp hdW).mul hdW).intervalIntegrable (μ := volume) (-max t 0-1) 0)
+  change (∫ x in (-max t 0-1)..0, (starRingEnd ℂ (deriv W x)*deriv W x).re) =
+    (∫ x in (-max t 0-1)..0, starRingEnd ℂ (deriv W x)*deriv W x).re at hr
+  rw [← hr] at h
+  simp_rw [he] at h
+  linarith
 
 end
 end RHTower.D4BMNativeResponse

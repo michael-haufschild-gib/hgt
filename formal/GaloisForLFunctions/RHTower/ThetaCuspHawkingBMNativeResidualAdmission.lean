@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullNativeWave
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCircleGauss
+import GaloisForLFunctions.HTGeometry.L2MeromorphicAlgebra
 import GaloisForLFunctions.HTGeometry.L2DominatedContinuity
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSpatialTests
 
@@ -594,6 +595,175 @@ theorem nativeJointResidual_zero_of_nonpos (q : XiZeroCopy) (s amplitude : ℂ) 
     simp only [not_or,not_le] at h
     linarith [h.1,h.2]
   exact fullNullResidual_nonpositive q s amplitude hn z.2
+
+/-- Literal double time primitive on the original radial/modular product coordinates. -/
+def nativeJointTimePrimitiveField (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
+    (z : ℝ × UpperHalfPlane) : ℂ :=
+  nativeResidualTimePrimitive q s amplitude t z.1 z.2.re (Real.log z.2.im)
+
+private theorem nativeJointTimePrimitiveField_continuous (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) :
+    Continuous (nativeJointTimePrimitiveField q s amplitude t) := by
+  have hc := (nativeJointResidualField_continuous q s amplitude).comp
+    (show Continuous (fun p : (ℝ × UpperHalfPlane) × ℝ => (p.2,p.1)) by fun_prop)
+  have hw : Continuous (fun p : (ℝ × UpperHalfPlane) × ℝ => ((t-p.2:ℝ):ℂ)) := by fun_prop
+  exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' (hw.mul hc) 0 t
+
+private theorem time_interval_abs_le {t u : ℝ} (hu : u ∈ uIcc (0:ℝ) t) : |u| ≤ |t| := by
+  by_cases ht : 0 ≤ t
+  · have h := (show u ∈ Icc (0:ℝ) t by simpa only [uIcc_of_le ht] using hu)
+    rw [abs_of_nonneg h.1,abs_of_nonneg ht]
+    exact h.2
+  · have ht' := le_of_not_ge ht
+    have h := (show u ∈ Icc t (0:ℝ) by simpa only [uIcc_of_ge ht'] using hu)
+    rw [abs_of_nonpos h.2,abs_of_nonpos ht']
+    linarith [h.1]
+
+/-- The actual native time primitive is square integrable in the original joint
+space, with no energy-domain admission premise. -/
+theorem nativeJointTimePrimitiveField_memLp (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) :
+    MemLp (nativeJointTimePrimitiveField q s amplitude t) 2
+      (radialMeasure.prod D4BMModularCore.measure) := by
+  obtain ⟨B,hB,hbound⟩ := nativeJointResidualField_uniform_bound q s amplitude |t|
+  have hm := (jointMajorant_memLp |t| B).const_mul (2*|t|^2)
+  apply hm.mono' (nativeJointTimePrimitiveField_continuous q s amplitude t).aestronglyMeasurable
+  filter_upwards [Measure.quasiMeasurePreserving_snd.ae
+    (ae_restrict_mem ModularGroup.isClosed_fd.measurableSet)] with z hz
+  have hD : 0 ≤ jointMajorant |t| B z := by
+    unfold jointMajorant
+    exact Set.indicator_nonneg (fun _ _ => hB) z
+  have hh := intervalIntegral.norm_integral_le_of_norm_le_const (a := (0:ℝ)) (b := t)
+    (f := fun u => ((t-u:ℝ):ℂ)*nativeJointResidualField q s amplitude u z)
+    (C := 2*|t| *jointMajorant |t| B z) (fun u hu => by
+      have hu' := time_interval_abs_le (uIoc_subset_uIcc hu)
+      have hd : |t-u| ≤ 2*|t| := (abs_sub t u).trans (by linarith)
+      rw [norm_mul,Complex.norm_real,Real.norm_eq_abs]
+      exact mul_le_mul hd (hbound u hu' z hz) (norm_nonneg _) (by positivity))
+  change ‖nativeJointTimePrimitiveField q s amplitude t z‖ ≤ _
+  convert! hh using 1
+  simp only [sub_zero]
+  ring
+
+private theorem timePrimitive_radial_memLp (f : ℝ × ℝ → ℂ) (hf : Continuous f)
+    (hz : ∀ u x : ℝ, max u 0 < |x| → f (u,x)=0) (t : ℝ) :
+    MemLp (fun x : ℝ => ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*f (u,x)) 2 radialMeasure := by
+  have hc : Continuous (fun x : ℝ => ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*f (u,x)) := by
+    apply intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
+    exact (by fun_prop : Continuous (fun p : ℝ × ℝ => ((t-p.2:ℝ):ℂ))).mul
+      (hf.comp (continuous_snd.prodMk continuous_fst))
+  have hk : HasCompactSupport (fun x : ℝ => ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*f (u,x)) := by
+    apply HasCompactSupport.intro (K := Icc (-|t|) |t|) isCompact_Icc
+    intro x hx
+    have hx' : |t| < |x| := lt_of_not_ge (fun h => hx (abs_le.mp h))
+    calc
+      _ = ∫ u in (0:ℝ)..t, (0:ℂ) := by
+        apply intervalIntegral.integral_congr
+        intro u hu
+        have ht := time_interval_abs_le hu
+        have hu' : max u 0 ≤ |t| := max_le ((le_abs_self u).trans ht) (abs_nonneg t)
+        change ((t-u:ℝ):ℂ)*f (u,x) = 0
+        rw [hz u x (hu'.trans_lt hx'),mul_zero]
+      _ = 0 := by simp
+  exact (hc.memLp_of_hasCompactSupport (μ := volume) (p := 2) hk).restrict (Iio (0:ℝ))
+
+
+private def nativePrincipalStaticCoefficient (q : XiZeroCopy) (s amplitude : ℂ)
+    (i : Fin 3) (u x : ℝ) : ℂ :=
+  principalAmplitude q i * radialResponse (-principalExponent q i) s amplitude u x /
+    (Real.cosh x:ℂ)^2
+
+private theorem nativePrincipalStaticCoefficient_continuous (q : XiZeroCopy) (s amplitude : ℂ)
+    (i : Fin 3) : Continuous (fun p : ℝ × ℝ => nativePrincipalStaticCoefficient q s amplitude i p.1 p.2) := by
+  exact ((radialResponse_continuous (-principalExponent q i) s amplitude).const_mul
+    (principalAmplitude q i)).div (by fun_prop)
+      (fun p => pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr (Real.cosh_pos p.2).ne'))
+
+private theorem nativePrincipalStaticCoefficient_zero (q : XiZeroCopy) (s amplitude : ℂ)
+    (i : Fin 3) (u x : ℝ) (h : max u 0 < |x|) :
+    nativePrincipalStaticCoefficient q s amplitude i u x = 0 := by
+  simp only [nativePrincipalStaticCoefficient,radialResponse_zero_outside _ s amplitude u x h,
+    mul_zero,zero_div]
+
+private theorem nativeResidualStaticForcing_separated (q : XiZeroCopy) (s amplitude : ℂ)
+    (u x : ℝ) (z : UpperHalfPlane) :
+    nativeResidualStaticForcing q s amplitude u x z.re (Real.log z.im) =
+      oddSource s amplitude u x * squareResidual q (coordinates z) +
+        ∑ i : Fin 3, nativePrincipalStaticCoefficient q s amplitude i u x *
+          cutoffCommutator (principalExponent q i) (coordinates z) := by
+  unfold nativeResidualStaticForcing principalNullResponse
+  rw [Real.exp_log z.im_pos,show (u+x+(u-x))/2 = u by ring,
+    show (u+x-(u-x))/2 = x by ring,Finset.sum_div]
+  congr 1
+  · exact mul_comm _ _
+  · apply Finset.sum_congr rfl
+    intro i hi
+    unfold nativePrincipalStaticCoefficient coordinates
+    ring
+
+/-- The time integral of the complete literal forcing, including all cutoff commutators. -/
+def nativeJointIntegratedForcing (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
+    (z : ℝ × UpperHalfPlane) : ℂ :=
+  ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*
+    nativeResidualStaticForcing q s amplitude u z.1 z.2.re (Real.log z.2.im)
+
+private theorem nativeJointIntegratedForcing_separated (q : XiZeroCopy) (s amplitude : ℂ)
+    (t : ℝ) (z : ℝ × UpperHalfPlane) :
+    nativeJointIntegratedForcing q s amplitude t z =
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*oddSource s amplitude u z.1)*
+        squareResidual q (coordinates z.2) +
+      ∑ i : Fin 3,
+        (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*nativePrincipalStaticCoefficient q s amplitude i u z.1)*
+          cutoffCommutator (principalExponent q i) (coordinates z.2) := by
+  have hw : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)) := by fun_prop
+  have hc := (actualOddSource_continuous s amplitude).comp
+    (continuous_id.prodMk (continuous_const (y := z.1)))
+  have hi (i : Fin 3) := (nativePrincipalStaticCoefficient_continuous q s amplitude i).comp
+    (continuous_id.prodMk (continuous_const (y := z.1)))
+  have hmain : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*oddSource s amplitude u z.1 *
+      squareResidual q (coordinates z.2)) := (hw.mul hc).mul_const _
+  have hterm (i : Fin 3) : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*
+      nativePrincipalStaticCoefficient q s amplitude i u z.1 *
+        cutoffCommutator (principalExponent q i) (coordinates z.2)) := (hw.mul (hi i)).mul_const _
+  have hsum : Continuous (fun u : ℝ => ∑ i : Fin 3, ((t-u:ℝ):ℂ)*
+      nativePrincipalStaticCoefficient q s amplitude i u z.1 *
+        cutoffCommutator (principalExponent q i) (coordinates z.2)) :=
+    continuous_finsetSum _ (fun i _ => hterm i)
+  unfold nativeJointIntegratedForcing
+  simp_rw [nativeResidualStaticForcing_separated,mul_add,Finset.mul_sum,← mul_assoc]
+  rw [intervalIntegral.integral_add (hmain.intervalIntegrable 0 t) (hsum.intervalIntegrable 0 t),
+    intervalIntegral.integral_finsetSum (fun i _ => (hterm i).intervalIntegrable 0 t)]
+  simp only [intervalIntegral.integral_mul_const]
+
+/-- The actual integrated forcing belongs to the original joint L² space. No
+spectral chamber, principal-channel deletion or energy-domain premise is used. -/
+theorem nativeJointIntegratedForcing_memLp (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) :
+    MemLp (nativeJointIntegratedForcing q s amplitude t) 2
+      (radialMeasure.prod D4BMModularCore.measure) := by
+  have hm := timePrimitive_radial_memLp (fun p => oddSource s amplitude p.1 p.2)
+    (actualOddSource_continuous s amplitude)
+    (fun u x h => actualOddSource_zero s amplitude ((le_max_left u 0).trans_lt h)) t
+  have hi (i : Fin 3) := timePrimitive_radial_memLp
+    (fun p => nativePrincipalStaticCoefficient q s amplitude i p.1 p.2)
+    (nativePrincipalStaticCoefficient_continuous q s amplitude i)
+    (nativePrincipalStaticCoefficient_zero q s amplitude i) t
+  have hmain := l2SeparatedRepresentative_memLp radialMeasure D4BMModularCore.measure _ _ hm
+    (squareResidual_memLp q)
+  have hsum := memLp_finsetSum (s := Finset.univ) (fun i _ =>
+    l2SeparatedRepresentative_memLp radialMeasure D4BMModularCore.measure _ _ (hi i)
+      (cutoffCommutator_memLp (principalExponent q i)))
+  apply (hmain.add hsum).ae_eq
+  exact Filter.Eventually.of_forall (fun z => (nativeJointIntegratedForcing_separated q s amplitude t z).symm)
+
+/-- The literal elliptic right-hand side for the native double time primitive. -/
+def nativeJointEllipticForcing (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
+    (z : ℝ × UpperHalfPlane) : ℂ :=
+  nativeJointIntegratedForcing q s amplitude t z - nativeJointResidualField q s amplitude t z
+
+/-- Both terms in the native elliptic equation are admitted in the original joint L² space. -/
+theorem nativeJointEllipticForcing_memLp (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) :
+    MemLp (nativeJointEllipticForcing q s amplitude t) 2
+      (radialMeasure.prod D4BMModularCore.measure) :=
+  (nativeJointIntegratedForcing_memLp q s amplitude t).sub
+    (nativeJointResidualField_memLp q s amplitude t)
 
 end
 end RHTower.D4BMNativeResponse

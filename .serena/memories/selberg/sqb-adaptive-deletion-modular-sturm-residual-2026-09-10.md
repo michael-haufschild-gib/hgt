@@ -1,0 +1,15 @@
+# SQB adaptive deletion and modular Sturm residual
+
+Continue mem:selberg/sqb-gauss-cutoff-source-minimizer-2026-09-10. RH and rank-seven source norm remain unproved. Frontier read only; analytical work only; no git, launch.sh, computations, or subagents.
+
+Authoritative route details: docs/drafts/pipeline/1-in-progress/sqb-native-spectral-source-comparison.md, subsection Adaptive deletion basis and modular Sturm coordinates. No formal repository module added in this pass.
+
+Hard target remains 2∫|(R_a F_a)'|² ≥ ∫(R_a'²−R_a R_a'')|F_a|² with R_a(t)=Q_a(2t), Q_a the actual degree-six monic signed-moment minimizer. Factor two is essential. At fixed a, P_j=R/(t−r_j) are orthogonal for signed weight ∂_a|F_a|²: offdiagonal products are R times degree-four polynomials; diagonal positive by lower-degree positivity. This does not diagonalize their ordinary |F_a|² Gram form. The weighted kinetic comparison is still missing. No new integral identities formalized.
+
+Actual source-positive modular field from PolynomialODEJetRankThreeSourcePositiveSl2: r=U+3B, b=B, k=Q+3/8−3B²/8=gap/16>0; r_x=2br+16k, b_x=b²+4k−1, k_x=4bk−2kr. K=r²+16k obeys K_x=4bK. d=√K, T=r/d, y=artanh T, h=√d give y_x=h² and h_yy=(1−T²)h/4−h^-3. For ψ=h f(x(y)), V=(1−T²)/4, exact identity [-D_y²+V−(1+z²)h^-4]ψ=h^-3[-D_x²−z²]f. Forcing remains. Energy scalar potential b²+4k−b_x=1; this is a Liouville rewrite, not a sign argument. Global clock, endpoints, domain not proved. Anonymous algebra checks in /tmp/sqb66_modular_coordinate_check.lean passed lake env lean, including corrected independent-Hy cross relation and forced transform. All owned processes collected, no build started.
+
+Deep searches (all retrieval views incl methods): root_energy, coercivity, compact_identity, pearson, variation, macdonald, curvature, rodrigues, source_commutator, unfolding, adaptive_mechanism, virial, modular_cone, ermakov. JSON /tmp/sqb66_*_search.json. Declarations, candidates, source arguments and groups inspected. Partial semantics/compiler coverage; multiple deadline/interrupted/Qdrant stages. No corpus absence claim. Pending evenCompactRawDet_eq_polynomial appeared as a candidate; it is not proved. Compact identity only covers inner interval, middle estimate remains. Do not drift into compact coefficient audit as if it closes global rank seven.
+
+Own arXiv terms nodal, screening, spectral flow, balayage, buckling. Read relevant analytical sections of https://arxiv.org/html/2608.18068v1 (Ouyang/Spector/Stockdale, Aug18 2026). Fractional obstacle decomposition f=μ+(-Δ)^{α/2}u, μ,u≥0, bounded μ, from variational inequality and disjoint-support cross sign. Splitting native signed current into positive/negative parts retains difference; missing theta-specific variational inequality. Nodal interpolation https://arxiv.org/html/2606.16643v1 assumes positive-definite kernel; no native join. No new numerical results used. User-requested 2607.08139 read in previous work; no new use.
+
+No new route-independent fact for universal STATUS. Goal stays active; no new source sign or RH progress claimed.

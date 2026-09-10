@@ -346,6 +346,19 @@ The double-angle identity matches the original positive horizontal offset and he
 
 `globalNativeResidual` is the resulting globally invariant extension. `globalNativeResidual_germ` retains the original residual on a neighborhood of every closed-cell point; `globalNativeResidual_eq_on_fd` gives exact values there. `nativeJointResidual_global_ae` identifies this global representative with the previously constructed strongly continuous vector in the original joint L2 measure. The [eight-theorem audit](../3-formalized/hb-native-modular-transport.md) is complete. Germ agreement preserves any existing derivatives; it does not by itself assert new differentiability or energy-domain membership.
 
+## Formal native time-primitive elliptic equation
+
+`nativeResidualTimePrimitive q s amplitude t x X k` is the literal integral `W(t)=integral_0^t (t-u)V(u+x,u-x;X,k) du`. The [four-theorem extension](../3-formalized/hb-native-time-primitive-elliptic-equation.md) proves, for all real coordinates,
+
+```
+(-partial_x^2-sech(x)^2 Delta_H) W(t)
+ = integral_0^t (t-u) nativeResidualStaticForcing(u) du-V(t+x,t-x),
+partial_t^2 W=V(t+x,t-x),
+W(t,0)=0.
+```
+
+`nativeResidualStaticForcing` retains the original `squareResidual * oddSource` and all three principal coefficients multiplying their original cutoff commutators. The source cone, including both characteristic edges, supplies the zero initial terms. A change of variables in the weighted first-null-derivative integral supplies the second spatial derivative without assuming pure second null derivatives of `V`. The original angular jets pass through the bounded time integral, giving the actual angular action on `W`. This closes the pointwise elliptic equation for the literal native primitive; energy-domain admission and the comparison with the constructed joint evolution remain open.
+
 ## Next conjecture: admit the time primitive through its elliptic equation
 
 For the continuous joint-L2 difference `u`, the bounded-resolvent argument only needs form admission of `W(t)=integral_0^t (t-s)u(s) ds`. The refined construction target is the weak elliptic identity `A W=-u`, where `A` is the actual radial/modular positive spatial operator, together with the original Dirichlet trace and the now-proved modular germ compatibility. It is not necessary to begin by proving an energy bound for every time derivative of `u`.
@@ -360,3 +373,49 @@ integral eta^2 |grad_A W|^2
 Here the gradient uses the original radial derivative and the two angular derivatives weighted by `sech(x)` in the original product measure. Boundary cancellation must use the actual zero Dirichlet value, not a supplied trace assumption. Modular cusp cutoffs and radial cutoffs would then bound the approximating energy graphs. A weak limit in the closed Hilbert graph would give the required member of `jointDomain`. This estimate, the admissible testing step and the limit argument are construction targets, not installed results.
 
 The corpus already contains `RadialEnergyFamily.graph_mem`: every smooth compact radial family valued in the original angular energy domain belongs to the original joint domain, proved by finite Hilbert-basis approximation. Its premises require an actual smooth angular-energy-valued field with compact support strictly inside `x<0`; it cannot yet be applied directly to the native time primitive at the Dirichlet boundary. The remaining proof must construct those approximants or an equally valid graph-admission argument and derive `B u+(I-B)W=0` for the actual fields.
+
+## Native elliptic energy construction
+
+The direct construction uses the actual primitive before subtracting the physical response. Fix `q,s,a,t`, write `W` for `nativeResidualTimePrimitive` and put
+
+```
+G(x,z) = integral_0^t (t-u) nativeResidualStaticForcing(q,s,a,u,x,z) du
+         - fullNullResidual(q,s,a,t+x,t-x,z).
+```
+
+The exact equation is `A W=G`, for `A=-partial_x^2-sech(x)^2 Delta_H`. All norms and integrals below use `dx dmu_fd`, on `x<0` and the original modular cell. The three principal cutoff commutators remain in `G`.
+
+The analytical argument to formalize is the following. It separates the local Green identity, which needs no global energy assumption, from the global limit.
+
+1. **Finite radial support and literal trace.** The source-cone identity makes `W(t,x,z)=0` whenever `max(t,0)<=abs(x)`. For negative time the whole time integral vanishes. For nonnegative time, each integration point has one nonpositive null coordinate outside this radial interval. The exact Dirichlet theorem gives `W(t,0,z)=0`. Thus radial integration over `[-max(t,0)-1,0]` has zero endpoint product `conj(W) W_x` at both ends. This step and the resulting exact radial Green and positive energy identities are [formalized and audited](../3-formalized/hb-native-primitive-radial-energy.md), including actual derivative existence and interval integrability.
+2. **Actual L2 right-hand side.** The existing common bounded-time native residual majorant gives `W` in L2. The first forcing term is a continuous radial coefficient with finite causal support times the admitted angular `squareResidual`. Each remaining term is a continuous principal response coefficient on that same finite radial interval times `cutoffCommutator`, supported in `2<=Im(z)<=3`. These give a common L2 majorant on every bounded time interval, hence `G` in L2. No Laplace convergence chamber is needed for this finite-time step.
+3. **Local Green step.** Let `eta_N=modularCuspCutoff N`, with `N>=1`. Its local profile is one below height `2N`, zero above `3N`, and its hyperbolic gradient is uniformly bounded by a constant `C_eta`. Joint angular smoothness of the actual primitive, its uniform modular germs, its smooth global extension, and compact angular integration by parts are [formalized and audited](../3-formalized/hb-native-angular-green.md). For `N=n+1`, the new theorem proves integrability of both pairings and `integral frameEnergy(W,eta_N^2 W)=-integral conj(Delta_H W) eta_N^2 W`. Its proof applies the existing core Green identity to `eta_(3N) W` and `eta_N^2 W`, then removes the outer cutoff through equality of actual germs. It assumes no global gradient energy or native joint-domain admission. All seams and elliptic corners remain included. Combining this angular identity with the proved radial identity and the actual elliptic equation must still establish the joint identity
+
+   ```
+   E_N = Re integral eta_N^2 conj(W) G
+         - 2 Re integral sech(x)^2 eta_N conj(W)
+                        <grad_H eta_N, grad_H W>,
+   E_N = integral eta_N^2 (abs(W_x)^2+sech(x)^2 abs(grad_H W)^2).
+   ```
+
+   This is a classical compact-domain identity; it does not first assert that `eta_N W` lies in the completed joint domain. Radial endpoint terms vanish by step 1. Angular side terms must be canceled using the actual invariant germs.
+4. **First estimate, then exact limit.** Young's inequality gives
+
+   ```
+   E_N <= 2 norm(W)_2 norm(G)_2
+          + 4 C_eta^2 norm(1_{2N<=Im(z)<=3N} W)_2^2.
+   ```
+
+   Fatou first proves finite total gradient energy. With that new fact available, dominated convergence applies to `E_N`; the mixed cutoff term tends to zero by Cauchy-Schwarz and the escaping cusp annulus. Consequently the stronger identity is
+
+   ```
+   integral (abs(W_x)^2+sech(x)^2 abs(grad_H W)^2)
+      = Re inner_L2(W,G) <= norm(W)_2 norm(G)_2.
+   ```
+
+5. **Approximate in the first-derivative graph.** The cutoff fields converge with their actual gradients: the additional derivative term is `W grad_H eta_N`, whose L2 norm tends to zero. For each fixed cusp cutoff, zero extension across `x=0` has weak radial derivative equal to the zero extension of `W_x`, since the literal trace is zero. Translate this extension toward negative `x`, then mollify at a smaller radius. This produces radial support strictly inside `x<0` and convergence of both value and radial derivative. Compact angular charts, a finite smooth partition and averaging over finite stabilizers give smooth invariant approximants; local weights are bounded on these compact sets. Finite separated approximation, as in `RadialEnergyFamily.graph_mem`, then puts the original value-and-gradient graph in `jointDomain`. The target is the form graph, not density in the second-order operator graph.
+6. **Identify the actual operator.** The compact-test Green identity extends by the just-established first-gradient norm convergence. If `J` is the original joint embedding, its Riesz identity is `W_graph=J.adjoint(W+G)`. Hence `W=J(J.adjoint(W+G))` and the actual Friedrichs operator `I+A` acts on `W` as `W+G`. This is the domain statement needed by the bounded-resolvent comparison.
+
+Status: the radial and compact angular Green identities are closed in Lean. The actual L2 forcing assembly, their joint integral combination, the cutoff estimate and global energy identity, native graph admission, and operator identification remain construction targets. The first estimate and limit are distinct: using dominated convergence on the gradient before Fatou would assume the missing result. The backward-adjoint alternative currently offers no shortcut because a form core alone does not establish an operator core.
+
+Own broad literature queries `capacity` and `compactness` were tested. The arXiv `capacity` endpoint returned HTTP 429. [Fernandez, 2609.10064, 9 September 2026](https://arxiv.org/html/2609.10064v1) keeps state and derivative together in an evolution graph when terminal atoms matter; its compact embedding hypotheses do not supply this native graph admission. [Cheng--Lin--Wang, 2609.10098, 9 September 2026](https://arxiv.org/html/2609.10098v1), Appendix D, realizes natural boundary conditions through closed forms in a rotating-star problem. The transferable question is which boundary condition the approximating form actually retains; its stellar estimates do not prove the HB cutoff estimate. Corpus deep/method searches returned relevant existing Sobolev and graph constructions, but their proposed ingredient groups did not establish the native estimate; source-only compiler metadata was not treated as verification.

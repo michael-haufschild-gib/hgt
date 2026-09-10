@@ -188,6 +188,112 @@ Searches inspected candidate-lemma, source-argument, declaration, prose and sour
 
 An analytical operator construction suggested by [the n-potent commutator paper](https://arxiv.org/html/2607.08139v1) uses the actual arithmetic phase. On `L2(R)`, set `Rf(t)=f(-t)`, `Jf(t)=beta(t)*f(-t)`, and `Q=(I+J)/2`. The proved `norm_boundaryPhase` and `boundaryPhase_neg` identities make `J` a unitary involution and `Q` an orthogonal projection. Since Xi is even and real on the real axis, `Q Xi=(1+beta)*Xi/2`, so the complete native density is exactly `Xi^2*w=2*|Q Xi|^2`. These operator statements are analytical deductions, not new Lean theorems. The paper's factorizations can therefore be tested on actual idempotents; applying them to the differential operator or source score would require separate potency identities. The remaining constructive target is a quantitative bound on the native residual. The retrieved `projection_commutator_decomposition` retains both polarized leakage terms, while `norm_sub_intersectionProjection_sq_le` requires a strict angle bound; neither input estimate has been established here.
 
+The differential generator of this actual reflection has a concrete local expression. Write `K0=i*d/dt` and `E(t)=(-1+it)*xi(1+it)`, so `beta=-conj(E)/E`. On smooth compactly supported functions the product rule gives
+
+```text
+h(t) = i*beta'(t)/beta(t)
+     = 2*(Re(xi'(1+it)/xi(1+it))-1/(1+t^2)),
+K0+J*K0*J = multiplication_by_h,
+Q*K0*Q = (multiplication_by_h)*Q/2.
+```
+
+These are analytical identities, with no new Lean operator-domain construction. Testing whether native mean subtraction removes the rational contribution retains a weighted Cauchy integral with the additional factor `1/(1+t^2)`. The proved mean subtraction instead has its fixed rank-one dependence on `1/(1+alpha_q^2)`. An equality between these pairings has not been established. The positive target is an estimate for the complete compressed generator coupled to the actual source, keeping this rational contribution.
+
+An alternative construction target is convexity of the tilt energies. With the preceding `g_a`, real parity polynomial `P`, and `u=P(D)g_a`, integration by parts gives the analytical second variation
+
+```text
+E_P(a) = integral_R u^2,
+E_P''(a) = 4*norm(x*u)^2 - 2*norm(P'(D)*g_a)^2
+           - 2*inner(P''(D)*g_a, u).
+```
+
+Indeed, the cross term is `inner(x*u,P'(D)*g_a) = -(norm(P'(D)*g_a)^2+inner(P''(D)*g_a,u))/2`. Here `P'` and `P''` are polynomial derivatives. Thus the source inequality
+
+```text
+2*norm(x*u)^2 >= norm(P'(D)*g_a)^2 + inner(P''(D)*g_a,u)
+```
+
+at every degree and `0<a<1/2` would imply `E_P'(a)>=0`, since parity gives `E_P'(0)=0`. This inequality and its formal signed-block join remain unproved. The retrieved one-dimensional Brascamp–Lieb bound controls variance by a derivative energy; it does not supply this signed second variation.
+
+Broad arXiv searches using independently chosen terms `passivity`, `screening`, `fragmentation`, and `synchronization` led to two mechanisms tested against these targets. [Fragmentation and Cluster Prediction](https://arxiv.org/html/2609.07992v1), submitted September 7, 2026, proves cone preservation for ordered velocity differences by a Metzler evolution and gives a positive group-inverse kernel for a fixed path. Its extension from mixed signs requires a positive slow-mode coefficient and enough time before a topology change. For theta, the required cone-preserving evolution and terminal control have not been constructed. [Quantum Synchronization](https://arxiv.org/html/2607.19328v1), submitted July 21, 2026, describes persistent modes through a stationary state and compatibility with both the Hamiltonian and dissipative operators; the actual scattering projection alone does not establish those compatibility conditions. These are possible proof mechanisms, not imported source estimates.
+
+Deep searches with all retrieval views, a broad single-word Laguerre search, and a separate cone-method query outside `RHTower` recovered `finiteTriangularCone_nonnegative`, the finite Hankel boundary extension law, and `OneDimBrascampLieb.variance_le_integral_deriv_sq_div_curvature`. The first requires a nonnegative terminal member of the hierarchy, and the boundary extension law retains its first unseen moment. Their hypotheses have not been discharged for the signed theta source. Candidate and source-argument sections were inspected; these requests returned no proof-idea or ingredient groups and reported incomplete semantic/compiler coverage or interrupted stages. No new Lean theorem or all-degree source bound is claimed from this analytical work.
+
+### First unproved-rank polynomial target
+
+Let `m_a = thetaCuspCenterMixedSignedJet a` and `Q_a = thetaCuspCenterMixedCutoffPolynomial a = HTGeometry.monicOrtho m_a 6`, with `0<a<1/2`. `FiniteGaussCutoff.lean` proves that a positive `N × N` moment section already makes its degree-`N` monic orthogonal polynomial split over the reals with simple roots, at the endpoint where its own signed norm has not been proved positive. The proof uses only lower-degree positivity: a nonreal conjugate quadratic factor would express an orthogonality zero as the sum of strictly positive squared norms; a repeated real factor gives the corresponding single-square contradiction.
+
+For every other monic degree-six polynomial `p`, `ThetaCuspCenterMixedCutoffPolynomial.lean` specializes the exact identity
+
+```text
+momentInner m_a p p = momentInner m_a Q_a Q_a
+                       + momentInner m_a (p-Q_a) (p-Q_a),
+momentInner m_a Q_a Q_a < momentInner m_a p p  when p != Q_a.
+```
+
+The source polynomial has exactly six distinct real roots, and its signed norm is exactly `thetaCuspCenterMixedSuccessorSchur a 6`, hence exactly `integral_(r>0) r*sinh(a*r)*thetaCuspNativeSuccessorSource a 6 (r/2)`. The proof identifies Gram–Schmidt's cutoff polynomial with the corpus's canonical inverse-Hankel solve and retains the complete native integral. Nonnegativity of this norm is equivalent to positive semidefiniteness at rank seven; that sign is still unproved. Scratch and finished-source Lean checks pass. The separate `/tmp/sqb65_cutoff_audit.lean`, rerun against the final isolated artifacts, audits all sixteen public results; each uses only `propext`, `Classical.choice`, and `Quot.sound`. Both modules are wired into their umbrellas, and formal lint including generated-index freshness passes. The final isolated Lake builds of both leaves pass in `/tmp/sqb65-leaf-audit`, using the actual source paths and symlinked existing compiled dependency artifacts. A repository Lake preflight first required fifteen sequential dependency/leaf repairs, all completed, then exposed nineteen further dependency records. Those remaining repository records were not rebuilt. The isolated audit checks the new leaves against the compiled corpus and is not a claim that the repository dependency closure is freshly rebuilt.
+
+For the separate all-degree tilt-energy candidate, write `P(i*t)=eta*Q(t)` with `Q` real and `|eta|=1`, and let `F_a` be the Fourier transform of `g_a=exp(a*x)*Phi(x)` in the convention with kernel `exp(-i*t*x)`. Plancherel translates the proposed second-variation bound into
+
+```text
+2 * integral |(Q*F_a)'|^2 >= integral (Q'^2-Q*Q'') * |F_a|^2.
+```
+
+If `Q` has distinct real roots `r_j`, its right side is `sum_j integral |(Q/(X-r_j))*F_a|^2`. The estimate remains unproved for the actual theta transform. The generic angular Laguerre energy identity has a different domain and weight.
+
+The actual density definition fixes the frequency scaling in the adaptive test. Analytically set `A_a(y)=integral_x g_a(x+y)*g_a(x-y)`. Evenness of `Phi`, followed by `r=2*x`, gives `thetaCuspCenterMixedDensity a y = partial_a A_a(y)`. Thus for a fixed real polynomial `Q`, its signed moment norm is the aperture derivative of `(1/(2*pi))*integral_t Q(2*t)^2*|F_a(t)|^2`. The physical differential polynomial has symbol `P(i*t)=Q(2*t)`; the factor two must be retained. Since the odd source moments vanish, reflection preserves the monic degree-six norm problem. Its strict minimizer is therefore even. Analytically its six simple real roots form three nonzero pairs `+/-r_j`; up to an overall sign, the corresponding physical operator is `product_j (4*D^2+r_j^2)`. This evenness and factorization have not been added as Lean declarations.
+
+For the moving minimizer `Q_a`, differentiating its signed norm cancels the coefficient-motion term: `Q_a` is orthogonal to `partial_a Q_a`, whose degree is below six because the leading coefficient is constantly one. Consequently the derivative of the successor scalar is the second aperture derivative of the preceding energy with `Q_a` held fixed during that derivative. This selects the adaptive frequency polynomial `R_a(t)=Q_a(2*t)`, whose six roots are real and simple, as a sharper target for `2*integral |(R_a*F_a)'|^2 >= integral (R_a'^2-R_a*R_a'')*|F_a|^2`. These differentiated Plancherel identities are analytical deductions, not additional Lean declarations. The adaptive bound and the zero-aperture limit needed to integrate its sign remain to be proved; no native successor positivity is asserted.
+
+The broad corpus queries used real roots, Darboux transformations, compensation, Hardy, orthogonal polynomials, Schur complements, and oscillation, with deep retrieval across all method views. The useful join was `HTGeometry.eq_monicMomentAdmissionPolynomial_of_monic_of_orthogonal` from `MonicMomentAdmission.lean`, whose lower-moment uniqueness identifies the canonical Hankel solve with the cutoff orthogonal polynomial. Other generated groups retain a missing source-preserving evolution or weighted estimate. Coverage remains partial; the oscillation request completed without errors and reported complete source inventory but incomplete semantic/compiler coverage.
+
+Independently chosen arXiv terms included `polarization`, `coarsening`, and `renewal`. [Discrete time-multidimensional renewal theory and applications](https://arxiv.org/html/2606.31455v1) gives a coefficientwise finite convolution inverse when the nonconstant kernel has zero constant coefficient. A positive inverse additionally needs a nonnegative increment kernel. Constructing such a kernel from the signed theta source remains a conjecture; no numerical results or theorem from the paper is used in the Lean proof.
+
+### Adaptive deletion basis and modular Sturm coordinates
+
+At a fixed aperture, put `R(t)=Q_a(2*t)` and `P_j(t)=R(t)/(t-r_j)` for its six simple real roots. Orthogonality of the monic minimizer gives the analytical identities `integral P_i*P_j*partial_a(|F_a|^2)=0` for `i != j`, since `P_i*P_j` is `R` times a degree-four polynomial. Each diagonal integral is strictly positive by positivity below degree six. This diagonalizes the deletion basis for the signed aperture-derivative weight. The kinetic inequality above instead contains the ordinary weight `|F_a|^2`; controlling its deletion Gram form by `2*integral |(R*F_a)'|^2` is still the target. These integral identities have not been formalized.
+
+The actual modular source field supplies a second analytical construction with an explicit retained residual. In the real coordinates of `modularThetaSourcePositiveVectorField_coordinates`, set `r=U+3*B`, `b=B`, and `k=Q+3/8-3*B^2/8`. Its equations are
+
+```text
+r_x = 2*b*r+16*k,   b_x = b^2+4*k-1,   k_x = 4*b*k-2*k*r.
+K = r^2+16*k > 0,   K_x = 4*b*K.
+d = sqrt(K),       T = r/d,           T_x = d*(1-T^2).
+```
+
+The actual theta curve has `k>0`, so `|T|<1`. Locally take `y=artanh(T)` and `h=sqrt(d)`. Then `y_x=d=h^2` and `h_yy=(1-T^2)*h/4-h^(-3)`. Thus, with `V=(1-T^2)/4=sech(y)^2/4`, the change `psi(y)=h(y)*f(x(y))` has the exact forcing identity
+
+```text
+[-D_y^2+V-(1+z^2)*h^(-4)] psi = h^(-3)*[-D_x^2-z^2] f.
+```
+
+The Casimir derivative, normalized-ratio derivative algebra, amplitude equation algebra, and forced Sturm substitution pass `lake env lean /tmp/sqb66_modular_coordinate_check.lean`. This scratch check verifies algebraic identities under their displayed differential relations; it does not construct the clock, prove its endpoint behavior, or admit an operator domain. In particular, the forcing pairing still needs a sign. The energy potential cancels to `b^2+4*k-b_x=1`, so this substitution alone is a coordinate expression of the original forced equation. No source-positivity theorem or new finished Lean module is claimed.
+
+Broad and mechanism-oriented deep searches used all retrieval views, including methods, with queries through coercivity, Pearson identities, variation, Rodrigues formulas, unfolding, virial estimates, and the modular differential field. Candidate lemmas, source arguments, and generated ingredient groups were inspected. Returned compact-incidence determinant identities are pending research candidates, not checked declarations; even their completion would leave the separate middle-interval estimate open. Requests reported partial semantic/compiler coverage, and several had interrupted retrieval stages. No absence claim follows.
+
+Independently chosen arXiv terms included `nodal`, `screening`, `spectral flow`, `balayage`, and `buckling`. [A dimension-free weak-type (1,1) bound for the vector Riesz transform on R^n](https://arxiv.org/html/2608.18068v1) constructs an obstacle decomposition of a nonnegative density into a bounded nonnegative part and a fractional Laplacian of a nonnegative potential. Its useful mechanism is positivity from the variational inequality and the sign of the disjoint-support Dirichlet cross term. Applying that decomposition separately to the positive and negative parts of the native current retains their difference; a theta-specific variational inequality orienting that difference has not been obtained. No theorem or numerical result from the paper enters Lean.
+
+### Actual source-weighted differential factorization
+
+For an actual Xi copy, write `z=b+i*c`, `u=SelbergThetaSourcePhase.mode q`, `Phi=thetaCuspFullSource`, and `s=(log Phi)'`. The existing source-ratio equation in `SelbergThetaSourceVariance` gives the following analytical, pointwise construction:
+
+```text
+R = u/Phi,                 R' = (-i*z-s)*R-i,
+v = exp(i*z*x/2)*u/sqrt(Phi),
+Omega_z = sqrt(Phi)*exp(i*z*x/2),
+A_z = D+s/2+i*z/2,         B_z = -D+s/2+i*z/2,
+A_z v = -i*Omega_z,        B_z Omega_z = 0,
+B_z A_z v = 0.
+```
+
+Thus `-v''+(s^2/4-s'/2)*v+(i*z*s/2)*v=(z^2/4)*v`. The finite-interval Green identity retains the endpoint term `[conj(v)*v']`. If that term vanishes at both ends and the derivative energy is admitted, its imaginary part gives `integral s*|v|^2=c*integral |v|^2`, while its real part gives `integral (|v'|^2+(s^2/4-s'/2)*|v|^2)=|z|^2*integral |v|^2/4`. The first equality is the existing gauge source balance. These calculations supply no new bound on `c`; no additional derivative-energy admission or operator-domain theorem is claimed.
+
+The forcing is essential when testing the adjoint. The formal adjoint `A_z^*` kills `Omega_(-conj(z))`. Pairing the inhomogeneous equation with this vector yields exactly `integral Phi(x)*exp(i*z*x) dx=0` when the endpoint vanishes: its integrand is `conj(Omega_(-conj(z)))*Omega_z`. This is the original Xi zero condition. The factorization and this compatibility equation therefore leave the signed tilt-energy inequality above unproved, including the rank-seven native successor integral. They are analytical identities, not a new source estimate or finished Lean module.
+
+Broad searches through covariance, transport, Bessel, weighted operators and intertwining inspected declarations, candidate lemmas, source arguments, and generated groups. The proposed groups retain unmatched density/reflection or intertwining obligations. The single-word intertwining request completed its retrieval stages and returned a full source inventory, but semantic coverage remained incomplete and most compiler metadata remained pending. None of these results establishes corpus absence.
+
+Independently chosen arXiv terms included `hypocoercivity`, `majorization`, `repulsion`, and `entanglement`. [Conditional hypocoercivity](https://arxiv.org/html/2607.26616v1), submitted July 29, 2026, suggests an inverse-Poisson corrector whose derivative supplies missing macroscopic dissipation; a native SQB evolution with the required dissipation and bounds has not been constructed. [From Majorization to Horn and Unitary-Orbit Inequalities](https://arxiv.org/html/2609.05854v1), submitted September 5, 2026, requires inequalities for every compressed scalarizer in its lifting theorem. A determinant or trace comparison of the theta Gram matrices does not supply those hypotheses. No source estimate is imported from either paper.
+
 ## Further source constructions under examination
 
 The lattice-Poisson candidate changes the primitive theta height weight to one quarter: the resulting multiple weight is formally `n^(2k-1/2)`, which disappears at `k=1/4`. A radial Gaussian derivative can then exploit unimodular rank-two Poisson reflection. This is a construction candidate, not an admitted native packet. For the proposed seed `g(r)=(2*pi*r^2-1)*exp(-pi*r^2)` and log profile `h(x)=exp(-x)*sum_{n>=1} g(n*exp(-x))`, the safe-half-plane Mellin calculation gives
