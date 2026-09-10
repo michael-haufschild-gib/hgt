@@ -351,28 +351,106 @@ The formalized global comparison is `J>=0`, hence `R` nondecreasing and
 
 The analytical argument uses the complete actual orbit. If `J` has a negative component `(a,b)`, then `a>=0` and `J(a)=0`, since `J(0)=0`. Its right derivative at `a` is nonpositive, so `D(a)<=0`. Throughout that component `D'<0` and therefore `D<0`; the displayed equation then gives `J'<0`. Continuity excludes a finite right endpoint, so `b=infinity`. Fixing `c>a`, one obtains `J(x)<=J(c)<0` and `k'(x)<=2*J(c)` for every `x>=c`, contradicting the global floor `k>2/3` after integration. The complete argument is formalized in [ThetaCuspModularRatioMonotonicity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularRatioMonotonicity.lean), namespace `RHTower.ThetaCuspModularRatio`. Its public conclusions include `J_nonneg`, `ratio_mono`, `gap_lower`, and `shear_upper`.
 
-There is a stronger analytical bound `J<1`. The preceding comparison gives `k>=k(0)>5/4`; the last strict inequality uses the proved actual seam bound `A(0)>191/10`. The derivative equation rewrites exactly as
+The stronger global bound `J<1` is also formalized in [ThetaCuspModularRatioUpperBarrier.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularRatioUpperBarrier.lean). The preceding comparison gives `k>=k(0)>5/4`; the last strict inequality uses the proved actual seam bound `A(0)>191/10`. The derivative equation rewrites exactly as
 
 ```text
 J' = (3-u)*((u+3)*k^2-2*k-4/3)
        +2*u*(k+2/3)*(J-1).
 ```
 
-The first term is strictly positive: `3-u>0`, and the bracket is at least `41/48` for `u>=0`, `k>=5/4`. If `J(b)>=1`, then `b>0`, the derivative at the level `1` prevents return below it, and `u(x)>=u(b)>0` on the resulting ray. Also `J<=u*k<=3*k`, since `w>=0`. Consequently `J'>(2*u(b)/3)*(J-1)^2` there. Setting `c=2*u(b)/3` and `f=c*(1-J)` gives a nonpositive function on a complete ray with `f'<-f^2`, contradicting the already formalized complete-ray Riccati escape theorem. Thus the proposed actual shear interval is `u*k-1<w<=u*k`, and integration of `k'<=2*(k+1/3)` gives `k(x)+1/3<=(A(0)/12)*exp(2*x)`. These upper comparisons have paper proofs here, but are not yet new Lean theorems.
+The first term is strictly positive: `3-u>0`, and the bracket is at least `41/48` for `u>=0`, `k>=5/4`. If `J(b)>=1`, then `b>0`, the derivative at the level `1` prevents return below it, and `u(x)>=u(b)>0` on the resulting ray. Also `J<=u*k<=3*k`, since `w>=0`. Consequently `J'>(2*u(b)/3)*(J-1)^2` there. Setting `c=2*u(b)/3` and `f=c*(1-J)` gives a nonpositive function on a complete ray with `f'<-f^2`, contradicting the complete-ray Riccati escape theorem. The resulting actual shear interval `u*k-1<w<=u*k` is now proved in Lean, through `J_lt_one` and `shear_lower`. Integration of `k'<=2*(k+1/3)` also gives the paper consequence `k(x)+1/3<=(A(0)/12)*exp(2*x)`; that exponential comparison is not a new Lean theorem.
 
 The actual-source derivative equations and the global comparison pass foreground scratch Lean checks. The final four capstone audits in `/tmp/sqb71_modular_ratio_final_check.lean` use only `propext`, `Classical.choice`, and `Quot.sound`. Installed source bytes match the checked staging source, the module has exactly one RHTower umbrella import, and formal lint passes. The final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularRatioMonotonicity` passes in `/tmp/sqb71-ratio-leaf-audit`, using the actual repository source and existing compiled dependencies. This is a leaf audit against the compiled corpus, not a fresh full dependency rebuild.
 
-The intended use is to constrain the same shear variable appearing in all seven complete-source compact moments. No determinant lower bound has yet been deduced from these tighter orbit constraints. The rank-seven integral and all-order propagation remain open. Neither a generic Toda identity nor real-rootedness of an unrelated polynomial family supplies that missing estimate.
+The upper barrier passes `lake env lean /tmp/sqb72_modular_ratio_upper.lean`, including capstone axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`. Its installed module is wired once into the RHTower umbrella. The final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularRatioUpperBarrier` passes in `/tmp/sqb72-ratio-upper-leaf-audit` against the actual source and compiled dependency corpus; formal lint passes. No numerical certificate enters either proof.
 
-A concrete next sign target retains the full source and removes the explicit center from a lower compensation model. The proved bound `w>=4*x+2*u/3`, together with `J>=0`, gives `4*x<=u*(k-2/3)`. Put `v=k-1/6`, `H=Bottcher.completedThetaProfile`, and define polynomials `P_0=v`, `P_(n+1)=V(P_n)+u*(1/6-2*k)*P_n`, where `V` is the polynomial vector field specified by the displayed equations for `u'`, `k'`, and `J'`, with `t=9-u^2`. Analytically, `Phi^(n)=(H*t/12)*P_n` and `P_1=u*(1/6-2*k)*v+2*(k+1/3)*J`. The existing inequality `w>=u` gives `J<=u*(k-1)` and hence `P_1<=-u*(5*k/6+25/36)`. Thus, using the literal source correction `G=3*Phi^2+2*x*Phi*Phi'`,
+A sharper actual-orbit barrier is formalized in [ThetaCuspModularRatioSlopeBarrier.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularRatioSlopeBarrier.lean): `J<=u/3`. Put `F=J-u/3`. Its exact derivative is
 
 ```text
-G >= (H*t/12)^2 * Gstar,
-Gstar = 3*v^2 + (u*(k-2/3)/2)*v*P_1.
+F' = t*(k-4/3)*(k+1/3)+2*u*(k+2/3)*F.
+```
+
+If `F(b)>0`, the last zero before `b` has nonnegative right derivative, forcing `k>=4/3` there and on the complete later ray. Derivative fencing keeps `F>=F(b)>0`, so `F'` has a fixed positive lower bound. Linear growth then contradicts `J<1` and `u>=0`. This proves the barrier without an asymptotic assumption. It also proves that `k^2*t` is nonincreasing: substituting `J<=u/3` in its derivative gives an upper bound `-2*u*k*t*(k^2-2*k/3-2/9)<=0`. The actual seam bound `k(0)<19/15` yields the global strict bound `k^2*(9-u^2)<361/25`.
+
+The foreground scratch check `/tmp/sqb73_modular_slope_barrier.lean` passes; `J_le_third_drift` and `kineticGap_lt` depend only on `propext`, `Classical.choice`, and `Quot.sound`. No numerical certificate or additional source premise is used. The installed module is wired once into the RHTower umbrella. Its final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularRatioSlopeBarrier` passes in `/tmp/sqb73-slope-barrier-leaf-audit` against the actual repository source and existing compiled dependencies.
+
+These bounds constrain the same variables in all seven complete-source compact moments. The determinant lower comparison below is proved, but its sign, the rank-seven integral, and all-order propagation remain open. Neither a generic Toda identity nor real-rootedness of an unrelated polynomial family supplies that missing estimate.
+
+A concrete next sign target retains the full source and removes the explicit center from a lower compensation model. The proved bound `w>=4*x+2*u/3`, with the exact identity `w=u*k-J`, gives `4*x<=u*(k-2/3)-J`. Put `v=k-1/6`, `H=Bottcher.completedThetaProfile`, and define polynomials `P_0=v`, `P_(n+1)=V(P_n)+u*(1/6-2*k)*P_n`, where `V` is the polynomial vector field specified by the displayed equations for `u'`, `k'`, and `J'`, with `t=9-u^2`. Analytically, `Phi^(n)=(H*t/12)*P_n` and `P_1=u*(1/6-2*k)*v+2*(k+1/3)*J`. The existing inequality `w>=u` gives `J<=u*(k-1)` and hence `P_1<=-u*(5*k/6+25/36)`. Thus, using the literal source correction `G=3*Phi^2+2*x*Phi*Phi'`,
+
+```text
+G >= (H*t/12)^2 * Gsharp,
+Gsharp = 3*v^2 + ((u*(k-2/3)-J)/2)*v*P_1.
 B_n = (-1)^n * sum_(j=0)^(2*n) (-1)^j * choose(2*n,j)*P_j*P_(2*n-j).
 ```
 
-For `L=10^12`, the new positive candidate is the determinant of the matrix with entries `B_(i+j)` (`i,j=0,...,3`) and last-entry addition `L*Gstar`, evaluated on the actual orbit. Its head is the already positive actual native head after positive normalization. A positive determinant would imply full compensated source positivity through the preceding lower comparison and then the existing aperture-dependent integration receiver. This determinant sign is unproved. The displayed derivative recurrence and compensation comparison have paper derivations here, without a new all-order Lean incidence theorem. The additional actual constraints include `k>151/120` and `(k-2/3)*(9-u^2)<27/5`; positivity on a larger box of unrelated triples is not being assumed.
+Keeping `J` improves the comparison by `-(J/2)*v*P_1>=0` relative to dropping it from the center bound. The upper barrier supplies a further exact positive reserve. For fixed `u,k`, write `g(j)` for the displayed `Gsharp` with `J=j`. Its quadratic term is `-v*(k+1/3)*j^2`, so
+
+```text
+g(J) = (1-J)*g(0) + J*g(1) + v*(k+1/3)*J*(1-J).
+```
+
+The last summand is nonnegative on the proved actual interval `0<=J<1`. This decomposition and the full-source lower comparison are formalized in [ThetaCuspModularCompensationDeterminant.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularCompensationDeterminant.lean), namespace `RHTower.ThetaCuspModularRatio`. They do not yet give a positive decomposition of the full determinant.
+
+For `L=10^12`, the positive candidate is the determinant of the matrix with entries `B_(i+j)` (`i,j=0,...,3`) and last-entry addition `L*Gsharp`, evaluated on the actual orbit. Its head is the already positive actual native head after positive normalization. A positive determinant would imply full compensated source positivity through the preceding lower comparison and then the existing aperture-dependent integration receiver. **This determinant sign is unproved.** The additional actual constraints include `0<=J<=u/3<1`, `J<=u*(k-1)`, `k>151/120`, `k^2*(9-u^2)<361/25`, and `(k-2/3)*(9-u^2)<27/5`; positivity on a larger box of unrelated triples is not being assumed.
+
+The seven required moment identities already have an exact Lean incidence theorem: `thetaCuspNativeEvenJet_eq_compactScalar` in [ThetaCuspEvenCompactSourceCoordinates.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspEvenCompactSourceCoordinates.lean). Thus the sign attack need not first build the displayed recurrence for every order. For `n=0,...,6`, set
+
+```text
+C_n(u,k,J) = HTGeometry.evenCompactSignedMoment n
+               u ((4/3)*(9-u^2)*(k+1/3)) (u*k-J).
+```
+
+On the actual orbit, that theorem gives `(-1)^n*nativeJet(2*n)=H^2*C_n`, and the paper normalization is `C_n=(t/12)^2*B_n`. The equivalent finite target is the determinant with entries `C_(i+j)` and last-entry addition `L*(t/12)^2*Gsharp`. The actual substitution is now formalized as `evenMoment_eq_native` in `ThetaCuspModularCompensationDeterminant`.
+
+In that module, `compensationChord=(1-J)*g(0)+J*g(1)`, `compensationReserve=v*(k+1/3)*J*(1-J)`, and `evenLowerDet` is the determinant with entries `C_(i+j)` and last-entry addition `L*(t/12)^2*compensationChord`. The closed theorem `compensated_det_lower` gives
+
+```text
+H^8*evenLowerDet(x)
+  + L*(H*t/12)^2*compensationReserve(x)*det(nativeEvenHead(x))
+    <= det(nativeEvenFourCompensated(L,x)),       L=10^12.
+```
+
+`determinant_reserve_nonneg` proves the second summand nonnegative on the complete actual half-orbit. The exact head cofactor is retained; no source moment is replaced by a Gaussian moment. **The sign of the full left-hand side is still unproved.** The target should retain both summands; positivity of `evenLowerDet` alone would be a stronger sufficient condition.
+
+The five capstone axiom audits in `/tmp/sqb73_modular_compensation.lean` use only `propext`, `Classical.choice`, and `Quot.sound`, and its foreground `lake env lean` check passes. The installed module is wired into the RHTower umbrella. Its final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularCompensationDeterminant` passes in `/tmp/sqb73-compensation-det-leaf-audit`, using actual repository source and existing compiled dependencies. After both new modules were installed and wired, `scripts/formal_tools.py lint` passed; full output is in `/tmp/sqb73_formal_lint.txt`. All owned Lean/Lake processes completed.
+
+### A second correction from the actual slope barrier
+
+Put `B=u/3-J>=0`, `Psi=(H*t/12)^2*B`, and `Q_a(x)=x*sinh(2*a*x)*Psi(x)`. The actual modular equations give the analytical identity
+
+```text
+Psi' = (H*t/12)^2 * [t*(k+1/3)*(4/3-k)+u*(5/3-2*k)*B].
+```
+
+The retained center inequality gives `k>=4*x/3+2/3` and `u*(2*k-5/3)>=8*x-1`. Consequently `Psi'<=-(8*x-1)*Psi` for `x>=2/3`. On this ray `k>4/3`, so a zero of `B` would be a local minimum with strictly negative derivative; thus `Psi>0`. Combining `y*cosh(y)<=(1+y)*sinh(y)` with `0<a<1/2` gives
+
+```text
+-Q_a'(x) >= (2/9)*sinh(2*a*x)*Psi(x) > 0,       x>=2/3.
+```
+
+The source inequality `0<=Psi<=Phi^2` bounds `Q_a` by a polynomial multiple of the squared tilted theta source, so `Q_a` tends to zero at infinity and vanishes at zero. Its derivative is continuous on compact intervals and nonpositive on the displayed ray, which gives absolute integrability and `integral_0^infinity Q_a'=0`. These statements are being checked in `/tmp/sqb74_barrier_flux.lean`; they are not yet installed Lean results.
+
+For the actual center weight `4*x*sinh(2*a*x)`, subtracting `K*Q_a'` from the last diagonal adds at least `K*Psi/(18*x)` to the source on `x>=2/3`. This is a positive candidate for repairing the upper part of the open middle interval while preserving every integrated moment. On the compact interval `[2/3,6/5]`, the actual positive head cofactor and this positive reserve allow a finite coefficient to dominate a continuous determinant deficit; the existing source tail is already strict beyond `6/5`. The coefficient's effect on `0<=x<2/3` still needs a separate sign estimate. No global rank-seven sign or all-rank propagation follows yet.
+
+### Integrating before taking the Schur complement
+
+There is an analytical alternative to pointwise compensated positivity. Put `H_x=nativeEvenHead(x)`, let `b_x` be the first three entries of the last column of the uncorrected native even-four matrix, and put `c_x=nativeJet(12,x)`. The actual head is positive definite. Define `r_x=H_x^(-1)*b_x` and `s_x=c_x-b_x^T*H_x^(-1)*b_x`. For aperture `0<a<1/2`, use the complete center measure `dmu_a(x)=4*x*sinh(2*a*x) dx` on `x>0`. Write `Hbar=integral H_x dmu_a`, `bbar=integral b_x dmu_a`, and `rbar=Hbar^(-1)*bbar`. Completion of squares gives
+
+```text
+Schur(integral nativeEvenFour(0,x) dmu_a)
+  = integral [s_x+(r_x-rbar)^T*H_x*(r_x-rbar)] dmu_a.
+```
+
+The bracket equals `c_x-2*rbar^T*b_x+rbar^T*H_x*rbar`, so it is integrable by the existing raw-entry estimates. This argument does not require separately splitting an integral of `s_x` and an integral of the nonnegative variance. The linear native successor source in `ThetaCuspCenterMixedSuccessorSource` has the same integral; it is not pointwise equal to this squared-polynomial source. A quantitative bound showing the variance offsets the negative part of `s_x` is still missing. The scalar finite-sum identity `schurComplement_sum_eq` in `HTGeometry/QuotientFusionProjectionGenesis.lean` and mathlib's matrix square-completion identities support the algebra; no theta variance domination is claimed.
+
+Broad deep searches through discriminants/interlacing, Hardy/uncertainty/coercivity, heterogeneity/variance/mixtures, and mechanism queries for continued fractions and averaged Schur complements inspected all retrieval views. Further all-view deep searches through Halphen/Chazy and subresultants/Bezoutians recovered modular differential identities and equivalent Xi kernel forms, without a sign-producing join to the seven native moments. A disconjugacy query returned unrelated disjointness results and does not establish absence of an oscillation method in the corpus. Returned recurrence theorems retain positive Jacobi data or unmatched evolution equations. Variance identities expose a positive gain without bounding the native deficit. Coverage remains partial, with source/compiler staleness and retrieval deadlines on some requests. No absence conclusion follows.
+
+Recent-paper searches used independently chosen rigidity, fragmentation, and capillarity terms. The direct arXiv search page sorted by announcement date recovered [Rigidity for capillary liquid drops of nearly circular section with constant vorticity](https://arxiv.org/html/2607.17844v1), submitted July 20, 2026. Its argument controls missing low Fourier modes quadratically using the area and barycenter constraints, then absorbs a cubic remainder through interpolation and regularity. This suggests retaining source constraints before estimating a degenerate quadratic form. Its smallness and elliptic estimates have not been identified with the theta determinant problem; the paper contributes no Lean premise.
+
+The analytical loop has closed both the constant upper barrier and the one-third drift barrier. Two determinant attacks remain unresolved: a first-singular-boundary derivative retaining the full source ODE, and a Bell/Wick decomposition retaining non-Gaussian cumulants through order twelve. Broad deep searches through Appell/Sheffer/Rodrigues, Darboux/Christoffel, cumulants/Turan/Bell, Wick/chaos, positive polynomial decompositions, and matrix-cone boundary mechanisms inspected all retrieval views, source arguments, and proposed ingredient sets. Retrieved cone theorems identify the singular boundary but do not give its actual theta derivative sign; Gaussian Wick laws require a source identification not established here. Coverage is partial, with stale source/compiler metadata and interrupted or malformed-response stages on some requests. No corpus-absence conclusion follows.
+
+Independently chosen recent-paper terms included hysteresis, soliton, and polarization. [Hysteresis-Driven Radiative Mpemba Effect in Phase-Change Nanostructures](https://arxiv.org/html/2606.22552v1) retains a separate memory-variable mismatch when comparing crossing rates. Its local Taylor calculation does not establish the global theta boundary inequality. No paper result is imported as a Lean premise.
 
 The unsigned-moment matrix conjecture above also remains open. Attempts to supply its source estimate from reciprocal-score positivity, coupled derivative energies, and Toda evolution have not produced the needed inequality. The retrieved Toda law requires coefficient equations not identified with these signed moments; positive reciprocal-moment measures use a different variable from `-x/(log Phi)'`. Broad deep searches through anharmonicity, score, compensation, Lee--Yang, reciprocity, moment flow, and lattice harmonics inspected statement, proof, method, source-argument, and proposed ingredient-group results. Coverage remains partial; some requests had interrupted or timed-out stages. No corpus-absence conclusion follows.
 

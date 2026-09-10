@@ -2304,7 +2304,8 @@ series, and the finite maximum formulation. The scratch check passed
 without warnings. The leaf-only build passed, compiling only this module
 (477 seconds under shared machine load; 9,101 jobs include cached dependencies).
 The eight new core theorems passed their axiom audit with only `propext`,
-`Classical.choice`, and `Quot.sound`. The endpoint application remains pending.
+`Classical.choice`, and `Quot.sound`. The endpoint application is now checked
+in `EulerDeletionPrimeCountEndpointTransfer.lean`; its audit is recorded below.
 
 
 ### Reflection test of the positive coupling [BRIDGE; paper]
@@ -2345,14 +2346,447 @@ implication and its positive survivor without retiring EDQ.
 
 The core import is wired into `RHTower.lean`; no umbrella build was run.
 Its generated index was refreshed and formal lint passed, with existing
-large-file warnings only. The five endpoint declarations are preserved as
-explicitly unchecked text in [the endpoint draft](edq-endpoint-transfer-draft.lean.txt),
-not as a formal module. Their latest scratch attempts stopped at unavailable
-imports before checking the declarations. Lake's recorded `importArts` list
-confirmed a moving set of missing artifacts during another process's active
-rebuild; no duplicate dependency build was launched. Final checks should
-resume when that imported closure is available. No numerical experiment was
-run, and the actual RH-producing signed covariance estimate remains open.
+large-file warnings only. The five endpoint declarations are now in
+`formal/GaloisForLFunctions/RHTower/EulerDeletionPrimeCountEndpointTransfer.lean`.
+Their imported closure became available after the external rebuild stopped
+and the two remaining required leaf artifacts were restored. The obsolete
+unchecked draft has been removed. No numerical experiment was run, and the
+actual RH-producing signed covariance estimate remains open.
 
 All 14 owned temporary files were removed after preserving the draft.
 All Lean, search, index, and lint processes started for this work have ended.
+
+## Endpoint pairing: exact forcing before an operator sign [BRIDGE]
+
+The target remains a cofinal subpower bound on the complete signed physical
+source. The endpoint transfer supplies arithmetic identities and a norm-error
+estimate; it does not supply the required signed covariance bound.
+
+Three candidate mechanisms were tested against the literal source:
+
+1. **Centered prime incidence.**
+   `Sieve/RouteERamareIncidenceConditionalNegative.lean` proves conditional
+   negativity under an exact zero-sum condition. With the physical history
+   `c_n(x)=mu(n)*b_n(x)`, that sum is `G_N(x)`, not zero. Harmonic balancing
+   inside each `b_n` does not center this history. Centering it by hand changes
+   the source and leaves the original total mode to estimate. Thus this
+   theorem does not establish the desired physical sign.
+2. **Accretive prime-power propagation.** The finite convolution has both an
+   invisible input mode and an indefinite mixed form, as checked below.
+   Positivity for arbitrary coefficients is false; a surviving estimate must
+   use the actual arithmetic coefficients and retain the forcing.
+3. **Hyperbola reversal followed by absolute values.** Reversing the complete
+   omitted divisor sum gives the harmonic depth cost already formalized in
+   `EulerDeletionQuotientHarmonicBound.floorResidual_le_harmonic`. This is not
+   a new estimate. Absolute values still remove the signed cancellation
+   needed at the target scale. Likewise, the exact complete-period formula
+   in `EulerDeletionMobiusPeriodCovariance.mobius_primitive_period_energy`
+   does not replace the nonuniform physical weights by a uniform average.
+
+Here the full-ray representatives are
+
+```
+b(x) = {x}/x,
+b_n(x) = ({x/n}-{x}/n)/x,
+G_N = sum_(n<=N) mu(n)*b_n,
+a_N = sum_(n<=N) mu(n)/n,
+D_q f(x) = f(x/q)/q.
+```
+
+The exact identity `b_(qm)=D_q b_m+b_q/m` follows by expanding both
+fractional-part differences. It holds on the entire positive ray; the
+representatives `b_m` vanish below 1. Change of variable gives
+`||D_q f||_2^2=||f||_2^2/q`. Consequently the prime-power convolution gives
+the following **paper identity with the complete boundary forcing**:
+
+```
+J_N = -sum_(q prime power <=N) [D_q G_floor(N/q) + a_floor(N/q)*b_q],
+Re<G_N,J_N> =
+  -sum_q Re<G_N,D_q G_floor(N/q)>
+  -sum_q a_floor(N/q)*Re<G_N,b_q>.
+```
+
+All sums are finite, and all terms lie in the original L2 carrier. No
+estimate or exchange of infinite sums is used. The vector-valued packet
+identity and its harmonic specialization are the positive algebraic
+survivors checked in the endpoint transfer module. The identification
+with `D_q` above has not been formalized here.
+
+For the operator test, let
+`R_N(a)=sum_(q prime power <=N) sum_(m<=N/q) a_m*b_(qm)`.
+The coefficient vector supported at 1 has zero physical source (`b_1=0`)
+but, already at N=2, has response `b_2 != 0`. Hence `R_N` does not factor
+through the physical source alone. Even after fixing that coefficient to
+zero, at N=4 take `a_2=1, a_4=t` and all other coefficients zero. Then the
+source is `b_2+t*b_4` and the response is `b_4`. Since `b_4(x)=1/(4*x)` on
+`1<x<2`, its norm is positive. The mixed pairing is
+`Re<b_2,b_4>+t*||b_4||^2`, which takes every real value. This is an exact
+paper counterexample to a coefficient-independent accretivity claim, not
+a counterexample for the actual Mobius coefficients or a retirement of EDQ.
+
+Broad recent-paper search selected Brown--Rosenthal--Zhou,
+[Markov Chain CLTs: Resolving Open Problems](https://arxiv.org/html/2609.07819v1)
+(7 September 2026). Sections 5.1--5.3 construct covariances using finite
+excursions and fresh symmetric signs. The covariance representation does
+not provide reversibility of the resulting chain, even though the transition
+can factor into reversible kernels. Applying it to EDQ would require a
+source-preserving representation and the missing tightness or variance
+bound; randomness cannot be assigned to the actual Mobius coefficients.
+The construction therefore supplies no signed energy estimate here.
+
+The independently selected Jha--Dayal paper,
+[Continuum Limit of Nonlocal Electrostatics in Random Media](https://arxiv.org/html/2609.06354v1)
+(5 September 2026), Appendix C, obtains a local correction by retaining a
+distributional boundary contribution. The relevant methodological transfer
+is to retain the forcing above. Its stationary random charge assumptions
+and electrostatic kernel have not been identified with EDQ, and no theorem
+from the paper is used in Lean.
+
+Four deep/method searches examined declaration, candidate, and source-argument
+lanes for signed pairing, flux, prime-power propagation, and floor covariance.
+Coverage was pending (generations 822592--822604); candidates were source-only,
+and no proof-idea or ingredient-set lane completed. The propagation query
+also reported a semantic-backend timeout. These are partial searches, not
+evidence that the corpus contains no other mechanism. No numerical experiment
+was needed for the operator counterexamples, and none was run.
+
+### Candidate forcing profile and a second cancellation scale [BRIDGE; paper audit]
+
+The boundary term above admits a more specific attack than an abstract
+operator estimate. Define `P_L=sum_(q prime power <=L) b_q` and
+`B_N=sum_q a_floor(N/q)*b_q`. Finite interchange gives
+
+```
+B_N = sum_(m<=N) mu(m)/m * P_floor(N/m).
+```
+
+The candidate full-ray limit is
+
+```
+log(N)*B_N(N*x) -> h(x) in L2(0,infinity),
+h(x) = sum_(m>=1) mu(m)/m * j(m*x).
+```
+
+This is a paper argument under audit, not a Lean theorem. The following
+checks specify the complete proposed proof and the scale it would deliver.
+
+* The prime number theorem and the proper-prime-power error give
+  `Q(L)~L/log(L)` and a global bound `Q(L)<=C*L/log(L+2)`. Abel summation
+  then gives `sum_(q<=L) q^(-1/2)<=C'*sqrt(L)/log(L+2)`. The physical
+  generator bound implies `||P_L||<=C''*sqrt(L)/log(L+2)`.
+* In the full carrier,
+  `P_L(L*x)=L^(-1)*sum_q Phi_(q/L)(x)-H_Q(L)*b(L*x)`, where
+  `Phi_u(x)={x/u}/x` and `H_Q(L)=sum_q 1/q`. The normalized prime-power
+  counting measures converge to Lebesgue measure on every compact
+  subinterval of (0,1]. L2 continuity of `Phi_u` was checked above.
+  The weighted prime-count bound controls the omitted `u<delta` part in
+  L2 by `C*sqrt(delta)` in the limit. Also
+  `log(L)*H_Q(L)*||b(L*.)||=O(log(L)*log(log(L))/sqrt(L))->0`.
+  Thus `log(L)*P_L(L*.) -> integral_0^1 Phi_u du = j` in full-ray L2.
+* For each fixed m, set `L=floor(N/m)`. Then `N/L->m` and
+  `log(N)/log(L)->1`; continuity of L2 dilation transfers the last limit
+  to `log(N)*P_L(N*.) -> j(m*.)`.
+* The m-tail is uniform. Its L2 norm is bounded by
+  `C*log(N)*sum_(M<m<=N) m^(-3/2)/log(2+N/m)`.
+  For `m<=sqrt(N)` the logarithmic ratio is at most 2. For larger m the
+  whole bound is `O(log(N)*N^(-1/4))`. Replacing `N/m` by its floor changes
+  this bound by a fixed constant only. First send N to infinity, then M
+  to infinity. The limiting series converges absolutely in L2 because
+  `||j(m*.)/m||=m^(-3/2)*||j||`.
+
+The proposed profile is nonzero, without assuming cancellation in its
+coefficients. Let `c2=sum_(m>=1) mu(m)/m^2`. The elementary comparison
+`sum_(m>=2) 1/m^2 <= 1/4+sum_(m>=3) 1/(m*(m-1))=3/4` gives `c2>=1/4`.
+For the periodic primitive `F(t)=({t}^2-{t})/2`, integration by parts
+gives `|j(y)-1/(2*y)|<=1/(4*y^2)` since `|F|<=1/8`.
+Termwise application in the absolutely convergent series gives
+
+```
+h(y) = c2/(2*y) + O(1/y^2),
+|h(y)-c2/(2*y)| <= (sum_(m>=1) m^(-3))/(4*y^2).
+```
+
+Since the latter sum is at most 2, `h(y)>=1/(16*y)` for `y>=8`.
+Hence `||h||>0`. The asserted forcing limit would therefore give the
+sharp order `||B_N||^2 ~ ||h||^2*N/log(N)^2`.
+
+There is also an exact shape distinction. On compact positive intervals,
+termwise one-sided differentiation is justified by the summable derivative
+majorant `m^(-2)/x^2`. At `x=1/2` the derivative jump of h is
+`4*sum_(2|m) mu(m)/m^2 = -4*c2/3`, which is nonzero. To obtain the last
+identity, separate even and odd m and use `mu(2*k)=-mu(k)` for odd k
+and zero for even k. The profile j has a continuous derivative at 1/2.
+Both representatives are continuous on the positive ray (the series for h
+converges locally uniformly), so this also excludes equality in L2.
+Thus h is not a scalar multiple of j. A scalar subtraction of the earlier
+jet profile cannot remove this entire forcing profile.
+
+If the earlier paper-level endpoint limit
+`log(N)^2*J_N(N*.) -> j` is completed, the exact packet identity then
+forces `log(N)*sum_q D_q G_floor(N/q)(N*.) -> -h`.
+Thus the two terms inside the endpoint response would each have energy
+of order `N/log(N)^2`, while their sum has order `N/log(N)^4`.
+This identifies a concrete leading profile to cancel. It still gives no
+absolute-scale estimate for their pairing with G_N, and cannot close RH
+by treating a relative error as an absolute bound. None of these new
+asymptotic or profile statements has been formalized here.
+
+The shape difference should not be mistaken for a new loss of information.
+On full-ray L2 define `A_m f(x)=f(m*x)/m`. Then
+`||A_m||=m^(-3/2)` and `A_m A_n=A_(mn)`. Both operator series
+
+```
+T = sum_(m>=1) mu(m)*A_m,
+Z = sum_(m>=1) A_m
+```
+
+converge absolutely in operator norm. Their product double series is
+absolutely convergent, so finite divisor regrouping followed by the
+norm limit and `sum_(d|n) mu(d)=1_(n=1)` gives `TZ=ZT=Id`.
+In particular `h=Tj` and `j=Zh`, with both operator norms at most
+`sum_(m>=1) m^(-3/2)`. This is a paper-level bounded inverse with no
+arithmetic cancellation hypothesis. It preserves subpower norm bounds
+under a fixed full-ray transformation.
+
+It does not identify the finite forcing `B_N` with `T` applied to a fixed
+physical source: `B_N` uses the moving cutoffs `floor(N/m)`, whereas `T`
+dilates the physical variable. Nor does this uncompressed `T` preserve
+the original support condition below 1.
+
+However, the subsequent corpus search exposed a way to retain the cutoff
+exactly. `FloorTransformHarmonicInverse.lean` proves the scalar harmonic
+floor inverse. The same finite regrouping is valid for vector-valued sums:
+
+```
+B_N = sum_(m<=N) mu(m)/m * P_floor(N/m),
+P_N = sum_(d<=N) B_floor(N/d)/d.
+```
+
+Indeed, composing the two sums makes the coefficient at
+`P_floor(N/r)` equal to `(sum_(m|r) mu(m))/r`. This is one at r=1 and
+zero otherwise; `floor(floor(N/d)/m)=floor(N/(dm))` retains the actual
+cutoff. Both transformations preserve a uniform norm bound `C*N^epsilon`
+for any epsilon>0, at a cost at most `sum_d d^(-1-epsilon)`.
+This does not transfer a bound assumed only on a cofinal subsequence,
+because smaller quotient cutoffs need not belong to that subsequence.
+The vector specialization is paper-only here. Thus finite-cutoff inversion
+of the isolated forcing is not the remaining mathematical obstacle; the
+signed cancellation with the other propagated source still is.
+
+### Tail-test proof of the forcing lower bound [BRIDGE; paper, not Lean]
+
+The forcing lower bound can be proved without waiting for the full L2
+profile limit. Let
+
+```
+W_N = sum_q a_floor(N/q),
+V_N = sum_q a_floor(N/q)/q,
+R_N = sum_q |a_floor(N/q)|*(q+1/q),
+g_T(x) = 1_(x>=T)/x.
+```
+
+All q sums run over prime powers at most N. For fixed m, the prime number
+theorem gives
+`log(N)*Q(floor(N/m))/N -> 1/m`. The bound
+`Q(L)<=C*L/log(L+2)` and the split at `m=sqrt(N)` give a summable
+`C'/m^2` majorant on the first part of
+`log(N)*W_N/N=sum_m mu(m)/m * log(N)*Q(floor(N/m))/N`.
+The remaining absolute tail is `O(log(N)/sqrt(N))`. Hence
+`W_N~c2*N/log(N)`, with `c2>=1/4` as above.
+
+The absolute bound `|a_M|<=H_M` gives `|V_N|<=H_N^2`.
+Reversing the positive majorant and using the same prime-count bound gives
+`R_N<=K*N^2/log(N)` eventually: the inner q sum is at most
+`2*(N/m)*Q(floor(N/m))`, and splitting the resulting m sum at sqrt(N)
+uses the convergent weight `m^(-3)`.
+
+An exact change of variable and the elementary j remainder above give
+
+```
+<b_q,g_T> = [j(T/q)-j(T)]/q,
+|<b_q,g_T> - (1-1/q)/(2*T)| <= (q+1/q)/(4*T^2),
+||g_T||^2 = 1/T.
+```
+
+Thus `<B_N,g_T> >= (W_N-V_N)/(2*T)-R_N/(4*T^2)`.
+Choose c>0 so that `W_N-V_N>=c*N/log(N)` eventually, and a fixed
+`A>=max(1,K/c)`. With `T=A*N`, the pairing is at least
+`c/(4*A*log(N))`. Cauchy--Schwarz now yields
+
+```
+||B_N||^2 >= c^2/(16*A) * N/log(N)^2
+```
+
+for all sufficiently large N. This is a dependency-closed paper proof
+using PNT, finite reindexing, the bounded periodic primitive, and
+Cauchy--Schwarz. Its Lean formalization is outstanding. It proves the
+size of the actual boundary forcing; it does not estimate the signed
+pairing after that forcing is combined with the propagated source.
+
+### Endpoint transfer validation
+
+`EulerDeletionPrimeCountEndpointTransfer.lean` now contains five checked
+public declarations: `endpointJet_error_energy_le`,
+`jetCoeff_eq_primePower_convolution`, `sum_jetCoeff_smul`,
+`endpointJet_eq_primePower_packets`, and
+`jetHarmonic_eq_primePower_harmonic`. The scratch check passed without
+warnings. The leaf-only final build compiled only this new module and
+passed in 186 seconds; its 13,644 jobs include cached dependencies.
+The separate scratch axiom audit of these five new declarations reported
+only `propext`, `Classical.choice`, and `Quot.sound`. Existing declarations
+were not re-audited. The import is wired into `RHTower.lean`; no umbrella
+build was run. Index refresh and formal lint passed.
+
+The only prerequisite compilations were the two missing leaf artifacts
+`Sieve.MaynardLongAmplitudeExclusion` (90 seconds) and
+`Sieve.MaynardEndpointReserve` (5.4 seconds), after their external build had
+stopped. The five endpoint declarations supersede the deleted unchecked
+draft. The subsequent fifth deep search, on summable dilation inverses,
+had pending coverage generation 822612 and source-only candidates; it
+identified the existing harmonic floor inverse used in the paper audit.
+The forcing tail-test lower bound and the new profile statements remain
+unformalized. The required full signed RH estimate remains open.
+
+All processes started for this endpoint transfer work have ended. Its 14
+owned temporary files were removed, and the final scoped diff check passed.
+The frontier map was not edited.
+
+## Finite-window coercivity and the joint-source test [BRIDGE]
+
+The hard target remains a cofinal subpower ceiling for the complete signed
+physical source. The following argument closes a lower-bound mechanism for
+the actual boundary forcing. It does not supply that ceiling.
+
+For arbitrary real coefficients c supported through N, write
+
+```
+u_c(k) = sum_(1<=n<=N) c_n*(k mod n)/n,
+mu_c = sum_(1<=n<=N) c_n*(n-1)/(2*n),
+R_c = sum_(1<=n<=N) |c_n|*n,
+G_c = sum_(1<=n<=N) c_n*b_n.
+```
+
+The centered residue primitive
+`P_n(k)=r*(r-n)/(2*n)`, where `r=k mod n`, satisfies
+
+```
+P_n(k+1)-P_n(k) = (k mod n)/n-(n-1)/(2*n),
+-n/8 <= P_n(k) <= 0,
+|P_n(k)-P_n(l)| <= n/8.
+```
+
+The last constant uses the range of one primitive; adding two independent
+absolute bounds would lose a factor of two. Summing the exact difference
+first over a spatial window and then over the literal signed coefficients
+proves, for every natural T and L,
+
+```
+|sum_(0<=i<L) u_c(T+i)-L*mu_c| <= R_c/8.
+```
+
+Finite Cauchy--Schwarz and the existing complete physical energy series give
+
+```
+(sum_(0<=i<L) u_c(T+1+i))^2 <= L*(T+L+1)^2*||G_c||^2.
+```
+
+This retains the weights `1/[k*(k+1)]`; no period average or asymptotic
+integral replaces the physical energy. In particular,
+
+```
+max(0,L*|mu_c|-R_c/8)^2 <= L*(T+L+1)^2*||G_c||^2.
+```
+
+There is also a window-free consequence:
+
+```
+|mu_c|^3 <= 8*R_c*||G_c||^2.
+```
+
+Indeed, `|mu_c|<=R_c/8` follows termwise from
+`4*(n-1)<=n^2`. If the mean is nonzero, take
+`L=ceil(R_c/(4*|mu_c|))`, so `L>=2`,
+`R_c<=4*L*|mu_c|`, and `L*|mu_c|<=R_c/2`.
+The window starting at 1 has absolute sum at least `L*|mu_c|/2`.
+Since `(L+1)^2<=4*L^2`, its energy bound yields
+`|mu_c|^2<=16*L*||G_c||^2`. Multiplication by `|mu_c|`
+proves the cubic bound. The zero-mean case is immediate.
+
+For the literal forcing, substitute
+`c_q=1_(q prime power)*a_floor(N/q)`. Then
+`G_c=B_N`, `mu_c=(W_N-V_N)/2`, and `R_c<=R_N` with the
+quantities defined in the preceding tail-test argument. Its dependency-closed
+paper estimates `W_N-V_N>=c*N/log(N)` and
+`R_N<=K*N^2/log(N)` imply
+
+```
+||B_N||^2 >= c^3/(64*K) * N/log(N)^2
+```
+
+for all sufficiently large N. This avoids formalizing the infinite tail-test
+integral and the proposed full-ray profile limit. The PNT-derived weighted
+moment estimates themselves remain unformalized here. This is a forcing
+size result, not a bound on the complete signed source.
+
+### Attempts to obtain the missing signed bound
+
+The critical-boundary cancellation theorem found by deep search,
+`coupledFloorMobiusCriticalBoundary_singularCancellation`, is backed by the
+actual source estimate in `ShiftedEulerFloorMobiusTailCoupling.lean`.
+Its incidence coefficients contain `d^(-(1+2*omega))`, with `omega>0`.
+The elementary constant is
+`2+2/(1-2*omega)+1/[(1+omega)*2*omega]`.
+It diverges as omega approaches zero; the logarithmic carrier bound also
+loses its decay rate there. Thus the candidate transfer by removing that
+weight does not prove an EDQ endpoint estimate. The positive theorem is
+valid on its stated weighted carrier.
+
+Broad newest-first arXiv searches on **impedance** and **memory** selected
+Hallinan--Lestas, [Part I](https://arxiv.org/html/2609.07315v1) and
+[Part II](https://arxiv.org/html/2609.07331v1), 7 September 2026.
+Part I's separation proof and Part II's multiplier congruence suggest
+retaining off-diagonal terms in a quadratic graph test. At proof level,
+they require a strict separator for the actual two graphs and the stated
+stability conditions. Finite Euler-deletion invertibility supplies no
+cutoff-uniform separator or inverse norm bound. The high-pass change of
+variables does not discharge those conditions. No theorem from these
+papers is used in Lean.
+
+The third deep/method search proposed a Lindblad-to-hypocoercivity ingredient
+set. Inspection of `ConservativeDissipativeQuantum.lean` and
+`ConservativeDissipativeBures.lean` does not identify their constructed flow
+with the EDQ derivative. The latter's coercivity rate is
+`2/(1+||B||^2)^3`, so its quantitative transfer also retains a raw-operator
+norm cost. The exact conditional-variance contraction in
+`RouteEPhysicalFibreCoarea.lean` concerns normalized fibre masses; an
+identity with the original signed physical energy has not been supplied.
+None of these candidates closes the signed arithmetic estimate.
+
+The three deep searches used OR matching across broad mechanism terms and
+inspected declaration, candidate-lemma, source-argument, and available
+method-group lanes. Coverage was partial (generations 822633 and 822648);
+returned candidates were source-only. The final ingredient set was explicitly
+`not_verified`; its unresolved off-diagonal-energy obligation is not a proof.
+No numerical experiment was run.
+
+### Centered-window validation
+
+`EulerDeletionCenteredCellWindow.lean` closes eleven public theorems,
+including `mean_window_source_certificate` and
+`abs_mean_cube_le_moment_energy`. The complete scratch file passed without
+warnings. The final `lake build --old` invocation compiled only this leaf
+and passed in 120 seconds; the 9,102 jobs include cached dependencies.
+A separate `/tmp` axiom audit checked only these eleven new declarations;
+each reported only `propext`, `Classical.choice`, and `Quot.sound`.
+The import is wired into `RHTower.lean`; no umbrella build was run.
+The generated index includes all new declarations, and formal lint passed
+with existing large-file warnings only.
+
+The paper specialization to the literal prime-power forcing is recorded
+above. Its arithmetic moment estimates and the RH-producing complete
+signed bound remain open in Lean. The frontier map and universal-law
+ledger were not edited; the existing absolute-scale cancellation law
+already covers this distinction. No numerical experiment was run.
+All processes started for this work have ended, and its thirteen owned
+temporary files have been removed after preserving the proofs and audit
+results here.

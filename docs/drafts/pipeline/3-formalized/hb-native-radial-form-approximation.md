@@ -2,7 +2,7 @@
 
 Stage: 3-formalized. Five family theorems and six endpoint theorems are proved and audited.
 
-The construction attacks native admission to the original joint form domain, needed for the complete physical inverse identification. The proof chain is literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. Full native form admission, complete physical-current cancellation and RH remain open.
+The construction attacks native admission to the original joint form domain, needed for the complete physical inverse identification. The proof chain is literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. Full native form admission is now [formalized and audited](hb-native-form-admission.md). Complete operator identification, physical-current cancellation and RH remain open.
 
 ## Actual family
 
@@ -30,11 +30,11 @@ The family difference beta_m H-H is dominated in squared angular energy norm by 
 
 and `norm(a+b)^2 <= 2 norm(a)^2+2 norm(b)^2` then prove integrability and convergence of the complete radial derivative error in the original angular L² space. The theorem's target derivative is the literal native radial derivative, not a separately chosen representative.
 
-## Remaining construction
+## Completed continuation
 
-For fixed n and m, convolve beta_m H in the angular energy space with a normalized bump of width epsilon_m/(k+2). Compact-support addition keeps the convolution strictly inside the original negative half-line. The original value embedding must commute with the Bochner integral, and classical convolution differentiation after that embedding must give convolution of `(beta_m JH)'`.
+The [radial smoothing proof](hb-native-radial-mollification.md) now convolves each endpoint-cutoff family in its original angular energy space, retains support below the Dirichlet endpoint, identifies the actual projected derivative, and proves convergence of the four original joint graph components. Closedness admits the interior cutoff graph; the endpoint limit above admits each finite cusp-cutoff graph.
 
-The shrinking-bump limit in H's energy space and in the projected derivative's original L² space should give convergence of the four original joint graph components: value, radial derivative, and both sech-weighted angular derivatives. `RadialEnergyFamily.graph_mem` and closedness must admit the fixed endpoint-cutoff graph. The endpoint limit above should then admit the fixed cusp-cutoff graph. The already proved global native energy and cusp-error limit should finally admit the complete native graph. These are three successive closed-domain limits; no common rate across their indices is needed. Convolution, graph-component assembly and native domain admission remain unproved in Lean.
+The [full native admission proof](hb-native-form-admission.md) then bounds those graphs in the original form norm, identifies their literal product-measure values and proves strong value convergence. The original embedding's dense adjoint range and the existing bounded weak-limit theorem admit the untruncated native primitive. The remaining immediate target is the original operator equation needed for complete causal inverse identification.
 
 ## Search and outside-field comparison
 

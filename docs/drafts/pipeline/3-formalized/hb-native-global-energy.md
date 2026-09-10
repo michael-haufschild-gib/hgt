@@ -1,6 +1,6 @@
 # HB: global native gradient energy
 
-Stage: 3-formalized. Four audited public theorems establish finite global gradient energy and the exact source-response identity for the literal native time primitive in the original radial/modular measure. Native form-domain admission, complete physical inverse identification, full physical-current extinction and RH remain open.
+Stage: 3-formalized. Four audited public theorems establish finite global gradient energy and the exact source-response identity for the literal native time primitive in the original radial/modular measure. Native form-domain admission is now [formalized and audited](hb-native-form-admission.md). Complete operator and physical inverse identification, full physical-current extinction and RH remain open.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -38,7 +38,7 @@ The second Fatou pass excludes a defect from energy escaping into the cusp. It r
 
 ## Remaining domain construction
 
-Convergence in the original first-derivative graph is still required. The [radial form-admission construction](../1-in-progress/hb-native-radial-form-admission.md) now has an audited actual angular energy family: continuity, compact radial support, zero trace, and C¹ regularity after the original value embedding with the literal radial derivative. The vanishing endpoint error and complete value/radial derivative convergence are also [audited](hb-native-radial-form-approximation.md). The remaining approximation convolves the endpoint-cutoff family inside the negative half-line. It uses the zero trace and a uniform weighted cutoff-derivative bound to control the endpoint error. Convergence in the four original graph slots must then establish native admission by closedness. Global energy and the already audited cusp-error limit supply the subsequent cusp-cutoff limit. Full native form admission and the physical inverse identification remain open.
+The [native form-admission construction](hb-native-form-admission.md) is now audited. The actual angular energy family, endpoint limit and normalized-bump smoothing admit every finite cusp-cutoff graph in the original closed joint domain. The original value and gradient norms give a uniform form bound using the cutoff-energy limit above. Strong convergence of the literal value projections, together with the dense adjoint range of the original injective embedding and the corpus's bounded weak-limit theorem, admits the untruncated native primitive. The remaining immediate target is its actual operator equation and subsequent complete physical inverse identification.
 
 ## Search and outside-field comparison
 

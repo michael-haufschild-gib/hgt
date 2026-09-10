@@ -1,14 +1,18 @@
-/-!
-# Endpoint transfer draft — kernel verification pending
-
-These five endpoint declarations have not passed a complete scratch check.
-Their imports were temporarily unavailable during a concurrent dependency
-rebuild. EulerDeletionCoefficientPrefixEnergy is independently checked,
-leaf-built, and audited. This text is not an imported Lean module.
--/
-
 import GaloisForLFunctions.RHTower.EulerDeletionPrimeCountEndpointVariance
 import GaloisForLFunctions.RHTower.EulerDeletionCoefficientPrefixEnergy
+/-!
+# Full physical transfer for the prime-count endpoint derivative
+
+Möbius inversion expresses the literal endpoint derivative as finite
+prime-power packets. The vector-valued identity retains every mixed term;
+its scalar specialization retains harmonic balancing. The endpoint error
+against any coefficient model obeys the complete-tail prefix-energy bound.
+
+These finite identities and inequalities assume no arithmetic cancellation
+estimate. They do not prove the asymptotics or signed covariance bound
+required for RH.
+-/
+
 noncomputable section
 set_option autoImplicit false
 open Finset ArithmeticFunction Filter Topology
@@ -31,6 +35,7 @@ theorem endpointJet_error_energy_le (c : ℕ → ℝ) (N T : ℕ) :
     unfold source
     simp only [Complex.ofReal_sub,sub_smul,sum_sub_distrib]
     congr 1
+    unfold PrimeCountDamping.endpointJet
     rw [← range_shift_eq_Icc]
     simp only [Nat.cast_add,Nat.cast_one]
   rw [← he]
@@ -39,6 +44,8 @@ theorem endpointJet_error_energy_le (c : ℕ → ℝ) (N T : ℕ) :
 end RHTower.DeletionCoefficientTransfer
 
 namespace RHTower.PrimeCountDamping
+
+/-- Möbius inversion retains the complete prime-power forcing. -/
 theorem jetCoeff_eq_primePower_convolution {n : ℕ} (hn : n  ≠  0) :
     jetCoeff n = -∑ q ∈ n.divisors,
       if IsPrimePow q then (moebius (n/q) : ℝ) else 0 := by
@@ -51,7 +58,6 @@ theorem jetCoeff_eq_primePower_convolution {n : ℕ} (hn : n  ≠  0) :
   apply sum_congr rfl
   intro q hq
   split_ifs  <;> ring
-
 
 
 /-- The convolution identity with its full vector-valued test; no norm is taken. -/
@@ -87,7 +93,7 @@ theorem endpointJet_eq_primePower_packets (N : ℕ) :
     endpointJet N = -∑ q ∈ Icc 1 N,if IsPrimePow q then
       ∑ m ∈ Icc 1 (N/q),(moebius m : ℂ) • bdGen (1/((q*m : ℕ) : ℝ)) else 0 := by
   have h := sum_jetCoeff_smul N (fun n => bdGen (1/(n : ℝ)))
-  simp only [RCLike.real_smul_eq_coe_smul (K := ℂ),Complex.ofReal_intCast] at h
+  simp only [RCLike.real_smul_eq_coe_smul (K := ℂ)] at h
   convert! h using 1
 
 /-- Harmonic balancing is retained exactly under the same prime-power convolution. -/

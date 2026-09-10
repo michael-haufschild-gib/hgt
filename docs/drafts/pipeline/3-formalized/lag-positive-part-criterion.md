@@ -43,3 +43,13 @@ Module `RHTower/WeilLagFunctionPositivePart.lean` (wired after `WeilLagFunctionG
 - [x] 1 → 2  paper proof complete
 - [x] 2 → 3  Lean theorem, module build green, axioms clean
 - [ ] 3 → 4  not pursued (no stage 4 by directive)
+
+## Mean-square corollary (Lean)
+
+`RH ⟺ ∀ σ > 0, ∫_0^∞ Φ(u)² e^{−σu} du < ∞` (`riemannHypothesis_iff_lagSquare_laplace`,
+`riemannHypothesis_of_lagSquare_laplace`).  Forward: `max(Φ,0) ≤ Φ² + 1` reduces the mean-square
+bound to the positive-part criterion.  Converse: under RH `|Φ| ≤ 2 + γ − log 4π`.  In prime
+coordinates `Φ(u) ≈ e^{u/2} M(e^u)`, `M(x) = −∫_x^∞ (ψ(t) − t) t^{−2} dt`, so this is Cramér's
+mean-square criterion for the tail of the prime-number-theorem error; by Plancherel it reads
+`G ∈ H²(Re s > σ)` for every `σ > 0`, with `G(s) = −[2Bs + (ξ'/ξ)(s + ½)]/(s² − ¼)`,
+`B = Σ'_ρ 1/ρ` — the Lagarias positivity criterion in Laplace coordinates.  Receiver.

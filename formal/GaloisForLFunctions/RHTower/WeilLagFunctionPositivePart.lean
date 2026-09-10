@@ -475,6 +475,76 @@ theorem riemannHypothesis_iff_lagPositivePart_integral_subexponential :
           _ ≤ _ := h2
   · exact riemannHypothesis_of_lagPositivePart_integral_subexponential
 
+/-! ## The mean-square form -/
+
+/-- **Mean-square criterion.**  If `∫_0^∞ Φ(u)² e^{−σu} du < ∞` for every `σ > 0`, then RH.  By
+`max(Φ,0) e^{−σu} ≤ Φ² e^{−σu} + e^{−σu}` this is a special case of the positive-part criterion. -/
+theorem riemannHypothesis_of_lagSquare_laplace
+    (h : ∀ σ : ℝ, 0 < σ →
+      ∫⁻ u in Ioi (0:ℝ), ENNReal.ofReal (weilLagFunctionReal u ^ 2 * Real.exp (-σ * u)) ≠ ⊤) :
+    RiemannHypothesis := by
+  refine riemannHypothesis_of_lagPositivePart_laplace fun σ hσ => ?_
+  rw [laplaceMass_oneSided_eq]
+  refine ENNReal.add_ne_top.mpr ⟨?_, laplaceMass_volume_ne_top hσ⟩
+  unfold laplaceMass
+  have hg : Measurable (fun u : ℝ => ENNReal.ofReal (Real.exp (-σ * u))) := by measurability
+  rw [restrict_withDensity measurableSet_Ioi, Measure.restrict_restrict measurableSet_Ioi, inter_self,
+    lintegral_withDensity_eq_lintegral_mul _ (measurable_oneSidedDensity (-1) 0).coe_nnreal_ennreal hg]
+  have hfg : ((fun u : ℝ => ((oneSidedDensity (-1) 0 u : ℝ≥0∞))) *
+      fun u => ENNReal.ofReal (Real.exp (-σ * u)))
+      = fun u : ℝ => ((oneSidedDensity (-1) 0 u : ℝ≥0∞)) * ENNReal.ofReal (Real.exp (-σ * u)) := rfl
+  rw [hfg]
+  have hpt : ∀ u : ℝ, ((oneSidedDensity (-1) 0 u : ℝ≥0∞)) * ENNReal.ofReal (Real.exp (-σ * u))
+      ≤ ENNReal.ofReal (weilLagFunctionReal u ^ 2 * Real.exp (-σ * u))
+          + ENNReal.ofReal (Real.exp (-σ * u)) := by
+    intro u
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (NNReal.coe_nonneg _),
+      ← ENNReal.ofReal_add (by positivity) (Real.exp_pos _).le]
+    apply ENNReal.ofReal_le_ofReal
+    have h1 : ((oneSidedDensity (-1) 0 u : ℝ)) = max (weilLagFunctionReal u) 0 := lagPositivePart_eq_max u
+    rw [h1]
+    have hm : max (weilLagFunctionReal u) 0 ≤ |weilLagFunctionReal u| :=
+      max_le (le_abs_self _) (abs_nonneg _)
+    have hamgm : |weilLagFunctionReal u| ≤ weilLagFunctionReal u ^ 2 + 1 := by
+      nlinarith [sq_nonneg (|weilLagFunctionReal u| - 1), sq_abs (weilLagFunctionReal u)]
+    calc max (weilLagFunctionReal u) 0 * Real.exp (-σ * u)
+        ≤ (weilLagFunctionReal u ^ 2 + 1) * Real.exp (-σ * u) := by
+          gcongr; exact hm.trans hamgm
+      _ = weilLagFunctionReal u ^ 2 * Real.exp (-σ * u) + Real.exp (-σ * u) := by ring
+  refine ne_top_of_le_ne_top ?_ (lintegral_mono hpt)
+  have hmeas : Measurable (fun u : ℝ =>
+      ENNReal.ofReal (weilLagFunctionReal u ^ 2 * Real.exp (-σ * u))) := by
+    exact ((measurable_weilLagFunctionReal.pow_const 2).mul
+      (Real.measurable_exp.comp (measurable_const.mul measurable_id))).ennreal_ofReal
+  rw [lintegral_add_left hmeas]
+  have hvol := laplaceMass_volume_ne_top hσ
+  unfold laplaceMass at hvol
+  exact ENNReal.add_ne_top.mpr ⟨h σ hσ, hvol⟩
+
+/-- **Equivalence.**  RH holds iff `∫_0^∞ Φ(u)² e^{−σu} du < ∞` for every `σ > 0`. -/
+theorem riemannHypothesis_iff_lagSquare_laplace :
+    RiemannHypothesis ↔ ∀ σ : ℝ, 0 < σ →
+      ∫⁻ u in Ioi (0:ℝ), ENNReal.ofReal (weilLagFunctionReal u ^ 2 * Real.exp (-σ * u)) ≠ ⊤ := by
+  constructor
+  · intro hRH σ hσ
+    have hb : ∀ u : ℝ, weilLagFunctionReal u ^ 2 ≤ poleSharpConstant ^ 2 := by
+      intro u
+      have := norm_weilLagFunction_le_of_riemannHypothesis hRH u
+      rw [weilLagFunction_eq_ofReal, Complex.norm_real, Real.norm_eq_abs] at this
+      have h0 : 0 ≤ poleSharpConstant := le_trans (abs_nonneg _) this
+      nlinarith [abs_nonneg (weilLagFunctionReal u), sq_abs (weilLagFunctionReal u)]
+    have hvol := laplaceMass_volume_ne_top hσ
+    unfold laplaceMass at hvol
+    have hle : ∀ u : ℝ, ENNReal.ofReal (weilLagFunctionReal u ^ 2 * Real.exp (-σ * u))
+        ≤ ENNReal.ofReal (poleSharpConstant ^ 2) * ENNReal.ofReal (Real.exp (-σ * u)) := by
+      intro u
+      rw [← ENNReal.ofReal_mul (by positivity)]
+      exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (hb u) (Real.exp_pos _).le)
+    refine ne_top_of_le_ne_top ?_ (lintegral_mono hle)
+    rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hvol
+  · exact riemannHypothesis_of_lagSquare_laplace
+
 end
 
 end RHTower

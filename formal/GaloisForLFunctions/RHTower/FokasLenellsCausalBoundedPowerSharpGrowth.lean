@@ -8,28 +8,28 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance causalPowerSharpLowerComplete : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance causalPowerSharpChainComplete : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance causalPowerSharpChainNormedGroup : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance causalPowerSharpChainNormedSpace : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance causalPowerSharpEndNormedRing : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance causalPowerSharpEndTopology : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance causalPowerSharpEndTopologicalRing : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
-local instance : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance causalPowerSharpEndNormedAlgebra : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedAlgebra
-local instance : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
+local instance causalPowerSharpEndNormOne : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
   have he := congrArg (fun A : causalBoundedChain →L[ℂ] causalBoundedChain => ‖A‖)
     causalBoundedChainExponential_zero
   exact he.symm.trans (norm_causalBoundedChainExponential_real (0 : ℝ≥0))⟩
 
 
 open ComplexConjugate
-local instance : NormedAlgebra ℚ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance causalPowerSharpEndRationalAlgebra : NormedAlgebra ℚ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   .restrictScalars ℚ ℂ _
 
 private theorem power_aligned_rate_norm (z : ℂ) (hz : z ≠ 0) :

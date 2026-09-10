@@ -1,0 +1,57 @@
+# HB native form admission — CLOSED, installed, audited, cleaned
+
+Current RH goal remains ACTIVE and unbounded. RH and complete physical-current cancellation remain UNPROVED. This goal turn closed the actual native remainder double-time-primitive's membership in the ORIGINAL joint form domain. Do not redo its smoothing, endpoint, norm, value, or axiom audits.
+
+## Persistent instructions
+Full chain each new goal turn: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. State hardest obstacle, last verified progress, and direct next attack. Ultimate complete-current target remains 2 Ω(B(p,p)/2,B(m,m)/2)=0 with independent SS/SV/VV and onset/horizon/AdS/temporal/cusp currents.
+Analytical only; no numerical experiments. NO Git commands, launch.sh, launcher or search implementation inspection. Frontier map READ ONLY. One owned foreground Lean/Lake at a time; observe actual exit_code, not timeout. Scratch: lake env lean <file>; final audit: lake build <exact module>; no full or umbrella builds. Axiom checks only NEW public theorems. No added axioms/oracles. No subagents authorized or spawned.
+
+## New installed Lean leaves
+All paths relative to /Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/.
+
+1. ThetaCuspHawkingBMNativeRadialMollification.lean — 449 lines.
+Seven NEW public theorems: nativeRadialMollification_graph_mem (116); nativeRadialMollification_value (136); nativeRadialMollification_value_hasDerivAt (147); nativeRadialMollification_energy_convergence (248); nativeRadialMollification_radial_convergence (259); nativeInteriorJointGraph_mem (405); nativeCuspJointGraph_mem (429).
+Actual beta_m H_n is smoothed in original angular energy space using normalized bump width epsilon_m/(k+2), epsilon_m=1/(m+1). Support remains below -epsilon_m. Original value embedding commutes with convolution and actual projected derivative equals convolution of projected derivative. Common compact domination gives both L² limits. Four-slot graph convergence and original closedness admit the interior graph; old endpoint convergence admits each cusp-cutoff graph.
+Public definitions: nativeInteriorAngularEnergy, nativeRadialMollification, nativeRadialMollificationFamily, nativeInteriorJointGraph, nativeCuspJointGraph. Private NativeFormFamily packages continuous compact energy family and C¹ original value projection; its graph is exactly the original four-component assembly.
+
+2. ThetaCuspHawkingBMNativeFormBound.lean — 187 lines.
+Two NEW public theorems: nativeCuspJointGraph_norm_sq_bound (145), nativeCuspJointGraph_bounded (171).
+Exact bound ||graph_n||² ≤ ∫||W||² + 2∫(nativeJointRadialCutoffEnergy_n + nativeJointAngularCutoffEnergy_n). Bochner/product isometry preserves norms. Angular frame graph and actual projected derivative give literal iterated integrals. Value ≤ native mass; each angular component ≤ total angular energy by nonnegativity. Existing nativeTimePrimitive_cutoff_energy_limit gives one finite original form-norm bound. No untruncated domain premise used.
+
+3. ThetaCuspHawkingBMNativeFormAdmission.lean — 182 lines.
+Three NEW public theorems: nativeCuspJointGraph_value (68), nativeCuspJointGraph_value_tendsto (91), nativeJointTimePrimitive_form_admission (166).
+LAST THEOREM: ∀ q : XiZeroCopy, ∀ s amplitude : ℂ, ∀ t : ℝ, ∃ v : jointDomain, jointEmbedding v = (nativeJointTimePrimitiveField_memLp q s amplitude t).toLp (nativeJointTimePrimitiveField q s amplitude t). No extra hypotheses.
+Private bochner_product_value proves original Bochner/product isometry preserves any specified literal product representative whose rows agree AE. Uses original pure-tensor agreement, L² inner-product integrability, Fubini, separated-tensor density. Applied to native family, value = actual eta_n W. Squared error ≤4||W||² and eventual-one cusp germs give strong L² value convergence.
+Private bounded_admission: for injective continuous Hilbert embedding K, range(K*) dense by orthogonal_ker and ker_eq_bot. Bounded original-domain approximants with strongly convergent K-values give convergent pairings on range K*. Existing GaloisForLFunctions.HTGeometry.exists_weakLimit_of_bounded gives v inside original domain; adjoint pairings identify Kv=W. This proves full native admission without first constructing untruncated derivative quotient classes.
+
+## Audits — finished, DO NOT repeat
+Complete smoothing/convergence scratch passed; graph corrections checked in scratch, final chain-rule correction in focused scratch. Complete FormBound and complete NativeFormAdmission candidates each passed lake env lean scratch.
+Final exact leaf builds: NativeRadialMollification: 2 jobs,187s; NativeFormBound:3 jobs,139s; NativeFormAdmission:4 jobs,73s. Only new target modules rebuilt. Isolated environment reused4146 local cached modules,11 dependency packages; existing WeakLimitBoundedFamily cache added for last leaf. No dependency or umbrella rebuild.
+All12 NEW public theorems checked separately with #print axioms in scratch; every result exactly [propext, Classical.choice, Quot.sound]. Older theorem axioms not rechecked.
+Each final source and five artifacts(.olean,.ilean,.trace,.olean.hash,.ilean.hash) installed byte for byte with absent-target guards. All3 leaves wired in formal/GaloisForLFunctions/RHTower.lean. scripts/formal_tools.py lint PASSED, large-file warnings elsewhere. All48 relative links across6 affected reports/cards checked.
+All owned process handles observed terminal. ps confirmed no owned Lean/Lake. /tmp/hb-native-smoothing.15b3vexe removed after completion. Eight owned /tmp/hb-native-smoothing-*.json outputs removed: friedrichs,graph-deep,douglas,admission-deep,adjoint-deep,uncurry,transposition,operator-deep. NO live owned process or scratch directory remains.
+
+## Documents
+Main authoritative proof/audit: docs/drafts/pipeline/3-formalized/hb-native-form-admission.md.
+Smoothing proof/audit: docs/drafts/pipeline/3-formalized/hb-native-radial-mollification.md.
+docs/drafts/pipeline/1-in-progress/hb-native-radial-form-admission.md is now a short completed-target pointer and next-operator link.
+Updated current remaining-work text in hb-native-radial-form-approximation.md, hb-native-global-energy.md (3-formalized), and hb-native-cusp-inverse-identification.md (1-in-progress; steps5/6 and final status). Frontier and universal-law STATUS untouched: no new route-independent RH constraint.
+
+## NEXT DIRECT MATHEMATICAL ATTACK
+Full native form admission CLOSED. Need actual original operator equation W=J J*(W+G), leading to complete native/physical causal inverse identification. Here W is literal native remainder double primitive and G is original nativeJointEllipticForcing (L² admission already proved). Ultimate current cancellation/RH remain later.
+Read/verified source: ThetaCuspHawkingBMJointCoreOperator.lean1–74, especially jointCoreDifferential_inner18 and jointEnergyOperator_core37. jointCoreDifferential(f,g)=sep(radialValue f,fieldVector g)-sep(radialDerivative f.differentiate,fieldVector g)-sep(radialWeightedValue f.angularWeighted,fieldVector g.laplacian). Its inner product against Jv equals full energy inner product of original core graph with v, for EVERY completed v.
+Next prove literal transposed elliptic identity <jointCoreDifferential f g,W>=<sep(f,g),W+G> for original RadialCore f and CoreField g. Native actual elliptic equation and pure-jet continuity are already in NativeJointEnergy; W is now admitted. Then density of original graph generators identifies v=J.adjoint(W+G), so W=J(J.adjoint(W+G)); friedrichsFormOperator_apply_covariance gives actual operator domain and action.
+Do not insist on constructing full untruncated gradient quotient classes or strong graph convergence first: weak admission plus original core transposition already provides completed form pairing. Need actual compact-test native Green identity, not a conditional operator wrapper.
+Potential proof for arbitrary angular CoreField g: choose one cusp cutoff identically1 on its compact support (and derivative germs), apply existing original modular CoreField Green formula to cutoff native W and g, then remove outer cutoff by germ equality. RadialCore support is compact inside Iio0, so integrate by parts twice with no radial boundary term. NativeJointEnergy supplies continuous literal pure derivatives and local compact integrability. Source G and all signs/complex conjugations must be matched exactly.
+Also read source this turn: JointCoreTransposition55–90 jointWaveSolution_transposed and jointWaveResponse_transposed; JointResponse40–84 constructs adjoint identity then actual Friedrichs action; JointRadialFamilyGreen1–53. NativeAngularGreen583 compact native angular Green is SELFTEST eta_n² W, not arbitrary g; do not mistake it for needed general bilinear identity. GlobalChartGreen PlanarChartTest.full_green104 gives test with arbitrary ChartSmooth h on full upper half plane, but original modular cell/measure still needs correct bridge.
+
+## Search / outside field
+Used corpus research tool broadly plus deep goal/method queries; spaces AND, --any OR. Own queries included Friedrichs, Douglas, graph approximation, recover injective domain via adjoint range, uncurry, transposition, and transfer differential equation via original energy operator. All candidate_lemmas, source_arguments/methods, proof_ideas, ingredient_sets and coverage/freshness inspected. Mostly partial/source_only; some deadlines. The decisive existing WeakLimitBoundedFamily source was applied successfully. Last operator deep group proposed modular current Green+compact derivative facts, UNVERIFIED/not used. Direct source verification found exact jointCoreDifferential_inner.
+Own newest-first arXiv term intertwining: Caputo–Quattropani–Sau9Sep2026, https://arxiv.org/html/2609.10450v1, Proposition2.3 and Section6. Useful methodological comparison: prove exact operator intertwining on actual domains. Exchange-model results NOT Lean premises.
+
+## Lean efficiency notes learned
+ContinuousLinearMap.hasFDerivAt takes x implicitly: .hasFDerivAt (x:=...). Real restriction function equality is ContinuousLinearMap.coe_restrictScalars' (NOT restrictScalars_apply). Explicit simp with it fixes chain-rule value projection.
+MemLp.mono' requires REAL majorant g: use hw.norm.mono', or MemLp.of_le for norm of complex majorant. Supply f:=fun _=>(0:ℝ) to partially applied dominated-convergence theorem. Normalize Pi.pow_apply/Pi.sub_apply and local F,W in its final equality.
+At dense adjoint pairing, first type hψ:Tendsto(fun n=>inner ℂ (J(un)) ψ)... using ht.inner (𝕜:=ℂ) tendsto_const_nhds; then hψ.congr with (J.adjoint_inner_right(un)ψ).symm. This fixes scalar/universe/implicit-target ambiguity.
+Semireducible private wrappers and function products often need explicit change before rw; integral_congr is not available here—use integral_congr_ae and Eventually.of_forall. New lemmas verified against this toolchain, not recalled names.
+Local SecondCountableTopologyEither ℝ originalAngularSpace/energyDomain instances choosing real-domain side prevent huge typeclass searches in convolution. Do not rerun long finished source checks for one local rewrite; use focused scratch when appropriate, then exact leaf audit.
