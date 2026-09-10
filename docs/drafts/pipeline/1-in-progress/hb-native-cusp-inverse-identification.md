@@ -388,7 +388,7 @@ The exact equation is `A W=G`, for `A=-partial_x^2-sech(x)^2 Delta_H`. All norms
 The analytical argument to formalize is the following. It separates the local Green identity, which needs no global energy assumption, from the global limit.
 
 1. **Finite radial support and literal trace.** The source-cone identity makes `W(t,x,z)=0` whenever `max(t,0)<=abs(x)`. For negative time the whole time integral vanishes. For nonnegative time, each integration point has one nonpositive null coordinate outside this radial interval. The exact Dirichlet theorem gives `W(t,0,z)=0`. Thus radial integration over `[-max(t,0)-1,0]` has zero endpoint product `conj(W) W_x` at both ends. This step and the resulting exact radial Green and positive energy identities are [formalized and audited](../3-formalized/hb-native-primitive-radial-energy.md), including actual derivative existence and interval integrability.
-2. **Actual L2 right-hand side.** The existing common bounded-time native residual majorant gives `W` in L2. The first forcing term is a continuous radial coefficient with finite causal support times the admitted angular `squareResidual`. Each remaining term is a continuous principal response coefficient on that same finite radial interval times `cutoffCommutator`, supported in `2<=Im(z)<=3`. These give a common L2 majorant on every bounded time interval, hence `G` in L2. No Laplace convergence chamber is needed for this finite-time step.
+2. **Actual L2 right-hand side.** This step is [formalized and audited](../3-formalized/hb-native-elliptic-l2-localization.md). The common bounded-time native residual majorant gives `W` in the original joint L2 space. The actual integrated forcing is exactly a finite sum of separated products: the time primitive of the odd source times `squareResidual`, and all three integrated principal response coefficients times their original `cutoffCommutator`. Each radial coefficient is continuous with finite causal support, hence is in radial L2. The original angular admission theorems then give the complete integrated forcing in joint L2, and subtraction of the native residual gives `G` in joint L2. The statements hold for every real time and arbitrary complex source parameters. No Laplace convergence chamber is required.
 3. **Local Green step.** Let `eta_N=modularCuspCutoff N`, with `N>=1`. Its local profile is one below height `2N`, zero above `3N`, and its hyperbolic gradient is uniformly bounded by a constant `C_eta`. Joint angular smoothness of the actual primitive, its uniform modular germs, its smooth global extension, and compact angular integration by parts are [formalized and audited](../3-formalized/hb-native-angular-green.md). For `N=n+1`, the new theorem proves integrability of both pairings and `integral frameEnergy(W,eta_N^2 W)=-integral conj(Delta_H W) eta_N^2 W`. Its proof applies the existing core Green identity to `eta_(3N) W` and `eta_N^2 W`, then removes the outer cutoff through equality of actual germs. It assumes no global gradient energy or native joint-domain admission. All seams and elliptic corners remain included. Combining this angular identity with the proved radial identity and the actual elliptic equation must still establish the joint identity
 
    ```
@@ -399,23 +399,37 @@ The analytical argument to formalize is the following. It separates the local Gr
    ```
 
    This is a classical compact-domain identity; it does not first assert that `eta_N W` lies in the completed joint domain. Radial endpoint terms vanish by step 1. Angular side terms must be canceled using the actual invariant germs.
-4. **First estimate, then exact limit.** Young's inequality gives
+4. **Exact localization, then global energy.** Completing the square gives a sharper construction. For each fixed radial coordinate, the actual angular identity is [formalized and audited](../3-formalized/hb-native-elliptic-l2-localization.md):
 
    ```
-   E_N <= 2 norm(W)_2 norm(G)_2
-          + 4 C_eta^2 norm(1_{2N<=Im(z)<=3N} W)_2^2.
+   integral_fd abs(grad_H(eta_N W))^2
+     = -Re integral_fd conj(Delta_H W) eta_N^2 W
+       + integral_fd abs(W grad_H eta_N)^2.
    ```
 
-   Fatou first proves finite total gradient energy. With that new fact available, dominated convergence applies to `E_N`; the mixed cutoff term tends to zero by Cauchy-Schwarz and the escaping cusp annulus. Consequently the stronger identity is
+   Both the cutoff energy and its nonnegative error are integrable. The proof retains both product-rule contributions and recombines their real cross terms using the existing native compact Green identity. The error also has an unconditional joint-space limit: both `integral abs(W grad_H eta_N)^2` and the exact physically weighted integral with `sech(x)^2` tend to zero. The scale-independent cutoff derivative bound dominates the error by `C_eta^2 abs(W)^2`; native L2 admission justifies dominated convergence for this error alone.
+
+   Combining the angular localization with the radial Green identity and `A W=G` must still establish the joint identity
+
+   ```
+   F_N = Re integral eta_N^2 conj(W) G + error_N,
+   F_N = integral (abs(partial_x(eta_N W))^2
+                    + sech(x)^2 abs(grad_H(eta_N W))^2),
+   error_N = integral sech(x)^2 abs(W grad_H eta_N)^2 -> 0.
+   ```
+
+   Its immediate bound would be `F_N <= norm(W)_2 norm(G)_2 + error_N`. Each point eventually lies where the complete cutoff germ is one, so Fatou would then prove finite total native gradient energy. With this new fact, cutoff gradients converge in L2: dominated convergence controls `(eta_N-1) grad(W)` and the already-proved error limit controls `W grad(eta_N)`. The forcing pairings converge because `W,G` are in L2. The resulting global target is
 
    ```
    integral (abs(W_x)^2+sech(x)^2 abs(grad_H W)^2)
-      = Re inner_L2(W,G) <= norm(W)_2 norm(G)_2.
+     = Re inner_L2(W,G) <= norm(W)_2 norm(G)_2.
    ```
+
+   The remaining compact-domain task is joint integrability and radial/angular interchange for the actual derivative fields. Fixed-radial angular integrability alone does not provide that interchange. Actual angular-jet continuity in all finite parameters, the elliptic equation, and finite radial support are the direct construction to check.
 
 5. **Approximate in the first-derivative graph.** The cutoff fields converge with their actual gradients: the additional derivative term is `W grad_H eta_N`, whose L2 norm tends to zero. For each fixed cusp cutoff, zero extension across `x=0` has weak radial derivative equal to the zero extension of `W_x`, since the literal trace is zero. Translate this extension toward negative `x`, then mollify at a smaller radius. This produces radial support strictly inside `x<0` and convergence of both value and radial derivative. Compact angular charts, a finite smooth partition and averaging over finite stabilizers give smooth invariant approximants; local weights are bounded on these compact sets. Finite separated approximation, as in `RadialEnergyFamily.graph_mem`, then puts the original value-and-gradient graph in `jointDomain`. The target is the form graph, not density in the second-order operator graph.
 6. **Identify the actual operator.** The compact-test Green identity extends by the just-established first-gradient norm convergence. If `J` is the original joint embedding, its Riesz identity is `W_graph=J.adjoint(W+G)`. Hence `W=J(J.adjoint(W+G))` and the actual Friedrichs operator `I+A` acts on `W` as `W+G`. This is the domain statement needed by the bounded-resolvent comparison.
 
-Status: the radial and compact angular Green identities are closed in Lean. The actual L2 forcing assembly, their joint integral combination, the cutoff estimate and global energy identity, native graph admission, and operator identification remain construction targets. The first estimate and limit are distinct: using dominated convergence on the gradient before Fatou would assume the missing result. The backward-adjoint alternative currently offers no shortcut because a form core alone does not establish an operator core.
+Status: radial and compact angular Green identities, actual joint-L2 admission of `W` and the complete elliptic forcing, exact compact angular energy localization, and both joint cutoff-error limits are closed in Lean. The joint radial/angular integral combination, global energy identity, native graph admission, and operator identification remain construction targets. The proved error limit uses only native L2 admission; the gradient limit still follows after the joint estimate and Fatou. The backward-adjoint alternative currently offers no shortcut because a form core alone does not establish an operator core.
 
 Own broad literature queries `capacity` and `compactness` were tested. The arXiv `capacity` endpoint returned HTTP 429. [Fernandez, 2609.10064, 9 September 2026](https://arxiv.org/html/2609.10064v1) keeps state and derivative together in an evolution graph when terminal atoms matter; its compact embedding hypotheses do not supply this native graph admission. [Cheng--Lin--Wang, 2609.10098, 9 September 2026](https://arxiv.org/html/2609.10098v1), Appendix D, realizes natural boundary conditions through closed forms in a rotating-star problem. The transferable question is which boundary condition the approximating form actually retains; its stellar estimates do not prove the HB cutoff estimate. Corpus deep/method searches returned relevant existing Sobolev and graph constructions, but their proposed ingredient groups did not establish the native estimate; source-only compiler metadata was not treated as verification.

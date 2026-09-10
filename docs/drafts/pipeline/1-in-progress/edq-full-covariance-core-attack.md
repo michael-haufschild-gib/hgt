@@ -1620,3 +1620,31 @@ and supply no estimate for the Ramaré weight `mu(m)/(1+omega_P(m))`.
 Direct source inspection instead found the uniform-in-P contour theorem
 above. The useful bridge is its explicit prime-mass budget; the full signed
 source estimate and RH remain open. No numerical experiment was run.
+
+
+## Adaptive prime window and the actual cofactor boundary
+
+**Active proof tests; no new source estimate claimed.** The receiver still needs
+a cofinal subpower bound for the complete signed physical source, including
+rough/prime mixed terms and the full tail. Two concrete conjectures are under
+examination.
+
+1. The existing all-heights Perron theorem leaves its height U independent of
+   the coefficient cutoff N. With L=log N, try Q=exp(L^(19/20)),
+   U=exp(L^(19/18)), H=N exp(-L^(1/40)), d=1+1/L. The proposed proof must check
+   both displacement bounds, the correction, all four edges, and the smoothing
+   error, uniformly for P contained in primes up to Q and abs(tau)<=N.
+   This retains a rough packet; a cofactor bound alone does not close EDQ.
+2. For the all-prime coefficient a(n)=mu(n)/(1+omega(n)), where omega counts
+   distinct prime factors, test whether its actual Dirichlet series has a
+   logarithmic boundary layer at s=1. Absolute convergence for s>1 suggests
+   F(s)=integral_0^1 product_p(1-u*p^(-s)) du. Put
+   S(s)=sum_p p^(-s), B(s)=log zeta(s). Concavity of log gives the candidate
+   squeeze (1-exp(-B))/B <= F(s) <= (1-exp(-S))/S. If justified,
+   B-S=O(1) yields F(s)*log zeta(s)->1 as s decreases to 1.
+   Abel summation would then test, and potentially disprove, the proposed
+   super-polylogarithmic partial-sum saving for this literal cofactor.
+
+These are proof attempts, not formalized results. The second test concerns
+the actual signed coefficient, whereas the preceding correction-budget
+obstruction concerns an upper-bound formula. No route is retired.
