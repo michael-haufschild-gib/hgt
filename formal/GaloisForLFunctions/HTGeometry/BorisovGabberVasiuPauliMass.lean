@@ -22,7 +22,10 @@ theorem bgv_pauli_anisotropic_det (r a : Fin 3 → ℝ) :
   have hmatrix : diagonal a + gomesPauliAdjointMass r =
       diagonal (fun i => a i + r ⬝ᵥ r) + vecMulVec (-r) r := by
     ext i j
-    by_cases h : i = j <;> simp [gomesPauliAdjointMass, h] <;> ring
+    by_cases h : i = j
+    · simp [gomesPauliAdjointMass, h]
+      ring
+    · simp [gomesPauliAdjointMass, h]
   rw [hmatrix, bgv_det_diagonal_add_vecMulVec]
   simp only [Pi.neg_apply, neg_mul, Finset.sum_neg_distrib, sub_eq_add_neg,
     pow_two]

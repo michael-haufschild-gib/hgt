@@ -241,7 +241,7 @@ For the separate all-degree tilt-energy candidate, write `P(i*t)=eta*Q(t)` with 
 
 If `Q` has distinct real roots `r_j`, its right side is `sum_j integral |(Q/(X-r_j))*F_a|^2`. The estimate remains unproved for the actual theta transform. The generic angular Laguerre energy identity has a different domain and weight.
 
-The actual density definition fixes the frequency scaling in the adaptive test. Analytically set `A_a(y)=integral_x g_a(x+y)*g_a(x-y)`. Evenness of `Phi`, followed by `r=2*x`, gives `thetaCuspCenterMixedDensity a y = partial_a A_a(y)`. Thus for a fixed real polynomial `Q`, its signed moment norm is the aperture derivative of `(1/(2*pi))*integral_t Q(2*t)^2*|F_a(t)|^2`. The physical differential polynomial has symbol `P(i*t)=Q(2*t)`; the factor two must be retained. Since the odd source moments vanish, reflection preserves the monic degree-six norm problem. Its strict minimizer is therefore even. Analytically its six simple real roots form three nonzero pairs `+/-r_j`; up to an overall sign, the corresponding physical operator is `product_j (4*D^2+r_j^2)`. This evenness and factorization have not been added as Lean declarations.
+The actual density definition fixes the frequency scaling in the adaptive test. Analytically set `A_a(y)=integral_x g_a(x+y)*g_a(x-y)`. Evenness of `Phi`, followed by `r=2*x`, gives `thetaCuspCenterMixedDensity a y = partial_a A_a(y)`. Thus for a fixed real polynomial `Q`, its signed moment norm is the aperture derivative of `(1/(2*pi))*integral_t Q(2*t)^2*|F_a(t)|^2`. The physical differential polynomial has symbol `P(i*t)=Q(2*t)`; the factor two must be retained. Since the odd source moments vanish, reflection preserves the monic degree-six norm problem. Its strict minimizer is therefore even, now formalized by the Jacobi formula below. Analytically its six simple real roots form three nonzero pairs `+/-r_j`; up to an overall sign, the corresponding physical operator is `product_j (4*D^2+r_j^2)`. The paired-root operator factorization has not been added as a Lean declaration.
 
 For the moving minimizer `Q_a`, differentiating its signed norm cancels the coefficient-motion term: `Q_a` is orthogonal to `partial_a Q_a`, whose degree is below six because the leading coefficient is constantly one. Consequently the derivative of the successor scalar is the second aperture derivative of the preceding energy with `Q_a` held fixed during that derivative. This selects the adaptive frequency polynomial `R_a(t)=Q_a(2*t)`, whose six roots are real and simple, as a sharper target for `2*integral |(R_a*F_a)'|^2 >= integral (R_a'^2-R_a*R_a'')*|F_a|^2`. These differentiated Plancherel identities are analytical deductions, not additional Lean declarations. The adaptive bound and the zero-aperture limit needed to integrate its sign remain to be proved; no native successor positivity is asserted.
 
@@ -267,7 +267,22 @@ d_12+2*S*d_10+(S^2+2*E)*d_8+2*(S*E+F)*d_6
   +(E^2+2*S*F)*d_4+2*E*F*d_2+F^2*d_0.
 ```
 
-For a geometric raw pair jet `d_(2j)=D^(2j)`, this expression is the retained positive square `(D^6+S*D^4+E*D^2+F)^2`, bounded below by `(D^6+F)^2`. The next conjecture is that the actual mixed-atom lower-order terms can be bounded while retaining this square. Their signs, the integrated norm sign, and all-rank propagation are open. The finite recurrence and actual-source specialization are being checked in Lean; no mixed-atom estimate is claimed yet.
+For a geometric raw pair jet `d_(2j)=D^(2j)`, this expression is the retained positive square `(D^6+S*D^4+E*D^2+F)^2`, bounded below by `(D^6+F)^2`. The next conjecture is that the actual mixed-atom lower-order terms can be bounded while retaining this square. Their signs, the integrated norm sign, and all-rank propagation are open. [ThetaCuspCutoffJacobiCone.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspCutoffJacobiCone.lean) now formalizes the actual cutoff formula, strict coefficient magnitudes, evenness, imaginary-axis evaluation and square bound, and exact raw-derivative norm. Scratch checking passes; the final isolated leaf build passes in `/tmp/sqb76-cutoff-jacobi-leaf-audit` against the existing compiled dependencies (48 seconds, two Lake jobs). `/tmp/sqb76_final_audit.lean` audits all six public theorems; each uses only `propext`, `Classical.choice`, and `Quot.sound`. The module is wired into `RHTower.lean`; global formal lint passes (`/tmp/sqb76_formal_lint.txt`). No mixed-atom remainder estimate is claimed.
+
+The literal atom product gives a scalar differential representation for that next bound. Set `q=pi*n^2*exp(2*x)`, `r=pi*m^2*exp(2*x)`, `c=4*q*r`, and `z(t)=q*exp(2*t)+r*exp(-2*t)`. Direct expansion of the two source seeds gives
+
+```text
+Phi_n(x+t)*Phi_m(x-t) = 4*q*r*exp(x)*(c+9-6*z(t))*exp(-z(t)).
+z''=4*z,    (z')^2=4*(z^2-c).
+R_c P = (z^2-c)*(P''-2*P'+P)+z*(P'-P).
+D_t^2 [exp(-z(t))*P(z(t))] = 4*exp(-z(t))*(R_c P)(z(t)).
+```
+
+Thus the exact even pair jet of order `2j` is `4*q*r*exp(x-q-r)*4^j*(R_c^j(c+9-6*X))(q+r)`. The cutoff-square pair contribution retains the entire operator `(64*R_c^3+16*S*R_c^2+4*E*R_c+F)^2` applied to `c+9-6*X`. These are analytical identities awaiting formalization, not positivity claims about the operator. The high-order remainder must still be bounded for the actual coefficients and complete atom sum.
+
+All-view deep searches used independently chosen inertia/copositivity, high cumulants, symmetric orthogonal coefficients, and hyperbolic radial diffusion, together with a determinant-correction mechanism query. Statements, source arguments, methods, proof ideas, and ingredient groups were inspected. The applicable finite Jacobi recurrence supplies the displayed cutoff coefficients. Other returned positivity results retain an unmatched source, derivative, or positive-Gram premise. Coverage is partial, with stale compiler metadata and some interrupted retrieval/deadline stages; no corpus-absence conclusion follows.
+
+Recent-paper searches used `screening` and `pinning`. [Exact Cancellation of Horizon Modes in Kerr Ringdown](https://arxiv.org/html/2609.07326v1) retains a complete frequency-dependent zero factor before evaluating a near-horizon source integral. [A dot-product bound from separate growth-minimizing bases](https://arxiv.org/html/2609.06730v1) combines independently chosen minimizing subsets through a product base. Neither paper supplies a theta inequality or a Lean premise. The pair differential identity above follows directly from the theta seed, while the remaining sign estimate still needs proof.
 
 ### Unsigned-moment projection candidate
 
@@ -350,7 +365,33 @@ Relative to `v^T*A_low*v-sum_ij |v_i|*E_band_ij*|v_j|`, its right side gains exa
 2*L*(max(-G_2(x),0)+e_G(x))*v_3^2.
 ```
 
-The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. For each fixed coefficient, the aperture-dependent matrix `thetaCuspCenterCorrectedEvenFour` integrates entrywise to the original native moments. Its correction dominates the weighted source correction, with a nonnegative diagonal remainder, as proved by `thetaCuspCenterCorrectedEvenFour_posDef_of_source`. This makes the coefficient choice admissible; the aperture-independent source matrix itself is not the exact zero-flux matrix. The complete-source tail theorem already covers `L` on `pi*exp(2*x)>=30`, and seam positivity for `L` is already proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
+The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. For each fixed coefficient, the aperture-dependent matrix `thetaCuspCenterCorrectedEvenFour` integrates entrywise to the original native moments. Its correction dominates the weighted source correction, with a nonnegative diagonal remainder, as proved by `thetaCuspCenterCorrectedEvenFour_posDef_of_source`. This makes the coefficient choice admissible; the aperture-independent source matrix itself is not the exact zero-flux matrix. The complete-source tail theorem covers `L` on `pi*exp(2*x)>=21`, hence throughout `x>=1`, and seam positivity for `L` is proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
+
+### Complete compensated outer region through center one
+
+The complete-source remainder estimate now retains the balancing factor in each even entry. Put `q=pi*exp(2*x)`, `f_1=thetaCuspSourceTerm x 1`, and `epsilon=regimeOneLikelihoodScale x`. For `0<=k<=6` and `q>=21`, the verified bound is
+
+```text
+abs(nativeScaled_k-firstScaled_k)/32^k
+  <= 27*18^k*q^k*epsilon
+  <= 27*18^6*21^6*32/(1300000000)^3
+  <= 2/10^9.
+```
+
+The exponential calibration follows analytically by cubing the existing proved lower bound for `exp(21)`, together with polynomial-exponential monotonicity. The exact first-atom determinant certificate uses `z=1-30/q`. Its constant coefficient dominates the sum of its odd coefficients, so the same reserve floor `1/10000` holds whenever `q>=15`, since `abs(z)<=1` and every even power is nonnegative. First-atom balanced entries have absolute value at most four for `q>=21`; complete entries have absolute value at most five. The existing four-by-four determinant perturbation estimate costs at most `96*5^3*(2/10^9)`. Consequently the reserved complete determinant is at least `1/20000` throughout `q>=21`, and the actual native Schur coordinate divided by `f_1^2*q^6` exceeds `100000000`.
+
+The complete mass/slope estimates `F<=(101/100)*f_1`, `abs(F')<=(201/100)*q*f_1`, and `16*x<=q` give
+
+```text
+G = 3*F^2+2*x*F*F' >= -(13/50)*q^2*f_1^2,
+G/(f_1^2*q^6) >= -(13/50)/21^4.
+```
+
+Thus every fixed `0<=C<=3*10^12` has compensated normalized Schur coordinate strictly above `90000000` on `q>=21`. Since `x>=1` implies `q>=21`, the actual complete matrix `thetaCuspNativeEvenFourCompensated C x` is positive definite on `x>=1`. This includes the actual canonical coefficient. The literal weighted matrix is positive for every positive aperture and `r>=2`. Combining with the existing uniform seam theorem gives one `delta>0`, `delta<=1`, such that every `10^12<=C<=3*10^12` is covered on `0<=x<delta` or `x>=1`.
+
+The exact statements are formalized in `HTGeometry/FirstAtomEvenTailExtendedReserve.lean` and `RHTower/ThetaCuspEvenFourExtendedTail.lean`. The full construction passes `lake env lean /tmp/sqb77_complete_extended.lean`; canonical source, weighted-source, and common outer-gap axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`. Both modules are wired into their umbrellas. The final narrow builds `lake build GaloisForLFunctions.HTGeometry.FirstAtomEvenTailExtendedReserve` and `lake build GaloisForLFunctions.RHTower.ThetaCuspEvenFourExtendedTail` pass in `/tmp/sqb77-first-extended-leaf-audit` and `/tmp/sqb77-even-extended-leaf-audit`, against actual repository source and cached dependencies. Formal lint passes (`/tmp/sqb77_formal_lint.txt`). No numerical experiment or numerical certificate enters these proofs. **The remaining compact source sign below one, compatibility with a fixed barrier coefficient, the global degree-six cutoff norm, and all-rank positivity remain open.** This is an even-block source theorem, not a global rank-seven theorem.
+
+Broad deep searches through angular terms, Rankin--Cohen identities, complete Gaussian errors, and absorption inspected declarations, candidate lemmas, source arguments, methods, and proposed ingredient groups. Search coverage remains partial, including stale compiler metadata; no absence claim is inferred. The successful estimate uses the actual effective source-error theorem and the existing exact reserve identity. The independently chosen arXiv search `buckling` recovered [Scaling Inequalities and Limits for Clamped Plate Eigenvalues on Geodesic Disks](https://arxiv.org/html/2608.29498v1). Section 3 keeps separate scaling factors in a fixed-domain Rayleigh quotient before comparing its coefficients. That mechanism motivates retaining normalization through estimates; its geometric hypotheses and spectral conclusions are not used as theta-source premises.
 
 ### Actual modular ratio bounds and next determinant target
 
