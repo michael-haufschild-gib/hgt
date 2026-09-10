@@ -1,0 +1,6 @@
+'RHTower.abs_resolvent_log_nat_le_mobiusDivisorSquareRootAbel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RHTower.riemannHypothesis_iff_mobiusDivisorSquareRootAbelSubpower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

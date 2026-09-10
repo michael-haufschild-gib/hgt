@@ -101,10 +101,11 @@ contains `2*((3/5)*2^(P.card-1))²/T`; it is not uniform in a growing processed 
 Any scale-contraction proposal must remove that dependence through signed source
 control, rather than insert it as a recurrence premise.
 
-An all-epsilon bound on the normalized Abel head remains a possible weaker target;
-this audit has not constructed its exact Lean implication to RH. Existing
-all-epsilon sharp-window and aperture-transfer theorems concern explicitly different
-quantities and cannot be silently substituted.
+The all-epsilon bound on the literal normalized Abel head now has a closed Lean
+equivalence to RH: `riemannHypothesis_iff_mobiusDivisorSquareRootAbelSubpower`.
+See the [exact source criterion](../3-formalized/ccm-fu-abel-subpower-criterion.md).
+This permits subpower losses, but the arithmetic estimate itself remains unproved;
+estimates for different sharp-window or aperture quantities cannot be substituted.
 
 No numerical experiment, new Lean declaration, umbrella build or frontier-map edit
 was made for this audit. RH remains unproved.

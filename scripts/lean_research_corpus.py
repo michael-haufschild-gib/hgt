@@ -213,18 +213,20 @@ IMPORT = re.compile(r"^[ \t]*(?:(?:public|private|meta)[ \t]+)*import[ \t]+([^\n
 def chunks(text: str, line: int = 1) -> Iterable[tuple[str, int, int]]:
     """Cover all bytes with bounded chunks, including declarations we cannot parse."""
     start = 0
+    first = line
     while start < len(text):
         end = min(len(text), start + CHUNK_CHARS)
         if end < len(text):
             newline = text.rfind("\n", start + CHUNK_CHARS // 2, end)
             if newline >= 0:
                 end = newline + 1
-        first = line + text.count("\n", 0, start)
         last = first + text.count("\n", start, end)
         yield text[start:end], first, last
         if end == len(text):
             break
-        start = max(start + 1, end - CHUNK_OVERLAP)
+        next_start = max(start + 1, end - CHUNK_OVERLAP)
+        first += text.count("\n", start, next_start)
+        start = next_start
 
 
 def source_declarations(text: str, module: str, path: str) -> list[dict]:

@@ -1,0 +1,25 @@
+# SQB47: half-inner and native Cauchy comparison
+
+Goal remains ACTIVE and RH unproved. No new mathematical theorem, Lean source, frontier-map edit, universal STATUS entry, or Lean/build process in this turn. Do not count search results as proof progress. Existing SQB scalar source orientation remains hardest obstacle; retain packet mass and full constant correction. User forbids Git, launch.sh/service management, numerical computations, subagents, easy receiver/no-go padding. Frontier map read-only.
+
+## Exact source checks
+
+Read SuzukiHalfInnerRealAxis.lean and SuzukiHalfInnerHalfPlane.lean fully. `norm_sq_suzukiHalfInner_ofReal`: |A/E|²=Re(A/E) unconditionally, A=XiC, E=XiC+i XiC'. Quotient holomorphic near real points including removable real divisor contacts; divided slopes at any Xi zero admit real-axis L². `norm_suzukiHalfInner_le_one_of_rh` and `differentiableAt_suzukiHalfInner_of_rh` explicitly require RH for upper half-plane. Boundary identity does not provide the global Hardy extension.
+
+Read RiemannGaussian/RiemannXiSuzukiCarrierHerglotz.lean fully (about 510 lines); declaration index of its Analytic and ArithmeticDensity dependencies. Its scalar transform integrates density Xi²/(Xi²+Xi'²), with literal density 1/4 at simultaneous-zero totalization contacts, against 1/(x-z)-x/(1+x²). It is an unconditional Herglotz transform, analytic off real axis, and reproduces its OWN carrier Gram via divided differences. Density differs from proposed SQB native density Xi(t)²*[1+Re(conj Lambda(1+it)/Lambda(1+it))]. No native transport identity established. Existing corpus theorem source inspected; no fresh Lean audit this turn.
+
+Read SuzukiShiftedXiBoundaryFactorization.lean lines1-210 and CoreSchur lines1-190. Exact shifted quotient factorization retains complete pole Blaschke denominator. Read GammaSewnMobiusXiTrueWienerHopfFactorization.lean lines1-130: genuine entire complement constructed from complementary divisor, source factorization exact; complement nonzero at every strict-right divisor. It is divisor separation, no cancellation of original native scalar response. Do not use old totalized complement as analytic at strict-right zeros.
+
+## Analytical attempt, not a theorem
+
+Tried identifying native Cauchy response with an analytic scattering expression vanishing at Xi zeros. Real-axis energy identity and upper-half-plane holomorphy alone leave a Cauchy-projection boundary/growth remainder. No estimate or cancellation of that remainder obtained. No rigorous factorization claim should be inferred from this exploratory attempt. Original SQB41 Mellin/boundary comparison card still has unproved boundary/Parseval joins.
+
+## Contour sources checked
+
+RiemannXiSuzukiSpectralUpperContourProjection and SignedContourProjection first165 lines: exact finite signed contour projection uses actual spectral logarithmic derivative. StaticContourUniformVanishing first125 plus index: genuine unconditional compact-uniform disappearance of selected VERTICAL edges at imaginary observations above1. This is a different integrand from native density and does not cancel the HORIZONTAL boundary term needed here. XiGaussianHorizontalCauchyResidue first135: Gaussian test horizontal wall-crossing infrastructure. XiSourceBoundaryOrientationConservation first175: exact signed prime-two displacement/entropy detector, no source cancellation. XiCenteredRealShiftCauchyPairExactCorrection first115: finite rational covariance correction, no native pairing weld. SelbergCuspHardyBoundary first110: retains boundary square completion; no global gluing gap.
+
+## Search results and process cleanup
+
+Four search JSON files, all owned handles finished exit0: /tmp/sqb47_half_inner.json (94216), /tmp/sqb47_source_holomorphy.json (10442), /tmp/sqb47_scattering_factor.json (7777), /tmp/sqb47_contour_remainder.json (49205). Used broad OR phrases, hybrid/deep, statement/proof/prose lanes, generated ideas/groups, natural-language mechanism query and adaptive expansions. No services changed. All searches partial. Half-inner and scattering no errors but semantic index incomplete: about2.167m/2.331m vectors; inventory55940files720486decls, most compiler metadata pending. Source-holomorphy and final contour hit deadlines; final text/source retrieval marked interrupted. Final query returned generic `FinitePoleHorizontalContourShift.horizontalIntegral_normalized_sub_eq_I_mul_sum_laurentCoeff_of_vertical_tendsto_seq`, finite Hardy polynomial projectors, no verified native source identity. Half-inner generated group attempted joining SelbergThetaDilationRows with TotientHankel scattering ratio; not native pairing cancellation. No absence claim about corpus.
+
+Other independent agents had live search processes visible in final ps snapshot; do not kill them. No own Lean process started. Last goal check tokensUsed10601083, active, unbudgeted. No goal status update.

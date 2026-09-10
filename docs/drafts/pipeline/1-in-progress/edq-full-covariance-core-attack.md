@@ -1261,3 +1261,362 @@ No dependency rebuild, umbrella build, axiom audit, or new Lean module
 was performed. The finite prime split and integral norm calculation
 above remain paper calculations. RH and the hard signed ceiling remain
 unproved; no universal-law or frontier-map change is justified here.
+
+## Deep search: mixed prime correlation and the full-tail estimate
+
+The target remains an upper ceiling for the complete signed source, on
+the same cofinal cutoffs used by the zero-balance receiver. Three further
+requests used `--any --mode deep --budget-seconds 120 --no-refresh`, with
+one result per module:
+
+| Query | Candidate lemmas / source arguments | Result |
+|---|---:|---|
+| `coprime Mobius dilation energy mixed correlation` | 12 / 12 | partial, 120.006 seconds |
+| `Mobius Gram Bessel dilation cutoff correlation` | 16 / 16 | partial, 120.013 seconds |
+| `signed bilinear cancellation Hilbert Cotlar` | 12 / 12 | partial, 120.035 seconds |
+
+All three reached the deadline with `filter_and_judge` unfinished.
+All returned empty `proof_ideas` and `ingredient_sets`; this is a retrieval
+outcome, not evidence that no useful argument exists in the corpus.
+Coverage was pending and semantic coverage incomplete. All 80 returned
+declaration occurrences matched their current source-block hashes when
+checked, but all had `source_only` compiler status and unchecked
+applicability. Their statements were inspected; selected relevant proof
+bodies were then read directly.
+
+The source-specific candidates expose the following exact boundaries:
+
+- `MobiusDivisorLocalizedInteractions` bounds a mixed second selection
+  difference by `(18/25)*4^(|P|-1)*M*(floor((M-1)/(p*q)) +
+  floor((M-1)/max(p,q)))`. Both support restrictions are genuine, but the
+  processed-prime factor remains. This is not a bound for the raw
+  prime-free Gram pairing in the preceding section.
+- `MobiusDivisorPrimeCorrelationPhysical` identifies the complete
+  fixed-core release with `2*density(P union {p})*p^(-3/2)*D_P(p)`.
+  `MobiusDivisorDilationMeanUniformRenewal` bounds `D_P(Y)` uniformly in
+  Y for each fixed P. Its bound explicitly contains the core's residue
+  and an absolute Mellin-boundary integral. The same module proves
+  `D_(P union {p})(Y) <= -c_P*sqrt(p)` throughout a comparable-ratio
+  band after a sufficiently large insertion. Thus even these changing-core
+  correlations have source-derived negative bands; a positive mixed
+  pairing cannot be supplied by generic dilation geometry. The release
+  prefactor must remain when judging their size.
+- `MobiusAdditiveDilationDiagonalization` gives exact Parseval for signed
+  divisor-incidence coefficients. The point-evaluation estimate needed
+  after that diagonalization remains unproved.
+- `Sieve.HilbertBilinear` controls its harmonic Fourier multiplier;
+  `HTGeometry.MontgomeryVaughanDampedMeanSquare` retains frequency-spacing
+  costs. Neither statement identifies that multiplier with the actual
+  symmetric EDQ Gram kernel or bounds its remaining signed part.
+
+The literal prime split still gives `F_N=A_N^p-Z`, hence a proposed
+contraction `||F_N||^2 <= q*||F_(floor(N/p))||^2+C*N^epsilon` requires
+
+```
+2*<A_N^p,Z> >= ||A_N^p||^2+||Z||^2
+               -q*||F_(floor(N/p))||^2-C*N^epsilon.
+```
+
+None of the inspected candidates proves this lower comparison for the
+actual finite prime-free vectors. Their fixed-core, selection-energy,
+and multiplier hypotheses cannot be silently substituted for it.
+
+A second attempt tested whether choosing cutoffs with small harmonic
+counterterm could make the existing complete tail bound sufficient.
+The lexical `deningerHarmonicPartial` search and source follow-ups did
+not supply the required cofinal selection theorem. Even granting the
+stronger condition `H_N=0`, the existing certificate from
+`DeletionQuotientTail.primitiveEnergy_le_harmonic_depth` is
+
+```
+4+2*N*L*(eta_N*(1+harmonic(L)))^2+N/L
+  >= 2*N*L*eta_N^2+N/L >= 2*N*eta_N       (N>=0, L>0).
+```
+
+The last inequality follows from
+`2*(L*eta_N)^2+1 >= 2*L*eta_N`. For the available positive rate constant
+and `eta_N=B*exp(-(log N)^(1/3)/108)`, its right side divided by N^epsilon
+tends to infinity for every fixed `0<epsilon<1`. This is a lower bound
+on the *upper-bound certificate*, not on the actual energy. It shows
+that optimizing L within this estimate, even at a vanishing harmonic
+counterterm, cannot produce the required subpower ceiling. A stronger
+estimate of the signed quotient-increment field is still needed.
+
+Scratch validation of the three fixed-core/selection candidates stopped
+at the missing transitive `XiCTaylorThetaTailPrimitiveRayInteriorSquare.olean`,
+before their examples were checked. No dependency rebuild was attempted.
+The elementary certificate inequality was checked separately with narrow
+mathlib imports. No new Lean module, axiom audit, mathematical computation,
+or umbrella build was needed. These attempts do not close the signed
+source bound or RH; no route is retired and no universal-law entry is added.
+
+## Completed argument assembly: audit against the compensated quotient source
+
+The previous certificate calculation rules out obtaining a subpower bound
+merely by optimizing tail depth, even after granting a vanishing harmonic
+counterterm. The next attempt therefore kept the signed samples and their
+compensating mass together.
+
+Three corpus requests used OR matching and current source verification:
+
+| Query | Budget / elapsed | Candidate lemmas / source arguments | Argument assembly |
+|---|---:|---:|---|
+| `compensated quotient sampling signed quadrature Mobius` | 120 / 120.010 seconds | 14 / 14 | deadline before completion |
+| `Mertens quadrature` | 300 / 56.914 seconds | 8 / 8 | one proposed ingredient set |
+| `moebius "bounded variation" "quotient sampling"` | 300 / 58.312 seconds | 10 / 10 | one proposed ingredient set |
+
+The latter two requests finished without runtime errors or an unfinished
+search stage; `partial` remained true solely because the semantic index
+was incomplete. Their inventory covered 55,940 files, including 46,540
+Lean files and 9,400 prose files. None returned `proof_ideas`. All 64
+candidate/source occurrences matched current declaration-block hashes;
+all still had `source_only` compiler status. The proposed ingredient sets
+were explicitly marked `not_verified`.
+
+The first proposed argument does not identify one mathematical source.
+`MertensSecondPrimeRecipSum.mertensFloorError` is the prime-weight error
+`sum_(p<=t) log(p)/p-log(t)`, integrated against `1/(t*log(t)^2)`.
+`BeurlingSensitivity.mertensIntegrand` is the adjoined-prime density
+`2*exp(beta*t)*(1-cos(gamma*t))`. The third ingredient, `RHTower.mertensM`
+in `MobiusFriableLargestPrimeDecomposition`, is the actual Möbius sum.
+The package gives no identities joining these different objects. Its
+integrability theorem cannot be read as an estimate for the EDQ increment.
+
+The second proposed argument combines a norm bound for each Möbius value,
+bounded variation of a smooth prolate source, and the BV lattice estimate
+`CCMBVMuntzSummation.abs_sum_le_variation`. Neither the norm bound nor the
+prolate theorem supplies bounded variation of the actual reciprocal
+Mertens field. The additional formal Dirichlet convolution identity does
+not repair that missing hypothesis.
+
+To audit the actual quadrature substitution, put
+
+```
+f_N(x) = M(floor(1/x))-M(N)   for 0<x<=1/N,
+         0                  otherwise.
+```
+
+The reciprocal cells have lengths `1/(k*(k+1))`. Thus the existing
+absolutely convergent increment-mass identity gives, on paper,
+
+```
+integral f_N = -H_N,
+e_N(n) = sum_(j>=1) f_N(j/n) - n*integral f_N.
+```
+
+This is the correct compensated source. Every prime p>N produces a unit
+jump at x=1/p, since `M(p)-M(p-1)=mu(p)=-1`. Infinitely many such jumps
+accumulate at zero, so bounded variation on the full source interval
+cannot follow from `|mu(p)|<=1`. A finite source truncation preserves an
+explicit positive result, but also preserves the missing tail: define
+
+```
+f_(N,K)(x) = sum_(N<k<=K) mu(k)*1_(0,1/k](x),
+Q_(N,K)(n) = sum_(j>=1) f_(N,K)(j/n)-n*integral f_(N,K).
+```
+
+It has variation at most `2*(K-N)`, integral `H_K-H_N`, and exact
+quadrature `Q_(N,K)(n)=F_K(n)-F_N(n)`. Consequently
+`e_N(n)=Q_(N,K)(n)+e_K(n)` at every coordinate. Truncating to obtain a BV
+source therefore leaves the full error at K; pointwise convergence as
+K grows is not a norm bound for that residual. These are applicability
+calculations, not a retirement of EDQ or a new subpower producer.
+
+Other inspected candidates also retain their missing inputs:
+`Sieve.MoebiusMaximalWindow` transfers a supplied first moment to a second
+moment with the window-length factor; `MobiusBlockDefectEnergyInterpolation`
+retains the cubic block interpolation cost. Riesz compensation and theta
+quadrature identities use their own kernels and do not identify the
+complete EDQ covariance.
+
+A narrow `lake env lean` scratch file checked the two public BV lattice
+API names and the exact Möbius prime-prefix jump, with exit 0 and no
+diagnostics. The continuous reciprocal-source calculations above were
+not formalized in that check. No new Lean module, dependency rebuild,
+umbrella build, axiom audit, or mathematical computation was performed.
+The signed quotient discrepancy still has no required cofinal subpower
+bound; RH remains unproved. Frontier and universal-law ledgers are unchanged.
+
+## Ramaré decomposition of the physical source: recurrence audit
+
+The attempted producer is a recurrence for the complete EDQ carrier energy,
+with both prime-pair and rough-packet interactions retained. Two broad OR
+searches used `--mode deep --budget-seconds 300 --max-rounds 2 --no-refresh
+--per-module 1 --limit 12 --explore 0 --json`:
+
+1. `Ramare "signed Gram" "largest prime"`;
+2. `derive a contracting recurrence for full Mobius Gram energy by prime
+   deletion retaining rough packet and signed mixed dilations`.
+
+The first finished argument assembly in 89.509 seconds, with no runtime
+errors. Its only unfinished item was incomplete semantic coverage. It
+returned 12 candidate lemmas, 12 source arguments, no proof ideas, and one
+unverified ingredient set, “Prime diagonal and off-diagonal sum equality.”
+That set combines the existing exact Ramaré Gram decomposition and bilinear
+identification; it supplies neither a sign nor an upper bound. The second
+request reached its 300.013-second budget during filtering/judgment, with
+interrupted text/source retrieval, malformed local-model JSON and a semantic
+retrieval deadline. It returned another 12 candidate lemmas and 12 source
+arguments, but no proof ideas or ingredient sets. Its trace reached round 2.
+
+All 48 candidate/source-argument occurrences matched current declaration-block
+hashes when checked. All carried `source_only` compiler status and unchecked
+applicability. The first inventory covered 55,942 files, including 46,540 Lean
+and 9,402 prose files, and 720,488 declarations. Semantic coverage was incomplete:
+2,167,627 ready out of 2,331,223 expected in the first result and 2,167,881 out
+of 2,331,272 in the second. The second inventory snapshot was pending. These
+results do not establish exhaustive mathematical coverage.
+
+Write `b_d(u)=bdGenReal(1/d,u)`, `G_N=sum_(d<=N)mu(d)*b_d`, and let P be
+a finite set of primes. Define the following finite physical packets:
+
+```
+omega_P(m) = card {p in P : p divides m},
+U_(P,N) = sum_(n<=N, omega_P(n)=0) mu(n)*b_n,
+A_p = sum_(m<=floor(N/p), p not dividing m) mu(m)/(1+omega_P(m))*b_m,
+B_p = sum_(m<=floor(N/p), p not dividing m) mu(m)/(m*(1+omega_P(m))),
+Z_p = D_p A_p+B_p*b_p,       (D_p f)(u)=f(u/p)/p.
+```
+
+All integer sums start at 1. Ramaré's identity, the vanishing of mu(p*m)
+when p divides m, and `b_(p*m)=D_p b_m+b_p/m` give the exact paper identity
+
+```
+G_N = U_(P,N)-sum_(p in P) Z_p,
+||G_N||^2 = ||U_(P,N)||^2+sum_p ||Z_p||^2
+            +sum_(p != q) Re<Z_p,Z_q>-2*sum_p Re<U_(P,N),Z_p>.
+```
+
+The prime-pair sum is ordered. Each packet norm includes its full cofactor
+cross terms and affine correction. The existing O(log N) bound for the
+individual-generator diagonal is not a bound for this packet diagonal.
+A narrow foreground `lake env lean` scratch check instantiated
+`Sieve.sum_eq_ramare_add_rough` with `mu(n)*bdGenReal(1/n,u)` and the literal
+cutoff `Icc 1 N`; it exited 0 without diagnostics. That check certifies the
+pointwise Ramaré splitting, not the entire paper calculation or a growth bound.
+
+Two choices of P expose the actual recurrence requirements:
+
+- For `P={p prime : N/2<p<=N}`, every cofactor is 1. Hence `A_p=0`, `B_p=1`,
+  and `Z_p=b_p`. The existing `DeletionPrimePacket.packet_norm_sq_eventually_lower`
+  gives squared norm at least `N/(8*32768^2*log(N)^2)` for their sum.
+  These packets reinforce each other; cancellation with U is essential.
+  This is the previously formalized weighted-prime result applied to the
+  proposed splitting, not a new obstruction theorem.
+- For P containing every prime up to N, the rough packet vanishes because
+  only n=1 remains and `b_1=0`. All cofactor cutoffs are at most N/2, but their
+  coefficients are `mu(m)/(1+omega(m))`, with the p-divisibility exclusion
+  retained. `Sieve.DampedCofactorIntegral` already represents these weights
+  by the integral of `mu(m)*t^omega(m)` over `0<=t<=1`.
+  `DampedCofactorTransfer` assumes the uniform saving it transfers. No bound
+  for the full physical packets or their signed sum follows from that identity.
+
+Conditional negativity of the Ramaré incidence complement also does not
+close the recurrence: its scalar centering condition is the vanishing of
+the total coefficient. Substituting the actual pointwise EDQ coefficients
+makes that total G_N(u), whose squared integral is the unknown source energy.
+The finite spectral-centering classification concerns logarithmic phases;
+it is not a theorem that centers the physical history.
+
+The second search's smaller-cutoff interpolation bound in
+`MobiusDivisorPrimeFibreInterpolation` controls the copied packet in its
+retained-label space. Its prime fibre carries a square-root-p factor and
+the full merger retains a signed overlap. The late-prime contraction in
+`MobiusDivisorNonemptyEnergy` explicitly subtracts the empty-label head square;
+it does not bound the complete energy. Theta dilation inversion uses its
+theta source, and the retrieved EDQ logarithmic saving is the existing
+`N/log(N)^q` estimate. None supplies the missing subpower bound.
+
+No new unconditional source estimate was obtained. No Lean module, dependency
+build, umbrella build, axiom audit, or mathematical computation was added.
+No route is retired by this audit; the full signed source bound and RH remain
+open. The frontier map and route-independent STATUS ledger were left unchanged.
+
+## Growing-prime correction budget for the damped cofactor
+
+**Prime-mass budget and all-prime majorant obstruction.** The all-frequency theorem
+`Sieve.exists_norm_sum_dampedTwist_le_rate` has constants and an eventual
+threshold uniform in the finite prime set P. It bounds the damped twisted sum
+by `K*C(P,c)*N*exp(-v)`, where
+
+```
+C(P,c) = product_(p in P) (1+p^(-c))/(1-p^(-c)),
+v = (log N)^(1/20),
+c = routeTContourLeft A delta (abs(tau)+N).
+```
+
+Thus fixed-P quantifiers are not the obstruction to using that theorem with
+all primes up to N. The explicit correction is. For `c>=1/2`, put
+`S(P,c)=sum_(p in P)p^(-c)`. The dependency-closed paper comparison is
+
+```
+exp(S(P,c)) <= C(P,c) <= exp(5*S(P,c)).
+```
+
+For `x=p^(-c)`, one has `0<x<=3/4`. The lower bound follows from
+`1-x<=exp(-x)`; the upper follows from `1+x<=exp(x)` and
+`1/(1-x)<=exp(4*x)`, since `(1-x)*(1+4*x)>=1` on this interval.
+Multiplying the factor bounds proves the comparison. Consequently
+`5*S<=v-r` suffices for `C*exp(-v)<=exp(-r)`, and `S<=v-r` is necessary.
+This is a positive prime-mass budget for preserving the contour saving.
+
+For `P=primesLE N`, `N>=1`, and `c>=1/2`, the finite Euler product gives
+
+```
+C(P,c) >= product_(p in P) (1-p^(-c))^(-1)
+       >= sum_(1<=n<=N) n^(-c)
+       >= N^(1-c).
+```
+
+Every positive integer up to N is supported on these primes, so the
+convergent nonnegative smooth-number expansion contains the displayed sum.
+Monotonicity gives its lower bound. No prime-count estimate is needed.
+The existing contour data give `(1-c)*log N>=10*v`, uniformly for
+`abs(tau)<=N`, eventually in N. Hence
+
+```
+C(primesLE N,c)*exp(-v) >= exp(9*v).
+```
+
+At zero frequency this product tends to infinity. The displayed contour
+majorant, even divided by N, therefore cannot give a saving at the
+all-prime substitution. This is a
+statement about that upper-bound formula, not a lower bound on the actual
+damped cofactor or the EDQ source. A smaller prime set can meet the mass
+budget but restores the rough packet and its mixed correlations.
+
+The six public declarations in
+`RHTower.Sieve.DampedCorrectionMassBudget` formalize the two mass bounds,
+the all-prime power lower bound, both budget implications, the uniform
+contour lower bound, and divergence at zero frequency. Scratch verification
+and `lake build --old GaloisForLFunctions.RHTower.Sieve.DampedCorrectionMassBudget`
+passed. All six new declarations have only `propext`, `Classical.choice`, and
+`Quot.sound`; no extra axiom or proof debt was introduced. The module is
+wired into the RHTower umbrella, generated indexes are refreshed, and
+`scripts/formal_tools.py lint` passed with existing file-size warnings.
+No umbrella build was run.
+The growing-prime substitution in
+`Sieve.exists_norm_sum_dampedTwist_le_rate` was also checked in Lean,
+with the explicit correction retained. The all-prime Ramaré architecture
+remains open: a successful estimate must retain cancellation lost by this
+correction or control the rough packet and all mixed correlations for a
+smaller prime set.
+
+**Deep-search audit.** Two OR searches used `--mode deep --any`, two rounds,
+`--budget-seconds 300`, and cached corpus data:
+
+```
+dampedOmegaMoebius "Ramare cofactor" "prime-count deformation"
+"divisor transform" "inverse prime count" "binomial integral"
+```
+
+Both completed argument assembly (50.254 s and 41.193 s). The inventory
+contained 55,947 files and 720,511 declarations; semantic coverage was
+incomplete, so both responses were marked partial. All 56 returned
+candidate/source-argument occurrences matched current declaration-block
+hashes, but were source-only with unchecked applicability. The generated
+prime-power-ladder proposals concern valuation powers and disjoint support,
+and supply no estimate for the Ramaré weight `mu(m)/(1+omega_P(m))`.
+Direct source inspection instead found the uniform-in-P contour theorem
+above. The useful bridge is its explicit prime-mass budget; the full signed
+source estimate and RH remain open. No numerical experiment was run.

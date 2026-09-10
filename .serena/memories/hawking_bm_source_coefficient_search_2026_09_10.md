@@ -1,0 +1,19 @@
+# HB source-coefficient search pass, 2026-09-10
+
+RH and complete physical cancellation remain unproved. Goal active. No Lean/source/document edits, mathematical computations, builds or axiom checks in this pass. Frontier map read only; no Git or launch.sh.
+
+Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. Target remains 2 Ω(B(p,p)/2,B(m,m)/2)=0 with independent SS/SV/VV amplitudes and all onset/horizon/AdS/temporal/cusp terms.
+
+Used scripts/formal_tools.py research directly, no implementation inspection. Broad single-term searches: Fokas 3213 declarations/257 modules; Higgs297/29; horizon11340/1791; Einasto572/37. Counts are returned metadata, not inspected/applicable theorem counts. Hybrid requests partial (deadline/coverage/source_refresh); candidate and method results inspected. Existing named-family evidence already in hb-corpus-ingredient-search.md; avoid repeating these same intake searches without a specific new mechanism.
+
+Broad OR searches for creative telescoping/telescoper/Picard Fuchs, and Riemann kernel/Green concomitant/bilinear concomitant. Existing BMCausalSourceAdjoint remains actual positive radial source-transfer result; no new cancellation found. Deep goal-description source-transfer query restricted ThetaCuspHawking returned a proposed ingredient group using SecondHarmonicRadialBoundaryUniqueness and bilinear_basis; unverified, not a cancellation proof. Boundary uniqueness assumptions do not supply the physical boundary balance. Deep intertwiner/concomitant query excluding ThetaCuspHawking returned generic exact complexes and unrelated source-bilinear constructions, no proof ideas/ingredient sets. Broad OR Möbius/Casimir/transvection query dominated by transvection; Casimir lexical isolated605 declarations/77 modules but inspected page did not provide a source intertwiner. Do not interpret any query as exhaustive absence.
+
+Full indexed coverage snapshot in source-transfer JSON:55915/55915 inventory complete;719889 declarations; semantic incomplete, most compiler metadata source_only/pending. Source applicability requires direct Lean verification.
+
+Read actual FokasLenellsRawQuinticMoments.lean1–95: integral_quartic_derivative builds Schwartz q^5 primitive and applies integral_deriv_schwartz_eq_zero. Existing theorem already catalogued, no identification of HB finite characteristic/cusp data with Schwartz whole-line source.
+
+Current mathematical attempt: use shared common radial source operator and direct characteristic Möbius flow to relate period coefficients to physical cross-current. No complete identity or coefficient cancellation proved. Do not promote speculation or append another isolated helper as extinction. Existing CharacteristicPeriod leaf already proves regular period R_delta, (d/dh+2)R_delta=regularForcing and R_delta(0)=log2. Do not rebuild/re-audit it. Full five coefficient formulas in hb-positive-delay-characteristic-current.md remain analytical and unverified, as does their full-current comparison.
+
+Read cards: hb-causal-onset-contact-cancellation.md full, hb-two-sided-source-current-reduction.md1–165, hb-native-circle-green-kernel.md95–178, hb-positive-delay-characteristic-current.md1–225, hb-reduced-source-clock-transfer.md1–end, hb-causal-source-adjoint-kernel.md(stage3), hb-radiative-source-period-attack.md1–180, hb-corpus-ingredient-search.md1–88. Use these exact remaining physical obligations rather than restart infrastructure.
+
+All owned search sessions completed; temporary search directory removed at close. No owned Lean/Lake processes were started.

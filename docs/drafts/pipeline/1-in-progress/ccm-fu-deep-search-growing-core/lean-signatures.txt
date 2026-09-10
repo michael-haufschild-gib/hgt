@@ -1,0 +1,20 @@
+RHTower.GibbsGas.gibbsNormalizedCurrentEnergy_insert_add_dissipation : ∀ (p : ℕ) (S : Finset ℕ),
+  p ∉ S →
+    ∀ (x : ℝ),
+      RHTower.GibbsGas.gibbsNormalizedCurrentEnergy (insert p S) x + RHTower.GibbsGas.gibbsSameSignDissipation p S x =
+        RHTower.GibbsGas.gibbsNormalizedCurrentEnergy S x + RHTower.GibbsGas.gibbsNormalizedCurrentEnergy S (↑p * x)
+@RHTower.Sieve.MRBilinear_moebius_of_correlations : ∀ {hh : ℝ → ℝ},
+  Filter.Tendsto hh Filter.atTop Filter.atTop →
+    (∀ᶠ (x : ℝ) in Filter.atTop, hh x ≤ √x) →
+      RHTower.Sieve.AveragedCorrelationSmall (fun n => ↑(ArithmeticFunction.moebius n)) hh →
+        RHTower.Sieve.MRBilinear (fun n => ↑(ArithmeticFunction.moebius n)) hh
+RHTower.ccmActualHeadCoherentQuantileGammaProducer_le_sourceQuadratic : ∀ (a : RHTower.SuzukiPositiveAperture)
+  (u : ↥(RHTower.CCMArchimedeanFormDomain a)),
+  RHTower.ccmActualHeadCoherentQuantileGammaProducer a u ≤ RHTower.ccmRestrictedWeilSourceQuadratic a u
+@RHTower.deletionSourceEnergy_mul_lt_independent : ∀ {α : ℝ},
+  1 < α →
+    ∀ {p q : ℕ},
+      1 < p →
+        1 < q →
+          RHTower.deletionSourceEnergy α (p * q) <
+            RHTower.deletionSourceEnergy α p + ↑p ^ 2 * ↑p ^ (-α) * RHTower.deletionSourceEnergy α q

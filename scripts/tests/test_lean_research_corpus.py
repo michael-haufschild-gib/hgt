@@ -48,6 +48,26 @@ class ExtractionTests(unittest.TestCase):
             self.assertTrue(any(line in part for part, _, _ in parts))
         self.assertTrue(parts[-1][0].endswith(source[-30:]))
 
+    def test_chunk_line_numbers_use_only_linear_scanning(self):
+        class CountedText(str):
+            scanned = 0
+
+            def count(self, value, start=0, end=None):
+                end = len(self) if end is None else end
+                self.scanned += max(0, min(end, len(self)) - start)
+                return super().count(value, start, end)
+
+        source = CountedText(''.join('%05d%s\n' % (i, 'α' * 127) for i in range(2000)))
+        parts = list(chunks(source, line=17))
+        self.assertLessEqual(source.scanned, 3 * len(source))
+        plain = str(source)
+        start = 0
+        for part, first, last in parts:
+            start = plain.index(part, start)
+            self.assertEqual(first, 17 + plain.count('\n', 0, start))
+            self.assertEqual(last, first + part.count('\n'))
+            start += 1
+
 
 class CorpusTests(unittest.TestCase):
     def setUp(self):

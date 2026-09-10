@@ -5,12 +5,14 @@ import GaloisForLFunctions.RHTower.Sieve.RamarePhaseBilinear
 
 `Sieve/OmegaBudgetLadderTail` consumes a *saving* on the cofactor polynomial of the plain Möbius
 coefficient — a bound strictly better than the trivial `#C` — and `Sieve/CofactorLowFreqBound`
-supplies it from the zero-free region.  The exact Ramaré identity produces the damped coefficient
-`μ(m)/(ω_P(m)+1)` instead, for which no such saving exists in the corpus.
+supplies it from the zero-free region. The exact Ramaré identity produces the damped coefficient
+`μ(m)/(ω_P(m)+1)` instead. `Sieve/DampedCofactorLowFreqBound` supplies a fixed-prime-set saving;
+`Sieve/RouteTDampedTwistRate` gives uniform twist estimates with an explicit prime-set correction.
+Using a growing prime set requires controlling that correction.
 
 `1/(k+1) = ∫₀¹ t^k dt` writes the damped cofactor polynomial as an average over `t ∈ [0,1]` of
 polynomials with the multiplicative weight `t^{ω_P(m)}`.  A saving uniform in `t` therefore transfers
-to the damped polynomial, which reduces the missing analytic input to one perturbed Euler product:
+to the damped polynomial. The associated perturbed Euler product is
 the Dirichlet series of `μ(m)·t^{ω_P(m)}` is `(1/ζ(s))·∏_{p ∈ P}(1 − t·p^{-s})/(1 − p^{-s})`.
 -/
 

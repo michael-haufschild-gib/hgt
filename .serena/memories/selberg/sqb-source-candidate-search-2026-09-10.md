@@ -1,0 +1,36 @@
+# SQB55 analytical search loop: no new Lean closure
+
+Goal remains ACTIVE and unbudgeted. RH, native occurrence, and source cancellation remain unproved. Latest completed new Lean result is SQB54 `SelbergThetaNativeMeanCancellation.sourcePairing_eq_cauchy`; do not repeat its builds/audits. See mem:selberg/sqb-native-mean-cancellation-2026-09-10.
+
+## Constraints
+Frontier map READ ONLY. No computations, Runpod, launch.sh, Git, service management, subagents, full builds, or umbrella builds. One owned foreground Lean/Lake process; scratch with lake env lean, final only narrow leaf. No Lean or Lake process was launched in SQB55. All search sessions completed and terminal results collected, including 58678, 7957, 4694, 82434, 80732. No owned process remains. Only route card sqb-native-spectral-source-comparison.md was edited, adding a concise candidate section; it was read back. No universal STATUS change qualifies.
+
+## Chain and hardest obstacle
+Literal theta source -> normalized native residual packets retaining mass -> entire Xi occurrence -> critical line -> RH. Hardest: signed native source cancellation with retained mass. Do not spend a turn proving another generic positivity law, equivalent RH receiver, or negative result.
+
+## SQB55 conjecture checks
+1. Full scattering Cauchy contour: native m(q)=1/(4pi) integral Xi(t)^2*w(t)/(t²-alpha_q²). Nonnegative density has the same imaginary sign as the already proved Gram law. Closing contours requires real Hardy admission and all shifted Xi poles; generic Cauchy orthogonality doesn't supply it.
+2. Arbitrarily small shift from safe half shift: Suzuki actual boundary multiplier unitary all real shifts; actual Hardy leakage norm <=1, strongly continuous. Zero leakage is RH-equivalent. Smaller-shift core Schur theorem removes transverse zeros first. Strong continuity is not norm analyticity. Positive dyadic prime-aperture Gram and VonMangoldt-Hardy residue Gram use different kernels; no native join. Don't reprove likelihood nondivisibility or finite-pole leakage.
+3. Lattice-Poisson seed: with general theta Poincare height y^k Phi(log y/2), primitive/multiple reindex has weight n^(2k-1/2); k=1/4 removes it, unlike native k=1/2. Candidate Gaussian radial derivative g(r)=(2pi*r²-1)exp(-pi*r²) has full unimodular 2D lattice sum 0 by formal Poisson derivative at t=1 (origin value -1), suggesting nonzero-vector sum constant. This 2D identification has NOT been formalized.
+For h(x)=exp(-x) sum_{n>=1}g(n exp(-x)), safe Re w<0 calculation:
+int exp(w x)h(x)dx = zeta(1-w) int u^(-w)g(u)du = -w/2 Lambda(1-w)=xi(w)/(1-w).
+Gamma recurrence establishes middle equality on safe half-plane. Proposed continuation reaches Re w<1; not Lean-checked. At w=1-rho, expression zero, but reflected value F(-w)=xi(2-rho)/(2-rho) nonzero (Re(2-rho)>1). Thus two-end response admission is missing, not automatic. Native k=1/2 source norm cannot be substituted. Subtracting an Eisenstein bad end may remove all centered response; retained mass must be proved with admission. No lattice occurrence theorem claimed; don't build a generic Poisson lemma as if it closes RH.
+4. Full theta Riccati: actual theorem RHTower.thetaCuspReflectedLogRiccatiMargin_nonneg in ThetaCuspGlobalReflectedRiccati.lean at788 covers every center, nonnegative displacement. Integrated consequence RHTower.thetaCuspCenterMixedThreePointMatrix_posSemidef at223 in HedenmalmCenterMixedCorrelationAngle.lean. Source-defined three-point PSD does not yet supply higher-order sign/native Cauchy orientation. Global Riccati is already imported by SelbergThetaSourcePhase; don't rediscover it as new closure. ThetaCuspFixedActionC5LikelihoodLiftReduction has positive highest likelihood reserve and adaptive cooling but leaves compensation inequality open. ThetaCuspCofinalWardConvexity has full-source tilted positive-half-line convexity for 0<=a<=1/4; not an all-frequency native sign law.
+
+## Search tool help and use
+Actual research --help: --max-rounds {1,2,3}; default budget now300; --retrieval-views {statements,all}; --scan bypass indexed search with declaration scan. Deep natural mechanism query is supported; local query expansion shown in query_trace. Broad OR phrases and module filters used; generated ingredient groups are unverified and often fail by kernel/space mismatch. No theorem applicability claimed from search alone.
+All search JSON files /tmp/sqb55_{scattering,scattering_hardy,shift_refinement,suzuki_source,source_gap,lattice_theta,poisson_division,theta_oscillation,native_mechanism}_search.json. /tmp/sqb55_riccati_scan.json is lexical --scan. All candidate_lemmas, source_arguments, declarations, prose/source_passages and groups were inspected (some long unrelated statements only excerpts; relevant actual files opened).
+Deep source inventory complete 55,969 files, 720,792 declarations; latest generation821574. Semantic 2,174,396 /2,331,897 incomplete despite pending0. Compiler48 snapshots,43stale,43,725pending,2734unavailable,5error. Some300sec requests complete all stages; lattice and Poisson requests had interrupted text/source retrieval. Thus not absence evidence.
+Generated groups: Cauchy circle resolvent + Hardy cancellation leaves Hardy admission; shift Loewner PSD doesn't identify kernel; lattice group bizarre quarter-weight theta+Gamma intensity unrelated; theta oscillation group confuses topological oscillation with spectral oscillation; native natural-mechanism group cdKernel_symm + continuousKernelOperator_symmetric explicitly leaves Cancel arithmetic forcing as obligation. No group closes native problem.
+
+## Newly read sources, avoid rereading whole files
+SuzukiFinitePoleLeakage.lean1-130: unconditional Euler-line inversion0<omega<.5, wrong-support boundary equals complete pole residues. Does NOT make residues vanish.
+DeningerMeyerPoissonCalderonGraph.lean1-180: actual Meyer reflection requires even Schwartz, f0=Fourier f0=0.
+DeningerMeyerReflectedGaussianGreenRangeWall1-165: finite-jet Green range dense but different divisor-built carrier, not native mass.
+ThetaCuspGlobalReflectedRiccati1-145 plus all theorem names; HedenmalmCenterMixedCorrelationAngle180-300; HedenmalmCenterMixedOrientationBoundary1-165 plus names; explicit higher-order/Fourier sign remains RH-equivalent.
+ThetaCuspLikelihoodGapCumulantRiccati1-150; ThetaCuspReflectedRiccatiAngle1-125; XiShiftedCanonicalAdmissionGaussRiccatiSource1-140 (assumes moment PosDef); ThetaCuspFixedActionC5LikelihoodLiftReduction1-125 plus names; ThetaCuspCofinalWardConvexity1-110.
+PolyaFrequencyIsTheHypothesis entire short file explicitly corrects old transform-versus-reciprocal confusion; generic equivalence theorem is trivial assumed equivalence. Don't rely on its title.
+SelbergThetaTotientHankel1-100 plus all names: profile differs from common-forcing p_q; zero mean Abel limit not native m orientation.
+Natural mechanism search retrieves D4BMModularCore.responseResidual_test_zero in ThetaCuspHawkingBMClassicalResponse.lean55; not read here and not assumed to be native homogeneous occurrence.
+
+Next useful work must derive an actual source-specific sign/comparison or construct an admitted mass-retaining infinite packet. No concrete proof of either emerged in SQB55; do not present expanded searches as a new theorem.

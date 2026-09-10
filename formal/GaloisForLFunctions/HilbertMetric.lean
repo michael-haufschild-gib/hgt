@@ -89,3 +89,5 @@ import GaloisForLFunctions.HilbertMetric.QNMModalResidue
 import GaloisForLFunctions.HilbertMetric.QNMPseudospectrum
 
 import GaloisForLFunctions.HilbertMetric.GomesReflectedQuarticTensor
+import GaloisForLFunctions.HilbertMetric.GaussianCoherentFisherClock
+import GaloisForLFunctions.HilbertMetric.ResponseCompression

@@ -1,6 +1,6 @@
 # HB: positive-delay characteristic source/current balance
 
-Status: analytical conjecture/proof loop. Complete physical extinction and RH remain unproved. Frontier map read only.
+Status: period and clock identities formalized; complete current comparison remains in the analytical conjecture/proof loop. Physical extinction and RH remain unproved. Frontier map read only.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -35,7 +35,7 @@ The earlier candidate of a primitive `r0(q)J_V(h(q))+r1(q)J_V'(h(q))` along one 
 
 ## Verification scope
 
-The displayed characteristic transport and source bracket are analytical identities under inspection. No new Lean result is claimed by this card. Existing zero-delay theorems are reused without rebuilding or re-auditing them.
+The characteristic transport, five source-density reductions, coefficient formulas and complete current comparison remain analytical. The period normalization, successive-pole recurrence, regular clock equation, logarithmic contact and first zero-delay derivative are now covered by [ten Lean theorems](../3-formalized/hb-characteristic-period-clock.md). Existing zero-delay theorems are reused without rebuilding or re-auditing them.
 
 ## Common period of the direct characteristic contacts
 
@@ -221,4 +221,4 @@ The original additional term `-C11*R_delta*E_V` and first circle-mean jet `Cjet*
 
 These ingredients were retrieved with hybrid and deep corpus searches, broad OR queries, quoted phrases, module-filtered follow-ups and an uncapped module result count. The returned source arguments were inspected alongside candidate lemmas. The optical follow-up returned an unverified ingredient set proposing susceptibility scaling and nonnegative mixing energy; that set does not derive a signed current cancellation. Search inventory covered 55,915 files, but semantic coverage and source/compiler freshness were partial. Empty proof-idea sections are not evidence that an ingredient is absent from the corpus.
 
-The new period and clock reductions are analytical work, not Lean-verified results. No mathematical computation, frontier-map edit, launcher invocation, Git command or old-module axiom audit was used for these reductions.
+The [period leaf](../3-formalized/hb-characteristic-period-clock.md) supplies the Lean-verified recurrence, clock identities and lower-endpoint limits. The finite source coefficients and their full-current cancellation remain analytical. No mathematical computation, frontier-map edit, launcher invocation, Git command or old-module axiom audit was used for this work.
