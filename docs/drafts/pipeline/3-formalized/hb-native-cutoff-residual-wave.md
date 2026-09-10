@@ -52,17 +52,15 @@ The Dirichlet result uses the already proved full-source reflection cancellation
 
 ## Next analytical construction
 
-The remaining comparison needs joint-L2 continuity and the time-integrated weak equation for the actual joint operator. The bounded-unit-resolvent energy method on the active inverse-identification card still requires those concrete facts.
+The [native joint-admission extension](hb-native-residual-joint-admission.md) now proves the actual residual's joint-L2 membership, strong continuity, exact representative and zero before and at onset. Its global source-integral identity and bounded-time majorant cover the complete modular cell and the characteristic edges.
 
-A bounded-time L2 admission argument is available to formalize. On a compact set of nonnegative null target coordinates and their source rectangles, `nullRadius` is continuous and nonnegative, hence bounded by some `D`. The exact circle/principal kernel identity rewrites `V` as the integral of `nativeCutoffResidual` against the original source. Above height `3+exp(D)`, its integrand is the actual cusp mean remainder; `cuspMeanRemainder_rapid_bound q 0` bounds that remainder uniformly in radius, horizontal coordinate and height. On the remaining truncated modular cell, joint continuity and compactness give a common bound. Compactness also bounds the source and rectangle area. The radial source support then supplies a bounded radial interval on every bounded time interval. The resulting constant times a radial interval indicator is square-integrable against the product of radial measure and finite modular measure. Pointwise continuity plus `continuous_toLp_two_of_dominated`, applied locally in time, would give strong continuity of the resulting L2 class.
-
-This admission argument has not yet been formalized or used to assert membership in `jointDomain`. Its integral identification, uniform bound and radial support must be checked for the literal residual, and the modular side conditions and operator relation remain separate construction obligations. The displayed null equation alone does not prove a global static-coordinate classical wave equation across the characteristic boundary.
+The remaining comparison needs the time-integrated weak equation for the actual joint operator. Membership in the first-derivative energy form domain `jointDomain` and the actual modular side conditions remain construction obligations. The displayed null equation alone does not prove a global static-coordinate classical wave equation across the characteristic boundary. The bounded-unit-resolvent energy method on the active inverse-identification card still requires the actual weak operator identity.
 
 ## Search evidence
 
 Broad OR cutoff/commutator intake and deep residual-forcing and logarithmic-height searches were inspected in declarations, candidate lemmas, source arguments, proof ideas and ingredient groups. They recovered `cutoffCommutator_height`, `powerCutoffHeight_smooth`, the actual height-Laplacian calculus and the physical cutoff-source constructions. Those exact source statements were read and applied in Lean.
 
-The deep dominated-L2 search recovered the actual dominated continuity theorem and its use in `FokasLenellsSecondTimeForcing`. Its required common L2 majorant remains an obligation for this residual. Generated holomorphy/coefficient groups did not discharge that obligation. Search inventory was complete, while semantic coverage and source refresh were partial; compiler metadata was predominantly source-only. No retrieval proposal was treated as a proof.
+The deep dominated-L2 search recovered the actual dominated continuity theorem and its use in `FokasLenellsSecondTimeForcing`. The joint-admission extension supplies its required common L2 majorant for the literal residual. Generated holomorphy/coefficient groups did not discharge that obligation. Search inventory was complete, while semantic coverage and source refresh were partial; compiler metadata was predominantly source-only. No retrieval proposal was treated as a proof.
 
 ## Validation
 

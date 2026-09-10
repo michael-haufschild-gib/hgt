@@ -1,6 +1,6 @@
 # SQB: actual spectral source comparison
 
-Status: the literal horizontal Mellin factorization, the all-complex actual response transform, their one-pole contour transfer, the native scalar Cauchy formula, and exact cancellation of its mean residue are formalized. Finite native packets with distinct upper-half-plane energies now have an exact positive integral norm formula and nonzero mass for every nonzero coefficient vector. The decisive remaining arithmetic source cancellation and cofinal residual estimate are open. RH remains unproved.
+Status: the literal horizontal Mellin factorization, the all-complex actual response transform, their one-pole contour transfer, the native scalar Cauchy formula, and exact cancellation of its mean residue are formalized. Complete positive Eisenstein probes separate every finite family of distinct native energies, including real energies: every nonzero coefficient vector has nonzero native packet mass. Upper-half-plane packets also have an exact positive integral norm formula. The decisive remaining arithmetic source cancellation and cofinal residual estimate are open. RH remains unproved.
 
 Full chain: theta source -> normalized full-native residual packets at each Xi target -> occurrence -> critical line -> RH. Hardest target: a source comparison retaining the signed arithmetic contribution, strong enough to orient the native scalar response. The current candidate uses the actual scattering phase rather than replacing the Möbius remainder by its absolute majorant.
 
@@ -213,9 +213,28 @@ norm(V)^2 = (1/pi) integral_R N(t) * normSq(sum_i c_i/(t^2-lambda_i)) dt.
 
 The entrywise formula follows from the exact native source Cauchy transform and Gram displacement, with coefficient `1/pi`. When the `lambda_i` are distinct and `c` is nonzero, clearing denominators produces a nonzero polynomial: evaluating at `alpha_i` isolates `c_i` times the nonzero product of spectral gaps. Its real zero set is finite. A zero packet would force `N=0` almost everywhere, contrary to the native diagonal source flux and the already proved nonzero response. Thus `packet_ne_zero` applies also to nonzero coefficient vectors satisfying `sum_i c_i=0`.
 
-This statement is quantified over upper-half-plane packets; it does not assert that such Xi copies exist. It supplies neither the real-energy case nor a lower bound uniform over a cofinal family. The normalized full residual remains uncontrolled.
+This integral norm formula is quantified over upper-half-plane packets; it does not assert that such Xi copies exist. Its proof does not extend the integral formula across real or reflected energy collisions. Finite nonzero mass at arbitrary distinct energies is proved separately below. A lower bound uniform over a cofinal family and the normalized full residual remain uncontrolled.
 
-The stronger mass candidate uses the complete positive Eisenstein pairings of the uncentered common-forcing profiles. For `r>1`, put `a=2*r-1`. The proposed pairing with `positiveCuspRows r` is the positive theta-source pairing divided by `alpha_q^2+a^2`. Both Weyl terms have this denominator because the response is reflected and `tiltedMass` is even. The corpus already proves all-real seed moments in `SelbergThetaNativeMoments.modeProfile_mellin` and full primitive-row unfolding at `r=2` in the private generic-profile lemmas of `SelbergThetaNativePairing`. Extending that admitted pairing to arbitrary `r>1` would give infinitely many rational probes. A zero centered packet first needs its constant component removed using the source cusp decay; these probes could then recover every coefficient for distinct squared parameters, including real ones. The general pairing, its absolute admission, and this extension of packet mass are unproved. The equivalent horizontal Mellin candidate is `M_q(z)=M_source(z)/(alpha_q^2+(z+1)^2)` for positive real `z`; all boundary and primitive-row terms must be retained.
+`SelbergThetaEisensteinProbes` proves the complete positive Eisenstein pairings for every `r>1`. Put `a=2*r-1`, `E_r=positiveCuspRows r`, and `B_r=(1+cuspReflectionNorm r)*tiltedMass a>0`. On the original native measure, with all primitive rows and both Weyl terms retained,
+
+```text
+integral positiveSource * E_r = B_r,
+integral source_q * E_r = B_r / (alpha_q^2+a^2).
+```
+
+`profile_eisenstein_integrable` and `profile_eisenstein_pairing` establish absolute admission and the two-term Mellin unfolding for every measurable height seed with all-power rapid bounds. `heightProfile_mellin` discharges the actual response moments using the proved all-real mode moments and reflection. The denominator is nonzero for every actual Xi copy because `Re(alpha_q)` is nonzero. No spectral half-plane premise is used.
+
+For the true centered native vectors, the proved identity `image_sub_vector` is
+
+```text
+(A-1) v_q = (energy_q-1) nativeSource_q - nativePositive/4.
+```
+
+Thus applying `A-1` to a zero packet removes its constant component exactly. Pairing with `E_r` gives the nonzero scalar factor `(1-a^2)*B_r/4` times `sum_i c_i/(alpha_i^2+a^2)`. `packet_zero_probe_identity` proves this rational sum vanishes for every `r>1`. Finitely many distinct negative real probe nodes form a nonsingular Cauchy matrix, so `vector_linearIndependent` and `packet_ne_zero` recover all coefficients for every finite family with distinct squared parameters. This includes real energies and nonzero zero-sum coefficient families cancelling the shared forcing.
+
+Scratch and finished-source checks, the narrow `SelbergThetaEisensteinProbes` leaf build, and formal lint pass. The module is wired into `RHTower.lean`; the generated index is refreshed and `lint --check-generated` passes. The separate `/tmp/sqb61_probes_audit.lean` checks the actual source and packet statements and audits ten results; all depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+
+The quantitative candidate localizes the admitted Eisenstein probes and controls the omitted cusp-tail pairing against the norm of the localized probe. Absolute admission and finite Cauchy invertibility alone give no uniform cost as packet size, probe parameter, and cutoff vary. A source-derived balance between that tail, coefficient recovery cost, and the full residual is still unproved; finite separation does not close cofinal occurrence.
 
 Scratch and source checks, the narrow leaf build, and formal lint pass. The module is wired into `RHTower.lean`. The separate `/tmp/sqb60_packet_mass_audit.lean` verifies the exact statements and audits six results; all use only `propext`, `Classical.choice`, and `Quot.sound`. Broad OR, deep, and proof-method searches supplied the Cauchy denominator-clearing argument used here. Their semantic/compiler coverage remains incomplete; retrieved unrelated Plancherel results are not a substitute for the native periodization join.
 

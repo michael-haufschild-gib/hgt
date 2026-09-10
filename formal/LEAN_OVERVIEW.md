@@ -7,7 +7,7 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 17986 | 200077 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 17988 | 200103 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 15943 | 160211 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 58 | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 74 | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -37,7 +37,7 @@ Use this as the quick map before opening large proof files.
 | Lines | File |
 |---:|---|
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
-| 17051 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 17053 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 15153 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
