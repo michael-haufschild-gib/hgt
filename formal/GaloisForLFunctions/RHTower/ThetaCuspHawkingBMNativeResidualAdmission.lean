@@ -765,5 +765,12 @@ theorem nativeJointEllipticForcing_memLp (q : XiZeroCopy) (s amplitude : ℂ) (t
   (nativeJointIntegratedForcing_memLp q s amplitude t).sub
     (nativeJointResidualField_memLp q s amplitude t)
 
+/-- Joint continuity of the literal residual in its original time, radius and
+upper-half-plane coordinates. -/
+theorem nativeJointResidualField_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
+    Continuous (fun x : ℝ × (ℝ × UpperHalfPlane) =>
+      nativeJointResidualField q s amplitude x.1 x.2) :=
+  nativeJointResidualField_continuous q s amplitude
+
 end
 end RHTower.D4BMNativeResponse

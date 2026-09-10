@@ -249,6 +249,26 @@ The broad corpus queries used real roots, Darboux transformations, compensation,
 
 Independently chosen arXiv terms included `polarization`, `coarsening`, and `renewal`. [Discrete time-multidimensional renewal theory and applications](https://arxiv.org/html/2606.31455v1) gives a coefficientwise finite convolution inverse when the nonconstant kernel has zero constant coefficient. A positive inverse additionally needs a nonnegative increment kernel. Constructing such a kernel from the signed theta source remains a conjecture; no numerical results or theorem from the paper is used in the Lean proof.
 
+### Cutoff coefficient cone and mixed-atom retention
+
+The current analytical target retains the actual cutoff coefficients when comparing atom-pair channels. Write `b_j=monicOrthoBeta m_a j`, for `1<=j<=5`. Positivity below degree six makes these five numbers strictly positive. Vanishing odd moments removes the diagonal Jacobi coefficients, so the finite recurrence gives
+
+```text
+Q_a(t)=t^6-S*t^4+E*t^2-F,
+S=b_1+b_2+b_3+b_4+b_5,
+E=b_1*b_3+b_1*b_4+b_2*b_4+b_1*b_5+b_2*b_5+b_3*b_5,
+F=b_1*b_3*b_5.
+```
+
+In particular `S,E,F>0`. The corresponding signed square norm, in raw even-derivative coordinates `d_j`, is exactly
+
+```text
+d_12+2*S*d_10+(S^2+2*E)*d_8+2*(S*E+F)*d_6
+  +(E^2+2*S*F)*d_4+2*E*F*d_2+F^2*d_0.
+```
+
+For a geometric raw pair jet `d_(2j)=D^(2j)`, this expression is the retained positive square `(D^6+S*D^4+E*D^2+F)^2`, bounded below by `(D^6+F)^2`. The next conjecture is that the actual mixed-atom lower-order terms can be bounded while retaining this square. Their signs, the integrated norm sign, and all-rank propagation are open. The finite recurrence and actual-source specialization are being checked in Lean; no mixed-atom estimate is claimed yet.
+
 ### Unsigned-moment projection candidate
 
 There is an analytical lower bound for the hard derivative energy involving only eight unsigned moments. Use the same non-normalized Fourier transform `F_a` of `g_a=thetaCuspTiltedSource a`, and put
@@ -478,9 +498,9 @@ Psi' <= amp^2*T/12,
 Q_a' <= (504/169)*(4*x*sinh(2*a*x))*Phi^2,   0<=a<=1/2, x>=0.
 ```
 
-On `[0,2/3]`, the proof retains `T<=72/5`, `Phi^2>=169*amp^2/144`, and the hyperbolic weight derivative. On the later ray the already proved `Q_a'<=0` gives the same upper bound. Consequently subtracting `K*Q_a'`, for `K>=0`, costs at most `(504/169)*K*Phi^2` after division by the positive center weight. The flux remains the same full-source flux with its proved zero integral; no new endpoint admission is assumed. The three capstones in [ThetaCuspModularBarrierCost.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularBarrierCost.lean) pass the foreground scratch check `/tmp/sqb75_normalized_cost.lean` with only `propext`, `Classical.choice`, and `Quot.sound`. The module is wired into the RHTower umbrella. Its initial narrow leaf build passes in `/tmp/sqb75-barrier-cost-leaf-audit`; the sharper comparison below is undergoing its own scratch check before the final module audit.
+On `[0,2/3]`, the proof retains `T<=72/5`, `Phi^2>=169*amp^2/144`, and the hyperbolic weight derivative. On the later ray the already proved `Q_a'<=0` gives the same upper bound. Consequently subtracting `K*Q_a'`, for `K>=0`, costs at most `(504/169)*K*Phi^2` after division by the positive center weight. The flux remains the same full-source flux with its proved zero integral; no new endpoint admission is assumed. The four capstones in [ThetaCuspModularBarrierCost.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularBarrierCost.lean) pass the foreground scratch check `/tmp/sqb75_normalized_cost.lean` with only `propext`, `Classical.choice`, and `Quot.sound`. The module is wired into the RHTower umbrella. The final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularBarrierCost` passes in `/tmp/sqb75-barrier-cost-leaf-audit`, using actual repository source and cached dependencies. This final build includes the signed polynomial comparison below.
 
-Retaining the sign instead of replacing the cost by its constant ceiling gives the analytical full-orbit candidate
+The closed theorem `barrierFlux_deriv_polynomial_cost` retains the sign instead of replacing the cost by its constant ceiling:
 
 ```text
 P = (T/12)*[6-3*k+(u*(k-2/3)-J)/4],
@@ -496,7 +516,29 @@ H^8*evenLowerDet
 
 on the complete actual half-orbit. This displayed determinant implication is analytical; no sign for its left side has been proved. It retains both the original concavity reserve and the signed cost of the second flux. The separate inner budget target using the constant ceiling is `nativeEvenFourSchur+L*G>(504/169)*K*Phi^2` on `[0,2/3]`, together with the proved upper-ray repair for that **same** coefficient. Existence of a coefficient meeting both sides remains open. Neither the cost bound nor the upper-ray repair establishes the rank-seven integral sign; all-rank propagation is also open.
 
-Broad all-view deep searches through transport/redistribution, majorization, successor, confinement/Riccati, multiplier budgets, and star-shaped concavity inspected declarations, candidate lemmas, source arguments, and proposed ingredient groups. The retrieved Riccati identities retain derivative identifications; the radial-phase concavity result concerns a different actual equation; generic derivative budgets retain the estimate to be supplied. These results do not establish the displayed native determinant sign. Search coverage is partial, with stale source/compiler records; some earlier requests also had interrupted, malformed-judging, or deadline stages. No corpus-absence conclusion follows.
+The outer gain is now quantitatively stronger as well. With `q=pi*exp(2*x)`, the exact full likelihood decomposition and its nonnegative first spectral moment give
+
+```text
+-6*k*Phi <= Phi' <= (5-2*q)*Phi,              q>=15/2,
+k >= q/3-5/6.
+```
+
+The upper estimate uses the first atom only inside the exact full-source derivative identity: the retained higher likelihood moment has the favorable sign. The polynomial difference in the first-atom slope comparison is `exp(x/2-q)*q*(2*q-15)>=0`. An analytical degree-four Taylor lower bound for `exp(4/3)` gives `q>=23/2` for `x>=2/3`; hence `k>=3` there. No numerical source experiment or computed spectral certificate enters this proof.
+
+Using `u<3` and `J>=0` in the signed polynomial then gives
+
+```text
+P <= -(5/48)*T,
+R_gap = (5/48)*amp^2*T,
+(4*x*sinh(2*a*x))*R_gap <= -Q_a',            x>=2/3,
+15*barrierReserve <= R_gap.                  x>=2/3
+```
+
+These four capstones pass `/tmp/sqb75_barrier_gain.lean` with only `propext`, `Classical.choice`, and `Quot.sound`, and are installed and wired in [ThetaCuspModularBarrierGain.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspModularBarrierGain.lean). The final narrow `lake build GaloisForLFunctions.RHTower.ThetaCuspModularBarrierGain` passes in `/tmp/sqb75-barrier-gain-leaf-audit`, using actual repository source and cached dependencies. Formal lint passes after both new modules are installed and wired; output is `/tmp/sqb75_formal_lint.txt`. All owned Lean/Lake and search processes completed. The factor fifteen follows from the complete-orbit bound `B<T/12` and `x>=2/3`; it compares actual source profiles pointwise.
+
+Consequently an outer repair previously obtained with coefficient `K0` against `barrierReserve` is supplied by the same literal flux with coefficient `K0/15` against its improved lower reserve. This is an analytical consequence of the proved comparisons, not a numerical estimate of `K0`. The remaining task is to prove the native determinant margin pays the inner cost for that same coefficient, or to prove the retained signed-polynomial determinant target directly. A compactness-selected `K0` still has no proved numerical ceiling. The complete rank-seven sign and all-order extension remain unproved.
+
+Broad all-view deep searches through transport/redistribution, majorization, successor, confinement/Riccati, multiplier budgets, star-shaped concavity, and full-source logarithmic slopes inspected declarations, candidate lemmas, source arguments, and proposed ingredient groups. The retrieved Riccati identities retain derivative identifications; the radial-phase concavity result concerns a different actual equation; generic derivative budgets retain the estimate to be supplied. These results do not establish the displayed native determinant sign. Search coverage is partial, with stale source/compiler records; some earlier requests also had interrupted, malformed-judging, or deadline stages. No corpus-absence conclusion follows.
 
 An independently chosen broad arXiv search for pinning recovered [Networked Admissibility-Preserving Control for Directed Safe Coordination](https://arxiv.org/html/2609.09384v1), submitted September 8, 2026. Its exact cascade retains the initial realization mismatch and prices its positive and negative demands separately before applying a boundary-invariance argument. The mechanism suggests preserving the sign of the source correction when testing a compatible coefficient. Its graph and actuator assumptions have not been identified with theta data; it supplies no Lean premise or determinant sign. The elasticity search also recovered a September 2026 upload of a paper published in 2022, which is not treated as new 2026 research.
 
