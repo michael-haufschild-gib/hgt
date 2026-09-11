@@ -2,7 +2,7 @@
 
 - **ID:** L-C47
 - **Date:** 2026-09-11
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** original Green-domain classification / source correction test
 - **Depends on:** [C46 complete damped Xi packet](../3-formalized/route-l-damped-complete-xi-packet.md); `HTGeometry.FourierUniquenessL1`; `HTGeometry.L1PeriodizationFourier`
 - **RH status:** unproved
@@ -11,10 +11,10 @@ Chain: complete original Green/BV source → fixed physical-reader agreement
 → conormal vanishing → RH. C46 admits the full damped Xi field and original
 Tate graph family for fixed a>1, while retaining the original physical
 critical-line discriminator. The hard remaining step is a source-forced
-comparison or domain change. This card tests the admissible correction
+comparison or domain change. This card classifies the admissible correction
 class before proposing such a change.
 
-## Conjecture → paper proof under verification
+## Closed proof and positive classification
 
 For integrable f, all Fourier coefficients of its original periodizations
 along any positive periods L_n tending to infinity determine f almost
@@ -33,11 +33,11 @@ For an infinite set of original primes, an injective enumeration tends to
 infinity and so do its positive logarithms. Thus all those original circle
 observations are jointly injective on L1.
 
-A second obligation is the actual original Green range: if
+The actual original Green range uses its unchanged sign: if
 `f(x)=g_p(x)-g_p(x+log(p))` almost everywhere with integrable g_p, the exact
 Fourier translation character is one at every integer/log(p) sample.
 All those samples vanish. Hence common integrable original-prime Green
-admission over infinitely many primes should force f=0. A nonzero survivor
+admission over infinitely many primes forces f=0 almost everywhere. A nonzero survivor
 would require a non-L1 primitive/domain change, or a proved alteration of
 the source equations. That conclusion is limited to these original
 translation differences, not every possible singular Green construction.
@@ -50,11 +50,17 @@ harmonic. That proof cannot be applied to general L1. The replacement uses
 all harmonics and continuity. Read the exact L1 periodization coefficient
 law and L1 Fourier uniqueness statements and their domain requirements.
 The terminal deep and hybrid reports are audited below. The complete
-179-line module `DeningerL1CofinalPrimeTomography` passed scratch check4
-and its initial leaf build. A final statement audit is checking the literal
-original orientation `Delta_L = 1 - translation_L`; reversing the sign
-preserves the existential range, but the public theorem must retain the
-original source formula.
+179-line module `DeningerL1CofinalPrimeTomography` passes scratch check5
+with the literal original orientation `Delta_L = 1 - translation_L`.
+Its eight public theorems are wired into the umbrella. The final
+`lake build GaloisForLFunctions.RHTower.DeningerL1CofinalPrimeTomography`
+audit of that exact orientation passed, building only this leaf (42 seconds;
+other dependency results replayed). Formal lint passed and indexing
+completed; all eight public declarations are present in `formal/LEAN_API.md`.
+Logs: `/tmp/route_l_c47_l1_circle_check5.log`,
+`/tmp/route_l_c47_l1_circle_build2.log`,
+`/tmp/route_l_c47_l1_circle_lint2.log`,
+`/tmp/route_l_c47_l1_circle_index.log`.
 
 
 ## Search and cross-field transfer audit
@@ -86,3 +92,21 @@ Route L's missing source equation or a cancellation law; a positive
 finite-dimensional Gram matrix cannot be assumed for the original
 boundary. No numerical example was used. The independent `sampling`
 search page failed to load; no paper from it was adopted.
+
+
+## Exact Lean results
+
+- `deningerCofinalLattice_frequency_tendsto`: every real frequency is a limit of actual integer harmonics at the original periods.
+- `deningerCofinalLattice_continuous_ext`: all such samples determine any continuous scalar response.
+- `deningerL1CofinalCircle_coefficients_injective`: complete circle coefficients at cofinal periods determine an L1 source almost everywhere.
+- `deningerL1PrimeCircle_coefficients_injective`: the same result over every infinite set of original primes.
+- `deningerL1PrimeCircle_periodizations_injective`: equality almost everywhere on each original cell suffices.
+- `deningerL1OriginalGreen_fourier_lattice_zero`: the literal integrable original translation primitive kills every lattice sample.
+- `deningerL1CofinalOriginalGreen_eq_zero`: common original Green admission at unbounded periods forces the source to vanish almost everywhere.
+- `deningerL1PrimeOriginalGreen_iff_zero`: exact common-domain classification over every infinite original-prime subset, with the zero-source converse proved too.
+
+`lake env lean /tmp/route_l_c47_l1_circle.lean` check5 passed without
+diagnostics. No numerical experiment or axiom-print command was used.
+The next [literal local Green boundary attack](../1-in-progress/route-l-l1-local-green-boundary-jump.md)
+constructs the non-L1 primitive and retains its full two-ended jump before
+any comparison with the fixed physical reader. RH remains unproved.

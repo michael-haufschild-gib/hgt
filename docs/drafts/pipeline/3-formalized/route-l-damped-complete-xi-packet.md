@@ -137,10 +137,10 @@ at every w; Fourier uniqueness gives `f=0` almost everywhere. The original
 translation-coboundary consequence still requires its exact Fourier
 character identity (or an AE periodization telescoping proof).
 
-The positive survivor would be a complete injectivity/classification law
+The positive survivor is a complete injectivity/classification law
 for all original prime-circle observations on L1, extending the current
-Meyer theorem. This is a paper mechanism under verification, not a new
-Lean theorem and not a retirement of Route L. It would require a non-L1
+Meyer theorem. This extension is now formalized in
+[C47](route-l-l1-original-circle-injectivity.md); Route L is not retired. It would require a non-L1
 source or a proved change of original Green domain for a nonzero
 simultaneous cancellation; it does not rule out such a singular source.
 
@@ -177,9 +177,9 @@ supersolution inequality. This suggests tracking the entire source jump,
 but supplies neither a Route L energy class nor a vanishing jump. No such
 PDE premise is transferred.
 
-The next domain attack is recorded separately in
-[original-circle injectivity on L1](../1-in-progress/route-l-l1-original-circle-injectivity.md).
-The L1 conjecture above remains a proposed extension, not a C46 theorem.
+The completed domain classification is recorded separately in
+[original-circle injectivity on L1](route-l-l1-original-circle-injectivity.md).
+The L1 extension is now closed in C47; it is separate from the C46 packet theorem.
 
 
 ## Lean validation

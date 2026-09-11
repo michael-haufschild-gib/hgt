@@ -4,7 +4,7 @@
 - **Date:** 2026-09-11
 - **Stage:** 1-in-progress
 - **Type:** source-forced domain enlargement / complete Green boundary comparison
-- **Depends on:** C44 actual weighted source, C46 full Xi packet, C47 L1 circle injectivity
+- **Depends on:** C44 actual weighted source, C46 full Xi packet, [C47 L1 circle injectivity](../3-formalized/route-l-l1-original-circle-injectivity.md)
 - **RH status:** unproved
 
 Chain: complete original Green/BV source → fixed physical-reader agreement

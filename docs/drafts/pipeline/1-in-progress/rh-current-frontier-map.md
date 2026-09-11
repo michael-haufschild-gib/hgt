@@ -1170,9 +1170,15 @@ retained. The chains converge in the full Xi-indexed Gamma graph norm.
 Both finite and completed physical readings equal the Gaussian reading
 times the exact nonzero Euler multiplier, so vanishing remains exactly
 critical-line placement. [Complete damped Xi packet](../3-formalized/route-l-damped-complete-xi-packet.md).
-The next [L1 correction-domain attack](route-l-l1-original-circle-injectivity.md)
-tests injectivity of all original circle observations beyond the Meyer
-class. Complete Green/BV-to-fixed-physical agreement remains open; damping
+`DeningerL1CofinalPrimeTomography` now proves complete original-circle
+injectivity for all L1 sources, using dense integer harmonics and Fourier
+continuity. Common integrable original Green primitives over any infinite
+prime set exist exactly for the zero source. This extends the Meyer
+obstruction to the full L1 class and retains the positive injectivity law.
+[Original-circle L1 classification](../3-formalized/route-l-l1-original-circle-injectivity.md).
+The next [local Green boundary attack](route-l-l1-local-green-boundary-jump.md)
+constructs the actual non-L1 primitive and its complete two-ended jump.
+Complete Green/BV-to-fixed-physical agreement remains open; damping
 continuation cannot assume the absence of the poles it encounters.
 
 
