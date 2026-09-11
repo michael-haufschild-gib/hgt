@@ -25,3 +25,5 @@ Validation: the complete scratch passed `lake env lean`; one harmless tactic-sty
 Search used broad Legendre and Hardy/Laplace queries and deep ground-state, complex-energy, frequency-coercivity, kernel-domination and L²-support queries. Candidate statements and source methods were inspected; partial and source-only search metadata were treated as discovery information. The decisive circle identity was verified in the current corpus. No external paper is a premise.
 
 The remaining full-response transfer is documented in [the working card](../1-in-progress/hb-principal-growth-energy.md). The generic Hilbert causal datum needs every-positive-damping L² admission; then the full source-resolvent product can be inverted at a shift just above B(q) and identified with the already constructed original joint response by Laplace injectivity.
+
+Final formal lint passed with existing large-file warnings. Module imports and local report links were verified. All owned checks completed; temporary audit and scratch files were removed. No owned Lean process remains.

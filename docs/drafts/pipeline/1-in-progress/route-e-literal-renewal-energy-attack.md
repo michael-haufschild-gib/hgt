@@ -244,6 +244,43 @@ counted as progress on that bound.
   `MonotoneMobiusPositivity` source uses an absolute reciprocal-square
   tail smaller than one; it does not cross the critical exponent barrier.
 
+### Attempt 7: test a sign-preserving packet recurrence on the literal source
+
+[CONJECTURE UNDER TEST] A scalar sign can orient the packet sequence into
+a completely monotone sequence: all iterates of `D b(k)=b(k)-b(k+1)` are
+nonnegative. Such a representation would admit positive moment methods.
+This is a proposed intermediate mechanism, not the bounded-return target.
+
+The direct source test is stronger than inspecting a few low-order differences.
+With the packets of Attempt 6, their exact differences satisfy
+
+```
+D^j b_(N,k)(r)
+ = sum_(1<=n<=N) mu(n)/(n+1)^r * q_n^k * (2/(n+1))^j.
+```
+
+For every fixed `r>=0`, uniformly over **all** `N>=2`, the proposed limits are
+
+```
+D^(h+2) b_(N,0)(r) -> 2^(-r),
+(3/2)^h * D^(h+2) b_(N,1)(r) -> -(4/27)*3^(-r).
+```
+
+Paper proof: the first detector retains `mu(1)=1` while all other normalized
+bases are at most `2/3`. The second kills the first coefficient through
+`q_1=0`, retains `mu(2)=-1`, and gives base at most `3/4` to every later
+coefficient. The two extra differences give the common summable majorant
+`4/(n+1)^2`; `r>=0` only decreases its size. The errors are bounded by a
+fixed summable budget times `(2/3)^h` and `(3/4)^h`, respectively. Thus no
+scalar orientation can make every difference nonnegative.
+
+The positive result to formalize is the **uniform quantitative recovery of
+these two opposite source coefficients**, together with the exact difference
+identity. This preserves the literal integer cutoff, gives no energy ceiling,
+and does not reject arbitrary signed recurrence methods. The subsequent
+signed-energy attempt must retain both channels and estimate their aggregate
+interaction instead of turning them into positive probability masses.
+
 ## Checkpoint
 
 - Completed leaf: `GaloisForLFunctions.RHTower.MobiusRenewalEnergySign`;

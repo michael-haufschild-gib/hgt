@@ -25,3 +25,5 @@ Module: [ThetaCuspHawkingBMPrincipalDirichletCoercivity.lean](../../../../formal
 Verification: `lake env lean` accepted the combined scratch containing the exact source. `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPrincipalDirichletCoercivity` passed in an isolated directory using cached dependencies, compiling only this new leaf (two jobs). The exact source and five build artifacts were installed, and one import was added to `RHTower.lean`. No umbrella build ran. No axiom-print checks or numerical experiments ran.
 
 The next causal landing uses the [native circle-kernel growth argument](../1-in-progress/hb-principal-growth-energy.md), which gives a rate strictly below two for the actual kernels and can avoid constructing a separate Hardy evolution from this inverse.
+
+Final formal lint passed with existing large-file warnings. Module imports and local report links were verified. All owned checks completed; temporary audit and scratch files were removed. No owned Lean process remains.

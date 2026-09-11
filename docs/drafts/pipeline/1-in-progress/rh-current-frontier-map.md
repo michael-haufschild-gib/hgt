@@ -1053,6 +1053,22 @@ physical readings automatically. Source-forced compensation and the
 aperture change under dilation remain the comparison obligations.
 [Two-prime joint source interpolation](../3-formalized/route-l-two-prime-joint-jet-source.md).
 
+The common kernel of both literal top-jet readings now gives an actual
+canonical minimum-norm source in the strict right half-strip. It preserves
+both readings, commutes with Fourier, and is coherent with normalized
+dilation after projection at the smaller aperture. Two original primes
+supply every joint preimage. For a source with readings `(u,0)`, normalized
+dilation and canonical projection retain that pair at `b/r`, with norm at
+most `r^(1/2-Re(rho))*norm(f)` and an exact discarded-kernel energy term.
+Thus a hypothetical strict-right Xi divisor has nonzero minimum sources
+with readings `(1,0)` and arbitrarily small norm as apertures shrink; no
+aperture-uniform Hilbert reader bound is available. At fixed aperture the
+canonical projection of the original window still has its strict bias
+after normalization by the original `J_L,K_L`. Twenty theorems passed
+scratch, the targeted leaf build and formal lint. Canonical selection and covariance
+therefore do not supply the missing original-source radial balance.
+[Canonical joint source and aperture cost](../3-formalized/route-l-coherent-joint-source-transport.md).
+
 
 **Open core.** Derive before divisor specialization the missing cyclic-source-to-fixed-physical comparison: the explicit normalized cyclic source reader must agree with the existing Burnol/Deninger physical reader on the degree-six boundary, forcing its physical marginal to vanish. Positive compact reduction and coherent-Frobenius closure are equivalent receiver presentations, not independent cores. Any producer must be genuinely singular at the all-cross-prime source origin, preserve prime, depth, multiplicity, nonzero Xi coefficient, and horizontal anchor, and escape both fixed-reader rigidity and Hausdorff energy-faithful multifibre rigidity by changing reader holonomy, making vertical ambiguity physically readable, leaving linearity/continuity/Hausdorff topology, losing literal-energy injectivity, or using a source-forced domain/fibre change.
 

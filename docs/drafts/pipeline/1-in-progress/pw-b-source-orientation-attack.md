@@ -2525,3 +2525,15 @@ The user instruction to stop axiom-print checks is saved separately
 in Serena memory rh/pw_b_user_no_axiom_prints_2026_09_11 and remains
 in force. No further such checks, full builds, numerical experiments,
 subagents, commits or pushes occurred.
+
+### Iteration30: original cutoff coefficient extraction
+
+Previous turn classified as verified progress: the actual moment-divergence
+leaf build and final lint logs were revalidated, the current source-integral
+and eventual nonvanishing declarations were read, and no owned Lean process
+was live. This turn attacks the original near/far cutoff decomposition,
+source-flat bounds uniform enough for the removed moment pieces, and the
+finite geometric remainder. A new deep/method search is running. No
+convergent-series premise will replace the missing finite asymptotics.
+The existing exact full-source moment detector is the contradiction target;
+full adjoints, Xi occurrence and independent Ward balance remain open.
