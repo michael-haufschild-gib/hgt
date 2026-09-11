@@ -48,3 +48,12 @@ Control M at the two original fundamental frequencies and actual rates
 The finite part is now elementary; its nonvanishing is not proved.
 The affine Xi incidences in A_eff, physical adjoint identification,
 spin-two/AIME reconstruction, and independent extinction remain open.
+
+- 2026-09-11 — Cross-reference: the onset factor `clearedOnset s w` is now identified in Lean with
+  the derivative-pulse transform `∫₀¹ χ'(u) e^{(2s−w)u} du`, entire, generically nonzero in the onset
+  duration and positive at real exponents (`ThetaCuspHawkingBMClearedOnsetPulseTransform`), and two
+  of the three affine Xi collision factors of the strict-right angular source are controlled
+  (`XiAffineCollisionControl`, `ThetaCuspHawkingBMAngularSourceCollisionControl`). See
+  `../3-formalized/hb-onset-collision-laurent-toolkit.md`. The `fundamentalSourceMoment ≠ 0` question
+  is unchanged; after `u = √(1−z)` it is an explicit Beta·₂F₁(−1) combination with no Kummer
+  constellation.

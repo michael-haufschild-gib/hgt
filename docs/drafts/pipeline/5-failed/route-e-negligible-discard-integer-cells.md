@@ -181,10 +181,11 @@ needed to record that distinction.
 The next arithmetic test retains common integer divisors of distinct slot
 receivers. A component active in exactly one slot contributes its inactive
 integer factor to every pair avoiding that slot. Multiplying the resulting
-difference-divisibility inequalities should bound the inactive product in
+difference-divisibility inequalities bounds the inactive product in
 terms of aperture width and the number of distinct receivers. The separate
-[common-divisor card](../1-in-progress/route-e-conditioned-slot-divisors.md) records the
-precise paper target; this is not yet a Lean result.
+[common-divisor theorem](../3-formalized/route-e-conditioned-slot-divisors.md)
+now proves the exact support law and its stronger bounded-activation
+consequence in Lean, including arbitrary conditioning of literal histories.
 
 A broad September search also found
 [Countable IET Models and Defect Sets](https://arxiv.org/html/2609.01670v1).

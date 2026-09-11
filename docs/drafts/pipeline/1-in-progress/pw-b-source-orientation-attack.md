@@ -2931,7 +2931,7 @@ obstruction changes the next action: use the original coefficient and spatial
 logarithms together. At fixed u=z+s the source derivative is M'_z-log(x)M_z.
 Its full atom contains -log(n*x), so scaling t=n*x retains a single logarithmic
 Gamma kernel with the original arithmetic norm weight n^(-u). This is the
-new [fixed-Mellin current attack](pw-b-gamma-fixed-mellin-current.md), before
+new [fixed-Mellin current proof](../3-formalized/pw-b-gamma-fixed-mellin-current.md), before
 any continuation or Xi specialization. A deep/method search and direct corpus
 Gamma/Mellin derivative audit are running; no new current identity is claimed
 yet. Physical domain/closure, Xi incidence and independent Ward balance remain
@@ -2963,3 +2963,24 @@ not enforce stagnation. No rate balance is imported as a Ward law. Primary
 reading of [Xu,2609.10454v1](https://arxiv.org/html/2609.10454v1), Theorem2.10
 and its proof, uses a chosen compactification and prior metric results. It
 supplies no original Mellin endpoint or physical source comparison here.
+
+Iteration35 final scratch: all six public theorems passed without diagnostics.
+The exact source was promoted and wired once; targeted leaf audit is running.
+The theorem identifies the actual fixed-argument derivative, admits the full
+mixed current, evaluates its Mellin integral as -Gamma'(s+1/2)/zeta(z+s), and
+proves the explicit Gamma-normalized current has zero integral in the same
+open convergence region. It adds no critical-strip continuation or physical
+Ward premise. The missing source endpoint/reader comparison and actual Xi
+incidence are now separate from this proved parameter-transport identity.
+
+Iteration35 final audit: the six public declarations in
+GammaFixedMellinCurrent passed final scratch without diagnostics and the
+28-second targeted leaf build. Exact scratch/promoted-source equality and
+one umbrella import are verified. All six public names are indexed; final
+formal lint passed with only existing repository size warnings. Proof-card
+links and scoped whitespace checks passed. All owned Lean/index/research/lint
+processes have finished. No full/umbrella build, numerical experiment or
+axiom-print check was used. RH remains unproved. The next current-source
+attack must retain endpoint flux while testing continuation and physical
+Xi incidence, rather than treating the normalized zero integral as the
+independent fixed-grade Ward producer.

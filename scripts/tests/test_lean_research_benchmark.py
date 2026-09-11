@@ -129,6 +129,15 @@ class MetricTests(unittest.TestCase):
         self.assertEqual(result["partial_cases"], 1)
         self.assertEqual(result["cases"][0]["unfinished_stages"], ["deadline"])
 
+    def test_completed_retrieval_preserves_index_warnings_for_acceptance(self):
+        result = run_case(case(), {"candidate_lemmas": [ref("answer")], "partial": False,
+            "index_warnings": ["semantic_index_incomplete"], "index_generation": 42,
+            "coverage": {"generation": 41}, "semantic_coverage": {"complete": False, "ready": 99, "expected": 100}})
+        row = result['cases'][0]
+        self.assertEqual(row['index_warnings'], ['semantic_index_incomplete'])
+        self.assertFalse(row['semantic_coverage']['complete'])
+        self.assertEqual(row['environment']['corpus_generation'], 42)
+
     def test_silent_mode_fallback_is_a_failure(self):
         report = benchmark.evaluate([case()], lambda *_: {"mode": "lexical", "declarations": [ref("answer")]}, ("deep",))
         self.assertEqual(report["modes"]["deep"]["failed_cases"], 1)
@@ -405,7 +414,8 @@ class ReleaseGateTests(unittest.TestCase):
     def test_failed_partial_unmeasured_or_mislabeled_runs_fail_closed(self):
         for field, value in (("partial", True), ("error", "timeout"), ("errors", ["failure"]),
                              ("wall_seconds", float("nan")), ("case_fingerprint", "tampered"),
-                             ("unfinished_stages", ["models_unavailable"]), ("metrics", None)):
+                             ("unfinished_stages", ["models_unavailable"]),
+                             ("index_warnings", ["semantic_index_incomplete"]), ("metrics", None)):
             report = copy.deepcopy(self.report)
             report["modes"]["deep"]["cases"][0][field] = value
             with self.subTest(field=field):

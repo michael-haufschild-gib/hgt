@@ -23,7 +23,7 @@ from pathlib import Path
 from lean_research_corpus import Corpus, cache_directory, digest, PATH_PRIORITY_SQL, EvidenceChanged, mask_comments_strings
 from lean_search_index import module_matches, query_parts
 
-ENGINE_VERSION = "deep-4-qdrant"
+ENGINE_VERSION = "deep-5-coverage"
 METHOD_PROMPT_VERSION = "method-3-code-lines"
 MAX_ROUNDS = 3
 MAX_QUERIES = 8
@@ -168,16 +168,9 @@ class Engine:
             return ([c for h in reciprocal_rank_fusion(direct) if (c := self._candidate(h))],
                     [c for h in reciprocal_rank_fusion(methods) if (c := self._method_candidate(h))],
                     reciprocal_rank_fusion(prose, key='id')[:10])
-        if self.vectors and self.vector_coverage is None and time.monotonic() < deadline:
-            stage('semantic_coverage')
-            self.corpus.con.set_progress_handler(lambda: int(time.monotonic() >= deadline), 1000)
-            try:
-                self.vector_coverage = self.vectors.coverage(self.embedding_model)
-            except sqlite3.DatabaseError as exc:
-                self.fail('semantic_coverage', exc)
-            finally:
-                self.corpus.con.set_progress_handler(None, 0)
-        if self.runtime and self.vectors and (self.vector_coverage or {}).get('ready', 0) and time.monotonic() < deadline:
+        # Qdrant can search the published index while new vectors are queued.
+        # Counting millions of receipts first adds no retrieval capability.
+        if self.runtime and self.vectors and time.monotonic() < deadline:
             try:
                 stage('query_embedding')
                 embedding = self.runtime.embed([query], query=True, deadline=min(deadline, time.monotonic() + 30))[0]
@@ -207,7 +200,7 @@ class Engine:
             try:
                 stage('reranking')
                 docs = [c["statement"] for c in candidates[:12]]
-                scores = self.runtime.rerank(query, docs, deadline=min(deadline, time.monotonic() + 30))
+                scores = self.runtime.rerank(query, docs, deadline=min(deadline, time.monotonic() + 60))
                 if len(scores) != len(docs) or not all(math.isfinite(s) for s in scores):
                     raise ValueError("invalid reranker scores")
                 reranked = []
@@ -335,7 +328,7 @@ class Engine:
                       source_passages=[],
                       retrieval_views=options.get('retrieval_views', 'all'),
                       max_rounds=max_rounds,
-                      query_trace=[], partial=True, unfinished_stages=['search_in_progress'],
+                      query_trace=[], partial=True, unfinished_stages=['search_in_progress'], index_warnings=[],
                       coverage={'generation': self.corpus.generation, 'status': 'pending'},
                       index_generation=self.corpus.generation, stage_seconds={}, active_stage='initializing',
                       runtime=self.status, elapsed_seconds=0, engine_version=ENGINE_VERSION)
@@ -399,6 +392,11 @@ class Engine:
             if time.monotonic() >= deadline:
                 result["unfinished_stages"].append("round_%d" % (round_number + 1))
                 break
+            # Spend at most the retrieval portion on expansions. Repeatedly
+            # halving the remaining request budget starved the final judgment.
+            judgment_reserve = min(60, (deadline - time.monotonic()) / 3) if mode == 'deep' and self.runtime else 0
+            retrieval_cutoff = deadline - judgment_reserve
+            stop_after_judgment = False
             if mode == "deep" and self.runtime and round_number > 0:
                 # Previous judgment supplies queries; only decompose if those
                 # yielded none. Never repeatedly retry an identical failed query.
@@ -410,7 +408,7 @@ class Engine:
                                               'Each search must contain only two to four plain keywords separated by spaces. No Boolean operators. '
                                               'Use source evidence and vary terminology. Do not assert mathematical conclusions.\nQUERY:\n' + query +
                                               '\nSOURCES:\n' + self._context(result['candidate_lemmas'], result['source_arguments']),
-                                              min(deadline, time.monotonic() + 30), max_tokens=256)
+                                              min(retrieval_cutoff, time.monotonic() + 30), max_tokens=256)
                         planned = plan.get('queries', [])
                         if not isinstance(planned, list):
                             raise ValueError('queries must be a list')
@@ -436,16 +434,16 @@ class Engine:
                     break
             if not queries:
                 break
-            for expanded in queries:
-                if time.monotonic() >= deadline:
-                    result["unfinished_stages"].append("query:" + expanded)
+            for query_number, expanded in enumerate(queries):
+                if time.monotonic() >= retrieval_cutoff:
+                    result["unfinished_stages"].extend("query:" + q for q in queries[query_number:])
+                    stop_after_judgment = True
                     break
                 result["query_trace"].append(dict(round=round_number + 1, query=expanded,
                                                   origin="user" if expanded == query else ('keyword_relaxation' if expanded in relaxed else 'local_model'),
                                                   lexical_operator="OR" if options.get("any_terms") else "AND"))
                 try:
-                    remaining = deadline - time.monotonic()
-                    retrieval_deadline = min(deadline, time.monotonic() + min(90, remaining * .5)) if mode == 'deep' and self.runtime else deadline
+                    retrieval_deadline = min(retrieval_cutoff, time.monotonic() + 90) if mode == 'deep' and self.runtime else deadline
                     retrieve_options = {**options, 'lexical_only': True} if relaxed and expanded in initial_queries else options
                     candidates, methods, prose = self.retrieve(expanded, options=retrieve_options, deadline=retrieval_deadline,
                                                                on_partial=retain, on_stage=stage)
@@ -456,14 +454,14 @@ class Engine:
                 # language goals then need short AND queries even when sparse
                 # vector coverage happens to return some unrelated neighbors.
                 if (mode == 'deep' and self.runtime and round_number == 0 and expanded == initial_queries[-1]
-                        and len(query_parts(query)) > 4 and time.monotonic() < deadline):
+                        and len(query_parts(query)) > 4 and time.monotonic() < retrieval_cutoff):
                     try:
                         stage('decomposition')
                         plan = self._generate('Return only JSON {"queries":[strings]}. Give at most three short '
                             'Lean corpus searches for mathematical premises or transferable proof methods for this goal. '
                             'Each search must contain only two to four plain keywords separated by spaces. No Boolean operators. '
                             'Vary terminology; do not assert a proof.\nGOAL:\n' + query,
-                            min(deadline, time.monotonic() + 30), max_tokens=256)
+                            min(retrieval_cutoff, time.monotonic() + 30), max_tokens=256)
                         planned = plan.get('queries', [])
                         if not isinstance(planned, list):
                             raise ValueError('queries must be a list')
@@ -500,29 +498,61 @@ class Engine:
             except Exception as exc:
                 self.fail("filter_and_judge", exc)
                 next_queries = []
+            if stop_after_judgment:
+                break
         if not self.runtime:
             result["unfinished_stages"].append("local_models_unavailable")
-        if time.monotonic() < deadline:
-            stage('coverage')
-            self.corpus.con.set_progress_handler(lambda: int(time.monotonic() >= deadline), 1000)
+        # Coverage describes the index, not whether the requested retrieval ran.
+        # Reuse the indexer's explicitly labelled snapshot; optional live counts
+        # share at most one second after retrieval, never its remaining budget.
+        reporting_deadline = min(deadline - .1, time.monotonic() + 1)
+        stage('coverage')
+        try:
+            snapshot = json.loads((self.corpus.directory / 'indexer.json').read_text())
+            coverage = snapshot['coverage']
+            if not isinstance(coverage, dict) or 'generation' not in coverage:
+                raise ValueError('coverage snapshot is missing its generation')
+            result['coverage'] = {**coverage, 'status': 'snapshot',
+                'snapshot_written_at': snapshot.get('updated_at'),
+                'current_generation': self.corpus.generation}
+            if coverage['generation'] != result['coverage']['current_generation']:
+                result['index_warnings'].append('coverage_snapshot_older_generation')
+        except (OSError, ValueError, KeyError, TypeError):
+            if time.monotonic() < reporting_deadline:
+                self.corpus.con.set_progress_handler(lambda: int(time.monotonic() >= reporting_deadline), 1000)
+                try:
+                    result['coverage'] = self.corpus.coverage()
+                except sqlite3.DatabaseError as exc:
+                    result['coverage']['error'] = str(exc)
+                finally:
+                    self.corpus.con.set_progress_handler(None, 0)
+        if self.vectors and time.monotonic() < reporting_deadline:
+            stage('semantic_coverage')
+            self.corpus.con.set_progress_handler(lambda: int(time.monotonic() >= reporting_deadline), 1000)
             try:
-                result['coverage'] = self.corpus.coverage()
+                self.vector_coverage = self.vectors.coverage(self.embedding_model)
             except sqlite3.DatabaseError as exc:
-                self.fail('coverage', exc)
+                self.vector_coverage = {'complete': None, 'status': 'not_measured'}
+                if str(exc) == 'interrupted':
+                    self.vector_coverage['reason'] = 'reporting_budget'
+                else:
+                    self.vector_coverage['error'] = str(exc)
             finally:
                 self.corpus.con.set_progress_handler(None, 0)
         if result['coverage'].get('status') == 'pending':
-            result['unfinished_stages'].append('coverage')
+            result['index_warnings'].append('coverage_unavailable')
         if result['coverage'].get('method_invalidation_pending'):
-            result['unfinished_stages'].append('method_dependency_refresh')
+            result['index_warnings'].append('method_dependency_refresh')
         if result['coverage'].get('pending_files') or result['coverage'].get('inventory_errors') or result['coverage'].get('outcomes', {}).get('failed'):
-            result['unfinished_stages'].append('source_index_incomplete')
+            result['index_warnings'].append('source_index_incomplete')
         if not self.vectors:
             result["unfinished_stages"].append("semantic_index_unavailable")
-        elif not (self.vector_coverage or {}).get('complete'):
-            result['unfinished_stages'].append('semantic_index_incomplete')
+        elif (self.vector_coverage or {}).get('complete') is False:
+            result['index_warnings'].append('semantic_index_incomplete')
+        elif (self.vector_coverage or {}).get('complete') is not True:
+            result['index_warnings'].append('semantic_coverage_unavailable')
         if self.vectors:
-            result['semantic_coverage'] = self.vector_coverage or {'complete': False, 'status': 'pending'}
+            result['semantic_coverage'] = self.vector_coverage or {'complete': None, 'status': 'not_measured'}
         if time.monotonic() >= deadline:
             result["unfinished_stages"].append("deadline")
         result["unfinished_stages"].extend(e["stage"] for e in self.errors)

@@ -286,6 +286,53 @@ G here is an original Green block. Passing this expansion through the
 explicit gradient lift, all principal corrections, and the full physical
 current is still part of the assembly below.
 
+## Original incoming density: explicit endpoint coefficients
+
+The actual Gauss coefficients now give, uniformly near each nonreal
+frequency and for 0<=z<=1/2,
+
+```
+H(w,z)=1+h1(w)z+O(z^2),
+h1(w)=gaussA(w)*gaussB(w)/gaussC(w),
+1/[2sqrt(1-z)]=1/2+z/4+O(z^2).
+```
+
+Lean proves the arbitrary finite-order Gauss remainder from its coefficient
+majorant, as well as the second-order specialization above. The Jacobian
+remainder has the explicit bound 2z^2. The coefficient h1 is analytic at
+nonreal frequencies, and h1(w0)=-1/2 at either fundamental root.
+
+Multiplying these bounds with the actual Green quotient expansion gives
+
+```
+core(w,z)=(G/h)*H^2/[2sqrt(1-z)],
+core0(w)=A_b(w)/2,
+core1(w)=(h1(w)+1/4)*A_b(w)+d(w)/2,
+|core-core0-core1*z| <= C*(|A_b(w)|+|d(w)|+1)*z^2.
+```
+
+The constant C is uniform on a derived frequency neighborhood away from
+connection zeros. The dependence on A_b is retained explicitly; its pole
+has not been bounded away. The actual source coefficient d is analytic
+through connection zeros. The exact geometric attachment is
+
+```
+z^(w-1)*core(w,z)=G(w,z)*h(w,z)/[2z sqrt(1-z)],  0<z<1.
+```
+
+This identity also covers zeros of h, using Lean's totalized division; no
+nonvanishing-mode hypothesis is added to it. At a fundamental frequency,
+the linear coefficient is -A_b/4+d/2. The analytic source term d/2 must
+remain in a subtraction of the full current, even though it has no residue.
+
+These statements pass the foreground Lean scratch check in
+`ThetaCuspHawkingBMIncomingPairingEndpoint`. The supporting leaves
+`HypergeometricTaylorEndpointBounds`, `QuadraticEndpointProducts`, and
+`ThetaCuspHawkingBMLaplaceHorizonTaylorBound` have passed exact leaf audits.
+The incoming pairing leaf also passed its warning-free exact audit (177 seconds,
+two jobs, cached imports only). All four umbrella imports are wired.
+The formal lint gate passed, reporting existing large-file warnings.
+
 ## Exact temporal-contact horizon factor
 
 The complete projected forcing has a proved exact factorization F=z F_hor.
@@ -310,8 +357,12 @@ radius identity R^2 z=R^2-1 then gives
 This is the full continued temporal current, including its source contact.
 The apparent additional horizon denominator cancels against a zero of the
 literal source. The identities passed Lean in
-`ThetaCuspHawkingBMTemporalContactHorizonFactor`. Uniform endpoint estimates
+`ThetaCuspHawkingBMTemporalContactHorizonFactor`, including a warning-free
+exact leaf audit using cached imports; its umbrella import is wired. Uniform endpoint estimates
 for F_hor and the restored full-current integral are still required.
+
+All six new leaves passed their exact audits. The formal lint gate passed
+with only existing large-file warnings.
 
 ## Active residue/interchange target
 
@@ -323,19 +374,178 @@ opposite coefficient is connection/(2w), proved in
 `ThetaCuspHawkingBMOriginalNormalizableHorizonDomain`. This supplies a
 specific cancellation to establish for the logarithmic channel.
 
-The next estimates are uniform second-order Gauss and elementary lift
-remainders, followed by their propagation through the full four-channel
-source and both Einstein contacts. After clearing the frequency pole,
-the restored incoming integrand must be dominated by z^(beta+1), beta>-2;
-the opposite channel must retain its exact logarithmic subtraction.
-Then exchange frequency residue with the original restored integral.
-The completed radial-norm theorem identifies the value this exchange must
-recover. Full-current residue interchange is not yet proved.
+The original Gauss family now has a proved uniform second-order endpoint
+bound; the elementary Jacobian bound is also proved. Their propagation to
+the original incoming pairing core also passes its Lean scratch check. Assembly
+must still retain the explicit gradient lift, the full four-channel source,
+both Einstein contacts, and the opposite-mode logarithmic subtraction.
+Full-current residue interchange is not yet proved.
 
-Broad/deep searches inspected candidate statements and method/source
-arguments. The Cauchy-dominated integral mechanism was used and checked
-in Lean. Taylor searches also located geometric-series remainder methods
-in `RiemannGaussian/FiniteToEntireExpandingTaylor` and Banach-valued Taylor
-bounds in `BourgainQuadraticTaylorControl`; applicability to the remaining
-Gauss estimate has not yet been checked. Retrieval was partial, including
-incomplete semantic coverage and largely pending compiler metadata.
+### Direct analytic split for the incoming channel
+
+The quotient derivative and its integrable endpoint bound give, by the
+fundamental theorem of calculus, the exact paper identity
+
+```
+Q(w,z)=A_b(w)+P(w,z),       P(w,z)=integral_0^z T(w,t)dt.
+M(w,z)=H(w,z)^2/[2sqrt(1-z)],
+m1(w)=h1(w)+1/4,
+M=1/2+m1*z+O(z^2),         P=d*z+O(z^2).
+```
+
+Here T is analytic through the connection zero. The same dominated-integral
+argument already used for integral_0^b T gives pointwise analyticity of P.
+The estimates imply P*M=d*z/2+O(z^2), uniformly on a smaller frequency
+neighborhood. This leads to the following concrete finite parts:
+
+```
+N_b(w)=b^w/(2w)+m1(w)*b^(w+1)/(w+1)
+       +integral_0^b z^(w-1)*(M-1/2-m1*z)dz,
+J_b(w)=d(w)*b^(w+1)/(2(w+1))
+       +integral_0^b z^(w-1)*(P*M-d*z/2)dz,
+FP incoming integral = A_b(w)*N_b(w)+J_b(w).
+```
+
+The active formalization extends the existing source-transport module with
+one common-neighborhood theorem for P: spatial continuity, pointwise
+frequency analyticity through connection zeros, |P|<=Mz,
+|P-dz|<=Cz^2, and the exact Q=A_b+P identity. It uses the already derived
+transport neighborhood, the fundamental theorem of calculus, and the
+Cauchy-dominated integral argument. The extension passed its warning-free
+scratch check and exact module audit (118 seconds, two jobs, cached imports).
+Its API is `incomingSourcePrimitive_common_data`.
+
+`HTGeometry.QuadraticEndpointMellin` also passed its warning-free scratch
+check and exact leaf audit (47 seconds, two jobs). For a fully frequency-
+dependent F and a common bound |F-a0-a1*z|<=Cz^2 it proves integrability of
+the subtracted density, its explicit norm bound and vanishing endpoint
+limit, the exact original cutoff identity, convergence after restoring
+both counterterms, and analyticity of the restored finite part. The APIs
+are `remainder_integrable`, `remainder_norm_le`, `remainder_tendsto_zero`,
+`remainder_analyticAt`, `cutoff_eq`, `cutoff_tendsto`, and
+`finitePart_analyticAt`. The new umbrella import is wired.
+
+The application to M and P*M passes its warning-free Lean scratch check.
+`incomingPairingFinitePart_horizon_restoration` derives all analyticity,
+spatial continuity, and uniform remainder conditions from the literal Gauss
+family and actual source primitive, on the same fixed b. Its endpoint
+limit has the original density G*h/[2z sqrt(1-z)], with coefficients
+A_b/2 and (h1+1/4)A_b+d/2. Both restored pieces and P(w,b) are analytic
+through the connection zero. The exact leaf audit passed (35 seconds,
+two jobs, cached imports); the new umbrella import is wired.
+
+The remainder integrands are bounded by a common constant times
+z^(beta+1), for beta>-2. Thus the paper reduction is to prove N_b and J_b
+analytic near the nonreal fundamental frequency, using the actual Cauchy-
+dominated integral theorem. At a simple pole of A_b this yields
+Res(FP incoming)=N_b(w0)*Res(A_b). The finite-part definitions and native cutoff-limit identity now pass
+Lean. The physical residue exchange now passes its Lean scratch check.
+The integral from b to the outer endpoint must also be restored before
+identifying the complete Gamma radial norm.
+
+The physical incoming residue is derived from a direct paper proof and
+a successful Lean scratch check. For
+K=reducedGreenGradient(chi,s,1), set
+
+```
+B_b(u)=[(normalizable(u,b)/h(u,b))*sourceMellin_b(u)
+        +outerSourceIntegral_b(u)]*continuedOnset(u).
+Q(u,b)=B_b(u)/[-connection(u,chi)].
+```
+
+At either physical fundamental frequency w0, h is nonzero on 0<b<1,
+normalizable=h, and the two source moments combine into the already proved
+fixed `fundamentalSourceMoment`. The derivative of -connection is the
+proved nonzero -connectionSimpleSlope. Hence the actual punctured limit is
+
+```
+lim (u-w0)*Q(u,b)=sourceMoment(w0)*continuedOnset(w0)/[-connectionSlope(w0)].
+```
+
+Subtracting analytic P(u,b) gives the same residue for A_b. Analyticity of
+N_b and J_b then gives the residue of the restored integral. The physical leaf
+`ThetaCuspHawkingBMPhysicalIncomingPairingResidue` proves this and the actual
+cutoff restoration at one common b, for every Xi copy, source branch and
+fundamental side, without a supplied residue or interchange premise. Its
+exact leaf audit passed without warnings (29 seconds, two jobs, cached
+imports); its umbrella import is wired.
+`physicalIncomingPoleAmplitude_eq_cleared` identifies the coefficient with
+the existing sourceMoment*clearedOnset/physicalDenominatorSlope.
+`physicalIncomingQuotient_residue` proves the pointwise quotient residue
+at every interior radius; `physicalIncomingPairing_residue_and_restoration`
+proves the residue after restoring the original horizon integral.
+The source moment and onset may still vanish; no pole-survival claim is
+added by these exact residue identities.
+
+For the opposite left mode, the actual coefficient is c_minus=C/(2w),
+where C=connection(w,chi). Its opposite Gauss product is
+V=H(w,z)*H(-w,z)/[2sqrt(1-z)]=1/2+O(z). The exact logarithmic finite parts
+suggested by the same source split are
+
+```
+L_b(w)=log(b)/2+integral_0^b (V-1/2)/z dz,
+K_b(w)=integral_0^b P(w,z)*V(w,z)/z dz,
+FP opposite integral = c_minus*(A_b*L_b+K_b).
+```
+
+The counterterm added at e is c_minus*A_b*log(e)/2. The paper proof of
+analytic restoration uses the common O(z) bounds for V-1/2 and P, giving
+bounded subtracted integrands. The actual quotient numerator above gives
+C*A_b=-B_b-C*P(w,b) on the punctured connection germ. Consequently the
+restored opposite pairing has the explicit analytic extension
+
+```
+[(-B_b-C*P(w,b))*L_b+C*K_b]/(2w).
+```
+
+Its value at a fundamental frequency is -B_b(w0)*L_b(w0)/(2w0), and its
+residue is zero.
+
+The general logarithmic restoration now passes a warning-free Lean scratch
+check in `HTGeometry.LogarithmicEndpointFinitePart` (namespace
+`LogarithmicEndpoint`). It proves integrability and |remainder|<=C*b,
+vanishing remainder at zero, exact cutoff identity, actual cutoff limit,
+and analyticity of the restored finite part for a frequency-dependent
+kernel with a common O(z) endpoint remainder. Its warning-free exact
+audit passed (6.3 seconds, two jobs, three cached project imports); its
+umbrella import is wired.
+The native opposite-mode application must first derive a common nonzero
+incoming-mode interval; unlike the incoming square, the opposite density
+cannot use totalized division at a zero of h. Shrinking to that interval
+preserves A_b by the exact Q=A_b+P identity evaluated at the new cutoff.
+
+`ThetaCuspHawkingBMOppositePairingFactor` now passes its warning-free
+scratch check. It derives the original product's common bounds
+|V-1/2|<=Cz and |V|<=M, frequency analyticity and spatial continuity, and
+its exact density identity under h!=0. Its exact audit currently awaits
+the cached `ThetaCuspHawkingBMJointSourceClearedPrincipal` artifact; an
+external foreground process was verified rebuilding that exact module.
+The native logarithmic-restoration scratch combines the Gauss nonzero
+neighborhood with the source primitive's neighborhood, proves A_b is
+preserved at their common smaller cutoff, and derives the original
+c_minus*G*h(-w)/[2z sqrt(1-z)] logarithmic cutoff limit. That native
+application is prepared but not yet checked.
+ This proves the paper mechanism for regularity while
+retaining the logarithmic finite part. Lean still needs the actual product
+bounds, native logarithmic cutoff theorem and extension identity; no
+analytic extension is inferred from totalized point values at the pole.
+
+Corpus searches include broad single-word queries, deep all-view method
+retrieval, unlimited per-module results, pagination and exclusion of HB
+modules. All candidate, source-method, idea and ingredient-set sections
+are inspected. The latest division deep query was partial over 56,948
+inventoried files (compiler metadata mostly pending); its order-theoretic
+division suggestions do not establish a complex residue theorem. The
+source-moment query completed its retrieval and located the exact
+`fundamental_source_sum_eq_moment` method used in the physical proof.
+The Cauchy-dominated integral mechanism, source primitive, Gauss remainder
+and actual connection slope are the useful verified ingredients. Broad
+arXiv queries also explored transgression, gluing and renormalization;
+no retrieved June–September 2026 theorem supplied an applicable ingredient.
+
+Latest repository lint reports three unreachable modules outside these edits:
+`ThetaCuspHawkingBMClearedOnsetPulseTransform`,
+`ThetaCuspHawkingBMOnsetPulseTransform`, and `XiAffineCollisionControl`.
+No lint errors name the new incoming-restoration leaves; their umbrella
+imports are present and their exact audits passed. The global lint gate
+is not claimed passed for this state.

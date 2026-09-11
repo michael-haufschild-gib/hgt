@@ -266,9 +266,8 @@ def discovery(root: Path, args, options: dict) -> dict:
     result = supervise([engine_python(root), str(root / "scripts" / "lean_research_engine.py")], request, deadline=deadline)
     if refresh is not None:
         result["refresh"] = refresh
-        if not refresh.get("complete"):
-            result["partial"] = True
-            result.setdefault("unfinished_stages", []).append("source_refresh")
+        if not refresh.get("complete") and refresh.get('reason') != 'background_indexer_running':
+            result.setdefault("index_warnings", []).append("source_refresh_deferred")
     result["elapsed_seconds"] = time.monotonic() - start
     return result
 
@@ -289,7 +288,7 @@ def refresh_main():
 
 def render_discovery(extra: dict) -> None:
     print("\nResearch discovery: %s%s (%.2fs)" % (extra.get("mode", "deep"),
-          "; partial" if extra.get("partial") else "", extra.get("elapsed_seconds", 0)))
+          "; partial search" if extra.get("partial") else "; search complete", extra.get("elapsed_seconds", 0)))
     for label, key in (("Candidate lemmas", "candidate_lemmas"), ("Proof ideas", "proof_ideas"),
                        ("Source arguments", "source_arguments")):
         values = extra.get(key, [])
@@ -312,7 +311,11 @@ def render_discovery(extra: dict) -> None:
             if step["obligations"]:
                 print("  Obligations: " + "; ".join(step["obligations"]))
     if extra.get("unfinished_stages"):
-        print("Unfinished: " + ", ".join(extra["unfinished_stages"]))
+        print("Unfinished search stages: " + ", ".join(extra["unfinished_stages"]))
+    if extra.get('index_warnings'):
+        print("Index coverage/freshness: " + ", ".join(extra['index_warnings']))
+    if extra.get('semantic_coverage'):
+        print("Semantic coverage: " + json.dumps(extra['semantic_coverage'], ensure_ascii=False))
     if extra.get("coverage"):
         print("Coverage: " + json.dumps(extra["coverage"], ensure_ascii=False))
 

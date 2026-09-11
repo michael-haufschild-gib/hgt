@@ -11,6 +11,17 @@ from lean_research_corpus import Corpus
 from lean_research_vectors import Vectors
 from lean_research_qdrant import Qdrant, sync, reconcile
 
+class QdrantRequestTests(unittest.TestCase):
+ def test_timeout_is_not_reported_as_server_unavailable(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   q=Qdrant(Path(tmp))
+   for failure,expected,message in ((TimeoutError('timed out'),TimeoutError,'search budget'),
+                                    (ConnectionRefusedError('refused'),RuntimeError,'Local Qdrant unavailable')):
+    with self.subTest(failure=type(failure).__name__),patch('lean_research_qdrant.http.client.HTTPConnection') as factory:
+     factory.return_value.getresponse.side_effect=failure
+     with self.assertRaisesRegex(expected,message):q.request('GET','/collections',deadline=time.monotonic()+3)
+     factory.return_value.close.assert_called_once()
+
 @unittest.skipUnless(os.environ.get('HGT_TEST_QDRANT')=='1','requires local Qdrant integration opt-in')
 class QdrantTests(unittest.TestCase):
  def setUp(self):

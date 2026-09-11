@@ -56,6 +56,8 @@ class Qdrant:
                 raise TimeoutError('Qdrant deadline exceeded')
             result = json.loads(raw)
             return result.get('result', result)
+        except TimeoutError as exc:
+            raise TimeoutError('Qdrant request timed out within its search budget') from exc
         except (OSError, http.client.HTTPException) as exc:
             raise RuntimeError('Local Qdrant unavailable; run ./launch.sh. ' + str(exc)) from exc
         finally:

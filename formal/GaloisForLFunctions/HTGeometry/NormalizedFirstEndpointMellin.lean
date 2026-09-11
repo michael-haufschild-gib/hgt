@@ -18,7 +18,7 @@ theorem normalizedFirstEndpointMellin_zero (F : ℂ → ℝ → ℂ) (w : ℂ) :
     normalizedFirstEndpointMellin F w 0=F w 0/(w+1) := by simp [normalizedFirstEndpointMellin]
 
 /-- The actual remainder integral has a sharp power bound throughout Re(w)>-2. -/
-theorem firstEndpointMellinRemainder_norm_le {F : ℂ → ℝ → ℂ} {w : ℂ} {b C : ℝ}
+theorem normalizedMellinRemainder_norm_le {F : ℂ → ℝ → ℂ} {w : ℂ} {b C : ℝ}
     (hb : 0 < b) (hw : -2 < w.re) (hm : Measurable (F w))
     (hC : ∀ t ∈ Ioc (0:ℝ) b, ‖F w t-F w 0‖ ≤ C*t) :
     ‖firstEndpointMellinRemainder F b w‖ ≤ C*b^(w.re+2)/(w.re+2) := by
@@ -56,7 +56,7 @@ theorem normalizedFirstEndpointMellin_sub_zero_bound {F : ℂ → ℝ → ℂ} {
   rw [he,norm_div,Complex.norm_cpow_eq_rpow_re_of_pos hb,Complex.add_re,Complex.one_re]
   calc
     _ ≤ (C*b^(w.re+2)/(w.re+2))/b^(w.re+1) :=
-      div_le_div_of_nonneg_right (firstEndpointMellinRemainder_norm_le hb hw hm hC) (Real.rpow_nonneg hb.le _)
+      div_le_div_of_nonneg_right (normalizedMellinRemainder_norm_le hb hw hm hC) (Real.rpow_nonneg hb.le _)
     _ = _ := by
       rw [show w.re+2=(w.re+1)+1 by ring,Real.rpow_add hb,Real.rpow_one]
       field_simp [ne_of_gt (Real.rpow_pos_of_pos hb (w.re+1))]

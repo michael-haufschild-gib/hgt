@@ -139,6 +139,39 @@ class SupervisionTests(unittest.TestCase):
                 finally:
                     writer.con.rollback()
 
+    def test_background_indexing_does_not_mark_finished_search_partial(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with Corpus(cache_directory(root)):
+                pass
+            args = SimpleNamespace(query=['alpha'], mode='hybrid', no_refresh=False, limit=20,
+                                   budget_seconds=3, research_started=time.monotonic())
+            completed = dict(candidate_lemmas=[{'name': 'alpha'}], partial=False, unfinished_stages=[])
+            with patch('lean_research_background.status', return_value={'running': True}), \
+                    patch('lean_research_cli.supervise', return_value=completed), \
+                    patch('lean_research_cli.engine_python', return_value=sys.executable):
+                result = discovery(root, args, {})
+            self.assertFalse(result['partial'])
+            self.assertFalse(result['unfinished_stages'])
+            self.assertEqual(result['refresh']['reason'], 'background_indexer_running')
+
+    def test_deferred_refresh_is_separate_from_finished_search(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with Corpus(cache_directory(root)):
+                pass
+            args = SimpleNamespace(query=['alpha'], mode='hybrid', no_refresh=False, limit=20,
+                                   budget_seconds=3, research_started=time.monotonic())
+            completed = dict(candidate_lemmas=[{'name': 'alpha'}], partial=False, unfinished_stages=[])
+            refresh = dict(refresh={'complete': False, 'reason': 'maintenance_busy'})
+            with patch('lean_research_background.status', return_value={'running': False}), \
+                    patch('lean_research_cli.supervise', side_effect=[refresh, completed]), \
+                    patch('lean_research_cli.engine_python', return_value=sys.executable):
+                result = discovery(root, args, {})
+            self.assertFalse(result['partial'])
+            self.assertFalse(result['unfinished_stages'])
+            self.assertIn('source_refresh_deferred', result['index_warnings'])
+
     def test_deadline_returns_last_snapshot_and_terminates_owned_child(self):
         with tempfile.TemporaryDirectory() as tmp:
             pidfile = Path(tmp) / 'pid'

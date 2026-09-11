@@ -423,7 +423,7 @@ def release_gates(report: dict, expected_cases: list[dict] | None = None) -> dic
             if (row.get("case_fingerprint") != case_fingerprint(case)
                     or any(row.get(k) != case[k] for k in ("kind", "split", "family"))):
                 blocked.append(prefix + "case labels/query differ from fixture")
-            if row.get("error") or row.get("partial") or row.get("errors") or row.get("unfinished_stages"):
+            if row.get("error") or row.get("partial") or row.get("errors") or row.get("unfinished_stages") or row.get('index_warnings'):
                 blocked.append(prefix + "failed or partial measurement")
             wall = row.get("wall_seconds")
             if type(wall) not in (int, float) or not math.isfinite(wall) or wall < 0:
@@ -543,7 +543,7 @@ def evaluate(cases: list[dict], search: Callable[[str, str], dict],
                 result = search(case["query"], run)
                 if isinstance(result, dict):
                     row.update({k: result[k] for k in
-                                ("partial", "unfinished_stages", "errors", "elapsed_seconds",
+                                ("partial", "unfinished_stages", "index_warnings", "semantic_coverage", "errors", "elapsed_seconds",
                                  "engine_version", "backend", "query_trace", "benchmark_command")
                                 if k in result})
                     config = {**result.get("options", {}), **result.get("retrieval_config", {}), **result}
@@ -551,7 +551,7 @@ def evaluate(cases: list[dict], search: Callable[[str, str], dict],
                                                ("mode", "retrieval_views", "max_rounds") if k in config}
                     row["environment"] = {
                         "engine_version": result.get("engine_version"),
-                        "corpus_generation": result.get("coverage", {}).get("generation"),
+                        "corpus_generation": result.get("index_generation", result.get("coverage", {}).get("generation")),
                         "runtime_fingerprints": result.get("runtime", {}).get("fingerprints")}
                     row["channel_counts"] = {k: len(result.get(k, [])) if isinstance(result.get(k, []), list) else None
                                              for k in ("candidate_lemmas", "source_arguments", "proof_ideas", "ingredient_sets")}

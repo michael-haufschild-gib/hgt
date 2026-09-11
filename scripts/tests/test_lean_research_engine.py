@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 import sys
 import tempfile
 import time
@@ -135,6 +136,29 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(len([c for c in runtime.calls if c[0] == 'generate']), 1)
         self.assertNotIn('beta', [c['name'] for c in result['candidate_lemmas']])
 
+    def test_expansion_budget_reserves_judgment_and_reports_skipped_queries(self):
+        runtime = FakeRuntime()
+        engine = Engine(self.db, runtime, vectors=EmptyVectors())
+        candidate = engine._candidate({'decl_id': self.did})
+        now = [1000.]
+        def retrieve(query, **kwargs):
+            self.assertAlmostEqual(kwargs['deadline'], 1060.)
+            now[0] = kwargs['deadline'] + .01
+            return [candidate], [], []
+        def judge(query, candidates, methods, deadline):
+            self.assertGreater(deadline-now[0], 29)
+            self.assertEqual(candidates[0]['id'], self.did)
+            return dict(sufficient=True, ingredient_sets=[dict(description='reuse bound', steps=[
+                dict(goal='apply estimate', candidate_ids=[self.did], obligations=['supply positivity'])])])
+        with patch('lean_research_engine.time.monotonic', side_effect=lambda: now[0]), \
+                patch.object(engine, 'retrieve', side_effect=retrieve), \
+                patch.object(engine, '_judge', side_effect=judge):
+            result = engine.search('uniform growth bound forces parameter zero', budget_seconds=90)
+        self.assertTrue(result['ingredient_sets'])
+        self.assertTrue(result['partial'])
+        self.assertTrue(any(s.startswith('query:') for s in result['unfinished_stages']))
+        self.assertNotIn('deadline', result['unfinished_stages'])
+
     def test_low_reranker_score_is_not_discarded_as_if_it_were_rrf(self):
         runtime = FakeRuntime()
         runtime.rerank = lambda query, documents, deadline: [.00001] * len(documents)
@@ -150,12 +174,59 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(context['source_arguments'][0]['proof'], 'rfl')
         self.assertFalse(context['source_arguments'][0]['statement_complete'])
 
-    def test_incomplete_vectors_never_report_complete_search(self):
+    def test_completed_search_keeps_incomplete_vector_coverage_explicit(self):
         vectors = EmptyVectors()
         vectors.coverage = lambda model: {'complete': False, 'expected': 10, 'ready': 1}
         result = Engine(self.db, FakeRuntime(), vectors=vectors).search('alpha', mode='hybrid')
-        self.assertTrue(result['partial'])
-        self.assertIn('semantic_index_incomplete', result['unfinished_stages'])
+        self.assertFalse(result['partial'])
+        self.assertFalse(result['unfinished_stages'])
+        self.assertIn('semantic_index_incomplete', result['index_warnings'])
+        self.assertFalse(result['semantic_coverage']['complete'])
+        self.assertTrue(result['candidate_lemmas'])
+
+    def test_coverage_failure_cannot_prevent_semantic_retrieval(self):
+        vectors = EmptyVectors()
+        searched = []
+        def search(embedding, **kwargs):
+            searched.append(kwargs['views'])
+            return self.db.search('alpha') if 'statement' in kwargs['views'] else []
+        def coverage(model):
+            self.assertTrue(searched)
+            raise sqlite3.OperationalError('interrupted')
+        vectors.search, vectors.coverage = search, coverage
+        result = Engine(self.db, FakeRuntime(), vectors=vectors).search('unmatched', mode='hybrid')
+        self.assertEqual(result['candidate_lemmas'][0]['name'], 'A.alpha')
+        self.assertFalse(result['partial'])
+        self.assertFalse(result['errors'])
+        self.assertIsNone(result['semantic_coverage']['complete'])
+        self.assertIn('semantic_coverage_unavailable', result['index_warnings'])
+
+    def test_indexer_snapshot_avoids_recount_and_exposes_its_generation(self):
+        (self.db.directory / 'indexer.json').write_text(json.dumps(dict(updated_at=123,
+            coverage=dict(generation=0, pending_files=1, method_invalidation_pending=True))))
+        with patch.object(self.db, 'coverage', side_effect=AssertionError('redundant corpus count')):
+            result = Engine(self.db, FakeRuntime(), vectors=EmptyVectors()).search('alpha', mode='hybrid')
+        self.assertFalse(result['partial'])
+        self.assertEqual(result['coverage']['generation'], 0)
+        self.assertEqual(result['coverage']['current_generation'], self.db.generation)
+        self.assertEqual(result['coverage']['snapshot_written_at'], 123)
+        self.assertIn('source_index_incomplete', result['index_warnings'])
+        self.assertIn('method_dependency_refresh', result['index_warnings'])
+
+    def test_slow_optional_counts_do_not_consume_search_budget(self):
+        vectors = EmptyVectors()
+        def coverage(model):
+            self.db.con.execute('WITH RECURSIVE n(x) AS (VALUES(1) UNION ALL '
+                'SELECT x+1 FROM n WHERE x<100000000) SELECT sum(x) FROM n').fetchone()
+            raise AssertionError('count was not interrupted')
+        vectors.coverage = coverage
+        started = time.monotonic()
+        result = Engine(self.db, FakeRuntime(), vectors=vectors).search('alpha', mode='hybrid', budget_seconds=5)
+        self.assertLess(time.monotonic()-started, 2)
+        self.assertFalse(result['partial'])
+        self.assertTrue(result['candidate_lemmas'])
+        self.assertIn('semantic_coverage_unavailable', result['index_warnings'])
+        self.assertEqual(self.db.con.execute('SELECT 1').fetchone()[0], 1)
 
     def test_filters_apply_to_semantic_results_and_dependency_expansion(self):
         beta = self.db.search('beta')[0]['decl_id']
@@ -204,8 +275,8 @@ class EngineTests(unittest.TestCase):
         runtime = FakeRuntime()
         def rerank(query, documents, *, deadline):
             self.assertTrue(snapshots[-1]['candidate_lemmas'])
-            self.assertGreater(deadline - time.monotonic(), 25)
-            self.assertLessEqual(deadline - time.monotonic(), 30)
+            self.assertGreater(deadline - time.monotonic(), 55)
+            self.assertLessEqual(deadline - time.monotonic(), 60)
             raise TimeoutError('reranking exhausted its stage budget')
         runtime.rerank = rerank
         r = Engine(self.db, runtime, vectors=vectors).search('unmatched', mode='hybrid',
@@ -243,7 +314,7 @@ class EngineTests(unittest.TestCase):
                         patch.object(engine, 'retrieve', side_effect=capture):
                     result = engine.search('alpha', budget_seconds=budget)
                 self.assertTrue(result['candidate_lemmas'])
-                for stage, cap in (('embedding',30),('reranking',30),('judgment',60),('retrieval',90)):
+                for stage, cap in (('embedding',30),('reranking',60),('judgment',60),('retrieval',90)):
                     self.assertLessEqual(limits[stage], min(cap,budget))
                     self.assertGreater(limits[stage], cap-1 if budget==300 else 0)
                 for left in limits['text']:

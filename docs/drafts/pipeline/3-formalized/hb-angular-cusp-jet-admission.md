@@ -1,6 +1,6 @@
 # HB: actual angular cusp jets
 
-Stage: 3-formalized. Four unconditional Lean theorems prove weighted bounds and cusp limits for every derivative word of the literal squared-source remainder and its retained spin-two image. Frontier map read only.
+Stage: 3-formalized. Unconditional Lean theorems prove derivative-weighted bounds for the literal squared source, its retained spin-two image, and the six quartic contact expressions. The quartic extension also admits the original regulated periods, proves decay of the integrated principal-subtracted Green flux, and constructs modular core cutoffs with exact Green transposition against the physical QNM angular test. Frontier map read only.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -66,3 +66,105 @@ Scratch `lake env lean` passed. The final exact-module `lake build GaloisForLFun
 Source indexing completed (three changed files, no removals). Whole static `scripts/formal_tools.py lint` passed with existing large-file warnings. Fifteen local documentation links, edited-file whitespace and the single umbrella import were checked. Every owned Lean/Lake/search process completed, and scratch sources, cached-import links and search outputs were removed.
 
 Complete physical-current cancellation, fixed Hawking-clock extinction and RH remain unproved.
+
+
+## Quartic contact extension, 11 September 2026
+
+The [retained contact balance](../1-in-progress/hb-source-contact-spin-two-balance.md) uses the six actual differential expressions
+
+```
+Q², J², Delta(J²)/2-J Delta J, J[-Delta(Delta-2)Q], H, Delta H,
+Q=f²/2, J=(cQ-2Delta Q)/8, c=7rho(rho-1)-2,
+H=2J²+c(c-4)Q²/96.
+```
+
+`quarticContactField` evaluates these products and actual angular derivatives on the full literal scalar. `quarticContactPrincipal` evaluates the same expressions on both original Weyl powers. No Fourier mode or principal cross term is deleted. The gradient expression is retained in its displayed differential form; attachment to the separately named physical gradient/contact fields belongs to the ensuing Green-transport proof.
+
+The private proof first closes the finite principal algebra under coordinate differentiation and multiplication by rapid remainders. Structural induction then proves that evaluating any of the six differential expressions on the full source differs rapidly from its principal evaluation. In the product step the complete difference is `f0*(g-g0)+g0*(f-f0)+(f-f0)*(g-g0)`. In the Laplacian step actual Fréchet derivative linearity transfers the existing rapid bound. This proves every coordinate-word bound and cusp limit.
+
+For every full scalar test psi, the function `psi*(P-chi*P0)` belongs to both L² and L¹ of the original modular measure, with the unchanged cutoff `chi(y)=smoothTransition(y-2)`. Above height three it is a rapid remainder times the full scalar; below height three continuity and compactness control it. The quotient has finite volume.
+
+Define the actual Green flux and its full principal counterpart by
+
+```
+B(psi,P)=psi partial_y P-P partial_y psi,
+B0(psi0,P0)=psi0 partial_y P0-P0 partial_y psi0.
+```
+
+Each flux has an ordinary interval integral at every positive height. Their difference is a sum of products with at least one rapid differentiated remainder. Its bound at weight `w+1` gives the uniform estimate `|y^w(B-B0)| <= C/y`. The horizontal interval has length one, so
+
+```
+lim_(Y -> infinity) integral_(-1/2)^(1/2) Y^w(B-B0)(x,Y) dx=0.
+```
+
+This is an actual integrated boundary theorem. It does not set B0, a cutoff commutator, or the physical cusp contribution to zero.
+
+New public theorems in the existing leaf:
+
+- `quarticContact_remainder_jet_bound`
+- `quarticContact_remainder_jet_tendsto_zero`
+- `quarticContactResidual_scalar_memLp`
+- `quarticContactResidual_scalar_integrable`
+- `quarticContactGreenFlux_remainder_integral_tendsto_zero`
+- `quarticContactField_smooth`
+- `quarticContactGreenFlux_intervalIntegrable`
+
+The complete extension passed `lake env lean /tmp/hb-quartic-contact.lean` without diagnostics. The final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 178 seconds against twelve cached import roots. The verified source and leaf artifacts were copied byte-identically to the corpus. The existing umbrella import remains in place; no umbrella build or numerical evaluation was used. Source SHA-256: `922f4996faa598b52121805e3ad2ec122d5f5d6852fb549796ed82b84c614ace`.
+
+The next mathematical obligation is the finite modular Green identity with its explicit principal-power and native Mellin corrections. Transport to the complete causal/left-QNM action, all independent channels and changing metric weights, and fixed-clock extinction remain open.
+
+The extension's twelve public declarations are present in the regenerated API. Whole static `scripts/formal_tools.py lint` passed with existing large-file warnings. The single existing umbrella import, documentation file links and scoped whitespace checks passed. All owned scratch, leaf-build and search processes completed; temporary sources and isolated cached-import audit files were removed.
+
+
+## Modular compact-core physical Green extension, 11 September 2026
+
+For each of the six full quartic differential expressions P, the original theta modularity and invariant angular Laplacian prove modularity of P by structural induction. The actual field `gamma_N P`, with N=n+1, is then a constructed `CoreField`: its smoothness, modular invariance and compact quotient support are proved from the source and the existing modular cusp cutoff.
+
+For arbitrary source and target Xi occurrences q,r, the target's physical test psi_r satisfies
+
+```
+integral_F psi_r Delta(gamma_N P_q) dmu
+ =mu_r integral_F psi_r gamma_N P_q dmu,
+mu_r=physicalAngularParameter(r)^2-1/4.
+```
+
+Both integrands are absolutely admitted. Use the existing conjugated physical core test at index 3n+2. Its cutoff equals one as a germ on the support of the source core and its Laplacian. Outside that support, both source expressions vanish as germs. Applying the original completed core Green identity therefore gives the displayed pairing with the actual full physical test, including the modular seams. This proof does not require the full physical test to be an L² eigenvector.
+
+On the original closed cell the source cutoff Laplacian is exactly
+
+```
+Delta(gamma_N P)=gamma_N Delta P
+                +2y² gamma_N' partial_y P+y² gamma_N''P.
+```
+
+Both cutoff derivatives remain. The new public declarations are `quarticContactField_modular`, `quarticContactCoreCutoff`, `quarticContactCoreCutoff_physical_green`, and `quarticContactCoreCutoff_laplacian` in the same existing leaf. No source regularity, test-domain, Green identity or extinction premise is supplied by their callers.
+
+`lake env lean /tmp/hb-quartic-green.lean` passed without diagnostics. The exact cached `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 7.3 seconds, using twelve cached import roots. Source and five leaf artifacts were copied byte-identically to the corpus; the existing single umbrella import remains. Source SHA-256: `04bf62862b8754bf3f1a01ad6e4832c7a59c66567171c4cd31a2a3cf8ab08110`.
+
+The [active contact-balance card](../1-in-progress/hb-source-contact-spin-two-balance.md#constructed-compact-core-physical-green-identity) derives the next finite-transition Mellin cancellation on paper, retaining all five principal powers. That native finite-part transport is not yet a Lean theorem. Attachment to the complete causal/left-QNM action, independent SS/SV/VV channels, solved corrections, changing metric weights and remaining spacetime faces is still required. Fixed Hawking-clock extinction and RH remain unproved.
+
+
+The compact Green extension's four public declarations are present once each in the regenerated API. The single existing umbrella import, eight local documentation links and scoped whitespace checks pass. Whole `scripts/formal_tools.py lint` returned exit 1 because the concurrently appearing, untracked `ThetaCuspHawkingBMOnsetPulseTransform` and `XiAffineCollisionControl` modules are not reachable from the RHTower umbrella; the gate reported no error for the quartic leaf. These two modules are outside this extension's write scope and were not modified.
+
+
+## Five-exponent finite Mellin boundary extension, 11 September 2026
+
+New module: [ThetaCuspHawkingBMQuarticCutoffMellin.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticCutoffMellin.lean), namespace `RHTower.D4BMQuarticCutoffMellin`.
+
+With rho the original Xi occurrence, define `k_j=4-j+(2j-4)rho` and `w_j=k_j-rho/2`, for j=0,...,4. All five w_j are nonzero: their imaginary parts are `(2j-9/2) Im(rho)`, and both factors are nonzero. For every natural n put N=n+2, keep the original cutoff chi(y)=smoothTransition(y-2), gamma_N(y)=1-chi(y/N), and the existing native M(w)=3^w/w-integral_2^3 chi(y)y^(w-1). Lean proves
+
+```
+integral_2^(3N) gamma_N(y)chi(y)y^(w_j-1)dy=(N^w_j-1)M(w_j),
+-integral_N^(4N) gamma_N'(y)y^w_j dy=w_j N^w_j M(w_j).
+```
+
+These are finite-interval identities with directly established smoothness, integrability and endpoint values. They require no condition on Re(w_j), no zero cutoff contact, and no changed physical frequency. The first proof separates the two transition intervals and rescales the outer one; the second integrates by parts on [1,4] before rescaling. Thus the two scale terms match exactly. The excluded w=0 case would have a logarithmic bulk term and is not silently included.
+
+Public declarations: `quarticPrincipalExponent`, `quarticPhysicalMellinExponent`, `quarticPhysicalMellinExponent_ne_zero`, `quarticCutoff_bulk_moment`, and `quarticCutoff_flux_moment`.
+
+The complete scratch `lake env lean /tmp/hb-quartic-cutoff-mellin.lean` passed without diagnostics. The exact cached `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticCutoffMellin` passed without warnings in 23 seconds (two jobs, twelve cached import roots). Source and five leaf artifacts were copied byte-identically to the corpus, and the module was wired once into the RHTower umbrella. Source SHA-256: `c05f47bf4838608b5cb497bee03bcfbd71d15477ce87bed5aa4f3cf1531fbd75`.
+
+This closes the finite cutoff moments at the exponents used by the paper principal expansion. Equality of each actual quartic principal field with that explicit five-power expansion and the full renormalized Green limit still require Lean proofs. The result does not assert complete physical-action cancellation or fixed Hawking-clock extinction.
+
+
+Final verification after the Mellin leaf: the regenerated API contains all five new declarations once; both owned modules have one umbrella import, nine local documentation links pass, and scoped whitespace checks pass. The subsequent whole `scripts/formal_tools.py lint` returned exit 0 with existing large-file warnings. The two earlier concurrent umbrella-reachability errors were resolved elsewhere in the shared worktree; this extension did not edit those modules. All owned Lean/Lake/search processes completed.

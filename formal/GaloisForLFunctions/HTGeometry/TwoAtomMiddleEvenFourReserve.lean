@@ -1,0 +1,454 @@
+import GaloisForLFunctions.HTGeometry.TwoAtomAffineEvenFour
+
+/-!
+# Middle affine reserve retaining both mixed pairs
+
+All four leading minors stay positive after subtracting the complete
+240-unit compensation budget and four diagonal reserves. Affine interpolation
+covers the physical exponential weight, whose envelope is proved analytically.
+-/
+namespace HTGeometry
+noncomputable section
+set_option maxHeartbeats 4000000
+set_option maxRecDepth 8192
+/-- Quadratic lower envelope of the physical reciprocal mixed-pair weight. -/
+def twoAtomMiddleEnvelope (q : ℝ) : ℝ :=
+  3000000*(1+3*(q-5)+(9/2)*(q-5)^2)
+
+private def sqbEndpointA (u t : ℝ) := 5*u+8*t
+private def sqbEndpointB (u t : ℝ) := u+t
+private def sqbEndpointU (u t : ℝ) := 1500000*(2*u^2+22*u*t+101*t^2)
+private def sqbEndpointV (u t : ℝ) := (u+t)^2
+
+private def sqbEndpointMoment0 (u t r : ℝ) : ℝ :=
+  sqbEndpointU u t*(2*sqbEndpointA u t-3*sqbEndpointB u t)^2+
+    8*(r*sqbEndpointV u t)*(2*sqbEndpointA u t-3*sqbEndpointB u t)*
+      (8*sqbEndpointA u t-3*sqbEndpointB u t)
+
+private def sqbEndpointMoment1 (u t r : ℝ) : ℝ :=
+  let A := sqbEndpointA u t; let B := sqbEndpointB u t
+  A*(sqbEndpointU u t*(120*B^3-96*A*B^2+32*A^2*B)+
+    (r*sqbEndpointV u t)*(2400*B^3-10848*A*B^2+11200*A^2*B-4608*A^3))
+
+private def sqbEndpointMoment2 (u t r : ℝ) : ℝ :=
+  let A := sqbEndpointA u t; let B := sqbEndpointB u t
+  A*(sqbEndpointU u t*(-480*B^5+4416*A*B^4-2432*A^2*B^3+768*A^3*B^2)+
+    (r*sqbEndpointV u t)*(-9600*B^5+317568*A*B^4-1369600*A^2*B^3+
+      1606272*A^3*B^2-864000*A^4*B+165888*A^5))
+
+private def sqbEndpointMoment3 (u t r : ℝ) : ℝ :=
+  let A := sqbEndpointA u t; let B := sqbEndpointB u t
+  A*(sqbEndpointU u t*(1920*B^7-82176*A*B^6+253952*A^2*B^5-
+      107520*A^3*B^4+30720*A^4*B^3)+
+    (r*sqbEndpointV u t)*(38400*B^7-5657088*A*B^6+80588800*A^2*B^5-
+      283335168*A^3*B^4+344716800*A^4*B^3-206323200*A^5*B^2+
+      60963840*A^6*B-5971968*A^7))
+
+private def sqbEndpointMoment4 (u t r : ℝ) : ℝ :=
+  let A := sqbEndpointA u t; let B := sqbEndpointB u t
+  A*(sqbEndpointU u t*(-7680*B^9+1360896*A*B^8-12388352*A^2*B^7+
+      19611648*A^3*B^6-6881280*A^4*B^5+1720320*A^5*B^4)+
+    (r*sqbEndpointV u t)*(-153600*B^9+92817408*A*B^8-3465011200*A^2*B^7+
+      29208102912*A^3*B^6-83216179200*A^4*B^5+99992137728*A^5*B^4-
+      63139184640*A^6*B^3+22308784128*A^7*B^2-3747409920*A^8*B+
+      214990848*A^9))
+
+
+private def sqbEndpointMoment5 (u t r : ℝ) : ℝ :=
+  let A := sqbEndpointA u t; let B := sqbEndpointB u t
+  A*(sqbEndpointU u t*(30720*B^11-21958656*A*B^10+500252672*A^2*B^9-
+      1924055040*A^3*B^8+1899233280*A^4*B^7-578027520*A^5*B^6+123863040*A^6*B^5)+
+    (r*sqbEndpointV u t)*(614400*B^11-1494294528*A*B^10+134014566400*A^2*B^9-
+      2350982012928*A^3*B^8+13476986265600*A^4*B^7-32021436211200*A^5*B^6+
+      36948979630080*A^6*B^5-23901460217856*A^7*B^4+9261775872000*A^8*B^3-
+      2004305928192*A^9*B^2+208003645440*A^10*B-7739670528*A^11))
+
+private def sqbEndpointMoment6 (u t r : ℝ) : ℝ :=
+  let A := sqbEndpointA u t; let B := sqbEndpointB u t
+  sqbEndpointU u t*(-122880*A*B^13+352075776*A^2*B^12-18886787072*A^3*B^11+
+    150752329728*A^4*B^10-320229212160*A^5*B^9+221632266240*A^6*B^8-
+    59949711360*A^7*B^7+10899947520*A^8*B^6)+
+  (r*sqbEndpointV u t)*(-2457600*A*B^13+23945576448*A^2*B^12-4973923532800*A^3*B^11+
+    169169423204352*A^4*B^10-1766855919206400*A^5*B^9+7517668254547968*A^6*B^8-
+    15294052901191680*A^7*B^7+16720020540850176*A^8*B^6-
+    10861074754928640*A^9*B^5+4434116081319936*A^10*B^4-
+    1107009375436800*A^11*B^3+155081713287168*A^12*B^2-
+    10738792857600*A^13*B+278628139008*A^14)
+
+private def detSym4 (a b c d e f g h i j : ℝ) :=
+  (a*e*h-a*f^2-b^2*h+2*b*c*f-c^2*e)*j -
+    ((e*h-f^2)*d^2+2*(c*f-b*h)*d*g+2*(b*f-c*e)*d*i+
+      (a*h-c^2)*g^2+2*(b*c-a*f)*g*i+(a*e-b^2)*i^2)
+
+private def reserve0 (u t : ℝ) : ℝ :=
+  (1/1000000)*sqbEndpointU u t*(2*sqbEndpointA u t-3*sqbEndpointB u t)^2
+private def reserve1 (u t : ℝ) : ℝ :=
+  (1/10000)*sqbEndpointU u t*(2*sqbEndpointA u t-3*sqbEndpointB u t)^2*
+    (8*sqbEndpointA u t)^2*(sqbEndpointB u t)^2
+private def reserve2 (u t : ℝ) : ℝ :=
+  (1/10)*sqbEndpointU u t*(2*sqbEndpointA u t-3*sqbEndpointB u t)^2*
+    (8*sqbEndpointA u t)^4*(sqbEndpointB u t)^4
+private def reserve3 (u t : ℝ) : ℝ :=
+  sqbEndpointU u t*(2*sqbEndpointA u t-3*sqbEndpointB u t)^2*
+    (8*sqbEndpointA u t)^6*(sqbEndpointB u t)^6
+
+
+private theorem reserved_mass_0_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) : 0 < sqbEndpointMoment0 u t 0-reserve0 u t := by
+  simp only [sqbEndpointMoment0, reserve0,
+    sqbEndpointA, sqbEndpointB, sqbEndpointU, sqbEndpointV]
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+private theorem reserved_head_0_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) : 0 < (sqbEndpointMoment0 u t 0-reserve0 u t)*(sqbEndpointMoment2 u t 0-reserve1 u t)-(sqbEndpointMoment1 u t 0)^2 := by
+  simp only [sqbEndpointMoment0, sqbEndpointMoment1, sqbEndpointMoment2,
+    reserve0, reserve1,
+    sqbEndpointA, sqbEndpointB, sqbEndpointU, sqbEndpointV]
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+private theorem reserved_three_0_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) : 0 < (sqbEndpointMoment0 u t 0-reserve0 u t)*(sqbEndpointMoment2 u t 0-reserve1 u t)*(sqbEndpointMoment4 u t 0-reserve2 u t)-(sqbEndpointMoment0 u t 0-reserve0 u t)*(sqbEndpointMoment3 u t 0)^2-(sqbEndpointMoment1 u t 0)^2*(sqbEndpointMoment4 u t 0-reserve2 u t)+2*sqbEndpointMoment1 u t 0*sqbEndpointMoment2 u t 0*sqbEndpointMoment3 u t 0-(sqbEndpointMoment2 u t 0)^2*(sqbEndpointMoment2 u t 0-reserve1 u t) := by
+  simp only [sqbEndpointMoment0, sqbEndpointMoment1, sqbEndpointMoment2,
+    sqbEndpointMoment3, sqbEndpointMoment4, reserve0, reserve1, reserve2,
+    sqbEndpointA, sqbEndpointB, sqbEndpointU, sqbEndpointV]
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+
+private theorem reserved_four_0_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) :
+    0 < detSym4
+      (sqbEndpointMoment0 u t 0-reserve0 u t)
+      (sqbEndpointMoment1 u t 0) (sqbEndpointMoment2 u t 0) (sqbEndpointMoment3 u t 0)
+      (sqbEndpointMoment2 u t 0-reserve1 u t)
+      (sqbEndpointMoment3 u t 0) (sqbEndpointMoment4 u t 0)
+      (sqbEndpointMoment4 u t 0-reserve2 u t)
+      (sqbEndpointMoment5 u t 0)
+      (sqbEndpointMoment6 u t 0-
+        240*sqbEndpointU u t*(8*sqbEndpointA u t)^6*(sqbEndpointB u t)^6*
+          (2*sqbEndpointA u t-3*sqbEndpointB u t)^2-reserve3 u t) := by
+  unfold detSym4 sqbEndpointMoment0 sqbEndpointMoment1 sqbEndpointMoment2
+    sqbEndpointMoment3 sqbEndpointMoment4 sqbEndpointMoment5 sqbEndpointMoment6
+    reserve0 reserve1 reserve2 reserve3 sqbEndpointA sqbEndpointB sqbEndpointU sqbEndpointV
+  dsimp only
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+
+private theorem reserved_mass_1_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) : 0 < sqbEndpointMoment0 u t 1-reserve0 u t := by
+  simp only [sqbEndpointMoment0, reserve0,
+    sqbEndpointA, sqbEndpointB, sqbEndpointU, sqbEndpointV]
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+private theorem reserved_head_1_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) : 0 < (sqbEndpointMoment0 u t 1-reserve0 u t)*(sqbEndpointMoment2 u t 1-reserve1 u t)-(sqbEndpointMoment1 u t 1)^2 := by
+  simp only [sqbEndpointMoment0, sqbEndpointMoment1, sqbEndpointMoment2,
+    reserve0, reserve1,
+    sqbEndpointA, sqbEndpointB, sqbEndpointU, sqbEndpointV]
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+private theorem reserved_three_1_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) : 0 < (sqbEndpointMoment0 u t 1-reserve0 u t)*(sqbEndpointMoment2 u t 1-reserve1 u t)*(sqbEndpointMoment4 u t 1-reserve2 u t)-(sqbEndpointMoment0 u t 1-reserve0 u t)*(sqbEndpointMoment3 u t 1)^2-(sqbEndpointMoment1 u t 1)^2*(sqbEndpointMoment4 u t 1-reserve2 u t)+2*sqbEndpointMoment1 u t 1*sqbEndpointMoment2 u t 1*sqbEndpointMoment3 u t 1-(sqbEndpointMoment2 u t 1)^2*(sqbEndpointMoment2 u t 1-reserve1 u t) := by
+  simp only [sqbEndpointMoment0, sqbEndpointMoment1, sqbEndpointMoment2,
+    sqbEndpointMoment3, sqbEndpointMoment4, reserve0, reserve1, reserve2,
+    sqbEndpointA, sqbEndpointB, sqbEndpointU, sqbEndpointV]
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+
+private theorem reserved_four_1_pos {u t : ℝ} (hu : 0 ≤ u) (ht : 0 ≤ t) (hpos : 0 < u+t) :
+    0 < detSym4
+      (sqbEndpointMoment0 u t 1-reserve0 u t)
+      (sqbEndpointMoment1 u t 1) (sqbEndpointMoment2 u t 1) (sqbEndpointMoment3 u t 1)
+      (sqbEndpointMoment2 u t 1-reserve1 u t)
+      (sqbEndpointMoment3 u t 1) (sqbEndpointMoment4 u t 1)
+      (sqbEndpointMoment4 u t 1-reserve2 u t)
+      (sqbEndpointMoment5 u t 1)
+      (sqbEndpointMoment6 u t 1-
+        240*sqbEndpointU u t*(8*sqbEndpointA u t)^6*(sqbEndpointB u t)^6*
+          (2*sqbEndpointA u t-3*sqbEndpointB u t)^2-reserve3 u t) := by
+  unfold detSym4 sqbEndpointMoment0 sqbEndpointMoment1 sqbEndpointMoment2
+    sqbEndpointMoment3 sqbEndpointMoment4 sqbEndpointMoment5 sqbEndpointMoment6
+    reserve0 reserve1 reserve2 reserve3 sqbEndpointA sqbEndpointB sqbEndpointU sqbEndpointV
+  dsimp only
+  rcases lt_or_eq_of_le hu with hu | hu
+  · ring_nf
+    positivity
+  · have htpos : 0 < t := by linarith
+    subst u
+    ring_nf
+    positivity
+
+
+private theorem affine_scale_identities (q : ℝ) :
+    sqbEndpointA (8-q) (q-5) = 3*q ∧
+    sqbEndpointB (8-q) (q-5) = 3 ∧
+    sqbEndpointU (8-q) (q-5) = 9*twoAtomMiddleEnvelope q ∧
+    sqbEndpointV (8-q) (q-5) = 9 := by
+  unfold sqbEndpointA sqbEndpointB sqbEndpointU sqbEndpointV twoAtomMiddleEnvelope
+  constructor
+  · ring
+  constructor
+  · ring
+  constructor <;> ring
+
+private theorem affine_envelope_pos {q : ℝ} (hq : 5 ≤ q) :
+    0 < twoAtomMiddleEnvelope q := by
+  have h : 0 ≤ q-5 := by linarith
+  unfold twoAtomMiddleEnvelope
+  positivity
+
+private theorem affine_moment0_hom (q r : ℝ) (hU : twoAtomMiddleEnvelope q ≠ 0) :
+    sqbEndpointMoment0 (8-q) (q-5) r =
+      (9*twoAtomMiddleEnvelope q)*3^2*
+        twoAtomAffineEvenMoment0 q (r/twoAtomMiddleEnvelope q) := by
+  obtain ⟨hA,hB,hUe,hV⟩ := affine_scale_identities q
+  unfold sqbEndpointMoment0
+  rw [hA,hB,hUe,hV]
+  unfold twoAtomAffineEvenMoment0
+  field_simp [hU]
+
+private theorem affine_moment1_hom (q r : ℝ) (hU : twoAtomMiddleEnvelope q ≠ 0) :
+    sqbEndpointMoment1 (8-q) (q-5) r =
+      (9*twoAtomMiddleEnvelope q)*3^4*
+        twoAtomAffineEvenMoment1 q (r/twoAtomMiddleEnvelope q) := by
+  obtain ⟨hA,hB,hUe,hV⟩ := affine_scale_identities q
+  unfold sqbEndpointMoment1
+  rw [hA,hB,hUe,hV]
+  unfold twoAtomAffineEvenMoment1 twoAtomAffinePart twoAtomOddNumerator1
+  field_simp [hU]
+  ring
+
+private theorem affine_moment2_hom (q r : ℝ) (hU : twoAtomMiddleEnvelope q ≠ 0) :
+    sqbEndpointMoment2 (8-q) (q-5) r =
+      (9*twoAtomMiddleEnvelope q)*3^6*
+        twoAtomAffineEvenMoment2 q (r/twoAtomMiddleEnvelope q) := by
+  obtain ⟨hA,hB,hUe,hV⟩ := affine_scale_identities q
+  unfold sqbEndpointMoment2
+  rw [hA,hB,hUe,hV]
+  unfold twoAtomAffineEvenMoment2 twoAtomAffinePart twoAtomOddNumerator2
+  field_simp [hU]
+  ring
+
+private theorem affine_moment3_hom (q r : ℝ) (hU : twoAtomMiddleEnvelope q ≠ 0) :
+    sqbEndpointMoment3 (8-q) (q-5) r =
+      (9*twoAtomMiddleEnvelope q)*3^8*
+        twoAtomAffineEvenMoment3 q (r/twoAtomMiddleEnvelope q) := by
+  obtain ⟨hA,hB,hUe,hV⟩ := affine_scale_identities q
+  unfold sqbEndpointMoment3
+  rw [hA,hB,hUe,hV]
+  unfold twoAtomAffineEvenMoment3 twoAtomAffinePart twoAtomOddNumerator3
+  field_simp [hU]
+  ring
+
+private theorem affine_moment4_hom (q r : ℝ) (hU : twoAtomMiddleEnvelope q ≠ 0) :
+    sqbEndpointMoment4 (8-q) (q-5) r =
+      (9*twoAtomMiddleEnvelope q)*3^10*
+        twoAtomAffineEvenMoment4 q (r/twoAtomMiddleEnvelope q) := by
+  obtain ⟨hA,hB,hUe,hV⟩ := affine_scale_identities q
+  unfold sqbEndpointMoment4
+  rw [hA,hB,hUe,hV]
+  unfold twoAtomAffineEvenMoment4 twoAtomAffinePart twoAtomOddNumerator4
+  field_simp [hU]
+  ring
+
+
+private theorem affine_moment5_hom (q r : ℝ) (hU : twoAtomMiddleEnvelope q ≠ 0) :
+    sqbEndpointMoment5 (8-q) (q-5) r =
+      (9*twoAtomMiddleEnvelope q)*3^12*
+        twoAtomAffineEvenMoment5 q (r/twoAtomMiddleEnvelope q) := by
+  obtain ⟨hA,hB,hUe,hV⟩ := affine_scale_identities q
+  unfold sqbEndpointMoment5
+  rw [hA,hB,hUe,hV]
+  unfold twoAtomAffineEvenMoment5 twoAtomAffinePart twoAtomOddNumerator5
+  field_simp [hU]
+  ring
+
+private theorem affine_moment6_hom (q r : ℝ) (hU : twoAtomMiddleEnvelope q ≠ 0) :
+    sqbEndpointMoment6 (8-q) (q-5) r =
+      (9*twoAtomMiddleEnvelope q)*3^14*
+        twoAtomAffineEvenMoment6 q (r/twoAtomMiddleEnvelope q) := by
+  obtain ⟨hA,hB,hUe,hV⟩ := affine_scale_identities q
+  unfold sqbEndpointMoment6
+  rw [hA,hB,hUe,hV]
+  unfold twoAtomAffineEvenMoment6
+  field_simp [hU]
+
+private def symQuadratic (a b c d e f g h i j x y z w : ℝ) : ℝ :=
+  a*x^2+2*b*x*y+2*c*x*z+2*d*x*w+e*y^2+2*f*y*z+2*g*y*w+
+    h*z^2+2*i*z*w+j*w^2
+
+private theorem symQuadratic_nonneg {a b c d e f g h i j : ℝ}
+    (ha : 0 < a) (h2 : 0 < a*e-b^2)
+    (h3 : 0 < a*e*h-a*f^2-b^2*h+2*b*c*f-c^2*e)
+    (h4 : 0 ≤ detSym4 a b c d e f g h i j) (x y z w : ℝ) :
+    0 ≤ symQuadratic a b c d e f g h i j x y z w := by
+  let D2 := a*e-b^2
+  let D3 := a*e*h-a*f^2-b^2*h+2*b*c*f-c^2*e
+  let E := a*e*i-a*f*g-b^2*i+b*c*g+b*d*f-c*d*e
+  have he : a*D2*D3*symQuadratic a b c d e f g h i j x y z w =
+      D2*D3*(a*x+b*y+c*z+d*w)^2 +
+      D3*(D2*y+(a*f-b*c)*z+(a*g-b*d)*w)^2 +
+      a*(D3*z+E*w)^2+a*D2*detSym4 a b c d e f g h i j*w^2 := by
+    dsimp [D2,D3,E,symQuadratic,detSym4]
+    ring
+  have hd2 : 0 < D2 := h2
+  have hd3 : 0 < D3 := h3
+  have hp : 0 ≤ a*D2*D3*symQuadratic a b c d e f g h i j x y z w := by
+    rw [he]
+    positivity
+  exact (mul_nonneg_iff_of_pos_left (mul_pos (mul_pos ha hd2) hd3)).mp hp
+
+/-- The corrected affine energy, with all ten symmetric coefficients retained. -/
+def twoAtomMiddleEvenFourQuadratic (q z x y v w : ℝ) : ℝ :=
+  twoAtomAffineEvenMoment0 q z*x^2+2*twoAtomAffineEvenMoment1 q z*x*y+
+    2*twoAtomAffineEvenMoment2 q z*x*v+2*twoAtomAffineEvenMoment3 q z*x*w+
+    twoAtomAffineEvenMoment2 q z*y^2+2*twoAtomAffineEvenMoment3 q z*y*v+
+    2*twoAtomAffineEvenMoment4 q z*y*w+twoAtomAffineEvenMoment4 q z*v^2+
+    2*twoAtomAffineEvenMoment5 q z*v*w+
+    (twoAtomAffineEvenMoment6 q z-240*(8*q)^6*(2*q-3)^2)*w^2
+
+/-- Coordinate-specific positive reserves available for the complete sixteen-entry tail. -/
+def twoAtomMiddleEvenFourDiagonalReserve (q x y v w : ℝ) : ℝ :=
+  (2*q-3)^2*(x^2/1000000+(8*q)^2*y^2/10000+(8*q)^4*v^2/10+
+    (8*q)^6*w^2)
+
+private theorem reserved_endpoint_quadratic {q r : ℝ}
+    (hq : 5 ≤ q) (hqu : q ≤ 8) (hr : r = 0 ∨ r = 1) (x y v w : ℝ) :
+    twoAtomMiddleEvenFourDiagonalReserve q x y v w ≤
+      twoAtomMiddleEvenFourQuadratic q (r/twoAtomMiddleEnvelope q) x y v w := by
+  have hU := affine_envelope_pos hq
+  let u := 8-q
+  let t := q-5
+  have hu : 0 ≤ u := by dsimp [u]; linarith
+  have ht : 0 ≤ t := by dsimp [t]; linarith
+  have hup : 0 < u+t := by dsimp [u,t]; linarith
+  have hmass : 0 < sqbEndpointMoment0 u t r-reserve0 u t := by
+    rcases hr with rfl | rfl
+    · exact reserved_mass_0_pos hu ht hup
+    · exact reserved_mass_1_pos hu ht hup
+  have hhead : 0 < (sqbEndpointMoment0 u t r-reserve0 u t)*
+      (sqbEndpointMoment2 u t r-reserve1 u t)-(sqbEndpointMoment1 u t r)^2 := by
+    rcases hr with rfl | rfl
+    · exact reserved_head_0_pos hu ht hup
+    · exact reserved_head_1_pos hu ht hup
+  have hthree : 0 < (sqbEndpointMoment0 u t r-reserve0 u t)*
+      (sqbEndpointMoment2 u t r-reserve1 u t)*(sqbEndpointMoment4 u t r-reserve2 u t)-
+      (sqbEndpointMoment0 u t r-reserve0 u t)*(sqbEndpointMoment3 u t r)^2-
+      (sqbEndpointMoment1 u t r)^2*(sqbEndpointMoment4 u t r-reserve2 u t)+
+      2*sqbEndpointMoment1 u t r*sqbEndpointMoment2 u t r*sqbEndpointMoment3 u t r-
+      (sqbEndpointMoment2 u t r)^2*(sqbEndpointMoment2 u t r-reserve1 u t) := by
+    rcases hr with rfl | rfl
+    · exact reserved_three_0_pos hu ht hup
+    · exact reserved_three_1_pos hu ht hup
+  have hfour : 0 ≤ detSym4
+      (sqbEndpointMoment0 u t r-reserve0 u t)
+      (sqbEndpointMoment1 u t r) (sqbEndpointMoment2 u t r) (sqbEndpointMoment3 u t r)
+      (sqbEndpointMoment2 u t r-reserve1 u t)
+      (sqbEndpointMoment3 u t r) (sqbEndpointMoment4 u t r)
+      (sqbEndpointMoment4 u t r-reserve2 u t) (sqbEndpointMoment5 u t r)
+      (sqbEndpointMoment6 u t r-
+        240*sqbEndpointU u t*(8*sqbEndpointA u t)^6*(sqbEndpointB u t)^6*
+          (2*sqbEndpointA u t-3*sqbEndpointB u t)^2-reserve3 u t) := by
+    rcases hr with rfl | rfl
+    · exact (reserved_four_0_pos hu ht hup).le
+    · exact (reserved_four_1_pos hu ht hup).le
+  have h := symQuadratic_nonneg hmass hhead hthree hfour (3^6*x) (3^4*y) (3^2*v) w
+  dsimp only [u,t] at h
+  rw [affine_moment0_hom q r hU.ne',affine_moment1_hom q r hU.ne',
+    affine_moment2_hom q r hU.ne',affine_moment3_hom q r hU.ne',
+    affine_moment4_hom q r hU.ne',affine_moment5_hom q r hU.ne',
+    affine_moment6_hom q r hU.ne'] at h
+  unfold reserve0 reserve1 reserve2 reserve3 at h
+  rw [(affine_scale_identities q).1,(affine_scale_identities q).2.1,
+    (affine_scale_identities q).2.2.1] at h
+  have he : 0 ≤ (9*twoAtomMiddleEnvelope q)*3^14*
+      (twoAtomMiddleEvenFourQuadratic q (r/twoAtomMiddleEnvelope q) x y v w-
+        twoAtomMiddleEvenFourDiagonalReserve q x y v w) := by
+    convert h using 1
+    unfold symQuadratic twoAtomMiddleEvenFourQuadratic twoAtomMiddleEvenFourDiagonalReserve
+    ring
+  have hp := (mul_nonneg_iff_of_pos_left (by positivity)).mp he
+  linarith only [hp]
+
+/-- A positive diagonal reserve survives across the whole admitted affine weight interval. -/
+theorem twoAtomMiddleEvenFourDiagonalReserve_le {q z : ℝ}
+    (hq : 5 ≤ q) (hqu : q ≤ 8) (hz : 0 ≤ z)
+    (hzU : twoAtomMiddleEnvelope q*z ≤ 1) (x y v w : ℝ) :
+    twoAtomMiddleEvenFourDiagonalReserve q x y v w ≤
+      twoAtomMiddleEvenFourQuadratic q z x y v w := by
+  have hU := affine_envelope_pos hq
+  have hzero := reserved_endpoint_quadratic (r:=0) hq hqu (Or.inl rfl) x y v w
+  have hone := reserved_endpoint_quadratic (r:=1) hq hqu (Or.inr rfl) x y v w
+  simp only [zero_div] at hzero
+  have h0 := mul_le_mul_of_nonneg_left hzero (show 0 ≤ 1-twoAtomMiddleEnvelope q*z by linarith)
+  have h1 := mul_le_mul_of_nonneg_left hone (mul_nonneg hU.le hz)
+  have he : twoAtomMiddleEvenFourQuadratic q z x y v w =
+      (1-twoAtomMiddleEnvelope q*z)*twoAtomMiddleEvenFourQuadratic q 0 x y v w+
+      (twoAtomMiddleEnvelope q*z)*twoAtomMiddleEvenFourQuadratic q (1/twoAtomMiddleEnvelope q) x y v w := by
+    unfold twoAtomMiddleEvenFourQuadratic twoAtomAffineEvenMoment0
+      twoAtomAffineEvenMoment1 twoAtomAffineEvenMoment2 twoAtomAffineEvenMoment3
+      twoAtomAffineEvenMoment4 twoAtomAffineEvenMoment5 twoAtomAffineEvenMoment6
+      twoAtomAffinePart twoAtomOddNumerator1 twoAtomOddNumerator2 twoAtomOddNumerator3
+      twoAtomOddNumerator4 twoAtomOddNumerator5
+    field_simp [hU.ne']
+    ring
+  rw [he]
+  nlinarith only [h0,h1]
+
+/-- The physical exponential weight belongs to the entire middle affine reserve region. -/
+theorem twoAtomMiddleEnvelope_exp_admission {q : ℝ} (hq : 5 ≤ q) :
+    twoAtomMiddleEnvelope q*Real.exp (-3*q) ≤ 1 := by
+  have h1 : (271/100 : ℝ) ≤ Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+  have hp := pow_le_pow_left₀ (by norm_num) h1 15
+  rw [← Real.exp_nat_mul] at hp
+  norm_num at hp
+  have hbase : (3000000 : ℝ) ≤ Real.exp 15 := by linarith only [hp]
+  have ht : 0 ≤ 3*(q-5) := by linarith
+  have he := Real.sum_le_exp_of_nonneg ht 3
+  norm_num [Finset.sum_range_succ] at he
+  have hpoly : 1+3*(q-5)+(9/2)*(q-5)^2 ≤ Real.exp (3*(q-5)) := by
+    nlinarith only [he]
+  have hnon : 0 ≤ 1+3*(q-5)+(9/2)*(q-5)^2 := by
+    have : 0 ≤ q-5 := by linarith
+    positivity
+  have hm := mul_le_mul hbase hpoly hnon (Real.exp_pos 15).le
+  rw [← Real.exp_add,show (15 : ℝ)+3*(q-5) = 3*q by ring] at hm
+  have hb := mul_le_mul_of_nonneg_right hm (Real.exp_pos (-3*q)).le
+  rw [← Real.exp_add,show 3*q+(-3*q) = 0 by ring,Real.exp_zero] at hb
+  exact hb
+end
+end HTGeometry

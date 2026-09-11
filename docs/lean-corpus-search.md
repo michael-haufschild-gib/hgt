@@ -23,13 +23,16 @@ python3 scripts/formal_tools.py research 'clock inverse' --mode lexical --exact
   start with short literal keyword pairs, recorded as `keyword_relaxation` in
   `query_trace`, so candidate retrieval can proceed while models are busy.
 
-`--budget-seconds` defaults to 120. The parent command supervises the search
+`--budget-seconds` defaults to 300. The parent command supervises the search
 process and returns its latest snapshot on deadline or cancellation. Models
 never download during queries. An unavailable model/index is reported as an
 unfinished stage, alongside the available lexical results.
 Completed lexical lanes and semantic matches are retained before reranking or
 reasoning. Empty `ingredient_sets` means no validated grouping was produced;
 it does not establish that the corpus lacks the required premises.
+Deep search reserves up to 60 seconds (one third of the remaining request budget)
+for judging retrieved sources before starting more query expansions. Expansions
+skipped to preserve that time are listed in `unfinished_stages`.
 
 Existing JSON fields (`declarations`, `exploration`, counts, `markers`, `match`,
 `options`, `backend`) retain their lexical meaning. Additional fields are:
@@ -45,7 +48,20 @@ Existing JSON fields (`declarations`, `exploration`, counts, `markers`, `match`,
 | `query_trace` | Actual original and generated queries, rounds and lexical semantics |
 | `coverage`, `semantic_coverage` | File outcomes and how much enrichment is available |
 | `partial`, `unfinished_stages`, `errors` | Work not completed within this request |
+| `index_warnings` | Index coverage or freshness limitations, separate from unfinished retrieval |
 | `active_stage`, `stage_seconds`, `first_candidate_seconds` | Stage interrupted or completed, stage durations, and time to the first candidate snapshot |
+
+`partial: false` means the requested search finished against the available index;
+it does not mean every source has embeddings or compiler metadata. Background
+indexing alone does not make a search partial. Use returned hits even when
+`index_warnings` reports pending enrichment. Actual deadlines, cancellation and
+failed search stages still set `partial: true` and name `unfinished_stages`.
+
+Coverage statistics do not block retrieval. `coverage.status: snapshot` labels
+the indexer's recorded counts and exposes their generation separately from the
+current generation. Optional live counts share a one-second reporting allowance;
+`semantic_coverage.complete: null` with `status: not_measured` means counts were
+not obtained, not zero coverage. Missing counts never suppress semantic search.
 
 Module filters, exclusions and module diversity apply to the additional lanes.
 Exact identifiers remain prominent. `--offset` and `--limit` select each ranked

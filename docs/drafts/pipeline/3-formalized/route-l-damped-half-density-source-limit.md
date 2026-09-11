@@ -103,10 +103,13 @@ axiom or proof placeholder was used.
 
 ## Next exact attack
 
-[Weighted source and original boundary](../1-in-progress/route-l-damped-weighted-source-boundary.md)
-contains the next proof mechanism and its admission obligations. The general
-weighted conjugacy changes the two prime weights separately; it must not
-be treated as an isometry off the half-density weight.
+[Weighted source and original boundary](route-l-damped-weighted-source-boundary.md)
+now proves compatible weighted L1 limits and their literal Mellin formula.
+At damping two it also identifies every original prime-circle coefficient
+as nonzero. [Full literal jets and native multiplicity](route-l-damped-full-mellin-jets.md)
+are now proved. The next [complete packet attack](../1-in-progress/route-l-damped-complete-xi-packet.md)
+targets the original Green transport and physical comparison. The
+general weighted conjugacy is not an isometry off the half-density weight.
 
 ## Hard continuation obstacle
 

@@ -183,5 +183,95 @@ theorem incomingResponseEndpoint_meromorphic (s chi a J K w : ℂ)
   exact ((continuedResponse_meromorphicAt s chi a J K w hw hwr hb hb1).div
     (horizon_frequency_analyticAt w chi hw ⟨hb,hb1⟩).meromorphicAt).sub hi.meromorphicAt
 
+
+/-- The original source transport integrated from the actual horizon. -/
+def incomingSourcePrimitive (s chi a J K w : ℂ) (z : ℝ) : ℂ :=
+  ∫ t in 0..z, incomingSourceTransport s chi a J K w t
+
+/-- A single derived neighborhood supplies the exact Green split, analytic source primitive,
+spatial continuity, and its uniform quadratic remainder through connection zeros. -/
+theorem incomingSourcePrimitive_common_data (s chi a J K w : ℂ)
+    (hw : w.im ≠ 0) (hwr : -2 < w.re) (hs : w-2*s ≠ 0) :
+    ∃ R b C M : ℝ, 0 < R ∧ 0 < b ∧ b ≤ 1/2 ∧ 0 ≤ C ∧ 0 ≤ M ∧
+      ∀ u ∈ ball w R, u.im ≠ 0 ∧ -2 < u.re ∧ u-2*s ≠ 0 ∧
+        ContinuousOn (incomingSourcePrimitive s chi a J K u) (Icc (0:ℝ) b) ∧
+        ∀ z ∈ Ioc (0:ℝ) b,
+          AnalyticAt ℂ (fun v => incomingSourcePrimitive s chi a J K v z) u ∧
+          ‖incomingSourcePrimitive s chi a J K u z‖ ≤ M*z ∧
+          ‖incomingSourcePrimitive s chi a J K u z-
+            (sourceRemainder s u a J K 1 0*(1/(u-2*s)+onsetCorrection (2*s) u)/(2*(u+1)))*(z:ℂ)‖ ≤ C*z^2 ∧
+          (connection u chi ≠ 0 → continuedResponse s chi a J K z u/horizon u chi z=
+            incomingResponseEndpoint s chi a J K u b+incomingSourcePrimitive s chi a J K u z) := by
+  obtain ⟨R,b,C,M,hR,hb,hbhalf,hC,hM,hbound⟩ := source_transport_common_neighborhood s chi a J K w hw hwr hs
+  have hcont (u : ℂ) (hu : u ∈ ball w R) :
+      ContinuousOn (incomingSourceTransport s chi a J K u) (Ioc (0:ℝ) b) := by
+    intro t ht
+    obtain ⟨hui,hur,_,hbds⟩ := hbound u hu
+    exact (incomingSourceTransport_continuousAt s chi a J K u hui hur
+      ⟨ht.1,lt_of_le_of_lt (ht.2.trans hbhalf) (by norm_num)⟩ (hbds t ht).1).continuousWithinAt
+  have hint (u : ℂ) (hu : u ∈ ball w R) :
+      IntervalIntegrable (incomingSourceTransport s chi a J K u) volume 0 b := by
+    apply (intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le).mpr
+    exact Integrable.mono' (integrable_const M)
+      ((hcont u hu).aestronglyMeasurable measurableSet_Ioc)
+      (by filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+          exact ((hbound u hu).2.2.2 t ht).2.1)
+  refine ⟨R,b,C,M,hR,hb,hbhalf,hC,hM,?_⟩
+  intro u hu
+  obtain ⟨hui,hur,hus,hbds⟩ := hbound u hu
+  have hi := hint u hu
+  have hPcont : ContinuousOn (incomingSourcePrimitive s chi a J K u) (Icc (0:ℝ) b) := by
+    have hp := intervalIntegral.continuousOn_primitive_interval' hi (left_mem_uIcc : (0:ℝ) ∈ uIcc 0 b)
+    change ContinuousOn (fun z : ℝ => ∫ t in 0..z, incomingSourceTransport s chi a J K u t) (Icc (0:ℝ) b)
+    simpa only [uIcc_of_le hb.le] using hp
+  refine ⟨hui,hur,hus,hPcont,?_⟩
+  intro z hz
+  have hiz : IntervalIntegrable (incomingSourceTransport s chi a J K u) volume 0 z :=
+    hi.mono_set (by rw [uIcc_of_le hb.le,uIcc_of_le hz.1.le]; exact Icc_subset_Icc le_rfl hz.2)
+  refine ⟨?_,?_,?_,?_⟩
+  · obtain ⟨r,hr,hsub⟩ := Metric.mem_nhds_iff.mp (isOpen_ball.mem_nhds hu)
+    apply analyticAt_intervalIntegral_of_uniform_bound hr hz.1.le hM
+    · intro v hv
+      exact (hcont v (hsub hv)).mono (Ioc_subset_Ioc_right hz.2)
+    · intro t ht v hv
+      obtain ⟨hvi,hvr,hvs,hvb⟩ := hbound v (hsub hv)
+      exact incomingSourceTransport_analyticAt s chi a J K v hvi hvr hvs
+        ⟨ht.1,lt_of_le_of_lt (ht.2.trans (hz.2.trans hbhalf)) (by norm_num)⟩
+        (hvb t ⟨ht.1,ht.2.trans hz.2⟩).1
+    · intro v hv t ht
+      exact ((hbound v (hsub hv)).2.2.2 t ⟨ht.1,ht.2.trans hz.2⟩).2.1
+  · have hn := intervalIntegral.norm_integral_le_of_norm_le_const (a := (0:ℝ)) (b := z)
+      (f := incomingSourceTransport s chi a J K u) (C := M) (fun t ht => by
+        rw [uIoc_of_le hz.1.le] at ht
+        exact (hbds t ⟨ht.1,ht.2.trans hz.2⟩).2.1)
+    simpa only [incomingSourcePrimitive,sub_zero,abs_of_pos hz.1,mul_comm] using hn
+  · let d := sourceRemainder s u a J K 1 0*(1/(u-2*s)+onsetCorrection (2*s) u)/(2*(u+1))
+    have he : incomingSourcePrimitive s chi a J K u z-d*(z:ℂ)=
+        ∫ t in 0..z, incomingSourceTransport s chi a J K u t-d := by
+      rw [intervalIntegral.integral_sub hiz intervalIntegrable_const,intervalIntegral.integral_const]
+      simp only [incomingSourcePrimitive,sub_zero,Complex.real_smul]
+      ring
+    change ‖incomingSourcePrimitive s chi a J K u z-d*(z:ℂ)‖ ≤ C*z^2
+    rw [he]
+    have hn := intervalIntegral.norm_integral_le_of_norm_le_const (a := (0:ℝ)) (b := z)
+      (f := fun t => incomingSourceTransport s chi a J K u t-d) (C := C*z) (fun t ht => by
+        rw [uIoc_of_le hz.1.le] at ht
+        exact ((hbds t ⟨ht.1,ht.2.trans hz.2⟩).2.2).trans
+          (mul_le_mul_of_nonneg_left ht.2 hC))
+    simpa only [sub_zero,abs_of_pos hz.1,pow_two,mul_assoc] using hn
+  · intro hc
+    have hzb : IntervalIntegrable (incomingSourceTransport s chi a J K u) volume z b :=
+      hi.mono_set (by rw [uIcc_of_le hb.le,uIcc_of_le hz.2]; exact Icc_subset_Icc hz.1.le le_rfl)
+    have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (fun t ht => continuedResponse_div_horizon_hasDerivAt s chi a J K u hui hur hc
+        (show t ∈ Ioo (0:ℝ) 1 from by
+          rw [uIcc_of_le hz.2] at ht
+          exact ⟨hz.1.trans_le ht.1,lt_of_le_of_lt (ht.2.trans hbhalf) (by norm_num)⟩)
+        (hbds t (by rw [uIcc_of_le hz.2] at ht; exact ⟨hz.1.trans_le ht.1,ht.2⟩)).1) hzb
+    have hadd := intervalIntegral.integral_add_adjacent_intervals hiz hzb
+    unfold incomingResponseEndpoint incomingSourcePrimitive
+    rw [← hadd,hFTC]
+    ring
+
 end
 end RHTower.D4BMLaplaceRadial

@@ -119,7 +119,11 @@ half, with an explicit tail error and positive lower bound. The finite
 source factors have their exact adjoint-square energy identity. No supplied
 source/limit identification or probability normalization enters.
 
-[Weighted admission and original boundary](../1-in-progress/route-l-damped-weighted-source-boundary.md)
-now attacks the same limit's Mellin readings, complete Green/BV domain and
-fixed physical reader. Full damped Xi-field/Green/Sonin identification and
-continuation toward zero damping remain open.
+[Weighted admission and original boundary](route-l-damped-weighted-source-boundary.md)
+now proves the same limit's weighted L1 admission and literal zeroth Mellin
+readings. At damping two every original prime-circle coefficient survives.
+[Full literal jets and native Xi multiplicity](route-l-damped-full-mellin-jets.md)
+are now proved. Xi-field/Green/Sonin identification, complete Green/BV
+comparison and continuation toward zero damping remain open; the
+[next exact attack](../1-in-progress/route-l-damped-complete-xi-packet.md)
+targets the complete packet and reader obligations.

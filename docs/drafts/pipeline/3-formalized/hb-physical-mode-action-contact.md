@@ -275,6 +275,134 @@ cancels. `ThetaCuspHawkingBMTemporalContactHorizonFactor` supplies
 `continuedPhysicalTimeAction_radial_density`. The remaining endpoint
 analysis must use this complete source quotient.
 
+The contact identities passed their scratch check. The final source passes
+its exact isolated leaf audit without warnings; its umbrella import is wired.
+The formal lint gate passed for all six new leaves, reporting only existing
+large-file warnings.
+
+## Actual incoming pairing endpoint coefficients
+
+Four further leaves pass warning-free foreground scratch checks and exact
+leaf audits; their umbrella imports are wired:
+
+- `HTGeometry.HypergeometricTaylorEndpointBounds`: arbitrary finite-order
+  Gauss remainder from the actual coefficient majorant (6.8-second audit).
+- `RHTower.ThetaCuspHawkingBMLaplaceHorizonTaylorBound`: uniform quadratic
+  horizon Gauss expansion; actual analytic h1=gaussA*gaussB/gaussC; h1=-1/2
+  at either fundamental root (90-second audit).
+- `HTGeometry.QuadraticEndpointProducts`: explicit product-remainder bound
+  and |1/(2sqrt(1-z))-1/2-z/4|<=2z^2 for 0<=z<=1/2 (4-second audit).
+- `RHTower.ThetaCuspHawkingBMIncomingPairingEndpoint`: exact native radial
+  density attachment and uniform second-order incoming pairing expansion
+  (177-second audit).
+
+For Q=G/h=A_b+d*z+O(z^2), the checked original density is
+
+```
+core=(G/h)*H^2/[2sqrt(1-z)],
+z^(w-1)*core=G*h/[2z sqrt(1-z)],
+core0=A_b/2,
+core1=(h1+1/4)*A_b+d/2,
+|core-core0-core1*z|<=C*(|A_b|+|d|+1)*z^2.
+```
+
+The density identity assumes only 0<z<1, including any zeros of h under
+Lean's totalized division. The remainder bound holds on a derived common
+frequency neighborhood away from connection zeros, for nonreal w with
+Re(w)>-2 and w!=2s. It retains the possible connection pole in A_b; it does
+not assert an unproved bound on A_b. The actual source slope d is analytic
+through the connection zero. At a fundamental frequency the derived
+linear coefficient is -A_b/4+d/2, retaining the analytic source term.
+
+The new actual APIs are `incomingPairingFactor_uniform_second_bound`,
+`incomingResponseSlope_analyticAt`, `incomingResponsePairingCore_density`,
+and `incomingResponsePairingCore_uniform_second_bound`.
+Every audit ran only its exact new leaf, with cached imports and no
+dependency or umbrella builds. The formal lint gate passed with existing
+large-file warnings. No numerical experiments were used.
+
+## Restored actual incoming horizon integral
+
+The exact source quotient split and its common analytic bounds now pass
+Lean in `incomingSourcePrimitive_common_data`, an extension of
+`ThetaCuspHawkingBMIncomingHorizonExpansion` (118-second exact audit):
+
+```
+Q(u,z)=A_b(u)+P(u,z),   P(u,z)=integral_0^z T(u,t)dt,
+|P|<=M*z,              |P-d*z|<=C*z^2.
+```
+
+P is spatially continuous and pointwise analytic in frequency on one
+derived neighborhood through the connection zero. The new general leaf
+`HTGeometry.QuadraticEndpointMellin` proves analyticity and cutoff
+restoration for a frequency-dependent kernel with a common quadratic
+endpoint remainder (47-second exact audit).
+
+Their native application is
+`ThetaCuspHawkingBMIncomingPairingFinitePart` (35-second exact audit).
+`incomingPairingFinitePart_horizon_restoration` gives one fixed 0<b<=1/2
+and a frequency neighborhood on which the original integral obeys
+
+```
+lim_{e->0+} [integral_e^b G(u,z)*h(u,z)/[2z sqrt(1-z)] dz
+  +(A_b(u)/2)*e^u/u
+  +((h1(u)+1/4)*A_b(u)+d(u)/2)*e^(u+1)/(u+1)]
+= A_b(u)*N_b(u)+J_b(u).
+```
+
+The literal N_b uses kernel M=H^2/[2sqrt(1-z)] and coefficients
+1/2, h1+1/4. The literal J_b uses P*M and coefficients 0, d/2.
+N_b, J_b, and P(u,b) are analytic through the connection zero, with
+all majorants derived from the original source and Gauss family.
+The cutoff identity holds away from the connection zero, retaining its
+possible pole in A_b. Physical residue extraction through this horizon restoration is now
+proved below. The opposite-mode logarithmic channel, full source/contact
+assembly, and outer endpoint restoration remain open.
+
+All new leaves passed warning-free scratch checks and exact leaf audits;
+umbrella imports are wired. An import collision exposed by the native
+check was repaired by renaming the helper in
+`NormalizedFirstEndpointMellin` to `normalizedMellinRemainder_norm_le`
+and its single local use (18-second exact audit). The earlier
+`FirstEndpointMellinLimit` API is unchanged. No numerical data were used.
+
+## Physical residue after horizon restoration
+
+`ThetaCuspHawkingBMPhysicalIncomingPairingResidue` passes its exact leaf
+audit without warnings (29 seconds, two jobs, cached imports). Its import
+is wired. For every Xi copy q, source branch and fundamental side, define
+w0=physicalFundamentalFrequency, s=physicalRate, chi=physicalRadialFrequency
+and K=reducedGreenGradient(chi,s,1). The proved source amplitude is
+
+```
+C_src=fundamentalSourceMoment(w0,s,a)*continuedOnset(s,w0)
+      /[-connectionSimpleSlope(w0,chi,side)]
+     =fundamentalSourceMoment(w0,s,a)*clearedOnset(s,w0)
+      /physicalFundamentalDenominatorSlope(q,branch,side).
+```
+
+The equality is `physicalIncomingPoleAmplitude_eq_cleared`.
+`physicalIncomingQuotient_residue` derives lim_(u->w0)(u-w0)*G(u,b)/h(u,b)
+=C_src at every interior b. Its proof uses the analytic original quotient
+numerator, nonvanishing fundamental mode, exact fixed source-moment
+identity, and the derived simple connection zero.
+
+`physicalIncomingPairing_residue_and_restoration` gives one common b and
+frequency neighborhood with both the original two-counterterm cutoff
+limit above and
+
+```
+lim_(u->w0) (u-w0)*incomingPairingFinitePart(s,chi,a,1,K,b,u)
+  = C_src*incomingNormFinitePart(chi,b,w0).
+```
+
+The finite part is taken before this frequency limit. The theorem supplies
+all frequency-strip, source-rate separation and analytic-primitive facts
+from the corpus; no residue or interchange premise is supplied. This
+closes the incoming horizon block. It does not yet restore the outer
+interval, prove the opposite logarithmic block regular, assemble the full
+physical current, or establish source-moment/onset nonvanishing.
+
 ## Remaining hard problem
 
 The completed horizon integral concerns the temporal Laurent coefficient of
@@ -300,3 +428,10 @@ biorthogonal, confluent, MaassSelberg, and repeated-zero jet Gram mechanisms.
 Results were partial; candidate applicability was not assumed. Every
 ingredient used in the new Lean proofs was read in source and checked in
 Lean. No numerical experiment was used.
+
+Latest repository lint reports three unreachable modules outside these edits:
+`ThetaCuspHawkingBMClearedOnsetPulseTransform`,
+`ThetaCuspHawkingBMOnsetPulseTransform`, and `XiAffineCollisionControl`.
+No lint errors name the new incoming-restoration leaves; their umbrella
+imports are present and their exact audits passed. The global lint gate
+is not claimed passed for this state.
