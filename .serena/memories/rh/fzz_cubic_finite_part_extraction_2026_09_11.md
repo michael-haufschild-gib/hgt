@@ -3,17 +3,12 @@
 Goal ACTIVE: unconditional closed Lean RH via FZZ-P. RH UNPROVED. Previous goal turn was progress: eight GammaUnit/rational/actual-source jet statements closed and built. No subagents.
 Latest user ban: STOP #print axioms. No further such audits. One owned foreground Lean only; scratch lake env lean /tmp/file.lean, cwd formal/. Final lake build exact leaf only, never umbrella/full. No numerical computations or new axioms/sorry/admit. No commits. Preserve concurrent files.
 
-## Current live state
-ONLY owned Lean session34749 RUNNING:
-lake env lean /tmp/fzzp_cubic_finite_part_value.lean > /tmp/fzzp-cubic-finite-part-value-scratch.log 2>&1
-cwd /Users/michael/Documents/code/hgt/formal.
-Poll same handle. No second Lean.
-This ~460line scratch has FIVE public targets: complete cubic polynomial; original local FP comparison; original plane FP comparison; exact cleared-source mixed-jet extraction; actual FP value -84pi.
-First THREE already passed earlier mathematical scratch24294 exit0 (/tmp/fzzp_cubic_finite_part_extraction.lean, log -extraction-scratch.log). No new repo module yet.
-First combined5 attempt3319 exit1: id_eq simplification missing, invalid Nat.cast_nonneg argument R, unnecessary ring, implicit pointwise-function instances in radial derivative, outer derivative translation matching. Corrected in current34749. Final formula also had newline-dot chain latent error, fixed before rerun.
-No mathematical contradiction found.
-All searches terminal, all candidate/method lists + ingredient sets inspected.
-After5 passes, add sixth public original independently removed cutoff value theorem, scratch-check then promote e.g. FZZCigarCubicFinitePartExtraction.lean (verify absent), wire after GammaUnit, final leaf build + global lint. No axioms check.
+## Current finalized result
+SIX original cutoff extraction statements closed and promoted to formal/GaloisForLFunctions/RHTower/FZZCigarCubicFinitePartExtraction.lean (~492 lines). Scratch /tmp/fzzp_cubic_finite_part_value.lean session14526 exit0 clean. Final targeted leaf build session31977 exit0 (232 seconds for leaf), /tmp/fzzp-cubic-finite-part-extraction-build.log. Global lint session31446 exit0, /tmp/fzzp-cubic-finite-part-extraction-lint.log. Umbrella wired. No axioms audit. Original PlaneFP=-84pi and actual independently removed two-cutoff limit=-84pi are now PROVED. All six names documented on card #closed-original-cubic-cutoff-value. Frontier all stale unmarked-conjecture claims updated; summary concurrently already updated. STATUS existing positivity rule now has new exact-negative-original-cutoff evidence link.
+
+NEXT CURRENT STATE: see mem:rh/fzz_higher_marked_remainder_2026_09_11. EIGHT original marked remainder derivative/source statements CLOSED in HigherMarkedRemainder (leaf21sec, lintpassed), and THREE original marked cutoff-to-remainder comparisons CLOSED in CubicMarkedFinitePartExtraction (leaf104sec, lintpassed). All umbrellas/docs/STATUS evidence updated. ONLY current owned Lean51635 RUNNING /tmp/fzzp_cubic_marked_source_value.lean, log /tmp/fzzp-cubic-marked-source-value-scratch.log; first private analytic second-product/source helper scratch. No marked-value conclusion yet. Full details and remaining exact coefficient targets in new memory. Goal ACTIVE, RH UNPROVED.
+
+Earlier scratch attempt details below are historical. Unmarked extraction is complete; only marked extraction and larger route gaps remain.
 
 ## Chain and hard gaps
 Source -> integrated mixed replica-momentum Ward identity in independent phase frame -> balanced external-Gamma vacuum-delay saturation -> passivity -> Re rho=1/2 -> RH.

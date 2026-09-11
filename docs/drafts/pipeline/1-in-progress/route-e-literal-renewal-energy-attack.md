@@ -246,7 +246,7 @@ counted as progress on that bound.
 
 ### Attempt 7: test a sign-preserving packet recurrence on the literal source
 
-[CONJECTURE UNDER TEST] A scalar sign can orient the packet sequence into
+[FALSIFIED IN LEAN] A scalar sign can orient the packet sequence into
 a completely monotone sequence: all iterates of `D b(k)=b(k)-b(k+1)` are
 nonnegative. Such a representation would admit positive moment methods.
 This is a proposed intermediate mechanism, not the bounded-return target.
@@ -259,7 +259,7 @@ D^j b_(N,k)(r)
  = sum_(1<=n<=N) mu(n)/(n+1)^r * q_n^k * (2/(n+1))^j.
 ```
 
-For every fixed `r>=0`, uniformly over **all** `N>=2`, the proposed limits are
+For every fixed `r>=0`, uniformly over **all** `N>=2`, the proved limits are
 
 ```
 D^(h+2) b_(N,0)(r) -> 2^(-r),
@@ -274,26 +274,180 @@ coefficient. The two extra differences give the common summable majorant
 fixed summable budget times `(2/3)^h` and `(3/4)^h`, respectively. Thus no
 scalar orientation can make every difference nonnegative.
 
-The positive result to formalize is the **uniform quantitative recovery of
+The formalized positive result is the **uniform quantitative recovery of
 these two opposite source coefficients**, together with the exact difference
-identity. This preserves the literal integer cutoff, gives no energy ceiling,
+identity. The same leaf retains `mu(2),mu(3),mu(5)` and `mu(4)=0` to prove the
+shifted moment eventually exceeds `1/200` throughout a nonempty interval above
+exponent two. Together with its negative sign above one and the exact
+adjacent-exponent recurrence, this proves `b_(N,0)(r)^2 < b_(N,1)(r)^2`
+eventually in cutoff near `r=1`. This excludes descent from the first packet
+step, not every possible eventual tail estimate. See the
+[closed source theorem and positive survivor](../5-failed/mobius-packet-complete-monotonicity.md).
+This preserves the literal integer cutoff, gives no energy ceiling,
 and does not reject arbitrary signed recurrence methods. The subsequent
 signed-energy attempt must retain both channels and estimate their aggregate
 interaction instead of turning them into positive probability masses.
+
+### Attempt 8: retain the adjacent-exponent mixed term
+
+[FAILED BOOTSTRAP; PAPER CALCULATION] Test whether the known absolute bound
+at `r+1>2` can control the energy at `r>1` through the exact packet recurrence.
+Write `S_N(r)=sum_k w_k(r)*b_(N,k)(r)^2`. The cumulative binomial weights
+are `sum_(j<=k) w_j(r)=w_k(r+1)`. At every fixed finite integer cutoff,
+all the packets decay geometrically in `k`, so summation by parts retains
+no boundary term and gives
+
+```
+S_N(r) = 4 * (X_N(r) - S_N(r+1)),
+X_N(r) = sum_k w_k(r+1)*b_(N,k)(r)*b_(N,k)(r+1).
+```
+
+This mixed term can be evaluated before any inequality. Applying the same
+convergent binomial series as in Attempt 6 gives
+
+```
+X_N(r) = 2^(-r-1) * sum_(m,n<=N) mu(m)*mu(n)*(m+1)/(m+n)^(r+1)
+       = S_N(r)/4 + S_N(r+1).
+```
+
+The second equality symmetrizes the numerator into `(m+n+2)/2`; it retains
+every ordered pair. Thus the proposed bootstrap is an identity. In particular,
+substituting an upper bound for `S_N(r+1)` cannot isolate `S_N(r)`.
+Cauchy--Schwarz instead asks for the different norm
+`sum_k w_k(r+1)*b_(N,k)(r)^2`; the known higher-exponent energy has
+`b_(N,k)(r+1)` in that position. No comparison between those norms has been
+proved. This rejects this inference, not every possible signed recurrence
+estimate. No new bounded-return theorem results, and these infinite packet
+identities remain paper work rather than a claimed Lean module.
+
+### Further source and method checks for Attempts 7--8
+
+- Broad `avalanche` search found [Hénard, August 2026](https://arxiv.org/html/2608.10992v1).
+  His triangular tail system uses a stochastic regeneration construction;
+  its uniform-mixture extremal inequality requires decreasing nonnegative
+  probability masses. Neither property has been established for the literal
+  Möbius packets. Complete monotonicity in Attempt 7 was our proposed stronger
+  representation, not an assumption claimed to occur in that paper.
+- Broad `Carleson` search found [Bényi--Hu--Zhou, June 2026](https://arxiv.org/html/2606.28292v1).
+  Proposition 2.4 requires a scale-invariant gradient tent norm, while
+  Theorem 3.2 decomposes a function already in the specified oscillation space.
+  Neither establishes the missing arithmetic mixed-norm bound. The related
+  [August embedding counterexample](https://arxiv.org/abs/2608.04981) was
+  checked at abstract level only; no transfer of its construction is claimed.
+- Broad `Lyapunov` search found [Fayad et al., September 2026](https://arxiv.org/html/2609.03722v1).
+  The theorem perturbs indefinite Hamiltonians while retaining a prescribed
+  finite normal form. No such perturbation or Hamiltonian realization of the
+  literal source has been constructed here.
+- Deep corpus queries for packet cancellation, signed-atom finite differences,
+  and weighted adjacent-exponent compensation inspected `candidate_lemmas`,
+  `source_arguments`, `proof_ideas`, and `ingredient_sets`. Coverage was partial;
+  no returned ingredient set supplied the missing bound. A proposed inverse-load
+  transfer left its source-identification and cancellation obligations open.
+  The lexical `Hardy telescoping` follow-up recovered
+  `MobiusThetaAdaptivePrimeNormalCodiagonal`: its quartic tail contraction
+  changes the spectral exponent and explicitly leaves the physical completion
+  comparison open. It is not an estimate for the packets at the fixed exponent.
+
+## Attempt 9: exact product fibres and removal of the diagonal
+
+[CLOSED CLASSIFICATION; NO SIGNED CEILING] Group every original pair by
+`q=m*n`, retaining its weight and both cutoff inequalities. The complete
+result is recorded in [the product-fibre card](../5-failed/mobius-product-fibre-absolute-summation.md).
+The exact identity `mu(m)*mu(n)=lambda(m*n)*mu(m)^2*mu(n)^2` proves
+that every nonzero pair in one fibre has the same sign, including pairs
+with common prime factors. Square-product fibres are exactly the diagonal;
+nonsquare-product fibres are exactly the covariance.
+
+The total absolute fibre mass is at least
+`(2^(-r)/16)*N^(2-r)` for `N>=1,r>=0`. Removing the complete bounded
+diagonal still leaves absolute variation tending to infinity for `1<r<2`.
+These are unconditional Lean theorems in `MobiusProductFibreVariation`.
+Thus neither internal product-fibre cancellation nor absolute summation of
+the remaining fibres can produce the desired bound. A signed comparison
+between different products remains possible and unpaid.
+
+## Attempt 10: retain the boundary in a one-prime pairing
+
+[PAPER TEST; NO COVARIANCE ESTIMATE] The corpus theorem
+`mobiusComplexCoefficient_eq_primeFree_difference` suggests pairing a
+cofactor with its prime multiple. For a prime `p`, put
+
+```
+A_N^p(x) = sum_(1<=n<=N, p does not divide n) mu(n)*exp(-n*x),
+M = floor(N/p),
+B_(N,p)(x) = A_N^p(x)-A_M^p(x).
+```
+
+Squarefree prime insertion gives the exact physical cutoff identity
+
+```
+F_N(x) = A_N^p(x)-A_M^p(p*x)
+       = H_(N,p)(x)+B_(N,p)(x),
+H_(N,p)(x) = A_M^p(x)-A_M^p(p*x).
+```
+
+For `r>0`, the complete prime cells inside `H` have kernel
+
+```
+Q_(p,r)(m,n) = (m+n)^(-r)-(p*m+n)^(-r)
+              -(m+p*n)^(-r)+(p*m+p*n)^(-r).
+Gamma(r)*Q_(p,r)(m,n)
+ = integral_0^infinity x^(r-1)
+     *(exp(-m*x)-exp(-p*m*x))*(exp(-n*x)-exp(-p*n*x)) dx.
+```
+
+The integral representation follows by expanding four admitted exponential
+integrals. For positive `m,n`, each factor is positive on `x>0`, so `Q>0`.
+The complete cell still carries the sign `mu(m)*mu(n)=lambda(m*n)` on
+squarefree cofactors. Pointwise `0<=Q<=K`, where `K=(m+n)^(-r)`, cannot
+be promoted to an inequality between quadratic forms with signed coefficients.
+Moreover the actual source energy retains all three contributions
+
+```
+E_N(r) = ||H_(N,p)||_r^2
+         +2*<H_(N,p),B_(N,p)>_r+||B_(N,p)||_r^2.
+```
+
+The interval defining `B` is exactly `(floor(N/p),N]`; it is not an error
+that this identity bounds. No estimate for its mixed term or complete energy
+has been derived. Hence the proposed direct inference from prime sign reversal
+and kernel positivity to a covariance ceiling fails. These paper identities
+are not a new Lean producer and do not exclude a collective many-prime estimate.
+
+Deep source/method searches for weighted prime remainders and dilation
+differences had partial coverage and returned no closed ingredient set.
+`LiouvilleSignedCofactorDilation` retains the full nondivisible-cofactor
+remainder. `MobiusMultiplicativeRectangleCubature` controls an already-admitted
+rectangle family and retains the uncovered residual; it constructs no covering.
+The fixed-prime window identity in `MobiusMertensPrimeRemovalTentLaw` similarly
+leaves its signed interval sum. The next arithmetic target is an actual
+many-prime incidence estimate for the retained weights and boundary, not
+another prime-removal identity or complete-prime replacement.
 
 ## Checkpoint
 
 - Completed leaf: `GaloisForLFunctions.RHTower.MobiusRenewalEnergySign`;
   namespace `RHTower.MobiusRenewalEnergy`. All six public theorems passed
   together in scratch and the final targeted build; umbrella import wired.
+- New leaf: `GaloisForLFunctions.RHTower.MobiusPacketDifferenceSign`. Its complete
+  source proof passed `lake env lean /tmp/route_e_packet_combined.lean` without
+  warnings; umbrella import wired. The final targeted command
+  `lake build GaloisForLFunctions.RHTower.MobiusPacketDifferenceSign` passed.
+  Lake replayed informational tactic suggestions from existing dependencies;
+  the new module emitted no warnings.
 - Generated indexes refreshed. Formal lint passed with existing file-size warnings.
+- Product-fibre source passed its complete scratch check and the final targeted
+  `lake build GaloisForLFunctions.RHTower.MobiusProductFibreVariation`;
+  umbrella import wired. Its subsequent index refresh and formal lint passed;
+  no own Lean process remains.
 - One foreground Lean invocation at a time; no numerical experiments, no
   `#print axioms`, no umbrella/full build.
 - Do not promote this card as an RH proof. Even after the sign theorem is closed,
   the compensated source-energy estimate remains open.
-- Attempts 5--6 are paper work only. Diagonal dominance would also force
+- Attempts 5--6 and 8 are paper work only. Diagonal dominance would also force
   critical-zero simplicity; the positive packet expansion does not provide
-  cancellation. No additional Lean result or covariance bound is claimed.
+  cancellation. Attempt 7's source signs and recurrence are now formal, but
+  no covariance bound is claimed.
 - Next hard target: derive a source-specific lower bound for the mixed feedback
   with coefficient strictly better than `-E_N`, or bound the original signed
   moving-cusp covariance directly. The bound must come from incomplete physical
@@ -304,3 +458,6 @@ interaction instead of turning them into positive probability masses.
 - 2026-09-11 — Opened source-specific energy attack from Route E's moving-cusp
   frontier. Existing absolute renewal contraction and complete-prime substitutions
   are excluded; this attempt retains signed finite cutoffs.
+- 2026-09-11 — Closed the exact product-sign, square-product diagonal and divergent
+  nonsquare absolute-variation theorems. Retained the full boundary in the next
+  paper prime-pairing test; no signed covariance estimate follows.

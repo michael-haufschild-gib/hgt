@@ -55,29 +55,18 @@ eventual nonvanishing of J_k(z).
 
 ## What this resolves and what remains
 
-This resolves the high-order moment-detection step for the actual signed
-source, with the Lean scratch proof closed. It does not
-extract moments from the original reciprocal-current cutoff. That
-extraction remains necessary before excluding the unit-ground-corrected
-scalar ansatz. Full source adjoints/common domains, actual Xi occurrence
-and independent fixed-grade Ward balance also remain open.
+This resolves high-order moment detection for the actual signed source.
+The subsequent [finite cutoff expansion](pw-b-gamma-reciprocal-cutoff-expansion.md)
+now identifies these moments with the original current's finite asymptotic
+coefficients. It retains the near response, removed moments, finite far
+remainder and source loss, proving an order-q remainder at every fixed q.
 
-For the next attack write S_z(t)=M_z(1/t)/Q(1/t)-1 and
-`C_z(v)=integral_(h>0) exp(-h)*(S_z(v+h)-S_z(v))/h dh`.
-Split at h=v. The existing complete kernel flat bound controls 0<h<v
-at arbitrary powers of v. On h>=v put t=v+h and expand 1/(t-v) as a
-finite geometric sum. Its remainder is bounded by
-`2*v^(m+1)*integral_(t>0) exp(-t)*norm(S_z(t))/t^(m+2) dt`.
-The omitted 0<t<2v moment pieces and S_z(v) times the logarithmic loss
-are flat by the complete source exponential-series bounds. This should
-give
-
-`exp(-v)*C_z(v)=sum_(j<=m) B_j(z)*v^j+O(v^(m+1))`,
-
-with `B_j(z)=integral_(t>0) exp(-t)*S_z(t)/t^(j+1) dt`.
-The already proved all-power current flatness would force all B_j=0,
-contradicting the high-order detector B_(k+2)=J_k. This cutoff expansion
-and its induction are not yet Lean theorems.
+The [current valuation theorem](../5-failed/pw-b-corrected-gamma-scalar-occurrence.md)
+selects the least nonzero B_j and proves the corresponding rescaled current
+converges to B_j. This excludes the specific unit-ground-corrected scalar
+ansatz at every complex parameter. These consequences passed Lean scratch
+checks and targeted leaf builds. Full source adjoints/common domains, actual
+Xi occurrence and independent fixed-grade Ward balance remain open.
 
 ## Verification and searches
 
@@ -99,5 +88,6 @@ limit by the reciprocal factorial/geometric factor would contradict
 the verified nonzero normalized moment limit. Therefore a convergent
 power-series API cannot supply the desired endpoint coefficient
 extraction. The finite asymptotic expansion and explicit remainder
-mechanism above remain the next mathematical attack. This says nothing
-about analyticity of the actual current until that extraction is proved.
+mechanism are now proved, and give the finite-order current classification
+without a convergent series. No separate Lean analyticity or nonanalyticity
+theorem for the original current is asserted.

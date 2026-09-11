@@ -2537,3 +2537,195 @@ finite geometric remainder. A new deep/method search is running. No
 convergent-series premise will replace the missing finite asymptotics.
 The existing exact full-source moment detector is the contradiction target;
 full adjoints, Xi occurrence and independent Ward balance remain open.
+
+Iteration30 source checkpoint: the complete reciprocal tail has an arbitrary-order
+flat bound and a global polynomial bound. The normalized response is proved equal
+to the original admitted same-source response divided by Q(v), so its integral is
+the original current/Q(v). The near-diagonal integral is flat to every order.
+Every endpoint integrand exp(-t)S_z(t)/t^(j+1), including j=0,1, is absolutely
+admitted. Its removed initial integral is flat at every requested order, and
+B_(k+2) is exactly the already nonzero high-order moment. Eighteen public theorems
+in GammaReciprocalCutoffSource passed a foreground scratch check with no
+diagnostics; its targeted leaf build is running. Full current extraction is not
+yet claimed.
+
+The loss estimate was sharpened in proof strategy: h>v implies 1/h<=1/v, hence
+its norm is at most norm(S_z(v))*exp(-v)/v. Arbitrary source flatness absorbs
+this bound. No separate logarithmic estimate is necessary. The next scratch
+retains this loss, the near response, the removed moments and the finite far
+resolvent remainder in one exact original-current identity.
+
+Both iteration30 deep/method records are saved in
+[pw-b-gamma-reciprocal-cutoff-searches.json](pw-b-gamma-reciprocal-cutoff-searches.json).
+All twenty candidates and twenty source arguments from each were inspected.
+The first has partial coverage731004; the second has partial coverage731102
+and local reranking deadline/disconnection errors. The attempted --mode method
+flag is unsupported; mechanism retrieval was run through the documented deep
+mode. The Frullani set-splitting proof and the original half-line translation
+proof in EulerHedenmalmMobiusStokesInverse provide applicable mechanisms. The
+suggested half-plane decay ingredient plan does not supply this cutoff estimate.
+
+Broad recent arXiv searches used gelation and bifurcation. Primary reading:
+[Jencks–Kaper–Vo, 2609.08969v1](https://arxiv.org/html/2609.08969v1), sections1,
+4.3 and4.4. Their singular reaction-diffusion proof retains separate rescaling
+and entry/exit charts and an explicit transition map. Persistence then needs
+transversality of center-manifold intersections. Transfer here is methodological:
+retain both cutoff regions and their exact coordinate conversion. Their fold,
+small-parameter and transversality hypotheses supply no PW source adjoint,
+Xi occurrence or Ward balance. No result from that paper is imported as a premise.
+
+The source leaf's targeted build completed successfully in43s. The first
+finite-expansion scratch pass exposed five formalization errors (measurability
+of the totalized quotient, an unnecessary closed-goal tactic, an inferred
+IntegrableOn type, exponential cast placement and a triangle-inequality
+association). These have been corrected in scratch. The original checker handle
+then disappeared without a terminal exit report; process inspection confirmed
+it was no longer live. No success was inferred from its empty log. The same
+corrected scratch is being checked again, now retaining an explicit exit file.
+
+The third deep/method query has partial coverage731153; semantic retrieval
+reported a local Qdrant timeout. All twenty candidate and twenty source-argument
+statements were inspected and the record was added to the cutoff search JSON.
+Actual corpus source in PowerExpansionAlongRay and AsymptoticExpansionAlgebra
+uses finite Poincare remainders and coefficient peeling, without a convergent
+series premise. The least-nonzero-moment mechanism in HierarchicalResonanceBreaking
+supplies a sharper survivor: existence of a finite first nonzero moment and
+an exact normalized current limit. The corresponding current-valuation scratch
+is drafted but cannot run until the expansion leaf is verified and built.
+
+Finite expansion checkpoint: the final explicit-exit scratch passed without
+diagnostics, and GammaReciprocalCutoffExpansion passed its targeted build in76s.
+Ten public theorems retain all four original cutoff errors and prove
+norm(exp(-v)C_z(v)-sum_(j<q)v^j B_j)<=C_z,q*v^q on0<v<=1/2.
+The current-valuation and corrected-scalar contradiction scratch is now running.
+
+A further broad recent arXiv search used resurgence. Primary reading of
+[de Mello Koch–Raj–Rudra, 2609.04664v1](https://arxiv.org/html/2609.04664v1)
+covered the introduction, section5 and the full-versus-reduced incidence part
+of section6.4. Their Borel–Leroy angular representation retains the radial
+Gamma normalization. Reduced kernel trajectories need not represent distinct
+full trajectories; the full matrix variables and physical contour determine
+incidence. The paper uses numerical integration for that incidence example,
+which is not an unconditional Lean premise here. Transfer is limited to
+retaining original variables, normalization and physical occurrence separately.
+No resummation or saddle claim proves PW Xi occurrence or Ward balance.
+
+Iteration30 final proof checkpoint: all31 public theorems in the three new leaves
+passed foreground scratch checks and targeted leaf builds (source43s,
+expansion76s, valuation6.3s). Exact scratch/promoted source equality and one
+umbrella import per leaf were verified. The index refreshed all three leaves.
+The final formal lint run failed on the unrelated unwired working-tree module
+ThetaCuspHawkingBMRetardedPulseClock; no PW-B wiring error was reported.
+No full/umbrella build or axiom-print check was run.
+
+The original current now has a finite first nonzero endpoint coefficient at
+every complex parameter, with its exact nonzero rescaled limit. This excludes
+the precise unit-ground-corrected Gamma scalar equation everywhere. The
+[narrow failed-route card](../5-failed/pw-b-corrected-gamma-scalar-occurrence.md)
+records both the obstruction and this strongest positive survivor. PW-B stays
+live; the next attack is complete original-cutoff transposition and its common
+signed source domain, followed by a different justified Xi occurrence and an
+independently forced fixed-grade Ward law. No RH proof is claimed.
+
+### Iteration31: complete adjoint cutoff passage
+
+Conjecture: the actual finite-cutoff transposition has the retained logarithmic
+contact on the complete signed arithmetic pairing, including the moving endpoint
+layer and the region with empty incoming interval. The pointwise cutoff limit
+and single-mode contact are already proved; neither permits dropping those
+regions. A new whole-corpus deep/method query targets transposition, reciprocal
+Jacobian and moving-boundary estimates. This attack must establish an actual
+paired identity, not merely all-parameter square-integrability.
+
+Iteration31 mechanism pivot: translate x=u+delta in the whole contact region,
+retaining its entire moving layer on the fixed positive u ray. The complete
+signed two-parameter density has the paper bound C*x*exp(-x), deduced from
+reciprocal polynomial source bounds and exponential factorial inequalities.
+It gives the integrable majorant C*exp(-u)*(2|log u|+3u^2+2u+3), and an
+O(delta) bound for the separate empty incoming loss. The full paired contact
+limit is now under Lean scratch verification; finite-cutoff gain transposition
+and the remaining difference term are not yet proved.
+
+Both new deep/method queries have no reported execution errors, with partial
+coverage731355 and731449 and incomplete semantic/source-refresh coverage.
+Records are saved in [full adjoint searches](pw-b-gamma-full-adjoint-searches.json).
+The first generated ingredient plan incorrectly proposed matrix transpose
+and an elliptic-curve variable-change invariant for the jump integral; neither
+supplies this proof. Actual reciprocal substitution source was inspected in
+BVPrimeWindowReciprocalReflection. The applicable logarithmic majorant proof
+comes from the corpus LogExpTailIntegral, and actual additive Haar translation
+transports the original contact integral. The second generated logarithmic
+squared-tail plan has a different weight and is not a substitute for the
+moving-layer estimate.
+
+Broad recent arXiv search used fragmentation and scattering. Search-engine
+results were old and the fragmentation listing timed out; the scattering
+latest listing produced [Belishev–Vakulenko,2609.03536v1](https://arxiv.org/html/2609.03536v1).
+Primary reading covered the control/connecting operators and AppendixLemma1.
+Their identity C=W*W=I+R connects positivity to an actual input-to-state map;
+unreachable states require a density argument using supported delayed waves.
+Real bounded compactly supported potential and absence of zero bound or
+semibound states are explicit premises. Transfer is methodological: original
+source occurrence and boundary-free transposition need their own proofs.
+Neither this scattering model nor abstract positive connecting operators
+supplies a PW Xi occurrence or the missing Ward balance.
+
+Iteration31 final checkpoint: all14 public declarations in
+GammaAdjointPairedContact passed the final foreground scratch without
+diagnostics. Its targeted leaf build passed in26s. Exact scratch/promoted
+source equality, one umbrella import and all14 indexed public names were
+verified. All local links in the four new proof cards resolve; scoped
+whitespace checks passed. Final index and repository formal lint passed.
+The earlier unrelated HB wiring error is resolved in the current working
+tree; no other task's source was modified. All owned Lean and research
+processes are terminal. No axiom-print check or full/umbrella build was run.
+
+The [paired-contact proof](../3-formalized/pw-b-gamma-adjoint-paired-contact.md)
+closes both complete signed moving-layer passage and the empty incoming
+constant loss. It is not a full adjoint theorem. The next exact quantities
+are the changing-source mismatch E_delta and omitted initial backward
+response, followed by original finite-cutoff gain transposition. Their
+complete response majorant is already available in GammaReciprocalCutoffSource.
+The third deep/method query retained in the full-adjoint JSON has partial
+coverage731543 and no execution errors; its proposed bounded-cutoff
+ingredient plan does not establish the moving-response limit. Actual
+mathlib integrable primitive continuity and dominated convergence are the
+applicable source mechanisms.
+
+A subsequent Xi-occurrence audit must also respect the actual corpus
+GammaMobiusMellinBridge: the original Mellin integral is
+Gamma(s+1/2)/zeta(z+s) only on its proved overlap Re(s)>-1/2 and
+Re(z+s)>1. The full sum of atom norm integrals has exactly the latter
+admission threshold. This gives an original source/transform identity,
+not a residue in the proposed operator domain or a scalar Gamma mode.
+Any continuation or different occurrence realization needs its own proof.
+Full common-domain adjoints, actual Xi occurrence and independent fixed-grade
+Ward balance remain open. PW-B and the overall RH goal remain active.
+
+### Iteration32: complete paired response passage
+
+Conjecture: the original paired backward response is jointly absolutely
+integrable on both positive rays. Its complete signed kernel is
+J_zv(x,h)=w(x)g_v(x) conjugate(H_z(1/x,h)). The proposed bound is
+C*x*exp(-x)*exp(-h)*(1+h)^r. The existing complete response bound and
+inverse polynomial source bound reduce this to exponential factorial
+inequalities. If proved, dominated convergence on the product space retains
+both the moving mismatch interval and the omitted initial response region.
+Original iterated integrals still require Fubini identities and admission;
+this is not yet a full gain transposition or operator domain theorem.
+
+Deep/method search returned partial coverage731591, with complete file
+inventory but incomplete compiler/semantic coverage. Its generated
+cancellation-plus-moving-parts plan requires separate admission of both
+parts; the existing full response estimate instead supports one joint
+absolute majorant. No generated proposal is treated as a verified lemma.
+
+Broad recent arXiv search used dilation and dispersal. Primary reading of
+[Bickel–Pascoe–Tully-Doyle,2607.14372v1](https://arxiv.org/html/2607.14372v1)
+covered the Nelson construction and its minimality proof. A strict finite
+matrix contraction is compressed from multiplication by a matrix inner
+function, with equality for every power and density supplied by its defect
+vectors. The transfer requirement is exact source compression and minimality;
+an available positive dilation alone selects no PW source or Xi occurrence.
+The minimum-dilation-tree result2609.08990 was inspected only at abstract
+level; its approximation algorithm supplies no exact source identity here.

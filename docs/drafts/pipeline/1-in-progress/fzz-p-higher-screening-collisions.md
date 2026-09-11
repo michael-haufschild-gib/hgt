@@ -2,7 +2,7 @@
 
 - **ID:** FZZ-P-HSC
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** FORMALIZED SOURCE RESULTS; FULL CONTINUATION OPEN
 - **Source:** [current frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation), [first-strip cutoff audit](fzz-p-continued-screening-mark.md)
 - **Statement:** Derive the original angular Taylor subtraction at exponent `-6`, including both punctures and all differentiated counterterms.
 
@@ -18,8 +18,10 @@ Fixed theta/FZZ source → complete mixed Ward law in an independently fixed pha
 - [x] Higher original cutoff counterterms at both punctures, with complete leaf and axiom audits.
 - [x] Original logarithmic angular recurrence, both marked remainders and radial cutoff limits.
 - [x] Original marked plane cutoff with both distinct local corrections and independent limits.
-- [ ] Higher parameter continuation, physical derivative identification and full source normalization.
-- [ ] Dependency-closed paper proofs and data-only Lean statements, targeted build and complete axiom audit.
+- [x] Higher original parameter continuation and both exact cubic finite-part values.
+- [x] Original marked source extraction, independent cutoff limit and position-log ratio.
+- [x] Dependency-closed paper proofs and data-only Lean statements for these source results, targeted leaf builds and formal lint.
+- [ ] Fractional screening-count continuation, complete physical normalization and physical replica/momentum identification.
 
 ## Approach
 
@@ -29,7 +31,7 @@ For `Q(r,theta)=1-2r*cos(theta)+r^2`, let `A_m(r)` be the original normalized an
 
 Two applications give `A_2=(1+r^2)/(1-r^2)^3` and `A_3=(1+4r^2+r^4)/(1-r^2)^5`. The latter gives the exact local expansion derived below, hence two power divergences and a logarithmic divergence at exponent `-6`. The original angular equality and remainder are now transported to the planar cutoff integral.
 
-The other marked puncture has new terms. The original logarithmic angular coefficients at `a=-6` are now proved to be `0,-3,-21`. Their proposed general-exponent source is `1,a^2/4,a^2*(a-2)^2/64`; that whole parameter family remains to be derived and admitted. The first-strip absence of a second-collision marked correction does not extend to this depth.
+The other marked puncture has new terms. The original logarithmic angular coefficients at `a=-6` are now proved to be `0,-3,-21`. Their general-exponent source `1,a^2/4,a^2*(a-2)^2/64` is now derived and admitted by the polynomial restoration below. The first-strip absence of a second-collision marked correction does not extend to this depth.
 
 ## Evidence and constraints
 
@@ -96,7 +98,7 @@ The public theorems are `fzzScreeningCubicAnnulus_integrable`, `fzzScreeningCubi
 
 ## Next conjecture: exact whole-plane finite value
 
-**CONJECTURE, not Lean-proved:** with independent circular punctures at zero and one and precisely the preceding local corrections, the whole-plane finite part of `K(-6,-6)` is `-84*pi`.
+**Now proved in Lean by the original cutoff extraction below:** with independent circular punctures at zero and one and precisely the preceding local corrections, the whole-plane finite part of `K(-6,-6)` is `-84*pi`. The harmonic-flux argument that first suggested this value remains a separate, unformalized candidate.
 
 This candidate comes from the original source, not a substituted special-function value at a pole. Set `f(z)=1/(z^3*(z-1)^3)`, so `K(-6,-6)=|f|^2` off the punctures. Its partial fractions are
 
@@ -112,7 +114,7 @@ Its proposed exact energy identity is `|grad U|^2=K(-6,-6)`. The local expansion
 
 `pi/(2*epsilon^4)+9*pi/epsilon^2-72*pi*log epsilon-42*pi+o(1)`.
 
-Green's identity on the finitely punctured disk, together with vanishing outer flux, would give the stated `-84*pi`. The remaining work is explicit: verify the original energy identity, admit the multiply punctured Green formula, bound both local remainders and outer flux, and compare with the independently removed cutoff definition. The deep/all-view corpus search for the required Dirichlet-energy method is recorded below. No phase-frame or mixed Ward conclusion follows from this candidate alone.
+Green's identity on the finitely punctured disk, together with vanishing outer flux, would independently give the stated `-84*pi`. For this separate harmonic-flux argument, the remaining work is explicit: verify the original energy identity, admit the multiply punctured Green formula, bound both local remainders and outer flux, and compare with the independently removed cutoff definition. The deep/all-view corpus search for the required Dirichlet-energy method is recorded below. No phase-frame or mixed Ward conclusion follows from this candidate alone.
 
 The first Dirichlet-energy query returned partial generation 823349 with interrupted text/source retrieval and no ingredient set; all 20 candidate and 20 method names were inspected. Broadening to `Green boundary circle` returned the same pending generation with semantic backend timeout, but exposed `Bottcher.integral_ball_laplacian_eq_boundary_flux` in `Bottcher/Brolin/RieszFlux.lean:415`. Its current source was read: it proves the disk flux identity for globally `ContDiff` order-two functions, using polar reduction, angular periodicity and FTC. It does not apply directly to the singular potential.
 
@@ -144,7 +146,7 @@ The `Poisson weighted logarithm circle average` deep/all-view search returned pa
 
 ## Complete-source normalization gate
 
-The [source paper](https://arxiv.org/html/2402.00932v3) states below (3.26) that its screening integral initially uses integer `s'=1/(k-2)`; thus `k=4` requires continuation to `s'=1/2`, not merely exponent continuation of one fixed-dimensional factor. Equations (3.27) and (3.34) also retain a reciprocal-Gamma zero and a compensating singular factor. The full response therefore needs a source-derived joint continuation of multiplicity, normalization and replica insertion. Neither the present circular finite part nor its conjectured value supplies that identification.
+The [source paper](https://arxiv.org/html/2402.00932v3) states below (3.26) that its screening integral initially uses integer `s'=1/(k-2)`; thus `k=4` requires continuation to `s'=1/2`, not merely exponent continuation of one fixed-dimensional factor. Equations (3.27) and (3.34) also retain a reciprocal-Gamma zero and a compensating singular factor. The full response therefore needs a source-derived joint continuation of multiplicity, normalization and replica insertion. Neither the present circular finite part nor its evaluated value supplies that identification.
 
 The deep/all-view `complex Selberg screening integral Gamma product` search returned partial generation 823349 with reranking deadline and semantic-backend timeout. All 20 candidate and 20 method names were inspected. It found the existing single-position beta integral but no applicable full screening identity. An exhaustive `rg` query for Dotsenko/Fateev and complex-Selberg screening phrases in Lean and notes found only unrelated Selberg-class prime pairings; this is limited lexical evidence, not a claim that no full method exists.
 
@@ -195,13 +197,13 @@ The later deep/all-view `method original logarithmic plane exterior power decay 
 
 ## Next pole identification conjecture
 
-**CONJECTURED ORIGINAL SOURCE VALUES, not established in Lean:** the circular finite parts should satisfy
+**Both original values now proved:** the original circular finite parts satisfy
 
-`fzzScreeningCubicPlaneFinitePart=-84*pi`,
+`fzzScreeningCubicPlaneFinitePart=-84*pi` (proved by the extraction below).
 
-`fzzScreeningCubicMarkedPlaneFinitePart=-141*pi/8`.
+The marked extraction below proves `fzzScreeningCubicMarkedPlaneFinitePart=-141*pi/8`.
 
-If both identifications hold, their normalized position-mark ratio is `47/224`, hence nonzero. This would still require the complete physical source to supply its compensating contribution. Neither value is assigned by definition.
+The proved normalized position-mark ratio is `47/224`, hence nonzero. The complete physical source still must supply its compensating contribution. Neither value is assigned by definition.
 
 The first candidate already has the independent harmonic-flux derivation above. A second source of both candidates is the current first-strip Gamma formula, using the current `Real.Gamma_add_one` recurrence (Mathlib `Gamma/Basic.lean:409`). Write `u=(alpha+6)/2`, `w=(beta+6)/2`, `v=u+w`, and `R(t)=Gamma(1+t)/Gamma(1-t)`. Away from the poles its symbolic factorization is
 
@@ -216,7 +218,7 @@ The Gamma quotient is one through degree two: the logarithm of `R` is odd, and i
 
 Subtract the two complete pole functions `pi*F(0,w)/u` and `pi*F(u,0)/w` before evaluating. The predicted analytic remainder has value `-84*pi` and `u` derivative `-141*pi/4`; the latter becomes `-141*pi/8` for the original `alpha` derivative. The pole coefficient is `F(0,w)=(3-w)^2*(4-w)^2/4`, equal to the proposed general regular angular coefficient `beta^2*(beta-2)^2/64`, whose value at `beta=-6` is the proved coefficient `36`. Its `alpha` derivative at `alpha=-6` is `-21`, matching the logarithmic correction in the marked source.
 
-**Missing bridge:** prove a higher parameter family directly from the original angular integrals, subtract its three even Taylor coefficients at each puncture, and establish the required parameter analyticity and differentiation. A uniform sixth-order angular remainder would give radial admission for `alpha,beta>-8`, with the existing exterior condition `alpha+beta<-2`. Then continue the already identified first-strip source into this larger connected domain and identify the two original finite parts with the corresponding pole-subtracted jets. The displayed Gamma algebra alone does not establish this bridge or the fractional number-of-screenings continuation. No conjectural source value is added to the universal ledger.
+**Current bridge status:** the higher original parameter family, full six-term restoration, analyticity on `alpha,beta>-8`, `alpha+beta<-2`, and the cleared source/Gamma jets are now closed below. Both original cutoff-to-jet extractions are proved below, with every logarithmic correction and clearing-factor derivative retained. The marked finite part and its ratio follow from that original-source bridge. Fractional number-of-screenings continuation and the physical mixed Ward law remain open.
 
 
 ## Closed original marked plane cutoff
@@ -228,11 +230,11 @@ The two compact annuli and admitted exterior cover every original finite cutoff 
 `marked_cutoff(T,U)+2*pi*P_singular(exp(-T))+2*pi*P_regular(exp(-U))
  -> L_singular+L_regular+int_exterior log|z|*K(-6,-6)`.
 
-This defines `fzzScreeningCubicMarkedPlaneFinitePart` by the original integrals. It does not impose the conjectured Gamma-jet value. Six public statements passed clean scratch `/tmp/fzzp_cubic_marked_plane.lean`; the proof body was promoted unchanged and the umbrella is wired. The targeted leaf build passed (145 seconds for the new leaf), and global formal lint passes. All six axiom audits passed with only `propext`, `Classical.choice`, `Quot.sound`.
+This defines `fzzScreeningCubicMarkedPlaneFinitePart` by the original integrals. Its Gamma-jet value is derived independently in the closed marked extraction below. Six public statements passed clean scratch `/tmp/fzzp_cubic_marked_plane.lean`; the proof body was promoted unchanged and the umbrella is wired. The targeted leaf build passed (145 seconds for the new leaf), and global formal lint passes. All six axiom audits passed with only `propext`, `Classical.choice`, `Quot.sound`.
 
 Public statements: `fzzScreeningCubicMarkedExterior_integrable`, `fzzScreeningCubicMarkedAnnulus_integrable`, `fzzScreeningCubicZeroMark_cutoff_limit`, `fzzScreeningCubicOneMark_cutoff_limit`, `fzzScreeningCubicMarkedPlaneCutoff_integrable`, `fzzScreeningCubicMarkedPlane_independent_cutoff_limit`.
 
-The remaining mathematical chain is now higher source-parameter continuation and derivative identification, full screening-multiplicity/normalization continuation, an independently fixed physical phase frame, and the complete mixed replica–momentum Ward law. RH remains unproved.
+Higher source-parameter continuation and original position-derivative identification are now closed below. The remaining mathematical chain is full screening-multiplicity/normalization continuation, an independently fixed physical phase frame, and the complete mixed replica–momentum Ward law. RH remains unproved.
 
 
 ### Source-remainder mechanism to test next
@@ -241,7 +243,7 @@ A direct pointwise subtraction may supply the missing higher analytic family wit
 
 Multiplication by `|z|^alpha` would then be absolutely integrable for `alpha>-8` in the original plane. Subtracting the entire Taylor polynomial retains the odd angular terms before integration; their circle averages vanish, while the low even terms give the three collision poles. The polynomial also contains even powers six through ten; these have admitted integrals and must be added back explicitly. They cannot be discarded. Repeat at the other puncture and retain the existing exterior.
 
-For the parameter-analytic step, use `exp((beta/2)*log(1+q))` with a complex parameter on compact neighborhoods. Its sixth base derivative has the same positive-base bound; proving an analytic remainder under the original integral would allow the existing connected identity-theorem method after clearing the three collision poles in each parameter. This is a concrete next proof attempt, not a proved higher continuation or physical normalization.
+For the parameter-analytic step, use `exp((beta/2)*log(1+q))` with a complex parameter on compact neighborhoods. Its sixth base derivative has the same positive-base bound; proving an analytic remainder under the original integral would allow the existing connected identity-theorem method after clearing the three collision poles in each parameter. This attempt is now realized by the higher original analytic family and continuation below. It does not establish full physical normalization.
 
 ## Original fifth subtraction and exponential lift
 
@@ -297,7 +299,7 @@ with `a_j=a_j(beta/2)`. The audited symbolic simplification gives
 The terms `k=3,4,5` have admitted denominators for `alpha>-8` and contribute
 finite values. These coefficient and restoration identities are now verified
 in Lean; the pole-cleared whole source and its Gamma jets are now closed
-below. The original finite-part extraction remains open.
+below. Both original unmarked and marked extractions are now proved.
 
 Clear `A(alpha)=(alpha+2)*(alpha+4)*(alpha+6)` at both punctures. The existing
 `FZZCigarPlaneScreeningGammaContinuation.reciprocal_gamma_analytic` proof uses
@@ -310,10 +312,10 @@ Its numerator arguments are positive on `alpha,beta>-8`, `alpha+beta<-2`.
 The complete original polynomial and exterior assembly, followed by two
 real analytic identity arguments from the ordinary chamber, is now proved
 below.
-Then identify the original unmarked and marked cutoff limits with the
-pole-subtracted jets. This bridge, the proposed values `-84*pi` and
-`-141*pi/8`, fractional screening multiplicity, full normalization, independent
-phase frame, and the complete Ward producer remain open.
+The original unmarked cutoff is now identified with its cleared jet and has
+value `-84*pi`. The marked cutoff-to-jet bridge now gives `-141*pi/8`.
+Fractional screening multiplicity, full normalization, independent phase frame,
+and the complete Ward producer remain open.
 
 ### Current-source search and paper intake
 
@@ -389,7 +391,7 @@ ordinary neighborhood; then fix `alpha<-2` and continue in `beta` from a
 neighborhood of `-1`. Replacing the lower bound `-3` by `-8` is now supported
 by the proved higher local remainder. The exact original restoration above
 supplies the new ordinary source identity. The pole-cleared source and all its Gamma jets are now proved below.
-The identification with the original marked finite-part cutoff remains open.
+The identification with the original marked finite-part cutoff is now closed by the extraction below.
 
 ### Current restoration search
 
@@ -435,9 +437,9 @@ uses `alpha=-8+14*exp(u)/(1+exp(u)+exp(v))`, with the symmetric formula for
 
 Local equality of the cleared functions identifies every mixed iterated
 derivative, including every order at `(-6,-6)`. This closes the cleared
-source/Gamma jets. The existing original marked and unmarked finite-part
-cutoff limits still require an exact comparison retaining every finite term
-and the derivatives of the clearing factors and pole residues.
+source/Gamma jets. The original unmarked finite-part cutoff comparison now closes below, retaining
+every finite term and both clearing-factor derivatives. The marked comparison
+still requires the original differentiated remainder and pole-residue terms.
 
 The umbrella is wired. The targeted leaf build passed in 331 seconds and
 global formal lint passed. The new leaf is clean; the build replayed existing
@@ -465,17 +467,16 @@ and global formal lint passed. The leaf build reports 39 seconds for the changed
 module, with tactic-style warnings; its one unused simplifier argument was
 removed before promotion. No numerical Gamma evaluation is used.
 
-A separate original-source extraction is required. Writing
-`A(-6+a)=8*a-6*a^2+a^3`, the expected unmarked relation is
+The separate original-source extraction now closes below. Writing
+`A(-6+a)=8*a-6*a^2+a^3`, its proved unmarked relation is
 
 `partial_alpha partial_beta H(-6,-6)=64*FP-6912*pi`.
 
-This relation must be derived from the original local remainder, exterior,
-and every restored polynomial term, then matched to the independently removed
-cutoff limit already proved. Merely dividing the cleared identity at the
-collision point cannot establish it. The marked extraction additionally needs
-the derivative of each local residue and the original logarithmic cutoff
-corrections. No proposed finite-part value is promoted to a theorem here.
+The proof retains the original local remainder, exterior and every restored
+polynomial term, then matches the independently removed cutoff limit. Merely
+dividing the cleared identity at the collision point cannot establish it.
+The marked extraction retains the derivative of each local residue and
+the original logarithmic cutoff corrections; this extraction and its value are now proved below.
 
 The completed proof uses direct parity: set
 `L(t)=log Gamma(1+t)-log Gamma(1-t)`. This function is odd by its definition,
@@ -486,7 +487,7 @@ derivatives vanish. Exponentiation then gives the required unit jets. The
 current corpus's `SlepianKernelScaledFubini.even_prolateSLAction` explicitly
 uses `deriv_comp_neg` and differentiation of a reflection identity; its proof
 was read as the parity mechanism. The actual Gamma source specialization
-is now proved; the original finite-part extraction remains open.
+is now proved; the original marked finite-part extraction is also closed below.
 
 ### Continuation search and paper intake
 
@@ -535,8 +536,8 @@ first exponent, the corresponding extraction target is
 
 The constant corrections in the proposed cutoff extraction come from the
 cubic clearing factors and the local residue coefficients. The cleared source
-jet values are proved; the original cutoff-to-jet comparison remains required
-before either finite-part conjecture follows.
+jet values and the original unmarked cutoff-to-jet comparison are proved.
+The marked comparison and complete source extraction are now proved below, so the finite-part value follows.
 
 The current Mathlib theorem
 `Complex.one_div_Gamma_eq_self_mul_one_div_Gamma_add_one`
@@ -589,19 +590,19 @@ For the next original local comparison, the full quintic angular polynomial
 at exponent `-6` has coefficients `(1,9,36,-460,-405,-21)`. Consequently the
 angular average of the integrable fifth remainder differs from the previously
 admitted cubic angular remainder by `460+405*r^2+21*r^4`. Integrating this exact
-difference on the original half disk gives the paper target
+difference on the original half disk gives the now-proved identity
 
 `CubicLocalFP = integral_ball R5(-6,-6) - 10993*pi/64 + 72*pi*log(1/2)`.
 
-This is a proposed original-integral comparison, not yet a Lean theorem.
-It retains all three integrable polynomial terms, not only the divergent
-coefficients. Polar admission and equality with the already proved independent
-cutoff limit must precede finite-part evaluation.
+This original-integral comparison passed mathematical scratch and is promoted
+in `FZZCigarCubicFinitePartExtraction`. It retains all three integrable
+polynomial terms. Joint polar admission precedes Fubini and the comparison
+with the already proved independent cutoff limit.
 
 
 A useful refinement of the next unmarked extraction is now explicit. Let
 `Rsum` denote both admitted fifth-remainder integrals plus the original exterior
-at `(-6,-6)`. Differentiating the complete source definition predicts
+at `(-6,-6)`. Differentiating the complete source definition proves
 
 `H_ab = 64*Rsum + 16*deriv (fun alpha => ClearedCounterterm(alpha,-6)) (-6)`.
 
@@ -610,5 +611,346 @@ The six radial derivatives give the counterterm derivative
 above, this is exactly `H_ab=64*FP-6912*pi`. This derivation needs only the
 already admitted separate analyticity of the two local remainders, the original
 exterior and the restored counterterms; no derivative of an unregularized
-singular integral is introduced. Both displayed extraction steps are paper
-proof targets for the next Lean pass, not completed Lean declarations.
+singular integral is introduced. Both displayed extraction steps passed Lean
+scratch and are promoted in the new leaf; its targeted final build and global formal lint passed.
+
+
+## Closed original cubic cutoff value
+
+`formal/GaloisForLFunctions/RHTower/FZZCigarCubicFinitePartExtraction.lean`
+contains six public data-only statements, all passed mathematical scratch:
+
+- `fzzScreeningFifthAngularPolynomial_cubic` retains the complete six-term polynomial.
+- `fzzScreeningCubicLocalFinitePart_eq_fifthRemainder` identifies the original half-disk finite part.
+- `fzzScreeningCubicPlaneFinitePart_eq_fifthRemainders` retains both punctures and the original exterior.
+- `fzzScreeningHigherClearedSource_cubic_second_extraction` proves `H_ab=64*FP-6912*pi`.
+- `fzzScreeningCubicPlaneFinitePart_value` proves `FP=-84*pi`.
+- `fzzScreeningCubicPlane_independent_cutoff_value` gives this value as the limit of the actual original cutoff with both punctures removed independently.
+
+The proof first admits the polar product using the uniform original sixth
+remainder bound. Its finite angular tail integrates to `8177/128` before the
+polar factor. The actual exterior has a positive weighted-measure exponential
+representation, so neighboring admitted original powers give local parameter
+analyticity. Exact differentiation of all six cleared radial primitives gives
+`countertermSlope(-6)=-14449*pi/8+576*pi*log(1/2)`. Both clearing factors vanish
+with derivative eight; the mixed response is therefore `64*Rsum+16*countertermSlope`.
+Combining the original cutoff comparison with the already proved source jet
+`H_ab=-12288*pi` fixes the value, with no numerical experiment or assigned
+special-function value at a singular endpoint.
+
+The umbrella is wired. The targeted final leaf build passed (232 seconds for
+the new leaf), and global formal lint passed. The scratch proof is clean. The marked value is now proved below. Screening-count
+continuation, complete physical normalization, independent phase frame and
+full mixed Ward producer remain open.
+
+### Next marked extraction
+
+The existing original marked cutoff retains distinct singular-factor and
+regular-factor local terms. Differentiating the full binomial recurrence gives
+the next exact coefficient targets at `beta=-6`:
+
+`(c0',c1',c2',c3',c4',c5')=(0,-3,-21,788/3,1779/8,459/40)`.
+
+These coefficient derivative values are now proved in the original marked-remainder and marked-source-value leaves below.
+The singular local derivative must retain `log(r)` times every finite Taylor
+term. The reflected regular local derivative must subtract the differentiated
+Taylor polynomial before integration. The existing integral Taylor lift gives
+a candidate admission mechanism: differentiate both its parameter prefactor
+and exponential weight, retaining the logarithmic lift insertion. Equality
+with the original marked cutoff now yields
+`H_aab=128*markedFP-96*FP+10368*pi`. This bridge proves the
+marked value `-141*pi/8` and normalized position-mark ratio `47/224` below.
+
+### Original-extraction search intake
+
+The deep polar query returned partial generation `874090`, with semantic
+indexing and source refresh unfinished and no errors. All twenty candidate
+and twenty method names and its generated ingredient set were inspected.
+`LebesguePolarIntegral.integral_polar_mul` requires an already separated
+radial/angular integrand; this does not describe the original remainder before
+angular integration. The original indicator-polar transport in `CauchyPompeiu`
+and the existing screening modules supplies the applicable mechanism.
+`DeningerRadialKahlerTrace` is radial and does not replace the original source.
+
+The deep cleared-coefficient query returned partial generation `874107`, with
+semantic indexing, reranking and refresh unfinished and a reranker deadline.
+Its complete candidate/method lists and ingredient set were inspected.
+`HadamardFinitePart.cutoffFinitePart_eq` and its Suzuki wrapper preserve the
+endpoint logarithm for a Cauchy kernel. They support retaining the finite
+boundary contribution but do not identify the cubic screening source. The
+current Mathlib explicit finite-product and finite-sum derivative rules were
+read and the latter is used in the original counterterm derivative.
+
+Broad recent arXiv searches used defect and resolvent.
+[Countable IET Models and Defect Sets for Interval Translation Maps](https://arxiv.org/abs/2609.01670),
+submitted 1 September 2026, was inspected at its original abstract. Its finite
+or countable models retain a branch defect measure and require invariant
+nonatomic probability and finite or null defect-support conditions. These
+premises are not identified for the fixed FZZ source; no cutoff or Ward theorem
+is imported from the paper. No absence claim follows from either partial search.
+
+## Closed original marked remainder derivatives
+
+The next scratch `/tmp/fzzp_higher_marked_remainder.lean` attacks both
+original local parameter derivatives. Write `R5(alpha,beta,z)` for the
+admitted fifth subtraction, `T5(beta,z)` for its full polynomial, and
+`P(beta)=descPochhammer(6,beta/2)`. The regular insertion is defined before
+integration as
+
+`|z|^alpha*(log|z-1|*|z-1|^beta - d_beta T5(beta,z))`.
+
+The singular insertion is `log|z|*R5(alpha,beta,z)`. Neighboring original
+powers admit its logarithmic moment. For the regular insertion, differentiate
+the exact pointwise Taylor integral remainder on its original interval.
+Both `P'(beta)*int W exp(beta X)` and `P(beta)*int W X exp(beta X)` survive.
+The existing joint exponential admission gives the marked product integral;
+Fubini then identifies its marginal with the original pointwise regular
+insertion. This proves admission before exchanging the plane integral and
+parameter derivative, without introducing an unregularized divergent integral.
+The initial scratch exposed measurability unfolding and function-elaboration
+issues; the second exposed an unreachable simplifier and universe annotations
+in scratch name checks. All eight expanded statements passed scratch. The
+final leaf `FZZCigarHigherMarkedRemainder.lean` passed its targeted build
+(21 seconds); the umbrella is wired. An unused scratch simplifier argument was
+removed before promotion. Global lint initially found an unrelated concurrent
+unwired `ThetaCuspHawkingBMRetardedPulseClock`; after its owner wired that leaf,
+the repeated global lint passed.
+
+The exact differentiated cubic Taylor polynomial has coefficients
+`(0,1/2,-7/4,47/12,-57/8,459/40)` in powers of
+`q=|z|^2-2*Re(z)`. Its proved full angular polynomial is
+
+`-3*r^2-21*r^4+(788/3)*r^6+(1779/8)*r^8+(459/40)*r^10`.
+
+These retain the finite radial powers needed for the marked local comparison.
+The actual exterior derivative and the sum of all three original remainder
+integrals are closed in the same leaf. The marked finite-part value is derived in the later source-value leaf below.
+
+Public statements: `fzzScreeningFifthSubtracted_singularMark_integrable`,
+`fzzScreeningFifthSubtracted_singularMark_hasDerivAt`,
+`fzzScreeningFifthRegularMark_integrable`,
+`fzzScreeningFifthSubtracted_regularMark_hasDerivAt`,
+`fzzScreeningFifthTaylorMark_cubic`,
+`fzzScreeningFifthTaylorMark_cubic_circleAverage`,
+`fzzScreeningCubicExteriorMark_hasDerivAt`, and
+`fzzScreeningCubicOriginalRemainders_hasDerivAt`.
+
+### Marked-derivative search intake
+
+The deep original-remainder query returned partial generation `874218`, no
+errors, and a proposed log-Taylor/shift ingredient set. Source inspection of
+`HurwitzShiftTaylor.shiftRemainder_eq` shows an exact finite-sum rearrangement,
+not a parameter-derivative interchange. The sphere-packing `I4` hit is an
+interval-to-set-integral conversion; it does not supply the missing domination.
+The admitted signed exponential-moment proof in the existing first-strip
+`FZZCigarContinuedScreeningMark` does transfer to the higher original singular
+remainder. Its pointwise shift and neighborhood admission are rederived.
+The installed parametric-integral and MGF derivative signatures were inspected.
+
+The deep angular-coefficient query returned partial generation `874253`, no
+errors; source refresh remained pending. Its proposed average-derivative
+transfer requires matching the actual parameter. The BM full-circle proof
+uses a common compact bound on the parameter derivative. The Böttcher
+`hasDerivAt_circleAverage` instead differentiates the radius, so it cannot be
+substituted for exponent differentiation. Exact finite polynomial integration
+is used for the differentiated cubic Taylor term.
+
+Broad arXiv searches used `transgression` and `intertwining`.
+[Abanov–Cappelli, June 2026, revised July](https://arxiv.org/html/2606.18779v2),
+sections 5.5 and 5.5.2, retain transverse constitutive corrections when deriving
+a reduced action. Their slow-manifold construction is explicitly schematic
+and relies on relaxation assumptions. It suggests checking all terms induced
+by restriction before imposing a Ward variation; it supplies no FZZ phase
+frame, relaxation theorem or unconditional Ward identity.
+[Caputo–Quattropani–Sau, September 2026](https://arxiv.org/html/2609.10450v1),
+sections 1.4.1–1.4.3, use an actual stochastic intertwining and a positive
+semigroup to turn variance contraction into a spectral bound. The present
+positive Taylor auxiliary weight is not such a semigroup or intertwining.
+The original negative finite part also prevents transferring its positivity
+through the retained boundary terms. No spectral or Ward premise is imported.
+
+### Exact marked extraction targets
+
+Let `R=1/2`, `L=log R`, `J_s=int_disk log|z|*R5(-6,-6,z)`,
+`J_r=int_disk |z|^-6*(log|z-1|*|z-1|^-6-d_beta T5(-6,z))`, and
+`J_e=int_exterior log|z|*K(-6,-6,z)`. The next original polar comparisons are
+
+`SingularMarkedLocalFP = J_s + pi*(36*L^2-10993*L/64+7811/192)`,
+
+`RegularMarkedLocalFP = J_r + pi*(-42*L+650309/7680)`.
+
+They follow on paper by retaining the exact angular tails, integrating
+`r^(2k+1)*log r` with primitive
+`r^(2k+2)*(log r/(2k+2)-1/(2k+2)^2)`, and retaining the existing distinct
+collision primitives at `R`. Consequently the required whole-plane identity is
+
+`MarkedFP = J_s+J_r+J_e + pi*(36*L^2-13681*L/64+962749/7680)`.
+
+All three equalities now pass clean Lean scratch and are promoted in
+`FZZCigarCubicMarkedFinitePartExtraction.lean`. The proof transports original
+local L1 admission through the nonnegative polar change of variables before
+Fubini, retains the full actual angular subtraction, and evaluates both
+original endpoint primitives. The targeted final leaf build (104 seconds) and global lint passed.
+No comparison equality is assumed as a premise.
+
+For the explicit cleared radial term at `alpha=-6`, the second derivatives
+are `32-64*L`, `8-32*L`, and `2-12*L+8*L^2` in slots zero through two. In
+slot `k>=3`, put `d=2*k-4`; the derivative is
+`R^d*(-12/d-16/d^2+16*L/d)`. Differentiating the complete original source
+therefore gives, before substituting any finite-part value,
+
+`H_aab = 128*(J_s+J_r+J_e)-96*RegularSource
+         +8*Counterterm_aa-12*CountertermSlope+16*CountertermSlope_beta`.
+
+The retained local constants cancel every `L` and `L^2` term and give
+`H_aab=128*MarkedFP-96*FP+10368*pi`. The complete identity now passes Lean
+and connects the original finite part to the already closed cubic Gamma jet.
+Its marked value and ratio are proved by the source-value leaf below.
+
+
+## Closed original marked cutoff-to-remainder comparison
+
+Three public data-only statements passed clean scratch
+`/tmp/fzzp_cubic_marked_finite_part_extraction.lean`:
+`fzzScreeningCubicRegularMarkedLocalFinitePart_eq_fifthMark`,
+`fzzScreeningCubicSingularMarkedLocalFinitePart_eq_fifthMark`, and
+`fzzScreeningCubicMarkedPlaneFinitePart_eq_fifthMarks`.
+Their proof body is promoted in `FZZCigarCubicMarkedFinitePartExtraction.lean`
+and the umbrella is wired. The targeted final leaf build passed (104 seconds),
+and global formal lint passed.
+
+The regular finite Taylor tail integrates to `558149/15360`. Its combination
+with the retained regular collision primitive produces `-42*L+650309/7680`.
+The singular tail integrates to `(8177/128)*L-11651/384`; the logarithmic
+primitive is continuous at zero through `r*log r`. Its endpoint combines with
+the distinct singular collision primitive to produce
+`36*L^2-10993*L/64+7811/192`. The whole plane retains the actual exterior
+logarithmic integral and sums both local corrections exactly.
+
+The first scratch required explicit real types for polar set intersections,
+actual polar-map rewriting, and scalar continuity annotations. The second
+required an associativity rewrite. The regular comparison then passed cleanly.
+The expanded three-statement scratch required an explicit angular lambda and
+the original volume in the two L1 annotations; the final scratch is clean.
+
+The source-value scratch `/tmp/fzzp_cubic_marked_source_value.lean` now passes cleanly and is promoted as `FZZCigarCubicMarkedSourceValue.lean`. It starts from the actual original
+cleared source and locally analytic second-product differentiation. The new
+deep source-coefficient query returned partial generation `874732`, with local
+retrieval/reranking deadlines and pending refresh; no absence claim follows.
+The `NonlinearConstraintHorizon.secondDeriv_mul_eq` hit is a derivation-ring
+identity, not a real-parameter integral derivative theorem. Installed
+`iteratedDeriv_fun_mul` instead exposes the required local `ContDiffAt` premises,
+which the admitted original analytic families can discharge.
+The global-analytic factorization lemma has stronger everywhere-analytic
+premises and is not substituted for this local source germ.
+
+### Second-source coefficient targets
+
+The next exact coefficient identities, derived from the six retained slots,
+are
+
+`CountertermSlope_beta(-6) = pi*(892229/960-336*L)`,
+
+`Counterterm_aa(-6,-6) = pi*(137093/48-(14449/4)*L+576*L^2)`.
+
+Together with the already closed first counterterm slope, they give
+
+`8*Counterterm_aa-12*CountertermSlope+16*CountertermSlope_beta
+ = pi*(3563569/60-41186*L+4608*L^2)`.
+
+These identities now pass Lean in the source-value leaf. Substituting the proved original unmarked and marked remainder
+comparisons cancels the complete logarithmic polynomial and leaves the exact
+`10368*pi` mixed-jet correction. This isolates the remaining coefficient
+proofs without dropping any source term.
+
+
+## Closed original marked source value
+
+Four public data-only statements in
+`formal/GaloisForLFunctions/RHTower/FZZCigarCubicMarkedSourceValue.lean`
+passed clean scratch and the targeted final leaf build (26 seconds):
+
+- `fzzScreeningHigherClearedSource_cubic_third_extraction` proves the full original source identity.
+- `fzzScreeningCubicMarkedPlaneFinitePart_value` proves `MarkedFP=-141*pi/8`.
+- `fzzScreeningCubicMarkedPlane_independent_cutoff_value` proves the actual original independent two-cutoff limit has this value.
+- `fzzScreeningCubicMarkedPlaneFinitePart_ratio` proves the position-log ratio `47/224`.
+
+Write `R(alpha,beta)` for both admitted local fifth remainders and the original
+exterior. The actual right source derivative near `alpha=-6` is
+`8*A(alpha)*R(alpha,-6)+8*CT(alpha,-6)+A(alpha)*CountertermSlope(alpha)`.
+The clearing factor has value zero, first derivative eight and second derivative
+minus twelve. Twice differentiating this complete local analytic identity gives
+
+`H_aab=128*R_alpha-96*R+8*CT_aa-12*CountertermSlope+16*CountertermSlope_beta`.
+
+The proved original marked and unmarked integral comparisons cancel every
+logarithmic term, leaving `H_aab=128*MarkedFP-96*FP+10368*pi`.
+Substitution of the independently proved source jet `16176*pi` and original
+value `FP=-84*pi` determines the marked value. The two distinct collision
+primitives remain in the limit theorem. The ratio is a position-log response,
+not an identified complete physical replica--momentum response.
+
+The scratch fixes were function-shift beta reduction, explicit iterated-derivative
+rewrites and explicit function arguments for the local product/sum rules.
+No mathematical premise was added. The umbrella is wired; global formal lint
+passed after the successful leaf build. Existing dependency tactic-style
+warnings were replayed; the new leaf and final scratch were clean.
+
+## Screening-count continuation: current source tests
+
+The fixed-dimensional marked extraction is closed independently of this
+next step. Deep continuation search `874855` inspected all twenty candidates,
+twenty methods and its proposed ingredient set; coverage was partial because
+semantic indexing and source refresh were unfinished, with no errors.
+`BurnolDepthCompletion.ae_eq_zero_of_integer_laplace_moments` determines an
+already admitted L1 density from integer Laplace samples. The current screening
+integrals change dimension with their count, so no fixed density has yet been
+constructed to which that theorem applies. The proposed Sonin ingredient set
+requires unrelated even-subspace and constant-core identities. The bounded-jet
+ODE methods require an actual differential relation not derived for this source.
+
+The source paper's borrowed [finite-factor derivation](https://arxiv.org/html/2310.02313)
+(section 3.3) first integrates an integer number of opposite-charge positions,
+then matches residues to a Liouville three-point function and uses its shift
+identities. It retains an unfixed phase before imposing reality and a joint
+limiting prescription for compensating singularities. These are additional
+source identifications; ordinary fixed-dimensional analyticity cannot supply
+them. Three-position fixing requires at least two insertions in each family.
+
+A second conjecture was that the neutral position kernel is a free Cauchy
+determinant at level four. The current corpus's exact `det_cauchyMatrix` formula
+shows the omitted term. On collision-free configurations with n positions of
+each charge, write D for the product of all opposite-charge distances and V
+for the product of all within-charge distances. The original kernel is
+`V^2/D^6`, while the Cauchy determinant has squared norm `V^2/D^2`.
+Thus the exact positive survivor is
+
+`K_4 = |det(1/(z_i-w_j))|^2 / D^4`.
+
+The residual depends on every opposite-charge pair. It cannot be silently
+replaced by a one-position weight or removed from the source. The next Lean
+target is this exact all-integer-count decomposition, including the totalized
+collision cases; fractional count and all cutoff passage remain separate.
+Under common positive dilation, the full integration density has homogeneity
+`2*n*(1-(k-2)*n)`. At level four this is `2*n*(1-2*n)`; neutrality concerns
+count one-half, not an integer-size determinant. This homogeneity check is a
+paper calculation, not a claimed Lean continuation theorem.
+
+Deep determinant search `874889` was partial (semantic indexing/source refresh),
+with no errors. Its twenty candidates, twenty methods and ingredient set were
+inspected. The neutral torus coefficients are factorial/power coefficients,
+not integrals of this sphere kernel; the suggested fractional-power expansion
+requires an independent asymptotic bound. Exhaustive source-text search located
+the actual Cauchy determinant formula, which supplies the displayed decomposition.
+
+Broad searches used sewing, descent, neutrality, confluence and localization,
+with June–September 2026 preference. Several returned only older or empirical
+work, and direct arXiv confluence search failed to fetch. The recent
+[Culf–Sebbar replication descent](https://arxiv.org/html/2609.08243v1)
+(8 September, theorem 1.1 and proof 4.1) requires replication identities and
+modular invariance; no such source law is available here. The recent
+[localized conformal prediction proof](https://arxiv.org/html/2608.06206v1)
+(6 August, theorem 3 and its proof) separates local bias, calibration and
+normalization errors on one common event. Its probability and regularity
+hypotheses do not identify the FZZ continuum source. No Ward or continuation
+premise is imported from either paper.

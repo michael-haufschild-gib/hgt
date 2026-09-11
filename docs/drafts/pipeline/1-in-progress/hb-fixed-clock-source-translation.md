@@ -113,7 +113,7 @@ The ordinary scalar pulse tends to zero at u=1. But its actual scalar forcing is
     T_s=U_s-d_s W,
     N_s=-s U_s+d_s(s+2)W.
 
-These are precisely the normalized trace and normal covectors already present in `clockCoefficients`. This paper calculation identifies the next source-contact target without changing the clock. It neither evaluates the causal pulse response nor cancels its cross current with the incoming field. The literal source factorization is now proved in Lean. The original normalized horizon-limit transfer remains a paper calculation; no equality of an unevaluated physical projection is asserted.
+These are precisely the normalized trace and normal covectors already present in `clockCoefficients`. The original normalized exterior equality and horizon limit are now proved in `ThetaCuspHawkingBMPulseHorizonSource.lean`; its exact leaf audit passed. The proof differentiates the actual angular fields, discharges the original denominator nonvanishing, and takes the regular limit after cancellation. It neither evaluates the causal pulse response nor cancels its cross current with the incoming field. No equality of an unevaluated physical projection is asserted.
 
 **C12: that local pulse contact alone cancels the incoming mass. Paper calculation rejects this inference.** Using the source-contact orientation in `hb-mixed-complete-current.md`, insert the C11 drive into `Psi_s,v dot S_pulse,t-Psi_t,v dot S_pulse,s`, with `Psi_s=A_s(1)T_s chi(v)exp(2sv)`. Put `X=T_t dot N_s`, `Y=T_s dot N_t`, `c=a²b²/64`. Direct bilinear expansion gives
 
@@ -121,7 +121,33 @@ These are precisely the normalized trace and normal covectors already present in
       4c[(s-t)T_s dot T_t+tX-sY] chi(v)chi'(v)
         +2c(X-Y)chi'(v)²}.
 
-The derivative-square coefficient matches the incoming radial current's derivative-square coefficient. There is no squared-onset mass in this local contact, so its fixed demodulated translation moment is zero by the proved profile identity. This statement about the actual contact still depends on the pending C11 normalized horizon transfer; its algebraic expansion is recorded on paper. It does not say that the **response** to the pulse has zero moment: a transition-supported forcing can leave a causal response after the transition. The next necessary cancellation calculation therefore involves that response, its incoming cross terms and the remaining physical faces, rather than discarding the pulse or its late-time tail.
+The derivative-square coefficient matches the incoming radial current's derivative-square coefficient. There is no squared-onset mass in this local contact, so its fixed demodulated translation moment is zero. The C11 transfer, this contact profile, its clock moment and the original static-chart radial contact limit are now proved in Lean and passed the exact leaf audit. The original radial derivative is retained until continuity of both differentiated incoming jets justifies its horizon limit. It does not say that the **response** to the pulse has zero moment: a transition-supported forcing can leave a causal response after the transition. The next necessary cancellation calculation therefore involves that response, its incoming cross terms and the remaining physical faces, rather than discarding the pulse or its late-time tail.
+
+**C13: the retarded action inherits finite clock covariance from a stationary kernel. The finite-domain change of variables retains an initial-history strip.** The literal-pulse specialization, including its finite-domain continuity, is now closed in Lean and passed its exact cached leaf audit (155 seconds, no warnings). The general source-defect linearity formula below remains a paper interface unless its source admission is independently discharged. Let `R[S](p,w)` be the existing `retardedNullAction`, with common physical time step h>=0 and fixed width w. Set `S_h(t,x,z)=S(t+h,x,z)`. Write `K^d_{p,w}[S](a,b)` and `K^i_{p,w}[S](a,b)` for the original direct and image circular integrands, including their factor 1/4. Their exact argument identity is
+
+    K^e_{p+h,w}[S](a+h,b+h)=K^e_{p,w}[S_h](a,b), e=d,i.
+
+Both source and target times shift by h; source and target spatial coordinates stay fixed. Split the outer a integral at h, and translate a,b by h only in the upper piece. The result is
+
+    R[S](p+h,w)=R[S_h](p,w)+H_h[S](p,w),
+    H_h[S](p,w)= integral_0^h da integral_a^(p+h+w) db K^d_{p+h,w}[S](a,b)
+                 -integral_0^h da integral_a^(p+h) db K^i_{p+h,w}[S](a,b).
+
+Consequently, for the unchanged original rate lambda,
+
+    Delta_h^lambda R[S](p,w)
+      = R[S_h-exp(lambda h)S](p,w)+H_h[S](p,w).
+
+This follows from finite integral additivity and substitution, with the original direct and image domains and orientation. It requires no frequency correction. For the actual pulse, source ingoing time is a and its temporal factor is chi'(a)exp(2sa). Its support removes new forcing after a=1, but does not remove H_h or the p-dependence of the old-history kernel. A source-derived annihilation of the completed left-QNM projection of these two terms, together with the quadratic cross currents and other faces, remains to be proved. Calling a finite-history response zero from forcing support is not that proof.
+
+**C14: positive theta heat-kernel squares supply the sign of the completed physical cut. This transfer is not justified.** For positive heat parameters t_i and finitely many coefficients c_i, the ordinary theta series gives the Gram identity
+
+    sum_ij conjugate(c_i)c_j[theta(t_i+t_j)-1]
+      =2 sum_{n>=1}|sum_i c_i exp(-pi n² t_i)|² >= 0.
+
+Finite expansion and the positive minimum heat parameter justify the absolutely convergent interchange. This is a heat-parameter pairing. It is not the actual renormalized cusp source, the Lorentzian/complex Einstein cut, or the original physical-clock translation. The missing transfer would have to identify the physical pairing with this positive form while deriving every cusp subtraction, radial weight, nonlinear correction and cross term. That transfer has not been found.
+
+The prior-research check rules out replacing it with a generic all-order reflected-Hankel claim: `completeReflectedHankel_realRootedness_noGo` in `TCDCompleteReflectedHankelRealRootednessNoGo.lean` proves that the positive real entire source `cosh(z)+cosh(2z)` has all reflected polynomial-square moments nonnegative and strict rank-three determinant, yet has a nonreal zero. Its final theorem and explicit zero proof were inspected. The positive Gram survivor is already covered by prior source-positive work; no duplicate no-go or Gram wrapper is being added. HB still needs the signed **identified physical** estimate, not another positive form on a different variable or source.
 
 ## Exact nonlinear interface still required
 
@@ -228,3 +254,143 @@ Broad searches used reciprocity, Noether, hypocoercivity, symplectic, dissipatio
 - [Li et al., Sensing-Limited Control Under Non-Designable Observation Mechanisms, 30 June 2026](https://arxiv.org/html/2606.31396v1): the sufficient observation mechanism needs a strict information surplus plus curvature/conditioning assumptions. **C6:** use a source-derived strict deficit bound instead of exact covariance. **Open:** the translated idea is the epsilon<1 estimate above; neither the positive geometry nor the needed source bound has been constructed. The paper's theorem itself does not apply to HB.
 
 No novelty claim beyond the audited corpus comparison is made. These are attempted mathematical transfers, not citations proving extinction.
+
+
+## Pulse horizon and causal-history continuation (11 September 2026)
+
+The source-level horizon calculation was strengthened before attempting a causal cancellation. The original contact is
+
+    C_r(x,v)=f/r² sum_j[(Psi_static,s,r)_j S_pulse,t,j
+                          -(Psi_static,t,r)_j S_pulse,s,j].
+
+In ingoing coordinates its regular expression is
+
+    C_r(x,v)=r^(-2) sum_j[(f Psi_s,r+Psi_s,v)_j S_pulse,t,j
+                          -(f Psi_t,r+Psi_t,v)_j S_pulse,s,j].
+
+Thus the radial derivative is retained until regularity at r=1 is established. At every exterior radius write `Psi_i=A_i(r) chi(v)exp(2s_i v)`, `D_i=partial_r A_i`, and `S_pulse,i=P_i(r) chi'(v)exp(2s_i v)`, with A_i,D_i,P_i the actual covector coefficients. The exact finite-radius contact is
+
+    C_r=exp(-6v)[B(r) chi chi'+C(r) chi'^2],
+    B(r)=r^(-2) sum_j[((f D_s+2s A_s)_j P_t,j)
+                         -((f D_t+2t A_t)_j P_s,j)],
+    C(r)=r^(-2) sum_j[A_s,j P_t,j-A_t,j P_s,j].
+
+It has zero fixed-clock translation moment before any horizon limit. The normalized-source and horizon-contact leaf audit passed (202 seconds, no warnings). The stronger finite-radius clock-moment extension also passed scratch checking and its exact cached leaf audit (40 seconds, no warnings), as `ThetaCuspHawkingBMPulseContactClock.lean`. Both leaves are wired into the umbrella. This is the source contact with the explicit incoming field, not the current of its unevaluated causal pulse response. A zero translation-defect moment of a compactly supported source does not assert that its Laplace transform or its propagated projection is zero.
+
+The new deep/method search for cancelling a vanishing radial factor returned partial coverage (generation 874024), twenty candidate lemmas and twenty source arguments. Its one unverified ingredient group still required the metric contraction and radial-limit transfer. The actual coexact derivative and exterior denominator arguments were used instead. A subsequent causal-triangle/history query also returned partial coverage (generation 874200, deadline and filter/judge unfinished), with twenty candidates and twenty source arguments but no proof ideas or ingredient groups. It recovered finite integral splitting, actual angular resolvent bijectivity and the already proved causal reconstruction. None was an extinction producer.
+
+Broad searches used tail, memory, echo, hereditary, transparent, Volterra, renewal, observability and controllability, prioritizing June–September 2026. Most hits concerned unrelated graphs, machine learning or observational astronomy. Primary-paper method checks:
+
+- [Cornuejols–Patil, A Hereditary Property of Cutting Plane Procedures, 2 September 2026](https://arxiv.org/html/2609.02038v1): the closure/face result uses one common family of full-dimensional convex sets. HB has no identified convex closure with these hypotheses; it gives no commutation of a radiative projection with nonlinear evolution.
+- [Hager–Harang–Pelizzari–Tindel, The Volterra signature](https://arxiv.org/html/2603.04525v1): initial submission 4 March 2026; displayed manuscript date 24 August 2026. Proposition 3.1 changes both the path and kernel under a smooth increasing reparameterization fixing both endpoints. A finite physical translation does not meet that endpoint condition. The Chen relation retains old history, motivating C13's explicit strip. Neither result erases that strip for the unchanged HB kernel.
+- [Neshaei Moghaddam–Chen–Gharesifard, Structural Averaged Controllability for Linear Ensemble Systems: Multi-input Case, 30 July 2026](https://arxiv.org/html/2607.27706v1): the construction chooses a system realization and common control to reach an ensemble average. HB's source, dynamics and clock are fixed, and its target concerns every occurrence. The paper therefore supplies no permitted extinction mechanism.
+- [Mukherjee–Fahim–Hausenblas, Sphere Constraints and Harmonic Map Flow: Controllability and Reachability by Low-Mode Forcing, 6 July 2026](https://arxiv.org/abs/2607.05687): abstract inspected; HTML retrieval timed out. The proposed Lie-bracket mechanism generates additional controlled directions. It does not establish an invariant of the fixed theta-source evolution or a common-clock annihilation.
+
+No theorem from these papers is assumed in the Lean source. C13 preserves the history term demanded by the actual causal geometry; its projection is the next unresolved calculation.
+
+
+The C14 deep source-positivity method query returned partial semantic coverage (generation 874420). All twenty candidate names and twenty source proof arguments were inspected. Its proposed ingredient group supplied determinant reflection symmetry and left the cusp-transfer obligation open; reflection of a determinant is not its sign. The returned strict theta/Gamma Hankel rays and adjoining-cone RH equivalences do not supply the physical estimate and were not adopted as hypotheses. The exact prior reflected-Hankel counterexample was checked in its source.
+
+A further broad arXiv pass used oscillation, Hankel and positivity. The date-sorted arXiv Hankel search page failed with a cache miss. [Martin, Oscillation Classes: An Interpolation Approach, 17 August 2026](https://arxiv.org/html/2608.17066v1), Theorem 13, derives endpoint rigidity from a bounded supremal operator, an admissible concave profile and a matching fundamental-function scale. Its proof retains the endpoint envelope through Fatou and duality. The transfer tested was a strict source norm bound after completing the causal history. HB has no identified rearrangement-invariant physical pairing or proof of that operator bound; the paper therefore supplies no fixed-clock sign or extinction. Its endpoint argument reinforces retaining the full envelope rather than discarding an unresolved boundary contribution.
+
+
+## Literal retarded-pulse translation continuation (11 September 2026)
+
+C13 now has a closed source specialization in `ThetaCuspHawkingBMRetardedPulseClock.lean`. Write P for the actual `fullSourceOnsetPulse`, P_h(t,x,z)=P(t+h,x,z), and K for its original circular integrand including the factor 1/4. Both kernels use the original source point; only the image kernel reflects the radial source argument in its invariant. For p,w,h>=0,
+
+    R[P](p+h,w)=R[P_h](p,w)+H_h[P](p,w),
+    H_h[P](p,w)=integral_a=0..h integral_b=a..p+h+w K^d_{p+h,w}[P](a,b)
+               -integral_a=0..h integral_b=a..p+h K^i_{p+h,w}[P](a,b).
+
+The proof establishes continuity of the actual pulse integrand from its full angular circular means, literal differentiated radial coefficients, smooth onset derivative and original kernel radius. Finite interval additivity and translation then apply to these particular source functions. No integrability, covariance or extinction premise is added to the public source theorems.
+
+The stronger positive survivor is an exact restriction to the original ingoing onset interval:
+
+    R[P_{1+h}](p,w)=0,
+    H_{1+h}[P](p,w)=H_1[P](p+h,w),
+    R[P](p+1+h,w)=H_1[P](p+h,w).
+
+Proof: source ingoing time is a+1+h in the first equation, so the literal pulse vanishes for a>0; the single endpoint has zero integration measure. In the second equation the original source vanishes for a>1, so split the outer integral at 1 and discard only that proved-zero piece. The upper b bounds and both kernels still depend on p+h. Thus support in ingoing time does not imply compact support in spacetime, and no horizon/history tail is discarded. The source cutoff endpoint 1 is fixed once and for all; these translations do not modify the Hawking frequency.
+
+The next physical obligation is to insert these exact history integrals into the original left-QNM pairing, its incoming-response cross currents, and the other SS/SV/VV channels. It remains necessary to prove the complete tensor quadratic equations before removing changing-weight terms, and to retain temporal, horizon, exterior, cusp, characteristic and source-contact contributions with their original orientation. This scalar response identity supplies one literal input to that task, not the completed radiative cut.
+
+**C15: reciprocity or a positive scalar source produces the required sign of the reflected physical cut. Not established; the algebra does not imply that sign.** Even for an admitted real skew Green pairing Omega, conjugation and skewness give
+
+    conjugate(Omega(conjugate(F),F))=-Omega(conjugate(F),F).
+
+Consequently i Omega(conjugate(F),F) is real but changes sign when F is conjugated. For real source vectors U,V, its value at U+iV is -2 Omega(U,V). This is a diagnostic of the proposed inference, not a claim that the HB FE-reflected source is a conjugate pair. A physical sign requires its own source-derived frequency/orientation or positive structure, together with boundary admission. No such structure for the completed HB pairing has been proved. Replacing it with ordinary pointwise positivity of a different theta source would omit the operator and all mixed channel terms.
+
+The exact sufficient estimate remains the one above: after identifying C_phys with -Sigma |D|², prove Re C_phys>=0 (or the strict epsilon<1 bound) from the original source. The verified history law does not supply that estimate. Extinction and RH remain open.
+
+### Current search and transfer audit
+
+Two new deep/method searches used finite translated causal intervals and retarded adjoint source work. They returned partial semantic coverage (generations 874513 and 874576); candidates and source proof arguments were inspected. The interval proposal concerned midpoint/escape-region splitting, not the needed nested integral translation. The adjoint proposal paired general graph-adjoint identities with pointwise positivity of `SelbergThetaNativeSource.positiveSource`. Its actual theorem proves positivity of a modular sum; it does not identify the HB physical pairing. The retrieved `HedenmalmThetaQuantileResolventPortLaw` was checked in source: its metric commutator retains a rank-two boundary flux and source-response cross term. Neither transfer closes the sign obligation. The current Lean proof instead uses verified finite interval substitution and the literal pulse equations.
+
+Broad arXiv searches used cocycle, renewal, memory, unitarity and dissipation, prioritizing June–September 2026. Date-sorted memory search was available; the unitarity endpoint failed. Primary-paper method checks:
+
+- [Tall, Log-Hölder continuity at zero Lyapunov gap for finite-state Markov GL(2)-cocycles, 23 August 2026](https://arxiv.org/html/2608.22157v1), Lemmas 5.1–5.2: centered Markov edge sums split into a martingale plus two endpoint values. Centering and the Markov realization are required; the main theorem assumes zero Lyapunov gap. Test: interpret clock defect as a coboundary. No HB centering law was found, and the endpoint/history terms remain.
+- [Tchuiaga, C^0-Analogue of Ismagilov's Theorem, 7 August 2026](https://arxiv.org/html/2608.07802v1), Theorem 4.2 and Remark 5.6: flux-cohomology classification uses volume preservation and zero-mean coefficients on a closed manifold; the stated noncompact extension uses compact support and finite volume. Test: obtain a source clock current from a flux cocycle. These geometric and mean conditions are unproved for the radiative HB domain and changing weights. Classification alone does not erase its faces.
+- [Yan, Yang-Lee Criticality as a Dissipative Dynamical Phase Transition, 26 August 2026](https://arxiv.org/html/2608.26082v1), Section II.2 and Appendix B: engineered Lindbladian weak-symmetry sectors realize non-Hermitian observable evolution. Test: use an invariant observable sector to kill the radiative projection. The construction changes dynamics and chooses an observable sector; neither is a source-derived HB identity. Its damped evolution does not establish exact extinction at the original clock.
+- [Ansbacher et al., Finite relaxation protocols with minimal dissipation, August 2026](https://arxiv.org/html/2608.25207v1), equation (4) and Proposition E.1: dissipation is a sum of relative entropies for protocols with complete equilibration after each changed Hamiltonian, with a Fisher–Rao large-step asymptotic. Test: turn the clock defect into a nonnegative dissipative supply. The paper requires the equilibration that HB must produce and changes the Hamiltonians. It supplies no identity for the unchanged causal source.
+
+No result from these papers is used as an assumed Lean source law.
+
+The literal retarded-pulse leaf passed its exact cached audit (155 seconds, no warnings), compiling only that leaf against twelve existing cache roots. It is wired into `RHTower.lean`; no umbrella build was run. Source SHA-256: `ba006ed0b56e7b91d1101c535ad7eb464bd29fbe0437c044048fdb7dc0fc581d`.
+
+Static API index refreshed; formal lint passed with existing large-file warnings. The audited canonical `.olean` and `.ilean` are retained.
+
+
+## FE-adjoint density test (11 September 2026, active)
+
+**C16: the FE partner itself is the radial adjoint source.** At fixed ingoing time write F_s=a² chi(v)exp(2sv)(1+u)^(2s)Q and t=-s-3. The actual common generator is D=(1+u)partial_u+3, with D F_s=delta F_s and D F_t=-delta F_t. Substitution into the original measure transpose gives the normalized mismatch (4u-u²)KQ. Thus the unweighted FE branch does not intertwine P and its transpose by the branch relation alone.
+
+**C17: a source-independent radial density factor repairs this mismatch.** Solving its exact coefficient equation
+
+    (1+u) w'/w=1-4/u
+
+produces w(u)=(1+u)^5/u^4, up to a constant normalization. Then
+
+    D(w F_t)=(-delta+1-4/u)w F_t,
+    Pdagger(w F_t)=[a_t(v)(1+u)^(2t)w] (P F_s/[a_s(v)(1+u)^(2s)]).
+
+The quotient display is only notation for equality of their angular coefficient operators; the Lean target is cross-multiplied and never divides by amplitudes or onset. The common angular Laplacian is retained, not replaced by an eigenvalue. This factor changes neither physical time nor frequency. It is an auxiliary adjoint test, not a replacement for the literal source or the admitted physical left-QNM state.
+
+The radial density exposes the cost of this formal repair:
+
+    u^4(1+u) (1+u)^(2s) w(u)(1+u)^(2t)=1.
+
+Thus the corresponding fixed-time radial source flux has equal endpoint values, not zero values. With retained spin-two test RQ, R=-Delta(Delta-2), its coefficient is a²b² chi(v)^2 exp(-6v)(KQ)(RQ), with the original angular density. At the AdS face w has a fourth-order pole: u^4 w F_t tends to a_t(v)Q. The original physical left-state boundary prescription must be checked before this test can be used in the physical pairing. No full action cancellation or zero boundary port follows from the repaired radial intertwiner. The source identity and residue are the current Lean target.
+
+A broad June 2026 paper gives a related but insufficient boundary mechanism: [Ciambelli–He–Klinger–Zurek, Mapping the Infrared Phase Space of Gravity to Finite Subregions](https://arxiv.org/html/2606.12515v1), equations (2.2), (2.9)–(2.13). Its null-boundary symplectic form retains the expansion/area pair even when the clock vector is fixed. Its conformal transverse-metric assumption explicitly sets the spin-two null shear to zero. Importing that reduction would remove the radiative sector HB must control; it is not an extinction proof for the literal source.
+
+
+**C18: the repaired adjoint seed is the original left-QNM radial mode. Failed boundary test.** The physical left stream uses the original homogeneous radial mode at opposite time frequency. At either fundamental resonance, both original radial normalizations are exactly z^(w0/2) sqrt(1-z), z=1-u²; hence they tend to zero at the AdS face. Multiplying any constant-normalized such mode by u^4 still tends to zero. Therefore
+
+    lim_(x→0-) u^4 [w F_t-c psi_left(x)] = a_t(v)Q.
+
+This exact residue is the positive survivor: no constant normalization of the original fundamental radial mode removes the source-dual pole coefficient. It does not claim that coefficient is nonzero at every source point. It rules out identifying the two fields by the radial transpose calculation alone; a source-derived correction and its complete physical boundary transport would be required. The repaired source transpose is first order in the radial generator, while the physical left mode solves the homogeneous second-order master equation. Neither equation implies the other.
+
+
+### Current method tests and next correction
+
+The two new deep requests, for physical left-state admission and source/propagator commutation, returned partial semantic coverage (generations 874835 and 874857), with deadlines and final filtering unfinished. All candidate names and retrieved source arguments were inspected. The first recovered the original causal source-adjoint density and its cubic remainder, not an admitted homogeneous dual. The second recovered the actual Dirichlet causal boundary and a general Volterra invariance theorem. The latter requires both invariant seed and compatible kernel; those are exactly the missing source obligations and are not imported as assumptions. Neither request supplied a completed physical sign.
+
+Broad arXiv passes used adjoint, duality, intertwining, factorization and Darboux, prioritizing June–September 2026. The date-sorted adjoint endpoint failed with a cache miss. Primary-paper checks:
+
+- [Brennecken–Rösler, Remarks on a proof of the absolute continuity of the representing measures for Dunkl's intertwining operator, August 2026](https://arxiv.org/html/2608.10821v1), Section 2: a spherical mean can change the singular/absolutely-continuous decomposition, and an interior density statement does not exclude a measure on the omitted sphere. Test: obtain boundary admission from an intertwiner's interior identity. The paper supplies no such implication; our explicit AdS residue must remain.
+- [Khan et al., Newtonian Gravitational Curvature-Induced Entanglement Generation, 30 August 2026](https://arxiv.org/html/2608.30075v1), equations (8)–(9): exact oscillator closure follows from a terminating Magnus expansion and a curvature-shifted period. A residual two-qubit phase remains. Test: obtain universal finite-clock extinction from closure. Neither the modified frequency nor dropping the surviving interaction is permitted for HB.
+- [Startsev, A new family of Darboux integrable partial differential equations, 27 August 2026](https://arxiv.org/html/2608.27709v1), Theorem 1: differential substitutions preserve characteristic integrals for a specified exponential hyperbolic equation with finite separated coefficient rank and nonzero determinant denominators. Test: repair the source intertwiner by derivative terms. HB has no proved identification with that PDE or its finite-rank condition. Its theorem cannot be transferred by the existence of a finite number of tensor channels.
+
+**C19, next correction test:** write the actual ingoing master operator as M=-partial_x²-2 partial_x partial_v-(1-u²)Delta and the common source operator as P=A(u,Delta)+b(u,Delta)partial_x, with b=-u² K/(u-1). On a smooth interior field, the second-radial-order part of [M,P] is
+
+    -2 b' partial_x²-2 b' partial_x partial_v,
+    b'=-u(u-2)(u+1)K/(u-1).
+
+Thus even a repaired formal source transpose does not give commutation with the causal master inverse. Comparing the two principal coefficients also excludes absorbing this whole remainder into a scalar zeroth-order multiple of M unless b'=0. A first-order correction c(u,Delta)partial_v would need c'=b' at this level; its full lower-order equations, literal onset contribution, and physical boundary domain still require derivation. This is an interior principal-coefficient calculation, not a completed intertwiner or a new assumption of covariance. No claim is made that it survives the independent SS/SV/VV assembly.
+
+The subsequent hybrid Darboux/complete-source search returned partial semantic coverage (generation 874889). Candidate statements and source arguments were inspected. The existing `ThetaCuspHawkingTopologicalDarbouxStarobinskySpectralFlow` was read through its scalar/vector factorizations: it supplies a homogeneous potential pair at fixed geometric scale, with its denominator conditions retained. It does not identify the common source producer or its pulse and contact corrections with that intertwiner. Its header explicitly leaves the complete nonlinear remainder unevaluated. That established factorization can guide the coupled correction; it cannot replace its source-level derivation.
+
+
+C17 and the exact C18 residue are now closed in `ThetaCuspHawkingBMSourceDensityDual.lean` (277 lines, seven public theorems, six public definitions). Scratch checking passed without warnings. The exact leaf audit passed in 134 seconds without warnings against twelve cached roots; the leaf is wired once into `RHTower.lean`, with no umbrella build. The [source-density proof and precise physical scope](../3-formalized/hb-source-density-dual-ads-residue.md) retain the full spin-two radial value and its AdS discrepancy from both original fundamental modes. Source SHA-256: `7aaa8794178e8c78a2fd7730ff30aa4f89340a4997cd7ef44a029d81158be629`. Extinction and RH remain open; no route retired.
+
+Static API index refreshed and all thirteen public declarations verified. Formal lint passed with existing large-file warnings. Canonical audited oleans are retained; owned temporary audit and scratch files were cleaned.

@@ -34,11 +34,13 @@ build passed in 175 seconds. The positive kernel substitution and bounds
 in `ThetaCuspHawkingParikhWilczekGammaReciprocalMoments` passed their
 61-second targeted build.
 
-The surviving extraction mechanism is a finite asymptotic expansion
-at every requested order, with the original near-cutoff, far-cutoff,
-removed-moment and logarithmic-loss terms bounded separately. Its proof
-is still open. No analyticity or nonanalyticity theorem for the original
-current is asserted before that coefficient identification is proved.
+The surviving [finite asymptotic expansion](../3-formalized/pw-b-gamma-reciprocal-cutoff-expansion.md)
+is now proved at every requested order, retaining the original near response,
+removed moments, finite far remainder and source loss. The subsequent
+[finite-order current classification](pw-b-corrected-gamma-scalar-occurrence.md)
+proves a nonzero rescaled limit at every parameter and excludes the specified
+corrected scalar equation. All three new leaves passed scratch and targeted
+builds. No separate Lean analyticity or nonanalyticity theorem is asserted.
 
 ## Verification and corpus transfer
 
