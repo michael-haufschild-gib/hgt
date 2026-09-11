@@ -394,3 +394,79 @@ The subsequent hybrid Darboux/complete-source search returned partial semantic c
 C17 and the exact C18 residue are now closed in `ThetaCuspHawkingBMSourceDensityDual.lean` (277 lines, seven public theorems, six public definitions). Scratch checking passed without warnings. The exact leaf audit passed in 134 seconds without warnings against twelve cached roots; the leaf is wired once into `RHTower.lean`, with no umbrella build. The [source-density proof and precise physical scope](../3-formalized/hb-source-density-dual-ads-residue.md) retain the full spin-two radial value and its AdS discrepancy from both original fundamental modes. Source SHA-256: `7aaa8794178e8c78a2fd7730ff30aa4f89340a4997cd7ef44a029d81158be629`. Extinction and RH remain open; no route retired.
 
 Static API index refreshed and all thirteen public declarations verified. Formal lint passed with existing large-file warnings. Canonical audited oleans are retained; owned temporary audit and scratch files were cleaned.
+
+## Causal two-source clock cancellation test (11 September 2026, active)
+
+**C20: the FE-paired clock annihilates the full native spin-two operator after the causal delay transpose.** The relevant Rodrigues identity is weighted: with p=Z²−1, the retained operator on the actual circular mean M is −partial_Z²(p² partial_Z² M). After transferring two derivatives, the exact bulk is −F partial_Z²(W/A) in the dZ measure, or −AF partial_Z²(W/A) in the original dh measure, where F=p² partial_Z² M and A=partial_h Z. Thus an unweighted cubic-polynomial argument does not apply. Vanishing of this transferred coefficient requires W/A to be affine in Z. This is a test of one proposed mechanism, not an assumption imposed on the literal source.
+
+The original finite clock can be evaluated on the open late interval 1<h<V−1. Set s=physicalRate(q,branch), t=−s−3, alpha=(2s+1)(2s+2), gamma=(2t+1)(2t+2), and d=t(t−1)w[3+(2t+3)w]/[2(1+w)]. The unchanged onset profile is g_s(u,v)=exp(2sv)[alpha chi(v)−b_s(u)chi'(v)]. Its actual two-source integral satisfies
+
+    W_V(h)=integral_0^(V−h) g_s(u,v+h)g_t(w,v)dv
+          =a exp(2sh)−b exp((2s+6)h),
+    a=alpha(gamma−6d) tailClock,
+    b=alpha gamma exp(−6V)/6.
+
+Proof on paper: the later onset equals one and its derivative equals zero throughout the integration interval. The FE relation combines the two v-exponentials to exp(−6v). The original finite contact identity gives integral_0^c exp(−6v)chi'(v)=exp(−6c)+6 integral_0^c exp(−6v)chi(v), and the latter integral is tailClock−exp(−6c)/6 for c>=1. Substitution gives the displayed identity. No source frequency, onset, or causal endpoint has changed.
+
+For the literal geometry let A=partial_h Z and B=partial_h A. Define
+
+    E_r=r²/A²−3Br/A³+(3B²−A²)/A⁴.
+
+Then the already defined full native `delayBulk` on this interval is exactly
+
+    F [a exp(2sh) E_(2s)−b exp((2s+6)h) E_(2s+6)].
+
+The terminal term is part of the original finite response; the zero terminal boundary current at h=V does not permit dropping it from the bulk. The current bounded target is a closed Lean proof of these identities and the actual first/second clock derivatives. Next, test their direct-minus-image and reversed-branch combination against the other channels. Neither a one-branch weight identity nor its failure to vanish is a value or sign theorem for the complete SS/SV/VV physical action. Extinction remains open.
+
+The same formula supplies two exact differential balances on this late interval:
+
+    (partial_h−2s)W_V(h)=−6b exp((2s+6)h),
+    partial_V W_V(h)=6b exp((2s+6)h).
+
+The coefficient b is nonzero for every actual Xi occurrence: both s and t have nonzero imaginary part, so neither factor of alpha or gamma vanishes, and the exponential never vanishes. The second balance is the original observation-cap source flux. Neither balance translates the source frequency. Their sum is a local transport identity for this original two-source integral, not a conservation law for the completed nonlinear action. A proposed complete cancellation must account for this cap along with the other faces and channels.
+
+The observation-cap balance also holds globally, before either onset has ended:
+
+    partial_V W_V(h)=g_s(u,V)g_t(w,V−h).
+
+This follows directly by the fundamental theorem of calculus applied to the original finite integral; both literal profiles are continuous, including the onset derivative. It retains the terminal transition layer rather than extending the late formula across it. For h>1, V>h+1 and any fixed H>0, the exact finite cap translation is
+
+    W_(V+H)(h)−W_V(h)=b_V [1−exp(−6H)] exp((2s+6)h) ≠ 0.
+
+Here H is unchanged physical time in the original normalization. This is a comparison of two observation caps for the same source, not a claim that this cap translation is the complete nonlinear action of a translated spacetime field. It proves that source-correlation stationarity cannot replace the required full action identity; the explicit right side is the compensation the other terms would need to supply. The finite-cap result does not determine the value of the full physical action at either cap.
+
+### Current method and external transfer tests
+
+The source-intertwiner, paired-angular-resolvent, spin-two weight, late-clock and positive-transport searches returned partial coverage (generations 874971, 874982, 874991, 875003 and 875070). Candidate names, statements relevant to the proposed mechanisms, source arguments and proposed ingredient groups were inspected. The wave-correction group left temporal applicability as an obligation and proposed a three-point Suzuki response equation; the actual source of that theorem was checked and does not concern the HB wave operator. The energy-transport hit is a Hilbert norm expansion with a mixed cross term, not its cancellation or sign. The direct source hits recovered the already established finite contact, native spin-two primitive, delay transpose and uniform clock derivatives. No returned theorem supplied the complete physical estimate.
+
+Broad arXiv searches used cohomology, transmutation, balance, coercivity, transgression and rigidity, prioritizing June–September 2026; date-sorted coercivity search was available. Primary-paper method tests:
+
+- [Dwivedi–Singhal, A dd^Phi-Lemma and Bott–Chern-type Cohomology for Spin(7)-Manifolds, 3 September 2026](https://arxiv.org/html/2609.04156v1): Theorem 4.5 and Lemma 4.9 use compact torsion-free Spin(7) geometry and specified form components to derive exactness and a harmonic decomposition. Test: complete source constraints force cokernel orthogonality. The compact elliptic geometry and admissible projection have not been identified for the HB radiative domain.
+- [Bader–Glasner–Gorfine–Sauer, On the Unitary Cohomology of Semisimple Groups, 9 September 2026](https://arxiv.org/html/2609.08652v1): the cohomological degree and torsion results require actual unitary representations and specified groups; they do not give general rank-one cohomological vanishing. Test: source translation represents a trivial unitary cocycle. Neither that representation nor its triviality follows from the FE branch relation.
+- [Li, Existence and strong-field asymptotics of skyrmions in a fourth-order model of frustrated ferromagnets, 8 September 2026](https://arxiv.org/html/2609.08255v1): Lemma 2.4 derives a forced Helmholtz circle-mean formula and its residual norm from a radial Green identity. Lemma 2.5 obtains a positive residual lower bound using the sphere constraint and nonzero topological degree. Test: force the HB residual by a circular-mean energy identity. The native HB mean is already constructed, but no sphere constraint, degree obstruction or identification of this Hermitian norm with the full physical bilinear cut has been proved. The paper does not supply extinction.
+- [Vo, Principal eigenvalues of nonlocal operators with advection: sharp scaling limits and spectral phase transitions, September 2026](https://arxiv.org/html/2609.02416v1): Proposition 6.1 and the proof of Theorem 1.3 retain the inflow transport flux. Symmetric nonnegative kernels give a Fourier energy lower bound and compactness; convergence to the limiting energy then forces the nonnegative boundary flux to zero. Test: derive HB boundary extinction by saturation of a bulk energy bound. HB still needs its own positive physical energy, sharp lower bound and convergent complete supply, including mixed channels. Merely transferring the symmetric operator to a test function proves none of these.
+- [Wang–Xie–Yu, Gromov's dihedral rigidity conjecture in dimension three, 29 June 2026](https://arxiv.org/html/2606.30130v1): Lemmas 3.10–3.11 track the boundary-domain and inner-normal comparison needed for essential self-adjointness at corners. Test: infer a physical sign from an interior adjoint identity. HB's null/cusp/radiative faces have no proved identification with those elliptic domains or comparison conditions.
+
+These are mechanism tests, not imported source-law assumptions. The current exact two-source calculation retains the obstruction each proposed transfer must address.
+
+**C21: a helicity or characteristic-class identity supplies the missing complete cancellation. Not established.** The date-sorted broad helicity search led to two useful distinctions. [Huang–Long–Zhao–Zhou, Spacelike reduction of the gravitational topological terms and associated helicity densities, 30 August 2026](https://arxiv.org/html/2608.30154v1), equations (1.2)–(1.3), (3.27), (3.34) and Section 7, distinguish the full characteristic-class descendant, its codimension-two terms, and an on-shell kinetic helicity. The identity dQ3=tr(R wedge R) does not make Q3 closed; the vacuum Ricci equation alone does not erase its Weyl curvature contribution. The paper's separated helicity functionals are quadratic around Minkowski space, with conservation and boundary admission requiring separate equations. They are not identified with HB's completed left-QNM action.
+
+[Xu–Chu, Metric Source Completions and Integrability in Celestial Gravity, September 2026](https://arxiv.org/html/2609.10637v1), Section 5.6 and equations (80)–(85), retain a nonlinear coordinate response after subtracting the complete same-chirality Ward anticommutator. Section 6 retains energy derivatives of the full momentum-conservation distribution; global two-leg completion still requires contact and mixed-pole data. Test: infer HB extinction from local same-chirality Ward integrability. This implication is not supplied by the paper, and HB's original source maps and boundaries remain to be evaluated.
+
+The associated deep self-dual source search returned partial coverage (generation 875160). Its proposed abstract dual-system symmetry has no physical amplitude identification. The retrieved `ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo` was checked: the local same-transverse-charge cyclic vertex is an exact graph energy, zero only on the momentum diagonal for nonzero real charge. This already excludes the source-local Jacobi shortcut; no duplicate lemma was added. The positive remaining task is the full causal pairing, with the actual terminal flux now evaluated in C20. HB itself is not retired.
+
+The concurrently added `ThetaCuspHawkingBMPhysicalRadialNorm` was also checked through its actual residue factor and final zero-set theorem. Its original horizon finite part is a nonzero Gamma quotient at each fundamental frequency. It therefore reduces vanishing to the remaining physical residue factor; it does not provide a positive sign or a zero multiplier that could replace source extinction.
+
+C20's exact source identities are now closed in `ThetaCuspHawkingBMLateSourceClock.lean`: the global observation-cap balance, late clock and both delay derivatives, nonzero cap coefficient, exact finite cap-translation difference, and substitution into the original native spin-two bulk on its physical causal domain. The [dependency-closed proof and scope](../3-formalized/hb-two-source-clock-cap-balance.md) distinguish this source integral from the complete nonlinear action. Scratch checking and the exact cached leaf audit passed without warnings; the audit took 98 seconds against twelve cache roots. The 352-line leaf has ten public theorems and three public definitions and is wired once into `RHTower.lean`, with no umbrella build. Source SHA-256: `e3e2e9f17106759afcf185d9995cd9af35f3533ab80642c6189e2e88d4967f7d`.
+
+The next extinction obligation is the completed causal/action compensation for this explicitly retained cap, including the onset layers, direct-minus-image integration, reversed branch, independent SS/SV/VV terms and all remaining boundary faces. The new source laws supply neither universal covariance nor the physical sign. The full goal remains active; extinction and RH are not proved.
+
+## Variational reciprocity and source-contact rigidity continuation
+
+**C22: complete variational self-pairing forces the oriented radiative pair to vanish. Failed as an inference.** The complete mixed-action coefficient and four-component Einstein current were checked again. The self-bracket cancels the two opposite orientations of a cross term; it does not annul either orientation separately. This repeats the already identified C15 distinction, so no new generic self-bracket lemma is being added. The positive next test is whether the original source producer itself supplies an admissible differential symmetry.
+
+**C23: the C19 first-order source intertwiner can be repaired by adding a time derivative and a zeroth-order term.** Completing all derivative coefficients gives the canonical half-density correction and a fixed zeroth-order remainder. The [source-contact rigidity derivation](hb-source-contact-rigidity.md) gives the full operator calculation. At the actual AdS endpoint that remainder is -3K, K=(7lambda-2-2Delta)/8. A local first-order repair therefore still has to carry the original angular contact KQ. This does not exclude a nonlocal or complete nonlinear compensation, and HB is not retired.
+
+**C24: the surviving contact has an independent source differential law. Closed for the literal angular source.** A complex bilinear Bochner/Cayley-Hamilton derivation gives the stronger fourth-power identity (2) in the same card, involving the actual contact, its gradient and Laplacian, and the full theta scalar gradient energy. Its leading coefficient is independently nonzero at every actual Xi occurrence. The original eigen-equation and actual derivatives discharge all source premises. The [formalized leaf](../3-formalized/hb-source-contact-differential-rigidity.md) passed its foreground scratch check and 172-second exact cached audit without final warnings. It is not a physical action sign or a cancellation of the nine independent channel pairings.
+
+Static API index refreshed; all thirteen public entries and the single umbrella import verified. Formal lint passed with existing large-file warnings. Audited canonical oleans are retained; owned temporary files and audit directory were cleaned.

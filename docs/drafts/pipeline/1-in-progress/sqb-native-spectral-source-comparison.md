@@ -981,9 +981,9 @@ New independent paper terms were `subordination`, `screening`, and `persistence`
 
 ### SQB90: retain score cancellation inside the deep-tail transport
 
-`HTGeometry/LogarithmicLaplaceInnerTransport.lean` proves `(-1)^n*laplaceCoolingJet n 0 (q*t) ≤ (3/4)*(16*q)^n*exp((q-49/20)*(t-8))` for `6≤n≤12`, `37/10≤q≤5`, and `8≤t`. The proof retains the full alternating score, bounds the exponential below by its degree-`n` Taylor polynomial, and homogenizes the compact `q` interval. All seven three-variable polynomial certificates, normalization identities, and exponential comparisons pass the actual-import scratch check `/tmp/sqb90_transport_release.lean`. The module is installed and wired; its narrow build is in progress. Integrating against the calibrated complete deep measure is prepared in `/tmp/sqb90_source_transport.lean`, not yet verified. Complete-tail absorption remains open.
+`HTGeometry/LogarithmicLaplaceInnerTransport.lean` proves `(-1)^n*laplaceCoolingJet n 0 (q*t) ≤ (3/4)*(16*q)^n*exp((q-49/20)*(t-8))` for `6≤n≤12`, `37/10≤q≤5`, and `8≤t`. The proof retains the full alternating score, bounds the exponential below by its degree-`n` Taylor polynomial, and homogenizes the compact `q` interval. All seven three-variable polynomial certificates, normalization identities, and exponential comparisons pass the actual-import scratch check `/tmp/sqb90_transport_release.lean`. The module is installed and wired; its narrow build passes. `RHTower/ThetaCuspInnerSourceReserves.lean` integrates the estimate against the complete calibrated deep measure, proving `|D^(n)|≤(3/4)*(16*q)^n*epsilon` for all seven orders. Its actual-import scratch, narrow build, and formal lint pass; it is wired into `RHTower.lean`. Complete-tail absorption remains open.
 
-A second positive reserve is exposed by the already proved full-source affine slope `F'≥(4-2*q)*F`. Combining it with the SQB88 clock bound gives `G≥(1+9*q/5-2*q^2/5)*F^2`. On `37/10≤q≤9/2`, this improves the existing coefficient by `(2/5)*(q-5/2)*(9/2-q)≥0`, precisely where the deep tail is largest. The paper argument is direct multiplication of the two source inequalities; `/tmp/sqb91_source_compensation_reserve.lean` is prepared but unverified. The fixed correction multiplier remains `10^12`.
+A second positive reserve is exposed by the already proved full-source affine slope `F'≥(4-2*q)*F`. Combining it with the SQB88 clock bound gives `G≥(1+9*q/5-2*q^2/5)*F^2`. On `37/10≤q≤9/2`, this improves the existing coefficient by `(2/5)*(q-5/2)*(9/2-q)≥0`, precisely where the deep tail is largest. Both the full-source bound and its transfer to the first-atom normalization are proved in `ThetaCuspInnerSourceReserves.lean`. The fixed correction multiplier remains `10^12`.
 
 For the remaining quadratic comparison, let `e_k` be bounds on the signed even-jet errors divided by `f1^2*(8*q)^k`, and let `delta=(10^-6,10^-4,1/10,500*(5-q)^2+1)`. Weighted Young inequalities allocate the six off-diagonal errors to the four coordinates if
 `e0≤delta0/2`,
@@ -991,6 +991,33 @@ For the remaining quadratic comparison, let `e_k` be bounds on the signed even-j
 `e4+8*e2^2/delta0+4*e3^2/delta1≤delta2/2`, and
 `e6+4*e3^2/delta0+2*e4^2/delta1+2*e5^2/delta2≤delta3`.
 The extra complete-source correction can augment the last right-hand side on the lower subinterval. These four source-specific error inequalities remain to be proved; the allocation retains all sixteen entries and makes no uniform row-factor loss.
+
+The existing `thetaCuspFirstAtomScaledEvenJet_bounds_middle` already bounds the first five first-atom moments, normalized by `f1^2*q^k`, by `11,310,14000,800000,55000000` on `37/10≤q≤7`. Thus their bounds in the `8*q` coordinates are these constants divided by `8^k`; no new proof of those five bounds is needed. The sixth polynomial bound `|a6(q,0)|≤2*10^10*(2*q-3)^2*q^6` and its exact literal-source normalization are now proved in `ThetaCuspInnerReflectionError.lean`.
+
+### SQB92: complete seven-moment absorption budget
+
+Put `c_n=1` for `n≤5` and `c_n=3/4` for `6≤n≤12`, `alpha_n=0^n+6^n/100`, `beta_n=c_n*16^n`, and
+`K_n=sum_i choose(n,i)*(alpha_i*beta_(n-i)+beta_i*alpha_(n-i)+beta_i*beta_(n-i)/(22*10^9))`.
+For the seven first-atom ceilings `M=(1,11,310,14000,800000,55000000,2*10^10)`, the candidate errors are
+`e_k=P_k(q)/D(q)`, where
+`P_k=sum_r choose(2*k,2*r)*M_r*q^(k-r)*K_(2*(k-r))/8^k`
+and `D=22*10^9*T10(8*(q-37/10))`.
+This retains both mixed products and the quadratic deep product, using only one factor of the calibrated exponential to linearize the latter.
+
+All four denominator-cleared inequalities pass Lean: the first three for every `q≥37/10`, the last on `37/10≤q≤9/2` with the extra correction and on `9/2≤q≤5` without it. The last two proofs homogenize their full closed intervals. Their strict versions and all fraction-normalization steps pass the combined `/tmp/sqb92_full_budget_release.lean`. The finished module `HTGeometry/TwoAtomInnerErrorBudget.lean` is installed and wired; its narrow build and formal lint pass. Its public theorems give the four strict normalized inequalities, a positive denominator, and the explicit complete convolution coefficients.
+
+`RHTower/ThetaCuspInnerReflectionError.lean` proves `|J_full(2k)-J_two(2k)|≤f1^2*(8q)^k*e_k` for all `k≤6`, `37/10≤q≤5`. The exact full partition decomposition supplies both mixed derivative products and the quadratic deep product; the proved odd first-atom vanishing only removes genuinely zero convolution terms. The exponential denominator is justified analytically by `exp(10)≥22000` and the Taylor lower bound. Its actual-import scratch `/tmp/sqb92_source_error_release.lean`, narrow module build, and formal lint pass; the module is installed and wired. Source error admission is closed. The explicit sixteen-entry Young comparison and literal two-atom affine energy join remain to be checked before claiming inner positive definiteness.
+
+Broad OR/deep/method absorption and single-word `majorant` searches cover 56,891 inventoried files and 731,829 declarations. Semantic coverage is incomplete and compiler metadata mostly pending; all candidate, source-argument, and ingredient views were inspected. Existing decay and summability methods do not replace the four quantitative inequalities. Own paper terms `entrainment`, `localization`, and `hypocoercivity` retrieved [Dong–Georgoulis, June 2026](https://arxiv.org/html/2606.29621v1): Lemma 3.2 assigns separate Young parameters to individual indefinite couplings before proving four positive reserves. This supports the coordinate-wise allocation being tested here. [Bouin–Dolbeault–Ziviani, August 2026](https://arxiv.org/html/2608.28120v1), Proposition 13, derives all-order moment control from a source-specific adjoint Lyapunov inequality; identifying and proving such an inequality for the signed theta-pair functional remains an all-rank construction target. Neither paper is used as an unproved Lean premise.
+
+
+### SQB93: strict quadratic absorption and literal retained energy
+
+`HTGeometry/TwoAtomInnerQuadraticAbsorption.lean` proves that the full sixteen-entry error quadratic is strictly below `innerEvenCoordinateReserve` for every nonzero coefficient vector and `37/10≤q≤5`. The six Young parameters are `8*10^6,8*10^6,4*10^6,40000,20000,20`. Its actual-import scratch and narrow module build pass; it is installed and wired. The extra lower-interval compensation appears only in the fourth coordinate.
+
+`RHTower/ThetaCuspTwoAtomAffineEnergy.lean` identifies the first pair and both ordered unequal pairs with the affine radial moment at every even order. Exact atom dilation gives `f2(x)=2^(-1/2)*f1(x+log 2)`, hence the full pure second-atom degree-six energy is nonnegative by the proved shifted first-atom bound. The corrected literal two-atom energy dominates the corrected affine quadratic after multiplication by `4*q^2*exp(x-2*q)`; its seed-square normalization is exactly `f1^2`. The complete scratch, narrow module build, and formal lint pass; the module is installed and wired. `/tmp/sqb93_native_inner.lean` prepares the all-entry source comparison and full-compensation join into inner positive definiteness; that capstone is not yet checked.
+
+Broad OR/deep/all-method queries through absorption and moment symmetrizers, plus the single-word `symmetrization` query, inspected declarations, candidate statements, source arguments, and ingredient views. Inventory covers 56,921 files and 732,156 declarations; semantic retrieval is incomplete and compiler metadata mostly pending. The independently chosen recent-paper term `coercivity` retrieved [Bothe, September 6, 2026](https://arxiv.org/html/2609.06732v1). Proposition 2.7 reduces additive pair friction to a diagonal form on a constrained subspace; Theorem 8.1 pulls a positive constrained inverse back through an affine moment map. A native all-rank use would require an exact theta source map and a positive constrained operator; neither is supplied by the current finite proof or admitted as a premise.
 
 ## Further source constructions under examination
 

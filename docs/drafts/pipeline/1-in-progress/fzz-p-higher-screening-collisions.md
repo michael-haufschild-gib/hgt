@@ -21,6 +21,8 @@ Fixed theta/FZZ source → complete mixed Ward law in an independently fixed pha
 - [x] Higher original parameter continuation and both exact cubic finite-part values.
 - [x] Original marked source extraction, independent cutoff limit and position-log ratio.
 - [x] Dependency-closed paper proofs and data-only Lean statements for these source results, targeted leaf builds and formal lint.
+- [x] Original all-count charge-family moment admission and exact neutral source determinant integral at finite position cutoffs.
+- [x] Actual root-to-coefficient Jacobian, all chamber multiplicities and null sets, exact finite-cutoff transport, and admitted original source integral in coefficient coordinates.
 - [ ] Fractional screening-count continuation, complete physical normalization and physical replica/momentum identification.
 
 ## Approach
@@ -928,9 +930,15 @@ Thus the exact positive survivor is
 `K_4 = |det(1/(z_i-w_j))|^2 / D^4`.
 
 The residual depends on every opposite-charge pair. It cannot be silently
-replaced by a one-position weight or removed from the source. The next Lean
-target is this exact all-integer-count decomposition, including the totalized
-collision cases; fractional count and all cutoff passage remain separate.
+replaced by a one-position weight or removed from the source. The exact all-integer-count decomposition, including totalized collision
+cases, now passes clean Lean scratch in
+`fzzNeutralCubicScreeningKernel_eq_cauchy_interaction`. The proof takes norms
+of the current Cauchy determinant identity when the cross-distance product is
+nonzero, and retains the zero-product case separately. The actual kernel is
+defined by all original pair factors before this identity. Its leaf
+`FZZCigarNeutralScreeningDeterminant.lean` is wired and passed the targeted final
+build (129 seconds). Global formal lint passed. Fractional count and all
+cutoff passage remain separate.
 Under common positive dilation, the full integration density has homogeneity
 `2*n*(1-(k-2)*n)`. At level four this is `2*n*(1-2*n)`; neutrality concerns
 count one-half, not an integer-size determinant. This homogeneity check is a
@@ -954,3 +962,270 @@ modular invariance; no such source law is available here. The recent
 normalization errors on one common event. Its probability and regularity
 hypotheses do not identify the FZZ continuum source. No Ward or continuation
 premise is imported from either paper.
+
+
+### Original charge-family integration: initial target
+
+A determinant of a single free kernel does not represent the full neutral
+source. A more direct next attack integrates one charge family with the other
+positions held fixed. Its within-charge Vandermonde square remains multiplied
+by the full original weight `W(w)=product_i |w-z_i|^(-6)`. For a bounded position
+cutoff excluding fixed-radius disks around every `z_i`, each original weighted
+moment is admitted. Already for two integrated positions, the exact target is
+
+`integral integral |u-v|^2 W(u)W(v) = 2*(M0*M2-|M1|^2)`,
+
+where `M0=integral W`, `M1=integral w*W(w)`, and
+`M2=integral |w|^2*W(w)` use that same original cutoff domain. Expanding the
+actual squared difference and proving product admission before Fubini should
+establish the identity without assuming any moment relation. This is the first
+nontrivial charge block in the gauge-fixed integer-screening source. The all-count
+extension is a determinant of the complete moment matrix. The current corpus's
+`CauchyBinet.factorial_mul_det_mul` proves a finite rectangular matrix identity;
+it does not itself interchange these original integrals. Derivation of all
+counterterms when the cutoff is removed and a source-selected continuation in
+count remain the hard analytic steps.
+
+
+The next deep moment-determinant query returned partial generation `874993`,
+with reranker deadline and unfinished filtering/source refresh. All twenty
+candidate and twenty method names were inspected; no ingredient set was
+returned. `RankThreeHankelMixture.integral_threeByThree_det_pos` was read: it
+transports already assumed pointwise minor positivity and does not supply the
+original screening identity. The installed `Integrable.fintype_prod` and
+`integral_fintype_prod_eq_prod` provide the needed finite-product admission and
+integration steps after a permutation expansion. Admission of every expanded
+term is still required before distributing the integral over that finite sum.
+No absence or completeness claim follows from the partial search.
+
+
+### Closed all-count original charge integration
+
+**Conjecture → paper proof → closed Lean proof.** For fixed opposite positions `z`,
+let `D` be the closed disk of radius `exp(R)` minus the open disks of radius
+`exp(-T)` around every `z_i`. Retain `W_z(w)=product_i |w-z_i|^(-6)` and define
+`M_ab=integral_D w^a conjugate(w^b) W_z(w)`. The identity for every integer `n` is
+`integral_(D^n) |Vandermonde(w)|^2 product_i W_z(w_i)=n! det(M).re`.
+The literal neutral source integral over this entire charge family therefore
+equals `|Vandermonde(z)|^2 n! det(M).re`, when the fixed family also has size `n`.
+
+The complete paper proof expands both determinants into permutations. Compactness
+and separation admit every original weighted moment. Each expanded product is
+then integrable under the original product measure, permitting finite-sum
+distribution before Fubini. For each first permutation, the sum over the second
+is a row-permuted moment determinant; its two signs cancel. Summing over the
+first permutation gives exactly `n!`. No moment identity is assumed. All
+opposite-charge interactions remain in the matrix entries. Empty domains,
+coincident fixed positions and count zero are included.
+
+Clean scratch `/tmp/fzzp_charge_family_moments.lean` verified all five public
+data-only statements: every original moment is integrable, the complete
+charge-family kernel is integrable and has the exact determinant integral,
+and the literal neutral kernel has both its original admission and full
+charge-family integral. The proof was promoted to
+`formal/GaloisForLFunctions/RHTower/FZZCigarScreeningChargeMoments.lean` and wired
+into the umbrella. The targeted final leaf build passed (101 seconds for the
+new leaf); global formal lint passed. This formula retains both position
+cutoffs. Removing them with every counterterm, varying screening count and
+obtaining the complete physical mixed response remain open.
+
+Deep query generation `875038` was partial: semantic backend unavailable,
+reranker deadline, malformed filtering output, and unfinished source refresh.
+All twenty candidates and twenty methods were inspected; no proof-idea or
+ingredient set was returned. The applicable corpus mechanisms are the exact
+row permutation determinant law, finite-product admission and Fubini.
+
+Broad searches used rigidity and interpolation with June–September 2026
+preference. [Dimitric–Vuckovic–Zigic](https://arxiv.org/html/2609.06258v1),
+5 September, theorem 3.4, propagates bounds on selected derivative orders of an
+already smooth function under a bounded gap-ratio condition. It does not
+construct a function of screening count. [Arutyunov–Korgin](https://arxiv.org/html/2606.22671v1),
+21 June, theorems 2.10 and 5.1, reconstructs finite-dimensional functions only
+after a dual basis is established. Neither result supplies uniqueness of a
+fractional-count source from the present integer determinants. No premise
+from either paper is imported.
+
+
+### Next continuation attack: roots to coefficients
+
+**Original coordinate transformation now closed below; affine beta evaluation and continuation remain open.** Appendix B of the
+[duality source](https://arxiv.org/html/2208.00016) records a multidimensional
+identity with normalized measure `product d2w/(pi^n*n!)`; its zero-dimensional
+dual case has exactly `n+1` fixed insertions. This suggests deriving that case
+from the original root variables rather than assuming its Gamma product.
+
+Write `P_w(t)=product_j(t-w_j)` and use its `n` non-leading coefficients as
+coordinates. Differentiating `P_w` in root `w_j` gives
+`-product_(k!=j)(t-w_k)`. Evaluation at the roots diagonalizes this derivative
+matrix, so the squared modulus of its determinant is the original Vandermonde
+square. Generic coefficient fibres contain exactly `n!` ordered root lists.
+These two factors should remove the repulsion and normalized factorial together.
+
+For distinct fixed nodes `t_0,...,t_n`, set
+`d_i=product_(j!=i)(t_i-t_j)` and `u_i=P_w(t_i)/d_i`. The installed
+`Lagrange.leadingCoeff_eq_sum` gives `sum_i u_i=1`; this is an affine change of
+coefficient coordinates. Its real Jacobian contributes the full fixed-node
+Vandermonde square. The remaining integral is an original complex Dirichlet
+integral `product_i |u_i|^(2p_i)` on that affine hyperplane. In the positive
+convergence chamber `p_i+1>0`, `sum_i(p_i+1)<1`, successive one-position beta
+integrals should give the complete Gamma factor. The pair exponent is
+`2p_i+2p_j+2`, agreeing with the displayed source identity.
+
+The roots-to-coefficients change of variables, exact multiplicity, null exceptional
+sets and original finite-cutoff transport are now proved below. The Jacobian
+integral theorem requires injectivity on each measurable domain; the proof
+supplies all permuted open chambers and removes only the proved null complement.
+The remaining hard obligations are the affine integral map, joint admission
+before successive beta integration, and the continued cutoff-removal prescription
+at the physical exponents. None of these remaining steps, or a fractional
+screening count, follows from the moment determinant or the coordinate change.
+
+
+The next two deep searches returned partial generations `875157` and `875179`.
+Both inventories covered 56,893 files, with most compiler snapshots still
+pending and semantic indexing/source refresh unfinished; the second also
+reported a reranker deadline. All twenty candidates and twenty methods from
+each query and both proposed ingredient sets were inspected. Gamma recurrences
+change a known special-function expression but do not prove the original
+multidimensional integral. The suggested weighted Vandermonde result supplied
+only a determinant factor; the separate original-map proof below now closes
+the finite-to-one integral transformation.
+
+**Source normalization discrepancy.** Deriving the recursion in appendix B of
+[Halder–Jafferis–Kolchmeyer](https://arxiv.org/html/2208.00016) from its preceding
+zero-dual identity requires `gamma(-b^2)^n` in the denominator. Substitution of
+`n-1` integrated positions, `n` fixed positions and `p_j=-1-b^2` gives
+`I=gamma(-b^2)^n/gamma(-n*b^2) * D_n^(-1-2*b^2)`. The rendered equation (75)
+displays only the first power; the [PDF equation (B.6), page 21](https://arxiv.org/pdf/2208.00016)
+also has that first power, so this is not only an HTML conversion discrepancy. The cited
+[Fateev–Litvinov equation (1.14)](https://arxiv.org/pdf/0707.1664) includes the
+`n`th power. The retained normalization for the proposed derivation is the
+full product. This comparison is algebra on the displayed identities, not
+a formalized continuation theorem. The cited paper explicitly leaves its
+appendix B identities without proofs; it also distinguishes convergent plane
+integrals from contour-based continuation. The finite-cutoff source coordinate
+transformation is now closed below; the continued cutoff-removal prescription
+and full multidimensional beta evaluation remain obligations here.
+
+### Closed original root-to-coefficient transformation
+
+**Closed in Lean, 11 September 2026.** `FZZCigarScreeningRootCoordinates`
+derives the actual change of variables from the original ordered complex
+screening positions. For every integer `n`, set
+
+```text
+P_w(t) = product_j (t-w_j),  C(w) = (coeff_0(P_w),...,coeff_(n-1)(P_w)).
+```
+
+For every nonnegative extended-real function `g`, the complete identity is
+
+```text
+integral_(C^n) |det Vandermonde(w)|^2 g(C(w)) dw
+  = n! * integral_(C^n) g(c) dc.
+```
+
+The Jacobian and multiplicity are proved from this map, not supplied as
+premises. The proof retains the following obligations together:
+
+1. Differentiating root `w_j` gives the negative deleted-factor polynomial.
+   Evaluation at every root gives `V(w) J(w) = -diag(product_(k!=j)(w_j-w_k))`.
+   Determinants and the full ordered-pair product give `|det J|=|det V|` for
+   distinct roots. Repeated roots give equal columns of `J`; both determinants
+   then vanish. Restriction of the actual complex derivative to the real
+   scalars proves `det_R DC(w)=|det V(w)|^2` at every configuration.
+2. Strict ordering of real parts gives an open chamber. Equality of coefficient
+   vectors gives equality of monic polynomials, hence of root ranges. Two
+   strictly ordered real-part lists with the same range coincide, proving
+   injectivity of the coefficient map on that chamber.
+3. All permuted chambers are disjoint and have the same coefficient image.
+   Their union consists exactly of tuples with distinct real parts. Every tie
+   set is the kernel of a nonzero real linear functional and has measure zero;
+   differentiability also makes its coefficient image null. Complex polynomial
+   factorization proves surjectivity onto every monic coefficient vector.
+4. Apply the actual Jacobian integral theorem separately on each chamber.
+   Sum all permutations, retaining exactly `n!`, then remove the two proved
+   null exceptional sets. No generic fibre count is assumed.
+
+The original finite position cutoffs are transported exactly. Write
+`D=D_z(R,T)` for the previously admitted outer disk with all opposite-charge
+puncture disks excluded, and `E=C(D^n)` for its full coefficient image.
+The image is compact. Equality of the original root ranges proves
+`C(w) in E iff w in D^n`, including coincident roots and coincident fixed
+positions. Thus the same formula holds with `D^n` and `E` on the two sides.
+
+Define the actual monic polynomial in coefficient coordinates and its retained
+opposite-charge weight by
+
+```text
+P_c(t) = t^n + sum_(a<n) c_a t^a,
+W_z(c) = product_i |P_c(z_i)|^(-6).
+```
+
+`P_(C(w))=P_w` proves that this retains every original opposite-charge factor.
+The resulting original source theorem is
+
+```text
+integral_(D^n) fzzScreeningChargeKernel(z,w) dw
+  = n! * integral_E W_z(c) dc.
+```
+
+The transformed weight is measurable. The original cutoff integral is already
+admitted; the nonnegative integral identity and `n!>=1` prove finiteness of the
+transformed integral. This establishes its L1 admission before passing to the
+Bochner equality. The public statements have only integer, position, cutoff or
+function data and cover count zero and empty cutoff domains.
+
+All sixteen public data-only theorems passed the complete mathematical scratch,
+the targeted final leaf build (27 seconds for the new leaf), and global formal
+lint. The umbrella is wired. Logs are retained at
+`/tmp/fzzp-root-coefficient-jacobian-scratch.log`,
+`/tmp/fzzp-screening-root-coordinates-build.log`, and
+`/tmp/fzzp-screening-root-coordinates-lint.log`.
+
+**Next source attack.** The first coordinate map and the exact finite cutoff
+transport are closed. The remaining affine map for `n+1` distinct fixed nodes
+uses `d_i=product_(j!=i)(t_i-t_j)` and `u_i=P_c(t_i)/d_i`. The current corpus
+`Lagrange.leadingCoeff_eq_sum` supplies `sum_i u_i=1` after its hypotheses are
+proved for the actual monic polynomial. On the first `n` coordinates, the
+Jacobian should be `1/product_(i<j)|t_i-t_j|^2`; combining it with all
+`|d_i|^(2p_i)` gives exactly the fixed-node pair exponents
+`2p_i+2p_j+2`. This affine integral theorem remains to be formalized.
+
+In the convergence chamber `alpha_i=p_i+1>0`, `sum_i alpha_i<1`, the next
+conjecture is the admitted complex Dirichlet integral
+`pi^n * product_i gamma(alpha_i)/gamma(sum_i alpha_i)`.
+Successively integrating one position should merge its exponent with the
+remaining affine factor, using the original one-position beta theorem.
+Joint admission and the exceptional affine slice must be justified before
+Fubini. The transported finite cutoff domain is retained; its removal and its
+continuation to the physical exponents have not been proved. The physical
+screening count, normalization, independent phase and full mixed Ward producer
+remain open. **RH is not proved.**
+
+### Root-coordinate search and distant-paper intake
+
+Two earlier deep searches returned partial generation `875259`: coefficient
+methods supplied algebraic invariants but no actual derivative, while the
+local-root-covering result supplied local invertibility without the full
+integral multiplicity. Their inventories covered 56,903 files, with compiler
+freshness still pending for most files. Both twenty-candidate and twenty-method
+sets and the proposed ingredient sets were inspected.
+
+The null-image deep search returned partial generation `875348`, with semantic
+retrieval timing out against the unavailable local Qdrant runtime. Its twenty
+candidate statements and twenty method descriptions were inspected. The useful
+hit was the Jacobian null-image argument, whose source led to the actual
+differentiable null-image theorem; finite-dimensional order and static-null
+methods did not apply. Lexical fallback and direct corpus searches supplied
+strictly monotone range uniqueness, tuple sorting, Haar-null proper subspaces,
+complex factorization, polynomial coefficients and admitted Jacobian integrals.
+All invoked names and their applicability were checked in the mathematical
+scratch proof; partial retrieval is not claimed as complete proof coverage.
+
+Broad searches used discriminant, transport, monodromy and folding, preferring
+June–September 2026. [Krishna, 6 July 2026](https://arxiv.org/html/2607.05340v1),
+lemmas 2.1 and 3.1, studies a discriminant divisor for pencils of quadrics.
+Its root-difference factorization identifies the collision locus but does not
+supply measure-zero transport or integral multiplicity. Those were proved
+separately above. The later monodromy/folding queries returned old or unrelated
+papers and supplied no additional premise.

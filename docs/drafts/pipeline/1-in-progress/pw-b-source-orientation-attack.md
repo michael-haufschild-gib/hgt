@@ -2729,3 +2729,237 @@ vectors. The transfer requirement is exact source compression and minimality;
 an available positive dilation alone selects no PW source or Xi occurrence.
 The minimum-dilation-tree result2609.08990 was inspected only at abstract
 level; its approximation algorithm supplies no exact source identity here.
+
+Iteration32 proof pivot is now explicit: use two product-space indicators,
+x>delta with h>a_delta(x), and x>delta with h>delta. Both are dominated
+by the complete jointly integrable response and converge to that response.
+Exact Fubini and difference-of-tail identities recover the original oriented
+mismatch. This avoids an unproved uniform bound on a changing primitive.
+The final scratch is checking all original source formulas and admissions.
+The second deep/method query returned partial coverage731623, no execution
+errors and no generated proof ideas. Its compact smooth interval majorants
+and probability-product transport results have different premises; neither
+replaces the original signed kernel estimate.
+
+The next gain-transposition attack can use the actual coordinate identity
+M_z'=(1/(2x))*M_z-M_(z-1). Dividing by the literal Q should give
+(g_z)'=g_z-g_(z-1), so complete source polynomial bounds and the convex
+mean-value estimate can admit the forward difference jointly without an
+atomwise sign assumption. This normalized derivative and its paired estimate
+are not yet Lean theorems. Actual corpus reciprocal substitution uses
+intervalIntegral.integral_deriv_smul_comp_of_deriv_nonpos on compact positive
+intervals; moving to the full jump triangle still requires the exact endpoint
+limits and absolute admission. Pointwise detailed balance alone does not
+complete this step.
+
+
+Iteration32 final checkpoint: all nineteen public theorems in
+GammaAdjointPairedResponse passed the final foreground scratch without
+diagnostics. Its targeted leaf build passed in125s; only this leaf was newly
+built. Exact scratch/promoted source equality, one umbrella import, all
+nineteen public API entries and the new proof-card links were verified.
+Final index and repository formal lint passed. All owned Lean and research
+processes are terminal. No axiom-print check, numerical experiment or
+full/umbrella build was run.
+
+The [complete paired-response proof](../3-formalized/pw-b-gamma-adjoint-paired-response.md)
+closes joint absolute admission, original moving mismatch and simultaneous
+native cutoff passage. This is verified progress beyond the previous contact
+limit, not a full adjoint theorem. The remaining chain is original finite-cutoff
+gain transposition, full common physical signed domain and source-forced
+pairing, a different justified Xi occurrence, independent fixed-grade Ward
+balance, and RH. The next exact attack is the normalized derivative and paired
+forward response bound, followed by the retained triangular reciprocal integral
+identity. The scalar Gamma ansatz excluded by the current valuation remains
+excluded. PW-B and the RH goal remain active; RH is not proved.
+
+The third deep/method query, retained in the response search JSON, has partial
+coverage731749 and no execution errors. Its triangle substitution candidate
+is a natural-number parameter encoding, not a change of integration variables.
+The useful reciprocal-integral candidate still needs its precise hypotheses
+checked for this jump triangle; no transfer theorem is assumed.
+
+### Iteration33: original forward response and triangular transpose
+
+The previous turn is verified progress: the complete paired response leaf,
+original-source mismatch and native cutoff limits passed scratch, targeted
+leaf build and formal lint. The finite-cutoff gain identity remains open.
+The new conjecture uses the actual coordinate source equation to prove
+(g_z)'=g_z-g_(z-1). Complete inverse-polynomial bounds should then control
+forward increments on every x>0,h>0 by h times a fixed inverse-polynomial
+in x. This supplies the original forward paired response admission needed
+before transposing the full source on the translated jump triangle.
+The investigation starts from the corpus derivative and complete source
+bounds, with a new deep/method query; no atom sign or Xi-mode assumption
+is introduced. Full physical domain, justified Xi occurrence and independent
+Ward balance remain distinct RH obstacles.
+
+Iteration33 pivot: the installed additive shear (x,y)->(x,y-x) preserves
+Lebesgue product measure. Composing the original absolutely admitted cutoff
+gain with this exact shear retains its whole triangular support; Fubini then
+produces the recipient interval0<x<y-delta. A direct injective Jacobian theorem
+maps that interval to the reciprocal ray h>a_delta(y). This avoids separately
+estimating a transformed triangle by a surrogate source. The normalized
+derivative, complete forward bound and source-level current pairing are
+checking in the same scratch as these exact gain identities.
+
+The first deep query finished with partial coverage731780 and interrupted
+text retrieval/disconnected semantic-worker errors. Its returned source
+coordinate derivative is usable; the unrelated exponential cascade and
+projective regulator candidates do not provide the required estimate.
+A second deep query targets the actual image, Jacobian and product shear.
+
+Broad recent arXiv searches used transport and symmetrization. The general
+search engine returned mostly old or unrelated results; the latest arXiv
+transport listing supplied two September9 preprints. Primary reading of
+[Bothe,2609.10393v1](https://arxiv.org/html/2609.10393v1) covered the explicit
+balance-anchoring axiom and Sections11–13: nonnegative mechanism production
+is a constitutive restriction after reversible exchanges cancel; matching
+weights test a stated model package. No new physical axiom or entropy sign
+is imported into PW-B. Primary reading of
+[Hashemi–Hyun,2609.10367v1](https://arxiv.org/html/2609.10367v1) covered the
+finite-free matrix defect proof: real-rooted input hyperbolicity supplies a
+definite symmetric pencil, and mean/variance identities turn the Jacobian
+loss into an off-diagonal squared norm. The real-rooted premise cannot
+supply an unconditional Xi producer. Exact transport and source identities,
+not an assumed positive representation, are the relevant methodological test.
+
+Iteration33 gain checkpoint: all33 public declarations in
+GammaAdjointGainTransposition passed the final foreground scratch without
+diagnostics. Exact source was promoted and wired once; targeted leaf build
+passed in46s. The complete reciprocal and triangular gain identities now
+have every original inner section and both outer integrals admitted. The
+forward cutoff converges to the actual coefficient-current pairing.
+The full paired adjoint is now under Lean verification through the exact
+identity F_delta=R_delta+E_delta+(C_delta-L_delta). This retains the separate
+empty incoming constant loss and applies the previous response/contact
+limits only after the finite-cutoff algebra has been established.
+
+The second and third deep/method queries have partial coverage731829 and
+731881 and no reported execution errors. The second returned positivity
+and unrelated injectivity lemmas rather than the actual change of variables;
+the installed additive shear and one-dimensional Jacobian source supplied
+that proof. The third's proposed cutoff-subtraction transfer only preserves
+an already stated literal piece; it does not prove the paired adjoint.
+Actual admitted tail subtraction and retained source-interval splitting
+provide the finite identity being checked.
+
+Iteration33 full-current checkpoint: the final scratch for all four
+GammaFullPairedAdjoint public theorems exited0 without diagnostics. The exact
+source has been promoted and wired once; its targeted leaf audit is running.
+The finite-cutoff identity, full-source adjoint formula and absolute admission
+of all three original-current pairings are proved in that checked source.
+
+The fourth deep/method query finished with partial coverage731960 and no
+execution errors. The actual DeningerSkewAdjointGraphCore source gives
+numerical-range and off-axis lower bounds only after skew symmetry on a
+specified inner-product domain. The generated exponential-density ingredient
+set does not establish density, closure or physical incidence. The raw result
+is retained with the three preceding queries. This leaves common-domain
+construction and original Xi incidence as mathematical obligations; it does
+not promote an abstract operator premise to a source theorem.
+
+Iteration33 final audit: both exact checked leaves are promoted and wired once.
+The gain leaf has33 public theorems and passed its46-second targeted build;
+the full paired-adjoint leaf has four public theorems and passed its124-second
+targeted build. All37 names are indexed. Final formal lint passed, with only
+existing repository size warnings. No full/umbrella build, numerical experiment
+or axiom-print check was used. The complete source formula retains2log(x),
+and all three displayed original-current integrals are absolutely admitted.
+RH is not proved: physical domain/closure, different justified Xi occurrence,
+and independently forced fixed-grade balance remain open.
+
+### Iteration34: Mellin reader and the paired source norm
+
+The source adjoint is now checked and audited. The next incidence conjecture
+asks whether its weighted norm controls the literal Mellin reader at any
+complex argument. The original source and density give the exact candidate
+dual weight D_a(x)=x^(2a)*exp(-x+1/x), a=Re(s). Paper comparison with
+exp(-1)/n!*x^(2a-n), n>2a+1, defeats global dual admission for every a.
+The positive survivor includes compact-away-from-zero dual admission and
+weighted square admission of every complete arithmetic source, obtainable
+from the proved self-pairing. Scratch verification is running; no new result
+is promoted yet. The [dual-domain proof](../3-formalized/pw-b-gamma-mellin-dual-domain.md)
+records the exact scope, including the additional work needed for an actual
+unbounded-reader theorem.
+
+Two new deep/method queries returned partial coverage732050 and732074 with
+no execution errors. Their [raw records](pw-b-gamma-mellin-dual-searches.json)
+retain all candidates and method premises. A proposed residue transfer mixes
+dual-number algebra with a separate contour source and supplies no PW
+incidence. Mellin inversion still needs original admission and vertical
+integrability; Sonin versions additionally require band and decay hypotheses.
+None supplies the missing global weighted reader. The direct source formula,
+exponential factorial bound and local power-integrability criterion are the
+proof ingredients being tested.
+
+Broad recent intertwining reading inspected
+[Elber–Lheem,2608.01485](https://arxiv.org/html/2608.01485v1): multiplicity-free
+finite-group induction uses explicit character restrictions and a compatible
+anti-involution or a separate reduction. Its exact intertwiner acts on a
+specified induced representation. No such representation or character
+identification has been derived for the PW source. The
+[Jiang–Wang–Wu abstract,2606.04383](https://arxiv.org/abs/2606.04383) concerns
+GNS/KMS-symmetric quantum Markov semigroups; its HTML body was unavailable,
+so no detailed proof transfer is asserted. These readings do not replace
+the original-source domain check.
+
+Iteration34 scratch closure: all seven public theorems passed without
+diagnostics. The exact source has been promoted and wired once; the targeted
+leaf audit is running. Lean proves the literal squared Mellin dual-weight
+identity, nonintegrability near zero for every complex argument, compact
+admission away from zero, and weighted squared-norm admission of every
+complete arithmetic source. The narrow failed global-dual estimate preserves
+these positive survivors. No theorem about arbitrary continuous Mellin
+extensions is claimed; endpoint control and actual Xi incidence remain open.
+
+Iteration34 final audit: exact checked GammaMellinDualDomain source and its
+unique umbrella import are verified. All seven public names are indexed.
+The targeted leaf build passed in57s and final formal lint passed with only
+existing size warnings. All owned Lean, index and research processes have
+finished. No full/umbrella build, numerical experiment or axiom-print check
+was used. The complete paired-current identity remains intact. The next
+incidence attack must retain explicit endpoint control or construct a
+justified stronger/weak reader domain; abstract weighted source admission
+cannot supply the missing Mellin estimate. Physical operator closure,
+actual Xi occurrence and independent fixed-grade balance remain unproved.
+
+### Iteration35: retain the fixed-argument mixed source current
+
+Revalidated iteration34 source and passing build/lint evidence. Its dual-norm
+obstruction changes the next action: use the original coefficient and spatial
+logarithms together. At fixed u=z+s the source derivative is M'_z-log(x)M_z.
+Its full atom contains -log(n*x), so scaling t=n*x retains a single logarithmic
+Gamma kernel with the original arithmetic norm weight n^(-u). This is the
+new [fixed-Mellin current attack](pw-b-gamma-fixed-mellin-current.md), before
+any continuation or Xi specialization. A deep/method search and direct corpus
+Gamma/Mellin derivative audit are running; no new current identity is claimed
+yet. Physical domain/closure, Xi incidence and independent Ward balance remain
+unproved.
+
+Iteration35 first checkpoint: the logarithmic Gamma-source admission and its
+literal Mellin integral, plus the exact full mixed-current weighted-source
+identity, passed scratch without diagnostics. The final assembly now applies
+the actual ChronologicalWeightedMellin theorem, whose admitted source theorem
+retains the complete norm-integral sum. Its general weight is
+W_z(t)=t^(-z)*[-log(t)*Q(t)], and the existing cpow-Mellin transport changes
+its argument from z+s to s. The resulting full mixed-current admission,
+Gamma derivative value, pointwise fixed-argument derivative and zero integral
+of the explicitly Gamma-normalized current are under verification.
+
+Deep/method search had partial coverage732156 and no execution errors. Its
+Mellin derivative candidate is applicable only with its endpoint bounds; the
+proposed abstract transport symmetries do not supply those. Hybrid logarithmic
+Gamma search returned useful actual GammaIntegral derivatives, with partial
+coverage and a local-Qdrant timeout. No service was launched. Both raw results
+are in [the search record](pw-b-gamma-fixed-mellin-searches.json). The installed
+general weighted Möbius source provides the direct full-series passage.
+
+Broad recent deformation and transmutation searches included primary reading
+of [Adarsha–Chakraborty–Bhattacharyya,2608.10594v1](https://arxiv.org/html/2608.10594v1),
+SectionV: its signed accretion/evaporation rate defines a stagnation threshold,
+but the stated closed-form timescale uses a specified rate regime; it does
+not enforce stagnation. No rate balance is imported as a Ward law. Primary
+reading of [Xu,2609.10454v1](https://arxiv.org/html/2609.10454v1), Theorem2.10
+and its proof, uses a chosen compactification and prior metric results. It
+supplies no original Mellin endpoint or physical source comparison here.

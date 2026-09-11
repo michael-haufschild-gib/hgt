@@ -68,18 +68,21 @@ the positive-cutoff contact formula to x<=delta.
 
 ## Exact remaining adjoint work
 
-Finite-cutoff gain transposition still requires joint admission, Fubini and
-the reciprocal Jacobian on the actual triangle. The transformed source varies
-across the mismatched cutoffs. Its additional term is
+The transformed source varies across the mismatched cutoffs. Its additional
+term is
 
 `integral_(a_delta(x)..delta) H_z(1/x,h) dh`,
 
-where H_z is the complete normalized reciprocal response. It must be proved
-to vanish after pairing. The backward response is initially restricted to
-x>delta, so its omitted initial region must also be controlled. None of these
-response terms is replaced by the constant-field contact proved here.
-The [pairing card](../1-in-progress/pw-b-gamma-reversible-pairing.md#remaining-transposition-terms-after-the-paired-contact)
-records the full-source majorant attack.
+where H_z is the complete normalized reciprocal response. The subsequent
+[complete paired-response proof](pw-b-gamma-adjoint-paired-response.md) now
+proves its paired limit is zero and passes both native cutoffs simultaneously,
+retaining the initially omitted region. Its joint majorant, exact Fubini and
+original source identities are separate from the constant-field contact here.
+The subsequent [complete gain transposition](pw-b-gamma-adjoint-gain-transposition.md)
+now supplies the admitted Fubini and reciprocal Jacobian on the actual triangle.
+The [full original-current paired adjoint](pw-b-gamma-full-paired-adjoint.md)
+combines these results. Physical operator-domain closure, Xi incidence and
+independent Ward balance remain open.
 
 ## Lean and verification
 

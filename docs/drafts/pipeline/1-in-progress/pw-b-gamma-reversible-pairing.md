@@ -2,7 +2,7 @@
 
 - **ID:** PW-B-GAMMA-REVERSIBLE-PAIRING-2026-09-11
 - **Stage:** 1-in-progress
-- **Status:** Reversible density, uniqueness, source weight, Jacobian, literal cutoff contact, actual source-mode defect and its exact logarithmic pairing are Lean-closed. Complete high-order source moments, finite original-current cutoff extraction and the nonzero finite endpoint order are Lean-closed. The specific unit-ground-corrected Gamma scalar equation is excluded at every parameter. The complete two-parameter paired contact, moving-layer passage and empty incoming constant loss are Lean-closed. Finite-cutoff gain transposition, changing-source response terms, full adjoint/domain, actual Xi occurrence and independent Ward balance remain open.
+- **Status:** Reversible density, uniqueness, source weight, Jacobian, literal cutoff contact, actual source-mode defect and its exact logarithmic pairing are Lean-closed. Complete high-order source moments, finite original-current cutoff extraction and the nonzero finite endpoint order are Lean-closed. The specific unit-ground-corrected Gamma scalar equation is excluded at every parameter. The complete two-parameter paired contact, moving-layer passage and empty incoming constant loss are Lean-closed. Complete forward response, original gain transposition and the full paired original-current adjoint are Lean-closed. Physical common-domain adjoints, actual Xi occurrence and independent Ward balance remain open.
 - **Objective:** Derive the positive pairing and retained adjoint correction from the existing forward and inverse-gain reflected source generators, then test their actual arithmetic domain.
 
 ## Actual source and candidate pairing
@@ -70,10 +70,10 @@ negative quadratic form
 
 The [literal cutoff limit](../3-formalized/pw-b-gamma-adjoint-cutoff-contact.md)
 is now Lean-closed: all nine public declarations pass their axiom audits.
-No full adjoint, closure, common form domain or complete pairing identity
-is claimed yet. The admitted source-mode paired products and their
-logarithmic contact are proved below; the complete transposition remains
-necessary before asserting these operator conclusions.
+The subsequent [full original-current paired identity](../3-formalized/pw-b-gamma-full-paired-adjoint.md)
+now closes complete transposition with the retained contact. Closure, a
+physical common form domain and operator-adjoint equality remain unproved.
+The admitted source-mode tests below explain why the contact is necessary.
 
 ## Concrete source tests and positive survivors
 
@@ -140,11 +140,10 @@ The empty incoming constant loss remains separate and has norm at most
 C*delta. Every original integral in this passage is absolutely admitted.
 Fourteen public theorems passed final scratch and the26-second targeted build.
 
-Finite-cutoff gain transposition, its joint admission and reciprocal
-substitution remain open. The changing-source mismatch and omitted initial
-backward response also need their own limits. The final section records their
-exact formulas and full-response majorant attack. The paired contact theorem
-does not assert a full operator adjoint or physical domain.
+The subsequent complete response and gain proofs now supply the changing-source
+limit, omitted initial response, full transposition and reciprocal substitution.
+The final section records their assembly into the paired original-current
+identity. A full physical operator adjoint and its domain remain unproved.
 
 ## Complete arithmetic endpoint and scalar source test
 
@@ -231,10 +230,9 @@ is promoted and wired into RHTower. Its targeted build, index, all18
 public-name and axiom checks, and repository formal lint passed.
 Next proof order:
 
-1. Prove finite-cutoff gain transposition and the retained changing-source response limits. The complete signed contact pairing, moving-layer passage and empty incoming constant loss are proved.
-2. Derive the complete admitted pairing identity and arithmetic domain.
-3. Identify an actual Xi occurrence and source-forced Ward law; none of
-   the preceding identities supplies that final step.
+1. Derive the physical common operator domain and closure from the now proved complete source pairing identity.
+2. Identify an actual Xi occurrence using a different justified field or realization.
+3. Force fixed-grade Ward balance independently; neither the paired identity nor domain admission supplies this law.
 
 [Pairing search records](pw-b-gamma-reversible-pairing-searches.json) and
 the reversible search in the [endpoint records](pw-b-gamma-endpoint-subtraction-searches.json)
@@ -288,12 +286,11 @@ complete detector supplies the needed nonzero coefficient directly.
 
 ## Remaining mathematical attack
 
-Complete the finite-cutoff transposition and the three-region pairing limit
-specified above: bulk x>2*delta, moving layer delta<x<=2*delta, and the empty
-incoming interval0<x<=delta. Derive the common arithmetic pairing domain and
-its exact retained2*log(x) correction. The corrected scalar obstruction means
+The finite-cutoff transposition and complete paired limit, including the moving
+layer and empty incoming interval, are now proved. Derive a justified physical
+common operator domain and closure. The corrected scalar obstruction means
 actual Xi occurrence must use another justified field or realization. Neither
-the candidate pairing nor all-parameter admission forces Ward balance.
+the paired identity nor all-parameter admission forces Ward balance.
 
 ## Divergent series and optional rate refinement
 
@@ -336,40 +333,63 @@ gives `|M_z/Q|<=1+C_z*x^(-p_z)`. Each resulting inverse monomial
 against exp(-1/x) is bounded by a factorial times x^2, giving the claimed
 `C*x*exp(-x)` bound. The actual coordinate derivative proves continuity.
 The complete signed source is retained. These paper steps and their exact Lean proofs are closed, with the targeted
-leaf build passed. No full transposition or operator adjoint is claimed.
+leaf build passed. The subsequent full transposition is proved below; this
+contact result alone does not assert an operator adjoint.
 
 ## Remaining transposition terms after the paired contact
 
-The translated complete contact limit and explicit admission of all displayed
-integrals are now Lean-verified, with the targeted leaf build passed. This still does
-not identify the full operator transpose. With g_z=M_z/Q, write
+The complete signed response passage is now closed in the
+[paired-response proof](../3-formalized/pw-b-gamma-adjoint-paired-response.md).
+All nineteen public theorems passed the final scratch without diagnostics;
+the targeted leaf build passed in125s, and repository formal lint passed. With g_z=M_z/Q, retain
 
 `H_z(v,h)=exp(-h)*(S_z(v+h)-S_z(v))/h`,
 
 `a_delta(x)=delta/[x*(x-delta)]` for x>delta.
 
-The changing-field mismatch is
+The complete kernel `J_z,v(x,h)=w(x)*g_v(x)*conj(H_z(1/x,h))` has the
+proved joint majorant `C*x*exp(-x)*exp(-h)*(1+h)^r`. Both positive-ray
+factors are integrable. Every positive-x section is also admitted.
 
-`E_delta(x)=integral_(a_delta(x)..delta) H_z(1/x,h) dh`.
+The changing-field mismatch
 
-It cannot be replaced by its constant-field logarithmic contact. The existing
-complete response bound gives
-`|H_z(1/x,h)|<=C*exp(-h)*(1/x+h)^r`.
-For fixed x>0 both integration endpoints tend to0. Admission of the full
-response makes E_delta(x)->0. Its norm is bounded by the full positive-ray
-norm integral. The binomial estimate
-`(1/x+h)^r<=(1+1/x)^r*(1+h)^r`
-and a Gamma moment bound admit this majorant against w times any complete
-source. Dominated convergence should therefore remove this entire mismatch
-on x>delta without discarding the moving layer.
+`E_delta(x)=integral_(a_delta(x)..delta) H_z(1/x,h) dh`
 
-The finite-cutoff gain pairing can first be transposed at fixed h by y=x+h,
-then Fubini changes the triangle to0<h<y. Reciprocal substitution
-`r=1/(y-h)-1/y` carries h>delta to r>a_delta(y), with the already proved
-Jacobian and detailed balance. The full source changes under this map;
-separating it produces both the retained contact and E_delta above.
-The resulting backward cutoff pairing is initially restricted to x>delta.
-Its omitted0<x<=delta response must also vanish by the same integrable
-response majorant. The separate empty incoming constant loss is retained
-in the proved contact limit. These exact finite-cutoff identities, joint
-admission and response-limit passages are the next Lean targets.
+vanishes after the original complete source pairing. The proof retains the
+entire moving layer: the two product masks x>delta,h>a_delta(x) and
+x>delta,h>delta are dominated by the same full kernel and converge to it.
+Exact Fubini and difference-of-tail identities recover the original oriented
+interval integral. Both native cutoffs pass simultaneously, including the
+initially omitted0<x<=delta response region. Outer cutoff, mismatch and
+limiting integrals are all admitted. The separate empty incoming constant
+loss remains in the previous complete contact theorem.
+
+The [complete gain proof](../3-formalized/pw-b-gamma-adjoint-gain-transposition.md)
+now proves `(g_z)'=g_z-g_(z-1)` and its global inverse-polynomial derivative
+bound. Mean-value control admits the entire forward paired response. The
+original gain is transposed by a measure-preserving additive shear, admitted
+Fubini and the actual injective reciprocal Jacobian. All original sections
+and both outer integrals are separately admitted.
+
+The [full paired adjoint](../3-formalized/pw-b-gamma-full-paired-adjoint.md)
+proves the exact finite identity F_delta=R_delta+E_delta+(C_delta-L_delta).
+Its limit is `integral w*conj(g_z)*A g_v = integral w*g_v*conj(B g_z)
++ integral w*conj(g_z)*g_v*2log(x)`, with both A and B identified as the
+original arithmetic currents and every integral admitted. The gain leaf's
+33 public theorems and this leaf's four public theorems passed scratch and
+targeted builds in46s and124s respectively.
+
+Physical common-domain adjoints, necessity of the pairing, a different
+justified Xi occurrence and independent Ward balance remain open.
+
+## Mellin evaluation is a separate domain test
+
+The [exact dual-domain proof](../3-formalized/pw-b-gamma-mellin-dual-domain.md)
+now verifies that w*|g_z|^2 is integrable for every complex source parameter.
+The literal Mellin kernel k_s=x^(s-1)Q nevertheless has squared dual density
+|k_s|^2/w=x^(2 Re s)*exp(-x+1/x), nonintegrable near zero for every s.
+It is admitted on each compact interval away from zero. Hence the direct
+global weighted Cauchy–Schwarz constant cannot supply the reader needed for
+Xi incidence. Source-specific endpoint control, a stronger domain or a
+justified weak reader remains required. A universal unbounded-extension
+statement would require an additional duality or normalized-test proof.

@@ -134,10 +134,11 @@ Targeted leaf audit passed: only the new leaf was built (193 seconds;
 11942 dependency-graph jobs). Index refresh passed and the new module
 appears in `LEAN_API.md`. Duplicate audit found 15 declarations and zero
 collisions; scratch and module are byte-identical. `git diff --check` passed.
-Global lint reported one unrelated shared-tree error: the concurrently added
-`ThetaCuspHawkingBMSourceDensityDual` module was not yet reachable from its
-umbrella. C40 itself is wired exactly once. No umbrella build, numerical
-experiment or axiom-print command was used. All C40 Lean and research
-processes finished.
+Global lint initially reported an unrelated shared-tree wiring error in
+`ThetaCuspHawkingBMSourceDensityDual`. Its owning task subsequently wired
+that module; the repeat global lint passed (log
+`/tmp/route_l_cofinal_c40_lint_rewired.log`). C40 is wired exactly once.
+No umbrella build, numerical experiment or axiom-print command was used.
+All C40 Lean and research processes finished.
 
-Next attack: [damped prime Green residual](../1-in-progress/route-l-damped-prime-green-residual.md).
+Next attack: [damped prime Green residual](route-l-damped-prime-green-residual.md).

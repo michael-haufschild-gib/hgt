@@ -1,10 +1,10 @@
 # Route E: integer quantization of complete multiplicative cells
 
 - **ID:** E-INTEGER-CUBE-APERTURE-001
-- **Stage:** 1-in-progress
+- **Stage:** 5-failed, restricted complete-cell class; positive survivor formalized
 - **Target:** test the proposed near-unit escape for complete growing-dimensional physical cells.
-- **Status:** paper three-axis inequality; corpus and Lean audit in progress.
-- **Parent:** [Route E frontier](rh-current-frontier-map.md).
+- **Status:** closed in Lean for complete cells with at least three nonconstant positive integer factors in the stated narrow aperture.
+- **Parent:** [Route E frontier](../1-in-progress/rh-current-frontier-map.md).
 
 ## Conjecture and paper proof
 
@@ -68,9 +68,42 @@ examples are admissible Möbius sign-reversing cells.
 This tests complete Cartesian products of integer factor choices. It does
 not forbid incomplete product-conditioned cells, additive transports, or
 arbitrary abstract activation systems without this integer factorization.
-No signed covariance bound follows. If the candidate closes, the survivor
-is an exact arithmetic aperture bound and a sharper specification of the
-incomplete-cell boundary that the growing-prime construction must control.
+No signed covariance bound follows. The positive survivor is an exact
+arithmetic aperture bound, with sharp exponent and leading constant, and
+its unconditional application to the actual growing marker window.
+
+An omitted extreme corner alone need not carry appreciable mass. The
+[boundary-mass closure](route-e-negligible-discard-integer-cells.md)
+now proves that even the maximal admitted subset has mass tending to zero
+at growing singleton variance, for arbitrary factor orientations. Its
+positive mass theorem is formalized; direct rare-event conditioning remains open.
+
+## Lean audit
+
+`formal/GaloisForLFunctions/RHTower/RouteEIntegerComponentAperture.lean`
+proves the three-axis span, spectator version, arbitrary finite-family
+classification, asymptotic sharpness, real-window version, literal complete
+histogram application, and eventual application to
+`Sieve.growingReciprocalMarkerWindow`.
+
+Scratch `lake env lean /tmp/route_e_integer_cube.lean` passed. Final targeted
+`lake build GaloisForLFunctions.RHTower.RouteEIntegerComponentAperture`
+passed; the leaf is wired into `RHTower.lean`. No umbrella build, numerical
+experiment, admitted proof, added axiom, or axiom-print audit was used.
+
+## Discovery audit
+
+Deep corpus searches for growing incidence, prime-anchor overlap, cubature,
+integer cube aperture, and three-term AM--GM were partial. Source and method
+lanes exposed existing Hall closure and real activation-ratio bounds, but
+no source-specific all-dimensional integer aperture estimate. The proof
+above uses the actual corpus's histogram permutations and growing schedule.
+
+The broad August 2026 paper search found
+[Toric Constructions via Integral Transversality](https://arxiv.org/html/2608.31026v1).
+Its distinction between real transversality and lattice compatibility
+suggested testing the discarded integer increments. No toric theorem is
+being transferred to the Möbius source.
 
 Do not create a general cubature receiver in place of this source-geometry
 test. The prime-anchor Hall matching was already proved in the corpus.
