@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitCoordinates
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapPowers
 import GaloisForLFunctions.HTGeometry.PolynomialODEOddCompactReflected10
 
 /-! # Exact coupled-coordinate signed even moment 5 -/
@@ -344,7 +345,9 @@ def evenCompactUnitMomentFive (r t v : ℝ) : ℝ :=
 /-- Exact drift-square substitution; this identity assumes no sign or approximation. -/
 theorem evenCompactUnitMomentFive_eq (u t v : ℝ) :
     (-1 : ℝ)^5*(oddCompactReflectedScalar10 u (evenCompactUnitGap (u^2) t) (u*(1+v/4)))/(100 : ℝ)^5 = evenCompactUnitMomentFive (u^2) t v := by
-  unfold oddCompactReflectedScalar10 evenCompactUnitGap evenCompactUnitMomentFive
+  unfold oddCompactReflectedScalar10
+  rw [evenCompactUnitGap_pow_two, evenCompactUnitGap_pow_three, evenCompactUnitGap_pow_four, evenCompactUnitGap_pow_five, evenCompactUnitGap_pow_six, evenCompactUnitGap_pow_seven]
+  unfold evenCompactUnitGap evenCompactUnitGapPow2 evenCompactUnitGapPow3 evenCompactUnitGapPow4 evenCompactUnitGapPow5 evenCompactUnitGapPow6 evenCompactUnitGapPow7 evenCompactUnitMomentFive
   ring
 
 end

@@ -1,6 +1,6 @@
 # HB: the retained spin-two contact and its angular Green balance
 
-Status: paper derivation of the literal contact balance, finite angular boundary terms, and matching original cutoff-Mellin correction. The six quartic regulated periods have closed Lean L²/L¹ admission and integrated principal-subtracted cusp flux decay. Constructed modular core cutoffs and their actual physical-test Green identity now pass scratch Lean checking and the exact cached leaf audit. Native finite-part transport and attachment to the complete physical action remain open. No extinction or RH theorem is claimed.
+Status: the literal pointwise contact balance, all six actual quartic principal expansions, their physical Green flux and original cutoff-Mellin contact are closed in Lean. The original quartic residual now has an actual modular core and a certified native physical Green limit, with both outer-cutoff errors removed and all original Mellin contacts retained. The full contact balance now transports through those native physical periods, giving the exact JRQ period reduction below. Attachment to the complete nonlinear physical action remains open. No extinction or RH theorem is claimed.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → original common Hawking-clock extinction → RH.
 
@@ -385,3 +385,299 @@ For the remaining native transport, only the H/Delta-H pair needs the new second
 
 
 Principal-attachment checkpoint: `/tmp/hb-quartic-principal.lean` contains the full proposed source extension; `/tmp/hb-quartic-principal-extension.lean` contains the new declarations alone. The candidate derives all six principal power sums, their actual height derivatives and Laplacians, and the same-occurrence physical principal Green flux. The gradient helper now evaluates the actual continuous linear map directly. No new principal-attachment theorem has yet been checked: scratch invocations stopped at missing cached imports. A duplicate owned dependency-repair batch was terminated after identifying another agent rebuilding the same cache target; no owned Lean or search process remains running. At that checkpoint, four required cached modules were still missing: NativeCutoffLowerAdmission, NativeCutoffUpperAdmission, NativeCutoffMellinMeromorphy and CutoffBulkMellinValue (all with the ThetaCuspHawkingBM prefix). The source leaf has not been edited for this extension. Resume by checking cache availability, then check the existing scratch with `lake env lean`; do not treat cached-index matches as certification.
+
+
+## Further source-identity attack
+
+The missing cached imports are being rebuilt in the shared worktree. The scalar differential core has no missing imports, so a separate scratch `/tmp/hb-quartic-differential-balance.lean` now attempts the complete pointwise balance (2) directly for the literal theta scalar at arbitrary complex parameter. It derives the actual product Laplacian from two-jets, the identity `Delta(Q²)=6Q Delta Q-8lambda Q²`, and then the contact and retained-spin-two balance. Every regularity input comes from the complete scalar family. This scratch is not yet certified and no new repository theorem is claimed.
+
+The broad arXiv word search “coercivity” led to [Bothe, 6 September 2026](https://arxiv.org/html/2609.06732v1). Its §11 production identity retains all mixed gradient terms. Their cancellation requires an explicit system for the Hessian of an entropy; positivity additionally uses positive diffusion coefficients and real concentration variables. Its left eigen-covectors are proved to be exact differentials of state functions, a property stronger than pointwise diagonalizability.
+
+The HB conjecture tested here is that the physical left-QNM covector similarly integrates to a real source entropy whose mixed-production identities survive the complete assembly. This is not established: no such entropy or exact covector identity has been derived for the independent complex scalar/vector source channels. Even a dissipative entropy balance would retain horizon and source work, and would give finite-clock extinction only after an additional exact endpoint/face balance. The source-derived contact identity (2) is therefore pursued as an actual contribution to that balance, without replacing the oriented left pairing by a Hermitian entropy pairing or dropping a boundary flux.
+
+
+The entropy-covector attempt has a precise additional interface test. For a fixed symmetric pairing B and a source-work one-form `alpha_f(h)=B(h,Gret f)`, direct differentiation gives `d alpha_f(h,k)=B(k,Gret h)-B(h,Gret k)`. If the actual retarded/advanced reciprocity law is established, this equals `B(k,(Gret-Gadv)h)`. Thus reciprocity does not by itself make this particular work one-form exact. In a nonlinear problem the derivative of the response replaces Gret, and changing pairing/metric weights add `(D_h B)(k,R)-(D_k B)(h,R)`; moving-domain faces add the corresponding transport terms. A real source potential therefore requires an actual cancellation of the whole antisymmetric variation, in addition to a signed production law. This test does not rule out other source currents.
+
+Corpus search for this test found `HBXiPeierlsRetardedAdvancedReciprocal` and the causal-jump skew theorem. Inspection shows that these carrier statements take reciprocity (and, separately, support-reversing Schwarz exchange) as premises; they do not derive the required identities for the complete physical response. The search was partial after its local worker disconnected. No such premise is added to the HB proof, and conjugation is not identified with causal reversal. The fixed original physical clock is unchanged throughout this source-variation test.
+
+
+## Pointwise balance closed; proof optimization, 12 September 2026
+
+`ThetaCuspHawkingBMQuarticContactBalance.lean` now proves (2) for the existing six `quarticContactField` expressions, at every actual Xi occurrence and every upper-half-plane point. Its private differential proof starts with the literal complete scalar equation and the actual two-jet product rule. The exported theorem takes no added spectral, covariance, sign, extinction or boundary assumption. Both retained spin-two Laplacians are present.
+
+The proof eliminates RQ pointwise using the Laplacian of J, then cancels matching Laplacian terms while keeping the source fields opaque. It avoids expanding J inside the nested derivatives of J². No heartbeat limit was added or increased. The independent differential scratch passed; the attached source leaf passed its exact cached `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticContactBalance` audit, without warnings, and is imported once by the RHTower umbrella. This is the bulk contact identity, not the complete nonlinear physical-action sign or extinction theorem.
+
+The principal expansion is being checked as a separate small leaf importing the already verified cusp-jet module; the original 815-line cusp-jet source is unchanged. This avoids re-elaborating its admission proofs on every principal-expansion check. The first check found reducible lambda-expression rewrites, a gradient-name resolution error and a leading-minus parse ambiguity. These were corrected using explicit target shapes, direct gradient evaluation and parentheses. After isolating and checking the finite convolution algebra, the full revised principal leaf passed scratch checking and its final targeted audit.
+
+The deep corpus query for the contact balance reported a complete 56,990-file source inventory but partial retrieval, interrupted text/source stages and pending compiler metadata. Its method hits included the physical Laplacian pairing limit and a modular Green formula. Source inspection confirms that the former requires an actual height-weighted L² response, while the latter requires the side and circular seam identities. Neither supplies a sign for the complete left-QNM action. The existing incoming-clock source balance explicitly retains source work.
+
+A broad September arXiv search for “symplectic” found [Gomes Da Silva, 3 September 2026](https://arxiv.org/html/2609.03329v1). Section II.1 explains that every smooth physical vector field admits a Hamiltonian lift to doubled variables. The attempted HB inference from doubled canonical structure to extinction therefore fails: the lift alone imposes no restriction on physical dissipation. For example, a doubled residual functional I(phi,eta)=pair(eta,E(phi)) vanishes at eta=0 for arbitrary E, while its first eta variation is pair(h,E(phi)). Any useful HB identity must control that physical variation and all boundary work; invariance of the diagonal functional value is insufficient. No new generic conditional Lean theorem is installed for this observation.
+
+The corresponding deep method search for doubled action/work conservation was also partial, with interrupted retrieval and a reranking deadline. Its suggested path-work and positive-Hankel ingredient sets were not applicable to the original complex physical pairing and were not used.
+
+## Exact next limit to prove
+
+For the existing physical angular test psi and original cutoff chi, put
+
+```
+N(P) = integral psi(P-chi P0) dmu-D sum_j p_j M(w_j),
+I_N(P) = integral psi gamma_N P dmu,
+gamma_N(y)=1-chi(y/N),  N=n+2,
+F_H(y) = integral_(-1/2)^(1/2) (psi H_y-H psi_y) dx,
+b_j=k_j-1+rho/2,  w_j=k_j-rho/2.
+```
+
+Use the already admitted core cutoff with index n+1, so its scale is exactly N. The remaining physical Green limit can be proved by establishing, for P=H and Delta H,
+
+```
+I_N(P)-D sum_j p_j N^w_j M(w_j) -> N(P),
+I_N(Delta H)-mu I_N(H) = -integral gamma_N'(y) F_H(y) dy.
+```
+
+The first formula must use the full scalar horizontal-mean theorem and native modular measure. Integrable domination applies to the principal-subtracted remainder. For the second, the two cutoff commutators combine by height integration by parts; gamma_N' vanishes at both transition endpoints. The principal flux is `D sum_j b_j h_j y^w_j`; its actual remainder has the previously proved integrated rapid decay. Each coefficient satisfies
+
+```
+k_j(k_j-1)-mu = w_j b_j.
+```
+
+The existing finite Mellin flux formula therefore cancels every N^w_j term exactly. The remaining limit would prove N(Delta H)=mu N(H), and transport (2) to the actual renormalized contact period. The equality is not yet claimed in Lean. Even after this limit, independent scalar/vector channels, solved quadratic corrections, metric variations and the remaining radial/horizon/characteristic contacts must be assembled before any complete-action sign or original-clock extinction conclusion.
+
+
+## Principal attachment closed, 12 September 2026
+
+[ThetaCuspHawkingBMQuarticPrincipalExpansion.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticPrincipalExpansion.lean) now proves the complete five-power representation of each original `quarticContactPrincipal` field, its actual height derivative and Laplacian, and the same-occurrence physical principal Green flux. The three original Q coefficients are supplied by `nativePrincipalSquare_eq_power_sum`; actual differentiated coefficients supply J and RQ. A separately checked finite convolution identity retains all nine ordered products without expanding analytic fields inside the algebra proof. These nine Weyl products do not represent the independent SS/SV/VV amplitude channels.
+
+The checked gradient coefficient is represented directly as `k_j(k_j-1)(J0²)_j/2-(J0 Delta J0)_j`, exactly following the original field definition. Its alternative symmetrized `sum r_i r_l j_i j_l` formula above remains a paper simplification, not a separately exported Lean theorem.
+
+The public `quarticContactPrincipal_physical_bulk_flux_coefficient` proves the final displayed indicial factor for the actual H and Delta-H coefficients. The full leaf passed `lake env lean /tmp/hb-quartic-principal-leaf.lean` without diagnostics. Its exact cached final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticPrincipalExpansion` passed without warnings in 38 seconds. Source and five artifacts were published byte-identically, with one RHTower umbrella import. Source SHA-256: `86bf5f736cfeb9a8b57ed4a2a73be731d89eef845c8d149cd1cdce1702b879a0`.
+
+The pointwise-balance leaf's final audit passed in 65 seconds; its source SHA-256 is `7370d39abf82d3d47af937eaeba02f67614ea2c5e03a1d76184d34e319604eb4`. Neither new file contains a heartbeat setting. The earlier missing-cache and pending-principal checkpoints are superseded by these results. Native finite-part Green transport and complete physical-action extinction remain open.
+
+
+Final verification for the two 12 September leaves: all seven new public declarations occur once in the regenerated API; both leaves have exactly one RHTower umbrella import; scoped whitespace and thirteen local documentation links pass. Whole `scripts/formal_tools.py lint` returned exit 1 because the concurrently present `HTGeometry.SecondEndpointMellinLaurentInterchange` and `HTGeometry.UniformSecondOrderJet` modules are not reachable from the HTGeometry umbrella. No error was reported for either new quartic leaf. These unrelated modules were not modified. All owned Lean, Lake and corpus-search processes completed; both leaf audit directories were removed after byte-identical artifact publication.
+
+
+## Native Green proof attack by subtracting the principal field first
+
+The next attempt uses R=H-chi H0. Construct compact modular approximants as the full source core gamma_N H minus the modular periodization of gamma_N chi H0. The principal height profile is smooth, compact and zero below height two; its support closure can include height two, so the existing strict `CuspHeightTest` support requirement cannot be invoked directly. A positive-height planar generator supplies the required core instead.
+
+The actual residual differential equation is
+
+```
+Delta R = (Delta H-chi (Delta H)0)-K_H,
+K_H=Delta(chi H0)-chi Delta H0.
+```
+
+The five-power attachment should identify K_H with the finite sum of the original `cutoffCommutator k_j`, with original coefficients h_j. The existing `cutoffPowerMoment_eq_gap_mul_nativeMellin` gives its physical integral exactly, since every w_j is independently nonzero. Thus the entire principal boundary contribution is retained before the Green limit. Actual weighted derivative bounds should make the two outer-cutoff commutators vanish on R. This would prove the same N(Delta H)=mu N(H) as the earlier scaled-flux argument, using the same original Mellin correction and physical clock. Neither the residual Green limit nor complete-action extinction is assumed in this construction.
+
+
+## Exact quartic cutoff contact closed, 12 September 2026
+
+[ThetaCuspHawkingBMQuarticCutoffContact.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticCutoffContact.lean) proves the actual contact for every one of the six original principal fields:
+
+```
+K_slot = Delta(chi P0_slot)-chi Delta(P0_slot)
+       = sum_j p_slot,j cutoffCommutator(k_j),
+integral psi K_slot dmu
+       = D sum_j p_slot,j [k_j(k_j-1)-mu] M(w_j).
+```
+
+Every full-scalar contact pairing is absolutely integrable. For the actual residual R=H-chi H0, it also proves `Delta R=R_5-K_4` and absolute integrability of its full-scalar Laplacian pairing. The physical identity uses the literal incoming coefficient `Lambda(rho)=0` and independently proved noncollision `w_j != 0`; neither a zero contact integral nor a new regulator is assumed.
+
+Scratch `lake env lean /tmp/hb-quartic-cutoff-contact.lean` passed without diagnostics. The exact cached leaf audit `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticCutoffContact` passed without warnings in 66 seconds. Source SHA-256: `a0cad9244771ec3c5cfc46cc691aa991e4c39d9044d02eecb91f8acade0a0505`; all five artifacts were published byte-identically. The leaf has one RHTower umbrella import and no heartbeat setting. Global lint/API audit remains pending for this addition.
+
+The modular construction has been simplified further: apply the existing `cellGermExtension` to the smooth principal height subtraction. It is zero below height two; translations preserve height, and every nonparabolic closed-cell overlap lies strictly below two. These facts prove full germ compatibility, including elliptic corners. Subtracting this extension from the original modular quartic field produces the actual residual on every closed-cell germ. This avoids a separate compact planar periodization construction. The finite-core construction and physical Green identity passed an initial scratch check; the expanded candidate including smoothness and its differentiated cutoff is still being checked. No native limiting Green theorem or complete-action extinction is claimed yet.
+
+The broad deep corpus query `physical renormalized Green limit cusp flux cutoff derivative` returned partial retrieval and pending compiler metadata. The narrowed deep query `principal cutoff Green --module ThetaCuspHawkingBM` completed retrieval, including candidate lemmas, source arguments and proposed ingredient sets. Its native radial growth-chamber results do not by themselves apply to the quartic angular residual. Direct source inspection found the reusable `squareResidual_cell_compatible` construction and the physical inverse-height L2 field. These supply concrete gluing and domination methods, not an unproved action sign.
+
+The 8 September paper [Erman–Turgut, Renormalization of One-Dimensional Semirelativistic Bosons with Contact Interactions](https://arxiv.org/html/2609.09068v1) offers an exact operator interface: an energy-independent subtraction cancels from the principal-operator difference, leaving a factor through dressed contact maps. Its resolvent identity and large-negative-energy bounds then establish the operator. HB has not established that factorization: its native Mellin corrections depend on the spectral test, and its bilinear left-QNM pairing has not been identified with an adjoint-positive contact form. The paper therefore suggests a testable missing identity, not fixed-Hawking-clock extinction.
+
+
+### Sharp energy-defect interface exposed by the broader search
+
+The broad arXiv search `coercivity`, sorted by newest announcement, found [Vo, 2 September 2026](https://arxiv.org/html/2609.02416v1). Its nonlocal advection problem recovers an unprescribed inflow trace through an exact energy balance and a matching lower-semicontinuity bound. A positive boundary term must disappear when the remaining energy attains that bound. The proof uses a positive symmetric kernel, real positive eigenfunctions, and compactness of zero extensions; none is automatically a property of a complex left-QNM action.
+
+A precise HB version would require source-constructed real quantities at the original fixed Hawking clock:
+
+```
+W_n = E_n + B_n,
+W_n -> E_infinity,
+E_infinity <= liminf E_n,
+B_n -> -Re(complete_left_action(q)) = susceptibility(q)*clockDefectEnergy(q).
+```
+
+The last equality is the established transduction. If the preceding source identities and estimates are proved, then `E_n -> E_infinity-susceptibility*clockDefectEnergy`; the lower bound forces the nonnegative clock-defect term to be at most zero. This is a sufficient extinction mechanism without declaring clock covariance. It is not a closed HB theorem: no actual complete nonlinear energy `E_n` with this sharp lower bound has been derived. All SS/SV/VV, solved ++/+- corrections, changing weights and radial boundary terms must enter the displayed balance. The new angular contact and residual Green work only justifies a specific angular transport; its complex bilinear periods do not provide the required real coercive energy.
+
+
+### Quartic residual core certified
+
+[ThetaCuspHawkingBMQuarticResidualCore.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualCore.lean) now proves the literal residual's smoothness, constructs its modular extension, preserves its full germ on the original closed cell, and constructs compact native cores. Its physical Green identity, full differentiated cutoff formula and eventual stabilization of the entire residual germ are closed. The final cached leaf build passed without warnings in 92 seconds after scratch checking. Source SHA-256: `ac36a24de7b322a6f8578056a309c0d1c9c13346c7c2965b5bd2780c5f3ba6fc`. No heartbeat setting or transparency override was added; the leaf is imported once by RHTower.
+
+The next candidate is `formal/.lake/hb-extinction-scratch/residual-green.lean`, checked through `/tmp/hb-quartic-residual-green.lean`. It derives weighted L2 admission of every actual residual derivative from `quarticContact_remainder_jet_bound`, then uses the independently admitted inverse-height physical scalar to control `psi*y*partial_y R`. Its proposed dominating density for the full cutoff Laplacian is
+
+```
+|psi Delta R| + 2 C |psi y partial_y R| + C |psi R|,
+```
+
+where the same source-independent C bounds `|y gamma_N'|` and `|y^2 gamma_N''|`. The exact modular core Green theorem and stabilization of full germs should then give `integral psi Delta R=mu integral psi R`. The final candidate retains the just-certified original contact integral and derives `quarticNativePhysicalPeriod q 5=mu*quarticNativePhysicalPeriod q 4`. This candidate has not yet passed Lean and is not installed as a source leaf.
+
+The complete-action deep/method query returned the existing exact `stream_complete_action_current` and `sourceContact_differential_identity`. Source inspection confirms that the first retains temporal/radial source contacts and both angular flux components, but takes general stream two-jets; the second retains complex bilinear gradient squares. Neither identifies the complete scalar/vector nonlinear action with the particular quartic Green-exact combination. The search had partial text/source retrieval; no exhaustiveness claim is made.
+
+
+## Native quartic Green transport certified
+
+The entire [ThetaCuspHawkingBMQuarticResidualGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualGreen.lean) candidate passed `lake env lean /tmp/hb-quartic-residual-green.lean` without diagnostics. The exact cached final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticResidualGreen` passed without warnings in 25 seconds. The source is installed and wired once; all five audited artifacts were published byte-identically. Source SHA-256: `275d33f0f1f664da5b65e6972148fd1a9d9a9f8360dabfdd9da5cbd65522719b`. The new identity is
+
+```
+N_q(Delta H) = mu_q N_q(H),
+mu_q = physicalAngularParameter(q)^2-1/4 = rho(rho-2)/4,
+N_q(P) = integral psi_q (P-chi P0) dmu - D sum_j p_j M(k_j-rho/2).
+```
+
+The proof is closed on the actual fields. Every complex-height-weighted coordinate jet of the cutoff residual belongs to native L2. Pairing its height-squared first derivative with the full inverse-height physical scalar gives the integrable first-cutoff-error density. The original residual and residual-Laplacian pairings provide the other two terms in the dominating density displayed above. The constructed core eventually agrees with the entire residual germ at every closed-cell point, so both field and Laplacian pairings converge. This establishes the uncorrected residual Green identity even for independent source and target Xi occurrences. The same-occurrence theorem then evaluates the actual original cutoff contact and uses the exact H/Delta-H coefficient relation to cancel its Mellin correction. Neither finite-part invariance nor a zero boundary integral was an input.
+
+Optimization: complex analytic fields remain opaque during algebra; real derivative results are typed before complex coercion; pointwise products and derivative germs receive explicit target shapes. Generic norm simplification is confined to the outer products so the proved weighted-derivative bounds remain reusable. The proof lives in small cached leaves; no heartbeat or transparency setting was added and no umbrella build was run.
+
+Next mathematical target: transport `quarticContactField_balance` through these native periods by proving its exact five-coefficient counterpart, then attach the resulting JRQ period to the actual complete left-QNM action. The independent SS/SV/VV amplitudes, solved ++/+- corrections, changing metric weights, and horizon/characteristic/source-contact terms must be included in that attachment. The native angular identity supplies neither a positive complete energy nor fixed-Hawking-clock extinction.
+
+
+Final audit for the cutoff-contact, residual-core and native-Green leaves: all 21 public declarations occur once in the regenerated API; all three umbrella imports occur once; nineteen local documentation links and scoped whitespace checks pass. Whole `scripts/formal_tools.py lint --check-generated` returned exit 1 with seven unrelated unreachable modules (`DeningerOriginalGreenXiResolventBound`, `RealPrincipalSeriesDerivedDirections`, `ThetaCuspHawkingBMHorizonCoordinateJets`, `ThetaCuspHawkingBMSelfChannelHorizonJet`, `ElementaryHorizonJets`, `SecondEndpointMellinLaurentInterchange`, `UniformSecondOrderJet`) and stale global `LEAN_API.md`/`LEAN_OVERVIEW.md` after concurrent source changes. No error was reported for the three new quartic leaves. The unrelated modules were not modified. All owned Lean/Lake/search processes completed, and all three owned audit directories were removed after artifact publication. Fixed-Hawking-clock extinction and RH remain open.
+
+
+## Native contact-period balance certified, 12 September 2026
+
+The source identity (6) is now closed in
+[ThetaCuspHawkingBMQuarticNativeBalance.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticNativeBalance.lean).
+For the original native period N, unchanged physical parameter mu, and the literal
+fields and coefficients defined above, `quarticNativePhysicalPeriod_spinTwo` proves
+
+```
+N(J RQ) = (2mu+2c-8) N(J²) - 4 N(Gamma(J,J))
+          - a(13lambda-6-mu) N(Q²).
+```
+
+The six exported theorems establish the actual five-coefficient balance, its full
+principal-field evaluation, the original cutoff residual balance, native-period
+transport, the H combination, and this final spin-two period law. No spectral,
+boundary-vanishing, covariance or extinction premise was added. The native period
+is exactly the prior integral of the original residual minus its original
+five-term Mellin correction. Thus this theorem includes those cusp and cutoff
+contacts, rather than assigning them zero separately.
+
+The proof first factors each retained spin-two coefficient through the J and Q
+coefficients. A separate low-degree scalar-square identity then controls the
+finite convolution. This avoids expanding all analytic coefficients and their
+nested polynomial expressions in one normalization. Explicit vector-component
+reduction and explicit integral functions remove elaboration ambiguity. No
+heartbeat, recursion-depth or transparency override was introduced.
+
+Scratch `lake env lean /tmp/hb-quartic-native-balance.lean` passed with no
+diagnostics. The exact cached leaf audit
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticNativeBalance`
+passed in 121 seconds, with no warnings. Source SHA-256:
+`d12f4dc95999a9e834e4eaef091bb77069d46f8d33080fe21e9c86a41a652de8`.
+The leaf is imported once by RHTower; no umbrella or full build was run.
+
+The deep corpus query `quartic principal coefficient contact native balance`
+returned useful coefficient, principal-germ and contact-balance methods. Its
+inventory covered 57,020 files, but text/source retrieval was partial and most
+compiler metadata remained pending. Candidate and source-argument inspection was
+followed by the actual Lean checks above; retrieval was not treated as proof.
+
+## Exact action interface after the new source theorem
+
+Define the already proved zero combination
+
+```
+Z(q) = N(J RQ) + 4 N(Gamma(J,J))
+       - (2mu+2c-8) N(J²) + a(13lambda-6-mu) N(Q²).
+```
+
+An actual complete-action reduction `Cphys(q,n)=W(q,n)*Z(q)` would now imply
+`Cphys(q,n)=0` by substitution. Together with the established
+`Cphys=-Sigma*clockDefectEnergy`, `Sigma>0`, this would force the clock defect to
+vanish. This equality is an exact remaining source-identification target, not an
+assumption installed in Lean and not an established physical-action formula.
+More generally, a proved remainder estimate
+`abs(Re(Cphys-W*Z)) <= kappa*Sigma*clockDefectEnergy`, with a source-derived fixed
+`0<=kappa<1`, would suffice: substitution gives `Sigma*energy<=kappa*Sigma*energy`,
+so positivity forces `energy=0`. The present theorem supplies Z=0; it supplies no
+strict remainder bound.
+
+The correction/source comparison exposes a specific additional issue. The actual
+scalar--vector source in `ThetaCuspHawkingBMQuadraticMixedSource.lean` retains its
+mixed ingoing correction and full sixteen-component tensor. The exact
+`master_resolvent_defect` in `ThetaCuspHawkingBMQuadraticMixedCurrent.lean` requires
+an angular response satisfying a shifted resolvent equation. These response
+fields and their cross-current products are not among the six local quartic
+expressions just transported. They cannot be dropped or replaced by their cusp
+powers. The existing `incoming_radial_mass_source_balance` still contains the
+work of those responses against the complete half-square Laplacian. A further
+source identity must control that work and its horizon/characteristic contacts,
+and the independent SS/SV/VV amplitude coefficients, before the displayed
+complete-action reduction can be asserted.
+
+A broad newest-first arXiv search for `reciprocity` found
+[Dutta's finite-time state-transfer construction](https://arxiv.org/html/2609.09654v1)
+(September 2026). Its mechanism imposes a zero eigenspace and odd-pi spectral
+phases, then solves an inverse spectral problem and fixes the scale. For HB the
+surviving test is exact spectral-phase cancellation at the already fixed clock.
+The construction does not derive such a condition for the theta source; tuning
+its generator or rescaling its clock would not prove the required theorem.
+No result from that paper is imported into the source proof.
+
+
+The follow-up deep/method query `complete action independent scalar vector quartic
+contact coefficients` returned the exact `mixedPairedCoefficient_eq`. Inspection
+of that declaration and `literal_mixedPairedCoefficient_eq` confirms the two
+changing bulk weights multiply the complete ++ and +- quadratic residuals,
+respectively. The solved quadratic equations therefore remove those bulk terms
+when attached to their actual correction fields; they do not remove the varied
+boundary current or establish a sign for the remaining response pairing. This
+query covered a 57,024-file inventory but reported partial text/source retrieval,
+pending compiler metadata, and no verified complete-action reduction.
+
+Final local checks for the native-balance leaf: all six public declarations occur
+once in the regenerated API, its umbrella import occurs once, source SHA matches
+the audited source, cached olean exists, the audit directory was removed, and all
+21 local links in the two task cards pass. Scoped whitespace checks pass.
+`scripts/formal_tools.py lint --check-generated` returned exit 1 only for seven
+unrelated unreachable modules: `ThetaCuspHawkingBMHorizonCoordinateJets`,
+`ThetaCuspHawkingBMPrincipalChannelHorizonJet`, `ThetaCuspHawkingBMSelfChannelHorizonJet`,
+`AnalyticJetGerm`, `ElementaryHorizonJets`, `SecondEndpointMellinLaurentInterchange`,
+and `UniformSecondOrderJet`. No error was reported for the native-balance leaf.
+All owned Lean, Lake and search processes completed. The goal remains active;
+fixed-Hawking-clock extinction and RH have not been proved.
+
+
+## Next source attack: transfer the mixed-response work, 12 September 2026
+
+The actual incoming SV-SV radial mass contains two constructed angular responses
+A and B, with Delta A=alpha(A+Q), Delta B=beta(B+Q). Set s=rho-2,
+t=-rho-1, p=st, lambda=2-p, alpha=(2s+1)(2s+2), beta=(2t+1)(2t+2),
+and retain the coefficients rs,rt,rQ in `incoming_radial_mass_source_balance`.
+The next candidate transfers the full Laplacian from Q to these actual responses:
+
+```
+J_new = Q [rs grad A + rt grad B + (2rQ/3) grad Q],
+W = rs alpha Q A + rt beta Q B
+    + [rs alpha+rt beta+(4lambda/3)rQ] Q²,
+y² clockCoefficients(q,a,b,w,1,0)
+  = (a²b²/16) [-p y² div(angularResponseGreen)/3
+                + y² div(J_new) - W].
+```
+
+The derivation uses the complete scalar equation and
+`|grad Q|_bilinear²=2Q E`, `Q DeltaQ=2lambda Q²+QE`. It retains both angular
+fluxes; integrated boundary values must still be evaluated. No source work is
+set to zero. Symbolic factorization predicts the Q² coefficient is
+
+```
+p (s-t) [p³+25p²-28p+20]/6.
+```
+
+This factor is nonzero at every Xi occurrence: Re(p)>2; translating p=x+2 gives
+the cubic x³+31x²+84x+72, which has no zero in Re(x)>=0 by elimination of its
+real and imaginary parts. Thus any cancellation must involve the actual
+response-source pairings or retained faces. These are paper deductions now being
+checked in Lean, not yet certified declarations.

@@ -36,26 +36,28 @@ theorem criticalSheetSourceSchurLift_mem_maximalIdeal
     criticalSheetSourceSchurLift K σ hsing x
       ∈ maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
         (Fact.out : 0 < n)) := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   have hmap : (criticalSchurChartPrime K (m := m) (n := n)).map
       (algebraMap (criticalSourceChartAlgebra K (m := m) (n := n))
-        (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n)))
-      = maximalIdeal (criticalSchurSourceValuationSubring K (Fact.out : 0 < m)
-        (Fact.out : 0 < n)) :=
+        (criticalSchurSourceValuationSubring K hfm hfn))
+      = maximalIdeal (criticalSchurSourceValuationSubring K hfm
+        hfn) :=
     IsLocalization.AtPrime.map_eq_maximalIdeal _ _
   rw [← hmap] at hx
   have hle : (criticalSchurChartPrime K (m := m) (n := n)).map
       (algebraMap (criticalSourceChartAlgebra K (m := m) (n := n))
-        (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n)))
-      ≤ (maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-        (Fact.out : 0 < n))).comap (criticalSheetSourceSchurLift K σ hsing) := by
+        (criticalSchurSourceValuationSubring K hfm hfn))
+      ≤ (maximalIdeal (criticalNormalClosureSchurValuationSubring K hfm
+        hfn)).comap (criticalSheetSourceSchurLift K σ hsing) := by
     rw [Ideal.map_le_iff_le_comap]
     intro t ht
     rw [Ideal.mem_comap]
     show (criticalSheetSourceSchurLift K σ hsing)
         (algebraMap (criticalSourceChartAlgebra K (m := m) (n := n))
-          (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n)) t)
-        ∈ maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-          (Fact.out : 0 < n))
+          (criticalSchurSourceValuationSubring K hfm hfn) t)
+        ∈ maximalIdeal (criticalNormalClosureSchurValuationSubring K hfm
+          hfn)
     rw [criticalSheetSourceSchurLift, IsLocalization.lift_eq]
     rw [← criticalSheetChartPrime_eq_of_singular K σ hsing] at ht
     exact ht

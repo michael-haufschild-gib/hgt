@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitCoordinates
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapPowers
 import GaloisForLFunctions.HTGeometry.PolynomialODEOddCompactReflected2
 
 /-! # Exact coupled-coordinate signed even moment 1 -/
@@ -44,7 +45,9 @@ def evenCompactUnitMomentOne (r t v : ℝ) : ℝ :=
 /-- Exact drift-square substitution; this identity assumes no sign or approximation. -/
 theorem evenCompactUnitMomentOne_eq (u t v : ℝ) :
     (-1 : ℝ)^1*(oddCompactReflectedScalar2 u (evenCompactUnitGap (u^2) t) (u*(1+v/4)))/(100 : ℝ)^1 = evenCompactUnitMomentOne (u^2) t v := by
-  unfold oddCompactReflectedScalar2 evenCompactUnitGap evenCompactUnitMomentOne
+  unfold oddCompactReflectedScalar2
+  rw [evenCompactUnitGap_pow_two, evenCompactUnitGap_pow_three]
+  unfold evenCompactUnitGap evenCompactUnitGapPow2 evenCompactUnitGapPow3 evenCompactUnitMomentOne
   ring
 
 end

@@ -1176,8 +1176,35 @@ continuity. Common integrable original Green primitives over any infinite
 prime set exist exactly for the zero source. This extends the Meyer
 obstruction to the full L1 class and retains the positive injectivity law.
 [Original-circle L1 classification](../3-formalized/route-l-l1-original-circle-injectivity.md).
-The next [local Green boundary attack](route-l-l1-local-green-boundary-jump.md)
-constructs the actual non-L1 primitive and its complete two-ended jump.
+The [local Green boundary classification](../3-formalized/route-l-l1-local-green-boundary-jump.md)
+now constructs the literal cellwise L1 primitive and its complete two-ended
+jump. Every original primitive differs by a periodic cell value, so both
+endpoint limits follow and their difference is always the same original
+periodization. Every prime mode of the damping-two jump remains nonzero.
+The generic calculus is separated from the concrete source application;
+both pass under default Lean limits. The [weighted original Green
+Mellin comparison](../3-formalized/route-l-weighted-original-green-mellin.md)
+now identifies the same literal primitive with the original resolvent
+`M(f)(s)/(1-p^(-s))` on its admitted positive-weight strip. At damping one,
+every native Xi order, every lower vanishing jet, and the exact nonzero
+leading coefficient survive, with the original prime denominator retained.
+This includes every derivative of the actual Mellin integral function;
+identification with all polynomially weighted Green integrals remains
+separate. The
+[original boundary-residue theorem](../3-formalized/route-l-original-green-boundary-residues.md)
+now proves meromorphic continuation on the damping-two source strip,
+simple poles at every original prime harmonic, and exact equality of each
+nonzero Laurent residue with the corresponding Fourier coefficient of the
+complete two-ended jump, with the original frequency sign and measure.
+Both modules pass the final leaf audit under default Lean limits. The
+[full Xi norm theorem](../3-formalized/route-l-original-green-full-xi-bound.md)
+now derives a polynomial reciprocal-denominator bound uniform in every
+original prime and actual Xi zero. The actual Gaussian moments and a common
+source-prefix envelope prove convergence of the literal Green fields in
+the original full Xi norm, with every multiplicity copy retained. Original
+Gamma residue normalization and full native-depth Tate graph convergence
+also pass Lean. All three final leaf audits passed under default limits;
+the shared coordinate estimate is reused, and no heartbeat increase is used.
 Complete Green/BV-to-fixed-physical agreement remains open; damping
 continuation cannot assume the absence of the poles it encounters.
 

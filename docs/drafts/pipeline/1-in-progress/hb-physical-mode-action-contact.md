@@ -368,17 +368,19 @@ with only existing large-file warnings.
 
 Construct the full temporal current's two power counterterms and its
 possible logarithmic counterterm from the now controlled Green blocks.
-The exact original homogeneous horizon decomposition is already in
+The exact original homogeneous horizon decomposition is in
 `ThetaCuspHawkingBMOriginalHorizonBasis`; the normalizable left mode's
 opposite coefficient is connection/(2w), proved in
-`ThetaCuspHawkingBMOriginalNormalizableHorizonDomain`. This supplies a
-specific cancellation to establish for the logarithmic channel.
+`ThetaCuspHawkingBMOriginalNormalizableHorizonDomain`. The original
+logarithmic channel now has a proved analytic extension through the
+physical connection zero, retaining its source-determined finite value.
 
 The original Gauss family now has a proved uniform second-order endpoint
-bound; the elementary Jacobian bound is also proved. Their propagation to
-the original incoming pairing core also passes its Lean scratch check. Assembly
-must still retain the explicit gradient lift, the full four-channel source,
-both Einstein contacts, and the opposite-mode logarithmic subtraction.
+bound; the elementary Jacobian bound is also proved. The incoming pairing
+has a proved two-counterterm restoration and physical residue, and the
+opposite pairing has a proved logarithmic restoration and zero residue.
+Assembly must retain the explicit gradient lift, the full four-channel
+source and both Einstein contacts, and restore the outer interval.
 Full-current residue interchange is not yet proved.
 
 ### Direct analytic split for the incoming channel
@@ -509,7 +511,7 @@ and analyticity of the restored finite part for a frequency-dependent
 kernel with a common O(z) endpoint remainder. Its warning-free exact
 audit passed (6.3 seconds, two jobs, three cached project imports); its
 umbrella import is wired.
-The native opposite-mode application must first derive a common nonzero
+The native opposite-mode application derives a common nonzero
 incoming-mode interval; unlike the incoming square, the opposite density
 cannot use totalized division at a zero of h. Shrinking to that interval
 preserves A_b by the exact Q=A_b+P identity evaluated at the new cutoff.
@@ -521,15 +523,26 @@ It derives the original product's common bounds |V-1/2|<=Cz and |V|<=M,
 frequency analyticity and spatial continuity, and its exact density
 identity under h!=0. Its source and artifacts are installed and its
 umbrella import is wired.
-The native logarithmic-restoration scratch combines the Gauss nonzero
+`ThetaCuspHawkingBMOppositePairingFinitePart` combines the Gauss nonzero
 neighborhood with the source primitive's neighborhood, proves A_b is
 preserved at their common smaller cutoff, and derives the original
-c_minus*G*h(-w)/[2z sqrt(1-z)] logarithmic cutoff limit. That native
-application is prepared but not yet verified.
- This proves the paper mechanism for regularity while
-retaining the logarithmic finite part. Lean still needs the
-native logarithmic cutoff theorem and extension identity; no
-analytic extension is inferred from totalized point values at the pole.
+c_minus*G*h(-w)/[2z sqrt(1-z)] logarithmic cutoff limit. Its scratch check
+and exact leaf audit passed without warnings (87 seconds, two jobs,
+4,335 cached project import metadata entries). Source, artifacts and
+umbrella import are installed. The theorem
+`oppositePairingFinitePart_horizon_restoration` supplies analytic L_b,
+K_b and P_b at the same cutoff used by the original integral.
+
+`ThetaCuspHawkingBMPhysicalOppositePairingRegularity` proves the physical
+analytic extension, its source-determined resonance value, the punctured
+limit of the actual restored pairing, its zero residue, and its original
+logarithmic cutoff restoration on the same common cutoff. Its exact leaf
+audit passed without warnings (107 seconds, two jobs, 4,341 cached project
+import metadata entries). Source, artifacts and umbrella import are
+installed. Denominator cancellation is isolated in a seven-variable scalar
+lemma, avoiding normalization of expanded Green integrals; resource limits
+are unchanged. Analyticity is proved for the explicit extension, not
+inferred from the totalized pairing's assigned value at the pole.
 
 Corpus searches include broad single-word queries, deep all-view method
 retrieval, unlimited per-module results, pagination and exclusion of HB
@@ -544,9 +557,345 @@ and actual connection slope are the useful verified ingredients. Broad
 arXiv queries also explored transgression, gluing and renormalization;
 no retrieved June–September 2026 theorem supplied an applicable ingredient.
 
-Latest repository lint reports three unreachable modules outside these edits:
-`ThetaCuspHawkingBMClearedOnsetPulseTransform`,
-`ThetaCuspHawkingBMOnsetPulseTransform`, and `XiAffineCollisionControl`.
-No lint errors name the new incoming-restoration leaves; their umbrella
-imports are present and their exact audits passed. The global lint gate
-is not claimed passed for this state.
+Latest repository lint exits with five unreachable modules outside these edits:
+`RHTower.DeningerOriginalGreenPoleCalculus`,
+`RHTower.ThetaCuspHawkingBMHorizonCoordinateJets`,
+`HTGeometry.ElementaryHorizonJets`,
+`HTGeometry.SecondEndpointMellinLaurentInterchange`, and
+`HTGeometry.UniformSecondOrderJet`.
+The new restoration and outer-pairing leaves are wired and their exact
+audits passed. The global lint gate is not claimed passed for this state.
+
+
+### Frequency Lagrange route for full radial assembly
+
+The corpus supplies the complex compact-interval Lagrange identity in
+`HTGeometry.SturmLagrangeIdentity` and the actual forced radial bracket in
+`ThetaCuspHawkingBMOriginalForcedBoundaryPairing`. The next candidate uses
+frequency differentiation of the original normalizable solution n. In the
+tortoise equation G''-(w^2+V)G=F, where F is minus the corpus
+`originalForcing`, and n''-(w^2+V)n=0, putting v=partial_w n
+gives v''-(w^2+V)v=2*w*n, hence
+
+```
+2*w*integral_L^0 G*n = [G*v'-G'*v]_L^0 + integral_L^0 F*v.
+```
+
+This is a paper mechanism, not yet an endpoint theorem in Lean. It requires
+the actual mixed frequency/radial derivatives and restored Wronskian limit;
+the compact-interval identity alone does not supply those conclusions.
+The original outer source already has a common bounded majorant through
+z=1 (`outerSource_uniform_bound`), and its actual integral is entire
+(`outerSourceIntegral_entire`). These are available ingredients for the
+remaining outer-endpoint proof.
+
+The mechanism has an exact normalization check from the existing Gamma
+formulas. At a fundamental connection zero, the other Gamma argument is
+w+3/2, so Gamma recurrence gives
+
+```
+connectionSimpleSlope(w,chi,side) = 2*w*normFinitePart(w).
+```
+
+Consequently the already integrated temporal Laurent density simplifies
+on paper to
+
+```
+(physicalAngularParameter(q)^2-1/4-2) * physicalSelfSourceCoefficient(q)
+  * fundamentalSourceMoment(w,s,a) * continuedOnset(s,w)
+  * modeAngularSquare(physicalModeAngularJet(q,z)).
+```
+
+This cancellation identifies the desired source quantity in the full
+restored action. It does not by itself interchange the original current's
+radial exhaustion and frequency residue. This exact simplification is not
+yet a new Lean theorem.
+
+Latest broad searches include transposition and Lagrange, with all retrieval
+views, uncapped module hits and (for Lagrange) exclusion of HB modules.
+The Lagrange method retrieval located the actual integrated Sturm bracket;
+its proposed polynomial-interpolation ingredient set is not applicable.
+Retrieval completed, but compiler metadata remains mostly pending and
+semantic coverage unavailable. The scoped outer search located the actual
+uniform-bound and entire-integral theorems above. ArXiv Volterra and
+isospectral searches with a recent-date preference returned older papers;
+`Isospectrality and heat content` (arXiv:1304.4030, revised 2014) was opened.
+No external theorem from it has been used in these proofs.
+
+
+The outer-integral candidate uses the regular tortoise ODE rather than a
+Gauss estimate at z=1. `continuedTortoiseGreen_hasDerivAt` and
+`continuedTortoiseGreen_equation` supply its actual two spatial derivatives
+and forced equation on t<0. On a fixed interval T<=t<0, the potential
+horizonCoordinate(t)*(1/4+chi^2) is bounded. A common frequency ball and
+bounded initial values of the connection-cleared response and its first
+derivative at T therefore give a uniform bound on both via Gronwall.
+The same argument applies to the normalizable mode. Their product then
+has a constant integrable majorant on (T,0), allowing frequency analyticity
+of the cleared outer pairing by the Cauchy-dominated integral theorem.
+
+The stronger usable corpus estimate is
+`forcedSecondOrder_horizon_bound_symmetric` in `HTGeometry.SymmetricHorizonGrowth`.
+Its original principal-frequency application is
+`JointSourceClearedUniformBound.clearedPrincipalDifference_compact_bound`.
+The independent-angular-frequency application now passes Lean in
+`ThetaCuspHawkingBMReducedGreenUniformBound` (scratch and exact leaf audit
+passed without warnings; 67 seconds, two jobs, 4,326 cached project imports).
+Its source, artifacts and umbrella import are installed. It uses the already
+defined `clearedReducedGreen`, including its explicit gradient lift, and
+proves the corresponding first jet and actual cleared ODE:
+
+```
+U'' = w^2*U + z(t)*(1/4+chi^2)*U - F_clr,
+F_clr = -connection(w,chi)*reducedCoefficient(s,w,a,clearedOnset(s,w),t).
+```
+
+Both initial jets are analytic in frequency. The existing
+`reducedCoefficient_family_norm_le_exp` derives the compact-family forcing
+bound. The resulting theorem `clearedReducedGreen_compact_bound` states
+
+```
+|U(w,t)| <= C*exp(-|Re(w)|*t),
+  w in interior(Omega), t<0,
+```
+
+for every compact Omega in the nonreal strip Re(w)>-2. The estimate extends
+through source and connection zeros using continuity of the explicit
+analytic numerator. It does not require an ODE for a totalized response at
+those zeros. `physicalClearedReducedGreen_outer_uniform_bound` then derives,
+for each Xi copy, branch, side and finite T, a frequency ball and one
+constant bounding the actual full reduced numerator for all T<=t<0.
+No forcing, growth, initial-data or resonance-regularity premise is supplied
+to that physical theorem. Denominator algebra is isolated in scalar lemmas;
+resource limits are unchanged.
+
+The common bound for the frequency-dependent normalizable left mode and
+Cauchy-dominated integration of its product with this numerator now pass
+Lean in the outer-pairing leaf described below. `outerGauss_uniform_bound`
+and the positive-radius power formula supply the concrete estimates. Spatial
+continuity of the undivided moments is available through
+`horizonFirstMoment_hasDerivAt` and `outerSourceIntegral_hasDerivAt` in
+`JointSourceClearedRadialAdmission`. The full temporal current still needs
+all four source channels and both contacts assembled before its residue
+interchange is proved.
+
+A broad deep `Gronwall` search also located the phase-pair proof in
+`HTGeometry.LinearSecondOrderComparison.phasePair_norm_le`. Its existing
+statement is real and homogeneous; its useful mechanism is controlling
+the solution and first derivative together. The native application needs
+the complex forced pair and actual source bounds described above. The
+retrieval completed over 56,989 inventoried files, with 44,547 compiler
+entries pending and stale snapshots reported; candidates, source methods,
+proof ideas and ingredient sets were inspected, not treated as verified
+applications.
+
+Further broad searches used `forced`, `normalizable`, and OR matching for
+`bound uniform`, plus a deep query describing the paired complex forced
+ODE mechanism. The bound query was partial; its candidate and method
+sections led to the existing cleared-principal estimate and its underlying
+symmetric growth theorem. The normalizable query completed retrieval over
+56,998 files, with compiler metadata mostly pending and stale coverage
+snapshots reported. Its normalizable boundary theorem still assumes the
+original chamber and is not used as a uniform continued-frequency bound.
+Broad arXiv searches for Volterra and impedance included
+[Volterra Generative Models](https://arxiv.org/abs/2606.18071), submitted
+16 June 2026. Its approximate stochastic lifts supply no exact theorem
+used in this deterministic Green-response proof.
+
+### Actual outer pairing and residue
+
+The explicit outer Gauss factor and positive-radius power formula derive
+one uniform bound for `normalizable(u,chi,z(t))` on a frequency ball and
+T<t<0. Combined with the full reduced numerator bound above, this gives
+absolute integrability and frequency analyticity of
+
+```
+R_T(w) = integral_(T,0) clearedReducedGreen(w,chi,s,a,t)*n(w,t) dt.
+```
+
+The original pairing is
+`Q_T(w)=integral_(T,0) continuedReducedGreen(w,chi,s,a,1,t)*n(w,t) dt`.
+Its original scalar denominator gives the exact identity
+`R_T(w)=D(w)*Q_T(w)`, where `D(w)=-(w-2*s)*connection(w,chi)`.
+At each physical fundamental w0, the actual fixed-source factorization
+then gives
+
+```
+lim_(w->w0) (w-w0)*Q_T(w)
+  = [fundamentalSourceMoment(w0,s,a)*clearedOnset(s,w0)
+       /physicalFundamentalDenominatorSlope(q,branch,side)]
+      *integral_(T,0) n(w0,t)^2 dt.
+```
+
+The same amplitude already occurs in the restored incoming horizon block.
+The outer integral is taken before the frequency limit. This argument
+retains the original reduced response's gradient lift. The prepared Lean
+leaf `ThetaCuspHawkingBMReducedOuterPairing` passes its scratch check and
+exact leaf audit without warnings (34 seconds, two jobs, 4,332 cached
+project imports). Source, artifacts and umbrella import are installed.
+Matching the inner and
+outer coordinate cutoffs and assembling the complete source/contact
+current remain separate obligations. No source-moment or onset
+nonvanishing follows from the residue identity alone.
+
+### Common-cutoff fundamental norm
+
+The joining identity is now proved for every actual fundamental frequency
+and every T<0, with b=horizonCoordinate(T):
+
+```
+incomingNormFinitePart(chi,b,w0)
+  + integral_(T,0) n(w0,t)^2 dt = D4BMFundamentalNorm.normFinitePart(w0).
+```
+
+`D4BMFundamentalNorm.physicalFundamentalNorm_join` in
+`ThetaCuspHawkingBMFundamentalNormJoin`
+identifies the incoming Gauss factor with sqrt(1-z), its first coefficient
+with -1/2, and the pairing kernel with sqrt(1-z)/2. Its two subtraction
+coefficients are exactly 1/2 and -1/4. The exact
+`QuadraticEndpointMellin.cutoff_eq` identity then cancels the arbitrary
+cutoff against the original tortoise-coordinate outer integral. The
+finite part at upper endpoint one equals the already established
+`D4BMFundamentalNorm.normFinitePart`; no new normalization is assigned.
+
+Scratch and exact leaf audit passed without warnings (28 seconds, two
+jobs, 4,415 cached project imports). Source, five artifacts and umbrella
+import are installed. Small scalar identities and integral congruences
+keep elaboration local; no resource limits were raised.
+
+### Regular horizon branch joined to the original outer integral
+
+The verified `ThetaCuspHawkingBMRegularOuterPairing` derives frequency
+analyticity of the actual Wronskian coefficient Aplus(w), with Aplus(w0)=1
+supplied by the original fundamental normalization theorem. Continuity of
+the original horizon coordinate and the intermediate value theorem match
+the restored horizon cutoff to an actual T<0. Thus
+
+```
+S_T(w) = Aplus(w)*incomingPairingFinitePart(s,chi,a,1,K,z(T),w)
+           +continuedReducedOuterPairing(chi,s,a,T,w)
+lim_(w->w0) (w-w0)*S_T(w)
+  = physicalIncomingPoleAmplitude(q,branch,side,a)*normFinitePart(w0).
+```
+
+`regularOuterPairingCutoff` retains the original positive-cutoff incoming
+integral and both derived counterterms, multiplied by Aplus(w), then adds
+the original outer integral. Its cutoff limit is S_T(w) on the actual
+connection-nonzero germ. This restoration precedes the frequency-residue
+limit. The theorem constructs its matching cutoff and frequency ball;
+neither is an added premise. Scratch and exact leaf audit passed without
+warnings (37 seconds, two jobs, 4,419 cached project imports). Source, five
+artifacts and umbrella import are installed; no resource limits changed.
+
+The opposite horizon block and inner explicit lift still need admission
+at this same cutoff, followed by all four source channels and both
+Einstein contact terms. The assembled current, retained pairing survival,
+fixed Hawking-clock extinction and RH remain unproved.
+
+Broad searches for gluing, cutoff and tortoiseOf and natural-language deep
+method searches were inspected alongside candidate lemmas, source
+arguments and proposed ingredient sets. The exact quadratic Mellin
+identity was applicable; generic lattice-join suggestions were not. The
+Wronskian search recovered both actual frequency-analytic radial jets.
+Coverage inventoried about 57,010 files, with most compiler metadata
+pending and semantic coverage unavailable; the Wronskian deep request was
+partial. New candidate applications were verified by Lean. Broad arXiv
+factorization searches included the July 2026
+[Landweber unique-factorization paper](https://arxiv.org/abs/2607.03475);
+its algebraic finite-jet result is not used in this analytic cutoff proof.
+
+The repository lint gate still reports unreachable modules outside this
+work, including the pending horizon-jet and endpoint-interchange leaves.
+Both new joining modules are wired and passed exact audits; global lint
+is not claimed passed. Frontier map and universal STATUS were not edited.
+
+### Simultaneous incoming/opposite cutoff restoration
+
+The two restoration theorems now hold at every sufficiently small positive
+cutoff, using one frequency ball and one upper cutoff. The endpoint
+amplitude is re-centered exactly by Q(z)=Q(b)-P(b)+P(z), so restriction
+preserves the original response and counterterms. Existing theorem
+signatures remain as corollaries at the upper cutoff. Scratch checks and
+exact leaf audits passed for `ThetaCuspHawkingBMIncomingPairingFinitePart`
+(124 seconds, two jobs, 4,337 cached project imports) and
+`ThetaCuspHawkingBMOppositePairingFinitePart` (9.3 seconds, two jobs, 4,335
+cached project imports). Updated sources and artifacts are installed.
+
+The active joining proof takes a cutoff below both bounds and retains the
+actual normalizable decomposition n=Aplus*horizon+connection/(2w)*horizon(-w).
+The proposed finite part is Aplus*incomingPairingFinitePart plus
+oppositePairingFinitePart. Its original single-integral restoration keeps
+both power counterterms and the logarithmic counterterm. Spatial
+integrability is derived from `continuedResponse_hasDerivAt` and the
+actual mode jets before applying integral additivity. The incoming
+residue is the original fixed-source amplitude times N_b; the opposite
+block has an analytic extension and zero residue at this same b. Joining
+the original outer integral should then give the established full radial
+norm with the same source amplitude. The original single-integral splitting theorem in
+`ThetaCuspHawkingBMNormalizableHorizonPairing` has passed scratch and exact
+leaf audit (100 seconds, two jobs, 4,341 cached project imports); source,
+five artifacts and umbrella import are installed. The physical residue
+and simultaneous restoration theorem is now proved in
+`ThetaCuspHawkingBMPhysicalNormalizablePairing`:
+
+```
+F_T(w) = Aplus(w)*incomingPairingFinitePart(w)
+           +oppositePairingFinitePart(w)+Q_T(w)
+lim_(w->w0) (w-w0)*F_T(w)
+  = physicalIncomingPoleAmplitude(q,branch,side,a)*normFinitePart(w0).
+```
+
+`physicalNormalizableOuterPairing_residue_and_restoration` constructs one
+T<0 and one frequency ball. On the original connection-nonzero germ,
+`normalizableOuterPairingCutoff` tends to F_T(w): this expression contains
+the single original normalizable horizon integral, both power
+counterterms, the logarithmic counterterm, and the original outer
+integral. The proof derives ordinary spatial integrability before
+splitting the horizon integral. The opposite analytic extension and its
+zero residue are established at exactly the same b=horizonCoordinate(T)
+as the incoming block. The source amplitude and normalization remain the
+original ones. Scratch and exact leaf audit passed without warnings
+(10 seconds, two jobs, 4,425 cached project imports); source, five
+artifacts and umbrella import are installed. The scalar source-endpoint
+step uses explicit normalization and mul_sub instead of expanding the
+source integral inside ring. No resource limits were raised.
+
+Inner explicit lift and complete source/contact assembly remain open.
+
+The next inner-lift correction has a concrete source-derived kernel.
+Writing r=sqrt(1-z), the actual definitions give
+
+```
+radialLift(s,w,a,T,t)
+  = (-s*(s-1)/4)*z^(w/2)*(1+r)^(2*s-w)*a^2*T*r^3.
+```
+
+Thus its incoming pairing density is z^(w-1) times
+`(-s*(s-1)/8)*amplitudeProfile(s,a,T,w,z)*(1-z)*H_w(z)`;
+the opposite pairing has z^(-1) and H_(-w) instead. The leading kernel
+need not vanish. The proposed correction therefore retains two incoming
+power subtractions and one opposite logarithmic subtraction.
+`ThetaCuspHawkingBMHorizonCoordinateJets` already supplies
+`radialLift_eq_profile`, `amplitudeProfile_jet` and `liftProfile_jet`.
+Combining the amplitude jet with the exact factor 1-z and the Gauss jet
+avoids introducing an inverse-square-root estimate. The fixed onset is
+analytic off its source pole, separated from every physical fundamental
+frequency by the existing source-rate theorem. This suggests an analytic
+lift finite part with zero physical pole residue, but the paired
+finite-part restoration is not yet proved.
+
+The restriction, cutoff-method, continuedResponse and lift searches used
+broad and deep corpus retrieval, including source arguments and proposed
+ingredient sets. The actual spatial derivative theorem and explicit
+amplitude/lift jets supplied applicable ingredients; generic restriction
+and transport suggestions did not replace the required source identity.
+Retrieval completed with compiler metadata mostly pending and semantic
+coverage unavailable. Broad arXiv sewing/localization searches included
+[nonlocal localization](https://arxiv.org/abs/2606.27387), June 2026. Its
+normalized detector-kernel variance law supplies no theorem used in this
+complex bilinear radial pairing. No computation was run.
+
+All four affected leaves passed scratch and exact-module checks with no
+resource-limit increases. New imports are wired; no umbrella build ran.
+The current repository lint gate reports eight outside-edit unreachable
+modules, listed on the formalized card. Global lint is not claimed passed.

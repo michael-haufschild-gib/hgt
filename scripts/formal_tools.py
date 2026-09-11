@@ -791,6 +791,67 @@ def run_lake_build(target: str | None) -> tuple[int, str]:
     return result.returncode, result.stdout + result.stderr
 
 
+HEARTBEAT_CEILING = 800_000
+HEARTBEAT_BASELINE = FORMAL / "heartbeat-baseline.txt"
+_HEARTBEAT_RE = re.compile(r"^\s*set_option\s+(maxHeartbeats|synthInstance\.maxHeartbeats)\s+(\d+)", re.M)
+
+
+def heartbeat_maxima(*, src: Path = SRC) -> dict[str, int]:
+    """Highest heartbeat budget each Lean file asks for, keyed by repo-relative path."""
+    found: dict[str, int] = {}
+    for path in sorted(src.rglob("*.lean")):
+        values = [int(m.group(2)) for m in _HEARTBEAT_RE.finditer(path.read_text(encoding="utf-8"))]
+        if values:
+            found[rel(path)] = max(values)
+    return found
+
+
+def read_heartbeat_baseline() -> dict[str, int]:
+    if not HEARTBEAT_BASELINE.exists():
+        return {}
+    baseline: dict[str, int] = {}
+    for line in HEARTBEAT_BASELINE.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        value, _, name = line.partition(" ")
+        baseline[name.strip()] = int(value)
+    return baseline
+
+
+def write_heartbeat_baseline(maxima: dict[str, int]) -> None:
+    lines = [
+        "# Grandfathered heartbeat budgets: <max-heartbeats> <path>.",
+        f"# The lint ceiling is {HEARTBEAT_CEILING}. Entries here may only shrink -- lowering a",
+        "# number is always accepted and re-recorded; raising one, or adding a new file above the",
+        "# ceiling, fails the lint. Delete a line once its file is at or below the ceiling.",
+    ]
+    lines += [f"{value} {name}" for name, value in sorted(maxima.items(), key=lambda kv: (-kv[1], kv[0]))]
+    HEARTBEAT_BASELINE.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def heartbeat_errors() -> list[str]:
+    """Ratchet: no new file may exceed the ceiling, and no file may raise its recorded budget."""
+    maxima = heartbeat_maxima()
+    baseline = read_heartbeat_baseline()
+    errors: list[str] = []
+    for name, value in sorted(maxima.items()):
+        if value <= HEARTBEAT_CEILING:
+            continue
+        allowed = baseline.get(name)
+        if allowed is None:
+            errors.append(
+                f"heartbeat budget {value} exceeds the {HEARTBEAT_CEILING} ceiling: {name}; "
+                "optimize the proof instead of raising the budget"
+            )
+        elif value > allowed:
+            errors.append(
+                f"heartbeat budget raised from {allowed} to {value}: {name}; "
+                "the grandfathered baseline may only shrink"
+            )
+    return errors
+
+
 def lint(args: argparse.Namespace) -> int:
     errors: list[str] = []
     warnings: list[str] = []
@@ -828,6 +889,8 @@ def lint(args: argparse.Namespace) -> int:
     if formal_claude.exists() and formal_agents.exists():
         if formal_claude.read_text(encoding="utf-8") != formal_agents.read_text(encoding="utf-8"):
             errors.append("formal/CLAUDE.md and formal/AGENTS.md have drifted")
+
+    errors.extend(heartbeat_errors())
 
     for f in proof_debt():
         errors.append(f"proof debt: {f.relpath}:{f.line}: {f.text} ({f.context})")

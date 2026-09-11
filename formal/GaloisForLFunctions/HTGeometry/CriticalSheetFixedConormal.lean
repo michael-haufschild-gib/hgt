@@ -136,12 +136,14 @@ theorem criticalSheet_reduced_inv (σ : criticalGeometricSheet K m n) :
     (X : (IsLocalRing.ResidueField (criticalNormalClosureSchurValuationSubring K
         (Fact.out : 0 < m) (Fact.out : 0 < n)))[X]) ^ (m + n)
       ∣ criticalSheetReducedRawPolynomial K σ * criticalSheetReducedRecipPolynomial K σ - 1 := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   rw [criticalSheetReducedRawPolynomial_eq, criticalSheetReducedRecipPolynomial_eq]
   exact (dvd_criticalLowProduct_sub_one_iff_mul_sub_one
-    (X_pow_dvd_reduced_criticalNormalClosureSchurRawTailIntegral K (Fact.out : 0 < m)
-      (Fact.out : 0 < n))
-    (X_pow_dvd_reduced_criticalNormalClosureSchurReciprocalTailIntegral K (Fact.out : 0 < m)
-      (Fact.out : 0 < n)) _ _).mp
+    (X_pow_dvd_reduced_criticalNormalClosureSchurRawTailIntegral K hfm
+      hfn)
+    (X_pow_dvd_reduced_criticalNormalClosureSchurReciprocalTailIntegral K hfm
+      hfn) _ _).mp
       (criticalGeometricSheetToSchurReducedFibre K (Fact.out : 1 < m)
         (Fact.out : 1 < n) σ).2.2.2
 

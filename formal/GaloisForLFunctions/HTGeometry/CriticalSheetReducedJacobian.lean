@@ -60,16 +60,18 @@ theorem criticalSheet_recipPolynomialIntegral_map (σ : criticalGeometricSheet K
       = (criticalGeometricSheetToSchurFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ).1.2
         + criticalNormalClosureSchurReciprocalTailIntegral K (Fact.out : 0 < m)
             (Fact.out : 0 < n) := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   refine Polynomial.map_injective
-    ((criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-      (Fact.out : 0 < n)).subtype) Subtype.val_injective ?_
+    ((criticalNormalClosureSchurValuationSubring K hfm
+      hfn).subtype) Subtype.val_injective ?_
   rw [Polynomial.map_map, criticalSheetSourceSchurLift_comp, ← Polynomial.map_map,
     map_criticalSourceRecipPolynomialIntegral, Polynomial.map_add,
     map_criticalNormalClosureSchurReciprocalTailIntegral]
   have hfibre : ((criticalGeometricSheetToSchurFibre K (Fact.out : 1 < m)
       (Fact.out : 1 < n) σ).1.2).map
-      ((criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-        (Fact.out : 0 < n)).subtype)
+      ((criticalNormalClosureSchurValuationSubring K hfm
+        hfn).subtype)
       = (criticalSourceReciprocalLow K m n).map σ.toRingHom :=
     congrArg (fun p => p.1.2)
       (criticalFibreMap_criticalGeometricSheetToSchurFibre K

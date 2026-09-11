@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitCoordinates
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapPowers
 import GaloisForLFunctions.HTGeometry.PolynomialODEOddCompactReflected6
 
 /-! # Exact coupled-coordinate signed even moment 3 -/
@@ -146,7 +147,9 @@ def evenCompactUnitMomentThree (r t v : ℝ) : ℝ :=
 /-- Exact drift-square substitution; this identity assumes no sign or approximation. -/
 theorem evenCompactUnitMomentThree_eq (u t v : ℝ) :
     (-1 : ℝ)^3*(oddCompactReflectedScalar6 u (evenCompactUnitGap (u^2) t) (u*(1+v/4)))/(100 : ℝ)^3 = evenCompactUnitMomentThree (u^2) t v := by
-  unfold oddCompactReflectedScalar6 evenCompactUnitGap evenCompactUnitMomentThree
+  unfold oddCompactReflectedScalar6
+  rw [evenCompactUnitGap_pow_two, evenCompactUnitGap_pow_three, evenCompactUnitGap_pow_four, evenCompactUnitGap_pow_five]
+  unfold evenCompactUnitGap evenCompactUnitGapPow2 evenCompactUnitGapPow3 evenCompactUnitGapPow4 evenCompactUnitGapPow5 evenCompactUnitMomentThree
   ring
 
 end

@@ -70,21 +70,23 @@ theorem criticalSheet_jacobian_mulVec_conormal
         ((IsLocalRing.residue (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
           (Fact.out : 0 < n))).comp (criticalSheetSourceSchurLift K σ hsing))).mulVec
       (criticalNormalSchurConormalVector K δ) = 0 := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   funext t
   have hsum := criticalSchur_jacobian_conormal_mem_maximalIdeal K δ hδ t
-  set f := (IsLocalRing.residue (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-    (Fact.out : 0 < n))).comp (criticalSheetSourceSchurLift K σ hsing) with hf
+  set f := (IsLocalRing.residue (criticalNormalClosureSchurValuationSubring K hfm
+    hfn)).comp (criticalSheetSourceSchurLift K σ hsing) with hf
   have key : ∀ s : Fin m ⊕ Fin n,
       f (criticalObservationJacobian K (m := m) (n := n) t s) *
           criticalNormalSchurConormalVector K δ s
         = f (criticalObservationJacobian K (m := m) (n := n) t s *
           algebraMap
-            (criticalSchurObservationValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n))
-            (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n))
+            (criticalSchurObservationValuationSubring K hfm hfn)
+            (criticalSchurSourceValuationSubring K hfm hfn)
             ((criticalObservationBlockCotangentBasis K (m := m) (n := n)).repr
               (KaehlerDifferential.D K
-                (criticalSchurObservationValuationSubring K (Fact.out : 0 < m)
-                  (Fact.out : 0 < n)) δ) s)) := by
+                (criticalSchurObservationValuationSubring K hfm
+                  hfn) δ) s)) := by
     intro s
     rw [map_mul]
     congr 1
@@ -101,13 +103,15 @@ theorem exists_criticalNormalSchurConormalVector_ne_zero :
     ∃ δ : criticalSchurObservationValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n),
       δ ∈ maximalIdeal (criticalSchurObservationValuationSubring K (Fact.out : 0 < m)
         (Fact.out : 0 < n)) ∧ criticalNormalSchurConormalVector K δ ≠ 0 := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   obtain ⟨δ, hδ, s, hs⟩ := exists_mem_maximalIdeal_repr_D_notMem_maximalIdeal K (m := m) (n := n)
   refine ⟨δ, hδ, fun hcon => ?_⟩
   have hzero : criticalNormalSchurConormalVector K δ s = 0 := by rw [hcon]; rfl
   rw [criticalNormalSchurConormalVector] at hzero
   have hunit : IsUnit ((criticalObservationBlockCotangentBasis K (m := m) (n := n)).repr
       (KaehlerDifferential.D K
-        (criticalSchurObservationValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n)) δ) s) :=
+        (criticalSchurObservationValuationSubring K hfm hfn) δ) s) :=
     IsLocalRing.notMem_maximalIdeal.mp hs
   exact (IsLocalRing.notMem_maximalIdeal.mpr (hunit.map _))
     ((IsLocalRing.residue_eq_zero_iff _).mp hzero)

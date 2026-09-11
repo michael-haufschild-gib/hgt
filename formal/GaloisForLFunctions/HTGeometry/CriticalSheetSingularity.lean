@@ -41,11 +41,13 @@ theorem criticalSheetFibre_recipPolynomial_map (σ : criticalGeometricSheet K m 
         ((criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
           (Fact.out : 0 < n)).subtype)
       = (criticalSourceReciprocalPolynomial K m n).map σ.toRingHom := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   rw [Polynomial.map_add, map_criticalNormalClosureSchurReciprocalTailIntegral]
   have hfibre : ((criticalGeometricSheetToSchurFibre K (Fact.out : 1 < m)
       (Fact.out : 1 < n) σ).1.2).map
-      ((criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-        (Fact.out : 0 < n)).subtype)
+      ((criticalNormalClosureSchurValuationSubring K hfm
+        hfn).subtype)
       = (criticalSourceReciprocalLow K m n).map σ.toRingHom :=
     congrArg (fun p => p.1.2)
       (criticalFibreMap_criticalGeometricSheetToSchurFibre K
@@ -86,8 +88,10 @@ theorem subtype_det_criticalReciprocalJacobian_sheet (σ : criticalGeometricShee
 theorem det_criticalReciprocalJacobian_mem_chartAlgebra :
     (criticalReciprocalJacobian (criticalSourceReciprocalPolynomial K m n) n m).det
       ∈ criticalSourceChartAlgebra K (m := m) (n := n) := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   rw [criticalSourceReciprocalJacobian_det_eq_schurRamification K
-    (Fact.out : 0 < m) (Fact.out : 0 < n)]
+    hfm hfn]
   refine Subalgebra.mul_mem _ (Subalgebra.mul_mem _ ?_ ?_) ?_
   · exact Subalgebra.pow_mem _ (Subalgebra.neg_mem _ (Subalgebra.one_mem _)) _
   · refine Subalgebra.pow_mem _ ?_ _
@@ -105,27 +109,29 @@ noncomputable def criticalSourceJacobianDetChart :
 theorem criticalSchurRamificationChartElement_dvd :
     criticalSourceJacobianDetChart K (m := m) (n := n)
       ∣ criticalSchurRamificationChartElement K (m := m) (n := n) := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   refine ⟨⟨(-1 : criticalSourceField K m n) ^ m *
-    (criticalSourceScale K (Fact.out : 0 < m) (Fact.out : 0 < n) ^ 2) ^ m, ?_⟩, ?_⟩
+    (criticalSourceScale K hfm hfn ^ 2) ^ m, ?_⟩, ?_⟩
   · refine Subalgebra.mul_mem _
       (Subalgebra.pow_mem _ (Subalgebra.neg_mem _ (Subalgebra.one_mem _)) _) ?_
     refine Subalgebra.pow_mem _ (Subalgebra.pow_mem _ ?_ _) _
     rw [criticalSourceScale]
     exact Algebra.subset_adjoin (Or.inl ⟨_, rfl⟩)
   · apply Subtype.ext
-    show MvPolynomial.aeval (criticalSourceSchurCoordinates K (Fact.out : 0 < m)
-        (Fact.out : 0 < n)) (criticalSourceSchurRamificationPolynomial K m n)
+    show MvPolynomial.aeval (criticalSourceSchurCoordinates K hfm
+        hfn) (criticalSourceSchurRamificationPolynomial K m n)
       = (criticalReciprocalJacobian (criticalSourceReciprocalPolynomial K m n) n m).det *
         ((-1 : criticalSourceField K m n) ^ m *
-          (criticalSourceScale K (Fact.out : 0 < m) (Fact.out : 0 < n) ^ 2) ^ m)
+          (criticalSourceScale K hfm hfn ^ 2) ^ m)
     rw [criticalSourceReciprocalJacobian_det_eq_schurRamification K
-      (Fact.out : 0 < m) (Fact.out : 0 < n)]
-    have hs : (criticalSourceScale K (Fact.out : 0 < m) (Fact.out : 0 < n) ^ 2) ≠ 0 :=
+      hfm hfn]
+    have hs : (criticalSourceScale K hfm hfn ^ 2) ≠ 0 :=
       pow_ne_zero 2 (criticalSourceScale_ne_zero K _ _)
     field_simp
     have hall : ((-1 : criticalSourceField K m n) ^ m) ^ 2 *
-        ((1 / criticalSourceScale K (Fact.out : 0 < m) (Fact.out : 0 < n) ^ 2) ^ m *
-          (criticalSourceScale K (Fact.out : 0 < m) (Fact.out : 0 < n) ^ 2) ^ m) = 1 := by
+        ((1 / criticalSourceScale K hfm hfn ^ 2) ^ m *
+          (criticalSourceScale K hfm hfn ^ 2) ^ m) = 1 := by
       rw [← mul_pow, one_div, inv_mul_cancel₀ hs, one_pow, mul_one, ← pow_mul, mul_comm m 2,
         pow_mul, neg_one_sq, one_pow]
     rw [mul_assoc, mul_assoc, hall, mul_one]
@@ -137,17 +143,19 @@ theorem criticalSheet_singular_of_det_eq_zero (σ : criticalGeometricSheet K m n
         (criticalSchurRamificationChartElement K (m := m) (n := n))
       ∈ maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
         (Fact.out : 0 < n)) := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   have hdetmem : criticalSheetChartToNormalSchur K σ
       (criticalSourceJacobianDetChart K (m := m) (n := n))
-      ∈ maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-        (Fact.out : 0 < n)) := by
+      ∈ maximalIdeal (criticalNormalClosureSchurValuationSubring K hfm
+        hfn) := by
     refine (IsLocalRing.residue_eq_zero_iff _).mp ?_
     have hval : criticalSheetChartToNormalSchur K σ
         (criticalSourceJacobianDetChart K (m := m) (n := n))
         = (criticalReciprocalJacobian
             ((criticalGeometricSheetToSchurFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ).1.2
-              + criticalNormalClosureSchurReciprocalTailIntegral K (Fact.out : 0 < m)
-                (Fact.out : 0 < n)) n m).det := by
+              + criticalNormalClosureSchurReciprocalTailIntegral K hfm
+                hfn) n m).det := by
       apply Subtype.ext
       exact (subtype_det_criticalReciprocalJacobian_sheet K σ).symm
     rw [hval, ← det_criticalReciprocalJacobian_criticalSheetReducedRecipPolynomial K σ]

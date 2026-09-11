@@ -87,11 +87,12 @@ theorem criticalSheet_tangent_recip_coeff_zero_ne_zero (σ : criticalGeometricSh
         + criticalSheetReducedRawPolynomial K σ * V)
     (hU0 : U.coeff 0 ≠ 0) :
     V.coeff 0 ≠ 0 := by
+  have hfm : 0 < m := Fact.out
   obtain ⟨w, hw⟩ := dvd_reciprocal_of_low_tangent (criticalSheet_reduced_inv K σ) htan
   have hzero : (V + criticalSheetReducedRecipPolynomial K σ *
       criticalSheetReducedRecipPolynomial K σ * U).coeff 0 = 0 := by
     rw [hw, Polynomial.mul_coeff_zero, Polynomial.coeff_X_pow,
-      if_neg (by have := (Fact.out : 0 < m); omega), zero_mul]
+      if_neg (by have := hfm; omega), zero_mul]
   rw [Polynomial.coeff_add, Polynomial.mul_coeff_zero, Polynomial.mul_coeff_zero] at hzero
   intro hV0
   rw [hV0, zero_add] at hzero
@@ -151,6 +152,8 @@ theorem criticalSchur_reducedFibre_eq_of_collisions [DecidableEq K]
       = criticalGeometricSheetToSchurReducedFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) τ') :
     criticalGeometricSheetToSchurReducedFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ
       = criticalGeometricSheetToSchurReducedFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ' := by
+  have hfm : 0 < m := Fact.out
+  have hfn : 0 < n := Fact.out
   classical
   obtain ⟨U, V, hUV, hU, hV, htan⟩ :=
     criticalSchur_exists_reduced_tangent_of_collision' K σ τ hne hr
@@ -166,7 +169,7 @@ theorem criticalSchur_reducedFibre_eq_of_collisions [DecidableEq K]
     · exact h (by rw [hUc, h0, map_zero, zero_mul])
     · exact h (by rw [hVc, h0, map_zero, zero_mul])
   have htanσ' : (X : (IsLocalRing.ResidueField (criticalNormalClosureSchurValuationSubring K
-      (Fact.out : 0 < m) (Fact.out : 0 < n)))[X]) ^ (m + n)
+      hfm hfn))[X]) ^ (m + n)
       ∣ U * criticalSheetReducedRecipPolynomial K σ'
         + criticalSheetReducedRawPolynomial K σ' * V := by
     have hfac : U' * criticalSheetReducedRecipPolynomial K σ'
@@ -177,11 +180,11 @@ theorem criticalSchur_reducedFibre_eq_of_collisions [DecidableEq K]
     rw [hfac] at htan'
     exact (IsUnit.dvd_mul_left (Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr hcne))).mp htan'
   have hU0 := criticalSheet_tangent_coeff_zero_ne_zero K σ hsing hU hV hUV htan
-  refine criticalFibre_eq_of_shared_coprime_tangent (Fact.out : 0 < m)
-    (X_pow_dvd_reduced_criticalNormalClosureSchurRawTailIntegral K (Fact.out : 0 < m)
-      (Fact.out : 0 < n))
-    (X_pow_dvd_reduced_criticalNormalClosureSchurReciprocalTailIntegral K (Fact.out : 0 < m)
-      (Fact.out : 0 < n))
+  refine criticalFibre_eq_of_shared_coprime_tangent hfm
+    (X_pow_dvd_reduced_criticalNormalClosureSchurRawTailIntegral K hfm
+      hfn)
+    (X_pow_dvd_reduced_criticalNormalClosureSchurReciprocalTailIntegral K hfm
+      hfn)
     (reduced_criticalNormalClosureSchurReciprocalTailIntegral_coeff_marked_ne_zero K
       (Fact.out : 1 < m) (Fact.out : 1 < n))
     _ _ hU hV (fun h => hU0 (by rw [h, Polynomial.coeff_zero]))

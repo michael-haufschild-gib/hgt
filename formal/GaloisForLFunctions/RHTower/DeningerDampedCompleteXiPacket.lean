@@ -127,7 +127,8 @@ private theorem dampedXiPrefix_step (a : {a : ℝ // 1<a}) (n : ℕ) (q : XiZero
   · exact deningerDampedPairedStrongLogDefect_mellin _ _ _ _
   · rfl
 
-private theorem dampedXiPrefix_pointwise_bounds (a : {a : ℝ // 1<a}) (n : ℕ) (q : XiZeroCopy) :
+/-- Coordinate bounds retain the Gaussian source profile through each original-prime step. -/
+theorem deningerDampedXiPrefix_pointwise_bounds (a : {a : ℝ // 1<a}) (n : ℕ) (q : XiZeroCopy) :
     ‖deningerDampedXiPrefix a (n+1) q‖ ≤
         Real.exp (2*deningerDampedXiStepWeight a.val (n+1))*‖deningerDampedXiPrefix a n q‖ ∧
       ‖deningerDampedXiPrefix a (n+1) q-deningerDampedXiPrefix a n q‖ ≤
@@ -156,7 +157,7 @@ theorem deningerDampedXiPrefix_step_bound (a : {a : ℝ // 1<a}) (n : ℕ) :
       apply lp.norm_mono (by norm_num : (2 : ENNReal) ≠ 0)
       intro q
       simpa only [lp.coeFn_smul,Pi.smul_apply,norm_smul,Complex.norm_real,Real.norm_eq_abs,
-        abs_of_pos (Real.exp_pos _)] using (dampedXiPrefix_pointwise_bounds a n q).1
+        abs_of_pos (Real.exp_pos _)] using (deningerDampedXiPrefix_pointwise_bounds a n q).1
     _ = _ := by simp only [norm_smul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _)]
 
 theorem deningerDampedXiPrefix_step_increment (a : {a : ℝ // 1<a}) (n : ℕ) :
@@ -169,7 +170,7 @@ theorem deningerDampedXiPrefix_step_increment (a : {a : ℝ // 1<a}) (n : ℕ) :
       apply lp.norm_mono (by norm_num : (2 : ENNReal) ≠ 0)
       intro q
       simpa only [lp.coeFn_sub,Pi.sub_apply,lp.coeFn_smul,Pi.smul_apply,norm_smul,
-        Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hw] using (dampedXiPrefix_pointwise_bounds a n q).2
+        Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hw] using (deningerDampedXiPrefix_pointwise_bounds a n q).2
     _ = _ := by simp only [norm_smul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hw]
 
 theorem deningerDampedXiPrefix_norm_le (a : {a : ℝ // 1<a}) (n : ℕ) :

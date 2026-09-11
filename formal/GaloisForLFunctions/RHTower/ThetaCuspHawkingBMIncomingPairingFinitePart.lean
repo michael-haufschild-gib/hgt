@@ -102,9 +102,10 @@ private theorem pairing_common_data (s chi a J K w : ℂ)
   all_goals exact (hM u huM).1
 
 /-- The original incoming horizon integral has its exact two-counterterm limit, and both source-derived restored pieces are analytic through the connection zero. -/
-theorem incomingPairingFinitePart_horizon_restoration (s chi a J K w : ℂ)
+theorem incomingPairingFinitePart_horizon_restoration_below (s chi a J K w : ℂ)
     (hw : w.im ≠ 0) (hwr : -2 < w.re) (hs : w-2*s ≠ 0) :
-    ∃ R b : ℝ, 0 < R ∧ 0 < b ∧ b ≤ 1/2 ∧
+    ∃ R B : ℝ, 0 < R ∧ 0 < B ∧ B ≤ 1/2 ∧
+      ∀ b : ℝ, 0 < b → b ≤ B →
       AnalyticAt ℂ (incomingNormFinitePart chi b) w ∧
       AnalyticAt ℂ (incomingSourcePairingFinitePart s chi a J K b) w ∧
       AnalyticAt ℂ (fun u => incomingSourcePrimitive s chi a J K u b) w ∧
@@ -116,14 +117,40 @@ theorem incomingPairingFinitePart_horizon_restoration (s chi a J K w : ℂ)
           ((horizonGaussFirstCoefficient u chi+1/4)*incomingResponseEndpoint s chi a J K u b+
             incomingResponseSlope s a J K u/2)*(e:ℂ)^(u+1)/(u+1))
           (𝓝[>] (0:ℝ)) (𝓝 (incomingPairingFinitePart s chi a J K b u)) := by
-  obtain ⟨R,b,C,D,β,hR,hb,hbhalf,hC,hD,hβ,hbds⟩ := pairing_common_data s chi a J K w hw hwr hs
+  obtain ⟨R,B,C,D,β,hR,hB,hBhalf,hC,hD,hβ,hbig⟩ := pairing_common_data s chi a J K w hw hwr hs
+  refine ⟨R,B,hR,hB,hBhalf,?_⟩
+  intro b hb hbB
+  have hbhalf : b ≤ 1/2 := hbB.trans hBhalf
+  have hbds (u : ℂ) (hu : u ∈ ball w R) :
+      u.im ≠ 0 ∧ β ≤ u.re ∧ u-2*s ≠ 0 ∧
+      ContinuousOn (incomingSourcePrimitive s chi a J K u) (Icc (0:ℝ) b) ∧
+      ∀ z ∈ Ioc (0:ℝ) b,
+        AnalyticAt ℂ (fun v => incomingSourcePrimitive s chi a J K v z) u ∧
+        ‖incomingPairingFactor u chi z-(1/2:ℂ)-
+          (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ C*z^2 ∧
+        ‖incomingSourcePrimitive s chi a J K u z*incomingPairingFactor u chi z-
+          (incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤ D*z^2 ∧
+        (connection u chi ≠ 0 → continuedResponse s chi a J K z u/horizon u chi z=
+          incomingResponseEndpoint s chi a J K u b+incomingSourcePrimitive s chi a J K u z) := by
+    obtain ⟨hui,hure,hus,hPc,hdata⟩ := hbig u hu
+    refine ⟨hui,hure,hus,hPc.mono (Icc_subset_Icc le_rfl hbB),?_⟩
+    intro z hz
+    obtain ⟨hPa,hMe,hPe,hQz⟩ := hdata z ⟨hz.1,hz.2.trans hbB⟩
+    refine ⟨hPa,hMe,hPe,?_⟩
+    intro hc
+    have hQb := (hdata b ⟨hb,hbB⟩).2.2.2 hc
+    change continuedResponse s chi a J K z u/horizon u chi z=
+      (continuedResponse s chi a J K b u/horizon u chi b-incomingSourcePrimitive s chi a J K u b)+
+        incomingSourcePrimitive s chi a J K u z
+    rw [hQz hc,hQb]
+    ring
   have hMcont (u : ℂ) : ContinuousOn (incomingPairingFactor u chi) (Ioc (0:ℝ) b) := by
     intro z hz
     exact (incomingPairingFactor_continuousAt u chi
       ⟨hz.1,lt_of_le_of_lt (hz.2.trans hbhalf) (by norm_num)⟩).continuousWithinAt
   have hw0 : w ≠ 0 := by intro h; apply hw; rw [h]; rfl
   have hw1 : w+1 ≠ 0 := by intro h; apply hw; have hi := congrArg Complex.im h; simpa using hi
-  refine ⟨R,b,hR,hb,hbhalf,?_,?_,?_,?_⟩
+  refine ⟨?_,?_,?_,?_⟩
   · unfold incomingNormFinitePart
     apply QuadraticEndpointMellin.finitePart_analyticAt hb (by linarith) hR hC hβ hw0 hw1
     · intro u hu; exact (hbds u hu).2.1
@@ -202,6 +229,24 @@ theorem incomingPairingFinitePart_horizon_restoration (s chi a J K w : ℂ)
       ring
     rw [hsplit]
     ring
+
+/-- The original restoration statement follows at the supplied upper cutoff. -/
+theorem incomingPairingFinitePart_horizon_restoration (s chi a J K w : ℂ)
+    (hw : w.im ≠ 0) (hwr : -2 < w.re) (hs : w-2*s ≠ 0) :
+    ∃ R b : ℝ, 0 < R ∧ 0 < b ∧ b ≤ 1/2 ∧
+      AnalyticAt ℂ (incomingNormFinitePart chi b) w ∧
+      AnalyticAt ℂ (incomingSourcePairingFinitePart s chi a J K b) w ∧
+      AnalyticAt ℂ (fun u => incomingSourcePrimitive s chi a J K u b) w ∧
+      ∀ u ∈ ball w R, connection u chi ≠ 0 →
+        Tendsto (fun e : ℝ =>
+          (∫ z in e..b, continuedResponse s chi a J K z u*horizon u chi z/
+            (2*(z:ℂ)*(Real.sqrt (1-z):ℂ)))+
+          (incomingResponseEndpoint s chi a J K u b/2)*(e:ℂ)^u/u+
+          ((horizonGaussFirstCoefficient u chi+1/4)*incomingResponseEndpoint s chi a J K u b+
+            incomingResponseSlope s a J K u/2)*(e:ℂ)^(u+1)/(u+1))
+          (𝓝[>] (0:ℝ)) (𝓝 (incomingPairingFinitePart s chi a J K b u)) := by
+  obtain ⟨R,b,hR,hb,hbhalf,hsmall⟩ := incomingPairingFinitePart_horizon_restoration_below s chi a J K w hw hwr hs
+  exact ⟨R,b,hR,hb,hbhalf,hsmall b hb le_rfl⟩
 
 end
 end RHTower.D4BMLaplaceRadial

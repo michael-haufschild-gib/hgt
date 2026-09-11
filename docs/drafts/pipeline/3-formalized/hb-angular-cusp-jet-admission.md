@@ -168,3 +168,108 @@ This closes the finite cutoff moments at the exponents used by the paper princip
 
 
 Final verification after the Mellin leaf: the regenerated API contains all five new declarations once; both owned modules have one umbrella import, nine local documentation links pass, and scoped whitespace checks pass. The subsequent whole `scripts/formal_tools.py lint` returned exit 0 with existing large-file warnings. The two earlier concurrent umbrella-reachability errors were resolved elsewhere in the shared worktree; this extension did not edit those modules. All owned Lean/Lake/search processes completed.
+
+
+## Pointwise contact balance and actual principal attachment, 12 September 2026
+
+New leaves:
+
+- [ThetaCuspHawkingBMQuarticContactBalance.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticContactBalance.lean), namespace `RHTower.D4BMQuarticContactBalance`.
+- [ThetaCuspHawkingBMQuarticPrincipalExpansion.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticPrincipalExpansion.lean), namespace `RHTower.D4BMQuarticPrincipalExpansion`.
+
+With lambda=rho(rho-1), c=7lambda-2, Q=f²/2, J=(cQ-2Delta Q)/8, RQ=-Delta(Delta-2)Q and H=2J²+c(c-4)Q²/96, the first leaf proves
+
+```
+J RQ = Delta H+2(c-4)J²-4Gamma(J,J)-c(c-4)(13lambda-6)Q²/96.
+```
+
+The statement uses the original six contact fields. Actual scalar smoothness, its eigen-equation and the two-jet product rule discharge every differential input. The proof first eliminates RQ pointwise, then cancels matching derivatives without unfolding J inside nested Laplacians. Its single public theorem is `quarticContactField_balance`.
+
+The second leaf attaches all six original principal fields to the five powers k_j=4-j+(2j-4)rho. J and RQ coefficients are obtained by applying actual Laplacians to the existing original three-power Q expansion. A small finite convolution proof retains every ordered product and keeps complex powers opaque during ring cancellation. Actual height differentiation and a second Laplacian are proved by local field equality and differentiated finite sums.
+
+For each slot, the physical principal Green flux is
+
+```
+D sum_j p_j (k_j-1+rho/2) y^(k_j-rho/2),
+D=reflectedCompletedLambda(rho-1).
+```
+
+For H and Delta H, the actual coefficients satisfy
+
+```
+p_(Delta H),j - rho(rho-2)p_H,j/4
+ = (k_j-rho/2)(k_j-1+rho/2)p_H,j.
+```
+
+Its six public declarations are `quarticPrincipalCoefficient`, `quarticContactPrincipal_eq_power_sum`, `quarticContactPrincipal_heightDeriv_eq_power_sum`, `quarticContactPrincipal_laplacian_eq_power_sum`, `quarticContactPrincipalGreenFlux_physical_eq`, and `quarticContactPrincipal_physical_bulk_flux_coefficient`.
+
+Both complete scratch checks passed without diagnostics. Exact cached leaf audits passed without warnings: the contact balance in 65 seconds, principal expansion in 38 seconds. Both are wired once into the umbrella; no umbrella build was run and no heartbeat setting was added or increased. The existing cusp-jet source is unchanged.
+
+This closes the principal-attachment gap recorded on 11 September. The [active contact-balance card](../1-in-progress/hb-source-contact-spin-two-balance.md#exact-next-limit-to-prove) specifies the remaining native Green limit. Independent SS/SV/VV amplitudes, solved quadratic corrections, metric variations and all remaining spacetime boundary contributions still need assembly and a source-derived sign or cancellation law. Neither fixed-clock extinction nor RH is proved.
+
+
+Final verification for the two 12 September leaves: all seven new public declarations occur once in the regenerated API; both leaves have exactly one RHTower umbrella import; scoped whitespace and thirteen local documentation links pass. Whole `scripts/formal_tools.py lint` returned exit 1 because the concurrently present `HTGeometry.SecondEndpointMellinLaurentInterchange` and `HTGeometry.UniformSecondOrderJet` modules are not reachable from the HTGeometry umbrella. No error was reported for either new quartic leaf. These unrelated modules were not modified. All owned Lean, Lake and corpus-search processes completed; both leaf audit directories were removed after byte-identical artifact publication.
+
+
+## Original quartic cutoff contact and native residual Green transport, 12 September 2026
+
+New leaves:
+
+- [ThetaCuspHawkingBMQuarticCutoffContact.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticCutoffContact.lean), namespace `RHTower.D4BMQuarticCutoffContact`.
+- [ThetaCuspHawkingBMQuarticResidualCore.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualCore.lean), namespace `RHTower.D4BMQuarticResidualCore`.
+- [ThetaCuspHawkingBMQuarticResidualGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualGreen.lean), namespace `RHTower.D4BMQuarticResidualGreen`.
+
+For every actual principal slot, the contact leaf proves
+
+```
+K = Delta(chi P0)-chi Delta P0 = sum_j p_j cutoffCommutator(k_j),
+integral psi_q K dmu = D sum_j p_j [k_j(k_j-1)-mu_q] M(k_j-rho/2).
+```
+
+Both original cutoff derivatives are retained. The actual residual H satisfies `Delta R_H=R_(Delta H)-K_H`, and its complete scalar Laplacian pairing is absolutely admitted.
+
+The core leaf constructs a smooth modular extension of the entire residual. Its principal height subtraction vanishes below two, so every nonparabolic closed-cell overlap gives the same zero germ, while parabolic translations preserve height. The full cell-germ extension therefore preserves the original source through the seams and elliptic corners. Original scaled cutoffs produce actual native cores with full physical Green transposition and both differentiated-cutoff terms.
+
+The Green leaf proves native L2 admission of every weighted actual residual jet, then bounds the full physical cutoff Laplacian by
+
+```
+|psi Delta R|+2 C |psi y partial_y R|+C |psi R|.
+```
+
+The first derivative pairs integrably because `psi/y` and `y^2 partial_y R` belong to the original L2 space. Dominated convergence and stabilization of full germs prove `integral psi_r Delta R_H=mu_r integral psi_r R_H` for independent source/target Xi occurrences. The same-occurrence original Mellin correction then gives
+
+```
+quarticNativePhysicalPeriod q 5
+  = (physicalAngularParameter q^2-1/4)*quarticNativePhysicalPeriod q 4.
+```
+
+This closes the native angular H/Delta-H Green limit left open in the earlier checkpoints. It does not identify or annul the complete nonlinear left-QNM action; independent SS/SV/VV amplitudes, both solved quadratic correction grades, varying metric weights, and the remaining spacetime faces still require attachment and a source-derived cancellation or sign law.
+
+All three full scratch checks passed without diagnostics. The cutoff-contact and residual-core exact cached leaf builds passed without warnings in 66 and 92 seconds. The final Green leaf build passed without warnings in 25 seconds; its source SHA-256 is `275d33f0f1f664da5b65e6972148fd1a9d9a9f8360dabfdd9da5cbd65522719b`, and all five artifacts were published byte-identically. Each source has one umbrella import, and none adds a heartbeat setting or transparency override. No full or umbrella build was run.
+
+
+Final audit for the cutoff-contact, residual-core and native-Green leaves: all 21 public declarations occur once in the regenerated API; all three umbrella imports occur once; nineteen local documentation links and scoped whitespace checks pass. Whole `scripts/formal_tools.py lint --check-generated` returned exit 1 with seven unrelated unreachable modules (`DeningerOriginalGreenXiResolventBound`, `RealPrincipalSeriesDerivedDirections`, `ThetaCuspHawkingBMHorizonCoordinateJets`, `ThetaCuspHawkingBMSelfChannelHorizonJet`, `ElementaryHorizonJets`, `SecondEndpointMellinLaurentInterchange`, `UniformSecondOrderJet`) and stale global `LEAN_API.md`/`LEAN_OVERVIEW.md` after concurrent source changes. No error was reported for the three new quartic leaves. The unrelated modules were not modified. All owned Lean/Lake/search processes completed, and all three owned audit directories were removed after artifact publication. Fixed-Hawking-clock extinction and RH remain open.
+
+
+## Native spin-two contact period, 12 September 2026
+
+[ThetaCuspHawkingBMQuarticNativeBalance.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticNativeBalance.lean)
+now transports the literal six-field contact identity through the actual native
+physical finite part. With lambda=(center q)^2-1/4, c=7lambda-2,
+a=c(c-4)/96 and the unchanged physical mu, its final theorem is
+
+```
+N(J RQ) = (2mu+2c-8) N(J²) - 4 N(Gamma(J,J))
+          - a(13lambda-6-mu) N(Q²).
+```
+
+All five original Mellin terms and the original cutoff residual are retained.
+Six exported theorems have closed source-specific proofs. Factoring the spin-two
+coefficient before convolution avoids large simultaneous expansions; no
+heartbeat, recursion-depth or transparency override was added. The scratch check
+passed without diagnostics, and the exact cached leaf audit passed in 121 seconds
+without warnings. SHA-256:
+`d12f4dc95999a9e834e4eaef091bb77069d46f8d33080fe21e9c86a41a652de8`.
+The umbrella imports the leaf once; no full or umbrella build was run.
+Complete corrected left-QNM action identification and original-clock extinction
+remain open, including response-dependent mixed-channel work.
