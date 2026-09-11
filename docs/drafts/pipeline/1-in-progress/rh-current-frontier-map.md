@@ -1000,10 +1000,36 @@ with prime pair, zero copy, depth and nonzero witness retained. Thirteen
 exported theorems and three internal lemmas passed scratch, targeted leaf
 build, transitive axiom coverage and formal lint. This closes the actual
 window-to-physical comparison, without proving radial balance or agreement
-with the cyclic reader. The next source test is the real polarized pairing
-through the two actual leading-jet normalizations; source Hilbert
-orthogonality alone has not identified that pairing.
+with the cyclic reader.
 [Actual reciprocal-window incidence](../3-formalized/route-l-burnol-reciprocal-window-incidence.md).
+
+The real-polarization test now retains both actual normalization factors.
+Writing `J_L` and `K_L` for the original and actual Fourier-partner leading
+completed jets at the unchanged divisor, the literal normalized vectors
+`X_L=J_L⁻¹ f_L` and `Y_L=K_L⁻¹ F(f_L)` satisfy
+`J_L F(X_L)=K_L Y_L`. The exact endpoint modulus has a strictly increasing
+centered hyperbolic quotient on every positive horizontal ray. Consequently,
+on the strict right half of the strip,
+`exp(L*(2*Re(rho)-1))*‖X_L‖² < ‖Y_L‖²`.
+Their Hilbert norms agree, and the real pairing of their sum and difference
+vanishes, exactly at critical-line placement. The corresponding unnormalized
+pairing is zero by Fourier unitarity. Nineteen theorems passed scratch,
+targeted leaf build and complete axiom audit. This supplies a quantitative
+normalization cost; it does not transfer orthogonality to the normalized
+pair or derive complete-source compensation.
+[Actual source normalization bias](../3-formalized/route-l-real-polarized-source-balance.md).
+
+The minimum-norm correction test now has a literal source witness.
+For the same window, put `V=K_L f_L-J_L F(f_L)`. Both `V` and `F(V)`
+lie in the algebraic co-Poisson source before closure. The original
+leading completed derivative of `V` is zero; that of `F(V)` is exactly
+`K_L²-J_L²`. On the strict right half its modulus exceeds
+`(exp(L*(2*Re(rho)-1))-1)*‖K_L‖²`, so the leading-jet kernel is not
+Fourier invariant there. Four theorems passed scratch, targeted leaf
+build, complete axiom audit and formal lint. A projection preserving
+one leading derivative therefore cannot be assumed to preserve Fourier
+transport; the surviving readout must enter any complete-source repair.
+[Actual kernel witness and Fourier cost](../3-formalized/route-l-jet-kernel-fourier-transport.md).
 
 
 **Open core.** Derive before divisor specialization the missing cyclic-source-to-fixed-physical comparison: the explicit normalized cyclic source reader must agree with the existing Burnol/Deninger physical reader on the degree-six boundary, forcing its physical marginal to vanish. Positive compact reduction and coherent-Frobenius closure are equivalent receiver presentations, not independent cores. Any producer must be genuinely singular at the all-cross-prime source origin, preserve prime, depth, multiplicity, nonzero Xi coefficient, and horizontal anchor, and escape both fixed-reader rigidity and Hausdorff energy-faithful multifibre rigidity by changing reader holonomy, making vertical ambiguity physically readable, leaving linearity/continuity/Hausdorff topology, losing literal-energy injectivity, or using a source-forced domain/fibre change.
@@ -1625,7 +1651,9 @@ The [original higher logarithmic angular source](fzz-p-higher-screening-collisio
 
 The [original higher marked plane cutoff](fzz-p-higher-screening-collisions.md#closed-original-marked-plane-cutoff) now retains the actual logarithmic source on both punctured annuli and the exterior. Compact polar admission precedes Fubini; reflection sends the one-puncture source to the different regular-factor mark. The exterior is controlled by two neighboring original power kernels. Both distinct local corrections converge with independently removed cutoffs. Six public theorems passed clean scratch and targeted leaf build; the umbrella is wired and global lint passes. All six axiom audits passed with only `propext`, `Classical.choice`, `Quot.sound`. The resulting finite value is defined by the original integrals. The proposed values `FP=-84*pi`, `markedFP=-141*pi/8` and normalized ratio `47/224` remain conjectures: the higher local analytic remainder is now closed below; the complete pole-restored source and its identification with the pole-subtracted Gamma jets remain missing. Fractional screening multiplicity, full physical normalization, phase frame and mixed Ward production remain open.
 
-The [original fifth subtraction and exponential lift](fzz-p-higher-screening-collisions.md#original-fifth-subtraction-and-exponential-lift) now closes the local higher parameter family. Subtracting the complete fifth polynomial before plane integration yields a uniform sixth-order remainder and original local integrability for `alpha>-8`, with the other exponent arbitrary. The exact integral Taylor remainder retains a nonnegative product-measure weight and the sixth descending factorial in `beta/2`. Joint admission precedes Fubini; the admitted exponential representation proves separate real analyticity in both exponents, and reflection admits the second puncture. All eight public data-only theorems passed clean scratch, targeted leaf build, complete axiom audit with only `propext`, `Classical.choice`, `Quot.sound`, and global lint. The umbrella is wired. The complete angular polynomial, including its finite powers six through ten, must still be restored before clearing the three poles at each puncture and matching the higher Gamma family. The exterior, original marked-jet identification and full Ward producer remain required.
+The [original fifth subtraction and exponential lift](fzz-p-higher-screening-collisions.md#original-fifth-subtraction-and-exponential-lift) now closes the local higher parameter family. Subtracting the complete fifth polynomial before plane integration yields a uniform sixth-order remainder and original local integrability for `alpha>-8`, with the other exponent arbitrary. The exact integral Taylor remainder retains a nonnegative product-measure weight and the sixth descending factorial in `beta/2`. Joint admission precedes Fubini; the admitted exponential representation proves separate real analyticity in both exponents, and reflection admits the second puncture. All eight public data-only theorems passed clean scratch, targeted leaf build, complete axiom audit with only `propext`, `Classical.choice`, `Quot.sound`, and global lint. The umbrella is wired. The complete angular polynomial is now restored by the next result. The explicitly pole-cleared whole source, higher Gamma match, original marked-jet identification and full Ward producer remain required.
+
+The [closed original polynomial restoration](fzz-p-higher-screening-collisions.md#closed-original-polynomial-restoration) proves the complete six-term circle average, the first two pole coefficients, analytic dependence of every coefficient, and the original local integral identity after restoring all removed terms. The finite powers six, eight and ten are retained. Product integrability is proved before polar Fubini. All seven public data-only theorems passed clean scratch, targeted leaf build, complete axiom audit with only `propext`, `Classical.choice`, `Quot.sound`, and global lint; the umbrella is wired. The displayed counterterm quotient is identified with the original integral only in its ordinary chamber. Its totalized values at Gamma poles are not finite-part values; the next whole source must cancel each pole factor before defining its boundary value.
 
 The [original whole-plane screening audit](fzz-p-plane-screening-beta-integral.md) proves absolute convergence and `integral_C |z|^(-2a)|z-1|^(-2b)=pi*Gamma(a+b-1)*Gamma(1-a)*Gamma(1-b)/(Gamma(a)*Gamma(b)*Gamma(2-a-b))` throughout `0<a,b<1<a+b`. Its public positive chart is proved to cover this entire chamber. Positive Gamma parameters, a plane Gaussian and a one-dimensional parameter rescaling establish joint integrability before each Fubini interchange; both original collisions and infinity are retained. All five public theorems passed scratch, leaf build, axiom audit and lint. The physical exponents remain outside this ordinary chamber. The first continuation strip now has an exact independent-cutoff finite part and a proved identity with the analytically continued Gamma ratio. The original logarithmic marked insertion is closed below; higher depths, the independent phase frame and complete Ward producer remain unproved.
 
@@ -1662,6 +1690,8 @@ Positive singular Hilbert energy is now classified as nonselective. Every reflec
 ### PW-B — recoil/Deninger Ward transmutation
 
 The actual reversible Gamma-mode contact now has an admitted logarithmic pairing. Reciprocal change of variables preserves the cross-density with its Jacobian, gives logarithmic moment `-(log n/2)` times the mode mass, and identifies the `2 log x` pairing exactly with the forward-minus-backward adjoint defect. This closes the single-mode logarithmic contact identity, not the full cutoff transposition, a closed operator domain, or the common-domain source balance.
+
+The [actual reciprocal-kernel endpoint](../3-formalized/pw-b-gamma-reciprocal-endpoint.md) now converges in L1 to a strictly positive integrable kernel. An explicit derivative bound removes the previous inverse-endpoint loss and gives uniform integral bounds at every inverse polynomial order. The [complete arithmetic endpoint](../3-formalized/pw-b-gamma-arithmetic-reciprocal-endpoint.md) also passes the full signed Möbius series to its limit for every complex coefficient parameter, with an absolute inverse-square majorant and exact equality to the original normalized current. The [skew-source audit](../3-formalized/pw-b-gamma-skew-source-endpoint.md) now proves that the unchanged arithmetic field cannot satisfy the proposed scalar skew equation: its quotient by Q*log(x) tends to-2 for every coefficient parameter. The exact leading correction is uniquely the unit ground subtraction; it cancels this obstruction at every parameter and is nonselective. Full adjoints, the complete corrected equation, an actual Xi occurrence and source-forced Ward balance remain open.
 
 **Architecture.** Literal finite-energy Parikh--Wilczek first-winding Borel response → functional-equation partner imbalance → positive Deninger reflect-gauge Ward transmutation → source-forced fixed-grade balance → RH.
 

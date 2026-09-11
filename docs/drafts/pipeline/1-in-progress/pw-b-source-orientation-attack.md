@@ -2223,3 +2223,130 @@ Neither the full arithmetic endpoint nor any spectral exclusion is
 claimed until this check succeeds. The active proof chain still lacks
 full adjoints, independent physical selection of the pairing, actual Xi
 occurrence and independently forced Ward balance.
+
+The final repaired endpoint scratch passed all14 public declarations
+with standard-only axioms. Exact bodies are promoted in
+ThetaCuspHawkingParikhWilczekGammaReciprocalEndpoint and wired once.
+The targeted leaf audit passed, building only that leaf in15s; the
+other dependencies were replayed. Index passed with two changed entries
+and zero removals. Final source/API uniqueness and repository lint are
+being checked. The complete arithmetic endpoint scratch is now running
+as the sole owned Lean process, importing the audited endpoint leaf.
+
+New broad single-word dissipation/resolvent web searches again returned
+mostly older papers despite their recent filter. The date-ordered arXiv
+dissipation listing yielded September10 papers; the resolvent listing
+returned an internal error. The primary
+[Quantitative Diffusive Limits for Singular Nonlocal Transport](https://arxiv.org/html/2609.11837v1)
+was inspected through its available abstract and introduction; its HTML
+stops at the model equation. It assumes smooth strictly positive data
+on a compact connected boundaryless manifold and states uniform
+approximation through a resolvent energy. These hypotheses have not
+been identified for the noncompact signed PW source. No proof or
+theorem transfer is claimed from the truncated HTML.
+
+The primary
+[An Anisotropic Onsager Criterion](https://arxiv.org/html/2609.11488v1)
+was read through its theorem discussion, commutator decomposition and
+horizontal-dissipation argument. It derives horizontal energy
+regularity for existing weak PDE solutions assuming space-time L4 and
+critical vertical Besov regularity. A doubly truncated balance absorbs
+horizontal commutator flux; the vertical flux needs separate control.
+An additional vanishing high-frequency Besov tail gives energy
+equality. The transferable method is to derive domain control from the
+original truncated balance and bound each remaining flux. PW-B still
+lacks the corresponding complete source balance and independently
+proved domain hypotheses. Neither positivity of its rate density nor
+the new arithmetic endpoint supplies these premises.
+
+The complete arithmetic endpoint is now verified. All11 public
+declarations in ThetaCuspHawkingParikhWilczekGammaMobiusReciprocalEndpoint
+pass standard-only axiom audits, the targeted40s leaf build, exact
+scratch-body comparison, all-name source/API uniqueness, single umbrella
+import and final repository lint. Index passed with two changed entries
+and zero removals. Together the two endpoint leaves close25 public
+declarations. Their scratch/build/index/lint processes are terminal.
+
+The next skew-occurrence deep search is terminal and saved under
+skew_occurrence in the same search record. It has no reported errors,
+but partial coverage of730452 declarations and substantial stale/pending
+compiler and method metadata. All20 candidate statements,20 source
+argument statements and the complete ingredient set were examined.
+Many source-argument hits are definitions with no extracted method.
+The proposed Sonin translation/Mellin ingredients require an identified
+L2/strong-log carrier. The finite chiral metric-adjoint result is a
+matrix identity; the finite Euler adjoint assumes an existing bounded
+operator source. None constructs the current nonlocal operator domain
+or an actual Xi eigenvector. Bare transform covariance cannot replace
+those missing premises.
+
+A direct source test now attacks the proposed corrected skew formula.
+The scratch /tmp/pwb-gamma-skew-source-endpoint.lean proves, with
+standard-only terms, M_z(x)/Q(x)->1 and E_z(x)/Q(x)->0 at infinity for
+every complex z. It uses the full admitted coefficient series at x=1
+as its common summable majorant. Actual inverse-gain reflection of the
+new complete reciprocal endpoint gives the finite limit of
+R(H(R M_z))(x)/Q(x). Hence the literal corrected source expression
+
+`K_z(x)=E_z(x)-R(H(R M_z))(x)-2*log(x)*M_z(x)`
+
+has exact leading quotient K_z(x)/(Q(x)*log(x))->-2. These five public
+declarations have standard-only proof terms, but the file is not yet
+promoted: its scalar-exclusion proof initially used a nonexistent
+Complex.ofNat_re name. The contradiction is now expressed directly as
+nonvanishing of -2 in C. The final scratch is running as the sole owned
+Lean process.
+
+The positive-survivor extension is being checked in that same scratch.
+Adding the explicit logarithmic ground correction 2*c*log(x)*Q(x)
+changes the leading quotient to2*c-2. A scalar identity with the
+ground-subtracted field M_z-c*Q therefore forces c=1. This is an exact
+necessary correction coefficient, not existence of a corrected scalar
+mode or a full-domain adjoint. It cancels the leading obstruction for
+every z and cannot alone select Xi zeros. Full transposition, physical
+necessity of the pairing, actual Xi occurrence and an independently
+forced Ward law remain open. PW-B is not being retired.
+
+Iteration27 final audit complete. The full skew-source scratch passed
+all8 public declarations, including the scalar exclusion, exact
+correction limit and unique ground coefficient. Exact bodies are
+promoted in ThetaCuspHawkingParikhWilczekGammaSkewSourceEndpoint,
+wired once, and its targeted leaf build passed in211s. Index passed
+with two changed entries and zero removals. All8 source/API names are
+unique, promoted bodies exactly match the passing scratch, and final
+repository formal lint passed. This leaf has only redundant-tactic
+style warnings. The three new leaves close33 public declarations with
+standard-only axioms; their targeted builds took15s,40s and211s and
+built only their respective leaves. All owned scratch, build, research,
+index and lint sessions are terminal; a process check found no remaining
+owned PW Gamma Lean/lake or research process.
+
+The next goal turn must retain the full chain: PW response -> FE signed
+defect -> complete source adjoints/domain and positive Ward transmutation
+-> independently source-forced fixed-grade balance at actual Xi
+occurrences -> RH. The previous turn is verified progress: it closes
+the complete arithmetic endpoint, excludes the unchanged-source scalar
+ansatz and proves the unique leading ground correction. PW-B and RH
+remain open. The continuing pairing card records a concrete next
+conjecture/proof target: prove exponential decay of the complete
+ground-subtracted normalized source, then identify the next retained
+skew boundary value as minus the complete endpoint B_z. This would
+give B_z=0 as a necessary condition for a corrected scalar equation,
+not produce that equation or identify its parameters with Xi zeros.
+Full original cutoff transposition, physical necessity of the chosen
+pairing, corrected source incidence and independent Ward balance must
+still be attacked. No full or umbrella build, numerical experiment,
+added axiom, subagent, commit or push occurred.
+
+
+### Iteration28: retained boundary after the forced ground correction
+
+The target is the complete signed tail, not a finite approximation. For
+d_n=GlobalAtom(z,n,1)/Q(1), absolute summability and the exact mode shift
+give |M_z/Q-1| <= (sum_n |d_(n+2)|) exp(-(x-1)) for x>=1. This should
+force log(x)(M_z/Q-1)->0 and identify the corrected residual divided by
+Q as -B_z. A corrected scalar equation must then satisfy B_z=0. The
+vanishing condition is a boundary test, not an established Xi incidence
+or a sufficient occurrence theorem. Full cutoff adjoints, physical
+necessity of the pairing and independent Ward balance remain open.
+The previous33 public declarations and final lint remain verified.

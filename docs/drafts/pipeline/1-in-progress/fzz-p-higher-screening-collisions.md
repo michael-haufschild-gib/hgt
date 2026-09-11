@@ -287,16 +287,16 @@ analyticity. Reflection admits the subtraction at the other puncture.
 The original full finite part is not the remainder alone. The current cosine
 integral recurrence (`Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean`,
 `integral_cos_pow`) and the corpus's admitted cosine moments give a direct
-next proof of the complete angular polynomial. Its proposed coefficient list is
+proof of the complete angular polynomial, now closed below. Its coefficient list is
 
 `c0=1; c1=a1+2*a2; c2=a2+6*a3+6*a4; c3=a3+12*a4+30*a5; c4=a4+20*a5; c5=a5`,
 
-with `a_j=a_j(beta/2)`. In particular, symbolic simplification should give
+with `a_j=a_j(beta/2)`. The audited symbolic simplification gives
 `c1=beta^2/4` and `c2=beta^2*(beta-2)^2/64`. Restore all six integrated terms
 `2*pi*c_k(beta)*(1/2)^(alpha+2*k+2)/(alpha+2*k+2)`, not only the three poles.
 The terms `k=3,4,5` have admitted denominators for `alpha>-8` and contribute
-finite values. These coefficient and restoration identities still require Lean
-verification.
+finite values. These coefficient and restoration identities are now verified
+in Lean; the pole-cleared whole source and its Gamma jets remain open.
 
 Clear `A(alpha)=(alpha+2)*(alpha+4)*(alpha+6)` at both punctures. The existing
 `FZZCigarPlaneScreeningGammaContinuation.reciprocal_gamma_analytic` proof uses
@@ -338,3 +338,125 @@ revised 21 July 2026, surveys geometric hypotheses for singular integrals and
 harmonic boundary problems. Its abstract supplies no substitute for the
 original screening-polynomial restoration. No theorem from these papers is
 assumed in the Lean proof.
+
+## Closed original polynomial restoration
+
+Scratch `/tmp/fzzp_higher_taylor_restoration.lean` passed cleanly with seven
+public source statements. The proof body was promoted unchanged to
+`formal/GaloisForLFunctions/RHTower/FZZCigarHigherScreeningRestoration.lean`
+and wired into the umbrella. Global formal lint and the targeted leaf build
+(99 seconds for the new leaf) passed. All seven public theorems passed the
+complete axiom audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The current cosine primitive and its recurrence prove the five nonconstant
+moments of `q=r^2-2*r*cos(theta)` directly. They give the complete six-term
+angular polynomial specified above, with both pole coefficients
+`c1=beta^2/4` and `c2=beta^2*(beta-2)^2/64`. Every coefficient is real analytic
+in `beta`. These coefficient and angular identities are now Lean-checked.
+
+For `alpha>-2`, the polynomial weighted by `|z|^alpha` is integrable on the
+original half-radius disk. In polar coordinates, its density is
+`r^(alpha+1)*T_beta(circleMap(0,r,theta))`. The polynomial factor is bounded
+on the compact radius-angle rectangle; the radial power is integrable at zero.
+This proves product admission before Fubini. Polar change of variables,
+the complete angular identity, and the admitted monomial primitives prove
+
+`integral_B |z|^alpha*T_beta(z) = 2*pi*sum_(k=0)^5 c_k(beta)*(1/2)^(alpha+2*k+2)/(alpha+2*k+2)`.
+
+Adding this exact original polynomial integral to the fifth remainder gives
+the original local position integral. All finite terms of degrees six, eight,
+and ten remain. The displayed quotients at their poles are not asserted to be
+finite-part values.
+
+### Next pole-cleared source
+
+The next source uses the admitted higher remainder and an explicitly cleared
+counterterm. Set `A(alpha)=(alpha+2)*(alpha+4)*(alpha+6)`. In the first three
+terms cancel the appropriate factor algebraically before defining the pole
+value: the remaining factors are `(alpha+4)*(alpha+6)`,
+`(alpha+2)*(alpha+6)`, and `(alpha+2)*(alpha+4)`. In the last three terms retain
+`A(alpha)/(alpha+2*k+2)`; their denominators remain strictly positive for
+`alpha>-8`. Multiply this first local cleared term by `A(beta)`, add its
+reflection, and add `A(alpha)*A(beta)` times both local remainders and the
+original exterior. This construction should retain the actual pole-line values
+instead of setting them to zero by totalized division.
+
+The already-read `FZZCigarPlaneScreeningGammaContinuation` uses two real
+analytic slices: first fix `-2<beta<0` and continue in `alpha` from a genuine
+ordinary neighborhood; then fix `alpha<-2` and continue in `beta` from a
+neighborhood of `-1`. Replacing the lower bound `-3` by `-8` is now supported
+by the proved higher local remainder. The exact original restoration above
+supplies the new ordinary source identity. The pole-cleared source, its Gamma
+match and the marked jet identification still require Lean proofs.
+
+### Current restoration search
+
+The deep/all-view cosine query returned partial generation `826581` without
+tool errors; all candidate and method names were inspected. Its harmonic-cosine
+candidate in `CosinePolynomialPurchaseCap` was read. The present proof uses
+the current direct cosine-power primitives, avoiding an additional Chebyshev
+conversion. The continuation query returned partial generation `826734`, with
+a reranking deadline; its candidate and method names were inspected. The
+useful identity method is already instantiated by the original FZZ continuation
+module, whose two-slice proof was read.
+
+Broad gluing, renormalization and duality searches did not reliably return the
+requested June–September 2026 window, including after date refinements; the
+direct sorted arXiv search endpoint returned a cache miss. Primary abstracts
+for [rank-one invariant random subgroups](https://arxiv.org/abs/1612.09510)
+(2016) and [N=2 dualities](https://arxiv.org/abs/0904.2715) (2009) were read.
+The former constructs different rank-one geometric families; the latter
+assembles strongly interacting superconformal theories. Neither abstract
+identifies this fixed source or its missing complete Ward law. These dates
+are outside the preferred window; no recent result or imported proof premise
+is inferred from them.
+
+## Higher whole-source continuation attack
+
+The explicit source construction above is being checked in
+`/tmp/fzzp_higher_cleared_source.lean`. Its target is equality with the higher
+cleared Gamma family on the full domain `D: alpha,beta>-8, alpha+beta<-2`,
+including all three collision lines at each puncture. The proof starts from
+the original local restoration and the admitted whole-plane Beta integral.
+Three numerator Gamma recurrences on each side give the factor `64*pi`.
+The reciprocal Gamma factors remain analytic at their zeros.
+
+The two-slice argument extends farther than the originally proposed negative
+square. First fix `-2<beta<0` and continue in `alpha` from an ordinary open
+interval. Next fix `alpha<-1` and continue in `beta` from a neighborhood of
+`-1` lying below `min(0,-2-alpha)`. Every point in `D` has either `alpha<-1`
+or `beta<-1`; reflection covers the other case. The proposed positive chart
+uses `alpha=-8+14*exp(u)/(1+exp(u)+exp(v))`, with the symmetric formula for
+`beta`. Its inverse uses `log((alpha+8)/(-2-alpha-beta))` and its reflection.
+
+Local equality of the cleared functions should also identify every mixed
+iterated derivative, including at `(-6,-6)`. This would close the cleared
+source/Gamma jets. It would not alone identify the existing original marked
+or unmarked finite-part cutoff limits: those still require restoring every
+finite term and differentiating the clearing factors and pole residues.
+
+### Next finite-part extraction conjecture
+
+Set `a=alpha+6`, `b=beta+6`, and `v=(a+b)/2` near the cubic collision.
+The inspected Gamma recurrences rewrite the remaining transcendental unit as
+
+`U(a,b)=Gamma(1-v)*Gamma(1+a/2)*Gamma(1+b/2)/(Gamma(1+v)*Gamma(1-a/2)*Gamma(1-b/2))`.
+
+All arguments are positive near the origin. The next conjecture is that `U`
+has value one and vanishing first and second derivatives there. The product
+has inverse reflection `U(-a,-b)=1/U(a,b)`; first-derivative cancellation
+would then force the second derivatives to vanish. These assertions still
+need Lean proof. They would reduce the cleared Gamma jets through degree
+three to the remaining rational factors, without numerical Gamma evaluation.
+
+A separate original-source extraction is required. Writing
+`A(-6+a)=8*a-6*a^2+a^3`, the expected unmarked relation is
+
+`partial_alpha partial_beta H(-6,-6)=64*FP-6912*pi`.
+
+This relation must be derived from the original local remainder, exterior,
+and every restored polynomial term, then matched to the independently removed
+cutoff limit already proved. Merely dividing the cleared identity at the
+collision point cannot establish it. The marked extraction additionally needs
+the derivative of each local residue and the original logarithmic cutoff
+corrections. No proposed finite-part value is promoted to a theorem here.

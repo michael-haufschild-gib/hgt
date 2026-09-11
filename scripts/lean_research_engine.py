@@ -592,6 +592,10 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
     model = embedding_version(status)
     generation_model = status.get("generation_model_version", status.get("fingerprints", {}).get("generation", status.get("generation_model", "Qwen3-4B-Instruct-2507-4bit")))
     report = dict(methods=0, vectors=0, failures=[])
+    if methods and any(json.loads(r[0]).get('partial', True) for r in corpus.con.execute(
+            "SELECT value FROM meta WHERE key LIKE 'method-recovery:%'")):
+        report['deferred'] = [dict(stage='methods', reason='stored_method_recovery')]
+        methods = False
     if methods and corpus.invalidation_pending():
         report['deferred'] = [dict(stage='methods', reason='dependency_invalidation_pending')]
         methods = False

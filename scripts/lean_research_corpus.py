@@ -9,6 +9,7 @@ exporter supplies elaborated types, binders, proof references and axioms.
 from __future__ import annotations
 
 import contextlib
+from collections import defaultdict, deque
 import fcntl
 import hashlib
 import json
@@ -84,6 +85,8 @@ CREATE TABLE IF NOT EXISTS methods(
  evidence TEXT NOT NULL,status TEXT NOT NULL,error TEXT NOT NULL DEFAULT '');
 CREATE TABLE IF NOT EXISTS method_invalidation(name TEXT PRIMARY KEY,cursor INTEGER NOT NULL DEFAULT 0,done INTEGER NOT NULL DEFAULT 0);
 CREATE INDEX IF NOT EXISTS method_invalidation_pending ON method_invalidation(done);
+CREATE TABLE IF NOT EXISTS method_invalidation_files(path TEXT PRIMARY KEY,cursor INTEGER NOT NULL DEFAULT 0,done INTEGER NOT NULL DEFAULT 0);
+CREATE INDEX IF NOT EXISTS method_invalidation_files_pending ON method_invalidation_files(done);
 CREATE TABLE IF NOT EXISTS method_chunks(
  decl_id TEXT NOT NULL REFERENCES declarations(id) ON DELETE CASCADE,
  chunk_hash TEXT NOT NULL,source_hash TEXT NOT NULL,model_version TEXT NOT NULL,
@@ -301,6 +304,25 @@ def source_declarations(text: str, module: str, path: str) -> list[dict]:
     return result
 
 
+def import_dependents(files, modules) -> set[str]:
+    """Paths in the transitive import closure, including the changed modules."""
+    reverse, paths = defaultdict(set), defaultdict(set)
+    for row in files:
+        paths[row['module']].add(row['path'])
+        imports = row['imports'] if isinstance(row['imports'], list) else json.loads(row['imports'])
+        for module in imports:
+            reverse[module].add(row['module'])
+    pending, seen, affected = deque(modules), set(), set()
+    while pending:
+        module = pending.popleft()
+        if module in seen:
+            continue
+        seen.add(module)
+        affected.update(paths[module])
+        pending.extend(reverse[module])
+    return affected
+
+
 def inventory(root: Path) -> tuple[list[dict], list[dict]]:
     """All project sources and installed package sources; no traversal failures hidden."""
     roots = [(root / "formal", "project", "lean"), (root / "docs", "research", "prose")]
@@ -454,9 +476,8 @@ class Corpus:
                 declarations = source_declarations(text, item["module"], item["path"]) if item["collection"] == "lean" else []
                 imports = [n for m in IMPORT.finditer(mask_comments_strings(text)) for n in m.group(1).split()]
                 with self.con:
-                    old_names = [r[0] for r in self.con.execute("SELECT name FROM declarations WHERE path=?", (item["path"],))]
                     if source_changed:
-                        self._invalidate_dependents(old_names, deadline=deadline, drain=False)
+                        self._invalidate_paths([item['path']], deadline=deadline, drain=False)
                     self.con.execute("DELETE FROM files WHERE path=?", (item["path"],))
                     self.con.execute("INSERT INTO files(path,module,package,collection,size,mtime_ns,source_hash,status,imports,toolchain,updated) "
                                      "VALUES(?,?,?,?,?,?,?,?,?,?,?)", (item["path"], item["module"], item["package"],
@@ -501,8 +522,7 @@ class Corpus:
             known = {i["path"] for i in items}
             with self.con:
                 for path in current.keys() - known:
-                    names = [r[0] for r in self.con.execute("SELECT name FROM declarations WHERE path=?", (path,))]
-                    self._invalidate_dependents(names, deadline=deadline, drain=False)
+                    self._invalidate_paths([path], deadline=deadline, drain=False)
                     self.con.execute("DELETE FROM files WHERE path=?", (path,))
                     removed += 1
                 if removed:
@@ -516,41 +536,50 @@ class Corpus:
         return dict(changed=changed, removed=removed, failed=failed, complete=complete,
                     inventory_errors=errors, coverage=self.coverage(include_enrichment=False))
 
-    def _invalidate_dependents(self, names, *, deadline=float('inf'), drain=True):
-        if not names or not self.con.execute("SELECT 1 FROM methods WHERE status='ready' UNION ALL SELECT 1 FROM method_chunks LIMIT 1").fetchone():
+    def _invalidate_paths(self, paths, *, deadline=float('inf'), drain=True):
+        if not paths or not self.con.execute("SELECT 1 FROM methods UNION ALL SELECT 1 FROM method_chunks LIMIT 1").fetchone():
             return
+        modules = {row['module'] for path in paths for row in self.con.execute(
+            "SELECT module FROM files WHERE path=? AND collection='lean'", (path,))}
+        if not modules:
+            return
+        files = list(self.con.execute("SELECT path,module,imports FROM files WHERE collection='lean'"))
+        affected = import_dependents(files, modules)
         self.con.executemany(
-            "INSERT INTO method_invalidation(name) VALUES(?) ON CONFLICT(name) DO UPDATE SET cursor=0,done=0",
-            [(variant,) for name in names for variant in (name, name.rsplit('.', 1)[-1])])
+            "INSERT INTO method_invalidation_files(path) VALUES(?) ON CONFLICT(path) DO UPDATE SET cursor=0,done=0",
+            [(path,) for path in sorted(affected)])
         if drain:
             self.drain_invalidations(deadline=min(deadline, time.monotonic() + 2))
 
     def invalidation_pending(self) -> bool:
-        try:
-            return self.con.execute("SELECT 1 FROM method_invalidation WHERE done=0 LIMIT 1").fetchone() is not None
-        except sqlite3.OperationalError as exc:
-            if 'no such table: method_invalidation' not in str(exc):
-                raise
-            # Readers can overlap the first schema upgrade; no queued edits exist yet.
-            return False
+        # Legacy token jobs remain a barrier until recovery from a verified
+        # source snapshot. Their original edit scope cannot be reconstructed.
+        for table in ('method_invalidation', 'method_invalidation_files'):
+            try:
+                if self.con.execute(f"SELECT 1 FROM {table} WHERE done=0 LIMIT 1").fetchone():
+                    return True
+            except sqlite3.OperationalError as exc:
+                if 'no such table:' not in str(exc):
+                    raise
+        return False
 
     def drain_invalidations(self, *, deadline: float) -> int:
-        """Resume bounded pages; never invalidate the entire corpus on timeout."""
+        """Invalidate only edited modules and their transitive importers."""
         visited = 0
         with self.con:
             while time.monotonic() < deadline:
-                job = self.con.execute("SELECT name,cursor FROM method_invalidation WHERE done=0 LIMIT 1").fetchone()
+                job = self.con.execute("SELECT path,cursor FROM method_invalidation_files WHERE done=0 LIMIT 1").fetchone()
                 if job is None:
-                    self.con.execute("DELETE FROM method_invalidation")
+                    self.con.execute("DELETE FROM method_invalidation_files")
                     break
-                # dependency_target includes rowid, so pagination avoids rescanning
-                # large fanouts. Keep processed names until the queue drains to stop cycles.
+                # declaration_path includes rowid; each bounded page resumes
+                # without scanning proof words or confusing binders with names.
                 rows = self.con.execute(
-                    "SELECT e.rowid AS edge,d.id,d.name FROM dependencies e JOIN declarations d ON d.id=e.source "
-                    "WHERE e.target=? AND e.rowid>? ORDER BY e.rowid LIMIT 128",
-                    (job['name'], job['cursor'])).fetchall()
+                    "SELECT rowid AS position,id FROM declarations "
+                    "WHERE path=? AND rowid>? ORDER BY rowid LIMIT 128",
+                    (job['path'], job['cursor'])).fetchall()
                 if not rows:
-                    self.con.execute("UPDATE method_invalidation SET done=1 WHERE name=?", (job['name'],))
+                    self.con.execute("UPDATE method_invalidation_files SET done=1 WHERE path=?", (job['path'],))
                     visited += 1
                     continue
                 for row in rows:
@@ -559,9 +588,7 @@ class Corpus:
                     self.con.execute("UPDATE methods SET status='stale' WHERE decl_id=? AND status<>'stale'", (row['id'],))
                     self.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (row['id'],))
                     self.con.execute("DELETE FROM method_chunks WHERE decl_id=?", (row['id'],))
-                    self.con.executemany("INSERT OR IGNORE INTO method_invalidation(name) VALUES(?)",
-                        [(row['name'],), (row['name'].rsplit('.', 1)[-1],)])
-                    self.con.execute("UPDATE method_invalidation SET cursor=? WHERE name=?", (row['edge'], job['name']))
+                    self.con.execute("UPDATE method_invalidation_files SET cursor=? WHERE path=?", (row['position'], job['path']))
                     visited += 1
             if visited:
                 self.bump(source=True)

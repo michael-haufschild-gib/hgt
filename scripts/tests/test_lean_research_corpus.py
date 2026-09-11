@@ -175,7 +175,7 @@ class CorpusTests(unittest.TestCase):
 
     def test_methods_require_source_evidence_and_invalidate_dependents(self):
         self.write('formal/A.lean', 'theorem alpha : True := trivial')
-        p = self.write('formal/B.lean', 'theorem beta : True := alpha')
+        p = self.write('formal/B.lean', 'import A\ntheorem beta : True := alpha')
         self.db.refresh(self.root)
         did = self.db.search('beta')[0]['decl_id']
         payload = dict(description='reuse witness', assumptions=[], steps=['apply alpha'],
@@ -204,7 +204,7 @@ class CorpusTests(unittest.TestCase):
 
     def test_source_references_invalidate_without_compiler_metadata(self):
         self.write('formal/A.lean', 'namespace A\ntheorem alpha : True := trivial\nend A')
-        self.write('formal/B.lean', 'theorem beta : True := A.alpha')
+        self.write('formal/B.lean', 'import A\ntheorem beta : True := A.alpha')
         self.db.refresh(self.root)
         did = self.db.search('beta')[0]['decl_id']
         self.db.save_method(did, dict(description='apply supplied witness', assumptions=[], steps=['use alpha'],
@@ -225,7 +225,7 @@ class CorpusTests(unittest.TestCase):
 
     def test_pending_method_cannot_publish_after_dependency_evidence_changes(self):
         self.write('formal/A.lean', 'theorem alpha : True := trivial')
-        self.write('formal/B.lean', 'theorem beta : True := alpha')
+        self.write('formal/B.lean', 'import A\ntheorem beta : True := alpha')
         self.db.refresh(self.root)
         did = self.db.search('beta')[0]['decl_id']
         epoch = self.db.evidence_epoch
@@ -241,7 +241,7 @@ class CorpusTests(unittest.TestCase):
         self.db.refresh(self.root)
         with self.db.con:
             self.db.con.execute("UPDATE files SET extractor_version='old'")
-        with patch.object(self.db, '_invalidate_dependents', side_effect=AssertionError('unnecessary graph traversal')):
+        with patch.object(self.db, '_invalidate_paths', side_effect=AssertionError('unnecessary graph traversal')):
             self.assertEqual(self.db.refresh(self.root)['changed'], 1)
 
     def test_invalidation_deadline_marks_descriptions_stale_without_blocking(self):
@@ -250,14 +250,14 @@ class CorpusTests(unittest.TestCase):
         did = self.db.search('alpha')[0]['decl_id']
         self.db.save_method(did, dict(description='use witness', assumptions=[], steps=[], obligations=[], evidence=['trivial']), model_version='m', prompt_version='v')
         with self.db.con:
-            self.db._invalidate_dependents(['alpha'], deadline=time.monotonic()-1)
+            self.db._invalidate_paths(['formal/A.lean'], deadline=time.monotonic()-1)
         self.assertIsNone(self.db.method(did))
         self.assertFalse(self.db.search('witness', views=('method',)))
 
     def test_dependency_invalidation_resumes_without_deleting_unrelated_methods(self):
         self.write('formal/A.lean', 'theorem alpha : True := trivial')
-        self.write('formal/B.lean', 'theorem beta : True := alpha')
-        self.write('formal/C.lean', 'theorem gamma : True := beta')
+        self.write('formal/B.lean', 'import A\ntheorem beta : True := alpha')
+        self.write('formal/C.lean', 'import B\ntheorem gamma : True := beta')
         self.write('formal/D.lean', 'theorem independent : True := trivial')
         self.db.refresh(self.root)
         ids = {r['name']:r['id'] for r in self.db.con.execute('SELECT id,name FROM declarations')}
@@ -265,7 +265,7 @@ class CorpusTests(unittest.TestCase):
             self.db.save_method(ids[name], dict(description='witness '+name, assumptions=[],
                 steps=[], obligations=[], evidence=[evidence]), model_version='m', prompt_version='v')
         with self.db.con:
-            self.db._invalidate_dependents(['alpha'], deadline=time.monotonic()-1)
+            self.db._invalidate_paths(['formal/A.lean'], deadline=time.monotonic()-1)
         self.assertTrue(self.db.invalidation_pending())
         self.assertEqual(self.db.con.execute('SELECT count(*) FROM methods').fetchone()[0], 3)
         with Corpus(self.db.directory) as resumed:
@@ -287,6 +287,42 @@ class CorpusTests(unittest.TestCase):
             self.db.save_method(d['id'], payload, model_version='m', prompt_version='v')
         with self.assertRaises(EvidenceChanged):
             self.db.save_method_chunk(d, 'chunk', payload, 'm', 'v', self.db.evidence_epoch)
+
+    def test_local_binder_does_not_depend_on_unimported_namesake(self):
+        self.write('formal/A.lean', 'namespace A\ntheorem h : True := True.intro\nend A')
+        self.write('formal/B.lean', 'theorem unrelated (h : True) : True := h')
+        self.db.refresh(self.root)
+        did = self.db.search('unrelated')[0]['decl_id']
+        self.db.save_method(did, dict(description='reuse assumption', assumptions=[], steps=[],
+            obligations=[], evidence=['h']), model_version='m', prompt_version='v')
+        self.write('formal/A.lean', 'namespace A\ntheorem h : True := by trivial\nend A')
+        self.db.refresh(self.root)
+        self.assertIsNotNone(self.db.method(did))
+        self.assertTrue(self.db.search('reuse assumption', views=('method',)))
+
+    def test_deleted_import_only_module_invalidates_transitive_importers(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        bridge = self.write('formal/Bridge.lean', 'import A')
+        self.write('formal/B.lean', 'import Bridge\ntheorem beta : True := alpha')
+        self.db.refresh(self.root)
+        did = self.db.search('beta')[0]['decl_id']
+        self.db.save_method(did, dict(description='reuse witness', assumptions=[], steps=[],
+            obligations=[], evidence=['alpha']), model_version='m', prompt_version='v')
+        bridge.unlink()
+        self.db.refresh(self.root)
+        self.assertIsNone(self.db.method(did))
+
+    def test_legacy_token_queue_is_not_followed_or_silently_discarded(self):
+        self.write('formal/A.lean', 'theorem alpha (h : True) : True := h')
+        self.db.refresh(self.root)
+        did = self.db.search('alpha')[0]['decl_id']
+        self.db.save_method(did, dict(description='reuse assumption', assumptions=[], steps=[],
+            obligations=[], evidence=['h']), model_version='m', prompt_version='v')
+        with self.db.con:
+            self.db.con.execute("INSERT INTO method_invalidation(name) VALUES('h')")
+        self.db.drain_invalidations(deadline=time.monotonic()+1)
+        self.assertTrue(self.db.invalidation_pending())
+        self.assertEqual(self.db.con.execute('SELECT status FROM methods').fetchone()[0], 'ready')
 
 
 if __name__ == '__main__':

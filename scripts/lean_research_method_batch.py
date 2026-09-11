@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-from collections import defaultdict, deque
 import json
 import os
 from pathlib import Path
@@ -11,7 +10,7 @@ import sqlite3
 import time
 
 from lean_research_batch import locks
-from lean_research_corpus import Corpus, source_priority
+from lean_research_corpus import Corpus, source_priority, import_dependents, chunks
 from research_batch.format import atomic_json, checked_file, descriptor, sha_file
 from research_batch.methods import (FORMAT, MAX_ROWS, MODEL, PRODUCER, METHOD_PROMPT_VERSION,
                                     checked_output, load_manifest, validated_payload, write_rows)
@@ -104,13 +103,7 @@ def changed_paths(root, corpus, original):
     current = {r['path']: dict(r) for r in corpus.con.execute('SELECT * FROM files')}
     toolchain_file = root / 'formal/lean-toolchain'
     toolchain = toolchain_file.read_text().strip() if toolchain_file.exists() else 'unknown'
-    bad, reverse = set(), defaultdict(set)
-    module_paths = defaultdict(set)
-    for row in [*old.values(), *current.values()]:
-        module_paths[row['module']].add(row['path'])
-        imports = row['imports'] if isinstance(row['imports'], list) else json.loads(row['imports'])
-        for module in imports:
-            reverse[module].add(row['module'])
+    bad = set()
     for path in old.keys() | current.keys():
         before, after = old.get(path), current.get(path)
         if (not before or not after or after['status'] != 'indexed' or before['toolchain'] != toolchain or
@@ -125,16 +118,92 @@ def changed_paths(root, corpus, original):
                     bad.add(path)
         except OSError:
             bad.add(path)
-    pending = deque(row['module'] for path in bad for row in (old.get(path), current.get(path)) if row)
-    seen = set()
-    while pending:
-        module = pending.popleft()
-        if module in seen:
-            continue
-        seen.add(module)
-        bad.update(module_paths[module])
-        pending.extend(reverse[module])
+    modules = {row['module'] for path in bad for row in (old.get(path), current.get(path)) if row}
+    bad.update(import_dependents([*old.values(), *current.values()], modules))
     return bad
+
+
+def recover_stored(cache, bundle, *, root, budget_seconds=45, lock_seconds=30):
+    """Republish validated stored GPU descriptions after legacy false invalidation.
+
+    No inference: require unchanged source and transitive imports relative to the
+    checked generation snapshot, the same producer, and still-exact citations.
+    Progress commits per file; re-running never duplicates published documents.
+    """
+    manifest = load_manifest(bundle)
+    manifest_sha = sha_file(bundle / 'manifest.json')
+    original = json.loads(checked_file(bundle, manifest['source_files']).read_text())
+    original.sort(key=lambda f: (source_priority(f['path']), f['path']))
+    key = 'method-recovery:' + manifest_sha
+    with locks([cache / n for n in ('source.lock','compiler.lock','enrichment.lock')], seconds=lock_seconds), Corpus(cache) as corpus:
+        # A bounded maintenance cache avoids random index-page reads for every
+        # restored declaration; leave interactive connections' memory unchanged.
+        corpus.con.execute('PRAGMA cache_size=-65536')
+        deadline = time.monotonic() + budget_seconds
+        saved = corpus.con.execute('SELECT value FROM meta WHERE key=?', (key,)).fetchone()
+        state = json.loads(saved[0]) if saved else dict(files_done=0, restored=0, rejected=0)
+        bad = changed_paths(root, corpus, original)
+        state['affected_files'] = len(bad)
+        # The old queue lost edit origins by recursively enqueueing short words.
+        # Replace it only after independently rebuilding the affected-file set.
+        if corpus.con.execute('SELECT 1 FROM method_invalidation LIMIT 1').fetchone():
+            with corpus.con:
+                corpus.con.executemany(
+                    "INSERT INTO method_invalidation_files(path) VALUES(?) ON CONFLICT(path) DO UPDATE SET cursor=0,done=0",
+                    [(path,) for path in sorted(bad)])
+                state['legacy_jobs_replaced'] = corpus.con.execute('SELECT COUNT(*) FROM method_invalidation').fetchone()[0]
+                corpus.con.execute('DELETE FROM method_invalidation')
+                corpus.bump(source=True)
+        corpus.drain_invalidations(deadline=deadline)
+        if not corpus.invalidation_pending():
+            for f in original[state['files_done']:]:
+                if time.monotonic() >= deadline:
+                    break
+                current = corpus.con.execute('SELECT source_hash,status FROM files WHERE path=?', (f['path'],)).fetchone()
+                eligible = (f['path'] not in bad and current and current['status'] == 'indexed'
+                            and current['source_hash'] == f['source_hash'])
+                finished = True
+                with corpus.con:
+                    if eligible:
+                        rows = corpus.con.execute(
+                            "SELECT m.*,d.proof,d.path,d.module,d.line,d.end_line FROM declarations d INDEXED BY declaration_path "
+                            "CROSS JOIN methods m ON m.decl_id=d.id WHERE d.path=? "
+                            "AND m.content_hash=d.source_hash AND m.status='stale' "
+                            "AND m.model_version=? AND m.prompt_version=?",
+                            (f['path'], manifest['producer'], manifest['prompt_version'])).fetchall()
+                        for m in rows:
+                            if time.monotonic() >= deadline:
+                                finished = False
+                                break
+                            payload = {k:json.loads(m[k]) for k in ('assumptions','steps','obligations','evidence')}
+                            payload['description'] = m['description']
+                            evidence = payload['evidence']
+                            if (not isinstance(evidence, list) or not evidence or any(
+                                    not isinstance(e, str) or not e.strip() or e not in m['proof'] for e in evidence)):
+                                state['rejected'] += 1
+                                continue
+                            text = '\n'.join(str(payload[k]) for k in ('description','assumptions','steps','obligations'))
+                            provenance = dict(kind='generated', source_hash=m['content_hash'], model=m['model_version'],
+                                prompt=m['prompt_version'], evidence=evidence,
+                                recovery=dict(manifest_sha256=manifest_sha, reason='legacy_token_invalidation',
+                                              interpretation_verified=False))
+                            corpus.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (m['decl_id'],))
+                            for part, _, _ in chunks(text):
+                                corpus._document(m['decl_id'], m['path'], m['module'], 'method', part,
+                                                 m['line'], m['end_line'], provenance)
+                            corpus.con.execute("UPDATE methods SET status='ready',error='' WHERE decl_id=?", (m['decl_id'],))
+                            state['restored'] += 1
+                        if rows:
+                            corpus.bump()
+                    if finished:
+                        state['files_done'] += 1
+                    corpus.con.execute('INSERT OR REPLACE INTO meta VALUES(?,?)', (key, json.dumps(state)))
+                if not finished:
+                    break
+        state.update(files_total=len(original), partial=state['files_done'] < len(original), at=time.time())
+        with corpus.con:
+            corpus.con.execute('INSERT OR REPLACE INTO meta VALUES(?,?)', (key, json.dumps(state)))
+    return state
 
 
 def import_results(cache, bundle, output, *, root, budget_seconds=90, lock_seconds=150):
@@ -210,6 +279,10 @@ if __name__ == '__main__':
     p = sub.add_parser('prepare')
     p.add_argument('--directory', type=Path, required=True)
     p.add_argument('--model-files', type=Path, required=True)
+    p = sub.add_parser('recover-stored')
+    p.add_argument('--bundle', type=Path, required=True)
+    p.add_argument('--root', type=Path, required=True)
+    p.add_argument('--budget-seconds', type=float, default=45)
     p = sub.add_parser('import')
     p.add_argument('--bundle', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
@@ -219,6 +292,8 @@ if __name__ == '__main__':
     if args.command == 'prepare':
         result = prepare(args.cache_dir, args.directory, args.model_files)
         result = {k:v for k,v in result.items() if k not in ('shards','model_files','code')}
+    elif args.command == 'recover-stored':
+        result = recover_stored(args.cache_dir, args.bundle, root=args.root, budget_seconds=args.budget_seconds)
     else:
         result = import_results(args.cache_dir, args.bundle, args.output, root=args.root, budget_seconds=args.budget_seconds)
     print(json.dumps(result))

@@ -71,8 +71,9 @@ negative quadratic form
 The [literal cutoff limit](../3-formalized/pw-b-gamma-adjoint-cutoff-contact.md)
 is now Lean-closed: all nine public declarations pass their axiom audits.
 No full adjoint, closure, common form domain or complete pairing identity
-is claimed yet. The admitted source-mode paired products are the next
-test before asserting these operator conclusions.
+is claimed yet. The admitted source-mode paired products and their
+logarithmic contact are proved below; the complete transposition remains
+necessary before asserting these operator conclusions.
 
 ## Concrete source tests and positive survivors
 
@@ -157,44 +158,76 @@ before claiming convergence of the original adjoint pairing. These
 are pending paper estimates, not new Lean results or a closed-domain
 operator identity.
 
-## Complete arithmetic endpoint attack
+## Complete arithmetic endpoint and scalar source test
 
-A further source test is pending. It targets the normalized complete
-arithmetic field G_z=M_z/Q and the corrected skew candidate
-K=A-B-2*log(x). Before asserting any spectral exclusion, prove its
-actual endpoint values and admissions. The atom formula suggests that
-G_z tends to1 and A G_z tends to0 at infinity for every coefficient
-parameter. The unpaid part is a finite limit of B G_z there. If all
-three limits hold, K G_z/log(x) tends to-2, so this unmodified field
-cannot solve a scalar eigen-equation for K. This would constrain this
-particular source realization, not exclude corrected fields or PW-B.
-
-There is a sharper paper bound for that unpaid endpoint. For a>0 set
-q_a(v)=exp(-a/v) on v>0, with its limiting value0 at v=0. Its actual
-derivative is a*v^(-2)*exp(-a/v). The exponential-series bound gives
+The [reciprocal-endpoint theorem](../3-formalized/pw-b-gamma-reciprocal-endpoint.md)
+proves the actual derivative of q_a(v)=exp(-a/v) and the all-order bound
 
 `0<=q_a'(v)<=(k+2)!/a^(k+1)*v^k`.
 
-Integrating this bound from v to v+h gives the complete kernel estimate
+The mean-value theorem on [v,v+h] controls the complete kernel by
+`((k+2)!/a^(k+1))*exp(-h)*(v+h)^k`, without the former1/v loss.
+The actual positive endpoint kernel exp(-h-a/h)/h is integrable. The
+original kernels converge to it in L1, and their integrals converge.
+On0<v<=1, the shifted Gamma moment gives a common integral bound at
+every inverse polynomial order in a. All14 public declarations, the
+targeted leaf build, index and final lint are verified.
 
-`0<=exp(-h)*(q_a(v+h)-q_a(v))/h`
-` <=(k+2)!/a^(k+1)*exp(-h)*(v+h)^k`.
+The [complete arithmetic endpoint](../3-formalized/pw-b-gamma-arithmetic-reciprocal-endpoint.md)
+retains the entire signed Möbius series and identifies its limit with
+the original normalized current H(R M_z)/Q as v->0+. For |z|<=N,
+coefficient norms are at most n^(N+1); k=N+2 makes the complete tail
+bounded by a constant times1/(n-1)^2. Tannery proves the finite endpoint
+B_z for every complex z and absolute summability of its series. All11
+public declarations and final integration audits are verified. No
+endpoint parameter analyticity or relation to Xi is asserted.
 
-Unlike the previously verified quotient estimate, this proposed bound
-has no factor1/v. On0<v<=1, it has a v-independent admitted Gamma
-majorant. The actual limit is exp(-h-a/h)/h. With a=n-1, sufficiently
-large k absorbs every polynomial coefficient weight and permits the
-complete arithmetic sum and endpoint limit to be interchanged. The
-finite endpoint series, its parameter regularity and its relation to
-K remain conjectures pending a full paper/dependency audit and Lean.
-The new deep method search is terminal and saved in the contact search
-record. Its proposed uniform-difference and entire-Gronwall ingredients
-assume the missing convergence or global derivative bound. The actual
-mathlib Convex.norm_image_sub_le_of_norm_hasDerivWithin_le theorem was
-read directly; on the compact positive interval [v,v+h], the explicit
-derivative bound above can supply every premise of its mean-value
-estimate. This is the next arithmetic-domain attack after the exact
-logarithmic contact pairing, not a claimed operator or spectral result.
+The [skew-source theorem](../3-formalized/pw-b-gamma-skew-source-endpoint.md)
+proves M_z/Q->1, E_z/Q->0, and the actual reflected-current quotient
+R(H(R M_z))/Q->B_z at infinity. Hence the literal proposed skew source
+
+`K_z=E_z-R(H(R M_z))-2*log(x)*M_z`
+
+obeys K_z/(Q*log(x))->-2. It cannot equal any scalar multiple of the
+unchanged M_z on the positive ray. The [failed raw-source ansatz](../5-failed/pw-b-raw-gamma-skew-occurrence.md)
+is narrowly retired; PW-B, corrected fields and distributional source
+realizations remain live. Its positive survivor is exact and stronger
+than exclusion: adding2*c*log(x)*Q gives leading quotient2*c-2, so the
+explicit scalar equation with M_z-c*Q forces c=1. At c=1 this quotient
+vanishes for every z. All8 public declarations pass their standard-only
+scratch audit, targeted leaf build, all-name source/API and exact
+proof-body checks, index and final repository lint. These statements
+do not prove a full-domain adjoint or existence of a corrected scalar
+solution.
+
+## Next corrected-source boundary test
+
+The unit ground subtraction survives the leading logarithmic test.
+The next exact quantity to retain is B_z, the complete signed endpoint
+above. A paper derivation gives a further necessary condition. At x=1,
+let d_n be the admitted normalized source atom and let C_z be the sum
+of |d_n| over n>=2. The proved atom transport gives for x>=1
+
+`|M_z(x)/Q(x)-1|<=C_z*exp(-(x-1))`.
+
+The analogous logarithmic coefficient sum gives the same exponential
+bound for E_z/Q. The elementary log(x)<=x bound and the already used
+exponential-series estimate show log(x)*exp(-x)->0. Consequently the
+unit-ground-corrected skew expression, divided by Q, should tend to
+-B_z. A scalar equation with M_z-Q would therefore require B_z=0.
+This sharper rate and boundary condition are pending Lean work, not a
+claimed eigenfunction or an identification of B_z with Xi. The next
+attack must prove the complete rate and retained boundary functional,
+then establish their actual source/spectral incidence. Merely declaring
+B_z zero at a selected parameter would assume the missing producer.
+
+The four new deep searches and their source/compiler freshness limits
+are preserved in the [endpoint search record](pw-b-gamma-reciprocal-flat-endpoint-searches.json).
+The useful methods are the actual mean-value theorem, admitted Gamma
+majorants, dominated integral convergence and Tannery. Proposed Sonin
+L2 and strong-log Mellin carriers do not establish admission or spectral
+occurrence for this source. The [attack journal](pw-b-source-orientation-attack.md)
+records the recent broad arXiv papers and their missing transfer premises.
 
 ## Lean and research state
 
@@ -220,3 +253,43 @@ sets. The proposed finite-fibre, cusp-eigenform and uniformly bounded-weight
 arguments were checked and do not establish this singular source domain.
 The [main attack card](pw-b-source-orientation-attack.md) records the
 recent broad arXiv searches and the exact limitations of their transfer.
+
+
+## Stronger corrected-source attack: all retained moments (conjecture)
+
+The next conjecture is sharper than B_z=0. Write
+F_z(y)=M_z(y)/Q(y)-1 and S_z(t)=F_z(1/t). The complete normalized
+reciprocal current is
+C_z(v)=integral_(h>0) exp(-h)(S_z(v+h)-S_z(v))/h dh.
+A unit-corrected scalar identity would make C_z(v) smaller than every
+power of v as v->0+. This flatness must be proved using the full signed
+source and logarithmic-current tails. It is not assumed.
+
+Candidate expansion: exp(-v) C_z(v) has asymptotic coefficients
+J_j(z)=integral_(t>0) exp(-t) S_z(t)/t^(j+1) dt for every j>=0.
+To prove it, split the original h-integral at h=v. The region0<h<v
+requires a derivative bound on S_z on[v,2v], not separate divergent
+integrals. On h>=v, put t=v+h and expand1/(t-v) finitely, where v/t<=1/2.
+Bound its remainder by2*v^(N+1)*integral_(t>0) exp(-t)|S_z(t)|/t^(N+2).
+The subtracted loss is bounded by |S_z(v)|*(1+|log v|); replacing the
+remaining lower limit2v by0 requires separate flat-tail estimates.
+None of these full-series, all-order estimates is yet formalized.
+
+If that expansion is proved, flatness forces every J_j(z)=0 by induction.
+Inversion t=1/y turns these into ordinary moments of
+g_z(y)=exp(-1/y)*F_z(y)/y on y>0. A single exponential window suffices
+for moment uniqueness: the actual corpus theorem
+HTGeometry.ae_eq_zero_of_forall_complex_moment_eq_zero
+in LocalExponentialTestClosure requires finite measure, an exponential
+window and an L2 density. Candidate realization: measure exp(-y/2)dy
+on y>0 and density exp(y/2)*g_z(y). Its hypotheses still need source
+proofs, particularly at y=0. Absolute arithmetic admission gives the
+mechanism for polynomial growth there, killed by exp(-1/y).
+
+Zero density would force F_z=0. The complete n=2 leading-tail limit
+should contradict this for every z, since its coefficient is nonzero.
+This last all-z leading limit also needs proof; the older leading-current
+leaf alone treats the untilted current and cannot be cited for it.
+Thus the conjectured exclusion of the unit-corrected scalar ansatz is
+NOT a proved no-go. Its positive survivor is the complete endpoint
+moment detector: some retained J_j(z) must be nonzero. PW-B remains live.

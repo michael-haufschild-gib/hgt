@@ -1,0 +1,40 @@
+# FZZ-P higher original polynomial restoration — 2026-09-11
+
+RH unproved; active goal unchanged. Previous turn's eight Taylor/lift theorems fully audited; see `rh/fzz_higher_screening_taylor_2026_09_11`. Current turn adds SEVEN source theorems in `formal/GaloisForLFunctions/RHTower/FZZCigarHigherScreeningRestoration.lean`. Scratch `/tmp/fzzp_higher_taylor_restoration.lean` passed clean; unchanged proof body promoted plus module header; umbrella wired. Final leaf build passed99seconds/8838jobs. Global formal lint passed. Final axioms session32725 completed exit0: all seven public theorems use only propext, Classical.choice, Quot.sound. All owned Lean/search/build/lint sessions are terminal. Audit log: /tmp/fzzp-higher-screening-restoration-axioms.log.
+
+## Seven current source theorems
+Public lines151,159,193,352,358,364,388:
+- fzzScreeningFifthAngularCoefficient_one beta: c1=beta²/4.
+- fzzScreeningFifthAngularCoefficient_two beta: c2=beta²(beta-2)²/64.
+- fzzScreeningFifthTaylor_circleAverage beta r: average actual full polynomial = complete radial polynomial, every real radius.
+- fzzScreeningFifthTaylor_weight_integrable u beta: normz^(-2+exp u)*Taylor integrable on original halfdisk.
+- fzzScreeningFifthTaylor_weight_integral u beta: original polynomial integral = all six exact integrated monomials.
+- fzzScreeningFifthSubtracted_original_integral u beta: original K local integral = fifth remainder integral + complete counterterm.
+- fzzScreeningFifthAngularCoefficient_analytic beta n: every coefficient analytic in original regular exponent.
+
+Definitions: fzzScreeningFifthBinomial beta j=Pochhammer_desc(j,beta/2)/j!; fzzScreeningFifthAngularCoefficient beta is Nat→Real defined slots0..5 and0 thereafter. Coefficients c0=1,c1=a1+2a2,c2=a2+6a3+6a4,c3=a3+12a4+30a5,c4=a4+20a5,c5=a5. fzzScreeningFifthAngularPolynomial=Σk∈range6 c_k r^(2k). fzzScreeningFifthCounterterm alpha beta=2pi Σk∈range6 c_k(beta)*(1/2)^(alpha+2k+2)/(alpha+2k+2). This raw quotient is only identified with original integral for alpha>-2; evaluating totalized denominators at poles is NOT a finite-part assertion.
+
+Proof: direct current Mathlib cosine primitive + integral_cos_pow recurrence gives cos moments0..5; generic degree5 cosine polynomial integral retains only even2,4 moments after full source admission. Symbolic q^j expansions j1..5 give r²; r4+2r²; r6+6r4; r8+12r6+6r4; r10+20r8+30r6. Binomial recurrence handles c1,c2 algebraically. Full original circle average is exactly polynomial with all six coefficients. Polynomial coeff analytic via aeval_polynomial and data-only Nat cases.
+
+Original plane integral transported by Complex.integral_comp_polarCoord_symm on ball indicator. Joint polar density r^(alpha+1)*Taylor(circleMap0rtheta) admitted for alpha>-2: radial power L1 times continuous bounded polynomial on compact[0,1/2]×[-pi,pi]. Product integrability before Fubini. circleAverage_eq_integral_add moves original angle from0..2pi to-pi..pi. Integrate every radial monomial; restore all finite r6,r8,r10 terms along with three pole terms. Original K=R5+normz^alpha Taylor proves original source identity. No Gamma identification, physical normalization, Ward law or RH yet.
+
+Audit files: `/tmp/fzzp-higher-taylor-restoration-scratch.log` clean; `/tmp/fzzp-higher-screening-restoration-build.log` passed; `/tmp/fzzp-higher-screening-restoration-lint.log` passed. `/tmp/fzzp_higher_screening_restoration_axioms.lean` generated all7. New module was nonexistent before promotion, proof body unchanged apart from header. No commits/full umbrella builds/numerical experiments/subagents.
+
+## Documentation finalized
+The route card, frontier map and route-independent STATUS now record all seven fully audited restoration statements. Earlier proposed-coefficient and pending-audit wording was corrected. RH and the goal remain open. Next attack: explicit pole-cleared whole source/Gamma identity.
+
+## Next genuine mathematical attack
+Construct explicit pole-cleared source from original local remainder + restored polynomial + reflection + exterior. A(alpha)=(alpha+2)(alpha+4)(alpha+6). For k0,1,2, define cancelled radial factors directly: (alpha+4)(alpha+6)*R^(alpha+2), (alpha+2)(alpha+6)*R^(alpha+4), (alpha+2)(alpha+4)*R^(alpha+6). For k>=3 retain A(alpha)*R^(alpha+2k+2)/(alpha+2k+2); positive denominator alpha>-8. Let Lclear=2pi Σ c_k beta*cancelled radial factor. Then H(alpha,beta)=Aalpha*Abeta*(R5Integral(alpha,beta)+R5Integral(beta,alpha)+ExteriorIntegral(alpha,beta))+Abeta*Lclear(alpha,beta)+Aalpha*Lclear(beta,alpha). This retains boundary pole values, unlike multiply-after-totalized-division.
+
+At alpha=-2,-4,-6 proposed pole-line values are respectively16pi A(beta), -8pi c1(beta) A(beta), 16pi c2(beta) A(beta). Need source domains when interpreting these analytically. No such new cleared module/scratch exists yet.
+
+Old `FZZCigarSubtractedScreeningAnalytic.lean`289–336 read: public `fzzScreeningPlaneExterior_integrable alpha (log(-2-alpha-beta))` admits arbitrary alpha+beta<-2; analytic exterior from signed-exp helper and open shift, final translation `.comp_sub alpha`. Could copy source proof or construct new data-only wrapper; no missing generic tail L1 theorem. Earlier module signed-exp helper private, so new source may need contained private helper reuse by copying (already used in8module).
+
+Old `FZZCigarPlaneScreeningGammaContinuation.lean`29–106 and214–255 read: reciprocal Gamma analytic everywhere via Complex.differentiable_one_div_Gamma.analyticAt.re_ofReal, positive Gamma analytic by inverse. Higher cleared Gamma candidate64pi Gamma(-alpha/2-beta/2-1)*Gamma(4+alpha/2)*Gamma(4+beta/2)*invGamma(-alpha/2)*invGamma(-beta/2)*invGamma(2+alpha/2+beta/2). Analytic for alpha,beta>-8,alpha+beta<-2. Original full plane equality from admitted source plus whole-plane Beta producer then numerator Gamma recurrences. Two-slice identity: first fixed -2<beta<0, a0=-2-beta/2, continue alpha along Ioo(-8,-2-beta) from actual ordinary neighborhood. Second fixed -8<alpha<-2, continue beta along Ioo(-8,-2-alpha) from neighborhood -1. Existing exact method uses AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq, isPreconnected_Ioo. Public chart alpha=-8+6/(1+exp u), beta same can cover(-8,-2)^2 including -6 atulog2. Full D match beyond negative alpha could use symmetry if desired, but actualphysicalcorner within this square. Higher finite jets, unmarked -84pi, marked -141pi/8, ratio47/224 remain conjectures. Full fractional screening multiplicity, physical coupling/parameters, nonzero modes, independent phase frame and mixed Ward producer still open.
+
+## Current searches and distant papers
+Search11773 (`cosine moment integral polynomial`, deep/all180) ended, `/tmp/fzzp-higher-restoration-cosine-methods.json`: partialgen826581,noerrors; allcandidate/method names inspected. Read `CosinePolynomialPurchaseCap.lean:90–118`: candidate is harmonic cos(kθ), would requireChebyshev conversion, direct cos-power recurrence used instead. Search33734 (`analytic identity connected real interval continuation pole clearing`, deep/all180) ended, `/tmp/fzzp-higher-pole-clearing-methods.json`: partialgen826734,rerankingdeadline; candidate/method names inspected, existing actual FZZ two-slice method selected. No absence claim from partial results.
+
+Broad gluing/renormalization/duality searches withrecency100, explicit2026months, thenarxiv2609/2608/2607 prefixes repeatedlyreturnedmostlyold papers; sortedarxiv searchendpoint cachemiss. Opened primary abstracts arxiv1612.09510(rank-one invariant random subgroups,2016) and0904.2715(N=2dualities,2009); none identifiesfixedFZZsource/Ward, noimportedpremises. Datesoutsidepreferredwindow explicitincard. Priorrecentthreepapersremainin8modulecard.
+
+One owned foreground Lean process only. Development lake env lean /tmp/file fromformal. Leaf lake build onlyfinalaudit. Printaxioms/tmp only. Formal lint authoritative; no fullbuild. Sharedtreechangesbyothers must bepreserved.

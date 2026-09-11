@@ -11,7 +11,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lean_research_corpus import Corpus
 from lean_research_engine import enrich
-from lean_research_method_batch import prepare, import_results
+from lean_research_method_batch import prepare, import_results, recover_stored
 from research_batch.format import atomic_json, sha_file
 from research_batch.format import descriptor
 from research_batch.method_vectors import prepare as prepare_vectors
@@ -90,6 +90,44 @@ class MethodBatchTests(unittest.TestCase):
         result = self.imported()
         self.assertEqual(result['stale'], 3)
         self.assertEqual(result['published'], 1)
+
+    def test_recovery_preserves_changed_import_closure_and_reuses_unchanged_text(self):
+        self.outputs()
+        self.imported()
+        with Corpus(self.cache) as c:
+            before = c.con.execute("SELECT text,content_hash FROM documents WHERE path='formal/Other.lean' AND view='method'").fetchone()
+            with c.con:
+                c.con.execute("UPDATE methods SET status='stale'")
+                c.con.execute("DELETE FROM documents WHERE view='method'")
+                c.con.execute("INSERT INTO method_invalidation(name) VALUES('trivial')")
+        # An edit not yet indexed must prevent recovery of its transitive importers.
+        (self.root / 'formal/Base.lean').write_text('theorem base : True := by trivial')
+        result = recover_stored(self.cache, self.bundle, root=self.root, budget_seconds=5)
+        self.assertFalse(result['partial'])
+        self.assertEqual(result['restored'], 1)
+        self.assertEqual(result['affected_files'], 3)
+        with Corpus(self.cache, readonly=True) as c:
+            self.assertFalse(c.invalidation_pending())
+            after = c.con.execute("SELECT text,content_hash FROM documents WHERE view='method'").fetchone()
+            self.assertEqual(tuple(before), tuple(after))
+            self.assertEqual(c.con.execute("SELECT count(*) FROM methods WHERE status='stale'").fetchone()[0], 3)
+        again = recover_stored(self.cache, self.bundle, root=self.root, budget_seconds=5)
+        self.assertEqual(again['restored'], 1)
+
+    def test_recovery_resumes_and_rejects_missing_source_evidence(self):
+        self.outputs()
+        self.imported()
+        with Corpus(self.cache) as c, c.con:
+            c.con.execute("UPDATE methods SET status='stale'")
+            c.con.execute("UPDATE methods SET evidence='[\"invented\"]' WHERE decl_id IN (SELECT id FROM declarations WHERE name='other')")
+            c.con.execute("DELETE FROM documents WHERE view='method'")
+        expired = recover_stored(self.cache, self.bundle, root=self.root, budget_seconds=0)
+        self.assertTrue(expired['partial'])
+        self.assertEqual(expired['restored'], 0)
+        result = recover_stored(self.cache, self.bundle, root=self.root, budget_seconds=5)
+        self.assertFalse(result['partial'])
+        self.assertEqual(result['restored'], 3)
+        self.assertEqual(result['rejected'], 1)
 
     def test_deleted_sources_are_not_restored(self):
         self.outputs()

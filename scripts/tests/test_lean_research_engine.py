@@ -81,6 +81,18 @@ class EngineTests(unittest.TestCase):
         self.db.refresh(root)
         self.did = self.db.search('alpha')[0]['decl_id']
 
+    def test_generation_cannot_overwrite_descriptions_awaiting_recovery(self):
+        payload = dict(description='use reflexivity', assumptions=[], steps=[], obligations=[], evidence=['rfl'])
+        self.db.save_method(self.did, payload, model_version='gpu', prompt_version='v')
+        with self.db.con:
+            self.db.con.execute("UPDATE methods SET status='stale'")
+            self.db.con.execute("INSERT INTO meta VALUES('method-recovery:snapshot','{\"partial\":true}')")
+        runtime = FakeRuntime()
+        report = enrich(self.db, runtime, deadline=time.monotonic()+5, methods=True)
+        self.assertEqual(report['deferred'][0]['reason'], 'stored_method_recovery')
+        self.assertFalse(runtime.calls)
+        self.assertEqual(self.db.con.execute('SELECT description FROM methods').fetchone()[0], payload['description'])
+
     def test_no_models_returns_truthful_partial_results(self):
         result = Engine(self.db).search('growth bound')
         self.assertTrue(result['partial'])
