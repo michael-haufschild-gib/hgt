@@ -375,3 +375,29 @@ Used broad arXiv queries with `ladder`, `cyclicity`, `Poisson`, `recursion`, `tr
 - 2026-09-12 — Recovered prior regularity/derived-action work; searched corpus before proposing new mathematics; derived the actual source vector fields and checked normalization.
 - 2026-09-12 — Proved opposite ladder recurrences and all-order nonvanishing; constructed the normalized finite intertwiner and a polynomial/evaluation inverse on paper.
 - 2026-09-12 — Kept formal and Hilbert status explicit. No Lean source changes, computations, heartbeat changes, or builds in this investigation.
+
+
+## Source differential formalization
+
+The source coefficient calculus and all-order ladder argument are now implemented in:
+
+- `formal/GaloisForLFunctions/RHTower/MaassSmoothDifferentialOperators.lean`
+- `formal/GaloisForLFunctions/RHTower/MaassDifferentialLadder.lean`
+
+`MaassSmooth.space` consists of actual smooth functions on the upper half-plane. Its directional derivatives use the original real Fréchet derivatives, and multiplication by height uses the actual imaginary coordinate. Smoothness, linearity, mixed-derivative commutation, and the height product rule are proved. The operators `raise` and `lower` are the coefficient formulas of Sections 1–3. Their changing-weight commutator is proved from those differential identities, not assumed.
+
+`laplacian_apply` identifies the smooth-space operator with the existing `positiveHyperbolicLaplacian` definition. `lower_raise_ofMaass` then proves the source equation from the original Maass eigenfunction. `lower_raised` and `raise_lowered` establish both all-order opposite recurrences. `raised_ne_zero` and `lowered_ne_zero` prove nonvanishing for every order and every bundled exceptional-eigenvalue Maass form. `lowerToZero_raised` and `raiseToZero_lowered` prove the exact finite product of the return coefficients.
+
+This closes the coefficient-level differential and ladder portions in Lean. It does **not** yet prove that lifting these coefficient functions to G preserves automorphy or differentiates to these operators at every group point. That source flow identification, the normalized intertwiner assembly, Hilbert globalization, and the higher-rank local classification remain unfinished. The paper proof above is not reclassified as fully formalized.
+
+The next source-flow theorem must identify differentiation of the literal weight lift along inverse diagonal translation, at every group element, with the sum of the lifted `raise m` and `lower m` terms. Compact rotation and the conjugate diagonal direction then separate the two operators and propagate automorphy to the whole ladder.
+
+Validation so far:
+
+- Scratch proofs checked with `lake env lean`, with at most one foreground Lean process.
+- Only the needed new source operator olean was produced before checking its dependent ladder module.
+- Final targeted audit: `LEAN_NUM_THREADS=1 lake build GaloisForLFunctions.RHTower.MaassDifferentialLadder` passed without warnings. It built the source operators in 3.1 seconds and the ladder in 2.5 seconds; all other jobs used the existing cache.
+- Both modules wired once into `RHTower.lean`; no umbrella/full build.
+- No new axioms, unfinished terms, computational certificates, or heartbeat/recursion/transparency option increases. Expansive operator formulas are not global simp rules.
+
+Further corpus searches used `smooth directional derivative commutator vector field` (deep, complete) and `Iwasawa derivative upperHalfPlane smul --any --module RHTower` (deep, partial). The first returned the existing mixed-derivative and vector-field methods; the second found the Iwasawa scale/phase derivatives needed for the next group-flow step. Source statements were inspected before use. Broad recent arXiv searches for `commutation` and `interpolation` also found [extended Gevrey interpolation](https://arxiv.org/abs/2609.06258): its derivative-growth assumptions do not supply the missing group-flow or quotient-L2 domain identification, so it is not used as a dependency.

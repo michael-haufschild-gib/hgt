@@ -2,6 +2,21 @@ import GaloisForLFunctions.RHTower.DeningerDampedOriginalGreenMellin
 import GaloisForLFunctions.RHTower.ReflectedBiHeatMultiplicityTomography
 import Mathlib.Analysis.Meromorphic.TrailingCoefficient
 
+/-!
+# Exact zero-damping singularity of the original Green transform
+
+The actual damped-source Euler formula forces a scalar meromorphic expression.
+At each native Xi divisor point its damping pole has twice the original
+multiplicity, with a nonzero coefficient determined by the original Gaussian,
+prime denominator and both first surviving zeta jets. Exactly that power
+normalization retains a finite nonzero limit and admits a scalar analytic germ.
+
+This proves neither a zero-damping source vector nor fixed physical-reader
+agreement. Passing all coordinate germs to the original completion remains a
+separate analytic obligation. No simplicity, critical-line or norm-bound premise
+is used to derive the native scalar singularity.
+-/
+
 open Complex Filter Topology
 noncomputable section
 namespace RHTower
@@ -46,12 +61,15 @@ private theorem native_trailingCoefficient_eq_jet {f : ℂ → ℂ} {r : ℂ} {m
     (hf : AnalyticAt ℂ f r) (hm : analyticOrderAt f r = m) :
     meromorphicTrailingCoeffAt f r = iteratedDeriv m f r / (m.factorial : ℂ) := by
   obtain ⟨u, hu, _, huc, hfac⟩ := translated_analytic_unit hf hm
-  have hder := hfac.iteratedDeriv_eq m
-  rw [iteratedDeriv_comp_add_const, zero_add] at hder
+  have hfac' : (fun a : ℂ => f (a + r)) =ᶠ[𝓝 0] (fun a => a ^ m * u a) := hfac
+  have hder := hfac'.iteratedDeriv_eq m
+  rw [iteratedDeriv_comp_add_const] at hder
+  change iteratedDeriv m f (0 + r) = _ at hder
+  rw [zero_add] at hder
   have hpow : AnalyticAt ℂ (fun a : ℂ => a ^ m) 0 := analyticAt_id.pow m
   have hmul := complex_iteratedDeriv_mul_of_left_vanishing_below m hpow.contDiffAt
     hu.contDiffAt (fun j hj => by
-      rw [iteratedDeriv_fun_pow_zero, if_neg (Nat.ne_of_lt hj)])
+      rw [iteratedDeriv_fun_pow_zero, if_neg (Nat.ne_of_lt hj), Nat.cast_zero])
   rw [hmul, iteratedDeriv_fun_pow_zero, if_pos rfl] at hder
   rw [← huc]
   apply (eq_div_iff (by exact_mod_cast Nat.factorial_ne_zero m)).2
@@ -192,13 +210,17 @@ theorem deningerOriginalPrimeGreenDampingContinuation_normalized_limit
       deningerOriginalPrimeGreenDampingContinuation p rho a) (𝓝[≠] 0)
       (𝓝 (deningerOriginalPrimeGreenZeroDampingCoefficient p rho)) := by
   have hlim := (deningerOriginalPrimeGreenDampingContinuation_meromorphicAt p rho).tendsto_nhds_meromorphicTrailingCoeffAt
-  rw [deningerOriginalPrimeGreenDampingContinuation_order,
-    deningerOriginalPrimeGreenDampingContinuation_trailingCoeff] at hlim
-  have hcast : (2 * (xiSupportMultiplicity rho : ℤ)) =
-      ((2 * xiSupportMultiplicity rho : ℕ) : ℤ) := by
+  have ho : (meromorphicOrderAt (deningerOriginalPrimeGreenDampingContinuation p rho) 0).untop₀ =
+      -((2 * xiSupportMultiplicity rho : ℕ) : ℤ) := by
+    rw [deningerOriginalPrimeGreenDampingContinuation_order]
+    change -(2 * (xiSupportMultiplicity rho : ℤ)) = -((2 * xiSupportMultiplicity rho : ℕ) : ℤ)
     simp only [Nat.cast_mul, Nat.cast_ofNat]
-  simpa only [WithTop.untop₀_coe, neg_neg, Pi.smul_apply', Pi.pow_apply,
-    sub_zero, smul_eq_mul, hcast, zpow_natCast] using hlim
+  change Tendsto (fun a : ℂ => (a - 0) ^
+    (-(meromorphicOrderAt (deningerOriginalPrimeGreenDampingContinuation p rho) 0).untop₀) *
+    deningerOriginalPrimeGreenDampingContinuation p rho a) (𝓝[≠] 0)
+    (𝓝 (meromorphicTrailingCoeffAt (deningerOriginalPrimeGreenDampingContinuation p rho) 0)) at hlim
+  simpa only [ho, neg_neg, zpow_natCast, sub_zero,
+    deningerOriginalPrimeGreenDampingContinuation_trailingCoeff] using hlim
 
 /-- Ordinary finite convergence is impossible for this original scalar continuation. -/
 theorem deningerOriginalPrimeGreenDampingContinuation_no_finite_limit
@@ -212,6 +234,54 @@ theorem deningerOriginalPrimeGreenDampingContinuation_no_finite_limit
     exact_mod_cast xiSupportMultiplicity_pos rho
   have hn : -(2 * (xiSupportMultiplicity rho : ℤ)) < 0 := by omega
   exact not_le.mpr (by exact_mod_cast hn)
+
+private theorem normalized_damping_order (p : Nat.Primes) (rho : XiDivisorSupport) (k : ℕ) :
+    meromorphicOrderAt (fun a : ℂ => a ^ k *
+      deningerOriginalPrimeGreenDampingContinuation p rho a) 0 =
+      (((k : ℤ) - 2 * xiSupportMultiplicity rho : ℤ) : WithTop ℤ) := by
+  have hp : MeromorphicAt (fun a : ℂ => a ^ k) 0 := (analyticAt_id.pow k).meromorphicAt
+  have ho : meromorphicOrderAt (fun a : ℂ => a ^ k) 0 = ((k : ℤ) : WithTop ℤ) := by
+    have ht := meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := 0) (n := k)
+    change meromorphicOrderAt (fun a : ℂ => (a - 0) ^ k) 0 = (k : WithTop ℤ) at ht
+    simpa only [sub_zero, ← WithTop.coe_natCast] using ht
+  rw [fun_meromorphicOrderAt_mul hp
+    (deningerOriginalPrimeGreenDampingContinuation_meromorphicAt p rho), ho,
+    deningerOriginalPrimeGreenDampingContinuation_order]
+  exact (WithTop.coe_add (k : ℤ) (-(2 * xiSupportMultiplicity rho : ℤ))).symm
+
+private theorem normalized_damping_meromorphicAt
+    (p : Nat.Primes) (rho : XiDivisorSupport) (k : ℕ) :
+    MeromorphicAt (fun a : ℂ => a ^ k *
+      deningerOriginalPrimeGreenDampingContinuation p rho a) 0 :=
+  (analyticAt_id.pow k).meromorphicAt.mul
+    (deningerOriginalPrimeGreenDampingContinuation_meromorphicAt p rho)
+
+/-- The source fixes the least possible power that admits a finite limit. -/
+theorem deningerOriginalPrimeGreenDampingContinuation_finite_limit_iff
+    (p : Nat.Primes) (rho : XiDivisorSupport) (k : ℕ) :
+    (∃ c : ℂ, Tendsto (fun a : ℂ => a ^ k *
+      deningerOriginalPrimeGreenDampingContinuation p rho a) (𝓝[≠] 0) (𝓝 c)) ↔
+      2 * xiSupportMultiplicity rho ≤ k := by
+  rw [tendsto_nhds_iff_meromorphicOrderAt_nonneg
+    (normalized_damping_meromorphicAt p rho k), normalized_damping_order]
+  constructor
+  · intro h
+    have hi : (0 : ℤ) ≤ (k : ℤ) - 2 * xiSupportMultiplicity rho := by exact_mod_cast h
+    omega
+  · intro h
+    have hi : (0 : ℤ) ≤ (k : ℤ) - 2 * xiSupportMultiplicity rho := by omega
+    exact_mod_cast hi
+
+/-- Exactly one power normalization retains a finite nonzero original coefficient. -/
+theorem deningerOriginalPrimeGreenDampingContinuation_nonzero_limit_iff
+    (p : Nat.Primes) (rho : XiDivisorSupport) (k : ℕ) :
+    (∃ c : ℂ, c ≠ 0 ∧ Tendsto (fun a : ℂ => a ^ k *
+      deningerOriginalPrimeGreenDampingContinuation p rho a) (𝓝[≠] 0) (𝓝 c)) ↔
+      k = 2 * xiSupportMultiplicity rho := by
+  rw [tendsto_ne_zero_iff_meromorphicOrderAt_eq_zero
+    (normalized_damping_meromorphicAt p rho k), normalized_damping_order,
+    WithTop.coe_eq_zero]
+  omega
 
 /-- Agreement with the actual admitted integral; this is not a definition of a zero-damping source. -/
 theorem deningerOriginalPrimeGreenDampingContinuation_eq_literal
@@ -227,5 +297,37 @@ theorem deningerOriginalPrimeGreenDampingContinuation_eq_literal
   simp only [deningerOriginalPrimeGreenDampingContinuation, add_sub_assoc,
     div_eq_mul_inv, mul_inv_rev]
   ring
+
+/-- The removable scalar germ fills the forced coefficient; it is not a continued source vector. -/
+def deningerOriginalPrimeGreenZeroDampingRegularization (p : Nat.Primes)
+    (rho : XiDivisorSupport) (a : ℂ) : ℂ :=
+  if a = 0 then deningerOriginalPrimeGreenZeroDampingCoefficient p rho
+  else a ^ (2 * xiSupportMultiplicity rho) *
+    deningerOriginalPrimeGreenDampingContinuation p rho a
+
+/-- The uniquely normalized scalar germ extends analytically across zero damping. -/
+theorem deningerOriginalPrimeGreenZeroDampingRegularization_analyticAt
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    AnalyticAt ℂ (deningerOriginalPrimeGreenZeroDampingRegularization p rho) 0 := by
+  obtain ⟨u, hu, _, huc, hfac⟩ := exists_deningerOriginalPrimeGreen_zeroDamping_unit p rho
+  apply hu.congr
+  filter_upwards [eventually_nhdsWithin_iff.mp hfac] with a ha
+  by_cases ha0 : a = 0
+  · subst a
+    rw [deningerOriginalPrimeGreenZeroDampingRegularization, if_pos rfl]
+    exact huc
+  · rw [deningerOriginalPrimeGreenZeroDampingRegularization, if_neg ha0, ha ha0]
+    have hcast : (2 * (xiSupportMultiplicity rho : ℤ)) =
+        ((2 * xiSupportMultiplicity rho : ℕ) : ℤ) := by
+      simp only [Nat.cast_mul, Nat.cast_ofNat]
+    rw [hcast, zpow_neg, zpow_natCast, ← mul_assoc,
+      mul_inv_cancel₀ (pow_ne_zero _ ha0), one_mul]
+
+/-- Its value is the same nonzero coefficient fixed by the literal source formula. -/
+theorem deningerOriginalPrimeGreenZeroDampingRegularization_zero
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    deningerOriginalPrimeGreenZeroDampingRegularization p rho 0 =
+      deningerOriginalPrimeGreenZeroDampingCoefficient p rho := by
+  rw [deningerOriginalPrimeGreenZeroDampingRegularization, if_pos rfl]
 
 end RHTower

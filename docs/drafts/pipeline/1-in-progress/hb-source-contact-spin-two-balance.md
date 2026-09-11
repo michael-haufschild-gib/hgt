@@ -650,13 +650,13 @@ All owned Lean, Lake and search processes completed. The goal remains active;
 fixed-Hawking-clock extinction and RH have not been proved.
 
 
-## Next source attack: transfer the mixed-response work, 12 September 2026
+## Closed radial source-work transfer, 12 September 2026
 
 The actual incoming SV-SV radial mass contains two constructed angular responses
 A and B, with Delta A=alpha(A+Q), Delta B=beta(B+Q). Set s=rho-2,
 t=-rho-1, p=st, lambda=2-p, alpha=(2s+1)(2s+2), beta=(2t+1)(2t+2),
 and retain the coefficients rs,rt,rQ in `incoming_radial_mass_source_balance`.
-The next candidate transfers the full Laplacian from Q to these actual responses:
+The proved source identity transfers the full Laplacian from Q to these actual responses:
 
 ```
 J_new = Q [rs grad A + rt grad B + (2rQ/3) grad Q],
@@ -670,7 +670,7 @@ y² clockCoefficients(q,a,b,w,1,0)
 The derivation uses the complete scalar equation and
 `|grad Q|_bilinear²=2Q E`, `Q DeltaQ=2lambda Q²+QE`. It retains both angular
 fluxes; integrated boundary values must still be evaluated. No source work is
-set to zero. Symbolic factorization predicts the Q² coefficient is
+set to zero. Exact factorization gives the Q² coefficient
 
 ```
 p (s-t) [p³+25p²-28p+20]/6.
@@ -679,5 +679,66 @@ p (s-t) [p³+25p²-28p+20]/6.
 This factor is nonzero at every Xi occurrence: Re(p)>2; translating p=x+2 gives
 the cubic x³+31x²+84x+72, which has no zero in Re(x)>=0 by elimination of its
 real and imaginary parts. Thus any cancellation must involve the actual
-response-source pairings or retained faces. These are paper deductions now being
-checked in Lean, not yet certified declarations.
+response-source pairings or retained faces. All three statements are now certified
+in [ThetaCuspHawkingBMQuarticResponseWork.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResponseWork.lean).
+The leaf also transports the balance to the actual finite-clock horizon moment
+and unshifted physical horizon integral, retaining the original common rate -6,
+onset endpoint, and derivative-clock energy. Scratch checking and the final exact
+leaf build passed without warnings or heartbeat/depth overrides. The final build
+took 100 seconds; no dependency or umbrella build ran.
+
+The [formalized source-work card](../3-formalized/hb-incoming-radial-response-work.md)
+records the complete proof and the remaining physical interface. This is the
+incoming SV-SV radial component, not the complete third-order left-QNM action.
+The two angular divergences still require their actual integrated cusp and
+source-contact values, and the independent SS/SV/VV pairings and mixed corrections
+still require comparison in the complete action.
+
+The reciprocity attack does not yet close that gap. The actual finite-energy
+response equation pairs conjugate test fields with the response. Its Hermitian
+energy cannot replace the complex-bilinear response-source work above. Applying
+the variational equations to both constructed residual responses gives a forced
+cross-pair identity, not a zero: with residuals hA,hB and complete forcings FA,FB,
+`(alpha-conj(beta))*<hB,hA> = <FB,hA>-<hB,FA>`.
+Restoring the full fields also restores their principal/cutoff contributions.
+Neither forcing reciprocity nor cancellation of those contributions has been
+derived. No conditional closure theorem or replacement positivity premise was
+added.
+
+The 300-second deep/method query `bilinear resolvent Green full response source
+contact work cancellation` returned actual Green and resolvent candidates, but
+its text/source retrieval was interrupted and semantic retrieval exceeded its
+deadline. The snapshot inventoried 57,028 files; most compiler metadata remained
+pending, and generated ingredient sets were explicitly unverified. Direct source
+inspection and the exact Lean check establish the new result, not retrieval rank.
+
+The broader lexical query `fullAngular homogeneous cusp response` found an
+important existing boundary result missed by that deep query:
+`D4BMCuspResponse.responseMean_native_decomposition` in
+[ThetaCuspHawkingBMCuspGrowingCoefficient.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCuspGrowingCoefficient.lean).
+Its original native norm eliminates the growing coefficient, while the actual
+surviving coefficient and both infinite source tails remain. Direct inspection of
+`responseMean`, `root`, `limitingCoefficient` and `limitingFlux` confirms these are
+the constructed global residual and its actual height-four boundary jet, not
+freely prescribed asymptotic data. The decaying exponents are 2rho-2 and -2rho
+for A and B respectively. This existing theorem should be reused in the angular
+integration of W; its native-energy selection does not set the surviving
+coefficients to zero.
+
+The ensuing paper-level observation is specific: multiplying those surviving
+response powers by the three source powers 2rho,1,2-2rho contributes exponents
+`4rho-2, 2rho-1, 0` from A and `0, 1-2rho, 2-4rho` from B. Thus the complete
+source-work cusp subtraction must include these terms as well as the original
+particular-response powers. A proved product/period identity attaching them to
+W, with the tail-response pairing admitted in the native measure, is the next
+boundary target. This attachment has not yet been formalized. No physical-clock
+translation is identified with a height dilation.
+
+The new leaf's ten public declarations, single umbrella import, audited source
+SHA, five cached artifacts and eleven documentation links were checked. All
+owned Lean/Lake/search processes completed. The whole-tree lint reports eight
+other unreachable worktree modules (the previous seven plus
+`ThetaCuspHawkingBMTemporalCurrentHorizonJet`). Regeneration was repeated after a
+stale-file report; the final concurrent-worktree lint still reports stale
+`LEAN_GAPS.md` and `LEAN_OVERVIEW.md`. No error names the response-work leaf.
+The global gate is therefore not green; complete extinction remains open.

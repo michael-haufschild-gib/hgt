@@ -85,3 +85,37 @@ identifies its value with the canonical trailing coefficient. Both Xi/zeta
 order equality and analyticity were checked on the current toolchain.
 The full pole, coefficient, normalized-limit and literal-integral bridge
 proofs are now being checked. No heartbeat or recursion limits changed.
+
+The stronger positive survivor is being formalized: multiplication by `a^k`
+admits a finite limit exactly for `k>=2*m`, and a nonzero finite limit exactly
+for `k=2*m`. Filling that normalized scalar function with its forced leading
+coefficient gives an analytic germ at zero. The coefficient is also identified
+with the actual `m`th zeta derivatives divided by `m!` at both reflected points.
+This prevents a choice of normalization from silently imposing simplicity.
+
+## Next analytic obstacle
+
+Coordinatewise Laurent continuation has not constructed a vector in the
+original full Xi norm. Its exact coefficient contains reciprocals of both
+native leading zeta jets. C51's Gaussian envelope bounds the original Green
+denominator, not these additional inverses. A source-domain continuation
+requires new uniform control and an identification with the complete original
+BV boundary; neither follows from scalar analyticity.
+
+[Reciprocal-coefficient deep search](route-l-singular-coefficient-norm-search.json)
+returned 20 candidates and 20 method entries, all inspected. Generation 878845
+reported pending coverage and a decomposition deadline. Gaussian zero-count
+summability does not include inverse native jets. Gamma–Gaussian multiplication
+preserves nonvanishing but gives no lower jet bound. The all-complex-time heat
+bound requires precisely an unproved summability hypothesis. The separated-point
+method requires additional separation data. No applicability claim was made.
+
+The broadened [inverse-jet hybrid search](route-l-inverse-jet-bound-hybrid-search.json)
+returned 20 candidates and 20 method entries, all inspected. Generation 878878
+inventoried 57,030 files (47,420 Lean); text/source retrieval remained partial,
+compiler coverage mostly pending. Useful reciprocal-zeta bounds hold in a
+zero-free region near real part one; derivative upper bounds do not lower-bound
+the first nonzero jet at an actual zero. Finite damped-product estimates already
+assume an inverse-zeta bound. Thus none of the inspected results supplies the
+required full-Xi coefficient envelope. This is a retrieval audit, not a claim
+that the whole corpus contains no such theorem.
