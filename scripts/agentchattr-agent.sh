@@ -13,7 +13,8 @@ AGENTCHATTR_SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 export AGENTCHATTR_SCRIPT_DIR
 . "$AGENTCHATTR_SCRIPT_DIR/agentchattr-env.sh"
 
-agentchattr_start_server_background
+# Server startup is intentionally reserved for ./chat.sh.
+agentchattr_require_server
 
 cd "$AGENTCHATTR_APP_ROOT"
 printf 'Launching %s with project-local agentchattr at %s\n' "$AGENT_NAME" "http://127.0.0.1:$AGENTCHATTR_PORT"

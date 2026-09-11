@@ -1,3 +1,5 @@
 [mcp_servers.agentchattr]
-url = "http://127.0.0.1:18620/mcp"
+command = "/bin/sh"
+args = ["/Users/michael/Documents/code/hgt/scripts/agentchattr-mcp.sh"]
+env = { AGENTCHATTR_AGENT_BASE = "codex" }
 enabled = true

@@ -2186,3 +2186,40 @@ under the required dilation. No Bell-game realization of the PW source
 was identified. This supplies a precise warning for the open physical
 selection step: a dense admitted class alone does not determine the
 exact zero-defect states. Neither paper supplies Ward balance or RH.
+
+The extended scratch then passed all eleven public declarations,
+including actual endpoint integrability, strictly positive finite mass,
+L1 convergence of the original kernels and convergence of their
+integrals. The polynomial extension proves the integrability of
+exp(-h)*(1+h)^k and the uniform original integral bound on0<v<=1.
+Its endpoint-bound proof had one remaining tactic mismatch (positivity
+was applied to h<=1+h); that is repaired and the final scratch is
+running alone. The immediately preceding run has thirteen standard-only
+declarations, not a fully passing file. No leaf has yet been promoted.
+
+The third deep method search is terminal, saved under series in the
+flat-endpoint record. It reports partial/pending generation823353 and
+semantic-worker disconnection and reranking deadline errors. All20
+candidate statements,20 source-argument statements and the complete
+proposed ingredient set were reviewed. The Dirichlet and exponential
+series candidates assume uniform or normal summability; positive moment
+form candidates additionally assume positivity and bounded kernel roots.
+The integral-sum theorem requires a summable bound and admitted sum.
+The local SuzukiWeilAppendixDerivative.tendsto_tsum_suzukiVerticalLerchTerm
+proof and mathlib Tannery theorem were read directly. They provide the
+applicable eventual-uniform-majorant method. The source-specific bound
+is derived from the new flat derivative estimate, not supplied by the
+search result.
+
+The next scratch, /tmp/pwb-gamma-arithmetic-endpoint.lean, is written but
+has not been run. It retains the actual signed coefficients and uses
+the existing complete source-current integral-to-series identity. The
+first two response terms vanish. For n>=2 and |z|<=N, the coefficient
+norm is at most n^(N+1), and k=N+2 gives a common inverse-square tail.
+Tannery should give an absolutely summable finite endpoint for every
+complex z. The scratch also connects this limit to the literal original
+current divided by Q(v), rather than merely a new coefficient series.
+Neither the full arithmetic endpoint nor any spectral exclusion is
+claimed until this check succeeds. The active proof chain still lacks
+full adjoints, independent physical selection of the pairing, actual Xi
+occurrence and independently forced Ward balance.

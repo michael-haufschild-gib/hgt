@@ -127,6 +127,8 @@ class Engine:
             d = self.corpus.declaration(candidate['id'])
             candidate['proof_excerpt'] = (d['proof'] if d else '')[:5000]
             candidate['method'] = self.corpus.method(candidate['id'])
+            if hit.get('view') == 'method' and not candidate['method']:
+                return None
             candidate['idea_status'] = 'retrieved_source_argument'
         return candidate
 
@@ -511,6 +513,8 @@ class Engine:
                 self.corpus.con.set_progress_handler(None, 0)
         if result['coverage'].get('status') == 'pending':
             result['unfinished_stages'].append('coverage')
+        if result['coverage'].get('method_invalidation_pending'):
+            result['unfinished_stages'].append('method_dependency_refresh')
         if result['coverage'].get('pending_files') or result['coverage'].get('inventory_errors') or result['coverage'].get('outcomes', {}).get('failed'):
             result['unfinished_stages'].append('source_index_incomplete')
         if not self.vectors:
@@ -588,6 +592,9 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
     model = embedding_version(status)
     generation_model = status.get("generation_model_version", status.get("fingerprints", {}).get("generation", status.get("generation_model", "Qwen3-4B-Instruct-2507-4bit")))
     report = dict(methods=0, vectors=0, failures=[])
+    if methods and corpus.invalidation_pending():
+        report['deferred'] = [dict(stage='methods', reason='dependency_invalidation_pending')]
+        methods = False
     if methods:
         record = corpus.con.execute("SELECT value FROM meta WHERE key='method_producers'").fetchone()
         producers = json.loads(record[0]) if record else {}

@@ -377,3 +377,39 @@ singularity at `0` is never needed. Instead:
 Still to build: the separation capstone (`criticalProfile`, `tailProfile`, the identity theorem in
 `s` on `{Re s < 1/2}`, the `s = ρ − δ` blow-up, and injectivity of `f ↦ F_f`), the Gram projection
 estimate, the observation inequality, and the assembly with `ChronologicalWeightedBoundary`.
+
+### Finite-tail card: STEP 1 (heat-transform separation) is CLOSED in Lean
+
+`RHTower/ChronologicalTailProfiles.lean` + `RHTower/ChronologicalTailSeparation.lean`
+(54 declarations together with `ChronologicalTailMellin`, all audited; built and wired).
+
+```
+heatTransform_separation
+  (hθ0 : 0 < θ) (hθ1 : θ < 1) (hρ : ρ.re = 1/2)
+  (hC : 0 ≤ C) (hfm : Measurable f) (hfb : ∀ x, ‖f x‖ ≤ C)
+  (h : ∀ t ∈ Icc 1 2, boseTransform (criticalProfile θ ρ) t
+                        = boseTransform (tailProfile θ f) t) : False
+```
+
+Route actually used (differs from the card's phrasing in two useful ways):
+
+1. **No zeta input.** Only `Re ρ = 1/2` is needed. `ζ(ρ) = 0` enters later, in step 3.
+2. **No limit `δ ↓ 0`.** The identity is continued to `{Re w < 1/2}` and then evaluated at the
+   single explicit `δ = min (1/2) (θ/(2(C+1)))`: `θ^δ/δ ≤ C θ^(−1/2)` together with
+   `θ^(1/2) ≤ θ^δ` gives `θ ≤ δ C`, which that `δ` contradicts outright.
+
+Key declarations: `criticalProfile` (defined through `Complex.exp` so measurability is free, with
+`criticalProfile_eq_cpow`), `tailProfile`, `integral_criticalProfile_weight`
+(`= θ^(ρ−s)/(ρ−s)` via `integral_cpow` and an indicator restriction to `Ioo 0 θ`),
+`tailMoment`/`tailMomentE` with `norm_tailMoment_le : ‖tailMoment θ f w‖ ≤ C θ^(−1/2)` for
+`0 ≤ Re w ≤ 1/2`, `hasDerivAt_tailMomentE` (second parametric-integral differentiation; the
+dominating constant is `C · θ^(−R) · (−log θ)` with `R = |Re w₀| + 1`, via
+`rpow_le_rpow_neg_bound` and `abs_log_le`), `moment_eq_zero_of_transform_eqOn`,
+`moment_identity_real`, and `criticalMomentE_eq_tailMomentE` (identity theorem on the convex
+half-plane `leftHalfPlane`).
+
+Remaining for this card: the Hilbert-space layer (`L²([1,2])`, the finite-dimensional tail span
+`W`, the projection `Q`, `d = ‖Q K_ρ‖ > 0` — which follows from the separation theorem plus
+"a.e. equal continuous functions on `[1,2]` are equal"), the `O(1/N)` Riemann/Gram estimate, the
+integer-scale transfer, the observation inequality (A), and the assembly with
+`ChronologicalWeightedBoundary`.

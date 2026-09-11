@@ -2,9 +2,11 @@
 from __future__ import annotations
 import argparse
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
+import plistlib
 import shutil
 import signal
 import subprocess
@@ -17,6 +19,70 @@ from lean_research_qdrant import IMAGE, Qdrant, settings
 from lean_research_runtime import RuntimeClient
 
 ROOT=Path(__file__).resolve().parents[1]
+
+
+def indexer_agent(directory):
+    label = 'com.hgt.research-indexer.' + hashlib.sha256(str(directory.resolve()).encode()).hexdigest()[:12]
+    return label, Path.home() / 'Library/LaunchAgents' / (label + '.plist'), f'gui/{os.getuid()}/{label}'
+
+
+def launchctl(*args, check=True):
+    return subprocess.run(['/bin/launchctl', *args], check=check, capture_output=True, text=True, timeout=15)
+
+
+def start_managed_indexer(directory):
+    if sys.platform != 'darwin':
+        return start_indexer(ROOT)
+    from lean_research_cli import engine_python
+    label, path, target = indexer_agent(directory)
+    definition = dict(Label=label, ProgramArguments=[engine_python(ROOT),
+        str(ROOT / 'scripts/lean_research_background.py'), 'run', '--root', str(ROOT)],
+        WorkingDirectory=str(ROOT), RunAtLoad=True, KeepAlive=True, ThrottleInterval=10,
+        ExitTimeOut=20, ProcessType='Interactive',
+        StandardOutPath=str(directory / 'indexer-launchd.log'),
+        StandardErrorPath=str(directory / 'indexer-launchd.log'),
+        EnvironmentVariables={'PATH': str(Path.home() / '.elan/bin')
+            + ':/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'})
+    content = plistlib.dumps(definition)
+    loaded = launchctl('print', target, check=False).returncode == 0
+    changed = not path.exists() or path.read_bytes() != content
+    if changed:
+        if loaded:
+            launchctl('bootout', target)
+            loaded = False
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix('.tmp')
+        temporary.write_bytes(content)
+        os.replace(temporary, path)
+    if not loaded:
+        # Migrate the former detached process before enabling launchd ownership.
+        stop_indexer(ROOT)
+        deadline = time.monotonic() + 10
+        while indexer_status(ROOT)['running'] and time.monotonic() < deadline:
+            time.sleep(.1)
+        if indexer_status(ROOT)['running']:
+            raise RuntimeError('Existing indexer did not stop; refusing duplicate worker')
+        launchctl('enable', target)
+        launchctl('bootstrap', f'gui/{os.getuid()}', str(path))
+    launchctl('kickstart', target)
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline:
+        current = indexer_status(ROOT)
+        if current['running']:
+            atomic_json(directory / 'progressive.json', {'enabled': True, 'enabled_at': time.time()})
+            return {**current, 'supervisor': 'launchd', 'launchd_label': label}
+        time.sleep(.1)
+    raise RuntimeError('launchd indexer did not start; inspect indexer-launchd.log')
+
+
+def stop_managed_indexer(directory):
+    if sys.platform == 'darwin':
+        _, path, target = indexer_agent(directory)
+        if launchctl('print', target, check=False).returncode == 0:
+            launchctl('bootout', target)
+        # Stop stays stopped across login/reboot; ./launch.sh recreates the job.
+        path.unlink(missing_ok=True)
+    stop_indexer(ROOT)
 
 
 def docker_binary():
@@ -61,7 +127,7 @@ def stop_process(pid, expected):
 
 def stop(directory):
     (directory/'services-stopped').touch()
-    stop_indexer(ROOT)
+    stop_managed_indexer(directory)
     deadline=time.monotonic()+8
     while indexer_status(ROOT)['running'] and time.monotonic()<deadline:time.sleep(.1)
     if indexer_status(ROOT)['running']:
@@ -152,10 +218,11 @@ def start(directory):
         state=runtime.start()
         if not state.get('available'):raise RuntimeError('Local models unavailable; run research-setup')
     atomic_json(directory/'services.json',dict(running=True,updated=time.time(),qdrant=name))
-    worker=start_indexer(ROOT)
+    worker=start_managed_indexer(directory)
     if worker.get('error'):raise RuntimeError(worker['error'])
     receivers=start_receivers(directory)
-    print('Running: Qdrant, inference worker, automatic source/method/vector indexing.',flush=True)
+    print('Running: Qdrant, inference worker, automatic source/method/vector indexing'
+          + (' (launchd auto-restart).' if sys.platform == 'darwin' else '.'), flush=True)
     if receivers:print(f'Resumed {len(receivers)} local GPU receiver(s).',flush=True)
 
 

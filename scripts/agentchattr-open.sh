@@ -5,7 +5,8 @@ AGENTCHATTR_SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 export AGENTCHATTR_SCRIPT_DIR
 . "$AGENTCHATTR_SCRIPT_DIR/agentchattr-env.sh"
 
-agentchattr_start_server_background
+# Server startup is intentionally reserved for ./chat.sh.
+agentchattr_require_server
 
 CHAT_URL="http://127.0.0.1:$AGENTCHATTR_PORT"
 if command -v open >/dev/null 2>&1; then

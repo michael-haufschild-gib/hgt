@@ -659,3 +659,47 @@ choice-and-spacing half (pick one point per meeting interval, split indices even
 
 Leaf build `12725/12725`, axiom-clean, umbrella-wired.
 **Session total: 35 leaves, 89 declarations, all `[propext, Classical.choice, Quot.sound]`.**
+
+### Bricks 34–37 landed (2026-09-11) — THE HUXLEY ROUTE IS CLOSED
+
+`Sieve/MenonHarmonicIntervalCovering.lean`, `MenonHarmonicSpacedToMeasure.lean`,
+`MenonHarmonicHuxleyMeasure.lean`, `MenonHarmonicBlockHuxley.lean`,
+`MenonHarmonicPartitionHuxleyClosed.lean`.
+
+The discrete-to-measure bridge named in the RESUME block is **built**:
+`measureReal_le_of_spaced_card_le` — every `delta`-spaced finite subset of `E ⊆ [-W,W]` having
+cardinality `≤ R` gives `volume.real E ≤ 2·R·delta`.  Huxley's cardinality count therefore becomes a
+measure, the narrow-block comparison transports it to `menonHarmonicBlockLarge`, and
+`integral_Icc_normSq_harmonicRamareBilinear_le_partition_huxley` is the window estimate running on
+it.
+
+**Session total: 39 leaves, 94 declarations, all `[propext, Classical.choice, Quot.sound]`,
+all leaf-built and umbrella-wired.**
+
+**RESUME, updated.**  The large-values gate is no longer an unbuilt bridge — it is closed on
+Huxley.  What remains for card 4 is *numerology*: choose `V j`, `sigma j`, `Nb j`, `Ec j`, `V₀ j`,
+`J j`, `k` at Menon's literal ladder and show
+
+```text
+mass(P)·∑_{active} min(pointwise,swapped)/m_j
+  + mass(P)·∑_{active} levelTrivialCost(∑_i huxleyBlockMeasureBound …)/m_j   ≤  (log x)^{-2}.
+```
+
+Every symbol in that display is a defined, unconditional object in the tree.
+
+### CORRECTION to bricks 34–37 (2026-09-11)
+
+"The Huxley route is closed" was wrong.  `card_le_of_mem_primeBlockLevelSet` needs
+`#B ≤ E/N` and `2400E ≤ N^{1/2-2σ}`, which force `#B ≤ N^{-1/2-2σ}/2400`; a dense Menon block has
+`#B ≍ ηN/log N` and no admissible `σ` exists (see the card for the two-sided computation).  It is a
+**sparse** large-values estimate.  `..._le_partition_huxley` is correct but vacuous at Menon's
+ladder.
+
+Still genuinely gained, and route-independent:
+`measureReal_le_of_spaced_card_le` (any spaced-family count → measure),
+`measureReal_le_of_subset_biUnion_Ico`, `volume_real_primeBlockLevelSet_le_huxley`,
+`menonHarmonicBlockLarge_subset_primeBlockLevelSet`.
+
+**Sharpened gate:** a large-values / zero-density estimate for a **dense** prime block
+(`#B ≍ ηN/log N`) at thresholds near its typical size `≍ √(#B)`.  Nothing in the corpus supplies
+that; it is the Heath--Brown identity route.

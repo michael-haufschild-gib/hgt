@@ -134,36 +134,12 @@ agentchattr_ensure_venv() {
   fi
 }
 
-agentchattr_is_server_running() {
-  lsof -nP -iTCP:"$AGENTCHATTR_PORT" -sTCP:LISTEN >/dev/null 2>&1
-}
-
-agentchattr_start_server_background() {
-  agentchattr_ensure_venv
-
-  if agentchattr_is_server_running; then
-    return 0
-  fi
-
-  cd "$AGENTCHATTR_APP_ROOT"
-  nohup .venv/bin/python run.py \
-    --data-dir "$AGENTCHATTR_DATA_DIR" \
-    --upload-dir "$AGENTCHATTR_UPLOAD_DIR" \
-    --port "$AGENTCHATTR_PORT" \
-    --mcp-http-port "$AGENTCHATTR_MCP_HTTP_PORT" \
-    --mcp-sse-port "$AGENTCHATTR_MCP_SSE_PORT" \
-    < /dev/null > "$AGENTCHATTR_SERVER_LOG" 2>&1 &
-
-  i=0
-  while [ "$i" -lt 60 ]; do
-    if agentchattr_is_server_running; then
-      return 0
+agentchattr_require_server() {
+  for port in "$AGENTCHATTR_PORT" "$AGENTCHATTR_MCP_HTTP_PORT" "$AGENTCHATTR_MCP_SSE_PORT"; do
+    if ! lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+      printf '%s\n' "agentchattr is not running on all configured ports." >&2
+      printf '%s\n' "Start it manually from the project root: ./chat.sh" >&2
+      return 1
     fi
-    sleep 0.5
-    i=$((i + 1))
   done
-
-  printf '%s\n' "agentchattr server did not start on port $AGENTCHATTR_PORT." >&2
-  printf '%s\n' "See $AGENTCHATTR_SERVER_LOG for details." >&2
-  return 1
 }

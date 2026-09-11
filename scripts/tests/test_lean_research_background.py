@@ -4,13 +4,60 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest import mock
+import subprocess
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lean_research_background import start, status, stop, classify_failures, small_shard_count, maintenance_contention
+from lean_research_background import start, status, stop, classify_failures, small_shard_count, maintenance_contention, terminate_owned
 from lean_research_corpus import Corpus
 
 
 class BackgroundTests(unittest.TestCase):
+    def test_embedding_pause_preserves_sources_and_qdrant_and_can_resume(self):
+        from lean_research_background import run
+        from lean_research_corpus import cache_directory
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            directory = cache_directory(root)
+            directory.mkdir(parents=True)
+            marker = directory / 'embeddings-paused.json'
+            marker.write_text('{}')
+            (directory / 'qdrant.json').write_text('{}')
+            child = mock.Mock(returncode=0)
+            child.poll.return_value = 0
+            with mock.patch('lean_research_background.subprocess.Popen', return_value=child) as spawn, \
+                    mock.patch('lean_research_background.signal.signal'), \
+                    mock.patch('lean_research_runtime.RuntimeClient') as client:
+                client.return_value.__enter__.return_value.status.return_value = {'available': True}
+                run(root, once=True)
+                commands = [call.args[0] for call in spawn.call_args_list]
+                self.assertTrue(any('--corpus' in command for command in commands))
+                self.assertTrue(any(str(root / 'scripts/lean_research_qdrant.py') in command for command in commands))
+                self.assertFalse(any('--vectors' in command for command in commands))
+                self.assertTrue(status(root)['embeddings_paused'])
+                marker.unlink()
+                spawn.reset_mock()
+                run(root, once=True)
+                self.assertTrue(any('--vectors' in call.args[0] for call in spawn.call_args_list))
+                self.assertFalse(status(root)['embeddings_paused'])
+
+    def test_denied_group_shutdown_reaps_direct_child(self):
+        child = mock.Mock(pid=123456789)
+        child.poll.return_value = None
+        with mock.patch('lean_research_background.os.killpg', side_effect=PermissionError):
+            terminate_owned(child)
+        child.kill.assert_called_once_with()
+        child.wait.assert_called_once_with()
+
+    def test_denied_force_group_shutdown_reaps_direct_child(self):
+        child = mock.Mock(pid=123456789)
+        child.poll.return_value = None
+        child.wait.side_effect = [subprocess.TimeoutExpired('owned', 2), 0]
+        with mock.patch('lean_research_background.os.killpg', side_effect=[None, PermissionError()]):
+            terminate_owned(child)
+        child.kill.assert_called_once_with()
+        self.assertEqual(child.wait.call_count, 2)
+
     def test_running_worker_detects_added_edited_and_deleted_lean(self):
         import sqlite3
         with tempfile.TemporaryDirectory() as tmp:

@@ -249,7 +249,8 @@ The next attack uses the actual plane position before angular averaging. Scratch
 `/tmp/fzzp_higher_taylor.lean` passed cleanly with eight public source statements.
 Its proof body was promoted unchanged to `FZZCigarHigherScreeningTaylor.lean`
 and wired into the umbrella. The targeted leaf build passed (166 seconds for
-the new leaf), and global formal lint passed. The complete axiom audit is pending.
+the new leaf), and global formal lint passed. All eight axiom audits passed
+with only `propext`, `Classical.choice`, and `Quot.sound`.
 No new Gamma value or RH conclusion is claimed.
 
 Put `s=beta/2`, `q(z)=|z|^2-2*Re(z)`, and

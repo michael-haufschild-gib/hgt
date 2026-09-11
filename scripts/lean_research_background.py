@@ -1,4 +1,4 @@
-"""One resumable, local corpus indexer. No agent, scheduler service or Lean build.
+"""One resumable, local corpus indexer. No research agent or Lean build.
 
 The worker owns each bounded Python maintenance child, stores progress atomically,
 and checks a stop token while children run. The shared inference broker gives
@@ -43,7 +43,9 @@ def status(root: Path) -> dict:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 running = True
-    return {**value, 'running': running, 'priority': ['RHTower', 'HTGeometry', 'rest'],
+    return {**value, 'running': running,
+            'embeddings_paused': (directory / 'embeddings-paused.json').exists(),
+            'priority': ['RHTower', 'HTGeometry', 'rest'],
             'log': str(directory / 'indexer.log')}
 
 
@@ -84,11 +86,21 @@ def terminate_owned(child):
     if child.poll() is None:
         try:
             os.killpg(child.pid, signal.SIGTERM)
-            child.wait(timeout=.5)
+            child.wait(timeout=2)
         except subprocess.TimeoutExpired:
-            os.killpg(child.pid, signal.SIGKILL)
+            try:
+                os.killpg(child.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            except PermissionError:
+                child.kill()
             child.wait()
         except ProcessLookupError:
+            child.wait()
+        except PermissionError:
+            # A group signal can be denied even for our own direct child.
+            # Use its Popen handle; never find or signal unrelated processes.
+            child.kill()
             child.wait()
 
 
@@ -202,9 +214,13 @@ def run(root: Path, *, once=False) -> int:
         record()
         try:
             while not stopped():
-                phase('sources', 25, ['--corpus'])
+                phase('sources', 300, ['--corpus'])
                 if stopped():
                     break
+                source_result = state.get('last_result', {})
+                if source_result.get('complete') is False and not source_result.get('reason'):
+                    record(cycles=state['cycles'] + 1)
+                    continue
                 if (directory / 'qdrant.json').exists():
                     phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
                         '--cache-dir', str(directory), '--budget-seconds', '30'])
@@ -217,7 +233,10 @@ def run(root: Path, *, once=False) -> int:
                         except Exception as exc:
                             record(last_error=str(exc))
                 if ready:
-                    phase('embeddings', 90, ['--vectors'])
+                    paused = (directory / 'embeddings-paused.json').exists()
+                    record(embeddings_paused=paused)
+                    if not paused:
+                        phase('embeddings', 90, ['--vectors'])
                     if not stopped() and (directory / 'qdrant.json').exists():
                         phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
                             '--cache-dir', str(directory), '--budget-seconds', '30'])

@@ -1491,3 +1491,38 @@ additional Green/BV term or relation whose complete physical balance
 vanishes, with source incidence proved before specialization. A
 counterterm defined to cancel the recovered value would assume that
 landing. RH remains unproved.
+
+### C32 closed: exact transgression class and actual Gaussian parity
+
+The existing cofinal Euler-flux identity was tested as a source of the
+missing physical balance. Full distributional Gamma/flux equality holds
+exactly on the literal Poisson source range. The actual reflected log
+Gaussian, transported through the existing strong-decay bridge into
+the Meyer source, is fixed by collar exchange but is outside that range:
+its retained Xi evaluations are nonzero. Hence its complete boundary
+survives and is anti-Fourier.
+
+The positive survivor is precise. Every Fourier-fixed Schwartz test
+annihilates Gamma and integrated flux separately. A four-term Fourier
+projection produces an anti-Fourier test detecting their difference.
+This rejects full cancellation from collar fixedness, without assuming
+an off-line divisor or erasing the nonzero cohomology class.
+
+Nine theorems passed scratch without warnings, a targeted leaf build,
+and an exact axiom audit using only the standard three foundational
+axioms. The module is wired and the index regenerated. Global lint was
+run twice; the last run reports other unwired shared-tree modules, as
+recorded in the [formal proof and audit card](../3-formalized/route-l-complete-transgression-physical-balance.md).
+All owned Lean processes exited.
+
+All candidates and source arguments from three partial deep/method
+searches, and recent broad arXiv mechanism probes, were inspected.
+Neither the actual Fourier-fixed prime
+probe nor the reciprocal-window Fourier intertwining identifies the
+original physical conormal reader with the cancelling test sector.
+Existing invariant Burnol orbit data retain a squared difference that
+vanishes exactly on the critical line; invariance cannot be relabelled
+as merger of the original characters. The next attack must establish
+the original source/reader incidence or a different complete physical
+balance, preserving the conormal and its divisor. The Meyer Gaussian
+and C31's moving Wold family have not been identified. RH remains unproved.

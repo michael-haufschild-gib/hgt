@@ -352,7 +352,7 @@ def corpus_index(root: Path, args) -> int:
                 from lean_research_vectors import Vectors
                 for row in corpus.con.execute('SELECT DISTINCT model FROM vector_shards').fetchall():
                     print(json.dumps(Vectors(corpus).compact(row[0], deadline=deadline)))
-            if not enriched and time.monotonic() < deadline:
+            if not enriched and not args.corpus and time.monotonic() < deadline:
                 print(json.dumps(dict(coverage=corpus.coverage()), ensure_ascii=False))
     except MaintenanceBusy as exc:
         deferred = [dict(stage=stage, reason='maintenance_busy', lock=str(exc))

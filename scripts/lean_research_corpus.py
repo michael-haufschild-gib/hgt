@@ -82,6 +82,8 @@ CREATE TABLE IF NOT EXISTS methods(
  content_hash TEXT NOT NULL,model_version TEXT NOT NULL,prompt_version TEXT NOT NULL,
  description TEXT NOT NULL,assumptions TEXT NOT NULL,steps TEXT NOT NULL,obligations TEXT NOT NULL,
  evidence TEXT NOT NULL,status TEXT NOT NULL,error TEXT NOT NULL DEFAULT '');
+CREATE TABLE IF NOT EXISTS method_invalidation(name TEXT PRIMARY KEY,cursor INTEGER NOT NULL DEFAULT 0,done INTEGER NOT NULL DEFAULT 0);
+CREATE INDEX IF NOT EXISTS method_invalidation_pending ON method_invalidation(done);
 CREATE TABLE IF NOT EXISTS method_chunks(
  decl_id TEXT NOT NULL REFERENCES declarations(id) ON DELETE CASCADE,
  chunk_hash TEXT NOT NULL,source_hash TEXT NOT NULL,model_version TEXT NOT NULL,
@@ -454,7 +456,7 @@ class Corpus:
                 with self.con:
                     old_names = [r[0] for r in self.con.execute("SELECT name FROM declarations WHERE path=?", (item["path"],))]
                     if source_changed:
-                        self._invalidate_dependents(old_names, deadline=deadline)
+                        self._invalidate_dependents(old_names, deadline=deadline, drain=False)
                     self.con.execute("DELETE FROM files WHERE path=?", (item["path"],))
                     self.con.execute("INSERT INTO files(path,module,package,collection,size,mtime_ns,source_hash,status,imports,toolchain,updated) "
                                      "VALUES(?,?,?,?,?,?,?,?,?,?,?)", (item["path"], item["module"], item["package"],
@@ -491,7 +493,7 @@ class Corpus:
                                      (item["path"], item["module"], item["package"], item["collection"], item["size"], item["mtime_ns"], "failed", str(exc), time.time()))
                     self.bump(source=True)
                 failed += 1
-            if progress and (changed + failed) % 1000 == 0:
+            if progress and (changed + failed) % 10 == 0:
                 progress(dict(visited=number + 1, total=len(items), changed=changed, failed=failed))
         removed = 0
         # Never interpret a traversal failure as deletion of a whole directory.
@@ -500,67 +502,90 @@ class Corpus:
             with self.con:
                 for path in current.keys() - known:
                     names = [r[0] for r in self.con.execute("SELECT name FROM declarations WHERE path=?", (path,))]
-                    self._invalidate_dependents(names)
+                    self._invalidate_dependents(names, deadline=deadline, drain=False)
                     self.con.execute("DELETE FROM files WHERE path=?", (path,))
                     removed += 1
                 if removed:
                     self.bump(source=True)
+        if complete:
+            self.drain_invalidations(deadline=min(deadline, time.monotonic() + 10))
         with self.con:
             for key, value in {"inventory_count": len(items), "inventory_errors": errors,
                                "inventory_complete": complete, "inventory_at": time.time()}.items():
                 self.con.execute("INSERT OR REPLACE INTO meta VALUES(?,?)", (key, json.dumps(value)))
         return dict(changed=changed, removed=removed, failed=failed, complete=complete,
-                    inventory_errors=errors, coverage=self.coverage())
+                    inventory_errors=errors, coverage=self.coverage(include_enrichment=False))
 
-    def _invalidate_dependents(self, names, *, deadline=float('inf')):
+    def _invalidate_dependents(self, names, *, deadline=float('inf'), drain=True):
         if not names or not self.con.execute("SELECT 1 FROM methods WHERE status='ready' UNION ALL SELECT 1 FROM method_chunks LIMIT 1").fetchone():
             return
-        stop = min(deadline, time.monotonic() + 2)
-        pending = [variant for name in names for variant in (name, name.rsplit('.', 1)[-1])]
-        seen = set()
-        self.con.set_progress_handler(lambda: int(time.monotonic() >= stop), 1000)
-        try:
-            while pending:
-                if time.monotonic() >= stop:
-                    raise TimeoutError('dependency invalidation budget')
-                name = pending.pop()
-                if name in seen:
-                    continue
-                seen.add(name)
-                rows = self.con.execute("SELECT d.id,d.name FROM declarations d JOIN dependencies e ON e.source=d.id WHERE e.target=?", (name,)).fetchall()
-                for row in rows:
-                    self.con.execute("UPDATE methods SET status='stale' WHERE decl_id=?", (row['id'],))
-                    self.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (row['id'],))
-                    self.con.execute('DELETE FROM method_chunks WHERE decl_id=?', (row['id'],))
-                    pending.extend((row['name'], row['name'].rsplit('.', 1)[-1]))
-        except (TimeoutError, sqlite3.OperationalError) as exc:
-            if isinstance(exc, sqlite3.OperationalError) and 'interrupted' not in str(exc):
-                raise
-            self.con.set_progress_handler(None, 0)
-            # Conservative invalidation preserves correctness when a broad
-            # source-reference graph cannot be traversed within the file budget.
-            # Raw sources/vectors remain available while descriptions regenerate.
-            self.con.execute("UPDATE methods SET status='stale' WHERE status='ready'")
-            self.con.execute("DELETE FROM documents WHERE view='method'")
-            self.con.execute('DELETE FROM method_chunks')
-            self.con.execute("INSERT OR REPLACE INTO meta VALUES('invalidation_fallback',?)",
-                             (json.dumps(dict(reason='dependency_graph_budget', at=time.time())),))
-        finally:
-            self.con.set_progress_handler(None, 0)
+        self.con.executemany(
+            "INSERT INTO method_invalidation(name) VALUES(?) ON CONFLICT(name) DO UPDATE SET cursor=0,done=0",
+            [(variant,) for name in names for variant in (name, name.rsplit('.', 1)[-1])])
+        if drain:
+            self.drain_invalidations(deadline=min(deadline, time.monotonic() + 2))
 
-    def coverage(self) -> dict:
+    def invalidation_pending(self) -> bool:
+        try:
+            return self.con.execute("SELECT 1 FROM method_invalidation WHERE done=0 LIMIT 1").fetchone() is not None
+        except sqlite3.OperationalError as exc:
+            if 'no such table: method_invalidation' not in str(exc):
+                raise
+            # Readers can overlap the first schema upgrade; no queued edits exist yet.
+            return False
+
+    def drain_invalidations(self, *, deadline: float) -> int:
+        """Resume bounded pages; never invalidate the entire corpus on timeout."""
+        visited = 0
+        with self.con:
+            while time.monotonic() < deadline:
+                job = self.con.execute("SELECT name,cursor FROM method_invalidation WHERE done=0 LIMIT 1").fetchone()
+                if job is None:
+                    self.con.execute("DELETE FROM method_invalidation")
+                    break
+                # dependency_target includes rowid, so pagination avoids rescanning
+                # large fanouts. Keep processed names until the queue drains to stop cycles.
+                rows = self.con.execute(
+                    "SELECT e.rowid AS edge,d.id,d.name FROM dependencies e JOIN declarations d ON d.id=e.source "
+                    "WHERE e.target=? AND e.rowid>? ORDER BY e.rowid LIMIT 128",
+                    (job['name'], job['cursor'])).fetchall()
+                if not rows:
+                    self.con.execute("UPDATE method_invalidation SET done=1 WHERE name=?", (job['name'],))
+                    visited += 1
+                    continue
+                for row in rows:
+                    if time.monotonic() >= deadline:
+                        break
+                    self.con.execute("UPDATE methods SET status='stale' WHERE decl_id=? AND status<>'stale'", (row['id'],))
+                    self.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (row['id'],))
+                    self.con.execute("DELETE FROM method_chunks WHERE decl_id=?", (row['id'],))
+                    self.con.executemany("INSERT OR IGNORE INTO method_invalidation(name) VALUES(?)",
+                        [(row['name'],), (row['name'].rsplit('.', 1)[-1],)])
+                    self.con.execute("UPDATE method_invalidation SET cursor=? WHERE name=?", (row['edge'], job['name']))
+                    visited += 1
+            if visited:
+                self.bump(source=True)
+        return visited
+
+    def coverage(self, *, include_enrichment=True) -> dict:
         counts = lambda table, field: {r[0]: r[1] for r in self.con.execute(f"SELECT {field},COUNT(*) FROM {table} GROUP BY {field}")}
         total = self.con.execute("SELECT COUNT(*) FROM files").fetchone()[0]
         meta = {r[0]: r[1] for r in self.con.execute("SELECT key,value FROM meta")}
         inventory_count = int(meta.get("inventory_count", total))
         pending = self.con.execute("SELECT COUNT(*) FROM files WHERE status IN ('pending','stale')").fetchone()[0]
-        return dict(files=total, inventoried=inventory_count, pending_files=pending + max(0, inventory_count - total),
+        result = dict(files=total, inventoried=inventory_count, pending_files=pending + max(0, inventory_count - total),
                     outcomes=counts("files", "status"), compiler=counts("files", "compile_status"),
                     collections=counts("files", "collection"), declarations=self.con.execute("SELECT COUNT(*) FROM declarations").fetchone()[0],
                     documents=self.con.execute("SELECT COUNT(*) FROM documents").fetchone()[0],
-                    vectors=self.con.execute("SELECT COUNT(*) FROM vectors").fetchone()[0], methods=counts("methods", "status"),
+                    vectors=self.con.execute("SELECT COUNT(*) FROM vectors").fetchone()[0],
+                    method_invalidation_pending=self.invalidation_pending(),
                     inventory_errors=json.loads(meta.get("inventory_errors", "[]")),
                     inventory_complete=json.loads(meta.get("inventory_complete", "false")), generation=self.generation)
+        if include_enrichment:
+            result['methods'] = counts('methods', 'status')
+        else:
+            result['enrichment_counts_pending'] = True
+        return result
 
     def install_compiler_rows(self, path: str, rows: list[dict], *, source_hash: str, status="checked") -> int:
         current = self.con.execute("SELECT * FROM files WHERE path=?", (path,)).fetchone()
@@ -628,6 +653,10 @@ class Corpus:
 
     def search(self, query: str, *, views=("statement", "type"), limit=100, any_terms=False,
                exact=False, module="", exclude_modules=(), deadline=float("inf")) -> list[dict]:
+        if 'method' in views and self.invalidation_pending():
+            views = tuple(view for view in views if view != 'method')
+        if not views:
+            return []
         expression = build_match_expression(query, any_terms=any_terms, exact=exact)
         if not expression:
             return []
@@ -678,6 +707,8 @@ class Corpus:
             # Acquire the writer lock before rechecking evidence. No concurrent
             # source/dependency transaction may slip between this check and save.
             self.con.execute("UPDATE meta SET value=value WHERE key='evidence_epoch'")
+            if self.invalidation_pending():
+                raise EvidenceChanged('dependency invalidation pending')
             if expected_evidence_epoch is not None and expected_evidence_epoch != self.evidence_epoch:
                 raise EvidenceChanged('source or dependency evidence changed during method generation')
             current = self.declaration(did)
@@ -707,6 +738,8 @@ class Corpus:
     def save_method_chunk(self, d: dict, chunk_hash: str, payload: dict, model: str, prompt: str, epoch: int):
         with self.con:
             self.con.execute("UPDATE meta SET value=value WHERE key='evidence_epoch'")
+            if self.invalidation_pending():
+                raise EvidenceChanged('dependency invalidation pending')
             current = self.declaration(d['id'])
             if epoch != self.evidence_epoch or not current or current['source_hash'] != d['source_hash'] or current['file_status'] != 'indexed':
                 raise EvidenceChanged('source or dependency evidence changed during method generation')
@@ -714,6 +747,8 @@ class Corpus:
                              (d['id'], chunk_hash, d['source_hash'], model, prompt, json.dumps(payload)))
 
     def method(self, did: str) -> dict | None:
+        if self.invalidation_pending():
+            return None
         row = self.con.execute("SELECT * FROM methods WHERE decl_id=? AND status='ready'", (did,)).fetchone()
         if not row:
             return None

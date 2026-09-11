@@ -7037,3 +7037,76 @@ of Menon's ladder (`|{|Q_j| > θ m_j}| ≤ k!/(θ^{2k} m_j^k)` beats the ambient
 per-block input — Case II, Huxley — drops into the identical slot
 (`..._le_partition_blockMeasures`) and upgrades the rate with no other change.
 Card remains Stage 2.
+
+## Lean progress update (2026-09-11) — the window estimate on HUXLEY's large-values theorem
+
+The discrete-to-measure bridge is built and the Huxley route is closed.  Four new unconditional
+leaves:
+
+- `Sieve/MenonHarmonicIntervalCovering.lean` — `measureReal_le_of_subset_biUnion_Ico`: a set covered
+  by `#s` intervals of common length `delta` has `volume.real ≤ #s · delta`.
+- `Sieve/MenonHarmonicSpacedToMeasure.lean` — `measureReal_le_of_spaced_card_le`: **if every
+  `delta`-spaced finite subset of `E ⊆ [-W,W]` has cardinality `≤ R`, then
+  `volume.real E ≤ 2·R·delta`.**  The proof meshes the window at scale `delta`, covers `E` by the
+  meeting intervals, chooses one point of `E` in each, and splits the indices into even and odd to
+  extract two `delta`-spaced families.  This is the bridge the large-values route always needed.
+- `Sieve/MenonHarmonicHuxleyMeasure.lean` — `volume_real_primeBlockLevelSet_le_huxley`: Huxley's
+  two-term density estimate (`Sieve/PrimeBlockLevelSetCount.card_le_of_mem_primeBlockLevelSet`,
+  a *cardinality* bound) as a **measure** bound.
+- `Sieve/MenonHarmonicBlockHuxley.lean` — the narrow-block comparison
+  (`‖harmonic‖ ≤ ‖ordinary‖/Q + #B·η/Q`) puts a harmonic block-large set inside an ordinary
+  prime-block level set, so Huxley bounds `volume.real (menonHarmonicBlockLarge P Q η V W j)` —
+  exactly the per-block family the socket consumes.
+- `Sieve/MenonHarmonicPartitionHuxleyClosed.lean` —
+  `integral_Icc_normSq_harmonicRamareBilinear_le_partition_huxley`, the window estimate closed on
+  Huxley's theorem.
+
+**This is a genuine large-values input, not a placeholder.**  The moment-method closure recorded
+above is vacuous on narrow blocks (`|{|Q_j| > θ m_j}| ≤ k!/(θ^{2k}m_j^k)` needs `θ² ≫ 1/m_j`);
+Huxley's estimate has no such restriction — it is the `N^{2σ} + G·E³N^{6σ-2}` two-term density
+bound, and it is what the literature's route actually uses.
+
+All five leaves are axiom-clean (`[propext, Classical.choice, Quot.sound]`), leaf-built
+(`12726`, `12788`, `12791`, `12792`) and umbrella-wired without an umbrella build.
+Card remains Stage 2 — the numerology (choosing `V j`, `σ j`, `N j`, `E j`, `V₀ j`, `J j`, `k` at
+Menon's schedule and showing the resulting sum is below `(log x)^{-2}`) is what is left.
+
+### CORRECTION (2026-09-11): the Huxley closure is vacuous at Menon's blocks
+
+The entry above says the large-values gate is "closed on a real theorem".  That over-states it, and
+the over-statement is withdrawn.  The five leaves are correct and unconditional, but
+`card_le_of_mem_primeBlockLevelSet`'s hypotheses cannot be met at a **dense** prime block.
+
+Its two side conditions are `#B ≤ E/N` and `2400·E ≤ N^{1/2-2σ}`, which together force
+
+```text
+#B  ≤  N^{-1/2-2σ}/2400 .
+```
+
+A Menon ladder block has `#B ≍ η N/log N`, so this needs `N^{3/2+2σ} ≤ (log N)/(2400 η)`, i.e.
+`σ ≤ -3/4 + o(1)`.  Feeding that back into the conclusion, `E ≥ N·#B ≍ η N²/log N` makes the first
+term
+
+```text
+(2πW)·E³·N^{6σ-2}  ≍  2πW·η³·N^{1.5}/(log N)³
+```
+
+astronomically larger than the ambient window `2W`.  Making *that* term small instead forces
+`E ≍ N^{(2-6σ)/3}`, i.e. `σ = -2/3`, and then `#B ≤ N^{5/6}/2400` fails for a dense block.  There is
+no admissible `σ`.
+
+**What the formalisation is, then.**  `card_le_of_mem_primeBlockLevelSet` is a *sparse* large-values
+estimate — the `E/N` shape is the sparse-factor normalisation of Heath--Brown's boxes, not the
+dense-prime-block one.  So `..._le_partition_huxley` is a correct theorem whose hypotheses hold only
+for sparse blocks; it does not advance the rate at Menon's ladder.
+
+**What is genuinely gained and keeps its value:**
+`Sieve/MenonHarmonicSpacedToMeasure.measureReal_le_of_spaced_card_le` — *every* spaced-family
+cardinality bound now becomes a measure bound, with no hypothesis about what the polynomial is.
+That bridge was missing from the corpus and is needed by any large-values route, sparse or dense.
+`MenonHarmonicIntervalCovering`, `MenonHarmonicHuxleyMeasure` and `MenonHarmonicBlockHuxley`
+(the narrow-block transport of a level set) are likewise route-independent.
+
+**The gate is therefore still open**, and the requirement is sharper than before: a large-values or
+zero-density estimate for a **dense** prime block — `#B ≍ ηN/log N` — at thresholds near its typical
+size.  That is Heath--Brown's identity route (Menon §1.1), as the trade-off analysis already said.

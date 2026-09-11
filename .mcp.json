@@ -4,7 +4,7 @@
       "type": "stdio",
       "command": "/bin/sh",
       "args": ["/Users/michael/Documents/code/hgt/scripts/agentchattr-mcp.sh"],
-      "env": {}
+      "env": {"AGENTCHATTR_AGENT_BASE": "claude"}
     },
     "sequential-thinking": {
       "type": "stdio",

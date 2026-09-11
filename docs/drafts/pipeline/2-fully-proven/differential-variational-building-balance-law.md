@@ -2970,3 +2970,151 @@ to the closed form, so the two must be identified.
 Direct check, targeted leaf build and axiom audit pass; all four declarations audit to exactly
 `[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an umbrella
 build.
+
+### Lean progress — base independence and the orbit decomposition (2026-09-11)
+
+`DifferentialVariationalBlockDecomposition` supplies the two structural inputs of the block estimate.
+
+```text
+variationalAttractingCore_base_independent            the growth filtration ignores the base lattice
+variationalRelativeAttractingCore_base_independent    and so does the relative one
+exists_variationalBlockDecomposition                  σⁿ(x) = uₙ + Σ_{j<n} σ^{n-1-j}(aⱼ)
+DifferentialFieldAut.vecBuildingAction_add
+DiffOp.exists_nat_mem_leftScale, DiffOp.exists_nat_finset_mem_leftScale
+DiffOp.leftScale_uniformizer_le_of_carrier_le
+nat_div_two_mul_add_le
+```
+
+Base independence is what lets the estimate be run in a lattice adapted to a splitting while the
+hypotheses are stated for the given lattice.  It is not formal: the two lattices sit inside
+uniformizer dilations of each other only up to a **constant** shift, and a constant is invisible to a
+rate only if there is room for it.  Reading the hypothesis at half the rate creates exactly that
+room, because `⌊n/2c⌋ + ⌊n/2c⌋ ≤ ⌊n/c⌋` by superadditivity of floor division and the constant is
+eventually below `⌊n/2c⌋`.  This is the content of `nat_div_two_mul_add_le`, and the same lemma is
+reused at the end of the estimate.
+
+The decomposition needs nothing but `W ⊔ U = ⊤`: the splitting at each step is a choice, and the
+closed form follows from the recursion by the reindexing already proved in
+`variationalBlockRecursion`.  Invariance of `W` is *not* needed here — it enters only when the
+accumulated block is shown to lie in `W`.
+
+Direct check, targeted leaf build and axiom audit pass; the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+### Lean progress — the block estimate, and the boundary datum (2026-09-11)
+
+`DifferentialVariationalBlockEstimate` closes the properness obligation recorded in the correction
+above, and does so in a stronger form than that correction anticipated.
+
+```text
+variationalRelativeAttractingCore_subset_variationalAttractingCore
+    W invariant and slow  ⟹  slow modulo W  ⟹  slow
+variationalAttractingCore_eq_univ_of_block
+variationalRelativeAttractingSubspace_attractingSubspace
+    relAttr(F) = F  for  F = variationalAttractingSubspace σ b L
+exists_proper_invariant_relativeAttracting_fixed_of_translationLength_pos
+DiffOp.mem_leftScale_uniformizer_iff, DiffOp.uniformizer_smul_mem_submodule
+DifferentialFieldAut.vecBuildingAction_pow_mem_subspace, variationalBlockSum_mem_subspace
+exists_uniform_slow_shift_of_fg
+```
+
+**The estimate.**  Let `W` be `σ`-invariant with every vector of `W` slow.  Choose a complement `U`
+and work in the adapted lattice `L' = (L ⊓ W) ⊕ (L ⊓ U)`.  For `u₀ ∈ U` the orbit unrolls as
+`σⁿ(u₀) = uₙ + Σ_{j<n} σ^{n-1-j}(aⱼ)` with `uₙ ∈ U` and `aⱼ ∈ W`.  Relative slowness of `u₀` bounds
+`uₙ` — this is where adaptedness is indispensable, because a bound on `σⁿ(u₀)` modulo `W` says
+nothing about its `U`-component unless the lattice splits, and where the direct-sum uniqueness turns
+the split supplied by the lattice into *the* component.  The same splitting applied one step later
+bounds `aⱼ`, using only that one step of the action moves the adapted lattice into a fixed dilation
+of itself.  Uniform slowness on the finitely generated trace lattice `L ⊓ W` — the "eventually" of a
+slow set upgraded to "always" on a finite generating family — bounds each transported term.  The
+accumulated sum then costs **nothing**: all `n` summands lie in the *same* dilation, and a submodule
+is closed under addition.
+
+**The consequence that matters.**  The correction above expected the estimate to make some tower
+fixed point proper.  In fact it does better: taking `W = F := variationalAttractingSubspace σ b L`,
+which is invariant and slow *by definition*, the estimate says `relAttr(F) ≤ F`, and the reverse
+inclusion is always true, so
+
+```text
+variationalRelativeAttractingSubspace σ b L F = F.
+```
+
+**The canonical attracting subspace is already a fixed point of the relative tower.**  The ascending
+tower of `DifferentialVariationalRelativeGrowth` does not need to be iterated at all, and the
+vacuous-stabilisation worry disappears: in the boundary phase `F ≠ ⊤` by
+`variationalAttractingSubspace_ne_top_iff_translationLength_pos`, so the boundary datum is a *proper*
+`σ`-invariant subspace that absorbs nothing from outside itself.
+
+No building, no boundary at infinity, no CAT(0) structure is used anywhere; the whole argument is the
+non-archimedean fact that a sum of `n` terms of a common size has that size.
+
+All 17 declarations of the two leaves audit to exactly `[propext, Classical.choice, Quot.sound]`;
+both leaves build and are wired into `HTGeometry` without an umbrella build.
+
+**State of `(16)`.**  The attracting half of the boundary pair is now canonical, proper and
+saturated, and the same applies to the repelling half by replacing `σ` with `σ⁻¹`
+(`differentialVariationalEuclideanTranslationLength_inv` already gives that the two phases agree).
+What `(16)` still asserts beyond this is **oppositeness**, `F ⊔ G = ⊤`.  That is exactly the slope
+decomposition, and it is the one remaining input: over a complete discretely valued base a
+`σ`-semilinear automorphism has a Harder–Narasimhan filtration, but transversality of the extreme
+steps is the splitting of that filtration.  The degree function needed to define the slopes is the
+next brick, and its finiteness is already proved
+(`DiffOp.length_ne_top_of_fg_of_uniformizer_pow_smul_eq_zero`).
+
+### Lean progress — length along a tower, and the signed lattice index (2026-09-11)
+
+Two leaves start the slope layer that `(16)` still needs.
+
+`ModuleLengthTower` supplies what mathlib leaves out.  Mathlib has additivity of `Module.length` in a
+short exact sequence but not the filtration form
+
+```text
+Module.length_quotient_add_length_quotient   length (B/A) + length (Q/B) = length (Q/A)
+Module.length_eq_of_linearEquiv
+```
+
+both over an arbitrary ring, with no finiteness hypothesis — the identity holds in `ℕ∞` with `⊤` on
+both sides when the lengths are infinite.  The short exact sequence `0 → B/A → Q/A → Q/B → 0` is
+built explicitly from two `liftQ`s.
+
+`CompletedPseudoDiffOpLatticeIndex` then builds the index itself.
+
+```text
+DiffOp.uniformizerScaleSubmodule                 π^k M, as the image of a semilinear map
+DiffOp.uniformizerScaleSubmodule_le / _fg / _le_of_smul_mem / _antitone
+DiffOp.relLength M N = length (N / (M ⊓ N))
+DiffOp.relLength_ne_top                          finiteness from a uniformizer bound
+DiffOp.relLength_tower                           relLength A B + relLength B D = relLength A D
+DiffOp.relIndex Q M N = length (N/Q) - length (M/Q)
+DiffOp.relIndex_add / _self / _swap              the cocycle laws, free from the definition
+DiffOp.relIndex_of_le                            refining the base changes nothing
+DiffOp.relIndex_base_independent                 and neither does replacing it altogether
+Module.length_quotient_comap_subtype             ↥(comap C.subtype B) ≃ ↥B, on relative lengths
+```
+
+Two design points are worth recording because they are what make the noncommutative case go through
+unchanged.
+
+*No intersections.*  The usual construction of a lattice index takes `M ⊓ N` as the common
+sublattice, which forces a Noetherian hypothesis on the valuation ring to keep it finitely generated.
+Here the common refinement of two base sublattices `Q₁, Q₂` is instead the **scaling** `π^j Q₁`: it
+lies inside `Q₁` because `π^j` is integral, and inside `Q₂` by commensurability
+(`DiffOp.exists_uniformizer_smul_le`).  Finite generation is then automatic, because the scaling is
+the image of a semilinear map.  Nothing in the development needs `O` to be Noetherian.
+
+*The cocycle is free, the base independence is the content.*  Measured from a fixed common
+sublattice, `relIndex Q M N + relIndex Q N P = relIndex Q M P` is a triviality about subtraction.  All
+the work is in `relIndex_base_independent`, and it is exactly the tower additivity applied twice, to
+`Q₃ ≤ Q₁` and `Q₃ ≤ Q₂`.
+
+Direct checks, targeted leaf builds and axiom audits pass; all 18 declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and both leaves are wired into `HTGeometry` without an
+umbrella build.
+
+Next: `σ`-equivariance of the relative length (the action induces a semilinear bijection of the layer,
+so lengths agree — this needs `Module.length` to be an invariant of *semilinear* equivalences, which
+mathlib also lacks), then the degree `deg(W) = relIndex Q (L ⊓ W) (σ(L ⊓ W))` for a `σ`-stable `W`,
+its independence of `L` (the cocycle plus equivariance make the two comparison terms cancel), and its
+additivity along an exact sequence.  Then slopes, and the Harder--Narasimhan filtration whose
+integrality supplies the **uniform** escape rate that the Sylvester contraction needs — the one thing
+that separates the proved `relAttr(F) = F` from transversality `F ⊔ G = ⊤`.

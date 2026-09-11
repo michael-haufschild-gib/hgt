@@ -2,8 +2,8 @@
 
 - **ID:** L-C32
 - **Date:** 2026-09-11
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; source incidence and cancellation test
+- **Stage:** 3-formalized
+- **Type:** THEOREM; exact cancellation class and parity separation
 - **Depends on:** [C31](../3-formalized/route-l-native-wold-cyclic-readout.md)
 - **RH status:** unproved
 
@@ -85,16 +85,15 @@ boundary. More sharply, for any detecting test `u`, the test
 boundary value is four times that of `u`. This follows from Fourier's
 fourth-power identity and the boundary's anti-Fourier covariance. Thus
 the surviving component has a detecting test in its own parity sector.
-These statements have dependency-closed paper proofs; Lean verification
-is next.
+These dependency-closed paper statements are now verified in Lean.
 
 The literal Gamma endpoint definition sharpens this survivor: for the
 fixed Gaussian, its Gamma distributional boundary is itself
 `Fourier(GammaDistribution(g)) - GammaDistribution(g)`. Its value on
 every Fourier-fixed test is zero separately. The equal transgression
 value is therefore also zero. This is annihilation of the symmetry
-sector, not compensation between two nonzero readings. Include this
-stronger positive statement in the Lean audit.
+sector, not compensation between two nonzero readings. The Lean audit
+includes this stronger positive statement.
 
 This Meyer Gaussian and C31's moving Wold product family are distinct
 existing source realizations. No identification between them is asserted.
@@ -145,8 +144,46 @@ Fourier pairing identities, cofinal transport with its graph-scale
 premise, or physical excess zero exactly on the critical line. No
 unconditional physical annihilator was found.
 
-Scratch verification of the first eight theorems succeeded without
-errors or warnings, including the strengthened anti-Fourier detecting
-test. The separate vanishing of Gamma and transgression on fixed tests
-is the ninth theorem under verification before creating the repository
-module.
+The next window comparison must retain more than reflection invariants.
+The checked existing `BurnolCoPoissonConormalReflectionCover` proves that
+the orbit sum, orbit product and squared character difference all
+descend under reflection; the orbit product has unit norm. Nevertheless
+the squared difference is zero exactly on the critical line. Thus
+passing to invariant window data or proving a unit-norm orbit product
+does not merge the two physical characters. A new argument must act
+on the original conormal difference, rather than assume that merger.
+
+## Formal audit
+
+All nine theorems passed scratch verification without errors or
+warnings, including the anti-Fourier detecting test and separate
+vanishing of Gamma and transgression on fixed tests. The repository
+module `GaloisForLFunctions.RHTower.DeningerAdiabaticGaussianBoundaryParity`
+contains exactly those checked bodies and one source definition, and
+is wired into `RHTower`.
+
+The final targeted build passed: only this leaf compiled (96 seconds),
+with its existing dependencies served from cache. Cached dependency
+warnings were replayed; the new module emitted none. All nine theorem
+names were audited exactly once via a `/tmp` file. Every theorem depends
+only on `propext`, `Classical.choice`, and `Quot.sound`. No added axioms,
+proof placeholders, numerical experiments or full/umbrella builds were
+used. All owned Lean processes exited.
+
+Index regeneration passed. Global lint was run twice, with a shared-tree
+wiring change between runs. The last run failed only on other unwired
+modules `ChronologicalTailProfiles` and `Sieve.MenonHarmonicBlockHuxley`.
+The earlier `ChronologicalTailMellin` wiring error had disappeared.
+No C32 error was reported. Global lint is therefore not claimed clean;
+these other modules were not edited or certified by this work.
+
+Logs: `/tmp/route_l_adiabatic_gaussian_parity.log`,
+`/tmp/route_l_adiabatic_gaussian_build.log`,
+`/tmp/route_l_adiabatic_gaussian_axioms.log`, and
+`/tmp/route_l_adiabatic_gaussian_lint_final.log`.
+
+The failed full-cancellation candidate has a formally audited positive
+survivor: exact Poisson classification, actual retained nonzero Gaussian
+boundary, separate zero readings on fixed tests, and an anti-Fourier
+detecting test. Route L remains open at the original physical-reader
+comparison. No RH proof is claimed.

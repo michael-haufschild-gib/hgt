@@ -22,7 +22,7 @@ import tempfile
 import time
 import unittest
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import lean_research_runtime as runtime
@@ -417,6 +417,34 @@ class MLXEmbeddingTests(unittest.TestCase):
             self.model.forward = lambda ids: self.mx.full((1, 1, 2), value)
             with self.assertRaisesRegex(RuntimeError, 'zero-norm'):
                 self.model.embed(['x'], deadline=time.monotonic()+2)
+
+
+class WorkerCleanupTests(unittest.TestCase):
+    def test_slow_model_exit_keeps_owned_handle_until_reaped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            server = worker.WorkerServer(Path(tmp))
+            self.addCleanup(server.selector.close)
+            child = Mock()
+            child.is_alive.side_effect = [True, True, False]
+            server.child = child
+            server._stop_child()
+            child.kill.assert_called_once_with()
+            child.join.assert_any_call(5)
+            self.assertIsNone(server.child)
+            self.assertFalse(server.stopping)
+
+    def test_unreaped_child_is_retained_and_no_new_inference_allowed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            server = worker.WorkerServer(Path(tmp))
+            self.addCleanup(server.selector.close)
+            child = Mock()
+            child.is_alive.return_value = True
+            server.child = child
+            with self.assertRaises(RuntimeError):
+                server._stop_child()
+            self.assertIs(server.child, child)
+            self.assertTrue(server.stopping)
+            child.close.assert_not_called()
 
 
 class WorkerTests(unittest.TestCase):

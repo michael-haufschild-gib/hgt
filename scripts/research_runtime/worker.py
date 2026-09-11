@@ -102,7 +102,7 @@ class WorkerServer:
         self.last_activity = time.monotonic()
 
     def _stop_child(self):
-        child, self.child = self.child, None
+        child = self.child
         self.child_outgoing.clear()
         self.child_incoming.clear()
         if self.pipe is not None:
@@ -117,12 +117,13 @@ class WorkerServer:
                 child.join(0.15)
                 if child.is_alive():
                     child.kill()
-            child.join(1)
+            child.join(5)
             if child.is_alive():
                 # Never launch overlapping inference if the OS has not reaped the old child.
                 self.stopping = True
                 raise RuntimeUnavailable('inference child could not be reaped')
             child.close()
+            self.child = None
 
     def _close(self, peer):
         if peer is self.active:

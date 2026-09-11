@@ -254,6 +254,40 @@ class CorpusTests(unittest.TestCase):
         self.assertIsNone(self.db.method(did))
         self.assertFalse(self.db.search('witness', views=('method',)))
 
+    def test_dependency_invalidation_resumes_without_deleting_unrelated_methods(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        self.write('formal/B.lean', 'theorem beta : True := alpha')
+        self.write('formal/C.lean', 'theorem gamma : True := beta')
+        self.write('formal/D.lean', 'theorem independent : True := trivial')
+        self.db.refresh(self.root)
+        ids = {r['name']:r['id'] for r in self.db.con.execute('SELECT id,name FROM declarations')}
+        for name, evidence in [('beta','alpha'), ('gamma','beta'), ('independent','trivial')]:
+            self.db.save_method(ids[name], dict(description='witness '+name, assumptions=[],
+                steps=[], obligations=[], evidence=[evidence]), model_version='m', prompt_version='v')
+        with self.db.con:
+            self.db._invalidate_dependents(['alpha'], deadline=time.monotonic()-1)
+        self.assertTrue(self.db.invalidation_pending())
+        self.assertEqual(self.db.con.execute('SELECT count(*) FROM methods').fetchone()[0], 3)
+        with Corpus(self.db.directory) as resumed:
+            resumed.drain_invalidations(deadline=time.monotonic()+5)
+            self.assertFalse(resumed.invalidation_pending())
+            self.assertIsNone(resumed.method(ids['beta']))
+            self.assertIsNone(resumed.method(ids['gamma']))
+            self.assertIsNotNone(resumed.method(ids['independent']))
+            self.assertEqual(len(resumed.search('witness', views=('method',))), 1)
+
+    def test_method_generation_cannot_publish_while_dependencies_are_pending(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        self.db.refresh(self.root)
+        d = dict(self.db.con.execute('SELECT * FROM declarations').fetchone())
+        with self.db.con:
+            self.db.con.execute("INSERT INTO method_invalidation(name) VALUES('alpha')")
+        payload = dict(description='witness', assumptions=[], steps=[], obligations=[], evidence=['trivial'])
+        with self.assertRaises(EvidenceChanged):
+            self.db.save_method(d['id'], payload, model_version='m', prompt_version='v')
+        with self.assertRaises(EvidenceChanged):
+            self.db.save_method_chunk(d, 'chunk', payload, 'm', 'v', self.db.evidence_epoch)
+
 
 if __name__ == '__main__':
     unittest.main()
