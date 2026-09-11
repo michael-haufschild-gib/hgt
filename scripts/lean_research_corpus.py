@@ -585,7 +585,7 @@ class Corpus:
                 for row in rows:
                     if time.monotonic() >= deadline:
                         break
-                    self.con.execute("UPDATE methods SET status='stale' WHERE decl_id=? AND status<>'stale'", (row['id'],))
+                    self.con.execute("UPDATE methods SET status='stale' WHERE decl_id=? AND status='ready'", (row['id'],))
                     self.con.execute("DELETE FROM documents WHERE decl_id=? AND view='method'", (row['id'],))
                     self.con.execute("DELETE FROM method_chunks WHERE decl_id=?", (row['id'],))
                     self.con.execute("UPDATE method_invalidation_files SET cursor=? WHERE path=?", (row['position'], job['path']))

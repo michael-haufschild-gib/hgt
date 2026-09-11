@@ -324,6 +324,20 @@ class CorpusTests(unittest.TestCase):
         self.assertTrue(self.db.invalidation_pending())
         self.assertEqual(self.db.con.execute('SELECT status FROM methods').fetchone()[0], 'ready')
 
+    def test_dependency_edit_preserves_failed_generation_outcome(self):
+        self.write('formal/A.lean', 'theorem alpha : True := trivial')
+        self.write('formal/B.lean', 'import A\ntheorem beta : True := alpha')
+        self.db.refresh(self.root)
+        did = self.db.search('beta')[0]['decl_id']
+        self.db.save_method(did, dict(description='reuse witness', assumptions=[], steps=[],
+            obligations=[], evidence=['alpha']), model_version='m', prompt_version='v')
+        with self.db.con:
+            self.db.con.execute("UPDATE methods SET status='failed',description='',evidence='[]',error='generation did not finish'")
+        self.write('formal/A.lean', 'theorem alpha : True := by trivial')
+        self.db.refresh(self.root)
+        row = self.db.con.execute('SELECT status,error FROM methods').fetchone()
+        self.assertEqual(tuple(row), ('failed', 'generation did not finish'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -85,6 +85,21 @@ The radial mass coefficient instead has the exact decomposition
 
 The displayed division is notation only: the formal theorem multiplies by 4c, including c=0. Proof: expand the original trace/normal covectors `U-d_s W`, `-sU+d_s(s+2)W` and their t partners in `clockCoefficients`. The U dot V coefficient is `2st(t-s)=-(st/3)(alpha_t-alpha_s)`; the other three coefficients are as displayed. No division by tilt, spectral difference or amplitude occurs. This identifies the precise source-response remainder after the angular boundary is extracted. No vanishing of that remainder, or compensation by the actual pulse response, has been derived. The algebraic source identity and its differentiated angular current are being checked in Lean.
 
+**C10: another angular integration by parts removes the remainder. Paper identity; no extinction.** Write `Z=r_s H_s+r_t H_t+r_Q Q`, `lambda=(s+1)(s+2)`. The actual source equation is `Delta Q=2lambda Q+fullGradientEnergy`. Thus
+
+    R = div(Z grad Q)-y^(-2) Z(2lambda Q+fullGradientEnergy),
+    C_10 = 4c div[-st G/3+Z grad Q]
+             -4c y^(-2) Z(2lambda Q+fullGradientEnergy).
+
+Proof: differentiate `Z grad Q`; its differentiated-Z term is exactly the three-term remainder R above, because coexact rotation preserves the bilinear dot product. The other term is Z times the Euclidean Laplacian of Q; substitute the literal hyperbolic source equation. This replaces the remainder with work against the literal half-square Laplacian and an explicitly determined boundary current. It does not set the full gradient energy to zero or replace Q by a Laplace eigenfunction. This stronger combined current is a next formalization and pulse-comparison target; only its paper derivation is recorded here.
+
+For a finite angular rectangle `[x0,x1] x [y0,y1]`, y0>0, the flux of any displayed densitized angular current J is
+
+    integral_y0^y1 [J_0(x1,y)-J_0(x0,y)]dy
+      +integral_x0^x1 [J_1(x,y1)-J_1(x,y0)]dx.
+
+The horizon component integrals retain the coordinate-current sign; an outward-oriented lower radial face requires its corresponding minus sign. These formulas must be inserted in the same finite-domain action balance before removing a cutoff. Neither modularity alone nor rapid decay of only the remainder discards the principal cusp terms.
+
 ## Exact nonlinear interface still required
 
 All formulas below describing the completed physical action are **proof obligations**, not new Lean assumptions or established physical identities. Existing local coefficient formulas are identified separately.
@@ -166,6 +181,15 @@ This exposes a source-boundary identity to prove, not a freedom to redefine the 
 where A is the complete original spatial scalar source coefficient, including gradient energy. The two wave images therefore retain the entire finite translation mass at this test. One still must derive the **actual** left state, its full radial/angular weighting and all limiting faces before using the first display. It is not legitimate to identify the demodulated temporal moment with that state by definition.
 
 ## Broader method search and attempted transfers
+
+Further broad searches used transgression, virial, polarization, passivity, reciprocity and Noether, prioritizing June–September 2026. The arXiv date-sorted passivity endpoint returned HTTP 429; broader web queries recovered the primary records below. These are method tests, not imported assumptions.
+
+- [Procopio et al., Backreaction of stimulated Hawking radiation in an optical analogue, July 2026](https://arxiv.org/html/2607.01118v1), Appendix A: a Hermitian interaction gives conservation of total co-moving energy while allowing exchange between pump and probe. **Test:** use nonlinear energy conservation to extinguish one radiative channel. **Failed transfer:** conservation permits nonzero exchange; the optical approximation supplies neither the Einstein boundary identification nor its required sign.
+- [Yang–Yang–Liu, Decentralized and Equilibrium-Set-Oriented Stability Analysis and Control for Power Systems, 31 August 2026](https://arxiv.org/html/2609.00497v1), Lemma 4: sum local storage inequalities and cancel the network supply, leaving a strict dissipation term. **Test:** combine all physical channel currents by a source-derived storage identity. **Open obligation:** HB needs the original storage and signed supplies for every channel and face. The paper assumes local differential passivity; adding its controller changes the dynamics. Neither operation can be imported as an HB extinction proof. Its theorem gives asymptotic stability, not exact extinction at one prescribed clock.
+- [Osipov–Tretyakov, Huygens' principle and field equivalence relations for cylindrical enclosing surfaces, August 2026](https://arxiv.org/abs/2608.14005): exact boundary representations use complementary field traces. **Transfer tested:** boundary reconstruction preserves the traces; it does not assert their vanishing. The harmonic Maxwell cylinder is not the complete nonlinear theta-source problem.
+- [Sugiura, Learning to Agree under Pseudo-Reciprocity, August 2026](https://arxiv.org/abs/2608.22234): the abstract classifies consensus networks under rational-learning assumptions. No source-equation or physical-current identity applicable to HB was found.
+
+Two additional deep/method requests targeted conserved bilinear flux and forced angular Green divergence. The first returned one unverified ingredient group based on finite abelian determinant flux and matrix bilinear invariance; neither identifies the physical current. The second recovered the actual forced angular operator, local Green differentiation and native angular-current methods. Their source arguments were inspected; semantic/compiler coverage and local-model deadlines remained partial. The derivative proof pattern is used for C9, with its literal field smoothness discharged independently. No retrieved covariance or RH-equivalent condition is used as a premise.
 
 Three deep corpus requests inspected candidate lemmas and source proof arguments. All returned partial coverage with pending index generations; deadlines affected reranking or semantic retrieval. Retrieved integration/translation arguments support compact endpoint telescoping, but no returned proof supplies the missing physical sign. In particular, the retrieved divergence-vanishing lemma requires the field to vanish near the boundary; using it here without deriving that premise would discard exactly the unresolved flux. Exact source text was also searched for onset translation and clock conservation.
 

@@ -296,7 +296,8 @@ with `a_j=a_j(beta/2)`. The audited symbolic simplification gives
 `2*pi*c_k(beta)*(1/2)^(alpha+2*k+2)/(alpha+2*k+2)`, not only the three poles.
 The terms `k=3,4,5` have admitted denominators for `alpha>-8` and contribute
 finite values. These coefficient and restoration identities are now verified
-in Lean; the pole-cleared whole source and its Gamma jets remain open.
+in Lean; the pole-cleared whole source and its Gamma jets are now closed
+below. The original finite-part extraction remains open.
 
 Clear `A(alpha)=(alpha+2)*(alpha+4)*(alpha+6)` at both punctures. The existing
 `FZZCigarPlaneScreeningGammaContinuation.reciprocal_gamma_analytic` proof uses
@@ -306,8 +307,9 @@ is required. The candidate cleared Gamma family is
 `64*pi*Gamma(-alpha/2-beta/2-1)*Gamma(4+alpha/2)*Gamma(4+beta/2)/(Gamma(-alpha/2)*Gamma(-beta/2)*Gamma(2+alpha/2+beta/2))`.
 
 Its numerator arguments are positive on `alpha,beta>-8`, `alpha+beta<-2`.
-After the complete original polynomial and exterior assembly, repeat the
-existing two-slice real analytic identity argument from the ordinary chamber.
+The complete original polynomial and exterior assembly, followed by two
+real analytic identity arguments from the ordinary chamber, is now proved
+below.
 Then identify the original unmarked and marked cutoff limits with the
 pole-subtracted jets. This bridge, the proposed values `-84*pi` and
 `-141*pi/8`, fractional screening multiplicity, full normalization, independent
@@ -386,8 +388,8 @@ analytic slices: first fix `-2<beta<0` and continue in `alpha` from a genuine
 ordinary neighborhood; then fix `alpha<-2` and continue in `beta` from a
 neighborhood of `-1`. Replacing the lower bound `-3` by `-8` is now supported
 by the proved higher local remainder. The exact original restoration above
-supplies the new ordinary source identity. The pole-cleared source, its Gamma
-match and the marked jet identification still require Lean proofs.
+supplies the new ordinary source identity. The pole-cleared source and all its Gamma jets are now proved below.
+The identification with the original marked finite-part cutoff remains open.
 
 ### Current restoration search
 
@@ -411,11 +413,13 @@ identifies this fixed source or its missing complete Ward law. These dates
 are outside the preferred window; no recent result or imported proof premise
 is inferred from them.
 
-## Higher whole-source continuation attack
+## Closed higher whole-source continuation
 
-The explicit source construction above is being checked in
-`/tmp/fzzp_higher_cleared_source.lean`. Its target is equality with the higher
-cleared Gamma family on the full domain `D: alpha,beta>-8, alpha+beta<-2`,
+The explicit source construction passed scratch in
+`/tmp/fzzp_higher_cleared_source.lean` and is now in
+`formal/GaloisForLFunctions/RHTower/FZZCigarHigherScreeningGammaContinuation.lean`.
+Ten public data-only statements prove equality with the higher cleared Gamma
+family on the full domain `D: alpha,beta>-8, alpha+beta<-2`,
 including all three collision lines at each puncture. The proof starts from
 the original local restoration and the admitted whole-plane Beta integral.
 Three numerator Gamma recurrences on each side give the factor `64*pi`.
@@ -425,15 +429,22 @@ The two-slice argument extends farther than the originally proposed negative
 square. First fix `-2<beta<0` and continue in `alpha` from an ordinary open
 interval. Next fix `alpha<-1` and continue in `beta` from a neighborhood of
 `-1` lying below `min(0,-2-alpha)`. Every point in `D` has either `alpha<-1`
-or `beta<-1`; reflection covers the other case. The proposed positive chart
+or `beta<-1`; reflection covers the other case. The proved positive chart
 uses `alpha=-8+14*exp(u)/(1+exp(u)+exp(v))`, with the symmetric formula for
 `beta`. Its inverse uses `log((alpha+8)/(-2-alpha-beta))` and its reflection.
 
-Local equality of the cleared functions should also identify every mixed
-iterated derivative, including at `(-6,-6)`. This would close the cleared
-source/Gamma jets. It would not alone identify the existing original marked
-or unmarked finite-part cutoff limits: those still require restoring every
-finite term and differentiating the clearing factors and pole residues.
+Local equality of the cleared functions identifies every mixed iterated
+derivative, including every order at `(-6,-6)`. This closes the cleared
+source/Gamma jets. The existing original marked and unmarked finite-part
+cutoff limits still require an exact comparison retaining every finite term
+and the derivatives of the clearing factors and pole residues.
+
+The umbrella is wired. The targeted leaf build passed in 331 seconds and
+global formal lint passed. The new leaf is clean; the build replayed existing
+dependency warnings. The scratch initially reported three unreachable `ring`
+tactics, which were removed before the successful leaf build. All ten public
+statements passed the complete axiom audit with only `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ### Next finite-part extraction conjecture
 
@@ -460,3 +471,73 @@ cutoff limit already proved. Merely dividing the cleared identity at the
 collision point cannot establish it. The marked extraction additionally needs
 the derivative of each local residue and the original logarithmic cutoff
 corrections. No proposed finite-part value is promoted to a theorem here.
+
+A more direct parity proof is now available as the next attempt: set
+`L(t)=log Gamma(1+t)-log Gamma(1-t)`. This function is odd by its definition,
+and is analytic near zero because both Gamma factors are positive there.
+Thus `L''(0)=0`. The logarithm of the unit is
+`L(a/2)+L(b/2)-L((a+b)/2)`, whose first derivatives cancel and whose second
+derivatives vanish. Exponentiation then gives the required unit jets. The
+current corpus's `SlepianKernelScaledFubini.even_prolateSLAction` explicitly
+uses `deriv_comp_neg` and differentiation of a reflection identity; its proof
+was read as the parity mechanism. The actual Gamma source specialization
+and the original finite-part extraction remain to be checked in Lean.
+
+### Continuation search and paper intake
+
+The deep/all-view continuation query returned partial generation `844002`
+without tool errors and a proposed, unverified Gamma-recurrence ingredient
+set. All twenty candidate and twenty method names were inspected. The actual
+`SeamTwoLatticesArchimedeanResidue.GammaR_recurrence` was read; its shifted
+Gamma recurrence has an explicit nonzero argument obligation. The present
+source proof instead discharges positivity at each of its three ordinary
+Gamma shifts. The hybrid/all-view finite-jet query returned partial generation
+`857720`, with background refresh unfinished and no tool errors. Its complete
+candidate and method lists were inspected. `GammaDifferentialFE.iteratedDeriv_residue_of_factor`
+and `AdS2RenormalizedScalarClockParity.tendsto_simplePoleProduct_sub_principalPart`
+were read; both retain the principal factor and differentiated regular term,
+and neither by itself identifies the original cubic cutoff.
+
+The deep/all-view reflected-unit query returned partial generation `869214`
+with semantic/Qdrant deadlines and unfinished filtering and refresh. Its
+candidate and method lists were inspected. The selected direct parity method
+comes from the actual derivative-reflection proof cited above. No absence
+claim follows from these partial searches.
+
+Broad arXiv searches used resonance, sewing, residue, monodromy, fusion,
+coaction, factorization and cocycle, with the preferred June–September 2026
+window and date refinements. Many results were empty or older than requested.
+[Fundamental Mathematics in the Age of AI](https://arxiv.org/abs/2608.12816),
+revised 29 August 2026, is an overview of mathematical understanding and
+institutions; its inspected abstract supplies no source or Ward theorem.
+[The non-Abelian X-ray transform on surfaces](https://arxiv.org/abs/2006.02257),
+revised 26 January 2022, uses loop-group factorization to reduce to a unitary
+setting on simple surfaces. Those geometric assumptions do not identify the
+present fixed FZZ source or its phase frame. Neither paper supplies a premise
+of the Lean proof; the latter lies outside the requested recent window.
+
+The corresponding rational factor to be verified near the cubic origin is
+
+`Q(a,b)=64*pi*v*((v-1)*(v-2)*(v-3)*(v-4))^2/((1-a/2)*(2-a/2)*(1-b/2)*(2-b/2))`,
+
+with `H(-6+a,-6+b)=Q(a,b)*U(a,b)`. Since `Q(0,0)=0`, the proposed unit
+flatness through order two would make the cleared jets through order three
+come entirely from `Q`. Symbolic coefficient comparison gives the next Lean
+targets `H_ab=-12288*pi` and `H_aab=16176*pi`. For the original mark in the
+first exponent, the corresponding extraction target is
+
+`H_aab=128*markedFP-96*FP+10368*pi`.
+
+The constant corrections come from the cubic clearing factors and the local
+residue coefficients. These are explicit proof targets, not audited values;
+the original cutoff-to-jet comparison remains required before either
+finite-part conjecture follows.
+
+The current Mathlib theorem
+`Complex.one_div_Gamma_eq_self_mul_one_div_Gamma_add_one`
+(`Analysis/SpecialFunctions/Gamma/Beta.lean:501`) was read. It proves the
+reciprocal recurrence at every complex argument, including zero. This supplies
+a direct route to the five reciprocal shifts in the proposed rational
+factorization while retaining the collision point. The two unit-flatness
+statements are drafted in `/tmp/fzzp_higher_gamma_unit.lean`; this scratch has
+not yet been checked.

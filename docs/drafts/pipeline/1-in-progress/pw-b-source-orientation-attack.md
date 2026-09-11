@@ -2350,3 +2350,125 @@ vanishing condition is a boundary test, not an established Xi incidence
 or a sufficient occurrence theorem. Full cutoff adjoints, physical
 necessity of the pairing and independent Ward balance remain open.
 The previous33 public declarations and final lint remain verified.
+
+
+Three deep searches are terminal and saved in
+pw-b-gamma-ground-boundary-searches.json. All20 candidates and20 source
+arguments in each, plus their complete ingredient sets, were reviewed.
+Coverage is partial730597 declarations. The ground-tail and incidence
+queries report no errors; the moment query reports a semantic runtime
+deadline. Compiler metadata remains largely pending. Method freshness
+improved across snapshots but does not certify applicability. The
+proposed finite ladder separation cannot establish continuous moment
+uniqueness; Laplace-boundary linearity and angular inversion do not
+construct this reciprocal source's boundary expansion. An exhaustive
+source search identified the directly relevant local exponential-window
+complex-density uniqueness theorem in HTGeometry.LocalExponentialTestClosure.
+Its actual finite-measure, exponential-window and L2 premises were read.
+A focused mechanism search is now running to audit related proof ideas.
+
+Broad single-word arXiv searches used memory, elasticity and friction.
+General web results returned older papers; the date-ordered memory and
+friction listings returned September2026, while elasticity listings
+failed to fetch. Most memory hits were AI/hardware work with no useful
+analytic transfer. Two primary friction-search papers were inspected:
+Boundary control for optimal mixing by two-dimensional second-grade
+fluids, arXiv2609.09946v1, September9, especially Remark8.1 and Lemma8.3;
+and Well-posedness and exponential stability for abstract evolution
+equations with delay in the nonlinear source: frictional and viscoelastic
+cases, arXiv2609.08986v1, especially Theorem3.2 and its explicit stability
+and small-Lipschitz premises. The former derives weak adjoint duality
+through common Galerkin limits and does not infer strong boundary traces
+from insufficient regularity. The latter requires an existing stable
+semigroup, delay bounds and independently justified small-data control.
+Neither supplies PW-B's source incidence or Ward law.
+Sources: https://arxiv.org/html/2609.09946v1 and
+https://arxiv.org/html/2609.08986v1.
+
+First scratch failed at an infinite-sum rewrite: rewriting division
+selected the shifted tail rather than the complete sum. It is corrected
+with an explicitly typed full-sum identity. An expanded sole foreground
+scratch now also checks all polynomially weighted source/current tails
+and the rapid reciprocal-current decay required by the corrected scalar
+equation. All moment extraction and uniqueness remain unformalized;
+the pairing card records their explicit quantitative proof candidate.
+
+
+The fourth deep search is terminal, saved as local_window: partial
+coverage730613 declarations and a decomposition runtime deadline.
+All20 candidate statements,20 source arguments and the full proposed
+ingredient set were examined. Its proposed AllZero monomial theorem
+concerns exponent lists, not vanishing integral moments; the Stokes
+germ isomorphism likewise does not identify this density. The actual
+local exponential-window density theorem found by source inspection
+remains the relevant method. No search-generated implication was used
+as a proof.
+
+The all-moment proof candidate can avoid differentiating the complete
+source: the already verified per-mode reciprocal flat-kernel bound,
+summed with a sufficiently high inverse-power coefficient majorant,
+makes the original0<h<v integral flat at each fixed order. Elementary
+exp-series bounds and Gamma integrability similarly admit each moment
+and control its removed0<t<2v piece. This identifies exact next Lean
+obligations without assuming a complete source derivative theorem.
+
+
+A stronger preferred positive survivor emerged from the actual corpus
+Schlaefli/Gamma coefficient mechanism (BesselK1RayCoefficients, read in
+full): J_j(z)/Gamma(j) should tend to the nonzero n=2 arithmetic
+coefficient as j->infinity. Inverting each positive endpoint integral
+and using1-a/u<=exp(-a/u)<=1 gives an explicit Gamma squeeze. A single
+large fixed inverse-power majorant controls every n>=3 contribution
+for all later j. This avoids the separate L2 density construction and
+all-z leading source theorem. The exact bounds and next formal steps
+are recorded in the pairing card. The original full cutoff expansion
+is still needed before this candidate can exclude the corrected ansatz.
+
+
+Iteration28 final audit complete. All10 public declarations are promoted
+in ThetaCuspHawkingParikhWilczekGammaGroundBoundary with exact passing
+scratch bodies and standard-only logical axioms. One umbrella import
+is wired. Only the targeted leaf was built, in482s; its dependencies
+were replayed. Index passed with zero changed entries and zero removals
+(the shared search index already contained the source). All10 public
+source and API names are unique. Repository formal lint and scoped
+tracked-file whitespace checks passed. Remaining Lean diagnostics are
+redundant-tactic style warnings. No full/umbrella build, added axiom,
+numerical experiment, subagent, commit or push occurred.
+
+The fifth deep query is terminal and saved as high_order. Its coverage
+reports only pending generation872787, with rerank/semantic runtime
+deadlines and a filter/worker disconnect. All20 candidates and20 source
+arguments were examined; there is no ingredient set. The reciprocal
+Gamma-function inverse lemmas are not the needed inverse change of
+variables in the endpoint integral. Existing original-source kernel
+bounds and the Gamma recurrence remain the verified starting points.
+
+The preferred next attack is the quantitative high-order endpoint
+moment detector. For fixed admitted p, the candidate error is
+|J_j/Gamma(j)-a_2| <= |a_2|/(j-1)+C_z,p*2^(p-j). First prove the
+reciprocal integral substitution and Gamma squeeze, then this full
+signed-series bound. Next derive the all-order expansion from the
+original cutoff integral using the already verified kernel flat bound,
+and extract moments from the all-power current flatness now proved.
+This could exclude the unit-corrected scalar ansatz while yielding
+nonzero high-order moments as its positive survivor. Neither statement
+is being claimed formalized yet; PW-B is not retired and RH is unproved.
+
+The complete goal chain remains PW response -> FE signed defect ->
+complete source adjoints/domain and positive Ward transmutation ->
+independently forced fixed-grade balance at actual Xi occurrences -> RH.
+The source-tail and necessary boundary results are verified progress;
+full original cutoff transposition, physical necessity of the pairing,
+actual Xi occurrence and independent Ward balance remain hard gaps.
+
+
+### Iteration29: normalized high-order endpoint moment
+
+Previous turn is verified progress: the actual482s leaf build and final
+lint logs were revalidated. This turn attacks the reciprocal integral
+substitution and Gamma squeeze, then the complete signed moment
+coefficient recovery. A new deep inversion-method search is running.
+User now explicitly forbids further #print axioms checks; comply.
+Continue kernel checking with lake env lean scratch files, targeted
+leaf build and the existing no-added-axiom/source lint discipline.

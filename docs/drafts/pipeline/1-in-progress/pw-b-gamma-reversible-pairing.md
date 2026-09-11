@@ -200,11 +200,11 @@ proof-body checks, index and final repository lint. These statements
 do not prove a full-domain adjoint or existence of a corrected scalar
 solution.
 
-## Next corrected-source boundary test
+## Verified corrected-source boundary test
 
 The unit ground subtraction survives the leading logarithmic test.
 The next exact quantity to retain is B_z, the complete signed endpoint
-above. A paper derivation gives a further necessary condition. At x=1,
+above. The new Lean proof gives a further necessary condition. At x=1,
 let d_n be the admitted normalized source atom and let C_z be the sum
 of |d_n| over n>=2. The proved atom transport gives for x>=1
 
@@ -213,13 +213,15 @@ of |d_n| over n>=2. The proved atom transport gives for x>=1
 The analogous logarithmic coefficient sum gives the same exponential
 bound for E_z/Q. The elementary log(x)<=x bound and the already used
 exponential-series estimate show log(x)*exp(-x)->0. Consequently the
-unit-ground-corrected skew expression, divided by Q, should tend to
--B_z. A scalar equation with M_z-Q would therefore require B_z=0.
-This sharper rate and boundary condition are pending Lean work, not a
-claimed eigenfunction or an identification of B_z with Xi. The next
-attack must prove the complete rate and retained boundary functional,
-then establish their actual source/spectral incidence. Merely declaring
-B_z zero at a selected parameter would assume the missing producer.
+unit-ground-corrected skew expression, divided by Q, tends to
+-B_z. A scalar equation with M_z-Q therefore requires B_z=0.
+The [unit-ground boundary theorem](../3-formalized/pw-b-gamma-ground-boundary.md)
+proves this rate and boundary condition, plus the all-power decay of
+the reflected current required by that scalar equation. These are not
+an eigenfunction or an identification of B_z with Xi. The next attack
+is the all-moment extraction below and actual source/spectral incidence.
+Merely declaring B_z zero at a selected parameter would assume the
+missing producer.
 
 The four new deep searches and their source/compiler freshness limits
 are preserved in the [endpoint search record](pw-b-gamma-reciprocal-flat-endpoint-searches.json).
@@ -262,14 +264,18 @@ F_z(y)=M_z(y)/Q(y)-1 and S_z(t)=F_z(1/t). The complete normalized
 reciprocal current is
 C_z(v)=integral_(h>0) exp(-h)(S_z(v+h)-S_z(v))/h dh.
 A unit-corrected scalar identity would make C_z(v) smaller than every
-power of v as v->0+. This flatness must be proved using the full signed
-source and logarithmic-current tails. It is not assumed.
+power of v as v->0+. The equivalent statement after inversion v=1/x
+is now proved in the unit-ground boundary theorem using the full signed
+source and logarithmic-current tails. It is a necessary consequence of
+the scalar identity; existence of that identity is not assumed.
 
 Candidate expansion: exp(-v) C_z(v) has asymptotic coefficients
 J_j(z)=integral_(t>0) exp(-t) S_z(t)/t^(j+1) dt for every j>=0.
 To prove it, split the original h-integral at h=v. The region0<h<v
-requires a derivative bound on S_z on[v,2v], not separate divergent
-integrals. On h>=v, put t=v+h and expand1/(t-v) finitely, where v/t<=1/2.
+can use a derivative bound on S_z on[v,2v], or directly the already
+verified modewise flat-kernel bound detailed below. It cannot be split
+into separate divergent integrals. On h>=v, put t=v+h and expand1/(t-v)
+finitely, where v/t<=1/2.
 Bound its remainder by2*v^(N+1)*integral_(t>0) exp(-t)|S_z(t)|/t^(N+2).
 The subtracted loss is bounded by |S_z(v)|*(1+|log v|); replacing the
 remaining lower limit2v by0 requires separate flat-tail estimates.
@@ -293,3 +299,162 @@ leaf alone treats the untilted current and cannot be cited for it.
 Thus the conjectured exclusion of the unit-corrected scalar ansatz is
 NOT a proved no-go. Its positive survivor is the complete endpoint
 moment detector: some retained J_j(z) must be nonzero. PW-B remains live.
+
+
+### Quantitative proof candidate for the all-moment step
+
+Let a_n=mu(n)*sqrt(n)*exp(-z*log n), n>=2. Fix integer N with
+|a_n|<=n^N, available from the coefficient bounds. For0<t<=1,
+(n-1)/t >= 1/(2t)+(n-1)/2. Therefore
+|S_z(t)|<=A_N*exp(-1/(2t)),
+|S_z'(t)|<=D_N*t^(-2)*exp(-1/(2t)),
+where A_N=sum_(n>=2)n^N exp(-(n-1)/2) and
+D_N=sum_(n>=2)n^N(n-1)exp(-(n-1)/2) are finite.
+The same term bounds locally uniformly justify termwise differentiation
+on each compact subinterval of t>0. For0<v<=1/2, the original near
+integral0<h<v is then bounded by D_N*v^(-1)*exp(-1/(4v)).
+This is smaller than every power of v. It retains the cancellation
+inside the difference quotient throughout.
+
+At t>=1, the elementary exponential-series inequality bounds
+n^N exp(-n/t) <= N!*(2t)^N*exp(-n/(2t)). Summing the geometric tail
+and using exp(u)-1>=u bounds S_z(t) by a constant times t^(N+1).
+Hence every absolute J_j integral is finite: exponential suppression
+at t=0 and at t=infinity dominates the respective powers. These
+bounds also make the missing0<t<2v moment pieces flat at every fixed
+order. The far-region finite geometric expansion above thus yields
+exp(-v)C_z(v)=sum_(j=0)^m J_j(z)*v^j+O_z,m(v^(m+1)).
+No bound uniform in m is being claimed or used.
+
+The inversion density g_z consequently satisfies an exponential bound
+at infinity and a polynomial times exp(-1/y) bound at zero. The
+proposed finite measure and L2 density therefore satisfy the single
+exponential-window uniqueness theorem. Finally, dominated convergence
+with the admitted n>=2 coefficients at x=1 gives
+exp(x-1)*F_z(x) -> a_2*exp(-1), which is nonzero for every z.
+Thus not all J_j(z) can vanish. Choosing their first nonzero index j
+would give C_z(v)/v^j -> J_j(z) != 0, contradicting the all-power
+flatness forced by a corrected scalar equation.
+
+This is the explicit proof candidate and positive survivor to audit:
+every parameter has a finite first nonzero retained endpoint moment.
+It does not imply any uniform bound on that first index, and it does
+not identify the endpoint moments with Xi. The all-order source
+bounds, expansion, density transport and all-z n=2 limit remain to be
+checked in Lean before this candidate can retire the corrected ansatz.
+
+
+### Lean-guided simplification of the near-region argument
+
+The already verified reciprocal-kernel flat bound removes the need to
+differentiate the complete source. For each mode a=n-1>0 it gives
+|K_a(v,h)| <= ((k+2)!/a^(k+1))*exp(-h)*(v+h)^k.
+Choose k larger than both the requested endpoint order and the fixed
+coefficient growth degree. Then sum |a_n|/a^(k+1) absolutely. On0<h<v,
+(v+h)^k <= (2v)^k, so the entire original near-region integral is
+O_z,k(v^(k+1)). Arbitrarily high fixed k supply exactly the required
+flatness while retaining the original cancellation. This can reuse
+ThetaCuspHawkingParikhWilczekGammaReciprocalEndpoint directly.
+
+The same elementary bound exp(-a/t)<=p!*t^p/a^p supplies two further
+closures. Taking p larger than the coefficient growth degree proves
+|S_z(t)|<=C_z,p*t^p for all t>0, hence |F_z(y)|<=C_z,p*y^(-p) near y=0.
+Taking p larger than both that degree and j proves absolute admission
+of the j-th moment by the majorant
+p!/a^p * integral_(t>0) exp(-t)*t^(p-j-1)dt.
+The Gamma integral is finite; the remaining coefficient sum converges.
+At t=0 one can take p arbitrarily large to control each removed moment
+piece. Thus the existing reciprocal flat-kernel theorem, exponential
+tail theorem and ordinary Gamma admission offer a source-faithful
+formalization path for every boundary remainder. These observations
+are a concrete proof simplification, not a completed all-moment audit.
+
+
+## Iteration28 verified source-tail and first boundary results
+
+All10 declarations in the [unit-ground boundary theorem](../3-formalized/pw-b-gamma-ground-boundary.md)
+pass scratch Lean with standard-only logical axioms. In particular,
+the complete source/current exponential bounds and all polynomially
+weighted tail limits are closed, as are the corrected boundary limit
+-B_z and the all-power current flatness required by a scalar identity.
+The exact proofs are promoted and wired. The targeted leaf build
+passed in482s; index, all10 source/API names, exact scratch-body match
+and repository formal lint passed. The all-moment expansion, moment
+density realization and all-z first nonzero source coefficient remain
+unformalized. The earlier candidate sections above describe those
+remaining tasks, not an already completed corrected-source no-go.
+
+
+## Preferred next attack: normalized high-order moment recovers n=2
+
+The corpus BesselK1RayCoefficients identifies ray coefficients through
+Schlaefli/Gamma integral representations. Applying that mechanism to
+these actual endpoint moments gives a shorter positive-survivor
+candidate than general moment determinacy. This is a new proof
+candidate, not yet a Lean theorem.
+
+For a>0 and integer j>=2 define
+I_j(a)=integral_(t>0) exp(-t-a/t)/t^(j+1)dt.
+The substitution u=a/t gives
+I_j(a)=a^(-j)*integral_(u>0) exp(-u-a/u)*u^(j-1)du.
+The elementary inequalities1-a/u<=exp(-a/u)<=1, together with
+Gamma(j)=(j-1)*Gamma(j-1), imply
+
+`a^(-j)*(1-a/(j-1)) <= I_j(a)/Gamma(j) <= a^(-j)`.
+
+The lower bound need not be positive; the actual integral is positive.
+For a=1 it forces I_j(1)/Gamma(j)->1. For a>=2 the upper bound tends
+to0. For fixed complex z, choose one integer j0 larger than the
+coefficient growth degree plus2. For all j>=j0, the n>=3 terms satisfy
+
+`|a_n*I_j(n-1)/Gamma(j)| <= |a_n|/(n-1)^j0`,
+
+with a summable right side. Dominated convergence therefore gives
+
+`J_j(z)/Gamma(j) -> a_2(z) = -sqrt(2)*exp(-z*log(2)) != 0`.
+
+This retains the full signed coefficient series and uses a fixed
+summable bound in j. It makes every sufficiently high endpoint moment
+nonzero for each fixed z, stronger than existence of some nonzero
+moment. No uniform starting moment in z is claimed. Combined with
+the original integral's all-order endpoint expansion, it would exclude
+the unit-ground-corrected scalar ansatz at every parameter.
+
+Formal priority: prove the reciprocal integral substitution and the
+normalized Gamma squeeze, then the complete arithmetic high-order
+limit. Afterwards prove the original cutoff expansion and extract its
+coefficients from the already verified all-power current flatness.
+The local exponential-window argument remains an independent backup;
+the preferred proof does not need that measure construction, an L2
+realization, or the separate all-z n=2 source-tail theorem. These
+reductions attack the actual unclosed endpoint-moment step. They do
+not construct Xi occurrence or Ward balance, and PW-B remains live.
+
+
+Lean indexing choice for that next positive theorem: use j=k+2 with
+k:nat, so every Gamma recurrence and comparison integral is admitted
+without a separate j>=2 premise. Use the existing
+pwGammaMobiusReciprocalCoefficient z n and a=n+1; its n=0 term is
+exactly the surviving n=2 arithmetic coefficient. The normalized
+main-mode error is at most1/(k+1), and all n>=1 terms are dominated
+by a fixed inverse power chosen from the coefficient growth bound.
+This is an indexing plan for the stated theorem, not a new axiom or
+an assumed analytic estimate.
+
+
+### Quantitative refinement of the preferred survivor
+
+Choose one integer p>=2 with
+C_z,p=sum_(n>=3)|a_n|/(n-1)^p finite. For every integer j>=p,
+(n-1)^(-j) <= (n-1)^(-p)*2^(p-j) on n>=3. The complete signed
+moment error therefore satisfies
+
+`|J_j(z)/Gamma(j)-a_2(z)| <= |a_2(z)|/(j-1)+C_z,p*2^(p-j)`.
+
+This replaces the last dominated-convergence step with an explicit
+complete-tail bound. Put j=p+k to avoid subtraction in natural powers.
+The right side tends to0 and eventually falls below |a_2(z)|, proving
+eventual moment nonvanishing once the integral identities and bounds
+are formalized. This strengthens the proposed positive survivor and
+gives a more direct next Lean target; it still makes no uniform claim
+about p or the starting index across all complex z.

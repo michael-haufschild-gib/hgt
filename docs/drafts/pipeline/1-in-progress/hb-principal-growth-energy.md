@@ -42,6 +42,18 @@ A frequency-domain version can avoid requiring new time regularity. Put v=w u an
 
 The final term is at most 3E. Therefore Re(conjugate(w)b_w(u,u))≥(Re(w)−3/2)E. The pointwise bound c h≤2 also gives E≥||u_x||²+|w|²||u||². For Re(w)>3/2 this controls the original H¹ graph norm. Applying the form equation to its actual solution yields ||u||≤||f||/((Re(w)−3/2)|w|). The next formal attempt is to prove the tanh factorization on the original radial Dirichlet graph, build the rotated coercive inverse there, and identify it with the original principal response on the existing overlap. This is presently a paper derivation, not a proved additional inverse.
 
+The frequency estimate also has a direct scalar proof. Set a=Re(w), b=Im(w), N=||u||², H=||sech·u||², D=||u_x||². The completed-domain factorization gives 2H≤D+N, while 0≤H≤N. With c=σ(σ−1), d=2σ−1, one has c≤2 and d²≤9. The two square inequalities
+
+2a≤(3/2)(a²+1),  b d η≤(3/2)(b²+η²)
+
+follow respectively from (a−2/3)²≥0 and (η−bd/3)²≥0 together with b²(9−d²)≥0. Multiplying by N and H, using b²H≤b²N and (2−c)H≥0, proves
+
+2aN+b d η H≤(3/2)[D+(a²+b²+2)N+(η²−c)H].
+
+The exact rotated form is aD+a(a²+b²)N+[a(η²−c)−bdη]H. Subtracting the preceding inequality proves the claimed coercivity without differentiating the time response. This is the current formalization target. The original completed Dirichlet graph, bounded tanh/sech multipliers and kernel-closure extension of the compact-test integration-by-parts identity are used; no new endpoint condition is introduced.
+
+For causal identification, existing `ThetaCuspHawkingBMJointKernelCoherence` and `ThetaCuspHawkingBMJointCausalRightHalfPlane` provide a concrete method: construct shifted Hardy preimages, identify different damping choices by actual Laplace injectivity, then choose arbitrarily small extra damping. Existing `ThetaCuspHawkingBMJointSourcePrincipalGreenIdentification` identifies the original causal transform with the literal Green correction on its coarse convergence overlap. Applying these methods to the new principal pencil remains to be proved.
+
 The energy calculation is a paper derivation for classical solutions with admitted boundary terms; it is not yet a Lean theorem for `principalTimeResponse`. Use the proved native/physical principal-response equality to establish the required time and radial regularity, finite propagation, zero initial data and energy identity for the actual response. Verify the physical normalization against the existing mass-conversion theorem. Prove the weighted forcing-square bound from the literal principal forcing, then transfer the estimate through the three bounded cutoff operators without adding their exponents.
 
 The complete residual also needs a response estimate or a refined Hardy/Laplace construction: replacing the principal source growth alone does not remove the extra unit shift in the currently stated causal Laplace theorem. Only after that transfer is proved may the smaller chamber be used to identify QNM profiles and traces.
