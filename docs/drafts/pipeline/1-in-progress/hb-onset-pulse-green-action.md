@@ -1,6 +1,6 @@
 # HB: original onset-pulse Green action
 
-Status: analytical conjecture/proof loop in progress. Complete physical cancellation and RH remain unproved.
+Status: full-angular and original onset-pulse circular Green transfers are [formalized](../3-formalized/hb-full-angular-circle-green.md). Complete causal pulse evaluation, physical cancellation and RH remain unproved.
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -10,7 +10,7 @@ First test: recover an explicit wave image by integrating its actual wave operat
 
 Second test: for `nu=2s+1`, the two angular inverse parameters are `nu(nu+1)` and `(nu+3)(nu+4)`. Test a three-step differential ladder against the literal forcing and unchanged physical operator. Parameter similarity alone does not identify a physical intertwiner.
 
-A direct Green mechanism to test in parallel: the circular mean of the constructed full angular response satisfies a forced Darboux equation. Its initial value is the full response and its forcing is the literal half-square mean. Derive a finite-radius variation-of-constants identity, then carry it into the original radial/onset integral. This could evaluate the pulse's response contribution without assigning any angular or incoming datum to zero. The finite Green-current identity now has a dependency-closed paper proof; Lean verification is in progress. Its use in the physical pairing remains open.
+A direct Green mechanism to test in parallel: the circular mean of the constructed full angular response satisfies a forced Darboux equation. Its initial value is the full response and its forcing is the literal half-square mean. Derive a finite-radius variation-of-constants identity, then carry it into the original radial/onset integral. This could evaluate the pulse's response contribution without assigning any angular or incoming datum to zero. The finite Green-current identity has a dependency-closed paper proof and a closed Lean proof. Its use in the physical pairing remains open.
 
 ## Finite angular transfer
 
@@ -52,4 +52,18 @@ Linearity of the actual circular average gives `pulseMean = C_H h + C_Q m`. Its 
 
 `W_p(pulseMean)(D) = C_H alpha integral(0,D) sinh d p(d) m(d) dd + C_Q sinh D (p(D)m′(D)-p′(D)m(D))`.
 
-The response channel is therefore replaced by a literal-source integral in this pulse current. The half-square current remains explicit, with both original coefficients and the original onset derivative. This identity is paper-proved and included in the current Lean scratch check. It is a circular transfer identity, not yet an evaluation of the complete causal convolution or its SS/SV/VV pairing.
+The response channel is therefore replaced by a literal-source integral in this pulse current. The half-square current remains explicit, with both original coefficients and the original onset derivative. This identity is paper-proved and kernel-checked in `onsetGreenCurrent_transfer`. It is a circular transfer identity, not yet an evaluation of the complete causal convolution or its SS/SV/VV pairing.
+
+## Full causal-kernel reconstruction test
+
+Current attack: recover the actual full angular mean before insertion into the direct and reflected causal kernels. For the existing physical Legendre kernel `P(z)` the coefficient `alpha` is nonreal on both Xi branches. Its actual ODE gives the finite imaginary-flux identity
+
+`(Z²-1) Im(conj(P(Z)) P′(Z)) = Im(alpha) integral_1^Z |P(z)|² dz`.
+
+With `P(1)=1`, continuity and nonnegativity make the integral strictly positive for `Z>1`. Therefore `P(Z)` cannot vanish for `Z>=1`. This would justify dividing by the original radial Legendre function at every real circle radius, without a new spectral assumption.
+
+The resulting reconstruction to prove is
+
+`h(D)=p(D)[H(z)+alpha integral_0^D (integral_0^u sinh a p(a)m(a) da)/(sinh u p(u)²) du]`.
+
+The inner source integral is literal; the outer apparent singularity at zero must be admitted. The existing smooth quotient `h/p` and its actual derivative identify the displayed integrand away from zero, allowing integrability to be proved without defining the source integral from an unknown remainder. Then insert `D=arcosh(invariant)` separately into the original direct and image terms. The unchanged onset coefficients give the full pulse kernel from the retained datum `H(z)` and source-only integrals. These stronger identities are currently paper targets, not established Lean claims.

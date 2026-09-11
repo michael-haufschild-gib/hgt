@@ -730,3 +730,43 @@ This closes Theorem B for every positive diagonal isogeny of every finite split 
 simultaneous reversible and expanding sectors.  It still does not construct quotient sheaves,
 function fields, reduced coactions, or finite-action quotient presentations for arbitrary
 connected commutative algebraic groups; those remain the card's Stage-3 gate.
+
+## Lean progress — quotient positions for an arbitrary split-torus isogeny (2026-09-11)
+
+The corpus already proved Theorem A for **every** nonsingular integer character matrix
+(`torusEndo_stableRangeCore_eq_torusInvariantMonomialField`): the stable tail is the field generated
+by the logarithmic currents together with the monomials annihilated by the erased sector.  What was
+computed only for *diagonal* matrices was which exponent vectors those are.  The general survivor
+side is now proved.
+
+`GaloisForLFunctions.HTGeometry.ToricGeneralIsogenyQuotientPositions`:
+
+```text
+prefixMatrix_const                              constant protocols accumulate matrix powers
+mem_scaleAnnihilator_ker_torusMonomialHom       a pullback character Mᵀb kills ker(torusMonomialHom M)
+mem_scaleAnnihilator_erasedSector_const         characters in ⋂ₙ (Aⁿ)ᵀℤʳ kill the whole erased sector
+laurentMonomial_mem_stableRangeCore_of_eventual_image
+```
+
+For a constant protocol the prefix matrices are exactly the matrix powers, so the erased sector is
+the increasing union of the deck kernels `ker(torusMonomialHom C (Aⁿ))`.  A character pulled back
+along `Aⁿ` is automatically trivial on that kernel: regrouping the double product
+`∏_k u_k^{∑_i b_i (Aⁿ)_{ik}}` by rows turns it into `∏_i ((Aⁿ·u)_i)^{b_i}`, which is one on the
+kernel.  Hence every character in the **eventual image lattice** `⋂ₙ (Aⁿ)ᵀℤʳ` annihilates the erased
+sector, and its Laurent monomial survives the infinite coarse-graining.
+
+The eventual image lattice is exactly the character lattice of the maximal quotient torus on which
+the isogeny is reversible, so this is the **position half of Theorem B for an arbitrary, not
+necessarily diagonal, split-torus isogeny** — previously available only for diagonal degree vectors
+(`torusInvariantMonomialField_erasedSector_const_diagonal_eq_positionVelocity`).
+
+Direct check, targeted leaf build and axiom audit pass; all four declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+Remaining on the split-torus side: the converse inclusion — that *only* characters in the eventual
+image lattice annihilate the erased sector — which for a general matrix reduces to the diagonal case
+by Smith normal form over `ℤ` together with the deck-order count `card_ker_torusMonomialHom`.  The
+card's Stage-3 gate (items 1--5: quotient sheaves, positive-dimensional invariant generation, point
+separation, the Maurer--Cartan torsor on the infinite-jet function field, and the finite-action
+quotient presentation) is untouched by this entry and still stands.

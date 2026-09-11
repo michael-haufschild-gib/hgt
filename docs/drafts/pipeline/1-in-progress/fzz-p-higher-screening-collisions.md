@@ -17,7 +17,8 @@ Fixed theta/FZZ source → complete mixed Ward law in an independently fixed pha
 - [x] Exact cubic inverse-power angular average and local remainder.
 - [x] Higher original cutoff counterterms at both punctures, with complete leaf and axiom audits.
 - [x] Original logarithmic angular recurrence, both marked remainders and radial cutoff limits.
-- [ ] Original marked plane cutoff and full source normalization at the receiver level.
+- [x] Original marked plane cutoff with both distinct local corrections and independent limits.
+- [ ] Higher parameter continuation, physical derivative identification and full source normalization.
 - [ ] Dependency-closed paper proofs and data-only Lean statements, targeted build and complete axiom audit.
 
 ## Approach
@@ -28,7 +29,7 @@ For `Q(r,theta)=1-2r*cos(theta)+r^2`, let `A_m(r)` be the original normalized an
 
 Two applications give `A_2=(1+r^2)/(1-r^2)^3` and `A_3=(1+4r^2+r^4)/(1-r^2)^5`. The latter gives the exact local expansion derived below, hence two power divergences and a logarithmic divergence at exponent `-6`. The original angular equality and remainder are now transported to the planar cutoff integral.
 
-The other marked puncture also needs new terms. The predicted first angular Taylor coefficients for regular exponent `a` are `1,a^2/4,a^2*(a-2)^2/64`; their derivatives at `a=-6` are `0,-3,-21`. Prove these as original source coefficients; do not extrapolate the first-strip absence of a second-collision marked correction.
+The other marked puncture has new terms. The original logarithmic angular coefficients at `a=-6` are now proved to be `0,-3,-21`. Their proposed general-exponent source is `1,a^2/4,a^2*(a-2)^2/64`; that whole parameter family remains to be derived and admitted. The first-strip absence of a second-collision marked correction does not extend to this depth.
 
 ## Evidence and constraints
 
@@ -68,7 +69,7 @@ For `0<epsilon<=1/2`, the fundamental theorem gives
 `int_epsilon^(1/2) r^(-5)*A_3(r) dr + P(epsilon)
  = int_epsilon^(1/2) r*H(r) dr + P(1/2)`.
 
-Dominated convergence removes the lower endpoint in the remainder integral. Multiplying by the polar factor gives the counterterm `-(pi/2)*epsilon^(-4)-9*pi*epsilon^(-2)+72*pi*log epsilon`. The planar-annulus transport is now proved below. The two higher marked planar transports remain separate obligations; their original angular limits are now closed below.
+Dominated convergence removes the lower endpoint in the remainder integral. Multiplying by the polar factor gives the counterterm `-(pi/2)*epsilon^(-4)-9*pi*epsilon^(-2)+72*pi*log epsilon`. The planar-annulus transport is now proved below. Both higher marked angular limits and their original planar transports are now closed below.
 
 ## Closed original plane cutoff
 
@@ -137,7 +138,7 @@ The actual regular-factor logarithmic mark is `C_3/2`; its expansion starts `-3r
 `-epsilon^(-4)*(log epsilon/4+1/16)
  -9*epsilon^(-2)*(log epsilon/2+1/4)+18*(log epsilon)^2`
 
-before the factor `2*pi`. Original logarithmic angular admission, justified differentiation, remainder control and both corrected radial cutoff limits are now closed below. Planar transport, physical parameter differentiation and the chosen singular-parameter continuation remain open.
+before the factor `2*pi`. Original logarithmic angular admission, justified differentiation, remainder control and both corrected radial cutoff limits are now closed below. Planar transport is now closed below. Physical parameter differentiation and the chosen singular-parameter continuation remain open.
 
 The `Poisson weighted logarithm circle average` deep/all-view search returned partial generation 823349 with semantic deadline/backend failure and no ingredient set. All 20 candidate and 20 method names were inspected; current harmonic logarithm and Poisson-kernel source statements were read. This supplies a concrete next attack on the missing higher marked source, with no assumed cancellation.
 
@@ -170,7 +171,7 @@ The current `Real.abs_log_sub_add_sum_range_le` theorem gives `|E|<=r^6/(1-r^2)`
 
 `r*(1+4r^2+r^4)/(1-r^2)^6+|r*B/(1-r^2)^5|`,
 
-which is continuous on `[0,1/2]`. This admits the original radial remainder before removing the cutoff. Its singular primitive is `3/(2r^2)-21log r`, giving the required correction `3*pi/r^2-42*pi*log r` after the polar factor. The singular-factor mark at zero instead multiplies the already proved unmarked angular source by `log r`; its residual source is `r*log(r)*H(r)`, continuous through zero by the current `Real.continuous_mul_log` theorem. Its primitive is the power-log and squared-log expression stated above. Finite-interval FTC and dominated convergence now prove both corrected radial cutoff limits. Planar transport and full physical normalization remain separate.
+which is continuous on `[0,1/2]`. This admits the original radial remainder before removing the cutoff. Its singular primitive is `3/(2r^2)-21log r`, giving the required correction `3*pi/r^2-42*pi*log r` after the polar factor. The singular-factor mark at zero instead multiplies the already proved unmarked angular source by `log r`; its residual source is `r*log(r)*H(r)`, continuous through zero by the current `Real.continuous_mul_log` theorem. Its primitive is the power-log and squared-log expression stated above. Finite-interval FTC and dominated convergence now prove both corrected radial cutoff limits. The original planar transport is now closed below; full physical normalization remains open.
 
 ### Current corpus and distant methods
 
@@ -184,13 +185,13 @@ Broad single-word arXiv searches for balayage, monodromy and renormalization, th
 - [Dunkl–Riesz endpoint estimates](https://arxiv.org/html/2609.08492v1), 8 September 2026: Section 1.3 derives the obstacle mechanism from a positive symmetric jump-kernel representation. That kernel property is a concrete additional obligation, not a consequence of the present FZZ cutoff theorem.
 - [Orlicz potential theory](https://arxiv.org/html/2606.29912v1), 29 June 2026: Section 1.3 states strict monotonicity, coercivity and growth assumptions for its scale-free potential theory. These are not established for the original continued source. No computations or numerical experiments were run from any paper.
 
-### Next original marked plane assembly
+### Original marked plane assembly mechanism
 
 The two radial limits have different source meanings. Polar transport of `K(-6,-6)*log|z|` near zero gives `r^(-5)*log(r)*A_3(r)`. Reflection `z=1-w` near one gives `r^(-5)*M_3(r)`. Thus the eventual whole-plane marked value must retain the two different local finite values and the actual exterior integral; reflection does not justify replacing them by twice one local value.
 
-A direct exterior admission avoids assuming a continued marked formula. For `t>0`, the current logarithm inequality gives `|log t|<=t+t^(-1)`. Therefore the absolute original marked kernel is bounded by `K(-5,-6)+K(-7,-6)`. Both shifted kernels satisfy the already proved exterior total-power admission. Compact annuli admit the original logarithmic kernel separately; the original polar indicator and compact Fubini can then identify each local integral. These are the remaining concrete steps before a two-cutoff marked plane theorem, with no prescribed Gamma value.
+A direct exterior admission avoids assuming a continued marked formula. For `t>0`, the current logarithm inequality gives `|log t|<=t+t^(-1)`. Therefore the absolute original marked kernel is bounded by `K(-5,-6)+K(-7,-6)`. Both shifted kernels satisfy the already proved exterior total-power admission. Compact annuli admit the original logarithmic kernel separately; the original polar indicator and compact Fubini can then identify each local integral. These steps now give the two-cutoff marked plane theorem below, with no prescribed Gamma value.
 
-The later deep/all-view `method original logarithmic plane exterior power decay integrable cutoff` search returned partial generation 823350 with incomplete source/semantic indexes and source refresh, without runtime errors. All 20 candidate and 20 method names were inspected; its cutoff-operator ingredient proposal did not identify the original marked exterior. The broadened hybrid `log norm exponent moments` query had the same partial generation and no runtime errors; all 20 candidate and 20 method names were inspected. The direct two-neighbor-power bound above uses the admitted original source and avoids substituting an unrelated moment family. That candidate is retained in `/tmp/fzzp_cubic_marked_exterior_candidate.lean` and is now included in the full original marked-plane scratch `/tmp/fzzp_cubic_marked_plane.lean`, currently being checked. The scratch includes compact polar admission, both angular transports, the distinct local limits, exterior admission, finite-cutoff integrability and independent-cutoff assembly; none of these new planar claims is yet promoted.
+The later deep/all-view `method original logarithmic plane exterior power decay integrable cutoff` search returned partial generation 823350 with incomplete source/semantic indexes and source refresh, without runtime errors. All 20 candidate and 20 method names were inspected; its cutoff-operator ingredient proposal did not identify the original marked exterior. The broadened hybrid `log norm exponent moments` query had the same partial generation and no runtime errors; all 20 candidate and 20 method names were inspected. The direct two-neighbor-power bound above uses the admitted original source and avoids substituting an unrelated moment family. That candidate is retained in `/tmp/fzzp_cubic_marked_exterior_candidate.lean` and is now included in the full original marked-plane scratch `/tmp/fzzp_cubic_marked_plane.lean`, now passing cleanly. The scratch includes compact polar admission, both angular transports, the distinct local limits, exterior admission, finite-cutoff integrability and independent-cutoff assembly; the completed planar results are recorded below.
 
 ## Next pole identification conjecture
 
@@ -213,6 +214,31 @@ The Gamma quotient is one through degree two: the logarithm of `R` is odd, and i
 
 `F(0,0)=36`, `F_u=F_w=-42`, `F_uu=F_ww=73/2`, `F_uw=-107/2`.
 
-Subtract the two complete pole functions `pi*F(0,w)/u` and `pi*F(u,0)/w` before evaluating. The predicted analytic remainder has value `-84*pi` and `u` derivative `-141*pi/4`; the latter becomes `-141*pi/8` for the original `alpha` derivative. The pole coefficient is `F(0,w)=(3-w)^2*(4-w)^2/4`, exactly the original regular angular coefficient `beta^2*(beta-2)^2/64`. Its `alpha` derivative at `alpha=-6` is `-21`, matching the logarithmic correction in the marked source.
+Subtract the two complete pole functions `pi*F(0,w)/u` and `pi*F(u,0)/w` before evaluating. The predicted analytic remainder has value `-84*pi` and `u` derivative `-141*pi/4`; the latter becomes `-141*pi/8` for the original `alpha` derivative. The pole coefficient is `F(0,w)=(3-w)^2*(4-w)^2/4`, equal to the proposed general regular angular coefficient `beta^2*(beta-2)^2/64`, whose value at `beta=-6` is the proved coefficient `36`. Its `alpha` derivative at `alpha=-6` is `-21`, matching the logarithmic correction in the marked source.
 
 **Missing bridge:** prove a higher parameter family directly from the original angular integrals, subtract its three even Taylor coefficients at each puncture, and establish the required parameter analyticity and differentiation. A uniform sixth-order angular remainder would give radial admission for `alpha,beta>-8`, with the existing exterior condition `alpha+beta<-2`. Then continue the already identified first-strip source into this larger connected domain and identify the two original finite parts with the corresponding pole-subtracted jets. The displayed Gamma algebra alone does not establish this bridge or the fractional number-of-screenings continuation. No conjectural source value is added to the universal ledger.
+
+
+## Closed original marked plane cutoff
+
+`formal/GaloisForLFunctions/RHTower/FZZCigarCubicMarkedScreeningCutoff.lean` retains the actual `fzzScreeningPlaneMarkedCutoff (-6) (-6) T U`. Compact polar rectangles admit the two marked angular integrals before Fubini. Near zero the original `log|z|` insertion gives the singular radial mark `log(r)*A_3(r)`; reflection at one gives the distinct regular angular mark `M_3(r)`. The fixed exterior is admitted directly by `|log t|<=t+t^(-1)` and the two neighboring original power kernels `K(-5,-6)` and `K(-7,-6)`.
+
+The two compact annuli and admitted exterior cover every original finite cutoff domain. For small independent radii their disjoint union equals that domain, so both local limits assemble without changing either subtraction:
+
+`marked_cutoff(T,U)+2*pi*P_singular(exp(-T))+2*pi*P_regular(exp(-U))
+ -> L_singular+L_regular+int_exterior log|z|*K(-6,-6)`.
+
+This defines `fzzScreeningCubicMarkedPlaneFinitePart` by the original integrals. It does not impose the conjectured Gamma-jet value. Six public statements passed clean scratch `/tmp/fzzp_cubic_marked_plane.lean`; the proof body was promoted unchanged and the umbrella is wired. The targeted leaf build passed (145 seconds for the new leaf), and global formal lint passes. All six axiom audits passed with only `propext`, `Classical.choice`, `Quot.sound`.
+
+Public statements: `fzzScreeningCubicMarkedExterior_integrable`, `fzzScreeningCubicMarkedAnnulus_integrable`, `fzzScreeningCubicZeroMark_cutoff_limit`, `fzzScreeningCubicOneMark_cutoff_limit`, `fzzScreeningCubicMarkedPlaneCutoff_integrable`, `fzzScreeningCubicMarkedPlane_independent_cutoff_limit`.
+
+The remaining mathematical chain is now higher source-parameter continuation and derivative identification, full screening-multiplicity/normalization continuation, an independently fixed physical phase frame, and the complete mixed replica–momentum Ward law. RH remains unproved.
+
+
+### Source-remainder mechanism to test next
+
+A direct pointwise subtraction may supply the missing higher analytic family without first assuming analyticity of a radially subtracted angular average. On `|z|<=1/2`, write `q=|z|^2-2*Re(z)`, so `|1-z|^beta=(1+q)^(beta/2)`, `-3/4<=q<=5/4`, and `|q|<=(5/2)|z|`. Subtract the degree-five Taylor polynomial in `q` at zero. Every intermediate base `1+t*q` stays at least `1/4`, so compact parameter bounds on the sixth derivative should give a uniform pointwise remainder `O(|z|^6)`. The current vector-valued `taylor_mean_remainder_bound` (Mathlib `Analysis/Calculus/Taylor.lean:390`) supplies the norm estimate; negative `q` can be handled by reflection about the expansion point.
+
+Multiplication by `|z|^alpha` would then be absolutely integrable for `alpha>-8` in the original plane. Subtracting the entire Taylor polynomial retains the odd angular terms before integration; their circle averages vanish, while the low even terms give the three collision poles. The polynomial also contains even powers six through ten; these have admitted integrals and must be added back explicitly. They cannot be discarded. Repeat at the other puncture and retain the existing exterior.
+
+For the parameter-analytic step, use `exp((beta/2)*log(1+q))` with a complex parameter on compact neighborhoods. Its sixth base derivative has the same positive-base bound; proving an analytic remainder under the original integral would allow the existing connected identity-theorem method after clearing the three collision poles in each parameter. This is a concrete next proof attempt, not a proved higher continuation or physical normalization.

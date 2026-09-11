@@ -3476,3 +3476,27 @@ These partial searches are not an exhaustive absence certificate.
 No Lean process, build, axiom re-audit, frontier-map edit or universal-law
 entry was needed for this transfer audit. The hard arithmetic bound remains
 open; no route is retired.
+
+## Compensated logarithmic renewal: compulsory linear forcing
+
+The [compensated renewal attack](edq-compensated-log-renewal.md) tests whether
+the harmonic correction in prime feedback can be discarded. It cannot:
+the [formal source theorem](../3-formalized/edq-log-prime-forcing.md) proves
+`c*N<=||B_N||^2<=C*N` eventually for the literal coefficients
+`Lambda(q)*H_floor(N/q)`. The exact original-carrier identity is
+`J_N=-A_N-B_N`, retaining the compensator at every earlier cutoff.
+Its positive cell mean follows by PNT and dominated signed hyperbola
+interchange; the lower bound uses the existing physical-window inequality.
+
+The positive survivor is the complete forcing size law and exact renewal,
+not an estimate for the original source G_N. The existing stretched source
+bound also gives `||A_N+B_N||/||B_N||->0` by finite Abel summation on paper.
+This identifies leading cancellation but leaves the RH-scale residual
+uncontrolled. The next target remains the complete signed logarithmic
+gcd-group budget, with A_N and B_N retained jointly. No route is retired.
+
+Five additional deep/method searches were partial at generation 823349;
+the exact search and source-freshness limitations are recorded on the attack
+card. The broad recent-arXiv majorization candidate requires positive
+weights and independent positions absent from the actual Mobius Gram.
+The frozen RunPod diagnostic remains unrun after a third SSH refusal.

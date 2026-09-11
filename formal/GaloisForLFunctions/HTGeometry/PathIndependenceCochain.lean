@@ -642,15 +642,9 @@ theorem pathCoboundaries_le_pathCocycles (n j : ℕ) :
     exact pathCoboundary_pathCoboundary n f
 
 /-- Reduced cohomology of the path complex in occupation degree `j`. -/
-def pathCohomology (F : Type*) [CommRing F] (n j : ℕ) : Type _ :=
+abbrev pathCohomology (F : Type*) [CommRing F] (n j : ℕ) : Type _ :=
   (pathCocycles F n j) ⧸
     (Submodule.comap (pathCocycles F n j).subtype (pathCoboundaries F n j))
-
-instance (F : Type*) [CommRing F] (n j : ℕ) : AddCommGroup (pathCohomology F n j) :=
-  Submodule.Quotient.addCommGroup _
-
-instance (F : Type*) [CommRing F] (n j : ℕ) : Module F (pathCohomology F n j) :=
-  Submodule.Quotient.module _
 
 /-- Reduced cocycles of the tail complex in occupation degree `j`. -/
 def tailCocycles (F : Type*) [CommRing F] (n j : ℕ) : Submodule F (Finset ℕ → F) :=
@@ -672,15 +666,9 @@ theorem tailCoboundaries_le_tailCocycles (n j : ℕ) :
     exact tailCoboundary_tailCoboundary n f
 
 /-- Reduced cohomology of the tail complex in occupation degree `j`. -/
-def tailCohomology (F : Type*) [CommRing F] (n j : ℕ) : Type _ :=
+abbrev tailCohomology (F : Type*) [CommRing F] (n j : ℕ) : Type _ :=
   (tailCocycles F n j) ⧸
     (Submodule.comap (tailCocycles F n j).subtype (tailCoboundaries F n j))
-
-instance (F : Type*) [CommRing F] (n j : ℕ) : AddCommGroup (tailCohomology F n j) :=
-  Submodule.Quotient.addCommGroup _
-
-instance (F : Type*) [CommRing F] (n j : ℕ) : Module F (tailCohomology F n j) :=
-  Submodule.Quotient.module _
 
 /-! ### The guarded maps are chain maps up to sign -/
 
@@ -787,6 +775,274 @@ theorem pathCoboundary_pathConeFace_add_eq {f : Finset ℕ → F} {n j : ℕ} (h
   · exact pathCoboundary_pathConeFace_add f hn hσ
   · rw [Pi.add_apply, pathCoboundary_of_not_face hσ, pathConeFace_of_not_face hσ, add_zero,
       Pi.sub_apply, pathInclFace_of_not_face hσ, hf σ (Or.inr hσ), sub_zero]
+
+/-! ### The graded maps as linear maps -/
+
+/-- The guarded tail contraction as an `F`-linear map. -/
+def pathTailMapFaceₗ (F : Type*) [CommRing F] (n : ℕ) :
+    (Finset ℕ → F) →ₗ[F] (Finset ℕ → F) where
+  toFun := pathTailMapFace F n
+  map_add' f g := by
+    funext τ
+    by_cases h : IsTailFace n τ
+    · rw [pathTailMapFace_of_face h, Pi.add_apply, pathTailMapFace_of_face h,
+        pathTailMapFace_of_face h, pathTailMap, pathTailMap, pathTailMap]
+      simp only [Pi.add_apply]
+      ring
+    · rw [pathTailMapFace_of_not_face h, Pi.add_apply, pathTailMapFace_of_not_face h,
+        pathTailMapFace_of_not_face h, add_zero]
+  map_smul' r f := by
+    funext τ
+    by_cases h : IsTailFace n τ
+    · rw [pathTailMapFace_of_face h, RingHom.id_apply, Pi.smul_apply,
+        pathTailMapFace_of_face h, pathTailMap, pathTailMap]
+      simp only [Pi.smul_apply, smul_eq_mul]
+      ring
+    · rw [pathTailMapFace_of_not_face h, RingHom.id_apply, Pi.smul_apply,
+        pathTailMapFace_of_not_face h, smul_zero]
+
+@[simp]
+theorem pathTailMapFaceₗ_apply (n : ℕ) (f : Finset ℕ → F) :
+    pathTailMapFaceₗ F n f = pathTailMapFace F n f := rfl
+
+/-- The guarded tail inclusion as an `F`-linear map. -/
+def pathInclFaceₗ (F : Type*) [CommRing F] (n : ℕ) :
+    (Finset ℕ → F) →ₗ[F] (Finset ℕ → F) where
+  toFun := pathInclFace F n
+  map_add' g h := by
+    funext σ
+    by_cases hface : IsPathFace n σ
+    · rw [pathInclFace_of_face hface, Pi.add_apply, pathInclFace_of_face hface,
+        pathInclFace_of_face hface]
+      by_cases h1 : 1 ∈ σ
+      · rw [pathIncl_of_mem h1, pathIncl_of_mem h1, pathIncl_of_mem h1, Pi.add_apply]
+      · rw [pathIncl_of_notMem h1, pathIncl_of_notMem h1, pathIncl_of_notMem h1, add_zero]
+    · rw [pathInclFace_of_not_face hface, Pi.add_apply, pathInclFace_of_not_face hface,
+        pathInclFace_of_not_face hface, add_zero]
+  map_smul' r g := by
+    funext σ
+    by_cases hface : IsPathFace n σ
+    · rw [pathInclFace_of_face hface, RingHom.id_apply, Pi.smul_apply,
+        pathInclFace_of_face hface]
+      by_cases h1 : 1 ∈ σ
+      · rw [pathIncl_of_mem h1, pathIncl_of_mem h1, Pi.smul_apply]
+      · rw [pathIncl_of_notMem h1, pathIncl_of_notMem h1, smul_zero]
+    · rw [pathInclFace_of_not_face hface, RingHom.id_apply, Pi.smul_apply,
+        pathInclFace_of_not_face hface, smul_zero]
+
+@[simp]
+theorem pathInclFaceₗ_apply (n : ℕ) (g : Finset ℕ → F) :
+    pathInclFaceₗ F n g = pathInclFace F n g := rfl
+
+/-- The guarded path cone as an `F`-linear map. -/
+def pathConeFaceₗ (F : Type*) [CommRing F] (n : ℕ) :
+    (Finset ℕ → F) →ₗ[F] (Finset ℕ → F) where
+  toFun := pathConeFace F n
+  map_add' f g := by
+    funext σ
+    by_cases hface : IsPathFace n σ
+    · rw [pathConeFace_of_face hface, Pi.add_apply, pathConeFace_of_face hface,
+        pathConeFace_of_face hface]
+      by_cases h : 0 ∈ σ ∨ 1 ∈ σ
+      · rw [pathCone, if_pos h, pathCone, if_pos h, pathCone, if_pos h, add_zero]
+      · push Not at h
+        rw [pathCone_of_notMem h.1 h.2, pathCone_of_notMem h.1 h.2, pathCone_of_notMem h.1 h.2,
+          Pi.add_apply]
+    · rw [pathConeFace_of_not_face hface, Pi.add_apply, pathConeFace_of_not_face hface,
+        pathConeFace_of_not_face hface, add_zero]
+  map_smul' r f := by
+    funext σ
+    by_cases hface : IsPathFace n σ
+    · rw [pathConeFace_of_face hface, RingHom.id_apply, Pi.smul_apply,
+        pathConeFace_of_face hface]
+      by_cases h : 0 ∈ σ ∨ 1 ∈ σ
+      · rw [pathCone, if_pos h, pathCone, if_pos h, smul_zero]
+      · push Not at h
+        rw [pathCone_of_notMem h.1 h.2, pathCone_of_notMem h.1 h.2, Pi.smul_apply]
+    · rw [pathConeFace_of_not_face hface, RingHom.id_apply, Pi.smul_apply,
+        pathConeFace_of_not_face hface, smul_zero]
+
+@[simp]
+theorem pathConeFaceₗ_apply (n : ℕ) (f : Finset ℕ → F) :
+    pathConeFaceₗ F n f = pathConeFace F n f := rfl
+
+/-! ### The reduction on cocycles -/
+
+/-- **Every path cocycle differs from `J q f` by the explicit coboundary `δ K f`.** -/
+theorem pathCocycles_sub_pathInclFace_pathTailMapFace {f : Finset ℕ → F} {n j : ℕ} (hn : 0 < n)
+    (hf : f ∈ pathCocycles F n j) :
+    f - pathInclFace F n (pathTailMapFace F n f)
+      = pathCoboundary F n (pathConeFace F n f) := by
+  have hδ : pathCoboundary F n f = 0 := by
+    have := hf.2
+    rw [SetLike.mem_coe, LinearMap.mem_ker] at this
+    exact this
+  have hzero : pathConeFace F n (pathCoboundary F n f) = 0 := by
+    rw [hδ]
+    exact (pathConeFaceₗ F n).map_zero
+  rw [← pathCoboundary_pathConeFace_add_eq hn hf.1, hzero, add_zero]
+
+/-! ### `q` and `J` transport cocycles and coboundaries -/
+
+theorem pathTailMapFace_zero (n : ℕ) : pathTailMapFace F n (0 : Finset ℕ → F) = 0 :=
+  (pathTailMapFaceₗ F n).map_zero
+
+theorem pathInclFace_zero (n : ℕ) : pathInclFace F n (0 : Finset ℕ → F) = 0 :=
+  (pathInclFaceₗ F n).map_zero
+
+theorem pathConeFace_zero (n : ℕ) : pathConeFace F n (0 : Finset ℕ → F) = 0 :=
+  (pathConeFaceₗ F n).map_zero
+
+theorem tailCoboundary_zero (n : ℕ) : tailCoboundary F n (0 : Finset ℕ → F) = 0 :=
+  (tailCoboundaryₗ F n).map_zero
+
+theorem pathCoboundary_eq_zero_of_mem_pathCocycles {f : Finset ℕ → F} {n j : ℕ}
+    (hf : f ∈ pathCocycles F n j) : pathCoboundary F n f = 0 := by
+  have h := hf.2
+  rw [SetLike.mem_coe, LinearMap.mem_ker] at h
+  exact h
+
+theorem tailCoboundary_eq_zero_of_mem_tailCocycles {g : Finset ℕ → F} {n j : ℕ}
+    (hg : g ∈ tailCocycles F n j) : tailCoboundary F n g = 0 := by
+  have h := hg.2
+  rw [SetLike.mem_coe, LinearMap.mem_ker] at h
+  exact h
+
+theorem pathTailMapFace_mem_tailCocycles {f : Finset ℕ → F} {n j : ℕ} (hn : 1 < n)
+    (hf : f ∈ pathCocycles F n (j + 1)) :
+    pathTailMapFace F n f ∈ tailCocycles F n j := by
+  refine ⟨pathTailMapFace_mem_tailSupported hf.1, ?_⟩
+  rw [SetLike.mem_coe, LinearMap.mem_ker]
+  show tailCoboundary F n (pathTailMapFace F n f) = 0
+  have h := pathTailMapFace_pathCoboundary_eq f hn
+  rw [pathCoboundary_eq_zero_of_mem_pathCocycles hf, pathTailMapFace_zero] at h
+  exact neg_eq_zero.mp h.symm
+
+theorem pathInclFace_mem_pathCocycles {g : Finset ℕ → F} {n j : ℕ}
+    (hg : g ∈ tailCocycles F n j) :
+    pathInclFace F n g ∈ pathCocycles F n (j + 1) := by
+  refine ⟨pathInclFace_mem_pathSupported hg.1, ?_⟩
+  rw [SetLike.mem_coe, LinearMap.mem_ker]
+  show pathCoboundary F n (pathInclFace F n g) = 0
+  have h := pathCoboundary_pathInclFace_eq g n
+  rw [tailCoboundary_eq_zero_of_mem_tailCocycles hg, pathInclFace_zero, neg_zero] at h
+  exact h
+
+theorem pathTailMapFace_mem_tailCoboundaries {f : Finset ℕ → F} {n j : ℕ} (hn : 1 < n)
+    (hf : f ∈ pathCoboundaries F n (j + 1)) :
+    pathTailMapFace F n f ∈ tailCoboundaries F n j := by
+  obtain ⟨h, hh, rfl⟩ := hf
+  have hq := pathTailMapFace_pathCoboundary_eq h hn
+  have hval : pathTailMapFace F n ((pathCoboundaryₗ F n) h)
+      = - tailCoboundary F n (pathTailMapFace F n h) := hq
+  match j with
+  | 0 =>
+    have hzero : pathTailMapFace F n h = 0 := by
+      funext τ
+      show pathTailMapFace F n h τ = 0
+      by_cases hτ : IsTailFace n τ
+      · rw [pathTailMapFace_of_face hτ, pathTailMap,
+          hh _ (Or.inl (by
+            rw [Finset.card_insert_of_notMem hτ.2.notMem_one]
+            omega)),
+          hh _ (Or.inl (by
+            rw [Finset.card_insert_of_notMem hτ.2.notMem_zero]
+            omega)), sub_zero]
+      · rw [pathTailMapFace_of_not_face hτ]
+    rw [hval, hzero, tailCoboundary_zero, neg_zero]
+    exact Submodule.zero_mem _
+  | (i + 1) =>
+    rw [hval]
+    refine Submodule.neg_mem _ ⟨pathTailMapFace F n h, ?_, rfl⟩
+    exact pathTailMapFace_mem_tailSupported hh
+
+theorem pathInclFace_mem_pathCoboundaries {g : Finset ℕ → F} {n j : ℕ}
+    (hg : g ∈ tailCoboundaries F n j) :
+    pathInclFace F n g ∈ pathCoboundaries F n (j + 1) := by
+  match j with
+  | 0 =>
+    have hgb : g ∈ (⊥ : Submodule F (Finset ℕ → F)) := hg
+    have hg0 : g = 0 := (Submodule.mem_bot F).mp hgb
+    rw [hg0, pathInclFace_zero]
+    exact Submodule.zero_mem _
+  | (i + 1) =>
+    obtain ⟨h, hh, rfl⟩ := hg
+    have hval : pathInclFace F n ((tailCoboundaryₗ F n) h)
+        = - pathCoboundary F n (pathInclFace F n h) := by
+      have hj := pathCoboundary_pathInclFace_eq h n
+      show pathInclFace F n (tailCoboundary F n h)
+        = - pathCoboundary F n (pathInclFace F n h)
+      rw [hj]
+      ring
+    rw [hval]
+    refine Submodule.neg_mem _ ⟨pathInclFace F n h, ?_, rfl⟩
+    exact pathInclFace_mem_pathSupported hh
+
+/-! ### The cohomology isomorphism with a shift of one in occupation degree -/
+
+/-- The tail contraction restricted to cocycles. -/
+def pathTailMapCocycles (F : Type*) [CommRing F] (n j : ℕ) (hn : 1 < n) :
+    pathCocycles F n (j + 1) →ₗ[F] tailCocycles F n j :=
+  LinearMap.restrict (pathTailMapFaceₗ F n)
+    (fun _ hx => pathTailMapFace_mem_tailCocycles hn hx)
+
+/-- The tail inclusion restricted to cocycles. -/
+def pathInclCocycles (F : Type*) [CommRing F] (n j : ℕ) :
+    tailCocycles F n j →ₗ[F] pathCocycles F n (j + 1) :=
+  LinearMap.restrict (pathInclFaceₗ F n)
+    (fun _ hx => pathInclFace_mem_pathCocycles hx)
+
+/-- The induced map on reduced cohomology, lowering the occupation degree by one. -/
+def pathTailMapCohomology (F : Type*) [CommRing F] (n j : ℕ) (hn : 1 < n) :
+    pathCohomology F n (j + 1) →ₗ[F] tailCohomology F n j :=
+  Submodule.mapQ _ _ (pathTailMapCocycles F n j hn) (by
+    intro x hx
+    have hxv : (x : Finset ℕ → F) ∈ pathCoboundaries F n (j + 1) := hx
+    show pathTailMapFace F n (x : Finset ℕ → F) ∈ tailCoboundaries F n j
+    exact pathTailMapFace_mem_tailCoboundaries hn hxv)
+
+/-- The induced map on reduced cohomology, raising the occupation degree by one. -/
+def pathInclCohomology (F : Type*) [CommRing F] (n j : ℕ) :
+    tailCohomology F n j →ₗ[F] pathCohomology F n (j + 1) :=
+  Submodule.mapQ _ _ (pathInclCocycles F n j) (by
+    intro x hx
+    have hxv : (x : Finset ℕ → F) ∈ tailCoboundaries F n j := hx
+    show pathInclFace F n (x : Finset ℕ → F) ∈ pathCoboundaries F n (j + 1)
+    exact pathInclFace_mem_pathCoboundaries hxv)
+
+theorem pathTailMapCohomology_pathInclCohomology (n j : ℕ) (hn : 1 < n)
+    (y : tailCohomology F n j) :
+    pathTailMapCohomology F n j hn (pathInclCohomology F n j y) = y := by
+  obtain ⟨g, rfl⟩ := Submodule.Quotient.mk_surjective _ y
+  rw [pathInclCohomology, Submodule.mapQ_apply, pathTailMapCohomology, Submodule.mapQ_apply]
+  refine congrArg _ (Subtype.ext ?_)
+  show pathTailMapFace F n (pathInclFace F n g.val) = g.val
+  exact pathTailMapFace_pathInclFace_eq hn g.property.1
+
+theorem pathInclCohomology_pathTailMapCohomology (n j : ℕ) (hn : 1 < n)
+    (x : pathCohomology F n (j + 1)) :
+    pathInclCohomology F n j (pathTailMapCohomology F n j hn x) = x := by
+  obtain ⟨f, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  rw [pathTailMapCohomology, Submodule.mapQ_apply, pathInclCohomology, Submodule.mapQ_apply,
+    Submodule.Quotient.eq]
+  show (pathInclFace F n (pathTailMapFace F n f.val) : Finset ℕ → F) - f.val
+    ∈ pathCoboundaries F n (j + 1)
+  have hkey := pathCocycles_sub_pathInclFace_pathTailMapFace (by omega : 0 < n) f.property
+  have hsub : (pathInclFace F n (pathTailMapFace F n f.val) : Finset ℕ → F) - f.val
+      = - pathCoboundary F n (pathConeFace F n f.val) := by
+    rw [← hkey]
+    ring
+  rw [hsub]
+  exact Submodule.neg_mem _
+    ⟨pathConeFace F n f.val, pathConeFace_mem_pathSupported f.property.1, rfl⟩
+
+/-- **The three-vertex reduction.** The tail contraction and the tail inclusion are inverse
+isomorphisms of reduced cohomology, with a shift of one in occupation degree. -/
+def pathCohomologyEquiv (F : Type*) [CommRing F] (n j : ℕ) (hn : 1 < n) :
+    pathCohomology F n (j + 1) ≃ₗ[F] tailCohomology F n j :=
+  LinearEquiv.ofLinear (pathTailMapCohomology F n j hn) (pathInclCohomology F n j)
+    (LinearMap.ext fun y => pathTailMapCohomology_pathInclCohomology n j hn y)
+    (LinearMap.ext fun x => pathInclCohomology_pathTailMapCohomology n j hn x)
 
 end
 end GaloisForLFunctions.HTGeometry

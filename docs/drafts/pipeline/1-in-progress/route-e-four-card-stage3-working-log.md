@@ -265,3 +265,119 @@ ratio-`e` blocks.
 So the top blocks must be handled by Heath--Brown's identity on the prime-supported polynomial
 (Menon §1.1), not by a factorisation receiver.  `Sieve/MenonHeathBrown*` is the relevant family.
 This is now the lane's only open core.
+
+### Accurate session tally (2026-09-11)
+
+**23 new leaf modules, 63 exported declarations audited, every one
+`[propext, Classical.choice, Quot.sound]`.**  Verified mechanically: every one of the 23 files
+exists, carries an `import` line in `GaloisForLFunctions/RHTower.lean`, and has a built `.olean`.
+No umbrella build was run.  No Lean process of this session was left running.
+
+```text
+MenonHarmonicRamareBlockSwapped            MenonHarmonicRamareLadderSwapped
+MenonHarmonicRamareLadderSwappedVolume     MenonHarmonicRamareLadderWeighted
+MenonHarmonicRamareLadderMass              MenonHarmonicBlockLevelSplit
+MenonHarmonicRamareLadderLevelSplit        MenonHarmonicBlockLevelSplitHM
+MenonHarmonicBlockLevelMoment              MenonHarmonicRamareLadderLevelMoment
+MenonHarmonicBlockLevelTrivial             MenonHarmonicRamareLadderLevelTrivial
+MenonHarmonicWindowThresholdSplit          MenonHarmonicWindowLadderAssembly
+MenonHarmonicWindowChebyshev               MenonFinalRangeWindowEstimate
+MenonFinalRangeWindowRough                 MenonHarmonicWindowPartitionMass
+MenonFinalRangeWindowPartition             MenonHarmonicRamareLadderMassFilter
+MenonHarmonicWindowPartitionMassFilter     MenonFinalRangeWindowPartitionFilter
+MenonFinalRangeWindowSchedule
+```
+
+Capstone: `eventually_integral_Icc_normSq_menonFinalRangeShell_le_ladderSchedule`.
+
+**Cards 1, 2, 3 received no formalisation work this session** — all three are gated on
+Matomäki–Teräväinen Theorem 1.2 (cards 1, 3) and on Matomäki–Radziwiłł's bilinear all-interval
+theorem at `h ≍ log log x` (card 2), and neither of those inputs has an open elementary brick at
+present.  Card 4's lane is the one with an open elementary frontier, which is why all effort went
+there.
+
+## The four cards share ONE gate (2026-09-11)
+
+Following the top-block obstruction to its root changes the picture: the four cards do not have
+four independent gates.  They have one.
+
+**Card 4's residue, traced.**  Integers of `[X,3X]` with a prime factor above `T = X/h` are
+`n = pm` with `m < h`; they have density `≍ 1/log log X`, so they are not negligible.  Splitting
+them dyadically in `m` and applying the corpus's own Heath--Brown Lemma 3.4
+(`Sieve/HeathBrownSparseMeanValueLemma34.integral_Icc_normSq_heathBrown_oneLine_le_lemma34_refined`,
+already closed and axiom-clean) with the **roles swapped** — sparse `=` the short cofactor
+`m ≍ M`, dense `=` the prime factor in `(N,2N]`, `N ≍ X/M` — satisfies every hypothesis, including
+the regime condition `T^{2/3} ≤ N` (because `M < h ≪ X^{1/3}`).  It yields `≍ C_η` per dyadic
+block.  But the *truth* at mean-value-theorem level for this part is only
+
+```text
+∑_{M dyadic ≤ h} (2T + X/M)·∑_n |coeff|²  ≍  (1/log X)·∑_M 1/M  ≍  2/log X ,
+```
+
+still a full logarithm above the `(log x)^{-2}` target.  So no split, no receiver, and no
+rearrangement closes it: **a genuine saving inside `∑_{p ≍ y} p^{-1-it}` at heights up to
+`X^{1-o(1)}` is required**, i.e. a large-values / zero-density estimate for prime-supported
+Dirichlet polynomials well beyond the Vinogradov--Korobov contour range
+(`|t| ≤ exp((log X)^{3/5-ε})`, which is what Route T supplies).
+
+**The same object gates the other three.**  Cards 1 and 3 wait on Matomäki--Teräväinen Theorem 1.2,
+whose residual on its own programme card is the collective cross-modulus estimate on the
+Lemma 3.5(ii) Type-I range — a large-values statement for the same prime polynomials.  Card 2 waits
+on Matomäki--Radziwiłł at `h ≍ log log x`, whose hard half is the same.
+
+So the one shared gate is: **large values / zero density for prime-supported Dirichlet polynomials
+at heights up to a power of `X`.**  The corpus already owns the *sparse×dense* half of the
+machinery (Heath--Brown Theorem 4(iii) in `Sieve/HeathBrownSparseMeanValueTheoremFour`, Lemma 3.4 in
+`Sieve/HeathBrownSparseMeanValueLemma34`, both closed) and the *contour* half below the
+Vinogradov--Korobov range (Route T).  What is missing is the prime large-values estimate joining
+them, which is exactly what the 43 unassembled `Sieve/MenonHeathBrown*` leaves are building.
+
+**Consequence for planning:** effort on any one of the four cards should go into that single
+object, not into the four lanes separately.
+
+### Quantitative ceiling of the existing tools on the large-prime part (2026-09-11)
+
+The corpus already owns the sharp dyadic prime mean square,
+`Sieve/DyadicPrimeMeanSquare.integral_normSq_dyadicPrimePoly_le` (two-dimensional sieve, closed and
+axiom-clean):
+
+```text
+∫_{-W}^{W} |∑_{R<p≤2R} p^{-1+2πiw}|² dw
+   ≤ (5/(4δR²))( π(2R)−π(R) + 2( 8e·K·R/E² + K·(Selberg remainder) ) ),
+   2πδW ≤ 1,  K ≥ 6Rδ,  E = exp(mertensS h − mertensS P₁) ≍ log h/log P₁ .
+```
+
+At `δ = 1/(2πW)`, `K ≍ R/W` it gives `≍ 5πW/(2R log R) + 60e/E²`: a sharp diagonal plus an
+off-diagonal of order `(log R)^{-2}` — genuinely one logarithm past the mean-value theorem.
+
+Feeding it into the large-prime part (`n = pm`, `m < h`, split dyadically in `m`) with the swapped
+receiver gives, after the Cauchy–Schwarz over the `≍ 1.44 log h` dyadic `m`-blocks,
+
+```text
+∑_{M dyadic ≤ h} ≍ 10.9 / (log log X)³ .
+```
+
+So the existing tools do drive the large-prime part to zero — but at rate `(log log X)^{-3}`, not
+`(log X)^{-2}`.  The gap is exactly the `sup|S_M|` loss: replacing the short factor by its supremum
+costs `M` per block, and recovering it needs genuine bilinear cancellation between the two
+variables, not a sharper bound on either.
+
+**This is the quantitative statement of the shared gate.**  Rate `o(1)` is reachable with what the
+corpus has; rate `o(1/log X)` — which is what card 4's Markov step consumes and what
+Matomäki–Teräväinen Thm 1.2 encodes for cards 1 and 3 — is not.
+
+### Brick 22 landed (2026-09-11) — the sieve-swapped receiver
+
+`Sieve/MenonHarmonicSieveSwappedReceiver.lean`: the generic swapped ordering
+(`setIntegral_normSq_product_le_meanSquareSup`) and the composition of the corpus's
+two-dimensional sieve mean square with the harmonic cofactor supremum
+(`integral_Icc_normSq_dyadicPrimePoly_mul_harmonicCofactor_le`).  This is a strictly better
+receiver for the top blocks than the Halasz--Montgomery one: no mean-value diagonal enters, and the
+sieve's off-diagonal is `≍ (log R)^{-2}`.  Leaf build `12271/12271`; both declarations axiom-clean;
+umbrella-wired.
+
+### Brick 23 landed (2026-09-11) — the canonical sieve-swapped receiver
+
+`Sieve/MenonHarmonicSieveSwappedCanonical.lean`: `sieveSwappedDelta/Budget/Dimension/Level` and the
+receiver with all five sieve parameters chosen, only structural inequalities left.
+**Session total: 25 leaves, 66 declarations, all axiom-clean, leaf-built and umbrella-wired.**

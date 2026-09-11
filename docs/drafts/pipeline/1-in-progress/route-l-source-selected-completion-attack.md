@@ -1420,3 +1420,40 @@ annihilation or fixed physical agreement. Critical top sources retain
 the same pair. The remaining mathematical attack must derive the
 source-to-fixed-Burnol/Deninger comparison at the original anchor,
 including arithmetic-action agreement, while retaining this data.
+
+
+### C30 closed: actual adjacent-depth physical reader
+
+At a common positive regulator tending to zero, the quotient of the two
+actual complete-source defects at depths `M+1` and `M` tends to the
+original complex successor ratio. Exact normalizer cancellation removes
+the joint damping without any assumption on `M*epsilon_M`. The fixed
+nonlinear decoder `1/6-||z||^(2*log(6)/log(successor(6)/6))` then recovers
+the existing physical BV value at the original anchor. Every original
+multiplicity-top Xi source supplies the nonzero jet automatically, and
+the actual reflected pair recovers the Burnol conormal radial defect.
+Finite diagonal repairs preserve the literal paired defects at late
+cutoffs, before every regulator limit.
+
+Both unnormalized defects tend to zero. The same actual Xi source shows
+that the literal totalized quotient decoder is discontinuous at the zero
+pair; replacing the measurements by zero first discards the physical
+readout. This does not rule out every different endpoint assignment on a
+restricted source family. The positive survivor is the proved singular
+nonlinear physical readout, with original source, jet and anchor retained
+in its inputs.
+
+All 22 theorems passed complete scratch, targeted build, exact axiom
+coverage and global lint. The module is wired into `RHTower`; all owned
+Lean processes exited. [Proof and audit](../3-formalized/route-l-adjacent-depth-physical-reader.md).
+
+The missing step is still a whole-source law identifying the recovered
+physical value with the zero/cyclic boundary reading. Five deep/method
+searches and broad arXiv transfers were audited. A September 2026
+reciprocity theorem requires a common symmetric response operator and
+swapped source/read ports; the inspected corpus optical comparison
+assumes that incidence. Hedenmalm equivariance transports to a reflected
+parameter and does not establish fixedness. Neither supplies the missing
+comparison. The next concrete test must construct that native response
+and port identification from the complete Green/BV source, or derive a
+different source law forcing the recovered radial value to vanish.

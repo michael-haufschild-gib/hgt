@@ -2,7 +2,7 @@
 
 - **ID:** PW-B-GAMMA-REVERSIBLE-PAIRING-2026-09-11
 - **Stage:** 1-in-progress
-- **Status:** Reversible density, uniqueness, source weight, Jacobian, literal cutoff contact and actual source-mode defect are Lean-closed. Full adjoint, source domain and spectral occurrence remain open.
+- **Status:** Reversible density, uniqueness, source weight, Jacobian, literal cutoff contact, actual source-mode defect and its exact logarithmic pairing are Lean-closed. Full adjoint, source domain and spectral occurrence remain open.
 - **Objective:** Derive the positive pairing and retained adjoint correction from the existing forward and inverse-gain reflected source generators, then test their actual arithmetic domain.
 
 ## Actual source and candidate pairing
@@ -96,9 +96,11 @@ the exact logarithmic moment
 
 `integral log(x)*w*phi_n=-(log(n)/2)*integral w*phi_n`.
 
-This checks the sign and size of the proposed contact at n=2 without a
-numerical test. Logarithmic admission and change of variables remain
-to be formalized. Their dependency-closed paper argument is now explicit.
+The [logarithmic-moment theorem](../3-formalized/pw-b-gamma-adjoint-log-moment.md)
+now proves the exact contact pairing for every positive integer n.
+All11 public declarations pass the final scratch, including logarithmic
+admission, the actual reciprocal derivative and integral substitution.
+Their dependency-closed argument is explicit.
 On x>0, the bounds log(x)<=x and -log(x)<=1/x give
 |log(x)|<=x+1/x. Writing r=1/x, the elementary exponential-series
 inequality r^2*exp(-r)<=2 yields
@@ -125,6 +127,35 @@ C,m, hence |M_z/Q|<=1+C*x^(-m). The moments above would admit every
 coefficient parameter in L2(w dx). Such admission would supply no Xi
 selection. Preserve the complete series and prove the transformed
 measure and bounds before claiming this domain result.
+
+## Remaining full cutoff-pairing passage
+
+The moment identity alone does not interchange the cutoff limit with
+the whole source pairing. A direct paper estimate is available for
+that additional step. On x>2*delta, the proved remainder bound and
+|log(1-delta/x)|<=2*delta/x give
+
+`|contact(x,delta)-2*log(x)|`
+` <=delta*(1+2/x+2/x^2)`.
+
+The cross-density has finite inverse moments, which still need their
+explicit Lean admission proof. On delta<x<=2*delta, positivity and
+exp(-h)<=1 bound the absolute contact by
+|log(x)|+|log(x-delta)|. Since
+
+`w(x)*phi_n(x)<=sqrt(n)*exp(-1/(2*delta))/delta`,
+
+the integral over this layer is bounded by
+sqrt(n)*exp(-1/(2*delta))*(1-2*log(delta)) for small positive delta,
+which tends to zero. The original adjoint cutoff also retains a
+separate loss term on0<x<=delta where its incoming interval is empty.
+Its pairing is bounded by sqrt(n)*delta*(1-log(delta)), using the
+actual admitted tail integral of exp(-h)/h. It cannot be silently
+replaced by the contact expression outside its positive-cutoff range.
+All three regions and the finite-cutoff transposition must be proved
+before claiming convergence of the original adjoint pairing. These
+are pending paper estimates, not new Lean results or a closed-domain
+operator identity.
 
 ## Complete arithmetic endpoint attack
 
@@ -156,9 +187,14 @@ large k absorbs every polynomial coefficient weight and permits the
 complete arithmetic sum and endpoint limit to be interchanged. The
 finite endpoint series, its parameter regularity and its relation to
 K remain conjectures pending a full paper/dependency audit and Lean.
-A new deep method search is running. This is the next arithmetic-domain
-attack after the exact logarithmic contact pairing, not a claimed
-operator or spectral result.
+The new deep method search is terminal and saved in the contact search
+record. Its proposed uniform-difference and entire-Gronwall ingredients
+assume the missing convergence or global derivative bound. The actual
+mathlib Convex.norm_image_sub_le_of_norm_hasDerivWithin_le theorem was
+read directly; on the compact positive interval [v,v+h], the explicit
+derivative bound above can supply every premise of its mean-value
+estimate. This is the next arithmetic-domain attack after the exact
+logarithmic contact pairing, not a claimed operator or spectral result.
 
 ## Lean and research state
 
@@ -172,7 +208,7 @@ is promoted and wired into RHTower. Its targeted build, index, all18
 public-name and axiom checks, and repository formal lint passed.
 Next proof order:
 
-1. Prove the admitted logarithmic contact pairing; the literal moving-cutoff limit and positive source cross-test are proved.
+1. Prove the full original cutoff-pairing passage, including its empty incoming region; the literal limit, source cross-test and admitted logarithmic contact pairing are proved.
 2. Derive the complete admitted pairing identity and arithmetic domain.
 3. Identify an actual Xi occurrence and source-forced Ward law; none of
    the preceding identities supplies that final step.

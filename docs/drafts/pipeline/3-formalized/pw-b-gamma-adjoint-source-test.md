@@ -56,9 +56,10 @@ The positive survivors are the finite positive cross-mass, the exact
 all-mode defect formula and weighted square admission. They preserve the
 source information that an adjoint correction must account for. The
 [literal cutoff theorem](pw-b-gamma-adjoint-cutoff-contact.md) supplies
-a retained 2*log(x) contact. The proposed equality of its pairing with
-this defect has an explicit paper proof via x ->1/(n*x); its logarithmic
-admission and integral substitution still await Lean verification.
+a retained 2*log(x) contact. The [admitted logarithmic pairing](pw-b-gamma-adjoint-log-moment.md)
+now proves that its integral against this same cross-density equals the
+whole defect, using the actual reciprocal derivative and substitution.
+The full original cutoff transposition and operator domain remain open.
 
 PW-B is not retired. A complete corrected adjoint, common arithmetic
 domain, physical requirement for the pairing, actual Xi occurrence and
@@ -72,8 +73,13 @@ Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaAd
 The final scratch passes all28 public declarations, with only propext,
 Classical.choice and Quot.sound in every axiom report. Identical proof
 bodies are promoted and one RHTower umbrella import is wired. The
-targeted leaf build is running; final index, name and lint audits remain
-pending. No full or umbrella build is authorized.
+targeted leaf build passed in230s, rebuilding only this leaf. Index
+regeneration passed (five changed entries, zero removals in the shared
+tree); all28 public names are unique in source and API, and every proof
+body matches the passing scratch. Repository formal lint passed. All
+source-test scratch/build/index/lint processes are terminal. No full or
+umbrella build, numerical experiment, added axiom, commit or push was
+used.
 
 The [search record](../1-in-progress/pw-b-gamma-adjoint-contact-searches.json)
 and [attack journal](../1-in-progress/pw-b-source-orientation-attack.md)

@@ -2,8 +2,8 @@
 
 - **ID:** L-C30
 - **Date:** 2026-09-11
-- **Stage:** 1-in-progress
-- **Type:** PAPER-PROVED; complete scratch check passed, final audits pending
+- **Stage:** 3-formalized
+- **Type:** LEAN-CLOSED; source-derived physical readout and exact collapse boundary
 - **Depends on:** [C29 actual regulator/depth crossover](../3-formalized/route-l-regulator-depth-crossover.md)
 - **RH status:** unproved; physical-reader vanishing remains separate
 
@@ -16,7 +16,7 @@ depths, take the literal quotient
 
 `Q_M=AbelDefect(epsilon_M,6,T_(M+1))/AbelDefect(epsilon_M,6,T_M)`.
 
-Proved in the complete scratch check: whenever `epsilon_M -> 0` and the original internal jet
+Proved: whenever `epsilon_M -> 0` and the original internal jet
 product is nonzero, `Q_M -> q(w)`, the original successor ratio.
 No convergence or increment assumption on `M*epsilon_M` is imposed.
 Using the same regulator in numerator and denominator is essential.
@@ -28,12 +28,12 @@ zero label, by
 
 `F(z)=1/6-||z||^kappa`.
 
-Since `||q(w)||=beta^(-Re(s(w)))`, the proposed limit is
+Since `||q(w)||=beta^(-Re(s(w)))`, the proved limit is
 
 `F(Q_M) -> 1/6-6^(-2*Re(s(w))) = B_6(s(w))`,
 
 where `B_6` is the already fixed ordinary-integer BV Green--Stokes
-boundary evaluation. This aims to construct an actual source-derived
+boundary evaluation. This constructs an actual source-derived
 nonlinear physical readout at the original anchor, including from paths
 where the individual normalized measurements vanish.
 
@@ -44,12 +44,12 @@ successor base. It does not feed the desired physical value or the
 spectral parameter into the decoder. Finite diagonal repairs
 preserve the quotient at all sufficiently late original depths.
 
-This would identify a physical value, not prove it zero or identify it
+This identifies a physical value; it does not prove it zero or identify it
 with the cyclic endpoint reader. Its zero condition must not be assumed
 as an RH input. Reflection must retain its actual source and separately
 recover the paired physical radial defect.
 
-## Proof attempt
+## Proof
 
 C29 gives the exact factorization
 
@@ -80,7 +80,7 @@ elimination needs cyclic variational incidence and causal skewness;
 those have not been constructed for this source. The existing adiabatic
 Green--Stokes theorem retains the transgression difference rather than
 forcing absolute vanishing. Neither supplies the missing fixed-reader
-agreement. The present conjecture instead derives a concrete nonlinear
+agreement. The present theorem instead derives a concrete nonlinear
 reader from actual adjacent measurements.
 
 The third whole-corpus deep/method search returned an applicable proof
@@ -92,7 +92,7 @@ common moving regulator. All 20 candidates and 20 source arguments were
 inspected; one proposed ingredient set repeats this ratio mechanism.
 Coverage remained partial: source generation `823350`, 552 pending/stale
 files reported, semantic coverage 2,196,271/2,337,170; candidate
-applicability is being checked in the scratch proof.
+applicability was checked in the complete scratch and final audits.
 
 The fourth deep/method search for projective boundary balance returned
 20 candidates and 20 source arguments, all inspected. Coverage was partial
@@ -116,10 +116,10 @@ isomonodromy, gluing, subordination, resurgence and intertwining have so
 far returned older papers despite June--September 2026 preferences;
 no recent result or external hypothesis is being presumed.
 
-Check the actual quotient in Lean, derive the nonlinear decoder identity,
-specialize at every original Xi divisor and audit finite diagonal repairs.
-Then examine what extra source law, if any, could force this constructed
-physical readout to vanish; do not call this construction an RH proof.
+The actual quotient, fixed decoder, all-divisor specialization and finite
+diagonal repairs are formalized. The remaining task is to derive a
+whole-source law forcing this physical readout to vanish; the construction
+itself is not an RH proof.
 
 
 ## External transfer audit and collapse test
@@ -148,22 +148,42 @@ regulator, because `|q|<1`, `epsilon->0`, `0<6^(-M*epsilon)<=1`, and the
 deattenuated factor converges. Nevertheless the fixed quotient decoder
 converges to `B_6(s)`, whereas its value at the collapsed zero pair is
 `F(0)=1/6`. Since `6^(-2 Re(s))>0`, these values differ at every finite
-source parameter. The complete scratch proves, using the actual Xi source, that
+source parameter. Lean proves, using the actual Xi source, that
 the literal totalized quotient decoder is discontinuous at the zero
 pair. This concerns its fixed value `F(0)`, not every possible endpoint
 assignment on a restricted source family. The positive survivor is the already constructed relative-decay
 physical readout; zero raw measurements do not supply its vanishing.
 
 
-## Lean checkpoint (final audits pending)
+## Completed Lean audit
 
-The complete scratch check passed with exit 0 and an empty log:
-`lake env lean /tmp/route_l_adjacent_depth_physical_reader.lean`.
-The repository module is
-`formal/GaloisForLFunctions/RHTower/DeningerGammaSixAdjacentDepthPhysicalReader.lean`:
-22 theorems and 5 definitions. It is wired into `RHTower`.
-The targeted final build is running; complete axiom and global lint
-audits follow sequentially. Stage-3 promotion is pending those audits.
+[Module](../../../../formal/GaloisForLFunctions/RHTower/DeningerGammaSixAdjacentDepthPhysicalReader.lean):
+22 theorems and 5 definitions; wired into `RHTower`.
+
+- Complete scratch: `lake env lean /tmp/route_l_adjacent_depth_physical_reader.lean`,
+  exit 0, empty log. Repository proof bodies match this successful scratch.
+- Targeted final build:
+  `lake build GaloisForLFunctions.RHTower.DeningerGammaSixAdjacentDepthPhysicalReader`,
+  exit 0; new module built successfully. Log:
+  `/tmp/route_l_adjacent_depth_build.log`. No full or umbrella build.
+- All 22 theorem dependencies:
+  `lake env lean /tmp/route_l_adjacent_depth_axioms.lean`, exit 0.
+  Exact theorem-name coverage checked; every report contains only
+  `propext`, `Classical.choice`, `Quot.sound`. No added axioms or proof gaps.
+  Log: `/tmp/route_l_adjacent_depth_axioms.log`.
+- Required `scripts/formal_tools.py lint`: exit 0, `formal lint passed`.
+  Log: `/tmp/route_l_adjacent_depth_lint.log`; repository warnings remain.
+- Foreground Lean checks were sequential; all owned Lean processes exited.
+  No numerical experiments or computations were used.
+
+Key conclusions are
+`tendsto_deningerGammaSixAdjacentDefectQuotient`,
+`tendsto_deningerGammaSixAdjacentDefect_physicalBV`,
+`tendsto_deningerGammaSixXiAdjacentPhysicalReadout`,
+`tendsto_deningerGammaSixXiAdjacentPhysicalReadout_reflected`,
+`tendsto_deningerGammaSixAdjacentDefect_finite_repair_physicalBV`,
+`tendsto_deningerGammaSixIntegralTailOperator_defect_pair_zero`, and
+`deningerGammaSixAdjacentPhysicalDecoder_not_continuousAt_zero`.
 
 The decoder is nonlinear and cancels the common amplitude; its inputs
 remain the original complete defects with their nonzero internal Xi jet.

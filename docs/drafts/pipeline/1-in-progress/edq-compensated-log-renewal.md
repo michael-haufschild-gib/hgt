@@ -1,6 +1,8 @@
 # EDQ: compensated logarithmic renewal
 
-Status: paper proof under formalization. RH and the complete signed upper
+Status: the exact renewal and positive linear forcing-energy bounds are
+[formalized in Lean](../3-formalized/edq-log-prime-forcing.md). The further
+relative-cancellation limits below are paper consequences. RH and the complete signed upper
 bound remain open. This card tests the proposed estimate that the harmonic
 correction in prime-dilation feedback is negligible. It does not retire EDQ.
 
@@ -34,10 +36,9 @@ signed Gram sum, equivalently a sufficient ceiling for the original source.
 
 ## Conjecture tested: B_N has subpower energy
 
-The following paper argument instead gives constants c,C>0 with
+The following formalized argument instead gives constants c,C>0 with
 `c*N <= ||B_N||^2 <= C*N` eventually. These inequalities concern B_N,
-not G_N. The goal of formalization is this exact full-source size statement,
-including its literal coefficients and physical norm.
+not G_N. The Lean statement retains its literal coefficients and physical norm.
 
 Write `a_N(q)=Lambda(q)*H_floor(N/q)`. The elementary bound `|H_m|<=2`
 follows by applying the complete residue-sum bound at the initial endpoint:

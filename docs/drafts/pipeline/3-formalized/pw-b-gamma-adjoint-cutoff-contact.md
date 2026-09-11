@@ -36,9 +36,10 @@ the predicted identities A*=B+2*log(x) and B*=A-2*log(x) remain to be
 proved with their complete paired integrals and domains.
 
 The [source pairing attack](../1-in-progress/pw-b-gamma-reversible-pairing.md)
-tests the same contact against actual Gamma source modes. The candidate
-logarithmic moment has an explicit admitted-integral paper proof; its
-Lean proof remains pending. Actual Xi occurrence and independently
+tests the same contact against actual Gamma source modes. The
+[admitted logarithmic-moment theorem](pw-b-gamma-adjoint-log-moment.md)
+now identifies its pairing with the entire source-mode defect. Full
+original cutoff transposition remains open. Actual Xi occurrence and independently
 source-forced fixed-grade balance remain open. RH is unproved.
 
 ## Verification and research

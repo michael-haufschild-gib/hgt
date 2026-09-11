@@ -2758,3 +2758,38 @@ degree of a `σ`-stable subspace, computable inside the ambient space as the sig
 `length(M/(M ∩ σM)) - length(σM/(M ∩ σM))` for `M = L ∩ W`, since these are finite-length modules
 over the completed valuation ring; from it the slope, the maximal destabilizing subobject, and the
 attained exponents follow.
+
+### Lean progress — integral lattices inside an invariant subspace (2026-09-11)
+
+`DifferentialVariationalSubspaceLattice` builds the first layer of the degree theory the
+transversality step needs, and does it inside the ambient coordinate space rather than by
+transporting the action.
+
+```text
+DiffOp.exists_uniformizer_smul_mem_lattice        ∃ k, π^k • v ∈ L
+subspaceTraceLattice L W = L.carrier ⊓ W          finitely generated, spans W
+subspaceTraceLattice_fg, span_subspaceTraceLattice
+DiffOp.exists_uniformizer_smul_mem_of_mem_span    v ∈ span_D M ⇒ ∃ k, π^k • v ∈ M
+DiffOp.exists_uniformizer_smul_le                 commensurability, one common power
+```
+
+The trace of the base lattice on a subspace is finitely generated because it is a submodule of a
+finitely generated module over the left Noetherian valuation ring, and it spans the subspace because
+every vector is pushed into the base lattice by a uniformizer power.  The span lemma is a span
+induction whose scalar step reuses the regrouping `π^m a = (π^d · π^z a' π^{-z}) · π^z` and the
+invariance of the valuation ring under conjugation by uniformizer powers; the commensurability
+statement then takes the supremum of the finitely many powers that clear the generators, so **a
+single uniformizer power carries one integral submodule into any other with the same skew-field
+span**.
+
+Direct check, targeted leaf build and axiom audit pass; all 8 declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+Next bricks for the degree: finiteness of the layer `length(M / π^k M)` for a finitely generated
+integral submodule — via the surjection `(O/π^k O)^j ↠ M/π^k M` and `length(O/πO) = 1`, which holds
+because every left ideal of the completed valuation ring is principal (corpus:
+`CompletedPseudoDiffOpIntegerPrincipal`) so the residue module is simple — then the signed degree
+`deg(W) = length(M/(M ∩ σM)) - length(σM/(M ∩ σM))`, its independence of `M`, additivity in short
+exact sequences, and from there the Harder--Narasimhan filtration whose attained exponents upgrade
+the available `liminf` separation to the `limsup` bound the Sylvester contraction consumes.

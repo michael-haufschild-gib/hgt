@@ -6883,3 +6883,30 @@ unconditional.
 Recorded so that no future session re-derives a receiver for the top blocks: the obstruction is in
 the split, not in the receiver, and the numbers above show it is not repairable by any choice of
 threshold or moment order.
+
+## Lean progress update (2026-09-11) — the sieve-swapped receiver, with its parameters chosen
+
+Two further unconditional leaves give the top blocks a strictly better receiver than
+Halász–Montgomery, by consuming the corpus's own two-dimensional sieve mean square.
+
+- `Sieve/MenonHarmonicSieveSwappedReceiver.lean` — the generic swapped ordering
+  `setIntegral_normSq_product_le_meanSquareSup`, and
+  `integral_Icc_normSq_dyadicPrimePoly_mul_harmonicCofactor_le`: the dyadic prime block paid by
+  `Sieve/DyadicPrimeMeanSquare.integral_normSq_dyadicPrimePoly_le` and the cofactor by its own
+  harmonic supremum.  No mean-value diagonal enters, and the sieve's off-diagonal is `≍ (log R)^{-2}`
+  — one logarithm past the mean-value theorem, which is the point of the two-dimensional sieve.
+- `Sieve/MenonHarmonicSieveSwappedCanonical.lean` — `sieveSwappedDelta W = 1/(2πW)` (saturating the
+  Gallagher constraint), `sieveSwappedBudget`, `sieveSwappedDimension`, `sieveSwappedLevel`, and the
+  receiver with every one of the sieve's five parameters chosen and every side condition
+  discharged.  Only the structural inequalities `1 ≤ W`, `h ≤ R`, `1 ≤ R`, `2 ≤ P₁ ≤ h` remain.
+
+Targeted leaf builds pass (`12271/12271`, `12272/12272`); all three new declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; both leaves are umbrella-wired without an umbrella build.
+
+**Where this leaves the lane, quantitatively.**  Feeding this receiver into the large-prime part
+(`n = pm`, `m < h`, split dyadically in `m`) gives, after the Cauchy–Schwarz over the `≍ 1.44 log h`
+dyadic `m`-blocks, a bound `≍ 10.9/(log log X)³`.  So the large-prime part **does** vanish with the
+tools now in place — but at rate `(log log X)^{-3}`, where the card's Markov step needs
+`o(1/log X)`.  The residual loss is exactly the `sup|S_M|` step: replacing the short factor by its
+supremum costs `M` per block, and recovering it needs genuine bilinear cancellation between the two
+variables, not a sharper bound on either.  Card remains Stage 2.

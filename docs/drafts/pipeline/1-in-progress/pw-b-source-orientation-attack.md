@@ -2022,3 +2022,116 @@ file reported only one redundant ring after a solved field_simp goal.
 That tactic was removed and the exact final source scratch is being
 checked as the sole owned Lean process. Promotion and its final audits
 remain pending; the wider route is not retired.
+
+
+Source-test final audit complete. All28 public declarations pass with
+standard-only axioms, and their exact proof bodies are promoted in
+ThetaCuspHawkingParikhWilczekGammaAdjointSourceTest. One umbrella import
+is wired. Targeted build passed in230s, building only this leaf; index
+passed (five changed entries, zero removals), all28 public-name/API
+uniqueness checks passed, and repository formal lint passed. All
+source-test scratch/build/index/lint sessions are terminal. The source
+test card and frontier record the exact negative defect and positive
+finite cross-mass. PW-B and RH remain open.
+
+The11-public-declaration logarithmic-moment scratch now runs as the sole
+owned Lean process. It co-imports both finished leaves and uses the
+actual one-dimensional Jacobian theorem. Its names had no prior source
+collisions. No moment identity is claimed before this verification.
+
+The flat-endpoint method search is terminal, partial coverage723712,
+and saved under flat_endpoint in the contact search record. All20
+candidate statements,20 source-argument statements and the proposed
+ingredient set were reviewed. The suggested uniform-difference theorem
+already assumes uniform derivative convergence. The suggested complex
+Gronwall theorem assumes an entire function and a global derivative
+bound. Neither supplies the positive-ray flat reciprocal derivative
+bound; this must be derived from the explicit exponential source as
+recorded in the pairing card.
+
+
+The first logarithmic-moment scratch stopped at local Lean issues:
+normalization of reciprocal multiplication and its derivative, an
+absolute-value parser spacing issue, a redundant ring, and beta-reduction
+before rewriting the pulled-back scalar product. The actual cross-density
+Jacobian formula already produced a standard-only proof term. These
+issues were repaired in the actual scratch and a second check is running
+as the sole owned Lean process. The moment and complete contact-pairing
+identity remain unverified until this check succeeds. The original body
+text is now stale; use /tmp/pwb-gamma-adjoint-log-moment.lean.
+
+
+The second logarithmic-moment scratch proves the cross-density formula,
+positive reciprocal involution/image, exact cross-Jacobian identity and
+actual logarithmic integrability with standard-only proof terms. Its
+remaining failure is normalization of the derivative's unapplied
+function, plus one redundant ring in the majorant proof. The actual
+reciprocal derivative formula is unchanged; an explicit function target
+and restricted Pi.inv_def simplification are now being checked in the
+sole owned Lean process. The final log is
+/tmp/pwb-gamma-adjoint-log-moment-scratch-final.txt. Do not claim the
+integrated moment or contact identity before a terminal passing result.
+
+
+The final logarithmic-moment scratch passed all11 public declarations
+with standard-only axioms. Identical proof bodies are promoted in
+ThetaCuspHawkingParikhWilczekGammaAdjointLogMoment, wired once, and the
+targeted build passed in168s, building only this leaf. Index passed
+(four changed entries, zero removals), and all11 source/API names and
+exact scratch proof bodies were checked. The three new leaves therefore
+close48 public declarations, including the actual admitted contact
+pairing. All owned Lean scratch/build processes are terminal.
+
+The first final repository lint failed solely because the concurrently
+added unrelated Sieve.MenonHarmonicSieveSwappedReceiver was unreachable.
+Its umbrella import is now present in the shared tree; a final lint
+rerun is checking that changed state. No unrelated source was edited
+or built. The moment card and predecessor cards now separate the proved
+mode-level identity from the still-open full cutoff transposition and
+source/domain/Xi/Ward obligations.
+
+
+Iteration26 final audit complete. Final repository lint passed after the
+concurrent Sieve umbrella change appeared; no unrelated file was edited
+or built here. All48 public declarations across the three new leaves
+pass their standard-only axiom audits and targeted builds (contact193s,
+source test230s, logarithmic moment168s). Every public name is unique
+in source and API; every promoted proof body matches its passing scratch;
+each leaf is wired once. All four result/continuation cards have valid
+relative links and scoped whitespace checks pass. All owned scratch,
+build, research, index and lint sessions are terminal; a process check
+found no remaining owned adjoint Lean/lake process. No full or umbrella
+build, numerical experiment, added axiom, commit or push occurred.
+
+This is verified progress, not RH closure: the literal2log(x) contact is
+proved and its admitted pairing accounts exactly for the complete
+ground-to-mode source defect. The next turn must state the chain
+PW first-winding response -> FE signed defect -> complete source adjoint
+and arithmetic domain -> independently source-forced fixed-grade Ward
+balance at actual Xi occurrences -> RH. Full original cutoff
+transposition must retain the empty incoming region and both remaining
+regions. The sharper flat reciprocal derivative bound attacks the
+unpaid complete arithmetic endpoint and any proposed scalar occurrence
+of the unmodified source. Those proofs, physical necessity of the
+pairing, actual Xi occurrence and independent balance remain open.
+Use the continuing pairing card for the exact paper bounds and next
+proof obligations; do not assert that a mode-level correction proves
+a closed operator or a Ward selector. PW-B and the goal remain active.
+
+
+## Iteration27 — uniform reciprocal derivative and actual arithmetic endpoint
+
+The prior turn is verified progress: all48 new public declarations,
+three targeted leaf builds and final lint are complete. Current cards,
+source kernel, build log and final lint were rechecked. RH is not proved.
+The next hard target is the v->0+ limit of the complete reciprocal
+generator. The old bound retains1/v, so it cannot justify that limit.
+Conjecture: derive the exact derivative a/v^2*exp(-a/v), bound it by
+(k+2)!/a^(k+1)*v^k, and use the mean-value theorem on[v,v+h]. This
+removes1/v from the whole difference quotient. An admitted common
+Gamma majorant should then allow the actual endpoint integral and
+complete arithmetic sum, rather than the value of the totalized kernel
+atv=0. Two new deep method searches are running; broad single-word
+relaxation/dilation searches have begun. The general search returned
+mostly old papers despite its recent filter; the date-ordered arXiv
+dilation listing supplies September2026 candidates.

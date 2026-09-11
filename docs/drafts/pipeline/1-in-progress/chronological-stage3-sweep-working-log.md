@@ -182,3 +182,41 @@ a subquotient (`inducedCocycles`, `inducedCoboundaries`, `inducedReducedCohomolo
 4. Base cases `n = 0, 1, 2` (for `n = 1` use `fullSimplex_exact`), then the all-degree multiplicity
    classification (one class in occupation `j` for `n = 3j` or `n = 3j−1`, none for `n = 3j+1`) and
    the paired trace at `n = 2d−1`.
+
+## Card 12 progress: `PathIndependenceCochain.lean` now 86 declarations, all audited
+
+Everything below builds, is wired into `HTGeometry.lean`, and every declaration depends only on
+`propext`, `Classical.choice`, `Quot.sound`.
+
+Added since phase 1:
+* `instDecidableIsPathFace`, `instDecidableIsTailFace` (the `if IsPathFace …` guards need these).
+* `pathCoboundary` / `pathCoboundaryₗ` — the simplicial coboundary **evaluated only at faces**,
+  with `pathCoboundary_pathCoboundary` (`δ² = 0`) and
+  `pathCoboundary_mem_pathSupported` (degree shift). Same for the tail complex:
+  `tailCoboundary`, `tailCoboundaryₗ`, `tailCoboundary_tailCoboundary`,
+  `tailCoboundary_mem_tailSupported`.
+* The occupation grading as honest submodules: `pathSupported F n j`, `tailSupported F n j`
+  (cochains vanishing off the faces of that cardinality). Note the *support* model works only with
+  the face-restricted differential — the unrestricted `δ` does not preserve it, since a non-face can
+  have all its facets be faces.
+* `IsTailFace`, `IsTailFace.insert_one`, `IsTailFace.insert_zero`,
+  `IsPathFace.erase_one_isTailFace`.
+* The guarded maps `pathConeFace`, `pathTailMapFace`, `pathInclFace`, their degree behaviour
+  (`pathConeFace_mem_pathSupported`, `pathTailMapFace_mem_tailSupported`,
+  `pathInclFace_mem_pathSupported`), and all four identities for them, first pointwise on faces
+  (`pathTailMapFace_pathInclFace`, `tailCoboundary_pathTailMapFace`,
+  `pathCoboundary_pathInclFace`, `pathCoboundary_pathConeFace_add`) and then as equalities of
+  cochains (`pathTailMapFace_pathCoboundary_eq`, `pathCoboundary_pathInclFace_eq`,
+  `pathTailMapFace_pathInclFace_eq`, `pathCoboundary_pathConeFace_add_eq`).
+* `pathTailMapFaceₗ`, `pathInclFaceₗ`, `pathConeFaceₗ` as `F`-linear maps.
+* Reduced cohomology in the occupation grading for both complexes: `pathCocycles`,
+  `pathCoboundaries`, `pathCoboundaries_le_pathCocycles`, `pathCohomology` (+ module instances),
+  and the tail analogues.
+* `pathCocycles_sub_pathInclFace_pathTailMapFace`: **every path cocycle differs from `J q f` by the
+  explicit coboundary `δ K f`** — the card's displayed conclusion at cochain level.
+
+Still open on card 12: package `q`/`J` as inverse linear equivalences of the cohomology modules
+(`LinearMap.restrict` + `Submodule.mapQ`, using the four identities above), the tail relabeling
+`{3,…,n−1} → {0,…,n−4}`, the base cases `n = 0,1,2`, and the all-degree multiplicity count.
+Note `pathCoboundary_pathConeFace_add` needs `0 < n` (for `n = 0` the only face is `∅` and
+`insert 0 ∅` is not a face) and `tailCoboundary_pathTailMapFace` needs `1 < n`.
