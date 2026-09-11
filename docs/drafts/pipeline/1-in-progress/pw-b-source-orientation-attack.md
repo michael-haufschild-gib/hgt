@@ -1063,3 +1063,90 @@ The reflected Gamma atom suggests Q(x)*sqrt(n)*exp(-(n-1)/x), so the
 reciprocal exponential may improve the original absolute-admission
 boundary. Prove any such bound before treating it as physical selection.
 A spectral Ward balance still requires an independent complete source law.
+
+
+**Iteration 19 mathematical result:** the reflected source and its
+conjugated nonlocal generator close in Lean. The exact inverse-gain ray
+formula Rf=Qf(1/x)/Q(1/x) identifies the original reflection, proves its
+involution and Q fixation, and gives the explicit reciprocal translation
+S_h=R T_h R with flow x/(1+h*x). The actual response on R M_b is R F_b;
+its admitted fixed-x integral is R E_b, also the coefficient derivative
+of R M_b. This statement preserves which source is reflected.
+
+The proposed global estimate is stronger than initially required. The
+actual reflected atom is sqrt(n)*Q(x)*exp(-(n-1)/x) times its unchanged
+arithmetic coefficient. Exponential factorial bounds and the admitted
+moment integral Gamma(p+3/2) show every polynomially weighted atom norm
+mass series summable at every complex b. The precise common bound for
+index n+2, norm(b)<=N and weight (n+2)^k has coefficient
+2^(N+k+1)*(N+k+3)!/(n+1)^2 and source x^(N+k+3)*norm Q(x).
+Thus full reflected family/current global admission, their series/integral
+exchanges and the joint reflected Frullani integral are all proved.
+Fubini holds for every b. No value or sign is asserted for its unweighted
+reflected mass. At zero the current is still not identically zero on the
+positive ray: involution would contradict integral E=Gamma(3/2).
+
+Three deep method searches, each partial with 723426 indexed declarations,
+are saved in pw-b-gamma-reflected-frullani-searches.json. They provided
+weighted-reflection and moment comparisons, not the literal all-parameter
+bound. The used factorial/Gamma names were located by corpus text search
+and verified in the actual scratch proof. Broad arXiv renewal search
+ordered by date yielded September9 papers 2609.09738 and 2609.10399.
+The former's actual model and stationary-state section retain competing
+waiting laws and a nonzero reset probability; no such source-derived law
+is available here. The latter's initiator-label identifiability concerns
+a different statistical model. No external premise or numerical experiment
+was introduced.
+
+**Next candidate, not yet proved:** compare the original Frullani operator
+H with its conjugate on the same actual reflected arithmetic input.
+The proved identity S_h(R M_b)=R(T_h M_b) supplies no equality
+S_h M_b=T_h M_b. On the positive reflected atom Q(x)*sqrt(n)*exp(-(n-1)/x),
+the normalized additive increment has sign opposite to that of the
+original atom when n>1. Derive its complete h integral and the full
+H(R M_b)-R(E_b) forcing, with joint absolute admission or an exact signed
+assembly. Test a source-derived balancing contribution rather than
+assuming covariance from Q fixation. The previously proved all-parameter
+admission cannot itself identify the Xi spectrum or force the RH Ward
+charge to vanish. PW-B remains active and RH unproved.
+
+
+**Concrete next estimate (paper candidate, not Lean-closed):** for n>=2,
+a=n-1 and positive x,h, the normalized original-translation increment of
+the reflected Gamma atom is
+L_n(x,h)=sqrt(n)*Q(x)*exp(-h)*
+(exp(-a/(x+h))-exp(-a/x))/h. The exponential difference is nonnegative.
+Keeping the exact reciprocal difference, rather than replacing x+h by x,
+suggests the majorant
+sqrt(n)*a*x^(-1/2)*exp(-x)*exp(-h)*
+exp(-a/(x+h))/(x+h).
+The bound 1-exp(-v)<=v gives this expression with v=a*h/(x*(x+h)).
+For every positive integer p, the already verified factorial estimate
+then bounds it by
+sqrt(n)*p!*a^(1-p)*x^(-1/2)*exp(-x)*exp(-h)*(x+h)^(p-1).
+A finite binomial expansion separates admitted Gamma moments in x and h.
+Choosing p above the coefficient's polynomial degree should give a
+summable inverse-square index cost for the complete original operator
+on R M_b. The unit atom has zero increment. This retains both the source
+endpoint and h=0 cancellation and directly attacks the same-input
+comparison; it does not assert that the resulting arithmetic signed
+commutator vanishes.
+
+
+**Iteration 19 final audit:** 447-line reflected-Frullani leaf, 38 public
+theorems and six definitions. Scratch and direct Lean checks, targeted
+leaf build and all 44 public axiom audits passed. The accepted proof
+emits an informational ring-normalization suggestion, and the build
+replays existing upstream style warnings; no open proof goal remains.
+Only standard foundations occur. Formal lint, index regeneration,
+all-name uniqueness and generated API coverage passed. Both the current
+umbrella import and the previously unrelated missing import are present.
+Scoped whitespace, conflict and Markdown-link checks passed after fixing
+a mathematical expression that had rendered as an unintended local link.
+All owned Lean/research/index processes completed; a final process scan
+found no owned Lean process. All Lean checks were serialized in the
+foreground. No full/umbrella build, numerical experiment, commit or push
+ran. The complete reflected nonlocal source is admitted at every complex
+coefficient parameter, with its nonzero forcing retained. Same-source
+operator balance and Xi spectral identification remain open. RH is
+unproved; goal active.

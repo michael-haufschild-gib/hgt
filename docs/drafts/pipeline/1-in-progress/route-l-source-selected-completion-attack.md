@@ -1220,28 +1220,69 @@ All 23 scratch theorems, targeted module build, complete axiom audit
 (standard Lean foundations only), and formal lint passed; umbrella wired.
 [Full integral proof and audit](../3-formalized/route-l-integral-column-law.md).
 
-### C25 candidate: full-source critical Abel reader with retained first variation
+### C25 proved: full-source critical Abel reader and physical first variation
 
-C24 leaves the critical Gibbs endpoint outside its ordinary summability
-domain. The corpus already has the exact principal degree-six normalized
-Gibbs continuation and its equality with the fixed BV coefficient in
-`DeningerGammaSixGreenGibbsPhysicalReader`; another principal continuation
-would not be new. The next target is the actual C24 full integral
-operator, all ordinary dilations, and its first parameter variation.
+The actual complete integral operator from C24 has a critical Abel reader
+obtained through admitted open Gibbs domains `tau=(1+epsilon)/2`, with
+`epsilon>0`. The literal partition satisfies `epsilon*Z_epsilon->1`,
+diverges, and has vanishing inverse. A full summable diagonal correction
+has normalized reader norm at most `Z_epsilon^(-1)*sum |r_k|`; this bound
+comes from the actual source class and vanishes at the endpoint.
 
-Write `epsilon=2*tau-1`, `Z_tau=sum_k k^(-2*tau)`, and `T=c*Q+R`, with
-the summable diagonal of `R` derived above. A proof must show directly that
-`Z_tau` diverges as `tau` decreases to `1/2` and that the complete weighted
-correction divided by `Z_tau` vanishes, also after every fixed divisibility
-projection. The predicted reader limits are `c` and `c/n`. The already
-proved exchange multiplier is `n^epsilon`, so the compression-minus-
-projection defect is predicted to tend to zero while its quotient by
-`epsilon` tends to `c*log(n)/n`. This retained first variation is nonzero
-at a multiplicity-top source for `n>1`.
+Consequently the complete reader tends to `c`, and its compression and
+projection by every fixed ordinary dilation `n` both tend to `c/n`. The
+exact exchange multiplier remains `n^epsilon`. Thus their literal defect
+`D_epsilon` tends to zero but `D_epsilon/epsilon` tends to
+`log(n)*c/n`. At each admissible divisor, multiplicity-top orders have
+nonzero `c`; for every fixed `n>1` the slope is nonzero and the actual
+positive-parameter defect is eventually nonzero. No zero slope can be
+substituted for this retained response.
 
-These limits and the first-variation law are not yet formalized. They must
-come from admitted open-domain readers, not an undefined endpoint series.
-Even if established, choosing the endpoint independently of the divisor
-does not prove agreement at the physical assignment `tau=Re(rho)` or
-annihilate its horizontal defect. That comparison is still the RH gate.
+There is a positive, derived physical comparison:
+`[D_epsilon-c*B_n((1+epsilon)/2)]/epsilon -> 0`,
+where `B_n` is the existing physical BV boundary reader. This first-order
+agreement holds before divisor specialization for the full integral
+source, including its complete arithmetic correction, and uses no reader
+agreement premise. It extends beyond the already known principal
+six-shell continuation. The regulator is independent of the spectral
+parameters: this does not identify its endpoint with `tau=Re(rho)` or
+retain an arbitrary divisor's actual horizontal displacement by itself.
+Even critical top-jet sources have nonzero regulator slope, so forcing
+that slope to vanish would be an invalid replacement condition.
 
+All 39 scratch theorems passed; final audits pending.
+[Full Abel proof and audit](../3-formalized/route-l-critical-abel-reader.md).
+The source-forced fixed-reader comparison required for RH remains open.
+
+### C26 candidate: second-order physical comparison and complete correction recovery
+
+C25 proves first-order agreement. The next attack is whether this
+comparison can extend while preserving the full arithmetic correction.
+For the same literal `T=c*Q+R`, the actual weighted correction should obey
+`A_epsilon(R)/epsilon -> sum_k r_k`. The current corpus has Tannery's
+filter-level theorem: the bound `|k^(-epsilon)*r_k|<=|r_k|` is uniform for
+positive `epsilon`, each term tends to `r_k`, and C24 supplies summability.
+Together with `epsilon*Z_epsilon->1`, these hypotheses predict the limit
+without assuming differentiability of the remainder.
+
+The exact ordinary-integer exchange then predicts
+`[D_epsilon(n,T)-c*B_n((1+epsilon)/2)]/epsilon^2
+  -> log(n)*sum_(n divides k) r_k`.
+This is the explicit mathematical target, not a proved Lean result yet.
+For all ordinary `n>1`, vanishing of these coefficients would force the
+summable correction to be supported at the unit, by the existing
+`pnatDivisibility_summable_supported_unit`. Combining those boundary
+coefficients with the total correction slope should recover every
+coefficient, using the already proved divisibility-sum injectivity. This
+classification needs the full ordinary-integer family; prime-only
+reconstruction is not assumed.
+
+For the current exact placement, an omitted nonunit head coordinate
+already has correction `-c/k`. More robustly, C23's complete diagonal
+tensor multiplier is eventually nonzero at each top-jet source. After
+checking its literal column identity, this should exclude finite-support
+repairs even after filling any omitted head: sufficiently late source
+corrections still survive. A serious proof must establish that survival
+in the exact source before using the reconstruction theorem. An infinite
+counterterm or a change of reader/domain needs its own physical
+justification; deleting the recovered correction is not that comparison.

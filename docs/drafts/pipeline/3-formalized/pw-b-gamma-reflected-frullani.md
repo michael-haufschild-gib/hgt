@@ -47,7 +47,7 @@ For each positive integer n, direct evaluation of the source gives
 
 `R[Q(n*.)](x)=sqrt(n)*Q(x)*exp(-(n-1)/x)`.
 
-Thus the actual reflected arithmetic atom A^R_b(n,x)=R[A_b(n,.)](x)
+Thus the actual reflected arithmetic atom `A^R_b(n,x)=R[A_b(n,.)](x)`
 retains mu(n), exp(-b*log(n)), sqrt(n), and the reciprocal exponential.
 The full pointwise series equals R M_b, and its logarithmic current series
 equals R E_b. This is equality with the original complete functions.
@@ -148,6 +148,18 @@ result is a Lean premise, and no numerical experiments were run.
 
 Module: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusReflectedFrullani.lean.
 The leaf has 447 lines, 38 public theorems and six definitions; capstone
-pwGammaMobiusReflectedFrullani_closed. The complete scratch proof passed;
-direct, leaf-build and public-axiom audits are in progress. RHTower import
-is wired. No full or umbrella build is used.
+pwGammaMobiusReflectedFrullani_closed. Complete scratch and direct
+`lake env lean` checks passed, as did the targeted
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusReflectedFrullani`.
+The accepted proof emits an informational ring-normalization suggestion;
+the build also replays existing upstream style warnings. No proof goal
+remains open. All 44 public declarations passed the scratch axiom audit,
+using only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Formal lint passed. The unrelated umbrella gap seen in the preceding
+iteration is now resolved in the shared worktree. All public names have
+unique declarations, the RHTower import is wired, and scoped whitespace,
+conflict and local Markdown-link checks passed. Index/API and final
+process checks are recorded in the attack ledger. Lean checks ran one
+at a time in the foreground; no full/umbrella build or numerical
+experiment ran. RH remains unproved and the goal active.
