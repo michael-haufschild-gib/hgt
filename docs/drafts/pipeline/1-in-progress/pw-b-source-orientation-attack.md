@@ -2472,3 +2472,56 @@ coefficient recovery. A new deep inversion-method search is running.
 User now explicitly forbids further #print axioms checks; comply.
 Continue kernel checking with lake env lean scratch files, targeted
 leaf build and the existing no-added-axiom/source lint discipline.
+
+
+Iteration29 mathematical target is now closed in scratch. The reciprocal
+positive kernel substitution, Gamma squeeze, main-mode error bound,
+main-mode limit, later-mode limit and arbitrary inverse-mode bounds
+are proved in GammaReciprocalMoments; its targeted leaf build passed
+in61s. The complete signed source moment is absolutely admitted at
+every order, with exact source/series integral equality. A single
+inverse-square majorant independent of every later moment order
+recovers the actual nonzero n=2 coefficient. Every sufficiently high
+actual moment is nonzero for each complex z. GammaMobiusMomentDetector
+scratch passed; its targeted leaf build is running. No numerical
+experiments or axiom-print checks were used.
+
+The remaining immediate mathematical obstacle is original-cutoff
+extraction: split h<v and h>=v, use the already proved kernel flat
+bound on the near part, and a finite geometric expansion of1/(t-v)
+after t=h+v on the far part. The complete source controls removed
+small-t moment pieces and the logarithmic loss. This should derive
+each moment from the already proved all-power current flatness, but
+that extraction is not yet a Lean proof. The corrected scalar ansatz
+is not retired. Full adjoints, actual Xi occurrence and independent
+Ward balance remain open, so RH remains unproved.
+
+
+Iteration29 final mathematical and build status: all three new leaves
+passed scratch and targeted leaf builds (61s,175s,76s); final formal
+lint passed. Each has one umbrella import. The complete actual-source
+high-order moment detector is closed. A new conjecture loop tested
+using a convergent-power-series API for the remaining extraction:
+the actual moment terms fail to tend to zero at every nonzero complex
+argument, proved in GammaMomentDivergence. The strongest positive
+survivor is the admitted full signed moment family and its nonzero
+Gamma-normalized first-coefficient limit, already closed in Lean.
+The narrow failed-series card records both statements; PW-B remains
+live. Finite asymptotic extraction, not an assumed convergent series,
+is the next attack.
+
+All three deep/method searches are terminal and saved in the moment
+search JSON. Each set of20 candidates and20 source arguments was
+inspected. The third has partial coverage730859 and no reported
+errors; its analytic approximation requires an unavailable series
+premise, and its generated finite-geometric/cutoff plan does not
+retain the actual moving-boundary terms. The actual corpus factorial
+decay proof and mathlib source yielded the new divergence theorem.
+Broad recent curvature/drift searches and primary Thorpe-pairing
+reading supplied an exact-annihilator correction idea only; no PW
+annihilator, Xi occurrence or Ward orientation follows from it.
+
+The user instruction to stop axiom-print checks is saved separately
+in Serena memory rh/pw_b_user_no_axiom_prints_2026_09_11 and remains
+in force. No further such checks, full builds, numerical experiments,
+subagents, commits or pushes occurred.

@@ -257,3 +257,123 @@ to [Solomons et al., geometric quantum state preparation, 9 September 2026](http
 Its section II.1 represents a linear-system solution up to a magnitude
 factor. Such state preparation does not supply the missing norm bound for
 the unnormalized EDQ source. No algorithm or numerical experiment was run.
+
+## Compensated quotient transfer: the input norm and truncation boundary
+
+The co-Poisson transfer attempt gives no stronger source bound. In
+particular, exact compensation is already formalized in
+DeletionCounterterm.error_eq_compensated_quotient_mass and
+DeletionCounterterm.hasSum_mertensIncrement_mass, in
+EulerDeletionCountertermRigidity. Repackaging those identities is not new
+arithmetic progress.
+
+Here is the continuous normalization used to test the transfer. All
+functions below are on the positive ray, and N is a positive integer:
+
+\[
+ \phi_n(u)=\frac{\{u/n\}}u,\quad
+ R_N=\sum_{n\le N}\mu(n)\phi_n,\quad
+ G_N=R_N-H_N\phi_1,\quad
+ e(u)=\frac{1_{u\ge1}}u,
+\]
+\[
+ h_N(v)=\frac{1_{v>N}(M(\lfloor v\rfloor)-M(N))}{v},\qquad
+ Ph(u)=\sum_{j\ge1}\frac{h(u/j)}j-\int_0^\infty h(v)\frac{dv}{v}.
+\]
+
+The corpus's arbitrary logarithmic Mertens bound implies
+\(\int|h_N(v)|\,dv/v=O_q((\log N)^{1-q})\) for each integer q>1,
+by integrating \(|M(\lfloor v\rfloor)|/v^2\) above N and adding
+\(|M(N)|/N\). Cellwise integration of the existing increment-mass
+identity gives \(\int h_N(v)\,dv/v=-H_N\). Finite divisor regrouping,
+using \(\sum_{n\le u}\mu(n)\lfloor u/n\rfloor=1_{u\ge1}\), therefore gives
+
+\[
+                  Ph_N=R_N+e=G_N+H_N\phi_1+e.                 \tag{Q1}
+\]
+
+Each quotient sum is finite at a fixed u. Since \(|H_N|\le2\),
+\(\|\phi_1\|_2\le\sqrt2\), and \(\|e\|_2=1\), the correction between
+Ph_N and G_N is uniformly bounded in \(L^2(du)\). Thus (Q1) retains
+the physical energy target; it does not estimate it.
+
+**The weighted input norm does not control output energy.** For
+\(h_a(v)=h(v/a)\), a>0, substitution gives
+\[
+ \|h_a\|_{L^1(dv/v)}=\|h\|_{L^1(dv/v)},\qquad
+ Ph_a(u)=Ph(u/a),\qquad \|Ph_a\|_2^2=a\|Ph\|_2^2.            \tag{Q2}
+\]
+Even zero weighted mean does not fix this mismatch. Take
+\(h(v)=1_{[1,2)}(v)/v-2\,1_{[2,4)}(v)/v\).
+Its weighted mean is zero and its weighted absolute integral is one.
+For 1<u<2, Ph(u)=1/u. For large u, the two integer interval counts
+have cancelling linear parts and bounded errors, so Ph(u)=O(1/u);
+hence \(0<\|Ph\|_2<\infty\). Equation (Q2) rules out a uniform
+\(L^1(dv/v)\)-to-\(L^2(du)\) bound on these compact zero-mean seeds.
+This generic transfer failure says nothing negative about the desired
+bound for the particular arithmetic h_N.
+
+**Actual arithmetic truncation keeps a boundary.** For integers L>N,
+let \(k_{N,L}(v)=1_{v<L}h_N(v)\), and set
+\[
+ h_{N,L}(v)=\frac1v\sum_{N<n\le L}\mu(n)1_{v\ge n},
+ \qquad \Delta_{N,L}=M(L)-M(N).
+\]
+Then
+\[
+ k_{N,L}=h_{N,L}-\Delta_{N,L}\frac{1_{v\ge L}}v,\qquad
+ Ph_{N,L}=R_N-R_L,\qquad
+ P(1_{v\ge L}/v)=-\phi_L.
+\]
+The last two identities follow directly by counting the admitted
+quotients and subtracting their weighted integrals. Consequently
+\[
+ Pk_{N,L}=R_N-R_L+\Delta_{N,L}\phi_L,\qquad
+ Pk_{N,L}-Ph_N=-(R_L+e)+\Delta_{N,L}\phi_L.                 \tag{Q3}
+\]
+The boundary has the exact squared norm
+\[
+ \|\Delta_{N,L}\phi_L\|_2^2
+   =\|\phi_1\|_2^2\,\frac{(M(L)-M(N))^2}{L}.
+\]
+The available logarithmic estimates do not make this term small.
+Nor may it be declared a lower bound for the complete defect in (Q3):
+the interaction with R_L+e must remain. Weighted input convergence does
+not justify strong output convergence.
+
+RHTower.BurnolCoPoissonSource.seed_memLp_two, in
+BurnolCoPoissonSeedL2Recovery, assumes a literal source with compact
+multiplicative support and an existing L2 output vector.
+Its finite inverse uses a cutoff at least the support ratio. Neither
+this theorem nor the dilation membership theorems supplies a uniform
+estimate for (Q3). The first interval N<u<2N also has only one active
+quotient in (Q1); its signed Mertens increment is the existing
+EulerDeletionFirstTailMertens obstacle. Later disjoint time intervals
+cannot cancel a positive energy already integrated on this interval.
+This does not preclude cancellation between quotient terms at the same u.
+
+Four broad deep/method searches tested shared coefficients and renewal,
+Cotlar dilation autocorrelation, almost orthogonality across scales,
+and Muntz/co-Poisson compensation. All used OR matching, all retrieval
+views, two rounds, no module cap, cached content and 120-second budgets.
+All were partial. Generations were 872700, 872742, 872793 and 872903;
+the second and fourth reported complete source inventories of 56,809
+files, with most compiler states pending. All returned 20 declarations.
+The second and fourth also returned 20 candidate and 20 source entries;
+the third returned 20 candidates. No proof ideas were returned. The two
+ingredient sets covered autocorrelation Fourier identities and dilation
+bookkeeping. Source statements were inspected; no candidate was accepted
+as compiler-verified. Retrieval interruptions, an unavailable semantic
+service and a reranking deadline limit the search conclusions.
+
+A broad newest-first arXiv search for memory led to
+[Ellis et al., delay-engineered spin dynamics, 10 September 2026](https://arxiv.org/html/2609.11383v1).
+Its exact linear characteristic equation retains the delay phase as
+well as gain; a negative feedback coefficient alone does not prove
+stability. The inspected result supplies no estimate of the EDQ source.
+No simulation was run.
+
+Equations (Q1)–(Q3) are paper normalizations and transfer tests, not new
+Lean theorems or a completed no-go. The source energy estimate remains
+open. No computations, Lean builds, or frontier-map changes accompany
+this section.

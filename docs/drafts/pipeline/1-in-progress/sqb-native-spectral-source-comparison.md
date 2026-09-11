@@ -597,6 +597,72 @@ This is a polynomial in `q`, quadratic in the four test coefficients, using the 
 
 Further independent word searches found [Umbral calculus over a vector space](https://arxiv.org/html/2609.10030v1), 9 September 2026, and [Charlier and Meixner Sobolev-type generating functions](https://arxiv.org/html/2607.12889v1), 14 July 2026. The former expresses raising and multiplication operators through lowering differentials in symmetric tensor coordinates. The latter retains a rank-one finite-difference correction with its degree-dependent reproducing-kernel denominator and assumes a positive classical discrete measure. These are possible recurrence and finite-completion mechanisms; neither has been identified with the signed theta endpoint form.
 
+### SQB86: proved affine endpoint head margins
+
+The coupled endpoint `z=1/U(q)`, `U(q)=twoAtomLowerEnvelope q`, has strict leading even minor margins throughout the **closed** interval `37/10<=q<=5`. Define `Affine(p,z)=2*p(z)-(p(2*z)+p(0))/2`; for the existing quadratic two-atom numerator polynomials this retains exactly their constant and linear terms. In the common normalization with the Gaussian square and `4*q^2` removed, put
+
+```text
+a0 = (2*q-3)^2 + 8*z*(2*q-3)*(8*q-3),
+ak = q*Affine(twoAtomOddNumeratork(q,·),z),  k=1,...,4.
+```
+
+The formalized conclusions at `z=1/U(q)` are
+
+```text
+a0 > 0,
+a0*a2-a1^2 > 100000,
+a0*(a2*a4-a3^2)-a1*(a1*a4-a2*a3)+a2*(a1*a3-a2^2) > 1000000000000.
+```
+
+The proof keeps every mixed term before forming the minors. Its homogeneous variables are `u,t>=0`, `u+t>0`, with `A=37*u+50*t`, `B=10*u+10*t`, `U_h=325*(200*u^2+1180*u*t+2501*t^2)`, and `V=(u+t)^2`. For `q=A/B`, `z=V/U_h`, the polynomial moments satisfy `b_k=U_h*B^(2*k+2)*a_k`. Exact symbolic normalization and positivity prove
+
+```text
+b0*b2-b1^2 > 100000*U_h^2*B^8,
+det Hankel_3(b) > 1000000000000*U_h^3*B^18.
+```
+
+The substitution `u=50-10*q`, `t=10*q-37` covers the full closed interval, including both endpoints, and gives `A=130*q`, `B=130`, `U_h=169*U(q)`, `V=169`. The normalization identities to the existing numerator polynomials are checked in Lean. This is an actual sign-and-margin result for the affine endpoint head. The fourth-coordinate completion, admission of the physical affine form, and the full-source tail margin remain separate obligations; no complete inner interval or all-rank theorem is claimed.
+
+Implemented in `formal/GaloisForLFunctions/HTGeometry/TwoAtomAffineEvenHead.lean`, with capstones `twoAtomAffineEvenMass_pos`, `twoAtomAffineEvenHead_lower`, and `twoAtomAffineEvenThreeDet_lower`. Foreground scratch `/tmp/sqb86_release.lean` passes; the installed source matches it, the module is wired once into the HTGeometry umbrella, and the narrow final `lake build GaloisForLFunctions.HTGeometry.TwoAtomAffineEvenHead` passes in `/tmp/sqb86-affine-head-leaf-audit` (log `/tmp/sqb86_affine_head_build.txt`). Formal lint passes (`/tmp/sqb86_formal_lint.txt`). Per the user's updated instruction, no further `#print axioms` checks are run.
+
+Independent deep searches for a mixed-term absorption mechanism and broad OR `coercivity polarization` inspected declarations, candidate lemmas, methods/source arguments, proof ideas, and ingredient groups. The latter covers 56,810 files and 730,683 declarations, with 706,128 methods ready and 724 stale; compiler metadata is mostly pending and semantic retrieval timed out. Retrieved source-specific coercivity results apply to other forms; the available generic operator bounds assume the positivity needed here.
+
+The independently chosen recent word search also located [additive Maxwell–Stefan diffusion](https://arxiv.org/html/2609.06732v1), 6 September 2026, and [fourth-order skyrmions](https://arxiv.org/html/2609.08255v1), 8 September 2026. The first diagonalizes constrained pair dissipation using its additive pair law; the second uses a forced Helmholtz mean identity and the sphere constraint to retain a positive residual at a degenerate threshold. Their stated structures have not been identified with the theta endpoint form. No paper assertion enters a Lean proof.
+
+### SQB87: fixed-product scalar recurrence for the fourth-coordinate attack
+
+The next analytical construction uses the literal ordered atom pair. Put `p(t)=p*exp(2*t)`, `r(t)=r*exp(-2*t)`, `a=p*r`, and `w(t)=p(t)+r(t)`. Then `a` is constant, `w''=4*w`, and `(w')^2=4*(w^2-4*a)`. The original seeded pair is exactly
+
+```text
+4*a*exp(x-w(t))*(4*a+9-6*w(t)).
+```
+
+For a polynomial `P` in `w`, define
+
+```text
+S_a P = -4*((w^2-4*a)*(P''-2*P'+P) + w*(P'-P)),
+P_(a,0)=4*a+9-6*w,     P_(a,k+1)=S_a P_(a,k).
+```
+
+The chain and product rules then give the all-order paper identity
+
+```text
+(-1)^k * pairReflectionDerivative_(2*k)
+  = 4*a*exp(x-w(0))*P_(a,k)(w(0)).
+```
+
+Consequently the affine first/two-atom moments, after removing `4*q^2*exp(x-2*q)`, have the one-variable description
+
+```text
+a_k(q,z) = P_(q^2,k)(2*q) + 8*z*P_(4*q^2,k)(5*q).
+```
+
+For `k=0` this is the exact mass polynomial in SQB86. The intended next proof constructs `k=5,6` with this recurrence and attacks the complete affine four-by-four determinant with its fixed correction. This reduces each even-derivative step to one second-order polynomial operator and keeps both ordered mixed pairs. The scalar-profile second derivative, all-order recurrence, and literal theta-pair identification pass `lake env lean /tmp/sqb87_radial_source.lean`. They are installed in `formal/GaloisForLFunctions/RHTower/ThetaCuspPairRadialRecurrence.lean`, wired once into the RHTower umbrella. The capstones are `thetaPairRadialProfile_second`, `thetaPairRadialProfile_even`, `thetaCuspAtomPair_eq_radialProfile`, and `thetaCuspAtomPairEvenJet_eq_radial`. The last theorem gives every original even atom-pair derivative with its exact Gaussian normalization and actual squared frequencies, for all natural atom indices and derivative orders. The narrow final `lake build GaloisForLFunctions.RHTower.ThetaCuspPairRadialRecurrence` passes in `/tmp/sqb87-radial-leaf-audit` (log `/tmp/sqb87_radial_build.txt`), and updated formal lint passes (`/tmp/sqb87_formal_lint.txt`). No axiom-printing check was run. The fourth determinant margin remains unproved. No numerical experiment or extracted numerical certificate is used.
+
+The broad OR radial/Casimir/Sturm search (`/tmp/sqb87_radial_search.json`) inspected all views. Inventory: 56,825 files, 730,883 declarations, 706,128 ready methods and 724 stale methods; semantic indexing remains partial and compiler records mostly pending. It found Sturm integration-by-parts and amplitude identities, plus Casimir sum-of-squares laws under Hermitian hypotheses. None was imported as a positivity premise for the theta form.
+
+The later broad OR mixed-discriminant search (`/tmp/sqb86_mixed_discriminant_search.json`) inspected all available views. Its inventory covers 56,820 files and 730,859 declarations; semantic reranking timed out, compiler metadata is mostly pending, and 724 method records are stale. It retrieved Gaussian log-determinant concavity and positive-cone determinant monotonicity, with positivity or source-incidence assumptions not yet supplied for the full four-coordinate form.
+
 ### Complete compensated outer region through four fifths
 
 Put `q=pi*exp(2*x)`, `f_1=thetaCuspSourceTerm x 1`, and `epsilon=regimeOneLikelihoodScale x`. The cooling recurrence only needs `m+n<=q` and `(m+n)/3<=q-pi`. Combining it with the Gaussian source jets gives the full reflected derivative bound under `6<=q` and `n+3<=q`. In balanced coordinates, for `6<=q` and `2*k+3<=q`,

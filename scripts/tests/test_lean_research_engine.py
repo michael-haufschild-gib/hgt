@@ -10,7 +10,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lean_research_corpus import Corpus
-from lean_research_engine import Engine, json_object, reciprocal_rank_fusion, method_payload, enrich
+from lean_research_engine import (Engine, json_object, reciprocal_rank_fusion, method_payload,
+                                  enrich, pending_method_ids, METHOD_PROMPT_VERSION)
 
 
 class FakeRuntime:
@@ -307,6 +308,27 @@ class EngineTests(unittest.TestCase):
         self.assertTrue(result['candidate_lemmas'])
         self.assertNotEqual(result['index_generation'], self.db.generation)
         self.assertEqual(self.db.con.execute('SELECT count(*) FROM cache').fetchone()[0], 0)
+
+    def test_pending_methods_keep_priority_limit_and_valid_producer_results(self):
+        root = Path(self.tmp.name)
+        for path, text in {
+            'formal/RHTower/Z.lean': '\n'.join('theorem '+n+' : True := trivial' for n in
+                ('localReady','gpuReady','localFailed','staleMethod','afterStale')),
+            'formal/HTGeometry/A.lean': 'theorem geometryPending : True := trivial',
+        }.items():
+            p = root/path; p.parent.mkdir(parents=True, exist_ok=True); p.write_text(text)
+        self.db.refresh(root)
+        ids = {r['name']:r['id'] for r in self.db.con.execute('SELECT name,id FROM declarations')}
+        payload = dict(description='use witness', assumptions=[], steps=[], obligations=[], evidence=['trivial'])
+        for name, model in [('localReady','local'),('gpuReady','gpu'),('localFailed','local'),('staleMethod','local')]:
+            self.db.save_method(ids[name], payload, model_version=model, prompt_version=METHOD_PROMPT_VERSION)
+        with self.db.con:
+            self.db.con.execute("UPDATE methods SET status='failed' WHERE decl_id=?", (ids['localFailed'],))
+            self.db.con.execute("UPDATE methods SET status='stale' WHERE decl_id=?", (ids['staleMethod'],))
+        rows = pending_method_ids(self.db, 'local', ['local','gpu'], limit=3)
+        self.assertEqual([r[0] for r in rows], [ids['staleMethod'],ids['afterStale'],ids['geometryPending']])
+        self.assertEqual(pending_method_ids(self.db, 'local', ['local','gpu'], limit=1)[0][0], ids['staleMethod'])
+        self.assertEqual(pending_method_ids(self.db, 'local', ['local','gpu'], limit=0), [])
 
     def test_interrupted_multi_chunk_method_resumes_completed_chunks(self):
         from research_runtime.protocol import RuntimeDeadline

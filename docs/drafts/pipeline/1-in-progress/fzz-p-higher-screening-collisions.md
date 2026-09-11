@@ -446,19 +446,24 @@ tactics, which were removed before the successful leaf build. All ten public
 statements passed the complete axiom audit with only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
-### Next finite-part extraction conjecture
+### Closed Gamma-unit factorization and next finite-part extraction
 
 Set `a=alpha+6`, `b=beta+6`, and `v=(a+b)/2` near the cubic collision.
 The inspected Gamma recurrences rewrite the remaining transcendental unit as
 
 `U(a,b)=Gamma(1-v)*Gamma(1+a/2)*Gamma(1+b/2)/(Gamma(1+v)*Gamma(1-a/2)*Gamma(1-b/2))`.
 
-All arguments are positive near the origin. The next conjecture is that `U`
-has value one and vanishing first and second derivatives there. The product
-has inverse reflection `U(-a,-b)=1/U(a,b)`; first-derivative cancellation
-would then force the second derivatives to vanish. These assertions still
-need Lean proof. They would reduce the cleared Gamma jets through degree
-three to the remaining rational factors, without numerical Gamma evaluation.
+All arguments are positive near the origin. The eight public statements in
+`FZZCigarHigherScreeningGammaUnit` now pass mathematical scratch: `U(0,0)=1`,
+both first axis derivatives, both second axis derivatives and the mixed second
+derivative vanish. The exact local factorization `H=Q*U` is proved first for
+the cleared Gamma family and then for the actual cleared original source,
+including the collision point. The rational mixed jets are `Q_ab(0,0)=-12288*pi` and
+`Q_aab(0,0)=16176*pi`; the actual original cleared source has the same values.
+The umbrella is wired. The expanded eight-statement targeted final leaf build
+and global formal lint passed. The leaf build reports 39 seconds for the changed
+module, with tactic-style warnings; its one unused simplifier argument was
+removed before promotion. No numerical Gamma evaluation is used.
 
 A separate original-source extraction is required. Writing
 `A(-6+a)=8*a-6*a^2+a^3`, the expected unmarked relation is
@@ -472,7 +477,7 @@ collision point cannot establish it. The marked extraction additionally needs
 the derivative of each local residue and the original logarithmic cutoff
 corrections. No proposed finite-part value is promoted to a theorem here.
 
-A more direct parity proof is now available as the next attempt: set
+The completed proof uses direct parity: set
 `L(t)=log Gamma(1+t)-log Gamma(1-t)`. This function is odd by its definition,
 and is analytic near zero because both Gamma factors are positive there.
 Thus `L''(0)=0`. The logarithm of the unit is
@@ -481,7 +486,7 @@ derivatives vanish. Exponentiation then gives the required unit jets. The
 current corpus's `SlepianKernelScaledFubini.even_prolateSLAction` explicitly
 uses `deriv_comp_neg` and differentiation of a reflection identity; its proof
 was read as the parity mechanism. The actual Gamma source specialization
-and the original finite-part extraction remain to be checked in Lean.
+is now proved; the original finite-part extraction remains open.
 
 ### Continuation search and paper intake
 
@@ -516,28 +521,94 @@ setting on simple surfaces. Those geometric assumptions do not identify the
 present fixed FZZ source or its phase frame. Neither paper supplies a premise
 of the Lean proof; the latter lies outside the requested recent window.
 
-The corresponding rational factor to be verified near the cubic origin is
+The rational factor now proved near the cubic origin is
 
 `Q(a,b)=64*pi*v*((v-1)*(v-2)*(v-3)*(v-4))^2/((1-a/2)*(2-a/2)*(1-b/2)*(2-b/2))`,
 
-with `H(-6+a,-6+b)=Q(a,b)*U(a,b)`. Since `Q(0,0)=0`, the proposed unit
-flatness through order two would make the cleared jets through order three
-come entirely from `Q`. Symbolic coefficient comparison gives the next Lean
-targets `H_ab=-12288*pi` and `H_aab=16176*pi`. For the original mark in the
+with `H(-6+a,-6+b)=Q(a,b)*U(a,b)`. Since `Q(0,0)=0`, unit
+flatness through order two isolates the cleared jets through order three
+in `Q`. The derivative product-rule transfer is now proved in Lean:
+`H_ab=-12288*pi` and `H_aab=16176*pi`. For the original mark in the
 first exponent, the corresponding extraction target is
 
 `H_aab=128*markedFP-96*FP+10368*pi`.
 
-The constant corrections come from the cubic clearing factors and the local
-residue coefficients. These are explicit proof targets, not audited values;
-the original cutoff-to-jet comparison remains required before either
-finite-part conjecture follows.
+The constant corrections in the proposed cutoff extraction come from the
+cubic clearing factors and the local residue coefficients. The cleared source
+jet values are proved; the original cutoff-to-jet comparison remains required
+before either finite-part conjecture follows.
 
 The current Mathlib theorem
 `Complex.one_div_Gamma_eq_self_mul_one_div_Gamma_add_one`
 (`Analysis/SpecialFunctions/Gamma/Beta.lean:501`) was read. It proves the
 reciprocal recurrence at every complex argument, including zero. This supplies
 a direct route to the five reciprocal shifts in the proposed rational
-factorization while retaining the collision point. The two unit-flatness
-statements are drafted in `/tmp/fzzp_higher_gamma_unit.lean`; this scratch has
-not yet been checked.
+factorization while retaining the collision point. All four unit-flatness
+and factorization statements passed `/tmp/fzzp_higher_gamma_unit.lean`.
+The exact rational second and third mixed derivatives passed
+`/tmp/fzzp_higher_rational_jets.lean` cleanly. Their transfer to the original
+cleared source then passed `/tmp/fzzp_higher_gamma_source_jets.lean` and is
+promoted into the same leaf. This uses the actual local factorization and the
+axis derivative `W(a)=(L'(0)-L'(a/2))/2`. Write `X(a)=Q(a,0)`. The correction
+to the right derivative is `C(a)=X(a)*W(a)`. Local analyticity admits every
+differentiation; `X(0)=W(0)=W'(0)=0` forces `C'(0)=C''(0)=0`. Two explicit
+product-rule steps therefore transfer both rational mixed values to the
+original source. No finite-part cutoff value is assigned by this argument.
+
+
+The mixed-product deep query returned partial generation `873258`, with local
+semantic/reranking deadlines and no proposed ingredient set. Its complete
+candidate and method lists were inspected. The source proof in
+`HedenmalmCenterMixedLocalThreePoint` supplies the explicit derivative-product
+method; `HedenmalmCenterMixedFourthJetCusp` supplies its iterated version.
+The Gamma logarithm uses local analyticity, so the stronger entire-function
+premise in `SignedReflectionParity` is not imported.
+
+Broad searches also used transgression and renormalization.
+[Renormalization group bounds on Araki relative entropy](https://arxiv.org/html/2609.07277v1),
+submitted 7 September 2026, was inspected in the original paper. Its
+probabilistic entropy identity assumes a stochastically positive KMS system,
+a sharp-time perturbation in `L^(2+epsilon)`, and exponential integrability.
+Its entropy bound additionally requires a multiscale curvature criterion.
+These are not yet identified for the fixed FZZ source and independently fixed
+phase frame; the bound alone does not force Ward saturation. No premise is
+imported from this paper.
+
+
+The original-cutoff deep query returned partial generation `873783`, no tool
+errors, and unfinished semantic indexing and source refresh. All twenty
+candidate and twenty method names, its proof idea and its proposed ingredient
+set were inspected. Reading `LocalExtensionQuadraticRateRigidity` showed that
+its poles and residues are finite spectral-gap data; the generated transfer
+does not identify the screening cutoff. `SelbergScatteringCuspSubtraction`
+retains the original source minus its principal cutoff, but also supplies no
+cubic finite-part identity. The original angular cutoff and full-polynomial
+restoration already available here remain the applicable starting point.
+
+For the next original local comparison, the full quintic angular polynomial
+at exponent `-6` has coefficients `(1,9,36,-460,-405,-21)`. Consequently the
+angular average of the integrable fifth remainder differs from the previously
+admitted cubic angular remainder by `460+405*r^2+21*r^4`. Integrating this exact
+difference on the original half disk gives the paper target
+
+`CubicLocalFP = integral_ball R5(-6,-6) - 10993*pi/64 + 72*pi*log(1/2)`.
+
+This is a proposed original-integral comparison, not yet a Lean theorem.
+It retains all three integrable polynomial terms, not only the divergent
+coefficients. Polar admission and equality with the already proved independent
+cutoff limit must precede finite-part evaluation.
+
+
+A useful refinement of the next unmarked extraction is now explicit. Let
+`Rsum` denote both admitted fifth-remainder integrals plus the original exterior
+at `(-6,-6)`. Differentiating the complete source definition predicts
+
+`H_ab = 64*Rsum + 16*deriv (fun alpha => ClearedCounterterm(alpha,-6)) (-6)`.
+
+The six radial derivatives give the counterterm derivative
+`-14449*pi/8 + 576*pi*log(1/2)`. Together with the original half-disk comparison
+above, this is exactly `H_ab=64*FP-6912*pi`. This derivation needs only the
+already admitted separate analyticity of the two local remainders, the original
+exterior and the restored counterterms; no derivative of an unregularized
+singular integral is introduced. Both displayed extraction steps are paper
+proof targets for the next Lean pass, not completed Lean declarations.

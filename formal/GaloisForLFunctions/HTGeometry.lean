@@ -14114,6 +14114,7 @@ import GaloisForLFunctions.HTGeometry.TwoAtomMiddleLowEntries
 import GaloisForLFunctions.HTGeometry.TwoAtomOddAlgebra
 import GaloisForLFunctions.HTGeometry.TwoAtomOddHighReserve
 import GaloisForLFunctions.HTGeometry.TwoAtomOddLowerReserve
+import GaloisForLFunctions.HTGeometry.TwoAtomAffineEvenHead
 import GaloisForLFunctions.HTGeometry.TwoAtomReflectedMajorant
 
 import GaloisForLFunctions.HTGeometry.HankelSuccessorSchur

@@ -44,26 +44,28 @@ Proof: cancel exponentials before integration. Translation changes the integral 
 
 2026-09-11: the exact source, pulse and actual wave-image translation moments are formalized in `ThetaCuspHawkingBMFixedClockSourceTranslation` (218 lines, seven public theorems). Scratch check and exact leaf build passed with no warnings; no dependency or umbrella build. The [formal result and proof](../3-formalized/hb-fixed-onset-translation-moment.md) give the precise scope. Extinction, complete physical-action identification and RH remain open. No route retired.
 
-### Next direct current attack
+The continuation now adds `ThetaCuspHawkingBMIncomingClockTranslation`: 459 lines, ten public source/current theorems, scratch-checked and audited by an exact leaf build (132 seconds, no warnings). It proves the incoming clock moments, two angular divergence/source-work laws, their exact radial mass balance, and the literal pulse factorization. See the [source balance and remaining physical scope](../3-formalized/hb-incoming-clock-source-balance.md). The complete extinction goal remains open.
+
+### Direct current attack
 
 **C7: the derivative-clock channels erase the finite translation of the incoming Einstein current.** The current is already identified with the original action and its exterior-to-horizon limit in `ThetaCuspHawkingBMFullIncomingCurrent`. All four horizon components have the exact form
 
     J_j(u)=exp(-6u)[C_j0 chi(u)^2+C_j1 chi(u)chi'(u)+C_j2 chi'(u)^2].
 
-The rate -6 is common to both physical branches and independent of the Xi occurrence. The C coefficients retain distinct angular trace/normal covectors and both angular Green currents. Direct paper calculation predicts
+The rate -6 is common to both physical branches and independent of the Xi occurrence. The C coefficients retain distinct angular trace/normal covectors and both angular Green currents. The source proof establishes
 
     M_h^{-6}(J_j)=h exp(-6h) C_j0.
 
 The derivative terms are compactly supported and have zero translation integral after the fixed demodulation. The squared onset tends from zero to one and contributes h. This determines an incoming boundary contribution; it does not identify the temporal test with the left-QNM state.
 
-**C8: original-measure late-slab current vanishes from temporal translation.** For T,h≥0, the direct original-measure calculation instead predicts
+**C8: original-measure late-slab current vanishes from temporal translation.** For T,h≥0, the proved original-measure calculation instead gives
 
     integral_{1+T}^{1+T+h} J_j(u) du
       = C_j0 exp(-6(1+T))[1-exp(-6h)]/6.
 
-Both derivative channels vanish on this slab; the complete mass coefficient survives. Both C7 and C8 now pass scratch checking, as does the original-measure identity `integral_0^T (J(u+h)-J(u)) = integral_T^(T+h) J - integral_0^h J`. Any complete fixed-clock invariance must cancel these terms against the corresponding pulse-response, cross, cusp and other radial/temporal faces. Final module audit is pending.
+Both derivative channels vanish on this slab; the complete mass coefficient survives. Both C7 and C8 now pass scratch checking, as does the original-measure identity `integral_0^T (J(u+h)-J(u)) = integral_T^(T+h) J - integral_0^h J`. Any complete fixed-clock invariance must cancel these terms against the corresponding pulse-response, cross, cusp and other radial/temporal faces. The exact leaf audit passed.
 
-**C9: the incoming radial mass is a pure angular divergence. Exact residual under test.** Put s=physicalRate(q,true), t=physicalRate(q,false)=-s-3, d_s=s(s-1)/4, d_t=t(t-1)/4, alpha_s=(2s+1)(2s+2), alpha_t=(2t+1)(2t+2). Let H_s,H_t be the actual full angular potentials, Q the literal half-square, U=coexact H_s, V=coexact H_t, W=coexact Q. Dot products below are complex bilinear coordinate contractions. The original forced equations give
+**C9: the incoming radial mass is a pure angular divergence. Exact residual proved.** Put s=physicalRate(q,true), t=physicalRate(q,false)=-s-3, d_s=s(s-1)/4, d_t=t(t-1)/4, alpha_s=(2s+1)(2s+2), alpha_t=(2t+1)(2t+2). Let H_s,H_t be the actual full angular potentials, Q the literal half-square, U=coexact H_s, V=coexact H_t, W=coexact Q. Dot products below are complex bilinear coordinate contractions. The original forced equations give
 
     E = U dot (roughDelta+1)V - V dot (roughDelta+1)U
       = (alpha_t-alpha_s) U dot V + alpha_t U dot W - alpha_s V dot W.
@@ -83,15 +85,15 @@ The radial mass coefficient instead has the exact decomposition
     r_t= 2t d_s[(s+1)²-st]-st alpha_s/3,
     r_Q=2d_s d_t(s-t)(1-st).
 
-The displayed division is notation only: the formal theorem multiplies by 4c, including c=0. Proof: expand the original trace/normal covectors `U-d_s W`, `-sU+d_s(s+2)W` and their t partners in `clockCoefficients`. The U dot V coefficient is `2st(t-s)=-(st/3)(alpha_t-alpha_s)`; the other three coefficients are as displayed. No division by tilt, spectral difference or amplitude occurs. This identifies the precise source-response remainder after the angular boundary is extracted. No vanishing of that remainder, or compensation by the actual pulse response, has been derived. The algebraic source identity and its differentiated angular current are being checked in Lean.
+The displayed division is notation only: the formal theorem multiplies by 4c, including c=0. Proof: expand the original trace/normal covectors `U-d_s W`, `-sU+d_s(s+2)W` and their t partners in `clockCoefficients`. The U dot V coefficient is `2st(t-s)=-(st/3)(alpha_t-alpha_s)`; the other three coefficients are as displayed. No division by tilt, spectral difference or amplitude occurs. This identifies the precise source-response remainder after the angular boundary is extracted. No vanishing of that remainder, or compensation by the actual pulse response, has been derived. The algebraic source identity and its differentiated angular current are now proved in Lean.
 
-**C10: another angular integration by parts removes the remainder. Paper identity; no extinction.** Write `Z=r_s H_s+r_t H_t+r_Q Q`, `lambda=(s+1)(s+2)`. The actual source equation is `Delta Q=2lambda Q+fullGradientEnergy`. Thus
+**C10: another angular integration by parts removes the remainder. Exact source balance proved in Lean; no extinction.** Write `Z=r_s H_s+r_t H_t+r_Q Q`, `lambda=(s+1)(s+2)`. The actual source equation is `Delta Q=2lambda Q+fullGradientEnergy`. Thus
 
     R = div(Z grad Q)-y^(-2) Z(2lambda Q+fullGradientEnergy),
     C_10 = 4c div[-st G/3+Z grad Q]
              -4c y^(-2) Z(2lambda Q+fullGradientEnergy).
 
-Proof: differentiate `Z grad Q`; its differentiated-Z term is exactly the three-term remainder R above, because coexact rotation preserves the bilinear dot product. The other term is Z times the Euclidean Laplacian of Q; substitute the literal hyperbolic source equation. This replaces the remainder with work against the literal half-square Laplacian and an explicitly determined boundary current. It does not set the full gradient energy to zero or replace Q by a Laplace eigenfunction. This stronger combined current is a next formalization and pulse-comparison target; only its paper derivation is recorded here.
+Proof: differentiate `Z grad Q`; its differentiated-Z term is exactly the three-term remainder R above, because coexact rotation preserves the bilinear dot product. The other term is Z times the Euclidean Laplacian of Q; substitute the literal hyperbolic source equation. This replaces the remainder with work against the literal half-square Laplacian and an explicitly determined boundary current. It does not set the full gradient energy to zero or replace Q by a Laplace eigenfunction. The source-work identity and its combination with the actual radial mass coefficient are now formalized without source-equation premises. Pulse comparison remains open.
 
 For a finite angular rectangle `[x0,x1] x [y0,y1]`, y0>0, the flux of any displayed densitized angular current J is
 
@@ -99,6 +101,27 @@ For a finite angular rectangle `[x0,x1] x [y0,y1]`, y0>0, the flux of any displa
       +integral_x0^x1 [J_1(x,y1)-J_1(x,y0)]dx.
 
 The horizon component integrals retain the coordinate-current sign; an outward-oriented lower radial face requires its corresponding minus sign. These formulas must be inserted in the same finite-domain action balance before removing a cutoff. Neither modularity alone nor rapid decay of only the remainder discards the principal cusp terms.
+
+**C11: the source pulse disappears on the horizon and therefore cannot affect the current. Rejected on paper after retaining the original master normalization.** Put `u=1/r=-tanh x`, `A_s(u)=a²(1+u)^(2s)`, `d_s=s(s-1)/4`, and `alpha_s=(2s+1)(2s+2)`. Directly differentiating the literal source seed and lift in the existing pulse formula gives
+
+    Pulse_s=2 alpha_s A_s(u)(1-u)
+      [-((2s+1)u+1)H_s+d_s u²((2s+3)u+3)Q] chi'(v)exp(2sv).
+
+The ordinary scalar pulse tends to zero at u=1. But its actual scalar forcing is `Pulse_s/alpha_s`, and conversion to the original master source multiplies by `-r³/f`, with `f=r²-1`. The factor `(1-u)` cancels before the limit. Its resulting horizon expression is
+
+    S_pulse,s|horizon=2 A_s(1)(T_s-N_s) chi'(v)exp(2sv),
+    T_s=U_s-d_s W,
+    N_s=-s U_s+d_s(s+2)W.
+
+These are precisely the normalized trace and normal covectors already present in `clockCoefficients`. This paper calculation identifies the next source-contact target without changing the clock. It neither evaluates the causal pulse response nor cancels its cross current with the incoming field. The literal source factorization is now proved in Lean. The original normalized horizon-limit transfer remains a paper calculation; no equality of an unevaluated physical projection is asserted.
+
+**C12: that local pulse contact alone cancels the incoming mass. Paper calculation rejects this inference.** Using the source-contact orientation in `hb-mixed-complete-current.md`, insert the C11 drive into `Psi_s,v dot S_pulse,t-Psi_t,v dot S_pulse,s`, with `Psi_s=A_s(1)T_s chi(v)exp(2sv)`. Put `X=T_t dot N_s`, `Y=T_s dot N_t`, `c=a²b²/64`. Direct bilinear expansion gives
+
+    C_pulse(v)=exp(-6v){
+      4c[(s-t)T_s dot T_t+tX-sY] chi(v)chi'(v)
+        +2c(X-Y)chi'(v)²}.
+
+The derivative-square coefficient matches the incoming radial current's derivative-square coefficient. There is no squared-onset mass in this local contact, so its fixed demodulated translation moment is zero by the proved profile identity. This statement about the actual contact still depends on the pending C11 normalized horizon transfer; its algebraic expansion is recorded on paper. It does not say that the **response** to the pulse has zero moment: a transition-supported forcing can leave a causal response after the transition. The next necessary cancellation calculation therefore involves that response, its incoming cross terms and the remaining physical faces, rather than discarding the pulse or its late-time tail.
 
 ## Exact nonlinear interface still required
 
@@ -183,6 +206,11 @@ where A is the complete original spatial scalar source coefficient, including gr
 ## Broader method search and attempted transfers
 
 Further broad searches used transgression, virial, polarization, passivity, reciprocity and Noether, prioritizing June–September 2026. The arXiv date-sorted passivity endpoint returned HTTP 429; broader web queries recovered the primary records below. These are method tests, not imported assumptions.
+
+- [Kirchhoff, Port-Hamiltonian formulation of energy-based modeling frameworks, 19 June 2026](https://arxiv.org/html/2606.21544v1), Propositions 4.1–4.2: algebraic variables can be retained as auxiliary covectors or represented through additional states. **Transfer tested:** retain source work as an internal exchange. This gives no HB identification of the auxiliary dynamics or sign of its actual radiative channel.
+- [Kirchhoff, Interconnection of port-Hamiltonian systems is not dynamical, 30 August 2026](https://arxiv.org/html/2608.29731v1), Example 5.1 and Section 5: power-preserving interconnection requires explicit paired port relations and regular realization of the connecting variables. **Transfer tested:** pair the incoming and pulse currents. HB still needs its actual paired traces and causal cross terms; geometric skewness alone supplies neither those relations nor extinction. The paper concerns finite-dimensional systems.
+
+A further deep source-work/current query returned partial coverage (pending generation 873253), no proof ideas or ingredient sets, and unrelated source-work classifiers alongside an onset forcing definition. Those classifiers were not adopted as source laws. A broader lexical pulse/current search recovered the actual pulse, all current directions, onset Green transfer, and incoming horizon limit. It supplies no evaluated pulse-response cancellation. No numerical experiment or axiom-print run was used in this continuation.
 
 - [Procopio et al., Backreaction of stimulated Hawking radiation in an optical analogue, July 2026](https://arxiv.org/html/2607.01118v1), Appendix A: a Hermitian interaction gives conservation of total co-moving energy while allowing exchange between pump and probe. **Test:** use nonlinear energy conservation to extinguish one radiative channel. **Failed transfer:** conservation permits nonzero exchange; the optical approximation supplies neither the Einstein boundary identification nor its required sign.
 - [Yang–Yang–Liu, Decentralized and Equilibrium-Set-Oriented Stability Analysis and Control for Power Systems, 31 August 2026](https://arxiv.org/html/2609.00497v1), Lemma 4: sum local storage inequalities and cancel the network supply, leaving a strict dissipation term. **Test:** combine all physical channel currents by a source-derived storage identity. **Open obligation:** HB needs the original storage and signed supplies for every channel and face. The paper assumes local differential passivity; adding its controller changes the dynamics. Neither operation can be imported as an HB extinction proof. Its theorem gives asymptotic stability, not exact extinction at one prescribed clock.

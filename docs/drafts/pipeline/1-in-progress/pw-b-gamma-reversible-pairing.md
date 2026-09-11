@@ -2,7 +2,7 @@
 
 - **ID:** PW-B-GAMMA-REVERSIBLE-PAIRING-2026-09-11
 - **Stage:** 1-in-progress
-- **Status:** Reversible density, uniqueness, source weight, Jacobian, literal cutoff contact, actual source-mode defect and its exact logarithmic pairing are Lean-closed. Full adjoint, source domain and spectral occurrence remain open.
+- **Status:** Reversible density, uniqueness, source weight, Jacobian, literal cutoff contact, actual source-mode defect and its exact logarithmic pairing are Lean-closed. Complete high-order source-moment recovery and the moment-series divergence obstruction are also Lean-closed. Original-cutoff extraction, full adjoint, source domain and spectral occurrence remain open.
 - **Objective:** Derive the positive pairing and retained adjoint correction from the existing forward and inverse-gain reflected source generators, then test their actual arithmetic domain.
 
 ## Actual source and candidate pairing
@@ -385,13 +385,14 @@ unformalized. The earlier candidate sections above describe those
 remaining tasks, not an already completed corrected-source no-go.
 
 
-## Preferred next attack: normalized high-order moment recovers n=2
+## Closed high-order moment detector: normalization recovers n=2
 
 The corpus BesselK1RayCoefficients identifies ray coefficients through
 Schlaefli/Gamma integral representations. Applying that mechanism to
-these actual endpoint moments gives a shorter positive-survivor
-candidate than general moment determinacy. This is a new proof
-candidate, not yet a Lean theorem.
+these actual endpoint moments gives a shorter positive survivor than
+general moment determinacy. The [positive kernel bounds](../3-formalized/pw-b-gamma-reciprocal-moments.md)
+and [complete signed source detector](../3-formalized/pw-b-gamma-moment-detector.md)
+are now closed in Lean with both targeted leaf builds passed.
 
 For a>0 and integer j>=2 define
 I_j(a)=integral_(t>0) exp(-t-a/t)/t^(j+1)dt.
@@ -420,29 +421,29 @@ moment. No uniform starting moment in z is claimed. Combined with
 the original integral's all-order endpoint expansion, it would exclude
 the unit-ground-corrected scalar ansatz at every parameter.
 
-Formal priority: prove the reciprocal integral substitution and the
-normalized Gamma squeeze, then the complete arithmetic high-order
-limit. Afterwards prove the original cutoff expansion and extract its
-coefficients from the already verified all-power current flatness.
+The reciprocal integral substitution, normalized Gamma squeeze, complete
+arithmetic high-order limit and exact original-source integral identity
+are now proved. Next prove the original cutoff expansion and extract
+its coefficients from the already verified all-power current flatness.
 The local exponential-window argument remains an independent backup;
 the preferred proof does not need that measure construction, an L2
 realization, or the separate all-z n=2 source-tail theorem. These
-reductions attack the actual unclosed endpoint-moment step. They do
+results close the endpoint-moment detection step; cutoff extraction remains open. They do
 not construct Xi occurrence or Ward balance, and PW-B remains live.
 
 
-Lean indexing choice for that next positive theorem: use j=k+2 with
+The verified Lean indexing is: use j=k+2 with
 k:nat, so every Gamma recurrence and comparison integral is admitted
 without a separate j>=2 premise. Use the existing
 pwGammaMobiusReciprocalCoefficient z n and a=n+1; its n=0 term is
 exactly the surviving n=2 arithmetic coefficient. The normalized
 main-mode error is at most1/(k+1), and all n>=1 terms are dominated
 by a fixed inverse power chosen from the coefficient growth bound.
-This is an indexing plan for the stated theorem, not a new axiom or
-an assumed analytic estimate.
+The actual source integral is absolutely admitted at every natural k;
+its normalized full signed series tends to the stated nonzero coefficient.
 
 
-### Quantitative refinement of the preferred survivor
+### Optional quantitative refinement; not yet formalized
 
 Choose one integer p>=2 with
 C_z,p=sum_(n>=3)|a_n|/(n-1)^p finite. For every integer j>=p,
@@ -454,7 +455,21 @@ moment error therefore satisfies
 This replaces the last dominated-convergence step with an explicit
 complete-tail bound. Put j=p+k to avoid subtraction in natural powers.
 The right side tends to0 and eventually falls below |a_2(z)|, proving
-eventual moment nonvanishing once the integral identities and bounds
-are formalized. This strengthens the proposed positive survivor and
-gives a more direct next Lean target; it still makes no uniform claim
+eventual moment nonvanishing with an explicit error bound. Qualitative
+eventual nonvanishing is already proved by a fixed summable bound and
+dominated convergence. This optional rate refinement is not needed for
+the next cutoff extraction; it still makes no uniform claim
 about p or the starting index across all complex z.
+
+
+### The asymptotic expansion cannot be replaced by a convergent series
+
+The [exact moment-series divergence](../5-failed/pw-b-convergent-endpoint-moment-series.md)
+now proves in Lean that J_k(z)*w^k does not tend to zero for
+any nonzero w, at every complex source parameter. The normalized
+nonzero Gamma limit is its positive survivor. The current has not yet
+been identified with any endpoint series; no assertion about its
+analyticity follows yet. This rules out using an assumed analytic
+power-series expansion as the missing coefficient-extraction proof.
+Next retain the original h<v piece, shift the h>=v piece, and estimate
+the finite geometric remainder and all removed endpoint terms.

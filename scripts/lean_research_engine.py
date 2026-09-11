@@ -586,6 +586,32 @@ def method_payload(response: str, chunk: str) -> dict:
         'evidence': list(dict.fromkeys(lines[i - 1] for i in ids))}
 
 
+def pending_method_ids(corpus: Corpus, generation_model: str, reusable: list[str], *, limit=32):
+    """Stop at the first pending batch in source-priority order.
+
+    Sorting the declaration join scans the whole corpus before LIMIT can help.
+    Sort the much smaller file list, then use the existing path index for each
+    file. The caller's SQL progress handler bounds this scan too.
+    """
+    if limit <= 0:
+        return []
+    placeholders = ','.join('?' for _ in reusable)
+    files = corpus.con.execute("SELECT path FROM files WHERE status='indexed' AND collection='lean' "
+                               "ORDER BY " + PATH_PRIORITY_SQL + ",path").fetchall()
+    rows = []
+    for file in files:
+        rows.extend(corpus.con.execute(
+            "SELECT d.id FROM declarations d INDEXED BY declaration_path "
+            "LEFT JOIN methods m ON m.decl_id=d.id WHERE d.path=? AND d.proof<>'' "
+            "AND (m.decl_id IS NULL OR m.status='stale' OR m.content_hash<>d.source_hash OR "
+            f"(m.model_version<>? AND (m.status<>'ready' OR m.model_version NOT IN ({placeholders}))) OR m.prompt_version<>?) "
+            "ORDER BY d.line,d.id LIMIT ?",
+            (file['path'], generation_model, *reusable, METHOD_PROMPT_VERSION, limit-len(rows))).fetchall())
+        if len(rows) == limit:
+            break
+    return rows
+
+
 def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=False, progress=None) -> dict:
     from lean_research_vectors import Vectors
     status = runtime.status()
@@ -604,17 +630,13 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
         producers = json.loads(record[0]) if record else {}
         reusable = [generation_model, *(model for model, provenance in producers.items()
                      if provenance.get('prompt_version') == METHOD_PROMPT_VERSION)]
-        placeholders = ','.join('?' for _ in reusable)
         rows = []
         while time.monotonic() < deadline:
             evidence_epoch = corpus.evidence_epoch
             if not rows:
                 corpus.con.set_progress_handler(lambda: time.monotonic() >= deadline, 10000)
                 try:
-                    rows = corpus.con.execute("SELECT d.id FROM declarations d LEFT JOIN methods m ON m.decl_id=d.id JOIN files f ON f.path=d.path WHERE d.proof<>'' AND f.status='indexed' "
-                                      "AND (m.decl_id IS NULL OR m.status='stale' OR m.content_hash<>d.source_hash OR "
-                                      f"(m.model_version<>? AND (m.status<>'ready' OR m.model_version NOT IN ({placeholders}))) OR m.prompt_version<>?) "
-                                      "ORDER BY " + PATH_PRIORITY_SQL.replace('lower(path)', 'lower(d.path)') + ",d.path,d.line LIMIT 32", (generation_model, *reusable, METHOD_PROMPT_VERSION)).fetchall()
+                    rows = pending_method_ids(corpus, generation_model, reusable)
                 except sqlite3.OperationalError:
                     if time.monotonic() < deadline:
                         raise

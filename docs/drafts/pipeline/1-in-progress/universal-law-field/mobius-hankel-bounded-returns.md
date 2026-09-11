@@ -50,6 +50,15 @@ energy above its diagonal budget. This is stronger than bounded returns and is n
 asserted as a universal-field theorem. Its appeal is the full signed, source-fixed comparison;
 there is no chosen zero, divisor, phase, or auxiliary convergence hypothesis.
 
+[PAPER STRENGTH AUDIT; NOT LEAN] This assertion would also force simplicity
+of every critical-line zero. Its diagonal budget is `O(1/(r-1))`; Fatou and
+Cauchy--Schwarz therefore bound `d*Mellin(Phi)(rho+d)` near a critical zero.
+A vanishing zeta derivative would make the other factor in the exact Mellin
+identity tend to zero, contradicting nonzero Gamma. The full proof is in
+[Attempt 5 of the literal renewal attack](../route-e-literal-renewal-energy-attack.md#attempt-5-audit-the-strength-of-collective-diagonal-dominance).
+This does not falsify diagonal dominance. No such growth rate or simplicity
+conclusion is required by the weaker bounded-return target.
+
 Evidence, not proof: previous RunPod scan at r=1,1.01,1.1,1.5 and every 2<=N<=20000 found
 negative total covariance. Thousands of positive increments rule out monotone descent as an
 explanation. No statement about all N follows from the scan.
