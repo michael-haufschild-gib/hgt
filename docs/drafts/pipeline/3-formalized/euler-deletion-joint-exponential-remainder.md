@@ -28,6 +28,6 @@ concurrent unwired `EulerDeletionBalancedPeriodCurvatureNoGo` module. No lint er
 for this new module.
 
 [Continuing full-product proof and exact remaining Lean
-obligations](../2-fully-proven/euler-deletion-joint-product-one-fifth.md).
+obligations](euler-deletion-joint-product-one-fifth.md).
 A local fifth-order bound alone does not prove convergence of the product with weights varying
 inside each block. Nor does convergence force the resulting unit to be the identity at a zero.

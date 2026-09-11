@@ -3,7 +3,7 @@
 - **ID:** chronological-delayed-moment-obstruction
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [dependency-closed paper proof](../2-fully-proven/chronological-delayed-moment-obstruction.md)
+- **Source:** [dependency-closed paper proof](chronological-delayed-moment-obstruction-paper.md)
 - **Statement:** arbitrarily small changes of an explicit planar domain preserve arbitrarily many actual quotient costs and strict adjacent curvature tests, but force a first negative moment square at an exactly prescribed degree; the thermal zeta zero divisor remains unchanged.
 
 ## Complete certificate

@@ -77,7 +77,7 @@ freedom even after all the stated endpoint constraints are met.
 **Proof status:** dependency-closed paper proof and Lean formalization, including the general
 observation formula and premise-free countermodel capstone. Source module
 `EulerDeletionPairedPrimeFreedom`; namespace `RHTower.DeletionPairedPrimes`.
-[Paper](../2-fully-proven/euler-deletion-paired-prime-freedom.md),
+[Paper](../3-formalized/euler-deletion-paired-prime-freedom.md),
 [Lean certificate](../3-formalized/euler-deletion-paired-prime-freedom.md),
 [computation report](../2-fully-proven/computations/deletion-multiplicativity-tangent/REPORT.md).
 

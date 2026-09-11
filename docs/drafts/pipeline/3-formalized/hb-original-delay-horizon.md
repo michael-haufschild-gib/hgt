@@ -76,4 +76,6 @@ Scratch checking passed. The exact isolated owner built successfully in 100 seco
 
 ## Remaining physical-current identification
 
+The [original lift-current and source-contact theorem](hb-physical-lift-horizon-current.md) now gives both lift horizon fluxes and their finite original onset integrals. Its contact resolves into the actual square and gradient source pairings, with the terminal correction retained. Matching the causal response and cross-currents to these explicit terms remains the next current comparison.
+
 This establishes the original finite source-delay horizon action at fixed source radius and angular point. Transport under the complete physical radial/angular measure, evaluation of the principal angular flux, the lift/response cross-currents, source-contact correction, physical temporal faces, infinite-time transport, and the independent SS/VV coefficients remain open. The direct attack is to insert the derived `(partial_h-1)(partial_h-2)` source action into the actual master/Einstein Green current on the same finite domain, then derive the remaining oriented faces. No current is assigned zero by the finite source-delay limit.

@@ -1,7 +1,7 @@
 # Route L: full integral Abel limit and retained physical first variation
 
 Date: 2026-09-11.
-Status: all 39 scratch theorems passed without warnings; final audits pending. RH unproved.
+Status: formalized; all 39 theorems and final audits passed. RH unproved.
 Module: `GaloisForLFunctions.RHTower.DeningerGammaSixCriticalAbelReader`.
 
 ## Question and positive result
@@ -97,6 +97,9 @@ existing physical boundary on the critical Abel path. The earlier
 six-shell continuation; that principal calculation is not claimed as new.
 
 The regulator `epsilon` is independent of the spectral source parameters.
+The comparison uses the ordinary-integer operator obtained from the
+literal column map; it does not construct a map into the Sonin carrier
+or prove that every source arithmetic action intertwines these dilations.
 Its first variation is a physical horizontal variation at the critical
 endpoint, not the actual displacement `2*Re(rho)-1` of an arbitrary
 source divisor. Endpoint cyclicity consequently does not identify the
@@ -131,6 +134,10 @@ measure or reader agreement. Neither paper is an RH premise.
 ## Verification
 
 All 39 scratch theorems passed without warnings using
-`lake env lean /tmp/route_l_critical_abel.lean`. Final targeted build,
-complete axiom audit and formal lint pending. Umbrella import wired.
-No numerical experiment, full build or umbrella build is used.
+`lake env lean /tmp/route_l_critical_abel.lean`.
+`lake build GaloisForLFunctions.RHTower.DeningerGammaSixCriticalAbelReader`
+passed. All 39 theorem axiom reports contain only `propext`,
+`Classical.choice`, and `Quot.sound`. `scripts/formal_tools.py lint`
+passed; existing repository warnings remain. Umbrella import wired.
+All owned Lean processes completed. No numerical experiment, full build
+or umbrella build was used.

@@ -202,6 +202,22 @@ theorem paired_curvature {p q N M : ℕ} (hp : p.Prime) (hq : q.Prime)
   push_cast
   ring
 
+/-- The literal floor form of the curvature prefix, exactly as displayed on the paper card. -/
+theorem cell_sum_floor (N : ℕ) :
+    (∑ n ∈ Finset.Icc 1 N, curvatureCoefficient 2 3 5 n) =
+      6 * ((N / 3 : ℕ) : ℝ) - 12 * ((N / 6 : ℕ) : ℝ) - 150 * ((N / 15 : ℕ) : ℝ) +
+        300 * ((N / 30 : ℕ) : ℝ) := by
+  rw [cell_sum]
+  have h : ∀ d : ℕ, ((N % d : ℕ) : ℝ) = (N : ℝ) - (d : ℝ) * ((N / d : ℕ) : ℝ) := by
+    intro d
+    have hc : ((d * (N / d) + N % d : ℕ) : ℝ) = (N : ℝ) :=
+      congrArg (fun m : ℕ => (m : ℝ)) (Nat.div_add_mod N d)
+    push_cast at hc
+    linarith
+  rw [h 6, h 3, h 15, h 30]
+  push_cast
+  ring
+
 def negativeWeight (t : ℝ) : ℕ → ℝ := primePairWeight 59 61 t
 
 def positiveWeight (t : ℝ) : ℕ → ℝ := primePairWeight 251 257 t

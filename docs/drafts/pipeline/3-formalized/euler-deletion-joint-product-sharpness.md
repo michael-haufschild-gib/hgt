@@ -30,7 +30,7 @@ The umbrella import is wired; no umbrella build ran. Repository-wide
 `scripts/formal_tools.py lint` passed. No computation or external certificate was used.
 
 This closes the fixed-target sharpness claim in the
-[paper theorem](../2-fully-proven/euler-deletion-joint-product-one-fifth.md).
+[paper theorem](euler-deletion-joint-product-one-fifth.md).
 The general coprime-modulus extension remains paper-only. No relation forced by a zeta zero,
 off-line contradiction, or qualifying RH proof architecture is established by this result.
 

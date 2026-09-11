@@ -1150,3 +1150,569 @@ ran. The complete reflected nonlocal source is admitted at every complex
 coefficient parameter, with its nonzero forcing retained. Same-source
 operator balance and Xi spectral identification remain open. RH is
 unproved; goal active.
+
+
+## Iteration 20 — original operator on the reflected arithmetic source (Lean closed; repository lint limitation)
+
+Previous turn is verified progress: exact reciprocal conjugation and
+all-parameter global admission closed. Revalidated those source formulas
+and the next kernel estimate. Attack the actual original-translation
+increment on R M_b, retaining its positive scalar kernel and every signed
+arithmetic coefficient. Prove the endpoint-sensitive bound, complete
+product admission, full-source identity and forcing difference from R E_b.
+A positive atom kernel does not imply positivity of its Möbius assembly;
+independent complete balance and Xi spectral identification remain open.
+
+**Iteration 20 paper calculation (Lean audit in progress):** the original
+translation on the same reflected atom has scalar kernel
+`K(a,x,h)=exp(-h)*(exp(-a/(x+h))-exp(-a/x))/h`, with a=n-1.
+For a,x,h>0 this is strictly positive. Writing
+`v=a*h/(x*(x+h))` factors the difference as
+`exp(-a/(x+h))*(1-exp(-v))`. The inequality `1-exp(-v)<=v`
+and the exponential factorial bound give, for every natural k,
+`K <= (k+1)!/a^k * exp(-h)*(x+h)^k/x`.
+This preserves the cancellation at h=0 and the integrable x=0 source
+weight; replacing x+h by x too early loses that joint estimate.
+
+The positive majorant
+`J_k(h,x)=exp(-h)*norm(Q(x))/x*(x^k+h^k)`
+splits into two products of admitted Gamma moments. Its x moments have
+exact values Gamma(k+1/2), while its h moments are Gamma(k+1).
+For norm(b)<=N, the complete atom with index n+2 is bounded in norm by
+`2^(N+1)*(N+4)!*2^(N+2)/(n+1)^2 * J_(N+3)(h,x)`.
+This supplies both joint norm summability and fixed-positive-x h norm
+summability, with the zero and unit increments handled exactly.
+
+The intended complete consequence is a globally admitted original
+Frullani current on R M_b, with valid series/integral exchange and Fubini.
+Its difference from R E_b has scalar weight
+`W_n(x)=sqrt(n)*(integral K(n-1,x,h) dh+log(n)*exp(-(n-1)/x))`.
+The zero and unit weights vanish; every n>1 weight is strictly positive.
+The full defect nevertheless retains mu(n)*exp(-b*log(n))*Q(x) in its
+convergent series. No sign or vanishing is inferred for that complete
+signed assembly. The next source-balance test must control this exact
+forcing and identify the spectral parameter; operator conjugacy alone
+supplies neither assertion.
+
+**Iteration 20 stronger candidate (not yet Lean-closed):** the exact
+forcing coefficients `c_n(x)=mu(n)*Q(x)*W_n(x)` define an L-series
+convergent at every complex coefficient parameter. The head c_0=c_1=0
+and the prime coefficient c_2=-Q(x)*W_2(x) is nonzero. The corpus theorem
+`LSeries.tendsto_cpow_mul_atTop` therefore predicts
+`2^r*(H(R M_r)(x)-R(E_r)(x)) -> -Q(x)*W_2(x)` as real r tends to infinity.
+This would give eventual nonvanishing of the actual full forcing at
+every positive x, not just an isolated-atom sign. It tests and rejects a
+family-wide source-balance conjecture while preserving the exact leading
+law. It does not rule out balance at particular spectral parameters.
+
+**Next source-balance test after the pointwise audit:** carry the literal
+same-source forcing through the global x pairing. Its coefficient
+`c_n(x)=mu(n)*Q(x)*W_n(x)` is the admitted difference of an integrated
+original-response atom and the reflected current atom. The sum of its
+norm integrals is controlled by the already proposed joint atom norm
+sum plus the reflected-current norm sum. This should justify the exact
+mass L-series with coefficients `d_n=integral c_n(x) dx`. The first two
+vanish and `d_2=-integral Q(x)*W_2(x) dx` should be strictly negative,
+using the full positive-ray integral and its proved admission. A leading
+coefficient limit would then test a globally integrated family-wide
+balance, not only pointwise equality. This remains a candidate: it does
+not determine the zero-parameter mass, identify a physical spectral
+pairing, or establish any Xi occurrence law.
+
+**Iteration 20 mathematical result:** the full same-source candidate and
+its stronger leading law close in Lean. Both the original and conjugated
+nonlocal generators act on the literal reflected arithmetic family on a
+proved common domain. The endpoint-sensitive reciprocal kernel estimate
+and its inverse-square complete atom bound admit the original response
+jointly and on every fixed-positive-x section, at every complex b.
+Its complete h current and its difference from R E_b are globally L1;
+Fubini and all used arithmetic sum/integral interchanges are justified.
+The exact full signed defect is the series with weights W_n stated above.
+W_0=W_1=0 and W_n>0 for n>1, with all Möbius signs retained.
+
+The L-series identification is literal. Its first two coefficients
+vanish; the prime-two coefficient is exactly -Q(x)*W_2(x), nonzero for
+every positive x. The corpus's first-coefficient limit theorem proves
+`2^r*D_r(x) -> -Q(x)*W_2(x)` along real r to infinity. Thus the actual
+complete forcing is eventually nonzero and cannot be identically zero
+across b. This rejects the family-wide same-input balance conjecture and
+retains a quantitative leading law as its positive survivor. It does
+not determine D_0, its global mass, or balance at Xi occurrences. The
+spatial pairing candidate above remains the next mathematical test.
+
+Four deep searches, all partial, are saved in the same-source search
+record. Available inventories contain 723442, 723502 and 723510
+declarations; the domain search's coverage was pending and had no count.
+Generic positivity/leading-coefficient suggestions did not furnish the
+literal theorem. Direct corpus search found and scratch-verified the
+Gamma, product-integral and L-series leading-coefficient APIs. Broad
+arXiv bistability search found September5 threshold-network and
+September10 localized-cubic papers. The former's actual row-stochastic
+nonnegative feedback and contraction hypothesis are not established for
+this signed arithmetic source; the latter's primary abstract supplied
+no verified transfer. No external premise or numerical experiment was
+introduced.
+
+
+**Iteration 20 Lean audit:** two leaves, 312 and 319 lines, with 44 public
+theorems and eight definitions. Complete scratch checks and both targeted
+final builds passed. Build logs show only the two new leaves rebuilt;
+dependencies were reused. All 52 public axiom audits passed with only
+standard foundations. All names are unique, both umbrella imports are
+wired, and new-file/scoped whitespace, conflict and local-link checks
+passed. The accepted current proof emits an informational ring suggestion
+at line 200, and builds replay existing upstream style warnings.
+
+The authoritative repository lint gate did not pass. Its five errors
+are missing imports for Sieve.MenonHarmonicRamareBlockSwapped,
+Sieve.MenonHarmonicRamareLadderSwapped,
+Sieve.MenonHarmonicRamareLadderSwappedVolume,
+HTGeometry.WeightedMinimax.Basic and HTGeometry.WeightedMinimax.SignRealization.
+Neither new PW-B leaf is flagged. Confirmed those unrelated imports are
+absent and preserved the separate active work. This is a repository-audit
+limitation, not a Lean proof failure and not a claim that the full gate
+passed. No full/umbrella build ran.
+
+Index regeneration passed and refreshed LEAN_API, LEAN_GAPS and
+LEAN_OVERVIEW. Every one of the 52 public names is present in the API;
+both imports occur exactly once. All owned Lean, research, lint and
+index sessions completed; no owned Lean process remains. Lean work was
+serialized in the foreground, with no full/umbrella build, numerical
+experiment, commit or push. RH remains unproved; the goal is active.
+The next attack is the complete spatial mass pairing and its retained
+prime leading coefficient, followed by the still-unpaid source/spectral
+identification and independent fixed-grade balance.
+
+## Iteration 21 — complete spatial pairing of the same-source forcing (Lean-closed)
+
+Previous turn is verified progress: actual common operator admission,
+full signed forcing and its nonzero pointwise leading coefficient are
+Lean-closed and audited. Revalidated the current sources and route ledger.
+Now test the actual positive-ray spatial pairing. Prove global coefficient
+norm summability before integrating the L-series, retain the full prime
+two coefficient, and derive its leading mass law. Pointwise nonvanishing
+alone cannot justify a nonzero total mass. The physical measure and Xi
+spectral identification, and independently source-forced balance at Xi
+occurrences, remain the hard RH gap.
+
+
+**Iteration 21 proof result:** complete scratch and all 31 public axiom
+prints passed. The exact original spatial mass is the L-series of the
+integrated signed coefficients, admitted at every complex parameter.
+The zero/unit coefficients vanish and the prime-two coefficient is -A
+with A finite and strictly positive. Thus 2^r B(r) tends to -A; the
+complete mass is eventually nonzero, universal integrated balance is
+false, and the scaled original L1 norm eventually exceeds A/2. This
+closes the previously unpaid spatial-cancellation test. B(0), the
+physical pairing and spectral occurrence balance remain undetermined.
+See the new formalized mass card for the dependency-closed paper proof.
+Its targeted final build passed (new leaf only, 239s); no full or umbrella
+build ran. All 31 scratch axiom records contain only standard foundations.
+Repository lint reports six unrelated missing umbrella paths: EulerDeletionSignatureWordExpansion,
+Sieve.MenonHarmonicRamareLadderSwapped, Sieve.MenonHarmonicRamareLadderSwappedVolume,
+and WeightedMinimax.Alternation, Coefficient and Perturbation. The new
+PW-B leaf is not flagged; separate active work was preserved.
+
+Research retained three partial deep results with pending coverage, one
+partial hybrid inventory (723510 declarations), the failed Ward deep
+backend and its eight-hit lexical fallback. Pure coefficient Mellin gauges
+are not an analytic Mellin transform. Broad entrainment/echo arXiv searches
+provided no established source transfer. The exact full mass calculation,
+not a generic adjoint or Bessel model, supplies the positive survivor.
+
+Iteration 21 final checks: index regeneration passed (two changed index
+entries, zero removed); all 31 public declarations occur uniquely and are
+present in LEAN_API. Card links, new-source whitespace/conflict checks and
+scoped git diff checks passed. All iteration21 Lean/research/lint/index
+sessions are terminal. The six-error repository lint limitation remains
+recorded; no full build was run. The active scratch now belongs only to
+iteration22. Memory: rh/pw_gamma_same_source_spatial_mass_2026_09_11.
+
+## Iteration 22 — actual source Mellin identification (Lean-closed)
+
+Conjecture from the literal atoms and freshly read corpus
+Mathlib.NumberTheory.LSeries.MellinEqDirichlet and Gamma.Basic:
+Mellin(M_z)(s)=Gamma(s+1/2)/zeta(z+s), initially for Re(s)>-1/2
+and Re(z+s)>1. Prove the original source Mellin integral, each weighted
+arithmetic atom's admission and value, full norm-sum admission and
+interchange. This identifies the combined analytic parameter z+s;
+coefficient-family entireness alone did not do so. Attempting absolute
+coefficient admission below Re(z+s)=1 must fail by the existing sharp
+Mobius L-series boundary. The positive survivor is the actual transform
+identity in its proved domain; a critical-strip extension requires new
+signed source estimates and cannot be assumed from reflected admission.
+A scratch for the source and atom identities is prepared; no proof result
+for this new Mellin bridge is claimed yet.
+
+
+Iteration22 source audits: the corpus's actual Mobius–Laplace transform
+has Gamma/zeta on Re(s)>1. Its critical continuation wall is proved
+EQUIVALENT to RH; the source half-decay bridge retains its decay premise.
+All located direct half-decay producers retain a critical-profile,
+additive-correlation or mixed-convolution bound. One occurrence inside
+an unconditional theorem is under a contradiction hypothesis proving
+that the critical profile does not tend to zero, not an unconditional
+decay producer. Generic Suzuki energy bounds retain coercivity,
+accretivity and the source equation; the proposed bilateral cancellation
+uses deliberately complementary character halves. No matching to the
+literal arithmetic operators was found. The RapidDecayRay candidate is
+a condition, not a proof of source decay. These candidates do not close
+the missing source law.
+
+The broad arXiv duality query found the September9 second-grade-fluid
+boundary-control paper. Read its actual weak adjoint and section8.1
+duality proof: cancellation uses common admitted tests and retains the
+terminal/source terms. A strong boundary operator needs additional
+regularity. No arithmetic transfer was established. The current
+Mellin scratch has only an exponent-normalization repair outstanding
+from its preceding check; the corrected full proof plus all nine public
+axiom checks is running serially in the foreground.
+
+Next candidate from the literal atoms and Mathlib Tannery: for Re(z)>3/2,
+M_z(x)/sqrt(x) tends to 1/zeta(z-1/2) as x approaches zero from above.
+Summability at z-1/2 controls each damped term by its original Dirichlet
+coefficient norm. A nonzero limit would give the actual small-coordinate
+Mellin boundary and prevent an unjustified large-coefficient/fixed-spectrum
+transfer. No endpoint result is claimed before checking the full proof.
+
+
+**Iteration22 Lean result:** complete corrected scratch and all nine
+public axiom audits passed (only propext, Classical.choice, Quot.sound).
+The original Q Mellin integral, full weighted atom integral and norm
+integral, sharp coefficientwise admission and complete source interchange
+are closed. Exact identity: Mellin(M_z)(s)=Gamma(s+1/2)/zeta(z+s) for
+Re(s)>-1/2 and Re(z+s)>1. The norm-integral series converges exactly
+when Re(z+s)>1 under the source exponent condition. No claim of signed
+nonintegrability beyond that boundary was made. Eight theorems and one
+definition were promoted with identical proof bodies and an umbrella
+import. Targeted final leaf build is running; no other owned Lean runs.
+Search records retain four deep method outputs: three partial inventories
+report723510 declarations; the Abel-boundary query reports pending
+coverage without a count. All suggested critical continuations retained
+an unproved source bound or concerned a different actual source.
+
+
+Iteration22 audit so far: the complete scratch and nine axiom checks
+passed without errors or warnings. The new leaf is 162 lines; all nine
+public names are unique, its umbrella import occurs once, local card
+links and scoped whitespace/conflict checks pass. Repository-wide lint
+now reports three unrelated active missing umbrella paths:
+HTGeometry.WeightedMinimax.Alternation, Coefficient and PolyRoots.
+The new PW-B leaf is not flagged. The targeted final build is still
+running; its output so far replays existing upstream warnings.
+
+The next endpoint argument now has a paper proof in its absolute
+coefficient region: for Re(z)>3/2,
+M_z(x)/sqrt(x)=sum_n term(mu,z-1/2,n)*exp(-n*x) on x>0.
+The full coefficient norm series converges. Each damping factor has
+modulus at most one and tends to one as x approaches zero from above.
+Tannery therefore gives the literal limit 1/zeta(z-1/2), nonzero in
+that region. A positive lower bound on the normalized source near zero
+then forces divergence of its Mellin norm integral when Re(s)<=-1/2.
+Together with the proved Mellin admission above -1/2, this would give an
+exact FULL SOURCE boundary in the region Re(z)>3/2. This paper proof is
+not yet Lean-checked; it does not claim the original z=0 signed critical
+estimate. The next turn must verify the normalized-series identity,
+dominated limit and actual nonintegrability before claiming that result.
+
+
+Iteration22 final target build passed: only the new leaf rebuilt, in370s;
+existing dependencies were reused. No full or umbrella build was run.
+All nine complete-source declaration axiom audits are standard-foundation
+only. Both this build and the axiom scratch are terminal; index regeneration
+is now running. Repository lint retains the three unrelated WeightedMinimax
+umbrella failures listed above. Critical continuation and independently
+source-forced Ward balance remain unproved; RH and the goal remain open.
+
+
+Iteration22 final audit complete: index regeneration passed and refreshed
+LEAN_API, LEAN_GAPS and LEAN_OVERVIEW (zero changed/removed search entries
+reported by this run). All nine new names and all31 iteration21 names
+are present in the API. Completed-card links and whitespace, new-source
+name uniqueness and one-copy umbrella wiring, and scoped diff checks
+passed. Final process inspection found no owned Lean/lake process.
+Every owned Lean, research, lint and index session is terminal. The
+three unrelated WeightedMinimax lint failures remain explicitly recorded;
+the repository-wide gate is not claimed passed. No full/umbrella build,
+added axiom, numerical experiment, commit or push occurred.
+
+Next goal turn starts from the literal small-coordinate endpoint argument
+above, checks all actual source/domain identities in scratch, and then
+returns to signed critical source control and independent PW-B Ward
+balance. Neither a large-coefficient asymptotic nor the existing
+RH-equivalent analytic continuation wall is an unconditional producer.
+
+## Iteration 23 — actual source endpoint and fixed spectral argument (Lean-closed)
+
+Previous goal turn is verified progress: the complete same-source spatial
+mass and literal original Mellin bridge were built and axiom-audited.
+Revalidated the current source and ledgers. The hard RH gap is still
+signed critical source control plus physical occurrence-level Ward balance.
+Now test the actual domain of the proposed fixed-spectral-argument transfer.
+The preceding paper argument predicts a nonzero normalized endpoint for
+Re(z)>3/2, hence a sharp full-source Mellin boundary at Re(s)=-1/2.
+Prove the original normalized series, dominated limit, nonzero coefficient
+and actual norm-integral obstruction in scratch. Retain the positive
+survivor: exact endpoint coefficient and complete admitted region. Do not
+replace a signed-source proof by failure of an atomwise majorant.
+
+
+Iteration23 paper proof: for Re(z)>3/2, divide the literal full source by
+sqrt(x). Every positive-index atom becomes
+`LSeries.term(mu,z-1/2,n)*exp(-n*x)`; the zero atom vanishes. Its coefficient
+norm series is summable, and the damping is bounded by one for x>0.
+Dominated convergence gives the exact right endpoint `1/zeta(z-1/2)`,
+which is nonzero in this region. Half its norm is therefore an eventual
+positive lower bound. The actual Mellin integrand norm is exactly
+`x^(Re(s)-1/2)*norm(M_z(x)/sqrt(x))`. Local power integrability now forces
+Re(s)>-1/2. The prior complete Mellin bridge gives the converse, so this
+is a sharp domain for the signed source itself. Keeping u=z+s fixed
+fails actual admission whenever Re(u)<=Re(z)-1/2. Scratch verification
+and the full public axiom audit are running; no endpoint Lean result is
+claimed before that run finishes.
+
+Three deep method searches finished with partial coverage of723510
+indexed declarations. Candidate statements, source arguments and every
+proposed ingredient set were inspected. The Einasto normalized-limit
+proof retains a nonzero source coefficient, but the actual series here
+requires Tannery. The proposed finite weighted Cauchy--Schwarz lemma
+proves no local nonintegrability; power-series uniqueness also does not
+supply this source's endpoint. The fold search's Klein--Gordon lemma
+assumes its balance equation, and complete analytic resolution retains
+an independently supplied conservative map. Neither establishes the
+missing source balance. Deadline/reranking errors, a decomposition
+transport failure and deferred refresh remain in the saved raw records;
+model sufficiency labels are not evidence of applicable premises.
+
+The broad date-ordered arXiv search `trapping` led to
+[Universal Structure of Horizon Formation in Generic Binary Black Hole Mergers](https://arxiv.org/html/2609.11819v1)
+(September10,2026). Its analytic mechanism combines past isolation,
+outermost stability, a positive principal eigenfunction and a complementary
+inverse, then retains nonzero linear-time and quadratic-amplitude
+coefficients in a fold reduction. Those requirements are not established
+for the actual Gamma/Möbius source. In particular, its known nontrivial
+zero-mass signed endpoint cannot be declared a positive principal mode.
+No physical stability, elliptic realization or new Lean premise was
+imported, and no numerical work was used.
+
+Next candidate, after the full-source domain audit: subtract the forced
+endpoint contribution itself, rather than assign a value to a divergent
+integral. With C_z=1/zeta(z-1/2), test the exact complete source
+`S_z=M_z-C_z*Q`. For Re(z)>5/2, its proposed normalized first remainder
+is `(M_z/sqrt(x)-C_z*exp(-x))/x`, with candidate limit
+`C_z-C_(z-1)`. This follows on paper from the complete difference series
+and the summable first coefficient moment, not from a formal Taylor
+replacement. A new domain, integral identity, and correction to the
+source dynamics would all have to be proved. No signed critical estimate
+or occurrence-level Ward balance follows merely from this subtraction.
+
+
+Iteration23 scratch and all ten public axiom audits passed. The nonzero
+full-source endpoint, actual norm identity, sharp Mellin domain and fixed
+spectral-argument exclusion are Lean-closed with standard foundations
+only. Proof bodies were promoted unchanged into
+ThetaCuspHawkingParikhWilczekGammaMobiusSourceEndpoint, with one umbrella
+import. Only that leaf's targeted final build is running.
+
+A fourth deep method query tested explicit subtraction and reciprocal-zeta
+differences. Its partial723510-declaration output and disconnected-worker
+error are saved alongside the prior three records. The proposed mixed
+finite-prefix detector and arithmetic zeta_apply statement were checked:
+the former concerns finite deletion paths, and the latter is the arithmetic
+function equal to one on positive integers, not a monotonicity theorem for
+analytic zeta. Neither proves the candidate remainder coefficient's sign.
+All four research sessions are terminal. The full-source subtraction
+candidate and remaining critical/Ward obstacles above remain open.
+
+
+Iteration23 repository formal lint passed; the earlier unrelated
+WeightedMinimax umbrella failures are absent in the current result.
+The promoted public proofs match the passing scratch exactly after
+comment/whitespace normalization. All ten source declarations, local card
+links and scoped whitespace checks passed. Targeted build and final
+index audit are still pending.
+
+
+Subtraction paper analysis for the next attack: retain a_n(z)=
+LSeries.term(mu,z-1/2,n). For x>0 the complete normalized remainder is
+`sum a_n(z)*(exp(-n*x)-exp(-x))/x`. For n>=1 its damping quotient equals
+`-integral_1^n exp(-t*x) dt`, is bounded in absolute value by n-1,
+and tends to1-n. The first absolute coefficient moment is summable when
+Re(z)>5/2. Dominated convergence therefore predicts the exact coefficient
+C_z-C_(z-1). For real z>5/2 this coefficient is positive: the positive
+Dirichlet series for zeta is strictly decreasing on the real region>1
+(the n=2 term is strict), hence its reciprocal is strictly increasing.
+This sign proof still needs verification against actual corpus APIs.
+
+The same complete difference bound gives O(x^(3/2)) at zero; the admitted
+coefficient norm sum gives exponential decay at infinity. Thus the proposed
+subtracted source should be Mellin-convergent for Re(s)>-3/2, with the
+nonzero first remainder forcing the converse for real z>5/2. One fixed
+subtraction would only move the fixed-u admission boundary by one; it would
+not permit an unbounded rightward coefficient shift at fixed u.
+
+On the common admitted region Re(s)>-1/2, linearity would give the exact
+transform Gamma(s+1/2)*(1/zeta(z+s)-C_z). At s=-1/2 this written product
+contains a removable Gamma pole and must not be evaluated through Lean's
+totalized factors. The actual complete integral has the Frullani candidate
+`-sum a_n(z)*log(n)`, namely the coefficient derivative of C_z, with its
+own absolute-admission proof required. Retaining this value and the full
+source correction is necessary before any continuation or Ward comparison.
+No new subtracted-source theorem, critical bound or balance is claimed yet.
+
+
+Iteration23 final targeted build passed in161s. Its only newly built
+module was ThetaCuspHawkingParikhWilczekGammaMobiusSourceEndpoint;
+all dependency jobs were reused. The build session is terminal, and
+index regeneration is running. No full or umbrella build was run.
+
+
+Iteration23 final audit complete. Index regeneration passed with one
+changed search entry and zero removals; LEAN_API, LEAN_GAPS and
+LEAN_OVERVIEW were refreshed. All ten public declarations occur once in
+the source corpus and API, with one umbrella import. The API uses
+unqualified display names: an initial namespaced-string audit was repaired
+to match actual rows, then passed without rerunning the index. All owned
+Lean, research, lint and index sessions are terminal; final process
+inspection found no owned Lean/lake process. Scoped source/doc whitespace
+and links passed. No full/umbrella build, numerical experiment, added
+axiom, commit or push occurred. RH and the goal remain open.
+
+Next goal turn starts from the completed endpoint module and the explicit
+subtraction paper analysis above. Attack complete remainder admission,
+its exact transform and the retained Gamma-pole value, while testing
+whether any source-derived relation can force the actual critical balance.
+Do not treat the new domain theorem, a zero assigned to an unadmitted
+integral, or a continued quotient as an unconditional PW-B producer.
+
+
+## Iteration 24 — explicit complete endpoint correction (in progress)
+
+Previous turn is verified progress: the literal normalized endpoint and
+sharp actual Mellin domain are Lean-closed; all ten axiom audits,
+targeted leaf build, lint and index checks passed. Rechecked the current
+module and process state. No owned Lean process remains from that turn.
+The same-source physical pairing, critical control and independently
+source-forced occurrence-level Ward balance remain unproved.
+
+Now attack the domain repair exposed by the endpoint obstruction. Construct
+S_z=M_z-C_z Q as the literal complete source, retain its full difference
+series and prove the first normalized remainder. The existing actual
+pwGammaFrullaniKernel is exactly the required exponential difference
+quotient and already has integral -log(n) and norm integral log(n) for
+n>0. Use this complete kernel to derive the subtracted source's finite
+Gamma-pole value, rather than substitute into a totalized singular product.
+The coefficient bound, source identity and integral interchange must all
+be proved before drawing any Ward conclusion.
+
+
+Iteration24 paper identity and scratch status: the complete normalized
+remainder is `sum a_n(z)*pwGammaFrullaniKernel n x`. Each atom is
+integrable for n>0, and its exact norm integral is
+`norm(LSeries.term(logMul(mu),z-1/2,n))`; the zero atom vanishes.
+The entire norm-integral series is summable already for Re(z)>3/2,
+without the stronger first-moment region. This admits the actual corrected
+Mellin integral at s=-1/2 and identifies its value with
+`-LSeries(logMul(mu),z-1/2)`, the derivative of C_z. Current scratch has
+closed the full series identity, first-moment summability, logarithmic
+norm-integral summability and coefficient derivative; local kernel-limit
+and integral/coercion repairs are being rechecked together. No complete
+subtraction module has yet been promoted or declared audited.
+
+The first-prime audit is also being tested: since logMul(mu) has zero
+coefficients at0 and1 and coefficient -log(2) at2, the exact candidate
+`2^r * integral R_(r+1/2) -> log(2)` follows from the corpus L-series
+leading-coefficient theorem. It would give eventual positive real part
+of the retained pole value, ruling out its automatic universal vanishing.
+It would not identify a fixed physical spectral parameter or establish
+critical-source balance.
+
+Two deep method searches finished with partial inventories of723712
+declarations and their complete raw records are saved. The Frullani
+candidate is applicable and already supported by the literal kernel.
+The pole search's proposed ingredient set incorrectly labels a cocycle
+formula and a Sonin missing-vector theorem as a route to strip nonvanishing.
+Their actual statements were read: reflCocycle_zeta assumes zeta nonzero,
+while exists_nonzero_zeta_dvd_of_aperture_lt_one constructs a vector whose
+Mellin function retains the zeta divisor. Neither proves nonvanishing.
+The latter search's decomposition deadline remains recorded. A third
+contact/source-method search is running.
+
+Broad arXiv searches used `compensation` and `dissipation`; a cached
+compensation listing stopped in July, so current indexed search hits
+were also checked. No experiment or numerical calculation was performed.
+The analytic discussion in
+[Dissipation Enables Strongly Detuning-Dependent Interference in Pulsed Dynamical Decoupling](https://arxiv.org/html/2607.25176v1)
+(July28) retains the coherent response after a decay event; a reset does
+not automatically erase the subsequent detuning signal. Its driven
+qubit dynamics have not been identified with this arithmetic source.
+[Dissipation-enhanced scrambling in the SYK model coupled to a lossy cavity](https://arxiv.org/html/2608.19310v1)
+(August19) retains an attractive contact term when differentiating its
+ladder equation, and explicitly requires large-parameter approximations.
+No exact finite-parameter PW-B transmutation follows from that calculation;
+its contact term cannot be silently discarded or imported as a premise.
+
+
+Iteration24 new pairing attack, derived from the actual transport identities:
+write g=f/Q. The normalized forward and reflected complete generators are
+A g(x)=integral_0^infinity exp(-h)*(g(x+h)-g(x))/h dh and
+B g(x)=integral_0^infinity exp(-h)*(g(x/(1+h*x))-g(x))/h dh.
+For 0<x<y their opposite jump densities are
+k_plus(x,y)=exp(-(y-x))/(y-x) and
+k_minus(y,x)=(y/x)*exp(-(1/x-1/y))/(y-x).
+Direct algebra gives detailed balance with w(x)=exp(-x-1/x)/x:
+both w(x)*k_plus(x,y) and w(y)*k_minus(y,x) equal
+exp(-y-1/x)/(x*(y-x)). Any density satisfying all these pair balances
+has constant ratio to w, by comparison with one fixed positive point.
+Also w(1/x)/x^2=w(x). In original f coordinates the candidate density
+is eta(x)=x^(-2)*exp(x-1/x); eta(x)*|Q(x)|^2=w(x).
+Its log-coordinate density is the existing singular gain.
+
+This is a paper candidate for a pairing forced by the two actual kernels,
+not yet a Lean theorem or a physical Hilbert-domain identification.
+The sum A+B should have a negative difference-square form after complete
+paired integration. Individual rates diverge at h=0; they cannot be
+split into separately admitted gain/loss terms. In particular, conjugating
+a finite forward h-cutoff changes the reflected small-h cutoff by a factor
+asymptotic to x^(-2). Paper analysis predicts a retained 2*log(x) diagonal
+term in the adjoint of A, with the opposite term for B. An uncorrected
+claim A*=B therefore needs testing, not acceptance. Complete increments,
+cutoff changes, actual arithmetic source admission, and Xi occurrence
+remain unpaid. These are the next hard mathematical targets.
+
+All four endpoint-subtraction deep searches are terminal and preserved
+in the raw record, with partial inventories of723712 declarations.
+The contact search supplies generic phase-integral identities, not a
+source Ward producer. The reversible search's suggested finite-fibre
+stationarity and row-zero ingredient set does not identify these singular
+ray generators. Actual RouteEPhysicalFibreCoarea and JumpFormAdjointness
+proofs were read: the former uses a supplied finite physical fibre mass,
+and the latter proves translation adjointness on admitted compact-support
+products. Neither discharges this ray's inversion Jacobian, cutoff term
+or physical source domain. No balance conclusion is imported from them.
+
+
+Iteration24 endpoint scratch now passes with all23 public declarations
+using only standard foundational axioms. The complete proof was promoted
+to GammaMobiusEndpointSubtraction and wired once in RHTower. Targeted leaf
+build is running. Lint currently fails solely on the unrelated unreachable
+HTGeometry.ChronologicalTensor.CubicCuspPresentation module. No PW-B lint
+violation was reported; this is not an all-repository passing audit.
+
+Additional broad arXiv searches used reciprocity and equilibration. The
+reciprocity date-ordered endpoint returned429; the equilibration listing
+was cached through August18. Read the actual primary texts of
+[On the kinetic Fokker--Planck equation in curved geometry](https://arxiv.org/html/2608.14904v1)
+(August14), including its source-relative density, invariant weighted
+measure, symmetric diffusion and skew transport decomposition in equations
+2.14--2.16. Its compact-manifold kinetic generator is not this nonlocal
+ray generator, so no symmetry, closure or coercivity result transfers
+without identification. The decomposition motivates checking both the
+full pairing and the retained adjoint correction separately.
+[Aperiodicity is sufficient for macroscopic thermalization](https://arxiv.org/html/2608.13462v1)
+(August13), Theorem2.4, uses actual return probabilities of a finite-dimensional
+initial subspace to bound occupied dimensions and typical equilibration.
+No such independently proved return bound, finite physical realization or
+Xi occurrence map has been supplied here. These source requirements cannot
+be replaced by a nominal equilibrium label. No numerical experiment or
+calculation was performed or imported as proof.

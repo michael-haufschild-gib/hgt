@@ -2854,6 +2854,554 @@ established, and EDQ is not retired.
 
 This paper proof uses the literal physical weights and supplies a positive
 bounded component, rather than assuming independence or dropping a
-conditional mean. Formalization of the actual residue measure, projections,
-and complete innovation estimate is in progress; no Lean closure of this
-martingale statement is claimed yet.
+conditional mean. `EulerDeletionResidueMartingale.lean` now contains the
+actual residue measure, projections, complete innovation estimate, original
+carrier norm identity and prime-support theorem. Its complete scratch
+check passed without warnings, and the final leaf build and new-theorem
+axiom audit passed. No drift growth estimate or RH proof is claimed.
+
+The Lean indexing is `j=k-1`, with cell weight `1/[(j+1)*(j+2)]`.
+It records `j mod L`, an equivalent residue history, and predicts using
+`R_n(1+(j mod L))`. This predictor agrees for `k<=L`, giving the stronger
+single-increment bound `1/(L+1)`. The stated cumulative budget two follows
+with the same telescoping comparison.
+
+### Drift attack: fixed-source projection and uniform integrability fail
+
+The first proposed way to pay the drift was to view it as conditional
+expectations of a single limiting observable. The deep search returned
+`Integrable.uniformIntegrable_condExp_filtration`, but its source is one
+fixed integrable function; the actual drift is a growing sum of projections
+of different residue functions. The theorem does not apply to that sum.
+Moreover, it is an L1 statement, whereas the required energy is quadratic.
+
+There is a stronger obstruction to the proposed L2 convergence strategy.
+`BaezDuarteMobiusPrefixApproximation.one_sub_bdMobiusModularApproximant`
+gives `S_N(k)+1=k*H_N` for `1<=k<=N`, where
+`H_N=sum_(n<=N) mu(n)/n`. The corpus proves `H_N -> 0`, so `S_N(k)->-1`
+at every physical cell. The same corpus proves unconditionally
+`not_tendsto_bdMobiusFullErrorEnergy_zero`: the full energy of `S_N+1`
+does not tend to zero. Consequently the squares of the literal source
+cannot be uniformly integrable. This conclusion follows directly by
+Vitali convergence on the probability measure above.
+
+The orthogonal innovations have summable squared norms, hence M_N converges
+in L2 to some M. On this countable space every singleton has positive
+measure, so that convergence also gives convergence at each coordinate.
+Thus D_N converges pointwise to `-1-M`. Uniform integrability of D_N squared
+would force L2 convergence to that same limit and then L2 convergence of
+S_N to -1, contradicting the existing full-error obstruction. This rejects
+uniform-integrability and strong-convergence proofs for this raw drift;
+it does not reject a cofinal subpower ceiling. The bounded innovation
+component remains the positive result of this attempt. This consequence
+is a dependency-closed paper argument; it is not yet a new Lean theorem.
+
+The corpus also gives the exact physical residue mean
+`E_nu R_n=log(n)/n` in `BaezDuartePairingSeries.hasSum_pairing_discrete`.
+Subtracting this mean retains the full centered covariance and does not
+supply its bound. Neither a constant-mode estimate nor the innovation
+budget controls the escaping squared energy.
+
+### External method checks
+
+Broad newest-first arXiv searches on **memory** and **transport** selected
+Aoki et al., [low-frequency merger waveforms](https://arxiv.org/html/2609.10329v1),
+9 September 2026, and Hashemi--Hyun,
+[finite free curves](https://arxiv.org/html/2609.10367v1), 9 September 2026.
+The first cancellation uses an explicit equality between particular
+on-shell integral coefficients; the paper distinguishes that identity
+from ordinary unitarity. No matching identity for the EDQ covariance
+has been derived. The second paper's matrix defect formula requires a
+real symmetric pencil and identification with the convolution root map.
+Its noncentered formula retains a mean-product term. Those conditions
+have not been established for the arithmetic source.
+
+Further broad **screening** and **renewal** searches did not return verified
+June--September 2026 papers; newest-first arXiv pages failed to load.
+The accessible primary source was Schulz--Barkai--Metzler,
+[aging renewal theory](https://arxiv.org/html/1310.1058v1), submitted in 2013.
+Its renewal and subordination formulas assume independent waiting times,
+and the subordinated process is independent of its clock. The physical
+residue clock satisfies neither supplied identification. In particular,
+composite increments remain determined by the same cell coordinate.
+No external theorem is used in Lean, and no numerical experiment was run.
+
+### Renewal estimate: signed transform values remain essential
+
+The next candidate was to bound the drift through the positive dilation
+renewal kernel. The corpus's exact critical-coordinate identity is
+
+```
+sum_(k>=1) k^(-1/2) F(y-log k)
+  = exp(-y/2)*exp(-exp(-y)).
+```
+
+`MobiusLaplaceCriterionFrontier.tsum_mobiusLaplaceCriticalRenewal` proves
+this for the actual Mobius--Laplace profile. Its absolute convergence is
+for the products containing F. Replacing F by a uniform norm bound loses
+that convergence: `MobiusLaplaceCriticalDilationNoGo` proves the weights
+are nonsummable even on primes. Thus this is not a probability renewal
+kernel or an absolute Neumann contraction at the critical exponent.
+
+The alternative changing-prime-core identity in
+`MobiusDivisorDilationMeanRenewal.mobiusDivisorDilationMean_insert` retains
+two cross-scale correlations. The available eventual release sign in
+`MobiusDivisorPrimeCorrelationPhysical` fixes the prime core first and
+depends on its parity. It supplies neither a common dissipative sign nor
+a threshold uniform along the growing core. Those are precisely the
+missing conditions for this proposed iteration; they are not supplied
+by the identity itself.
+
+The drift and renewal deep searches used OR matching, inspected all
+declaration, candidate-lemma and source-argument lanes, and returned no
+proof-idea or ingredient-set certificate. Generation 823332 had partial
+coverage and source-only candidates. For the drift search the semantic
+coverage reported 2,196,271 ready out of 2,336,631 expected entries; the
+renewal coverage query was interrupted at its deadline. Candidate
+statements were checked in their source files before this assessment.
+
+### Physical residue validation
+
+`EulerDeletionResidueMartingale.lean` closes 26 public theorems in 435 lines.
+The main unconditional bounds are `martingalePart_sq_le_two` and
+`source_drift_norm_gap`; `sourceVec_energy` identifies the original
+complete carrier, and `signedInnovation_eq_zero_of_not_prime` gives exact
+prime support. The final complete scratch check passed without warnings.
+`lake build --old GaloisForLFunctions.RHTower.EulerDeletionResidueMartingale`
+passed in 82 seconds, compiling only this leaf; the 9,102 jobs include
+cached dependencies. The umbrella import is wired, without an umbrella
+build. A separate scratch axiom audit inspected only the 26 new public
+theorems: every axiom list is contained in `propext`, `Classical.choice`,
+and `Quot.sound`.
+
+The new declarations appear in the generated API. Formal lint passed
+with existing large-file warnings. The stronger generated-file freshness
+check initially found eight newly added declarations in another research
+module and its umbrella import absent from the generated snapshot.
+That discrepancy does not involve the new residue module; a final
+regeneration followed immediately by a fresh-process
+`scripts/formal_tools.py lint --check-generated` passed, with existing
+large-file warnings only.
+
+The route-independent ledger now states the need to bound accumulated
+conditional means as well as innovations. This agent did not edit the
+frontier map. No numerical experiment was run. The unresolved mathematical
+target is still an actual cofinal subpower bound for the complete signed
+source, equivalently for its predictable part under the bounded norm gap.
+All processes started for this work have ended. Its fifteen owned temporary
+files were removed after preserving the proof and validation results here.
+
+## Complete-source stretched-exponential ceiling [Lean]
+
+The target remains the actual cofinal subpower ceiling. Rechecking the gcd
+head and harmonic-cutoff proposals did not close it: the existing
+`EulerDeletionGcdHeadSubpower` retains its harmonic coefficients and later
+cells, and `EulerDeletionFirstTailMertens` retains the first complementary
+Mertens-increment energy. These are existing results, not new progress.
+
+The new upper-bound attack keeps the quantitative saving already proved
+for the actual Mertens function instead of weakening it to each fixed
+inverse-log power. Write
+
+```
+u(N) = (log N)^(1/3),
+s(N) = exp(-u(N)/216),
+|M(N)| <= B*N*s(N)^2                     (eventually).
+```
+
+The half-saving ray has finite total mass
+`T=sum_(n>=1) s(n)/n`. Indeed it is nonnegative and decreasing, and
+Cauchy condensation turns its series into
+`sum_k exp(-((log 2)^(1/3)/216)*k^(1/3))`, which the corpus already
+bounds by a convergent inverse-square series. For k>=N, monotonicity
+therefore gives
+
+```
+|M(k)|/[k(k+1)] <= B*s(N)*s(k)/k.
+```
+
+The exact boundary-minus-tail identity then yields
+`|H_N| <= B*(1+T)*s(N)` eventually. The complete energy theorem with
+logarithmic quotient-depth cost, including every physical coordinate,
+gives for every positive integer L
+
+```
+E_N <= 4 + 2*N*L*(|H_N|+B*s(N)^2*(2+log L))^2 + N/L.
+```
+
+Choose `L=floor(1/s(N))`. Eventually `1/s(N)>=2`, hence
+`1/(2*s(N))<=L<=1/s(N)`. If `t=u(N)/216`, then
+`s(N)*(2+log L)<=exp(-t)*(2+t)<=3`, using `1+t<=exp(t)`.
+Thus the parenthesized term is at most `B*(4+T)*s(N)`, and
+
+```
+E_N <= 4 + (2*B^2*(4+T)^2+2)*N*s(N).
+```
+
+Eventually `N*s(N)>=1`, so a single constant absorbs 4. This proves
+an unconditional stretched-exponential ceiling for the complete actual
+primitive energy and its modular Hilbert source. It strengthens the
+previous separate fixed-order logarithmic bounds. A single constant and
+a single eventual cutoff also give, simultaneously for all q>=0,
+
+```
+E_N*(log N)^q <= C*N*216^(3*q)*(3*q)!.
+```
+
+This follows from the positive exponential-series term
+`t^(3*q)/(3*q)!<=exp(t)` with `t=(log N)^(1/3)/216`.
+It is an upper bound of factorial order three, not a claim that this is
+the exact best order of the actual source. It does not prove a subpower
+ceiling: `log(N*s(N))/log N -> 1`. Moreover the same exponential-series
+inequality gives `(3*q)!/t^(3*q)>=exp(-t)` for t>0 and every q.
+Consequently optimizing q in this particular certified family cannot
+produce a subpower majorant. This lower-bounds the proposed certificates,
+not the actual arithmetic energy.
+
+The attempted further upgrade was order-uniform asymptotic cancellation.
+For a nonnegative normalized remainder r(t), a bound
+`r(t)<=C*A^q*q!/t^q` for all integers q would imply exponential decay:
+choose `q=floor(t/(2*A))`, use `q!<=q^q`, and obtain
+`r(t)<=2*C*exp(-(log 2)*t/(2*A))` for sufficiently large t.
+In contrast, `exp(-c*t^(1/3))` has no estimate of that form for any
+fixed C,A>0; its ratio to every `exp(-d*t)` diverges. The available
+all-orders logarithmic estimates do not supply the missing uniform
+factorial bound. No such bound for the actual signed remainder was
+proved, and no equality between a formal asymptotic series and that
+remainder is assumed.
+
+Recent broad external searches used synchronization and resurgence.
+[Xu et al., submitted 3 September 2026, revised 7 September](https://arxiv.org/html/2609.04122v2)
+use independent local choices and conditional interval min-entropy before
+a local-lemma construction. Those hypotheses are not available for the
+fixed Möbius sequence or the physical residue measure. The paper's
+square-free words concern repeated substrings, not squarefree integers.
+[de Mello Koch, Raj and Rudra, submitted 4 September 2026](https://arxiv.org/html/2609.04664v1)
+relate large-order coefficients to other saddle sectors using an exact
+matrix integral and its thimble connections. That suggested testing
+order-uniform remainder control; EDQ has no identified integral/thimble
+representation to import the result. Neither external paper supplies a
+Lean premise or a bound for the actual EDQ source.
+
+Five bounded deep searches covered signed drift, gcd grouping, harmonic
+cutoffs, signed dilation covariance, and factorial remainder mechanisms.
+Their declaration, candidate-lemma and proof-source lanes were inspected.
+Results were partial at generation 823339; reported semantic coverage,
+when available, was 2,196,271 of 2,336,767 chunks. No validated proof-idea
+or ingredient group was returned. Applied candidates are checked against
+source and in Lean. These searches do not establish corpus exhaustion.
+
+A self-improvement attempt also fails at the available reverse estimates.
+The initial-block coercivity `N*H_N^2/2<=fullErrorEnergy N` yields only
+`H_N=O(s(N)^(1/2))` from a full-error bound of order `N*s(N)` (the
+source/error comparison adds only a bounded term). The direct harmonic
+estimate above is already `O(s(N))`. Thus this return step weakens the
+saving rather than amplifying it. The surviving target is a new estimate
+for the actual signed correlations; neither order optimization nor this
+energy-to-harmonic feedback provides it.
+
+### Stretched-energy validation
+
+`EulerDeletionStretchedEnergy.lean` (260 lines), namespace
+`RHTower.DeletionStretchedEnergy`, contains four new unconditional public
+theorems: `harmonic_rate`, `primitiveEnergy_rate`,
+`modular_norm_sq_rate`, and `primitiveEnergy_factorial_rate`.
+All were developed with foreground `lake env lean` scratch checks.
+After the final local-definition correction,
+`lake build --old GaloisForLFunctions.RHTower.EulerDeletionStretchedEnergy`
+passed, compiling only this leaf in 218 seconds; the 13,112 jobs include
+cached dependencies. Lake replayed existing dependency messages. The new
+leaf emitted no warning. Its umbrella import is wired; no umbrella build
+was run.
+
+A separate scratch audit printed axioms only for these four new theorems.
+Each depends only on `propext`, `Classical.choice`, and `Quot.sound`.
+No added axiom, unproved premise, admitted proof, or numerical result is
+used. No numerical experiment was run. The frontier map was not edited
+by this work. The route-independent ledger records the need for order
+uniformity before optimizing asymptotic estimates. RH remains unproved;
+the complete signed source still lacks its required cofinal subpower bound.
+
+The declaration index was regenerated. After one refresh for concurrent
+source changes, the generated-file freshness errors cleared. Overall
+`lint --check-generated` still fails solely because these other modules
+are not reachable from their theorem-area umbrellas:
+
+- `RHTower.EulerDeletionSignatureWordExpansion`
+- `RHTower.Sieve.MenonHarmonicRamareLadderSwapped`
+- `RHTower.Sieve.MenonHarmonicRamareLadderSwappedVolume`
+- `HTGeometry.WeightedMinimax.Alternation`
+- `HTGeometry.WeightedMinimax.Coefficient`
+
+This work did not edit those modules or their wiring. The new
+stretched-energy module is reachable and has no reported lint error.
+The repository-wide lint gate is therefore not reported as passing.
+
+All owned Lean, search, index and lint processes have ended. The 12
+owned temporary files were removed after preserving their conclusions
+and validation results here.
+
+## Direct-current phase cancellation and inverse Abel attack [Lean]
+
+The next attempted producer is a bound on the zero-specific current that
+uses the phases lost in the complete primitive norm estimate. Before
+claiming such a gain, test whether that phase transform has a bounded
+inverse on the physical energy space. Write `A(k)=primitive N k`,
+`S(k)=sourcePrefix N s k`, and `b(k)=(k+1)^(Re s-1)*|S(k+1)|`.
+Finite summation by parts, retaining the endpoint, gives
+
+```
+A(k+1)=(k+1)^s*S(k+1)
+        - sum_{n<k} ((n+2)^s-(n+1)^s)*S(n+1).
+```
+
+For `0<Re s<1`, the complex first difference is bounded by
+`|s|*(n+1)^(Re s-1)`. Consequently
+
+```
+|A(k+1)|/(k+1) <= b(k)+|s|*sum_{n<k} b(n)/(k+1).
+```
+
+The finite Cesaro operator has a cutoff-independent square-energy bound.
+One available proof uses domination by the transpose of the existing
+Hardy kernel at `sigma=3/4`, whose squared operator bound is 25. Thus
+the primitive's finite energy is at most
+`2*(1+25*|s|^2)*sum b(k)^2`. If `a=2*Re s-1` lies in `(0,1)`, concavity
+of `x^a` gives `(k+2)^a-(k+1)^a >= (a/2)*(k+1)^(a-1)`.
+At an actual right-half zero the exact positive-current identity therefore
+gives
+
+```
+primitiveEnergy N <= 4*(1+25*|s|^2)/a * Re(sourceCurrent N s).
+```
+
+The existing forward inequality and reflection give two-sided
+comparison at every hypothetical off-line zero. This rules out a
+growth-exponent gain from changing only between these two energy
+descriptions. It does not bound either energy, and does not assert a
+converse from RH to a bound on the unweighted norm. All three statements
+are now proved in `EulerDeletionInverseAbel.lean`: the finite inverse
+identity, the explicit reverse energy bound, and the cutoff-uniform
+two-sided comparison. A new arithmetic argument using the zero equation
+is still possible; the result only rules out a gain from the bounded
+change of energy description itself. The signed arithmetic Gram estimate
+remains a separate, unresolved producer.
+
+### Independent attempts to produce the missing signed bound
+
+**Conjecture: reciprocal-frequency orthogonality supplies the aggregate
+Gram saving.** Four broad deep/method queries inspected signed quotient
+correlations, inverse Hardy transport, signed residue Gram bounds, and
+reciprocal Fourier/Kloosterman mechanisms. All returned partial results
+at index generation 823339. The first two reported 2,196,271 of 2,336,767
+semantic items ready, incomplete coverage and interrupted source/text
+retrieval; the latter two did not complete their coverage response.
+Candidate, declaration, source-argument, proof-idea and ingredient lanes
+were inspected. No validated proof idea or ingredient set was returned.
+Source-only candidates were not treated as verified Lean applications.
+
+The inspected `KloostermanPhysicalResidueModulusBilinear` retains the
+signed physical residue carrier, but its upper bound is a fixed-modulus
+operator estimate. `KloostermanTerminalOrbitParseval` retains source
+residue energies and a modulus-pair terminal budget.
+`KloostermanGlobalFrequencyParseval` is an exact frequency identity.
+`KloostermanProductFrequencyGcdBound` takes absolute source masses in its
+quadratic bound. None supplies the EDQ Möbius-weighted upper bound. The
+existing full-flux frequency expansion above gives a sharper test of
+applicability: its `m=j=1` phase is `2*pi*d/e`, with bounded variation on
+the balanced scaled rectangle, independent of N. That term gains no
+large oscillatory parameter merely by increasing N. This attempt does
+not close the signed estimate; the earlier finite-frequency remainder
+bound remains valid.
+
+**Conjecture: local sign-annihilation constraints transfer a small or zero
+energy to the physical source.** The broad single-word arXiv search
+`holonomy`, sorted by announcement date, found
+[Kránitz–Iqbal–Penc, Chiral Color Ice](https://arxiv.org/html/2608.30802v1)
+(31 August 2026). Sections III.1 and VI construct local positive parent
+terms around an explicitly chosen state space and identify the global
+zero-energy space with their common kernel. The paper's Möbius maps are
+fractional-linear transformations, not arithmetic Möbius coefficients.
+The method prompted an exact EDQ toy test: the coefficient vector
+`(mu(1),mu(2))=(1,-1)` is annihilated by the scalar-sum map, while its
+actual residue source at the positive physical integer k=1 is
+`(1 mod 1)/1-(1 mod 2)/2=-1/2` (index zero in `residueVec`).
+Thus a parent quadratic built only from that local
+coefficient-sum constraint cannot dominate the actual physical Gram
+quadratic, even at this cutoff. The positive kernel construction would
+need a different, source-compatible constraint; declaring the desired
+coefficient state to be a zero mode does not provide one. No numerical
+experiment or new parent-operator module was warranted. This finite test
+rejects that kernel transfer, not a different asymptotic family of
+source-compatible local constraints.
+
+Other broad searches included `avalanche`, `suspension`, `catalysis`, and
+`inertia`. Primary sources inspected were
+[Zhang, Tomter's example revisited](https://arxiv.org/html/2608.11097v1)
+(11 August 2026) and
+[Chen et al., Quantum hot carrier spectra in plasmonic catalysis](https://arxiv.org/html/2609.06949v1)
+(7 September 2026). The first propagates already uniform hyperbolicity
+from a dense orbit family; EDQ has no such uniform arithmetic estimate
+to propagate. The second models material-specific carrier generation
+and scattering, with no applicable arithmetic identity or bound found.
+These papers were method prompts, not proof inputs.
+
+### Inverse-Abel validation and remaining goal
+
+`EulerDeletionInverseAbel.lean` has 305 lines and three public theorems:
+`primitive_inverse_abel`, `primitiveEnergy_le_current`, and
+`off_line_energy_comparison`. Development used foreground
+`lake env lean` scratch checks. The final
+`lake build --old GaloisForLFunctions.RHTower.EulerDeletionInverseAbel`
+passed, compiling only this leaf in 229 seconds. The 13,108 jobs include
+cached dependencies; no full or umbrella build was run. The module is
+wired into `RHTower.lean`. One non-blocking tactic-sequence style warning
+remains at line 264; there are no proof errors.
+
+A separate `/tmp` audit printed axioms only for these three new theorems.
+Each uses exactly `propext`, `Classical.choice`, and `Quot.sound`.
+No added axiom or numerical result is used. The new comparison is a
+closed universally quantified theorem about hypothetical off-line zeros,
+not a proof of their absence.
+
+After regenerating the index and refreshing once for concurrent changes,
+`lint --check-generated` reports no generated-file freshness error and
+no error for this module. Its only errors are two other modules still
+unreachable from their theorem-area umbrella:
+
+- `HTGeometry.WeightedMinimax.Coefficient`
+- `HTGeometry.WeightedMinimax.PolyRoots`
+
+Those modules were not edited by this work. The global lint gate is not
+reported as passing. The frontier map remained read-only. No numerical
+experiment was run. The RH goal remains open: neither the inverse
+comparison, reciprocal-frequency attempt, nor local-kernel test supplies
+the required cofinal subpower bound on the complete signed source.
+
+All owned Lean, search, index and lint commands have finished. The 11
+owned temporary files were removed after recording the proofs, search
+conclusions and validation results. No owned Lean process remains.
+
+## Logarithmic prime renewal: transport and feedback audit
+
+**Status: unsuccessful estimate attack; paper calculations only.** No new
+Lean theorem or stronger arithmetic ceiling is claimed. The surviving
+question is an estimate for the complete signed source, not a missing
+Abel identity. This audit does not retire EDQ or exclude an eventual or
+cofinal estimate.
+
+Write, on the full positive ray,
+
+```
+phi_n(u) = fract(u/n)/u,
+R_N = sum_(1<=n<=N) mu(n)*phi_n,
+J_N = sum_(1<=n<=N) mu(n)*log(n)*phi_n,
+D_q f(u) = f(u/q)/q.
+```
+
+For the actual compensated generator sum G_N and harmonic sum H_N,
+`R_N(u)=G_N(u)+H_N*fract(u)/u`. The compensated source vanishes on
+`0<u<1`; its full-ray norm is therefore its original physical norm.
+The correction has norm at most `sqrt(2)*|H_N|`: bound its seed by 1
+below 1 and by `1/u` above 1. Thus this change preserves the question
+of a cofinal subpower ceiling. It does not supply that ceiling.
+
+The exact coefficient identity `mu*Lambda=-mu*log` and the finite
+hyperbola interchange give
+
+```
+J_N = -sum_(2<=q<=N) Lambda(q)*D_q R_floor(N/q),
+log(N)*R_N = sum_(1<=k<N) log((k+1)/k)*R_k - P_N,
+P_N = sum_(2<=q<=N) Lambda(q)*D_q R_floor(N/q).
+```
+
+The second equality is finite Abel summation, with `log(1)=0` retained.
+The divisor identities in `LocalizedHalfDensityCurvature` and
+`TatuzawaIsekiIdentity`, and the Abel formula in `DeningerAbelSummation`,
+provide existing source-level ingredients. This particular full-ray
+package has not been checked in Lean.
+
+**Conjecture → failure: joint rescaling makes a scalar renewal.** For
+real cutoff t, put `V_t(x)=t*R_floor(t)(t*x)`. The prime packet does
+become `t*D_q R_floor(t/q)(t*x)=V_(t/q)(x)`. However, the Abel integral
+becomes
+
+```
+integral_(1<=v<=t) (t/v)*V_v((t/v)*x) dv/v.
+```
+
+It still contains spatial transport. Moreover,
+`||V_t||^2=t*||R_floor(t)||^2` on the full positive ray. Removing that
+factor or the transport would change the growth question. Keeping them
+does not produce a contracting scalar kernel.
+
+**Conjecture → failure: the actual prime feedback is nonnegative.**
+At N=5, `H_5=-1/30` and all nonzero non-unit coefficients are negative:
+`mu(2)=mu(3)=mu(5)=-1`, `mu(4)=0`. Each compensated generator is
+nonnegative: with k=floor(u), its numerator is `(k mod d)/d`.
+Consequently `R_5<=0` on the whole positive ray. Also
+`J_5=-log(2)*phi_2-log(3)*phi_3-log(5)*phi_5<=0`.
+On `0<u<1` both are strictly negative, with
+`R_5=-1/30` and `J_5=-log(2)/2-log(3)/3-log(5)/5`.
+All these finite sums are in L2. Hence
+`<R_5,P_5>=-<R_5,J_5><0`. This disproves the proposed sign at all
+cutoffs; it says nothing by itself against a large-cutoff or accumulated
+bound. No numerical experiment is needed.
+
+**Second pass: retain the cutoff-history variance.** Set
+`w_k=log((k+1)/k)`, `E_N=||R_N||^2`, and
+
+```
+B_N = sum_(1<=k<N) w_k*E_k,
+V_N = sum_(1<=k<N) w_k*||R_N-R_k||^2,
+Gamma_N = V_N + 2*<R_N,P_N>.
+```
+
+Polarization gives `log(N)*E_N=B_N-Gamma_N`. Expanding the finite sums
+also gives
+
+```
+Gamma_N = -sum_(m,n<=N) mu(m)*mu(n)*log(max(m,n))*<phi_m,phi_n>.
+```
+
+The nonnegative history variance therefore does not automatically
+absorb the adverse feedback. Its combination with the feedback is a
+signed Gram sum requiring an independent arithmetic bound. The second
+pass found no such bound. The displayed identities are bookkeeping for
+the attempted estimate, not a new producer or a completed no-go package.
+No positive estimate was salvaged from scalarization or feedback
+positivity; no replacement hypothesis is asserted as proved.
+
+**Search and external-method audit.** Five deep/method searches used
+120-second budgets, two rounds, all retrieval views, cached content,
+`--any`, and no per-module cap. The mechanisms were largest-prime
+factorization/renewal, joint cutoff/spatial scaling, signed transport
+dissipation, hypocoercivity/Bellman memory, and logarithmic Abel energy.
+Declaration, candidate-lemma, source-argument, proof-idea and ingredient
+lanes were inspected. Results were partial, with pending coverage at
+generations 823340/823347, source-only compiler metadata, interrupted
+retrieval and unavailable/timed-out semantic service. They are not an
+exhaustive absence certificate; no service was started to bypass this.
+
+`GibbsSignedCovarianceAccumulation` preserves a partition mass in its
+positive energy identity. `RouteEPhysicalFibreCoarea` uses normalized
+factor masses and conditional means. Neither identifies its energy with
+the present unnormalized source. `HodgeEdgeCochain.Energy` requires the
+actual two-field equations and a skew cancellation identity.
+
+Broad newest-first arXiv searches on renewal and dissipation supplied
+two concrete transfer tests. [Ding--Tran--Vicente, 10 September 2026](https://arxiv.org/html/2609.11567v1)
+use a memory-dependent merit function with sufficient-decrease polling;
+the fixed arithmetic cutoff sequence supplies neither their polling
+directions nor their decrease law. [Fischer--Krhac--Reis--Wierzba,
+6 August 2026](https://arxiv.org/html/2608.05606v1) cancel the magnetic and
+mechanical power terms through an explicit adjoint relation, retaining
+external input and dissipation. Attempting that mechanism here leaves
+the displayed Gamma_N; no opposite adjoint equation for a second
+arithmetic state was obtained. Neither paper supplies the missing bound.
+
+No Lean process, build, axiom re-audit or numerical experiment was run
+for this attack. No new route-independent law is asserted from these
+unformalized calculations. The frontier map remains read-only.
+All five owned searches finished; their temporary JSON files were removed
+after the findings were recorded. No owned process remains.

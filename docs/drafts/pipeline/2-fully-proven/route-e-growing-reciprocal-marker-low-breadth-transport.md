@@ -6492,3 +6492,210 @@ Card remains Stage 2.  Initial all-small decay and the exact bounded terminal me
 Remaining work is the initial-exceptional/Case-II numerical specialization, its final-block and
 frequency-band summation, and the final insertion into the growing marker/grid/count chain; none is
 assumed.
+
+## Lean progress update (2026-09-11) — the reversed and hybrid harmonic Ramaré receivers
+
+Every geometric block of the harmonic Ramaré ladder was being paid with a single ordering: the
+prime block polynomial bounded pointwise and the cofactor by reciprocal Halász--Montgomery
+(`Sieve/MenonHarmonicRamareLadderOnHM.setIntegral_normSq_harmonicRamareBlock_geom_le_HM`).  That
+ordering is off by a factor `≍ A₀` on the blocks whose prime scale reaches the source scale: there
+the cofactor factor is `Ω²·card ≍ 2q_j/A₀`, so its ambient mean square costs `≍ W·q_j/A₀ ≍ W`,
+while the truth for such a block is `≍ (2W + B₀)·∑_{p ∈ B_j} p^{-2} ≍ harmonicPrimeMass B_j`.
+
+Three new unconditional leaves supply the missing ordering and the hybrid ladder:
+
+- `Sieve/MenonHarmonicRamareBlockSwapped.lean` — `harmonicPrimeBlockPoly B = logPoly
+  harmonicMoebiusC B` exactly, hence the corpus's reciprocal Halász--Montgomery receiver applies to
+  the *prime* factor at the block's own natural endpoints (`⌊Q(1+η)^j⌋₊+1`, `⌊Q(1+η)^{j+1}⌋₊`);
+  the cofactor is paid by its own harmonic supremum, which is literal, not assumed.  Capstone
+  `setIntegral_normSq_harmonicRamareBlock_geom_le_HM_swapped`.
+- `Sieve/MenonHarmonicRamareLadderSwapped.lean` — `menonHarmonicSwappedBlockCost`, the complete
+  swapped ladder `setIntegral_normSq_harmonicRamareBilinear_le_swapped`, and — the useful one —
+  the **hybrid** ladder `setIntegral_normSq_harmonicRamareBilinear_le_min`, in which every block
+  independently takes the smaller of the two receivers.  It is therefore never worse than
+  `setIntegral_normSq_harmonicRamareBilinear_le_allSmall`.
+- `Sieve/MenonHarmonicRamareLadderSwappedVolume.lean` — the swapped cost with its Gallagher-set
+  measure exposed as a scalar plus monotonicity in that scalar (so an exceptional-set budget can
+  replace the literal measure), and `harmonicPrimeMass_Icc_le`
+  (`∑_{a ≤ m ≤ b} 1/m ≤ (b+1-a)/a`), which evaluates the swapped receiver's cofactor supremum to an
+  explicit `O(1)` scalar on a geometric block.
+
+Direct source checks pass; targeted leaf builds pass (`12254/12254`, `12697/12697`,
+`12703/12703`).  All fifteen new declarations audit with only
+`[propext, Classical.choice, Quot.sound]`.  The three leaves are umbrella-wired without an umbrella
+build.
+
+Card remains Stage 2.  A separate finding recorded with this entry: the receiver's frequency radius
+must reach `twoRangeTop (2/3) x ≍ √x/h`, not `menonHarmonicCentralRadius x = (log x)^{2000}` —
+in `dyadicMeanSquare_harmonic_le_menonFinalRange_boundedDyadicHead_two` the head carries
+`log(1+l/A)^2 ≍ (l/A)^2` and the tail `4·menonHarmonicAffineConst A/(3π²W²)`, so `W ≳ (A/l)(log A)^{20}`
+is forced.  The exponent `80` in the existing central-disc statements is slack: the receiver only
+needs `I·K ≪ 1/log A` with `K ≍ (log A)^2`, i.e. any fixed power above `3`.
+
+Remaining work is unchanged in kind: the quantitative outer-annulus ladder at that radius, its
+initial-exceptional/Case-II specialization, and the final insertion into the growing marker chain.
+
+## Lean progress update (2026-09-11) — the ladder split at its own masses
+
+The harmonic Ramaré ladder was being split by `setIntegral_normSq_harmonicRamareBilinear_le_blocks`,
+which costs the **number** of blocks.  Along every schedule the ladder uses that number is a large
+power of `log x` (`menonFinalRangeLadderSteps ≍ (log x)^{11}`), while the blocks' own harmonic
+masses sum only to `∑_{p ∈ P} 1/p ≍ log log log x`.  The split alone therefore put the assembled
+bound eleven logarithms above the trivial bound, whatever per-block receiver was used.
+
+`Sieve/HarmonicCauchySchwarz.normSq_sum_le_weighted` — whose own docstring states exactly this —
+had only ever been applied *inside* a block (over that block's primes, with weight `p`).  Two new
+unconditional leaves apply it to the block split itself:
+
+- `Sieve/MenonHarmonicRamareLadderWeighted.lean` —
+  `setIntegral_normSq_harmonicRamareBilinear_le_blocks_weighted`, the split at arbitrary positive
+  weights, costing `∑_i 1/v_i`; and `..._le_min_weighted`, the hybrid per-block receiver under it.
+- `Sieve/MenonHarmonicRamareLadderMass.lean` — `harmonicPrimeMass_biUnion` and
+  `setIntegral_normSq_harmonicRamareBilinear_le_blocks_mass`:
+
+  ```text
+  ∫_E ‖harmonicRamareBilinear P s w‖²
+     ≤ harmonicPrimeMass P · ∑_i (∫_E ‖harmonicRamareBlock P s (B i) w‖²) / harmonicPrimeMass (B i)
+  ```
+
+  **the split now costs the total harmonic mass of the designated prime range, not its length** —
+  together with the hybrid-receiver form `..._le_min_mass`.
+
+Direct checks pass; targeted leaf builds pass (`12698/12698`, `12699/12699`); all five new
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; both leaves are
+umbrella-wired without an umbrella build.
+
+With this split the **low** blocks of the final-range ladder close comfortably at the Route-T
+threshold: `harmonicPrimeMass P · ∑_j V_j²·6/(m_j (log log x)²) ≍ (log x)^{-18}` for
+`V_j = C(log q_j)^{-20}` and `q_j ≤ W`.  The **top** blocks (`q_j ≫ W`) remain open and are now
+isolated as the single structural obstruction of this lane: for a polynomial of length `N ≫ W` the
+mean-value theorem's `N·∑|a_n|²` term is lossy by `N/W`, so every available upper bound for
+`∫_{|w| ≤ W}‖P_j‖²` is `≍ m_j` where the truth is `≍ 2W m_j/q_j`; and no pointwise threshold helps,
+because `∫_E ‖C_j‖² ≍ |E| ≍ W ≍ √x` for a top block's `O(1)`-term cofactor.  Card remains Stage 2.
+
+### CORRECTION and sharpening (2026-09-11), after reading Menon 2026 §1.1, §2
+
+The preceding entry's closing claim — that the top blocks are a structural obstruction of the lane
+— is **over-broad, and is withdrawn in that form**.  It is correct only for a ladder applied on a
+frequency set of *ambient* measure.  Menon's Lemma 2.19 is
+
+```text
+∫_𝒯 |F(1+it)|² dt  ≪  H·log(Q/P) · ∑_{v ∈ ℐ} ∫_𝒯 |Q_{v,H}(1+it) R_{v,H}(1+it)|² dt + 1/H + 1/P
+```
+
+with `ℐ = ℤ ∩ [H log P, H log Q]`, `Q_{v,H}(s) = ∑_{e^{v/H} ≤ p ≤ e^{(v+1)/H}} c_p p^{-s}`,
+`R_{v,H}(s) = ∑_{X e^{-v/H} ≤ m ≤ 2X e^{-v/H}} b_m m^{-s}/(ω_{[P,Q]}(m)+1)`, and the final range
+`P = exp((log X)(log log log X)/(R log log X))`, `Q = 3X` of (2.7), whose complement has density
+`≪_R (log X)^{-R+o(1)}` by Lemma 2.15 — the paper's one new point.  So Menon does pay the block
+count `|ℐ| ≍ H log(Q/P)`, exactly as the corpus's `menonFinalRangeLadderSteps ≍ (log X)^{11}` does,
+**and it is affordable because the ladder is applied on the exceptional set `𝒯`, not on the ambient
+window.**  The ambient half is paid by the `L^∞` threshold instead, `∫_{|F| ≤ V} |F|² ≤ V²·2T`;
+that is the `L²–L^∞` split of §1.1.
+
+With that correction the new mass-weighted split is a **quantified gain, not a repair**.  Writing
+`ε = |𝒯|` and using the trivial per-block envelope `∫_𝒯 ‖Q_v R_v‖² ≤ m_v²·ε·O(1)`:
+
+```text
+block-count split (Lemma 2.19):   L·∑_v m_v²·ε ≍ ε·(log X)^{10}·log log X      ⟹  ε ≲ (log X)^{-12}
+mass split (this corpus, new):    (∑_v m_v)²·ε ≍ ε·(log log log X)²            ⟹  ε ≲ (log X)^{-2}
+```
+
+**The mass-weighted split relaxes the exceptional-measure requirement by ten logarithms.**  Menon's
+own Lemma 2.20 buys part of the same thing by a Perron decoupling — it replaces `H log(Q/P)` by
+`(log D)(log Q)` at the price of a `u`-integral over `|u| ≤ D < P` and an error `1/D` — but even
+that is `≍ log X·log log X`, still `(log X)^{1+o(1)}` worse than `(∑_v m_v)² ≍ (log log log X)²`.
+The corpus therefore does not need Lemma 2.20 at all.
+
+What remains genuinely open in this lane is unchanged and is the `L²–L^∞` pair: the ambient
+threshold `V` with `V²·2T` below target, and the large-values bound on `|𝒯|`.
+
+## Lean progress update (2026-09-11) — Menon's ladder receiver with no free measure
+
+Five further unconditional leaves rebuild the per-block half of the ladder in the form Menon's
+`L²`–`L^∞` argument actually needs, and assemble it with the mass split above.
+
+- `Sieve/MenonHarmonicBlockLevelSplit.lean` — the harmonic dyadic **level split**.  The corpus's
+  `Sieve/BlockProductLevelSplit` does this for the *unweighted* prime block (sup bound = block
+  cardinality); the harmonic form needs the sup bound `harmonicPrimeMass B = ∑_{p∈B} 1/p`, and it is
+  stated on an arbitrary measurable part of the window:
+
+  ```text
+  ∫_E ‖Q_B·R_D‖² ≤ V₀²∫_E ‖R_D‖² + ∑_{i<J} (2^{i+1}V₀)² ∫_{E ∩ {2^i V₀ ≤ ‖Q_B‖}} ‖R_D‖²
+  ```
+
+  whenever `harmonicPrimeMass B ≤ 2^J V₀`, together with its insertion into the exact harmonic
+  Ramaré block (`..._le_levelSplit`).  A supremum on the whole window is never taken, which is the
+  point: by Kronecker the phases align somewhere, so only rarity survives.
+- `Sieve/MenonHarmonicRamareLadderLevelSplit.lean` — the ladder with the mass split outside and the
+  level split inside (`..._le_levelSplit_mass`).
+- `Sieve/MenonHarmonicBlockLevelSplitHM.lean` — `harmonicBlockLevelSet` with its measurability and
+  window inclusion, and every level's cofactor mean square paid by the corpus's reciprocal
+  Halász–Montgomery receiver, so the only free scalar left on each level is **the measure of that
+  level set**.
+- `Sieve/MenonHarmonicBlockLevelMoment.lean` — that measure supplied: a level set inside the window
+  sits in the literal `menonHarmonicBlockLarge`, so
+  `volume_menonHarmonicBlockLarge_pow_le_local` gives
+  `volume (level set) ≤ menonHarmonicLocalBlockMomentCost k Q η W j / V^{2k}` at every moment order
+  `k`, and `..._levelSplit_moment` substitutes it — **no free measure remains on any level**.
+- `Sieve/MenonHarmonicRamareLadderLevelMoment.lean` — the capstone.
+  `menonHarmonicLevelMomentBlockCost` is the resulting per-block cost (base level + measured levels
+  + the corpus's exact `harmonicCofactorSupportError`), and
+
+  ```text
+  ∫_E ‖harmonicRamareBilinear P (Icc A₀ B₀)‖²
+     ≤ harmonicPrimeMass P · ∑_{j<L} menonHarmonicLevelMomentBlockCost … / harmonicPrimeMass (B_j).
+  ```
+
+  Its only parameters are the schedule's own base levels `V₀ j`, level counts `J j` and moment
+  order `k`; no analytic premise and no measure is supplied from outside.
+
+Direct checks pass; targeted leaf builds pass (`12703`, `12704`, `12705`, `12709`, `12710`); all
+new declarations audit with only `[propext, Classical.choice, Quot.sound]`; every leaf is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  What is now needed is purely a schedule: choose `V₀ j`, `J j`, `k` and the
+ambient threshold so that the displayed sum is below `(log x)^{-A}` at the radius
+`twoRangeTop β x`, and pair it with the ambient `L^∞` half.
+
+## Lean progress update (2026-09-11) — the `L²`--`L^∞` window estimate, assembled
+
+The reciprocal Halász–Montgomery receiver is the wrong tool on the *exceptional* set: its
+`hmMassRecip` carries `48π N log(2+2T)`, which does not shrink with the set, and on Menon's
+exceptional set that term alone is `≍ log x` per block.  Four further unconditional leaves supply
+the receiver that does shrink, and join the two halves of the `L²`–`L^∞` split.
+
+- `Sieve/MenonHarmonicBlockLevelTrivial.lean` — the measure-times-supremum receiver
+  `∫_E ‖logPoly a D‖² ≤ |E|·(∑_{n∈D}‖a_n‖)²`, the evaluation
+  `∑_{n∈D}‖harmonicRamareCofactorCoeff P n‖ ≤ harmonicPrimeMass D` (which is `O(1)` on a geometric
+  cofactor block), and the level split with every level paid that way — first with the literal
+  level measures, then with those measures replaced by their moment budgets.
+- `Sieve/MenonHarmonicRamareLadderLevelTrivial.lean` — `menonHarmonicLevelTrivialBlockCost` and the
+  ladder `setIntegral_normSq_harmonicRamareBilinear_le_levelTrivial_mass`.  Every term is now
+  proportional to a measure, so the whole ladder on a set of measure `ε` is
+  `≍ harmonicPrimeMass P²·ε`, with no logarithm of the height anywhere.
+- `Sieve/MenonHarmonicWindowThresholdSplit.lean` — `windowSuperLevel` with its measurability and
+  window inclusion, the bounded-set mean square `∫_E ‖F‖² ≤ V²·|E|`, and the split itself:
+
+  ```text
+  ∫_{[-W,W]} ‖F‖²  ≤  V²·(2W) + ∫_{windowSuperLevel F W V} ‖F‖² .
+  ```
+
+- `Sieve/MenonHarmonicWindowLadderAssembly.lean` — the join:
+
+  ```text
+  ∫_{[-W,W]} ‖harmonicRamareBilinear P (Icc A₀ B₀)‖²
+     ≤ V²·(2W)
+       + harmonicPrimeMass P · ∑_{j<L} menonHarmonicLevelTrivialBlockCost … / harmonicPrimeMass (B_j)
+  ```
+
+  with the exceptional-set measure appearing only as
+  `volume.real (windowSuperLevel (harmonicRamareBilinear P (Icc A₀ B₀)) W V)`.
+
+Direct checks pass; targeted leaf builds pass (`12710`, `12712`, `12713`, `12714`); all new
+declarations audit with only `[propext, Classical.choice, Quot.sound]`; every leaf is
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  The lane's remaining obligations are now exactly four scalars and one
+measure: the threshold `V`, the base levels `V₀ j`, the level counts `J j`, the moment order `k`,
+and a large-values bound for `volume.real (windowSuperLevel …)`.  Everything else feeding the
+estimate is explicit and unconditional.

@@ -32,5 +32,5 @@ ordinary-convergence domain, or that every possible deformation fails.
 `EulerDeletionCompatibleCurvature`. The fixed attenuation `1/5` gives a closed
 theorem with multiplier 25 and strict signs on both sides of two. This completes
 the positive survivor of the failed repair, not the main RH objective.
-[Paper and literature scope](../2-fully-proven/euler-deletion-compatible-curvature.md),
+[Paper and literature scope](../3-formalized/euler-deletion-compatible-curvature.md),
 [formal certificate](../3-formalized/euler-deletion-compatible-curvature.md).

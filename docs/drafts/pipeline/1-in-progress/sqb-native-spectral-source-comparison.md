@@ -365,40 +365,151 @@ Relative to `v^T*A_low*v-sum_ij |v_i|*E_band_ij*|v_j|`, its right side gains exa
 2*L*(max(-G_2(x),0)+e_G(x))*v_3^2.
 ```
 
-The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. For each fixed coefficient, the aperture-dependent matrix `thetaCuspCenterCorrectedEvenFour` integrates entrywise to the original native moments. Its correction dominates the weighted source correction, with a nonnegative diagonal remainder, as proved by `thetaCuspCenterCorrectedEvenFour_posDef_of_source`. This makes the coefficient choice admissible; the aperture-independent source matrix itself is not the exact zero-flux matrix. The complete-source tail theorem covers `L` on `pi*exp(2*x)>=18`, hence throughout `x>=7/8`, and seam positivity for `L` is proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
+The gain uses `A_2(L,x)-A_low(x)=2*L*max(-G_2(x),0)*e_3*transpose(e_3)`. For each fixed coefficient, the aperture-dependent matrix `thetaCuspCenterCorrectedEvenFour` integrates entrywise to the original native moments. Its correction dominates the weighted source correction, with a nonnegative diagonal remainder, as proved by `thetaCuspCenterCorrectedEvenFour_posDef_of_source`. This makes the coefficient choice admissible; the aperture-independent source matrix itself is not the exact zero-flux matrix. The complete-source tail theorem covers `L` on `pi*exp(2*x)>=15`, hence throughout `x>=4/5`, and seam positivity for `L` is proved on an unspecified neighborhood of zero. The explicit inner extension through `8/95` still depends on the unfinished compact determinant incidence. **Positivity of the sharper middle lower form remains unproved.** These strengthened comparison formulas are paper deductions from the existing error estimates, not new Lean declarations or a rank-seven sign theorem.
 
-### Complete compensated outer region through seven eighths
+### First-atom central-factorial reserve and full-source comparison
 
-The complete-source reflection estimate retains both likelihood-error contributions. Put `q=pi*exp(2*x)`, `f_1=thetaCuspSourceTerm x 1`, and `epsilon=regimeOneLikelihoodScale x`. The all-order balanced estimate, valid for `q>=2*k+6` and `x>0`, is
+Set `q=pi*exp(2*x)` and `p_n(X)=product_(0<=j<n)(X^2+4*j^2)`. The exact first-atom reflected kernel, divided by its mass squared, is
+
+```text
+exp(-2*q*(cosh(2*y)-1)) *
+  (1-12*q/(2*q-3)^2*(cosh(2*y)-1)).
+```
+
+The normalized signed moment identity
+`L_1(p_n)=(2*n-1)!!*(8*q)^n*(1+6*n/(2*q-3)^2)`
+is Lean-checked for all seven orders `0<=n<=6`, retaining the original source normalization. The all-order extension is still a conjecture. The implementation directly proves the seven finite transforms of the literal reflection jets, without assuming a Gaussian source.
+
+Set `v=1/(2*q)`, `h=6/(2*q-3)^2`, `Y=X^2/(8*q)`. Use the monic basis
+
+```text
+1,
+Y-1,
+Y^2+(v-6)*Y+3,
+Y^3+(5*v-15)*Y^2+(4*v^2-15*v+45)*Y-15.
+```
+
+For an actual even polynomial `sum c_i X^(2*i)`, let `y_i` be its coordinates in this basis. The exact normalized source form `N` completes its first square to `(y_0+h*y_1)^2`. The proved parameter relation is `h*(1-3*v)^2=6*v^2`. Explicit polynomial decompositions and three Young inequalities give
+
+```text
+q>=4:   N >= (y_0+h*y_1)^2 + (7/8)*y_1^2 + 3*y_2^2 + 282*y_3^2,
+q>=7/2: N >= (y_0+h*y_1)^2 + (5/14)*y_1^2 + y_2^2 + 196*y_3^2.
+```
+
+`firstAtomEvenEnergy_eq_centralHermite` identifies `f_1^2*N` with the literal source sum over all sixteen Hankel entries. Consequently the first-atom sixth-degree reserves are `282*f_1^2*(8*q)^6*c_3^2` and `196*f_1^2*(8*q)^6*c_3^2` on the respective domains. Both unequal-atom terms and the complete tail error still have to be transferred and bounded; the complete-source middle interval and rank-seven norm sign remain open.
+
+For the retained pair, set `a=5*q`, `b=3*q`, `z=exp(-3*q)`, and let `H_n(a,b)` be the coefficient of `u^n` in
+
+```text
+exp(2*a*u)*cos(2*b*sqrt(u*(1-u))).
+```
+
+The cosine has an ordinary power series in `u`, so the coefficient is the finite sum
+
+```text
+sum_(j=0..n) (-1)^j*(4*b^2)^j/(2*j)! *
+  sum_(k=0..min(j,n-j)) (-1)^k*choose(j,k)*(2*a)^(n-j-k)/(n-j-k)!.
+```
+
+The seeded mixed coefficient is
+`B_n=(a^2-b^2+9-6*a)*H_n+12*a*H_(n-1)+6*b*partial_b(H_n)`, with `H_(-1)=0`.
+This follows by writing the pair's even reflected kernel as an exponential times a hyperbolic cosine and its derivative; substitution `u=sin(t)^2` retains both unequal-atom terms. In units `4*q^2*exp(x-2*q)`, the two-atom central-factorial moment is therefore the candidate expression
+
+```text
+c_n*q^n*((2*q-3)^2+6*n) + 8*z*(2*n)!*B_n(5*q,3*q)
+  + 16*z^2*c_n*(4*q)^n*((8*q-3)^2+6*n),
+c_n=(2*n)!*4^n/n!.
+```
+
+These mixed-coefficient identities are analytical, not yet Lean-checked. They give a structured target for the retained two-atom correction and its Schur numerator; replacing the mixed terms by zero is not justified. The complete third-and-higher-atom error remains the one already proved through twelve.
+
+A further fixed-coefficient target uses the literal first-atom correction `G_1=3*f_1^2+2*x*f_1*f_1'`. The actual scale obeys `12*q*x<=q^2-9`: multiply `2*x<=sinh(2*x)` by the positive scale and retain `pi>3`. With `P_0=4*q^2-6*q`, `P_1=-8*q^3+30*q^2-15*q`, the adverse first-atom correction is bounded by a single polynomial:
+
+```text
+W(q)=629145600*q^7*(2*q-3)
+  +10^12*(-8*q^4+30*q^3+129*q^2-378*q+135).
+```
+
+For `q>=4`, its proved positive decomposition uses `q-4` on `[4,5]`, `q-5` on `[5,6]`, and `q-6` on `[6,infinity)`. The Lean-checked source identity is
+
+```text
+6*q*(10^12*G_1+200*f_1^2*(8*q)^6)
+ -2*q^2*(2*q-3)*exp(x-2*q)*W(q)
+ =10^12*exp(x-2*q)*P_0*P_1*(12*q*x-q^2+9).
+```
+
+The product `P_0*P_1` and the final factor are nonpositive on this domain. The proof of `W>0` therefore gives `10^12*G_1 > -200*f_1^2*(8*q)^6`. Joining this to the literal first-atom form proves
+
+```text
+E_1(x,c)+10^12*G_1(x)*c_3^2 >=
+ f_1^2*((y_0+h*y_1)^2+(7/8)*y_1^2+3*y_2^2+82*y_3^2)
+```
+
+for every real coefficient vector, `x>=0`, and `q>=4`. This is `firstAtomCompensatedEvenEnergy_coordinate_lower` in [ThetaCuspFirstAtomCentralFactorial.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspFirstAtomCentralFactorial.lean). The full scratch check `/tmp/sqb81_all.lean` passes. The module is wired into the RHTower umbrella. Its final narrow build passes in `/tmp/sqb81-central-factorial-leaf-audit`, against the actual source and existing compiled dependencies (`/tmp/sqb81_build.txt`). The compiled-module audit `/tmp/sqb81_final_audit.lean` checks all fourteen public theorems; each uses only `propext`, `Classical.choice`, and `Quot.sound`. Global formal lint passes (`/tmp/sqb81_formal_lint.txt`). All owned Lean/Lake processes for this module completed. The mixed-atom quadratic form and complete remainder must be compared against this full four-coordinate lower form, not merely its last-coordinate scalar reserve.
+
+Broad all-view deep searches through cumulants, Gaussian Schur bounds, Rodrigues/Appell/Touchard, central factorials/Sheffer, and head/cofactor bounds, coherent states, Gaussian product squares, and Poisson finite differences inspected candidate statements, source arguments, methods, and ingredient groups. All requests reported partial coverage; the head-bound request also reached its deadline before judging finished. The recent broad searches `majorization` and `caustics` supplied [Poset-refined majorization relations](https://arxiv.org/html/2607.28061v1), whose refined eigenvalue inequality requires orthonormal spectral bases and an LU approximation of their overlap. That theorem has not been applied to the nonorthogonal source basis here.
+
+### Exact finite-difference square candidate for retained pairs
+
+For a real parameter `lambda`, define the polynomial moment functional `T_lambda` by its formal exponential generating series `exp(lambda*(exp(t)-1))`. This definition applies to negative parameters without a probability interpretation. Its polynomial product identity is
+
+```text
+T_lambda(A*B) = sum_k lambda^k/k! * T_lambda(Delta^k A)*T_lambda(Delta^k B),
+Delta A(J)=A(J+1)-A(J).
+```
+
+The sum terminates at the smaller polynomial degree. A finite definition is
+`T_lambda(P)=sum_(k=0..degree(P)) lambda^k/k! * (Delta^k P)(0)`.
+For the product identity, the forward difference on a product is represented on the tensor product by the sum of three commuting operators `Delta tensor 1`, `1 tensor Delta`, and `Delta tensor Delta`. They are nilpotent on each fixed polynomial-degree space, so their finite exponential factors exactly. Evaluation at `(0,0)` yields the displayed identity. Equivalently, compare coefficients in `F(s+t)=F(s)*F(t)*exp(lambda*(exp(s)-1)*(exp(t)-1))`. Tensoring gives the two-variable identity with weights `lambda^k*mu^l/(k!*l!)`. For `lambda=-p`, `mu=-r`, these weights have sign `(-1)^(k+l)`, so the negative directions are explicit finite-difference squares.
+
+This functional represents the literal atom pair, including its seed. Put `W(J)=4*J*(J-1)+6*J=4*J^2+2*J`, and for physical even coefficients `c_i` put `A(J,K)=sum_(i=0..3) (-1)^i*c_i*(2*(J-K))^(2*i)`. The pair contribution to the even energy is
+
+```text
+e^(x-p-r) * (T_(-p) tensor T_(-r))(W(J)*W(K)*A(J,K)^2).
+```
+
+Indeed, the weighted generating series is exactly
+`P_0(p*exp(2*y))*P_0(r*exp(-2*y))*exp(-p*exp(2*y)-r*exp(-2*y))`, after restoring the factor `exp(x)`, where `P_0(u)=4*u^2-6*u`. For the first and second atoms, `(p,r)=(q,4*q)`; the swapped pair contributes equally. The seed itself has the exact four-square decomposition, with `U=2*J+1/2` and `V=2*K+1/2`,
+
+```text
+W(J)*W(K)*A^2 = (U*V*A)^2 - (U*A)^2/4 - (V*A)^2/4 + A^2/16.
+```
+
+Thus the proposed comparison retains every lower clock derivative in finitely many signed squares, rather than replacing the pair by its Gaussian approximation. These identities have an analytical generating-series proof but are not yet Lean-checked. The remaining sign task is to bound their negative squares in the actual first-atom central coordinates and combine that estimate with the complete tail and fixed correction. No such bound is claimed here.
+
+### Complete compensated outer region through four fifths
+
+Put `q=pi*exp(2*x)`, `f_1=thetaCuspSourceTerm x 1`, and `epsilon=regimeOneLikelihoodScale x`. The cooling recurrence only needs `m+n<=q` and `(m+n)/3<=q-pi`. Combining it with the Gaussian source jets gives the full reflected derivative bound under `6<=q` and `n+3<=q`. In balanced coordinates, for `6<=q` and `2*k+3<=q`,
 
 ```text
 abs(nativeScaled_k-firstScaled_k)/32^k
   <= 18*8^k*q^k*epsilon + 9*18^k*q^k*epsilon^2.
 ```
 
-This follows from the full reflected Leibniz estimate `18*(16*q)^(2*k)*epsilon + 9*(24*q)^(2*k)*epsilon^2`, before merging its linear and quadratic terms. For `k<=6` and `q>=18`, polynomial-exponential monotonicity and the analytically proved bound `exp(18)>65000000` give
+Keep the order `k` throughout the estimate. For `k<=6` and `q>=15`, polynomial-exponential monotonicity and the analytically proved `exp(15)>3200000` give
 
 ```text
-B = 18^6*32/(65000000)^3,
-q^6*epsilon <= B,   epsilon <= B,   q^6*epsilon^2 <= B^2,
+E = 32/(3200000)^3,
+q^k*epsilon <= 15^k*E,   epsilon <= E,
+q^k*epsilon^2 <= 15^k*E^2,
 abs(nativeScaled_k-firstScaled_k)/32^k
-  <= 18*8^6*B + 9*18^6*B^2 <= 2/10^8.
+  <= 18*120^k*E + 9*270^k*E^2 <= 120^k*(2/10^17).
 ```
 
-The exact first-atom determinant certificate uses `z=1-30/q`. On `q>=18`, its odd powers are bounded below by `-(2/3)^j`, its even powers are nonnegative, and its denominator obeys `(4-6/q)^2<=16`. Keeping these bounds in the existing degree-fourteen identity gives a first-atom reserved determinant floor `1/4000`. First-atom balanced entries have absolute value at most four; complete entries have absolute value at most five. The determinant perturbation costs at most `96*5^3*(2/10^8)`, leaving a complete reserved determinant at least `1/100000`. The actual native Schur coordinate divided by `f_1^2*q^6` therefore exceeds `100000000`.
+The exact first-atom reserved determinant has floor `1/10000` on `q>=15`. Its balanced entries leave room for the displayed errors inside the separate ceilings `[2,1/3,1/4,1/3,1,2,5]`. The sixth-profile estimate uses denominator at least `129/10` and numerator absolute value at most `51000000000`. Expanding the determinant into its sixteen product terms and telescoping each product gives error at most `3*10^12*eta` whenever entry `k` has error at most `120^k*eta`. With `eta=2/10^17`, the complete reserved determinant is therefore at least `1/25000`. Its actual native Schur coordinate divided by `f_1^2*q^6` exceeds `100000000`.
 
-The complete mass/slope estimates `F<=(101/100)*f_1`, `abs(F')<=(201/100)*q*f_1`, and `16*x<=q` retain the compensation bound
+The complete mass/slope estimates retain
 
 ```text
 G = 3*F^2+2*x*F*F' >= -(13/50)*q^2*f_1^2,
-G/(f_1^2*q^6) >= -(13/50)/18^4.
+G/(f_1^2*q^6) >= -(13/50)/15^4.
 ```
 
-Thus every fixed `0<=C<=3*10^12` has compensated normalized Schur coordinate strictly above `90000000` on `q>=18`. A finite Taylor lower bound proves `x>=7/8` implies `q>=18`. The actual complete matrix `thetaCuspNativeEvenFourCompensated C x` is consequently positive definite on `x>=7/8`, including the actual canonical coefficient. The literal weighted matrix is positive for every positive aperture and `r>=7/4`. Combining with the existing uniform seam theorem gives one `delta>0`, `delta<=7/8`, covering every `10^12<=C<=3*10^12` on `0<=x<delta` or `x>=7/8`.
+Consequently every fixed `0<=C<=3*10^12` has compensated normalized Schur coordinate strictly above `80000000` on `q>=15`. A finite Taylor lower bound proves `x>=4/5` implies `q>=15`. The actual complete matrix `thetaCuspNativeEvenFourCompensated C x` is positive definite there, including the canonical coefficient. The literal weighted matrix is positive for every positive aperture and `r>=8/5`. The uniform seam theorem supplies one `delta>0`, `delta<=4/5`, covering every `10^12<=C<=3*10^12` on `0<=x<delta` or `x>=4/5`.
 
-The exact statements are formalized in `HTGeometry/FirstAtomEvenTailSharpReserve.lean` and `RHTower/ThetaCuspEvenFourTwoScaleTail.lean`. Both full constructions pass foreground scratch checks (`/tmp/sqb78_first_reserve.lean` and `/tmp/sqb78_complete_two_scale.lean`); canonical source, weighted-source, and common outer-gap axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`. Both modules are wired into their umbrellas. The final narrow builds `lake build GaloisForLFunctions.HTGeometry.FirstAtomEvenTailSharpReserve` and `lake build GaloisForLFunctions.RHTower.ThetaCuspEvenFourTwoScaleTail` pass in `/tmp/sqb78-first-sharp-leaf-audit` and `/tmp/sqb78-even-two-scale-leaf-audit`, against actual repository source and cached dependencies. Formal lint passes (`/tmp/sqb78_formal_lint.txt`). No numerical experiment or numerical certificate enters these proofs. **The remaining compact source sign below seven eighths, compatibility with a fixed barrier coefficient, the global degree-six cutoff norm, and all-rank positivity remain open.** This is an even-block source theorem, not a global rank-seven theorem. The present all-order error estimate needs `q>=18` at order twelve; extending it below that threshold requires a stronger source estimate.
+The constructions are formalized in `HTGeometry/FirstAtomEvenTailEntrywiseReserve.lean`, `RHTower/ThetaCuspSupportScaleReflectionApproximation.lean`, and `RHTower/ThetaCuspEvenFourEntrywiseTail.lean`. Verification: foreground scratch checks, three narrow leaf builds against actual repository source and cached dependencies, formal lint, and a separate canonical-source/weighted-source/common-gap axiom audit. The capstones use only `propext`, `Classical.choice`, and `Quot.sound`. Modules are wired into their umbrellas; no umbrella build or numerical experiment is used. **The inner complete-source sign, fixed-barrier compatibility, global degree-six cutoff norm, and all-rank positivity remain open.**
 
-Broad deep searches through coercivity/defect/transport, Christoffel kernels, modular source-sign mechanisms, and Gaussian derivative-pair majorants inspected declarations, candidate lemmas, source arguments, methods, and proposed ingredient groups. Results retain partial coverage and stale compiler metadata; pending compact determinant declarations are not treated as proved source inputs. The useful error estimate was verified in Lean on the actual complete source. The independently chosen arXiv term `entrainment` recovered [On the Existence of Almost Periodic Solutions with Applications to Global Entrainment](https://arxiv.org/pdf/2607.10838). Its matrix-measure argument uses accumulated contraction and a uniformly bounded discounted time window on a bounded invariant region. This suggests comparing a complete signed forcing with the actual orbit's integrated gain, but no such theta contraction estimate has been obtained; no dynamical hypothesis from that paper enters Lean.
+Broad all-view deep searches through Laguerre polynomials, derivative geometry, anisotropic perturbations, reflected pairs, exponential-polynomial positivity, and Toda recurrences inspected declarations, candidate lemmas, source arguments, methods, and proposed ingredient groups. Coverage remains partial and compiler metadata stale. The concrete inner candidate retains both leading atoms using `ThetaCuspTwoAtomScalePolynomials`, with `ThetaCuspDeepTailCoolingTwelve` and `ThetaCuspTwoAtomReflectedTwelve` controlling every required remainder derivative on `q>=37/10`. The actual compensated two-atom lower form still needs its positive margin. `XiShiftedJacobiFrameToda` provides a positive transported boundary-square integral once a differentiable symmetric frame and invertible compression are constructed; constructing that frame from the actual cutoff data remains part of the source problem.
 
 ### Actual modular ratio bounds and next determinant target
 

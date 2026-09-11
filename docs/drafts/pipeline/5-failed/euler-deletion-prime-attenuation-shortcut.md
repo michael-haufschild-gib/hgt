@@ -31,7 +31,7 @@ the literal one on the entire open strip.
 literal admission, and repaired convergence have dependency-closed paper proofs and Lean
 proofs in `EulerDeletionPrimeAttenuation`. The Euler-quotient explanation is paper-proved
 and is not an exported Lean theorem in that module.
-[Paper](../2-fully-proven/euler-deletion-prime-attenuation-admission.md),
+[Paper](../3-formalized/euler-deletion-prime-attenuation-admission.md),
 [Lean certificate and validation boundary](../3-formalized/euler-deletion-prime-attenuation-admission.md).
 
 The subsequent [compatible-coefficient audit](euler-deletion-compatible-attenuation-repair.md)

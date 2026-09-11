@@ -159,7 +159,7 @@ object, with its infinite norm and zero-specific arithmetic relations still to b
 ## Developed successor: a full joint product
 
 [Dependency-closed paper proof of the sharp one-fifth admission
-boundary](../2-fully-proven/euler-deletion-joint-product-one-fifth.md) now derives convergence
+boundary](../3-formalized/euler-deletion-joint-product-one-fifth.md) now derives convergence
 to a unit for the joint product in every complete complex normed algebra when `Re(s)>1/5`.
 It includes a summable error estimate for the actual varying weights, all partial prefixes,
 and a fixed finite-dimensional truncated-algebra witness of divergence for real `0<s<=1/5`.

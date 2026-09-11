@@ -2422,3 +2422,239 @@ Both new leaves pass direct checking and targeted builds.  All new declarations 
 build was run.  Remaining exact phase obligation is now strictly `zero Cartan vector/scalar speed
 -> bounded orbit`; continuous affine-building realization, semisimple axes, and opposite weighted
 visual flags also remain.  Card stays at Stage 2.
+
+### Lean progress — zero speed forces a bounded orbit; the phase partition closes (2026-09-11)
+
+`DifferentialVariationalZeroSpeedBoundedOrbit` proves the last missing implication of `(21)`,
+
+```text
+differentialVariationalEuclideanTranslationLength_eq_zero_implies_orbitBounded
+differentialVariationalCartanTranslationVector_eq_zero_implies_orbitBounded
+```
+
+and it does so **algebraically**: no continuous affine realization, CAT(0) comparison, geodesic, or
+affine-building semisimplicity theorem is used anywhere in the proof.  The mechanism is a monotone
+layer count on the forward orbit hull.
+
+Write `M_n = L + σL + ⋯ + σⁿL`, built by the recursion `M_{n+1} = L + σ M_n`, and
+`d_n = length(M_{n+1}/M_n)`.
+
+1. **Layer monotonicity** (`orbitHullDefect_succ_le`).  Since `M_{n+2} = L + σ M_{n+1}` and
+   `M_{n+1} = L + σ M_n`, the layer `M_{n+2}/M_{n+1}` is a quotient of `σ M_{n+1} / σ M_n` — the
+   general submodule fact `length((A ⊔ B)/(A ⊔ B')) ≤ length(B/B')`, isolated as the reusable
+   `length_sup_quotient_le`.  The canonical semilinear action preserves the dominant Cartan vector
+   exactly (`DifferentialFieldAut.latticeBuildingAction_dominantRelativePosition`), hence preserves
+   quotient length, so `d_{n+1} ≤ d_n`.  The layer sequence is an antitone sequence of naturals.
+2. **A vanishing layer is a fixed vertex** (`orbitHullLattice_fixed_of_defect_eq_zero`).  If
+   `d_n = 0` then `M_{n+1} = M_n`, so the hull absorbs its own image, `σ M_n ⊆ M_n`.  Exact Cartan
+   balance (`variationalOreCartanBalance_everyLattice`) upgrades that one-sided inclusion to an
+   equality, through the new
+   `DiffOp.completedPseudoDiffOpLattice_eq_of_carrier_le_of_balanced`: in a common Cartan frame the
+   inclusion forces every coweight coordinate to be `≤ 0` while the character forces their sum to
+   be `0`.  So `M_n` is a literally fixed projective lattice vertex, and the already-proved
+   fixed-vertex implication bounds the orbit.
+3. **A persistent layer forces linear growth.**  Otherwise `d_n ≥ 1` for every `n`, so
+   `length(M_n / L) = ∑_{k<n} d_k ≥ n` (`natLength_orbitHullLattice`).  On the other hand a
+   sublinear Euclidean displacement confines the hull: from `‖μ(σ^k)‖ ≤ N` the balanced-interleaving
+   theorem puts `σ^k L` inside `π^{-N} L`, so with `m = ⌈B + εn⌉` the whole hull lies inside
+   `π^{-m} L`, whose length above `L` is exactly `rank · m` (`natLength_leftScale_uniformizer`).
+   Hence `n ≤ rank·(B + εn + 1)` for every `n`; choosing `ε = 1/(2(rank+1))` makes this false for
+   large `n`.
+
+The capstone records the complete unconditional partition,
+
+```text
+differentialVariationalPhase_iff
+    bounded orbit ↔ fixed projective vertex ↔ zero scalar speed ↔ zero Cartan vector
+differentialVariationalEuclideanTranslationLength_pos_iff_orbitUnbounded
+differentialVariationalEuclideanTranslationLength_pos_iff_noFixedVertex
+```
+
+the last two being the card's **"there is no parabolic third phase and no unbounded sublinear
+variational drift"** in its exact form: strictly positive stable speed is the precise complement of
+the bounded phase, so displacement is either bounded or genuinely linear.  Combined with
+`FreeDifferentialBoundedOrbit` this closes `(21)` in the free field as well: `ell_delta(sigma) = 0`
+if and only if `ord_x(sigma^n)` is bounded.
+
+Direct check with `lake env lean`, targeted leaf build, and the axiom audit all pass.  All 27 new
+declarations audit to exactly `[propext, Classical.choice, Quot.sound]`; the leaf is wired into
+`HTGeometry` and no umbrella build was run.
+
+Remaining for Stage 3: `(16)` and `(22)` — the canonical attracting/repelling pair
+`xi_±(sigma)` as opposite weighted differential flags, and the identification of positive speed with
+that boundary pair.  The bounded/unbounded dichotomy itself no longer needs the visual boundary.
+
+### Lean progress — the canonical attracting core, and the boundary phase (2026-09-11)
+
+`DifferentialVariationalAttractingFlag` builds the canonical object `(16)` asks for, algebraically,
+and proves the equivalence `(22)` against it.  No visual boundary, geodesic, or CAT(0) structure is
+used anywhere.
+
+The construction is a growth filtration of the completed coordinate space.  For a rate `1/c`,
+
+```text
+variationalSlowSet σ b L c
+    = { v : ∀ᶠ n, σⁿ v ∈ π^(-⌊n/c⌋) L }
+```
+
+collects the vectors whose variational orbit leaves the base lattice at rate at most `1/c`; each is
+a submodule over the completed valuation ring (`variationalSlowSubmodule`).  The **attracting core**
+
+```text
+variationalAttractingCore σ b L = ⋂ c, variationalSlowSet σ b L (c+1)
+variationalAttractingSubmodule σ b L
+```
+
+is their intersection, the vectors of non-positive growth rate.  It is canonical: it is defined from
+`σ` and the vertex alone, and by commensurability of lattices it does not see which representative
+of the projective vertex is used.
+
+The two halves:
+
+```text
+variationalAttractingCore_eq_univ_of_orbitBounded
+translationLength_eq_zero_of_variationalAttractingCore_eq_univ
+variationalAttractingCore_eq_univ_iff
+```
+
+The first adjoins the single vector `v` to the base lattice — still a full finite lattice
+(`DiffOp.adjoinVectorLattice`) — uses base-vertex independence of boundedness, and turns the
+Euclidean bound into a uniform uniformizer confinement through exact Cartan balance.  The second
+runs the opposite way: a finite generating family of `L` carries the whole lattice
+(`DifferentialFieldAut.latticeBuildingAction_carrier_le_of_span`), so rate-`1/c` confinement of the
+generators confines `σⁿ L` itself, and the new one-sided inclusion test
+
+```text
+DiffOp.carrier_le_leftScale_uniformizer_iff_relativePosition
+    M ⊆ π^z L  ↔  ∀ i, z ≤ μ_i(L,M)
+DiffOp.euclideanVertexDistance_le_of_carrier_le_scale
+    balance + one-sided inclusion ⇒ ‖μ‖ ≤ (rank+1)³ N
+```
+
+converts that into `dist(L, σⁿL) ≤ (rank+1)³ ⌊n/c⌋`.  Dividing by `n` and letting `c → ∞` kills the
+speed.  The inclusion test is the general-pair form of the corpus's
+`CompletedPseudoDiffOpCartanInclusion` lemmas, and the distance bound is the exact converse of
+`completedPseudoDiffOpLattice_interleavedAt_of_balanced_euclidean_le`: balance means one-sided
+containment already controls both sides.
+
+The capstone is `(22)`'s content:
+
+```text
+variationalAttractingCore_ne_univ_iff_translationLength_pos
+variationalAttractingCore_ne_univ_iff_cartanVector_ne_zero
+variationalAttractingSubmodule_ne_top_iff_translationLength_pos
+```
+
+**`σ` is in the boundary phase exactly when its canonical attracting core is proper** — that is,
+exactly when some coordinate direction escapes the base lattice at a strictly positive exponential
+rate.  Combined with the previous entry, the phase law now reads: bounded orbit ⟺ fixed vertex ⟺
+zero speed ⟺ zero Cartan vector ⟺ full attracting core, and the negation of all five is the
+boundary phase.
+
+Direct check with `lake env lean`, targeted leaf build, and the axiom audit pass.  All 25 new
+declarations audit to exactly `[propext, Classical.choice, Quot.sound]`; the leaf is wired into
+`HTGeometry` and no umbrella build was run.
+
+Still open for Stage 3: the attracting core is so far a valuation-ring submodule.  Upgrading it to a
+`CompletedPseudoDiffOp`-subspace (the uniformizer is fixed by every coefficient automorphism, so
+only the denominator-clearing step is missing), proving it `σ`-stable (which needs the vector-level
+composition law for the semilinear action), and pairing it with the repelling core of `σ⁻¹` into the
+opposite weighted flags of `(16)` are the remaining bricks.
+
+### Lean progress — the attracting core is an invariant subspace, and the boundary pair (2026-09-11)
+
+Two further leaves upgrade the attracting core from a growth filtration to the canonical boundary
+datum `(16)` asks for.
+
+`DifferentialVariationalAttractingSubspace` proves the vector-level cocycle law
+
+```text
+DifferentialFieldAut.vecBuildingAction_mul
+    (σ·τ) v = τ (σ v)
+DifferentialFieldAut.vecBuildingAction_pow_succ
+```
+
+from the matrix cocycle `U_{στ} = τ(U_σ)·U_τ`, transport of a row product, and associativity of
+`vecMul`; no new algebra is introduced.  With it:
+
+```text
+variationalAttractingCore_vecBuildingAction_mem     the core is σ-invariant
+variationalAttractingCore_uniformizer_zpow_smul     closed under π^z
+variationalAttractingCore_smul_mem                  closed under every completed skew scalar
+variationalAttractingSubspace                       the canonical invariant subspace
+variationalAttractingSubspace_ne_top_iff_translationLength_pos
+```
+
+The invariance step reads the rate-`1/(2c+2)` condition one index along the orbit and uses
+`⌊(n+1)/(2c+2)⌋ ≤ ⌊n/(c+1)⌋`, valid for every `n`.  The scalar closure uses that the canonical
+uniformizer is *fixed* by every differential coefficient automorphism
+(`mapCompletedPseudoDiffOpUnit_uniformizer`), so `π^z`-scaling only shifts the confinement exponent
+by the constant `z`, which one rate halving absorbs; an arbitrary nonzero skew scalar then factors
+as `π^{-t}` times a valuation-ring element.  **The attracting core is therefore a genuine subspace
+over the completed pseudodifferential skew field, invariant under the action** — a weighted
+differential flag datum, not merely a lattice-level object.
+
+`DifferentialVariationalBoundaryPair` supplies the companion and the pair:
+
+```text
+differentialVariationalEuclideanTranslationLength_inv    speed is inversion-invariant
+variationalRepellingSubspace, variationalRepellingSubspace_invariant
+variationalBoundaryPair_iff
+    (attracting proper ∧ repelling proper) ↔ 0 < ell_delta(sigma)
+variationalBoundaryPair_eq_top_iff
+    (attracting = ⊤ ∧ repelling = ⊤) ↔ ell_delta(sigma) = 0
+```
+
+Speed is inversion-invariant because the canonical action is an isometry, so
+`d(x, σ^{-n}x) = d(x, σ^n x)`; the repelling objects are the attracting objects of `σ⁻¹`.  This is
+`(22)` with its boundary datum made explicit: **the boundary phase is exactly the phase in which `σ`
+carries a canonical proper attracting subspace together with a canonical proper repelling subspace,
+and the bounded phase is exactly the phase in which both degenerate to the whole space.**
+
+Direct checks, targeted leaf builds, and axiom audits pass for both leaves.  All 16 declarations of
+the subspace leaf and all 6 of the boundary-pair leaf audit to exactly
+`[propext, Classical.choice, Quot.sound]`; both are wired into `HTGeometry` and no umbrella build
+was run.
+
+What remains of `(16)` is exactly the word *opposite*: transversality of the two canonical
+subspaces, i.e. `F + G = ⊤` with `F ∩ G` the zero-rate part.  That is the slope/Lyapunov splitting
+for a cyclic semilinear group over a complete discretely valued skew field, and it is the only
+remaining mathematical input of Theorem B; the dichotomy itself, both canonical subspaces, their
+invariance, and the exclusion of a parabolic phase are now unconditional in Lean.  The continuous
+affine realization is no longer needed for any of the statements above.
+
+### Lean progress — Theorem C's gap `(21)` and boundary equivalence `(22)`, in the free field (2026-09-11)
+
+`FreeDifferentialClockPhase` restates the phase law in the card's own free-field coordinates, the
+differential order `ord_x(sigma^n)`:
+
+```text
+freeDifferentialOrderTranslationLength_eq_zero_iff
+    ell_delta(sigma) = 0  ↔  ord_x(sigma^n) is bounded
+freeDifferentialOrderTranslationLength_pos_iff
+    ell_delta(sigma) > 0  ↔  ord_x(sigma^n) is unbounded
+freeDifferential_boundaryPair_iff
+    (attracting subspace proper ∧ repelling subspace proper)  ↔  ell_delta(sigma) > 0
+```
+
+The first is the exact statement of `(21)`: the order-oriented Cartan vector is antitone with zero
+sum, so a vanishing top coordinate — which is exactly `ell_delta(sigma)` by
+`freeDifferentialOrderTranslationLength_eq_reverseCartan_zero` — forces the whole vector to vanish;
+the zero-speed theorem then supplies a bounded Euclidean orbit, and the corpus comparison
+`freeDifferentialEuclideanOrbitBounded_iff_orderPowersBounded` converts that back into bounded
+differential order.  The second is the card's sentence **"differential-order growth of a reversible
+finite-rank clock is either bounded or genuinely linear"**, now a theorem rather than a consequence
+of the building dichotomy: `Fekete's lemma alone gives existence of (20)` and this gives the strict
+gap, with the affine-building input replaced by the orbit-hull argument.  The third is `(22)`.
+
+Direct check, targeted leaf build and axiom audit pass; all 5 declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+**State of Theorem B and Theorem C.**  `(14)`, `(15)`, `(19)`, `(20)`, `(21)`, `(23)` and the whole
+bounded/boundary dichotomy including the exclusion of a parabolic phase are unconditional in Lean;
+`(16)`'s canonical pair exists and `(22)` holds for it.  The one remaining mathematical input is
+transversality of the pair — that the attracting and repelling subspaces span, which is the
+slope/Lyapunov splitting for a cyclic semilinear group over a complete discretely valued skew field.
+That splitting is proved classically by successive approximation across the slope gap; it needs a
+degree/slope layer for sigma-stable subspaces, which the corpus does not yet have.

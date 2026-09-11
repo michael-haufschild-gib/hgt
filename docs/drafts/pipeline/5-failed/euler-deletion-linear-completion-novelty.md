@@ -24,5 +24,5 @@ consequence remains unproved and is not established by the linear criterion.
 **Status:** exact source dictionary, finite-combination equality, equality of
 spans, arbitrary-topology closure equality, and tail-cell comparison formalized
 in `EulerDeletionLinearSpanAudit`. No RH proof or new approximation theorem.
-[Paper and primary sources](../2-fully-proven/euler-deletion-linear-span-audit.md),
+[Paper and primary sources](../3-formalized/euler-deletion-linear-span-audit.md),
 [formal certificate](../3-formalized/euler-deletion-linear-span-audit.md).

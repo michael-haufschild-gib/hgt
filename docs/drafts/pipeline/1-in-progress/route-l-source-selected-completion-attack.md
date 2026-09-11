@@ -1249,40 +1249,158 @@ parameters: this does not identify its endpoint with `tau=Re(rho)` or
 retain an arbitrary divisor's actual horizontal displacement by itself.
 Even critical top-jet sources have nonzero regulator slope, so forcing
 that slope to vanish would be an invalid replacement condition.
+The result uses the ordinary-integer operator produced by the literal
+column map; transport into the Sonin carrier and intertwining of all
+source arithmetic actions remain unconstructed.
 
-All 39 scratch theorems passed; final audits pending.
+All 39 scratch theorems passed without warnings. The targeted module
+build, all 39 axiom audits (standard Lean foundations only), and formal
+lint passed; umbrella wired and all owned Lean processes completed.
 [Full Abel proof and audit](../3-formalized/route-l-critical-abel-reader.md).
 The source-forced fixed-reader comparison required for RH remains open.
 
-### C26 candidate: second-order physical comparison and complete correction recovery
+### C26 proved: second-order physical comparison and complete correction recovery
 
-C25 proves first-order agreement. The next attack is whether this
-comparison can extend while preserving the full arithmetic correction.
-For the same literal `T=c*Q+R`, the actual weighted correction should obey
-`A_epsilon(R)/epsilon -> sum_k r_k`. The current corpus has Tannery's
-filter-level theorem: the bound `|k^(-epsilon)*r_k|<=|r_k|` is uniform for
-positive `epsilon`, each term tends to `r_k`, and C24 supplies summability.
-Together with `epsilon*Z_epsilon->1`, these hypotheses predict the limit
-without assuming differentiability of the remainder.
+For the same full integral source `T=c*Q+R`, the admitted correction
+obeys `A_epsilon(R)/epsilon -> sum_k r_k`. The proof uses Tannery with
+the source-derived summable bound `|k^(-epsilon)*r_k|<=|r_k|` and the
+proved partition residue `epsilon*Z_epsilon->1`. Projection preserves
+summability. Exact principal physical agreement and weighted exchange
+then give
 
-The exact ordinary-integer exchange then predicts
 `[D_epsilon(n,T)-c*B_n((1+epsilon)/2)]/epsilon^2
   -> log(n)*sum_(n divides k) r_k`.
-This is the explicit mathematical target, not a proved Lean result yet.
-For all ordinary `n>1`, vanishing of these coefficients would force the
-summable correction to be supported at the unit, by the existing
-`pnatDivisibility_summable_supported_unit`. Combining those boundary
-coefficients with the total correction slope should recover every
-coefficient, using the already proved divisibility-sum injectivity. This
-classification needs the full ordinary-integer family; prime-only
-reconstruction is not assumed.
 
-For the current exact placement, an omitted nonunit head coordinate
-already has correction `-c/k`. More robustly, C23's complete diagonal
-tensor multiplier is eventually nonzero at each top-jet source. After
-checking its literal column identity, this should exclude finite-support
-repairs even after filling any omitted head: sufficiently late source
-corrections still survive. A serious proof must establish that survival
-in the exact source before using the reconstruction theorem. An infinite
-counterterm or a change of reader/domain needs its own physical
-justification; deleting the recovered correction is not that comparison.
+These coefficients at all ordinary `n>1` vanish exactly when the complete
+correction is supported at the unit. Together with the scalar first
+variation `(A_epsilon(T)-c)/epsilon`, they determine every diagonal
+correction coefficient, including the unit. This is full diagonal
+recovery, not an off-diagonal operator reconstruction or a prime-only
+classification.
+
+For the actual every-depth integral source, full second-order agreement
+holds exactly when `c=0`; the omitted coordinate two detects `-c/2`.
+The obstruction also survives every finite diagonal repair: at coordinate
+`n+216`, the correction is the literal complete integral remainder.
+C23's eventually nonzero full tensor multiplier and the exact depth law
+at `n=6^m` give nonzero coefficients above every finite bound whenever
+`w=z` and `c!=0`. Every finite diagonal counterterm vanishes at some
+such coordinate. Reconstruction then gives a nonzero second discrepancy
+at some ordinary dilation. At every admitted divisor `Re(rho)>1/3`,
+multiplicity-top orders discharge `c!=0` unconditionally. This concerns
+finite diagonal support, not finite operator rank.
+
+The positive survivor is the complete measured correction and its sharp
+kernel, together with source-derived finite-repair robustness. A vanishing
+second discrepancy cannot be imposed as an RH condition: critical
+multiplicity-top sources have the same obstruction. Regulator and
+original spectral parameter remain distinct. Sonin transport, all-prime
+source-action intertwining, and fixed-reader agreement at the original
+horizontal anchor remain open.
+
+All 27 scratch theorems passed without warnings. The targeted module
+build and all 27 theorem axiom audits passed using standard Lean
+foundations only. The final repository lint reports unrelated newly
+added modules unreachable from their umbrellas; the exact five errors
+are recorded in the proof card. This card remains at stage 2 pending
+that gate. The Route L umbrella is wired, whitespace
+checks passed, and every owned Lean process completed.
+[Complete proof and audit record](../2-fully-proven/route-l-abel-second-comparison.md).
+
+### C27 proved: fixed-six measurement of the complete source tail
+
+The original coordinate projection `E_M` onto `a>=6^M` is applied
+to the full integral correction `R=T-c*Q` before reading its boundary. For the
+admitted chamber `|Im(w)|<1`, `Re(s(w))>1/3`, its actual second
+boundary coefficient at the fixed dilation six is
+
+`J_M=lim_(epsilon->0+) D_epsilon(6,E_M*R)/epsilon^2`.
+
+Restoring `a=n+216`, every retained shell has exact correction
+`r_a=c*C_m/a`, where `C_m=M_6(m,w)^2-1` includes all three tensor
+remainder terms. The finite divisible shell has mass
+`h_(m-1)=(1/6)*sum_(j=6^(m-1)..6^m-1) 1/j`, and
+`h_m->log(6)/6`. Absolute summability justifies the full regrouping
+`J_M=log(6)*c*sum_(j>=0) C_(M+j)*h_(M+j-1)`.
+
+C23's actual successor normalizer satisfies `N_m=N_1^m` and
+`N_m*C_m->2*mu(successor(6))`. With `q=N_1^(-1)`, `|q|<1`.
+A convergent normalized source sequence is bounded; multiplying by
+`q^j` supplies a summable majorant for all moving tails. Tannery proves
+
+`N_M*J_M -> 2*mu(successor(6))*c*(log(6))^2/[6*(1-q)]`.
+
+The constant is nonzero whenever the retained Xi-jet product `c` is
+nonzero. Every sufficiently late cutoff therefore has nonzero second
+response at the same dilation six. Every finite diagonal repair
+vanishes after a sufficiently late source cutoff and has exactly the
+same normalized limit. At admitted multiplicity-top sources the
+existing Xi multiplicity theorem proves `c!=0`.
+
+This controls cancellation in the complete complex tail. It does not
+prove that the uncut fixed-six coefficient is nonzero, identify finite
+diagonal support with finite rank, or interchange the regulator and
+source-depth limits. The Abel limit is taken separately at each fixed
+cutoff. Critical top sources retain this response too, so vanishing is
+not an RH condition. The original-anchor Sonin/Burnol comparison and
+all-prime source-action intertwining remain open.
+
+All 29 theorems passed scratch checking without warnings, the targeted
+module build, and the complete axiom audit using standard Lean
+foundations only. The module is wired into `RHTower`; all owned Lean
+processes completed. The latest global lint reports unrelated newly added
+unreachable modules, recorded in the proof card. No Route L lint
+error was reported. [Complete source proof and audit record](../2-fully-proven/route-l-fixed-six-tail-reader.md).
+
+### C28 closed: complete integrand admission at every original divisor
+
+The every-depth chamber `Re(s)>1/3` is no longer needed for the complete
+cutoff source. For every positive original `Re(s)`, a cofinal set of
+literal depth cutoffs admits all retained integrands. The mask is
+applied before integration and is exactly the original coordinate
+projection once every retained depth satisfies its convergence law.
+
+The proof controls the source before arithmetic cancellation. Its
+strict-tail coefficient mass is summable in depth, and the physical
+coordinate factor cancels its Jacobian. The complete tensor remainder's
+integrated norm is bounded by the half-density squared times
+`I_k(w)*I_l(z)*[t_m(w)+t_m(z)+t_m(w)*t_m(z)]`.
+Exact shell multiplicity then makes the sum over all original columns
+of these integrated norms finite. This justifies integrability of the
+complete source sum and its sum--integral exchange, also after every
+ordinary divisibility filter. The leading Green component remains
+separate.
+
+At every sufficiently late cutoff, the actual operator's diagonal is
+the integral of this admitted source. At label six its second boundary
+coefficient is `log(6)` times the complete filtered source integral.
+The original normalizer therefore retains C27's nonzero limit at every
+Xi divisor, with no reflection or relocation. The adjacent lower/top
+internal jets give an exact zero/nonzero pair. Every finite diagonal
+repair retains the top response; no finite-rank claim is made.
+
+All 45 theorems passed scratch without warnings, the targeted module
+build, and the complete axiom audit using only standard foundations.
+The new module is wired into `RHTower`. The global lint run reports
+only unrelated unreachable modules `RHTower.Sieve.MenonHarmonicWindowThresholdSplit`
+and `HTGeometry.ChronologicalTensor.CubicRepairGamma`; the proof card
+therefore remains in stage 2 pending that gate. [Complete paper proof,
+source identities and audit](../2-fully-proven/route-l-complete-integrand-admission.md).
+
+Fixed Sonin/Burnol agreement and source arithmetic-action intertwining
+at the original anchor remain open. Reflection alone does not supply
+them: the existing reflected-normalizer norm ratio equals one precisely
+at critical placement, while the adaptive reflection-averaged source's
+global codiagonal retains lower modulus `3/4`. Neither supplies the
+missing annihilation law. Critical top sources retain C28's response too.
+
+### C29 attack: retain the regulator--depth interaction
+
+The next conjecture keeps the actual Abel regulator during source-depth
+exhaustion. Its exact Gibbs weight exposes `6^(-M*epsilon)`. The original
+normalized shell mass is sandwiched between `6^(-epsilon)` times its
+unweighted mass and that same mass. Together with the complete geometric
+tail bound, this suggests that `epsilon_M -> 0` and
+`M*epsilon_M -> tau` give the C28 normalized response times `6^(-tau)`;
+infinite product should suppress it. This joint law is not yet claimed.
+[Source-derived argument and remaining formal obligations](route-l-regulator-depth-crossover.md).
