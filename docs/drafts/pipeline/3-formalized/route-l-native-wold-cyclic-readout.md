@@ -2,8 +2,8 @@
 
 - **ID:** L-C31
 - **Date:** 2026-09-11
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; actual-source comparison test
+- **Stage:** 3-formalized
+- **Type:** THEOREM; actual-source native comparison and exact subtraction discrepancy
 - **Depends on:** [C30](../3-formalized/route-l-adjacent-depth-physical-reader.md)
 - **RH status:** unproved
 
@@ -39,18 +39,26 @@ actual trace quotients
 `R(X_(M+1))/R(X_M)`, `R(Y_(M+1))/R(Y_M)`,
 `R(Z_(M+1))/R(Z_M)`
 
-should all equal C30's actual defect quotient exactly after source
-admission. Applying the same fixed nonlinear decoder should give the
+all equal C30's actual defect quotient exactly after source
+admission. Applying the same fixed nonlinear decoder gives the
 existing physical BV value in the limit for all three families.
 
 ## Positive survivor and vanishing test
 
-This would construct native product/cyclic-swap invariance for an actual
-source-derived nonlinear physical readout. It would also prove that the
+This constructs native product/cyclic-swap invariance for an actual
+source-derived nonlinear physical readout. It also proves that the
 literal commutator has the SAME reconstructed physical value. Equality
 of nonlinear readouts on `AB` and `BA` therefore does not by itself make
 the readout on `AB-BA` zero. Its vanishing remains the original critical
 line condition; it is not assumed or inferred from cyclicity.
+
+The decoded value is the fixed physical **boundary scalar** reconstructed
+from each product family. This is not an identification of a linear
+physical marginal on the individual products. The existing normalized
+source cyclic reader is `(5/6)d_1+d_6` and takes value `1/6` on each
+product of the original reciprocal-Green pair. Those statements concern
+that pair, not the moving remainder products `X_M,Y_M`. The new quotient
+construction does not identify the two readers.
 
 The original spectral point, multiplicity-top jet, depth cut and complete
 integral source remain inputs. Domain closure under native compression,
@@ -58,9 +66,9 @@ projection and subtraction must be established before using Abel-reader
 linearity. The two original reflected sources must recover the existing
 Burnol conormal difference; no reflected fixedness may be inserted.
 
-Prove the exact three-family identity before divisor specialization,
-then its complete-source limits, original Xi specialization and finite
-repair stability. This targets the native-action part of the hard
+The exact three-family identity is proved before divisor specialization,
+followed by complete-source limits, original Xi specialization and finite
+repair stability. This closes the tested native-action part of the hard
 comparison while testing whether nonlinear cyclicity can supply the
 missing annihilation. No claim of an RH proof is made.
 
@@ -138,3 +146,57 @@ prescription not fixed by symmetry alone. Its comparison therefore
 does not license identifying Route L's two readers by symmetry. Only
 the relevant sections and abstracts were inspected, not every claim
 of either paper. These are mechanism probes, not proof premises.
+
+Additional broad probes used `inflow` and `cobordism`. The former gave
+no useful recent mathematical hit. The latter found
+[Algebraic cobordism rings of wonderful varieties and matroids](https://arxiv.org/abs/2606.12645)
+(10 June, revised 10 August); its abstract gives combinatorial ring
+presentations and a Chow/cobordism comparison. No actual-source or
+physical-reader comparison is supplied by that abstract, so no transfer
+is claimed and no result from it is used.
+
+## Lean verification
+
+The complete scratch file passed with exit 0 and empty log. The
+[DeningerGammaSixNativeWoldReadout](../../../../formal/GaloisForLFunctions/RHTower/DeningerGammaSixNativeWoldReadout.lean) module has 19 theorems, four
+definitions and a three-constructor native-face type. All declaration
+bodies match that successful scratch. It is wired directly after C30
+in `RHTower`. Its targeted final build passed: the new module compiled
+in 337 seconds, with cached dependencies replayed. All 19 theorem names
+were checked against the axiom transcript, with no omissions or extra
+names. Dependencies are only `propext`, `Classical.choice`, and
+`Quot.sound`. Formal lint passed. No added axioms, proof holes or
+computational experiments were used. All owned Lean processes exited.
+
+Verification commands, run sequentially in the foreground:
+
+```text
+lake env lean /tmp/route_l_native_wold_readout.lean
+lake build GaloisForLFunctions.RHTower.DeningerGammaSixNativeWoldReadout
+lake env lean /tmp/route_l_native_wold_axioms.lean
+scripts/formal_tools.py lint
+```
+
+The first three ran from `formal/`, lint from the repository root.
+No full or umbrella build was run. Transcripts are
+`/tmp/route_l_native_wold_readout.log`,
+`/tmp/route_l_native_wold_build.log`,
+`/tmp/route_l_native_wold_axioms.log`, and
+`/tmp/route_l_native_wold_lint.log`.
+
+## Next mathematical obstacle
+
+The native-action test succeeds as a positive comparison and fails as
+an annihilation argument: equality after nonlinear decoding cannot be
+subtracted to obtain the decoding of a difference. On these exact
+source families, the discrepancy is already the original physical
+boundary. A global additivity assumption would be unjustified; only
+a source-derived identity on the actual boundary could supply the
+missing comparison.
+
+The next conjecture must identify a genuine additional term or relation
+in the original Green/BV source whose complete physical balance is
+zero, with incidence and reader agreement proved before specialization.
+Inserting a counterterm defined to cancel the recovered value would
+assume the desired landing. The searched reciprocity, covariance and
+symmetry statements do not provide such a source term or relation.

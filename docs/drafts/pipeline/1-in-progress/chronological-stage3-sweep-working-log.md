@@ -220,3 +220,160 @@ Still open on card 12: package `q`/`J` as inverse linear equivalences of the coh
 `{3,…,n−1} → {0,…,n−4}`, the base cases `n = 0,1,2`, and the all-degree multiplicity count.
 Note `pathCoboundary_pathConeFace_add` needs `0 < n` (for `n = 0` the only face is `∅` and
 `insert 0 ∅` is not a face) and `tailCoboundary_pathTailMapFace` needs `1 < n`.
+
+## Card 12 CLOSED and promoted to stage 3 (path cochain reduction)
+
+Four modules, 200 declarations, all audited (`propext`, `Classical.choice`, `Quot.sound` only),
+all wired into `HTGeometry.lean`, `formal lint passed`:
+
+* `PathIndependenceProbe.lean` (10) — `pathProbeSupport`, `isPathFace_iff_exists_nonneg_probe`,
+  and `mem_cubicFaces_iff_isPathFace` tying the corpus's `cubicFaces` to the faces of `P_5`.
+* `PathIndependenceCochain.lean` (103) — the four identities and
+  `pathCohomologyEquiv F n j (1 < n) : pathCohomology F n (j+1) ≃ₗ tailCohomology F n j`.
+* `PathIndependenceShift.lean` (38) — the order-preserving `v ↦ v+3` relabeling
+  (`faceSign_shiftSet` shows the incidence signs transport with no sign), giving
+  `tailCohomologyEquiv` and hence
+  `pathCohomologyShiftEquiv F n j : pathCohomology F (n+3) (j+1) ≃ₗ pathCohomology F n j`.
+* `PathIndependenceMultiplicity.lean` (49) — base cases `pathCohomologyZeroEquiv`,
+  `pathCohomology_one_one_subsingleton`, `pathCohomologyTwoEquiv`, then by induction on the
+  occupation degree `pathCohomology_nonempty_equiv`, `pathCohomology_subsingleton`,
+  `pathCohomology_finrank = if n = 3j ∨ n+1 = 3j then 1 else 0`, and the paired tower
+  (`pathCohomology_pairedPath_odd/even/void` with their uniqueness and covering statements).
+
+Useful Lean facts discovered here: `LinearMap.proj` needs an explicit type ascription when it
+appears under a subtraction (the pi-type metavariable is otherwise stuck);
+`Submodule.comap_subtype_eq_top` + `Submodule.Quotient.eq` is the cheapest route to
+`Subsingleton` of a subquotient; `Submodule.quotEquivOfEqBot` handles the occupation-zero slot.
+
+### Remaining cards in `2-fully-proven/chronological` (5)
+
+| Card | Remaining obstacle |
+|---|---|
+| `chronological-fusion-spectrum` | sphere-homotopy reading of arbitrary join powers (Euler chain already proved) |
+| `chronological-recovery-exponential-rate` | weighted potential theory: support equation, F-functional, equilibrium measure, Balogh–Bertola asymptotic |
+| `chronological-recovery-uniform-spectrum` | needs the rate constant from the exponential-rate card |
+| `chronological-growing-moment-source` | whole construction (Gram matrix, PNT transfer, bounds (B)/(C), log window, remainder, signed projection) |
+| `chronological-finite-tail-obstruction` | L²([1,2]) separation, exact discrete annihilation, critical-zero obstruction |
+
+## Card `chronological-fusion-spectrum` CLOSED and promoted to stage 3
+
+The one open item was the sphere-homotopy reading of arbitrary join powers. Formalized as the
+graded reduced cohomology it is used for (151 declarations in four modules, all audited):
+
+* `VertexIndependenceCochain.lean` (89) — the three-vertex reduction generalised from
+  `Finset.range n` to an arbitrary `V ⊆ ℕ`: `IsLeaf V a` (least vertex with its successor present)
+  gives `cohomology F V (j+1) ≃ₗ cohomology F (tailVerts V a) j` with
+  `tailVerts V a = {v ∈ V | a+3 ≤ v}`. Because the tail is itself a vertex set, **no relabeling
+  module is needed** — this is strictly cleaner than the `range n` version, which needed
+  `PathIndependenceShift`.
+* `VertexIndependenceSphere.lean` (55) — `joinVertsFrom a n = {a+6i+q : i<n, q<5}` (the disjoint
+  union of `n` copies of `P_5`, which is the `n`-fold join of `Ind(P_5)`); two leaf reductions
+  strip one block and two occupation degrees; base case `cohomology F ∅ 0 ≃ₗ F`. Result:
+  `finrank = if j = 2n then 1 else 0`, i.e. the reduced cohomology of `S^(2n-1)`.
+* `CubicJoinSphere.lean` (9) — `σ ∈ cubicFaces ↔ IsPathFace 5 (σ.image Fin.val)` and
+  `σ ∈ fusedCubicFaces n ↔ IsFace (joinVertsFrom 0 n) (σ.image cubicJoinLabel)` with
+  `cubicJoinLabel (i,q) = 6i+q` injective, so the result is about the corpus's own join model.
+* `ChronologicalTensor/FusionEtaJoin.lean` (7) — the card's eta comparison:
+  `etaJoinEuler`, the alternating zeta series `dirichletEta_eq_tsum` (new corpus asset),
+  `etaJoin_tsum : ∑' n, n(-1)^n(n+1)^(-s) = η(s-1) - η(s)` for `2 < Re s`, and
+  `dirichletEta_sub_one_ne_zero` / `etaJoin_ne_zero_of_dirichletEta_eq_zero` — no common strip
+  zero, via `RHTower.riemannZeta_eq_zero_iff_of_re_lt_zero`.
+
+Recorded on the card: the homotopy equivalence itself is not formalized (it needs geometric
+realization and join homotopy theory that mathlib lacks); the graded cohomology is what every
+downstream claim uses.
+
+Note: `scripts/formal_tools.py lint` currently reports one failure that is **not** from this sweep —
+`GaloisForLFunctions.RHTower.Sieve.MenonHarmonicWindowPartitionBudget` is an untracked new file
+from another agent's in-flight work, not yet in the `RHTower` umbrella.
+
+### Remaining cards in `2-fully-proven/chronological` (4)
+
+| Card | Remaining obstacle |
+|---|---|
+| `chronological-finite-tail-obstruction` | L²([1,2]) separation, exact discrete annihilation, critical-zero obstruction |
+| `chronological-growing-moment-source` | whole construction (Gram matrix, PNT transfer, bounds (B)/(C), log window, remainder, signed projection) |
+| `chronological-recovery-exponential-rate` | weighted potential theory: support equation, F-functional, equilibrium measure, Balogh–Bertola asymptotic |
+| `chronological-recovery-uniform-spectrum` | needs the rate constant from the exponential-rate card |
+
+## Card `chronological-finite-tail-obstruction`: asset inventory and module plan
+
+### Corpus assets found (do NOT rebuild)
+
+The card's kernel `h(t) = 1/t − 1/(exp t − 1)` **is** `ChronologicalTensor.fusionBoseDefect`
+(`FusionHeat.lean`), with `fusionBoseDefect_bounds : 0 ≤ h ∧ h ≤ 1 ∧ h ≤ 1/|t|` and
+`fusionBoseDefect_dyadic`. Its complex form is `fusionBoseKernel` (`FusionMellin.lean`) with
+`fusionBoseKernel_norm`, `_continuousOn`, `_isBigO_atTop` (`t^(-1)`), `_isBigO_atZero` (`t^0`),
+`_converges` on `fusionMellinStrip`, and **`fusionBoseKernel_mellin : mellin h s = −Γ(s) ζ(s)`**
+on the strip.
+
+The card's residual `r_(N,f)` **is** `RHTower.chronologicalHeatError a N t
+= exp(−t) + Σ_(k ∈ Ioc 0 N) a k · fusionBoseDefect (k t)` (`ChronologicalHeatMellin.lean`), with
+`chronologicalHeatError_memLp`, `_bounds`, `_mellinConvergent`, `_mellin_at_zero`.
+`ChronologicalHeatL2.lean` has `chronologicalL2Norm`, `chronologicalL2Norm_eq_sqrt`,
+`chronologicalL2Norm_dilate_le`, `chronologicalExponential_L2Norm_le_one`.
+`ChronologicalWeightedMellin.lean` has `chronologicalMobiusWeightedSource` and its Mellin identity;
+`ChronologicalWeightedBoundary.lean` has the five critical-zero boundary theorems (step 3 of the
+card). `ChronologicalRawHeatObstruction.lean` has the raw obstruction and a Hardy critical zero.
+
+**Not in the corpus:** a complex analytic Bose kernel (only `fusionBoseKernel` on `ℝ → ℂ`), the
+heat-transform separation, the Gram projection estimate, the integer-scale transfer, and the
+observation inequality.
+
+### The analyticity route chosen for step 1 (separation)
+
+The card's "real analytic in u, h extends analytically across zero" is *not* the cheapest route.
+Since `K_ρ(u) = ∫₀^θ x^(ρ−1) h(xu) dx` only ever evaluates `h` at `xu` with `x > 0`, the removable
+singularity at `0` is never needed. Instead:
+
+* `boseKernelC z = 1/z − 1/(exp z − 1)` is analytic on the **open right half-plane**
+  `{z | 0 < z.re}`: there `z ≠ 0`, and `exp z = 1 ⟺ z ∈ 2πiℤ` forces `z.re = 0`.
+* For real `x > 0` and `0 < u.re`, `(x·u).re > 0`, so `u ↦ ∫₀^1 g(x) boseKernelC (x u) dx` is
+  analytic on the right half-plane by differentiation under the integral sign.
+* The right half-plane is convex, hence connected, and `[1,2]` has limit points in it, so
+  vanishing a.e. on `[1,2]` (plus continuity) forces vanishing identically — **no analytic
+  continuation of `h` across `0` is required.**
+
+### Module plan
+
+1. `RHTower/ChronologicalTailKernelAnalytic.lean` — `boseKernelC`, its analyticity on the right
+   half-plane, agreement with `fusionBoseKernel` on `Ioi 0`, strict positivity of
+   `fusionBoseDefect` on `Ioi 0`, and positivity of the Mellin bracket
+   `0 < ∫ y in Ioi 0, h y · y^(s−1)` for real `0 < s < 1`.
+2. `RHTower/ChronologicalTailSeparation.lean` — `F_f`, `K_ρ`, analyticity in `u`, the identity
+   theorem in `u`, the Fubini/Mellin identity, the identity theorem in `s`, the `δ ↓ 0` blow-up,
+   hence `K_ρ ∉ W`; plus injectivity of `f ↦ F_f` by polynomial moments and Weierstrass.
+3. `RHTower/ChronologicalTailProjection.lean` — the `O(1/N)` Riemann-sum estimate for
+   `F_(j,N) − F_(f_j)`, the limiting Gram matrix, `‖Q_N − Q‖ = O(1/N)`, `‖ψ_N − ψ‖ = O(1/N)`.
+4. `RHTower/ChronologicalTailObservation.lean` — `H₀`, `T(X)`, the integer-scale transfer
+   `T(X) − T(N) = O(1)`, and the observation inequality (A).
+5. `RHTower/ChronologicalTailCapstone.lean` — assembly with
+   `ChronologicalWeightedBoundary`, the invariant `d`, and the `L ≥ d/|ζ′(ρ)|` survivor.
+
+### Finite-tail card: progress (modules 1–3 of 5 built and audited)
+
+* `RHTower/ChronologicalTailKernelAnalytic.lean` — 30 decls, audited. `rightHalfPlane`,
+  `boseKernelC z = 1/z − 1/(exp z − 1)` analytic there; `boseStrip = {|Im z| < 2π}`;
+  `norm_boseKernelC_le_two` (the order-two cancellation via
+  `Complex.norm_exp_sub_one_sub_id_le`); `boseKernelE` = the removable-singularity extension
+  (`Complex.differentiableOn_update_limUnder_of_bddAbove`), analytic on the whole strip;
+  `fusionBoseDefect_pos`; `integrableOn_boseDefect_rpow`; `boseMellinBracket_pos`.
+* `RHTower/ChronologicalTailTransform.lean` — 19 decls, audited. `boseDomain = {0 < Re u, |Im u| <
+  2π}` (open, convex); `boseTransform g u = ∫₀¹ g(x) h(xu) dx`; differentiation under the integral
+  sign (`hasDerivAt_integral_of_dominated_loc_of_deriv_le`, dominating constant from
+  `IsCompact.exists_bound_of_continuousOn` on the compact set swept by `x u`);
+  `analyticOnNhd_boseTransform`; and the propagation
+  `boseTransform_eq_zero_of_eqOn_Icc` — vanishing on `[1,2]` forces vanishing on `boseDomain`
+  (identity theorem via `AnalyticOnNhd.eqOn_zero_of_preconnected_of_frequently_eq_zero` and the
+  real sequence `3/2 + 1/(n+2)`).
+* `RHTower/ChronologicalTailMellin.lean` — the multiplicative-convolution law.
+  `boseBracket s = ∫₀^∞ h(y) y^(s−1) dy`, `measurable_fusionBoseDefect`,
+  the scaling law `∫₀^∞ u^(s−1) h(xu) du = x^(−s) boseBracket s`
+  (`integral_comp_mul_left_Ioi`), `boseTransform_ofReal`, and
+  `mellin_boseTransform : ∫₀^∞ u^(s−1) T(u) du = boseBracket s · ∫₀¹ g(x) x^(−s) dx`
+  by Fubini (`integrable_prod_iff'` + `integral_integral_swap`), for `0 < s < 1` and
+  `∫₀¹ ‖g‖ x^(−s) < ∞`.
+
+Still to build: the separation capstone (`criticalProfile`, `tailProfile`, the identity theorem in
+`s` on `{Re s < 1/2}`, the `s = ρ − δ` blow-up, and injectivity of `f ↦ F_f`), the Gram projection
+estimate, the observation inequality, and the assembly with `ChronologicalWeightedBoundary`.

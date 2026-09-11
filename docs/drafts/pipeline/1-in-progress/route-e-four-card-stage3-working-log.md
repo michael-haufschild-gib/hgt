@@ -381,3 +381,281 @@ umbrella-wired.
 `Sieve/MenonHarmonicSieveSwappedCanonical.lean`: `sieveSwappedDelta/Budget/Dimension/Level` and the
 receiver with all five sieve parameters chosen, only structural inequalities left.
 **Session total: 25 leaves, 66 declarations, all axiom-clean, leaf-built and umbrella-wired.**
+
+### Brick 24 landed (2026-09-11) — the sieve mean square in the ladder's own language
+
+`Sieve/MenonHarmonicSievePrimeBlock.lean`.  On a set of primes `μ(p) = -1`, so
+`harmonicPrimeBlockPoly B = -logPoly (fun n => 1/n) B`; the two have the same norm, and the
+two-dimensional sieve's mean square therefore transfers verbatim to the ladder's own prime block:
+
+```text
+∫_{[-W,W]} ‖harmonicPrimeBlockPoly (bigPrimeSet R (2R))‖²
+   ≤ (5/(4δ))(1/R²)( #bigPrimeSet + 2( 8e·K·R/E² + K·(Selberg remainder) ) ) ,  δ = 1/(2πW) ,
+```
+
+with every sieve parameter already chosen.  The swapped receiver can now consume it in place of
+reciprocal Halász–Montgomery.  Leaf build `12273/12273`; three declarations axiom-clean;
+umbrella-wired.  **Session total: 26 leaves, 69 declarations.**
+
+### Corpus assets RULED OUT for the residual gap (2026-09-11)
+
+Checked directly against the numbers, so that no future session re-tries them:
+
+| asset | why it does not close the residue |
+|-|-|
+| `HeathBrownSparseMeanValueTheoremFour.integral_Icc_normSq_heathBrown_factors_le_theoremFour` | its first term is `(95π/2)N²R²`; at `N = X/M`, `R = M` that is `(95π/2)X²`, i.e. `O(1)` after harmonic normalisation, and it dominates because `NRT = X·T < N²R² = X²` whenever `T < X`.  Theorem 4(iii) has content only for `T ≫ NR`. |
+| `HeathBrownSparseMeanValueLemma34.integral_Icc_normSq_heathBrown_oneLine_le_lemma34_refined` | its regime condition `T^{2/3} ≤ N` *does* hold with the roles swapped (sparse `=` short cofactor, dense `=` prime factor), but the bound then degenerates to its first term `K²(|A|/M)²`, which is the trivial `L^∞ × L²` bound. |
+| `DyadicPrimeMeanSquare.integral_normSq_dyadicPrimePoly_le` | sharp, and now wired in (bricks 22–24); it drives the large-prime part to `≍ (log log X)^{-3}`, still short of `o(1/log X)`. |
+
+The common reason: the frequency radius `T = X/h` is **below** the polynomial length `X`, and every
+generic mean-value or large-values tool is vacuous there.  The saving must come from the
+multiplicative structure — the multi-range factorisation plus Halász — which is precisely the
+Matomäki–Radziwiłł method, implemented in this corpus for sub-polynomial ranges
+(`Sieve/TwoRangeAssembly`, `o(1)` at every window) and needing Menon's wide final range to acquire a
+rate.
+
+### Brick 25 landed (2026-09-11) — sparse-set harmonic mean square, and a better route for the top blocks
+
+`Sieve/MenonHarmonicSparseSetMeanSquare.lean`:
+`integral_Icc_normSq_logPoly_harmonicMoebius_le_card` bounds the harmonic Möbius mean square of any
+`S ⊆ [A,N]` by `#S` and `A` alone.  **Session total: 27 leaves, 72 declarations.**
+
+**New route for the top blocks, and it is better by two logarithms.**  The `ω`-weighted Ramaré
+identity gives the top blocks density `≍ 1/log log x`; the *smallest-prime-factor* partition gives
+them density `≍ 1/log W` instead, because a top block then captures only integers with no prime
+factor below `W`.  The corpus already owns those counts —
+`Sieve/RoughCount.card_rough_Ioc_le` (Brun's pure sieve at the primorial) and
+`Sieve/BrunTitchmarsh.card_coprime_Ioc_le_log` (`≤ 2(b−a)/log Y + Selberg error`).  Composing them
+with the new display bounds the whole top part by `≍ C/log W`, versus `≍ 1/(log log x)³` for the
+`ω`-weighted arrangement.
+
+Still one logarithm from `(log x)^{-2}`, but the arrangement is now the right one and every
+ingredient except the final assembly is in the tree.
+
+### Brick 26 landed (2026-09-11) — the rough part assembled
+
+`Sieve/MenonHarmonicShellRoughMeanSquare.lean`: `menonShellRough`,
+`integral_Icc_normSq_menonShellRough_le_count` (any count bound) and
+`integral_Icc_normSq_menonShellRough_le_brun` (Brun's pure sieve inserted).
+**Session total: 28 leaves, 75 declarations, all axiom-clean, leaf-built and umbrella-wired.**
+
+The top-block contribution is now `≍ 1/log z` with no factorisation estimate, against
+`≍ 1/(log log x)³` before.  Remaining residue for the lane: one logarithm, now located in the low
+blocks' threshold, not in the top blocks.
+
+### Brick 27 landed (2026-09-11) — the shell split at a prime cutoff
+
+`Sieve/MenonHarmonicShellCutoffSplit.lean`: `ramareRough_primesLE_eq_menonShellRough`,
+`integral_Icc_normSq_shell_le_bilinear_add_rough`, `integral_Icc_normSq_shell_le_bilinear_add_brun`.
+**Session total: 29 leaves, 78 declarations, all axiom-clean, leaf-built and umbrella-wired.**
+
+The lane's architecture is now: split the shell at a cutoff `z ≤ W`; the rough half is paid by
+Brun at `≍ 1/log z`; the bilinear half has every block of prime scale `≤ z`, i.e. long cofactors,
+which is the regime all of this session's receivers were built for and where the top-block
+obstruction does not arise.  Residue: the low blocks' threshold, one logarithm.
+
+## The trade-off, stated completely (2026-09-11)
+
+Both "easy" architectures for the shell ceiling at `1/log X`, for opposite reasons.  This is the
+sharp reason the Heath–Brown step is unavoidable, and it is worth stating once so that neither
+architecture is attempted again as a fix for the other.
+
+Write `P` for the designated prime set of the Ramaré identity, `T = X/h` for the frequency radius.
+
+**(a) Designated set `= primesLE z` (this session's cutoff split).**  Every ladder block has prime
+scale `≤ z`, so the cofactors are long and every receiver applies; the top-block obstruction does
+not arise.  The moment method is effective on a block exactly when `q_j^k ≤ T` — because the
+`2T·∑|coeff|²` term of `∫|Q_j|^{2k}` then dominates the `q_j^k·∑|coeff|²` term — so `z ≤ T^{1/k}`
+makes every block's large-values count non-vacuous.  But the rough remainder is the set of
+`z`-**rough** integers, of density `≍ 1/log z ≥ k/log T`.  **Ceiling `1/log X`.**
+
+**(b) Designated set `= primes in [P₀, 3X]` (Menon's).**  The rough remainder is the set of
+`P₀`-**friable** integers, of density `(log X)^{-R}` with `R` free — negligible, which is the paper's
+new point.  But the ladder then has blocks with `q_j ≍ X`, whose cofactors have `O(1)` terms; there
+every bound for the cofactor mean square on a set of measure `≍ W` is `≍ W` while the truth is
+`≍ m_j`, and the moment method is vacuous because `q_j^k ≫ T` for every `k ≥ 1`.  **No receiver
+closes the top blocks.**
+
+The two rough sets are complementary — `z`-rough versus `P₀`-friable — so there is no intermediate
+cutoff that makes both small: pushing `z` up to kill the rough density reinstates the top blocks
+exactly.  The only way out is to estimate the top blocks' prime-supported polynomial by Heath–Brown's
+identity rather than by any factorisation receiver, which is Menon §1.1 and the target of the 43
+`Sieve/MenonHeathBrown*` leaves.
+
+Both architectures are now **built and unconditional** in the corpus — (a) as
+`integral_Icc_normSq_shell_le_bilinear_add_brun`, (b) as
+`integral_Icc_normSq_menonFinalRangeShell_le_partition_mass_filter` and
+`eventually_integral_Icc_normSq_menonFinalRangeShell_le_ladderSchedule` — so whichever way the
+Heath–Brown step lands, the surrounding chain is ready for it.
+
+### Brick 28 landed (2026-09-11) — window reflection symmetry
+
+`Sieve/MenonHarmonicWindowSymmetry.lean`: `conj_logPoly_harmonicRamareCofactorCoeff`,
+`norm_harmonicRamareBilinear_neg` (the bilinear form's norm is even in frequency, because its
+arithmetic coefficients are real), `neg_mem_windowSuperLevel` (the exceptional set is symmetric) and
+`volume_windowSuperLevel_le_two_mul_nonneg`:
+
+```text
+volume.real (windowSuperLevel F W V) ≤ 2 · volume.real (windowSuperLevel F W V ∩ Ici 0) .
+```
+
+**Why this one:** every Heath--Brown/Montgomery receiver in `Sieve/MenonHeathBrown*` is stated for
+*positive* ordinates (`∀ r ∈ S, Tlo ≤ lam r`).  This is the bridge that lets such a count bound the
+whole window, at a factor two.  Leaf built, four declarations axiom-clean, umbrella-wired.
+
+**Session total: 30 leaves, 82 declarations, all `[propext, Classical.choice, Quot.sound]`.**
+
+### Brick 29 landed (2026-09-11) — the positive-ordinate interface
+
+`Sieve/MenonHarmonicWindowHalfMeasure.lean`:
+`integral_Icc_normSq_harmonicRamareBilinear_le_threshold_halfMeasure` — the complete window estimate
+with the exceptional measure supplied **only on `[0,W]`**, which is the shape every
+`Sieve/MenonHeathBrown*` receiver produces.  Leaf build `12725/12725`, axiom-clean, umbrella-wired.
+
+**Session total: 31 leaves, 83 declarations, all `[propext, Classical.choice, Quot.sound]`.**
+
+## RESUME HERE (written 2026-09-11, for the next session)
+
+**Goal state.** Four cards in `2-fully-proven` must reach `3-formalized`.  All four share one gate;
+none can move until it closes.  Do not re-derive the analysis below — it is settled and checked.
+
+**The gate.** A mean-square saving for `∑_{n ≍ X} μ(n) n^{-1-it}` over `|t| ≤ T = X/h`, i.e. at a
+frequency radius *below* the polynomial length.  Every generic mean-value / large-values tool is
+vacuous there (see the ruled-out table above: HB Thm 4(iii), HB Lemma 3.4, the dyadic prime sieve).
+The two natural Ramaré architectures both ceiling at `1/log X` for complementary reasons (see "The
+trade-off, stated completely").  The only route is Heath--Brown's identity on the prime-supported
+polynomial — Menon §1.1 — i.e. assembling the 43 `Sieve/MenonHeathBrown*` leaves.
+
+**What is already built and waiting for it (this session, 31 leaves, all axiom-clean, all wired):**
+
+| need | have |
+|-|-|
+| ladder split not costing the block count | `..._le_blocks_mass`, `..._le_blocks_mass_filter` (no prime-gap hypothesis) |
+| both factor orderings, and their min | `MenonHarmonicRamareBlockSwapped`, `..._le_min_mass_filter` |
+| no supremum over a long window | `MenonHarmonicBlockLevelSplit` + `...LevelMoment` |
+| receiver on a small set | `MenonHarmonicBlockLevelTrivial`, `...LadderLevelTrivial` |
+| sharp prime mean square | `MenonHarmonicSievePrimeBlock` (two-dimensional sieve, params chosen) |
+| `L²`–`L^∞` split, Chebyshev base case | `MenonHarmonicWindowThresholdSplit`, `...WindowChebyshev` |
+| shell = bilinear + rough, rough paid | `MenonHarmonicShellCutoffSplit`, `...ShellRoughMeanSquare` |
+| sparse-set mean square by cardinality | `MenonHarmonicSparseSetMeanSquare` |
+| whole estimate at Menon's literal ladder | `eventually_..._le_ladderSchedule` |
+| **positive-ordinate → whole window** | `..._le_threshold_halfMeasure` ← **plug the HB count in here** |
+
+**Next concrete step.** Produce, from the `MenonHeathBrown*` family, a bound of the form
+`volume.real (windowSuperLevel (harmonicRamareBilinear P (Icc A₀ B₀)) W V ∩ Set.Ici 0) ≤ vol`
+with `vol` small enough, and feed it to `..._le_threshold_halfMeasure`.  The five frontier leaves of
+that family are `MenonHeathBrownActiveBoxCofactorMeanSquare`, `...CofactorPerronMeanSquare`,
+`...CoreReflection`, `...MediumMobiusReceiver`, `...WideCofactorPerronMeanSquare`; the Montgomery
+count is `exists_derivativeExcised_montgomery_heathBrownBox_moebius_routeTPower`.
+
+**Cards 1, 2, 3** need no separate elementary work until the gate closes.
+
+### Brick 30 landed (2026-09-11) — the partition against an arbitrary exceptional budget
+
+`Sieve/MenonHarmonicWindowPartitionBudget.lean`:
+`integral_Icc_normSq_harmonicRamareBilinear_le_partition_budget` — the frequency partition estimate
+with the some-large measure supplied as an arbitrary `vol`, instead of the corpus's hard-wired
+moment budget.  Leaf build `12722/12722`, axiom-clean, umbrella-wired.
+
+**Session total: 32 leaves, 84 declarations, all `[propext, Classical.choice, Quot.sound]`.**
+
+**Refinement of the RESUME next step.**  There are now *two* sockets for the large-values input, and
+the Case-II route fits the second one directly:
+
+1. `..._le_threshold_halfMeasure` — takes a bound on
+   `volume.real (windowSuperLevel (harmonicRamareBilinear …) W V ∩ Ici 0)`, i.e. on the exceptional
+   set of the **bilinear form**;
+2. `..._le_partition_budget` — takes a bound on
+   `volume.real (menonHarmonicSomeBlockLarge P Q eta L V W)`, i.e. on the union of the **prime
+   blocks'** large-value sets.
+
+`Sieve/MenonHarmonicCaseIIWideMeasure.exists_absolute_eventually_volume_menonHarmonicPrimeBlockExceptionalSet_caseII_wide_le`
+bounds the measure of a *single* prime block's exceptional set, so socket 2 is the one to aim at:
+take the union bound over the `L` blocks (`volume_menonHarmonicSomeBlockLarge_le`, already in the
+tree) and feed the result to `..._le_partition_budget`.  That is a finite union bound plus a
+parameter match — no new analysis.
+
+### Brick 31 landed (2026-09-11) — per-block measures to a some-large budget
+
+`Sieve/MenonHarmonicSomeLargeUnionBudget.lean`:
+`volume_real_menonHarmonicSomeBlockLarge_le_sum` (the union bound in **real** measure, the corpus's
+own being in `ℝ≥0∞`) and
+`integral_Icc_normSq_harmonicRamareBilinear_le_partition_blockMeasures` — the complete partition
+estimate taking a family of per-block measure bounds `M j` and nothing else.
+
+**This is the socket in its final shape.**  Every large-values input in the literature and in this
+corpus — Case II (`MenonHarmonicCaseIIWideMeasure`), the moment method
+(`volume_menonHarmonicBlockLarge_pow_le_local`), Huxley
+(`PrimeBlockLevelSetCount.card_le_of_mem_primeBlockLevelSet`) — produces exactly per-block bounds
+of that shape.  Supplying any of them now yields the window estimate with no further analysis.
+
+Leaf build `12723/12723`, both declarations axiom-clean, umbrella-wired.
+**Session total: 33 leaves, 86 declarations, all `[propext, Classical.choice, Quot.sound]`.**
+
+### Brick 32 landed (2026-09-11) — the chain is CLOSED (moment method)
+
+`Sieve/MenonHarmonicPartitionMomentClosed.lean`:
+`volume_real_menonHarmonicBlockLarge_le_moment` and
+`integral_Icc_normSq_harmonicRamareBilinear_le_partition_moment_closed` — the complete window
+estimate with no free measure and no external input.
+
+**Session total: 34 leaves, 88 declarations, all `[propext, Classical.choice, Quot.sound]`,
+all leaf-built and umbrella-wired.**
+
+The chain is now closed end to end with a weak large-values input.  Upgrading the rate is a
+**drop-in replacement** at `..._le_partition_blockMeasures`: supply a better family `M j` of
+per-block large-value measures (Case II via `MenonHarmonicCaseIIWideMeasure`, or Huxley via
+`PrimeBlockLevelSetCount.card_le_of_mem_primeBlockLevelSet` plus a discrete-to-measure bridge) and
+nothing else changes.
+
+## RESUME — CURRENT STATE (supersedes the earlier RESUME block)
+
+**Status.** Four cards in `2-fully-proven`; all four share one gate; none can move until it closes.
+Card 4's frequency chain is now **closed end to end and unconditional** (34 leaves, 88 declarations,
+all `[propext, Classical.choice, Quot.sound]`, all umbrella-wired), but with a large-values input
+too weak for the target rate.
+
+**The single remaining mathematical need.**  A better family of per-block large-value measures
+
+```text
+M : ℕ → ℝ   with   ∀ j < L, volume.real (menonHarmonicBlockLarge P Q η V W j) ≤ M j
+```
+
+fed to `integral_Icc_normSq_harmonicRamareBilinear_le_partition_blockMeasures`
+(`Sieve/MenonHarmonicSomeLargeUnionBudget.lean`).  **Nothing else in the 34-module chain changes.**
+The currently supplied family is the moment method
+(`MenonHarmonicPartitionMomentClosed.volume_real_menonHarmonicBlockLarge_le_moment`), which is weak
+on narrow blocks: `|{|Q_j| > θ m_j}| ≤ k!/(θ^{2k} m_j^k)` beats the ambient length only when
+`θ² ≫ 1/m_j`, never for `m_j ≪ 1`.
+
+**Two candidate replacements, and what each still needs.**
+
+1. *Huxley* — `Sieve/PrimeBlockLevelSetCount.card_le_of_mem_primeBlockLevelSet` already bounds the
+   cardinality of a **one-spaced family** inside a prime-block level set.  Missing: the
+   discrete-to-measure bridge.  The standard argument: partition `[-W,W]` into `⌈2W/δ⌉` intervals of
+   length `δ`; `E ⊆ ⋃` of the meeting ones gives `volume E ≤ δ·#meeting` (easy, via
+   `measure_biUnion_finset_le`); choosing one point per meeting interval and splitting the indices
+   into even/odd gives two `δ`-spaced families, so `#meeting ≤ 2R` and `volume E ≤ 2δR`.  The
+   choice-and-spacing half is the work.
+2. *Case II* — `Sieve/MenonHarmonicCaseIIWideMeasure.exists_absolute_eventually_volume_menonHarmonicPrimeBlockExceptionalSet_caseII_wide_le`
+   already produces a **measure** for a single prime block's exceptional set, so no bridge is needed;
+   the work is matching its parameter list (`L X Y cells T0 t H B sigma V Δ T`) to the ladder's and
+   checking `menonHarmonicPrimeBlockExceptionalSet` against `menonHarmonicBlockLarge`.
+
+Candidate 2 needs no new mathematics — only a parameter match — and is the recommended next step.
+
+**Do not retry** (checked against the numbers, reasons in the table above): Heath–Brown Theorem
+4(iii); Heath–Brown Lemma 3.4; the dyadic prime sieve as a fix for the rate; a factorisation
+receiver for the top blocks under the `ω`-weighted identity; a cutoff architecture as a way around
+the Heath–Brown step (both architectures ceiling at `1/log X`, for complementary reasons).
+
+### Brick 33 landed (2026-09-11) — the covering half of the discrete-to-measure bridge
+
+`Sieve/MenonHarmonicIntervalCovering.lean`: `measureReal_le_of_subset_biUnion_Ico` — a set covered
+by `#s` intervals of common length `delta` has `volume.real ≤ #s * delta`.  This is the reusable
+half of the Huxley bridge described in the RESUME block; what remains of that bridge is the
+choice-and-spacing half (pick one point per meeting interval, split indices even/odd to get two
+`delta`-spaced families, giving `#meeting ≤ 2R`).
+
+Leaf build `12725/12725`, axiom-clean, umbrella-wired.
+**Session total: 35 leaves, 89 declarations, all `[propext, Classical.choice, Quot.sound]`.**

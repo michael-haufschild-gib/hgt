@@ -6,7 +6,7 @@ This document is a present-tense topology of the RH research formalized in HTGeo
 
 Evidence surface: declarations indexed from current Lean working tree in HTGeometry, HilbertMetric, and RHTower. Cards and papers are not evidence here. Incomplete intended theorems are not reported as proved.
 
-Lean declaration snapshot cutoff: **2026-09-11 09:56 +0200, commit `a899ea6b86ea4a13089f7f3a81986ba8ecd0afea` plus source-level declarations present in the Lean working tree; incomplete declarations excluded**. Working-tree-only claims below are source-inspected, not build-verified by this ledger update.
+Lean declaration snapshot cutoff: **2026-09-11 10:16 +0200, commit `919bd1d2d921c307ab1aab394ee81ea0050ad93f` plus source-level declarations present in the Lean working tree; incomplete declarations excluded**. Working-tree-only claims below are source-inspected, not build-verified by this ledger update.
 
 Status language:
 
@@ -739,7 +739,7 @@ The physical two-edge transform is not an order-preserving bridge. At every D2 p
 
 ### E — squarefree Wold transport
 
-Menon's literal final-range shell now reaches the paper's `H`-adic ladder without a prime-gap hypothesis. The split is by harmonic prime mass, the exceptional half is controlled by measure times supremum, zero-mass blocks are filtered out, and the rough half inherits the existing unconditional `o((log x)^(-8))` estimate on every subwindow. In the swapped ordering, the dyadic prime factor now feeds through the sharper two-dimensional-sieve mean square while the harmonic cofactor is paid by its own supremum, avoiding the lossy Halasz--Montgomery diagonal. Range coverage, ladder geometry, and this block receiver are closed; choosing threshold schedules and summing them strongly enough to yield the required many-prime half-power cancellation remains open.
+Menon's literal final-range shell now reaches the paper's `H`-adic ladder without a prime-gap hypothesis. The split is by harmonic prime mass, the exceptional half is controlled by measure times supremum, zero-mass blocks are filtered out, and the rough half inherits the existing unconditional `o((log x)^(-8))` estimate on every subwindow. In the swapped ordering, the dyadic prime factor now feeds through the sharper two-dimensional-sieve mean square while the harmonic cofactor is paid by its own supremum, avoiding the lossy Halasz--Montgomery diagonal. The sieve parameters are chosen canonically, and the unsigned dyadic estimate transfers exactly to the ladder's signed harmonic prime-block polynomial because every prime has Möbius sign `-1`. Range coverage, ladder geometry, and the canonical signed block receiver are closed; choosing threshold schedules and summing them strongly enough to yield the required many-prime half-power cancellation remains open.
 
 **Architecture.** Squarefree depth-zero Wold source has three live source-specific realizations of one cancellation gate. Structured-cell front: reciprocal-marker supply → source-predeclared growing-density product-conditioned incidence → physical-aperture load/expansion and co-moving friable/one-large-prime flux → Möbius cancellation → RH. Nested-aperture front: exact squarefree integer-pair incidence → inter-aperture residual and Kloosterman response-mass cancellation → moving Gallagher control → same endpoint. Moving-cusp front: literal finite Möbius Laplace sections → signed Gamma--Hankel off-diagonal covariance concentrated in the shrinking integer cusp → one cofinal bounded return or uniform upper ceiling → RH. Exact hard-cutoff transfer/birth algebra is a common source interface, not a fourth producer. Harmonic Menon and complete-prime Euler--Gamma chains are terminal as independent substitutes for literal integer-prefix cancellation.
 
@@ -955,6 +955,23 @@ passed scratch, targeted build, complete axiom audit and global lint.
 This constructs a singular nonlinear physical readout, not its vanishing
 or equality with the cyclic zero reader; native arithmetic-action
 comparison remains open. [Adjacent-depth physical reader](../3-formalized/route-l-adjacent-depth-physical-reader.md).
+
+The native Wold comparison is now exact for that singular readout. For
+the complete tail `T_M`, let `A=V_6`, `B_M=T_M U_6`. At a common positive
+regulator, the actual Abel trace quotients of `AB_M`, `B_M A`, and their
+additive commutator all equal the original adjacent defect quotient.
+The weighted exchange factors cancel exactly after Gibbs admission.
+Thus all three families reconstruct the same fixed physical boundary
+scalar at the original anchor. The decoded subtraction discrepancy also
+recovers that scalar; vanishing is exactly critical-line placement.
+All original multiplicity-top Xi sources, their reflected conormal and
+finite diagonal repairs are covered. This proves native cyclic-swap
+invariance of nonlinear recovery, not agreement of a linear physical
+marginal with the normalized cyclic source reader. All 19 theorems passed
+scratch, targeted build, complete axiom coverage and formal lint.
+The remaining target is a source-derived complete physical balance,
+without inserting a counterterm defined to cancel the recovered value.
+[Native Wold comparison](../3-formalized/route-l-native-wold-cyclic-readout.md).
 
 
 **Open core.** Derive before divisor specialization the missing cyclic-source-to-fixed-physical comparison: the explicit normalized cyclic source reader must agree with the existing Burnol/Deninger physical reader on the degree-six boundary, forcing its physical marginal to vanish. Positive compact reduction and coherent-Frobenius closure are equivalent receiver presentations, not independent cores. Any producer must be genuinely singular at the all-cross-prime source origin, preserve prime, depth, multiplicity, nonzero Xi coefficient, and horizontal anchor, and escape both fixed-reader rigidity and Hausdorff energy-faithful multifibre rigidity by changing reader holonomy, making vertical ambiguity physically readable, leaving linearity/continuity/Hausdorff topology, losing literal-energy injectivity, or using a source-forced domain/fibre change.
@@ -1970,6 +1987,8 @@ For any linear source map into a Hilbert space, quotienting by its kernel with p
 
 ### Derived and factor-framed selection geometry
 
+For an arbitrary nonsingular split-torus isogeny, every character in the eventual image lattice `intersection_n (A^n)^T Z^r` annihilates the erased deck sector, so its Laurent monomial survives the stable coarse-graining tail. This extends the survivor-position theorem from diagonal to general integer character matrices. The reverse inclusion/classification needed for a complete quotient theorem remains open, and no Xi occurrence or orientation is present.
+
 Ordinary inverse limits and standard perfect-complex shadows cannot replace Route R's derived completion class. The stationary tower `Z <-2 Z <-2 ...` has zero ordinary inverse limit but nonzero first derived inverse limit, explicitly identified with the dyadic completion modulo `Z`. For every bounded perfect complex, Euler/K0, every power supertrace, every power superdeterminant, and positive squared-modulus readings all factor through cohomology; polarity and extension data can still differ. Thus ordinary-limit vanishing or finite additive/multiplicative/positive shadow cancellation does not annihilate a Roos/`lim¹` obstruction. This is a generic terminal mechanism, not an RH producer, because no theorem identifies the doubling tower or its dyadic class with the literal Xi source.
 
 The cyclic-source scalar boundary is completely classified without inverting the landing scalar. Over any commutative ring its quotient is `R/(c) × R/(c q(q-1))` and its annihilator is the principal ideal generated by `c q(q-1)`; every invariant surjective trace has the same boundary. At `c=0` the boundary vanishes and the full two-coordinate module survives for every rotation parameter. Therefore the unit-scalar orientation theorem cannot be specialized to a vanishing source response: setting the landing equal to zero removes rather than selects the boundary relation. This closes the zero-scalar shortcut for derived-selection, L/R/JAS-style quotient interfaces; a survivor must retain a nonzero source scalar or change the boundary construction.
@@ -2122,7 +2141,7 @@ This unifies L, CDC, R, terminal NDS, WBF, and theta/Gamma completion receivers 
 
 ### Finite path-cochain reduction
 
-The finite path-independence complex now has explicit quotient/inclusion chain maps and a contraction `δK+Kδ=id-Jq`. Every path cocycle differs from its normalized quotient representative by the explicit coboundary `δKf`. This closes generic finite cochain reduction, but contains no arithmetic specialization, Xi occurrence, or source orientation.
+The finite path-independence complex now has explicit quotient/inclusion chain maps and a contraction `δK+Kδ=id-Jq`. Every path cocycle differs from its normalized quotient representative by the explicit coboundary `δKf`. Its tail on vertices `{3,...,n+2}` is also chain-isomorphic, with unchanged incidence signs, to the shifted path complex on `{0,...,n-1}`, yielding the displayed reduced-cohomology shift equivalence. This closes generic finite cochain reduction and tail relabeling, but contains no arithmetic specialization, Xi occurrence, or source orientation.
 
 ### Faithful prime formation and noncompact boundary interception
 
@@ -2237,7 +2256,7 @@ Positive statewise mass and positive mean do not imply a positive ensemble groun
 
 ### Modal and pseudospectral transport
 
-Absolute mode synthesis in the completed Fokas--Lenells frequency space now has an exact image boundary: its image is precisely the chains with absolutely summable canonical coefficients, is dense but nonclosed and proper, and its inverse is unbounded. Arbitrarily large genuine mode packets can nevertheless have almost-Euclidean chain norm. This sharpens the completion/conditioning obstruction but supplies no arithmetic Xi source or selector.
+Absolute mode synthesis in the completed Fokas--Lenells frequency space now has an exact image boundary: its image is precisely the chains with absolutely summable canonical coefficients, is dense but nonclosed and proper, and its inverse is unbounded. Arbitrarily large genuine mode packets can nevertheless have almost-Euclidean chain norm. More sharply, one selected infinite frequency family admits an injective closed `ell^2` synthesis with distortion tending to one, exact recovery of every selected canonical coefficient, unconditional convergence, and invariance under the derivative shift. This sharpens the completion/conditioning geometry but supplies no arithmetic Xi source or selector.
 
 Finite Keldysh algebra closes exact left/right modal reconstruction, biorthogonality, projective normalization, generalized-pencil identities, quadratic frequency mixing, Sobolev weighting, and exponential truncation. The rank-one modal residue is idempotent, independently scale-invariant in left and right vectors, and its norm records conditioning. Exact backward-error theory is sharper: every nonzero trial vector is an exact generalized eigenvector after an explicit rank-at-most-one perturbation; its norm is the relative residual and is minimal. In finite dimension, normalized quasimode, exact perturbation, and norm-resolvent pseudospectrum descriptions are equivalent. Applied to the corpus theta exterior pseudomodes, the correction is exponentially small while the original spectrum remains inverse-quadratically separated. Bounded positive-root similarity still preserves spectrum and controls pseudospectra only through condition number. Thus modal completeness, transient growth, metric self-adjointization, small residual, and pseudospectral proximity cannot supply Xi occurrence or wall orientation. A route needs occurrence and residue in the fixed unperturbed source-derived operator, plus an orientation law; no route or candidate label is added.
 

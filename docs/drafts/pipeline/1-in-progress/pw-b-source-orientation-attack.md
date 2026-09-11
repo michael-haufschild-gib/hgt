@@ -2135,3 +2135,54 @@ atv=0. Two new deep method searches are running; broad single-word
 relaxation/dilation searches have begun. The general search returned
 mostly old papers despite its recent filter; the date-ordered arXiv
 dilation listing supplies September2026 candidates.
+
+The first corrected flat-endpoint scratch passed all seven public
+declarations with only propext, Classical.choice and Quot.sound. It
+derives the reciprocal exponential's actual derivative, its arbitrary
+polynomial flat bound, the complete mean-value kernel bound, the positive
+endpoint kernel exp(-h-a/h)/h and pointwise right-limit convergence.
+The original formula evaluated at v=0 is not that limit: totalized
+division gives exp(-a/0)=1. The proof instead establishes exp(-a/v)->0
+on v->0+. The bound at k=0 is 2!*exp(-h)/a, uniformly for every v>0.
+An extended scratch now tests L1 convergence and the actual integral
+limit. This passage, and subsequent full arithmetic summation, are
+required before asserting any source endpoint or spectral exclusion.
+
+The two new deep searches are terminal and preserved in
+[flat-endpoint search records](pw-b-gamma-reciprocal-flat-endpoint-searches.json).
+The derivative search reports partial coverage of723739 declarations.
+The integral search reports pending coverage generation823353, without
+a declaration count, and local-model JSON/runtime, Qdrant timeout and
+BrokenPipe errors. All20 candidate and20 source-argument statements per
+search, and all available ingredient sets, were examined despite this
+incomplete coverage. No service was restarted. Suggested Hankel-head
+flat-face and reciprocal Gauss-node polynomial results assume unrelated
+positivity/root data. Entire-function Gronwall and uniform derivative
+convergence results assume the missing estimate. The actual mathlib
+mean-value theorem supplies the derivative-to-kernel step. The actual
+GaussianWindowMomentRescaling.tendsto_gaussianCooledMoment proof and
+mathlib's filter dominated-convergence theorem supply the integral
+method, with a new explicit source majorant proved here. A third deep
+method search now targets uniform convergence of the complete series.
+
+Broad single-word relaxation/dilation searches were followed by the
+date-ordered arXiv dilation listing; the relaxation listing timed out.
+Two September9 primary papers were read beyond their abstracts.
+[When Finite Free Curves Split](https://arxiv.org/html/2609.10367v1)
+starts with real-rooted finite-free inputs and obtains a definite
+symmetric pencil from hyperbolicity. Its Jacobian defect is an
+off-diagonal squared norm; vanishing forces commuting matrices and
+splitting. Input incidence and simplicity still matter. No corresponding
+hyperbolic source pencil has been derived for PW-B, so those premises
+cannot be imported. The transferable question is whether the complete
+source defect has an independently justified positive representation.
+
+[A Separation between Full-Rank PVM and Assumption-free Self-Testing](https://arxiv.org/html/2609.10013v1)
+classifies an optimal face by tracial states of C plus M2. Requiring
+supported projectivity removes the matrix summand. Restricted-class
+closure does not commute with selecting the exact optimal face;
+near-optimal projective strategies need not approach the reference
+under the required dilation. No Bell-game realization of the PW source
+was identified. This supplies a precise warning for the open physical
+selection step: a dense admitted class alone does not determine the
+exact zero-defect states. Neither paper supplies Ward balance or RH.

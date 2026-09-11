@@ -1457,3 +1457,37 @@ parameter and does not establish fixedness. Neither supplies the missing
 comparison. The next concrete test must construct that native response
 and port identification from the complete Green/BV source, or derive a
 different source law forcing the recovered radial value to vanish.
+
+### C31 closed: native Wold comparison and subtraction discrepancy
+
+For the actual complete tail `T_M`, the native products `V_6 T_M U_6`
+and `T_M U_6 V_6=T_M P_6`, and their additive commutator, are all
+Gibbs-admitted at sufficiently late original cutoffs. Their actual Abel
+readings have factors `6^epsilon`, `1`, and `6^epsilon-1` relative to
+the projected reading. These factors are nonzero for positive epsilon
+and cancel in adjacent-depth quotients at the same regulator. Every
+quotient therefore equals C30's actual defect quotient exactly.
+
+The fixed nonlinear decoder reconstructs the same original physical BV
+boundary scalar from each of the three families. This gives native
+cyclic-swap invariance, but its subtraction discrepancy also recovers
+that scalar. For every original multiplicity-top Xi source, vanishing
+of any native readout is exactly critical-line placement. Independent
+native faces on the actual reflected pair recover the fixed Burnol
+conormal; finite diagonal repairs disappear before limits. The existing
+linear cyclic reader `(5/6)d_1+d_6` is normalized on the reciprocal-Green
+pair. Its agreement with a fixed physical marginal has not been proved
+by the moving-tail quotient construction.
+
+All 19 theorems passed complete scratch, targeted build, exact axiom
+coverage and formal lint. The module is wired into `RHTower`, and all
+owned Lean processes exited. [Proof, search audit and positive survivor](../3-formalized/route-l-native-wold-cyclic-readout.md).
+
+Three whole-corpus deep/method searches and broad recent arXiv mechanism
+probes supplied no missing complete-source cancellation. The native
+comparison conjecture is proved; inferring annihilation by subtracting
+equal nonlinear values fails. The next conjecture must derive a genuine
+additional Green/BV term or relation whose complete physical balance
+vanishes, with source incidence proved before specialization. A
+counterterm defined to cancel the recovered value would assume that
+landing. RH remains unproved.

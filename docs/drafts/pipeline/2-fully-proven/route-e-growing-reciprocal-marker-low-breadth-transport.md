@@ -6910,3 +6910,130 @@ tools now in place — but at rate `(log log X)^{-3}`, where the card's Markov s
 `o(1/log X)`.  The residual loss is exactly the `sup|S_M|` step: replacing the short factor by its
 supremum costs `M` per block, and recovering it needs genuine bilinear cancellation between the two
 variables, not a sharper bound on either.  Card remains Stage 2.
+
+## Lean progress update (2026-09-11) — the harmonic mean square of a sparse set, by cardinality
+
+`Sieve/MenonHarmonicSparseSetMeanSquare.lean` proves, for any finite `S ⊆ [A, N]` and any `T ≥ 0`,
+
+```text
+∫_{[-T,T]} ‖∑_{n ∈ S} μ(n) n^{-1-2πiw}‖² dw
+   ≤ (5π/2)·T·(#S/A²) + (5e/2)·(#S/A) + (5/4)·(#S/A²) .
+```
+
+Both energies of the affine mean-value majorant are proportional to `#S`, so the bound is
+proportional to the **density** of `S` — which is what the parts of Menon's shell that a sieve
+counts, rather than a factorisation estimates, actually need.  `harmonicMoebiusOn`,
+`logPoly_harmonicMoebiusOn_eq` and `sum_weight_normSq_harmonicMoebiusOn_le` are the supporting
+pieces; the last is a general weighted-energy bound for a set-restricted coefficient family.
+
+Leaf build `12288/12288`; all three declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; umbrella-wired without an umbrella build.
+
+**Why this matters for the top blocks.**  Under the *smallest-prime-factor* partition (rather than
+the `ω`-weighted Ramaré identity) the blocks with `q_j ≳ W` capture only the integers with **no**
+prime factor below `W`, whose count the corpus's own sieve bounds
+(`Sieve/RoughCount.card_rough_Ioc_le`, `Sieve/BrunTitchmarsh.card_coprime_Ioc_le_log`) put at
+`≪ x/log W`.  Composing those with the display above bounds the whole top part by `≍ C/log W`,
+against `≍ 1/(log log x)³` for the `ω`-weighted arrangement — two logarithms better, and one
+logarithm from the `(log x)^{-2}` target.  Card remains Stage 2.
+
+## Lean progress update (2026-09-11) — the rough part of the shell, assembled
+
+`Sieve/MenonHarmonicShellRoughMeanSquare.lean` completes the arrangement announced above.
+`menonShellRough A B z` is the set of integers of the shell with no prime factor at most `z` — under
+the smallest-prime-factor partition, exactly what the ladder blocks above `z` capture.  Two
+theorems:
+
+- `integral_Icc_normSq_menonShellRough_le_count` — the rough part's frequency mean square from
+  **any** count bound `#(menonShellRough A B z) ≤ C`, monotone in `C`;
+- `integral_Icc_normSq_menonShellRough_le_brun` — the same with the corpus's Brun pure sieve count
+  (`Sieve/RoughCount.card_rough_Ioc_le`) inserted, so the bound is
+
+  ```text
+  ∫_{[-T,T]} ‖∑_{n ∈ shell, P⁻(n) > z} μ(n) n^{-1-2πiw}‖² dw
+     ≤ (5π/2)·T·(C_z/A²) + (5e/2)·(C_z/A) + (5/4)·(C_z/A²) ,
+     C_z = (B−A+1)·e^{c₁}/log z + (B−A+1)·e^{λ c₂}(log z)^λ/λ^r + #truncDivisors(z#, r) ,
+  ```
+
+  for every even sieve depth `r` and every tilt `λ ≥ 1`.  At `z` a fixed power of `x` and the usual
+  Brun choice of `r, λ` this is `≍ 1/log z`, with **no factorisation estimate anywhere**.
+
+Leaf build `12289/12289`; all three declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; umbrella-wired without an umbrella build.
+
+This is the top-block contribution the lane was missing, at `≍ 1/log x` instead of the
+`≍ 1/(log log x)³` the `ω`-weighted arrangement was stuck at.  Card remains Stage 2: the residue is
+now one logarithm, and it sits in the *low* blocks' threshold rather than in the top blocks.
+
+## Lean progress update (2026-09-11) — the shell split at a prime cutoff
+
+`Sieve/MenonHarmonicShellCutoffSplit.lean` puts the new arrangement together.  The exact harmonic
+Ramaré factorisation is general in the designated prime set — `logPoly_harmonicMoebius_eq_ramare_add_rough`
+needs only that the set consists of primes — so taking it to be **all** primes up to a cutoff `z`
+makes its rough remainder exactly `menonShellRough`
+(`ramareRough_primesLE_eq_menonShellRough`).  Hence, unconditionally and for every `T ≥ 0`:
+
+```text
+∫_{[-T,T]} ‖logPoly harmonicMoebiusC (Icc A B)‖²
+   ≤ 2∫_{[-T,T]} ‖harmonicRamareBilinear (Nat.primesLE z) (Icc A B)‖²
+     + 2∫_{[-T,T]} ‖logPoly harmonicMoebiusC (menonShellRough A B z)‖² ,
+```
+
+and `integral_Icc_normSq_shell_le_bilinear_add_brun` is the same with the second term already paid
+by Brun's pure sieve, at `≍ 1/log z`.
+
+**What this buys.**  Every ladder block of the remaining bilinear part has prime scale at most `z`.
+Choosing `z ≤ W` puts every block in the regime where the cofactor is long — which is exactly where
+the receivers built earlier in this session apply cleanly, and where the top-block obstruction does
+not exist at all.  The lane's architecture is therefore no longer blocked on the top blocks; the
+residue is the low blocks' threshold, one logarithm.
+
+Leaf build `12290/12290`; all three declarations audit with only
+`[propext, Classical.choice, Quot.sound]`; umbrella-wired without an umbrella build.
+Card remains Stage 2.
+
+## Lean progress update (2026-09-11) — the large-values socket, final shape
+
+`Sieve/MenonHarmonicWindowPartitionBudget.lean` and `Sieve/MenonHarmonicSomeLargeUnionBudget.lean`
+put the frequency-partition estimate into the form every large-values input actually produces:
+
+```text
+(∀ j < L, volume.real (menonHarmonicBlockLarge P Q η V W j) ≤ M j)
+  ⟹ ∫_{[-W,W]} ‖harmonicRamareBilinear P (Icc A₀ B₀)‖²
+       ≤ mass(P)·∑_{active j} min(pointwise, swapped)/m_j
+         + mass(P)·∑_{active j} levelTrivialCost(∑_i M i)/m_j .
+```
+
+`volume_real_menonHarmonicSomeBlockLarge_le_sum` supplies the union bound in real measure (the
+corpus's own is in `ℝ≥0∞`).  Case II (`MenonHarmonicCaseIIWideMeasure`), the moment method
+(`volume_menonHarmonicBlockLarge_pow_le_local`) and Huxley
+(`PrimeBlockLevelSetCount.card_le_of_mem_primeBlockLevelSet`) all produce per-block bounds of
+exactly this shape, so any of them can be inserted with no further analysis.  Both leaves are
+axiom-clean, leaf-built and umbrella-wired.  Card remains Stage 2.
+
+## Lean progress update (2026-09-11) — the window estimate, CLOSED
+
+`Sieve/MenonHarmonicPartitionMomentClosed.lean` fills the large-values socket with an input the
+corpus already owns unconditionally — the moment method at each block's own upper endpoint
+(`volume_menonHarmonicBlockLarge_pow_le_local`) — via
+`volume_real_menonHarmonicBlockLarge_le_moment`.  The result,
+`integral_Icc_normSq_harmonicRamareBilinear_le_partition_moment_closed`, is the complete window
+estimate with **no free measure and no external analytic input**:
+
+```text
+∫_{[-W,W]} ‖harmonicRamareBilinear P (Icc A₀ B₀)‖²
+   ≤ mass(P)·∑_{active j} min(pointwise, swapped)/m_j
+     + mass(P)·∑_{active j} levelTrivialCost( ∑_{i<L} momentCost(k,i)/(V i)^{2k} )/m_j ,
+```
+
+its only parameters being the schedule's thresholds `V j`, base levels `V₀ j`, level counts `J j`
+and moment order `k`.  Leaf build `12724/12724`; both declarations axiom-clean; umbrella-wired.
+
+**What this is and is not.**  It is the first fully assembled, unconditional frequency estimate for
+the harmonic Ramaré bilinear form in this corpus — every ingredient closed, nothing supplied from
+outside.  It is **not** sharp enough for the cards: the moment method is weak on the narrow blocks
+of Menon's ladder (`|{|Q_j| > θ m_j}| ≤ k!/(θ^{2k} m_j^k)` beats the ambient length only when
+`θ² ≫ 1/m_j`, never for `m_j ≪ 1`), so the resulting rate is far from `(log x)^{-2}`.  Any stronger
+per-block input — Case II, Huxley — drops into the identical slot
+(`..._le_partition_blockMeasures`) and upgrades the rate with no other change.
+Card remains Stage 2.

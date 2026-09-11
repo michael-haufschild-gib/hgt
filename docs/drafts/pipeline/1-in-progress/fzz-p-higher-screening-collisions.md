@@ -242,3 +242,98 @@ A direct pointwise subtraction may supply the missing higher analytic family wit
 Multiplication by `|z|^alpha` would then be absolutely integrable for `alpha>-8` in the original plane. Subtracting the entire Taylor polynomial retains the odd angular terms before integration; their circle averages vanish, while the low even terms give the three collision poles. The polynomial also contains even powers six through ten; these have admitted integrals and must be added back explicitly. They cannot be discarded. Repeat at the other puncture and retain the existing exterior.
 
 For the parameter-analytic step, use `exp((beta/2)*log(1+q))` with a complex parameter on compact neighborhoods. Its sixth base derivative has the same positive-base bound; proving an analytic remainder under the original integral would allow the existing connected identity-theorem method after clearing the three collision poles in each parameter. This is a concrete next proof attempt, not a proved higher continuation or physical normalization.
+
+## Original fifth subtraction and exponential lift
+
+The next attack uses the actual plane position before angular averaging. Scratch
+`/tmp/fzzp_higher_taylor.lean` passed cleanly with eight public source statements.
+Its proof body was promoted unchanged to `FZZCigarHigherScreeningTaylor.lean`
+and wired into the umbrella. The targeted leaf build passed (166 seconds for
+the new leaf), and global formal lint passed. The complete axiom audit is pending.
+No new Gamma value or RH conclusion is claimed.
+
+Put `s=beta/2`, `q(z)=|z|^2-2*Re(z)`, and
+`a_j(s)=descPochhammer(j,s)/j!`. The subtracted factor is
+
+`R(alpha,beta,z)=|z|^alpha*(|z-1|^beta-sum_(j=0)^5 a_j(beta/2)*q(z)^j)`.
+
+For `|z|<=1/2`, `-3/4<=q<=5/4` and `|q|<=(5/2)|z|`. Expanding
+`t ↦ (1+q*t)^s` on the fixed interval `[0,1]` handles both signs of `q`
+without moving the Taylor interval. The base stays in `[1/4,9/4]`. Its exact
+`n`th derivative is `q^n*descPochhammer(n,s)*(1+q*t)^(s-n)`; the proof uses
+local positive-base differentiation, not a false global smoothness assertion
+for real powers. Compactness in `(s,base)` bounds the sixth derivative uniformly
+near each exponent. Taylor's bound therefore gives `|R|<=C*|z|^(alpha+6)`,
+which is locally integrable in the original plane for `alpha>-8`.
+
+The stronger integral-remainder identity is
+
+`integral_B R(alpha,beta,z) = descPochhammer(6,beta/2) * integral_(B×(0,1]) W_alpha(z,t)*exp(beta*X(z,t))`,
+
+where `B=ball(0,1/2)`,
+`W_alpha=|z|^alpha*q^6*(1-t)^5/(5!*(1+t*q)^6)` and
+`X=log(1+t*q)/2`. The weight is nonnegative on the original product measure;
+the descending factorial is retained, including its sign and zeros. The same
+sixth-order domination proves joint integrability before Fubini, at every real
+`beta` and every `alpha>-8`. The signed exponential-moment theorem then proves
+real analyticity in `beta`. Multiplication by `exp(delta*log|z|)` shifts `alpha`
+inside its open integrability interval and proves analyticity in the singular
+exponent. This avoids the proposed complex-parameter detour for separate real
+analyticity. Reflection admits the subtraction at the other puncture.
+
+### Remaining polynomial and pole assembly
+
+The original full finite part is not the remainder alone. The current cosine
+integral recurrence (`Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean`,
+`integral_cos_pow`) and the corpus's admitted cosine moments give a direct
+next proof of the complete angular polynomial. Its proposed coefficient list is
+
+`c0=1; c1=a1+2*a2; c2=a2+6*a3+6*a4; c3=a3+12*a4+30*a5; c4=a4+20*a5; c5=a5`,
+
+with `a_j=a_j(beta/2)`. In particular, symbolic simplification should give
+`c1=beta^2/4` and `c2=beta^2*(beta-2)^2/64`. Restore all six integrated terms
+`2*pi*c_k(beta)*(1/2)^(alpha+2*k+2)/(alpha+2*k+2)`, not only the three poles.
+The terms `k=3,4,5` have admitted denominators for `alpha>-8` and contribute
+finite values. These coefficient and restoration identities still require Lean
+verification.
+
+Clear `A(alpha)=(alpha+2)*(alpha+4)*(alpha+6)` at both punctures. The existing
+`FZZCigarPlaneScreeningGammaContinuation.reciprocal_gamma_analytic` proof uses
+the actual entire reciprocal Gamma function; no assumption excluding its zeros
+is required. The candidate cleared Gamma family is
+
+`64*pi*Gamma(-alpha/2-beta/2-1)*Gamma(4+alpha/2)*Gamma(4+beta/2)/(Gamma(-alpha/2)*Gamma(-beta/2)*Gamma(2+alpha/2+beta/2))`.
+
+Its numerator arguments are positive on `alpha,beta>-8`, `alpha+beta<-2`.
+After the complete original polynomial and exterior assembly, repeat the
+existing two-slice real analytic identity argument from the ordinary chamber.
+Then identify the original unmarked and marked cutoff limits with the
+pole-subtracted jets. This bridge, the proposed values `-84*pi` and
+`-141*pi/8`, fractional screening multiplicity, full normalization, independent
+phase frame, and the complete Ward producer remain open.
+
+### Current-source search and paper intake
+
+Four current-corpus searches covered the uniform Taylor mechanism, affine-power
+derivatives, signed exponential analyticity, and constant-coefficient circle
+integration. All returned partial generation `823353`; their candidate and
+method lists were inspected. The circle search reported semantic and reranking
+deadlines and no ingredient set. Partial hits do not establish absence of a
+stronger theorem. The useful verified mechanisms are the current
+`BourgainTaylorRemainders` local affine derivative proof, `PolynomialPowerFiniteDifference`
+Pochhammer Taylor evaluation, Mathlib's mean and integral Taylor remainders,
+and the actual signed-weight proof in `FZZCigarSubtractedScreeningAnalytic`.
+The new scratch discharges their source-specific domains and integrability.
+
+Broad recent-paper searches used interpolation, cocycle, and regularity.
+[Greedy sampling designs via reduced basis methods](https://arxiv.org/abs/2609.01578),
+1 September 2026, works with RKHS kernel and width-decay assumptions; its
+abstract does not identify this source remainder or produce the missing Ward
+law. [Stability Landscape in Wave-Packet Scattering](https://arxiv.org/html/2607.21578v1),
+23 July 2026, retains regularity requirements in its scattering stability
+analysis; no source identification was obtained from the inspected introduction.
+[Interactions between quantitative rectifiability, singular integrals, and boundary value problems for harmonic functions](https://arxiv.org/abs/2607.16457),
+revised 21 July 2026, surveys geometric hypotheses for singular integrals and
+harmonic boundary problems. Its abstract supplies no substitute for the
+original screening-polynomial restoration. No theorem from these papers is
+assumed in the Lean proof.

@@ -140,7 +140,120 @@ No source-energy upper bound follows from that argument. Searches for
 `majorization` and `dissipation` supplied no applicable transfer; the direct
 arXiv majorization endpoint was rate-limited.
 
-The earlier frozen logarithmic gcd experiment still tests its stated
-compensated Gram identity. It is not a numerical test of the uncorrected
-raw prime-feedback identity. RunPod remains unavailable; no computation
-has been performed for this card.
+The earlier frozen logarithmic gcd protocol concerns its stated
+compensated Gram identity, not the uncorrected raw prime-feedback identity.
+It was never executed. The user's subsequent **no computations** instruction
+excludes executing it; experimental execution is no longer pending work.
+
+## Signed-history and first-tail estimate audit
+
+**No new arithmetic ceiling.** The following paper attempts do not improve
+the known exponent, close RH, or retire EDQ. They identify the exact terms
+left by three proposed estimate mechanisms. No new Lean module is claimed.
+
+**Convex history → retained forcing.** For N>1 finite Abel summation gives
+
+```
+w_k = log((k+1)/k),
+Gbar_N = sum_(1<=k<N) w_k*G_k/log(N),
+G_N = Gbar_N + J_N/log(N) = Gbar_N-(A_N+B_N)/log(N).
+```
+
+The history weights are positive and sum to one. This suggests importing
+the history-plus-resolvent estimate in
+[Fritz, Threshold dynamics for subdiffusive grain growth, 7 September 2026](https://arxiv.org/pdf/2609.07938).
+Propositions 3.2--3.4 use a convex Caputo history and the actual Helmholtz
+equation `(a I-Delta)u=a fbar`; testing that equation against u gives its
+L2 contraction. The EDQ Abel identity supplies neither that operator
+equation nor its accretivity. Its source term is the exact joint packet
+`-(A_N+B_N)/log(N)`. The already proved linear size of B_N cannot be
+charged as a subpower forcing allowance. This transfer leaves the joint
+signed estimate open; it does not exclude a different eventual dissipative
+construction derived from the actual source.
+
+**Zero-mass Green form → terminal energy retained.** Put
+`u_n=mu(n)*b_n`, `t_n=log(n)`, `T=log(N)`, and `E(k)=||G_k||^2`.
+The complete logarithmic Gram is exactly
+
+```
+L(N) = sum_(m,n<=N) max(t_m,t_n)*<u_m,u_n>
+     = T*E(N)-sum_(1<=k<N) w_k*E(k).
+```
+
+Indeed, replace each maximum by T minus the sum of w_k over
+`max(m,n)<=k<N`, then interchange the finite sums.
+[Hossein et al., Clustering versus sorting, 30 August 2026, section 5.1](https://arxiv.org/html/2608.29679v1)
+uses a Neumann Green form that is negative on zero-total-mass competition
+modes. That sign suggests adjoining the vector `-G_N` at terminal location T.
+The enlarged EDQ source then has total vector mass zero, but its quadratic is
+
+```
+Q_aug = L(N)-T*E(N) = -sum_(1<=k<N) w_k*E(k).
+```
+
+Both terminal cross terms and the terminal self term have been included.
+Thus the nonpositive augmented form returns the existing history identity;
+recovering the original source restores the unknown `T*E(N)`. No upper
+bound for that term has been obtained from Green negativity.
+
+**Complete first-tail correlations → an unpaid quantitative estimate.**
+The existing `DeletionFirstTail.error_eq_harmonic_add_mertens_increment`
+identifies the actual error on `N<n<=2N` as
+`n*H_N+M(n)-M(N)`. The same module proves that its increment energy I_N is
+at most six times the full error energy. For N>=1, expanding this literal
+increment energy and telescoping its physical weights gives
+
+```
+I_N = sum_(N<a,b<=2N) mu(a)*mu(b)
+        * (1/max(a,b)-1/(2*N+1))
+    = D_N + 2*O_N,
+D_N = sum_(N<a<=2N) mu(a)^2*(1/a-1/(2*N+1)),
+O_N = sum_(1<=h<N) sum_(N<a<=2*N-h)
+        mu(a)*mu(a+h)*(1/(a+h)-1/(2*N+1)).
+```
+
+All denominators here are real. To verify the first equality, a pair a,b
+occurs in precisely the squared prefixes with `max(a,b)<=n<=2N`, whose
+weights sum to `1/max(a,b)-1/(2*N+1)`. The second equality separates equal
+indices and writes the strict half as b=a+h. In particular
+`0<=D_N<=sum_(N<a<=2N)1/a<=log(2)`; the final inequality follows by
+integrating 1/x on each preceding unit interval.
+
+The candidate bound is a one-sided subpower estimate for O_N, retaining
+all shifts h<N and their moving endpoints. No such estimate was proved.
+`Sieve.AveragedChowlaInterface.MRBilinear_moebius_of_averagedChowla`
+explicitly assumes `AveragedChowlaUniform` for the Mobius sequence; its
+proof does not discharge that input. Moreover, that interface specifies
+an `o(H*Y)` correlation budget, not the required subpower weighted budget.
+Even a transfer with an ideal factor 1/N at H,Y of order N would leave an
+`o(N)` allowance, without the needed power rate. This is a normalization
+comparison, not an assertion that the moving-endpoint transfer is proved.
+Controlling I_N would still leave the harmonic interaction and the complete
+later tail in the original source. The finite expansion above is a paper
+audit of that necessary local estimate, not an additional Lean receiver.
+
+The reciprocity follow-up also inspected
+`Sieve.KloostermanPhysicalResidueModulusBilinear`: it retains the signed
+modulus kernel exactly, while its available operator estimate still has
+the modulus factor and two residue-vector norms. No identification and
+improved estimate for O_N or the full EDQ Gram follows from that statement.
+
+Six further broad OR-matched deep/method searches covered gcd-log
+cancellation, resolvents, coarea, zero-mass Green forms, divisor-tail
+reciprocity, and Mertens increments. Each used 120 seconds, two rounds,
+all retrieval views, no refresh and no per-module cap. All were partial
+at generation 823353, with pending coverage and unfinished judging.
+All returned 20 declarations; five returned 20 candidate lemmas and 20
+source arguments, while the Green query returned neither lane. All
+proof-idea and ingredient sets were empty. The candidate/source lanes
+were `source_only`, with no compiler metadata; they were not accepted as
+Lean-verified proof ingredients. Relevant source statements were read.
+Retrieval was interrupted or timed out; some searches also reported an
+unavailable Qdrant service. These results cannot certify corpus absence.
+
+Additional broad newest-first arXiv searches used `screening`, `rigidity`
+and `reflection`; the latter two endpoints failed. The screening search led
+to [Solomons et al., geometric quantum state preparation, 9 September 2026](https://arxiv.org/html/2609.10282v1).
+Its section II.1 represents a linear-system solution up to a magnitude
+factor. Such state preparation does not supply the missing norm bound for
+the unnormalized EDQ source. No algorithm or numerical experiment was run.

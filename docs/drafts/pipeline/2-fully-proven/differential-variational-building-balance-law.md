@@ -2793,3 +2793,180 @@ because every left ideal of the completed valuation ring is principal (corpus:
 `deg(W) = length(M/(M ∩ σM)) - length(σM/(M ∩ σM))`, its independence of `M`, additivity in short
 exact sequences, and from there the Harder--Narasimhan filtration whose attained exponents upgrade
 the available `liminf` separation to the `limsup` bound the Sylvester contraction consumes.
+
+### Lean progress — residue length over the completed valuation ring (2026-09-11)
+
+`CompletedPseudoDiffOpResidueLength` supplies the counting input for the degree of an invariant
+subspace.
+
+```text
+DiffOp.isSimpleModule_quotient_maximalIdeal        the residue module is simple
+DiffOp.length_quotient_maximalIdeal_eq_one         hence has length one
+DiffOp.uniformizerInteger                          the uniformizer inside the valuation ring
+DiffOp.exists_mul_uniformizerInteger_of_mem_maximalIdeal
+DiffOp.length_span_le_card_of_uniformizer_smul_eq_zero
+```
+
+The valuation ring is local and its maximal ideal is maximal as an ideal, so the residue module is a
+coatom quotient, hence simple, hence of length one.  Every element of the maximal ideal is a right
+multiple of the canonical uniformizer: its additive value is at least one, so dividing by the
+uniformizer stays integral — the only delicate point is that `WithTop ℤ` needs the discreteness step
+`0 < v ⇒ 1 ≤ v`.
+
+The capstone is the finiteness the degree needs: **a finitely generated module killed by the
+uniformizer has length at most its generator count**.  The proof is an induction over the generating
+finset: splitting off one generator gives an exact sequence whose sub-object is the span of the rest
+and whose quotient is cyclic, and the cyclic quotient is `O` modulo a left ideal containing the
+maximal ideal — because the uniformizer already annihilates the module — so it has length at most
+one.
+
+Direct check, targeted leaf build and axiom audit pass; all 7 declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+Next: iterate this over the filtration `M ⊆ M + πᵏ⁻¹N ⊆ ⋯ ⊆ N` to get finite length for the layer
+between commensurable integral lattices, then define
+`deg(W) = length(M/(M ∩ σM)) - length(σM/(M ∩ σM))` for `M = L ⊓ W` and prove it independent of `M`
+and additive.
+
+### Lean progress — finite length of uniformizer-torsion modules (2026-09-11)
+
+`CompletedPseudoDiffOpTorsionLength` closes the finiteness the degree needs.
+
+```text
+DiffOp.coe_uniformizerInteger_pow            ring power = unit power
+DiffOp.uniformizerConj, DiffOp.uniformizerInteger_pow_mul
+    π^k a = (π^k a π^{-k}) π^k, the conjugate again integral
+DiffOp.uniformizerTorsion                    the annihilator of π^k is a submodule
+DiffOp.length_ne_top_of_fg_of_uniformizer_smul_eq_zero
+DiffOp.length_ne_top_of_fg_of_uniformizer_pow_smul_eq_zero
+```
+
+The noncommutative obstruction is that multiplication by a uniformizer power is `O`-**semi**linear,
+not `O`-linear, so neither the annihilator of `π^k` nor the image `π·A` is a submodule for free.
+Both become submodules through the single identity `π^k a = (π^k a π^{-k}) π^k`, whose conjugate
+stays integral because the valuation is multiplicative.  With that, the induction on `k` runs:
+splitting a finitely generated `A` along the span of `π·(generators)` gives an exact sequence whose
+sub-object is finitely generated and killed by `π^k` — induction hypothesis — and whose quotient is
+finitely generated and killed by `π` — the residue-length bound of the previous leaf.
+
+**The layer between two commensurable integral lattices therefore has finite length**, which is
+exactly what makes the signed degree `deg(W) = length(σM/(M ∩ σM)) - length(M/(M ∩ σM))` a
+well-formed integer.
+
+Direct check, targeted leaf build and axiom audit pass; all 7 declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+Next: the degree itself — independence of the chosen lattice `M`, additivity along invariant
+subspaces, and then the Harder--Narasimhan filtration whose attained slopes upgrade the proved
+`liminf` separation to the `limsup` bound the Sylvester contraction consumes.
+
+### Correction — the relative tower needs a properness companion (2026-09-11)
+
+The entry above on `exists_variationalRelativeAttractingSubspace_fixedPoint` is correct as stated but
+was described as if the fixed point were automatically useful.  It is not: the ascending tower could
+in principle stabilize at `⊤`, and `variationalRelativeAttractingSubspace σ b L ⊤ = ⊤` holds
+vacuously.  So the tower gives a `σ`-invariant `W` with trivial relative core, but properness of `W`
+is a separate obligation.
+
+What supplies it is an elementary non-archimedean estimate, and it is worth recording because it is
+also the reason no "parabolic accumulation" can occur:
+
+> **Block estimate.**  Let `W` be `σ`-invariant.  If every vector of `W` is in the attracting core
+> (uniformly, at lattice level) *and* `variationalRelativeAttractingSubspace σ b L W = ⊤`, then the
+> orbit is bounded.
+
+In an adapted lattice `L = L_W ⊕ L_U` the matrix of `σ` is block triangular `[[A,0],[B,C]]`, and the
+off-diagonal block of `σⁿ` is `wₙ = Σ_j σ^{n-1-j}(B(u_j))`.  Each summand has valuation at least
+`-ε(n-1) - β` — subexponential on `W` for the outer factor, subexponential on `V/W` for `u_j` — and
+because the valuation is **non-archimedean the sum of the `n` summands is no worse than the largest**.
+Hence `‖σⁿ‖ ≤ ‖B‖·q^{εn}` for every `ε`, so the speed is zero.
+
+Contrapositive: in the boundary phase, the relative attracting subspace of the attracting core is
+*proper*, so the tower fixed point is a proper `σ`-invariant subspace with trivial relative core —
+exactly the datum the Sylvester contraction needs on the quotient side.
+
+This estimate is the next brick.  It needs a `D`-complement of `W` (`Submodule.exists_isCompl`), the
+adapted lattice, and the summation bound; the uniform lattice-level slowness it consumes is already
+available from the slow sets applied to a finite generating family.
+
+### Lean progress — lattices adapted to a splitting (2026-09-11)
+
+`DifferentialVariationalAdaptedLattice` supplies the compatibility the block estimate consumes.
+
+```text
+adaptedTraceLattice L W U hWU = (L ⊓ W) ⊔ (L ⊓ U)
+exists_split_of_uniformizer_smul_mem_adaptedTraceLattice
+```
+
+The adapted lattice is finitely generated as a sum of two finitely generated traces, and full because
+each trace already spans its own subspace while the two subspaces span everything.  The splitting
+theorem is the substantive part: **if a uniformizer power pushes `x` into the adapted lattice, then
+`x = w + u` with `w ∈ W`, `u ∈ U`, and the same uniformizer power pushes each component into the
+corresponding trace lattice.**  Without adaptation a bound on `σⁿ x` says nothing about its two
+components; with it, the bound splits, which is what lets the off-diagonal sum
+`wₙ = Σ_j σ^{n-1-j}(B(u_j))` be estimated term by term and then collected — the collection being free
+because the terms all lie in one submodule.
+
+Direct check, targeted leaf build and axiom audit pass; both declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+Note on performance: the naive proof of fullness times out even at a million heartbeats, because
+rewriting through `subspaceTraceLattice` forces the scalar-tower instance repeatedly.  Stating the
+two span equalities first and chaining them with `calc` avoids the rewrite entirely and elaborates
+in seconds.  The same shape should be used for the remaining bricks of this layer.
+
+### Lean progress — eventual confinement upgrades to uniform confinement (2026-09-11)
+
+`DifferentialVariationalUniformShift` removes the "eventually" from the rate bounds the block
+estimate consumes.
+
+```text
+exists_uniform_shift_of_eventually_carrier_le
+    (∀ᶠ n, σⁿ P ⊆ π^{-⌊n/c⌋} L)  ⇒  ∃ γ, ∀ n, σⁿ P ⊆ π^{-(⌊n/c⌋ + γ)} L
+```
+
+The unrolled off-diagonal term `wₙ = Σ_j σ^{n-1-j}(B(u_j))` needs the rate bound at *every* exponent
+`n-1-j`, including the small ones, whereas a slow set only supplies it eventually.  The finitely many
+early indices each admit some uniformizer confinement — every lattice sits inside some dilation of
+every other — and the supremum of those finitely many exponents is a single additive constant that
+makes the bound hold at all indices.  A constant is invisible to the rate, so nothing is lost.
+
+Direct check, targeted leaf build and axiom audit pass; the declaration audits to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry`.
+
+With the adapted lattice and this uniformisation both in place, the remaining pieces of the block
+estimate are the component recursion `w_{n+1} = σ(wₙ) + pr_W(σ(uₙ))`, `u_{n+1} = pr_U(σ(uₙ))`, its
+unrolling, and the observation that the `n` summands all lie in the single submodule
+`π^{-(ε(n-1)+β)} L₀`, so their sum does too.
+
+### Lean progress — the block sum obeys the component recursion (2026-09-11)
+
+`DifferentialVariationalBlockRecursion` ties the closed form of the previous leaf to the recursion
+that actually generates it.
+
+```text
+DifferentialFieldAut.vecBuildingAction_injective     the vector action is injective
+DifferentialFieldAut.vecBuildingAction_one           the identity acts trivially
+DifferentialFieldAut.vecBuildingAction_succ_left     σ ∘ σⁿ = σⁿ⁺¹ on vectors
+variationalBlockSum_succ                             Σ_{j<n+1} = σ(Σ_{j<n}) + aₙ
+```
+
+The two basic facts were genuinely missing.  Injectivity is not a triviality for a semilinear action:
+the action is a matrix multiplication composed with a coefficient ring equivalence, and the matrix has
+no `Inv` instance to invert directly — what does work is that the matrix acts through
+`completedPseudoDiffOpMatrixLinearEquiv`, an equivalence, so injectivity comes for free from the
+composite of two injections.  `vecBuildingAction_one` then follows from the cocycle law `(1·1)·v =
+1·(1·v)` plus injectivity, rather than from unfolding the canonical matrix unit — which would force
+the elaborator through the whole Ore-matrix construction.
+
+`variationalBlockSum_succ` is the reindexing `n-1-j ↦ n-j` that pushing `σ` inside the sum performs,
+with the new top summand `σ⁰(aₙ) = aₙ`.  It is the recursion half of the block estimate: the orbit's
+off-diagonal component satisfies `w_{n+1} = σ(wₙ) + aₙ`, and the estimate of the previous leaf applies
+to the closed form, so the two must be identified.
+
+Direct check, targeted leaf build and axiom audit pass; all four declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an umbrella
+build.

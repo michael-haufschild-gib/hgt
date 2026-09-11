@@ -1,6 +1,6 @@
 # HB: original onset-pulse Green action
 
-Status: full-angular and original onset-pulse circular Green transfers are [formalized](../3-formalized/hb-full-angular-circle-green.md). Complete causal pulse evaluation, physical cancellation and RH remain unproved.
+Status: full-angular and original onset-pulse circular Green transfers are [formalized](../3-formalized/hb-full-angular-circle-green.md), as are their [literal-source reconstruction](../3-formalized/hb-full-angular-circle-reconstruction.md), [full angular wave action](../3-formalized/hb-full-angular-circle-action.md), and [closed-cone pulse kernel identity](../3-formalized/hb-full-angular-goursat.md). Complete causal pulse evaluation, physical cancellation and RH remain unproved.
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -60,10 +60,64 @@ Current attack: recover the actual full angular mean before insertion into the d
 
 `(Z²-1) Im(conj(P(Z)) P′(Z)) = Im(alpha) integral_1^Z |P(z)|² dz`.
 
-With `P(1)=1`, continuity and nonnegativity make the integral strictly positive for `Z>1`. Therefore `P(Z)` cannot vanish for `Z>=1`. This would justify dividing by the original radial Legendre function at every real circle radius, without a new spectral assumption.
+With `P(1)=1`, continuity and nonnegativity make the integral strictly positive for `Z>1`. Therefore `P(Z)` cannot vanish for `Z>=1`. This proves that division by the original radial Legendre function is valid at every real circle radius, without a new spectral assumption.
 
-The resulting reconstruction to prove is
+The resulting reconstruction is
 
 `h(D)=p(D)[H(z)+alpha integral_0^D (integral_0^u sinh a p(a)m(a) da)/(sinh u p(u)²) du]`.
 
-The inner source integral is literal; the outer apparent singularity at zero must be admitted. The existing smooth quotient `h/p` and its actual derivative identify the displayed integrand away from zero, allowing integrability to be proved without defining the source integral from an unknown remainder. Then insert `D=arcosh(invariant)` separately into the original direct and image terms. The unchanged onset coefficients give the full pulse kernel from the retained datum `H(z)` and source-only integrals. These stronger identities are currently paper targets, not established Lean claims.
+The inner source integral is literal. The existing smooth quotient `h/p` and its actual derivative identify the displayed outer integrand away from zero, proving interval integrability through the apparent singularity. Inserting `D=arcosh(invariant)` separately into the original direct and image terms gives the circular pulse kernel from the retained datum `H(z)` and source-only integrals. These identities passed scratch checks, the exact-module build of `ThetaCuspHawkingBMFullAngularCircleReconstruction`, and all six new public theorem axiom checks. Only `propext`, `Classical.choice` and `Quot.sound` occur.
+
+## Actual angular wave action
+
+Exact base-Laplacian commutation is proved for the constructed full field. For `F(theta,x,k)=H(logCircle(d,theta,x,k))`, the corpus's original chart coefficient identities and the chain rule give
+
+`exp(2k) F_xx + F_kk - F_k - (Delta H)(logCircle) = -2 exp(k) partial_theta(partial_x F)`.
+
+The right-hand side averages to zero by periodicity. Differentiation of the compact circle integral is justified by the already constructed field's smoothness. Thus the actual base action is `Delta_base h = alpha(h+m)`. Together with the proved radial forced equation this gives the full radial/base Darboux equation. The original causal invariant's two derivative identities then yield the time/tortoise wave equation for `h(arcosh(invariant))`, with characteristic value `H(z)` and identical direct/image values at the AdS boundary. This dependency-closed paper argument is formalized in `ThetaCuspHawkingBMFullAngularCircleAction`. Its exact-module build and all six new public theorem axiom checks passed, with only the three standard logical axioms. This closes the full-angular kernel's operator identification; its original pulse convolution and complete physical pairing are still required.
+
+The full kernel's characteristic differentiation and closed-cone Goursat equation are now kernel-checked in `ThetaCuspHawkingBMFullAngularGoursat`; the original pulse's kernel identity retains both source channels. The next dependent target is its actual time/source integral and signed combination with the full incoming wave image, both cross terms and every physical face.
+
+The reconstruction searches used `transmutation`, `nonreal Dirichlet` with OR matching, `Darboux`, and mechanism queries describing causal recovery and Laplacian commutation. Candidate lemmas, method/source arguments and proposed ingredient sets were inspected. The usable positive mechanisms are imaginary flux for the actual nonreal physical parameter, the existing full-field Green current, and the native chart's explicit periodic derivative defect. The index reported partial/pending coverage and source-only compiler metadata. The generated groups involving unrelated telescoping sums or Euclidean harmonic averages were not used as proofs.
+
+Independent broad arXiv searches used `impedance`, `disconjugacy`, `port-Hamiltonian` and `reciprocity`, with recent-date filters. The [August 2026 interconnection paper](https://arxiv.org/html/2608.29731v1) supplies a constructive regularity mechanism in Lemma 5.2: splitting a constant matching matrix's kernel and applying a fixed left inverse reconstructs omitted port trajectories with the required regularity. Lemma 5.4 extends lifting under a constant-rank intersection condition. A possible application is explicit recovery of omitted physical boundary variables after the complete mixed-current matching equations are derived. No such finite-rank identification with the present PDE has been proved. The [June energy-model representation paper](https://arxiv.org/abs/2606.21544), [September revision of the interaction-dynamics paper](https://arxiv.org/abs/2606.08281), and [August graphene-impedance paper](https://arxiv.org/abs/2608.28836) are contextual leads, not dependencies of either Lean proof.
+
+## Closed-cone pulse kernel identity
+
+Proved identity: the actual full angular circle kernel equals its original characteristic datum plus the double null-coordinate integral of `alpha (Hcircle + Qcircle)/(4 cosh(x)^2)` on the entire closed causal cone. Smooth radial Darboux regularity gives `h′(0)=0` and `h″(0)=alpha(H+Q)/2`; the right derivative in the invariant coordinate is therefore finite. Its product with the null-axis invariant derivative vanishes. Two finite fundamental-theorem identities then recover the kernel, including both characteristic axes.
+
+Linearity transfers this identity to the existing onset-pulse kernel with its original two coefficients, clock, direct/image gates and factor one half. This is the kernel formation step needed before evaluating the original pulse/current pairing. The time/source convolution, signed cross terms, independent physical faces, QNM pairing and extinction remain open.
+
+## Dependent response and current identity
+
+The existing `timeOriginalForcing_full_onset_decomposition` fixes the sign and normalization:
+
+`F = wave(lift) - wave(seed H)/alpha + P/alpha`.
+
+Let `W = lift - seed H/alpha` and let `R_P` be the original causal integral of the actual onset pulse. The next conjecture is `R_F = W + R_P/alpha`, with the original past and AdS data justified from the actual fields. This requires formation of the pulse's time/source integral and a Green identity or uniqueness argument on its admitted domain. The kernel identity alone does not assert it. Its proof would supply the four terms of the physical bilinear current: incoming/incoming, incoming/pulse, pulse/incoming and pulse/pulse, with the branch-specific factors `1/alpha`. Each remains attached to its original physical face.
+
+An external analytical lead from a broad **backstepping** search is [Belhadjoudja, May 2026, §3.2](https://arxiv.org/html/2605.25217v1): an invertible triangular integral transform removes nonlocal transport terms; its boundary kernel equation enforces a target trace, and uniformly bounded characteristic transit times yield finite-time disappearance. A possible HB test is to derive the boundary equation satisfied by the already fixed pulse/current combination. No free boundary controller or transit-time premise has been transferred into this proof. The June 2026 [optimization backstepping paper](https://arxiv.org/html/2606.27722v1) concerns designed feedback and supplies no identified lemma for the physical pulse. Neither paper is a Lean dependency.
+
+### Source-integration admission
+
+Direct substitution into the existing source profiles gives the AdS source trace
+
+`P(tau,0,z) = -2 a^2 alpha H(z) chi′(tau) exp(2s tau)`.
+
+Indeed `radialUnit(0)=0`, `sourceAmplitude(s,0,a,1,0)=a^2`, `sourceSeedFieldFirst(s,0,a,1,alpha,0)=a^2 alpha`, and `radialLiftFirst(s,0,a,1,0)=0`. This is a paper derivation from the exact definitions; a separate Lean endpoint theorem has not yet been added. For source formation, integrate the fixed pulse on the original negative-tortoise half-domain with direct and image terms, or split its odd extension at zero. The existing full-native response's globally continuous odd-source argument cannot be reused without checking this trace. Its finite triangle/Fubini mechanism can be adapted to the two smooth source halves. The gate intersections at the characteristic corners still require the corresponding almost-everywhere integral justification.
+
+### Constructive Green reconstruction candidate
+
+The invariant is symmetric in target and source radius: `invariant(h,x,y)=invariant(h,y,x)`, directly from its displayed formula. Therefore the already proved target-radius wave equation yields the corresponding source-radius equation for both `K_H` and `K_Q`. For a scalar coefficient `beta(tau,y)`, the circular image of `wave(beta H)` is
+
+`(beta_tautau-beta_yy) K_H - beta sech(y)^2 K_(Delta H)`.
+
+The source-radius kernel equation identifies this as the two-dimensional Green divergence obtained from `beta` and `K_H`; the same mechanism applies to `Q`. Integrating over the original backward causal half-domain should recover `beta(T,x) H` from the characteristic vertex and the explicitly retained past/AdS faces. For the prescribed incoming wave image `W`, the initial field and initial time derivative vanish because its onset is zero for `tau+y<=0`, while both seed and lift vanish at the AdS scalar boundary. This gives a concrete route to `R_F = W + R_P/alpha` through finite integrations by parts. It does not require a supplied global inverse or a supplied extinction identity. Remaining proof obligations are the actual moving-domain Green integration, characteristic-corner admission, the original vector reconstruction and complete current pairing. This is an analytical proof mechanism to formalize, not a closed Lean theorem yet.
+
+For this Green proof, first use reciprocity to make the original target radius the fixed center in the new Goursat identity. The backward source null coordinates then occur only as the upper integration limits. Differentiating the public double-integral formula gives continuous single-integral characteristic derivatives directly, with zero edge values. This may avoid rederiving private singular-coordinate derivative limits: the new closed-cone identity already contains the needed first-derivative admission in primitive form. The mixed derivative follows from two finite FTCs. This is the preferred first proof attempt for the moving source domain.
+
+### Direct/image triangle Green proof under construction
+
+Use target null coordinates `0<=p<=r`, source coordinates `(a,b)` with `a<=b`, and `x=(p-r)/2`. The direct backward source domain is `0<=a<=p, a<=b<=r`; the reflected domain is `0<=a<=p, a<=b<=p`. For a radial seed coefficient `c`, put `beta(a,b)=c((a-b)/2) timeOnset(2s,a)`. Both actual seed and lift have `c(0)=0`, so `beta(a,a)=0`; the fixed onset gives `beta_b(0,b)=0`.
+
+For the reciprocal kernel `K(a,b)`, the exact identity `K beta_ab-beta K_ab = partial_a(K beta_b)-partial_b(beta K_a)` integrates over the direct triangle to `H beta(p,r) + integral_0^p K(a,a) beta_b(a,a) da`. The reflected triangle contributes precisely that same diagonal integral. Their difference therefore recovers the actual original wave image. This cancellation retains the AdS term until the two original images are combined. It needs neither a continuous odd forcing nor a missing inverse assumption. The public Goursat double primitive supplies the continuous kernel first derivatives and mixed action required by the two FTCs. The proof is being instantiated for the actual full angular seed and half-square lift, then combined with the fixed pointwise source/onset decomposition.
