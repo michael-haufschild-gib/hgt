@@ -619,4 +619,16 @@ theorem nativeTimePrimitive_compact_angular_green (q : XiZeroCopy) (s amplitude 
   exact (integral_congr_ae hleft).symm.trans
     (hfg.trans (congrArg Neg.neg (integral_congr_ae hright)))
 
+
+/-- Joint smoothness of the literal full-source circle mean in radius and both
+base coordinates. This exposes the existing compact-integral proof for source
+operator transposition; no angular or radial regularity premise is supplied. -/
+theorem nativeMean_joint_smooth (q : XiZeroCopy) :
+    ContDiff ℝ ∞ (fun v : ℝ × ℝ × ℝ => mean q v.1 v.2.1 v.2.2) := by
+  have he : angularCircle q = mean q := by
+    funext d X k
+    unfold angularCircle mean D4BMNativeCircle.average
+    rw [intervalIntegral.integral_of_le (by positivity : (0:ℝ) ≤ 2*Real.pi)]
+  simpa only [he] using angularCircle_smooth q
+
 end RHTower.D4BMNativeResponse

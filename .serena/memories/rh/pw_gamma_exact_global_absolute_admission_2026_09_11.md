@@ -1,0 +1,36 @@
+# PW-B actual Gamma global absolute admission — audited 2026-09-11
+
+Goal remains active: unconditional Lean RH through PW-B. RH NOT proved. Chain: literal PW first-winding response -> FE partner imbalance -> positive Deninger Ward transmutation -> independent source-forced fixed-grade balance -> RH. Missing source law, global signed admission and spectral parameter identification are not supplied by coefficient analyticity or an absolute boundary.
+
+## Completed leaf
+`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusGlobalAdmission.lean` (239 lines) imports GammaMobiusParameterGenerator, Mathlib.NumberTheory.SumPrimeReciprocals, HTGeometry.L1PeriodizationFourier. Fifteen public theorems, two definitions. Umbrella RHTower.lean wired after ParameterGenerator (around15226). Card `docs/drafts/pipeline/3-formalized/pw-b-gamma-global-absolute-admission.md`. Raw four partial-coverage deep searches and one lexical search plus methods and broad arXiv audit: `.../1-in-progress/pw-b-gamma-global-admission-searches.json`. Attack card iteration12 audited; frontier, STATUS, prior parameter card updated.
+
+Define actual atom A_b,n(x)=mu(n)*exp(-b log n)*Q(nx), Q(x)=sqrt(x) exp(-x) for x>0; `pwGammaMobiusGlobalAtom`. Derivative atom `pwGammaMobiusGlobalCurrentAtom`=-log(n)*A. Public tsum identifications recover the exact existing M_b and E_b (definitional equality). Zero coefficient vanishes although auxiliary Q(0) is not defined by the positive-ray formula.
+
+Actual measure is Lebesgue dx restricted to x>0. Each individual atom is integrable for every b,n. `pwGammaRaySource_norm_integral` gives C=Gamma(3/2)>0. `pwGammaMobiusGlobalAtom_norm_integral` gives C*norm(mu n)*n^(-Re(b)-1); derivative mass is C*log(n)*norm(mu n)*n^(-Re(b)-1). Both full norm-mass sums are Summable iff Re(b)>0, public `_absolute_admission` theorems at171,178. Sufficiency: mu norm<=1 and ordinary/log p-series. Necessity: restrict to primes mu norm1; prime rpow criterion; derivative uses log(p)>=log2>0. No omitted arithmetic coefficients or tail.
+
+Positive survivor: `pwGammaMobiusTilt_integrable` at187, Current_integrable at195 for positive Re(b); both `_integral_eq_tsum` at203,210 justify full series/integral interchange. `pwGammaMobiusGlobalAdmission_closed` at219 is premise-free: all b exact iff classifications, positive-region signed integrability, and both original mass sums fail at zero. Does NOT assert that signed M0 or E0 is nonintegrable, an L1 derivative at zero, Mellin continuation, finite critical energy, stationarity, or Xi identification.
+
+## Validation
+Scratch `/tmp/pwb-gamma-global-proof.lean`, direct leaf `lake env lean`, final targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusGlobalAdmission` all passed (67sec target;10691jobs mostly cached replay). All15 public axioms printed in `/tmp/pwb-gamma-global-axioms.lean`; exactly standard propext/Classical.choice/Quot.sound only. Lint passed; index regenerated LEAN_API/GAPS/OVERVIEW,15theorems2defs. All17 public names unique; task-scoped diff/newfile whitespace checks passed. A whole-worktree diff check briefly observed unrelated concurrent HB trailing whitespace; left other task untouched. All owned Lean and research processes finished. No full/umbrella builds, numerical experiments, added axioms, sorry/admit, commits/pushes. Logs `/tmp/pwb-gamma-global-{scratch,direct,build,axioms,lint,index}.txt`.
+
+## Current API lessons
+GammaBasic: Real.GammaIntegral_convergent s3/2, `.ofReal`, explicit `IntegrableOn.congr_fun` (field notation on `.ofReal` fails by reducing to And). Source equality use congrArg Complex.ofReal (mul_comm _ _), not push_cast (rewrites exp into complex exp). `integrable_zero` takes explicit arguments `integrable_zero ℝ ℂ measure`. For unapplied atom0, first prove function equality to0 via funext, rw it; simp alone fails. Integral dilation rw must supply actual norm function: `integral_comp_mul_left_Ioi (fun x=>norm(Q x)) 0 hn`. `Real.rpow_def_of_pos` exp(logn*(-Reb)) needs explicit mul_comm before ring.
+
+Nat.Primes.summable_rpow is exact iff r<-1. `.subtype Nat.Prime` plus simpa produced Nat.Primes/subtype and AddCommMonoid instance mismatches even with respectTransparency true. Working proof: typed `have hr : Summable(fun p:Nat.Primes=>norm(mu p)*...) := h.comp_injective Nat.Primes.coe_nat_injective`; then `hr.congr` rewrites prime norms. Root `summable_mul_left_iff hc` removes nonzero constants (not Summable.mul_left_iff). Positive global source integrability uses `GaloisForLFunctions.HTGeometry.integrable_tsum_of_summable_integral_norm` from HTGeometry/L1PeriodizationFourier:28; measure-general. To rewrite a source function in IntegrableOn, first change to Integrable(fun x=>source z x)(volume.restrict...), then simp_rw. MeasureTheory.integrable_tsum does not exist; integral_tsum_of_summable_integral_norm does.
+
+## Next concrete signed endpoint attack
+Current corpus supplies unconditional PNT-strength saving, not an assumed RH bound:
+- DeningerMertensSummatory.lean:34 deningerMertensM_rate gives |Mertens N|<=B N exp(-(log N)^(1/3)/108).
+- DeningerMertensInvSquare.lean:131 deningerMertensM_invSq_summable gives Sum |Mertens(n)|/n^2 < infinity.
+- Sieve/MoebiusHarmonicArbitraryLogRate.lean:61 deningerMertensM_log_pow_rate gives every inverse-log saving.
+- DeningerAbelMassBound.lean:45 deningerAbelDifference_mass_le costs1/(n(n+1)) times first weighted derivative moment. Existing theorem uses Schwartz log source h; don't apply with unproved Gamma membership. Generalize C1/window argument or prove actual Gamma admission.
+
+For Q, derivative on y>0 is (1/(2y)-1)Q(y), so integral y|Q'| <=Gamma3/2/2+Gamma5/2 finite. Adjacent dilation difference thus should have L1 mass <=C1/(n(n+1)). Finite Abel gives M0(x)=Sum Mertens(n)*(Q(nx)-Q((n+1)x)). Terminal term tends0 pointwise from Q inverse-square bound and |Mertens(n)|<=n+1. Summable norm differences then prove actual signed M0 in L1 despite divergent original atom norm sum. Its integral should be0 via existing harmonic Mobius limit; retain all terminal terms. This exact signed Gamma assembly is NOT yet Lean-proved. E0 would require analogous log-coefficient assembly; source integral potentially Gamma3/2 from existing Sieve/MoebiusLogarithmicNormalization convergence, not yet claimed.
+
+Beyond b0, proposed Mellin identity is Gamma(s+1/2)/zeta(s+b) initially Re(s)>-1/2 and Re(s+b)>1. Global signed L1(dx) at negative realb would put base Mellin line at Re(s)=1 and, after separately justified continuation, expose zero exclusion to right of1+b. Approaching b=-1/2 requires stronger signed power cancellation; PNT saving at b0 does not give it. Do not relabel coefficient boundary as spectral wall.
+
+## Broad recent literature
+Opened abstracts: arxiv2606.18995 cascade intermittency (Jun17),2608.23530 pipe-dream rectification (Aug24),2606.08524 acoustic disguising (Jun7), from single-word broad queries. No applicable source-boundary theorem extracted: specific cascade equations, restricted combinatorial class and closed-surface Green-function forcing respectively remain unproved here. All source URLs and limitations in search artifact. No external result used as Lean premise.
+
+Prior memory: `mem:rh/pw_gamma_entire_parameter_generator_2026_09_11`.

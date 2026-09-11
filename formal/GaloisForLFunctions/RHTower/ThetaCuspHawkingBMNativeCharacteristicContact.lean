@@ -198,5 +198,172 @@ theorem angularKernel_right_derivative (q : XiZeroCopy) (X k : ℝ) :
     filter_upwards [self_mem_nhdsWithin] with z hz
     exact (angular_first_derivative q X k hz).deriv.symm
 
+
+set_option maxHeartbeats 600000
+
+private theorem argumentFirst_derivative (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
+    HasDerivAt (fun y => argumentFirst q y X k) (argumentSecond q z X k) z := by
+  have hs1 := (contDiff_infty_iff_deriv.mp (mean_radial_smooth q X k)).2
+  have hm1 := ((hs1.contDiffAt (x := Real.arcosh z)).differentiableAt (by simp)).hasDerivAt
+  have hd : HasDerivAt Real.arcosh (1/Real.sinh (Real.arcosh z)) z := by
+    simpa only [one_div,Real.sinh_arcosh hz.le] using Real.hasDerivAt_arcosh hz
+  have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
+  have hr := ((Real.hasDerivAt_sinh (Real.arcosh z)).comp z hd).ofReal_comp
+  apply ((hm1.scomp z hd).div hr hn).congr_deriv
+  dsimp [argumentSecond]
+  simp only [Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_one]
+  field_simp [hn]
+
+private theorem angularAction_equation (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
+    ((z:ℂ)^2-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=
+      angularAction q z X k := by
+  have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
+  have he : (z:ℂ)^2-1=(Real.sinh (Real.arcosh z):ℂ)^2 := by
+    have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
+    rw [Real.cosh_arcosh hz.le] at h
+    exact_mod_cast (by linarith : z^2-1=Real.sinh (Real.arcosh z)^2)
+  have h := mean_darboux q (Real.arcosh z) X k
+  change _ = (Real.sinh (Real.arcosh z):ℂ)^2*angularAction q z X k at h
+  rw [Real.cosh_arcosh hz.le] at h
+  rw [he]
+  dsimp [argumentSecond,argumentFirst]
+  rw [Real.cosh_arcosh hz.le]
+  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^2
+
+private theorem angularAction_eq_mean (q : XiZeroCopy) (z X k : ℝ) :
+    angularAction q z X k=laplaceMean q (Real.arcosh z) X k := by
+  exact mean_laplacian_commutes q (Real.arcosh z) X k
+
+private theorem angularAction_continuousOn (q : XiZeroCopy) (X k : ℝ) :
+    ContinuousOn (fun z => angularAction q z X k) (Ici 1) := by
+  simpa only [angularAction_eq_mean,Function.comp_def] using!
+    (laplaceMean_continuous q X k).comp_continuousOn Real.continuousOn_arcosh
+
+private def radialCurrent (q : XiZeroCopy) (X k z : ℝ) : ℂ :=
+  ((z:ℂ)^2-1)*argumentFirst q z X k
+
+private theorem radialCurrent_derivative (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
+    HasDerivAt (radialCurrent q X k) (angularAction q z X k) z := by
+  have h := (((hasDerivAt_id z).ofReal_comp.pow 2).sub_const 1).mul
+    (argumentFirst_derivative q X k hz)
+  apply h.congr_deriv
+  rw [← angularAction_equation q X k hz]
+  simp only [id_eq,Pi.pow_apply,Complex.ofReal_one,mul_one]
+  ring
+
+/-- The original weighted native derivative is the integral of the full angular action.
+The characteristic face contributes zero by the actual source contact. -/
+theorem angularCurrent_integral (q : XiZeroCopy) (X k : ℝ) (z : Ici (1:ℝ)) :
+    ((z.val:ℂ)^2-1)*argumentFirst q z X k=
+      ∫ r in (1:ℝ)..z.val, angularAction q r X k := by
+  rcases eq_or_lt_of_le (show (1:ℝ) ≤ z.val from z.property) with h0 | hz
+  · simp [← h0]
+  have hc := angularAction_continuousOn q X k
+  have hi : IntervalIntegrable (fun r => angularAction q r X k) volume 1 z.val :=
+    (hc.mono (Icc_subset_Ici_self)).intervalIntegrable_of_Icc hz.le
+  have hl : Tendsto (radialCurrent q X k) (𝓝[>] 1) (𝓝 0) := by
+    have hp : Tendsto (fun r : ℝ => (r:ℂ)^2-1) (𝓝[>] 1) (𝓝 (0:ℂ)) := by
+      have h := ((show Continuous (fun r : ℝ => (r:ℂ)^2-1) by fun_prop).continuousAt
+        (x := (1:ℝ))).tendsto.mono_left
+          (show 𝓝[>] (1:ℝ) ≤ 𝓝 1 from nhdsWithin_le_nhds)
+      simpa using h
+    simpa only [radialCurrent,zero_mul] using! hp.mul (argumentFirst_tendsto_characteristic q X k)
+  have hr := (radialCurrent_derivative q X k hz).continuousAt.tendsto.mono_left
+    (show 𝓝[<] z.val ≤ 𝓝 z.val from nhdsWithin_le_nhds)
+  have h := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_tendsto hz
+    (fun r hr => radialCurrent_derivative q X k hr.1) hi hl hr
+  simpa only [sub_zero,radialCurrent] using h.symm
+
+/-- Nonsingular full-source derivative on the closed physical invariant chart. -/
+def characteristicFirst (q : XiZeroCopy) (z X k : ℝ) : ℂ :=
+  (∫ t in (0:ℝ)..1, angularAction q (1+t*(z-1)) X k)/(z+1:ℂ)
+
+/-- The actual interior derivative equals its nonsingular original-source integral. -/
+theorem argumentFirst_volterra (q : XiZeroCopy) (X k : ℝ) (z : Ioi (1:ℝ)) :
+    argumentFirst q z X k=characteristicFirst q z X k := by
+  have hz : (1:ℝ) < z.val := z.property
+  have h := angularCurrent_integral q X k ⟨z.val,hz.le⟩
+  have hs := intervalIntegral.smul_integral_comp_add_mul
+    (fun r => angularAction q r X k) (a := 0) (b := 1) (z.val-1) 1
+  simp only [mul_zero,add_zero,mul_one,Complex.real_smul] at hs
+  have hn : (z.val:ℂ)-1 ≠ 0 := by exact_mod_cast (sub_pos.mpr hz).ne'
+  have hn1 : (z.val+1:ℂ) ≠ 0 := by
+    exact_mod_cast (show z.val+1 ≠ 0 by linarith)
+  change argumentFirst q z.val X k = _
+  unfold characteristicFirst
+  apply (eq_div_iff hn1).mpr
+  apply (mul_left_cancel₀ hn)
+  have hzcast : ((z.val-1:ℝ):ℂ)=(z.val:ℂ)-1 := by push_cast; rfl
+  rw [hzcast] at hs
+  have hs' : ((z.val:ℂ)-1)*(∫ t in (0:ℝ)..1,
+      angularAction q (1+t*(z.val-1)) X k)=∫ r in (1:ℝ)..z.val, angularAction q r X k := by
+    simpa only [mul_comm,add_sub_cancel] using hs
+  linear_combination h-hs' 
+
+private def closedAction (q : XiZeroCopy) (X k z : ℝ) : ℂ :=
+  angularAction q (max 1 z) X k
+
+private theorem closedAction_continuous (q : XiZeroCopy) (X k : ℝ) :
+    Continuous (closedAction q X k) :=
+  (angularAction_continuousOn q X k).comp_continuous
+    (continuous_const.max continuous_id) (fun z => (show max 1 z ∈ Ici (1:ℝ) from le_max_left 1 z))
+
+/-- The actual derivative integral is continuous through the characteristic. -/
+theorem characteristicFirst_continuousOn (q : XiZeroCopy) (X k : ℝ) :
+    ContinuousOn (fun z => characteristicFirst q z X k) (Ici 1) := by
+  have hc : Continuous (fun p : ℝ × ℝ => closedAction q X k (1+p.2*(p.1-1))) :=
+    (closedAction_continuous q X k).comp (by fun_prop)
+  have hi : Continuous (fun z => ∫ t in (0:ℝ)..1, closedAction q X k (1+t*(z-1))) :=
+    intervalIntegral.continuous_parametric_intervalIntegral_of_continuous
+      (f := fun z t => closedAction q X k (1+t*(z-1))) hc continuous_const
+  have he : EqOn (fun z => characteristicFirst q z X k)
+      (fun z => (∫ t in (0:ℝ)..1, closedAction q X k (1+t*(z-1)))/(z+1:ℂ)) (Ici 1) := by
+    intro z hz
+    unfold characteristicFirst
+    apply congrArg (fun v : ℂ => v/(z+1:ℂ))
+    apply intervalIntegral.integral_congr
+    intro t ht
+    have ht0 : 0 ≤ t := (show t ∈ Icc (0:ℝ) 1 by simpa using ht).1
+    have hz0 : 1 ≤ z := hz
+    have hh : 1 ≤ 1+t*(z-1) := by nlinarith [mul_nonneg ht0 (sub_nonneg.mpr hz0)]
+    simp only [closedAction,max_eq_right hh]
+  apply (hi.continuousOn.div (by fun_prop) ?_).congr he
+  intro z hz
+  have hz0 : 1 ≤ z := hz
+  exact_mod_cast (by linarith : z+1 ≠ 0)
+
+/-- The closed integral retains the complete characteristic source Laplacian. -/
+theorem characteristicFirst_at_one (q : XiZeroCopy) (X k : ℝ) :
+    characteristicFirst q 1 X k=scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2 := by
+  simp only [characteristicFirst,sub_self,mul_zero,add_zero,angularAction_eq_mean,
+    Real.arcosh_zero,laplaceMean_zero,intervalIntegral.integral_const,sub_zero,
+    one_smul,Complex.ofReal_one]
+  norm_num
+
+/-- The source integral is the actual derivative throughout the closed physical chart. -/
+theorem angularKernel_closed_derivative (q : XiZeroCopy) (X k : ℝ) (z : Ici (1:ℝ)) :
+    HasDerivWithinAt (fun r => angularKernel q r X k)
+      (characteristicFirst q z X k) (Ici 1) z.val := by
+  rcases eq_or_lt_of_le (show (1:ℝ) ≤ z.val from z.property) with h0 | hz
+  · simpa only [← h0,characteristicFirst_at_one] using angularKernel_right_derivative q X k
+  · rw [← argumentFirst_volterra q X k ⟨z.val,hz⟩]
+    exact (angular_first_derivative q X k hz).hasDerivWithinAt
+
+/-- The full native kernel is reconstructed from its original source and admitted derivative. -/
+theorem angularKernel_source_integral (q : XiZeroCopy) (X k : ℝ) (z : Ici (1:ℝ)) :
+    angularKernel q z X k=fullSquarePotential q ![X,Real.exp k]+
+      ∫ r in (1:ℝ)..z.val, characteristicFirst q r X k := by
+  have hc : ContinuousOn (fun r => angularKernel q r X k) (Ici 1) :=
+    (mean_radial_smooth q X k).continuous.comp_continuousOn Real.continuousOn_arcosh
+  have h := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le z.property
+    (hc.mono Icc_subset_Ici_self)
+    (fun r hr => by
+      rw [← argumentFirst_volterra q X k ⟨r,hr.1⟩]
+      exact angular_first_derivative q X k hr.1)
+    (((characteristicFirst_continuousOn q X k).mono Icc_subset_Ici_self).intervalIntegrable_of_Icc z.property)
+  simpa only [angularKernel,Real.arcosh_zero,mean_zero,add_comm] using (eq_add_of_sub_eq h.symm)
+
 end
 end RHTower.D4BMNativeCircle

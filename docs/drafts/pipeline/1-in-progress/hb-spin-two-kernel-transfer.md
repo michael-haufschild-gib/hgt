@@ -1,6 +1,8 @@
 # HB: spin-two kernel transfer with the full onset retained
 
-Stage: 1-in-progress. Analytical finite-domain construction; five original scalar-kernel identities [formalized](../3-formalized/hb-spin-two-kernel-primitive.md). Complete physical extinction and RH remain unproved. Frontier map read only.
+Stage: 1-in-progress for the source-delay and physical-current transfer. The original scalar-kernel identities are [formalized](../3-formalized/hb-spin-two-kernel-primitive.md); the [full native-source primitive and characteristic data](../3-formalized/hb-native-spin-two-primitive.md) are also formalized. Complete physical extinction and RH remain unproved. Frontier map read only.
+
+The [direct coincident-radius finite-clock transfer](../3-formalized/hb-spin-two-delay-characteristic.md) is now formalized, including its actual source clock, zero characteristic current, retained finite bulk contact and radius-independent geometric coefficients. The [full off-diagonal/image finite transfer and signed assembly](../3-formalized/hb-full-spin-two-delay-transfer.md) are now formalized with their original causal lower limits. A [derived finite-delay bulk bound](../3-formalized/hb-uniform-spin-two-delay.md) now controls both entire radial domains, retaining the original source and both clock derivatives. Boundary-limit and global angular transport, and the full physical-current comparison, remain open.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
@@ -37,6 +39,8 @@ F(Z)=integral_1^Z (Z-r) Delta(Delta-2)M(r) dr.
 ```
 
 For each compact angular region and bounded `Z>=1`, this implies `F=O((Z-1)^2)` and `F'=O(Z-1)`. The derivatives in (1) are argument derivatives, not time derivatives. No factor involving an angular eigenvalue is divided out.
+
+The [native-source proof](../3-formalized/hb-native-spin-two-primitive.md) establishes (1), both characteristic limits, the full double-integral identity and the two displayed vanishing orders at each fixed original angular base point, uniformly over compact invariant intervals. It also proves equality with the original radius-frozen physical spin-two trace. Uniform compact-angular bounds and the delay-coordinate quotient estimates below remain analytical obligations.
 
 ## Apply (1) to the original finite clock density
 
@@ -99,6 +103,8 @@ a=0, Z=1+k(cosh h-1), A=k sinh h, B=k cosh h.
 ```
 
 Consequently `Z-1=O(h^2)`, `F=O(h^4)`, and `partial_h F=O(h^3)`. Both terms of the boundary expression in (4) tend to zero, although its displayed denominators vanish. The bulk `F T W` is bounded: its three contributions have orders `O(h^2)`, `O(h)`, and `O(1)`. This is an improper-integral limit; it does not multiply distributions by `1/A` at the diagonal.
+
+The [original diagonal proof](../3-formalized/hb-spin-two-delay-characteristic.md) sharpens this to the exact bulk contact `F T W -> -3 (R Q) W(0)/8`, while the boundary current tends to zero. It derives both facts from the literal source moments and retains both onset derivatives in `W`. It also proves (7) on this entire diagonal interval. The raw bulk's assigned value at zero need not equal its limit; integrability is proved by agreement with the continuous expression away from zero.
 
 The control also holds uniformly on a compact radial square `0<=u,w<=r<1`. At either characteristic, write `B0=1-epsilon uw`, and let `d0=|u-w|` on the direct branch or `d0=u+w` on the image. The exact identity
 
@@ -165,4 +171,4 @@ The physical lift/response cross-currents from the two-sided reduction, the sour
 
 The original native-circle wave and Darboux identities supply the angular input. The bounded `bispectral`, squared-eigenfunction and Rodrigues/Gegenbauer searches were checked in statement and proof-method views; results were partial and did not supply a complete source-current cancellation. `ProlateCommutationKernel` supplies the concrete method of deriving a kernel operator identity before doing the boundary integral. Its band endpoints are not substituted for the HB endpoints.
 
-The original positive-chart Legendre kernel provides a closed scalar check of (1): with `ell=nu(nu+1)`, its primitive is `p[ell P_nu-2Z P_nu']`. Its first derivative is `p(ell-2)P_nu'`, and its second is `ell(ell-2)P_nu`. Five Lean theorems prove these actual derivatives, the weighted-second-derivative identity, both zero characteristic jets, and the two finite integral formulas. Their exact statements and targeted validation are linked above. This check is not a spectral replacement for the full native circle mean in (7); that identity, its limit transport and the physical current comparison remain analytical.
+The original positive-chart Legendre kernel provides a closed scalar check of (1): with `ell=nu(nu+1)`, its primitive is `p[ell P_nu-2Z P_nu']`. Its first derivative is `p(ell-2)P_nu'`, and its second is `ell(ell-2)P_nu`. Five Lean theorems prove these actual derivatives, the weighted-second-derivative identity, both zero characteristic jets, and the two finite integral formulas. The separate full native-source proof establishes these mechanisms on the literal angular mean, including its original physical trace; it uses no spectral replacement. Equation (7) is formalized on both complete causal branches with the actual finite clock, including degenerate characteristics; see the [full finite transfer](../3-formalized/hb-full-spin-two-delay-transfer.md). The [original source horizon transport](../3-formalized/hb-original-delay-horizon.md) now proves the target-horizon limit of its signed native source action on finite delay intervals at fixed source radius and angular point. Integration under the full physical radial/angular measure, joint corner limits and complete physical-current comparison remain open.

@@ -41,7 +41,7 @@ div(omega+C)=[S_Psi dot A Phi-S_Phi dot A Psi]/r⁴,
 A=roughLaplacian-1, S=M Psi.
 ```
 
-It also derives the common producer's formal transpose in the original master's radial measure, its radial boundary density, and the precise conversion from the scalar wave source to `S=2 coexact(P_lambda F)`. These differentiated, integrated and inverse-transport statements are analytical. The four Lean theorems above do not formalize those statements.
+It also derives the common producer's formal transpose in the original master's radial measure, its radial boundary density, and the precise conversion from the scalar wave source to `S=2 coexact(P_lambda F)`. A separate [formal source-kernel Green transfer](hb-common-source-green-transfer.md) now supplies the radial and both angular currents for the literal theta seed and either native causal term, retaining the full spin-two weight and fixed-ingoing-delay derivative. It also identifies that producer with the original forcing. The complete Einstein four-divergence, finite-domain integration and physical current transport remain analytical.
 
 The remaining direct target is the actual source pairing through the retarded-minus-advanced master inverse, retaining the temporal, horizon, AdS and cusp boundary terms. The common producer alone supplies no vanishing theorem. All independent polarization coefficients remain required.
 
