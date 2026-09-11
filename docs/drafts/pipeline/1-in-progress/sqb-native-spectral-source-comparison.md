@@ -449,7 +449,7 @@ for every real coefficient vector, `x>=0`, and `q>=4`. This is `firstAtomCompens
 
 Broad all-view deep searches through cumulants, Gaussian Schur bounds, Rodrigues/Appell/Touchard, central factorials/Sheffer, and head/cofactor bounds, coherent states, Gaussian product squares, and Poisson finite differences inspected candidate statements, source arguments, methods, and ingredient groups. All requests reported partial coverage; the head-bound request also reached its deadline before judging finished. The recent broad searches `majorization` and `caustics` supplied [Poset-refined majorization relations](https://arxiv.org/html/2607.28061v1), whose refined eigenvalue inequality requires orthonormal spectral bases and an LU approximation of their overlap. That theorem has not been applied to the nonorthogonal source basis here.
 
-### Exact finite-difference square candidate for retained pairs
+### Exact finite-difference square formula for retained pairs
 
 For a real parameter `lambda`, define the polynomial moment functional `T_lambda` by its formal exponential generating series `exp(lambda*(exp(t)-1))`. This definition applies to negative parameters without a probability interpretation. Its polynomial product identity is
 
@@ -475,7 +475,71 @@ Indeed, the weighted generating series is exactly
 W(J)*W(K)*A^2 = (U*V*A)^2 - (U*A)^2/4 - (V*A)^2/4 + A^2/16.
 ```
 
-Thus the proposed comparison retains every lower clock derivative in finitely many signed squares, rather than replacing the pair by its Gaussian approximation. These identities have an analytical generating-series proof but are not yet Lean-checked. The remaining sign task is to bound their negative squares in the actual first-atom central coordinates and combine that estimate with the complete tail and fixed correction. No such bound is claimed here.
+Thus the proposed comparison retains every lower clock derivative in finitely many signed squares, rather than replacing the pair by its Gaussian approximation. The finite one-variable product and square formulas, and the two-variable square formula for every finite separated polynomial expansion, are now Lean-checked in `HTGeometry/PolynomialSignedPoissonProduct.lean`, namespace `HTGeometry.SignedPoisson`. The construction uses the actual forward-difference operator on degree-bounded polynomials, proves its nilpotence by degree descent, proves the three-term tensor product rule, and factors its finite exponential. `moment_product`, `moment_square`, and `pairSquare_eq_difference_squares` retain every signed coefficient for arbitrary real parameters. The scratch check `/tmp/sqb82_product_final.lean` and narrow leaf build both pass; the five audited capstones use only `propext`, `Classical.choice`, and `Quot.sound`. The module is wired into the HTGeometry umbrella. The seeded theta-pair identification displayed above remains an analytical generating-series argument, not a new Lean source-incidence theorem. Domination of the negative squares by the actual coordinate reserve and fixed correction remains unproved.
+
+### Complete order-twelve cooling at physical scale eight
+
+The full higher-likelihood measure has support `t>=3`. Hence `q>=8` gives `q*t>=24`, where the existing exact scalar cooling-score bounds apply through order twelve. Integrating the signed bounds against that complete measure, then applying the spectral moment ceiling, proves
+
+```text
+0 <= (-1)^n*R^(n)(x) <= (6*q)^n*epsilon,  0<=n<=12, q>=8,
+R = thetaCuspLikelihoodSourceRemainder,
+epsilon = regimeOneLikelihoodScale.
+```
+
+No atom is omitted. Factoring the full reflection error through the exact first-atom reflected product gives
+
+```text
+abs(nativeJet_n-firstAtomJet_n)
+ <= sum_(i=0..n) choose(n,i)*abs(firstAtomJet_i)*
+      [2*(6*q)^(n-i)*epsilon+(12*q)^(n-i)*epsilon^2].
+```
+
+Both inequalities pass the foreground scratch check `/tmp/sqb82_cooling_twelve.lean` and are installed and wired in `RHTower/ThetaCuspSharpFiniteCoolingTwelve.lean`. The final narrow build passes in `/tmp/sqb82-pair-cooling-leaf-audit` against actual source and existing compiled dependencies. The compiled-module audit `/tmp/sqb82_final_audit.lean` checks all five cooling/reflection capstones and five signed-product capstones; all use only `propext`, `Classical.choice`, and `Quot.sound`. Global formal lint currently reports two unrelated unreachable modules, `HTGeometry/ChronologicalTensor/CubicCuspHilbert.lean` and `HTGeometry/ChronologicalTensor/CubicCuspPresentation.lean`; neither new SQB module is reported. These concurrent-work findings have not been repaired or represented as a passing global lint. These are full-source error bounds, not a new source-positivity endpoint.
+
+The complete source errors now fit the four central coordinates already carrying reserves `1,7/8,3,82`. With `s=8*q`, the proved normalized entry ceilings for orders `0,...,6` are
+
+```text
+[1/200000000, 1/5000000, 1/100000, 1/3000, 1/70, 3/4, 40].
+```
+
+Their incidence as bounds for the actual source entries is proved by `abs_native_even_sub_first_le_centralErrorCeiling`. The finite rational comparison and complete central-coordinate error budget pass `/tmp/sqb83_coordinate_error.lean`. The source-entry capstone in `/tmp/sqb83_source_error.lean` uses only `propext`, `Classical.choice`, and `Quot.sound`. Put `d=[1,1,3,15,105,945,10395]`. The checked finite convolution is
+
+```text
+sum_(j=0..k) choose(2*k,2*j)*(3/2)*d_j*
+  [2*36^(k-j)/800000000+144^(k-j)/800000000^2] <= e_k.
+```
+
+For `0<=v<=1/8`, the inverse central-coordinate vector is
+
+```text
+z=[y0-y1+3*y2-15*y3,
+   y1+(v-6)*y2+(4*v^2-15*v+45)*y3,
+   y2+(5*v-15)*y3, y3].
+sum_(i,j=0..3) e_(i+j)*abs(z_i)*abs(z_j)
+  <= y0^2/8+y1^2/8+2*y2^2+70*y3^2.
+```
+
+The proof retains all sixteen entries and uses six Young squares. The actual-entry join uses proved nonnegative first-atom moments with ceiling `(3/2)*d_j` after division by `f1^2*(8*q)^j`, exact vanishing of odd reflection jets, and the analytical exponential bound `q^j*epsilon<=8^j/800000000` for `j<=6` on `q>=8`. The complete compensation also satisfies
+
+```text
+10^12*abs(Gfull-G1) <= f1^2*(8*q)^6,   q>=8.
+```
+
+Indeed `Gfull-G1=G1*(2*R+R^2)+2*x*f1^2*(1+R)*R'`, the complete cooling bounds give `abs(Gfull-G1)<=11*q^2*epsilon*f1^2`, and the same analytical exponential ceiling pays this cost. Both source capstones pass the scratch axiom audit with only the standard three axioms. The checked error bounds are installed and wired in `HTGeometry/CentralHermiteReflectionErrorBudget.lean` and `RHTower/ThetaCuspScaleEightReflectionError.lean`; their narrow build audit is pending with the final source-positivity leaf.
+
+The remaining coordinate identity is being checked in `/tmp/sqb83_coordinate_inverse.lean`. Combining it with the two proved physical error bounds and the first-atom lower form gives the explicit candidate complete reserve
+
+```text
+f1^2*((3/4)*(y0+h*y1)^2+(47/64)*y1^2+y2^2+11*y3^2),
+h=6/(2*q-3)^2.
+```
+
+The full quadratic join and positivity theorem are written in scratch; their closed audit still awaits that coordinate identity. This would prove fixed-coefficient positivity for `q>=8`, hence `x>=1/2`, with `L=10^12`. It does not assert the same new endpoint for the canonical coefficient or the whole rational coefficient family. The lower middle interval and all-rank extension remain open.
+
+For the inner interval, the next concrete conjecture retains the unequal-atom pair's leading positive square, using the signed-Poisson formula above, and charges its remaining signed derivative squares to the existing coordinate reserve. The required seeded theta-pair incidence is still analytical. Broad all-view searches through localization, Riccati, Darboux, and Wronskian mechanisms inspected all candidate and method views; source and semantic coverage remain partial and compiler metadata largely pending. The retrieved Jacobi compression formula retains its terminal square, and the adjacent-trace sign theorem retains its positive-moment and trace premises. Neither has yet supplied the native inner-source estimate. An independently chosen Wronskian arXiv search found [Strict Total Positivity from Spectral Darboux and Toeplitz Smoothing Mechanisms](https://arxiv.org/html/2607.02778v1), dated 2 July 2026. Its spectral induction propagates positive pivots using a shared scalar differential equation and ordered endpoint asymptotics at every stage. The actual theta source has not yet been identified with such a spectral family; no paper theorem is used as a Lean premise.
+
+Broad all-view deep searches using independently chosen queries for discrete product coercivity, Touchard/Charlier moment mechanisms, and cooling inspected declarations, candidate statements, source arguments, methods, proof ideas, and ingredient groups. The cooling search recovered the exact scalar order-eleven/twelve bounds and full-measure support/score identities used above. Coverage remains partial, with stale source/compiler records and an interrupted/deadline stage in the discrete-product request. The exact lexical Touchard/Charlier query returned no hits; this is not a corpus-absence conclusion. Independent recent arXiv searches for hypocoercivity, subordination, and indefinite forms recovered [Weighted L2 bounds for kinetic Fokker–Planck equations and hypocoercivity](https://arxiv.org/html/2608.28120v1) and [Hypocoercivity-preserving space-time Galerkin methods](https://arxiv.org/html/2606.29621v1). Their coupled weighted-energy estimates require identified transport/diffusion operators; no such paper theorem supplies the theta sign here.
 
 ### Complete compensated outer region through four fifths
 

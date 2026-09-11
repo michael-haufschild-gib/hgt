@@ -30,7 +30,7 @@ def pwGammaMobiusEndpointSubtraction (z : ℂ) (x : ℝ) : ℂ :=
 def pwGammaMobiusEndpointRemainder (z : ℂ) (x : ℝ) : ℂ :=
   pwGammaMobiusEndpointSubtraction z x / ((x:ℂ)*(Real.sqrt x:ℂ))
 
-theorem pwGammaFrullaniKernel_norm_le {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
+theorem pwGammaFrullaniKernel_norm_le_nat {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
     ‖pwGammaFrullaniKernel n x‖ ≤ (n:ℝ) := by
   rw [pwGammaFrullaniKernel_norm_eq hn hx, pwGammaFrullaniKernel_eq_real, Complex.ofReal_re,
     ← neg_div, neg_sub]
@@ -128,7 +128,7 @@ theorem pwGammaMobiusEndpointRemainder_tendsto {z : ℂ} (hz : (5/2:ℝ) < z.re)
       rcases Nat.eq_zero_or_pos n with rfl | hn
       · simp
       rw [norm_mul]
-      exact mul_le_mul_of_nonneg_left (pwGammaFrullaniKernel_norm_le hn hx) (norm_nonneg _))
+      exact mul_le_mul_of_nonneg_left (pwGammaFrullaniKernel_norm_le_nat hn hx) (norm_nonneg _))
   have he : (∑' n, LSeries.term muCoeff (z-1/2) n * ((1:ℂ)-n)) =
       (riemannZeta (z-1/2))⁻¹-(riemannZeta (z-3/2))⁻¹ := by
     calc

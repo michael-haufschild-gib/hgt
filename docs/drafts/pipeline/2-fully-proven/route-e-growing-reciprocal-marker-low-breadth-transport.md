@@ -6699,3 +6699,187 @@ Card remains Stage 2.  The lane's remaining obligations are now exactly four sca
 measure: the threshold `V`, the base levels `V₀ j`, the level counts `J j`, the moment order `k`,
 and a large-values bound for `volume.real (windowSuperLevel …)`.  Everything else feeding the
 estimate is explicit and unconditional.
+
+## Lean progress update (2026-09-11) — the shell's window estimate, with only scalars left free
+
+Two closing leaves.
+
+- `Sieve/MenonHarmonicWindowChebyshev.lean` — `volume_windowSuperLevel_le`, the base case of the
+  large-values hierarchy (`|{w ∈ [-W,W] : V < ‖F w‖}| ≤ (∫_{[-W,W]}‖F‖²)/V²`), and the window
+  estimate with the exceptional measure eliminated in favour of **any** mean-square majorant `I`:
+
+  ```text
+  ∫_{[-W,W]} ‖harmonicRamareBilinear P (Icc A₀ B₀)‖²
+     ≤ V²(2W) + harmonicPrimeMass P · ∑_{j<L} menonHarmonicLevelTrivialBlockCost … (I/V²) … / m_j .
+  ```
+
+- `Sieve/MenonFinalRangeWindowEstimate.lean` — the same for Menon's literal shell, joining the
+  exact Ramaré factorisation's rough half:
+
+  ```text
+  ∫_{[-W,W]} ‖logPoly harmonicMoebiusC (menonFinalRangeShell x)‖²
+     ≤ 2(V²(2W) + harmonicPrimeMass (menonFinalRangePrimes x) · ∑_j … )
+       + 2∫_{[-W,W]} ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x)‖² .
+  ```
+
+  The rough term is the corpus's own friable energy, already `o((log x)^{-8})` by
+  `tendsto_menonFinalRangeHarmonicRoughEnergy_mul_logPow_zero`, and Menon's Lemma 2.15 permits any
+  fixed `(log x)^{-R}`.
+
+Direct checks pass; targeted leaf builds pass (`12715/12715`, `12716/12716`); both new declarations
+audit with only `[propext, Classical.choice, Quot.sound]`; both leaves are umbrella-wired without an
+umbrella build.
+
+**State of the lane.**  The whole frequency estimate for Menon's shell is now one unconditional
+Lean inequality whose only free inputs are: the threshold `V`, the base levels `V₀ j`, the level
+counts `J j`, the moment order `k`, a mean-square majorant `I` for the bilinear form (or directly a
+large-values bound for the exceptional measure), and the rough energy.  No analytic premise, no
+measure, and no supremum over a long window remains anywhere in the chain.  Card remains Stage 2.
+
+### The rough half is discharged (2026-09-11)
+
+`Sieve/MenonFinalRangeWindowRough.lean`.  The integrand is nonnegative, so the receiver's window
+inherits the corpus's full-interval friable estimate whenever `W ≤ x`:
+
+```text
+∫_{[-W,W]} ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x)‖²
+   ≤ menonFinalRangeHarmonicRoughEnergy x ,
+```
+
+and `tendsto_menonFinalRangeHarmonicRoughEnergy_mul_logPow_zero` already gives that
+`o((log x)^{-8})`.  `integral_Icc_normSq_menonFinalRangeShell_le_threshold_rough` is the shell's
+window estimate with the rough half so discharged.  Targeted leaf build `12717/12717`; both
+declarations axiom-clean; umbrella-wired.
+
+**Free inputs remaining in the whole frequency estimate:** `V`, `V₀ j`, `J j`, `k`, and one
+mean-square majorant `I` (or directly a large-values bound for the exceptional measure).  Nothing
+else.
+
+## Lean progress update (2026-09-11) — the frequency partition under the mass split
+
+`Sieve/MenonHarmonicWindowPartitionMass.lean` and `Sieve/MenonFinalRangeWindowPartition.lean`
+rebuild the corpus's own frequency-partition estimate
+(`integral_Icc_normSq_menonFinalRangeShell_le_explicitMoments`) with both of this session's
+corrections in place:
+
+* the ladder is split at the blocks' own harmonic masses on **both** halves of the partition, so
+  neither pays the block count;
+* on the exceptional (some-large) half the receiver is measure-times-supremum rather than
+  reciprocal Halász–Montgomery, so every term there is proportional to a measure, and that measure
+  is the corpus's own `menonHarmonicSomeLargeMomentBudget` at any moment order `k`.
+
+`menonHarmonicLevelTrivialBlockCost_mono` supplies the monotonicity in the exposed measure, and
+`..._le_levelTrivial_mass_budget` the substitution.  The capstone is
+
+```text
+∫_{[-W,W]} ‖logPoly harmonicMoebiusC (menonFinalRangeShell x)‖²
+   ≤ 2( harmonicPrimeMass P · ∑_{j<L} min(pointwise, swapped) / m_j
+      + harmonicPrimeMass P · ∑_{j<L} levelTrivialCost(someLargeMomentBudget) / m_j )
+     + 2 · menonFinalRangeHarmonicRoughEnergy x ,
+```
+
+`P = menonFinalRangePrimes x`, `m_j = harmonicPrimeMass (geomBlock P Q (1+η) j)`, valid for every
+`1 ≤ W ≤ x`.  Direct checks pass; targeted leaf builds pass (`12718/12718`, `12719/12719`); all
+three new declarations audit with only `[propext, Classical.choice, Quot.sound]`; both leaves are
+umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  The estimate's free inputs are now exactly the schedule's thresholds
+`V j`, base levels `V₀ j`, level counts `J j`, and moment order `k`.
+
+## Lean progress update (2026-09-11) — the prime-gap hypothesis removed from the split
+
+The mass split divides by each block's harmonic mass, so as first stated it required every ladder
+block to be nonempty.  At Menon's ratio `1 + (log x)^{-10}` that is a prime-gap theorem, and it has
+no business being inside a Cauchy--Schwarz.  Three new leaves remove it:
+
+- `Sieve/MenonHarmonicRamareLadderMassFilter.lean` — `eq_empty_of_harmonicPrimeMass_eq_zero` (a
+  prime block of zero harmonic mass is empty) and
+  `setIntegral_normSq_harmonicRamareBilinear_le_blocks_mass_filter`, the split summed over the
+  blocks of positive mass, with the cover and the total mass proved unchanged.
+- `Sieve/MenonHarmonicWindowPartitionMassFilter.lean` — `menonHarmonicActiveBlocks` and the
+  filtered forms of the hybrid ladder, the small-set ladder and the whole frequency-partition
+  estimate.
+- `Sieve/MenonFinalRangeWindowPartitionFilter.lean` —
+  `integral_Icc_normSq_menonFinalRangeShell_le_partition_mass_filter`, the corrected chain's
+  capstone: Menon's literal shell on `[-W,W]` for every `1 ≤ W ≤ x`, split at the frequency
+  partition, ladder split at the blocks' own masses on both halves, exceptional half received by
+  measure-times-supremum at the moment budget, rough half discharged by the friable energy, and
+  **no block required to contain a prime**.
+
+Direct checks pass; targeted leaf builds pass (`12700/12700`, `12721/12721`, `12722/12722`); all
+eight new declarations audit with only `[propext, Classical.choice, Quot.sound]`; all three leaves
+are umbrella-wired without an umbrella build.
+
+Card remains Stage 2.  The estimate's free inputs are exactly `V j`, `V₀ j`, `J j`, `k`.
+
+## Lean progress update (2026-09-11) — the corrected estimate at Menon's literal ladder
+
+`Sieve/MenonFinalRangeWindowSchedule.lean` instantiates the whole corrected chain at the paper's
+own `H`-adic ladder
+
+```text
+Q = menonFinalRangeLadderBase x = P(X),   η = exp(1/(log X)^10) − 1,
+L = menonFinalRangeLadderSteps x = ⌈H·log(⌊3X⌋/P(X))⌉ ,
+```
+
+discharging every structural side condition from the corpus's own schedule lemmas: range coverage
+(`eventually_menonFinalRangePrimes_ladder_range`), both cofactor endpoints
+(`eventually_menonFinalRangeLadder_cofactor_endpoints`), positivity of the base, the block top
+`1 ≤ ⌊Q(1+η)^{j+1}⌋₊`, and `1 ≤ ⌈x⌉₊`.  The conclusion is
+
+```text
+∀ᶠ x, ∀ W V V₀ J, 1 ≤ W → W ≤ x → (thresholds positive) → (level counts cover the block masses) →
+  ∫_{[-W,W]} ‖logPoly harmonicMoebiusC (menonFinalRangeShell x)‖²
+     ≤ 2( mass-split all-small sum + mass-split some-large sum ) + 2·roughEnergy x ,
+```
+
+and `exists_levelCount` shows the level-count condition is always satisfiable — any positive base
+level reaches any mass after finitely many doublings.
+
+**No structural hypothesis remains in this estimate.**  What is left is a numerical choice of the
+schedule's thresholds `V j`, base levels `V₀ j` and moment order `k`, and the resulting arithmetic.
+
+Direct check passes; targeted leaf build passes (`12724/12724`); both new declarations audit with
+only `[propext, Classical.choice, Quot.sound]`; the leaf is umbrella-wired without an umbrella
+build.  Card remains Stage 2.
+
+## Located obstruction (2026-09-11): top blocks cannot be received on a large-measure set
+
+With the corrected chain in place the remaining work is numerical, and the numerology localises the
+lane's one real obstruction precisely.  Write `m_j = harmonicPrimeMass (B_j)`, `q_j` for the block's
+prime scale, `W` for the frequency radius, and take the relative threshold `V_j = θ·m_j`.
+
+For a block with `q_j ≳ W` the cofactor `R_j` is supported on `O(1)` integers with coefficients
+`O(1)`, so **every** available bound for its mean square over a set of measure `≍ W` is `≍ W`:
+the mean-value theorem gives `(2W + N_j)·Ω²·card ≍ 4W q_j/x ≍ 12W`, and the trivial receiver gives
+`|E|·(∑_{m∈D_j} 1/m)² ≍ 1.2 W`.  The truth for the *product* is `≍ m_j`.  Hence the all-small
+contribution of the top blocks is
+
+```text
+mass(P) · ∑_{top j} V_j²·12W/m_j  ≍  6 W θ² · log log log x ,
+```
+
+which is below `(log x)^{-2}` only for `θ ≲ (log x)^{-1}W^{-1/2} ≍ x^{-1/4}`.
+
+At that threshold the moment method is vacuous.  For a prime block of mass `m_j`,
+`∫|Q_j|^{2k} ≍ k!·m_j^k` once `q_j^k ≫ T`, so
+
+```text
+|{ |Q_j| > θ m_j }|  ≤  k!·m_j^k/(θ m_j)^{2k}  =  k!/(θ^{2k} m_j^k) ,
+```
+
+which beats the ambient length only when `θ² ≫ 1/m_j`, i.e. never for `m_j ≪ 1`.  This is
+independent of the block width: at Menon's `η = (log x)^{-10}` one has `m_j ≍ (log x)^{-11}`, and
+even at ratio `e` (his Lemma 2.20) one has `m_j ≍ 1/log q_j ≪ 1`.
+
+**Therefore no factorisation receiver — pointwise, swapped, level-split, or their minimum — can
+handle blocks with `q_j ≳ W` on a set of measure `≍ W`.**  Their contribution has to sit entirely
+inside the `L^∞` half or inside a set of measure `≲ (log x)^{-2}`, which is what Menon's
+Heath--Brown decomposition of the prime-supported polynomial (§1.1) must achieve.  That step —
+`Sieve/MenonHeathBrown*`, currently a family of unassembled leaves — is the lane's genuine open
+core, and it is now the *only* one: every other ingredient of the frequency estimate is closed and
+unconditional.
+
+Recorded so that no future session re-derives a receiver for the top blocks: the obstruction is in
+the split, not in the receiver, and the numbers above show it is not repairable by any choice of
+threshold or moment order.

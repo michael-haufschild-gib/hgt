@@ -49,7 +49,7 @@ first endpoint remainder. It does not prove its entire enlarged Mellin
 domain, nonvanishing of C_z-C_(z-1) throughout a real half-line, a critical
 estimate at z=0, or identification of coefficient and Xi spectral labels.
 The physical pairing and independently source-forced occurrence-level
-Ward balance remain open. The [ongoing attack](../1-in-progress/pw-b-source-orientation-attack.md)
+Ward balance remain open. The [pairing attack](../1-in-progress/pw-b-gamma-reversible-pairing.md)
 now tests a pairing derived from both literal translation kernels and
 retains the possible logarithmic correction in their individual adjoints.
 
@@ -65,9 +65,19 @@ Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMo
 The complete scratch passes; all23 public declarations use only
 propext, Classical.choice and Quot.sound. Identical proof bodies are
 promoted and the one-copy RHTower umbrella import is wired.
-Final targeted leaf build and index audit are pending.
+The final targeted leaf build passed in70s, building only this new leaf
+and reusing its dependencies. An exhaustive API audit caught and repaired
+one collision with the older FrullaniJointAdmission bound: the new bound
+is named pwGammaFrullaniKernel_norm_le_nat. The final scratch explicitly
+co-imports that older module and passes all23 standard-only axiom audits.
 
-The repository lint run currently reports one unrelated unreachable
-HTGeometry module, `ChronologicalTensor.CubicCuspPresentation`; no new
-PW-B violation was reported. No full or umbrella build, numerical
+Index regeneration passed, refreshing LEAN_API, LEAN_GAPS and
+LEAN_OVERVIEW (seven changed entries, zero removals, in the shared tree).
+All23 public names occur exactly once in the API and source corpus;
+the umbrella import occurs once. Promoted proof bodies match the passing
+scratch, and local card links resolve. Build and index sessions are terminal.
+
+Repository formal lint now passes in the final reversible-density audit.
+The earlier unrelated unreachable HTGeometry module
+`ChronologicalTensor.CubicCuspPresentation` is absent from that result. No full or umbrella build, numerical
 experiment, added axiom, commit or push was used. RH remains unproved.

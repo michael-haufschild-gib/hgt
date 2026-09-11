@@ -1300,12 +1300,10 @@ horizontal anchor remain open.
 
 All 27 scratch theorems passed without warnings. The targeted module
 build and all 27 theorem axiom audits passed using standard Lean
-foundations only. The final repository lint reports unrelated newly
-added modules unreachable from their umbrellas; the exact five errors
-are recorded in the proof card. This card remains at stage 2 pending
-that gate. The Route L umbrella is wired, whitespace
+foundations only. The subsequent C29 global lint audit passed, clearing the
+previous unrelated reachability failures and completing the formal gate. The Route L umbrella is wired, whitespace
 checks passed, and every owned Lean process completed.
-[Complete proof and audit record](../2-fully-proven/route-l-abel-second-comparison.md).
+[Complete proof and audit record](../3-formalized/route-l-abel-second-comparison.md).
 
 ### C27 proved: fixed-six measurement of the complete source tail
 
@@ -1348,9 +1346,8 @@ all-prime source-action intertwining remain open.
 All 29 theorems passed scratch checking without warnings, the targeted
 module build, and the complete axiom audit using standard Lean
 foundations only. The module is wired into `RHTower`; all owned Lean
-processes completed. The latest global lint reports unrelated newly added
-unreachable modules, recorded in the proof card. No Route L lint
-error was reported. [Complete source proof and audit record](../2-fully-proven/route-l-fixed-six-tail-reader.md).
+processes completed. The subsequent C29 global lint audit passed, clearing the
+previous unrelated reachability failures and completing the formal gate. [Complete source proof and audit record](../3-formalized/route-l-fixed-six-tail-reader.md).
 
 ### C28 closed: complete integrand admission at every original divisor
 
@@ -1381,11 +1378,10 @@ repair retains the top response; no finite-rank claim is made.
 
 All 45 theorems passed scratch without warnings, the targeted module
 build, and the complete axiom audit using only standard foundations.
-The new module is wired into `RHTower`. The global lint run reports
-only unrelated unreachable modules `RHTower.Sieve.MenonHarmonicWindowThresholdSplit`
-and `HTGeometry.ChronologicalTensor.CubicRepairGamma`; the proof card
-therefore remains in stage 2 pending that gate. [Complete paper proof,
-source identities and audit](../2-fully-proven/route-l-complete-integrand-admission.md).
+The new module is wired into `RHTower`. The subsequent C29 global lint audit passed,
+clearing the previous unrelated reachability failures and completing the
+formal gate. [Complete paper proof,
+source identities and audit](../3-formalized/route-l-complete-integrand-admission.md).
 
 Fixed Sonin/Burnol agreement and source arithmetic-action intertwining
 at the original anchor remain open. Reflection alone does not supply
@@ -1394,13 +1390,33 @@ at critical placement, while the adaptive reflection-averaged source's
 global codiagonal retains lower modulus `3/4`. Neither supplies the
 missing annihilation law. Critical top sources retain C28's response too.
 
-### C29 attack: retain the regulator--depth interaction
+### C29 closed: actual regulator--depth crossover and retained conormal pair
 
-The next conjecture keeps the actual Abel regulator during source-depth
-exhaustion. Its exact Gibbs weight exposes `6^(-M*epsilon)`. The original
-normalized shell mass is sandwiched between `6^(-epsilon)` times its
-unweighted mass and that same mass. Together with the complete geometric
-tail bound, this suggests that `epsilon_M -> 0` and
-`M*epsilon_M -> tau` give the C28 normalized response times `6^(-tau)`;
-infinite product should suppress it. This joint law is not yet claimed.
-[Source-derived argument and remaining formal obligations](route-l-regulator-depth-crossover.md).
+The actual admitted operator has an exact regulated-source identity.
+Multiplying the original masked integrand by its Gibbs weight preserves
+C28's integrated-norm majorant; the complete source sum is integrable,
+and its integral equals the actual projected Gibbs trace. Original
+coordinate regrouping retains `n+216`, fixed dilation six, the Gibbs
+partition, and the gain `6^epsilon-1`.
+
+For every eventually positive `epsilon_M -> 0`, the normalized actual
+defect divided by the explicit attenuation `6^(-M*epsilon_M)` tends to
+C28's original constant `K`. Thus finite product limit `tau` gives
+`6^(-tau)*K`, while infinite product gives zero. This diagnostic division
+is explicitly separate from the fixed reader. At every original Xi
+divisor the actual top defect nevertheless remains nonzero at every
+sufficiently late depth along every such path. The adjacent lower/top
+internal jets retain an exact zero/nonzero pair, including in the
+infinite-product regime. Finite diagonal repairs disappear pointwise
+from all regulated defects after sufficiently late original cutoffs.
+
+All 25 theorems passed scratch, targeted module build and complete axiom
+audit with standard foundations only. The module is wired into
+`RHTower`; global lint also passed. C26--C29 are now in stage 3.
+[Complete original-source proof and audit](../3-formalized/route-l-regulator-depth-crossover.md).
+
+Regulator suppression therefore cannot itself supply source conormal
+annihilation or fixed physical agreement. Critical top sources retain
+the same pair. The remaining mathematical attack must derive the
+source-to-fixed-Burnol/Deninger comparison at the original anchor,
+including arithmetic-action agreement, while retaining this data.

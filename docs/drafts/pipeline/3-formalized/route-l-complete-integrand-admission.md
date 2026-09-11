@@ -2,7 +2,7 @@
 
 - **ID:** L-C28
 - **Date:** 2026-09-11
-- **Stage:** 2-fully-proven; Lean checked, global lint gate pending
+- **Stage:** 3-formalized; targeted build, complete axiom audit and global lint passed
 - **Type:** THEOREM (paper and Lean)
 - **Source:** [source-selected completion attack](../1-in-progress/route-l-source-selected-completion-attack.md), C28
 - **Statement:** The original complete tensor remainder has a summable integrated-norm majorant after source-selected depth admission; its whole cutoff integral agrees with the actual cutoff reader and retains the normalized fixed-six top-jet response at every Xi divisor.
@@ -127,13 +127,13 @@ passed; the new module built in 112 seconds. No full umbrella build ran.
 `Classical.choice`, and `Quot.sound`; no added axiom or forbidden
 declaration occurs. All C28 Lean processes completed.
 
-The required `scripts/formal_tools.py lint` run reported two unrelated
-unreachable modules: `RHTower.Sieve.MenonHarmonicWindowThresholdSplit`
-and `HTGeometry.ChronologicalTensor.CubicRepairGamma`. It reported no
-Route L error. The card remains in stage 2 until the global gate clears;
-the 45 checked theorems and target build are complete. No unconditional
-RH theorem is claimed.
+The original global lint run reported two unrelated unreachable modules.
+The subsequent C29 audit ran `scripts/formal_tools.py lint` successfully
+with exit status zero and `formal lint passed`, clearing that final gate.
+The 45-theorem source and its earlier targeted build and axiom audit
+remain unchanged; this card is now formalized. No unconditional RH
+theorem is claimed.
 
-The next source comparison attack is the [regulator--depth crossover](../1-in-progress/route-l-regulator-depth-crossover.md),
+The successor is the audited [regulator--depth crossover](route-l-regulator-depth-crossover.md),
 which keeps the actual regulator and normalizer together. Its joint
-limit is not claimed by this module.
+limit is proved in that separate module.

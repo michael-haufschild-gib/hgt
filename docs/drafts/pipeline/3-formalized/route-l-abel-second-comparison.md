@@ -2,7 +2,7 @@
 
 - **ID:** L-C26
 - **Date:** 2026-09-11
-- **Stage:** 2-fully-proven; Lean checks complete, repository lint gate pending
+- **Stage:** 3-formalized; targeted build, complete axiom audit and global lint passed
 - **Type:** THEOREM (Lean); 27 theorems checked
 - **Module:** `GaloisForLFunctions.RHTower.DeningerGammaSixAbelSecondComparison`
 - **Source:** [source-selected completion attack](../1-in-progress/route-l-source-selected-completion-attack.md), C26
@@ -12,8 +12,8 @@
 ## Exact source and comparison
 
 Use the same complete integral operator as
-[C24](../3-formalized/route-l-integral-column-law.md) and the admitted Abel path from
-[C25](../3-formalized/route-l-critical-abel-reader.md). Write its diagonal as
+[C24](route-l-integral-column-law.md) and the admitted Abel path from
+[C25](route-l-critical-abel-reader.md). Write its diagonal as
 `T_kk=c/k+r_k`, with `sum_k |r_k|<infinity`. Here
 `c=XiC^(a)(w)*XiC^(b)(z)`, and the complete correction includes the
 omitted finite head. The actual every-depth source domain is
@@ -157,14 +157,9 @@ The Route L module is wired into `RHTower.lean`; whitespace checks passed.
 No numerical experiment, full build or umbrella build was used.
 All owned Lean processes completed.
 
-The latest `scripts/formal_tools.py lint` exited with status 1 because
-five unrelated concurrently added modules are unreachable from their
-umbrellas: `RHTower.EulerDeletionCoprimeJointProduct`,
-`RHTower.EulerDeletionCoprimePolygonSignature`,
-`HTGeometry.WeightedMinimax.Alternation`,
-`HTGeometry.WeightedMinimax.Coefficient`, and
-`HTGeometry.WeightedMinimax.PolyRoots`. Earlier reported missing
-imports were wired by their owners; these are the current gate errors.
-No Route L lint error was reported. This card remains at stage 2 until the authoritative
-repository gate passes; the target build and kernel axiom audit above
-are complete. The unrelated modules have not been modified by this task.
+The original global lint run reported unrelated unreachable modules.
+The subsequent C29 audit ran `scripts/formal_tools.py lint` successfully
+with exit status zero and `formal lint passed`, clearing that final gate.
+The source, targeted build and complete axiom audit recorded above are
+unchanged; this card is now formalized. The unrelated modules were not
+modified by this task.

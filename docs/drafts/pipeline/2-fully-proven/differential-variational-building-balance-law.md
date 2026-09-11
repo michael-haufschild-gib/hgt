@@ -2658,3 +2658,103 @@ transversality of the pair — that the attracting and repelling subspaces span,
 slope/Lyapunov splitting for a cyclic semilinear group over a complete discretely valued skew field.
 That splitting is proved classically by successive approximation across the slope gap; it needs a
 degree/slope layer for sigma-stable subspaces, which the corpus does not yet have.
+
+### Lean progress — the growth filtration stabilizes, and escape is uniform (2026-09-11)
+
+`DifferentialVariationalGrowthStabilization` proves that the attracting core is reached at a finite
+rate index, which is the separation the transversality of `(16)` needs.
+
+A slow set `S c = { v : ∀ᶠ n, σⁿ v ∈ π^{-⌊n/c⌋} L }` is only a valuation-ring submodule.  Its
+**saturation**
+
+```text
+variationalSlowSaturation σ b L c = { v : ∃ z, π^z • v ∈ variationalSlowSet σ b L c }
+```
+
+is a subspace over the completed skew field.  The two facts that make it one are new and reusable:
+
+```text
+DiffOp.uniformizer_conj_mem_integer      π^z o π^{-z} ∈ O for o ∈ O
+DiffOp.uniformizer_shift_factorization   π^m a = (π^d · π^z a' π^{-z}) · π^z
+```
+
+the first because the valuation is multiplicative, so conjugation preserves it; the second the exact
+regrouping that turns an arbitrary scalar `a = π^{-t} o` into an integral factor acting on the
+already-dilated vector.  Two sandwiching inclusions,
+
+```text
+variationalSlowSet_subset_saturation        S c ⊆ Sat c
+variationalSlowSaturation_subset_slowSet    Sat c ⊆ S (c-1)
+```
+
+hold because dilating by `π^{-z}` costs only the constant `z`, which one rate step absorbs
+(`uniformizer_smul_mem_variationalSlowSet`).  The saturations form a descending chain of subspaces
+of a finite-rank space over a division ring, hence stabilize; sandwiching again transfers the
+stabilization to the slow sets themselves:
+
+```text
+exists_variationalSlowSet_eq_attractingCore
+    ∃ c₀ ≥ 1, ∀ m ≥ c₀, variationalSlowSet σ b L m = variationalAttractingCore σ b L
+exists_uniform_escape_rate
+    ∃ c₀ ≥ 1, every vector outside the core escapes π^{-⌊n/c₀⌋} L infinitely often
+```
+
+So the attracting core is not merely an intersection of rates: **it is a single slow set, and every
+direction outside it escapes at a rate bounded below by one positive constant.**  That uniform gap
+is exactly the hypothesis under which the classical slope splitting is proved by successive
+approximation — the remaining step is the contraction estimate for the twisted Sylvester iteration
+`X ↦ C^{-1}(φ(X)A + B)` in a basis adapted to the core, whose convergence needs the uniform
+expansion of the quotient (now available) together with the subexponential growth on the core.
+
+Direct check, targeted leaf build, and axiom audit pass; all 13 new declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+### Lean progress — relative growth modulo an invariant subspace, and the tower fixed point (2026-09-11)
+
+`DifferentialVariationalRelativeGrowth` runs the whole growth filtration *relative* to a fixed
+subspace, without transporting the semilinear action to a quotient.  The target of the growth
+condition is enlarged from `π^{-m} L` to
+
+```text
+variationalRelativeTarget L W m = (π^{-m} L).carrier ⊔ W
+```
+
+and because `W` is a subspace over the completed skew field it is stable under every dilation, so
+every absolute argument ports verbatim: relative slow sets are valuation-ring submodules, their
+uniformizer saturations are subspaces, the sandwich inclusions hold, and the descending chain of
+saturations stabilizes.
+
+```text
+exists_variationalRelativeSlowSet_eq_attractingCore
+variationalRelativeAttractingSubspace, variationalRelativeAttractingSubspace_carrier
+variationalRelativeAttractingSubspace_invariant
+le_variationalRelativeAttractingSubspace
+exists_variationalRelativeAttractingSubspace_fixedPoint
+```
+
+The capstone is the tower: for a `σ`-invariant `W₀` the relative attracting subspace is again
+`σ`-invariant and contains `W₀`, so iterating gives an ascending chain, which stabilizes because the
+coordinate space is Noetherian over the completed skew field.  The limit `W` satisfies
+
+```text
+variationalRelativeAttractingSubspace σ b L W = W
+```
+
+— **its own relative attracting core is itself**: read through the quotient, the induced action on
+`V/W` has trivial attracting core, so no direction outside `W` is asymptotically absorbed into it.
+
+Direct check, targeted leaf build and axiom audit pass; all 21 declarations audit to exactly
+`[propext, Classical.choice, Quot.sound]`, and the leaf is wired into `HTGeometry` without an
+umbrella build.
+
+**Where the remaining obstruction now sits, precisely.**  The two available separations are
+`liminf`-type: a vector outside the core has `liminf_n val(σⁿ v)/n ≤ -1/c₀`, uniformly in the vector.
+The Sylvester contraction `X ↦ C^{-1}(φ(X)A + B)` that produces the invariant complement needs a
+`limsup`-type bound instead — every direction of `V/W` expanding by at least `δk` for *all* large
+`k`, not merely infinitely often.  Upgrading `liminf` to `limsup` is exactly attainment of the
+Lyapunov exponents, i.e. the Harder--Narasimhan/slope filtration.  The next brick is therefore the
+degree of a `σ`-stable subspace, computable inside the ambient space as the signed length
+`length(M/(M ∩ σM)) - length(σM/(M ∩ σM))` for `M = L ∩ W`, since these are finite-length modules
+over the completed valuation ring; from it the slope, the maximal destabilizing subobject, and the
+attained exponents follow.

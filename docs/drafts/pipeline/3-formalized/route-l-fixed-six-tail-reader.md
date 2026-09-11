@@ -2,7 +2,7 @@
 
 - **ID:** L-C27
 - **Date:** 2026-09-11
-- **Stage:** 2-fully-proven; Lean checks complete, repository lint gate pending
+- **Stage:** 3-formalized; targeted build, complete axiom audit and global lint passed
 - **Type:** THEOREM (Lean); 29 theorems checked and axiom-audited
 - **Module:** `GaloisForLFunctions.RHTower.DeningerGammaSixFixedDilationTailReader`
 - **Source:** [source-selected completion attack](../1-in-progress/route-l-source-selected-completion-attack.md), C27
@@ -142,12 +142,9 @@ passed (171 seconds for the new module). All 29 reports from
 into `RHTower.lean`; whitespace checks passed. No numerical experiment,
 full build, or umbrella build was used. All owned Lean processes completed.
 
-The latest `scripts/formal_tools.py lint` exited with status 1 because
-five unrelated concurrently added modules are unreachable from their
-umbrellas: `RHTower.EulerDeletionCoprimeJointProduct`,
-`RHTower.EulerDeletionCoprimePolygonSignature`,
-`HTGeometry.WeightedMinimax.Alternation`,
-`HTGeometry.WeightedMinimax.Coefficient`, and
-`HTGeometry.WeightedMinimax.PolyRoots`. No Route L error was reported.
-Those modules were not changed by this task; the card remains at
-stage 2 pending the authoritative repository gate.
+The original global lint run reported unrelated unreachable modules.
+The subsequent C29 audit ran `scripts/formal_tools.py lint` successfully
+with exit status zero and `formal lint passed`, clearing that final gate.
+The source, targeted build and complete axiom audit recorded above are
+unchanged; this card is now formalized. The unrelated modules were not
+modified by this task.

@@ -113,3 +113,72 @@ Only gap is the explicit finite Gamma/power-sum formula
 integrals, needing no Fubini; the first reduces by `mellin_comp_mul_left` to
 `mellin ((1−e^{−t})/t) s = Γ(s)/(1−s)`, which is one Fubini over `Ioi 0 × Ioo 0 1` against
 `∫_{Ioi 0} t^{s−1}e^{−xt} dt = Γ(s)x^{−s}`.
+
+## Promotions, round 2
+
+| Card | What closed it |
+|---|---|
+| observation-repair | `CubicRepairGamma` (13 decls): scaled Gamma integral + Fubini reference term ⟹ `cubicFiniteKernel_mellin_gamma` |
+| observation-cusp | `CubicCuspPresentation` (25 decls): `cuspEvalHom_range` + `cuspEvalHom_ker = span{W²−V³}`, i.e. the presentation by the first isomorphism theorem, plus `CubicCuspHilbert` (14 decls): graded dimensions and the three Hilbert-series identities as formal power series |
+
+Note on the presentation: mathlib's `HasQuotient R (Ideal R)` instance is **not found** for triple-nested
+`Polynomial` rings in this toolchain (`Polynomial (Polynomial (Polynomial ℝ)) ⧸ I` fails to
+synthesize; double nesting and `MvPolynomial (Fin 3) ℝ` both work). The presentation is therefore
+stated as surjectivity onto `cubicCuspAlgebra` together with the exact kernel, which is the
+presentation.
+
+## Remaining 6, with the real obstacle in each
+
+| Card | Obstacle |
+|---|---|
+| growing-moment-source | whole construction: bounded arrays with matched Möbius prefix and growing odd-moment matching, plus the jet and the `L²([δ,∞))`/uniform decay |
+| finite-tail-obstruction | whole construction: the `L²([1,2])` separation, exact discrete annihilation, and the critical-zero obstruction (Hardy is corpus-owned) |
+| path-cochain-reduction | whole construction: path independence complexes, the `K`/`q`/`J` identities, the occupation-degree shift isomorphism, base cases, all-degree multiplicities |
+| fusion-spectrum | only the sphere-homotopy *interpretation* of arbitrary join powers. The card's own status and the stage-3 certificate both record that the formal Euler chain deliberately avoids it (`fusedCubicReducedEuler_eq n = -1` is proved from actual finite face sets). Formalizing it needs a topological or homological join theory that mathlib does not have |
+| recovery-exponential-rate | weighted potential theory: support equation, `F`-functional, equilibrium measure, and the Balogh–Bertola weighted Chebyshev asymptotic |
+| recovery-uniform-spectrum | needs the rate constant from the exponential-rate card; the uniform growth bound and the spectral-disc argument are otherwise self-contained Hilbert-space work |
+
+## Round 3: the path-cochain reduction (card 12), phase 1 done
+
+New leaf `HTGeometry/PathIndependenceCochain.lean` — **builds, wired, 25 declarations all
+axiom-audited**. It supplies the card's computational core:
+
+* `IsPathFace n σ` (members `< n`, no two adjacent), closed under `erase`; `IsTailSet τ`
+  (members `≥ 3`).
+* `pathFaceSign_zero`, `pathFaceSign_one`, `pathFaceSign_insert_of_lt`,
+  `pathFaceSign_insert_self` — the incidence signs at the two lowest vertices.
+* `pathCone` (`K`), `pathTailMap` (`q`), `pathIncl` (`J`) exactly as displayed on the card.
+* `pathTailMap_pathIncl` : **`qJ = id`**.
+* `pathCoboundary_insert_of_min` : `δf (insert a τ) = f τ − ∑_v sign(τ,v) f (insert a (τ \ v))`
+  for `a` below every member of `τ` — the workhorse for the two sign identities.
+* `pathTailMap_simplicialCoboundary` : **`qδ = −δq`** on tail sets.
+* `simplicialCoboundary_pathIncl` : **`δJ = −Jδ`** on path faces.
+* `simplicialCoboundary_pathCone_add` : **`δK + Kδ = id − Jq`** on path faces. Three cases:
+  `0 ∈ σ` and `1 ∈ σ` are single-term sums (`Finset.sum_eq_single`), and the remaining case is
+  *exactly* the corpus's `simplicialCoboundary_simplicialCone_add` at base vertex `0`, since
+  `pathCone` and `simplicialCone F 0` agree on every set missing `1`.
+
+### Corpus assets found (do not rebuild these)
+
+`HTGeometry/SimplicialCochainComplex.lean` already has the reduced simplicial cochain complex of an
+arbitrary finite complex in every degree: `faceSign` with all its erase/antisymmetry lemmas,
+`simplicialCoboundary` (+ `ₗ`), `δ² = 0`, the occupation grading `cardCochains F c` with
+`simplicialCoboundary_mem_cardCochains`, and the complex's cochains as the quotient by
+`faceVanishingCochains`, with `complexCoboundaryₗ` and its `δ² = 0`.
+`HTGeometry/SimplexConeContraction.lean` has the cone homotopy `δK + Kδ = id` for an arbitrary base
+vertex and `fullSimplex_exact`. `HTGeometry/HochsterCohomologyEquiv.lean` has reduced cohomology as
+a subquotient (`inducedCocycles`, `inducedCoboundaries`, `inducedReducedCohomology`).
+
+### Phase 2 (card 12, still open)
+
+1. Graded cochain modules of the path complex. Use the corpus's quotient pattern with a
+   path-specific kernel `pathVanishing F n := {f | ∀ σ, IsPathFace n σ → f σ = 0}` (a submodule,
+   `δ`-stable because faces are erase-closed), graded by intersecting with `cardCochains F j`.
+2. Cocycles / coboundaries / reduced cohomology in occupation degree `j`, then the induced maps
+   `q` and `J`; the four identities above make them inverse on cohomology with a shift of one in
+   occupation degree.
+3. The tail relabeling: an order-preserving bijection `{3,…,n−1} → {0,…,n−4}` transporting the
+   incidence signs, giving `H̃^(j+1)(Ind P_(n+3)) ≅ H̃^j(Ind P_n)`.
+4. Base cases `n = 0, 1, 2` (for `n = 1` use `fullSimplex_exact`), then the all-degree multiplicity
+   classification (one class in occupation `j` for `n = 3j` or `n = 3j−1`, none for `n = 3j+1`) and
+   the paired trace at `n = 2d−1`.

@@ -1716,3 +1716,309 @@ No such independently proved return bound, finite physical realization or
 Xi occurrence map has been supplied here. These source requirements cannot
 be replaced by a nominal equilibrium label. No numerical experiment or
 calculation was performed or imported as proof.
+
+
+Iteration24 targeted endpoint-subtraction build passed in255s. The log
+records only this leaf as newly built; dependencies were reused.
+Its session is terminal. All23 public source declarations, one-copy
+umbrella wiring, local card links and exact equality with the passing
+scratch proof bodies were checked. Index regeneration is now running.
+A separate scratch tests the source-derived reversible density, its
+uniqueness up to scale, inversion identity, actual source-square weight,
+log-coordinate singular-gain identity and integrability. No individual
+adjoint or complete source form-domain result is claimed from that scratch.
+
+
+The exhaustive iteration24 API audit found one actual declaration-name
+collision: the older FrullaniJointAdmission bound already uses
+pwGammaFrullaniKernel_norm_le for a different bound. Renamed this leaf's
+stronger bound to pwGammaFrullaniKernel_norm_le_nat and changed its one
+use. All other22 public names are unique. The next scratch co-imports
+FrullaniJointAdmission explicitly before rechecking all23 axiom reports;
+then the final targeted rebuild and regenerated API will be audited again.
+This is a source integration correction; no mathematical statement changed.
+
+
+Paper cutoff calculation for the pairing attack: the forward displacement
+cutoff y-x>delta becomes, at the target x, reflected displacement
+h>delta/(x*(x-delta)), for 0<delta<x. The difference between that cutoff
+and the native reflected cutoff is the literal interval integral
+integral_[delta/(x*(x-delta)),delta] exp(-h)/h dh.
+Write its integrand as 1/h+(exp(-h)-1)/h. The first integral is
+log(x*(x-delta)), tending to2*log(x). The second tends to zero because
+its complete integrand is bounded near0 and both endpoints tend to0.
+This supplies an explicit candidate for the retained adjoint contact;
+its sign reverses under inversion. A full operator adjoint still requires
+admitted paired products and the transformed cutoff comparison. The next
+Lean target is this actual contact limit, not an assumed adjoint relation.
+
+The contact deep search is terminal; all candidate and source-argument
+names and the proposed ingredient set were inspected. Actual source checks
+show log_criticalCutoff is only log(exp(...)), cutoffLogPower_first is an
+ordinary composed derivative, and criticalLogJumpAtom is a power-log mode.
+They do not establish the moving-cutoff integral limit or this pairing's
+adjoint. The all-parameter weighted-domain deep search is still running.
+
+
+The first reversible-pairing scratch completed with verified pointwise
+balance, inversion and the exact singular-gain log-coordinate identity.
+It also reported local elaboration errors in source-square simplification,
+continuity, and the ratio proof. Those have been repaired in the scratch
+but are not yet rechecked. The full pairing leaf is not promoted or
+claimed complete. Its two new deep searches are terminal and saved in
+pw-b-gamma-reversible-pairing-searches.json. Both have partial coverage
+of723712 declarations. The all-parameter search's proposed cusp-eigenform
+decay theorem requires an actual Maass eigenform; generic bounded-weight
+comparison requires uniform bounds unavailable for the singular source
+weight. Their actual statements were read. Neither establishes this
+arithmetic family's form domain or spectral realization.
+
+
+Further paper attack using the existing complete reflected-atom bound:
+for each z choose integer N>=norm(z). The proved inverse-square index
+majorant bounds the full normalized reflected source by 1+C*x^(N+3).
+Involution then bounds the original g_z=M_z/Q by 1+C*x^(-(N+3)).
+Every integer moment of w is finite: for positive powers use
+x^k*w(x)<=x^k*exp(-x); for negative powers use the exact inversion
+identity w(1/x)/x^2=w(x). Thus the forced pairing should admit g_z
+in L2(w dx) for every complex coefficient parameter. This deduction
+still needs full Lean interchange and measure-change proofs; it is
+not a verified critical spectral domain or a selector.
+
+An exact source test targets the uncorrected individual adjoint claim:
+phi_1=Q(x)/Q(x)=1 and phi_2=Q(2*x)/Q(x)=sqrt(2)*exp(-x).
+The actual forward Frullani generator has A phi_1=0 and
+A phi_2=-log(2)*phi_2, while B phi_1=0 by source fixation.
+The pairing integral integral w*phi_2 is finite and strictly positive.
+Therefore <phi_1,A phi_2> differs from <B phi_1,phi_2> by the
+strictly negative value -log(2)*integral w*phi_2. This is a concrete
+candidate refutation of A*=B on a domain containing these source modes,
+with a positive nonzero cross-pairing as survivor. Formalize the actual
+admission, positivity and generator values before claiming that no-go.
+The corrected individual adjoint and symmetry of A+B remain live.
+
+
+The proposed contact sign is consistent with a second exact source
+identity. The positive cross-density w*phi_n is proportional to
+exp(-n*x-1/x)/x and is invariant under x ->1/(n*x), with its Jacobian
+retained. Thus its logarithmic moment, once admitted, is
+integral log(x)*w*phi_n = -(log(n)/2)*integral w*phi_n.
+At n=2 this makes the proposed 2*log(x) contact exactly account for the
+nonzero ground-to-mode adjoint defect above. Both the value identity and
+logarithmic admission are new paper conjectures pending Lean, not a
+spectral balance law. They provide a source-level check on the cutoff
+calculation without a numerical test or a special-function continuation.
+
+
+The renamed endpoint-subtraction scratch now passes while explicitly
+co-importing FrullaniJointAdmission. All23 axiom reports contain only
+propext, Classical.choice and Quot.sound. This closes the actual namespace
+collision; no statement or proof mechanism changed. Final targeted leaf
+rebuild, regenerated index and final lint are running. Only one owned
+Lean build process is active.
+
+
+Iteration24 endpoint-subtraction final audit complete. Final targeted
+leaf build passed in70s, rebuilding only this leaf. Final co-import
+scratch passed all23 standard-only axiom audits. Index regeneration
+passed (seven changed entries, zero removals in the shared tree), and
+all23 public names are unique in API and source corpus. One umbrella
+import, exact scratch proof-body agreement, local links and scoped
+whitespace were checked. The final lint still reports only the unrelated
+unreachable HTGeometry.ChronologicalTensor.CubicCuspPresentation module;
+this is not a repository-wide passing lint result. All endpoint build,
+research, index and lint sessions are terminal. No full or umbrella
+build, numerical experiment, added axiom, commit or push occurred.
+
+The next live target is now recorded in pw-b-gamma-reversible-pairing.md.
+Its repaired16-declaration scratch is being checked as the sole owned
+Lean process. RH, actual Xi occurrence, critical source control and
+independently source-forced Ward balance remain open.
+
+
+Iteration25 pairing progress: the repaired16-declaration scratch passed
+with only standard foundational axioms. It proves uniqueness up to scale,
+source-square identification, exact existing singular gain, inversion and
+integrability of the explicit weight, along with weighted rate balance.
+The sole owned Lean process now checks two additional declarations: the
+actual reciprocal-displacement derivative and the exact rate with its
+Jacobian retained. No operator adjoint or Xi realization follows merely
+from these pointwise identities; the contact and actual source-domain
+attacks remain as recorded in the dedicated card.
+
+
+The displacement derivative and backward rate/Jacobian proof both
+produced standard-only proof terms. The combined18-declaration run
+reported only one trailing redundant ring tactic (No goals to be solved),
+which was removed. The exact final scratch is being rechecked before
+promotion. This establishes a density-level change-of-variables identity,
+not a full integral substitution or operator adjoint.
+
+
+Iteration25 reversible-density final audit complete. All18 public
+declarations pass with only standard foundational axioms, including the
+actual reciprocal derivative and rate/Jacobian identity. The new leaf
+ThetaCuspHawkingParikhWilczekGammaReversibleDensity was promoted with
+identical proof bodies and wired once in RHTower. Targeted build passed
+in12s, building only this leaf. Index passed (eleven changed entries,
+zero removals in the shared tree); all18 public names are unique in
+API and source corpus. Final repository lint passed: the earlier unrelated
+CubicCuspPresentation import failure is absent. Build, scratch, index,
+research and lint sessions are terminal. No full or umbrella build,
+numerical experiment, added axiom, commit or push occurred.
+
+The next turn must begin with the verified chain: first-winding PW
+response -> FE signed defect -> positive source-derived pairing and
+complete Ward transmutation -> independently forced fixed-grade balance
+at actual Xi occurrences -> RH. The density/Jacobian is now verified
+within the pairwise-balance class; imposing that class physically, the
+actual adjoints, arithmetic form domain, Xi occurrence and source-forced
+balance remain unproved. Attack the explicit moving-cutoff contact limit
+and finite positive Gamma-mode cross-pairing in
+pw-b-gamma-reversible-pairing.md; then test the complete arithmetic source.
+Do not claim RH, operator symmetry or a physical Xi spectrum from density
+uniqueness. PW-B and the goal remain active.
+
+
+## Iteration26 — literal adjoint contact and actual source cross-test
+
+The preceding goal turn was verified progress: endpoint subtraction and
+reversible density are promoted, all41 public axiom audits and targeted
+builds pass, umbrellas are wired, final index checks and repository lint
+pass. Current source and logs were rechecked. RH remains unproved.
+Now attack the actual adjoint gap, not a new density choice. The contact
+is the literal interval integral from delta/(x*(x-delta)) to delta of
+exp(-h)/h. On positive h, |(exp(-h)-1)/h|<=1, so subtracting the admitted
+1/h integral leaves an error bounded by the distance between the two
+endpoints. Both endpoints tend to zero. This proves the proposed2log(x)
+limit without requiring a continuous value at h=0 or evaluating a
+singular totalized product. In parallel, inspect source-ground/second-mode
+pairing admission, positivity and actual generator values, to test the
+uncorrected adjoint against concrete source data. Two new deep method
+searches are running; broad arXiv transport/defect searches have begun.
+
+
+Iteration26 source cross-test now has an explicit scratch construction.
+The normalized positive Gamma mode is Q(n*x)/Q(x), with its actual
+source-ratio proof retained. The original forward response uses literal
+weighted translation before division by Q; its whole h integral should
+be -log(n) times that same mode. The backward response uses the actual
+reflected translation of Q and should vanish by source fixation. The
+proposed weighted cross-mass is finite and strictly positive for every
+positive n, and every such mode has finite weighted squared norm. Thus
+for n>1 the fully admitted paired responses should differ by the strict
+negative value -log(n) times the cross-mass. This tests the uncorrected
+adjoint on actual source data; it is not a claim of an already constructed
+closed operator. The28-declaration scratch is written but not yet run;
+the contact scratch remains the sole owned Lean process.
+
+Both initial deep searches are terminal and their raw records saved in
+pw-b-gamma-adjoint-contact-searches.json, partial coverage723712.
+All candidate/source-argument names and ingredient sets were inspected.
+The generic metric-adjoint decomposition assumes bounded operators and
+an already repaired adjoint relation; it cannot produce this singular
+source correction. The finite Gamma boundary vector/range theorem is a
+factorial rank-one construction, not these ray modes. The parametric
+primitive continuity lemma requires an actually continuous integrand;
+using the direct complete remainder bound avoids silently extending the
+singular written integrand at0. A third boundary-rigidity method search
+is running.
+
+Broad arXiv queries used transport and defect; transport's date-ordered
+listing was cached in July, while defect yielded September10 papers.
+[Optimal feedback control under stepwise equilibration and partial observation](https://arxiv.org/html/2607.21523v1)
+(July23), SectionsII--III.1, obtains its work decomposition after assuming
+complete equilibration between interventions and accounting separately
+for observation-conditioned updates. Its reset and finite-cycle law have
+not been established for this source, so no stationarity transfers.
+[Electrovacuum Black Hole Uniqueness](https://arxiv.org/html/2609.11140v1)
+(September10), Theorem1.1 and Section3, retains a nonlinear differential
+inequality, exhaustion boundary estimates and axis analyticity in its
+rigidity argument. No such harmonic-map equations, asymptotic class or
+axis analyticity have been identified for the arithmetic source. The
+paper motivates testing an actual signed forcing and boundary law before
+using a maximum principle; its geometric hypotheses are not adopted as
+premises. The SYM one-point paper2609.09303 was also opened, but no
+applicable cutoff identity has been identified. No experimental or
+numerical result was used as mathematical proof.
+
+
+The third boundary-rigidity search is terminal and saved beside the first
+two records. Its source-reflection rigidity theorem assumes the exact
+reflected quadratic source equals the conjugate source at a Xi copy;
+it does not produce that equality. The finite conservative/dissipative
+master generator uses a finite jump matrix. The causal-generator
+dissipation theorem requires its already constructed contraction orbit
+and generator domain. None identifies the current singular arithmetic
+operator or discharges its full adjoint/domain gap.
+
+The primary text of
+[One-point functions of the Lagrangian in N=4 SYM with boundaries, defects and interfaces](https://arxiv.org/html/2609.09303v1)
+(September8), Section2, was inspected further. Its integrated insertion
+retains boundary contributions and a regulated finite part; its matrix
+model relation retains identity mixing. Coupling differentiation is not
+a stationarity law. This motivates retaining the complete insertion and
+contact here, but no supersymmetric localization or interface action has
+been identified for PW-B. No theorem is transferred from that model.
+
+A fourth deep method search now targets the admitted logarithmic moment
+under scaled reciprocal substitution. The exact source cross-density
+has a candidate involution x -> 1/(n*x). An integral substitution and
+logarithmic admission would test whether the literal cutoff contact
+accounts for the whole ground-to-mode adjoint defect. They would still
+not prove the operator identity on the full arithmetic domain.
+
+
+The logarithmic-moment method search is terminal, partial coverage723712,
+and its raw result is saved under log_moment in the contact search record.
+All20 candidate statements,20 source-argument statements and the complete
+proposed ingredient set were reviewed. The suggested eval_recipSub is
+an algebraic evaluation law for reciprocal derivative jets, not an
+integral change of variables. The inverse-scaled atomic-moment theorem
+assumes an existing atomic representation and rescales its nodes. Neither
+applies to this continuous reciprocal source measure. The actual mathlib
+one-dimensional Jacobian theorem was read directly: it requires the
+derivative, injectivity and measurable source set, all of which can be
+proved for x ->1/(n*x). The separate logarithmic exponential majorant
+will justify linearity of the two resulting finite integrals.
+
+The third cutoff scratch failed only at pointwise-function simplification;
+all integral estimates and the positive-cutoff identities already have
+standard-only proof terms. Pi.div_apply did not rewrite an unapplied
+function. The source-verified Pi.div_def rewrite is now being checked
+in the sole owned Lean process. No cutoff-limit success is claimed yet.
+
+
+The final cutoff scratch passed: all nine public declarations report
+only propext, Classical.choice and Quot.sound. The literal contact limit
+is now proved. Identical proof bodies are promoted in
+ThetaCuspHawkingParikhWilczekGammaAdjointCutoffContact and wired once in
+RHTower. Its targeted leaf build is the sole owned Lean process; final
+index/name/lint audits remain pending. The formalized contact card,
+frontier and route-independent cutoff constraint now record exactly this
+result. Source-mode and logarithmic-pairing claims remain pending.
+
+The logarithmic moment proof has been written as an unrun body in
+/tmp/pwb-gamma-adjoint-log-moment-body.txt. It derives positivity,
+involution, image and actual derivative of x ->1/(n*x); the exact
+cross-density/Jacobian identity; an exponential logarithmic majorant;
+the admitted moment equation; and equality of the contact pairing with
+the existing source-mode defect. Do not import or claim these pending
+proofs before checking the actual source-test module and this body.
+The cutoff limit still does not justify exchange of its limit with the
+whole source integral or an arbitrary-domain adjoint identity.
+
+
+Cutoff-contact final audit complete: target build passed in193s, building
+only the new leaf. All nine public names are unique in source and API;
+proof bodies exactly match the passing scratch. Index passed (four
+changed entries, zero removals), and repository formal lint passed.
+All cutoff scratch/build/index/lint sessions are terminal.
+
+The first source-mode scratch produced standard-only axiom reports for
+all28 declarations, including the exact strictly negative paired defect
+for every n>1 and its admitted strictly positive cross-mass. The overall
+file reported only one redundant ring after a solved field_simp goal.
+That tactic was removed and the exact final source scratch is being
+checked as the sole owned Lean process. Promotion and its final audits
+remain pending; the wider route is not retired.

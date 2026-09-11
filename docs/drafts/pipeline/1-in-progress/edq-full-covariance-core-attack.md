@@ -3405,3 +3405,74 @@ for this attack. No new route-independent law is asserted from these
 unformalized calculations. The frontier map remains read-only.
 All five owned searches finished; their temporary JSON files were removed
 after the findings were recorded. No owned process remains.
+
+## Complete gcd groups: logarithmic budget diagnostic and transfer audit
+
+The open target remains a cofinal subpower upper bound for the complete
+signed physical source. No new bound or Lean theorem is claimed here.
+The cotangent/Euclidean reciprocity proposal repeats the coefficient
+transport obstruction already audited above; it is not a new result.
+
+Two recent papers supplied different transfer attempts. In
+[Vu et al., 6 September 2026, version 2](https://arxiv.org/html/2609.04169v2),
+mechanical reciprocity restricts the response to symmetric operators,
+with an additional positive-semidefinite restriction in the shared-block
+case. The forbidden-component error floor does not upper-bound a quadratic
+form in the permitted component. The actual EDQ Gram is already symmetric
+and positive semidefinite, so this mechanism supplies no upper bound on its
+Möbius quadratic form.
+
+[Beier--Eckstein, 11 August 2026](https://arxiv.org/html/2608.11016v1)
+use block means and quantization of kernels under probability measures.
+For the actual finite Gram, let nu be uniform on {1,...,N}, and suppose
+only that ||G-Ghat||_(L2(nu x nu))<=delta. Finite Cauchy--Schwarz gives
+
+```
+|sum_(m,n<=N) mu(m)*mu(n)*(G(m,n)-Ghat(m,n))| <= N^2*delta,
+```
+
+because |mu|<=1. Thus a subpower error in the original source would require
+delta<=N^(-2+epsilon), or a sharper estimate that uses the signs. The
+block-mean approximation does not itself supply either condition. This is
+a normalization check, not a rejection of quantization or a new EDQ
+receiver. No regularity bound for a normalized EDQ kernel curve has been
+proved here.
+
+The deep-search candidate
+`eventually_sum_norm_sq_mtLiteralSignedSourceErrorLayer_dilation_le`
+has also been checked against its source definition and terminal identity.
+It bounds one Matomäki--Teräväinen error layer, under the displayed
+rounded-geometric certificate, by `25*B^2*Y*(log X)^(-3*A)`.
+`matomakiTeravainen_lemma23ii_terminal_all_layers` retains a separate sum
+of signed main layers after the terminal remainder vanishes. Neither the
+identification of that expansion with the EDQ physical source nor an
+estimate for its resulting signed main term was obtained. Applying the
+error-layer bound alone would leave the required energy uncontrolled.
+
+The next finite diagnostic is frozen in
+[the logarithmic gcd-budget protocol](../2-fully-proven/computations/edq-logarithmic-gcd-budget-2026-09-11/PROTOCOL.md).
+For the original compensated Gram and literal Möbius coefficients it tests
+both `sum_r |C_r(N)|<=4*D(N)` and
+`sum_r |L_r(N)|<=4*Dlog(N)` at every cutoff 2<=N<=128. Here L inserts
+`log(max(m,n))` inside each complete gcd group. Its aggregate is the exact
+logarithmic cutoff-history difference of the original source energy.
+The purpose is to distinguish whether this weighting loses the earlier
+finite groupwise cancellation budget; no finite outcome establishes the
+asymptotic estimate. Infinite physical tails have explicit allowances.
+
+**NOT RUN:** the prescribed RunPod endpoint refused two SSH connections.
+The four-worker program passed static syntax parsing only. It was not
+uploaded or executed; its runtime and numerical controls remain unverified.
+The endpoint question is pending. No computation was moved to another host.
+
+Five broad deep/method searches used OR matching for divisor Gram
+cancellation, cotangent reciprocity, continued-fraction transfer,
+nearby-modulus clustering, and signed arithmetic convolution. All returned
+partial coverage (generations 823348/823349), with source-only compiler
+metadata and interrupted or unavailable retrieval stages. Declaration,
+candidate-lemma, source-argument, proof-idea and ingredient lanes were
+inspected; no candidate was accepted as a new proved source estimate.
+These partial searches are not an exhaustive absence certificate.
+No Lean process, build, axiom re-audit, frontier-map edit or universal-law
+entry was needed for this transfer audit. The hard arithmetic bound remains
+open; no route is retired.

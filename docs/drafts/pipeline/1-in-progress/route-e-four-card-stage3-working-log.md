@@ -194,3 +194,74 @@ Both are now available and a schedule can take either.
 4. the rough/friable half (already `(log x)^{-8}` in `MenonHarmonicRoughMeanSquare`, and Menon's
    Lemma 2.15 allows `(log x)^{-R}` for any `R`);
 5. insertion into the receiver at radius `twoRangeTop β x` and then into the marker chain.
+
+### Bricks 13–14 landed (2026-09-11)
+
+`Sieve/MenonHarmonicWindowChebyshev.lean` (`volume_windowSuperLevel_le`,
+`..._le_threshold_chebyshev`) and `Sieve/MenonFinalRangeWindowEstimate.lean`
+(`integral_Icc_normSq_menonFinalRangeShell_le_threshold_chebyshev`).
+
+**Session total: 14 leaves, 44 declarations, all axiom-clean, all leaf-built, all umbrella-wired.**
+
+New leaves, in dependency order:
+
+```text
+MenonHarmonicRamareBlockSwapped          MenonHarmonicRamareLadderSwapped
+MenonHarmonicRamareLadderSwappedVolume   MenonHarmonicRamareLadderWeighted
+MenonHarmonicRamareLadderMass            MenonHarmonicBlockLevelSplit
+MenonHarmonicRamareLadderLevelSplit      MenonHarmonicBlockLevelSplitHM
+MenonHarmonicBlockLevelMoment            MenonHarmonicRamareLadderLevelMoment
+MenonHarmonicBlockLevelTrivial           MenonHarmonicRamareLadderLevelTrivial
+MenonHarmonicWindowThresholdSplit        MenonHarmonicWindowLadderAssembly
+MenonHarmonicWindowChebyshev             MenonFinalRangeWindowEstimate
+```
+
+Remaining for the Menon lane: choose `V`, `V₀ j`, `J j`, `k`; supply the large-values bound for the
+exceptional measure (Chebyshev is in place as the base case); then insert at radius
+`twoRangeTop β x` into `dyadicMeanSquare_moebius_le_menonFinalRange_boundedDyadicHead_two` and on
+into the marker/grid/count chain of card 4.
+
+### Brick 15 landed (2026-09-11) — rough half discharged
+
+`Sieve/MenonFinalRangeWindowRough.lean`.  **Session total: 15 leaves, 46 declarations.**
+
+### Bricks 16–17 landed (2026-09-11) — the frequency partition under the mass split
+
+`Sieve/MenonHarmonicWindowPartitionMass.lean`, `Sieve/MenonFinalRangeWindowPartition.lean`.
+Capstone `integral_Icc_normSq_menonFinalRangeShell_le_partition_mass`.
+**Session total: 17 leaves, 50 declarations.**
+
+Next: instantiate at Menon's literal schedule (`Sieve/MenonHarmonicFinalRangeSchedule`,
+`MenonHarmonicFinalProductSchedule` already prove the endpoint/positivity side conditions), then
+choose `V j`, `V₀ j`, `J j`, `k`.
+
+### Bricks 18–20 landed (2026-09-11) — prime-gap hypothesis removed
+
+`Sieve/MenonHarmonicRamareLadderMassFilter.lean`,
+`Sieve/MenonHarmonicWindowPartitionMassFilter.lean`,
+`Sieve/MenonFinalRangeWindowPartitionFilter.lean`.  Capstone
+`integral_Icc_normSq_menonFinalRangeShell_le_partition_mass_filter`.
+**Session total: 20 leaves, 58 declarations, all axiom-clean, all leaf-built, all umbrella-wired.**
+
+### Brick 21 landed (2026-09-11) — the estimate at Menon's literal ladder
+
+`Sieve/MenonFinalRangeWindowSchedule.lean`:
+`eventually_integral_Icc_normSq_menonFinalRangeShell_le_ladderSchedule` plus `exists_levelCount`.
+**Session total: 21 leaves, 60 declarations.**
+
+All structural side conditions of the window estimate are now discharged at the paper's own
+schedule.  The remaining work in this lane is numerical: choose `V j`, `V₀ j`, `k`, and bound the
+two mass-split sums and the rough energy by `(log x)^{-A}` at `W = twoRangeTop β x`.
+
+### The lane's open core, located precisely (2026-09-11)
+
+Top blocks (`q_j ≳ W`): cofactor has `O(1)` terms, so any mean-square bound for it on a set of
+measure `≍ W` is `≍ W`, while the truth for the product is `≍ m_j`.  The all-small contribution is
+then `≍ 6Wθ²·logloglog x`, needing `θ ≲ x^{-1/4}`; and at that threshold the moment method is
+vacuous, since `|{|Q_j| > θ m_j}| ≤ k!/(θ^{2k}m_j^k)` beats the ambient length only when
+`θ² ≫ 1/m_j`, i.e. never for `m_j ≪ 1` — which holds at every block width, including Menon's
+ratio-`e` blocks.
+
+So the top blocks must be handled by Heath--Brown's identity on the prime-supported polynomial
+(Menon §1.1), not by a factorisation receiver.  `Sieve/MenonHeathBrown*` is the relevant family.
+This is now the lane's only open core.
