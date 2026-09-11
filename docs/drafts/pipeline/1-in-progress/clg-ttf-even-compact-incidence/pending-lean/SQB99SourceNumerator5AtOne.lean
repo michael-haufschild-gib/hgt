@@ -1,0 +1,80 @@
+import SQB99CoefficientCore
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentZeroInteger
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentOneInteger
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentTwoInteger
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentThreeInteger
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentFourInteger
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentFiveInteger
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentSixInteger
+import Mathlib.Tactic.Ring
+namespace SQBCompactRow
+noncomputable section
+set_option maxHeartbeats 400000
+
+def groupedNumerator5 (t v : ℝ) : ℝ :=
+  ((((((n5_0_0 : ℝ)*t^(0 : ℕ)*v^(0 : ℕ) +
+  ((n5_1_0 : ℝ)*t^(1 : ℕ)*v^(0 : ℕ) +
+  (n5_2_0 : ℝ)*t^(2 : ℕ)*v^(0 : ℕ))) +
+  (((n5_3_0 : ℝ)*t^(3 : ℕ)*v^(0 : ℕ) +
+  (n5_4_0 : ℝ)*t^(4 : ℕ)*v^(0 : ℕ)) +
+  ((n5_5_0 : ℝ)*t^(5 : ℕ)*v^(0 : ℕ) +
+  (n5_6_0 : ℝ)*t^(6 : ℕ)*v^(0 : ℕ)))) +
+  (((n5_7_0 : ℝ)*t^(7 : ℕ)*v^(0 : ℕ) +
+  ((n5_0_1 : ℝ)*t^(0 : ℕ)*v^(1 : ℕ) +
+  (n5_0_2 : ℝ)*t^(0 : ℕ)*v^(2 : ℕ))) +
+  (((n5_1_1 : ℝ)*t^(1 : ℕ)*v^(1 : ℕ) +
+  (n5_1_2 : ℝ)*t^(1 : ℕ)*v^(2 : ℕ)) +
+  ((n5_2_1 : ℝ)*t^(2 : ℕ)*v^(1 : ℕ) +
+  (n5_2_2 : ℝ)*t^(2 : ℕ)*v^(2 : ℕ))))) +
+  ((((n5_3_1 : ℝ)*t^(3 : ℕ)*v^(1 : ℕ) +
+  ((n5_3_2 : ℝ)*t^(3 : ℕ)*v^(2 : ℕ) +
+  (n5_4_1 : ℝ)*t^(4 : ℕ)*v^(1 : ℕ))) +
+  (((n5_4_2 : ℝ)*t^(4 : ℕ)*v^(2 : ℕ) +
+  (n5_5_1 : ℝ)*t^(5 : ℕ)*v^(1 : ℕ)) +
+  ((n5_5_2 : ℝ)*t^(5 : ℕ)*v^(2 : ℕ) +
+  (n5_6_1 : ℝ)*t^(6 : ℕ)*v^(1 : ℕ)))) +
+  (((n5_6_2 : ℝ)*t^(6 : ℕ)*v^(2 : ℕ) +
+  ((n5_0_3 : ℝ)*t^(0 : ℕ)*v^(3 : ℕ) +
+  (n5_0_4 : ℝ)*t^(0 : ℕ)*v^(4 : ℕ))) +
+  (((n5_1_3 : ℝ)*t^(1 : ℕ)*v^(3 : ℕ) +
+  (n5_1_4 : ℝ)*t^(1 : ℕ)*v^(4 : ℕ)) +
+  ((n5_2_3 : ℝ)*t^(2 : ℕ)*v^(3 : ℕ) +
+  (n5_2_4 : ℝ)*t^(2 : ℕ)*v^(4 : ℕ)))))) +
+  (((((n5_3_3 : ℝ)*t^(3 : ℕ)*v^(3 : ℕ) +
+  ((n5_3_4 : ℝ)*t^(3 : ℕ)*v^(4 : ℕ) +
+  (n5_4_3 : ℝ)*t^(4 : ℕ)*v^(3 : ℕ))) +
+  (((n5_4_4 : ℝ)*t^(4 : ℕ)*v^(4 : ℕ) +
+  (n5_5_3 : ℝ)*t^(5 : ℕ)*v^(3 : ℕ)) +
+  ((n5_5_4 : ℝ)*t^(5 : ℕ)*v^(4 : ℕ) +
+  (n5_0_5 : ℝ)*t^(0 : ℕ)*v^(5 : ℕ)))) +
+  (((n5_0_6 : ℝ)*t^(0 : ℕ)*v^(6 : ℕ) +
+  ((n5_1_5 : ℝ)*t^(1 : ℕ)*v^(5 : ℕ) +
+  (n5_1_6 : ℝ)*t^(1 : ℕ)*v^(6 : ℕ))) +
+  (((n5_2_5 : ℝ)*t^(2 : ℕ)*v^(5 : ℕ) +
+  (n5_2_6 : ℝ)*t^(2 : ℕ)*v^(6 : ℕ)) +
+  ((n5_3_5 : ℝ)*t^(3 : ℕ)*v^(5 : ℕ) +
+  (n5_3_6 : ℝ)*t^(3 : ℕ)*v^(6 : ℕ))))) +
+  ((((n5_4_5 : ℝ)*t^(4 : ℕ)*v^(5 : ℕ) +
+  ((n5_4_6 : ℝ)*t^(4 : ℕ)*v^(6 : ℕ) +
+  (n5_0_7 : ℝ)*t^(0 : ℕ)*v^(7 : ℕ))) +
+  (((n5_0_8 : ℝ)*t^(0 : ℕ)*v^(8 : ℕ) +
+  (n5_1_7 : ℝ)*t^(1 : ℕ)*v^(7 : ℕ)) +
+  ((n5_1_8 : ℝ)*t^(1 : ℕ)*v^(8 : ℕ) +
+  (n5_2_7 : ℝ)*t^(2 : ℕ)*v^(7 : ℕ)))) +
+  ((((n5_2_8 : ℝ)*t^(2 : ℕ)*v^(8 : ℕ) +
+  (n5_3_7 : ℝ)*t^(3 : ℕ)*v^(7 : ℕ)) +
+  ((n5_3_8 : ℝ)*t^(3 : ℕ)*v^(8 : ℕ) +
+  (n5_0_9 : ℝ)*t^(0 : ℕ)*v^(9 : ℕ))) +
+  (((n5_0_10 : ℝ)*t^(0 : ℕ)*v^(10 : ℕ) +
+  (n5_1_9 : ℝ)*t^(1 : ℕ)*v^(9 : ℕ)) +
+  ((n5_1_10 : ℝ)*t^(1 : ℕ)*v^(10 : ℕ) +
+  (n5_2_9 : ℝ)*t^(2 : ℕ)*v^(9 : ℕ)))))))
+
+theorem sourceNumerator5_at_one (t v : ℝ) :
+  HTGeometry.evenCompactUnitMomentFiveNumerator 1 t v = groupedNumerator5 t v := by
+  unfold HTGeometry.evenCompactUnitMomentFiveNumerator groupedNumerator5
+  norm_num only [one_pow, mul_one, n5_0_0, n5_1_0, n5_2_0, n5_3_0, n5_4_0, n5_5_0, n5_6_0, n5_7_0, n5_0_1, n5_0_2, n5_1_1, n5_1_2, n5_2_1, n5_2_2, n5_3_1, n5_3_2, n5_4_1, n5_4_2, n5_5_1, n5_5_2, n5_6_1, n5_6_2, n5_0_3, n5_0_4, n5_1_3, n5_1_4, n5_2_3, n5_2_4, n5_3_3, n5_3_4, n5_4_3, n5_4_4, n5_5_3, n5_5_4, n5_0_5, n5_0_6, n5_1_5, n5_1_6, n5_2_5, n5_2_6, n5_3_5, n5_3_6, n5_4_5, n5_4_6, n5_0_7, n5_0_8, n5_1_7, n5_1_8, n5_2_7, n5_2_8, n5_3_7, n5_3_8, n5_0_9, n5_0_10, n5_1_9, n5_1_10, n5_2_9, Int.cast_add, Int.cast_neg, Int.cast_ofNat]
+  ring
+
+end
+end SQBCompactRow

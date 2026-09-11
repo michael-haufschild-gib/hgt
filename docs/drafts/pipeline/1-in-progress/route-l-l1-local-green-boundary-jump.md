@@ -68,4 +68,61 @@ and exponential decay. It therefore assumes the central admission condition
 and cannot be used to prove the needed boundary cancellation. The direct
 L1 cell partition and norm-tail construction above is the pivot.
 The returned cyclic-descent definition remains an existential requirement,
-not an implementation of a physical reader. No C48 Lean module exists yet.
+not an implementation of a physical reader.
+
+Two further deep/method reports are terminal. The cell/Green query
+(`/tmp/route_l_c48_cell_green_deep.json`, generation 876662) expired during
+retrieval and ranking, with coverage pending. All 20 candidates and 20
+source arguments were inspected; no proof ideas or ingredient groups were
+returned. The integer-tail query
+(`/tmp/route_l_c48_integer_tail_deep.json`, query generation 876699) reports
+a later complete inventory of 56969 files (47367 Lean, 9602 prose), but
+partial retrieval, a disconnected semantic worker and malformed judging
+output. All returned declarations, candidates and source arguments were
+inspected. Inventory completeness is not compiler or semantic completeness.
+The fundamental-domain unfolding methods require actual integrability;
+the Connes orbit-energy method additionally requires summability of the
+product integrals and cannot manufacture the needed reader comparison.
+
+The focused mathlib deep/method report
+`/tmp/route_l_c48_mathlib_tail_deep.json` is also terminal. Its 19 candidates,
+20 source arguments and proposed group were inspected. Retrieval and
+reranking remain partial; generation 876727, later inventory snapshot
+876731. It retrieves `tprod_of_nat_of_neg_add_one`; the source's
+`to_additive` declaration supplies the additive integer decomposition used
+in scratch. The proposed nonnegative-domination group requires a summable
+majorant and injectivity, and is not a boundary-vanishing argument. The
+actual source integral supplies the majorant here. `tendsto_sum_nat_add`
+and `Lp.coeFn_tsum` are checked through their actual applications, not
+accepted from source-index metadata alone.
+
+Current scratch `/tmp/route_l_c48_green.lean` implements the original-cell
+L1 vectors and integer tail decomposition. The source norm partition uses
+mathlib's `Integrable.hasSum_intervalIntegral_comp_add_int`, with both
+scaling factors cancelled explicitly to retain `(0,L]` and original
+Lebesgue measure. `Lp.coeFn_tsum` is the intended bridge back to the literal
+source. This scratch is still under validation; no C48 result is yet
+claimed formalized.
+
+## Stronger positive survivor under verification
+
+For any two cellwise L1 primitives of the same original translation
+equation, their difference is independent of the integer cell index.
+Consequently every such primitive has the same complete two-ended jump,
+even when its separate endpoints do not converge. The periodic freedom
+cancels between matching endpoints. This strengthens the canonical future
+sum construction to a classification of all cellwise primitives and a
+source-forced boundary invariant. It supplies no vanishing boundary law.
+
+## Distant-paper method audit
+
+Broad arXiv intake used `scattering`, sorted by announcement date. The
+September 3, 2026 paper [First Two-Hadron Form Factor from QCD](https://arxiv.org/html/2609.04142v1)
+retains a finite-volume triangle correction and a residue normalization in
+its exact relation between finite-volume current matrix elements and the
+infinite-volume amplitude (equation 7). Its Ward identity uses a conserved
+electromagnetic current. Neither that conservation premise nor its
+finite-volume normalization has been derived for the fixed Route L reader;
+no cancellation theorem is transferred. Only the method of retaining the
+complete correction in the comparison is pertinent here. No numerical
+part of the paper is used.

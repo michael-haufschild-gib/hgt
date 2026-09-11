@@ -168,3 +168,47 @@ Implemented from the "cheapest wins" list. Every theorem below is unconditional 
    `ThetaCuspHawkingBMIncomingHorizonExpansion`) remains open.
 
 5. **Reorder 33/34 after 39.** Recorded in the pipeline card; no Lean content.
+
+### audit and bookkeeping (2026-09-11, later)
+
+- **Axioms.** `#print axioms` (scratch file importing all five modules) on the sixteen main
+  theorems: only `propext`, `Classical.choice`, `Quot.sound`. No `sorry`, `axiom`, `opaque`,
+  `unsafe`, or added premise.
+- **Umbrellas.** Imports inserted in place next to alphabetical neighbours:
+  `RHTower.lean` — `XiAffineCollisionControl` (after `XiAdmissibleHeights`),
+  `ThetaCuspHawkingBMAngularSourceCollisionControl` (after `…BMAngularScalarEquation`),
+  `ThetaCuspHawkingBMClearedOnsetPulseTransform` (after `…BMCausalSchwarzSupport`),
+  `ThetaCuspHawkingBMOnsetPulseTransform` (after `…BMOnsetGreenReconstruction`);
+  `HTGeometry.lean` — `FirstEndpointMellinLaurentInterchange` (after `FirstEndpointMellin`).
+  No umbrella build was run.
+- **Static lint** (`scripts/formal_tools.py lint`): the only error is another agent's untracked
+  module `ThetaCuspHawkingBMQuarticCutoffMellin` not yet wired into `RHTower`; none of the five new
+  modules is flagged.
+- **`lake build <module>` audit** (final gate, one process at a time, foreground):
+  `XiAffineCollisionControl` green (8746 jobs replayed, 33 s);
+  `ThetaCuspHawkingBMOnsetPulseTransform` green (87 s);
+  `ThetaCuspHawkingBMClearedOnsetPulseTransform` green (62 s);
+  `FirstEndpointMellinLaurentInterchange` green (11 s);
+  `ThetaCuspHawkingBMAngularSourceCollisionControl`: lake is rebuilding ~110 stale dependency
+  oleans in the `ThetaCuspHawkingBMPhysicalAngularSourceXi` cone (other agents' modules whose
+  lake traces were out of date); the first bounded run stopped at job 12824/12907, the resumed
+  run is at 12869/12977 with zero errors at the time of writing. `lake env lean` on the module
+  itself was clean.
+- **Process hygiene.** No lean/lake process of this session was left running after each step;
+  the other lean processes on the machine belong to other agents (`/tmp/hb-quartic-green.lean`,
+  `/tmp/sqb99_*`, `/tmp/hb-opposite-factor-0911m.lean`, a `lake build` of
+  `DeningerL1CofinalPrimeTomography`) and were not touched.
+- **Card.** `docs/drafts/pipeline/3-formalized/hb-onset-collision-laurent-toolkit.md`
+  (ID `HB-ONSET-COLLISION-LAURENT-TOOLKIT`). It was first written under the decoy
+  `formal/docs/…` tree and swept into another agent's auto-commit `0e5476c39` there; moved with
+  `git mv` to the repo-root pipeline folder (staged rename, not committed). The five Lean modules,
+  the earlier `docs/notes.md` record, and a cross-reference log entry on
+  `docs/drafts/pipeline/1-in-progress/hb-fundamental-radial-source-moment.md` were also included
+  in that auto-commit.
+- **What the frontier gains, in step numbers of the first table.** Step 33a (`clearedOnset ≠ 0`):
+  circumvented by onset-duration genericity, positive at real exponents; the fixed unit duration
+  is still not proved nonzero at the physical point. Step 34 (affine collisions): `ρ/2` and
+  `3ρ/2` factors controlled, `5ρ/2 − 1` open for `1/2 < Re ρ < 4/5` with an explicit obstruction
+  at `Re ρ = 3/5`. Step 31 (Laurent/horizon interchange): abstract interchange theorem in place;
+  the application to the projected temporal current is the remaining assembly. Step 35: the `+−`
+  arm of the cut was already eliminated in the corpus. Steps 32, 33b, 36–40, 44: unchanged.

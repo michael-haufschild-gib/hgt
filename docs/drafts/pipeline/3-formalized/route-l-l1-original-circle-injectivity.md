@@ -110,3 +110,7 @@ diagnostics. No numerical experiment or axiom-print command was used.
 The next [literal local Green boundary attack](../1-in-progress/route-l-l1-local-green-boundary-jump.md)
 constructs the non-L1 primitive and retains its full two-ended jump before
 any comparison with the fixed physical reader. RH remains unproved.
+
+An exact lexical corpus query retrieves `deningerL1PrimeOriginalGreen_iff_zero`
+from the installed module with one correct hit. Local card links and the
+targeted diff check pass. All owned Lean processes are terminal.

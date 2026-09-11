@@ -514,20 +514,21 @@ incoming-mode interval; unlike the incoming square, the opposite density
 cannot use totalized division at a zero of h. Shrinking to that interval
 preserves A_b by the exact Q=A_b+P identity evaluated at the new cutoff.
 
-`ThetaCuspHawkingBMOppositePairingFactor` now passes its warning-free
-scratch check. It derives the original product's common bounds
-|V-1/2|<=Cz and |V|<=M, frequency analyticity and spatial continuity, and
-its exact density identity under h!=0. Its exact audit currently awaits
-the cached `ThetaCuspHawkingBMJointSourceClearedPrincipal` artifact; an
-external foreground process was verified rebuilding that exact module.
+`ThetaCuspHawkingBMOppositePairingFactor` passes its warning-free scratch
+check and exact leaf audit (338 seconds, two jobs, 4,004 cached project
+imports). Its narrowed imports avoid the unrelated field-wave layer.
+It derives the original product's common bounds |V-1/2|<=Cz and |V|<=M,
+frequency analyticity and spatial continuity, and its exact density
+identity under h!=0. Its source and artifacts are installed and its
+umbrella import is wired.
 The native logarithmic-restoration scratch combines the Gauss nonzero
 neighborhood with the source primitive's neighborhood, proves A_b is
 preserved at their common smaller cutoff, and derives the original
 c_minus*G*h(-w)/[2z sqrt(1-z)] logarithmic cutoff limit. That native
-application is prepared but not yet checked.
+application is prepared but not yet verified.
  This proves the paper mechanism for regularity while
-retaining the logarithmic finite part. Lean still needs the actual product
-bounds, native logarithmic cutoff theorem and extension identity; no
+retaining the logarithmic finite part. Lean still needs the
+native logarithmic cutoff theorem and extension identity; no
 analytic extension is inferred from totalized point values at the pole.
 
 Corpus searches include broad single-word queries, deep all-view method

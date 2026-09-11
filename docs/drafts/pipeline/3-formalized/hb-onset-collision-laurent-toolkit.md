@@ -93,3 +93,10 @@ projected temporal current's uniform Lipschitz constant (available in
 ## Log
 - 2026-09-11 — created directly in 3-formalized; five modules compiled with `lake env lean`
   (0 errors, 0 warnings), oleans published, umbrella imports inserted in place.
+- 2026-09-11 — `#print axioms` on the sixteen main theorems: only `propext`, `Classical.choice`,
+  `Quot.sound`. `lake build <module>` audit: `XiAffineCollisionControl` (8746 jobs replayed, 33 s),
+  `ThetaCuspHawkingBMOnsetPulseTransform` (87 s), `ThetaCuspHawkingBMClearedOnsetPulseTransform`
+  (62 s), `FirstEndpointMellinLaurentInterchange` (11 s) all green;
+  `ThetaCuspHawkingBMAngularSourceCollisionControl` required rebuilding stale dependency oleans in
+  the `PhysicalAngularSourceXi` cone (first bounded run stopped at job 12824/12907); resumed run
+  recorded below.
