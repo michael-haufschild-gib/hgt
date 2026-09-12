@@ -1181,48 +1181,234 @@ and factorization arXiv searches did not return verified June–September
 2026 matches; the opened [soft-collinear factorization paper](https://arxiv.org/abs/hep-ph/0109045)
 is not used as a premise. No computation was run.
 
-### Source-moment reduction target
+### Exact source-moment reduction
 
-The explicit source amplitude leaves the original `fundamentalSourceMoment`
-to be evaluated. A new reduction candidate uses `r = sqrt(1-z)`. Write
+The original physical `fundamentalSourceMoment` now has a Lean-checked
+polynomial-coordinate evaluation. Set `z=x*(2-x)`, with `0<x<=1`, and write
 
 ```
 A = (5*s^2+15*s+4)/4,
 B = s*(s-1)*((s+2)*(2*s+3)-(w+1)*(w+2)/2)/4,
-W(r) = (1-r)^w * (1+r)^(2*s),
-I_n = FP integral(0..1, r^n * W(r)),
+H_n(x) = (1-x)^n*(2-x)^(2*s),
+I_n = firstEndpointMellin(H_n,1,w),
 d = 2*s-w,  e = w+2*s+2.
 ```
 
-The pointwise substitution predicts `M = 2*a^2*(A*I_2+B*I_4)`.
-Differentiating `r^n*(1-r)^(w+1)*(1+r)^(2*s+1)` predicts the recurrence
+The actual source density times the substitution's Jacobian is exactly
+`2*a^2*x^w*(A*H_2(x)+B*H_4(x))`. Both A and B come from the original source.
+The original integral above `epsilon*(2-epsilon)` therefore equals the
+polynomial integral above epsilon. The counterterm difference is exactly
 
 ```
-d*I_0-e*I_1 = -1,
-n*I_(n-1) + d*I_n - (n+e)*I_(n+1) = 0  (n >= 1).
-I_2 = ((e+d^2)*I_0+d)/(e*(e+1)),
-I_4 = ((d^4+(6*e+8)*d^2+3*e*(e+2))*I_0
-       +d*(d^2+5*e+8))/(e*(e+1)*(e+2)*(e+3)).
+F(0)/(w+1) * epsilon^(w+1)*((2-epsilon)^(w+1)-2^(w+1)).
 ```
 
-This reduces the candidate evaluation to one incomplete beta integral:
-`I_0 = 2^(w+2*s+1) * FP integral(0..1/2, t^w*(1-t)^(2*s))`.
-The integration-by-parts boundary term is essential. These identities
-are not yet Lean theorems: the immediate obligation is transporting the
-original fixed endpoint subtraction through the change of variables and
-proving its limit. On the physical strip the discarded comparison term
-should be of order `epsilon^(Re(w)+2)`, which tends to zero. This must be
-proved for the same finite part already present in the source, before
-using the recurrence to address nonvanishing or joint survival of the
-physical branch/side family.
+Its last factor is a differentiable endpoint difference. The slope limit
+and `Re(w)>-2` prove that the whole difference tends to zero. Compact
+bounds on the actual derivatives of H_n prove admission of each moment;
+no new regularity hypothesis is supplied for the physical source.
+Consequently the proved identity is for the same original finite part:
 
-Broad OR retrieval for quintic, Catalan, Raney and period terms returned
-no applicable source evaluation. Deep Mellin/incomplete-beta retrieval
-found `ThetaCuspHawkingSelfDualGeneralMellinVertex`: its source was read,
-and its shifted-beta recurrence mechanism motivates the reduction above.
-Its complete-beta, positive-real-part hypotheses do not evaluate this
-half-interval physical finite part. Candidate lemmas, source arguments
-and the proposed tail-splitting ingredient set were inspected. The deep
-request returned partial results with unfinished auxiliary queries;
-compiler coverage remained mostly pending and semantic coverage was
-unmeasured. No numerical computation or nonvanishing premise is used.
+```
+M = 2*a^2*(A*I_2+B*I_4).
+```
+
+Integration by parts with the primitive
+`x^(w+1)*(1-x)^n*(2-x)^(2*s+1)` retains its upper boundary:
+
+```
+n*I_(n-1) + d*I_n - (n+e)*I_(n+1) = -0^n.
+e*(e+1)*I_2 = (e+d^2)*I_0+d,
+e*(e+1)*(e+2)*(e+3)*I_4 =
+  (d^4+(6*e+8)*d^2+3*e*(e+2))*I_0+d*(d^2+5*e+8).
+```
+
+In particular, the zeroth recurrence has right side -1. The exact physical
+source evaluation is the denominator-cleared identity
+
+```
+D*M = 2*a^2*(P*I_0+Q),
+D = e*(e+1)*(e+2)*(e+3),
+P = A*(e+d^2)*(e+2)*(e+3)
+    + B*(d^4+(6*e+8)*d^2+3*e*(e+2)),
+Q = d*(A*(e+2)*(e+3)+B*(d^2+5*e+8)).
+```
+
+`ThetaCuspHawkingBMFundamentalMomentPolynomial` proves the exact original
+source substitution. `ThetaCuspHawkingBMFundamentalMomentCounterterm`
+provides the endpoint limit mechanism.
+`ThetaCuspHawkingBMFundamentalJacobiMoment` derives moment admission from
+its actual core. `ThetaCuspHawkingBMFundamentalJacobiRecurrence` proves
+the recurrence and second/fourth reductions.
+`ThetaCuspHawkingBMFundamentalSourceMomentTransport` proves
+`physicalFundamentalSourceMoment_polynomial` and
+`physicalFundamentalSourceMoment_base_period`, for every actual Xi copy,
+branch, side and amplitude, without extra physical hypotheses.
+
+All five leaves passed `lake env lean` scratch checks and exact
+`lake build <module>` audits. Audit times were 71, 75, 25, 78 and 134
+seconds, respectively; each built only its requested leaf against cached
+dependencies (two Lake jobs). All five are installed and wired into
+RHTower. No heartbeat or other resource limit was raised; no umbrella,
+full or dependency build, axiom check or mathematical computation was
+run by this work.
+
+`scripts/formal_tools.py lint` passed with existing large-file warnings.
+
+The remaining source problem is nonvanishing or joint survival of the
+specific physical family `P*I_0+Q`, together with the actual angular
+source factors in K. The base period is a half-interval finite part;
+complete-beta nonvanishing does not evaluate it. A concrete next candidate
+uses the physical relations `s=2*w+1` or `s=2*w+2`: the common phase then
+comes from `x*(2-x)^4`, whose interior stationary point is `x=2/5`.
+The corpus theorem `norm_sqrt_mul_besselPhaseIntegral_sub_le` in
+`BesselJZeroConstant.lean` supplies an inspected proof mechanism for a
+Fresnel main term with an explicit remainder after a quadratic change of
+variables. Transferring that mechanism requires bounds for this original
+subtracted source, and a range covering the physical frequencies. No
+such dominance or source nonvanishing theorem is claimed here. Full
+angular/action comparison, Hawking-clock extinction and RH remain open.
+
+Broad incomplete and saddle retrieval and deep endpoint, stationary-phase
+and period-nonvanishing requests inspected candidate lemmas, source
+arguments and ingredient sets. First-endpoint subtraction and compact
+primitive continuity supplied the endpoint proof. The last period search
+completed with snapshot coverage (57,084 files, 735,656 declarations),
+mostly pending compiler metadata and unmeasured semantic coverage. Its
+continued-fraction and Suzuki beta candidates supply no applicable
+nonvanishing theorem for this complex half-period. Earlier deep requests
+returned partial auxiliary queries. Broad monodromy/holonomic searches
+reached the September 2026
+[line-arrangement monodromy paper](https://arxiv.org/abs/2609.06416) and
+the August 2026 [multivariable monodromy paper](https://arxiv.org/abs/2608.26087).
+Their abstracts were inspected; neither is used as a proof premise.
+
+### Monotone-phase source survival
+
+The source-survival proof uses the actual `branch=true, side=true`
+choice: `w=-1-q/2`, `s=q-2=-2*w-4`, hence `-3/2<Re(w)<-1`.
+The original polynomial moments become
+
+```
+I_n = FP integral_0^1 [x/(2-x)^4]^w * (1-x)^n/(2-x)^8 dx.
+phi=x/(2-x)^4, p=phi/phi'=x*(2-x)/(2+3*x).
+T f=(p*f)'-f
+   =x*((2-x)/(2+3*x)*f'-4*(4+3*x)/(2+3*x)^2*f).
+```
+
+The proved integration-by-parts identity keeps the original endpoint
+subtraction and has a remainder with an explicit factor x:
+`(w+1)J(f)=f(1)/5-J(T f)`. On the physical strip, the remainder is
+uniformly integrable against `x^(-1/2)`. For
+`f_n=(1-x)^n/(2-x)^8`, the first n upper endpoint terms vanish, and
+`T^n f_n(1)=(-1)^n*n!/5^n`. This gives
+
+```
+(w+1)^(n+1)*I_n = n!/5^(n+1) + O(1/abs(w+1)).
+```
+
+With `v=w+1`, exact source coefficients simplify to
+`A=5*v^2+(5/2)*v-3/2` and
+`B=(15/2)*v^4+(81/4)*v^3+15*v^2+(9/4)*v`.
+For unit amplitude, the complete source now has a Lean-proved bound
+`norm(v*(v*M-172/625)) <= K`, with one nonnegative K uniform on the strip
+when `norm(v)>=1`. The exact physical identification retains the original
+endpoint subtraction. The installed source-survival theorem proves
+
+```
+exists H>0, forall q:XiZeroCopy, H<=abs(Im(q)) -> forall a:Complex,
+  (86/625)*norm(a)^2 <= norm((w+1)*fundamentalSourceMoment(w,s,a)).
+```
+
+Consequently every nonzero original amplitude has a nonzero source moment
+in this channel above H. The proof chooses
+`H=2*(1+2*K/(172/625))`; no numerical evaluation is needed. Bounded-height survival,
+angular factors and affine Xi collisions, fixed onset survival, the full
+retained action and Hawking-clock extinction remain open; RH is unproved.
+
+To avoid expanding high rational derivatives, the exact weights
+are `T^j f_n=P_j(x)/((2-x)^8*(2+3*x)^(2*j))`, with
+
+```
+P_0=(1-X)^n,
+P_(j+1)=X*((2-X)*(2+3*X)*P_j' +(6*(j+2)*X-12*j)*P_j).
+```
+
+Every positive-order numerator has the required factor X. Seven new leaves
+are installed and wired after scratch checks and exact leaf audits:
+`ThetaCuspHawkingBMNonstationaryWeight` (60 seconds),
+`ThetaCuspHawkingBMNonstationaryMoment` (22 seconds),
+`ThetaCuspHawkingBMNonstationaryIntegrationByParts` (24 seconds), and
+`ThetaCuspHawkingBMNonstationaryPolynomial` (7 seconds),
+`ThetaCuspHawkingBMNonstationaryAsymptotic` (31 seconds),
+`ThetaCuspHawkingBMPhysicalNonstationarySource` (143 seconds), and
+`ThetaCuspHawkingBMFundamentalSourceSurvival` (18 seconds). They prove the
+rational derivative recurrence, original finite-part recurrence, uniform
+remainder admission and bound, exact upper endpoint coefficients, uniform
+leading-term error bounds, identification with the original source, and
+the uniform high-height lower bound and nonvanishing theorem.
+The first isolated audit visited cached dependency jobs and printed one
+built module; subsequent audits reported two jobs each. No umbrella or
+full build was run. No heartbeat or other resource limit was raised.
+No axiom checks or mathematical computations were run. The frontier map
+and universal STATUS remain unchanged.
+
+Formal lint passed with existing large-file warnings after restoring the
+missing umbrella import for the already compiled
+`ThetaCuspHawkingBMScalarJetQuadraticEinstein`. Its source was unchanged;
+no re-audit or umbrella build was run.
+
+Broad Wronskian retrieval and deep Stieltjes and endpoint-asymptotic
+requests inspected candidate lemmas, source arguments, proof ideas and
+ingredient sets. The finite-interval integration-by-parts mechanism led
+to the retained-boundary recurrence above. The later inverse-density
+request returned partial results with reranking unfinished; snapshot
+coverage was 57,113 files and 735,918 declarations, mostly pending compiler
+metadata and unmeasured semantic coverage. Exact phrase retrieval for
+"Lagrange inversion" found no hits. Broad Pick/univalence arXiv searches
+reached July 2026 papers on
+[harmonic-map Landau bounds](https://arxiv.org/abs/2607.04377) and
+[directed univalence](https://arxiv.org/abs/2607.02420); their abstracts
+were inspected and neither is used as a premise.
+
+For the remaining bounded-height problem, an analytical candidate moves
+the frequency polynomials onto one density. In the phase coordinate
+`z=x/(2-x)^4`, set
+
+```
+rho_n(z)=(1-x(z))^n/((2-x(z))^3*(2+3*x(z))),
+theta=z*d/dz,
+R=(5*theta^2-(5/2)*theta-3/2)rho_2
+  +((15/2)*theta^4-(81/4)*theta^3+15*theta^2-(9/4)*theta)rho_4.
+```
+
+The endpoint values are `R(0)=-3/32` and `R(1)=86/625`.
+The proposed exact reduction is
+`v*M/(2*a^2)=86/625-integral_0^1 z^v*R'(z) dz` for nonzero a.
+It follows on paper by retaining the phase-change counterterm and using
+the second/fourth endpoint vanishing when moving the polynomials across
+the Mellin integral. This density reduction has not been formalised.
+The specific next target is excluding the value `86/625` from that
+integral for `-1/2<Re(v)<0`, `Im(v)!=0`; no density sign or Stieltjes
+representation is assumed. The deep inverse-density search returned
+Lagrange interpolation rather than inversion candidates, so it supplies
+no proof of this target.
+
+The current analytical attack removes every frequency polynomial before
+applying a nonvanishing argument. Write `P_nk=nonstationaryPolynomial n k`
+and `D=2+3*X`, and define the single fixed polynomial
+
+```
+N=5*D^4*P_22-(5/2)*D^6*P_21-(3/2)*D^8*P_20
+  +(15/2)*P_44-(81/4)*D^2*P_43+15*D^4*P_42-(9/4)*D^6*P_41.
+```
+
+The target identity is `M=2*a^2*J(W(N,8))`, then
+`v*M=2*a^2*(86/625-J(W(Step(N,8),10)))`. The last pairing is an ordinary
+absolutely convergent integral with one frequency-independent rational
+weight. Formalising this identity gives an exact scalar problem with no
+remaining finite-part ambiguity. A direct positive-density argument is
+not established: differentiating the proposed phase-coordinate density
+on paper gives `R'(0)=-2` and `R'(1)=-1/25`. Overtone completeness is also
+being investigated, but ordinary polynomial-moment completeness does
+not itself identify or admit the actual higher-QNM pairings.

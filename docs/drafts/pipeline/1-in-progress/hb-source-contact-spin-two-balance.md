@@ -1099,3 +1099,452 @@ index refreshed once (4 changed files), all ten public API rows and the single
 umbrella import verified. `scripts/formal_tools.py lint --check-generated`
 passed (exit 0). Source hash remained unchanged, all owned processes completed,
 and the temporary audit directory was removed. No extinction theorem is claimed.
+
+## Current attack: finite-cusp physical tested-current balance
+
+The next source-level identity is the finite-height balance for the actual
+combined angular current J=-(s*t/3) angularResponseGreen+reducedSourceCurrent.
+Multiplying its original divergence law by the physical scalar test produces
+both div(psi J) and grad(psi) dot J. The proposed theorem must integrate the
+whole expression over the cusp rectangle, cancel only the periodic horizontal
+sides, and retain upper/lower tested vertical currents and the full Q*A_true,
+Q*A_false, Q^2 work. This is the direct conservation test for the physical
+pairing; its remainder cannot be declared zero from periodicity or admission.
+
+### Finite physical-clock current balance proved on paper and in scratch Lean
+
+[HB-QTCC](../3-formalized/hb-physical-clock-tested-current-cusp-balance.md)
+retains the physical scalar test on the complete incoming angular current,
+proves its full source-derived horizontal side matching, and integrates its
+actual divergence over the positive-height width-one strip. For l,r>3 this is
+the original fundamental cusp. With B=mean(psi J_y), the exact original-clock
+identity is
+
+```
+integral_l^r physicalClockDensity_h
+ = h exp(-6h) (a^2 b^2/16)
+   [B(r)-B(l)-integral_l^r mean(grad psi dot J+psi W/y^2)].
+```
+
+Both arbitrary amplitudes, both constructed responses, the Q source-contact
+factors in J, and the local Q^2 term in W remain. The fundamental rates here
+are those in D4BMModularCore (s=rho-2,t=-rho-1); the common incoming horizon
+moment retains its original rate -6. No source frequency is changed.
+The actual scalar-test derivative is essential. This closes the finite-cusp
+current/physical-clock interface for this incoming radial sector; it does not
+assert its infinite-height cancellation or the full left-QNM identification.
+
+The scratch proof passed with default limits. Its imports were then trimmed
+to QuarticResponseWork, PhysicalAngularCutoffCalibration, CuspMeanDerivative
+and ComplexCoordinateDerivativeRules, and the trimmed version passed as well.
+The isolated final leaf audit passed in 16 seconds, source SHA256 `ce13833079844dd9a71392bdfbcd65ed72cf5bbef7c67636bab0d8557e730c5d`. No heartbeat/depth/transparency hack
+was used; intermediate elaboration failures were resolved by explicit function,
+measure, endpoint and coordinate identifications.
+
+The cached deep corpus request `tested-current-source-product-search.json`
+completed with partial coverage and older-generation/compiler warnings.
+Candidate lemmas, source arguments, methods, proof ideas and ingredient sets
+were inspected. The actual sourceWork current, literal scalar periodicity,
+full response modular invariance and cusp differentiation rules were checked
+in source and applied successfully in Lean. The suggested general Green and
+core Green transfers retain their own source and differentiated-test terms;
+none supplies the desired vanishing of the complete physical current.
+
+Broad arXiv searches for transgression, Pohozaev and reciprocity found recent
+conservation mechanisms worth testing:
+
+- [Campos–Killip–Visan, 25 August 2026](https://arxiv.org/html/2608.25047v1),
+  equations (1.6), (1.9) and Proposition 3.2: a resolvent generating function,
+  with a quartic Gram correction, gives commuting conservation laws for a
+  specific Kirchhoff–Pohozaev evolution. Their shared scalar speed and fixed
+  nonnegative selfadjoint operator have not been identified with the literal
+  HB nonlinear assembly. The extra conservation law cannot be imported as a
+  source premise. Its coercive bounds are not a fixed-clock extinction result.
+- [Bambusi et al., 1 September 2026](https://arxiv.org/html/2609.01891v1):
+  the same equation has commuting Hamiltonians and specified integrable
+  Fourier reductions. No model identification for the actual HB channels was
+  found; a formal normal-form analogy does not change the physical clock.
+- [Vu et al., 3 September 2026](https://arxiv.org/html/2609.04169v1):
+  passive linear mechanical reciprocity constrains a response block through
+  symmetry of compliance. This is not yet an identity for the complete causal
+  nonlinear HB action with its boundary/test contributions. Its numerical
+  experiments were not used.
+
+The attempted shortcut from horizontal periodicity to full action invariance
+has been replaced by the exact surviving boundary/work balance above. Next
+hard target: derive its original upper-cusp finite part (including the native
+response products in B and differentiated-test work), match the restored
+response-source periods and Q^2 term, and join every remaining physical
+boundary/channel. The extinction objective remains active and unproved.
+
+HB-QTCC final audit: exact leaf passed in 16 seconds at default limits; source
+hash unchanged, 17 public API entries and one umbrella import verified. After
+the initial index refresh (8 changed files), lint detected concurrent changes
+to RHTower.lean and MaassLadderL2.lean. Refreshing those 2 verified changes fixed
+the generated-document drift; final `lint --check-generated` passed (exit 0).
+All owned processes completed and the audit directory was removed. The
+finite-clock incoming radial balance is closed; complete extinction remains open.
+
+## Current attack: native nonconstant response cusp coercivity
+
+The complete tested upper current contains products of native angular
+responses and their derivatives. The known native circle-source rapid decay
+is not a theorem about these elliptic responses. Their separately known means
+also do not determine the mean of their product. The next source-level target
+is therefore the actual Fourier-mode equation, retaining the full forcing:
+
+```
+c_n'' = ((2*pi*n)^2 + alpha/y^2)c_n + f_n/y^2,
+(|c_n|^2)'' = 2|c_n'|^2 + 2((2*pi*n)^2+Re alpha/y^2)|c_n|^2
+               + 2 Re(f_n conjugate(c_n))/y^2.
+```
+
+Above a source-parameter-dependent cusp height (not a changed physical clock),
+Young's inequality and the nonzero integer frequency gap should give a
+coercive forced mass inequality uniform over nonzero n. The source term must
+then be bounded using the literal rapid cusp remainder, and native L2
+admission must eliminate the growing homogeneous alternative. Parseval and
+height-derivative control are still needed before claiming decay of products
+in the complete boundary current. No source-work term is assigned zero.
+
+The existing generic Fourier differentiation and horizontal integration by
+parts in SelbergMaassFourierModes apply to arbitrary smooth periodic charts;
+the Maass homogeneous decay theorem does not apply to this forced equation.
+
+### Forced Fourier attack: paper mechanism and current Lean boundary
+
+For each original response branch let c_n be its literal period-one Fourier
+coefficient, f_n the coefficient of its complete cusp-subtracted forcing, and
+k_n=2*pi*n. The exact equation and real mass identity above passed scratch
+Lean with default limits. Completing a square gives
+
+```
+(|c_n|^2)'' >= 2|c_n'|^2
+  + (2*k_n^2+2*Re(alpha)/y^2-1)|c_n|^2 - |f_n|^2/y^4.
+```
+
+No signed forcing work has been dropped in obtaining this inequality. The
+extended scratch now adds: coercivity by k_n^2 for n!=0 above
+1+2*abs(Re alpha); arbitrary complex-weight bounds on f_n uniform in n;
+Parseval for the full native slice mass; and integrability of each
+|c_n|^2/y^2 from the original modular energy. The new height is a cusp cutoff,
+not a change of clock, source frequency, or response parameter.
+
+The proposed comparison step is: if u>=0, u''>=k^2*u-C*y^(-N), and
+integral u/y^2 is finite, use an exponential lower-endpoint term plus
+(2*C/k^2)*y^(-N) as a supersolution once y^2>=2*N*(N+1)/k^2.
+A positive excess would have a growing positive component and contradict
+weighted integrability. This is a paper argument to formalise, not a proved
+Lean decay theorem. Summing the initial modal masses via Parseval and the
+k_n^(-2) forcing majorant is then required, followed by derivative control
+before passing products to the actual tested vertical boundary.
+
+Three cached deep requests were inspected, including candidate lemmas,
+source arguments, method descriptions, and proposed ingredient sets. Coverage
+was partial; semantic coverage was unavailable, and one request reported an
+older-generation snapshot. A proposed "mean zero from periodicity" step was
+rejected: periodicity does not imply zero mean. The generic literal Fourier
+coefficient differentiation/Green identities in SelbergMaassFourierModes were
+read and successfully specialised in Lean instead. Homogeneous Maass decay
+and unrelated first-order Riccati comparison lemmas were not treated as
+forced native-response results.
+
+Broad recent arXiv retrieval found
+[Majdoub, 14 June 2026](https://arxiv.org/html/2606.15668v1), whose weighted
+Hardy argument retains the logarithmic-coordinate weight and its critical
+exponent. It supports testing weighted coercivity rather than removing a
+weight by notation; its compact-support boundary assumption is not a proved
+boundary condition for the HB response. Also inspected
+[Shaimerdenov--Yessirkegenov--Zhangirbayev, 2 March 2026](https://arxiv.org/html/2603.02381v1)
+on weighted Hardy/Rellich remainder identities. Neither supplies a complete
+nonlinear Hawking-clock conservation law. The complete extinction goal stays
+open.
+
+[HB-QNCM](../3-formalized/hb-native-cusp-mode-coercivity.md) is now proved in
+scratch Lean and passed its exact isolated leaf audit in 59 seconds at
+default limits, source SHA256
+`033761794ebf44dea4d5ca66b7602d70c005b4971dcb10f77c667339f1dd35c6`.
+Its five definitions and nine theorems include both original response
+branches, full signed forcing work, the nonzero-mode coercive inequality,
+source-weight bounds uniform in n, Parseval, and native weighted modal
+integrability. The paper comparison step, summed derivative/product control,
+and complete fixed-clock action cancellation remain open.
+
+Next comparison proof ingredient located and read:
+`RHTower.suzukiSecondDeriv_nonpos_of_isLocalMax` in
+`SuzukiInteriorExcursionSpectralTurningPoint.lean:119` proves the needed
+second-derivative maximum test. Its short proof uses
+`isLocalMin_of_deriv_deriv_pos` and local constancy; that proof can be reused
+with the direct Mathlib DerivativeTest import to avoid pulling the unrelated
+Suzuki dependency chain into the cusp comparison leaf. Candidate reuse is
+not yet checked in a new Lean comparison theorem.
+
+HB-QNCM final status: exact leaf passed; all 14 API entries, one umbrella
+import, unchanged source hash and audit-directory cleanup verified. Global
+lint did not pass: after index refreshes covering real concurrent changes,
+its final result is an unreachable HTGeometry.CoordinateEinsteinDiagonalCollapse
+module and stale generated API/GAPS/OVERVIEW files. RealSL2Haar's earlier
+unreachability was fixed concurrently. Repeated global refreshes stopped;
+no unrelated source was changed and no global lint success is claimed.
+All owned processes are terminal. The extinction goal remains active.
+
+## Current attack: forcing-to-decay comparison without an upper boundary premise
+
+The previous turn is verified progress: HB-QNCM's source hash and actual
+coercivity/admission statements were revalidated. The next proof replaces an
+assumed zero upper boundary by the original integral of modal mass/y^2.
+Weighted integrability must produce arbitrarily far heights with
+u(B)<=epsilon*B. On each finite interval, a positive maximum of
+u-b-epsilon*y contradicts its coercive second-derivative inequality. Sending
+epsilon to zero yields domination by the explicit forced supersolution b.
+The public target must specialise all derivative, forcing and admission
+inputs to the original native modes; the generic comparison facts are only
+internal proof steps. Then a bound with summable inverse-square frequency
+weight will permit the complete nonconstant response to be restored.
+
+
+### Source-derived comparison closed in scratch; native mean retained
+
+The literal-mode and complete nonconstant-mass bounds now pass scratch Lean
+at default limits. The proof does not prescribe an upper endpoint. For every
+N in Nat put p=2N+4. The complete source bound yields C>=0 with
+|f_n|^2/y^4<=C*y^(-p) uniformly in n above 3. Choose
+
+```
+Y=max(4, coercivityHeight(q,b), p+1),
+L_n=(2*pi*n)^2 >= 2  (n!=0),
+b_n(y)=u_n(Y)*exp(Y-y)+(2*C/L_n)*y^(-p).
+```
+
+Direct differentiation proves b_n''<=L_n*b_n-C*y^(-p) for y>=Y.
+Native admission integral u_n/y^2<infinity supplies, for every epsilon>0
+and every T, some B>=max(Y,T) with u_n(B)<=epsilon*B. Otherwise 1/y
+would be integrable on a tail. For v=u_n-b_n-epsilon*y, both endpoints
+on [Y,B] are nonpositive and v''>=L_n*v. A positive interior maximum
+would have v''<=0, contradiction. If u_n(y)>b_n(y), choosing
+epsilon=(u_n(y)-b_n(y))/(2*y) produces the contradiction at that same y.
+This proves the comparison without a radiation/decay premise.
+
+Parseval supplies summability of all lower-endpoint masses; integer
+inverse-square summability admits the complete forcing majorant. Consequently
+
+```
+U_b(y)=sum_(n!=0) u_n(y),
+U_b(y)<=U_b(Y)*exp(Y-y)+C_N*y^(-(2*N+4)),
+y^r*U_b(y) -> 0  (every real r).
+```
+
+This is decay of every nonconstant mode together, not a finite truncation.
+The zero mode is retained; the final scratch additionally checks the exact
+full native slice mass = u_0+U decomposition and its weighted remainder.
+The common Hawking clock and original spectral parameter remain unchanged.
+
+Corpus use this turn: cached deep comparison, inverse-square summation and
+Caccioppoli/derivative-current requests, including source/method views and
+proposed ingredient sets. All report partial coverage; snapshots can lag the
+active generation and semantic coverage is not measured. Inverse-square
+summability is verified against Mathlib's actual PSeries source and in Lean.
+The derivative search located the relevant native
+`localDistribution_derivative` in BMInteriorEllipticRegularity: it retains the
+cutoff derivative and the completed frame derivative divided by height.
+Generic dissipative Hodge/wave estimates are not an identification for this
+elliptic native response and were not imported as one.
+
+Broad recent arXiv searches also inspected
+[Wang--Zhu, 10 June 2026](https://arxiv.org/html/2606.11957v1)
+on scalar-curvature/bottom-spectrum rigidity. Its equality and geometric
+assumptions are not supplied by the HB source. No complete physical-clock
+invariance follows from that analogy. Hyperbolic-shell rigidity
+[Chen--Yao, 14 June 2026](https://arxiv.org/html/2606.15827v1)
+was also retrieved; no applicable HB identity was extracted.
+
+Next hard interface: identify the literal smooth response gradient with its
+completed native energy components, transfer their integrability to the cusp
+rectangle, and combine it with U_b's rapid decay. Weighted Cauchy--Schwarz
+then offers an integrable majorant for response/derivative products. To deduce
+an actual endpoint limit, one must additionally use the exact tested-current
+derivative balance; weighted L1 alone does not give pointwise decay. The
+native zero-mode products, source contacts and source periods remain. Full
+independent-channel action identification and fixed-clock extinction remain
+unproved.
+
+
+The isolated native-mass decomposition now passes scratch Lean. Proof
+engineering uses the explicit `tsum_congr_subtype` reindexing and a composed
+equality, avoiding repeated simplifier attempts through a dependent sum's
+index type. Earlier normalization problems were resolved by typed `change`
+statements and small local algebraic identities; no resource limits changed.
+The assembled final scratch is checking all six public declarations together.
+
+For the next weighted derivative step, `jointCuspWeight_energy` was read as
+a method, not used as an angular-response theorem. It concerns a different
+completed joint wave domain. Its useful exact pattern is that testing with
+a squared multiplier leaves the negative squared gradient-of-weight error;
+that error cannot be suppressed in transferring a weighted estimate to the
+literal angular response.
+
+### Next source attack: finite-cutoff energy before derivative identification
+
+A more direct route uses the already classical source equation on finite
+periodic rectangles. Put R_perp=R-mean_x(R) and F_perp=F-mean_x(F). Subtracting
+the proved mean equation gives
+
+```
+Delta R_perp=(alpha*R_perp+F_perp)/y^2.
+```
+
+For any real smooth height multiplier m supported strictly inside a finite
+positive-height interval, integration by parts gives the exact identity
+
+```
+integral |grad(m*R_perp)|^2
+  + Re(alpha)*integral m^2*|R_perp|^2/y^2
+= integral (m')^2*|R_perp|^2
+  - Re integral m^2*F_perp*conjugate(R_perp)/y^2.
+```
+
+All integrals here are over a complete horizontal period and the height
+interval. Horizontal faces cancel by literal periodicity. At the two vertical
+faces m vanishes by construction. Expanding grad(m*R_perp) completes the cross
+term exactly, retaining both the gradient-of-weight error and signed forcing
+work. This is a dependency-closed paper identity using smoothness, periodicity
+and the original forced PDE, not yet a Lean theorem in this leaf.
+
+Use m=y^r times a fixed lower cutoff and an upper cutoff scaled to [R,2R].
+Young's inequality bounds the forcing work by the original full forcing
+mass and response mass. The proved rapid nonconstant response mass, together
+with literal forcing decay, bounds the entire right side uniformly in R.
+The upper cutoff derivative contributes at most a constant times
+integral_R^(2R) y^(2r-2)*U_b(y), which tends to zero. Fatou then gives
+polynomially weighted gradient-square integrability of R_perp. This avoids
+first transferring the completed gradient representation: the finite classical
+identity produces the needed gradient admission directly. Formalising its
+Parseval identification, finite integration by parts and cutoff limit is the
+next source-level theorem to prove.
+
+If this succeeds, weighted Cauchy--Schwarz controls the nonconstant
+response/derivative products. The exact current divergence contains first
+response gradients, source forcing and test/source jets, so its corresponding
+weighted remainder should be integrable as well. Integrability of a current
+remainder and its derivative then forces its endpoint limit to zero; the
+retained zero-mode current must be evaluated separately. None of these next
+Lean conclusions, or complete fixed-Hawking-clock extinction, is claimed yet.
+
+
+[HB-QNCD](../3-formalized/hb-native-nonconstant-cusp-decay.md) passed the
+assembled scratch and its exact isolated leaf audit in 43 seconds at default
+limits. Source SHA256 `3a1955a582f89e686f5a79c3ed04e78640c97d664baa93b50890b348fe5f334a`.
+One definition and five public theorems are closed, retaining both original
+branches and their complete forcing; the original zero-mode mass is restored
+exactly alongside the rapid nonconstant remainder. The finished module is
+wired once. No additional source hypotheses, boundary vanishing, clock
+covariance or resource-limit changes were introduced. Fixed-clock extinction
+and RH remain unproved.
+
+A Lean-efficient implementation of that next energy step can reuse the proved
+literal modal mass identities and sum only finite sets before taking a limit.
+For w=m^2, the exact finite-height multiplier identity is
+
+```
+integral_A^B w*(2|c_n'|^2+2*(L_n+Re(alpha)/y^2)*u_n+2*W_n)
+= [w*u_n' - w'*u_n]_A^B + integral_A^B w''*u_n.
+```
+
+It follows from the exact mass second derivative and two integrations by
+parts. For the auxiliary compact multiplier, m=0 at A,B makes w=w'=0
+there; no condition on the original response or physical boundary is imposed.
+The source-derived coercive inequality then gives, for each finite nonzero
+index set E above the original coercivity height,
+
+```
+integral w*sum_E (2|c_n'|^2+L_n*u_n)
+<= integral |w''|*U_b + integral w*sum_E |f_n|^2/y^4.
+```
+
+Parseval for the literal forcing bounds the last finite sum by its full
+source slice mass; a uniform bound on individual f_n alone must not be summed
+as a constant over infinitely many n. The already proved U_b decay controls
+the cutoff error. Taking the finite-index and upper-cutoff limits by positivity
+would then admit both vertical derivative mass and horizontal frequency
+energy without differentiating an infinite series. This is the preferred
+next formalisation target; its exact signed identity and all auxiliary
+endpoint terms must be proved before the limits are used.
+
+
+Final verification: all six public API rows, the single umbrella import,
+unchanged audited source hash and audit-directory cleanup were verified.
+All owned Lean and search processes completed. Index refresh covered three
+changed files; lint first reported stale API/OVERVIEW generation. A second
+refresh covered one new change. Final `lint --check-generated` failed solely
+on the then-unreachable
+`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarJetQuadraticEinstein`.
+No global lint success is claimed and no unrelated unfinished source was
+changed. The exact new leaf audit passed. Log:
+`formal/.lake/hb-extinction-scratch/native-cusp-comparison-final-lint.log`.
+
+## Current attack: original modal multiplier energy and derivative admission
+
+The previous turn is progress: HB-QNCD's audited source hash and actual public
+rapid-decay theorem were revalidated. The target now is weighted derivative
+admission for the same original response, not an assumed cusp trace. Use the
+exact modal second-mass identity with polynomial multiplier squares, retaining
+[w*u'-w'*u] at both finite endpoints and the signed work in the identity.
+
+For the upper-cutoff limit, an explicit polynomial family suffices:
+
+```
+m_B(y)=y^N*(y-A)*(1-y/B),  A<=y<=B,
+w_B=m_B^2.
+```
+
+Both w_B and w_B' vanish at A,B. On [A,B], y/B<=1 controls every upper-cutoff
+coefficient by polynomial powers of y independently of B. At fixed y>A,
+m_B(y) tends to y^N*(y-A). The already proved U_b rapid decay and literal
+forcing bounds should therefore admit the uniform energy majorants needed
+for Fatou. This avoids introducing a new smooth-cutoff domain or presuming
+an upper response boundary condition. Complete forcing Parseval must be
+proved before infinite-index passage; the uniform single-coefficient bound
+is insufficient for that sum.
+
+## Weighted native derivative admission proved (HB-QNCE)
+
+[HB-QNCE](../3-formalized/hb-native-weighted-cusp-energy.md) closes the
+weighted derivative-admission step for both original angular-response branches.
+The exact signed polynomial multiplier identity retains its finite endpoints,
+y^-2 metric potential and signed source work. Completing a square reduces
+the coercive cutoff error to the first multiplier derivative. Literal forcing
+Parseval controls the entire source loss. The previously proved rapid
+nonconstant mass then bounds every finite-mode cutoff energy uniformly.
+
+For P_B(y)=y^(N+1)(y-A)(1-y/B), endpoint fluxes vanish from P_B's explicit
+factors. Interior comparison with B=2T gives a uniform bound on [A+1,T].
+The improper-integral criterion admits every finite-mode energy; positivity
+and summability restore all modes. Independent Parseval identifies the result
+with the literal native gradient slice minus its retained zero-mode derivative
+energy. No response trace or clock covariance is assumed.
+
+Eight definitions and ten public theorems passed assembled scratch and the
+exact isolated leaf build in 38 seconds at default limits. Source SHA256
+`bc4fbd314c92c817eeeb7d6cfee618e714fa90029e5903485bdd7da02df7e975`.
+One umbrella import is wired. No full/umbrella build or resource-limit override.
+
+Next: use weighted Cauchy–Schwarz for the nonconstant native-native
+response/derivative products, then the exact tested divergence for the current
+remainder's derivative. Integrability of both remainder and derivative would
+force its upper trace to zero. Signed source/test terms and the native mean
+current remain. The other nonlinear channels and physical faces still need
+complete action identification and cancellation. Fixed-clock extinction and
+RH are unproved.
+
+Final shared-tree verification: index refreshed six changed files; all eighteen
+new API rows and the single umbrella import were verified. The source hash
+remained unchanged. `scripts/formal_tools.py lint --check-generated` exited 1
+with the sole error:
+
+```
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarJetEntries
+```
+
+This is a different shared-tree module; no unrelated unfinished source was
+modified. Global lint success is not claimed. All owned Lean, search, index
+and lint processes have completed.
