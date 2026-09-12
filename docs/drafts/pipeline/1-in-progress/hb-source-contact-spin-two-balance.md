@@ -4,6 +4,12 @@ Status: the literal pointwise contact balance, all six actual quartic principal 
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → original common Hawking-clock extinction → RH.
 
+Latest closed attachment: the original incoming radial response work has an exact
+full scalar-tested cusp mean, with both actual native response coefficients and
+all three tested remainders retained. Their admission is proved in the
+[radial response cusp-pair leaf](../3-formalized/hb-radial-response-cusp-pair.md).
+The remaining height periods and complete-action boundary cancellation stay open.
+
 The preceding [source-contact rigidity theorem](../3-formalized/hb-source-contact-differential-rigidity.md) controls the literal contact two-jet. This continuation tests its contribution to the actual retained radial face, rather than replacing that face by a square-source self-pairing. It also records why two positivity mechanisms found in recent literature do not yet apply.
 
 ## Literal contact, including spin two
@@ -745,10 +751,10 @@ The global gate is therefore not green; complete extinction remains open.
 
 ## Current attachment: actual scalar-tested response periods
 
-The next candidate keeps both the squared-source remainder and the Fourier tail
+The closed cusp attachment keeps both the squared-source remainder and the Fourier tail
 of the complete scalar testing field psi. If P is psi's two-term principal part,
 Q0 is the original three-term principal half-square and chi is the original cusp
-cutoff, define `T=(psi Q-chi P Q0) A`. The proposed closed admission is
+cutoff, define `T=(psi Q-chi P Q0) A`. The closed admission is
 `T in L1(native measure)` for either constructed full response A and every full
 scalar testing parameter. The proof splits T into `psi(Q-chi Q0)A` and
 `chi(psi-P)Q0 A`. All complex height weights of each multiplying tail are in L2;
@@ -760,15 +766,15 @@ At every height above three, the exact resulting identity is
 retains the actual limiting coefficient and both infinite source moments from
 `responseMean_native_decomposition`. This attaches the source work to the full
 testing leg; it does not evaluate the remaining weighted height integral or set
-any boundary coefficient to zero. The candidate is being checked in scratch;
-no new source/current cancellation premise is introduced.
+any boundary coefficient to zero. No new source/current cancellation premise is
+introduced.
 
-The remaining local term now has a companion candidate
+The remaining local term has the closed companion
 `TQQ=psi Q²-chi P Q0²`. The existing six-slot quartic jet theorem supplies
 `psi(Q²-chi Q0²) in L1`; the difference is `chi(psi-P)Q0²`, a complete scalar
 Fourier tail times the already derived five-power quartic principal expansion.
 Every power-weighted tail is admitted. Consequently every term of the original
-work coefficient has the proposed exact cusp mean
+work coefficient has the exact cusp mean
 
 ```
 mean(psi W)
@@ -777,9 +783,17 @@ mean(psi W)
 ```
 
 where `M_A` and `M_B` each retain their actual particular response, decaying
-homogeneous coefficient and both infinite forcing moments. This is a candidate
+homogeneous coefficient and both infinite forcing moments. This is a proved
 identity for the original source work, not a complete-action formula or a
 vanishing claim. Corpus hybrid/method retrieval found the actual quartic scalar
 admission (`partial=true`, compiler metadata pending for many files); source
 inspection checked slot zero and the five-power principal statement. Applicability
-is being verified together with the new proof in one foreground scratch check.
+was verified together with the new proof in one foreground scratch check.
+
+The [formalized card](../3-formalized/hb-radial-response-cusp-pair.md) records the
+closed proof and exact limitations. Scratch `lake env lean` passed without
+diagnostics. Final exact-leaf `lake build` passed without warnings in 18 seconds
+against cached imports. The new leaf is wired into the umbrella once; no
+heartbeat or recursion-depth override and no dependency or umbrella build was
+used. Its source SHA-256 is
+`afb5b3652aeb0d89c1dadbab23a6cdd167af8454dd7d9c2390478a9f57488771`.

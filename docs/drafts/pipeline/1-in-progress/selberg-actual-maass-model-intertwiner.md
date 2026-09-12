@@ -407,3 +407,41 @@ Further corpus searches used `smooth directional derivative commutator vector fi
 - Generated indexes refreshed successfully (`formal_tools.py index`, 6 changed sources, no removals).
 - `formal_tools.py lint` is not globally clean: it reports large pre-existing files and unreachable modules outside this change, including `ThetaCuspHawkingBMHorizonCoordinateJets`, `ThetaCuspHawkingBMHorizonModeOuterUniformBound`, `ThetaCuspHawkingBMPrincipalChannelHorizonJet`, `ThetaCuspHawkingBMSelfChannelHorizonJet`, `ThetaCuspHawkingBMTemporalCurrentHorizonJet`, `AnalyticJetGerm`, `ElementaryHorizonJets`, `JetCoefficientUniqueness`, `SecondEndpointMellinLaurentInterchange`, and `UniformSecondOrderJet`. Neither new Maass module is among the reported failures. These unrelated modules were not modified.
 - Both new imports checked for exact single occurrence. No owned Lean processes remain. No commit or push performed.
+
+
+## Actual group derivatives and automorphic ladders
+
+The next source gap is now closed in `MaassWeightLift.lean`. The literal lift is
+`f(g • I) * realSphericalKTypeCharacter m (realIwasawaK g)`. Its right K covariance,
+section recovery and injectivity are proved. At every group element, inverse diagonal
+right translation differentiates to the sum of the lifted raising/lowering operators;
+compact rotation differentiates to weight `2m i`; quarter-rotation conjugated diagonal
+translation differentiates to `i` times raising minus lowering. The proof uses actual
+Möbius derivatives and the existing Iwasawa character identities. No differential
+compatibility is assumed.
+
+`MaassAutomorphicDifferentialLadder.lean` propagates left Γ invariance through these
+actual derivatives, for both ladders at every order. It bundles the resulting functions
+in the existing `automorphicFunctionSpace`, proves their exceptional-parameter
+nonvanishing, and proves independence of every finite set of integer weights using
+the existing independent compact characters. Its finite coordinate map is injective.
+Both files passed foreground `lake env lean` checks producing only needed oleans and
+are wired into RHTower. The final targeted Lake audit remains pending while the
+standard spherical coefficient normalization is being completed.
+
+The full proof chain still requires the normalized intertwiner, identification of its
+image with the differentiated cyclic module, Hilbert globalization, and arithmetic
+exclusion of complementary parameters. No statement here excludes an exceptional
+Maass form. Recent broad arXiv searches `rigidity` and `transport` found
+https://arxiv.org/abs/2609.10527 and https://arxiv.org/abs/2609.11702. Their positive
+curvature and higher-dimensional assumptions do not give an applicable estimate for
+this hyperbolic congruence problem; neither is used as a proof dependency.
+
+Corpus search logs for this continuation: `/tmp/maass_group_flow_deep.json`,
+`/tmp/maass_group_flow_methods.json`, `/tmp/maass_iwasawa_reuse.json`,
+`/tmp/maass_derivative_automorphy_search.json`,
+`/tmp/maass_weight_independence_search.json`, `/tmp/maass_ladder_normalization_search.json`.
+Both broad complete and narrower partial searches were inspected, including method
+source arguments and ingredient sets. Source-only suggestions were checked against
+source and Lean; irrelevant Lie-weight, angular-current and transcendence suggestions
+were not treated as proofs of the source correspondence.
