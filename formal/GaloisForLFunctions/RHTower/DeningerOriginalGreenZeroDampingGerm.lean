@@ -99,17 +99,22 @@ private theorem original_green_gaussian_nonzero (p : Nat.Primes)
     (deningerOriginalGreen_prime_denominator_ne_zero p
       (xi_divisor_support_re_mem_open_unit rho).1)
 
+/-- The expression continues meromorphically throughout the complex damping plane. -/
+theorem deningerOriginalPrimeGreenDampingContinuation_meromorphicOn
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    MeromorphicOn (deningerOriginalPrimeGreenDampingContinuation p rho) Set.univ := by
+  intro a _
+  have hshift (s : ℂ) : MeromorphicAt (fun z : ℂ => riemannZeta (z + s)) a :=
+    MeromorphicAt.comp_analyticAt
+      (GaloisForLFunctions.HTGeometry.meromorphicOn_riemannZeta (a + s) (Set.mem_univ _))
+      (analyticAt_id.add analyticAt_const)
+  exact analyticAt_const.meromorphicAt.div ((hshift (rho : ℂ)).mul (hshift (1 - (rho : ℂ))))
+
 /-- The scalar continuation is meromorphic at zero without a source-domain premise. -/
 theorem deningerOriginalPrimeGreenDampingContinuation_meromorphicAt
     (p : Nat.Primes) (rho : XiDivisorSupport) :
-    MeromorphicAt (deningerOriginalPrimeGreenDampingContinuation p rho) 0 := by
-  have hs : AnalyticAt ℂ (fun a : ℂ => a + (rho : ℂ)) 0 :=
-    analyticAt_id.add analyticAt_const
-  have ht : AnalyticAt ℂ (fun a : ℂ => a + (1 - (rho : ℂ))) 0 :=
-    analyticAt_id.add analyticAt_const
-  have hf := (zeta_native_analytic rho).comp_of_eq hs (zero_add _)
-  have hg := (analyticAt_riemannZeta_one_sub_xiDivisorSupport rho).comp_of_eq ht (zero_add _)
-  exact analyticAt_const.meromorphicAt.div (hf.mul hg).meromorphicAt
+    MeromorphicAt (deningerOriginalPrimeGreenDampingContinuation p rho) 0 :=
+  deningerOriginalPrimeGreenDampingContinuation_meromorphicOn p rho 0 (Set.mem_univ _)
 
 /-- Exact local unit for the zero-damping pole; every native multiplicity is retained. -/
 theorem exists_deningerOriginalPrimeGreen_zeroDamping_unit

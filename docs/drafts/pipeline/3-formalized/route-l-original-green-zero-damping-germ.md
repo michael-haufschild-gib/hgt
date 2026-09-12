@@ -2,7 +2,7 @@
 
 - **ID:** L-C52
 - **Date:** 2026-09-12
-- **Stage:** 1-in-progress; paper conjecture and corpus audit
+- **Stage:** 3-formalized; final named leaf audit passed under default limits
 - **Depends on:** C44 literal source Euler formula; C49 original Green transform; C51 full Xi norm admission
 - **RH status:** unproved
 
@@ -22,14 +22,14 @@ where G is the original reflected Gaussian Mellin transform. On the proved
 real damping admission region this is the literal original Green integral.
 No source at zero damping is defined by this notation.
 
-Conjecture: at every actual Xi zero rho of native multiplicity m, the
+Proved in Lean: at every actual Xi zero rho of native multiplicity m, the
 function `a ↦ H(a,rho)` has exact pole order `2*m` at zero. If c and cR are
 the actual first nonzero zeta Taylor coefficients at rho and 1-rho, the
 leading Laurent coefficient is
 
 `G(rho)/((1-p^(-rho))*c*cR)`.
 
-Paper mechanism to verify: zeta is analytic at both original points; its
+Proof: zeta is analytic at both original points; its
 order equals the native Xi order and reflection preserves that order.
 The two local factorizations therefore pull back to `a^m*u(a)` and
 `a^m*v(a)`, with nonzero analytic units at zero. Their product has order
@@ -37,8 +37,8 @@ The two local factorizations therefore pull back to `a^m*u(a)` and
 The exact unit product fixes the normalization. No simple-zero premise,
 critical-line placement, deleted pole, or fitted residue is allowed.
 
-This must yield the positive singular germ, including its exact nonzero
-coefficient, rather than only a negative statement about regular limits.
+This yields the positive singular germ, including its exact nonzero
+coefficient and the sharp power-normalization classification.
 Its relation to a complete source-domain continuation and the fixed
 physical reader remains to be derived; a scalar meromorphic continuation
 alone does not supply that relation.
@@ -79,14 +79,17 @@ transition; the paper supplies no reader agreement or critical confinement.
 
 ## Lean attempt
 
-The first scratch check passed under default limits: one generic analytic
+The complete scratch check passed under default limits. One generic analytic
 unit lemma translates a native finite-order zero to the damping origin and
-identifies its value with the canonical trailing coefficient. Both Xi/zeta
-order equality and analyticity were checked on the current toolchain.
-The full pole, coefficient, normalized-limit and literal-integral bridge
-proofs are now being checked. No heartbeat or recursion limits changed.
+identifies its value with the canonical trailing coefficient. The same unit
+supplies the order, coefficient, limit and analytic extension proofs. A shared
+Leibniz collapse identifies the original Taylor jets without expanding every
+derivative. Explicitly typed function equalities and a direct integer-coercion
+equality replace unsuccessful rewrite matching. No heartbeat or recursion
+limits changed. The global meromorphic formula also passed a separate small
+scratch check; the zero-local theorem now reuses that global result.
 
-The stronger positive survivor is being formalized: multiplication by `a^k`
+The stronger positive survivor is proved: multiplication by `a^k`
 admits a finite limit exactly for `k>=2*m`, and a nonzero finite limit exactly
 for `k=2*m`. Filling that normalized scalar function with its forced leading
 coefficient gives an analytic germ at zero. The coefficient is also identified
@@ -119,3 +122,27 @@ the first nonzero jet at an actual zero. Finite damped-product estimates already
 assume an inverse-zeta bound. Thus none of the inspected results supplies the
 required full-Xi coefficient envelope. This is a retrieval audit, not a claim
 that the whole corpus contains no such theorem.
+
+## Final verification
+
+`GaloisForLFunctions.RHTower.DeningerOriginalGreenZeroDampingGerm` contains
+17 public declarations. The full source expression is meromorphic on the
+complex damping plane and agrees with the actual original Green integral
+throughout the proved real admission range `a>1`. The exact pole order,
+nonzero native-jet coefficient, sharp normalization classification and
+filled analytic scalar germ are unconditional at every actual Xi support
+point and every original prime.
+
+The final audit
+`lake build GaloisForLFunctions.RHTower.DeningerOriginalGreenZeroDampingGerm`
+passed, compiling only the new leaf (131 seconds); its required dependency
+jobs were cached. No full or umbrella build ran. The module is wired once
+into `RHTower.lean`. Both scratch checks passed via `lake env lean`.
+
+Logs: [full scratch](route-l-zero-damping-scratch.log),
+[global meromorphic scratch](route-l-zero-damping-meromorphic-scratch.log),
+[final leaf audit](route-l-zero-damping-build.log).
+
+Full-Xi admission of these normalized coefficients, a complete zero-damping
+source-domain passage, and fixed physical-reader agreement remain unproved.
+This card is a closed singularity and normalization theorem, not a proof of RH.

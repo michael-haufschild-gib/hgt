@@ -392,7 +392,7 @@ This closes the coefficient-level differential and ladder portions in Lean. It d
 
 The next source-flow theorem must identify differentiation of the literal weight lift along inverse diagonal translation, at every group element, with the sum of the lifted `raise m` and `lower m` terms. Compact rotation and the conjugate diagonal direction then separate the two operators and propagate automorphy to the whole ladder.
 
-Validation so far:
+Validation of the two source modules:
 
 - Scratch proofs checked with `lake env lean`, with at most one foreground Lean process.
 - Only the needed new source operator olean was produced before checking its dependent ladder module.
@@ -401,3 +401,9 @@ Validation so far:
 - No new axioms, unfinished terms, computational certificates, or heartbeat/recursion/transparency option increases. Expansive operator formulas are not global simp rules.
 
 Further corpus searches used `smooth directional derivative commutator vector field` (deep, complete) and `Iwasawa derivative upperHalfPlane smul --any --module RHTower` (deep, partial). The first returned the existing mixed-derivative and vector-field methods; the second found the Iwasawa scale/phase derivatives needed for the next group-flow step. Source statements were inspected before use. Broad recent arXiv searches for `commutation` and `interpolation` also found [extended Gevrey interpolation](https://arxiv.org/abs/2609.06258): its derivative-growth assumptions do not supply the missing group-flow or quotient-L2 domain identification, so it is not used as a dependency.
+
+
+- All 37 public theorems audited with `#print axioms` in `/tmp/maass_source_ladder_axioms.lean`: only `propext`, `Classical.choice`, `Quot.sound`. Audit log: `/tmp/maass_source_ladder_axioms.log`.
+- Generated indexes refreshed successfully (`formal_tools.py index`, 6 changed sources, no removals).
+- `formal_tools.py lint` is not globally clean: it reports large pre-existing files and unreachable modules outside this change, including `ThetaCuspHawkingBMHorizonCoordinateJets`, `ThetaCuspHawkingBMHorizonModeOuterUniformBound`, `ThetaCuspHawkingBMPrincipalChannelHorizonJet`, `ThetaCuspHawkingBMSelfChannelHorizonJet`, `ThetaCuspHawkingBMTemporalCurrentHorizonJet`, `AnalyticJetGerm`, `ElementaryHorizonJets`, `JetCoefficientUniqueness`, `SecondEndpointMellinLaurentInterchange`, and `UniformSecondOrderJet`. Neither new Maass module is among the reported failures. These unrelated modules were not modified.
+- Both new imports checked for exact single occurrence. No owned Lean processes remain. No commit or push performed.
