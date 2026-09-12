@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ZetaBinomialHalfFractionalPole
 import GaloisForLFunctions.RHTower.ZetaPoleSplit
+import GaloisForLFunctions.RHTower.AnalyticDividedDifference
 import GaloisForLFunctions.HTGeometry.AnalyticSquareRoot
 
 open ArithmeticFunction Complex Filter Metric Set Topology
@@ -44,6 +45,212 @@ theorem exists_local_normalized_analytic_sqrt_zetaPoleUnit :
       simp
     · intro z hz
       simpa using hPsq z hz
+
+/-- The normalized pole-unit square root is the pole-cleared positive Dirichlet branch on the
+right-half overlap.  The normalization at the pole rules out the negative branch. -/
+theorem normalized_analytic_sqrt_zetaPoleUnit_eq_cpow_mul_LSeries
+    {r : ℝ} (hr : 0 < r) {P : ℂ → ℂ}
+    (hPan : AnalyticOnNhd ℂ P (ball (1 : ℂ) r))
+    (hPone : P 1 = 1)
+    (hPsq : ∀ z ∈ ball (1 : ℂ) r, P z ^ 2 = zetaPoleUnit z) :
+    EqOn P (fun z => (z - 1) ^ (1 / 2 : ℂ) * LSeries zetaBinomialHalf z)
+      (ball (1 : ℂ) r ∩ {z : ℂ | 1 < z.re}) := by
+  let S : Set ℂ := ball (1 : ℂ) r ∩ {z : ℂ | 1 < z.re}
+  let R : ℂ → ℂ := fun z => (z - 1) ^ (1 / 2 : ℂ) * LSeries zetaBinomialHalf z
+  have hcpowAn : AnalyticOnNhd ℂ (fun z : ℂ => (z - 1) ^ (1 / 2 : ℂ))
+      {z : ℂ | 1 < z.re} := by
+    intro z hz
+    apply (analyticAt_id.sub analyticAt_const).cpow analyticAt_const
+    rw [Complex.mem_slitPlane_iff]
+    left
+    change 1 < z.re at hz
+    change 0 < z.re - 1
+    linarith
+  have hRan : AnalyticOnNhd ℂ R {z : ℂ | 1 < z.re} :=
+    hcpowAn.mul analyticOnNhd_LSeries_zetaBinomialHalf
+  have hRcont : ContinuousOn R S := hRan.continuousOn.mono inter_subset_right
+  have hPcont : ContinuousOn P S := hPan.continuousOn.mono inter_subset_left
+  have hhalfSq : ∀ z : ℂ, 1 < z.re → ((z - 1) ^ (1 / 2 : ℂ)) ^ 2 = z - 1 := by
+    intro z hz
+    rw [← Complex.cpow_nat_mul]
+    convert Complex.cpow_one (z - 1) using 2
+    all_goals norm_num
+  have hRsq : ∀ z ∈ S, R z ^ 2 = zetaPoleUnit z := by
+    intro z hz
+    change (((z - 1) ^ (1 / 2 : ℂ)) * LSeries zetaBinomialHalf z) ^ 2 =
+      zetaPoleUnit z
+    rw [mul_pow, hhalfSq z hz.2]
+    have hzre : 1 < z.re := hz.2
+    have hz1 : z ≠ 1 := by
+      intro h
+      rw [h] at hzre
+      norm_num at hzre
+    calc
+      (z - 1) * LSeries zetaBinomialHalf z ^ 2 =
+          (z - 1) * (LSeries zetaBinomialHalf z * LSeries zetaBinomialHalf z) := by ring
+      _ = (z - 1) * riemannZeta z := by rw [LSeries_zetaBinomialHalf_sq hz.2]
+      _ = zetaPoleUnit z := (zetaPoleUnit_of_ne hz1).symm
+  have hSqOn : EqOn (P ^ 2) (R ^ 2) S := by
+    intro z hz
+    change P z ^ 2 = R z ^ 2
+    rw [hPsq z hz.1, hRsq z hz]
+  have hRne : ∀ {z : ℂ}, z ∈ S → R z ≠ 0 := by
+    intro z hz
+    have hzre : 1 < z.re := hz.2
+    have hbase : z - 1 ≠ 0 := sub_ne_zero.mpr (by
+      intro h
+      rw [h] at hzre
+      norm_num at hzre)
+    have hcpowNe : (z - 1) ^ (1 / 2 : ℂ) ≠ 0 := by
+      rw [ne_eq, Complex.cpow_eq_zero_iff]
+      simp [hbase]
+    have hLne : LSeries zetaBinomialHalf z ≠ 0 := by
+      intro hzero
+      have hsq := LSeries_zetaBinomialHalf_sq hz.2
+      rw [hzero, zero_mul] at hsq
+      exact (riemannZeta_ne_zero_of_one_le_re hz.2.le) hsq.symm
+    exact mul_ne_zero hcpowNe hLne
+  have hSpre : IsPreconnected S :=
+    ((convex_ball (1 : ℂ) r).inter (convex_halfSpace_re_gt 1)).isPreconnected
+  rcases hSpre.eq_or_eq_neg_of_sq_eq hPcont hRcont hSqOn hRne with hEq | hEq
+  · exact hEq
+  · exfalso
+    have hinner : Tendsto (fun t : ℝ => (((1 + t : ℝ) : ℂ)))
+        (nhdsWithin 0 (Ioi 0)) (nhds (1 : ℂ)) := by
+      have hrealCont : ContinuousAt (fun t : ℝ => 1 + t) 0 :=
+        continuousAt_const.add continuousAt_id
+      have hreal : Tendsto (fun t : ℝ => 1 + t) (nhds 0) (nhds 1) := by
+        simpa using hrealCont.tendsto
+      have hfull := Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
+      have hfull' : Tendsto (fun t : ℝ => (((1 + t : ℝ) : ℂ)))
+          (nhds 0) (nhds (1 : ℂ)) := by
+        simpa [Function.comp_def] using hfull
+      exact hfull'.mono_left nhdsWithin_le_nhds
+    have hPlim : Tendsto (fun t : ℝ => P (((1 + t : ℝ) : ℂ)))
+        (nhdsWithin 0 (Ioi 0)) (nhds (1 : ℂ)) := by
+      have hPcontAt : ContinuousAt P (1 : ℂ) :=
+        (hPan 1 (mem_ball_self hr)).continuousAt
+      change Tendsto (P ∘ fun t : ℝ => (((1 + t : ℝ) : ℂ)))
+        (nhdsWithin 0 (Ioi 0)) (nhds (1 : ℂ))
+      simpa only [hPone] using hPcontAt.tendsto.comp hinner
+    have hRreal : (fun t : ℝ => R (((1 + t : ℝ) : ℂ))) =ᶠ[
+        nhdsWithin (0 : ℝ) (Ioi 0)]
+        (fun t : ℝ => ((Real.sqrt t : ℝ) : ℂ) *
+          LSeries zetaBinomialHalf (((1 + t : ℝ) : ℂ))) := by
+      filter_upwards [self_mem_nhdsWithin] with t ht
+      have ht0 : 0 ≤ t := ht.le
+      change ((((1 + t : ℝ) : ℂ) - 1) ^ (1 / 2 : ℂ)) *
+        LSeries zetaBinomialHalf (((1 + t : ℝ) : ℂ)) = _
+      have hsub : (((1 + t : ℝ) : ℂ) - 1) = (t : ℂ) := by push_cast; ring
+      rw [hsub]
+      have hcpow : (t : ℂ) ^ (1 / 2 : ℂ) = ((Real.sqrt t : ℝ) : ℂ) := by
+        calc
+          (t : ℂ) ^ (1 / 2 : ℂ) =
+              (t : ℂ) ^ (((1 / 2 : ℝ) : ℝ) : ℂ) := by norm_num
+          _ = (((t ^ (1 / 2 : ℝ) : ℝ)) : ℂ) :=
+            (Complex.ofReal_cpow ht0 _).symm
+          _ = ((Real.sqrt t : ℝ) : ℂ) := by rw [Real.sqrt_eq_rpow]
+      rw [hcpow]
+    have hRlim : Tendsto (fun t : ℝ => R (((1 + t : ℝ) : ℂ)))
+        (nhdsWithin 0 (Ioi 0)) (nhds (1 : ℂ)) :=
+      RHTower.tendsto_sqrt_mul_LSeries_zetaBinomialHalf_one_add.congr' hRreal.symm
+    have hltR : ∀ᶠ t in nhdsWithin (0 : ℝ) (Ioi 0), t < r :=
+      (show ∀ᶠ t : ℝ in nhds (0 : ℝ), t < r from Iio_mem_nhds hr).filter_mono
+        nhdsWithin_le_nhds
+    have hmem : ∀ᶠ t in nhdsWithin (0 : ℝ) (Ioi 0),
+        (((1 + t : ℝ) : ℂ)) ∈ S := by
+      filter_upwards [self_mem_nhdsWithin, hltR] with t ht htr
+      constructor
+      · rw [mem_ball, dist_eq]
+        have hsub : (((1 + t : ℝ) : ℂ) - 1) = (t : ℂ) := by push_cast; ring
+        rw [hsub, norm_real, Real.norm_eq_abs, abs_of_pos ht]
+        exact htr
+      · simpa using ht
+    have hEqLine : (fun t : ℝ => P (((1 + t : ℝ) : ℂ))) =ᶠ[nhdsWithin 0 (Ioi 0)]
+        (fun t : ℝ => -R (((1 + t : ℝ) : ℂ))) := by
+      filter_upwards [hmem] with t ht
+      exact hEq ht
+    have hnegLim : Tendsto (fun t : ℝ => -R (((1 + t : ℝ) : ℂ)))
+        (nhdsWithin 0 (Ioi 0)) (nhds (-1 : ℂ)) := by
+      simpa using hRlim.neg
+    have hPnegLim : Tendsto (fun t : ℝ => P (((1 + t : ℝ) : ℂ)))
+        (nhdsWithin 0 (Ioi 0)) (nhds (-1 : ℂ)) := hnegLim.congr' hEqLine.symm
+    have hone : (1 : ℂ) = -1 := tendsto_nhds_unique hPlim hPnegLim
+    norm_num at hone
+
+/-- Near the zeta pole, Kato's boundary remainder is an analytic factor times the explicit
+square-root cusp. -/
+theorem exists_local_zetaBinomialHalf_kato_remainder_factorization :
+    ∃ r : ℝ, 0 < r ∧ ∃ P H : ℂ → ℂ,
+      AnalyticOnNhd ℂ P (ball (1 : ℂ) r) ∧
+      P 1 = 1 ∧
+      (∀ z ∈ ball (1 : ℂ) r, P z ^ 2 = zetaPoleUnit z) ∧
+      AnalyticOnNhd ℂ H (ball (1 : ℂ) r) ∧
+      EqOn
+        (fun z => LSeries zetaBinomialHalf z / z - (z - 1) ^ (-(1 / 2 : ℂ)))
+        (fun z => (z - 1) ^ (1 / 2 : ℂ) * H z)
+        (ball (1 : ℂ) r ∩ {z : ℂ | 1 < z.re}) := by
+  obtain ⟨r, hr, P, hPan, hPone, hPsq⟩ :=
+    exists_local_normalized_analytic_sqrt_zetaPoleUnit
+  let r₀ : ℝ := min r (1 / 2)
+  have hr₀ : 0 < r₀ := lt_min hr (by norm_num)
+  have hr₀r : r₀ ≤ r := min_le_left _ _
+  have hr₀half : r₀ ≤ 1 / 2 := min_le_right _ _
+  let N : ℂ → ℂ := fun z => P z / z - 1
+  let H : ℂ → ℂ := dslope N 1
+  have hz_ne : ∀ z ∈ ball (1 : ℂ) r₀, z ≠ 0 := by
+    intro z hz hzero
+    subst z
+    rw [mem_ball, dist_zero_left, norm_one] at hz
+    linarith
+  have hNan : AnalyticOnNhd ℂ N (ball (1 : ℂ) r₀) := by
+    intro z hz
+    exact ((hPan z (ball_subset_ball hr₀r hz)).div analyticAt_id (hz_ne z hz)).sub
+      analyticAt_const
+  have hHan : AnalyticOnNhd ℂ H (ball (1 : ℂ) r₀) := by
+    intro z hz
+    exact analyticAt_dslope_of_analyticAt (hNan 1 (mem_ball_self hr₀)) (hNan z hz)
+  have hNone : N 1 = 0 := by simp [N, hPone]
+  have hNfactor : ∀ z : ℂ, N z = (z - 1) * H z := by
+    intro z
+    have hs := sub_smul_dslope N 1 z
+    rw [hNone, sub_zero, smul_eq_mul] at hs
+    exact hs.symm
+  have hPmatch := normalized_analytic_sqrt_zetaPoleUnit_eq_cpow_mul_LSeries
+    hr hPan hPone hPsq
+  refine ⟨r₀, hr₀, P, H, hPan.mono (ball_subset_ball hr₀r), hPone,
+    fun z hz => hPsq z (ball_subset_ball hr₀r hz), hHan, ?_⟩
+  intro z hz
+  have hzre : 1 < z.re := hz.2
+  have hz0 : z ≠ 0 := hz_ne z hz.1
+  have hw0 : z - 1 ≠ 0 := sub_ne_zero.mpr (by
+    intro h
+    rw [h] at hzre
+    norm_num at hzre)
+  have hq0 : (z - 1) ^ (1 / 2 : ℂ) ≠ 0 := by
+    rw [ne_eq, Complex.cpow_eq_zero_iff]
+    simp [hw0]
+  have hqSq : ((z - 1) ^ (1 / 2 : ℂ)) ^ 2 = z - 1 := by
+    rw [← Complex.cpow_nat_mul]
+    convert Complex.cpow_one (z - 1) using 2
+    all_goals norm_num
+  have hPz : P z = (z - 1) ^ (1 / 2 : ℂ) * LSeries zetaBinomialHalf z :=
+    hPmatch ⟨ball_subset_ball hr₀r hz.1, hz.2⟩
+  have hfac := hNfactor z
+  change P z / z - 1 = (z - 1) * H z at hfac
+  have hfac2 :
+      (z - 1) ^ (1 / 2 : ℂ) * LSeries zetaBinomialHalf z / z - 1 =
+        ((z - 1) ^ (1 / 2 : ℂ)) ^ 2 * H z := by
+    calc
+      (z - 1) ^ (1 / 2 : ℂ) * LSeries zetaBinomialHalf z / z - 1 =
+          P z / z - 1 := by rw [hPz]
+      _ = (z - 1) * H z := hfac
+      _ = ((z - 1) ^ (1 / 2 : ℂ)) ^ 2 * H z := by rw [hqSq]
+  change LSeries zetaBinomialHalf z / z - (z - 1) ^ (-(1 / 2 : ℂ)) =
+    (z - 1) ^ (1 / 2 : ℂ) * H z
+  rw [Complex.cpow_neg]
+  field_simp [hz0, hq0] at hfac2 ⊢
+  linear_combination hfac2
 
 /-- At every non-pole point of the line `Re s = 1`, the positive Dirichlet square root of zeta
 extends holomorphically across the line on a disk and remains a square root of zeta there. -/

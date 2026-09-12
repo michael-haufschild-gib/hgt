@@ -82,6 +82,53 @@ does not retire mechanisms outside its stated hypotheses.
   `formal/GaloisForLFunctions/RHTower/RouteESourceFaithfulEulerTiltUnitShell.lean`, theorem
   `routeEParityEnergyFourierSum_eq_eulerProduct`.
 
+- **FACT-011 — The square-root seam has an exact largest-prime recursion.** If `Y > 0` and
+  `X < Y^2`, every squarefree integer at most `X` has zero or one prime factor larger than `Y`.
+  Therefore
+  `M(X) = M_fri(X,Y) - ∑_{Y<p≤X} M(floor(X/p))`, where `M_fri(X,Y)` is the Möbius sum over
+  `Y`-smooth integers at most `X`. No coprimality correction is needed in the prime sum because
+  `floor(X/p) < Y < p`. Lean source: theorem `mertensLargePrimeSector_eq`, recorded in
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/route-e-mobius-friable-u2-seam-charge.md`.
+
+- **FACT-012 — The squarefree product complex is shifted.** Order prime coordinates increasingly.
+  If `q` is occupied, `p<q` is unoccupied, and a support product is at most `X`, replacing `q` by
+  `p` multiplies the product by `p/q<1`; the new support remains in `K_X`. Thus `K_X` is a shifted
+  simplicial complex. This order structure is source-specific, but by itself supplies no parity
+  estimate (NOGO-017).
+
+- **FACT-013 — A fixed finite prime reservoir separates every injective tuple at one
+  source-dependent index.** For an injective `m : Fin k → Fin N`, with `k,N ≠ 0`, Lean proves that
+  one of `k*(k*k-k)+1` fixed Bertrand-reservoir primes makes reduction of the tuple injective. The
+  proof chooses a prime not dividing the directed difference product. Downstream use covers all
+  tuples by summing over every reservoir index and pays the full reservoir multiplicity. Lean:
+  `exists_vinogradovAvoidingReservoirIndex` in
+  `formal/GaloisForLFunctions/RHTower/Sieve/VinogradovAvoidingPrime.lean` and
+  `vinogradov_injective_energy_le_reservoir_cover` in
+  `formal/GaloisForLFunctions/RHTower/Sieve/VinogradovReservoirRecurrence.lean`.
+
+- **FACT-014 — Prescribed Möbius signs occur with unbounded normalized supply in every positive
+  subpower half-power window.** For fixed `0<β<1`, either sign `σ∈{±1}`, and every fixed constant
+  `C`, Lean proves eventually at least
+  `C * H(Z)/log Z` integers of sign `σ` in `(Z,Z+H(Z)]`, where
+  `H(Z)=ceil(sqrt Z * exp((log Z)^β))`. It also derives an eventual cardinality injection from
+  primes in that window into its `μ=1` integers. Lean: `route_e_marker_hall_law_all` and
+  `route_e_marker_hall_injection_all` in
+  `formal/GaloisForLFunctions/RHTower/Sieve/RouteEMarkerHallLawAll.lean`.
+
+- **FACT-015 — One-sided equal-window Hall reduces exactly to consecutive intervals.** For finite
+  integer sets `E,T`, a source injection satisfying `e < f(e) ≤ e+H` exists iff every interval
+  `[a,b]` obeys `card(E∩[a,b]) ≤ card(T∩(a,b+H])`. Lean:
+  `hasForwardWindowMatching_iff_intervalCondition` in
+  `formal/GaloisForLFunctions/HTGeometry/ForwardWindowHallMatching.lean`.
+
+- **FACT-016 — Cofactor-amplified E3 targets have an exact factorization decoder.** In the proved
+  E3 construction, `q=t*p₁*p₂*p₃`, the full `p₁` band is excluded from `t`, and `p₂,p₃` lie above
+  the cofactor cutoff for `η<1/6`. Thus `t` is recovered from the prime factors of `q` below the
+  cutoff outside the excluded band, while the remaining small factor identifies the dyadic
+  `p₁` slice. Distinct cofactors and slices therefore give disjoint physical targets. Paper proof:
+  `docs/drafts/pipeline/2-fully-proven/route-e-cofactor-amplified-e3-token-supply.md`; its parity,
+  scale-separation, slice-count, and unsigned-mass layers are Lean-formalized as recorded there.
+
 ### No-gos
 
 - **NOGO-001 — Signed column-load cancellation is circular.** For every row-stochastic kernel
@@ -170,3 +217,46 @@ does not retire mechanisms outside its stated hypotheses.
   does not advance the proof unless it first exploits interaction across the moving multiplicative
   boundary. Sources: `RouteESourceFaithfulEulerTiltUnitShell.lean`,
   `RouteEPhysicalShellParityEnergyRegression.lean`, and the corresponding pipeline card.
+
+- **NOGO-014 — Scalar largest-prime renewal cannot bootstrap a power saving.** In the weighted
+  sup norm `|f(t)| ≤ t^alpha`, the positive operator
+  `T f(X) = ∑_{Y<p≤X} f(X/p)` has norm `∑_{Y<p≤X} p^(-alpha)`. For every fixed `alpha<1`, PNT and
+  partial summation make this asymptotic to `X^(1-alpha)/((1-alpha)log X)`, so it diverges. Hence
+  strong induction through FACT-011 fails at every strict power-saving exponent, including
+  `1/2+epsilon`; taking absolute values over primes loses almost linear size. Source:
+  `route-e-squarefree-exponential-gibbs-parity.md`, equations `(G46m)`--`(G46o)`.
+
+- **NOGO-015 — The literal prime tail has no prime-index oscillation to feed a large sieve.** Exact
+  grouping gives
+  `∑_{Y<p≤X} M(floor(X/p)) = ∑_k M(k) * card{p : Y<p≤X, floor(X/p)=k}`.
+  The bucket multiplicities are nonnegative. Bare regrouping therefore creates no orthogonal prime
+  phases, and Cauchy--Schwarz replaces the target by an unproved square-root-scale `L^2` bound for
+  `M(k)`. Scope: direct prime-parameter orthogonality or Cauchy--Schwarz; a new arithmetic transform
+  with an independently bounded off-diagonal kernel is not excluded.
+
+- **NOGO-016 — Static multiplicative rectangles conserve each seam sector's signed mass.** For a
+  coprime Möbius checkerboard rectangle wholly in the zero/one-large-prime boundary, the signed
+  corner sum is zero separately in breadth zero and breadth one. Thus a sector-closed fractional
+  rectangle cover cannot transfer the large opposite seam charges; only corners crossing the
+  moving physical cutoff can contribute flux. Lean:
+  `mobiusParityRectangle_zeroLargePrime_cornerSum_eq_zero` and
+  `mobiusParityRectangle_oneLargePrime_cornerSum_eq_zero` in
+  `formal/GaloisForLFunctions/RHTower/MobiusMultiplicativeRectangleCubature.lean`.
+
+- **NOGO-017 — Actual large-prime slices have asymptotically maximal local parity bias.** On the
+  empty-small-prime slice of `B_X={p prime : sqrt X<p≤X}`, the product cutoff admits exactly the
+  empty set and the singleton sets: every product of two block primes exceeds `X`. Its signed
+  parity sum is `1-card(B_X)` and its unsigned mass is `1+card(B_X)`; PNT gives
+  `card(B_X)→∞`, so relative bias tends to one. Hence distinct `log p` weights, shiftedness, and
+  within-block compression cannot yield local parity mixing. Any successful proof must couple
+  large-prime occupancy to nontrivial small-prime spectators before averaging or taking norms.
+
+- **NOGO-018 — One balanced E3 core with multiplicative pre-cofactors lacks strict-half physical
+  capacity.** If targets have shape `t*p₁*p₂*p₃` and strict-half displacement forces
+  `T*P=U^o(1)`, their physical count in one dyadic scale is at most
+  `O(U*log T*log log P/log² U)=o(U*log log U/log U)`. This is below the ordinary defect budget
+  allowed by the available mean-square estimate. Counting labeled representations cannot improve
+  physical target capacity. Scope: one balanced E3 core with one total multiplicative pre-cofactor;
+  non-collapsed higher-rank targets remain open. Paper proof and exact hostile current:
+  `docs/drafts/pipeline/5-failed/route-e-strict-half-e3-cofactor-capacity-ceiling.md` and
+  `formal/GaloisForLFunctions/RHTower/MobiusBlockDefectEnergy.lean`.

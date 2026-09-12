@@ -41,11 +41,18 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
 - **F12 — Exact channel-energy partition.** Expected squared energies of all largest-prime channels
   equal coefficient square mass of the non-`Y`-smooth sector. Evidence:
   `steinhausCoefficientMass_eq_smooth_add_largePrimeChannelEnergy`.
-- **F13 — Axiom audit.** F07, F10, F11, and F12 depend only on `propext`, `Classical.choice`, and
-  `Quot.sound`; targeted builds pass.
+- **F13 — Axiom audit.** F07, F10, F11, F12, F15, and F16 depend only on `propext`,
+  `Classical.choice`, and `Quot.sound`; targeted builds pass.
 - **F14 — Dense-support Gaussian warning.** arXiv:2605.21737 proves, in its random multiplicative
   setting, that its standard complex-Gaussian CLT forces sparse support; it does not exclude a
   Gaussian mixture or direct full-support law.
+- **F15 — Variable-cofactor channel floor.** For `0<d<1/2`, prime `p` with `2p<=N`, and normalized
+  model weight `N^(-2d)n^(-(1-2d))`, the dyadic cofactor block `N/(2p)<m<=N/p` contributes at least
+  `((1/2)/2^(2d))/p`. Evidence: `normalized_power_channel_lower_recip`.
+- **F16 — Positive ideal terminal mass.** Summing F15 over primes between the half- and
+  two-thirds-power cuts gives an eventual positive normalized lower bound. Their reciprocal mass
+  tends to `-log(1/2)+log(2/3)=log(4/3)>0`. Evidence:
+  `eventually_normalized_power_terminal_channels_lower`.
 
 ## No-gos
 
@@ -77,3 +84,11 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   cofactor and primes `p<=T^theta`, `theta<1`, has normalized square mass at most logarithmic factors
   times `T^(-2*d*(1-theta))`; it vanishes. Constant reciprocal-prime mass at `d=0` does not solve
   recurrence on a compact containing a zero with fixed positive displacement.
+- **N13 — Marginal small-ball bounds as simultaneous boundary control.** False as a general
+  principle: arXiv:2609.11795 constructs fixed-direction small-ball lower bounds with catastrophic
+  failure after searching over a low-Gaussian-width family. C15 needs a joint finite-node law or a
+  proved complexity/occupancy bound, not nodewise estimates alone.
+- **N14 — Shifted anticoncentration as target recurrence.** arXiv:2609.06526 gives uniform *upper*
+  small-interval bounds for a conditional Gaussian scale mixture by controlling inverse conditional
+  variance. C15 needs a *lower* probability near its prescribed planar target; the theorem's model
+  and inequality direction do not supply it.

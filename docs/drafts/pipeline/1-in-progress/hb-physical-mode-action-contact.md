@@ -2823,3 +2823,73 @@ Thus a weight-four cusp-form identification can close the tensor remainder
 without a scalar spectral-completeness assumption. That identification is still
 open. Since the tensor is complex-valued, both its holomorphic and
 antiholomorphic components must be retained; real-valuedness is not assumed.
+
+The same-copy physical parent rates sum to -3, so their combined expression
+(sum+1)(sum+2) is exactly 2. This gives the new inverse a second potential role
+in the opposite-parent-branch channel; the original cross-branch Einstein
+reduction must still be derived. More generally, all four principal exponents
+of a product of two Xi scalar sources have real part in (0,2), so none meets
+the shift-two roots 2 or -1, even when imaginary parts cancel. These algebraic
+facts are recorded separately from the still-unproved cross-source construction.
+
+### Smooth source inverse and the undetected tensor component
+
+The next construction uses the proved shift-two native response equation,
+with its negative residual forcing in (Delta-2)W=-G, to derive the full planar
+localization identity. Compact-local forcing is smooth, so the existing
+Sobolev gain can be iterated from local L2 to all orders. Gluing the resulting
+representatives and retaining the original cusp field must give an actual
+smooth modular U with (2-Delta)U=S^2 pointwise.
+
+The tensor test is then source-specific: compare
+[Hess(S^2)-dS tensor dS]^TF with HessTF(S^2+lambda U).
+Vanishing of their divergence is not their vanishing. The proposed completion
+must identify both complex tensor polarizations with weight-four cusp forms,
+including their actual cusp bounds, before using the corpus dimension theorem.
+
+The smooth construction is checked in Lean: `ThetaCuspHawkingBMAngularTwoRegularity`
+constructs `smoothFullResponse` and its original-coordinate `coordinateResponse`.
+The pointwise equation is `(2-Delta)U=S^2`; the full-volume distributional field
+and native finite-energy correction are preserved. No smoothness premise on the
+weak response is supplied.
+
+The remaining tensor simplifies algebraically. Set
+`E=[dS tensor dS]^TF+lambda HessTF(U)`, where `Delta S=lambda S`.
+Then the proposed source-tensor identity is equivalent to `E=0`.
+Its coordinate components are
+`A=(S_x^2-S_y^2)/2+lambda*((U_xx-U_yy)/2-U_y/y)` and
+`B=S_x*S_y+lambda*(U_xy+U_x/y)`.
+Direct differentiation gives `A_x+B_y=0` and `B_x-A_y=0`:
+for the Hessian terms, the two divergence components are respectively
+`(partial_x Delta U-2U_x)/(2y^2)` and
+`(partial_y Delta U-2U_y)/(2y^2)`;
+for the gradient-square terms they are `S_x Delta S/y^2` and
+`S_y Delta S/y^2`. The two scalar equations cancel both components exactly.
+Consequently `A-iB` obeys the holomorphic Cauchy–Riemann equation and `A+iB`
+the antiholomorphic equation, without a reality assumption. This differentiation
+is the current Lean target. Modular weight and cusp admission remain separate
+obligations; no tensor-vanishing conclusion is being inferred from divergence.
+
+A second cusp-admission candidate uses the existing native L2 correction directly.
+Once both tensor polarizations are holomorphic/antiholomorphic and periodic,
+compact mean-value tests can transfer their derivatives onto the tests. The
+coordinate weight converts the local flat L2 norm of W to a polynomial height
+bound using its native norm. The explicit principal fields have polynomial
+height bounds. Polynomial growth of a periodic holomorphic field excludes all
+growing Fourier modes. Its possible constant mode must then be excluded using
+the original principal subtraction and native L2 admission: a nonzero constant
+trace-free Hessian contribution would force a y^2 term in the mean of U, whereas
+all explicit source principal exponents have real part strictly below 2 and W
+is native L2. This is a conjectured proof mechanism, not a proved bound or cusp
+admission theorem. It may replace a stronger global Hessian L2 estimate.
+
+The constant-mode test can be weaker still. Pair the period mean of the tensor
+with a smooth height test supported in [Y,2Y], and move both derivatives from W
+onto that test. Native L2 gives an O(Y^(3/2)) bound for the unweighted L1 pairing
+of W there; two transferred height derivatives contribute Y^(-2). After dividing
+by the test's height mass O(Y), the correction contributes O(Y^(-3/2)) times
+the native L2 tail norm. The explicit principal tensor contribution tends to zero
+because each squared-source exponent has real part below 2. A constant tensor
+Fourier mode would survive that averaging, hence must vanish. This scaled-test
+argument is a proposed replacement for solving the mean-field ODE, and still
+requires exact test normalization, integration-by-parts and source bounds in Lean.

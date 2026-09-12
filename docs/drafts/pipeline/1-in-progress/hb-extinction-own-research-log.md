@@ -54,6 +54,7 @@ Notation: `rho=x+it` is an actual Xi occurrence; `delta=x-1/2`; `S` is the liter
 10. **Adding that future response leaves the original lift's horizon trace. [Lean]**
     At fixed ingoing time `v`, `lift+R -> [-s(s-1) 2^(2s) amplitude²/4] timeOnset(2s,v) Q`. This is the exact trace, not a claim that it is nonzero at every point or amplitude.
     **No-go:** finite retarded lift reconstruction cannot silently be transferred to a future inverse with its boundary contribution deleted. **Survivor:** the explicit boundary datum that such a comparison must account for. No advanced Green reconstruction is asserted.
+    The source-derived correction to this value is now proved in item 20.
     Evidence: [FullSourceAdvancedAdmission](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSourceAdvancedAdmission.lean), `lift_plus_response_ingoing_horizon`.
 
 11. **The physical radial source reduces to an endpoint period with a retained remainder. [Scratch + paper]**
@@ -96,5 +97,19 @@ Notation: `rho=x+it` is an actual Xi occurrence; `delta=x-1/2`; `S` is the liter
     `w_plus(1-rho)=w_minus(rho)+1/2`, `w_minus(1-rho)=w_plus(rho)-1/2`. The four-Lambda coefficient theorem used in this attack also has a half-strip domain; its reflected label lies outside that domain. Values known only at discrete Xi occurrences do not license an identity-theorem continuation.
     **No-go:** source reflection supplies neither an unshifted marked-frequency exchange nor the reflected coefficient formula outside its proved domain. **Survivor:** exact frequency comparison and a precise domain boundary; the common physical clock has not been replaced.
     Evidence: [actual source-reflection test](hb-radiative-source-period-attack.md#actual-source-reflection-test-12-september-2026).
+
+19. **The original future kernel has an explicit source-horizon limit. [Lean]**
+    With source ingoing time `v` fixed and source radius tending to the horizon, the full Dirichlet kernel tends to half the direct-minus-image means at `Z_D=(exp(v-tau)-sinh x)/cosh x`, `Z_I=(exp(v-tau)+sinh x)/cosh x`. Their supports remain `v>=tau+x` and `v>=tau-x`, including characteristic values. At delay `h>=0`, the direct argument is `1+(exp x/cosh x)(exp h-1)`; its full theta mean tends to `Q` as the target approaches the ingoing horizon.
+    Evidence: [FutureHorizonCap](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFutureHorizonCap.lean), `native_kernel_source_horizon`, `halfKernel_at_delay`, `horizonMean_ingoing`.
+
+20. **A convergent source cap integral cancels the retained lift value. [Lean]**
+    Let `A_s(v,x)=integral_0^infinity g_s'(v+h) mean_Q(arcosh[1+(exp x/cosh x)(exp h-1)]) dh`. This integral is absolutely admitted with a radial-uniform bound; `A_s(v,x)->-g_s(v)Q` at the ingoing horizon. The image arm `A_s(v-2x,-x)` tends to zero. With the original lift coefficient `l_infinity`, the field `H=-l_infinity[A_s(tau+x,x)-A_s(tau-x,-x)]` has zero Dirichlet value and horizon trace `l_infinity g_s(v)Q`. Therefore `lift+reduced_future_response-H -> 0` at fixed ingoing time.
+    **Scope:** source-derived field-value cancellation; no differentiated Einstein flux, complete SS/SV/VV action, or left-QNM extinction is proved by it.
+    Evidence: [FutureHorizonCap](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFutureHorizonCap.lean), `boundaryDensity_integrable`, `boundaryArm_bound`, `onsetFirst_future_integral`, `capBoundaryField_ingoing`, `lift_response_sub_cap_ingoing_zero`. Scratch check and cached exact-leaf audit passed; module wired; formal lint passed.
+
+21. **The finite future Green calculation isolates one null-cap correction. [Paper]**
+    For source coordinates `a<=b<=B`, target `p=tau+x<=r=tau-x`, and the original lift `beta(a,b)Q`, direct-minus-image integration gives `G_B(L lift)=lift+integral_p^B beta_a(a,B)K_D(a,B)da-integral_r^B beta_a(a,B)K_I(a,B)da`. The diagonal contributions and cap corners cancel exactly. Source-rate decay and full theta growth admit the cap limit `lim_B G_B(L lift)=lift-H`, with `H` from item 20.
+    **Scope:** this Green cap identity remains a paper proof. It is not yet a Lean identification with a separately constructed advanced wave inverse or the complete physical action.
+    Evidence: [finite identity FG and cap limit FH](hb-radiative-source-period-attack.md#future-null-cap-green-calculation-12-september-2026).
 
 **Result of this research:** no complete radiative extinction theorem, fixed finite physical-clock invariance theorem, or RH proof has been obtained. None of these scoped no-gos disproves HB.

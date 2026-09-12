@@ -16,6 +16,8 @@
 - Kato, Theorem 3.1 (`arXiv:1406.0427`), assumes more than a real pole limit: `L^m` must continue meromorphically to an open neighborhood of the closed boundary half-plane and be holomorphic there except for the pole. For fractional order below one, the proof obtains a locally bounded-variation boundary remainder and Fourier decay.
 - `ZetaBinomialHalfBoundaryGerm.exists_local_analytic_zetaBinomialHalf_extension_at_oneLine` proves unconditionally that at every `1 + iy`, `y ≠ 0`, the actual positive Dirichlet square root of zeta extends holomorphically across `Re(s)=1` on a zero-free disk and squares to zeta there. The sign is fixed by agreement at one point of the connected right-half-disk.
 - `ZetaBinomialHalfBoundaryGerm.exists_local_normalized_analytic_sqrt_zetaPoleUnit` proves unconditionally that the entire pole unit `(s-1)·zeta(s)`, patched to value `1` at `s=1`, has an analytic square root `P` on a disk about `1`, normalized by `P(1)=1`.
+- `ZetaBinomialHalfBoundaryGerm.normalized_analytic_sqrt_zetaPoleUnit_eq_cpow_mul_LSeries` identifies that normalized root with the actual positive Dirichlet branch: `P(s) = (s-1)^(1/2)·LSeries zetaBinomialHalf s` on the right-half overlap. The real-axis normalization excludes the negative square-root branch.
+- `ZetaBinomialHalfBoundaryGerm.exists_local_zetaBinomialHalf_kato_remainder_factorization` proves the exact local identity `LSeries zetaBinomialHalf s / s - (s-1)^(-1/2) = (s-1)^(1/2)·H(s)` with `H` analytic near `s=1`.
 
 ## No-gos
 
@@ -28,5 +30,5 @@
 
 ## Open boundary
 
-- Complete the pole germ at `s=1`: construct the analytic unit square root of `(s-1)·zeta(s)`, identify it with `sqrt(s-1)·LSeries zetaBinomialHalf` on the positive real side, and prove the resulting Kato remainder is locally BV/Fourier-decaying.
+- Prove from the pole factorization that the boundary remainder is a one-cusp profile with integrable one-sided derivatives, hence locally BV and square-root-weighted Fourier-decaying.
 - Any claimed RH advance after that bridge must exhibit a source-derived mechanism that crosses `Re(s)=1` and trivializes root monodromy.

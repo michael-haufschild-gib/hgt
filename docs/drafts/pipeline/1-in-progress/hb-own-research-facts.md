@@ -97,6 +97,19 @@ These results are in `ThetaCuspHawkingBMAngularTwoResponse`, namespace `RHTower.
 - **F65 · Lean.** The explicit restored field `U=globalLift(W)-K` is pointwise modular invariant; adding back `K` recovers the actual native energy response almost everywhere. This fixes the complete principal field and the chosen finite-energy correction. **References:** `fullResponse_invariant`, `fullResponse_renormalized_native`.
 - **F66 · Lean.** The restored field satisfies the full original equation `(2-Delta)U=S²` distributionally on the entire modular half-plane: for every compact chart test `g`, `integral conj(Delta g)*U-2*integral conj(g)*U=-integral conj(g)*S²`. Integrability and the smooth cutoff's Green identity are proved before splitting the integrals. The theorem assumes neither `S² in L2` nor scalar-harmonic completeness. Smooth representative construction and full tensor identification are not conclusions of this theorem. **Reference:** `fullResponse_distribution_equation`.
 
+## Cross-branch algebra
+
+- **F67 · Analytical, from the proved rate formulas.** The two physical parent rates of the same Xi copy satisfy `(rho-2)+(-rho-1)=-3`; consequently `(sum+1)(sum+2)=2`. The shift-two inverse therefore also matches this cross-branch parameter expression. Identifying the original cross-branch Einstein equation with that expression is a separate obligation. **References:** F03; `D4BMModularCore.physicalRate`.
+- **F68 · Analytical nonresonance.** For any two Xi copies, each original Weyl exponent has real part strictly between zero and one. Every sum `a` of one exponent from each copy has `0<Re(a)<2`; hence `a(a-1)-2=(a-2)(a+1)≠0`. Thus all four principal powers of a product of two original scalar sources avoid the shift-two indicial roots, including pairs whose imaginary parts cancel. **Reference:** `xi_divisor_support_re_mem_open_unit`; factorization displayed above.
+
+## Smooth shift-two source inverse
+
+These results are in `ThetaCuspHawkingBMAngularTwoRegularity`, namespace `RHTower.D4BMAngularTwo`.
+
+- **F69 · Lean.** Every compact positive-height localization of the actual native correction `W` has every Sobolev order and a smooth representative. The localization equation retains both derivative commutators, the cutoff Laplacian, the inverse-square height density and the negative residual forcing. It holds across modular seams. **References:** `full_response_global_cutoff_laplacian`, `full_response_global_local_all_orders`, `full_response_global_local_smooth`.
+- **F70 · Lean.** The local representatives glue to a globally smooth, pointwise modular field representing the original `W` almost everywhere in both full invariant volume and native measure. It satisfies `(Delta-2)W=-G` pointwise; smoothness and the classical equation are derived from the constructed weak solution. **References:** `globalResponse_smooth`, `globalResponse_invariant`, `globalResponse_native_ae`, `globalResponse_classical_equation`.
+- **F71 · Lean.** Restoring the entire original cusp field gives a smooth modular `U` satisfying `(2-Delta)U=S²` pointwise in the original angular metric coordinates. It equals the previously proved distributional response almost everywhere; `U+K` remains the chosen native finite-energy correction. Every finite coordinate derivative exists at positive height. **References:** `smoothFullResponse_classical_equation`, `smoothFullResponse_ae_fullResponse`, `smoothFullResponse_renormalized_native`, `coordinateResponse_smooth`, `coordinateResponse_equation`.
+
 ## No-gos and exact surviving statements
 
 - **N01 · Lean; incoming temporal correction only.** The restored ingoing correction is analytic at each physical fundamental QNM, so it cannot cancel an already nonzero incoming temporal pole. **Survivor:** the original incoming pole coefficient is preserved exactly; the correction's finite value remains. **Reference:** `ThetaCuspHawkingBMCorrectionTemporalRestoration.incoming_corrected_residue`.

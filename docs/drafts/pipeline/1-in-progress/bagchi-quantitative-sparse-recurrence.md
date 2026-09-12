@@ -272,7 +272,19 @@ channel energies exactly with the square mass of the non-smooth coefficient sect
 variance question is now an arithmetic lower bound for the actual terminal AFE weights, followed
 by concentration of that conditional energy; it is not an unverified independence calculation.
 
-Three analytic sublemmas remain: non-smooth AFE coefficient mass and conditional channel energy
+The corresponding lower bound is now closed for the ideal right-line power profile. For
+`0<d<1/2`, normalized coefficient-square weight `N^(-2d)n^(-(1-2d))`, and every prime `p` with
+`2p<=N`, the complete dyadic cofactor block `N/(2p)<m<=N/p` has mass at least
+`((1/2)/2^(2d))/p` (`normalized_power_channel_lower_recip`). The reciprocal-prime mass between
+the half- and two-thirds-power cuts tends to `log(4/3)>0`; therefore
+`eventually_normalized_power_terminal_channels_lower` gives a uniform positive aggregate floor.
+Module: `RHTower.SteinhausLargestPrimePowerMass`; targeted build passes; axiom audit is only
+`propext`, `Classical.choice`, `Quot.sound`. This proves that variable
+composite cofactors repair the fixed-cofactor loss. It does not yet transfer the floor to the
+actual smooth AFE coefficients, whose cutoff may decay at the terminal edge.
+
+Three analytic sublemmas remain: transfer of the ideal positive mass to actual non-smooth AFE
+coefficients and conditional channel energy
 bounded away from zero on a positive-mass base event; a two-dimensional local lower bound uniform
 in the random centre and in finitely many boundary nodes; and deterministic vertical-orbit
 transfer for the resulting triangular family. Corpus deep/method-enriched searches found conditional probability
@@ -318,3 +330,6 @@ mixture or direct full-support law remains possible.
 - 2026-09-12 — C15.2: proved complex-coefficient Steinhaus Parseval and exact expected
   largest-prime-channel energy partition; isolated non-smooth terminal AFE coefficient mass and
   conditional energy concentration as next quantitative gate.
+- 2026-09-12 — C15.3: proved each variable-cofactor ideal power channel contributes a reciprocal-
+  prime floor and the half-to-two-thirds prime-power window has a uniform positive aggregate mass;
+  isolated transfer to actual right-line smooth AFE weights as the remaining coefficient gate.

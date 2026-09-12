@@ -230,6 +230,136 @@ theorem tendsto_sqrt_mul_norm_intervalIntegral_exp_mul_of_piecewise_ibp {a c b :
       rw [Real.sq_sqrt hz.le]
       ring
 
+private theorem aestronglyMeasurable_verticalCpow (q : ℂ) :
+    AEStronglyMeasurable (fun t : ℝ => ((t : ℂ) * Complex.I) ^ q) := by
+  apply Measurable.aestronglyMeasurable
+  apply measurable_of_continuousOn_compl_singleton (0 : ℝ)
+  apply continuousOn_of_forall_continuousAt
+  intro t ht
+  refine (continuousAt_cpow_const ?_).comp ?_
+  · rw [Complex.mem_slitPlane_iff]
+    right
+    simpa using ht
+  · fun_prop
+
+/-- The inverse square-root singularity on a vertical complex ray is locally integrable. -/
+theorem intervalIntegrable_verticalCpow_negHalf (a b : ℝ) :
+    IntervalIntegrable
+      (fun t : ℝ => ((t : ℂ) * Complex.I) ^ (-(1 / 2 : ℂ))) volume a b := by
+  rw [← IntervalIntegrable.intervalIntegrable_norm_iff
+    (aestronglyMeasurable_verticalCpow (-(1 / 2 : ℂ))).restrict]
+  have h := (intervalIntegral.intervalIntegrable_cpow'
+    (a := a) (b := b) (r := (-(1 / 2 : ℂ))) (by norm_num)).norm
+  refine h.congr fun t _ => ?_
+  symm
+  change ‖((t : ℂ) * Complex.I) ^ (-(1 / 2 : ℂ))‖ =
+    ‖(t : ℂ) ^ (-(1 / 2 : ℂ))‖
+  rw [show (-(1 / 2 : ℂ)) = ((-(1 / 2 : ℝ) : ℝ) : ℂ) by norm_num,
+    Complex.norm_cpow_real, Complex.norm_cpow_real]
+  simp
+
+/-- Square-root cusp on a vertical ray, multiplied by a regular complex factor. -/
+noncomputable def verticalCpowCusp (H : ℂ → ℂ) (t : ℝ) : ℂ :=
+  ((t : ℂ) * Complex.I) ^ (1 / 2 : ℂ) * H (1 + (t : ℂ) * Complex.I)
+
+private noncomputable def verticalCpowCuspDeriv (H : ℂ → ℂ) (t : ℝ) : ℂ :=
+  ((1 / 2 : ℂ) * ((t : ℂ) * Complex.I) ^ (-(1 / 2 : ℂ)) * Complex.I) *
+      H (1 + (t : ℂ) * Complex.I) +
+    ((t : ℂ) * Complex.I) ^ (1 / 2 : ℂ) *
+      (deriv H (1 + (t : ℂ) * Complex.I) * Complex.I)
+
+private theorem verticalCpowCusp_hasDerivAt {H : ℂ → ℂ} {t : ℝ} (ht : t ≠ 0)
+    (hH : DifferentiableAt ℂ H (1 + (t : ℂ) * Complex.I)) :
+    HasDerivAt (verticalCpowCusp H) (verticalCpowCuspDeriv H t) t := by
+  have hslit : (t : ℂ) * Complex.I ∈ Complex.slitPlane := by
+    rw [Complex.mem_slitPlane_iff]
+    right
+    simpa using ht
+  have hline : HasDerivAt (fun z : ℂ => z * Complex.I) Complex.I (t : ℂ) := by
+    simpa using (hasDerivAt_id (t : ℂ)).mul_const Complex.I
+  have hpow := hline.cpow_const (c := (1 / 2 : ℂ)) hslit
+  have harg : HasDerivAt (fun z : ℂ => 1 + z * Complex.I) Complex.I (t : ℂ) := by
+    exact hline.const_add (1 : ℂ)
+  have hHline := hH.hasDerivAt.comp (t : ℂ) harg
+  have hprod := hpow.mul hHline
+  convert! hprod.comp_ofReal using 1
+  simp only [verticalCpowCuspDeriv, Function.comp_apply]
+  rw [show (1 / 2 : ℂ) - 1 = -(1 / 2 : ℂ) by ring]
+
+private theorem continuous_verticalCpowHalf :
+    Continuous (fun t : ℝ => ((t : ℂ) * Complex.I) ^ (1 / 2 : ℂ)) := by
+  rw [continuous_iff_continuousAt]
+  intro t
+  refine (Complex.continuousAt_cpow_const_of_re_pos ?_ (by norm_num)).comp ?_
+  · left
+    simp
+  · fun_prop
+
+/-- An analytic factor times a vertical square-root cusp has the local Fourier decay required at a
+fractional Tauberian boundary. -/
+theorem tendsto_sqrt_mul_norm_intervalIntegral_verticalCpowCusp {δ : ℝ} (hδ : 0 < δ)
+    {H : ℂ → ℂ}
+    (hHcont : ContinuousOn (fun t : ℝ => H (1 + (t : ℂ) * Complex.I)) (uIcc (-δ) δ))
+    (hHdcont : ContinuousOn
+      (fun t : ℝ => deriv H (1 + (t : ℂ) * Complex.I)) (uIcc (-δ) δ))
+    (hHdiff : ∀ t ∈ uIcc (-δ) δ, t ≠ 0 →
+      DifferentiableAt ℂ H (1 + (t : ℂ) * Complex.I)) :
+    Tendsto (fun z : ℝ => Real.sqrt z *
+      ‖∫ t in (-δ)..δ, verticalCpowCusp H t *
+        Complex.exp (((z * t : ℝ) : ℂ) * Complex.I)‖) atTop (nhds 0) := by
+  have hpowCont : ContinuousOn
+      (fun t : ℝ => ((t : ℂ) * Complex.I) ^ (1 / 2 : ℂ)) (uIcc (-δ) δ) :=
+    continuous_verticalCpowHalf.continuousOn
+  have hwCont : ContinuousOn (verticalCpowCusp H) (uIcc (-δ) δ) := by
+    exact hpowCont.mul hHcont
+  have hsing := intervalIntegrable_verticalCpow_negHalf (-δ) δ
+  have hsingH : IntervalIntegrable
+      (fun t : ℝ => ((t : ℂ) * Complex.I) ^ (-(1 / 2 : ℂ)) *
+        H (1 + (t : ℂ) * Complex.I)) volume (-δ) δ :=
+    hsing.mul_continuousOn hHcont
+  have hfirst : IntervalIntegrable
+      (fun t : ℝ => ((1 / 2 : ℂ) *
+        ((t : ℂ) * Complex.I) ^ (-(1 / 2 : ℂ)) * Complex.I) *
+        H (1 + (t : ℂ) * Complex.I)) volume (-δ) δ := by
+    have h := hsingH.const_mul ((1 / 2 : ℂ) * Complex.I)
+    convert h using 1
+    funext t
+    ring
+  have hsecondCont : ContinuousOn
+      (fun t : ℝ => ((t : ℂ) * Complex.I) ^ (1 / 2 : ℂ) *
+        (deriv H (1 + (t : ℂ) * Complex.I) * Complex.I)) (uIcc (-δ) δ) := by
+    exact hpowCont.mul (hHdcont.mul continuousOn_const)
+  have hDint : IntervalIntegrable (verticalCpowCuspDeriv H) volume (-δ) δ := by
+    exact hfirst.add hsecondCont.intervalIntegrable
+  have hleftSub : uIcc (-δ) 0 ⊆ uIcc (-δ) δ := by
+    rw [uIcc_of_le (by linarith), uIcc_of_le (by linarith)]
+    intro t ht
+    exact ⟨ht.1, ht.2.trans hδ.le⟩
+  have hrightSub : uIcc 0 δ ⊆ uIcc (-δ) δ := by
+    rw [uIcc_of_le hδ.le, uIcc_of_le (by linarith)]
+    intro t ht
+    exact ⟨(neg_nonpos.mpr hδ.le).trans ht.1, ht.2⟩
+  apply tendsto_sqrt_mul_norm_intervalIntegral_exp_mul_of_piecewise_ibp
+      (a := -δ) (c := 0) (b := δ) (w := verticalCpowCusp H)
+      (wLeft' := verticalCpowCuspDeriv H) (wRight' := verticalCpowCuspDeriv H)
+      (by linarith) hδ.le
+  · exact hwCont.mono hleftSub
+  · exact hwCont.mono hrightSub
+  · intro t ht
+    apply verticalCpowCusp_hasDerivAt ht.2.ne
+    apply hHdiff t
+    · rw [uIcc_of_le (by linarith)]
+      exact ⟨ht.1.le, ht.2.le.trans hδ.le⟩
+    · exact ht.2.ne
+  · intro t ht
+    apply verticalCpowCusp_hasDerivAt ht.1.ne'
+    apply hHdiff t
+    · rw [uIcc_of_le (by linarith)]
+      exact ⟨(neg_nonpos.mpr hδ.le).trans ht.1.le, ht.2.le⟩
+    · exact ht.1.ne'
+  · exact hDint.mono hleftSub le_rfl
+  · exact hDint.mono hrightSub le_rfl
+
 /-- **Fractional Sobolev membership from an integrable derivative.**  An integrable function whose
 derivative is integrable lies in every Sobolev weight strictly below one half.  The exponent is
 sharp for this hypothesis: order-one decay is exactly the borderline. -/

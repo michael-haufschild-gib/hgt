@@ -4,6 +4,84 @@ Status: analytical source reduction; physical extinction and RH unproved. Fronti
 
 Verified findings and scoped no-gos from this work: [concise research log](hb-extinction-own-research-log.md).
 
+## Cap trace and physical contact, 12 September 2026
+
+**Current attack.** Test whether the source cap that cancels the lift value also
+cancels its physical charge. The existing all-component Einstein stream current,
+not a scalar substitute, fixes the interface. For ingoing covector jets `P,Q`, put
+`f=R^2-1`, `A=rough angular Laplacian minus one`,
+`O P=R^2 f P_RR+R^2(P_vR+P_Rv)+2R P_R-2R P_v`, and `M=O+A`.
+The original source contact has components
+
+```
+B_v = sum(P_R M Q-Q_R M P)/R^2,
+B_R = sum((f P_R+P_v) M Q-(f Q_R+Q_v) M P)/R^2,
+B_X = B_y = 0.
+```
+
+Adding it to the actual regular Einstein current cancels only the orbit-master
+terms. Its radial component is exactly
+
+```
+(J+B)_R = sum((f P_R+P_v) A Q-(f Q_R+Q_v) A P)/R^2.       (CR)
+```
+
+At `R=1`, this is `sum(P_v A Q-Q_v A P)`. Thus a contact-corrected
+**radial** horizon limit needs the admitted time/angular traces and control of
+the `f P_R` terms; it does not require a separate second-normal-derivative
+limit. Evaluating a regular jet at `R=1` alone does not prove that limit.
+The time component retains normal derivatives. The two angular components
+retain the original mixed time/radius curls, so (CR) removes no cusp face.
+
+The cap's already derived scalar trace is `l_infinity g(v) Q`. Its associated
+angular covector trace is `l_infinity g(v) *dQ`. Testing these literal trace
+fields against each other gives a source-specific angular Wronskian, retaining
+`*d(Delta Q-2Q)`. This is the same contact-corrected radial **trace expression**
+as the original lift. It is not a zero-charge theorem. Identification with the
+integral cap's differentiated current still requires admitted angular/time
+traces and the weighted normal remainder. The complete left-QNM, SS/SV/VV,
+correction, changing-weight and other boundary contributions remain separate.
+
+Formal verification of this interface and its literal trace evaluation is in
+progress. No new cap-current identity is counted as Lean-proved here yet.
+
+**Precise remaining trace admission.** Write `D_R P=f P_R+P_v` and let
+`p_v,q_v,a_p,a_q` denote the proposed time and angular traces. With
+`Phi=sum(p_v a_q-q_v a_p)`, (CR) gives the exact finite-radius defect
+
+```
+(J+B)_R-Phi = (R^(-2)-1) Phi
+  + R^(-2) sum((D_R P-p_v) A Q+p_v(A Q-a_q)
+               -(D_R Q-q_v) A P-q_v(A P-a_p)).          (CD)
+```
+
+Triangle inequality bounds the right side by the sum of the absolute products
+displayed. For the cap/physical-left pairing, this requires convergence and
+integrable majorants for these actual products on each admitted time/angular
+cutoff, followed by the original cusp subtraction and QNM continuation. The
+previous scalar value limit proves none of those derivative interchanges.
+This is a narrower interface than separately demanding every second normal
+jet, but it still retains the weighted normal remainder and all source contacts.
+
+**Fixed translation test.** The literal trace expression has clock factor
+`exp(-6v) chi(v)^2`. For `v>=1` and any fixed `T>=0`, its translation is
+`exp(-6T)` times itself. This statement concerns a boundary density, not the
+complete action. It provides no finite-clock invariance and no extinction.
+No frequency has been retuned. The angular factor still contains both
+`(2lambda-2) sum(*dQ)^2` and `2 sum(*dQ)(*dE)`.
+
+**Search record.** Two whole-corpus requests, deep and method views, returned
+57,317 indexed files with `partial=false`; the compiler snapshot still had
+44,818 pending files, so candidates were verified locally. Useful current
+hits were the complete stream current, original contact, full incoming chart
+identity, and native angular-Laplacian primitive. Broad arXiv searches for
+symplectic, characteristic, Darboux and observability did not supply a verified
+June–September 2026 theorem for this interface; direct date-sorted searches
+failed with a cache miss and HTTP 429. The retrieved
+[Getzler deformation paper](https://arxiv.org/abs/math/0002164) is from 2000
+and concerns Hamiltonian operators of hydrodynamic type. Its abstract gives
+no HB boundary or source-action theorem; none is imported into this argument.
+
 ## Future null-cap Green calculation, 12 September 2026
 
 The retained lift trace is now tested against the **original future source kernel**.
@@ -84,6 +162,60 @@ action therefore requires the lift and angular-seed boundary operators,
 retarded/future pulse difference, every scalar/vector channel correction,
 changing weights, and the actual left-mode source contacts in one pairing.
 The source-level sign or cancellation of that assembled pairing remains open.
+
+**Derivative test for the actual current (candidate, not proved).** In physical
+radius `R=-coth x`, the direct mean's argument is exactly
+`1+(1-1/R)(exp h-1)`. Define
+`G_j(v)=integral_0^infinity exp(j h) g(v+h) dh`, `j=1,2`.
+Both time integrals converge because the actual source has `Re(2s)<-2`.
+The native angular equation predicts the following ingoing traces for (FH):
+
+```
+H|R=1       = l_infinity g(v) Q,
+H_R|R=1     = (l_infinity/2) G_1(v) Delta Q,
+H_RR|R=1    = -l_infinity G_1(v) Delta Q
+               +(l_infinity/4)(G_2(v)-G_1(v)) Delta(Delta-2)Q.
+```
+
+The first line is now proved in Lean; the other two require differentiating
+the admitted full-source integral and proving derivative bounds. They are not
+consequences of value convergence. The displayed candidates satisfy the
+algebraic horizon recurrences for the original wave expression:
+`2(partial_v+1)H_R+Delta H=0` and
+`2(partial_v+2)H_RR+(Delta+2)H_R-2Delta H=0`, using
+`G_j'=-g-j G_j`. This is a paper consistency check, not derivative admission.
+The image has lower ingoing time `v-2x`; showing its first two physical-radius
+derivatives vanish requires corresponding estimates, not just its zero value.
+The metric stream reconstruction uses `R H`, so the Einstein-current test must
+also retain this radial factor before taking its derivatives.
+
+The angular seed has a different source field. Substitution of its actual
+`parameter=(2s+1)(2s+2)` into `sourceSeedPolynomial` gives `-parameter*u`;
+its scalar horizon coefficient is therefore
+`-parameter*2^(2s)*amplitude²`. Applying the future comparison to it needs
+a growth/admission proof for the constructed `fullAngularField`, not an
+unjustified reuse of the theta-square bound. The source equation
+`Delta A=parameter*(A+Q)` identifies the field, but does not alone bound its
+global circle means or set its physical pairing to zero.
+
+**Formal status.** `ThetaCuspHawkingBMFutureHorizonCap.lean` proves the original
+source-horizon kernel limit with both causal supports, absolute admission and
+uniform bounds for the full theta/onset cap integral, its exact onset endpoint,
+zero Dirichlet value, and the original lift horizon trace. Combining that trace
+with the earlier reduced future admission proves
+`lift_response_sub_cap_ingoing_zero`. These are field-value statements. The
+finite Green identity (FG), its cap-exhaustion identification (FH), the two
+derivative formulas, and Einstein left-QNM incidence have separate statuses;
+none is promoted to a Lean theorem by this field-value result.
+
+Scratch checking passed. The final isolated cached command was
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFutureHorizonCap`;
+the exact leaf passed in 70 seconds without proof diagnostics, and its guarded
+artifacts were installed. Source SHA-256:
+`700d7eea5d3d129e58011e29b0ec550c53d480e64bb09c4668090d15485409e8`.
+The leaf is wired into `RHTower.lean`. Formal lint passed, with existing
+large-file warnings; no umbrella or full build was run. The new leaf sets only
+`autoImplicit false`, with no heartbeat, depth, transparency or instance overrides.
 
 **External method comparisons.** The June 2026 curved-duality paper derives
 an on-shell boundary contribution in a different action; it gives no reason
