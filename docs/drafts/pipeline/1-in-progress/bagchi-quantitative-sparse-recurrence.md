@@ -4,6 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** `rh-alternatives-search-2026-09-12/assessment.md` · `rh-three-alternatives-working-log.md`
+- **Working log:** `bagchi-quantitative-sparse-recurrence-working-log.md`
 - **Statement:** Replace RH-equivalent positive-density zeta self-recurrence by a coefficient-faithful return count that quantitatively exceeds the strict-right-strip zero count.
 
 ## Goal
@@ -264,10 +265,17 @@ This retains the composite mass lost by the failed prime-only shell. Module:
 `RHTower.SteinhausLargestPrimeDecomposition`; targeted build passes; axiom audit is only `propext`,
 `Classical.choice`, `Quot.sound`.
 
-Three analytic sublemmas remain: conditional channel energy bounded away from zero on a
-positive-mass base event; a two-dimensional local lower bound uniform in the random centre and in
-finitely many boundary nodes; and deterministic vertical-orbit transfer for the resulting
-triangular family. Corpus deep/method-enriched searches found conditional probability
+The complex-coefficient Parseval identity is also closed in
+`RHTower.SteinhausComplexSecondMoment`. Consequently
+`steinhausCoefficientMass_eq_smooth_add_largePrimeChannelEnergy` identifies the sum of expected
+channel energies exactly with the square mass of the non-smooth coefficient sector. Thus the
+variance question is now an arithmetic lower bound for the actual terminal AFE weights, followed
+by concentration of that conditional energy; it is not an unverified independence calculation.
+
+Three analytic sublemmas remain: non-smooth AFE coefficient mass and conditional channel energy
+bounded away from zero on a positive-mass base event; a two-dimensional local lower bound uniform
+in the random centre and in finitely many boundary nodes; and deterministic vertical-orbit
+transfer for the resulting triangular family. Corpus deep/method-enriched searches found conditional probability
 infrastructure but no theorem closing these gates. Recent random-multiplicative evidence also
 warns that a standard complex-Gaussian CLT on dense support is the wrong target
 ([Escaping Chaos in Random Multiplicative Functions](https://arxiv.org/abs/2605.21737)); a Gaussian
@@ -289,9 +297,10 @@ mixture or direct full-support law remains possible.
   instead asks the terminal dual block to synthesize one explicit nonzero target.
 - **Status:** fixed uniform winding gap, sharp exponent-four AFE transfer, exact survival of
   prime-conditioned smooth resonances, the necessary-and-sufficient dual-target reduction, and
-  C15's arbitrary-weight largest-prime decomposition/locality interface are Lean-proved,
-  targeted-build verified, and axiom-audited. Open theorems are C15 aggregate target recurrence and
-  C13 full-strip strict-right zero density. No RH claim.
+  C15's arbitrary-weight largest-prime decomposition/locality interface and exact expected
+  channel-energy partition are Lean-proved, targeted-build verified, and axiom-audited. Open
+  theorems are C15 aggregate target recurrence and C13 full-strip strict-right zero density. No RH
+  claim.
 
 ## Log
 
@@ -306,3 +315,6 @@ mixture or direct full-support law remains possible.
 - 2026-09-12 — C15.1: proved arbitrary-complex-weight largest-prime channel decomposition, smooth
   background/channel low-phase locality, cofactor cutoff, and large/small phase disjointness; reduced
   remaining route to channel energy, conditional planar local law, and triangular orbit transfer.
+- 2026-09-12 — C15.2: proved complex-coefficient Steinhaus Parseval and exact expected
+  largest-prime-channel energy partition; isolated non-smooth terminal AFE coefficient mass and
+  conditional energy concentration as next quantitative gate.

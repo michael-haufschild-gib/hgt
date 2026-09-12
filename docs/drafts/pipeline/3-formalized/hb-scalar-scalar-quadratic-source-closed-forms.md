@@ -52,3 +52,11 @@ Consistency: the (2,3) component agrees with the corpus `angularCoefficient_eq` 
 - Field level (`HTGeometry/TwistedRadialDerivative`, `…ScalarStreamReconstructionField`): Horner rational coefficients with explicit derivatives, `twist_linear`, per-chain twist lemmas split per symbol; `sourced_equation_TT … _L` for actual radial functions under `SourcedMasterData` (twisted-jet differentiability, master ODE, Bianchi at order 0 on the exterior). Axioms standard everywhere.
 - Dictionary (bookkeeping): master operator in the undressed variable equals `(4/(r²f))` times the corpus `d4BMPlusPlusHypergeometricJet` at `z = 1−r⁻²` with `C = 1+2s`, `A+B = ½+2s`, `AB = s²+s/2−μ/4`.
 - Structural: the master equation is the conformally coupled scalar (m² = −2) on Rindler-AdS₄; row 37 needs only the fundamental's own harmonic (reciprocity), the μ-independent Green only for global existence of K₀.
+
+## Per-harmonic causal response as a metric field (2026-09-12, fifth pass)
+- `ThetaCuspHawkingBMScalarStreamMasterDictionary`: `masterOp_comp_zmap` (undressed master operator = `4/(r²(r²−1))` × corpus `d4BMPlusPlusHypergeometricJet` at `z = 1−r⁻²` under `C = 1+2s`, `A+B = ½+2s`, `AB = s²+s/2−μ/4`), `dict_C/ApB/AB` for the Birmingham–Mokhtari parameters (`s = −i·chi − (2n+3/2)`, `μ = −(¼+chi²)`), `greenResponse_masterOp`.
+- `ThetaCuspHawkingBMScalarStreamSourceField`: Horner radial sources, smoothness, `ssSourcedMasterData`, `ssSourced_equation_*`.
+- `ThetaCuspHawkingBMScalarStreamGreenSourced`: forcing `−(r²(r²−1)/4)·ssMasterSource` in `z`, `greenSS`, bootstrap regularity (`contDiffOn_of_linear_ode`), `greenSS_equation_TT … _L`.
+- `ThetaCuspHawkingBMScalarStreamEinsteinLower`: lower-triangle stream operator components.
+- `ThetaCuspHawkingBMScalarStreamHarmonicField`: `harmonicMetricField_jet` (actual two-jet via `ofField_mul`, `envelope_jet`, `angular_lift_jet`, `ofField_radialLift`, `hasDerivAt_twist`), `harmonicMetricField_einstein`, `greenSS_metricField_einstein`. Axioms standard throughout.
+- Still open for row 37: the true SS source is not a single harmonic; the pairing with the − mode's profile reduces the ++ contribution to the single-harmonic response at `Y = S`, `μ = λ`, times the renormalized triple product `⟨S,S²⟩/⟨S,S⟩` (non-L² pairings need the cutoff/renormalized machinery).

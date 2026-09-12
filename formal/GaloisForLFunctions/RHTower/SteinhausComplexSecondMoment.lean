@@ -75,7 +75,8 @@ theorem integral_normSq_dpoly_complex (a : ℕ → ℂ) (s : Finset ℕ)
         ((‖∑ n ∈ s, a n * X n omega‖ ^ 2 : ℝ) : ℂ) := by
     intro omega
     rw [Complex.mul_conj']
-    rfl
+    push_cast
+    ring
   rw [integral_congr_ae (Filter.Eventually.of_forall hpoint),
     integral_complex_ofReal] at h
   exact_mod_cast h

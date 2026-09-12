@@ -2,6 +2,99 @@
 
 Status: analytical source reduction; physical extinction and RH unproved. Frontier map remains read-only.
 
+Verified findings and scoped no-gos from this work: [concise research log](hb-extinction-own-research-log.md).
+
+## Future null-cap Green calculation, 12 September 2026
+
+The retained lift trace is now tested against the **original future source kernel**.
+This attacks the boundary term needed in a causal/transpose comparison. It does
+not identify that comparison with the complete corrected Einstein action.
+
+Put `p=tau+x`, `r=tau-x`, `x<0`, and fix a finite source outgoing cap `B>=r`.
+Source null coordinates are `a=t_source+y`, `b=t_source-y`. The direct future
+region is `r<=b<=B, p<=a<=b`; the image region is `r<=b<=B, r<=a<=b`.
+Let `K_D(a,b)` and `K_I(a,b)` be the actual full theta-square Riemann means in
+these two regions, without the kernel's factor one half. For the literal lift,
+
+```
+ell(t_source,y,z)=l(y) g(a) Q(z),
+beta(a,b)=l((a-b)/2) g(a),
+g(a)=timeOnset(2s,a),
+l_infinity=-s(s-1) 2^(2s) amplitude²/4.
+```
+
+**Finite identity (paper derivation).** Let `G_B` mean the direct-minus-image
+circle average of a source over those regions, with the original null Jacobian
+and kernel normalization, hence factor `1/4`. The exact Green identity is
+
+```
+G_B(L ell)=ell(tau,x,z)
+  + integral_p^B beta_a(a,B) K_D(a,B) da
+  - integral_r^B beta_a(a,B) K_I(a,B) da.                 (FG)
+```
+
+Here `L` is the original full angular wave operator. To derive (FG), the
+proved source-variable Goursat equation gives the averaged integrand
+`K beta_ab-beta K_ab`. Write this as
+`partial_a(K beta_b)-partial_b(beta K_a)` and integrate each finite triangle.
+The characteristic identities are `K_D(p,b)=Q`, `K_I(r,b)=Q`, and
+`(K_D)_a(a,r)=0`. The diagonal has `beta(a,a)=0`; the two diagonal terms
+`K(a,a) beta_b(a,a)` cancel because the original direct and image kernels
+agree there. Integrating the cap term `beta K_a` once in `a` cancels its
+corner with `-Q beta(p,B)` (respectively `-Q beta(r,B)`). The direct vertex
+leaves `Q beta(p,r)=ell`; the image vertex is on the zero diagonal. This
+derivation keeps the onset derivative in `beta_a`; it sets no contact to zero.
+
+**Cap limit.** With `a` fixed and `b->infinity`, the original invariants tend to
+
+```
+Z_D(a)=(exp(a-tau)-sinh x)/cosh x,
+Z_I(a)=(exp(a-tau)+sinh x)/cosh x.
+```
+
+This follows from `cosh(a-tau-y)/cosh y` and `sinh y/cosh y`, with
+`y=(a-b)/2`. Causal supports remain `a>=p` and `a>=r`, including their
+characteristic values. The full source mean is evaluated at `arcosh Z`;
+no principal-mode truncation is used.
+
+Also `beta_a(a,B)->l_infinity g'(a)`. The radial lift and its first
+derivative are bounded for compact radius in `[0,1]`, and the derivative
+tends to zero at the horizon. The actual source rate has `Re(2s)<-2`.
+Choose the existing majorant exponent `a0<c<2`, with
+`a0=1+2|Re(rho-1/2)|`. On the direct cap,
+`arcosh Z <= a-p+|x|+log 4`. Thus the cap integrand is bounded by a constant
+times `exp(-(c-a0)a)`; the image obeys the corresponding bound. Dominated
+convergence gives the paper consequence
+
+```
+lim_B G_B(L ell)=ell-H,
+H=-l_infinity [integral_p^infinity g'(a) mean_Q(arcosh Z_D(a)) da
+               -integral_r^infinity g'(a) mean_Q(arcosh Z_I(a)) da].       (FH)
+```
+
+The exponent `c` is only an integrable majorant. It changes no physical rate
+or clock. This is a cap-exhaustion identity; identification with any separately
+defined advanced Bochner wave inverse needs its own admission. In particular,
+no differentiated Einstein flux or left-QNM projection is inferred from (FH).
+
+**Consequences for the whole chain.** Finite retarded lift reconstruction and
+(FH) differ by a specific source boundary operator. The existing future
+admission for the reduced forcing cannot remove it. Testing the complete
+action therefore requires the lift and angular-seed boundary operators,
+retarded/future pulse difference, every scalar/vector channel correction,
+changing weights, and the actual left-mode source contacts in one pairing.
+The source-level sign or cancellation of that assembled pairing remains open.
+
+**External method comparisons.** The June 2026 curved-duality paper derives
+an on-shell boundary contribution in a different action; it gives no reason
+to delete the BM cap ([Chakrabarti–Manna–Raman](https://arxiv.org/html/2606.18013v1)).
+The September stationary tidal-resonance model distinguishes conserved energy
+from other resonant changes ([Bonga et al.](https://arxiv.org/abs/2609.03732)).
+Those comparisons motivate retaining the actual observable; neither supplies
+an Einstein-source or extinction premise. Current deep and method searches
+covered 57,309 indexed files without partial results; retrieved generic
+Poisson and Euler-boundary objects did not identify this physical cap.
+
 ## Future-response admission and the retained lift boundary
 
 **12 September 2026 continuation; source admission and boundary values audited in Lean.**

@@ -2669,7 +2669,7 @@ solution. `ThetaCuspHawkingBMForcedMetricField.forcedMetricField_einstein`
 already solves all sixteen components for its specified scalar-vector mixed
 source. These are usable producers, not gaps to rebuild.
 
-New analytical conjecture: the explicit scalar-scalar master source admits a
+The explicit scalar-scalar master source admits a
 particular solution y(r)=r+A/r+B/r^3 at independent complex rate s and angular
 eigenvalue mu. Clearing the twisted master operator gives
 
@@ -2680,19 +2680,19 @@ On r^k this equals k(k+1)r^(k+2) +
 this operator applied to r exactly. The remaining two coefficients determine
 B and A by triangular elimination. The apparent B denominator
 mu-(2s+3)(2s+4) cancels against an exact factor of the source numerator;
-that cancellation must be checked in Lean. The remaining possible denominator
+that cancellation is proved in `ssMasterSource_laurent`. The remaining possible denominator
 is mu-(2s+1)(2s+2), besides the existing angular factor 2-mu.
 
-Whole-chain test: if proved, this is a source-specific particular inverse
+Whole-chain consequence: this is a source-specific particular inverse
 without tying parent rate to output angular eigenvalue. The original source
 transport and the homogeneous correction enforcing causal horizon/AdS data
 still need to be derived. Any correction or resonance must be carried into
 the original left-mode pairing and fixed-clock question; a particular solution
-alone supplies no extinction. Next test: prove the actual derivative identity,
+alone supplies no extinction. The new leaf proves the actual derivative identity,
 exact source cancellation, and smooth sourced reconstruction with this field.
 
-The next conjecture concerns boundary admission, not a vanishing source:
-for the finite Laurent particular field, subtracting the forced r term gives
+The exact boundary decomposition is proved: for the finite Laurent particular
+field, subtracting its r term gives
 A/r+B/r^3. In reciprocal radius x=1/r, the scaled full field is the polynomial
 1+A*x^2+B*x^4; the subtracted remainder is A*x+B*x^3. Thus its boundary germ
 can be retained exactly before reconstruction and pairing. Whether the original
@@ -2729,7 +2729,8 @@ The analytic coefficients simplify further. With d=(2s+1)(2s+2),
         + 3s(s+1)^2(3s+4)/(2(mu-d)),
     B = -s^2(s+1)^2/8 - s^2(s+1)^3(s+2)/(4(2-mu)).
 
-These simplifications are under Lean verification. The parameter d is exactly
+These simplifications are proved in `laurentMasterA_resolvents` and
+`laurentMasterB_resolvent`. The parameter d is exactly
 the existing mixed-source angular parameter, as seen in
 `D4BMModularCore.parameter_physicalRate`. Moreover,
 `fullAngularField_equation` already supplies
@@ -2741,3 +2742,84 @@ exposed by the radial solution. It still requires the original source identity,
 matching the inverse-at-2 domain, and proving the reconstructed metric's physical
 boundary and time-onset conditions. Those conditions determine whether this
 particular field can enter the causal action and the extinction argument.
+
+The exact angular lifting candidate is now explicit. Let F=S^2,
+(2-Delta)U=F, and (Delta-d)V=F, with d=(2s+1)(2s+2). Then set
+
+    A_field = s(5s+2)F/2 + s^2(s+1)(s+2)U
+              + 3s(s+1)^2(3s+4)V/2,
+    B_field = -s^2(s+1)^2 F/8 - s^2(s+1)^3(s+2)U/4,
+    y(r,z) = r F(z) + A_field(z)/r + B_field(z)/r^3.
+
+The existing full angular field supplies V=2*fullAngularField/d. The existing
+`ThetaCuspHawkingBMAngularReconstruction` supplies the bounded weak inverse
+for U on L2 forcing. To restore the full source, its cusp principal response
+at shift two is explicit: for F_pr=(A*y^rho+D*y^(1-rho))^2,
+
+    U_pr = A^2*y^(2rho)/(2-(2rho)(2rho-1)) + A*D*y
+           + D^2*y^(2-2rho)/(2-(2-2rho)(1-2rho)).
+
+Neither nonconstant denominator vanishes for a Xi occurrence.
+`xi_cusp_two_denominators` discharges those factors, and
+`xi_cusp_two_response_equation` proves the full principal-part differential identity. Then a smooth modular cusp cutoff and its compact
+commutator can reduce the remaining forcing to the native L2 problem; global
+smooth reconstruction and restoration must still be supplied at this shift.
+This is a construction target, not an assumed full angular solution.
+
+The tensor matching test remains essential: the source-harmonic coefficient
+file describes scalar harmonic images of the full quadratic source. Lifting
+those coefficients must identify the actual angular tensor, including any
+remaining trace-free tensor component, instead of declaring the projection
+complete. The already proved full quadratic conservation supplies compatibility
+but does not by itself prove that tensor identification. Likewise the explicit
+r term must remain through reconstructed metric boundary conditions, physical
+time onset, and original left-QNM pairing. The scalar Laurent construction does
+not yet establish a causal tensor inverse or fixed-clock extinction.
+
+### Full original angular reconstruction at shift two
+
+The Laurent coefficients require U solving (2-Delta)U=S^2. The proved weak construction uses the actual cusp response Q=cuspPowerResponse(2,rho,A,D),
+whose equation is (Delta-2)Q=P^2 for the original principal part P. With the
+existing smooth height cutoff chi, put K=chi*Q and
+G=S^2-(Delta-2)K. Above height three G=S^2-P^2, which the existing literal
+Fourier-tail theorem bounds; on the remaining compact cell G is smooth.
+Thus G belongs to the original modular L2 space. The already constructed
+coercive inverse gives the unique native finite-energy solution W of
+(2-Delta)W=G. The intended complete response is U=W-K.
+
+Full cell-germ compatibility preserves K and every cutoff derivative
+at modular seams. The restored field U now satisfies (2-Delta)U=S^2 against
+every compact chart test on the full modular half-plane; the cutoff Green
+identity and integrability are proved before separating the integrals.
+The exact theorem is `D4BMAngularTwo.fullResponse_distribution_equation`.
+After this original forcing admission, W still requires
+local weak-to-smooth reconstruction and pointwise restoration. The tensor
+matching question remains separate: the trace-free harmonic reconstruction
+must account for the whole original angular tensor, including any component
+invisible to its scalar divergence. Neither step is assumed from conservation.
+
+The source tensor suggests a second construction test once U is smooth. Write
+F=S^2 and lambda=rho(rho-1), and let HessTF be the actual hyperbolic trace-free
+Hessian. The source-harmonic dictionary predicts
+
+    [Hess(F)-dS tensor dS]^TF = HessTF(F+lambda*U).
+
+Their divergence agrees when (2-Delta)U=F and Delta S=lambda*S. The missing
+statement is vanishing of their divergence-free, trace-free difference, rather
+than an assumed completeness of scalar harmonics. For each original principal
+power y^(2rho), y, y^(2-2rho), direct differentiation predicts exact equality:
+HessTF(y^a) has diagonal entries -a(a+1)y^(a-2)/2 and its negative. The residual
+native homogeneous cusp power y^(-1) has zero trace-free Hessian. These are
+paper-level checks to formalize, not yet facts in the working log. A modular
+holomorphic quadratic-differential or energy argument may then identify the
+remaining tensor globally, provided its actual cusp admission is proved.
+
+The broad weight-four corpus search found a concrete uniqueness ingredient in
+`Bottcher2Cusp.quarticDefect_eq_zero`: it applies
+`CuspForm.rank_eq_zero_of_weight_lt_twelve` to a constructed level-one
+weight-four cusp form. The source declaration in the installed
+`Mathlib.NumberTheory.ModularForms.LevelOne.DimensionFormula` is verified.
+Thus a weight-four cusp-form identification can close the tensor remainder
+without a scalar spectral-completeness assumption. That identification is still
+open. Since the tensor is complex-valued, both its holomorphic and
+antiholomorphic components must be retained; real-valuedness is not assumed.
