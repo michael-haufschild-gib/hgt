@@ -4,6 +4,250 @@ Chain: literal theta-cusp source → Xi occurrence → retained spin-two source 
 physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 RH remains unproved. The frontier map is read-only.
 
+## Actual RH closing obligation
+
+The active target is the literal augmented Einstein causal pairing and its
+fixed-clock extinction. The overtone source-moment argument below is an
+unproved auxiliary approach; completing it alone does not close this target.
+
+`ThetaCuspHawkingBMSecondHarmonicPeierlsPolarizedLanding` requires an actual
+source-pairing incidence in
+`d4BMXiSecondHarmonicCokernelCausalCut_eq_PeierlsPolarizedCandidate`.
+`ThetaCuspHawkingBMSourceFixedPeierlsReflectionRigidity` proves RH from this
+incidence on source families exchanged by reflection in one cyclic/skew
+Peierls theory. The packet model in
+`ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence` has algebraic
+incidence, but its required source covariance is itself an RH equivalent.
+It does not discharge the literal metric's physical incidence.
+
+A checked amplitude reduction targets this missing physical pairing. Put
+`Q(p)=B(p,p)/2` and `Omega(f,g)=pairing(Delta(f),g)`. Under the existing
+cyclicity and Peierls-skewness assumptions, the complete cubic cut is
+`C(p,m)=2*Omega(Q(p),Q(m))`. Its double polarization is
+
+```
+C(pS+pV,mS+mV)-C(pS,mS+mV)-C(pV,mS+mV)
+  -C(pS+pV,mS)+C(pS,mS)+C(pV,mS)
+  -C(pS+pV,mV)+C(pS,mV)+C(pV,mV)
+  = 2*Omega(B(pS,pV),B(mS,mV)).
+```
+
+This identity passed `lake env lean` in scratch at default resource limits
+on 2026-09-12. Its proof expands the existing polarized-cut theorem by
+bilinearity and symmetry of `B`. It is conditional Peierls algebra, not a
+new unconditional physical theorem, and was not installed as a Lean leaf.
+The selected quartic coefficient depends only on the mixed radiative
+sources once physical cyclicity/skewness has been established. This does
+not remove those physical assumptions or prove extinction.
+
+The raw-source attachment is essential. The all-component theorem
+`D4BMQuadraticMixedSource.einstein_component` states
+`B(S,V)+L(k)=T`, where `k` is the explicit ingoing correction and `T` is
+the constructed mixed tensor. Thus its source pairing must retain
+
+```
+Omega(Bplus,Bminus) = Omega(Tplus,Tminus)
+  -Omega(L(kplus),Tminus)-Omega(Tplus,L(kminus))
+  +Omega(L(kplus),L(kminus)).
+```
+
+The next physical incidence calculation must evaluate this entire
+expression using the original retarded/advanced responses and the four
+components of `D4BMMixedActionCurrent.stream_complete_action_current`,
+including the correction's horizon/onset traces. No theorem presently
+identifies it with the RH-detecting BM boundary concomitant. Nor is its
+fixed-Hawking-clock extinction proved. These are the closing obligations;
+the displayed algebraic reductions do not settle them.
+
+## Incoming correction and its significance for the full chain
+
+The incoming temporal correction is formalized in
+`ThetaCuspHawkingBMCorrectionTemporalRestoration`. Scratch verification and
+the exact leaf audit passed at default resource limits; the leaf is wired
+into `RHTower` without an umbrella build. The starting points are the
+original mixed correction jet, the
+complete Einstein action current, the literal source amplitude and the
+existing quadratic endpoint Mellin theorem.
+
+Write `s=D4BMModularCore.physicalRate q branch`, `kappa=s*(s+1)/2`,
+`r=-coth(x)`, `u=1/r` and `z=1-u^2`. The original onset amplitude is
+
+```
+A(w,x)=exp(w*x)*(1+u)^(2*s)*a^2*continuedOnset(s,w).
+c(r)=kappa*A(w,tortoise(r))*(r^2-1)/r^3.
+c'(r)-2*c(r)/r
+  =kappa*A*((w-2*s)/r^3-3/r^2+(5+2*s)/r^4).
+```
+
+For the correction angular covector `J` and an independent left covector
+`K`, the exact temporal Einstein density is
+`w*d/(r^2-1)*(c'-2*c/r)*sum(J_j*K_j)`. The original correction's metric and
+every first derivative are identified with this separated representation.
+The covectors are not identified with each other. At the original
+frequency `w=2*s`, the reduced derivative is
+`kappa*B^2*((2*s+5)/r^4-3/r^2)`.
+
+For the incoming left mode, the original radial Jacobian gives
+`z^(w-1)*H(w,z)`, where
+
+```
+H = w*kappa*angular/2 * amplitudeProfile(s,a,continuedOnset(s),w,z)
+    * gaussProfile(q,w,z)
+    * ((w-2*s)*sqrt(1-z)-3+(5+2*s)*(1-z)).
+```
+
+The common-cutoff integral is restored with both terms
+`c0(w)*e^w/w+c1(w)*e^(w+1)/(w+1)`. Its finite part is analytic at every
+physical fundamental QNM, hence has zero pole residue. Its finite value
+is retained. `incoming_corrected_residue` proves that subtracting this
+restored correction preserves exactly the original incoming temporal
+pole coefficient `FP(clearedDensityProfile)(w0)/denominatorSlope`.
+
+The resulting no-go is specific: this incoming temporal contribution
+cannot remove an already nonzero pole. Its positive content is exact
+coefficient preservation, with the full restored correction still
+present. This is not a proof that the full raw-source Peierls pairing is
+unchanged. Opposite-horizon, radial, angular and outer contributions, and
+the causal inverse's treatment of the correction, still need evaluation.
+
+The full-chain implications determine the next conjectures, rather than
+treating this component as the sole path to RH:
+
+- `physicalSelfSourceCoefficient_zero_iff_xi` independently identifies
+  angular-source cancellation with zeros at `5*rho/2-1`, `rho/2`, or
+  `3*rho/2`. A regular correction does not exclude these incidences or
+  radial source cancellation. A candidate replacement is detection by a
+  family of original adjoint channels; joint detection must be proved
+  without replacing the source.
+- `physicalPrimitiveCurrent_balance` identifies integrated complete
+  source work with the retained final-time physical primitive current.
+  `retardedPulse_late_history` identifies the entire late onset-pulse
+  response with its original initial-history strip. Thus the fixed-clock
+  conjecture must estimate the retained response/current in the original
+  observable. Vanishing of the shifted source alone does not give that
+  estimate.
+- `d4BMXiSourceFixedPeierls_global_BM_incidence_forces_rh` supplies another
+  closing mechanism: actual oriented incidence and source exchange in
+  one cyclic/skew theory force RH. The candidate bridge from the native
+  physical Green balance to the joined Einstein Peierls action must
+  retain its original source, pairing, conjugation and boundary terms.
+  The abstract reciprocal half-jump construction supplies none of those
+  physical identifications.
+
+The literal source-exchange conjecture is now proved for independent,
+unchanged scalar/vector amplitudes in
+`ThetaCuspHawkingBMLiteralSourceReflection.lean`. The complete field and
+every nonlinear Einstein-source coefficient exchange under functional-
+equation reflection. Matching the RH candidate's normalized amplitudes
+and physical pairing remains an obligation; the source identity alone
+does not establish that incidence.
+
+These are unproved closing mechanisms. The new correction theorem does
+not prove angular coupling, full physical incidence, extinction or RH.
+
+## Literal source reflection and consequences for closure
+
+**Status:** paper proof closed; scratch checked with default Lean limits;
+exact new leaf audit passed. The leaf is imported by `RHTower.lean`;
+no umbrella build was run.
+
+The successful conjecture is a field identity, rather than an inference
+from an integrated Eisenstein vertex. For every positive integer `n`,
+the original arithmetic coefficient obeys
+
+```
+a_u(n) = n^u * sum_(d|n) d^(-2u) = a_(-u)(n).
+```
+
+Divisor complement `d -> n/d` proves this equality term by term after
+reindexing the finite sum. The corpus's `modifiedBesselKOrder_neg` then
+preserves every signed Fourier mode and hence the complete infinite
+zero-word tail. At nonreal `u`, the completed functional equation
+exchanges `Lambda(2u)` with `Lambda(1+2u)` under `u -> -u`, simultaneously
+exchanging their Weyl powers. Thus the full literal scalar satisfies
+`scalar(-u)=scalar(u)` at every coordinate. Its actual coexact covector
+and the complete metric reconstruction inherit the identity.
+
+At each multiplicity-labelled Xi occurrence, put `u=rho-1/2` and use the
+original fundamental rate `s=D4BMModularCore.physicalRate(q,b)`. The
+metric frequency is `omega=I*s`, since the temporal factor is
+`exp(-I*omega*t)`. The new `physicalPerturbation_eq_qnm` verifies both
+frequency conversions against the original plus/minus QNM definitions;
+`physicalPerturbation_first_source_zero` closes their linear Einstein
+equations using the existing literal source theorem. Reflection gives
+
+```
+u(reflect(q)) = -u(q)
+s(reflect(q),b) = s(q,!b)
+h(reflect(q),b,aS,aV) = h(q,!b,aS,aV).
+```
+
+`physicalSource_reflect` proves equality of the actual full Einstein
+source as a function of perturbation amplitude. Consequently
+`physicalSource_coefficient_reflect` covers every derivative order,
+including the original quadratic and cubic coefficients. These Xi
+identities have no supplied symmetry, regularity or field-equation
+premises. The amplitudes `aS` and `aV` remain independent.
+
+**Effect on the complete RH chain:** source exchange is available for
+the concrete on-shell metric family. Taking its two branches as `p,m`
+supplies the exchange identities in the existing cyclic/skew Peierls
+receiver at fixed amplitudes. The remaining construction must match
+those fields, the actual source bilinear map, the causal inverse and
+the normalized BM candidate in one physical pairing, with every
+correction and boundary term retained. Neither an abstract reciprocal
+half-jump nor an injective finite channel map makes that identification.
+Source-coupling nonvanishing and fixed-clock extinction remain open.
+
+The broad helicity search also found `collisionHelicity_reconstruct`
+and `angularCoefficient_collisionHelicityPlus/Minus` in
+`PolyatomicAngularHelicity.lean` (namespace
+`RHTower.D4BMQuadraticAngularSource`). They give exact reconstruction
+and factorization of the original quadratic angular tensor. This is a
+concrete joint-detection candidate when one scalar angular projection
+vanishes: prove the physical adjoint channel family detects these
+components of the same source. Pointwise tensor reconstruction does
+not itself prove a nonzero global left-QNM overlap.
+
+Broad/deep/method retrieval also located
+`SelbergModularCurrentGreen.current_green_identity`, retaining side,
+top and curved-arc fluxes. It is a candidate integration mechanism for
+the original current, not a ready-made Einstein reciprocity theorem.
+The broad literature search found a related methodological example in
+[Khankhoje–Kundu, arXiv:2606.14486, §III](https://arxiv.org/html/2606.14486v1):
+full reaction integrals restore reciprocity missed by a reduced
+scattering description. Its electromagnetic result is not imported
+as a theorem about this gravitational source.
+
+Keep the source's `center(q)` distinct from the original left probe's
+`physicalAngularParameter(q)=(rho-1)/2`, and the fundamental rate above
+distinct from the doubled rate in `D4BMCuspProjection`.
+
+The next physical-pairing conjecture has a specific source in the corpus:
+`EinsteinActionBoundary.densityPath_first_variation` gives the original
+Einstein--Hilbert variation as minus the volume-weighted raised Einstein
+residual plus its complete connection-current divergence. Differentiate
+twice in independent on-shell directions, using the same volume branch.
+The candidate identity is that the cyclicity defect
+`<x,B(y,z)> - <z,B(x,y)>` equals minus the boundary divergence of the
+`y`-variation of the original symplectic current of `x,z`. With the
+corpus's relative-density convention, that variation must differentiate
+
+```
+volumeRatio J.metric Y.metric 0 0 t *
+  actionSymplectic (affine J Y t) X Z a
+```
+
+rather than `actionSymplectic` alone. This is an unformalized conjecture
+about the actual current; no global cyclicity is claimed. The existing
+`CubicSource.pairedSource_cubic` separately exhibits the varying-test
+weight multiplying the complete quadratic residual. These are concrete
+terms to track when joining the source action and the boundary pairing.
+If the resulting boundary flux cancels in the original common-cutoff
+limit, it supplies the physical cyclicity premise. If it survives, its
+exact value belongs in the full action incidence and in the fixed-clock
+observable. Either outcome changes the whole closing argument.
+
 ## Closed local action attachment
 
 The local action attachment uses three checked and audited leaves:
@@ -1405,9 +1649,23 @@ The current analytical attack retains the prescribed unit-duration
 onset and varies only the original physical QNM overtone. The exact
 formula gives `w_n=w_0-2*n`, hence
 `clearedOnset(s,w_n)=onsetPulseTransform(2*s-w_0+2*n)`.
-The conjecture under formal development is: for every fixed complex
-`z`, this original pulse transform at `z+2*n` is nonzero for all
-sufficiently large `n`.
+`ThetaCuspHawkingBMFixedOnsetRealTilt` proves that, for every fixed
+complex `z`, this original pulse transform at `z+2*n` is nonzero for
+all sufficiently large `n`. Its scratch check and exact module audit
+passed with default heartbeats; the exact audit took 24 seconds.
+`ThetaCuspHawkingBMFixedOnsetOvertoneSurvival` proves the physical
+corollary: for every original Xi copy there is one `N` such that, for
+every `n>=N` and both source-rate and QNM-side choices, the original
+`clearedOnset` and `continuedOnset` are nonzero. Its scratch check and
+exact module audit passed; the latter took 21 seconds. Both leaves
+are installed with their audited artifacts and wired into `RHTower`.
+No dependency or umbrella build, heartbeat increase, or axiom query
+was used. The formal lint gate passed, with existing large-file
+warnings. Integral measures and integrand forms are explicit, and
+the phase estimates use restricted arithmetic hypotheses. A slow
+scratch initialization was traced to import loading, before tactics;
+the physical leaf imports 4,328 cached project dependencies in its
+isolated audit.
 
 The paper mechanism is endpoint concentration. Write
 `p(u)=deriv Real.smoothTransition u`, so `p>=0`, its total integral is
@@ -1423,6 +1681,177 @@ The remaining physical obligation is to establish nonzero original
 radial/left-QNM coupling on a compatible high-overtone subsequence and
 retain all endpoint subtractions there. Fundamental-mode contact
 survival alone does not identify that higher-overtone coupling.
+
+The current radial conjecture uses the terminating polynomial of the
+original plus branch. Put `w_n=w_0-2*n`, `w_0=-3/2-I*chi`,
+`t=1-z`, `A=fundamentalMomentConstant s`, and
+`B=fundamentalMomentQuadratic w_0 s`. The source coefficients `A,B`
+remain fixed when `n` changes. Direct substitution of the actual outer
+Gauss parameters gives
+`P_n(t)=₂F₁(-n,n+w_n+3/2;3/2;t)`.
+The radial source density is therefore proportional to
+`t^(1/2)*(1-t)^w_n*(1+sqrt(t))^(2*s-w_n)*(A+B*t)*P_n(t)`.
+
+The verified Rodrigues identity is
+`(3/2)_n*t^(1/2)*(1-t)^w_n*P_n(t)
+ = D_t^n[t^(n+1/2)*(1-t)^(n+w_n)]`.
+`ThetaCuspHawkingBMJacobiRodrigues` proves the general weighted derivative
+and its iterated identity from the actual Gauss ODE. Its scratch check
+and exact leaf audit passed (182 seconds). The proof isolates power
+derivative values before polynomial normalization and uses default
+resource limits. `ThetaCuspHawkingBMOvertoneSourceRodrigues` identifies
+both original QNM ladders with that terminating factor and proves the
+exact original source density identity, retaining the fixed angular
+gradient, amplitude and arbitrary original onset factor. Its scratch
+check and exact leaf audit passed (105 seconds). Both leaves are
+installed with audited artifacts and wired into `RHTower`; dependency
+sources and umbrella builds were excluded from the audits.
+
+The identities hold at every interior radius. Higher-order endpoint
+restoration and overtone-tail nonvanishing are not yet Lean theorems.
+Neither generic polynomial completeness nor a positive moment measure
+has been identified with this pairing.
+
+### Unproved auxiliary overtone-tail survival approach
+
+The recurrence attack keeps the original source coordinate `u=sqrt(t)`.
+With `mu=(1-u)^w0*(1+u)^(2*s)`, set
+`L p=(1-u^2)*p'+(2*s-w0-(w0+2*s+2)*u)*p`.
+Then `(mu*(1-u^2)*p)'=mu*L p`. For `p_k=(1-u)^(-k)`,
+
+```
+L p_k=2*(k-w0-1)*p_k+(w0+2*s+2-k)*p_(k-1).
+```
+
+The cutoff integral has the upper primitive minus `1`; its canonical
+finite part therefore predicts the affine pole-moment recurrence
+`2*(k-w0-1)*J_k+(w0+2*s+2-k)*J_(k-1)=-1`.
+The primitive's endpoint powers have nonzero imaginary exponent, so
+none contributes a constant term. The missing part of this approach is
+an actual overtone block recovering that nonzero boundary: an abstract
+moment recurrence does not prove source-pairing survival. No such block
+determinant has been established.
+
+The alternative overtone argument sums the Rodrigues kernels. Strip only
+the external amplitude and onset from the original source pairing:
+
+```
+R_n=FP integral_0^1 t^(1/2)*(1-t)^(w0-2*n)
+      *(1+sqrt(t))^(2*s-w0+2*n)*(A+B*t)*P_n(t) dt,
+S(lambda)=sum_n (3/2)_n/n! * R_n * lambda^n.
+H(t)=t^(1/2)*(1-t)^w0, g(t)=t/(1-t).
+```
+
+For each interior t, Cauchy's coefficient formula at the nearby root
+`T=t+x*g(T)` gives the local analytic identity
+`sum_n x^n/n!*D^n[H*g^n](t)=H(T)/(1-x*g'(T))`.
+Set `x=lambda*(1+sqrt(t))^2`. Then
+
+```
+T^2-(1+t-lambda*(1+sqrt(t))^2)*T+t=0,
+Delta=(1+sqrt(t))^4*(1-lambda)*(((1-sqrt(t))/(1+sqrt(t)))^2-lambda),
+H(T)/(1-x*g'(T))=sqrt(T)*(1-T)^(w0+1)/sqrt(Delta).
+```
+
+This local identity alone does not justify integrating the infinite sum
+through the horizon. The proposed identification uses one fixed keyhole
+contour around `u=1`, based at `u=0`. Every overtone has the same horizon
+monodromy `exp(2*pi*I*w0)`, because its exponent differs by `-2*n`.
+On a fixed contour away from the horizon the kernel series can be summed
+uniformly. Proving its normalized contour integral equals the original
+canonical finite parts is a required step, not an assumed interchange.
+
+The exact algebraic substitution is particularly restrictive. Put
+`beta=sqrt(1-lambda)` and `v=sqrt(T)`. The chosen local branch gives
+
+```
+u=v*(beta-v)/(1-beta*v),
+1+u=(1-v^2)/(1-beta*v),
+sqrt(Delta)=beta*(1-v^2)*du/dv.
+```
+
+The transformed generating integrand is therefore
+
+```
+F_beta(v)=(2/beta)*v^2*(beta-v)*(1-v^2)^(2*s)
+           *(1-beta*v)^(w0-2*s-1)
+           *[A+B*v^2*(beta-v)^2/(1-beta*v)^2].
+```
+
+The lifted contour surrounds `v=1` and `v=1/beta`, excluding `v=-1`.
+An endpoint-preserving decomposition into `0..1` and `1..1/beta` periods
+is the next exact identity to establish. With one consistent side of
+the cuts, its second-period multiplier is predicted to be
+
+```
+kappa=exp(-2*pi*I*s)
+       *(1-exp(2*pi*I*(w0-2*s-1)))/(1-exp(2*pi*I*w0)).
+```
+
+The orientation and normalization must be checked against the original
+contour before this is treated as a proved physical formula.
+
+For the original `branch=true, side=true` choice,
+`s=q-2`, `w0=-s/2-2`, and direct algebra gives
+`B=3*s*(s-1)*(s+2)*(5*s+8)/32`, which is nonzero because s is nonreal.
+Scaling `y=beta*v` in the second period predicts the concrete limit
+
+```
+beta^(4*s+9)*S(1-beta^2)
+  -> -2*kappa*B*Gamma(4*s+8)*Gamma(w0-2*s-2)
+                   /Gamma(w0+2*s+6).
+```
+
+All three Gamma arguments are nonreal on this physical channel; the
+two monodromy denominators/numerators are also nonzero. Thus the proposed
+limit is explicitly nonzero. Moreover `0<Re(4*s+8)<4`. A polynomial S
+would give limit zero, so this exact limit would directly disprove an
+eventually zero source-pairing tail and meet the previously established
+cofinite onset-survival tail.
+
+The analytical estimate to prove keeps both endpoint subtractions.
+After scaling, the B term tends to
+`-2*B*y^(4*s+7)*(1-y)^(w0-2*s-3)`. The moving lower-endpoint contribution
+is of order `beta^(4*s+8)` after normalization, and the fixed-endpoint
+period is of the same vanishing order. The A term is lower order.
+At `y=1`, two Taylor subtractions suffice throughout the physical strip;
+at the moving `y=beta` endpoint, four suffice for the exponent `2*s`.
+Uniform bounds for those subtracted remainders and the contour identity
+remain to be proved. The limit, tail survival, complete retained action,
+fixed-clock extinction and RH are not yet established in Lean.
+
+Current corpus retrieval also used single-word Gegenbauer, Bürmann and
+contiguous searches, broad Bernstein/Bessel, holonomic/telescoping and
+finite-part searches, and deep derivative-transfer, recurrence-recovery
+and Abel-jump mechanism requests. Returned candidate lemmas, source
+arguments and proposed ingredient sets were inspected. Some broad and
+deep requests were partial; the completed recurrence snapshots covered
+57,228 files and 738,760 declarations with mostly pending compiler
+metadata. The lexical contiguous search exposed the finite Pfaff and
+Jacobi coefficient proofs in `SemilocalDiagonalPfaffTransformation` and
+`SemilocalBoostContiguousRelations`. They do not yet supply this physical
+generating period or its endpoint limit.
+
+A broad resurgence search reached the June 2026
+[Weak-Strong Resurgence Duality](https://arxiv.org/html/2606.26637v1#S8)
+Mellin-transform section, which relates different asymptotic expansions
+through explicit Gamma factors, and the April 2026
+[Resurgence of high-energy string amplitudes](https://arxiv.org/html/2604.07444v1#S3),
+whose period difference systems are obtained by integration by parts.
+These supply comparison methods; no theorem from either paper has been
+substituted for the required physical contour identity or uniform limit.
+
+Broad and deep corpus searches covered Hermite–Biehler, Lee–Yang,
+Sturm, oscillation, overtones, endpoint concentration, Rodrigues,
+moment recurrences, Mellin subtraction and contiguity. Candidate
+statements and source arguments were checked for matching premises.
+The moment-tail request was partial (unfinished asymptotic query and
+reranking); the later subtraction and contiguity requests completed.
+The latter snapshots covered 57,213 files and 738,617 declarations,
+with most compiler records pending. Suggested ingredient sets remain
+unverified. In particular, the Hurwitz order-independence proof and
+the BM Gauss coefficient coboundaries supply methods, not the missing
+physical endpoint or coupling theorem.
 
 ### Monotone-phase source survival
 

@@ -68,6 +68,145 @@ Shen's September 10 paper, also found through `torsion`, transfers reflection fr
 
 **Conjecture tested:** Use the normalized cyclic reader as a symmetric companion and the physical readout as its approximation. On the admitted original-prime Tate sequence in B, the proposed discrepancy is the constant `H(a,p,q) • R(g(q))`; no decaying comparison error has been proved. For a nonzero receiver its norm cannot satisfy an error bound tending to zero. Thus the needed companion comparison is the unresolved theorem itself. The paper's transfer lemma does not supply that comparison. No numerical checks from the paper were used.
 
+### G. Recurrence transfer — the source-to-current identity is missing (C71)
+
+**Conjecture tested:** Interpret the retained physical boundary as a conserved finite-energy flux on the native depth ray, then use divergent resistance to force that flux to vanish. This attacks the fixed-reader comparison directly. The preceding Mellin extraction admits the original source but does not establish this interpretation.
+
+The broad newest-first arXiv search `interpolation` led to Bäumler–Lüchtrath–Mönch, August 2026. Their recurrence argument obtains infinitely many disjoint cutsets with divergent sum of reciprocal cutset sizes. In dimension two, stationarity, ergodicity, finite degree intensity and a chemical-distance estimate produce those cutsets. These are hypotheses about an actual graph, not consequences of Hilbert-space admission. [Recurrence paper, §3](https://arxiv.org/html/2608.25201v1).
+
+**Direct source test:** `deningerGammaSixCofinalTateNaturalityDifferential` maps a finite coefficient packet to independent outgoing top coordinates in `Sigma (fun m => Fin (m+2))`. Its top readout is an exact left inverse. This is the literal finite Tate naturality defect, but it is not an established incidence map identifying outgoing flux at one depth with incoming flux at the next. Consequently its name and cofinal indexing do not supply Kirchhoff conservation.
+
+The actual approximating packet has coefficient `1/(N+1)` at depths `0,...,N`. The already-proved identities give unit trace and ambient squared norm `1/(N+1)`. In the original-prime source these become trace `H(a,p,q)` and ambient squared norm `|H(a,p,q)|^2/(N+1)`, with `H(a,p,q) != 0`. Its graph limit retains `(0,H(a,p,q))`, and its physical transport remains `H(a,p,q) * R(g(q))` as in B. Thus the small ambient norm is already compatible with the exact retained boundary. It cannot be used as the energy of a conserved flux without deriving an additional source identity.
+
+**Pivot tested:** use a weighted mass-transport identity to retain the native asymmetry. The broad search `localization` led to Chatterjee–Chen–Terlov, September 10, 2026. Their Theorem 2.1 equates outgoing mass with incoming mass multiplied by the automorphism action's relative weight. It requires a transitive graph action and an invariant transport. It does not remove that weight. No such action and invariant transport for the original selected Green boundary was constructed in this pass; replacing its weighted identity by unweighted cyclicity would omit the same modular factor already retained in D. [Weighted mass transport, §2](https://arxiv.org/html/2609.11845v1).
+
+**Outcome and positive survivor:** neither transfer establishes fixed-reader agreement. The existing coefficient-faithful Tate left inverse and singular graph transport are the retained positive results; no new theorem is claimed from this test. A viable recurrence attempt must first derive an actual conserved current from the complete original source and prove its energy bound in the same native weights. C71 does not retire Route L, assert a universal recurrence no-go, or add a Lean wrapper around the existing graph obstruction. The Fourier endpoint subproblem is deferred until its precise contribution to the fixed quadratic comparison is supplied.
+
+### H. Lower jets in the complete two-collar identity — cancellation not established (C71)
+
+**Conjecture tested:** The divisor's vanishing lower Xi jets annihilate the complete raised two-collar boundary under the fixed physical pairing.
+
+At the original divisor parameter `v_rho`, C70 reads the first collar as `m^-1 * R_(p,m)(v_rho) * Xi^(j)(v_rho)`. For `j` below the actual multiplicity this reading vanishes; at the multiplicity the retained reading is nonzero at cofinal native depths. Vanishing of a lower-order value does not annul its derivative: differentiating the displayed scalar product at the last vanishing order retains the top Xi jet. This is precisely the term the source raising equation must retain.
+
+The complete equation `mobiusThetaNativeFullCollarBoundary_succ_contact` has contacts at `v_m = i*(1/2-1/m)` and `i/2`, paired respectively with `(Fourier phi)(0)` and `phi(0)`. Those points are not the original divisor parameter. `XiC_I_half_eq` in `XiEndpointCompletedValue.lean` proves `XiC(i/2)=1/2`; already at source order zero the second contact coefficient is `1/m`. Thus deleting contacts by the divisor's zero equation is invalid. Their possible compensation by the two logarithmic collars, complete causal currents and finite prefixes remains to be proved in the same pairing.
+
+**Pivot tested:** recover the equality from Hilbert norm preservation of the paired normalized Burnol sources. Whole-corpus search returns `burnolJetNormalizedWindowSource_norm_eq_iff`, which identifies that norm equality with `Re(rho)=1/2`, and `burnolCoPoissonJointJetCanonical_unique`, which requires the canonical norm equality as an input. Neither supplies the norm comparison. The proposed search ingredient group combines a residual vanishing at a chosen coincident parameter with `primeDepthBVWoldXiSourcePointedNormalJet_reflection_fixed_iff`; its outstanding obligation is explicitly `Re(rho)=1/2`. No such group is an unconditional proof.
+
+**Outcome:** no cancellation of the complete mixed pairing was proved. No new Lean theorem or mathematical advance on fixed-reader agreement is claimed. Future work must derive that pairing from the original source, including its nonzero top jet and contacts, rather than formalize further identities without a demonstrated role in closing it.
+
+### I. Mixed source variations — physical cancellation not derived (C73)
+
+**Conjecture tested:** Commutation of two independent variations of the original source forces the selected physical degree-six boundary to vanish.
+
+`DeningerCalderonWittCotangentNoether.lean` constructs a cotangent differential for any three-term complex and proves that its own variational form annihilates its gauge boundaries. Its actual all-prime Koszul instance does not identify that differential and its dual coefficients with the fixed physical Gamma-six pairing. The mixed-principal-symbol search also requires linear independence of all mixed source tails; commutation alone does not supply it. In the corrected metric identities, test-weight slopes multiply the retained quadratic residuals. Dropping those terms would assume the desired cancellation.
+
+**Outcome:** no physical reader equality follows. The existing cotangent identity remains valid, but no new positive theorem or RH advance is claimed. A broad recent `compatibility` search led to Xiong's quadratic-extension construction: associativity resolves explicit overlaps, while coassociativity imposes a cocycle condition on the retained correction. Neither condition sets that correction to zero. No identification of those Hopf-algebra data with the original RH source was found. [Quadratic extensions, §3.2–3.4](https://arxiv.org/html/2609.11622v1).
+
+### J. Division at an actual Xi zero — original-source preservation not proved (C73)
+
+**Direct contradiction attempted:** Fix a hypothetical right-half Xi zero `rho` of multiplicity `r`, retaining the actual window seed `g(x)=1_[c,d](x)/x`, with `0<c<d`. Its seed Mellin factor is
+
+\[
+G(s)=\int_c^d x^{-s}g(x)\,dx=(c^{-s}-d^{-s})/s.
+\]
+
+The existing `subWindowFactor_ne_zero` gives `G(rho) ≠ 0`. The completed co-Poisson transform is a nonvanishing completion factor times `zeta(s) G(s)`, so it has exact order `r` at `rho`. Ambient extended-Sonin division supplies a vector whose transform is divided by `s-rho`. If that vector remained in the original closed co-Poisson source at a positive fixed aperture, the closed-source lower-jet annihilation theorem would contradict its nonzero derivative of order `r-1`. **That source-preservation assertion was not derived.** It must not become a premise in a purported RH proof.
+
+**Source-level proof attempt and failure:** The direct inverse must solve
+
+\[
+x h'(x)+(1-\rho)h(x)=g(x).
+\]
+
+With the seed extended by zero, the solution vanishing below `c` is
+
+\[
+h_-(x)=x^{\rho-1}\int_c^x t^{-\rho}g(t)\,dt.
+\]
+
+For `x>d` it has the nonzero tail `G(rho) x^(rho-1)`. The solution vanishing above `d` instead has tail `-G(rho) x^(rho-1)` below `c`. Every other solution differs by `C x^(rho-1)`, so one homogeneous correction cannot remove both tails. This exact inverse-seed construction therefore does not produce an admissible compact seed. Combining windows to force `G(rho)=0` removes the retained exact leading order and loses the proposed contradiction. This rejects the particular construction, not Route L, and does not settle admission through the closed source by a different construction.
+
+**Bilinear pivot tested:** Could the zero equation annihilate the forcing pairing without source preservation? `BurnolDividedShiftSourceLeakage.lean` gives the actual identity
+
+\[
+\Re\langle f,T_\rho f\rangle
+  =(\Re\rho-\tfrac12)\|T_\rho f\|^2,
+\]
+
+where `T_rho` is the bounded Mellin multiplier `1/(rho-(1/2+it))`. Its pairing with the nonzero original window source is nonzero for `Re(rho)>1/2`; its projection back to the same source is also nonzero. Thus the proposed Green argument retains a forcing term, rather than obtaining a homogeneous eigenvalue equation from `Xi(rho)=0`. This is an existing source theorem, not a new result of C73.
+
+**Outcome:** neither division nor the bilinear pivot establishes the actual degree-six equality. No Lean theorem was added or checked for these failed attempts. The nonzero top jet, original source, and fixed aperture were retained in diagnosing the failure. No route-independent law was proved, so no STATUS entry is warranted.
+
+### K. Positive replacement for compact division — constructive range law (C74)
+
+The survivor of J is an exact boundary-value alternative, obtained from the corpus's integrating-factor and interval fundamental-theorem arguments. In logarithmic coordinate `t`, put `H(t)=exp(t) h(exp(t))` and `q(t)=exp(t) g(exp(t))`. The original Euler equation becomes `H' - rho H = q`. For `a<b`, set
+
+\[
+M_\rho(q)=\int_a^b e^{-\rho t}q(t)\,dt,\qquad
+H_q(t)=e^{\rho t}\int_a^t e^{-\rho u}q(u)\,du.
+\]
+
+For continuous forcing, a continuous solution with zero endpoint values exists exactly when `M_rho(q)=0`; extending `H_q` by zero gives compact support. Necessity follows by integrating `(exp(-rho*t) H(t))'`; sufficiency follows from the displayed primitive. The endpoint mismatch is exactly `exp(rho*b) M_rho(q)`.
+
+The positive repair is explicit: subtract `exp(rho*t) M_rho(q)/(b-a)` from `q`. Its moment vanishes, so it admits compact division. Among multiples of `exp(rho*t)`, this correction is unique. This is an exact one-scalar correction, not an assertion that the original source already has zero moment. For the actual logarithmic window, `q=1` on `[a,b]`; its moment is nonzero whenever `Re(rho) ≠ 0`. More sharply, its moment vanishes exactly when `rho ≠ 0` and `exp(-rho*b)=exp(-rho*a)`.
+
+`CompactExponentialSourceDivision.lean` proves the boundary balance, the constructive alternative with a continuous compact zero extension, uniqueness of the correction coefficient, and the sharp window resonance classification. `BurnolWindowSourceDivision.lean` identifies `exp(t) * coPoissonSubWindowSeed(exp(a),exp(b),exp(t))` with `1` on the window, excludes an uncorrected continuous classical Euler solution with zero endpoint values, and constructs the corrected solution in logarithmic coordinates. This does not claim a theorem about arbitrary weak solutions or membership of a divided vector in the original closed co-Poisson source.
+
+### L. Can compensated division still lower the Xi order? — no, with exact factorization (C74)
+
+**Conjecture tested:** The compactness repair in K still permits the multiplicity-lowering contradiction in J.
+
+Let `F` be the original analytic factor, `G` its seed multiplier, and `U` an analytic correction normalized by `U(rho)=1`. Put `D(s)=G(s)-G(rho) U(s)`. Then `D(rho)=0`, and the analytic extension of the divided corrected product is
+
+\[
+Q(s)=F(s)\,\operatorname{analyticSlope}(D,\rho,s),\qquad
+(s-\rho)Q(s)=F(s)D(s).
+\]
+
+**No-go:** the analytic order of `Q` is at least the order of `F`. In particular, taking the repository's actual completed `xi` as `F` cannot lower its multiplicity. The original contradiction therefore fails even after compactness is repaired.
+
+**Positive survivor:** the order is exactly the sum of the original order and the order of the analytic slope. The slope's value at the divisor is exactly `G'(rho)-G(rho) U'(rho)`. When this is nonzero, the repaired quotient preserves the original multiplicity exactly. These statements are proved in `CompensatedAnalyticDivision.lean`, reusing the corpus's `AnalyticSlopeFactor` and mathlib's analytic-order multiplication theorem; the actual-Xi statements are in `BurnolWindowSourceDivision.lean`. This gives an explicit admissibility repair and an exact record of its spectral effect, rather than a new vanishing premise.
+
+The mixed-variation experiment in I remains a failed proof attempt, not a theorem asserting impossibility of every such argument. C74 does not retire Route L. Fixed-reader agreement and RH remain unproved.
+
+### M. Consequences for the whole proof chain and competing mechanisms (C74)
+
+The chain remains **complete original source → fixed-reader agreement → conormal vanishing → RH**. K–L eliminate one attempted implication; they do not identify the only possible implication. In particular, the compact-window obstruction holds whenever `Re(rho) != 0`, including on the critical line. It therefore rejects this inverse-seed construction, not the existence of an off-line divisor. The constructive moment repair and exact surviving Xi factor describe precisely what the failed construction can still accomplish.
+
+**Different attack: construct the physical pairing as a transposed current.** The broad newest-first arXiv query `duality` found Lo Biundo–Tripaldi, September 10, 2026. Their Engel-group construction first proves that integration annihilates the actual complementary boundary spaces; all auxiliary forms required for compact-support membership retain that support. Only then does integration descend and intertwine differentials. The argument uses explicit weight cancellation and Stokes, not just an abstract quotient. Relevant argument inspected: introduction and §4, especially Lemma 4.7 and Theorem 4.6; no whole-paper audit is claimed. [Spectral complexes and currents](https://arxiv.org/html/2609.11625v1).
+
+**Direct test against the original source:** in `SourceHorizontalGammaSixTameReaderTransgression`, the literal cyclic differential `D` and physical character `chi_a` satisfy
+
+\[
+\chi_a(Df)=(e^a-1)\chi_a(f).
+\]
+
+Thus source exactness does not by itself place the fixed reader in the transposed kernel. Pairing the two orientations does not fix this: the same unit primitive gives the exact positive sum `2(cosh(a)-1)`, as proved in `SourceHorizontalGammaSixPairedDefectGaussHodgeCurvature`. Replacing `D` by a twisted differential would change the source operation; it is not an established comparison with the original boundary. **Outcome:** the proposed automatic descent fails. The existing positive survivor is the exact adjoint defect and its paired curvature. A selected full-source transposition remains possible only after its actual auxiliary terms, domains and contacts are identified; this test excludes neither such a construction nor Route L.
+
+**Different attack: propagate positivity from the actual theta source.** The corpus identifies every normalized prime–Gamma moment through `thetaCusp_allOrderCumulantRecurrence`; it also proves that positivity of the entire resulting Hankel hierarchy would imply RH. This gives a route to the global conclusion without first constructing the chosen cyclic comparison. Attempting to transfer ordinary positive-density Gram inequalities immediately encounters a signed nonlinear transformation. If `mu_j` are the normalized raw even theta moments, the first transformed determinant, multiplied by 360, is exactly
+
+\[
+3\mu_1\mu_3+15\mu_1^2\mu_2-10\mu_2^2.
+\]
+
+Cauchy–Schwarz only gives the lower estimate `mu_2*(15*mu_1^2-7*mu_2)`. Its sign is not supplied by Cauchy–Schwarz. This fails to prove the transformed determinant; it does not prove that determinant negative or disqualify a source-specific positive argument.
+
+**Pivot within that attack:** `PrimeArchThetaGaussianApertureCurvatureFlow` supplies a real source-derived propagation law, rather than a formal positivity premise. With its gamma-normalized ratios `q_j`, curvatures `C_j=q_j-2*q_(j+1)+q_(j+2)`, and `A_j=j+1/2`, it proves for negative aperture
+
+\[
+C_j'=4(q_j-q_{j+1})^2+A_{j+3}q_{j+2}C_{j+1}+R_j C_j.
+\]
+
+At `C_j=0`, the next nonnegative curvature prevents a negative derivative. An attempted first-crossing proof therefore shifts the problem to higher degree: it needs justified initial and infinite-degree control, not merely a separate bound at each fixed degree. Moreover, the documented aperture balance discharges the first nonconstant Hankel gate; no theorem inspected here promotes that one gate to the complete RH criterion. **Outcome:** retain the actual propagation law as a candidate ingredient, but do not substitute this finite gate for reader agreement or all-order positivity. No new sign or infinite-degree estimate was proved in C74.
+
+**Decision:** stop expanding compact-division helpers. The useful comparisons now distinguish (i) admissibility repair, (ii) transposition of the fixed full-source pairing, and (iii) propagation of the complete arithmetic sign hierarchy. Any further result must be assessed by which missing implication it establishes, with its precise domain and any surviving term recorded. None of the three investigations establishes fixed-reader agreement in this pass.
+
+### C74 Lean validation
+
+All three scratch files passed `lake env lean` before promotion. The final named builds passed for `HTGeometry.CompactExponentialSourceDivision` (34s leaf), `HTGeometry.CompensatedAnalyticDivision` (6.7s leaf), and `RHTower.BurnolWindowSourceDivision` (67s leaf). These are named-leaf audits; no full or umbrella build was run. All three modules are imported by their respective umbrellas. `scripts/formal_tools.py index` and `scripts/formal_tools.py lint --check-generated` passed; lint reported existing large-file warnings. `git diff --check` passed. Every owned Lean process exited.
+
+No elaboration limit was increased, no axiom report or numerical experiment was run, and no RH premise was added. The existing route-independent factorization entry in `universal-law-field/STATUS.md` was extended with the proved correction-and-division order law. The surrounding C53/C71/C73 validation paragraphs below retain their historical scope.
+
 ## Search audit
 
 `route-l-full-source-reader-defect-search.json`: generation 879115; 57,036 inventoried files (47,426 Lean, 9,610 prose), partial text/source/decomposition coverage under the deadline, compiler coverage mostly pending. All 20 candidate statements, 20 method records and returned ingredient groups inspected. Actual Ward cancellation above was the substantive new lead. Other hits required domain/decay, self-duality, retained equivariance or the comparison itself. Definition records labeled as proof methods were not treated as proved producers. The proposed cyclic-symmetry ingredient group never establishes physical-reader agreement.
@@ -86,7 +225,84 @@ The still-needed operation is a source-derived identity for the fixed physical r
 
 No new route-independent fact was added to `universal-law-field/STATUS.md`: this pass tested already-formalized obstructions and two external mechanisms, without proving a new universal law. No axioms were printed, no elaboration limit was raised, and no Lean process was started for C53.
 
+
+### C71 whole-corpus and method audit
+
+Four direct deep searches used the cached whole corpus without a module filter. All 20 candidate statements and all 20 source-method statement/assumption records in each output were inspected, together with each proposed ingredient group. None returned a proof idea. All candidate records are source-only, and all four searches report partial retrieval; these results neither certify the whole corpus nor establish absence of an applicable theorem.
+
+- `route-l-native-fourier-endpoint-admission-search.json`: query generation 883994, snapshot 884016, 57,228 files / 47,584 Lean files / 738,760 declarations. Partial text/source retrieval and reranking; worker-disconnection/cancellation error. Recovered actual finite Taylor bounds and Fourier norm-moment machinery. The proposed Mellin group additionally requires Fourier-forbidden-space admission, not supplied by the first endpoint bound. This subproblem was deferred after the user's hardest-problem steering.
+- `route-l-fixed-reader-original-compensation-search.json`: query generation 884012, snapshot 884016, same inventory. Partial retrieval/reranking/semantic stages with runtime deadline errors. The cyclic-reader group assumes cyclicity before recovering trace form. Actual selected boundary annihilation, Ward decompositions and continuous trace transport were found; none constructs fixed physical-reader agreement.
+- `route-l-native-boundary-resistance-search.json`: query generation 884038, snapshot 884062/current 884063, same inventory. Partial text/source retrieval. The proposed group bounds an eta-source flux by an envelope but proves neither envelope summability nor native-source identification. One returned exact eta-flux summability criterion itself requires critical-line placement. Actual Tate source definitions were inspected for G.
+- `route-l-lower-jet-physical-pairing-search.json`: query generation 884066, snapshot 884078, 57,229 files / 47,584 Lean files / 738,760 declarations. Partial text/source retrieval. The purported boundary-symmetry group leaves critical-line placement as its explicit obligation. Definitions of annihilator spaces and source certificates were not treated as proved admission or comparison.
+
+Latest snapshot reports 44,745 compiler-pending files, 9 stale and 43 stale-snapshot records, and 9,614 stale method records. Freshness limitations remain material. Broad arXiv listing screens were partial: only the relevant recurrence argument (§3) and weighted mass-transport statement (§2) above were pursued. Other opened or listed papers are not claimed as audited sources.
+
+C71 started no Lean process, added no Lean module, and ran no build. All four owned search processes exited. No new route-independent theorem was proved, so no new STATUS entry was added. The user's renewed instruction is binding: attack the actual fixed-reader equality each turn; do not count retrieval, documentation or unrelated helper lemmas as progress on that equality.
+
+### C73 retrieval limits
+
+Three direct whole-corpus deep searches were completed and their candidate statements, source-method records and proposed ingredient groups inspected: `route-l-original-mixed-variation-cancellation-search.json`, `route-l-original-source-division-search.json`, and `route-l-actual-source-bilinear-flux-search.json`. All report partial source/text retrieval and source-only candidates; semantic coverage was not measured. The last query used generation 884313, with coverage snapshot 884327/current 884328. Its proposed Wronskian-to-Mellin group explicitly leaves zero boundary flux unresolved. Homogeneous Sturm/Jacobi identities require the actual source to solve the same homogeneous equation and satisfy the stated endpoint bounds; neither condition follows from the original Xi zero equation. No completed search is claimed as a corpus-wide compiler audit.
+
+The broad newest-first `intertwining` search led to Caputo–Quattropani–Sau's stochastic exchange paper. Its hidden process acts by row-stochastic matrices and its decay argument uses a positive semigroup and a quadratic Lyapunov bound. No source-preserving stochastic evolution of the original RH source was derived, so that method was not transferred as a vanishing proof. Only the displayed setting and proof strategy in §1.3.3–1.4.4 were inspected, not the full paper. [Stochastic exchange models](https://arxiv.org/html/2609.10450v1).
+
+C73 added no Lean code, ran no Lean/build process, and left no owned search process running. The decisive equality remains unproved; documenting failed attempts is not a mathematical advance on it.
+
 ## Log
 
 - 2026-09-12 — Direct comparison investigation opened after the user's request to establish full-source reader agreement. Candidate A checked against actual definitions and rejected as a proof of fixed-reader agreement; original objective remains open.
 - 2026-09-12 — Attempts B–F audited directly against full-source definitions, native-jet domain restrictions, and fresh external theorem premises. All four corpus searches inspected, including returned method and ingredient records. No unconditional producer found or claimed.
+
+- 2026-09-12 — C71 directly tested recurrence/mass transport and lower-jet cancellation. Neither established the fixed-reader comparison; no mathematical advance on that equality claimed.
+- 2026-09-12 — C73 tested mixed variation, division of the original co-Poisson source at a hypothetical off-line Xi zero, and the actual bilinear divided-shift identity. Retained source tails and forcing terms prevent these arguments from proving reader agreement. No new mathematical advance or Lean theorem claimed.
+
+
+### N. Test complete-boundary cancellation on the original native source (C75)
+
+The chain remains complete original source → fixed-reader agreement → conormal vanishing → RH. C74 changed the viable division argument; it did not advance reader agreement. C75 tests whether the stronger proposal to annul the entire Gamma-minus-Euler distribution is even compatible with the original native source, rather than another Gaussian example.
+
+For the unchanged order-zero source `h_m = mobiusThetaNativeCollarSource 0 m`, set `v_m(s) = I/2 - I*s/m`. The admitted source formula gives `M(h_m)(s) = XiC(v_m(s))/m` when `|Im v_m(s)| < 1`. At each fixed `s`, `v_m(s) → I/2`; the positive survivor is the exact proved limit `m*M(h_m)(s) → 1/2`. At any actual Xi divisor, genuine Poisson boundaries have zero Mellin value. The limit therefore excludes the original `h_m` from the Poisson range at cofinal native depths. The exact commutator kernel shows that its whole Gamma-minus-Euler boundary, equivalently native tail boundary plus the retained prime prefix, is nonzero. A Schwartz test detects it. The final theorem has no input hypothesis and gives one cofinal depth condition valid for every finite prefix.
+
+The scratch-checked positive comparison now records both readings on the same source: `M(h_m)(m*rho)=0` at every positive native depth, while `M(h_m)(rho)≠0` at cofinal depths. Both statements retain their actual parameters and the first comes with absolute admission. This identifies the precise failed implication: native Xi vanishing at `m*rho` does not place the original source in the fixed Poisson range, whose characters read at zeta divisors themselves.
+
+This is a test of whole-boundary annihilation, not of the required quadratic reader equality. The detector here reads at the fixed zeta parameter `s=rho`; the retained physical conormal reading in C70 is at `s=m*rho`. A nonzero first reading disproves vanishing of the entire distribution, but does not determine the second quadratic reading. The original order-zero source is part of the complete jet family; this argument neither deletes its nonzero top jet nor identifies the order-zero Mellin character with the degree-six reader. The module is `formal/GaloisForLFunctions/RHTower/MobiusThetaNativeBoundarySurvival.lean`. Its original proof and the added comparison passed foreground scratch checks; the final named-leaf audit is pending. Route L is not retired.
+
+### O. Competing cancellation mechanisms and their whole-chain consequences (C75)
+
+**Fourier–Mellin continuation.** The original source exchange obeys `J h_(k,m)(t) = (-1)^k exp((m-1)t) h_(k,m)(t)`. Its Mellin reflection is `s → 1-s`; at the first collar's reading `s=m*rho`, the exchanged source therefore samples the physical coordinate `1/m-rho`. It is not the physical reflection `1-rho`. The inspected extended-Sonin reflection identities require actual central-band data and retain the head constants. No such admission or identification with the original native Fourier collar was derived. Formal cancellation of reciprocal-zeta factors does not supply the absent common integral domain or remove its boundary terms. This attempt does not prove reader agreement.
+
+**Full raising equation.** `MobiusThetaNativeFullJetBalance` gives the next boundary as `I*m` times the sum of the two logarithmic pairings, minus the sum of the Euler-current pairings, both finite logarithmic prefixes, and two contacts. Choosing tests with `phi(0)=Fourier(phi)(0)=0` removes only the contacts. No equality cancelling the remaining pairings was found or proved. The derivative theorem in `DeningerAdiabaticGreenStokes` identifies the derivative with the Euler flux; it does not make that derivative zero.
+
+**Adjoint/norm alternative.** The source-level target may be weaker than vanishing of the complete distribution. For two vectors `A,B` in the same Hilbert space, the required norm difference is the real part of the pairing of `A+B` with `A-B`. The original positive dilations have reciprocal adjoints and commute. This suggested using finite real Möbius sums and normality to balance ambient norms. The mathematical transfer tested here remains incomplete: neither the infinite native `L²` passage nor its equality with the multiplicity-exact conormal reader was established. `MobiusLaplaceMellinPlancherelBridge` explicitly requires `L¹ ∩ L²`; the original native admission proved so far is not that hypothesis. The boundary-pole energy module proves divergence only for its specified principal part and is not a theorem about the full native quotient. No native `L²` impossibility or equivalence with RH is claimed. The finite-operator idea is not promoted into another Lean leaf because its contribution to the actual fixed reader is still missing.
+
+**Broad external transfer.** Newest-first, single-word arXiv search `gluing` led to Pigazzini, *Yau's conjecture for the stacked Clifford tori of Wiygul*, September 7, 2026. The introduction and the full reduction theorem/proof in §§6.5–6.6 were read; no whole-paper audit is claimed. The proof compares energy, mass and mean with the same weighted graph, using actual block Poincaré and aggregate trace bounds. Its constants depend on graph size and the stated geometric bounds. This suggests testing a coupled source/reader estimate rather than unrelated norm bounds; no Route L graph, conductance law or such estimate was derived. It supplies no RH implication. [Source](https://arxiv.org/html/2609.07423v1).
+
+The remaining choices are a contact-complete quadratic source comparison, a genuine Hermitian pairing on the retained source quotient with positivity proved from that source, or another source criterion whose transfer to the original Xi function is proved. C75 excludes neither these mechanisms nor Route L. The new native-boundary theorem changes the admissible cancellation statement; it does not close the RH-bearing arrow.
+
+### C74 corpus and method audit
+
+The compact-division search (`route-l-compact-source-division-alternative-search.json`) used deep mode, all collections and no module filter. Generation 884359; snapshot/current 884377; 57,236 files / 47,590 Lean files / 739,136 declarations. Text/source retrieval, reranking and filter output were partial. All 20 candidates and 20 source-method statements/assumptions were inspected; no proof idea or ingredient set was returned. The integrating-factor method was checked in the actual source and instantiated in the passing Lean proof.
+
+The analytic-division search (`route-l-compensated-division-zero-order-search.json`) used hybrid mode over all collections. Generation 884475; snapshot 884479/current 884480; 57,239 files / 47,593 Lean files / 739,525 declarations. Retrieval was partial. All 20 candidates and 20 method statements/assumptions were inspected; no ideas or groups were returned. `AnalyticSlopeFactor` and mathlib's analytic-order multiplication theorem were read and used in the checked proof.
+
+The two broader mechanism searches used deep mode over the whole available corpus with no module filter:
+
+- `route-l-source-pairing-selection-search.json`: generation 884542, snapshot 884567/current 884568; 57,242 files / 47,596 Lean files / 739,560 declarations. Text/source retrieval and one expanded query remained partial. All 20 candidates, 20 method statements/assumptions and the proposed group were inspected. The group reconstructs a defect from generators; it does not annihilate those generators. The Green-isotropy method requires Green self-duality, and the bidirectional reporter method requires construction of that reporter. Neither input was derived for the fixed reader. Exact positive-unit comparisons and opposite-character source formulas were checked against source.
+- `route-l-source-domain-selection-search.json`: same query generation and inventory snapshot; text/source retrieval and reranking remained partial. All 20 candidates, 20 method statements/assumptions and the proposed group were inspected. Orthogonal-complement closure and closed-subspace complementation do not identify a divided source with a zero evaluator or prove its source membership. The actual `BurnolDividedShiftEvaluationSeparation` retains a nonzero quantitative source projection; its hypotheses and proof were read. The group's `StandardSubspace` entry is a structure requiring cyclicity and separation, not their producer.
+
+Neither broad search returned a proof idea. Their shared snapshot reports 44,757 compiler-pending files, 9 stale and 43 stale-snapshot records, and 9,382 stale method records; semantic coverage was not measured. Inventory coverage is not a whole-corpus kernel audit, and partial searches establish no absence theorem. Exhaustive source-text searches supplemented the ranked results, including the actual theta cumulant recurrence and aperture curvature equation used in M. No claimed method transfer rests on a generated description alone.
+
+
+`route-l-theta-cumulant-transfer-search.json`: deep, whole corpus, no module filter; generation 884558, snapshot/current 884578, same 57,242-file / 47,596-Lean / 739,560-declaration inventory. Text/source retrieval, one expanded query and reranking were partial; semantic coverage was not measured. All 20 candidate statements, 20 source-method statements/assumptions and the proposed group were inspected; no proof idea returned. The Schur group explicitly leaves `D>0` and `L*D-B^2>0` as obligations and does not prove the source determinant sign.
+
+Two apparently stronger candidates were traced through their source definitions and proofs. `XiThetaArithmeticTraceZeroHankelApproximants` proves positive finite arithmetic blocks at a degree-dependent parabolic mass, then forms centered real Gauss nodes; it does not prove convergence of their centered determinants to the original Xi function. `ThetaGammaPrimeArchStrictHankelRay` proves an unconditional all-order positive Gamma-plus-theta ray; its RH equivalence still requires the adjoining-cone property. The positive theta-tail measure theorem itself was also inspected. These results are useful positive constructions, but neither changing the mass and centering nor adding a positive ray supplies the missing identification with the unchanged source criterion. No such identification is claimed. All owned search processes exited.
+
+### C75 corpus and method audit
+
+Four deep searches used all available collections, no module filter and `--no-refresh`. Partial retrieval is not evidence that no applicable theorem exists; indexed source is not a kernel audit of the whole corpus.
+
+- `route-l-complete-collar-comparison-search.json`: query generation 884617, snapshot/current 884625, 57,243 files / 47,597 Lean files / 739,589 declarations. All 20 candidate statements and 20 source-method statements/assumptions were inspected. No ideas or ingredient sets returned. Text/source retrieval, filtering and decomposition remained partial; semantic coverage was not measured. The actual native Mellin and two-collar source proofs, and the applicable continuation hypotheses, were read.
+- `route-l-selected-bilinear-adjoint-search.json`: generation 884617, coverage pending. All 20 candidate statements and 20 source-method statements/assumptions were inspected. No ideas or groups returned. Expanded integration-by-parts/raising/cancellation queries and filtering were partial. The actual adiabatic derivative, contragredient Euler pairing, native raising law and Gaussian boundary-parity proofs were inspected; none was read as a zero-flux theorem.
+- `route-l-mobius-normal-pairing-search.json`: generation 884668, snapshot/current 884672, same 57,243-file / 47,597-Lean / 739,589-declaration inventory. All 20 candidates, 20 source-method statements/assumptions and the proposed group were inspected. No proof idea returned. The group's `LikelihoodJuliaDatum` is a specified Hilbert-space dilation, not the arithmetic dilation: its structure requires the square-sum and involution identities. Its declaration and fields were checked directly. The original Sonin dilation adjoint and composition proofs were read instead. Text/source retrieval was partial; semantic coverage was not measured; 44,758 compiler-pending files, 9 stale and 43 stale snapshots, 9,324 stale methods.
+- `route-l-native-source-boundary-survival-search.json`: generation 884698, snapshot 884706/current 884708, 57,244 files / 47,598 Lean files / 739,607 declarations. Expanded queries and text/source/semantic retrieval remained partial; semantic coverage was not measured. It returned 20 declaration references and 5 exploration references but no candidate-lemma, source-method, proof-idea or ingredient-set records. These references were inspected; the relevant original native Mellin formula, Poisson Mellin factorization and exact commutator kernel were read directly. No claim of applicability is based solely on a generated method description.
+
+All four owned searches exited. No new route-independent mathematical law is asserted from the failed transfers in O; their route-specific hypotheses and outcomes remain on this card.

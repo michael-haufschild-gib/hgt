@@ -20,19 +20,20 @@ For T=A+b partial_x+c partial_v, direct product differentiation gives
 ```
 M T-(T+2b') M
  =2(b'-c') partial_x partial_v
+  -2c' partial_v²
   -(2A'+b'') partial_x-(2A'+c'') partial_v
   -A''-b V' Delta-2b' V Delta.
 ```
 
-Primes are actual x derivatives; all angular operators commute here. Eliminating the derivative terms requires c'=b' and A'=-b''/2. Thus, up to x-independent commuting terms, the canonical repair is
+Correction, 12 September 2026: the earlier calculation omitted `-2c' partial_v²`. Primes are actual x derivatives; all angular operators commute here. Taking c'=b' and A'=-b''/2 eliminates the mixed and first derivative terms, but leaves a second time derivative. The resulting candidate is
 
 ```
 T=K[b0(partial_x+partial_v)-b0'/2],
 M T-(T+2K b0') M
- =K[b0'''/2-(b0 V'+2b0' V)Delta].
+ =K[b0'''/2-2b0' partial_v²-(b0 V'+2b0' V)Delta].
 ```
 
-This permits a zeroth-order adjustment as well as a time derivative. It is more permissive than repairing only the principal terms of the original producer. With e=exp(-2x), b0=(e-1)/2-u,
+It is not a repair of all derivative coefficients: that would require both c'=0 and c'=b', impossible for this nonconstant b. With e=exp(-2x), b0=(e-1)/2-u,
 
 ```
 b0'=-e-V,
@@ -107,3 +108,7 @@ The broad reciprocity search also found [Jiang, 8 September 2026](https://arxiv.
 The actual extinction target remains Cphys(q,n)=K(q,n)=-Sigma(q,n)|D(q,n)|² with Sigma>0. A source-derived bound Re Cphys>=0, or -Re Cphys<=epsilon Sigma|D|² with epsilon<1, would force D=0. Equation (1) does not give that bound. It identifies the local contact that a proposed symmetry must carry through the complete ++/+- corrections, all nine independent SS/SV/VV pairings, metric-weight variations, and temporal, horizon, exterior, cusp, characteristic and source-contact faces. The original Hawking clock is unchanged.
 
 The next [retained spin-two contact balance](hb-source-contact-spin-two-balance.md) derives a paper Green identity for the actual characteristic-face density J[-Delta(Delta-2)Q]. It retains the bilinear contact-gradient term and gives every principal cusp flux power for the constant test and the same-occurrence angular QNM test. No constant-power collision occurs in those cases. Closing the regulated integral in Lean and matching the original physical subtraction remain open; the resulting quartic-period balance is not a positivity or extinction theorem.
+
+## Direct causal-repair attack, 12 September 2026
+
+The [causal source-symmetry repair calculation](hb-causal-source-symmetry-repair.md) records a proposed operator and its boundary tests. Its missing second-time-derivative term is corrected above and there. This candidate is deferred: it has not advanced the actual complete-action extinction problem. No theorem about the complete Einstein quadratic map, physical sign, or extinction follows from it. The separately formalized literal angular contact identity does not use this paper commutator.

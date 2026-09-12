@@ -160,11 +160,14 @@ or axiom-printing step was used.
 
 ## Remaining hard source task
 
-The full scalar-tested centered-current mechanism is carried forward in
-[HB-QTCC](../1-in-progress/hb-physical-tested-centered-current.md). It retains
-the literal theta test and its first derivatives, all full-mean terms and
-source contacts. Full independent-channel physical-action identification,
-fixed-clock extinction and RH remain open.
+The full scalar-tested centered current is now closed in
+[HB-QTCC](hb-physical-tested-centered-current.md): all six differentiated
+terms are retained and every complex-weighted upper trace vanishes. Its
+improper density integral retains the negative original lower current.
+[HB-QTMCC](../1-in-progress/hb-physical-tested-mean-contact-current.md)
+carries the restored linear moments, full means and source contacts forward.
+Full independent-channel physical-action identification, fixed-clock
+extinction and RH remain open.
 
 ## Formal validation
 

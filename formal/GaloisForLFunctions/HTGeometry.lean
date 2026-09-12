@@ -15736,3 +15736,5 @@ import GaloisForLFunctions.HTGeometry.SmoothCylinderIntegral
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactLastRowAtOne
 
 import GaloisForLFunctions.HTGeometry.CompactSmoothParameterIntegral
+import GaloisForLFunctions.HTGeometry.CompactExponentialSourceDivision
+import GaloisForLFunctions.HTGeometry.CompensatedAnalyticDivision

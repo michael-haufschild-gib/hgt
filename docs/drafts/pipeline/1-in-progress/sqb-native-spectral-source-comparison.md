@@ -197,7 +197,39 @@ K0+J*K0*J = multiplication_by_h,
 Q*K0*Q = (multiplication_by_h)*Q/2.
 ```
 
-These are analytical identities, with no new Lean operator-domain construction. Testing whether native mean subtraction removes the rational contribution retains a weighted Cauchy integral with the additional factor `1/(1+t^2)`. The proved mean subtraction instead has its fixed rank-one dependence on `1/(1+alpha_q^2)`. An equality between these pairings has not been established. The positive target is an estimate for the complete compressed generator coupled to the actual source, keeping this rational contribution.
+These are analytical identities, with no new Lean operator-domain construction. The rational contribution can be expressed using the existing scalar response, without introducing another unknown transform. Put `N(t)=Xi(t)^2*w(t)` and `C(z)=integral_R N(t)/(t^2-z) dt`. Partial fractions give
+
+```text
+integral_R N(t)/((1+t^2)*(t^2-z)) dt
+    = (C(z)-C(-1))/(1+z),
+C(alpha_q^2) = 4*pi*m(q).
+```
+
+For `z=alpha_q^2`, the proved native Cauchy admission and `N`'s exponential decay admit both terms. The identity holds almost everywhere at any real removed points; `alpha_q^2 != -1` follows from the proved nonzero real part of `alpha_q`. Thus mean subtraction cannot simply be substituted for this rational contribution: the exact expression retains `m(q)` as well as the fixed real constant `C(-1)`. This is a paper derivation, not a new Lean declaration. The positive target remains an estimate for the complete compressed generator coupled to the actual source.
+
+The full arithmetic phase also has an explicit positive kernel completion. In `Re lambda>0`, set
+
+```text
+S(lambda)=xi(lambda)/xi(lambda+1),
+B(lambda)=(lambda-1)/(lambda+1),
+b(lambda)=S(lambda)/B(lambda),
+K_f(lambda,mu)=(1-f(lambda)*conj(f(mu)))/(lambda+conj(mu)).
+```
+
+Entireness of `xi` and its proved nonvanishing denominator make `S` analytic there; `norm_scatteringCore_le` supplies contractivity. Hence `K_S` is positive: under the Cayley map `B`, multiplication by the corresponding disk function contracts Hardy norm, and its adjoint defect evaluated on reproducing kernels gives this kernel. This is the mechanism present in `HTGeometry/FiniteBlaschkeGeneralizedSchurKernel.lean`; the native half-plane instantiation has not been Lean-checked. Direct subtraction gives, away from `lambda=1` and `mu=1`,
+
+```text
+K_b(lambda,mu) + 2/((lambda-1)*(conj(mu)-1))
+    = K_S(lambda,mu)/(B(lambda)*conj(B(mu))) >= 0
+```
+
+where the inequality denotes positivity of every finite kernel matrix. The added term is exactly rank one. On the boundary `b(it)=beta(t)`, and the even part of its pole feature is
+
+```text
+(1/(it-1)+1/(-it-1))/2 = -1/(1+t^2).
+```
+
+The same meromorphic even feature evaluated at `t=alpha_q` has the rational dependence of native mean subtraction. Independently, the proved all-plane `profile_transform_equation` gives `profileTransform(q,i)=xi(3/2)/(1+alpha_q^2)`, retaining its normalization. These agreements identify an explicit candidate correction to test. They do **not** identify the kernel quadratic form with the native differential current: multiplication by `1/(1+t^2)` is a different operator from the rank-one kernel correction. The remaining join must prove equality or a sufficient inequality for the actual response forms, including their domains and both reflected terms. Kernel positivity alone supplies neither all-rank theta orientation nor vanishing native forcing.
 
 An alternative construction target is convexity of the tilt energies. With the preceding `g_a`, real parity polynomial `P`, and `u=P(D)g_a`, integration by parts gives the analytical second variation
 
@@ -1106,28 +1138,6 @@ Phi_n(x+t)*Phi_m(x−t)
 The first operator has a positive quadratic form in `L²(exp(−2x) dx)`: writing `f=exp(x)*g` gives `∫exp(−2x)*f*L_nm(f)=∫(g'²+16*π²*n²*m²*exp(4x)*g²)` for compactly supported smooth real `g`. This fixes the potential that any source-preserving transform must retain. Fourier transformation in `t`, with kernel `exp(−i*b*t)`, turns the second displayed operator into `((D_x²+b²−1)²+4*b²)/16`. These are analytical identities, not additional Lean declarations. The constructive obligation is to represent the complete center-weighted lattice pairing as a quadratic form of this operator, with the exact source differentiation and center-boundary terms. The current radial square integral does not yet provide that identity.
 
 The broad OR transmutation/spectral/measure and single-word Sonine requests inspected candidate, source-argument, method, and proposed ingredient views. Their snapshot contains 57,202 files and 738,063 declarations; the Sonine request completes, while the broad request has interrupted text/source stages. Compiler metadata is mostly pending. The retrieved Sonine construction requires a cosine eigenvector and constant head; it has not been identified with the displayed theta pairing. A separate broad arXiv `coercivity` search retrieved [Bortolotto–Ramos, August 26, 2026](https://arxiv.org/html/2608.26365v1). Their two integrations by parts and weighted derivative estimate apply to Gaussian Fock area norms; the exact center weight and source readout above still need their own comparison. No result from that paper is assumed in Lean.
-
-### Complete primitive-ray interior transform
-
-The next source-specific conjecture replaces the beta-ratio substitution in
-`XiCTaylorThetaTailPrimitiveRayInteriorSquare.lean` by an admitted integral. Put
-`u(t)=exp(t)/(2*cosh(t))`, `b=1/2-a`, and let `R(u,lambda)` denote the literal
-five-term `thetaCuspPrimitiveRayRadialLaplacePacket`. For every `a>0`, conjecture
-
-```text
-integral_R cosh(t)^(-a) * R(u(t),2*a-1/2) * exp(-i*s*t) dt
-  = (s^2+b^2)^2 * 2^(a-1) * |Gamma((a+i*s)/2)|^2 / Gamma(a).
-```
-
-The corpus already proves the general hyperbolic Fourier transform, absolute
-integrability of each negative hyperbolic power, and the algebraic interior
-square. Gamma recurrence should prove the two actual transform ratios and join
-these ingredients. This exact interior integral is not yet checked in Lean.
-The original primitive-ray current uses a moving angular interval; its endpoint
-currents, radial integration and primitive-direction reassembly remain part of
-the required source sign. The complete-source Green potential is already
-constructed in `XiCTaylorThetaTailCompletedPotential.lean`; its positivity alone
-does not settle those currents.
 
 ## Further source constructions under examination
 

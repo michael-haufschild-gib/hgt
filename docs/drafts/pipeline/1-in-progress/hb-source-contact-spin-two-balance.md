@@ -25,7 +25,10 @@ now includes both original cusp particular solutions and decomposes the
 complete incoming current into its full-mean flux, all three exact source
 contacts and a remainder that vanishes under every complex height power.
 The original physical scalar principal factor preserves that zero remainder.
-[The full scalar-tested current](hb-physical-tested-centered-current.md),
+[The full scalar-tested centered current](../3-formalized/hb-physical-tested-centered-current.md)
+now has an exact six-term source law and zero upper trace under every complex
+height weight, with the negative lower current retained in the density
+integral. [Restored tested moments and contacts](hb-physical-tested-mean-contact-current.md),
 mean/contact boundary cancellation and complete-action faces remain open;
 fixed-clock extinction is not asserted.
 

@@ -1,9 +1,4 @@
-module
-public import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPrimitiveRayCoefficients
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPrimitiveRayPolarization
 
 /-!
 # Interior perfect-square symbol of the complete primitive theta ray
@@ -26,7 +21,6 @@ algebraic core of an interior primitive-ray transform; this module does not asse
 change of variables, endpoint control, a current sign, or RH.
 -/
 
-@[expose] public section
 open Real
 
 namespace RHTower
