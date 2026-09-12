@@ -1043,3 +1043,59 @@ that actual remainder integral plus Lambda(rho-1) times the three original
 principal amplitudes and source-determined response periods. No part of this
 value is assigned zero. This is the full pairing needed by the remaining
 angular-current/source-work balance.
+
+### Full physical pairing: paper proof and scratch verification
+
+The current attack is proved for both original quadratic response branches:
+[full scalar-tested response cusp period](../3-formalized/hb-full-scalar-tested-response-cusp-period.md).
+Native L1 admission transfers through the exact y^-2 chart and Fubini. Its
+signed period equals the original quotient integral restricted to the cusp.
+The finite part of the full physical pairing is that signed native period
+plus all three original principal amplitudes times source-determined response
+periods. The complete lower jet and native response coefficient remain.
+Scratch Lean passes at default limits. The exact isolated leaf audit also passed (66 seconds), using cached imports; source SHA256 is `e4e2f2efc0c15ec211def51df61969ee227614025ce295ceda872a541d147bde`.
+
+Two cached deep corpus requests were completed and inspected, including
+candidate declarations, source arguments, generated methods, proof ideas and
+ingredient sets. Coverage was partial (source/compiler snapshots are not all
+fresh); candidate applicability was checked in source and the successful
+ones in Lean. The first request supplied the exact cusp chart/Fubini bridge.
+The second returned complete-source transpose currents and finite-circle
+Green identities, but no theorem cancelling the physical scalar-tested
+angular current. Its Eisenstein boundary cancellation hits require the
+absolute-convergence parameter subtype; they do not directly instantiate the
+present physical test. A generated method attached to a cusp-top definition
+was treated as a definition, not a proof that the integral vanishes.
+
+The next cancellation test must keep `grad psi dot J` in
+`psi div J = div(psi J)-grad psi dot J`. Periodicity can cancel the horizontal
+sides of the cusp rectangle, but does not remove that derivative work or the
+upper/lower tested currents. The new result provides the actual response work
+for this comparison. The complete angular-current balance and the local Q^2
+period still need to be assembled with all other physical boundaries/channels.
+
+Broad arXiv searches for Ward, symplectic, Maass, renormalized and scattering
+were screened. Two recent primary sources were inspected for method transfer:
+
+- [Sadegh, b^k-symplectic manifolds and [Q,R]=0, 23 August 2026](https://arxiv.org/html/2608.22171v1),
+  sections 3.1 and 3.6–3.7: residue expansions retain a finite part; the
+  reduction theorem additionally needs Hamiltonian data and odd leading
+  modular type. Those hypotheses have not been established for the literal
+  theta causal action with its complex cusp exponents. No vanishing theorem
+  was imported from the analogy.
+- [Ferretti et al., Bounds on scattering amplitudes of non-identical scalar particles,
+  8 September 2026](https://arxiv.org/html/2609.09282v1), introduction and
+  sections 6–7: discontinuities outside the physically constrained region
+  require additional control in their bootstrap setup. Their numerical
+  bounds and additional Omnes parametrisation are not unconditional source
+  identities for HB. No computation or numerical bound was used here.
+
+These searches did not produce the missing fixed-Hawking-clock cancellation.
+The positive result is the source-derived full pairing above, now ready to be
+compared with the retained physical current. The extinction goal stays active.
+
+Final audit for HB-QFTCP: exact leaf passed with default limits; generated
+index refreshed once (4 changed files), all ten public API rows and the single
+umbrella import verified. `scripts/formal_tools.py lint --check-generated`
+passed (exit 0). Source hash remained unchanged, all owned processes completed,
+and the temporary audit directory was removed. No extinction theorem is claimed.
