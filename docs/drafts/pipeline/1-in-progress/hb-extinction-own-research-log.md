@@ -138,4 +138,14 @@ Notation: `rho=x+it` is an actual Xi occurrence; `delta=x-1/2`; `S` is the liter
     **Boundary:** the late-region law cannot be applied along the past-horizon limit, where `tau+x=v+2x->-infinity`. The finite ingoing-time strip is not compact spacetime support. **Survivor:** the exact source defect, its admitted response and its past datum, at the unchanged physical clock. Complete-action invariance and cancellation remain unproved. Scratch and cached exact-leaf audit passed; module wired.
     Evidence: [SourceTimeTranslation](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceTimeTranslation.lean), `onsetDefect_hasDerivAt`, `onsetDefect_zero_outside`, `reducedDefect_eq`, `originalForcing_translation`, `response_translation`, `corrected_future_late_translation`, `defect_response_past_horizon`.
 
+27. **The original weighted mixed source changes affinely with the full corrections. [Lean]**
+    For original first jets `P,Q`, quadratic discrepancies `A_pp,A_pm` and cubic discrepancy `B_ppm`, the actual mixed coefficient changes by `W0(M)*(L B_ppm+E2(P,A_pm)+E2(Q,A_pp))+W1(P,M)*L A_pm+W1(Q,M)*L A_pp`, contracting every tensor entry. `W1` retains the determinant-volume and both inverse-index derivatives. Original Xi modes supply the vacuum/linear equations; scalar/vector amplitudes are independent; no equation for the correction discrepancies is assumed.
+    **Survivor:** the exact local work to project after a fixed-clock translation. No boundary or physical projection is set to zero. Scratch and cached exact-leaf audit passed; module wired.
+    Evidence: [WeightedCorrectionDiscrepancy](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMWeightedCorrectionDiscrepancy.lean), `physical_coefficient_change`, `physical_mixed_discrepancy`.
+
+28. **Exchanging an inhomogeneous correction exposes its source pairing and boundary defect. [Paper]**
+    On the original vacuum background, for linearized solutions `H,M` and a symmetric correction `A`, `W0(M)*E2(H,A)+W1(H,M)*L A = W0(A)*E2(H,M)+D_H D_A Theta(M)-D_H D_M Theta(A)`, where `Theta` is the original weighted connection-current divergence. This follows by the full product rule and local cyclic-action identity.
+    **No-go:** the on-shell-only Hessian exchange cannot discard `W1(H,M)*L A` for an inhomogeneous correction. **Survivor:** the displayed correction/source pairing and exact boundary defect. This specialization is not yet Lean-proved; actual causal boundary admission and integrated cancellation remain open.
+    Evidence: [boundary exchange WB](hb-radiative-source-period-attack.md#actual-weighted-correction-discrepancy-12-september-2026).
+
 **Result of this research:** no complete radiative extinction theorem, fixed finite physical-clock invariance theorem, or RH proof has been obtained. None of these scoped no-gos disproves HB.

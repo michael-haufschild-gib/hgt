@@ -6,11 +6,10 @@ Verified findings and scoped no-gos from this work: [concise research log](hb-ex
 
 ## Actual weighted correction discrepancy, 12 September 2026
 
-**Current attack.** Return from the auxiliary quartic action expansion to the
-actual weighted `++-` Einstein source used by the physical projection. Its
-existing coefficient formula is affine in the full quadratic corrections.
-For first jets `P,Q`, quadratic discrepancies `A_pp,A_pm` and cubic discrepancy
-`B_ppm`, the candidate exact change is
+**Closed source identity; scratch and cached exact-leaf audit passed.** The actual
+weighted `++-` Einstein source is affine in changes of the full quadratic
+corrections. For first jets `P,Q`, quadratic discrepancies `A_pp,A_pm` and
+cubic discrepancy `B_ppm`, the exact change is
 
 ```
 <W0(M), L B_ppm+E2(P,A_pm)+E2(Q,A_pp)>
@@ -20,14 +19,78 @@ For first jets `P,Q`, quadratic discrepancies `A_pp,A_pm` and cubic discrepancy
 Here `L` is the original cosmological Einstein linearization, `E2` its actual
 second derivative, and `W1` the full determinant-volume and inverse-index test
 weight derivative. Every tensor entry and independent scalar/vector amplitude
-must remain. The goal of this calculation is an identity for the original
-nonlinear amplitude derivative, with the original physical first modes
-discharging the vacuum and linear equations. No quadratic equation for the
-discrepancies is assumed. This would expose the exact local integrand which the
-source translation defect has to cancel after physical projection. It would
-not itself admit the differentiated causal correction fields or remove a
+remain. The Lean proof differentiates the original nonlinear source coefficient;
+the original physical first modes discharge the vacuum and linear equations.
+No quadratic equation for the discrepancies is assumed. This identifies the
+exact local integrand which the source translation defect has to cancel after
+physical projection. It does not itself admit the differentiated causal
+correction fields or remove a
 horizon, cusp, characteristic or source-contact contribution. In particular,
 the auxiliary quadratic discrepancy term in (TV) is not a substitute for (WC).
+
+`RHTower.D4BMWeightedCorrectionDiscrepancy.physical_mixed_discrepancy`
+proves (WC) with no supplied field equation. The 219-line leaf is wired;
+its isolated cached `lake build` passed (2 jobs). No heartbeat, recursion-depth
+or transparency override was added.
+
+**Derivation of the identity.** For an on-shell first jet `H`, the original
+cubic coefficient is
+`W0*(L l+E2(H,k)+E3(H,H,H)/6)+W1(H)*(L k+E2(H,H)/2)`.
+Replacing `k,l` by `k+A,l+B` cancels the third-variation term and leaves
+`W0*L B+W0*E2(H,A)+W1(H)*L A`. Differentiate this identity at
+`H=P+z Q`, with all four polynomial correction slots retained. Only `A(0)`,
+`A'(0)` and `B'(0)` survive, yielding (WC). This uses the actual nonlinear
+source coefficient; it does not require a quadratic equation for `A`.
+
+**Current formal attack.** Extend the original weighted bulk second derivative
+without requiring either variation to be on shell, then specialize the cyclic
+identity to original physical first modes and complete symmetric correction
+jets. The actual ingoing mixed correction must be included as a concrete
+specialization. This keeps the quadratic source residual in its geometric
+weight contraction. The target remains the integrated physical pairing and
+its fixed-clock cancellation; local exchange alone does not prove it.
+
+**Boundary exchange test, paper calculation.** Let `Theta_g(M)` be the original
+connection-current divergence with its determinant weight, as defined by
+`EinsteinCyclicVariation.boundary`. On the original vacuum background, for
+linearized solutions `H,M` and a symmetric correction jet `A`, the product
+rule and the existing local cyclic-action identity give
+
+```
+W0(M)*E2(H,A)+W1(H,M)*L A
+ = W0(A)*E2(H,M)
+   +D_H D_A Theta(M)-D_H D_M Theta(A).                (WB)
+```
+
+All products here contract every tensor entry. To verify (WB), differentiate
+`W(g;M)*E(g)` in directions `H,A`. The vacuum residual and `L H` vanish,
+leaving the left side. Exchange `A` with `M` in the cyclic identity. Both
+`L H` and `L M` then vanish, leaving the first term on the right. The
+remaining two derivatives are exactly the original boundary-divergence
+defect, with the displayed order and sign. No field equation for `A` has
+been used. This is a local paper derivation; its one-inhomogeneous
+specialization and the boundary admission for the actual causal corrections
+are not yet Lean-proved.
+
+Thus (WC) transfers to two explicit correction/source pairings plus original
+boundary divergences, not to zero by cyclicity alone. In a cutoff physical
+action, (WB) retains every oriented face before taking a common limit.
+Horizon, cusp and characteristic faces and the response's source-contact
+terms still need their actual differentiated integrals and matching limits.
+Neither the already admitted field-value limits nor the on-shell-only
+Hessian pairing theorem discharges this obligation.
+
+**Current research search record.** Deep and method-view searches used the full
+available index (latest successful deep search: 57,348 files, `partial=false`;
+most compiler metadata was pending, so applicability was checked in scratch).
+A subsequent reciprocity search reported a disconnected semantic worker;
+lexical fallback returned 637 matches. The broad recent-paper searches also
+opened the abstracts of [Yun, 1 June 2026](https://arxiv.org/abs/2606.01507),
+[Garnek, 8 June 2026](https://arxiv.org/abs/2606.10181),
+[Ghosh, 2 September 2026](https://arxiv.org/abs/2609.02699), and
+[Tesfaye--Palumbo, 9 September 2026](https://arxiv.org/abs/2609.10541).
+These were screened as cross-field leads; no extinction theorem or physical
+positivity hypothesis was imported from them.
 
 ## Fixed time translation of the original future fields, 12 September 2026
 

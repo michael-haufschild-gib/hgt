@@ -23,6 +23,8 @@
 - `WeldTowerLimit.xi_coherentTower_iff_zeroFree_halfPlane` proves for every real `σ` that a coherent dyadic tower for `xi` on `Re(s)>σ` is equivalent to zero-freeness there. At `σ=1/2` this is exactly RH; at `σ=1` the tower exists unconditionally.
 - Corpus constructors `exists_analyticOnNhd_pow_eq` and `exists_analyticOnNhd_pow_eq_of_lift` give global analytic roots from, respectively, simple connectivity plus nonvanishing or connectedness plus divisible loop winding.
 - `HTGeometry.circleBoundaryModulus_blind_to_monomial_zero_order` proves that the entire functions `z ↦ z^m` have identical unit-circle modulus for all `m`, while their zero orders at the origin are exactly the arbitrary values `m`. The existential corollary gives two entire functions with the same full boundary modulus and different zero orders.
+- `ThetaTiltXiInfiniteDivisibilityNoGo.not_exists_probability_convPow_two_thetaTiltProb_zero` proves unconditionally that the central theta probability `thetaTiltProb 0` is not a convolution square of any probability measure. Its characteristic function is normalized `XiC`; endpoint exponential moments would make a hypothetical root transform analytic on `|Im z|<1`, where the identity theorem and Hardy's odd-order Xi zero contradict the even order of an analytic square.
+- `ThetaTiltXiInfiniteDivisibilityNoGo.not_infinitelyDivisible_thetaTiltProb_zero` strengthens this to failure of probability infinite divisibility.
 
 ## No-gos
 
@@ -34,9 +36,11 @@
 - Local square-root germs along the zero-free line do not supply the required global square root: continuation can stop at zeros to the left of the line, and gluing around loops still requires trivial monodromy.
 - Restricting to a simply connected zero-free subregion makes root construction automatic but removes hypothetical zeros from the receiver. On `rightHalf`, using nonvanishing or divisible winding as the root-construction premise restates the unresolved zero/multiplicity obstruction.
 - Full boundary modulus, and therefore outer-factor data alone, cannot determine zero multiplicity or dyadic divisibility. The missing information is the inner factor, equivalently phase/winding/divisor data.
+- Probability convolution and infinite-divisibility constructions cannot produce even the first analytic square root of normalized `XiC`. The obstruction is the actual odd-order Xi divisor, not lack of exponential moments or transform analyticity.
 
 ## Open boundary
 
 - Determine whether the pole and nonpole analytic germs extend through a connected zero-exclusion region with trivial square-root monodromy; otherwise isolate the exact zero or loop obstruction.
 - Any claimed RH advance after that bridge must exhibit a source-derived mechanism that crosses `Re(s)=1` and trivializes root monodromy.
 - Burnol/Sonin completeness can turn divisibility of a source Mellin transform by zeta into source vanishing, but the searched theorems do not construct a fractional zeta divisor or force zeta multiplicities to be even.
+- Any transform-side dyadic-root producer must leave probability characteristic transforms; signed or complex measures remain possible only if they also supply global analytic continuation and trivial monodromy.

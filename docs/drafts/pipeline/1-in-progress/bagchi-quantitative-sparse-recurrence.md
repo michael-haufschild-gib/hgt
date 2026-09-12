@@ -301,9 +301,21 @@ channel estimate to the literal reflected-primal AFE coefficients, and
 aggregate terminal channel mass. Module: `RHTower.SmoothAFEZetaRightReflectedPrimalMass`; targeted
 build passes; axiom audit is only `propext`, `Classical.choice`, `Quot.sound`.
 
-Three analytic sublemmas remain: conditional channel energy bounded away from zero on a
-positive-mass base event; a two-dimensional local lower bound uniform
-in the random centre and in finitely many boundary nodes; and deterministic vertical-orbit
+The conditional-energy gate is now closed with an arbitrary-small-power probability loss.
+Squaring a complex Steinhaus carrier produces its finite Dirichlet convolution, so complex Parseval
+and the divisor-fibre estimate give fourth moment at most
+`C_epsilon*(M^2)^epsilon*variance^2`. Weighted Cauchy aggregates all channels without a factor for
+their number; zero-variance channels vanish exactly. Paley--Zygmund and the literal terminal mass
+therefore prove `exists_eventually_measure_reflectedPrimalChannelEnergy_gt_ge_rpow`: uniformly for
+`tau in [N,2N]`, the literal reflected-primal conditional energy exceeds half a fixed positive
+constant on a set of small-prime phases of measure at least
+`1/(4*C_epsilon*(N^2)^epsilon)`. Modules:
+`RHTower.SteinhausComplexFourthMomentBound` and
+`RHTower.SmoothAFEZetaRightReflectedPrimalEnergyEvent`; targeted builds pass; axiom audit is only
+`propext`, `Classical.choice`, `Quot.sound`.
+
+Two analytic sublemmas remain: a two-dimensional local lower bound uniform
+in the random centre and simultaneously in finitely many boundary nodes; and deterministic vertical-orbit
 transfer for the resulting triangular family. Corpus deep/method-enriched searches found conditional probability
 infrastructure but no theorem closing these gates. Recent random-multiplicative evidence also
 warns that a standard complex-Gaussian CLT on dense support is the wrong target
@@ -357,3 +369,7 @@ mixture or direct full-support law remains possible.
   inner cutoff lower bound, the exact literal reflected-primal coefficient-square identity, and an
   eventual positive aggregate terminal channel mass; isolated conditional energy concentration as
   the remaining coefficient/probability interface.
+- 2026-09-12 — C15.6: proved exact complex fourth moment via finite Dirichlet convolution, its
+  arbitrary-small-power divisor-fibre bound, channel-count-free weighted aggregation, exact removal
+  of zero-variance channels, and a Paley--Zygmund event of measure `N^(-o(1))` for literal
+  reflected-primal terminal energy; isolated simultaneous planar local probability as next gate.

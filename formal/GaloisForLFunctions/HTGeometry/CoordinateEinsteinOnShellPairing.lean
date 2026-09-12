@@ -10,7 +10,10 @@ its mixed second derivative. For a vacuum background and original linearized sol
 differentiating the volume-weighted raised test produces no extra quadratic terms:
 each such term multiplies a vanishing zeroth or first residual. The resulting equality
 identifies the quadratic source in the previously proved cyclic action identity.
-Boundary divergence and global causal admission are not discarded.
+The general second-variation theorem also retains both changing-weight contractions
+with inhomogeneous linear residuals, before making the on-shell specialization.
+The test coefficient's first derivative is identified with the original determinant
+and inverse-index slope. Boundary divergence and global causal admission are not discarded.
 -/
 open Complex Filter Topology
 open scoped ContDiff BigOperators
@@ -44,14 +47,14 @@ private theorem pd_add {f g : Param → ℂ} {a : Param}
   simpa only [parameterDeriv, add_apply] using
     congrArg (fun L => L (Pi.single k 1)) (hf.hasFDerivAt.fun_add hg.hasFDerivAt).fderiv
 
-/-- The second variation of a weighted residual freezes the weight exactly when its
-zeroth and relevant first residuals vanish. -/
-theorem weighted_second_of_residual_zero {f g : Param → ℂ}
+/-- The original weighted second derivative retains both first-residual terms. -/
+theorem weighted_second_of_value_zero {f g : Param → ℂ}
     (hf : ContDiffAt ℂ 3 f 0) (hg : ContDiffAt ℂ 3 g 0)
-    (i j : Fin 3) (hg0 : g 0 = 0)
-    (hgi : parameterDeriv g i 0 = 0) (hgj : parameterDeriv g j 0 = 0) :
+    (i j : Fin 3) (hg0 : g 0 = 0) :
     parameterDeriv (parameterDeriv (fun x => f x * g x) j) i 0 =
-      f 0 * parameterDeriv (parameterDeriv g j) i 0 := by
+      f 0 * parameterDeriv (parameterDeriv g j) i 0 +
+        parameterDeriv f i 0 * parameterDeriv g j 0 +
+        parameterDeriv f j 0 * parameterDeriv g i 0 := by
   have he : parameterDeriv (fun x => f x * g x) j =ᶠ[𝓝 (0:Param)]
       fun x => f x * parameterDeriv g j x + g x * parameterDeriv f j x := by
     filter_upwards [hf.eventually (by norm_num), hg.eventually (by norm_num)] with x hfx hgx
@@ -66,7 +69,17 @@ theorem weighted_second_of_residual_zero {f g : Param → ℂ}
     (hdf.hasFDerivAt.fun_mul hdpg.hasFDerivAt).differentiableAt
   have hB : DifferentiableAt ℂ (fun x => g x * parameterDeriv f j x) 0 :=
     (hdg.hasFDerivAt.fun_mul hdpf.hasFDerivAt).differentiableAt
-  rw [pd_add hA hB i, pd_mul hdf hdpg i, pd_mul hdg hdpf i, hg0, hgi, hgj]
+  rw [pd_add hA hB i, pd_mul hdf hdpg i, pd_mul hdg hdpf i, hg0]
+  ring
+
+/-- The second variation freezes the weight when the relevant residuals vanish. -/
+theorem weighted_second_of_residual_zero {f g : Param → ℂ}
+    (hf : ContDiffAt ℂ 3 f 0) (hg : ContDiffAt ℂ 3 g 0)
+    (i j : Fin 3) (hg0 : g 0 = 0)
+    (hgi : parameterDeriv g i 0 = 0) (hgj : parameterDeriv g j 0 = 0) :
+    parameterDeriv (parameterDeriv (fun x => f x * g x) j) i 0 =
+      f 0 * parameterDeriv (parameterDeriv g j) i 0 := by
+  rw [weighted_second_of_value_zero hf hg i j hg0, hgi, hgj]
   ring
 
 open ComplexCoordinateMetricTwoJet
@@ -254,6 +267,43 @@ private theorem testCoefficient_zero (J : Jet) (U : Fin 3 → Jet)
     testCoefficient J U k r s 0 = (J.metric⁻¹ * (U k).metric * (J.metric⁻¹).transpose) r s := by
   simp [testCoefficient, weight, family_zero, hdet]
 
+private theorem family_single_line (J : Jet) (U : Fin 3 → Jet) (i : Fin 3) (t : ℂ) :
+    family J U (t • Pi.single i 1) = ofSpace (toSpace J + t • toSpace (U i)) := by
+  apply congrArg ofSpace
+  change toSpace J + variationMap U (t • Pi.single i 1) = _
+  rw [map_smul, variationMap_single]
+
+/-- The complete test coefficient's actual directional derivative is the original metric slope. -/
+theorem testCoefficient_first (J : Jet) (U : Fin 3 → Jet)
+    (hdet : J.metric.det ≠ 0) (k : Fin 3) (r s : Fin d) (i : Fin 3) :
+    parameterDeriv (testCoefficient J U k r s) i 0 =
+      MetricPathDensity.testWeightSlope J.metric (U i).metric (U k).metric r s := by
+  let e : Param := Pi.single i 1
+  have hd : HasDerivAt (fun t : ℂ => t • e) e 0 := by
+    convert! (hasDerivAt_id (0:ℂ)).smul_const e using 1
+    simp only [one_smul]
+  have hf : HasFDerivAt (testCoefficient J U k r s)
+      (fderiv ℂ (testCoefficient J U k r s) 0) ((0:ℂ) • e) := by
+    simpa only [zero_smul] using
+      ((testCoefficient_smooth (n := 1) J U hdet k r s).differentiableAt
+        (by norm_num)).hasFDerivAt
+  have hh := hf.comp_hasDerivAt 0 hd
+  have hmetric (t : ℂ) : (family J U (t • e)).metric =
+      MetricPathDensity.path J.metric (U i).metric 0 0 t := by
+    rw [family_single_line]
+    simp only [MetricPathDensity.path, smul_zero, add_zero]
+    rfl
+  have he : (fun t : ℂ => testCoefficient J U k r s (t • e)) =
+      fun t => MetricPathDensity.testWeight J.metric (U i).metric 0 0 (U k).metric t r s := by
+    funext t
+    simp only [testCoefficient,weight,hmetric,MetricPathDensity.testWeight,MetricPathDensity.volumeRatio]
+  have hh' : HasDerivAt (fun t : ℂ => testCoefficient J U k r s (t • e))
+      (parameterDeriv (testCoefficient J U k r s) i 0) 0 := by
+    convert! hh using 1
+  rw [he] at hh'
+  exact hh'.unique (MetricPathDensity.testWeight_hasDerivAt J.metric (U i).metric 0 0
+    (U k).metric hdet r s)
+
 private theorem pd_sum {ι : Type*} [Fintype ι] {F : ι → Param → ℂ} {a : Param}
     (hF : ∀ v, DifferentiableAt ℂ (F v) a) (k : Fin 3) :
     parameterDeriv (fun x => ∑ v, F v x) k a = ∑ v, parameterDeriv (F v) k a := by
@@ -279,6 +329,43 @@ private theorem bulk_eq_sum (J : Jet) (U : Fin 3 → Jet) (Λ : ℂ) (k : Fin 3)
   funext a
   simp [bulk, testCoefficient, residual, Finset.mul_sum, mul_assoc]
 
+/-- The original second bulk variation, including every inhomogeneous first residual and weight. -/
+theorem bulk_second_eq_hessian_and_weights (J : Jet) (U : Fin 3 → Jet) (Λ : ℂ)
+    (hdet : J.metric.det ≠ 0)
+    (hzero : ∀ r s, J.einstein r s + Λ * J.metric r s = 0)
+    (i j k : Fin 3) :
+    parameterDeriv (parameterDeriv (bulk J U Λ k) j) i 0 =
+      ∑ r, ∑ s,
+        ((J.metric⁻¹ * (U k).metric * (J.metric⁻¹).transpose) r s *
+          secondVariation (toSpace J) r s (toSpace (U i)) (toSpace (U j)) +
+        MetricPathDensity.testWeightSlope J.metric (U i).metric (U k).metric r s *
+          CoordinateMetricTwoJet.Linearization.cosmological J (U j) Λ r s +
+        MetricPathDensity.testWeightSlope J.metric (U j).metric (U k).metric r s *
+          CoordinateMetricTwoJet.Linearization.cosmological J (U i) Λ r s) := by
+  have h0 : (family J U 0).metric.det ≠ 0 := by simpa only [family_zero] using hdet
+  have hg (r s : Fin d) : ContDiffAt ℂ 3 (residual J U Λ r s) 0 :=
+    residual_smooth J U Λ r s 0 h0
+  have hg0 (r s : Fin d) : residual J U Λ r s 0 = 0 := by
+    simpa only [residual, family_zero] using hzero r s
+  have hg1 (v : Fin 3) (r s : Fin d) : parameterDeriv (residual J U Λ r s) v 0 =
+      CoordinateMetricTwoJet.Linearization.cosmological J (U v) Λ r s := by
+    rw [residual_first J U Λ r s 0 h0 v, family_zero,
+      ← CoordinateMetricTwoJet.Linearization.einstein_eq_fderiv J (U v) hdet r s]
+    rfl
+  have hp (r s : Fin d) : ContDiffAt ℂ 3
+      (fun a => testCoefficient J U k r s a * residual J U Λ r s a) 0 :=
+    (testCoefficient_smooth J U hdet k r s).mul (hg r s)
+  rw [bulk_eq_sum, pd2_sum (fun r => ContDiffAt.sum (fun s _ => hp r s))]
+  apply Finset.sum_congr rfl
+  intro r _
+  rw [pd2_sum (fun s => hp r s)]
+  apply Finset.sum_congr rfl
+  intro s _
+  rw [weighted_second_of_value_zero (testCoefficient_smooth J U hdet k r s)
+      (hg r s) i j (hg0 r s), testCoefficient_zero J U hdet k r s,
+    residual_second J U Λ hdet r s i j, hg1, hg1,
+    testCoefficient_first J U hdet k r s i, testCoefficient_first J U hdet k r s j]
+
 /-- On-shell reduction of the ORIGINAL volume-weighted source pairing to the actual
 Einstein Hessian. All changing-test terms are discharged by the original residual equations. -/
 theorem bulk_second_eq_hessian (J : Jet) (U : Fin 3 → Jet) (Λ : ℂ)
@@ -289,27 +376,8 @@ theorem bulk_second_eq_hessian (J : Jet) (U : Fin 3 → Jet) (Λ : ℂ)
     parameterDeriv (parameterDeriv (bulk J U Λ k) j) i 0 =
       ∑ r, ∑ s, (J.metric⁻¹ * (U k).metric * (J.metric⁻¹).transpose) r s *
         secondVariation (toSpace J) r s (toSpace (U i)) (toSpace (U j)) := by
-  have h0 : (family J U 0).metric.det ≠ 0 := by simpa only [family_zero] using hdet
-  have hg (r s : Fin d) : ContDiffAt ℂ 3 (residual J U Λ r s) 0 :=
-    residual_smooth J U Λ r s 0 h0
-  have hg0 (r s : Fin d) : residual J U Λ r s 0 = 0 := by
-    simpa only [residual, family_zero] using hzero r s
-  have hg1 (v : Fin 3) (r s : Fin d) : parameterDeriv (residual J U Λ r s) v 0 = 0 := by
-    rw [residual_first J U Λ r s 0 h0 v, family_zero,
-      ← CoordinateMetricTwoJet.Linearization.einstein_eq_fderiv J (U v) hdet r s]
-    exact hfirst v r s
-  have hp (r s : Fin d) : ContDiffAt ℂ 3
-      (fun a => testCoefficient J U k r s a * residual J U Λ r s a) 0 :=
-    (testCoefficient_smooth J U hdet k r s).mul (hg r s)
-  rw [bulk_eq_sum, pd2_sum (fun r => ContDiffAt.sum (fun s _ => hp r s))]
-  apply Finset.sum_congr rfl
-  intro r _
-  rw [pd2_sum (fun s => hp r s)]
-  apply Finset.sum_congr rfl
-  intro s _
-  rw [weighted_second_of_residual_zero (testCoefficient_smooth J U hdet k r s)
-      (hg r s) i j (hg0 r s) (hg1 i r s) (hg1 j r s),
-    testCoefficient_zero J U hdet k r s, residual_second J U Λ hdet r s i j]
+  rw [bulk_second_eq_hessian_and_weights J U Λ hdet hzero i j k]
+  simp only [hfirst, mul_zero, add_zero]
 
 end
 end GaloisForLFunctions.HTGeometry.EinsteinOnShellPairing

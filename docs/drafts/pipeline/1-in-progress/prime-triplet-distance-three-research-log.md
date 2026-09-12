@@ -180,6 +180,31 @@ does not retire mechanisms outside its stated hypotheses.
   `routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceEnergy` in
   `formal/GaloisForLFunctions/RHTower/RouteEApproximateTransposeDivergence.lean`.
 
+- **FACT-023 — Row normalization splits transpose mismatch into geometry and local normalizers.**
+  For raw upward/downward incidences `U,V` with row masses `a_j,b_i`, their normalized kernels obey
+  `Q(i,j)-P(j,i)=(V(i,j)-U(j,i))/b_i + U(j,i)*(1/b_i-1/a_j)`. Nonzero raw rows automatically give
+  complete normalized rows, so FACT-022 turns mixed column-load gradient energy exactly into the
+  divergence-gradient energy of these two source-visible terms. Lean:
+  `routeE_normalizedTransposeMismatch_eq_rawBidirectionalMismatch` and
+  `routeE_normalizedBidirectionalColumnGradientEnergy_eq_quarterRawMismatchDivergenceEnergy` in
+  `formal/GaloisForLFunctions/RHTower/RouteEApproximateTransposeDivergence.lean`.
+
+- **FACT-024 — Opposite-grade exclusion permits count-preserving one-radius left transfer.** If a
+  monotone radius `h` satisfies `h(y)≤y` and the counted predicate excludes `y`, then every token in
+  the right window based at `y-h(y)` transfers to the strict left window `(y-h(y),y)` with no count
+  loss. Numerically nonreverse tokens lie in a boundary strip of width
+  `h(y)-h(y-h(y))`, so their count is at most that width. This is purely numerical: stability of a
+  source-dependent factorization certificate under endpoint reversal remains open. Lean:
+  `routeE_oneShift_leftWindow_card_ge_rightWindow_card` and
+  `routeE_oneShift_nonreverseWindow_card_le_radiusOscillation` in
+  `formal/GaloisForLFunctions/RHTower/RouteERightToLeftWindowTransfer.lean`.
+
+- **FACT-025 — Square-root one-shift radius oscillation is quadratic in its multiplier.** For
+  `c≥0` and `c²≤y`,
+  `c*sqrt(y)-c*sqrt(y-c*sqrt(y))≤c²`. Thus the numerical boundary from FACT-024 has width at most
+  `(log X)^3.1` when `c=(log X)^1.55`. Lean: `routeE_sqrtRadius_sub_oneShift_le_sq` in
+  `formal/GaloisForLFunctions/RHTower/RouteERightToLeftWindowTransfer.lean`.
+
 ### No-gos
 
 - **NOGO-001 — Signed column-load cancellation is circular.** For every row-stochastic kernel
@@ -356,3 +381,17 @@ does not retire mechanisms outside its stated hypotheses.
   approximate transpose survives, with its precise remaining producer given by the divergence in
   FACT-022. Lean: `routeE_columnMass_eq_one_of_transpose_rowMass` in
   `formal/GaloisForLFunctions/RHTower/RouteEApproximateTransposeDivergence.lean`.
+
+- **NOGO-025 — The count-preserving two-radius shift has only singleton transpose overlap.** Under
+  the monotonicity and fit hypotheses of FACT-021, at most one shifted token satisfies the ordinary
+  numerical reverse-window test, and any such token equals `y-h(y)`. Scope: bulk approximate
+  transpose from that shift; its complete downward-row supply remains valid. Lean:
+  `routeE_twoShift_reverseOverlapWindow_card_le_one` in
+  `formal/GaloisForLFunctions/RHTower/RouteERightToLeftWindowTransfer.lean`.
+
+- **NOGO-026 — A nontrivial whole-anchor reservoir cannot be fresh at its own terminal.** If the
+  forward target is `q=t*m`, then `Coprime(t,q)` holds iff `t=1`. Hence the same inserted reservoir
+  cannot be reused as a fresh reverse certificate. Scope: entrywise same-reservoir reversal only.
+  Different reverse reservoirs, symmetric toggle relations, support symmetrization, and aggregate
+  mismatch-divergence estimates survive. Lean: `routeE_wholeAnchor_reverseFresh_sameReservoir_iff_one`
+  in `formal/GaloisForLFunctions/RHTower/RouteEWholeAnchorReverseFreshnessNoGo.lean`.

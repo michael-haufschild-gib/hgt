@@ -65,3 +65,20 @@ Consistency: the (2,3) component agrees with the corpus `angularCoefficient_eq` 
 - `ThetaCuspHawkingBMScalarStreamForcingHorizon`: the Green forcing is pole-free, `srcForcing = −N(r)/(4r³(2−μ))`, `N` even of degree 6 in `r`; horizon value explicit; at `μ = (s+1)(s+2)` the factor `s` of `N` cancels `2−μ = −s(s+3)`, and the AdS leading growth is `r³/8` (rate-independent).
 - `ThetaCuspHawkingBMScalarStreamRadiation`: `ssRadiation` = normalizable coefficient of the SS ++ response = ∫ regular·weight·forcing.
 - Structure of the moment (bookkeeping): with `z = 1−r⁻²`, weight `∝ z^{2s−1}(1−z)^{−3/2}`, forcing `= Σ_{k=0}^{3} c_k (1−z)^{3/2−k}`, the integrand is `Σ_k c_k z^{2s−1}(1−z)^{−k}·₂F₁(A,B;C;z)`: Euler integrals `B(2s,1−k)·₃F₂(A,B,2s;C,2s+1−k;1)`, divergent at the AdS boundary for `k ≥ 1` (finite part = analytic continuation in the `(1−z)` exponent), horizon convergence needs `Re s > 0`; not Saalschützian/Watson/Whipple/Dixon, so generically transcendental ₃F₂(1) values — this is the row-33b "unevaluated source moment" made explicit, and rows 31–34's Laurent/collision machinery is the tool for its finite part.
+
+
+## Pass 7 (2026-09-12): the vector–vector block
+
+Same pipeline for the fundamental vector jet `vectorJet s r y B A C P Q R U W`: 336 entries, 384 Christoffel-variation
+closed forms (`bmVectorEntry`, `bmVectorTable`), 40 Riemann traces, ten Ricci and ten Einstein components
+(`vectorJet_quadratic_einstein_i_j`, `…VectorVectorQuadraticSource`). Only the symbols `A, C, P, Q, R` occur: the
+third-derivative jets `U, W` drop out of the VV source. With the coexact substitution
+(`A = S_y, C = −S_x, P = S_xy, Q = S_yy = λS/y² − S_xx, R = −S_xx`) every component is an angular invariant of `S`
+(`coexactJet_quadratic_einstein_i_j`, `…VectorVectorSourceInvariants`): orbit block in `S², |∇S|², |∇∇S|²`; mixed
+block the gradient of one potential in `S², |∇S|²`; angular block a trace part in the three scalars plus a
+trace-free part in `(∇S⊗∇S)^{tf}`, `tfHess(S²)`. Harmonic images (Bochner for `|∇∇S|²`) give `vvSourceTT … vvSourceL`
+with all three Bianchi identities (`…VectorVectorSourceHarmonic`), the function-level layer
+(`…VectorVectorSourceField`), and the decaying Laurent particular `A/r + B/r³` (`…VectorVectorLaurentMaster`):
+the cleared VV master source has no growing part, `B` needs only `(2−μ)⁻¹`, and the normalizable coefficient is
+`A = −2s²(3s²+12s+μ+9)/(μ−(2s+1)(2s+2))`. `vvLaurentMetricField_einstein` (`…VectorVectorLaurentField`) is the
+field-level statement. All modules at default heartbeats, standard axioms.

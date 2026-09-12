@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SteinhausComplexSecondMoment
 import GaloisForLFunctions.RHTower.Sieve.ProdIdxFibreDivisorBound
+import GaloisForLFunctions.RHTower.Sieve.DirichletIntegralMeanValue
 import GaloisForLFunctions.HTGeometry.PaleyZygmund
 
 /-!
@@ -21,6 +22,13 @@ open SteinhausModel
 /-- A complex Steinhaus carrier indexed by the positive integers `1, ..., M`. -/
 noncomputable def steinhausFinCarrier (M : ℕ) (a : Fin M → ℂ) (omega : Omega) : ℂ :=
   ∑ j : Fin M, a j * X ((j : ℕ) + 1) omega
+
+/-- Reindex a finite successor carrier from `Fin M` to the positive interval `[1, M]`. -/
+theorem sum_fin_succ_eq_sum_Icc {A : Type*} [AddCommMonoid A]
+    (M : ℕ) (g : ℕ → A) :
+    ∑ j : Fin M, g ((j : ℕ) + 1) = ∑ n ∈ Finset.Icc 1 M, g n := by
+  classical
+  rw [← Sieve.image_succ_univ M, Finset.sum_image (Sieve.succ_injOn M)]
 
 theorem norm_steinhausFinCarrier_le (M : ℕ) (a : Fin M → ℂ) (omega : Omega) :
     ‖steinhausFinCarrier M a omega‖ ≤ ∑ j : Fin M, ‖a j‖ := by
@@ -318,7 +326,7 @@ theorem integral_steinhausFinEnergy_sq_le_of_fourth
           refine Finset.sum_congr rfl fun i hi => ?_
           rw [integral_div]
           congr 1
-          ring
+          ring_nf
         · intro i hi
           exact (hpow4 i).div_const (v i)
       _ ≤ V * ∑ i ∈ P, (K * v i ^ 2) / v i := by
@@ -464,7 +472,8 @@ theorem exists_measure_steinhausFinEnergy_gt_half_ge_rpow_of_totalVariance_pos
     linarith
   have hQvar : ∀ i ∈ Q, 0 < ∑ j : Fin M, ‖a i j‖ ^ 2 := by
     intro i hi
-    exact (Finset.mem_filter.mp (by simpa only [Q] using hi)).2
+    change i ∈ P.filter (fun i => 0 < ∑ j : Fin M, ‖a i j‖ ^ 2) at hi
+    exact (Finset.mem_filter.mp hi).2
   have h := hbase Q M a hQ hQvar
   simpa only [hVeq, hEeq] using h
 

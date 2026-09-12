@@ -41,7 +41,7 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
 - **F12 — Exact channel-energy partition.** Expected squared energies of all largest-prime channels
   equal coefficient square mass of the non-`Y`-smooth sector. Evidence:
   `steinhausCoefficientMass_eq_smooth_add_largePrimeChannelEnergy`.
-- **F13 — Axiom audit.** F07, F10, F11, F12, F15--F19 depend only on `propext`,
+- **F13 — Axiom audit.** F07, F10, F11, F12, F15--F20 depend only on `propext`,
   `Classical.choice`, and `Quot.sound`; targeted builds pass.
 - **F14 — Dense-support Gaussian warning.** arXiv:2605.21737 proves, in its random multiplicative
   setting, that its standard complex-Gaussian CLT forces sparse support; it does not exclude a
@@ -73,6 +73,14 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   square-mass floor. Evidence: `exists_norm_zetaChi_rightDisplaced_ge_nat_window`,
   `norm_sq_smoothAFEZetaRightReflectedPrimalCoefficient_eq_actual`, and
   `exists_eventually_reflected_actual_terminal_channels_lower`.
+- **F20 — Literal conditional-energy event.** Squaring any complex Steinhaus carrier gives its
+  finite Dirichlet convolution; complex Parseval plus the divisor-fibre bound gives fourth moment
+  at most `C_epsilon*(M^2)^epsilon*variance^2`. Weighted Cauchy aggregates channels without their
+  cardinality, zero-variance channels vanish exactly, and Paley--Zygmund gives probability at least
+  `1/(4*C_epsilon*(N^2)^epsilon)` that literal reflected-primal terminal channel energy exceeds
+  half a fixed positive mass. Evidence: `exists_integral_norm_four_steinhausFinCarrier_le_rpow`,
+  `exists_measure_steinhausFinEnergy_gt_half_ge_rpow_of_totalVariance_pos`, and
+  `exists_eventually_measure_reflectedPrimalChannelEnergy_gt_ge_rpow`.
 
 ## No-gos
 

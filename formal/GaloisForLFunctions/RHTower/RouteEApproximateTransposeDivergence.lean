@@ -40,6 +40,47 @@ def routeEMismatchDivergence (P Q : ι → ι → ℝ) (i : ι) : ℝ :=
   (∑ j, routeETransposeMismatch P Q i j) -
     ∑ j, routeETransposeMismatch P Q j i
 
+/-- Row normalization of an unnormalized physical incidence. -/
+def routeERowNormalizedKernel (U : ι → ι → ℝ) (i j : ι) : ℝ :=
+  U i j / routeERowMass U i
+
+/-- Exact split of normalized up/down transpose mismatch into raw-incidence and normalizer terms. -/
+def routeERawBidirectionalMismatch (U V : ι → ι → ℝ) (i j : ι) : ℝ :=
+  (V i j - U j i) / routeERowMass V i +
+    U j i * (1 / routeERowMass V i - 1 / routeERowMass U j)
+
+/-- Divergence of the raw-incidence plus normalizer mismatch. -/
+def routeERawBidirectionalMismatchDivergence
+    (U V : ι → ι → ℝ) (i : ι) : ℝ :=
+  (∑ j, routeERawBidirectionalMismatch U V i j) -
+    ∑ j, routeERawBidirectionalMismatch U V j i
+
+/-- A nonempty raw row becomes a complete normalized row. -/
+theorem routeE_rowMass_rowNormalizedKernel_eq_one
+    (U : ι → ι → ℝ) (i : ι) (hU : routeERowMass U i ≠ 0) :
+    routeERowMass (routeERowNormalizedKernel U) i = 1 := by
+  change (∑ j, U i j / routeERowMass U i) = 1
+  rw [← Finset.sum_div]
+  exact div_self hU
+
+/-- Normalized transpose mismatch separates exactly into geometry and row-normalization mismatch. -/
+theorem routeE_normalizedTransposeMismatch_eq_rawBidirectionalMismatch
+    (U V : ι → ι → ℝ) (i j : ι) :
+    routeETransposeMismatch
+        (routeERowNormalizedKernel U) (routeERowNormalizedKernel V) i j =
+      routeERawBidirectionalMismatch U V i j := by
+  unfold routeETransposeMismatch routeERowNormalizedKernel routeERawBidirectionalMismatch
+  ring
+
+/-- The normalized mismatch divergence is the divergence of the two explicit raw terms. -/
+theorem routeE_normalizedMismatchDivergence_eq_rawBidirectionalMismatchDivergence
+    (U V : ι → ι → ℝ) (i : ι) :
+    routeEMismatchDivergence
+        (routeERowNormalizedKernel U) (routeERowNormalizedKernel V) i =
+      routeERawBidirectionalMismatchDivergence U V i := by
+  unfold routeEMismatchDivergence routeERawBidirectionalMismatchDivergence
+  simp_rw [routeE_normalizedTransposeMismatch_eq_rawBidirectionalMismatch]
+
 /-- Column defect of the bidirectional mixture is exactly half the mismatch divergence. -/
 theorem routeE_one_sub_averageColumnMass_eq_half_mismatchDivergence
     (P Q : ι → ι → ℝ)
@@ -99,6 +140,33 @@ theorem routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceE
   rw [routeE_averageColumnMass_gradient_sq_eq_quarter_mismatchDivergence_gradient_sq
     P Q hP hQ]
   ring
+
+/-- For row-normalized physical incidences, load-gradient energy is exactly the divergence energy
+of raw shifted-incidence discrepancy plus local row-normalizer discrepancy. -/
+theorem routeE_normalizedBidirectionalColumnGradientEnergy_eq_quarterRawMismatchDivergenceEnergy
+    (U V : ι → ι → ℝ)
+    (hU : ∀ i, routeERowMass U i ≠ 0)
+    (hV : ∀ i, routeERowMass V i ≠ 0)
+    (edges : Finset (ι × ι)) (weight : ι × ι → ℝ) :
+    (∑ p ∈ edges, weight p *
+      (routeEColumnMass
+          (routeEKernelAverage
+            (routeERowNormalizedKernel U) (routeERowNormalizedKernel V)) p.1 -
+        routeEColumnMass
+          (routeEKernelAverage
+            (routeERowNormalizedKernel U) (routeERowNormalizedKernel V)) p.2) ^ 2) =
+      (1 / 4 : ℝ) * ∑ p ∈ edges, weight p *
+        (routeERawBidirectionalMismatchDivergence U V p.1 -
+          routeERawBidirectionalMismatchDivergence U V p.2) ^ 2 := by
+  rw [routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceEnergy
+    (routeERowNormalizedKernel U) (routeERowNormalizedKernel V)
+    (fun i => routeE_rowMass_rowNormalizedKernel_eq_one U i (hU i))
+    (fun i => routeE_rowMass_rowNormalizedKernel_eq_one V i (hV i))]
+  apply congrArg ((1 / 4 : ℝ) * ·)
+  apply Finset.sum_congr rfl
+  intro p _hp
+  rw [routeE_normalizedMismatchDivergence_eq_rawBidirectionalMismatchDivergence,
+    routeE_normalizedMismatchDivergence_eq_rawBidirectionalMismatchDivergence]
 
 /-- Pointwise absolute column defect is bounded by incoming plus outgoing mismatch mass. -/
 theorem routeE_abs_one_sub_averageColumnMass_le_mismatchL1

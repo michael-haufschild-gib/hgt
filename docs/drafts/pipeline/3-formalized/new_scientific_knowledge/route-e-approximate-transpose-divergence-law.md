@@ -67,6 +67,32 @@ The same decomposition gives the auxiliary absolute estimate
 \tag{6}
 \]
 
+## Row-normalized raw-incidence split
+
+Let `U,V` be the unnormalized upward and downward physical incidences, and put
+
+\[
+ a_j=\sum_kU_{jk},\qquad b_i=\sum_kV_{ik},\qquad
+ P_{ji}={U_{ji}\over a_j},\qquad Q_{ij}={V_{ij}\over b_i}.
+\tag{7}
+\]
+
+Whenever all raw rows are nonzero, `P,Q` have complete rows. Their transpose mismatch has the exact
+two-term decomposition
+
+\[
+ \boxed{
+ Q_{ij}-P_{ji}
+ ={V_{ij}-U_{ji}\over b_i}
+ +U_{ji}\left({1\over b_i}-{1\over a_j}\right).}
+\tag{8}
+\]
+
+First term is literal geometric mismatch between downward incidence and transposed upward
+incidence. Second is local row-normalizer mismatch on shared physical edges. Lean combines `(8)`
+with `(5)`, proving that mixed normalized column-gradient energy is exactly one quarter of the
+divergence-gradient energy of these two raw terms.
+
 ## Exact-transpose boundary
 
 If `Q=Pᵀ` and every row of `Q` sums to one, then every column of `P` already sums to one. Hence

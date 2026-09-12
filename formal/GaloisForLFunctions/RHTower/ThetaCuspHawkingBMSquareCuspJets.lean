@@ -528,6 +528,37 @@ private theorem product_remainder_rapid {f f0 g g0 : Field}
   intro z hz
   ring
 
+/-- The complete gradient product after subtracting both principal derivatives. -/
+def gradientProductRemainder (u : ℂ) (i j : Fin 2) : Field := fun z =>
+  coordDeriv i (scalar u) z*coordDeriv j (scalar u) z-
+    coordDeriv i (principal u) z*coordDeriv j (principal u) z
+
+private theorem gradientProductRemainder_rapid (u : ℂ) (i j : Fin 2) :
+    Rapid (gradientProductRemainder u i j) :=
+  product_remainder_rapid (AngularExpression.seed.derivative_remainder u i)
+    ((literal_principal u).derivative i) (AngularExpression.seed.derivative_remainder u j)
+    ((literal_principal u).derivative j)
+
+/-- Every actual gradient-product remainder jet has all complex height-weighted bounds. -/
+theorem gradientProductRemainder_jet_weighted_bound (u w : ℂ) (i j : Fin 2)
+    (word : List (Fin 2)) (l : Ioi (0:ℝ)) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ z : Fin 2 → ℝ, l.val ≤ z 1 →
+      ‖(z 1:ℂ)^w * coordinateJet word (gradientProductRemainder u i j) z‖ ≤ C :=
+  ((gradientProductRemainder_rapid u i j).jet word).bound w l.val l.property
+
+/-- Every weighted gradient-product remainder jet vanishes along every horizontal path. -/
+theorem gradientProductRemainder_jet_tendsto_zero (u w : ℂ) (i j : Fin 2)
+    (word : List (Fin 2)) (X : ℝ → ℝ) :
+    Tendsto (fun y : ℝ => (y:ℂ)^w *
+      coordinateJet word (gradientProductRemainder u i j) ![X y,y]) atTop (𝓝 0) :=
+  ((gradientProductRemainder_rapid u i j).jet word).vanish w X
+
+/-- The complete gradient-product remainder and all its coordinate jets are smooth. -/
+theorem gradientProductRemainder_jet_smooth (u : ℂ) (i j : Fin 2)
+    (word : List (Fin 2)) :
+    ContDiffOn ℝ ∞ (coordinateJet word (gradientProductRemainder u i j)) domain :=
+  ((gradientProductRemainder_rapid u i j).jet word).smooth
+
 /-- The actual vertical Green flux for a full scalar test and one of the six
 quartic contact fields, before any principal subtraction. -/
 def quarticContactGreenFlux (q : XiZeroCopy) (slot : Fin 6) (u : ℂ) (z : Fin 2 → ℝ) : ℂ :=
@@ -812,4 +843,3 @@ theorem quarticContactCoreCutoff_laplacian (q : XiZeroCopy) (slot : Fin 6) (n : 
 
 end
 end RHTower.D4BMSquareCuspJets
-

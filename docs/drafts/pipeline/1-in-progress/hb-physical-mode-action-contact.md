@@ -2956,11 +2956,11 @@ Lean warnings. Formal lint passed. The RHTower umbrella imports the new leaf;
 no umbrella or dependency source was built. The cached dependency artifacts
 were retained, and the new leaf artifacts were copied to the normal cache.
 
-The missing angular step is cusp admission for these actual holomorphic
-weight-four fields. The exact principal cancellation below and the retained
-native L2 correction give the next direct estimate to prove. The source tensor
-identity, physical causal boundary admission and Hawking-clock extinction
-remain unproved.
+The missing Lean angular step is cusp admission for these actual holomorphic
+weight-four fields. The exact principal cancellation and native derivative
+estimates below now give an analytical proof of the source tensor identity.
+That assembly is not yet formalized. Physical causal boundary admission and
+Hawking-clock extinction remain unproved.
 
 ### Exact cancellation of the complete cusp principal tensor
 
@@ -3037,3 +3037,160 @@ an annulus. This gives a fixed compact evaluation test without assuming a
 chosen `ContDiffBump` is radial. Translating that fixed test will let both tensor
 derivatives move onto a uniformly controlled test. The immediate target remains
 a polynomial growth bound for the actual retained native correction.
+
+### Native L1 control of the inverse's cusp contribution
+
+The actual native measure has finite volume. The constructed correction `W`
+is therefore native L1 by its proved native L2 membership. Write
+`M(q)=integral_fd |W(q)| dmu`, with `dmu=dx dy/y²`.
+
+For a compact planar test `g` supported in the closed radius-`1/4` ball about
+`c`, `Im(c)>3`, exact modular unfolding gives
+
+    integral_plane g*W = integral_fd periodize(y²*g)*W dmu.
+
+The proved high-cusp periodization identity removes nonparabolic terms. At
+most the three integer translations `floor(Re(c))-1`, `floor(Re(c))`,
+`floor(Re(c))+1` can contribute. Thus, if `|g|<=B`,
+
+    |integral_plane g*W| <= 3*(Im(c)+1)²*B*M(q).
+
+The fixed divided-cutoff Cauchy kernel and each fixed first or second
+directional derivative have uniform compact-support bounds after translation.
+Two compact Green identities therefore bound the actual tested second
+derivatives of `W` by `C(v,w)*(Im(c)+1)²*M(q)`. For the connection terms, use
+`g/y` and one integration by parts:
+
+    D_v(g/y) = D_v(g)/y - g*Im(v)/y².
+
+On the support, `y>1`, so the derivative test is bounded by
+`sup|D_v(g)|+sup|g|*|Im(v)|`. This controls every actual `y^(-1) D_v W`
+term by the same polynomial height factor. No pointwise derivative bound on
+`W` is assumed. These estimates replace the proposed sharper local L2 norm
+estimate; assembly with the literal source and principal inverse is still
+required for a polynomial bound on either full tensor polarization.
+
+### Vanishing normalized cusp mean of the correction's actual Hessian
+
+This is an analytical proof for the constructed `W`, not yet a Lean theorem.
+Choose `chi` smooth and compactly supported in `(1,2)` with integral one, and
+put `psi_Y(y)=chi(y/Y)/Y` for `Y>1`. Integrate over the horizontal period
+`[-1/2,1/2]` and all positive heights. `W` and its actual derivatives are
+periodic and smooth. Horizontal total derivatives integrate to zero.
+
+The original trace-free Hessian components are
+
+    H00 = (W_xx-W_yy)/2-W_y/y,
+    H01 = W_xy+W_x/y,  H10=H01,  H11=-H00.
+
+The normalized means of `H01` and `H10` are zero. Two integrations by parts
+in height give the exact diagonal mean
+
+    integral psi_Y*H00 dx dy
+      = integral W*(-psi_Y''/2+psi_Y'/y-psi_Y/y²) dx dy.
+
+All boundary terms vanish because `psi_Y` is compactly supported. Let
+`B=||chi''||_infty/2+||chi'||_infty+||chi||_infty`. The coefficient has
+absolute value at most `B/Y³` and support in `Y<y<2Y`. This entire strip
+belongs to the original fundamental cell. Consequently its absolute pairing
+is at most
+
+    (B/Y³)*integral_strip |W| dx dy <= (4*B/Y)*M(q) -> 0.
+
+The `H11` mean is its negative. Thus all four normalized means of the actual
+correction's trace-free Hessian tend to zero, without a pointwise decay
+estimate or an assumption on its differentiated native norms. Combined with
+the exact principal cancellation and rapid source cross terms, this is the
+constant-mode mechanism for both independent tensor polarizations. The
+source/principal assembly, cusp admission, tensor vanishing and physical
+causal boundary admission remain separate formal obligations.
+
+### Analytical closure of the actual angular tensor identity
+
+**Statement, proved analytically below; not yet a Lean theorem.** For every
+original Xi occurrence `q`, let `S` be the literal scalar, `lambda` its original
+Laplace--Beltrami eigenvalue and `U=W-K` the constructed smooth shift-two
+inverse. Then, pointwise throughout the upper half-plane,
+
+    [dS tensor dS]^TF + lambda*HessTF(U) = 0.
+
+This statement concerns the actual squared-source angular tensor. It does not
+assert physical radial/left-QNM endpoint admission or Hawking-clock extinction.
+
+1. **Exact high-cusp reduction.** Above height three, the proved cutoff germ is
+   `K=Q`, the complete principal response. Integer translation invariance
+   extends this equality from the fundamental cell across the entire high
+   cusp, including the vertical seams. Write `S=P+R`. The explicit principal
+   cancellation proved above gives
+
+       E = [dP tensor dR+dR tensor dP+dR tensor dR]^TF
+             +lambda*HessTF(W).
+
+   Both first coordinate derivatives of `R` have all height-weighted bounds:
+   `D4BMSquareCuspJets` proves closure of the full signed Fourier--Bessel tail
+   under these derivatives and complex height weights. The first derivative
+   of each principal power is its coefficient times another height power.
+   Hence the first tensor on the right decreases faster than every prescribed
+   inverse height power, uniformly in horizontal position. No Fourier mode or
+   principal--tail cross term is discarded.
+
+2. **Polynomial growth of both actual polarizations.** The established actual
+   tensor components give `H_minus=A-iB` and `H_plus=conj(A+iB)`. They are
+   holomorphic, and each satisfies the full weight-four transformation law.
+   The fixed compact evaluation identity reconstructs `pi*H(c)`. The rapid
+   term has a uniformly bounded pairing. The second-derivative and connection
+   estimates proved above bound the remaining pairing by
+   `C*(Im(c)+1)²*M(q)`. Thus, for each fixed `q`, both polarizations satisfy
+   `|H(c)|<=C_q*(Im(c)+1)²` for sufficiently large height.
+
+   For `H_plus`, apply the same generic test bound to the conjugate kernel.
+   Conjugation preserves support, smoothness, every real directional
+   derivative bound and the native absolute mass; it commutes with the
+   integrals. This step assumes no reality of `S`, `U`, `A` or `B`. Its Lean
+   specialization still needs to be written; the generic bound and Green
+   identities already apply to the conjugated tests.
+
+3. **Bounded cusp admission from the periodic gap.** Integral translation has
+   automorphy factor one, so each `H` is periodic of period one. Extend it by
+   zero to nonpositive height; this preserves global real periodicity and
+   eventual holomorphy. Put `g(z)=exp(2*pi*i*z)*H(z)`. The polynomial bound
+   implies `g->0` uniformly as `Im(z)->infinity`. The source-verified theorem
+   `HTGeometry.normedPeriodic_exp_decay_of_zero_at_inf` gives
+   `|g(z)|<=C*exp(-2*pi*Im(z))`. Cancel the strictly positive norm of the
+   exponential to obtain a uniform bound for `H`. The proved
+   `analyticAt_normedPeriodicCuspFunction_zero` consequently extends its
+   periodic cusp function holomorphically to zero.
+
+4. **Zero constant mode.** For either holomorphic polarization, the horizontal
+   average `a(y)=integral_(-1/2)^(1/2) H(x+i*y) dx` is independent of `y`:
+   holomorphy gives `partial_y H=i*partial_x H`, and periodicity cancels the
+   endpoint difference. Pair this constant average with the normalized
+   `psi_Y`. The rapid source remainder contributes a quantity tending to
+   zero. The preceding exact Hessian-mean proof gives a correction bounded by
+   `C_q/Y`, also tending to zero. The same argument after conjugation applies
+   to `H_plus`. Since the normalized pairing equals `a` for every `Y`, both
+   constant averages are zero.
+
+5. **Actual cusp vanishing.** The holomorphic cusp extension in step 3 has a
+   value `L` at zero; its continuity gives `H(x+i*y)->L` uniformly in `x`.
+   Integration over a unit interval gives `a(y)->L`. Step 4 gives `L=0`.
+   Thus each actual polarization tends to zero at infinity. The full modular
+   transformation law supplies vanishing at every cusp: the exact formal
+   interface is `OnePoint.isZeroAt_iff_forall_SL2Z`, as used in
+   `Bottcher/QuarticModularForm.lean` to construct `CuspForm` objects.
+
+6. **Weight-four uniqueness.** Each polarization is now a cusp form of weight
+   four for the full integral modular group. The corpus uses the unconditional
+   `CuspForm.rank_eq_zero_of_weight_lt_twelve` together with
+   `rank_zero_iff_forall_zero` for this exact space. Both polarizations vanish.
+   Therefore `A-iB=A+iB=0`, so `A=B=0`; the already proved original tensor
+   component identity gives the stated geometric equality.
+
+The remaining formal work in this angular step is precise: formalize the
+actual principal tensor cancellation and rapid gradient remainder, specialize
+the derivative tests to the conjugate polarization, assemble the polynomial
+bound, formalize the normalized mean argument, and package the two actual
+cusp forms. The new kernel and native estimates passed both their scratch
+check and separate exact-leaf audits under Lean 4.32.2 without warnings. Their
+modules are wired into the umbrella, which was not built. The full pointwise
+tensor equality is currently an analytical conclusion.

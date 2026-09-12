@@ -63,4 +63,163 @@ theorem routeE_exists_leftWindow_of_rightWindow
   rw [Finset.mem_filter, Finset.mem_Ioo] at hm
   exact ⟨m, hm.2, hm.1.1, hm.1.2⟩
 
+/-! ## Two-radius transpose-overlap boundary -/
+
+/-- A token from the count-preserving two-radius shift can reverse an ordinary upward window edge
+only at the single boundary point `y-h(y)`. -/
+theorem routeE_twoShift_reverse_eq_singleBoundary
+    (h : ℕ → ℕ) (hmono : Monotone h) {y m : ℕ}
+    (hfit : 2 * h y ≤ y)
+    (hm : m ∈ Finset.Ioc (y - 2 * h y)
+      ((y - 2 * h y) + h (y - 2 * h y)))
+    (hreverse : y ≤ m + h m) :
+    m = y - h y := by
+  rw [Finset.mem_Ioc] at hm
+  have hbase : y - 2 * h y ≤ y := Nat.sub_le _ _
+  have hxhy : h (y - 2 * h y) ≤ h y := hmono hbase
+  have hmle : m ≤ y - h y := by omega
+  have hmley : m ≤ y := hmle.trans (Nat.sub_le _ _)
+  have hmhy : h m ≤ h y := hmono hmley
+  omega
+
+/-- Numerically reverse-compatible tokens in the two-radius shifted window. -/
+def routeETwoShiftReverseOverlapWindow (h : ℕ → ℕ) (y : ℕ) : Finset ℕ :=
+  (Finset.Ioc (y - 2 * h y)
+    ((y - 2 * h y) + h (y - 2 * h y))).filter fun m => y ≤ m + h m
+
+theorem routeE_twoShift_reverseOverlapWindow_subset_singleton
+    (h : ℕ → ℕ) (hmono : Monotone h) {y : ℕ}
+    (hfit : 2 * h y ≤ y) :
+    routeETwoShiftReverseOverlapWindow h y ⊆ {y - h y} := by
+  intro m hm
+  rw [routeETwoShiftReverseOverlapWindow, Finset.mem_filter] at hm
+  rw [Finset.mem_singleton]
+  exact routeE_twoShift_reverse_eq_singleBoundary h hmono hfit hm.1 hm.2
+
+/-- The two-radius shift has at most one numerically transpose-overlapping token. -/
+theorem routeE_twoShift_reverseOverlapWindow_card_le_one
+    (h : ℕ → ℕ) (hmono : Monotone h) {y : ℕ}
+    (hfit : 2 * h y ≤ y) :
+    (routeETwoShiftReverseOverlapWindow h y).card ≤ 1 := by
+  calc
+    (routeETwoShiftReverseOverlapWindow h y).card ≤ ({y - h y} : Finset ℕ).card :=
+      Finset.card_le_card
+        (routeE_twoShift_reverseOverlapWindow_subset_singleton h hmono hfit)
+    _ = 1 := Finset.card_singleton _
+
+/-! ## One-radius shift and transpose-overlap boundary -/
+
+/-- Shifting by one radius places the right window in the corresponding closed left window. -/
+theorem routeE_oneShift_rightWindow_subset_closedLeftWindow
+    (h : ℕ → ℕ) (hmono : Monotone h) {y : ℕ}
+    (hfit : h y ≤ y) :
+    Finset.Ioc (y - h y) ((y - h y) + h (y - h y)) ⊆
+      Finset.Ioc (y - h y) y := by
+  intro m hm
+  rw [Finset.mem_Ioc] at hm ⊢
+  refine ⟨hm.1, ?_⟩
+  have hbase : y - h y ≤ y := Nat.sub_le _ _
+  have hwindow : h (y - h y) ≤ h y := hmono hbase
+  omega
+
+/-- If the counted predicate excludes `y`, the one-radius shift transfers every token strictly
+below `y`, so the factor two in the unconditional transfer is unnecessary. -/
+theorem routeE_oneShift_rightWindow_filter_subset_leftWindow_filter
+    (h : ℕ → ℕ) (hmono : Monotone h) (A : ℕ → Prop) [DecidablePred A]
+    {y : ℕ} (hfit : h y ≤ y) (hAy : ¬ A y) :
+    (Finset.Ioc (y - h y) ((y - h y) + h (y - h y))).filter A ⊆
+      (Finset.Ioo (y - h y) y).filter A := by
+  intro m hm
+  rw [Finset.mem_filter, Finset.mem_Ioc] at hm
+  rw [Finset.mem_filter, Finset.mem_Ioo]
+  refine ⟨⟨hm.1.1, ?_⟩, hm.2⟩
+  have hclosed := routeE_oneShift_rightWindow_subset_closedLeftWindow h hmono hfit
+    (by simpa only [Finset.mem_Ioc] using hm.1)
+  rw [Finset.mem_Ioc] at hclosed
+  exact lt_of_le_of_ne hclosed.2 (Ne.symm (fun hmy => hAy (hmy ▸ hm.2)))
+
+/-- Predicate counts therefore transfer without loss at one-radius displacement whenever the
+source point is excluded by the target predicate. -/
+theorem routeE_oneShift_leftWindow_card_ge_rightWindow_card
+    (h : ℕ → ℕ) (hmono : Monotone h) (A : ℕ → Prop) [DecidablePred A]
+    {y D : ℕ} (hfit : h y ≤ y) (hAy : ¬ A y)
+    (hsupply : D ≤
+      ((Finset.Ioc (y - h y) ((y - h y) + h (y - h y))).filter A).card) :
+    D ≤ ((Finset.Ioo (y - h y) y).filter A).card := by
+  exact hsupply.trans (Finset.card_le_card
+    (routeE_oneShift_rightWindow_filter_subset_leftWindow_filter h hmono A hfit hAy))
+
+/-- A downward token from the one-radius shift which is not the reversal of an upward window edge
+must lie in the initial strip whose width is the radius oscillation. -/
+theorem routeE_oneShift_nonreverse_mem_oscillationBoundary
+    (h : ℕ → ℕ) (hmono : Monotone h) {y m : ℕ}
+    (hfit : h y ≤ y)
+    (hm : m ∈ Finset.Ioc (y - h y) ((y - h y) + h (y - h y)))
+    (hmy : m ≠ y) (hnotReverse : ¬y ≤ m + h m) :
+    m ∈ Finset.Ioo (y - h y)
+      ((y - h y) + (h y - h (y - h y))) := by
+  rw [Finset.mem_Ioc] at hm
+  rw [Finset.mem_Ioo]
+  refine ⟨hm.1, ?_⟩
+  have hbase : y - h y ≤ y := Nat.sub_le _ _
+  have hxhy : h (y - h y) ≤ h y := hmono hbase
+  have hmle : m ≤ y := by omega
+  have hmlt : m < y := lt_of_le_of_ne hmle hmy
+  have hxm : y - h y ≤ m := hm.1.le
+  have hxmWindow : h (y - h y) ≤ h m := hmono hxm
+  omega
+
+/-- Downward one-shift edges which are neither diagonal nor reversals of upward window edges. -/
+def routeEOneShiftNonreverseWindow (h : ℕ → ℕ) (y : ℕ) : Finset ℕ :=
+  (Finset.Ioc (y - h y) ((y - h y) + h (y - h y))).filter fun m =>
+    m ≠ y ∧ ¬y ≤ m + h m
+
+theorem routeE_oneShift_nonreverseWindow_subset_oscillationBoundary
+    (h : ℕ → ℕ) (hmono : Monotone h) {y : ℕ}
+    (hfit : h y ≤ y) :
+    routeEOneShiftNonreverseWindow h y ⊆
+      Finset.Ioo (y - h y)
+        ((y - h y) + (h y - h (y - h y))) := by
+  intro m hm
+  rw [routeEOneShiftNonreverseWindow, Finset.mem_filter] at hm
+  exact routeE_oneShift_nonreverse_mem_oscillationBoundary h hmono hfit hm.1 hm.2.1 hm.2.2
+
+/-- The number of non-reversible one-shift edges is at most the radius oscillation
+`h(y)-h(y-h(y))`. -/
+theorem routeE_oneShift_nonreverseWindow_card_le_radiusOscillation
+    (h : ℕ → ℕ) (hmono : Monotone h) {y : ℕ}
+    (hfit : h y ≤ y) :
+    (routeEOneShiftNonreverseWindow h y).card ≤ h y - h (y - h y) := by
+  calc
+    (routeEOneShiftNonreverseWindow h y).card ≤
+        (Finset.Ioo (y - h y)
+          ((y - h y) + (h y - h (y - h y)))).card :=
+      Finset.card_le_card
+        (routeE_oneShift_nonreverseWindow_subset_oscillationBoundary h hmono hfit)
+    _ ≤ h y - h (y - h y) := by
+      simp only [Nat.card_Ioo]
+      omega
+
+/-- For the actual fixed-shell radius `h(y)=c*sqrt(y)`, one-shift radius oscillation is at most
+`c²`.  At `c=(log X)^1.55`, this is the subpower width `(log X)^3.1`. -/
+theorem routeE_sqrtRadius_sub_oneShift_le_sq
+    (c y : ℝ) (hc : 0 ≤ c) (hy : c ^ 2 ≤ y) :
+    c * Real.sqrt y - c * Real.sqrt (y - c * Real.sqrt y) ≤ c ^ 2 := by
+  have hy0 : 0 ≤ y := le_trans (sq_nonneg c) hy
+  have hsqrty : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hcsqrt : c ≤ Real.sqrt y := by
+    apply (sq_le_sq₀ hc (Real.sqrt_nonneg y)).mp
+    simpa [hsqrty] using hy
+  have hshift0 : 0 ≤ y - c * Real.sqrt y := by
+    have hmul := mul_le_mul_of_nonneg_right hcsqrt (Real.sqrt_nonneg y)
+    nlinarith [hsqrty]
+  have hlower0 : 0 ≤ Real.sqrt y - c := sub_nonneg.mpr hcsqrt
+  have hlowerSq : (Real.sqrt y - c) ^ 2 ≤ y - c * Real.sqrt y := by
+    nlinarith [hsqrty, mul_le_mul_of_nonneg_left hcsqrt hc]
+  have hlower : Real.sqrt y - c ≤ Real.sqrt (y - c * Real.sqrt y) := by
+    apply (sq_le_sq₀ hlower0 (Real.sqrt_nonneg _)).mp
+    rw [Real.sq_sqrt hshift0]
+    exact hlowerSq
+  nlinarith [mul_le_mul_of_nonneg_left hlower hc]
+
 end RHTower
