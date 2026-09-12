@@ -2530,3 +2530,214 @@ literal metric's already proved all-order exterior regularity provides the
 proper starting point: differentiate its complete two-jet along the actual
 real coordinate line, retaining ordered derivatives in every slot. Boundary
 and contact currents remain attached to the later causal and left-QNM action.
+
+The amplitude side is now proved in
+`HTGeometry/CoordinateEinsteinAffineSpatialVariation.lean`:
+`affineSpatialEinstein_second` differentiates the original spatial Einstein
+variation `F'(q+e*p)[qx+e*px]` twice and gives
+`F'''(q)[p,p,qx]+2*F''(q)[p,px]`. Both varying factors are retained;
+nondegeneracy is used on a genuine amplitude neighborhood. Scratch checking
+and the isolated exact new-leaf audit passed at default heartbeats, with
+cached dependencies. Its umbrella import is wired without an umbrella build.
+
+A broad `transgression` paper search found Anghel,
+[AKSZ Descent on Manifolds with Ordinary Corners](https://arxiv.org/abs/2608.02928)
+(August 2026). The paper organizes defects using signed incidences of boundary
+faces under explicit mapping-space hypotheses. No AKSZ or gravity reduction
+hypothesis has been supplied for HB. The proposed transfer is only a method:
+assemble the actual finite radial, temporal and cusp faces together with shared
+corner/contact terms before taking their respective limits. The claimed HB
+cancellation or extinction is not a consequence of that paper.
+
+The actual-field side is now verified in `ComplexMetricJetDerivative`:
+`jetSpace_coordinateLine_hasDerivAt` produces the derivative of every ordered
+slot from C3 field regularity, and `jetSpacePartial_add_smul` proves affine
+variation of that genuine spatial derivative. `ComplexMetricMixedEinsteinDerivative`
+then proves `einstein_mixed_derivatives`: the two amplitude derivatives of the
+actual spatial Einstein field equal the actual spatial derivative of its Hessian.
+`ComplexMetricEinsteinSourceVariation` retains the cosmological term and proves
+actual first and second amplitude coefficients, amplitude regularity, and the
+spatial derivative of the first variation. All three new leaves passed scratch
+checks and isolated exact leaf audits (15s, 12s, 29s respectively); their umbrella
+imports are wired without umbrella builds.
+
+Whole-chain consequence: these results make coefficient conservation derivable
+from the original field identity, instead of adding a divergence assumption to
+a projected source. The remaining coefficient step is to use the original zero
+and first-order equations on a spatial neighborhood and contract the resulting
+second coefficient with the background connection and inverse metric. This does
+not yet supply the full causal inverse, common boundary domain, physical left-mode
+incidence, or fixed-clock extinction. The same original boundary/contact defect
+continues to constrain all those later steps.
+
+Broad/deep searches for matrix smoothness found a public real-matrix inverse
+lemma, while the needed complex local inverse lemmas in the metric modules are
+private. Searches for `Peano` and then `Taylor remainder` found the exact
+`AnalyticSlopeFactor.eq_taylor_two_add_sq_mul` decomposition. It exposes a useful
+stronger possibility: after the source's first two coefficients vanish, dividing
+out amplitude squared can extract conservation using only continuity of the
+metric weights. This is an alternative analytical proof mechanism, not a proved
+HB specialization or a new extinction claim. The current finite Leibniz argument
+already has the stronger regularity available and remains the direct closure.
+
+`ComplexMetricEinsteinSpatialSource` now proves actual spatial-source amplitude
+regularity and identifies its first and second amplitude derivatives with the
+spatial derivatives of the original linear source and Einstein Hessian. Its
+scratch check and exact leaf audit passed; the audit built only this new leaf
+(9.1s), with existing dependencies cached.
+
+`ComplexMetricQuadraticConservation.hessian_conservation` is now proved and
+leaf-audited (11s). For actual C3 symmetric complex metric and perturbation
+fields, background nondegeneracy, and the original background and linearized
+equations on a spatial neighborhood, it produces zero background covariant
+divergence of the full Einstein Hessian. The proof derives the actual inverse
+metric and connection's amplitude regularity, expands both tensor-index actions,
+uses finite Leibniz at the original source's double zero, and differentiates the
+already proved nonlinear Bianchi identity. The output is the original Hessian
+tensor, with no prescribed source derivative arrays. Constant-scalar divergence
+linearity is also verified, to retain the Taylor factor one half.
+
+The physical Xi-labelled specialization is the remaining local conservation
+check. Full causal solvability and original boundary-domain matching remain
+separate producers; the scalar stream's residual identities alone cannot stand
+in for those fields and their genuine radial derivatives.
+
+Two full-field construction mechanisms remain under comparison after this
+conservation result. The radial route must transport the original conserved
+source into the actual harmonic source rows, realize all reconstructed radial
+jets, and solve the common physical boundary problem. A second candidate is to
+identify the original linearized Einstein operator with a gauge-fixed tensor
+wave operator plus its gauge term, solve that tensor equation, and prove that
+the gauge constraint propagates from admissible data. Either route must produce
+the same original causal solution and retained boundary action before claiming
+physical left-QNM coupling or any clock law.
+
+Broad/deep `Lichnerowicz` and `gauge propagation` corpus searches did not identify
+an applicable producer for the second mechanism. Both searches reported partial
+filter/judge and decomposition coverage; this is not a claim that the corpus
+lacks one. The returned Fokas–Lenells Hardy propagation statements concern their
+own analytic slices and boundary corrections, and do not identify the metric's
+tensor operator or boundary domain. No such identification has been assumed.
+
+The physical specialization now passes scratch checking in
+`ThetaCuspHawkingBMQuadraticConservation`.
+`physical_hessian_conservation` discharges regularity, symmetry, background
+nondegeneracy, and the original background and linearized equations for every
+physical Xi-labelled theta-cusp perturbation on the actual exterior chart.
+`physicalQuadraticSource_eq` identifies the resulting tensor, divided by two,
+with the original source's actual second Taylor coefficient.
+`physical_quadratic_source_conservation` proves its zero background covariant
+divergence with no supplied conservation, derivative-jet, or reconstruction
+certificate. The physical leaf's isolated final audit passed (56s); it built only the new leaf with cached dependencies.
+
+Analytical proof: write the original cosmological tensor as E(e) and its actual
+covariant divergence as D(e). Nonlinear Bianchi gives D(e)E(e)=0 on an amplitude
+neighborhood. Both E(0) and its first amplitude derivative vanish on an exterior
+spatial neighborhood. The verified mixed derivative identities therefore kill
+their spatial derivatives as well. Finite Leibniz retains only D(0)E''(0), which
+is zero. E''(0)/2 is the original quadratic coefficient Q, hence D(0)Q=0.
+The inverse metric and both covariant tensor-index actions are included in D.
+
+This closes the local quadratic-conservation conjecture. The hard remaining
+producer is a full causal field solving the original sourced linearized tensor
+equations in the physical domain. Transport to harmonic constraints, actual
+radial reconstruction, common retarded/advanced boundary data, and the original
+left-mode boundary action must still be supplied. Conservation does not prove
+that field exists, select a physical left-mode coupling, or establish extinction.
+
+Validation for this producer: all seven new leaf modules passed `lake env lean`
+scratch checking and exact isolated `lake build <module>` audits. The authoritative
+formal lint passed, reporting existing large-file warnings. Both umbrellas are
+wired without being built. No mathematical computations, heartbeat increases,
+axiom printing, Git commands, frontier-map edits, or STATUS edits were used.
+
+All owned scratch, search, audit, log and staging paths for this producer were
+removed after validation. No owned Lean/Lake, search or lint processes remain;
+other agents’ files and processes were left untouched.
+
+
+### Independent harmonic rate and a finite Laurent source inverse (0912x)
+
+Fresh corpus inspection changes the construction problem. The cached
+`ThetaCuspHawkingBMScalarStreamReconstructionField` already derives all seven
+sourced harmonic equations from genuine twisted radial derivatives, and
+`ThetaCuspHawkingBMScalarStreamGreenSourced` supplies a smooth interior Green
+solution. Its current dictionary ties the source rate and output angular
+parameter to the same `chi`; its integration cutoffs are interior. Neither
+interface yet identifies the full original source with a physical endpoint
+solution. `ThetaCuspHawkingBMForcedMetricField.forcedMetricField_einstein`
+already solves all sixteen components for its specified scalar-vector mixed
+source. These are usable producers, not gaps to rebuild.
+
+New analytical conjecture: the explicit scalar-scalar master source admits a
+particular solution y(r)=r+A/r+B/r^3 at independent complex rate s and angular
+eigenvalue mu. Clearing the twisted master operator gives
+
+    r^2(r^2-1)y'' + (2r^3+4sr)y' + (mu-2s-4s^2)y.
+
+On r^k this equals k(k+1)r^(k+2) +
+[mu-(k-2s)(k-2s-1)]r^k. The source's two highest Laurent coefficients match
+this operator applied to r exactly. The remaining two coefficients determine
+B and A by triangular elimination. The apparent B denominator
+mu-(2s+3)(2s+4) cancels against an exact factor of the source numerator;
+that cancellation must be checked in Lean. The remaining possible denominator
+is mu-(2s+1)(2s+2), besides the existing angular factor 2-mu.
+
+Whole-chain test: if proved, this is a source-specific particular inverse
+without tying parent rate to output angular eigenvalue. The original source
+transport and the homogeneous correction enforcing causal horizon/AdS data
+still need to be derived. Any correction or resonance must be carried into
+the original left-mode pairing and fixed-clock question; a particular solution
+alone supplies no extinction. Next test: prove the actual derivative identity,
+exact source cancellation, and smooth sourced reconstruction with this field.
+
+The next conjecture concerns boundary admission, not a vanishing source:
+for the finite Laurent particular field, subtracting the forced r term gives
+A/r+B/r^3. In reciprocal radius x=1/r, the scaled full field is the polynomial
+1+A*x^2+B*x^4; the subtracted remainder is A*x+B*x^3. Thus its boundary germ
+can be retained exactly before reconstruction and pairing. Whether the original
+metric boundary conditions select this affine master boundary datum must be
+proved from the reconstruction; it is not assumed here.
+
+Broad/deep searches used reconstruction, hyperbolic, endpoint extension, and
+rational/Laurent mechanisms, including candidate lemmas, proof-method source
+arguments and ingredient sets. Results were partial (source/compiler and
+retrieval coverage reported), so missing hits are not absence claims. The
+Laurent search returned rational-function/Laurent-series operator transport,
+but no matching particular solution among its reported candidates. Exhaustive
+source references to `ssMasterSource` and `SSMasterEquation` identify the
+existing interior Green construction described above.
+
+A broad renormalization paper search found Rogers and Whitehill,
+[What are the consequences of independent factorization and renormalization
+scales?](https://arxiv.org/abs/2608.01489) (August 2026). Its QCD discussion
+relates subtraction choices through conservation constraints. The transferable
+question here is whether source and boundary subtractions preserve the same
+original Einstein identity. Its QCD hypotheses do not prove any HB identity;
+the proposed Laurent decomposition is being derived directly from the corpus
+source instead. The separate broad resonance search returned no useful recent
+paper in its reported results.
+
+The finite Laurent conjecture now passes `lake env lean` in scratch, including
+actual first/second radial derivatives and the twisted sourced equation. The
+original lower source coefficient factors exactly as predicted. No numerical
+or symbolic external computation was used.
+
+The analytic coefficients simplify further. With d=(2s+1)(2s+2),
+
+    A = s(5s+2)/2 + s^2(s+1)(s+2)/(2-mu)
+        + 3s(s+1)^2(3s+4)/(2(mu-d)),
+    B = -s^2(s+1)^2/8 - s^2(s+1)^3(s+2)/(4(2-mu)).
+
+These simplifications are under Lean verification. The parameter d is exactly
+the existing mixed-source angular parameter, as seen in
+`D4BMModularCore.parameter_physicalRate`. Moreover,
+`fullAngularField_equation` already supplies
+Delta H=d H+(d/2)S^2 for the original literal scalar S. This suggests lifting the
+Laurent coefficients to actual angular fields using the existing inverse at d
+and the inverse at 2, instead of decomposing the entire quadratic source into
+individual spectral harmonics. That is a new full-field construction candidate
+exposed by the radial solution. It still requires the original source identity,
+matching the inverse-at-2 domain, and proving the reconstructed metric's physical
+boundary and time-onset conditions. Those conditions determine whether this
+particular field can enter the causal action and the extinction argument.

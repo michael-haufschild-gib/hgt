@@ -188,22 +188,110 @@ AFE block length.
 cluster inequality using bounded-exponent smooth counts. Failure of that inequality pivots to a
 sparse winding-bearing carrier with fewer synchronized prime directions.
 
+### C11 — exact fixed-scale dual-target reduction
+
+`[LEAN-PROVED REDUCTION]` At any fixed smoothing scale `x>0`, subtracting the two exact general
+Gaussian AFEs gives
+
+```text
+M(t) - (M(s)+R(s)) = (D(t)-D(s)) - (zeta(t)-zeta(s)) - R(t),
+```
+
+where `D` is the direct edge, `M` the dual edge, and `R` the shifted-pole residue. Therefore, once
+`D(t)->D(s)` and `R(t)->0`, zeta self-recurrence is equivalent to the moving dual edge synthesizing
+the nonzero target `M(s)+R(s)`. The converse estimate and arbitrary-filter limit are formalized in
+`SmoothAFEZetaGeneralSelfRecurrenceDualNecessity.lean`; targeted build and axiom audit pass.
+
+**Positive survivor:** fixed `x` makes the direct edge a fixed, rapidly truncated Dirichlet series.
+The only moving arithmetic producer is now the explicit dual-target event. Boundary-uniform
+recurrence still requires simultaneous values on a finite mesh plus derivative control.
+
+### C12 — terminal scale is forced
+
+`[OPEN; PAPER SCALE AUDIT]` For a fixed strict-right abscissa `1/2+d`, the fixed-`x` dual edge has
+effective length `N` comparable to height `T/x`. Its chi factor has size `T^{-d}`, while the
+coefficient square mass through `N` is of order `N^{2d}`; the complete normalized dual block thus
+has order-one variance. A mesoscopic head `n<=T^alpha`, `alpha<1`, has variance of order
+`T^{-2d(1-alpha)}` and cannot supply a fixed nonzero target. The synthesis must use the terminal
+scale.
+
+The isolated prime shell `p in (N/2,N]` has total radius about `sqrt(T)/log T` but variance only
+about `1/log T`; hitting an order-one target through primes alone is a moderate-deviation event.
+`RVPlanarLDP.lean` supplies lower mass for fixed normalized targets, not the moving normalized
+centre and radius needed here.
+
+### C13 — full-strip zero-density gate
+
+`[OPEN BELOW 7/10]` The actual Lean zero-count chain remains restricted to `sigma>=7/10` and has
+exponent at most `(16/5)(1-sigma)`. The file named
+`InghamUniformDetectorZeroDensityUniformPolylog.lean` also quantifies only over `sigma>=7/10`;
+"full Gabriel strip" does not mean the full critical strip. The Huxley modules prove unconditional
+two-term large-values bounds for abstract dyadic Dirichlet polynomials, with amplitude parameter
+up to `7/32`, but no downstream theorem converts them into a zeta-zero count for every
+`sigma>1/2`.
+
+**Required successor:** either wire a Huxley/zero-detecting polynomial argument to obtain a
+sublinear count throughout `sigma>1/2`, or prove recurrence numerous enough to contradict the
+weaker available count after an independent mechanism moves every hypothetical zero into the
+covered band. No such mechanism is present.
+
+### C14 — coordinatewise terminal-phase targeting
+
+`[FAILED QUANTITATIVELY]` Independent terminal prime phases have enough total radius to synthesize
+a bounded complex correction, and finite-dimensional Kronecker density can approximate any fixed
+phase assignment. But the number of terminal coordinates grows polynomially in `T`; coordinatewise
+return volume and delay become superpolynomial, while restricting to logarithmically many terminal
+primes gives vanishing total amplitude. This cannot produce enough shifts below the same height
+that sets the AFE cutoff.
+
+**Pivot:** transfer an aggregate complex-value event, not a coordinate cylinder.
+
+### C15 — largest-prime conditional synthesis
+
+`[OPEN; ARITHMETIC DECOMPOSITION LEAN-PROVED]` The full terminal block, unlike the prime-only shell,
+has order-one variance.
+Conditioning on phases for primes at most `sqrt(T)` decomposes terms with largest prime factor above
+`sqrt(T)` as a sum over independent large-prime phases, with random cofactor coefficients. A
+conditional planar local law could therefore give fixed or polynomial lower mass for a prescribed
+dual target without synchronizing every phase.
+
+The exact arithmetic/dependency half is now closed in Lean for arbitrary complex weights. If
+`X < Y^2`, `steinhausCarrier_eq_smooth_add_largePrimeChannels` proves
+`sum_{n<=X} a_n X_n = B_Y + sum_{Y<p<=X} X_p C_p`, where
+`C_p = sum_{m<=X/p} a_{pm} X_m`; every such `m` is strictly below `Y`, both `B_Y` and every `C_p`
+read only prime phases at most `Y`, and each channel phase `p` lies outside that conditioning set.
+This retains the composite mass lost by the failed prime-only shell. Module:
+`RHTower.SteinhausLargestPrimeDecomposition`; targeted build passes; axiom audit is only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+Three analytic sublemmas remain: conditional channel energy bounded away from zero on a
+positive-mass base event; a two-dimensional local lower bound uniform in the random centre and in
+finitely many boundary nodes; and deterministic vertical-orbit transfer for the resulting
+triangular family. Corpus deep/method-enriched searches found conditional probability
+infrastructure but no theorem closing these gates. Recent random-multiplicative evidence also
+warns that a standard complex-Gaussian CLT on dense support is the wrong target
+([Escaping Chaos in Random Multiplicative Functions](https://arxiv.org/abs/2605.21737)); a Gaussian
+mixture or direct full-support law remains possible.
+
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** C1 and the small-tail form of C6 are killed quantitatively by
   `exists_xiBoundaryLoop_zeroWinding_uniformGap`; naive phase-cell decorrelation in C10 is killed by
-  the exact positive Fejer multiplier for every smooth integer frequency. C2, C4 fixed-scale, C5,
-  C7, and C9 with available moments are failed proof mechanisms, not universal impossibility
-  theorems.
-- **Strongest positive survivor:** sharp exponent-four deep-AFE truncation, plus the exact rate
-  specification for moving-scale or sparse-return successors.
+  the exact positive Fejer multiplier for every smooth integer frequency. C14 is killed as a
+  same-height quantitative mechanism. C2, C4 fixed-scale, C5, C7, and C9 with available moments
+  are failed proof mechanisms, not universal impossibility theorems.
+- **Strongest positive survivor:** exact fixed-scale dual-target equivalence plus C15's exact
+  largest-prime conditional-channel decomposition. C15's local law and C13 remain independent
+  analytic gates.
 - **New insight:** positive lower density is stronger than the contradiction needs, but weakening it
   transfers the entire problem into a quantitative return-count versus zero-density race. Uniform
-  finite-Euler tails cannot enter that race at all because they erase winding.
-- **Status:** fixed uniform winding gap, sharp exponent-four AFE transfer, and exact survival of
-  prime-conditioned smooth resonances are Lean-proved, targeted-build verified, and axiom-audited.
-  The open theorem is conditional recurrence of a winding-bearing infinite remainder at a count
-  exceeding strict-right zero density. No RH claim.
+  finite-Euler tails cannot enter that race because they erase winding. Fixed-scale AFE recurrence
+  instead asks the terminal dual block to synthesize one explicit nonzero target.
+- **Status:** fixed uniform winding gap, sharp exponent-four AFE transfer, exact survival of
+  prime-conditioned smooth resonances, the necessary-and-sufficient dual-target reduction, and
+  C15's arbitrary-weight largest-prime decomposition/locality interface are Lean-proved,
+  targeted-build verified, and axiom-audited. Open theorems are C15 aggregate target recurrence and
+  C13 full-strip strict-right zero density. No RH claim.
 
 ## Log
 
@@ -212,3 +300,9 @@ sparse winding-bearing carrier with fewer synchronized prime directions.
   gap; exposed fourth-power AFE coefficient, tail, deep-value, and classical-value bounds.
 - 2026-09-12 — C9--C10: normal-family rate failure; proved exact positive Fejer survival and lower
   bound for every prime-supported integer resonance; isolated weighted smooth-cluster estimate.
+- 2026-09-12 — C11--C15: proved exact dual-target necessity and sufficiency; terminal-scale audit;
+  falsified coordinatewise targeting; isolated largest-prime conditional local law and full-strip
+  zero density as separate remaining gates.
+- 2026-09-12 — C15.1: proved arbitrary-complex-weight largest-prime channel decomposition, smooth
+  background/channel low-phase locality, cofactor cutoff, and large/small phase disjointness; reduced
+  remaining route to channel energy, conditional planar local law, and triangular orbit transfer.

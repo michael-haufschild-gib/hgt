@@ -286,4 +286,72 @@ theorem tendsto_zetaBinomialHalfKaramataCompactLaw :
   · exact GaloisForLFunctions.HTGeometry.gammaMeasure_half_Iio_zero
   · exact tendsto_integral_exp_neg_zetaBinomialHalfKaramataLaw
 
+theorem expPush_gammaMeasure_half_frontier_expTailSet (x : ℝ) :
+    (GaloisForLFunctions.HTGeometry.expPush (gammaMeasure (1 / 2) 1))
+      (frontier (GaloisForLFunctions.HTGeometry.expTailSet x)) = 0 := by
+  haveI : IsProbabilityMeasure (gammaMeasure (1 / 2) 1) :=
+    isProbabilityMeasure_gammaMeasure (by norm_num) (by norm_num)
+  have hmeas : MeasurableSet
+      (Subtype.val ⁻¹' {Real.exp (-x)} : Set (Icc (0 : ℝ) 1)) :=
+    measurable_subtype_coe (measurableSet_singleton _)
+  have hval :
+      (GaloisForLFunctions.HTGeometry.expPush (gammaMeasure (1 / 2) 1))
+          (Subtype.val ⁻¹' {Real.exp (-x)}) = 0 := by
+    rw [GaloisForLFunctions.HTGeometry.expPush,
+      Measure.map_apply GaloisForLFunctions.HTGeometry.measurable_expProj hmeas]
+    have hae :
+        (GaloisForLFunctions.HTGeometry.expProj ⁻¹'
+          (Subtype.val ⁻¹' {Real.exp (-x)}) : Set ℝ)
+          =ᵐ[gammaMeasure (1 / 2) 1] ({x} : Set ℝ) := by
+      refine Filter.eventuallyEq_set.mpr ?_
+      filter_upwards [GaloisForLFunctions.HTGeometry.ae_nonneg_of_Iio_zero
+        GaloisForLFunctions.HTGeometry.gammaMeasure_half_Iio_zero] with y hy
+      simp only [Set.mem_preimage, Set.mem_singleton_iff]
+      rw [GaloisForLFunctions.HTGeometry.coe_expProj_of_nonneg hy]
+      constructor
+      · intro h
+        exact neg_inj.mp (Real.exp_injective h)
+      · rintro rfl
+        rfl
+    rw [measure_congr hae]
+    exact GaloisForLFunctions.HTGeometry.gammaMeasure_half_singleton x
+  exact measure_mono_null
+    (GaloisForLFunctions.HTGeometry.frontier_expTailSet_subset x) hval
+
+/-- Distribution functions of the zeta-half Karamata laws converge to Gamma shape `1 / 2`. -/
+theorem tendsto_cdf_zetaBinomialHalfKaramataLaw (x : ℝ) :
+    Tendsto
+      (fun t : ℝ => cdf (zetaBinomialHalfKaramataLaw t) x)
+      (𝓝[>] (0 : ℝ)) (𝓝 (cdf (gammaMeasure (1 / 2) 1) x)) := by
+  haveI : IsProbabilityMeasure (gammaMeasure (1 / 2) 1) :=
+    isProbabilityMeasure_gammaMeasure (by norm_num) (by norm_num)
+  have hport := ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto'
+    (μ := gammaHalfCompactLaw)
+    (μs := zetaBinomialHalfKaramataCompactLaw)
+    tendsto_zetaBinomialHalfKaramataCompactLaw
+    (E := GaloisForLFunctions.HTGeometry.expTailSet x)
+    (by simpa [gammaHalfCompactLaw] using expPush_gammaMeasure_half_frontier_expTailSet x)
+  have hport' := hport
+  simp only [zetaBinomialHalfKaramataCompactLaw, gammaHalfCompactLaw,
+    GaloisForLFunctions.HTGeometry.expPushProb_toMeasure] at hport'
+  rw [GaloisForLFunctions.HTGeometry.expPush_expTailSet
+    (gammaMeasure (1 / 2) 1)
+    GaloisForLFunctions.HTGeometry.gammaMeasure_half_Iio_zero x] at hport'
+  have hport'' : Tendsto
+      (fun t : ℝ => (zetaBinomialHalfKaramataLaw t) (Iic x))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 ((gammaMeasure (1 / 2) 1) (Iic x))) := by
+    refine hport'.congr fun t => ?_
+    exact GaloisForLFunctions.HTGeometry.expPush_expTailSet
+      (zetaBinomialHalfKaramataLaw t)
+      (zetaBinomialHalfKaramataLaw_Iio_zero t) x
+  have hreal :=
+    (ENNReal.tendsto_toReal (measure_ne_top (gammaMeasure (1 / 2) 1) (Iic x))).comp hport''
+  have hcdf : cdf (gammaMeasure (1 / 2) 1) x =
+      ((gammaMeasure (1 / 2) 1) (Iic x)).toReal := by
+    rw [cdf_eq_real, Measure.real]
+  rw [hcdf]
+  refine hreal.congr fun t => ?_
+  simp [cdf_eq_real, Measure.real]
+
 end RHTower

@@ -9,7 +9,8 @@ its differentiated ingoing coordinate change. Their actual exterior horizon limi
 supplies the first null-surface displacement and angular generator. The original
 infinite scalar equation forces the induced deformation to have zero metric trace.
 Its full bilinear contraction retains independent scalar/scalar and vector/vector
-terms and identifies the vanishing scalar/vector angular cross-contraction.
+terms. Distinct angular parameters retain an antisymmetric mixed Hessian term;
+that mixed contraction vanishes when the angular fields coincide.
 
 These are source-derived first-order null-cut identities. This file does not
 construct a global event horizon, prove the nonlinear Raychaudhuri equation, or
@@ -322,6 +323,29 @@ private theorem contraction_eq (z : AngularPoint) (H K : Matrix (Fin 2) (Fin 2) 
     contraction z H K = (z.val 1 : ℂ)^4*
       (H 0 0*K 0 0+H 0 1*K 0 1+H 1 0*K 1 0+H 1 1*K 1 1) := by
   simp [contraction, metric_inverse z z.property, Fin.sum_univ_two]
+  ring
+
+/-- Distinct literal angular fields retain an antisymmetric mixed spin-two term. -/
+theorem hessian_rotated_pairing (u w : ℂ) (z : AngularPoint) :
+    contraction z (tracefreeHessian u z) (rotatedHessian w z) =
+      2*(z.val 1 : ℂ)^4*(spinA u z*spinB w z-spinB u z*spinA w z) := by
+  rw [contraction_eq, tracefreeHessian_values, rotatedHessian_values]
+  simp
+  ring
+
+/-- Complete local pairing with independent source parameters and polarizations.
+The mixed determinant may be discarded only after an actual source/reader identification. -/
+theorem deformation_pairing_general (u w aS aV cS cV : ℂ) (b c : Bool)
+    (v : ℝ) (z : AngularPoint) :
+    contraction z (deformation u aS aV b v z) (deformation w cS cV c v z) =
+      rate u b*rate w c*envelope (rate u b) v*envelope (rate w c) v*
+        ((aS*cS/4+aV*cV)*contraction z (tracefreeHessian u z) (tracefreeHessian w z)+
+          (aS*cV-aV*cS)/2*contraction z (tracefreeHessian u z) (rotatedHessian w z)) := by
+  rw [contraction_eq, contraction_eq, contraction_eq]
+  simp_rw [deformation_eq u aS aV b v z, deformation_eq w cS cV c v z,
+    tracefreeHessian_values u z, tracefreeHessian_values w z,
+    rotatedHessian_values u z, rotatedHessian_values w z]
+  simp
   ring
 
 /-- Both scalar and vector source polarizations survive in the exact horizon pairing.
