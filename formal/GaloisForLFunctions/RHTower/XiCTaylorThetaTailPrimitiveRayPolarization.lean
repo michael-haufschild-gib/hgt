@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPrimitiveRayCoefficients
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailConvexCore
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailDensityAtoms
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSurvivalMixedCurrent
@@ -47,34 +48,6 @@ theorem thetaCuspDensityPrimitiveRayPolynomial_one_sub (u : ℝ) :
   unfold thetaCuspDensityPrimitiveRayPolynomial
   ring_nf
 
-/-- The single symmetric angular coordinate carried by a primitive ray. -/
-def thetaCuspPrimitiveRayMoment (u : ℝ) : ℝ :=
-  u * (1 - u)
-
-/-- Zeroth radial derivative coefficient of the primitive-ray density packet. -/
-def thetaCuspPrimitiveRayCoefficientZero (u : ℝ) : ℝ :=
-  -(25 / 4 : ℝ) * thetaCuspPrimitiveRayMoment u +
-    (585 / 16 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
-
-/-- First radial derivative coefficient of the primitive-ray density packet. -/
-def thetaCuspPrimitiveRayCoefficientOne (u : ℝ) : ℝ :=
-  (75 / 4 : ℝ) * thetaCuspPrimitiveRayMoment u -
-    (203 / 2 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
-
-/-- Second radial derivative coefficient of the primitive-ray density packet. -/
-def thetaCuspPrimitiveRayCoefficientTwo (u : ℝ) : ℝ :=
-  (1 / 4 : ℝ) - 14 * thetaCuspPrimitiveRayMoment u +
-    (127 / 2 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
-
-/-- Third radial derivative coefficient of the primitive-ray density packet. -/
-def thetaCuspPrimitiveRayCoefficientThree (u : ℝ) : ℝ :=
-  3 * thetaCuspPrimitiveRayMoment u -
-    14 * thetaCuspPrimitiveRayMoment u ^ 2
-
-/-- Fourth radial derivative coefficient of the primitive-ray density packet. -/
-def thetaCuspPrimitiveRayCoefficientFour (u : ℝ) : ℝ :=
-  thetaCuspPrimitiveRayMoment u ^ 2
-
 /-- **Exact five-mode radial decomposition.**  The complete product polynomial is a linear
 combination of the first five logarithmic derivatives of the one-dimensional theta tail.  The
 coefficients retain the angular variable jointly through `u(1-u)`; no density factor has been
@@ -103,11 +76,6 @@ theorem thetaCuspDensityPrimitiveRayPolynomial_eq_derivative_packet (u : ℝ) :
     thetaCuspPrimitiveRayMoment,
     thetaCuspTailDerivativePolynomial, thetaCuspLogDerivativeStep]
   ring
-
-/-- Coefficient of the growing half-exponential after radial theta reflection. -/
-def thetaCuspPrimitiveRayGrowingCoefficient (u : ℝ) : ℝ :=
-  (1 / 32 : ℝ) - (39 / 4 : ℝ) * thetaCuspPrimitiveRayMoment u +
-    (105 / 2 : ℝ) * thetaCuspPrimitiveRayMoment u ^ 2
 
 /-- Degree-two symmetric Jacobi mode for the primitive angular beta weight. -/
 def thetaCuspPrimitiveRayJacobiModeTwo (u : ℝ) : ℝ :=

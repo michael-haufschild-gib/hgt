@@ -1,0 +1,21 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactLastRowAtOne.lean",
+    "-j",
+    "1",
+    "-R",
+    "/Users/michael/Documents/code/hgt/formal",
+    "-o",
+    "/Users/michael/Documents/code/hgt/formal/.lake/build/lib/lean/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactLastRowAtOne.olean"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 5.91,
+  "sampled_peak_physical_mib": 451.7,
+  "samples": 47,
+  "measurement": "proc_pid_rusage RUSAGE_INFO_V0 ri_phys_footprint",
+  "remaining_owned_pids": []
+}

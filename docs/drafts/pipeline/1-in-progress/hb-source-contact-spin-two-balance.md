@@ -16,6 +16,19 @@ Wronskians and complete source moments. All six original physical testing gaps
 are independently nonzero. Infinite-height finite parts and the other current
 faces remain open.
 
+The [native cusp-current trace](../3-formalized/hb-native-cusp-current-trace.md)
+now derives rapid upper-trace vanishing of both native bilinear response
+remainders from the original forced equations and admitted gradient energies.
+The source-cell flux retains the exact original mean product. The
+[complete response-current attachment](../3-formalized/hb-full-response-cusp-current.md)
+now includes both original cusp particular solutions and decomposes the
+complete incoming current into its full-mean flux, all three exact source
+contacts and a remainder that vanishes under every complex height power.
+The original physical scalar principal factor preserves that zero remainder.
+[The full scalar-tested current](hb-physical-tested-centered-current.md),
+mean/contact boundary cancellation and complete-action faces remain open;
+fixed-clock extinction is not asserted.
+
 The preceding [source-contact rigidity theorem](../3-formalized/hb-source-contact-differential-rigidity.md) controls the literal contact two-jet. This continuation tests its contribution to the actual retained radial face, rather than replacing that face by a square-source self-pairing. It also records why two positivity mechanisms found in recent literature do not yet apply.
 
 ## Literal contact, including spin two

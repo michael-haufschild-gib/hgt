@@ -1,0 +1,14 @@
+{
+  "command": [
+    "lake",
+    "build",
+    "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactLastRowAtOne"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 10.94,
+  "sampled_peak_physical_mib": 453.3,
+  "samples": 92,
+  "measurement": "proc_pid_rusage RUSAGE_INFO_V0 ri_phys_footprint",
+  "remaining_owned_pids": []
+}

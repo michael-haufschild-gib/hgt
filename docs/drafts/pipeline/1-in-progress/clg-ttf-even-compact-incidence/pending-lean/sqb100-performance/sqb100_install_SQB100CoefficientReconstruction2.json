@@ -1,0 +1,21 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/MomentTwo.lean",
+    "-j",
+    "1",
+    "-R",
+    "/Users/michael/Documents/code/hgt/formal",
+    "-o",
+    "/Users/michael/Documents/code/hgt/formal/.lake/build/lib/lean/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/MomentTwo.olean"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 1.14,
+  "sampled_peak_physical_mib": 237.3,
+  "samples": 9,
+  "measurement": "proc_pid_rusage RUSAGE_INFO_V0 ri_phys_footprint",
+  "remaining_owned_pids": []
+}

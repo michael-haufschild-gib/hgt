@@ -1,0 +1,22 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/SQB99RawCoefficientData.lean",
+    "-j",
+    "1",
+    "-M",
+    "768",
+    "-R",
+    "/private/tmp",
+    "-o",
+    "/tmp/SQB99RawCoefficientData.olean"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 4.0,
+  "sampled_peak_physical_mib": 201.1,
+  "samples": 2,
+  "remaining_owned_pids": []
+}

@@ -1283,6 +1283,147 @@ reached the September 2026
 the August 2026 [multivariable monodromy paper](https://arxiv.org/abs/2608.26087).
 Their abstracts were inspected; neither is used as a proof premise.
 
+### Intermediate-height source and retained horizon contact
+
+Two analytical conjectures now have Lean proofs: boundary recovery from
+the original moments, and all-height survival of the original intrinsic
+horizon contact. Both retain the prescribed endpoint subtraction.
+
+Write `I_n=fundamentalJacobiMoment n w s`, `d=2*s-w`, and
+`e=w+2*s+2`. The admitted first, second and third recurrences give
+
+```
+2*I_0 = (d^2+5*e+8)*I_2 - (e+2)*(e+3)*I_4,
+(e+d^2)*(e+2)*(e+3)*I_4
+  - (d^4+(6*e+8)*d^2+3*e*(e+2))*I_2 = 2*d.
+```
+
+The second identity holds whenever `Re(w)>-2` and `w+1!=0`, without
+dividing by `e` or `e+1`. Its norm gives a lower bound for a weighted
+sum of the two moment norms. At each of the four physical branch/side
+choices, `d!=0`, so `I_2!=0` or `I_4!=0`. The mathematical work still
+needed for this survivor is identification of independent retained
+physical projections detecting those moments: the identity alone does
+not exclude cancellation in the specified combination `A*I_2+B*I_4`.
+
+For the actual true/true choice, set `v=w+1`, so
+`-1/2<Re(v)<0`. The original endpoint polynomial is
+
+```
+E(v)=30*v^4+81*v^3+80*v^2+19*v-6=4*(A+B),
+fundamentalSourceCore(w,s,a,0)=2^(2*s-w)*a^2*E(v)/4.
+```
+
+Lean proves `E(v)!=0` on the entire closed strip
+`-1/2<=Re(v)<=0`, with no restriction on `Im(v)`. Put `t=-Re(v)`
+and `y=Im(v)`. When `y!=0`, the imaginary zero equation gives
+`(81-120*t)*y^2=19-160*t+243*t^2-120*t^3`.
+The right side is at most `19-(137/2)*t`; its nonnegativity gives
+`t<=1/3`, then `y^2<=1/2`. On that interval
+`-180*t^2+243*t-80<=-19`. Thus the imaginary correction to the real
+polynomial, `y^2*(30*y^2-180*t^2+243*t-80)`, is nonpositive,
+whereas the existing real coefficient bounds give `E(-t)<=-15/4`.
+The case `y=0` follows from the same real bound. The proof uses factored
+polynomial inequalities and restricted `nlinarith only` inputs.
+
+With the unchanged angular-gradient prescription
+`K=reducedGreenGradient(physicalRadialFrequency(q),s,1)`, Lean identifies
+the original `sourceRemainder` at the horizon with this endpoint core.
+Consequently, for every physical copy and every nonzero amplitude,
+
+```
+intrinsicContact = fundamentalSourceCore(w,s,a,0)/(2*(w+1)) != 0,
+incomingResponseSlope(s,a,1,K,w)
+  = intrinsicContact * continuedOnset(s,w),
+incomingResponseSlope(s,a,1,K,w)=0 iff continuedOnset(s,w)=0,
+(eventually as b tends to 0 from above,
+  incomingSourceTransport(s,chi,a,1,K,w,b)!=0)
+  iff continuedOnset(s,w)!=0.
+```
+
+The last equivalence concerns the existing analytic continuation of the
+original Green-quotient derivative and remains valid at the target
+connection zero. Its reverse direction uses the admitted horizon limit
+and the nonzero slope; its forward direction retains the exact onset
+factor in the transport formula. All-height intrinsic contact
+cancellation is therefore closed. The unchanged onset, identification
+with the full retained physical action, and intermediate-height total
+source-moment cancellation remain open. Contact survival does not by
+itself prove nonvanishing of the total moment or its QNM residue.
+
+Three leaves passed scratch checks and exact leaf audits, then were
+installed with their audited artifacts and wired into the umbrella:
+`ThetaCuspHawkingBMSourceEndpointPolynomial` (31 seconds),
+`ThetaCuspHawkingBMFundamentalBoundaryRecovery` (9.6 seconds), and
+`ThetaCuspHawkingBMPhysicalSourceContactSurvival` (269 seconds).
+Each audit built only its named leaf and reported two jobs. No heartbeat
+or other resource limit was raised; no umbrella build, dependency rebuild,
+axiom check or mathematical computation was run. The frontier map and
+universal STATUS remain unchanged.
+
+Broad contiguous and exact OR Casoratian/Wronskian searches, followed by
+deep moment-system and source-contact method requests, inspected
+candidate lemmas, source arguments and ingredient sets. All four
+requests returned `partial=false`; the latest snapshot covered 57,158
+files and 737,205 declarations. Most compiler metadata was pending and
+semantic coverage was unmeasured. Second-kind moment Wronskians suggested
+boundary recovery; their positivity assumptions were not transferred to
+these complex moments. The exact original recurrences supplied the
+proof above.
+
+A broad arXiv biorthogonality search reached September 2026 papers on
+[radial potential-density bases](https://arxiv.org/abs/2609.04012),
+[boundary control of damped beams](https://arxiv.org/abs/2609.07806), and
+[non-Hermitian Hawking analogues](https://arxiv.org/abs/2609.05632).
+Their abstracts were inspected. Boundary-adapted combinations and
+retained modal projections are candidate mechanisms to investigate;
+none of these papers supplies a proof premise here.
+
+The next onset conjecture can be stated for the exact existing pulse
+transform: `onsetPulseTransform(-lambda)!=0` at
+`lambda=3-(5/2)*q`, whose real part lies in `(1/2,3)`.
+The existing integration-by-parts theorem identifies this transform with
+`lambda*continuedOnset(s,w)`. Broad Laguerre/Hurwitz retrieval and a
+single-term `smoothTransition` search recovered the original pulse
+identity, real-exponent positivity and isolated-zero theorems, but no
+applicable zero-free theorem on this complex curve. A possible stronger
+target is a real-zero theorem for the centered Fourier transform of the
+specified transition derivative; that target is an unproved conjecture.
+No adjustable onset duration or new kernel is substituted.
+These two additional searches returned `partial=false` with a snapshot
+covering 57,202 files; semantic coverage remained unmeasured.
+
+The formal lint run reported one error outside these three leaves:
+`GaloisForLFunctions.HTGeometry.InversePowerCancellation` was unreachable
+from its theorem-area umbrella. It also reported existing large-file
+warnings. No error was reported in the new HB leaves; the unrelated
+module was not edited or rebuilt.
+
+### Fixed onset on the actual overtone ladder
+
+The current analytical attack retains the prescribed unit-duration
+onset and varies only the original physical QNM overtone. The exact
+formula gives `w_n=w_0-2*n`, hence
+`clearedOnset(s,w_n)=onsetPulseTransform(2*s-w_0+2*n)`.
+The conjecture under formal development is: for every fixed complex
+`z`, this original pulse transform at `z+2*n` is nonzero for all
+sufficiently large `n`.
+
+The paper mechanism is endpoint concentration. Write
+`p(u)=deriv Real.smoothTransition u`, so `p>=0`, its total integral is
+one, and every interval ending at one has positive mass. For fixed
+imaginary part, choose a terminal interval where the phase, rotated by
+its endpoint value, has real part at least one half. A smaller terminal
+interval gives a positive lower bound with a strictly larger exponential
+rate than the entire possibly negative earlier contribution. This yields
+strict positivity of a rotated real part at all sufficiently large real
+tilts. It changes no onset profile, clock duration or Xi copy.
+
+The remaining physical obligation is to establish nonzero original
+radial/left-QNM coupling on a compatible high-overtone subsequence and
+retain all endpoint subtractions there. Fundamental-mode contact
+survival alone does not identify that higher-overtone coupling.
+
 ### Monotone-phase source survival
 
 The source-survival proof uses the actual `branch=true, side=true`
@@ -1383,12 +1524,13 @@ R=(5*theta^2-(5/2)*theta-3/2)rho_2
 ```
 
 The endpoint values are `R(0)=-3/32` and `R(1)=86/625`.
-The proposed exact reduction is
+The phase-coordinate form of the reduction is
 `v*M/(2*a^2)=86/625-integral_0^1 z^v*R'(z) dz` for nonzero a.
 It follows on paper by retaining the phase-change counterterm and using
 the second/fourth endpoint vanishing when moving the polynomials across
-the Mellin integral. This density reduction has not been formalised.
-The specific next target is excluding the value `86/625` from that
+the Mellin integral. The equivalent fixed-weight reduction in the original
+x coordinate is now formalised below; no inverse phase coordinate is
+needed in Lean. The global target is excluding the value `86/625` from that
 integral for `-1/2<Re(v)<0`, `Im(v)!=0`; no density sign or Stieltjes
 representation is assumed. The deep inverse-density search returned
 Lagrange interpolation rather than inversion candidates, so it supplies
@@ -1403,12 +1545,104 @@ N=5*D^4*P_22-(5/2)*D^6*P_21-(3/2)*D^8*P_20
   +(15/2)*P_44-(81/4)*D^2*P_43+15*D^4*P_42-(9/4)*D^6*P_41.
 ```
 
-The target identity is `M=2*a^2*J(W(N,8))`, then
-`v*M=2*a^2*(86/625-J(W(Step(N,8),10)))`. The last pairing is an ordinary
-absolutely convergent integral with one frequency-independent rational
-weight. Formalising this identity gives an exact scalar problem with no
-remaining finite-part ambiguity. A direct positive-density argument is
-not established: differentiating the proposed phase-coordinate density
-on paper gives `R'(0)=-2` and `R'(1)=-1/25`. Overtone completeness is also
-being investigated, but ordinary polynomial-moment completeness does
-not itself identify or admit the actual higher-QNM pairings.
+The identities `M=2*a^2*J(W(N,8))` and
+`v*M=2*a^2*(86/625-Dsource(w))` now pass Lean for the original physical
+source, where `Dsource(w)=J(W(Step(N,8),10))`. The last pairing is an
+ordinary absolutely convergent integral for `Re(w)>-2`, with one
+frequency-independent rational weight. The fixed polynomial satisfies
+`N(0)=-384`, `N(1)=268750`, and `W(N,8,1)/5=86/625`.
+The exact endpoint identity is `Dsource(-1)=86/625+3/32`.
+One common `x^(-1/2)` majorant proves continuity of Dsource on the closed
+physical strip, including its subtracted-pole endpoint.
+
+### Complete-source real coercivity and a uniform complex band
+
+Transferring the frequency polynomials gives the fixed-weight reduction
+above, but a sign for its single density has not been established.
+The successful positive replacement compares the admitted second and
+fourth remainder kernels. For real `-3/2<=u<=-1`, put
+
+```
+kappa=x^u*(2-x)^(-4*u),
+g2=x*(1-x)*(8-4*x+6*x^2)/((2-x)^8*(2+3*x)^2),
+g4=4*x*(1-x)^3*(4+x)/((2-x)^8*(2+3*x)^2),
+U2=integral_0^1 kappa*g2, U4=integral_0^1 kappa*g4.
+```
+
+Both integrals are admitted for every `u>-2`. Lean proves `U2>0` and
+`0<=U4<=2*U2`; the comparison follows from the positive numerator
+`4*x^2*(1-x)*(5+x-x^2)` of `2*g2-g4`. For the complete source
+coefficients, Lean proves `A<=-3/2`, `B<=9/16`, hence
+
+```
+A*U2+B*U4 <= -(3/8)*U2 < 0.
+```
+
+The coefficient proof factors B as
+`(3/4)*t*(1-t)*(5*t-1)*(3-2*t)`, with `t=-(u+1)` in `[0,1/2]`.
+The original endpoint recurrence identifies this combination with
+`(u+1)*J(W(N,8))` for `u<-1`. Consequently
+`Re(Dsource(u))>86/625` throughout the closed real interval; the exact
+endpoint value handles `u=-1` separately.
+
+Applying the corpus's `CompactPatchGenericity` theorem to this strict gap
+and the admitted integral's continuity gives a Lean-proved `delta>0`:
+
+```
+-3/2<=Re(w)<=-1, abs(Im(w))<=delta  ->  Dsource(w)!=86/625.
+```
+
+The physical identification uses `w=-1-q/2` and proves
+
+```
+exists h>0, forall q:XiZeroCopy, abs(Im(q))<=h -> forall a:Complex,
+  a!=0 -> fundamentalSourceMoment(w,physicalRate(q,true),a)!=0.
+```
+
+Here `h=2*delta`. Together with the existing high-height source theorem,
+this supplies uniform low-height and high-height survival ranges. No
+comparison making these ranges cover all heights has been proved.
+Intermediate-height cancellation, the full angular/retained-action
+identification, fixed onset survival, Hawking-clock extinction and RH
+remain open. Ordinary polynomial-moment completeness still lacks an
+identification with the actual higher-QNM pairings.
+
+The proof uses factored weight recurrences and separate algebra,
+integrability, coercivity and compactness leaves. No heartbeat or other
+resource limit was raised. All seven new leaves passed scratch checks
+and exact audits, and are installed with audited artifacts and wired:
+`ThetaCuspHawkingBMNonstationaryMomentAlgebra` (37 seconds),
+`ThetaCuspHawkingBMFixedSourcePolynomial` (127 seconds),
+`ThetaCuspHawkingBMRealSourceWeights` (40 seconds),
+`ThetaCuspHawkingBMFixedSourceDefect` (52 seconds),
+`ThetaCuspHawkingBMRealSourceCoercivity` (71 seconds),
+`ThetaCuspHawkingBMSourceRealBand` (17 seconds), and
+`ThetaCuspHawkingBMPhysicalFixedSource` (23 seconds).
+Only the requested leaf was reported built in each audit; the defect
+audit visited cached dependency jobs, while the others reported two jobs.
+No full or umbrella build, axiom check, or mathematical computation ran.
+The frontier map and universal STATUS remain unchanged.
+
+The final lint run reports no error for the seven new leaves. It still
+reports unreachable concurrently added modules `MaassCircleKernel`,
+`MaassCircleTransfer`, and `CompactSmoothParameterIntegral`, alongside
+existing large-file warnings. Missing imports for the already compiled
+`ThetaCuspHawkingBMScalarJetEntries`, `SmoothCylinderKernel`, and
+`SmoothCylinderIntegral` were restored without changing their sources or
+rebuilding them. No umbrella build was run.
+
+Broad Hurwitz, contiguous and overtone retrieval and deep density,
+completeness, Xi-height, compactness and moment-ratio searches inspected
+candidate lemmas, source arguments and proposed ingredient sets.
+`CompactPatchGenericity` supplied the applicable uniform-band mechanism.
+The final moment-ratio request completed with snapshot coverage of
+57,137 files and 736,578 declarations; compiler metadata remains mostly
+pending and semantic coverage unmeasured. Its proposed differential-adjoin
+ingredient set concerns field generation, not a differential adjoint
+identity. The inspected `PositiveSourceQuadraticStability` theorem requires
+a transverse sector inequality; that inequality has not been established
+for this original source, so it supplies no middle-band conclusion yet.
+Broad passivity and total-positivity arXiv retrieval reached the July 2026
+[impedance-passive stability paper](https://arxiv.org/abs/2607.01861) and
+August 2026 [reciprocity paper](https://arxiv.org/abs/2608.30778).
+Their abstracts were inspected; neither is used as a proof premise.

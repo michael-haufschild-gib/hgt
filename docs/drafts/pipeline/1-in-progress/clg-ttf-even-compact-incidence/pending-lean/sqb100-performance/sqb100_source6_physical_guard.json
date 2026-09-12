@@ -1,0 +1,19 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/SQB99SourceNumerator6AtOne.lean",
+    "-j",
+    "1",
+    "--profile"
+  ],
+  "exit_code": -15,
+  "reason": "physical memory cutoff",
+  "seconds": 55.21,
+  "sampled_peak_physical_mib": 535.3,
+  "samples": 25,
+  "remaining_owned_pids": [
+    4665
+  ]
+}

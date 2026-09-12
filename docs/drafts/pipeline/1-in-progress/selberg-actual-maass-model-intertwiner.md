@@ -1,8 +1,8 @@
 # Actual Maass-to-model intertwiner
 
 - **ID:** selberg-actual-maass-model-intertwiner
-- **Stage:** 1-in-progress — finite differentiated correspondence, faithful hyperbolic source L2, first ladder energy, actual quotient unitary representation, Iwasawa Haar formula, finite covolume, and faithful nonzero spherical Maass admission to quotient L2 are formalized and individually audited. All-order Hilbert generator domains and cyclic model completion remain unfinished.
-- **Type:** THEOREM (Lean, finite differentiated cyclic correspondence and actual nonzero spherical Maass vector in the quotient unitary representation); identification with the completed cyclic model remains open in the formalization.
+- **Stage:** 1-in-progress — actual finite correspondence, finite-covolume quotient unitary representation, compact-kernel all-order derivative bounds, all ladder L2 admission, injective finite model in quotient L2, and the three actual Hilbert generators are formalized and target-audited. Cyclic model completion and full group intertwining remain unfinished. Arithmetic exclusion of complementary series is not proved.
+- **Type:** THEOREM (Lean, injective actual finite Maass model in the quotient Hilbert representation, with all three infinitesimal intertwining identities); identification with the completed cyclic model remains open in the formalization.
 - **Date:** 2026-09-12
 - **Statement:** Every nonzero Maass eigenfunction with (0<\lambda<1/4\) generates, under the actual differentiated right action, a spherical Harish-Chandra module explicitly isomorphic to the corpus model with (s=2\sqrt{1/4-\lambda}\).
 - **Scope:** Known representation theory, reconstructed here with the corpus's signs and normalization. No claim of a new proof of Selberg's conjecture.
@@ -21,9 +21,11 @@ Here (V_f) is a subspace of the actual smooth, left-\(\Gamma\)-invariant functio
 
 The formalization now proves C-infinity regularity, actual source and model flow derivatives, normalized source ladder identities, and the finite intertwiner. `GaloisForLFunctions.RHTower.MaassSmooth.maassDifferentialModelEquiv` identifies the intrinsically defined differentiated cyclic source with the existing spherical model. The forward map is the explicit normalized derivative construction below; Lean's inverse uses its proved injectivity and range equality. The separate polynomial/evaluation inverse formula below remains a paper formula.
 
-`MaassCongruenceL2` now places the existing finite-coset source vector faithfully in actual hyperbolic L2, with a strictly positive norm equal to the original trace integral, for every real eigenvalue and positive principal congruence level. `MaassLadderL2` admits the first raised/lowered source vectors and the normalized model coefficients at indices 1 and -1; their combined squared norm is exactly twice eigenvalue times source squared norm. This does not assert all-order domains or right-group unitarity.
+`MaassCongruenceL2` now places the existing finite-coset source vector faithfully in actual hyperbolic L2, with a strictly positive norm equal to the original trace integral, for every real eigenvalue and positive principal congruence level. `MaassLadderL2` admits the first raised/lowered source vectors and the normalized model coefficients at indices 1 and -1; their combined squared norm is exactly twice eigenvalue times source squared norm. These first-order statements are supplemented by the all-order construction below.
 
 `RealSL2Haar` proves unimodularity from algebraic perfectness. `IntegralSubgroupQuotientMeasure` constructs a measurable strict fundamental domain, then an actual nonzero, sigma-finite, locally finite, regular invariant measure on G/Gamma for every integral subgroup. `IntegralSubgroupUnitaryRepresentation` builds the complex linear isometric automorphisms, representation multiplication law, literal pullback formula, and joint continuity. This is the ambient quotient Hilbert representation. `RealIwasawaMeasure` now proves its Haar disintegration up to an actual positive scalar. `IntegralSubgroupFiniteCovolume` proves finite quotient volume for every finite-index integral subgroup and full support for every integral subgroup. `MaassQuotientL2` constructs the specified Maass source as a nonzero spherical vector, proves faithful admission for every real eigenvalue and positive principal congruence level, and identifies literal unitary translations. The comparison constant with the old finite-coset norm, including central -I multiplicity, is still unproved. That comparison is no longer needed merely to admit the source: finite covolume and proved global boundedness discharge admission directly.
+
+`MaassCircleKernel` now constructs a compact annular reproducing kernel for the original positive-eigenvalue source from the proved circular mean law. `MaassCircleDerivativeBounds` transfers every finite word in y*d_x and y*d_y to such a kernel and proves its global bound. `MaassLadderDerivativeBounds` closes these bounds under all changing-weight raising and lowering. `MaassLadderQuotientL2` admits both complete ladders to the actual finite-volume quotient Hilbert space. `MaassModelQuotientL2.modelToLp` is injective and has the literal normalized Maass representative. Finally, `MaassModelHilbertGenerators` proves norm derivatives of the actual quotient unitary action: diagonal = E+F, conjugated diagonal = i(E-F), compact rotation = iH, on every finite model vector. All majorants come from the original Maass function; no generator-domain or derivative-bound interface is assumed. The capstone targeted build passed, and 108 public declarations have only the standard Lean axioms `propext`, `Classical.choice`, and `Quot.sound`.
 
 The existing `maassCyclicAutomorphicRepresentation` is the group-algebra span of **all** right translates. That space must not be silently identified with (V_f), which is stable under the Lie algebra and (K). Noncompact translations generally take finite (K)-support to infinite (K)-support. Extending this correspondence to closed unitary group representations is a further analytic theorem.
 
@@ -1045,3 +1047,77 @@ radial/angular transference, compact kernel parameter differentiation, repeated
 integration by parts, and nonzero smooth bump construction before implementing.
 The target is uniform bounds for the original Maass ladder, hence actual L2
 generator domains. A supplied derivative bound is not an acceptable endpoint.
+
+Derivative-transfer scratch passed, including four exact coordinate identities,
+actual horizontal/vertical flow derivatives, and their action on the original
+smooth source. The existing circle differential module now exposes its three
+first-derivative lemmas and a general smooth-family theorem; no proof settings
+were added. Integration-by-parts and compact kernel closure are in scratch.
+A further improvement is to divide a normalized annulus bump by the proved
+circular multiplier on a small interval where it is nonzero. This should give
+a reproducing kernel with scalar exactly one, avoiding a separate complex
+integral positivity argument. The corpus's `soninAnnulusBumpData` supplies the
+bump, and mathlib supplies its normalized integral.
+
+The combined kernel/compact-integral scratch now passes: support and periodicity
+are preserved by all directional derivatives and transpose operators; division
+by a nonzero radial divisor preserves smoothness; radial and angular integration
+by parts and their divergence identity are closed; a uniform source-value bound
+controls the kernel integral. Searches found and reused Sonin's one-sided annulus
+bump data. The heavier Sonin Mellin-weight module, with a raised heartbeat setting,
+is not imported.
+
+Broad recent arXiv screens this continuation: `localization`, `transference`.
+Opened [Localization and Abelianization of Strings on Group Manifolds](https://arxiv.org/abs/2609.02425)
+(September 2): compact simply connected Lie groups and WZW partition functions;
+its abstract supplies no SL2 noncompact generator estimate. Opened
+[A generalised transference principle](https://arxiv.org/abs/2608.17982)
+(August 18): dense-to-sparse random combinatorial transfer; its density hypotheses
+do not supply the needed analytic derivative bounds. These are abstract screens,
+not claims that either paper proves the missing correspondence or spectral gap.
+
+### Compact reproduction verified; all-order transfer in progress
+
+`/tmp/maass_reproducing_kernel.lean` passed with default limits: a normalized smooth annular bump divided by the actual circular multiplier reproduces the original positive-eigenvalue Maass form. The divisor is proved nonzero on an annulus by continuity at radius zero. No assumed mean law or derivative bound. Expanded actual circle differential and transfer modules, and the compact parameter integral module, each passed their required standalone olean checks.
+
+Deep search `bounded iterated derivatives raising lowering smooth vectors finite volume` returned partial results with full file inventory but largely source-only compiler metadata. Candidate support-preserving derivative maps and explicit sech bounds do not discharge the Maass bound. Proposed ingredient sets were not verified. The actual next proof uses the compact reproducing identity, actual base-point transfer, and cylinder integration by parts. Existing `MaassLadderL2` covers only first raising/lowering on the finite congruence deck; the all-order quotient ladder remains the needed stronger target.
+
+### All-order bounds and quotient ladder admission checked
+
+The complete scratch `/tmp/maass_model_quotient.lean` checked the derivative-transfer block, bounded Euler submodule, and actual quotient ladder block without errors or warnings. Its only failures were in the subsequently appended finite-model block (case indentation and evaluation of pointwise sums); those are being corrected before installation. Hence the all-order bound and raised/lowered quotient L2 proofs have passed, while finite-model/Hilbert-generator claims await their own clean check.
+
+A fresh deep search found the existing `HTGeometry.hasDerivAt_toLp_two_of_dominated` in `L2DominatedDerivative.lean`. Its actual proof was read: the fixed square-integrable derivative majorant controls difference quotients, then dominated convergence proves the norm derivative. The new global bound on each model derivative supplies precisely its previously missing majorant. Next conjecture: the original unitary quotient action differentiates on every finite Maass model vector to E+F, i(E-F), and iH. Proof attempt uses one-parameter subgroup translation to move the existing pointwise derivative at zero to every time, then the existing dominated L2 theorem. No spectral-gap premise is introduced.
+
+### Actual finite model admitted to quotient L2
+
+`/tmp/maass_all_hilbert_generators.lean` checked the preceding compact-transfer, all-order ladder, quotient admission, and complete finite-model blocks without errors or warnings. The finite model is mapped to bounded continuous quotient functions, then through Mathlib's canonical injective bounded-continuous-to-Lp map. This gives an injective map from the actual finite spherical model to L2(G/Gamma), with its literal representative identified at every coset. The only remaining errors in that scratch run were inside the newly appended Hilbert generator block: a field-notation line break, a time-shift elaboration, and subgroup coercions. The corrected generator block is now checking.
+
+Search `linearCombination injective continuous functions almost everywhere toLp full support` found `BoundedContinuousFunction.toLp_injective`; its source and constructor were read and reused instead of re-proving an AE finite-sum injection. Search `Lp HasDerivAt dominated pointwise derivatives finite measure` was partial but its exact L2DominatedDerivative hit was applicable. Broad-search papers recorded above supplied no theorem used by this construction.
+
+### Next completion mechanism (paper target; not a Lean claim)
+
+After Hilbert generator identification, differentiate actual unitary inner-product invariance. For the finite model, A=E+F and B=i(E-F) being skew gives E-adjoint = -F; the compact generator iH gives orthogonality of distinct K-weights. In THIS corpus E e_m=(nu-1/2-m)e_(m+1), F e_(m+1)=(nu+1/2+m)e_m, with s=2 nu. Therefore the forced norm recurrence is (m+1/2-nu)||T e_(m+1)||^2=(m+1/2+nu)||T e_m||^2. This sign/normalization was checked against `RealSphericalHarishChandra.lean:49-74`; do not use the inverse ratio from a different convention. Existing `RealSphericalComplementarySeries` proves the positive invariant diagonal form and `RealPrincipalSeriesCompactUnitarity` its compact-picture transport. The next missing step is identifying this actual pullback inner product with that canonical form, then extending the isometry to completion and proving the full group intertwining. Local positivity permits 0<nu<1/2 and supplies no congruence exclusion by itself.
+
+### Completion attack after norm identification: analytic-vector bound
+
+Paper mechanism, not yet a new Lean theorem: once the pullback inner product is the canonical diagonal form, orthogonality and E-adjoint=-F give ||E e_m||^2/||e_m||^2 = lambda+m(m+1), and ||F e_m||^2/||e_m||^2 = lambda+m(m-1). For 0<lambda<1/4, each square-root coefficient is at most |m|+1. On vectors supported in |m|<=M, E and F each have operator bound M+1 because each is a weighted shift between orthogonal bases. Hence A=E+F and B=i(E-F) have bound 2(M+1), and enlarge support by at most one. Iteration gives ||A^n v|| <= 2^n (M+n)!/M! ||v||, likewise B. Thus the exponential series converges for |t|<1/2 (its terms are bounded by binomial(M+n,n)(2|t|)^n ||v||). This supplies analytic vectors from the actual model coefficients; arbitrary smooth kernel bounds alone gave no factorial control. Taylor remainders for actual unitary orbit curves then identify the local series; subgroup multiplication extends to all times. Next formal obligations: exact pullback Hermitian form, finite-support weighted-shift bound, analytic orbit/Taylor identity, invariant closure and comparison with the completed model. None of this supplies arithmetic exclusion of complementary series.
+
+### Verified milestone: actual quotient Hilbert generators
+
+- Combined scratch `/tmp/maass_all_hilbert_generators.lean` passed. The time-shift helper was then simplified to explicit additive cancellation and checked separately in `/tmp/maass_time_shift.lean` without diagnostics.
+- Final foreground command: `LEAN_NUM_THREADS=1 lake build GaloisForLFunctions.RHTower.MaassModelHilbertGenerators`. Exit 0, 12690 dependency jobs visited, twelve changed/required modules built; all other dependencies were cached/replayed. No full or umbrella build. Exactly one Lean child was observed under the build parent.
+- The twelve fresh builds were three cylinder/parameter integration modules, `MaassCircleDifferential`, `MaassCircleMean`, `MaassCircleTransfer`, `MaassCircleKernel`, `MaassCircleDerivativeBounds`, `MaassLadderDerivativeBounds`, `MaassLadderQuotientL2`, `MaassModelQuotientL2`, and `MaassModelHilbertGenerators`. No warning in these modules; 79 pre-existing dependency warning lines were replayed.
+- `/tmp/maass_hilbert_axioms.lean`, checked with `lake env lean`, audited 108 declarations. Exact allowed union: `propext`, `Classical.choice`, `Quot.sound`; no added axiom or native certificate.
+- Ten new modules are imported exactly once in their proper umbrellas. Scoped forbidden-token, raised-option, and whitespace checks passed. No heartbeat/transparency/recursion limits were raised.
+- First global lint snapshot failed only on unrelated untracked `RHTower/ThetaCuspHawkingBMFundamentalBoundaryRecovery.lean` and `HTGeometry/InversePowerCancellation.lean`, missing their umbrella imports. Their sources were not modified. Index/generated audit follows this entry.
+- Remaining proof chain: actual injective Hilbert model + proved generators -> identify the canonical inner product -> complete the intertwiner and full group action -> congruence-specific exclusion of complementary representations -> Selberg 1/4. The first portion is verified progress, not a blocked turn or a completed Selberg proof.
+
+Final index refresh completed: LEAN_API.md, LEAN_GAPS.md, LEAN_OVERVIEW.md regenerated; search index refreshed (38 changed sources, 0 removed, including concurrent work). `lint --check-generated` exited 1 with the following global failures:
+
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.InversePowerCancellation
+
+No task Lean process remains. The ten new modules still have exactly one umbrella import each. Target compilation and the 108-declaration axiom audit passed independently of these unrelated global lint failures. The active goal remains unfinished: canonical norm identification, completed group intertwining, and arithmetic exclusion still require work.
+
+### Continuation: derive the actual invariant inner product
+
+Previous goal turn is verified progress, not a wait or blocker: the injective quotient L2 model and all Hilbert generators passed the targeted build and axiom audit. Current target is the pullback of the actual Hilbert inner product. Conjecture: differentiating original unitary invariance gives E-adjoint=-F and H-symmetry, hence orthogonal K-types and the canonical complementary weight recurrence. Next derive equality of the entire actual form with the corpus canonical diagonal form times its actual spherical norm. Search/read existing canonical weights before defining any new norm. Completion/full group intertwining and congruence arithmetic exclusion remain distinct unfinished steps.

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/SQB100CoefficientColumn1.lean",
+    "-j",
+    "1",
+    "-R",
+    "/private/tmp",
+    "-o",
+    "/tmp/SQB100CoefficientColumn1.olean"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 12.07,
+  "sampled_peak_physical_mib": 419.1,
+  "samples": 91,
+  "measurement": "proc_pid_rusage RUSAGE_INFO_V0 ri_phys_footprint",
+  "remaining_owned_pids": []
+}

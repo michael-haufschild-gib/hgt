@@ -1,0 +1,22 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/SQB100LiteralNumeratorData.lean",
+    "-j",
+    "1",
+    "-M",
+    "768",
+    "-R",
+    "/private/tmp",
+    "-o",
+    "/tmp/SQB100LiteralNumeratorData.olean"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 32.04,
+  "sampled_peak_physical_mib": 386.5,
+  "samples": 12,
+  "remaining_owned_pids": []
+}

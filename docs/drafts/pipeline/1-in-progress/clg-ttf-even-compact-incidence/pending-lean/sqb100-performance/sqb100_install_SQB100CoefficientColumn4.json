@@ -1,0 +1,21 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/ColumnFour.lean",
+    "-j",
+    "1",
+    "-R",
+    "/Users/michael/Documents/code/hgt/formal",
+    "-o",
+    "/Users/michael/Documents/code/hgt/formal/.lake/build/lib/lean/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/ColumnFour.olean"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 20.17,
+  "sampled_peak_physical_mib": 451.5,
+  "samples": 137,
+  "measurement": "proc_pid_rusage RUSAGE_INFO_V0 ri_phys_footprint",
+  "remaining_owned_pids": []
+}

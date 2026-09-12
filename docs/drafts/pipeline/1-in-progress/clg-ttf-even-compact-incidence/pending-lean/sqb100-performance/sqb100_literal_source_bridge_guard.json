@@ -1,0 +1,17 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/SQB100LiteralSourceBridge.lean",
+    "-j",
+    "1",
+    "--profile"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "seconds": 8.22,
+  "sampled_peak_physical_mib": 442.1,
+  "samples": 4,
+  "remaining_owned_pids": []
+}

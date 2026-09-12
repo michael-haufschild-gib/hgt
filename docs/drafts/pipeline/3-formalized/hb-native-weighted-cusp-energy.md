@@ -188,9 +188,11 @@ divergence must supply the derivative bound, retaining signed forcing,
 source/test derivatives and changing weights. L1 control of the function
 and its derivative would then force its upper trace to zero.
 
-This is not yet a Lean conclusion. A mere L1 current estimate does not give
-a pointwise upper limit; the derivative/trace step remains necessary. The
-retained zero-mode current and other physical faces must still be evaluated.
+The derivative/trace step is now formalized in the
+[native cusp-current trace](hb-native-cusp-current-trace.md): both weighted
+integrabilities are derived from the original source, and the upper native
+remainder trace is zero. The retained zero-mode current and other physical
+faces must still be evaluated.
 
 ## Exact leaf verification
 
