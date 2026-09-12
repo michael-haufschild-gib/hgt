@@ -615,12 +615,14 @@ No heartbeat or other resource limit was raised.
 
 ## Remaining hard problem
 
-The completed admission now includes the actual forced response paired
-with both normalizable horizon branches and the original outer reduced
-response. The inner explicit lift must still be restored and combined
-with this pairing, followed by all four source channels and both Einstein
-contact terms. Residue extraction for the complete continued current
-remains unproved. The
+The completed admission includes the original response paired with both
+normalizable horizon branches and the original outer reduced response.
+The complete temporal horizon-mode current now additionally retains the
+inner lift, all three principal channels and its source contact, with
+cutoff restoration and a residue theorem after integration. The complete
+normalizable current still requires its opposite logarithmic horizon
+branch and original full-current outer interval. Evaluation and survival
+of that joined residue remain unproved. The
 full unprojected angular reconstruction, independent SS/VV sectors, original
 retarded/advanced Peierls pairing and all-multiplicity angular dual remain
 open. The source angular coefficient, radial source moment and fixed onset
@@ -642,19 +644,68 @@ Results were partial; candidate applicability was not assumed. Every
 ingredient used in the new Lean proofs was read in source and checked in
 Lean. No numerical experiment was used.
 
-Latest repository lint exits with eight unreachable modules outside these
-edits:
+## Full temporal horizon current: original density, restoration and residue
 
-- `RHTower.ThetaCuspHawkingBMHorizonCoordinateJets`
-- `RHTower.ThetaCuspHawkingBMPrincipalChannelHorizonJet`
-- `RHTower.ThetaCuspHawkingBMSelfChannelHorizonJet`
-- `RHTower.ThetaCuspHawkingBMTemporalCurrentHorizonJet`
-- `HTGeometry.AnalyticJetGerm`
-- `HTGeometry.ElementaryHorizonJets`
-- `HTGeometry.SecondEndpointMellinLaurentInterchange`
-- `HTGeometry.UniformSecondOrderJet`
+`ThetaCuspHawkingBMTemporalCurrentHorizonIdentification` identifies the
+complete horizon-mode temporal current with the existing uniform profile.
+The proof separately reconstructs the reduced self response, all three
+principal cutoff channels, the full source contact and the radial Jacobian.
+`clearedDensityProfile_eq_actualAction` identifies the same expression
+with component zero of the actual projected Einstein action on its physical
+Laplace band. This is the horizon left-mode leg (`outer=false`).
 
-Both strengthened restoration leaves and both new normalizable-pairing
-leaves passed exact audits and are reachable from their umbrella. The
-global lint gate is not passed. Unrelated pending modules were not changed
-or rebuilt. Frontier map and universal STATUS remain untouched.
+`ThetaCuspHawkingBMTemporalCurrentHorizonRegularity` proves spatial
+continuity and frequency analyticity of the full cleared profile through
+the fundamental QNM. Its continuity proof differentiates the undivided
+source moments directly; it never obtains a value at the QNM by dividing
+by the vanishing connection coefficient. Frequency analyticity requires
+only the existing nonreal strip and separated source/principal poles,
+which the physical restoration theorem discharges on one neighborhood.
+
+Write D(w)=-(w-2s)*connection(w,chi), F(w,z)=clearedDensityProfile(w,z),
+and j(w,z)=continuedTemporalRadialDensity(w,z). The checked identity is
+
+```
+z^(w-1)*F(w,z) = D(w)*j(w,z).
+```
+
+The density j is the original temporal current evaluated at tortoiseOf(z),
+including the exterior radial Jacobian. Let N_b(w) be the two-term Mellin
+finite part of F, with c0(w),c1(w) supplied by its proved uniform quadratic
+jet. `physicalTemporalCurrent_horizon_restoration_and_residue` proves,
+without supplied regularity or residue assumptions, that actual physical
+q, branch, side, amplitude and angular point determine R>0 and B>0 such
+that for EVERY 0<b<=B:
+
+- N_b is analytic at the physical fundamental frequency w0.
+- For w in the common frequency ball and connection(w,chi) nonzero,
+  the original cutoff expression
+  `integral(e..b,j(w,z)) + [c0(w)*e^w/w+c1(w)*e^(w+1)/(w+1)]/D(w)`
+  tends to N_b(w)/D(w) as e tends to zero from above.
+- After radial integration and endpoint restoration,
+  `(w-w0)*N_b(w)/D(w)` tends to
+  `N_b(w0)/physicalFundamentalDenominatorSlope(q,branch,side)`.
+
+The source lift and contact are retained inside F. The power counterterms
+come from the common source-derived jet; neither a residue nor a finite
+part is assigned. Allowing every smaller cutoff permits later joining to
+the opposite branch at exactly the same endpoint.
+
+The proofs use explicit continuity/analyticity composition and polynomial
+evaluation instead of broad tactic expansion of the full source. Redundant
+ring/cast steps were removed. All three modules passed scratch checks at
+default resource limits. Exact leaf audits passed warning-free: identification 80 seconds,
+regularity 36 seconds, restoration/residue 110 seconds; each built only
+the requested leaf (two Lake jobs) against cached dependencies. Sources,
+five artifacts per new leaf and umbrella imports are installed. The three
+used jet-support modules are also wired into HTGeometry. No umbrella,
+full or dependency build ran; no resource limit was raised.
+
+
+Repository lint still reports four pending unreachable modules outside
+these new sources: `RHTower.ThetaCuspHawkingBMHorizonModeOuterUniformBound`,
+`RHTower.ThetaCuspHawkingBMTemporalCurrentClearedDensity`,
+`HTGeometry.JetCoefficientUniqueness` and
+`HTGeometry.SecondEndpointMellinLaurentInterchange`. Global lint is not
+passed. These concurrently developed sources were not edited or rebuilt.
+Frontier map and universal STATUS remain untouched.

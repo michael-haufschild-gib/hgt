@@ -143,6 +143,20 @@ Logs: [full scratch](route-l-zero-damping-scratch.log),
 [global meromorphic scratch](route-l-zero-damping-meromorphic-scratch.log),
 [final leaf audit](route-l-zero-damping-build.log).
 
+[Index regeneration](route-l-zero-damping-index.log) passed; all 17 public
+declarations are present and the new umbrella import occurs once.
+[Global lint](route-l-zero-damping-lint.log) failed on six unrelated modules
+unreachable from their theorem-area umbrellas:
+
+- RHTower: `ThetaCuspHawkingBMHorizonModeOuterUniformBound`.
+- HTGeometry: `AnalyticJetGerm`, `ElementaryHorizonJets`,
+  `JetCoefficientUniqueness`, `SecondEndpointMellinLaurentInterchange`,
+  `UniformSecondOrderJet`.
+
+This is not a passed global lint gate. The new Route L module is wired;
+unrelated concurrent work was preserved. All owned Lean, Lake, search, index
+and lint processes reached terminal status; no build was left running.
+
 Full-Xi admission of these normalized coefficients, a complete zero-damping
 source-domain passage, and fixed physical-reader agreement remain unproved.
 This card is a closed singularity and normalization theorem, not a proof of RH.
