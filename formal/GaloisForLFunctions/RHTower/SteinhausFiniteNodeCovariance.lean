@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaRightReflectedPrimalEnergyEvent
+import GaloisForLFunctions.HTGeometry.ComplexGramPlucker
 
 /-!
 # Finite-node covariance of largest-prime Steinhaus channels
@@ -23,6 +24,7 @@ namespace RHTower
 
 open Complex Finset Nat MeasureTheory
 open SteinhausModel
+open GaloisForLFunctions.HTGeometry
 
 /-- Complex linear combination of a finite family of arithmetic coefficient systems. -/
 def steinhausFiniteNodeCoefficientCombination {J : ℕ}
@@ -81,6 +83,72 @@ theorem sum_integral_normSq_steinhausFiniteNodeChannelCombination {J : ℕ}
   unfold steinhausFiniteNodeArithmeticGramEnergy
   exact Finset.sum_congr rfl fun p hp =>
     integral_normSq_steinhausFiniteNodeChannelCombination a u X p
+
+/-- Coordinate set of all prime--cofactor samples entering a finite-node Gram form. -/
+abbrev steinhausFiniteNodeFeatureIndex (P : Finset ℕ) (X : ℕ) :=
+  ↥(P.sigma fun p => Finset.Icc 1 (X / p))
+
+noncomputable instance steinhausFiniteNodeFeatureIndexLinearOrder
+    (P : Finset ℕ) (X : ℕ) : LinearOrder (steinhausFiniteNodeFeatureIndex P X) :=
+  LinearOrder.lift' (Fintype.equivFin _) (Equiv.injective _)
+
+/-- Finite coefficient feature rows over the prime--cofactor sample set. -/
+def steinhausFiniteNodeFeature {J : ℕ}
+    (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (X : ℕ) :
+    Fin J → steinhausFiniteNodeFeatureIndex P X → ℂ :=
+  fun j q => a j (q.1.1 * q.1.2)
+
+/-- Hermitian Gram matrix of the finite-node arithmetic coefficient rows. -/
+def steinhausFiniteNodeArithmeticGram {J : ℕ}
+    (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (X : ℕ) :
+    Matrix (Fin J) (Fin J) ℂ :=
+  hermFeatureGram (steinhausFiniteNodeFeature P a X)
+
+/-- The explicit nested arithmetic energy is the coordinate-space squared norm of the
+corresponding finite-node coefficient combination. -/
+theorem steinhausFiniteNodeArithmeticGramEnergy_eq_feature_sum {J : ℕ}
+    (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (u : Fin J → ℂ) (X : ℕ) :
+    steinhausFiniteNodeArithmeticGramEnergy P a u X =
+      ∑ q : steinhausFiniteNodeFeatureIndex P X,
+        ‖∑ j : Fin J, u j * steinhausFiniteNodeFeature P a X j q‖ ^ 2 := by
+  classical
+  unfold steinhausFiniteNodeArithmeticGramEnergy
+    steinhausFiniteNodeCoefficientCombination steinhausFiniteNodeFeature
+  calc
+    (∑ p ∈ P, ∑ m ∈ Finset.Icc 1 (X / p),
+        ‖∑ j : Fin J, u j * a j (p * m)‖ ^ 2) =
+        ∑ q ∈ P.sigma (fun p => Finset.Icc 1 (X / p)),
+          ‖∑ j : Fin J, u j * a j (q.1 * q.2)‖ ^ 2 :=
+      Finset.sum_sigma' _ _ _
+    _ = ∑ q : ↥(P.sigma fun p => Finset.Icc 1 (X / p)),
+          ‖∑ j : Fin J, u j * a j (q.1.1 * q.1.2)‖ ^ 2 := by
+      rw [Finset.sum_subtype _ (fun _ => Iff.rfl)]
+
+/-- Complex Cauchy--Binet identifies the finite-node arithmetic Gram determinant with
+the sum of squared maximal coefficient minors. -/
+theorem det_steinhausFiniteNodeArithmeticGram_eq_pluckerNormSq {J : ℕ}
+    (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (X : ℕ) :
+    (steinhausFiniteNodeArithmeticGram P a X).det =
+      (hermPluckerNormSq (steinhausFiniteNodeFeature P a X) : ℂ) :=
+  det_hermFeatureGram_eq_pluckerNormSq (steinhausFiniteNodeFeature P a X)
+
+/-- Any single nonzero maximal terminal coefficient minor gives a quantitative lower bound
+for the real arithmetic Gram determinant. -/
+theorem norm_sq_steinhausFiniteNodeFeatureMinor_le_gram_det_re {J : ℕ}
+    (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (X : ℕ)
+    (s : Set.powersetCard (steinhausFiniteNodeFeatureIndex P X) J) :
+    ‖hermFeatureMinor (steinhausFiniteNodeFeature P a X) s‖ ^ 2 ≤
+      (steinhausFiniteNodeArithmeticGram P a X).det.re := by
+  rw [det_steinhausFiniteNodeArithmeticGram_eq_pluckerNormSq]
+  simp only [Complex.ofReal_re]
+  unfold hermPluckerNormSq
+  refine Finset.single_le_sum
+    (s := Finset.univ)
+    (f := fun q : Set.powersetCard (steinhausFiniteNodeFeatureIndex P X) J =>
+      ‖hermFeatureMinor (steinhausFiniteNodeFeature P a X) q‖ ^ 2)
+    ?_ (Finset.mem_univ s)
+  intro q hq
+  exact sq_nonneg _
 
 /-- A frozen family of channel coefficients sampled by independent prime phases. -/
 def steinhausFiniteNodeLargePrimePacket {J : ℕ}

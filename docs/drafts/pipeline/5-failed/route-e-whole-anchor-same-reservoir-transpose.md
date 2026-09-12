@@ -58,5 +58,11 @@ Direct foreground check:
 lake env lean GaloisForLFunctions/RHTower/RouteEWholeAnchorReverseFreshnessNoGo.lean
 ```
 
-The module is wired into `formal/GaloisForLFunctions/RHTower.lean`. Targeted build and axiom audit
-are recorded after final audit.
+Targeted module build passed:
+
+```text
+lake build GaloisForLFunctions.RHTower.RouteEWholeAnchorReverseFreshnessNoGo
+```
+
+The module is wired into `formal/GaloisForLFunctions/RHTower.lean`. `#print axioms` on both public
+theorems reports only Lean's standard `propext` and `Quot.sound`.

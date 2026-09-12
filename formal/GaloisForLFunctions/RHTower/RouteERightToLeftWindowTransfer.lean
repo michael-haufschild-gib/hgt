@@ -200,6 +200,47 @@ theorem routeE_oneShift_nonreverseWindow_card_le_radiusOscillation
       simp only [Nat.card_Ioo]
       omega
 
+/-- Tokens from the one-radius shifted supply which also pass the reverse-window test. -/
+def routeEOneShiftReverseFilteredWindow
+    (h : ℕ → ℕ) (A : ℕ → Prop) [DecidablePred A] (y : ℕ) : Finset ℕ :=
+  (Finset.Ioc (y - h y) ((y - h y) + h (y - h y))).filter fun m =>
+    A m ∧ y ≤ m + h m
+
+/-- Imposing the symmetric reverse-window condition loses at most the exact radius oscillation.
+This converts a one-sided token lower bound into a pair-stable token lower bound. -/
+theorem routeE_oneShift_reverseFilteredWindow_card_ge_supply_sub_oscillation
+    (h : ℕ → ℕ) (hmono : Monotone h) (A : ℕ → Prop) [DecidablePred A]
+    {y D : ℕ} (hfit : h y ≤ y) (hAy : ¬A y)
+    (hsupply : D ≤
+      ((Finset.Ioc (y - h y) ((y - h y) + h (y - h y))).filter A).card) :
+    D - (h y - h (y - h y)) ≤
+      (routeEOneShiftReverseFilteredWindow h A y).card := by
+  let base : Finset ℕ :=
+    Finset.Ioc (y - h y) ((y - h y) + h (y - h y))
+  let eligible : Finset ℕ := base.filter A
+  have hbadSubset :
+      eligible.filter (fun m => ¬y ≤ m + h m) ⊆ routeEOneShiftNonreverseWindow h y := by
+    intro m hm
+    simp only [eligible, base, Finset.mem_filter, Finset.mem_Ioc] at hm
+    rw [routeEOneShiftNonreverseWindow, Finset.mem_filter]
+    refine ⟨by simpa only [Finset.mem_Ioc] using hm.1.1, ?_⟩
+    exact ⟨fun hmy => hAy (hmy ▸ hm.1.2), hm.2⟩
+  have hbad : (eligible.filter (fun m => ¬y ≤ m + h m)).card ≤
+      h y - h (y - h y) := by
+    exact (Finset.card_le_card hbadSubset).trans
+      (routeE_oneShift_nonreverseWindow_card_le_radiusOscillation h hmono hfit)
+  have hpartition := eligible.card_filter_add_card_filter_not (fun m => y ≤ m + h m)
+  have hgood :
+      eligible.filter (fun m => y ≤ m + h m) =
+        routeEOneShiftReverseFilteredWindow h A y := by
+    ext m
+    simp only [eligible, base, routeEOneShiftReverseFilteredWindow, Finset.mem_filter,
+      Finset.mem_Ioc]
+    tauto
+  rw [hgood] at hpartition
+  change D ≤ eligible.card at hsupply
+  omega
+
 /-- For the actual fixed-shell radius `h(y)=c*sqrt(y)`, one-shift radius oscillation is at most
 `c²`.  At `c=(log X)^1.55`, this is the subpower width `(log X)^3.1`. -/
 theorem routeE_sqrtRadius_sub_oneShift_le_sq

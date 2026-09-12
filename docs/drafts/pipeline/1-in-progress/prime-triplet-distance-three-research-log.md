@@ -205,6 +205,62 @@ does not retire mechanisms outside its stated hypotheses.
   `(log X)^3.1` when `c=(log X)^1.55`. Lean: `routeE_sqrtRadius_sub_oneShift_le_sq` in
   `formal/GaloisForLFunctions/RHTower/RouteERightToLeftWindowTransfer.lean`.
 
+- **FACT-026 — Low/rough cutoff factorization is intrinsic at each squarefree endpoint.** Filtering
+  `primeFactors(n)` at a fixed cutoff `P` gives disjoint low and rough supports whose union is the
+  full support. Their products multiply to `n`, and their cardinalities add to the complete
+  distinct-prime breadth. Lean: `routeE_lowPart_mul_roughPart_eq_of_squarefree` and
+  `routeE_lowBreadth_add_roughBreadth_eq` in
+  `formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementPairStability.lean`.
+
+- **FACT-027 — Entropy-complement certificate asymmetry is exactly the literal seam.** On the
+  two-sided `z`-friable sector, squarefreeness, symmetric shell membership, coprime freshness, and
+  adjacent breadth make upward and downward certificates exact endpoint swaps and reverse Möbius
+  sign. If only the forward terminal is required friable, its reverse certificate exists iff the
+  original source is friable. Lean: `routeE_entropyComplement_up_iff_down_swap`,
+  `routeE_entropyComplement_up_reverses_moebius`, and
+  `routeE_entropyComplement_seam_reverse_iff_sourceFriable` in the same module.
+
+- **FACT-028 — One-sided supply converts to symmetric-shell supply with only oscillation loss.**
+  If the one-radius shifted window contains at least `D` tokens of a predicate excluding the
+  source, then at least `D-(h(y)-h(y-h(y)))` of them also pass the reverse-window test. Combined
+  with FACT-025, a square-root radius `c*sqrt(y)` loses at most `c²` tokens. Lean:
+  `routeE_oneShift_reverseFilteredWindow_card_ge_supply_sub_oscillation` in
+  `formal/GaloisForLFunctions/RHTower/RouteERightToLeftWindowTransfer.lean`.
+
+- **FACT-029 — Symmetric raw incidence reduces load-gradient energy exactly to normalizer flux.**
+  If `U(i,j)=U(j,i)` and all raw rows are nonzero, row normalization has transpose mismatch
+  `U(i,j)*(1/rowMass(U,i)-1/rowMass(U,j))`; its divergence is twice the reciprocal-row-mass flux
+  `F(i)=Σ_j U(i,j)*(1/a_i-1/a_j)`. Weighted column-load gradient energy is exactly the weighted
+  edge-gradient energy of `F`, with no geometric mismatch term. Lean:
+  `routeE_symmetricNormalizedTransposeMismatch_eq_normalizerGradient` and
+  `routeE_symmetricNormalizedColumnGradientEnergy_eq_normalizerFluxEnergy` in
+  `formal/GaloisForLFunctions/RHTower/RouteEApproximateTransposeDivergence.lean`.
+
+- **FACT-030 — The September 2026 smooth-number advance is multiplicative-local.** Gorodetsky
+  proves sharp uniform ratios `Ψ(x/d,y)/Ψ(x,y)`, with squarefree smooth and coprime smooth
+  consequences; for `2≤d≤y`, the basic ratio is
+  `d^(-α)*(1+O(log(d)/log(x)))`. Primary source:
+  [Gorodetsky, *Sharp local estimates for smooth numbers*](https://arxiv.org/abs/2609.10324),
+  Corollaries 1.1, 1.2, and 1.11.
+
+- **FACT-031 — The cutoff-separated product fibre is exactly singleton.** If `q=t*m` is
+  squarefree, every prime factor of `t` is at most `P`, and every prime factor of `m` is greater
+  than `P`, then `t=lowPart(P,q)` and `m=roughPart(P,q)`. Conversely the intrinsic pair is always
+  admissible. Thus low/rough labels create no multiplicity after projection to a physical
+  endpoint. Lean: `routeE_cutoffSeparatedSplit_iff_intrinsic` and
+  `routeE_cutoffSeparatedSplit_unique` in
+  `formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementPhysicalIncidence.lean`.
+
+- **FACT-032 — Entropy-complement raw support is one physical adjacent-grade shell.** After
+  symmetrizing the two orientations, support is exactly the squarefree, two-sided-friable,
+  coprime, symmetric-shell relation with total prime-factor counts differing by one. The cutoff
+  disappears from support, though weights may still depend on the intrinsic split. For unit
+  weights, raw row mass is exactly the cardinality of this endpoint set. Every supported edge is
+  symmetric, loop-free, and reverses Möbius sign. Lean:
+  `routeE_entropyComplement_pairRelation_iff_physical`,
+  `routeE_entropyComplementRawIncidence_support_reverses_moebius`, and
+  `routeE_entropyComplementPhysicalRowMass_one_eq_card` in the same module.
+
 ### No-gos
 
 - **NOGO-001 — Signed column-load cancellation is circular.** For every row-stochastic kernel
@@ -395,3 +451,17 @@ does not retire mechanisms outside its stated hypotheses.
   Different reverse reservoirs, symmetric toggle relations, support symmetrization, and aggregate
   mismatch-divergence estimates survive. Lean: `routeE_wholeAnchor_reverseFresh_sameReservoir_iff_one`
   in `formal/GaloisForLFunctions/RHTower/RouteEWholeAnchorReverseFreshnessNoGo.lean`.
+
+- **NOGO-027 — Multiplicative smooth-number ratios do not directly control additive shell
+  normalizers.** The estimates in FACT-030 compare prefix counts at `x` and `x/d`; they do not state
+  an asymptotic for `Ψ(x+h,y)-Ψ(x,y)` uniformly at `h=sqrt(x)*x^{o(1)}`. Scope: direct use of that
+  paper to close the reciprocal-row-mass flux from FACT-029. Partial summation or a new additive
+  transfer theorem is not excluded.
+
+- **NOGO-028 — Prefix variance of divisor-count products is not the physical row-mass energy.**
+  `sum_sq_joint_deviation_le` controls a prefix sum of deviations of
+  `card(primeFactorsIn P n)*card(primeFactorsIn Q n)`. FACT-032 identifies the actual unweighted
+  row mass as a local additive-shell endpoint count with squarefree, friable, coprime, and
+  adjacent-grade restrictions. No corpus theorem identifies these observables or transfers the
+  prefix variance to reciprocal row-mass edge-gradient energy. Scope: direct composition with
+  current joint Turán–Kubilius theorem; a new local convolution or transfer identity survives.

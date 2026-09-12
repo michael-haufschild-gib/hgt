@@ -93,6 +93,39 @@ incidence. Second is local row-normalizer mismatch on shared physical edges. Lea
 with `(5)`, proving that mixed normalized column-gradient energy is exactly one quarter of the
 divergence-gradient energy of these two raw terms.
 
+## Symmetric-incidence reduction
+
+After restricting to a genuinely pair-stable physical support, choose one symmetric raw incidence
+`U`, so `U(i,j)=U(j,i)`, and normalize its rows. Literal geometric mismatch then vanishes exactly:
+
+\[
+  P_{ij}-P_{ji}
+  =U_{ij}\left({1\over a_i}-{1\over a_j}\right),
+  \qquad a_i=\sum_jU_{ij}.
+\tag{9}
+\]
+
+Define reciprocal-row-mass flux
+
+\[
+  F_U(i)=\sum_jU_{ij}\left({1\over a_i}-{1\over a_j}\right).
+\tag{10}
+\]
+
+The transpose-mismatch divergence is exactly `2F_U(i)`. Consequently the factor `1/4` in `(5)`
+cancels, and Lean proves the exact identity
+
+\[
+  \boxed{
+  \sum_{(i,j)\in E}w_{ij}(\ell_P(i)-\ell_P(j))^2
+  =\sum_{(i,j)\in E}w_{ij}(F_U(i)-F_U(j))^2.}
+\tag{11}
+\]
+
+Thus, once raw support is pair-stable, global Hall terminology can be replaced by one concrete
+arithmetic target: control the edge-gradient energy of reciprocal local token masses. Symmetric
+support alone does not make these masses constant and does not imply balance.
+
 ## Exact-transpose boundary
 
 If `Q=Pᵀ` and every row of `Q` sums to one, then every column of `P` already sums to one. Hence
@@ -107,14 +140,13 @@ The right-to-left window transfer supplies complete rows in both numerical direc
 column defect, which retains the original signed sum; instead prove that the divergence of the
 up/down transpose mismatch varies slowly along the actual strict-half physical edges.
 
-For the product-truncated entropy-complement relation, `D` must be decomposed into source-visible
-pieces:
+For the product-truncated entropy-complement relation, the pair-stability theorem removes bulk
+decoder mismatch on the friable/friable sector. The remaining source-visible pieces are:
 
-1. shifted terminal-window discrepancy;
+1. symmetric-shell boundary loss;
 2. row-normalizer discrepancy;
-3. product-cutoff loss;
-4. zero/one-large-prime seam discrepancy;
-5. physical collisions under projection from labelled histories.
+3. zero/one-large-prime seam discrepancy;
+4. physical collisions under projection from labelled histories.
 
 Only the edge-gradient energy of the combined divergence is required. Its value may have an
 order-one hydrodynamic profile; equation `(5)` does not require `D` or the column defect to have
@@ -134,5 +166,11 @@ Direct foreground check passed:
 lake env lean GaloisForLFunctions/RHTower/RouteEApproximateTransposeDivergence.lean
 ```
 
-Module is wired into `formal/GaloisForLFunctions/RHTower.lean`. Targeted build and axiom audit are
-recorded after final audit.
+Targeted module build passed:
+
+```text
+lake build GaloisForLFunctions.RHTower.RouteEApproximateTransposeDivergence
+```
+
+Module is wired into `formal/GaloisForLFunctions/RHTower.lean`. `#print axioms` on every public
+theorem reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

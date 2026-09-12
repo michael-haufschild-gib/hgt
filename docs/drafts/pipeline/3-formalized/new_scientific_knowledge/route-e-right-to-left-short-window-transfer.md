@@ -96,8 +96,20 @@ Consequently their number is at most `Δ_y`. For the real radius `h(y)=c\sqrt y`
 For `c=(\log X)^{1.55}`, the numerical nonreverse boundary is therefore at most
 `(\log X)^{3.1}=X^{o(1)}`.
 
+More precisely, if the original shifted right window contains at least `D` predicate tokens, the
+subfamily which also passes the reverse-window test has cardinality at least
+
+\[
+  D-\Delta_y.
+\tag{7}
+\]
+
+This is the exact finite interface from a one-sided token lower bound to a numerically pair-stable
+token lower bound.
+
 This is a numerical statement only. A source-dependent factorization certificate must separately
-be proved stable under endpoint reversal. Equations (4)--(6) do not provide that pair-stability.
+be proved stable under endpoint reversal. Equations (4)--(7) do not provide that factorization
+pair-stability.
 
 ## Why the two-radius shift is not a transpose device
 
@@ -140,5 +152,11 @@ Direct foreground check:
 lake env lean GaloisForLFunctions/RHTower/RouteERightToLeftWindowTransfer.lean
 ```
 
-The module is wired into `formal/GaloisForLFunctions/RHTower.lean`. Targeted build and axiom audit
-are recorded after final audit.
+Targeted module build passed:
+
+```text
+lake build GaloisForLFunctions.RHTower.RouteERightToLeftWindowTransfer
+```
+
+The module is wired into `formal/GaloisForLFunctions/RHTower.lean`. `#print axioms` on every public
+theorem reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

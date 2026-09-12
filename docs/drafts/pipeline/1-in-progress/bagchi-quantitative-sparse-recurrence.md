@@ -314,6 +314,24 @@ constant on a set of small-prime phases of measure at least
 `RHTower.SmoothAFEZetaRightReflectedPrimalEnergyEvent`; targeted builds pass; axiom audit is only
 `propext`, `Classical.choice`, `Quot.sound`.
 
+The joint-covariance reduction is also closed exactly. For every finite node family and complex
+Rayleigh direction, linear combination commutes with largest-prime channel formation. Conditional
+large-prime Parseval gives the frozen covariance energy, and small-prime Parseval identifies its
+mean with an explicit prime--cofactor coefficient Gram form. Complex Cauchy--Binet then writes the
+Gram determinant as a sum of squared maximal coefficient minors; any selected terminal sample
+minor lower-bounds that determinant. Module: `RHTower.SteinhausFiniteNodeCovariance`; targeted build
+passes; axiom audit is only `propext`, `Classical.choice`, `Quot.sound`. The next arithmetic gate is
+a uniform lower bound for the sum of literal reflected-AFE terminal minors, followed by
+concentration of the full covariance form rather than only its trace. The analytic rank part of
+that lower bound is now closed: distinct normalized node powers remain independent on the real
+terminal log interval, yield a nonsingular real evaluation packet, and retain a fixed positive
+determinant floor on coordinatewise neighborhoods. Module:
+`RHTower.SteinhausFiniteNodePowerMinor`; targeted build passes; axiom audit is only `propext`,
+`Classical.choice`, `Quot.sound`. A single literal minor still scales like `N^(-J)` after squaring,
+so it cannot give a uniform floor. Remaining arithmetic task is to count linearly many
+prime--cofactor samples in each disjoint evaluation neighborhood and sum their `N^J` colored
+selections through Cauchy--Binet.
+
 Two analytic sublemmas remain: a two-dimensional local lower bound uniform
 in the random centre and simultaneously in finitely many boundary nodes; and deterministic vertical-orbit
 transfer for the resulting triangular family. Corpus deep/method-enriched searches found conditional probability
@@ -373,3 +391,11 @@ mixture or direct full-support law remains possible.
   arbitrary-small-power divisor-fibre bound, channel-count-free weighted aggregation, exact removal
   of zero-variance channels, and a Paley--Zygmund event of measure `N^(-o(1))` for literal
   reflected-primal terminal energy; isolated simultaneous planar local probability as next gate.
+- 2026-09-12 — C15.7: proved exact finite-node channel linearity, frozen conditional covariance,
+  literal reflected-AFE mean arithmetic Gram identity, complex Cauchy--Binet determinant formula,
+  and selected-minor determinant lower interface; isolated uniform terminal-minor positivity and
+  covariance concentration as the next joint-law gates.
+- 2026-09-12 — C15.8: proved exponential independence survives restriction to every nonempty real
+  log interval, extracted pairwise distinct terminal samples with nonzero power determinant, and
+  proved a uniform positive determinant floor on coordinatewise neighborhoods; ruled out one-minor
+  scaling and isolated colored sample counting plus many-minor summation as the arithmetic gate.

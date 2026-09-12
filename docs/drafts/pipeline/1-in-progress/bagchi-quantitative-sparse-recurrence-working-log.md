@@ -81,6 +81,22 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   half a fixed positive mass. Evidence: `exists_integral_norm_four_steinhausFinCarrier_le_rpow`,
   `exists_measure_steinhausFinEnergy_gt_half_ge_rpow_of_totalVariance_pos`, and
   `exists_eventually_measure_reflectedPrimalChannelEnergy_gt_ge_rpow`.
+- **F21 — Joint covariance is an explicit arithmetic Gram form.** For any finite node family and
+  complex direction `u`, a linear combination of largest-prime channels equals the channel of the
+  combined coefficients. Frozen-channel Parseval identifies its conditional large-prime covariance
+  with the sum of squared channel combinations; averaging the small phases identifies that sum with
+  the explicit prime--cofactor coefficient Gram energy. Complex Cauchy--Binet expresses the Gram
+  determinant as the sum of squared maximal coefficient minors, so any one selected terminal minor
+  gives a quantitative determinant floor. Evidence: `integral_normSq_steinhausFiniteNodeLargePrimePacket`,
+  `sum_integral_normSq_reflectedPrimalFiniteNodeChannelCombination`, and
+  `norm_sq_steinhausFiniteNodeFeatureMinor_le_gram_det_re`.
+- **F22 — Stable real-terminal power minor.** For distinct node exponents, the normalized terminal
+  rows `z ↦ exp(β_j z)` remain linearly independent after restriction to every nonempty real
+  interval embedded in `ℂ`. Hence every such interval contains pairwise distinct real log-samples
+  with a nonzero square evaluation determinant. Continuity upgrades that determinant to a fixed
+  positive norm floor whenever each sample stays in one sufficiently small neighborhood. Evidence:
+  `exists_realComplexInterval_powerEvaluation_det_isUnit` and
+  `exists_powerEvaluation_det_norm_lower_neighborhood`.
 
 ## No-gos
 

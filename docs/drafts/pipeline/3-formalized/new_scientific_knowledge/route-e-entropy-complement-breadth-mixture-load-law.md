@@ -428,6 +428,30 @@ Unlike former fixed-\(E_3\) target, (27) spends actual complementary entropy for
 truncation. It does not assert RH-strength cancellation as generic sieve estimate: quadratic column
 and recurrence clauses remain source-bearing core.
 
+### 8a. Pair-stability refinement (2026-09-12)
+
+The low/rough factorization in (27) is intrinsic to each squarefree endpoint: split its own prime
+support at `P`. Consequently, on the `z`-friable/friable sector and after imposing a symmetric
+physical shell, upward and downward adjacent-grade certificates are exact endpoint swaps. Reverse
+certification does not reuse the forward endpoint's reservoir.
+
+For the target-friable seam relation, Lean proves the sharper equivalence
+
+\[
+  \text{reverse certificate exists}\quad\Longleftrightarrow\quad
+  \text{source is }z\text{-friable}.
+\]
+
+Thus factorization asymmetry is not a bulk producer for (27). It is exactly the literal
+nonfriable-source seam. Remaining mismatch terms are symmetric-shell loss, row-normalizer
+variation, pair-switch/history recombination collisions, and normalized seam flux. Moreover, the
+cutoff-separated factor fibre over each squarefree physical endpoint is exactly singleton, so
+low/rough labels create no projection multiplicity. After symmetrizing orientations, unit-weight
+row mass is exactly the count of physical squarefree, friable, coprime shell endpoints whose total
+prime-factor grade differs by one. Sources:
+`route-e-entropy-complement-pair-stability-seam-law.md` and
+`route-e-entropy-complement-physical-incidence-fibre-law.md`.
+
 ## 9. Anti-theatre audit
 
 - Equation (3) corrects quantitatively false frontier target; no logarithmic factor is renamed

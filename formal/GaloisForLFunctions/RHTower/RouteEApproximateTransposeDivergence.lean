@@ -55,6 +55,10 @@ def routeERawBidirectionalMismatchDivergence
   (∑ j, routeERawBidirectionalMismatch U V i j) -
     ∑ j, routeERawBidirectionalMismatch U V j i
 
+/-- Reciprocal-row-mass flux of a symmetric raw incidence. -/
+def routeESymmetricNormalizerFlux (U : ι → ι → ℝ) (i : ι) : ℝ :=
+  ∑ j, U i j * (1 / routeERowMass U i - 1 / routeERowMass U j)
+
 /-- A nonempty raw row becomes a complete normalized row. -/
 theorem routeE_rowMass_rowNormalizedKernel_eq_one
     (U : ι → ι → ℝ) (i : ι) (hU : routeERowMass U i ≠ 0) :
@@ -80,6 +84,36 @@ theorem routeE_normalizedMismatchDivergence_eq_rawBidirectionalMismatchDivergenc
       routeERawBidirectionalMismatchDivergence U V i := by
   unfold routeEMismatchDivergence routeERawBidirectionalMismatchDivergence
   simp_rw [routeE_normalizedTransposeMismatch_eq_rawBidirectionalMismatch]
+
+/-- On symmetric raw support, normalized transpose mismatch is purely the reciprocal-row-mass
+gradient. Literal geometric incidence mismatch vanishes. -/
+theorem routeE_symmetricNormalizedTransposeMismatch_eq_normalizerGradient
+    (U : ι → ι → ℝ) (hsym : ∀ i j, U i j = U j i) (i j : ι) :
+    routeETransposeMismatch
+        (routeERowNormalizedKernel U) (routeERowNormalizedKernel U) i j =
+      U i j * (1 / routeERowMass U i - 1 / routeERowMass U j) := by
+  unfold routeETransposeMismatch routeERowNormalizedKernel
+  rw [hsym j i]
+  ring
+
+/-- For symmetric raw incidence the mismatch divergence is exactly twice the normalizer flux. -/
+theorem routeE_symmetricNormalizedMismatchDivergence_eq_two_normalizerFlux
+    (U : ι → ι → ℝ) (hsym : ∀ i j, U i j = U j i) (i : ι) :
+    routeEMismatchDivergence
+        (routeERowNormalizedKernel U) (routeERowNormalizedKernel U) i =
+      2 * routeESymmetricNormalizerFlux U i := by
+  unfold routeEMismatchDivergence routeESymmetricNormalizerFlux
+  simp_rw [routeE_symmetricNormalizedTransposeMismatch_eq_normalizerGradient U hsym]
+  have hreverse :
+      (∑ j, U j i * (1 / routeERowMass U j - 1 / routeERowMass U i)) =
+        -(∑ j, U i j * (1 / routeERowMass U i - 1 / routeERowMass U j)) := by
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    rw [hsym j i]
+    ring
+  rw [hreverse]
+  ring
 
 /-- Column defect of the bidirectional mixture is exactly half the mismatch divergence. -/
 theorem routeE_one_sub_averageColumnMass_eq_half_mismatchDivergence
@@ -167,6 +201,45 @@ theorem routeE_normalizedBidirectionalColumnGradientEnergy_eq_quarterRawMismatch
   intro p _hp
   rw [routeE_normalizedMismatchDivergence_eq_rawBidirectionalMismatchDivergence,
     routeE_normalizedMismatchDivergence_eq_rawBidirectionalMismatchDivergence]
+
+/-- A symmetric physical incidence has no geometric transpose defect: the normalized column-load
+gradient energy is exactly the edge-gradient energy of its reciprocal-row-mass flux. -/
+theorem routeE_symmetricNormalizedColumnGradientEnergy_eq_normalizerFluxEnergy
+    (U : ι → ι → ℝ)
+    (hU : ∀ i, routeERowMass U i ≠ 0)
+    (hsym : ∀ i j, U i j = U j i)
+    (edges : Finset (ι × ι)) (weight : ι × ι → ℝ) :
+    (∑ p ∈ edges, weight p *
+      (routeEColumnMass
+          (routeEKernelAverage
+            (routeERowNormalizedKernel U) (routeERowNormalizedKernel U)) p.1 -
+        routeEColumnMass
+          (routeEKernelAverage
+            (routeERowNormalizedKernel U) (routeERowNormalizedKernel U)) p.2) ^ 2) =
+      ∑ p ∈ edges, weight p *
+        (routeESymmetricNormalizerFlux U p.1 -
+          routeESymmetricNormalizerFlux U p.2) ^ 2 := by
+  rw [routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceEnergy
+    (routeERowNormalizedKernel U) (routeERowNormalizedKernel U)
+    (fun i => routeE_rowMass_rowNormalizedKernel_eq_one U i (hU i))
+    (fun i => routeE_rowMass_rowNormalizedKernel_eq_one U i (hU i))]
+  simp_rw [routeE_symmetricNormalizedMismatchDivergence_eq_two_normalizerFlux U hsym]
+  calc
+    (1 / 4 : ℝ) * ∑ p ∈ edges, weight p *
+        (2 * routeESymmetricNormalizerFlux U p.1 -
+          2 * routeESymmetricNormalizerFlux U p.2) ^ 2 =
+      (1 / 4 : ℝ) * ∑ p ∈ edges, 4 * (weight p *
+        (routeESymmetricNormalizerFlux U p.1 -
+          routeESymmetricNormalizerFlux U p.2) ^ 2) := by
+        congr 1
+        apply Finset.sum_congr rfl
+        intro p _hp
+        ring
+    _ = ∑ p ∈ edges, weight p *
+        (routeESymmetricNormalizerFlux U p.1 -
+          routeESymmetricNormalizerFlux U p.2) ^ 2 := by
+      rw [← Finset.mul_sum]
+      ring
 
 /-- Pointwise absolute column defect is bounded by incoming plus outgoing mismatch mass. -/
 theorem routeE_abs_one_sub_averageColumnMass_le_mismatchL1
