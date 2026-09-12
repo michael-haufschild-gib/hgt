@@ -97,6 +97,12 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   positive norm floor whenever each sample stays in one sufficiently small neighborhood. Evidence:
   `exists_realComplexInterval_powerEvaluation_det_isUnit` and
   `exists_powerEvaluation_det_norm_lower_neighborhood`.
+- **F23 — Linear sample supply in every fixed normalized interval.** For `0 ≤ a < b`, each terminal
+  prime channel contains at least `(b-a)N/p - 1` cofactors with `pm/N ∈ (a,b]`. Summation gives the
+  reciprocal-prime main term; the accumulated floor loss is `#terminalPrimePowerWindow N = o(N)`.
+  Hence some `c>0` gives at least `cN` terminal prime--cofactor samples eventually. Evidence:
+  `terminalPrimePowerWindow_normalizedProductCofactorBlock_card_lower` and
+  `exists_eventually_terminalPrimePowerWindow_normalizedProductCofactorBlock_card_linear`.
 
 ## No-gos
 

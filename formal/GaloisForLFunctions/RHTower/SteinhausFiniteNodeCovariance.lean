@@ -88,9 +88,46 @@ theorem sum_integral_normSq_steinhausFiniteNodeChannelCombination {J : ℕ}
 abbrev steinhausFiniteNodeFeatureIndex (P : Finset ℕ) (X : ℕ) :=
   ↥(P.sigma fun p => Finset.Icc 1 (X / p))
 
+/-- Product first, then an arbitrary injective finite tie-breaker. -/
+noncomputable def steinhausFiniteNodeFeatureIndexOrderKey
+    (P : Finset ℕ) (X : ℕ) (q : steinhausFiniteNodeFeatureIndex P X) :=
+  toLex (q.1.1 * q.1.2, Fintype.equivFin _ q)
+
+theorem steinhausFiniteNodeFeatureIndexOrderKey_injective (P : Finset ℕ) (X : ℕ) :
+    Function.Injective (steinhausFiniteNodeFeatureIndexOrderKey P X) := by
+  intro q r h
+  exact (Fintype.equivFin _).injective (congrArg (fun z => (ofLex z).2) h)
+
 noncomputable instance steinhausFiniteNodeFeatureIndexLinearOrder
     (P : Finset ℕ) (X : ℕ) : LinearOrder (steinhausFiniteNodeFeatureIndex P X) :=
-  LinearOrder.lift' (Fintype.equivFin _) (Equiv.injective _)
+  LinearOrder.lift' (steinhausFiniteNodeFeatureIndexOrderKey P X)
+    (steinhausFiniteNodeFeatureIndexOrderKey_injective P X)
+
+noncomputable instance (priority := 10000) steinhausFiniteNodeFeatureIndexLE
+    (P : Finset ℕ) (X : ℕ) : LE (steinhausFiniteNodeFeatureIndex P X) :=
+  (steinhausFiniteNodeFeatureIndexLinearOrder P X).toLE
+
+noncomputable instance (priority := 10000) steinhausFiniteNodeFeatureIndexLT
+    (P : Finset ℕ) (X : ℕ) : LT (steinhausFiniteNodeFeatureIndex P X) :=
+  (steinhausFiniteNodeFeatureIndexLinearOrder P X).toLT
+
+theorem steinhausFiniteNodeFeatureIndex_lt_iff_key_lt
+    {P : Finset ℕ} {X : ℕ} {q r : steinhausFiniteNodeFeatureIndex P X} :
+    q < r ↔ steinhausFiniteNodeFeatureIndexOrderKey P X q <
+      steinhausFiniteNodeFeatureIndexOrderKey P X r := by
+  change (LinearOrder.lift' (steinhausFiniteNodeFeatureIndexOrderKey P X)
+    (steinhausFiniteNodeFeatureIndexOrderKey_injective P X)).lt q r ↔ _
+  rfl
+
+/-- Product-first ordering: a smaller represented integer gives a smaller prime--cofactor feature
+index, independently of tie-breaking by the prime and cofactor. -/
+theorem steinhausFiniteNodeFeatureIndex_lt_of_product_lt
+    {P : Finset ℕ} {X : ℕ} {q r : steinhausFiniteNodeFeatureIndex P X}
+    (h : q.1.1 * q.1.2 < r.1.1 * r.1.2) : q < r := by
+  apply steinhausFiniteNodeFeatureIndex_lt_iff_key_lt.mpr
+  unfold steinhausFiniteNodeFeatureIndexOrderKey
+  rw [Prod.Lex.toLex_lt_toLex]
+  exact Or.inl h
 
 /-- Finite coefficient feature rows over the prime--cofactor sample set. -/
 def steinhausFiniteNodeFeature {J : ℕ}

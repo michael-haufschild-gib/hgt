@@ -95,6 +95,12 @@ reciprocal-degree variation is exactly absolute signed imbalance. Therefore (5) 
 positive arithmetic target, not automatic consequence of breadth, row/co-degree exponents, or
 co-moving displacement.
 
+The follow-on [reciprocal-degree variance bridge](route-e-entropy-complement-degree-variance-bridge.md)
+reduces its Dirichlet-energy version to local degree variance plus comparison-profile energy. Its
+rate audit also shows that the raw unit-shell graph does not close through absolute Cauchy even
+from Poisson-scale degree variance at `H=sqrt(X)`. This sharpens the open producer to regularized
+incidence or signed flux before absolute values.
+
 ## 2. Existing Lean consumer
 
 For nonisolated vertices set

@@ -261,6 +261,28 @@ does not retire mechanisms outside its stated hypotheses.
   `routeE_entropyComplementRawIncidence_support_reverses_moebius`, and
   `routeE_entropyComplementPhysicalRowMass_one_eq_card` in the same module.
 
+- **FACT-033 — Reciprocal-degree edge energy admits an exact degree-variance interface.** For
+  positive raw degrees `d_i`, positive comparison profile `D_i`, and symmetric nonnegative edge
+  weights, the reciprocal-degree Dirichlet energy is at most three times the degree-weighted
+  profile residual plus three times the profile Dirichlet energy. Pointwise, if
+  `delta*D_i ≤ d_i`, then
+  `d_i*(1/d_i-1/D_i)^2 ≤ (d_i-D_i)^2/(delta*D_i^3)`. A constant-profile specialization removes
+  the profile-energy term. Lean: `inverseDegreeDirichletEnergy_le_relativeVariance_add_profileEnergy`,
+  `inverseDegreeProfileResidualEnergy_inv_le_relativeVarianceBudget`, and
+  `inverseDegreeDirichletEnergy_le_two_centeredEnergy` in
+  `formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementDegreeVarianceBridge.lean`.
+
+- **FACT-034 — Sign-complete physical incidence has an exact squarefree-shell/Möbius-shell degree
+  split.** Join two positive integers exactly when both are squarefree, lie in the prescribed
+  symmetric numerical shell, and have opposite Möbius signs. This raw incidence is symmetric,
+  loop-free, and sign-reversing. If `Q(n)` is squarefree shell mass and `M(n)` its Möbius-signed
+  shell mass, then for `mu(n)=±1` its row mass satisfies
+  `2*d(n)=Q(n)-mu(n)*M(n)`. Consequently
+  `(d(n)-Q0/2)^2 ≤ ((Q(n)-Q0)^2+M(n)^2)/2`. Lean:
+  `routeE_two_mul_signCompleteRowMass_eq` and
+  `routeE_signCompleteRowMass_deviation_sq_le` in
+  `formal/GaloisForLFunctions/RHTower/RouteESignCompletePhysicalDegree.lean`.
+
 ### No-gos
 
 - **NOGO-001 — Signed column-load cancellation is circular.** For every row-stochastic kernel
@@ -465,3 +487,13 @@ does not retire mechanisms outside its stated hypotheses.
   adjacent-grade restrictions. No corpus theorem identifies these observables or transfers the
   prefix variance to reciprocal row-mass edge-gradient energy. Scope: direct composition with
   current joint Turán–Kubilius theorem; a new local convolution or transfer identity survives.
+
+- **NOGO-029 — Raw sign-complete unit-shell variance cannot close through the present absolute
+  Cauchy consumer, even at Poisson scale.** For `X` sources, shell width/degree scale `H`, total
+  raw edge budget `B≈XH`, and total degree variance `V`, FACT-033 gives reciprocal-degree energy
+  at scale `V/H^3`; Cauchy therefore gives variation at scale `sqrt(X*V/H^2)`. A strict-half
+  target `X^(1/2+o(1))` requires `V≤H^2*X^o(1)`. At `H=sqrt(X)`, Poisson-scale variance
+  `V≈XH` already exceeds this threshold by `sqrt(X)`. The corpus short-interval mean-square
+  inputs are weaker still: qualitative `o(XH^2)` or logarithmic savings from `XH^2` do not meet
+  the threshold. Scope: unweighted sign-complete shell plus the current absolute-value/Cauchy
+  composition. Regularized incidence and direct signed reciprocal-load flux cancellation survive.

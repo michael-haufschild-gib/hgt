@@ -25,6 +25,11 @@
 - `HTGeometry.circleBoundaryModulus_blind_to_monomial_zero_order` proves that the entire functions `z ↦ z^m` have identical unit-circle modulus for all `m`, while their zero orders at the origin are exactly the arbitrary values `m`. The existential corollary gives two entire functions with the same full boundary modulus and different zero orders.
 - `ThetaTiltXiInfiniteDivisibilityNoGo.not_exists_probability_convPow_two_thetaTiltProb_zero` proves unconditionally that the central theta probability `thetaTiltProb 0` is not a convolution square of any probability measure. Its characteristic function is normalized `XiC`; endpoint exponential moments would make a hypothetical root transform analytic on `|Im z|<1`, where the identity theorem and Hardy's odd-order Xi zero contradict the even order of an analytic square.
 - `ThetaTiltXiInfiniteDivisibilityNoGo.not_infinitelyDivisible_thetaTiltProb_zero` strengthens this to failure of probability infinite divisibility.
+- `XiSymmetricZeroFreeCuspDyadicRoots.isOpen_firstTraceSymmetricZeroFreeCusp` and `isPreconnected_firstTraceSymmetricZeroFreeCusp` prove that the Euler chamber joined to the upper and lower classical zero-free cusps is one open preconnected region.
+- `XiSymmetricZeroFreeCuspDyadicRoots.exists_xi_symmetricZeroFreeCusp_extension_of_farHalf_root_all_levels` proves unconditionally that every chosen Euler-side `2^k`-th root of actual completed `xi` extends, at every level `k`, to that same symmetric cusp and agrees with the Euler germ on all of `farHalf`.
+- `XiSymmetricZeroFreeCuspDyadicRoots.exists_xi_symmetricZeroFreeCusp_arithmetic_extensions_all_levels` selects those extensions simultaneously level-by-level from the unconditional Euler roots. No coherence premise is used.
+- `XiSymmetricLittlewoodZeroFreeCuspDyadicRoots` proves that a single unconditional constant `c > 0` supports actual analytic `2^k`-th roots of `xi`, for every `k`, on the same open preconnected conjugation-symmetric region with high left edge `max(1/2, 1 - c log log |t| / log |t|)`; each root agrees with its chosen Euler-side root on `farHalf`.
+- `firstTraceZeroFreeCusp_strictlyContainedIn_littlewoodZeroFreeCusp` proves a genuine domain gain: above the explicit height `max(9, exp(exp(1/(10000c)+1)))`, the classical `1/(10000 log t)` cusp is properly contained in the Littlewood cusp.
 
 ## No-gos
 
@@ -37,6 +42,8 @@
 - Restricting to a simply connected zero-free subregion makes root construction automatic but removes hypothetical zeros from the receiver. On `rightHalf`, using nonvanishing or divisible winding as the root-construction premise restates the unresolved zero/multiplicity obstruction.
 - Full boundary modulus, and therefore outer-factor data alone, cannot determine zero multiplicity or dyadic divisibility. The missing information is the inner factor, equivalently phase/winding/divisor data.
 - Probability convolution and infinite-divisibility constructions cannot produce even the first analytic square root of normalized `XiC`. The obstruction is the actual odd-order Xi divisor, not lack of exponential moments or transform analyticity.
+- The classical cusp tower does not imply RH: its left edge is `1 - 1/(10000 log |Im s|)` and retreats to `Re(s)=1`, so it omits the fixed-width region between the critical line and that edge. Root construction there succeeds precisely because prior zero-freeness removes all divisor monodromy.
+- The strictly wider Littlewood cusp tower still does not imply RH: `c log log |t| / log |t| → 0`, so its left edge also retreats to `Re(s)=1`. Removing one logarithmic factor enlarges the actual-root domain but does not reach any fixed half-plane `Re(s)>σ` with `σ<1`.
 
 ## Open boundary
 

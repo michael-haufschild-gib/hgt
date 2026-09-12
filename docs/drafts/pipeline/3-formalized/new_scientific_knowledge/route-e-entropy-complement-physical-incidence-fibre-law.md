@@ -87,6 +87,13 @@ variance of a product of two divisor-count observables. No current theorem ident
 `(3)` or transfers it to local reciprocal row-mass energy. Direct composition is therefore a
 no-go; a new localization/convolution bridge remains live.
 
+An alternative physical completion joins every squarefree shell endpoint with opposite Möbius
+sign. Its row degree satisfies `2*d(n)=Q(n)-mu(n)*M(n)`, separating squarefree shell mass from the
+local Möbius shell sum. See the
+[sign-complete physical degree law](route-e-sign-complete-physical-degree-law.md). This removes
+adjacent-grade concentration but exposes the Möbius short-interval second moment at the required
+degree-regularity rate.
+
 ## Lean theorem map
 
 - `routeE_cutoffSplit_recovers_intrinsicParts`

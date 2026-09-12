@@ -328,9 +328,13 @@ terminal log interval, yield a nonsingular real evaluation packet, and retain a 
 determinant floor on coordinatewise neighborhoods. Module:
 `RHTower.SteinhausFiniteNodePowerMinor`; targeted build passes; axiom audit is only `propext`,
 `Classical.choice`, `Quot.sound`. A single literal minor still scales like `N^(-J)` after squaring,
-so it cannot give a uniform floor. Remaining arithmetic task is to count linearly many
-prime--cofactor samples in each disjoint evaluation neighborhood and sum their `N^J` colored
-selections through Cauchy--Binet.
+so it cannot give a uniform floor. The required multiplicity is now closed: every fixed normalized
+interval contains at least `cN` terminal prime--cofactor samples eventually; summing the per-prime
+floor estimate loses only the sublinear cardinality of the terminal prime window. Module:
+`RHTower.SteinhausTerminalSampleCounting`; targeted build passes; axiom audit is only `propext`,
+`Classical.choice`, `Quot.sound`. Remaining arithmetic task is to inject the resulting `N^J`
+colored selections into Cauchy--Binet minors and transfer the stable normalized determinant floor
+to the literal reflected-AFE coefficient matrix.
 
 Two analytic sublemmas remain: a two-dimensional local lower bound uniform
 in the random centre and simultaneously in finitely many boundary nodes; and deterministic vertical-orbit
@@ -399,3 +403,6 @@ mixture or direct full-support law remains possible.
   log interval, extracted pairwise distinct terminal samples with nonzero power determinant, and
   proved a uniform positive determinant floor on coordinatewise neighborhoods; ruled out one-minor
   scaling and isolated colored sample counting plus many-minor summation as the arithmetic gate.
+- 2026-09-12 — C15.9: proved every fixed normalized interval contains linearly many terminal
+  prime--cofactor samples: reciprocal-prime mass supplies the linear main term and the one-unit
+  floor loss per prime sums to `o(N)`; isolated colored-choice injection and literal-minor scaling.

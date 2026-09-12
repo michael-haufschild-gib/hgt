@@ -3109,7 +3109,7 @@ causal boundary admission remain separate formal obligations.
 
 ### Analytical closure of the actual angular tensor identity
 
-**Statement, proved analytically below; not yet a Lean theorem.** For every
+**Lean theorem:** `D4BMAngularTwoCuspDecay.actual_tensor_zero`. For every
 original Xi occurrence `q`, let `S` be the literal scalar, `lambda` its original
 Laplace--Beltrami eigenvalue and `U=W-K` the constructed smooth shift-two
 inverse. Then, pointwise throughout the upper half-plane,
@@ -3211,14 +3211,12 @@ assert physical radial/left-QNM endpoint admission or Hawking-clock extinction.
    Therefore `A-iB=A+iB=0`, so `A=B=0`; the already proved original tensor
    component identity gives the stated geometric equality.
 
-The actual principal cancellation, all gradient-product remainder jets,
-full high-cusp decomposition, both conjugated derivative tests and polynomial
-growth of both actual polarizations have Lean proofs. For the normalized-average
-proof, remaining formal work:
-periodic cusp removal, the normalized Hessian-mean estimate and cusp-value
-limit, then the two actual cusp forms and their vanishing. The full pointwise
-tensor identity remains an analytical conclusion. Physical causal
-radial/left-QNM admission and fixed-Hawking-clock extinction remain open.
+The full pointwise tensor identity has a Lean proof through the expanding-disk
+argument below. Its actual cusp forms and their vanishing are constructed in
+`ThetaCuspHawkingBMAngularTwoCuspDecay`. Periodic cusp removal and normalized
+Hessian means remain an alternative analytical proof, with no role in the
+formal dependency chain. Physical causal radial/left-QNM admission and
+fixed-Hawking-clock extinction remain open.
 
 The cusp-growth leaf passed `lake env lean` and its exact `lake build` audit
 under Lean 4.32.2 without warnings. Its umbrella import is wired. Formal lint
@@ -3226,7 +3224,9 @@ with generated-index checking passed; no umbrella build was run.
 
 ### Direct cusp vanishing from expanding evaluation disks
 
-**Analytical theorem; not yet Lean.** For each original Xi occurrence `q`,
+**Lean theorems:** `holomorphicPolarization_decay` and
+`conjugatePolarization_decay` in `ThetaCuspHawkingBMAngularTwoCuspDecay`.
+For each original Xi occurrence `q`,
 both actual polarizations satisfy `|H(c)|<=C_q/Im(c)` when `Im(c)>4`.
 
 Put `Y=Im(c)` and let `k_b` be the original fixed evaluation kernel or its
@@ -3269,5 +3269,33 @@ holomorphic polarizations. For the second, conjugate the integral against
 stated `C_q/Y` bounds, with no reality premise. Both actual polarizations
 therefore tend uniformly to zero at the cusp. Their proved modular laws and
 vanishing of the weight-four cusp-form space give the original tensor
-identity F81. Formal targets for this proof are the scaled compact tests,
-the translation-count estimate, the `C_q/Y` assembly and actual cusp forms.
+identity F81. The scaled compact tests, exact translation count, `C_q/Y`
+assembly, both actual cusp forms and the original tensor identity are proved
+in Lean. The scratch check passed without warnings, followed by the exact
+leaf audit under Lean 4.32.2. The new leaf is wired into its umbrella.
+
+
+### Original scalar-source reconstruction from the angular tensor identity
+
+Current construction target: lift all seven scalar-harmonic source coefficients
+into the original scalar--scalar quadratic Einstein tensor. Put `F=S^2`,
+`U=coordinateResponse(q)` and `lambda=(s+1)(s+2)`. The proved angular identity
+provides `[dS tensor dS]^TF=-lambda*HessTF(U)`. Hence the complete trace-free
+source depends on `HessTF(F)+lambda*HessTF(U)`, without assuming that `F` is a
+single harmonic or dropping a divergence-free component.
+
+For each affine coefficient `c(mu)`, its proposed literal field is
+`c(0)*F+(c(1)-c(0))*Delta(F)`. The `TT`, `RR` and angular trace coefficients
+have this form. The `TR` coefficient multiplies `F`; the mixed angular rows
+multiply `dF`. The trace-free coefficient factors as
+
+    kappa(s,r)=s^2*((s+1)^2-4*r^2)/(8*r^4),
+    ssSourceTF(s,r,mu)=kappa(s,r)*(1+lambda/(2-mu)).
+
+Thus its literal tensor is
+`kappa(s,r)*(HessTF(F)+lambda*HessTF(U))`. Equality must be checked against
+all original quadratic Einstein components, including the factor `1/2`
+between the Hessian and quadratic Taylor source. This is the pending formal
+identification required before lifting the Laurent metric formulas. The
+causal correction must subsequently retain their forced growing radial term,
+actual onset, horizon data and original left-QNM pairing.

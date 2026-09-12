@@ -4,6 +4,47 @@ Status: analytical source reduction; physical extinction and RH unproved. Fronti
 
 Verified findings and scoped no-gos from this work: [concise research log](hb-extinction-own-research-log.md).
 
+## Actual cap derivative attack, 12 September 2026
+
+**Paper derivation; Lean verification in progress.** The complete correction
+exchange (WBCQ) still requires differentiated physical boundary limits.
+For the original cap arm write `c(x)=exp(x)/cosh(x)=1+tanh(x)` and
+`M(x,h)=mean_Q(arcosh(1+c(x)*(exp(h)-1)))`. The original field is
+`A(v,x)=integral_0^infinity g'(v+h)*M(x,h) dh`, with the full literal `Q`
+and unchanged onset `g(u)=chi(u)*exp(2s*u)`.
+
+The two derivatives of its circle argument satisfy
+`partial_x M=(2-c(x))*(1-exp(-h))*partial_h M` away from the removable
+characteristic. Integration by parts therefore predicts the exact law
+
+```
+partial_x A = -(2-c(x))*integral_0^infinity
+  [g''(v+h)*(1-exp(-h))+g'(v+h)*exp(-h)]*M(x,h) dh.   (CN)
+```
+
+This must be justified without assuming a global bound for the derivative
+of the circle mean. Set `u=c(x)*(exp(h)-1)` first. The same arm becomes
+
+```
+integral_0^infinity
+  g'(v+log(1+u/c(x)))/(u+c(x))*mean_Q(arcosh(1+u)) du. (CI)
+```
+
+The circle field in (CI) is independent of `x`. The existing source bound
+and strict gap `sourceGrowthExponent < decayExponent` admit both the density
+and its differentiated onset weight, locally uniformly in `x`. Differentiating
+that weight and substituting back gives (CN), so no differentiated-theta
+majorant is required. The lower integration-by-parts factor is zero; the
+upper factor decays by the same strict gap.
+
+At the ingoing horizon `M(x,h)->Q`, while the bracket in (CN) integrates to
+`[g'(v+h)*(1-exp(-h))]_0^infinity=0`. Thus `partial_x A->0` is the target
+normal trace. Similarly `partial_v A=integral g''(v+h)*M(x,h) dh` tends to
+`-g'(v)*Q`. These assertions are not recorded as verified log facts yet.
+They concern the actual source cap; angular-current passage, the reduced
+future response, independent SS/SV/VV corrections and full extinction remain
+separate terms in the original boundary balance.
+
 ## Actual weighted correction discrepancy, 12 September 2026
 
 **Cross-source tensor comparison, paper derivation.** The current source corpus
@@ -39,16 +80,64 @@ which a cross-source tensor reconstruction must retain. Its complete
 Einstein-channel identification and Lean formalization remain open; no
 failure of HB or new extinction claim follows from this comparison.
 
-**Current continuation attack.** Close the left metric equation at the original
-fundamental QNM frequencies, not merely in the positive response band.
-The continued ingoing mode has actual first/second derivatives at every
-frequency and its radial equation at nonreal frequencies; the prescribed
-fundamental frequencies are proved nonreal. Differentiate this source
-equation to obtain the required third radial derivative, reconstruct the
-complete metric two-jet, and evaluate the original master curl. The target
-is removal of the actual `L M` term in (WBC); the remaining correction/source
-pairings and full boundary limits still require cancellation. No result of
-this continuation attack is claimed before scratch and leaf verification.
+**Positive second pass on (XP), paper calculation.** Put
+`J=S*dT-T*dS` and retain the original bilinear metric contraction and
+coexact convention `*dT=(T_y,-T_x)`. Metric compatibility, the product rule,
+`div(*dT)=0` and `<dT,*dT>=0` give the exact identity
+
+```
+<J,*dT> = -div(S*T *dT).                            (XF)
+```
+
+There is no complex conjugation in (XF). In the original upper half-plane
+coordinates, its density is `-T*(S_x*T_y-S_y*T_x) dx dy`, equal to
+`-d(S*T*dT)`. The outward flux of `S*T *dT` on a horizontal upper edge
+is `-S*T*T_x dx`; the opposite edge carries the opposite orientation.
+Thus even an eigenvalue-mismatch current can have a boundary-only
+same-reader projection. A nonzero mismatch coefficient is not an
+obstruction to its integrated vanishing.
+
+For a different response scalar `U`, however, direct differentiation gives
+
+```
+<J,*dU> = -div(S*T *dU)+2*S*<dT,*dU>.               (XFU)
+```
+
+The second term is the remaining Jacobian pairing. This is the relevant
+distinction when the correction contains the source-derived angular
+inverse rather than the reader scalar itself. If a finite integration
+domain and its actual fields admit Stokes, (XF) specifies its entire edge
+flux; it does not prove those fluxes zero. Horizontal evenness would cancel
+the displayed horizontal flux on a symmetric cell, but the retrieved
+evenness theorem concerns the absolutely convergent Poincare domain.
+It has not been transported here to every literal continued field,
+correction and boundary. No complete Einstein pairing is identified with
+(XF) or (XFU), and neither paper identity is claimed as a Lean theorem.
+
+**Check against the actual scalar/vector source.** The original
+`D4BMQuadraticMixedSource.tensor` contains
+`squareCovector=*d(S^2/2)` and
+`gradientCovector=*d(y^2*(S_x^2+S_y^2)/2)` with its stated radial/time
+coefficients. Pairing either with the actual coexact reader `*dT` gives
+`<*dF,*dT>=<dF,dT>=div(F*dT)-lambdaT*F*T`, using the literal reader's
+equation. This is a gradient product, not the Jacobian in (XF).
+Consequently (XF) cannot erase that existing scalar/vector overlap.
+This recovers the source-contact overlap already recorded in log item 15,
+with its original reader eigenvalue and flux; it is not a new general
+extinction mechanism or a reason to drop the independent channels in (WBCQ).
+
+**Continuation attack closed at the local metric equation.**
+`ThetaCuspHawkingBMLeftQNMMetricEquation` passed scratch verification and its
+isolated cached exact-leaf audit (133 seconds, 2 jobs). Both prescribed
+fundamental frequencies and both original radial normalizations are covered.
+The continued radial equations and their smooth potentials supply the third
+radial derivative and complete ordered metric two-jet. The actual source
+master curl vanishes by the literal angular equation. All 16 cosmological
+Einstein components vanish on the original time-zero action slice; the
+field is identified with the original `physicalLeftModeStream` reconstruction
+on the entire exterior. No frequency or clock is changed. This supplies
+the `L M=0` fact needed in (WBC); the remaining correction/source pairings
+and full boundary limits still require cancellation.
 
 **Closed source identity; scratch and cached exact-leaf audit passed.** The actual
 weighted `++-` Einstein source is affine in changes of the full quadratic
@@ -158,7 +247,8 @@ short specialization. `ThetaCuspHawkingBMInhomogeneousCorrectionBoundary` now pr
 correction/test specialization of (WBT), its two-original-Xi-mode specialization
 of (WB), and the unchanged original mixed ingoing correction case. Scratch and
 the cached exact-leaf audit passed; the 210-line leaf is wired. The actual
-left-metric derivative realization and integrated cancellation are still open.
+left-metric derivative realization is now closed by the continuation result
+above; integrated cancellation remains open.
 
 The complete composition is now closed in
 `D4BMMixedCorrectionBoundary.complete_mixed_exchange`:
@@ -181,6 +271,32 @@ action still requires the original fields' derivative admission and common
 boundary limits. It is a local integrand identity, not an integrated
 extinction theorem.
 
+**Actual left-QNM specialization of the complete exchange.**
+`D4BMLeftQNMCorrectionExchange.complete_mixed_exchange` passed scratch
+verification and its isolated cached leaf audit (290 seconds, 2 jobs).
+The 95-line module is wired; generated documentation was refreshed and
+`scripts/formal_tools.py lint --check-generated` passed. The actual symmetric
+metric field supplies symmetry of every derivative slot and, by the source
+equation just proved, both test residuals vanish. At the unchanged time-zero
+action slice, for either prescribed frequency and radial normalization,
+
+```
+Delta C = W0(M)*L B_ppm
+        + W0(A_pm)*E2(P,M)+W0(A_pp)*E2(Q,M)
+        + boundaryDefect(P,A_pm,M)+boundaryDefect(Q,A_pp,M). (WBCQ)
+```
+
+The first source copies and scalar/vector amplitudes remain independent;
+all correction and tensor slots still enter the original mixed derivative.
+No correction equation is supplied. In particular the moving metric weights
+were exchanged by (WBT), not suppressed. The right side of (WBCQ), with
+the actual translated causal correction discrepancies substituted, is the
+exact surviving local work to integrate. Removing `L M` has not proved
+derivative admission for those causal fields, integration by parts over the
+physical domain, or cancellation of its horizon, cusp, characteristic and
+source-contact terms. Nor does an identity for the *change* of the complete
+source assign zero to its value at the source-predeclared clock.
+
 **Complete left metric: source-derived derivative route.** The current corpus's
 `physicalTortoiseMode_hasDerivAt` gives both `Y'=Y1` and
 `Y1'=(w^2-lambda*angularWeight^2)*Y` on the original response band. Thus the
@@ -198,10 +314,10 @@ coordinate, whose derivative is `1/(r^2-1)`. In the complete metric jet,
 `D4BMVectorStream.cosmological_component` expresses the Einstein residual
 through the original `master` and `masterFirst`. The actual left time phase
 is `exp(-w*tau)`, so this construction uses `-w` in the metric reconstruction
-and the unchanged `w^2` radial equation. Formula (LJ) is a paper derivative
-calculation; full physical-left metric realization and residual closure are
-not yet Lean-proved here. The existing stream metric first-jet constructor
-cannot replace that realization.
+and the unchanged `w^2` radial equation. Formula (LJ), the complete physical-left
+metric realization and its residual closure on the original action slice are
+now Lean-proved in `D4BMLeftModeRadialEquation`. The existing stream metric
+first-jet constructor has not been used as a placeholder for that realization.
 
 **Current research search record.** Deep and method-view searches used the full
 available index (latest successful deep search: 57,348 files, `partial=false`;
@@ -227,6 +343,20 @@ These concern convex augmented-Lagrangian complexity and reciprocal
 multiple-polylogarithm/Cauchy-number identities respectively. Only their
 abstracts were read; neither supplies a source equation, boundary
 cancellation or positivity theorem for this calculation.
+
+The continuation attack used another six full-index deep/method-view searches.
+The first full-left-equation search had a semantic-retrieval budget timeout
+(`partial=true`, 57,366 files); five subsequent searches completed without
+errors or partial results, ending at 57,373 indexed files. These covered
+radial derivative methods, complete variational work, tensor cancellation,
+cross-reader currents and coexact/parity mechanisms. Most compiler metadata
+remained pending. The adopted `TwistedRadial.contDiffOn_of_linear_ode` method
+was checked against the original radial equation in Lean. The other searches
+did not supply a complete boundary cancellation. Broad reciprocity, virial
+and rigidity searches reopened [Vu et al., 3 September 2026](https://arxiv.org/html/2609.04169v1),
+Sections 2 and 3.2–3.3: transpose reciprocity and an additional positive
+matrix condition have distinct roles there. No positivity or Einstein
+identity is imported from that finite-network setting.
 
 ## Fixed time translation of the original future fields, 12 September 2026
 
