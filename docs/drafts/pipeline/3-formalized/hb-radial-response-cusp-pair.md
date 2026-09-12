@@ -129,3 +129,13 @@ present. Final
 passed without warnings in 18 seconds against cached imports, with the exact
 source hash `afb5b3652aeb0d89c1dadbab23a6cdd167af8454dd7d9c2390478a9f57488771`.
 No dependency or umbrella build ran.
+
+Index regeneration registered all fifteen public declarations. Whole-tree
+`scripts/formal_tools.py lint --check-generated` remains non-green: five other
+worktree modules are unreachable (`ThetaCuspHawkingBMHorizonModeOuterUniformBound`,
+`ThetaCuspHawkingBMTemporalCurrentClearedDensity`,
+`ThetaCuspHawkingBMTemporalCurrentClearedDensityBound`, `JetCoefficientUniqueness`,
+and `SecondEndpointMellinLaurentInterchange`), and `LEAN_OVERVIEW.md` became stale
+after regeneration during concurrent work. No error names the new leaf. Its
+source hash, single umbrella import and cached build artifacts were verified;
+all Lean processes started for this leaf have finished.
