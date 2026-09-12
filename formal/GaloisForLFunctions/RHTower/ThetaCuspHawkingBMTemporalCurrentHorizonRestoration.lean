@@ -32,9 +32,11 @@ theorem clearedDensityProfile_eq_radialDensity (q : XiZeroCopy) (branch : Bool) 
 
 /-- Every sufficiently small common cutoff restores the full horizon current. The restored
 numerator is analytic through the QNM; the physical denominator remains the original one. -/
-theorem physicalTemporalCurrent_horizon_restoration_and_residue (q : XiZeroCopy) (branch side : Bool)
+theorem physicalTemporalCurrent_horizon_restoration_data (q : XiZeroCopy) (branch side : Bool)
     (a : ℂ) (zang : D4BMHorizon.Point) :
     ∃ R B : ℝ, ∃ c₀ c₁ : ℂ → ℂ, 0 < R ∧ 0 < B ∧ B ≤ 1 / 2 ∧
+      (∃ C : ℝ, 0 ≤ C ∧ HasUniformJet2 (closedBall (physicalFundamentalFrequency q side) R) B
+        (clearedDensityProfile q branch a zang) c₀ c₁ C) ∧
       ∀ b : ℝ, 0 < b → b ≤ B →
         AnalyticAt ℂ (QuadraticEndpointMellin.finitePart
           (clearedDensityProfile q branch a zang) c₀ c₁ b)
@@ -83,7 +85,8 @@ theorem physicalTemporalCurrent_horizon_restoration_and_residue (q : XiZeroCopy)
     hdata (mem_ball.mp (ball_subset_ball (min_le_right RJ RA) hu))
   have hJ (u : ℂ) (hu : u ∈ ball w₀ R) : u ∈ closedBall w₀ RJ :=
     ball_subset_closedBall (ball_subset_ball (min_le_left RJ RA) hu)
-  refine ⟨R, B, c₀, c₁, hR, hB, hBh, ?_⟩
+  refine ⟨R, B, c₀, c₁, hR, hB, hBh,
+    ⟨C, hC, hjet.mono (closedBall_subset_closedBall (min_le_left RJ RA))⟩, ?_⟩
   intro b hb hbB
   have hb1 : b < 1 := by linarith
   have hsp (u : ℂ) (hu : u ∈ ball w₀ R) :
@@ -140,6 +143,34 @@ theorem physicalTemporalCurrent_horizon_restoration_and_residue (q : XiZeroCopy)
       ⟨he.trans_le hz.1, hz.2.trans_lt hb1⟩, mul_div_cancel_left₀ _ hD]
   rw [heq]
   ring
+
+/-- Restoration and residue of the original horizon current. -/
+theorem physicalTemporalCurrent_horizon_restoration_and_residue (q : XiZeroCopy) (branch side : Bool)
+    (a : ℂ) (zang : D4BMHorizon.Point) :
+    ∃ R B : ℝ, ∃ c₀ c₁ : ℂ → ℂ, 0 < R ∧ 0 < B ∧ B ≤ 1 / 2 ∧
+      ∀ b : ℝ, 0 < b → b ≤ B →
+        AnalyticAt ℂ (QuadraticEndpointMellin.finitePart
+          (clearedDensityProfile q branch a zang) c₀ c₁ b)
+          (physicalFundamentalFrequency q side) ∧
+        Tendsto (fun w => (w - physicalFundamentalFrequency q side) *
+          (QuadraticEndpointMellin.finitePart (clearedDensityProfile q branch a zang) c₀ c₁ b w /
+            reducedGreenClearingFactor w (physicalRadialFrequency q) (physicalRate q branch)))
+          (𝓝[≠] physicalFundamentalFrequency q side)
+          (𝓝 (QuadraticEndpointMellin.finitePart (clearedDensityProfile q branch a zang) c₀ c₁ b
+            (physicalFundamentalFrequency q side) / physicalFundamentalDenominatorSlope q branch side)) ∧
+        ∀ w ∈ ball (physicalFundamentalFrequency q side) R,
+          connection w (physicalRadialFrequency q) ≠ 0 →
+          Tendsto (fun e : ℝ =>
+            (∫ z in e..b, continuedTemporalRadialDensity q branch a zang w z) +
+            (c₀ w * (e : ℂ) ^ w / w + c₁ w * (e : ℂ) ^ (w + 1) / (w + 1)) /
+              reducedGreenClearingFactor w (physicalRadialFrequency q) (physicalRate q branch))
+            (𝓝[>] (0:ℝ))
+            (𝓝 (QuadraticEndpointMellin.finitePart
+              (clearedDensityProfile q branch a zang) c₀ c₁ b w /
+              reducedGreenClearingFactor w (physicalRadialFrequency q) (physicalRate q branch))) := by
+  obtain ⟨R, B, c₀, c₁, hR, hB, hBh, _, hrest⟩ :=
+    physicalTemporalCurrent_horizon_restoration_data q branch side a zang
+  exact ⟨R, B, c₀, c₁, hR, hB, hBh, hrest⟩
 
 end
 end RHTower.D4BMJointSource

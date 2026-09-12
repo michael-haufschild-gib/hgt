@@ -1,7 +1,7 @@
 # HB: Laurent extraction through the renormalized radial finite part of the temporal current
 
 - **ID:** HB-RADIAL-LAURENT-INTERCHANGE
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized (horizon-mode leg; the normalizable-mode leg is a separate open item)
 - **Type:** CANDIDATE
 - **Source:** docs/notes.md, ledger step 31; frontier-map HB open core ("interchanging Laurent extraction with full horizon exhaustion")
 - **Statement:** For the horizon-mode leg (`outer = false`) of the continued temporal Einstein current, the two-counterterm radial finite part is meromorphic at each fundamental Xi QNM and its order −1 Laurent coefficient is `physicalRadialResidueFinitePart`.
@@ -15,8 +15,8 @@ extinction and selects no zero.
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed; abstract tools in Lean
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven (the Lean development is the proof)
+- [x] 2 → 3  formalized: `continuedPhysicalTimeAction_horizon_radial_laurent`
 
 ## Approach
 
@@ -39,18 +39,29 @@ Abstract tools (Lean, unconditional):
   `H(u,t) = (F(u,t) − F(u,0))/t`; cutoff limit (`secondEndpointMellin_cutoff_tendsto`), analyticity,
   scalar transport, `laurentCoeff_secondEndpointMellin_div_sub`.
 
-Remaining assembly (in order):
-1. Uniform two-jet algebra on a parameter ball: sums, products, scalars, elementary examples via
-   `taylor_mean_remainder_bound` + compactness of `closedBall × Icc 0 b`.
-2. Channel expansions: principal channels on a full ball (connection nonzero at the QNM), self
-   channel on the punctured ball; cleared coefficients analytic at the QNM by removable singularity.
-3. Density assembly `z^{u−1}·G(u,z)`, change of variables `t → z`, analyticity of the compact
-   part `z ∈ [b,1]`.
-4. Final theorem: cutoff limit with the density's own counterterms, meromorphy, Laurent coefficient
-   `= physicalRadialResidueFinitePart` (uses `physicalTimeResidue_radial_cutoff_tendsto` at the QNM).
+Assembly as built (Lean modules, all unconditional, axioms `propext`, `Classical.choice`,
+`Quot.sound` only):
+1. `HTGeometry/UniformSecondOrderJet`, `ElementaryHorizonJets`, `AnalyticJetGerm`,
+   `JetCoefficientUniqueness`: uniform two-jet algebra, elementary jets, analytic germs, uniqueness.
+2. `RHTower/…BMHorizonCoordinateJets`, `…BMSelfChannelHorizonJet`, `…BMPrincipalChannelHorizonJet`,
+   `…BMTemporalCurrentHorizonJet`: channel jets and the germ of the cleared density profile.
+3. `RHTower/…BMHorizonModeOuterUniformBound`: the continued horizon mode is uniformly bounded up to
+   spatial infinity on a frequency ball (homogeneous tortoise ODE + symmetric Grönwall bound).
+   This was the one analytic input the corpus lacked: the Gauss series at the boundary of its disc
+   is never touched.
+4. `RHTower/…BMTemporalCurrentClearedDensity`, `…Bound`: `clearing factor × (R²−1) × current =
+   z_t^u · core`, spatial continuity, frequency analyticity through the QNM, uniform outer bound.
+5. `RHTower/…BMTemporalCurrentRadialCutoff`, `…Package`, `…Laurent`: patched profile, analytic
+   compact part, change of variables, cutoff limit with the profile's own counterterms, clearing
+   slope, density at the QNM = slope × residue density, jet coefficients `κF/2`, `−κF/4`, Mellin
+   value against the corpus mode square, Laurent coefficient `= physicalRadialResidueFinitePart`.
 
 The `outer = true` leg (normalizable mode) adds a second horizon branch weighted by the connection
-coefficient and is deferred.
+coefficient and is not done; it needs a uniform outer bound of the normalizable mode up to spatial
+infinity and its horizon jet, then the same assembly.
 
 ## Log
 - 2026-09-12 — created; abstract Mellin tools compiled (`lake env lean` clean).
+- 2026-09-12 — horizon-mode leg closed in Lean (`continuedPhysicalTimeAction_horizon_radial_laurent`);
+  ten modules wired into the umbrellas; static lint green; per-module `lake build` audit run on the
+  final module (see docs/notes.md §2 for the result).

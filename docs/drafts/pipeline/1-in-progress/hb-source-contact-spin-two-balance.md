@@ -10,6 +10,12 @@ all three tested remainders retained. Their admission is proved in the
 [radial response cusp-pair leaf](../3-formalized/hb-radial-response-cusp-pair.md).
 The remaining height periods and complete-action boundary cancellation stay open.
 
+The [physical response Mellin transport](../3-formalized/hb-radial-response-mellin-transport.md)
+now evaluates the finite-height response portions through actual endpoint
+Wronskians and complete source moments. All six original physical testing gaps
+are independently nonzero. Infinite-height finite parts and the other current
+faces remain open.
+
 The preceding [source-contact rigidity theorem](../3-formalized/hb-source-contact-differential-rigidity.md) controls the literal contact two-jet. This continuation tests its contribution to the actual retained radial face, rather than replacing that face by a square-source self-pairing. It also records why two positivity mechanisms found in recent literature do not yet apply.
 
 ## Literal contact, including spin two
@@ -797,3 +803,243 @@ against cached imports. The new leaf is wired into the umbrella once; no
 heartbeat or recursion-depth override and no dependency or umbrella build was
 used. Its source SHA-256 is
 `afb5b3652aeb0d89c1dadbab23a6cdd167af8454dd7d9c2390478a9f57488771`.
+
+## Current attack: physical weighted response periods
+
+The proposed shortcut from variational symmetry to complete extinction fails at
+the existing Peierls polarization identity: cyclicity removes the mixed source's
+self-pairing but retains the polarized ++/-- source pairing. The actual action
+pairing, common propagator and boundary cyclicity remain independent obligations.
+No new symmetry hypothesis is introduced. Broad recent resonance literature
+also separates time-translation invariance of the forcing from stationarity of
+the background: [Bonga et al., 3 September 2026](https://arxiv.org/html/2609.03732v1),
+Section V, obtains zero energy jump for its stationary tide. It does not prove
+invariance of the fixed theta-source onset or its complete nonlinear action.
+
+The source-derived transport integrates the response terms in the proved cusp
+decomposition. For the full response mean M, the original equation gives
+`y² M''-alpha M=alpha mean(Q)`. For each original physical weight
+`v_i=1-rho/2+principalExponent_i`, set
+`J_i=y^v_i M'-v_i y^(v_i-1) M`. The exact finite-height law is
+
+```
+[alpha-v_i(v_i-1)] integral_a^b y^(v_i-2) M(y)dy
+ = J_i(b)-J_i(a)-alpha integral_a^b y^(v_i-2) mean(Q)(y)dy.
+```
+
+All six gaps (three source powers, two constructed branches) are proved
+nonzero directly from the Xi occurrence's nonzero imaginary part. This retains
+the actual response jets at both ends and the complete source mean, and can
+then be inserted into the scalar-tested W period. Infinite-height finite parts,
+the other current faces and complete extinction are not assumed by this target.
+
+The closed transport derives the ODE by averaging the constructed full response's
+original classical equation. Its actual modular translation cancels the
+horizontal second derivative; the particular response and native residual are
+both retained. The weights are
+`[1+3rho/2, 2-rho/2, 3-5rho/2]`. The two homogeneous roots are
+`[2rho-2, 3-2rho]` for the first branch and `[-2rho, 1+2rho]` for the second.
+Every weight/root difference has a nonzero rational coefficient of Im(rho), so
+the occurrence's independently proved nonrealness makes all six spectral gaps
+nonzero. No source-dependent physical time rate is introduced: these are
+angular height weights from the original physical testing leg.
+
+For `T=(psi Q-chi P Q0)A`, the closed finite-height attachment is
+
+```
+integral_a^b [mean(psi Q A)-mean(T)]dy/y²
+ = Lambda(rho-1) sum_i principalAmplitude_i
+     [J_i(b)-J_i(a)-alpha integral_a^b y^(v_i-2)mean(Q)dy]
+       /[alpha-v_i(v_i-1)] ,        3<a,b.
+```
+
+The remainder T is the already admitted complete source/test remainder, not a
+term declared zero. Both endpoint jets and the full forcing moment remain.
+This gives a concrete source-and-boundary expression for the response portion
+of the cusp period; it is not an infinite-height limit or a full left-QNM action
+comparison. The [formalized transport card](../3-formalized/hb-radial-response-mellin-transport.md)
+records the exact proof and remaining obligations. Scratch `lake env lean`
+passed without diagnostics; final exact-leaf `lake build` passed without warnings
+in 45 seconds, with default heartbeat limits and cached imports. The umbrella
+imports the leaf once. Source SHA-256:
+`e25a2775f9bc18a97835d036108f3419c05678c821a5baade8f49ef31cd9861c`.
+
+## Current attack: infinite cusp flux without deleting native coefficients
+
+The next source-level target is rapid decay of every complex height-weighted
+original flux tail. For either actual indicial source F, prove
+`|y^w integral_y^infinity F(t)dt|<=C_w/y` for y>3, directly from the complete
+Fourier tail. Choosing the nonnegative exponent `max(Re(w),0)` bounds the
+outside weight by the corresponding inside weight for t>=y. Its source-derived
+inverse-square majorant has integral 1/y. This would make all weighted flux
+remainders vanish while preserving their original limiting coefficients.
+
+The application is the full-response endpoint flux in the preceding physical
+Mellin transport. Its particular powers and native decaying homogeneous term
+must be subtracted explicitly; only the remaining complete forcing tails may
+then be sent to zero. No zero value is assigned to the native coefficient.
+
+### Candidate endpoint law being checked
+
+Write r_- = root false, r_+ = root true, d = r_+-r_-,
+C_- = limitingCoefficient false, and I_±(y) = integral_(y,infinity) F_±.
+For each original physical weight v, the candidate exact identity is
+
+`J_v(fullMean) = J_v(cuspResponse) + (r_- - v) C_- y^(v-r_+)`
+`                 - (v-r_-)/d y^(v-r_+) I_+(y)`
+`                 - (r_+-v)/d y^(v-r_-) I_-(y)`.
+
+Its paper derivation multiplies the two native Wronskians by y^(v-r_±),
+solves the resulting two linear equations, inserts their original source-tail
+formulas, and uses only the native-L2 removal of limitingFlux false. The value
+C_- is retained. Local equality fullMean-responseMean=cuspResponse supplies
+the derivative splitting without assuming a new particular-response identity.
+
+The first scratch check is in progress at default Lean limits. The new bound
+would remove exactly the last two terms in the infinite-cusp limit. The first
+two terms need not vanish: v-r_+ need not have negative real part throughout
+the critical strip. Any use of finite-part subtraction or cancellation with
+other action faces still needs a derivation from the actual complete action.
+
+Broad September literature search also examined Farhangi and Rodríguez Martín,
+“Solutions to 6 problems in recurrence and Van der Corput sets” (7 September
+2026), https://arxiv.org/html/2609.07506v1. Its operatorial recurrence framework
+requires unitary representations or measure-preserving systems. It supplies no
+proof of unitarity or fixed-step invariance for this literal theta action;
+installing that missing property as an assumption would not solve extinction.
+
+
+## Complete cusp-tail endpoint theorem certified, 12 September 2026
+
+The preceding candidate is now proved in
+[HB-QCFD](../3-formalized/hb-physical-cusp-flux-decay.md). The closed source bound
+`||y^w integral_(y,infinity) F||<=C/y` holds for every complex weight and both
+original indicial sources. Their Wronskian remainders have arbitrary power
+decay. The exact full physical endpoint formula above and its remainder limit
+are proved for both response branches at all three original physical weights.
+The particular contribution and native coefficient are explicitly retained.
+
+`ThetaCuspHawkingBMQuarticCuspFluxDecay` contains six public theorems and two
+definitions. Its scratch `lake env lean` check passed without diagnostics;
+final exact-leaf `lake build` passed in 25 seconds against cached imports,
+without warnings or raised proof limits. Source SHA256:
+`2f8ac5abed0198f4a8539d30032f9cc2323293c08023976e9b7ef7b3dfd121dc`.
+The umbrella imports it once. No full or umbrella build ran.
+
+The second deep search inspected Wronskian constancy, physical source moments,
+original horizon finite-part currents and their proof methods. Its coverage
+was partial; returned ingredient sets did not prove a complete-action identity.
+The next mathematical obstruction is cancellation or a source-derived finite
+part of the retained particular/native cusp fluxes together with the other
+physical action faces and independent nonlinear channels. No fixed-clock
+extinction or RH theorem has been obtained.
+
+
+HB-QCFD final gate: index registered all eight public declarations; one umbrella
+import and documentation links verified. Whole-tree lint reports only the
+unrelated unreachable `ThetaCuspHawkingBMTemporalCurrentFundamentalFactor`;
+no error targets this leaf or generated-document freshness. All owned processes
+completed and the temporary audit directory was removed. The HB extinction goal
+remains active.
+
+## Current attack: source-derived cusp-period restoration
+
+The last verified leaf removes the complete forcing-tail endpoint but leaves
+particular and native cusp fluxes. To integrate the radial work against the
+actual physical scalar, those fluxes must be paired with the original three
+source principal powers; dropping them is invalid. The next target is an exact
+restoration of each full-response cusp moment, with counterterms derived from
+those particular powers and the retained native coefficient, and an admitted
+complete source-tail moment. This is the input needed before the two angular
+current integrations can be combined with the response work.
+
+A separate conjecture tested during method search was a self-dual/all-plus
+amplitude selection rule. The literal source has independent scalar and vector
+amplitudes, whereas a self-dual helicity reduction would require a proved
+relation between those modes and compatibility with every original boundary.
+The August 2026 references distinguish off-shell currents, flat-space amplitudes
+and AdS boundary correlators. No such identification is presently proved for
+this source, so their vanishing rules cannot be installed as an extinction law.
+
+### Precise candidate restoration law
+
+For each original physical weight v, let e_j and A_j be the three original
+half-square principal exponents and amplitudes. Put
+`d_j=v+e_j-1`, `k_j=alpha A_j/(e_j(e_j-1)-alpha)`,
+`gap=alpha-v(v-1)`, and retain the same native coefficient C_-.
+The source-prescribed upper subtractions are
+
+`B_source(Y)=sum_j alpha A_j Y^d_j/d_j`,
+`B_response(Y)=sum_j k_j Y^d_j/d_j+C_- Y^(v-r_+)/(v-r_+)`.
+
+Every displayed denominator is nonzero from the original Xi occurrence's
+nonzero imaginary part and the already proved physical gaps. No critical-line
+assumption is used. The candidate limit is
+
+`lim_Y [integral_a^Y y^(v-2) M(y)dy-B_response(Y)]`
+`  = [-J_v(M)(a)+B_source(a)-integral_a^infinity y^(v-r_-) F_-(y)dy]/gap`.
+
+The integral on the right is absolutely convergent by the complete weighted
+source bound. The proof combines the actual finite-height response law, exact
+principal source integration, and the previously certified endpoint-remainder
+limit. The identity `gap B_response+B_source=J_v(K)+J_v(native)` verifies that
+the subtraction is the original power antiderivative, with no added constant.
+The right side is retained, not set to zero.
+
+The deeper corpus search also recovered
+`ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo`: its actual same-charge
+cyclic vertex is a graph-Laplacian energy and only vanishes on the diagonal.
+Thus the local Jacobi shortcut was already excluded, with a nonlocal causal
+Green comparison as its positive survivor. One generated search-method summary
+incorrectly described `d4BMPlusPlusContinuousGreenResponse_adsBranch` as a zero
+response theorem; its actual statement retains a normalizable solution times
+a complete source moment. That retrieval inference was rejected.
+
+
+## Original-source response cusp finite part certified, 12 September 2026
+
+The candidate restoration above is now proved in
+[HB-QRCFP](../3-formalized/hb-physical-response-cusp-finite-part.md).
+`responseCounterterm_power_expansion` identifies the forced subtraction with
+all three original particular-power antiderivatives and the native homogeneous
+antiderivative. `response_period_restoration` is the exact finite-cutoff law;
+`response_period_tendsto` proves its source-determined infinite-cusp limit.
+Every original lower-boundary jet and the complete admitted source-tail moment
+remain. Neither their sum nor the complete physical action is assigned zero.
+
+The new 365-line leaf has seven public theorems and six definitions. Scratch
+`lake env lean /tmp/hb-response-cusp-finite-part.lean` passed without diagnostics;
+final exact-leaf `lake build` passed in 18 seconds against cached imports, with
+no warnings or proof-limit overrides. SHA256:
+`70c14b84874bac701d5aba6495139a57ffeffa4c6a31154385e104db0905dce4`.
+No full, dependency or umbrella build ran. The umbrella imports this leaf once.
+
+The next attachment is the complete physical scalar-test remainder. Corpus
+search located `integral_cusp_field_from`; its chart/Fubini argument should
+transfer the already proved native quotient L1 admission to the high-cusp mean.
+The complete scalar-tested response period must retain that admitted integral
+alongside the new explicit source/boundary value. The two angular-current
+integrations and full independent nonlinear/action-face cancellation remain
+open. Fixed Hawking-clock extinction and RH remain unproved.
+
+
+HB-QRCFP final gate: all thirteen public API rows and its single umbrella import
+verified. Whole-tree lint reports only the unrelated unreachable
+`ThetaCuspHawkingBMTemporalCurrentFundamentalFactor` and
+`ThetaCuspHawkingBMTemporalOppositeOuterCurrent`; no error concerns this leaf or
+generated-document freshness. All owned processes completed and the audit
+directory was removed. The original HB extinction objective remains active.
+
+## Current attack: full scalar-tested response cusp period
+
+The preceding source restoration controls the three physical weighted means,
+but the actual scalar-tested pairing also contains the complete admitted
+`testedResponseTail`. The next theorem must restore that integral rather than
+replace the full test by its principal part. The source-native L1 theorem and
+the original chart/Fubini map should give L1 of its high-cusp horizontal mean
+with the actual factor y^(-2), and identify its period with the native quotient
+integral restricted to that cusp. The full response finite part will then be
+that actual remainder integral plus Lambda(rho-1) times the three original
+principal amplitudes and source-determined response periods. No part of this
+value is assigned zero. This is the full pairing needed by the remaining
+angular-current/source-work balance.

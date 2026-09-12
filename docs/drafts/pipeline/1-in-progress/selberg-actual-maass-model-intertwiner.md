@@ -1,8 +1,8 @@
 # Actual Maass-to-model intertwiner
 
 - **ID:** selberg-actual-maass-model-intertwiner
-- **Stage:** 1-in-progress — the explicit algebraic correspondence has a paper proof below; its source-side Lean implementation and Hilbert globalization remain unfinished.
-- **Type:** THEOREM (paper), not yet THEOREM (Lean)
+- **Stage:** 1-in-progress — the finite differentiated correspondence is now formalized and audited; Hilbert globalization remains unfinished.
+- **Type:** THEOREM (Lean, finite differentiated cyclic correspondence); unitary group globalization remains open in the formalization.
 - **Date:** 2026-09-12
 - **Statement:** Every nonzero Maass eigenfunction with (0<\lambda<1/4\) generates, under the actual differentiated right action, a spherical Harish-Chandra module explicitly isomorphic to the corpus model with (s=2\sqrt{1/4-\lambda}\).
 - **Scope:** Known representation theory, reconstructed here with the corpus's signs and normalization. No claim of a new proof of Selberg's conjecture.
@@ -19,7 +19,7 @@ The chain is
 
 Here (V_f) is a subspace of the actual smooth, left-\(\Gamma\)-invariant functions on (G=\mathrm{SL}_2(\mathbb R)). All its operators are differentiated right translations. It is not an abstract module supplied with unproved compatibility fields.
 
-The previous formalization proved C-infinity regularity of the original Maass function and identified the model operators with actual principal-series flow derivatives. The missing mathematical construction was the map between these two actual realizations. The normalized derivative construction below supplies that map on paper, including an explicit inverse.
+The formalization now proves C-infinity regularity, actual source and model flow derivatives, normalized source ladder identities, and the finite intertwiner. `GaloisForLFunctions.RHTower.MaassSmooth.maassDifferentialModelEquiv` identifies the intrinsically defined differentiated cyclic source with the existing spherical model. The forward map is the explicit normalized derivative construction below; Lean's inverse uses its proved injectivity and range equality. The separate polynomial/evaluation inverse formula below remains a paper formula.
 
 The existing `maassCyclicAutomorphicRepresentation` is the group-algebra span of **all** right translates. That space must not be silently identified with (V_f), which is stable under the Lie algebra and (K). Noncompact translations generally take finite (K)-support to infinite (K)-support. Extending this correspondence to closed unitary group representations is a further analytic theorem.
 
@@ -445,3 +445,67 @@ Both broad complete and narrower partial searches were inspected, including meth
 source arguments and ingredient sets. Source-only suggestions were checked against
 source and Lean; irrelevant Lie-weight, angular-current and transcendence suggestions
 were not treated as proofs of the source correspondence.
+
+
+## Verified finite Maass-to-model equivalence
+
+`formal/GaloisForLFunctions/RHTower/MaassModelIntertwiner.lean` completes the
+normalization and source identification. For an actual bundled exceptional Maass
+form, `modelStep` uses the existing parameter `2*complementaryExponent` and
+`ladderScale` normalizes the actual derivatives. `raise_modelSource` and
+`lower_modelSource` prove the existing model coefficients at every integer weight.
+`modelToMaass` realizes the standard finitely supported model inside the existing
+automorphic function space; independence proves injectivity.
+
+Theorems `modelToMaass_diagonal_hasDerivAt`,
+`modelToMaass_quarterDiagonal_hasDerivAt`, and
+`modelToMaass_rotation_hasDerivAt` prove pointwise on every group element that
+literal right translations differentiate to the existing `E+F`, `i(E-F)`, and `iH`.
+`modelToMaass_K` proves compact group intertwining. `modelToMaass_spherical`
+identifies the generator with the original Maass function.
+
+The construction also identifies the source intrinsically. `maassDifferentialCyclicSpace`
+is the infimum of all complex subspaces containing the original spherical Maass
+vector and stable under the two actual noncompact right derivatives.
+`modelToMaass_range_stable` and `modelToMaass_range_minimal` prove this definition
+agrees with the explicit model image; `modelToMaass_range_eq_cyclic` packages the
+equality. Consequently `maassDifferentialModelEquiv` is a linear equivalence from
+that intrinsic source space to `SphericalKFiniteModel`. Its inverse identities are
+proved. No intertwining, covariance, irreducibility or nonvanishing assertion is
+supplied as an unproved input.
+
+The source is finite under K and differentiated right action. It is not identified
+with the algebraic span of every noncompact group translate or with a completed
+quotient L2 representation. Hilbert globalization, higher-rank generic unitary
+bounds and compatible arithmetic lifts remain unfinished. In particular, this
+construction does not exclude complementary representations on congruence quotients.
+
+Validation completed:
+
+- `LEAN_NUM_THREADS=1 lake build GaloisForLFunctions.RHTower.MaassModelIntertwiner`
+  passed without warnings. Only three new modules rebuilt: MaassWeightLift (15s),
+  MaassAutomorphicDifferentialLadder (6.1s), MaassModelIntertwiner (33s). Remaining
+  jobs used the existing dependency cache. Log: `/tmp/maass_intertwiner_final_build.log`.
+- All 50 public theorems audited through `lake env lean /tmp/maass_intertwiner_axioms.lean`.
+  Only `propext`, `Classical.choice`, `Quot.sound`; no new axioms or unfinished terms.
+  Log: `/tmp/maass_intertwiner_axioms.log`.
+- No heartbeat, recursion or transparency increases; no numerical or native certificates.
+  Foreground checking used one Lean process at a time. New modules are wired exactly once.
+- Generated indexes refreshed (4 changed sources, no removals); `git diff --check` passed.
+- Global lint remains blocked by unrelated unreachable modules:
+  ThetaCuspHawkingBMHorizonModeOuterUniformBound,
+  ThetaCuspHawkingBMTemporalCurrentClearedDensity,
+  ThetaCuspHawkingBMTemporalCurrentClearedDensityBound,
+  ThetaCuspHawkingBMTemporalCurrentRadialCutoff,
+  ThetaCuspHawkingBMTemporalOppositeCurrentProfile,
+  JetCoefficientUniqueness, SecondEndpointMellinLaurentInterchange.
+  There are also existing large-file warnings. None concerns the new Maass modules.
+  Log: `/tmp/maass_intertwiner_lint.log`.
+
+A further deep corpus search for the Hilbert continuation is saved at
+`/tmp/maass_hilbert_followthrough_search.json` (partial; source-only candidates).
+Source inspection confirms `SelbergMaassTailEnergy.hyperbolicMass_tail_integrable`
+at line 92 proves integrability of actual cusp mass divided by height squared,
+and `SelbergMaassBessel.mode_hyperbolicMass_integrable` at line 185 supplies the
+modal version. These are usable ingredients for the quotient-L2 bridge; they do
+not by themselves provide all-order smooth-vector domains or unitary globalization.

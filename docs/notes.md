@@ -51,7 +51,7 @@ UNKNOWN = no mechanism or statement identified. DEAD = proven no-go.
 | 29 | Source-contact rigidity | Coefficient (λ−2)(λ−6)(3λ−2) ≠ 0 at every Xi occurrence; bilinear, not a positivity | FULL | `ThetaCuspHawkingBMSourceContactRigidity` |
 | 30 | Spin-two contact balance | Quartic-period Green balance with cutoff-commutator cancellation; Re(13λ−6−μ) < −23/4 | PAPER | card `hb-source-contact-spin-two-balance` |
 | **E. Open radiative core** | | | | |
-| 31 | Laurent/horizon interchange | Abstract form in Lean: the order −1 Laurent coefficient of the endpoint-Mellin finite part of F u t/(u−w) equals the finite part of F w, under the corpus's uniform horizon Lipschitz bound | PART | `laurentCoeff_firstEndpointMellin_div_sub`, `firstEndpointMellin_analyticAt` |
+| 31 | Laurent/horizon interchange | Horizon-mode leg (`outer = false`) closed: the cutoff radial integral of the temporal current plus the two counterterms of the cleared density's horizon jet converges near each fundamental QNM; the limit is meromorphic with a simple pole and its order −1 Laurent coefficient is `physicalRadialResidueFinitePart`. The normalizable-mode leg (`outer = true`) is not done | FULL (horizon-mode leg) / OPEN (normalizable leg) | `continuedPhysicalTimeAction_horizon_radial_laurent`, `radial_cutoff_package`, `clearedTemporalDensity_eq_current` |
 | 32 | Radial contact and QNM-boundary traces | Horizon Wronskian-bracket finite part vanishes off the QNM (`continuedResponse_horizon_current_finite_part_zero`); germ at the QNM, derivative traces, cusp faces open | OPEN | — |
 | 33a | Cleared onset nonzero | clearedOnset s w = ∫₀¹χ′(u)e^{(2s−w)u}du; equals 1 at the source rate, positive at real exponents, nonzero for all but isolated onset durations; the fixed unit duration at the physical point (Im(2s−w) = ±7τ/2 or ±9τ/2) is not proved nonzero | PART | `clearedOnset_eq_onsetPulseTransform`, `clearedOnsetDuration_eventually_ne_zero` |
 | 33b | Fundamental source moment nonzero | After u = √(1−z): 2a²∫₀¹(1−u)^w(1+u)^{2s}u²(A+Bu²)du, a Beta·₂F₁(−1) combination with no Kummer constellation | OPEN | only the different object `d4FundamentalQNMContinuedRadialMoment_xi_ne_zero` |
@@ -82,21 +82,30 @@ published, and is wired into its umbrella.
 | `RHTower/XiAffineCollisionControl` | `RHTower` | `xi_three_half_ne_zero_of_re`; `xi_five_half_sub_one_ne_zero_of_re`; `xi_three_half_collision_partner`; `xiHalfDescent` with `_eq`, `_re`, `_im`, `_tendsto`; `exists_xiHalfDescent_half_ne_zero`; `exists_xi_zero_half_ne_zero`; `exists_strict_right_representative` | `lake build` green |
 | `RHTower/ThetaCuspHawkingBMAngularSourceCollisionControl` | `RHTower.D4BMJointSource` | `physicalSelfSourceCoefficient_zero_iff_of_two_thirds_le`; `physicalSelfSourceCoefficient_zero_iff_half_of_four_fifths_le`; `physicalSelfSourceCoefficient_ne_zero_of_four_fifths_le`; `exists_strict_right_zero_half_ne_zero_of_copy` (copies with Re ≠ 1/2) | `lake build` green (13004 jobs, stale dependency oleans of the `PhysicalAngularSourceXi` cone rebuilt on the way) |
 | `HTGeometry/FirstEndpointMellinLaurentInterchange` | `GaloisForLFunctions.HTGeometry` | `firstEndpointMellin_differentiableAt`; `firstEndpointMellin_analyticAt`; `firstEndpointMellin_const_mul`; `firstEndpointMellin_div_sub`; `laurentCoeff_firstEndpointMellin_div_sub` | `lake build` green |
+| `HTGeometry/SecondEndpointMellinLaurentInterchange` | `GaloisForLFunctions.HTGeometry` | `dividedDifference`; `secondEndpointMellin`; `secondEndpointMellin_cutoff_tendsto`; `secondEndpointMellin_analyticAt`; `secondEndpointMellin_const_mul`; `laurentCoeff_secondEndpointMellin_div_sub` | `lake build` green (13103 jobs) |
+| `HTGeometry/UniformSecondOrderJet`, `HTGeometry/ElementaryHorizonJets`, `HTGeometry/AnalyticJetGerm`, `HTGeometry/JetCoefficientUniqueness` | `GaloisForLFunctions.HTGeometry` | `HasUniformJet2` algebra (`add`, `sub`, `mul`, `const_mul`, `pow_three`, `of_deriv2_bound`, `closedBall_of_punctured`); jets of `√(1−z)`, `(1+√(1−z))^α`, `(√(1−z))⁻¹`; `AnalyticJet2At` germs closed under ring operations, `polynomial_eval`, `cpow_one_add_sqrt`; `eq_zero_of_norm_add_mul_le_mul_sq` (jet coefficients are unique) | `lake build` green (13103 jobs) |
+| `RHTower/ThetaCuspHawkingBMHorizonCoordinateJets`, `…BMSelfChannelHorizonJet`, `…BMPrincipalChannelHorizonJet`, `…BMTemporalCurrentHorizonJet` | `RHTower.D4BMJointSource` | `exp_mul_tortoise`; `sourceAmplitude_eq_profile`; `selfClearedProfile_jet` (jet of the cleared self channel through the QNM, per-frequency analytic); `principalProfile_jet`; `clearedDensityProfile_germ` (analytic horizon-jet germ of the cleared density at the QNM) | `lake build` green (13103 jobs) |
+| `RHTower/ThetaCuspHawkingBMHorizonModeOuterUniformBound` | `RHTower.D4BMJointSource` | `tortoiseMode_hasDerivAt_continued`, `tortoiseMode_equation_continued` (homogeneous tortoise ODE off the real axis); `tortoiseMode_outer_uniform_bound`: one constant bounds the continued horizon mode on a frequency ball and on every `[T, 0)`, up to spatial infinity (Grönwall, no Gauss summation at the disc boundary) | `lake build` green (13103 jobs) |
+| `RHTower/ThetaCuspHawkingBMTemporalCurrentClearedDensity`, `…Bound` | `RHTower.D4BMJointSource` | `clearedTemporalDensity`; `clearedTemporalDensity_eq_current` (clearing factor × radius Jacobian × current = `z_t^u`·core); `_continuousOn`; `_frequency_analyticAt` (at the QNM too); `clearedTemporalDensity_outer_uniform_bound` | `lake build` green (13103 jobs) |
+| `RHTower/ThetaCuspHawkingBMTemporalCurrentRadialCutoff`, `…Package`, `…Laurent` | `RHTower.D4BMJointSource` | `patchedProfile`; `compactPart_analyticAt` (Cauchy domination); `cutoff_integral_split` (change of variables `t → z`); `radial_cutoff_package` (cutoff limit with the profile's own counterterms, eventually on the punctured neighbourhood); `clearingSlope` (dslope of the clearing factor, value `physicalFundamentalDenominatorSlope`); `clearedTemporalDensity_fundamental` (density at the QNM = slope × residue density); `jet_coefficients_fundamental`; `mellin_fundamental`; `continuedPhysicalTimeAction_horizon_radial_laurent` | `lake build` green (13103 jobs) |
 
 Scope limits of the toolkit. The stretched-onset pipeline is identified with the fixed one only
 through `clearedOnsetDuration s w 1 = clearedOnset s w`; re-deriving the fixed-duration modules
-with `u ↦ χ(u/L)` is not done. The Laurent interchange is abstract; supplying the projected
-temporal current's uniform horizon Lipschitz constant (available in
-`ThetaCuspHawkingBMIncomingHorizonExpansion`) is the open assembly. Nothing here evaluates a
-physical current, proves extinction, or selects the critical line.
+with `u ↦ χ(u/L)` is not done. The Laurent interchange is now applied to the actual
+horizon-mode temporal current (step 31, `outer = false`); the normalizable-mode leg
+(`outer = true`, a second horizon branch weighted by the connection coefficient) is not assembled.
+The counterterm coefficients are existential in the final statement but pinned by the horizon jet
+clause (they are unique). Nothing here evaluates a physical current, proves extinction, or selects
+the critical line.
 
 ## 3. Attack order
 
 1. Step 39 first. If the physical residue is identified with the reduced cokernel −Σ|D|² through
    a nowhere-zero transducer, then off-line D ≠ 0 forces every Laurent factor nonzero, and steps
    33a, 33b, 34 follow. Lean effort on 33/34 before 39 is wasted.
-2. Step 31 assembly: apply `laurentCoeff_firstEndpointMellin_div_sub` to the projected temporal
-   current with the uniform constant from the incoming horizon expansion.
+2. Step 31: horizon-mode leg done. Remaining: the normalizable-mode leg (`outer = true`), same
+   assembly with `normalizable` in place of `horizon`; needs a uniform outer bound of the
+   normalizable mode up to spatial infinity (it decays there) and its horizon jet.
 3. Step 36: generalize the Eisenstein Stokes modules from the absolute-convergence family to the
    actual theta fields at Xi parameters; this is also what step 30 needs.
 4. Step 35: the ++ SS and VV blocks.
@@ -107,9 +116,12 @@ physical current, proves extinction, or selects the critical line.
 - Pipeline card: `docs/drafts/pipeline/3-formalized/hb-onset-collision-laurent-toolkit.md`
   (ID `HB-ONSET-COLLISION-LAURENT-TOOLKIT`); cross-reference on
   `docs/drafts/pipeline/1-in-progress/hb-fundamental-radial-source-moment.md`.
-- Umbrella imports: `RHTower.lean` after `XiAdmissibleHeights`, `…BMAngularScalarEquation`,
-  `…BMCausalSchwarzSupport`, `…BMOnsetGreenReconstruction`; `HTGeometry.lean` after
-  `FirstEndpointMellin`. No umbrella build.
+- Step 31 card: `docs/drafts/pipeline/3-formalized/hb-radial-laurent-interchange-assembly.md`.
+- Umbrella imports: all modules of §2 are wired into `RHTower.lean` / `HTGeometry.lean` in
+  place next to alphabetical neighbours. No umbrella build.
+- Final audit of the step-31 chain: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMTemporalCurrentRadialLaurent`
+  green, 13103 jobs, no warnings in the new modules; `#print axioms` on the final theorem shows
+  `propext`, `Classical.choice`, `Quot.sound` only.
 - Static lint: the five modules pass; the only reported error is another agent's untracked
   `ThetaCuspHawkingBMQuarticCutoffMellin`, not wired into `RHTower`.
 - Frontier map is read-only and unchanged.

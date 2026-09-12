@@ -45,9 +45,11 @@ For interior s≤t<0 the checked Einstein flux identity is
 A^1(t)-A^1(s) = [-(lambda-2) integral_s^t gF - (C(t)-C(s))] N.
 ```
 
-This identifies a projected mixed sector. Full angular reconstruction,
-independent SS/VV sectors, retarded/advanced Peierls identification and
-residue extraction through the full current's horizon limit remain open.
+This identifies a projected mixed sector. The temporal-current restoration
+below retains the full normalizable left mode, joins both original radial
+intervals and evaluates its residue after the horizon limit. Full angular
+reconstruction, independent SS/VV sectors, retarded/advanced Peierls
+identification and nonvanishing of the source-evaluated residue remain open.
 
 ## Closed local temporal QNM transfer
 
@@ -955,15 +957,13 @@ five artifacts per new leaf and umbrella imports are installed. The three
 used jet-support modules are also wired into HTGeometry. No umbrella,
 full or dependency build ran; no resource limit was raised.
 
-The next full-normalizable-current conjecture uses the actual coefficient
-`connection/(2w)` of the opposite horizon mode. Its ratio to D is
-`-1/(2w*(w-2s))`, so the remaining opposite profile should be analytic
-through w0 and require a logarithmic endpoint subtraction. Proving its
-uniform jet, exact original-current decomposition and logarithmic
-restoration remains necessary. The original full-current outer interval
-and the evaluation/nonvanishing of the joined residue also remain open.
-The existing bare-response normalizable pairing is not yet the complete
-normalizable Einstein current. Hawking-clock extinction and RH are unproved.
+The full-normalizable-current conjecture is proved in the four companion
+leaves described below: the actual opposite coefficient cancels the
+self-channel pole, its uniform jet gives a logarithmic subtraction, and
+the original complete horizon integral is restored before residue extraction.
+The full radial join below now supplies the original outer interval and
+evaluates the joined residue. Nonvanishing of its explicit source amplitude,
+Hawking-clock extinction and RH remain unproved.
 
 Broad amplitude/profile/logarithmic searches and mechanism-based deep
 searches inspected candidate lemmas, source arguments and ingredient sets.
@@ -975,10 +975,254 @@ A broad arXiv transmutation search also found the
 [June 2026 revision of the Kannai-transform paper](https://arxiv.org/abs/2601.03616).
 Its diffusion/wave representation was not used as a premise here.
 
-Repository lint still reports four pending unreachable modules outside
-these new sources: `RHTower.ThetaCuspHawkingBMHorizonModeOuterUniformBound`,
-`RHTower.ThetaCuspHawkingBMTemporalCurrentClearedDensity`,
-`HTGeometry.JetCoefficientUniqueness` and
-`HTGeometry.SecondEndpointMellinLaurentInterchange`. Global lint is not
-passed. These concurrently developed sources were not edited or rebuilt.
+Repository lint passes after the full radial join and all four new
+imports. Previously pending companion modules are now reachable.
 Frontier map and universal STATUS remain untouched.
+
+## Full normalizable temporal horizon current
+
+The pole-cancellation conjecture succeeds for the original current, with
+the complete self response, all three principal channels, explicit lift
+and temporal source contact retained. Four leaves supply the construction:
+
+- `ThetaCuspHawkingBMTemporalOppositeCurrentProfile`: the exact ratio
+  `-1/(2w*(w-2s))`, a uniform analytic quadratic jet for the opposite
+  profile, and its spatial/frequency regularity through the physical QNM.
+- `ThetaCuspHawkingBMTemporalNormalizableCurrentDensity`: the opposite
+  contribution is the difference between the original normalizable
+  current and its actual incoming-mode component. The original
+  homogeneous-mode connection formula identifies this difference with
+  the derived opposite profile divided by z. Finite-cutoff integrability
+  is proved before decomposing the current integral.
+- `ThetaCuspHawkingBMTemporalOppositeCurrentRestoration`: the profile's
+  own constant jet coefficient supplies the logarithmic counterterm.
+  Its restored integral is analytic through the QNM and has zero residue.
+- `ThetaCuspHawkingBMTemporalNormalizableCurrentRestoration`: one original
+  normalizable-current integral has a common-cutoff restoration with
+  both power counterterms and the logarithmic counterterm. Residue
+  extraction follows this restoration.
+
+Let A(w) be the original normalizable mode's horizon-regular coefficient,
+j_n the original temporal radial density with `outer=true`, j_h its
+`outer=false` counterpart, and D(w)=-(w-2s)*connection(w,chi). The exact
+opposite-mode coefficient is connection(w,chi)/(2w). Consequently
+
+```
+j_o = j_n - A(w)*j_h = F_o(w,z)/z,
+F_o = [-1/(2w*(w-2s))] *
+      N * [-2w(lambda-2)*selfPart - w*contactPart] * H_(-w)(z)
+      / (2*sqrt(1-z)).
+```
+
+Here selfPart and contactPart are the original cleared source profiles,
+N is the actual angular bilinear square, and H is the original Gauss
+factor. The connection zero cancels algebraically; no self-connection
+nonvanishing assumption is used for the profile's analytic germ.
+The Gauss lower bound supplies a common spatial/frequency neighborhood
+for the original finite-current decomposition.
+
+For the source-derived incoming coefficients c0,c1 and opposite coefficient
+d, set
+
+```
+N_b(w) = QuadraticEndpointMellin.finitePart(F,c0,c1,b,w),
+L_b(w) = LogarithmicEndpoint.finitePart(F_o,d,b,w),
+M_b(w) = A(w)*N_b(w)/D(w) + L_b(w).
+```
+
+The physical data determine R>0 and B>0, B<=1/2, such that for EVERY
+0<b<=B and every w in the common ball with connection(w,chi) nonzero,
+
+```
+integral(e..b,j_n(w,z))
+ + A(w)*[c0(w)*e^w/w + c1(w)*e^(w+1)/(w+1)]/D(w)
+ + d(w)*log(e)  -->  M_b(w)                       (e --> 0+).
+```
+
+The actual normalizable coefficient satisfies A(w0)=1. The separately
+proved analytic continuation of L_b and incoming restored residue give
+
+```
+(w-w0)*M_b(w) --> N_b(w0)/physicalFundamentalDenominatorSlope.
+```
+
+This closes the original normalizable left-mode temporal current's
+horizon restoration at each angular point. The full radial join below
+adds its original outer interval; a nonzero retained action is still open.
+
+The proved residue-evaluation identity below is the exact factorization
+`F(w0,z)=K*incomingPairingFactor(w0,chi,z)`, where
+
+```
+K = N * (-2*w0*(lambda-2)) * physicalSelfSourceCoefficient(q)
+    * fundamentalSourceMoment(w0,s,a) * clearedOnset(s,w0).
+```
+
+The existing fundamental Green factorization gives its self-channel
+identity; the clearing factor kills the principal/contact terms at w0.
+The new proof identifies the actual endpoint coefficients, retains their
+uniform-jet witnesses through restoration, and evaluates N_b(w0) as K
+times the original incoming norm finite part. The corpus's
+`JetCoefficientUniqueness` supplies the coefficient-uniqueness mechanism,
+and `physicalFundamentalNorm_join` supplies the norm's exact cutoff join.
+Neither substitutes for the full-current outer-integral proof or
+nonvanishing of the physical coefficient.
+
+Broad opposite-mode retrieval and mechanism-based deep searches inspected
+candidate lemmas, source arguments and proposed ingredient sets. The
+original connection identity, analytic jet closure and logarithmic
+endpoint theorem were applicable and checked in Lean. A later deep
+coefficient/finite-part search returned a proposed gamma-pole ingredient
+set whose premises do not identify this current; it is not used.
+That search completed, but its coverage was a snapshot with mostly
+pending compiler metadata and unmeasured semantic coverage. A broad
+arXiv confluence/impedance search included the August 2026
+[finite-array active-impedance paper](https://arxiv.org/abs/2608.17844);
+no result from it is used in the proof. No computation was run.
+
+All four new leaves passed `lake env lean` scratch checks and exact
+`lake build <module>` audits against cached dependencies. Audit times:
+opposite profile 88 seconds, original current density 133 seconds,
+opposite restoration 57 seconds, normalizable restoration 9.8 seconds.
+Each audit built only the requested leaf (two Lake jobs). The proofs use
+explicit analytic composition, local identities and narrow associative
+rewrites; no heartbeat or other resource limit was raised. Sources, five
+artifacts per leaf and all four RHTower imports are installed. No full,
+umbrella or dependency build ran, and no axiom checks were run. Repository
+lint now passes with the full radial join and its imports.
+
+Owned Lean/Lake processes have completed. Scratch files, search outputs
+and the isolated audit package/helper were removed; installed proofs and
+artifacts remain.
+
+The full radial join below integrates the companion sources
+`ThetaCuspHawkingBMTemporalCurrentClearedDensityBound`,
+`ThetaCuspHawkingBMTemporalCurrentRadialCutoff` and
+`ThetaCuspHawkingBMTemporalCurrentRadialPackage`. The last exposes the
+incoming current's endpoint-jet witness, analytic outer integral and
+original full radial cutoff limit. The full normalizable join retains
+the opposite branch and passed a combined import check before assembly.
+
+## Full normalizable radial current: source evaluation and outer join
+
+The checked full radial join attaches the original normalizable temporal
+horizon current to its original outer integral. Its source-evaluated residue is
+
+```
+K * normFinitePart(w0) / physicalFundamentalDenominatorSlope,
+K = N * (-2*w0*(lambda-2)) * physicalSelfSourceCoefficient(q)
+    * fundamentalSourceMoment(w0,s,a) * clearedOnset(s,w0).
+```
+
+`ThetaCuspHawkingBMTemporalCurrentFundamentalFactor` is installed and
+audited. It evaluates the complete cleared horizon profile as
+`K*incomingPairingFactor`, proves uniqueness of its actual two endpoint
+coefficients, and evaluates its quadratic finite part as K times the
+original incoming norm finite part. The source moment is the original
+fixed endpoint pairing; no residue value is assigned.
+
+`ThetaCuspHawkingBMTemporalOppositeOuterCurrent` is also installed and
+audited. Its density is the coefficient `-1/(2w*(w-2s))` times the
+complete cleared source factor and the original opposite homogeneous
+mode. The original connection formula identifies it with
+`(R^2-1)*A^0_normalizable - A(w)*(R^2-1)*A^0_incoming`. Uniform source
+bounds and the horizon-mode bound centered at -w0 give a common outer
+majorant. Spatial continuity, frequency analyticity and dominated Cauchy
+integration prove an analytic original opposite outer integral through
+w0. The full source, principal terms, lift and source contact are retained.
+
+`ThetaCuspHawkingBMTemporalNormalizableOuterCurrent` proves integrability
+of the original normalizable outer current before splitting its integral,
+extracts its residue and evaluates its cleared fundamental density as
+K times the square of the original normalizable mode. It also proves
+`physicalTemporalFundamentalRadialResidue_ne_zero_iff`: the radial residue
+is nonzero exactly when K is nonzero. This leaf is installed and audited.
+
+`ThetaCuspHawkingBMTemporalNormalizableRadialJoin` is installed and audited.
+Its `physicalNormalizableTemporalCurrent_full_radial_restoration_and_residue`
+joins the restored horizon current and original outer integral at the same
+negative tortoise cutoff, for every sufficiently small positive cutoff.
+It proves the original cutoff limit, integrability of the outer current,
+the displayed source-evaluated residue and independence of the joined
+numerator from that cutoff.
+
+The two existing horizon-restoration leaves now expose their uniform-jet
+witnesses in `physicalTemporalCurrent_horizon_restoration_data` and
+`physicalNormalizableTemporalCurrent_horizon_restoration_data`. Their
+original public theorem statements are preserved as wrappers. Thus the
+coefficient evaluation applies to the same source-derived counterterms;
+no second choice of endpoint coefficients is assumed. The original norm
+and denominator are nonzero at every physical fundamental frequency.
+Nonvanishing of K, full angular/action comparison and Hawking-clock
+extinction remain open.
+
+All six affected leaves passed `lake env lean` scratch checks and exact
+`lake build <module>` audits. Final audit times: fundamental source factor
+52 seconds, opposite outer current 22 seconds, incoming horizon data
+6.3 seconds, normalizable horizon data 58 seconds, original normalizable
+outer current 74 seconds, full radial join 36 seconds. Each audit built
+only its requested leaf against cached dependencies (two Lake jobs).
+Four new leaves are wired into RHTower; the two modified leaves retain
+their existing imports. No full, umbrella or dependency build was run
+by this work. No heartbeat or other resource limit was raised, and no
+axiom checks or mathematical computations were run.
+
+The independent incoming-current work now includes
+`ThetaCuspHawkingBMTemporalCurrentRadialLaurent`. Its source was inspected;
+an untested duplicate incoming-radial draft was discarded and this work
+continued with the missing opposite outer contribution. A scratch import
+check confirmed that the incoming radial package and normalizable horizon
+module can be imported together. The broad moment search and deep
+endpoint/source-factorization search inspected candidate lemmas, source
+arguments and proposed ingredient sets; the Fokas matrix proposal does
+not supply this current's endpoint identity. Retrieval completed with
+snapshot coverage and unmeasured semantic coverage. Broad transmission
+and factorization arXiv searches did not return verified June–September
+2026 matches; the opened [soft-collinear factorization paper](https://arxiv.org/abs/hep-ph/0109045)
+is not used as a premise. No computation was run.
+
+### Source-moment reduction target
+
+The explicit source amplitude leaves the original `fundamentalSourceMoment`
+to be evaluated. A new reduction candidate uses `r = sqrt(1-z)`. Write
+
+```
+A = (5*s^2+15*s+4)/4,
+B = s*(s-1)*((s+2)*(2*s+3)-(w+1)*(w+2)/2)/4,
+W(r) = (1-r)^w * (1+r)^(2*s),
+I_n = FP integral(0..1, r^n * W(r)),
+d = 2*s-w,  e = w+2*s+2.
+```
+
+The pointwise substitution predicts `M = 2*a^2*(A*I_2+B*I_4)`.
+Differentiating `r^n*(1-r)^(w+1)*(1+r)^(2*s+1)` predicts the recurrence
+
+```
+d*I_0-e*I_1 = -1,
+n*I_(n-1) + d*I_n - (n+e)*I_(n+1) = 0  (n >= 1).
+I_2 = ((e+d^2)*I_0+d)/(e*(e+1)),
+I_4 = ((d^4+(6*e+8)*d^2+3*e*(e+2))*I_0
+       +d*(d^2+5*e+8))/(e*(e+1)*(e+2)*(e+3)).
+```
+
+This reduces the candidate evaluation to one incomplete beta integral:
+`I_0 = 2^(w+2*s+1) * FP integral(0..1/2, t^w*(1-t)^(2*s))`.
+The integration-by-parts boundary term is essential. These identities
+are not yet Lean theorems: the immediate obligation is transporting the
+original fixed endpoint subtraction through the change of variables and
+proving its limit. On the physical strip the discarded comparison term
+should be of order `epsilon^(Re(w)+2)`, which tends to zero. This must be
+proved for the same finite part already present in the source, before
+using the recurrence to address nonvanishing or joint survival of the
+physical branch/side family.
+
+Broad OR retrieval for quintic, Catalan, Raney and period terms returned
+no applicable source evaluation. Deep Mellin/incomplete-beta retrieval
+found `ThetaCuspHawkingSelfDualGeneralMellinVertex`: its source was read,
+and its shifted-beta recurrence mechanism motivates the reduction above.
+Its complete-beta, positive-real-part hypotheses do not evaluate this
+half-interval physical finite part. Candidate lemmas, source arguments
+and the proposed tail-splitting ingredient set were inspected. The deep
+request returned partial results with unfinished auxiliary queries;
+compiler coverage remained mostly pending and semantic coverage was
+unmeasured. No numerical computation or nonvanishing premise is used.

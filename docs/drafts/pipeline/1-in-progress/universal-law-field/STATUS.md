@@ -1,10 +1,12 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-11
+Updated: 2026-09-12
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
 ## RH: route-independent research constraints
+
+- **Cannot bound a complete source's squared linear readings by a multiple of a retained one-dimensional source's readings when a fixed orthogonal projection detects a nonzero remainder.** Must retain that detected component and derive any replacement comparison map from the original source. Vanishing of every fixed linear reading along a normalized family need not remove its norm or its quadratic signal. The [complete-tail separation theorem](../../3-formalized/route-l-strict-tail-source-separation.md) proves a fixed projection retaining the entire positive limiting tail norm and an explicit obstruction to domination by the pure leading source.
 
 - **Must retain minimum integer increments when placing independently varying multiplicative factors inside a short window.** Three changing positive integer factors force `W^3 >= 27*L^2` for a window `[L,L+W]` with `L>=0`; arbitrary near-unit real factors need not obey this law. The [integer aperture classification](../../5-failed/route-e-complete-integer-factor-cells.md) proves the bound and its sharp leading constant in Lean. Cannot infer negligible discarded mass merely from the existence of one inadmissible corner. Must measure retained probability in the original joint law: a restriction with admitted probability tending to zero cannot provide a negligible-discard approximation. The [full orientation mass theorem](../../5-failed/route-e-negligible-discard-integer-cells.md) proves this failure for growing-variance singleton integer-factor cells, while leaving independently constructed correlated supports open.
 
