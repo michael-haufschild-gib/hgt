@@ -1,0 +1,14 @@
+{
+  "docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md": {
+    "sha256": "67799c06dbbec60c29b2ade40966b44f74c1b686d02e2408aa62b1a51598b937",
+    "bytes": 1324412,
+    "lines": 3177,
+    "snapshot": "frontier-map-snapshot.md"
+  },
+  "docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md": {
+    "sha256": "bd7129c323bb18937742d825f1286a887c657d01d2b2ab23a8d1dfd7d6e62a14",
+    "bytes": 835048,
+    "lines": 5786,
+    "snapshot": "constraints-snapshot.md"
+  }
+}

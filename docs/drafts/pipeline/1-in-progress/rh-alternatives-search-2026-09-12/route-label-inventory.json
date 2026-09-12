@@ -1,0 +1,1312 @@
+{
+  "Live branches": [
+    {
+      "line": 312,
+      "label": "CCM-FU"
+    },
+    {
+      "line": 313,
+      "label": "C1"
+    },
+    {
+      "line": 314,
+      "label": "CDC"
+    },
+    {
+      "line": 315,
+      "label": "D2"
+    },
+    {
+      "line": 316,
+      "label": "E"
+    },
+    {
+      "line": 317,
+      "label": "STC"
+    },
+    {
+      "line": 318,
+      "label": "CSB"
+    },
+    {
+      "line": 319,
+      "label": "G"
+    },
+    {
+      "line": 320,
+      "label": "MSC"
+    },
+    {
+      "line": 321,
+      "label": "L"
+    },
+    {
+      "line": 322,
+      "label": "O"
+    },
+    {
+      "line": 323,
+      "label": "P"
+    },
+    {
+      "line": 324,
+      "label": "Q"
+    },
+    {
+      "line": 325,
+      "label": "CLG/TTF"
+    },
+    {
+      "line": 326,
+      "label": "HB"
+    },
+    {
+      "line": 327,
+      "label": "FZZ-P"
+    },
+    {
+      "line": 328,
+      "label": "PW-B"
+    },
+    {
+      "line": 329,
+      "label": "SP-E"
+    },
+    {
+      "line": 330,
+      "label": "T1"
+    },
+    {
+      "line": 331,
+      "label": "T2"
+    },
+    {
+      "line": 332,
+      "label": "U"
+    },
+    {
+      "line": 333,
+      "label": "HC"
+    },
+    {
+      "line": 334,
+      "label": "LI"
+    },
+    {
+      "line": 335,
+      "label": "RG"
+    },
+    {
+      "line": 336,
+      "label": "SV2"
+    }
+  ],
+  "Candidate interfaces": [
+    {
+      "line": 2188,
+      "label": "SQB"
+    },
+    {
+      "line": 2189,
+      "label": "TK"
+    },
+    {
+      "line": 2190,
+      "label": "FEL"
+    },
+    {
+      "line": 2191,
+      "label": "BSH"
+    },
+    {
+      "line": 2192,
+      "label": "UEB"
+    },
+    {
+      "line": 2193,
+      "label": "PSRC"
+    },
+    {
+      "line": 2194,
+      "label": "RHist"
+    },
+    {
+      "line": 2195,
+      "label": "PBM"
+    },
+    {
+      "line": 2196,
+      "label": "SC"
+    },
+    {
+      "line": 2197,
+      "label": "RFHM"
+    },
+    {
+      "line": 2198,
+      "label": "IRK"
+    },
+    {
+      "line": 2199,
+      "label": "HJ"
+    },
+    {
+      "line": 2200,
+      "label": "HCF"
+    },
+    {
+      "line": 2201,
+      "label": "EGC"
+    },
+    {
+      "line": 2202,
+      "label": "EWJ"
+    },
+    {
+      "line": 2203,
+      "label": "EDQ"
+    },
+    {
+      "line": 2204,
+      "label": "CTF"
+    },
+    {
+      "line": 2205,
+      "label": "PCS"
+    },
+    {
+      "line": 2206,
+      "label": "SEC"
+    },
+    {
+      "line": 2207,
+      "label": "BPC"
+    },
+    {
+      "line": 2208,
+      "label": "MPLF"
+    },
+    {
+      "line": 2209,
+      "label": "W1C"
+    },
+    {
+      "line": 2210,
+      "label": "TCD"
+    },
+    {
+      "line": 2211,
+      "label": "JAS"
+    },
+    {
+      "line": 2212,
+      "label": "K-RVM"
+    },
+    {
+      "line": 2213,
+      "label": "GTA"
+    },
+    {
+      "line": 2214,
+      "label": "APF"
+    },
+    {
+      "line": 2215,
+      "label": "AKC"
+    },
+    {
+      "line": 2216,
+      "label": "S6F"
+    },
+    {
+      "line": 2217,
+      "label": "WS2"
+    },
+    {
+      "line": 2218,
+      "label": "WBF"
+    },
+    {
+      "line": 2219,
+      "label": "HDL"
+    },
+    {
+      "line": 2220,
+      "label": "PMP/LPC"
+    },
+    {
+      "line": 2221,
+      "label": "RG-HF"
+    },
+    {
+      "line": 2222,
+      "label": "RG-ETA"
+    },
+    {
+      "line": 2223,
+      "label": "TMD"
+    }
+  ],
+  "Terminal inventory": [
+    {
+      "line": 2833,
+      "label": "finite-prefix, relabelling, weighted-coefficient, or formal-inverse continuation"
+    },
+    {
+      "line": 2834,
+      "label": "CTF finite positivity, fixed-tail weight, or perturbative bounded repair"
+    },
+    {
+      "line": 2835,
+      "label": "fixed finite critical-locus splitting weights"
+    },
+    {
+      "line": 2836,
+      "label": "CCM-FU monotone-weight diagonal smoothing"
+    },
+    {
+      "line": 2837,
+      "label": "CCM-FU separate gcd-component sign"
+    },
+    {
+      "line": 2838,
+      "label": "CCM-FU uniformly budgeted increasing-prime elimination"
+    },
+    {
+      "line": 2839,
+      "label": "CCM-FU adaptive stepwise prime contraction"
+    },
+    {
+      "line": 2840,
+      "label": "CCM-FU fixed-block prime schedules"
+    },
+    {
+      "line": 2841,
+      "label": "CCM-FU increasing middle front plus scalar reserves"
+    },
+    {
+      "line": 2842,
+      "label": "CCM-FU universal nonempty-energy contraction"
+    },
+    {
+      "line": 2843,
+      "label": "CCM-FU geometric parity certificate or defect-free prefixes"
+    },
+    {
+      "line": 2844,
+      "label": "CCM-FU uniform successor averaging"
+    },
+    {
+      "line": 2845,
+      "label": "CCM-FU transferable pair reserve"
+    },
+    {
+      "line": 2846,
+      "label": "CCM-FU inherited-state contraction"
+    },
+    {
+      "line": 2847,
+      "label": "CCM-FU fixed weighted or square-root terminal head"
+    },
+    {
+      "line": 2848,
+      "label": "CCM-FU head/coarea Lyapunov and positive normalization"
+    },
+    {
+      "line": 2849,
+      "label": "Montgomery pair-form positivity as a horizontal selector"
+    },
+    {
+      "line": 2850,
+      "label": "square-summable odd source promoted to uniformly bounded tensor powers"
+    },
+    {
+      "line": 2851,
+      "label": "continuous Beurling regularity or thin-deletion asymptotics"
+    },
+    {
+      "line": 2852,
+      "label": "trace-one positive cofinal regularization"
+    },
+    {
+      "line": 2853,
+      "label": "D2 boundary-to-interior propagation"
+    },
+    {
+      "line": 2854,
+      "label": "E bounded-density binary singleton histories"
+    },
+    {
+      "line": 2855,
+      "label": "E nested-residual sign telescope"
+    },
+    {
+      "line": 2856,
+      "label": "E finite source-faithful spectral centering"
+    },
+    {
+      "line": 2857,
+      "label": "E fixed-arity Hall or source-disjoint `l1` centering"
+    },
+    {
+      "line": 2858,
+      "label": "E signed column-load producer"
+    },
+    {
+      "line": 2859,
+      "label": "E generic short-interval/Menon producer"
+    },
+    {
+      "line": 2860,
+      "label": "EDQ endpoint/full-energy/associative refinement shortcuts"
+    },
+    {
+      "line": 2861,
+      "label": "EDQ arithmetic-minimum, projected-balance, cellwise sign, or finite holomorphic phase charts"
+    },
+    {
+      "line": 2862,
+      "label": "EDQ coprime-only or prime-support-only reconstruction"
+    },
+    {
+      "line": 2863,
+      "label": "EDQ blanket positivity of the completed arithmetic half"
+    },
+    {
+      "line": 2864,
+      "label": "EDQ exhaustive exact critical matching by finite cutoffs"
+    },
+    {
+      "line": 2865,
+      "label": "EDQ uniform period-average logarithmic ceiling"
+    },
+    {
+      "line": 2866,
+      "label": "EDQ fixed complex-neighborhood subpower bound"
+    },
+    {
+      "line": 2867,
+      "label": "EDQ cofinal all-frequency divisor positivity"
+    },
+    {
+      "line": 2868,
+      "label": "L common integrable original prime-Green primitives"
+    },
+    {
+      "line": 2869,
+      "label": "EDQ all-prime damping/majorant shortcut"
+    },
+    {
+      "line": 2870,
+      "label": "lift multiplicity in Green/prime-port quotients"
+    },
+    {
+      "line": 2871,
+      "label": "positive mean or positive residue as spectral-gap selector"
+    },
+    {
+      "line": 2872,
+      "label": "HB modular spectral, positive-height graph, characteristic-kernel, principal-causal, or local residual admission"
+    },
+    {
+      "line": 2873,
+      "label": "Levinson profile-slope improvement"
+    },
+    {
+      "line": 2874,
+      "label": "E generic hard-cutoff seam reconstruction"
+    },
+    {
+      "line": 2875,
+      "label": "E complete-prime/integer-prefix identification"
+    },
+    {
+      "line": 2876,
+      "label": "E diagonal Gamma--Hankel M\u00f6bius reconstruction"
+    },
+    {
+      "line": 2877,
+      "label": "E complete factor-two activation histogram"
+    },
+    {
+      "line": 2878,
+      "label": "E negligible-discard integer cells and fixed-power conditioned richness"
+    },
+    {
+      "line": 2879,
+      "label": "E two-sided additive-hybrid Kloosterman lift"
+    },
+    {
+      "line": 2880,
+      "label": "E\u00d7Gamma complete-lcm Kloosterman weld"
+    },
+    {
+      "line": 2881,
+      "label": "P ordinary physical scalar depth completion"
+    },
+    {
+      "line": 2882,
+      "label": "positive Selberg zero ledger"
+    },
+    {
+      "line": 2883,
+      "label": "SQB scalar, polynomial/native-scattering, finite-word, deck-average, norm-only character, finite-packet, nonzero-mean resummation, phase-current, common-forcing-as-occurrence, pointwise-regulator, and path-resistance shortcuts"
+    },
+    {
+      "line": 2884,
+      "label": "fixed pair-even or interior-convergence individuation"
+    },
+    {
+      "line": 2885,
+      "label": "ordinary-limit or perfect-shadow annihilation of a derived class"
+    },
+    {
+      "line": 2886,
+      "label": "persistent cofinal cyclotomic-zero completion"
+    },
+    {
+      "line": 2887,
+      "label": "proper derivation-stable Steinberg three-jet quotient"
+    },
+    {
+      "line": 2888,
+      "label": "LI local Bernstein or global quotient complete monotonicity"
+    },
+    {
+      "line": 2889,
+      "label": "first-Laguerre line anchor from generic positive kernels"
+    },
+    {
+      "line": 2890,
+      "label": "faithful integral Arakelov/Frobenius characteristic-polynomial producer"
+    },
+    {
+      "line": 2891,
+      "label": "symplectic doubling, universal even multiplicity, or quadratic-symbol orientation"
+    },
+    {
+      "line": 2892,
+      "label": "fixed-domain same-fibre holomorphic Kramers family"
+    },
+    {
+      "line": 2893,
+      "label": "non-diagonal twin-factorization freedom"
+    },
+    {
+      "line": 2894,
+      "label": "convolution-inverse analytic twins"
+    },
+    {
+      "line": 2895,
+      "label": "S6F/TCD regular star-algebra contravariant carrier"
+    },
+    {
+      "line": 2896,
+      "label": "HDL ordinary residue or continuous coface descent"
+    },
+    {
+      "line": 2897,
+      "label": "HC bounded diagonal landing"
+    },
+    {
+      "line": 2898,
+      "label": "fixed-rank positive Suzuki/Ward resolution"
+    },
+    {
+      "line": 2899,
+      "label": "CCM Littlewood/triangular/observer/Robin producer package"
+    },
+    {
+      "line": 2900,
+      "label": "CCM causal-depth regular operator assembly"
+    },
+    {
+      "line": 2901,
+      "label": "CCM unframed local chiral spectralization"
+    },
+    {
+      "line": 2902,
+      "label": "G finite zero-mass width high-pass"
+    },
+    {
+      "line": 2903,
+      "label": "fixed local Suzuki Cartan/Stokes germ"
+    },
+    {
+      "line": 2904,
+      "label": "SCE strict-convex event sign principle"
+    },
+    {
+      "line": 2905,
+      "label": "Route-P matrix-complete subquantum repair"
+    },
+    {
+      "line": 2906,
+      "label": "CCM all-frequency positive/scalar Ward completion"
+    },
+    {
+      "line": 2907,
+      "label": "MSC ordinary/stable Hilbert and fixed-rigging transport"
+    },
+    {
+      "line": 2908,
+      "label": "shared-Ward finite-index/reflection carrier"
+    },
+    {
+      "line": 2909,
+      "label": "Suzuki wall-light finite-linear compression"
+    },
+    {
+      "line": 2910,
+      "label": "HB regular passive/equivariant, arbitrary or maximal unbounded dissipative, or self-adjoint exclusion"
+    },
+    {
+      "line": 2911,
+      "label": "HB closed-dense unbounded or projectively normalized response"
+    },
+    {
+      "line": 2912,
+      "label": "PW-B raw Gamma skew-source scalar occurrence"
+    },
+    {
+      "line": 2913,
+      "label": "PW-B convergent endpoint moment series"
+    },
+    {
+      "line": 2914,
+      "label": "PW-B unit-ground-corrected Gamma scalar occurrence"
+    },
+    {
+      "line": 2915,
+      "label": "PW-B literal global weighted Mellin dual-mass bound"
+    },
+    {
+      "line": 2916,
+      "label": "PW-B positive, conditionally ordered, uniformly energized, or closed-linear endpoint darkness"
+    },
+    {
+      "line": 2917,
+      "label": "theta-pair/product-fibre Wigner positivity"
+    },
+    {
+      "line": 2918,
+      "label": "growing-rank positive Cartan fission as Suzuki/Ward producer"
+    },
+    {
+      "line": 2919,
+      "label": "fixed actual-head matched CCM compensation of Suzuki transition core"
+    },
+    {
+      "line": 2920,
+      "label": "Suzuki divisor-blind cross-sewn holomorphic regularization"
+    },
+    {
+      "line": 2921,
+      "label": "projected versus joint prime--Gamma naturality"
+    },
+    {
+      "line": 2922,
+      "label": "shared-Ward coherent quadratic mixing and Gamma-six untwisting/localization"
+    },
+    {
+      "line": 2923,
+      "label": "Route-R internal energy/diagonal multiplication, moving clock, or bounded cross-prime lift"
+    },
+    {
+      "line": 2924,
+      "label": "Hurwitz associated-tensor fixed-vector selector"
+    },
+    {
+      "line": 2925,
+      "label": "finite holomorphic/difference-form Yang--Baxter selector"
+    },
+    {
+      "line": 2926,
+      "label": "differential-algebraic arithmetic heat carrier"
+    },
+    {
+      "line": 2927,
+      "label": "Ritt/log-tower cyclic/unicritical/tree invariant differential"
+    },
+    {
+      "line": 2928,
+      "label": "A"
+    },
+    {
+      "line": 2929,
+      "label": "PPM centered-prime natural-power monodromy"
+    },
+    {
+      "line": 2930,
+      "label": "PEP exponent-zero negative-sheet gauge"
+    },
+    {
+      "line": 2931,
+      "label": "B"
+    },
+    {
+      "line": 2932,
+      "label": "C2/I"
+    },
+    {
+      "line": 2933,
+      "label": "D1"
+    },
+    {
+      "line": 2934,
+      "label": "S6F/TCD static chamber, D1--C5 weld, lower-jet, monotone Schr\u00f6dinger potential, second-level concavity, whole-positive-chamber, generic positive-head, atomwise-PSD, or raw matrix-Bernstein closure"
+    },
+    {
+      "line": 2935,
+      "label": "S6F/TCD C5--D1 slope corridor"
+    },
+    {
+      "line": 2936,
+      "label": "S6F/TCD generic complete reflected-Hankel landing"
+    },
+    {
+      "line": 2937,
+      "label": "CLG/TTF all-order signed positivity of individual reflected theta fibres"
+    },
+    {
+      "line": 2938,
+      "label": "CLG stripped/master-reserved center velocity, source-independent Bregman cone, static localization, Riccati charge, scalar reserve compression, or Bose shifted cones"
+    },
+    {
+      "line": 2939,
+      "label": "CLG positive Lorentz/Hankel faces zero through two"
+    },
+    {
+      "line": 2940,
+      "label": "CLG fixed-mass/first-moment curvature reserve"
+    },
+    {
+      "line": 2941,
+      "label": "FZZ unmarked torus averaging"
+    },
+    {
+      "line": 2942,
+      "label": "FZZ charge-balanced holonomy-only replica area"
+    },
+    {
+      "line": 2943,
+      "label": "FZZ external-BRST pointwise, branch, spectator, and genus shortcuts"
+    },
+    {
+      "line": 2944,
+      "label": "FZZ generic tempered scalar puncture occurrence"
+    },
+    {
+      "line": 2945,
+      "label": "FZZ finite normalized logarithmic-density threshold"
+    },
+    {
+      "line": 2946,
+      "label": "FZZ same-scale scalar Laurent fusion"
+    },
+    {
+      "line": 2947,
+      "label": "FZZ canonical joint natural radial/phase incidence"
+    },
+    {
+      "line": 2948,
+      "label": "FZZ same-source divisor gradient flow"
+    },
+    {
+      "line": 2949,
+      "label": "FZZ holomorphic real-slice or horizontally stratified generator"
+    },
+    {
+      "line": 2950,
+      "label": "FZZ regular finite-exponential-type physical response"
+    },
+    {
+      "line": 2951,
+      "label": "PW-B singular connection index or canonical Hilbert density"
+    },
+    {
+      "line": 2952,
+      "label": "W2C positive-cone extension or common-translation propagation"
+    },
+    {
+      "line": 2953,
+      "label": "five-point angle concavity promotion"
+    },
+    {
+      "line": 2954,
+      "label": "directed prime--archimedean KMS/passive completion"
+    },
+    {
+      "line": 2955,
+      "label": "prime-window phase supply as selector"
+    },
+    {
+      "line": 2956,
+      "label": "finite-prime D2/P tail"
+    },
+    {
+      "line": 2957,
+      "label": "finite retained-prime/Dirichlet annihilator"
+    },
+    {
+      "line": 2958,
+      "label": "two-atom centered Euler truncation"
+    },
+    {
+      "line": 2959,
+      "label": "D2 order transport through physical two-edge squares"
+    },
+    {
+      "line": 2960,
+      "label": "Suzuki fixed-scale dressed transition-core producer"
+    },
+    {
+      "line": 2961,
+      "label": "Suzuki diagonal Jordan compactification"
+    },
+    {
+      "line": 2962,
+      "label": "square-root PNT envelope as Suzuki scale-order producer"
+    },
+    {
+      "line": 2963,
+      "label": "fixed-affine Suzuki signed compensation"
+    },
+    {
+      "line": 2964,
+      "label": "higher fixed Suzuki contact as RH endpoint"
+    },
+    {
+      "line": 2965,
+      "label": "finite Feller tensor admission as selector"
+    },
+    {
+      "line": 2966,
+      "label": "completed Riesz clock descent through marginal quotient"
+    },
+    {
+      "line": 2967,
+      "label": "F"
+    },
+    {
+      "line": 2968,
+      "label": "F2 literal regularized trace-moment weld"
+    },
+    {
+      "line": 2969,
+      "label": "C1 literal global-mean Pluecker moment landing"
+    },
+    {
+      "line": 2970,
+      "label": "F2 compact Hausdorff synchronization"
+    },
+    {
+      "line": 2971,
+      "label": "NB/BD canonical raw-M\u00f6bius approximation"
+    },
+    {
+      "line": 2972,
+      "label": "finite stationary theta carrier"
+    },
+    {
+      "line": 2973,
+      "label": "G2"
+    },
+    {
+      "line": 2974,
+      "label": "fixed-interior Ward majorant"
+    },
+    {
+      "line": 2975,
+      "label": "four-unit operator-norm transport"
+    },
+    {
+      "line": 2976,
+      "label": "H"
+    },
+    {
+      "line": 2977,
+      "label": "J"
+    },
+    {
+      "line": 2978,
+      "label": "T2 regular/compact-open semicontinuous scalar descent"
+    },
+    {
+      "line": 2979,
+      "label": "FCRJ shrinking, fixed-window bounds, or schedule selection"
+    },
+    {
+      "line": 2980,
+      "label": "O lag sign, strict-margin, Gram, lower-floor, or abstract single-base shortcut"
+    },
+    {
+      "line": 2981,
+      "label": "K"
+    },
+    {
+      "line": 2982,
+      "label": "M"
+    },
+    {
+      "line": 2983,
+      "label": "N"
+    },
+    {
+      "line": 2984,
+      "label": "L fixed-reader singular relation"
+    },
+    {
+      "line": 2985,
+      "label": "L Hausdorff operator/multifibre descent"
+    },
+    {
+      "line": 2986,
+      "label": "L normalized cofinal exact-prime Green-source convergence in original Meyer topology"
+    },
+    {
+      "line": 2987,
+      "label": "R"
+    },
+    {
+      "line": 2988,
+      "label": "PCS co-shift-natural selective boundary"
+    },
+    {
+      "line": 2989,
+      "label": "G-CE finite local analytic annihilator or fixed ceiling"
+    },
+    {
+      "line": 2990,
+      "label": "XST signed cross-orbit incidence"
+    },
+    {
+      "line": 2991,
+      "label": "Real-corona intrinsic local-index transgression"
+    },
+    {
+      "line": 2992,
+      "label": "flat/split homological provenance"
+    },
+    {
+      "line": 2993,
+      "label": "formation depth, passive recovery, finite Gaussian fusion, or abstract sublinear filling as coercive producer"
+    },
+    {
+      "line": 2994,
+      "label": "IW"
+    },
+    {
+      "line": 2995,
+      "label": "AP"
+    },
+    {
+      "line": 2996,
+      "label": "split additive-exponential Hopf hidden-kernel mechanism"
+    },
+    {
+      "line": 2997,
+      "label": "controlled arithmetic Leibniz/formal-deformation producer"
+    },
+    {
+      "line": 2998,
+      "label": "all-prime Fermat-quotient carry selector"
+    },
+    {
+      "line": 2999,
+      "label": "TD/C1 raw positive supercarrier"
+    },
+    {
+      "line": 3000,
+      "label": "SC finite-port Stokes landing"
+    },
+    {
+      "line": 3001,
+      "label": "SC unmarked pointwise rigged-fibre geometry"
+    },
+    {
+      "line": 3002,
+      "label": "SC scalar unitization, unrestricted additive determinant, or skew-adjoint additive restriction"
+    },
+    {
+      "line": 3003,
+      "label": "finite two-packet rational/differential prime formation"
+    },
+    {
+      "line": 3004,
+      "label": "positive or naive signed Euler--Wold budget descent"
+    },
+    {
+      "line": 3005,
+      "label": "HCF finite entire Euler-gauge cancellation"
+    },
+    {
+      "line": 3006,
+      "label": "HCF norm-square-only, unpaired low-center, or absolute Poisson-alias ceiling"
+    },
+    {
+      "line": 3007,
+      "label": "HCF continuous scalar diagonal minorant or adaptive spacing"
+    },
+    {
+      "line": 3008,
+      "label": "HCF fixed positive-shift mixture or positive dyadic telescope"
+    },
+    {
+      "line": 3009,
+      "label": "T1 fixed finite-aperture/order/type prime extraction"
+    },
+    {
+      "line": 3010,
+      "label": "literal Euler half-density bounded completion"
+    },
+    {
+      "line": 3011,
+      "label": "AF"
+    },
+    {
+      "line": 3012,
+      "label": "BW barrelled Wold certificate"
+    },
+    {
+      "line": 3013,
+      "label": "prime-Poisson common recovery or internal sewing"
+    },
+    {
+      "line": 3014,
+      "label": "KMSS order-independent scalar Koszul completion"
+    },
+    {
+      "line": 3015,
+      "label": "EGC raw horizontal-edge majorant"
+    },
+    {
+      "line": 3016,
+      "label": "APF source-null or positive winding"
+    },
+    {
+      "line": 3017,
+      "label": "SNR"
+    },
+    {
+      "line": 3018,
+      "label": "residue-scale fitting"
+    },
+    {
+      "line": 3019,
+      "label": "printed Connes\u2013Consani prime normalization"
+    },
+    {
+      "line": 3020,
+      "label": "source-independent diagonal Euler--Wick Hilbert/Krein completion"
+    },
+    {
+      "line": 3021,
+      "label": "OPUC / positive circle carrier"
+    },
+    {
+      "line": 3022,
+      "label": "DQPT"
+    },
+    {
+      "line": 3023,
+      "label": "rank-one theta-lattice sewing deformation"
+    },
+    {
+      "line": 3024,
+      "label": "bounded-similarity/Keldysh/theta pseudospectral selection"
+    },
+    {
+      "line": 3025,
+      "label": "independent-phase/Riemann--Siegel log mean"
+    },
+    {
+      "line": 3026,
+      "label": "mollified off-line first moment and Jensen-gap closure"
+    },
+    {
+      "line": 3027,
+      "label": "Speiser critical-line sign"
+    },
+    {
+      "line": 3028,
+      "label": "regular, tempered, finite-action, or sparse-local-jet FZZ selection"
+    },
+    {
+      "line": 3029,
+      "label": "HB zero-cusp, unmodified scalar-RSZ, or pointwise specialization"
+    },
+    {
+      "line": 3030,
+      "label": "fixed-kernel, target-scaled, gauge, or cross-pair HB production"
+    },
+    {
+      "line": 3031,
+      "label": "HB global propagator, fixed pairing, or meromorphic scalar cancellation"
+    },
+    {
+      "line": 3032,
+      "label": "HB analytic or finite-rank two-leg compensation"
+    },
+    {
+      "line": 3033,
+      "label": "HB finite-energy Hilbert, bounded-Krein, or arbitrary two-leg graph compensation"
+    },
+    {
+      "line": 3034,
+      "label": "HB finite/local/Hermitian/passive completion"
+    },
+    {
+      "line": 3035,
+      "label": "HB diagonal/compact/bounded or abstract unbounded coefficient response"
+    },
+    {
+      "line": 3036,
+      "label": "HB finite-variation damped spectral cancellation"
+    },
+    {
+      "line": 3037,
+      "label": "HB Schwarz-odd diagonal or Schwarz-exchanged global Peierls realization"
+    },
+    {
+      "line": 3038,
+      "label": "HB Birmingham--Mokhtari source-probe response"
+    },
+    {
+      "line": 3039,
+      "label": "HB completed spin-two/Jost/continuum/renormalization shortcuts"
+    },
+    {
+      "line": 3040,
+      "label": "HB analytic perturbative QNM clock"
+    },
+    {
+      "line": 3041,
+      "label": "HB closed-discrete finite-jet positive-clock passport"
+    },
+    {
+      "line": 3042,
+      "label": "HB nonzero FE-invariant scalar response correction"
+    },
+    {
+      "line": 3043,
+      "label": "HB scalar Poincare-radial descent"
+    },
+    {
+      "line": 3044,
+      "label": "HB scalar angular reconstruction"
+    },
+    {
+      "line": 3045,
+      "label": "HB conservative Bogoliubov or regular/common-Fock/Riesz completion"
+    },
+    {
+      "line": 3046,
+      "label": "diagonal or sector-local Hawking completion"
+    },
+    {
+      "line": 3047,
+      "label": "channelwise third-order Hawking/AIME cancellation"
+    },
+    {
+      "line": 3048,
+      "label": "inverse-character sideband audit as physical BM closure"
+    },
+    {
+      "line": 3049,
+      "label": "local Birmingham--Mokhtari pole, scalar-projective, or monodromy-only shortcut"
+    },
+    {
+      "line": 3050,
+      "label": "raw Birmingham--Mokhtari causal decay or two-sided boundedness"
+    },
+    {
+      "line": 3051,
+      "label": "finite/moving-horizon mass sign closure in HB"
+    },
+    {
+      "line": 3052,
+      "label": "finite-state FZZ/Schwarzschild closure"
+    },
+    {
+      "line": 3053,
+      "label": "scalar-history, regular Borel, grade-diagonal, or rescaling-invariant Parikh--Wilczek balance"
+    },
+    {
+      "line": 3054,
+      "label": "positive moment-admissible PW boundary regularization"
+    },
+    {
+      "line": 3055,
+      "label": "neutral FZZ/PW counterterm sewing"
+    },
+    {
+      "line": 3056,
+      "label": "RBH complementary/wall finite part, separated-sign linear production, or passive normalization"
+    },
+    {
+      "line": 3057,
+      "label": "diagonal thermofield purification"
+    },
+    {
+      "line": 3058,
+      "label": "finite-cylinder double realization"
+    },
+    {
+      "line": 3059,
+      "label": "JAS diagonal/flat/nilpotent/Haar synthesis"
+    },
+    {
+      "line": 3060,
+      "label": "JAS/RFHM all-prime reversible literal sewing"
+    },
+    {
+      "line": 3061,
+      "label": "JAS multivalued square-zero quotient landing"
+    },
+    {
+      "line": 3062,
+      "label": "JAS/RFHM direct prime-torus action"
+    },
+    {
+      "line": 3063,
+      "label": "finite critical-observation cover as nonabelian selector"
+    },
+    {
+      "line": 3064,
+      "label": "paired irregular determinant purity"
+    },
+    {
+      "line": 3065,
+      "label": "GIT word-trace gluing"
+    },
+    {
+      "line": 3066,
+      "label": "standard CGL packet"
+    },
+    {
+      "line": 3067,
+      "label": "positive diagonal repair"
+    },
+    {
+      "line": 3068,
+      "label": "FD2/GTA polarization, cone approximation, admissible approximation, or full quadratic-defect decay"
+    },
+    {
+      "line": 3069,
+      "label": "full-sector or compact--cofinal repair"
+    },
+    {
+      "line": 3070,
+      "label": "bounded strict-frontier gauge"
+    },
+    {
+      "line": 3071,
+      "label": "U scalar source-capital inference"
+    },
+    {
+      "line": 3072,
+      "label": "boundary-resolvent shortcut"
+    },
+    {
+      "line": 3073,
+      "label": "finite, differential, modulus/Newton, power-profield/Jensen, inertia, orbit, deformation, fixed-dimension passports, or squarefree-half regularization"
+    },
+    {
+      "line": 3074,
+      "label": "physical dilation, BBM pullback, or finite autonomous spectrum"
+    },
+    {
+      "line": 3075,
+      "label": "positive critical-prime Fock determinant"
+    },
+    {
+      "line": 3076,
+      "label": "Route-P direct determinant and scalar/Rees/cubic matching"
+    },
+    {
+      "line": 3077,
+      "label": "Route-P positive/passive/scalar landing"
+    },
+    {
+      "line": 3078,
+      "label": "moving finite-prime escape cure"
+    },
+    {
+      "line": 3079,
+      "label": "de Branges transcendence selector"
+    },
+    {
+      "line": 3080,
+      "label": "time-one Gamma-jet Fock boundedness"
+    },
+    {
+      "line": 3081,
+      "label": "NDS reduced-conductor regulator and nodal naturality"
+    },
+    {
+      "line": 3082,
+      "label": "finite residue positivity"
+    },
+    {
+      "line": 3083,
+      "label": "bounded Marcinkiewicz/Yoneda descent"
+    },
+    {
+      "line": 3084,
+      "label": "absolute or merely relative Gamma anomaly cancellation"
+    },
+    {
+      "line": 3085,
+      "label": "reciprocal-Xi Clifford split"
+    },
+    {
+      "line": 3086,
+      "label": "LI eventual negativity, generic square-cone, ordinary boundary summation, finite/adaptive prefix, sublinear repair, absolute endpoint assembly, or uniform normalized tail"
+    },
+    {
+      "line": 3087,
+      "label": "universal squared-Euler anti-L\u00f6wner positivity"
+    },
+    {
+      "line": 3088,
+      "label": "critical scalar/Jordan Suzuki curvature summation"
+    },
+    {
+      "line": 3089,
+      "label": "positive same-phase shared-plane Suzuki fusion"
+    },
+    {
+      "line": 3090,
+      "label": "unrenormalized Suzuki Ward energy"
+    },
+    {
+      "line": 3091,
+      "label": "compact Thorin/Markov/seam-log Hankel"
+    },
+    {
+      "line": 3092,
+      "label": "direct prime Ising"
+    },
+    {
+      "line": 3093,
+      "label": "centered abelian zeta-gas socle limit"
+    },
+    {
+      "line": 3094,
+      "label": "source-horizontal annealing"
+    },
+    {
+      "line": 3095,
+      "label": "C5 pointwise Jensen prime factorization"
+    },
+    {
+      "line": 3096,
+      "label": "finite ABHN/Bruhat landing"
+    },
+    {
+      "line": 3097,
+      "label": "fractional-part extraction"
+    }
+  ]
+}

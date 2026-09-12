@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaDisplacedDeepCoefficientIdentification
 import GaloisForLFunctions.RHTower.Sieve.DirichletTruncationError
+import GaloisForLFunctions.RHTower.ZetaChiFixedNegativeLineDerivativeBound
 
 /-!
 # Quantitative truncation of the deep displaced zeta value edge
@@ -15,35 +16,32 @@ open Complex MeasureTheory
 
 namespace RHTower
 
-/-- Polynomial-height, fixed-power bound for every deep value coefficient. -/
-theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_poly_le
+/-- Explicit fourth-power height bound for every deep value coefficient. -/
+theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_rpow_four_le
     {x d : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4) :
-    ∃ (D : ℝ) (N : ℕ), 0 ≤ D ∧
+    ∃ D : ℝ, 0 ≤ D ∧
       ∀ tau : ℝ, ∀ n : ℕ,
       ‖smoothAFEZetaDisplacedDeepCoefficient d tau x n‖ ≤
-        D * (1 + |tau|) ^ N *
+        D * (1 + |tau|) ^ 4 *
           (1 / (n + 1 : ℝ) ^ (9 / 2 : ℝ)) := by
-  obtain ⟨C, N, hC, hchi⟩ :=
-    exists_norm_zetaChi_neg_seven_halves_poly_le
+  obtain ⟨C, hC, hchi⟩ :=
+    exists_norm_zetaChi_neg_seven_halves_le
   let K : ℝ := x ^ (d - 4) *
     (Real.exp ((d - 4) ^ 2) / |d - 4|) * C
-  let J : ℝ := ∫ v : ℝ, (1 + |v|) ^ N * Real.exp (-(v ^ 2))
+  let J : ℝ := ∫ v : ℝ, (1 + |v|) ^ 4 * Real.exp (-(v ^ 2))
   let c : ℝ := 1 / (2 * Real.pi)
   let D : ℝ := c * K * J
   have hc : 0 ≤ c := by dsimp only [c]; positivity
-  have hC0 : 0 ≤ C := by
-    have hzero := hchi 0
-    simpa using (le_trans (norm_nonneg
-      (zetaChi (((-7 / 2 : ℝ) : ℂ) + (0 : ℂ) * I))) hzero)
+  have hC0 : 0 ≤ C := hC.le
   have hK : 0 ≤ K := by dsimp only [K]; positivity
   have hJ : 0 ≤ J := by
     dsimp only [J]
     exact integral_nonneg fun v => by positivity
   have hD : 0 ≤ D := by dsimp only [D]; positivity
-  refine ⟨D, N, hD, fun tau n => ?_⟩
+  refine ⟨D, hD, fun tau n => ?_⟩
   let a : ℝ := 1 + |tau|
   let b : ℝ := 1 / (n + 1 : ℝ) ^ (9 / 2 : ℝ)
-  let M : ℝ := K * b * a ^ N
+  let M : ℝ := K * b * a ^ 4
   have hshift : ∀ v : ℝ,
       1 + |tau| + |v| ≤ a * (1 + |v|) := by
     intro v
@@ -51,30 +49,30 @@ theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_poly_le
     nlinarith [abs_nonneg tau, abs_nonneg v,
       mul_nonneg (abs_nonneg tau) (abs_nonneg v)]
   have hmajor : Integrable (fun v : ℝ =>
-      M * ((1 + |v|) ^ N * Real.exp (-(v ^ 2)))) :=
-    (integrable_shifted_pow_mul_exp_neg_sq 1 N).const_mul M
+      M * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2)))) :=
+    (integrable_shifted_pow_mul_exp_neg_sq 1 4).const_mul M
   have hint :
       ‖∫ v : ℝ,
           smoothAFEZetaReflectedTerm (displacedLinePt d tau) x n
             (((d - 4 : ℝ) : ℂ) + (v : ℂ) * I)‖ ≤
-        ∫ v : ℝ, M * ((1 + |v|) ^ N * Real.exp (-(v ^ 2))) := by
+        ∫ v : ℝ, M * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by
     apply MeasureTheory.norm_integral_le_of_norm_le hmajor
     exact Filter.Eventually.of_forall fun v => by
       calc
         ‖smoothAFEZetaReflectedTerm (displacedLinePt d tau) x n
             (((d - 4 : ℝ) : ℂ) + (v : ℂ) * I)‖ ≤
             K * b *
-              ((1 + |tau| + |v|) ^ N * Real.exp (-(v ^ 2))) := by
+              ((1 + |tau| + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by
           have h := norm_smoothAFEZetaReflectedTerm_displaced_deep_le
             hx hd hdq hchi tau n v
           dsimp only [K, b]
           convert h using 1
           · ring
         _ ≤ K * b *
-            ((a * (1 + |v|)) ^ N * Real.exp (-(v ^ 2))) := by
+            ((a * (1 + |v|)) ^ 4 * Real.exp (-(v ^ 2))) := by
           gcongr
           exact hshift v
-        _ = M * ((1 + |v|) ^ N * Real.exp (-(v ^ 2))) := by
+        _ = M * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by
           dsimp only [M]
           rw [mul_pow]
           ring
@@ -86,30 +84,42 @@ theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_poly_le
         smoothAFEZetaReflectedTerm (displacedLinePt d tau) x n
           (((d - 4 : ℝ) : ℂ) + (v : ℂ) * I)‖
       ≤ c * ∫ v : ℝ,
-          M * ((1 + |v|) ^ N * Real.exp (-(v ^ 2))) :=
+          M * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) :=
         mul_le_mul_of_nonneg_left hint hc
-    _ = D * (1 + |tau|) ^ N *
+    _ = D * (1 + |tau|) ^ 4 *
           (1 / (n + 1 : ℝ) ^ (9 / 2 : ℝ)) := by
       rw [integral_const_mul]
       dsimp only [D, M, J, a, b]
       ring
 
-/-- Explicit `L^(-7/2)` tail of the deep reflected value series. -/
-theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_tsum_sub_sum_le
+/-- Polynomial-form compatibility wrapper for the explicit fourth-power bound. -/
+theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_poly_le
     {x d : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4) :
     ∃ (D : ℝ) (N : ℕ), 0 ≤ D ∧
+      ∀ tau : ℝ, ∀ n : ℕ,
+      ‖smoothAFEZetaDisplacedDeepCoefficient d tau x n‖ ≤
+        D * (1 + |tau|) ^ N *
+          (1 / (n + 1 : ℝ) ^ (9 / 2 : ℝ)) := by
+  obtain ⟨D, hD, hbound⟩ :=
+    exists_norm_smoothAFEZetaDisplacedDeepCoefficient_rpow_four_le hx hd hdq
+  exact ⟨D, 4, hD, hbound⟩
+
+/-- Explicit fourth-power-height, `L^(-7/2)` deep reflected tail. -/
+theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_tsum_sub_sum_rpow_four_le
+    {x d : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4) :
+    ∃ D : ℝ, 0 ≤ D ∧
       ∀ tau : ℝ, ∀ L : ℕ, 1 ≤ L →
       ‖(∑' n : ℕ, smoothAFEZetaDisplacedDeepCoefficient d tau x n) -
           ∑ n ∈ Finset.range L,
             smoothAFEZetaDisplacedDeepCoefficient d tau x n‖ ≤
-        D * (1 + |tau|) ^ N *
+        D * (1 + |tau|) ^ 4 *
           ((L : ℝ) ^ (-(7 / 2 : ℝ)) / (7 / 2 : ℝ)) := by
-  obtain ⟨D, N, hD, hpoint⟩ :=
-    exists_norm_smoothAFEZetaDisplacedDeepCoefficient_poly_le hx hd hdq
-  refine ⟨D, N, hD, fun tau L hL => ?_⟩
+  obtain ⟨D, hD, hpoint⟩ :=
+    exists_norm_smoothAFEZetaDisplacedDeepCoefficient_rpow_four_le hx hd hdq
+  refine ⟨D, hD, fun tau L hL => ?_⟩
   let f : ℕ → ℂ := fun n =>
     smoothAFEZetaDisplacedDeepCoefficient d tau x n
-  let A : ℝ := D * (1 + |tau|) ^ N
+  let A : ℝ := D * (1 + |tau|) ^ 4
   have hnorm : Summable (fun n : ℕ => ‖f n‖) := by
     have hbase := summable_smoothAFEZetaMajorant
       (p := (9 / 2 : ℝ)) (by norm_num)
@@ -161,9 +171,24 @@ theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_tsum_sub_sum_le
         (Sieve.tsum_tail_rpow_neg_le
           (show (1 : ℝ) < 9 / 2 by norm_num) hL)
         (by dsimp only [A]; positivity)
-    _ = D * (1 + |tau|) ^ N *
+    _ = D * (1 + |tau|) ^ 4 *
         ((L : ℝ) ^ (-(7 / 2 : ℝ)) / (7 / 2 : ℝ)) := by
       dsimp only [A]
       ring_nf
+
+/-- Polynomial-form compatibility wrapper for the explicit fourth-power tail. -/
+theorem exists_norm_smoothAFEZetaDisplacedDeepCoefficient_tsum_sub_sum_le
+    {x d : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4) :
+    ∃ (D : ℝ) (N : ℕ), 0 ≤ D ∧
+      ∀ tau : ℝ, ∀ L : ℕ, 1 ≤ L →
+      ‖(∑' n : ℕ, smoothAFEZetaDisplacedDeepCoefficient d tau x n) -
+          ∑ n ∈ Finset.range L,
+            smoothAFEZetaDisplacedDeepCoefficient d tau x n‖ ≤
+        D * (1 + |tau|) ^ N *
+          ((L : ℝ) ^ (-(7 / 2 : ℝ)) / (7 / 2 : ℝ)) := by
+  obtain ⟨D, hD, hbound⟩ :=
+    exists_norm_smoothAFEZetaDisplacedDeepCoefficient_tsum_sub_sum_rpow_four_le
+      hx hd hdq
+  exact ⟨D, 4, hD, hbound⟩
 
 end RHTower

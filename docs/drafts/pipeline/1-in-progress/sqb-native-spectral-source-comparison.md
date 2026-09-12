@@ -231,6 +231,8 @@ where the inequality denotes positivity of every finite kernel matrix. The added
 
 The same meromorphic even feature evaluated at `t=alpha_q` has the rational dependence of native mean subtraction. Independently, the proved all-plane `profile_transform_equation` gives `profileTransform(q,i)=xi(3/2)/(1+alpha_q^2)`, retaining its normalization. These agreements identify an explicit candidate correction to test. They do **not** identify the kernel quadratic form with the native differential current: multiplication by `1/(1+t^2)` is a different operator from the rank-one kernel correction. The remaining join must prove equality or a sufficient inequality for the actual response forms, including their domains and both reflected terms. Kernel positivity alone supplies neither all-rank theta orientation nor vanishing native forcing.
 
+The [actual Hardy response construction](sqb-native-hardy-source-weight.md) supplies a paper source map into the half-shift model space using the literal entire divided responses and uniform Gamma/zeta estimates. It retains the explicit native weight `|xi(1+it)|^2*boundaryWeight(t)` and the full forcing. The weighted estimate needed for occurrence or all-rank orientation remains open; the new source admission and forcing-norm identity are not Lean-checked.
+
 An alternative construction target is convexity of the tilt energies. With the preceding `g_a`, real parity polynomial `P`, and `u=P(D)g_a`, integration by parts gives the analytical second variation
 
 ```text

@@ -14,7 +14,7 @@ every integrable function with integrable derivative in each Sobolev weight belo
 threshold, and the reason a bounded-variation profile just misses `H^{1/2}`.
 -/
 
-open Real MeasureTheory FourierTransform
+open Real MeasureTheory FourierTransform Filter Topology Set
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -42,6 +42,193 @@ theorem norm_fourier_mul_le_integral_norm_deriv {f : ℝ → ℂ}
 theorem norm_fourierReal_le_integral_norm (f : ℝ → ℂ) (ξ : ℝ) :
     ‖fourier f ξ‖ ≤ ∫ t, ‖f t‖ :=
   VectorFourier.norm_fourierIntegral_le_integral_norm _ _ _ _ _
+
+/-- **Square-root weighted Fourier decay.** Order-one decay from an integrable derivative is
+strictly stronger than the square-root weighted decay required at a fractional Tauberian boundary.
+This is the `alpha = 1/2` oscillatory decay step in the Kato--Ikehara argument. -/
+theorem tendsto_sqrt_mul_norm_fourier_of_integrable_deriv {f : ℝ → ℂ}
+    (hf : Integrable f) (hdiff : Differentiable ℝ f) (hf' : Integrable (deriv f)) :
+    Tendsto (fun ξ : ℝ ↦ Real.sqrt ξ * ‖fourier f ξ‖) atTop (nhds 0) := by
+  let C : ℝ := ∫ t, ‖deriv f t‖
+  have hmajor : Tendsto (fun ξ : ℝ ↦ C / (2 * π * Real.sqrt ξ)) atTop (nhds 0) := by
+    have hsqrt : Tendsto (fun ξ : ℝ ↦ Real.sqrt ξ) atTop atTop :=
+      Real.tendsto_sqrt_atTop
+    have hden : Tendsto (fun ξ : ℝ ↦ 2 * π * Real.sqrt ξ) atTop atTop :=
+      hsqrt.const_mul_atTop (by positivity : 0 < 2 * π)
+    exact Tendsto.const_div_atTop hden C
+  refine squeeze_zero'
+    (Eventually.of_forall fun ξ => mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) ?_ hmajor
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with ξ hξ
+  have hsqrt : 0 < Real.sqrt ξ := Real.sqrt_pos.2 hξ
+  have hpi : 0 < 2 * π := by positivity
+  have hdecay := norm_fourier_mul_le_integral_norm_deriv hf hdiff hf' ξ
+  dsimp [C]
+  calc
+    Real.sqrt ξ * ‖fourier f ξ‖ =
+        (‖fourier f ξ‖ * (2 * π * |ξ|)) / (2 * π * Real.sqrt ξ) := by
+          apply (eq_div_iff (mul_ne_zero hpi.ne' hsqrt.ne')).2
+          rw [abs_of_pos hξ]
+          calc
+            Real.sqrt ξ * ‖fourier f ξ‖ * (2 * π * Real.sqrt ξ) =
+                ‖fourier f ξ‖ * (2 * π * Real.sqrt ξ ^ 2) := by ring
+            _ = ‖fourier f ξ‖ * (2 * π * ξ) := by rw [Real.sq_sqrt hξ.le]
+    _ ≤ (∫ t, ‖deriv f t‖) / (2 * π * Real.sqrt ξ) :=
+      div_le_div_of_nonneg_right hdecay (mul_nonneg hpi.le hsqrt.le)
+
+/-! ## Piecewise-smooth cusp decay
+
+Fractional Tauberian boundary remainders have a square-root cusp at the pole.  Their derivative is
+integrable on each side but does not exist at the cusp, so the global derivative theorem above is
+not applicable.  Splitting the interval at the cusp gives the same order-one Fourier decay; the
+finite endpoint terms are harmless.
+-/
+
+/-- **Order-one decay on a finite interval.**  Only interior differentiability is required; the
+function need merely be continuous at the endpoints. -/
+theorem norm_intervalIntegral_exp_mul_le_ibp {a b : ℝ} (hab : a ≤ b)
+    {w w' : ℝ → ℂ} {z : ℝ} (hz : z ≠ 0)
+    (hw : ContinuousOn w (uIcc a b))
+    (hderiv : ∀ x ∈ Ioo a b, HasDerivAt w (w' x) x)
+    (hw' : IntervalIntegrable w' volume a b) :
+    ‖∫ x in a..b, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖
+      ≤ (‖w b‖ + ‖w a‖ + ∫ x in a..b, ‖w' x‖) / |z| := by
+  have hzC : ((z : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz
+  set V : ℝ → ℂ := fun t => Complex.exp (((z : ℂ) * t) * Complex.I) /
+    (((z : ℝ) : ℂ) * Complex.I) with hV
+  have hVcont : ContinuousOn V (uIcc a b) := by
+    apply Continuous.continuousOn
+    fun_prop
+  have hVderiv : ∀ x ∈ Ioo a b,
+      HasDerivAt V (Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)) x := by
+    intro x _
+    have hlin : HasDerivAt (fun t : ℝ => ((z : ℂ) * t) * Complex.I)
+        ((z : ℂ) * Complex.I) x := by
+      have hbase : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x :=
+        Complex.ofRealCLM.hasDerivAt.congr_deriv (by simp)
+      simpa using ((hbase.const_mul (z : ℂ)).mul_const Complex.I)
+    have hexp : HasDerivAt (fun t : ℝ => Complex.exp (((z : ℂ) * t) * Complex.I))
+        (Complex.exp (((z : ℂ) * x) * Complex.I) * ((z : ℂ) * Complex.I)) x := hlin.cexp
+    have hdiv := hexp.div_const (((z : ℝ) : ℂ) * Complex.I)
+    have hval : Complex.exp (((z : ℂ) * x) * Complex.I) * ((z : ℂ) * Complex.I) /
+        (((z : ℝ) : ℂ) * Complex.I) =
+        Complex.exp (((z * x : ℝ) : ℂ) * Complex.I) := by
+      rw [mul_div_assoc, div_self (mul_ne_zero hzC Complex.I_ne_zero), mul_one]
+      push_cast
+      ring_nf
+    rwa [hval] at hdiv
+  have hVnorm : ∀ x : ℝ, ‖V x‖ = 1 / |z| := by
+    intro x
+    rw [hV]
+    simp only [norm_div, norm_mul]
+    rw [show ((z : ℂ) * x) = (((z * x : ℝ) : ℂ)) from by push_cast; ring,
+      Complex.norm_exp_ofReal_mul_I, Complex.norm_I, Complex.norm_real, Real.norm_eq_abs,
+      mul_one]
+  have hexpInt : IntervalIntegrable (fun x : ℝ =>
+      Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)) volume a b := by
+    apply Continuous.intervalIntegrable
+    fun_prop
+  have hderiv' : ∀ x ∈ Ioo (min a b) (max a b), HasDerivAt w (w' x) x := by
+    simpa [min_eq_left hab, max_eq_right hab] using hderiv
+  have hVderiv' : ∀ x ∈ Ioo (min a b) (max a b),
+      HasDerivAt V (Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)) x := by
+    simpa [min_eq_left hab, max_eq_right hab] using hVderiv
+  rw [intervalIntegral.integral_mul_deriv_eq_deriv_mul_of_hasDerivAt hw hVcont hderiv'
+    hVderiv' hw' hexpInt]
+  have hbound : ‖w b * V b - w a * V a - ∫ x in a..b, w' x * V x‖
+      ≤ ‖w b‖ * (1 / |z|) + ‖w a‖ * (1 / |z|)
+        + (∫ x in a..b, ‖w' x‖) * (1 / |z|) := by
+    refine (norm_sub_le _ _).trans ?_
+    have h1 : ‖w b * V b - w a * V a‖ ≤
+        ‖w b‖ * (1 / |z|) + ‖w a‖ * (1 / |z|) := by
+      refine (norm_sub_le _ _).trans ?_
+      rw [norm_mul, norm_mul, hVnorm, hVnorm]
+    have h2 : ‖∫ x in a..b, w' x * V x‖ ≤
+        (∫ x in a..b, ‖w' x‖) * (1 / |z|) := by
+      refine (intervalIntegral.norm_integral_le_abs_integral_norm).trans ?_
+      have hcongr : (∫ x in a..b, ‖w' x * V x‖) =
+          ∫ x in a..b, ‖w' x‖ * (1 / |z|) := by
+        refine intervalIntegral.integral_congr ?_
+        intro x _
+        dsimp only
+        rw [norm_mul, hVnorm]
+      rw [hcongr, intervalIntegral.integral_mul_const, abs_of_nonneg]
+      have hnn : 0 ≤ ∫ x in a..b, ‖w' x‖ :=
+        intervalIntegral.integral_nonneg hab fun _ _ => norm_nonneg _
+      positivity
+    linarith
+  refine hbound.trans ?_
+  rw [div_eq_mul_one_div]
+  ring_nf
+  exact le_of_eq rfl
+
+/-- **Order-one decay across one cusp.**  Split at `c`; no derivative is required there. -/
+theorem norm_intervalIntegral_exp_mul_le_piecewise_ibp {a c b : ℝ}
+    (hac : a ≤ c) (hcb : c ≤ b) {w wLeft' wRight' : ℝ → ℂ} {z : ℝ} (hz : z ≠ 0)
+    (hwLeft : ContinuousOn w (uIcc a c)) (hwRight : ContinuousOn w (uIcc c b))
+    (hderivLeft : ∀ x ∈ Ioo a c, HasDerivAt w (wLeft' x) x)
+    (hderivRight : ∀ x ∈ Ioo c b, HasDerivAt w (wRight' x) x)
+    (hwLeft' : IntervalIntegrable wLeft' volume a c)
+    (hwRight' : IntervalIntegrable wRight' volume c b) :
+    ‖∫ x in a..b, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖ ≤
+      (‖w b‖ + 2 * ‖w c‖ + ‖w a‖ + (∫ x in a..c, ‖wLeft' x‖) +
+        (∫ x in c..b, ‖wRight' x‖)) / |z| := by
+  have hexp : Continuous (fun x : ℝ => Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)) := by
+    fun_prop
+  have hIntLeft : IntervalIntegrable
+      (fun x : ℝ => w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)) volume a c :=
+    (hwLeft.mul hexp.continuousOn).intervalIntegrable
+  have hIntRight : IntervalIntegrable
+      (fun x : ℝ => w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)) volume c b :=
+    (hwRight.mul hexp.continuousOn).intervalIntegrable
+  rw [← intervalIntegral.integral_add_adjacent_intervals hIntLeft hIntRight]
+  calc
+    ‖(∫ x in a..c, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)) +
+        ∫ x in c..b, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖ ≤
+        ‖∫ x in a..c, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖ +
+          ‖∫ x in c..b, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖ :=
+      norm_add_le _ _
+    _ ≤ (‖w c‖ + ‖w a‖ + ∫ x in a..c, ‖wLeft' x‖) / |z| +
+        (‖w b‖ + ‖w c‖ + ∫ x in c..b, ‖wRight' x‖) / |z| :=
+      add_le_add
+        (norm_intervalIntegral_exp_mul_le_ibp hac hz hwLeft hderivLeft hwLeft')
+        (norm_intervalIntegral_exp_mul_le_ibp hcb hz hwRight hderivRight hwRight')
+    _ = (‖w b‖ + 2 * ‖w c‖ + ‖w a‖ + (∫ x in a..c, ‖wLeft' x‖) +
+        (∫ x in c..b, ‖wRight' x‖)) / |z| := by ring
+
+/-- A continuous one-cusp profile with integrable derivatives on both sides has the
+square-root-weighted Fourier decay used at a fractional Tauberian boundary. -/
+theorem tendsto_sqrt_mul_norm_intervalIntegral_exp_mul_of_piecewise_ibp {a c b : ℝ}
+    (hac : a ≤ c) (hcb : c ≤ b) {w wLeft' wRight' : ℝ → ℂ}
+    (hwLeft : ContinuousOn w (uIcc a c)) (hwRight : ContinuousOn w (uIcc c b))
+    (hderivLeft : ∀ x ∈ Ioo a c, HasDerivAt w (wLeft' x) x)
+    (hderivRight : ∀ x ∈ Ioo c b, HasDerivAt w (wRight' x) x)
+    (hwLeft' : IntervalIntegrable wLeft' volume a c)
+    (hwRight' : IntervalIntegrable wRight' volume c b) :
+    Tendsto (fun z : ℝ => Real.sqrt z *
+      ‖∫ x in a..b, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖)
+      atTop (nhds 0) := by
+  let C : ℝ := ‖w b‖ + 2 * ‖w c‖ + ‖w a‖ + (∫ x in a..c, ‖wLeft' x‖) +
+    (∫ x in c..b, ‖wRight' x‖)
+  have hmajor : Tendsto (fun z : ℝ => C / Real.sqrt z) atTop (nhds 0) := by
+    exact Tendsto.const_div_atTop Real.tendsto_sqrt_atTop C
+  refine squeeze_zero'
+    (Eventually.of_forall fun z => mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) ?_ hmajor
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with z hz
+  have hsqrt : 0 < Real.sqrt z := Real.sqrt_pos.2 hz
+  have hdecay := norm_intervalIntegral_exp_mul_le_piecewise_ibp hac hcb hz.ne' hwLeft
+    hwRight hderivLeft hderivRight hwLeft' hwRight' (z := z)
+  change Real.sqrt z *
+      ‖∫ x in a..b, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖ ≤
+    C / Real.sqrt z
+  calc
+    Real.sqrt z *
+        ‖∫ x in a..b, w x * Complex.exp (((z * x : ℝ) : ℂ) * Complex.I)‖ ≤
+        Real.sqrt z * (C / |z|) := mul_le_mul_of_nonneg_left hdecay (Real.sqrt_nonneg _)
+    _ = C / Real.sqrt z := by
+      rw [abs_of_pos hz]
+      field_simp
+      rw [Real.sq_sqrt hz.le]
+      ring
 
 /-- **Fractional Sobolev membership from an integrable derivative.**  An integrable function whose
 derivative is integrable lies in every Sobolev weight strictly below one half.  The exponent is

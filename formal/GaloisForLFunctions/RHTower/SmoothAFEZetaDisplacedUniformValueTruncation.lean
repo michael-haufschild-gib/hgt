@@ -155,24 +155,24 @@ theorem riemannZeta_displaced_eq_direct_tsum_sub_deep_tsum
   rw [hweighted] at hbase
   simpa only [smoothAFEZetaDisplacedDirectTerm, sub_eq_add_neg] using hbase
 
-/-- Direct plus deep reflected tails give a height-uniform finite value AFE. -/
-theorem exists_norm_riemannZeta_displaced_sub_deepFiniteValue_le
+/-- Direct plus deep reflected tails with explicit fourth-power height growth. -/
+theorem exists_norm_riemannZeta_displaced_sub_deepFiniteValue_rpow_four_le
     {x d : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4) :
-    ∃ (C D : ℝ) (N : ℕ), 0 ≤ C ∧ 0 ≤ D ∧
+    ∃ C D : ℝ, 0 ≤ C ∧ 0 ≤ D ∧
       ∀ (tau : ℝ) (L : ℕ), 1 ≤ L →
       ‖riemannZeta (displacedLinePt d tau) -
           smoothAFEZetaDisplacedDeepFiniteValue d x tau L‖ ≤
         C * (L : ℝ) ^ (-1 : ℝ) +
-          D * (1 + |tau|) ^ N *
+          D * (1 + |tau|) ^ 4 *
             ((L : ℝ) ^ (-(7 / 2 : ℝ)) / (7 / 2 : ℝ)) := by
   have hdhalf : d < 1 / 2 := hdq.trans_lt (by norm_num)
   obtain ⟨C, hC, hdirect⟩ :=
     exists_norm_smoothAFEZetaDisplacedDirectTerm_tsum_sub_sum_le
       hdhalf hx
-  obtain ⟨D, N, hD, hreflected⟩ :=
-    exists_norm_smoothAFEZetaDisplacedDeepCoefficient_tsum_sub_sum_le
+  obtain ⟨D, hD, hreflected⟩ :=
+    exists_norm_smoothAFEZetaDisplacedDeepCoefficient_tsum_sub_sum_rpow_four_le
       hx hd hdq
-  refine ⟨C, D, N, hC, hD, fun tau L hL => ?_⟩
+  refine ⟨C, D, hC, hD, fun tau L hL => ?_⟩
   rw [riemannZeta_displaced_eq_direct_tsum_sub_deep_tsum hx hd hdq tau]
   unfold smoothAFEZetaDisplacedDeepFiniteValue
   have hdecomp :
@@ -194,29 +194,42 @@ theorem exists_norm_riemannZeta_displaced_sub_deepFiniteValue_le
   exact (norm_sub_le _ _).trans
     (add_le_add (hdirect tau L hL) (hreflected tau L hL))
 
-/-- Height-uniform classical value truncation.  Constants are chosen before
-height, and all deep-tail and conductor-localization terms remain explicit. -/
-theorem exists_norm_riemannZeta_displaced_sub_finiteClassicalValue_uniform_le
+/-- Polynomial-form compatibility wrapper for the explicit fourth-power AFE. -/
+theorem exists_norm_riemannZeta_displaced_sub_deepFiniteValue_le
+    {x d : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4) :
+    ∃ (C D : ℝ) (N : ℕ), 0 ≤ C ∧ 0 ≤ D ∧
+      ∀ (tau : ℝ) (L : ℕ), 1 ≤ L →
+      ‖riemannZeta (displacedLinePt d tau) -
+          smoothAFEZetaDisplacedDeepFiniteValue d x tau L‖ ≤
+        C * (L : ℝ) ^ (-1 : ℝ) +
+          D * (1 + |tau|) ^ N *
+            ((L : ℝ) ^ (-(7 / 2 : ℝ)) / (7 / 2 : ℝ)) := by
+  obtain ⟨C, D, hC, hD, hbound⟩ :=
+    exists_norm_riemannZeta_displaced_sub_deepFiniteValue_rpow_four_le hx hd hdq
+  exact ⟨C, D, 4, hC, hD, hbound⟩
+
+/-- Height-uniform classical value truncation with explicit fourth-power deep tail. -/
+theorem exists_norm_riemannZeta_displaced_sub_finiteClassicalValue_rpow_four_uniform_le
     {x d eta : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4)
     (heta : 0 < eta) (hetaq : eta ≤ 1 / 4) :
-    ∃ (C D E : ℝ) (N : ℕ),
+    ∃ C D E : ℝ,
       0 ≤ C ∧ 0 ≤ D ∧ 0 ≤ E ∧
       ∀ (tau : ℝ) (L : ℕ), 1 ≤ L →
       ‖riemannZeta (displacedLinePt d tau) -
           smoothAFEZetaDisplacedFiniteClassicalValue d x tau L‖ ≤
         C * (L : ℝ) ^ (-1 : ℝ) +
-          D * (1 + |tau|) ^ N *
+          D * (1 + |tau|) ^ 4 *
             ((L : ℝ) ^ (-(7 / 2 : ℝ)) / (7 / 2 : ℝ)) +
           E * x ^ (d + eta) / (max 1 |tau|) ^ eta *
             (1 + (L : ℝ) ^ (1 / 2 + eta) / (1 / 2 + eta)) := by
-  obtain ⟨C, D, N, hC, hD, hdeep⟩ :=
-    exists_norm_riemannZeta_displaced_sub_deepFiniteValue_le hx hd hdq
+  obtain ⟨C, D, hC, hD, hdeep⟩ :=
+    exists_norm_riemannZeta_displaced_sub_deepFiniteValue_rpow_four_le hx hd hdq
   have hdhalf : d < 1 / 2 := hdq.trans_lt (by norm_num)
   have hetaHalf : eta < 1 / 2 := hetaq.trans_lt (by norm_num)
   obtain ⟨E, hE, hcorr⟩ :=
     exists_norm_sum_smoothAFEZetaDualCoefficientGeneral_displaced_add_main_le
       hd.le hdhalf heta hetaHalf
-  refine ⟨C, D, E, N, hC, hD, hE, fun tau L hL => ?_⟩
+  refine ⟨C, D, E, hC, hD, hE, fun tau L hL => ?_⟩
   have hcorr' :
       ‖smoothAFEZetaDisplacedDeepFiniteValue d x tau L -
           smoothAFEZetaDisplacedFiniteClassicalValue d x tau L‖ ≤
@@ -259,5 +272,24 @@ theorem exists_norm_riemannZeta_displaced_sub_finiteClassicalValue_uniform_le
   rw [hsplit]
   exact (norm_add_le _ _).trans
     (add_le_add (hdeep tau L hL) hcorr')
+
+/-- Polynomial-form compatibility wrapper for the explicit fourth-power truncation. -/
+theorem exists_norm_riemannZeta_displaced_sub_finiteClassicalValue_uniform_le
+    {x d eta : ℝ} (hx : 0 < x) (hd : 0 < d) (hdq : d ≤ 1 / 4)
+    (heta : 0 < eta) (hetaq : eta ≤ 1 / 4) :
+    ∃ (C D E : ℝ) (N : ℕ),
+      0 ≤ C ∧ 0 ≤ D ∧ 0 ≤ E ∧
+      ∀ (tau : ℝ) (L : ℕ), 1 ≤ L →
+      ‖riemannZeta (displacedLinePt d tau) -
+          smoothAFEZetaDisplacedFiniteClassicalValue d x tau L‖ ≤
+        C * (L : ℝ) ^ (-1 : ℝ) +
+          D * (1 + |tau|) ^ N *
+            ((L : ℝ) ^ (-(7 / 2 : ℝ)) / (7 / 2 : ℝ)) +
+          E * x ^ (d + eta) / (max 1 |tau|) ^ eta *
+            (1 + (L : ℝ) ^ (1 / 2 + eta) / (1 / 2 + eta)) := by
+  obtain ⟨C, D, E, hC, hD, hE, hbound⟩ :=
+    exists_norm_riemannZeta_displaced_sub_finiteClassicalValue_rpow_four_uniform_le
+      hx hd hdq heta hetaq
+  exact ⟨C, D, E, 4, hC, hD, hE, hbound⟩
 
 end RHTower

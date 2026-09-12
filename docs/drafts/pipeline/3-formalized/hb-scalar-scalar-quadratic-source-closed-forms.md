@@ -38,3 +38,9 @@ Consistency: the (2,3) component agrees with the corpus `angularCoefficient_eq` 
 - Built the KI-gauge scalar-stream operator (`ThetaCuspHawkingBMScalarStreamEinstein`) and the gradient-tensor stream operator (`ThetaCuspHawkingBMGradientStreamEinstein`), both clean at default heartbeats; the rate-2s fundamental jet solves the scalar-stream equations identically (cross-check).
 - Negative: the SV-style ansatz (rational radial profiles × {S², |∇S|², (∇S⊗∇S)^{tf}, (Δ−λ₂)⁻¹(A S² + B |∇S|²)}) is inconsistent: trace-free and (1,1) balances fix F0, F2 algebraically, the (0,1)/(0,0) gradient-square balances force f_tr = 0 and B = 0, and the (1,2) mixed equation keeps the residual src₀₂/(r⁵(r²−1)). The |∇S|²-stream is excluded by its own Sxx²/Sx·Sxx terms.
 - Consequence: 35(ii)/(iii) must go through the per-harmonic KI reduction with source and the ++ Green function; the corpus's `fullAngular` resolvent alone cannot carry the SS response.
+
+## Sourced master identity (2026-09-12, third pass)
+- `ThetaCuspHawkingBMScalarStreamMasterIdentity.master_identity` (Lean, standard axioms): for every jet of the KI-gauge harmonic scalar stream, `M[Φ̃] = −(2r/f²)E_tt + (2/s)E_tr + 2rE_rr − (4r/(sf))E_t + 4E_r + (4/r + 4μ/(rf) − 8s²r/f²)E_T − (2/s)E_t' + ((8r²−4)/f)E_T' + 2rE_T''`, `Φ̃ = r(−fF1/s + F0/f − fF2 + 4H)`, `M = ∂_r² + (2r/f)∂_r + μ/(r²f) − 4s²/f²`.
+- Vacuum cross-check: the corpus reconstruction `d4KIScalarGaugeInvariantOrbitOfBMMaster` (with `iω = −2s`, `J.first = dΦ/dz`, `z = 1 − r⁻²`) makes E_tr, E_rr, E_t, E_r proportional to `M[Φ]`, E_tt and E_L combinations of `M[Φ]` and `M[Φ]'`, and E_T ≡ 0 (bookkeeping, exact).
+- SS master source per harmonic: `(2−μ)² M[Φ_μ] = N(r; s, μ)/(r⁵ f²)`, N explicit (scratch `sigma.json`); the master operator equals the corpus ++ hypergeometric operator after dressing by `z^{s}`.
+- Open: rational reconstruction U, the ++ Green at independent angular parameter, spectral assembly.

@@ -1,0 +1,1994 @@
+[
+  {
+    "file": "01-initial-deep.json",
+    "query": "zero exclusion without positivity rigidity winding argument principle arithmetic cancellation",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "elapsed_seconds": 52.439189375,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57250,
+      "inventoried": 57250,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57250
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9647,
+        "pending": 44764,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47603,
+        "prose": 9647
+      },
+      "declarations": 739746,
+      "documents": 2494707,
+      "vectors": 2364695,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884913,
+      "methods": {
+        "failed": 6,
+        "ready": 700588,
+        "stale": 9244
+      },
+      "status": "snapshot",
+      "snapshot_written_at": 1789207487.5414789,
+      "current_generation": 884914
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": []
+  },
+  {
+    "file": "02-speiser.json",
+    "query": "Speiser derivative zeros inverse branches critical points",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "filter_and_judge",
+      "decomposition"
+    ],
+    "elapsed_seconds": 186.79748616700002,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495239,
+      "vectors": 2365182,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884948,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207741.252484,
+      "current_generation": 884949
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "filter_and_judge",
+        "error": "local runtime deadline expired"
+      },
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "03-recurrence.json",
+    "query": "Bagchi strong recurrence self approximation zeta universality",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "elapsed_seconds": 213.546140125,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495239,
+      "vectors": 2365182,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884948,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207741.4656231,
+      "current_generation": 884949
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "04-certification.json",
+    "query": "Rouche Turing certified zero counting Riemann Siegel sign changes",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "elapsed_seconds": 137.541986375,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495239,
+      "vectors": 2365182,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884948,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207651.071263,
+      "current_generation": 884949
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": []
+  },
+  {
+    "file": "05-arithmetic-alternatives.json",
+    "query": "zeta cohomology characteristic p congruence combinatorial involution",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "elapsed_seconds": 119.306949833,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495239,
+      "vectors": 2365182,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884948,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207651.071263,
+      "current_generation": 884949
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": []
+  },
+  {
+    "file": "06-bagchi-lexical.json",
+    "query": "Bagchi Voronin universality",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 20,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "07-topology-lexical.json",
+    "query": "Speiser NewtonFlow inverseBranch",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 9,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "08-asymptotic-lexical.json",
+    "query": "RiemannSiegel SaddlePoint SteepestDescent Resurgent",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 4,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "09-discrete-lexical.json",
+    "query": "Nyman Beurling BaezDuarte Balazard Saias Yor",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 20,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "10-combinatorics-lexical.json",
+    "query": "signReversing involution zeroFree lopsided",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 20,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "11-recurrence-focused.json",
+    "query": "Bagchi Voronin",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 1,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "12-extremal-arithmetic.json",
+    "query": "Robin Lagarias colossally abundant divisor sum Nicolas primorial",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "decomposition"
+    ],
+    "elapsed_seconds": 60.476537917,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 2,
+      "source_arguments": 2,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495241,
+      "vectors": 2365161,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884954,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207809.952629,
+      "current_generation": 884955
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "13-nonvanishing-computation.json",
+    "query": "certified complex interval arithmetic nonreal zeta zero argument principle",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "decomposition"
+    ],
+    "elapsed_seconds": 94.49414145799999,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495241,
+      "vectors": 2365161,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884954,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207809.952629,
+      "current_generation": 884955
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "14-resurgence.json",
+    "query": "Riemann Siegel auxiliary function saddle contour exact remainder Stokes multipliers",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "decomposition"
+    ],
+    "elapsed_seconds": 76.26705862499999,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 16,
+      "source_arguments": 13,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495241,
+      "vectors": 2365161,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884954,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207809.952629,
+      "current_generation": 884955
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "15-zero-propagation.json",
+    "query": "replicate isolated zeta zero vertical translation recurrence zero density sublinear",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "elapsed_seconds": 208.33160212500002,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495243,
+      "vectors": 2365160,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884959,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207963.121291,
+      "current_generation": 884960
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "16-strong-recurrence-source.json",
+    "query": "holomorphic function vertical translation frequent return compact uniform approximation",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "decomposition",
+      "filter_and_judge"
+    ],
+    "elapsed_seconds": 110.327100791,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495241,
+      "vectors": 2365161,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884954,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207809.952629,
+      "current_generation": 884955
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      },
+      {
+        "stage": "filter_and_judge",
+        "error": "local model returned incomplete or malformed JSON"
+      }
+    ]
+  },
+  {
+    "file": "17-zero-density.json",
+    "query": "zeta zero density count o T sigma half Ingham",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "decomposition"
+    ],
+    "elapsed_seconds": 96.402052042,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495241,
+      "vectors": 2365161,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884954,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207809.952629,
+      "current_generation": 884955
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "18-almost-periodic.json",
+    "query": "AlmostPeriodic UniformAlmostPeriodic RelDense Bohr Bochner",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 20,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "19-sign-reversal.json",
+    "query": "sign reversing involution weighted sum cancellation unmatched",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "elapsed_seconds": 216.056034208,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495243,
+      "vectors": 2365160,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884959,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207963.121291,
+      "current_generation": 884960
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "20-difference-equations.json",
+    "query": "zeta exact difference equation continued fraction functional relation zero exclusion",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "decomposition",
+      "filter_and_judge"
+    ],
+    "elapsed_seconds": 134.848217208,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": {
+      "files": 57254,
+      "inventoried": 57254,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57254
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44765,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47604,
+        "prose": 9650
+      },
+      "declarations": 739757,
+      "documents": 2495241,
+      "vectors": 2365161,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884954,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789207900.3409312,
+      "current_generation": 884955
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      },
+      {
+        "stage": "filter_and_judge",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "21-return-transfer.json",
+    "query": "return time recurrence approximation density uniform limit",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "HTGeometry",
+      "exclude_modules": []
+    },
+    "partial": false,
+    "unfinished_stages": [],
+    "elapsed_seconds": 164.4715725,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57255,
+      "inventoried": 57255,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57255
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44766,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47605,
+        "prose": 9650
+      },
+      "declarations": 739766,
+      "documents": 2495263,
+      "vectors": 2365229,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884967,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789208112.618378,
+      "current_generation": 884967
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "errors": []
+  },
+  {
+    "file": "22-topological-obstructions.json",
+    "query": "zero divisor covering monodromy lift holomorphic roots",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "RHTower",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "elapsed_seconds": 214.73336829200002,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57255,
+      "inventoried": 57255,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57255
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44766,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47605,
+        "prose": 9650
+      },
+      "declarations": 739766,
+      "documents": 2495263,
+      "vectors": 2365229,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884967,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789208112.618378,
+      "current_generation": 884967
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "23-involutive-cancellation.json",
+    "query": "RouteEParityColumnLoadCircularityNoGo",
+    "mode": "lexical",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 2,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "24-algebraic-relations.json",
+    "query": "zeta algebraic independence functional equation difference relation translation",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "RHTower",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "elapsed_seconds": 250.13550675000002,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57255,
+      "inventoried": 57255,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57255
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44766,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47605,
+        "prose": 9650
+      },
+      "declarations": 739766,
+      "documents": 2495263,
+      "vectors": 2365229,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884967,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789208203.292083,
+      "current_generation": 884967
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "25-dynamical-descent.json",
+    "query": "well founded termination infinite descent arithmetic rewriting",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "HTGeometry",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "filter_and_judge",
+      "decomposition"
+    ],
+    "elapsed_seconds": 214.60759925000002,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": {
+      "files": 57255,
+      "inventoried": 57255,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57255
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44766,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47605,
+        "prose": 9650
+      },
+      "declarations": 739766,
+      "documents": 2495263,
+      "vectors": 2365229,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884967,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789208112.618378,
+      "current_generation": 884967
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "filter_and_judge",
+        "error": "local runtime deadline expired"
+      },
+      {
+        "stage": "decomposition",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "26-combinatorial-vanishing.json",
+    "query": "sign reversing involution sum cancellation",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "HTGeometry.PoincareHopf",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "elapsed_seconds": 188.006431125,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57255,
+      "inventoried": 57255,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57255
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44766,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47605,
+        "prose": 9650
+      },
+      "declarations": 739766,
+      "documents": 2495265,
+      "vectors": 2365207,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884971,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789208249.4409869,
+      "current_generation": 884972
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "27-ramsey.json",
+    "query": "Hindman vanDerWaerden Ramsey syndetic arithmeticProgression",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 20,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "28-characteristic-p.json",
+    "query": "ChevalleyWarning polynomial_method combinatorialNullstellensatz",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 20,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "29-coherence.json",
+    "query": "one ended product graph finite boundary coherence",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "HTGeometry.Coherence",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "query:edge boundary finite support",
+      "query:preconnected graph product coherence",
+      "query:cut label invariant adjacency",
+      "deadline",
+      "filter_and_judge"
+    ],
+    "elapsed_seconds": 300.01347029199997,
+    "sections": {
+      "declarations": 1,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": {
+      "generation": 884964,
+      "status": "pending"
+    },
+    "semantic_coverage": null,
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      },
+      {
+        "stage": "filter_and_judge",
+        "error": "local model returned incomplete or malformed JSON"
+      },
+      {
+        "stage": "reranking",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "30-eta-recurrence.json",
+    "query": "eta Dirichlet series vertical translation recurrence",
+    "mode": "deep",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "RHTower",
+      "exclude_modules": []
+    },
+    "partial": true,
+    "unfinished_stages": [
+      "semantic_retrieval"
+    ],
+    "elapsed_seconds": 206.71874566699998,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 20,
+      "source_arguments": 20,
+      "proof_ideas": 0,
+      "ingredient_sets": 1
+    },
+    "coverage": {
+      "files": 57255,
+      "inventoried": 57255,
+      "pending_files": 0,
+      "outcomes": {
+        "indexed": 57255
+      },
+      "compiler": {
+        "compiled_snapshot": 48,
+        "error": 5,
+        "not_applicable": 9650,
+        "pending": 44766,
+        "stale": 9,
+        "stale_snapshot": 43,
+        "umbrella_source_only": 1,
+        "unavailable": 2733
+      },
+      "collections": {
+        "lean": 47605,
+        "prose": 9650
+      },
+      "declarations": 739766,
+      "documents": 2495265,
+      "vectors": 2365207,
+      "method_invalidation_pending": false,
+      "inventory_errors": [],
+      "inventory_complete": true,
+      "generation": 884971,
+      "enrichment_counts_pending": true,
+      "status": "snapshot",
+      "snapshot_written_at": 1789208249.4409869,
+      "current_generation": 884972
+    },
+    "semantic_coverage": {
+      "complete": null,
+      "status": "not_measured",
+      "reason": "reporting_budget"
+    },
+    "refresh": {
+      "complete": false,
+      "reason": "background_indexer_running"
+    },
+    "index_warnings": [
+      "coverage_snapshot_older_generation",
+      "semantic_coverage_unavailable"
+    ],
+    "errors": [
+      {
+        "stage": "semantic_retrieval",
+        "error": "local runtime deadline expired"
+      }
+    ]
+  },
+  {
+    "file": "31-finite-field-focused.json",
+    "query": "ChevalleyWarning CombinatorialNullstellensatz",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": true,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "32-ramsey-focused.json",
+    "query": "Hindman vanDerWaerden Szemeredi",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": true,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "33-finite-combinatorics-declarations.json",
+    "query": "char_dvd_card_solutions combinatorial_nullstellensatz_exists_eval_nonzero FP_partition_regular",
+    "mode": "lexical",
+    "options": {
+      "any_terms": true,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 20,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "34-chevalley-warning-module.json",
+    "query": "solutions",
+    "mode": "lexical",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "ChevalleyWarning",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "35-nullstellensatz-module.json",
+    "query": "combinatorial nullstellensatz",
+    "mode": "lexical",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "Combinatorics.Nullstellensatz",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  },
+  {
+    "file": "36-hindman-module.json",
+    "query": "partition regular",
+    "mode": "lexical",
+    "options": {
+      "any_terms": false,
+      "exact": false,
+      "per_module": 2,
+      "offset": 0,
+      "explore": 5,
+      "module": "Combinatorics.Hindman",
+      "exclude_modules": []
+    },
+    "partial": null,
+    "unfinished_stages": null,
+    "elapsed_seconds": null,
+    "sections": {
+      "declarations": 0,
+      "candidate_lemmas": 0,
+      "source_arguments": 0,
+      "proof_ideas": 0,
+      "ingredient_sets": 0
+    },
+    "coverage": null,
+    "semantic_coverage": null,
+    "refresh": null,
+    "index_warnings": null,
+    "errors": null
+  }
+]

@@ -52,6 +52,65 @@ theorem exists_xiBoundaryLoop_nonzero_winding :
     exact hwind r hr hrw]
   exact_mod_cast RHTower.xi_order_toNat_ne_zero hxi
 
+/-- One unconditional Xi boundary loop stays a fixed positive uniform distance from every
+continuous periodic zero-winding loop.  Thus a finite zero-free carrier cannot approach the
+decisive boundary even along a sparse subsequence. -/
+theorem exists_xiBoundaryLoop_zeroWinding_uniformGap :
+    ∃ (gamma : ℝ → ℂ) (m : ℝ),
+      Continuous gamma ∧ (∀ t, gamma t ≠ 0) ∧
+      Function.Periodic gamma (2 * Real.pi) ∧
+      RHTower.windingNumber gamma 0 (2 * Real.pi) ≠ 0 ∧
+      0 < m ∧
+      ∀ delta : ℝ → ℂ,
+        Continuous delta →
+        Function.Periodic delta (2 * Real.pi) →
+        RHTower.windingNumber delta 0 (2 * Real.pi) = 0 →
+        ∃ t ∈ Set.Icc (0 : ℝ) (2 * Real.pi),
+          m ≤ ‖delta t - gamma t‖ := by
+  obtain ⟨gamma, hcont, hne, hper, hcharge⟩ :=
+    exists_xiBoundaryLoop_nonzero_winding
+  have hKne : (Set.Icc (0 : ℝ) (2 * Real.pi)).Nonempty :=
+    Set.nonempty_Icc.mpr Real.two_pi_pos.le
+  obtain ⟨t₀, ht₀, hmin⟩ := isCompact_Icc.exists_isMinOn
+    hKne hcont.norm.continuousOn
+  let m : ℝ := ‖gamma t₀‖
+  have hm : 0 < m := by
+    dsimp only [m]
+    exact norm_pos_iff.mpr (hne t₀)
+  have hlow : ∀ t : ℝ, m ≤ ‖gamma t‖ := by
+    intro t
+    obtain ⟨y, hy, hval⟩ := hper.exists_mem_Ico₀ Real.two_pi_pos t
+    rw [hval]
+    exact isMinOn_iff.mp hmin y (Set.Ico_subset_Icc_self hy)
+  refine ⟨gamma, m, hcont, hne, hper, hcharge, hm, fun delta hdcont hdper hdzero => ?_⟩
+  by_contra hgap
+  push Not at hgap
+  have hdiffper : Function.Periodic (fun t => delta t - gamma t) (2 * Real.pi) := by
+    intro t
+    change delta (t + 2 * Real.pi) - gamma (t + 2 * Real.pi) =
+      delta t - gamma t
+    rw [hdper t, hper t]
+  have hclose : ∀ t : ℝ, ‖delta t - gamma t‖ < m := by
+    intro t
+    obtain ⟨y, hy, hval⟩ := hdiffper.exists_mem_Ico₀ Real.two_pi_pos t
+    rw [hval]
+    exact hgap y (Set.Ico_subset_Icc_self hy)
+  have hgammaLoop : gamma 0 = gamma (2 * Real.pi) := by
+    have h := hper 0
+    rw [zero_add] at h
+    exact h.symm
+  have hdeltaLoop : delta 0 = delta (2 * Real.pi) := by
+    have h := hdper 0
+    rw [zero_add] at h
+    exact h.symm
+  have hwind := RHTower.windingNumber_eq_of_close
+    hcont hdcont hgammaLoop hdeltaLoop hlow hclose
+  apply hcharge
+  calc
+    RHTower.windingNumber gamma 0 (2 * Real.pi) =
+        RHTower.windingNumber delta 0 (2 * Real.pi) := hwind.symm
+    _ = 0 := hdzero
+
 /-- No sequence of regular zero-winding loops can converge uniformly to every Xi boundary loop:
 one unconditional positive-charge Xi circle obstructs such a thermodynamic limit. -/
 theorem exists_xiBoundaryLoop_not_uniformLimit_of_zeroWindingLoops :

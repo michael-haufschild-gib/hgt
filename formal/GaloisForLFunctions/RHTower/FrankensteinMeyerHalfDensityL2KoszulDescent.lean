@@ -8,10 +8,11 @@ Canonical half-density gauge sends every all-weight Meyer cochain injectively in
 Centered dilation becomes literal unitary translation, so Xi-selected Meyer prime Koszul coordinate
 intertwines coefficient-faithfully with the normalized prime-translation coordinate.
 
-This closes missing source-to-Hilbert comparison without compact-support or RH assumptions. It also
-isolates exact non-circular producer: an off-circle L2 resolvent cannot preserve full strong source
-image at an actual Xi divisor. If genuine source/Gamma naturality forced that preservation at even
-one prime, divisor would lie on critical line; doing so for all retained divisors proves RH.
+The embedding preserves source coefficients but does not identify a positive arithmetic quotient.
+At every actual Xi divisor, one normalized source vector spans a line transverse to the image of
+every prime Koszul coordinate. Consequently full strong-source surjectivity fails even on the
+critical line. Off the critical line the analytic L2 inverse exists, but cannot preserve the full
+strong source. A source quotient must retain this cokernel rather than assume its disappearance.
 -/
 
 open Complex MeasureTheory
@@ -248,8 +249,8 @@ theorem deningerMeyerXiPrimeStrongLogKoszulCoordinate_mk
     deningerMeyerStrongLogCenteredCohomologyFlow_mk,
     Submodule.Quotient.mk_smul]
 
-/-- The exact remaining source law: the off-circle L2 inverse sends the half-density image of every
-strong source vector back into that same image. -/
+/-- Full source surjectivity of the analytic Koszul coordinate. This condition is impossible at
+every Xi divisor, including critical-line divisors; it is not an admissible purity premise. -/
 def DeningerMeyerXiHalfDensityL2ResolventPreservesStrongSource
     (rho : XiDivisorSupport) (p : Nat.Primes) : Prop :=
   ∀ y : Lp ℂ 2 (volume : Measure ℝ),
@@ -257,41 +258,70 @@ def DeningerMeyerXiHalfDensityL2ResolventPreservesStrongSource
     ∃ x ∈ LinearMap.range deningerMeyerHalfDensityL2LM,
       deningerMeyerHalfDensityL2PrimeKoszulCoordinate rho p x = y
 
-theorem xi_re_eq_half_of_halfDensityL2ResolventPreservesStrongSource
-    (rho : XiDivisorSupport) (p : Nat.Primes)
-    (hsource : DeningerMeyerXiHalfDensityL2ResolventPreservesStrongSource rho p) :
-    (rho : ℂ).re = 1 / 2 := by
-  by_contra hrho
-  apply not_surjective_deningerMeyerXiPrimeKoszulCoordinate rho p
-  intro u
-  induction u using Submodule.Quotient.induction_on with
-  | _ g =>
-      obtain ⟨x, ⟨h, rfl⟩, hx⟩ := hsource (deningerMeyerHalfDensityL2LM g)
-        ⟨g, rfl⟩
-      have heq : deningerMeyerXiPrimeStrongLogKoszulCoordinate rho p h = g := by
-        apply deningerMeyerHalfDensityL2LM_injective
-        rw [deningerMeyerHalfDensityL2LM_primeKoszulCoordinate, hx]
-      refine ⟨Submodule.Quotient.mk h, ?_⟩
-      rw [← deningerMeyerXiPrimeStrongLogKoszulCoordinate_mk, heq]
+/-- One normalized literal source spans a line meeting every prime-coordinate source image only
+at zero. The same vector works for all primes; its genuine Xi reporter is exactly one. -/
+theorem exists_deningerMeyerXiPrimeKoszul_sourceTransverseLine
+    (rho : XiDivisorSupport) :
+    ∃ g : DeningerMeyerStrongLogTarget,
+      deningerMeyerXiPrimeGammaSourceReporter rho
+          (Submodule.Quotient.mk g) = 1 ∧
+      ∀ (p : Nat.Primes) (c : ℂ),
+        (∃ f : DeningerMeyerStrongLogTarget,
+          deningerMeyerHalfDensityL2PrimeKoszulCoordinate rho p
+              (deningerMeyerHalfDensityL2LM f) =
+            c • deningerMeyerHalfDensityL2LM g) ↔ c = 0 := by
+  have hex : ∃ u : DeningerMeyerStrongLogCohomology,
+      deningerMeyerXiPrimeGammaSourceReporter rho u ≠ 0 := by
+    by_contra h
+    apply deningerMeyerXiPrimeGammaSourceReporter_ne_zero rho
+    apply LinearMap.ext
+    intro u
+    exact not_not.mp (fun hu => h ⟨u, hu⟩)
+  obtain ⟨u, hu⟩ := hex
+  have hnormalized : ∃ g : DeningerMeyerStrongLogTarget,
+      deningerMeyerXiPrimeGammaSourceReporter rho
+        (Submodule.Quotient.mk g) = 1 := by
+    induction u using Submodule.Quotient.induction_on with
+    | _ g =>
+      refine ⟨(deningerMeyerXiPrimeGammaSourceReporter rho
+        (Submodule.Quotient.mk g))⁻¹ • g, ?_⟩
+      rw [Submodule.Quotient.mk_smul, map_smul, smul_eq_mul,
+        inv_mul_cancel₀ hu]
+  obtain ⟨g, hg⟩ := hnormalized
+  refine ⟨g, hg, ?_⟩
+  intro p c
+  constructor
+  · rintro ⟨f, hf⟩
+    have hsource : deningerMeyerXiPrimeStrongLogKoszulCoordinate rho p f = c • g := by
+      apply deningerMeyerHalfDensityL2LM_injective
+      rw [deningerMeyerHalfDensityL2LM_primeKoszulCoordinate, map_smul, hf]
+    have hquot : deningerMeyerXiPrimeKoszulCoordinate rho p
+        (Submodule.Quotient.mk f) = Submodule.Quotient.mk (c • g) := by
+      rw [← deningerMeyerXiPrimeStrongLogKoszulCoordinate_mk, hsource]
+    have hzero := deningerMeyerXiPrimeGammaSourceReporter_koszulCoordinate
+      rho p (Submodule.Quotient.mk f)
+    rw [hquot, Submodule.Quotient.mk_smul, map_smul, hg, smul_eq_mul, mul_one] at hzero
+    exact hzero
+  · rintro rfl
+    exact ⟨0, by simp⟩
 
-theorem not_halfDensityL2ResolventPreservesStrongSource_of_offLine
-    (rho : XiDivisorSupport) (p : Nat.Primes)
-    (hrho : (rho : ℂ).re ≠ 1 / 2) :
+/-- The full-source preservation condition fails at every actual Xi divisor, with no condition
+on its real part. Its obstruction is the nonzero normalized source line above. -/
+theorem not_halfDensityL2ResolventPreservesStrongSource
+    (rho : XiDivisorSupport) (p : Nat.Primes) :
     ¬ DeningerMeyerXiHalfDensityL2ResolventPreservesStrongSource rho p := by
   intro h
-  exact hrho (xi_re_eq_half_of_halfDensityL2ResolventPreservesStrongSource rho p h)
+  obtain ⟨g, _, hg⟩ := exists_deningerMeyerXiPrimeKoszul_sourceTransverseLine rho
+  obtain ⟨x, ⟨f, rfl⟩, hx⟩ := h (deningerMeyerHalfDensityL2LM g) ⟨g, rfl⟩
+  exact one_ne_zero ((hg p 1).mp ⟨f, by simpa only [one_smul] using hx⟩)
 
-def EveryXiHalfDensityL2ResolventPreservesStrongSource : Prop :=
-  ∀ (rho : XiDivisorSupport) (p : Nat.Primes),
-    DeningerMeyerXiHalfDensityL2ResolventPreservesStrongSource rho p
-
-theorem riemannHypothesis_of_everyXiHalfDensityL2ResolventPreservesStrongSource
-    (h : EveryXiHalfDensityL2ResolventPreservesStrongSource) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_forall_xiDivisorSupport_re_eq_half
-  intro rho
-  exact xi_re_eq_half_of_halfDensityL2ResolventPreservesStrongSource rho
-    deningerCalderonWittPrimeTwo (h rho deningerCalderonWittPrimeTwo)
+/-- Off line, where the analytic coordinate is invertible, its inverse necessarily leaves the
+strong source. The source obstruction itself also holds on the critical line. -/
+theorem not_halfDensityL2ResolventPreservesStrongSource_of_offLine
+    (rho : XiDivisorSupport) (p : Nat.Primes)
+    (_hrho : (rho : ℂ).re ≠ 1 / 2) :
+    ¬ DeningerMeyerXiHalfDensityL2ResolventPreservesStrongSource rho p :=
+  not_halfDensityL2ResolventPreservesStrongSource rho p
 
 end
 

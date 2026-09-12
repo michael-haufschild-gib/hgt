@@ -2075,3 +2075,458 @@ Broad passivity and total-positivity arXiv retrieval reached the July 2026
 [impedance-passive stability paper](https://arxiv.org/abs/2607.01861) and
 August 2026 [reciprocity paper](https://arxiv.org/abs/2608.30778).
 Their abstracts were inspected; neither is used as a proof premise.
+
+## Original action cyclicity with its boundary divergence
+
+**Status:** paper proof closed; both leaves passed scratch Lean and exact
+leaf audits with default limits. Only the new geometry leaf (84 seconds)
+and new physical leaf (65 seconds) were built; dependencies were reused
+from cache. Both are wired into their umbrellas; no umbrella build ran.
+The formal lint gate passed; it reported existing large-file warnings.
+
+Formal statements:
+- `HTGeometry/CoordinateEinsteinCyclicAction.lean`:
+  `paired_cyclicity_defect`, `cubicAction_eq_density_third`,
+  `cubicAction_cyclic` in `HTGeometry.EinsteinCyclicVariation`.
+- `RHTower/ThetaCuspHawkingBMCyclicActionBoundary.lean`:
+  `metricFamily_jet`, `physical_cubicAction_cyclic`,
+  `physical_cubicAction_eq_density_third` in `RHTower.D4BMCyclicAction`.
+  The physical theorems have no supplied regularity, symmetry,
+  nondegeneracy, field-equation or boundary-cancellation premises.
+
+For the complete metric jets put `G(a)=J+sum_k a_k U_k` in jet
+coordinates, `w(a)=exp(log(det(G(a))/det(J))/2)`, and
+
+```
+L(a)   = w(a) * (R(G(a))-2 Lambda)
+P_k(a) = w(a) * sum_ij (G(a)^(-1) U_k G(a)^(-T))_ij
+                         * (Einstein(G(a))+Lambda G(a))_ij
+D_k(a) = w(a) * EinsteinActionBoundary.divergence(G(a),U_k).
+```
+
+The original Einstein--Hilbert first variation gives
+`partial_k L=-P_k+D_k` near zero. Nondegeneracy puts the determinant
+ratio near `1` in one fixed logarithm branch. Rational curvature and
+this density are smooth there. Differentiating twice and commuting
+mixed derivatives proves
+
+```
+partial_i partial_j P_k - partial_i partial_k P_j
+  = partial_i partial_j D_k - partial_i partial_k D_j,
+C_ijk := partial_i partial_j P_k - partial_i partial_j D_k
+       = -partial_i partial_j partial_k L.
+```
+
+All values here are at zero. Consequently `C_ijk=C_ikj`; the retained
+action has cubic symmetry without assuming a vanishing boundary flux.
+This is a positive identity from the original action, not a proof that
+the bulk source alone has the required cyclic pairing. No route is
+retired by this result.
+
+For the physical specialization, `J` is the actual BM background jet and
+`U_k` is the actual complete spatial jet of
+`physicalPerturbation(q_k,b_k,aS_k,aV_k)`. All three Xi occurrences,
+branches, and scalar/vector amplitudes are independent. Background
+nondegeneracy follows from the explicit exterior metric; symmetry of
+every mode and its first derivatives follows from the original
+covariant metric expression. The actual metric family is formed
+before spatial differentiation; its field-to-jet identity retains
+every ordered second coordinate derivative.
+
+**Consequences for the full proof chain:** this supplies a local
+variational identity for the retained source, before projection onto
+radial or left-QNM channels. It does not yet supply the abstract
+Peierls receiver's `hcyclic`: that receiver needs one common source
+map, pairing and causal propagator, including sourced response fields.
+Identifying the second variation of `P` with a frozen pairing of the
+quadratic residual still requires discharging the background and
+linearized residual terms. Integrating `D` requires the original
+volume measure, all boundary components and the common-cutoff limit.
+The formal divergence has not been replaced by a bare radial endpoint.
+
+Two closing possibilities remain in view. If the complete physical
+incidence equals the original normalized BM candidate, the existing
+source-reflection/Peierls receiver can force the critical line. If the
+boundary contribution survives in that incidence, its value also
+belongs in the proposed fixed-clock observable; extinction must be
+proved for that same observable. Neither incidence identification,
+causal reciprocity, channel nonvanishing, extinction nor RH is proved
+by the local cubic identity.
+
+Broad/deep/method corpus retrieval found the original EH variation and
+actual Einstein Hessian symmetry. Some deep requests returned partial
+coverage; source statements were inspected and candidate use was
+checked in Lean. Broad arXiv searches for `variational` and
+`transgression` found [Monroy, arXiv:2606.08659](https://arxiv.org/abs/2606.08659)
+and [Bildhauer--Fuchs, arXiv:2608.01105](https://arxiv.org/abs/2608.01105).
+Their abstracts did not provide the missing gravitational pairing or
+extinction theorem; no mathematical claim from them enters the proof.
+
+## Original on-shell quadratic pairing and boundary assembly
+
+**Status:** both geometric and physical source reductions are paper-proved,
+scratch-checked and leaf-audited with default Lean limits. Exact audits built
+only the new geometry leaf (13 seconds) and physical leaf (54 seconds),
+reusing cached dependencies. Both umbrella imports are wired; no umbrella
+build ran. Formal lint passed with existing large-file warnings. RH and
+global physical incidence remain open.
+
+For the same complete family `G(a)`, let `E_rs(a)` be its original
+cosmological Einstein residual and let `W_k,rs(a)` be its original
+volume-weighted raised test coefficient. The exact derivative identities are
+
+```
+partial_k E_rs(a) = DEinstein_rs(G(a))[U_k] + Lambda*(U_k)_rs,
+partial_i partial_j E_rs(0) = D²Einstein_rs(J)[U_i,U_j],
+partial_i partial_j sum_rs W_k,rs(a)*E_rs(a) at 0
+  = sum_rs W_k,rs(0)*D²Einstein_rs(J)[U_i,U_j]
+```
+
+when the actual background residual and first residuals vanish. The proof
+retains all four Leibniz terms. The extra three terms vanish because they
+multiply `E(0)`, `partial_i E(0)` or `partial_j E(0)`, rather than because
+the volume or inverse metric is held constant during variation. The
+cosmological term contributes at first order and vanishes at second order
+because the metric family is affine.
+
+`HTGeometry/CoordinateEinsteinOnShellPairing.lean` contains
+`residual_first`, `residual_second` and `bulk_second_eq_hessian` in
+`HTGeometry.EinsteinOnShellPairing`. Its scalar product lemma records the
+precise residual conditions that permit freezing a varying coefficient.
+The geometric statement applies to arbitrary complete jet directions;
+it does not restrict future source, test or response directions to one
+angular parameter.
+
+The concrete application uses the actual BM vacuum and the previously
+proved full physical mode equations to discharge every residual premise.
+The source convention matters: the original quadratic Taylor source is
+one half the Einstein Hessian. Thus, writing `B_ijk` for its paired
+coefficient, the target identity is
+
+```
+B_ijk - B_ikj
+  = (partial_i partial_j D_k - partial_i partial_k D_j)/2.
+```
+
+The diagonal is also compared with the actual field-source coefficient
+`iteratedDeriv 2 (D4BMActualMetricSource.source ...) 0 / 2`, fixing this
+normalization independently. This Taylor factor is distinct from a
+causal half-jump convention.
+
+`RHTower/ThetaCuspHawkingBMOnShellCyclicSource.lean` proves
+`physical_bulk_second_eq_hessian`,
+`quadraticPairing_diag_eq_sourceCoefficient`,
+`physical_quadratic_cyclicity_defect` and
+`physical_quadratic_with_boundary_cyclic` in
+`RHTower.D4BMOnShellCyclicSource`. These physical statements supply their
+own background and linearized equation proofs, using three independent
+Xi occurrences, branches and scalar/vector amplitudes.
+
+For the causal construction, a forced response is not itself covered by
+the homogeneous first-residual condition. The needed producer is the
+original homogeneous equation for the retarded--advanced difference,
+with the same full source and every contact retained. Terms involving a
+first residual must remain until that producer is proved; the on-shell
+identity is not permission to discard them on each forced branch.
+
+The concrete hard producer is a pair of full metric corrections satisfying
+the original component equations `L(k_ret)=L(k_adv)=-B(h,h)`, including
+the source contacts and all independent scalar/vector channels. A solved
+projected scalar wave equation alone does not establish those equations.
+Their proved common source would give `L(k_ret-k_adv)=0`, placing the
+actual causal difference within the reduction above. The scalar-stream
+master-row identities are ingredients for constructing that producer,
+not a substitute for constructing the corrections.
+
+**Boundary assembly and whole-chain consequences:** broad Green and
+method searches found exact paired modular side/arc cancellation in
+`ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation.lean`. Its
+parameters explicitly require `Re(s)>1`; it is not yet a producer for
+the physical Xi parameters. A continuation or direct full-field
+identification must be proved before using that cancellation.
+
+A different, physically specialized result is available in
+`ThetaCuspHawkingBMQuarticTestedNativeCurrent.lean`: the full scalar-tested
+centered response current has zero upper trace under every complex height
+power. Its exact improper integral retains the negative lower current.
+The candidate assembly therefore keeps the original lower endpoint,
+mean terms and contacts while comparing the tested native current with
+the Einstein boundary quantity above. Neither scalar identity alone
+identifies the full nine-channel action, its physical left reader, or
+the causal inverse.
+
+The next decisive test is equality with the original global
+causal/left-QNM pairing, with those terms retained on one common cut.
+A surviving boundary term changes both the candidate incidence and the
+observable whose fixed-clock extinction is required. Source reflection,
+local cubic symmetry and local Hessian reduction do not imply that
+incidence or extinction.
+
+Broad arXiv searches for `corner`, `interface`, `gluing` and `cobordism`
+were also used. The August papers
+[Jia--Tan, arXiv:2608.05071](https://arxiv.org/abs/2608.05071) and
+[Bais--Kjuchukova, arXiv:2608.07788](https://arxiv.org/abs/2608.07788)
+concern boundary-defect algebras and branched-cover cobordism respectively.
+Their inspected abstracts supply no theorem about this Einstein pairing;
+no claim from them is used in the formal proof. Corpus deep requests
+returned partial coverage; applicable source statements and method
+arguments were inspected and their uses checked in Lean.
+
+### Sourced scalar-stream reconstruction
+
+The current target is a converse to the original master-row identity:
+recover full metric amplitudes from a sourced master solution and prove
+every original Einstein row, before imposing retarded/advanced domains.
+Writing `f=r²−1`, the code's master is
+`M=r F0/f−f F1/s−rf F2+4rH`. Its `F1` term has no extra factor `r`.
+For original row values `T=E_TF`, `B=E_TR`, `D=E_T`, direct elimination gives
+
+```
+(2−μ)H = fD/s +(μ/2−f)T−frT' +fM'/2 +frB/(2s)−μM/(4r).
+```
+
+The formal first derivative `H'` is recovered by differentiating this
+expression with all source derivatives retained. The other values are
+
+```
+F1 = s(4rH+2rT−M)/f
+F2 = rB/(2sf)+μF1/(4srf)−2H/f²+2rH'/f
+F0 = f²F2+2fT.
+```
+
+These identities and all three original harmonic Bianchi row identities
+are formalized in `ThetaCuspHawkingBMScalarStreamReconstruction.lean`
+and have passed the isolated leaf audit. The angular convention is
+the **trace-free** Hessian: its divergence coefficient is `μ/2−1`, and
+its angular trace is zero. For residual rows
+`A=TT, B=TR, C=RR, D=T, E=R, F=TF, G=L`, the exact defects are
+
+```
+Wt = fB' +(4r−2/r)B−2sA/f+μD/r²
+Wa = fE' +(4r−2/r)E−2sD/f+((μ/2−1)F+G)/r²
+Wr = fC' +(5r−2/r)C−2sB/f+rA/f²+μE/r²−2G/r³.
+Q  = 2rC+4E
+Q' = 2C+2rC'+4E'
+
+(μ−2)(E+F/r)/r²
+  = Wr+2Wa/r−fQ'/(2r)−(2−1/(2r²))Q−rA/f²+2sB/f+4sD/(rf).
+```
+
+The last identity is verified without a compatibility premise. If the
+three defects, `B,B',D,F,Q,Q'` vanish and `s,r,f,μ−2` are nonzero,
+the verified conclusion is `A=C=E=0` and `G=−r²fE'`. A pointwise claim
+that `G=0` would be too strong: a value `E=0` does not force its separate
+first-jet slot to vanish. The positive replacement is exact: once these
+relations hold for genuine differentiable residual functions on a
+neighborhood, `E` vanishes there, hence `E'=G=0`. This differential
+closure must be constructed for the original forced source.
+
+The parameter `μ` here is the angular eigenvalue of `Delta`, not the
+shifted physical angular resolvent parameter. The latter's proved
+nonrealness cannot discharge `μ≠2` for a general source. A broader
+construction replaces division by `2−μ` with the actual modular form
+of `2−Delta`: on the existing value-plus-gradient energy domain, its
+bounded form operator is `I+J*J`, where `J` is the original embedding
+into modular L². Its form is the sum of both gradient terms plus twice
+the scalar mass. The corpus coercive-operator inverse theorem supplies
+the full-domain inverse. The concrete application in
+`ThetaCuspHawkingBMAngularReconstruction.lean` has passed its foreground
+scratch check and isolated final leaf audit: for every modular L² forcing `F`,
+there is exactly one `h` in the original energy domain such that
+
+```
+sum_i <D_i v,D_i h> + 2<Jv,Jh> = <Jv,F>     for every energy test v,
+||h||_energy <= ||F||_L2 / 2.
+```
+
+The estimate controls both gradient components and scalar mass. It
+follows from `||h||²+||Jh||² <= ||Jh|| ||F||`, retaining all terms,
+and supplies quantitative control for differentiating the reconstructed
+response once the original forcing is admitted.
+
+The joint next conjecture is to extend the literal residual identity
+from a separated angular harmonic to the original angular scalar
+potentials, replacing `μ−2` by `Delta−2`. The newly constructed inverse
+then eliminates that residual in the actual energy domain without a
+spectral-expansion premise. Its principal cusp part requires a separate
+exact reconstruction. The nonreal physical resolvent theorem and the
+existing native-response cusp-flux reconstruction have different
+parameters and do not by themselves establish this extension.
+
+**Whole-chain consequence:** reconstruction now has explicit source
+terms and a precise completeness test. The two attacks, radial
+elimination and modular coercivity, address different parts of the
+same full metric producer. Still required are genuine derivative
+realization, compatibility of the original quadratic source in all
+channels, admission of the reconstruction forcing with every cusp
+principal part and cutoff contact, and the common causal boundary
+domain. Only those producers can place the actual causal difference
+in the earlier on-shell cyclic pairing. Its global left reader,
+nonzero coupling and fixed-clock extinction remain open; the local
+identities alone establish none of those conclusions.
+
+**Formal verification:** both new leaves passed `lake env lean` scratch
+checks and their exact `lake build` audits at default limits. Each audit
+built only its new Lean leaf (plus configuration), using cached
+dependencies. Both are wired into the RHTower umbrella; no umbrella or
+full build was run. The frontier map and universal-law ledger are
+unchanged, since these new statements concern this route's reconstruction.
+The formal lint gate passed, with existing large-file warnings.
+
+### Original source compatibility by contraction
+
+The next target is conservation of the original full quadratic Einstein
+source, needed to discharge the reconstruction's Bianchi conditions in
+every channel. The existing actual metric Bianchi identity is uncontracted.
+The contraction is now formalized using the metric and inverse
+compatibility identities. Commuting two actual metric derivatives gives
+`R_ij.transpose * g + g * R_ij = 0` for the original connection's
+curvature matrices. Together with their proved alternation in `i,j`, this
+provides the two skew symmetries needed for the contraction, without
+requiring a separate general pair-exchange theorem first.
+
+The contracted expression has been identified with the literal covariant
+divergence of the original cosmological Einstein tensor, including actual
+spatial derivatives through a neighborhood identity. The next step is
+to differentiate twice in amplitude. The proved background and first-order
+equations remove lower-order coefficient terms; the original quadratic
+source and its spatial derivatives remain. This conservation producer,
+combined with genuine radial derivative realization and full angular
+source admission, is intended to connect reconstruction to the common
+retarded/advanced metric equations. It does not itself supply the causal
+boundary domain, the global left reader or fixed-clock extinction.
+
+For the contraction, write `T k i j u v = (nabla_k R_ij)^u_v`, retaining
+connection action on both curvature-form slots. The proved algebraic
+step uses `T k i j = -T k j i`, symmetric `gInv`, and
+`T k i j * gInv + gInv * (T k i j).transpose = 0`.
+Let `P k v j = sum_u T k u j u v`. Contracting differential Bianchi with
+`gInv b k`, then using these skew identities, gives
+
+```
+2 * sum_(k,b) gInv b k * P k b j
+  = sum_(b,k) gInv b k * P j b k.
+```
+
+The right side is proved equal to the actual scalar-curvature derivative;
+the left side is twice the actual Ricci divergence. The inverse metric
+is differentiated in this identification. Metric compatibility also
+supplies the cosmological metric term's zero divergence. For the derivative-level skew law, differentiate
+`R.transpose*g+g*R=0` on a genuine neighborhood. Substituting
+`g'=A.transpose*g+g*A` shows that `R'+A*R-R*A` is again metric-skew;
+the remaining connection actions are scalar combinations of metric-skew
+curvature matrices. All these steps pass Lean in the new leaf modules
+`ComplexMetricCurvatureSymmetry`, `ComplexMetricCovariantCurvature`,
+`ComplexMetricBianchiContraction`, `ComplexMetricContractedDerivative`,
+and `ComplexMetricEinsteinConservation`. Their exact leaf audits passed;
+only new leaves were built, with cached dependencies. The geometry umbrella
+imports them without an umbrella build.
+
+
+#### Consequence for the whole proof chain
+
+The original full Einstein source has a proved local conservation producer.
+This moves source compatibility upstream of scalar/vector/tensor separation:
+the retained source must inherit it through the actual coefficient extraction,
+and reconstruction must preserve it. It does not produce a retarded or advanced
+inverse, common boundary domain, nonzero left-QNM coupling, or fixed-clock
+extinction. The previously proved cyclic action identity leaves its original
+boundary defect explicit. Those boundary terms must remain attached when the
+conserved source is used in the causal action; dropping them would lose the
+connection to the later extinction problem.
+
+The next conjecture is conservation of the original quadratic source under the
+background covariant derivative. Write `E(e,x)` for the original full source
+and `D(e)` for its metric-dependent divergence. The new theorem gives
+`D(e)E(e)=0` on a genuine amplitude neighborhood. The existing physical
+background and first-order equations give `E(0)=0` and `E_e(0)=0` on the
+exterior. Twice differentiating, including every operator coefficient, gives
+`D(0)E_ee(0)=0`: terms involving `D_e` and `D_ee` multiply those vanishing
+lower-order fields. Spatial derivatives of the zero fields also vanish locally.
+
+The unclosed Lean identification is the full mixed spatial/amplitude
+interchange and its physical field-jet specialization. The spatial side
+is now proved for actual real jet paths. For complete jet fields `q(x), p(x)` and Einstein component `F`, the
+spatial derivative of the Hessian is
+
+```
+∂x [F''(q)[p,p]]
+  = F'''(q)[q_x,p,p] + F''(q)[p_x,p] + F''(q)[p,p_x].
+```
+
+The second amplitude derivative of
+`F'(q+e*p)[q_x+e*p_x]` gives the same expression, using the corpus's proved
+`thirdVariation_symm_left`, `thirdVariation_symm_right` and
+`secondVariation_symm`. Real-coordinate differentiation must be connected to
+these complex derivatives by restriction of scalars and actual field-jet
+regularity; a supplied derivative array is insufficient. Corpus search also
+found the Fokas–Lenells mixed-derivative workflow: identify each iterated actual
+derivative with its produced expression before comparing them. Its scattering
+operators are different, so only that proof mechanism transfers here.
+
+Analytical status: the coefficient argument above is derived from the proved
+full identity and existing Hessian symmetry. Formal status: the full identity
+is proved; the quadratic coefficient's spatial/amplitude interchange and its
+physical specialization still need Lean closure. This remaining work is
+necessary before claiming that reconstruction's quadratic Bianchi defects
+have been discharged.
+
+The full identity is also specialized to the actual literal theta-cusp field
+in `RHTower/ThetaCuspHawkingBMLiteralConservation.lean`.
+`sourceField_apply` identifies every exterior component with the existing
+`D4BMActualMetricSource.source`. The theorem
+`literal_source_conservation_near_zero` supplies conservation on an actual
+complex amplitude neighborhood, with regularity, symmetry and nondegeneracy
+proved from the literal field and background. Its scratch check and isolated
+exact leaf audit passed (new leaf only, cached dependencies); the RHTower
+umbrella is wired without building it. This is full nonlinear source
+conservation, not yet the separate quadratic coefficient conservation theorem.
+
+
+The spatial Hessian identity is formalized in
+`HTGeometry/CoordinateEinsteinQuadraticSpatialDerivative.lean`.
+`secondVariation_hasDerivAt_real` differentiates the original Einstein Hessian
+along actual real jet paths, retaining all three terms.
+`secondVariation_hasDerivAt_real_symmetric` uses the proved second/third
+variation symmetries to give
+`F'''(q)[p,p,q_x] + 2*F''(q)[p,p_x]`, the expression needed for the amplitude
+comparison. These statements require the actual path derivatives; the next
+specialization must produce them from the physical field's complete spatial
+jets. Both the scratch check and exact leaf audit passed at the default
+heartbeat limit; only the new leaf was built, with cached dependencies.
+
+The remaining conservation target is still the background covariant divergence
+of the original quadratic source. The real Hessian derivative theorem closes
+one side of the mixed-derivative comparison. The amplitude side, actual
+spatial-jet realization, and cancellation using the physical zero/first-order
+equations must be connected before this target is declared closed. Even after
+that closure, source conservation alone will not establish global causal
+solvability or left-QNM incidence. Those questions must be tested against the
+same retained boundary/contact functional that survives in the original
+cyclic action and would have to enter fixed-clock extinction.
+
+Validation: all seven new leaf modules passed scratch checks and isolated exact
+leaf audits. `scripts/formal_tools.py lint` passed; it reported existing large-file
+warnings. Both umbrellas are wired but were not built. No mathematical computations,
+axiom-printing, heartbeat increases, frontier-map edits or STATUS edits were used.
+
+All owned scratch/search/log/staging paths for this turn were removed after
+validation. All owned Lean/Lake and search processes completed; none were left
+running. Other agents' temporary files and processes were left untouched.
+
+### Quadratic conservation: actual derivative interchange
+
+Current conjecture: the original physical quadratic source has zero background
+covariant divergence. The full nonlinear conservation theorem and real Hessian
+path derivative are proved. The next producer must identify actual spatial
+jet paths, compare the amplitude derivative of the full spatial Einstein
+variation, and cancel the lower-order fields on an exterior neighborhood.
+
+The corpus's `ScalarJetSpatial3ConnectionTable` uses coordinate index `3`, not
+third-order regularity; it cannot supply the required third spatial jet.
+`EisensteinActualThirdJet` concerns the actual Eisenstein Poincare field in its
+convergence chamber, rather than the literal scalar/vector metric here. The
+literal metric's already proved all-order exterior regularity provides the
+proper starting point: differentiate its complete two-jet along the actual
+real coordinate line, retaining ordered derivatives in every slot. Boundary
+and contact currents remain attached to the later causal and left-QNM action.

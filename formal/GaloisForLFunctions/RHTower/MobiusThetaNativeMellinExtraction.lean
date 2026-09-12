@@ -140,6 +140,21 @@ private theorem raw_ne_zero_of_normal {p m : ℕ} {v : ℂ}
 end NativeMellin
 open NativeMellin
 
+/-- The complete admitted native Mellin formula, with its original finite prefix.
+This public form permits continuation arguments to start from an open integral domain. -/
+theorem mobiusThetaNativeCollarTail_hasMellin_prefix
+    {p : ℕ} (hp : 0 < p) (k : ℕ) (m : ℕ+)
+    {v : ℂ} (hv : |v.im| < 1)
+    (hmv : 1 / (m : ℝ) < (mobiusThetaCenteredParameter v).re) :
+    HasMellin (mobiusThetaNativeCollarTail k p m)
+      ((m : ℂ) * mobiusThetaCenteredParameter v)
+      ((m : ℂ)⁻¹ *
+        (((riemannZeta ((m : ℂ) * mobiusThetaCenteredParameter v))⁻¹ -
+          ∑ n ∈ Finset.range p, LSeries.term (↗(μ : ArithmeticFunction ℤ))
+            ((m : ℂ) * mobiusThetaCenteredParameter v) n) * iteratedDeriv k XiC v)) := by
+  have h := hasMellin_native hp k m hv hmv
+  rwa [multiplier_prefix m hmv] at h
+
 /-- Literal native Mellin admission at every original divisor, at all sufficiently large native depths. -/
 theorem mobiusThetaNativeCollarTail_hasMellin_at_divisor_cofinal
     (p : Nat.Primes) (k : ℕ) (rho : XiDivisorSupport) :

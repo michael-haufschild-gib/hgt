@@ -1,0 +1,1 @@
+{"query": "Hindman vanDerWaerden Szemeredi", "match": "\"hindman\" OR \"vanderwaerden\" OR \"szemeredi\"", "backend": "fts5", "options": {"any_terms": true, "exact": true, "per_module": 2, "offset": 0, "explore": 5, "module": "", "exclude_modules": []}, "declarations": [], "exploration": [], "total": 0, "modules": 0, "eligible": 0, "markers": []}

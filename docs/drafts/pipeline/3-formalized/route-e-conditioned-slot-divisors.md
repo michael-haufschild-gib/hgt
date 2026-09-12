@@ -138,9 +138,11 @@ The finite theorem also allows varying activation powers whenever the
 pointwise condition `M>=10*(K+1)` holds. Growth of `K` alone does not
 evade that finite statement.
 
-The [squarefree majority-sign attack](../1-in-progress/route-e-squarefree-conditioned-majority.md)
-tests whether squarefreeness supplies the missing comparison between
-different histories. Its proposed parity consequence is not yet formalized.
+The [squarefree majority-sign theorem](route-e-squarefree-conditioned-majority.md)
+proves that squarefreeness supplies a common repeated receiver across the literal conditioned cell.
+For fixed activation powers it forces all but at most three slots per history to share that receiver
+and gives an invariant-weight fixed-anchor Möbius bias of size `1-6/M`. This is an obstruction:
+bounded support produces sign alignment rather than cancellation.
 
 After the final leaf, `scripts/formal_tools.py index` completed and
 `scripts/formal_tools.py lint --check-generated` passed with existing
