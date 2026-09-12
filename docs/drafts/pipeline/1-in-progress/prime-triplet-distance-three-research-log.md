@@ -162,6 +162,24 @@ does not retire mechanisms outside its stated hypotheses.
   `routeE_independent_replica_productANOVA_floor` in
   `formal/GaloisForLFunctions/RHTower/RouteEIndependentReplicaANOVAFloor.lean`.
 
+- **FACT-021 — Every monotone all-right short-window supply already contains a left-window
+  supply with unchanged count.** If `h` is monotone and `2h(y)≤y`, the right window based at
+  `y-2h(y)` lies inside `(y-2h(y),y)`. Thus applying the same factorization predicate at the shifted
+  base gives a numerical predecessor within `2h(y)` without changing parity, freshness, or token
+  count. Lean: `routeE_rightWindow_subset_leftWindow`,
+  `routeE_leftWindow_card_ge_rightWindow_card`, and the real-scale inclusion in
+  `formal/GaloisForLFunctions/RHTower/RouteERightToLeftWindowTransfer.lean`.
+
+- **FACT-022 — Bidirectional load-gradient energy is exactly mismatch-divergence energy.** For
+  complete row kernels `P,Q`, put `R=(P+Q)/2` and `D=Q-Pᵀ`. Then
+  `1-columnLoad_R(i)=(rowSum_D(i)-columnSum_D(i))/2`; hence every weighted squared load-gradient
+  energy of `R` is exactly one quarter of the corresponding squared gradient energy of
+  `div D`. This permits an order-one hydrodynamic mismatch profile and isolates shifted-window,
+  normalization, cutoff, seam, and physical-collision discrepancies as the arithmetic producer.
+  Lean: `routeE_one_sub_averageColumnMass_eq_half_mismatchDivergence` and
+  `routeE_weightedAverageColumnGradientEnergy_eq_quarterMismatchDivergenceEnergy` in
+  `formal/GaloisForLFunctions/RHTower/RouteEApproximateTransposeDivergence.lean`.
+
 ### No-gos
 
 - **NOGO-001 — Signed column-load cancellation is circular.** For every row-stochastic kernel
@@ -322,3 +340,19 @@ does not retire mechanisms outside its stated hypotheses.
   `C/(M-2)→∞`; power-size entropy at bounded component density is insufficient. Scope:
   bounded-density singleton histories; unbounded-density and non-singleton conditioned histories
   survive. Lean: `formal/GaloisForLFunctions/RHTower/RouteEComponentHistorySparseDensityNoGo.lean`.
+
+- **NOGO-023 — A strict-half cube mixed difference is not an `H`-local edge estimate.** The
+  parity-coalesced full-terminal relation explicitly permits numerical jumps `X^(1-o(1))`; its
+  `X^(-1/2+o(1))` cost is the full odd mixed difference. Therefore it cannot be inserted into the
+  two-sided column-load conductance theorem, whose first term requires every supported edge to
+  have `H=X^(1/2+o(1))`. Scope: this direct theorem composition only. The high-order cube consumer
+  and the product-truncated whole-anchor relation with genuinely strict-half edges both survive.
+  Sources: sections 4–5 of `route-e-grade-recurrent-sparse-reservoir-cube-admission.md` and Theorem
+  B of `route-e-two-sided-column-load-gradient-pairswitch-law.md`.
+
+- **NOGO-024 — Exact transpose reversal cannot manufacture column balance.** If a proposed
+  downward kernel is exactly the transpose of an upward kernel and the downward rows have mass
+  one, then the upward columns already have mass one. Scope: exact transpose identification only;
+  approximate transpose survives, with its precise remaining producer given by the divergence in
+  FACT-022. Lean: `routeE_columnMass_eq_one_of_transpose_rowMass` in
+  `formal/GaloisForLFunctions/RHTower/RouteEApproximateTransposeDivergence.lean`.

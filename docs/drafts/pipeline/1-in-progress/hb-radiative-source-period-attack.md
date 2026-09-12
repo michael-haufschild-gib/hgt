@@ -4,6 +4,118 @@ Status: analytical source reduction; physical extinction and RH unproved. Fronti
 
 Verified findings and scoped no-gos from this work: [concise research log](hb-extinction-own-research-log.md).
 
+## Actual weighted correction discrepancy, 12 September 2026
+
+**Current attack.** Return from the auxiliary quartic action expansion to the
+actual weighted `++-` Einstein source used by the physical projection. Its
+existing coefficient formula is affine in the full quadratic corrections.
+For first jets `P,Q`, quadratic discrepancies `A_pp,A_pm` and cubic discrepancy
+`B_ppm`, the candidate exact change is
+
+```
+<W0(M), L B_ppm+E2(P,A_pm)+E2(Q,A_pp)>
+ +<W1(Q,M), L A_pp>+<W1(P,M), L A_pm>.                 (WC)
+```
+
+Here `L` is the original cosmological Einstein linearization, `E2` its actual
+second derivative, and `W1` the full determinant-volume and inverse-index test
+weight derivative. Every tensor entry and independent scalar/vector amplitude
+must remain. The goal of this calculation is an identity for the original
+nonlinear amplitude derivative, with the original physical first modes
+discharging the vacuum and linear equations. No quadratic equation for the
+discrepancies is assumed. This would expose the exact local integrand which the
+source translation defect has to cancel after physical projection. It would
+not itself admit the differentiated causal correction fields or remove a
+horizon, cusp, characteristic or source-contact contribution. In particular,
+the auxiliary quadratic discrepancy term in (TV) is not a substitute for (WC).
+
+## Fixed time translation of the original future fields, 12 September 2026
+
+**Closed source translation identity.** Keep the same physical time coordinate
+and any source-independent `T>=0`. Write `g_s(u)=chi(u) exp(2su)` and
+`d_T g_s(u)=g_s(u+T)-exp(2sT)g_s(u)`. Direct differentiation leaves the
+actual first-derivative defect. Both defects are supported on `[-T,1]`.
+Consequently the original reduced source obeys
+
+```
+F_red(tau+T,y)-exp(2sT)F_red(tau,y)
+ = reducedCoefficient(s,0,a,1,y) d_T g_s(tau+y)
+   +2 radialLiftFirst(s,0,a,1,y) d_T g_s'(tau+y).        (TC)
+```
+
+The source's exponential factor is retained in (TC); no QNM frequency or clock
+is replaced. Actual translation has difference `(exp(2sT)-1)F_red` plus this
+onset defect. Linearity of the admitted original future integral gives
+its response to precisely (TC). On the late ingoing region `tau+x>1`, `x<0`,
+both native causal supports imply `tau+h+y>1`, so the defect integral
+vanishes. The cap's two arms and original lift obey the same late
+translation law. This test does not reach the past-horizon datum: at fixed
+outgoing `v`, `tau=v+x` gives `tau+x=v+2x->-infinity`. A late-region law cannot
+be passed to that boundary. Source/current projection and complete-action
+cancellation remain unproved.
+
+`ThetaCuspHawkingBMSourceTimeTranslation` now proves (TC), the actual onset
+derivative and its strip support, absolute admission and the exact defect
+integral, and all three late-field translation laws. It also derives the
+defect integral's past limit as
+`pastResponse(v+T)-exp(2sT)pastResponse(v)`. Scratch checking and the cached
+exact-leaf audit passed; the module is wired. The strip is bounded in ingoing
+time only, not in spacetime. No global clock covariance of the radiative data
+or complete corrected action follows from these theorems.
+
+The alternative passivity test is being checked against the actual complex
+Einstein action and all boundary supply terms, rather than assuming a positive
+storage functional. The existing centered-QNM finite-clock covariance theorem
+is explicitly RH-equivalent and is not used as an input.
+
+**Complete-action checkpoint; physical realization unproved.** In the symmetric
+quartic expansion recorded below, let the translated first fields be
+`p'=alpha p`, `m'=beta m`, and write the actual correction discrepancies as
+`a'=alpha^2 a+A`, `b'=alpha beta b+B`, `c'=beta^2 c+C`. Here `a,b,c` are
+the `++`, `+-`, `--` corrections, and `A,B,C` must eventually be the translated
+original solutions, not chosen replacements. Multilinear expansion gives
+
+```
+I4' - alpha^2 beta^2 I4
+ = alpha^2 E_a(C)+alpha beta E_b(B)+beta^2 E_c(A)
+   +L(A,C)+L(B,B)/2,                                  (TV)
+E_a(z)=L(a,z)+T(p,p,z)/2,
+E_b(z)=L(b,z)+T(p,m,z),
+E_c(z)=L(c,z)+T(m,m,z)/2.
+```
+
+To check (TV), expand `L(a',c')` and `L(b',b')/2`; their linear discrepancies
+are `alpha^2 L(a,C)+beta^2 L(c,A)+alpha beta L(b,B)`. Expanding the three
+cubic terms supplies exactly the remaining terms in `E_a,E_b,E_c`; the pure
+quartic term scales by `alpha^2 beta^2`. Thus even formal stationary
+cancellation of the linear discrepancies leaves `L(A,C)+L(B,B)/2`.
+For the original rates, `alpha beta=exp(-3T)`; the physical clock is unchanged.
+The actual `L,T` would have to be derivatives of the complete geometric action
+with its determinant and inverse-index weights. Transferring `E_a,E_b,E_c`
+to source equations then retains the original horizon, cusp, characteristic,
+source-contact and switching-residual terms. The scalar-source theorem (TC)
+does not identify the independent SS/SV/VV correction discrepancies in (TV).
+
+The tempting passivity inference is not established. The actual residual
+expression in (TV) is complex-bilinear; no source-derived positive storage
+identity for it has been constructed. [Borja, arXiv:2608.15218](https://arxiv.org/html/2608.15218v1),
+Section 2, assumes a nonnegative storage function and retains the external
+input/output supply. Its damping argument gives asymptotic decay under added
+feedback and detectability conditions. Those conditions have not been derived
+for the original complete left-QNM action. Neither that argument nor (TV)
+produces fixed-clock extinction here. This is an unclosed physical comparison,
+not a new conditional Lean wrapper or a retired HB route.
+
+**Search record.** Deep finite-clock and hybrid angular-method searches both
+returned `partial=false` with 57,336 indexed files. The passivity/coercivity
+deep search returned `partial=false` with 57,338 files. The retrieved fixed-weight
+Ward and finite-QNM clock conditions are RH-equivalent or cancel with zero
+total weight; neither is a source producer. Angular mean smoothness/commutation
+and cusp-energy bounds remain relevant to the separate differentiated boundary
+admission, but did not supply complete-action positivity. The original source
+and cap translation proofs above use the checked onset, causal-support and
+Bochner-integral APIs, without a retrieved covariance premise.
+
 ## Original advanced response at the past face, 12 September 2026
 
 **Current source-level test.** The proved gradient absorption has the sign
@@ -31,7 +143,7 @@ This is the existing source-horizon kernel limit after the actual symmetric
 kernel's two radial arguments are exchanged. Both characteristic inequalities
 remain. The source is zero for `a<0`.
 
-**Uniform majorant to verify in Lean.** For `a>=0`, both direct/image
+**Closed Lean majorant and coordinate change.** For `a>=0`, both direct/image
 invariants at every finite target radius are at most `5 exp(a+|v|)`.
 Indeed, put `b=a-y-v`; `cosh(b-x)<=2 cosh b cosh x`,
 `|sinh x sinh y|<=cosh x cosh y`, and
@@ -41,9 +153,51 @@ The established source bound in these coordinates is
 `|F_reduced coefficient|<=C exp(-c0 a+2y)`. Thus the full theta density is
 bounded by a constant (depending on `v,z`) times
 `exp((a0-c0)a) exp(2y)` on `a>0,y<0`, with the original `a0<c0<2`.
-This admits the proposed past datum. Identifying it with the original
-Bochner response still requires the exact source-coordinate integral change;
-no replacement response is being assumed to equal the physical one.
+The exact source-coordinate change in the original Bochner response is now
+proved. The proof uses zero source before onset, zero kernel at negative delay,
+Haar translation and admitted Fubini in both coordinate systems. Dominated
+convergence then identifies the actual response's outgoing past-horizon limit
+with the integral of (PK) times the original source coefficient divided by two.
+The limiting density's absolute integrability is independently proved.
+`ThetaCuspHawkingBMPastSourceResponse` passed scratch checking and the cached
+exact-leaf audit; the module is wired. No derivative or wave-equation assertion
+is inferred from the value limit.
+
+**Connection to the actual physical left test.** The existing
+`physicalProjectedModeAction_transport` gives, on its physical frequency band,
+the exact finite radial identity
+
+```
+j_R(t)-j_R(s) = [-(mu-2) integral_s^t g(x) F(x) dx
+                 -(C(t)-C(s))] N,                            (PA)
+C(x) = [R(x) g(x)+R(x)^2 g'(x)/(R(x)^2-1)] F(x).
+```
+
+Here `F` is the actual continued angular source projection, `g` the original
+left radial mode, `N` its angular bilinear square, and
+`mu=physicalAngularParameter^2-1/4`. The theorem uses
+`3/2<Re(w)<2`, `Im(w)!=0`; it is not a direct endpoint assertion at a QNM.
+This source/current identity retains both endpoint contacts. To use the new
+past datum in (PA), the actual projected differentiated field must be identified
+with its admitted source integral, and the original horizon and cusp operations
+must commute with the projection and continuation. The cap must undergo the
+same operations. The existing value majorant proves none of these exchanges.
+Even their completion would leave the independent SS/SV/VV channels, solved
+`++` and `+-` corrections, retained spin two, changing weights and remaining
+characteristic/source-contact faces in the complete action. No cancellation or
+fixed-clock invariance of that sum is asserted.
+
+**Search record.** The source-cap and Green-method searches returned partial
+coverage of 57,326 files. A subsequent deep/all-views request for actual horizon
+radiation and the left projection returned `partial=false`, 57,331 indexed files,
+741,597 declarations and 692,151 ready method records; 44,831 compiler entries
+were pending. Its proposed boundary-pairing and residue ingredients did not
+supply the differentiated source-integral or cancellation theorem. The actual
+finite-current identity above was checked directly in its source. Broad recent
+arXiv searches also retrieved [2606.20825](https://arxiv.org/abs/2606.20825),
+whose abstract derives power-correction scaling from boost invariance, and the
+[Waves 2026 abstract collection](https://arxiv.org/abs/2607.19425). Only their
+abstracts were inspected; neither supplies an HB extinction theorem used here.
 
 ## Cap trace and physical contact, 12 September 2026
 

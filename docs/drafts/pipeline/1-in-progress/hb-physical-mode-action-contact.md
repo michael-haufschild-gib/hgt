@@ -2917,9 +2917,10 @@ For example the first iterated term expands to
 `-y^2*U_xx+y^2*U_yy+2i*y^2*U_xy+2i*y*U_x+2y*U_y`, exactly
 `-2y^2` times the Hessian contribution to `A-iB`. The squared first derivative
 has the same factor for the gradient-square contribution. The other identity
-has both imaginary signs reversed. These are analytical operator identities;
-the actual `FunctionSpace` embeddings and conversion of their weight lifts to
-the weight-four slash law are not yet formalized. The separate BM second-jet
+has both imaginary signs reversed. These operator identities, the actual
+`FunctionSpace` embeddings and conversion of the weight lifts to the original
+weight-four transformation are formalized in
+`ThetaCuspHawkingBMAngularTwoWeight`. The separate BM second-jet
 Maass bridge also retains the relevant connection terms, but its conventions
 must be matched explicitly rather than identified by name.
 
@@ -2929,21 +2930,110 @@ actual metric tensor; `defect_cauchyRiemann_x` and `defect_cauchyRiemann_y` deri
 both differential identities; `holomorphicPolarization_differentiableAt` and
 `conjugatePolarization_differentiableAt` prove complex differentiability on the
 entire upper half-plane. The source identity still requires the tensor to vanish.
-The next two obligations are its actual weight-four transformation and cusp
-admission. Physical causal boundary admission and Hawking-clock extinction
+The weight-four transformation is also proved. Cusp admission remains open.
+Physical causal boundary admission and Hawking-clock extinction
 remain beyond that angular identification.
 
 Validation: both new exact leaf audits passed, and formal lint passed. Both leaves are imported by the RHTower umbrella; the umbrella was not built.
 
-### Current weight-four construction
+### Proved weight-four transformation and current cusp target
 
-The active target is the actual modular transformation of the two holomorphic
-tensor polarizations. Reuse the generic Maass ladder invariance argument for a
-single real matrix, then specialize it to every original integral modular matrix.
-Embed the already constructed smooth source and inverse into the corpus's
-`MaassSmooth.FunctionSpace`; build the squared first-step fields and iterated
-second-step fields with their actual derivatives. Identify these fields with
-`-2y²(A-iB)` and `-2y²(A+iB)` before converting the compact-phase law to the
-weight-four slash law. `realIwasawaK_phase` gives the exact stabilizer phase in
-terms of the original matrix entries and upper-half-plane height. Cusp admission
-and tensor vanishing remain subsequent obligations.
+`ThetaCuspHawkingBMAngularTwoWeight` proves the transformation of both actual
+holomorphic polarizations for every Xi occurrence and every original integral
+modular matrix. `lowerTensorFunction_eq` and `raiseTensorFunction_eq` identify
+the genuine smooth Maass ladder expressions with `-2y²(A-iB)` and
+`-2y²(A+iB)`. `holomorphicPolarization_weight_four` and
+`conjugatePolarization_weight_four` give `H(gamma*z)=(c*z+d)^4 H(z)`.
+The conjugate proof retains the independent complex polarization.
+
+The generic ladder proof differentiates invariance along the two actual group
+curves. The exact identity `orbit_phase_four` cancels the height ratios when
+converting compact weights to the original modular denominator. No Maass
+cuspidality or eigenform premise is imposed on the constructed inverse.
+
+Validation: the exact weight leaf audit passed (2 jobs, 302 seconds), with no
+Lean warnings. Formal lint passed. The RHTower umbrella imports the new leaf;
+no umbrella or dependency source was built. The cached dependency artifacts
+were retained, and the new leaf artifacts were copied to the normal cache.
+
+The missing angular step is cusp admission for these actual holomorphic
+weight-four fields. The exact principal cancellation below and the retained
+native L2 correction give the next direct estimate to prove. The source tensor
+identity, physical causal boundary admission and Hawking-clock extinction
+remain unproved.
+
+### Exact cancellation of the complete cusp principal tensor
+
+Let `r=rho`, `s=1-r`, `lambda=r(r-1)=s(s-1)`, and
+`P=A*y^r+D*y^s`. The actual restored principal response is
+
+    U_pr = -A²*y^(2r)/(2(r-1)(2r+1)) + A*D*y
+           -D²*y^(2s)/(2(s-1)(2s+1)).
+
+Its denominators are nonzero for every Xi occurrence by
+`xi_cusp_two_denominators`. This is precisely the negative of
+`cuspPowerResponse 2 rho A D`, after factoring the two denominators.
+For a height-only power `C*y^(2r)`, the first trace-free Hessian component is
+`-r(2r+1)C*y^(2r-2)`; for `A*D*y` it is `-A*D/y`.
+Multiplying these three components by `lambda` gives respectively
+
+    (r²*A²/2)*y^(2r-2),  r*s*A*D/y,  (s²*D²/2)*y^(2s-2).
+
+Their sum is `P_y²/2`, exactly cancelling the first component of
+`[dP tensor dP]^TF`. Both off-diagonal components are zero because both
+fields depend only on height. Thus the complete principal tensor is zero,
+including the mixed Weyl term. This analytical identity uses the actual
+signed eigenvalue `lambda=-scalarQ(rho-1/2)=rho(rho-1)`. It is stronger
+than the earlier proposed decay bound; it is not yet a Lean theorem about
+the actual differentiated principal fields.
+
+Consequently, above the cutoff transition, writing `S=P+R` and `U=W-Q`
+reduces the exact tensor remainder to
+
+    [dP tensor dR + dR tensor dP + dR tensor dR]^TF
+      + lambda HessTF(W).
+
+This supplies a sharper cusp-admission target: estimate only the Fourier
+tail terms and the distributional derivatives of the retained native L2
+correction. Exact principal cancellation does not itself establish those
+estimates, cusp admission, tensor vanishing or causal radial admission.
+
+### Cusp-gap route from a weak growth estimate
+
+Deep search for periodic holomorphic growth returned the source argument
+`HTGeometry.normedPeriodic_exp_decay_of_zero_at_inf` in
+`GaloisForLFunctions/HTGeometry/PeriodicCuspBoundaryGap.lean:148`.
+Its exact inputs are positive period `h`, periodicity, eventual holomorphy and
+`ZeroAtFilter I∞ f`; its conclusion is `f=O(exp(-2*pi*Im(z)/h))`.
+The theorem uses the removable singularity of the periodic cusp function.
+It does not assume the Fourier coefficients or supply a bound for our tensor.
+
+Analytical consequence: if a periodic holomorphic `H` has growth strictly below
+the first increasing Fourier exponential, apply this theorem to
+`g=qParam(h,z)*H(z)`. The growth hypothesis gives `g→0`. The theorem gives
+`||g||≤C*exp(-2*pi*Im(z)/h)`. Since `||qParam(h,z)||` equals this positive
+exponential, cancellation gives `||H||≤C`. Thus a polynomial bound from compact
+mean-value tests would already give bounded cusp admission, without constructing
+all Fourier coefficients. A globally periodic extension of the original
+upper-half-plane field and the actual weak-growth estimate still need Lean
+proofs. The constant mode remains to be removed by the normalized height test
+against the retained native L2 correction. This is a candidate mechanism for
+that missing estimate, not an admission theorem for the actual tensor.
+
+Search coverage: the multiword deep request was partial; the broad
+`subexponential` request completed, but its leading RH growth equivalences do
+not provide the missing local bound. Candidate/source-argument and ingredient
+results were inspected; no absence claim is made from those searches.
+
+### Current compact evaluation construction
+
+The next weak-growth proof uses the source-verified
+`HTGeometry.integral_dzbar_kernel` from `HTGeometry/DbarSolve.lean`.
+It reconstructs any compact C1 field from its actual Wirtinger derivative.
+Apply it to a smooth cutoff times a holomorphic tensor polarization. Holomorphy
+kills the derivative of that polarization. A cutoff equal to one near the
+center makes the remaining divided-cutoff derivative smooth and supported in
+an annulus. This gives a fixed compact evaluation test without assuming a
+chosen `ContDiffBump` is radial. Translating that fixed test will let both tensor
+derivatives move onto a uniformly controlled test. The immediate target remains
+a polynomial growth bound for the actual retained native correction.

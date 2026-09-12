@@ -41,7 +41,7 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
 - **F12 — Exact channel-energy partition.** Expected squared energies of all largest-prime channels
   equal coefficient square mass of the non-`Y`-smooth sector. Evidence:
   `steinhausCoefficientMass_eq_smooth_add_largePrimeChannelEnergy`.
-- **F13 — Axiom audit.** F07, F10, F11, F12, F15--F18 depend only on `propext`,
+- **F13 — Axiom audit.** F07, F10, F11, F12, F15--F19 depend only on `propext`,
   `Classical.choice`, and `Quot.sound`; targeted builds pass.
 - **F14 — Dense-support Gaussian warning.** arXiv:2605.21737 proves, in its random multiplicative
   setting, that its standard complex-Gaussian CLT forces sparse support; it does not exclude a
@@ -66,6 +66,13 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   Evidence: `exists_norm_smoothAFEZetaDualCoefficientGeneral_right_add_main_le`,
   `riemannZeta_rightDisplaced_eq_two_tsum_smoothAFE_dualWeight`, and
   `riemannZeta_rightDisplaced_eq_reflectedPrimal_add_complement`.
+- **F19 — Literal reflected-AFE terminal mass.** On `tau in [N,2N]`, reflection of the left-line
+  chi upper bound gives `|chi(1/2+d+i*tau)| >= c*N^(-d)`. The ordinary cutoff has norm at least
+  `1/2` on one fixed inner interval. Consequently the half-to-two-thirds prime-power channels of
+  the literal reflected-primal AFE coefficients have an eventual uniform positive aggregate
+  square-mass floor. Evidence: `exists_norm_zetaChi_rightDisplaced_ge_nat_window`,
+  `norm_sq_smoothAFEZetaRightReflectedPrimalCoefficient_eq_actual`, and
+  `exists_eventually_reflected_actual_terminal_channels_lower`.
 
 ## No-gos
 
@@ -109,4 +116,4 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   when `Y/|tau| -> 0`, but at the terminal scale `Y` proportional to `|tau|` its upper bound is only
   `O(1)` and gives no lower bound for `|W_R|`. Positive survivor: F18's reflected AFE moves the
   terminal carrier to the ordinary primal cutoff, where a fixed inner fraction can be treated by
-  the independent cutoff estimate; the resulting actual terminal channel mass still needs proof.
+  the independent cutoff estimate. F19 completes that surviving transfer.

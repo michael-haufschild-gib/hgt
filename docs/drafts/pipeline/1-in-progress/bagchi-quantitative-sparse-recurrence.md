@@ -293,9 +293,16 @@ ordinary primal terminal cutoff are also proved. Targeted builds pass; axiom aud
 mass: when `Y` is proportional to `|tau|`, the direct bound is only `O(1)`. The reflected-primal
 identity is the surviving exact route for transferring a fixed inner terminal fraction.
 
-Three analytic sublemmas remain: transfer of the ideal positive mass through the reflected ordinary
-cutoff to actual terminal coefficients and conditional channel energy
-bounded away from zero on a positive-mass base event; a two-dimensional local lower bound uniform
+That reflected terminal transfer is now closed in Lean. Reflection gives a uniform lower bound
+`|chi(1/2+d+i*tau)| >= c*N^(-d)` for `tau in [N,2N]`, while the ordinary cutoff is bounded below on
+one fixed inner interval. The exact coefficient-square identity then transfers the ideal dyadic
+channel estimate to the literal reflected-primal AFE coefficients, and
+`exists_eventually_reflected_actual_terminal_channels_lower` proves an eventual uniform positive
+aggregate terminal channel mass. Module: `RHTower.SmoothAFEZetaRightReflectedPrimalMass`; targeted
+build passes; axiom audit is only `propext`, `Classical.choice`, `Quot.sound`.
+
+Three analytic sublemmas remain: conditional channel energy bounded away from zero on a
+positive-mass base event; a two-dimensional local lower bound uniform
 in the random centre and in finitely many boundary nodes; and deterministic vertical-orbit
 transfer for the resulting triangular family. Corpus deep/method-enriched searches found conditional probability
 infrastructure but no theorem closing these gates. Recent random-multiplicative evidence also
@@ -346,3 +353,7 @@ mixture or direct full-support law remains possible.
 - 2026-09-12 — C15.4: proved direct right-line chi-ratio decay, signed residue contour, infinite
   contour localization, exact actual-coefficient error, direct two-series AFE, and reflected-primal
   AFE; isolated fixed-inner-fraction cutoff mass as the remaining coefficient transfer.
+- 2026-09-12 — C15.5: proved a right-line chi lower bound uniform on dyadic height windows, a fixed
+  inner cutoff lower bound, the exact literal reflected-primal coefficient-square identity, and an
+  eventual positive aggregate terminal channel mass; isolated conditional energy concentration as
+  the remaining coefficient/probability interface.
