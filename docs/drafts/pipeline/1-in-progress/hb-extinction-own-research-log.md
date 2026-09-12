@@ -178,8 +178,30 @@ Notation: `rho=x+it` is an actual Xi occurrence; `delta=x-1/2`; `S` is the liter
     **No-go:** the one-eigenvalue tensor cancellation does not by itself remove the cross-source current; a nonzero mismatch coefficient does not obstruct integrated cancellation either. The actual scalar/vector source instead contains coexact/coexact contractions: `<*dF,*dT>=div(F*dT)-lambdaT*F*T`, retaining item 15's scalar overlap. **Survivor:** exact divergence plus Jacobian decomposition, retaining the reader/response distinction and edge flux. These paper identities have not been identified with the complete Einstein source, admitted on every boundary, or formalized here.
     Evidence: [calculations XP, XF, XFU](hb-radiative-source-period-attack.md#actual-weighted-correction-discrepancy-12-september-2026).
 
-35. **The original cap has an admitted time derivative. [Lean scratch]
+35. **The original cap has an admitted time derivative.** [Lean]
     The original onset obeys `|g'|+|g''| <= B exp(-d*u)` at the existing source-admission exponent `a0<d<2`. Differentiation under the original cap integral gives `partial_v A=integral g''(v+h)*M(x,h) dh`; its majorant is uniform in `x`. No theta derivative bound, frequency change or supplied field equation is used.
-    **Scope:** actual time derivative only; normal identification, differentiated horizon limits and complete boundary cancellation remain pending. Verified by `lake env lean /tmp/hb-cap-normal-trace.lean`; no installed leaf or final audit yet.
+    **Scope:** actual time derivative; item 36 supplies the differentiated horizon limits. Scratch and isolated cached leaf audit passed; module wired.
+    Evidence: [CapNormalTrace](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapNormalTrace.lean), `onset_derivative_bound`, `boundaryArm_time_hasDerivAt`.
+
+36. **The actual cap arm has zero weighted normal horizon trace; the full cap retains its time contact.** [Lean]
+    `partial_x A=-(2-c(x))*integral N(v,h)*M(x,h) dh`, where `N=partial_h[g'(v+h)*(1-exp(-h))]`. A bijective delay change fixes the full theta mean before differentiation. Both endpoint factors vanish, so `integral N=0`; admitted dominated convergence gives `partial_x A->0` and `partial_v A->-g'(v)*Q`. Both original cap arms contribute to the actual time derivative, whose horizon limit is `l*g'(v)*Q`; the differentiated image vanishes by the original source decay gap.
+    **Scope:** scalar arm normal trace and full scalar cap time trace. Item 22's remaining angular traces, other causal corrections, temporal/cusp faces and complete cancellation are unproved. Scratch and isolated cached exact-leaf audit passed (216 seconds, 2 jobs); module wired. No heartbeat, depth or transparency override added.
+    Evidence: [CapNormalTrace](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapNormalTrace.lean), `normalWeight_future_integral`, `boundaryArm_normal_hasDerivAt`, `boundaryArm_normal_ingoing`, `capBoundaryField_time_hasDerivAt`, `capBoundaryField_time_ingoing`.
+
+37. **The direct scalar cap arm has a source-derived finite radial horizon derivative. [Lean]**
+    The actual characteristic derivative `K'(1)=Delta_H Q/2`, compact derivative control and global source growth admit `|(K(1+c*(exp(h)-1))-Q)/c|<=C*(exp(h)+exp(a0*h))` for `0<c<=1`. Since `1<=a0<d`, dominated convergence gives `normalArm/c -> (Delta_H Q/2)*I_g(v)`, with `I_g=integral g(v+h)*exp(h) dh`. The actual direct arm obeys `partial_r A -> -(Delta_H Q/2)*I_g` at fixed ingoing time.
+    **Survivor:** a finite radial boundary datum. The full two-arm cap limit (CFJ) and late evaluation `I_g=-g/(2s+1)` remain paper-only; angular passage and complete current cancellation remain open. Scratch and isolated cached exact-leaf audit passed (88 seconds, 2 jobs); module wired. No nonvanishing claim.
+    Evidence: [CapRadialMemory](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapRadialMemory.lean), `normalWeight_first_moment`, `normalArm_div_scale_ingoing`, `radialArm_derivative_ingoing`; [CR–CFJ](hb-radiative-source-period-attack.md#actual-cap-derivative-attack-12-september-2026).
+
+38. **The actual radial boundary memory retains exact finite-clock source work. [Lean]**
+    `I_g'+I_g=-g` and `exp(T)*I_g(v+T)-I_g(v)=-integral_0^T exp(h)*g(v+h) dh` for every real `T`. Differentiation under the admitted original integral and integration by parts retain the lower source contact `g(v)`; the upper product vanishes because `d>1`. Consequently the translated actual direct-arm radial derivatives tend to `(Delta_H Q/2)*integral_0^T exp(h)*g(v+h) dh`.
+    **Boundary:** this is a forced transport law; no zero source-work value or complete-action invariance follows from it. **Survivor:** exact unchanged-clock term that the remaining physical boundary/correction contributions must control. Scratch and exact-leaf audit passed; no heartbeat, depth or transparency override added.
+    Evidence: [CapRadialMemory](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapRadialMemory.lean), `sourceMemory_hasDerivAt`, `sourceMemory_physical_translation`, `radialArm_derivative_physical_translation`.
+
+
+39. **Angular transposition exposes a weaker tested-current interface with explicit edges. [Paper]**
+    With the original `coexact(u)=(u_y,-u_X)`, `A=rough Laplacian-1`, `D=(r²-1)partial_r+partial_v`, `R(W)=partial_X W_y-partial_y W_X` and `Lstar(psi)=partial_XX(y² psi)+partial_yy(y² psi)-2psi`, the compactly tested radial current plus source contact equals `r^(-2)*integral[Du*R(eta*A V)-u*Lstar(R(eta*D V))]`. The exact three boundary contributions are displayed in (WT); they vanish when the cutoff is supported inside the angular region. Every cutoff derivative remains in the test factors.
+    **Survivor:** the linear tested expression needs scalar `u,Du` passage instead of three separate strong angular derivative limits. This applies on paper to finite-delay native cap truncations. It does not admit the actual infinite cusp/left-QNM cutoff limit, products of weak limits, other faces or complete nonlinear cancellation. Not Lean-formalized.
+    Evidence: [WT and its boundary derivation](hb-radiative-source-period-attack.md#actual-cap-derivative-attack-12-september-2026).
 
 **Result of this research:** no complete radiative extinction theorem, fixed finite physical-clock invariance theorem, or RH proof has been obtained. None of these scoped no-gos disproves HB.

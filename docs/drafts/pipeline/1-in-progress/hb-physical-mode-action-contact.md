@@ -3277,25 +3277,144 @@ leaf audit under Lean 4.32.2. The new leaf is wired into its umbrella.
 
 ### Original scalar-source reconstruction from the angular tensor identity
 
-Current construction target: lift all seven scalar-harmonic source coefficients
-into the original scalar--scalar quadratic Einstein tensor. Put `F=S^2`,
-`U=coordinateResponse(q)` and `lambda=(s+1)(s+2)`. The proved angular identity
-provides `[dS tensor dS]^TF=-lambda*HessTF(U)`. Hence the complete trace-free
-source depends on `HessTF(F)+lambda*HessTF(U)`, without assuming that `F` is a
-single harmonic or dropping a divergence-free component.
+The scalar--scalar source identification is proved in Lean for every original Xi
+occurrence, either physical branch, arbitrary scalar amplitude and every exterior
+point. `ThetaCuspHawkingBMScalarSourceIdentification.physical_scalar_source_coefficient`
+identifies all sixteen components with the second Taylor coefficient of the
+original nonlinear metric source, including its factor `1/2`.
 
-For each affine coefficient `c(mu)`, its proposed literal field is
-`c(0)*F+(c(1)-c(0))*Delta(F)`. The `TT`, `RR` and angular trace coefficients
-have this form. The `TR` coefficient multiplies `F`; the mixed angular rows
-multiply `dF`. The trace-free coefficient factors as
+Put `F=S^2`, `U=coordinateResponse(q)` and `lambda=(s+1)(s+2)`. The actual
+angular identity `[dS tensor dS]^TF=-lambda*HessTF(U)` gives the complete
+trace-free tensor `HessTF(F)+lambda*HessTF(U)`. Each affine harmonic
+coefficient `c(mu)` becomes `c(0)*F+(c(1)-c(0))*Delta(F)`. This applies
+to `TT`, `RR` and the angular trace. `TR` multiplies `F`; the mixed angular
+rows multiply the actual `dF`. The trace-free coefficient is
 
     kappa(s,r)=s^2*((s+1)^2-4*r^2)/(8*r^4),
     ssSourceTF(s,r,mu)=kappa(s,r)*(1+lambda/(2-mu)).
 
-Thus its literal tensor is
-`kappa(s,r)*(HessTF(F)+lambda*HessTF(U))`. Equality must be checked against
-all original quadratic Einstein components, including the factor `1/2`
-between the Hessian and quadratic Taylor source. This is the pending formal
-identification required before lifting the Laurent metric formulas. The
-causal correction must subsequently retain their forced growing radial term,
-actual onset, horizon data and original left-QNM pairing.
+Thus the literal trace-free source is
+`kappa(s,r)*(HessTF(F)+lambda*HessTF(U))`. The source matrix retains the
+actual envelope squared. All six lower Ricci slots are derived through the
+original connection tables; full Einstein symmetry is a conclusion. The
+original physical perturbation's complete field jet is matched by its exterior
+germ, so the theorem concerns the original metric source. It assumes neither
+harmonic completeness nor that `S^2` is a single harmonic.
+
+The scratch check and exact leaf audit pass without warnings under Lean 4.32.2.
+Only the new leaf was built; its artifacts are installed and its umbrella import is wired. The remaining construction is the literal Laurent metric response,
+followed by its causal correction with the forced growing radial term, actual
+onset, horizon data and original left-QNM pairing retained.
+
+
+### Cancellation of the reconstruction's apparent double shift-two pole
+
+Analytical identity from the original Laurent coefficients and `recH`, on the
+physical exterior `r>1`, with `s` nonreal and away from the displayed spectral
+poles. No numerical or symbolic experiment is used. Write `R=1/(2-mu)`, `V=1/(mu-d)`,
+`d=(2s+1)(2s+2)`, `lambda=(s+1)(s+2)` and
+`kappa=s^2*((s+1)^2-4r^2)/(8r^4)`. Decompose
+
+    M = M0 + R*M2 + V*Md,
+    M0 = r+s*(5s+2)/(2r)-s^2*(s+1)^2/(8r^3),
+    M2 = s^2*lambda/r-s^2*(s+1)^2*lambda/(4r^3) = -2*lambda*r*kappa,
+    Md = 3*s*(s+1)^2*(3s+4)/(2r),
+    tauTF = kappa*(1+lambda*R).
+
+Consequently `M+2r*tauTF=M0+2r*kappa+V*Md`: the original source
+cancels the entire shift-two term in this reconstructed combination.
+
+Let `D_s=d/dr+2s/(r*(r^2-1))` be the original twisted derivative and
+`f=r^2-1`. The verified jet formula for the angular metric amplitude is
+
+    H = R*(-mu*M/(4r)+f*D_s(M)/2-r*f*tauTR/(2s)
+           -f*tauT/s+(f-mu/2)*tauTF+r*f*D_s(tauTF)).
+
+The coefficient that could produce a double pole at `mu=2` is
+
+    -M2/(2r)+f*D_s(M2)/2+(f-1)*lambda*kappa+r*f*lambda*D_s(kappa).
+
+Since `M2=-2*lambda*r*kappa` and
+`D_s(M2)=-2*lambda*kappa-2*lambda*r*D_s(kappa)`, this coefficient is
+`lambda*kappa-f*lambda*kappa-r*f*lambda*D_s(kappa)
+ +(f-1)*lambda*kappa+r*f*lambda*D_s(kappa)=0`.
+The remaining factors `R*V` split as `(R+V)/(2-d)`. For either actual
+physical branch, `d-2=2s*(2s+3)` is nonzero because `s` is nonreal.
+Thus `H` has at most simple poles at the two original shifts and remains
+bounded as `mu` tends to infinity. Hence its rational dependence on `mu`
+lies in the span of `1,R,V`. Radial differentiation does not increase pole
+orders because both shifts are independent of `r`. The original source-retaining
+reconstruction identities then read
+
+    F1 = s/f*(4r*H-2r*tauTF-M),
+    F2 = -r*tauTR/(2s*f)+mu*F1/(4s*r*f)-2H/f^2+2r*D_s(H)/f,
+    F0 = f^2*F2-2f*tauTF.
+
+The leading value of `H` at spectral infinity is exactly
+`H_infty=M0/(4r)+kappa/2`. The constant part of `F1` therefore also cancels:
+`s/f*(4r*H_infty-2r*kappa-M0)=0`. Thus `F1` is proper and lies in the
+span of `R,V`; multiplication by `mu` leaves it bounded at infinity.
+Consequently `H,F0,F2` lie in the span of `1,R,V`. The apparent iterated
+angular inverse and the apparent positive spectral power both cancel from
+the metric amplitudes. Their proposed literal angular fields consequently
+need only the three existing fields `F=S^2`, `U=(2-Delta)^(-1)F` and
+`V_field=(Delta-d)^(-1)F`; the source itself still retains `Delta(F)`.
+This classifies the actual rational coefficients. Proving that their substitution
+solves the nonseparated metric equation, and establishing causal endpoint
+conditions, remain obligations.
+
+Paper proof: closed by the displayed identities. Lean status: the input
+Laurent identities and `recH` are proved; this cancellation is not yet a
+separate Lean theorem. Sources: `ThetaCuspHawkingBMScalarStreamLaurentMaster`
+(`laurentMasterA_resolvents`, `laurentMasterB_resolvent`) and
+`ThetaCuspHawkingBMScalarStreamReconstructionJet.recH`.
+
+
+### Explicit three-field coefficients of the original reconstructed response
+
+Current construction: prove the literal sourced metric equation using the exact
+three-field reduction of F87, then impose the original causal/onset and radial
+endpoint data. Set `f=r^2-1`, `d=(2s+1)(2s+2)`, `R=1/(2-mu)`, `V=1/(mu-d)`
+and use the original twisted derivative `D_s`. The reduced master is
+
+    N=M+2r*tauTF=N0+Nd*V,
+    N0=r+s*(3s+2)/(2r)+s^2*(s+1)^2/(8r^3),
+    Nd=3s*(s+1)^2*(3s+4)/(2r).
+
+The original reconstruction formula simplifies exactly to
+
+    H=R*(f*D_s(N)/2-mu*N/(4r)-r*f*tauTR/(2s)-f*tauT/s).
+
+Define coefficient fields, independent of `mu`, by
+
+    H0=N0/(4r),
+    Hd=(f*D_s(Nd)/2-d*Nd/(4r))/(2-d),
+    H2=f*D_s(N0)/2-N0/(2r)-r*f*tauTR/(2s)-f*tauT/s-Nd/(4r)+Hd.
+
+Then `H=H0+H2*R+Hd*V`, with every original source term retained. This
+follows by `mu*R=2R-1`, `mu*V=1+dV` and `R*V=(R+V)/(2-d)`.
+The remaining actual reconstruction coefficients are determined by
+
+    F1_2=4sr*H2/f,                 F1_d=s*(4r*Hd-Nd)/f,
+    F2_0=-r*tauTR/(2s*f)+(F1_d-F1_2)/(4s*r*f)-2H0/f^2+2r*D_s(H0)/f,
+    F2_2=F1_2/(2s*r*f)-2H2/f^2+2r*D_s(H2)/f,
+    F2_d=d*F1_d/(4s*r*f)-2Hd/f^2+2r*D_s(Hd)/f,
+    F0_0=f^2*F2_0-2f*kappa,
+    F0_2=f^2*F2_2-2f*lambda*kappa,
+    F0_d=f^2*F2_d.
+
+The proposed actual field is the sum of three original `harmonicMetricField`
+recipes with profiles `F=S^2`, `U=(2-Delta)^(-1)F` and
+`V_field=(Delta-d)^(-1)F`, using the corresponding coefficient columns.
+These profiles are not supplied as harmonics. Their actual Laplacians must be
+used: `Delta(U)=2U-F`, `Delta(V_field)=d*V_field+F`, and the full already
+proved square Laplacian. The existing `harmonicMetricField_jet` permits arbitrary
+smooth profiles, and `metricJet_cosmological_i_j` gives all sixteen unrestricted
+angular-jet components. Thus no spectral-completeness theorem is needed for
+this direct verification. Equality with the literal source from F88 and causal
+admission are separate proof obligations.
+
+Status: the displayed coefficient derivation is analytical; a scratch Lean check
+of the original reduced master, its actual twisted derivative, and `recHR`
+three-field decomposition is in progress. No new metric-equation theorem is
+claimed yet.

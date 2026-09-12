@@ -283,6 +283,23 @@ does not retire mechanisms outside its stated hypotheses.
   `routeE_signCompleteRowMass_deviation_sq_le` in
   `formal/GaloisForLFunctions/RHTower/RouteESignCompletePhysicalDegree.lean`.
 
+- **FACT-035 — Weighted signed current fractures exactly into signed normalizer flux and signed
+  co-moving transport.** For symmetric raw incidence `U` with nonzero rows and sign-reversing
+  support,
+  `2*sum_i s_i*w_i = sum_i s_i*w_i*F_i + sum_i s_i*sum_j U_ij/d_j*(w_i-w_j)`, where
+  `F_i=sum_j U_ij*(1/d_i-1/d_j)`. For constant `w`, second term vanishes and signed flux is
+  exactly twice original signed sum. Lean:
+  `routeE_two_mul_signedWeightedSum_eq_signedNormalizerFlux_add_coMoving` and
+  `routeE_two_mul_signedSum_eq_signedNormalizerFlux` in
+  `formal/GaloisForLFunctions/RHTower/RouteESignedNormalizerFluxCircularity.lean`.
+
+- **FACT-036 — Symmetric sign-reversing raw incidence has zero signed total degree.** For every
+  symmetric real incidence `U` supported only between opposite signs,
+  `sum_i s_i*rowMass(U,i)=0`. Hence signed vertex count is exactly signed raw row-degree defect:
+  `sum_i s_i=sum_i s_i*(1-rowMass(U,i))`. Lean:
+  `routeE_sum_sign_mul_rowMass_eq_zero` and `routeE_signedSum_eq_signedRowMassDefect` in
+  `formal/GaloisForLFunctions/RHTower/RouteESignedNormalizerFluxCircularity.lean`.
+
 ### No-gos
 
 - **NOGO-001 — Signed column-load cancellation is circular.** For every row-stochastic kernel
@@ -496,4 +513,23 @@ does not retire mechanisms outside its stated hypotheses.
   `V≈XH` already exceeds this threshold by `sqrt(X)`. The corpus short-interval mean-square
   inputs are weaker still: qualitative `o(XH^2)` or logarithmic savings from `XH^2` do not meet
   the threshold. Scope: unweighted sign-complete shell plus the current absolute-value/Cauchy
-  composition. Regularized incidence and direct signed reciprocal-load flux cancellation survive.
+  composition. Regularized incidence and source-derived cancellation before absolute values
+  survive; NOGO-030 audits bare signed flux.
+
+- **NOGO-030 — Signed reciprocal-normalizer flux is not an independent cancellation quantity.**
+  FACT-035 gives `sum_i s_i*F_i=2*sum_i s_i` at constant weight and, for unit-bounded signs,
+  `2*abs(sum_i s_i)≤sum_i abs(F_i)`. With varying Gibbs weight, only the signed co-moving term
+  separates flux from twice the original signed current. Hence retaining the flux sign before
+  Cauchy avoids NOGO-029's variance loss but does not itself prove cancellation; its required
+  half-power estimate is the original target up to the already-budgeted co-moving error. Scope:
+  symmetric row normalization with sign-reversing support. A source-derived identity estimating
+  the combined flux/current, or a non-row-normalized partial pairing with explicitly bounded
+  unmatched mass, survives.
+
+- **NOGO-031 — Symmetric degree regularization to unit rows already requires sign balance.**
+  FACT-036 implies `abs(sum_i s_i)≤sum_i abs(1-rowMass(U,i))` for unit-bounded signs. In
+  particular, a symmetric sign-reversing incidence with every raw row mass exactly one can exist
+  only when total signed vertex count is zero. Sinkhorn scaling, Metropolis symmetrization, or any
+  other support-preserving symmetric reweighting cannot make row-degree defect small independently
+  of the desired cancellation. Scope: symmetric raw incidence on all vertices. Partial incidence
+  with explicitly charged unmatched vertices and nonsymmetric source/target mechanisms survive.

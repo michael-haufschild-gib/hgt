@@ -332,9 +332,14 @@ so it cannot give a uniform floor. The required multiplicity is now closed: ever
 interval contains at least `cN` terminal prime--cofactor samples eventually; summing the per-prime
 floor estimate loses only the sublinear cardinality of the terminal prime window. Module:
 `RHTower.SteinhausTerminalSampleCounting`; targeted build passes; axiom audit is only `propext`,
-`Classical.choice`, `Quot.sound`. Remaining arithmetic task is to inject the resulting `N^J`
-colored selections into Cauchy--Binet minors and transfer the stable normalized determinant floor
-to the literal reflected-AFE coefficient matrix.
+`Classical.choice`, `Quot.sound`. The many-minor combinatorics are now closed too. Strictly ordered
+color blocks inject all transversals into distinct canonical Pluecker coordinates; product-first
+ordering of actual terminal feature indices makes separated normalized intervals satisfy this
+hypothesis; and the product of their cardinalities is `Ω(N^J)`. Modules:
+`HTGeometry.ComplexGramColoredMinors` and `RHTower.SteinhausTerminalColoredMinors`; targeted builds
+pass; axiom audit is only `propext`, `Classical.choice`, `Quot.sound`. Remaining arithmetic task is
+to transfer the stable normalized power-determinant floor to every literal reflected-AFE
+coefficient minor with its exact `N^(-J/2)` scale.
 
 Two analytic sublemmas remain: a two-dimensional local lower bound uniform
 in the random centre and simultaneously in finitely many boundary nodes; and deterministic vertical-orbit
@@ -406,3 +411,7 @@ mixture or direct full-support law remains possible.
 - 2026-09-12 — C15.9: proved every fixed normalized interval contains linearly many terminal
   prime--cofactor samples: reciprocal-prime mass supplies the linear main term and the one-unit
   floor loss per prime sums to `o(N)`; isolated colored-choice injection and literal-minor scaling.
+- 2026-09-12 — C15.10: proved colored transversals inject into distinct Pluecker minors without
+  factorial loss, ordered actual feature indices by represented product, lifted cofactor counts to
+  `Ω(N)` actual block cardinalities, and combined finitely many blocks into `Ω(N^J)` minors;
+  isolated literal reflected-AFE determinant scaling as the remaining arithmetic gate.

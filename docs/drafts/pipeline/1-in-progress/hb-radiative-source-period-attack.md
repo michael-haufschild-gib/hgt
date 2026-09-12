@@ -6,12 +6,18 @@ Verified findings and scoped no-gos from this work: [concise research log](hb-ex
 
 ## Actual cap derivative attack, 12 September 2026
 
-**Paper derivation; Lean verification in progress.** The complete correction
+**CN and scalar time/normal horizon traces verified in Lean; isolated cached exact-leaf audit passed (216 seconds, 2 jobs).** The complete correction
 exchange (WBCQ) still requires differentiated physical boundary limits.
 For the original cap arm write `c(x)=exp(x)/cosh(x)=1+tanh(x)` and
 `M(x,h)=mean_Q(arcosh(1+c(x)*(exp(h)-1)))`. The original field is
 `A(v,x)=integral_0^infinity g'(v+h)*M(x,h) dh`, with the full literal `Q`
 and unchanged onset `g(u)=chi(u)*exp(2s*u)`.
+
+The new `ThetaCuspHawkingBMCapRadialMemory` leaf passed scratch Lean and
+its isolated cached final audit (88 seconds, 2 jobs); it is wired into
+`RHTower.lean`. Generated indices were refreshed. Global formal lint still
+reports the unrelated unwired `Sieve.KloostermanGlobalCollisionCoprime`
+module; no global lint pass is claimed.
 
 The two derivatives of its circle argument satisfy
 `partial_x M=(2-c(x))*(1-exp(-h))*partial_h M` away from the removable
@@ -40,10 +46,183 @@ upper factor decays by the same strict gap.
 At the ingoing horizon `M(x,h)->Q`, while the bracket in (CN) integrates to
 `[g'(v+h)*(1-exp(-h))]_0^infinity=0`. Thus `partial_x A->0` is the target
 normal trace. Similarly `partial_v A=integral g''(v+h)*M(x,h) dh` tends to
-`-g'(v)*Q`. These assertions are not recorded as verified log facts yet.
+`-g'(v)*Q`. These scalar arm claims and the full two-arm cap's actual time
+contact are now Lean-verified in `ThetaCuspHawkingBMCapNormalTrace`.
+The formal change uses the equivalent bijective delay map
+`flow(b,h)=log((b+exp(h)-1)/b)`, with `b=c(x)/c(x0)` and Jacobian
+`exp(h)/(b+exp(h)-1)`, fixing `M(x0,h)`. Formula (CI) remains a paper
+version of the same change, not a separately formalized declaration.
 They concern the actual source cap; angular-current passage, the reduced
 future response, independent SS/SV/VV corrections and full extinction remain
 separate terms in the original boundary balance.
+
+**Direct-arm normalized normal limit and first radial jet checked in Lean; isolated cached exact-leaf audit passed (88 seconds, 2 jobs).** The first field expansion in (CJ), full two-arm passage (CFJ) and late memory evaluation remain paper-only. Let
+`K(z)=mean_Q(arcosh(z))`, `z>=1`. The current corpus proves continuity of
+its actual right derivative through `z=1`, with
+`K'(1)=Delta_H Q/2` (`angularKernel_closed_derivative` and
+`characteristicFirst_at_one`). It also proves
+`|mean_Q(r)|<=C exp(a0*(r+|k|))`, with `1<=a0<d<2`.
+At fixed `X,k`, these facts give the global estimate
+
+```
+|K(1+u)-K(1)| <= C_(X,k)*(u+u^a0),   u>=0.          (CR)
+```
+
+For `0<=u<=1`, integrate the bounded continuous derivative on `[1,2]`.
+For `u>=1`, use `arcosh(1+u)<=log(4u)`, the global growth bound and the
+constant `K(1)`, absorbed into `C*u^a0`. Thus, for `0<c<=1`,
+`|K(1+c*(exp(h)-1))-Q|/c <= C*(exp(h)+exp(a0*h))`.
+The original `g`, `g'`, `g''` decay with exponent `d>a0>=1`, so this is
+an integrable difference-quotient majorant for both arm weights.
+Dominated convergence and the actual derivative at one give
+
+```
+A(v,x) = -g(v)*Q-c(x)*(Delta_H Q/2)*I_g(v)+o(c(x)),
+normalArm(v,x)/c(x) -> (Delta_H Q/2)*I_g(v),
+I_g(v) = integral_0^infinity g(v+h)*exp(h) dh.        (CJ)
+```
+
+The two required weighted moments are derived by integration by parts:
+`integral g'(v+h)*(exp(h)-1)=-I_g(v)`, and
+`integral normalWeight(v,h)*(exp(h)-1)=I_g(v)`.
+Every lower boundary factor is zero; every upper product decays since
+`d>1`. The second identity uses
+`normalWeight=partial_h[g'(v+h)*(1-exp(-h))]`, followed by the first.
+
+For the actual exterior radius `r=-coth(x)`,
+`r=1/(1-c(x))` and `r^2-1=r^2*c(x)*(2-c(x))`. Therefore (CN) and (CJ)
+give the original direct arm's finite radial derivative at fixed `v`:
+
+```
+partial_r A -> -(Delta_H Q/2)*I_g(v).               (CRJ)
+```
+
+The image arm and its time/normal partial derivatives have size
+`O(exp(2*d*x))=O(c(x)^d)` at fixed `v`. The exact same delay substitution
+admits joint differentiation in `v,x`: the additional time term is
+`g''` times the Jacobian and obeys the same local majorant. The chain rule
+therefore retains both image derivatives in the full normal derivative;
+after division by `r^2-1`, all image terms tend to zero because `d>1`.
+For `C_cap(v-x,x)=-l*(A(v,x)-A(v-2*x,-x))`, this yields
+
+```
+partial_r C_cap |_(fixed v) -> l*(Delta_H Q/2)*I_g(v). (CFJ)
+```
+
+This scalar radial trace is an explicit source-derived boundary memory,
+not a zero assertion. On the original late region `v>=1`,
+`I_g(v)=-g(v)/(2*s+1)` by the unchanged physical exponential and
+`Re(2*s+1)<0`; this is an integral evaluation, not a new frequency.
+No nonvanishing of `Delta_H Q` or of the complete boundary pairing is
+claimed. Angular differentiation of the admitted cap limits, the
+reduced response's differentiated limits, cusp admission and complete
+SS/SV/VV cancellation remain unproved here.
+
+**Original-time transport of the boundary memory checked in Lean; isolated cached exact-leaf audit passed (88 seconds, 2 jobs).**
+Differentiating the admitted `I_g(v)` integral gives `integral g'(v+h)*exp(h) dh`.
+Its source majorant is `C exp((1-d)*h)`, locally uniform in `v`, with `d>1`.
+Integration of `partial_h[g(v+h)*exp(h)]` retains the lower contact `g(v)`
+and a zero upper endpoint. Consequently
+
+```
+I_g'(v)+I_g(v)=-g(v),
+exp(T)*I_g(v+T)-I_g(v)=-integral_0^T exp(h)*g(v+h) dh. (CTM)
+```
+
+The second identity follows by integrating the actual derivative of
+`exp(h)*I_g(v+h)` on the oriented interval `[0,T]`; it holds for every real
+`T`, including the user-predeclared positive physical-clock step. The onset
+inside the finite source-work integral is unchanged. The factor `exp(T)` is
+fixed by the radial transport equation, not a frequency correction.
+For the direct arm radial trace `R(v)=-(Delta_H Q/2)*I_g(v)`, (CTM) gives
+`exp(T)*R(v+T)-R(v)=(Delta_H Q/2)*integral_0^T exp(h)*g(v+h) dh`.
+This supplies an exact source term to retain in the translated boundary
+balance. It asserts neither invariance of this datum nor vanishing of its
+actual angular/left-QNM contraction, and it does not replace the complete
+nonlinear balance (WBCQ).
+
+**Angular transposition of the actual radial current, paper interface.**
+The corpus search suggested moving angular derivatives onto the fixed test
+before the infinite-delay limit. The exact original coordinate convention is
+`coexact(u)=(u_y,-u_X)` and `A=roughLaplacian-1`, hence
+`A(coexact(u))=coexact((Delta_H-2)u)`. In the already volume-weighted radial
+current, let `P=coexact(u)`, let `V` be the independent test stream, and set
+`D=(r^2-1)*partial_r+partial_v`. At a finite exterior radius,
+
+```
+r^2*(J+B)_r = coexact(Du) dot (A V) - (D V) dot coexact((Delta_H-2)u).
+```
+
+For a smooth angular cutoff `eta` and a bounded piecewise smooth positive-height
+region `Omega`, define `R(W)=partial_X W_y-partial_y W_X`,
+`Lstar(psi)=partial_XX(y^2*psi)+partial_yy(y^2*psi)-2*psi`, and
+`b(f,W)=f*(W_X*n_y-W_y*n_X)` on the outward Euclidean unit normal. Two
+coordinate integrations by parts give the exact boundary-retaining identity
+
+```
+r^2*integral_Omega eta*(J+B)_r dXdy
+ = integral_Omega [Du*R(eta*A V)-u*Lstar(R(eta*D V))] dXdy
+ + integral_boundaryOmega [b(Du,eta*A V)-b((Delta_H-2)u,eta*D V)
+     -y^2*R(eta*D V)*partial_n u
+     +u*partial_n(y^2*R(eta*D V))] ds.              (WT)
+```
+
+Indeed `coexact(f) dot W=f*R(W)+div(-f*W_y,f*W_X)`.
+Then apply the scalar Green formula to
+`integral (Delta_H u)*R(eta*D V)` with `Delta_H=y^2*(partial_XX+partial_yy)`.
+This derives all signs and the changing height weights in (WT).
+If `eta` is supported inside `Omega`, the displayed edge integral vanishes
+and every derivative of `eta` remains in the two test factors. Thus the
+compactly tested expression requires limits of `u` and `Du`; it does not
+require separate strong limits of three angular derivatives of `u`.
+
+For a finite-delay truncation of the original cap, angular smoothness follows
+from the native circle's joint smoothness and compact integration. Formula
+(WT) therefore gives a source-specific finite-truncation interface. Passing
+its scalar terms to the full arm uses the admitted scalar/time/normal bounds,
+locally uniformly on a compact angular set. The same compact derivative
+argument behind (CR) makes its constant uniform on compact base sets.
+This does **not** yet identify the limit with the complete physical left-QNM
+action: the actual cutoff limit, both radial normalizations, all other faces,
+source contacts and SS/SV/VV correction terms must still be admitted and
+summed. Products of two independently weakly converging fields are not
+covered. Formula (WT) is not Lean-formalized here.
+
+The already logged contact-corrected radial current (item 22) contains
+`(r^2-1)*partial_r+partial_v=partial_x+partial_v`. Its weighted normal
+term is controlled by (CN). Temporal and angular faces retain further
+normal/mixed derivatives, for which (CRJ)/(CFJ) specifies the scalar
+source datum to identify. This is a refinement of that existing
+interface, not a second claim of the same current identity.
+
+**Search check.** The new deep corpus query for a weighted characteristic
+remainder covered the cached inventory of 57,388 files (`partial=false`);
+its generic Taylor candidates supplied no complete cap/current theorem.
+The direct source derivative and growth results above are the applicable
+ingredients. Broad recent Mellin search found Poldaru's
+[expansion by regions](https://arxiv.org/html/2607.26291v1) (28 July 2026),
+which studies positive-polynomial integrals. That result is not applied
+to the complex theta integral; (CR) uses the source's own bounds.
+
+A further deep query for angular derivative/covariance passage covered the
+cached inventory of 57,391 files (`partial=false`, no retrieval errors;
+compiler metadata is predominantly source-only/pending). Its proposed
+boundary-growth ingredient was an unrelated squarefree-convolution theorem
+and was rejected. Applicable source results were the native mean's joint
+smoothness, its Laplacian commutation and the actual coexact curvature shift.
+They motivate (WT), but do not supply its complete-action cutoff limit.
+
+Broad Noether/semigroup/rigidity searches found the July 2026 publication
+[Hinterbichler–Saha–Yan](https://arxiv.org/html/2602.10188), whose equations
+(1.2), (1.23) and (1.24) concern special-mass fields and explicitly retained
+current improvements. No identification of those fields with the complete
+HB metric was obtained. [Arnold's August 2026 semigroup paper](https://arxiv.org/html/2608.13397v4)
+gives a growth improvement under a Kreiss resolvent bound; no such bound for
+the complete HB evolution was established here, and the cited estimate itself
+is not finite-time extinction. [Cunden et al., September 2026](https://arxiv.org/html/2609.04057v1)
+classify limits of invariant-distribution-preserving stochastic matrices;
+no positive stochastic realization of the HB action was found. These papers
+are not used as premises in the Lean proofs.
 
 ## Actual weighted correction discrepancy, 12 September 2026
 

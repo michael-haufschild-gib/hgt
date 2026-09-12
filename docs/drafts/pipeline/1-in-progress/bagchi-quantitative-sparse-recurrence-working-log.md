@@ -103,6 +103,14 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   Hence some `c>0` gives at least `cN` terminal prime--cofactor samples eventually. Evidence:
   `terminalPrimePowerWindow_normalizedProductCofactorBlock_card_lower` and
   `exists_eventually_terminalPrimePowerWindow_normalizedProductCofactorBlock_card_linear`.
+- **F24 — Colored many-minor compensation.** Strictly ordered finite color blocks inject their
+  transversals into distinct canonical Pluecker coordinates, so a common minor norm floor `c`
+  contributes `product(card S_j)*c^2` to the Gram determinant. Product-first ordering of terminal
+  prime--cofactor features makes nonoverlapping normalized intervals strictly separated. Each fixed
+  interval has `Ω(N)` actual features; finitely many intervals therefore supply `Ω(N^J)` distinct
+  minors. Evidence: `prod_card_mul_sq_le_hermPluckerNormSq_of_coloredChoices`,
+  `exists_eventually_prod_terminal_normalizedProductFeatureBlock_card_ge_pow`, and
+  `prod_normalizedProductBlock_card_mul_sq_le_arithmeticGram_det_re`.
 
 ## No-gos
 

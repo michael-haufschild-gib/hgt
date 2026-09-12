@@ -182,6 +182,83 @@ theorem routeE_two_mul_abs_signedSum_le_sum_abs_normalizerFlux
       simpa using mul_le_mul_of_nonneg_right (hsign i)
         (abs_nonneg (routeESymmetricNormalizerFlux U i))
 
+/-- Symmetric sign-reversing incidence gives equal total raw degree to the two sign classes. -/
+theorem routeE_sum_sign_mul_rowMass_eq_zero
+    (U : ι → ι → ℝ) (sign : ι → ℝ)
+    (hsym : ∀ i j, U i j = U j i)
+    (hflip : ∀ i j, U i j ≠ 0 → sign i + sign j = 0) :
+    ∑ i, sign i * routeERowMass U i = 0 := by
+  have hterm (i j : ι) : sign i * U i j = -sign j * U i j := by
+    by_cases hzero : U i j = 0
+    · simp [hzero]
+    · have hsign : sign i = -sign j := by
+        linarith [hflip i j hzero]
+      rw [hsign]
+  have hcol (j : ι) : (∑ i, U i j) = routeERowMass U j := by
+    unfold routeERowMass
+    apply Finset.sum_congr rfl
+    intro i _hi
+    exact hsym i j
+  have hneg :
+      (∑ i, sign i * routeERowMass U i) =
+        -(∑ i, sign i * routeERowMass U i) := by
+    calc
+      (∑ i, sign i * routeERowMass U i) =
+          ∑ i, ∑ j, sign i * U i j := by
+            unfold routeERowMass
+            apply Finset.sum_congr rfl
+            intro i _hi
+            rw [Finset.mul_sum]
+      _ = ∑ j, ∑ i, sign i * U i j := Finset.sum_comm
+      _ = ∑ j, ∑ i, -sign j * U i j := by
+            apply Finset.sum_congr rfl
+            intro j _hj
+            apply Finset.sum_congr rfl
+            intro i _hi
+            exact hterm i j
+      _ = -(∑ j, sign j * routeERowMass U j) := by
+            rw [← Finset.sum_neg_distrib]
+            apply Finset.sum_congr rfl
+            intro j _hj
+            rw [← hcol j]
+            calc
+              (∑ i, -sign j * U i j) = ∑ i, -(sign j * U i j) := by
+                apply Finset.sum_congr rfl
+                intro i _hi
+                ring
+              _ = -∑ i, sign j * U i j := by rw [Finset.sum_neg_distrib]
+              _ = -(sign j * ∑ i, U i j) := by rw [Finset.mul_sum]
+  linarith
+
+/-- Signed vertex imbalance is exactly signed raw row-mass defect. -/
+theorem routeE_signedSum_eq_signedRowMassDefect
+    (U : ι → ι → ℝ) (sign : ι → ℝ)
+    (hsym : ∀ i j, U i j = U j i)
+    (hflip : ∀ i j, U i j ≠ 0 → sign i + sign j = 0) :
+    ∑ i, sign i = ∑ i, sign i * (1 - routeERowMass U i) := by
+  have hzero := routeE_sum_sign_mul_rowMass_eq_zero U sign hsym hflip
+  simp_rw [mul_sub, mul_one, Finset.sum_sub_distrib]
+  linarith
+
+/-- Total absolute raw row-mass defect cannot be smaller than original signed imbalance. -/
+theorem routeE_abs_signedSum_le_sum_abs_rowMassDefect
+    (U : ι → ι → ℝ) (sign : ι → ℝ)
+    (hsign : ∀ i, |sign i| ≤ 1)
+    (hsym : ∀ i j, U i j = U j i)
+    (hflip : ∀ i j, U i j ≠ 0 → sign i + sign j = 0) :
+    |∑ i, sign i| ≤ ∑ i, |1 - routeERowMass U i| := by
+  rw [routeE_signedSum_eq_signedRowMassDefect U sign hsym hflip]
+  calc
+    |∑ i, sign i * (1 - routeERowMass U i)| ≤
+        ∑ i, |sign i * (1 - routeERowMass U i)| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ i, |1 - routeERowMass U i| := by
+      apply Finset.sum_le_sum
+      intro i _hi
+      rw [abs_mul]
+      simpa using mul_le_mul_of_nonneg_right (hsign i)
+        (abs_nonneg (1 - routeERowMass U i))
+
 end
 
 end RHTower
