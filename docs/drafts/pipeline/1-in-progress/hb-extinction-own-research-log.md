@@ -112,4 +112,19 @@ Notation: `rho=x+it` is an actual Xi occurrence; `delta=x-1/2`; `S` is the liter
     **Scope:** this Green cap identity remains a paper proof. It is not yet a Lean identification with a separately constructed advanced wave inverse or the complete physical action.
     Evidence: [finite identity FG and cap limit FH](hb-radiative-source-period-attack.md#future-null-cap-green-calculation-12-september-2026).
 
+22. **The original stream current has a sharper contact-corrected horizon interface. [Lean]**
+    For ingoing covector jets, `f=R²-1`, `D_R=f partial_R+partial_v`, and original angular operator `A=rough Laplacian minus one`, the actual Einstein current plus original master-source contact obeys `(J+B)_R=R^(-2) sum((D_R P) A Q-(D_R Q) A P)`. All four components are identified; time and angular faces retain their normal/mixed-curl terms. At `R=1` the regular expression is `sum(P_v A Q-Q_v A P)`.
+    **No-go:** evaluating a regular horizon jet does not establish a limit of differentiated integral fields. **Survivor:** only time/angular traces and weighted normal remainders are needed for this radial contact-corrected limit; separate second-normal limits are unnecessary there. No other face or complete nonlinear channel is removed.
+    Evidence: [CapTraceAction](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapTraceAction.lean), `physical_current_add_contact`, `contact_is_original`, `radial_horizon`; [finite-radius defect CD](hb-radiative-source-period-attack.md#cap-trace-and-physical-contact-12-september-2026).
+
+23. **The literal cap trace retains the lift's angular clock pairing. [Lean]**
+    The derived scalar trace `l_infinity g(v)Q` has actual coexact trace `l_infinity g(v)*dQ` and proved time/angular derivatives. Its two-branch radial angular pairing equals `horizonFactor(s,a,b) exp(-6v) chi(v)² angularPair(q,z)`, exactly the lift's contact-corrected trace expression. Here `angularPair=(2lambda-2) angularSquare+2 gradientPair`; the original normalization is `*dE=2 fullGradientCovector`. Its finite time integral retains `clockMass(V)`. For `v>=1` and any fixed `T>=0`, the pairing at `v+T` is `exp(-6T)` times its value at `v`.
+    **Scope:** exact trace-field expression, with no universal nonzero claim. It is not yet the differentiated cap integral's flux, a complete-action invariance law, or extinction. Scratch, exact-leaf audit and formal lint passed; module wired; no heartbeat or transparency override was added.
+    Evidence: [CapTraceAction](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapTraceAction.lean), `covectorTrace_is_coexact`, `traceAction_original`, `traceFlux_eq_lift_angular`, `traceFlux_square_gradient`, `traceFlux_finite_integral`, `traceFlux_physical_step`.
+
+24. **The same cap has an explicit opposite-horizon datum. [Paper]**
+    At fixed outgoing time `v`, `tau=v+x`, `x->-infinity`, the cap tends to `-l_infinity[integral_0^infinity g'(u) M_Q(1+2exp(u-v))du-integral_v^infinity g'(u) M_Q(2exp(u-v)-1)du]`. The direct-arm substitution gives `1-c(x)+c(-x)exp(u-v)`, `c(x)=exp x/cosh x`; the image retains its `u>=v` support. Zero onset removes negative `u`. The existing source bound admits both integrals and their limits with majorant `C exp((a0-c0)u)`, `a0<c0<2`.
+    **Survivor:** an explicit past datum to include when comparing the cap with the advanced, seed and pulse fields. Its vanishing, nonvanishing, and complete causal-action cancellation are unproved. This limit is not yet Lean-formalized.
+    Evidence: [opposite-horizon formula PH and admission](hb-radiative-source-period-attack.md#opposite-horizon-of-the-actual-cap-paper-calculation).
+
 **Result of this research:** no complete radiative extinction theorem, fixed finite physical-clock invariance theorem, or RH proof has been obtained. None of these scoped no-gos disproves HB.

@@ -280,11 +280,21 @@ the half- and two-thirds-power cuts tends to `log(4/3)>0`; therefore
 `eventually_normalized_power_terminal_channels_lower` gives a uniform positive aggregate floor.
 Module: `RHTower.SteinhausLargestPrimePowerMass`; targeted build passes; axiom audit is only
 `propext`, `Classical.choice`, `Quot.sound`. This proves that variable
-composite cofactors repair the fixed-cofactor loss. It does not yet transfer the floor to the
-actual smooth AFE coefficients, whose cutoff may decay at the terminal edge.
+composite cofactors repair the fixed-cofactor loss.
 
-Three analytic sublemmas remain: transfer of the ideal positive mass to actual non-smooth AFE
-coefficients and conditional channel energy
+The direct right-line analytic gate is now closed in Lean. For `0<d`, `d+eta<1/2`, the exact
+right-line dual weight obeys
+`|W_R(d,tau,Y)-1| <= C*Y^eta/(max 1 |tau|)^eta`
+(`exists_norm_smoothAFEZetaRightDualWeight_sub_one_le_conductor`), and
+`exists_norm_smoothAFEZetaDualCoefficientGeneral_right_add_main_le` connects this estimate to the
+actual general-AFE coefficient. The exact direct two-series AFE and the reflected AFE with an
+ordinary primal terminal cutoff are also proved. Targeted builds pass; axiom audits use only
+`propext`, `Classical.choice`, `Quot.sound`. This closes sub-conductor transfer, but not terminal-edge
+mass: when `Y` is proportional to `|tau|`, the direct bound is only `O(1)`. The reflected-primal
+identity is the surviving exact route for transferring a fixed inner terminal fraction.
+
+Three analytic sublemmas remain: transfer of the ideal positive mass through the reflected ordinary
+cutoff to actual terminal coefficients and conditional channel energy
 bounded away from zero on a positive-mass base event; a two-dimensional local lower bound uniform
 in the random centre and in finitely many boundary nodes; and deterministic vertical-orbit
 transfer for the resulting triangular family. Corpus deep/method-enriched searches found conditional probability
@@ -333,3 +343,6 @@ mixture or direct full-support law remains possible.
 - 2026-09-12 — C15.3: proved each variable-cofactor ideal power channel contributes a reciprocal-
   prime floor and the half-to-two-thirds prime-power window has a uniform positive aggregate mass;
   isolated transfer to actual right-line smooth AFE weights as the remaining coefficient gate.
+- 2026-09-12 — C15.4: proved direct right-line chi-ratio decay, signed residue contour, infinite
+  contour localization, exact actual-coefficient error, direct two-series AFE, and reflected-primal
+  AFE; isolated fixed-inner-fraction cutoff mass as the remaining coefficient transfer.

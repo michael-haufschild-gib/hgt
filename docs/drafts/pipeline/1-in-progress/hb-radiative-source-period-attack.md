@@ -4,6 +4,47 @@ Status: analytical source reduction; physical extinction and RH unproved. Fronti
 
 Verified findings and scoped no-gos from this work: [concise research log](hb-extinction-own-research-log.md).
 
+## Original advanced response at the past face, 12 September 2026
+
+**Current source-level test.** The proved gradient absorption has the sign
+`F_original=L lift+F_reduced`. Combined with the paper cap Green identity,
+the candidate advanced original field is `lift-H+R_adv(F_reduced)`. Its
+past face must retain both the cap and the reduced response. Neither can be
+set to zero from the ingoing future trace.
+
+Use source ingoing time `a=t_source+y` and fix target outgoing time `v`,
+`tau=v+x`. The actual reduced response integrand becomes
+
+```
+K_D(a-y-v-x,x,y;z) * timeReducedCoefficient(s,amplitude,a-y,y).
+```
+
+Its limiting kernel is one half the original direct/image difference:
+
+```
+1_(a>=v+2y) M_Q((1+u_y) exp(a-v)+u_y;z)
+ -1_(a>=v) M_Q((1+u_y) exp(a-v)-u_y;z),
+u_y=-tanh y.                                                   (PK)
+```
+
+This is the existing source-horizon kernel limit after the actual symmetric
+kernel's two radial arguments are exchanged. Both characteristic inequalities
+remain. The source is zero for `a<0`.
+
+**Uniform majorant to verify in Lean.** For `a>=0`, both direct/image
+invariants at every finite target radius are at most `5 exp(a+|v|)`.
+Indeed, put `b=a-y-v`; `cosh(b-x)<=2 cosh b cosh x`,
+`|sinh x sinh y|<=cosh x cosh y`, and
+`cosh b<=2 exp(a+|v|) cosh y`. The corresponding angular radius is at most
+`a+|v|+log 10`, uniformly in target `x` and source `y`.
+The established source bound in these coordinates is
+`|F_reduced coefficient|<=C exp(-c0 a+2y)`. Thus the full theta density is
+bounded by a constant (depending on `v,z`) times
+`exp((a0-c0)a) exp(2y)` on `a>0,y<0`, with the original `a0<c0<2`.
+This admits the proposed past datum. Identifying it with the original
+Bochner response still requires the exact source-coordinate integral change;
+no replacement response is being assumed to equal the physical one.
+
 ## Cap trace and physical contact, 12 September 2026
 
 **Current attack.** Test whether the source cap that cancels the lift value also
@@ -42,8 +83,13 @@ integral cap's differentiated current still requires admitted angular/time
 traces and the weighted normal remainder. The complete left-QNM, SS/SV/VV,
 correction, changing-weight and other boundary contributions remain separate.
 
-Formal verification of this interface and its literal trace evaluation is in
-progress. No new cap-current identity is counted as Lean-proved here yet.
+**Lean status.** `ThetaCuspHawkingBMCapTraceAction` proves the all-face
+current/contact identity, its identification with the original exterior
+Einstein action and source contact, the literal trace's actual coexact/time/
+angular derivatives, and the trace pairing's clock and square/gradient
+formulas. The finite time integral and late fixed-translation law are closed.
+Scratch check, exact cached leaf audit and formal lint passed; the module is wired.
+The cap integral's differentiated horizon flux remains unproved.
 
 **Precise remaining trace admission.** Write `D_R P=f P_R+P_v` and let
 `p_v,q_v,a_p,a_q` denote the proposed time and angular traces. With
@@ -62,13 +108,16 @@ cutoff, followed by the original cusp subtraction and QNM continuation. The
 previous scalar value limit proves none of those derivative interchanges.
 This is a narrower interface than separately demanding every second normal
 jet, but it still retains the weighted normal remainder and all source contacts.
+For the cap, the physical stream uses `R H`; its radial factor belongs inside
+`D_R P` and cannot be deleted merely because `R=1` in the boundary value.
 
 **Fixed translation test.** The literal trace expression has clock factor
 `exp(-6v) chi(v)^2`. For `v>=1` and any fixed `T>=0`, its translation is
 `exp(-6T)` times itself. This statement concerns a boundary density, not the
 complete action. It provides no finite-clock invariance and no extinction.
 No frequency has been retuned. The angular factor still contains both
-`(2lambda-2) sum(*dQ)^2` and `2 sum(*dQ)(*dE)`.
+`(2lambda-2) sum(*dQ)^2` and `sum(*dQ)(*dE)`, since the original
+`fullGradientEnergy_coexact` theorem identifies `*dE=2 fullGradientCovector`.
 
 **Search record.** Two whole-corpus requests, deep and method views, returned
 57,317 indexed files with `partial=false`; the compiler snapshot still had
@@ -81,6 +130,43 @@ failed with a cache miss and HTTP 429. The retrieved
 [Getzler deformation paper](https://arxiv.org/abs/math/0002164) is from 2000
 and concerns Hamiltonian operators of hydrodynamic type. Its abstract gives
 no HB boundary or source-action theorem; none is imported into this argument.
+A follow-up derivative-admission query returned partial coverage of 57,326
+files and no verified theorem admitting the actual cap's derivative limits.
+
+### Opposite horizon of the actual cap: paper calculation
+
+The same cap construction also determines a past face. At fixed outgoing
+time `v`, put `tau=v+x` and let `x->-infinity`. With `M_Q(Z,z)` the complete
+theta circle mean at `arcosh Z`, the resulting boundary value is
+
+```
+H_past(v,z)=-l_infinity [integral_0^infinity g'(u) M_Q(1+2 exp(u-v),z) du
+                       -integral_v^infinity g'(u) M_Q(2 exp(u-v)-1,z) du]. (PH)
+```
+
+**Derivation.** The direct arm is `A_s(v+2x,x)`. Shift its integration
+variable to `u=v+2x+h`. Its mean argument becomes exactly
+`1-c(x)+c(-x) exp(u-v)`, where `c(x)=exp x/cosh x`. For all sufficiently
+negative `x`, its lower limit is negative; `g'(u)=0` for `u<0` removes that
+interval. Since `c(x)->0` and `c(-x)->2`, the direct argument tends to the
+first argument in (PH). The image is `A_s(v,-x)`; the same shift
+`u=v+h` gives `1+c(-x)(exp(u-v)-1)`, hence the second argument.
+Its support remains `u>=v`, so this argument is at least one. The onset
+again removes any negative-`u` portion.
+
+**Admission.** On the remaining `u>=0` domain the direct radius is bounded
+uniformly in `x` by `u+|v|+log 6`, because `0<=c(±x)<=2`. The image has
+the already proved radius bound `u+|v|+log 4`. Full source growth and the
+original onset derivative give a common constant times `exp((a0-c0)u)`,
+with the existing `a0<c0<2`. Both integrals converge absolutely and dominated
+convergence proves (PH). No principal angular term or clock derivative was
+discarded. This is a paper proof; (PH) has not been formalized in Lean.
+
+**Whole-chain consequence.** A comparison with a retarded physical response
+must compare this past datum with the other advanced/seed/pulse terms as well
+as the future trace. No vanishing or nonvanishing of (PH) is asserted. In
+particular, subtracting the cap is not by itself a proof of causal-response
+identification. This exposes an explicit source-derived datum for that test.
 
 ## Future null-cap Green calculation, 12 September 2026
 

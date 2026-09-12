@@ -2893,3 +2893,57 @@ because each squared-source exponent has real part below 2. A constant tensor
 Fourier mode would survive that averaging, hence must vanish. This scaled-test
 argument is a proposed replacement for solving the mean-field ODE, and still
 requires exact test normalization, integration-by-parts and source bounds in Lean.
+
+### Automorphic ladder candidate for the tensor weight
+
+Broad Maass/raising search found the exact generic argument
+`weightLift_ladder_preserves` (private) in
+`GaloisForLFunctions/RHTower/MaassAutomorphicDifferentialLadder.lean`.
+It uses only a smooth `FunctionSpace` field and automorphic invariance of its
+`weightLift`; no Maass eigenvalue or cusp/L2 premise enters that argument.
+It differentiates invariance along two actual group curves and solves for the
+raised and lowered fields using the public `weightLift_diagonal_hasDerivAt`
+and `weightLift_quarterDiagonal_hasDerivAt` laws. The public
+`raised_automorphic`/`lowered_automorphic` specializations assume real Maass cusp
+eigenforms; the generic argument is the applicable ingredient for S and U.
+
+The literal operator conventions are `X=i*y*partial_x`, `Y=y*partial_y`,
+`raise(m)=X-Y-m` and `lower(m)=-X-Y+m`. Direct differentiation gives
+
+    (lower(0) S)^2 + lambda*lower(-1)(lower(0) U) = -2*y^2*(A-iB),
+    (raise(0) S)^2 + lambda*raise(1)(raise(0) U) = -2*y^2*(A+iB).
+
+For example the first iterated term expands to
+`-y^2*U_xx+y^2*U_yy+2i*y^2*U_xy+2i*y*U_x+2y*U_y`, exactly
+`-2y^2` times the Hessian contribution to `A-iB`. The squared first derivative
+has the same factor for the gradient-square contribution. The other identity
+has both imaginary signs reversed. These are analytical operator identities;
+the actual `FunctionSpace` embeddings and conversion of their weight lifts to
+the weight-four slash law are not yet formalized. The separate BM second-jet
+Maass bridge also retains the relevant connection terms, but its conventions
+must be matched explicitly rather than identified by name.
+
+The tensor differentiation and holomorphic reconstruction are now checked in
+`ThetaCuspHawkingBMAngularTwoTensor`. `defectTensor_components` identifies the
+actual metric tensor; `defect_cauchyRiemann_x` and `defect_cauchyRiemann_y` derive
+both differential identities; `holomorphicPolarization_differentiableAt` and
+`conjugatePolarization_differentiableAt` prove complex differentiability on the
+entire upper half-plane. The source identity still requires the tensor to vanish.
+The next two obligations are its actual weight-four transformation and cusp
+admission. Physical causal boundary admission and Hawking-clock extinction
+remain beyond that angular identification.
+
+Validation: both new exact leaf audits passed, and formal lint passed. Both leaves are imported by the RHTower umbrella; the umbrella was not built.
+
+### Current weight-four construction
+
+The active target is the actual modular transformation of the two holomorphic
+tensor polarizations. Reuse the generic Maass ladder invariance argument for a
+single real matrix, then specialize it to every original integral modular matrix.
+Embed the already constructed smooth source and inverse into the corpus's
+`MaassSmooth.FunctionSpace`; build the squared first-step fields and iterated
+second-step fields with their actual derivatives. Identify these fields with
+`-2y²(A-iB)` and `-2y²(A+iB)` before converting the compact-phase law to the
+weight-four slash law. `realIwasawaK_phase` gives the exact stabilizer phase in
+terms of the original matrix entries and upper-half-plane height. Cusp admission
+and tensor vanishing remain subsequent obligations.

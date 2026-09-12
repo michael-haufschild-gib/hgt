@@ -15,7 +15,7 @@ namespace RHTower
 open Complex MeasureTheory Filter Topology Set
 
 theorem norm_smoothAFEZetaRightDualIntegrand_horizontal_le
-    {d η Y : ℝ} (hd : 0 < d) (hdhalf : d < 1 / 2)
+    {d η Y : ℝ} (hd : 0 < d) (_hdhalf : d < 1 / 2)
     (hη : 0 < η) (hdηhalf : d + η < 1 / 2)
     (hY : 0 < Y) (τ : ℝ) {u T : ℝ}
     (huLow : -η ≤ u) (huHigh : u ≤ 1)

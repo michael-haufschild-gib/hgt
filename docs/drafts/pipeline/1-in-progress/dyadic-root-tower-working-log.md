@@ -18,6 +18,10 @@
 - `ZetaBinomialHalfBoundaryGerm.exists_local_normalized_analytic_sqrt_zetaPoleUnit` proves unconditionally that the entire pole unit `(s-1)·zeta(s)`, patched to value `1` at `s=1`, has an analytic square root `P` on a disk about `1`, normalized by `P(1)=1`.
 - `ZetaBinomialHalfBoundaryGerm.normalized_analytic_sqrt_zetaPoleUnit_eq_cpow_mul_LSeries` identifies that normalized root with the actual positive Dirichlet branch: `P(s) = (s-1)^(1/2)·LSeries zetaBinomialHalf s` on the right-half overlap. The real-axis normalization excludes the negative square-root branch.
 - `ZetaBinomialHalfBoundaryGerm.exists_local_zetaBinomialHalf_kato_remainder_factorization` proves the exact local identity `LSeries zetaBinomialHalf s / s - (s-1)^(-1/2) = (s-1)^(1/2)·H(s)` with `H` analytic near `s=1`.
+- `HTGeometry.intervalIntegrable_verticalCpow_negHalf` proves `(it)^(-1/2)` is interval-integrable on every finite real interval. `HTGeometry.tendsto_sqrt_mul_norm_intervalIntegral_verticalCpowCusp` upgrades any analytic-factor cusp `(it)^(1/2)H(1+it)` to square-root-weighted localized Fourier decay.
+- `ZetaBinomialHalfBoundaryGerm.exists_zetaBinomialHalf_kato_boundary_fourier_decay` instantiates that cusp theorem with the actual zeta half-Dirichlet remainder. Thus the pole boundary germ at `s=1` has the local Fourier decay required by the fractional Kato mechanism.
+- `WeldTowerLimit.xi_coherentTower_iff_zeroFree_halfPlane` proves for every real `σ` that a coherent dyadic tower for `xi` on `Re(s)>σ` is equivalent to zero-freeness there. At `σ=1/2` this is exactly RH; at `σ=1` the tower exists unconditionally.
+- Corpus constructors `exists_analyticOnNhd_pow_eq` and `exists_analyticOnNhd_pow_eq_of_lift` give global analytic roots from, respectively, simple connectivity plus nonvanishing or connectedness plus divisible loop winding.
 
 ## No-gos
 
@@ -27,8 +31,9 @@
 - Proving Kato's ordinary coefficient asymptotic would strengthen the arithmetic description of the positive half, but would still not imply a global analytic root without a separate continuation/monodromy theorem.
 - The harmonic-window asymptotic does not, by finite partial summation alone, imply `ZetaBinomialHalfKatoInversion`: its `o(√(log N))` error is larger than the endpoint cancellation scale `N/√(log N)`. Nonnegative mass may be redistributed inside bounded-width logarithmic shells without changing the harmonic asymptotic while changing endpoint-dominated ordinary sums.
 - Local square-root germs along the zero-free line do not supply the required global square root: continuation can stop at zeros to the left of the line, and gluing around loops still requires trivial monodromy.
+- Restricting to a simply connected zero-free subregion makes root construction automatic but removes hypothetical zeros from the receiver. On `rightHalf`, using nonvanishing or divisible winding as the root-construction premise restates the unresolved zero/multiplicity obstruction.
 
 ## Open boundary
 
-- Prove from the pole factorization that the boundary remainder is a one-cusp profile with integrable one-sided derivatives, hence locally BV and square-root-weighted Fourier-decaying.
+- Determine whether the pole and nonpole analytic germs extend through a connected zero-exclusion region with trivial square-root monodromy; otherwise isolate the exact zero or loop obstruction.
 - Any claimed RH advance after that bridge must exhibit a source-derived mechanism that crosses `Re(s)=1` and trivializes root monodromy.

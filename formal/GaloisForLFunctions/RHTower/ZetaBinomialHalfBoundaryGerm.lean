@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.ZetaBinomialHalfFractionalPole
 import GaloisForLFunctions.RHTower.ZetaPoleSplit
 import GaloisForLFunctions.RHTower.AnalyticDividedDifference
 import GaloisForLFunctions.HTGeometry.AnalyticSquareRoot
+import GaloisForLFunctions.HTGeometry.FourierDecayFromDerivative
 
 open ArithmeticFunction Complex Filter Metric Set Topology
 open scoped BigOperators ArithmeticFunction.zeta ComplexOrder
@@ -338,5 +339,59 @@ theorem exists_local_analytic_zetaBinomialHalf_extension_at_oneLine
       change -s a = LSeries zetaBinomialHalf a
       rw [ha]
       simp
+
+/-- The actual Kato remainder at the zeta pole has a boundary square-root cusp whose localized
+Fourier transform has the required square-root-weighted decay. -/
+theorem exists_zetaBinomialHalf_kato_boundary_fourier_decay :
+    ∃ δ r : ℝ, 0 < δ ∧ δ < r ∧ ∃ H : ℂ → ℂ,
+      AnalyticOnNhd ℂ H (ball (1 : ℂ) r) ∧
+      EqOn
+        (fun z => LSeries zetaBinomialHalf z / z - (z - 1) ^ (-(1 / 2 : ℂ)))
+        (fun z => (z - 1) ^ (1 / 2 : ℂ) * H z)
+        (ball (1 : ℂ) r ∩ {z : ℂ | 1 < z.re}) ∧
+      Tendsto (fun ξ : ℝ => Real.sqrt ξ *
+        ‖∫ t in (-δ)..δ,
+          GaloisForLFunctions.HTGeometry.verticalCpowCusp H t *
+            Complex.exp (((ξ * t : ℝ) : ℂ) * Complex.I)‖) atTop (nhds 0) := by
+  obtain ⟨r, hr, P, H, hPan, hPone, hPsq, hHan, hfactor⟩ :=
+    exists_local_zetaBinomialHalf_kato_remainder_factorization
+  let δ : ℝ := r / 2
+  have hδ : 0 < δ := by dsimp [δ]; linarith
+  have hδr : δ < r := by dsimp [δ]; linarith
+  have hline_mem : ∀ t ∈ uIcc (-δ) δ,
+      1 + (t : ℂ) * Complex.I ∈ ball (1 : ℂ) r := by
+    intro t ht
+    rw [mem_ball, dist_eq]
+    have habs : |t| ≤ δ := by
+      rw [uIcc_of_le (by linarith)] at ht
+      exact abs_le.mpr ⟨by linarith [ht.1], ht.2⟩
+    calc
+      ‖1 + (t : ℂ) * Complex.I - 1‖ = |t| := by simp
+      _ ≤ δ := habs
+      _ < r := hδr
+  have hHcont : ContinuousOn
+      (fun t : ℝ => H (1 + (t : ℂ) * Complex.I)) (uIcc (-δ) δ) := by
+    intro t ht
+    have hline : ContinuousAt (fun u : ℝ => 1 + (u : ℂ) * Complex.I) t := by fun_prop
+    have hcomp : ContinuousAt
+        (H ∘ fun u : ℝ => 1 + (u : ℂ) * Complex.I) t :=
+      (hHan _ (hline_mem t ht)).continuousAt.comp_of_eq hline rfl
+    convert! hcomp.continuousWithinAt using 1
+  have hHdan : AnalyticOnNhd ℂ (deriv H) (ball (1 : ℂ) r) := hHan.deriv
+  have hHdcont : ContinuousOn
+      (fun t : ℝ => deriv H (1 + (t : ℂ) * Complex.I)) (uIcc (-δ) δ) := by
+    intro t ht
+    have hline : ContinuousAt (fun u : ℝ => 1 + (u : ℂ) * Complex.I) t := by fun_prop
+    have hcomp : ContinuousAt
+        (deriv H ∘ fun u : ℝ => 1 + (u : ℂ) * Complex.I) t :=
+      (hHdan _ (hline_mem t ht)).continuousAt.comp_of_eq hline rfl
+    convert! hcomp.continuousWithinAt using 1
+  have hHdiff : ∀ t ∈ uIcc (-δ) δ, t ≠ 0 →
+      DifferentiableAt ℂ H (1 + (t : ℂ) * Complex.I) := by
+    intro t ht _
+    exact (hHan _ (hline_mem t ht)).differentiableAt
+  refine ⟨δ, r, hδ, hδr, H, hHan, hfactor, ?_⟩
+  exact GaloisForLFunctions.HTGeometry.tendsto_sqrt_mul_norm_intervalIntegral_verticalCpowCusp
+    hδ hHcont hHdcont hHdiff
 
 end RHTower

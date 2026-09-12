@@ -41,7 +41,7 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
 - **F12 — Exact channel-energy partition.** Expected squared energies of all largest-prime channels
   equal coefficient square mass of the non-`Y`-smooth sector. Evidence:
   `steinhausCoefficientMass_eq_smooth_add_largePrimeChannelEnergy`.
-- **F13 — Axiom audit.** F07, F10, F11, F12, F15, and F16 depend only on `propext`,
+- **F13 — Axiom audit.** F07, F10, F11, F12, F15--F18 depend only on `propext`,
   `Classical.choice`, and `Quot.sound`; targeted builds pass.
 - **F14 — Dense-support Gaussian warning.** arXiv:2605.21737 proves, in its random multiplicative
   setting, that its standard complex-Gaussian CLT forces sparse support; it does not exclude a
@@ -53,6 +53,19 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   two-thirds-power cuts gives an eventual positive normalized lower bound. Their reciprocal mass
   tends to `-log(1/2)+log(2/3)=log(4/3)>0`. Evidence:
   `eventually_normalized_power_terminal_channels_lower`.
+- **F17 — Direct right-line conductor localization.** If `0<d`, `d+eta<1/2`, and `Y>0`, the
+  actual right-line dual weight satisfies
+  `|W_R(d,tau,Y)-1| <= C*Y^eta/(max 1 |tau|)^eta`. The proof shifts the Gaussian contour from
+  `Re w=1` to `Re w=-eta`; the analytic domain is `Re w>d-1/2`, and the chi-ratio contributes
+  exactly the net power `|tau|^(-eta)`. Evidence:
+  `exists_norm_smoothAFEZetaRightDualWeight_sub_one_le_conductor`.
+- **F18 — Actual right-line AFE connection.** The general AFE coefficient at
+  `s=1/2+d+i*tau` is exactly `-(chi(s)n^(s-1)W_R)`, and its error from the classical main term is
+  bounded by the main-term norm times `C*((n*x)/(max 1 |tau|))^eta`. The corresponding exact
+  two-series AFE and a separately reflected AFE with an ordinary primal cutoff are Lean-proved.
+  Evidence: `exists_norm_smoothAFEZetaDualCoefficientGeneral_right_add_main_le`,
+  `riemannZeta_rightDisplaced_eq_two_tsum_smoothAFE_dualWeight`, and
+  `riemannZeta_rightDisplaced_eq_reflectedPrimal_add_complement`.
 
 ## No-gos
 
@@ -92,3 +105,8 @@ Updated: 2026-09-12. Scope: facts and no-gos established during this research th
   small-interval bounds for a conditional Gaussian scale mixture by controlling inverse conditional
   variance. C15 needs a *lower* probability near its prescribed planar target; the theorem's model
   and inequality direction do not supply it.
+- **N15 — Sub-conductor localization alone does not control the terminal edge.** F17 tends to zero
+  when `Y/|tau| -> 0`, but at the terminal scale `Y` proportional to `|tau|` its upper bound is only
+  `O(1)` and gives no lower bound for `|W_R|`. Positive survivor: F18's reflected AFE moves the
+  terminal carrier to the ordinary primal cutoff, where a fixed inner fraction can be treated by
+  the independent cutoff estimate; the resulting actual terminal channel mass still needs proof.

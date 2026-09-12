@@ -23,8 +23,8 @@ theorem smoothAFEZetaDualCoefficientGeneral_right_eq_neg_weight
   have h := smoothAFEZetaDualCoefficientGeneral_displaced_eq_neg_weight
     hx (-d) τ n
   unfold smoothAFEZetaRightDualWeight smoothAFEZetaRightDualWeightAt
-    smoothAFEZetaDisplacedDualWeight at h ⊢
-  rw [displacedLinePt_neg_displacement_eq_right] at h ⊢
+  unfold smoothAFEZetaDisplacedDualWeight at h
+  rw [displacedLinePt_neg_displacement_eq_right] at h
   exact h
 
 /-- Actual right-line dual coefficients differ from their classical main

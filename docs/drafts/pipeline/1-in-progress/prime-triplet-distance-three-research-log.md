@@ -129,6 +129,39 @@ does not retire mechanisms outside its stated hypotheses.
   `docs/drafts/pipeline/2-fully-proven/route-e-cofactor-amplified-e3-token-supply.md`; its parity,
   scale-separation, slice-count, and unsigned-mass layers are Lean-formalized as recorded there.
 
+- **FACT-017 — Product truncation can retain a fixed proportion of variable-breadth harmonic
+  mass.** The finite collision/log-moment estimate in
+  `RouteEProductTruncatedReservoirMass.lean` gives the explicit lower bound for truncated
+  elementary-symmetric mass; its cofinal specialization proves that the permitted product-bounded
+  reservoirs retain at least `7/10` of the full divided harmonic mass. This resolves row harmonic
+  entropy for that reservoir schedule, not physical column balance. Lean:
+  `productTruncatedHarmonicMass_lowerBound_of_normalizedLosses` and
+  `sevenTenths_fullMass_le_productTruncatedMass`.
+
+- **FACT-018 — Complementary breadths obey an exact convolution.** If low-reservoir breadth is
+  `b`, rough-token breadth is `k-b`, and their divided masses are `S^b/b!` and
+  `R^(k-b)/(k-b)!`, summing over every `0≤b≤k` gives exactly `(S+R)^k/k!`. Thus fixed-breadth loss
+  is repaired at the unsigned row-mass level by varying both breadths with fixed total grade.
+  Lean: `routeEDividedBreadthWeight_sum_eq` in
+  `formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementBreadthMixture.lean`.
+
+- **FACT-019 — Weighted Hall deficits have a sharp chi-square rate.** For normalized positive
+  source and target laws, a Hall cut with neighbor mass `b∈(0,1)` and deficit `δ` forces canonical
+  projection distance squared at least `δ²/(b(1-b))`; exact weighted Hall is equivalent to zero
+  projection distance. Therefore a strict-half projection target requires every cut deficit to be
+  `X^(-1/2+o(1))*sqrt(b(1-b))`. Lean:
+  `weightedHallDeficit_sq_div_le_projectionDistanceSq` and the zero-distance equivalence in
+  `formal/GaloisForLFunctions/RHTower/RouteEWeightedHallProjectionDuality.lean`.
+
+- **FACT-020 — Independent replica parity ANOVA has an exact one-copy floor.** For `M>0`
+  independent Bernoulli replicas of a binary component with activation probability `q`, the mean
+  squared empirical histogram bias is exactly
+  `(1-2q)^2 + 4q(1-q)/M`. Across independent components these factors multiply and are at least
+  the square of the original one-copy product parity mean. Lean:
+  `routeE_independent_replica_localANOVA_eq` and
+  `routeE_independent_replica_productANOVA_floor` in
+  `formal/GaloisForLFunctions/RHTower/RouteEIndependentReplicaANOVAFloor.lean`.
+
 ### No-gos
 
 - **NOGO-001 — Signed column-load cancellation is circular.** For every row-stochastic kernel
@@ -260,3 +293,32 @@ does not retire mechanisms outside its stated hypotheses.
   non-collapsed higher-rank targets remain open. Paper proof and exact hostile current:
   `docs/drafts/pipeline/5-failed/route-e-strict-half-e3-cofactor-capacity-ceiling.md` and
   `formal/GaloisForLFunctions/RHTower/MobiusBlockDefectEnergy.lean`.
+
+- **NOGO-019 — Cut Hardy--Ramanujan recursion cannot bootstrap the central exact-omega layer from
+  level one in square-root intervals.** After `s` steps ending at level `j`, its prime-power error
+  exceeds the interval length when `s≈(j+1)/3`; starting from the proved level-one estimate reaches
+  only `j=O(1)`, not `j≈log log X`. Scope: this recursion as a bootstrap; Shiu's tilted rough sum
+  and any independently supplied upper central layer remain open. Exact derivation:
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/route-e-two-sided-off-normal-wold-breadth-transport.md`,
+  section “Reach of the cut recursion”.
+
+- **NOGO-020 — Unquantified one-sided near-unit load is too weak for strict-half ANOVA.** A ceiling
+  `columnLoad≤1+ε` gives chi-square at most `ε`, sharply, so `ε=o(1)` does not reach
+  `X^(-1+o(1))`; one-sided load needs `ε≤X^(-1+o(1))`, while two-sided relative balance needs
+  error `≤X^(-1/2+o(1))`. Scope: conversion from load bounds to the chi-square endpoint; a direct
+  unmatched-mass estimate enters linearly and has a different rate law. Source:
+  `route-e-weighted-hall-anova-projection-duality-law.md`.
+
+- **NOGO-021 — Independent replica productization cannot create Möbius cancellation.** FACT-020
+  shows that increasing replica order removes only a nonnegative `1/M` variance correction and
+  converges to the unchanged one-copy parity-bias square. Scope: independent Bernoulli/Euler
+  averaging of histogram cells; aperture-conditioned or otherwise correlated component histories
+  remain open. Paper/Lean card:
+  `docs/drafts/pipeline/5-failed/route-e-independent-replica-productization.md`.
+
+- **NOGO-022 — Replica orbit cardinality does not control parity bias.** A binary singleton cell
+  with `C` components and `M>2` slots has orbit size `M^C` but bias `(1-2/M)^C`, bounded below by
+  `exp(-2C/(M-2))`. Vanishing physical curvature plus exact cancellation therefore forces
+  `C/(M-2)→∞`; power-size entropy at bounded component density is insufficient. Scope:
+  bounded-density singleton histories; unbounded-density and non-singleton conditioned histories
+  survive. Lean: `formal/GaloisForLFunctions/RHTower/RouteEComponentHistorySparseDensityNoGo.lean`.

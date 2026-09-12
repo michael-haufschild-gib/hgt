@@ -340,7 +340,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 0 2 =
-      B * s * r⁻¹ ^ 2 * A - B * s ^ 2 * r⁻¹ ^ 2 * A * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * A - B * s ^ 2 * r⁻¹ ^ 2 * A * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -388,7 +388,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 0 2 =
-      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -424,7 +424,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 0 2 =
-      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -436,7 +436,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 0 2 =
-      -(B * s * r⁻¹ ^ 3 * A * 2) + B * s ^ 2 * r⁻¹ * A * (-1 + r ^ 2)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * A * (-1 + r ^ 2)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * A * (-1 + r ^ 2)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * A * (-1 + r ^ 2)⁻¹ ^ 2 := by
+      -(B * s * r⁻¹ ^ 3 * A * 2) + B * s ^ 2 * r⁻¹ * A * (r ^ 2 - 1)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * A * (r ^ 2 - 1)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * A * (r ^ 2 - 1)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * A * (r ^ 2 - 1)⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -448,7 +448,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 0 2 =
-      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -460,7 +460,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 0 2 =
-      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -484,7 +484,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 0 2 =
-      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -532,7 +532,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_0_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 0 2 =
-      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -592,7 +592,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 0 3 =
-      B * s * r⁻¹ ^ 2 * C - B * s ^ 2 * r⁻¹ ^ 2 * C * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * C - B * s ^ 2 * r⁻¹ ^ 2 * C * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -640,7 +640,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 0 3 =
-      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -676,7 +676,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 0 3 =
-      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -688,7 +688,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 0 3 =
-      -(B * s * r⁻¹ ^ 3 * C * 2) + B * s ^ 2 * r⁻¹ * C * (-1 + r ^ 2)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * C * (-1 + r ^ 2)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * C * (-1 + r ^ 2)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * C * (-1 + r ^ 2)⁻¹ ^ 2 := by
+      -(B * s * r⁻¹ ^ 3 * C * 2) + B * s ^ 2 * r⁻¹ * C * (r ^ 2 - 1)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * C * (r ^ 2 - 1)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * C * (r ^ 2 - 1)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * C * (r ^ 2 - 1)⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -700,7 +700,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 0 3 =
-      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -712,7 +712,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 0 3 =
-      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -736,7 +736,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 0 3 =
-      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -784,7 +784,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_0_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 0 3 =
-      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1114,7 +1114,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_metric_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).metric 1 2 =
-      -(s * B * (-1 + r ^ 2)⁻¹ * A) := by
+      -(s * B * (r ^ 2 - 1)⁻¹ * A) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1126,7 +1126,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_0_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 0 1 2 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * A) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * A) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1138,7 +1138,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 1 2 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * A * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * A * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1150,7 +1150,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_2_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 2 1 2 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * P) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * P) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1162,7 +1162,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_3_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 3 1 2 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * Q) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * Q) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1174,7 +1174,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_0_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 0 1 2 =
-      -(B * s ^ 3 * (-1 + r ^ 2)⁻¹ * A) := by
+      -(B * s ^ 3 * (r ^ 2 - 1)⁻¹ * A) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1186,7 +1186,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 1 2 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * A * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * A * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1198,7 +1198,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_2_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 2 1 2 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1210,7 +1210,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_3_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 3 1 2 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * Q) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * Q) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1222,7 +1222,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 1 2 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * A * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * A * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1234,7 +1234,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 1 2 =
-      -(B * s * r ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * A * 8) + B * s * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * A * 7 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * A * r⁻¹ ^ 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 3 * A * r⁻¹ ^ 2 := by
+      -(B * s * r ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * A * 8) + B * s * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * A * 7 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * A * r⁻¹ ^ 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 3 * A * r⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1246,7 +1246,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 1 2 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1258,7 +1258,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 1 2 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * Q * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * Q * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1270,7 +1270,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_0_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 0 1 2 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1282,7 +1282,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 1 2 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1294,7 +1294,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_2_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 2 1 2 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * U) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * U) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1306,7 +1306,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_3_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 3 1 2 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * W) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * W) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1318,7 +1318,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_0_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 0 1 2 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * Q) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * Q) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1330,7 +1330,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 1 2 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * Q * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * Q * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1342,7 +1342,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_2_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 2 1 2 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * W) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * W) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1354,7 +1354,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_3_1_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 3 1 2 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * A * y⁻¹ ^ 2 * 2) - B * s * (-1 + r ^ 2)⁻¹ * y * y⁻¹ ^ 2 * R * 2 + B * s * (-1 + r ^ 2)⁻¹ * y⁻¹ * Q * 2 + B * s * (-1 + r ^ 2)⁻¹ * U - B * s ^ 2 * (-1 + r ^ 2)⁻¹ * A * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ * A * y⁻¹ ^ 2 := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * A * y⁻¹ ^ 2 * 2) - B * s * (r ^ 2 - 1)⁻¹ * y * y⁻¹ ^ 2 * R * 2 + B * s * (r ^ 2 - 1)⁻¹ * y⁻¹ * Q * 2 + B * s * (r ^ 2 - 1)⁻¹ * U - B * s ^ 2 * (r ^ 2 - 1)⁻¹ * A * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ * A * y⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1366,7 +1366,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_metric_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).metric 1 3 =
-      -(s * B * (-1 + r ^ 2)⁻¹ * C) := by
+      -(s * B * (r ^ 2 - 1)⁻¹ * C) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1378,7 +1378,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_0_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 0 1 3 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * C) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * C) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1390,7 +1390,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 1 3 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * C * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * C * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1402,7 +1402,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_2_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 2 1 3 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * R) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * R) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1414,7 +1414,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_3_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 3 1 3 =
-      B * s * (-1 + r ^ 2)⁻¹ * P := by
+      B * s * (r ^ 2 - 1)⁻¹ * P := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1426,7 +1426,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_0_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 0 1 3 =
-      -(B * s ^ 3 * (-1 + r ^ 2)⁻¹ * C) := by
+      -(B * s ^ 3 * (r ^ 2 - 1)⁻¹ * C) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1438,7 +1438,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 1 3 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * C * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * C * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1450,7 +1450,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_2_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 2 1 3 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * R) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * R) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1462,7 +1462,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_3_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 3 1 3 =
-      B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P := by
+      B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1474,7 +1474,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 1 3 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * C * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * C * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1486,7 +1486,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 1 3 =
-      -(B * s * r ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * C * 8) + B * s * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * C * 7 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * C * r⁻¹ ^ 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 3 * C * r⁻¹ ^ 2 := by
+      -(B * s * r ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * C * 8) + B * s * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * C * 7 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * C * r⁻¹ ^ 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 3 * C * r⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1498,7 +1498,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 1 3 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * R * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * R * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1510,7 +1510,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 1 3 =
-      -(B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      -(B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1522,7 +1522,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_0_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 0 1 3 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * R) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * R) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1534,7 +1534,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 1 3 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * R * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * R * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1546,7 +1546,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_2_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 2 1 3 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * C * y⁻¹ ^ 2 * 2) - B * s * (-1 + r ^ 2)⁻¹ * W - B * s ^ 2 * (-1 + r ^ 2)⁻¹ * C * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ * C * y⁻¹ ^ 2 := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * C * y⁻¹ ^ 2 * 2) - B * s * (r ^ 2 - 1)⁻¹ * W - B * s ^ 2 * (r ^ 2 - 1)⁻¹ * C * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ * C * y⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1558,7 +1558,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_3_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 3 1 3 =
-      B * s * (-1 + r ^ 2)⁻¹ * U := by
+      B * s * (r ^ 2 - 1)⁻¹ * U := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1570,7 +1570,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_0_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 0 1 3 =
-      B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P := by
+      B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1582,7 +1582,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 1 3 =
-      -(B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      -(B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1594,7 +1594,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_2_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 2 1 3 =
-      B * s * (-1 + r ^ 2)⁻¹ * U := by
+      B * s * (r ^ 2 - 1)⁻¹ * U := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1606,7 +1606,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_3_1_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 3 1 3 =
-      B * s * (-1 + r ^ 2)⁻¹ * W := by
+      B * s * (r ^ 2 - 1)⁻¹ * W := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1642,7 +1642,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 2 0 =
-      B * s * r⁻¹ ^ 2 * A - B * s ^ 2 * r⁻¹ ^ 2 * A * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * A - B * s ^ 2 * r⁻¹ ^ 2 * A * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1690,7 +1690,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 2 0 =
-      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1726,7 +1726,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 2 0 =
-      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * A - B * s ^ 3 * r⁻¹ ^ 2 * A * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1738,7 +1738,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 2 0 =
-      -(B * s * r⁻¹ ^ 3 * A * 2) + B * s ^ 2 * r⁻¹ * A * (-1 + r ^ 2)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * A * (-1 + r ^ 2)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * A * (-1 + r ^ 2)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * A * (-1 + r ^ 2)⁻¹ ^ 2 := by
+      -(B * s * r⁻¹ ^ 3 * A * 2) + B * s ^ 2 * r⁻¹ * A * (r ^ 2 - 1)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * A * (r ^ 2 - 1)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * A * (r ^ 2 - 1)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * A * (r ^ 2 - 1)⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1750,7 +1750,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 2 0 =
-      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1762,7 +1762,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 2 0 =
-      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1786,7 +1786,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 2 0 =
-      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * P - B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1834,7 +1834,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_2_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 2 0 =
-      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * Q - B * s ^ 2 * r⁻¹ ^ 2 * Q * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1870,7 +1870,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_metric_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).metric 2 1 =
-      -(s * B * (-1 + r ^ 2)⁻¹ * A) := by
+      -(s * B * (r ^ 2 - 1)⁻¹ * A) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1882,7 +1882,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_0_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 0 2 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * A) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * A) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1894,7 +1894,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 2 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * A * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * A * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1906,7 +1906,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_2_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 2 2 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * P) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * P) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1918,7 +1918,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_3_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 3 2 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * Q) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * Q) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1930,7 +1930,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_0_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 0 2 1 =
-      -(B * s ^ 3 * (-1 + r ^ 2)⁻¹ * A) := by
+      -(B * s ^ 3 * (r ^ 2 - 1)⁻¹ * A) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1942,7 +1942,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 2 1 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * A * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * A * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1954,7 +1954,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_2_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 2 2 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1966,7 +1966,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_3_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 3 2 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * Q) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * Q) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1978,7 +1978,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 2 1 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * A * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * A * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -1990,7 +1990,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 2 1 =
-      -(B * s * r ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * A * 8) + B * s * (-1 + r ^ 2)⁻¹ ^ 2 * A * 2 + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * A * 7 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * A * r⁻¹ ^ 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 3 * A * r⁻¹ ^ 2 := by
+      -(B * s * r ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * A * 8) + B * s * (r ^ 2 - 1)⁻¹ ^ 2 * A * 2 + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * A * 7 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * A * r⁻¹ ^ 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 3 * A * r⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2002,7 +2002,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 2 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2014,7 +2014,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 2 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * Q * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * Q * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2026,7 +2026,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_0_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 0 2 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2038,7 +2038,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 2 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2050,7 +2050,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_2_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 2 2 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * U) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * U) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2062,7 +2062,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_3_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 3 2 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * W) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * W) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2074,7 +2074,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_0_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 0 2 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * Q) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * Q) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2086,7 +2086,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 2 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * Q * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * Q * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * Q * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2098,7 +2098,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_2_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 2 2 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * W) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * W) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2110,7 +2110,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_3_2_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 3 2 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * A * y⁻¹ ^ 2 * 2) - B * s * (-1 + r ^ 2)⁻¹ * y * y⁻¹ ^ 2 * R * 2 + B * s * (-1 + r ^ 2)⁻¹ * y⁻¹ * Q * 2 + B * s * (-1 + r ^ 2)⁻¹ * U - B * s ^ 2 * (-1 + r ^ 2)⁻¹ * A * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ * A * y⁻¹ ^ 2 := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * A * y⁻¹ ^ 2 * 2) - B * s * (r ^ 2 - 1)⁻¹ * y * y⁻¹ ^ 2 * R * 2 + B * s * (r ^ 2 - 1)⁻¹ * y⁻¹ * Q * 2 + B * s * (r ^ 2 - 1)⁻¹ * U - B * s ^ 2 * (r ^ 2 - 1)⁻¹ * A * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ * A * y⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2440,7 +2440,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 3 0 =
-      B * s * r⁻¹ ^ 2 * C - B * s ^ 2 * r⁻¹ ^ 2 * C * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * C - B * s ^ 2 * r⁻¹ ^ 2 * C * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2488,7 +2488,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 3 0 =
-      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2524,7 +2524,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 3 0 =
-      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (-1 + r ^ 2)⁻¹ := by
+      B * s ^ 2 * r⁻¹ ^ 2 * C - B * s ^ 3 * r⁻¹ ^ 2 * C * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2536,7 +2536,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 3 0 =
-      -(B * s * r⁻¹ ^ 3 * C * 2) + B * s ^ 2 * r⁻¹ * C * (-1 + r ^ 2)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * C * (-1 + r ^ 2)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * C * (-1 + r ^ 2)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * C * (-1 + r ^ 2)⁻¹ ^ 2 := by
+      -(B * s * r⁻¹ ^ 3 * C * 2) + B * s ^ 2 * r⁻¹ * C * (r ^ 2 - 1)⁻¹ ^ 2 * 3 + B * s ^ 2 * r⁻¹ ^ 3 * C * (r ^ 2 - 1)⁻¹ * 2 - B * s ^ 2 * r⁻¹ ^ 3 * C * (r ^ 2 - 1)⁻¹ ^ 2 - B * s ^ 3 * r⁻¹ ^ 3 * C * (r ^ 2 - 1)⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2548,7 +2548,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 3 0 =
-      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2560,7 +2560,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 3 0 =
-      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2584,7 +2584,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 3 0 =
-      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (-1 + r ^ 2)⁻¹ := by
+      B * s * r⁻¹ ^ 2 * R - B * s ^ 2 * r⁻¹ ^ 2 * R * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2632,7 +2632,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_3_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 3 0 =
-      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (-1 + r ^ 2)⁻¹ := by
+      -(B * s * r⁻¹ ^ 2 * P) + B * s ^ 2 * r⁻¹ ^ 2 * P * (r ^ 2 - 1)⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2668,7 +2668,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_metric_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).metric 3 1 =
-      -(s * B * (-1 + r ^ 2)⁻¹ * C) := by
+      -(s * B * (r ^ 2 - 1)⁻¹ * C) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2680,7 +2680,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_0_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 0 3 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * C) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * C) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2692,7 +2692,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_1_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 1 3 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * C * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * C * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2704,7 +2704,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_2_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 2 3 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * R) := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * R) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2716,7 +2716,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_first_3_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).first 3 3 1 =
-      B * s * (-1 + r ^ 2)⁻¹ * P := by
+      B * s * (r ^ 2 - 1)⁻¹ * P := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2728,7 +2728,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_0_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 0 3 1 =
-      -(B * s ^ 3 * (-1 + r ^ 2)⁻¹ * C) := by
+      -(B * s ^ 3 * (r ^ 2 - 1)⁻¹ * C) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2740,7 +2740,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_1_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 1 3 1 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * C * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * C * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2752,7 +2752,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_2_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 2 3 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * R) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * R) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2764,7 +2764,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_0_3_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 0 3 3 1 =
-      B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P := by
+      B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2776,7 +2776,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_0_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 0 3 1 =
-      B * s ^ 2 * r * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 2 * C * r⁻¹ := by
+      B * s ^ 2 * r * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 2 * C * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2788,7 +2788,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_1_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 1 3 1 =
-      -(B * s * r ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * C * 8) + B * s * (-1 + r ^ 2)⁻¹ ^ 2 * C * 2 + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * C * 7 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 3 * C * r⁻¹ ^ 2 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ ^ 3 * C * r⁻¹ ^ 2 := by
+      -(B * s * r ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * C * 8) + B * s * (r ^ 2 - 1)⁻¹ ^ 2 * C * 2 + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * C * 7 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 3 * C * r⁻¹ ^ 2 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ ^ 3 * C * r⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2800,7 +2800,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_2_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 2 3 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * R * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * R * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2812,7 +2812,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_1_3_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 1 3 3 1 =
-      -(B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      -(B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2824,7 +2824,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_0_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 0 3 1 =
-      -(B * s ^ 2 * (-1 + r ^ 2)⁻¹ * R) := by
+      -(B * s ^ 2 * (r ^ 2 - 1)⁻¹ * R) := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2836,7 +2836,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_1_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 1 3 1 =
-      B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * R * r⁻¹ := by
+      B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * R * 2 - B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * R * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2848,7 +2848,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_2_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 2 3 1 =
-      -(B * s * (-1 + r ^ 2)⁻¹ * C * y⁻¹ ^ 2 * 2) - B * s * (-1 + r ^ 2)⁻¹ * W - B * s ^ 2 * (-1 + r ^ 2)⁻¹ * C * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (-1 + r ^ 2)⁻¹ * C * y⁻¹ ^ 2 := by
+      -(B * s * (r ^ 2 - 1)⁻¹ * C * y⁻¹ ^ 2 * 2) - B * s * (r ^ 2 - 1)⁻¹ * W - B * s ^ 2 * (r ^ 2 - 1)⁻¹ * C * y⁻¹ ^ 2 * 3 - B * s ^ 3 * (r ^ 2 - 1)⁻¹ * C * y⁻¹ ^ 2 := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2860,7 +2860,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_2_3_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 2 3 3 1 =
-      B * s * (-1 + r ^ 2)⁻¹ * U := by
+      B * s * (r ^ 2 - 1)⁻¹ * U := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2872,7 +2872,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_0_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 0 3 1 =
-      B * s ^ 2 * (-1 + r ^ 2)⁻¹ * P := by
+      B * s ^ 2 * (r ^ 2 - 1)⁻¹ * P := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2884,7 +2884,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_1_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 1 3 1 =
-      -(B * s * r * (-1 + r ^ 2)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (-1 + r ^ 2)⁻¹ ^ 2 * P * r⁻¹ := by
+      -(B * s * r * (r ^ 2 - 1)⁻¹ ^ 2 * P * 2) + B * s ^ 2 * (r ^ 2 - 1)⁻¹ ^ 2 * P * r⁻¹ := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2896,7 +2896,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_2_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 2 3 1 =
-      B * s * (-1 + r ^ 2)⁻¹ * U := by
+      B * s * (r ^ 2 - 1)⁻¹ * U := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
@@ -2908,7 +2908,7 @@ variable {s r y B A C P Q R U W : ℂ}
 
 @[bmVectorEntry] theorem vectorJet_second_3_3_3_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (vectorJet s r y B A C P Q R U W).second 3 3 3 1 =
-      B * s * (-1 + r ^ 2)⁻¹ * W := by
+      B * s * (r ^ 2 - 1)⁻¹ * W := by
   simp only [vectorJet, angular0, angular1, temporalRadial, coord, ScalarTwoJet.mul,
     ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
