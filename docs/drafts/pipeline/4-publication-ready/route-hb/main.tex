@@ -1,0 +1,46 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=29mm]{geometry}
+\usepackage{booktabs,longtable,array,enumitem,xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+\usepackage{fancyhdr}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small Theta-cusp causal scattering}\fancyhead[R]{\small M. Haufschild}\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Open problem}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\C}{\mathbb C}\newcommand{\R}{\mathbb R}\newcommand{\N}{\mathbb N}
+\newcommand{\XiC}{\Xi_{\!c}}\newcommand{\RH}{\mathrm{RH}}
+\newcommand{\FP}{\operatorname{FP}}\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\re}{\operatorname{Re}}\newcommand{\im}{\operatorname{Im}}
+\newcommand{\dd}{\,\mathrm d}\newcommand{\id}{\mathrm{id}}
+\newcommand{\cert}[1]{\par\smallskip\noindent\textit{Formal source:} \hyperref[cert:#1]{source group #1}.\par\smallskip}
+\newcommand{\code}[1]{\ifmmode\text{\small\nolinkurl{#1}}\else{\small\nolinkurl{#1}}\fi}
+\newcommand{\status}[1]{\textsc{#1}}
+\allowdisplaybreaks
+\setlist{nosep}
+\title{Theta-cusp causal scattering and the Riemann hypothesis:\\formal results and unresolved interfaces of Route HB}
+\author{Michael Haufschild}
+\date{13 September 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Route HB is a proposed connection between the Riemann hypothesis, automorphic cusp scattering, and nonlinear perturbations of a topological anti-de Sitter background. We give a source-audited account of its mathematical content and distinguish three different achievements: construction of an arithmetic resonance, nonvanishing of a specified forced response, and a dynamical law forcing a diagnostic to vanish. The first does not imply the second, and neither supplies the third. The formal corpus contains an entire spin-two source factorization, an exact five-factor criterion for survival of a fundamental forced pole, a universal onset-duration theorem, finite Laurent particular solutions, a nonseparated scalar--scalar sourced metric, and specified renormalized angular and radial identities. It also contains an explicit rational kernel whose real part detects displacement from the critical line above height 92. We present proofs of the principal identities and classify the missing identifications and hypotheses. Several stronger conclusions in working notes, including full spectral dominance and extinction of the complete physical action, are not certified results. No proof or disproof of the Riemann hypothesis is obtained. An accompanying declaration manifest and source snapshot distinguish formal statements from their intended physical applications.
+\end{abstract}
+\noindent\textbf{Keywords:} Riemann hypothesis; Eisenstein series; quasinormal modes; finite-part integrals; formalized mathematics; Lean.
+\tableofcontents
+\input{01-framework}
+\input{02-source-response}
+\input{03-metric-boundary}
+\input{04-detectors-obstructions}
+\input{05-frontier}
+\appendix
+\input{06-certificates}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

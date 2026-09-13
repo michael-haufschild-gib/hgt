@@ -19,6 +19,7 @@ import time
 import uuid
 
 from lean_research_corpus import Corpus, cache_directory
+from research_runtime.processes import terminate_owned as stop_owned_group
 
 
 def atomic_json(path: Path, value: dict):
@@ -83,25 +84,7 @@ def stop(root: Path) -> dict:
 
 
 def terminate_owned(child):
-    if child.poll() is None:
-        try:
-            os.killpg(child.pid, signal.SIGTERM)
-            child.wait(timeout=2)
-        except subprocess.TimeoutExpired:
-            try:
-                os.killpg(child.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            except PermissionError:
-                child.kill()
-            child.wait()
-        except ProcessLookupError:
-            child.wait()
-        except PermissionError:
-            # A group signal can be denied even for our own direct child.
-            # Use its Popen handle; never find or signal unrelated processes.
-            child.kill()
-            child.wait()
+    stop_owned_group(child)
 
 
 def classify_failures(reports):

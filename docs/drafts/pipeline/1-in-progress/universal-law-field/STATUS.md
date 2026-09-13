@@ -1,10 +1,24 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
 ## RH: route-independent research constraints
+
+- **Cannot carry an atomwise absolute estimate across a proven Dirichlet convergence boundary.** Zeta's positive square-root coefficients have absolute convergence exactly for `Re(s)>1`; their convolution square proves necessity without assuming RH. Must retain cancellation in the complete summed source when seeking continuation past that boundary. The [full arithmetic transform audit](../dyadic-root-causal-kernel.md#full-arithmetic-transform-and-absolute-integration-boundary) proves the admitted initial-region integral and rules out termwise absolute integration at `2/3`; convergence of the complete source there remains open.
+
+- **Cannot infer absolute Laplace convergence of a source from positivity, integrability, and decay of its convolution square.** An explicit real causal source has a strictly positive integrable square tending to zero, but its absolute Laplace integral converges at `2` and fails at `3/4`. Must prove an additional property of the original source before making that growth inference. The [complete source counterexample](../../5-failed/positive-convolution-square-growth-bootstrap.md) verifies the source, its full convolution identity, and the failed weight in Lean scratch; this does not exclude a source-specific arithmetic estimate.
+
+- **Must retain block means or baselines when using local oscillation bounds to prove transform convergence.** Summable within-block deviations do not bound the discarded constant part. Once the weighted remainder is integrable, integrability of the full source is equivalent to integrability of the retained baseline, by the two triangle inequalities. This is a paper-level structural consequence; the [actual-source cell estimate](../dyadic-root-causal-kernel.md) now proves weighted remainder-mass summability in Lean for every exponent greater than `1/2`, while leaving the arithmetic baseline unbounded.
+
+- **Cannot erase forced within-cell variation by adding a background that decreases in the same direction.** If integrable `f(x)=c/sqrt(x)+h(x)` on `(0,d)`, with `d>0`, `c>=0` and decreasing `h`, then `integral abs(f) >= 2*(sqrt(2)-1)*c*sqrt(d)`. Must control absolute source mass separately from cancellation of signed values. The [causal-source audit](../dyadic-root-causal-kernel.md) formalizes the reflected-difference inequality and its application to actual arithmetic cells; no upper convergence bound follows from this lower bound.
+
+- **Cannot transfer analytic-root claims from an auxiliary transform without auditing the zeros it introduces.** A transform can remove zeta's pole and have an absolutely convergent source yet introduce simple zeros where zeta is nonzero. Must distinguish recovering the original function after cancellation from constructing its roots. The [paired-source audit](../../5-failed/dyadic-root-paired-source-test.md) verifies both the introduced simple zero and exact entire cancellation; its locally uniform recovery limit supplies no root of the recovered function.
+
+- **Cannot repair a regularization with a fixed-sign divergent lower bound merely by slowing or sparsifying its parameter.** Every cofinal sample still diverges. Must retain the complete signed tail and the actual normalization before invoking local boundedness or a normal-family limit. The [complete heat-source audit](../../5-failed/dyadic-root-laplace-source-mass.md) proves a strictly positive uncancellable fraction of the original mass and a normalization bounded away from zero. This failure of a representation is not a zero-location conclusion.
+
+- **Cannot infer meromorphic continuation of an infinite root product from integer exponents or meromorphic finite stages.** Zeta's simple pole forces a hypothetical meromorphic square-root germ to have integer order `m` with `2m=-1`, which is impossible. Must distinguish this obstruction from the completed problem: the normalized analytic square root of the pole-cleared zeta unit exists near `1`, but this does not continue it across possible interior zeros. The [root-source audit](../dyadic-root-tower-working-log.md#no-gos) kernel-checks both the obstruction and the local positive survivor using existing Lean declarations.
 
 - **Cannot bound a complete source's squared linear readings by a multiple of a retained one-dimensional source's readings when a fixed orthogonal projection detects a nonzero remainder.** Must retain that detected component and derive any replacement comparison map from the original source. Vanishing of every fixed linear reading along a normalized family need not remove its norm or its quadratic signal. The [complete-tail separation theorem](../../3-formalized/route-l-strict-tail-source-separation.md) proves a fixed projection retaining the entire positive limiting tail norm and an explicit obstruction to domination by the pure leading source.
 
@@ -4955,10 +4969,11 @@ the normalized adjacent gaps to escape every bound
 `|tau_N-tau_(N+1)|=O(tau_(N+1)^(16/11))`. Independent pole degree does not change this once it is
 at least `24` (`SquarefreeConvolutionHalfLaplaceDiagonalNoGo`,
 `SquarefreeConvolutionHalfLaplaceScheduledNoGo`, `SquarefreeConvolutionHalfLaplaceTwoClockNoGo`).
-CANNOT-273 — It cannot evade completion obstruction merely by increasing smoothing order,
-changing a dense clock, or decoupling pole and heat clocks. Surviving scalar schedules must be
-genuinely sparse in the exact `16/11` arithmetic metric, or alter source profile by a
-source-derived singular/nonlinear correction.
+CANNOT-273 — Cannot evade a fixed-sign source divergence by changing the sampling clock.
+The complete source-mass estimate at `s=2/3` now excludes even arbitrarily sparse positive
+heat clocks with cofinal pole degree (`SquarefreeConvolutionHalfLaplaceAllClocksNoGo`).
+Must compensate the divergent source while preserving its Euler germ; the earlier necessary
+`16/11` sparsity condition no longer identifies a surviving unchanged-source construction.
 F617 — Lean identifies constrained Weil positivity exactly. On the polar-moment-zero subspace, the restricted form is a scalar term plus the positive translation-defect energy `integral K_+(h) ||u-T_hu||^2/2` plus literal prime block, and equivalently the integral of the spectral density against one explicit multiplier. Nonnegativity of its ground energy at every aperture implies RH (`SuzukiWeilConstrainedKernelForm`, `ConstrainedWeilFourierMultiplier`, `riemannHypothesis_of_polarGroundEnergy_nonneg`).
 CANNOT-274 — Polar constraints do not turn positivity into a producer. All-aperture constrained
 positivity is now a Lean-certified RH endpoint; any finite-aperture inequality is a local gauge.

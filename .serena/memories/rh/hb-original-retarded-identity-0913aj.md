@@ -1,0 +1,28 @@
+# HB original retarded identity — 0913aj
+
+RH remains unproved. Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
+
+## Audited results: do not reprove
+New leaf `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalRetardedIdentity.lean`, namespace `RHTower.D4BMOriginalRetardedIdentity`, imports OriginalCausalPotential and OnsetGreenReconstruction. Scratch `lake env lean` passed, then exact `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalRetardedIdentity` passed: [2/2], 15s, only new leaf compiled against cached dependencies in isolated stage. Default proof budgets, no raised heartbeats/axiom checks/computations. Five audited artifacts atomically installed after exact source comparison. Wired RHTower umbrella, no umbrella build.
+
+- `fullNullResponse_eq_retarded_reduced`192: all q,s,amp and NNReal p,width, native rectangle = actual retarded direct-minus-image action of timeReducedCoefficient*fullSquarePotential, retaining 1/4, endpoints and source.
+- `retarded_original_source_difference`388: R(original forcing)-R(reduced forcing)=R(wave of original lift). Original full gradient and onset source retained, all integral subtraction/continuity obligations proved.
+- `originalPotential_eq_retarded`412: Z(q,branch,amp,p,p+width,X,k)=R(timeOriginalForcing)(p,width,X,k). Both branches/all amplitudes/nonnegative endpoints, no source-ID or inverse-uniqueness premise.
+- `originalPotential_onset_reconstruction`430: Z=lift-seed/d+R(fullSourceOnsetPulse)/d, actual physical d. No pulse extinction.
+
+Main proof: continuous rectangle split along diagonal plus lower-triangle Fubini swap; actual odd source changes sign. Explicit closedKernel/logCircle continuity and actual fullSquarePotential/fullGradientEnergy smoothness justify original/reduced source circle means, finite triangle subtraction. Existing retardedNullAction_lift_wave closes exact potential identification. Existing originalForcing_retarded_reconstruction transports full retained onset decomposition.
+
+## Analytical advance: exact rescaling for interior joint smoothness, NOT LEAN
+Card `docs/drafts/pipeline/1-in-progress/hb-physical-mode-action-contact.md`, final section 'Smooth physical parameters after exact triangle rescaling', contains dependency-closed analytical argument. Fix 0<p<r; alpha,beta∈[0,1]; A=p alpha, D=r-p alpha>0, U=p(1-alpha), c=sqrt((1-alpha)(1-beta)), x=(p-r)/2. Direct B=A+D beta with Jacobian pD; image B=A+U beta with Jacobian pU. y=(A-B)/2. Define sinhc(t)=integral_0^1 cosh(vt)dv, smooth positive, sinh(t)=t sinhc(t).
+Hdirect=pD*sinhc(U/2)*sinhc(D(1-beta)/2)/(4 cosh x cosh ydirect).
+Himage=pD*sinhc(U(1-beta)/2)*sinhc(D/2)/(4 cosh x cosh yimage).
+Actual radii are exactly 2 arsinh(c sqrt(Hdirect/image)). Each H strictly positive even all square edges. Factor invariant-1 using cosh difference: direct numerator 2 sinh((p-A)/2)sinh((r-B)/2); image 2 sinh((p-B)/2)sinh((r-A)/2); denominator cosh x cosh y. cosh(2arsinh v)=1+2v² and v≥0 identify arcosh(max1 invariant). Physical derivatives never differentiate c. On compact physical neighborhoods all H have positive lower bound. Original source smooth and circle positive-height; compact parameter differentiation gives joint C∞ on 0<p<r. No trace regularity at onset/boundary/horizon/cusp and no action extinction conclusion. Formalize this exact parameterization/regularity next to supply genuine spacetime jets for full metric/current.
+
+Useful verified sources: `HTGeometry/ConstraintMotiveRelativity/PrimeGammaReesEventGerm.lean` namespace HTGeometry.ConstraintMotiveRelativity has sinhc25, sinhc_mul29, sinhc_pos34; no smoothness theorem despite doc 'entire'. Mathlib Arsinh has Real.contDiff_arsinh174, sinh_arsinh75, cosh_arsinh79, arsinh_nonneg_iff147. Arcosh has cosh_arcosh77 and arcosh_cosh93. Check Real cosh_two_mul name in scratch before use. Mathlib Calculus/DSlope has no ContDiff dslope API found; Complex.differentiableOn_dslope in Complex/RemovableSingularity60, corpus RHTower.differentiable_dslope_of_differentiable ProductAFEIntegrand50 offer alternative removable entire proof. No API may be assumed from memory.
+
+## Status/log/constraints
+Own crisp facts log `docs/drafts/pipeline/1-in-progress/hb-own-research-facts.md` now F01–F96, N01–N04. F94/95 new Lean results, F96 explicitly analytical not Lean. Main card source-action identification updated proved with exact audit and new analytical section. Frontier map READ ONLY, STATUS untouched (no new route-independent law). Full causal Einstein tensor/action boundary pairing and fixed-clock extinction remain open; original source-action identity is closed. Prior ai OriginalCausalPotential wave/onset/boundary/angular/modular results already audited; do not redo.
+
+Repo lint run once: only error unrelated preexisting unreachable `GaloisForLFunctions.RHTower.Sieve.KloostermanGlobalCollisionCoprime`; existing large-file warnings. Own leaf wired; do not edit other agents' files. Broad arxiv intertwining/reciprocity returned old sources; no 2026 theorem applied. Six corpus searches completed and inspected (partial/source-only limitations observed); no pending search/Lean sessions. Audit stage and ten owned aj scratch/search/output files removed; no owned Lean/Lake process remains. Other agents' processes untouched.
+
+Next focus actual spacetime jets via radius rescaling then original complete metric/current boundary pairing. No computations, Git, launch.sh, #print axioms, heartbeat hacks, umbrella/full builds, or proactive subagents. Keep one foreground Lean process with LEAN_NUM_THREADS=2 and pinned v4.32.2. Read facts log to avoid repeating work.

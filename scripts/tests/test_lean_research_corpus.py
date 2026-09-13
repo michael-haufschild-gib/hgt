@@ -13,6 +13,34 @@ from lean_research_corpus import Corpus, chunks, inventory, mask_comments_string
 
 
 class ExtractionTests(unittest.TestCase):
+    def test_inventory_preserves_paths_modules_packages_errors_and_priority(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            paths = ['formal/GaloisForLFunctions/RHTower/First.lean',
+                     'formal/GaloisForLFunctions/HTGeometry/Second.lean',
+                     'formal/space dir/ξ.part.lean', 'formal/Root.lean',
+                     'docs/notes/a.b.md', 'formal/.lake/packages/mathlib/Mathlib/X.lean',
+                     'formal/LEAN_API.md', 'formal/.git/Hidden.lean',
+                     'formal/.lake/build/Hidden.lean', 'formal/no.txt', 'formal/.lean']
+            for path in paths:
+                f = root/path; f.parent.mkdir(parents=True, exist_ok=True); f.write_text('hello')
+            (root/'formal/broken.lean').symlink_to(root/'missing')
+            (root/'formal/linked').symlink_to(root/'docs', target_is_directory=True)
+            items, errors = inventory(root)
+            self.assertFalse(errors)
+            self.assertEqual([i['path'] for i in items[:2]], paths[:2])
+            got = {i['path']: i for i in items}
+            self.assertEqual(set(got), {*paths[:6], 'formal/broken.lean'})
+            for path in paths[:6]:
+                item = got[path]
+                base = root/'formal/.lake/packages/mathlib' if item['package']=='mathlib' else root/('docs' if path.startswith('docs/') else 'formal')
+                self.assertEqual(item['module'], '.'.join((root/path).relative_to(base).with_suffix('').parts))
+                self.assertEqual(item['abspath'], str(root/path))
+                self.assertEqual(item['mtime_ns'], (root/path).stat().st_mtime_ns)
+                self.assertEqual(item['size'], 5)
+            self.assertEqual(got[paths[5]]['package'], 'mathlib')
+            self.assertIn('error', got['formal/broken.lean'])
+
     def test_comment_only_mask_retains_string_literals_and_line_positions(self):
         source = '"/-- literal \\" --/"\n/- comment /- nested -/ -/\nby rfl -- note'
         result = mask_comments_strings(source, mask_strings=False)

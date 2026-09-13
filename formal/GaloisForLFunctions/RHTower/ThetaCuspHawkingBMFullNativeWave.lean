@@ -1942,5 +1942,31 @@ theorem nativeResidualTimePrimitive_joint_spatial_jets (q : XiZeroCopy) (s ampli
     funext z
     exact nativePrimitive_kk q s amplitude z.1.1 z.1.2 z.2.1 z.2.2
 
+/-- The full native response has its genuine first null derivative in the
+forward chart, as required when restoring the original explicit source lift. -/
+theorem fullNullResponse_differentiable_first (q : XiZeroCopy) (s amplitude : ℂ)
+    {p r : ℝ} (hp : 0 < p) (hr : 0 ≤ r) (X k : ℝ) :
+    DifferentiableAt ℝ (fun a => fullNullResponse q s amplitude a r X k) p :=
+  (fullResponse_first q s amplitude hp hr X k).differentiableAt
+
+/-- The mixed null derivative used in the native wave equation exists. -/
+theorem fullNullResponse_differentiable_mixed (q : XiZeroCopy) (s amplitude : ℂ)
+    {p r : ℝ} (hp : 0 < p) (hr : 0 < r) (X k : ℝ) :
+    DifferentiableAt ℝ
+      (fun b => deriv (fun a => fullNullResponse q s amplitude a b X k) p) r := by
+  have hi := Continuous.uncurry_left (f := fullEffective q s amplitude X k) p
+    (fullEffective_continuous q s amplitude X k)
+  have hd := intervalIntegral.integral_hasDerivAt_right (hi.intervalIntegrable 0 r)
+    (hi.stronglyMeasurableAtFilter _ _) hi.continuousAt
+  apply (hd.congr_of_eventuallyEq ?_).differentiableAt
+  filter_upwards [isOpen_Ioi.mem_nhds hr] with b hb
+  exact (fullResponse_first q s amplitude hp hb.le X k).deriv
+
+/-- The full native response vanishes before either original source characteristic. -/
+theorem fullNullResponse_nonpositive (q : XiZeroCopy) (s amplitude : ℂ)
+    {p r : ℝ} (h : p ≤ 0 ∨ r ≤ 0) (X k : ℝ) :
+    fullNullResponse q s amplitude p r X k = 0 :=
+  responseJet_nonpositive q s amplitude 2 0 h X k
+
 end
 end RHTower.D4BMNativeResponse

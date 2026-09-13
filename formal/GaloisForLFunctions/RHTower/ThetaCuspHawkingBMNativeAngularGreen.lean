@@ -157,6 +157,15 @@ private theorem triple_integral_infty {G : Type} [NormedAddCommGroup G] [NormedS
   simp only [integral_Icc_eq_integral_Ioc]
 
 
+/-- A globally smooth integrand remains smooth after substitution of continuous
+parameters and integration over the fixed unit cube. -/
+theorem unitCube_integral_smooth {G : Type} [NormedAddCommGroup G] [NormedSpace ℝ G]
+    [CompleteSpace G] {f : E × P → G} (hf : ContDiff ℝ ∞ f)
+    (γ : ℝ × ℝ × ℝ → P) (hγ : Continuous γ) :
+    ContDiff ℝ ∞ (fun y => ∫ a in (0:ℝ)..1, ∫ b in (0:ℝ)..1,
+      ∫ c in (0:ℝ)..1, f (y,γ (a,b,c))) :=
+  triple_integral_infty hf γ hγ
+
 open GaloisForLFunctions.HTGeometry
 open RHTower
 open RHTower.D4BMNativeResponse RHTower.D4BMNativeCircle RHTower.D4BMCausalKernel

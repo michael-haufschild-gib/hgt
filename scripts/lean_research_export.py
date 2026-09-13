@@ -59,6 +59,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any
+from research_runtime.processes import cancellation_signals
 
 
 EXPORT_SENTINEL = "HGT_CORPUS_JSON:"
@@ -469,6 +470,7 @@ def _attach_snapshot_metadata(result: dict) -> None:
         row["freshness"] = result["snapshots"][row["module"]]["freshness"]
 
 
+@cancellation_signals()
 def export_modules(formal_dir: Path, modules: list[str], *, timeout_seconds=60,
                    source_paths: dict[str, Path] | None = None) -> dict:
     """Export a small group in one foreground Lean call; never build imports.

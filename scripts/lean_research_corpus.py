@@ -325,40 +325,42 @@ def import_dependents(files, modules) -> set[str]:
 
 def inventory(root: Path) -> tuple[list[dict], list[dict]]:
     """All project sources and installed package sources; no traversal failures hidden."""
-    roots = [(root / "formal", "project", "lean"), (root / "docs", "research", "prose")]
+    roots = [(root / "formal", "project"), (root / "docs", "research")]
     package_dir = root / "formal" / ".lake" / "packages"
     errors: list[dict] = []
     if package_dir.exists():
         try:
-            roots.extend((p, p.name, "lean") for p in sorted(package_dir.iterdir()) if p.is_dir())
+            roots.extend((p, p.name) for p in sorted(package_dir.iterdir()) if p.is_dir())
         except OSError as exc:
             errors.append(dict(path=str(package_dir), error=str(exc)))
     items = []
     seen: set[str] = set()
     ignored = {".lake", ".git", "node_modules", "__pycache__", ".venv"}
-    for base, package, collection in roots:
+    catalogs = {"LEAN_API.md", "LEAN_OVERVIEW.md", "LEAN_GAPS.md"}
+    for base, package in roots:
         if not base.exists():
             continue
         def onerror(exc: OSError) -> None:
             errors.append(dict(path=str(exc.filename), error=str(exc)))
         for directory, dirs, files in os.walk(base, onerror=onerror, followlinks=False):
             dirs[:] = sorted(d for d in dirs if d not in ignored)
+            # Derive prefixes once per directory, not twice per source file.
+            relative = os.path.relpath(directory, root)
+            module_dir = os.path.relpath(directory, base)
+            module_prefix = "" if module_dir == "." else module_dir.replace(os.sep, ".") + "."
             for filename in sorted(files):
-                p = Path(directory) / filename
-                if p.suffix not in {".lean", ".md"}:
+                stem, suffix = os.path.splitext(filename)
+                if suffix not in {".lean", ".md"} or filename in catalogs:
                     continue
-                # Generated catalogs copy the corpus; do not multiply every hit.
-                if p.name in {"LEAN_API.md", "LEAN_OVERVIEW.md", "LEAN_GAPS.md"}:
-                    continue
-                path = str(p.relative_to(root))
+                path = os.path.join(relative, filename)
                 if path in seen:
                     continue
                 seen.add(path)
-                module = ".".join(p.relative_to(base).with_suffix("").parts)
-                kind = "lean" if p.suffix == ".lean" else "prose"
-                item = dict(path=path, abspath=str(p), module=module, package=package, collection=kind)
+                absolute = os.path.join(directory, filename)
+                item = dict(path=path, abspath=absolute, module=module_prefix + stem,
+                            package=package, collection="lean" if suffix == ".lean" else "prose")
                 try:
-                    stat = p.stat()
+                    stat = os.stat(absolute)
                     item.update(size=stat.st_size, mtime_ns=stat.st_mtime_ns)
                 except OSError as exc:
                     item.update(size=0, mtime_ns=0, error=str(exc))

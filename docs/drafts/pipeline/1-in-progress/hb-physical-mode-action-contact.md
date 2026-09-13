@@ -10,6 +10,618 @@ The active target is the literal augmented Einstein causal pairing and its
 fixed-clock extinction. The overtone source-moment argument below is an
 unproved auxiliary approach; completing it alone does not close this target.
 
+The constructed original retarded potential has its exact source-action
+identity, joint interior smoothness and smooth future-horizon extension in
+Lean (`OriginalRetardedIdentity.originalPotential_eq_retarded`,
+`OriginalSpacetimeRegularity.originalPotential_smooth`, and
+`OriginalHorizonRegularity.horizonPotential_smooth`, with the
+`ThetaCuspHawkingBM` module prefix). The theorem
+`OriginalHorizonRegularity.originalPotential_horizon_limit` identifies its
+actual horizon trace with the complete compact-source integral. The source
+and both image domains are retained before taking the limit.
+
+The regular ingoing formulas for all four action-current components and
+their attachment to the actual reconstructed causal metric fields have
+passed exact Lean module audits in `ThetaCuspHawkingBMIngoingFullCurrent`
+and `ThetaCuspHawkingBMActualIngoingCurrent`; both leaves are wired into
+`RHTower`. The original causal current also vanishes identically in an
+explicit horizon neighborhood on every finite static-time slab. That
+neighborhood depends on the slab's time bound. The original left
+QNM has the exact factor `exp(-w*p)*(1-1/R)^w`; its singular power must be
+retained alongside the causal field's smooth horizon extension. The
+current coefficients and finite Taylor subtractions are derived below.
+The complete boundary pairing and its fixed-clock extinction remain open.
+
+## Original modular boundary — Lean closure
+
+**Lean:** `ThetaCuspHawkingBMOriginalModularGreen` passed its exact module
+audit and is wired into `RHTower`. For the same full causal source `Z` and
+physical reader `S`, modular pullback preserves `Z`, `S` and `Delta Z`. Differentiation transports each
+scalar differential with the actual reciprocal-square Möbius Jacobian.
+Consequently the weighted current `J=(Delta Z)*grad S-mu*S*grad Z`
+transports as a covector; no scalar potential for `J` is required.
+Inversion sends a radial vector at `z` to the negative radial vector at
+`S*z`. On the unit circle it pairs `(X,Y)` with `(-X,Y)`, yielding
+
+```
+(X/Y)*(J_X(-X,Y)-J_X(X,Y))-J_Y(-X,Y)-J_Y(X,Y)=0.
+```
+
+Translation pairs the vertical-side currents. Apply the corpus's genuine
+area-measure vector-current Green identity, separately to the real and
+imaginary parts. Both side and circular boundary integrals cancel, leaving
+`integral_domain(Y) defect = cuspFlux(Y)`. This is the actual curved
+modular domain, including its compact lower core. Combining it with the
+proved cusp-flux expansion gives a finite part equal to the grouped
+constant coefficient; diagonal and reflected physical readers give zero.
+Theorems `current_modular`, `original_arc_cancellation` and
+`original_modular_area` prove the original boundary and area identities.
+`original_modular_finitePart` retains every independent-reader constant
+coefficient. `diagonal_modular_finitePart` and
+`reflected_modular_finitePart` prove the two zero limits, with the compact
+core and actual curved boundary included. This closes this angular
+transposition. It does not settle the temporal, horizon, onset-corner or
+joint counterterm limits of the full spacetime action.
+
+### Original physical metric current — Lean closure
+
+`ThetaCuspHawkingBMOriginalAngularCurrent` passed its exact module audit and
+is wired into `RHTower`. Let `U=R*Z_tilde` be the actual reconstructed original
+causal scalar, and let `W=ell*S` generate the unchanged original physical left
+stream. For `B(F,G)=(Delta F)*grad(G)-(Delta G)*grad(F)`, the theorem
+`original_physical_metric_current` proves both angular components of the
+actual metric Einstein current are exactly
+
+```
+R^(-2)*(f*B(U_R,W_R)+B(U_R,W_p)+B(U_p,W_R)).
+```
+
+This holds for independent source and reader Xi occurrences, either source
+branch, either physical fundamental frequency and either original radial
+normalization, on `p>0`, `1<R<3`, `Y>0`. `leftStream_static` identifies the
+actual test with the original static `physicalLeftModeStream` before its
+metric derivatives are evaluated. Both fields' required smoothness and
+coexact reconstruction are proved from their original definitions. No
+regularity, left-mode admission or field-equation premise is supplied.
+The generic `coexact_current` identity uses actual scalar derivatives and
+commutes the mixed jets on neighborhoods; it is not an identity on freely
+assigned derivative slots. The integrated spacetime pairing remains open.
+
+### Original parameter boundary transfer — Lean closure
+
+**[BRIDGE].** `ThetaCuspHawkingBMOriginalGreenBoundary` passed its exact module
+audit and is wired into `RHTower`. This is a derivative-transfer theorem for
+the original physical current, not a new restriction on Xi occurrences.
+
+First, `originalPotential_exterior_smooth` composes the original joint
+null-coordinate regularity theorem with
+`(p,R,X,Y) -> (p,p-2*tortoise(R),X,log(Y))`. For every `R>1`, the tortoise
+coordinate is negative, so the two null coordinates lie in the proved
+interior region. The reconstructed scalar and stream are therefore smooth
+on all `p>0`, `R>1`, `Y>0`; no upper-radius bound remains.
+`original_metric_current_eq` identifies all four components of the actual
+reconstructed metric current with their ingoing stream formulas, with the
+unchanged original physical left field and both radial normalizations.
+
+Write `B(F,G)=(Delta F)*grad(G)-(Delta G)*grad(F)`, and set
+
+```
+C=R^(-2),              A=1-C,                D=-2*R^(-3),
+BR=A*B(U,W_R)+C*B(U,W_p),
+Bp=C*B(U,W_R),
+E=-D*B(U,W_R)+D*B(U,W_p)+A*B(U,W_RR)
+    +C*B(U,partial_R partial_p W)+C*B(U,partial_p partial_R W).
+```
+
+The actual bilinear rule
+`partial_i B(U,W)=B(partial_i U,W)+B(U,partial_i W)`, for `i=p,R`,
+and the differentiated inverse-square weight give exactly
+
+```
+J^angular=partial_R BR+partial_p Bp-E.
+```
+
+`greenPair_partial` proves the rule on genuine field germs.
+`original_current_boundary` and `original_metric_boundary` attach this
+identity to the original causal source and metric, respectively.
+`original_rectangle_boundary` then proves, for every finite rectangle with
+`0<p0<=p1` and `1<R0<=R1`,
+
+```
+int_p int_R J^angular
+ = int_p [BR]_(R0)^(R1)+int_R [Bp]_(p0)^(p1)-int_p int_R E.
+```
+
+All four oriented edges remain. Original field regularity supplies the
+fundamental-theorem and Fubini hypotheses. Every term on the right contains
+only angular derivatives of the source; time and radial derivatives act on
+the original reader. No cusp limit is differentiated.
+
+**Whole-route assessment.** The generic identity uses no special Xi-zero
+arithmetic: that enters only when specifying the actual fields. Hence this
+bridge cannot supply source-coupling nonvanishing or extinction. Its intended
+use is to justify angular transposition in the complete original spacetime
+pairing using undifferentiated source flux and retained edge terms. Further
+local derivative-transfer variants are not the closing obligation.
+
+The relevant correspondence already has two concrete sides in the corpus.
+`PhysicalWeightedResponse.physicalJointProjection_height_integral` is the
+literal bilinear scalar-reader integral of the height-admitted response.
+`PhysicalCausalGreenBand.causalPhysicalProjection_original_profile` identifies
+its actual Green profile in the right half-plane. But, by the original
+field definitions,
+
+```
+originalPotential
+ = fullNullResidual
+   +sum_i principalNullResponse_i*cutoffPower_i
+   +nullLift*sourceProfile.
+```
+
+Thus comparison with the original reconstructed Einstein pairing must
+retain the three transported principal terms, the full onset lift and their
+metric boundary contacts. Establishing this correspondence and its permitted
+continuation to the original physical QNM is the next route-level target.
+No equality of these complete pairings is asserted here. The source/onset
+nonvanishing and fixed-Hawking-clock extinction obligations remain unchanged.
+
+This scope decision applies the two project methods: the repeated irritant
+is the source-derivative/cusp-limit interchange; the proved bridge moves those
+derivatives to their actual edges. Asking where the argument uses Xi exposes
+why it is not an RH-closing conjecture. The correspondence between the full
+field and its weighted projection must be proved, not inferred from their
+similar names or from local current identities.
+
+### Physical pairing versus scalar projection — active correspondence
+
+**[BRIDGE; paper derivation, Lean verification in progress].** The primary
+target remains the complete original Einstein pairing and its fixed-clock
+extinction. The next required correspondence fixes the normalization of its
+scalar projection while retaining the original boundary term.
+
+Let `F` be the complete original causal scalar, `S` the independent physical
+scalar reader, `Delta S=mu*S`, and `D_Y` the actual curved modular domain.
+Define
+
+```
+V_Y(F) = integral_D_Y sum_j coexact(F)_j*coexact(S)_j dxdy,
+M_Y(F) = integral_D_Y F*S/Y^2 dxdy,
+N_Y(F) = integral_(-1/2)^(1/2) F(X,Y)*partial_Y S(X,Y) dX.
+```
+
+The conjectured exact correspondence is
+
+```
+V_Y(F) + mu*M_Y(F) = N_Y(F).
+```
+
+Paper proof: the planar divergence of `F*grad S` equals its left integrand.
+Actual modular invariance transports this normal current with the same
+Möbius Jacobian as the reader differential. Translation pairs the vertical
+sides; inversion pairs the curved core. The surviving top term is `N_Y`.
+No decay assumption or zero boundary value is inserted.
+
+**Whole-route consequence.** The physical coexact pairing carries factor
+`-mu`, together with an explicit normal-flux correction. Identifying the
+complete Einstein pairing with a scalar projected residue therefore requires
+this correction and the original principal/lift restoration. A scalar
+projection identity alone does not establish that identification. The next
+test is Lean verification on the actual source, followed by its use in the
+radial/time current, with every principal and onset contact retained.
+
+### Connection to the complete Einstein angular current — analytical
+
+Use the actual reconstructed causal stream `P=coexact(U)` with
+`U=R*Z_tilde`; the factor `R` is retained. Write the unchanged left stream
+as `Q=ell(p,R)*coexact(S)`, with `Delta S=mu*S`, and put
+`J_S(F)=(Delta F)*grad(S)-mu*S*grad(F)`. At positive angular height,
+commuting the genuine mixed derivatives gives
+
+```
+curl(P)_i = -Y^(-2)*Delta(U_i),
+curl(Q)_i = -Y^(-2)*ell_i*mu*S,        i=p,R.
+```
+
+Substitute these identities and the coexact components directly into
+both angular components of `D4BMIngoingFullCurrent.current`. Their common
+vector expression is
+
+```
+(J^X,J^Y) = R^(-2)*((f*ell_R+ell_p)*J_S(U_R)+ell_R*J_S(U_p)),
+f=R^2-1,
+U_R=Z_tilde+R*Z_tilde_R,              U_p=R*Z_tilde_p.
+```
+
+For the original left factor, `f*ell_R+ell_p=(w/R)*ell`, so this becomes
+
+```
+(J^X,J^Y) = (w*ell/R^3)*J_S(Z_tilde)
+             +(w*ell/R^2)*J_S(Z_tilde_R)
+             +(ell_R/R)*J_S(Z_tilde_p).
+```
+
+Every sign and factor follows from the original two angular current
+formulas; no radial equation for the causal source is used. Thus the
+modular-transfer result above has a direct role in the complete action.
+The remaining attachment is to the actual parameter derivatives of the
+same causal potential: their modularity and differentiated cusp
+expansions must be proved before applying the angular finite-part limit.
+Differentiability alone does not justify differentiating that limit.
+The original-field attachment is now proved by the bilinear identity above.
+The displayed eigen-reader simplification remains analytical. A separate
+boundary-transfer mechanism below can move the parameter derivatives off the
+source before the cusp limit, while retaining their endpoint contributions.
+
+### Moving the spacetime derivatives to retained boundaries — analytical
+
+There is a second consequence of the angular-current formula, independent of
+interchanging a derivative and a cusp limit. Fix the original physical reader
+`S`, retain its proved equation `Delta(S)=mu*S`, and set
+
+```
+K=J_S(U),                         U=R*Z_tilde,
+a=w*ell/R^3,                     b=ell_R/R^2,
+c=(mu-2)*ell/R^4.
+```
+
+On `p>0`, `R>1`, `Y>0`, the actual fields are smooth. Since `S` is independent
+of `p,R`, equality of mixed derivatives gives `K_R=J_S(U_R)` and
+`K_p=J_S(U_p)`. Thus the two original Einstein angular components are
+`a*K_R+b*K_p`. The original left factor gives
+
+```
+ell_p=-w*ell,                  ell_R=w*ell/(R*(R-1)),
+mu-2=w*(w+3),
+a_R+b_p=-w*(w+3)*ell/R^4=-c.
+```
+
+Indeed, `a_R=w*ell_R/R^3-3*w*ell/R^4` and
+`b_p=-w*ell_R/R^2`; their `ell_R` terms sum to `-w^2*ell/R^4`.
+The exact product rule therefore proves, component by component,
+
+```
+J^angular = partial_R(a*K)+partial_p(b*K)+c*K.
+```
+
+Consequently every closed rectangle `[p0,p1] x [R0,R1]` strictly inside the
+smooth region has the exact identity
+
+```
+int_p int_R J^angular
+ = int_p [a*K]_(R0)^(R1)
+   +int_R [b*K]_(p0)^(p1)
+   +int_p int_R c*K.
+```
+
+The fundamental theorem of calculus and Fubini apply because all integrands
+are continuous on this compact rectangle. Both temporal and radial endpoint
+terms remain. In particular the identity uses no limit and differentiates no
+asymptotic assertion.
+
+There is also an exact change of local current that preserves its divergence.
+Put `div_A V=partial_X V_X+partial_Y V_Y` and define
+
+```
+Jnew^R=J^R+div_A(a*K),
+Jnew^p=J^p+div_A(b*K),
+Jnew^angular=c*K.
+```
+
+The difference in the four-dimensional divergences is zero by commutation of
+actual mixed derivatives. The change in each separate boundary face is
+retained; its edges match the adjacent face contributions. This does not
+assert that either current or an individual face has zero flux.
+
+**Whole-chain consequence:** the integrated angular contribution can be
+expressed using only the original undifferentiated `K` and explicit endpoint
+currents. The existing modular finite-part theorem applies to each fixed
+parameter value of `K=R*J_S(Z_tilde)`. Passing that limit through a parameter
+integral still requires a justified bound on compact parameter rectangles;
+fixed-point convergence alone does not supply it. Extension to the onset and
+horizon corners and removal of unbounded temporal cutoffs remain separate
+obligations. Thus the derivative-transfer identity supplies an alternative to
+differentiated cusp estimates, not a proof of fixed-clock extinction.
+
+The supporting corpus is more specific than smoothness alone:
+`D4BMCausalCusp.responseRemainder_jet_uniform_bound` bounds every angular jet
+uniformly on `0<=p,r<=T`, over every horizontal position, by
+`B*exp(N*(D-k))` for each natural `N`. Its
+`responseRemainder_first_null` and `responseRemainder_second_null` give actual
+null derivatives as one-dimensional integrals of `remainderForcing`. The
+forcing contains the original native remainder times its source weight plus
+the angular Laplacian of the causal remainder divided by
+`4*cosh((p-r)/2)^2`. Hence there is also a route to derivative estimates that
+uses these already identified forcing integrals. The full original onset
+lift and the physical ingoing coordinate change still require attachment to
+these estimates. On compact physical rectangles separated from `R=1`, the
+corresponding two null coordinates stay bounded; this observation gives no
+bound at the horizon.
+
+**Status:** the displayed eigen-reader simplification has the paper proof
+above; its direct Lean specialization remains open. The general original-field
+identity and all four finite-rectangle edges are now proved in
+`ThetaCuspHawkingBMOriginalGreenBoundary`, with the full reader remainder
+retained. The uniform-bound and null-derivative statements cited here already
+occur in the corpus; their combined application to the full original metric
+pairing is not asserted.
+
+### Horizon order after the parameter transfer — analytical
+
+The exact reader specialization in the preceding paper proof gives
+`BR=a*K`, `Bp=b*K`, and `E=-c*K`. With `v=1-1/R` and the original factor
+`ell=exp(-w*p)*v^w`, these are
+
+```
+BR=exp(-w*p)*v^w*(w/R^3)*K,
+Bp=exp(-w*p)*v^(w-1)*(w/R^4)*K,
+E=-exp(-w*p)*v^w*((mu-2)/R^4)*K.
+```
+
+At fixed positive ingoing time and angular height, the proved source horizon
+extension makes `K=J_S(U)` smooth in `v` through zero. Grouping the reader
+remainder therefore cancels its apparent higher radial singularities. The
+radial edge still needs only the degree-one subtraction and the temporal
+edge the degree-two subtraction already identified for the original current.
+
+For the interior radial integral, retain the exact Jacobian
+`dR=(1-v)^(-2)dv`. Its density is `v^w*H(v)`, where
+`H(v)=-exp(-w*p)*(mu-2)*(1-v)^2*K(p,1/(1-v),X,Y)` is smooth.
+On a sufficiently small fixed interval, `|H(v)-H(0)|<=M*v`. The original
+frequency strip `Re(w)>-2` therefore gives
+
+```
+int_0^epsilon |v^w*(H(v)-H(0))| dv
+ <= M*epsilon^(Re(w)+2)/(Re(w)+2).
+```
+
+Only the constant Taylor term of this exact radial density must be removed
+for absolute integrability of the remaining interior integral. This is a
+paper consequence of the original reader factor and source horizon
+regularity; its eigen-reader specialization and estimate are not yet Lean
+theorems. It does not identify these subtractions with the transformed source
+counterterm or control the onset corner. For the whole route it shows that
+the derivative transfer does not worsen the horizon orders, while leaving
+the physical counterterm correspondence explicit and unresolved.
+
+## Original angular transfer and complete causal cusp jets
+
+**Lean:** `ThetaCuspHawkingBMOriginalAngularGreen` passed its exact module
+build and is wired into `RHTower`. `ThetaCuspHawkingBMOriginalCuspJets`
+also passed its exact module build and is wired into `RHTower`. These results
+concern the complete original potential, including the fixed onset lift.
+
+Fix the original null coordinates `p,v`, source occurrence `q`, physical
+branch and amplitude. In the positive-height chart write
+
+```
+Z(X,Y) = originalPotential(q,branch,amp,p,v,X,log(Y)),
+S(X,Y) = literalScalar(u,X,Y),       mu = u^2-1/4,
+P = coexact(Z),                     V = coexact(S),
+Delta F = Y^2*(F_XX+F_YY).
+```
+
+The actual reader equation is `Delta S=mu*S`. Define
+
+```
+J_j = (Delta Z)*partial_j S - mu*S*partial_j Z.
+D = sum_j ((coexact(Delta Z)_j-mu*P_j)*V_j).
+```
+
+Differentiating the two products gives `partial_X J_X+partial_Y J_Y=D`:
+the extra term is `(Delta Z)*(S_XX+S_YY)-mu*S*(Z_XX+Z_YY)=0`.
+The coexact/rough-Laplacian identity identifies this with
+`sum_j ((roughLaplacian P)_j*V_j-P_j*(roughLaplacian V)_j)`.
+The identity shift in the physical angular action cancels in this
+bilinear difference. Thus this is the original vector-operator transfer.
+
+Original modular periodicity makes `J_X(X+1,Y)=J_X(X,Y)`. For every
+positive pair of heights `a,b`, the actual compact integral satisfies
+
+```
+integral_a^b integral_(-1/2)^(1/2) D(X,Y) dX dY
+  = integral_(-1/2)^(1/2) J_Y(X,b) dX
+    - integral_(-1/2)^(1/2) J_Y(X,a) dX.
+```
+
+Theorems `divergence_flux`, `defect_eq_rough`, `cuspFlux_hasDerivAt` and
+`original_coexact_green` establish this with the full retarded source and
+any original physical reader. Both height endpoints remain.
+
+The complete source has precisely the following principal coefficients:
+
+```
+rho = (q.1 : Complex),              alpha = [2*rho,1,2-2*rho],
+A_i(p,v) = principalNullResponse(q,physicalRate(q,branch),amp,i,p,v)
+           + nullLift(physicalRate(q,branch),amp,p,v)*principalAmplitude(q,i),
+R_Z(X,k) = originalPotential(q,branch,amp,p,v,X,k)
+           - sum_i A_i(p,v)*exp(alpha_i*k).
+```
+
+Radius zero of the native circle is exactly the original half-square.
+Consequently every actual ordered angular jet has the exact decomposition
+
+```
+jet_word R_Z = jet_word responseRemainder
+              + nullLift*nativeJet_(map succ word)(nativeRemainder)(0,X,k).
+```
+
+The new leaf proves this equality and, for fixed `p,v>=0`, proves that
+`exp(w*k)*jet_word R_Z(X(k),k)` tends to zero for every complex `w` and
+every horizontal path `X(k)`. Choosing a violating path if uniformity
+failed upgrades this to a bound uniform over all real `X`. The compact
+integral norm bound then gives the same zero limit after integration in
+`X` from `-1/2` to `1/2`. This retains the causal response and onset lift
+in every derivative; the estimate is not a claim uniform as `p` or `v`
+tends to infinity.
+
+### Derived physical cusp flux expansion
+
+**Lean closure:** `ThetaCuspHawkingBMOriginalCuspFlux` passed its exact
+module audit and is wired into `RHTower`. The expansion is attached to
+the actual differentiated flux and its original width-one integral.
+Let the reader occurrence be `r`, put
+`sigma=(r.1 : Complex)`, `beta=1-sigma/2` and
+`C=reflectedCompletedLambda(sigma-1)`. The existing theorem
+`PhysicalAngularCutoffCalibration.physicalScalar_principal` gives
+
+```
+S = C*Y^beta + T,                   mu=beta*(beta-1),
+Z = sum_i A_i*Y^alpha_i + R.
+```
+
+The scalar reader tail `T` and its first height derivative have arbitrary
+height-weighted bounds uniform in `X`. For `T`, use
+`GlobalAngularResponse.weighted_tail_bounded`. For its derivative, use
+`GlobalAngularResponse.tail_vertical_eq` and
+`AngularSeries.value_coordDeriv_one`: it is a finite linear combination
+of the original derivative-stable signed Bessel families, each covered
+by `AngularSeries.weighted_value_bounded` at every complex weight.
+
+The new source bounds imply the same arbitrary decay for `R`, `R_Y`
+and `Delta R`, because
+`R_Y=Y^(-1)*R_k` and `Delta R=Y^2*R_XX+R_kk-R_k` at `k=log(Y)`.
+Writing `Z0=sum_i A_i*Y^alpha_i`, `S0=C*Y^beta`, the exact flux remainder is
+
+```
+J_Y-J0 = (Delta R)*S0_Y + (Delta Z0)*T_Y + (Delta R)*T_Y
+         - mu*(T*Z0_Y + S0*R_Y + T*R_Y).
+```
+
+Every summand is a rapidly decaying factor times a finite power family
+or another rapidly decaying factor. Hence the remainder decays after
+any height weight, uniformly in `X`, also after the width-one integral.
+Direct differentiation of the principal powers gives the complete
+original flux expansion
+
+```
+J0(Y) = sum_i A_i*C*alpha_i*beta*(alpha_i-beta)
+                    *Y^(alpha_i+beta-1).
+```
+
+This determines its constant-height coefficient without discarding any
+nonconstant term. For independent original occurrences, that coefficient
+can receive contributions only from `sigma=4*rho` or `sigma=4-4*rho`;
+the cross channel would require the real value `sigma=2`, excluded by
+the proved nonzero imaginary part of Xi occurrences. For the diagonal
+reader the exponents are `[3*rho/2,1-rho/2,2-5*rho/2]`, all nonzero. For
+the actual functional-equation reflection `sigma=1-rho`, their imaginary
+parts are `[5/2,1/2,-3/2]*Im(rho)`, again all nonzero. The constant-height
+coefficient therefore vanishes for both the diagonal and reflected
+original readers, for every branch, amplitude and fixed causal cut.
+
+Theorems `principalFlux_expansion` and `fluxRemainder_decomposition`
+prove the differentiated principal formula and exact six-term remainder.
+`original_flux_expansion` and `original_cuspFlux_expansion` prove the
+arbitrary-weight remainder limit along every horizontal path and after
+the actual cusp integration. `independent_constant_classification`,
+`diagonal_constant_zero` and `reflected_constant_zero` prove the full
+specialized constant-coefficient statements above.
+
+There is also an exact infinite-cusp action limit. Write
+`Gamma_i=A_i*C*alpha_i*beta*(alpha_i-beta)`,
+`e_i=alpha_i+beta-1`, and
+
+```
+C_nc(k) = sum_(i: e_i != 0) Gamma_i*exp(e_i*k),
+C_0     = sum_(i: e_i = 0) Gamma_i.
+```
+
+Every coefficient comes from the original causal response and restored
+lift. Removing exactly these nonconstant powers, while retaining any
+genuine constant contribution, gives
+
+```
+lim_(k -> infinity) [cuspFlux(exp(k))-C_nc(k)] = C_0,
+lim_(k -> infinity) [integral_a^exp(k) cuspDefect(Y) dY-C_nc(k)]
+  = C_0-cuspFlux(a),                 a>0.
+```
+
+These are `original_cuspFlux_finitePart` and
+`original_cuspAction_finitePart`. For the actual reflected reader,
+`C_0=0`, so the latter limit is exactly `-cuspFlux(a)`;
+`reflected_cuspAction_finitePart` proves this without an added boundary
+or nonresonance premise. The lower endpoint has not been erased.
+
+**Effect on the complete chain:** original causal integration and onset
+restoration preserve the angular exponent support needed for the
+reflection pairing, and the actual integrated upper cusp contribution
+is now identified in Lean. `OriginalModularGreen` also cancels the
+paired lower modular boundary and proves the actual curved-domain finite
+part. The complete action's other fluxes, temporal transformation and
+identification with the original joint counterterm prescription remain
+separate obligations.
+All null coordinates are fixed in these limit theorems; they supply no
+infinite-time/horizon interchange or fixed-Hawking-clock extinction.
+
+## Actual causal metric current and finite static-time horizon exclusion
+
+**Lean closure:** `ThetaCuspHawkingBMActualIngoingCurrent`; exact module audit
+passed, cached artifacts installed and umbrella wired. The conclusions below
+concern the original causal integral and its reconstructed local metric
+current. They do not assert the complete physical pairing or RH.
+
+Write `f=R^2-1` and
+`x(R)=(log(R-1)-log(R+1))/2`. The actual ingoing potential is
+
+```
+Z_ing(p,R,X,Y) = Z(p,p-2*x(R),X,log(Y)),
+P = R * (partial_Y Z_ing, -partial_X Z_ing).
+```
+
+For `p>0`, `1<R<3`, `Y>0`, equality with the constructed smooth horizon
+extension holds on coordinate neighborhoods. Differentiating that equality
+identifies all actual stream derivatives. The original substitution
+`p=t+x(R)` has the full ordered two-jet used in
+`IngoingFullCurrent.toStatic`; its radial second derivative includes the
+coefficient `-2R/f^2`. This closes the causal-field attachment required by
+the current formulas above.
+
+The actual static-coordinate metric is formed from
+`g_tA=f*partial_R P_A` and `g_RA=partial_t P_A/f`, with symmetric entries.
+Its first coordinate derivatives are exactly
+
+```
+partial_k g_tA = 2R*delta_kR*partial_R P_A + f*partial_k partial_R P_A,
+partial_k g_RA = partial_k partial_t P_A/f
+                - 2R*delta_kR*partial_t P_A/f^2.
+```
+
+The Einstein action current depends only on metric values and first
+derivatives. Consequently its value for these actual metric fields equals
+the complete ingoing current, including both angular fluxes and source
+contacts. The proof does not equate the actual second metric derivatives
+with the stream table's unused zero slots. Theorems
+`reconstructedMetric_first`, `reconstructedMetric_action` and
+`original_causal_metric_current` prove these identifications.
+
+There is also an exact causal support boundary. For any real `T`, set
+`delta(T)=exp(-2*(T+1))>0`. If `t<=T` and `1<R<1+delta(T)`, then
+
+```
+log(R-1) < -2*(T+1),     log(R+1) > 0,
+x(R) < -(T+1),          p=t+x(R) < 0.
+```
+
+The original potential vanishes for `p<=0`. Since `p<0` is open, the
+potential and coexact stream vanish on a coordinate neighborhood. Every
+stream jet used by the current is therefore zero, and all four current
+components are exactly zero against every test two-jet. For actual test
+metric fields, local C2 regularity suffices; no bound uniform at the
+horizon is needed. This is
+`original_current_finite_static_slab` and
+`original_metric_current_finite_static_slab`.
+
+This finite-static-time exclusion and the positive-ingoing-time horizon
+trace are distinct statements. Holding `p>0` fixed while `R` tends to
+one forces `t=p-x(R)` to infinity. The support neighborhood above shrinks
+with `T`. Thus it removes the horizon face on finite static-time slabs,
+but leaves the growing-time boundary, the original transformed
+counterterm matching, onset-corner control and complete physical pairing
+unresolved. None of these limit interchanges is supplied by local current
+identification or causal support.
+
+## Remaining original pairing obligation
+
 `ThetaCuspHawkingBMSecondHarmonicPeierlsPolarizedLanding` requires an actual
 source-pairing incidence in
 `d4BMXiSecondHarmonicCokernelCausalCut_eq_PeierlsPolarizedCandidate`.
@@ -3363,9 +3975,9 @@ This classifies the actual rational coefficients. Proving that their substitutio
 solves the nonseparated metric equation, and establishing causal endpoint
 conditions, remain obligations.
 
-Paper proof: closed by the displayed identities. Lean status: the input
-Laurent identities and `recH` are proved; this cancellation is not yet a
-separate Lean theorem. Sources: `ThetaCuspHawkingBMScalarStreamLaurentMaster`
+Paper proof: closed by the displayed identities. Lean status: all four original
+amplitude decompositions, actual twisted derivatives, exterior smoothness and
+physical noncollision are proved in `ThetaCuspHawkingBMThreeFieldReconstruction`. Sources: `ThetaCuspHawkingBMScalarStreamLaurentMaster`
 (`laurentMasterA_resolvents`, `laurentMasterB_resolvent`) and
 `ThetaCuspHawkingBMScalarStreamReconstructionJet.recH`.
 
@@ -3414,7 +4026,520 @@ angular-jet components. Thus no spectral-completeness theorem is needed for
 this direct verification. Equality with the literal source from F88 and causal
 admission are separate proof obligations.
 
-Status: the displayed coefficient derivation is analytical; a scratch Lean check
-of the original reduced master, its actual twisted derivative, and `recHR`
-three-field decomposition is in progress. No new metric-equation theorem is
-claimed yet.
+Status: the complete four-amplitude decomposition and smooth radial columns
+passed scratch Lean and the isolated exact-module Lake audit. No new
+nonseparated metric-equation theorem is claimed yet.
+
+
+### Source-retaining ingoing horizon cancellation
+
+For `v=t+r_*`, `f=r^2-1`, the ingoing radial coefficients are
+`Gvv=F0`, `Gvr=F1-F0/f`, `Grr=F2-2F1/f+F0/f^2`.
+Write `N=M+2r*tauTF`, `W=4r*H-N`. The original reconstruction identities give
+
+    Gvr=N'/2-tauT/s-2r*H'+2*tauTF+s*W/(r*(r+1)),
+    f*Grr=4r*H'-N'+2*tauT/s-2*tauTF-2s*W/(r*(r+1)).
+
+Primes here are ordinary radial derivatives. This follows by substituting
+`D_s g=g'+2s*g/(r*f)` and eliminating `tauTR` with the original `H` identity;
+no source term is dropped. The three angular amplitudes have the Laurent form
+`H_k=a_k+b_k/r^2+c_k/r^4`. With
+`C=3*(s+1)^2*(3s+4)/(8*(2s+3))`, their coefficients are
+
+    a=(1/4, C-(3s^2+6s+2)/4, C),
+    b=(s*(3s+2)/8, C*(2s^2+s)-s*(4s^3+9s^2+6s+2)/4, C*(2s^2+s)),
+    c=(s^2*(s+1)^2/32, -s^2*(s+1)^3/16, 0).
+
+Write `N_k=n1_k*r+n_1k/r+n_3k/r^3` and
+`W_k=w0_k*r+w2_k/r+w4_k/r^3`. Then
+`w0=4a-n1`, `w2=4b-n_1`, `w4=4c-n_3`. The polynomial part of `f*Grr`
+has no constant term: it is `p2/r^2+p4/r^4`, with
+
+    p2=-8b+n_1+indicator(k=0)*s*(s+2)/2+tensorWeight_k*s^2,
+    p4=-16c+3n_3+indicator(k=0)*3s^2*(s+1)^2/8
+       -tensorWeight_k*s^2*(s+1)^2/4,
+    tensorWeight=(1,(s+1)*(s+2),0).
+
+Direct substitution gives the horizon residue identity
+`p2+p4=s*(w0+w2+w4)` in each original column. Consequently
+
+    Grr = [-2s*w0*r^3+(p2-2s*w0)*r^2
+           +(-2p4+2s*w4)*r+(-p4+2s*w4)]/[r^4*(r+1)^2].
+
+This expression extends smoothly across `r=1`. The other ingoing coefficients
+are then `Gvr=tauTF-f*Grr/2`, `Gvv=s*W-f*tauTF+f^2*Grr/2` and `H`.
+The original time-radial envelope also has its already-proved regular ingoing
+form (`ThetaCuspHawkingBMIngoingCoordinates.envelope_staticPoint`). This removes
+an apparent horizon singularity of the particular metric. It does not yet impose
+retarded onset, the radial boundary condition or the left-QNM action.
+
+Paper status: algebraic derivation above. Lean status: exact Laurent expressions,
+source-retaining residue cancellation, equality of every transformed original radial
+column and its smooth ingoing extension, and specialization to both physical branches
+are proved in `ThetaCuspHawkingBMThreeFieldHorizon`. Scratch Lean and the isolated
+exact-module Lake audit passed without warnings. The full nonseparated metric
+equation is proved below; retarded onset, boundary admission and left-QNM action
+remain unproved.
+
+
+### Direct nonseparated metric equation from the three original columns
+
+The actual summed metric's original cosmological Einstein operator equals minus
+the identified literal scalar-square source in all sixteen components. Its actual
+profiles are `F=S^2`, `U=coordinateResponse` and `V=2*fullAngularField/d`, satisfying
+`Delta U=2U-F` and `Delta V=dV+F`. No profile is supplied as a harmonic and no
+completeness statement is assumed.
+
+For each of the seven original operator rows write `L(mu)=L0+mu*L1`, and
+let `c0,c2,cd` be the actual twisted radial jets of the three proved columns.
+The source has exact form `t0+mu*t1+t2/(2-mu)`; only its trace-free row has a
+nonzero `t2`. Expanding the already-proved harmonic residual produces
+
+    mu*A+B+C/(2-mu)+D/(mu-d),
+    A=L1(c0)+t1,
+    B=L0(c0)-L1(c2)+L1(cd)+t0,
+    C=L0(c2)+2*L1(c2)+t2,
+    D=L0(cd)+d*L1(cd).
+
+Clearing the two denominators gives a polynomial of degree at most three.
+Its vanishing follows from the original sourced reconstruction identities at
+independent admissible spectral values; polynomial rigidity then forces
+`A=B=C=D=0`. These are precisely the nonseparated coefficient equations after
+substituting the actual Laplacians of `F,U,V`. All twisted jets must first be
+transported through the proved exterior field identity. The final operator is
+applied to the actual sum of metric fields using jet addition and the original
+linearized Einstein derivative, with `envelope(2s,a^2)=envelope(s,a)^2` retained.
+
+The actual twisted-jet decomposition and all 28 coefficient identities are now
+proved in `ThetaCuspHawkingBMThreeFieldRows`. The free-angular-jet operator and
+all sixteen assembled source cancellations are proved in
+`ThetaCuspHawkingBMThreeFieldTensor`. The actual summed metric and its complete source identity are proved in
+`ThetaCuspHawkingBMThreeFieldMetric.literalMetric_einstein`, with its actual
+coordinate regularity in `literalMetric_smooth`. The field uses the original
+radial columns and both constructed angular inverses. Its jet is obtained from
+`harmonicMetricField_jet` without a harmonic hypothesis; actual field-jet addition
+and the linear Einstein derivative give the full sum. The original physical
+quadratic source is substituted through `physical_scalar_source`, including the
+factor `envelope(2s,a^2)=envelope(s,a)^2`. All three exact leaf audits passed without
+warnings at default proof budgets, and all three imports are wired.
+
+The constructed response now has both the full sourced metric equation and the
+previously proved radial ingoing extension. This does not establish retarded
+onset, boundary admission, left-QNM incidence or fixed-Hawking-clock extinction.
+The next causal identification must retain the fixed source and its initial
+terms; multiplying this particular response by an onset function alone does not
+supply a proof of that identification. Broad Volterra search found the existing
+`D4BMJointSource.principalTimeResponse_duhamel`, `_zero_of_nonpos` and `_unique`
+theorems. Their source and potential definitions must be identified with the
+present full metric construction before they can discharge any remaining gap.
+
+## Original causal potential in null coordinates
+
+The native full theta response already satisfies its actual mixed-null wave
+equation and Dirichlet condition (`D4BMNativeResponse.fullNullResponse_wave`,
+`fullNullResponse_boundary`), and has joint angular smoothness
+(`fullNullResponse_angular_smooth`). The existing original-source retarded
+reconstruction also retains the onset pulse; these are available ingredients,
+not missing constructions.
+
+The direct source attachment is proved in `ThetaCuspHawkingBMOriginalCausalPotential`. Set
+`p=tau+x`, `r=tau-x` and
+`Z(p,r,z)=fullNullResponse(p,r,z)+L((p-r)/2)*eta(p)*F(z)`,
+where `L` is the original radial lift, `eta` the fixed physical-rate onset
+and `F` the literal theta half-square. On `0<p<=r`, the actual derivatives satisfy
+`4*Z_pr-Delta(Z)/cosh((p-r)/2)^2=timeOriginalForcing`.
+The lift contributes `-L''*eta-2*L'*eta'` to `4*Z_pr`; the reduced source
+contains exactly the opposite differentiated-onset term. Thus the full
+original gradient source is restored. The same field has proved zero
+pre-onset support, the Dirichlet value, angular smoothness and modular
+invariance. This is a scalar potential
+attachment for the mixed stream, not yet the full Einstein action incidence.
+
+The proof in null coordinates uses the actual first and mixed derivatives
+inside `FullNativeWave`, now exposed by public differentiability theorems,
+plus the original lift jets. It assumes no joint spacetime smoothness.
+Converting the result
+into the full metric/action and evaluating its admitted boundary traces
+remains a separate obligation.
+
+The direct/image source identification is proved in
+`ThetaCuspHawkingBMOriginalRetardedIdentity`. Its
+`fullNullResponse_eq_retarded_reduced` identifies the native odd-source
+rectangle with the direct-minus-image triangles for
+`timeReducedCoefficient*F`. The proof splits along `a=b` and swaps the
+lower triangle, retaining the source, one-quarter normalization and both
+image signs. Actual joint continuity of the original half-square and
+full gradient source justifies every finite source integral interchange.
+
+`retarded_original_source_difference` retains the complete gradient
+absorption under the original retarded operator. Together with the
+existing retarded lift identity, `originalPotential_eq_retarded` proves
+`Z=R(timeOriginalForcing)` for both physical branches, all amplitudes and
+all nonnegative null endpoint/width pairs. No inverse-uniqueness premise
+is supplied. `originalPotential_onset_reconstruction` then proves the
+exact original decomposition `Z=lift-seed/d+R(onsetPulse)/d`. The source
+pulse is retained. Full Einstein action/boundary pairing remains open.
+
+The scratch check and exact `lake build
+GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalRetardedIdentity`
+audit pass at default proof budgets; the new leaf is wired. The audit built
+only this leaf against cached dependencies. Repository lint reports the
+unrelated unreachable `Sieve.KloostermanGlobalCollisionCoprime` module.
+
+## Smooth physical parameters after exact triangle rescaling
+
+The following interior joint-smoothness argument is formalized by
+`ThetaCuspHawkingBMRetardedTriangleGeometry` and
+`ThetaCuspHawkingBMOriginalSpacetimeRegularity`. It applies to the actual
+original-source retarded potential identified above.
+
+Fix `0<p<r`, set `x=(p-r)/2`, and use `alpha,beta in [0,1]`. Write
+`A=p*alpha`, `D=r-p*alpha>0`, `U=p*(1-alpha)`, and
+`c=sqrt((1-alpha)*(1-beta))`. Rescale the direct and image source triangles
+by
+
+```
+B_direct = A+D*beta,       Jacobian_direct = p*D,
+B_image  = A+U*beta,       Jacobian_image  = p*U.
+```
+
+Define `sinhc(t)=integral_0^1 cosh(v*t) dv`. This is smooth and positive
+on all real `t`, equals `sinh(t)/t` off zero and has value one at zero.
+Compact differentiation proves smoothness; positivity of `cosh` proves
+positivity; the fundamental theorem of calculus proves the quotient
+identity. This agrees with the corpus's positive removable `sinhc` in
+`HTGeometry.ConstraintMotiveRelativity.PrimeGammaReesEventGerm`.
+
+With `y_direct=(A-B_direct)/2`, `y_image=(A-B_image)/2`, put
+
+```
+H_direct = p*D*sinhc(U/2)*sinhc(D*(1-beta)/2)
+           /(4*cosh(x)*cosh(y_direct)),
+H_image  = p*D*sinhc(U*(1-beta)/2)*sinhc(D/2)
+           /(4*cosh(x)*cosh(y_image)).
+```
+
+Both are strictly positive, including every square edge. The two original
+circle radii are exactly
+
+```
+radius_direct = 2*arsinh(c*sqrt(H_direct)),
+radius_image  = 2*arsinh(c*sqrt(H_image)).
+```
+
+Indeed the original invariant obeys
+`invariant-1=2*sinh((p-A)/2)*sinh((r-B)/2)/(cosh(x)*cosh(y))`
+for the direct channel. The image channel replaces those numerator
+arguments by `(p-B)/2` and `(r-A)/2`. The displayed factorizations follow
+from `sinh(t)=t*sinhc(t)`. Finally
+`cosh(2*arsinh(v))=1+2*v^2` and nonnegativity identify the original
+`arcosh` radius, including the characteristic edges where `c=0`.
+
+On any sufficiently small compact neighborhood of a fixed `0<p<r`,
+`H_direct` and `H_image` have positive lower bounds uniformly in the
+unit square. Thus every ordered derivative in the physical parameters
+`p,r,X,k` of the displayed radii and original circle-source integrands
+exists and is continuous jointly with the integration parameters.
+The nonsmooth factor `c` is an integration parameter and is never
+differentiated. The original source is smooth in time, radial coordinate
+and positive-height angular coordinates: its fixed smooth onset,
+original amplitude, half-square and full gradient field remain present.
+The two Jacobians are polynomial and the three integration intervals
+(including the circle angle) are fixed and compact. Repeated dominated
+differentiation proves joint `C-infinity` regularity of
+`originalPotential q branch amplitude p r X k` on `0<p<r`.
+
+This supplies the actual spacetime jets needed for mixed metric
+reconstruction and the original action current. It
+claims no boundary regularity at `p=0`, `p=r`, the horizon limit, or the
+angular cusp, and supplies no current extinction or RH conclusion.
+
+### A globally smooth representation for compact parameter integration
+
+The same formula admits a global smooth extension in the physical and
+auxiliary variables. Set `p=exp(u)`, `r=exp(u)+exp(v)`, replace
+`alpha,beta` by `sin(a)^2,sin(b)^2`, and replace `c` by `cos(a)*cos(b)`.
+The factors `H` are then strictly positive for every real `u,v,a,b`:
+`r-p*sin(a)^2=exp(v)+exp(u)*cos(a)^2>0`. The resulting radius is globally
+smooth. Negative cosines outside the integration chart cause no problem
+for smoothness of `arsinh`; no radius identification is claimed there.
+
+On the original unit square, take `a=arcsin(sqrt(alpha))` and
+`b=arcsin(sqrt(beta))`. These maps are continuous, their squared sines
+recover the original variables, and their cosine product equals the
+original nonnegative edge factor. Thus the original integral is a
+globally smooth function evaluated at continuous compact integration
+parameters. Its original linear triangle Jacobians remain unchanged;
+this uses no trigonometric change of integration variable. The existing
+compact-parameter smoothness theorem applies directly to this extension.
+Finally `u=log(p)` and `v=log(r-p)` recover the original physical chart.
+
+The exact invariant factorization, positive factors, characteristic-edge
+radius identity, smooth logarithmic radius and its original-chart recovery
+are formalized in `ThetaCuspHawkingBMRetardedTriangleGeometry`.
+Its exact leaf audit passes. `NativeAngularGreen.unitCube_integral_smooth`
+exposes the already proved compact-parameter theorem; that leaf's audit also
+passes. Neither audit rebuilds other source modules.
+
+`ThetaCuspHawkingBMOriginalSpacetimeRegularity.originalPotential_smooth`
+proves joint `ContDiffAt` of order infinity for the actual potential on
+`0<p<r`. The complete original forcing is smooth through every positive
+circle chart. Exact affine triangle rescaling and circle normalization
+identify the smooth compact integral with the original retarded action,
+then F94 identifies it with the constructed native potential. Both source
+gradients and the fixed onset remain. Scratch verification and the exact
+leaf audit pass at default proof budgets, and the module is wired.
+Repository lint's sole error is the unrelated unreachable
+`Sieve.KloostermanGlobalCollisionCoprime` module.
+
+## The original causal source at the future horizon
+
+**Lean closure:** `ThetaCuspHawkingBMRetardedHorizonGeometry` proves the exact
+compact kernels, source cancellation and closed-square radius chart.
+`ThetaCuspHawkingBMOriginalHorizonRegularity` identifies the complete
+original action, proves its joint smooth extension and its actual horizon
+limit. Both exact leaf audits pass. The derivation below displays their
+mathematical content.
+
+The following is an analytical smooth-extension proof, not yet Lean.
+Keep the actual ingoing time `p>0` fixed and put `rho=exp(p-r)`.
+For each source point set `z=exp(a-b)` and `E=exp(p-a)`. The original
+target and source radial units are `(1-rho)/(1+rho)` and
+`u=(1-z)/(1+z)`. Direct hyperbolic expansion gives the exact invariants
+
+```
+invariant_direct-1 = 2*(E-1)*(z-rho/E)/((1+rho)*(1+z)),
+invariant_image-1  = 2*(E-rho)*(z-1/E)/((1+rho)*(1+z)).
+```
+
+In the direct triangle, `rho/E <= z <= 1`; in the image triangle,
+`1/E <= z <= 1`. The source itself remains at the original, unreflected
+radial coordinate. Since `db=-dz/z`, the original forcing's factor
+`1-u^2=4*z/(1+z)^2` cancels this Jacobian exactly. For the original
+angular fields `J=fullSquarePotential` and `K=fullGradientEnergy/2`, the
+complete resulting source density is
+
+```
+-8*u/(1+z)^2 * power(2*s, 2/(1+z)) * amplitude^2 * timeOnset(2*s,a)
+  * ((5*s^2+15*s+4)*J/4 + s*(s-1)*u^2*((s+2)^2*J-K)/4).
+```
+
+Every factor is smooth for `z>-1`, including `z=0`. Both original angular
+fields and the entire fixed onset remain; no source term is discarded.
+The action still has its factor `1/4` and direct-minus-image sign.
+
+Set `a=p*alpha`, `alpha,beta in [0,1]`, and rescale
+
+```
+z_direct = rho/E + (1-rho/E)*beta,
+z_image  = 1/E   + (1-1/E)*beta.
+```
+
+Their Jacobians are respectively `1-rho/E` and `1-1/E`. Both invariant
+increments now have the common numerator
+`2*(E-1)*(1-rho/E)*beta`, with their own denominator
+`(1+rho)*(1+z)`. Write
+`expc(t)=integral_0^1 exp(v*t) dv`, so
+`E-1=p*(1-alpha)*expc(p*(1-alpha))`. The actual circle radii are
+
+```
+2*arsinh(sqrt((1-alpha)*beta)*sqrt(H)),
+H = p*expc(p*(1-alpha))*(1-rho/E)/((1+rho)*(1+z)).
+```
+
+For `p` in any compact positive interval and `abs(rho)<1/2`, both `H`
+are smooth and strictly positive uniformly on the whole unit square:
+`E>=1`, `1-rho/E>0`, and both `1+z>0`. The edge factor depends only on
+integration variables. Equivalently use the continuous inverse-sine
+parameters above, with `cos(a)*sin(b)` as the edge factor. Compact
+differentiation supplies a smooth continuation of the complete original
+retarded potential across `rho=0`, in ingoing time and both angular
+coordinates. Original-chart equality uses F94 for `rho>0`; no value of
+`log(rho)` is used in the extension at or below zero.
+
+Since the physical radius is `R=(1+rho)/(1-rho)`, this is regularity at
+the actual future horizon `R=1`. For any smooth reconstructed stream
+`P_A`, the original blocks `h_tA=f*partial_R P_A` and
+`h_RA=partial_t P_A/f`, `f=R^2-1`, become
+`h_pA=f*partial_R P_A+partial_p P_A` and `h_RA=-partial_R P_A`
+in ingoing coordinates. The apparent horizon pole cancels with its
+original coordinate transformation. This establishes the analytical
+regularity mechanism for the causal reconstruction. It does not evaluate
+or annihilate the horizon action current, prove the full sourced tensor
+equation, or supply fixed-clock extinction.
+
+## Horizon transport of the actual normal derivative
+
+The smooth extension above and the proved original wave equation give an
+exact boundary transport law. Write the same potential as `W(p,rho,X,k)`,
+where `rho=exp(p-r)`, and let `F_compact` be the complete density displayed
+above at the target point. The original source is `rho*F_compact`.
+At fixed original `p`, `partial_r=-rho*partial_rho`; at fixed original `r`,
+`partial_p=partial_p_new+rho*partial_rho`. Consequently
+
+```
+4*Z_pr = -4*rho*(W_p_rho+W_rho+rho*W_rho_rho),
+1/cosh((p-r)/2)^2 = 4*rho/(1+rho)^2.
+```
+
+The interior equation therefore becomes
+
+```
+W_p_rho+W_rho+rho*W_rho_rho+Delta_H(W)/(1+rho)^2 = -F_compact/4.
+```
+
+Every term extends continuously to `rho=0` by the joint smooth extension,
+so the actual horizon value satisfies
+
+```
+partial_p U + U = -Delta_H(W(p,0))-F_compact(p,0)/4,
+U(p)=partial_rho W(p,0).
+```
+
+Here `Delta_H` acts on both original angular coordinates, and
+`F_compact(p,0)` retains the full half-square, full gradient energy and fixed
+onset. This is an analytical proof, not yet a Lean theorem. It determines
+transport of the normal jet required by the original action current; it
+neither sets that jet to zero nor supplies the missing physical pairing or
+fixed-clock extinction.
+
+## Complete stream current in regular ingoing coordinates
+
+The existing `BMMixedRadialActionCurrent.stream_complete_action_current`
+identifies all four original Einstein flux components with the stream
+current. Its coordinate poles cancel exactly before taking a horizon
+trace. Write `R` for physical radius, `f=R^2-1`, and use `p=t+tortoise(R)`.
+All derivatives below are ingoing derivatives. For either full angular
+stream `P`, put
+
+```
+M_P = R^2*f*P_RR + R^2*(P_pR+P_Rp) + 2*R*P_R - 2*R*P_p + A(P),
+C_P = A(P)-M_P,
+D_P = partial_X P_1-partial_Y P_0,
+```
+
+where `A` is the existing complete angular covector action, component by
+component. The two ordered mixed derivatives are retained. The exact
+static derivatives are `P_t=P_p`, `P_R_static=P_R+P_p/f` and
+`P_RR_static=P_RR+(P_pR+P_Rp)/f+P_pp/f^2-2*R*P_p/f^2`.
+Substitution in the existing master gives precisely `M_P` above.
+
+The current's coordinate transformation has determinant one. Thus
+`J^p=J^t+J^R/f`; the complete transformed current is
+
+```
+J^p = (1/R^2)*sum_A (P_A,R*C_Q,A-Q_A,R*C_P,A),
+J^R = (1/R^2)*sum_A ((f*P_A,R+P_A,p)*C_Q,A-(f*Q_A,R+Q_A,p)*C_P,A),
+J^X = -(Y^2/R^2)*(f*(P_1,R*D_Q,R-Q_1,R*D_P,R)
+        +P_1,R*D_Q,p+P_1,p*D_Q,R-Q_1,R*D_P,p-Q_1,p*D_P,R),
+J^Y = +(Y^2/R^2)*(f*(P_0,R*D_Q,R-Q_0,R*D_P,R)
+        +P_0,R*D_Q,p+P_0,p*D_Q,R-Q_0,R*D_P,p-Q_0,p*D_P,R).
+```
+
+These identities follow by direct substitution in all four displayed
+corpus current components: both inverse powers of `f` cancel in each
+angular component, and the time pole cancels against `J^R/f`.
+No field equation, angular integration or boundary cancellation is used.
+For smooth ingoing streams the expressions therefore extend smoothly
+across `R=1`. Their actual radial horizon flux is
+`sum_A(P_A,p*C_Q,A-Q_A,p*C_P,A)` at `R=1`.
+The two-jet identity is formalized in
+`ThetaCuspHawkingBMIngoingFullCurrent.original_ingoing_current`, using the
+existing complete Einstein action current. The exact module audit passed
+and the leaf is wired into `RHTower`. `ActualIngoingCurrent` attaches this
+formula to the actual reconstructed causal metric and every locally C²
+testing stream. Every angular flux and original source contact is
+retained; no extinction is asserted.
+
+## Original left QNM: exact horizon power and surviving current coefficients
+
+Put `u=1/R`, `v=1-u`, and let `w=physicalFundamentalFrequency(q,side)`.
+The original fundamental radial identities give, for either normalization,
+`Psi_w=z^(w/2)*sqrt(1-z)` with `z=1-u^2`.
+The stream reconstruction multiplies by `R`, cancelling `sqrt(1-z)=u`.
+In ingoing time `p=t_static+x`, the exact identity
+`1-u=exp(2x)*(1+u)` therefore gives
+
+```
+Q_A(p,R,X,Y) = exp(-w*p)*v^w*V_A(X,Y),
+V = literal coexact covector at physicalAngularParameter(q),
+lambda = physicalAngularParameter(q)^2-1/4-2 = w*(w+3).
+```
+
+This is the original opposite-time-frequency left stream; both original
+radial normalizations give this same expression. In particular, a regular
+coordinate formula for the current cannot be specialized by treating both
+streams as smooth at the horizon. The source field's proved smoothness
+and this exact left-mode power must be used together.
+
+Differentiation at positive `v` gives
+
+```
+Q_p = -w*Q,
+Q_R = w*Q/(R^2*v),
+f*Q_R+Q_p = (w/R)*Q,
+A(Q)=lambda*Q,  M_Q=0.
+```
+
+The last master identity follows either from the original left-mode
+Einstein equation or directly from these derivatives and the displayed
+angular eigenvalue. Let `P` be the full ingoing source stream; retain its
+original contact `C_P=A(P)-M_P` and curl `D_P=dX(P_1)-dY(P_0)`.
+Writing `D_V=dX(V_1)-dY(V_0)` and `K=exp(-w*p)`, substitution in every
+component of the complete current gives the exact decomposition
+
+```
+J^R = K*v^w/R^2 * sum_A V_A*(lambda*(f*P_A,R+P_A,p)-(w/R)*C_P,A),
+J^p = K*v^(w-1) * sum_A V_A*(v*lambda*P_A,R/R^2-w*C_P,A/R^4),
+J^X = -K*v^(w-1)*Y^2/R^2 *
+  ((w*v/R)*(P_1,R*D_V-V_1*D_P,R)+(w/R^2)*(P_1,p*D_V-V_1*D_P,p)),
+J^Y = +K*v^(w-1)*Y^2/R^2 *
+  ((w*v/R)*(P_0,R*D_V-V_0*D_P,R)+(w/R^2)*(P_0,p*D_V-V_0*D_P,p)).
+```
+
+The causal stream used here is explicit. With `H=horizonPotential`, set
+`Z_tilde(p,R,X,Y)=H(p,(R-1)/(R+1),X,log(Y))` and
+`P=R*(partial_Y Z_tilde,-partial_X Z_tilde)`, retaining the original Xi,
+branch and amplitude parameters of `H`. On the exterior horizon strip,
+the proved value identity identifies `Z_tilde` with the original retarded
+potential before taking derivatives.
+
+For this reconstructed causal stream, all coefficients multiplying the
+explicit powers are smooth at `v=0`, at fixed positive `p` and positive
+angular height. This follows from the proved joint horizon
+smoothness of the original causal potential, angular differentiation and
+`R=1/(1-v)`. The assertion retains every master-source contact and both
+angular fluxes; it does not require those coefficients to vanish.
+
+There is a precise analytical endpoint consequence. Write these formulas
+as `J^R=K*v^w*B_R(v)` and `J^j=K*v^(w-1)*B_j(v)` for `j=p,X,Y`.
+Taylor's theorem gives
+
+```
+B_R(v)=B_R(0)+v*B_R'(0)+O(v^2),
+B_j(v)=B_j(0)+v*B_j'(0)+v^2*B_j''(0)/2+O(v^3).
+```
+
+The original frequency theorem gives `Re(w)>-2`. For positive real `v`,
+`abs(v^w)=v^Re(w)`, so subtracting exactly these coefficient terms leaves
+`O(v^(Re(w)+2))`, which tends to zero. These are boundary terms derived
+from the original current, not a replacement weighted observable.
+
+The decomposition and Taylor consequence are analytical results pending
+full Lean attachment to the reconstructed causal stream. They do not yet
+identify these counterterms with `continuedHorizonSourceCounterterm`:
+that corpus expression is a source-determined radial primitive after the
+temporal transform. Exchanging that transform with horizon restoration,
+retaining onset and cusp boundaries, remains an obligation. The proved
+horizon smoothness covers `p>0`; this argument supplies no uniform estimate
+through the onset corner `p=0`, no complete pairing and no fixed-clock
+extinction.
+
+The original left-factor identity, angular eigenvalue and actual time and
+radial-chart derivatives are formalized in
+`ThetaCuspHawkingBMLeftHorizonFactor`. Its theorem
+`ingoingField_transport` proves `(partial_x+partial_p)Q=(w/R)*Q` for the
+original field, where `x` varies the exact tortoise-radius chart at fixed
+`p`. The exact module audit passed; the leaf is wired into `RHTower`.
+The full current-coefficient substitution and its finite-part matching
+have the analytical status stated above.

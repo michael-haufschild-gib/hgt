@@ -70,6 +70,37 @@ class FusionTests(unittest.TestCase):
 
 
 class EngineTests(unittest.TestCase):
+    def test_progress_reuses_records_and_external_commits_invalidate_them(self):
+        engine = Engine(self.db)
+        hit = {'decl_id': self.did, 'view': 'proof'}
+        with patch.object(self.db, 'declaration', wraps=self.db.declaration) as declaration:
+            first = engine._method_candidate(hit)
+            second = engine._method_candidate(hit)
+            self.assertEqual(first, second)
+            self.assertEqual(declaration.call_count, 1)
+            # A commit without bumping the application generation must count.
+            other = sqlite3.connect(self.db.directory/'corpus.sqlite3')
+            try:
+                with other:
+                    other.execute('UPDATE declarations SET statement=? WHERE id=?', ('changed hypothesis', self.did))
+            finally:
+                other.close()
+            self.assertEqual(engine._candidate(hit)['statement'], 'changed hypothesis')
+            self.assertEqual(declaration.call_count, 2)
+            with self.db.con:
+                self.db.con.execute('UPDATE declarations SET statement=? WHERE id=?', ('local edit', self.did))
+            self.assertEqual(engine._candidate(hit)['statement'], 'local edit')
+
+    def test_method_invalidation_is_not_hidden_by_record_cache(self):
+        self.db.save_method(self.did, dict(description='reflexivity', assumptions=[], steps=[], obligations=[], evidence=['rfl']),
+                            model_version='m', prompt_version='p')
+        engine = Engine(self.db)
+        hit = {'decl_id': self.did, 'view': 'method'}
+        self.assertIsNotNone(engine._method_candidate(hit))
+        with self.db.con:
+            self.db.con.execute("UPDATE methods SET status='stale' WHERE decl_id=?", (self.did,))
+        self.assertIsNone(engine._method_candidate(hit))
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)

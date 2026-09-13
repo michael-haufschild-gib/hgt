@@ -121,9 +121,16 @@ runs bounded source, embedding and method-description batches, with no Codex
 subagents or remote inference. Work order is **RHTower, then HTGeometry, then
 the rest**, across sources, vectors and method descriptions. It sleeps between
 cycles, preempted inference remains pending, and interactive searches take
-priority in the shared model worker. Restart it after reboot; no login service
-or automatic system startup is installed. `status` shows phase, latest completed
-coverage and errors. `stop` cancels/reaps its owned maintenance child.
+priority in the shared model worker. `./launch.sh` installs a per-user launchd
+service that restarts the indexer after exit and at login. Use `./launch.sh --stop`
+to stop the managed stack; `research-indexer stop` alone may be restarted by
+launchd. `status` shows phase, latest completed coverage and errors.
+
+Maintenance and search cleanup targets the owned process group, including
+grandchildren remaining after the group leader exits. Long agent scratch jobs
+use `python3 scripts/run_guarded.py --timeout 600 -- python3 /tmp/job.py`.
+The runner also cleans up when its caller is killed; jobs must not detach into
+another session. Search and managed-service commands keep their existing usage.
 
 Search retrieval uses read-only SQLite connections. Optional result-cache writes
 skip a busy writer. While the background indexer runs, searches leave source
@@ -138,6 +145,12 @@ reusable but cannot produce stale search hits. Source/dependency changes
 invalidate descriptions; concurrent evidence changes reject pending generated
 descriptions. Model/prompt versions control enrichment reuse. The worker resumes
 pending batches rather than rebuilding the corpus on every cycle.
+
+Inventory computes path prefixes once per directory. Progressive retrieval
+caches at most 512 declaration/method records and clears them on SQLite changes
+from either this connection or another process. Full statements remain intact;
+cached proof text is limited to the displayed excerpt. These optimizations do
+not change model fingerprints or require re-embedding existing content.
 
 Compiler extraction remains an explicit foreground operation. The background
 indexer never starts Lean, builds modules or downloads models. Pending and stale

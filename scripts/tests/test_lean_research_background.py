@@ -26,6 +26,7 @@ class BackgroundTests(unittest.TestCase):
             child = mock.Mock(returncode=0)
             child.poll.return_value = 0
             with mock.patch('lean_research_background.subprocess.Popen', return_value=child) as spawn, \
+                    mock.patch('lean_research_background.terminate_owned'), \
                     mock.patch('lean_research_background.signal.signal'), \
                     mock.patch('lean_research_runtime.RuntimeClient') as client:
                 client.return_value.__enter__.return_value.status.return_value = {'available': True}
@@ -52,11 +53,10 @@ class BackgroundTests(unittest.TestCase):
     def test_denied_force_group_shutdown_reaps_direct_child(self):
         child = mock.Mock(pid=123456789)
         child.poll.return_value = None
-        child.wait.side_effect = [subprocess.TimeoutExpired('owned', 2), 0]
         with mock.patch('lean_research_background.os.killpg', side_effect=[None, PermissionError()]):
             terminate_owned(child)
         child.kill.assert_called_once_with()
-        self.assertEqual(child.wait.call_count, 2)
+        child.wait.assert_called_once_with()
 
     def test_running_worker_detects_added_edited_and_deleted_lean(self):
         import sqlite3

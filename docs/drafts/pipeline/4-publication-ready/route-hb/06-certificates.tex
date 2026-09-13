@@ -1,0 +1,248 @@
+\section{Source concordance and reproducibility}\label{app:cert}
+
+The supplementary package fixes the source rather than relying on a moving working tree. The repository HEAD recorded at the start of the audit is
+\begin{center}\path{6ba671fa1ddf6c1f519445b4a0172e2abbfcac1c}.\end{center}
+The working tree contained additional changes, so this commit alone does not identify the results. The archived source hashes are authoritative for this manuscript's source references. The toolchain file specifies Lean 4.32.2; the included Lake manifest pins external packages. The local import closure is archived, while external dependency source is obtained from those pins.
+
+The file \path{audit/declarations.json} supplies full declaration types, namespaces, source lines, and file hashes. It contains 67 selected declarations in 28 groups. The unexecuted \path{audit/Verify.lean} lists the corresponding checks and axiom queries. A future kernel run must use the supplied source snapshot and pinned dependencies and must inspect both the complete types and transitive axioms. No new Lean checking was completed during this preparation, and the interrupted log must not be used as evidence that the final declarations passed.
+
+The global source lint run also did not pass: it reported two unreachable modules as well as size warnings. That structural failure is not a discovered proof of a false mathematical statement, but it precludes reporting a clean whole-project gate. Source searches and formula-transcription checks are useful cross-checks; neither substitutes for kernel validation.
+
+Below, a namespace is followed by short declaration names. The name of a module is relative to \path{formal/GaloisForLFunctions/RHTower/}. Conditions in the main text remain part of the statement even when the short name omits them. Groups D2--D3 include explicitly conditional formulas. The ``source group'' labels are provenance references, not newly executed certificates.
+
+\subsection*{Group D5}\phantomsection\label{cert:D5}
+\noindent Module: \path{ThetaCuspHawkingBMAngularScalarEquation.lean}.\\
+Namespace: \path{RHTower.D4BMAngularSeries}.
+\begin{itemize}
+\item \path{scalarCusp_hyperbolicLaplacian}.
+\end{itemize}
+
+\subsection*{Group A10}\phantomsection\label{cert:A10}
+\noindent Module: \path{XiAffineCollisionControl.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{exists_xi_zero_half_ne_zero}.
+\end{itemize}
+
+\subsection*{Group A1}\phantomsection\label{cert:A1}
+\noindent Module: \path{ThetaCuspHawkingTopologicalBlackHoleQNMIncidence.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{thetaCuspHawkingXiDivisor_topologicalBlackHoleQNM_incidence}.
+\item \path{thetaCuspHawkingTopologicalBlackHoleSeparatedOpticalEnergy_shadow}.
+\item \path{thetaCuspHawkingTopologicalBlackHoleBranchImaginarySplitting_eq}.
+\end{itemize}
+
+\subsection*{Group A2}\phantomsection\label{cert:A2}
+\noindent Module: \path{ThetaCuspHawkingBMCanonicalSpinTwoAmputation.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{d4BMCanonicalSpinTwoAmputatedSource_eq}.
+\item \path{d4BMCompletedSpinTwoVertex_eq_XiC_sq_mul_canonicalSource}.
+\item \path{d4BMCanonicalSpinTwoAmputation_existsUnique}.
+\item \path{d4BMCanonicalSpinTwoAmputatedSource_eq_zero_iff}.
+\end{itemize}
+
+\subsection*{Group A3}\phantomsection\label{cert:A3}
+\noindent Module: \path{ThetaCuspHawkingBMPhysicalAngularSourceValue.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{physicalSelfSourceCoefficient_fourLambda}.
+\end{itemize}
+
+\subsection*{Group A4}\phantomsection\label{cert:A4}
+\noindent Module: \path{ThetaCuspHawkingBMPhysicalAngularSourceXi.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{physicalSelfSourceCoefficient_zero_iff_xi}.
+\end{itemize}
+
+\subsection*{Group A5}\phantomsection\label{cert:A5}
+\noindent Module: \path{ThetaCuspHawkingBMPhysicalFundamentalMoment.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{physicalSelfResidueCoefficient_fundamental_value}.
+\item \path{continuedPhysicalSelfResponse_nonremovable_iff_elementary}.
+\end{itemize}
+
+\subsection*{Group A6}\phantomsection\label{cert:A6}
+\noindent Module: \path{ThetaCuspHawkingBMClearedOnsetPulseTransform.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{clearedOnset_eq_onsetPulseTransform}.
+\item \path{clearedOnset_source_rate}.
+\item \path{clearedOnsetDuration_one}.
+\item \path{clearedOnsetDuration_zero}.
+\item \path{differentiable_clearedOnsetDuration}.
+\end{itemize}
+
+\subsection*{Group A7}\phantomsection\label{cert:A7}
+\noindent Module: \path{ThetaCuspHawkingBMUniversalOnsetDuration.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{exists_universal_onset_duration}.
+\end{itemize}
+
+\subsection*{Group A8}\phantomsection\label{cert:A8}
+\noindent Module: \path{ThetaCuspHawkingBMPhysicalRadialNorm.lean}.\\
+Namespace: \path{RHTower.D4BMFundamentalNorm}.
+\begin{itemize}
+\item \path{normFinitePart_eq_gamma}.
+\item \path{normFinitePart_ne_zero}.
+\end{itemize}
+
+\subsection*{Group A9}\phantomsection\label{cert:A9}
+\noindent Module: \path{ThetaCuspHawkingBMTemporalCurrentRadialLaurent.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{continuedPhysicalTimeAction_horizon_radial_laurent}.
+\end{itemize}
+
+\subsection*{Group B1}\phantomsection\label{cert:B1}
+\noindent Module: \path{ThetaCuspHawkingBMScalarStreamLaurentMaster.lean}.\\
+Namespace: \path{RHTower.D4BMScalarStream}.
+\begin{itemize}
+\item \path{ssMasterSource_laurent}.
+\item \path{laurentMasterA_resolvents}.
+\item \path{laurentMasterB_resolvent}.
+\item \path{laurentMasterField_operator}.
+\item \path{ssLaurentMaster_equation}.
+\item \path{physical_ssLaurentMaster_sourcedData}.
+\end{itemize}
+
+\subsection*{Group B2}\phantomsection\label{cert:B2}
+\noindent Module: \path{ThetaCuspHawkingBMLaurentPhysicalRadiation.lean}.\\
+Namespace: \path{RHTower.D4BMScalarStream}.
+\begin{itemize}
+\item \path{vvLaurentMasterA_physical_plus}.
+\item \path{vvLaurentMasterA_physical_minus}.
+\item \path{laurentMasterA_physical_plus}.
+\item \path{laurentMasterA_physical_minus}.
+\end{itemize}
+
+\subsection*{Group B3}\phantomsection\label{cert:B3}
+\noindent Module: \path{ThetaCuspHawkingBMThreeFieldMetric.lean}.\\
+Namespace: \path{RHTower.D4BMThreeFieldMetric}.
+\begin{itemize}
+\item \path{literalProfile_equations}.
+\item \path{literalMetric_einstein}.
+\end{itemize}
+
+\subsection*{Group B4}\phantomsection\label{cert:B4}
+\noindent Module: \path{ThetaCuspHawkingBMOriginalModularGreen.lean}.\\
+Namespace: \path{RHTower.D4BMOriginalModularGreen}.
+\begin{itemize}
+\item \path{original_modular_area}.
+\item \path{original_modular_finitePart}.
+\item \path{diagonal_modular_finitePart}.
+\item \path{reflected_modular_finitePart}.
+\end{itemize}
+
+\subsection*{Group B5}\phantomsection\label{cert:B5}
+\noindent Module: \path{ThetaCuspHawkingBMOriginalAngularCurrent.lean}.\\
+Namespace: \path{RHTower.D4BMOriginalAngularCurrent}.
+\begin{itemize}
+\item \path{original_physical_current}.
+\item \path{original_physical_metric_current}.
+\end{itemize}
+
+\subsection*{Group C1}\phantomsection\label{cert:C1}
+\noindent Module: \path{ThetaCuspHawkingBMSourceProbeRangeClassification.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{hbXiPeierlsSourceProbeRealizingWeight_profile}.
+\item \path{exists_hbXiPeierlsSourceProbeProfile_iff}.
+\end{itemize}
+
+\subsection*{Group C2}\phantomsection\label{cert:C2}
+\noindent Module: \path{ThetaCuspHawkingBMPhaseSensitiveChiralWardAmplitude.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{hbXiPhaseSensitiveChiralWardMultiplier_ne_zero}.
+\item \path{d4BMMixedHorizonOpticalSourceProjection_eq_chiralMultiplier_mul_deningerCharge}.
+\item \path{hbXiCalibratedPhaseSensitiveChiralWardAmplitude_re_eq}.
+\item \path{hbXiCalibratedPhaseSensitiveChiralWardAmplitude_im_eq_zero}.
+\item \path{riemannHypothesis_iff_hbXiPhaseSensitiveChiralWardAmplitudeCancellation}.
+\end{itemize}
+
+\subsection*{Group C3}\phantomsection\label{cert:C3}
+\noindent Module: \path{ThetaCuspHawkingBMEvenSectorSkewConstantTilt.lean}.\\
+Namespace: \path{RHTower.D4BMScalarStream}.
+\begin{itemize}
+\item \path{skewConstantKernel_eq}.
+\item \path{skewConstantKernel_polynomial_identity}.
+\item \path{skewConstantKernel_re_tilt}.
+\item \path{skewConstantTiltCofactor_pos}.
+\item \path{skewConstantKernel_re_eq_zero_iff}.
+\end{itemize}
+
+\subsection*{Group C4}\phantomsection\label{cert:C4}
+\noindent Module: \path{ThetaCuspHawkingBMEvenSectorSkewConstantSquare.lean}.\\
+Namespace: \path{RHTower.D4BMScalarStream}.
+\begin{itemize}
+\item \path{skewConstantMode_leading_square}.
+\item \path{skewConstantMode_leading_coefficients}.
+\end{itemize}
+
+\subsection*{Group C5}\phantomsection\label{cert:C5}
+\noindent Module: \path{XiFiveHalfCollisionOrbit.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{exists_xi_zero_five_half_three_half_ne_zero_of_not_mem_band}.
+\item \path{xiFiveHalf_trapped_orbit_dichotomy}.
+\end{itemize}
+
+\subsection*{Group C6}\phantomsection\label{cert:C6}
+\noindent Module: \path{ThetaCuspHawkingBMAngularSourceCollisionControl.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{physicalSelfSourceCoefficient_ne_zero_of_four_fifths_le}.
+\end{itemize}
+
+\subsection*{Group C7}\phantomsection\label{cert:C7}
+\noindent Module: \path{ThetaCuspHawkingTiltedBackreactionGaugeEndpoint.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{riemannHypothesis_iff_thetaCuspHawkingTiltedResonanceCentralizerRigid}.
+\end{itemize}
+
+\subsection*{Group C8}\phantomsection\label{cert:C8}
+\noindent Module: \path{ThetaCuspHawkingKMSCayleyScatteringMixingEndpoint.lean}.\\
+Namespace: \path{RHTower}.
+\begin{itemize}
+\item \path{riemannHypothesis_iff_thetaCuspHawkingKMSCayleyScatteringMixing}.
+\end{itemize}
+
+\subsection*{Group D2}\phantomsection\label{cert:D2}
+\noindent Module: \path{ThetaCuspHawkingBMLiteralMixedActionCoefficient.lean}.\\
+Namespace: \path{RHTower.D4BMMixedActionSource}.
+\begin{itemize}
+\item \path{literal_mixedPairedCoefficient_eq}.
+\item \path{literal_affine_mixedPairedCoefficient}.
+\end{itemize}
+
+\subsection*{Group D3}\phantomsection\label{cert:D3}
+\noindent Module: \path{ThetaCuspHawkingBMMixedActionCubicCoefficient.lean}.\\
+Namespace: \path{RHTower.D4BMMixedActionSource}.
+\begin{itemize}
+\item \path{mixedPairedCoefficient_of_quadratic_zero}.
+\end{itemize}
+
+\subsection*{Group D4}\phantomsection\label{cert:D4}
+\noindent Module: \path{ThetaCuspHawkingBMSourceContactRigidity.lean}.\\
+Namespace: \path{RHTower.D4BMSourceContactRigidity}.
+\begin{itemize}
+\item \path{sourceContact_eq}.
+\item \path{sourceContact_differential_identity}.
+\item \path{sourceContact_rigidity_factor_ne_zero}.
+\end{itemize}
+
+\subsection*{Group D1}\phantomsection\label{cert:D1}
+\noindent Module: \path{ThetaCuspHawkingBMPhysicalFundamentalFrequencies.lean}.\\
+Namespace: \path{RHTower.D4BMJointSource}.
+\begin{itemize}
+\item \path{physicalFundamentalFrequency_eq}.
+\item \path{physicalFundamentalFrequency_sub_sourceRate_ne_zero}.
+\end{itemize}
+
+\input{07-metric-coefficients}

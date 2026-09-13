@@ -18,8 +18,10 @@ import sys
 
 try:
     from .research_runtime.config import DEFAULT_CACHE_DIR, MODELS, PYTHON, RUNTIME_HOME, fingerprints
+    from .research_runtime.processes import terminate_owned, cancellation_signals
 except ImportError:
     from research_runtime.config import DEFAULT_CACHE_DIR, MODELS, PYTHON, RUNTIME_HOME, fingerprints
+    from research_runtime.processes import terminate_owned, cancellation_signals
 
 
 def _sha256(path: Path) -> str:
@@ -30,22 +32,15 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+@cancellation_signals()
 def _owned_run(command: list[str]) -> None:
     """Wait in foreground; on interruption terminate/reap only this child group."""
-    import signal
     child = subprocess.Popen(command, start_new_session=True)
     try:
         if child.wait():
             raise RuntimeError(f'setup command failed: {command[0]}')
-    except BaseException:
-        if child.poll() is None:
-            os.killpg(child.pid, signal.SIGTERM)
-            try:
-                child.wait(timeout=2)
-            except subprocess.TimeoutExpired:
-                os.killpg(child.pid, signal.SIGKILL)
-                child.wait()
-        raise
+    finally:
+        terminate_owned(child)
 
 
 def install_environment() -> None:

@@ -5,8 +5,10 @@ import Mathlib.Analysis.Calculus.Deriv.Slope
 
 /-! The original scalar cap arm has a finite radial horizon derivative governed by
 an admitted source memory. Its exact physical-time transport retains the finite source
-work, with the original onset and Hawking rates. The complete two-arm radial limit,
-angular passage and nonlinear left-QNM cancellation are not asserted here. -/
+work, with the original onset and Hawking rates. Both moving image coordinates are differentiated before taking the full two-arm
+radial limit. Late source work is nonzero at every positive physical-clock step;
+its vanishing after the cap coefficient is included is classified exactly.
+Angular passage and nonlinear left-QNM cancellation are not asserted here. -/
 
 set_option autoImplicit false
 open Set MeasureTheory Filter Topology
@@ -689,6 +691,198 @@ theorem radialArm_derivative_physical_translation (q : XiZeroCopy) (branch : Boo
       _ = _ := by rw [sourceMemory_physical_translation]; ring
   rw [he] at ht
   exact ht
+
+
+private theorem cap_normal_scaled_limit (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (v X k : ℝ) :
+    Tendsto (fun x => deriv (fun y => capBoundaryField q branch amplitude (v-y) y X k) x/(capScale x:ℂ))
+      atBot (𝓝 (liftTraceCoefficient q branch amplitude*
+        D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]*sourceMemory q branch v)) := by
+  have ht := ((boundaryArm_scaled_normal_ingoing q branch v X k).sub
+    (boundaryArm_image_div_scale_ingoing q branch v X k)).const_mul (-liftTraceCoefficient q branch amplitude)
+  have he (x : ℝ) :
+      deriv (fun y => capBoundaryField q branch amplitude (v-y) y X k) x/(capScale x:ℂ)=
+        -liftTraceCoefficient q branch amplitude*
+          (deriv (fun y => boundaryArm q branch v y X k) x/(capScale x:ℂ)-
+            deriv (fun y => boundaryArm q branch (v-2*y) (-y) X k) x/(capScale x:ℂ)) := by
+    rw [(capBoundaryField_ingoing_normal_hasDerivAt q branch amplitude v x X k).deriv,
+      (boundaryArm_normal_hasDerivAt q branch v x X k).deriv,
+      (boundaryArm_image_hasDerivAt q branch v x X k).deriv]
+    ring
+  simpa only [he,sub_zero,neg_mul,mul_neg,neg_neg,mul_assoc] using ht
+
+/-- The unchanged full cap, in physical radius and original ingoing time. -/
+def radialCap (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) (v X k r : ℝ) : ℂ :=
+  capBoundaryField q branch amplitude (v-D4BMIngoingCoordinates.tortoise r)
+    (D4BMIngoingCoordinates.tortoise r) X k
+
+private theorem radialCap_derivative (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (v X k x : ℝ) (hx : x < 0) :
+    deriv (radialCap q branch amplitude v X k) (tortoiseRadius x)=
+      (deriv (fun y => capBoundaryField q branch amplitude (v-y) y X k) x/(capScale x:ℂ))/
+        ((tortoiseRadius x:ℂ)^2*(2-(capScale x:ℂ))) := by
+  have hr := tortoiseRadius_exterior x hx
+  have hd := capBoundaryField_ingoing_normal_hasDerivAt q branch amplitude v
+    (D4BMIngoingCoordinates.tortoise (tortoiseRadius x)) X k
+  have ht := hd.scomp (tortoiseRadius x) (D4BMIngoingCoordinates.tortoise_hasDerivAt _ hr)
+  rw [tortoise_original_inverse x hx] at hd ht
+  have he : (tortoiseRadius x:ℂ)^2-1=
+      (tortoiseRadius x:ℂ)^2*(capScale x:ℂ)*(2-(capScale x:ℂ)) := by
+    exact_mod_cast (radius_scale x hx).2
+  change deriv (fun r => capBoundaryField q branch amplitude (v-D4BMIngoingCoordinates.tortoise r)
+    (D4BMIngoingCoordinates.tortoise r) X k) (tortoiseRadius x)=_
+  simp only [Function.comp_def] at ht
+  rw [ht.deriv,hd.deriv]
+  simp only [Complex.real_smul,Complex.ofReal_inv,Complex.ofReal_sub,Complex.ofReal_pow,Complex.ofReal_one]
+  rw [he]
+  simp only [div_eq_mul_inv,mul_inv_rev,Complex.ofReal_ofNat]
+  ring
+
+/-- Both actual cap arms yield the original source-memory radial trace. -/
+theorem radialCap_derivative_ingoing (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) (v X k : ℝ) :
+    Tendsto (fun x => deriv (radialCap q branch amplitude v X k) (tortoiseRadius x)) atBot
+      (𝓝 (liftTraceCoefficient q branch amplitude*
+        (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*sourceMemory q branch v)) := by
+  have hr : Tendsto (fun x => (tortoiseRadius x:ℂ)) atBot (𝓝 (1:ℂ)) := by
+    simpa only [Complex.ofReal_one,Function.comp_def] using!
+      (Complex.continuous_ofReal.tendsto (1:ℝ)).comp radius_limit
+  have hc : Tendsto (fun x => (capScale x:ℂ)) atBot (𝓝 (0:ℂ)) := by
+    simpa only [Complex.ofReal_zero,Function.comp_def] using!
+      (Complex.continuous_ofReal.tendsto (0:ℝ)).comp scale_limit
+  have ht := (cap_normal_scaled_limit q branch amplitude v X k).div
+    ((hr.pow 2).mul ((tendsto_const_nhds (x := (2:ℂ))).sub hc)) (by norm_num : (1:ℂ)^2*(2-0) ≠ 0)
+  have hl : Tendsto (fun x =>
+      (deriv (fun y => capBoundaryField q branch amplitude (v-y) y X k) x/(capScale x:ℂ))/
+        ((tortoiseRadius x:ℂ)^2*(2-(capScale x:ℂ)))) atBot
+      (𝓝 (liftTraceCoefficient q branch amplitude*
+        (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*sourceMemory q branch v)) := by
+    convert! ht using 1
+    ring
+  apply hl.congr'
+  filter_upwards [eventually_lt_atBot (0:ℝ)] with x hx
+  exact (radialCap_derivative q branch amplitude v X k x hx).symm
+
+/-- The full two-arm cap retains the finite source work at the same physical clock. -/
+theorem radialCap_derivative_physical_translation (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (v T X k : ℝ) :
+    Tendsto (fun x => (Real.exp T:ℂ)*deriv (radialCap q branch amplitude (v+T) X k) (tortoiseRadius x)-
+      deriv (radialCap q branch amplitude v X k) (tortoiseRadius x)) atBot
+      (𝓝 (-liftTraceCoefficient q branch amplitude*
+        (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*
+        (∫ h in (0:ℝ)..T, timeOnset (2*physicalRate q branch) (v+h)*(Real.exp h:ℂ)))) := by
+  have ht := ((radialCap_derivative_ingoing q branch amplitude (v+T) X k).const_mul (Real.exp T:ℂ)).sub
+    (radialCap_derivative_ingoing q branch amplitude v X k)
+  have he : (Real.exp T:ℂ)*
+      (liftTraceCoefficient q branch amplitude*
+        (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*sourceMemory q branch (v+T))-
+      (liftTraceCoefficient q branch amplitude*
+        (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*sourceMemory q branch v)=
+      -liftTraceCoefficient q branch amplitude*
+        (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*
+        (∫ h in (0:ℝ)..T, timeOnset (2*physicalRate q branch) (v+h)*(Real.exp h:ℂ)) := by
+    calc
+      _ = liftTraceCoefficient q branch amplitude*
+          (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*
+          ((Real.exp T:ℂ)*sourceMemory q branch (v+T)-sourceMemory q branch v) := by ring
+      _ = _ := by rw [sourceMemory_physical_translation]; ring
+  rw [he] at ht
+  exact ht
+
+private theorem memory_rate_re_neg (q : XiZeroCopy) (branch : Bool) :
+    (2*physicalRate q branch+1).re < 0 := by
+  have hs := currentRate_re_lt q branch
+  change (2*physicalRate q branch).re < -2 at hs
+  simp only [Complex.add_re,Complex.one_re]
+  linarith
+
+/-- Late source memory is an evaluation at the original source rate, with no new clock. -/
+theorem sourceMemory_late (q : XiZeroCopy) (branch : Bool) (v : Ici (1:ℝ)) :
+    sourceMemory q branch v = -Complex.exp ((2*physicalRate q branch)*(v.val:ℂ))/(2*physicalRate q branch+1) := by
+  have he (h : ℝ) (hh : h ∈ Ioi (0:ℝ)) :
+      timeOnset (2*physicalRate q branch) (v.val+h)*(Real.exp h:ℂ)=
+        Complex.exp ((2*physicalRate q branch)*(v.val:ℂ))*
+          Complex.exp ((2*physicalRate q branch+1)*(h:ℂ)) := by
+    rw [timeOnset,Real.smoothTransition.one_of_one_le (v.property.trans (le_add_of_nonneg_right hh.le))]
+    simp only [Complex.ofReal_one,one_mul,Complex.ofReal_exp,← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  rw [sourceMemory,setIntegral_congr_fun measurableSet_Ioi he,integral_const_mul,
+    integral_exp_mul_complex_Ioi (memory_rate_re_neg q branch) 0]
+  simp only [Complex.ofReal_zero,mul_zero,Complex.exp_zero]
+  ring
+
+/-- A positive physical-clock step has a nontrivial multiplier on the late boundary memory. -/
+theorem late_memory_multiplier_ne_one (q : XiZeroCopy) (branch : Bool) (T : Ioi (0:ℝ)) :
+    Complex.exp ((2*physicalRate q branch+1)*(T.val:ℂ)) ≠ 1 := by
+  intro he
+  have hn := congrArg norm he
+  rw [Complex.norm_exp,norm_one] at hn
+  have hr : ((2*physicalRate q branch+1)*(T.val:ℂ)).re < 0 := by
+    simpa only [Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
+      using mul_neg_of_neg_of_pos (memory_rate_re_neg q branch) T.property
+  have hh := Real.exp_lt_one_iff.mpr hr
+  linarith
+
+/-- The admitted memory itself cannot be fixed by a positive step of its physical transport. -/
+theorem sourceMemory_physical_step_ne (q : XiZeroCopy) (branch : Bool)
+    (v : Ici (1:ℝ)) (T : Ioi (0:ℝ)) :
+    (Real.exp T.val:ℂ)*sourceMemory q branch (v.val+T.val) ≠ sourceMemory q branch v := by
+  have hw : 2*physicalRate q branch+1 ≠ 0 := by
+    intro he
+    have hh := memory_rate_re_neg q branch
+    rw [he,Complex.zero_re] at hh
+    exact lt_irrefl 0 hh
+  let vT : Ici (1:ℝ) := ⟨v.val+T.val,by
+    change (1:ℝ) ≤ v.val+T.val
+    linarith [show (1:ℝ) ≤ v.val from v.property,show (0:ℝ) < T.val from T.property]⟩
+  have hm : sourceMemory q branch v ≠ 0 := by
+    rw [sourceMemory_late]
+    exact div_ne_zero (neg_ne_zero.mpr (Complex.exp_ne_zero _)) hw
+  have ht : (Real.exp T.val:ℂ)*sourceMemory q branch (v.val+T.val)=
+      Complex.exp ((2*physicalRate q branch+1)*(T.val:ℂ))*sourceMemory q branch v := by
+    rw [show sourceMemory q branch (v.val+T.val)=sourceMemory q branch vT from rfl,
+      sourceMemory_late,sourceMemory_late]
+    dsimp only [vT]
+    rw [Complex.ofReal_exp]
+    have he : Complex.exp (T.val:ℂ)*Complex.exp ((2*physicalRate q branch)*((v.val+T.val:ℝ):ℂ))=
+        Complex.exp ((2*physicalRate q branch+1)*(T.val:ℂ))*
+          Complex.exp ((2*physicalRate q branch)*(v.val:ℂ)) := by
+      rw [← Complex.exp_add,← Complex.exp_add]
+      congr 1
+      push_cast
+      ring
+    calc
+      _ = -(Complex.exp (T.val:ℂ)*Complex.exp ((2*physicalRate q branch)*((v.val+T.val:ℝ):ℂ)))/
+          (2*physicalRate q branch+1) := by ring
+      _ = _ := by rw [he]; ring
+  intro he
+  rw [ht] at he
+  have hz : (Complex.exp ((2*physicalRate q branch+1)*(T.val:ℂ))-1)*sourceMemory q branch v=0 := by
+    linear_combination he
+  exact mul_ne_zero (sub_ne_zero.mpr (late_memory_multiplier_ne_one q branch T)) hm hz
+
+/-- The finite physical-clock source work is nonzero throughout the unchanged late region. -/
+theorem late_physical_source_work_ne_zero (q : XiZeroCopy) (branch : Bool)
+    (v : Ici (1:ℝ)) (T : Ioi (0:ℝ)) :
+    (∫ h in (0:ℝ)..T.val, timeOnset (2*physicalRate q branch) (v.val+h)*(Real.exp h:ℂ)) ≠ 0 := by
+  intro hz
+  have ht := sourceMemory_physical_translation q branch v.val T.val
+  rw [hz,neg_zero] at ht
+  exact sourceMemory_physical_step_ne q branch v T (sub_eq_zero.mp ht)
+
+/-- Exact pointwise classification of the full cap's finite-clock radial source work.
+This concerns the original cap datum before the independent left-QNM contraction. -/
+theorem radialCap_clock_work_zero_iff (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (v : Ici (1:ℝ)) (T : Ioi (0:ℝ)) (X k : ℝ) :
+    (-liftTraceCoefficient q branch amplitude*
+      (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*
+      (∫ h in (0:ℝ)..T.val, timeOnset (2*physicalRate q branch) (v.val+h)*(Real.exp h:ℂ))=0) ↔
+    liftTraceCoefficient q branch amplitude*D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]=0 := by
+  rw [mul_eq_zero]
+  simp only [late_physical_source_work_ne_zero q branch v T,or_false]
+  rw [← mul_div_assoc,div_eq_zero_iff]
+  norm_num only [OfNat.ofNat_ne_zero,or_false,neg_mul,neg_eq_zero]
 
 end
 end RHTower.D4BMCapRadialMemory

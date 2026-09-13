@@ -5,7 +5,6 @@ import json
 import fcntl
 import os
 import selectors
-import signal
 import sqlite3
 import subprocess
 import sys
@@ -14,6 +13,7 @@ from contextlib import ExitStack, contextmanager
 from pathlib import Path
 
 from lean_research_corpus import Corpus, cache_directory, source_priority
+from research_runtime.processes import terminate_owned, cancellation_signals
 
 
 class MaintenanceBusy(RuntimeError):
@@ -160,6 +160,7 @@ def empty_extra(mode: str, reason: str) -> dict:
                 prose=[], source_passages=[], partial=True, unfinished_stages=[reason], query_trace=[], elapsed_seconds=0)
 
 
+@cancellation_signals()
 def supervise(command: list[str], request: dict, *, deadline: float) -> dict:
     """Read progressive snapshots while enforcing the whole child lifetime."""
     latest = empty_extra(request.get("mode", "deep"), "not_started")
@@ -219,15 +220,7 @@ def supervise(command: list[str], request: dict, *, deadline: float) -> dict:
         latest.setdefault("unfinished_stages", []).append("cancelled")
     finally:
         selector.close()
-        if process.poll() is None:
-            try:
-                os.killpg(process.pid, signal.SIGTERM)
-                process.wait(timeout=.25)
-            except subprocess.TimeoutExpired:
-                os.killpg(process.pid, signal.SIGKILL)
-                process.wait()
-            except ProcessLookupError:
-                process.wait()
+        terminate_owned(process)
         process.stdout.close()
         process.stderr.close()
     if latest.get('partial') and latest.get('active_stage') not in (None, 'finished'):

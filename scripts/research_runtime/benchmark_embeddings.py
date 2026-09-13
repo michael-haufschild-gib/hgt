@@ -10,15 +10,14 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
-import signal
 import sqlite3
 import subprocess
 import sys
 import time
 
 from .config import CONTEXT_TOKENS, DEFAULT_CACHE_DIR, RUNTIME_HOME, installation_status, offline_environment
+from .processes import terminate_owned, cancellation_signals
 
 
 def fixtures(cache_dir, selections=None):
@@ -152,6 +151,7 @@ def child(backend, fixture, output, group=None):
                                  'results':results,'queries':q.tolist()}))
 
 
+@cancellation_signals()
 def owned_run(command, seconds):
     process=subprocess.Popen(command,env=offline_environment(),start_new_session=True)
     try:
@@ -159,11 +159,7 @@ def owned_run(command, seconds):
         if code:
             raise RuntimeError(f'benchmark exited with {code}')
     finally:
-        if process.poll() is None:
-            os.killpg(process.pid,signal.SIGTERM)
-            try: process.wait(timeout=1)
-            except subprocess.TimeoutExpired:
-                os.killpg(process.pid,signal.SIGKILL); process.wait()
+        terminate_owned(process)
 
 
 def main():

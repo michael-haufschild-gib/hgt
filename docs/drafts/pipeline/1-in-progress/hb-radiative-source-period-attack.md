@@ -56,7 +56,7 @@ They concern the actual source cap; angular-current passage, the reduced
 future response, independent SS/SV/VV corrections and full extinction remain
 separate terms in the original boundary balance.
 
-**Direct-arm normalized normal limit and first radial jet checked in Lean; isolated cached exact-leaf audit passed (88 seconds, 2 jobs).** The first field expansion in (CJ), full two-arm passage (CFJ) and late memory evaluation remain paper-only. Let
+**Direct-arm normalized normal limit and first radial jet checked in Lean; isolated cached exact-leaf audit passed (88 seconds, 2 jobs).** The full two-arm passage (CFJ) and late memory evaluation subsequently passed combined scratch verification; their updated isolated cached leaf audit passed (32 seconds, 2 jobs). The first field expansion in (CJ) remains paper-only. Let
 `K(z)=mean_Q(arcosh(z))`, `z>=1`. The current corpus proves continuity of
 its actual right derivative through `z=1`, with
 `K'(1)=Delta_H Q/2` (`angularKernel_closed_derivative` and
@@ -98,11 +98,26 @@ partial_r A -> -(Delta_H Q/2)*I_g(v).               (CRJ)
 ```
 
 The image arm and its time/normal partial derivatives have size
-`O(exp(2*d*x))=O(c(x)^d)` at fixed `v`. The exact same delay substitution
-admits joint differentiation in `v,x`: the additional time term is
-`g''` times the Jacobian and obeys the same local majorant. The chain rule
-therefore retains both image derivatives in the full normal derivative;
-after division by `r^2-1`, all image terms tend to zero because `d>1`.
+`O(exp(2*d*x))=O(c(x)^d)` at fixed `v`. Joint differentiation follows
+from continuous partial derivatives: for either transferred source weight,
+the original density is jointly continuous in `(v,x)` and, locally in `v`,
+is dominated by `C exp((a0-d)*h)` uniformly in `x`. Dominated convergence
+therefore gives continuity of `timeArm` and `normalArm`. The corpus's
+`hasStrictFDerivAt_uncurry_coprod` then gives the actual joint derivative.
+The image chain rule and the original scale identity give
+
+```
+d/dx A(v-2x,-x) = -2*timeArm(v-2x,-x)
+                   +(2-c(-x))*normalArm(v-2x,-x),
+2-c(-x)=c(x),
+exp(2*d*x)/c(x)=[exp(2*d*x)+exp((2*d-2)*x)]/2.      (CIJ)
+```
+
+Both exponents are positive. Hence the full image derivative divided by
+`c(x)` tends to zero; division by `r^2-1` has the same conclusion because
+`(r^2-1)/c(x)->2`. This retains both image derivatives before taking the
+limit. **The joint and image extension passed combined scratch verification and its
+isolated cached exact-leaf audit (42 seconds, 2 jobs).**
 For `C_cap(v-x,x)=-l*(A(v,x)-A(v-2*x,-x))`, this yields
 
 ```
@@ -140,6 +155,327 @@ This supplies an exact source term to retain in the translated boundary
 balance. It asserts neither invariance of this datum nor vanishing of its
 actual angular/left-QNM contraction, and it does not replace the complete
 nonlinear balance (WBCQ).
+
+**Positive physical-clock source work, checked in combined scratch.**
+On the original late region `v>=1`, exact integration gives
+`I_g(v)=-exp(2*s*v)/(2*s+1)`. Since `Re(2*s+1)<0`,
+`exp((2*s+1)*T)!=1` for every real `T>0`, as follows already from
+its norm being less than one. Thus
+
+```
+exp(T)*I_g(v+T) != I_g(v),
+W(v,T)=integral_0^T exp(h)*g(v+h) dh != 0.           (CNV)
+```
+
+The full cap's finite-clock radial difference tends to
+`-l*(Delta_H Q/2)*W(v,T)`. This limit coefficient vanishes exactly when
+`l*Delta_H Q=0` at the indicated angular point. This is a classification
+of the source-derived cap datum; no nonzero angular coefficient is assumed.
+It does not classify a contracted left-QNM finite part or the complete
+nonlinear current. The physical clock and original onset remain unchanged.
+The updated isolated cached radial leaf audit passed (32 seconds, 2 jobs).
+
+**Reader-weighted cap remainder: source proof on compact angular tests (paper).**
+The current corpus's `normalizable_fundamental_value` and
+`horizon_eq_normalizable_fundamental` identify both original fundamental
+normalizations with `z^(w/2)*(1-z)^(1/2)`. Here
+`z=1-r^(-2)`, `radiusLift=r*Y`, and `tau=v-x`. Consequently the original
+left stream is exactly
+
+```
+V(v,x,z_ang)=exp(-w*v)*c(x)^w*V0(z_ang),
+D V=w*(1-c)*V,  D=partial_x+partial_v.               (CLF)
+```
+
+Positive real bases fix the logarithms in this formula. The source and target
+frequencies are unchanged. At the prescribed roots, `-2<Re w<-1`.
+An `o(c)` cap remainder therefore does not establish a vanishing product
+with this reader.
+
+There is a stronger source estimate. Let `a0=sourceGrowthExponent q`,
+choose `max(a0,-Re w)<p<d<2`, and write `K(1+y)` for the original
+full-theta mean. The auxiliary `p,d` are bound exponents only. On every
+compact angular set inside the upper half-plane,
+
+```
+|K(1+y)-Q-(Delta_H Q/2)*y| <= C_p*y^p,  y>=0.      (CTR)
+```
+
+Proof near `y=0`: apply the original circle construction to `G=Delta_H Q`.
+Its first radial derivative at zero is zero, by the sine/cosine first
+moments; its second derivative is bounded on the compact circle/center
+parameter set because the literal source is smooth. Hence
+`|mean_G(d0)-G|<=C*d0^2`. Since
+`arcosh(1+y)^2<=3y` for `0<=y<=1`, the actual `angularAction(1+y)` differs from `G` by
+`O(y)`. The already proved Volterra formula
+`K'(1+y)=(2+y)^(-1)*integral_0^1 angularAction(1+t*y)dt`
+then gives `K'(1+y)-G/2=O(y)`. Integration gives an `O(y^2)` remainder,
+which is bounded by `O(y^p)` for `0<=y<=1`. For `y>=1`, original global
+theta growth and `arcosh(1+y)<=log(4y)` bound the three terms by
+`C*(y^a0+1+y)<=C'*y^p`. All local constants can be chosen uniformly
+on the indicated compact angular set.
+
+Substitute `y=c*(exp(h)-1)` into (CTR). The unchanged onset and its
+first two derivatives admit `C_d*exp(-d*(v+h))`: their physical rate has
+real part below `-2`, and their switching derivatives are supported in
+`[0,1]`. The dominating integral is `integral_0^infinity exp((p-d)*h)dh`.
+Use the source endpoint moments already derived in (CJ)/(CTM), then include
+the image arm, whose value and transferred partials are `O(c^d)`.
+For the full original scalar cap `u`, uniformly on compact `v` and angular
+sets, this yields
+
+```
+u=l*g*Q+l*c*I_g*(Delta_H Q/2)+O(c^p),
+D u=l*g'*Q+l*c*(I_g-g)*(Delta_H Q/2)+O(c^p).        (CTJ)
+```
+
+For a smooth compactly supported angular test `eta`, define
+`Phi(F)=integral F*R(eta*V0)` and
+`Psi(F)=integral F*Lstar(R(eta*V0))`, with the original operators in
+(WT) below. Weak angular transposition retains every derivative of `eta`.
+Using `A V0=(mu-2)V0`, the contact-corrected radial current, including
+its original `r^2` volume factor, has the distributional angular pairing
+
+```
+exp(-w*v)*c^w*(B0+c*B1+O(c^p)),
+B0=l*((mu-2)*g'*Phi(Q)-w*g*Psi(Q)),
+B1=l*((mu-2)*(I_g-g)*Phi(Delta_H Q/2)
+       -w*I_g*Psi(Delta_H Q/2)+w*g*Psi(Q)).         (CLB)
+```
+
+Thus subtraction of these two explicitly source-derived terms leaves a
+quantity tending to zero, since `p+Re w>0`. This proves a compact-test
+remainder estimate, **not** identification of this subtraction with the
+prescribed physical finite part. The infinite-cusp cutoff limit, actual
+angular metric realization, other faces, independent SS/SV/VV corrections
+and complete nonlinear balance remain open. The pointwise-in-centre version
+of (CTR), its local quadratic bound, and its characteristic derivative bound
+are now proved in `BMCapReaderRemainder`; its isolated cached leaf audit passed
+(49 seconds, 2 jobs). The compact-uniform bound and the full-cap/angular passage
+in (CTJ), (CLF) and (CLB) remain paper results.
+
+**Leading cap coefficient after physical-time projection, 13 September 2026 (paper).**
+The pointwise `c^w` coefficient in (CLB) and the original continued radial
+current have different leading orders before time and angular projection.
+This difference has an exact source-level decomposition. Keep independent
+source occurrence `q`, reader occurrence `r`, both original branches,
+`g(v)=timeOnset(2*physicalRate q branch,v)`, and
+`w=physicalFundamentalFrequency r side`. The source strip gives
+`Re(2s)<-2<Re w`; hence the current corpus's actual onset transform proves
+
+```
+integral_0^infinity exp(-wv)*(g'(v)-w*g(v))dv=0.
+```
+
+This includes the derivative of the fixed transition. Its lower endpoint
+is zero because `g(0)=0`; its upper endpoint is zero because `Re(2s-w)<0`.
+Define the complete compact-cutoff defect
+`H_eta(Q)=Psi(Q)-(mu-2)*Phi(Q)`. The leading coefficient therefore satisfies
+
+```
+exp(-wv)*B0
+ = partial_v[l*(mu-2)*exp(-wv)*g(v)*Phi(Q)]
+   -l*w*exp(-wv)*g(v)*H_eta(Q),
+integral_0^infinity exp(-wv)*B0 dv
+ = -l*w*onsetTransform(2s,w)*H_eta(Q).             (CLT)
+```
+
+The zero time-boundary term and the exact time projection with independent
+angular coefficients are now proved in `BMCapLeadingTimeCurrent`; its isolated
+cached exact-leaf audit passed (97 seconds, 2 jobs). The realization of those
+coefficients as the angular pairings below remains a paper statement.
+
+The angular defect is explicit. Put `S_r` for the unchanged reader scalar,
+`V0=(partial_y S_r,-partial_X S_r)`, and let `Delta_flat` denote the
+Euclidean coordinate Laplacian. The original equation is
+`y^2*Delta_flat S_r=mu*S_r`. Thus `R(V0)=-mu*S_r/y^2` and
+`Lstar(R(V0))=(mu-2)*R(V0)`. With `J=-grad eta dot grad S_r`, direct
+Leibniz expansion gives
+
+```
+Lstar(R(eta*V0))-(mu-2)*R(eta*V0)
+ = -mu*S_r*Delta_flat eta-mu*grad eta dot grad S_r
+   -Delta_flat(y^2*grad eta dot grad S_r).          (CLA)
+```
+
+Every term is supported where derivatives of the angular cutoff occur.
+This explains why the leading pointwise divergence cannot be compared
+directly with the already time-projected radial finite part. The actual
+`continuedHorizonSourceCounterterm` starts at the first integrated Mellin
+power, and its restored current is proved only in its stated projected
+interface. Equations (CLT)/(CLA) do not admit the infinite-cusp cutoff
+limit or identify the complete nonlinear finite part. Their positive
+survivor is the exact transfer of the leading time-boundary term to
+angular-cutoff work, with source/reader frequencies unchanged.
+
+Recent broad-search sources supplied comparison tests, not HB premises:
+[2608.26244, introduction](https://arxiv.org/html/2608.26244v1) distinguishes
+fixed physical and field-dependent coordinate cutoffs;
+[2608.09858, abstract](https://arxiv.org/abs/2608.09858) distinguishes
+cancellation of divergent terms from invariance of the finite action.
+Neither establishes the required original-source cancellation.
+
+**Source flux behind the angular-cutoff defect, 13 September 2026 (paper).**
+Let `F` be the original source scalar, `Q=F^2/2`, `E=y^2*|grad F|_bilinear^2`,
+`lambda=center(q)^2-1/4`, and `S=S_r` the independent actual reader scalar
+with `Delta_H S=mu*S`. For smooth compactly supported `eta`, (CLA) and two
+coordinate integrations by parts give
+
+```
+H_eta(Q)=integral grad eta dot K,
+K=mu*S*grad Q-(Delta_H Q)*grad S
+ =mu*S*grad Q-(2*lambda*Q+E)*grad S.              (CLK)
+```
+
+For example, put `P=(Delta_H-mu)Q`. Transposing `Lstar` first gives
+`H_eta=integral P*(-mu*eta*S/y^2-grad eta dot grad S)`.
+The first summand equals `-mu*integral eta*div(S grad Q-Q grad S)`.
+A further integration by parts yields (CLK), retaining the gradient-energy
+term `E`. The full bounded-region edge terms are those in (WT); the compact
+support assumption is what removes them here.
+
+This is not just the first Stokes current. Define
+`J_Q=S grad Q-Q grad S`, `J_E=S grad E-E grad S`. Direct Leibniz expansion gives
+
+```
+K=(lambda+mu/2)*J_Q+J_E/2-grad(S*P)/2.            (CLD)
+```
+
+The finite-region identity retains the last gradient flux and the domain
+comparison. The residue calculation (CLSR) below now removes its independent
+constant-sector contribution; this does not remove it at finite cutoff.
+
+For constant Weyl powers `Q=A*y^beta`, `S=B*y^gamma`, where
+`mu=gamma*(gamma-1)`, the actual vertical flux is
+`A*B*beta*gamma*(gamma-beta)*y^(beta+gamma-1)`. Its specialized constant
+coefficient can survive at `beta+gamma=1`. For the original diagonal reader,
+`u=rho-1/2`, `v=(rho-1)/2`, every boundary exponent is
+`1/2+(epsilon1+epsilon2)*u+epsilon3*v`.
+Its imaginary coefficient of `rho` is one of `+/-1/2,+/-3/2,+/-5/2`,
+so no exponent is zero because the original Xi occurrence is nonreal.
+This source-specific diagonal fact is stronger than merely discarding a
+nonzero affine exponent before specialization. It does not assert the same
+noncollision for independent source and reader occurrences.
+
+**Finite angular boundary and exact source residue, 13 September 2026.**
+On a bounded smooth region `Omega` in `y>0`, put
+`psi=R(eta*coexact(S))=-div(eta*grad S)`. The same calculation retains
+all edges:
+
+```
+H_eta(Q)=integral_Omega grad eta dot K
+ +integral_boundary [Q*partial_n(y^2*psi)-y^2*psi*partial_n Q
+                    -mu*eta*(S*partial_n Q-Q*partial_n S)].    (CLKB)
+```
+
+Indeed Green's second identity first contributes the first two displayed
+edge terms. Using `div(J_Q)=S*(Delta_H-mu)Q/y^2` and integrating
+`-mu*eta*div(J_Q)` once contributes the last. Normal orientation fixes
+the sign on every edge; at the upper cusp it is `n=+partial_y`. The
+changing weight `y^2`, derivatives of the cutoff, and lower and side
+edges remain explicit. Compact interior support removes these terms;
+that fact does not identify a physical horizon or characteristic face.
+This boundary identity and (CLD) are paper proofs, not new Lean claims.
+
+The new `BMCapAngularFluxCusp` leaf identifies `K_y` with the actual full
+Fourier expression, retains `E`, and proves that subtracting its literal
+constant sectors leaves rapid decay after every complex height weight
+at each fixed horizontal position. It also proves zero of the specialized
+diagonal constant coefficient. Scratch checking and an isolated cached
+exact-leaf audit passed (98 seconds, 2 jobs); the leaf is wired.
+
+The independent-reader test gives a sharper source-specific classification.
+Let `C(e1,e2,e3)` be the exact coefficient `constantCoefficient` in that
+leaf, evaluated at `u=center(q),v=physicalAngularParameter(r)`. Then
+
+```
+R(q,r)=specializedFamily(q,r)(0)
+ =1_{rho_r=4-4*rho_q}*C(false,false,false)
+  +1_{rho_r=4*rho_q}*C(true,true,false).                       (CLR)
+```
+
+The literal Xi condition kills the reader's `true` coefficient, as follows
+from the already source-proved `physicalScalar_principal` at height one.
+The two mixed source Weyl sectors have nonzero specialized exponent by
+the reader's nonreal Xi occurrence. The remaining two exponents vanish
+exactly at the displayed resonances. `independent_specialized_constant`
+proves (CLR) in Lean without assuming their absence. This is not a proof
+that such pairs exist or that either displayed coefficient is nonzero.
+
+**The extra gradient has no independent constant residue.**
+Set `a_i=1/2+epsilon_i*u`, `gamma=1/2+epsilon_3*v`,
+`beta=a_1+a_2`, `alpha=beta+gamma-1` and
+`c=A(u,epsilon_1)*A(u,epsilon_2)*A(v,epsilon_3)`.
+The original Weyl equations give `a_i*(a_i-1)=lambda` and
+`gamma*(gamma-1)=mu`. For the actual ordered coefficients of `K_y` and
+the existing first Stokes current `J=2*J_Q`, direct expansion gives
+
+```
+C_K-(mu/2)*C_J=-(c*gamma/2)*(beta-gamma)*alpha.                (CLSD)
+```
+
+Thus the discrepancy vanishes exactly where a constant height term could
+occur. Summing after specialization proves, for arbitrary original complex
+parameters (including every collision),
+
+```
+constant_residue(K_y)=(mu/2)*constant_residue(J_y).            (CLSR)
+```
+
+Both statements are Lean-proved in `BMCapAngularFluxResidue`, with no
+spectral nonresonance premise. At the paper level, the constant coefficient
+of `partial_y(S*P)` in (CLD) is
+`(c/2)*(beta+gamma)*(beta-gamma)*alpha`, so it also vanishes at `alpha=0`.
+This refines the earlier obstruction: the gradient is a necessary finite
+boundary term, but supplies no new constant residue. The obstruction that
+survives is the domain/physical finite-part comparison and the actual first
+Stokes residue at independent reader parameters. An unspecialized affine
+finite part cannot replace that specialized residue at a collision.
+
+**Uniform cusp admission and cutoff residue: paper proof.**
+The finite signed-tail identity `signedTail_eq_value` and the source bound
+`D4BMAngularSeries.value_height_decay` hold uniformly in horizontal
+position. The actual first vertical tail is exactly its height-divided
+zero-order tail minus the two adjacent-order tails times `pi`
+(`d4BM_completedEisensteinSignedSqrtWhittakerVerticalFirstJetTail_decomposition`);
+the horizontal derivative is the frequency-weighted tail. Thus each
+nonconstant factor among `F,F_X,F_y,S,S_y` has a bound
+`C*Y^a*exp(-Y/2)` for `Y>=1`, independent of `X`. Each corresponding
+constant sector has a finite polynomial height bound. Expanding the cubic
+flux minus its constant sectors leaves a finite sum with at least one tail
+in every term, including the `Y^2*F_X^2*S_y` term. Increasing the real power
+and summing the finitely many constants gives
+
+```
+sup_X |K_y(q,r;X,Y)-constantVerticalFlux(u,v,Y)|
+ <= C*Y^m*exp(-Y/2),  Y>=1.                                  (CLU)
+```
+
+No Fourier truncation or source-dependent frequency is used. This
+uniform strengthening is paper-proved from those literal bounds; the new
+Lean leaf currently proves only its fixed-horizontal-position consequence.
+
+For a smooth height cutoff `chi(Y/H)` with `chi=1` below one and `chi=0`
+above two, define its cusp-band work alone by
+`W_H=integral_{H}^{2H} integral_{-1/2}^{1/2}
+       H^(-1)*chi'(Y/H)*K_y(X,Y) dX dY`.
+Finite expansion and `Y=H*t` give
+
+```
+W_H=sum_alpha R_alpha*H^alpha*integral_1^2 chi'(t)*t^alpha dt
+    +O(H^m*exp(-H/2)).                                      (CLW)
+```
+
+The error follows from (CLU), the finite cutoff derivative bound and the
+band length `H`; its inverse `H` prefactor cancels that length. Here
+`R_alpha` groups the actual specialized exponents. Consequently the
+constant-power finite part of this cusp-band work is exactly `-R(q,r)`,
+since `integral_1^2 chi'=-1`. For the diagonal it is zero, independently
+of the transition shape. This is a paper result about the displayed band
+work and its explicit asymptotic expansion. Identifying it with the
+prescribed physical finite part requires the full domain comparison,
+including (CLKB), other faces and correction channels. It does not
+produce complete radiative extinction.
 
 **Angular transposition of the actual radial current, paper interface.**
 The corpus search suggested moving angular derivatives onto the fixed test
@@ -2492,3 +2828,870 @@ There is a further scope restriction on a proposed arithmetic cancellation. `phy
 The direct unresolved task remains evaluation of the complete source pairing with these original readers. Neither the source reflection identity nor the one vanished Weyl coefficient proves `Cphys=0` or `Re Cphys>=0`. The reduced identity `K=-Sigma|D|²`, with `Sigma>0`, remains a receiver until that actual cancellation or sign is produced.
 
 The deep four-source and source-reflection searches and the hybrid response-pairing method search returned no retrieval errors with 57,233 inventoried files; most compiler metadata remained pending. Candidate statements, source methods and ingredient groups were inspected. Abstract reflection-odd Peierls theorems require source/reader incidence; the retrieved rotation, matrix-norm and generic Maass-flux ingredients do not evaluate the present pairing. Broad searches used scattering, crossing, sum rules, resonance and reciprocity. [Khankhoje–Kundu, 12 June 2026](https://arxiv.org/html/2606.14486v1), Sections I–III, distinguish full reciprocal scattering from coefficients that omit coupling and boundary effects. Their linear electromagnetic reciprocity does not supply an Einstein source identity or the marked QNM-reader comparison. No numerical work or external theorem premise was used.
+
+Research check for this continuation: the full-index joint-partial deep/method
+search reported `partial=true` with 57,392 inventoried files; its
+`ClockMultivariateC1` source argument led to the applicable Mathlib partial-
+derivative theorem, verified in the finished source proof. The nonlinear
+adjoint search reported `partial=true`, 57,395 files, and returned the
+existing inhomogeneous correction exchange rather than a closed source
+cancellation. Most compiler metadata was pending. Broad balance, rigidity,
+memory and reciprocity searches read
+[Bösch–Gediz–Türeci, August 2026, Section 6.2](https://arxiv.org/html/2608.11585v1)
+and the abstract of
+[Wang–Xie–Yu, June 2026](https://arxiv.org/abs/2606.30130).
+The former distinguishes a nonlinear trajectory's tangent adjoint from
+background reciprocity; this motivates checking additional source work,
+not assuming it vanishes. The latter concerns three-dimensional scalar-
+curvature rigidity; no HB metric or positivity hypothesis was supplied
+from it. Neither paper is used as a premise of the Lean results above.
+
+Verification checkpoint for (CIJ), (CFJ) and (CNV): combined scratch
+`/tmp/hb-cap-combined.lean` passed; the two isolated cached leaf audits
+passed sequentially (42 and 32 seconds, 2 jobs each). Both existing
+umbrella imports remain present. No heartbeat/depth/transparency override
+was added. Index refresh completed (4 changed, 0 removed).
+`/tmp/hb-cap-full-radial-lint.log` records the unchanged unrelated failure:
+`owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.Sieve.KloostermanGlobalCollisionCoprime`.
+No global lint pass or complete extinction theorem is claimed.
+
+## Full angular source potential attack, 13 September 2026
+
+The current corpus proves `D4BMAngularTwoCuspDecay.actual_tensor_zero`;
+its cached declaration was independently checked in a scratch import. This is
+an existing result, not a new proof claimed here. For the original source S,
+write F=S², lambda=rho(rho-1), and U=(2-Delta_H)^(-1)F, with U the already
+constructed response. Put H(f)=(f_xx-f_yy-2f_y/y, f_xy+f_x/y) and
+R(A,B)=(2B,-A/2). The proved tensor identity gives G=-lambda H(U), where
+G=(S_x²-S_y²,S_x S_y). Product differentiation gives H_old+G=H(F)/2.
+Consequently the original three-channel angular Einstein coefficient of
+the fundamental unswitched metric is
+
+```
+B² [aS² ws H(F) + (aS aV wm/2) R H(F)
+      + lambda(aS² ws-aV² wv) H(U)].                 (CAP)
+```
+
+Here ws, wv, wm are the original scalar, vector and mixed radial weights.
+The existing explicit angular correction removes the first two terms and
+leaves exactly the final H(U) term. This retains the complete Fourier source
+and both tensor components. It does not identify that explicit angular
+correction with the complete causal ++ or +- correction.
+
+For an actual densitized trace-free left test (a,b), define
+
+```
+D(a,b)=a_xx-a_yy+2b_xy-2b_x/y+2a_y/y-2a/y²,
+Jx(f)=a f_x+b f_y-f(a_x+b_y-2b/y),
+Jy(f)=b f_x-a f_y-f(b_x-a_y+2a/y).
+```
+
+Direct product differentiation gives
+`a H(f).1+2b H(f).2 = div J(f)+f D(a,b)`.
+Each Hessian in (CAP) transfers to the full test and boundary normal flux J.n;
+the rotated term uses test (-b,a). Changing density/inverse-metric weights
+must be included in a,b before differentiation. On a bounded smooth angular
+domain, integration gives the complete boundary integral. Extension to the
+cusp finite part remains a separate domain obligation. A vanishing
+holomorphic remainder alone therefore gives this scalar-potential action,
+including boundary work; it does not give zero left action. The original
+Hawking clock has not changed.
+
+The source tensor identity and product rule prove (CAP). The actual physical
+combined metric jet and (CAP) are now Lean-formalized and audited below.
+The Green identity above remains a paper calculation; no complete physical
+boundary cancellation is claimed.
+
+For a scalar left angular eigenfield psi with `Delta_H psi=mu psi`, its
+actual raised Hessian density has
+`a=y² H(psi).1/2`, `b=y² H(psi).2`. Substitution in D gives
+
+```
+D(a,b)=Delta_H(Delta_H-2)psi/(2y²),   D(-b,a)=0.
+```
+
+These follow by expanding the four coordinate derivatives; in the first
+identity the second-order terms cancel and the remainder is
+`y² Delta_flat² psi/2+2y partial_y Delta_flat psi`.
+Put `W=psi grad U-U grad psi`, with flat gradient in these coordinates.
+The original inverse equation gives
+`div W=((2-mu)U psi-F psi)/y²`. Consequently
+
+```
+<HessTF U,HessTF psi> dvol/dxdy
+  = -mu F psi/(2y²) + div[J(U)-mu W/2].          (CAPG)
+```
+
+There is no division by `2-mu` in (CAPG). It therefore also holds at mu=2.
+The complete three-channel source (CAP), tested against HessTF psi, has
+bulk density
+
+```
+B² mu/2 [aS² ws(mu-2-lambda)+aV² wv lambda] F psi/y²
+```
+
+and boundary current
+
+```
+B² [aS² ws J(F;a,b)+(aS aV wm/2)J(F;-b,a)
+     +lambda(aS² ws-aV² wv)(J(U;a,b)-mu W/2)].
+```
+
+Thus the mixed term is an explicit angular boundary current for this scalar
+Hessian test. This is not a deletion of the mixed channel: a rotated test,
+changing metric weights, or a corrected field changes the test entering D.
+In particular the original physical left metric in
+`D4BMLeftQNMMetricEquation.metricField` is a vector metric with mixed
+(time/radial,angular) entries; it is not this pure Hessian test. (CAPG)
+controls an angular tensor pairing inside assembly, not the complete
+left-QNM action. The distinct source/reader current in log item 34 remains
+in the correction exchange. These Green identities are paper-proved;
+full quotient finite-part admission and Lean formalization remain open.
+
+The full-index angular-potential deep/method search completed with
+`partial=false`, 57,433 files and no inventory errors; most compiler
+metadata was pending. Its source-argument retrieval supplied the actual
+scalar/vector metric split used in the new proof. Broad Noether and
+transgression searches found [Akil et al., 9 September 2026](https://arxiv.org/html/2609.10533v1).
+Theorem 1 and its proof preserve a transition along a symmetry orbit once
+a seed transition and invariant endpoint states exist. Applying that
+argument here would still require the original HB boundary invariance
+and a vanishing seed value. The paper does not supply either, and is not
+a premise of the Lean theorem.
+
+Verification checkpoint for (CAP): the final scratch passed, including the
+original second Taylor coefficient, reconstructed coexact and combined metric
+jets, independent amplitude polarization, and the explicit corrected angular
+coefficient. `ThetaCuspHawkingBMPhysicalAngularPotential` passed its isolated
+cached exact-leaf audit (37 seconds, 2 jobs) and is wired into `RHTower`.
+Source SHA256: `082bdf871722264f45b9bba6c1056135275d76edfa40cb26271ef71d17afa464`.
+No heartbeat/depth/transparency override was added. The Green identities
+(CAPG), their finite-part admission, and complete physical extinction remain
+outside this Lean result.
+
+The final index refresh completed (7 changed, 0 removed). Formal lint with
+`--check-generated` finished with one unrelated error: existing module
+`GaloisForLFunctions.RHTower.Sieve.KloostermanGlobalCollisionCoprime` is
+unreachable from its theorem-area umbrella. No generated-file error was
+reported. Scoped whitespace checks passed; the installed source hash and
+unique umbrella import match the audited leaf. All owned processes finished.
+
+## Spatial reflection of the actual causal response, 13 September 2026
+
+This is horizontal spatial reflection `(X,Y) -> (-X,Y)`, not functional-equation
+reflection of a spectral parameter. The literal scalar is even for every complex
+parameter: its positive and negative Fourier phases exchange term by term, and
+the two Weyl terms are independent of X. No convergence-chamber substitution or
+critical-line premise enters this argument.
+
+The original circle chart obeys
+`circle(d,2*pi-theta,(-X,Y)) = reflect(circle(d,theta,(X,Y)))`.
+Consequently its literal half-square source and circular average are even in X.
+The original native Riemann kernel, supported Dirichlet kernel (including the
+image), and full null response are even in X. For the last statement, the exact
+defining double integral has circle radius
+`arcosh(max(1,invariant((p+r-a-b)/2,(p-r)/2,(a-b)/2)))`; its radius, source
+rectangle, odd radial source and normalization are independent of X. The three
+subtracted cutoff powers depend only on height, so the residual and its actual
+double time primitive inherit the same reflection. This preserves the original
+clock and all characteristic support in these scalar response formulas.
+
+Put `S=S_u(X,exp k)`, `T=S_v(X,exp k)` with independent complex u,v, and let C
+be the actual full null response. Define
+
+```
+J_X = S*T_X-T*S_X,     J_k = S*T_k-T*S_k,
+W = J_X*C_k-J_k*C_X.                                  (SRC)
+```
+
+Differentiating the established reflection identities gives odd horizontal and
+even vertical derivatives. Thus J_X is odd, J_k is even, and W is odd. Actual
+source and causal-response smoothness admits W on every bounded horizontal
+interval. Its integral over `[-L,L]` is zero. The same holds after any factor
+depending only on time, radius and height. In original coordinates,
+`<S dT-T dS,*dC>_H = exp(k)*W`; the hyperbolic density changes this by a further
+height-only factor. Hence the cross-eigenvalue current from item 34 has zero
+horizontal work on these slices without equating its two eigenvalues.
+
+The boundary flux used to transfer this current is `S*T*(*dC)`.
+Its horizontal component is even and its vertical component is odd. Paired
+vertical sides have cancelling outward flux; each horizontal edge has zero
+integrated flux on a symmetric slice. In logarithmic coordinates its densitized
+components are `P=(S*T*C_k,-S*T*C_X)` and the exact identity is
+`W=-div(P)+2*S*(T_X*C_k-T_k*C_X)`. These identities, actual smoothness and all
+four oriented rectangle boundary cancellations are now checked in Lean.
+Reflection also cancels its flux on paired smooth boundary arcs of a symmetric
+bounded angular domain [paper calculation]. Identification with the prescribed
+full physical finite part and its coupled horizon/source-contact faces is not
+claimed.
+
+The positive survivor is a source-produced cancellation of this extra Jacobian
+work, including the actual causal scalar response. It does not annihilate the
+complete action: `exp(2k)*T_X*C_X+T_k*C_k`, the coexact/coexact contraction,
+is even. A reflected nonlinear metric with a coexact source sends its vector
+amplitude to its negative. If covariance of the complete assembled action is
+derived, a vector left reader therefore retains terms with an odd number of
+source-vector factors (including the mixed quadratic channel and scalar-scalar-
+vector/vector-vector-vector cubic channels). Full nonlinear covariance and
+these surviving channels remain separate obligations; they are not assumed.
+
+The finished `ThetaCuspHawkingBMSpatialReflectionCurrent` leaf also identifies
+the original inverse-metric/coexact contraction as `exp(k)*W`, proves its finite
+slice admission and cancellation, and handles paired slices with a symmetric
+inner gap. Its full scratch check and isolated cached exact-leaf audit passed
+(127 seconds, 2 jobs); it is wired into `RHTower`. Source SHA256:
+`5a979ddbd123a01b07b7f3c35fae721df0e9e97c3c61e0b50b9c8313ed0943b3`.
+No heartbeat, depth or transparency override was added. The index refresh
+completed (7 changed, 0 removed). Formal lint reported the existing unrelated
+unwired module `GaloisForLFunctions.RHTower.Sieve.KloostermanGlobalCollisionCoprime`;
+no generated-file error was reported. Scoped whitespace checks passed.
+
+The new deep/method query covered all 57,440 indexed files (`partial=false`),
+with compiler metadata predominantly pending and semantic coverage reported
+unavailable. Its suggested modular tensor pullbacks use SL(2,Z), which is
+orientation preserving; they do not supply the orientation-reversing nonlinear
+reflection needed here. The Fokas-Lenells origin-compatibility results suggested
+a separate regularity mechanism. I checked their actual local integrability
+proof and compared it with the HB boundary expansion in items 42–44.
+
+The sharp analytic implication is: if `epsilon^(-gamma)*B(epsilon) -> c`,
+`Re gamma <= -1`, and the unsubtracted B is locally absolutely integrable at
+zero, then c=0. For c nonzero, convergence gives
+`|B(epsilon)| >= |c|*epsilon^(Re gamma)/2` on a positive interval, contradicting
+the real-power integrability threshold. Applying the same argument to
+`B-c0*epsilon^gamma` forces c=c0, not c=0. Thus a subtraction prescription
+determines a residue rather than deleting it. For HB this mechanism requires
+both identification of the complete cokernel in an actual boundary coefficient
+and source-produced integrability of the unsubtracted full physical expression.
+Neither follows from the admitted scalar response, the singular left reader's
+interior smoothness, or the subtracted cap estimate already proved here.
+The survivor is this precise distinction between residue identification and
+residue vanishing; no new HB regularity premise has been introduced.
+
+The associated [July 2026 paper](https://arxiv.org/html/2607.19649v1) asserts
+fifth-order origin decay in Proposition 3.8 and obtains weighted L2 admission
+from it in Proposition 3.9. The corpus's `FokasLenellsOriginIntegrability` and
+`FokasLenellsOriginCompatibility` instead expose an exact compatibility moment
+and a unique pole subtraction. These are independently read corpus results,
+not new proofs from this HB attack. They cannot supply HB boundary admission.
+Likewise [Xu–Chu, September 2026](https://arxiv.org/html/2609.10637v1), equation
+168 and its surrounding discussion, require puncture-contact matching and a
+common continuation with coordinate poles; those properties are not a theorem
+about the present theta source. Neither paper is a premise of the Lean work.
+
+## Complete mixed quadratic residual and moving weights, 13 September 2026
+
+The complete cubic coefficient is
+`W0*(L K3 + E2(H,K2) + E3(H,H,H)/6) + W1(H)*(L K2 + E2(H,H)/2)`,
+summed over all sixteen tensor entries. `W1` includes determinant and inverse-metric
+derivatives. This is the existing `BMWeightedCorrectionDiscrepancy.coefficient_eq`.
+The concrete attack is to discharge the second bracket from the actual source
+correction, beginning with its scalar/vector coefficient.
+
+The verified mixed source tensor includes the linear image of an ingoing contact
+jet, whose only nonzero metric entries are
+`Kcontact[0,A]=Kcontact[A,0]=s(s+1)/2 * B^2 * (r^2-1)/r^3 * S (*dS)[A]`.
+The proposed complete mixed particular correction is this actual field plus
+`BMModularCore.forcedMetricField`. The latter solves the negative of the
+contact-corrected mixed tensor. The contact field's actual two-jet must first
+be matched to its verified table, including the scalar's third derivatives.
+Then linearity gives `L Ksv + E2(Hs,Hv)=0` in every component. Every moving
+weight consequently contracts this mixed residual to zero pointwise.
+
+This is an unswitched particular correction at one Xi occurrence and branch.
+It does not identify the complete causal correction or solve the independent
+scalar/scalar and vector/vector channels. Source-onset and boundary terms must
+still be included before this cancellation applies to the complete causal action.
+
+The new deep/method search covered 57,445 inventoried files (`partial=false`);
+compiler metadata remained mostly pending, semantic coverage unmeasured. Its
+candidate cubic coefficient and contact-amplitude lemmas were checked in source.
+A broad recent Noether search led to [Baker, arXiv:2609.09170](https://arxiv.org/html/2609.09170v1).
+Equations 389 and 551–555 retain second-derivative surface terms and use boundary
+conditions for the integrated Bianchi identity. They do not establish this
+problem's physical left-QNM boundary conditions. No paper claim is a Lean premise.
+
+The endpoint calculation must include the contact. Set `u=1/r`,
+`J=S(*dS)`, `A=fullAngularCovector`, `c=s(s-1)/4`, `d=s(s+1)/2`,
+and `E=a^2 exp(2s(v+log(1+u)))`. The actual ingoing/inverse-radius
+coordinate differentials give contact entries `K[v,A]=d E u(1-u^2) J_A`
+and `K[u,A]=d E u J_A`, with their symmetric counterparts. Hence the
+contact contributes zero at the conformal boundary `u=0`, but at `u=1`
+its radial-angular entry is `d E J_A`. Adding the existing forced metric
+gives horizon entries
+`Ksv[v,A]=2s E(A_A-c J_A)` and
+`Ksv[u,A]=E(-s A_A+s^2(s+3)J_A/4)`.
+At `u=0`, the complete unrescaled radial-angular entry is
+`-2s a^2 exp(2s v) A_A`. These are value identities, not differentiated
+left-QNM flux identities. No universal nonzero value is asserted.
+
+A second broad deep/method query covered 57,446 inventoried files with no
+partial stages. The checked `ReflectionTateAnomaly` result supplies an
+admissible reflection primitive only when the displacement already belongs
+to the admissible subspace; `NormedInterventionTwoField` retains the current
+of the residual in its filling identity. Neither supplies the missing HB
+boundary admission or converts the even scalar/vector action to an odd one.
+
+The contact-field realization and all sixteen mixed residual equations are now
+closed in `BMMixedQuadraticClosure`: `contactField_jet`,
+`contactField_einstein`, `mixedField_einstein`, and
+`mixedField_secondVariation`. `independentField_secondVariation` proves the
+corresponding identity for independently scaled original pure-mode directions;
+`movingWeight_mixed_residual_zero` removes the full moving-weight contraction
+of this residual. The complete 365-line scratch file passed without warnings
+or raised limits. The isolated cached exact-leaf audit passed (2 jobs, leaf
+7.6 seconds), and the umbrella import is wired. Source SHA256:
+`ab60fa875d286d8835a02fc54aa44f3b0e781e9d4abaa9b4f338f19809be871d`.
+The endpoint value calculation above remains paper-only.
+No complete causal ++/+- correction identification or extinction is claimed.
+
+## Contact-inclusive mixed Green current, 13 September 2026
+
+The next source-level test is the actual mixed particular correction against
+the original independent left QNM metric. Put `f=r²-1`, `E=B²`,
+`A=fullAngularCovector`, `J=S(*dS)`, and `s=physicalRate`. Directly adding
+the forced stream and its contact predicts
+`T=E*(2s*A/r + s²*(1-(s+1)/(2r²))*J/r)` and
+`R=2s*E*(A-s*(s-1)*J/(4r²))/f`.
+The source-derived curl `∂time R-∂r T` should therefore be
+`E/r²*(2s*(2s+1)*A + s²*(1-(s+1)*(2s+3)/(2r²))*J)`.
+These formulas include the differentiated contact, not only its endpoint value.
+
+For the original left radial mode `g`, its tortoise derivative `g'`, and
+angular eigenvalue `λ`, its blocks at time zero are
+`U=(f*g+r*g')*V`, `Vrad=-w*r*g*V/f`.
+Its radial curl is `(λ*g/r-2*r*g-2*g')*V`, using the actual radial equation.
+Consequently the volume-weighted radial Einstein current is
+`sum_A (T_A*(λ*g/r-2*r*g-2*g')-Uscalar*curl_A)*V_A`.
+The proposed proof identifies every value and derivative with actual metric
+fields; it must not use the older toy minus-mode radial envelope in place of
+the continued original left mode. All other current components remain in the
+complete mixed-current formula and cannot be discarded by this radial identity.
+
+A broad residue search found [Klyuev, arXiv:2608.01379](https://arxiv.org/html/2608.01379v1).
+Section 4 proves a twisted trace using algebraic pole conditions, zeros of the
+trace weight, its imaginary-shift law, and exponential decay. These conditions
+are not identified with the HB nonlinear source algebra or physical clock.
+The useful test is whether the complete HB integrand has a source-produced
+pole/weight cancellation under translation; a formal trace analogy supplies
+none of those facts.
+
+The contact's radial action coefficient is
+`s*(s+1)*E/(2*r^4) * (f*(λ-3*r^2+2*s+3)*g + r*(2*s+5-3*r^2)*g')`,
+times the actual overlap `sum_A J_A V_A`. The sign follows from
+`Tcontact*curl(left)-Tleft*curl(contact)`; both terms are required.
+
+There is a source-derived angular identity. Let `H=fullAngularField`,
+`S=literal source`, `R=literal scalar of the independent physical reader`,
+`μ=parameter(q,branch)`, `λ=physical reader eigenvalue`, and `V=*dR`.
+The established actual equations are
+`ΔH=μ(H+S²/2)` and `ΔR=λR`, in the original hyperbolic metric.
+Define the flat coordinate current
+`G_j=λ R ∂j H-μ(H+S²/2)∂j R`.
+Product differentiation cancels the two Laplacian terms exactly and gives
+`div G=(λ-μ) sum_A A_A V_A-μ sum_A J_A V_A`.
+Thus no scalar/reader boundary condition is needed for this local identity.
+Integrating it retains the normal flux of this explicitly constructed current;
+there is no justification here for setting that flux to zero.
+
+Let `C` and `D` be the radial-current coefficients of `sum A V` and `sum J V`
+respectively, obtained from the contact-inclusive blocks and curls above.
+The exact consequence for the actual mixed radial Einstein action `I_r` is
+`(λ-μ) I_r = C div G + ((λ-μ)D+μC) sum J V`.
+This polynomial identity remains valid at `λ=μ`. It exposes the precise
+remaining square/reader overlap and angular boundary flux; it does not give
+their vanishing. The complete-current theorem must retain the other three
+Einstein flux components. Causal onset selection, independent scalar/scalar
+and vector/vector corrections, and the full cubic assembly remain outside
+this mixed-particular identity.
+
+The old odd-sector formulas use a test with time rate `-3-s`. The original
+left metric instead has time rate `-physicalFundamentalFrequency(reader,side)`.
+The Xi open-strip theorem and the actual frequency formulas give
+`2 < Re(-physicalFundamentalFrequency-(-3-s)) < 4`, even for independent
+source and reader occurrences. Therefore the old damped test's endpoint law
+cannot be transferred to the actual left metric by identifying their rates.
+The positive replacement is the actual continued left-mode current above,
+with its independently derived radial equation.
+
+These identities are now closed in the 533-line `BMMixedQuadraticCurrent`
+leaf: `mixedField_orbit`, `radial_current`, `complete_current`,
+`contact_radial_current`, `original_left_source_rate_gap`,
+`original_left_ne_damped_source`, `angular_overlap_divergence`, and
+`radial_current_angular_decomposition`. The full scratch check passed without
+warnings or raised limits. The isolated cached `lake build` of this exact
+leaf passed (2 jobs; leaf 44 seconds), and its umbrella import is wired.
+Source SHA256: `d1cb09e411acd1951df0eb51c2ef6d061d82b5969c42f62e07fbc0fa75008464`.
+The proof uses the original time-zero action slice and both continued radial
+branches; no physical-clock translation or extinction is inferred from it.
+
+
+## Original reader against the complete native cusp response, 13 September 2026
+
+The current attack tests the actual boundary current from the preceding section,
+not a substitute clock or damped test. Write H=P+N above height three, where P is
+the literal particular cusp response and N is the native global response. The
+native contribution is lambda R N_y-mu N R_y. Separate each cell product into
+its mean product and its covariance; no Fourier mode is discarded.
+
+Paper mechanism for the nonconstant part: differentiate Cov(N_y,R), use the
+actual forced equation for N, and cancel the horizontal side flux by original
+periodicity. Its derivative is
+Cov(N_y,R_y)+Cov(N_x,R_x)+mu/y^2 Cov(N,R)+1/y^2 Cov(f,R),
+where f is the complete original cutoff-subtracted forcing. The actual reader
+and its first jets have polynomial bounds. Scaled Young inequalities bound both
+the current and its derivative by constants times y^4 times the complete native
+nonconstant energy plus y^(-2); the forcing term has its independently proved
+arbitrary weighted bound. Both quantities are integrable, so the original
+current has zero upper trace. Cov(N,R_y) tends to zero separately from the
+rapid native nonconstant mass bound. This uses the ordered native current;
+it is not an antisymmetric-current argument.
+
+For the mean part, native energy kills the growing homogeneous coefficient.
+The remaining root alpha has Re alpha<0. The physical reader has only the
+constant power t=1-rho_reader/2 with 1/2<Re t<1. Their boundary product has
+exponent alpha+t-1 with strictly negative real part. Every forcing-tail
+remainder decays with arbitrary fixed complex height weight. Thus the native
+Green-flux theorem has no imposed cusp boundary condition.
+
+The particular P and the square S^2/2 remain. For a squared-source power k and
+reader power t, their explicit contribution has coefficient
+(mu/2)*sourceCoefficient*readerCoefficient*k*t*(t-k)/(k*(k-1)-mu)
+and height exponent k+t-1. The following section now proves its exact
+identification with the actual particular field and the integrated remainder.
+No complete causal action, finite clock invariance or extinction follows from
+native-flux decay alone.
+
+
+The 1,039-line `BMMixedNativeReaderFlux` leaf now closes this mechanism for the
+actual angular native response and independent original reader. The proof also
+restores the real angular coordinates and the original centered cusp cell:
+
+`sourceGreenFlux(q,r,b,Y)=particularGreenFlux(q,r,b,Y)+nativeGreenFlux(q,r,b,Y)`
+
+for Y>3. Here the left side is the integral of the preceding leaf's actual
+`angularGreenCurrent`, and the particular term is exactly
+`integral [lambda R P_y-mu(P+S^2/2)R_y]`. The full source square, physical reader,
+and their Fourier tails remain inside this expression. Both exact field values
+and differentiated values are derived from the global cutoff assembly. The
+native term tends to zero, including the source-selected stable coefficient.
+
+Consequently the native angular response cannot provide a nonzero upper trace
+to cancel the remaining particular/square cusp flux. For the complete HB chain,
+the next boundary question is the value of this explicit survivor and its
+cancellation with the remaining mixed overlap and other physical action faces
+and channels. Neither a fixed-clock translation identity nor extinction is
+obtained by deleting the native term. The causal switched corrections remain
+separate from this unswitched particular mixed-current identity.
+
+Validation: complete `lake env lean /tmp/hb-mixed-native-reader-flux.lean` passed
+without warnings or raised limits. Isolated cached `lake build
+GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedNativeReaderFlux` passed
+(2 jobs; leaf 56 seconds), and the exact leaf's umbrella import is wired.
+Source SHA256: `4a3fb68e028547a27c2f9ea86d7a4d9419fe1a134f5644b328d16be156c97a27`.
+
+Final source/index check refreshed six changed modules. Global formal lint
+reported two unrelated unwired modules: `Sieve.KloostermanGlobalCollisionCoprime`
+and `ThetaCuspHawkingBMEvenSectorSkewLowBand`. The new leaf has no lint diagnostic;
+its source, scratch, published artifacts and unique import were checked. The
+isolated audit directory was removed, and no owned Lean/Lake process remains.
+
+
+## Forced particular cusp flux and branch comparison, 13 September 2026
+
+The preceding exact sourceGreenFlux decomposition now has an explicit evaluation
+of its surviving particular term. Write rho for the source occurrence, sigma for
+the independent physical reader, and keep either original source branch b:
+
+- k_i=(2 rho,1,2-2 rho), c_i=(A^2,2 A D,D^2).
+- mu=parameter(q,b), d_i=k_i(k_i-1)-mu.
+- C=Lambda(sigma-1), t=1-sigma/2, lambda=t(t-1).
+
+A,D are the literal principal Weyl coefficients. The original Xi equations prove
+every d_i nonzero. The actual particular response and its derivative are
+P(y)=sum_i (mu/2)c_i/d_i y^k_i and the termwise differentiated expression.
+
+The exact identity is
+
+    particularGreenFlux(q,r,b,y)
+      = sum_i F_i y^(k_i-sigma/2) - (mu/2) T(q,r,y),
+    F_i = (mu/2)c_i C k_i t(t-k_i)/d_i,
+    T(q,r,y) = integral_cell (S^2-S_principal^2) R_y.
+
+The full physical reader R and full square S^2 remain. Its proof first takes the
+actual reader mean and derivative mean, then expands the particular response.
+The coefficient identity uses lambda=t(t-1) and the exact resolvent denominator;
+the contact S^2/2 is necessary for the factor k_i t(t-k_i).
+
+For every fixed complex w, y^w T(q,r,y) tends to zero. The source's uniform bound
+on y^(w+1)(S^2-S_principal^2), multiplied by the independently bounded full R_y,
+gives an integrated bound C_w/y. The centered cell has length one. This proves
+rapid decay after integration, without replacing R_y by its principal part.
+
+Together with the complete native-flux theorem, this gives
+
+    sourceGreenFlux(q,r,b,y) - sum_i F_i y^(k_i-sigma/2) -> 0.
+
+The source-derived native response therefore has no missing upper trace capable
+of changing these three explicit powers. This identifies the actual angular
+cusp face of the unswitched mixed correction, not only a formal cap model.
+
+At the cross power k=1 the exact coefficient is -A D C lambda, independent of b.
+Thus subtracting the two unweighted source-branch fluxes leaves only the two
+squared-Weyl powers, up to a vanishing remainder. This is a positive branch law;
+its transfer to the complete action is not proved. The actual radial current
+uses branch-dependent C_b=radialPairCoefficient(s_b,r,E_b,lambda,g,g',1,0),
+D_b=radialPairCoefficient(s_b,r,E_b,lambda,g,g',0,1), and
+
+    (lambda-mu_b) I_b = C_b div G_b
+                         + ((lambda-mu_b) D_b + mu_b C_b) J dot V.
+
+Consequently the unweighted branch difference is not yet a cancellation of
+that radial pairing. The remaining overlap and all other causal faces/channels
+must be assembled with these original coefficients.
+
+A height exponent is zero exactly when i=0 and sigma=4 rho, or i=2 and
+sigma=4-4 rho. Xi imaginary-part nonvanishing excludes the cross power and both
+diagonal resonances. Hence the identified finite expansion has diagonal
+constant coefficient zero without RH. This is a statement about its constant
+coefficient; a raw flux limit or complete radiative extinction is not derived.
+
+Corpus applicability audit: the deep all-view search for finite-power uniqueness
+completed across 57,483 indexed files (47,808 Lean files), with source/compiler
+freshness reported separately. It found HurwitzExp.expLin_linearIndependent and
+its finite-type extension. Their checked source statements concern an exact
+identity of entire functions of a complex variable. They do not directly supply
+an asymptotic coefficient-extraction theorem for this physical flux. No
+unverified search recipe was used as a proof. Broad arXiv searches returned
+reciprocity and commutator literature, but no source-level fixed-clock identity
+was extracted from those papers.
+
+The hard HB obligation remains source-produced cancellation of the complete
+nonlinear physical action at the original Hawking clock. The new result makes
+one surviving boundary contribution explicit; it does not close that obligation.
+
+Validation: complete `lake env lean /tmp/hb-mixed-particular-cusp-flux.lean`
+passed without warnings. Isolated cached `lake build
+GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedParticularCuspFlux` passed
+(2 jobs; leaf 30 seconds), published the exact checked artifacts and removed its
+temporary directory. The new leaf is wired into the RHTower umbrella without
+building that umbrella. No proof-limit override or clock change was added.
+Source SHA256: `4382c2828fe406b3bbda6c1c32e06005215394e4024f0cccfab541ea40e258f8`.
+
+Final index refresh: three changed modules, zero removed. Global lint remains
+blocked by the two unrelated unwired modules `Sieve.KloostermanGlobalCollisionCoprime`
+and `ThetaCuspHawkingBMEvenSectorSkewLowBand`; no diagnostic names this leaf.
+Exact source/scratch identity, artifact presence, unique import, whitespace and
+scoped diff checks passed. No owned Lean/Lake process remains.
+
+## Whole-corpus transfer audit and relative-reader horizon test, 13 September 2026
+
+Eight completed hybrid/deep requests searched all retrieval views over
+57,487–57,489 indexed files, with no reported partial result or retrieval error.
+Compiler coverage remains incomplete; a retrieved statement is not a checked
+new theorem. Queries covered positivity, genuine finite-time extinction,
+nonlinear Ward identities, flux correctors, gauge curvature, half-parameter
+transforms, metaplectic mechanisms and relative-reader horizon admission.
+
+The following transfer tests have definite outcomes from the inspected sources.
+
+* `NonMarkovianLangevinKernel` supplies positive-definite Fourier kernels by an
+  exact sum of nonnegative squared moduli. `HBFullCokernelKMSPassivityPolarityNoGo`
+  realizes the existing negative complete cokernel by a passive two-level
+  response. Thus this positivity mechanism supplies the already-known sign;
+  its opposite sign has not been obtained from the literal source.
+* `InverseResponseWardMechanics` gives
+  `trace(Theta1 Theta2)=trace(M D1 D2 E)-beta(Theta2)`. Its zero conclusion
+  requires both mixed affinity and annihilation of the derivative reporter.
+  Neither has been established for the complete Einstein source and its
+  physical boundary action. The boundary reporter must remain in the identity.
+* `FokasLenellsCausalCauchySemigroup` gives a genuine nonzero finite-time kernel
+  in the completed lower Hardy space, even though the encoded finite core has
+  invertible evolution. This defeats an argument against extinction based only
+  on invertibility on a finite core. Its positive replacement is exact upper
+  Hardy membership of the evolved source. No identification of the complete HB
+  causal cut with that kernel condition has been obtained. The separate
+  `RadialAngularRecurrenceCompletionLaw` only yields asymptotic decay after an
+  additional damping factor; it does not yield the requested original-clock
+  finite-time statement.
+* [Wang, arXiv:2606.05098, submitted 3 June 2026](https://arxiv.org/abs/2606.05098)
+  constructs a skew flux potential for the periodic Lamé–Stokes flux after
+  subtracting its effective mean. Its divergence calculation uses the cell
+  equations and interface traction continuity. Mean subtraction and the
+  interface terms cannot be omitted when testing transfer to HB. The possible
+  survivor is a source-owned mean-plus-skew-potential-plus-contact identity;
+  no such complete HB identity was derived by this audit.
+* `SelbergThetaEisensteinProbes` supplies finite probe separation, not the
+  required physical half-parameter action intertwiner. `BornSectorExchange`
+  concerns half-integral level cosets, not this spectral half shift. The
+  inspected metaplectic results likewise do not supply that intertwiner.
+
+The next conjecture was that two original horizon-normalized radial modes at
+one unchanged physical frequency have a sufficiently small difference to
+remove the reflected-reader boundary term. The actual definitions refine this
+conjecture as follows. Put `rho=q`, `q*=1-q`, `u=(rho-1)/2`,
+`w=physicalFundamentalFrequency q side`, and
+`F_r(z)=gaussFactor w (physicalRadialFrequency r) false z`. Both `F_r(0)=1`.
+The original Gauss equation at zero gives
+
+    (1+w) F_r'(0) = [w(w+1)+scalarQ(u_r)]/4,
+    F_q'(0)-F_q*'(0) = (rho-1/2)/[8(1+w)].
+
+This coefficient is nonzero at every actual Xi occurrence, independently of RH.
+The radial leading terms cancel, but the full angular fields do not disappear:
+
+    F_q* V_q* - F_q V_q
+      = F_q (V_q* - V_q) + (F_q* - F_q) V_q*.
+
+Here `V_r` is the original full coexact reader, including all Fourier terms.
+The limit is `V_q*-V_q`, not zero by radial normalization alone. The coexact
+reader equations and the nonzero original scalar Weyl mean are the proposed
+source-level route to proving that this angular difference is nonzero somewhere.
+
+There is also a direct radial boundary test. With actual horizon modes `g_r`
+and their tortoise derivatives, set `W=g_q* g_q' - g_q g_q*'`. At the horizon,
+the predicted normalized limit is
+
+    W / [z * (z^(w/2))^2] -> (rho-1/2)/[4(1+w)],
+
+since `dz/dt=2 z radialUnit(t)` and `radialUnit(t)->1`. Thus equality of the
+zeroth Gauss coefficients does not annul the original Green boundary current.
+The physical frequencies obey `-2<Re(w)<-1`, so a zero raw Wronskian limit
+cannot be inferred from the first-order radial gain either.
+
+These are source-specific boundary tests, not a construction of the complete
+nonlinear action or an extinction proof. A nonlocal spatial transmutation
+would still have to carry this boundary term and its nonlinear product defect.
+[Sitnik's transmutation survey](https://arxiv.org/abs/1012.3741) confirms that a
+Volterra intertwiner requires a kernel equation, a diagonal condition, and a
+lower-endpoint Wronskian condition; no such actual HB kernel was constructed.
+Formal status: the complete scratch file passed `lake env lean` without warnings.
+The source-specific radial coefficient, raw no-finite-limit theorem, unique
+subtraction and decaying remainder, actual derivative identification, and full
+coexact stream trace are in `ThetaCuspHawkingBMRelativeReaderHorizon.lean`.
+The proposed nonzero-coexact-difference argument was not formalized by this
+leaf; the proved full-stream limit retains that difference explicitly. The
+isolated cached `lake build
+GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRelativeReaderHorizon` passed
+(2 jobs; leaf 247 seconds). Artifacts were published under the source hash
+`b93e554dd5330b2a91296bbbfe48dd8e22e623fedf8b33233bacc924e7f36c3e`,
+the temporary audit directory was removed, and the unique umbrella import was
+wired without an umbrella build. No owned Lean/Lake process remains.
+
+Final index refresh completed (three changed files). Global lint reports three
+unrelated unwired modules: `Sieve.KloostermanGlobalCollisionCoprime`,
+`ThetaCuspHawkingBMEvenSectorSkewPlateauOdd`, and
+`ThetaCuspHawkingBMOriginalGreenBoundary`; no diagnostic names this leaf.
+Scratch/source identity, published artifacts, unique import, whitespace and
+scoped diff checks passed. Other agents' unfinished modules were not modified.
+
+The second pass extracts a stronger positive survivor from the radial no-go.
+Write `a_q=(rho-1/2)/(4(1+w))` and
+
+    H(z)=2(1-z)^(1/2)[F_q*(z) F_q'(z)-F_q(z) F_q*'(z)].
+
+The actual dressing and the original tortoise derivative give the exact identity
+`W=z^(w+1)H(z)`, with `H(0)=a_q`. The continued Gauss derivatives prove `H`
+differentiable at zero, so `(H(z)-H(0))/z` has a finite limit. Because
+`Re(w+2)>0`, the source-derived subtraction satisfies
+
+    W-a_q z^(w+1) = z^(w+2) [(H(z)-H(0))/z] -> 0.
+
+This subtraction is unique among constant multiples of the leading power:
+if `W-c z^(w+1)` has any finite limit, multiplication by `z^(-w-1)->0`
+forces `c=a_q`. In particular the unsubtracted current has no finite limit.
+No frequency has been moved. This identifies an actual boundary prescription
+and its zero remainder, not an assumption of a zero raw boundary current.
+Transfer to extinction still requires identifying the complete physical action
+with this prescription, and controlling the remaining angular, causal, contact,
+metric-weight and independent polarization contributions. The calculation does
+not provide those identifications.
+
+Whole-chain action check: `BMPhysicalRadialNorm` identifies the actual radial
+residue with a source/angular factor times
+`Gamma(w) Gamma(3/2)/(2 Gamma(w+3/2))`; its existing theorem proves this norm
+factor nonzero at every original Xi fundamental frequency. Thus zero of the
+new renormalized boundary remainder cannot be substituted for zero of the
+physical residue. The latter still requires the actual remaining factor to
+vanish or to cancel in the complete sum of channels.
+
+A ninth complete deep all-view search covered 57,492 indexed files. Its
+unverified ingredient set retained an unresolved energy-sign obligation.
+`DeningerCalderonWittCotangentNoether` supplies a fixed cotangent action which
+annihilates boundaries of its own square-zero differential; its source and
+reporter have not been identified with this physical HB action. No universal
+fixed-clock extinction theorem was obtained from this search.
+
+## Method-directed whole-route reassessment, 13 September 2026
+
+Applied `docs/meta/stroke-of-genius-method.md` and
+`docs/meta/scientific-method.md`. The current radial subtraction is a `[BRIDGE]`,
+not the primary extinction conjecture. It is useful only as an identified
+boundary contribution of the physical action; extending its special cases does
+not itself attack the missing source law.
+
+Written interrogation:
+
+* **Where does this proof know that Xi vanishes?** The relative radial proof
+  uses the existing physical parameter definitions, reflection, the open-strip
+  bounds and nonrealness. Its decisive algebra does not use a vanishing theta
+  Mellin period. Therefore its zero remainder cannot be the RH-bearing step.
+* **What is being removed?** A source-derived horizon coefficient. Keeping it
+  exposed a unique subtraction, not invariance of the complete action. The
+  subtraction must remain part of any subsequent variation or gluing identity.
+* **Which correspondence is still informal?** The physical causal/left action
+  and the reduced complete cokernel remain different until their complete
+  independent-channel comparison is proved. Boundary-current identities also
+  remain different from vanishing of the nonzero-norm physical residue.
+* **What changed in the current team corpus?** `BMOriginalModularGreen` now
+  proves zero diagonal/reflected modular finite part for the original causal
+  potential at fixed null coordinates. `BMOriginalAngularCurrent` expresses
+  the actual Einstein angular current as three Green transfers of spacetime
+  derivatives, retaining the source factor `R`. Passing from the former to the
+  latter needs the differentiated prescription, including its parameter tails;
+  it is not an immediate substitution.
+* **Am I working on the right problem?** Completing the isolated radial audit
+  records a finished bridge. The next priority is an identity that uses the
+  literal vanishing Xi/theta period in the complete nonlinear source, or a
+  decisive falsification of such an identity. Further radial refinements are
+  deferred unless they discharge a named obligation of that identity.
+
+Three new full-corpus deep requests test period-annihilator preservation under
+nonlinear assembly, cyclic homotopy transfer of source equations, and complete
+finite-clock action laws with independent polarizations and contacts. A possible
+exact factorization of the physical action by the original theta period is a
+proof target, not an established law: dividing by Xi and assuming the quotient
+regular at its zeros would merely restate the missing result. A legitimate
+factorization must construct its coefficient from the original source assembly
+and prove its regularity independently. This has not been frozen as a new
+primary conjecture; the novelty/distance and source-evidence gates remain open.
+
+The three requests finished over 57,498 indexed files. Cyclic transfer returned
+without partial coverage; its proposed ingredients still assumed zero action
+and preserved gauge symmetry. Period-ideal and complete-clock searches returned
+usable hits but reported partial results from malformed local-model output;
+period-ideal decomposition also timed out. Their missing synthesis is not
+evidence that a source law does not exist. Candidate applicability was checked
+against source files rather than accepted from the generated ingredient lists.
+
+The most relevant new tests are:
+
+| Candidate mechanism | Actual source evidence | Whole-route consequence |
+| --- | --- | --- |
+| A closed Ward annihilator forces the radiative coefficient to vanish | `VortexWardOperator` proves the exact uncleared residual is the degree-zero boundary minus a resonance series. Multiplying by the denominator kills the resonance series; Euler differentiation then kills the constant. | The cleared equation can erase precisely the resonant quantity the left-QNM action must detect. The actual uncleared resonance/contact coefficient must be calculated; a cleared source equation is insufficient. |
+| Solved lower-order corrections force the next obstruction to vanish | `TateFractureObstructionBianchiAmplitudeLaw.exists_firstObstruction_zero_higherObstruction_ne_zero` gives a closed counterexample. `MinimalLawLeadingJet` preserves the first surviving operation under an equivalence satisfying the full triangular morphism equations. | Solved `++` and `+-` equations and invertible changes of variables do not supply extinction. The source-specific next obstruction, with its physical boundary domain, remains decisive. |
+| A general higher Noether theorem already supplies the missing identity | `CyclicMaurerCartanLaw` requires Bianchi and cyclicity as fields; its gauge-annihilation theorem applies to `twisted alpha epsilon`. | One must derive the actual boundary-corrected pairing and identify the physical clock variation as that direction. Instantiating the structure with those unproved fields would assume the missing content. |
+
+The vortex example is tied to an independently checked primary paper,
+[Brunner–Cheng–Jockers, submitted 8 September 2026](https://arxiv.org/abs/2609.09298),
+which studies difference-operator Ward identities for supersymmetric vortex
+partition functions. The inspected Lean recurrence preserves its boundary and
+singular-denominator correction. No identification of its degree-rescaling
+variable with the original HB physical clock has been established.
+
+A broad annihilator search also found
+[Asgharzadeh, revised 3 September 2026](https://arxiv.org/abs/2601.20596).
+Its ideal/Ext annihilator containments concern the appropriate grade in a
+Noetherian local setting; extra closure statements have explicit structural
+hypotheses and counterexamples. No such module or graded source identification
+has been constructed for the complete nonlinear HB action. The paper therefore
+does not justify automatic propagation of the theta-period ideal through the
+higher source assembly.
+
+An additional live-team update changes the proposed integration strategy:
+`BMOriginalGreenBoundary.original_current_boundary` has already transferred the
+three spacetime-derivative Green terms to explicit radial and temporal endpoint
+currents minus `readerRemainder`. That remainder retains the radius-weight
+derivative and both ordered mixed reader derivatives. Thus the next use of the
+modular finite-part theorem should start from this finite-cut identity, not by
+assuming that differentiation commutes with an infinite-cutoff limit. No
+vanishing of its endpoints or remainder was inferred here.
+
+## Original radial weights and the surviving triple-source overlap, 13 September 2026
+
+The next attack combines the identified cusp face with the remaining mixed
+angular overlap. With K=(S^2/2) grad R, the literal reader equation gives
+`div K=J dot V+lambda*S^2*R/(2*y^2)`. Thus, with the original coefficients
+C,D and Omega=(lambda-mu)D+mu C,
+
+    (lambda-mu) I_r = div(C G+Omega K)-Omega*lambda*S^2*R/(2*y^2).
+
+This retains a full triple-source density and its boundary current. The
+conjecture that original radial weights kill Omega must be tested, not imposed.
+
+The current corpus's FundamentalRadialModes supplies the original mode
+`g=z^(w/2)/r` at either fundamental frequency, with both radial normalizations
+agreeing. Since r'=r^2-1 and z'/z=2/r, its derivative is
+`g'=(w+1-r^2)g/r`. Together with lambda=(w+1)(w+2), the actual left blocks
+reduce to `Tleft=w*g`, `curl(left)=w*(w+1)*g/r`.
+
+The now-checked contact-inclusive radial coefficients are
+
+    C = (w E g/r^2) * 2s(w-2s),
+    D = (w E g/r^2) * s^2*(w+(s+1)*(2s+2-w)/(2r^2)).
+
+The original eigenvalue difference factors as
+`lambda-mu=(w-2s)(w+2s+3)`. Xi open-strip bounds prove
+`Re(w-2s)>0` and `Re(w+2s+3)<0` even for independent source and reader.
+This permits the actual resolvent division without imposing nonresonance.
+It does not make the surviving square/contact coefficient vanish. The exact
+original-field identities and the resulting no-go are checked below.
+
+The original-field calculation and no-go now pass the complete Lean scratch
+check. Define
+
+    P0 = s*(w+2s+3)*w + 2*(2s+1)*(2s+2),
+    P1 = s*(w+2s+3)*(s+1)*(2s+2-w)/2.
+
+The actual coefficient is
+
+    Omega = (w E g/r^2)*(w-2s)*s*(P0+P1/r^2).
+
+For unit source amplitude, every factor outside the last bracket is nonzero
+at every interior radius. Both original continued radial normalizations give
+the same nonzero g. The source strip proves s, s+1, s+2 and 4s+1 nonzero;
+the independent frequency gaps prove w-2s and w+2s+3 nonzero.
+
+Conjecture that Omega vanishes everywhere: rejected. Its positive survivor is
+an exact zero-locus law. P0 and P1 cannot vanish together. Indeed P1=0 would
+force w=2s+2; after this substitution P0=(2s+2)(4s+1)(s+2), whose factors are
+source-proved nonzero. Therefore Omega=0 exactly when P0*r^2+P1=0, and this
+can hold at at most one interior radius. The general amplitude law is
+Omega(a)=a^2 Omega(1); its zero criterion is a=0 or the same radial equation.
+
+The second Green identity is also checked on the actual literal fields:
+
+    (lambda-mu) I_r + Omega*lambda*S^2*R/(2*y^2)
+      = C div G + Omega div K,       K=(S^2/2) grad R.
+
+This is the exact local boundary/bulk comparison required before integration.
+No source or reader Fourier term, differentiated source contact, or radial
+normalization was removed. It does not set either boundary flux to zero,
+establish the causal switched correction, or prove a nonzero integrated
+coupling. For the complete HB chain, extinction must now be tested through the
+full admitted boundary/triple-source balance and the other nonlinear channels;
+pointwise vanishing of these radial weights cannot supply it.
+
+Search audit: three deep all-view requests completed over 57,485 files. The
+fundamental-profile search recovered the terminating Gauss-series mechanism and
+original horizon/normalizable normalization equality used here. Generic
+polynomial/secular-root results were unnecessary after the source-specific
+linear equation was derived. Broad single-word arXiv queries did not return a
+new June–September 2026 identity applicable to this source. The primary abstract
+of [Popkov et al., arXiv:2408.09302](https://arxiv.org/abs/2408.09302) concerns an
+XXZ steady state with boundary dissipation and a modified dispersion relation;
+no unchanged-Hawking-clock theorem was transferred from it.
+
+Validation: complete `lake env lean /tmp/hb-mixed-radial-overlap.lean` passed
+without warnings after reducing imports to the required mixed current and original
+left-horizon factor. Isolated cached `lake build
+GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedRadialOverlap` passed
+(2 jobs; leaf 34 seconds); artifacts published under a source-hash guard,
+temporary directory removed, and exact leaf wired without an umbrella build.
+Source SHA256: `2b8fef587ca670b1bcbf329e2731ef978bf760e98b956a7937e8fc29c3bfaea4`.
+
+Final index refresh: three changed files. Global lint reports the same two
+unrelated unwired modules, `Sieve.KloostermanGlobalCollisionCoprime` and
+`ThetaCuspHawkingBMEvenSectorSkewLowBand`; no diagnostic names this leaf.
+Exact source/scratch identity, artifact presence, unique import, whitespace and
+scoped diff checks passed. No owned Lean/Lake process remains.

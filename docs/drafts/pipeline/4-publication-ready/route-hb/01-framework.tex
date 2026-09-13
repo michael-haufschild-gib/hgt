@@ -1,0 +1,109 @@
+\section{Scope, contribution, and evidence}
+
+An arithmetic scattering pole is an occurrence statement. A proof of the Riemann hypothesis requires a restriction on where such poles may occur. Route HB attempts to obtain that restriction from a common time convention and the nonlinear action of a theta-derived source. Its proposed chain is
+\[
+\begin{gathered}
+\text{theta source}\longrightarrow\text{Xi occurrence}
+\longrightarrow\text{retained nonlinear source},\\
+\text{retained nonlinear source}\dashrightarrow\text{complete physical causal action}
+\dashrightarrow\text{extinction}\longrightarrow\RH.
+\end{gathered}
+\]
+The dashed arrows are research objectives, not theorems. The final implication refers to the specified reduced extinction receivers, whose identification with a diagnostic of the complete action remains open. In particular, an equivalence between an extinction property and \(\RH\) does not establish either side.
+
+\textbf{Viability status.} Route HB is not yet a validated proof strategy with only technical lemmas missing. Two substantive bridges remain unestablished: identification of the complete physical action with a faithful diagnostic, and an independent source law forcing the required diagnostic to vanish. The second is not a consequence of finishing the construction in the first. Either proposed bridge could fail. Any viable law must exclude hypothetical off-line zeros while remaining compatible with the known critical-line zeros; it need not, and cannot without further justification, demand that the entire physical action vanish. The formal components therefore do not yet establish the viability of the proposed RH mechanism.
+
+This article is a critical exposition of a specified formal corpus, not a claim of a new zero-location theorem. Its contribution is to make the mathematical statements, their domains, and the unfinished transfers between them explicit. The results are organized around analytic factorization, response residues, sourced metric reconstruction, boundary renormalization, and the difference between a detector and a law that makes it vanish. The development is substantial, but the extent of a formal library is not evidence of progress on an unproved final implication.
+
+The geometric setting is related to the exact topological-black-hole calculations of Aros, Mart\'inez, Troncoso, and Zanelli \cite{aros}, the gauge-invariant master equations of Kodama and Ishibashi \cite{ki}, and the gravitational quasinormal-frequency calculation of Birmingham and Mokhtari \cite{bm}. These works provide context for the choice of operators and boundary conditions. They do not identify the nonlinear arithmetic source with an extinction mechanism. The cusp integrals also require the distinction between ordinary integration and regularization familiar from Zagier's work \cite{zagier}.
+
+\subsection{What is meant by a formal result}
+
+A result labelled as a theorem below has an identified theorem declaration in the accompanying corpus manifest. The ordinary restrictions in its statement---for example, \(r>1\), a nonzero denominator, or membership in the type of actual Xi zeros---are part of its mathematical domain. No unproved analytic existence, positivity, extinction, or \(\RH\) premise is silently discharged. An implication with such a premise is explicitly called conditional, even if Lean formalizes the implication itself.
+
+There are two distinct audits. A \emph{logical audit} reads the complete declaration type and the definitions and proof on which its mathematical interpretation depends. A \emph{kernel audit} executes the proof checker and records its transitive axioms. This manuscript's new work is a source and dependency audit. A build started during preparation was interrupted; no successful fresh kernel audit is claimed. The supplied \code{Verify.lean} is a reviewer verification driver, not an executed certificate from this preparation. Previous checks reported in research notes are provenance, not replacements for a fresh check of a changed source file. This distinction is retained in the supplementary review report.
+
+Lean's usual foundational constants \code{propext}, \code{Classical.choice}, and \code{Quot.sound} are not conjectural mathematical hypotheses. Conversely, absence of an extra axiom does not remove a theorem's explicit arguments or assumptions hidden in a structure. Throughout, an abstract response satisfying prescribed properties is distinguished from the literal constructed response.
+
+\subsection{Snapshot and limits of coverage}
+
+The primary inputs were \code{docs/notes.md} and the Route HB entry of \code{rh-current-frontier-map.md}. The latter explicitly uses a 12 September 2026 evidence cutoff. Later source files close some tasks still described there as open; the notes also contain superseded and speculative passages. The accompanying inventory lists 1,250 HB-related Lean files and 22,138 declaration names. This is a lexical inventory, not a claim that every declaration is independently explained or checked here. Every item in the notes' numbered route ledger is addressed in the coverage table; the formal-source appendix identifies the specific statements used in the mathematical exposition.
+
+Hybrid and deep corpus search were used for discovery, followed by exact source searches and reading. The search service reported broad source coverage but incomplete compiler metadata, with many candidates marked \code{source_only} and \code{applicability: not_checked}. Therefore search rank, a descriptive comment, and a ledger label such as ``FULL'' are never treated as proof certificates. Negative findings mean that a requisite theorem was not located and established in this audit, not that no differently named theorem can exist.
+
+\section{Conventions and the two spectral parameterizations}
+
+Write
+\[
+\Lambda(s)=\pi^{-s/2}\Gamma(s/2)\zeta(s),\qquad
+\xi(s)=\tfrac12s(s-1)\Lambda(s),\qquad
+\XiC(z)=\xi(\tfrac12+iz),
+\]
+where \(\xi\) is extended to an entire function. Equalities using \(\Lambda\) at its poles mean meromorphic identities, not ordinary finite values. The corpus defines \(\xi\) by an entire pole-cleared expression. A zero copy \(q\) consists of a zero \(\rho\) and one of its multiplicity labels. No assumption that zeros are simple is made. Set
+\[
+ z_q=-i(\rho-\tfrac12),\qquad
+ \rho=\sigma+it,\qquad
+ z_q=t+i(\tfrac12-\sigma).
+\]
+The critical-line condition is \(\im z_q=0\). Functional-equation reflection of a zero is \(\rho\mapsto1-\rho\); complex conjugation is a different operation.
+
+\subsection{Optical scattering coordinate}
+
+Define the normalized meromorphic quotient and its shadow by
+\[
+ \mathcal S(z)=\frac{\XiC(z+i)}{\XiC(z)},\quad
+ j(z)=-z-i,\quad a(z)=\tfrac14+\tfrac i2z,\quad
+ \nu(z)=\tfrac z2+\tfrac i4.
+\]
+Thus \(a=\tfrac12+i\nu\). The quotient is the corpus's normalized modular cusp coefficient; the classical unnormalized coefficient has an additional elementary factor. The frequencies used in the incidence packet are
+\[
+ \omega_\pm(n,z)=\pm\nu(z)-i(2n+\tfrac32).
+\]
+These formulas define the spectral data being audited. They do not assert an \(L^2\) harmonic at a continued arithmetic resonance, nor a nonlinear Einstein--Klein--Gordon realization of every such resonance.
+
+\begin{proposition}[Optical incidence and shadow symmetry]\label{thm:incidence}
+For every Xi zero copy \(q\) and \(n\in\N\), \(\mathcal S\) has negative meromorphic order at \(z_q\), is analytic and zero at \(j(z_q)\), and
+\[
+ \omega_+(n,j(z_q))=\omega_-(n,z_q).
+\]
+For every complex \(z\),
+\[
+ \im\omega_+(n,z)-\im\omega_-(n,z)=\tfrac12+\im z.
+\]
+Any real-valued reporter depending only on \(Q(z)=\tfrac14+\nu(z)^2\) has the same value at \(z\) and \(j(z)\).
+\end{proposition}
+\cert{A1}
+\begin{proof}
+All zeros of \(\XiC\) lie in \(|\im z|<1/2\). At \(z_q\), the numerator has argument of imaginary part in \((1/2,3/2)\), hence is nonzero. The denominator has positive zero order; their quotient has negative order. At the shadow, evenness of \(\XiC\) makes the numerator \(\XiC(-z_q)=0\), while its denominator is outside the zero strip. Moreover \(\nu(j(z))=-\nu(z)\). Substitution gives both the branch exchange and invariance of \(Q\). Finally the difference of imaginary parts is \(2\im\nu(z)=\im z+1/2\).
+\end{proof}
+
+The last assertion is a statement about reporters of the displayed form. It does not classify every optical observable. Requiring the splitting to equal \(1/2\) at all Xi copies is a zero-location requirement, not a consequence of its name ``Hawking splitting.''
+
+\subsection{Metric-source rates and physical testing frequencies}
+
+For the later metric-source construction define
+\[
+ s_+(\rho)=\rho-2,\qquad s_-(\rho)=-\rho-1,\qquad
+ \lambda=\rho(\rho-1)=(s_\pm+1)(s_\pm+2).
+\]
+A quadratic source has time rate \(2s_\pm\), and its output angular shift is
+\(\lambda_2=(2s_\pm+1)(2s_\pm+2)\).
+The \emph{original optical testing frequencies} in the Laplace variable are instead
+\begin{equation}\label{eq:testing}
+ w_+=-1-\rho/2,\qquad w_-=-2+\rho/2.
+\end{equation}
+These are the formulas for \code{physicalFundamentalFrequency}. They are not \(s_\pm\). The same short name \code{physicalRate} is used in two namespaces for a parent rate and its doubled rate; the manifest uses full namespaces. The residue statements below use the parent rate of \code{D4BMModularCore}.
+\cert{D1}
+The distinction matters: a calculation at \(\mu=\lambda\) for an elementary metric mode cannot be inserted into an original optical left-reader pairing without an explicit matching theorem.
+
+\subsection{Background and angular source}
+
+Take exterior coordinates \((\tau,r,x,y)\), \(r>1\), \(y>0\), and the background
+\[
+ g_0=-(r^2-1)\dd\tau^2+\frac{\dd r^2}{r^2-1}
+       +r^2\frac{\dd x^2+\dd y^2}{y^2}.
+\]
+This fixes the anti-de Sitter radius to one. Let \(\Delta=y^2(\partial_x^2+\partial_y^2)\); thus its \(L^2\) sign is nonpositive. The literal scalar Eisenstein field, in the corpus normalization, is denoted \(S_\rho\). It retains both Weyl terms and the entire Fourier--Bessel tail. Its constant terms are
+\(\Lambda(2\rho-1)y^{1-\rho}+\Lambda(2\rho)y^\rho\), and its scalar equation is \(\Delta S_\rho=\lambda S_\rho\). The quadratic source uses \(S_\rho^2\), not \(|S_\rho|^2\). Analytic continuation and complex bilinear pairing are retained until a conjugation theorem is available. Local identities on \(y>0\), descent to a modular domain, and a renormalized integral over its cusp are different assertions.
+
+\cert{D5}

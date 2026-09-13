@@ -1,0 +1,661 @@
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEvenSectorRadialCurrent
+
+/-!
+# The even-sector onset (time-component) symplectic current between the `−` mode and the `++` Laurent responses
+
+The time component of the Einstein action symplectic current (`streamCurrent_0`) between the
+Kodama–Ishibashi `−` mode (undressed master `1/r` at half-rate `(−3−s)/2`) and the `++` Laurent
+responses is computed with the same reconstruction jets as the radial component. For a pair of
+fields with time dependence `e^{2st}` and `e^{(−3−s)t}` the divergence identity of the current has
+the time term `(s−3)·(density)`, so the radial integral of this component (the onset trace of the
+`++−` action coefficient) is the bulk quantity `−S₃(p,p,m)/(s−3)` up to the radial flux, whose
+boundary finite parts vanish. Every piece is again a single angular structure `P·Q` times a
+rational function of `r`; the source-only reconstruction gives a linear form in the ten source
+jets (`onsetSrcCurrent`), and the scalar–scalar and vector–vector Laurent responses have the onset
+currents `onsetCurrentSS`, `onsetCurrentVV`.
+-/
+
+set_option autoImplicit false
+set_option linter.unusedVariables false
+set_option linter.unusedSimpArgs false
+set_option linter.unusedTactic false
+set_option linter.unreachableTactic false
+
+namespace RHTower.D4BMScalarStream
+open GaloisForLFunctions.HTGeometry CoordinateMetricTwoJet D4BMScalarLinearEquation
+open RHTower.D4BMMixedActionCurrent RHTower.D4BMActionSymplecticForm
+noncomputable section
+
+/-- The onset current is additive in the first stream jet (second derivative slots unsplit). -/
+theorem streamCurrent_0_add (s v r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 F0' F01' F1' F11' F2' F21' H' H1' P Px Py Pxx Pxy Pyy G0 G01 G02 G1 G11 G12 G2 G21 G22 L L1 L2 Q Qx Qy Qxx Qxy Qyy : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet s r y (F0 + F0') (F01 + F01') F02 (F1 + F1') (F11 + F11') F12 (F2 + F2') (F21 + F21') F22 (H + H') (H1 + H1') H2 P Px Py Pxx Pxy Pyy)
+      (metricJet v r y G0 G01 G02 G1 G11 G12 G2 G21 G22 L L1 L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+    actionSymplectic (D4BMBackground.jet r y) (metricJet s r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy)
+      (metricJet v r y G0 G01 G02 G1 G11 G12 G2 G21 G22 L L1 L2 Q Qx Qy Qxx Qxy Qyy) 0 +
+    actionSymplectic (D4BMBackground.jet r y) (metricJet s r y F0' F01' F02 F1' F11' F12 F2' F21' F22 H' H1' H2 P Px Py Pxx Pxy Pyy)
+      (metricJet v r y G0 G01 G02 G1 G11 G12 G2 G21 G22 L L1 L2 Q Qx Qy Qxx Qxy Qyy) 0 := by
+  simp only [streamCurrent_0 hr hy hf]
+  ring
+
+/-- The onset current is homogeneous in the first stream jet (second derivative slots unsplit). -/
+theorem streamCurrent_0_smul (c s v r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy G0 G01 G02 G1 G11 G12 G2 G21 G22 L L1 L2 Q Qx Qy Qxx Qxy Qyy : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet s r y (c * F0) (c * F01) F02 (c * F1) (c * F11) F12 (c * F2) (c * F21) F22 (c * H) (c * H1) H2 P Px Py Pxx Pxy Pyy)
+      (metricJet v r y G0 G01 G02 G1 G11 G12 G2 G21 G22 L L1 L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+    c * actionSymplectic (D4BMBackground.jet r y) (metricJet s r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy)
+      (metricJet v r y G0 G01 G02 G1 G11 G12 G2 G21 G22 L L1 L2 Q Qx Qy Qxx Qxy Qyy) 0 := by
+  simp only [streamCurrent_0 hr hy hf]
+  ring
+
+/-- Onset current of the `−` mode against the pure Laurent master `r`. -/
+def onsetCurrent_lauR (s r μ : ℂ) : ℂ := (((24 : ℂ) + (-21 / 2 : ℂ) * μ + (-3 / 4 : ℂ) * μ ^ 2 + (-66 : ℂ) * r ^ 2 + (-45 / 2 : ℂ) * r ^ 2 * μ + (3 / 4 : ℂ) * r ^ 2 * μ ^ 2 + (-36 : ℂ) * r ^ 4 + (3 : ℂ) * r ^ 4 * μ + (18 : ℂ) * r ^ 6 + (-58 : ℂ) * s + (-35 / 2 : ℂ) * s * μ + (-3 / 4 : ℂ) * s * μ ^ 2 + (-13 : ℂ) * s * r ^ 2 + (2 : ℂ) * s * r ^ 2 * μ + (3 / 4 : ℂ) * s * r ^ 2 * μ ^ 2 + (-8 : ℂ) * s * r ^ 4 + (-1 : ℂ) * s * r ^ 4 * μ + (6 : ℂ) * s * r ^ 6 + (65 : ℂ) * s ^ 2 + (23 / 2 : ℂ) * s ^ 2 * μ + (27 : ℂ) * s ^ 2 * r ^ 2 + (1 / 2 : ℂ) * s ^ 2 * r ^ 2 * μ + (19 : ℂ) * s ^ 3 + (-3 / 2 : ℂ) * s ^ 3 * μ + (6 : ℂ) * s ^ 3 * r ^ 2 + (-8 : ℂ) * s ^ 4) / (r ^ 2 * (r ^ 2 - 1) ^ 2 * (2 - μ) ^ 2))
+
+theorem evenSector_onset_lauR (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ (lauRMaster s r) (lauRMaster1 s r) (lauRMaster2 s r) (lauRMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      onsetCurrent_lauR s r μ * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  simp only [lauR_F0_eq s r μ hr hf hμ hs, lauR_F01_eq s r μ hr hf hμ hs, lauR_F1_eq s r μ hr hf hμ hs, lauR_F11_eq s r μ hr hf hμ hs, lauR_F2_eq s r μ hr hf hμ hs, lauR_F21_eq s r μ hr hf hμ hs, lauR_H_eq s r μ hr hf hμ hs, lauR_H1_eq s r μ hr hf hμ hs, mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCurrent_lauR
+  field_simp
+  ring
+
+/-- Onset current of the `−` mode against the pure Laurent master `1/r`. -/
+def onsetCurrent_lauI1 (s r μ : ℂ) : ℂ := (((24 : ℂ) + (-21 / 2 : ℂ) * μ + (-3 / 4 : ℂ) * μ ^ 2 + (36 : ℂ) * r ^ 2 + (-39 / 2 : ℂ) * r ^ 2 * μ + (3 / 4 : ℂ) * r ^ 2 * μ ^ 2 + (78 : ℂ) * s + (-3 / 2 : ℂ) * s * μ + (-3 / 4 : ℂ) * s * μ ^ 2 + (135 : ℂ) * s * r ^ 2 + (-15 : ℂ) * s * r ^ 2 * μ + (3 / 4 : ℂ) * s * r ^ 2 * μ ^ 2 + (45 : ℂ) * s ^ 2 + (15 / 2 : ℂ) * s ^ 2 * μ + (135 : ℂ) * s ^ 2 * r ^ 2 + (9 / 2 : ℂ) * s ^ 2 * r ^ 2 * μ + (-21 : ℂ) * s ^ 3 + (-3 / 2 : ℂ) * s ^ 3 * μ + (36 : ℂ) * s ^ 3 * r ^ 2 + (-12 : ℂ) * s ^ 4) / (r ^ 4 * (r ^ 2 - 1) ^ 2 * (2 - μ) ^ 2))
+
+theorem evenSector_onset_lauI1 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ (lauI1Master s r) (lauI1Master1 s r) (lauI1Master2 s r) (lauI1Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      onsetCurrent_lauI1 s r μ * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  simp only [lauI1_F0_eq s r μ hr hf hμ hs, lauI1_F01_eq s r μ hr hf hμ hs, lauI1_F1_eq s r μ hr hf hμ hs, lauI1_F11_eq s r μ hr hf hμ hs, lauI1_F2_eq s r μ hr hf hμ hs, lauI1_F21_eq s r μ hr hf hμ hs, lauI1_H_eq s r μ hr hf hμ hs, lauI1_H1_eq s r μ hr hf hμ hs, mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCurrent_lauI1
+  field_simp
+  ring
+
+/-- Onset current of the `−` mode against the pure Laurent master `1/r³`. -/
+def onsetCurrent_lauI3 (s r μ : ℂ) : ℂ := (((3 / 2 : ℂ) * μ + (-3 / 4 : ℂ) * μ ^ 2 + (378 : ℂ) * r ^ 2 + (-81 / 2 : ℂ) * r ^ 2 * μ + (3 / 4 : ℂ) * r ^ 2 * μ ^ 2 + (-180 : ℂ) * r ^ 4 + (9 : ℂ) * r ^ 4 * μ + (-18 : ℂ) * r ^ 6 + (-90 : ℂ) * s + (21 / 2 : ℂ) * s * μ + (-3 / 4 : ℂ) * s * μ ^ 2 + (715 : ℂ) * s * r ^ 2 + (-24 : ℂ) * s * r ^ 2 * μ + (3 / 4 : ℂ) * s * r ^ 2 * μ ^ 2 + (-120 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 4 * μ + (-6 : ℂ) * s * r ^ 6 + (-151 : ℂ) * s ^ 2 + (7 / 2 : ℂ) * s ^ 2 * μ + (443 : ℂ) * s ^ 2 * r ^ 2 + (17 / 2 : ℂ) * s ^ 2 * r ^ 2 * μ + (-24 : ℂ) * s ^ 2 * r ^ 4 + (-85 : ℂ) * s ^ 3 + (-3 / 2 : ℂ) * s ^ 3 * μ + (90 : ℂ) * s ^ 3 * r ^ 2 + (-16 : ℂ) * s ^ 4) / (r ^ 6 * (r ^ 2 - 1) ^ 2 * (2 - μ) ^ 2))
+
+theorem evenSector_onset_lauI3 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ (lauI3Master s r) (lauI3Master1 s r) (lauI3Master2 s r) (lauI3Master3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      onsetCurrent_lauI3 s r μ * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  simp only [lauI3_F0_eq s r μ hr hf hμ hs, lauI3_F01_eq s r μ hr hf hμ hs, lauI3_F1_eq s r μ hr hf hμ hs, lauI3_F11_eq s r μ hr hf hμ hs, lauI3_F2_eq s r μ hr hf hμ hs, lauI3_F21_eq s r μ hr hf hμ hs, lauI3_H_eq s r μ hr hf hμ hs, lauI3_H1_eq s r μ hr hf hμ hs, mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCurrent_lauI3
+  field_simp
+  ring
+
+def onsetAtom_qt0_G1 (s r μ : ℂ) : ℂ := (((-8 : ℂ) * r) / ((2 - μ) * s))
+def onsetAtom_qt1_G1 (s r μ : ℂ) : ℂ := (((6 : ℂ) + (-1 : ℂ) * μ + (-12 : ℂ) * r ^ 2) / ((2 - μ) * s))
+def onsetAtom_qtr0_G1 (s r μ : ℂ) : ℂ := (((2 : ℂ) + (-10 : ℂ) * r ^ 2) / ((2 - μ) * s))
+def onsetAtom_qtr1_G1 (s r μ : ℂ) : ℂ := (((4 : ℂ) * r + (-8 : ℂ) * r ^ 3) / ((2 - μ) * s))
+def onsetAtom_qT0_G1 (s r μ : ℂ) : ℂ := (((4 : ℂ) + (-2 : ℂ) * μ + (-12 : ℂ) * r ^ 2 + (4 : ℂ) * r ^ 2 * μ + (8 : ℂ) * r ^ 4) / (r * (r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qT1_G1 (s r μ : ℂ) : ℂ := (((-14 : ℂ) + (1 : ℂ) * μ + (32 : ℂ) * r ^ 2) / ((2 - μ)))
+def onsetAtom_qT2_G1 (s r μ : ℂ) : ℂ := (((-12 : ℂ) * r + (18 : ℂ) * r ^ 3) / ((2 - μ)))
+def onsetAtom_qt0_G11 (s r μ : ℂ) : ℂ := (((-1 : ℂ) * μ + (-2 : ℂ) * r ^ 2) / ((2 - μ) * s))
+def onsetAtom_qt1_G11 (s r μ : ℂ) : ℂ := (((2 : ℂ) * r + (-2 : ℂ) * r ^ 3) / ((2 - μ) * s))
+def onsetAtom_qtr0_G11 (s r μ : ℂ) : ℂ := (((-2 : ℂ) * r ^ 3) / ((2 - μ) * s))
+def onsetAtom_qtr1_G11 (s r μ : ℂ) : ℂ := (((1 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4) / ((2 - μ) * s))
+def onsetAtom_qT0_G11 (s r μ : ℂ) : ℂ := (((-2 : ℂ) + (3 : ℂ) * μ + (2 : ℂ) * r ^ 2) / ((2 - μ)))
+def onsetAtom_qT1_G11 (s r μ : ℂ) : ℂ := (((-4 : ℂ) * r + (6 : ℂ) * r ^ 3) / ((2 - μ)))
+def onsetAtom_qT2_G11 (s r μ : ℂ) : ℂ := (((-2 : ℂ) * r ^ 2 + (2 : ℂ) * r ^ 4) / ((2 - μ)))
+def onsetAtom_qt0_L (s r μ : ℂ) : ℂ := (((-24 : ℂ) + (6 : ℂ) * μ + (36 : ℂ) * r ^ 2 + (-16 : ℂ) * s + (6 : ℂ) * s * μ + (12 : ℂ) * s * r ^ 2) / ((r ^ 2 - 1) * (2 - μ) * s))
+def onsetAtom_qt1_L (s r μ : ℂ) : ℂ := (((12 : ℂ) * r + (4 : ℂ) * s * r) / ((2 - μ) * s))
+def onsetAtom_qtr0_L (s r μ : ℂ) : ℂ := (((-12 : ℂ) * r + (24 : ℂ) * r ^ 3 + (-4 : ℂ) * s * r + (8 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ) * s))
+def onsetAtom_qtr1_L (s r μ : ℂ) : ℂ := (((6 : ℂ) * r ^ 2 + (2 : ℂ) * s * r ^ 2) / ((2 - μ) * s))
+def onsetAtom_qT0_L (s r μ : ℂ) : ℂ := (((24 : ℂ) + (-36 : ℂ) * r ^ 2 + (8 : ℂ) * s + (-12 : ℂ) * s * r ^ 2) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qT1_L (s r μ : ℂ) : ℂ := (((48 : ℂ) * r + (-60 : ℂ) * r ^ 3 + (16 : ℂ) * s * r + (-20 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qT2_L (s r μ : ℂ) : ℂ := (((-12 : ℂ) * r ^ 2 + (-4 : ℂ) * s * r ^ 2) / ((2 - μ)))
+def onsetAtom_qt0_G2 (s r μ : ℂ) : ℂ := (((-6 : ℂ) + (6 : ℂ) * r ^ 2 + (-4 : ℂ) * s + (8 : ℂ) * s * r ^ 2) / ((2 - μ) * s))
+def onsetAtom_qtr0_G2 (s r μ : ℂ) : ℂ := (((-3 : ℂ) * r + (3 : ℂ) * r ^ 3 + (-3 : ℂ) * s * r + (5 : ℂ) * s * r ^ 3) / ((2 - μ) * s))
+def onsetAtom_qT0_G2 (s r μ : ℂ) : ℂ := (((6 : ℂ) + (3 : ℂ) * μ + (-6 : ℂ) * r ^ 2 + (2 : ℂ) * s + (3 : ℂ) * s * μ + (-8 : ℂ) * s * r ^ 2) / ((2 - μ)))
+def onsetAtom_qT1_G2 (s r μ : ℂ) : ℂ := (((6 : ℂ) * r + (-6 : ℂ) * r ^ 3 + (10 : ℂ) * s * r + (-12 : ℂ) * s * r ^ 3) / ((2 - μ)))
+def onsetAtom_qt0_L1 (s r μ : ℂ) : ℂ := (((8 : ℂ) * r) / ((2 - μ)))
+def onsetAtom_qtr0_L1 (s r μ : ℂ) : ℂ := (((4 : ℂ) * r ^ 2) / ((2 - μ)))
+def onsetAtom_qT0_L1 (s r μ : ℂ) : ℂ := (((16 : ℂ) * s * r + (-8 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qT1_L1 (s r μ : ℂ) : ℂ := (((-8 : ℂ) * s * r ^ 2) / ((2 - μ)))
+def onsetAtom_qt0_G0 (s r μ : ℂ) : ℂ := (((-6 : ℂ) + (2 : ℂ) * r ^ 2) / ((r ^ 2 - 1) ^ 2 * (2 - μ)))
+def onsetAtom_qtr0_G0 (s r μ : ℂ) : ℂ := (((-4 : ℂ) * r + (2 : ℂ) * r ^ 3) / ((r ^ 2 - 1) ^ 2 * (2 - μ)))
+def onsetAtom_qT0_G0 (s r μ : ℂ) : ℂ := (((-12 : ℂ) * s + (6 : ℂ) * s * r ^ 2 + (-2 : ℂ) * s * r ^ 4) / ((r ^ 2 - 1) ^ 3 * (2 - μ)))
+def onsetAtom_qT1_G0 (s r μ : ℂ) : ℂ := (((12 : ℂ) * s * r + (-6 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) ^ 2 * (2 - μ)))
+def onsetAtom_qt2_G1 (s r μ : ℂ) : ℂ := (((2 : ℂ) * r + (-2 : ℂ) * r ^ 3) / ((2 - μ) * s))
+def onsetAtom_qtr2_G1 (s r μ : ℂ) : ℂ := (((1 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 4) / ((2 - μ) * s))
+def onsetAtom_qT3_G1 (s r μ : ℂ) : ℂ := (((-2 : ℂ) * r ^ 2 + (2 : ℂ) * r ^ 4) / ((2 - μ)))
+def onsetAtom_qt1_G0 (s r μ : ℂ) : ℂ := (((2 : ℂ) * r) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qtr1_G0 (s r μ : ℂ) : ℂ := (((1 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qT2_G0 (s r μ : ℂ) : ℂ := (((-2 : ℂ) * s * r ^ 2) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qt0_G01 (s r μ : ℂ) : ℂ := (((2 : ℂ) * r) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qtr0_G01 (s r μ : ℂ) : ℂ := (((1 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qT0_G01 (s r μ : ℂ) : ℂ := (((4 : ℂ) * s * r + (-2 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) ^ 2 * (2 - μ)))
+def onsetAtom_qT1_G01 (s r μ : ℂ) : ℂ := (((-2 : ℂ) * s * r ^ 2) / ((r ^ 2 - 1) * (2 - μ)))
+def onsetAtom_qt1_G2 (s r μ : ℂ) : ℂ := (((-2 : ℂ) * r + (2 : ℂ) * r ^ 3) / ((2 - μ)))
+def onsetAtom_qtr1_G2 (s r μ : ℂ) : ℂ := (((-1 : ℂ) * r ^ 2 + (1 : ℂ) * r ^ 4) / ((2 - μ)))
+def onsetAtom_qT2_G2 (s r μ : ℂ) : ℂ := (((2 : ℂ) * s * r ^ 2 + (-2 : ℂ) * s * r ^ 4) / ((2 - μ)))
+def onsetAtom_qt0_G21 (s r μ : ℂ) : ℂ := (((-2 : ℂ) * r + (2 : ℂ) * r ^ 3) / ((2 - μ)))
+def onsetAtom_qtr0_G21 (s r μ : ℂ) : ℂ := (((-1 : ℂ) * r ^ 2 + (1 : ℂ) * r ^ 4) / ((2 - μ)))
+def onsetAtom_qT0_G21 (s r μ : ℂ) : ℂ := (((4 : ℂ) * s * r + (-2 : ℂ) * s * r ^ 3) / ((2 - μ)))
+def onsetAtom_qT1_G21 (s r μ : ℂ) : ℂ := (((2 : ℂ) * s * r ^ 2 + (-2 : ℂ) * s * r ^ 4) / ((2 - μ)))
+
+def onsetCoeff_qtr0 (s r μ : ℂ) : ℂ := (((-42 : ℂ) + (-3 / 2 : ℂ) * μ + (156 : ℂ) * r ^ 2 + (6 : ℂ) * r ^ 2 * μ + (42 : ℂ) * r ^ 4 + (-9 / 2 : ℂ) * r ^ 4 * μ + (-36 : ℂ) * r ^ 6 + (-74 : ℂ) * s + (5 / 2 : ℂ) * s * μ + (25 : ℂ) * s * r ^ 2 + (-4 : ℂ) * s * r ^ 2 * μ + (35 : ℂ) * s * r ^ 4 + (3 / 2 : ℂ) * s * r ^ 4 * μ + (-12 : ℂ) * s * r ^ 6 + (-57 : ℂ) * s ^ 2 + (-22 : ℂ) * s ^ 2 * r ^ 2 + (9 : ℂ) * s ^ 2 * r ^ 4 + (-19 : ℂ) * s ^ 3 + (-3 : ℂ) * s ^ 3 * r ^ 2 + (-2 : ℂ) * s ^ 4) / (r * (r ^ 2 - 1) ^ 2 * (2 - μ) ^ 2 * s))
+def onsetCoeff_qtr1 (s r μ : ℂ) : ℂ := (((60 : ℂ) + (3 / 2 : ℂ) * μ + (-24 : ℂ) * r ^ 2 + (-3 / 2 : ℂ) * r ^ 2 * μ + (-24 : ℂ) * r ^ 4 + (58 : ℂ) * s + (-1 / 2 : ℂ) * s * μ + (-7 : ℂ) * s * r ^ 2 + (1 / 2 : ℂ) * s * r ^ 2 * μ + (-8 : ℂ) * s * r ^ 4 + (21 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 + (3 : ℂ) * s ^ 3) / ((r ^ 2 - 1) * (2 - μ) ^ 2 * s))
+def onsetCoeff_qtr2 (s r μ : ℂ) : ℂ := (((-9 : ℂ) * r + (-3 : ℂ) * r ^ 3 + (-6 : ℂ) * s * r + (-1 : ℂ) * s * r ^ 3 + (-1 : ℂ) * s ^ 2 * r) / ((2 - μ) ^ 2 * s))
+def onsetCoeff_qt0 (s r μ : ℂ) : ℂ := (((-48 : ℂ) + (21 : ℂ) * μ + (3 / 2 : ℂ) * μ ^ 2 + (132 : ℂ) * r ^ 2 + (45 : ℂ) * r ^ 2 * μ + (-3 / 2 : ℂ) * r ^ 2 * μ ^ 2 + (72 : ℂ) * r ^ 4 + (-6 : ℂ) * r ^ 4 * μ + (-36 : ℂ) * r ^ 6 + (-116 : ℂ) * s + (31 : ℂ) * s * μ + (3 / 2 : ℂ) * s * μ ^ 2 + (-74 : ℂ) * s * r ^ 2 + (16 : ℂ) * s * r ^ 2 * μ + (-3 / 2 : ℂ) * s * r ^ 2 * μ ^ 2 + (56 : ℂ) * s * r ^ 4 + (-12 : ℂ) * s * r ^ 6 + (-98 : ℂ) * s ^ 2 + (11 : ℂ) * s ^ 2 * μ + (-78 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 * μ + (12 : ℂ) * s ^ 2 * r ^ 4 + (-34 : ℂ) * s ^ 3 + (1 : ℂ) * s ^ 3 * μ + (-12 : ℂ) * s ^ 3 * r ^ 2 + (-4 : ℂ) * s ^ 4) / (r ^ 2 * (r ^ 2 - 1) ^ 2 * (2 - μ) ^ 2 * s))
+def onsetCoeff_qt1 (s r μ : ℂ) : ℂ := (((102 : ℂ) + (-6 : ℂ) * μ + (-18 : ℂ) * r ^ 2 + (-6 : ℂ) * r ^ 2 * μ + (-36 : ℂ) * r ^ 4 + (104 : ℂ) * s + (-7 : ℂ) * s * μ + (8 : ℂ) * s * r ^ 2 + (-12 : ℂ) * s * r ^ 4 + (40 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * μ + (6 : ℂ) * s ^ 2 * r ^ 2 + (6 : ℂ) * s ^ 3) / (r * (r ^ 2 - 1) * (2 - μ) ^ 2 * s))
+def onsetCoeff_qt2 (s r μ : ℂ) : ℂ := (((-18 : ℂ) + (-6 : ℂ) * r ^ 2 + (-12 : ℂ) * s + (-2 : ℂ) * s * r ^ 2 + (-2 : ℂ) * s ^ 2) / ((2 - μ) ^ 2 * s))
+def onsetCoeff_qT0 (s r μ : ℂ) : ℂ := (((-120 : ℂ) + (57 : ℂ) * μ + (3 / 2 : ℂ) * μ ^ 2 + (198 : ℂ) * r ^ 2 + (15 : ℂ) * r ^ 2 * μ + (-3 : ℂ) * r ^ 2 * μ ^ 2 + (-81 : ℂ) * r ^ 4 * μ + (3 / 2 : ℂ) * r ^ 4 * μ ^ 2 + (-114 : ℂ) * r ^ 6 + (9 : ℂ) * r ^ 6 * μ + (36 : ℂ) * r ^ 8 + (-214 : ℂ) * s + (56 : ℂ) * s * μ + (3 / 2 : ℂ) * s * μ ^ 2 + (-162 : ℂ) * s * r ^ 2 + (-39 : ℂ) * s * r ^ 2 * μ + (-3 : ℂ) * s * r ^ 2 * μ ^ 2 + (94 : ℂ) * s * r ^ 4 + (-16 : ℂ) * s * r ^ 4 * μ + (3 / 2 : ℂ) * s * r ^ 4 * μ ^ 2 + (-66 : ℂ) * s * r ^ 6 + (-1 : ℂ) * s * r ^ 6 * μ + (12 : ℂ) * s * r ^ 8 + (-174 : ℂ) * s ^ 2 + (11 : ℂ) * s ^ 2 * μ + (-132 : ℂ) * s ^ 2 * r ^ 2 + (-12 : ℂ) * s ^ 2 * r ^ 2 * μ + (74 : ℂ) * s ^ 2 * r ^ 4 + (1 : ℂ) * s ^ 2 * r ^ 4 * μ + (-12 : ℂ) * s ^ 2 * r ^ 6 + (-64 : ℂ) * s ^ 3 + (-4 : ℂ) * s ^ 3 * r ^ 2 + (12 : ℂ) * s ^ 3 * r ^ 4 + (-8 : ℂ) * s ^ 4 + (4 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 2 * (r ^ 2 - 1) ^ 3 * (2 - μ) ^ 2))
+def onsetCoeff_qT1 (s r μ : ℂ) : ℂ := (((270 : ℂ) + (-384 : ℂ) * r ^ 2 + (-15 : ℂ) * r ^ 2 * μ + (-114 : ℂ) * r ^ 4 + (15 : ℂ) * r ^ 4 * μ + (108 : ℂ) * r ^ 6 + (344 : ℂ) * s + (-13 : ℂ) * s * μ + (-92 : ℂ) * s * r ^ 2 + (16 : ℂ) * s * r ^ 2 * μ + (-94 : ℂ) * s * r ^ 4 + (-3 : ℂ) * s * r ^ 4 * μ + (36 : ℂ) * s * r ^ 6 + (192 : ℂ) * s ^ 2 + (-1 : ℂ) * s ^ 2 * μ + (24 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2 * μ + (-24 : ℂ) * s ^ 2 * r ^ 4 + (50 : ℂ) * s ^ 3 + (4 : ℂ) * s ^ 4) / (r * (r ^ 2 - 1) ^ 2 * (2 - μ) ^ 2))
+def onsetCoeff_qT2 (s r μ : ℂ) : ℂ := (((-156 : ℂ) + (-3 : ℂ) * μ + (54 : ℂ) * r ^ 2 + (3 : ℂ) * r ^ 2 * μ + (54 : ℂ) * r ^ 4 + (-140 : ℂ) * s + (1 : ℂ) * s * μ + (22 : ℂ) * s * r ^ 2 + (-1 : ℂ) * s * r ^ 2 * μ + (18 : ℂ) * s * r ^ 4 + (-46 : ℂ) * s ^ 2 + (-6 : ℂ) * s ^ 3) / ((r ^ 2 - 1) * (2 - μ) ^ 2))
+def onsetCoeff_qT3 (s r μ : ℂ) : ℂ := (((18 : ℂ) * r + (6 : ℂ) * r ^ 3 + (12 : ℂ) * s * r + (2 : ℂ) * s * r ^ 3 + (2 : ℂ) * s ^ 2 * r) / ((2 - μ) ^ 2))
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qtr0`. -/
+theorem evenSector_onset_qtr0 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qtr0 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 qtr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qtr0 * (onsetAtom_qtr0_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG0 : ((1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) + ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-4 : ℂ) * r) / ((2 - μ))) = onsetAtom_qtr0_G0 s r μ := by
+    unfold onsetAtom_qtr0_G0
+    field_simp
+    all_goals ring
+  have hG01 : ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qtr0_G01 s r μ := by
+    unfold onsetAtom_qtr0_G01
+    field_simp
+    all_goals ring
+  have hG1 : ((-1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((-1 : ℂ) * r + (4 : ℂ) * r ^ 3 + (-3 : ℂ) * r ^ 5) / ((2 - μ) * s)) + ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-1 : ℂ) + (12 : ℂ) * r ^ 2 + (-15 : ℂ) * r ^ 4) / ((2 - μ) * s)) + ((1 : ℂ)) / (r) * (((1 : ℂ) * r + (-3 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-1 : ℂ) + (8 : ℂ) * r ^ 2 + (-3 : ℂ) * r ^ 4) / ((r ^ 2 - 1) ^ 2 * (2 - μ) * s)) + ((-4 : ℂ) * r) / ((r ^ 2 - 1)) * (((1 / 2 : ℂ) * r + (-1 / 2 : ℂ) * r ^ 3) / ((2 - μ) * s)) + ((2 : ℂ)) * (((1 / 2 : ℂ) + (-3 / 2 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qtr0_G1 s r μ := by
+    unfold onsetAtom_qtr0_G1
+    field_simp
+    all_goals ring
+  have hG11 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-1 : ℂ) * r + (4 : ℂ) * r ^ 3 + (-3 : ℂ) * r ^ 5) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((1 : ℂ) * r + (-3 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((-2 : ℂ)) * (((1 / 2 : ℂ) * r + (-1 / 2 : ℂ) * r ^ 3) / ((2 - μ) * s)) = onsetAtom_qtr0_G11 s r μ := by
+    unfold onsetAtom_qtr0_G11
+    field_simp
+    all_goals ring
+  have hG2 : ((-1 : ℂ)) / (r) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) + ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-4 : ℂ) * r) / ((2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((1 / 2 : ℂ) * r + (-1 / 2 : ℂ) * r ^ 3) / ((2 - μ) * s)) = onsetAtom_qtr0_G2 s r μ := by
+    unfold onsetAtom_qtr0_G2
+    field_simp
+    all_goals ring
+  have hG21 : ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qtr0_G21 s r μ := by
+    unfold onsetAtom_qtr0_G21
+    field_simp
+    all_goals ring
+  have hL : ((4 : ℂ) * r) / ((r ^ 2 - 1)) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) + ((2 : ℂ)) * (((-4 : ℂ) * r) / ((2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((1 : ℂ) * r + (-3 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((4 : ℂ) * (-3 - s) + (-4 : ℂ) * (2 * s)) / ((r ^ 2 - 1)) * (((1 / 2 : ℂ) * r + (-1 / 2 : ℂ) * r ^ 3) / ((2 - μ) * s)) = onsetAtom_qtr0_L s r μ := by
+    unfold onsetAtom_qtr0_L
+    field_simp
+    all_goals ring
+  have hL1 : ((-2 : ℂ)) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qtr0_L1 s r μ := by
+    unfold onsetAtom_qtr0_L1
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qtr0 * Y0 * P * Q) * hG0 + (qtr0 * Y1 * P * Q) * hG01 + (qtr0 * Y2 * P * Q) * hG1 + (qtr0 * Y3 * P * Q) * hG11 + (qtr0 * Y4 * P * Q) * hG2 + (qtr0 * Y5 * P * Q) * hG21 + (qtr0 * Y6 * P * Q) * hL + (qtr0 * Y7 * P * Q) * hL1
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qtr0_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qtr0_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr0_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qtr0 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qtr0 onsetAtom_qtr0_G0 onsetAtom_qtr0_G01 onsetAtom_qtr0_G1 onsetAtom_qtr0_G11 onsetAtom_qtr0_G2 onsetAtom_qtr0_G21 onsetAtom_qtr0_L onsetAtom_qtr0_L1
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qtr1`. -/
+theorem evenSector_onset_qtr1 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qtr1 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 qtr1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qtr1 * (onsetAtom_qtr1_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG0 : ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qtr1_G0 s r μ := by
+    unfold onsetAtom_qtr1_G0
+    field_simp
+    all_goals ring
+  have hG1 : ((-1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((-1 : ℂ) * r ^ 2 + (2 : ℂ) * r ^ 4 + (-1 : ℂ) * r ^ 6) / ((2 - μ) * s)) + ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-3 : ℂ) * r + (12 : ℂ) * r ^ 3 + (-9 : ℂ) * r ^ 5) / ((2 - μ) * s)) + ((1 : ℂ)) / (r) * (((-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((3 : ℂ) * r + (-5 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((2 : ℂ)) * (((1 / 2 : ℂ) * r + (-1 / 2 : ℂ) * r ^ 3) / ((2 - μ) * s)) = onsetAtom_qtr1_G1 s r μ := by
+    unfold onsetAtom_qtr1_G1
+    field_simp
+    all_goals ring
+  have hG11 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-1 : ℂ) * r ^ 2 + (2 : ℂ) * r ^ 4 + (-1 : ℂ) * r ^ 6) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qtr1_G11 s r μ := by
+    unfold onsetAtom_qtr1_G11
+    field_simp
+    all_goals ring
+  have hG2 : ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qtr1_G2 s r μ := by
+    unfold onsetAtom_qtr1_G2
+    field_simp
+    all_goals ring
+  have hL : ((2 : ℂ)) * (((-2 : ℂ) * r ^ 2) / ((2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qtr1_L s r μ := by
+    unfold onsetAtom_qtr1_L
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qtr1 * Y0 * P * Q) * hG0 + (qtr1 * Y2 * P * Q) * hG1 + (qtr1 * Y3 * P * Q) * hG11 + (qtr1 * Y4 * P * Q) * hG2 + (qtr1 * Y6 * P * Q) * hL
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qtr1_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qtr1_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qtr1_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qtr1 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qtr1 onsetAtom_qtr1_G0 onsetAtom_qtr1_G1 onsetAtom_qtr1_G11 onsetAtom_qtr1_G2 onsetAtom_qtr1_L
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qtr2`. -/
+theorem evenSector_onset_qtr2 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qtr2 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 qtr2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qtr2 * (onsetAtom_qtr2_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG1 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-1 : ℂ) * r ^ 2 + (2 : ℂ) * r ^ 4 + (-1 : ℂ) * r ^ 6) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qtr2_G1 s r μ := by
+    unfold onsetAtom_qtr2_G1
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qtr2 * Y2 * P * Q) * hG1
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qtr2_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qtr2_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qtr2 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qtr2 onsetAtom_qtr2_G1
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qt0`. -/
+theorem evenSector_onset_qt0 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qt0 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qt0 * (onsetAtom_qt0_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG0 : ((1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((-4 : ℂ) * r) / ((2 - μ))) + ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-4 : ℂ)) / ((2 - μ))) = onsetAtom_qt0_G0 s r μ := by
+    unfold onsetAtom_qt0_G0
+    field_simp
+    all_goals ring
+  have hG01 : ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-4 : ℂ) * r) / ((2 - μ))) = onsetAtom_qt0_G01 s r μ := by
+    unfold onsetAtom_qt0_G01
+    field_simp
+    all_goals ring
+  have hG1 : ((-1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((-2 : ℂ) + (1 : ℂ) * μ + (6 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 2 * μ + (-4 : ℂ) * r ^ 4) / ((2 - μ) * s)) + ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((12 : ℂ) * r + (-2 : ℂ) * r * μ + (-16 : ℂ) * r ^ 3) / ((2 - μ) * s)) + ((1 : ℂ)) / (r) * (((2 : ℂ) + (-1 : ℂ) * μ + (-4 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((4 : ℂ) * r + (2 : ℂ) * r * μ) / ((r ^ 2 - 1) ^ 2 * (2 - μ) * s)) + ((-4 : ℂ) * r) / ((r ^ 2 - 1)) * (((1 : ℂ) + (-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) + ((2 : ℂ)) * (((-2 : ℂ) * r) / ((2 - μ) * s)) = onsetAtom_qt0_G1 s r μ := by
+    unfold onsetAtom_qt0_G1
+    field_simp
+    all_goals ring
+  have hG11 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-2 : ℂ) + (1 : ℂ) * μ + (6 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 2 * μ + (-4 : ℂ) * r ^ 4) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((2 : ℂ) + (-1 : ℂ) * μ + (-4 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((-2 : ℂ)) * (((1 : ℂ) + (-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qt0_G11 s r μ := by
+    unfold onsetAtom_qt0_G11
+    field_simp
+    all_goals ring
+  have hG2 : ((-1 : ℂ)) / (r) * (((-4 : ℂ) * r) / ((2 - μ))) + ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-4 : ℂ)) / ((2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((1 : ℂ) + (-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qt0_G2 s r μ := by
+    unfold onsetAtom_qt0_G2
+    field_simp
+    all_goals ring
+  have hG21 : ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-4 : ℂ) * r) / ((2 - μ))) = onsetAtom_qt0_G21 s r μ := by
+    unfold onsetAtom_qt0_G21
+    field_simp
+    all_goals ring
+  have hL : ((4 : ℂ) * r) / ((r ^ 2 - 1)) * (((-4 : ℂ) * r) / ((2 - μ))) + ((2 : ℂ)) * (((-4 : ℂ)) / ((2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((2 : ℂ) + (-1 : ℂ) * μ + (-4 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((4 : ℂ) * (-3 - s) + (-4 : ℂ) * (2 * s)) / ((r ^ 2 - 1)) * (((1 : ℂ) + (-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qt0_L s r μ := by
+    unfold onsetAtom_qt0_L
+    field_simp
+    all_goals ring
+  have hL1 : ((-2 : ℂ)) * (((-4 : ℂ) * r) / ((2 - μ))) = onsetAtom_qt0_L1 s r μ := by
+    unfold onsetAtom_qt0_L1
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qt0 * Y0 * P * Q) * hG0 + (qt0 * Y1 * P * Q) * hG01 + (qt0 * Y2 * P * Q) * hG1 + (qt0 * Y3 * P * Q) * hG11 + (qt0 * Y4 * P * Q) * hG2 + (qt0 * Y5 * P * Q) * hG21 + (qt0 * Y6 * P * Q) * hL + (qt0 * Y7 * P * Q) * hL1
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qt0_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qt0_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt0_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qt0 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qt0 onsetAtom_qt0_G0 onsetAtom_qt0_G01 onsetAtom_qt0_G1 onsetAtom_qt0_G11 onsetAtom_qt0_G2 onsetAtom_qt0_G21 onsetAtom_qt0_L onsetAtom_qt0_L1
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qt1`. -/
+theorem evenSector_onset_qt1 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qt1 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qt1 * (onsetAtom_qt1_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG0 : ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-4 : ℂ) * r) / ((2 - μ))) = onsetAtom_qt1_G0 s r μ := by
+    unfold onsetAtom_qt1_G0
+    field_simp
+    all_goals ring
+  have hG1 : ((-1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((-2 : ℂ) * r + (4 : ℂ) * r ^ 3 + (-2 : ℂ) * r ^ 5) / ((2 - μ) * s)) + ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-4 : ℂ) + (1 : ℂ) * μ + (18 : ℂ) * r ^ 2 + (-1 : ℂ) * r ^ 2 * μ + (-14 : ℂ) * r ^ 4) / ((2 - μ) * s)) + ((1 : ℂ)) / (r) * (((-2 : ℂ) * r) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((4 : ℂ) + (-1 : ℂ) * μ + (-6 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ) * s)) + ((2 : ℂ)) * (((1 : ℂ) + (-1 : ℂ) * r ^ 2) / ((2 - μ) * s)) = onsetAtom_qt1_G1 s r μ := by
+    unfold onsetAtom_qt1_G1
+    field_simp
+    all_goals ring
+  have hG11 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-2 : ℂ) * r + (4 : ℂ) * r ^ 3 + (-2 : ℂ) * r ^ 5) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-2 : ℂ) * r) / ((2 - μ) * s)) = onsetAtom_qt1_G11 s r μ := by
+    unfold onsetAtom_qt1_G11
+    field_simp
+    all_goals ring
+  have hG2 : ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-4 : ℂ) * r) / ((2 - μ))) = onsetAtom_qt1_G2 s r μ := by
+    unfold onsetAtom_qt1_G2
+    field_simp
+    all_goals ring
+  have hL : ((2 : ℂ)) * (((-4 : ℂ) * r) / ((2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((-2 : ℂ) * r) / ((2 - μ) * s)) = onsetAtom_qt1_L s r μ := by
+    unfold onsetAtom_qt1_L
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qt1 * Y0 * P * Q) * hG0 + (qt1 * Y2 * P * Q) * hG1 + (qt1 * Y3 * P * Q) * hG11 + (qt1 * Y4 * P * Q) * hG2 + (qt1 * Y6 * P * Q) * hL
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qt1_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qt1_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qt1_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qt1 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qt1 onsetAtom_qt1_G0 onsetAtom_qt1_G1 onsetAtom_qt1_G11 onsetAtom_qt1_G2 onsetAtom_qt1_L
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qt2`. -/
+theorem evenSector_onset_qt2 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qt2 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qt2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qt2 * (onsetAtom_qt2_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG1 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-2 : ℂ) * r + (4 : ℂ) * r ^ 3 + (-2 : ℂ) * r ^ 5) / ((2 - μ) * s)) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-2 : ℂ) * r) / ((2 - μ) * s)) = onsetAtom_qt2_G1 s r μ := by
+    unfold onsetAtom_qt2_G1
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qt2 * Y2 * P * Q) * hG1
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qt2_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qt2_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qt2 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qt2 onsetAtom_qt2_G1
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qT0`. -/
+theorem evenSector_onset_qT0 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qT0 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT0 0 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qT0 * (onsetAtom_qT0_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG0 : ((1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((-8 : ℂ) * s * r + (4 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((8 : ℂ) * s + (-4 : ℂ) * s * r ^ 2 + (4 : ℂ) * s * r ^ 4) / ((r ^ 2 - 1) ^ 2 * (2 - μ))) = onsetAtom_qT0_G0 s r μ := by
+    unfold onsetAtom_qT0_G0
+    field_simp
+    all_goals ring
+  have hG01 : ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-8 : ℂ) * s * r + (4 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) = onsetAtom_qT0_G01 s r μ := by
+    unfold onsetAtom_qT0_G01
+    field_simp
+    all_goals ring
+  have hG1 : ((-1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((6 : ℂ) + (-3 : ℂ) * μ + (-10 : ℂ) * r ^ 2 + (3 : ℂ) * r ^ 2 * μ + (4 : ℂ) * r ^ 4) / ((2 - μ))) + ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-20 : ℂ) * r + (6 : ℂ) * r * μ + (16 : ℂ) * r ^ 3) / ((2 - μ))) + ((1 : ℂ)) / (r) * (((-2 : ℂ) + (1 : ℂ) * μ + (4 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ))) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-4 : ℂ) * r + (-2 : ℂ) * r * μ) / ((r ^ 2 - 1) ^ 2 * (2 - μ))) + ((-4 : ℂ) * r) / ((r ^ 2 - 1)) * (((-1 : ℂ) + (-1 / 2 : ℂ) * μ + (1 : ℂ) * r ^ 2) / ((2 - μ))) + ((2 : ℂ)) * (((2 : ℂ) * r) / ((2 - μ))) = onsetAtom_qT0_G1 s r μ := by
+    unfold onsetAtom_qT0_G1
+    field_simp
+    all_goals ring
+  have hG11 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((6 : ℂ) + (-3 : ℂ) * μ + (-10 : ℂ) * r ^ 2 + (3 : ℂ) * r ^ 2 * μ + (4 : ℂ) * r ^ 4) / ((2 - μ))) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-2 : ℂ) + (1 : ℂ) * μ + (4 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ))) + ((-2 : ℂ)) * (((-1 : ℂ) + (-1 / 2 : ℂ) * μ + (1 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qT0_G11 s r μ := by
+    unfold onsetAtom_qT0_G11
+    field_simp
+    all_goals ring
+  have hG2 : ((-1 : ℂ)) / (r) * (((-8 : ℂ) * s * r + (4 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((8 : ℂ) * s + (-4 : ℂ) * s * r ^ 2 + (4 : ℂ) * s * r ^ 4) / ((r ^ 2 - 1) ^ 2 * (2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((-1 : ℂ) + (-1 / 2 : ℂ) * μ + (1 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qT0_G2 s r μ := by
+    unfold onsetAtom_qT0_G2
+    field_simp
+    all_goals ring
+  have hG21 : ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-8 : ℂ) * s * r + (4 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) = onsetAtom_qT0_G21 s r μ := by
+    unfold onsetAtom_qT0_G21
+    field_simp
+    all_goals ring
+  have hL : ((4 : ℂ) * r) / ((r ^ 2 - 1)) * (((-8 : ℂ) * s * r + (4 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((2 : ℂ)) * (((8 : ℂ) * s + (-4 : ℂ) * s * r ^ 2 + (4 : ℂ) * s * r ^ 4) / ((r ^ 2 - 1) ^ 2 * (2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((-2 : ℂ) + (1 : ℂ) * μ + (4 : ℂ) * r ^ 2) / ((r ^ 2 - 1) * (2 - μ))) + ((4 : ℂ) * (-3 - s) + (-4 : ℂ) * (2 * s)) / ((r ^ 2 - 1)) * (((-1 : ℂ) + (-1 / 2 : ℂ) * μ + (1 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qT0_L s r μ := by
+    unfold onsetAtom_qT0_L
+    field_simp
+    all_goals ring
+  have hL1 : ((-2 : ℂ)) * (((-8 : ℂ) * s * r + (4 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) = onsetAtom_qT0_L1 s r μ := by
+    unfold onsetAtom_qT0_L1
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qT0 * Y0 * P * Q) * hG0 + (qT0 * Y1 * P * Q) * hG01 + (qT0 * Y2 * P * Q) * hG1 + (qT0 * Y3 * P * Q) * hG11 + (qT0 * Y4 * P * Q) * hG2 + (qT0 * Y5 * P * Q) * hG21 + (qT0 * Y6 * P * Q) * hL + (qT0 * Y7 * P * Q) * hL1
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qT0_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qT0_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT0_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qT0 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qT0 onsetAtom_qT0_G0 onsetAtom_qT0_G01 onsetAtom_qT0_G1 onsetAtom_qT0_G11 onsetAtom_qT0_G2 onsetAtom_qT0_G21 onsetAtom_qT0_L onsetAtom_qT0_L1
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qT1`. -/
+theorem evenSector_onset_qT1 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qT1 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT1 0 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qT1 * (onsetAtom_qT1_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG0 : ((1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) + ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((-16 : ℂ) * s * r + (12 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) = onsetAtom_qT1_G0 s r μ := by
+    unfold onsetAtom_qT1_G0
+    field_simp
+    all_goals ring
+  have hG01 : ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) = onsetAtom_qT1_G01 s r μ := by
+    unfold onsetAtom_qT1_G01
+    field_simp
+    all_goals ring
+  have hG1 : ((-1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((6 : ℂ) * r + (-14 : ℂ) * r ^ 3 + (8 : ℂ) * r ^ 5) / ((2 - μ))) + ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((12 : ℂ) + (-3 : ℂ) * μ + (-52 : ℂ) * r ^ 2 + (3 : ℂ) * r ^ 2 * μ + (44 : ℂ) * r ^ 4) / ((2 - μ))) + ((1 : ℂ)) / (r) * (((-6 : ℂ) * r + (8 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((8 : ℂ) + (-1 : ℂ) * μ + (-24 : ℂ) * r ^ 2 + (1 : ℂ) * r ^ 2 * μ + (12 : ℂ) * r ^ 4) / ((r ^ 2 - 1) ^ 2 * (2 - μ))) + ((-4 : ℂ) * r) / ((r ^ 2 - 1)) * (((-1 : ℂ) * r + (1 : ℂ) * r ^ 3) / ((2 - μ))) + ((2 : ℂ)) * (((-2 : ℂ) + (-1 / 2 : ℂ) * μ + (4 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qT1_G1 s r μ := by
+    unfold onsetAtom_qT1_G1
+    field_simp
+    all_goals ring
+  have hG11 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((6 : ℂ) * r + (-14 : ℂ) * r ^ 3 + (8 : ℂ) * r ^ 5) / ((2 - μ))) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-6 : ℂ) * r + (8 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((-2 : ℂ)) * (((-1 : ℂ) * r + (1 : ℂ) * r ^ 3) / ((2 - μ))) = onsetAtom_qT1_G11 s r μ := by
+    unfold onsetAtom_qT1_G11
+    field_simp
+    all_goals ring
+  have hG2 : ((-1 : ℂ)) / (r) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) + ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((-16 : ℂ) * s * r + (12 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((-1 : ℂ) * r + (1 : ℂ) * r ^ 3) / ((2 - μ))) = onsetAtom_qT1_G2 s r μ := by
+    unfold onsetAtom_qT1_G2
+    field_simp
+    all_goals ring
+  have hG21 : ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) = onsetAtom_qT1_G21 s r μ := by
+    unfold onsetAtom_qT1_G21
+    field_simp
+    all_goals ring
+  have hL : ((4 : ℂ) * r) / ((r ^ 2 - 1)) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) + ((2 : ℂ)) * (((-16 : ℂ) * s * r + (12 : ℂ) * s * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((-6 : ℂ) * r + (8 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((4 : ℂ) * (-3 - s) + (-4 : ℂ) * (2 * s)) / ((r ^ 2 - 1)) * (((-1 : ℂ) * r + (1 : ℂ) * r ^ 3) / ((2 - μ))) = onsetAtom_qT1_L s r μ := by
+    unfold onsetAtom_qT1_L
+    field_simp
+    all_goals ring
+  have hL1 : ((-2 : ℂ)) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) = onsetAtom_qT1_L1 s r μ := by
+    unfold onsetAtom_qT1_L1
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qT1 * Y0 * P * Q) * hG0 + (qT1 * Y1 * P * Q) * hG01 + (qT1 * Y2 * P * Q) * hG1 + (qT1 * Y3 * P * Q) * hG11 + (qT1 * Y4 * P * Q) * hG2 + (qT1 * Y5 * P * Q) * hG21 + (qT1 * Y6 * P * Q) * hL + (qT1 * Y7 * P * Q) * hL1
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qT1_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qT1_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G01 s r μ * (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_G21 s r μ * (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT1_L1 s r μ * (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qT1 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qT1 onsetAtom_qT1_G0 onsetAtom_qT1_G01 onsetAtom_qT1_G1 onsetAtom_qT1_G11 onsetAtom_qT1_G2 onsetAtom_qT1_G21 onsetAtom_qT1_L onsetAtom_qT1_L1
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qT2`. -/
+theorem evenSector_onset_qT2 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qT2 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT2 0 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qT2 * (onsetAtom_qT2_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG0 : ((-1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) = onsetAtom_qT2_G0 s r μ := by
+    unfold onsetAtom_qT2_G0
+    field_simp
+    all_goals ring
+  have hG1 : ((-1 : ℂ)) / (r * (r ^ 2 - 1) ^ 2) * (((2 : ℂ) * r ^ 2 + (-4 : ℂ) * r ^ 4 + (2 : ℂ) * r ^ 6) / ((2 - μ))) + ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((10 : ℂ) * r + (-30 : ℂ) * r ^ 3 + (20 : ℂ) * r ^ 5) / ((2 - μ))) + ((1 : ℂ)) / (r) * (((2 : ℂ) * r ^ 2) / ((2 - μ))) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((-10 : ℂ) * r + (12 : ℂ) * r ^ 3) / ((r ^ 2 - 1) * (2 - μ))) + ((2 : ℂ)) * (((-1 : ℂ) * r + (1 : ℂ) * r ^ 3) / ((2 - μ))) = onsetAtom_qT2_G1 s r μ := by
+    unfold onsetAtom_qT2_G1
+    field_simp
+    all_goals ring
+  have hG11 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((2 : ℂ) * r ^ 2 + (-4 : ℂ) * r ^ 4 + (2 : ℂ) * r ^ 6) / ((2 - μ))) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qT2_G11 s r μ := by
+    unfold onsetAtom_qT2_G11
+    field_simp
+    all_goals ring
+  have hG2 : ((1 / 2 : ℂ) + (-1 / 2 : ℂ) * r ^ 2) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) = onsetAtom_qT2_G2 s r μ := by
+    unfold onsetAtom_qT2_G2
+    field_simp
+    all_goals ring
+  have hL : ((2 : ℂ)) * (((4 : ℂ) * s * r ^ 2) / ((2 - μ))) + ((2 : ℂ) * (-3 - s) + (-2 : ℂ) * (2 * s)) * (((2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qT2_L s r μ := by
+    unfold onsetAtom_qT2_L
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qT2 * Y0 * P * Q) * hG0 + (qT2 * Y2 * P * Q) * hG1 + (qT2 * Y3 * P * Q) * hG11 + (qT2 * Y4 * P * Q) * hG2 + (qT2 * Y6 * P * Q) * hL
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qT2_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qT2_G0 s r μ * (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_G11 s r μ * (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_G2 s r μ * (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) + onsetAtom_qT2_L s r μ * (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qT2 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qT2 onsetAtom_qT2_G0 onsetAtom_qT2_G1 onsetAtom_qT2_G11 onsetAtom_qT2_G2 onsetAtom_qT2_L
+  field_simp
+  ring
+
+/-- Onset current of the source-only reconstruction carrying the single source jet `qT3`. -/
+theorem evenSector_onset_qT3 (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qT3 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) (recF01 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) F02 (recF1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) (recF11 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) F12 (recF2 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) (recF21 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) F22 (recH s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) (recH1 s r μ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 qT3 0 0 0 0 0 0) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      qT3 * (onsetAtom_qT3_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) * P * Q := by
+  rw [streamCurrent_0 hr hy hf]
+  generalize hY0 : recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y0
+  generalize hY1 : recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y1
+  generalize hY2 : recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y2
+  generalize hY3 : recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y3
+  generalize hY4 : recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y4
+  generalize hY5 : recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y5
+  generalize hY6 : recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y6
+  generalize hY7 : recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 = Y7
+  simp only [recF0, recF01, recF1, recF11, recF2, recF21, recH, recH1]
+  have hG1 : ((1 / 2 : ℂ)) / ((r ^ 2 - 1)) * (((2 : ℂ) * r ^ 2 + (-4 : ℂ) * r ^ 4 + (2 : ℂ) * r ^ 6) / ((2 - μ))) + ((-1 / 2 : ℂ) + (1 / 2 : ℂ) * r ^ 2) * (((2 : ℂ) * r ^ 2) / ((2 - μ))) = onsetAtom_qT3_G1 s r μ := by
+    unfold onsetAtom_qT3_G1
+    field_simp
+    all_goals ring
+  linear_combination (norm := ring_nf) (qT3 * Y2 * P * Q) * hG1
+  all_goals (try field_simp)
+  all_goals (try ring)
+
+theorem onsetCoeff_qT3_eq (s r μ : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    onsetAtom_qT3_G1 s r μ * (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) = onsetCoeff_qT3 s r μ := by
+  simp only [mode_F0_eq s r μ hr hf hμ hs3, mode_F01_eq s r μ hr hf hμ hs3, mode_F1_eq s r μ hr hf hμ hs3, mode_F11_eq s r μ hr hf hμ hs3, mode_F2_eq s r μ hr hf hμ hs3, mode_F21_eq s r μ hr hf hμ hs3, mode_H_eq s r μ hr hf hμ hs3, mode_H1_eq s r μ hr hf hμ hs3]
+  unfold onsetCoeff_qT3 onsetAtom_qT3_G1
+  field_simp
+  ring
+
+/-- The source-only onset current with all mode jets evaluated. -/
+def onsetSrcCurrent (s r μ qtr0 qtr1 qtr2 qt0 qt1 qt2 qT0 qT1 qT2 qT3 : ℂ) : ℂ := onsetCoeff_qtr0 s r μ * qtr0 + onsetCoeff_qtr1 s r μ * qtr1 + onsetCoeff_qtr2 s r μ * qtr2 + onsetCoeff_qt0 s r μ * qt0 + onsetCoeff_qt1 s r μ * qt1 + onsetCoeff_qt2 s r μ * qt2 + onsetCoeff_qT0 s r μ * qT0 + onsetCoeff_qT1 s r μ * qT1 + onsetCoeff_qT2 s r μ * qT2 + onsetCoeff_qT3 s r μ * qT3
+
+/-- Onset current of the source-only reconstruction against the `−` mode: a linear form in the
+source jets with explicit rational coefficients. -/
+theorem evenSector_onset_source (s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4 : ℂ) :
+    actionSymplectic (D4BMBackground.jet r y) (metricJet (2 * s) r y (recF0 s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) (recF01 s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) F02 (recF1 s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) (recF11 s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) F12 (recF2 s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) (recF21 s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) F22 (recH s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) (recH1 s r μ 0 0 0 0 0 qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4) H2 P Px Py Pxx Pxy Pyy) (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 =
+      onsetSrcCurrent s r μ qtr0 qtr1 qtr2 qt0 qt1 qt2 qT0 qT1 qT2 qT3 * P * Q := by
+  rw [srcjet_F0_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4, srcjet_F01_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4, srcjet_F1_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4, srcjet_F11_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4, srcjet_F2_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4, srcjet_F21_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4, srcjet_H_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4, srcjet_H1_decomp s r μ qtt0 qtt1 qtt2 qtt3 qtt4 qtr0 qtr1 qtr2 qtr3 qtr4 qtr5 qrr0 qrr1 qrr2 qrr3 qrr4 qrr5 qt0 qt1 qt2 qt3 qt4 qr0 qr1 qr2 qr3 qr4 qr5 qT0 qT1 qT2 qT3 qT4 qL0 qL1 qL2 qL3 qL4]
+  rw [streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf)]
+  rw [evenSector_onset_qtr0 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qtr0, evenSector_onset_qtr1 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qtr1, evenSector_onset_qtr2 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qtr2, evenSector_onset_qt0 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qt0, evenSector_onset_qt1 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qt1, evenSector_onset_qt2 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qt2, evenSector_onset_qT0 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qT0, evenSector_onset_qT1 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qT1, evenSector_onset_qT2 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qT2, evenSector_onset_qT3 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 qT3,
+    onsetCoeff_qtr0_eq s r μ hr hf hμ hs hs3, onsetCoeff_qtr1_eq s r μ hr hf hμ hs hs3, onsetCoeff_qtr2_eq s r μ hr hf hμ hs hs3, onsetCoeff_qt0_eq s r μ hr hf hμ hs hs3, onsetCoeff_qt1_eq s r μ hr hf hμ hs hs3, onsetCoeff_qt2_eq s r μ hr hf hμ hs hs3, onsetCoeff_qT0_eq s r μ hr hf hμ hs hs3, onsetCoeff_qT1_eq s r μ hr hf hμ hs hs3, onsetCoeff_qT2_eq s r μ hr hf hμ hs hs3, onsetCoeff_qT3_eq s r μ hr hf hμ hs hs3]
+  unfold onsetSrcCurrent
+  ring
+
+/-- Onset current between the `−` mode and the SS `++` Laurent response `r + A/r + B/r³`. -/
+def onsetCurrentSS (s r μ A B : ℂ) : ℂ := onsetCurrent_lauR s r μ + A * onsetCurrent_lauI1 s r μ + B * onsetCurrent_lauI3 s r μ + onsetSrcCurrent s r μ (ssSourceTR s r μ) (ssSourceTR1 s r μ) (ssSourceTR2 s r μ) (ssSourceT s r μ) (ssSourceT1 s r μ) (ssSourceT2 s r μ) (ssSourceTF s r μ) (ssSourceTF1 s r μ) (ssSourceTF2 s r μ) (ssSourceTF3 s r μ)
+
+theorem evenSector_onsetCurrent_SS (s r y μ A B P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    actionSymplectic (D4BMBackground.jet r y)
+      (metricJet (2 * s) r y (ssRespJet_F0 s r μ A B) (ssRespJet_F01 s r μ A B) F02 (ssRespJet_F1 s r μ A B) (ssRespJet_F11 s r μ A B) F12 (ssRespJet_F2 s r μ A B) (ssRespJet_F21 s r μ A B) F22 (ssRespJet_H s r μ A B) (ssRespJet_H1 s r μ A B) H2 P Px Py Pxx Pxy Pyy)
+      (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 = onsetCurrentSS s r μ A B * P * Q := by
+  unfold ssRespJet_F0 ssRespJet_F01 ssRespJet_F1 ssRespJet_F11 ssRespJet_F2 ssRespJet_F21 ssRespJet_H ssRespJet_H1
+  rw [streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf)]
+  rw [streamCurrent_0_smul (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_smul (hr := hr) (hy := hy) (hf := hf)]
+  rw [evenSector_onset_lauR s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3, evenSector_onset_lauI1 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3, evenSector_onset_lauI3 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3,
+    evenSector_onset_source s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 (ssSourceTT s r μ) 0 0 0 0 (ssSourceTR s r μ) (ssSourceTR1 s r μ) (ssSourceTR2 s r μ) 0 0 0 (ssSourceRR s r μ) 0 0 0 0 0 (ssSourceT s r μ) (ssSourceT1 s r μ) (ssSourceT2 s r μ) 0 0 (ssSourceR s r μ) 0 0 0 0 0 (ssSourceTF s r μ) (ssSourceTF1 s r μ) (ssSourceTF2 s r μ) (ssSourceTF3 s r μ) 0 (ssSourceL s r μ) 0 0 0 0]
+  unfold onsetCurrentSS
+  ring
+
+/-- Onset current between the `−` mode and the VV `++` Laurent response `A/r + B/r³`. -/
+def onsetCurrentVV (s r μ A B : ℂ) : ℂ := A * onsetCurrent_lauI1 s r μ + B * onsetCurrent_lauI3 s r μ + onsetSrcCurrent s r μ (vvSourceTR s r μ) (vvSourceTR1 s r μ) (vvSourceTR2 s r μ) (vvSourceT s r μ) (vvSourceT1 s r μ) (vvSourceT2 s r μ) (vvSourceTF s r μ) (vvSourceTF1 s r μ) (vvSourceTF2 s r μ) (vvSourceTF3 s r μ)
+
+theorem evenSector_onsetCurrent_VV (s r y μ A B P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 : ℂ)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) :
+    actionSymplectic (D4BMBackground.jet r y)
+      (metricJet (2 * s) r y (vvRespJet_F0 s r μ A B) (vvRespJet_F01 s r μ A B) F02 (vvRespJet_F1 s r μ A B) (vvRespJet_F11 s r μ A B) F12 (vvRespJet_F2 s r μ A B) (vvRespJet_F21 s r μ A B) F22 (vvRespJet_H s r μ A B) (vvRespJet_H1 s r μ A B) H2 P Px Py Pxx Pxy Pyy)
+      (metricJet (-3 - s) r y (recF0 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF01 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G02 (recF1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF11 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G12 (recF2 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recF21 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) G22 (recH ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (recH1 ((-3 - s) / 2) r μ (modeMaster s r) (modeMaster1 s r) (modeMaster2 s r) (modeMaster3 s r) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) L2 Q Qx Qy Qxx Qxy Qyy) 0 = onsetCurrentVV s r μ A B * P * Q := by
+  unfold vvRespJet_F0 vvRespJet_F01 vvRespJet_F1 vvRespJet_F11 vvRespJet_F2 vvRespJet_F21 vvRespJet_H vvRespJet_H1
+  rw [streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_add (hr := hr) (hy := hy) (hf := hf)]
+  rw [streamCurrent_0_smul (hr := hr) (hy := hy) (hf := hf), streamCurrent_0_smul (hr := hr) (hy := hy) (hf := hf)]
+  rw [evenSector_onset_lauI1 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3, evenSector_onset_lauI3 s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3,
+    evenSector_onset_source s r y μ P Px Py Pxx Pxy Pyy Q Qx Qy Qxx Qxy Qyy F02 F12 F22 H2 G02 G12 G22 L2 hr hy hf hμ hs hs3 (vvSourceTT s r μ) 0 0 0 0 (vvSourceTR s r μ) (vvSourceTR1 s r μ) (vvSourceTR2 s r μ) 0 0 0 (vvSourceRR s r μ) 0 0 0 0 0 (vvSourceT s r μ) (vvSourceT1 s r μ) (vvSourceT2 s r μ) 0 0 (vvSourceR s r μ) 0 0 0 0 0 (vvSourceTF s r μ) (vvSourceTF1 s r μ) (vvSourceTF2 s r μ) (vvSourceTF3 s r μ) 0 (vvSourceL s r μ) 0 0 0 0]
+  unfold onsetCurrentVV
+  ring
+
+end
+end RHTower.D4BMScalarStream

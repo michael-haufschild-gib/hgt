@@ -7,14 +7,13 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from pathlib import Path
-import signal
 import subprocess
 import sys
 import time
 
 from .config import DEFAULT_CACHE_DIR, CONTEXT_TOKENS, installation_status, offline_environment
+from .processes import terminate_owned, cancellation_signals
 
 
 def probe(cache_dir, count=32):
@@ -75,6 +74,7 @@ def probe(cache_dir, count=32):
     print(json.dumps(report), flush=True)
 
 
+@cancellation_signals()
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cache-dir',type=Path,default=DEFAULT_CACHE_DIR)
@@ -91,13 +91,7 @@ def main():
         if code:
             raise SystemExit(code)
     finally:
-        if child.poll() is None:
-            os.killpg(child.pid,signal.SIGTERM)
-            try:
-                child.wait(timeout=1)
-            except subprocess.TimeoutExpired:
-                os.killpg(child.pid,signal.SIGKILL)
-                child.wait()
+        terminate_owned(child)
 
 
 if __name__=='__main__':

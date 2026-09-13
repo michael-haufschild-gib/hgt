@@ -19,8 +19,10 @@ import time
 from lean_research_batch import import_results, locks
 from research_batch.format import atomic_json, load_manifest, sha_file
 from research_runtime.config import DEFAULT_CACHE_DIR
+from research_runtime.processes import terminate_owned, cancellation_signals
 
 
+@cancellation_signals()
 def owned_run(argv, timeout=900):
     """Cancellation and timeouts reap only this command and its SSH children."""
     child = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -31,13 +33,8 @@ def owned_run(argv, timeout=900):
             raise RuntimeError(f'{argv[0]} failed ({child.returncode}): {output[-2000:]}')
         return output
     finally:
-        if child.poll() is None:
-            os.killpg(child.pid, signal.SIGTERM)
-            try:
-                child.communicate(timeout=5)
-            except subprocess.TimeoutExpired:
-                os.killpg(child.pid, signal.SIGKILL)
-                child.communicate()
+        terminate_owned(child)
+        child.stdout.close()
 
 
 def sync(directory, *, cache=DEFAULT_CACHE_DIR, interval=120, max_failures=5):

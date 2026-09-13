@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFutureHorizonCap
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSourceOnsetDerivativeBound
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.MeasureTheory.Function.JacobianOneDim
+import Mathlib.Analysis.Calculus.FDeriv.Partial
 
 /-! Actual differentiated traces of the original full-theta cap.
 
@@ -11,6 +12,9 @@ to the onset and its Jacobian. The resulting normal weight is an exact source de
 with zero endpoint contribution. This proves the original arm's normal derivative and
 its zero ingoing trace. Both original cap arms are retained in the actual time derivative;
 its horizon limit is exactly the original source lift's time contact.
+Source-dominated continuity of both partials gives the actual joint derivative.
+The complete image arm differentiates both moving coordinates and vanishes even
+after division by the original horizon scale.
 
 Angular differentiation of the cap integral, the full cap's radial derivative in the
 ingoing radius, other causal corrections, and complete nonlinear current cancellation
@@ -707,6 +711,178 @@ theorem capBoundaryField_time_ingoing (q : XiZeroCopy) (branch : Bool) (amplitud
     rw [(capBoundaryField_time_hasDerivAt q branch amplitude (v-x) x X k).deriv]
     rw [sub_add_cancel,show v-x-x=v-2*x by ring]
   simpa only [he,sub_zero,neg_mul,mul_neg,neg_neg,mul_assoc] using ht
+
+
+private theorem mean_normal_continuous (q : XiZeroCopy) (h X k : ℝ) :
+    Continuous (fun x => horizonMean q x h X k) := by
+  change Continuous (fun x => mean q (Real.arcosh (max 1
+    (1+(Real.exp x/Real.cosh x)*(Real.exp h-1)))) X k)
+  have hc : Continuous (fun z : ℝ => mean q (Real.arcosh (max 1 z)) X k) := by
+    apply (mean_radial_smooth q X k).continuous.comp
+    exact Real.continuousOn_arcosh.comp_continuous (continuous_const.max continuous_id)
+      (fun z => le_max_left 1 z)
+  exact hc.comp (continuous_const.add
+    ((Real.continuous_exp.div Real.continuous_cosh (fun x => (Real.cosh_pos x).ne')).mul continuous_const))
+
+private theorem density_joint_continuous (q : XiZeroCopy) (branch normal : Bool) (X k h : ℝ) :
+    Continuous (fun p : ℝ × ℝ => weightedDensity q branch normal p.1 p.2 X k h) := by
+  have hg1 : Continuous (fun p : ℝ × ℝ => timeOnsetFirst (2*physicalRate q branch) (p.1+h)) := (first_continuous (2*physicalRate q branch)).comp (continuous_fst.add continuous_const)
+  have hg2 : Continuous (fun p : ℝ × ℝ => timeOnsetSecond (2*physicalRate q branch) (p.1+h)) := (timeOnsetSecond_continuous (2*physicalRate q branch)).comp
+    (continuous_fst.add continuous_const)
+  have hm : Continuous (fun p : ℝ × ℝ => horizonMean q p.2 h X k) := (mean_normal_continuous q h X k).comp continuous_snd
+  cases normal
+  · exact hg2.mul hm
+  · exact ((hg2.mul continuous_const).add (hg1.mul continuous_const)).mul hm
+
+private theorem weightedArm_joint_continuous (q : XiZeroCopy) (branch normal : Bool) (X k : ℝ) :
+    Continuous (fun p : ℝ × ℝ => weightedArm q branch normal p.1 p.2 X k) := by
+  obtain ⟨C,hC,hb⟩ := density_bound q branch normal
+  apply continuous_iff_continuousAt.mpr
+  intro p
+  let B := C*Real.exp (-decayExponent q*(p.1-1)+sourceGrowthExponent q*|k|)
+  apply continuousAt_of_dominated (μ := volume.restrict (Ioi (0:ℝ)))
+    (bound := fun h => B*Real.exp ((sourceGrowthExponent q-decayExponent q)*h))
+  · exact Eventually.of_forall (fun z => (density_continuous q branch normal z.1 z.2 X k).aestronglyMeasurable)
+  · have hn : ∀ᶠ z : ℝ × ℝ in 𝓝 p, p.1-1 < z.1 :=
+      continuous_fst.continuousAt.eventually (Ioi_mem_nhds (by linarith : p.1-1 < p.1))
+    filter_upwards [hn] with z hz
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+    apply (hb z.1 z.2 X k h hh.le).trans
+    have he : Real.exp (-decayExponent q*z.1+sourceGrowthExponent q*|k|) ≤
+        Real.exp (-decayExponent q*(p.1-1)+sourceGrowthExponent q*|k|) := by
+      apply Real.exp_le_exp.mpr
+      have hd := mul_le_mul_of_nonpos_left hz.le (neg_nonpos.mpr (decay_pos q).le)
+      linarith
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left he hC) (Real.exp_pos _).le
+  · exact majorant_integrable q B
+  · exact Eventually.of_forall (fun h => (density_joint_continuous q branch normal X k h).continuousAt)
+
+private theorem joint_from_partials (f a b : ℝ → ℝ → ℂ)
+    (ha : ∀ v x, HasDerivAt (fun t => f t x) (a v x) v)
+    (hb : ∀ v x, HasDerivAt (fun y => f v y) (b v x) x)
+    (ca : Continuous (Function.uncurry a)) (cb : Continuous (Function.uncurry b)) (v x : ℝ) :
+    HasFDerivAt (Function.uncurry f)
+      ((ContinuousLinearMap.toSpanSingleton ℝ (a v x)).coprod
+        (ContinuousLinearMap.toSpanSingleton ℝ (b v x))) (v,x) := by
+  have d1 : ∀ᶠ p : ℝ × ℝ in 𝓝 (v,x), HasFDerivAt (fun t => f t p.2)
+      (ContinuousLinearMap.toSpanSingleton ℝ (a p.1 p.2)) p.1 :=
+    Eventually.of_forall (fun p => (ha p.1 p.2).hasFDerivAt)
+  have d2 : ∀ᶠ p : ℝ × ℝ in 𝓝 (v,x), HasFDerivAt (fun y => f p.1 y)
+      (ContinuousLinearMap.toSpanSingleton ℝ (b p.1 p.2)) p.2 :=
+    Eventually.of_forall (fun p => (hb p.1 p.2).hasFDerivAt)
+  have c1 : ContinuousAt (fun p : ℝ × ℝ => ContinuousLinearMap.toSpanSingleton ℝ (a p.1 p.2)) (v,x) :=
+    ((ContinuousLinearMap.toSpanSingletonLIE ℝ ℂ).continuous.comp ca).continuousAt
+  have c2 : ContinuousAt (fun p : ℝ × ℝ => ContinuousLinearMap.toSpanSingleton ℝ (b p.1 p.2)) (v,x) :=
+    ((ContinuousLinearMap.toSpanSingletonLIE ℝ ℂ).continuous.comp cb).continuousAt
+  exact (hasStrictFDerivAt_uncurry_coprod (𝕜 := ℝ) (u := (v,x)) (f := f)
+    (f₁ := fun v x => ContinuousLinearMap.toSpanSingleton ℝ (a v x))
+    (f₂ := fun v x => ContinuousLinearMap.toSpanSingleton ℝ (b v x)) d1 d2 c1 c2).hasFDerivAt
+
+/-- The two original arm variables have a joint derivative, proved from source admission. -/
+theorem boundaryArm_joint_hasFDerivAt (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
+    HasFDerivAt (fun p : ℝ × ℝ => boundaryArm q branch p.1 p.2 X k)
+      ((ContinuousLinearMap.toSpanSingleton ℝ (timeArm q branch v x X k)).coprod
+        (ContinuousLinearMap.toSpanSingleton ℝ
+          (-((2-capScale x:ℝ):ℂ)*normalArm q branch v x X k))) (v,x) := by
+  have htime : Continuous (fun p : ℝ × ℝ => timeArm q branch p.1 p.2 X k) :=
+    weightedArm_joint_continuous q branch false X k
+  have hnormal : Continuous (fun p : ℝ × ℝ =>
+      -((2-capScale p.2:ℝ):ℂ)*normalArm q branch p.1 p.2 X k) := by
+    have hs : Continuous capScale := continuous_iff_continuousAt.mpr
+      (fun x => (capScale_derivative x).continuousAt)
+    exact (Complex.continuous_ofReal.comp (continuous_const.sub (hs.comp continuous_snd))).neg.mul
+      (weightedArm_joint_continuous q branch true X k)
+  exact joint_from_partials (fun v x => boundaryArm q branch v x X k)
+    (fun v x => timeArm q branch v x X k)
+    (fun v x => -((2-capScale x:ℝ):ℂ)*normalArm q branch v x X k)
+    (fun v x => boundaryArm_time_hasDerivAt q branch v x X k)
+    (fun v x => boundaryArm_normal_hasDerivAt q branch v x X k) htime hnormal v x
+
+/-- The actual image arm differentiates both its moving time and its moving radius. -/
+theorem boundaryArm_image_hasDerivAt (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
+    HasDerivAt (fun y => boundaryArm q branch (v-2*y) (-y) X k)
+      (-2*timeArm q branch (v-2*x) (-x) X k+
+        ((2-capScale (-x):ℝ):ℂ)*normalArm q branch (v-2*x) (-x) X k) x := by
+  have hp := (((hasDerivAt_id x).const_mul (2:ℝ)).const_sub v).prodMk (hasDerivAt_neg x)
+  have hd := (boundaryArm_joint_hasFDerivAt q branch (v-2*x) (-x) X k).comp_hasDerivAt x hp
+  convert! hd using 1
+  simp only [ContinuousLinearMap.coprod_apply,ContinuousLinearMap.toSpanSingleton_apply,
+    Complex.real_smul,Complex.ofReal_neg,Complex.ofReal_one,Complex.ofReal_ofNat,mul_one,neg_mul,mul_neg]
+  ring
+
+/-- Both time and radius contributions of the full image arm survive the finite-radius formula. -/
+theorem capBoundaryField_ingoing_normal_hasDerivAt (q : XiZeroCopy) (branch : Bool)
+    (amplitude : ℂ) (v x X k : ℝ) :
+    HasDerivAt (fun y => capBoundaryField q branch amplitude (v-y) y X k)
+      (-liftTraceCoefficient q branch amplitude*
+        (-((2-capScale x:ℝ):ℂ)*normalArm q branch v x X k+
+          2*timeArm q branch (v-2*x) (-x) X k-
+          ((2-capScale (-x):ℝ):ℂ)*normalArm q branch (v-2*x) (-x) X k)) x := by
+  have hd := ((boundaryArm_normal_hasDerivAt q branch v x X k).sub
+    (boundaryArm_image_hasDerivAt q branch v x X k)).const_mul (-liftTraceCoefficient q branch amplitude)
+  convert! hd using 1
+  · funext y
+    simp only [capBoundaryField,sub_add_cancel]
+    rw [show v-y-y=v-2*y by ring]
+    rfl
+  · ring
+
+private theorem scale_complement (x : ℝ) : 2-capScale (-x)=capScale x := by
+  unfold capScale
+  rw [Real.cosh_neg,Real.cosh_eq]
+  field_simp
+  ring
+
+private theorem image_exponential_over_scale (q : XiZeroCopy) (x : ℝ) :
+    Real.exp ((2*decayExponent q)*x)/capScale x =
+      (Real.exp ((2*decayExponent q)*x)+Real.exp ((2*decayExponent q-2)*x))/2 := by
+  have he : Real.exp ((2*decayExponent q)*x)*Real.exp (-x)/Real.exp x =
+      Real.exp ((2*decayExponent q-2)*x) := by
+    rw [← Real.exp_add,← Real.exp_sub]
+    congr 1
+    ring
+  rw [capScale,div_div_eq_mul_div,Real.cosh_eq]
+  rw [show Real.exp ((2*decayExponent q)*x)*((Real.exp x+Real.exp (-x))/2)/Real.exp x=
+    (Real.exp ((2*decayExponent q)*x)+Real.exp ((2*decayExponent q)*x)*Real.exp (-x)/Real.exp x)/2 by
+      field_simp [(Real.exp_pos x).ne']]
+  rw [he]
+
+private theorem weightedArm_image_div_scale_ingoing (q : XiZeroCopy) (branch normal : Bool)
+    (v X k : ℝ) :
+    Tendsto (fun x => weightedArm q branch normal (v-2*x) (-x) X k/(capScale x:ℂ)) atBot (𝓝 0) := by
+  obtain ⟨C,hC,hb⟩ := weightedArm_bound q branch normal
+  have hd : 1 < decayExponent q := by
+    linarith [(sourceGrowthExponent_bounds q).1,(decayExponent_bounds q).1]
+  have h0 := Real.tendsto_exp_atBot.comp
+    ((tendsto_const_mul_atBot_of_pos (by linarith : 0 < 2*decayExponent q)).mpr tendsto_id)
+  have h1 := Real.tendsto_exp_atBot.comp
+    ((tendsto_const_mul_atBot_of_pos (by linarith : 0 < 2*decayExponent q-2)).mpr tendsto_id)
+  let D := C*Real.exp (-decayExponent q*v+sourceGrowthExponent q*|k|)
+  have hbnd (x : ℝ) : ‖weightedArm q branch normal (v-2*x) (-x) X k/(capScale x:ℂ)‖ ≤
+      D*((Real.exp ((2*decayExponent q)*x)+Real.exp ((2*decayExponent q-2)*x))/2) := by
+    rw [norm_div,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (capScale_pos x)]
+    have hb' := hb (v-2*x) (-x) X k
+    rw [show -decayExponent q*(v-2*x)+sourceGrowthExponent q*|k|=
+      (-decayExponent q*v+sourceGrowthExponent q*|k|)+(2*decayExponent q)*x by ring,Real.exp_add] at hb'
+    calc
+      _ ≤ D*Real.exp ((2*decayExponent q)*x)/capScale x :=
+        div_le_div_of_nonneg_right (by simpa only [D,mul_assoc] using hb') (capScale_pos x).le
+      _ = _ := by rw [mul_div_assoc,image_exponential_over_scale]
+  apply squeeze_zero_norm hbnd
+  simpa only [Function.comp_def,id_eq,zero_add,zero_div,mul_zero] using ((h0.add h1).div_const 2).const_mul D
+
+/-- Even after dividing by the vanishing horizon scale, the full image derivative vanishes. -/
+theorem boundaryArm_image_div_scale_ingoing (q : XiZeroCopy) (branch : Bool) (v X k : ℝ) :
+    Tendsto (fun x => deriv (fun y => boundaryArm q branch (v-2*y) (-y) X k) x/(capScale x:ℂ))
+      atBot (𝓝 0) := by
+  have ht := ((weightedArm_image_div_scale_ingoing q branch false v X k).const_mul (-2:ℂ)).add
+    (weightedArm_image_ingoing q branch true v X k)
+  have he (x : ℝ) : deriv (fun y => boundaryArm q branch (v-2*y) (-y) X k) x/(capScale x:ℂ)=
+      (-2:ℂ)*(timeArm q branch (v-2*x) (-x) X k/(capScale x:ℂ))+
+        normalArm q branch (v-2*x) (-x) X k := by
+    rw [(boundaryArm_image_hasDerivAt q branch v x X k).deriv,scale_complement]
+    field_simp [Complex.ofReal_ne_zero.mpr (capScale_pos x).ne']
+  simpa only [he,mul_zero,zero_add,timeArm,normalArm] using ht
 
 end
 end RHTower.D4BMCapNormalTrace

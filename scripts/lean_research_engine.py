@@ -94,6 +94,28 @@ class Engine:
         self.embedding_model = embedding_version(self.status)
         self.vector_coverage = None
         self.errors: list[dict] = []
+        self._records = {}
+        self._record_version = None
+
+    def _record(self, kind, did):
+        # data_version catches commits from the indexer, total_changes catches
+        # writes through this connection. Neither relies on callers bumping meta.
+        version = (self.corpus.con.execute('PRAGMA data_version').fetchone()[0],
+                   self.corpus.con.total_changes)
+        if version != self._record_version:
+            self._records.clear()
+            self._record_version = version
+        key = (kind, did)
+        if key not in self._records:
+            if len(self._records) >= 512:
+                del self._records[next(iter(self._records))]
+            record = getattr(self.corpus, kind)(did)
+            if kind == 'declaration' and record:
+                # Only the displayed excerpt uses the proof; avoid retaining
+                # entire long generated proofs across progressive snapshots.
+                record['proof'] = record['proof'][:5000]
+            self._records[key] = record
+        return self._records[key]
 
     def fail(self, stage, exc):
         entry = dict(stage=stage, error=str(exc))
@@ -104,7 +126,7 @@ class Engine:
         return module_matches(declaration["module"], options.get("module", ""), options.get("exclude_modules", []))
 
     def _candidate(self, hit: dict) -> dict | None:
-        d = self.corpus.declaration(hit["decl_id"])
+        d = self._record('declaration', hit['decl_id'])
         if not d:
             return None
         # Preserve full signature; text truncation is limited to display context
@@ -124,9 +146,9 @@ class Engine:
     def _method_candidate(self, hit):
         candidate = self._candidate(hit)
         if candidate:
-            d = self.corpus.declaration(candidate['id'])
+            d = self._record('declaration', candidate['id'])
             candidate['proof_excerpt'] = (d['proof'] if d else '')[:5000]
-            candidate['method'] = self.corpus.method(candidate['id'])
+            candidate['method'] = self._record('method', candidate['id'])
             if hit.get('view') == 'method' and not candidate['method']:
                 return None
             candidate['idea_status'] = 'retrieved_source_argument'

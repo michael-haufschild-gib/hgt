@@ -53,8 +53,11 @@ bound and a real-power moment estimate, not a recalled asymptotic.
 ## Surviving RH-chain edge
 
 Exact half-divisor scalar construction remains open.  This card determines which smoothing clocks
-cannot supply its missing local boundedness.  Schedules with unbounded weighted transport cost are
-the exact survivors; they are candidates only, not evidence for RH.
+cannot supply its missing local boundedness. Schedules with unbounded weighted transport cost
+were the survivors of this interpolation argument. The
+[complete source-mass audit](dyadic-root-laplace-source-mass.md) now excludes every positive heat
+clock tending to zero with a cofinal pole clock, including sparse clocks. The analytic-root
+construction itself remains open.
 
 ## No-go closure (mandatory when falsified)
 
@@ -65,8 +68,8 @@ the exact survivors; they are candidates only, not evidence for RH.
   continuation would then contradict the zeta pole at one.
 - **Strongest positive survivor:** Weighted mesh escape law: eventual boundedness of canonical
   boundary samples forces adjacent gaps to escape every eventual
-  `O(τ(N+1)^(16/11))` bound.  Thus viable smoothing clocks must be genuinely sparse in this exact
-  arithmetic metric.
+  `O(τ(N+1)^(16/11))` bound. This argument alone requires genuine sparsity in that metric;
+  the later complete source-mass theorem excludes that remaining schedule-only candidate.
 - **New insight:** Pole-degree growth and heat-time decay decouple completely at sample level.
   Pole clearing supplies bounded samples; only weighted mesh sparsity can prevent those samples
   from controlling the full Mellin profile.  Reciprocal and all comparably dense schedules are not

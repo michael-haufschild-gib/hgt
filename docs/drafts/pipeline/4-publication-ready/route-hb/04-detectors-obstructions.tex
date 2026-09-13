@@ -1,0 +1,115 @@
+\section{An exact rational detector and its limits}
+
+The elementary plateau calculations provide a useful example of what an unconditional detector does, and what it does not do. Let \(K(s)\) be the value of \code{skewPlateauMu} at angular parameter zero. Set \(v=s+3/2\) and
+\begin{align*}
+ P(u)&=-\tfrac{74655}{2048}+\tfrac{58863}{256}u-\tfrac{19053}{32}u^2
+ +\tfrac{36367}{32}u^3-\tfrac{3151}{8}u^4-46u^5+36u^6-8u^7,\\
+ Q(u)&=4-20u+16u^2=(4u-4)(4u-1).
+\end{align*}
+Away from the four elementary denominator zeros,
+\begin{equation}\label{eq:kernel}
+ K(s)=\frac{vP(v^2)}{512Q(v^2)}.
+\end{equation}
+The denominator zeros are \(s=-1/2,-1,-2,-5/2\); none lies at positive imaginary height.
+
+\begin{theorem}[Constant-mode tilt detection]\label{thm:tilt}
+For \(0\le\sigma\le1\) and \(t\ge92\),
+\[
+ \re K(\sigma-2+it)=0\quad\Longleftrightarrow\quad\sigma=1/2.
+\]
+More precisely, there is an explicit real polynomial \(C(\sigma,t)>0\) on this domain such that
+\begin{equation}\label{eq:tilt}
+ 2\re K(\sigma-2+it)\,|512Q((\sigma-1/2+it)^2)|^2
+      =(2\sigma-1)C(\sigma,t).
+\end{equation}
+\end{theorem}
+\cert{C3}
+\begin{proof}
+Define the polynomial \(H\) through the symmetric difference identity
+\begin{align*}
+ &vP(v^2)512Q(y^2)-512Q(v^2)yP(y^2)\\
+ &\hspace{18mm}=(v-y)512H((v+y)^2,vy).
+\end{align*}
+The corpus gives its explicit coefficients and verifies this polynomial identity. This definition also permits direct calculation of \(H\) by polynomial division and symmetric reduction. Equation~\eqref{eq:kernel} is odd under \(s\mapsto-3-s\) and commutes with conjugation. Choose \(v=\sigma-1/2+it\) and \(y=-\overline v\). Then
+\[
+ (v+y)^2=-4t^2,\quad vy=-((\sigma-1/2)^2+t^2),\quad v-y=2\sigma-1.
+\]
+Taking the difference of the two rational kernels gives \eqref{eq:tilt} with
+\[
+ C(\sigma,t)=512H(-4t^2,-((\sigma-1/2)^2+t^2)).
+\]
+For completeness, the elementary bound used for positivity is
+\[
+ C(\sigma,t)\ge720896t^{18}-6067244032t^{16}
+ \quad(0\le\sigma\le1,\ t\ge1).
+\]
+Expand \(C\) in \(\sigma,t\), discard nonnegative monomials, and bound the remaining monomials by \(t^{16}\). The four coefficient groups in the formal certificate have absolute negative sums
+\[
+ 2244870144,\quad1077216256,\quad1209179136,\quad1535978496.
+\]
+Their sum is the displayed constant. Since \(720896\cdot92^2>6067244032\), the bound is positive at \(t\ge92\). The squared denominator is positive, so \eqref{eq:tilt} proves the equivalence.
+\end{proof}
+
+This theorem holds for every complex parameter in its domain, regardless of whether it is a Xi zero. It supplies a rational test for the real coordinate. It supplies no reason that its value at an arithmetic zero must vanish, and it makes no claim below height 92.
+
+\subsection{Amplitude dependence and spectral assembly}
+
+The scalar, mixed, and vector constant-mode leading coefficients have the exact factorization
+\begin{equation}\label{eq:square}
+ 8x^2-192xy+1152y^2=8(x-12y)^2.
+\end{equation}
+Here \(x,y\) stand for the squared scalar and vector amplitudes in the leading quartic form.
+\cert{C4}
+For real \(x,y\), this is nonnegative, but it vanishes on \(x=12y\). Consequently it cannot establish the notes' assertion of an automatic strict sign in every reading. For complex amplitudes, even the word nonnegative requires a separate conjugation identification. A helicity substitution in a bilinear polynomial produces a fourth power of the amplitude; replacing that with an absolute fourth power also requires such an identification.
+
+The notes propose that a physical coefficient has a dominant constant-mode contribution of schematic form
+\[
+ K_{\rm phys}(\rho)=c_0(\rho)^2K(\rho-2)+\mathcal R(\rho).
+\]
+\textbf{Unproved assembly claim.} This article does not assert this decomposition for the complete original action, nonvanishing of its normalizing coefficient, or the proposed relative error \(O(t^{-3/2})\). The isolated harmonic estimates do not supply the regularized spectral identity, the measure, the mixed-sector amplitudes, and the boundary interchange needed here.
+
+There is a second issue even if an asymptotic estimate is established. The leading real part in \eqref{eq:tilt} tends to zero with \(2\sigma-1\). A small additive error bound alone cannot justify a uniform sign arbitrarily close to the line. A valid transfer needs a matching tilt factor in the real error, or a quantitative bound relative to that vanishing leading real part. A magnitude estimate relative to the full complex kernel is insufficient. The same concern applies when a cutoff is chosen separately for each zero and then promoted to a single universal choice.
+
+\section{The exact boundary of the original source probe}
+
+In the corpus's Peierls carrier, write \(s_+(q)\) and \(s_-(q)\) for the two unit source vectors in this paragraph only; these vectors are unrelated to the scalar rates \(s_\pm(\rho)\). Let \(\beta\) be its bilinear pairing. The complementary testing vector obeys
+\[
+ s_-(q)=0\quad\Longleftrightarrow\quad\re\rho=1/2.
+\]
+For arbitrary returned vectors \(r(q)\), define the measured profile \(T_r(q)=\beta(r(q),s_-(q))\).
+
+\begin{theorem}[Exact attainable profiles]\label{thm:range}
+A function \(T:\mathrm{XiZeroCopy}\to\C\) equals \(T_r\) for some returned-vector family if and only if it vanishes on all critical-line copies. Every such profile is realized by a weighted complex-linear skew propagator applied to the original positive source.
+\end{theorem}
+\cert{C1}
+\begin{proof}
+Necessity follows from pairing against zero. For sufficiency, let
+\(h(q)=|A_{\rm pol}(q)|^2\), where \(A_{\rm pol}\) is the unit-amplitude value of \code{d4BMXiSecondHarmonicPolarizedSourceAmplitude}.
+The source identities give \(h(q)\ne0\) exactly off the critical line, and the weighted propagator has profile \(w(q)h(q)\). Choose \(w(q)=T(q)/h(q)\) off the line, and zero on it. This produces \(T\) everywhere. No regularity or linearity of an arbitrary competing returned-vector family was used.
+\end{proof}
+
+This is both a no-go and a positive classification. Nonlinear propagation cannot recover information already annihilated by this particular testing leg. Conversely, the canonical construction realizes every compatible target. Because it uses that target in its defining weight, it is not an independently derived physical response law. The theorem excludes neither a different testing field nor a retained derivative of a vanishing source; those possibilities need their own construction and physical identification.
+
+\section{Receivers for the Riemann hypothesis}
+
+The phase-sensitive chiral Ward construction is particularly transparent. With a nonzero source amplitude \(a\), its reduced projection has the factorization
+\[
+ \mathcal W_a(q)=m_a(q)(1-2\re\rho),\qquad m_a(q)\ne0.
+\]
+In the source normalization,
+\[
+ m_a(q)=i\im\rho\,
+   \code{d4BMGaugeFixedSecondHarmonicGreen}(q)
+   C_{\mathrm{sd}}(a,z_q).
+\]
+Here \(C_{\mathrm{sd}}\) denotes \code{d4ThetaHawkingSelfDualQuadraticCarrierCoefficient}.
+Dividing by this multiplier gives a real calibrated value \(1-2\re\rho\). Therefore the corpus proves
+\[
+ \bigl(\forall q,\ \mathcal W_1(q)=0\bigr)\quad\Longleftrightarrow\quad\RH.
+\]
+\cert{C2}
+The proof is cancellation of the nonzero multiplier followed by the zero-copy formulation of \(\RH\). It is a premise-free equivalence, but neither side is supplied as a premise-free fact. Identifying \(\mathcal W\) with the complete physical mixed action is not a consequence of defining this reduced projection.
+
+The static front has analogous equivalences for tilted-resonance centralizer rigidity and KMS Cayley scattering mixing.
+\cert{C7}\cert{C8}
+Their role is to translate a universal property of a zero-labelled construction into zero location. Abstract graph completion, an operator realization, or a local near-action law does not establish that universal property. These alternatives remain separate possible endpoints until a source-derived dynamical or static principle supplies one of them.

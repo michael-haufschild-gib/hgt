@@ -50,9 +50,10 @@ otherwise irrelevant.
 
 ## Surviving RH-chain edge
 
-Exact half-divisor scalar construction remains open.  If conjecture closes, schedule decoupling
-survives only for sparse heat clocks whose normalized `16/11` gaps are unbounded, or for a literal
-singular/nonlinear correction changing the boundary heat profile.
+Exact half-divisor scalar construction remains open. The
+[complete source-mass audit](dyadic-root-laplace-source-mass.md) strengthens this result: every
+positive heat clock tending to zero fails with every cofinal pole-degree clock, without a gap
+condition. Sparse sampling is no longer a surviving candidate for this unchanged source.
 
 ## No-go closure (mandatory when falsified)
 
@@ -61,10 +62,11 @@ singular/nonlinear correction changing the boundary heat profile.
   of the canonical boundary heat profile.  Positive convergence and weighted dense gaps then
   violate the scheduled mesh escape theorem.
 - **Strongest positive survivor:** Two-clock separation law: pole-degree rate is irrelevant once it
-  reaches `24`; only heat clocks with unbounded normalized `16/11` gaps survive schedule-only
-  closure.
+  reaches `24`. This theorem left unbounded normalized `16/11` gaps unexcluded; the later
+  all-clock obstruction closes that gap and retains a quantitative positive source-mass reserve.
 - **New insight:** Slowing or accelerating pole degree cannot compensate for dense heat geometry.
-  Any next Laplace candidate must be sparse in heat time itself or change the arithmetic profile.
+  The later source-mass theorem also excludes sparse heat time: a replacement must change or
+  compensate the divergent profile while preserving the actual Euler germ.
 - **Status:** dependency-closed paper proof; Lean module
   `GaloisForLFunctions.RHTower.SquarefreeConvolutionHalfLaplaceTwoClockNoGo`; direct check and
   targeted build `13036/13036` passed; three public theorems axiom-audited with only `propext`,

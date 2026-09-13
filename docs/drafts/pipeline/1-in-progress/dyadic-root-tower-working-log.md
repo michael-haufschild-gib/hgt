@@ -2,9 +2,76 @@
 
 - **Scope:** facts and no-gos established or verified during this investigation
 - **Status:** in progress; no RH proof
-- **Updated:** 2026-09-12
+- **Updated:** 2026-09-13
 
 ## Facts
+
+- `ZetaPoleHalfArithmeticLaplace` verifies the literal damped
+  floor-cutoff source as the infinite sum of all arithmetic translates, including
+  exact endpoint agreement. It proves whole-line integrability, the full transform
+  `L(H)(s)=B(s+3)*L(D)(s)`, and square `zeta(s+3)*(s+2)/(s+3)^2` for `Re(s)>=0`.
+  The transform is analytic on `Re(s)>0`. These are original-variable `Re(z)>=3`
+  statements, not a larger root domain or a baseline bound. Targeted production
+  build passed; all 18 public theorems have only `propext`, `Classical.choice`, and
+  `Quot.sound` as axiom dependencies. Umbrella wired; default heartbeats.
+- The same module proves `LSeriesSummable zetaBinomialHalf z iff 1<Re(z)` directly
+  from the actual coefficient convolution square and zeta's convergence criterion.
+  The complete weighted atom norm factors exactly into a Dirichlet coefficient norm
+  and the weighted kernel norm. Both statements retain the full arithmetic family.
+
+- Complete Gamma-source scratch constructs a real causal `g`, proves
+  `g*g=exp(-t)*t*((1-t)^2+t^2/3)` almost everywhere on the positive ray,
+  and proves that this square is strictly positive there, integrable, and tends to zero.
+  It proves `exp(-2*t)*g` integrable but `exp(-3*t/4)*g` not integrable.
+  The source is an explicit convolution of two conjugate Gamma-half filters;
+  Fourier uniqueness verifies the square identity. The contradiction at the stronger
+  weight uses a simple transform zero, not an assumed zero of zeta.
+  Therefore positivity and decay of a full convolution square cannot alone establish
+  the required source bound. The actual arithmetic coefficients remain outside this
+  generic counterexample. See the [complete construction](../5-failed/positive-convolution-square-growth-bootstrap.md).
+  The three production leaves passed targeted builds; every one of their 55 public
+  theorems has only `propext`, `Classical.choice`, and `Quot.sound` as axiom dependencies.
+  Umbrellas wired; default heartbeats. Final lint has unrelated unreachable
+  `RHTower.Sieve.KloostermanGlobalCollisionCoprime` and
+  `RHTower.ThetaCuspHawkingBMOriginalHorizonRegularity`.
+
+- `CausalGammaHalfLaplace` proves the normalized complex-rate Gamma-half integral,
+  filter integrability, and the square-transform identity `(s+w)/(s+3)^2` for
+  `Re(s)>=0`, `Re(w)>0`. Its targeted build passed. A separate scratch identifies
+  the `w=2` filter with `exp(-3*t)*poleClearedHalfKernel(t)/Gamma(1/2)` and proves
+  integrability and its Laplace square. This is the existing kernel, including the
+  full primitive subtraction; the infinite arithmetic delayed sum is not yet identified.
+
+- Direct inspection found `exists_zetaBinomialHalf_summatory_bound` assumes
+  `ZetaBinomialHalfKatoInversion`. It does not supply an unconditional baseline bound.
+
+- The complete cell-upper scratch proves
+  `sum_(1<=N<M) N^(-sigma)*integral_cell abs(G-C_N)
+   <=16*sum_(1<=N<M) b(N)*N^(-sigma-1/2)` for `sigma>=0`.
+  It proves the weighted remainder-mass sequence summable for every `sigma>1/2`,
+  bounded by `16*sum N^(-sigma-1/2)`. The proof uses positive increments,
+  exact triangular finite-sum interchange, telescoping, and `0<=b(n)<=1`.
+  No bound for the retained baseline, no root continuation, and no RH proof follows yet.
+  `PoleHalfKernelCellOscillation` and `ZetaPoleHalfCellRemainder` passed both targeted
+  builds; all 24 public theorems have only `propext`, `Classical.choice`, and `Quot.sound`
+  as axiom dependencies. Umbrellas wired; default heartbeats. Lint still has the unrelated
+  unreachable `RHTower.Sieve.KloostermanGlobalCollisionCoprime`.
+
+- The cell-upper scratch verifies the exact decomposition of the literal causal source into
+  its old-atom right-endpoint baseline and remainder. It proves the remainder's cell mass
+  is at most `12*b(N)*sqrt(d_N)+2*sum_(n<N) b(n)/n * (q(log(N/n))-q(log((N+1)/n)))`,
+  with `q(t)=t^(-1/2)`. Each old-atom difference is nonnegative and its later-cell sum
+  telescopes. This is an upper bound for the remainder, not the complete source.
+
+- `PoleClearedHalfKernel` verifies local integrability and exact derivatives of `r(t)=exp(t)*t^(-1/2)-integral_0^t exp(v)*v^(-1/2) dv`. Both `r` and `r(t)-t^(-1/2)` are strictly decreasing on the positive ray. The latter gives a reflected-cell absolute-mass bound for every nonnegative finite packet of delayed kernels, without a sign assumption on the packet values.
+- `ZetaPoleHalfCausalSource` instantiates that law with the literal zeta-half coefficients and the full floor-cutoff causal source. On every prime cell of width `d=log(p+1)-log(p)`, its unnormalized absolute mass is at least `sqrt(d)/4`. The normalization to the Gamma-half kernel divides this bound by `sqrt(pi)`. The [causal-kernel card](dyadic-root-causal-kernel.md) distinguishes this checked lower bound from the still-unproved weighted upper bound needed for analytic roots. Both targeted builds passed; all 19 public theorems have only `propext`, `Classical.choice`, and `Quot.sound` as axiom dependencies. Default heartbeats; no root domain gain.
+
+- `PairedEtaRootContinuationBoundary` verifies the exact entire-factor identity `etaPair=C*zetaPoleUnit` on `Re(s)>0`, including `etaPair(1)=C(1)=log(2)`. Here `C=dslope (1-2^(1-s)) 1`; auxiliary zeros are retained, not silently cancelled inside separate roots.
+- Its entire comparison `J_h(s)=dslope exp 0 (-h*(s-1))` satisfies `J_h->1` locally uniformly on all of `Complex`, and `J_h*zetaPoleUnit->zetaPoleUnit` locally uniformly. At `h=log(2)` the latter equals `etaPair/log(2)`. The comparison uses the already continued pole unit; it supplies no new root of that unit. Complete scratch proof passed with default heartbeats.
+
+- `SquarefreeConvolutionHalfSourceMass` proves `norm(c(n)) <= norm(b(n))` for the actual Möbius and positive zeta halves, strictly at `n=4`, and proves the complete square-supported correction tail at `s=2/3` has absolute mass `A<1`.
+- `SquarefreeConvolutionHalfHeatMass` proves for every `t>0` that the actual signed heat sum satisfies `norm(F(t)-B(t)) <= A*B(t)`, hence `Re F(t) >= (1-A)*B(t) -> +infinity` as `t->0+`. The proof retains the full correction, proves absolute summability before rearranging, and uses prime-coefficient divergence rather than Kato asymptotics or heat-gap interpolation.
+- `PoleFactorTwoThirdsLowerBound` proves `norm(poleFactorSqrtApprox N (2/3)) >= 1/2` for every `N>=4`, from monotonicity of the binomial partial sums in their separate parity classes.
 
 - `RHTower.nonvanishing_of_exists_roots_all_two_powers_preconnected` needs global analytic roots of every order `2^k` on one open preconnected region plus one nonzero anchor. Successive-root coherence is not used.
 - `RHTower.rh_iff_exists_roots_all_two_powers` identifies the required global dyadic-root family on `rightHalf` as RH-equivalent. It is a receiver, not a root producer.
@@ -38,8 +105,23 @@
 - `thetaKernelOperator_adjoint_ne_thetaKernelOperator` proves the actual source operator is not ordinarily self-adjoint. Its coordinate expectation has strictly negative imaginary part.
 - `pinnedBoundaryCLM_exact_inertia` proves the Green boundary form has exact inertia `(1, 1)`, with explicit quadratic values `1/6` and `-1/6`. `thetaFredholmEigenmodesPinnedGreenIsotropic_iff_riemannHypothesis` proves that annihilating this form on every nonzero source eigenmode is exactly RH.
 - `PolyaFrequencyIsTheHypothesis` explicitly corrects the Pólya-frequency shortcut: Schoenberg's characterization concerns the reciprocal bilateral Laplace transform of an integrable Pólya-frequency density, not real-rootedness of that density's Fourier transform. `xi_laguerrePolya_of_rh` constructs the Xi Laguerre--Pólya approximation only after assuming RH.
+- `PrimeLogBlockCompression` retains prime count and first logarithmic moment in each `[k^4,(k+1)^4)` block. Its complete Euler-log discrepancy has bound `(240*norm(s)^2*exp(2*norm(s))+30)*k^(1-4*Re(s))`; the literal finite quotients converge to the holomorphic nonzero multiplier `quarticPrimeCompressionUnit` on `Re(s)>1/2`. This compares sources but supplies no continuation theorem for a root of either infinite Euler product.
+- `XiPoleClearedFirstTraceRootReduction` removes the archimedean and higher-prime-power analytic units. Its remaining actual Euler half-germ is `exp((log(s-1)+coronaPrimeZeta(s))/2)`; extending it to `rightHalf` is exactly `RHLadder 1`, not an unconditional construction.
+- **Earlier source audit, not a resumed route:** `SuzukiTaCovarianceSource.suzukiTaCovarianceDeficiency_shiftEquation` uses the literal shift `r=norm(B)+1>=1`. The paper's [Theorem AE](../3-formalized/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md#1422-every-negative-shift-bounded-away-from-zero-is-asymptotically-free) states, under RH, defect convergence to zero for `inf r_j>0`; the actual Xi target is unconditionally in `(77/85,1)` by `SuzukiXiFirstDefectJet`. The cited `SuzukiExpandingFrameAnnihilation` and `SuzukiNegativeRecessionJensen` modules contain abstract ingredients, not the instantiated literal-covariance limit. The resulting source-identification obstruction remains paper-level, not a verified closed Lean no-go.
 
 ## No-gos
+
+- Termwise absolute integration of the literal pole-cleared atom family cannot cross
+  original `Re(z)=1`: integrability of every atom plus summability of their norm
+  integrals forces `Re(z)>1`. The closed instance at `z=2/3` passes the production audit.
+  The proof establishes nonzero kernel mass under integrability and does not infer
+  convergence from a default zero integral. This rejects an absolute-value step;
+  the [positive survivor](dyadic-root-causal-kernel.md#full-arithmetic-transform-and-absolute-integration-boundary)
+  is the exact full-source transform, not retirement of the dyadic-root route.
+
+- Taking a global analytic square root of the actual paired eta series on `rightHalf` is impossible: at `1+2*pi*i/log(2)` the series vanishes with derivative `log(2)*zeta(rho)!=0`, hence exact analytic order one. This zero is introduced by pairing, not by zeta. `not_exists_analytic_etaPair_squareRoot_rightHalf` and the [positive cancellation and dilation survivor](../5-failed/dyadic-root-paired-source-test.md) passed the complete scratch check and targeted production build; all 27 public theorems use only `propext`, `Classical.choice`, and `Quot.sound`. The module is umbrella-wired; no heartbeat increases. This rejects separate factor-root extraction, not the actual dyadic-root route.
+
+- `SquarefreeConvolutionHalfLaplaceAllClocksNoGo.not_exists_locallyBounded_squarefreeHalfLaplace_cofinal_twoClocks` closes the sparse-clock loophole for the **literal** normalized heat family: no positive heat clock tending to zero and no cofinal pole-degree clock yield local boundedness on `rightHalf`. No monotonicity, gap, or rate condition is imposed on heat time. The [complete source-mass card](../5-failed/dyadic-root-laplace-source-mass.md) retains the positive reserve theorem; this rejects the producer, not the analytic-root route. Four direct checks and four targeted builds passed with default heartbeats; all 20 public theorems have only `propext`, `Classical.choice`, and `Quot.sound` as axiom dependencies.
 
 - All-power divisibility is only the selection endpoint. Replacing roots by covering lifts or divisibility data does not construct the required global objects.
 - Positive coefficient roots and Gamma-half/Karamata laws live in the Euler convergence chamber. By themselves they do not analytically continue a square root across `Re(s)=1` or control monodromy.
@@ -58,6 +140,9 @@
 - The actual source determinant does not gain local parity from functional-equation reflection: anticommutation pairs the distinct zeros `z` and `-z` with equal order, while a generic off-diagonal determinant `det(I + zB)` can have simple zeros. Fixed-point-free pairing constrains the global divisor but not either local order.
 - Ordinary or weighted dissipativity cannot be inferred from the available theta Green identity. The ordinary operator has a proved nonzero adjoint defect, and the weighted boundary form is one hyperbolic plane rather than semidefinite. Reflected eigenmodes carry opposite boundary currents, so aggregate cancellation does not imply modewise neutrality.
 - Positive theta-source density or a proposed Pólya-frequency property does not by itself locate the zeros of its Fourier transform. The relevant Schoenberg theorem applies to a reciprocal Laplace transform, and the corpus's actual Xi Laguerre--Pólya construction has RH as an input.
+- Integer exponents in finite Euler products do not supply meromorphic continuation of their infinite root limit. An uncompleted meromorphic square root of zeta near `s=1` would require `2*ord(g)=-1`. Pole-clearing is a genuine survivor: `exists_local_normalized_analytic_sqrt_zetaPoleUnit` already constructs the normalized analytic square root near `1`; this local repair does not settle interior Xi monodromy. Both statements passed `lake env lean /tmp/rh-root-source-audit.XnUgKV/PoleCheck.lean`; both axiom audits report only `propext`, `Classical.choice`, `Quot.sound`. This is a diagnostic using existing order lemmas, not a new production module or an RH advance.
+- The geometric removability theorem found by the broad search does not remove a complex root's branch obstruction: [Antonelli–Székelyhidi, arXiv:2609.01464, Theorem 1.1](https://arxiv.org/html/2609.01464v1) assumes metric comparability and singular-set codimension strictly greater than `3-1/(n-1)`. At real dimension two that is strictly greater than two, so an isolated complex branch point is outside its hypotheses. No branch-descent conclusion is supplied.
+- The recent iterated-extension theorem does not force an unramified root tower: [Barcau–Paşol, arXiv:2606.29310, Theorem 1.1 and Proposition 5.2](https://arxiv.org/html/2606.29310v1) allow deep ramification; collapse in the Frobenius-type case requires unramifiedness at every level. Substituting that premise for trivial complex root monodromy does not prove it.
 
 ## Open boundary
 

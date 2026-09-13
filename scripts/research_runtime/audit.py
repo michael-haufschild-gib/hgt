@@ -5,12 +5,13 @@ likewise: their macOS wheels load different OpenMP runtimes and cannot safely
 share one interpreter. Never use KMP_DUPLICATE_LIB_OK to suppress that failure.
 """
 from pathlib import Path
-import os
-import signal
 import subprocess
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from research_runtime.processes import terminate_owned, cancellation_signals
 
+@cancellation_signals()
 def main():
     root = Path(__file__).resolve().parents[2]
     paths = sorted((root / 'scripts/tests').glob('test_lean_research_*.py'))
@@ -22,13 +23,7 @@ def main():
             if code:
                 return code
         finally:
-            if child.poll() is None:
-                os.killpg(child.pid, signal.SIGTERM)
-                try:
-                    child.wait(timeout=1)
-                except subprocess.TimeoutExpired:
-                    os.killpg(child.pid, signal.SIGKILL)
-                    child.wait()
+            terminate_owned(child)
     return 0
 
 

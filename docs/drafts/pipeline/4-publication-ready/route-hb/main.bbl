@@ -1,0 +1,70 @@
+\begin{thebibliography}{1}
+
+\bibitem{aros}
+Rodrigo Aros, Cristi{\'a}n Mart{\'i}nez, Ricardo Troncoso, and Jorge Zanelli.
+\newblock Quasinormal modes for massless topological black holes.
+\newblock {\em Physical Review D}, 67:044014, 2003.
+\newblock
+  \href{https://doi.org/10.1103/PhysRevD.67.044014}{doi:10.1103/PhysRevD.67.044014};
+  \href{https://arxiv.org/abs/hep-th/0211024}{arXiv:hep-th/0211024}.
+
+\bibitem{bm}
+Danny Birmingham and Susan Mokhtari.
+\newblock Exact gravitational quasinormal frequencies of topological black
+  holes.
+\newblock {\em Physical Review D}, 74:084026, 2006.
+\newblock
+  \href{https://doi.org/10.1103/PhysRevD.74.084026}{doi:10.1103/PhysRevD.74.084026};
+  \href{https://arxiv.org/abs/hep-th/0609028}{arXiv:hep-th/0609028}.
+
+\bibitem{djn}
+Jakub Dobrowolski, Subhajit Jana, and Ramon Nunes.
+\newblock Regularized spectral expansion of a {Rankin--Selberg} period and
+  moments, 2026.
+\newblock Preprint, version 1, 1 September 2026.
+  \href{https://arxiv.org/abs/2609.01358v1}{arXiv:2609.01358v1}.
+
+\bibitem{green}
+Stephen~R. Green, Stefan Hollands, Laura Sberna, Vahid Toomani, and Peter
+  Zimmerman.
+\newblock Conserved currents for a {Kerr} black hole and orthogonality of
+  quasinormal modes.
+\newblock {\em Physical Review D}, 107:064030, 2023.
+\newblock
+  \href{https://doi.org/10.1103/PhysRevD.107.064030}{doi:10.1103/PhysRevD.107.064030};
+  \href{https://arxiv.org/abs/2210.15935}{arXiv:2210.15935}.
+
+\bibitem{ki}
+Hideo Kodama and Akihiro Ishibashi.
+\newblock A master equation for gravitational perturbations of maximally
+  symmetric black holes in higher dimensions.
+\newblock {\em Progress of Theoretical Physics}, 110:701--722, 2003.
+\newblock \href{https://doi.org/10.1143/PTP.110.701}{doi:10.1143/PTP.110.701};
+  \href{https://arxiv.org/abs/hep-th/0305147}{arXiv:hep-th/0305147}.
+
+\bibitem{lestingi}
+Jacopo Lestingi, Laura Sberna, and Stephen~R. Green.
+\newblock Schr{\"o}dinger perturbation theory for black hole quasinormal modes,
+  2026.
+\newblock Preprint, version 1, 21 July 2026.
+  \href{https://arxiv.org/abs/2607.19492v1}{arXiv:2607.19492v1}.
+
+\bibitem{minucci}
+Marica Minucci, Rodrigo~Panosso Macedo, Christiana Pantelidou, and Laura
+  Sberna.
+\newblock Bilinear products and the orthogonality of quasinormal modes on
+  hyperboloidal foliations, 2026.
+\newblock Preprint, version 1, 14 April 2026.
+  \href{https://arxiv.org/abs/2604.13182v1}{arXiv:2604.13182v1}.
+
+\bibitem{zagier}
+Don Zagier.
+\newblock The {Rankin--Selberg} method for automorphic functions which are not
+  of rapid decay.
+\newblock {\em Journal of the Faculty of Science, University of Tokyo, Section
+  IA, Mathematics}, 28:415--437, 1981.
+\newblock
+  \href{https://people.mpim-bonn.mpg.de/zagier/files/rankin-selberg/fulltext.pdf}{Author-hosted
+  text}.
+
+\end{thebibliography}

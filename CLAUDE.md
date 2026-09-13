@@ -31,6 +31,13 @@ Card template: docs/drafts/pipeline/_card-template.md
 - Check `partial`, coverage and source/compiler freshness; verify candidate applicability in Lean.
 - `--no-refresh` searches the cached index without refreshing it. Use `rg` for exhaustive source-text searches.
 
+## Python scratch jobs
+- Run potentially long Python jobs through `python3 scripts/run_guarded.py --timeout 600 -- python3 /tmp/job.py`.
+  Choose a finite timeout; wrap an entire pipeline with `-- /bin/zsh -c '...'`.
+- Tool timeouts may background jobs. Cancel the guarded command by its owned PID/handle, never `pkill -f`.
+  Verify exit before starting a replacement. Exit 124 means the runner timed out and cleaned up its process group.
+- Keep jobs in the runner's process group; do not detach them. Search commands and managed services retain their documented launch commands.
+
 ## Lean discipline
 - Verify every mathlib name against THIS toolchain in a /tmp scratch file
   (`lake env lean /tmp/x.lean` with `have := @Name` lines). Never trust a recalled name.
