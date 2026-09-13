@@ -1,0 +1,1 @@
+The positive low-tile winding was resolved by subdivision, yielding one independently validated rank-one candidate. Parent report and analysis contain exact location, residuals, null vector, third-reader comparison and scope. Raw32-cell contours, failed seeds and all precision/source evidence retained; original checksums verified.

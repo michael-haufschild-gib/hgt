@@ -1,0 +1,27 @@
+{
+  "rows": [
+    {
+      "T": 20,
+      "y": 0.125,
+      "full_moments": [
+        0
+      ],
+      "success": false,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "dimension": 11
+    },
+    {
+      "T": 20,
+      "y": 0.125,
+      "full_moments": [
+        2
+      ],
+      "success": false,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "dimension": 11
+    }
+  ],
+  "seconds": 0.7975843027234077
+}

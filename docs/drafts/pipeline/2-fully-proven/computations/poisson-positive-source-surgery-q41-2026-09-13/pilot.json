@@ -1,0 +1,45 @@
+{
+  "rows": [
+    {
+      "T": 20,
+      "y": 0.125,
+      "full_moments": true,
+      "success": false,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "dimension": 11
+    },
+    {
+      "T": 20,
+      "y": 0.125,
+      "full_moments": false,
+      "success": true,
+      "status": 0,
+      "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+      "dimension": 11,
+      "u": [
+        "12.887588190205388",
+        "-3.313277945292987",
+        "0.0",
+        "-2.952220841826109",
+        "0.0",
+        "0.0",
+        "1.0444535995899762",
+        "1.58783754104196",
+        "-3.10268720610427",
+        "1.3796880951956816",
+        "4.7540387392986245"
+      ],
+      "constraint_pivots": [
+        1,
+        0,
+        8,
+        9,
+        10
+      ],
+      "coefficient_min": 0.04999999999999982,
+      "scaled_residual": 3.552713678800501e-15
+    }
+  ],
+  "seconds": 1.0785145871341228
+}

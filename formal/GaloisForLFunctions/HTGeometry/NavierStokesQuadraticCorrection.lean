@@ -196,4 +196,67 @@ theorem existsUnique_quadratic_correction
     have : dist c y = 0 := by nlinarith [@dist_nonneg E _ c y]
     exact (eq_of_dist_eq_zero this).symm
 
+omit [CompleteSpace E] in
+/--
+Small quadratic corrections depend Lipschitz-continuously on the discrepancy, with the explicit
+constant `2 ‖B⁻¹‖` under the paper's smallness condition for both data.
+-/
+theorem quadratic_correction_lipschitz
+    (B : E ≃L[ℝ] E) (Q : E →L[ℝ] E →L[ℝ] E) (d e x y : E)
+    (hsmallD : 8 * ‖B.symm.toContinuousLinearMap‖ ^ 2 * ‖Q‖ * ‖d‖ ≤ 1)
+    (hsmallE : 8 * ‖B.symm.toContinuousLinearMap‖ ^ 2 * ‖Q‖ * ‖e‖ ≤ 1)
+    (hxnorm : ‖x‖ ≤ correctionRadius B d) (hynorm : ‖y‖ ≤ correctionRadius B e)
+    (hx : B x + Q x x = d) (hy : B y + Q y y = e) :
+    ‖x - y‖ ≤ 2 * ‖B.symm.toContinuousLinearMap‖ * ‖d - e‖ := by
+  have hβ : 0 ≤ ‖B.symm.toContinuousLinearMap‖ := norm_nonneg _
+  have hκ : 0 ≤ ‖Q‖ := Q.opNorm_nonneg
+  have hd : 0 ≤ ‖d‖ := norm_nonneg _
+  have he : 0 ≤ ‖e‖ := norm_nonneg _
+  have hcoef :
+      ‖B.symm.toContinuousLinearMap‖ * ‖Q‖ * (‖x‖ + ‖y‖) ≤ 1 / 2 := by
+    calc
+      _ ≤ ‖B.symm.toContinuousLinearMap‖ * ‖Q‖ *
+          (correctionRadius B d + correctionRadius B e) := by gcongr
+      _ ≤ 1 / 2 := by
+        dsimp [correctionRadius]
+        nlinarith [add_le_add hsmallD hsmallE]
+  have hxfix : correctionMap B Q d x = x := by
+    apply B.injective
+    simp only [correctionMap, B.apply_symm_apply]
+    rw [← hx]
+    abel
+  have hyfix : correctionMap B Q e y = y := by
+    apply B.injective
+    simp only [correctionMap, B.apply_symm_apply]
+    rw [← hy]
+    abel
+  have hdata :
+      ‖correctionMap B Q d y - correctionMap B Q e y‖ ≤
+        ‖B.symm.toContinuousLinearMap‖ * ‖d - e‖ := by
+    calc
+      _ = ‖B.symm (d - e)‖ := by
+        congr 1
+        simp only [correctionMap, ← map_sub]
+        congr 1
+        abel
+      _ ≤ _ := B.symm.toContinuousLinearMap.le_opNorm _
+  have hsame := correctionMap_sub_norm_le B Q d x y
+  have hmain :
+      ‖x - y‖ ≤
+        (1 / 2) * ‖x - y‖ + ‖B.symm.toContinuousLinearMap‖ * ‖d - e‖ := by
+    calc
+      ‖x - y‖ = ‖correctionMap B Q d x - correctionMap B Q e y‖ := by
+        rw [hxfix, hyfix]
+      _ = ‖(correctionMap B Q d x - correctionMap B Q d y) +
+          (correctionMap B Q d y - correctionMap B Q e y)‖ := by
+            congr 1
+            abel
+      _ ≤ ‖correctionMap B Q d x - correctionMap B Q d y‖ +
+          ‖correctionMap B Q d y - correctionMap B Q e y‖ := norm_add_le _ _
+      _ ≤ (‖B.symm.toContinuousLinearMap‖ * ‖Q‖ * (‖x‖ + ‖y‖)) * ‖x - y‖ +
+          ‖B.symm.toContinuousLinearMap‖ * ‖d - e‖ := add_le_add hsame hdata
+      _ ≤ (1 / 2) * ‖x - y‖ +
+          ‖B.symm.toContinuousLinearMap‖ * ‖d - e‖ := by gcongr
+  nlinarith [norm_nonneg (x - y), mul_nonneg hβ (norm_nonneg (d - e))]
+
 end GaloisForLFunctions.HTGeometry.NavierStokesQuadraticCorrection

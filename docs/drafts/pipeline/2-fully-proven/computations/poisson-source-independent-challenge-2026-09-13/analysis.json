@@ -1,0 +1,7 @@
+{
+  "successful_checks": 8,
+  "maximum_fine_scaled_residual": 3.1730963991986746e-146,
+  "maximum_fine_anchor_difference": 3.173088005441813e-146,
+  "wall_seconds": 4.131517488509417,
+  "worker_seconds": 22.349013805389404
+}

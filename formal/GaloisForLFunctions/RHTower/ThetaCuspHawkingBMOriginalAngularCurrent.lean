@@ -196,6 +196,15 @@ def leftScalar (q : XiZeroCopy) (side outer : Bool) (x : P4) : ℂ :=
   leftAmplitude q side outer (timeRadius x)*
     D4BMLiteralCusp.scalar (physicalAngularParameter q) (angularPoint x)
 
+/-- Pointwise formula for the original reader in the ingoing chart. -/
+theorem leftScalar_value (q : XiZeroCopy) (side outer : Bool) (x : P4) :
+    leftScalar q side outer x =
+      Complex.exp (-D4BMLeftModeRadialEquation.frequency q side *
+        ((x 0-D4BMIngoingCoordinates.tortoise (x 1)):ℂ))*
+      radiusLift (D4BMLeftModeRadialEquation.profile q side outer) (x 1)*
+      D4BMLiteralCusp.scalar (physicalAngularParameter q) (angularPoint x) := by
+  simp [leftScalar,leftAmplitude,timeRadius]
+
 private theorem angular_smooth : ContDiff ℝ ∞ angularPoint := by
   apply contDiff_pi.mpr
   intro i

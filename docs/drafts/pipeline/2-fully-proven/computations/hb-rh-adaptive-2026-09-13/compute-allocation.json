@@ -188,5 +188,82 @@
     "wall_seconds": 189.01834472827613,
     "category": "HB source-component investigation",
     "timing_scope": "sum of guarded stages; preparation gaps excluded; not uninterrupted wall span"
+  },
+  {
+    "family": "hb-native-cutoff-energy-2026-09-13",
+    "category": "HB source-component investigation",
+    "seconds": 3082.7717165090144,
+    "wall_seconds": 225.54615894332528,
+    "timing_scope": "guarded execution and recorded tasks; preparation excluded"
+  },
+  {
+    "family": "eisenstein-fourier-alignment-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 6305.960962826386,
+    "wall_seconds": 458.31169615499675,
+    "timing_scope": "guarded execution and recorded tasks; preparation excluded"
+  },
+  {
+    "family": "hb-radial-reader-rank-2026-09-13",
+    "category": "HB radial-factor investigation",
+    "seconds": 82.17959306202829,
+    "wall_seconds": 11.7742216065526,
+    "timing_scope": "guarded execution and recorded tasks; preparation excluded"
+  },
+  {
+    "family": "theta-nonreal-collision-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 492.2471919506788,
+    "wall_seconds": 160.88227551430464,
+    "timing_scope": "one guard includes pilot, screen and all validation"
+  },
+  {
+    "family": "dirichlet-nonreal-collision-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 1129.1100345216691,
+    "wall_seconds": 236.46712104044855,
+    "timing_scope": "one guard includes pilot, screen and all validation"
+  },
+  {
+    "family": "theta-critical-strip-transplant-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 656.9134196229279,
+    "wall_seconds": 158.4778007529676,
+    "timing_scope": "one guard includes all continuation and independent validation"
+  },
+  {
+    "family": "dirichlet-critical-strip-transplant-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 2391.5315240584314,
+    "wall_seconds": 486.43290844373405,
+    "timing_scope": "one guard includes all continuation and independent validation"
+  },
+  {
+    "family": "poisson-positive-source-surgery-q29-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 6.374017998576164,
+    "wall_seconds": 2.689824905246496,
+    "timing_scope": "one guard; unreported failed-worker time excluded"
+  },
+  {
+    "family": "poisson-positive-source-surgery-q41-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 48.56742185726762,
+    "wall_seconds": 41.79173728264868,
+    "timing_scope": "one guard; unreported failed-worker time excluded"
+  },
+  {
+    "family": "poisson-source-independent-challenge-2026-09-13",
+    "category": "broader validation",
+    "seconds": 22.349013805389404,
+    "wall_seconds": 4.131517488509417,
+    "timing_scope": "separate independent validation guard"
+  },
+  {
+    "family": "poisson-moment-omission-2026-09-13",
+    "category": "broader discovery",
+    "seconds": 5.534611472859979,
+    "wall_seconds": 2.626936485990882,
+    "timing_scope": "one guard"
   }
 ]

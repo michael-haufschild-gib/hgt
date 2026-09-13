@@ -1102,12 +1102,28 @@ in either the scalar bulk or its boundary expression. The identity admits
 zero source coefficient and vanishing individual radial moments.
 
 The original fields supply all smoothness and compact-domain integrability.
-The scratch proof and isolated exact leaf audit passed at default heartbeats;
-only the new leaf was built, and its umbrella import is wired. The formulas
-above this subsection with `C(W)=(mu-2)*W` and only top normal flux still need
-their reader-eigenvalue and paired-side/core reductions in Lean. No temporal,
-cusp or horizon limit is interchanged by this finite identity. Full matching
-and its impossibility remain unproved.
+`ThetaCuspHawkingBMOriginalReaderEquation` also proves, for the unchanged
+continued reader at every exterior time and both original radial normalizations,
+
+```
+C(W)=(mu-2)*W,  Delta(W)=mu*W,
+Delta(D_j W)=mu*D_j W,  Delta(C(W))=mu*(mu-2)*W.
+
+P_Y(A,B) = int_D_Y A*B/y^2,
+int_D_Y J_j + R^(-2)*[
+  mu*(mu-2)*P_Y(D_j U,W)-mu*P_Y(C(U),D_j W)]
+ = R^(-2)*[N_Y(D_j U,C(W))-N_Y(C(U),D_j W)].
+```
+
+`original_metric_scalar_integral` attaches this identity to the actual metric
+current and full original forcing. Its reader proof uses the genuine continued
+radial equation and two-jet, without a positive-frequency convergence premise.
+Clean scratch checks and isolated exact module audits passed at unchanged
+heartbeats; the leaf import is wired. The explicit coordinate formula is exposed
+by `ThetaCuspHawkingBMOriginalAngularCurrent.leftScalar_value`.
+Paired-side/core cancellation and the prescribed temporal/cusp/horizon limit
+comparison remain open. No limit is interchanged by this finite identity.
+Full matching and its impossibility remain unproved.
 
 ### Connection to the complete Einstein angular current — analytical
 

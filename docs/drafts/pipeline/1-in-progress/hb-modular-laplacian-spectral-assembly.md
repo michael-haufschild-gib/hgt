@@ -1,7 +1,7 @@
 # HB on-line clock: spectral assembly on the modular surface (input (ii)(b))
 
 - **ID:** HB-SPEC-001
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress (assembly inequality in Lean; closability and the source element open)
 - **Type:** THEOREM (paper) — Lean blocked by missing infrastructure
 - **Source:** docs/notes.md row 40, input (ii)(b); card `3-formalized/hb-scalar-scalar-quadratic-source-closed-forms.md` passes 26–30
 - **Statement:** For `t ≥ 50`, `F := Λ¹(E*(·,½+it)²) ∈ L²(SL(2,ℤ)\H)`, `Δ` the Friedrichs Laplacian (`Δ ≤ 0`) and `K(s,·)` the certified plateau kernel at `s = −3/2+it`, `Im⟨F, K(s,Δ)F⟩ ≥ |⟨F,1⟩|²·Im K(s,0)/vol − t⁹·‖F − P₀F‖²`, where `P₀` is the orthogonal projection onto constants.
@@ -71,3 +71,5 @@ integration-by-parts argument). Everything else is assembled from existing theor
   reduction to steps 1–6 (no spectral gap, no discreteness, no Eisenstein Plancherel) is the scoping result.
 - 2026-09-13 — step 5 discharged in abstract form: `HTGeometry/SelfAdjointFunctionalCalculusLowerBound.re_inner_cfc_self_ge` (bounded self-adjoint `A`, `c ≤ g` on the spectrum ⇒ `c‖f‖² ≤ Re⟪g(A)f,f⟫`); with `A = (1−Δ)⁻¹` no spectral measure is needed. Remaining: steps 1–3 and 6.
 - 2026-09-13 — corpus audit: fundamental-domain measure and Friedrichs covariance already exist; plan refined to B1–B4 (bounded covariance only, closability via interior test functions, no surface Stokes theorem).
+- 2026-09-13 — B3–B4 CLOSED IN LEAN: `HTGeometry/CfcEigenvectorRankOneAssembly`, `HTGeometry/FormEmbeddingCovarianceSpectrum`, `HTGeometry/ModularDirichletFormDomain` (`modular_spectral_assembly`, `modularCovariance_one`, `inner_modularOne`, `norm_modularOne_sq`; standard axioms). The HB kernel specialisation (`skewPlateauCov`, `hb_online_clock_spectral_assembly`) is written in the scratchpad and waits for the `ThetaCuspHawkingBM` chain to be rebuilt. Remaining: B1–B2 meaning content (`J` injective and of dense range), and the source `F = Λ¹(E*²)` as an `L²(𝒟)` element.
+- 2026-09-13 — B2 closability CLOSED IN LEAN: `HTGeometry/ModularDirichletFormIntegrationByParts`, `HTGeometry/ModularDirichletFormClosable` (`formInclusion_injective`). Remaining: dense range of `J` (D1 continuous approximation in `L²(𝒟)`, D2 smoothing with support in `𝒟°`, D3 periodisation into the pre-domain), the HB kernel module (scratchpad, chain blocked), and the source element `F = Λ¹(E*²)`.

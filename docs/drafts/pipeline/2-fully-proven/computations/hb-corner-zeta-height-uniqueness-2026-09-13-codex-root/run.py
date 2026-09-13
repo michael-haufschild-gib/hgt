@@ -1,0 +1,30 @@
+import json
+import os
+import signal
+import subprocess
+import sys
+import time
+
+
+started=time.monotonic()
+limit=570
+env=dict(os.environ)
+proc=subprocess.Popen([sys.executable,"experiment.py"],env=env,start_new_session=True)
+status="complete"
+try:
+    code=proc.wait(timeout=limit)
+    if code:
+        status="failed"
+except subprocess.TimeoutExpired:
+    status="timeout"
+    os.killpg(proc.pid,signal.SIGTERM)
+    try:
+        proc.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        os.killpg(proc.pid,signal.SIGKILL)
+        proc.wait()
+    code=124
+with open("run-status-"+os.environ["ZERO_SLICE"]+".json","w") as f:
+    json.dump({"script":"experiment.py","slice":os.environ["ZERO_SLICE"],"status":status,
+               "exit_code":code,"seconds":time.monotonic()-started},f,indent=2)
+raise SystemExit(code)
