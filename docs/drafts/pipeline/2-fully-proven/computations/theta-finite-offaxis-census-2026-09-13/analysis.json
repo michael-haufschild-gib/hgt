@@ -1,0 +1,11 @@
+{
+  "screen_cells": 72,
+  "planned_cells": 72,
+  "stable_counts": 0,
+  "positive_screen_cells": 8,
+  "located_roots": 4,
+  "validated_roots": 4,
+  "max_independent_source_error": 2.2486263504303356e-141,
+  "active_wall_seconds": 178.67614939436316,
+  "recorded_worker_seconds": 1614.7563196569681
+}

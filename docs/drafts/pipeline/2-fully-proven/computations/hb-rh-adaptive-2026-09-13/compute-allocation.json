@@ -111,5 +111,47 @@
     "seconds": 44.70183052867651,
     "wall_seconds": 10.154478318989277,
     "category": "HB onset-factor investigation"
+  },
+  {
+    "family": "theta-finite-offaxis-census-2026-09-13",
+    "seconds": 1614.7563196569681,
+    "wall_seconds": 178.67614939436316,
+    "category": "broader discovery",
+    "timing_scope": "screen and reserved root/source challenge combined"
+  },
+  {
+    "family": "dirichlet-finite-offaxis-census-2026-09-13",
+    "seconds": 4112.753048339859,
+    "wall_seconds": 526.0908484440297,
+    "category": "broader discovery",
+    "timing_scope": "screen and reserved root/source challenge combined"
+  },
+  {
+    "family": "theta-earlier-collision-2026-09-13",
+    "seconds": 1438.2530349045992,
+    "wall_seconds": 189.03998301923275,
+    "category": "broader discovery",
+    "timing_scope": "entire guarded pilot, coupling screen, refinement and independent source checks"
+  },
+  {
+    "family": "dirichlet-earlier-collision-2026-09-13",
+    "seconds": 649.2965883668512,
+    "wall_seconds": 248.53371499106288,
+    "category": "broader discovery",
+    "timing_scope": "entire guarded pilot, coupling screen, refinement and independent source checks"
+  },
+  {
+    "family": "theta-witness-boundary-2026-09-13",
+    "seconds": 479.23188530281186,
+    "wall_seconds": 111.93811317905784,
+    "category": "broader discovery",
+    "timing_scope": "coarse/fine witness tracks, boundary refinement and source validation under one guard"
+  },
+  {
+    "family": "dirichlet-witness-boundary-2026-09-13",
+    "seconds": 460.5112739019096,
+    "wall_seconds": 281.5814561024308,
+    "category": "broader discovery",
+    "timing_scope": "coarse/fine witness tracks, boundary refinement and source validation under one guard"
   }
 ]

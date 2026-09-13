@@ -257,8 +257,8 @@ the resulting full matching remain open.
 
 ### Original circle period and the source-only temporal comparison
 
-**Analytical derivation; not yet formalized. Full matching in Lean remains
-open.** This supplies a concrete producer for the horizon quantities in the
+**Original circle-period identity formalized; subsequent temporal/metric
+comparison remains analytical. Full matching in Lean remains open.** This supplies a concrete producer for the horizon quantities in the
 preceding corner calculation. It also gives a stronger comparison than
 cancellation of one Laurent coefficient. The time finite part below means
 the constant after subtracting the linear term in the original static cutoff
@@ -337,9 +337,15 @@ original counterterm multiplied by the physical angular gaps. The exact
 hyperbolic-to-planar measure identity then gives
 `original_angular_measure_green_finitePart`: the original scalar reading of
 `Delta(M_d)-mu*M_d` has zero finite part. This leaf passed its exact Lean
-module audit. Combining this limit with the admitted radius derivatives and
-the native Darboux equation is still required to obtain the period equation
-in Lean.
+module audit. `ThetaCuspHawkingBMOriginalCircleEquation` now combines this
+limit with the admitted radius derivatives and the genuine metric Darboux
+equation. Its zero Wronskian, continuous original endpoint and nonvanishing
+reader kernel prove `original_circle_period` and
+`original_circle_finitePart_kernel` for every nonnegative radius, without a
+nonzero source-coefficient premise. The exact leaf audit passed. Integration through the original finite null source rectangle is also
+kernel-checked in `ThetaCuspHawkingBMOriginalCausalPeriod`, using
+`fullNullResidual_eq_nativeResidualIntegral` and `radialResponse_null_native`,
+with the original onset lift retained.
 
 **A global Wronskian reconstruction avoids singular-ODE uniqueness.** The
 same module proves `reader_powerCircle_ne_zero` for every actual Xi copy
@@ -392,6 +398,66 @@ iterates controls the next parameter derivatives. The native bounds for
 all angular jets therefore retain rapid cusp decay uniformly through the
 characteristic. This is the required domination when differentiating the
 original finite parts in the following finite parameter integrals.
+
+**Direct null-rectangle producer and horizon domination.** The original
+native residual already equals `nativeResidualIntegral`; its integrand is
+the cutoff circle mean times the unchanged `sourceWeight`. The circle-period
+identity gives the kernel-checked exact original scalar value
+
+```
+C*(radialResponse(-eta,s,amp,(p+r)/2,(p-r)/2)+nullLift(s,amp,p,r)).
+```
+
+The finite-rectangle Fubini proof uses the uniform compact-radius bound on
+height times the circle residual and the integrable physical dual density.
+The integrated three correction coefficients are exactly the original
+`principalNullResponse` coefficients, so their restoration cancels them.
+`ThetaCuspHawkingBMOriginalCausalPeriod.original_native_period` proves this
+restoration. Its `original_causal_finitePart_radial` identifies the original
+height-cutoff limit, retaining the source, reader, null Jacobian and complete
+onset lift. The exact leaf audit passed.
+
+There is also a direct analytical domination for its horizon limit. Apply
+`timeReducedCoefficient_physical_bound` with `c=1`. On the negative radial
+half, at source coordinates `((a+b)/2,(a-b)/2)`, its bound is `C_s*exp(-b)`.
+Odd reflection and the exact zero at radial coordinate zero consequently give
+
+```
+abs(sourceWeight(s,amp,a,b)) <= C_s*exp(-max(a,b)),  a,b>=0.
+int_0^infty int_0^infty exp(-max(a,b)) db da = 2.
+```
+
+For `0<=p<=r`, `0<=a<=p`, `0<=b<=r`, put
+`h=(p+r-a-b)/2`, `x=(p-r)/2`, `y=(a-b)/2`. The actual invariant obeys
+
+```
+1 <= I = cosh(h)/(cosh(x)*cosh(y))+tanh(x)*tanh(y)
+       <= 1+4*exp(p-max(a,b)) <= 5*exp(p).
+```
+
+Indeed `h+x-abs(y)=p-max(a,b)`, `cosh(h)<=exp(h)`, and each
+of the two denominator factors is at least half its corresponding positive
+exponential. The existing power-circle bound, with `G=Re(eta)>0`, gives
+`abs(legendreKernel(-eta,I))<=10^G*exp(G*p)`. The original reduced scalar
+response is therefore bounded by `C_s*10^G*exp(G*p)/2`, uniformly for
+`r>=p`. This proves a value bound in the original ingoing time, without using
+the weaker static-time exponent as a horizon estimate.
+
+Writing `rho=exp(p-r)`, `E=exp(p-a)`, `z=exp(a-b)` gives the exact direct
+invariant `1+2*(E-1)*(z-rho/E)/((1+rho)*(1+z))`. At fixed `p`, dominated
+convergence using the same finite source mass identifies the reduced horizon
+value with
+
+```
+(1/4)*int_0^p da int_0^infty db sourceWeight(s,amp,a,b)*
+  legendreKernel(-eta,1+2*(exp(p-a)-1)*exp(a-b)/(1+exp(a-b))).
+```
+
+These domination and horizon-limit statements are analytical, not yet Lean.
+The full scalar retains the separately explicit original lift. Metric
+matching still needs the derivative/current bounds and the original moving
+boundary comparison; this value limit does not interchange its temporal,
+cusp and horizon cutoffs.
 
 **2. Identify the complete causal scalar and its needed horizon bounds.**
 Set `s=D4BMModularCore.physicalRate(q,branch)` (the undoubled rate),
@@ -552,9 +618,9 @@ pole after including the corner. Equality with the uncorrected restored
 radial pairing would require the entire displayed corner to vanish; the
 vanishing of `beta(w0)` alone does not establish that. No nonzero source
 coupling counterexample has been supplied, and no claim of impossibility
-for every possible matching is made. The full original-period identity,
-source-derived bounds, metric-current attachment, and source-only
-continuation in this section still require Lean closure. A separately
+for every possible matching is made. The original-period identity is now kernel-checked. The source-derived
+bounds, metric-current attachment, and source-only continuation in this
+section still require Lean closure. A separately
 prescribed physical time-cap or a direct fixed-frequency order of limits
 must be identified with these explicit limits, not substituted for them.
 

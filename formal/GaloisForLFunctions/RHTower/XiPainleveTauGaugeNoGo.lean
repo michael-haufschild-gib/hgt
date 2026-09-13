@@ -79,6 +79,37 @@ private theorem differentiallyAlgebraic_global_of_on {f : ℂ → ℂ}
 def painleveIIID6QuadraticPullback (s : ℂ) : ℂ :=
   s * (1 - s)
 
+/-- Polynomial produced by a quadratic exponential tau normalization after the quadratic
+Painlevé pullback. -/
+def painleveIIID6PulledTauNormalizationPolynomial (a b c : ℂ) : Polynomial ℂ :=
+  Polynomial.C a * (Polynomial.X - Polynomial.X ^ 2) ^ 2 +
+    Polynomial.C b * (Polynomial.X - Polynomial.X ^ 2) +
+      Polynomial.C c
+
+/-- Evaluation of the pulled-back tau-normalization polynomial is the expected quadratic
+expression in the pullback variable. -/
+theorem painleveIIID6PulledTauNormalizationPolynomial_eval (a b c s : ℂ) :
+    (painleveIIID6PulledTauNormalizationPolynomial a b c).eval s =
+      a * (s * (1 - s)) ^ 2 + b * (s * (1 - s)) + c := by
+  simp [painleveIIID6PulledTauNormalizationPolynomial]
+  ring
+
+/-- A quadratic exponential normalization in the Painlevé variable becomes a polynomial
+exponential gauge of degree at most four after the quadratic pullback. -/
+theorem painleveIIID6PulledTauNormalizationPolynomial_natDegree_le_four (a b c : ℂ) :
+    (painleveIIID6PulledTauNormalizationPolynomial a b c).natDegree ≤ 4 := by
+  dsimp [painleveIIID6PulledTauNormalizationPolynomial]
+  have hbase :
+      (Polynomial.X - Polynomial.X ^ 2 : Polynomial ℂ).natDegree ≤ 2 := by
+    rw [sub_eq_add_neg]
+    exact (Polynomial.natDegree_add_le _ _).trans (by simp)
+  apply Polynomial.natDegree_add_le_of_degree_le
+  · apply Polynomial.natDegree_add_le_of_degree_le
+    · exact (Polynomial.natDegree_C_mul_le a _).trans
+        (Polynomial.natDegree_pow_le_of_le 2 hbase)
+    · exact (Polynomial.natDegree_C_mul_le b _).trans (hbase.trans (by omega))
+  · simp
+
 /-- The first numerator occurring after substituting
 `sigma(t) = t * tau'(t) / tau(t)` into the `PIII(D₆)` sigma equation.  Coordinates are
 `(t, tau, tau', tau'', tau''')`. -/

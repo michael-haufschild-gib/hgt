@@ -4181,3 +4181,111 @@ The actual coexact left mode is built from the derivative of its own scalar
 Eisenstein reader, so identifying this term in the complete source action is
 necessary before QS1 can be used for extinction. This is an unresolved
 coefficient/field identification, not an additional vanishing premise.
+
+## Experiment-led complete-action tests, 13 September 2026
+
+No fixed-clock extinction or impossibility theorem was obtained in this pass.
+The target remains the complete original causal/left-QNM action, with the clock
+unchanged; neither a local cancellation nor failure of a proposed mechanism
+settles this target.
+
+**Theta seam transfer.** The exact finite-shell Fourier theorem gives
+`b^2 C_(P_N) -> -P_N'(0)` and `b^2 C_(Phi-P_N) -> P_N'(0)`.
+Its mechanism is `Phi'(0)=0` and two integrations by parts. The stronger
+proposed transfer to the physical action was not proved: the raw source's
+full FE exchange is already established, while the marked left reader
+changes parameter and the complete mixed exchange retains both
+correction/source contractions and boundary divergences. No commutation of
+this Fourier endpoint cancellation with nonlinear assembly was derived.
+The tail theorem remains a constraint on approximation, not an extinction
+producer or a newly proved failure of HB.
+
+**Source-specific sign test.** The physical spectral-sign search recovered
+the complete Peierls polarization and optical-section receivers. Their
+displayed source-response and reciprocity premises remain necessary; none
+was inserted as a source theorem. The already proved finite-KMS realization
+has exactly the canonical cokernel's nonpositive polarity. The January
+[matrix passivity paper](https://arxiv.org/html/2601.04796v1), definitions
+1 and 6, requires a nonnegative storage function and an admitted supply
+inequality. Its interconnection proof cancels supplies under specified
+input/output relations. Those relations and the opposite physical HB sign
+were not derived. No new no-go or positive form is claimed.
+
+**Arithmetic and retarded-assembly alternatives.** A Hecke/correspondence
+search did not yield a literal nonlinear Einstein-action intertwiner. Its
+proposed product-preservation obligation was not discharged. The August
+[Stratonovich–Weyl/Magnus paper](https://arxiv.org/html/2608.21328v1),
+equation (56), explicitly retains the emission/absorption interference
+integral in addition to the conservative bracket. Thus representing an
+action by nested brackets is not a proof of its radiative matrix element's
+vanishing. No map from that asymptotic scattering construction to the
+original HB QNM pairing was established.
+
+The live corpus supersedes the older experiment report's local SV frontier:
+`MixedQuadraticClosure.independentField_secondVariation` and
+`movingWeight_mixed_residual_zero` were already recorded above. They must be
+used as inputs, not reported as new progress or left as reconstruction tasks.
+The actual complete-action estimate (PI) above is still unproved.
+
+Search artifacts: five new deep requests (theta seam, mixed-current
+projection, physical spectral sign, Hecke nonlinear clock, Magnus assembly)
+finished with `partial=false`, 57,585 inventoried files and semantic coverage
+`not_measured`; candidate statements, source arguments and ingredient sets
+were inspected. A lexical full-cokernel search retrieved the existing KMS
+polarity theorem. The files are in `formal/.lake/hb-extinction-scratch/` under
+the corresponding `extinction-` names. No numerical experiment, Lean build,
+new Lean declaration, proof-limit change or axiom-print audit was performed.
+All six owned search handles terminated.
+
+## Fixed-step covariance and variational-energy test, 13 September 2026
+
+**Outcome:** no extinction or impossibility theorem. The original Hawking clock,
+literal source, independent polarizations and complete-action target remain fixed.
+
+The attempted finite-step proof would commute source FE through the complete
+nonlinear evolution, then use the finite-clock classification. The corpus already
+proves that such covariance differentiates at vacuum to covariance of the
+prescribed linear clock, even using only real amplitude rays. Thus this remains
+an RH-strength source obligation; higher-order correction terms cannot repair an
+off-wall first variation. This does not exclude deriving the covariance from
+the actual equations. The physical nonlinear evolution and its FE intertwining
+have not been supplied by the packet equivalence.
+
+The alternate energy proof would require a source-produced nonnegative quantity
+whose first surviving amplitude coefficient is a positive multiple of the real
+complete radiative action. If `E(eps)>=0` and
+`E(eps)=eps^4*c*Re(K)+o(eps^4)`, with `c>0`, dividing by `eps^4` and taking the
+limit gives `Re(K)>=0`; the established negative clock-defect factorization would
+then force extinction. This is a receiver, not a derived HB energy law. An
+unremoved quadratic coefficient prevents this inference, and subtracting that
+coefficient does not preserve nonnegativity automatically. No new conditional
+Lean wrapper was written.
+
+The exact factor `XiC(z)^2` in canonical spin-two amputation is spectral. It
+does not establish the needed vanishing of lower coefficients in metric amplitude.
+These are distinct variables in the inspected definitions. The contemporary
+boundary-completed Noether-charge paper likewise leaves global positivity and
+orthogonality as inputs; its compact spherical local result has not been
+transported to the original cusp geometry or the marked complex left reader.
+See own facts 101–102 for exact sources.
+
+An exact nonlinear-family alternative was also checked against recent
+Kerr–Schild and optical-seed constructions. The inspected Kerr–Schild ansatz
+requires a null rank-one metric deformation; the Birkhoff seed construction
+requires spherical vacuum geometry. No identification of the literal independent
+scalar/vector metric with either family was established. Their existence is not
+a full HB reconstruction or a radiation-annihilation result. Sources:
+[Kerr–Schild equations (19)–(20)](https://arxiv.org/html/2602.16905v1),
+[optical-seed setup](https://arxiv.org/html/2604.09830v2).
+
+Four all-view deep searches completed: finite translation/source Ward action,
+boundary-completed canonical energy, leading variational coefficient, and exact
+Einstein families. Cached artifacts are `extinction-finite-translation-source-ward-deep`,
+`extinction-completed-canonical-energy-deep`,
+`extinction-leading-variational-coefficient-deep`, and
+`extinction-exact-einstein-family-deep` under `formal/.lake/hb-extinction-scratch/`.
+All report `partial=false`; semantic coverage is `not_measured`, and retrieved
+source statements are not fresh compiler verification. Candidate statements,
+source arguments and ingredient suggestions were inspected; no generated
+ingredient suggestion was accepted as a proof. All four owned searches ended.
+No numerical experiment or Lean process was started.

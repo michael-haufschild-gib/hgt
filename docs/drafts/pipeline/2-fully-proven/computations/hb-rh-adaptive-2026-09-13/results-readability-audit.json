@@ -1,0 +1,728 @@
+{
+  "old_sha256": "f3b08ebc8911e3dd34341d46d8370b8ca3a47d1f6a9338b8a89e114e53b2b8fb",
+  "new_sha256": "f01ab2e2f4fd3e6e87bab90dc8ea9ee9b0a5ba8b2a40158300b3ba167fde852a",
+  "entries": 143,
+  "mapping": [
+    {
+      "entry": 1,
+      "old": "An exact finite counterexample can falsify a universal inequality. Finite computation can also locate dangerous faces and expose candidate exact identities; it cannot prove cofinal no-escape, all-order positivity, common-zero landing, or RH.",
+      "new": "A single exact counterexample can disprove a proposed universal inequality. A finite successful scan cannot establish Riemann hypothesis (RH), positivity at every matrix size, escape control as a cutoff tends to infinity, or a common-zero theorem. Use successful scans to select the next statement to prove, not as that proof."
+    },
+    {
+      "entry": 2,
+      "old": "Positive signs from floating-point scans remain conjectural. Near clustered atoms, high Hankel rank, large theta action, or tiny Galerkin energies, low precision routinely creates false negative eigenvalues/signs.",
+      "new": "[Observation] Numerical sign tests are especially unreliable when spectral points nearly coincide, moment matrices have high rank, or an exponentially small signal is obtained by subtracting large terms. Increasing precision has repeatedly removed apparent negative eigenvalues. A small computed eigenvalue needs a conditioning and precision check before it can reject a mechanism."
+    },
+    {
+      "entry": 3,
+      "old": "Exact algebra discovered numerically is usable only after independent symbolic proof. Several such survivors below are now Lean-checked.",
+      "new": "[Research rule] An exact-looking identity suggested by computation becomes an analytic result only after an independent derivation. Some entries below report such derivations; none licenses importing a saved numerical coefficient table as a premise in Lean."
+    },
+    {
+      "entry": 4,
+      "old": "Repeated lesson: scalar, diagonal, pointwise, fixed-block, or fixed-order control usually deletes the mixed cancellation carrying the actual source.",
+      "new": "[Interpretation] Many failed shortcuts kept only diagonal terms, one scalar component, pointwise signs, or a fixed matrix size. The surviving arithmetic expressions often rely on cancellation between the omitted components. Before strengthening a bound, check whether the quantity being bounded still contains the source's mixed terms."
+    },
+    {
+      "entry": 5,
+      "old": "`[observed]` Literal completed-theta C5 stayed nonnegative on all tested domains; its only observed tight limit is coalescence `t\u21920`, with margin of order `t\u2074`. The safe mechanism is cumulative compensation in the hard negative-elasticity chamber, not nonnegative elasticity.",
+      "new": "[Observation] The fifth-root curvature inequality for the literal completed-theta source, called C5, was nonnegative at all tested admissible points. Its smallest margins occurred when the two reflected evaluation points coalesced; the margin then scaled as the fourth power of their separation. The tested source lay in the negative-elasticity region, so positivity must come from the combined balance, not from assuming elasticity is nonnegative."
+    },
+    {
+      "entry": 6,
+      "old": "`[observed]` Completed-theta Bezoutian sections were positive through rank 20 after precision escalation; tiny high-rank eigenvalues reflect analytic-kernel conditioning, not detected sign failure.",
+      "new": "[Observation] Finite sections of the completed-theta Bezoutian kernel were positive through matrix rank 20 after increasing precision. This supports further investigation of that specific kernel. It does not establish positivity at arbitrary rank; the very small eigenvalues make extrapolation particularly unsafe."
+    },
+    {
+      "entry": 7,
+      "old": "`[observed/rejected]` Numerics found no total-positivity violation through order 4 and a robust failure at order 5. Rank-\u22644 C5 structure lies inside the observed free TP range; no `TP_m` mechanism with `m\u22655` can close higher packets.",
+      "new": "[Observation; rejected extension] The tested completed-theta kernel had no detected total-positivity violation through order four, but a stable violation occurred at order five. Here total positivity means nonnegativity of all ordered minors of the specified order. An argument requiring this kernel to be totally positive at every order, or at order five and above, cannot be justified by its successful low-order tests."
+    },
+    {
+      "entry": 8,
+      "old": "`[observed]` Li coefficients stayed positive through degree 300; shifted zero-moment Hankel and support-side matrices stayed positive through size 12. High precision is mandatory because atom clustering creates false negative signs.",
+      "new": "[Observation] The tested Li coefficients were positive through degree 300, and the tested moment/support matrices built from zeta-zero data were positive through size 12. These are finite checks of positivity conditions related to RH. Clustered zero data made low-precision moment matrices produce false negative signs; neither successful range proves the infinite sequence of inequalities."
+    },
+    {
+      "entry": 9,
+      "old": "`[rejected]` Endpoint-ratio confinement, local log-concavity, Riccati positivity, and positive finite theta-atom mixing do not imply C5: admissible 2\u20134 atom mixtures give negative balance. Exact modular coefficient coupling is essential.",
+      "new": "[Rejected mechanism] Positivity of theta-shaped atoms, local log-concavity, endpoint-ratio bounds and the tested Riccati inequality do not together force the C5 curvature inequality. Positive mixtures of only two to four admissible atoms violate it. A proof for the literal theta source therefore needs its particular coefficient relations, or another constraint absent from those mixtures."
+    },
+    {
+      "entry": 10,
+      "old": "`[observed]` At fixed action, the direct transverse C5 Jacobian stayed positive. Reflection gives exact seam zero; the correct target is the desingularized sign `J(u,t)/u`, not the raw Jacobian at `u=0`.",
+      "new": "[Observation] For the C5 balance F and reflected log action q, the fixed-action Jacobian J=F_u q_t\u2212F_t q_u was positive in the tested interior. Reflection forces J=0 at the symmetry center u=0. The useful boundary target is therefore the limiting sign of J/u, not strict positivity of J at the symmetry center."
+    },
+    {
+      "entry": 11,
+      "old": "`[exact candidate]` The first nonzero fixed-action seam coefficient is governed by",
+      "new": "[Exact candidate] The leading symmetry-center coefficient of the C5 fixed-action Jacobian is controlled by A\u00b2D\u221218A\u00b3C+36A\u00b2B\u00b2\u22125ABC+4B\u00b3, where A,B,C,D are minus the second, fourth, sixth and eighth derivatives of log Phi at the center, respectively. Its modular polynomial reduction has a positive degree-12 Bernstein representation on the physical scale interval. Extending that sign to the larger proposed half-line fails beyond a root near the normalized squared scale X=56.86; the actual modular enclosure is 19.1<X<20. Use that enclosure, not the failed half-line extension."
+    },
+    {
+      "entry": 12,
+      "old": "`[rejected]` Global center monotonicity of `J/u`, the old two-sign velocity/current split, and separate positivity of the eighth-jet residual block all fail. Compact, seam, and tail regions require signed compensation.",
+      "new": "[Rejected mechanisms] The desingularized C5 Jacobian J/u is not globally monotone in the center coordinate. The proposed separate signs for its velocity and current contributions also fail, as does separate positivity of an eighth-derivative residual block. A proof must retain signed compensation and distinguish the symmetry boundary, compact interior and large-scale tail."
+    },
+    {
+      "entry": 13,
+      "old": "`[proved]` First-atom base compensation is positive on the same half-line. Its seam margin first appears at order `t\u2077` with an explicitly shifted-positive degree-7 polynomial. Termwise sign of the intermediate `P\u2082` polynomial is false.",
+      "new": "[Reported analytic result] The C5 compensation supplied by the first theta atom is positive on the admitted physical tail region. Its coalescence margin first appears at order seven in separation and has a degree-seven polynomial coefficient that is positive after shifting the scale to its lower endpoint. An intermediate polynomial changes sign, so the result does not follow by assigning the same sign to every intermediate term."
+    },
+    {
+      "entry": 14,
+      "old": "`[observed]` Modular-center C5 velocity stayed strictly positive from seam to far cusp; no stationary point was detected. Direct radial monotonicity is a stronger surviving target than stationary-locus reserve accounting.",
+      "new": "[Observation] Along the tested modular-center trajectory, the C5 balance increased from the coalescence boundary into the far cusp; no stationary point was found. Direct positivity of this derivative is a smaller candidate proof target than a construction that must classify and control every stationary point. The numerical search does not establish global monotonicity."
+    },
+    {
+      "entry": 15,
+      "old": "`[rejected]` Likelihood interpolation is not monotone: `M'(\u03bb)` has both signs and interior margins can be below both endpoints.",
+      "new": "[Rejected mechanism] The compensation margin M(lambda), obtained by interpolating from the first theta atom to the complete theta source, is not monotone in the interpolation parameter. Its derivative takes both signs, and an interior value can lie below both endpoint values. Endpoint positivity alone therefore cannot justify this interpolation."
+    },
+    {
+      "entry": 16,
+      "old": "`[observed]` Likelihood compensation instead appears convex. Sharpened candidate: `M'''(\u03bb)>0`, `M''(0)\u22650`, and atom-tangent reserve `M'(0)\u2265\u2212M(0)/5`; these imply full-tail positivity. Direct falsification tests found no failure and show higher-atom corrections are perturbative on the structural tail.",
+      "new": "[Observation; candidate mechanism] The same theta compensation interpolation appears convex in the tested structural tail. A possible sufficient route is M'''(lambda)>0, M''(0)>=0 and M'(0)>=\u2212M(0)/5, with M(0)>0 and 0<=lambda<=1. Together these inequalities would prevent the interpolation from exhausting the positive first-atom margin. No tested counterexample was found; the inequalities for the full source still require analytic proof."
+    },
+    {
+      "entry": 17,
+      "old": "`[proved/observed]` The seam germ of `M'''` reduces to the source inequality `F\u2082F\u2085\u22122F\u2083F\u2084>0`. A sufficient split is `3AF\u2082<\u2212F\u2083` and `\u2212F\u2085<6AF\u2084`; the first is proved, the dominant `n=2` reserve for the second is an explicit shifted-positive degree-9 polynomial, and sampled higher-atom opposition is tiny. Generic moment/log-convexity proofs fail.",
+      "new": "[Reported reduction; partial evidence] The coalescence limit of the third interpolation derivative reduces to a specific inequality between higher theta likelihood derivatives. One sufficient component has an analytic proof, and the dominant second-theta-atom contribution to the other has a positive degree-nine polynomial certificate. Numerically, higher atoms oppose it only weakly. Generic moment or log-convexity assumptions do not supply the missing full-source bound; the useful task is to control the signed higher-atom remainder."
+    },
+    {
+      "entry": 18,
+      "old": "`[rejected]` Positive likelihood-jet signs plus existing pairwise tangent bounds do not imply atom-tangent reserve. The saturated adverse vertex is genuine. Surviving source information includes non-saturation coupling, the favorable third likelihood channel, and proved mixed trapezoid law `dm\u2264t\u00b7dn`.",
+      "new": "[Rejected mechanism] Favorable signs of individual likelihood derivatives and pairwise tangent bounds do not guarantee that the theta interpolation's initial slope fits inside the available first-atom margin. A configuration saturating the adverse bounds violates that budget. Possible surviving information is coupling that prevents simultaneous saturation, the favorable third likelihood channel, and a derived mixed trapezoid inequality; these must remain coupled in any replacement proof."
+    },
+    {
+      "entry": 19,
+      "old": "`[rejected/proved]` Lower-jet, master-reserved, and adaptive-reserved endpoint margins become negative near the collapsed seam. The adaptive margin has exact fifth seam derivative `600\u03ba\u00b2(F\u2083+2AF\u2082)<0`; deleting the third-channel cooling excess destroys the needed cancellation.",
+      "new": "[Reported obstruction] Several C5 endpoint-margin constructions fail near coalescence even after adding their proposed reserves. The adaptive construction has a strictly negative fifth derivative at that boundary. These failures identify an omitted cancellation involving the third likelihood channel; they reject the reduced margins, not the complete theta compensation."
+    },
+    {
+      "entry": 20,
+      "old": "`[proved]` For normalized homotopy coordinates `b,r,s,h`, complete curvature balance is",
+      "new": "[Reported analytic result] The normalized theta-interpolation curvature balance has an exact decomposition that makes the required curvature threshold explicit. Merely knowing that the curvature contribution is positive does not meet that threshold: its coefficient and the remaining signed terms matter. A replacement argument must compare the complete balance rather than use curvature positivity as a standalone premise."
+    },
+    {
+      "entry": 21,
+      "old": "`[rejected]` Even fixed mass, support gap, conditional first moment, and positive lower-transport curvature do not force the enlarged-source compensation inequality: a remote escaping atom makes compensation negative while preserving those data. Fixed first moment permits unbounded second moment.",
+      "new": "[Rejected mechanism] Fixing a positive measure's total mass, support gap and conditional first moment does not force the enlarged-source compensation inequality, even with the tested lower-transport curvature condition. A sufficiently distant atom preserves those constraints while making compensation negative. First-moment control permits an unbounded second moment; additional tail or coupled-moment information is necessary."
+    },
+    {
+      "entry": 22,
+      "old": "`[proved]` Holding the retained mixed coordinate `\u03ba=s\u2212r+h/(2r)` fixed, the curvature coefficient is positive because its quadratic `Q` has an exact square decomposition. This is coordinate monotonicity, not theta-source monotonicity.",
+      "new": "[Reported analytic result; limited scope] A change of coordinates retaining a particular mixed transport quantity yields a curvature coefficient with an exact sum-of-squares decomposition. This proves monotonicity when that mixed coordinate is held fixed. It does not prove monotonicity along the actual theta trajectory, where the coordinate can vary."
+    },
+    {
+      "entry": 23,
+      "old": "`[rejected]` Scalar center-independent damped Fourier corrections have incompatible required signs at different centers for tested dampings. Sufficiently fast damping fails analytically because its correction vanishes inside the formally negative native rank-three chamber; sufficiently slow damping also cannot close the zero-mass proposal. A full center-frequency flux still needs the signed positive-vs-negative mass comparison.",
+      "new": "[Rejected mechanism] A single center-independent, damped Fourier correction cannot repair the tested reflected-theta determinant at all centers: different centers require incompatible correction signs. Fast damping also makes the correction disappear inside a known negative rank-three region, while slow damping fails the proposed zero-mass construction. Any surviving correction needs coupled center/frequency information and a bound on the complete signed mass balance."
+    },
+    {
+      "entry": 24,
+      "old": "`[observed]` A fixed canonical even correction and both endpoints of its coefficient band stayed positive on the tested middle interval, including complete entry/correction error majorants. Uniform signed interval control remains open.",
+      "new": "[Observation] One fixed even Fourier correction, including both endpoints of its allowed coefficient interval, kept the tested middle-region determinant positive after the stated entry and correction error allowances. This supports that specific compact-region construction. Uniform interval control of the signed errors remains open; sampled corrected positivity is not a certificate for the whole region."
+    },
+    {
+      "entry": 25,
+      "old": "`[proved]` Exact moment identities, Horner/block incidences, and positive lower/remainder pieces of the compact even determinant are checked; the original-coordinate full determinant incidence is the remaining proof bottleneck. Generated coefficients are not premises.",
+      "new": "[Reported analytic result; open connector] The compact even-determinant construction has derived moment identities, exact polynomial/block correspondences and positive lower-order/remainder pieces. The remaining task is to prove that their assembled expression equals the required determinant in the original variables. Generated coefficient tables do not establish that identity or supply missing premises."
+    },
+    {
+      "entry": 26,
+      "old": "`[observed]` Actual physical rank-three determinant D1 stayed positive on the compact missing orbit interval with a large margin. Nearby seam scale alone does not force this: other initial scales fail later.",
+      "new": "[Observation] The actual 3-by-3 Hankel determinant built from reflected theta-source derivatives stayed positive on the tested missing compact trajectory interval. Nearby starting scales can fail later, so positivity is a property to establish for the actual source trajectory, not for every trajectory that starts near the same boundary."
+    },
+    {
+      "entry": 27,
+      "old": "`[proved/exact candidate]` Actual theta dynamics lie in a proved compact tube with `A>17`, controlled `\u2212S`, and controlled `W`. Exact polynomial candidates are positive on the larger box `\u22121\u2264S\u22640`, `A\u226517`, `0\u2264W\u22646/5`; finite-order closure does not imply an all-degree Xi producer.",
+      "new": "[Reported analytic enclosure; exact candidates] The actual reflected-theta dynamics have a derived compact enclosure in normalized source coordinates. Exact polynomial calculations suggest positivity on a larger rectangular region containing that enclosure. This separates two tasks: prove the source remains in the enclosure, then prove the determinant inequality there. Neither a finite-order enclosure nor a polynomial sign at this rank produces all-degree Xi positivity."
+    },
+    {
+      "entry": 28,
+      "old": "`[observed]` Direct D1 positivity is stronger and cleaner than projective-drift positivity on the physical cone. Scale variation is increasing/convex; clock-square variation is concave with positive third derivative. Alternating derivative hierarchy fails at fourth order.",
+      "new": "[Observation] On the refined region containing the reflected-theta trajectory, the rank-three determinant increased and was convex in the scale variable; it was concave in the squared clock variable, with positive third derivative. These signs suggest a direct boundary-minimum proof. The alternating derivative pattern already fails at order four, so an all-orders complete-monotonicity argument is unavailable."
+    },
+    {
+      "entry": 29,
+      "old": "`[rejected]` Global wall monotonicity, upper-wall clock monotonicity, raw D1 monotonicity, simple factorization, and complete monotonicity are false or unavailable.",
+      "new": "[Rejected mechanisms] For the reflected-theta rank-three determinant, global boundary monotonicity, monotonicity along the upper clock boundary, monotonicity of the raw determinant, and the proposed simple factorizations do not provide valid global proofs. A localized geometric argument is needed; the finite determinant's observed positivity survives these failures."
+    },
+    {
+      "entry": 30,
+      "old": "`[observed]` After scale increase and clock concavity, D1 reduces to seam positivity plus one decreasing univariate outer face and its upper-corner value. This is the smallest surviving finite-gate architecture.",
+      "new": "[Observation; proof target] The tested scale monotonicity and clock concavity reduce the reflected-theta determinant's minimum to its symmetry boundary and one outer one-variable boundary. That outer boundary was decreasing, leaving its endpoint as the final test. This is a candidate small collection of sufficient inequalities; the numerical reduction is not itself their analytic proof."
+    },
+    {
+      "entry": 31,
+      "old": "`[observed]` Projective drift is inward at the seam and positive away from it on tested boxes, but raw D1 is unimodal rather than monotone. Local nonzero projective jets alternate `+,-,+`, so absolute monotonicity is false.",
+      "new": "[Observation] The projective motion associated with the reflected-theta determinant points inward at the symmetry boundary and had the desired sign on the tested interior boxes. The raw determinant nevertheless rises and then falls, and the first nonzero projective derivatives alternate +,\u2212,+. Favorable inward motion must not be confused with monotonicity of the determinant or positivity of all derivatives."
+    },
+    {
+      "entry": 32,
+      "old": "`[proved]` Source dynamics contain an exact `sl\u2082` triple; physical scale differentiation is its Cartan derivative. This is the natural structure for a finite contravariant/Loewner proof.",
+      "new": "[Reported analytic structure] The reflected-theta source dynamics admit three differential operators satisfying the sl\u2082 commutation relations; physical scale differentiation corresponds to the diagonal, or Cartan, operator. This supplies a concrete algebraic structure for studying finite matrix positivity. It does not by itself establish the required positive inner product or all-rank result."
+    },
+    {
+      "entry": 33,
+      "old": "`[rejected]` Raw coefficientwise matrix-Bernstein positivity fails although the assembled derivative matrix appears positive definite; cancellation between scale layers is essential.",
+      "new": "[Rejected proof format] Testing each Bernstein coefficient of the reflected-theta derivative matrix for positivity fails, although the assembled matrix appears positive definite. Cancellation between different scale contributions is essential. A matrix or determinant argument may succeed where coefficient-by-coefficient signs cannot."
+    },
+    {
+      "entry": 34,
+      "old": "`[observed]` On the refined cone, all tested principal minors of the scale-velocity Hankel matrix are positive, selecting strict Loewner increase as a candidate mechanism.",
+      "new": "[Observation] On the refined physical region, all tested principal minors of the Hankel matrix obtained by differentiating with respect to scale were positive. This suggests strict increase in the Loewner order, meaning that the matrix increment is positive definite. An analytic proof must establish that matrix inequality on the whole region."
+    },
+    {
+      "entry": 35,
+      "old": "`[rejected]` Full Bochner/positive-definite completion of the reflected theta fibre fails at six points. Positive definiteness survived all tested packets through five points. Thus use finite-order-5 or direct rank-three geometry, not an all-order measure representation.",
+      "new": "[Rejected all-order extension] The reflected-theta kernel's proposed positive-definite completion fails for a six-point configuration. All tested configurations with at most five points passed. Consequently, a representation as the Fourier transform of a positive measure, which would imply positivity at every finite size, cannot serve this kernel as proposed. Finite-order or direct rank-three arguments remain separate possibilities."
+    },
+    {
+      "entry": 36,
+      "old": "`[certified]` The pole-constrained restricted Weil form is positive through support length `S=1` (`\u03bb\u2264\u221ae`); certified ground lower bounds include about `0.518` at `S=log 2` and `0.0014` at `S=1`.",
+      "new": "[Reported finite certificate] For the restricted Weil quadratic form with the pole constraints imposed, rigorous finite numerical bounds establish positivity through logarithmic support length S=1, where aperture lambda=exp(S/2). Reported lower bounds for the least energy are approximately 0.518 at S=log(2) and 0.0014 at S=1. These certify the stated restricted range, not the unrestricted Weil positivity criterion for RH."
+    },
+    {
+      "entry": 37,
+      "old": "`[observed]` At aperture `\u03bb=\u221a2`, constrained ground energy is about `0.547`, versus unconstrained `1.33\u00b710\u207b\u00b3`. Resolved positivity persists to about `\u03bb=2.1`; no sign-changing aperture appears up to `\u03bb\u22485`, but later Galerkin values are only upper bounds and decay super-exponentially.",
+      "new": "[Observation] At aperture lambda=sqrt(2), imposing the pole constraints raises the computed least Weil energy from about 0.00133 to 0.547. Numerically resolved positivity persists to about lambda=2.1. No negative value was found up to roughly lambda=5, but the later finite-dimensional eigenvalues are only upper bounds on the true least energy and become extremely small; they cannot certify positivity there."
+    },
+    {
+      "entry": 38,
+      "old": "`[observed]` Archimedean-only constrained form becomes indefinite near `\u03bb=1.8145`; each omitted prime power becomes decisive shortly after entering. Prime contributions have no fixed sign and must conspire collectively.",
+      "new": "[Observation] Removing prime contributions from the pole-constrained Weil form makes it indefinite near aperture lambda=1.8145. Individual omitted prime powers become important shortly after their support thresholds are crossed. Prime contributions themselves have both signs. The arithmetic terms are essential collectively; adding primes cannot be justified as a sequence of positive corrections."
+    },
+    {
+      "entry": 39,
+      "old": "`[observed]` Both constrained and unconstrained ground-state Fourier zeros lock onto low zeta ordinates as aperture grows; pole directions accelerate locking but do not cause it. Extra interlacing zeros eventually appear from exponential-type counting.",
+      "new": "[Observation] As the allowed support grows, Fourier-transform zeros of both constrained and unconstrained computed Weil ground states approach low zeta-zero ordinates. Pole constraints accelerate this alignment but are not its sole cause. Additional interlacing transform zeros eventually appear, so alignment of a few zeros is not a one-to-one global spectral identification."
+    },
+    {
+      "entry": 40,
+      "old": "`[observed]` Compact-Weil ground states lock one transform root to each low ordinate, but close pairs eventually merge while scalar ground energy barely changes. Pre-collapse root error scales approximately as separation `\u03b4\u207b\u00b3`; multiplicity control needs a Hermite/divided-difference channel.",
+      "new": "[Observation] In computed compact-support Weil ground states, closely spaced transform zeros can merge even while the lowest energy barely changes. Before merging, the measured location error grows approximately as the inverse cube of the pair separation. A small scalar energy therefore does not ensure separate recovery of nearby zeros or their multiplicities; derivative samples or divided differences are needed to resolve a close pair."
+    },
+    {
+      "entry": 41,
+      "old": "`[proved]` Two point-sampling energies split exactly into average and antisymmetric channels; the antisymmetric channel vanishes quadratically at collision with limit controlled by the derivative norm.",
+      "new": "[Reported analytic result] The combined squared sampling energy at two nearby points decomposes into the squared average response and the squared difference response. As the points merge, the difference channel vanishes quadratically and its rescaled limit measures a derivative norm. This identifies the additional observable needed when ordinary two-point sampling loses multiplicity information."
+    },
+    {
+      "entry": 42,
+      "old": "`[observed]` Ground autocorrelation monotonicity and post-first-atom cumulative prime\u2013polar positivity survived finite Galerkin tests, while pointwise positivity of the completed error is false by known oscillation. Any proof must use ground-selected averaging of the sign-changing error.",
+      "new": "[Observation] Computed Weil ground states had monotone autocorrelations and favorable cumulative prime/pole balances after the first contributing atom. The corresponding pointwise completed error changes sign. A proof using these observations must justify the averaging selected by the ground state; it cannot replace a signed oscillatory error by a pointwise positive function."
+    },
+    {
+      "entry": 43,
+      "old": "`[proved]` Published finite restricted-Weil matrices form an exact nested principal tower. Missing connector is convergence from those source matrices to the abstract Laurent/Galerkin compression.",
+      "new": "[Reported analytic result; open limit] The published finite restricted-Weil matrices are nested principal submatrices of an exact matrix system. The missing result is convergence connecting these source-defined matrices with the proposed infinite-dimensional Laurent/Galerkin operator. Nestedness alone does not justify that identification or transfer finite positivity to the limit."
+    },
+    {
+      "entry": 44,
+      "old": "`[observed]` Fixed-pole parity energies stayed positive for `0<a\u22648`; normalized margins oscillate around the sharp mass `2+\u03b3\u2212log(4\u03c0)\u22480.04619`, with zero asymptotic margin. Any prime-side proof must reach that exact constant.",
+      "new": "[Observation] The tested fixed-pole even/odd energy combinations were positive over their parameter range 0<a<=8. Their normalized margins oscillate around the exact mass 2+gamma\u2212log(4*pi), approximately 0.04619, where gamma is Euler's constant, and the excess margin tends toward zero. A sharp prime-side argument must recover this constant; a uniformly loose positive allowance will not suffice."
+    },
+    {
+      "entry": 45,
+      "old": "`[observed]` Integer lags through `2\u00b710\u2077` remain far below the RH ceiling: maximum about 40% of it. Conditional recurrence to the ceiling is therefore extremely slow at accessible scales.",
+      "new": "[Observation] The tested arithmetic lag function, evaluated at every integer lag through 20 million, reached only about 40% of the ceiling predicted under RH. This suggests that any conditional recurrence near that ceiling happens much later than accessible samples. Failure to approach the ceiling in this range is not evidence against the conditional recurrence theorem."
+    },
+    {
+      "entry": 46,
+      "old": "`[observed/proved]` Prime-truncated lag positive-definiteness fails a few hundredths past the first omitted prime-power lag. Under RH, continuum positive-definiteness pins every prime-power position and weight exactly: any nonzero single-kink perturbation creates negative high-frequency directions.",
+      "new": "[Observation; conditional analytic obstruction] Truncating prime-power terms in the arithmetic lag kernel causes finite positive-definiteness tests to fail shortly after the first omitted prime-power lag. Separately, an analytic result conditional on RH says that continuum positive definiteness fixes every prime-power location and weight exactly: any nonzero perturbation of one such corner creates a negative high-frequency direction. This conditional rigidity result is not an unconditional proof of RH."
+    },
+    {
+      "entry": 47,
+      "old": "`[observed]` Arithmetic Gram least eigenvalues scale approximately `c/N`, `c\u22480.09\u20130.10`; top eigenvalues scale as `N/(1/4+\u03b3_j\u00b2)`. Finite PSD tests are insensitive to sufficiently high off-line zeros until matrix size is roughly square-root in zero height.",
+      "new": "[Observation] In the tested arithmetic Gram matrices of size N, the smallest eigenvalue behaves approximately as c/N with c around 0.09\u20130.10; leading eigenvalues follow the tested zeta-ordinate scales N/(1/4+gamma_j\u00b2). Here gamma_j is the imaginary part of the j-th sampled critical-line zero. Finite positive-semidefinite tests can miss sufficiently high hypothetical off-line zeros until the matrix is much larger; positive small matrices are weak evidence about the full zero set."
+    },
+    {
+      "entry": 48,
+      "old": "`[observed]` Full infinite-lattice HCF receiver capacity improves the three-center threshold only from about `0.3437` to `0.3821`; receiver optimization is not the active bottleneck.",
+      "new": "[Observation] For the Hedenmalm critical feature 2/(1+(z\u2212t)\u00b2), extending the receiver from three sampling centers to a complete integer lattice improves the measured capacity threshold only from about 0.3437 to 0.3821. This modest gain does not produce the missing arithmetic source covariance. Further optimization of the same scalar receiver is unlikely to address the main source-identification obstacle."
+    },
+    {
+      "entry": 49,
+      "old": "`[rejected]` Scalar signed separator mixtures suppress off-diagonal response only outside a collision radius, with coefficient norm and negative lobe exploding as radius shrinks. Uniform HCF needs matrix/source cancellation or zero spacing.",
+      "new": "[Rejected mechanism] Signed mixtures of scalar separating kernels suppress cross responses only when spectral points remain outside a minimum separation. As that separation shrinks, the coefficient norm and the adverse negative lobe grow rapidly. Such mixtures are not uniform close-pair controls without an additional spacing theorem or a matrix/source cancellation mechanism."
+    },
+    {
+      "entry": 50,
+      "old": "`[rejected]` Fixed-degree gamma-cell factors add only `O(T)` mobile off-line zeros versus zeta's `T log T`; they are finite-height falsifiers, not asymptotic density obstructions. Genuine adversaries need `N(T)`-scale mobility.",
+      "new": "[Rejected asymptotic inference] Multiplying by a fixed-degree admissible gamma-cell factor can introduce moving off-line zeros, but only in number proportional to height T. Zeta has on the order of T log(T) zeros. These factors can falsify finite-height structural claims; they cannot alone force a positive asymptotic proportion of off-line zeros. A density obstruction needs a perturbation affecting comparably many zeros."
+    },
+    {
+      "entry": 51,
+      "old": "`[rejected/observed]` Even positive strictly log-concave kernels can have negative rank-three packets; FE-symmetrized atoms can have off-axis zeros; finite causal/symmetric Volterra truncations were indefinite. Classical Laguerre wall jets `L\u2081,L\u2082` stayed positive, but close-pair failure is invisible to pointwise wall jets.",
+      "new": "[Rejected sufficiency claims; finite observations] Positive, strictly log-concave kernels can still have a negative rank-three test. Enforcing functional-equation symmetry on source atoms does not prevent off-axis zeros, and tested finite causal symmetric Volterra operators were indefinite. Conversely, the first two pointwise Laguerre derivative tests can remain positive while close-pair control fails. Positivity, symmetry, causality and low-order derivative signs are individually insufficient substitutes for the missing coupled spectral inequality."
+    },
+    {
+      "entry": 52,
+      "old": "`[observed]` Multi-band isolated-zero ladders did not hide energy materially better than one chirped band; this does not prove the full isolation law.",
+      "new": "[Observation] In tests of observables designed to isolate a zero, combining several frequency bands did not conceal substantially more energy than one band with a varying phase frequency. This gives no observed advantage to that particular extra complexity. It is not a uniform lower bound for all possible isolated-zero constructions."
+    },
+    {
+      "entry": 53,
+      "old": "`[proved/observed]` Uniform damping gives an `n`-uniform exponential floor; data suggest a sharper scale polynomial in `K/g` for `K\u2272g`. Gram/Ingham bounds alone do not resolve wide real-part spreads.",
+      "new": "[Reported bound; numerical refinement] For exponentials with frequency gaps at least g, all sharing decay rate K on a window of length L>2*pi/g, the Gram matrix has an n-independent lower bound exp(\u22122*K*L)*(L\u22122*pi/g), where n is the number of exponentials. This follows by comparison with the undamped integral. Finite tests of unequal decay rates did not violate the proposed analogous floor, but do not prove it. A stronger polynomial-scale lower bound when decay rates are small compared with the frequency gap remains conjectural. Do not extrapolate an initial decrease with n into a contradiction of the proved uniform-decay floor."
+    },
+    {
+      "entry": 54,
+      "old": "`[rejected]` At actual Weil prime-power entries, many barrier jumps are negative and continuous convex growth alone cannot pay all losses. Positive jump credits are essential in the exact signed balance.",
+      "new": "[Rejected mechanism] In the barrier representation of the actual Weil form, many jumps at prime-power thresholds are negative. Convex growth between thresholds cannot pay all these losses by itself. Any cumulative positivity argument must include the favorable jumps as well as the negative ones, with their actual signs and sizes."
+    },
+    {
+      "entry": 55,
+      "old": "`[rejected]` Current C1 global-mean scalar carrier misses the theta target by a stable margin of about 32%. An exact head/tail separation should retire this carrier; other possible C1 carriers are unaffected.",
+      "new": "[Rejected specific carrier] The tested global-mean scalar construction in route C1 differs from its intended theta quantity by a stable relative margin of about 32%. It cannot be used as an exact identification of that theta source. This rejects the tested mean-based carrier, not every possible construction in route C1; an analytic head/tail separation is the appropriate way to close the rejection."
+    },
+    {
+      "entry": 56,
+      "old": "`[rejected]` Flat prime-insertion cocycle integrates only to nonunitary diagonal similarity. Unequal apertures have no tested finite `*`-intertwiner; any surviving sewing needs a defect/environment, changed inner product, or non-diagonal coupling.",
+      "new": "[Rejected operator identification] The tested rule for inserting primes integrates to a diagonal similarity transformation that is not unitary. Finite searches found no compatible adjoint-preserving intertwiner between unequal apertures. A surviving operator construction must supply an appropriate inner product, an additional environment/defect, or non-diagonal coupling; algebraic similarity alone does not preserve the required spectral geometry."
+    },
+    {
+      "entry": 57,
+      "old": "`[observed]` Mixed prime-character/completed-theta packet Grams stayed independent through 10 primes (matrix size 1024). Scalar Gamma aperture weights cancel from normalized Grams, so they neither select critical wall nor improve conditioning.",
+      "new": "[Observation; exact normalization effect] Mixed prime-character and completed-theta packet Gram matrices remained nonsingular through ten primes, giving matrices of size 1024. Scalar Gamma aperture factors cancel when those Gram matrices are normalized. Consequently, these scalar factors neither improve the normalized conditioning nor select the critical line; that role would require information that survives normalization."
+    },
+    {
+      "entry": 58,
+      "old": "`[rejected]` Reciprocal bilateral scalar completion has primorial-scale growth; no fixed exponential gauge moderates it. A surviving bilateral construction needs different topology or a non-scalar defect channel.",
+      "new": "[Rejected growth control] The tested two-sided reciprocal scalar completion grows on the scale of a primorial, the product of the included primes. No fixed exponential gauge controls that growth. Continuing this construction would require a different topology or an additional non-scalar channel, not a stronger estimate for the same scalar normalization."
+    },
+    {
+      "entry": 59,
+      "old": "`[rejected]` Current T2 finite-shell interfaces miss required exponent even with prime-gap exponent `13/25`; generic `L\u00b2/L\u2074`, buffered-gain, physical-slice, and reciprocal-tail repairs do not close it.",
+      "new": "[Rejected estimates] The finite-shell localization route called T2 does not reach its required exponent using the tested interfaces, even after granting the prime-gap exponent 13/25. Generic second/fourth-moment bounds, buffering, physical-slice restrictions and reciprocal-tail repairs did not close the deficit. Improving those estimates without changing the arithmetic localization mechanism has no demonstrated route to the target."
+    },
+    {
+      "entry": 60,
+      "old": "T2 survivor requires both target-reciprocal localization `s+g\u22641` and a genuinely arithmetic selected-cell/bad-set estimate across all paired low shells.",
+      "new": "[Open requirement] A surviving T2 shell argument needs two ingredients together: sufficiently tight localization relative to the target's reciprocal scale, and an arithmetic estimate for the selected cells and excluded set across every paired low shell. Either ingredient alone leaves the tested exponent deficit. Their joint uniform form remains unproved."
+    },
+    {
+      "entry": 61,
+      "old": "`[observed/proved]` One-prime deformation becomes order one near degree `n\u2248p`, far before the fixed first-jet scale `p\u00b2`. It collapses as `D_k(1/p)=p^{-1/2}\u03a6(n/p)+O(p^{-1})`.",
+      "new": "[Observation with reported scaling result] In route J's Jacobi-matrix model, perturbing one Euler factor at prime p becomes significant around matrix degree n proportional to p, much earlier than the p\u00b2 scale suggested by keeping only the initial derivative. The rescaled response approaches a profile in n/p with amplitude p^(\u22121/2). A fixed-degree Taylor approximation therefore cannot be extrapolated to the relevant growing matrix sizes."
+    },
+    {
+      "entry": 62,
+      "old": "`[proved]` Universal profile is",
+      "new": "[Reported analytic result] For that one-prime Jacobi scaling, with x=n/p, the limiting response profile is Phi(x)=4*sqrt(2/pi)*(sqrt(x)*cos(4x)\u22128*x^(3/2)*sin(4x)). Its derivation uses Meixner\u2013Pollaczek/Jacobi matrix elements. This describes a specific growing-degree limit; it is not an independent prime-by-prime approximation to a complete Euler product."
+    },
+    {
+      "entry": 63,
+      "old": "`[proved]` Fixed-frequency beat response has an explicit oscillatory `k^(3/2)` asymptotic; a uniform two-index law contains both beat and one-prime limits.",
+      "new": "[Reported analytic result] The Jacobi response to a fixed difference frequency has an explicit oscillatory asymptotic whose amplitude grows like matrix degree to the power 3/2. A two-index scaling statement contains both this regime and the one-prime limit. Keeping both indices is necessary to distinguish a fixed-frequency limit from a prime-dependent frequency tending to zero."
+    },
+    {
+      "entry": 64,
+      "old": "`[rejected]` Two primes do not superpose. For comparable primes, pair cross terms dominate single-prime effects and equal the linear response to beat frequency `log(p\u2082/p\u2081)` to high accuracy.",
+      "new": "[Rejected superposition] Two prime perturbations in the Jacobi model do not add independently. For comparable primes, their cross terms dominate the separate effects and numerically match a response at the difference frequency log(p\u2082/p\u2081). The interaction between nearby prime frequencies is a leading-order effect, not a small error term."
+    },
+    {
+      "entry": 65,
+      "old": "`[proved]` Two-mode determinant response is beat jet plus sum-mode jet minus truncation defect; explicit boost-entry bounds control the defect. One-prime quadratic response is `O(p\u207b\u00b2)` and finite-set second order contains only one- and two-prime terms.",
+      "new": "[Reported analytic decomposition] The two-mode Jacobi determinant response splits into a difference-frequency term, a sum-frequency term and an explicit finite-truncation defect. Bounds on the underlying matrix entries control that defect. At second order, a finite set of primes contributes only one-prime and two-prime terms; this classification provides a way to retain the leading interactions systematically."
+    },
+    {
+      "entry": 66,
+      "old": "`[proved]` True finite Euler-product log determinant has a second-order expansion with explicit cubic remainder. Current bound uses an entrywise norm that is too large; an `n`-uniform operator-norm refinement is missing.",
+      "new": "[Reported expansion; open estimate] The logarithm of the true finite Euler-product determinant has a second-order expansion with an explicit cubic remainder. The available estimate controls individual matrix entries and grows too quickly with matrix size. The missing step is a suitable operator-norm bound uniform in that size; the existence of the finite expansion does not supply it."
+    },
+    {
+      "entry": 67,
+      "old": "Finite-prime analysis must assemble Euler product first and organize around pairwise log-ratio beats; fixed Euler jets or independent one-prime boundary layers are not valid building blocks.",
+      "new": "[Interpretation] Assemble the finite Euler product before estimating the Jacobi determinant response, and organize its leading interactions by differences of prime logarithms. The tested independent one-prime layers and fixed-degree Euler-factor derivatives lose the dominant cross terms. This is a constraint on a viable approximation, not a completed infinite-prime limit."
+    },
+    {
+      "entry": 68,
+      "old": "`[observed]` Diagonal dominance `S\u00b2\u2264Q` survived every cutoff through `2,097,152`; `[proved]` diagonal energy has exact update law and unconditional bound `Q(M)\u2264722M\u00b2`. The required nonpositive total off-diagonal sign remains open.",
+      "new": "[Observation; reported diagonal bound] For the literal signed divisor source in CCM-FU, the square of the total signed sum stayed below the sum of individual squared contributions for every cutoff through 2,097,152. The diagonal energy has a derived update identity and bound Q(M)<=722*M\u00b2. The missing arithmetic statement is that the complete off-diagonal contribution is nonpositive at every cutoff; the finite checks do not prove it."
+    },
+    {
+      "entry": 69,
+      "old": "`[rejected/proved]` Every-step energy contraction fails already at `M=5`; every-order nonincreasing paths fail at `M=7`. A local increase can still remain below the original diagonal, so contraction and ceiling are distinct.",
+      "new": "[Reported counterexamples] In prime-order regroupings of the signed divisor source, requiring energy to decrease at every step fails already at cutoff 5; requiring every ordering to be nonincreasing fails at cutoff 7. These statements are stronger than staying below the original diagonal budget: a temporary increase can still fit inside that budget. Reject stepwise contraction without discarding the weaker global ceiling question."
+    },
+    {
+      "entry": 70,
+      "old": "`[observed]` Original-diagonal ceiling survived finite exhaustive path searches through 32, greedy paths through 1024, fixed-late policies through 32768, and joint-prime policies through 8192. None gives all-cutoff control.",
+      "new": "[Observation] Prime-order paths keeping the divisor-source energy below its original diagonal budget were found by exhaustive search through cutoff 32, greedy search through 1024, fixed-late-prime policies through 32768, and joint-prime policies through 8192. These successes concern different finite search procedures and ranges. None gives a policy or energy bound valid for all cutoffs."
+    },
+    {
+      "entry": 71,
+      "old": "`[observed]` Exact successor-envelope extension, least-energy successor selection, negative-support selection, and two-step repair after any prescribed prime all succeeded on complete subset cubes through 32; final-overlap states through 1024 also extended. These select concrete conjectural policies, not generic signed-field theorems.",
+      "new": "[Observation] On complete processed-prime subset state spaces through cutoff 32, the tested low-energy successor, negative-support and two-step repair rules found admissible continuations. Tested final-overlap states through cutoff 1024 also extended. These are concrete candidate selection rules for the arithmetic source, not theorems for arbitrary signed coefficients or unbounded cutoffs."
+    },
+    {
+      "entry": 72,
+      "old": "`[rejected]` Homogeneous descent of the geometric certificate, logarithmically averaged successor slack, uniform averaging of successor envelopes, and pointwise prime-2 envelope monotonicity all fail. Successful selection must retain prime-specific signed interactions.",
+      "new": "[Rejected selection rules] Uniformly decreasing a geometric certificate, averaging successor allowances, and requiring pointwise monotonicity for the prime-2 successor all fail in the divisor-source state model. Successful selection must use which prime is chosen and the signs of its interactions. A prime-independent averaged allowance loses information needed by the successful finite paths."
+    },
+    {
+      "entry": 73,
+      "old": "`[rejected/proved]` Simultaneously requiring nonempty-energy dissipation and envelope admission has a unique reachable trap at `M=25`; head-square release pays forced transverse growth. Generic sharp next-step bound is `V_next\u22643V/2`.",
+      "new": "[Reported obstruction and bound] At cutoff 25, the rule demanding both dissipation of all nonempty-group energy and admission by the proposed successor bound has a reachable trapped state. Releasing energy from the distinguished head group can pay the necessary growth elsewhere. A general sharp one-step bound allows the tracked energy to grow by a factor 3/2; demanding contraction excludes a necessary mechanism."
+    },
+    {
+      "entry": 74,
+      "old": "`[rejected/proved]` Keeping every nonempty fibre nonnegative fails from `M=21`; at least one moving defect is necessary. Exact defect-triangle and mixed-transverse compensation results capture the positive survivor.",
+      "new": "[Reported obstruction] Keeping every nonempty group of divisor-source terms nonnegative fails from cutoff 21. At least one group must be allowed to carry a moving negative contribution. Derived triangle and mixed-group compensation identities describe how such a contribution can be balanced; universal positivity of each group is the wrong target."
+    },
+    {
+      "entry": 75,
+      "old": "`[observed]` A fixed potential `V+\u03b1H\u00b2` admits complete monotone paths through 32 for `0\u2264\u03b1\u22720.201`, but no fixed `\u03b1` gives a good next move from every state. Path existence is weaker than local extendability.",
+      "new": "[Observation; rejected universal policy] A potential equal to remaining-group energy plus alpha times the squared signed head admitted complete decreasing paths through cutoff 32 for 0<=alpha approximately <=0.201. No single fixed alpha guarantees an acceptable next step from every state. Existence of a successful complete path is therefore weaker than a universal greedy rule based on this scalar potential."
+    },
+    {
+      "entry": 76,
+      "old": "`[rejected]` Binary gcd packets and individual exact-gcd groups need not be nonpositive. Compensation crosses distinct gcd classes.",
+      "new": "[Rejected termwise sign] Neither binary greatest-common-divisor packets nor individual exact-greatest-common-divisor groups of the source cross terms need be nonpositive. Favorable cancellation can occur between different greatest-common-divisor classes. Proving a sign for each class separately would impose a false requirement."
+    },
+    {
+      "entry": 77,
+      "old": "`[rejected]` Positive exact-gcd mass is not bounded by diagonal with constant one; complete signed cross sums nevertheless remained negative at all tested cutoffs. Preserve `S\u00b2=D+P\u2212N` and bound `P\u2212N`, not `P` alone.",
+      "new": "[Rejected bound; surviving target] The total positive contribution from exact-greatest-common-divisor groups can exceed the diagonal energy. Yet the complete signed cross sum remained negative at all tested cutoffs. Writing total-sum squared as diagonal + positive cross mass \u2212 negative cross mass shows the useful target: bound the difference of the two cross masses, not the positive mass alone."
+    },
+    {
+      "entry": 78,
+      "old": "`[observed]` One-prime adjacency flow compensated positive gcd mass at tested cutoffs, but shared negative-neighbor capacity, not isolated vertices, controls the residual. M\u00f6bius parity-class balance alone is insufficient because graph neighborhoods restrict access.",
+      "new": "[Observation] A flow along edges corresponding to one-prime changes compensated the positive greatest-common-divisor mass in the tested source graphs. The limiting issue is shared capacity: several positive groups may need the same negative neighbors. Balancing total M\u00f6bius parity classes ignores that access constraint; a uniform proof would need an appropriate neighborhood or transport-capacity estimate."
+    },
+    {
+      "entry": 79,
+      "old": "`[rejected]` Coarea mass-envelope greedy paths, coupled-sector steepest paths, and the proposed unit transverse budget fail at growing cutoffs. Local pair variance or average cancellation does not prevent coherent amplification.",
+      "new": "[Rejected selection rules] Greedy rules based on averaged mass allowances, simultaneous steepest descent of coupled groups, and a fixed unit allowance for transverse energy fail as cutoffs grow. Small local variance or average cancellation does not prevent many signed terms from amplifying coherently. A successful rule must control that collective effect."
+    },
+    {
+      "entry": 80,
+      "old": "`[rejected/proved]` Advancing retained prime front can increase transverse energy even with small receiving coordinates. Child-inactive helper blocks commute exactly with later transverse costs, so head balancing cannot change the sign of those gains; a cumulative budget is required.",
+      "new": "[Reported obstruction and identity] Processing an additional retained prime can increase energy in the remaining groups even when the receiving coordinates are small. Helper groups that are inactive in the copied child commute with later transverse costs, so adjusting the head through those helpers cannot reverse the gain. The replacement target is a cumulative signed budget, not independent repairs of every step."
+    },
+    {
+      "entry": 81,
+      "old": "`[rejected/proved]` Increasing middle-prime order exceeds original diagonal even after all fixed scalar reserves are removed. Analytic nested child-head amplification defeats every fixed quadratic ceiling uniformly over fixed scalar-reserve choices; adaptive orders remain open.",
+      "new": "[Reported obstruction] Processing middle primes in increasing order can exceed the original divisor-source diagonal budget even after the tested fixed scalar reserves are included. A derived nested amplification mechanism defeats every fixed quadratic ceiling in that class of reserve choices. Adaptive prime orders are not ruled out; the obstruction concerns the specified fixed-order and fixed-reserve mechanism."
+    },
+    {
+      "entry": 82,
+      "old": "`[observed]` Fixed small cores contain many asymptotically energy-increasing edges, including parents still far below original budget. This points to signed dilation correlation rather than local reserve.",
+      "new": "[Observation] Fixed small prime cores contain many transitions whose asymptotic energy change is positive, including transitions starting far below the original budget. Thus distance below the budget does not itself predict the next sign. Signed correlations under dilation are a more informative quantity to investigate than local scalar reserve alone."
+    },
+    {
+      "entry": 83,
+      "old": "`[observed/proved]` Joint two-prime selection exposes a real middle/late amplitude window: both first moves may increase while their common endpoint compensates. Exact continuous optimum is classified; existence of an unused prime in the needed window at every stage is open.",
+      "new": "[Observation; reported optimization] Two primes chosen jointly can repair a state even when either first move increases energy. The corresponding continuous amplitude optimization has an exact classification, exposing an interval of useful middle/late amplitudes. It remains open whether an unused actual prime lies in the required interval at every stage; continuous feasibility does not establish arithmetic availability."
+    },
+    {
+      "entry": 84,
+      "old": "`[observed]` Coupled head/prime-2 source profiles admit positive zero-sum circuits; a `2,11,15` circuit also removes inherited prime-2 debt. Uniform capacity and complete exhaustion remain open.",
+      "new": "[Observation] Coupled signed-head and prime-2 profiles admit tested positive combinations whose net unwanted contribution is zero. A combination indexed by 2,11,15 also cancels the inherited prime-2 debt. These examples motivate cancellation circuits, but neither uniform available capacity nor an exhaustion procedure covering the complete source has been proved."
+    },
+    {
+      "entry": 85,
+      "old": "`[rejected]` Independent Bernoulli half-selection eventually has mean-head square above original diagonal; zeta-pole analysis gives the analytic obstruction.",
+      "new": "[Reported obstruction] Selecting source components independently with probability one half eventually makes the expected squared head exceed the original diagonal budget. The analytic explanation uses zeta-pole behavior. Independent random selection therefore cannot establish the proposed bound merely by averaging; any successful probabilistic selection needs additional dependence or arithmetic structure."
+    },
+    {
+      "entry": 86,
+      "old": "`[proved]` Literal unsigned channel orientation and square-root lower bound hold independently of the finite positive scans.",
+      "new": "[Reported analytic result] For the literal divisor source, the unsigned comparison channel has the required orientation and a square-root lower bound independently of the finite sign scans. This provides one controlled part of the construction. It does not establish the unresolved sign of the complete signed off-diagonal energy."
+    },
+    {
+      "entry": 87,
+      "old": "`[rejected]` Ordinary decreasing weights, prefix-by-prefix positive pairings, and geometric/Laplace component positivity do not prove the source bound. Exact Abel representation as a mixture of prefix channels survives.",
+      "new": "[Rejected positivity shortcut; analytic survivor] Ordinary decreasing weights, positivity at every prefix and positivity of separate geometric/Laplace components do not prove the signed divisor-source bound. An exact Abel summation formula still expresses the weighted quantity using prefix channels. That representation can organize a proof, but its components cannot all be assigned the favorable sign."
+    },
+    {
+      "entry": 88,
+      "old": "`[rejected]` Blockwise feedback, uniform merge contraction, pointwise block contraction, and a fixed average decrement across scales fail. Literal source has aggregate cancellation plus locally coherent deficit clusters; no dependency-closed positive salvage was found.",
+      "new": "[Rejected local-feedback mechanisms] Uniform contraction under merging, pointwise contraction of each block and a fixed average energy decrement across scales fail for the literal divisor source. The data contain aggregate cancellation alongside locally coherent clusters of adverse terms. No dependency-closed positive replacement theorem emerged from these particular feedback attempts; they do not refute other cumulative arithmetic bounds."
+    },
+    {
+      "entry": 89,
+      "old": "`[observed]` Complete reciprocal flux was positive for every cutoff `2\u2264N\u2264512`, but positivity alone gives no subpower upper bound.",
+      "new": "[Observation] The complete reciprocal divisor flux R(N), with both directed divisor interactions, the mean correction and the infinite time tail retained, was positive at every tested cutoff 2<=N<=512; R(1)=0. Positivity alone would still not give the subpower upper bound required by this route, meaning growth slower than N^epsilon for every epsilon>0. Both the all-cutoff sign and the required growth control remain open."
+    },
+    {
+      "entry": 90,
+      "old": "`[rejected]` Absolute row variation is not always within four times flux, and the Bernoulli mean profile can miss nearly all row variation. Complete finite head, nonzero Fourier modes, and outer M\u00f6bius signs must remain.",
+      "new": "[Rejected comparison] The absolute variation across rows of the reciprocal divisor covariance is not always bounded by four times its signed flux. Replacing a row by its Bernoulli mean can miss almost all that variation. The complete finite initial part, nonzero Fourier modes and exterior M\u00f6bius signs must remain in the quantity being estimated."
+    },
+    {
+      "entry": 91,
+      "old": "`[observed]` Exact-gcd total variation stayed below four diagonal units in tested raw/tapered sources. Individual groups have both signs; complete-gcd estimates remain plausible, not proved.",
+      "new": "[Observation] After grouping complete reciprocal-divisor covariance terms by their exact greatest common divisor, the tested total variation stayed below four times the diagonal comparison quantity for both raw and tapered sources. Individual groups take both signs. The observation supports investigating a bound on the complete grouping; it does not prove the constant four uniformly."
+    },
+    {
+      "entry": 92,
+      "old": "`[rejected]` Separately charging head polynomial and corrected remainder can exceed the same budget even when the signed head/tail budget passes. Retain each head as one signed object.",
+      "new": "[Rejected decomposition] Estimating the initial polynomial part of a divisor-covariance row and its corrected remainder separately can spend more than the allowed budget even when their signed sum fits. Preserve each complete row's signed initial-part/remainder cancellation before taking absolute values. Separate estimates can manufacture an obstruction absent from the original quantity."
+    },
+    {
+      "entry": 93,
+      "old": "`[rejected]` Localization to divisor ratio `\u22644`, reduced denominators `2,3`, or temporal radius `\u2264X` fails. Omitted long-range covariance can be larger than complete energy and restore its sign.",
+      "new": "[Rejected locality] In the reciprocal-divisor covariance, restricting to divisor ratios at most four, to reduced denominators two and three, or to the proposed finite time radius discards essential terms. The omitted long-range contribution can exceed the complete energy and restore its sign. A local model with those truncations cannot identify the complete covariance."
+    },
+    {
+      "entry": 94,
+      "old": "`[proved]` Reduced-denominator head with denominator `\u2264B` is uniformly bounded by `B/2`; the missing estimate is the complete large-denominator tail.",
+      "new": "[Reported analytic bound] The part of the reciprocal-divisor initial sum with reduced denominator at most B is uniformly bounded by B/2. This isolates a concrete missing term: the sum over larger reduced denominators. The finite-denominator bound does not control that complete tail or the final source energy."
+    },
+    {
+      "entry": 95,
+      "old": "`[observed]` Logarithmic cutoff averaging suppresses measured post-support error but not at the preregistered strong rate; available omitted-tail bounds are too loose for a full comparison.",
+      "new": "[Observation; failed rate target] Averaging over logarithmically spaced cutoffs reduces the tested error outside the support, but not at the strong rate fixed before the experiment. Existing bounds on omitted tails are also too large to justify full transfer. Averaging has a measured finite benefit, but the proposed quantitative estimate is not supported."
+    },
+    {
+      "entry": 96,
+      "old": "`[rejected]` Choosing cutoffs by minimum harmonic head does not suppress complementary tail: roughly half or more lies in the first block. Exact first-tail source is `nH_N+M(n)\u2212M(N)`.",
+      "new": "[Rejected cutoff selector] Choosing the cutoff that minimizes the harmonic initial part does not suppress its complementary tail; in the tested examples roughly half or more of that tail is already in its first block. The exact first-tail expression contains both the harmonic partial sum and the difference of Mertens sums. Minimizing only the harmonic term ignores a leading arithmetic contribution."
+    },
+    {
+      "entry": 97,
+      "old": "`[rejected]` Minimizing the all-gcd head polynomial does not consistently minimize full residue energy; the linear unit-source cross term changes finite rankings. Formal all-gcd subpower remainder remains valid but does not control complete tail.",
+      "new": "[Rejected surrogate objective] Minimizing the all-greatest-common-divisor initial polynomial does not reliably minimize the complete residue energy. The linear cross term with the unit source can change which finite cutoff is best. A derived subpower bound for the corrected remainder does not automatically control this full energy or its tail."
+    },
+    {
+      "entry": 98,
+      "old": "`[observed]` Bounded coefficient repair can reduce finite heat residuals by many orders. Rewriting nonsquarefree coefficients and coordinating head/tail help, but fixing the first quarter to M\u00f6bius still permits near-best finite errors. No tested construction proves asymptotic convergence.",
+      "new": "[Observation] Bounded changes to arithmetic coefficients can reduce finite heat-approximation errors by many orders of magnitude. Adjusting nonsquarefree coefficients and coordinating the initial and tail portions both help; nearly optimal finite errors remain possible even when the first quarter of coefficients is fixed to M\u00f6bius values. These are finite approximations, not constructions with proved error tending to zero as the fixed prefix grows."
+    },
+    {
+      "entry": 99,
+      "old": "`[observed/proved]` Positive averages of raw M\u00f6bius cutoffs reach small finite errors while preserving M\u00f6bius signs. Successful near-identity power damping cannot have `\u03b5_N log N\u21920`; mass must move cofinally away from terminal cutoff.",
+      "new": "[Observation; reported necessary condition] Positive averages of truncated M\u00f6bius sums can give small finite approximation errors while preserving coefficient signs. For near-identity power damping with exponent epsilon_N at cutoff N, the successful asymptotic mechanism cannot have epsilon_N*log(N) tending to zero: averaging weight must move sufficiently far from the terminal cutoff. Finite small errors alone do not meet that necessary escape condition."
+    },
+    {
+      "entry": 100,
+      "old": "`[observed]` Freezing a growing prefix has a visible cost under monotone positive averaging, largely removed by allowing a nonmonotone sign-preserving envelope. Remaining task is actual residual control as frozen prefix grows.",
+      "new": "[Observation] Fixing a growing initial segment of M\u00f6bius coefficients increases error when the remaining positive averaging weights must be monotone. Allowing a nonmonotone envelope while preserving coefficient signs removes much of the measured cost. The unresolved issue is convergence of the actual approximation error as the fixed segment grows; relaxed finite fitting is not that convergence proof."
+    },
+    {
+      "entry": 101,
+      "old": "`[observed]` Enforcing more exact boundary moments is not monotonically beneficial; error is concentrated outside Taylor-scale neighborhood. Local derivatives and harmonic charge do not settle global residual.",
+      "new": "[Observation] Imposing more exact boundary moments does not monotonically improve the tested arithmetic approximation. Much of the error lies outside the neighborhood described by the matched Taylor derivatives. Matching local derivatives and a harmonic charge therefore does not control the global residual; the missing observable must measure the region where the error remains."
+    },
+    {
+      "entry": 102,
+      "old": "`[rejected/observed]` Recovery-gap positive-moment model has a degree-17 square witness with negative numerical functional; finite Hausdorff differences can all pass while Hankel positivity fails. Global log-convexity remains open.",
+      "new": "[Numerical obstruction candidate] Define recovery gaps delta_(m\u22121) by minimizing max W(r)^m*abs(R(r)) on 0<=r<=1/4 over polynomials R of degree at most m whose coefficient of r^(m\u22121) equals one, with W(r)=1\u2212sqrt(1\u22124*r). For gamma_k=(delta_k/delta_0)^2, a canonical degree-17 squared-polynomial functional is numerically negative, stable under independent 140/230-digit computations. All 2080 tested Hausdorff finite differences nevertheless pass. Thus those finite differences do not establish a positive representing measure; an exact negative-square proof remains open. This does not refute the weaker log-convexity question delta_(k+1)^2<=delta_k*delta_(k+2)."
+    },
+    {
+      "entry": 103,
+      "old": "`[proved]` Recovery multiplier has uniform block growth and exact closed spectral disc of radius `\u03c1\u22480.0173600`, independent of moment positivity.",
+      "new": "[Paper result; not formalized] For those weighted-polynomial recovery gaps, the associated recovery operator is the weighted shift constructed from consecutive recovery costs. A paper argument proves uniform block growth and identifies its spectrum as the closed disc of radius rho\u22480.01736004210, the exponential decay rate of delta_k. The argument does not assume that the squared gaps form a positive moment sequence. This operator result survives the numerical obstruction to that stronger moment interpretation; the paper dependencies and operator result have not been fully formalized."
+    },
+    {
+      "entry": 104,
+      "old": "`[rejected/proved]` Normalized chord-basis bound fails from three chords. Exact `27D+R` optimum is known; `27D\u2212R` has signed capacity `28/27` versus monotone capacity `1`, proving genuine reversal advantage.",
+      "new": "[Reported exact counterexample and optimum] For products of chord increments along a path with total variation one, the sum of responses normalized by individual chord capacities can exceed one starting at three chords. With D the three adjacent disjoint chords and R the three nested chords on six ordered endpoints, the combination 27D\u2212R has maximum absolute response 1 for monotone paths but 28/27 when reversals are allowed. Thus path reversal has a genuine advantage that monotone-only optimization misses. The related positive combination 27D+R also has an exactly derived optimum."
+    },
+    {
+      "entry": 105,
+      "old": "`[proved]` Cubic reversal enclosure depth is exactly one. No finite search found a higher-degree counterexample to analogous shallow stabilization; this remains open outside proved cubic class.",
+      "new": "[Reported finite-degree result; open extension] In the cubic chord-response class, one level of the reversal-enclosure construction suffices exactly. Finite searches found no counterexample to analogous shallow stabilization at higher degree. That extension remains conjectural; a proved cubic closure cannot be assumed for arbitrary numbers of chords."
+    },
+    {
+      "entry": 106,
+      "old": "`[rejected/proved]` Real projected minimum balance admits off-line nonzeros of zeta and therefore is not a sufficient zero/location test. Retain the missing imaginary constraint or another independent equation.",
+      "new": "[Reported counterexample] Keeping only the real part of the proposed arithmetic minimum-balance condition admits complex points off the critical line where zeta is nonzero. The real projected condition is therefore neither a sufficient zero test nor a sufficient location test. A surviving formulation needs the missing imaginary equation or another independent condition."
+    },
+    {
+      "entry": 107,
+      "old": "`[proved]` Every critical-line zero has a finite arithmetic value below the explicit tail boundary; observed minimizing moduli vary across primes/composites and M\u00f6bius signs. Finite minimum labels do not determine zero location.",
+      "new": "[Reported analytic result; observation] At every critical-line zero, the arithmetic minimization quantity attains a finite value below its explicit tail bound. Computed minimizing indices include primes and composites with different M\u00f6bius signs. The label of the minimizing index therefore does not determine the zero's horizontal location; finite attainment and zero selection are different questions."
+    },
+    {
+      "entry": 108,
+      "old": "`[rejected]` Individual divisor terms are not monotone/dominant; large finite excursions coexist with proved power-decay envelopes.",
+      "new": "[Rejected termwise argument] Individual divisor terms in the arithmetic phase/minimum construction are neither monotone nor uniformly dominant. Large finite excursions coexist with derived power-decay bounds for the complete remainder. A proof must account for cancellation or envelopes of the assembled expression rather than extrapolate a single term's behavior."
+    },
+    {
+      "entry": 109,
+      "old": "`[rejected]` Prime-sieve phase sign and monotone-insertion laws fail. A sufficiently late negative imaginary tail survives analytically, but supplies no sign for the full unit-head limit.",
+      "new": "[Rejected sign law; analytic survivor] Inserting primes into the phase construction does not preserve the proposed sign or monotonicity. A sufficiently late imaginary tail does have a derived negative sign, but that does not determine the sign after adding the initial unit contribution and all earlier terms. Tail sign is not a sign theorem for the complete limit."
+    },
+    {
+      "entry": 110,
+      "old": "`[observed]` Proposed successor cutoff `t<2\u03c0n` survived the finite ordinary-remainder scan. Cellwise negativity is false at special heights, so any proof must use cancellation across cells.",
+      "new": "[Observation] The proposed relation between spectral height t and successor cutoff n, namely t<2*pi*n, survived the finite ordinary-remainder tests. Negativity of every individual cell fails at special heights. Any proof using this cutoff relation must establish cancellation across cells, not replace the sum by a false cellwise sign."
+    },
+    {
+      "entry": 111,
+      "old": "`[rejected/proved]` Individual logarithmic phase turns may be positive while all tested cumulative prefixes are negative. Constant-speed prefix nonpositivity is proved; logarithmic clock transfer remains open.",
+      "new": "[Reported constant-clock result; open transfer] Individual increments of a logarithmically parametrized arithmetic phase can be positive even when all tested cumulative prefixes are negative. Prefix nonpositivity has an analytic proof for the related constant-speed clock. Transferring that result to the actual logarithmic clock remains open; reparametrization does not preserve the needed signs automatically."
+    },
+    {
+      "entry": 112,
+      "old": "`[rejected]` Constant-speed signs do not persist under arbitrary exponential clock acceleration. Restricted layer formulations survived finite tests.",
+      "new": "[Rejected clock invariance] The favorable phase signs from a constant-speed clock fail under arbitrary exponential acceleration. Restricted clock layers survived the finite tests, but this does not justify unrestricted clock changes. Any time-change argument must state and prove the conditions preserving the cumulative sign."
+    },
+    {
+      "entry": 113,
+      "old": "`[rejected]` Growing-modulus remainder is not bounded after the naive main subtraction; it contains a universal `\u2212(1/2)log p` term plus explicit real power and complex correction terms, not zero-specific cancellation.",
+      "new": "[Rejected remainder cancellation] After the proposed leading subtraction, the growing-modulus arithmetic remainder is not bounded: it still contains a universal \u2212log(p)/2 term, together with real power terms and a complex correction. These contributions are not specific to zeta zeros. They must be removed or retained explicitly before claiming a zero-dependent cancellation."
+    },
+    {
+      "entry": 114,
+      "old": "`[rejected]` Mixed refinement correction neither vanishes at zeros nor lies in tested scalar/two-coordinate repair spaces. Exact finite correction cocycle survives.",
+      "new": "[Rejected repair space; analytic identity] The mixed correction created by arithmetic refinement does not vanish at zeta zeros and is not captured by the tested scalar or two-coordinate repairs. An exact finite composition identity for the correction survives. That identity is useful bookkeeping, but it does not collapse the correction to a zero or to the proposed low-dimensional repair."
+    },
+    {
+      "entry": 115,
+      "old": "`[rejected/proved]` Complete multiplicativity does not force finite endpoint-to-curvature sign: exact positive and negative tangent directions exist via paired primes.",
+      "new": "[Reported counterexamples] Complete multiplicativity of the source coefficients does not fix the sign relating finite endpoint data to curvature. Paired-prime constructions give exact tangent directions of both signs. A curvature-selection argument needs additional arithmetic compatibility beyond complete multiplicativity."
+    },
+    {
+      "entry": 116,
+      "old": "`[rejected]` Mixed chronological area is not rank at most two at tested zeros; endpoint area identities do not collapse contributions from many time pairs.",
+      "new": "[Numerical rejection] At tested zeta zeros, the mixed area recording interactions between different times has rank greater than two. Identities involving only endpoint areas do not eliminate those many-time contributions. A two-dimensional endpoint model therefore omits information present in the chronological source."
+    },
+    {
+      "entry": 117,
+      "old": "`[observed]` Second-level quasi-shuffle identities hold, but self-area and cross-carry take both signs. Any depth-two producer needs compatibility of canonical continuation/refinement maps, not endpoint closure or universal sign.",
+      "new": "[Observation] The tested second-level iterated-sum identities, including their quasi-shuffle product rule, hold, but self-area terms and cross-correction terms take both signs. Algebraic closure at this level is not a positivity mechanism. A viable construction needs compatibility of the actual continuation and refinement maps, rather than a universal sign for each second-level component."
+    },
+    {
+      "entry": 118,
+      "old": "`[proved]` Signed-prime observable is exactly a weighted Liouville sum, not a second independent constraint. Prime dilation cancels divisible cofactors and leaves an explicit nondivisible remainder.",
+      "new": "[Reported analytic identity] The proposed signed-prime observable is exactly a weighted sum of the Liouville function, whose value at n is (\u22121) to the number of prime factors counted with multiplicity. It is therefore not a second independent arithmetic constraint. Dilation by a prime cancels divisible cofactors and leaves an explicit contribution from nondivisible cofactors; that remainder is the part requiring further control."
+    },
+    {
+      "entry": 119,
+      "old": "`[rejected]` Two discarded log-recursion remainders reinforce rather than cancel on tested Liouville cutoffs; literal prime/cofactor alignment alternates between strong suppression and amplification. No fixed reversal law survives.",
+      "new": "[Rejected cancellation law] Two remainders discarded in the logarithmic Liouville recursion reinforce one another on tested cutoffs rather than cancel. Matching actual prime and cofactor indices can alternate between strong suppression and strong amplification. No fixed reversal or cancellation rule survived; the literal alignment has to remain in the recurrence."
+    },
+    {
+      "entry": 120,
+      "old": "`[observed]` In the two-moment-preserving theta cosine family with signed direction (+,-), collision continuation stalls are regular interaction-coordinate folds at (t,lambda,kappa)\u2248(32.56568,.07879551,.35536084) and (40.67315,.06301241,.34758784): F=F_t=F_lambda\u22480, F_tt\u22600, lambda'(t)\u22600. Both positive-multiplier bounds hold; 50/100/160-digit refinement and independent theta integration confirm local double-zero folds, not triple-zero events. No global branch or HB selection claim.",
+      "new": "[Observation] In the constrained-theta deformation defined above, tracking a collision while increasing interaction strength can stop because the collision curve folds in that parameter. Two validated folds occur near (t,lambda,kappa)=(32.56568,0.07879551,0.35536084) and (40.67315,0.06301241,0.34758784) for direction (+,\u2212). The zero remains double, not triple: F=F_t=F_lambda=0 numerically while F_tt is nonzero. A failed continuation step therefore does not establish that the collision branch terminates. Both source multipliers remain positive under the sufficient bound."
+    },
+    {
+      "entry": 121,
+      "old": "`[observed]` For L1-normalized theta cosine deformations on frequencies (2,4,6)/(3,5,7), annihilating source mass and second moment, adding their moment-compensated product changes the continued gap-24 collision threshold by +1.42971% in direction (+,+) and -7.55148% in (-,+). Positive-multiplier bounds hold; endpoints survive 50/100/160-digit checks, branch-return checks and independent theta integration. Local interaction sensitivity is direction-dependent; no global first-collision, zero-ancestry or HB extinction claim.",
+      "new": "[Observation] For the same theta deformation, adding the compensated product term changes the continued collision threshold near original zeros 24 and 25 by +1.42971% in direction (+,+), but \u22127.55148% in direction (\u2212,+). Increasing interaction can therefore either delay or advance this local loss of real zeros. The sign depends on the source direction, despite preservation of source mass and second moment. Higher precision, return tracking and independent source integration support these local comparisons; they are not global first-collision thresholds."
+    },
+    {
+      "entry": 122,
+      "old": "`[rejected]` Fixed theta-shell prefixes do not supply all-degree logarithmic Hankel positivity: first atom fails at degree 3; first two atoms fail at degree 12; third atom repairs the tested degree-12 block. Degree and shell cutoff must grow together.",
+      "new": "[Rejected fixed-truncation strategy] Keeping a fixed number of theta-series terms does not yield positivity of logarithmic moment Hankel matrices at every degree. One retained term fails at degree three; two terms fail at degree twelve; adding the third repairs the tested degree-twelve failure. A proof using truncated theta sums must control how the number of terms grows with matrix degree, rather than fix the truncation once."
+    },
+    {
+      "entry": 123,
+      "old": "`[proved]` Every finite theta prefix has a negative high-frequency cosine-transform boundary canceled exactly by its omitted tail; truncation destroys a source-level cancellation.",
+      "new": "[Reported analytic cancellation] Every finite theta-series prefix has a negative high-frequency boundary contribution in its cosine transform, canceled exactly by the omitted infinite tail in the full source. Truncating the source can therefore create a false spectral obstruction. The tail is structurally necessary, not merely a small uniform numerical error at all frequencies."
+    },
+    {
+      "entry": 124,
+      "old": "`[observed]` Cleared logarithmic Hankel kernel can be a positive contraction of raw odd Gram for sufficiently many shells at tested degree, but one/two-shell lower signs fail. Upper domination alone does not produce positivity; literal equality is proved false asymptotically.",
+      "new": "[Observation; rejected identification] At a fixed tested degree and with sufficiently many theta terms retained, the normalized logarithmic Hankel kernel can be represented numerically as a positive contraction of the raw odd-moment Gram matrix. One- and two-term versions fail the lower sign, and a bound from above alone does not establish positivity. The stronger claim that the two kernels are literally equal is analytically false in the asymptotic regime."
+    },
+    {
+      "entry": 125,
+      "old": "`[proved]` Signed exponential-polynomial Stein primitives yield rational global certificates for four first-atom integrals, sufficient for both Ward ratio inequalities and the full-source first minor. Method supplies finite-block, not all-rank, positivity.",
+      "new": "[Reported analytic certificates] Integration-by-parts identities using signed exponential-polynomial primitives give rational global bounds for four first-theta-atom integrals. These bounds suffice for two required Ward ratios and the first minor of the complete-source matrix. This is a finite-block success; it does not establish positivity of every matrix rank."
+    },
+    {
+      "entry": 126,
+      "old": "`[observed]` Tilted theta log-cumulants alternate through orders 2\u20138 for all tested tilts; low-tilt behavior follows pole-dominated factorial laws and high-tilt behavior follows saddle scaling. Complete monotonicity remains conjectural.",
+      "new": "[Observation] Derivatives of the log partition function of the tilted theta source alternate in sign through orders two to eight over the tested tilts. Small tilts follow factorial behavior associated with a nearby pole, while large tilts follow the dominant integration region. These asymptotic descriptions help choose stable numerical normalizations. Complete monotonicity, which requires all derivative orders, remains conjectural."
+    },
+    {
+      "entry": 127,
+      "old": "`[rejected/proved]` Bounded finite packet factors either retain nonzero defect or coherent zero defect; trace-norm limits of zero finite defects remain zero. ULF-INHD bounded landing is retired. A singular landing cannot inherit the old Hilbert\u2013Schmidt/nuclear estimate.",
+      "new": "[Reported obstruction] In the bounded finite-packet operator construction, finite defects either remain nonzero or vanish coherently; a limit in trace norm of zero defects remains zero. Thus this bounded-limit mechanism cannot create the desired nonzero index charge. A singular limiting construction remains a different possibility, but it cannot automatically inherit the bounded construction's Hilbert\u2013Schmidt or trace-norm estimates."
+    },
+    {
+      "entry": 128,
+      "old": "`[rejected/proved]` Exact Gamma subtraction leaves a positive tail and index zero; oversubtraction manufactures a negative direction but is not source-lawful. Wild-saddle relocation has trace zero and no horizontal sensitivity.",
+      "new": "[Reported obstruction] Subtracting exactly the permitted Gamma contribution leaves a positive tail and index zero. Subtracting more creates a negative direction only by changing the source; it is not a valid counterexample to the original source law. The tested relocation of a distant saddle also has zero trace and no sensitivity to horizontal zero displacement, so it cannot provide the missing selector."
+    },
+    {
+      "entry": 129,
+      "old": "`[proved]` Prime\u2013polar\u2013Gamma signed scalar completion is unconditionally subunit, but scalar cancellation is not a nuclear-norm estimate and cannot preserve index-one trace. Coefficient-faithful nuclear lift is missing.",
+      "new": "[Reported analytic result; missing lift] The complete signed scalar combination of prime, pole and Gamma contributions is strictly below one in its prescribed normalization. This scalar cancellation is not a bound on an operator's trace norm and does not preserve an index-one trace automatically. The unresolved task is an operator construction that retains the actual coefficients and satisfies the required trace-norm budget."
+    },
+    {
+      "entry": 130,
+      "old": "`[proved]` Relative theta metrics can have trace-one positive curvature with operator norm `1/3`, but positivity forces trace norm `1`; small operator norm cannot substitute for required subunit nuclear norm.",
+      "new": "[Reported analytic obstruction] A relative theta metric can have positive curvature with trace one and operator norm 1/3. Because the curvature is positive, its trace norm is still one. Small operator norm therefore cannot replace a required trace norm strictly below one; these norms measure different constraints."
+    },
+    {
+      "entry": 131,
+      "old": "`[observed]` Positive cyclic exponential-Hankel surrogate has ample cubic margin, dominated by mixed cyclic terms, but no identity lands it on the arithmetic Hardy seam. Only a direct same-boundary theta `S\u2083` kernel identity remains viable in that class.",
+      "new": "[Observation; missing identification] A positive cyclic exponential-Hankel model has a large cubic positivity margin, mostly supplied by mixed cyclic terms. No identity identifies that model with the arithmetic Hardy-boundary quantity. Its positivity is useful only after a source-faithful identity on the same boundary is proved; positivity of a convenient surrogate is not the missing bridge."
+    },
+    {
+      "entry": 132,
+      "old": "`[rejected/proved]` Flat cubic source does not force the two-channel spectral curve: three rational rank-one projections give an exact counterexample. Source cubic vanishes before Hardy compression; boundary charge is an infinite-dimensional compression effect.",
+      "new": "[Reported exact counterexample] A flat cubic source does not force the proposed two-channel spectral relation: three rational rank-one projections give a counterexample. The source cubic vanishes before compression to the Hardy subspace, whereas the nonzero boundary charge arises from that infinite-dimensional compression. A finite uncompressed source calculation cannot substitute for the boundary calculation."
+    },
+    {
+      "entry": 133,
+      "old": "`[proved]` Three-column circulant source frames satisfy exact phase-area transgression and support faithful arithmetic Xi winding after Hardy compression. Missing ingredients are subunit nuclear budget and off-line-charge annihilation.",
+      "new": "[Reported analytic identity; open estimates] A three-column circulant source construction has an exact relation transferring phase area into a boundary contribution and can represent the arithmetic Xi winding after Hardy compression. The missing ingredients are a trace-norm bound strictly below one and a mechanism annihilating charges associated with off-line zeros. The winding identity alone does not provide either."
+    },
+    {
+      "entry": 134,
+      "old": "`[rejected]` Constant-curvature HC94 proxy is not the physical AdS4 radial vertex. Its special cancellation cannot decide the BM route; physical vertex must retain radial derivatives and `1/z` structure.",
+      "new": "[Rejected physical proxy] The constant-curvature model called HC94 is not the actual radial interaction vertex in four-dimensional anti-de Sitter geometry used by the BM/HB route. Its special cancellation omits radial derivatives and inverse-radial-coordinate terms present in the physical vertex. That cancellation therefore cannot decide the physical route."
+    },
+    {
+      "entry": 135,
+      "old": "`[proved]` Actual quadratic BM angular source splits into scalar, mixed rotated-Hessian, and vector channels with distinct radial coefficients. Mixed source is an angular derivative and cannot be deleted or collapsed to one scalar amplitude.",
+      "new": "[Reported analytic source decomposition] The actual quadratic BM angular source has scalar\u2013scalar, scalar\u2013vector and vector\u2013vector channels with different radial coefficients. The mixed channel is an angular derivative. It must be retained until the relevant reader and boundary pairing is evaluated; setting it to zero or merging all amplitudes into one scalar loses physical information needed for identification."
+    },
+    {
+      "entry": 136,
+      "old": "`[proved/observed]` Corrected mixed BM source has only time/radial\u2013angular components; all third angular derivatives cancel, coefficients are horizon-regular but generally nonzero, and a conserved-current form is suggested. Complete vector-master curl is proved; all-height nonlinear source identity and causal pairing remain open.",
+      "new": "[Reported partial formal structure; observation] In the corrected mixed BM source, third angular derivatives cancel and the remaining nonzero components couple time or radius to an angular direction. Their coefficients are regular at the horizon but generally do not vanish. A complete vector-master curl identity is reported as derived; a conserved-current interpretation is suggested by the computations. The complete nonlinear source identity and original causal action pairing are still separate open requirements."
+    },
+    {
+      "entry": 137,
+      "old": "`[observed/rejected]` For A(rho)=Lambda(5rho/2-1)Lambda(rho/2)^2Lambda(1-3rho/2)/2, gamma-removed log-magnitude at zeta ordinates minus its two quarter-forward-gap controls has mean -0.13529 on zeros 1\u201364 but +0.03625 on held-out 65\u2013128; 257\u2013320 gives -0.01092. Stable at 50/100/160 digits with independent Euler\u2013Maclaurin checks. Low-height average suppression is not a persistent sign selector; arithmetic sampling supplies no complete-action identification.",
+      "new": "[Observation; rejected selector] For the HB arithmetic product A(rho)=Lambda(5*rho/2\u22121)*Lambda(rho/2)^2*Lambda(1\u22123*rho/2)/2, removing the explicit Gamma factors reveals lower average log magnitude at the first 64 zeta ordinates than at neighboring control heights. That contrast reverses on held-out zeros 65\u2013128: means \u22120.13529 and +0.03625, respectively; zeros 257\u2013320 give \u22120.01092. Thus low-height average suppression is not a persistent sign-selection mechanism. Agreement at 50/100/160 digits and independent summation checks validate the failed statistic, not an identification with the physical HB action."
+    },
+    {
+      "entry": 138,
+      "old": "`[observed]` No integer linear relation of height `\u226410\u2076` was found among `{1,\u03b3\u2080,\u03b3\u2081,\u03b3\u2082,log2,log3,log5,\u03b6(2),\u03b6(3)}`; no degree-2 relation of height `\u22642000` was found among the tested Stieltjes/log/MZV monomials. This is bounded PSLQ evidence only and RH-blind.",
+      "new": "[Bounded numerical non-detection] Integer-relation searches found no relation with coefficient magnitudes at most one million among 1, the first three Stieltjes constants, log(2), log(3), log(5), zeta(2) and zeta(3). A tested quadratic-monomial search with coefficient bound 2000 also found none. This gives no proof of independence and no evidence for RH; it only excludes relations detectable within those numerical searches and bounds."
+    },
+    {
+      "entry": 139,
+      "old": "`[proved]` Functional equation gives triangular Stieltjes dictionary `\u03b6^(k)(0)=(k/2)\u03b3_(k\u22121)+R_k`; checked explicitly at `k=2,3`. It preserves rather than collapses the wild Stieltjes tower.",
+      "new": "[Reported analytic identity] The functional equation expresses zeta derivatives at zero triangularly in the Stieltjes constants: for k>=1, zeta^(k)(0) contains (k/2) times the (k\u22121)-st Stieltjes constant plus an expression using earlier constants and elementary completion terms. The cases k=2 and k=3 were checked explicitly. Changing from Stieltjes constants to derivatives at zero reorganizes the same unknown information; it does not eliminate the higher constants."
+    },
+    {
+      "entry": 140,
+      "old": "`[proved/observed]` Mollified fourth-moment ratios recipe gives",
+      "new": "[Reported main-term formula; observation] For the tested normalized mollified fourth moment of zeta, the ratios calculation predicts c4(theta)=1+8/(3*theta)+2/theta\u00b2+2/(3*theta\u00b3), where theta is the mollifier-length exponent. The stated main-term result applies only in its proved length range; it is not valid at arbitrary theta by numerical extrapolation. Computed moments move toward this non-Gaussian prediction, so a Gaussian approximation misses the tested arithmetic fourth-moment structure."
+    },
+    {
+      "entry": 141,
+      "old": "`[observed]` The unit-amplitude affine continuation of the full first-subtracted fundamental radial moment has numerically simple zeros at rho\u22480.4197560634+6.3336824462i for (source,reader)=(false,false), and rho\u22480.9225395686+6.8704538406i for (true,true), with s_false=-rho-1, s_true=rho-2, w_false=-2+rho/2, w_true=-1-rho/2. Fresh 50/100/160-digit solves, independent endpoint series, and direct fixed-source quadrature validate the blind spots. All three alternate channels remain nonzero at each point. These are spectral controls below the first cached zeta ordinate, not asserted Xi zeros: individual-channel strip-wide nonvanishing fails numerically; actual-Xi survival and common-zero exclusion remain open.",
+      "new": "[Observation; limited nonvanishing failure] The HB fundamental radial response has numerically simple zeros inside the open strip 0<Re(rho)<1 even when its full first endpoint subtraction is retained. Two examples are rho\u22480.4197560634+6.3336824462i in the false/false source-reader channel and rho\u22480.9225395686+6.8704538406i in the true/true channel. All three alternative channels remain nonzero at each point. These points lie below the first cached zeta-zero height and are spectral controls, not asserted zeta or Xi zeros. They refute strip-wide nonvanishing of each individual channel numerically; they do not refute survival at actual zeros or exclusion of a common zero of all channels."
+    },
+    {
+      "entry": 142,
+      "old": "`[observed]` For the first 64 zeta ordinates, a gamma-free 1:3:5 phase-curvature zero-versus-midpoint contrast has zeta mean +.274855, frequency-control mean +.161352, and conductor-4/5 means -.185584/-.214891. Only 5/8 zeta block signs agree; the frozen stability/control-dominance criterion fails. Selected precision and independent Euler-Maclaurin checks pass. This does not exclude other phase mechanisms or identify an HB action.",
+      "new": "[Observation; rejected phase statistic] For the uncompleted carrier L=zeta or a conductor-4/5 Dirichlet L-function, set U_k(t)=L(1/4+i*k*t/2)/abs(L(1/4+i*k*t/2)) and R(t)=Re(U_5*U_1*conj(U_3)^2). The statistic compares the locally centered second difference of R at each of the first 64 zeta ordinates with that at its neighboring midpoint; all carriers use the same zeta-anchored heights. Its zeta mean is positive, 0.274855, but only five of eight consecutive blocks share that sign, below the required six. Replacing frequency5 by7 gives mean0.161352; the conductor-4/5 means are \u22120.185584/\u22120.214891. The zeta effect is not twice as large as these controls, as required before testing further heights. Independent high-precision checks confirm this failure. This rejects the specified phase statistic as a reliable zero-conditioned discriminator; it does not reject all phase mechanisms or HB selection."
+    },
+    {
+      "entry": 143,
+      "old": "`[observed]` In the two-moment theta cosine family, numerical backward continuation assigns the additive/product gap-24 collisions in directions (+,+) and (-,+) to the same original zeros24/25. Thus the +1.42971%/-7.55148% local threshold changes are not ancestor-label changes in these tracks. Selected100/160-digit roots and independent complex theta integrals agree; no interval branch certificate or global first-collision claim.",
+      "new": "[Observation] Numerical backward continuation links the additive and product-modified theta collisions near original zeros 24 and 25 to that same original pair in directions (+,+) and (\u2212,+). Consequently, the opposite threshold shifts described above are not changes in which pair is being tracked. Selected roots pass 100/160-digit checks and independent complex theta integration. This is numerical ancestry evidence, not a certified continuous branch or a global first-collision theorem."
+    }
+  ],
+  "verification": "All143 prior bullets mapped; terminology checked against source reports; damping-rate versus bandwidth error corrected; recovery gaps defined and paper-only status explicit. No Lean build or new premise audit. Defined the deformation source, moment constraints, sufficient positivity bound, collision-versus-onset distinction, character controls and failed phase statistic without experiment filenames. Defined the signed divisor coefficients and energy comparison; appended a self-contained, independently checked finite return-interval observation with numerical/path limitations.",
+  "additional_validated_entries": [
+    "[Observation] In the mass- and second-moment-preserving theta deformation, both additive and product variants already have nonreal transform zeros near height 111.3 at 90% of their respective collision thresholds for original zeros 24/25 near height 88. Thus those accurately tracked local thresholds are not bounds for keeping all zeros real in the first-64-ordinate height window. A conductor-5 Dirichlet product deformation likewise has a nonreal root near t=20.6043+0.709735i at half its reference low-pair threshold. These witnesses pass 50/100/160-digit solves and independent source integration. The effect is not exclusive to zeta, and coarse contour counts do not locate the globally first instability. No undeformed zeta/L-function zero or HB physical identification is claimed.",
+    "[Observation; nonmonotone zero response] In the defined mass- and second-moment-preserving theta deformation, the additive direction (a,b)=(1,\u22121)/sqrt(2) has a numerically tracked pair of nonreal transform zeros between collisions at lambda\u22480.02518582140 (height 162.70952) and lambda\u22480.05789056735 (height 163.38875). Increasing deformation therefore lets this pair leave and later return to the real t-axis; its sufficient multiplier bound stays below 0.081870 throughout the interval. The conductor-5 control with direction (\u22121,1)/sqrt(2) and product strength 1 has an analogous tracked interval, lambda\u22480.02092554470 to 0.05898932573; no positivity of its underlying character kernel is asserted. Continuation repeated at half the step, 50/100/160-digit boundary solves, derivative signs consistent with leaving and returning, and independent source integration support these observations. A nearby double-root solve cannot be treated as the first onset without branch attachment, and loss of real zeros need not be one-way as deformation grows. These are numerical paths for selected deformed zero pairs, not certified intervals, recovery of the entire zero set, off-line zeros of undeformed zeta/L-functions, or an HB extinction mechanism."
+  ],
+  "final_entry_count": 145
+}

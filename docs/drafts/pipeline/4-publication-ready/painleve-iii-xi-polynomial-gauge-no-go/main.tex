@@ -102,8 +102,10 @@ The associated tau function $u$ is related to $\sigma$ by
  \label{eq:tau-sigma-quotient}
 \end{equation}
 This is the standard Hamiltonian tau-function description of the $D_6$ equation
-\cite{JMU1981,Miwa1981,Okamoto1981,Okamoto1987}.  In a 2026 preprint, Planat wrote the same sigma
-equation as his equation~(5), proposed the quadratic pullback
+\cite{JMU1981,Miwa1981,Okamoto1981,Okamoto1987}.  Planat's construction appears both in a journal
+article \cite{Planat2026GFJ} and in a longer April 2026 preprint \cite{Planat2026}.  We use the
+latter because it supplies the precise equation numbering and the explicit conjecture analyzed
+here: the same sigma equation is his equation~(5), followed by the quadratic pullback
 $t=s(1-s)$ and the carrier
 \begin{equation}
  E_{D_6}(s)=e^{-2s}u\bigl(s(1-s)\bigr).
@@ -135,13 +137,15 @@ so no division by $u$ enters the proof.
 Differential transcendence of the Riemann zeta function belongs to a classical line beginning
 with Ostrowski's theory of Dirichlet series and algebraic differential equations
 \cite{Ostrowski1920}; Reich developed broad hypertranscendence criteria for Dirichlet series
-\cite{Reich1984}, and Nagoshi gives a modern account and extensions to automorphic
+\cite{Reich1982,Reich1984}, and Nagoshi gives a modern account and extensions to automorphic
 $L$-functions \cite{Nagoshi2016}.  Joint differential-algebraic relations between $\zeta$ and
 $\Gamma$ have also been studied extensively, from Markus's partial independence results
 \cite{Markus2007} through later theorems of Han--Liu and Wang--Yao
-\cite{HanLiu2021,WangYao2024}.  Those results impose strong differential-independence constraints
-on combinations of $\zeta$ and $\Gamma$.  We therefore do not claim that
-hypertranscendence of completed xi is new in isolation.
+\cite{HanLiu2021,WangYao2024}.  Recent extensions treat broader solutions of rational difference
+equations, Dirichlet-series--gamma combinations, and further classes of functions paired with
+$\Gamma$ \cite{Lu2025Markus,LuJiangLu2025,LuMaCao2026}.  These results impose strong
+differential-independence constraints on combinations of $\zeta$, Dirichlet series, and
+$\Gamma$.  We therefore do not claim that hypertranscendence of completed xi is new in isolation.
 
 The contribution here is a proof adapted to the proposed bridge.  It isolates an exact
 translation defect of $\xi'/\xi$ whose coefficients have a nonzero pivot at every prime, proves
@@ -676,7 +680,13 @@ $\zeta(s)=\prod_p(1-p^{-s})^{-1}\neq0$.  The Weierstrass product
  \frac1{\Gamma(z)}=ze^{\gamma z}
    \prod_{n\geq1}\left(1+\frac zn\right)e^{-z/n}
 \]
-is nonzero for $\Re z>0$, so $\Gamma(z)$ is finite and nonzero there.  The remaining factors in
+has no zero for $\Re z>0$.  Indeed, every displayed factor is nonzero there, while
+\[
+ \log\!\left(1+\frac zn\right)-\frac zn=O_K(n^{-2})
+\]
+uniformly for $z$ in any compact set $K$ and all sufficiently large $n$.  The logarithms of the
+tail therefore converge absolutely and locally uniformly, so their exponential converges to a
+nonzero limit.  Thus $\Gamma(z)$ is finite and nonzero for $\Re z>0$.  The remaining factors in
 \eqref{eq:xi-def} are nonzero when $\Re s>1$.  Thus $\xi(s)\neq0$ in this half-plane.  Standard
 background for these theta, gamma, and zeta identities is given in \cite{Titchmarsh1986}.
 \end{proof}
@@ -983,9 +993,11 @@ $u(t)\mapsto e^{at^2+bt+c}u(t)$.  Under $t=s(1-s)$, its additional exponent is
  =as^4-2as^3+(a-b)s^2+bs+c,
  \label{eq:normalization-polynomial}
 \end{equation}
-a polynomial of degree at most four.  It can be absorbed into the external polynomial gauge.
-The degree-unrestricted form of Theorem~\ref{thm:main} therefore covers this normalization
-ambiguity as well as the degree-two gauge stated in Conjecture~3.
+a polynomial of degree at most four.  If $\widetilde u=e^{at^2+bt+c}u$, then the corresponding
+carriers satisfy $\widetilde E=e^R E$.  A putative identity
+$\xi=e^Q\widetilde E$ is therefore the identity $\xi=e^{Q+R}E$.  The
+degree-unrestricted form of Theorem~\ref{thm:main} excludes it.  Thus the normalization ambiguity
+cannot evade the no-go theorem, even though Conjecture~3 states only a degree-two external gauge.
 \end{remark}
 
 \begin{corollary}[Disjointness of the two classes]
@@ -1061,6 +1073,16 @@ already contain hypertranscendental data.
 No statement about the Riemann hypothesis is used.  The contradiction occurs before zero
 localization enters: it is an incompatibility between differential-algebraic types.
 
+\section*{Declaration of generative-AI use and human responsibility}
+
+All research, mathematical development, literature review, and writing and revision of this
+manuscript were performed by AI agents based on OpenAI GPT-6 and Anthropic Fable 5, Fable 5.1,
+and Opus 5.  The named human contributor, Michael Haufschild, acted only as project manager,
+setting objectives, selecting research directions, and reviewing outputs; he did not independently
+derive or write the results presented here.  He approved the manuscript and assumes full
+responsibility for its content, its verification record, any errors, and the decision to submit
+it.  The AI systems are not listed as authors because they cannot assume scholarly responsibility.
+
 \begingroup
 \small
 \begin{thebibliography}{99}
@@ -1102,6 +1124,25 @@ Differential independence of $\Gamma$ and $\zeta$,
 \emph{J. Dynam. Differential Equations} \textbf{19} (2007), no.~1, 133--154,
 \href{https://doi.org/10.1007/s10884-006-9034-1}{doi:10.1007/s10884-006-9034-1}.
 
+\bibitem{Lu2025Markus}
+F.~L\"u,
+A further study on Markus's conjecture,
+\emph{Bull. Lond. Math. Soc.} \textbf{57} (2025), no.~11, 3586--3596,
+\href{https://doi.org/10.1112/blms.70171}{doi:10.1112/blms.70171}.
+
+\bibitem{LuJiangLu2025}
+F.~L\"u, S.~Jiang, and W.~L\"u,
+On algebraic independence of Dirichlet series and the Euler gamma function,
+\emph{Ramanujan J.} \textbf{67} (2025), no.~4, Article 96,
+\href{https://doi.org/10.1007/s11139-025-01143-1}{doi:10.1007/s11139-025-01143-1}.
+
+\bibitem{LuMaCao2026}
+F.~L\"u, Z.~Ma, and Z.~Cao,
+A note on the algebraic differential independence of $\Gamma$ and some certain functions,
+\emph{Complex Var. Elliptic Equ.} \textbf{71} (2026), no.~6, 1311--1320,
+\href{https://doi.org/10.1080/17476933.2025.2519495}
+  {doi:10.1080/17476933.2025.2519495}.
+
 \bibitem{Miwa1981}
 T.~Miwa,
 Painlev\'e property of monodromy preserving deformation equations and the analyticity of
@@ -1131,6 +1172,13 @@ A.~Ostrowski,
 \"Uber Dirichletsche Reihen und algebraische Differentialgleichungen,
 \emph{Math. Z.} \textbf{8} (1920), 241--298.
 
+\bibitem{Planat2026GFJ}
+M.~Planat,
+Painlev\'e III-$D_6$, wild character varieties, and the isomonodromic cosine: Toward a de Branges
+positivity construction,
+\emph{Gauge Freedom Journal} \textbf{1} (2026), no.~1, Article 003,
+\href{https://doi.org/10.65323/gfj.2026.003}{\nolinkurl{doi:10.65323/gfj.2026.003}}.
+
 \bibitem{Planat2026}
 M.~Planat,
 Wild character varieties, Painlev\'e $\mathrm{III}_{D_6}$, the isomonodromic cosine, and a complete
@@ -1138,6 +1186,11 @@ positivity framework toward the Riemann hypothesis,
 Preprints 2026, 202604.0442,
 \href{https://doi.org/10.20944/preprints202604.0442.v1}
   {\nolinkurl{doi:10.20944/preprints202604.0442.v1}}.
+
+\bibitem{Reich1982}
+A.~Reich,
+Zetafunktionen und Differenzen-Differentialgleichungen,
+\emph{Arch. Math. (Basel)} \textbf{38} (1982), 226--235.
 
 \bibitem{Reich1984}
 A.~Reich,
