@@ -87,8 +87,8 @@ private theorem correctionMap_sub_norm_le
       gcongr
     _ = ‖B.symm.toContinuousLinearMap‖ * ‖Q‖ * (‖x‖ + ‖y‖) * ‖x - y‖ := by ring
 
-/-- The paper's smallness condition makes the correction map preserve its prescribed ball. -/
 omit [CompleteSpace E] in
+/-- The paper's smallness condition makes the correction map preserve its prescribed ball. -/
 theorem correctionMap_mapsTo_closedBall
     (B : E ≃L[ℝ] E) (Q : E →L[ℝ] E →L[ℝ] E) (d : E)
     (hsmall : 8 * ‖B.symm.toContinuousLinearMap‖ ^ 2 * ‖Q‖ * ‖d‖ ≤ 1) :
@@ -119,8 +119,8 @@ theorem correctionMap_mapsTo_closedBall
     _ ≤ 2 * ‖B.symm.toContinuousLinearMap‖ * ‖d‖ := by nlinarith
     _ = correctionRadius B d := by rw [correctionRadius]
 
-/-- On the prescribed ball, the correction map has Lipschitz constant `1/2`. -/
 omit [CompleteSpace E] in
+/-- On the prescribed ball, the correction map has Lipschitz constant `1/2`. -/
 theorem correctionMap_lipschitzOnWith_half
     (B : E ≃L[ℝ] E) (Q : E →L[ℝ] E →L[ℝ] E) (d : E)
     (hsmall : 8 * ‖B.symm.toContinuousLinearMap‖ ^ 2 * ‖Q‖ * ‖d‖ ≤ 1) :

@@ -1,0 +1,6 @@
+{
+  "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGlobalAngularForcing.lean": "b6d3cc509e965aca24dcf0600318b57bccf29c3c1a9929083cce7da868e5d476",
+  "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMJointSourceAngularAdmission.lean": "0a89a35e020d138635a730fbd68a2a78a4058e03260353a20e3953164427aa6a",
+  "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSquareResidualModular.lean": "33a747326d7feaae942d73fb7fa6d332f8fada327630c84574071ef3a0aa74a3",
+  "formal/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean": "0feea244614398679aac0efdf3c67e72c1d246f103d48ae1dbb8d40d0e75ccfa"
+}

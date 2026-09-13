@@ -167,5 +167,26 @@
     "wall_seconds": 302.8452112432569,
     "category": "broader discovery",
     "timing_scope": "two chart grids, precision/source checks and bounded classification supplements; worker total excludes timed-out unfinished tasks"
+  },
+  {
+    "family": "dirichlet-companion-transport-2026-09-13",
+    "seconds": 1347.6111885104328,
+    "wall_seconds": 510.11516783759,
+    "category": "broader discovery",
+    "timing_scope": "sum of guarded stages; preparation gaps excluded; not uninterrupted wall span"
+  },
+  {
+    "family": "hb-angular-source-energy-2026-09-13",
+    "seconds": 6719.77019726485,
+    "wall_seconds": 527.3906810060143,
+    "category": "HB source-component investigation",
+    "timing_scope": "sum of guarded stages; preparation gaps excluded; not uninterrupted wall span"
+  },
+  {
+    "family": "hb-cutoff-energy-2026-09-13",
+    "seconds": 2555.409953447059,
+    "wall_seconds": 189.01834472827613,
+    "category": "HB source-component investigation",
+    "timing_scope": "sum of guarded stages; preparation gaps excluded; not uninterrupted wall span"
   }
 ]

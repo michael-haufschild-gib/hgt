@@ -163,11 +163,11 @@ theorem exists_unique_inverse_on_packet (packet : Finset (d → ℤ))
     integral_box_inverse_eq_zero packet amplitude velocity hnonresonant,
     fun _ hsolution => inverseAmplitude_unique_on_packet hnonresonant hsolution⟩
 
+omit [DecidableEq d] in
 /--
 Finite-packet small-divisor estimate from Lemma 8.6.  A uniform transport-frequency gap
 `δ` bounds inverse coefficient energy by `(2πδ)⁻²` times source energy.
 -/
-omit [DecidableEq d] in
 theorem packetEnergy_inverse_le (packet : Finset (d → ℤ))
     (amplitude : (d → ℤ) → ℂ) (velocity : d → ℝ) {δ : ℝ} (hδ : 0 < δ)
     (hgap : ∀ frequency ∈ packet,

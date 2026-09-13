@@ -1073,8 +1073,41 @@ forcing and onset lift remain. No radial moment is divided out. The scratch
 check and isolated exact leaf audit passed at default heartbeats, and the
 umbrella is wired without an umbrella build. This closes the local source
 attachment, including its weight and sign. Angular integration with its
-normal flux and the prescribed temporal/horizon/QNM cutoff comparison
-remain open.
+complete normal flux is formalized below; the prescribed
+temporal/horizon/QNM cutoff comparison remains open.
+
+### Finite temporal/radial metric transfer — proved in Lean
+
+`ThetaCuspHawkingBMOriginalOrbitCurrent.original_metric_integral` identifies
+both original reconstructed metric-current components on every actual
+finite modular domain, for `p>0`, `R>1`, `Y>=1`, and the unchanged left QNM.
+Put `D_p U=U_R`, `D_R U=f*U_R+U_p`, and define
+
+```
+M_Y(A,B) = int_D_Y A*Delta(B)/y^2,
+N_Y(A,B) = complete boundary normal flux of A*grad(B).
+
+int_D_Y J_j = R^(-2)*[
+  N_Y(D_j U,C(W))-N_Y(C(U),D_j W)
+  -M_Y(D_j U,C(W))+M_Y(C(U),D_j W)].
+```
+
+`N_Y` explicitly includes the vertical-side jump, horizontal top and paired
+curved-core flux, with the original orientations. The metric is reconstructed
+and differentiated before the current is evaluated. Its actual source
+contact is replaced by `(Delta-2)*U+R^3*F_orig/f` inside the theorem.
+Symmetry of the coexact pairing places the angular derivatives on the reader
+in both transfers: no additional angular derivative of the forcing is needed
+in either the scalar bulk or its boundary expression. The identity admits
+zero source coefficient and vanishing individual radial moments.
+
+The original fields supply all smoothness and compact-domain integrability.
+The scratch proof and isolated exact leaf audit passed at default heartbeats;
+only the new leaf was built, and its umbrella import is wired. The formulas
+above this subsection with `C(W)=(mu-2)*W` and only top normal flux still need
+their reader-eigenvalue and paired-side/core reductions in Lean. No temporal,
+cusp or horizon limit is interchanged by this finite identity. Full matching
+and its impossibility remain unproved.
 
 ### Connection to the complete Einstein angular current — analytical
 

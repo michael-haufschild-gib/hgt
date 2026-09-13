@@ -1,0 +1,1 @@
+Not launched. User redirected the campaign away from estimates/constants and toward structural surprises. Spectral-moment optimization is rejected as the next task; no remote compute or result exists for this folder.
