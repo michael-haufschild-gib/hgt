@@ -1021,7 +1021,8 @@ C(U)=-R^2*f*U_RR-R^2*(U_pR+U_Rp)-2*R*U_R+2*R*U_p.
 ```
 
 Direct substitution in `IngoingFullCurrent.contact` cancels its angular
-operator. Commuting genuine mixed derivatives gives
+operator. The Lean theorem `OriginalSourceContact.coexact_contact` commutes
+the genuine mixed derivatives and proves
 `contact(coexact(U))=coexact(C(U))`. The original left radial equation gives
 `C(W)=(mu-2)*ell*S`. The resulting finite angular-current formulas are
 
@@ -1061,11 +1062,19 @@ Substitute `U=R*Z` and then `p=t+x`. The contact above is therefore
 C(U)=(Delta-2)*U+(R^3/f)*F_orig.
 ```
 
-This is an **analytical consequence awaiting Lean attachment** of
-`OriginalCausalPotential.originalPotential_wave` and the original coordinate
-definitions. It preserves the complete original forcing and fixes its
-weight and sign in the contact. Thus the radial/time comparison can use the
-original source equation to eliminate `C(U)`'s second parameter derivatives.
+This source reduction is **proved in Lean** in
+`ThetaCuspHawkingBMOriginalSourceContact`. `original_ingoing_wave` transports
+`OriginalCausalPotential.originalPotential_wave` through the actual original
+coordinate definitions; `original_scalar_contact` includes the radius
+reconstruction. `original_stream_contact` identifies the complete original
+Einstein stream contact with the coexact derivative of this expression.
+The original fields supply all regularity on `p>0`, `R>1`, `Y>0`; the full
+forcing and onset lift remain. No radial moment is divided out. The scratch
+check and isolated exact leaf audit passed at default heartbeats, and the
+umbrella is wired without an umbrella build. This closes the local source
+attachment, including its weight and sign. Angular integration with its
+normal flux and the prescribed temporal/horizon/QNM cutoff comparison
+remain open.
 
 ### Connection to the complete Einstein angular current — analytical
 

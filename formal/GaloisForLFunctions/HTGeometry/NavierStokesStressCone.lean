@@ -1,5 +1,8 @@
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # Quadratic coordinates for an admissible stress cone
@@ -186,6 +189,80 @@ theorem scaled_stressCoordinateCone_iff_quadratic {v p j scale : ℝ}
       QuadraticStressCone v p j := by
   rw [stressCoordinateCone_pos_smul_iff hscale]
   simp only [StressCoordinateCone, QuadraticStressCone, sub_pos]
+
+/--
+Pointwise large-pressure core of Lemma 4.5(ii).  A direction satisfying the paper's
+strict shape inequality enters the admissible cone once its pressure scale is large enough.
+The published compact-set statement follows by replacing the pointwise margins below by
+their uniform positive minima.
+-/
+theorem eventually_admissible_along_pressure_ray
+    {a b w : ℝ} (ha : 0 < a) (hc₀ : 0 < a - b * w)
+    (hshape : 2 * b * w + b ^ 2 / a + (a - 2) * w ^ 2 < 2)
+    (hv : 2 < shearSize a b) :
+    ∃ P : ℝ, 0 < P ∧ ∀ p₁ : ℝ, P ≤ p₁ →
+      AdmissibleStressCone (shearSize a b)
+        (parallelCoordinate (shearSlope a b) p₁ (w * p₁))
+        (transverseCoordinate (shearSlope a b) p₁ (w * p₁)) := by
+  let v := shearSize a b
+  let c := 1 - b * w / a
+  let j := w + b / a
+  let g := 2 * c ^ 2 - (v - 2) * j ^ 2
+  have ha₀ : a ≠ 0 := ne_of_gt ha
+  have hc : 0 < c := by
+    have hc_eq : c = (a - b * w) / a := by
+      dsimp [c]
+      field_simp [ha₀]
+    rw [hc_eq]
+    exact div_pos hc₀ ha
+  have hv' : 2 < v := hv
+  have hfactor : 0 < 1 + (b / a) ^ 2 := by positivity
+  have hid :
+      (v - 2) * j ^ 2 - 2 * c ^ 2 =
+        (1 + (b / a) ^ 2) * (2 * b * w + b ^ 2 / a + (a - 2) * w ^ 2 - 2) := by
+    dsimp [v, c, j]
+    rw [shearSize_eq a b ha₀]
+    field_simp [ha₀]
+    ring
+  have hg : 0 < g := by
+    dsimp [g]
+    have hnegative :
+        (1 + (b / a) ^ 2) *
+          (2 * b * w + b ^ 2 / a + (a - 2) * w ^ 2 - 2) < 0 :=
+      mul_neg_of_pos_of_neg hfactor (by linarith)
+    nlinarith [hid]
+  let P := max ((v + 1) / c) (8 * c * v / g)
+  have hP : 0 < P := by
+    have hfirst : 0 < (v + 1) / c := div_pos (by linarith) hc
+    exact lt_of_lt_of_le hfirst (le_max_left _ _)
+  refine ⟨P, hP, ?_⟩
+  intro p₁ hp₁
+  have hpfirst : (v + 1) / c ≤ p₁ := (le_max_left _ _).trans hp₁
+  have hpsecond : 8 * c * v / g ≤ p₁ := (le_max_right _ _).trans hp₁
+  have hp₁pos : 0 < p₁ := lt_of_lt_of_le hP hp₁
+  have hpc : v < p₁ * c := by
+    have hvc : v + 1 ≤ p₁ * c := (div_le_iff₀ hc).mp hpfirst
+    linarith
+  have hpg : 8 * c * v ≤ p₁ * g := (div_le_iff₀ hg).mp hpsecond
+  have hlarge : 4 * p₁ * c * v < p₁ ^ 2 * g := by
+    have hcv : 0 < c * v := mul_pos hc (by linarith)
+    have hmul := mul_le_mul_of_nonneg_left hpg hp₁pos.le
+    nlinarith
+  have hquadratic : (v - 2) * (p₁ * j) ^ 2 < 2 * (p₁ * c - v) ^ 2 := by
+    dsimp [g] at hlarge
+    nlinarith [sq_nonneg v]
+  rw [admissibleStressCone_iff]
+  refine ⟨hv', ?_⟩
+  have hparallel :
+      parallelCoordinate (shearSlope a b) p₁ (w * p₁) = p₁ * c := by
+    dsimp [parallelCoordinate, shearSlope, c]
+    ring
+  have htransverse :
+      transverseCoordinate (shearSlope a b) p₁ (w * p₁) = p₁ * j := by
+    dsimp [transverseCoordinate, shearSlope, j]
+    ring
+  rw [hparallel, htransverse]
+  exact ⟨hpc, hquadratic⟩
 
 end
 

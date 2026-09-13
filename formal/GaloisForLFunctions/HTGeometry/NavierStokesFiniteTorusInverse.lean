@@ -34,6 +34,10 @@ def inverseAmplitude (velocity : d → ℝ) (amplitude : (d → ℤ) → ℂ)
     (frequency : d → ℤ) : ℂ :=
   amplitude frequency / transportMultiplier velocity frequency
 
+/-- Squared coefficient norm of a finite Fourier packet. -/
+def packetEnergy (packet : Finset (d → ℤ)) (amplitude : (d → ℤ) → ℂ) : ℝ :=
+  ∑ frequency ∈ packet, ‖amplitude frequency‖ ^ 2
+
 omit [DecidableEq d] in
 theorem transportDetuning_zero (velocity : d → ℝ) :
     transportDetuning velocity (0 : d → ℤ) = 0 := by
@@ -47,6 +51,14 @@ theorem transportMultiplier_ne_zero {velocity : d → ℝ} {frequency : d → �
   exact mul_ne_zero
     (mul_ne_zero (mul_ne_zero (by norm_num) (by exact_mod_cast Real.pi_ne_zero)) I_ne_zero)
     (by exact_mod_cast hfrequency)
+
+omit [DecidableEq d] in
+/-- Absolute size of a transport multiplier. -/
+theorem norm_transportMultiplier (velocity : d → ℝ) (frequency : d → ℤ) :
+    ‖transportMultiplier velocity frequency‖ =
+      2 * Real.pi * |transportDetuning velocity frequency| := by
+  simp only [transportMultiplier, norm_mul, norm_ofNat, Complex.norm_real,
+    norm_I, mul_one, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
 
 /-- Constant transport differentiates each character by its scalar transport multiplier. -/
 theorem transportDerivative_trigLift {ι : Type*} (packet : Finset ι)
@@ -150,6 +162,42 @@ theorem exists_unique_inverse_on_packet (packet : Finset (d → ℤ))
   ⟨transportDerivative_inverse packet amplitude velocity hnonresonant,
     integral_box_inverse_eq_zero packet amplitude velocity hnonresonant,
     fun _ hsolution => inverseAmplitude_unique_on_packet hnonresonant hsolution⟩
+
+/--
+Finite-packet small-divisor estimate from Lemma 8.6.  A uniform transport-frequency gap
+`δ` bounds inverse coefficient energy by `(2πδ)⁻²` times source energy.
+-/
+omit [DecidableEq d] in
+theorem packetEnergy_inverse_le (packet : Finset (d → ℤ))
+    (amplitude : (d → ℤ) → ℂ) (velocity : d → ℝ) {δ : ℝ} (hδ : 0 < δ)
+    (hgap : ∀ frequency ∈ packet,
+      δ ≤ |transportDetuning velocity frequency|) :
+    packetEnergy packet (inverseAmplitude velocity amplitude) ≤
+      (2 * Real.pi * δ)⁻¹ ^ 2 * packetEnergy packet amplitude := by
+  have hscale : 0 < 2 * Real.pi * δ := mul_pos (mul_pos (by norm_num) Real.pi_pos) hδ
+  unfold packetEnergy
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun frequency hfrequency => ?_
+  have hmultiplier : 0 < ‖transportMultiplier velocity frequency‖ := by
+    rw [norm_transportMultiplier]
+    exact mul_pos (mul_pos (by norm_num) Real.pi_pos)
+      (lt_of_lt_of_le hδ (hgap frequency hfrequency))
+  have hscale_le : 2 * Real.pi * δ ≤ ‖transportMultiplier velocity frequency‖ := by
+    rw [norm_transportMultiplier]
+    gcongr
+    exact hgap frequency hfrequency
+  have hinverseNorm :
+      ‖inverseAmplitude velocity amplitude frequency‖ =
+        ‖amplitude frequency‖ / ‖transportMultiplier velocity frequency‖ := by
+    simp [inverseAmplitude]
+  have hnorm :
+      ‖inverseAmplitude velocity amplitude frequency‖ ≤
+        (2 * Real.pi * δ)⁻¹ * ‖amplitude frequency‖ := by
+    rw [hinverseNorm, inv_mul_eq_div]
+    exact div_le_div_of_nonneg_left (norm_nonneg _) hscale hscale_le
+  rw [← mul_pow]
+  exact (sq_le_sq₀ (norm_nonneg _)
+    (mul_nonneg (inv_nonneg.mpr hscale.le) (norm_nonneg _))).mpr hnorm
 
 end
 

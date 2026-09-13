@@ -43,7 +43,31 @@ spectrum below `¼`, no spectral gap, no Eisenstein Plancherel):
 Estimated size: several thousand lines; the hard parts are 1–2 (periodic `H¹` on the fundamental domain and the
 form domain). No numerics, no RH input.
 
+### Refined plan (2026-09-13, after the corpus audit)
+Existing bricks: `HTGeometry/ModularFundamentalDomainMeasure.isFundamentalDomain_fd` (𝒟 is a fundamental domain for
+`PSL2Z` with `dx dy/y²`), `ModularFundamentalDomainVolume.volume_fd_lt_top`, and
+`HTGeometry/FriedrichsFormOperator` (`formEmbeddingCovariance J := J J†` bounded, positive, self-adjoint, injective
+with dense range; `friedrichsFormOperator` its closed inverse; `friedrichsFormOperator_represents_form`). With these,
+the unbounded Laplacian is never needed:
+- B1. Pre-domain `P`: smooth `Γ`-invariant `u : ℍ → ℂ` with `∫_𝒟 |u|² dμ + ∫_𝒟 |∇u|² dx dy < ∞`
+  (the Dirichlet form in Euclidean coordinates is the conformally invariant one), inner product
+  `⟨u,v⟩_V = ⟨u,v⟩_{L²(𝒟)} + q(u,v)`.
+- B2. `V := ` completion of `P`; `J : V →L L²(𝒟)` the extension of the inclusion, `‖J‖ ≤ 1`.
+  Injectivity (closability of `q`) needs only interior test functions: if `u_n → 0` in `L²` and `∇u_n → G` in `L²`,
+  test against `φ ∈ C_c^∞(𝒟°)` and integrate by parts inside a box (Mathlib divergence theorem), so `G = 0`.
+  No Stokes theorem on the surface and no boundary identification is needed. Dense range: `C_c^∞(𝒟°)` extended
+  `Γ`-periodically lies in `P` and is dense in `L²(𝒟)` because `∂𝒟` is null.
+- B3. `C := formEmbeddingCovariance J = (1−Δ)⁻¹`: self-adjoint, `σ(C) ⊂ [0,1]` (from `‖J‖ ≤ 1` and positivity),
+  and `C 1 = 1` since `q(1,·) = 0`.
+- B4. Assembly: `g(r) := Im K(s, 1 − 1/r)` is continuous on `[0,1]` (the kernel has a finite limit as `l → ∞`) and
+  `g ≥ −t⁹` on `[0,1]` by `skewPlateauMu_line_im_ge_neg`; split `F = ⟨F,1⟩/vol·1 + F⊥`; `cfc g C 1 = g(1)·1`, the
+  cross terms vanish by self-adjointness, and `re_inner_cfc_self_ge` gives
+  `Re⟪cfc g C F⊥, F⊥⟫ ≥ −t⁹‖F⊥‖²`.
+Remaining hard content: B1–B2 (smooth `Γ`-invariant functions as a pre-Hilbert space, the completion, the
+integration-by-parts argument). Everything else is assembled from existing theorems.
+
 ## Log
 - 2026-09-13 — created in 0-backlog after passes 26–30 closed every other input of the on-line sign law; the
   reduction to steps 1–6 (no spectral gap, no discreteness, no Eisenstein Plancherel) is the scoping result.
 - 2026-09-13 — step 5 discharged in abstract form: `HTGeometry/SelfAdjointFunctionalCalculusLowerBound.re_inner_cfc_self_ge` (bounded self-adjoint `A`, `c ≤ g` on the spectrum ⇒ `c‖f‖² ≤ Re⟪g(A)f,f⟫`); with `A = (1−Δ)⁻¹` no spectral measure is needed. Remaining: steps 1–3 and 6.
+- 2026-09-13 — corpus audit: fundamental-domain measure and Friedrichs covariance already exist; plan refined to B1–B4 (bounded covariance only, closability via interior test functions, no surface Stokes theorem).
