@@ -1,1110 +1,1322 @@
-\documentclass[10pt]{article}
+\documentclass[11pt]{article}
 
-\usepackage[margin=0.78in]{geometry}
+\usepackage[margin=1.05in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
-\usepackage{booktabs}
-\usepackage{array}
 \usepackage{enumitem}
-\usepackage{xcolor}
-\usepackage{tikz}
 \usepackage[hidelinks]{hyperref}
 
-\usetikzlibrary{arrows.meta,positioning,fit,patterns,decorations.pathreplacing}
-\setlist{nosep,leftmargin=*}
-\setlength{\parindent}{1.05em}
+\setlist{leftmargin=*,itemsep=0.25em,topsep=0.45em}
+\setlength{\parindent}{1.2em}
 \setlength{\parskip}{0.12em}
 \setlength{\emergencystretch}{2em}
+\allowdisplaybreaks
 \numberwithin{equation}{section}
 
 \newtheorem{theorem}{Theorem}[section]
-\newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 
-\newcommand{\R}{\mathbb R}
 \newcommand{\C}{\mathbb C}
-\newcommand{\N}{\mathbb N}
-\newcommand{\Z}{\mathbb Z}
 \newcommand{\Q}{\mathbb Q}
-\newcommand{\T}{\mathbb T}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\HH}{\mathbb H}
+\newcommand{\M}{\mathcal M}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Tor}{\operatorname{Tor}}
+\newcommand{\dtrdeg}{\operatorname{dtrdeg}}
 \newcommand{\dd}{\mathrm d}
-\newcommand{\I}{\mathrm i}
-\newcommand{\sinc}{\operatorname{sinc}}
-\newcommand{\rank}{\operatorname{rank}}
-\newcommand{\supp}{\operatorname{supp}}
-\newcommand{\Law}{\operatorname{Law}}
-\newcommand{\E}{\mathbb E}
-\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\T}{\mathsf T}
+\newcommand{\Deltaop}{\mathop{\Delta}}
 
-\definecolor{visible}{RGB}{219,238,255}
-\definecolor{hidden}{RGB}{244,244,244}
-\definecolor{accent}{RGB}{20,88,145}
-\definecolor{local}{RGB}{170,55,45}
-
-\title{\bfseries A universal information law for quantum recurrence}
+\title{\bfseries Differential Algebraicity of Multiple Elliptic Gamma Functions:\\
+Exact Classification by Augmented Period Rank}
 \author{Michael Haufschild}
-\date{July 30, 2026}
+\date{}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-What can a quantum return reveal about the system that returned and the clock
-that observed it?  We prove that all survival-return experiments factor
-through two exact and maximal information quotients.  An arbitrary probability
-energy spectrum \(\nu\) is visible precisely through its energy-gap law
-\(A\nu\); an arbitrary probability law \(\rho\) of signed clock readings is
-visible precisely through its orientation quotient
-\(S\rho=(\rho+(-\mathrm{id})_\#\rho)/2\).  Two spectra give identical complete
-return distributions under every clock if and only if their gap laws agree.
-Two clocks give identical complete return distributions for every spectrum if
-and only if their orientation quotients agree.  Balanced two-level systems
-alone reconstruct \(S\rho\) by scanning their gap.  More strongly, the
-infinite hierarchy of universal equivalence tests collapses to first moments:
-deterministic first-return curves decide universal system equivalence, and
-two-level first-return means decide universal clock equivalence.  Thus
-survival recurrence cannot recover spectral information beyond
-autocorrelation or determine clock orientation without an external
-orientation reference, and these are the entire universal losses.
-
-The quotient law follows from a system--clock reciprocity valid for every
-spectral type and every clock.  If \(\Gamma_n(\nu)\) is the law of the sum of
-\(n\) independent energy gaps, then the \(n\)-th sampled survival-fidelity
-moment is exactly
+Let $I$ be a nonempty finite set, let $\tau=(\tau_i)_{i\in I}$ lie in the
+complex upper half-plane, and let $G_I(z;\tau)$ be Nishizawa's multiple
+elliptic gamma function.  We determine its differential nature for every
+period tuple.  If
 \[
- \mathcal M_n(\nu,\rho)
- =\int \varphi_\rho(x)\,\dd\Gamma_n(\nu)(x)
- =\int \varphi_{\Gamma_n(\nu)}(t)\,\dd\rho(t).
+ d_{\Q}(\tau)=
+ \dim_{\Q}\Span_{\Q}\bigl(\{1\}\cup\{\tau_i:i\in I\}\bigr),
 \]
-This holds for every \(n\), without finiteness, discreteness, absolute
-continuity, nonresonance or a long-time limit.  The full sequence
-\(\{\mathcal M_n\}\) determines the entire probability law of observed
-return; two arbitrary system--clock pairs have the same return law if and
-only if all clock--collision moments agree.  Pure-point phase laws, sampling
-aliases, observer-dependent temporal dimension, weak-interaction
-wall-crossings, local detector cost and long-time collision plateaux then
-become refinements or projections of this one information law.
+then $G_I$ and its logarithmic derivative are differentially algebraic over
+$\C(z)$ exactly when $d_{\Q}(\tau)=2$; both are hypertranscendental exactly
+when $d_{\Q}(\tau)\geq3$.  Thus the exceptional non-rational tuples are
+precisely the families on a rational affine line
+$\tau_i=a_i+b_i\omega$, where $a_i,b_i\in\Q$, $b_i>0$, and
+$\omega\in\mathbb H$.  In nome coordinates the same invariant is the
+torsion-free rank of the multiplicative group generated by the nomes.
+
+The proof is complete in both directions.  In augmented rank two, a common
+upper-half-plane step is an integral multiple of every period modulo the
+unit period.  Repeated differencing by this step descends the full face
+hierarchy and annihilates the logarithmic derivative.  A finite-dimensional
+two-translation theorem then gives differential algebraicity.  In augmented
+rank at least three, a two-period face has rationally independent periods.
+For that seed we prove a joint Ostrowski descent theorem and combine it with
+specialization on a product of elliptic curves and a one-orbit pole
+obstruction.  This yields the exact differential matroid of all translation
+quotients of the elliptic gamma function.  Nishizawa's coface recurrence
+propagates the obstruction to every higher order.  The classification
+settles the non-rational-period problem posed by Kato and proves his expected
+failure outside a precisely described exceptional locus.
 \end{abstract}
 
-\noindent\textbf{One-sentence summary.}
-All possible survival-return experiments are classified by two objects: the
-autocorrelation of energy and the unoriented probability law of clock time.
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 33E30; Secondary 12H05, 39A13.
 
-\section{The return-information problem}
+\noindent\textbf{Keywords.}
+Multiple elliptic gamma function; differential algebraicity;
+hypertranscendence; elliptic translation; rational period rank;
+Ostrowski descent.
 
-Temporal ensembles are normally defined by averaging uniformly over a long
-interval.  That convention hides a prior physical choice: which times the
-clock samples and with what probability.  Pulsed, stroboscopic, randomly
-jittered and continuous clocks need not identify the same phase history,
-even for one unchanged Hamiltonian.  Imperfect clock readings are already
-known to induce energy-basis dephasing and limit quantum control
-\cite{Xuereb2023,Xu2021}; the characteristic function of a tick
-distribution filters individual energy gaps.  Fixed-period quantum
-detection is known
-to exhibit sampling resonances and dark states \cite{Friedman2017}; finite
-uniform temporal ensembles expose sinc-filtered energy sums
-\cite{Mark2024}.  Higher-order no-resonance conditions are fragile because
-sums of energies develop pseudo-resonances that remain unresolved for
-extremely long times \cite{RiddellPagliaroli2024}.  These are usually treated
-as different effects.
+\section{Introduction}
 
-For a fixed clock time, the survival probability and the autocorrelation of
-the energy distribution are a cosine-transform pair; its evenness is a
-Wiener--Khinchin consequence \cite{RamirezKelkar2021}.  That known observation
-does not answer the inverse question with both sides variable: what is the
-largest system information and the largest clock information that the
-\emph{complete distribution} of survival return can determine, across all
-spectra, all probability clocks and all moment orders?
+The multiple elliptic gamma functions introduced by Nishizawa
+\cite{Nishizawa2001} form a hierarchy beginning with a Jacobi theta function
+and the elliptic gamma function.  Their functional equations, modular
+properties, and integral representations connect special-function theory,
+elliptic hypergeometric analysis, and mathematical physics
+\cite{FelderVarchenko2000,Narukawa2004}.  Their differential-algebraic
+classification, however, has remained incomplete.
 
-Weak integrability breaking produces further hierarchies of long relaxation
-scales \cite{SuraceMotrunich2023}, while spectral-form-factor theories
-identify hydrodynamic or random-matrix times in specified models
-\cite{WinerSwingle2022,Cotler2017}.  What these approaches do not supply is
-one characterwise answer to the prior question:
-\begin{quote}
-\emph{Given any quantum spectrum and any statistical law of clock readings,
-what is the complete probability law of return, and exactly which information
-about the system and clock is fundamentally identifiable from return alone?}
-\end{quote}
+Kato proved that a multiple elliptic gamma function satisfies an algebraic
+differential equation when all periods lie on one positive rational ray
+\cite[Theorem~1.1]{Kato2021}.  He stated explicitly that differential
+algebraicity for non-rational period vectors was unknown and expected the
+rational-period result to fail in general, possibly with exceptional cases
+\cite[Remark~1.2]{Kato2021}.  The issue is subtle because literal
+commensurability of additive periods is not the intrinsic condition.  The
+function is $1$-periodic, so rational additive offsets can disappear after a
+finite cover.  Consequently tuples outside a rational ray can remain in the
+differential-algebraic phase.
 
-The missing object is a \emph{double information quotient} generated by the
-clock--collision pairing.  At moment order \(n\), the system supplies the
-additive law of \(n\) energy gaps and the clock supplies its characteristic
-function.  The pairing sees the spectrum only after energy autocorrelation
-and sees the clock only after orientation symmetrization.  These quotients are
-not merely sufficient; each is maximal when the probes on the other side may
-vary.  For pure-point spectra the same pairing lifts character by character
-to a filtered projective lattice.  Interaction valuation, local
-connected-cluster cancellation and fidelity-moment order then grade those
-characters.  Uniform-window dephasing, sampling aliasing, weak-interaction
-resolution, recurrence and long-time information become shadows of one law.
+This article gives the exact classification.  The controlling invariant is
+the rational dimension of the span of the periods together with the unit
+period.  Augmented rank two is precisely the exceptional
+differential-algebraic locus.  Augmented rank at least three is precisely the
+hypertranscendental locus.  In particular, the pair $(i,1+i)$ is not on a
+rational ray but is differentially algebraic, whereas any pair $\sigma,\tau$
+for which $1,\sigma,\tau$ are rationally independent forces
+hypertranscendence at every face containing it.
 
-\paragraph{Meaning of temporal dimension.}
-Throughout, temporal dimension means the number of rationally independent
-relative phase directions supporting the observer's limiting phase law.  It
-does not mean the coordinate dimension of relativistic spacetime.  The
-distinction is essential: a single Hamiltonian trajectory is parametrized by
-one laboratory time, yet its closure can contain many independent phase
-directions.  A clock law determines which directions remain distinct and
-which are identified as aliases.  The resulting dimension is operational:
-it counts independent relative phases in the probability law of histories
-that this clock can produce.
+Both implications require more than a reformulation of Kato's hypothesis.
+For the positive phase we do not invoke the rational-ray theorem.  Instead,
+we construct a common translation step and prove that its sufficiently high
+forward difference annihilates the logarithmic derivative.  The orbit of the
+function under that translation lies in a finite-dimensional complex vector
+space stable under two lattice translations.  A direct induction on the
+dimension of such a space proves differential algebraicity.
 
-\section{The universal system--clock reciprocity law}
+The negative phase reduces by exact coface equations to a two-period seed.
+There the logarithmic derivative satisfies two additive difference equations
+whose right-hand sides are logarithmic derivatives of theta functions.  A
+joint Ostrowski theorem converts any differential dependence into one
+simultaneous coboundary in a product of two elliptic function fields.  After
+specialization to one elliptic factor, that coboundary is impossible: its
+right-hand side has exactly one pole on a nontorsion translation orbit, while
+every rational coboundary has either zero or at least two boundary poles on
+each orbit.  The same argument determines every finite differential
+dependence among translated defects and quotients of the seed.
 
-Let \(\nu\) be an arbitrary probability measure on the real energy line and
-write
-\begin{equation}
- a_\nu(t)=\int_\R e^{-\I tE}\,\dd\nu(E),
- \qquad F_\nu(t)=|a_\nu(t)|^2.
-\end{equation}
-No spectral type is prescribed.  Let \(X_\ell,Y_\ell\) be independent with
-law \(\nu\), and let \(\Gamma_n(\nu)\) denote the probability law of
+The proof is organized so that each input is established before use.
+Section~\ref{sec:definitions} defines the functions and states the
+classification.  Section~\ref{sec:identities} derives the product, coface,
+and differential-field identities.  Sections~\ref{sec:stable}--\ref{sec:low}
+prove the complete rank-two phase.  Section~\ref{sec:ostrowski} proves the
+joint descent theorem.  Sections~\ref{sec:seed}--\ref{sec:propagation} prove
+the rank-three obstruction and its propagation.  Section~\ref{sec:global}
+gives the arbitrary-family and genericity consequences.
+
+\section{Definition and main results}
+\label{sec:definitions}
+
+Let $I$ be a finite set and let $\tau=(\tau_i)_{i\in I}$ satisfy
+$\operatorname{Im}\tau_i>0$.  Put
 \[
- G_n=\sum_{\ell=1}^{n}(X_\ell-Y_\ell).
+ q_i=e^{2\pi i\tau_i},\qquad x=e^{2\pi iz},\qquad
+ Q_I=\prod_{i\in I}q_i.
 \]
-For probability measures \(\alpha,\beta\) on \(\R\), define their Fourier
-pairing
-\begin{equation}
- B(\alpha,\beta)
-   =\int_\R\varphi_\alpha(x)\,\dd\beta(x).
- \label{eq:fourier-pairing}
-\end{equation}
-Fubini's theorem makes this pairing symmetric:
-\(B(\alpha,\beta)=B(\beta,\alpha)\).
-
-\begin{theorem}[System--clock reciprocity and complete return law]
-\label{thm:reciprocity}
-For every probability energy spectrum \(\nu\), every probability clock
-\(\rho\), and every \(n\in\N\),
-\begin{equation}
- \boxed{\quad
- \mathcal M_n(\nu,\rho)
- :=\int_\R F_\nu(t)^n\,\dd\rho(t)
- =B\!\left(\rho,\Gamma_n(\nu)\right)
- =\int_\R\varphi_\rho(x)\,\dd\Gamma_n(\nu)(x).
- \quad}
- \label{eq:reciprocity}
-\end{equation}
-The sequence \((\mathcal M_n)_{n\ge0}\) uniquely determines the complete
-probability distribution of \(F_\nu(T)\) for \(T\sim\rho\).  Two arbitrary
-system--clock pairs \((\nu_1,\rho_1)\) and \((\nu_2,\rho_2)\) produce
-identical return distributions if and only if
+For a finite family $q=(q_i)_{i\in I}$ define
 \[
- \mathcal M_n(\nu_1,\rho_1)=\mathcal M_n(\nu_2,\rho_2)
- \quad\hbox{for every }n\ge0.
+ (x;q)_\infty=
+ \prod_{n\in\N^I}\left(1-x\prod_{i\in I}q_i^{n_i}\right).
 \]
+For compact subsets of the $z$-plane, the sums of the absolute values of the
+nonconstant terms in both products below converge uniformly, since
+\[
+ \sum_{n\in\N^I}\prod_{i\in I}|q_i|^{n_i}
+ =\prod_{i\in I}(1-|q_i|)^{-1}<\infty.
+\]
+The products therefore converge locally uniformly.  Define
+\begin{equation}
+ G_I(z;\tau)=
+ (Q_I/x;q)_\infty\,(x;q)_\infty^{\varepsilon_I},
+ \qquad \varepsilon_I=(-1)^{|I|+1}\in\{-1,1\}.
+ \label{eq:defG}
+\end{equation}
+For nonempty $I$ this is Nishizawa's function, with $|I|=r+1$
+corresponding to $G_r$.  The convention also defines the terminal face:
+\begin{equation}
+ G_\varnothing(z)=\frac{1-x^{-1}}{1-x}=-x^{-1}.
+ \label{eq:terminal-G}
+\end{equation}
+Thus every $G_I$ is a nonzero meromorphic function on $\C$.
+
+All differential fields use the derivation $\partial=\dd/\dd z$.  A
+meromorphic function $f$ is \emph{differentially algebraic} over $\C(z)$ if
+there are $m\geq0$ and a nonzero polynomial
+\[
+ P\in\C(z)[Y_0,\ldots,Y_m]
+\]
+such that $P(f,f',\ldots,f^{(m)})=0$.  Otherwise $f$ is
+\emph{hypertranscendental}, or differentially transcendental, over $\C(z)$.
+Write
+\[
+ \Psi_I(z;\tau)=\frac{\partial G_I(z;\tau)}{G_I(z;\tau)}.
+\]
+
+For nonempty $I$, define the augmented rational period rank
+\begin{equation}
+ d_{\Q}(\tau)=
+ \dim_{\Q}\Span_{\Q}\bigl(\{1\}\cup\{\tau_i:i\in I\}\bigr).
+ \label{eq:rank}
+\end{equation}
+Since every $\tau_i$ is nonreal, $1$ and $\tau_i$ are rationally
+independent; hence $d_{\Q}(\tau)\geq2$.
+
+\begin{theorem}[Exact augmented-rank dichotomy]
+\label{thm:main}
+Let $I$ be a nonempty finite set and let $\tau:I\to\HH$.  Then
+\begin{align}
+ G_I(\,\cdot\,;\tau)\text{ is differentially algebraic over }\C(z)
+ &\Longleftrightarrow d_{\Q}(\tau)=2,
+ \label{eq:main-G-DA}\\
+ \Psi_I(\,\cdot\,;\tau)\text{ is differentially algebraic over }\C(z)
+ &\Longleftrightarrow d_{\Q}(\tau)=2,
+ \label{eq:main-Psi-DA}\\
+ G_I(\,\cdot\,;\tau)\text{ is hypertranscendental over }\C(z)
+ &\Longleftrightarrow d_{\Q}(\tau)\geq3,
+ \label{eq:main-G-HT}\\
+ \Psi_I(\,\cdot\,;\tau)\text{ is hypertranscendental over }\C(z)
+ &\Longleftrightarrow d_{\Q}(\tau)\geq3.
+ \label{eq:main-Psi-HT}
+\end{align}
+The two alternatives are exhaustive and disjoint.
 \end{theorem}
 
-Theorem~\ref{thm:reciprocity} is the master law.  The system and clock enter
-through mathematically interchangeable probability laws: additive spectral
-collisions on one side and observation times on the other.  Completeness is
-not an approximation.  Return fidelity lies in the compact interval
-\([0,1]\), so its full moment sequence determines its probability law.
-Every result below identifies what \eqref{eq:reciprocity} becomes when more
-structure is resolved.
+The rank-two locus has a concrete affine description.
 
-\subsection{The two maximal information quotients}
-
-Let \(\widetilde\nu=(-\mathrm{id})_\#\nu\).  The system autocorrelation
-quotient is its energy-gap law
+\begin{corollary}[Complete exceptional locus]
+\label{cor:affine}
+The functions $G_I$ and $\Psi_I$ are differentially algebraic if and only if
+there exist $\omega\in\HH$ and rational numbers $a_i,b_i$, with $b_i>0$,
+such that
 \begin{equation}
- A\nu=\nu*\widetilde\nu=\Gamma_1(\nu).
- \label{eq:system-quotient}
+ \tau_i=a_i+b_i\omega\qquad(i\in I).
+ \label{eq:rational-affine}
 \end{equation}
-For a clock law \(\rho\), define its reflection
-\(\rho^\leftarrow=(-\mathrm{id})_\#\rho\) and orientation quotient
-\begin{equation}
- S\rho=\frac{\rho+\rho^\leftarrow}{2}.
- \label{eq:clock-quotient}
-\end{equation}
-Every \(\Gamma_n(\nu)\) is symmetric, so
-\(B(\rho,\Gamma_n)=B(S\rho,\Gamma_n)\).  Sufficiency is immediate from
-\eqref{eq:reciprocity}; the converse statements are the substantive
-identifiability result.
-
-\begin{theorem}[Double maximality of return information]
-\label{thm:maximal-quotients}
-For arbitrary probability energy spectra \(\nu_1,\nu_2\) and arbitrary
-probability clock laws \(\rho_1,\rho_2\):
-\begin{align}
- A\nu_1=A\nu_2
- &\quad\Longleftrightarrow\quad
- \Law_{\rho}\!\bigl(F_{\nu_1}(T)\bigr)
- =\Law_{\rho}\!\bigl(F_{\nu_2}(T)\bigr)
- \quad\text{for every probability clock }\rho ,
- \label{eq:max-system}\\
- S\rho_1=S\rho_2
- &\quad\Longleftrightarrow\quad
- \Law_{\rho_1}\!\bigl(F_{\nu}(T)\bigr)
- =\Law_{\rho_2}\!\bigl(F_{\nu}(T)\bigr)
- \quad\text{for every probability spectrum }\nu .
- \label{eq:max-clock}
-\end{align}
-The second equivalence is already decided by balanced two-level spectra
-\(\nu_\Omega=\tfrac12(\delta_0+\delta_\Omega)\): for every
-\(\Omega\in\R\),
-\begin{equation}
- \E_{\rho}F_{\nu_\Omega}(T)
- =\frac{1+\operatorname{Re}\varphi_\rho(\Omega)}{2},
- \label{eq:two-level-clock-tomography}
-\end{equation}
-and equality of these means for all \(\Omega\) is equivalent to equality of
-\(S\rho\).  Likewise, deterministic clocks at all \(t\) reconstruct
-\(\varphi_{A\nu}(t)=F_\nu(t)\), proving the converse in
-\eqref{eq:max-system}.
-\end{theorem}
-
-\begin{corollary}[Universal collapse to minimal probes]
-\label{cor:minimal-probes}
-The two universal equivalence problems in
-Theorem~\ref{thm:maximal-quotients} require no higher moments:
-\begin{align}
- &\Law_{\rho}\!\bigl(F_{\nu_1}(T)\bigr)
-   =\Law_{\rho}\!\bigl(F_{\nu_2}(T)\bigr)
-   \quad\text{for every probability clock }\rho
- \nonumber\\[-2pt]
- &\hspace{4.5cm}\Longleftrightarrow\quad
- F_{\nu_1}(t)=F_{\nu_2}(t)\quad\text{for every }t\in\R ,
- \label{eq:minimal-system}\\
- &\Law_{\rho_1}\!\bigl(F_{\nu}(T)\bigr)
-   =\Law_{\rho_2}\!\bigl(F_{\nu}(T)\bigr)
-   \quad\text{for every probability spectrum }\nu
- \nonumber\\[-2pt]
- &\hspace{4.5cm}\Longleftrightarrow\quad
- \E_{\rho_1}F_{\nu_\Omega}(T)
-   =\E_{\rho_2}F_{\nu_\Omega}(T)
-   \quad\text{for every }\Omega\in\R .
- \label{eq:minimal-clock}
-\end{align}
-In both equivalences, ``every real \(t\)'' and ``every real \(\Omega\)''
-may be replaced by ``every rational \(q\)''.  A countable dense deterministic
-schedule and a countable dense two-level gap scan are therefore complete.
-Hence deterministic one-time probes classify the complete universal return
-behaviour of a system, while one tunable balanced two-level probe classifies
-the complete universal return behaviour of a clock.  Higher moments remain
-necessary to reconstruct the return distribution of one fixed
-system--clock pair, but add no universal identification power.
+They are hypertranscendental if and only if some distinct $q,r\in I$ make
+$1,\tau_q,\tau_r$ rationally linearly independent.
 \end{corollary}
 
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[
-  >=Latex,
-  node distance=0.75cm and 1.05cm,
-  box/.style={draw,rounded corners,align=center,minimum height=0.85cm,
-    inner xsep=8pt,fill=hidden},
-  quotient/.style={box,fill=visible,draw=accent,thick},
-  law/.style={box,fill=white,draw=local,thick}
-]
-\node[box] (system) {energy law\\ \(\nu\)};
-\node[quotient,right=of system] (gap) {maximal system quotient\\
-  \(A\nu=\Law(X-Y)\)};
-\node[law,right=1.25cm of gap] (return) {all moments and complete law\\
-  \(\{\mathcal M_n\}_{n\ge0}\Longleftrightarrow
-    \Law(F_\nu(T))\)};
-\node[box,below=of system] (clock) {signed clock law\\ \(\rho\)};
-\node[quotient,right=of clock] (sym) {maximal clock quotient\\
-  \(S\rho=(\rho+\rho^\leftarrow)/2\)};
-\draw[->,thick] (system) -- (gap);
-\draw[->,thick] (clock) -- (sym);
-\draw[->,thick] (gap.east) -- (return.west);
-\draw[->,thick] (sym.east) -- (return.south west);
-\end{tikzpicture}
-\caption{\textbf{Universal factorization of survival-return information.}
-Every system enters through its full energy-gap law; every clock enters
-through its orientation quotient.  Theorem~\ref{thm:maximal-quotients}
-proves that neither arrow can be factored through a strictly coarser
-universal quotient.}
-\label{fig:double-quotient}
-\end{figure}
+\begin{example}[A non-rational differentially algebraic pair]
+\label{ex:exception}
+The tuple $(i,1+i)$ has augmented rank two.  It is not contained in a
+positive rational ray: otherwise $(1+i)/i=1-i$ would be a positive rational
+number.  Nevertheless $G_{\{1,2\}}(z;i,1+i)$ and its logarithmic derivative
+are differentially algebraic over $\C(z)$.
+\end{example}
 
-The theorem says precisely what recurrence forgets.  Translating every
-energy by one constant, reflecting the energy axis, or replacing a spectrum
-by any homometric spectrum with the same gap law leaves all survival-return
-experiments unchanged.  On the clock side, recurrence cannot distinguish a
-signed timing law from its reflection or, more generally, two laws with the
-same symmetrization.  It loses no further clock information universally:
-two-level gap scans recover the entire cosine transform.  These are
-maximality statements, not a claim that one fixed system identifies its
-clock or that one fixed clock identifies its system.
+There is also an intrinsic multiplicative form of the invariant.
 
-\paragraph{Operational two-level protocol.}
-Prepare an equal superposition of two energy eigenstates separated by a
-tunable gap \(\Omega\), let the clock signal terminate the evolution, and
-project onto the prepared state.  The mean success probability is exactly
-\eqref{eq:two-level-clock-tomography}.  Repeating this binary measurement at
-each selected gap estimates one cosine-transform coordinate of the clock;
-scanning all gaps determines \(S\rho\).  No many-body simulator,
-long-time limit or spectral reconstruction is required for each coordinate.
-Exact nonparametric reconstruction needs only a countable dense gap schedule,
-although a finite noisy scan recovers only finite-band information unless a
-separate stability theorem is supplied.
-
-\paragraph{What ``orientation'' does and does not mean.}
-The quotient \(S\rho\) concerns the sign of the clock coordinate available
-to the survival observable.  It does not assert that thermodynamic,
-cosmological or measurement arrows are absent.  If independent information
-already restricts a clock to nonnegative times, that support condition
-supplies an orientation reference and its symmetrization determines the
-original law.  Phase-sensitive observables can also access the imaginary
-part of \(\varphi_\rho\).  The result is sharper: \emph{return alone} cannot
-supply that external reference, and the theorem identifies its complete
-information content.
-
-\subsection{Phase-resolved refinement for pure-point spectra}
-
-Let \(I\) be finite or countable, let
-\(\omega=(\omega(i))_{i\in I}\) be a real pure-point spectrum, and let
-\(\rho\) be an arbitrary probability measure on laboratory time.  It may be
-continuous, discrete, singular or mixed.  Sampling \(t\sim\rho\) and
-following the Hamiltonian orbit induces the phase-history law
+\begin{corollary}[Nome-rank classification]
+\label{cor:nome}
+Let $q_i=e^{2\pi i\tau_i}$, and let $\mathcal Q_\tau\subset\C^\times$ be the
+subgroup generated by the $q_i$.  Then
 \begin{equation}
- \mu_{\rho,\omega}
-   =\bigl[t\mapsto(t\omega(i)\bmod2\pi)_{i\in I}\bigr]_{\#}\rho .
- \label{eq:phase-law}
+ d_{\Q}(\tau)-1=
+ \operatorname{rank}_{\Z}\bigl(\mathcal Q_\tau/
+ \Tor(\mathcal Q_\tau)\bigr).
+ \label{eq:nome-rank}
 \end{equation}
-Every relative-phase relation is a finitely supported integer vector
-\(k=(k_i)\) of total charge zero,
-\begin{equation}
-  k\in\Lambda_I:=
-  \left\{k\in\Z^{(I)}:\sum_i k_i=0\right\}.
-\end{equation}
-Its spectral detuning is
-\begin{equation}
-  \Delta_k=\sum_i k_i\omega(i).
-  \label{eq:detuning}
-\end{equation}
-Write
-\(\varphi_\rho(\xi)=\int_{\R}e^{\I t\xi}\,\dd\rho(t)\) for the characteristic
-function of the clock.  Pushforward gives the exact character transform
-\begin{equation}
-  \boxed{\quad
-  \widehat\mu_{\rho,\omega}(k)
-   =\int e^{\,\I\langle k,\theta\rangle}\,
-      \dd\mu_{\rho,\omega}(\theta)
-   =\varphi_\rho(\Delta_k).\quad}
-  \label{eq:master-coefficient}
-\end{equation}
+Consequently differential algebraicity is equivalent to torsion-free nome
+rank one, and hypertranscendence is equivalent to torsion-free nome rank at
+least two.
+\end{corollary}
 
-\begin{theorem}[System--clock duality and completeness]
-\label{thm:action}
-Equation~\eqref{eq:master-coefficient} holds for every probability clock and
-every finite or countably infinite real pure-point spectrum.  For arbitrary
-scaling families \((\rho_x,\omega_x)\), the complete phase laws
-\(\mu_{\rho_x,\omega_x}\) have a weak limit if and only if
-\(\varphi_{\rho_x}(\Delta_k(x))\) converges for every finite-support integer
-character \(k\).  Whenever the limit exists it is unique and fixes the limit
-of every continuous phase statistic.
-\end{theorem}
+\begin{proof}
+Consider the homomorphism from the free abelian group on $I$ to
+$\mathcal Q_\tau$ given by $(n_i)\mapsto\prod_iq_i^{n_i}$.  Its value is
+torsion exactly when, for some $m\geq1$,
+\[
+ \exp\left(2\pi i m\sum_i n_i\tau_i\right)=1,
+\]
+or equivalently $\sum_i n_i\tau_i\in\Q$.  After tensoring with $\Q$, the
+torsion-free quotient is therefore naturally isomorphic to
+\[
+ \Span_{\Q}\{1,\tau_i:i\in I\}/\Q\cdot1.
+\]
+Its dimension is $d_{\Q}(\tau)-1$.  The classification follows from
+Theorem~\ref{thm:main}.
+\end{proof}
 
-The theorem does not require a density for \(\rho\), periodic sampling,
-analyticity, nonresonance, a power-law limit or finite dimension.  It says
-that a quantum system supplies detunings while a clock supplies a transfer
-function; only their composition is observable.  A centered uniform clock
-on \([-T,T]\) has
-\begin{equation}
- \varphi_{\rho_T}(\xi)=\sinc(T\xi),\qquad
- \sinc u=\begin{cases}\sin u/u,&u\ne0,\\1,&u=0,\end{cases}
- \label{eq:sinc-specialization}
-\end{equation}
-so the usual observer action \(A_k=T\Delta_k\) is one specialization of
-\eqref{eq:master-coefficient}, not the master law itself.
+\section{Product identities and differential-algebraic closure}
+\label{sec:identities}
 
-\subsection{Time as a clock-dependent conserved quotient}
+For $c\in\C$, let $\T_cf(z)=f(z+c)$ and
+$\Deltaop_c=\T_c-1$.  Translations commute with one another and with
+$\partial$.
 
-For a finite spectrum, the clock-alias space is
-\begin{equation}
- Z_{\rho,\omega}
- =\operatorname{span}_{\Q}
-   \{k\in\Lambda_I:\varphi_\rho(\Delta_k)=1\}.
-\end{equation}
-The equality to one is exact: it means the corresponding phase character is
-almost surely locked under the sampled history.  Define
-\begin{equation}
- d_{\mathrm{time}}(\rho,\omega)
-   =\dim_{\Q}\bigl((\Lambda_I\otimes\Q)/Z_{\rho,\omega}\bigr).
- \label{eq:temporal-dimension}
-\end{equation}
-
-\begin{theorem}[Clock-alias rank conservation]
-\label{thm:rank}
-For every probability clock and every finite spectrum,
-\begin{equation}
- d_{\mathrm{time}}(\rho,\omega)+\dim_{\Q}Z_{\rho,\omega}
-   =\dim_{\Q}(\Lambda_I\otimes\Q)=|I|-1.
- \label{eq:rank-conservation}
-\end{equation}
-For one fixed rationally independent finite spectrum, a clock concentrated
-at \(t=0\) gives \(d_{\mathrm{time}}=0\), whereas every centered uniform
-clock on a nonzero interval gives
-\(d_{\mathrm{time}}=|I|-1\).  Spectrum and dynamics are identical; only the
-sampling law changes.  This separation is not a time-zero artefact.  For the
-fixed two-level spectrum \(\{0,1\}\), a deterministic clock at the nonzero
-full-revival time \(2\pi\) aliases every projective character and gives
-\(d_{\mathrm{time}}=0\); every nonzero centered continuous uniform window
-gives \(d_{\mathrm{time}}=1\).
-\end{theorem}
-
-Equation~\eqref{eq:rank-conservation} is the first central interpretation.
-Observation does not create or destroy projective spectral rank.  It transfers
-rank between clock-hidden relations and resolved phase directions.  ``How
-many dimensions of time are visible?'' is therefore a property of the
-system--clock pair, answered by a quotient rather than by assigning more
-coordinate times to the underlying dynamics.
-
-\section{Weak interaction creates a temporal atlas}
-
-We now specialize the arbitrary clock law to centered uniform windows whose
-width is coupled to an interaction strength.  Suppose every spectral branch
-is real analytic near \(g=0\).  For an active relation \(k\), analyticity
-gives a unique first nonzero order
-\begin{equation}
- \Delta_k(g)=c_k g^{v(k)}+o(g^{v(k)}),
- \qquad c_k\ne0,\quad v(k)\in\N.
- \label{eq:valuation}
-\end{equation}
-The integer \(v(k)\) is its \emph{activation valuation}.  Observe on the
-inverse-power horizon \(T_g=\tau g^{-r}\), with \(\tau>0\).  Then
-\begin{equation}
- \widehat\mu_r(k)=
- \begin{cases}
-   1, & r<v(k),\\[2pt]
-   \sinc(\tau|c_k|), & r=v(k),\\[2pt]
-   0, & r>v(k).
- \end{cases}
- \label{eq:wall-crossing}
-\end{equation}
-Every analytic relation therefore has one exact wall-crossing: locked,
-critical, then dephased.
-
-\begin{theorem}[Fourier--valuation atlas]
-\label{thm:atlas}
-Every finite analytic real spectrum has one unique phase-probability law at
-every inverse-power horizon and every positive prefactor \(\tau\).
-The collection of those laws reconstructs the exact activation order and
-critical magnitude of every active projective character.  The same statement
-holds for every countable analytic real spectrum, character by
-finite-support character.
-\end{theorem}
-
-The joint limit resolves the apparent paradox between perturbation theory and
-late-time dynamics.  For every positive \(v\),
-\begin{equation}
- \lim_{g\downarrow0}\sinc(Tg^v)=1
- \quad\text{at fixed }T,\qquad
- \lim_{T\to\infty}\sinc(Tg^v)=0
- \quad\text{at fixed }g>0,
- \label{eq:noncommute}
-\end{equation}
-whereas \(T=\tau g^{-v}\) gives the nontrivial exact boundary
-\(\sinc\tau\).  Neither sequential limit is wrong; each lies on a different
-face of the observer--action boundary.
-
-\section{The space--time--detector visibility cone}
-
-The activation valuation becomes physical once the Hamiltonian is local.
-Consider a finite set of sites with finite local state spaces, a Hermitian
-Hamiltonian whose uncoupled product energies are simple, and finite local
-interaction terms indexed by edges \(e\).  Switch on edge \(e\) as
-\(g^{w(e)}z_e\), where \(w(e)\) is a positive integer.  For a nonempty set
-\(S\) of queried sites, form the Boolean M\"obius relation \(k_S\) by
-alternating the \(2^{|S|}\) product configurations obtained by changing
-exactly the sites in each subset of \(S\).
-
-Let \(C_w(S)\) be the minimum total edge weight of a connected interaction
-packet spanning \(S\).  If no such packet contributes, the relation remains
-exact.  If it is active, connected-cluster cancellation gives
-\begin{equation}
-  v(k_S)\ge C_w(S).
-  \label{eq:steiner}
-\end{equation}
-This is a spectral causality law: a local interaction cannot unlock a
-multi-site phase relation before an interaction packet has connected all
-sites seen by that relation.
-
-There is a second, independent observation cost, and it is present in an
-actual survival-fidelity observable.  Give every spectral branch positive
-weight \(w_i>0\).  After collecting the multinomial expansion of the
-\(m\)-th fidelity moment, the coefficient of a balanced character \(k\) is
-\begin{equation}
- C_m(k)=
- \sum_{\substack{p,q\in\N^I\\
-                  \sum_i p_i=\sum_iq_i=m\\
-                  p-q=k}}
- \binom{m}{p}\binom{m}{q}
- \prod_i w_i^{p_i+q_i}.
- \label{eq:actual-coefficient}
-\end{equation}
-Every summand is strictly positive.  Thus \(C_m(k)>0\) exactly when \(k\)
-can be written
-\begin{equation}
- k_i=p_i-q_i,\qquad \sum_i p_i=\sum_i q_i=m,
- \qquad p_i,q_i\in\N.
-\end{equation}
-Its exact minimum order is
-\begin{equation}
- h(k)=\sum_i (k_i)_+ .
- \label{eq:height}
-\end{equation}
-Every larger order is obtained by adding identical dummy labels to the
-positive and negative multisets.
-
-\begin{theorem}[Exact visibility cone]
-\label{thm:cone}
-For every active projective character \(k\) of a nonempty finite analytic
-spectrum with full-support positive spectral weights, the character is
-unlocked at observation order \(r\) and has a strictly positive coefficient
-in the \(m\)-th survival-fidelity moment exactly when
-\begin{equation}
-  r\ge v(k),\qquad m\ge h(k).
-  \label{eq:cone}
-\end{equation}
-The lower-left corner \((v(k),h(k))\) is attained.  For a nondegenerate
-Boolean relation on \(s\) genuinely changed sites,
-\begin{equation}
-  h(k_S)=2^{s-1}.
-  \label{eq:mobius-height}
-\end{equation}
-For every finite Hermitian local interaction family described above, its
-active local relation therefore has the exact attained corner
-\begin{equation}
-  \bigl(v(k_S),2^{s-1}\bigr),
-  \qquad v(k_S)\ge C_w(S).
-  \label{eq:local-corner}
-\end{equation}
-\end{theorem}
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[x=0.92cm,y=0.72cm,>=Latex]
-  \fill[hidden] (0,0) rectangle (8.4,5.7);
-  \fill[visible] (3.2,3.0) rectangle (8.4,5.7);
-  \draw[->,thick] (0,0) -- (8.8,0)
-    node[right] {observation order \(r\)};
-  \draw[->,thick] (0,0) -- (0,6.1)
-    node[above] {replica order \(m\)};
-  \draw[local,dashed,very thick] (1.7,0) -- (1.7,5.7);
-  \node[local,rotate=90,anchor=south] at (1.55,2.7)
-    {locality floor \(C_w(S)\)};
-  \draw[accent,dashed,thick] (3.2,0) -- (3.2,5.7);
-  \draw[accent,dashed,thick] (0,3.0) -- (8.4,3.0);
-  \fill[accent] (3.2,3.0) circle (2.7pt);
-  \node[accent,anchor=south west] at (3.3,3.08)
-    {attained corner \((v(k),h(k))\)};
-  \node at (6.25,4.45) {\large character occurs};
-  \node at (5.9,1.5) {insufficient replica order};
-  \node[rotate=90] at (0.9,3.7) {too early};
-  \node[below] at (3.2,0) {\(v(k)\)};
-  \node[left] at (0,3.0) {\(h(k)\)};
-  \draw[decorate,decoration={brace,amplitude=5pt}]
-    (1.7,-0.55) -- (3.2,-0.55)
-    node[midway,below=5pt] {dynamical delay};
-\end{tikzpicture}
-\caption{\textbf{One relation, two exact observation costs.}
-Observation time resolves activation valuation; replica order supplies a
-strictly positive fidelity coefficient.  Local connected-spanning geometry
-gives the lower face \(C_w(S)\le v(k_S)\).  For a nondegenerate
-\(s\)-site Boolean relation, \(h(k_S)=2^{s-1}\).}
-\label{fig:cone}
-\end{figure}
-
-Theorem~\ref{thm:cone} is the first nontrivial consequence of the
-system--clock quotient.  Low-order perturbation theory, short observation
-histories and low-order fidelity moments fail for the same reason: they query
-characters outside the accessible cone.  The failure is not an unspecified
-lack of information.  It has two exact integer coordinates and a local
-geometric lower face.
-
-\section{An exact six-level benchmark}
-
-The wall crossings do not require a many-body limit.  Consider a qutrit
-sector \(s=0,1,2\) conditioning a qubit,
-\begin{equation}
- H_s(g)=a_s\mathbf 1+(1+c_sg)\sigma_z+h_sg\,\sigma_x ,
- \quad
- (a_s)=(0,4,9),\quad(c_s)=(0,1,2),\quad(h_s)=(1,1,2).
- \label{eq:benchmark-H}
-\end{equation}
-The direct sum \(H(g)=\bigoplus_s H_s(g)\) is a Hermitian \(6\times6\)
-Hamiltonian, exactly affine in \(g\).  Its six exact eigenvalue branches are
-\begin{equation}
- E_{s,\pm}(g)=a_s\pm
- \sqrt{(1+c_sg)^2+(h_sg)^2}.
-\end{equation}
-Let \(D_s=E_{s,+}-E_{s,-}\).  Two actual spectral relations have the
-profiles
-\begin{equation}
- \frac{D_1-D_0}{g}\longrightarrow2,\qquad
- \frac{D_0-2D_1+D_2}{g^2}\longrightarrow3.
- \label{eq:benchmark-profiles}
-\end{equation}
-They therefore cross at different observation horizons:
+\begin{lemma}[Unit period, cofaces, and terminal face]
+\label{lem:coface}
+For every finite $I$ and every $q\in I$,
 \begin{align}
- T=\tau g^{-1}:&\quad
- \widehat\mu(k_1)\longrightarrow\sinc(2\tau),
- & h(k_1)&=2,\\
- T=\tau g^{-2}:&\quad
- \widehat\mu(k_2)\longrightarrow\sinc(3\tau),
- & h(k_2)&=4.
- \label{eq:benchmark-crossings}
+ G_I(z+1;\tau)&=G_I(z;\tau),
+ \label{eq:unit-period}\\
+ G_I(z+\tau_q;\tau)&=
+ G_{I\setminus\{q\}}(z;\tau|_{I\setminus\{q\}})G_I(z;\tau),
+ \label{eq:coface-G}\\
+ \Deltaop_{\tau_q}\Psi_I&=\Psi_{I\setminus\{q\}}.
+ \label{eq:coface-Psi}
 \end{align}
-Below each horizon the corresponding coefficient tends to \(1\); above it,
-to \(0\).  This provides an exact finite-dimensional falsifier for the law:
-the same tunable Hamiltonian contains a first-order/two-replica relation and
-a second-order/four-replica relation.  No random-matrix, thermodynamic or
-semiclassical approximation enters the prediction.
-
-\section{Recurrence and spectral form factors are projections}
-
-For finite weights \(p_i\), the survival amplitude and fidelity are
+For the empty face,
 \begin{equation}
-  a(t)=\sum_i p_i e^{-\I t\omega_i},
-  \qquad F(t)=|a(t)|^2
-  =\sum_{i,j}p_ip_j e^{-\I t(\omega_i-\omega_j)}.
+ \Psi_\varnothing=-2\pi i.
+ \label{eq:terminal-Psi}
 \end{equation}
-Each ordered gap \(\omega_i-\omega_j\) is the action of the projective
-character \(e_i-e_j\).  Therefore an arbitrary clock law gives the exact
-recurrence projection
-\begin{equation}
-  \E_{\rho}F
-   =\sum_{i,j}p_ip_j\,
-     \varphi_\rho(\omega_i-\omega_j).
- \label{eq:arbitrary-clock-fidelity}
-\end{equation}
-For a centered uniform clock this becomes
-\begin{equation}
-  \E_{\mu_x}F
-   =\sum_{i,j}p_ip_j\,
-     \sinc\!\left(T_x(\omega_x(i)-\omega_x(j))\right).
- \label{eq:fidelity-projection}
-\end{equation}
-Whenever the full phase law converges, every finite weighted return statistic
-converges to the corresponding polynomial evaluated on the same action
-profile.  Recurrence is therefore not an additional law placed beside
-Theorem~\ref{thm:action}; it is a polynomial projection of it.  In
-particular, sampling resonances are clock aliases of pair characters, not a
-separate mechanism.
+\end{lemma}
 
-For an arbitrary probability energy measure \(\nu\), including continuous
-and singular-continuous spectra, the same window kernel gives a complete
-long-time recurrence statement.  Let \(X_i,Y_i\) be independent with law
-\(\nu\).  The \(n\)-th symmetric-window fidelity moment satisfies
-\begin{equation}
- \frac{1}{2T}\int_{-T}^{T}
-   \left|\int e^{-\I tE}\,\dd\nu(E)\right|^{2n}\dd t
- =
- \E\,\sinc\!\left(
- T\sum_{\ell=1}^{n}(X_\ell-Y_\ell)\right),
- \label{eq:collision-finite}
-\end{equation}
-and hence
-\begin{equation}
- \lim_{T\to\infty}\frac{1}{2T}\int_{-T}^{T}F(t)^n\,\dd t
- =
- \Pr\!\left[\sum_{\ell=1}^{n}(X_\ell-Y_\ell)=0\right].
- \label{eq:collision}
-\end{equation}
-This additive collision hierarchy determines the long-time mean of every
-continuous function of fidelity.  If \(\nu\) is atomless, every positive
-collision moment is zero and every continuous statistic converges in mean to
-its value at zero fidelity, even when pointwise decay is absent.  Equation
-\eqref{eq:collision} extends the recurrence projection beyond pure-point
-phase tori without pretending that a continuous spectrum is a countable
-torus.
+\begin{proof}
+The coordinate $x=e^{2\pi iz}$ is unchanged by $z\mapsto z+1$, proving
+\eqref{eq:unit-period}.  For the coface identity, separate the coordinate
+$n_q$ in each product.  On the backward side,
+\[
+ \frac{(xq_q;q)_\infty}{(x;q)_\infty}
+ =\frac{1}{(x;q|_{I\setminus\{q\}})_\infty},
+\]
+because all factors with $n_q\geq1$ cancel and only the slice $n_q=0$
+remains in the denominator.  On the forward side,
+\[
+ \frac{(Q_I/(xq_q);q)_\infty}{(Q_I/x;q)_\infty}
+ =(Q_{I\setminus\{q\}}/x;
+ q|_{I\setminus\{q\}})_\infty.
+\]
+Removing one index reverses the sign $\varepsilon_I$, so these two residual
+factors combine exactly into $G_{I\setminus\{q\}}$.  This proves
+\eqref{eq:coface-G}.  Logarithmic differentiation gives
+\eqref{eq:coface-Psi}; the identity extends meromorphically across zeros and
+poles.  Finally \eqref{eq:terminal-G} gives
+$G_\varnothing=-e^{-2\pi iz}$, whose logarithmic derivative is
+$-2\pi i$.
+\end{proof}
 
-\section{Finite endings and two forms of infinity}
+We record the differential-field facts used below.  They are proved here to
+make all changes of coefficient field explicit; standard background may be
+found in \cite[Chapter~II]{Kolchin1973}.
 
-For a finite analytic spectrum, only finitely many independent relations can
-be born.  There is therefore a finite terminal horizon after which the
-limiting projective Fourier transform equals Haar measure on the terminal
-observable quotient: exact relations retain coefficient \(1\), and every
-active relation has coefficient \(0\).
-
-Infinite systems behave differently.  One fixed countable analytic spectrum,
-\begin{equation}
-  \omega_0(g)=0,\qquad \omega_{n+1}(g)=g^{n+1},
- \label{eq:infinite-staircase}
-\end{equation}
-has a character of exact birth order \(n+1\) for every \(n\).  Each one obeys
-the complete locked--sinc--dephased crossing, and the full countable phase law
-exists uniquely at every horizon.  Consequently there is no final temporal
-layer: longer inverse-power observations continue to expose new independent
-phase directions without end.  This proves possibility, not a claim that
-every infinite system has unbounded temporal dimension.
-
-Countable labels are not the only infinite regime.  For an arbitrary real
-probability energy law \(\nu\), let \(d_{\mathrm{proj}}(\nu)\) be the
-rational rank of the topological support of its energy-gap law
-\((E,E')\mapsto E-E'\).  There is a universal cardinal gap:
-\begin{equation}
- d_{\mathrm{proj}}(\nu)\le\aleph_0
- \quad\hbox{or}\quad
- d_{\mathrm{proj}}(\nu)=2^{\aleph_0}.
- \label{eq:cardinal-gap}
-\end{equation}
-No intermediate uncountable value occurs.  Every atomless probability
-spectrum lies in the continuum phase.  Moreover, for every fidelity
-threshold \(\eta>0\),
-\begin{equation}
- \lim_{T\to\infty}\frac{1}{2T}
-   \bigl|\{t\in[-T,T]:F(t)\ge\eta\}\bigr|=0.
- \label{eq:zero-density-return}
-\end{equation}
-Thus infinity has two sharply different manifestations in the same
-framework: a countable spectrum can keep adding new temporal layers without
-end, while an atomless spectrum already carries continuum projective
-capacity and spends asymptotically zero time above every fixed positive
-return threshold.
-
-\section{What previous descriptions were missing}
-
-\begin{table}[t]
-\centering
-\small
-\begin{tabular}{P{0.23\linewidth}P{0.31\linewidth}P{0.37\linewidth}}
-\toprule
-Description & What it determines & Missing datum supplied here\\
-\midrule
-Fixed-time survival/Wiener--Khinchin
- & One survival curve as cosine transform of one energy autocorrelation
- & Exact maximal system and clock quotients, arbitrary clocks, all orders
- and complete return laws\\
-Imperfect-clock dephasing
- & Clock filtering of individual coherences and control fidelity
- & All-order clock--collision reciprocity and the complete return
- distribution for every spectral type\\
-Infinite-time random-phase ensemble
- & Terminal phase law under no-resonance conditions
- & Arbitrary probability-clock transfer and the exact clock-alias
- quotient\\
-Near-resonance analysis
- & Existence and consequences of pseudo-resonances
- & Exact valuation of every relation and its full limiting coefficient\\
-Weak-coupling relaxation theory
- & Model-dependent quasi-conservation and thermalization scales
- & Observation scale of spectral relations, independent of a thermalization
- claim\\
-Hydrodynamic or random-matrix SFF
- & Collective ramp and Thouless scales in specified ensembles
- & Exact pre-ensemble action profile and first strictly positive
- fidelity-moment coefficient of each character\\
-Local perturbation expansion
- & Coefficients through a chosen order
- & Connected-spanning lower face and the exact reason a relation remains
- invisible\\
-\bottomrule
-\end{tabular}
-\caption{\textbf{The new organizing object.}  Existing theories answer
-different projected questions.  The double maximal quotient specifies the
-system and clock data retained by return; the filtered
-projective-character lattice resolves its pure-point structure.}
-\label{tab:comparison}
-\end{table}
-
-The central change of interpretation is now exact.  Recurrence is not a
-property of a bare energy list evaluated against an external parameter.  It
-is a bilinear observation law on two quotient objects: energy
-autocorrelation \(A\nu\) and unoriented clock statistics \(S\rho\).  A near
-resonance is not merely a small denominator awaiting a sufficiently late
-time.  It is a character in this system--clock quotient.  The system
-supplies its detuning; the clock supplies the transfer function evaluated at
-that detuning.
-Observation time is dual to activation valuation.  Fidelity-moment order is
-dual to positive character mass.  Local interaction geometry bounds the
-valuation.  The limiting phase law is the complete transform of this
-composition.  Temporal dimension is the quotient rank left after
-clock-aliased relations are removed.
-
-This also explains earlier local--global recurrence obstructions.  Complete
-local moment or perturbative records can fail to decide recurrence because
-they need not determine the global gap law or character-action profile.
-Homometric spectra are exactly indistinguishable when the former agrees.
-Once the latter profile and the clock law are supplied,
-Theorem~\ref{thm:action} fixes the phase law and
-\eqref{eq:arbitrary-clock-fidelity} fixes every finite recurrence polynomial.
-For general spectral measures, \eqref{eq:collision} supplies the corresponding
-complete long-time fidelity distribution.  The obstruction and the positive
-classification are therefore opposite sides of the same missing object.
-
-\section{Scope and conclusion}
-
-No dynamical conjecture, random-matrix ansatz, thermodynamic approximation or
-genericity premise enters the results.  Their four exact domains are:
-\begin{enumerate}
-\item arbitrary probability clocks and arbitrary probability energy spectra
-for system--clock reciprocity, both maximal information quotients and the
-complete survival-return distribution;
-\item arbitrary clocks and finite or countable real pure-point spectra for
-the complete phase-history law and alias quotient;
-\item analytic weak-interaction paths for the valuation atlas and temporal
-rank cascade;
-\item finite Hermitian local interaction families with simple uncoupled
-product spectrum for the connected-spanning visibility cone;
+\begin{lemma}[Differential-algebraic closure]
+\label{lem:DA-closure}
+Let $B\subseteq L\subseteq F$ be differential fields of characteristic zero.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The elements of $F$ differentially algebraic over $B$ form a
+differential subfield of $F$.
+\item If $L/B$ and $u/L$ are differentially algebraic, then $u/B$ is
+differentially algebraic.
+\item If $0\neq f\in F$, then
+\[
+ f\text{ is differentially algebraic over }B
+ \quad\Longleftrightarrow\quad
+ f'/f\text{ is differentially algebraic over }B.
+\]
+\item If $L/B$ is differentially algebraic, then for every finite
+$S\subset F$,
+\[
+ \dtrdeg_B B\langle S\rangle_\partial
+ =\dtrdeg_L L\langle S\rangle_\partial.
+\]
 \end{enumerate}
-Continuous-spectrum phase tori, thermodynamic-limit locality, open
-nonunitary dynamics and gravity are distinct observables or dynamical
-settings, not consequences silently inferred from survival return.
-Black-hole spectral form factors motivate the importance of late-time information
-\cite{BarbonRabinovici2003,Cotler2017,Saad2019}, but no statement about
-quantum gravity follows without a model satisfying the stated spectral and
-local hypotheses.
+\end{lemma}
 
-The question posed at the outset now has a complete answer.  At every moment
-order, a system supplies an additive energy-collision law and a clock pairs
-with it through its characteristic function.  All orders determine the
-entire observed return distribution.  Across all clocks, the exact maximal
-system datum is the energy-gap law \(A\nu\).  Across all spectra, the exact
-maximal clock datum is the orientation quotient \(S\rho\).  Deterministic
-clocks and balanced two-level systems attain the two converses; their first
-moments already decide the corresponding complete universal equivalence
-classes.  Absolute
-energy origin, homometric spectral information and signed clock orientation
-are therefore absent from return data for one structural reason, and no
-coarser universal quotient is possible.
-
-For pure-point spectra, phase-sensitive measurement lifts the survival
-quotient to every projective character; exact clock aliases then determine
-temporal dimension.  Analytic weak interaction assigns each active relation
-one birth horizon.  Locality prevents a relation spanning a region from
-appearing before interactions connect that region, and fidelity-moment order
-supplies a second exact detector coordinate.  Long uniform clocks reduce the
-same hierarchy to additive zero-sum collision probabilities.  Finite,
-countably layered and atomless regimes are therefore not separate recurrence
-mechanisms; they are different structures carried by \(A\nu\) and sampled
-through \(S\rho\).
-
-The resulting worldview shift is precise: quantum recurrence is a relational
-property of a system, a clock and a probe, not an intrinsic timestamp stored
-by a Hamiltonian.  Return to a state can certify repetition but cannot by
-itself supply the orientation in which time was traversed.  That orientation
-must enter through prior support information or a phase-sensitive observable.
-Sampling resonance, weak-interaction wall crossing, local spectral causality
-and observer-dependent temporal dimension are refinements of this one
-system--clock information law.
-
-\section*{Methods}
-
-\subsection*{System--clock reciprocity and completeness}
-
-The spectral difference \(X-Y\) has characteristic function
-\(|\varphi_\nu(t)|^2=F_\nu(t)\).  Independence therefore makes
-\(F_\nu(t)^n\) the characteristic function of the \(n\)-fold gap-sum law
-\(\Gamma_n(\nu)\).  Integrating against \(\rho\) and applying Fubini gives
+\begin{proof}
+For a finite set $A\subset F$, differential algebraicity over $B$ is
+equivalent to finiteness of the ordinary transcendence degree of the field
+generated by all derivatives of $A$.  The usual transcendence-degree tower
+formula then proves closure under sums, products, inverses, and derivatives,
+as well as transitivity; this gives (i) and (ii).  If $f$ is differentially
+algebraic, then $f'/f$ belongs to the differential field it generates.  In
+the converse direction, put $a=f'/f$.  Over the differentially algebraic
+extension $B\langle a\rangle_\partial$, the element $f$ satisfies the
+nonzero first-order differential polynomial $Y'-aY$; (ii) applies.  This
+proves (iii).  For (iv), apply the differential transcendence-degree tower
+formula to
 \[
- \int\!\int e^{\I tx}\,\dd\Gamma_n(\nu)(x)\,\dd\rho(t)
- =
- \int\!\int e^{\I tx}\,\dd\rho(t)\,\dd\Gamma_n(\nu)(x),
+ B\subseteq L\subseteq L\langle S\rangle_\partial
+ \quad\text{and}\quad
+ B\subseteq B\langle S\rangle_\partial
+ \subseteq L\langle S\rangle_\partial.
 \]
-which is \eqref{eq:reciprocity}.  The integrand has modulus one, so no
-additional integrability premise is needed.  The observed return law is the
-pushforward of \(\rho\) under the continuous map \(F_\nu:\R\to[0,1]\).
-Equality of all moments implies equality of integrals for polynomials;
-uniform polynomial approximation on \([0,1]\) then implies equality for
-every continuous function and hence equality of the probability measures.
+The terms contributed by $L/B$ and by its scalar extension both vanish.
+\end{proof}
 
-\subsection*{Maximality of the system and clock quotients}
+Translations stabilize $\C(z)$ and act on it semilinearly; hence they
+preserve differential algebraicity over $\C(z)$.  We shall also use the
+following classical description of elliptic function fields.
 
-If \(A\nu_1=A\nu_2\), then every convolution power
-\(\Gamma_n(\nu_1)=\Gamma_n(\nu_2)\), so
-\eqref{eq:reciprocity} gives equality of all moments for every clock and
-hence equality of complete return laws.  Conversely, take the clock
-\(\rho=\delta_t\).  Equality of complete return laws implies equality of
-their first moments for every \(t\):
+\begin{lemma}[Elliptic functions are differentially algebraic]
+\label{lem:elliptic-DA}
+Let $\Lambda=\Z\alpha+\Z\beta$ be a lattice in $\C$.  Every
+$\Lambda$-elliptic meromorphic function is differentially algebraic over
+the constant differential field $\C$, and hence over $\C(z)$.
+\end{lemma}
+
+\begin{proof}
+The field $E_\Lambda$ of $\Lambda$-elliptic functions is
+$\C(\wp_\Lambda,\wp_\Lambda')$, and
 \[
- F_{\nu_1}(t)=F_{\nu_2}(t).
+ (\wp_\Lambda')^2
+ =4\wp_\Lambda^3-g_2(\Lambda)\wp_\Lambda-g_3(\Lambda).
 \]
-These are the characteristic functions of \(A\nu_1\) and \(A\nu_2\).
-Uniqueness of characteristic functions proves \(A\nu_1=A\nu_2\).
+Thus $\wp_\Lambda$ is differentially algebraic over the constant field,
+as is $\wp_\Lambda'$, and every rational expression in the two generators
+is differentially algebraic.  Enlarging the base from $\C$ to $\C(z)$
+preserves that property.  The field description is the standard function
+field theorem for the complex torus $\C/\Lambda$; see
+\cite[Chapter~VI]{Lang1987}.
+\end{proof}
 
-Every survival fidelity is even.  Integration against \(\rho\) therefore
-equals integration against \(S\rho\), proving the forward direction of
-\eqref{eq:max-clock}.  For the converse, the balanced two-level spectrum
-has
+\section{Finite-dimensional two-translation spaces}
+\label{sec:stable}
+
+The positive phase rests on a finite-dimensional translation theorem.  Its
+proof is included because it replaces any appeal to a pre-existing
+rational-period differential equation.
+
+\begin{lemma}[Constant multipliers]
+\label{lem:constant-multipliers}
+Let $\alpha,\beta$ be real-linearly independent complex numbers.  If a
+nonzero meromorphic function $y$ satisfies
 \[
- F_{\nu_\Omega}(t)=\frac{1+\cos(\Omega t)}2 .
+ \T_\alpha y=\lambda y,
+ \qquad \T_\beta y=\mu y
 \]
-Equality of its first sampled moment for every \(\Omega\) gives equality of
-the cosine transforms, equivalently equality of the real parts of the two
-clock characteristic functions.  The characteristic function of
-\(S\rho\) is exactly this real part.  Characteristic-function uniqueness
-therefore gives \(S\rho_1=S\rho_2\).
+for nonzero constants $\lambda,\mu$, then $y$ is differentially algebraic
+over $\C(z)$.
+\end{lemma}
 
-\subsection*{Clock transfer, completeness and rank}
+\begin{proof}
+The logarithmic derivative $\ell=y'/y$ satisfies
+$\T_\alpha\ell=\ell$ and $\T_\beta\ell=\ell$, because translation commutes
+with differentiation and the multipliers are constant.  Hence $\ell$ is
+elliptic for the lattice $\Z\alpha+\Z\beta$ and is differentially algebraic
+by Lemma~\ref{lem:elliptic-DA}.  The equation $y'-\ell y=0$, followed by
+Lemma~\ref{lem:DA-closure}(ii), proves the claim.
+\end{proof}
 
-For any probability clock \(\rho\), pull one torus character back along the
-phase orbit.  It becomes \(t\mapsto e^{\I t\Delta_k}\); integration is
-exactly \(\varphi_\rho(\Delta_k)\), proving
-\eqref{eq:master-coefficient}.  On a finite torus, convergence of all
-character integrals is equivalent to weak convergence of probability
-measures because trigonometric polynomials are uniformly dense in the
-continuous functions.  On a countable product torus, every character has
-finite support; the same compactness and density argument applies to
-cylinder trigonometric polynomials.  Necessity is continuity of each
-character integral, and Fourier uniqueness gives uniqueness.
+\begin{theorem}[Finite-dimensional two-translation theorem]
+\label{thm:stable-space}
+Let $\alpha,\beta$ be real-linearly independent.  Let $W\subset\M(\C)$ be a
+finite-dimensional complex vector space of meromorphic functions satisfying
+\[
+ \T_\alpha W\subseteq W,
+ \qquad \T_\beta W\subseteq W.
+\]
+Then every element of $W$ is differentially algebraic over $\C(z)$.
+\end{theorem}
 
-A unit-modulus random variable has expectation \(1\) exactly when it equals
-\(1\) almost surely.  Hence the relations aliased by the clock are exactly
-those with \(\varphi_\rho(\Delta_k)=1\).  Passing from the full projective
-character space to the quotient by their rational span proves
-\eqref{eq:rank-conservation}.  For the unit-gap two-level spectrum every
-projective detuning is an integer.  At deterministic time \(2\pi\) every
-character is therefore \(1\); a nonzero continuous uniform window has sinc
-transfer equal to \(1\) only at zero detuning.  The two dimensions are
-respectively zero and one.
+\begin{proof}
+We argue by induction on $d=\dim_\C W$.  The assertion is immediate for
+$d=0$.  Suppose $d>0$.  The restrictions of $\T_\alpha$ and $\T_\beta$ to
+$W$ are commuting injective endomorphisms, hence commuting automorphisms.
+Over the algebraically closed field $\C$, two commuting endomorphisms have a
+common eigenvector: choose an eigenspace of the first; it is stable under the
+second, which has an eigenvector in that eigenspace.  We therefore obtain
+$0\neq y\in W$ and $\lambda,\mu\in\C^\times$ such that
+\[
+ \T_\alpha y=\lambda y,
+ \qquad \T_\beta y=\mu y.
+\]
+Lemma~\ref{lem:constant-multipliers} makes $y$ differentially algebraic.
 
-\subsection*{Analytic wall crossing and rank}
+Divide the space by $y$:
+\[
+ W'=y^{-1}W=\{w/y:w\in W\}.
+\]
+This is again $d$-dimensional, contains $1$, and is stable under both
+translations, since
+\[
+ \T_\alpha(w/y)=\lambda^{-1}(\T_\alpha w)/y,
+ \qquad
+ \T_\beta(w/y)=\mu^{-1}(\T_\beta w)/y.
+\]
+Let
+\[
+ U=\{u':u\in W'\}.
+\]
+Differentiation commutes with translations, so $U$ is translation-stable.
+Its dimension is at most $d-1$, because the kernel of differentiation on
+$W'$ contains the nonzero vector $1$.  By the induction hypothesis, every
+element of $U$ is differentially algebraic.
 
-For an active analytic detuning, divide its Taylor series by its first
-nonzero power to obtain \(|\Delta_k(g)|/g^{v(k)}\to|c_k|>0\).
-Multiplication by \(T_g=\tau g^{-r}\) gives limits \(0\), \(\tau|c_k|\), or
-unbounded magnitude according as \(r<v(k)\), \(r=v(k)\), or \(r>v(k)\).
-Continuity of sinc and its decay at infinity yield
-\eqref{eq:wall-crossing}.  A phase character is almost surely constant
-exactly when its Fourier coefficient is \(1\).  Since \(\sinc a=1\) exactly
-at \(a=0\), the constraint space is the rational span of zero-action
-characters.  Equation~\eqref{eq:rank-conservation} is rank--nullity for the
-projective character map.
+For $u\in W'$, the derivative $u'$ is therefore differentially algebraic.
+Over $\C(z)\langle u'\rangle_\partial$, the element $u$ satisfies
+$Y'-u'=0$; Lemma~\ref{lem:DA-closure}(ii) shows that $u$ is differentially
+algebraic over $\C(z)$.  Finally every $w\in W$ has the form $w=yu$, and
+Lemma~\ref{lem:DA-closure}(i) completes the induction.
+\end{proof}
 
-\subsection*{Connected-cluster lower face}
+\begin{corollary}[Finite-unipotent translation criterion]
+\label{cor:unipotent}
+Let $\beta\in\HH$ and let $f$ be a $1$-periodic meromorphic function.  If
+\begin{equation}
+ \Deltaop_\beta^N f=0
+ \label{eq:unipotent-hyp}
+\end{equation}
+for some $N\geq0$, then $f$ is differentially algebraic over $\C(z)$.
+\end{corollary}
 
-Simple uncoupled product energies give analytic eigenvalue branches under a
-finite Hermitian local perturbation.  At weighted order \(n\), each spectral
-coefficient decomposes into interaction packets of total edge weight at most
-\(n\).  A Boolean M\"obius contrast supported on \(S\) annihilates every
-packet that misses a queried site and every packet disconnected across a
-partition of \(S\).  Only connected packets spanning \(S\) survive.
-Therefore all coefficients below \(C_w(S)\) vanish, which proves
-\eqref{eq:steiner}.
+\begin{proof}
+Let
+\[
+ W=\Span_\C\{f,\Deltaop_\beta f,\ldots,
+ \Deltaop_\beta^Nf\}.
+\]
+The space is fixed by $\T_1$, because $f$ is $1$-periodic and translations
+commute.  It is stable under $\T_\beta$, since
+\[
+ \T_\beta(\Deltaop_\beta^jf)
+ =\Deltaop_\beta^jf+\Deltaop_\beta^{j+1}f,
+\]
+and the last term vanishes at the top of the chain.  The numbers $1$ and
+$\beta$ are real-linearly independent because $\operatorname{Im}\beta>0$.
+Theorem~\ref{thm:stable-space} applies.
+\end{proof}
 
-\subsection*{Exact fidelity coefficient and replica height}
+\section{Arithmetic normal form and a common step}
+\label{sec:arithmetic}
 
-If \(k\) is balanced and realized by \(m\) positive and \(m\) negative
-labels, then \(\sum_i(k_i)_+\le m\).  Equality is attained by taking
-\(p_i=(k_i)_+\) and \(q_i=(-k_i)_+\); higher orders are obtained by adding
-the same dummy label to both multisets.  This proves
-\eqref{eq:height}.  Expanding both factors of the \(m\)-th fidelity moment
-multinomially and collecting equal characters gives
-\eqref{eq:actual-coefficient}.  Full-support weights make every summand
-strictly positive, so this coefficient is nonzero exactly when a realizing
-pair exists; this proves the exact cone.  For a nondegenerate \(s\)-site
-Boolean contrast, the \(2^s\) updated configurations are distinct and carry
-alternating coefficients \(\pm1\).  Exactly half are positive, giving
-\(h(k_S)=2^{s-1}\).
+\begin{lemma}[Rank-two rational-affine normal form]
+\label{lem:normal-form}
+Let $I$ be nonempty.  Then $d_\Q(\tau)=2$ if and only if there are
+$\omega\in\HH$ and $a_i,b_i\in\Q$, with $b_i>0$, satisfying
+\eqref{eq:rational-affine}.
+\end{lemma}
 
-\subsection*{Collision extension}
+\begin{proof}
+Assume first that $d_\Q(\tau)=2$ and choose $i_0\in I$.  Put
+$\omega=\tau_{i_0}$.  The pair $1,\omega$ is rationally independent and
+therefore forms a basis of the augmented span.  Thus
+$\tau_i=a_i+b_i\omega$ for rational $a_i,b_i$.  Taking imaginary parts
+gives
+\[
+ \operatorname{Im}\tau_i=b_i\operatorname{Im}\omega,
+\]
+so $b_i>0$.  Conversely, \eqref{eq:rational-affine} places all periods in
+$\Span_\Q\{1,\omega\}$.  The dimension is at most two and at least two,
+hence equals two.
+\end{proof}
 
-Expand \(F(t)^n\) using \(2n\) independent spectral samples.  Fubini's
-theorem changes the time integral into the sinc transform of the random
-gap sum, proving \eqref{eq:collision-finite}.  As \(T\to\infty\), sinc
-converges to the indicator of zero and is bounded by one, so dominated
-convergence gives \eqref{eq:collision}.  Polynomial approximation on
-\([0,1]\) then extends moment convergence to every continuous fidelity
-statistic.
+\begin{lemma}[Existence of a common positive step]
+\label{lem:common-step}
+If $d_\Q(\tau)=2$, then there are $\beta\in\HH$, positive integers $m_i$,
+and integers $k_i$ such that
+\begin{equation}
+ \beta=m_i\tau_i+k_i\qquad(i\in I).
+ \label{eq:common-step}
+\end{equation}
+\end{lemma}
 
-\subsection*{Projective cardinal gap}
+\begin{proof}
+Use Lemma~\ref{lem:normal-form} and write
+\[
+ a_i=A_i/C_i,\qquad b_i=U_i/V_i,
+\]
+where $A_i\in\Z$ and $C_i,U_i,V_i\in\Z_{>0}$.  Choose a positive integer
+$N$ divisible by every $U_iC_i$, and put
+\[
+ \beta=N\omega,\qquad m_i=NV_i/U_i,qquad k_i=-m_i a_i.
+\]
+The divisibility choice makes $m_i$ a positive integer and $k_i$ an integer.
+Moreover $m_ib_i=N$, so
+\[
+ m_i\tau_i+k_i=m_i(a_i+b_i\omega)-m_ia_i=N\omega=\beta.
+\]
+Since $N>0$ and $\omega\in\HH$, one has $\beta\in\HH$.
+\end{proof}
 
-The support of every real energy-gap measure is closed.  If it is countable,
-its rational span has rank at most \(\aleph_0\).  If it is uncountable, every
-uncountable closed subset of the real line has cardinality continuum; its
-inclusion into its rational span gives the matching lower bound, while
-\(\R\) gives the upper bound.  This proves \eqref{eq:cardinal-gap}.
-Atomlessness passes from an energy law to its difference law, so the latter
-has uncountable support and continuum projective rank.  Markov's inequality
-bounds \eqref{eq:zero-density-return} by mean fidelity divided by \(\eta\);
-the collision law sends that mean to zero.
+The converse is also useful: if a common step \eqref{eq:common-step} exists
+with $\beta\in\HH$ and all $m_i>0$, then
+$\tau_i=-k_i/m_i+(1/m_i)\beta$, so the period family has augmented rank
+two.  Thus common-step existence is equivalent to rank two.
 
-\small
+\section{The complete rank-two phase}
+\label{sec:low}
+
+We now prove the positive half of Theorem~\ref{thm:main} directly from the
+face equations.  For a subset $S\subseteq I$, write $\Psi_S$ for the
+logarithmic derivative associated with the restricted period family.  The
+notation includes $S=\varnothing$.
+
+\begin{lemma}[One common-step difference descends a face]
+\label{lem:common-step-defect}
+Suppose \eqref{eq:common-step} holds.  If $q\in S\subseteq I$, then
+\begin{equation}
+ \Deltaop_\beta\Psi_S
+ =\sum_{j=0}^{m_q-1}\T_{j\tau_q}\Psi_{S\setminus\{q\}}.
+ \label{eq:common-step-defect}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Every $\Psi_S$ is $1$-periodic by Lemma~\ref{lem:coface}.  Hence
+$\T_\beta\Psi_S=\T_{m_q\tau_q}\Psi_S$ because
+$\beta=m_q\tau_q+k_q$ with $k_q\in\Z$.  The elementary telescoping identity
+\[
+ \T_{m_q\tau_q}-1
+ =\sum_{j=0}^{m_q-1}\T_{j\tau_q}(\T_{\tau_q}-1)
+\]
+and the coface equation \eqref{eq:coface-Psi} give
+\eqref{eq:common-step-defect}.
+\end{proof}
+
+\begin{proposition}[Facewise common-step nilpotence]
+\label{prop:nilpotence}
+Under the hypotheses of Lemma~\ref{lem:common-step-defect}, every face
+$S\subseteq I$ satisfies
+\begin{equation}
+ \Deltaop_\beta^{|S|+1}\Psi_S=0.
+ \label{eq:nilpotence}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+We induct on $d=|S|$.  For $d=0$, the terminal identity
+\eqref{eq:terminal-Psi} says that $\Psi_\varnothing$ is constant, so
+$\Deltaop_\beta\Psi_\varnothing=0$.
+
+Let $d>0$, choose $q\in S$, and assume the statement for faces with
+$d-1$ periods.  Apply $\Deltaop_\beta^d$ to
+\eqref{eq:common-step-defect}.  Difference operators commute with every
+translation, and each summand contains the face $S\setminus\{q\}$, whose
+$d$-th $\beta$-difference is zero by induction.  Therefore
+\[
+ \Deltaop_\beta^{d+1}\Psi_S
+ =\sum_{j=0}^{m_q-1}\T_{j\tau_q}
+   \Deltaop_\beta^d\Psi_{S\setminus\{q\}}=0.
+\]
+This closes the induction.
+\end{proof}
+
+\begin{proposition}[Rank two implies differential algebraicity]
+\label{prop:low-phase}
+If $d_\Q(\tau)=2$, then $\Psi_I$ and $G_I$ are differentially algebraic
+over $\C(z)$.
+\end{proposition}
+
+\begin{proof}
+Lemma~\ref{lem:common-step} supplies $\beta\in\HH$ satisfying
+\eqref{eq:common-step}.  Proposition~\ref{prop:nilpotence} gives
+\[
+ \Deltaop_\beta^{|I|+1}\Psi_I=0.
+\]
+The function $\Psi_I$ is $1$-periodic, so Corollary~\ref{cor:unipotent}
+makes it differentially algebraic.  Since $G_I$ is nonzero and
+$G_I'/G_I=\Psi_I$, Lemma~\ref{lem:DA-closure}(iii) gives differential
+algebraicity of $G_I$.
+\end{proof}
+
+This proof contains Kato's rational-ray locus as the case $k_i=0$, but it
+also handles every rational affine offset.  No differential equation from
+the rational-ray case is used.
+
+\section{A joint Ostrowski descent theorem}
+\label{sec:ostrowski}
+
+The high-rank argument requires one base-field primitive that works for two
+translations simultaneously.  The next theorem gives exactly that.  Its
+one-automorphism antecedent belongs to parameterized difference Galois
+theory \cite[Proposition~3.1]{HardouinSinger2008}; the proof below is direct
+and requires neither differential closure nor Picard--Vessiot existence.
+
+For a differential field $k$ and a set $S$ in a differential overfield,
+write $k\langle S\rangle_\partial$ for the differential field generated by
+$k\cup S$.
+
+\begin{theorem}[Joint Ostrowski descent]
+\label{thm:ostrowski}
+Let $C\subseteq k\subseteq F$ be fields of characteristic zero.  Suppose
+$F$ is a differential field, $k$ is stable under $\partial$, and every
+element of $C$ is a differential constant.  Let $(\rho_j)_{j\in J}$ be
+automorphisms of $F$ which stabilize $k$, fix $C$, and commute with
+$\partial$.  Assume that their joint fixed field is
+\[
+ F^{(\rho_j)_{j\in J}}=C.
+\]
+For $1\leq r\leq m$, suppose $y_r\in F$ and
+\[
+ \rho_j(y_r)-y_r=a_{j,r}\in k
+ \qquad(j\in J).
+\]
+Then $y_1,\ldots,y_m$ are differentially algebraically dependent over $k$
+if and only if there are operators $L_1,\ldots,L_m\in C[\partial]$, not all
+zero, and one $g\in k$ such that
+\begin{equation}
+ \rho_j(g)-g=\sum_{r=1}^mL_r(a_{j,r})
+ \qquad(j\in J).
+ \label{eq:joint-coboundary}
+\end{equation}
+In that event there is a $c\in C$ for which
+\begin{equation}
+ \sum_{r=1}^mL_r(y_r)=g+c.
+ \label{eq:joint-linear}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Assume first that the $y_r$ are differentially dependent.  Some finite jet
+family
+\[
+ x_{r,n}=\partial^ny_r,
+ \qquad 1\leq r\leq m,\quad 0\leq n\leq N,
+\]
+is algebraically dependent over $k$.  In characteristic zero, algebraic
+dependence implies linear dependence of the K\"ahler differentials in
+$\Omega_{F/k}$.  Let
+\[
+ W=\left\{(u_{r,n})\in F^{m(N+1)}:
+       \sum_{r,n}u_{r,n}\,\dd x_{r,n}=0\right\}.
+\]
+Then $W\neq0$.  Since
+\[
+ \rho_j(x_{r,n})=x_{r,n}+\partial^na_{j,r}
+\]
+and the increment lies in $k$, its relative differential is zero.  Each
+$\rho_j$ therefore acts semilinearly on $\Omega_{F/k}$ and preserves $W$.
+
+Choose a nonzero vector $u\in W$ of minimal support and divide by one of its
+nonzero coordinates so that this coordinate equals $1$.  For each $j$,
+$\rho_j(u)-u$ lies in $W$ and its support is strictly smaller unless it is
+zero, because the normalized coordinate cancels.  Minimality gives
+$\rho_j(u)=u$.  Every coordinate of $u$ lies in the joint fixed field $C$.
+We obtain constants $c_{r,n}\in C$, not all zero, such that
+\[
+ \dd_{F/k}\left(\sum_{r,n}c_{r,n}\partial^ny_r\right)=0.
+\]
+Set $L_r=\sum_n c_{r,n}\partial^n$ and
+$u_0=\sum_rL_r(y_r)$.
+
+The kernel of the universal derivation $\dd_{F/k}$ is the relative
+algebraic closure of $k$ in $F$.  To see the nontrivial direction, suppose
+$v$ in the kernel were transcendental over $k$.  Extend $v$ to a
+transcendence basis of $F/k$, define a derivation sending $v$ to $1$ and the
+other basis elements to $0$, and extend it uniquely over the remaining
+algebraic extension; separability follows from characteristic zero.  This
+contradicts the universal property of $\dd_{F/k}$.  Hence $u_0$ is algebraic
+over $k$.
+
+Let $E=k(u_0)$ and $e=[E:k]$.  Because
+\[
+ \rho_j(u_0)-u_0=\sum_rL_r(a_{j,r})\in k,
+\]
+each $\rho_j$ maps $E$ onto itself.  Define
+\[
+ g=e^{-1}\Tr_{E/k}(u_0)\in k.
+\]
+Field trace is compatible with the semilinear action: applying $\rho_j$ to
+a multiplication matrix for $u_0$ gives a multiplication matrix for
+$\rho_j(u_0)$.  Since the trace of an element of $k$ is $e$ times that
+element,
+\[
+ \rho_j(g)-g
+ =e^{-1}\Tr_{E/k}(\rho_j(u_0)-u_0)
+ =\sum_rL_r(a_{j,r}).
+\]
+Thus $u_0-g$ is fixed by every $\rho_j$ and belongs to $C$, proving
+\eqref{eq:joint-coboundary} and \eqref{eq:joint-linear}.
+
+Conversely, if \eqref{eq:joint-coboundary} holds, then
+$\sum_rL_r(y_r)-g$ is fixed by every $\rho_j$, hence equals a constant in
+$C$.  Because the operators are not all zero, this is a nonzero linear
+differential-polynomial relation over $k$.  The family is differentially
+dependent.
+\end{proof}
+
+\section{The rationally independent elliptic-gamma seed}
+\label{sec:seed}
+
+Let $\sigma,\tau\in\HH$ and suppose that $1,\sigma,\tau$ are rationally
+linearly independent.  Put
+\[
+ \Gamma(z)=G_{\{\sigma,\tau\}}(z;\sigma,\tau),
+ \qquad \Psi=\Gamma'/\Gamma.
+\]
+For $\omega\in\HH$, write
+\[
+ \theta_\omega(z)=G_{\{\omega\}}(z;\omega),
+ \qquad \lambda_\omega=\theta_\omega'/\theta_\omega,
+ \qquad \Lambda_\omega=\Z+\Z\omega.
+\]
+The coface equations give
+\begin{align}
+ \Gamma(z+1)&=\Gamma(z),
+ &\Gamma(z+\sigma)&=\theta_\tau(z)\Gamma(z),
+ &\Gamma(z+\tau)&=\theta_\sigma(z)\Gamma(z),
+ \label{eq:Gamma-shifts}\\
+ \Deltaop_1\Psi&=0,
+ &\Deltaop_\sigma\Psi&=\lambda_\tau,
+ &\Deltaop_\tau\Psi&=\lambda_\sigma.
+ \label{eq:Psi-shifts}
+\end{align}
+
+The product for $\theta_\omega$ has simple zeros precisely at
+$\Lambda_\omega$.  Direct cancellation gives
+\[
+ \theta_\omega(z+1)=\theta_\omega(z),
+ \qquad
+ \theta_\omega(z+\omega)=-e^{-2\pi iz}\theta_\omega(z).
+\]
+Consequently $\lambda_\omega$ has one simple pole, of residue one, modulo
+$\Lambda_\omega$, and
+\begin{equation}
+ \lambda_\omega(z+1)=\lambda_\omega(z),qquad
+ \lambda_\omega(z+\omega)=\lambda_\omega(z)-2\pi i.
+ \label{eq:lambda-quasi}
+\end{equation}
+It follows that $\lambda_\omega'$ and every
+$\Deltaop_h\lambda_\omega$ belong to the elliptic function field
+$E_\omega$ of $\C/\Lambda_\omega$.
+
+Define
+\[
+ P=\Z+\Z\sigma+\Z\tau,qquad K=E_\tau E_\sigma,
+\]
+where the compositum is taken inside the field of meromorphic functions on
+$\C$, and for $h\in\C$ set
+\begin{equation}
+ D_h=\Deltaop_h\Psi,qquad
+ R_h=\frac{\Gamma(z+h)}{\Gamma(z)}.
+ \label{eq:defects}
+\end{equation}
+
+\subsection{Elliptic geometry of the coefficient field}
+
+\begin{lemma}[Nondiscrete period group]
+\label{lem:nondiscrete}
+The subgroup $P$ is nondiscrete.  A meromorphic function whose period group
+contains $P$ is constant.
+\end{lemma}
+
+\begin{proof}
+Rational independence makes $P$ a free abelian group of rank three.  A
+discrete subgroup of the real plane $\C\simeq\R^2$ has rank at most two;
+hence $P$ contains a sequence of nonzero elements tending to zero.  A
+meromorphic function with these periods cannot have a pole, since the
+translates of a pole would accumulate.  It is therefore entire.  Difference
+quotients along the vanishing sequence of periods show that its derivative
+is zero, so it is constant.
+\end{proof}
+
+\begin{lemma}[Product of the two elliptic curves]
+\label{lem:product-field}
+The fields $E_\tau$ and $E_\sigma$ are algebraically disjoint over $\C$.
+Thus
+\[
+ K\cong\C\bigl((\C/\Lambda_\tau)\times
+                    (\C/\Lambda_\sigma)\bigr).
+\]
+Moreover $K/\C$ is differentially algebraic, and $K(z)$ is
+differentially algebraic over both $K$ and $\C(z)$.
+\end{lemma}
+
+\begin{proof}
+Both elliptic function fields are regular one-variable function fields over
+the algebraically closed field $\C$.  If they were not algebraically
+disjoint in their common meromorphic overfield, their compositum would have
+transcendence degree at most one.  We could then choose nonconstant
+$f\in E_\tau$ and $v\in E_\sigma$ which are algebraically dependent.  In
+particular $v$ is algebraic over $\C(f)$.
+
+Translation by $\tau$ fixes $f$.  Therefore all functions
+$v(z+n\tau)$, $n\in\Z$, satisfy the same minimal polynomial over
+$\C(f)$.  A polynomial over a field has only finitely many roots in any
+extension field, so two translates coincide.  Thus
+$v(z+N\tau)=v(z)$ for some nonzero integer $N$.  The period group of $v$
+then contains $\Z+\Z\sigma+\Z N\tau$.  Its three generators are rationally
+independent, so Lemma~\ref{lem:nondiscrete} makes $v$ constant, a
+contradiction.  Algebraic disjointness follows, and the fraction field of
+$E_\tau\otimes_\C E_\sigma$ is the function field of the product curve.
+
+By Lemma~\ref{lem:elliptic-DA}, each elliptic function field is a
+differentially algebraic extension of $\C$; hence so is their compositum
+$K$.  Finally $z$ satisfies $z'-1=0$.  Adjoining it shows that $K(z)/K$ is
+differentially algebraic, while scalar extension of $K/\C$ shows that
+$K(z)/\C(z)$ is differentially algebraic.
+\end{proof}
+
+\begin{lemma}[Specialization to one factor]
+\label{lem:specialization}
+Let $X,Y$ be irreducible complex algebraic curves, let $a$ be an automorphism
+of $X$, and let $r\in\C(X\times Y)$.  If
+\[
+ (a\times1)^*r-r=s\in\C(X),
+\]
+then there is a closed point $y\in Y$ for which the restriction
+$r_y\in\C(X)$ is defined and satisfies
+\[
+ a^*r_y-r_y=s.
+\]
+\end{lemma}
+
+\begin{proof}
+Choose affine opens in $X$ and $Y$ on which $r$ is represented by a quotient
+of regular functions.  Only a proper closed subset of $Y$ makes its
+denominator, or the denominator of $(a\times1)^*r$, vanish identically after
+specialization.  Choose $y$ outside that set.  Restriction to the fiber
+$X\times\{y\}$ is then defined on every coefficient occurring in the
+identity, commutes with the automorphism acting on $X$, and fixes
+$s\in\C(X)$.  The specialized identity is the required one.
+\end{proof}
+
+\subsection{The orbital pole obstruction}
+
+\begin{lemma}[Boundary poles of a coboundary]
+\label{lem:boundary-poles}
+Let $X$ be an elliptic curve and let $\T_a$ be translation by a nontorsion
+point.  On every $\T_a$-orbit, the polar support of
+$(\T_a-1)u$, with $u\in\C(X)$, is either empty or contains at least two
+points.
+\end{lemma}
+
+\begin{proof}
+The polar divisor of $u$ is finite.  On a fixed orbit, index its nonempty
+polar support by a finite subset of $\Z$.  At the point immediately before
+the least index, only the translated term $\T_au$ is singular.  At the point
+with greatest index, only the untranslated term $-u$ is singular.  These
+points are distinct because $a$ is nontorsion, and neither pole can cancel.
+\end{proof}
+
+\begin{lemma}[Highest-pole persistence]
+\label{lem:highest-pole}
+Let $f$ have a simple pole at $x$, and let
+$0\neq L=\sum_{j=0}^Nc_j\partial^j\in\C[\partial]$, with $c_N\neq0$.
+Then $L(f)$ has a pole of order $N+1$ at $x$ and has no poles away from the
+poles of $f$.
+\end{lemma}
+
+\begin{proof}
+In a local coordinate, write the principal part as $a(z-x)^{-1}$ with
+$a\neq0$.  The highest derivative contributes
+\[
+ c_N(-1)^NN!a(z-x)^{-N-1}.
+\]
+No lower derivative can cancel this term.  Differentiation creates no new
+pole locations.
+\end{proof}
+
+Lemma~\ref{lem:boundary-poles} is the special support form of the elliptic
+orbital-residue obstruction developed in
+\cite[Appendix~B]{DreyfusHardouinRoquesSinger2018}; complete elliptic
+summability criteria are given in \cite{ArrecheBabbitt2025}.  The elementary
+form above is sufficient here.
+
+\subsection{Exact translation-coset differential rank}
+
+\begin{theorem}[Translation-coset differential matroid]
+\label{thm:coset}
+For shifts $h_1,\ldots,h_m\in\C$, let $\nu$ be the number of distinct
+nonzero classes represented by $h_1,\ldots,h_m$ in $\C/P$.  For
+$B=K$ and for $B=\C(z)$,
+\begin{equation}
+ \dtrdeg_B B\langle D_{h_1},\ldots,D_{h_m}\rangle_\partial
+ =\dtrdeg_B B\langle R_{h_1},\ldots,R_{h_m}\rangle_\partial
+ =\nu.
+ \label{eq:coset-rank}
+\end{equation}
+Thus the zero class is a loop, each nonzero class is one parallel class, and
+distinct nonzero period classes are differentially independent.
+\end{theorem}
+
+\begin{proof}
+We first work over $K$.  The additive cocycle identities are
+\begin{equation}
+ D_{u+v}=\T_uD_v+D_u,
+ \qquad D_{-u}=-\T_{-u}D_u.
+ \label{eq:additive-cocycle}
+\end{equation}
+From \eqref{eq:Psi-shifts},
+$D_1=0$, $D_\sigma=\lambda_\tau$, and
+$D_\tau=\lambda_\sigma$.  The derivatives
+$\lambda_\tau'\in E_\tau$ and $\lambda_\sigma'\in E_\sigma$ show, by the
+first-order equations $Y'=\lambda_\omega'$, that both logarithmic theta
+derivatives are differentially algebraic over $K$.  Every translation
+stabilizes $E_\tau$, $E_\sigma$, and $K$.  Repeated use of
+\eqref{eq:additive-cocycle} therefore proves that $D_p$ is differentially
+algebraic over $K$ for every $p\in P$.  If $h-h'\in P$, the same identities
+show that adjoining $D_h$ to $K\langle D_{h'}\rangle_\partial$ contributes
+no differential transcendence.  Hence the first rank in
+\eqref{eq:coset-rank} is at most $\nu$.
+
+Choose representatives $h_1,\ldots,h_\nu$ of distinct nonzero classes.
+Commuting translations in \eqref{eq:Psi-shifts} gives
+\begin{equation}
+ \Deltaop_\sigma D_{h_i}
+ =\Deltaop_{h_i}\lambda_\tau=:b_{\tau,i}\in E_\tau,
+ \qquad
+ \Deltaop_\tau D_{h_i}
+ =\Deltaop_{h_i}\lambda_\sigma=:b_{\sigma,i}\in E_\sigma.
+ \label{eq:paired-system}
+\end{equation}
+Let
+\[
+ F=K\langle D_{h_1},\ldots,D_{h_\nu}\rangle_\partial.
+\]
+Equations \eqref{eq:paired-system} show that $F$ is stable under
+$\T_\sigma$ and $\T_\tau$.  Every element of $F$ is $1$-periodic.  If it is
+fixed by both translations, its period group contains $P$, and
+Lemma~\ref{lem:nondiscrete} makes it constant.  Therefore
+\[
+ F^{\T_\sigma,\T_\tau}=\C.
+\]
+
+Suppose that the $D_{h_i}$ were differentially dependent over $K$.
+Theorem~\ref{thm:ostrowski}, applied simultaneously to the two equations in
+\eqref{eq:paired-system}, would give operators
+$L_i\in\C[\partial]$, not all zero, and a single $g\in K$ such that
+\begin{equation}
+ (\T_\sigma-1)g=\sum_iL_i(b_{\tau,i}),
+ \qquad
+ (\T_\tau-1)g=\sum_iL_i(b_{\sigma,i}).
+ \label{eq:paired-coboundary}
+\end{equation}
+
+By Lemma~\ref{lem:product-field}, regard $g$ as a rational function on
+$X_\tau\times X_\sigma$, where
+$X_\omega=\C/\Lambda_\omega$.  In the first identity of
+\eqref{eq:paired-coboundary}, $\T_\sigma$ acts by translation on
+$X_\tau$ and trivially on $X_\sigma$, because $\sigma$ is a period of the
+second factor.  Lemma~\ref{lem:specialization} therefore gives
+$g_\tau\in E_\tau$ satisfying
+\begin{equation}
+ (\T_\sigma-1)g_\tau
+ =\sum_iL_i(b_{\tau,i}).
+ \label{eq:specialized-coboundary}
+\end{equation}
+
+Choose $i$ with $L_i\neq0$.  On $X_\tau$, the function
+$b_{\tau,i}=\T_{h_i}\lambda_\tau-\lambda_\tau$ has simple poles exactly at
+$-h_i$ and $0$.  The $\T_\sigma$-orbit of $-h_i$ contains neither $0$ nor
+any $-h_j$ with $j\neq i$: the first collision would imply $h_i\in P$, and
+the second would imply $h_i-h_j\in P$.  Thus, on that orbit, only the term
+$L_i(b_{\tau,i})$ has a pole.  Lemma~\ref{lem:highest-pole} shows that this
+pole survives in the sum, and it is the only pole of the right-hand side on
+the chosen orbit.  Translation by $\sigma$ is nontorsion on $X_\tau$;
+otherwise $n\sigma\in\Lambda_\tau$ for some $n\neq0$, contradicting the
+rational independence of $1,\sigma,\tau$.  Equation
+\eqref{eq:specialized-coboundary} now contradicts
+Lemma~\ref{lem:boundary-poles}.  Hence the representatives are
+differentially independent, and the defect rank over $K$ is $\nu$.
+
+To pass to $\C(z)$, use the common differential overfield $K(z)$.
+Lemma~\ref{lem:product-field} says that $K(z)$ is differentially algebraic
+over both $K$ and $\C(z)$.  Lemma~\ref{lem:DA-closure}(iv) therefore leaves
+the differential rank of every finite defect packet unchanged, proving the
+first equality in \eqref{eq:coset-rank} for both bases.
+
+Finally,
+\begin{equation}
+ \frac{R_h'}{R_h}=D_h.
+ \label{eq:R-logderiv}
+\end{equation}
+The differential field generated by the $R_{h_i}$ contains the corresponding
+$D_{h_i}$, while each $R_{h_i}$ satisfies the first-order equation
+$Y'-D_{h_i}Y=0$ over the field generated by the defect packet.  The
+intervening extension is differentially algebraic.  The quotient and defect
+packets therefore have the same differential transcendence degree, which
+completes the proof.
+\end{proof}
+
+\begin{corollary}[Hypertranscendence of the seed]
+\label{cor:seed}
+If $1,\sigma,\tau$ are rationally independent, then $\Gamma$ and $\Psi$ are
+hypertranscendental over $K$ and over $\C(z)$.
+\end{corollary}
+
+\begin{proof}
+The countable group $P$ is a proper subset of $\C$; choose $h\notin P$.
+Theorem~\ref{thm:coset} gives differential transcendence degree one for
+$D_h$ over $K$.  If $\Psi$ were differentially algebraic over $K$, then
+$D_h=\T_h\Psi-\Psi$ would be differentially algebraic by translation
+invariance and field closure, a contradiction.  If $\Gamma$ were
+differentially algebraic, then $\Gamma'/\Gamma=\Psi$ would be so as well.
+
+If either function were differentially algebraic over $\C(z)$, it would be
+differentially algebraic over $K(z)$.  Since $K(z)/K$ is differentially
+algebraic, transitivity would make it differentially algebraic over $K$.
+Thus both functions are hypertranscendental over both bases.
+\end{proof}
+
+\section{Propagation through the face hierarchy}
+\label{sec:propagation}
+
+\begin{lemma}[Rank-three minor extraction]
+\label{lem:minor}
+For a finite nonempty period family,
+$d_\Q(\tau)\geq3$ if and only if there are distinct $q,r\in I$ such that
+$1,\tau_q,\tau_r$ are rationally linearly independent.
+\end{lemma}
+
+\begin{proof}
+One implication is immediate.  Conversely, start with the independent set
+$\{1\}$ and select a basis from the finite spanning family
+$\{1\}\cup\{\tau_i:i\in I\}$.  Dimension at least three supplies two
+period entries.  Their labels are distinct because the selected vectors are
+independent.
+\end{proof}
+
+\begin{lemma}[Hypertranscendence escapes from a face]
+\label{lem:escape}
+Let $S\subset I$ and $q\in I\setminus S$.  If $\Psi_S$ is
+hypertranscendental over $\C(z)$, then $\Psi_{S\cup\{q\}}$ is
+hypertranscendental over $\C(z)$.
+\end{lemma}
+
+\begin{proof}
+If $\Psi_{S\cup\{q\}}$ were differentially algebraic, then its translate
+by $\tau_q$ and their difference would be differentially algebraic.
+The coface identity says that this difference is $\Psi_S$, a contradiction.
+\end{proof}
+
+\begin{proposition}[Rank at least three implies hypertranscendence]
+\label{prop:high-phase}
+If $d_\Q(\tau)\geq3$, then $\Psi_I$ and $G_I$ are
+hypertranscendental over $\C(z)$.
+\end{proposition}
+
+\begin{proof}
+Choose $q,r$ as in Lemma~\ref{lem:minor}.  The two-period face
+$\Psi_{\{q,r\}}$ is hypertranscendental by Corollary~\ref{cor:seed}.  Adjoin
+the labels in $I\setminus\{q,r\}$ one at a time and apply
+Lemma~\ref{lem:escape} at each step.  This proves hypertranscendence of
+$\Psi_I$.  If $G_I$ were differentially algebraic, its logarithmic
+derivative would be differentially algebraic by
+Lemma~\ref{lem:DA-closure}(iii), a contradiction.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+If $d_\Q(\tau)=2$, Proposition~\ref{prop:low-phase} proves differential
+algebraicity of both functions.  If $d_\Q(\tau)\geq3$,
+Proposition~\ref{prop:high-phase} proves hypertranscendence of both.
+Every nonempty upper-half-plane period family has augmented rank at least
+two, so the alternatives are exhaustive and disjoint.  The two
+hypertranscendence equivalences are the negations of the corresponding
+differential-algebraicity equivalences.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:affine}]
+The rational-affine characterization is Lemma~\ref{lem:normal-form} combined
+with Theorem~\ref{thm:main}.  The rank-three-pair characterization is
+Lemma~\ref{lem:minor} combined with the same theorem.
+\end{proof}
+
+\section{Arbitrary ambient families and generic failure}
+\label{sec:global}
+
+The classification extends to an ambient family of any cardinality without
+defining an infinite-order product: it classifies every finite section.
+
+\begin{theorem}[Rank-three graph law]
+\label{thm:graph}
+Let $A$ be any set and let $\tau:A\to\HH$.  Form a graph on $A$ by joining
+distinct $a,b$ when $1,\tau_a,\tau_b$ are rationally linearly independent.
+For every finite nonempty $S\subset A$:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $G_S$ and $\Psi_S$ are differentially algebraic exactly when $S$
+contains no edge;
+\item $G_S$ and $\Psi_S$ are hypertranscendental exactly when $S$ contains
+an edge.
+\end{enumerate}
+Moreover, exactly one of the following global alternatives holds:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item there exist $\omega\in\HH$ and $a_s,b_s\in\Q$, $b_s>0$, such that
+$\tau_s=a_s+b_s\omega$ for every $s\in A$; every finite nonempty section is
+differentially algebraic;
+\item the graph has an edge; every finite section containing that edge is
+hypertranscendental.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For finite $S$, Lemma~\ref{lem:minor} identifies the presence of an edge
+with augmented rank at least three.  Theorem~\ref{thm:main} proves (i) and
+(ii).
+
+If the graph is edgeless and $A$ is nonempty, choose $a_0\in A$ and put
+$\omega=\tau_{a_0}$.  For every $s\in A$, the triple
+$1,\omega,\tau_s$ is rationally dependent.  Since $1,\omega$ are
+independent, there are unique $a_s,b_s\in\Q$ with
+$\tau_s=a_s+b_s\omega$; taking imaginary parts gives $b_s>0$.  Conversely,
+one rational affine line contains no rank-three pair.  The empty ambient
+family satisfies (a) vacuously after choosing any $\omega\in\HH$.  If an
+edge exists, every finite section containing its endpoints contains the same
+rank-three minor, and (ii) applies.
+\end{proof}
+
+Kato's anticipated generic failure can be stated in the standard topological
+and measure-theoretic senses.
+
+\begin{proposition}[The exceptional locus is thin]
+\label{prop:generic}
+Let $n\geq2$.  In $\HH^n\subset\C^n\simeq\R^{2n}$, the set of period tuples
+for which $G$ is differentially algebraic is meagre and has Lebesgue measure
+zero.  Its complement, the hypertranscendental locus, is therefore comeagre
+and has full Lebesgue measure.
+\end{proposition}
+
+\begin{proof}
+By Corollary~\ref{cor:affine}, the exceptional set is
+\[
+ \bigcup_{\substack{a\in\Q^n,\ b\in(\Q_{>0})^n}}
+ \{(a_1+b_1\omega,\ldots,a_n+b_n\omega):\omega\in\HH\}.
+\]
+The index set is countable.  For fixed $(a,b)$, the displayed set lies in a
+real affine plane of dimension two.  Since $2<2n$, that plane has Lebesgue
+measure zero and empty interior in $\R^{2n}$; its intersection with
+$\HH^n$ is nowhere dense there.  A countable union of these sets is null and
+meagre.  The complement has the asserted properties.
+\end{proof}
+
+\section{Relation to previous work}
+\label{sec:prior}
+
+Nishizawa introduced the multiple elliptic gamma hierarchy and its recursive
+functional equations \cite{Nishizawa2001}.  Felder and Varchenko developed
+the automorphic structure of the two-period elliptic gamma function
+\cite{FelderVarchenko2000}, and Narukawa established modular and integral
+representations for the multiple hierarchy \cite{Narukawa2004}.
+
+Kato's rational-period theorem proves differential algebraicity when all
+periods are positive rational multiples of one upper-half-plane period
+\cite[Theorem~1.1]{Kato2021}.  Theorem~\ref{thm:main} both extends and
+sharpens that result.  Its low-rank proof is independent of Kato's theorem:
+the common-step nilpotence argument proves differential algebraicity on the
+larger rational-affine locus.  Its high-rank proof establishes the converse
+and leaves no finite period tuple unclassified.  Example~\ref{ex:exception}
+exhibits the special non-rational behavior anticipated in
+\cite[Remark~1.2]{Kato2021}; Proposition~\ref{prop:generic} proves that all
+such exceptions form a null meagre set.
+
+Theorem~\ref{thm:ostrowski} is a simultaneous, common-trace version of the
+Ostrowski mechanism underlying parameterized difference Galois theory
+\cite{HardouinSinger2008}.  The orbital boundary argument is consistent with
+the elliptic summability framework of
+\cite{DreyfusHardouinRoquesSinger2018,ArrecheBabbitt2025}, but only the
+elementary two-boundary-pole consequence is required and it is proved in
+Lemma~\ref{lem:boundary-poles}.  The new use of these mechanisms is the exact
+translation-coset rank law of Theorem~\ref{thm:coset} and its propagation
+through every face of the multiple elliptic gamma hierarchy.
+
+The scope is the standard one-variable Nishizawa product for arbitrary
+finite upper-half-plane period families.  Theorem~\ref{thm:graph} concerns
+all finite sections of an arbitrary ambient family; it does not posit an
+undefined infinite-order product.  Cone-indexed or geometric-family
+generalizations alter the underlying function and require separate
+classification.
+
+\section{Conclusion}
+
+For every nonempty finite upper-half-plane period tuple,
+\[
+ \boxed{
+ \begin{array}{ccl}
+ d_\Q(\tau)=2
+ &\Longleftrightarrow&
+ G_I,\,G_I'/G_I\text{ are differentially algebraic over }\C(z),\\[2mm]
+ d_\Q(\tau)\geq3
+ &\Longleftrightarrow&
+ G_I,\,G_I'/G_I\text{ are hypertranscendental over }\C(z).
+ \end{array}}
+\]
+The exceptional non-rational phase consists exactly of rational affine
+period families, or equivalently nome families of torsion-free rank one.
+Outside that locus, a rationally independent two-period face supplies an
+elliptic orbital obstruction which exact coface equations preserve at every
+higher order.  This proves the complete non-rational-period classification
+and the precise form of both the generic failure and all exceptional cases.
+
 \begin{thebibliography}{99}
 
-\bibitem{BocchieriLoinger1957}
-P.~Bocchieri and A.~Loinger,
-Quantum recurrence theorem,
-\emph{Phys.\ Rev.} \textbf{107}, 337--338 (1957).
+\bibitem{ArrecheBabbitt2025}
+C.~E. Arreche and M.~W. Babbitt,
+\newblock Panorbital residues and elliptic summability,
+\newblock arXiv:2508.18247 (2025),
+\newblock \url{https://doi.org/10.48550/arXiv.2508.18247}.
 
-\bibitem{Xuereb2023}
-J.~Xuereb, P.~Erker, F.~Meier, M.~T.~Mitchison and M.~Huber,
-Impact of imperfect timekeeping on quantum control,
-\emph{Phys.\ Rev.\ Lett.} \textbf{131}, 160204 (2023).
+\bibitem{DreyfusHardouinRoquesSinger2018}
+T.~Dreyfus, C.~Hardouin, J.~Roques, and M.~F. Singer,
+\newblock On the nature of the generating series of walks in the quarter plane,
+\newblock \emph{Invent. Math.} \textbf{213} (2018), 139--203,
+\newblock \url{https://doi.org/10.1007/s00222-018-0787-z}.
 
-\bibitem{Xu2021}
-S.~Xu, W.-J.~Gong, H.~Z.~Shen and X.~X.~Yi,
-Effective decoherence of realistic clocks: General theory and application
-to a topological insulator,
-\emph{Phys.\ Rev.\ A} \textbf{103}, 032207 (2021).
+\bibitem{FelderVarchenko2000}
+G.~Felder and A.~Varchenko,
+\newblock The elliptic gamma function and
+$\mathrm{SL}(3,\Z)\ltimes\Z^3$,
+\newblock \emph{Adv. Math.} \textbf{156} (2000), 44--76,
+\newblock \url{https://doi.org/10.1006/aima.2000.1951}.
 
-\bibitem{Friedman2017}
-H.~Friedman, D.~A.~Kessler and E.~Barkai,
-Quantum walks: The first detected passage time problem,
-\emph{Phys.\ Rev.\ E} \textbf{95}, 032141 (2017).
+\bibitem{HardouinSinger2008}
+C.~Hardouin and M.~F. Singer,
+\newblock Differential Galois theory of linear difference equations,
+\newblock \emph{Math. Ann.} \textbf{342} (2008), 333--377,
+\newblock \url{https://doi.org/10.1007/s00208-008-0238-z}.
 
-\bibitem{Mark2024}
-D.~K.~Mark, F.~Surace, A.~Elben, A.~L.~Shaw, J.~Choi, G.~Refael,
-M.~Endres and S.~Choi,
-A maximum entropy principle in deep thermalization and in Hilbert-space
-ergodicity,
-\emph{Phys.\ Rev.\ X} \textbf{14}, 041051 (2024).
+\bibitem{Kato2021}
+M.~Kato,
+\newblock Differential algebraicity of the multiple elliptic gamma function
+for a rational period,
+\newblock \emph{Funkcial. Ekvac.} \textbf{64} (2021), 225--235,
+\newblock \url{https://doi.org/10.1619/fesi.64.225}.
 
-\bibitem{RiddellPagliaroli2024}
-J.~Riddell and N.~Pagliaroli,
-No-resonance conditions, random matrices, and quantum chaotic models,
-\emph{J.\ Stat.\ Phys.} \textbf{191}, article 144 (2024).
+\bibitem{Kolchin1973}
+E.~R. Kolchin,
+\newblock \emph{Differential Algebra and Algebraic Groups},
+\newblock Pure and Applied Mathematics, vol.~54, Academic Press, New York,
+1973.
 
-\bibitem{SuraceMotrunich2023}
-F.~M.~Surace and O.~Motrunich,
-Weak integrability breaking perturbations of integrable models,
-\emph{Phys.\ Rev.\ Research} \textbf{5}, 043019 (2023).
+\bibitem{Lang1987}
+S.~Lang,
+\newblock \emph{Elliptic Functions}, second ed.,
+\newblock Graduate Texts in Mathematics, vol.~112, Springer, New York, 1987.
 
-\bibitem{WinerSwingle2022}
-M.~Winer and B.~Swingle,
-Hydrodynamic theory of the connected spectral form factor,
-\emph{Phys.\ Rev.\ X} \textbf{12}, 021009 (2022).
+\bibitem{Narukawa2004}
+A.~Narukawa,
+\newblock The modular properties and the integral representations of the
+multiple elliptic gamma functions,
+\newblock \emph{Adv. Math.} \textbf{189} (2004), 247--267,
+\newblock \url{https://doi.org/10.1016/j.aim.2003.11.009}.
 
-\bibitem{CamposVenuti2015}
-L.~Campos Venuti,
-The recurrence time in quantum mechanics,
-arXiv:1509.04352 (2015).
-
-\bibitem{Kotowski2026}
-M.~Kotowski and M.~Oszmaniec,
-Tight bounds on recurrence time in closed quantum systems,
-arXiv:2601.10409 (2026).
-
-\bibitem{GuptaShort2026}
-C.~Gupta and A.~J.~Short,
-Recurrence time for finite quantum systems,
-arXiv:2604.14995 (2026).
-
-\bibitem{Wiener1933}
-N.~Wiener,
-\emph{The Fourier Integral and Certain of Its Applications}
-(Cambridge University Press, 1933).
-
-\bibitem{RamirezKelkar2021}
-D.~F.~Ram\'irez Jim\'enez and N.~G.~Kelkar,
-Formal aspects of quantum decay,
-\emph{Phys.\ Rev.\ A} \textbf{104}, 022214 (2021).
-
-\bibitem{BarbonRabinovici2003}
-J.~L.~F.~Barbon and E.~Rabinovici,
-Very long time scales and black hole thermal equilibrium,
-\emph{JHEP} \textbf{11}, 047 (2003).
-
-\bibitem{Cotler2017}
-J.~S.~Cotler \emph{et al.},
-Black holes and random matrices,
-\emph{JHEP} \textbf{05}, 118 (2017).
-
-\bibitem{Saad2019}
-P.~Saad, S.~H.~Shenker and D.~Stanford,
-JT gravity as a matrix integral,
-arXiv:1903.11115 (2019).
+\bibitem{Nishizawa2001}
+M.~Nishizawa,
+\newblock An elliptic analogue of the multiple gamma function,
+\newblock \emph{J. Phys. A: Math. Gen.} \textbf{34} (2001), 7411--7421.
 
 \end{thebibliography}
 

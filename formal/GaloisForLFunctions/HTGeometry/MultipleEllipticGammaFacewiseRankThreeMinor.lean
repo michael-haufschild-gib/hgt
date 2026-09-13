@@ -36,13 +36,6 @@ attribute [local instance] ellipticGammaRationalBaseDomain
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-/-- The raw multiple elliptic-gamma function on the face obtained by deleting `J`. -/
-def multipleEllipticGammaFaceMero
-    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (J : Finset ι) :
-    meroField (Set.univ : Set ℂ) :=
-  multipleEllipticGammaMero
-    (multipleEllipticGammaFaceParameters τ J) (fun i => hτ i)
-
 /-- **Facewise rank-three-minor law.**  If the periods surviving a deletion face contain one
 rank-three minor, both the genuine raw face function and its logarithmic derivative are
 hypertranscendental over `ℂ(z)`.  No restriction is imposed on the other surviving periods. -/

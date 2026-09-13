@@ -291,8 +291,9 @@ Lean rules:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed arxiv papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2609.02957
-- https://arxiv.org/abs/2609.07645
+- https://arxiv.org/abs/2608.10427
+- https://arxiv.org/abs/2607.29504
+- https://arxiv.org/abs/2607.09738
   
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -442,27 +443,30 @@ and use the search tool for our lean corpus
 
 
 ## computations
-lets stop the specific work here for a while and admit that we do not know how to solve this or any hard problem around the RH proof yet.
+lets change the method and run experiments with computations.
 
-have a wide look at our routes and route candidates: docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
-also look at the high level knowledge: docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md
+here are two runpods for you to use:
+ssh root\@213.173.105.94 -p 47180 -i \~/.ssh/id\_ed25519
+ssh root\@213.173.105.97 -p 40850 -i \~/.ssh/id\_ed25519
 
-then design computation experiments that can suprise you and lead to new insights and ideas and approaches to solve the hard open mathematical problems we are stuck at.
+task:
+- design computations that can deliver new insights and knowledge or could simply surprise you
+- use extensively the scientific methods to design experiments and mingle-mangle experiments: docs/meta/scientific-method.md&#x20;
+- computations should be related to:
+  1. HB chain Identification: does the complete physical action actually produce the diagnostic used by the RH receiver, with all corrections and boundary terms retained?
+  2. HB chain Selection: does the source enforce its vanishing, for a reason independent of RH, while permitting the known critical-line zeros?
+  3. HB route in general
+  4. Riemann hypothesis and riemann zeta function in general
+  5. Anything that can deliver new insights directly or indirectly for our problem space of the riemann hypotheses
 
-do not run hour long computation and do not run computations whose result you could also predict by reasoning.
+Computation rules:
 
-use the scientific methods to design experiments: docs/meta/scientific-method.md 
-
-run the computations on this runpod: ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519
-download results and document them in a subfolder in docs/drafts/pipeline/2-fully-proven/computations. optimize python code for multicore. once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
-
-Use the search tool for the lean corpus, not to find ready solutions but new ideas to brainstorm and conjecture about. Do not just search, but also create missing mathematical knowledge with a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
-
-Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
-
-goal is met when you have found a solution to the rh proof on any existing or new route.
-
-be a real scientist here. we do not even have an idea for an approach to use to solve these open problems we face. be creative, use the scientific method, interrogate data, likely we need a completely new approach for each problem that neither we nor literature nor anything in your training data have thought of, so do explorativy experimental computations, try to "make the numbers talk"
+- no computations that you could also predict the result of if you would honestly try
+- no hour long computations
+- optimize for multi-core
+- when an experiment has finished, download results into a folder in docs/drafts/pipeline/2-fully-proven/computations. write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+- document noteworthy new insights/facts in most token-efficient form for future ai agents to read in docs/drafts/pipeline/2-fully-proven/computations/results.md (short facts, no file references, no log, no diary, just the pure facts)
+  
 
 
 you are a scientist. use these and other methods to mingle and mangle your conjectures and experiments:
@@ -517,6 +521,12 @@ working rules:
  And be a scientist man, do not just focus on one fucking narrow thing that you have somehow decided is the only way to solve the riddle, but always ask what it means for the whole proof chain when you learn something new or see something fail
 
 
+ install -d -m 700 /root/.ssh
+printf '%s\n' 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP8vO+PBmlBuPv8KtZBV3FSoeHt+xUw5pS+rcugVNfHj michael-macbook' >> /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
+
+
 ## Scientist
 
 Act like a scientist. Always ask what a scientist would do in your situation.
@@ -532,3 +542,22 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 4) Always ask "am I actually working on the right problem? Is this what I should be working on to bring the whole route forward? Or am I tunnelviewing on a minor problem that adds little to nothing while not moving the route as a whole?"
 
 5) Keep a crisp "fact log" for your own research (do not meddle with logs of other agents). Only record facts and nogos, things you have found out - it is not a diary or history log, it is a token-efficient log of the insights you have made during your research.
+
+6)  use the search tool and deep search and method search extensively
+
+7)  do not just search, also attack open problems using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... loops
+
+8) use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (january to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
+
+
+
+ establish the two core bridges to confirm that the proposed proof chain can even work:
+1. Identification: does the complete physical action actually produce the diagnostic used by the RH receiver, with all corrections and boundary terms retained?
+2. Selection: does the source enforce its vanishing, for a reason independent of RH, while permitting the known critical-line zeros?
+**Lean rules:**
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. No computations
+4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave stale lean processes running - clean up after yourself.

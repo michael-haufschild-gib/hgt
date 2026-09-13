@@ -1,0 +1,151 @@
+{
+  "tracks": 20,
+  "complete": 20,
+  "endpoints": [
+    {
+      "key": "4_1_-11_0_-1_back",
+      "q": 4,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 0,
+      "sign": -1,
+      "ancestor": 1,
+      "distance": "3.841652702867107508E-51",
+      "max_imag": 5.264782813848207e-56
+    },
+    {
+      "key": "4_1_-11_0_1_back",
+      "q": 4,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 0,
+      "sign": 1,
+      "ancestor": 2,
+      "distance": "3.2987621467694988215E-49",
+      "max_imag": 4.958017020121064e-56
+    },
+    {
+      "key": "5_1_-11_0_-1_back",
+      "q": 5,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 0,
+      "sign": -1,
+      "ancestor": 1,
+      "distance": "1.627625287053284631E-51",
+      "max_imag": 2.3270523523218328e-55
+    },
+    {
+      "key": "4_1_-11_1_-1_back",
+      "q": 4,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 1,
+      "sign": -1,
+      "ancestor": 1,
+      "distance": "3.841652702867107508E-51",
+      "max_imag": 2.9143998291987075e-55
+    },
+    {
+      "key": "4_1_-11_1_1_back",
+      "q": 4,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 1,
+      "sign": 1,
+      "ancestor": 2,
+      "distance": "3.2987621467694988215E-49",
+      "max_imag": 4.208916792405492e-55
+    },
+    {
+      "key": "5_1_-11_0_1_back",
+      "q": 5,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 0,
+      "sign": 1,
+      "ancestor": 2,
+      "distance": "7.430426686522694404E-51",
+      "max_imag": 7.099103197952743e-56
+    },
+    {
+      "key": "5_4_-11_1_1_back",
+      "q": 5,
+      "seed_gap": 4,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 1,
+      "sign": 1,
+      "ancestor": 5,
+      "distance": "4.6876310005533682024E-49",
+      "max_imag": 3.867721671491454e-55
+    },
+    {
+      "key": "5_1_-11_1_-1_back",
+      "q": 5,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 1,
+      "sign": -1,
+      "ancestor": 1,
+      "distance": "1.627625287053284631E-51",
+      "max_imag": 2.1240871126766513e-55
+    },
+    {
+      "key": "5_1_-11_1_1_back",
+      "q": 5,
+      "seed_gap": 1,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 1,
+      "sign": 1,
+      "ancestor": 2,
+      "distance": "7.430426686522694404E-51",
+      "max_imag": 8.33256548464844e-56
+    },
+    {
+      "key": "5_4_-11_1_-1_back",
+      "q": 5,
+      "seed_gap": 4,
+      "direction": [
+        -1,
+        1
+      ],
+      "interaction": 1,
+      "sign": -1,
+      "ancestor": 4,
+      "distance": "2.3654565603939881338E-49",
+      "max_imag": 1.5565389714272372e-55
+    }
+  ],
+  "maximum_challenge_shift": 3.579985082405685e-49,
+  "maximum_independent_error": 3.1172666915347772e-189,
+  "source_checks": 20,
+  "total_active_wall_seconds": 173.0806219689548,
+  "recorded_worker_seconds": 1645.5443324148655
+}

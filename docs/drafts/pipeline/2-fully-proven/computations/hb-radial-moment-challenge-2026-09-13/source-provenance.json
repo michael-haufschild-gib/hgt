@@ -1,0 +1,17 @@
+{
+  "revision": "c5201958270e866b20322bdac6d66f9d3652b0a5",
+  "source_hashes": {
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFundamentalSourceMoment.lean": "f8d7f1c1cd2469068253698915ba7384fcdb084fc9c22864d4372dcb85b065d6",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFundamentalMomentPolynomial.lean": "2ab05adf6bfbcba4ea31e9daffc0fc3d04103d243541cc5c1c89726a5041d452",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFundamentalMomentEndpoint.lean": "82edf75dfafb64ffd65b95d9287c3258eb6956f5d8dcd6e172c2e6877b888289",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFundamentalSourceMomentTransport.lean": "27e0bf433365c48da063c6486b776ba859db8c62d67ba0a7fef6dc1825040420",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalFundamentalFrequencies.lean": "d23584ab4d3c711384889fe85b7189dd4354f8ef6111aee96a03170d4b05d809",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalFundamentalMoment.lean": "19c11943e8281a4377577d7f0158c8e778b6d11b50fa24a1c00ece4299423f26",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularMasterCurrent.lean": "7e6c0bc17c1d409d6bfdc5870df739bb7c0762c658efc7ed05cb6c44c95bb00d",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFundamentalSourceSurvival.lean": "a57884f14184e367e380cdbfc0f36f40578e51b57eaa4faa39ffc5f5f7f12750",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalFixedSource.lean": "48998f4bf120332357dd036b5ecf8a54d5f3521a5840422ff13754914cd15ed7",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFixedSourceDefect.lean": "b79170670350384ab63dad486cdfa8d402a503ab530d6fee796a89dc719f6c1a",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceRealBand.lean": "5a551e3e6617ac221da1a86dafc84d0fc38f790d34972608bc81dbdce4fbf3c9"
+  },
+  "audit": "source inspection only; no Lean builds; deep index partial/pending source-only"
+}

@@ -241,9 +241,12 @@ theorem hypertranscendental_primeSquareBackwardProduct
   have hτ : ∀ p, 0 < (τ p).im := fun p => primeSquarePeriod_im_pos p
   have hQ : PeriodsIntegrallyIndependent τ :=
     periodsIntegrallyIndependent_primeSquarePeriod Subtype.val_injective
-  have hminor : MultipleEllipticGammaHasRankThreeMinor τ :=
-    multipleEllipticGammaHasRankThreeMinor_of_periodsIntegrallyIndependent
-      τ hQ (by simpa using hS)
+  have hminor : MultipleEllipticGammaHasRankThreeMinor τ := by
+    have huniv : 2 ≤ (Finset.univ : Finset S).card := by simpa using hS
+    obtain ⟨A, -, hAcard⟩ := Finset.exists_subset_card_eq huniv
+    obtain ⟨p, r, hpr, -⟩ := Finset.card_eq_two.mp hAcard
+    exact ⟨p, r, hpr,
+      linearIndependent_ellipticGammaSourcePeriods_of_periodsIntegrallyIndependent τ hQ hpr⟩
   exact
     hypertranscendental_multipleEllipticGammaBackwardProduct_of_rankThreeMinor
       τ hτ hminor

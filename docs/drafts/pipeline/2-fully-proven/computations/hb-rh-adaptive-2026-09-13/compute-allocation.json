@@ -1,0 +1,115 @@
+[
+  {
+    "family": "hb-affine-landscape-2026-09-13",
+    "seconds": 55.294011786580086,
+    "wall_seconds": 4.642083860933781,
+    "category": "broader discovery"
+  },
+  {
+    "family": "hb-affine-holdout-2026-09-13",
+    "seconds": 351.6897600144148,
+    "wall_seconds": 26.191095614805818,
+    "category": "broader discovery"
+  },
+  {
+    "family": "hb-cubic-channel-family-2026-09-13",
+    "seconds": 70.25841470062733,
+    "wall_seconds": 8.650249507278204,
+    "category": "HB identification"
+  },
+  {
+    "family": "hb-cubic-independent-2026-09-13",
+    "seconds": 30.40559956431389,
+    "wall_seconds": 7.647866979241371,
+    "category": "HB identification"
+  },
+  {
+    "family": "theta-mixed-deformation-2026-09-13",
+    "seconds": 3773.78257496655,
+    "wall_seconds": 285.226789906621,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-discriminant-challenge-2026-09-13",
+    "seconds": 313.0425936933607,
+    "wall_seconds": 55.22285616397858,
+    "category": "broader discovery"
+  },
+  {
+    "family": "dirichlet-deformation-controls-2026-09-13",
+    "seconds": 1112.7599610686302,
+    "wall_seconds": 122.9038291759789,
+    "category": "broader discovery"
+  },
+  {
+    "family": "dirichlet-discriminant-challenge-2026-09-13",
+    "seconds": 665.9909414760768,
+    "wall_seconds": 152.48138746619225,
+    "category": "broader discovery"
+  },
+  {
+    "family": "dirichlet-theta-tail-validation-2026-09-13",
+    "seconds": 814.6916535869241,
+    "wall_seconds": 79.29662908613682,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-collision-branch-2026-09-13",
+    "seconds": 539.5836742985994,
+    "wall_seconds": 233.53004859015346,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-interaction-fold-2026-09-13",
+    "seconds": 434.51045448705554,
+    "wall_seconds": 230.02531855925918,
+    "category": "broader discovery"
+  },
+  {
+    "family": "hb-radial-moment-zeros-2026-09-13",
+    "seconds": 13.450796395540237,
+    "wall_seconds": 2.1445324793457985,
+    "category": "HB radial-factor investigation",
+    "timing_scope": "recorded worker tasks; full-contour validation parent overhead not included"
+  },
+  {
+    "family": "hb-radial-moment-challenge-2026-09-13",
+    "seconds": 27.725714828819036,
+    "wall_seconds": 5.640224838629365,
+    "category": "HB radial-factor investigation",
+    "timing_scope": "recorded worker tasks; full-contour validation parent overhead not included"
+  },
+  {
+    "family": "hb-radial-source-validation-2026-09-13",
+    "seconds": 31.20687822252512,
+    "wall_seconds": 4.655289947986603,
+    "category": "HB radial-factor investigation",
+    "timing_scope": "recorded worker tasks; full-contour validation parent overhead not included"
+  },
+  {
+    "family": "affine-phase-curvature-2026-09-13",
+    "seconds": 125.01221129111946,
+    "wall_seconds": 13.15794836729765,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-zero-ancestry-2026-09-13",
+    "seconds": 791.4152275249362,
+    "wall_seconds": 78.43254481628537,
+    "category": "broader discovery",
+    "timing_scope": "parent and independent source challenge combined; source-check not separate family"
+  },
+  {
+    "family": "dirichlet-zero-ancestry-2026-09-13",
+    "seconds": 1645.5443324148655,
+    "wall_seconds": 173.0806219689548,
+    "category": "broader discovery",
+    "timing_scope": "parent and independent source challenge combined; source-check not separate family"
+  },
+  {
+    "family": "hb-unit-onset-zero-family-2026-09-13",
+    "seconds": 44.70183052867651,
+    "wall_seconds": 10.154478318989277,
+    "category": "HB onset-factor investigation"
+  }
+]

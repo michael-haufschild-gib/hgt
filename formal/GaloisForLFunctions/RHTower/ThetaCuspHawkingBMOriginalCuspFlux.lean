@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalCuspJets
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularVerticalBounds
 
 /-!
-The complete original causal angular flux and its cusp finite part.
+The complete original causal angular-action and physical-pairing cusp fluxes.
 
 The source's logarithmic jet bounds are transferred through the actual height
 coordinate derivatives. The full signed reader tail and its genuine derivative
@@ -17,6 +17,11 @@ possible independent-reader resonances. That term vanishes on the diagonal and
 on the original functional-equation reflected pair. Subtracting only the derived
 nonconstant powers gives an exact infinite-cusp angular-action limit with its
 lower boundary preserved.
+
+The one-derivative normal flux also has an exact three-term remainder and
+source-derived principal coefficients. Its integrated finite part retains the
+independent-reader constant and vanishes for the original diagonal and reflected
+readers. This supplies the cusp correction for physical scalar projection.
 
 Null coordinates remain fixed nonnegative parameters. No temporal/horizon limit
 interchange, complete spacetime pairing, or RH conclusion is asserted.
@@ -735,6 +740,160 @@ theorem reflected_cuspAction_finitePart (q : XiZeroCopy) (branch : Bool) (amp : 
         (physicalAngularParameter (xiZeroCopyReflectEquiv q)) a)) := by
   simpa only [reflected_constant_zero,zero_sub] using
     original_cuspAction_finitePart q (xiZeroCopyReflectEquiv q) branch amp p v a
+
+/-- Original normal flux for transferring one angular derivative onto the physical reader. -/
+def pairingFlux (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) (z : Point) : ℂ :=
+  D4BMOriginalAngularGreen.source q branch amp p v z*
+    D 1 (D4BMLiteralCusp.scalar (physicalAngularParameter r)) z
+
+def pairingFluxCoefficient (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) (i : Fin 3) : ℂ :=
+  coefficient q branch amp p v i*readerCoefficient r*readerExponent r
+
+def pairingPrincipalFlux (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) (z : Point) : ℂ :=
+  sourcePrincipal q branch amp p v z*D 1 (readerPrincipal r) z
+
+/-- All original principal coefficients survive the one-derivative transfer. -/
+theorem pairingPrincipalFlux_expansion (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : ℝ) {z : Point} (hz : 0 < z 1) :
+    pairingPrincipalFlux q r branch amp p v z=∑ i : Fin 3,
+      pairingFluxCoefficient q r branch amp p v i*(z 1:ℂ)^(fluxExponent q r i) := by
+  have hn : (z 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hz.ne'
+  rw [pairingPrincipalFlux,readerPrincipal_derivative r hz,sourcePrincipal,Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro i _
+  calc
+    _ = pairingFluxCoefficient q r branch amp p v i*
+        ((z 1:ℂ)^(principalExponent q i)*(z 1:ℂ)^(readerExponent r-1)) := by
+      unfold pairingFluxCoefficient
+      ring
+    _ = _ := by
+      rw [← Complex.cpow_add _ _ hn]
+      congr 2
+      unfold fluxExponent
+      ring
+
+def pairingFluxRemainder (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) (z : Point) : ℂ :=
+  pairingFlux q r branch amp p v z-pairingPrincipalFlux q r branch amp p v z
+
+/-- Exact normal-flux remainder: both principal-tail products and the tail-tail product. -/
+theorem pairingFluxRemainder_decomposition (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : ℝ) {z : Point} (hz : 0 < z 1) :
+    pairingFluxRemainder q r branch amp p v z=
+      sourceRemainder q branch amp p v z*D 1 (readerPrincipal r) z+
+      sourcePrincipal q branch amp p v z*D 1 (readerTail r) z+
+      sourceRemainder q branch amp p v z*D 1 (readerTail r) z := by
+  unfold pairingFluxRemainder pairingFlux pairingPrincipalFlux
+  rw [source_decomposition q branch amp p v z hz,reader_derivative r hz]
+  ring
+
+private theorem sourcePrincipal_moderate (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : ℝ) : Moderate (atHeight (sourcePrincipal q branch amp p v)) := by
+  have h := Moderate.sum_three (fun i z => coefficient q branch amp p v i*E (principalExponent q i) z)
+    (fun i => (Moderate.exp (principalExponent q i)).scale (coefficient q branch amp p v i))
+  apply h.congr
+  intro z
+  simp only [atHeight,sourcePrincipal,Matrix.cons_val,exp_cpow,E]
+
+private theorem pairingFluxRemainder_rapid (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : Ici (0:ℝ)) : Rapid (atHeight (pairingFluxRemainder q r branch amp p v)) := by
+  have hR := source_remainder_rapid q branch amp p v
+  have hT := tail_derivative_rapid r
+  have h := ((hR.mul_moderate (readerPrincipal_derivative_moderate r)).add
+    ((sourcePrincipal_moderate q branch amp p v) _ hT)).add (hR.mul hT)
+  apply h.congr
+  intro z
+  exact (pairingFluxRemainder_decomposition q r branch amp p v
+    (z := ![z 0,Real.exp (z 1)]) (Real.exp_pos _)).symm
+
+private theorem pairingFlux_integrable (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v Y : ℝ) (hY : 0 < Y) : IntervalIntegrable (fun X : ℝ =>
+      pairingFlux q r branch amp p v ![X,Y]) volume (-1/2:ℝ) (1/2:ℝ) := by
+  have hmap : Continuous (fun X : ℝ => (![X,Y] : Point)) := by
+    apply continuous_pi; intro i; fin_cases i <;> fun_prop
+  apply Continuous.intervalIntegrable
+  apply continuous_iff_continuousAt.mpr
+  intro X
+  have hS := (cuspLeg_contDiffOn .scalar (physicalAngularParameter r)).contDiffAt
+    (positive_nhds (z := ![X,Y]) hY)
+  have h := (source_smooth q branch amp p v (z := ![X,Y]) hY).mul (partial_smooth hS 1)
+  exact h.continuousAt.comp (f := fun t : ℝ => (![t,Y] : Point)) (x := X) hmap.continuousAt
+
+/-- Complete original width-one normal flux; no boundary term is removed. -/
+def pairingCuspFlux (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v Y : ℝ) : ℂ :=
+  ∫ X in (-1/2:ℝ)..1/2, pairingFlux q r branch amp p v ![X,Y]
+
+/-- The actual integrated normal-flux remainder decays with every complex cusp weight. -/
+theorem original_pairingCuspFlux_expansion (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : Ici (0:ℝ)) (w : ℂ) :
+    Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
+      (pairingCuspFlux q r branch amp p v (Real.exp k)-
+        ∑ i : Fin 3, pairingFluxCoefficient q r branch amp p v i*Complex.exp (fluxExponent q r i*(k:ℂ))))
+      atTop (𝓝 0) := by
+  have h := (pairingFluxRemainder_rapid q r branch amp p v).integral w
+  convert h using 1
+  funext k
+  have hp (x : ℝ) : pairingPrincipalFlux q r branch amp p v ![x,Real.exp k]=
+      ∑ i : Fin 3, pairingFluxCoefficient q r branch amp p v i*Complex.exp (fluxExponent q r i*(k:ℂ)) := by
+    simpa only [Matrix.cons_val,exp_cpow] using
+      pairingPrincipalFlux_expansion q r branch amp p v (z := ![x,Real.exp k]) (Real.exp_pos k)
+  simp only [E,atHeight,pairingFluxRemainder,Matrix.cons_val,hp]
+  rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_sub
+    (pairingFlux_integrable q r branch amp p v (Real.exp k) (Real.exp_pos k)) intervalIntegrable_const,
+    intervalIntegral.integral_const]
+  simp only [pairingCuspFlux,neg_div,sub_neg_eq_add,show (1/2:ℝ)+1/2=1 by norm_num,one_smul]
+
+/-- Constant-height normal-flux coefficient, grouping all original source powers. -/
+def pairingFluxConstant (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) : ℂ :=
+  ∑ i : Fin 3, if fluxExponent q r i=0 then pairingFluxCoefficient q r branch amp p v i else 0
+
+/-- Only the derived nonconstant normal-flux powers are subtracted. -/
+def pairingNonconstantFlux (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v k : ℝ) : ℂ :=
+  ∑ i : Fin 3, if fluxExponent q r i=0 then 0 else
+    pairingFluxCoefficient q r branch amp p v i*Complex.exp (fluxExponent q r i*(k:ℂ))
+
+private theorem pairingPowerSum_sub_nonconstant (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v k : ℝ) :
+    (∑ i : Fin 3, pairingFluxCoefficient q r branch amp p v i*Complex.exp (fluxExponent q r i*(k:ℂ)))-
+      pairingNonconstantFlux q r branch amp p v k=pairingFluxConstant q r branch amp p v := by
+  classical
+  unfold pairingNonconstantFlux pairingFluxConstant
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  by_cases hi : fluxExponent q r i=0 <;> simp [hi]
+
+/-- The original normal-flux finite part retains precisely its actual resonant coefficient. -/
+theorem original_pairingCuspFlux_finitePart (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : Ici (0:ℝ)) :
+    Tendsto (fun k : ℝ => pairingCuspFlux q r branch amp p v (Real.exp k)-
+      pairingNonconstantFlux q r branch amp p v k) atTop (𝓝 (pairingFluxConstant q r branch amp p v)) := by
+  have h0 := original_pairingCuspFlux_expansion q r branch amp p v 0
+  simp only [zero_mul,Complex.exp_zero,one_mul] at h0
+  have h := h0.add_const (pairingFluxConstant q r branch amp p v)
+  convert h using 1
+  · funext k
+    linear_combination pairingPowerSum_sub_nonconstant q r branch amp p v k
+  · simp
+
+/-- Only the two original independent-reader resonances can contribute to the normal finite part. -/
+theorem pairingFluxConstant_classification (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) :
+    pairingFluxConstant q r branch amp p v=
+      (if (r.1:ℂ)=4*(q.1:ℂ) then pairingFluxCoefficient q r branch amp p v 0 else 0)+
+      (if (r.1:ℂ)=4-4*(q.1:ℂ) then pairingFluxCoefficient q r branch amp p v 2 else 0) := by
+  classical
+  simp [pairingFluxConstant,Fin.sum_univ_three,first_exponent_zero,last_exponent_zero,middle_exponent_nonzero]
+
+/-- The diagonal and reflected original readers have no constant normal-flux contribution. -/
+theorem pairingFluxConstant_original_readers (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) :
+    pairingFluxConstant q q branch amp p v=0 ∧
+      pairingFluxConstant q (xiZeroCopyReflectEquiv q) branch amp p v=0 := by
+  have hq := exponent_nonzero_of_im_or q q (Or.inl rfl)
+  have hr : ((xiZeroCopyReflectEquiv q).1:ℂ).im= -(q.1:ℂ).im := by
+    rw [show ((xiZeroCopyReflectEquiv q).1:ℂ)=1-(q.1:ℂ) from xiZeroReflectEquiv_apply q.1]
+    simp
+  have hf := exponent_nonzero_of_im_or q (xiZeroCopyReflectEquiv q) (Or.inr hr)
+  constructor
+  · simp [pairingFluxConstant,hq]
+  · simp [pairingFluxConstant,hf]
 
 end
 end RHTower.D4BMOriginalCuspFlux

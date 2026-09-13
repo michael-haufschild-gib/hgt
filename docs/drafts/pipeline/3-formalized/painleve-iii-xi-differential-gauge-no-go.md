@@ -16,8 +16,8 @@ tests, RH, and choice of Stokes/monodromy point.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [x] 2 → 3  formalized: Lean theorems `RHTower.xi_expPolynomialGauge_hypertranscendental` and `RHTower.no_entire_differentiallyAlgebraic_expPolynomialBridge_to_xi`; targeted `lake env lean` and module build green; new declarations pass `#print axioms`
-- [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
+- [x] 2 → 3  formalized: explicit cleared tau relation, regular local PIII carrier, quadratic-pullback closure, unrestricted gauge no-go, and exact degree-two corollary; targeted `lake env lean` and module build green; new declarations pass `#print axioms`
+- [x] 3 → 4  publication-ready: standalone paper (theorem + complete proof + Door-2)
 
 ## Literature audit
 
@@ -38,8 +38,27 @@ tests, RH, and choice of Stokes/monodromy point.
   algebraic differential equation over `C(s)`.
 - `differentiallyAlgebraic_exp_polynomial` and `differentiallyAlgebraic_mul` provide the exact
   polynomial-exponential gauge closure needed for Lean.
-- No corpus theorem states the Painlevé/isomonodromic exclusion or polynomial-gauge invariance for
-  `xi`.  Lean formalization should be an applied RHTower leaf, not new irregular-RH foundations.
+- No earlier corpus theorem stated the Painlevé/isomonodromic exclusion itself.  The completed
+  formalization is an applied RHTower leaf, not new irregular-RH foundations.
+
+## Lean scope
+
+- `painleveIIID6TauRelation` is the explicit order-three, denominator-cleared polynomial relation in
+  `(t, tau, tau', tau'', tau''')`; `painleveIIID6TauRelation_ne_zero` proves it is nonzero for every
+  parameter pair.
+- `PainleveIIID6TauCarrier` asks only for one regular local tau--sigma chart satisfying the
+  cross-multiplied identity `tau * sigma = t * tau'`, the PIII sigma equation, and the exact
+  carrier identity `E(s) = exp(-2s) * tau(s(1-s))`.  It does **not** assume tau is entire or assume
+  the cleared third-order relation.
+- `PainleveIIID6TauCarrier.tau_equation` differentiates the cross-multiplied identity twice,
+  eliminates `sigma'` and `sigma''`, and derives the explicit third-order tau equation without
+  division by tau.  The result therefore includes tau zeros whenever the tau--sigma chart is
+  regular there.
+- `PainleveIIID6TauCarrier.differentiallyAlgebraic` proves such a carrier is differentially
+  algebraic once the carrier is entire.  In the no-go theorem, entireness follows from the alleged
+  global bridge `xi = exp(Q) * E`, so it is not an extra conjectural hypothesis.
+- `no_painleveIIID6_expPolynomialBridge_to_xi` excludes every polynomial gauge;
+  `planat_polynomialGauge_painleveIIID6_bridge_false` records Planat's exact `natDegree ≤ 2` form.
 
 ## Conjecture and hostile attack
 
@@ -88,23 +107,25 @@ Write `u = tau`, `u_j = d^j u/dt^j`, and
 
 `B = 2*u*(u*u_2-u_1^2) + t*(u^2*u_3-3*u*u_1*u_2+2*u_1^3)`.
 
-On any open set where `u` is nonzero,
+Differentiate the cross-multiplied defining identity `u*sigma = t*u_1`.  Without dividing by `u`,
+one obtains
 
-`sigma' = A/u^2`,
+`u^2*sigma' = A`,
 
-`sigma - t*sigma' = t^2*(u_1^2-u*u_2)/u^2`,
+`u^2*(sigma - t*sigma') = t^2*(u_1^2-u*u_2)`,
 
-`t*sigma'' = t*B/u^3`.
+`u^3*sigma'' = B`.
 
-Substitution in the sigma equation and multiplication by `u^6` gives
+Multiplying the sigma equation by `u^6` and using these three polynomial identities gives
 
 `t^2*B^2 = t^2*(2*A-(theta0+thetaInf)*u^2)^2*(u_1^2-u*u_2)
   + 4*A*(A-theta0*u^2)*(A-thetaInf*u^2)`.
 
-This is an algebraic differential equation with polynomial coefficients.  It is nonzero: coefficient
-of `u_3^2` on left is `t^4*u^4`, while right side contains no `u_3`.  Both sides are analytic after
-denominator clearing, so identity extends across zeros of `u`.  Hence every fixed-monodromy PIII
-tau-function is differentially algebraic over `C(t)`.
+This is an algebraic differential equation with polynomial coefficients.  It is nonzero: evaluation
+at `(t,u,u_1,u_2,u_3)=(1,1,0,0,1)` is `1`, independently of the monodromy parameters.  Because the
+derivation never divides by `u`, the equation is proved directly at every point of the regular
+tau--sigma chart; no continuation across tau zeros is assumed.  Hence every fixed-monodromy PIII
+tau-function is locally differentially algebraic over `C(t)`.
 
 Let `g(s)=s(1-s)` and `y(s)=u(g(s))`.  On `s != 1/2`, chain rule expresses each
 `u^(k)(g(s))` triangularly as a rational expression in `s,y,...,y^(k)`, with top coefficient
@@ -132,10 +153,19 @@ monodromy pair realizes the proposed bridge.  QED.
   PIII wild character variety.  It must enlarge representation class, not merely select monodromy.
 - **Status:** **[PROVED HERE] [FORMALIZED]** in
   `GaloisForLFunctions.RHTower.XiPainleveTauGaugeNoGo`; targeted direct Lean and module build pass.
-  Both new public theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+  Explicit relation, local-to-global carrier theorem, unrestricted no-go, and exact degree-two
+  corollary use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-08-24 — created in `1-in-progress`; internal corpus and primary-literature audits complete.
 - 2026-08-24 — hostile audit closed; paper proof promoted to `2-fully-proven`.
 - 2026-08-24 — exact survivor and closed bridge exclusion formalized; promoted to `3-formalized`.
+- 2026-09-13 — closed remaining formal gap: derived the nonzero cleared PIII tau equation directly
+  from the defining tau--sigma identity and sigma equation, proved local quadratic-pullback
+  differential algebraicity, derived carrier entireness from the alleged bridge, and added the exact
+  degree-two falsification theorem.  No heartbeat limit changes.
+- 2026-09-13 — publication manuscript completed at
+  `docs/drafts/pipeline/4-publication-ready/painleve-iii-xi-polynomial-gauge-no-go/main.tex` with a
+  clean 12-page PDF render and a full proof of completed-xi hypertranscendence, tau elimination,
+  pullback closure, and degree-unrestricted bridge exclusion.

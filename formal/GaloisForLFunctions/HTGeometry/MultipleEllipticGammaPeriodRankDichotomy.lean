@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaCommonStepNilpotence
-import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaFacewiseRankThreeMinor
+import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaFaceHierarchy
 
 /-!
 # Exact period-rank dichotomy for multiple elliptic Gamma functions

@@ -1,4 +1,11 @@
-import Mathlib
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.MeasureTheory.Group.Integral
+import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+import Mathlib.Tactic.FunProp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The translation modulus of a function with integrable derivative

@@ -28,6 +28,13 @@ def multipleEllipticGammaFaceParameters
     (τ : ι → ℂ) (J : Finset ι) : MultipleEllipticGammaFaceIndex J → ℂ :=
   fun i => τ i
 
+/-- The raw multiple elliptic-gamma function on the face obtained by deleting `J`. -/
+def multipleEllipticGammaFaceMero
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (J : Finset ι) :
+    meroField (Set.univ : Set ℂ) :=
+  multipleEllipticGammaMero
+    (multipleEllipticGammaFaceParameters τ J) (fun i => hτ i)
+
 /-- The actual logarithmic-derivative coordinate on the face obtained by deleting `J`. -/
 def multipleEllipticGammaLogDerivFaceMero
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (J : Finset ι) :

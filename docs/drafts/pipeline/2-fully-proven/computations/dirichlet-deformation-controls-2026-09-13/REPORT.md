@@ -1,0 +1,9 @@
+# Primitive Dirichlet deformation controls
+
+**Outcome:** 96 requested cells completed in 122.90 seconds; 42 returned root-solver failures. This is an initial 50-digit experiment, not validated evidence of arithmetic specificity. All remote output checksums passed.
+
+The carriers are the completions of the real primitive characters modulo 4 and 5, with parities 1 and 0. Multiplicativity, Gauss root number +1, and the functional equation were checked at 70 digits (relative error below 1.21e-70). Five positive real roots per carrier were located by sign scanning; no completeness or GRH claim is made. Each carrier gets its own moment-annihilating cosine perturbations and compensated product, using the same frequency prescription as the theta experiment. Positivity bounds concern the multiplier; positivity of a Dirichlet source kernel is not asserted.
+
+Each of four seed gaps was tested with eight signed axis/diagonal directions, comparing additive and compensated-product models on diagonals. In direction (-,+), the successful conductor-5 minima appear at lambda=.10166487 in seed gap 1 (additive) and .01158254 in seed gap 4 (product). Conductor 4 gives .38529397/.40750227 in gap 1. Unequal solver failures can create both the apparent size difference and the gap difference. A seed gap labels where the collision is located, not the ancestry of its colliding zeros.
+
+**Consequence:** no zeta-specific mechanism has been established. Challenge the conductor-5 contrast with bracketed one-dimensional discriminants in gaps 1 and 4, retaining conductor 4 as a control; recompute moments and roots at higher precision and check against character-theta integrals. Do not extend this two-variable Newton scan or interpret failed searches as absence. Full HB physical action and source-selection laws are outside this arithmetic control.

@@ -2,17 +2,19 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**267 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger,
-grouped for lookup. Each entry separates the closed result from its strongest survivor
-and remaining problem. Grouping is navigational; it does not assert mathematical independence.
+**270 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
+result from its strongest survivor and remaining problem. Grouping is navigational;
+it does not assert mathematical independence.
 
 “Closed” can mean **impossible under the stated assumptions**, **nonselective**, or
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Evidence cutoff: **2026-09-12, `0ffc77419f5423bb08c6e2fb3bdc3615e86ecf7f`**.
-Source statements and survivors below are preserved from that ledger, not newly proved or
-kernel-checked. FD2's full verdict and RBH's retired architecture remain accessible from
+Source-audit cutoff: **2026-09-13, `c5201958270e866b20322bdac6d66f9d3652b0a5`**.
+Updated records link directly to committed Lean statements; unchanged records retain their
+historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
+RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
 
 ## Browse by family
@@ -22,11 +24,11 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | [Retired original route labels](#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 17 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 32 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 45 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 46 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 22 |
 | [Singular descent, formation and completion](#completion) | 26 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 30 |
-| [Analytic roots, multiplicity and regularization](#roots) | 7 |
+| [Analytic roots, multiplicity and regularization](#roots) | 9 |
 | [Other finite, scalar and source-blind selectors](#other) | 72 |
 
 <a id="retired-labels"></a>
@@ -549,7 +551,7 @@ Exact nonempty update retains mixed products minus the absorbed singleton square
 - [E negligible-discard integer cells and fixed-power conditioned richness](#no-go-047)
 - [E nested-residual sign telescope](#no-go-023)
 - [E same-reservoir reversal or two-shift bulk reverse supply](#no-go-028)
-- [E signed column-load producer](#no-go-026)
+- [E signed column-load or normalizer-flux producer](#no-go-026)
 - [E two-sided additive-hybrid Kloosterman lift](#no-go-048)
 - [E×Gamma complete-lcm Kloosterman weld](#no-go-049)
 - [EDQ all-prime damping/majorant shortcut](#no-go-038)
@@ -727,15 +729,29 @@ Exact trivial-reservoir classification, source-excluding one-shift supply minus 
 
 <a id="no-go-026"></a>
 
-### E signed column-load producer
+### E signed column-load or normalizer-flux producer
 
 **Closed result**
 
 For every row-stochastic sign-reversing transport, twice the signed source imbalance is exactly the signed column-load defect. All-strict-half control of that defect already implies the strict-half Möbius signature and RH.
 
+For symmetric raw incidence with nonzero row masses and sign reversal on support,
+`routeE_two_mul_signedSum_eq_signedNormalizerFlux` identifies twice the signed sum with
+the signed reciprocal-degree normalizer flux. The weighted identity also retains the
+co-moving weight defect. Thus the signed normalizer formulation is the same cancellation
+burden, not a new producer; this strengthens the existing record rather than adding one.
+
 **Survivor / still open**
 
 Prove unsigned/product-conditioned load dispersion before inserting Möbius signs. Signed unit-column control is a receiver, not an independent cancellation mechanism.
+
+Positive survivor in Lean source: exact signed row-mass balance, centered row-mass defect
+identity and unsigned defect bounds. The sign-complete physical relation further gives
+`2 degree = squarefree shell mass − μ(source) × shell Möbius sum` and a variance bound.
+Independent physical shell-energy/seam estimates remain open; no new paper-proof audit
+or kernel check is claimed.
+
+Current evidence: [normalizer and weighted identities](../../../../formal/GaloisForLFunctions/RHTower/RouteESignedNormalizerFluxCircularity.lean), [physical degree decomposition](../../../../formal/GaloisForLFunctions/RHTower/RouteESignCompletePhysicalDegree.lean).
 
 [Back to family](#arithmetic) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-026)
 
@@ -1036,6 +1052,7 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [FZZ same-scale scalar Laurent fusion](#no-go-115)
 - [FZZ same-source divisor gradient flow](#no-go-117)
 - [FZZ unmarked torus averaging](#no-go-110)
+- [HB amplitude-independent stationary skew-kernel sign](#no-go-268)
 - [HB analytic or finite-rank two-leg compensation](#no-go-201)
 - [HB analytic perturbative QNM clock](#no-go-209)
 - [HB Birmingham--Mokhtari source-probe response](#no-go-207)
@@ -1250,6 +1267,32 @@ Squared odd cycle-`n` holonomy has only charges `0,±2n`; its Haar zero mode is 
 Marked `±2n` coefficients are exact beta/gamma radial squares; unit norm of the positive marked coefficient is exactly zero radial monodromy. A source Ward law must retain one marked resonance.
 
 [Back to family](#scattering) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-110)
+
+<a id="no-go-268"></a>
+
+### HB amplitude-independent stationary skew-kernel sign
+
+**Closed result**
+
+At physical rate `s=−3/2+it` and real harmonic `μ=−l`, for `t≥50` and
+`40t≤l≤2t²`, `skewSector_opposite_signs` proves the SS plateau kernel has negative
+imaginary part while the VV plateau kernel has positive imaginary part. No one
+strict kernel sign can hold independently of scalar/vector amplitudes in this family.
+This is a stationary harmonic obstruction, not a no-go for HB or a theorem about the
+sign of the complete integrated retarded action.
+
+**Survivor / still open**
+
+The exact quartic sector form and its amplitude dependence are retained. The normalized
+chiral kernel (`aS=1`, `aV=±i`), combining SS−cross+VV, has positive imaginary part
+for `t≥50`, `0≤l≤17t²/4`; the leading constant-mode form is `8(x−12y)²`
+for real `x,y` (`x=aS²`, `y=aV²`). These are scoped positive Lean-source results, not complete
+physical positivity. Source-selected amplitudes, spectral weights/tails and passage
+to the unchanged causal action remain open. No new paper-proof or kernel audit was run.
+
+Evidence: [opposite signs and sector form](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewSectorForm.lean), [chiral support band](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewChiralEdge.lean), [leading constant square](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewConstantSquare.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
 <a id="no-go-201"></a>
 
@@ -2113,11 +2156,17 @@ Denominator-safe packet restriction, all-depth support, algebraic independence, 
 
 **Closed result**
 
-Exact-order-one Schwarz-real families preserve finite jets, power-translation fields, divisibility towers, maximal translation differential independence, and finite Pick/Krein data while inserting off-real quartets. Exact seam inertia only counts supplied off-line pairs. Pole-cleared compact-open square approximation on `rightHalf` is already `RHLadder 1`. Canonical convolution roots are automatic but not absolutely summable for `Re s <= 1`; raw half partial sums and every cofinal Cayley schedule are unbounded. Fixed-anchor point-Hermite correction is terminal for every bounded, unbounded, or oscillatory depth schedule. Interior-clustered moving anchors are terminal; noncompact escape is topologically sharp and survives functional-equation, Schwarz, hypertranscendence, and finite-passport constraints. Every cofinal Cesàro pole schedule is terminal. Diagonal and dense/transport-controlled Laplace clocks are terminal.
+Exact-order-one Schwarz-real families preserve finite jets, power-translation fields, divisibility towers, maximal translation differential independence, and finite Pick/Krein data while inserting off-real quartets. Exact seam inertia only counts supplied off-line pairs. Pole-cleared compact-open square approximation on `rightHalf` is already `RHLadder 1`. Canonical convolution roots are automatic but not absolutely summable for `Re s <= 1`; raw half partial sums and every cofinal Cayley schedule are unbounded. Fixed-anchor point-Hermite correction is terminal for every bounded, unbounded, or oscillatory depth schedule. Interior-clustered moving anchors are terminal; noncompact escape is topologically sharp and survives functional-equation, Schwarz, hypertranscendence, and finite-passport constraints. Every cofinal Cesàro pole schedule is terminal. **Every positive Laplace heat clock tending to zero with a cofinal pole-degree clock is terminal**, including arbitrarily sparse schedules, for this literal squarefree-half family.
+
+The complete signed heat source diverges at `s=2/3`; the actual pole factor has norm
+at least `1/2` at every degree at least four. Hence the normalized two-clock family
+cannot be locally bounded on `rightHalf`, with no density, mesh, Kato or RH premise.
 
 **Survivor / still open**
 
 Finite passports, coefficient magnitudes, Newton/profield/differential/Jensen data, deformation continuity, finite inertia, raw Cayley schedules, fixed-anchor Hermite correction, interior-clustered anchors, all Cesàro schedules, and every positive cofinal Laplace heat clock cannot orient Xi through these literal families. The [all-clock source-mass theorem](../5-failed/dyadic-root-laplace-source-mass.md) closes sparse rescheduling and retains a strictly positive fraction of the complete signed source mass. A source-sensitive noncompact/distributed or genuinely compensated continuation remains outside these no-gos. Selberg--Delange continuation reduces separately to the undilated `ZetaBinomialHalfKatoInversion`; all fixed dilations and the summable moving-Tannery majorant follow formally. Gamma-half scaling and the now-committed harmonic-window law are joined by the actual matched local Kato boundary germ and localized Fourier decay. The final Tauberian inversion and sharp ordinary coefficient sum remain unproved. This is a candidate interface inside squarefree-half continuation, not a route label.
+
+Current evidence: [all-clock theorem](../../../../formal/GaloisForLFunctions/RHTower/SquarefreeConvolutionHalfLaplaceAllClocksNoGo.lean), [positive source-mass reserve](../../../../formal/GaloisForLFunctions/RHTower/SquarefreeConvolutionHalfHeatMass.lean), [uniform pole-factor floor](../../../../formal/GaloisForLFunctions/RHTower/PoleFactorTwoThirdsLowerBound.lean). The failed-route card records the survivor's paper/Lean status; this update performs no fresh proof check.
 
 [Back to family](#completion) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-242)
 
@@ -2893,6 +2942,8 @@ Relative signed SP-E comparison retaining and coupling the common divergent sect
 - [finite holomorphic/difference-form Yang--Baxter selector](#no-go-094)
 - [fixed-domain same-fibre holomorphic Kramers family](#no-go-061)
 - [lift multiplicity in Green/prime-port quotients](#no-go-039)
+- [paired-eta analytic square-root detour](#no-go-269)
+- [positive convolution square as a causal-root growth bound](#no-go-270)
 - [reciprocal-Xi Clifford split](#no-go-254)
 - [symplectic doubling, universal even multiplicity, or quadratic-symbol orientation](#no-go-060)
 
@@ -2965,6 +3016,58 @@ Equal horizontal lifts differ by radical vectors; descended pairings are lift-in
 Nonunique representatives are real geometry but cannot create orientation in a quotient reader. L/R/JAS/SC must alter reader holonomy, radical, source domain, or connecting class.
 
 [Back to family](#roots) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-039)
+
+<a id="no-go-269"></a>
+
+### paired-eta analytic square-root detour
+
+**Closed result**
+
+The literal `etaPair` has a simple zero at `1+2πi/log 2`, where zeta is nonzero.
+`analyticOrderAt_etaPair_auxiliary` proves order one;
+`not_exists_analytic_etaPair_squareRoot_rightHalf` excludes a global analytic
+square root of this paired source on `Re s>1/2`. The obstruction is an auxiliary
+filter zero, not an off-line Xi zero or a disproof of the dyadic-root route.
+
+**Survivor / still open**
+
+Exact pole-safe factorization identifies `etaPair` with the entire pairing correction
+times `zetaPoleUnit`, including at `s=1`. The normalized dilation correction `J_h`
+satisfies `J_0=1`, `J_h(1)=1`, and tends locally uniformly to one as `h→0`;
+`J_h × zetaPoleUnit` tends locally uniformly to `zetaPoleUnit`. These factorization,
+simple-zero and limit statements are in Lean source. Producing compatible roots with
+controlled continuation in that limit remains open; convergence of the squared sources
+does not provide it. No new paper-proof or kernel audit was run.
+
+Evidence: [auxiliary zero, no-root theorem and normalized dilation limit](../../../../formal/GaloisForLFunctions/RHTower/PairedEtaRootContinuationBoundary.lean).
+
+[Back to family](#roots) · [Current dyadic-root frontier](rh-current-frontier-map.md#dyadic-xi-roots-and-continuation)
+
+<a id="no-go-270"></a>
+
+### positive convolution square as a causal-root growth bound
+
+**Closed result**
+
+`exists_real_causal_positive_square_without_weighted_integrability` constructs a
+real causal source `g` whose convolution square is a positive, integrable, decaying
+kernel, while `g` is absolutely Laplace-integrable at weight `2` but not at `3/4`.
+Thus positivity and decay of the convolution square alone cannot give the root's
+required growth bound. This is an explicit generic counterexample, not a claim that
+the actual zeta-half source has the same growth.
+
+**Survivor / still open**
+
+The explicit source, exact almost-everywhere convolution identity and distinction
+between the two stated weights are retained in Lean source. For the actual arithmetic
+source, the logarithmic-cell remainder is weighted-summable for every `σ>1/2`;
+the old-atom baseline is the remaining source-specific burden. A successful continuation
+needs that full-source estimate, not square positivity or forbidden absolute atomwise
+interchange at zeta argument `2/3`. No new paper-proof or kernel audit was run.
+
+Evidence: [explicit positive-square counterexample](../../../../formal/GaloisForLFunctions/HTGeometry/PositiveConvolutionSquareGrowth.lean), [actual cell remainder](../../../../formal/GaloisForLFunctions/RHTower/ZetaPoleHalfCellRemainder.lean), [arithmetic interchange obstruction](../../../../formal/GaloisForLFunctions/RHTower/ZetaPoleHalfArithmeticLaplace.lean).
+
+[Back to family](#roots) · [Current causal-source frontier](rh-current-frontier-map.md#pole-cleared-zeta-half-causal-source)
 
 <a id="no-go-254"></a>
 

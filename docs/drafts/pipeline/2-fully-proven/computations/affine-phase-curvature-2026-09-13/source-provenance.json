@@ -1,0 +1,9 @@
+{
+  "revision": "c5201958270e866b20322bdac6d66f9d3652b0a5",
+  "source_hashes": {
+    "docs/drafts/pipeline/2-fully-proven/computations/dirichlet-deformation-controls-2026-09-13/experiment.py": "89419160a0d653ec11419fb28063208dddfc58ddc8eccda35b13e0fc54380d30",
+    "docs/drafts/pipeline/2-fully-proven/computations/dirichlet-deformation-controls-2026-09-13/REPORT.md": "7d8d0be8baa37f48bc37a627d7304caad30da37ec022e0daf4bd7751c9a907ad",
+    "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalAngularSourceValue.lean": "d6e1aaede58fa0ee28ba417606e20a12b81559a3110799a523554ff69f9d35af"
+  },
+  "audit": "cached source-only deep/method search; no Lean builds; physical four-Lambda theorem not transported to controls"
+}

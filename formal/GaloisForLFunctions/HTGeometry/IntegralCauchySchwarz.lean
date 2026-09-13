@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # Cauchy–Schwarz for real integrals, and its weighted form
@@ -44,21 +47,21 @@ theorem sq_le_mul_of_quadratic_nonneg {A B C : ℝ} (hC : 0 ≤ C)
     have h3 : (A - B ^ 2 / C) * C = A * C - B ^ 2 := by field_simp
     linarith [h3 ▸ h2]
 
-variable {μ : Measure ℝ}
+variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
 /-- A product of two square-integrable functions is integrable. -/
-theorem integrable_mul_of_sq_integrable {f g : ℝ → ℝ}
+theorem integrable_mul_of_sq_integrable {f g : α → ℝ}
     (hfm : AEStronglyMeasurable f μ) (hgm : AEStronglyMeasurable g μ)
     (hf2 : Integrable (fun x => f x ^ 2) μ) (hg2 : Integrable (fun x => g x ^ 2) μ) :
     Integrable (fun x => f x * g x) μ := by
   refine Integrable.mono' (g := fun x => (f x ^ 2 + g x ^ 2) / 2) ((hf2.add hg2).div_const 2)
     (hfm.mul hgm) ?_
-  filter_upwards with x
-  rw [Real.norm_eq_abs, abs_mul]
-  nlinarith [sq_nonneg (|f x| - |g x|), sq_abs (f x), sq_abs (g x)]
+  exact Filter.Eventually.of_forall fun x => by
+    rw [Real.norm_eq_abs, abs_mul]
+    nlinarith [sq_nonneg (|f x| - |g x|), sq_abs (f x), sq_abs (g x)]
 
 /-- **Cauchy–Schwarz for real integrals.** -/
-theorem sq_integral_mul_le {f g : ℝ → ℝ}
+theorem sq_integral_mul_le {f g : α → ℝ}
     (hfm : AEStronglyMeasurable f μ) (hgm : AEStronglyMeasurable g μ)
     (hf2 : Integrable (fun x => f x ^ 2) μ) (hg2 : Integrable (fun x => g x ^ 2) μ) :
     (∫ y, f y * g y ∂μ) ^ 2 ≤ (∫ y, f y ^ 2 ∂μ) * ∫ y, g y ^ 2 ∂μ := by
@@ -83,12 +86,12 @@ theorem sq_integral_mul_le {f g : ℝ → ℝ}
 
 /-- **The weighted form.**  Against a nonnegative weight, the square of the weighted mean is at
 most the total mass times the weighted mean of the square. -/
-theorem sq_integral_weighted_le {w g : ℝ → ℝ} (hw : ∀ y, 0 ≤ w y)
+theorem sq_integral_weighted_le {w g : α → ℝ} (hw : ∀ y, 0 ≤ w y)
     (hwm : AEStronglyMeasurable w μ) (hgm : AEStronglyMeasurable g μ)
     (hwi : Integrable w μ) (hwg2 : Integrable (fun y => w y * g y ^ 2) μ) :
     (∫ y, w y * g y ∂μ) ^ 2 ≤ (∫ y, w y ∂μ) * ∫ y, w y * g y ^ 2 ∂μ := by
-  set F : ℝ → ℝ := fun y => Real.sqrt (w y) with hF
-  set G : ℝ → ℝ := fun y => Real.sqrt (w y) * g y with hG
+  set F : α → ℝ := fun y => Real.sqrt (w y) with hF
+  set G : α → ℝ := fun y => Real.sqrt (w y) * g y with hG
   have hFm : AEStronglyMeasurable F μ := (Real.continuous_sqrt.comp_aestronglyMeasurable hwm)
   have hGm : AEStronglyMeasurable G μ := hFm.mul hgm
   have hFsq : (fun y => F y ^ 2) = w := by

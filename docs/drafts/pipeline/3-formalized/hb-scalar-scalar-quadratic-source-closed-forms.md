@@ -270,3 +270,131 @@ reality of the metric perturbation were each tested against the certified kernel
 receivers equivalent to RH (the reality test shows the Hermitian diagonal terms enter the rate-`(−6)` clock moment only
 at second order in the tilt, the corpus's cokernel-orbit structure). Survivor: the explicit certified detector; the
 producer, if any, is an independent evaluation of the cusp regularization face carrying `c₀(ρ)²`.
+
+### Addendum pass 23 (2026-09-13): reader distinction and the converged verdict on the producer
+
+- **Two readers.** The corpus's clock number pairs the pointwise quartic plateau `clockCoefficients` with the physical
+  test `scalar (physicalAngularParameter q)`, `physicalAngularParameter q = (ρ−1)/2`, i.e. `E*(·, ρ/2)`
+  (`tested_radial_balance`), and unfolds it at the affine weights `physicalWeight q i = 1 − ρ/2 + {2ρ, 1, 2−2ρ}`
+  (`response_period_restoration`, `sourceDeterminedPeriod`). The fourteen certified kernels of passes 11–22 are
+  exact for the two-rate pairing (`++` correction against the `−−` source, i.e. against `F = E*(·,ρ)²` itself).
+  The Xi occurrence is `lambda_at_xi`: the `y^{ρ/2}` Weyl term of the test vanishes, leaving the single term
+  `Λ(ρ−1) y^{1−ρ/2}` (`physical_principal_square_expansion`).
+- **On-line phases differ.** The `F`-reader's weights are squares of real numbers on the line, so its
+  coefficient is purely imaginary there; the tested reader carries the phase of `Λ(ρ−1)` even on the line.
+  The corpus never reads a phase: its detector is the FE-reflected unit-packet difference
+  `hbXiPeierlsSourceFECenteredQNMClockDefectCoefficient n q = I·(σ−½)·hbXiPeierlsUnitSourceFECocycle q`,
+  cocycle `A(q̃)/conj A(q)` built from the second-harmonic polarized source amplitude; a definitional receiver.
+- **Verdict on (C).** The reader sits at the scattering pole `s = ρ/2` of `φ(s) = ξ(2s−1)/ξ(2s)`, on the second
+  sheet (`Re < ½`). Zeros enter as resonances, never `L²` eigenvalues; Maass–Selberg truncated-norm
+  positivity is σ-blind on the strip; every clock coefficient of every reader is (completed-zeta values at
+  affine images of `ρ`) × (elementary kernel), and the only σ-information is the FE tilt `(2σ−1)`. This is
+  exactly the corpus's two tagged open producers, `ThetaCuspHawkingCausalHardyNoInnerDefect` (REDUCTION) and
+  `ThetaCuspHawkingFiniteReesPartnerRecoverable` (BRIDGE); the Krein/PT/Hermitian-metric readings are closed
+  by `ThetaCuspHawkingBMRadiativeSourceFEPositiveHermitianMetricNoGo` and `polePlane_index_blind`.
+- **Dissolved item.** The `c₀`-consistency question of pass 22 compared objects of different readers; the
+  `F`-reader's constant term is the Maass–Selberg value `−ξ(2ρ)²φ'(ρ)` (primary source: Edwards, arXiv
+  1809.07605, eq. (15)); no consistency condition links it to `sourceDeterminedPeriod`.
+
+### Addendum pass 24 (2026-09-13): the infinite-energy survivor, quantified (paper, Maass–Selberg)
+
+- Truncated norms of the resonant state `u₁ = E*(·,ρ/2)` and its FE-partner state `u₂ = E*(·,(1+ρ)/2)` (both
+  single-Weyl-term because `Λ(ρ)=0`): `‖Λ^Y u₁‖² = |Λ(ρ−1)|² Y^{1−σ}/(1−σ)`, `‖Λ^Y u₂‖² = |Λ(1+ρ)|² Y^{σ}/σ`;
+  truncated bilinear pairing `∫_F Λ^Y u₁·Λ^Y u₂ = 2Λ(ρ−1)Λ(1+ρ)Y^{½}`.
+- Normalized pairing modulus `= 2√(σ(1−σ))`, independent of `Y` and of every zeta value. Cauchy–Schwarz gives
+  `≤ 1` unconditionally; RH is exactly saturation (anti-linear FE transport isometric on resonant states).
+  This is the sharpest arithmetic-free receiver on the route and fixes the sign of the only second-sheet
+  positivity: it bounds the pairing from above, a producer would need it to reach the bound.
+- All Zagier-renormalized pairings of `u₁` vanish (no collision), so the tested reader's clock is necessarily
+  cutoff dependent; the `F`-reader's `c₀ = −ξ(2ρ)²φ'(ρ)` is nonzero only because `E*(·,ρ)²` is a collision.
+- Decay-rate form (corpus normalization, `hb-original-fundamental-qnm-endpoint-continuation.md`): fundamental
+  rates `5/4 − Im(ξ)/2`, `7/4 + Im(ξ)/2`; RH ⟺ slowest `= 5/4` ⟺ fastest `= 7/4` ⟺ resonance-free strip of
+  width exactly `¼` in horizon momentum. Thermal-QFT pole-strip bounds (2607.13482) and convex-cocompact
+  spectral gaps (2602.20392, 2607.18010) do not reach finite-area cusped surfaces.
+
+### Addendum pass 25 (2026-09-13): general-Fuchsian barrier, Hecke-positivity test
+
+- **Barrier.** Every input of the HB chain is group-independent (Einstein/Laplace on Rindler-AdS₄ × `Γ\H`,
+  Green/Stokes, cusp finite parts, truncation/Maass–Selberg, and the Xi occurrence read as "`φ_Γ` has a pole at
+  `ρ/2`"). For generic cusped surfaces the scattering poles are not on `Re s = ¼`: a dissolving embedded
+  eigenvalue moves to `Re s = ½ − (ε²/(4t_j²))Σ_k|⟨L^{(1)}u_{j,k},E(·,½+it_j)⟩|² + O(ε³)` (Petridis–Risager,
+  arXiv 1003.2820 / 1907.00800, Thm 1.1). A producer must therefore use `PSL(2,ℤ)` arithmeticity.
+- **Hecke test.** On `v = Λ^Y E*(·,ρ/2)`: `T_p v = p^{−a}Λ^{Y/p}u + p^{a}Λ^{pY}u`, `a = (ρ−1)/2`; exact vector-state
+  moments `ω(T_p) = 2p^{(σ−1)/2}cos((t/2)log p)`, `ω(T_p²) = 2 + 2p^{σ−1}cos(t log p)`,
+  `ω(T_p⁴) = 6 + 8p^{σ−1}cos(t log p) + 2p^{2(σ−1)}cos(2t log p)`, variance `2(1−p^{σ−1})`. All positivity and
+  Ramanujan-support constraints have slack `∝ (1−p^{σ−1})`, saturating only as `σ → 1` (strip edge).
+- **Verdict.** (C) is not solvable inside the model: the only untested arithmetic lever is the Euler product of
+  `φ` used in a non-positivity way, i.e. the classical problem. The route's positive salvage is the certified
+  explicit detector family (passes 11–22) plus the exact receivers of passes 23–25.
+
+### Addendum pass 26 (2026-09-13): constant-mode weight positive on the line (Lean)
+
+- Module `RHTower/XiLogDerivLineOnePositive.lean` (standard axioms, default heartbeats, wired after
+  `…EvenSectorSkewConstantFE`): `xiPartialFractionTerm`, `summable_xiPartialFractionTerm`
+  (from `summable_xiRelativeResolventTerm`, `−i` times the centred resolvent term), `re_logDeriv_xi_eq_tsum`,
+  `nonempty_xiZeroCopy` (Hardy), `re_logDeriv_xi_pos_of_one_le_re : 1 ≤ Re s → 0 < Re(ξ'/ξ)(s)`,
+  `re_logDeriv_xi_lineOne_pos`, `logDeriv_xi_one_sub`, `hbConstantModeWeight`, `hbConstantModeWeight_eq`
+  (`= 4|ξ(1+2it)|²·Re(ξ'/ξ)(1+2it)`), `hbConstantModeWeight_im = 0`, `hbConstantModeWeight_re_pos`.
+- Mechanism: pair each divisor copy with its reflection; the `Re 1/(ρ−½)` parts cancel, the resolvent parts
+  `(Re s − β)/|s−ρ|²` are positive because `0 < β < 1`. No zero-free-region or Littlewood input.
+- Consequence for (A)/(B): the F-reader's constant-mode weight `c₀(½+it) = −ξ(2ρ)ξ(2ρ−1)(φ'/φ)(ρ)` is real
+  and strictly positive at every height; the on-line sign law now rests only on the bulk spectral bound (ii).
+
+### Addendum pass 27 (2026-09-13): uniform kernel bound above the low band (Lean)
+
+- Module `RHTower/ThetaCuspHawkingBMEvenSectorSkewUniformBound.lean` (generator `gen_bulkbound.py`, standard
+  axioms, default heartbeats, wired after `…SkewConstantFE`): `skewPlateauMu_line_abs_im_le : 50 ≤ t → t ≤ l →
+  |Im K(−3/2+it, −l)| ≤ t⁹`, from `skewPlateauLineForm_bound_plus/minus` (`0 ≤ t⁹·D ± Form`) assembled from six
+  exact region certificates (`t ≤ l ≤ 2t²`, `2t² ≤ l ≤ 8t²`, `l ≥ 8t²`; 49–68 terms each).
+- Method: `D = 128(2+l)²(q² + 36t²)`, `q = 4t²−2−l`; leading term via `(q+2)² ≤ 2q² + 8`; region A expands
+  `q = (2(t−50)(t+50)+4998) + (2t²−l)` into nonnegative atoms; region B2 uses
+  `q² = l²/4 + (3u/2+8t²+2)(u/2+2)`, `u = l−8t²`; lower monomials absorbed by `t¹¹l²` and the `t⁹l²Q²`, `t⁹l⁴`
+  pieces with `T_n = tⁿ − 50ⁿ` slack. Direct substitution `l = t+u`, `t = 50+T` fails (twelve negative `u³` terms,
+  per-degree discriminant ratio `1.0097`), which is why the product structure must be kept.
+- Status of (ii): kernel side complete (constant mode `≥ t¹¹/2176`, low band positive, `|Im K| ≤ t⁹` above);
+  remaining are the weight-side classical inputs (Bessel on `Γ\H`, sup-norm of `E*(·,½+it)`, `Re(ξ'/ξ)(1+2it) ≫
+  1/log t`).
+
+### Addendum pass 28 (2026-09-13): growth of `Re(ξ'/ξ)` on `Re s = 1` (Lean), input (d) closed
+
+- Module `RHTower/XiLogDerivLineOneGrowth.lean` (standard axioms, default heartbeats, wired after
+  `XiLogDerivLineOnePositive`; that module now exports the paired API `xiPairedResolventTerm`,
+  `xiPairedResolventTerm_pos`, `summable_xiPairedResolventTerm`, `two_mul_re_logDeriv_xi_eq_tsum_paired`).
+- Statements: `exists_re_logDeriv_xi_lineOne_loglog_lower : ∃ c₁ > 0, ∃ t₀ ≥ 16, ∀ t ≥ t₀,
+  c₁·log log t / t ≤ Re(ξ'/ξ)(1+2it)`; `exists_re_logDeriv_xi_lineOne_ge_div : ∀ A, ∃ t₀, ∀ t ≥ t₀,
+  A/t ≤ Re(ξ'/ξ)(1+2it)`.
+- Mechanism: copies with ordinate in `(t,3t]` (`xiSupportsWindow`, multiplicity-weighted size `N(3t) − N(t)` by
+  `sum_mult_xiSupportsWindow` from `xiZeroCount_eq_pos_sum`), each paired term `≥ (1−β)/(1+t²)`, Littlewood
+  zero-free region (`Sieve.exists_littlewood_zero_free_region_abs`) for `1−β`, Riemann–von Mangoldt
+  (`exists_xiZeroCount_close` with `ε = 1/(16π)`) for the count `≥ t log t/(2π)`.
+- Why this suffices for (ii)(d): with truncation height `Y = 1` the dominance condition is `(Re ξ'/ξ)²t² > C`
+  with an absolute `C`; Backlund-strength localisation of a zero within `O(1)` of `2t` is not needed.
+- Remaining for (ii): (b) Bessel on `Γ\H` for `Λ^1 F`, (c) the `L⁴` bound of the cusp part of `E*(·,½+it)` on
+  the truncated domain (uniform `K_{it}` bounds), both classical, not in the corpus.
+
+### Addendum pass 29 (2026-09-13): uniform bound for `K_x(iτ)` (Lean), core of input (ii)(c)
+
+- Module `RHTower/BesselKImaginaryOrderUniformBound.lean` (standard axioms, default heartbeats, wired after
+  `XiLogDerivLineOneGrowth`; builds on the corpus's `besselOrderExpKernel`, `integral_besselOrderExpKernel_eq_two_mul`,
+  `integrable_besselOrderExpKernel`, `bessel_exponent_bound`).
+- Contour shift `integral_besselOrderExpKernel_eq_shifted`: the entire integrand `e^{−x cosh w + νw}` on the rectangle
+  `[−R,R]×[0,θ]` (`Complex.integral_boundary_rect_eq_zero_of_differentiableOn`), vertical sides
+  `≤ θ·exp(−x cos θ cosh R + ‖ν‖(R+θ))` which tends to `0` by the corpus's quadratic exponent bound, horizontal
+  integrals converge by `intervalIntegral_tendsto_integral`.
+- `norm_modifiedBesselKOrder_I_mul_le : 1 ≤ x → 1 ≤ τ → ‖K_x(iτ)‖ ≤ e·(log(πτ)+1)·e^{−πτ/2}` via `θ = π/2 − 1/τ`,
+  `cos θ = sin(1/τ) ≥ 2/(πτ)`, and `∫₀^∞ e^{−y cosh u}du ≤ log(2/y) + 1` for `0 < y ≤ 2` (split at `log(2/y)`,
+  `cosh u ≥ e^u/2`, `e^{s} ≥ 1+s`).
+- Remaining for (ii)(c): assembly with the Eisenstein Fourier expansion (divisor sums, `K₀` tail beyond `x > πt/2`);
+  (ii)(b) still needs the spectral decomposition of `L²(SL(2,ℤ)\H)`.
+
+### Addendum pass 30 (2026-09-13): cusp part of `E*(·,½+it)` on the compact domain (Lean), input (ii)(c) closed
+
+- Module `RHTower/EisensteinCuspTailImaginaryOrderBound.lean` (standard axioms, default heartbeats, wired after
+  `BesselKImaginaryOrderUniformBound`): `norm_eisensteinCuspTailPart_I_mul_le : 1 ≤ t → 1/2 ≤ Y ≤ 1 →
+  ‖d4BMCompletedEisensteinCuspTailPart .scalar (it) x Y‖ ≤ 20(t+1)(1+log(t+1))(1+log πt)e^{−πt/2}`.
+- Mechanism: on the line `‖n^{it}Σ_{d|n}d^{−2it}‖ ≤ d(n)`; the corpus's tail is `∑' N, coeff(N+1)·phase·√Y·K_{2π(N+1)Y}(it)`;
+  head `N < ⌈t⌉` via the uniform bound `e(log πt+1)e^{−πt/2}` and `Σ_{n≤N} d(n) ≤ N(1+log N)`
+  (`Sieve.sum_card_divisors_pow_le_polylog 1`); tail via `‖K_x(iτ)‖ ≤ e·e^{−x}` (`x cosh u ≥ x+u−1`),
+  `d(n) ≤ n`, `(N+1)e^{−π(N+1)} ≤ e^{−2}(e^{−2})^N`, geometric series; split by `Summable.sum_add_tsum_nat_add`.
+- Consequence: with the constant term `≍ e^{−πt/2}t^{3/2}|ζ(1+2it)|`, the cusp part is two powers of `t` smaller;
+  the `L⁴`-norm bookkeeping of the dominance count is now fully certified except for the spectral assembly (b).
