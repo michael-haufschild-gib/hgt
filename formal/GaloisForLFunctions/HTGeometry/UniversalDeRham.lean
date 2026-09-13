@@ -214,4 +214,9 @@ theorem oneFormExteriorDerivative_smul_D (a b : S) :
   rw [← hx, oneFormExteriorDerivative_toCotangent]
   simp [tensorExteriorDifferentialOnIdeal, x, tensorExteriorDifferential_tmul]
 
+/-- Exact universal one-forms are closed: `d₁(db) = 0`. -/
+theorem oneFormExteriorDerivative_D_eq_zero (b : S) :
+    oneFormExteriorDerivative R S (KaehlerDifferential.D R S b) = 0 := by
+  simpa using oneFormExteriorDerivative_smul_D R S (1 : S) b
+
 end GaloisForLFunctions.HTGeometry.UniversalDeRham

@@ -398,3 +398,12 @@ producer, if any, is an independent evaluation of the cusp regularization face c
   `d(n) ≤ n`, `(N+1)e^{−π(N+1)} ≤ e^{−2}(e^{−2})^N`, geometric series; split by `Summable.sum_add_tsum_nat_add`.
 - Consequence: with the constant term `≍ e^{−πt/2}t^{3/2}|ζ(1+2it)|`, the cusp part is two powers of `t` smaller;
   the `L⁴`-norm bookkeeping of the dominance count is now fully certified except for the spectral assembly (b).
+
+### Addendum pass 31 (2026-09-13): whole-spectrum one-sided kernel bound; (b) scoped
+
+- `skewPlateauMu_line_im_ge_neg : 50 ≤ t → 0 ≤ l → −t⁹ ≤ Im K(−3/2+it, −l)` added to `…SkewUniformBound`
+  (low band positivity for `l ≤ t`, uniform bound above), standard axioms.
+- Input (ii)(b) scoped as backlog card `0-backlog/hb-modular-laplacian-spectral-assembly.md` (HB-SPEC-001): with the
+  whole-spectrum bound, the assembly needs only `L²(Γ\H)`, the Friedrichs Laplacian with Lax–Milgram resolvents,
+  the Herglotz spectral measure of a vector, and "`L²` harmonic ⇒ constant"; no spectral gap, discreteness, or
+  Eisenstein Plancherel. This is the last open piece of the on-line sign law; it is receiver-side.

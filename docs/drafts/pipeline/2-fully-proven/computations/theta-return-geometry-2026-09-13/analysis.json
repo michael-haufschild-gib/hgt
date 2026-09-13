@@ -1,0 +1,42 @@
+{
+  "screen_cells": 28,
+  "screen_errors": 0,
+  "root_solver_errors": [
+    {
+      "monitor": "kappa_prime",
+      "bracket": [
+        "111.575",
+        "111.5875"
+      ],
+      "error": "Could not find root within given tolerance. (26088285546976798428756939782294785.280518219141725134906 > 1.00000000000000000000000000000000000000000000000000024"
+    },
+    {
+      "monitor": "kappa_prime",
+      "bracket": [
+        "111.575",
+        "111.58125"
+      ],
+      "error": "Could not find root within given tolerance. (102534449876613965393522584881170585840.07870906665032022 > 1.00000000000000000000000000000000000000000000000000024"
+    }
+  ],
+  "admitted_distinct_candidates": 0,
+  "candidates": [],
+  "nonadmitted_screen_points": [
+    {
+      "t": "111.15655957413986652371182989307486320690028075448",
+      "lam": "0.015014254967782864548395113365796745179612734968581",
+      "kappa": "-0.71791111923380829597127192373280930704930816626497",
+      "monitor": "kappa_prime"
+    },
+    {
+      "t": "162.97629519422932922528843025758380722401487101939",
+      "lam": "0.030999584517333334073190741024900175975543873248341",
+      "kappa": "-0.45039200449320333247801002026041742735845480517942",
+      "monitor": "kappa_prime"
+    }
+  ],
+  "maximum_100_160_coordinate_disagreement": null,
+  "maximum_independent_scaled_source_discrepancy": null,
+  "wall_seconds": 38.706383876502514,
+  "worker_seconds": 205.8162399865687
+}

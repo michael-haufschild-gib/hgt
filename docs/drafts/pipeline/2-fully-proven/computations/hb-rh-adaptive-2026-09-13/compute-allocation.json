@@ -153,5 +153,19 @@
     "wall_seconds": 281.5814561024308,
     "category": "broader discovery",
     "timing_scope": "coarse/fine witness tracks, boundary refinement and source validation under one guard"
+  },
+  {
+    "family": "theta-return-geometry-2026-09-13",
+    "seconds": 205.8162399865687,
+    "wall_seconds": 38.706383876502514,
+    "category": "broader discovery",
+    "timing_scope": "two chart grids, precision/source checks and bounded classification supplements; worker total excludes timed-out unfinished tasks"
+  },
+  {
+    "family": "dirichlet-return-geometry-2026-09-13",
+    "seconds": 1242.6558468081057,
+    "wall_seconds": 302.8452112432569,
+    "category": "broader discovery",
+    "timing_scope": "two chart grids, precision/source checks and bounded classification supplements; worker total excludes timed-out unfinished tasks"
   }
 ]

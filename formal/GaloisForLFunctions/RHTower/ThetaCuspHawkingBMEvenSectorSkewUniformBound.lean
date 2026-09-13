@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEvenSectorSkewPlateauHarmonic
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEvenSectorSkewLowBand
 
 /-!
 # Uniform bound of the scalar-scalar plateau kernel above the low band
@@ -852,6 +852,19 @@ theorem skewPlateauMu_line_abs_im_le (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl : t
   · have hmul : (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im * (128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2)) ≤ t ^ 9 * (128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2)) := by
       rw [h]; linarith
     exact le_of_mul_le_mul_right hmul hden
+
+/-- **One-sided bound at every harmonic.**  On the critical line, for `t ≥ 50` and every `l ≥ 0`,
+`Im K(−3/2+it, −l) ≥ −t⁹`: positive on the low band `l ≤ t`, bounded by `t⁹` in modulus above it.  This is the
+pointwise input the spectral assembly of the on-line clock needs on the whole spectrum. -/
+theorem skewPlateauMu_line_im_ge_neg (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl : 0 ≤ l) :
+    -t ^ 9 ≤ (skewPlateauMu ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im := by
+  rcases le_or_gt l t with h | h
+  · have hlow := skewPlateauMu_low_band_im_ge t l (by linarith) hl h
+    have hpos : (0 : ℝ) ≤ t ^ 11 / (544 * (2 + l) ^ 2) := by positivity
+    have ht9 : (0 : ℝ) ≤ t ^ 9 := by positivity
+    linarith
+  · have habs := skewPlateauMu_line_abs_im_le t l ht h.le
+    exact (abs_le.mp habs).1
 
 end
 

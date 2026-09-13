@@ -451,26 +451,43 @@ the constant differential field $\C$, and hence over $\C(z)$.
 \end{lemma}
 
 \begin{proof}
-Let $f$ be elliptic.  Its poles modulo $\Lambda$ form a finite set $S$;
-write $r_x$ for the pole order at $x\in S$.  For an effective divisor
-$D=\sum_{x\in S}d_x[x]$, the vector space of elliptic functions whose pole
-divisor is bounded by $D$ has dimension at most
-$1+\sum_xd_x$: sending a function to all coefficients in its principal
-parts has kernel consisting of holomorphic functions on the compact torus,
-and those are constant by the maximum-modulus principle.
+Let $X=\C/\Lambda$ and let $\wp=\wp_\Lambda$.  The map
+$\wp:X\to\mathbf P^1$ has degree two.  Here is the divisor argument.  Its
+Laurent expansion shows that it is even and has one double pole modulo
+$\Lambda$.  For any nonconstant elliptic function, the integral of its
+logarithmic derivative around a fundamental parallelogram is zero because
+opposite sides cancel; the argument principle therefore equates the total
+orders of its zeros and poles.  Applied to $\wp-\wp(w)$, this gives two zeros
+counted with multiplicity.  Evenness supplies $w$ and $-w$, so these are all
+the points of a generic fiber; the same statement with multiplicity persists
+at the branch points.  Thus the deck involution is $z\mapsto-z$ and,
+equivalently, $\wp(z)=\wp(w)$ precisely when
+$w\equiv z$ or $w\equiv-z\pmod\Lambda$.  Hence every even elliptic function
+descends through $\wp$ to a meromorphic function on $\mathbf P^1$, and is
+therefore a rational function of $\wp$.
 
-For $0\leq a,b\leq N$, the monomial $f^a(f')^b$ has at $x$ pole order at
-most $N(2r_x+1)$.  All $(N+1)^2$ such monomials thus lie in a vector space of
-dimension at most
+For an arbitrary elliptic function $f$, split
 \[
- 1+N\sum_{x\in S}(2r_x+1).
+ f=f_{\mathrm e}+f_{\mathrm o},\qquad
+ f_{\mathrm e}(z)=\frac{f(z)+f(-z)}2,\qquad
+ f_{\mathrm o}(z)=\frac{f(z)-f(-z)}2.
 \]
-For sufficiently large $N$, the number of monomials exceeds this dimension.
-A nontrivial complex linear relation among them gives a nonzero polynomial
-$P\in\C[Y_0,Y_1]$ with $P(f,f')=0$.  Hence $f$ is differentially algebraic
-over $\C$, and enlarging the base to $\C(z)$ preserves the relation.  This
-dimension argument is also the elementary core of the usual description
-$E_\Lambda=\C(\wp_\Lambda,\wp_\Lambda')$; see
+The first summand is even.  The quotient $f_{\mathrm o}/\wp'$ is also even
+and elliptic; as a quotient of meromorphic functions it extends
+meromorphically across the zeros of $\wp'$.  The preceding descent gives
+rational functions $R,S\in\C(T)$ such that
+\[
+ f=R(\wp)+\wp'S(\wp).
+\]
+Finally,
+\[
+ (\wp')^2=4\wp^3-g_2(\Lambda)\wp-g_3(\Lambda)
+\]
+is a nonzero algebraic differential equation for $\wp$.  It follows by
+differential-field closure that $\wp'$, every rational expression in
+$\wp,\wp'$, and hence $f$ are differentially algebraic over $\C$.  The same
+relation is valid after enlarging the base to $\C(z)$.  The degree-two
+description of $\wp$ used above is proved, for example, in
 \cite[Chapter~VI]{Lang1987}.
 \end{proof}
 
@@ -514,8 +531,9 @@ Then every element of $W$ is differentially algebraic over $\C(z)$.
 \end{theorem}
 
 \begin{proof}
-We argue by induction on $d=\dim_\C W$.  The assertion is immediate for
-$d=0$.  Suppose $d>0$.  The restrictions of $\T_\alpha$ and $\T_\beta$ to
+We argue by induction on $d=\dim_\C W$.  If $d=0$, then $W=\{0\}$ and its
+only element satisfies the polynomial equation $Y_0=0$.  Suppose $d>0$.
+The restrictions of $\T_\alpha$ and $\T_\beta$ to
 $W$ are commuting injective endomorphisms, hence commuting automorphisms.
 Over the algebraically closed field $\C$, two commuting endomorphisms have a
 common eigenvector: choose an eigenspace of the first; it is stable under the
@@ -836,14 +854,15 @@ dependent.
 Let $\sigma,\tau\in\HH$ and suppose that $1,\sigma,\tau$ are rationally
 linearly independent.  Put
 \[
- \Gamma(z)=G_{\{\sigma,\tau\}}(z;\sigma,\tau),
+ \Gamma(z)=G_{\{1,2\}}(z;\sigma,\tau),
  \qquad \Psi=\Gamma'/\Gamma.
 \]
 For $\omega\in\HH$, write
 \[
- \theta_\omega(z)=G_{\{\omega\}}(z;\omega),
+ \theta_\omega(z)=G_{\{1\}}(z;\omega),
  \qquad \lambda_\omega=\theta_\omega'/\theta_\omega,
- \qquad \Lambda_\omega=\Z+\Z\omega.
+ \qquad \Lambda_\omega=\Z+\Z\omega,
+ \qquad q=e^{2\pi i\omega}.
 \]
 The coface equations give
 \begin{align}
@@ -928,23 +947,26 @@ differentially algebraic over both $K$ and $\C(z)$.
 \end{lemma}
 
 \begin{proof}
-The principal-part argument in Lemma~\ref{lem:elliptic-DA} shows that any two
-elliptic functions for a fixed lattice are algebraically dependent.  Each
-$E_\omega$ therefore has transcendence degree one over $\C$; it is regular
-because $\C$ is algebraically closed.  If $E_\tau$ and $E_\sigma$ were not
+The representation in Lemma~\ref{lem:elliptic-DA} shows that each
+$E_\omega$ is a one-variable function field over $\C$.  It is regular:
+every element algebraic over the algebraically closed field $\C$ belongs to
+$\C$, and separability is automatic in characteristic zero.  If
+$E_\tau$ and $E_\sigma$ were not
 algebraically disjoint in their common meromorphic overfield, their
 compositum would have transcendence degree one.  Choose nonconstant
-$f\in E_\tau$ and $v\in E_\sigma$.  Then $f$ is transcendental over $\C$,
-the compositum is a finitely generated extension of transcendence degree
-one, and hence $v$ is algebraic over $\C(f)$.
+$f\in E_\tau$ and $v\in E_\sigma$.  They are algebraically dependent.
+Because $f$ is transcendental over $\C$, a nonzero polynomial relation
+between $f$ and $v$, viewed as a polynomial in $v$, proves that $v$ is
+algebraic over $\C(f)$.
 
 Translation by $\tau$ fixes $f$.  Therefore all functions
 $v(z+n\tau)$, $n\in\Z$, satisfy the same minimal polynomial over
 $\C(f)$.  A polynomial over a field has only finitely many roots in any
 extension field, so two translates coincide.  Thus
 $v(z+N\tau)=v(z)$ for some nonzero integer $N$.  The period group of $v$
-then contains $\Z+\Z\sigma+\Z N\tau$.  Its three generators are rationally
-independent, so Lemma~\ref{lem:nondiscrete} makes $v$ constant, a
+then contains $P_N=\Z+\Z\sigma+\Z N\tau$.  Its three generators are
+rationally independent.  The proof of Lemma~\ref{lem:nondiscrete}, applied
+to $P_N$, makes $P_N$ nondiscrete and then makes $v$ constant, a
 contradiction.  Algebraic disjointness follows.  The coordinate rings on
 affine opens of $X_\tau\times X_\sigma$ are tensor products of the
 corresponding coordinate rings on the two factors.  Taking fraction fields
@@ -973,10 +995,10 @@ $r_y\in\C(X)$ is defined and satisfies
 \end{lemma}
 
 \begin{proof}
-On suitable affine opens, write
+On suitable affine opens $X^\circ\subset X$ and $Y^\circ\subset Y$, write
 \[
  r=\frac{\sum_i f_i\otimes p_i}{\sum_j g_j\otimes q_j},
- \qquad f_i,g_j\in\C(X),\quad p_i,q_j\in\C[Y].
+ \qquad f_i,g_j\in\C(X),\quad p_i,q_j\in\mathcal O(Y^\circ),
 \]
 Combine terms so that the nonzero $g_j$ are linearly independent over
 $\C$.  The denominator specializes to zero in $\C(X)$ only if every
@@ -1064,12 +1086,19 @@ $D_1=0$, $D_\sigma=\lambda_\tau$, and
 $D_\tau=\lambda_\sigma$.  The derivatives
 $\lambda_\tau'\in E_\tau$ and $\lambda_\sigma'\in E_\sigma$ show, by the
 first-order equations $Y'=\lambda_\omega'$, that both logarithmic theta
-derivatives are differentially algebraic over $K$.  Every translation
-stabilizes $E_\tau$, $E_\sigma$, and $K$.  Repeated use of
-\eqref{eq:additive-cocycle} therefore proves that $D_p$ is differentially
-algebraic over $K$ for every $p\in P$.  If $h-h'\in P$, the same identities
-show that adjoining $D_h$ to $K\langle D_{h'}\rangle_\partial$ contributes
-no differential transcendence.  Hence the first rank in
+derivatives are differentially algebraic over $K$.  Translating an elliptic
+function preserves each of its periods, so every translation stabilizes
+$E_\tau$, $E_\sigma$, and $K$.  Starting from $D_1,D_\sigma,D_\tau$ and
+using the two cocycle identities proves by induction on the sum of the
+absolute values of the integer coefficients that $D_p$ is differentially
+algebraic over $K$ for every $p\in P$.  If $h-h'=p\in P$, then
+\[
+ D_h=D_{h'+p}=\T_{h'}D_p+D_{h'}.
+\]
+The first term on the right is differentially algebraic over $K$.
+Consequently adjoining $D_h$ to
+$K\langle D_{h'}\rangle_\partial$ contributes no differential
+transcendence.  Hence the first rank in
 \eqref{eq:coset-rank} is at most $\nu$.
 
 Choose representatives $h_1,\ldots,h_\nu$ of distinct nonzero classes.
@@ -1087,8 +1116,11 @@ Let
  F=K\langle D_{h_1},\ldots,D_{h_\nu}\rangle_\partial.
 \]
 Equations \eqref{eq:paired-system} show that $F$ is stable under
-$\T_\sigma$ and $\T_\tau$.  Every element of $F$ is $1$-periodic.  If it is
-fixed by both translations, its period group contains $P$, and
+$\T_\sigma$ and $\T_\tau$: translating a generator adds the corresponding
+element $b_{\omega,i}\in K$, and translation commutes with differentiation.
+The fields $K$ and every generator $D_{h_i}$ are $1$-periodic, so every
+element of $F$ is $1$-periodic.  If it is fixed by both translations, its
+period group contains $P$, and
 Lemma~\ref{lem:nondiscrete} makes it constant.  Therefore
 \[
  F^{\T_\sigma,\T_\tau}=\C.
@@ -1106,8 +1138,7 @@ $L_i\in\C[\partial]$, not all zero, and a single $g\in K$ such that
 \end{equation}
 
 By Lemma~\ref{lem:product-field}, regard $g$ as a rational function on
-$X_\tau\times X_\sigma$, where
-$X_\omega=\C/\Lambda_\omega$.  In the first identity of
+$X_\tau\times X_\sigma$.  In the first identity of
 \eqref{eq:paired-coboundary}, $\T_\sigma$ acts by translation on
 $X_\tau$ and trivially on $X_\sigma$, because $\sigma$ is a period of the
 second factor.  Lemma~\ref{lem:specialization} therefore gives
@@ -1120,7 +1151,8 @@ $g_\tau\in E_\tau$ satisfying
 
 Choose $i$ with $L_i\neq0$.  On $X_\tau$, the function
 $b_{\tau,i}=\T_{h_i}\lambda_\tau-\lambda_\tau$ has simple poles exactly at
-$-h_i$ and $0$.  The $\T_\sigma$-orbit of $-h_i$ contains neither $0$ nor
+$-h_i$ and $0$: these are distinct because $h_i\notin P$ and
+$\Lambda_\tau\subset P$.  The $\T_\sigma$-orbit of $-h_i$ contains neither $0$ nor
 any $-h_j$ with $j\neq i$: the first collision would imply $h_i\in P$, and
 the second would imply $h_i-h_j\in P$.  Thus, on that orbit, only the term
 $L_i(b_{\tau,i})$ has a pole.  Lemma~\ref{lem:highest-pole} shows that this
@@ -1182,7 +1214,9 @@ $1,\tau_q,\tau_r$ are rationally linearly independent.
 \end{lemma}
 
 \begin{proof}
-One implication is immediate.  Conversely, start with the independent set
+If $1,\tau_q,\tau_r$ are independent, their span is a three-dimensional
+subspace of the augmented span, so $d_\Q(\tau)\geq3$.  Conversely, start
+with the independent set
 $\{1\}$ and select a basis from the finite spanning family
 $\{1\}\cup\{\tau_i:i\in I\}$.  Dimension at least three supplies two
 period entries.  Their labels are distinct because the selected vectors are
@@ -1282,10 +1316,11 @@ and measure-theoretic senses.
 
 \begin{proposition}[The exceptional locus is thin]
 \label{prop:generic}
-Let $n\geq2$.  In $\HH^n\subset\C^n\simeq\R^{2n}$, the set of period tuples
-for which $G$ is differentially algebraic is meagre and has Lebesgue measure
-zero.  Its complement, the hypertranscendental locus, is therefore comeagre
-and has full Lebesgue measure.
+Let $n\geq2$, and write $G=G_{\{1,\ldots,n\}}$.  In
+$\HH^n\subset\C^n\simeq\R^{2n}$, the set of period tuples for which $G$ is
+differentially algebraic is meagre and has Lebesgue measure zero.  Its
+complement, the hypertranscendental locus, is therefore comeagre and has full
+Lebesgue measure.
 \end{proposition}
 
 \begin{proof}
@@ -1375,6 +1410,14 @@ elliptic orbital obstruction which exact coface equations preserve at every
 higher order.  This proves the complete non-rational-period classification
 and the precise form of both the generic failure and all exceptional cases.
 
+\section*{Declaration of artificial-intelligence use and contributions}
+
+All research, mathematical proof development and verification, and manuscript
+writing for this article were performed by artificial-intelligence agents using
+OpenAI GPT~6, Anthropic Fable~5, Anthropic Fable~5.1, and Anthropic Opus~5.  The human
+contributor acted solely as project manager and did not conduct the research,
+develop or verify the proofs, or write the manuscript.
+
 \begin{thebibliography}{99}
 \raggedright
 
@@ -1431,7 +1474,8 @@ multiple elliptic gamma functions,
 \bibitem{Nishizawa2001}
 M.~Nishizawa,
 \newblock An elliptic analogue of the multiple gamma function,
-\newblock \emph{J. Phys. A: Math. Gen.} \textbf{34} (2001), 7411--7421.
+\newblock \emph{J. Phys. A: Math. Gen.} \textbf{34} (2001), 7411--7421,
+\newblock \url{https://doi.org/10.1088/0305-4470/34/36/320}.
 
 \end{thebibliography}
 

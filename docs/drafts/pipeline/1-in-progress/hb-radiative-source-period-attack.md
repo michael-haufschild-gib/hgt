@@ -4289,3 +4289,86 @@ source statements are not fresh compiler verification. Candidate statements,
 source arguments and ingredient suggestions were inspected; no generated
 ingredient suggestion was accepted as a proof. All four owned searches ended.
 No numerical experiment or Lean process was started.
+
+## Literal-source logarithmic translation and the complete-action phase test
+
+**Question.** The even cosine deformations preserve the seam cancellation (own
+fact 103), but need not preserve the literal source's complex logarithmic phase
+law. Can that stronger law force the complete radiative cut to vanish?
+
+**Complete-action test.** The existing
+`d4GaugeFixedTeukolskyPhaseNormalizedPeierlsCubicCut_smul_conj` gives
+`C(A*p,conj(A)*m)=normSq(A)^2*C(p,m)`. In particular, the target cut is invariant
+under every unit phase, including the theta atom's sign monodromy. There is no
+odd-character selection of this four-leg quantity. This uses the actual
+abstract cut definition, including both quadratic response terms, rather than
+discarding the mixed term. Its identification with the complete original HB
+action remains an independent obligation. No vanishing follows from this
+phase invariance; it cannot be promoted to a physical-clock Ward identity.
+
+**Source contour test: exact classification.** For the literal complex atom,
+
+`a_z(n)=(A_z*n^4+B_z*n^2)*exp(-q_z*n^2)`,
+
+where `A_z=4*pi^2*exp(z/2)*exp(z)^4 != 0`,
+`B_z=-6*pi*exp(z/2)*exp(z)^2`, and `q_z=pi*exp(z)^2`.
+The original labelled series is summable if and only if
+`Re(exp(z)^2)>0`, equivalently `cos(2*Im(z))>0`.
+For positive real part, a polynomial times a decaying geometric sequence is a
+summable majorant. For nonpositive real part, the exponential has norm at least
+one and the nonzero quartic leading coefficient gives a term norm at least
+`n^2` eventually. Summability is impossible there.
+
+Every continuous curve from `x` to `x+2*pi*i`, for any real `x`, has a point with
+imaginary part `pi/4`. At that point the series is not summable. Hence no full
+logarithmic turn stays in the admission set of the original series, including
+curved paths. Nevertheless, the exact discrete law survives:
+
+`sum_n a_(z+2*pi*i)(n) = -sum_n a_z(n)`.
+
+On the admitted domain this relates convergent sums in different components.
+These results are the positive classification exposed by failure of the raw
+contour-shift mechanism. They do not assert a natural boundary for every
+possible analytic continuation.
+
+**Meaning for the whole route.** Logarithmic scale is not identified here with
+physical Hawking time. The original source's phase law neither supplies a
+nontrivial character for the complete cut nor permits an unrestricted raw-source
+contour shift. The outstanding theorem is still a source-derived identity for
+the continued complete causal/left-QNM action, retaining all correction and
+boundary terms. No source term has been discarded and no clock changed.
+Neither fixed-clock extinction nor its impossibility is proved.
+
+**Primary-paper applicability.** The September monodromy papers
+[Xie–Yu–Zheng](https://arxiv.org/html/2609.06416v1) and
+[Diao–Moon–Yao](https://arxiv.org/html/2609.11106v1) were checked. The first obtains
+vanishing using a positive self-intersection divisor on a compact Kähler
+surface and the Hodge-index form; the second requires a de Rham p-adic local
+system and constructs finite covers giving semistability. Neither structure
+has been derived for the complete HB causal action. These are not available
+extinction premises. Two whole-corpus deep/method searches completed; their
+generated ingredient suggestions did not supply the missing source identity.
+
+**Formal status.** The complete scratch file passed `lake env lean` without
+warnings. The exact admission classification, no-admitted-turn theorem, and
+summed phase law are in `ThetaCuspComplexClockSector`, wired into `RHTower`.
+The final isolated cached `lake build
+GaloisForLFunctions.RHTower.ThetaCuspComplexClockSector` passed without warnings
+(one leaf compilation, 22 seconds). Source hash:
+`bb7b4a237e2af9a950a1a3c9c6fa1efe7656d89566e5005e8b750bf3b107a08a`.
+The audit directory was removed and the checked leaf artifacts published.
+No full or umbrella build, numerical experiment, or raised proof limit was used.
+Index refresh completed. Global lint still reports the three unrelated unwired
+modules `Sieve.KloostermanGlobalCollisionCoprime`,
+`HTGeometry.NavierStokesFiniteTorusInverse`, and `HTGeometry.NavierStokesStressCone`;
+none belongs to this change. All owned search, Lean, audit and index processes
+have terminated.
+
+**New physical admission result checked.** The concurrently added
+`BMOriginalCausalAdmission.original_scalar_ingoing_horizon_trace` now supplies
+horizon limits of the original scalar with its coefficient and onset lift.
+It makes the second null derivative tend to zero while retaining an unrestricted
+first/ingoing trace `Hp`. This is useful admission data for the real-clock
+boundary identity. It does not make that temporal trace zero or complete the
+metric-current/moving-corner comparison. The next fixed-clock attack must retain
+this trace rather than equate transverse derivative decay with extinction.

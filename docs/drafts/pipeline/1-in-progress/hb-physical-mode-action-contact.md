@@ -459,6 +459,85 @@ matching still needs the derivative/current bounds and the original moving
 boundary comparison; this value limit does not interchange its temporal,
 cusp and horizon cutoffs.
 
+### Characteristic transport of the actual horizon traces
+
+The quantitative horizon estimates can be obtained from the original
+characteristic equation without differentiating the Legendre kernel. Write
+`eta=1-zeta/2`, `G=Re(eta)`, `mu=eta*(eta-1)`, and
+
+```
+U(p,r)=radialResponse(-eta,s,amp,(p+r)/2,(p-r)/2),
+D(p,r)=oddSource(s,amp,(p+r)/2,(p-r)/2)/4
+       + mu*U(p,r)/(4*cosh((p-r)/2)^2).
+```
+
+The original physical source obeys `abs(source)<=A*exp(-max(p,r))`.
+For a source point in the original null rectangle, the actual invariant
+satisfies `1<=I<=3*exp(p)`. The circle representation consequently bounds
+its kernel by `exp(G*log(6))*exp(G*p)`. The weaker separable source
+majorant `A*exp(-(a+b)/2)` has finite quadrant mass. Thus
+`abs(U(p,r))<=B*exp(G*p)` for every nonnegative `p,r`, uniformly toward
+the horizon.
+
+The original Goursat identity supplies genuine derivatives
+
+```
+U_p(p,r)=int_0^r D(p,b) db,
+U_r(p,r)=int_0^p D(a,r) da,
+U_pr(p,r)=D(p,r).
+```
+
+Odd reflection gives `D(p,r)=-D(r,p)`. The exact metric potential obeys
+`1/(4*cosh(x)^2)<=exp(2*x)`. These identities give, with a common constant,
+
+```
+abs(D(p,r)), abs(U_r(p,r)) <= K*exp(p-r)*exp(G*p),  0<=p<=r,
+abs(U_p(p,r)) <= 2*K*exp(G*p).
+```
+
+For the last estimate, split the first integral at `b=p`; reflection
+turns its lower piece into minus the second null derivative at
+`r=p`, and the upper piece has an integrable exponential majorant.
+Integrating the actual derivatives toward infinity produces unique traces
+`H(p),H1(p)` and the quantitative errors
+
+```
+abs(H(p)-U(p,r)), abs(H1(p)-U_p(p,r))
+  <= K*exp(p-r)*exp(G*p).
+```
+
+All the displayed source, kernel, derivative, and reduced-trace estimates
+are proved in `ThetaCuspHawkingBMOriginalCausalAdmission`. The estimates
+also imply locally uniform convergence in positive `p`; on paper this
+identifies `H1=H'`. That derivative-of-the-trace statement is not yet a
+Lean theorem.
+
+The full original scalar is `M=C*(U+nullLift)`, already identified with
+the unchanged height finite part. The same leaf retains the lift's exact
+horizon coefficient
+
+```
+ell_s = -s*(s-1)*power(2*s,2)*amp^2/4.
+```
+
+Its value tends to `ell_s*timeOnset(2*s,p)`, its first null derivative
+tends to `ell_s*timeOnsetFirst(2*s,p)`, and its second null derivative
+tends to zero. Hence the full `M` and the ingoing-time derivative
+`M_p+M_r` have actual horizon limits; neither limit is set to zero.
+The null second derivative vanishes in this limit.
+
+**Meaning for full matching.** In compact horizon coordinates
+`rho=exp(p-r)`, the physical ingoing-time derivative is `U_p+U_r`.
+The reduced trace error is therefore `O(rho*exp(G*p))` for both the value
+and the required time direction. The explicit lift has the same bound
+analytically: its first and second radial polynomials have a factor
+`1-radialUnit`, and its onset and onset derivative decay. With `G<1`,
+these are the estimates needed for the integrable temporal-current
+remainder on the original frequency band. The complete metric/normal-flux
+attachment and the prescribed moving-corner comparison still require
+Lean closure. These trace theorems do not interchange the original cusp,
+time and horizon limits or prove QNM matching or its impossibility.
+
 **2. Identify the complete causal scalar and its needed horizon bounds.**
 Set `s=D4BMModularCore.physicalRate(q,branch)` (the undoubled rate),
 `k=mu/2-(s+1)*(s+2)`, and
