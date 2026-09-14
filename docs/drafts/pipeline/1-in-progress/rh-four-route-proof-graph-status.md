@@ -25,6 +25,9 @@ HB / FZZ-P / RBH / PW-B endpoints → RH.
   `hbXiFiveHalfHorizontallyRobustTrappedCollisionProducerRouteKilled`,
   `volume_xiFiveHalfRealTrappedSet_eq_zero`,
   `hbXiFiveHalfRegularTrappedCollisionProducerRouteKilled`.
+- Original convergent FZZ one-screening first logarithmic mark has exact cancellation locus `y=0`;
+  there are no other source zeros in complete positive chart:
+  `fzzScreeningPlaneMarkedMoment_first_eq_zero_iff`.
 
 ## Forced survivor
 
@@ -33,7 +36,9 @@ or sheet-changing. Exact fixed-axis chamber law is `-e / 0 / e`. Phase-only shee
 excluded. A reflected-pair response survivor must break QNM time conservation or be non-kernel
 dynamics. More generally, a survivor must change magnitude, carrier, propagator, or source
 incidence. A perpetual five-half source-collision survivor must be singular in horizontal real
-part (atomic or singular-Cantor), never interval-robust or Lebesgue-regular.
+part (atomic or singular-Cantor), never interval-robust or Lebesgue-regular. Any FZZ-P cancellation
+away from `y=0` must enter through physical continuation, higher screenings, or phase/cross-charge
+coupling; it cannot already occur in original convergent one-screening plane source.
 
 ## Open core
 

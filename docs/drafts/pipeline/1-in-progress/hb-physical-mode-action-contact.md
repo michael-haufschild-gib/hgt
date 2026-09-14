@@ -488,21 +488,136 @@ their joint metric attachment. This theorem does not establish that attachment.
 
 ### Original source-square horizon jets: Lean closure
 
-**Active full-current bridge.** Prove a uniform horizon Taylor estimate for the
-literal source-square Jacobian times `compactForcing`, applied to the exact
-principal-subtracted square and height-weighted gradient energy. Keep the
-fixed onset, both triangles, and normalized circle integral. The proposed
-bound is `C*exp(B*p-N*k)*abs(rho)` for every cusp order `N`, with independent
-unbounded `p,k`. This is a bridge toward the unchanged full temporal/metric/QNM
-matching target. Its decisive tests are the moving lower endpoint, collapsed
-circle edges, and the sampled `Y^2` gradient factor; none may be dropped.
+**Original forcing/source/time bridge: Lean closure.** The new
+`ThetaCuspHawkingBMOriginalHorizonForcingBound` leaf identifies its remainder
+with the existing `OriginalHorizonRegularity.compactSample` minus the explicit
+principal source, retaining the original Jacobian, onset, gradient height
+squared, both source triangles, and normalized circle average.
 
-The exact complete integrated metric boundary is the four-transfer expression
-`T(U,W), T(W,U), T(Delta U,W), T(F,W)` in `OriginalCompactBoundary`.
-Its source-normal derivative is angular height derivative; temporal derivatives
-are already represented by endpoints. The remaining mixed horizon comparison
-requires controlling the horizon derivative of these actual source fields,
-with the source-domain motion retained.
+For arbitrary fixed complex `u,s,amp` and every `N : Nat`, it proves constants
+`C,B>=0` with the original integrand bounded by `C*exp(B*p-N*k)` and its horizon
+variation bounded by that expression times `abs(rho)`. Bounds hold throughout
+both complete source squares, `p,k>=0`, `abs(rho)<=1/4`, and all angular/base
+horizontal coordinates. The sampled height `Y` satisfies `abs(Y_rho)<=4*Y`;
+its square is retained through the product estimate, with its base height
+power absorbed by the independent cusp order.
+
+The original normalized source cube preserves these bounds. Continuity and
+integrability on the actual cube prove that the integrated variation equals
+the difference of the two integrals. Let `R(p,rho,x,k)` be the complete
+direct-minus-image source remainder. The public theorem
+`original_source_time_horizon_estimate` proves
+
+```
+norm(int p=0..T exp(-w*p)*(R(p,rho,x,k)-R(p,0,x,k)))
+  <= C*exp(-N*k)*abs(rho)
+```
+
+for every `T,k>=0`, `abs(rho)<=1/4`, all `x`, and `Re(w)>=B+1`. The constants
+depend on the fixed source and `N`, not on `T,w,rho,x,k` within this region.
+Scratch and isolated exact leaf audit passed; artifacts installed and umbrella
+wired. This closes an independent source time/cusp/horizon estimate in a
+sufficiently far right frequency half-plane. It does not identify the full
+metric boundary or permit arbitrary singular reader weights.
+
+**[BRIDGE; scratch and isolated exact leaf audits passed; installed and wired]**
+`OriginalBaseCircleJets` proves the actual moving-circle base derivatives and
+interchange with the entire normalized source cube. In
+`OriginalHorizonForcingBound`, `original_source_cube_base_jet` and
+`original_action_base_jet` identify the derivatives of the integrated field.
+For `B_j` equal to identity, `Dk`, `Dx²`, `Dk²`, or `Dx`, the actual original
+forcing remainder after direct-minus-image integration satisfies
+
+```
+norm(B_j R(p,rho,x,k)-B_j R(p,0,x,k))
+  <= C*exp(B*p-N*k)*abs(rho)
+norm(int p=0..T exp(-w*p)*(B_j R(p,rho,x,k)-B_j R(p,0,x,k)))
+  <= C*exp(-N*k)*abs(rho)
+```
+
+for every natural `N`, `p,T,k>=0`, `abs(rho)<=1/4`, all `x`, and, in the
+second estimate, `Re(w)>=B+1`. The original Jacobian, onset, image subtraction,
+and gradient height weight remain in `R`. No cutoff coupling is imposed.
+
+Verification: combined scratch passed; isolated exact audits built only the two
+changed leaves (76s and 91s), and artifacts were installed. Current global lint passes, with baseline large-file warnings.
+
+**[BRIDGE; scratch and isolated exact leaf audits passed; installed and wired]**
+`OriginalPrincipalChannels` expands the literal two-Weyl-power gradient and the
+unchanged principal forcing into the three canonical powers `K=(2*q,1,2-2*q)`.
+The actual direct-minus-image source integrals give
+`originalPotential=actionRemainder+sum literalCoefficient_i*exp(K_i*k)`.
+`OriginalPrincipalMatching.literalCoefficient_eq_original` proves that every
+literal coefficient equals `principalNullResponse+nullLift*principalAmplitude`.
+The actual Xi exponents are distinct; the projection
+`F''-(K_j+K_l)*F'+K_j*K_l*F` and arbitrary weighted decay of both remainder jets
+force every coefficient difference to vanish. No onset or source term is dropped.
+
+`actionRemainder_eq_original` therefore identifies the uniform literal remainder
+with `OriginalCuspJets.remainder` at `(p,p+width)`, for `p>0` and
+`exp(-width)<=1/4`. Its five actual base operations now inherit both the pointwise
+horizon/cusp estimates and the damped time-integral estimates, uniformly in the
+upper time cutoff. The latter require the derived half-plane `Re(w)>=B+1`.
+
+**[BRIDGE; scratch and isolated exact leaf audit passed; installed and wired]**
+`OriginalReaderCuspBounds` couples each matched canonical base jet to the
+unchanged normalizable radial reader. With
+`n_L=exp(-w*L/2)*tortoiseMode(true,w,chi,-L/2)` and
+`beta=connection(w,chi)*power(-w,2)/(2*w)`, it proves
+
+```
+norm(exp(-w*p)*(n_L*B_j R_original-beta*B_j R_horizon))
+  <= C*(exp(-L)+exp(-Re(w)*L))*exp(-N*k)*exp(-p)
+norm(int p=0..T exp(-w*p)*(n_L*B_j R_original-beta*B_j R_horizon))
+  <= C*(exp(-L)+exp(-Re(w)*L))*exp(-N*k)
+```
+
+uniformly in horizontal position, `k>=0`, all positive source times and all
+upper time cutoffs `T>=0`, on sufficiently long collars. Both radial reader
+branches remain. The source supplies a half-plane `Re(w)>=G+1`; these are
+not estimates asserted at a QNM. The new three-leaf exact audits passed
+(116s, 37s, 104s), all artifacts are installed, and global lint passes.
+
+**Original angular products (Lean; exact leaf audits passed).** Every canonical
+principal coefficient has horizon error at most `C*exp(-L)*exp(2*p)` and horizon
+value at most `C*exp(2*p)`. Both actual reader-tail operations retain all weighted
+cusp bounds. `OriginalPrincipalReaderBounds` combines these with both original
+radial reader branches, including the principal-source times reader-tail terms.
+
+`OriginalAngularProductBounds` proves the exact principal expansion for all five
+source base operations, with multipliers `[1,K,0,K²,0]`, and combines them with
+both actual angular reader operations. Write their principal-subtracted product
+as `A_L=n_L*(U_j*G_d-P_j*Q_d)` and its actual horizon expression as `A_inf`.
+The time integral of `exp(-wp)*(A_L-A_inf)` is bounded by
+`C*(exp(-L)+exp(-Re(w)*L))*exp(-N*k)`, uniformly for every upper time cutoff.
+After division by the actual metric factor `R_L²-1`, arbitrary cusp decay remains.
+`metric_angular_product_joint_limit` proves independent horizon/cusp convergence
+to zero along every nonnegative time-cutoff net and every horizontal path.
+These statements hold on the source-derived right half-plane, not at a QNM.
+
+**Next full-metric obligation.** Attach these exact angular-product comparisons
+and finite-height horizon counterterms to the complete metric identity. The
+complete current contains `T(U,W), T(W,U), T(Delta U,W), T(F,W)` and temporal
+endpoints. The remaining comparison must retain all four transfers, both radial
+reader branches and the finite-height subtraction coefficients before taking
+independent time, cusp and horizon limits. The fourth transfer's normalized
+source has the existing exact decomposition into `fullSquarePotential` and
+`angularDefect`, with smooth compact-radius coefficients and the original onset
+(`OriginalForcingAngularPeriod.profile_decomposition`). This gives a concrete
+two-component attack for that remaining forcing term. The product comparison
+does not yet identify the complete action with
+`OriginalMetricQNM.regularAction`. Full matching, impossibility and RH remain open.
+
+**Fourth-transfer conjecture under attack.** Divide the literal forcing by its
+original geometric horizon factor. Its exact squared-source/Green-defect
+decomposition and all three principal counterterms use the same two smooth
+compact-radius coefficients. Pair each fixed angular field with the actual
+reader value or normal derivative and subtract its original principal product.
+The conjectured difference from the horizon expression is bounded by
+`C*(exp(-L)+exp(-Re(w)*L))*exp(-N*k)*exp(-p)`, uniformly in source time and angular
+position on a derived right half-plane. This would retain arbitrary cusp decay
+after the remaining singular metric factor and supply the fourth transfer
+needed for the complete finite-height counterterm comparison.
 
 **[BRIDGE; scratch and isolated exact leaf audit passed]** In the original unit
 source square, write `e=exp(-p*(1-alpha))`, `Z=sourceZ(image,p,rho,alpha,beta)`,
@@ -549,7 +664,7 @@ sample with the original `arcosh(max(1,compactInvariant))` circle for `p>0`.
 `D4BMOriginalHorizonRadiusDerivative` in the same leaf. Scratch and the single
 isolated exact leaf audit passed; artifacts are installed and umbrella wired.
 
-**Next complete-current attachment.** The literal `compactForcing` is linear
+**Closed forcing attachment.** The literal `compactForcing` is linear
 in `J,K`. Its coefficients depend on `Z` through `compactUnit(Z)`, inverse
 powers of `1+Z` and `power(2*s,2/(1+Z))`; the latter base stays in `[1,8/3]`
 on the original source square, so it has no characteristic-endpoint zero.
@@ -562,11 +677,11 @@ same `timeOnset(2*s,...)` through `timeOnset_pair_bound`.
 The full gradient-energy remainder is the sampled height squared times the
 sum of the two diagonal gradient-product remainders. This requires retaining
 that height factor and its horizon derivative; arbitrary `N` in the proved
-jet bounds absorbs its base-height power. The next formal target is the
-Taylor bound for the original Jacobian times this complete forcing remainder,
-then its actual normalized circle/unit-square integral. After exponential
-time damping in a sufficiently far right half-plane, these bounds provide a
-candidate common domination for independent cusp/time/horizon removal.
+jet bounds absorbs its base-height power. These factors and their
+actual normalized circle/unit-square integral are included in the closed
+forcing/source/time theorem above. The remaining step is the angular derivative
+and complete metric-current attachment, including the actual reader and its
+finite-height horizon counterterms.
 The complete metric angular products, finite-height horizon counterterms and
 QNM continuation must still be identified explicitly. Full matching and its
 impossibility remain unproved.

@@ -147,13 +147,15 @@ theorem thetaCuspThirtySecondExpTaylorLower_le_exp :
     thetaCuspThirtySecondExpTaylorLower ≤ Real.exp (1 / 32 : ℝ) := by
   rw [thetaCuspThirtySecondExpTaylorLower]
   convert thetaCuspExpTwoTaylorEightPolynomial_le_exp
-    (y := (1 / 64 : ℝ)) (by norm_num) using 1 <;> norm_num
+    (y := (1 / 64 : ℝ)) (by norm_num) using 1
+  all_goals norm_num
 
 theorem exp_le_thetaCuspThirtySecondExpTaylorUpper :
     Real.exp (1 / 32 : ℝ) ≤ thetaCuspThirtySecondExpTaylorUpper := by
   rw [thetaCuspThirtySecondExpTaylorUpper]
   convert exp_le_thetaCuspExpTwoTaylorEightUpperPolynomial
-    (y := (1 / 64 : ℝ)) (by norm_num) (by norm_num) using 1 <;> norm_num
+    (y := (1 / 64 : ℝ)) (by norm_num) (by norm_num) using 1
+  all_goals norm_num
 
 theorem thetaCuspThirtySecondExpTaylorLower_pow_le_exp (j : ℕ) :
     thetaCuspThirtySecondExpTaylorLower ^ j ≤ Real.exp ((j : ℝ) / 32) := by
@@ -274,7 +276,7 @@ def thetaCuspFirstRateTaylorLocalUpperCertificate64 (j : ℕ) : ℝ[X] :=
   (expNegTruncPoly 5).comp (thetaCuspFirstRateTaylorLowerDelta64 j)
 
 theorem thetaCuspFirstRateTaylorUpperEndpoint64_nonneg
-    {j : ℕ} (hj : j < 64) :
+    {j : ℕ} (_hj : j < 64) :
     0 ≤ thetaCuspFirstRateTaylorUpperEndpoint64 j := by
   let x : ℝ := (j : ℝ) / 64
   have hx : 0 ≤ x := by dsimp only [x]; positivity
@@ -296,7 +298,7 @@ theorem thetaCuspFirstRateTaylorUpperEndpoint64_nonneg
   linarith
 
 theorem thetaCuspFirstRateTaylorLowerEndpoint64_nonneg
-    {j : ℕ} (hj : j < 64) :
+    {j : ℕ} (_hj : j < 64) :
     0 ≤ thetaCuspFirstRateTaylorLowerEndpoint64 j := by
   have hbern := one_add_mul_le_pow
     (a := thetaCuspThirtySecondExpTaylorLower - 1) (n := j)
@@ -335,14 +337,6 @@ theorem thetaCuspFirstRateTaylorUpperEndpoint64_lt_hundredMillion
   rw [thetaCuspFirstRateTaylorUpperEndpoint64]
   have hj0 : 0 ≤ (j : ℝ) := Nat.cast_nonneg j
   nlinarith
-
-theorem thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64_pos
-    {j : ℕ} (hj : j < 64) :
-    0 < thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j := by
-  have hall : ∀ i ∈ Finset.range 64,
-      (0 : ℚ) < ThetaRationalQuadrature.endpointLower i := by native_decide
-  rw [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64]
-  exact_mod_cast hall j (Finset.mem_range.mpr hj)
 
 theorem thetaRationalQuadrature_thirtySecondExpLower_cast :
     (ThetaRationalQuadrature.thirtySecondExpLower : ℝ) =
@@ -469,7 +463,6 @@ theorem thetaRationalQuadrature_expNeg_ten_cast (x : ℚ) :
       (expNegTruncPoly 10).eval (x : ℝ) := by
   norm_num [ThetaRationalQuadrature.eval, ThetaRationalQuadrature.expNeg,
     eval_expNegTruncPoly, Finset.sum_range_succ]
-  push_cast
   ring
 
 theorem thetaRationalQuadrature_expNeg_nine_cast (x : ℚ) :
@@ -477,7 +470,6 @@ theorem thetaRationalQuadrature_expNeg_nine_cast (x : ℚ) :
       (expNegTruncPoly 9).eval (x : ℝ) := by
   norm_num [ThetaRationalQuadrature.eval, ThetaRationalQuadrature.expNeg,
     eval_expNegTruncPoly, Finset.sum_range_succ]
-  push_cast
   ring
 
 theorem expNegTruncPoly_ten_eval_pos_of_mem_unit
@@ -595,7 +587,7 @@ theorem thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64_le_exp
           rw [thetaCuspFirstRateTaylorUpperEndpoint64_succ, neg_add, Real.exp_add]
 
 theorem exp_le_thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64
-    {j : ℕ} (hj : j < 64) :
+    {j : ℕ} (_hj : j < 64) :
     Real.exp (-thetaCuspFirstRateTaylorLowerEndpoint64 j) ≤
       thetaCuspFirstRateTaylorLowerEndpointUpperCertificate64 j := by
   have hall (n : ℕ) :
@@ -752,7 +744,7 @@ theorem thetaCuspFirstRateTaylorLocalLowerCertificate64_eval_pos
     (thetaCuspFirstRateTaylorUpperDelta64_eval_le_one hj hy hyh)
 
 theorem thetaCuspFirstRateTaylorLocalLowerCertificate64_eval_le_exp
-    {j : ℕ} (hj : j < 64) {y : ℝ} (hy : 0 ≤ y) (hyh : y ≤ 1 / 64) :
+    {j : ℕ} (_hj : j < 64) {y : ℝ} (hy : 0 ≤ y) (_hyh : y ≤ 1 / 64) :
     (thetaCuspFirstRateTaylorLocalLowerCertificate64 j).eval y ≤
       Real.exp (-(thetaCuspFirstRateTaylorUpperDelta64 j).eval y) := by
   let t := (thetaCuspFirstRateTaylorUpperDelta64 j).eval y
@@ -873,6 +865,340 @@ theorem actual_le_thetaCuspFirstSourceTaylorUpper64_eval
     _ = (6.28318530717958647694 : ℝ) *
           thetaCuspThirtySecondExpTaylorUpper ^ j *
             thetaCuspExpTwoTaylorEightUpperPolynomial.eval y - 3 := by ring
+
+private theorem expNegTruncPoly_ten_error_le
+    {t : ℝ} (ht0 : 0 ≤ t) :
+    |Real.exp (-t) - (expNegTruncPoly 10).eval t| ≤
+      (t ^ 10 / ((10 : ℕ).factorial : ℝ)) * Real.exp t := by
+  have h := norm_complex_exp_sub_sum_le_factorial_tail ((-t : ℝ) : ℂ) 10
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg ht0] at h
+  rw [show (∑ m ∈ Finset.range 10,
+      (((-t : ℝ) : ℂ) ^ m / (m.factorial : ℕ))) =
+      (((expNegTruncPoly 10).eval t : ℝ) : ℂ) by
+        push_cast
+        norm_num [eval_expNegTruncPoly, Finset.sum_range_succ]
+        ring] at h
+  simp only [Complex.ofReal_neg] at h
+  have harg : -(t : ℂ) = ((-t : ℝ) : ℂ) := by norm_num
+  rw [harg, ← Complex.ofReal_exp] at h
+  simpa only [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs] using h
+
+private theorem exp_mul_one_sub_endpointDelta_le_expNegTruncPoly_ten
+    {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    Real.exp (-t) *
+        (1 - 9 * t ^ 10 / ((10 : ℕ).factorial : ℝ)) ≤
+      (expNegTruncPoly 10).eval t := by
+  have herr := expNegTruncPoly_ten_error_le ht0
+  have hexpUpper : Real.exp t < 3 := by
+    exact (Real.exp_le_exp.mpr ht1).trans_lt
+      (Real.exp_one_lt_d9.trans (by norm_num))
+  have hexpLower : (1 / 3 : ℝ) < Real.exp (-t) := by
+    rw [Real.exp_neg]
+    simpa only [one_div] using one_div_lt_one_div_of_lt (Real.exp_pos t) hexpUpper
+  have hratio : Real.exp t ≤ 9 * Real.exp (-t) := by
+    nlinarith
+  have hpow : 0 ≤ t ^ 10 / ((10 : ℕ).factorial : ℝ) := by positivity
+  have herrorUpper :
+      Real.exp (-t) - (expNegTruncPoly 10).eval t ≤
+        (t ^ 10 / ((10 : ℕ).factorial : ℝ)) * Real.exp t :=
+    (le_abs_self _).trans herr
+  have hscaled := mul_le_mul_of_nonneg_left hratio hpow
+  nlinarith
+
+private def thetaRationalQuadratureEndpointFactor (j : ℕ) : ℝ :=
+  (ThetaRationalQuadrature.eval (ThetaRationalQuadrature.expNeg 10)
+    (ThetaRationalQuadrature.upperIncrement j) : ℚ)
+
+private def thetaRationalQuadratureEndpointDelta (j : ℕ) : ℝ :=
+  9 * (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ 10 /
+    ((10 : ℕ).factorial : ℝ)
+
+private theorem thetaRationalQuadratureEndpointDelta_nonneg (j : ℕ) :
+    0 ≤ thetaRationalQuadratureEndpointDelta j := by
+  unfold thetaRationalQuadratureEndpointDelta
+  positivity
+
+private theorem thetaRationalQuadratureEndpointDelta_le_one
+    {j : ℕ} (hj : j < 64) :
+    thetaRationalQuadratureEndpointDelta j ≤ 1 := by
+  have ht0q := (thetaRationalQuadrature_upperIncrement_pos j).le
+  have ht0 : (0 : ℝ) ≤ (ThetaRationalQuadrature.upperIncrement j : ℚ) := by
+    exact_mod_cast ht0q
+  have ht1q := thetaRationalQuadrature_upperIncrement_le_one hj
+  have ht1 : (ThetaRationalQuadrature.upperIncrement j : ℚ) ≤ (1 : ℝ) := by
+    exact_mod_cast ht1q
+  have hp : (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ 10 ≤ 1 := by
+    simpa using pow_le_one₀ ht0 ht1
+  unfold thetaRationalQuadratureEndpointDelta
+  norm_num at hp ⊢
+  nlinarith
+
+private theorem thetaRationalQuadratureEndpointFactor_nonneg
+    {j : ℕ} (hj : j < 64) :
+    0 ≤ thetaRationalQuadratureEndpointFactor j := by
+  have ht0q := (thetaRationalQuadrature_upperIncrement_pos j).le
+  have ht0 : (0 : ℝ) ≤ (ThetaRationalQuadrature.upperIncrement j : ℚ) := by
+    exact_mod_cast ht0q
+  have ht1q := thetaRationalQuadrature_upperIncrement_le_one hj
+  have ht1 : (ThetaRationalQuadrature.upperIncrement j : ℚ) ≤ (1 : ℝ) := by
+    exact_mod_cast ht1q
+  unfold thetaRationalQuadratureEndpointFactor
+  rw [thetaRationalQuadrature_expNeg_ten_cast]
+  exact (expNegTruncPoly_ten_eval_pos_of_mem_unit ht0 ht1).le
+
+private theorem thetaRationalQuadratureEndpointFactor_le_one (j : ℕ) :
+    thetaRationalQuadratureEndpointFactor j ≤ 1 := by
+  have ht0q := (thetaRationalQuadrature_upperIncrement_pos j).le
+  have ht0 : (0 : ℝ) ≤ (ThetaRationalQuadrature.upperIncrement j : ℚ) := by
+    exact_mod_cast ht0q
+  unfold thetaRationalQuadratureEndpointFactor
+  rw [thetaRationalQuadrature_expNeg_ten_cast]
+  exact (expNegTruncPoly_ten_eval_le_exp ht0).trans
+    (Real.exp_le_one_iff.mpr (by linarith))
+
+private theorem thetaRationalQuadratureEndpointFactor_lower
+    {j : ℕ} (hj : j < 64) :
+    Real.exp (-(ThetaRationalQuadrature.upperIncrement j : ℝ)) *
+        (1 - thetaRationalQuadratureEndpointDelta j) ≤
+      thetaRationalQuadratureEndpointFactor j := by
+  have ht0q := (thetaRationalQuadrature_upperIncrement_pos j).le
+  have ht0 : (0 : ℝ) ≤ (ThetaRationalQuadrature.upperIncrement j : ℚ) := by
+    exact_mod_cast ht0q
+  have ht1q := thetaRationalQuadrature_upperIncrement_le_one hj
+  have ht1 : (ThetaRationalQuadrature.upperIncrement j : ℚ) ≤ (1 : ℝ) := by
+    exact_mod_cast ht1q
+  unfold thetaRationalQuadratureEndpointFactor thetaRationalQuadratureEndpointDelta
+  rw [thetaRationalQuadrature_expNeg_ten_cast]
+  exact exp_mul_one_sub_endpointDelta_le_expNegTruncPoly_ten ht0 ht1
+
+private theorem sum_upperIncrement_eq_endpoint (n : ℕ) :
+    (∑ j ∈ Finset.range n,
+      (ThetaRationalQuadrature.upperIncrement j : ℝ)) =
+        thetaCuspFirstRateTaylorUpperEndpoint64 n := by
+  induction n with
+  | zero => norm_num [thetaCuspFirstRateTaylorUpperEndpoint64]
+  | succ n ih =>
+      rw [Finset.sum_range_succ, ih,
+        thetaCuspFirstRateTaylorUpperEndpoint64_succ]
+
+private theorem thetaCuspFirstRateTaylorUpperEndpoint64_le_eighteen
+    {n : ℕ} (hn : n ≤ 64) :
+    thetaCuspFirstRateTaylorUpperEndpoint64 n ≤ 18 := by
+  have hmono : Monotone thetaCuspFirstRateTaylorUpperEndpoint64 :=
+    monotone_nat_of_le_succ fun j => by
+      rw [thetaCuspFirstRateTaylorUpperEndpoint64_succ]
+      exact le_add_of_nonneg_right (by
+        exact_mod_cast (thetaRationalQuadrature_upperIncrement_pos j).le)
+  have hcap : thetaCuspFirstRateTaylorUpperEndpoint64 64 < 18 := by
+    norm_num [thetaCuspFirstRateTaylorUpperEndpoint64,
+      thetaCuspThirtySecondExpTaylorUpper,
+      thetaCuspExpTwoTaylorEightUpperPolynomial,
+      thetaCuspExpTwoTaylorEightPolynomial]
+  exact (hmono hn).trans hcap.le
+
+private theorem thetaRationalQuadratureEndpointDelta_le_nine_div_factorial
+    {j : ℕ} (hj : j < 64) :
+    thetaRationalQuadratureEndpointDelta j ≤
+      9 / ((10 : ℕ).factorial : ℝ) := by
+  have ht0q := (thetaRationalQuadrature_upperIncrement_pos j).le
+  have ht0 : (0 : ℝ) ≤ (ThetaRationalQuadrature.upperIncrement j : ℚ) := by
+    exact_mod_cast ht0q
+  have ht1q := thetaRationalQuadrature_upperIncrement_le_one hj
+  have ht1 : (ThetaRationalQuadrature.upperIncrement j : ℚ) ≤ (1 : ℝ) := by
+    exact_mod_cast ht1q
+  have hp : (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ 10 ≤ 1 := by
+    simpa using pow_le_one₀ ht0 ht1
+  unfold thetaRationalQuadratureEndpointDelta
+  norm_num at ⊢
+  nlinarith
+
+private theorem sum_endpointDelta_lt_one_thousandth
+    {n : ℕ} (hn : n ≤ 64) :
+    (∑ j ∈ Finset.range n, thetaRationalQuadratureEndpointDelta j) <
+      (1 / 1000 : ℝ) := by
+  calc
+    (∑ j ∈ Finset.range n, thetaRationalQuadratureEndpointDelta j) ≤
+        ∑ _j ∈ Finset.range n,
+          (9 / ((10 : ℕ).factorial : ℝ)) := by
+      exact Finset.sum_le_sum fun j hj =>
+        thetaRationalQuadratureEndpointDelta_le_nine_div_factorial
+          (Finset.mem_range.mp hj |>.trans_le hn)
+    _ = (n : ℝ) * (9 / ((10 : ℕ).factorial : ℝ)) := by
+      rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    _ ≤ (64 : ℝ) * (9 / ((10 : ℕ).factorial : ℝ)) := by
+      gcongr
+      exact_mod_cast hn
+    _ < (1 / 1000 : ℝ) := by norm_num
+
+private theorem endpointFactor_prod_lower
+    {n : ℕ} (hn : n ≤ 64) :
+    Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 n) *
+        (1 - ∑ j ∈ Finset.range n,
+          thetaRationalQuadratureEndpointDelta j) ≤
+      ∏ j ∈ Finset.range n, thetaRationalQuadratureEndpointFactor j := by
+  have hprodLower :
+      (∏ j ∈ Finset.range n,
+          Real.exp (-(ThetaRationalQuadrature.upperIncrement j : ℝ)) *
+            (1 - thetaRationalQuadratureEndpointDelta j)) ≤
+        ∏ j ∈ Finset.range n, thetaRationalQuadratureEndpointFactor j := by
+    apply Finset.prod_le_prod
+    · intro j hj
+      exact mul_nonneg (Real.exp_pos _).le
+        (sub_nonneg.mpr (thetaRationalQuadratureEndpointDelta_le_one
+          (Finset.mem_range.mp hj |>.trans_le hn)))
+    · intro j hj
+      exact thetaRationalQuadratureEndpointFactor_lower
+        (Finset.mem_range.mp hj |>.trans_le hn)
+  have hbonf := one_sub_sum_le_prod_one_sub (Finset.range n)
+    thetaRationalQuadratureEndpointDelta
+    (fun j _hj => thetaRationalQuadratureEndpointDelta_nonneg j)
+    (fun j hj => thetaRationalQuadratureEndpointDelta_le_one
+      (Finset.mem_range.mp hj |>.trans_le hn))
+  have hexpProdNonneg :
+      0 ≤ ∏ j ∈ Finset.range n,
+        Real.exp (-(ThetaRationalQuadrature.upperIncrement j : ℝ)) :=
+    Finset.prod_nonneg fun _ _ => (Real.exp_pos _).le
+  have hweighted := mul_le_mul_of_nonneg_left hbonf hexpProdNonneg
+  calc
+    Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 n) *
+          (1 - ∑ j ∈ Finset.range n,
+            thetaRationalQuadratureEndpointDelta j) =
+        (∏ j ∈ Finset.range n,
+          Real.exp (-(ThetaRationalQuadrature.upperIncrement j : ℝ))) *
+            (1 - ∑ j ∈ Finset.range n,
+              thetaRationalQuadratureEndpointDelta j) := by
+      rw [← Real.exp_sum]
+      congr 2
+      rw [Finset.sum_neg_distrib, sum_upperIncrement_eq_endpoint]
+    _ ≤ (∏ j ∈ Finset.range n,
+          Real.exp (-(ThetaRationalQuadrature.upperIncrement j : ℝ))) *
+            (∏ j ∈ Finset.range n,
+              (1 - thetaRationalQuadratureEndpointDelta j)) := hweighted
+    _ = ∏ j ∈ Finset.range n,
+          (Real.exp (-(ThetaRationalQuadrature.upperIncrement j : ℝ)) *
+            (1 - thetaRationalQuadratureEndpointDelta j)) := by
+      rw [Finset.prod_mul_distrib]
+    _ ≤ ∏ j ∈ Finset.range n,
+        thetaRationalQuadratureEndpointFactor j := hprodLower
+
+private theorem one_div_sixtySixMillion_lt_exp_neg_eighteen :
+    (1 / 66000000 : ℝ) < Real.exp (-18) := by
+  have hpow := pow_lt_pow_left₀ Real.exp_one_lt_d9 (Real.exp_pos 1).le
+    (n := 18) (by norm_num)
+  have hcap : Real.exp 18 < (66000000 : ℝ) := by
+    rw [show (18 : ℝ) = (18 : ℕ) * 1 by norm_num, Real.exp_nat_mul]
+    exact hpow.trans (by norm_num)
+  rw [Real.exp_neg]
+  simpa only [one_div] using
+    one_div_lt_one_div_of_lt (Real.exp_pos 18) hcap
+
+private theorem fixed_lower_lt_endpointFactor_prod
+    {n : ℕ} (hn : n ≤ 64) :
+    (999 / 66000000000 : ℝ) <
+      ∏ j ∈ Finset.range n, thetaRationalQuadratureEndpointFactor j := by
+  have hprod := endpointFactor_prod_lower hn
+  have hrate := thetaCuspFirstRateTaylorUpperEndpoint64_le_eighteen hn
+  have hexp : Real.exp (-18) ≤
+      Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 n) :=
+    Real.exp_le_exp.mpr (by linarith)
+  have hdelta := sum_endpointDelta_lt_one_thousandth hn
+  have hone : (999 / 1000 : ℝ) <
+      1 - ∑ j ∈ Finset.range n,
+        thetaRationalQuadratureEndpointDelta j := by
+    linarith
+  have hfixed := one_div_sixtySixMillion_lt_exp_neg_eighteen
+  calc
+    (999 / 66000000000 : ℝ) =
+        (1 / 66000000 : ℝ) * (999 / 1000) := by norm_num
+    _ < Real.exp (-18) * (999 / 1000) := by gcongr
+    _ ≤ Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 n) *
+          (999 / 1000) := by gcongr
+    _ < Real.exp (-thetaCuspFirstRateTaylorUpperEndpoint64 n) *
+          (1 - ∑ j ∈ Finset.range n,
+            thetaRationalQuadratureEndpointDelta j) := by gcongr
+    _ ≤ ∏ j ∈ Finset.range n,
+        thetaRationalQuadratureEndpointFactor j := hprod
+
+private theorem thetaRationalQuadrature_roundDown_sub_error_lt (x : ℚ) :
+    x - 1 / 1000000000000 < ThetaRationalQuadrature.roundDown x := by
+  rw [ThetaRationalQuadrature.roundDown,
+    lt_div_iff₀ (by norm_num : (0 : ℚ) < 1000000000000)]
+  calc
+    (x - 1 / 1000000000000) * 1000000000000 =
+        x * 1000000000000 - 1 := by ring
+    _ < ((⌊x * 1000000000000⌋ : ℤ) : ℚ) :=
+      Int.sub_one_lt_floor (x * 1000000000000)
+
+private theorem endpointFactor_prod_sub_rounding_le_endpointLower
+    {n : ℕ} (hn : n ≤ 64) :
+    (∏ j ∈ Finset.range n, thetaRationalQuadratureEndpointFactor j) -
+        (n : ℝ) / 1000000000000 ≤
+      (ThetaRationalQuadrature.endpointLower n : ℚ) := by
+  induction n with
+  | zero => norm_num [ThetaRationalQuadrature.endpointLower]
+  | succ n ih =>
+      let p : ℝ := thetaRationalQuadratureEndpointFactor n
+      let P : ℝ := ∏ j ∈ Finset.range n,
+        thetaRationalQuadratureEndpointFactor j
+      have ih' := ih (by omega)
+      have hp0 : 0 ≤ p :=
+        thetaRationalQuadratureEndpointFactor_nonneg (j := n) (by omega)
+      have hp1 : p ≤ 1 := thetaRationalQuadratureEndpointFactor_le_one n
+      have hmul : (P - (n : ℝ) / 1000000000000) * p ≤
+          (ThetaRationalQuadrature.endpointLower n : ℚ) * p :=
+        mul_le_mul_of_nonneg_right ih' hp0
+      have hroundQ := thetaRationalQuadrature_roundDown_sub_error_lt
+        (ThetaRationalQuadrature.endpointLower n *
+          ThetaRationalQuadrature.eval (ThetaRationalQuadrature.expNeg 10)
+            (ThetaRationalQuadrature.upperIncrement n))
+      have hroundCast := (Rat.cast_lt (K := ℝ)).2 hroundQ
+      have hround :
+          (ThetaRationalQuadrature.endpointLower n : ℚ) * p -
+              1 / 1000000000000 <
+            (ThetaRationalQuadrature.endpointLower (n + 1) : ℚ) := by
+        push_cast at hroundCast
+        simpa only [p, thetaRationalQuadratureEndpointFactor,
+          ThetaRationalQuadrature.endpointLower] using hroundCast
+      have herror :
+          P * p - ((n + 1 : ℕ) : ℝ) / 1000000000000 ≤
+            (P - (n : ℝ) / 1000000000000) * p -
+              1 / 1000000000000 := by
+        have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+        have hnp : 0 ≤ (n : ℝ) * (1 - p) :=
+          mul_nonneg hn0 (sub_nonneg.mpr hp1)
+        apply sub_nonneg.mp
+        calc
+          0 ≤ (n : ℝ) * (1 - p) / 1000000000000 := by positivity
+          _ = (P - (n : ℝ) / 1000000000000) * p -
+                1 / 1000000000000 -
+              (P * p - ((n + 1 : ℕ) : ℝ) / 1000000000000) := by
+            push_cast
+            ring
+      rw [Finset.prod_range_succ]
+      dsimp only [P, p] at hmul hround herror ⊢
+      exact herror.trans (sub_le_sub_right hmul _ |>.trans hround.le)
+
+private theorem thetaRationalQuadrature_endpointLower_pos
+    {n : ℕ} (hn : n ≤ 64) :
+    0 < (ThetaRationalQuadrature.endpointLower n : ℚ) := by
+  have hprod := fixed_lower_lt_endpointFactor_prod hn
+  have hendpoint := endpointFactor_prod_sub_rounding_le_endpointLower hn
+  have hnR : (n : ℝ) ≤ 64 := by exact_mod_cast hn
+  have hpositive :
+      (0 : ℝ) < (999 / 66000000000 : ℝ) - 64 / 1000000000000 := by
+    norm_num
+  have hfixed :
+      (999 / 66000000000 : ℝ) - 64 / 1000000000000 <
+        (∏ j ∈ Finset.range n, thetaRationalQuadratureEndpointFactor j) -
+          (n : ℝ) / 1000000000000 := by
+    nlinarith
+  exact_mod_cast hpositive.trans_le (hfixed.le.trans hendpoint)
+
+theorem thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64_pos
+    {j : ℕ} (hj : j < 64) :
+    0 < thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64 j := by
+  rw [thetaCuspFirstRateTaylorUpperEndpointLowerCertificate64]
+  exact_mod_cast thetaRationalQuadrature_endpointLower_pos hj.le
 
 theorem thetaCuspFirstGibbsTaylorLower64_le
     {j : ℕ} (hj : j < 64) {y : ℝ} (hy : 0 ≤ y) (hyh : y ≤ 1 / 64) :

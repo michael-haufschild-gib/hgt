@@ -137,13 +137,16 @@ private theorem hasDerivAt_fzzScreeningPlaneSymmetricGammaSlope
       ((deriv Complex.digamma (s : ℂ)).re -
         (deriv Complex.digamma ((1 - s : ℝ) : ℂ)).re) s := by
   have h₁ := hasDerivAt_fzzScreeningPlaneGammaLogSlope_of_pos hs
-  have hinner' := (hasDerivAt_const s (1 : ℝ)).sub (hasDerivAt_id s)
-  have hinner : HasDerivAt (fun x : ℝ => 1 - x) (-1) s := by
-    simpa only [Pi.sub_apply, id_eq, zero_sub] using hinner'
+  have hinner : HasDerivAt (fun x : ℝ => 1 - x) (-1) s :=
+    (hasDerivAt_id s).const_sub 1
   have h₂ := (hasDerivAt_fzzScreeningPlaneGammaLogSlope_of_pos
     (show 0 < 1 - s by linarith)).comp s hinner
-  simpa only [fzzScreeningPlaneSymmetricGammaSlope, Function.comp_apply,
-    Pi.add_apply, mul_neg, mul_one, add_neg_eq_sub] using h₁.add h₂
+  have heq : fzzScreeningPlaneSymmetricGammaSlope =ᶠ[nhds s]
+      fzzScreeningPlaneGammaLogSlope +
+        fzzScreeningPlaneGammaLogSlope ∘ (fun x : ℝ => 1 - x) := by
+    filter_upwards with x
+    rfl
+  exact ((h₁.add h₂).congr_of_eventuallyEq heq).congr_deriv (by ring)
 
 private theorem deriv_fzzScreeningPlaneSymmetricGammaSlope_pos
     {s : ℝ} (hs : 0 < s) (hsHalf : s < 1 / 2) :

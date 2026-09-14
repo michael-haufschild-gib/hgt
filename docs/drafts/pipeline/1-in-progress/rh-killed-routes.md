@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**278 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**282 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-14, `f279e3a973bfcada34c9a91cac608242b730dfba`**.
+Source-audit cutoff: **2026-09-14, `8aef75a546b75b3b548732d8dc8881838bf0d6d9`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -24,10 +24,10 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | [Retired original route labels](#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 17 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 33 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 48 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 51 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 23 |
 | [Singular descent, formation and completion](#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 30 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 31 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
 | [Other finite, scalar and source-blind selectors](#other) | 76 |
 
@@ -1097,6 +1097,9 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [HB scalar angular reconstruction](#no-go-213)
 - [HB scalar Poincare-radial descent](#no-go-212)
 - [HB Schwarz-odd diagonal or Schwarz-exchanged global Peierls realization](#no-go-206)
+- [HB QNM-conserved reflected-pair response](#no-go-279)
+- [HB copywise unit-phase darkness repair](#no-go-280)
+- [HB regular five-half trapped-collision producer](#no-go-281)
 - [HB reflected normalizable reader as original horizon mode](#no-go-276)
 - [HB unrenormalized split-reader continuity](#no-go-271)
 - [HB zero-cusp, unmodified scalar-RSZ, or pointwise specialization](#no-go-198)
@@ -1113,6 +1116,69 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [raw Birmingham--Mokhtari causal decay or two-sided boundedness](#no-go-219)
 - [RBH complementary/wall finite part, separated-sign linear production, or passive normalization](#no-go-225)
 - [scalar-history, regular Borel, grade-diagonal, or rescaling-invariant Parikh--Wilczek balance](#no-go-222)
+
+<a id="no-go-279"></a>
+
+### HB QNM-conserved reflected-pair response
+
+**Closed result**
+
+Conservation under the QNM generator forces every finite-packet bilinear kernel to be
+spectral-fibre-local. Off the symmetry wall, a mode and its reflected partner have
+different spectral support, so their coefficient is zero; on the wall, the source
+amplitude itself is zero. The induced reflected-pair response charge therefore vanishes
+for every completed-Xi copy.
+
+**Survivor / still open**
+
+The exact spectral-locality classification survives. A nonzero physical response must
+break stationary QNM conservation or finite-packet bilinear locality, or use a genuinely
+nonlinear/cross-channel mechanism outside this theorem.
+
+Evidence: [QNM-conserved response no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQNMConservedReflectedPairResponseNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
+<a id="no-go-280"></a>
+
+### HB copywise unit-phase darkness repair
+
+**Closed result**
+
+Arbitrary copywise unit rephasing, with the conjugate phase on the reflected branch,
+leaves the universal Birmingham--Mokhtari cubic cut exactly unchanged. For nonzero source
+amplitude, darkness remains equivalent to placement on the critical line; a phase- or
+sheet-only repair cannot darken an off-line copy.
+
+**Survivor / still open**
+
+The exact phase rigidity is retained as a receiver. Any successor must change magnitude,
+carrier, propagator or incidence rather than only rephase the existing two branches.
+
+Evidence: [copywise phase-rigidity no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBUniversalCopywiseUnitPhaseDarknessNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
+<a id="no-go-281"></a>
+
+### HB regular five-half trapped-collision producer
+
+**Closed result**
+
+The complete real trapped set for the five-half collision dynamics contains no interval
+and has Lebesgue measure zero. Hence no horizontally robust producer, or any absolutely
+continuous/Lebesgue-regular source producer supported on that trapped set, can supply the
+required incidence.
+
+**Survivor / still open**
+
+The exact expanding two-branch dynamics and geometric volume decay survive. Singular or
+atomic source laws remain logically possible, but still require an independent arithmetic
+construction and a landing theorem.
+
+Evidence: [five-half trapped-set no-go](../../../../formal/GaloisForLFunctions/RHTower/XiFiveHalfTrappedCollisionIntervalNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
 <a id="no-go-276"></a>
 
@@ -2548,9 +2614,19 @@ Exact polarized Krein geometry and unrestricted additive Xi approximation surviv
 
 Within either connected open half-strip, an explicit diagonal equivalence tamely transports the reservoir functional, positive diagonal, and full rigged Witt pairing between every pair of fibres; both directions lose at most one height seminorm. Across the wall it is an anti-congruence.
 
+For the canonical source-selected fundamental symmetry, one fixed nonzero two-prime
+time-axis vector has value `-1` throughout the left chamber, `+1` throughout the right
+chamber and `0` on the wall. No wall assignment can extend both chamber actions
+continuously.
+
 **Survivor / still open**
 
-Pointwise topological Krein-isomorphism class is constant within each chamber and cannot force the wall. Fixed source coordinates and cross-fibre relative data are the sharp survivors.
+Pointwise topological Krein-isomorphism class is constant within each chamber and cannot
+force the wall. The discontinuous source-selected symmetry sharpens the obstruction but
+also leaves a wall-singular or sheet-changing completion as the survivor. Fixed source
+coordinates and cross-fibre relative data remain essential.
+
+Evidence: [source-selected wall singularity](../../../../formal/GaloisForLFunctions/RHTower/SourceHorizontalRiggedKreinWallSingularityNoGo.lean).
 
 [Back to family](#completion) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-170)
 
@@ -2614,8 +2690,31 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [Suzuki diagonal Jordan compactification](#no-go-130)
 - [Suzuki divisor-blind cross-sewn holomorphic regularization](#no-go-089)
 - [Suzuki fixed-scale dressed transition-core producer](#no-go-129)
+- [Suzuki torque-only second-jet selector](#no-go-282)
 - [Suzuki wall-light finite-linear compression](#no-go-078)
 - [unrenormalized Suzuki Ward energy](#no-go-259)
+
+<a id="no-go-282"></a>
+
+### Suzuki torque-only second-jet selector
+
+**Closed result**
+
+At fixed positive even and odd energies away from exact equality, fixing endpoint torque
+`evenTilt − oddTilt` leaves the normalized two-jet Schur numerator surjective over the
+real line. Torque alone therefore cannot determine the sign of the second-jet slack; the
+exact decomposition retains an independent local tilt-asymmetry term.
+
+**Survivor / still open**
+
+At exact parity-energy balance the torque threshold is complete. The literal finite-aperture
+source also supplies the full two-jet inequality, a uniform defect-normalized bound and a
+cofinal subsequence transporting first and second defects. It remains to identify that
+source limit with the Xi target and control the residual tilt/energy relation.
+
+Evidence: [two-jet shifted-Hankel gate](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTwoJetShiftedHankelGate.lean), [actual source bound](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTaV2ActualSecondDefectBound.lean), [cofinal two-jet transport](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTaV2ActualSecondDefectJetCofinalLimit.lean).
+
+[Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
 
 <a id="no-go-253"></a>
 

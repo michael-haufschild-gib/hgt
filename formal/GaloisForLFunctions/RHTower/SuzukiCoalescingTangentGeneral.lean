@@ -38,7 +38,6 @@ def positionResolventTangent (R : Lp ℂ 2 μ →L[ℂ] Lp ℂ 2 μ) : ℝ :=
   (inner ℂ (B.monomialC 1) (R (B.monomialC 1)) : ℂ).re /
     (inner ℂ (B.monomialC 0) (R (B.monomialC 0)) : ℂ).re
 
-set_option maxHeartbeats 1000000 in
 /-- **Theorem E `(46)`, model-free.**  The coalescing defect gap is twice the squared base times the
 position-resolvent quotient. -/
 theorem tendsto_one_sub_coalescingDefect_rate (R : Lp ℂ 2 μ →L[ℂ] Lp ℂ 2 μ)

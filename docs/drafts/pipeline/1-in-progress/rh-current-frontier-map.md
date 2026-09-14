@@ -1,7 +1,7 @@
 # RH research ledger
 
 **No route proves or disproves RH.** This register separates **25 active routes**,
-**37 named candidates**, and **278 closed mechanisms**. “Active” means a formal
+**37 named candidates**, and **282 closed mechanisms**. “Active” means a formal
 route architecture with an independent mathematical problem still open, not a proof in hand.
 
 [Active routes](#active-routes) · [Route candidates](#route-candidates) ·
@@ -20,9 +20,9 @@ route architecture with an independent mathematical problem still open, not a pr
 - Route labels are lookup keys, not claims of independence. A receiver ending in RH
   does not prove its source premise. A killed subroute does not kill its whole family.
 
-**Source-audit cutoff: 2026-09-14, `f279e3a973bfcada34c9a91cac608242b730dfba`.**
-Reconciled all 80 changed formal files since `9d774a1ea257311ad02f21d521ec31441b980657`
-(68 additions and 12 modifications, including import umbrellas). Uncommitted work is
+**Source-audit cutoff: 2026-09-14, `8aef75a546b75b3b548732d8dc8881838bf0d6d9`.**
+Reconciled all 58 changed formal files since `f279e3a973bfcada34c9a91cac608242b730dfba`
+(43 additions and 15 modifications, including import umbrellas). Uncommitted work is
 outside this audit. No builds, Lean checks, tests, lint or index refresh were run.
 
 ## Active routes
@@ -53,9 +53,9 @@ dependency graph.
 
 ### CCM-FU — completed current and fixed-aperture Suzuki checkpoint
 
-- **Closed:** Completed current, source transport, coprime pairing, arity balance, finite scheduling/capacity and RH receivers.
-- **Open:** Construct one source-controlled cofinal raw-energy history with transverse cancellation and an O(M) terminal head; alternatively bound accumulated signed arity charge. Framed, singular or growing-carrier alternatives still need their own source inequality.
-- **Evidence:** [Architecture, precise hypotheses and source references](rh-frontier-reference-2026-09-12.md#source-line-340).
+- **Closed:** Completed current, source transport, coprime pairing, arity balance, finite scheduling/capacity and RH receivers. Generalized von Koch is now formal for every Xi half-plane width, and RH is exactly equivalent to one sharp dyadic weighted-prime-window subpower upper law.
+- **Open:** Prove that subpower law from the literal source rather than assume the equivalent Xi half-plane bound; or construct one source-controlled cofinal raw-energy history with transverse cancellation and an `O(M)` terminal head. Framed, singular or growing-carrier alternatives still need their own source inequality.
+- **Evidence:** [Generalized von Koch and dyadic-window criterion](../../../../formal/GaloisForLFunctions/RHTower/CCMGeneralizedVonKoch.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-340).
 
 <a id="cdc--constitutive-dagger-confluence"></a>
 
@@ -101,9 +101,9 @@ dependency graph.
 
 ### FZZ-P — parity-delay Mellin orientation
 
-- **Closed:** Theta/FZZ Mellin occurrence, finite charge transport, fixed-dimensional cubic values and position-log ratio.
-- **Open:** Derive the integrated mixed replica–momentum Ward identity in an independently source-fixed phase frame, retaining fractional screening, physical normalization and cross-charge weighting.
-- **Evidence:** [Architecture, precise hypotheses and source references](rh-frontier-reference-2026-09-12.md#source-line-1935).
+- **Closed:** Theta/FZZ Mellin occurrence, finite charge transport, fixed-dimensional cubic values and position-log ratio. The symmetric Gamma-log slope controlling the first plane-screening mark is reflection-invariant and injective modulo `s ↔ 1−s` on the unit chamber.
+- **Open:** Complete the source-level deduction that the actual normalized first marked integral vanishes only on its intended chart line, then derive the integrated mixed replica–momentum Ward identity in an independently source-fixed phase frame. Retain fractional screening, physical normalization and cross-charge weighting.
+- **Evidence:** [Gamma-slope classification](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarPlaneScreeningMarkedZeroClassification.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-1935).
 
 <a id="g--ward-orientation"></a>
 
@@ -117,22 +117,22 @@ dependency graph.
 
 ### HB — theta-cusp Hawking causal scattering
 
-- **Closed:** Both actual angular polarizations decay as `O(1/Y)`; the modular defect tensor vanishes. The literal scalar quadratic source is identified in all 16 components, and its full **nonseparated SS particular metric** and contact-inclusive **SV particular metric** solve their sourced equations. For the original causal field, the scalar transform/continued-Green match, complete three-power cusp subtraction, compact-time metric finite part, horizon moments, source/forcing corner-remainder admission, and leading temporal-corner normalization are now proved. The modular covariance also carries an assembled all-`L²` on-line spectral lower bound.
-- **Open:** Lift those scalar and compact-time closures to the complete original metric action: justify the joint unbounded-time/cusp/horizon/corner passage, retain all source/contact terms, and reconcile the physical reflected reader with the original horizon domain. Identify the literal physical source field in the modular `L²` comparison and prove its constant mode dominates its orthogonal part. Independent SS/SV/VV causal assembly, source/onset and full-coupling nonvanishing, affine-factor control, and fixed-Hawking-clock extinction remain separate gates.
+- **Closed:** Both actual angular polarizations decay as `O(1/Y)`; the modular defect tensor vanishes. The literal scalar quadratic source is identified in all 16 components, and its full **nonseparated SS particular metric** and contact-inclusive **SV particular metric** solve their sourced equations. For the original causal field, scalar/Green matching, cusp subtraction, temporal endpoint removal, outer and horizon restoration, and the complete angular-first radial-plus-temporal-corner continuation are now source-derived. At each physical fundamental QNM the apparent radial/corner pole is removable and its finite value is fixed. The modular covariance also carries an assembled all-`L²` on-line spectral lower bound.
+- **Open:** Identify that angular-first analytic continuation with the complete original metric pairing under independent cusp, time and horizon removal, retaining every mixed corner and source/contact term. Then determine the source-fixed finite QNM value/nonvanishing and connect the literal physical field to the modular spectral comparison. Independent SS/SV/VV causal assembly, full-coupling control, and fixed-Hawking-clock extinction remain separate gates. No existing local continuation or receiver proves extinction or RH.
 - **Evidence:** [Tensor vanishing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMAngularTwoCuspDecay.lean), [literal source](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarSourceIdentification.lean), [full SS metric](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMThreeFieldMetric.lean), [mixed SV closure](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedQuadraticClosure.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-1646).
 
 | Remaining HB front | What is closed | What is not closed |
 |---|---|---|
-| Original scalar/circle period | Actual circle period equals the physical source coefficient times the Legendre circle kernel. All principal corrections cancel on restoration. The [original time integral](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCharacteristicTransform.lean) equals the continued reduced Green family on its convergence chamber, for both source branches, and the finite-height error is the explicit cusp tail with uniform control on bounded null rectangles. | Full metric/action matching and exchange of unbounded time, cusp and horizon limits. Scalar-period matching alone does not control every boundary component. |
-| Physical metric current | Original forced scalar/coexact contact and exact finite-domain orbit-current identities are closed. The complete static current retains source contact, and the [complete finite-time boundary transfer](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalModularOrbit.lean) isolates endpoint values and full forcing flux. | Pass from finite time and radius to the prescribed complete causal action. Existing identities expose rather than cancel the retained forcing/contact terms. |
-| Angular cusp face | Native mixed-reader flux decays; particular/contact flux has two independent-reader resonances. Genuine null and orbit derivatives have uniform weighted cusp bounds. All three original scalar transfers and both metric transfers have their prescribed cusp subtraction; diagonal/reflected constant terms vanish, including after compact-time integration of the [complete metric boundary](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCompactBoundary.lean). | Joint cusp with horizon/unbounded-time limits and the complete action. Equal-reader vanishing does not justify unrenormalized split-reader continuity: [the family has a genuine pole](rh-killed-routes.md#no-go-271). |
-| Horizon, cap and corner | Actual horizon traces admit all exponentially damped moments; horizon passage commutes with them, and the first frequency derivative is the original first time moment. Source-current and forcing remainders are integrable and static/radial cutoffs agree. The [actual causal horizon triangle](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalTemporalCorner.lean), with the fixed `log 2` radial shift, equals the meromorphic corner candidate. | Attach this leading scalar corner to full angular/metric current and QNM specialization. The reflected normalizable reader has a nonzero opposite-horizon coefficient and [does not satisfy the original horizon domain](rh-killed-routes.md#no-go-276); a different physical matching is required. |
-| Stationary two-rate kernels | Exact SS/VV and mixed current/trace formulae, finite parts, tilt detectors and harmonic sign laws. The constant-mode FE-invariance receiver detects `σ=1/2` for `0≤σ≤1`, `t≥92`. | Source-produced FE invariance and transport to the original causal action. SS and VV have opposite signs on an explicit band; [amplitude-independent kernel sign is excluded](rh-killed-routes.md#no-go-268). Chiral positivity on its proved band is not global physical extinction. |
+| Original scalar/circle period | Actual circle period equals the physical source coefficient times the Legendre circle kernel; all principal corrections cancel on restoration. The original time integral equals the continued reduced Green family. The height-weighted causal orbit now has a genuine cusp-time `L²` limit and Laplace transform, and the physical angular reader may be applied before time integration. | Identify these scalar and weighted limits with every component of the complete metric action. Scalar-period and `L²` convergence do not by themselves justify the full mixed-corner passage. |
+| Physical metric current | Original forced scalar/coexact contact and exact finite-domain orbit-current identities are closed. Finite-radius temporal endpoints can be removed independently; outer integration preserves the source/onset terms, and static-time versus radial cutoff comparison on the complete exterior lands on the fixed temporal-corner candidate. | Extend the proved angular-first/fixed-exterior statements to one complete pairing with independently moving cusp, time and horizon cutoffs. Existing decompositions retain forcing and contact terms rather than cancel them automatically. |
+| Angular cusp face | Genuine null/orbit derivatives and all actual squared-source, spin-two and gradient-product jets have uniform transported cusp bounds. The full forcing admits joint angular/horizon moments and a three-cutoff time/horizon/angular limit at arbitrary relative rates. Finite-height forcing is exactly two source-derived radial kernels, with a joint QNM-analytic horizon finite part. | Propagate these source-jet estimates through the full metric products and normal flux, then prove independent multi-face convergence for the evolved response as well as the forcing. Equal-reader vanishing still does not justify unrenormalized split-reader continuity: [the family has a genuine pole](rh-killed-routes.md#no-go-271). |
+| Horizon, radial and QNM corner | Horizon traces admit all damped moments. Source/forcing radial pullbacks retain both horizon branches and source-determined power/log counterterms. The complete original radial finite part has residue opposite to the temporal corner; their sum has a [removable fundamental-QNM singularity and fixed finite value](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalMetricQNM.lean). | Match this angular-first analytic representative to the complete independent-limit metric action and determine the physical finite value. The reflected normalizable reader still [fails the original horizon domain](rh-killed-routes.md#no-go-276). QNM-conserved reflected-pair compensation is [identically dark](rh-killed-routes.md#no-go-279), so a survivor must change locality/conservation or use a non-packet mechanism. |
+| Stationary two-rate kernels | Exact SS/VV and mixed current/trace formulae, finite parts, tilt detectors and harmonic sign laws. The constant-mode FE-invariance receiver detects `σ=1/2` for `0≤σ≤1`, `t≥92`. | Source-produced FE invariance and transport to the original causal action. SS and VV have opposite signs on an explicit band; [amplitude-independent kernel sign is excluded](rh-killed-routes.md#no-go-268). Arbitrary copywise unit phase [cannot alter universal darkness](rh-killed-routes.md#no-go-280), and a regular horizontally robust five-half collision trap is [null/terminal](rh-killed-routes.md#no-go-281). |
 | On-line spectral comparison | SS plateau satisfies `abs(Im K)≤t⁹` for `t≥50`, while its constant mode is at least `t¹¹/2176`. The modular Dirichlet form is dense and closable, its covariance is `(1−Δ)⁻¹`, and the [assembled spectral inequality](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSkewPlateauCovarianceKernel.lean) holds for every modular `L²` field: constant-mode contribution minus `t⁹` times orthogonal energy bounds the quadratic form below. | Identify the actual source-retaining HB field in this `L²` space and prove the source-specific domination `orthogonal energy = o(t² × constant energy)` (or a sufficient explicit variant), then connect the form to the original causal current. The general spectral theorem does not supply that source estimate. |
 
 Additional evidence: [native-reader decay](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedNativeReaderFlux.lean), [particular cusp resonances](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedParticularCuspFlux.lean), [finite static slabs](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMActualIngoingCurrent.lean), [mixed radial overlap](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedRadialOverlap.lean), [left-QNM exchange](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLeftQNMCorrectionExchange.lean), [constant-mode receiver](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewConstantFE.lean).
 
-Current matching evidence: [circle Darboux equation and exact period](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCircleEquation.lean), [scalar restoration](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalScalarRestoration.lean), [full source contact](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalSourceContact.lean), [finite orbit current](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalOrbitCurrent.lean), [horizon time trace](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalHorizonTimeTrace.lean), [corner continuation](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalHorizonGreenMatch.lean), [corner admission](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCornerCurrentAdmission.lean).
+Current matching evidence: [cusp-time passage](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCuspTime.lean), [metric time finite part](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalMetricTimePeriod.lean), [temporal endpoint removal](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalMetricTimeLimit.lean), [outer-time comparison](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalMetricOuterTime.lean), [horizon restoration](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalMetricHorizon.lean), [radial/corner balance](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalMetricRadial.lean), [forcing joint limits](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalForcingAngularPeriod.lean), [uniform horizon source jets](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalHorizonSourceJets.lean).
 
 Current spectral evidence: [uniform kernel bound](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewUniformBound.lean), [constant-weight positivity](../../../../formal/GaloisForLFunctions/RHTower/XiLogDerivLineOnePositive.lean), [logarithmic-derivative growth](../../../../formal/GaloisForLFunctions/RHTower/XiLogDerivLineOneGrowth.lean), [Bessel bound](../../../../formal/GaloisForLFunctions/RHTower/BesselKImaginaryOrderUniformBound.lean), [Eisenstein bound, `t≥1`, `1/2≤Y≤1`](../../../../formal/GaloisForLFunctions/RHTower/EisensteinCuspTailImaginaryOrderBound.lean), [modular form assembly](../../../../formal/GaloisForLFunctions/HTGeometry/ModularDirichletFormDomain.lean), [closability](../../../../formal/GaloisForLFunctions/HTGeometry/ModularDirichletFormClosable.lean).
 
@@ -180,9 +180,9 @@ Current spectral evidence: [uniform kernel bound](../../../../formal/GaloisForLF
 
 ### P — paired prime–Gamma signed exterior wall
 
-- **Closed:** Paired source operators and exact arithmetic rectangle cubic trace equal Xi multiplicity; the direct determinant's Xi mismatch is proved.
-- **Open:** Prove exterior tail passivity or strict-right cubic zero-charge from source. Alternatives need modular admissibility or a singular moving-reference current. Occurrence is closed on the arithmetic cubic front; orientation is not.
-- **Evidence:** [Architecture, precise hypotheses and source references](rh-frontier-reference-2026-09-12.md#source-line-1351).
+- **Closed:** Paired source operators and exact arithmetic rectangle cubic trace equal Xi multiplicity; the direct determinant's Xi mismatch is proved. A second-moment radius `‖α⁻²‖<1/150` now controls every higher reciprocal-square moment, and every cold Malgrange target from order two onward has its exact alternating orientation without finite-order enumeration or RH.
+- **Open:** Connect this all-order cold orientation to the literal exterior wall/current and prove strict-right cubic zero-charge or exterior tail passivity. Alternatives still need modular admissibility or a singular moving-reference current; oriented target jets alone do not establish source occurrence.
+- **Evidence:** [Second-moment radius](../../../../formal/GaloisForLFunctions/RHTower/XiReciprocalSquareSecondMomentRadius.lean), [all-order Malgrange orientation](../../../../formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaStokesPrimeGammaWallAllOrderMalgrangeOrientation.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-1351).
 
 <a id="pw-b--recoildeninger-ward-transmutation"></a>
 
@@ -196,9 +196,9 @@ Current spectral evidence: [uniform kernel bound](../../../../formal/GaloisForLF
 
 ### Q — exterior paired-value passivity
 
-- **Closed:** Explicit paired kernel, finite rational matrices and exact RH endpoint.
-- **Open:** Prove source nonnegativity of the exterior paired diagonal, equivalently every finite paired-value matrix.
-- **Evidence:** [Architecture, precise hypotheses and source references](rh-frontier-reference-2026-09-12.md#source-line-1407).
+- **Closed:** Explicit paired kernel, finite rational matrices and exact RH endpoint. The continued prime–Gamma reciprocal-square sector sign on the centered upper strip is now exactly equivalent to RH, with an explicit local negative pole witness at every off-line zero. Source positivity is proved on the exterior overlap `701/100 < Re z ≤ 207/20`, `0 < Im z < 1/2` away from poles.
+- **Open:** Extend the source sector sign from that finite exterior band to its full pole-free upper-strip domain, equivalently prove global exterior paired-diagonal nonnegativity. The present positive band ends before the proved zero-frequency radius and cannot encounter a divisor pole.
+- **Evidence:** [Exact source-sector criterion](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchReciprocalSquareSectorGate.lean), [positive exterior overlap](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchPositivePairedDiagonalExteriorOverlap.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-1407).
 
 <a id="rg--gaussian-arithmetic-and-suzuki-transport-positivity"></a>
 
@@ -228,9 +228,9 @@ Current spectral evidence: [uniform kernel bound](../../../../formal/GaloisForLF
 
 ### SV2 — Suzuki projective limit and shifted-kernel inertia
 
-- **Closed:** Projective/Schur receivers, shifted-kernel inertia, rational-node negative witnesses and certified finite-prime tails.
-- **Open:** Exclude every finite tail-certified negative Pick witness directly from primes; alternatively complete both projective charts and reciprocal convergence.
-- **Evidence:** [Architecture, precise hypotheses and source references](rh-frontier-reference-2026-09-12.md#source-line-2212).
+- **Closed:** Projective/Schur receivers, shifted-kernel inertia, rational-node negative witnesses and certified finite-prime tails. Suzuki's literal finite-aperture completed covariance now supplies an exact second disk jet, uniform defect-normalized two-jet bounds, and one canonical cofinal subsequence transporting both first defect and endpoint torque. The target two-jet Schur slack is exactly the first safe-shift `2×2` Hankel minor.
+- **Open:** Identify the cofinal source limit with the Xi target strongly enough to transport the two-jet sign, or exclude every finite tail-certified negative Pick witness directly from primes. Position torque alone is insufficient away from exact parity-energy balance; [its fixed-torque fibre is nonselective](rh-killed-routes.md#no-go-282).
+- **Evidence:** [Actual source second jet and bound](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTaV2ActualSecondDefectBound.lean), [joint cofinal jet transport](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTaV2ActualSecondDefectJetCofinalLimit.lean), [shifted-Hankel gate](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTwoJetShiftedHankelGate.lean).
 
 <a id="t1--theta-tail-core-current"></a>
 
@@ -597,7 +597,7 @@ does not independently solve the problem; they do not mean its premise is false.
 
 ### Closed subroutes inside otherwise live families
 
-The complete catalogue contains **all 278 named entries**, not a selected list. Each family
+The complete catalogue contains **all 282 named entries**, not a selected list. Each family
 opens a name index followed by one structured result/survivor card per mechanism.
 The 16 original-label records above are included in that total; FD2 and RBH also have
 their longer architecture verdicts in the reference.
@@ -607,10 +607,10 @@ their longer architecture verdicts in the reference.
 | [Retired original route labels](rh-killed-routes.md#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](rh-killed-routes.md#ccm) | 17 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](rh-killed-routes.md#arithmetic) | 33 |
-| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 48 |
+| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 51 |
 | [Theta, Schur, spectral and positivity mechanisms](rh-killed-routes.md#theta) | 23 |
 | [Singular descent, formation and completion](rh-killed-routes.md#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 30 |
+| [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 31 |
 | [Analytic roots, multiplicity and regularization](rh-killed-routes.md#roots) | 9 |
 | [Other finite, scalar and source-blind selectors](rh-killed-routes.md#other) | 76 |
 
@@ -666,6 +666,17 @@ remove—or expose—inside the named routes.
 - **Open:** Complete Tauberian inversion/unsmoothing to the ordinary coefficient
   asymptotic and the existing `ZetaBinomialHalfKatoInversion` input.
 - **Evidence:** [Tauberian progress](rh-frontier-reference-2026-09-12.md#zeta-half-tauberian) and [boundary/inversion statement](rh-frontier-reference-2026-09-12.md#zeta-half-boundary).
+
+### Prime-counting and signed normal-equation infrastructure
+
+- **Closed:** An unconditional de la Vallée Poussin power-log prime number theorem is now
+  available for both Chebyshev `ψ` and its Perron interface. Separately, the abstract
+  half-log trace theorem now permits a bounded signed profile and weighted signed trace;
+  positivity and a one-sided numerator hypothesis are no longer required.
+- **Open:** Supply the source-specific exact normal equation, bounded signed profile,
+  weighted-trace control and average needed by a named route. The unconditional PNT error
+  does not imply CCM-FU's RH-equivalent dyadic subpower window law.
+- **Evidence:** [Chebyshev power-log PNT](../../../../formal/GaloisForLFunctions/RHTower/ChebyshevPsiPowerLogPNT.lean), [Perron power-log PNT](../../../../formal/GaloisForLFunctions/RHTower/PerronPowerLogPNT.lean), [signed half-log trace](../../../../formal/GaloisForLFunctions/HTGeometry/LogNormalEquationSignedTrace.lean).
 
 ### Source-construction and selector checks
 

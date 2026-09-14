@@ -9,8 +9,8 @@ import GaloisForLFunctions.RHTower.PrimeArchExplicitCircleStateReflection
 
 The reciprocal-square radius `1/150`, fourth-trace orientation control, and unconditional
 positivity of normalized source moments through index twenty-two together force strict Route-Q
-diagonal positivity on `701/100 < Re z ≤ 207/20`, `0 < Im z < 1/2`.  The proof compares the exact
-first moment term with a closed geometric majorant for the entire remaining tail.
+diagonal positivity on `701/100 < Re z ≤ 261/25`, `0 < Im z < 1/2`.  The proof compares the exact
+first moment term with a closed linear-weight majorant for the entire remaining tail.
 -/
 
 open Complex Real MeasureTheory Set Filter Topology
@@ -330,76 +330,50 @@ private theorem abs_im_pow_le_two_mul
       push_cast
       ring
 
-/-- Linear growth is absorbed by a fixed geometric ratio after index twenty-three. -/
-private theorem twentyThree_add_le_geometric (k : ℕ) :
-    ((23 + k : ℕ) : ℝ) ≤ 23 * (24 / 23 : ℝ) ^ k := by
-  induction k with
-  | zero => norm_num
-  | succ k ih =>
-      have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-      calc
-        ((23 + k.succ : ℕ) : ℝ) ≤
-            (24 / 23 : ℝ) * ((23 + k : ℕ) : ℝ) := by
-          push_cast
-          nlinarith
-        _ ≤ (24 / 23 : ℝ) * (23 * (24 / 23 : ℝ) ^ k) := by
-          gcongr
-        _ = 23 * (24 / 23 : ℝ) ^ k.succ := by
-          rw [pow_succ]
-          ring
+private def linearWeightedTail (N : ℕ) (x : ℝ) : ℝ :=
+  x ^ (N - 1) * (N * (1 - x)⁻¹ + x / (1 - x) ^ 2)
 
-private theorem twentyThree_add_mul_pow_le_geometricTerm
-    {x : ℝ} (hx0 : 0 ≤ x) (hx : x ≤ 157 / 200) (k : ℕ) :
-    ((23 + k : ℕ) : ℝ) * x ^ (22 + k) ≤
-      23 * x ^ 22 * (471 / 575 : ℝ) ^ k := by
-  have hcount := twentyThree_add_le_geometric k
-  have hxpow : x ^ k ≤ (157 / 200 : ℝ) ^ k :=
-    pow_le_pow_left₀ hx0 hx k
-  calc
-    ((23 + k : ℕ) : ℝ) * x ^ (22 + k) =
-        x ^ 22 * (((23 + k : ℕ) : ℝ) * x ^ k) := by
-      rw [pow_add]
-      ring
-    _ ≤ x ^ 22 *
-        ((23 * (24 / 23 : ℝ) ^ k) * (157 / 200 : ℝ) ^ k) := by
-      gcongr
-    _ = 23 * x ^ 22 * (471 / 575 : ℝ) ^ k := by
-      rw [mul_assoc 23, ← mul_pow]
-      norm_num
-      ring
+/-- Exact linear-weight tail, avoiding the fixed-ratio loss in the coarse geometric majorant. -/
+private theorem hasSum_nat_add_mul_pow_exact
+    (N : ℕ)
+    {x : ℝ} (hx : |x| < 1) :
+    HasSum (fun k : ℕ => ((N + k : ℕ) : ℝ) * x ^ (N - 1 + k))
+      (linearWeightedTail N x) := by
+  have hnorm : ‖x‖ < 1 := by simpa [Real.norm_eq_abs] using hx
+  have hgeom : HasSum (fun k : ℕ => x ^ k) (1 - x)⁻¹ :=
+    hasSum_geometric_of_norm_lt_one hnorm
+  have hlinear : HasSum (fun k : ℕ => (k : ℝ) * x ^ k)
+      (x / (1 - x) ^ 2) :=
+    hasSum_coe_mul_geometric_of_norm_lt_one hnorm
+  have hsum := (hgeom.mul_left (N : ℝ)).add hlinear
+  have hscaled := hsum.mul_left (x ^ (N - 1))
+  apply hscaled.congr_fun
+  intro k
+  rw [pow_add]
+  push_cast
+  ring
 
-private theorem summable_twentyThree_add_mul_pow
-    {x : ℝ} (hx0 : 0 ≤ x) (hx : x ≤ 157 / 200) :
-    Summable (fun k : ℕ => ((23 + k : ℕ) : ℝ) * x ^ (22 + k)) := by
-  apply Summable.of_nonneg_of_le
-    (fun k => mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hx0 _))
-    (twentyThree_add_mul_pow_le_geometricTerm hx0 hx)
-  exact ((summable_geometric_of_lt_one
-    (by norm_num : (0 : ℝ) ≤ 471 / 575)
-    (by norm_num : (471 / 575 : ℝ) < 1)).mul_left (23 * x ^ 22))
-
-/-- Weighted tail of any ratio at most `157/200`, starting at index twenty-three. -/
-private theorem tsum_twentyThree_add_mul_pow_le
-    {x : ℝ} (hx0 : 0 ≤ x) (hx : x ≤ 157 / 200) :
-    (∑' k : ℕ, ((23 + k : ℕ) : ℝ) * x ^ (22 + k)) ≤
-      (13225 / 104 : ℝ) * x ^ 22 := by
-  have hgeo : HasSum
-      (fun k : ℕ => 23 * x ^ 22 * (471 / 575 : ℝ) ^ k)
-      ((13225 / 104 : ℝ) * x ^ 22) := by
-    have h := (hasSum_geometric_of_lt_one
-      (by norm_num : (0 : ℝ) ≤ 471 / 575)
-      (by norm_num : (471 / 575 : ℝ) < 1)).mul_left (23 * x ^ 22)
-    have hsum :
-        (13225 / 104 : ℝ) * x ^ 22 =
-          23 * x ^ 22 * (1 - 471 / 575 : ℝ)⁻¹ := by
-      norm_num
-      ring
-    rw [hsum]
-    exact h
-  have hpoint := twentyThree_add_mul_pow_le_geometricTerm hx0 hx
-  have hleft := summable_twentyThree_add_mul_pow hx0 hx
-  rw [← hgeo.tsum_eq]
-  exact Summable.tsum_le_tsum hpoint hleft hgeo.summable
+/-- Exact tail at `x` is bounded by the exact tail at any larger contraction `r`. -/
+private theorem tsum_nat_add_mul_pow_le_exact_at
+    (N : ℕ)
+    {x r : ℝ} (hx0 : 0 ≤ x) (hxr : x ≤ r) (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    (∑' k : ℕ, ((N + k : ℕ) : ℝ) * x ^ (N - 1 + k)) ≤
+      linearWeightedTail N r := by
+  have hrAbs : |r| < 1 := by rwa [abs_of_nonneg hr0]
+  have hsum := hasSum_nat_add_mul_pow_exact N hrAbs
+  have hpoint : ∀ k : ℕ,
+      ((N + k : ℕ) : ℝ) * x ^ (N - 1 + k) ≤
+        ((N + k : ℕ) : ℝ) * r ^ (N - 1 + k) := by
+    intro k
+    exact mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ hx0 hxr (N - 1 + k)) (Nat.cast_nonneg _)
+  have hleft : Summable (fun k : ℕ =>
+      ((N + k : ℕ) : ℝ) * x ^ (N - 1 + k)) :=
+    Summable.of_nonneg_of_le
+      (fun k => mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hx0 _))
+      hpoint hsum.summable
+  rw [← hsum.tsum_eq]
+  exact Summable.tsum_le_tsum hpoint hleft hsum.summable
 
 /-- Relative moment decay and the power Lipschitz estimate give a summable majorant with one
 dimensionless ratio. -/
@@ -453,12 +427,31 @@ private theorem norm_sq_lt_oneHundredFifty_of_exteriorOverlap
   rw [norm_pow]
   nlinarith [norm_nonneg z]
 
-/-- Twenty-two positive moments dominate the remaining moment tail throughout an explicit
-exterior overlap band. -/
-theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
+private theorem norm_sq_lt_oneHundredFifty_of_extendedExteriorOverlap
     (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
-    (hzreUpper : z.re ≤ 207 / 20)
+    (hzreUpper : z.re ≤ 261 / 25)
     (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
+    ‖z ^ 2‖ < 150 := by
+  have hre : 0 ≤ z.re := by linarith
+  have hnormz : ‖z‖ < 547 / 50 :=
+    (Complex.norm_le_abs_re_add_abs_im z).trans_lt (by
+      rw [abs_of_nonneg hre, abs_of_pos hzim]
+      linarith)
+  rw [norm_pow]
+  nlinarith [norm_nonneg z]
+
+/-- Exact-tail positivity core. The only quantitative input is domination of the natural
+linear-weight tail at one contraction ratio; no frozen geometric relaxation remains. -/
+private theorem im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
+    (z : ℂ) (hzre : 0 < z.re) (hzim : 0 < z.im)
+    (N : ℕ) (hN : 1 < N)
+    (hmoment : ∀ n : ℕ, n < N → 0 ≤ normalizedPrimeArchMoment n)
+    (hpower : ∀ n : ℕ, n < N → 0 ≤ (z ^ (2 * n)).im)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
+    (hratio : (z.re + |z.im|) ^ 2 / 150 ≤ r)
+    (hscalar :
+      (74 / 73 : ℝ) * (z.re + |z.im|) *
+          linearWeightedTail N r < z.re) :
     0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
   have hre : 0 ≤ z.re := by linarith
   have hm1 : 0 < normalizedPrimeArchMoment 1 :=
@@ -470,18 +463,23 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
   have ha0 : 0 ≤ a := by
     dsimp only [a]
     positivity
-  have haUpper : a < 217 / 20 := by
-    dsimp only [a]
-    rw [abs_of_pos hzim]
-    linarith
   have hx0 : 0 ≤ x := by
     dsimp only [x]
     positivity
-  have hx : x ≤ 157 / 200 := by
-    dsimp only [x]
-    nlinarith [sq_nonneg (a - 217 / 20)]
-  have hw := norm_sq_lt_oneHundredFifty_of_exteriorOverlap
-    z hzre hzreUpper hzim hzimUpper
+  have hxr : x ≤ r := by
+    simpa only [x, a] using hratio
+  have hx1 : x < 1 := hxr.trans_lt hr1
+  have hxAbs : |x| < 1 := by rwa [abs_of_nonneg hx0]
+  have hnormza : ‖z‖ ≤ a := by
+    dsimp only [a]
+    have h := Complex.norm_le_abs_re_add_abs_im z
+    rwa [abs_of_nonneg hre] at h
+  have haSq : a ^ 2 < 150 := by
+    dsimp only [x] at hx1
+    nlinarith
+  have hw : ‖z ^ 2‖ < 150 := by
+    rw [norm_pow]
+    nlinarith [sq_nonneg (a - ‖z‖), norm_nonneg z]
   let f : ℕ → ℂ := fun n =>
     (normalizedPrimeArchMoment n : ℂ) * z ^ (2 * n)
   have hsum : Summable f := by
@@ -489,12 +487,11 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
       summable_primeArchCircleMomentSeries_of_norm_lt_oneHundredFifty
         (w := z ^ 2) hw
     simpa only [f, ← pow_mul] using h
-  have hprefixTerm : ∀ n ∈ Finset.range 23, 0 ≤ (f n).im := by
+  have hprefixTerm : ∀ n ∈ Finset.range N, 0 ≤ (f n).im := by
     intro n hn
-    have hnlt : n < 23 := Finset.mem_range.mp hn
-    have hm := (normalizedPrimeArchMoment_pos_of_lt_twentyThree n hnlt).le
-    have hp := pow_two_mul_im_nonneg_of_exteriorBand
-      z hzre hzim hzimUpper n (by omega)
+    have hnlt : n < N := Finset.mem_range.mp hn
+    have hm := hmoment n hnlt
+    have hp := hpower n hnlt
     dsimp only [f]
     rw [Complex.mul_im]
     simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
@@ -507,12 +504,12 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
     ring
   have hprefix :
       2 * z.re * z.im * normalizedPrimeArchMoment 1 ≤
-        ∑ n ∈ Finset.range 23, (f n).im := by
+        ∑ n ∈ Finset.range N, (f n).im := by
     rw [← hfirst]
-    exact Finset.single_le_sum hprefixTerm (by norm_num)
-  have htail : Summable (fun k : ℕ => f (k + 23)) :=
-    (summable_nat_add_iff 23).2 hsum
-  have htailIm : Summable (fun k : ℕ => (f (k + 23)).im) :=
+    exact Finset.single_le_sum hprefixTerm (Finset.mem_range.mpr hN)
+  have htail : Summable (fun k : ℕ => f (k + N)) :=
+    (summable_nat_add_iff N).2 hsum
+  have htailIm : Summable (fun k : ℕ => (f (k + N)).im) :=
     Complex.imCLM.summable htail
   have hB0 : 0 ≤ B := by
     dsimp only [B]
@@ -521,66 +518,53 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
         (mul_nonneg
           (mul_nonneg (by norm_num) (by norm_num)) (abs_nonneg _)) ha0)
       hm1.le
-  have hweight := summable_twentyThree_add_mul_pow hx0 hx
+  have hweight := (hasSum_nat_add_mul_pow_exact N hxAbs).summable
   have htailTerm : ∀ k : ℕ,
-      |(f (k + 23)).im| ≤
-        B * (((23 + k : ℕ) : ℝ) * x ^ (22 + k)) := by
+      |(f (k + N)).im| ≤
+        B * (((N + k : ℕ) : ℝ) * x ^ (N - 1 + k)) := by
     intro k
-    have h := abs_primeArchMomentTerm_one_add_im_le z hre (22 + k)
+    have h := abs_primeArchMomentTerm_one_add_im_le z hre (N - 1 + k)
     dsimp only [f, B, x, a]
-    simpa only [show k + 23 = 1 + (22 + k) by omega,
-      show 1 + (22 + k) = 23 + k by omega] using h
+    simpa only [show k + N = 1 + (N - 1 + k) by omega,
+      show 1 + (N - 1 + k) = N + k by omega] using h
   have htailAbsLe :
-      (∑' k : ℕ, |(f (k + 23)).im|) ≤
-        B * ((13225 / 104 : ℝ) * x ^ 22) := by
+      (∑' k : ℕ, |(f (k + N)).im|) ≤
+        B * linearWeightedTail N r := by
     calc
-      (∑' k : ℕ, |(f (k + 23)).im|) ≤
-          ∑' k : ℕ, B * (((23 + k : ℕ) : ℝ) * x ^ (22 + k)) :=
+      (∑' k : ℕ, |(f (k + N)).im|) ≤
+          ∑' k : ℕ, B * (((N + k : ℕ) : ℝ) * x ^ (N - 1 + k)) :=
         Summable.tsum_le_tsum htailTerm htailIm.abs (hweight.mul_left B)
-      _ = B * ∑' k : ℕ, ((23 + k : ℕ) : ℝ) * x ^ (22 + k) := by
+      _ = B * ∑' k : ℕ, ((N + k : ℕ) : ℝ) * x ^ (N - 1 + k) := by
         rw [tsum_mul_left]
-      _ ≤ B * ((13225 / 104 : ℝ) * x ^ 22) :=
-        mul_le_mul_of_nonneg_left (tsum_twentyThree_add_mul_pow_le hx0 hx) hB0
-  have hxpow : x ^ 22 ≤ (157 / 200 : ℝ) ^ 22 :=
-    pow_le_pow_left₀ hx0 hx 22
-  have hscalarLe :
-      (74 / 73 : ℝ) * a * (13225 / 104) * x ^ 22 ≤
-        (74 / 73 : ℝ) * (217 / 20) * (13225 / 104) * (157 / 200) ^ 22 := by
-    gcongr
-  have hscalar :
-      (74 / 73 : ℝ) * a * (13225 / 104) * x ^ 22 < z.re := by
-    calc
-      (74 / 73 : ℝ) * a * (13225 / 104) * x ^ 22 ≤
-          (74 / 73 : ℝ) * (217 / 20) * (13225 / 104) * (157 / 200) ^ 22 :=
-        hscalarLe
-      _ < 701 / 100 := by norm_num
-      _ < z.re := hzre
+      _ ≤ B * linearWeightedTail N r :=
+        mul_le_mul_of_nonneg_left
+          (tsum_nat_add_mul_pow_le_exact_at N hx0 hxr hr0 hr1) hB0
   have htailBound :
-      B * ((13225 / 104 : ℝ) * x ^ 22) <
+      B * linearWeightedTail N r <
         2 * z.re * z.im * normalizedPrimeArchMoment 1 := by
     calc
-      B * ((13225 / 104 : ℝ) * x ^ 22) =
+      B * linearWeightedTail N r =
           (2 * z.im * normalizedPrimeArchMoment 1) *
-            ((74 / 73 : ℝ) * a * (13225 / 104) * x ^ 22) := by
+            ((74 / 73 : ℝ) * a * linearWeightedTail N r) := by
         dsimp only [B]
         rw [abs_of_pos hzim]
         ring
       _ < (2 * z.im * normalizedPrimeArchMoment 1) * z.re :=
-        mul_lt_mul_of_pos_left hscalar (by positivity)
+        mul_lt_mul_of_pos_left (by simpa only [a] using hscalar) (by positivity)
       _ = 2 * z.re * z.im * normalizedPrimeArchMoment 1 := by ring
   have htailAbsSmall :
-      (∑' k : ℕ, |(f (k + 23)).im|) <
+      (∑' k : ℕ, |(f (k + N)).im|) <
         2 * z.re * z.im * normalizedPrimeArchMoment 1 :=
     htailAbsLe.trans_lt htailBound
   have htailLower :
-      -(∑' k : ℕ, |(f (k + 23)).im|) ≤
-        ∑' k : ℕ, (f (k + 23)).im := by
+      -(∑' k : ℕ, |(f (k + N)).im|) ≤
+        ∑' k : ℕ, (f (k + N)).im := by
     have h := Summable.tsum_le_tsum
-      (fun k => neg_abs_le ((f (k + 23)).im))
+      (fun k => neg_abs_le ((f (k + N)).im))
       htailIm.abs.neg htailIm
     rw [tsum_neg] at h
     exact h
-  have hsplit := hsum.sum_add_tsum_nat_add 23
+  have hsplit := hsum.sum_add_tsum_nat_add N
   rw [primeArchCircleMomentResolvent]
   rw [show (fun n : ℕ =>
       (normalizedPrimeArchMoment n : ℂ) * (z ^ 2) ^ n) = f by
@@ -589,6 +573,86 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
     rw [← pow_mul]]
   rw [← hsplit, Complex.add_im, Complex.im_sum, Complex.im_tsum htail]
   linarith
+
+/-- Twenty-two positive moments dominate the remaining moment tail throughout an explicit
+exterior overlap band. -/
+theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 207 / 20)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
+    0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
+  have haUpper : z.re + |z.im| < (217 / 20 : ℝ) := by
+    rw [abs_of_pos hzim]
+    linarith
+  have ha0 : (0 : ℝ) ≤ z.re + |z.im| := by positivity
+  have hratio : (z.re + |z.im|) ^ 2 / 150 ≤ (157 / 200 : ℝ) := by
+    nlinarith [sq_nonneg ((z.re + |z.im|) - 217 / 20)]
+  have htailCoefficient :
+      0 < (74 / 73 : ℝ) * linearWeightedTail 23 (157 / 200) := by
+    simp only [linearWeightedTail]
+    positivity
+  have hscalar :
+      (74 / 73 : ℝ) * (z.re + |z.im|) *
+          linearWeightedTail 23 (157 / 200) < z.re := by
+    calc
+      (74 / 73 : ℝ) * (z.re + |z.im|) *
+            linearWeightedTail 23 (157 / 200) =
+          ((74 / 73 : ℝ) * linearWeightedTail 23 (157 / 200)) *
+              (z.re + |z.im|) := by ring
+      _ < ((74 / 73 : ℝ) * linearWeightedTail 23 (157 / 200)) *
+              (217 / 20 : ℝ) :=
+        mul_lt_mul_of_pos_left haUpper htailCoefficient
+      _ < 701 / 100 := by norm_num [linearWeightedTail]
+      _ < z.re := hzre
+  exact im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
+    z (by linarith) hzim 23 (by norm_num)
+    (fun n hn => (normalizedPrimeArchMoment_pos_of_lt_twentyThree n hn).le)
+    (fun n hn => pow_two_mul_im_nonneg_of_exteriorBand
+      z hzre hzim hzimUpper n (by omega))
+    (by norm_num) (by norm_num) hratio hscalar
+
+/-- Exact tail summation enlarges unconditional moment-resolvent positivity from upper edge
+`207/20` to `261/25`. The lower edge, which controls the first twenty-two arguments, is
+unchanged. -/
+theorem im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 261 / 25)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
+    0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
+  by_cases hold : z.re ≤ 207 / 20
+  · exact im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
+      z hzre hold hzim hzimUpper
+  · have holdStrict : (207 / 20 : ℝ) < z.re := lt_of_not_ge hold
+    have hre : (0 : ℝ) ≤ z.re := by linarith
+    have ha0 : (0 : ℝ) ≤ z.re + |z.im| := by positivity
+    have haUpper : z.re + |z.im| < (547 / 50 : ℝ) := by
+      rw [abs_of_pos hzim]
+      linarith
+    have hratio : (z.re + |z.im|) ^ 2 / 150 ≤ (399 / 500 : ℝ) := by
+      nlinarith [sq_nonneg ((z.re + |z.im|) - 547 / 50)]
+    have htailCoefficient :
+        0 < (74 / 73 : ℝ) * linearWeightedTail 23 (399 / 500) := by
+      simp only [linearWeightedTail]
+      positivity
+    have hscalar :
+        (74 / 73 : ℝ) * (z.re + |z.im|) *
+            linearWeightedTail 23 (399 / 500) < z.re := by
+      calc
+        (74 / 73 : ℝ) * (z.re + |z.im|) *
+              linearWeightedTail 23 (399 / 500) =
+            ((74 / 73 : ℝ) * linearWeightedTail 23 (399 / 500)) *
+                (z.re + |z.im|) := by ring
+        _ < ((74 / 73 : ℝ) * linearWeightedTail 23 (399 / 500)) *
+                (547 / 50 : ℝ) :=
+          mul_lt_mul_of_pos_left haUpper htailCoefficient
+        _ < 207 / 20 := by norm_num [linearWeightedTail]
+        _ < z.re := holdStrict
+    exact im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
+      z (by linarith) hzim 23 (by norm_num)
+      (fun n hn => (normalizedPrimeArchMoment_pos_of_lt_twentyThree n hn).le)
+      (fun n hn => pow_two_mul_im_nonneg_of_exteriorBand
+        z hzre hzim hzimUpper n (by omega))
+      (by norm_num) (by norm_num) hratio hscalar
 
 /-- The circle atomic resolvent at `z²` is exactly the reciprocal-square resolvent sum at `z`. -/
 theorem primeArchCircleAtomicResolvent_sq_eq_reciprocalSquare_tsum (z : ℂ) :
@@ -617,6 +681,22 @@ theorem continuedPrimeArchReciprocalSquareTrace_im_pos_of_exteriorOverlap
   exact im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
     z hzre hzreUpper hzim hzimUpper
 
+/-- Exact tail summation propagates the enlarged overlap band to the continued prime--Gamma
+reciprocal-square trace. -/
+theorem continuedPrimeArchReciprocalSquareTrace_im_pos_of_extendedExteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 261 / 25)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2)
+    (hzeta : riemannZeta (1 / 2 + z * I) ≠ 0) :
+    0 < (continuedPrimeArchReciprocalSquareTrace z).im := by
+  have hw := norm_sq_lt_oneHundredFifty_of_extendedExteriorOverlap
+    z hzre hzreUpper hzim hzimUpper
+  rw [continuedPrimeArchReciprocalSquareTrace_eq_tsum hzim hzimUpper hzeta,
+    ← primeArchCircleAtomicResolvent_sq_eq_reciprocalSquare_tsum,
+    ← primeArchCircleMomentResolvent_eq_atomicResolvent_of_norm_lt_oneHundredFifty hw]
+  exact im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
+    z hzre hzreUpper hzim hzimUpper
+
 /-- Route Q is strictly positive, not merely nonnegative, on the explicit exterior overlap band
 `701/100 < Re z ≤ 207/20`. -/
 theorem ccmPositivePairedReducedKernel_self_pos_of_exteriorOverlap
@@ -629,6 +709,20 @@ theorem ccmPositivePairedReducedKernel_self_pos_of_exteriorOverlap
   exact mul_pos
     (mul_pos (by norm_num) (div_pos (by linarith) hzim))
     (continuedPrimeArchReciprocalSquareTrace_im_pos_of_exteriorOverlap
+      z hzre hzreUpper hzim hzimUpper hzeta)
+
+/-- Route Q is strictly positive on the exact-tail exterior overlap band
+`701/100 < Re z ≤ 261/25`. -/
+theorem ccmPositivePairedReducedKernel_self_pos_of_extendedExteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 261 / 25)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2)
+    (hzeta : riemannZeta (1 / 2 + z * I) ≠ 0) :
+    0 < ccmPositivePairedReducedKernel z z := by
+  rw [ccmPositivePairedReducedKernel_self_eq_reciprocalSquareSector hzim.ne']
+  exact mul_pos
+    (mul_pos (by norm_num) (div_pos (by linarith) hzim))
+    (continuedPrimeArchReciprocalSquareTrace_im_pos_of_extendedExteriorOverlap
       z hzre hzreUpper hzim hzimUpper hzeta)
 
 /-- Closed source-only statement of strict Route-Q positivity on the exterior overlap band. -/
@@ -645,6 +739,22 @@ theorem primeArchPositivePairedDiagonalExteriorOverlap :
     PrimeArchPositivePairedDiagonalExteriorOverlap := by
   intro z hzre hzreUpper hzim hzimUpper hzeta
   exact ccmPositivePairedReducedKernel_self_pos_of_exteriorOverlap
+    z hzre hzreUpper hzim hzimUpper hzeta
+
+/-- Closed source-only statement of strict Route-Q positivity on the exact-tail overlap band. -/
+def PrimeArchPositivePairedDiagonalExtendedExteriorOverlap : Prop :=
+  ∀ z : ℂ,
+    (701 / 100 : ℝ) < z.re → z.re ≤ 261 / 25 →
+    0 < z.im → z.im < 1 / 2 →
+    riemannZeta (1 / 2 + z * I) ≠ 0 →
+      0 < ccmPositivePairedReducedKernel z z
+
+/-- The prime--Gamma source unconditionally satisfies strict Route-Q positivity on the enlarged
+exact-tail exterior overlap band. -/
+theorem primeArchPositivePairedDiagonalExtendedExteriorOverlap :
+    PrimeArchPositivePairedDiagonalExtendedExteriorOverlap := by
+  intro z hzre hzreUpper hzim hzimUpper hzeta
+  exact ccmPositivePairedReducedKernel_self_pos_of_extendedExteriorOverlap
     z hzre hzreUpper hzim hzimUpper hzeta
 
 end

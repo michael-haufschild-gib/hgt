@@ -452,115 +452,137 @@ theorem norm_chebyshev_sub_halfInt_le_of_xiZeroHalfPlaneBound
   rw [hreal] at htri
   linarith [htri, hperron, hshift]
 
-/-- Chebyshev error at half-integer cutoffs from an arbitrary Xi zero frontier below one. -/
-theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
-    {alpha : ℝ} (halpha : 0 ≤ alpha) (halphaHalf : alpha < 1 / 2)
-    (hXi : XiZeroHalfPlaneBound alpha) {epsilon : ℝ}
-    (hepsilon : 0 < epsilon) (hepsilon4 : epsilon ≤ 1 / 4)
-    (hline : 1 / 2 + alpha + epsilon / 2 < 1) :
-    ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ, 7 ≤ N →
-      |(∑ n ∈ Finset.Icc 1 N, (Λ n : ℝ)) - (N : ℝ)|
-        ≤ C * (((N : ℝ) + 1 / 2) ^ (1 / 2 + alpha + epsilon / 2) *
-            (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) := by
-  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
-  have hsigma1 : (1 : ℝ) / 2 + alpha < 1 / 2 + alpha + epsilon / 2 := by linarith
-  have hsigma11 : (1 : ℝ) / 2 + alpha + epsilon / 2 < 1 := hline
-  have hsigma0 : (1 : ℝ) < 1 + epsilon / 2 := by linarith
-  have hsigma02 : (1 : ℝ) + epsilon / 2 ≤ 2 := by linarith
-  have hsigma098 : (1 : ℝ) + epsilon / 2 ≤ 9 / 8 := by linarith
-  have hsigma1sigma0 : (1 : ℝ) / 2 + alpha + epsilon / 2 ≤ 1 + epsilon / 2 := by
-    linarith
+private theorem vonKoch_envelope_bounds
+    {x p e : ℝ} (hx : 1 ≤ x) (hp : 0 ≤ p) (hep : e ≤ p) :
+    0 ≤ x ^ p * (1 + Real.log x) ^ 2 ∧
+      1 ≤ x ^ p * (1 + Real.log x) ^ 2 ∧
+      x ^ e ≤ x ^ p * (1 + Real.log x) ^ 2 ∧
+      (1 + Real.log x) ^ 2 ≤ x ^ p * (1 + Real.log x) ^ 2 ∧
+      Real.log x * x ^ e ≤ x ^ p * (1 + Real.log x) ^ 2 := by
+  have hx0 : 0 ≤ x := le_trans (by norm_num) hx
+  have hlog0 : 0 ≤ Real.log x := Real.log_nonneg hx
+  have hL1 : 1 ≤ 1 + Real.log x := by linarith
+  have hL2 : 1 ≤ (1 + Real.log x) ^ 2 := by nlinarith
+  have hP1 : 1 ≤ x ^ p := by
+    simpa using Real.rpow_le_rpow_of_exponent_le hx hp
+  have hxe : x ^ e ≤ x ^ p := Real.rpow_le_rpow_of_exponent_le hx hep
+  have hxe0 : 0 ≤ x ^ e := Real.rpow_nonneg hx0 _
+  have hP0 : 0 ≤ x ^ p := Real.rpow_nonneg hx0 _
+  have hL0 : 0 ≤ (1 + Real.log x) ^ 2 := sq_nonneg _
+  refine ⟨mul_nonneg hP0 hL0, ?_, ?_, ?_, ?_⟩
+  · simpa using mul_le_mul hP1 hL2 (by norm_num : (0 : ℝ) ≤ 1) hP0
+  · simpa using mul_le_mul hxe hL2 (by norm_num : (0 : ℝ) ≤ 1) hP0
+  · simpa using mul_le_mul_of_nonneg_right hP1 hL0
+  · have hlogle : Real.log x ≤ (1 + Real.log x) ^ 2 := by nlinarith
+    have hmul := mul_le_mul hlogle hxe hxe0 hL0
+    simpa only [mul_comm] using hmul
+
+private theorem vonKoch_perron_leading_identity
+    {x epsilon : ℝ} (hepsilon : 0 < epsilon) (hx : 0 < x) :
+    (1 / (Real.pi * x * Real.log 2)) *
+          (x ^ ((1 : ℝ) + epsilon / 2) * (8 / ((1 + epsilon / 2) - 1) ^ 2)) =
+      (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) * x ^ (epsilon / 2) := by
+  have hxrp : x ^ ((1 : ℝ) + epsilon / 2) = x * x ^ (epsilon / 2) := by
+    rw [Real.rpow_add hx, Real.rpow_one]
+  rw [show ((1 : ℝ) + epsilon / 2) - 1 = epsilon / 2 by ring, hxrp]
+  field_simp
+  ring
+
+private theorem vonKoch_log_product_le
+    {A B L : ℝ} (hB0 : 0 ≤ B) (hL0 : 0 ≤ L)
+    (hAL : A ≤ L) (hBL : B ≤ 3 * L) :
+    64 * A * B ≤ 192 * L ^ 2 := by
+  have hmul := mul_le_mul hAL hBL hB0 hL0
+  nlinarith [hmul]
+
+private theorem vonKoch_vertical_bracket_le
+    {alpha epsilon x : ℝ} (halpha : 0 ≤ alpha) (hepsilon : 0 < epsilon)
+    (hx4 : 4 ≤ x) :
+    2 * (1 + Real.log 3) / (1 / 2 + alpha + epsilon / 2) +
+        2 * (1 + Real.log (2 + x)) * Real.log x
+      ≤ 14 * (1 + Real.log x) ^ 2 := by
+  have hx1 : (1 : ℝ) ≤ x := by linarith
+  have hlogx0 : (0 : ℝ) ≤ Real.log x := Real.log_nonneg hx1
+  have hL1 : (1 : ℝ) ≤ 1 + Real.log x := by linarith
+  have hL2 : (1 : ℝ) ≤ (1 + Real.log x) ^ 2 := by nlinarith
   have hsigma10 : (0 : ℝ) < 1 / 2 + alpha + epsilon / 2 := by linarith
-  obtain ⟨K, hK0, hK⟩ :=
-    exists_logDeriv_zeta_line_bound_of_xiZeroHalfPlaneBound
-      halpha hXi hsigma1 hsigma11
-  obtain ⟨C, hC0, hC⟩ :=
-    exists_logDeriv_zeta_bound_of_xiZeroHalfPlaneBound halpha hXi
-  refine ⟨32 / (Real.pi * Real.log 2 * epsilon ^ 2) + 192 / Real.pi +
-      7 * K / Real.pi + C / (Real.pi * epsilon) + 1 / 2, by positivity, ?_⟩
-  intro N hN
+  have hlog3 : Real.log 3 ≤ 1.4 := by
+    have h34 : Real.log 3 ≤ Real.log 4 := Real.log_le_log (by norm_num) (by norm_num)
+    have h4 : Real.log 4 = 2 * Real.log 2 := by
+      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      push_cast
+      ring
+    nlinarith [Real.log_two_lt_d9]
+  have h1 : 2 * (1 + Real.log 3) / (1 / 2 + alpha + epsilon / 2) ≤ 10 := by
+    rw [div_le_iff₀ hsigma10]
+    nlinarith [hlog3]
+  have h2 : 1 + Real.log (2 + x) ≤ 2 * (1 + Real.log x) := by
+    have hmono : Real.log (2 + x) ≤ Real.log (4 * x) :=
+      Real.log_le_log (by linarith) (by nlinarith)
+    rw [Real.log_mul (by norm_num) (by linarith)] at hmono
+    have hl4 : Real.log 4 ≤ Real.log x := Real.log_le_log (by norm_num) hx4
+    linarith
+  have h4 : (1 + Real.log (2 + x)) * Real.log x ≤
+      (2 * (1 + Real.log x)) * (1 + Real.log x) :=
+    mul_le_mul h2 (by linarith) hlogx0 (by linarith)
+  nlinarith [h1, h4, hL2]
+
+private theorem vonKoch_horizontal_identity
+    {alpha epsilon C x : ℝ} (halphaHalf : alpha < 1 / 2)
+    (hepsilon : 0 < epsilon) (hx : 0 < x) :
+    (C * Real.log x / ((1 / 2 + alpha + epsilon / 2) - (1 / 2 + alpha))) *
+          (x ^ ((1 : ℝ) + epsilon / 2) / x) *
+          |(1 + epsilon / 2) - (1 / 2 + alpha + epsilon / 2)| =
+      (2 * C * (1 / 2 - alpha) / epsilon) *
+        (Real.log x * x ^ (epsilon / 2)) := by
+  have hxrp : x ^ ((1 : ℝ) + epsilon / 2) = x * x ^ (epsilon / 2) := by
+    rw [Real.rpow_add hx, Real.rpow_one]
+  rw [show (1 / 2 + alpha + epsilon / 2) - (1 / 2 + alpha) = epsilon / 2 by ring,
+    show |(1 + epsilon / 2) - (1 / 2 + alpha + epsilon / 2)| =
+        1 / 2 - alpha by
+      rw [show (1 + epsilon / 2) - (1 / 2 + alpha + epsilon / 2) =
+        1 / 2 - alpha by ring, abs_of_nonneg (by linarith)],
+    hxrp]
+  field_simp
+
+private theorem vonKoch_perron_error_le
+    {alpha epsilon : ℝ} (halpha : 0 ≤ alpha) (hepsilon : 0 < epsilon)
+    (hepsilon4 : epsilon ≤ 1 / 4) {N : ℕ} (hN : 7 ≤ N) :
+    (∑' n : ℕ, ‖((Λ n : ℝ) : ℂ)‖ *
+          ((((N : ℝ) + 1 / 2) / n) ^ (1 + epsilon / 2) /
+            (Real.pi * ((N : ℝ) + 1 / 2) *
+              |Real.log (((N : ℝ) + 1 / 2) / n)|)))
+      ≤ (32 / (Real.pi * Real.log 2 * epsilon ^ 2) + 192 / Real.pi) *
+        (((N : ℝ) + 1 / 2) ^ (1 / 2 + alpha + epsilon / 2) *
+          (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) := by
   have hN7 : (7 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   have hx0 : (0 : ℝ) < (N : ℝ) + 1 / 2 := by linarith
   have hx1 : (1 : ℝ) ≤ (N : ℝ) + 1 / 2 := by linarith
   have hx4 : (4 : ℝ) ≤ (N : ℝ) + 1 / 2 := by linarith
   have hlogx0 : (0 : ℝ) ≤ Real.log ((N : ℝ) + 1 / 2) := Real.log_nonneg hx1
-  have hL1 : (1 : ℝ) ≤ 1 + Real.log ((N : ℝ) + 1 / 2) := by linarith
-  have hL2 : (1 : ℝ) ≤ (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by nlinarith [hL1]
-  have hP1 : (1 : ℝ) ≤
-      ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) / 2 + alpha + epsilon / 2) := by
-    simpa using Real.rpow_le_rpow_of_exponent_le hx1
-      (show (0 : ℝ) ≤ 1 / 2 + alpha + epsilon / 2 by linarith)
-  have hxrp : ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) + epsilon / 2) =
-      ((N : ℝ) + 1 / 2) * ((N : ℝ) + 1 / 2) ^ (epsilon / 2) := by
-    rw [Real.rpow_add hx0, Real.rpow_one]
-  have hxe : ((N : ℝ) + 1 / 2) ^ (epsilon / 2) ≤
-      ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) / 2 + alpha + epsilon / 2) :=
-    Real.rpow_le_rpow_of_exponent_le hx1 (by linarith)
-  have hxe0 : (0 : ℝ) ≤ ((N : ℝ) + 1 / 2) ^ (epsilon / 2) :=
-    Real.rpow_nonneg hx0.le _
+  have hsigma0 : (1 : ℝ) < 1 + epsilon / 2 := by linarith
+  have hsigma02 : (1 : ℝ) + epsilon / 2 ≤ 2 := by linarith
   set Q : ℝ := ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) / 2 + alpha + epsilon / 2) *
       (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 with hQdef
-  have hQ0 : (0 : ℝ) ≤ Q := by rw [hQdef]; positivity
-  have hQ1 : (1 : ℝ) ≤ Q := by rw [hQdef]; nlinarith [hP1, hL2]
-  have hQxe : ((N : ℝ) + 1 / 2) ^ (epsilon / 2) ≤ Q := by
-    rw [hQdef]
-    nlinarith [hxe, hL2, hP1]
-  have hQL : (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 ≤ Q := by
-    rw [hQdef]
-    nlinarith [hP1, hL2]
-  have hQlogxe : Real.log ((N : ℝ) + 1 / 2) *
-      ((N : ℝ) + 1 / 2) ^ (epsilon / 2) ≤ Q := by
-    rw [hQdef]
-    have hlogle : Real.log ((N : ℝ) + 1 / 2) ≤
-        (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
-      nlinarith [hL1, hlogx0]
-    have hmul := mul_le_mul hlogle hxe hxe0 (by nlinarith [hL1])
-    simpa only [mul_comm] using hmul
-  have hmaster := norm_chebyshev_sub_halfInt_le_of_xiZeroHalfPlaneBound
-    (N := N) (sigma1 := 1 / 2 + alpha + epsilon / 2)
-    (sigma0 := 1 + epsilon / 2) (T := (N : ℝ) + 1 / 2)
-    halpha hXi hsigma1 hsigma11 hsigma0 hx0
+  have hQbounds := vonKoch_envelope_bounds hx1
+    (show (0 : ℝ) ≤ 1 / 2 + alpha + epsilon / 2 by linarith)
+    (show epsilon / 2 ≤ 1 / 2 + alpha + epsilon / 2 by linarith)
+  rw [← hQdef] at hQbounds
+  rcases hQbounds with ⟨_, _, hQxe, hQL, _⟩
   have hE := perron_error_vonMangoldt_total_le (N := N) (σ := 1 + epsilon / 2)
     (T := (N : ℝ) + 1 / 2) (by omega) hsigma0 hsigma02 hx0
-  have hcont := continuous_perron_integrand_line_of_xiZeroHalfPlaneBound
-    halpha hXi (x := (N : ℝ) + 1 / 2)
-    (sigma := 1 / 2 + alpha + epsilon / 2) hx0 hsigma1 hsigma11
-  have hV := norm_vIntegral_perron_le (x := (N : ℝ) + 1 / 2)
-    (σ := 1 / 2 + alpha + epsilon / 2) (T := (N : ℝ) + 1 / 2)
-    (K := K) hx0 hsigma10 hx1 hK0.le hK hcont
-  have habs : |(N : ℝ) + 1 / 2| = (N : ℝ) + 1 / 2 := abs_of_pos hx0
-  have habsneg : |-((N : ℝ) + 1 / 2)| = (N : ℝ) + 1 / 2 := by
-    rw [abs_neg]
-    exact habs
-  have hHp := norm_hIntegral_perron_le_of_frontier
-    (frontier := 1 / 2 + alpha) (x := (N : ℝ) + 1 / 2)
-    (sigma1 := 1 / 2 + alpha + epsilon / 2) (sigma0 := 1 + epsilon / 2)
-    (y := (N : ℝ) + 1 / 2) (C := C) hx1 hsigma1 hsigma1sigma0 hsigma098
-    (by rw [habs]; linarith) hC0 hC
-  have hHm := norm_hIntegral_perron_le_of_frontier
-    (frontier := 1 / 2 + alpha) (x := (N : ℝ) + 1 / 2)
-    (sigma1 := 1 / 2 + alpha + epsilon / 2) (sigma0 := 1 + epsilon / 2)
-    (y := -((N : ℝ) + 1 / 2)) (C := C) hx1 hsigma1 hsigma1sigma0 hsigma098
-    (by rw [habsneg]; linarith) hC0 hC
-  rw [habs] at hHp
-  rw [habsneg] at hHm
-  have hcast : ((2 * N + 2 : ℕ) : ℝ) = 2 * (N : ℝ) + 2 := by push_cast; ring
   have hE1 : (1 / (Real.pi * ((N : ℝ) + 1 / 2) * Real.log 2)) *
         (((N : ℝ) + 1 / 2) ^ ((1 : ℝ) + epsilon / 2) *
-          (8 / ((1 + epsilon / 2) - 1) ^ 2))
-      = (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) *
-        ((N : ℝ) + 1 / 2) ^ (epsilon / 2) := by
-    rw [show ((1 : ℝ) + epsilon / 2) - 1 = epsilon / 2 by ring, hxrp]
-    field_simp
-    ring
+          (8 / ((1 + epsilon / 2) - 1) ^ 2)) =
+      (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) *
+        ((N : ℝ) + 1 / 2) ^ (epsilon / 2) :=
+    vonKoch_perron_leading_identity hepsilon hx0
+  have hcast : ((2 * N + 2 : ℕ) : ℝ) = 2 * (N : ℝ) + 2 := by push_cast; ring
   have hlog2x : Real.log (2 * ((N : ℝ) + 1 / 2)) ≤
       1 + Real.log ((N : ℝ) + 1 / 2) := by
     rw [Real.log_mul (by norm_num) (by linarith)]
     have : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]
     linarith
-  have hlog2x0 : (0 : ℝ) ≤ Real.log (2 * ((N : ℝ) + 1 / 2)) :=
-    Real.log_nonneg (by linarith)
   have hlogN2 : 1 + Real.log ((2 * N + 2 : ℕ) : ℝ) ≤
       3 * (1 + Real.log ((N : ℝ) + 1 / 2)) := by
     rw [hcast]
@@ -582,49 +604,100 @@ theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
       ≤ (192 / Real.pi) * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
     have hid : 16 * Real.log (2 * ((N : ℝ) + 1 / 2)) * ((N : ℝ) + 1 / 2) /
           (Real.pi * ((N : ℝ) + 1 / 2)) *
-          (4 * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ)))
-        = (64 * Real.log (2 * ((N : ℝ) + 1 / 2)) *
-            (1 + Real.log ((2 * N + 2 : ℕ) : ℝ))) / Real.pi := by
+          (4 * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ))) =
+        (64 * Real.log (2 * ((N : ℝ) + 1 / 2)) *
+          (1 + Real.log ((2 * N + 2 : ℕ) : ℝ))) / Real.pi := by
       field_simp
       ring
     have hid2 : (192 / Real.pi) * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 =
         (192 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) / Real.pi := by ring
     rw [hid, hid2]
     have hnum : 64 * Real.log (2 * ((N : ℝ) + 1 / 2)) *
-          (1 + Real.log ((2 * N + 2 : ℕ) : ℝ))
-        ≤ 192 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
-      nlinarith [mul_le_mul hlog2x hlogN2 hlogN20
-        (by linarith : (0 : ℝ) ≤ 1 + Real.log ((N : ℝ) + 1 / 2))]
-    gcongr
-  have hlog3 : Real.log 3 ≤ 1.4 := by
-    have h34 : Real.log 3 ≤ Real.log 4 := Real.log_le_log (by norm_num) (by norm_num)
-    have h4 : Real.log 4 = 2 * Real.log 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
-      push_cast
-      ring
-    nlinarith [Real.log_two_lt_d9]
-  have hVb : 2 * (1 + Real.log 3) / (1 / 2 + alpha + epsilon / 2) +
-        2 * (1 + Real.log (2 + ((N : ℝ) + 1 / 2))) *
-          Real.log ((N : ℝ) + 1 / 2)
-      ≤ 14 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
-    have h1 : 2 * (1 + Real.log 3) / (1 / 2 + alpha + epsilon / 2) ≤ 10 := by
-      rw [div_le_iff₀ hsigma10]
-      nlinarith [hlog3, hepsilon, halpha]
-    have h2 : 1 + Real.log (2 + ((N : ℝ) + 1 / 2)) ≤
-        2 * (1 + Real.log ((N : ℝ) + 1 / 2)) := by
-      have hmono : Real.log (2 + ((N : ℝ) + 1 / 2)) ≤
-          Real.log (4 * ((N : ℝ) + 1 / 2)) :=
-        Real.log_le_log (by linarith) (by linarith)
-      rw [Real.log_mul (by norm_num) (by linarith)] at hmono
-      have hl4 : Real.log 4 ≤ Real.log ((N : ℝ) + 1 / 2) :=
-        Real.log_le_log (by norm_num) hx4
-      linarith
-    have h4 : (1 + Real.log (2 + ((N : ℝ) + 1 / 2))) *
-          Real.log ((N : ℝ) + 1 / 2)
-        ≤ (2 * (1 + Real.log ((N : ℝ) + 1 / 2))) *
-          (1 + Real.log ((N : ℝ) + 1 / 2)) :=
-      mul_le_mul h2 (by linarith) hlogx0 (by linarith)
-    nlinarith [h1, h4, hL2]
+          (1 + Real.log ((2 * N + 2 : ℕ) : ℝ)) ≤
+        192 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 :=
+      vonKoch_log_product_le hlogN20 (by linarith) hlog2x hlogN2
+    exact div_le_div_of_nonneg_right hnum Real.pi_pos.le
+  have hEq1 : (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) *
+        ((N : ℝ) + 1 / 2) ^ (epsilon / 2) ≤
+      (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) * Q :=
+    mul_le_mul_of_nonneg_left hQxe (by positivity)
+  have hEq2 : (192 / Real.pi) * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 ≤
+      (192 / Real.pi) * Q := mul_le_mul_of_nonneg_left hQL (by positivity)
+  rw [hE1] at hE
+  calc
+    (∑' n : ℕ, ‖((Λ n : ℝ) : ℂ)‖ *
+          ((((N : ℝ) + 1 / 2) / n) ^ (1 + epsilon / 2) /
+            (Real.pi * ((N : ℝ) + 1 / 2) *
+              |Real.log (((N : ℝ) + 1 / 2) / n)|)))
+        ≤ (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) *
+            ((N : ℝ) + 1 / 2) ^ (epsilon / 2) +
+          (16 * Real.log (2 * ((N : ℝ) + 1 / 2)) * ((N : ℝ) + 1 / 2) /
+            (Real.pi * ((N : ℝ) + 1 / 2))) *
+            (4 * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ))) := hE
+    _ ≤ (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) * Q +
+          (192 / Real.pi) * Q := add_le_add hEq1 (hE2.trans hEq2)
+    _ = (32 / (Real.pi * Real.log 2 * epsilon ^ 2) + 192 / Real.pi) * Q := by ring
+    _ = _ := by rw [hQdef]
+
+private theorem exists_vonKoch_contour_sides_bound
+    {alpha : ℝ} (halpha : 0 ≤ alpha) (halphaHalf : alpha < 1 / 2)
+    (hXi : XiZeroHalfPlaneBound alpha) {epsilon : ℝ}
+    (hepsilon : 0 < epsilon) (hepsilon4 : epsilon ≤ 1 / 4)
+    (hline : 1 / 2 + alpha + epsilon / 2 < 1) :
+    ∃ K : ℝ, 0 < K ∧ ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ, 7 ≤ N →
+      ‖VIntegral
+          (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s) *
+            ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s))
+          (1 / 2 + alpha + epsilon / 2) (-((N : ℝ) + 1 / 2))
+            ((N : ℝ) + 1 / 2)‖ +
+        ‖HIntegral
+          (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s) *
+            ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s))
+          (1 / 2 + alpha + epsilon / 2) (1 + epsilon / 2)
+            ((N : ℝ) + 1 / 2)‖ +
+        ‖HIntegral
+          (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s) *
+            ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s))
+          (1 / 2 + alpha + epsilon / 2) (1 + epsilon / 2)
+            (-((N : ℝ) + 1 / 2))‖
+      ≤ 14 * K * (((N : ℝ) + 1 / 2) ^ (1 / 2 + alpha + epsilon / 2) *
+            (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) +
+        ((C / epsilon) * (((N : ℝ) + 1 / 2) ^ (1 / 2 + alpha + epsilon / 2) *
+            (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) +
+          (C / epsilon) * (((N : ℝ) + 1 / 2) ^ (1 / 2 + alpha + epsilon / 2) *
+            (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2)) := by
+  have hsigma1 : (1 : ℝ) / 2 + alpha < 1 / 2 + alpha + epsilon / 2 := by linarith
+  have hsigma11 : (1 : ℝ) / 2 + alpha + epsilon / 2 < 1 := hline
+  have hsigma098 : (1 : ℝ) + epsilon / 2 ≤ 9 / 8 := by linarith
+  have hsigma1sigma0 : (1 : ℝ) / 2 + alpha + epsilon / 2 ≤ 1 + epsilon / 2 := by
+    linarith
+  have hsigma10 : (0 : ℝ) < 1 / 2 + alpha + epsilon / 2 := by linarith
+  obtain ⟨K, hK0, hK⟩ :=
+    exists_logDeriv_zeta_line_bound_of_xiZeroHalfPlaneBound
+      halpha hXi hsigma1 hsigma11
+  obtain ⟨C, hC0, hC⟩ :=
+    exists_logDeriv_zeta_bound_of_xiZeroHalfPlaneBound halpha hXi
+  refine ⟨K, hK0, C, hC0, ?_⟩
+  intro N hN
+  have hN7 : (7 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hx0 : (0 : ℝ) < (N : ℝ) + 1 / 2 := by linarith
+  have hx1 : (1 : ℝ) ≤ (N : ℝ) + 1 / 2 := by linarith
+  have hx4 : (4 : ℝ) ≤ (N : ℝ) + 1 / 2 := by linarith
+  have hlogx0 : (0 : ℝ) ≤ Real.log ((N : ℝ) + 1 / 2) := Real.log_nonneg hx1
+  set Q : ℝ := ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) / 2 + alpha + epsilon / 2) *
+      (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 with hQdef
+  have hQbounds := vonKoch_envelope_bounds hx1
+    (show (0 : ℝ) ≤ 1 / 2 + alpha + epsilon / 2 by linarith)
+    (show epsilon / 2 ≤ 1 / 2 + alpha + epsilon / 2 by linarith)
+  rw [← hQdef] at hQbounds
+  rcases hQbounds with ⟨_, _, _, _, hQlogxe⟩
+  have hcont := continuous_perron_integrand_line_of_xiZeroHalfPlaneBound
+    halpha hXi (x := (N : ℝ) + 1 / 2)
+    (sigma := 1 / 2 + alpha + epsilon / 2) hx0 hsigma1 hsigma11
+  have hV := norm_vIntegral_perron_le (x := (N : ℝ) + 1 / 2)
+    (σ := 1 / 2 + alpha + epsilon / 2) (T := (N : ℝ) + 1 / 2)
+    (K := K) hx0 hsigma10 hx1 hK0.le hK hcont
+  have hVb := vonKoch_vertical_bracket_le halpha hepsilon hx4
   have hVfin : ‖VIntegral
         (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s) *
           ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s))
@@ -639,22 +712,34 @@ theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
       positivity
     have hmul := mul_le_mul_of_nonneg_left hVb hcoef
     rw [hQdef]
-    nlinarith [hmul]
-  have hHid : (C * Real.log ((N : ℝ) + 1 / 2) /
-          ((1 / 2 + alpha + epsilon / 2) - (1 / 2 + alpha))) *
-        (((N : ℝ) + 1 / 2) ^ ((1 : ℝ) + epsilon / 2) /
-          ((N : ℝ) + 1 / 2)) *
-        |(1 + epsilon / 2) - (1 / 2 + alpha + epsilon / 2)|
-      = (2 * C * (1 / 2 - alpha) / epsilon) *
-        (Real.log ((N : ℝ) + 1 / 2) *
-          ((N : ℝ) + 1 / 2) ^ (epsilon / 2)) := by
-    rw [show (1 / 2 + alpha + epsilon / 2) - (1 / 2 + alpha) = epsilon / 2 by ring,
-      show |(1 + epsilon / 2) - (1 / 2 + alpha + epsilon / 2)| =
-          1 / 2 - alpha by
-        rw [show (1 + epsilon / 2) - (1 / 2 + alpha + epsilon / 2) =
-          1 / 2 - alpha by ring, abs_of_nonneg (by linarith)],
-      hxrp]
-    field_simp
+    calc
+      K * ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) / 2 + alpha + epsilon / 2) *
+          (2 * (1 + Real.log 3) / (1 / 2 + alpha + epsilon / 2) +
+            2 * (1 + Real.log (2 + ((N : ℝ) + 1 / 2))) *
+              Real.log ((N : ℝ) + 1 / 2)) ≤
+        K * ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) / 2 + alpha + epsilon / 2) *
+          (14 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) := hmul
+      _ = 14 * K * (((N : ℝ) + 1 / 2) ^
+          ((1 : ℝ) / 2 + alpha + epsilon / 2) *
+            (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) := by ring
+  have habs : |(N : ℝ) + 1 / 2| = (N : ℝ) + 1 / 2 := abs_of_pos hx0
+  have habsneg : |-((N : ℝ) + 1 / 2)| = (N : ℝ) + 1 / 2 := by
+    rw [abs_neg]
+    exact habs
+  have hHp := norm_hIntegral_perron_le_of_frontier
+    (frontier := 1 / 2 + alpha) (x := (N : ℝ) + 1 / 2)
+    (sigma1 := 1 / 2 + alpha + epsilon / 2) (sigma0 := 1 + epsilon / 2)
+    (y := (N : ℝ) + 1 / 2) (C := C) hx1 hsigma1 hsigma1sigma0 hsigma098
+    (by rw [habs]; linarith) hC0 hC
+  have hHm := norm_hIntegral_perron_le_of_frontier
+    (frontier := 1 / 2 + alpha) (x := (N : ℝ) + 1 / 2)
+    (sigma1 := 1 / 2 + alpha + epsilon / 2) (sigma0 := 1 + epsilon / 2)
+    (y := -((N : ℝ) + 1 / 2)) (C := C) hx1 hsigma1 hsigma1sigma0 hsigma098
+    (by rw [habsneg]; linarith) hC0 hC
+  rw [habs] at hHp
+  rw [habsneg] at hHm
+  have hHid := vonKoch_horizontal_identity (C := C) (x := (N : ℝ) + 1 / 2)
+    halphaHalf hepsilon hx0
   rw [hHid] at hHp hHm
   have hcoefle : 2 * C * (1 / 2 - alpha) / epsilon ≤ C / epsilon := by
     have hCe : (0 : ℝ) ≤ C / epsilon := by positivity
@@ -664,20 +749,58 @@ theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
           (C / epsilon) * (2 * (1 / 2 - alpha)) := by ring
       _ ≤ (C / epsilon) * 1 := mul_le_mul_of_nonneg_left hw hCe
       _ = C / epsilon := by ring
+  have hxe0 : (0 : ℝ) ≤ ((N : ℝ) + 1 / 2) ^ (epsilon / 2) :=
+    Real.rpow_nonneg hx0.le _
   have hprod0 : (0 : ℝ) ≤ Real.log ((N : ℝ) + 1 / 2) *
       ((N : ℝ) + 1 / 2) ^ (epsilon / 2) := mul_nonneg hlogx0 hxe0
   have hHp' := hHp.trans (mul_le_mul_of_nonneg_right hcoefle hprod0)
   have hHm' := hHm.trans (mul_le_mul_of_nonneg_right hcoefle hprod0)
   have hHq : (C / epsilon) *
-        (Real.log ((N : ℝ) + 1 / 2) * ((N : ℝ) + 1 / 2) ^ (epsilon / 2))
-      ≤ (C / epsilon) * Q := mul_le_mul_of_nonneg_left hQlogxe (by positivity)
-  have hEq1 : (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) *
-        ((N : ℝ) + 1 / 2) ^ (epsilon / 2)
-      ≤ (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) * Q :=
-    mul_le_mul_of_nonneg_left hQxe (by positivity)
-  have hEq2 : (192 / Real.pi) * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2
-      ≤ (192 / Real.pi) * Q := mul_le_mul_of_nonneg_left hQL (by positivity)
-  rw [hE1] at hE
+        (Real.log ((N : ℝ) + 1 / 2) * ((N : ℝ) + 1 / 2) ^ (epsilon / 2)) ≤
+      (C / epsilon) * Q := mul_le_mul_of_nonneg_left hQlogxe (by positivity)
+  have hHpq := hHp'.trans hHq
+  have hHmq := hHm'.trans hHq
+  calc
+    _ ≤ (14 * K * Q + (C / epsilon) * Q) + (C / epsilon) * Q :=
+      add_le_add (add_le_add hVfin hHpq) hHmq
+    _ = 14 * K * Q + ((C / epsilon) * Q + (C / epsilon) * Q) := by ring
+
+/-- Chebyshev error at half-integer cutoffs from an arbitrary Xi zero frontier below one. -/
+theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
+    {alpha : ℝ} (halpha : 0 ≤ alpha) (halphaHalf : alpha < 1 / 2)
+    (hXi : XiZeroHalfPlaneBound alpha) {epsilon : ℝ}
+    (hepsilon : 0 < epsilon) (hepsilon4 : epsilon ≤ 1 / 4)
+    (hline : 1 / 2 + alpha + epsilon / 2 < 1) :
+    ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ, 7 ≤ N →
+      |(∑ n ∈ Finset.Icc 1 N, (Λ n : ℝ)) - (N : ℝ)|
+        ≤ C * (((N : ℝ) + 1 / 2) ^ (1 / 2 + alpha + epsilon / 2) *
+            (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) := by
+  have hsigma1 : (1 : ℝ) / 2 + alpha < 1 / 2 + alpha + epsilon / 2 := by linarith
+  have hsigma11 : (1 : ℝ) / 2 + alpha + epsilon / 2 < 1 := hline
+  have hsigma0 : (1 : ℝ) < 1 + epsilon / 2 := by linarith
+  obtain ⟨K, hK0, C, hC0, hcontour⟩ :=
+    exists_vonKoch_contour_sides_bound halpha halphaHalf hXi hepsilon hepsilon4 hline
+  refine ⟨32 / (Real.pi * Real.log 2 * epsilon ^ 2) + 192 / Real.pi +
+      7 * K / Real.pi + C / (Real.pi * epsilon) + 1 / 2, by positivity, ?_⟩
+  intro N hN
+  have hN7 : (7 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hx0 : (0 : ℝ) < (N : ℝ) + 1 / 2 := by linarith
+  have hx1 : (1 : ℝ) ≤ (N : ℝ) + 1 / 2 := by linarith
+  set Q : ℝ := ((N : ℝ) + 1 / 2) ^ ((1 : ℝ) / 2 + alpha + epsilon / 2) *
+      (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 with hQdef
+  have hQbounds := vonKoch_envelope_bounds hx1
+    (show (0 : ℝ) ≤ 1 / 2 + alpha + epsilon / 2 by linarith)
+    (show epsilon / 2 ≤ 1 / 2 + alpha + epsilon / 2 by linarith)
+  rw [← hQdef] at hQbounds
+  rcases hQbounds with ⟨_, hQ1, _, _, _⟩
+  have hmaster := norm_chebyshev_sub_halfInt_le_of_xiZeroHalfPlaneBound
+    (N := N) (sigma1 := 1 / 2 + alpha + epsilon / 2)
+    (sigma0 := 1 + epsilon / 2) (T := (N : ℝ) + 1 / 2)
+    halpha hXi hsigma1 hsigma11 hsigma0 hx0
+  have hE := vonKoch_perron_error_le halpha hepsilon hepsilon4 hN
+  rw [← hQdef] at hE
+  have hsides := hcontour N hN
+  rw [← hQdef] at hsides
   have htri : |(∑ n ∈ Finset.Icc 1 N, (Λ n : ℝ)) - (N : ℝ)| ≤
       |(∑ n ∈ Finset.Icc 1 N, (Λ n : ℝ)) - ((N : ℝ) + 1 / 2)| + 1 / 2 := by
     have h1 := abs_sub_le (∑ n ∈ Finset.Icc 1 N, (Λ n : ℝ))
@@ -687,7 +810,8 @@ theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
       norm_num
     rw [h2] at h1
     exact h1
-  have hhalf : (1 : ℝ) / 2 ≤ 1 / 2 * Q := by nlinarith [hQ1]
+  have hhalf : (1 : ℝ) / 2 ≤ 1 / 2 * Q := by
+    simpa only [mul_one] using mul_le_mul_of_nonneg_left hQ1 (by norm_num : (0 : ℝ) ≤ 1 / 2)
   have hexpand : (32 / (Real.pi * Real.log 2 * epsilon ^ 2) + 192 / Real.pi +
         7 * K / Real.pi + C / (Real.pi * epsilon) + 1 / 2) * Q =
       (32 / (Real.pi * Real.log 2 * epsilon ^ 2)) * Q +
@@ -698,25 +822,8 @@ theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
     ring
   rw [hexpand]
   have hpiinv : (0 : ℝ) ≤ 1 / (2 * Real.pi) := by positivity
-  have hsides : ‖VIntegral
-        (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s) *
-          ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s))
-        (1 / 2 + alpha + epsilon / 2) (-((N : ℝ) + 1 / 2))
-          ((N : ℝ) + 1 / 2)‖ +
-      ‖HIntegral
-        (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s) *
-          ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s))
-        (1 / 2 + alpha + epsilon / 2) (1 + epsilon / 2)
-          ((N : ℝ) + 1 / 2)‖ +
-      ‖HIntegral
-        (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s) *
-          ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s))
-        (1 / 2 + alpha + epsilon / 2) (1 + epsilon / 2)
-          (-((N : ℝ) + 1 / 2))‖
-      ≤ 14 * K * Q + ((C / epsilon) * Q + (C / epsilon) * Q) := by
-    linarith [hVfin, hHp'.trans hHq, hHm'.trans hHq]
   have hscaled := mul_le_mul_of_nonneg_left hsides hpiinv
-  linarith [hmaster, hE, hE2, hEq1, hEq2, htri, hhalf, hscaled]
+  linarith [hmaster, hE, htri, hhalf, hscaled]
 
 /-- Generalized von Koch natural-cutoff estimate below the trivial frontier. -/
 theorem chebyshev_error_isBigO_of_xiZeroHalfPlaneBound
