@@ -1,0 +1,13 @@
+# Independent full-loop physical-reader validation
+
+Validate three selected loop-response cases(parent IDs0,2,12), all64steps and all three maps, at50/100/160working digits. These cover moderate versus smaller energy envelope, dimensions2/3, and modular traces3/6. Replace NumPy finite Gaussian double sums with arbitrary-precision analytic Gaussian overlap plus infinite inner Jacobi sum and twice the outer cutoff. Recompute every physical matrix, Gram inverse root, chronologically ordered product and SVD at the target precision. Keep exact temporal interfaces and short-step metaplectic continuation. No zeta input.
+
+Frozen acceptance: nine complete tasks, endpoint closure and selected propagated Gram invariance better than1e-25; reported matrices/singular values/projective distances must agree with production within1e-7absolute/scaled, and100/160within1e-20for scalars away from zero. Near-zero distances and low-survival geometric maps need conditioning reported separately. This validates finite-step arithmetic, not convergence to infinitely frequent monitoring. A separate step-refinement family is necessary before any limiting holonomy interpretation.
+
+One600secondwhole-family guard including cleanup, at most14workers, native threads1. First full50digitcase pilot; abort above75sor control failure. Preserve partials. Exact versions and input checksums recorded. No Lean builds. Current cached deep/method search and source applicability are inherited from the immediately preceding parent experiment; no frontier theorem is assumed absent from partial coverage.
+
+All24method applications remain in method-matrix.json with explicit validation actions. Whole-route implication: test whether physical transport plus explicit code monitoring retains ideal modular loop transport. A noncentral residual would identify a physical matrix cocycle that a scalar Riemann receiver must justify eliminating. No full cusp scattering operator, primitive normalization, material/pump backreaction or RH-independent resonance-confinement mechanism is claimed.
+
+## Pilot-driven reformulation
+
+The128-step validation pilot completed successfully at50digits but took82.54s, exceeding the frozen75s sizing allowance. That family stopped after one of nine planned tasks; its output is preserved, and the unrun tasks are not successes. This new family halves the number of physical monitoring steps and validates the corresponding already-computed64-step maps. It does not pretend to validate128steps or the monitoring continuum. The unchanged9task portfolio is sized for a whole-family finish below600s; the same75sfirst-task gate and owned-group cleanup remain. A separate fast step-refinement experiment addresses the continuum question.

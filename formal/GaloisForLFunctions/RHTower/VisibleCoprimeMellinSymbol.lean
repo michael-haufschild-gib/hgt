@@ -123,9 +123,8 @@ theorem visibleCoprimeMellinSymbol_mul_riemannZeta
   have hray : Summable (fun q : ThetaCuspPrimitiveRayIndex =>
       f (thetaCuspPrimitiveRayIndexToPositivePair q)) :=
     (Equiv.summable_iff thetaCuspPrimitiveRayIndexEquivPositivePair).2 hfull
-  have hst : 1 < (s + t).re := by
-    simp only [add_re]
-    linarith
+  have hst : 1 < (s + t).re :=
+    hs.trans (lt_add_of_pos_right s.re (zero_lt_one.trans ht))
   have hdir := summable_visibleCoprimeMellinTerm s t hs ht
   have hd := summable_positiveDirichletTerm hst
   have hprod : Summable (fun q : ThetaCuspPrimitiveRayIndex =>
@@ -162,14 +161,12 @@ theorem visibleCoprimeMellinSymbol_eq_zeta_quotient
     (s t : ℂ) (hs : 1 < s.re) (ht : 1 < t.re) :
     visibleCoprimeMellinSymbol s t =
       riemannZeta s * riemannZeta t / riemannZeta (s + t) := by
-  have hst : 1 ≤ (s + t).re := by
-    simp only [add_re]
-    linarith
+  have hst : 1 ≤ (s + t).re :=
+    (hs.trans (lt_add_of_pos_right s.re (zero_lt_one.trans ht))).le
   have hnz : riemannZeta (s + t) ≠ 0 :=
     riemannZeta_ne_zero_of_one_le_re hst
-  apply (mul_right_cancel₀ hnz)
-  rw [visibleCoprimeMellinSymbol_mul_riemannZeta s t hs ht]
-  field_simp
+  exact (eq_div_iff hnz).2
+    (visibleCoprimeMellinSymbol_mul_riemannZeta s t hs ht)
 
 end
 

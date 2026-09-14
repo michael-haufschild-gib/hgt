@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "method": "Split",
+    "application": "Measure three distinct maps on the same closed lattice cycle: unmonitored physical evolution; products of code projectors; physical evolution interleaved with those projectors. Retain scalar survival and logical rotation separately.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 2,
+    "method": "Falsify",
+    "application": "A stable noncentral mismatch after step/precision refinement falsifies the proposed finite-energy identification with the ideal modular gate. A scalar phase alone does not.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 3,
+    "method": "Reverse",
+    "application": "Start from an actual positive-permittivity temporal cycle. Determine its naturally closed lattice, rather than choosing a Riemann zero and engineering a drive.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 4,
+    "method": "Viewpoint",
+    "application": "The object is a transported optical lattice and its readout holonomy, not a metric imposed on parameter space.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 5,
+    "method": "Visual",
+    "application": "Plot reader-dependent survival against projective mismatch, paired by physical cycle and envelope; show refinement arrows.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 6,
+    "method": "Action",
+    "application": "A pump transports the field; projections retain or reject code components. These operations are interleaved explicitly, never commuted through the energy envelope.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 7,
+    "method": "Essentials",
+    "application": "Exact ideal two-layer Maxwell canonical matching, full Gaussian kernels, all logical Gram channels, phase-correct stabilizers, and metaplectic short-step continuation are retained.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 8,
+    "method": "Similar",
+    "application": "Compare code dimensions2/3, modular trace3/6/10 and three readers. No transfer from a different code or compact surface is assumed.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 9,
+    "method": "Small",
+    "application": "First full64-step d2,m3,delta.2case is a sizing pilot inside the same guard. Exact monodromy/closure/contraction checks are implementation controls.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 10,
+    "method": "Extreme",
+    "application": "Trace10makes a larger hyperbolic excursion; smaller envelope approaches ideal energy.64/128steps independently expose finite-monitoring loss.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 11,
+    "method": "Experiment",
+    "application": "20jobs,14workers,one600secondcap. Complex128discovery; selected results require50/100/160working digits and independent inner sums before a validated ledger claim.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 12,
+    "method": "Invariant",
+    "application": "The same integral endpoint matrix labels every reader comparison. Singular values and projective distance separate loss from logical twist; frame gauge conjugacy is not a discovery.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 13,
+    "method": "Monotone",
+    "application": "Increasing monitoring frequency may reduce leakage but is not assumed to restore the ideal logical holonomy. The two observables test that separation.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 14,
+    "method": "Weaker bridge",
+    "application": "The equation F(T)g=-gA is an exact derived kinematic bridge. It is not a physical wave/scattering identity or the headline conjecture.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 15,
+    "method": "New hunch",
+    "application": "This is an exploratory identification test, not an admitted universal RH conjecture. The risky candidate is that combined physical transport and code monitoring preserves ideal projective loop transport even where either operation alone does not.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 16,
+    "method": "Minimal counterexample",
+    "application": "Same code, trace and delta with only reader changed isolates the proposed cancellation between physical evolution and moving measurement.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 17,
+    "method": "Representation",
+    "application": "Use complex symplectic Gaussian kernels and cross-Gram matrices instead of a Fock truncation. Store matrices for independent high-precision evaluation.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 18,
+    "method": "Technique",
+    "application": "Continuous-measurement holonomy motivates the reader; Gaussian composition and frame normalization are independently derived. Recent source formulas are not copied as authoritative numerics.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 19,
+    "method": "Fake proof",
+    "application": "Both transports follow the same ideal lattice, hence their finite-energy holonomies agree. Gap: E_delta U and U E_delta differ, and the projected commutator can act noncentrally on logical channels.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 20,
+    "method": "Missing lemma",
+    "application": "Uniform identification of the phase-correct finite-energy physical transport/reader with ideal automorphic transport, including long cusp excursions.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 21,
+    "method": "Dependency",
+    "application": "PTC evolution -> integral-lattice closed cycle -> measured operator holonomy -> justified scalar or vector response on lattice space -> cusp scattering -> RH-independent confinement. This family tests only the middle transport bridge.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 22,
+    "method": "Nearby false",
+    "application": "Projector geometry alone is not actual evolution; bare unitary evolution does not reset the lab envelope. Removing either term changes the experiment and is a paired control.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 23,
+    "method": "Boundary",
+    "application": "Keep ideal temporal interfaces exact; two segments have physical durations pi/2 and lambda*pi/2. Parameter t allocates half the mesh to each, not equal physical durations. Pump work is retained through nonorthogonal symplectic evolution; material dispersion/backreaction remain absent from this explicitly ideal model.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  },
+  {
+    "id": 24,
+    "method": "Salvage",
+    "application": "If combined transport changes the logical response, retain the measured operator cocycle as new primitive rather than discarding its phase/weight. If it survives, investigate whether a physical ensemble reader exposes scalar cusp resonances. Neither outcome proves RH.",
+    "refinement_application": "Same physical path and finite-energy encoding, with256/512/1024/2048monitoring steps; no new fitted drive. Compare surviving probability and projective logical response independently. This is required discretization challenge, not discovery from known Zeno loss."
+  }
+]

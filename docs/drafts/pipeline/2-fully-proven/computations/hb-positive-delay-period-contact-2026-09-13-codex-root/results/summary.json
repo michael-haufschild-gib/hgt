@@ -1,0 +1,67 @@
+{
+  "zeros": 64,
+  "V_primary": 4,
+  "actual": {
+    "median_relative": 0.05613570616148439,
+    "min_relative": 0.03496406962577118,
+    "hits_1e-6": 0
+  },
+  "controls": [
+    {
+      "rep": 1,
+      "median_relative": 0.05604280392595597,
+      "min_relative": 0.034989732466156734,
+      "hits_1e-6": 0
+    },
+    {
+      "rep": 2,
+      "median_relative": 0.05572940386107206,
+      "min_relative": 0.03495940258455822,
+      "hits_1e-6": 0
+    },
+    {
+      "rep": 3,
+      "median_relative": 0.05559776867018898,
+      "min_relative": 0.03500608579718254,
+      "hits_1e-6": 0
+    },
+    {
+      "rep": 4,
+      "median_relative": 0.056296486986368674,
+      "min_relative": 0.03496643308666308,
+      "hits_1e-6": 0
+    },
+    {
+      "rep": 5,
+      "median_relative": 0.05576485808576054,
+      "min_relative": 0.03497056779022358,
+      "hits_1e-6": 0
+    },
+    {
+      "rep": 6,
+      "median_relative": 0.05645864641610225,
+      "min_relative": 0.03502632069448749,
+      "hits_1e-6": 0
+    },
+    {
+      "rep": 7,
+      "median_relative": 0.055653547794900136,
+      "min_relative": 0.03496874342254557,
+      "hits_1e-6": 0
+    },
+    {
+      "rep": 8,
+      "median_relative": 0.05624126975148572,
+      "min_relative": 0.03495442989883062,
+      "hits_1e-6": 0
+    }
+  ],
+  "empirical_p_median": 0.6666666666666666,
+  "max_absolute_refinement_change": 0.001151841378711091,
+  "max_conjugacy_error": 0.0,
+  "V_medians": {
+    "2.0": 0.05603886738384267,
+    "4.0": 0.05613570616148439,
+    "8.0": 0.05613697428574467
+  }
+}

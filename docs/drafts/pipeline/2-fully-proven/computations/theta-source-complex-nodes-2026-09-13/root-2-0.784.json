@@ -1,0 +1,10 @@
+{
+  "start": [
+    2,
+    0.784
+  ],
+  "dps": 50,
+  "status": "error",
+  "error": "ArithmeticError('Newton domain escape')",
+  "seconds": 0.003967754542827606
+}

@@ -1,0 +1,10 @@
+{
+  "start": [
+    0.5,
+    0.765
+  ],
+  "dps": 50,
+  "status": "error",
+  "error": "ArithmeticError('Newton iteration limit')",
+  "seconds": 0.08227013796567917
+}

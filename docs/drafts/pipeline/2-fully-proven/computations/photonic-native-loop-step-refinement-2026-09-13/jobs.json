@@ -1,0 +1,162 @@
+[
+  {
+    "id": "0-256",
+    "m": 3,
+    "dim": 2,
+    "delta": ".2",
+    "steps": 256,
+    "N": 18,
+    "precision": "complex128",
+    "parent_id": 0
+  },
+  {
+    "id": "0-512",
+    "m": 3,
+    "dim": 2,
+    "delta": ".2",
+    "steps": 512,
+    "N": 18,
+    "precision": "complex128",
+    "parent_id": 0
+  },
+  {
+    "id": "0-1024",
+    "m": 3,
+    "dim": 2,
+    "delta": ".2",
+    "steps": 1024,
+    "N": 18,
+    "precision": "complex128",
+    "parent_id": 0
+  },
+  {
+    "id": "0-2048",
+    "m": 3,
+    "dim": 2,
+    "delta": ".2",
+    "steps": 2048,
+    "N": 18,
+    "precision": "complex128",
+    "parent_id": 0
+  },
+  {
+    "id": "2-256",
+    "m": 3,
+    "dim": 2,
+    "delta": ".05",
+    "steps": 256,
+    "N": 32,
+    "precision": "complex128",
+    "parent_id": 2
+  },
+  {
+    "id": "2-512",
+    "m": 3,
+    "dim": 2,
+    "delta": ".05",
+    "steps": 512,
+    "N": 32,
+    "precision": "complex128",
+    "parent_id": 2
+  },
+  {
+    "id": "2-1024",
+    "m": 3,
+    "dim": 2,
+    "delta": ".05",
+    "steps": 1024,
+    "N": 32,
+    "precision": "complex128",
+    "parent_id": 2
+  },
+  {
+    "id": "2-2048",
+    "m": 3,
+    "dim": 2,
+    "delta": ".05",
+    "steps": 2048,
+    "N": 32,
+    "precision": "complex128",
+    "parent_id": 2
+  },
+  {
+    "id": "12-256",
+    "m": 6,
+    "dim": 3,
+    "delta": ".2",
+    "steps": 256,
+    "N": 20,
+    "precision": "complex128",
+    "parent_id": 12
+  },
+  {
+    "id": "12-512",
+    "m": 6,
+    "dim": 3,
+    "delta": ".2",
+    "steps": 512,
+    "N": 20,
+    "precision": "complex128",
+    "parent_id": 12
+  },
+  {
+    "id": "12-1024",
+    "m": 6,
+    "dim": 3,
+    "delta": ".2",
+    "steps": 1024,
+    "N": 20,
+    "precision": "complex128",
+    "parent_id": 12
+  },
+  {
+    "id": "12-2048",
+    "m": 6,
+    "dim": 3,
+    "delta": ".2",
+    "steps": 2048,
+    "N": 20,
+    "precision": "complex128",
+    "parent_id": 12
+  },
+  {
+    "id": "16-256",
+    "m": 10,
+    "dim": 2,
+    "delta": ".1",
+    "steps": 256,
+    "N": 40,
+    "precision": "complex128",
+    "parent_id": 16
+  },
+  {
+    "id": "16-512",
+    "m": 10,
+    "dim": 2,
+    "delta": ".1",
+    "steps": 512,
+    "N": 40,
+    "precision": "complex128",
+    "parent_id": 16
+  },
+  {
+    "id": "16-1024",
+    "m": 10,
+    "dim": 2,
+    "delta": ".1",
+    "steps": 1024,
+    "N": 40,
+    "precision": "complex128",
+    "parent_id": 16
+  },
+  {
+    "id": "16-2048",
+    "m": 10,
+    "dim": 2,
+    "delta": ".1",
+    "steps": 2048,
+    "N": 40,
+    "precision": "complex128",
+    "parent_id": 16
+  }
+]

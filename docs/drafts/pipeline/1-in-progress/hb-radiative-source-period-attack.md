@@ -4372,3 +4372,946 @@ first/ingoing trace `Hp`. This is useful admission data for the real-clock
 boundary identity. It does not make that temporal trace zero or complete the
 metric-current/moving-corner comparison. The next fixed-clock attack must retain
 this trace rather than equate transverse derivative decay with extinction.
+
+## Source-reader cusp residue and its exact subtraction
+
+**Derived source identity; complete fixed-clock extinction remains open.**
+Write Lambda for the meromorphic completed zeta and fix an actual Xi source
+rho. Probe readers `eta_+=(2-rho+e+d)/2` and `eta_-=(2-rho+e-d)/2`.
+The completed triple-Eisenstein meromorphic coefficient from
+[Huang--Li, Lemma4.2](https://arxiv.org/html/2510.12322#S4.SS1) is
+
+`T(e,d)=Lambda(1+e)*Lambda(rho-d)*Lambda(rho+d)*Lambda(2*rho-1-e)`.
+
+Its transverse residue is
+`R(d)=Lambda(2*rho-1)*Lambda(rho-d)*Lambda(rho+d)`.
+The three lower-Weyl powers of the literal cusp expansion multiply to
+`Y^(1-e)`, with coefficient
+`C(e,d)=Lambda(2*rho-1)*Lambda(1-rho+e+d)*Lambda(1-rho+e-d)`.
+For H>=1 and Re(e)>0 this term's integral over Y>H, with measure dY/Y^2,
+is `C(e,d)*H^(-e)/e`. The completed functional equation gives
+`C(0,d)=R(d)` near the original reader.
+
+For Re(rho)<=1/2, reflection to `2-2*rho` makes Lambda(2*rho-1) nonzero.
+Punctured zero isolation then makes R(d) nonzero for every sufficiently
+small nonzero d. At least one of rho and its FE partner meets this condition.
+For that member, boundedness of T in a product neighborhood would bound each
+nearby d-slice. Multiplying a bounded slice by e would give limit zero,
+contradicting its nonzero residue. Hence T has no finite joint limit,
+although `T(e,0)=0` identically.
+
+The positive survivor is an exact subtraction, not an impossibility claim.
+Let `B(e)=Lambda(2*rho-1-e)`,
+`A(e)=Lambda_0(1+e)-1/(1+e)`, and
+`H_rho(e)=A(e)*B(e)+dslope B 0 e`. Then, for e!=0,
+
+`T(e,d)-R(d)/e=Lambda(rho-d)*Lambda(rho+d)*H_rho(e)`.
+
+B is analytic near zero, so its divided difference has the derivative as
+continuous value at zero. The displayed remainder is jointly continuous,
+zero at every equal reader d=0, and has joint limit zero. This uses no
+simple-zero assumption. The exact residue, literal cusp coefficient germ,
+unboundedness, no-joint-limit theorem, subtraction identity and continuous
+zero remainder are Lean-proved in
+[ThetaCuspHawkingBMXiReaderSplitResidue](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMXiReaderSplitResidue.lean).
+The elementary tail integral above is a paper calculation; this leaf does
+not assert a new truncated-Poincare-integral identification.
+
+**Whole-route consequence.** These are one-source/two-reader coefficients.
+The forward ++ forcing has two-source/one-reader coefficients, and cyclicity
+does not change that multiplicity. Any application to extinction must derive
+the same principal subtraction and every finite boundary/correction term
+from the actual causal SS/SV/VV assembly and its original marked left reader.
+Neither an arbitrary choice of finite part nor changing the physical clock
+supplies that theorem. This analysis excludes a bare continuity shortcut
+while preserving a concrete source cancellation to test against the full
+action. No complete fixed-clock extinction or impossibility is established.
+
+Scratch and exact cached leaf audit passed without warnings or raised proof
+limits; RHTower imports the new leaf. Global lint reports the unrelated
+unwired Sieve.KloostermanGlobalCollisionCoprime module. Only this leaf was
+compiled in the final audit.
+
+## Seven reframings of fixed-clock extinction, 13 September 2026
+
+**Status:** application of all seven operations and the interrogation in
+[the requested guide](../../../meta/stroke-of-genius-method.md), to the current
+source and experimental records. No new extinction theorem, impossibility
+theorem, or Lean module is claimed. The earlier residue subtraction remains
+an auxiliary source result. The target remains theta -> Xi -> retained spin
+two -> complete causal/left-QNM action -> original-clock extinction -> RH.
+
+### Irritant and the seven operations
+
+The recurring irritant is a zero obtained after changing the quantity:
+combining angular pairings, discarding a face, identifying two readers,
+changing source subtraction, or replacing the action by a positive model.
+The question is which operation preserves the complete physical projection.
+
+| Operation | Application to the actual extinction question | Result of the attack |
+|---|---|---|
+| 1. Change the arena | Keep finite time, radial and cusp cutoffs together; retain the actual source, marked reader and all faces as arguments of the pairing. | The proved angular limit holds at fixed null coordinates. It does not establish the common spacetime limit. A quotient by boundary work cannot be taken before the physical reader is proved to annihilate that work. |
+| 2. Swap primitive and derived | Work backward from zero using the exact negative clock-defect transduction; separately test taking nonlinear clock symmetry as primitive. | The sufficient interface is (PI) above. The corpus's vacuum-differentiable nonlinear covariance theorem makes the proposed primitive RH-equivalent at a nonzero fixed time. It cannot be supplied as an assumption. |
+| 3. Re-assign the dictionary | Read the zero angular finite part as a relation between two physical pairings, rather than as zero radiation. | The exact relation is `C_Y + mu*S_Y = N_Y`, derived below. This keeps a generally unevaluated scalar pairing; it is not `C_Y=0`. |
+| 4. Vary one structural input | Compare principal versus full constant-Fourier subtraction, literal versus randomized Fourier phases, and the Poisson controls with each moment condition removed separately. Keep the Hawking clock unchanged. | The experiments separate different sources and different constraints. Favorable scalar ratios do not identify the complete action. Period-41 singleton-moment infeasibility is only for the frozen box and prescribed targets. |
+| 5. Prove the correspondence | Test arithmetic symmetry -> nonlinear source symmetry, and modular Green zero -> radiative extinction. | Averaging has a product covariance term. The actual modular correspondence retains `N_Y` and the factor `-mu`; neither correspondence supplies complete action invariance. |
+| 6. Represent maps instead of individual components | Treat the two radial readers as a map on the two source branches, and treat the full physical projection as a composition of reconstruction and observation. | The reported rank defect prevents inferring radial injectivity from nonzero entries. The columns have different clock rates, so this is not a kernel of the full time-dependent reconstruction. The generic clock-descent composition identity still requires each actual intertwining map. |
+| 7. Promote the nuisance | Keep cusp height, onset displacement and reader separation as coordinates; retain their exact defects. | The original onset has nonzero compact translation mass. The split-reader pole has a source-derived subtraction. Neither can be erased by declaring a convenient normalization; their incidence in the complete action remains to be proved. |
+
+### Three concrete proof attempts and their surviving statements
+
+**Angular cancellation attempt.** Let `F` be the original causal angular
+source at fixed nonnegative null coordinates, `V` the original physical
+reader, `mu=(physicalAngularParameter r)^2-1/4`, and define, on the actual
+finite modular domain,
+
+```
+C_Y = integral coexactPair(F,V),
+S_Y = integral F*V/y^2,
+N_Y = original normal flux.
+```
+
+`D4BMOriginalScalarPairing.original_physical_pairing` proves
+`C_Y+mu*S_Y=N_Y`. The diagonal/reflected theorem proves
+`C_Y+mu*S_Y-N_Y^nonconstant -> 0`, at fixed null coordinates.
+It does not separately assert that either period has a limit or is zero.
+Thus the proposed deduction from this zero to extinction stops at an exact
+quantity mismatch, not at an estimate that needs tightening.
+
+The positive replacement, before any limit, is
+
+```
+a*C_Y+b*S_Y = (b-a*mu)*S_Y+a*N_Y.
+```
+
+This follows by substituting `C_Y=N_Y-mu*S_Y`. If a piece of the physical
+action has these weights, this formula identifies both the remaining
+scalar coefficient and its boundary term. Establishing the actual weights
+and cancellation with the other pieces is still necessary. In particular,
+the reader-remainder calculation already recorded above retains a
+`(mu-2)` bulk coefficient; the modular zero does not dispose of it.
+The displayed substitution is a consequence of the existing Lean theorem,
+not a newly formalized complete-action identity.
+
+**Arithmetic symmetry attempt.** For a normalized finite average
+`T(F)=sum_i F_i/N`, direct expansion gives
+
+```
+T(F*G)-T(F)*T(G)
+  = (1/(2*N^2))*sum_(i,j) (F_i-F_j)*(G_i-G_j).
+```
+
+The four expanded terms give twice `N*sum_i F_i*G_i` minus twice the
+product of sums. For real `G=F`, the defect is nonnegative and vanishes
+exactly when all sampled values agree. The corpus already has this finite
+covariance identity in `SquareBlockSqrtClockMoment` and the corresponding
+probability-measure formula in `Mathlib.Probability.Moments.Covariance`.
+This rejects automatic product preservation by averaging, not a particular
+unconstructed HB Hecke identity. A Hecke-based extinction proof must derive
+the actual correlated products, their action on derivatives and metric
+weights, and their causal boundary terms. Replacing the all-plus bilinear
+pairing by a Hermitian variance would change the requested quantity.
+
+**Time-symmetry attempt.** Re-derivation from the original onset gives,
+for `f(u)=(A*chi(u)+B*chi'(u))*exp(v*u)` and a fixed `h>=0`,
+
+```
+integral[-h,1] exp(-v*u)*(f(u+h)-exp(v*h)*f(u)) du
+  = h*exp(v*h)*A.
+```
+
+After cancelling exponentials, the translated `chi` integrals differ by
+`h`; the two complete `chi'` integrals cancel. This is exactly the existing
+`D4BMSourceClockTranslation.sourceAndContact_clockMoment`, not a new result.
+It fails to give raw source covariance even at critical-line rates. The
+positive survivor is an exact work term that a full invariant action must
+balance. It is not yet the actual left-QNM functional. At an independent
+reader rate `w`, the already recorded formula retains `(A-(v-w)*B)`;
+the contact cannot be dropped using the resonant test.
+
+### Written interrogation
+
+| Question from the guide | Answer for this proof chain |
+|---|---|
+| Where is literal theta used? | In the actual Fourier coefficients, modular gluing, source equations, Xi occurrence and source-prescribed subtractions. The final cancellation must use these through an explicit identity; positivity or inversion alone is shared by broader controls. |
+| What group acts, and what is invariant? | Modular pullback, source FE, and physical time translation are different operations. Their established identities have different domains and readers. No proved complete nonlinear action law identifies all three. |
+| On what space is this canonical? | On data retaining the marked reader, causal prescription and original cutoffs/subtractions. Reader or subtraction independence is a theorem to derive, not a definition. |
+| What is the moduli count? | The period-41 report gives an 11-dimensional real DFT-fixed even space. Fixing the residue and a prescribed complex double zero imposes at most five real affine equations; adding the two moments imposes at most seven. Rank alone therefore does not explain the reported infeasibility inside the coefficient box. The positivity/bound constraints and actual coefficients matter. This is not a count of HB solutions. |
+| What is being removed? | Onset mass, nonconstant cusp powers, reader remainders and mixed products. Keeping them yields the explicit identities above and facts111-112, not their vanishing. |
+| Which mature theory has these primitives? | Boundary variational identities, covariance of finite averages, and intertwining of reconstruction/observation. The missing transfers are listed below. |
+| What are the dual, base and total space? | The physical left reader is the observation; source parameters and fixed-clock data form the base; causal fields together with face data are the data to reconstruct. A Hermitian dual or a reader with a new frequency has not been identified with this observation. |
+| Can the theorem be stated without project terminology? | For every zero of the entire completion, prove that a specifically defined, fully corrected causal response has zero pairing with the specified resonant adjoint mode at the original clock. |
+| What if the answer is assumed? | Under physical identification, `K=-Sigma*normSq(D)` makes zero equivalent to `D=0`. The source-derived estimate (PI) is sufficient. Assuming zero, covariance or the needed positive sign supplies the missing conclusion rather than proving it. |
+
+Three notations expose the same gap: the spectral equation
+`K=-Sigma*normSq(D)`; the finite-domain balance
+`P_c=P_bulk,c+sum_faces P_face,c+P_corrections,c`; and the deliberately
+misleading shorthand `E_rad=-Re(P)`. The last name does not prove energy
+positivity, and nonnegativity of that sign would agree with, not oppose,
+the reduced transduction. All terms include independent SS/SV/VV channels,
+both solved quadratic corrections, spin two and changing metric weights.
+
+The adjacent-field translation was a self-review, not an external expert
+consultation:
+
+| Proposed dictionary | Exact correspondence still missing |
+|---|---|
+| Conserved variational current -> zero QNM pairing | Admitted adjoint pairing and the evaluated sum of every face and correction. Conservation alone is a balance. |
+| Arithmetic linear symmetry -> nonlinear symmetry | The correlated-product law, derivative/metric compatibility and causal prescription. |
+| Angular finite part -> spacetime action | Actual coefficients, prescribed subtraction and common time/horizon/cusp/corner limits. |
+| Nonzero radial entries -> faithful observation | Injectivity on the actual source space with its time dependence retained. |
+
+The June primary paper [Dang, Karur and Sen](https://arxiv.org/html/2606.05305),
+equations(4)-(5), explicitly distinguishes a nonzero boundary current
+divergence from its compensating radial inflow. Cancellation between
+chiralities uses their specific charge relation. Its flow prescription also
+adds a stable-local-minimum condition. These are concrete missing dictionary
+rows for an HB transfer, not an extinction theorem for gravity.
+
+### Experimental facts that change the interpretation
+
+The period-41 baseline is itself
+`X_base(t)=2*41^(1/4)*cos(t*log(41)/2)*Xi(t)`, already stated in the
+experiment's protocol. It follows by splitting the baseline Dirichlet
+series into all integers and multiples of41. Consequently, the fixed
+center moments are those of this product, not those of undeformed Xi.
+For `c=log(41)/2`, normalization by `2*41^(1/4)` gives center value `Xi(0)`
+and second derivative `Xi''(0)-c^2*Xi(0)`. The literal source is not recovered
+by describing these as two unchanged zeta moments.
+
+The four nonreal double-zero candidates remain numerical, independently
+checked to about145 digits at worst, without interval existence certificates.
+No full modular HB source or physical action was constructed for them.
+They supply discriminating controls, not impossibility of fixed-clock
+extinction. No further numerical experiment was run here.
+
+Two new deep searches used all indexed views and completed with
+`partial=false`, 57,704 inventoried files and semantic coverage explicitly
+`not_measured`; most compiler metadata remained pending. Candidate lemmas,
+source arguments and generated ingredient sets were inspected. The proposed
+Lie-equivalence composition recipes do not provide the missing physical
+maps. Lexical extinction search recovered the exact existing transduction,
+not an unconditional extinction producer. Relevant source statements above
+were read directly. No fresh primary universal law passed the scientific
+method's evidence gate; these bridges were not promoted into one.
+
+**Whole route:** all seven reframings leave the same substantive obligation:
+derive the full source work's cancellation or the opposite-sign estimate
+(PI) for the actual marked left-QNM action at the original clock. The tests
+above prevent replacing that obligation by a component zero, an arithmetic
+average, or an RH-equivalent covariance premise. They do not prove its
+impossibility. No new Lean compilation or axiom inspection was performed.
+
+## The ordered optical experiment and the actual orbit observable
+
+The [new ordered-kernel report](../2-fully-proven/computations/hb-reduced-optical-ordered-kernel-2026-09-13-codex-root/REPORT.md)
+tests the scalar coefficient in equations(13)-(14) of
+[the two-sided current reduction](hb-two-sided-source-current-reduction.md).
+Its nonzero values at sampled actual zero heights concern individual ordered
+coefficients, before angular, lift, contact and terminal assembly. No experiment
+was rerun here.
+
+There is an exact distinction between that nonzero coefficient and the orbit
+whose extinction is required. Put
+
+```
+s=rho-2, t=-rho-1, delta=s-t,
+Gamma(rho;L,d)=L^delta*[K_st]-L^(-delta)*[K_ts].
+```
+
+Here the brackets are differences at the same original geometric endpoints,
+and `K_st` includes the earlier onset contribution. Replacing rho by1-rho
+exchanges s,t and sends delta to-delta. Therefore
+
+```
+Gamma(1-rho;L,d)=-Gamma(rho;L,d).
+```
+
+This identity is direct substitution into the supplied formula, independent
+of numerical roots. The original half-square is FE-invariant by
+`D4BMSourceReflectionTransport.square_reflect`. Its native circle mean and
+`-Delta(Delta-2)` image preserve that equality: their definitions apply the
+same fixed circle averaging and angular derivatives to equal fields. Thus
+the unweighted reduced bulk integrand, including that angular image, is
+FE-odd. Its reflected sum is zero on common finite domains before any limit.
+This is a paper consequence of the inspected definitions; it is not a newly
+audited Lean theorem or a complete physical-action identification.
+
+The required canonical unit-carrier orbit is the sum of its two marked
+single-copy cuts, and its value is the negative even clock-defect square.
+The original physical reader itself has the already proved half-unit
+parameter change under source reflection. Consequently the experiment's
+unweighted antisymmetrization cannot silently be substituted for this marked
+projection. Nor does a nonzero single-copy sample falsify orbit extinction.
+
+For any correctly identified decomposition `P=B+R` on common finite domains
+with this FE-odd subtotal B, elementary addition gives
+`P(q)+P(FE q)=R(q)+R(FE q)`. This is only a conditional accounting identity:
+the actual normalization and marked-reader attachment must establish that B
+is a subtotal of P. Defining R by subtraction does not prove its vanishing.
+The unresolved source calculation is precisely the FE-even remainder after
+that attachment, including other channels and all boundary/correction work.
+
+The current metric source separately supplies
+`C(W)=(mu-2)W` and the exact forced contact
+`C(U)=(Delta-2)U+R^3*F_original/(R^2-1)`; their finite-domain period identity
+retains both terms. Their disappearance was not derived. The source-FE
+reader mismatch and the combined modular zero were already facts1 and85;
+re-reading them supplied no new extinction theorem.
+
+Two additional deep searches completed over57,718 and57,720 indexed files;
+candidate/source/method ingredients were inspected. The generic symmetry and
+common-zero recipes did not supply the marked physical identification.
+**Goal status:** no proof of fixed-clock extinction or of its impossibility.
+The optical report changes the next diagnostic to the correctly normalized
+FE-even physical remainder, not another pointwise optical-zero search.
+
+## Reflected reader boundary data at the unchanged clock
+
+**[BRIDGE] [PAPER-PROVED] [LEAN-PROVED].** Test: carry source reflection
+through the marked reader by a spatial transform preserving the physical
+frequency and endpoint conditions. This tests the prescribed reflected
+normalizable mode, not all integral transforms or extinction itself.
+
+For `rho=q`, `q*=1-q`, `chi*=physicalRadialFrequency(q*)`, the original
+frequencies and reflected angular parameter give
+
+```
+w_false=-2+rho/2,  w_true=-1-rho/2,  i*chi*=-rho/2.
+C(w,chi)=Gamma(1+w)*Gamma(1/2)
+  / [Gamma(3/4+w/2-i*chi/2)*Gamma(3/4+w/2+i*chi/2)].
+
+C(w_false,chi*)=Gamma(-1+rho/2)*Gamma(1/2)
+  / [Gamma(-1/4+rho/2)*Gamma(-1/4)],
+C(w_true,chi*)=Gamma(-rho/2)*Gamma(1/2)
+  / [Gamma(1/4)*Gamma(1/4-rho/2)].
+```
+
+Both quotients are nonzero at every actual Xi occurrence. Every variable
+Gamma argument is nonreal; the remaining arguments are `1/2`, `1/4`, and
+`-1/4`, none a Gamma pole. Only established Xi strip/nonreal facts enter.
+The original continued-domain theorems identify the opposite-horizon
+coefficient of the actual normalizable solution `N(w,chi)` as `C(w,chi)/(2*w)`
+and give `OriginalHorizonC2(w,N(w,chi)) iff C(w,chi)=0` for nonreal w with
+`-2<Re w`. Both conditions hold at the original fundamental frequencies.
+
+Consequently `N(w_side(q),chi*)` has a nonzero opposite-horizon coefficient
+and fails the original horizon condition. The unreflected mode is admitted
+there by the existing fundamental connection-zero theorem. This is actual
+boundary data, not merely unequal algebraic frequency labels or a failed
+first-order Darboux ansatz. A local or nonlocal map ending at this prescribed
+reflected mode cannot preserve that domain. Finite real clock translation
+multiplies its separated time factor by a nonzero exponential, so it cannot
+remove the coefficient. This observation concerns the reader, not the full
+nonlinear action.
+
+**Whole route.** This reader replacement cannot identify the optical FE-odd
+subtotal with the marked orbit. Its defect is nonzero even on the critical
+line, so it cannot itself be the source-FE clock-defect energy. The coefficient
+has not been identified as a term of the original action. Consequently its
+nonvanishing does not impose a compensation obligation on a proof that avoids
+this replacement. Full Peierls branch exchange does not require individual
+reader equality; the source-to-functional incidence must be proved instead.
+Neither extinction nor its impossibility follows. No complete
+spectral-disjointness claim is made.
+
+**Seven moves applied to this test:** (1) retain the solution and both endpoint
+data; (2) work backward from the exact admission criterion; (3) read the
+connection as boundary data rather than a pole label; (4) remove the
+first-order restriction and test the required target; (5) apply the proved
+continued connection/domain correspondence at negative physical frequencies;
+(6) test transport on the prescribed modes; (7) retain the Gamma quotient
+as the positive mathematical residue of failure. The interrogation and
+three-notation comparison above remain the working framework.
+
+Two whole-corpus deep searches covered57,736 and57,738 inventoried files
+without partial retrieval. Candidate/source/method ingredients were inspected.
+The suggested disjoint-spectrum theorem requires self-adjoint operators;
+it supplies no QNM-domain theorem. The June2026
+[Jin–Ma–Zuazua paper](https://arxiv.org/html/2601.03616) uses auxiliary-time
+averaging. The2026 [D=3 intertwiner paper](https://arxiv.org/html/2601.18490)
+assumes a boundaryless surface in its holomorphic construction and neglects
+boundary terms in the displayed gravity integration by parts. Neither
+supplies the required HB boundary cancellation.
+
+**Formal status.** `ThetaCuspHawkingBMReflectedReaderBoundary` proves the exact
+quotient, nonvanishing, horizon non-admission and nonzero opposite coordinate.
+Scratch `lake env lean` and isolated cached final
+`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMReflectedReaderBoundary`
+passed without warnings; one leaf compiled in53seconds. The119-line module
+is wired into `RHTower`; no umbrella build, numerical experiment, added axiom
+or raised proof limit. Source SHA256:
+`92d9d8d70f0f59feaa3ae199ccf0295bb51e526295f0c702be091ebc732cdffa`.
+Index refresh and targeted whitespace checks completed. Global lint reports
+the unrelated unreachable module `RHTower.Sieve.KloostermanGlobalCollisionCoprime`;
+that module was not modified. All owned search, Lean, audit and index/lint
+processes terminated; the isolated audit directory was removed.
+
+## Return to source-restricted variational incidence
+
+**Correction of the research direction.** The new reader-boundary theorem is
+valid, but its coefficient belongs to a proposed reflected-reader replacement.
+It is not proved to occur in the original radiative action. Searching for a
+source term to cancel it would introduce an obligation of our own making.
+The earlier source/Peierls table already distinguished this from the needed
+functional correspondence. No new Lean wrapper or extinction claim is added.
+
+The exact existing algebra gives a more relevant test. Write `p,m` for the
+two input fields, `Qpm,Qpp` for their complete quadratic residuals,
+`Delta_pm,Delta_pp` for the two retarded-minus-advanced response jumps, and
+`ell` for the marked left functional. For a candidate common propagator
+`Delta` and an action pairing `P`, set
+
+```
+R = B(p,Delta Qpm)+B(m,Delta Qpp),
+E = B(p,(Delta_pm-Delta)Qpm)+B(m,(Delta_pp-Delta)Qpp),
+W(f) = ell(f)-P(m,f).
+```
+
+Linearity and the corpus's complete cubic causal-cut formula give exactly
+
+```
+markedCut = PeierlsCut(P,B,Delta;p,m) + W(R) + ell(E).
+```
+
+Here the identical direct cubic terms have canceled between the two response
+prescriptions, as in `TotalThirdOrderCausalCut`; no physical boundary has been
+deleted. This is an algebraic interface decomposition. Interpreting its
+arguments physically requires the original augmented residual, including
+metric weights, all channels and every boundary contribution.
+
+With symmetric B, full cyclicity and causal skewness, the existing theorem
+`d4GaugeFixedTeukolskyPhaseNormalizedPeierlsCubicCut_swap` makes the Peierls
+term odd under `p<->m`. Literal source FE performs exactly that exchange with
+the four amplitude slots exchanged. For those matched raw amplitude slots,
+the two Peierls terms cancel. What remains is the sum of `W(R)+ell(E)` over
+the two copies. This does not require `W=0` on arbitrary fields, equality of
+reader profiles, or an invertible reader transmutation. It does require the
+same physical pairing/propagator and the correct amplitude incidence.
+The unit-carrier normalization cannot be inserted without proving its
+transport; canonical packet FE is a different, cocycle-weighted operation.
+
+**Independent source evidence checked:** full literal field/source exchange;
+local bulk-plus-boundary cyclic Einstein variation; actual left-metric
+equation; the complete mixed correction exchange. The latter still contains
+cubic linear work, two correction/source works and two boundary defects.
+The scalar `BMCausalSourceAdjoint` transfers an angular operator to radial
+weights; it is not the full retarded/advanced transpose theorem. Advanced
+scalar integral admission likewise does not identify the full Einstein
+propagator. These sources establish neither vanishing of the displayed
+functional error nor cancellation of the complete physical orbit.
+
+The tested general Noether and exact-Einstein-family proposals supplied no
+new source law: the former requires an identified gauge direction and
+boundary pairing; no exact family with the actual metric and causal data was
+constructed. These repeat existing obstacles and are not counted as new
+mathematical results. Three deep/method searches completed with nonpartial
+inventories of57,763,57,763 and57,773 files; their proposed ingredients did
+not supply the missing physical incidence. No computations or Lean builds
+were run in this continuation. Fixed-clock extinction and its impossibility
+remain unproved.
+
+## Fixed-onset Peierls test: rejected source identification
+
+**Target unchanged:** literal theta -> Xi -> retained spin two -> complete
+causal/left-QNM action -> original-clock extinction -> RH. This test produced
+no new extinction or impossibility theorem. Its source integration-by-parts
+survivor is already fact15, not a new result.
+
+**Tested inference [BRIDGE attempt]:** a fixed onset can be represented by
+right multiplication in the common Peierls response, and its commutator
+then decides whether the complete reflected cut cancels. This cannot be
+applied to the original source as stated. `BMMixedCurrentCutoff` defines
+the source by differentiating the switched current. In static coordinates,
+with `f=r^2-1` and `C` the original two-component mixed current,
+
+```
+T_A = f/r^2 * partial_r(chi*C_A),
+R_A = 1/(r^2*f) * partial_t(chi*C_A).
+```
+
+Thus the source is `D(chi*C)=chi*D(C)+N`, with exactly the onset tensor
+in `switchedCurrentSource_eq`. Its physical left-field contraction is
+`-2*chi'/r^2 * sum C_A*(partial_r-partial_t/f)Psi_A`, by
+`BMCurrentSourceAction.physical_left_onset_action`. The contact's null
+self-pairing does not erase this contraction.
+
+There are two distinct operator questions. If `Delta` is skew for a
+symmetric pairing and multiplication by `chi` is symmetric, direct
+transposition gives
+
+```
+P(Delta(chi*f),g)+P(Delta(chi*g),f)
+  = P((Delta*chi-chi*Delta)f,g).
+```
+
+But applying the same complete source map `S` to both arguments gives
+`P(Delta(S*f),S*g)=-P(Delta(S*g),S*f)` for any linear `S`; no commutation
+with `Delta` is needed. Neither expression has been identified here with
+the actual complete marked cut. In particular, nonzero bare commutator
+would not prove failure of the second expression or of extinction.
+
+**Attempt to close the actual contact:** substituting the original stream
+metric and integrating its source work by parts recovers identity(G):
+temporal/radial flux plus `2/r^4 * sum (chi*C_A)*(Master(Psi)_A-A(Psi)_A)`.
+The homogeneous left equation removes the master term, leaving the angular
+overlap. Transferring that angular operator retains its cusp/core/side
+fluxes. This repeats fact15. It does not close the original marked action,
+and no duplicate Lean leaf was created.
+
+**Whole-route consequence:** retain the exact source map and its transpose
+at both vertices before invoking Peierls skewness. The solved mixed
+quadratic residual kills its changing-weight residual, but the existing
+`BMLeftQNMCorrectionExchange.complete_mixed_exchange` still retains source
+work and boundary defects. No source equation checked in this test sets
+their sum with the independent SS/VV and original left-QNM terms to zero.
+The previously stated absolute-error/sign interface and source-restricted
+Peierls incidence remain unproved; they have not become assumptions.
+
+The seven reframings and written interrogation above remain the method
+record. This continuation tests the correspondence (move5), compares
+placing the source map on one or both arguments (move4), and keeps onset
+dependence as part of the operator (moves6–7). It does not replace the
+fixed Hawking clock or redefine the target after the failed inference.
+
+Broad primary-paper checks also supplied no closing identity. The
+[2026 flux-law paper](https://arxiv.org/html/2601.07091v2), sectionII,
+retains boundary charges and radiative flux. The
+[coadjoint-averaging paper](https://arxiv.org/html/2607.17943v1), lemma5.1,
+obtains zero by integration over a compact orbit with invariant Liouville
+measure. No such identification of the marked HB observable was derived.
+The [photoacoustic adjoint paper](https://arxiv.org/html/2604.04022v1),
+section3.3, keeps the source operator in the composite adjoint; its wave
+domain and source differ from HB. These are checked transfer attempts,
+not imported HB premises. Four deep/method searches returned nonpartial
+inventories of57,778,57,782,57,787 and57,789 files; semantic coverage was
+unmeasured and candidate compiler metadata predominantly source-only.
+No numerical experiment or Lean build was run.
+
+## Positive-source, overtone and chiral tests of the same extinction target
+
+No complete-action vanishing, opposite-sign estimate, or impossibility
+theorem resulted. The positive-source current still has the gradient
+contact of fact4. The overtone estimate returns to fact91: the growing
+canonical susceptibility belongs to varying parent overtones, whereas
+the available Rodrigues estimates vary the reader of a fixed source.
+No estimate was transferred between these families.
+
+The chiral test exposes a precise normalization issue to resolve, not a
+proved error in a physical helicity reconstruction. The literal displaced
+cut has deformation `s*e*(aS*H/2+aV*JH)`. The proved independent-field
+pairing has coefficients
+
+```
+aS*cS/4+aV*cV,       (aS*cV-aV*cS)/2.
+```
+
+Both vanish at `aV=i*aS/2`, `cV=i*cS/2`. At the ratio `i` rather than
+`i/2`, the first is `-3*aS*cS/4`. Meanwhile
+`d4GravitationalHelicityPlus/Minus` are the abstract coordinates
+`scalar +/- i*vector`, and the stationary chiral-kernel discussion uses
+`aV=+/-i*aS`. The latter coordinates have not been identified here with
+the displaced-cut spin-two coefficients. A null deformation contraction
+also does not prove self-duality of the full perturbed Weyl tensor or
+vanishing of the nonlinear action.
+
+The actual quadratic source further specifies what the null-deformation
+attempt would have to cancel. Write `F=squareSource(q)`,
+`U=coordinateResponse(q)`, `lambda=eigenvalue(q)`,
+`s=physicalRate(q,branch)`, and
+`Hminus(f)=collisionHelicityMinus(hessianComponents(f))`.
+Substitution of `aS=a`, `aV=i*a/2` in
+`BMPhysicalAngularPotential.potentialSource`, using the rotation in
+`PolyatomicAngularHelicity.collisionHelicity_rotate`, gives
+
+```
+collisionHelicityMinus(source) = a^2*B^2*s^2/(8*r^4) * (
+  ((s+1)^2-2*r*(s+1)-4*r^2)*Hminus(F)
+  +lambda*(4*s^2+14*s+12-4*r^2)*Hminus(U)).
+```
+
+This is a paper substitution in the existing full angular second-source
+formula, not a new Lean audit. It retains the SS, SV and VV coefficients
+and the original angular response. It supplies neither nonzero integrated
+radiation nor cancellation after the solved full quadratic corrections.
+In particular, the null first-deformation pairing is not a proof that
+this subsequent source vanishes. No source term was deleted to obtain
+an extinction claim.
+
+**Whole route:** the chiral option must derive its actual nonlinear Weyl
+or action identity, including the source displayed here and every
+correction/boundary term. The exact conserved or nonnegative quantity
+needed by the original marked action is still missing. These tests do
+not replace that target with a polarization classification.
+
+## Original metric-period test against fixed-clock extinction
+
+The current `OriginalReaderEquation.original_metric_scalar_integral`
+supplies the precise finite-domain identity recorded in own fact117.
+Its reader coefficients are `mu*(mu-2)` and `mu`, and its right side
+retains the difference of two original angular transfer fluxes. The
+attempt to use the earlier combined modular zero stops unless these
+actual coefficients, forced contact and boundary difference are matched.
+No vanishing or opposite-sign estimate for the complete action follows
+from the inspected statement alone. This sharpens the interface being
+tested; it is another agent's existing source theorem, not a new proof here.
+
+The fixed-translation test again returns the already recorded onset
+moment in fact26 and the weighted correction work in facts27–33; no new
+invariance was obtained. An exact-metric completion was also tested
+against the literal scalar angular block. No completion satisfying the
+original source and boundary data was constructed. Neither failed
+attempt establishes impossibility of fixed-clock extinction.
+
+The broad reciprocity search led to
+[Unifying Physical Backpropagation](https://arxiv.org/html/2608.11585v1).
+Its equation(110) retains independent initial and terminal contributions
+in the full adjoint variation; section6.2 separately requires reciprocity
+along the nonlinear trajectory and its reversal construction. No HB
+identification discharging those requirements was derived. Three deep
+searches completed over57,800,57,801 and57,803 indexed files with
+`partial=false`; semantic coverage remains unmeasured and retrieved
+compiler metadata predominantly source-only. No experiment or Lean
+build was run, and no new unconditional extinction law was found.
+
+## Reframing the retained history and the new horizon experiment
+
+The target remains complete fixed-clock extinction or its actual impossibility.
+Neither is proved here. The following tests apply the seven operations in the
+requested guide to new evidence; they do not promote an auxiliary result into
+an extinction theorem.
+
+| Operation | Concrete test and outcome |
+|---|---|
+| Change the arena | Keep the causal field together with its initial-history strip. The existing exact retarded translation law retains that strip even when the translated forcing vanishes; zero forcing is not zero response. |
+| Swap primitive and derived | Work backward from `K=-Sigma*normSq(D)`. A source-derived nonnegative complete action would suffice under physical identification. Taking nonlinear canonical clock covariance as primitive instead retains the existing RH-equivalent premise. |
+| Reassign the dictionary | Interpret the reported negative phase mean as a coefficient of horizon density, not as the value or sign of the family-regularized complete action. Integration changes the height exponent and retains a lower endpoint. |
+| Vary one structural input | Compare specialization before/after finite-part extraction while holding clock, field and reader fixed. The general collision counterexample does not apply automatically: the actual diagonal triple cap flux has no exponent collision, as recorded in fact118. |
+| Prove the correspondence | Trace the report's `angularPair` to `PhysicalLiftHorizonCurrent.angular_pair_original`, then compare with `CapAngularFluxCusp.angularFlux`. The former is quartic in one source; the latter includes the independent physical reader. They cannot share a zero theorem without an actual identification. |
+| Represent one level inside another | Retain affine exponent labels and the physical specialization map explicitly. At the integrated principal level the exponent is `1+2*k*u`, rather than the density exponent `2*k*u`. The data needed by the finite part depend on which object is being regularized. |
+| Promote the nuisance | Keep the lower modular boundary `l(x)=sqrt(1-x^2)` and the causal onset as data. They expose finite endpoint work and retained history that a proposed all-face conservation law must cancel. |
+
+### Horizon density versus its integrated finite part
+
+This is a paper-level interface derivation, not an admitted formula for the
+complete physical action. Let the principal source be
+
+`S_0(y)=a*y^(1/2+u)+b*y^(1/2-u)`,
+
+with `alpha=1/2+u`, `beta=1/2-u`, `mu=u^2-1/4=-alpha*beta`.
+The literal definitions of `squareCovector` and `gradientCovector`, with
+horizontal derivatives zero, give
+
+```
+J_0 = a^2*alpha*y^(2u) + a*b + b^2*beta*y^(-2u),
+K_0 = a^2*alpha^3*y^(2u) + a*b*alpha*beta + b^2*beta^3*y^(-2u).
+```
+
+The report's surviving angular density is
+`A_0=(2mu-2)*J_0^2+2*J_0*K_0`.
+In its expansion `sum_(k=-2)^2 c_k*y^(2ku)`, the coefficient with exponent
+identically zero is
+
+```
+c_0 = a^2*b^2*((2mu-2)*(1-2mu)-4mu*(1+mu))
+    = a^2*b^2*(-8u^4+6u^2-3).
+```
+
+For the normalized critical-line source, `u=i*gamma` and `a*b=1`, this
+recovers the report's `-(8gamma^4+6gamma^2+3)`. The term is already neutral
+in the one-parameter density family; it is not an accidental spectral
+collision. This observation alone does not determine a finite part.
+
+The experiment integrates that density with `dx dy`, as confirmed by
+reading `horizon_pair.py`; it is not a logarithmic-height integral. At
+critical-line parameters, every `1+2ku` is nonzero. Thus the principal
+antiderivative is
+
+`B_0(y)=sum_(k=-2)^2 c_k*y^(1+2ku)/(1+2ku)`.
+
+For a finite modular truncation `D_Y`, direct integration gives
+
+```
+integral_(D_Y) A_full - B_0(Y)
+  = integral_(D_Y) (A_full-A_0)
+    - integral_(-1/2)^(1/2) B_0(l(x)) dx.
+```
+
+Every upper exponent `1+2ku` is a nonzero affine family, including the
+neutral-density contribution `c_0*Y`. If the prescribed action subtracts
+this upper primitive and the remainder is admitted, its finite value is
+the pointwise-subtracted remainder **minus the lower-boundary primitive**.
+The experiment omits that latter term by subtracting the principal density
+throughout the cell. Proving that this primitive, normalization and family
+are precisely those of the original complete action is still required;
+neither its value nor the sum of the other physical faces is obtained here.
+No new Lean theorem or sign claim is attached to this unclosed interface.
+
+### Written interrogation and failed transfers
+
+- Literal theta enters the full covectors and Fourier amplitudes; the principal
+  calculation alone uses no zero-selecting arithmetic identity.
+- Modular pullback, raw source FE and physical-clock translation remain different
+  operations. None of the inspected identities identifies their complete actions.
+- The canonical data must retain reader, causal history, original family and
+  subtraction. A moduli/dimension argument is unavailable: no finite-dimensional
+  model of all full causal corrections with these boundaries was established.
+- The pieces being removed are precisely initial history and the lower primitive;
+  their explicit formulas expose required work rather than justify its deletion.
+- The dual is the prescribed left-QNM functional. The phase-averaged quartic
+  source density is not that functional. This is the failed dictionary row.
+- Without project names, the task is to prove zero pairing of a fully forced
+  causal solution with its specified resonant adjoint after all boundary work.
+- Assuming the answer leads back to `D=0` through strict susceptibility, leaving
+  the same source-production gap rather than a proof.
+
+Three notations isolate the distinction: `A_0=sum c_k*y^(2ku)` for the
+density; `I_Y=B_0(Y)+C+o(1)` for the integrated family; and the deliberately
+bad shorthand `negative mean = negative action`. The last equality has no
+mathematical justification. The adjacent-field comparison is a self-review,
+not an external consultation.
+
+The original August paper [Ivanov, arXiv:2608.23069](https://arxiv.org/html/2608.23069v1)
+requires boundary counterterms and a renormalized boundary Gaussian weight
+to glue its quartic Euclidean model (Theorems1–2). It supplies a concrete
+warning that bulk renormalization does not determine gluing; it supplies
+neither HB's Lorentzian action nor permission to change its source-fixed
+counterterms. No extinction law transfers from that paper.
+
+The previous modular-entropy and closed-time-path tests likewise supplied no
+source law. Entropy exchange needs an identified invariant state/evolution;
+equal-source closed-time-path normalization does not set its physical response
+derivative to zero. The exact HB marked cut retains both response jumps.
+
+Three new deep/method searches completed with `partial=false`, over57,832,
+57,833 and57,833 files; semantic coverage was unmeasured and retrieved compiler
+metadata source-only. Their proposed ingredient sets were unverified and did
+not close any physical-action obligation. No numerical computation or Lean
+build was run. The new verified corpus fact is fact118, not extinction.
+
+## Rebuilding HB as a relational clock readout — arXiv:2608.27650
+
+**Target unchanged:** original theta → Xi → retained spin two → original complete
+causal/left-QNM action → fixed-Hawking-clock extinction → RH. This reconstruction
+changes the observable used to study the missing law. It does not prove that law.
+
+The [paper](https://arxiv.org/html/2608.27650v1), §§2–4 and Appendices A–D,
+separates clock reading, spatial lattice translation and an externally controlled
+cycle. Its cycle factorization is adiabatic and retains periodic geometric and
+dynamical factors. Its photonic free clock–system constraint omits the pair-creation
+interaction at leading order. The useful imported idea is comparison of two
+operations through their relative complex amplitude, with a relational reference.
+Neither an exact finite-time Hawking period nor a full nonlinear Einstein
+constraint follows from the photonic construction.
+
+### The actual HB dictionary
+
+Let `q` be an actual Xi multiplicity copy, `R q` its FE reflection,
+`delta=Re(rho)-1/2`, `gamma=Im(rho)`, and `kappa_q` the literal nonzero source
+cocycle. On the existing finite source-packet space `E`, put
+
+```
+H_n e_q = h_q e_q,       h_q = (gamma-i*delta)/2,
+J(c e_q) = kappa_q*conj(c) e_(Rq),
+U_t = exp(-i*t*H_n).
+```
+
+Here `H_n` removes only the already fixed overtone/redshift offset. It is not a
+new source-dependent clock. The source equations independently supply
+`h_(Rq)=-h_q`, `kappa_(Rq)*conj(kappa_q)=1`, and
+`conj(h_q)+h_(Rq)=i*delta`. They do not supply `delta=0`.
+
+Restoring the uncentered frequency changes both path coefficients by the same
+positive factor `exp(t*(1/4-decay_n))`: the offset is purely imaginary and
+anti-linearity gives the same factor in both orders. Their intensity ratio
+and visibility are therefore unchanged. Removing this common attenuation in
+the readout does not imply that the centered evolution is contractive.
+
+| Paper primitive | Source-faithful HB object | Transfer boundary |
+|---|---|---|
+| Clock reading | Original Hawking `t`, acting through `U_t` | Neither cusp height nor control-loop parameter replaces `t`. |
+| Clock–system pair | `J` represented as a linear map from the conjugate space `conj(E)` to `E` | A physical quantum Hilbert space/POVM has not been constructed from Einstein evolution. |
+| Energy anticorrelation | Two-sided constraint `H_n L + L conj(H_n)` on that map | Its coefficient is `i*delta*kappa_q`; setting it to zero is the missing law. |
+| Two paths | `J U_t` and `U_t J`, both ending at the reflected source copy | These are existing source operations; no retarded/advanced exchange is assumed. |
+| Relative holonomy | Ratio of the two nonzero path coefficients | It is positive real, so its modulus must be retained. |
+| Readout | Two-arm intensity contrast and dark-output intensity | Phase-only normalization discards the target defect. |
+| Nonlinear interaction | Complete Einstein jets, solved quadratic responses and boundary work | Cannot be discarded as post-preparation dynamics. |
+| Topological protection | Would require an independently constructed source family and protected physical transport | No gapped HB band or compact parameter torus is supplied by the dictionary. |
+
+The honest arena is `Hom_C(conj(E),E)`. For a finite set of copies, let `L_F`
+send `bar(e_q)` to `kappa_q e_(Rq)` on that set and to zero elsewhere.
+Write `E_(r,q)` for the map sending `bar(e_q)` to `e_r`, zero on other basis
+vectors. The free relational constraint is exactly
+
+```
+H_n L_F + L_F conj(H_n)
+  = sum_(q in F) i*delta_q*kappa_q * E_(Rq,q).
+```
+
+This is a finite algebraic representation of the existing anticommutator;
+normalizability of a global quantum state is not asserted. Vectorization needs
+the appropriate dual space; no tensor-product quantum state is silently
+identified with this map. Replacing `conj(H_n)` by `H_n` makes the reflected
+pair coefficients vanish automatically. That would erase the anti-linearity of
+the actual source. The corpus's linear/anti-linear coherence theorem already
+identifies the resulting change: linearized reflection is clock-odd but loses
+involutivity off the critical wall. Thus the free anticorrelation obtained from
+linear reflection is not a solution of HB's constraint.
+
+### Exact source interference, with the common clock retained
+
+Let `A_t=(J U_t e_q)(Rq)` and `B_t=(U_t J e_q)(Rq)`. The existing finite-step
+formulas give
+
+```
+A_t = kappa_q * exp(i*gamma*t/2) * exp(-delta*t/2),
+B_t = kappa_q * exp(i*gamma*t/2) * exp( delta*t/2).
+```
+
+Consequently
+
+```
+A_t*conj(B_t) = |kappa_q|^2 > 0,
+|A_t|^2 = |kappa_q|^2 * exp(-delta*t),
+|B_t|^2 = |kappa_q|^2 * exp( delta*t),
+|A_t-B_t|^2 = 2*|kappa_q|^2 * (cosh(delta*t)-1),
+log(|A_t|^2/|B_t|^2) = -2*t*delta.
+```
+
+All differential phase information has canceled before any assumption about
+Xi placement. The lost amplitude information is exactly what is needed. With
+a variable reference phase `theta`, direct expansion gives
+
+`|A_t-exp(i*theta)*B_t|^2=2*|kappa_q|^2*(cosh(delta*t)-cos(theta))`.
+
+The visibility of this algebraic readout is `1/cosh(delta*t)`. At `t=1`, the
+already established complete reduced cokernel transduction becomes
+
+```
+K_n(q) = -Sigma_n(q)*|kappa_q|^2
+           * (log(|A_1|^2/|B_1|^2)/2)^2.
+```
+
+This identity uses the complete reduced target-independent causal cut, not an
+isolated quadratic channel. The variable-phase/visibility formulas above are
+paper consequences of the cross-amplitude and intensity identities; the
+separate physical interferometer realization remains unconstructed. The
+source readout formulas are being checked in an isolated Lean leaf.
+
+Equivalently, the finite source loop `J U_t J U_(-t)` acts on `e_q` by
+`exp(t*delta)`. This is a dilation component of complex transport. A phase-only
+quotient makes it invisible. The loop is defined on finite source packets;
+its action on the original causal boundary domain has not been established.
+
+### Keep the complete interaction in the relational constraint
+
+If an interacting history formulation is constructed, it must satisfy a full
+constraint `C_total=C_clock+V_Einstein`, not the free constraint alone. Even
+`C_total Psi=0` would give `C_clock Psi=-V_Einstein Psi`, which is not zero.
+No Hilbert-space operator `V_Einstein` is claimed to have been constructed here.
+Its required perturbative content is already concrete. With
+`E(g+h)=Lh+B(h,h)/2+C(h,h,h)/6+...`, the exact `++-` source is
+
+```
+B(p,h_pm) + B(m,h_pp)
+  + (C(p,p,m)+C(p,m,p)+C(m,p,p))/6.
+```
+
+Here `h_pm` and `h_pp` must be the solved original corrections. Each source
+retains its SS, SV and VV contributions and spin-two component. The actual
+metric weights are fixed by the local action identity
+
+```
+delta L = -sum_ij (g^-1 M (g^-1)^transpose)_ij * source_ij
+          + sum_a partial_a(localVolume * current_a).
+```
+
+`BMActionBoundary.literal_action_boundary_near_zero` proves this for the literal
+fields and independent amplitudes in a nondegenerate neighborhood. The current
+has all four directions. Integration therefore retains horizon, cusp,
+characteristic, temporal and corner fluxes; onset and source-contact work must
+be counted in the same original action. The already closed SV correction also
+annihilates its own moving-weight residual, by
+`BMMixedQuadraticClosure.movingWeight_mixed_residual_zero`. This does not cancel
+other channels or all boundary work.
+
+An exact sufficient physical interface is the following, with all quantities
+defined using the original clock, reader and prescribed counterterms:
+
+1. The fully assembled finite-domain action `P_c(q)` tends to the established
+   `K_n(q)` as the original cutoffs are removed, with an admitted error `e_c→0`.
+2. A current derived from the complete source gives
+   `Re(P_c(q)) >= -eta_c`, where `eta_c≥0` and `eta_c→0`.
+
+Then
+`0 <= Sigma_n*|kappa_q|^2*(log(|A_1|^2/|B_1|^2)/2)^2 <= e_c+eta_c`,
+so the logarithmic gain vanishes, both amplitudes match, and `K_n(q)=0`.
+This proves the receiver mechanism on paper, but neither interface item is
+proved here. In particular, an intensity norm is nonnegative by construction;
+identifying it, with the required sign, with the original left-QNM action is
+not supplied by that elementary positivity.
+
+A second possible physical producer is contraction of the actual finite loop
+in a fixed positive source-derived norm on both members of every FE orbit.
+Its two eigen-gains `exp(t*delta)` and `exp(-t*delta)` then force `delta=0` for
+any fixed `t>0`. This too remains a proposed interface, not an independently
+proved property. The existing source-specific Bogoliubov completion preserves
+a signed Hermitian form while retaining off-wall partner production; that
+conservation cannot substitute for the required positive contraction.
+
+### Seven operations and the written interrogation
+
+| Operation | Test made here; whole-route consequence |
+|---|---|
+| Change arena | Use the conjugate clock/source graph and the two-path square. Anti-linearity is now visible in the constraint itself. |
+| Swap primitive/derived | Take actual source transport as primitive and derive its clock readout; importing a free stationary state would assume the missing zero. |
+| Reassign dictionary | Read the clock defect as logarithmic gain, not an unwrapped phase. The exact cokernel is gain energy. |
+| Vary one input | Retain modulus when passing from unit-circle to nonzero-complex transport. Phase-only readout loses the defect identically. |
+| Prove correspondence | Trace both arms to existing packet operations and derive their exact intensities; do not substitute a synthetic two-level model. |
+| Represent one level inside another | Encode anti-linear FE as a linear graph on the conjugate space. Dropping conjugation produces the wrong automatic anticorrelation. |
+| Promote nuisance | Keep gain, nonlinear interaction and causal boundary history as coordinates of the proposed physical realization. None is a removable common phase. |
+
+- **Where is literal theta used?** In `kappa_q`, its nonvanishing/involution,
+  the Xi-labeled generator and the complete-cut transduction. Topological
+  vocabulary alone supplies none of the missing source cancellations.
+- **What acts and what is invariant?** The real-time group and anti-linear FE
+  involution act on finite packets. Their loop has positive gain. Its phase is
+  invariant but insufficient; no complete-action invariance was derived.
+- **Canonical space?** Actual multiplicity copies, conjugate source graph,
+  original Hawking time and physical boundary data. No arbitrary clock split,
+  new frequency, or choice of positive norm is silently fixed.
+- **Moduli count?** A winding number does not determine a positive gain. Here
+  the actual gain already varies with the source spectral coordinate; no
+  finite-dimensional rigidity theorem selecting unit gain was found.
+- **What was being removed?** Modulus, pump/source interaction and boundary
+  memory. Restoring them exposes the exact outstanding constraint.
+- **Mature theory and failed row?** Relational clocks and interference provide
+  the graph/readout description. Positive physical transport on that graph
+  has not crossed from the photonic model to the nonlinear causal action.
+- **Dual/base/total space?** Base: source copies and original clock readings;
+  total data: fields, corrections and boundary traces; dual: the prescribed
+  left-QNM functional. No independent quantum detector may replace that dual.
+- **Without invented names?** Prove that the two orders of applying the actual
+  source reflection and the same finite evolution have equal amplitudes,
+  through the complete original physical action.
+- **With the answer assumed?** The source gain is one and the dark intensity
+  vanishes. Showing only equal phases has already happened unconditionally,
+  so it cannot be counted as progress toward the missing amplitude equality.
+
+Three notations: the operator defect `[J,U_t]e_q`; the two-sided source-map
+constraint `H L_F+L_F conj(H)`; and the deliberately lossy notation
+`phase(A_t/B_t)=0`. The last records a true but insufficient observation.
+
+The attempted transfers were: topological winding → fixed-time extinction
+(does not transfer: it loses the gain); free relational stationarity → source
+stationarity (does not transfer: it changes conjugation/omits interaction);
+conservative completion → dark output (does not transfer: signed conservation
+retains partner production). Their positive residue is the exact amplitude
+readout above. None disproves actual fixed-clock extinction.
+
+Broad recent searches also found
+[relational memory](https://arxiv.org/html/2606.08595v1) and
+[canonical clock sectors](https://arxiv.org/html/2607.23852v1). They provide
+additional transfer checks, not HB theorems: retain memory after conditioning,
+and preserve the clock momentum as well as its label. No altered clock or
+coarse-grained evolution is used here.

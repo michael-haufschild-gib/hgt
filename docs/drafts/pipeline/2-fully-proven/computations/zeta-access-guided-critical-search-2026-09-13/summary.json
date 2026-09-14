@@ -1,0 +1,1473 @@
+{
+  "planned": 120,
+  "completed": 120,
+  "rows": [
+    {
+      "gap": 29,
+      "start_real": ".6",
+      "offset": "-1.5",
+      "critical_point": [
+        "0.78062800472464464532817895193774037961236437607552",
+        "95.292968271352216939710567654110051437607087709052"
+      ],
+      "critical_value": [
+        "0.42950118878755063663116340848116983328908656703955",
+        "0.077852198290633006173375966540497471124362543258709"
+      ],
+      "critical_residual": "7.7417995726248287579273000316164394302621501733929e-50",
+      "second_derivative": [
+        "1.4306827822251660304725853287981380741806152485681",
+        "0.085669200168456216595742511521697953801206966403233"
+      ],
+      "distance_to_one": "0.57578629574999610285119269638216701821004350426834",
+      "status": "ok",
+      "seconds": 2.3755328822880983,
+      "endpoints": [
+        [
+          28,
+          "0.0"
+        ],
+        [
+          27,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 29,
+      "start_real": "1.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10510530322790146
+    },
+    {
+      "gap": 29,
+      "start_real": "2.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07092140056192875
+    },
+    {
+      "gap": 29,
+      "start_real": "1.0",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10635204240679741
+    },
+    {
+      "gap": 29,
+      "start_real": "1.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10833493247628212
+    },
+    {
+      "gap": 29,
+      "start_real": "1.0",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.12363250181078911
+    },
+    {
+      "gap": 29,
+      "start_real": ".6",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1254168301820755
+    },
+    {
+      "gap": 29,
+      "start_real": "1.0",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1263720989227295
+    },
+    {
+      "gap": 29,
+      "start_real": "1.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.14013451524078846
+    },
+    {
+      "gap": 29,
+      "start_real": "2.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.0842738151550293
+    },
+    {
+      "gap": 29,
+      "start_real": "1.0",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.16971862129867077
+    },
+    {
+      "gap": 29,
+      "start_real": ".6",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.19150057807564735
+    },
+    {
+      "gap": 29,
+      "start_real": "1.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.18948050029575825
+    },
+    {
+      "gap": 29,
+      "start_real": "3.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.0742251556366682
+    },
+    {
+      "gap": 29,
+      "start_real": "3.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.0846315361559391
+    },
+    {
+      "gap": 29,
+      "start_real": "2.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08642729744315147
+    },
+    {
+      "gap": 29,
+      "start_real": "2.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.09704176336526871
+    },
+    {
+      "gap": 29,
+      "start_real": "3.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07317436672747135
+    },
+    {
+      "gap": 29,
+      "start_real": "2.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.12362637929618359
+    },
+    {
+      "gap": 29,
+      "start_real": "3.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07391100749373436
+    },
+    {
+      "gap": 29,
+      "start_real": "3.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07439236901700497
+    },
+    {
+      "gap": 29,
+      "start_real": "4.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.0625919122248888
+    },
+    {
+      "gap": 29,
+      "start_real": "4.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.060922831296920776
+    },
+    {
+      "gap": 29,
+      "start_real": "4.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.0626421794295311
+    },
+    {
+      "gap": 29,
+      "start_real": "4.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06129510886967182
+    },
+    {
+      "gap": 29,
+      "start_real": "4.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06297951005399227
+    },
+    {
+      "gap": 38,
+      "start_real": ".6",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.16007000394165516
+    },
+    {
+      "gap": 38,
+      "start_real": ".6",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.16749760136008263
+    },
+    {
+      "gap": 38,
+      "start_real": "1.0",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13938723877072334
+    },
+    {
+      "gap": 38,
+      "start_real": ".6",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.16924414038658142
+    },
+    {
+      "gap": 38,
+      "start_real": "1.0",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.16070871241390705
+    },
+    {
+      "gap": 38,
+      "start_real": "1.0",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.14622165635228157
+    },
+    {
+      "gap": 38,
+      "start_real": ".6",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1755030918866396
+    },
+    {
+      "gap": 38,
+      "start_real": "1.0",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.14698966406285763
+    },
+    {
+      "gap": 38,
+      "start_real": "1.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06211240030825138
+    },
+    {
+      "gap": 38,
+      "start_real": "2.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.05385780148208141
+    },
+    {
+      "gap": 38,
+      "start_real": "1.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10505813173949718
+    },
+    {
+      "gap": 38,
+      "start_real": "2.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07809453830122948
+    },
+    {
+      "gap": 38,
+      "start_real": "2.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08024411834776402
+    },
+    {
+      "gap": 38,
+      "start_real": "2.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.09149705432355404
+    },
+    {
+      "gap": 38,
+      "start_real": "1.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1158701591193676
+    },
+    {
+      "gap": 38,
+      "start_real": "1.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.12240437977015972
+    },
+    {
+      "gap": 38,
+      "start_real": "2.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.05711815133690834
+    },
+    {
+      "gap": 38,
+      "start_real": "3.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06507409736514091
+    },
+    {
+      "gap": 38,
+      "start_real": "3.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07803290896117687
+    },
+    {
+      "gap": 38,
+      "start_real": "3.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07697003521025181
+    },
+    {
+      "gap": 38,
+      "start_real": "4.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.03777146339416504
+    },
+    {
+      "gap": 38,
+      "start_real": "3.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07858665846288204
+    },
+    {
+      "gap": 38,
+      "start_real": "4.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06467535719275475
+    },
+    {
+      "gap": 38,
+      "start_real": "3.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07860542833805084
+    },
+    {
+      "gap": 38,
+      "start_real": "4.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06396244093775749
+    },
+    {
+      "gap": 38,
+      "start_real": "4.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06554476730525494
+    },
+    {
+      "gap": 38,
+      "start_real": "4.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.06525959074497223
+    },
+    {
+      "gap": 55,
+      "start_real": ".6",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13413944840431213
+    },
+    {
+      "gap": 55,
+      "start_real": ".6",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.18125017918646336
+    },
+    {
+      "gap": 55,
+      "start_real": "1.0",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.18027155846357346
+    },
+    {
+      "gap": 55,
+      "start_real": ".6",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.2254064939916134
+    },
+    {
+      "gap": 55,
+      "start_real": "1.0",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.20191047526896
+    },
+    {
+      "gap": 55,
+      "start_real": "1.0",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.20216877572238445
+    },
+    {
+      "gap": 55,
+      "start_real": "1.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.15404448471963406
+    },
+    {
+      "gap": 55,
+      "start_real": "1.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1994210947304964
+    },
+    {
+      "gap": 55,
+      "start_real": "1.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.17938650213181973
+    },
+    {
+      "gap": 55,
+      "start_real": "1.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.15417426452040672
+    },
+    {
+      "gap": 55,
+      "start_real": "2.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13165505789220333
+    },
+    {
+      "gap": 55,
+      "start_real": "2.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13081026822328568
+    },
+    {
+      "gap": 55,
+      "start_real": "2.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13310011848807335
+    },
+    {
+      "gap": 55,
+      "start_real": "2.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13161351904273033
+    },
+    {
+      "gap": 55,
+      "start_real": "3.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10733680054545403
+    },
+    {
+      "gap": 55,
+      "start_real": "2.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13151752762496471
+    },
+    {
+      "gap": 55,
+      "start_real": "3.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1108563244342804
+    },
+    {
+      "gap": 55,
+      "start_real": "3.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10837368480861187
+    },
+    {
+      "gap": 55,
+      "start_real": "3.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1086458396166563
+    },
+    {
+      "gap": 55,
+      "start_real": "3.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10901633091270924
+    },
+    {
+      "gap": 55,
+      "start_real": "4.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08471460826694965
+    },
+    {
+      "gap": 55,
+      "start_real": "4.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08551259711384773
+    },
+    {
+      "gap": 55,
+      "start_real": "4.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08477213606238365
+    },
+    {
+      "gap": 55,
+      "start_real": "4.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.0856286771595478
+    },
+    {
+      "gap": 55,
+      "start_real": "4.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08474044874310493
+    },
+    {
+      "gap": 59,
+      "start_real": ".6",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.22720361314713955
+    },
+    {
+      "gap": 29,
+      "start_real": ".6",
+      "offset": ".75",
+      "critical_point": [
+        "1.7671060612468998987456643740043573272654279090453",
+        "101.71542143253801862164074936272887196218045416066"
+      ],
+      "critical_value": [
+        "1.0395692143846281047744494901010500259178042761163",
+        "-0.15091747660210273727722663021808158079226408731194"
+      ],
+      "critical_residual": "1.5910073875247579063417423903110944363959102046035e-47",
+      "second_derivative": [
+        "-0.061628760371966517295481816657121483194288805205902",
+        "0.22717384699961908756138419818568384743832966647266"
+      ],
+      "distance_to_one": "0.1560186125786371902771927783982104397883977282184",
+      "status": "ok",
+      "seconds": 2.8468227460980415,
+      "endpoints": [
+        [
+          30,
+          "1.7396664891358017275344672253750322023999623149319e-39"
+        ],
+        [
+          31,
+          "1.643211179119318234803216054480416312106765495398e-37"
+        ]
+      ]
+    },
+    {
+      "gap": 55,
+      "start_real": "1.0",
+      "offset": "0",
+      "critical_point": [
+        "1.2659867631346453871117565387351261540575096043245",
+        "152.61329488566600021508142916275222552620511887342"
+      ],
+      "critical_value": [
+        "1.0344028175914354140543979768515452619177282429498",
+        "0.41887120283617548767714378816028088002810719526367"
+      ],
+      "critical_residual": "3.6549968146282582178017220930466079238948580961348e-43",
+      "second_derivative": [
+        "0.24211165099160249162994002139648252480802000136672",
+        "-0.91301485885522436779525731119454188957544900332628"
+      ],
+      "distance_to_one": "0.42028161799399940672106371340603759297634685063183",
+      "status": "ok",
+      "seconds": 4.26769407466054,
+      "endpoints": [
+        [
+          55,
+          "0.0"
+        ],
+        [
+          54,
+          "1.800456462761182958047890511818205455201905713535e-44"
+        ]
+      ]
+    },
+    {
+      "gap": 29,
+      "start_real": "1.5",
+      "offset": "0",
+      "critical_point": [
+        "1.7984373897654074222932667212992334082620651434093",
+        "98.826971867454157708322756119036442240269873239253"
+      ],
+      "critical_value": [
+        "1.1593511178003646439289563064542844963114808777452",
+        "0.057681720903653274542707590293311740888504012742546"
+      ],
+      "critical_residual": "9.2210463101671282265158102558319778135970151186531e-51",
+      "second_derivative": [
+        "-0.26544609133345730809698211365936717801789420534162",
+        "-0.040038637126224011797793118400385975777547638281155"
+      ],
+      "distance_to_one": "0.16946964232756449884740533535748957589432996152428",
+      "status": "ok",
+      "seconds": 5.090162239968777,
+      "endpoints": [
+        [
+          29,
+          "1.2856253959794615328375852113320292252778666476823e-39"
+        ],
+        [
+          27,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 29,
+      "start_real": ".6",
+      "offset": "0",
+      "critical_point": [
+        "1.7984373897654074222932667212992334082620651434093",
+        "98.826971867454157708322756119036442240269873239253"
+      ],
+      "critical_value": [
+        "1.1593511178003646439289563064542844963114808777452",
+        "0.057681720903653274542707590293311740888504012742546"
+      ],
+      "critical_residual": "9.2210463101671282265158102558319778135970151186531e-51",
+      "second_derivative": [
+        "-0.26544609133345730809698211365936717801789420534162",
+        "-0.040038637126224011797793118400385975777547638281155"
+      ],
+      "distance_to_one": "0.16946964232756449884740533535748957589432996152428",
+      "status": "ok",
+      "seconds": 5.119373396039009,
+      "endpoints": [
+        [
+          29,
+          "1.2856253959794615328375852113320292252778666476823e-39"
+        ],
+        [
+          27,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": ".6",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13351928815245628
+    },
+    {
+      "gap": 29,
+      "start_real": "1.0",
+      "offset": "0",
+      "critical_point": [
+        "1.7984373897654074222932667212992334082620651434093",
+        "98.826971867454157708322756119036442240269873239253"
+      ],
+      "critical_value": [
+        "1.1593511178003646439289563064542844963114808777452",
+        "0.057681720903653274542707590293311740888504012742546"
+      ],
+      "critical_residual": "9.2210463101671282265158102558319778135970151186531e-51",
+      "second_derivative": [
+        "-0.26544609133345730809698211365936717801789420534162",
+        "-0.040038637126224011797793118400385975777547638281155"
+      ],
+      "distance_to_one": "0.16946964232756449884740533535748957589432996152428",
+      "status": "ok",
+      "seconds": 5.17744330316782,
+      "endpoints": [
+        [
+          29,
+          "1.2856253959794615328375852113320292252778666476823e-39"
+        ],
+        [
+          27,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "1.0",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.18154314160346985
+    },
+    {
+      "gap": 59,
+      "start_real": "1.0",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.2042238973081112
+    },
+    {
+      "gap": 59,
+      "start_real": "1.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13162438943982124
+    },
+    {
+      "gap": 59,
+      "start_real": "1.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1559674944728613
+    },
+    {
+      "gap": 38,
+      "start_real": "1.0",
+      "offset": "0",
+      "critical_point": [
+        "1.6570865307336665343842371654048262279943544627445",
+        "118.90849196385106131204101448363155645101516461582"
+      ],
+      "critical_value": [
+        "1.1857312573671425594956972243864193181772499494491",
+        "-0.10794074267391082927584130443834101054919072080318"
+      ],
+      "critical_residual": "2.9840175527883862402004304603044575614708960568467e-42",
+      "second_derivative": [
+        "-0.34117430291645110553421644988165789553722275933275",
+        "0.17142083519584584233270767728733084048827272437725"
+      ],
+      "distance_to_one": "0.21481923538681349110504540529500752545961299188195",
+      "status": "ok",
+      "seconds": 6.9863852597773075,
+      "endpoints": [
+        [
+          38,
+          "1.0216711518251706139978051166340493308382792179623e-39"
+        ],
+        [
+          40,
+          "5.0499228708866537475963908484775268965992871813866e-46"
+        ]
+      ]
+    },
+    {
+      "gap": 38,
+      "start_real": ".6",
+      "offset": "0",
+      "critical_point": [
+        "1.6570865307336665343842371654048262279943599923215",
+        "118.90849196385106131204101448363155645101515909291"
+      ],
+      "critical_value": [
+        "1.1857312573671425594956972243864193181772499494491",
+        "-0.10794074267391082927584130443834101054919072080318"
+      ],
+      "critical_residual": "8.0388284207754756843749421325085612810944891416059e-51",
+      "second_derivative": [
+        "-0.34117430291645110553421644988165789553721960803689",
+        "0.17142083519584584233270767728733084048826331456054"
+      ],
+      "distance_to_one": "0.21481923538681349110504540529500752545961299188195",
+      "status": "ok",
+      "seconds": 7.035725561901927,
+      "endpoints": [
+        [
+          38,
+          "1.0216711518251706139978051166340493308382792179623e-39"
+        ],
+        [
+          40,
+          "5.0499228708866537475963908484775268965992871813866e-46"
+        ]
+      ]
+    },
+    {
+      "gap": 38,
+      "start_real": "1.5",
+      "offset": "0",
+      "critical_point": [
+        "1.6570865307336665343842371654048262279943599923215",
+        "118.90849196385106131204101448363155645101515909291"
+      ],
+      "critical_value": [
+        "1.1857312573671425594956972243864193181772499494491",
+        "-0.10794074267391082927584130443834101054919072080318"
+      ],
+      "critical_residual": "8.0388284207754756843749421325085612810944891416059e-51",
+      "second_derivative": [
+        "-0.34117430291645110553421644988165789553721960803689",
+        "0.17142083519584584233270767728733084048826331456054"
+      ],
+      "distance_to_one": "0.21481923538681349110504540529500752545961299188195",
+      "status": "ok",
+      "seconds": 6.88085849583149,
+      "endpoints": [
+        [
+          38,
+          "1.0216711518251706139978051166340493308382792179623e-39"
+        ],
+        [
+          40,
+          "5.0499228708866537475963908484775268965992871813866e-46"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "2.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.13004117645323277
+    },
+    {
+      "gap": 59,
+      "start_real": "1.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.18028843961656094
+    },
+    {
+      "gap": 59,
+      "start_real": "2.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1312418282032013
+    },
+    {
+      "gap": 59,
+      "start_real": "2.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10936412028968334
+    },
+    {
+      "gap": 59,
+      "start_real": "2.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.1324352901428938
+    },
+    {
+      "gap": 55,
+      "start_real": ".6",
+      "offset": "0",
+      "critical_point": [
+        "1.2659867631346453871117565387351261540575099849282",
+        "152.61329488566600021508142916275222552620511894324"
+      ],
+      "critical_value": [
+        "1.0344028175914354140543979768515452619177282429498",
+        "0.41887120283617548767714378816028088002810719526367"
+      ],
+      "critical_residual": "7.8998851511864375154092774542131488859829301058858e-48",
+      "second_derivative": [
+        "0.2421116509916024916299400213964825248080192180082",
+        "-0.91301485885522436779525731119454188957544789002185"
+      ],
+      "distance_to_one": "0.42028161799399940672106371340603759297634685063183",
+      "status": "ok",
+      "seconds": 7.1876690946519375,
+      "endpoints": [
+        [
+          55,
+          "0.0"
+        ],
+        [
+          54,
+          "1.800456462761182958047890511818205455201905713535e-44"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "3.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.11250326223671436
+    },
+    {
+      "gap": 59,
+      "start_real": "3.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10940685123205185
+    },
+    {
+      "gap": 55,
+      "start_real": ".6",
+      "offset": "1.5",
+      "critical_point": [
+        "0.96695134207337122484372064649786897384842989753508",
+        "156.63266791341366180896641634791350393796250909479"
+      ],
+      "critical_value": [
+        "0.63319274060316621007613700860918571198732057074401",
+        "-0.38172754612712342747816834751879514525693216166"
+      ],
+      "critical_residual": "1.7527291312220661031989182768046738303885229717968e-49",
+      "second_derivative": [
+        "1.2927578907812609112520970268072296184029035215594",
+        "0.33651135513437708692631709049354973732774724985182"
+      ],
+      "distance_to_one": "0.5293991736095280822661214172710637825400183683555",
+      "status": "ok",
+      "seconds": 7.353674540296197,
+      "endpoints": [
+        [
+          56,
+          "0.0"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "3.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08697770722210407
+    },
+    {
+      "gap": 59,
+      "start_real": "3.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10873742029070854
+    },
+    {
+      "gap": 59,
+      "start_real": "4.5",
+      "offset": "-1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08531810715794563
+    },
+    {
+      "gap": 59,
+      "start_real": "3.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.10919702053070068
+    },
+    {
+      "gap": 59,
+      "start_real": "4.5",
+      "offset": "-.75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08584427647292614
+    },
+    {
+      "gap": 59,
+      "start_real": ".6",
+      "offset": ".75",
+      "critical_point": [
+        "1.5503456423977028198083702839505217708356906058277",
+        "162.66556369569605710332789046008980384543544235079"
+      ],
+      "critical_value": [
+        "1.1448495588861500296406348602802849744017638220836",
+        "0.10711060235777953047357794892072911808180322435267"
+      ],
+      "critical_residual": "5.6334221828025533802906080859511929577510161130567e-50",
+      "second_derivative": [
+        "-0.13835673583426328751544520750982105551038389518081",
+        "-0.31051258056483415311620562639480448699141369348908"
+      ],
+      "distance_to_one": "0.18015014806254978742572519745756657705901872542909",
+      "status": "ok",
+      "seconds": 5.267578579485416,
+      "endpoints": [
+        [
+          60,
+          "1.206650511630350977152314931517399758448554356024e-39"
+        ],
+        [
+          57,
+          "4.193181706561349286655967671876278164002939238611e-46"
+        ]
+      ]
+    },
+    {
+      "gap": 55,
+      "start_real": "1.0",
+      "offset": "1.5",
+      "critical_point": [
+        "0.96695134207337122484372064649786897384842987374404",
+        "156.6326679134136618089664163479135039379625090736"
+      ],
+      "critical_value": [
+        "0.63319274060316621007613700860918571198732057074401",
+        "-0.38172754612712342747816834751879514525693216166"
+      ],
+      "critical_residual": "4.2561653319739965182992028211991096162944045018415e-44",
+      "second_derivative": [
+        "1.2927578907812609112520970268072296184029036544627",
+        "0.33651135513437708692631709049354973732774736810747"
+      ],
+      "distance_to_one": "0.5293991736095280822661214172710637825400183683555",
+      "status": "ok",
+      "seconds": 7.3176412880420685,
+      "endpoints": [
+        [
+          56,
+          "0.0"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "4.5",
+      "offset": "0",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08539997600018978
+    },
+    {
+      "gap": 59,
+      "start_real": "4.5",
+      "offset": ".75",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.07484094798564911
+    },
+    {
+      "gap": 59,
+      "start_real": "4.5",
+      "offset": "1.5",
+      "status": "error",
+      "error": "ArithmeticError('critical Newton domain escape')",
+      "seconds": 0.08594887517392635
+    },
+    {
+      "gap": 55,
+      "start_real": "1.5",
+      "offset": "0",
+      "critical_point": [
+        "1.2659867631346453871117565387351261540575099765538",
+        "152.61329488566600021508142916275222552620511894346"
+      ],
+      "critical_value": [
+        "1.0344028175914354140543979768515452619177282429498",
+        "0.41887120283617548767714378816028088002810719526367"
+      ],
+      "critical_residual": "7.9061237281003512162439622815469550685653050714125e-45",
+      "second_derivative": [
+        "0.2421116509916024916299400213964825248080192296249",
+        "-0.91301485885522436779525731119454188957544791710673"
+      ],
+      "distance_to_one": "0.42028161799399940672106371340603759297634685063183",
+      "status": "ok",
+      "seconds": 7.2536625768989325,
+      "endpoints": [
+        [
+          55,
+          "0.0"
+        ],
+        [
+          54,
+          "1.800456462761182958047890511818205455201905713535e-44"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": ".6",
+      "offset": "-1.5",
+      "critical_point": [
+        "0.86340469782998042887470993977550896036303247652754",
+        "158.2825221067153056516485907858475822853019681779"
+      ],
+      "critical_value": [
+        "0.52170654597786503912435433720022560936977882414157",
+        "0.080539217105471936035264209002753571563690437954296"
+      ],
+      "critical_residual": "7.4305057377287816083098367588787574288322014448927e-50",
+      "second_derivative": [
+        "1.3049915599948755815132552182268442745673539678487",
+        "-0.10990978753611867967506397151932589462301940521859"
+      ],
+      "distance_to_one": "0.48502700301363270910678742114288222292901631982445",
+      "status": "ok",
+      "seconds": 6.575449828058481,
+      "endpoints": [
+        [
+          58,
+          "0.0"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": ".6",
+      "offset": "0",
+      "critical_point": [
+        "1.7758310331283147842762853018643963159963733401688",
+        "161.02187331530693833714394706011212113868852313601"
+      ],
+      "critical_value": [
+        "1.0436871206991896565070651598997388795096346866015",
+        "0.13803608522405023123083222043821052809147886741933"
+      ],
+      "critical_residual": "1.1281321599007613782310407673723244658087651612293e-41",
+      "second_derivative": [
+        "-0.12032825391716913997596826212663058771634011551608",
+        "-0.16578661967967232976326996654391146210912626598322"
+      ],
+      "distance_to_one": "0.14478440986158290073485426880937400876964949632419",
+      "status": "ok",
+      "seconds": 7.6600955203175545,
+      "endpoints": [
+        [
+          59,
+          "2.2404219282377164442278746889173019257575574120776e-39"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "1.0",
+      "offset": "0",
+      "critical_point": [
+        "1.775831033128314784276285301864396315996330162585",
+        "161.02187331530693833714394706011212113868855731912"
+      ],
+      "critical_value": [
+        "1.0436871206991896565070651598997388795096346866015",
+        "0.13803608522405023123083222043821052809147886741933"
+      ],
+      "critical_residual": "3.1137403050027497704858483452498672892628691575428e-50",
+      "second_derivative": [
+        "-0.12032825391716913997596826212663058771637756408738",
+        "-0.16578661967967232976326996654391146210912984230134"
+      ],
+      "distance_to_one": "0.14478440986158290073485426880937400876964949632419",
+      "status": "ok",
+      "seconds": 4.997144054621458,
+      "endpoints": [
+        [
+          59,
+          "2.2404219282377164442278746889173019257575574120776e-39"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "1.0",
+      "offset": "-1.5",
+      "critical_point": [
+        "0.86340469782998042887470993977550896036303247652754",
+        "158.2825221067153056516485907858475822853019681779"
+      ],
+      "critical_value": [
+        "0.52170654597786503912435433720022560936977882414157",
+        "0.080539217105471936035264209002753571563690437954296"
+      ],
+      "critical_residual": "7.4305057377287816083098367588787574288322014448927e-50",
+      "second_derivative": [
+        "1.3049915599948755815132552182268442745673539678487",
+        "-0.10990978753611867967506397151932589462301940521859"
+      ],
+      "distance_to_one": "0.48502700301363270910678742114288222292901631982445",
+      "status": "ok",
+      "seconds": 6.83254511654377,
+      "endpoints": [
+        [
+          58,
+          "0.0"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "1.0",
+      "offset": ".75",
+      "critical_point": [
+        "1.5503456423977028198083702839505217708356903270692",
+        "162.66556369569605710332789046008980384543544227516"
+      ],
+      "critical_value": [
+        "1.1448495588861500296406348602802849744017638220836",
+        "0.10711060235777953047357794892072911808180322435267"
+      ],
+      "critical_residual": "9.8188058286464922454394113544432964967760973756958e-44",
+      "second_derivative": [
+        "-0.13835673583426328751544520750982105551038387203239",
+        "-0.31051258056483415311620562639480448699141407932421"
+      ],
+      "distance_to_one": "0.18015014806254978742572519745756657705901872542909",
+      "status": "ok",
+      "seconds": 6.791615031659603,
+      "endpoints": [
+        [
+          60,
+          "1.206650511630350977152314931517399758448554356024e-39"
+        ],
+        [
+          57,
+          "4.193181706561349286655967671876278164002939238611e-46"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "2.5",
+      "offset": "0",
+      "critical_point": [
+        "1.7758310331283147842762853018643963159963347337946",
+        "161.02187331530693833714394706011212113868852106718"
+      ],
+      "critical_value": [
+        "1.0436871206991896565070651598997388795096346866015",
+        "0.13803608522405023123083222043821052809147886741933"
+      ],
+      "critical_residual": "7.4850659011406261507064061750343762853994931091983e-42",
+      "second_derivative": [
+        "-0.12032825391716913997596826212663058771635816383696",
+        "-0.16578661967967232976326996654391146210914554661451"
+      ],
+      "distance_to_one": "0.14478440986158290073485426880937400876964949632419",
+      "status": "ok",
+      "seconds": 5.3123186733573675,
+      "endpoints": [
+        [
+          59,
+          "2.2404219282377164442278746889173019257575574120776e-39"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "1.5",
+      "offset": ".75",
+      "critical_point": [
+        "1.5503456423977028198083702839505217708356906057649",
+        "162.66556369569605710332789046008980384543544235083"
+      ],
+      "critical_value": [
+        "1.1448495588861500296406348602802849744017638220836",
+        "0.10711060235777953047357794892072911808180322435267"
+      ],
+      "critical_residual": "2.5281878542059234993432260096922205491514314630142e-47",
+      "second_derivative": [
+        "-0.13835673583426328751544520750982105551038389524992",
+        "-0.31051258056483415311620562639480448699141369356054"
+      ],
+      "distance_to_one": "0.18015014806254978742572519745756657705901872542909",
+      "status": "ok",
+      "seconds": 5.63533478230238,
+      "endpoints": [
+        [
+          60,
+          "1.206650511630350977152314931517399758448554356024e-39"
+        ],
+        [
+          57,
+          "4.193181706561349286655967671876278164002939238611e-46"
+        ]
+      ]
+    },
+    {
+      "gap": 59,
+      "start_real": "1.5",
+      "offset": "0",
+      "critical_point": [
+        "1.775831033128314784276285301864396315996330205863",
+        "161.02187331530693833714394706011212113868855738184"
+      ],
+      "critical_value": [
+        "1.0436871206991896565070651598997388795096346866015",
+        "0.13803608522405023123083222043821052809147886741933"
+      ],
+      "critical_residual": "1.5611449698446986184827453571942282946720245965849e-44",
+      "second_derivative": [
+        "-0.12032825391716913997596826212663058771637757242878",
+        "-0.16578661967967232976326996654391146210912979091559"
+      ],
+      "distance_to_one": "0.14478440986158290073485426880937400876964949632419",
+      "status": "ok",
+      "seconds": 7.354304321110249,
+      "endpoints": [
+        [
+          59,
+          "2.2404219282377164442278746889173019257575574120776e-39"
+        ],
+        [
+          57,
+          "0.0"
+        ]
+      ]
+    }
+  ],
+  "seconds": 15.540146922692657
+}

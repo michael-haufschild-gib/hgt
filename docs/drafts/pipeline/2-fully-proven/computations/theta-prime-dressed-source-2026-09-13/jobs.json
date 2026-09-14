@@ -1,0 +1,170 @@
+[
+  {
+    "p": "2",
+    "alpha": ".5",
+    "kind": "full",
+    "label": "2-.5-full"
+  },
+  {
+    "p": "2",
+    "alpha": ".5",
+    "kind": "tail",
+    "label": "2-.5-tail"
+  },
+  {
+    "p": "2",
+    "alpha": "1",
+    "kind": "full",
+    "label": "2-1-full"
+  },
+  {
+    "p": "2",
+    "alpha": "1",
+    "kind": "tail",
+    "label": "2-1-tail"
+  },
+  {
+    "p": "3",
+    "alpha": ".5",
+    "kind": "full",
+    "label": "3-.5-full"
+  },
+  {
+    "p": "3",
+    "alpha": ".5",
+    "kind": "tail",
+    "label": "3-.5-tail"
+  },
+  {
+    "p": "3",
+    "alpha": "1",
+    "kind": "full",
+    "label": "3-1-full"
+  },
+  {
+    "p": "3",
+    "alpha": "1",
+    "kind": "tail",
+    "label": "3-1-tail"
+  },
+  {
+    "p": "5",
+    "alpha": ".5",
+    "kind": "full",
+    "label": "5-.5-full"
+  },
+  {
+    "p": "5",
+    "alpha": ".5",
+    "kind": "tail",
+    "label": "5-.5-tail"
+  },
+  {
+    "p": "5",
+    "alpha": "1",
+    "kind": "full",
+    "label": "5-1-full"
+  },
+  {
+    "p": "5",
+    "alpha": "1",
+    "kind": "tail",
+    "label": "5-1-tail"
+  },
+  {
+    "p": "7",
+    "alpha": ".5",
+    "kind": "full",
+    "label": "7-.5-full"
+  },
+  {
+    "p": "7",
+    "alpha": ".5",
+    "kind": "tail",
+    "label": "7-.5-tail"
+  },
+  {
+    "p": "7",
+    "alpha": "1",
+    "kind": "full",
+    "label": "7-1-full"
+  },
+  {
+    "p": "7",
+    "alpha": "1",
+    "kind": "tail",
+    "label": "7-1-tail"
+  },
+  {
+    "p": "4",
+    "alpha": ".5",
+    "kind": "full",
+    "label": "4-.5-full"
+  },
+  {
+    "p": "4",
+    "alpha": ".5",
+    "kind": "tail",
+    "label": "4-.5-tail"
+  },
+  {
+    "p": "4",
+    "alpha": "1",
+    "kind": "full",
+    "label": "4-1-full"
+  },
+  {
+    "p": "4",
+    "alpha": "1",
+    "kind": "tail",
+    "label": "4-1-tail"
+  },
+  {
+    "p": "6",
+    "alpha": ".5",
+    "kind": "full",
+    "label": "6-.5-full"
+  },
+  {
+    "p": "6",
+    "alpha": ".5",
+    "kind": "tail",
+    "label": "6-.5-tail"
+  },
+  {
+    "p": "6",
+    "alpha": "1",
+    "kind": "full",
+    "label": "6-1-full"
+  },
+  {
+    "p": "6",
+    "alpha": "1",
+    "kind": "tail",
+    "label": "6-1-tail"
+  },
+  {
+    "p": "2.5",
+    "alpha": ".5",
+    "kind": "full",
+    "label": "2.5-.5-full"
+  },
+  {
+    "p": "2.5",
+    "alpha": ".5",
+    "kind": "tail",
+    "label": "2.5-.5-tail"
+  },
+  {
+    "p": "2.5",
+    "alpha": "1",
+    "kind": "full",
+    "label": "2.5-1-full"
+  },
+  {
+    "p": "2.5",
+    "alpha": "1",
+    "kind": "tail",
+    "label": "2.5-1-tail"
+  }
+]

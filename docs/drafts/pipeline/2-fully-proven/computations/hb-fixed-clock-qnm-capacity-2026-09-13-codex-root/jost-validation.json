@@ -1,0 +1,97 @@
+{
+  "beta": 0.5,
+  "gamma": 14.134725141734695,
+  "per_branch": 16,
+  "T": 2.0,
+  "rcond": 1e-14,
+  "retained_rank": 26,
+  "coefficient_l1": "11746995329.68338256427117",
+  "coefficient_l2": "2830769410.179969010843955",
+  "high_precision_grid": {
+    "points": 401,
+    "max_error": "0.0001941882753544110710665946",
+    "rms_error": "0.00003565971045329433508044211",
+    "endpoint_error": "0.0001941882753544110710665946"
+  },
+  "relative_coefficient_perturbations": {
+    "1e-14": {
+      "max_error": "0.0001943207312527478354996149",
+      "rms_error": "0.00003624856646613039626499776"
+    },
+    "1e-12": {
+      "max_error": "0.002821923388520414458365332",
+      "rms_error": "0.0006430252061312248045942536"
+    },
+    "1e-10": {
+      "max_error": "0.2812222829851091814998517",
+      "rms_error": "0.06419370158996487549071159"
+    }
+  },
+  "moment_cancellations": [
+    {
+      "order": 0,
+      "absolute_residual": "0.00002882523865522508855124724",
+      "relative_to_term_budget": "2.453839287940026520320876e-15"
+    },
+    {
+      "order": 1,
+      "absolute_residual": "0.1237986063838259345960863",
+      "relative_to_term_budget": "4.884227806063671810061189e-13"
+    },
+    {
+      "order": 2,
+      "absolute_residual": "67.15168709180960758289293",
+      "relative_to_term_budget": "1.157523906597985749346523e-11"
+    },
+    {
+      "order": 3,
+      "absolute_residual": "21290.18238851672196056627",
+      "relative_to_term_budget": "1.519128494806100748852727e-10"
+    },
+    {
+      "order": 4,
+      "absolute_residual": "4863043.525029988744158155",
+      "relative_to_term_budget": "1.371139460081482043953089e-9"
+    },
+    {
+      "order": 5,
+      "absolute_residual": "874523603.3538541086727882",
+      "relative_to_term_budget": "9.379027592213487607568422e-9"
+    },
+    {
+      "order": 6,
+      "absolute_residual": "130206555653.4597815983253",
+      "relative_to_term_budget": "5.153544393356463054467305e-8"
+    },
+    {
+      "order": 7,
+      "absolute_residual": "16588234022826.3282722215",
+      "relative_to_term_budget": "0.0000002366588372774785402933473"
+    },
+    {
+      "order": 8,
+      "absolute_residual": "1851256041908841.411619347",
+      "relative_to_term_budget": "0.0000009347195796474283768897543"
+    },
+    {
+      "order": 9,
+      "absolute_residual": "184210374741564629.4455859",
+      "relative_to_term_budget": "0.00000324484045850747319471778"
+    },
+    {
+      "order": 10,
+      "absolute_residual": "16571781087894273131.70254",
+      "relative_to_term_budget": "0.00001006860261268453562759311"
+    },
+    {
+      "order": 11,
+      "absolute_residual": "1363017764128352982306.034",
+      "relative_to_term_budget": "0.00002830253986890492206376064"
+    },
+    {
+      "order": 12,
+      "absolute_residual": "103451416214177569980312.5",
+      "relative_to_term_budget": "0.00007285961361381157219735903"
+    }
+  ]
+}

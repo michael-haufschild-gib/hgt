@@ -1,0 +1,278 @@
+{
+  "formula": "HB-TWO-SIDED-SOURCE-CURRENT equations (13)-(14)",
+  "ranges": {
+    "zeros": [
+      1,
+      128
+    ],
+    "L": [
+      5.43656365691809,
+      60.00000000000001
+    ],
+    "x": [
+      0,
+      1
+    ]
+  },
+  "grid_points_per_parameter": 2080,
+  "summary": {
+    "complete": {
+      "0.2": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.9779301925866509,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.383274227713748
+      },
+      "0.35": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.8703089990552316,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.363539517869622
+      },
+      "0.5": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.6984585845824637,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.0
+      },
+      "0.65": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.8703089990552316,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.363539517869622
+      },
+      "0.8": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.977930192586651,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.383274227713748
+      }
+    },
+    "no_onset": {
+      "0.2": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.9771644867102709,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.3783745949080085
+      },
+      "0.35": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.868302194194846,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.36632938218310784
+      },
+      "0.5": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.6944986299817154,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.0
+      },
+      "0.65": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.868302194194846,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.36632938218310784
+      },
+      "0.8": {
+        "min_over_all_points": 0.0,
+        "median_of_pointwise_medians": 0.9771644867102708,
+        "max_near_zero_count_per_zero": 32,
+        "median_axis_distance": 0.3783745949080085
+      }
+    },
+    "plus_face_only": {
+      "0.2": {
+        "min_over_all_points": 0.7682347598865111,
+        "median_of_pointwise_medians": 0.978535554733443,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.3839921246600725
+      },
+      "0.35": {
+        "min_over_all_points": 0.46847953750338106,
+        "median_of_pointwise_medians": 0.8728861378224465,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.3615390978348504
+      },
+      "0.5": {
+        "min_over_all_points": 0.0006475569136086619,
+        "median_of_pointwise_medians": 0.7096718173649218,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.0
+      },
+      "0.65": {
+        "min_over_all_points": 0.46847953750338106,
+        "median_of_pointwise_medians": 0.8728861378224465,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.3615390978348504
+      },
+      "0.8": {
+        "min_over_all_points": 0.7682347598865115,
+        "median_of_pointwise_medians": 0.9785355547334429,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.3839921246600726
+      }
+    },
+    "minus_face_only": {
+      "0.2": {
+        "min_over_all_points": 0.7682347598865111,
+        "median_of_pointwise_medians": 0.9785355553658898,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.38399264222018087
+      },
+      "0.35": {
+        "min_over_all_points": 0.46847953750338106,
+        "median_of_pointwise_medians": 0.8728859223507441,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.3615394048809346
+      },
+      "0.5": {
+        "min_over_all_points": 0.0006475569136086619,
+        "median_of_pointwise_medians": 0.7096864834466552,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.0
+      },
+      "0.65": {
+        "min_over_all_points": 0.46847953750338106,
+        "median_of_pointwise_medians": 0.8728859223507441,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.3615394048809346
+      },
+      "0.8": {
+        "min_over_all_points": 0.7682347598865115,
+        "median_of_pointwise_medians": 0.9785355553658898,
+        "max_near_zero_count_per_zero": 0,
+        "median_axis_distance": 0.3839926422201809
+      }
+    }
+  },
+  "challenges": [
+    {
+      "n": 1,
+      "L": 5.43656365691809,
+      "x": 0.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 0.0
+    },
+    {
+      "n": 1,
+      "L": 7.0,
+      "x": 0.37,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 1,
+      "L": 23.0,
+      "x": 0.5,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 1,
+      "L": 60.0,
+      "x": 1.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 2,
+      "L": 5.43656365691809,
+      "x": 0.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 0.0
+    },
+    {
+      "n": 2,
+      "L": 7.0,
+      "x": 0.37,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 2,
+      "L": 23.0,
+      "x": 0.5,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 2,
+      "L": 60.0,
+      "x": 1.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 17,
+      "L": 5.43656365691809,
+      "x": 0.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 0.0
+    },
+    {
+      "n": 17,
+      "L": 7.0,
+      "x": 0.37,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 17,
+      "L": 23.0,
+      "x": 0.5,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 17,
+      "L": 60.0,
+      "x": 1.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 128,
+      "L": 5.43656365691809,
+      "x": 0.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 0.0
+    },
+    {
+      "n": 128,
+      "L": 7.0,
+      "x": 0.37,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 128,
+      "L": 23.0,
+      "x": 0.5,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    },
+    {
+      "n": 128,
+      "L": 60.0,
+      "x": 1.0,
+      "complement_antisymmetry_rel": 0.0,
+      "critical_real_fraction": 0.0,
+      "critical_imag_fraction": 1.0
+    }
+  ]
+}

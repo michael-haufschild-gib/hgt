@@ -1,0 +1,155 @@
+{
+  "effective_status": "partial; cooperative deadline consumed by two-target pilot; top-level ok statuses are not evidence of completed scientific work",
+  "targets": [
+    {
+      "label": "zero_01",
+      "source_saddles": 5,
+      "newton_failures": {
+        "ArithmeticError('Newton iteration limit')": 23
+      },
+      "flow_outcomes": {
+        "saved_trajectory": 2,
+        "TimeoutError('whole-experiment deadline')": 18
+      },
+      "seconds": 569.8194176331162
+    },
+    {
+      "label": "mid_01",
+      "source_saddles": 5,
+      "newton_failures": {
+        "ArithmeticError('Newton iteration limit')": 23
+      },
+      "flow_outcomes": {
+        "saved_trajectory": 3,
+        "TimeoutError('whole-experiment deadline')": 17
+      },
+      "seconds": 569.8730472493917
+    },
+    {
+      "label": "zero_02",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0008990466594696045
+    },
+    {
+      "label": "mid_03",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0007425602525472641
+    },
+    {
+      "label": "zero_08",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0007125101983547211
+    },
+    {
+      "label": "mid_02",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0009726285934448242
+    },
+    {
+      "label": "mid_05",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0010527800768613815
+    },
+    {
+      "label": "mid_08",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0009745191782712936
+    },
+    {
+      "label": "tilt_13_.25",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.00043394044041633606
+    },
+    {
+      "label": "mid_13",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0009460411965847015
+    },
+    {
+      "label": "tilt_01_.25",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0005934201180934906
+    },
+    {
+      "label": "tilt_13_-.25",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0006049200892448425
+    },
+    {
+      "label": "zero_13",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0010378211736679077
+    },
+    {
+      "label": "tilt_01_-.25",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0008970815688371658
+    },
+    {
+      "label": "zero_03",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.002071179449558258
+    },
+    {
+      "label": "zero_05",
+      "source_saddles": 0,
+      "newton_failures": {
+        "TimeoutError('whole-experiment deadline')": 28
+      },
+      "flow_outcomes": {},
+      "seconds": 0.0023988373577594757
+    }
+  ]
+}

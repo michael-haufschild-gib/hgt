@@ -48,18 +48,15 @@ theorem rationalHurwitzFiberResponse_two (s : ℂ) :
 theorem rationalHurwitzFiberResponse_eq_cpow
     {n : ℕ} (hn : 0 < n) {s : ℂ} (hs : 0 < s.re) :
     rationalHurwitzFiberResponse n s = (n : ℂ) ^ s := by
-  have hs1 : 1 < (s + 1).re := by
-    simp only [Complex.add_re, Complex.one_re]
-    linarith
+  have hs1 : 1 < (s + 1).re := lt_add_of_pos_left 1 hs
   have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast Nat.ne_of_gt hn
   have hz : riemannZeta (s + 1) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re hs1
   rw [rationalHurwitzFiberResponse,
     hzeta_distribution hs1 hn (1 : ℂ),
     hzeta_one_eq_riemannZeta hs1]
-  rw [show s + 1 = s + (1 : ℂ) by rfl,
-    Complex.cpow_add _ _ hnC, Complex.cpow_one]
-  field_simp
+  rw [Complex.cpow_add _ _ hnC, Complex.cpow_one, mul_assoc,
+    mul_div_cancel_right₀ _ (mul_ne_zero hnC hz)]
 
 /-- The FE--Schwarz seam written only with finite rational Hurwitz fibre responses. -/
 def rationalHurwitzFiberReflectionSeam (n : ℕ) (rho : ℂ) : ℂ :=
@@ -74,8 +71,8 @@ theorem rationalHurwitzFiberReflectionSeam_eq_primeSeamCharge
     (hstrip : 0 < rho.re ∧ rho.re < 1) :
     rationalHurwitzFiberReflectionSeam n rho =
       orbitwiseNatPrimeSeamCharge n rho := by
-  have hconj : 0 < ((starRingEnd ℂ) rho).re := by simpa using hstrip.1
-  have href : 0 < (1 - rho).re := by simp; linarith
+  have hconj : 0 < ((starRingEnd ℂ) rho).re := hstrip.1
+  have href : 0 < (1 - rho).re := sub_pos.mpr hstrip.2
   rw [rationalHurwitzFiberReflectionSeam,
     rationalHurwitzFiberResponse_eq_cpow hn hconj,
     rationalHurwitzFiberResponse_eq_cpow hn href,
@@ -90,10 +87,10 @@ theorem rationalHurwitzFiberResponse_reflection_fixed_iff
     rationalHurwitzFiberResponse n ((starRingEnd ℂ) rho) =
         rationalHurwitzFiberResponse n (1 - rho) ↔
       rho.re = 1 / 2 := by
-  have hn0 : 0 < n := by omega
+  have hn0 : 0 < n := Nat.zero_lt_one.trans hn
   have hnR : (1 : ℝ) < n := by exact_mod_cast hn
-  have hconj : 0 < ((starRingEnd ℂ) rho).re := by simpa using hstrip.1
-  have href : 0 < (1 - rho).re := by simp; linarith
+  have hconj : 0 < ((starRingEnd ℂ) rho).re := hstrip.1
+  have href : 0 < (1 - rho).re := sub_pos.mpr hstrip.2
   rw [rationalHurwitzFiberResponse_eq_cpow hn0 hconj,
     rationalHurwitzFiberResponse_eq_cpow hn0 href]
   constructor
@@ -107,14 +104,13 @@ theorem rationalHurwitzFiberResponse_reflection_fixed_iff
     have hre : ((starRingEnd ℂ) rho).re = (1 - rho).re :=
       (Real.strictMono_rpow_of_base_gt_one hnR).injective hnorm
     simp only [Complex.conj_re, Complex.sub_re, Complex.one_re] at hre
-    linarith
+    linarith only [hre]
   · intro hre
     have hfixed : (starRingEnd ℂ) rho = 1 - rho := by
       apply Complex.ext
       · simp only [Complex.conj_re, Complex.sub_re, Complex.one_re]
-        linarith
-      · simp only [Complex.conj_im, Complex.sub_im, Complex.one_im]
-        ring
+        linarith only [hre]
+      · simp only [Complex.conj_im, Complex.sub_im, Complex.one_im, zero_sub]
     rw [hfixed]
 
 /-- The common first-prime seam is exactly the finite two-point Hurwitz fibre defect. -/

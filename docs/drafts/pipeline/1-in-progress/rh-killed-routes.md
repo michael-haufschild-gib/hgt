@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**270 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**274 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-13, `c5201958270e866b20322bdac6d66f9d3652b0a5`**.
+Source-audit cutoff: **2026-09-13, `9d774a1ea257311ad02f21d521ec31441b980657`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -24,12 +24,12 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | [Retired original route labels](#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 17 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 32 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 46 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 22 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 47 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 23 |
 | [Singular descent, formation and completion](#completion) | 26 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 30 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
-| [Other finite, scalar and source-blind selectors](#other) | 72 |
+| [Other finite, scalar and source-blind selectors](#other) | 74 |
 
 <a id="retired-labels"></a>
 
@@ -1071,6 +1071,7 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [HB scalar angular reconstruction](#no-go-213)
 - [HB scalar Poincare-radial descent](#no-go-212)
 - [HB Schwarz-odd diagonal or Schwarz-exchanged global Peierls realization](#no-go-206)
+- [HB unrenormalized split-reader continuity](#no-go-271)
 - [HB zero-cusp, unmodified scalar-RSZ, or pointwise specialization](#no-go-198)
 - [inverse-character sideband audit as physical BM closure](#no-go-217)
 - [local Birmingham--Mokhtari pole, scalar-projective, or monodromy-only shortcut](#no-go-218)
@@ -1546,6 +1547,34 @@ The nonzero first-live angular jet and exact target remain. The class assumes Sc
 
 [Back to family](#scattering) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-206)
 
+<a id="no-go-271"></a>
+
+### HB unrenormalized split-reader continuity
+
+**Closed result**
+
+For the literal completed-zeta coefficient
+`T(e,d)=Λ(1+e)Λ(ρ−d)Λ(ρ+d)Λ(2ρ−1−e)`, equal readers give `T(e,0)=0`.
+Nevertheless, for one of `ρ` and `1−ρ` in every Xi orbit, all sufficiently small
+nonzero splits `d` retain a nonzero transverse residue. The coefficient has neither
+a finite `e→0` slice limit at those splits nor a finite joint punctured limit at `(0,0)`.
+Thus equal-reader vanishing cannot be extended by unrenormalized continuity.
+The theorem concerns this one-source/two-reader coefficient, not the two-source/one-reader
+forward forcing or complete Einstein action.
+
+**Survivor / still open**
+
+The exact residue is `R(d)=Λ(ρ−d)Λ(ρ+d)Λ(2ρ−1)`, identified with the literal
+cusp coefficient. Subtracting `R(d)/e` gives an explicit remainder continuous at
+`(0,0)`, with equal-reader value zero and joint limit zero. Both obstruction and
+this positive subtraction theorem are in Lean source. Matching this renormalization
+to the complete physical current, contacts and original clock remains open;
+no new paper-proof or kernel audit was run.
+
+Evidence: [orbit residue, no joint limit and regularized survivor](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMXiReaderSplitResidue.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
 <a id="no-go-198"></a>
 
 ### HB zero-cusp, unmodified scalar-RSZ, or pointwise specialization
@@ -1756,6 +1785,7 @@ The all-orders-flat carrier, fixed-neutral energy selector, and boundary-singula
 - [EGC raw horizontal-edge majorant](#no-go-184)
 - [FD2/GTA polarization, cone approximation, admissible approximation, or full quadratic-defect decay](#no-go-237)
 - [finite stationary theta carrier](#no-go-141)
+- [literal theta-series full logarithmic turn](#no-go-272)
 - [O lag sign, strict-margin, Gram, lower-floor, or abstract single-base shortcut](#no-go-149)
 - [OPUC / positive circle carrier](#no-go-190)
 - [positive mean or positive residue as spectral-gap selector](#no-go-040)
@@ -1908,6 +1938,31 @@ Every genuine Xi eigenmode coexists with the intrinsic prime-quantile flow, but 
 Canonical transported theta-quantile Haar measure is invariant and has infinite interior mass. Any stationary successor must be infinite-volume, relative, quotient, or non-probability; finite-state stationarity is terminal.
 
 [Back to family](#theta) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-141)
+
+<a id="no-go-272"></a>
+
+### literal theta-series full logarithmic turn
+
+**Closed result**
+
+The original integer-labelled complex theta-cusp series is summable exactly when
+`Re(exp(z)²)>0`, equivalently `cos(2 Im z)>0`. No continuous path from real `x`
+to `x+2πi` can stay in this summability domain throughout. Outside the admitted
+sectors the literal summands fail to tend to zero, so a full turn cannot be
+justified within this same series representation.
+
+**Survivor / still open**
+
+The exact sector classification includes a Gaussian convergence proof inside each
+sector. The summed source retains anti-periodicity under `z↦z+2πi`, relating
+convergent values in different components. These positive statements are in Lean
+source. Another analytic continuation or an independently justified physical-time
+identification is not excluded; neither is constructed here. No new paper-proof
+or kernel audit was run.
+
+Evidence: [summability iff, full-turn obstruction and anti-periodicity](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspComplexClockSector.lean).
+
+[Back to family](#theta) · [Source-construction checks](rh-current-frontier-map.md#source-construction-and-selector-checks)
 
 <a id="no-go-149"></a>
 
@@ -3134,6 +3189,7 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [four-unit operator-norm transport](#no-go-144)
 - [fractional-part extraction](#no-go-267)
 - [full-sector or compact--cofinal repair](#no-go-238)
+- [Ghaboussi saddle/de Rham shortcuts](#no-go-273)
 - [GIT word-trace gluing](#no-go-234)
 - [HC bounded diagonal landing](#no-go-066)
 - [Hurwitz associated-tensor fixed-vector selector](#no-go-093)
@@ -3146,6 +3202,7 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [NB/BD canonical raw-Möbius approximation](#no-go-140)
 - [non-diagonal twin-factorization freedom](#no-go-062)
 - [paired irregular determinant purity](#no-go-233)
+- [Painlevé III(D₆) polynomial-exponential Xi bridge](#no-go-274)
 - [PEP exponent-zero negative-sheet gauge](#no-go-099)
 - [persistent cofinal cyclotomic-zero completion](#no-go-055)
 - [physical dilation, BBM pullback, or finite autonomous spectrum](#no-go-243)
@@ -3636,6 +3693,33 @@ A viable correction must be noncompact/full-sector, change the structural carrie
 
 [Back to family](#other) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-238)
 
+<a id="no-go-273"></a>
+
+### Ghaboussi saddle/de Rham shortcuts
+
+**Closed result**
+
+Concrete corpus counterexamples reject the required shortcuts: a parallel section
+can be nonzero; the closed stage-one logarithmic form has no global holomorphic
+primitive; a nonzero two-dimensional one-form cannot satisfy `⋆ω=ω` when `⋆²=−1`;
+and on the unit circle `z conjugate(z)=1` does not imply `z²=1`. Tangent
+reparametrization preserves nonzero constant data, while a closed universal Dirichlet
+form retains its nonzero von Mangoldt contraction. None of these local identities
+forces the Xi divisor onto the critical line.
+
+**Survivor / still open**
+
+Correct head/tail Mellin identities on their convergence domains, the exact radial
+unit-norm/critical-line equivalence, finite Hodge–Green decomposition with its
+stationary summand, and a nonzero closed/coclosed mode with chirality `⋆ω=iω`
+are retained in Lean source. The new universal identity `d₁(db)=0` proves only
+exact-implies-closed, not its converse. A global source-to-divisor orientation law
+remains missing. No new paper-proof or kernel audit was run.
+
+Evidence: [counterexamples and positive identities](../../../../formal/GaloisForLFunctions/RHTower/GhaboussiSaddleDeRhamAudit.lean), [exact universal one-forms are closed](../../../../formal/GaloisForLFunctions/HTGeometry/UniversalDeRham.lean).
+
+[Back to family](#other) · [Source-construction checks](rh-current-frontier-map.md#source-construction-and-selector-checks)
+
 <a id="no-go-234"></a>
 
 ### GIT word-trace gluing
@@ -3803,6 +3887,35 @@ Hermitian-dual determinant unitarity holds for every paired irregular type, incl
 Constituentwise relative Stokes data and the multiplicity-retaining resolved character survive; a producer must orient constituents before pairing.
 
 [Back to family](#other) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-233)
+
+<a id="no-go-274"></a>
+
+### Painlevé III(D₆) polynomial-exponential Xi bridge
+
+**Closed result**
+
+No carrier with the specified regular local PIII(D₆) tau/sigma presentation,
+pulled back by `t=s(1−s)` with `E(s)=exp(−2s) tau(t)`, can satisfy
+`xi(s)=exp(Q(s)) E(s)` globally for any polynomial `Q`. The degree-two proposal
+is a corollary. The source proof now derives a nonzero cleared third-order tau
+relation from the sigma equation and proves differential algebraicity of the
+entire carrier; it no longer assumes that key conclusion. Global equality with
+Xi itself supplies carrier entireness. Global entireness of tau is not required.
+
+**Survivor / still open**
+
+The explicit denominator-free tau relation remains valid at tau zeros; the
+local-chart-to-entire-carrier differential-algebraicity theorem and polynomial-gauge
+hypertranscendence of Xi are positive Lean-source results. They classify why no
+choice of the stated monodromy parameters or polynomial gauge repairs this bridge.
+The [formalized research card](../3-formalized/painleve-iii-xi-differential-gauge-no-go.md)
+records the completed paper proof and formalization. A different carrier must leave
+this differential-algebraic class or alter the asserted equality; no replacement
+RH producer is established. No fresh kernel check was run for this ledger update.
+
+Evidence: [local carrier, tau elimination and unrestricted-gauge no-go](../../../../formal/GaloisForLFunctions/RHTower/XiPainleveTauGaugeNoGo.lean).
+
+[Back to family](#other) · [Source-construction checks](rh-current-frontier-map.md#source-construction-and-selector-checks)
 
 <a id="no-go-099"></a>
 

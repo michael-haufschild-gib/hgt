@@ -1,0 +1,8 @@
+{
+  "gap": 38,
+  "start_real": "2.5",
+  "offset": "1.5",
+  "status": "error",
+  "error": "ArithmeticError('critical Newton domain escape')",
+  "seconds": 0.05711815133690834
+}

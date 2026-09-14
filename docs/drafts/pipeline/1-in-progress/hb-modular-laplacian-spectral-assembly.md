@@ -73,3 +73,86 @@ integration-by-parts argument). Everything else is assembled from existing theor
 - 2026-09-13 — corpus audit: fundamental-domain measure and Friedrichs covariance already exist; plan refined to B1–B4 (bounded covariance only, closability via interior test functions, no surface Stokes theorem).
 - 2026-09-13 — B3–B4 CLOSED IN LEAN: `HTGeometry/CfcEigenvectorRankOneAssembly`, `HTGeometry/FormEmbeddingCovarianceSpectrum`, `HTGeometry/ModularDirichletFormDomain` (`modular_spectral_assembly`, `modularCovariance_one`, `inner_modularOne`, `norm_modularOne_sq`; standard axioms). The HB kernel specialisation (`skewPlateauCov`, `hb_online_clock_spectral_assembly`) is written in the scratchpad and waits for the `ThetaCuspHawkingBM` chain to be rebuilt. Remaining: B1–B2 meaning content (`J` injective and of dense range), and the source `F = Λ¹(E*²)` as an `L²(𝒟)` element.
 - 2026-09-13 — B2 closability CLOSED IN LEAN: `HTGeometry/ModularDirichletFormIntegrationByParts`, `HTGeometry/ModularDirichletFormClosable` (`formInclusion_injective`). Remaining: dense range of `J` (D1 continuous approximation in `L²(𝒟)`, D2 smoothing with support in `𝒟°`, D3 periodisation into the pre-domain), the HB kernel module (scratchpad, chain blocked), and the source element `F = Λ¹(E*²)`.
+- 2026-09-13 — dense range CLOSED IN LEAN (`…Periodization`, `…SmoothApprox`, `…Dense`): `modularFriedrichsOperator` is the self-adjoint Friedrichs Laplacian `1−Δ` with bounded inverse `modularCovariance`. B1–B4 all closed. Remaining: the HB kernel module (scratchpad `CovKer.lean`, blocked on the `ThetaCuspHawkingBM` chain rebuild) and the source element `F = Λ¹(E*²)` in `L²(𝒟)`.
+- 2026-09-13 — accounting: `⟨F,1⟩ = ‖Λ¹E*‖²` is the Maass–Selberg relation at `Y = 1` (paper input); Lean would need the real-analytic Eisenstein series on the line as a Γ-invariant eigenfunction (corpus gap: Fourier model vs Poincaré sum). Dominance needs `A ≥ 50` in `exists_re_logDeriv_xi_lineOne_ge_div`.
+- 2026-09-13 — kernel module IN TREE: `RHTower/ThetaCuspHawkingBMSkewPlateauCovarianceKernel` (`hb_online_clock_spectral_assembly'`: `t¹¹/2176·|∫_𝒟F|²/vol 𝒟 − t⁹‖F−P₀F‖² ≤ Re⟪(Im K̂)(C)F,F⟫`, `t ≥ 50`, every `F ∈ L²(𝒟)`); axioms standard (scratch), `lake build` audit deferred (upstream chain under rebuild by another agent). Remaining: source `F` + bound (α) via the Fourier model; Maass–Selberg value of `⟨F,1⟩` (needs the Eisenstein series on the line).
+
+### Eisenstein on the line (E1–E4, scoped 2026-09-13 evening)
+The corpus already has, at the absolute-convergence parameter `Re s > 1`: the completed Poincaré series
+(`d4BMCompletedEisensteinPoincareSeries`), its `S`/`T` invariance (`…ModularGeneratorInvariance`), its
+eigen-equation, and its identification with the cusp Fourier model
+(`d4BM_actualCompletedPoincare_eq_canonicalCuspLeg : Poincaré(x + i y) = d4BMCompletedEisensteinCuspLeg .scalar (s − 1/2) x y`).
+The Fourier model is defined for every parameter `u`; so the line is reached by analytic continuation in `u`:
+- E1. `u ↦ cuspLeg .scalar u x Y` is `DifferentiableOn ℂ` on the quarter-plane `Ω = {−1/2 < Re u, 0 < Im u}`
+  (convex, so preconnected; contains `{Re u > 1/2, Im u > 0}` and the line points `it`, `t > 0`; avoids the
+  real poles of `Λ(2u)`, `Λ(1+2u)`). Constant part: `reflectedCompletedLambda = Γ_ℝ·ζ` via
+  `Complex.differentiableAt_Gamma`, `differentiableAt_riemannZeta`, `DifferentiableAt.const_cpow`; tail: locally
+  `Complex.differentiableOn_tsum_of_summable_norm` with `analyticOnNhd_modifiedBesselKOrder`, the coefficient bound
+  `‖coef(u,n)‖ ≤ n^{3|Re u|+1}` and the order-uniform Bessel bound `d4BM_norm_modifiedBesselKOrder_le`.
+- E2. Identity theorem (`AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`) for
+  `u ↦ leg(u, S·z) − leg(u, z)` (translation invariance is exact in the Fourier phases), then
+  `SpecialLinearGroup.SL2Z_generators` + `Subgroup.closure_induction`: `E*(·, ½ + it)` is an `SL(2,ℤ)`-invariant
+  function on `ℍ`, defined by the Fourier model.
+- E3. Eigen-equation on the line: the corpus has `d4BM_canonicalCuspFullSecondJet_eigenEquation` for every `u`
+  (`Y ≥ 1`) and the Poincaré/canonical second-jet weld for `Re s > 1`; identify the canonical jets with the true
+  derivatives of the leg for all `u` (or continue by the identity theorem), and extend below `Y = 1`.
+- E4. Maass–Selberg at `Y = 1` on the line by Green's identity on the truncated fundamental domain for the
+  invariant eigenfunction (corpus: the truncated modular Green/Stokes modules at `Re s > 1`), giving
+  `⟨F,1⟩ = ‖Λ¹E*‖² = 4|ξ|²Re(ξ'/ξ)(1+2it) + Im(ξ(1+2it)²)/t`.
+E1–E2 CLOSED IN LEAN (2026-09-13 night): `RHTower/ThetaCuspHawkingBMEisensteinLineInvariance` (`differentiableOn_cuspLeg`, `eisensteinLineModel_smul`, `eisensteinLineModel_I_mul_smul`); axioms standard (scratch), `lake build` audit deferred with the chain. E3–E4 are larger.
+- 2026-09-13 (night) — E3/E4 scoping notes. E3: the corpus has first-jet `hasDerivAt` theorems for the signed
+  Whittaker tails (`…ActualSignedFirstJetWeld`), the canonical full second jet with its eigen-equation for every
+  `u` at `Y ≥ 1` (`d4BM_canonicalCuspFullSecondJet_eigenEquation`), and the Poincaré/canonical second-jet weld
+  at `Re s > 1`; the line eigen-equation follows once the canonical jets are shown to be the true chart
+  derivatives of the model for all `u` in the quarter-plane (termwise differentiation with the order-uniform
+  Bessel bounds, as in E1) and the height restriction `Y ≥ 1` is removed (needed down to `y = √3/2`).
+  E4: unfolding does NOT bypass Green's identity — the `x`-average of `Λ^Y E*` on the strip is not the
+  truncated constant term for small `y` (other cusp translates contribute), so the Maass–Selberg value needs
+  Green's identity on `𝒟_Y` for two invariant `C²` eigenfunctions (side cancellation from invariance by the
+  chain rule, no series needed) plus the cusp boundary term from the Fourier expansion, then `s' → s̄`.
+- 2026-09-13 (late) — E3 refined: NO identity theorem needed. The corpus has, for every height `Y > 0`, the
+  per-mode derivatives (`hasDerivAt_d4BMSignedWhittakerMode_{horizontal,vertical}`, second jets) and the
+  per-mode eigen-equation `d4BM_signedWhittakerMode_secondJet_eigenEquation`, and the constant-part
+  eigen-equation `d4BM_cuspConstantFullSecondJet_eigenEquation`; only the *summable majorants* of the mode jets
+  are restricted to `Y ≥ 1` (`d4BM_norm_modifiedBesselKOrder_signed_local_le`). Plan: (A) all-heights majorants
+  on `Y ∈ [Y₀/2, 2Y₀]` for the mode and its jets, from `d4BM_norm_modifiedBesselKOrder_le` applied to the
+  shifted orders `ν + k`, `|k| ≤ 2` (every jet is a finite combination of `√Y·K_{cY}(ν+k)` with polynomial
+  factors), times the coefficient bound `(N+1)^{3|Re u|+1}`; (B) `hasDerivAt_tsum_of_isPreconnected` in `x`
+  and in `Y` (twice) for the weighted tails; (C) sum the per-mode eigen-equations: the model satisfies
+  `Y²(∂²_x + ∂²_Y)E* = (u² − 1/4)E*` for every `u` and every `z ∈ ℍ`; then transport to the chart
+  Laplacian on `ℍ` (partials → Fréchet derivatives) for E4.
+- 2026-09-13 (late) — E3 step A CLOSED IN LEAN: `RHTower/ThetaCuspHawkingBMEisensteinModeJetMajorants` (window Bessel bound `norm_modifiedBesselKOrder_window_le`, the `WindowDominated` predicate with closure lemmas, degree-`d` majorants for `P₀, P₀', P₁, P₁'`, the raise-zero words, the second jet `whittakerP0SecondJetR`, all signed-mode jets, `summable_pow_mul_besselModeMajorant`, `WindowDominated.weighted`); axioms standard (scratch). Next: step B, termwise differentiation of the weighted tails in `x` and `Y` via `hasDerivAt_tsum_of_isPreconnected`.
+- 2026-09-13 (late) — E3 CLOSED IN LEAN: `RHTower/ThetaCuspHawkingBMEisensteinLineEigenEquation` (`weightedTail`, termwise `∂_x`, `∂²_x`, `∂_Y`, `∂²_Y` via `hasDerivAt_tsum_of_isPreconnected` with the all-heights majorants; `weightedTail_eigen`; constant-part derivatives; `lineModel_eq_cuspLeg`; `lineModel_eigen : Y²(∂²_x + ∂²_Y)E* = (u² − 1/4)E*` for every `u` and `Y > 0`; `lineModel_eigen_deriv`). Axioms standard (scratch, concatenated with the majorant module because my new modules have no oleans: their import closure contains a stale `HTGeometry/MilnorKTheory` with 24 dependents, so a `lake build` would cascade; audits deferred). Remaining: E4 (Green's identity on the truncated domain, the cusp boundary term, `s' → s̄`) and the source element.
+- 2026-09-13 (late, correction from the numerics in `2-fully-proven/computations/results.md`, section "Eisenstein
+  source components and cusp subtraction"). Their `R = t² M²/(2176 V₀ V)` with `M = ∫F`, `V = ‖F − P₀F‖²` is exactly
+  the assembled bound's dominance ratio. Findings: (1) principal subtraction `F_P = S² − 1_{y>H} a₀²` at `H = 1`
+  gives `R ≈ 0.15, 0.82, 3.03` at `t = 50` and zeta ordinates 24, 64; the smooth corpus cutoff gives
+  `0.35, 1.12, 4.06`; (2) subtracting the full zeroth Fourier mode of `S²` (Arthur truncation of the square,
+  which is what the card called `Λ¹(E*²)`) gives `R ≈ 0.004–0.02`: the constant mode loses the cusp mass of the
+  tail, `M_C = M_P − ∫_{y>H} Q dμ`. Corrections to the earlier accounting: (a) my claim
+  `⟨Λ¹(E*²),1⟩ = ‖Λ¹E*‖²` holds for the principal subtraction (cross term vanishes, tail² kept), not for the full
+  subtraction; (b) the normalized Eisenstein tail is `O(1)` relative to the constant term (the certified sup bound
+  `B_t/|Λ| ≍ t log²t/|ζ(1+2it)|` is large, and numerically `V ≈ 2·10²` at `t = 50`), so
+  `‖F‖² ≤ 16(π/3)|Λ|⁴(1+o(1))` is false; (c) the true sizes are `M ≈ 4|Λ|²Re(ξ'/ξ)(1+2it) ≈ 2|Λ|² log(t/π)`
+  (from `Re ψ(½+it)`, far above the certified `A/t` lower bound) and `V ≍ |Λ|⁴·polylog t`, so `R ≍ t²/polylog`
+  and the sign law holds for all large `t`, numerically from ordinate ≈ 30 for `F_P`. Certified route for `V`:
+  Parseval in `x` on the strip (no cross terms between modes) with the certified `K_{it}` bounds and
+  `Σ_{n≤N} d(n)²/n ≪ log⁴N` gives `V ≲ t log⁸ t·|Λ|⁴` — enough for `R → ∞` (`R ≳ t/log⁶ t`) but with an
+  astronomically large threshold; a polylog bound for `V` is a fourth-moment estimate for truncated Eisenstein
+  series (cf. arXiv 2408.14815). The source convention (principal vs full subtraction, sharp vs smooth cutoff)
+  must be fixed by the physical action, not by the favourable value of `R`.
+
+### The sign law without Maass–Selberg (plan S1–S4, 2026-09-13 late)
+With the principal-subtraction source `F_P = E*² − 1_{y>H} c(y)²` (`c` the Weyl constant term, `H ≥ 1` fixed), the
+assembled bound needs only `t² M² > 2176·vol·V` with `M = ∫_𝒟 F_P`, `V = ‖F_P‖²`. Both sides are elementary:
+- S1. `F_P` as an `L²(𝒟)` element from the Fourier model (`lineModel`), real-valued on the line (constant part
+  real by `Λ(2it) = conj Λ(1+2it)`, tail real by the coefficient symmetry `d ↔ n/d` and `K_{it}` real).
+- S2. Lower bound `M ≥ ∫_1^H ∫_0^1 E*² dx dy/y² ≥ ∫_1^H c(y)² dy/y² = 2|Λ(1+2it)|²(log H − 1/t)` — the tail has
+  zero mean in `x` and `tail² ≥ 0`, so no Maass–Selberg relation and no Green identity are needed.
+- S3. Upper bound `V ≤ C·t·log^k t·|Λ|⁴ + 16H²·vol·|Λ|⁴`: Parseval in `x` for `∫ tail² dx = Σ|a_n|²`, Young's
+  inequality `∫ tail⁴ dx ≤ (Σ|a_n|)²Σ|a_n|²`, the certified `K_{it}` bounds (uniform for `x ≥ 1`, `e·e^{−x}` for
+  large `x`), and `Σ_{n≤N} d(n)² ≤ N(1+log N)³` (corpus `Sieve`). The normalized tail is `O(1)`, so sup norms
+  alone cannot give this; the mean-square structure is essential.
+- S4. Combine with `hb_online_clock_spectral_assembly'`: `∃ t₀, ∀ t ≥ t₀`, the on-line clock coefficient
+  `Re⟪(Im K̂)(C)F_P, F_P⟫` is positive. The threshold is large (numerics: crossover near zeta ordinate 30).
+E4 (Green's identity / Maass–Selberg) is thereby removed from the critical path of the sign law.

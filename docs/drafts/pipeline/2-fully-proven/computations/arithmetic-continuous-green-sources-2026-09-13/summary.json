@@ -1,0 +1,5458 @@
+{
+  "planned": 12,
+  "rows": [
+    {
+      "job": {
+        "host": "B4",
+        "mode": ".5",
+        "label": "B4-.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "1.0",
+        "1.5": "1.16624361612327512055353782587357967545626461594334908104401"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 10.089123032987118
+    },
+    {
+      "job": {
+        "host": "R",
+        "mode": ".5",
+        "label": "R-.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "0.5",
+        "1.5": "0.523598775598298873077107230546583814032861566562517636829157"
+      },
+      "roots": [
+        {
+          "root": [
+            "0.403381481188878902134278462998074587649910086594910317013362",
+            "0.708365274574395383107465059666368936094698349441092716396289"
+          ],
+          "correction": "8.90153558558431521629068676760119084899442875454863301725826e-37",
+          "normalized_residual": "4.45076779279215760814534338380059542449721437727431650862913e-37",
+          "iterations": 11
+        },
+        {
+          "root": [
+            "0.91675535786448917792426212941967283134259862553406170949954",
+            "0.744518264855897315210852868742843581774267229151737378388589"
+          ],
+          "correction": "1.53713172749381105849045036859912286451038259130748386176397e-32",
+          "normalized_residual": "7.68565863746905529245225184299561432255191295653741930881986e-33",
+          "iterations": 6
+        },
+        {
+          "root": [
+            "1.16397509286692720939581279137181206490938969266632472111312",
+            "0.756603357898695368326460245837438120791781645695553833034316"
+          ],
+          "correction": "1.00114161452519173712774329996046245072961085969784335493654e-35",
+          "normalized_residual": "5.00570807262595868563871649980231225364805429848921677468268e-36",
+          "iterations": 13
+        },
+        {
+          "root": [
+            "1.32861580923398410515294533112235482102194146357849871254371",
+            "0.762837640781068513068229001521522172927959800071218584819988"
+          ],
+          "correction": "7.96533700411931591485210167141498122447286789373901655160867e-48",
+          "normalized_residual": "3.98266850205965795742605083570749061223643394686950827580433e-48",
+          "iterations": 10
+        },
+        {
+          "root": [
+            "1.45225865116677270823849669320774522463657541917173084063695",
+            "0.766699997989499409189133474700503665086464717062983607606752"
+          ],
+          "correction": "1.39607593906910026674179715580314338494747482707859803935969e-47",
+          "normalized_residual": "6.98037969534550133370898577901571692473737413539299019679847e-48",
+          "iterations": 9
+        },
+        {
+          "root": [
+            "1.8949797276342741484249807179554726093983321029263817271788",
+            "0.776090871115232560790366729357693474076961309909362855002292"
+          ],
+          "correction": "4.43509216751332842428168318491961211649574703342865919961474e-36",
+          "normalized_residual": "2.21754608375666421214084159245980605824787351671432959980737e-36",
+          "iterations": 8
+        },
+        {
+          "root": [
+            "2.04928411261451741363680739688038721012906047973708702277791",
+            "0.778154533602464064971303161841869948959233081293587882732093"
+          ],
+          "correction": "1.92375114445482862640874916436024471868597100291722206707707e-52",
+          "normalized_residual": "9.61875572227414313204374582180122359342985501458611033538537e-53",
+          "iterations": 9
+        },
+        {
+          "root": [
+            "2.49945803325642212230019118982792976716457542932727364087323",
+            "0.78197079730367509871387011711250377071475876364179202133813"
+          ],
+          "correction": "3.32523618923124522170695496973425486677070741167916022107819e-37",
+          "normalized_residual": "1.66261809461562261085347748486712743338535370583958011053909e-37",
+          "iterations": 14
+        }
+      ],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 12.288664791733027
+    },
+    {
+      "job": {
+        "host": "B4",
+        "mode": "1.5",
+        "label": "B4-1.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "1.0",
+        "1.5": "1.16624361612327512055353782587357967545626461594334908104401"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 12.325592014938593
+    },
+    {
+      "job": {
+        "host": "R",
+        "mode": "1.5",
+        "label": "R-1.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "0.5",
+        "1.5": "0.523598775598298873077107230546583814032861566562517636829157"
+      },
+      "roots": [
+        {
+          "root": [
+            "0.465356672945046897745476110254786831950431586013516460631065",
+            "0.614420529133928853493022086374832160848125624769224986614115"
+          ],
+          "correction": "7.16120777869448992433190397004510915207603224681574427181902e-35",
+          "normalized_residual": "1.07418116680417348864978559550676637281140483702236164077285e-34",
+          "iterations": 9
+        },
+        {
+          "root": [
+            "0.939417452759484995280009112534369509087251005376124711307755",
+            "0.696836172286483136483090300028618523893071736360831441437013"
+          ],
+          "correction": "1.08796926794014627999262661618168241438035574927214332026893e-32",
+          "normalized_residual": "1.63195390191021941998893992427252362157053362390821498040339e-32",
+          "iterations": 8
+        },
+        {
+          "root": [
+            "1.89799556188924142878163180913313959470216720627658433188156",
+            "0.765583277056513110258605304265324749986680710582377174046069"
+          ],
+          "correction": "3.01871431568906773005869033739130493212198104878662456228683e-38",
+          "normalized_residual": "4.52807147353360159508803550608695739818297157317993684343024e-38",
+          "iterations": 10
+        },
+        {
+          "root": [
+            "2.50032925684898110598062724145503122139025547206125966775086",
+            "0.77816809517789153076132576631889407087329723548896995496826"
+          ],
+          "correction": "1.31399463204786361366718736618212149828442487826724351336328e-29",
+          "normalized_residual": "1.97099194807179542050078104927318224742663731740086527004487e-29",
+          "iterations": 7
+        }
+      ],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 12.672265566885471
+    },
+    {
+      "job": {
+        "host": "D",
+        "mode": "1.5",
+        "label": "D-1.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "1.46868479710193478038612733142864918996071058357057974397219",
+        "1.5": "1.77952795927619883735640625456160377954274347589958929323439"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 15.705096621066332
+    },
+    {
+      "job": {
+        "host": "D",
+        "mode": ".5",
+        "label": "D-.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "1.46868479710193478038612733142864918996071058357057974397219",
+        "1.5": "1.77952795927619883735640625456160377954274347589958929323439"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 17.562789745628834
+    },
+    {
+      "job": {
+        "host": "L5",
+        "mode": "1.5",
+        "label": "L5-1.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "0.962423650119206894995517826848736846270368668771321039322036",
+        "1.5": "1.12397035696651622290501994291278316791464146993075238719836"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 19.331028819084167
+    },
+    {
+      "job": {
+        "host": "L5",
+        "mode": ".5",
+        "label": "L5-.5"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "0.962423650119206894995517826848736846270368668771321039322036",
+        "1.5": "1.12397035696651622290501994291278316791464146993075238719836"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 22.03223168104887
+    },
+    {
+      "job": {
+        "host": "B4",
+        "mode": "mixed",
+        "label": "B4-mixed"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "1.0",
+        "1.5": "1.16624361612327512055353782587357967545626461594334908104401"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 22.312502652406693
+    },
+    {
+      "job": {
+        "host": "R",
+        "mode": "mixed",
+        "label": "R-mixed"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "0.5",
+        "1.5": "0.523598775598298873077107230546583814032861566562517636829157"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 30.46802542358637
+    },
+    {
+      "job": {
+        "host": "D",
+        "mode": "mixed",
+        "label": "D-mixed"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "1.46868479710193478038612733142864918996071058357057974397219",
+        "1.5": "1.77952795927619883735640625456160377954274347589958929323439"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 30.802746299654245
+    },
+    {
+      "job": {
+        "host": "L5",
+        "mode": "mixed",
+        "label": "L5-mixed"
+      },
+      "dps": 60,
+      "status": "ok",
+      "moments": {
+        ".5": "0.962423650119206894995517826848736846270368668771321039322036",
+        "1.5": "1.12397035696651622290501994291278316791464146993075238719836"
+      },
+      "roots": [],
+      "failed_starts": [
+        {
+          "start": [
+            "0.0",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.0",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root iteration limit')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.12",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.55",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "0.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.3",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "1.9",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.15"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.35"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.5"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.62"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.7"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.75"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.78"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        },
+        {
+          "start": [
+            "2.5",
+            "0.784"
+          ],
+          "error": "ArithmeticError('root domain escape')"
+        }
+      ],
+      "seconds": 30.820864986628294
+    }
+  ],
+  "seconds": 30.904168847948313
+}

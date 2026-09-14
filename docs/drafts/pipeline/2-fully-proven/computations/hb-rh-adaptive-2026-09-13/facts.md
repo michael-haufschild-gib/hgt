@@ -40,3 +40,40 @@
 - Positive periodic DFT-fixed q41 sources with fixed cusp residue admit four independently validated numerical double zeros inside the critical strip when center moments are free. Retaining either baseline center value or second derivative blocks all frozen targets in the same finite box; not a global selector. No Euler product/full-HB claim.
 - Source audit: original_rectangle_boundary retains four original edges minus readerRemainder. Canonical channel Schwarz transport holds on every Xi fibre; old universal equality is extinction/RH receiver. Finite symmetry/boundary identity checks cannot close global selection.
 - Source audit: SelbergThetaNativeMeanCancellation cancels actual contour residue against native constant-mode correction; CommonForcingPacketMass gives nonzero finite packets in its strict spectral chamber. Normalized cofinal residual/occurrence remains separate. Source-level inspection only; no new kernel certification.
+
+- NUMERICAL: zeta inverse loop w=1-exp(2pi*i*u) gives predecessor transport on zero labels2..128,257..320; label1 reaches trivial zero-4. Selected100/160-digit + independent Euler--Maclaurin checks pass. Finite transport does not confine the zero fibre toRe=.5.
+- NUMERICAL: critical point1.550345642398+162.665563695696i has value1.144849558886+.107110602358i; its two straight-to-zero inverse branches reach labels57/60. Nonadjacent connection survives precision, access-start and step refinements. Nearest-gap-only graph is insufficient for this access convention.
+- NUMERICAL: small loop.35(1-exp(2pi*i*u)) exchanges9/10and13/14 in first16; also-2/-4. Large loop fixes-2. Critical values and access paths matter; winding around1 alone is insufficient.
+- SOURCE AUDIT: inspected first-trivial-zero derivative nonvanishing and critical-line derivative nonvanishing conditional on nonzero zeta value aboveheight20. Neither supplies simplicity of all nontrivial zeros or global inverse-sheet incidence. Current compiler metadata remains pending/source-only for much of corpus.
+
+- NUMERICAL: finite target approach to1 distinguishes actual zero branches; zero1 escapes right throughRe~48, zero6 approaches1.367688181122+38.419105560643i with zeta=1. Selected100/160digit/independentEM checks pass. No infinite-limit proof.
+- NUMERICAL: access labels depend on path; zero2 escape-like atangle0/finite-like at-pi/3, zero3 reverses roles, zero57 also changes. Counts18escape/46finite are stable across3testedangles at80digits;27labels change. Selected changes validated; fullcount exploratory.
+- NUMERICAL: access-guided search found4missingcriticaledges29–27,38–40,55–54,59–57; all4validated at100/160digits,2starts,independentEM. Combined finitegraph64vertices/46edges/18components hasoneescape-likevertex percomponent for3angles. Fullcriticalcensus and zero-divisor completeness absent.
+- NUMERICAL: conductor4/5primitiveL controls share first5predecessortransport; firstrootattaches totrivial-1/0. Selected independentchecks pass. Shared transport is notzeta-specific RH rigidity.
+- SOURCE AUDIT: CriticalPointInterpolation gives finite derivative-killing polynomial gauges. SpeiserCriticalPacketGauge preserves real-axis positivity and order-one envelope with polynomial factors, but may add complex zeros. Exponential gauges preserve the divisor; maintaining subquadratic proximity forces an affine exponential. Generic gauge perturbation is an already-derived control, not a new computation target. No fresh compiler/premise audit.
+
+- DH actual odd κ-carrier: connected off-line pair passes finite one-escape test atR48;100/160digit paths and independent differentiated Euler–Maclaurin agree. Finite graph/access dictionary alone is not an RH discriminator. Largecircle fixes leftpairmember but transports right; full arithmetic exclusion of hidden branches is open. No global graph or infinite-escape certificate; no actualDH Lean claim.
+
+- Literal theta source has13validated numerical strip-node candidates, including0.63883005360059i;100/160digits, independentJacobi formula, local3mesh winding1. Global logPhi is obstructed if these nodes are certified;Phi staysholomorphic. Use amplitude/local-log contour formulation; no spectral/RHcounterexample.
+
+- Unbounded adaptive normalized saddle flow stalled near source-log singularities;two-targetpilotconsumed570.6s.14laterempty saddle lists aredeadline failures, notabsence. Positive survivor:bounded puncture-aware flow with explicit endpoint/cycle limitations.
+
+- Literal theta saddle coordinate w=-iPhi'/Phi has validated simple-fold candidate w=-9.62457962286+.47991051324i insideRHspectralstrip, while|XiC|=.04758502261.100/160digits plusindependentJacobi jets/EM pass. Original-cycleattachmentunknown:representationbranching!=spectralzero;noglobalRHobstructionclaimed.
+
+- NUMERICAL NOGO: deleting literal theta-source pair±.638830053600594i gives positive even quotient with Fourier zeros20.192841+2.192678i,29.779015+.961842i;100/160digits,Jacobi,shiftedcontours,winding1. Arbitrary actual-source-node deflation does not preserve spectral reality.
+- NUMERICAL SURVIVOR: further actual quartet deletion has independently validated healing and complexification collisions under positive-source interpolation. Same added quartet can do both at different frequencies. Deletion count is not monotone; source-divisor/residual coupling is the open primitive. No HB attachment or Lean proof.
+- VALIDATION NOGO: sorting candidate roots by Re selected the wrong planned in-strip witness; original valid result retained, corrected |Im|-selector independently validated73.7439696+.4072695i for the deformed source.
+
+- NUMERICAL: actual donor transplantation depends on host and native/variance coordinates;9spectral witnesses and3DHsource nodes checked100/160. NativeDpairhealing fold admittedlambda=.087155952604279; initial85.7Newtonseed selectednegative-lambdaroot andfailed. Localrepair isnotglobalrealrootedness.
+
+- NUMERICAL NOGO: all14 positive geometric theta-source dressings retain complexnodes, includingfar-tail witnesses8L/16L;56witnesses112checks100/160,Jacobi,winding1. Zero-preserving Fourier multiplier doesnotremove sourcelogobstruction. TailFloquetstructure ispositive survivor,notinfinitezeros theorem.
+
+- ADMISSION REJECTION: Gaussian convolution ofPhi has zeros corresponding byrotation/scaling to F_lambda(w)=integral Phi(x)exp(lambda*x^2)exp(iwx)dx atlambda=-1/(4t): G_t(z)=exp(-z^2/(4t))/sqrt(4pi*t)*F_lambda(-iz/(2t)). A naive scan repackages backwarddeBruijnflow; noexperimentadmitted.
+
+- NUMERICAL: continuous Green theta sources with a=.5,1.5 have4selected interior nodes independently checked100/160 via forced ODE/Jacobi. Two specific source-log candidates fail; positive two-kernel composition remains unproved. Five near-boundary R contour cases failed resolution, so their winding counts are rejected.
+
+- NUMERICAL: support/mixture optical code metrics remain anisotropic at coupled cusp points; selected entire tensors independently checked100/160. Correct odd stabilizer phases reverse the previous odd/even cusp interpretation but do not restore marked hyperbolicity. No global metric/no-energy-limit theorem.
+
+- DERIVED BRIDGE, NOT LEAN: hyperbolic PTC left action on ideal G/Gamma is conjugate under gGamma->Gamma g^-1 C to sampled modular geodesic flow. Information-metric failure does not kill this route. Actual U(F)E_delta and re-prepared E_delta U(F) are distinct; the physical response/intertwiner is the main missing bridge.
+
+- NUMERICAL: threecomplete64-step nativePTC/code-monitor paths checked50/100/160. Realdriveprevents sharp-code geometricloss (d2,m3:delta.2/.05 gives driven survival.908159/.908319 versusgeometric.134058/9.74e-11).2048steps raises survival but leavesnoncentral logicalmismatch. Scalarautomorphicoperatoridentificationstillopen.

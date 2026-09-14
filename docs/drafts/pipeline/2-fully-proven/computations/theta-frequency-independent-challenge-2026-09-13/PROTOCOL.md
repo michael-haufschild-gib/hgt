@@ -1,0 +1,13 @@
+# Frozen independent challenge of complex saddle frequencies
+
+The critical-frequency search found a candidate w≈−9.62457962286267+0.47991051323739i inside abs(Im w)<.5, arising at z≈0.23586044848966+0.55757834601664i. This is a branch value of w(z)=−i Phi'(z)/Phi(z), not an alleged zeta zero. The question is whether this unexpected intrusion into the RH spectral strip survives independent evaluation, and whether the full transform vanishes there.
+
+Validate4selected critical points at100/160digits: the real-frequency control, this inside-strip candidate, the nearest sampled outside-strip candidate by abs(Im w), and a farther complex candidate. Native roots use Phi Phi''−(Phi')^2=0 and9Newtonsteps. The independent evaluator uses the Jacobi-theta source formula, differentiated by mpmath.diff to order3 at50guard digits; it does not use the custom jet-polynomial recurrence or imposed reflection. Compare degeneracy residual, Newton correction, critical frequency and second derivative ofw to distinguish a simple fold from a higher degeneracy.
+
+Independently evaluate XiC(w)=s(s−1)pi^(−s/2)Gamma(s/2)zeta(s)/2, s=.5+i*w, using explicit Euler–Maclaurin sums atN=max(100,floor(abs(Im s))+80), M=dps+25 andN+40,M+20. Record value, magnitude, truncation disagreement and comparison with native zeta. A nonzero value would distinguish a failure of this saddle coordinate from an RH counterexample. This identity is a validation control, not a new discovery.
+
+All8jobs share575cooperative/585forcedseconds plus cleanup<10seconds,14workersmaximum,native threads1. Parent map took4.7seconds; independent checks are bounded. Preserve exact source/corpus evidence, seeds, versions and outputs. No Lean builds and no claim of a complete complex critical-value census.
+
+Landscape consequence: a robust nonreal saddle branch value inside the critical strip rules out a globally single-valued inverse saddle coordinate on that entire strip, conditional on certifying the numerical fold. The complete transform can remain analytic and nonzero: local saddle branches must be combined with their cycles. This identifies a structural requirement for a contour RH strategy, not a source of forbidden spectral zeros. HB physical-action identification and selection remain uncomputed. Generic existence of the real fold and its numerical constant were predictable controls and are not promoted.
+
+All24operations fromMETHODS.md remain applicable with the critical-frequency map, independent jet formula and transform evaluation specified above. Cross-field thimble motivation and global-hypothesis caveats remain those in the parent protocol.

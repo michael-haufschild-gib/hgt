@@ -265,5 +265,353 @@
     "seconds": 5.534611472859979,
     "wall_seconds": 2.626936485990882,
     "timing_scope": "one guard"
+  },
+  {
+    "family": "zeta-value-monodromy-2026-09-13",
+    "seconds": 166.8625584319234,
+    "wall_seconds": 14.672801095992327,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-critical-value-graph-2026-09-13",
+    "seconds": 418.1087774243206,
+    "wall_seconds": 37.2756390478462,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-monodromy-independent-challenge-2026-09-13",
+    "seconds": 168.3633654601872,
+    "wall_seconds": 20.181408390402794,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-critical-graph-independent-challenge-2026-09-13",
+    "seconds": 448.05437760427594,
+    "wall_seconds": 73.2678835093975,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-zero-chain-boundaries-2026-09-13",
+    "seconds": 1340.8938712403178,
+    "wall_seconds": 107.67366028949618,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "dirichlet-inverse-value-geometry-2026-09-13",
+    "seconds": 1816.651437934488,
+    "wall_seconds": 146.6011368110776,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-chain-boundary-challenge-2026-09-13",
+    "seconds": 270.24616269767284,
+    "wall_seconds": 36.70892570540309,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "dirichlet-inverse-independent-challenge-2026-09-13",
+    "seconds": 1004.8304066620767,
+    "wall_seconds": 168.39754737727344,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-one-fibre-access-2026-09-13",
+    "seconds": 2030.0924291238189,
+    "wall_seconds": 156.16069885343313,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-one-fibre-independent-challenge-2026-09-13",
+    "seconds": 502.9555266574025,
+    "wall_seconds": 77.80149655044079,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-critical-access-join-2026-09-13",
+    "seconds": 0.0023681707680225372,
+    "wall_seconds": 0.6255347486585379,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-access-guided-critical-search-2026-09-13",
+    "seconds": 142.666591854766,
+    "wall_seconds": 16.186976408585906,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-access-direction-challenge-2026-09-13",
+    "seconds": 490.8856492936611,
+    "wall_seconds": 72.80358189344406,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "zeta-guided-critical-independent-challenge-2026-09-13",
+    "seconds": 1079.0420315116644,
+    "wall_seconds": 131.9138558730483,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "davenport-inverse-access-2026-09-13",
+    "seconds": 4182.937876868993,
+    "wall_seconds": 382.27313320338726,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "davenport-critical-incidence-2026-09-13",
+    "seconds": 4224.85051580891,
+    "wall_seconds": 384.0111622978002,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "davenport-access-independent-challenge-2026-09-13",
+    "seconds": 3758.2528448812664,
+    "wall_seconds": 457.5836793631315,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "davenport-incidence-independent-challenge-2026-09-13",
+    "seconds": 3065.816741468385,
+    "wall_seconds": 506.941759288311,
+    "category": "broader discovery",
+    "timing_scope": "sum of recorded worker durations; parent and preparation overhead excluded"
+  },
+  {
+    "family": "theta-source-complex-nodes-2026-09-13",
+    "seconds": 12.0942329056561,
+    "wall_seconds": 1.6339863389730453,
+    "category": "broader discovery",
+    "timing_scope": "recorded worker durations; parent excluded",
+    "scientific_status": "completed; numerical scope in REPORT.md"
+  },
+  {
+    "family": "theta-source-node-independent-challenge-2026-09-13",
+    "seconds": 100.26101188734174,
+    "wall_seconds": 13.21642030775547,
+    "category": "broader discovery",
+    "timing_scope": "recorded worker durations; parent excluded",
+    "scientific_status": "completed; numerical scope in REPORT.md"
+  },
+  {
+    "family": "theta-fourier-saddle-access-2026-09-13",
+    "seconds": 1139.706802168861,
+    "wall_seconds": 570.6013153009117,
+    "category": "broader discovery",
+    "timing_scope": "recorded worker durations; parent excluded",
+    "scientific_status": "partial; pilot consumed deadline"
+  },
+  {
+    "family": "theta-saddle-puncture-aware-flow-2026-09-13",
+    "seconds": 97.56361018121243,
+    "wall_seconds": 16.179077573120594,
+    "category": "broader discovery",
+    "timing_scope": "recorded worker durations; parent excluded",
+    "scientific_status": "exploratory;32phase-unstable step-budget paths inconclusive"
+  },
+  {
+    "family": "theta-source-critical-frequency-map-2026-09-13",
+    "seconds": 59.40376446954906,
+    "wall_seconds": 4.696382753551006,
+    "category": "broader discovery",
+    "timing_scope": "recorded worker durations; parent excluded",
+    "scientific_status": "completed; selected numerical claims validated"
+  },
+  {
+    "family": "theta-frequency-independent-challenge-2026-09-13",
+    "seconds": 1.6461102571338415,
+    "wall_seconds": 0.6244420260190964,
+    "category": "broader discovery",
+    "timing_scope": "recorded worker durations; parent excluded",
+    "scientific_status": "completed; selected numerical claims validated"
+  },
+  {
+    "family": "theta-divisor-individual-erasure-2026-09-13",
+    "seconds": 393.29232093319297,
+    "wall_seconds": 53.844075836241245,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-divisor-collective-erasure-2026-09-13",
+    "seconds": 240.27722523733974,
+    "wall_seconds": 32.67067206092179,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-divisor-single-independent-challenge-2026-09-13",
+    "seconds": 17.85033645108342,
+    "wall_seconds": 3.6405109763145447,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-divisor-collective-independent-challenge-2026-09-13",
+    "seconds": 11.99760378524661,
+    "wall_seconds": 4.12921497784555,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-divisor-interaction-collisions-2026-09-13",
+    "seconds": 116.23997746407986,
+    "wall_seconds": 14.672103133052588,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-divisor-collision-independent-challenge-2026-09-13",
+    "seconds": 16.94120230898261,
+    "wall_seconds": 4.650842733681202,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-divisor-strip-witness-correction-2026-09-13",
+    "seconds": 5.407215893268585,
+    "wall_seconds": 4.127957100048661,
+    "category": "broader discovery"
+  },
+  {
+    "family": "arithmetic-source-donor-transplants-2026-09-13",
+    "seconds": 1434.9336043782532,
+    "wall_seconds": 105.97755987197161,
+    "category": "broader discovery"
+  },
+  {
+    "family": "davenport-source-reciprocal-transplants-2026-09-13",
+    "seconds": 1019.3425254095346,
+    "wall_seconds": 87.36868845298886,
+    "category": "broader discovery"
+  },
+  {
+    "family": "arithmetic-donor-independent-challenge-2026-09-13",
+    "seconds": 176.6903367601335,
+    "wall_seconds": 41.23767228424549,
+    "category": "broader discovery"
+  },
+  {
+    "family": "davenport-reciprocal-independent-challenge-2026-09-13",
+    "seconds": 18.92639871314168,
+    "wall_seconds": 4.6323231514543295,
+    "category": "broader discovery"
+  },
+  {
+    "family": "davenport-donor-zero-transport-2026-09-13",
+    "seconds": 51.86199281364679,
+    "wall_seconds": 9.158400136977434,
+    "category": "broader discovery"
+  },
+  {
+    "family": "davenport-transport-independent-challenge-2026-09-13",
+    "seconds": 77.4500095769763,
+    "wall_seconds": 27.197221241891384,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-prime-dressed-source-2026-09-13",
+    "seconds": 189.5197810214013,
+    "wall_seconds": 18.65688726492226,
+    "category": "broader discovery"
+  },
+  {
+    "family": "theta-dressing-independent-challenge-2026-09-13",
+    "seconds": 25.481799511238933,
+    "wall_seconds": 2.1285763140767813,
+    "category": "broader discovery"
+  },
+  {
+    "family": "arithmetic-continuous-green-sources-2026-09-13",
+    "seconds": 236.410931635648,
+    "wall_seconds": 31.20529904961586,
+    "category": "broader discovery"
+  },
+  {
+    "family": "green-source-independent-challenge-2026-09-13",
+    "seconds": 31.483532052487135,
+    "wall_seconds": 6.13968363404274,
+    "category": "broader discovery"
+  },
+  {
+    "family": "green-source-boundary-count-2026-09-13",
+    "seconds": 4495.008949011564,
+    "wall_seconds": 501.17469231411815,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-lattice-native-metric-2026-09-13",
+    "seconds": 45.76114249229431,
+    "wall_seconds": 5.660716291517019,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-lattice-metric-independent-challenge-2026-09-13",
+    "seconds": 129.59793307632208,
+    "wall_seconds": 25.20658003911376,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-lattice-cusp-readers-2026-09-13",
+    "seconds": 413.6719864271581,
+    "wall_seconds": 84.39379195123911,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-lattice-cusp-independent-challenge-2026-09-13",
+    "seconds": 1012.20715174824,
+    "wall_seconds": 211.57392928004265,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-lattice-phase-fibres-2026-09-13",
+    "seconds": 267.6300077699125,
+    "wall_seconds": 31.734955713152885,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-lattice-phase-independent-challenge-2026-09-13",
+    "seconds": 437.2149435095489,
+    "wall_seconds": 105.3906309120357,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-native-loop-response-2026-09-13",
+    "seconds": 10.565962847322226,
+    "wall_seconds": 2.1518133021891117,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-native-loop-independent-challenge-2026-09-13",
+    "seconds": 82.54459879547358,
+    "wall_seconds": 82.80280997976661,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-native-loop-short-challenge-2026-09-13",
+    "seconds": 1103.9850163683295,
+    "wall_seconds": 300.81748711690307,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-native-loop-monitoring-limit-2026-09-13",
+    "seconds": 5.383044481277466e-06,
+    "wall_seconds": 0.63449302688241,
+    "category": "broader discovery"
+  },
+  {
+    "family": "photonic-native-loop-step-refinement-2026-09-13",
+    "seconds": 48.1198862567544,
+    "wall_seconds": 10.654505211859941,
+    "category": "broader discovery"
   }
 ]

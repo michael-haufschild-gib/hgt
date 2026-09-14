@@ -453,11 +453,13 @@ value with
   legendreKernel(-eta,1+2*(exp(p-a)-1)*exp(a-b)/(1+exp(a-b))).
 ```
 
-These domination and horizon-limit statements are analytical, not yet Lean.
-The full scalar retains the separately explicit original lift. Metric
-matching still needs the derivative/current bounds and the original moving
-boundary comparison; this value limit does not interchange its temporal,
-cusp and horizon cutoffs.
+The displayed Legendre integral representation remains analytical.
+`OriginalCausalAdmission` proves the characteristic growth and horizon-trace
+estimates. `OriginalHorizonTimeTrace` proves the complete differentiable
+trace and its damped temporal moments, including the separately explicit
+original lift. The original metric-current and moving-boundary comparison
+still require attachment; no cusp/time interchange follows from these
+scalar horizon statements.
 
 ### Characteristic transport of the actual horizon traces
 
@@ -529,14 +531,108 @@ The null second derivative vanishes in this limit.
 **Meaning for full matching.** In compact horizon coordinates
 `rho=exp(p-r)`, the physical ingoing-time derivative is `U_p+U_r`.
 The reduced trace error is therefore `O(rho*exp(G*p))` for both the value
-and the required time direction. The explicit lift has the same bound
-analytically: its first and second radial polynomials have a factor
-`1-radialUnit`, and its onset and onset derivative decay. With `G<1`,
-these are the estimates needed for the integrable temporal-current
-remainder on the original frequency band. The complete metric/normal-flux
-attachment and the prescribed moving-corner comparison still require
-Lean closure. These trace theorems do not interchange the original cusp,
-time and horizon limits or prove QNM matching or its impossibility.
+and the required time direction. `OriginalCollarCurrentBounds` now proves
+this for the complete scalar, uniformly over all `p>0` and sufficiently
+large `L=r-p`, with `rho=exp(-L)`. On this collar the lift radius is fixed:
+its two radial derivative terms cancel in the genuine time derivative.
+Only its value error remains; differentiability of its compact-radius
+profile at `radialUnit=1` gives that error at rate `exp(-L)`.
+
+The same leaf derives the unchanged normalizable reader's exact two-branch
+decomposition. With `N_L=exp(-w*L/2)*g(w,-L/2)` and
+`N_inf=connection(w,chi)*power(-w,2)/(2*w)`, it proves
+`abs(N_L-N_inf)<=B*(exp(-L)+exp(-Re(w)*L))` at every nonreal frequency.
+Combining this with the actual scalar and slope gives, for `Re(w)>G`,
+
+```
+abs(exp(-w*p)*(N_L*(m_L'(p)+w*m_L(p))-N_inf*(H'(p)+w*H(p))))
+ <= B*(exp(-L)+exp(-Re(w)*L))*exp(-(Re(w)-G)*p).
+```
+
+The full original `timeOriginalForcing/horizonCoordinate`, at each angular
+point, satisfies the corresponding reader-product error with
+`G` replaced by `Re(2*physicalRate)`. Both scalar and gradient source
+channels remain. These are kernel-checked bounds on the original
+expressions, not an assumed leading-density decomposition. Clean scratch
+and isolated exact leaf audit passed; the umbrella imports the leaf.
+The forcing constant can depend on the angular point.
+`OriginalCornerCurrentAdmission` proves absolute product-measure integrability
+of these actual remainders on some collar `L>L0>0, p>0`: the source-current
+remainder for `Re(w)>G`, and the full-forcing remainder at each angular point
+for `Re(w)>0`, always with nonreal `w`. Joint continuity of the original
+scalar supplies measurability of its parameterized time derivative; the
+unchanged forcing factorization supplies its own measurability.
+
+For both remainders, static-time indicators `p+L/2<T` and radial indicators
+`L/2<T` exhaust the same product integral. Their integral difference tends
+to zero. The physical chart Jacobian is the constant `1/2`, which preserves
+this zero difference. Clean scratch and isolated exact leaf audit passed;
+the umbrella imports the leaf. This closes the remainder cutoff comparison
+without supplying an arbitrary leading-density ansatz. The leading horizon
+term's first temporal moment and fixed radial normalization are now closed
+for the retained scalar-horizon sector below. Complete angular finite-part
+assembly and attachment to the original metric moving-corner integral remain necessary.
+No continuation of the assembled action to QNM frequencies follows yet.
+
+### Original temporal corner and fixed radial normalization — Lean closure
+
+`ThetaCuspHawkingBMOriginalTemporalCorner` retains the actual `horizonTrace`
+and `forcingTrace` at the unchanged physical coefficients. With
+`H=horizonTrace`, `E=C*forcingTrace(s,amp,1,reducedGreenGradient(chi,s,1))`,
+`N=connection(w,chi)*2^(-w)/(2*w)`, its density is
+
+```
+A(p)=mu*N*exp(-w*p)*(lambda*(H'(p)+w*H(p))+w*E(p)).
+```
+
+All polynomially weighted absolute moments are derived for `Re(w)>G`.
+Uniform convergence of the original collar on `[0,1]`, including its exact
+zero onset, proves `H(p)->0` as `p->0+`. The actual growth bound proves the
+damped endpoint at infinity is zero. Half-line integration by parts gives
+`Laplace(H')=w*Laplace(H)` and
+`int p*exp(-w*p)*H'=w*int p*exp(-w*p)*H-Laplace(H)`.
+
+Put `K=int A`, `J1=int p*A`, and
+`triangle(T)=int_(0<=t<=T) int_(-t<=x<=0) A(t+x) dx dt`.
+The corpus's triangular interval Fubini theorem gives its exact weighted
+integral; the first-moment tail bound proves `triangle(T)-T*K -> -J1`.
+The unchanged radial coordinate itself gives
+
+```
+T+log(horizonCoordinate(-T))/2 -> log(2).
+```
+
+Thus the difference between the temporal finite part and the time-first
+radial leading integral with its prescribed logarithmic subtraction tends
+to `-J1-log(2)*K`. For `Re(w)>3/2`, `Im(w)!=0`, this equals exactly
+`physicalCornerCandidate`, including the original forcing derivative.
+The normalization is derived; no adjustable constant or endpoint premise
+is supplied. References: `original_horizon_onset_zero`,
+`horizon_derivative_firstMoment`, `original_radial_log_shift`,
+`original_corner_moment_eq_candidate`,
+`original_temporal_radial_leading_difference`.
+
+**Meaning for full matching:** the scalar-horizon first-moment mechanism
+in the corner conjecture has an original-field proof. This is not the
+complete angular/metric boundary attachment: the forcing remainder bound
+is still pointwise in the angular variable, and the assembled action's
+continuation to the physical QNM remains open. Together with the admitted
+remainder comparison above, this identifies exactly which angular and
+metric attachment remains before the candidate residue can decide matching.
+Clean scratch checking and the isolated exact leaf build passed; the umbrella
+is wired without an umbrella build. Global lint retains the unrelated
+unreachable `RHTower.Sieve.KloostermanGlobalCollisionCoprime` module.
+
+Broad/deep/method retrieval was partial and predominantly source-only. Its
+proposed forcing-period ingredient set used unrelated finite-period lemmas
+and supplies no bridge. The proofs instead use the inspected original
+characteristic derivatives, onset bounds, horizon basis and analytic radial
+factors. Broad primary-paper retrieval found the
+[stationary-clock threshold subtraction](https://arxiv.org/html/2606.02718v1):
+its transfer-matrix expansion separates a threshold background from a
+phase-delay observable. Its real compact-potential assumptions and clock
+definition do not identify the HB action or authorize an additional
+subtraction here.
 
 **2. Identify the complete causal scalar and its needed horizon bounds.**
 Set `s=D4BMModularCore.physicalRate(q,branch)` (the undoubled rate),
@@ -697,11 +793,620 @@ pole after including the corner. Equality with the uncorrected restored
 radial pairing would require the entire displayed corner to vanish; the
 vanishing of `beta(w0)` alone does not establish that. No nonzero source
 coupling counterexample has been supplied, and no claim of impossibility
-for every possible matching is made. The original-period identity is now kernel-checked. The source-derived
-bounds, metric-current attachment, and source-only continuation in this
-section still require Lean closure. A separately
+for every possible matching is made. The original-period identity is now
+kernel-checked. The horizon/time admission below is also proved. The complete
+metric-current attachment, its regularized corner comparison, and source-only
+continuation still require Lean closure. A separately
 prescribed physical time-cap or a direct fixed-frequency order of limits
 must be identified with these explicit limits, not substituted for them.
+
+### Original horizon/time moments — Lean closure
+
+`ThetaCuspHawkingBMOriginalHorizonTimeTrace` derives the horizon value `H`
+from the actual `OriginalCausalAdmission.originalScalar`. It retains the
+original arithmetic coefficient, reduced causal response, and unchanged
+onset lift. Uniform convergence of the genuine reduced first null
+derivatives proves that the limiting slope is the derivative of the trace.
+Thus the complete `H` is differentiable for every positive ingoing time.
+
+Put `eta=1-q/2`, `G=Re(eta)`, and `r=p+L`. The original source estimates
+give one constant `B` such that, for all sufficiently large `L` and every
+`p>0`, the complete scalar has norm at most `B*exp(G*p)`. The lift separates
+exactly into `radialLift(s,0,amp,1,-L/2)*timeOnset(2*s,p)`; its coefficient
+converges to the original `liftHorizon`. For every natural `n` and
+`Re(w)>G`, dominated convergence therefore gives
+
+```
+lim_L int_0^infty p^n*exp(-w*p)*originalScalar(p,p+L) dp
+ = int_0^infty p^n*exp(-w*p)*H(p) dp.
+```
+
+All limiting moments are integrable. Differentiation with respect to the
+independent complex frequency is derived under the integral using the
+first moment and a common majorant on a smaller half-plane. In particular,
+
+```
+a(w)  = exp(-w*log(2))*Laplace(H)(w),
+a'(w) = exp(-w*log(2))*(-log(2)*Laplace(H)(w)
+          - int_0^infty p*exp(-w*p)*H(p) dp).
+```
+
+The domain contains the original Green band because `0<Re(q)<1` gives
+`1/2<G<1`. Both physical branches and all amplitudes are included; no
+nonvanishing source coefficient is assumed. The scratch check and isolated
+exact module audit passed, and the leaf is wired into the umbrella.
+
+This closes the actual response horizon amplitude's temporal admission
+required by the moving corner. The following characteristic-transform
+theorem supplies the scalar Green identification at `eta=1-q/2`.
+Cusp/time interchange, the complete metric-current comparison and its
+fundamental-QNM continuation remain open.
+
+### Original scalar time/Green identification — Lean closure
+
+`ThetaCuspHawkingBMOriginalCharacteristicTransform` identifies the actual
+original causal scalar time integral, retaining the Xi reader exponent,
+arithmetic source coefficient, source lift and smooth onset. Put
+`eta=1-q/2`, `s=physicalRate(q,branch)`, `C=physicalSelfSourceCoefficient(q)`.
+For both branches, every amplitude, every `x<0`, and every independent
+frequency with `Re(w)>3/2` and `Im(w)!=0`, the proved identity is
+
+```
+int_0^infty exp(-w*t)*originalScalar(q,branch,amp,t+x,t-x) dt
+ = C*(continuedReducedGreen(w,physicalRadialFrequency(q),s,amp,1,x)
+       + radialLift(s,w,amp,continuedOnset(s,w),x)).
+```
+
+The proof starts with the original characteristic solution
+`A(p,L)=nullValue(-eta,s,amp,p,p+L)`, its first partial derivative `P`,
+and its mixed density `D`. One source-derived exponential bound admits
+their positive-time transforms. The original zero onset and genuine
+partial derivatives give
+
+```
+d_L Ahat = w*Ahat - Phat,
+d_L Phat = Dhat.
+```
+
+The transformed literal source includes its onset-derivative term.
+Consequently `exp(w*x)*Ahat(-2*x)` satisfies the original forced radial
+equation. A causal-delay identity identifies this expression with the
+actual reduced time integral. Its boundedness on the negative half-line
+and its zero outer trace follow from the original response estimates.
+The existing bounded radial Wronskian uniqueness theorem then identifies
+it with `continuedReducedGreen`. The lift's causal-delay identity restores
+the full scalar formula above; integrability is proved before splitting
+the complete integral. No scalar matching or cusp/time interchange is
+supplied as a premise.
+
+Clean scratch checking and the isolated exact leaf build passed; the
+umbrella import is wired. This closes the scalar-period comparison on its
+convergence domain. It does not exchange the unprojected cusp and time
+limits, attach all metric/source/contact/corner faces, or identify the
+continued complete action at a QNM. In particular, it gives no
+finite-variation QNM expansion for that action. The experiment's spectral
+no-go becomes applicable only after deriving such a representation;
+the existing peripheral-spectrum theorem additionally identifies any
+persistent limit, within its damped-plus-integrable-continuum class, with
+the actual zero-frequency atom.
+
+### Original horizon continuation and corner response residue — Lean closure
+
+`ThetaCuspHawkingBMOriginalHorizonGreenMatch` identifies the actual normalized
+horizon transform `a(w)=exp(-w*log(2))*Laplace(H)(w)` with a single
+meromorphic coefficient of the same original Green response. Equality holds
+for `Re(w)>3/2`, `Im(w)!=0`, with the original first temporal moment retained.
+The continuation is meromorphic throughout `Re(w)>-2`, `Im(w)!=0`.
+
+The coefficient is the horizon limit of `continuedResponse/horizon`.
+The existing local Green split identifies it with the actual positive-radius
+quotient minus the integrated source transport. That source primitive is
+analytic across the fundamental QNM, so the local endpoint expressions glue
+and the quotient's original source residue transfers to this horizon amplitude.
+No horizon amplitude or continuation is supplied as a premise.
+
+Put `w0=physicalFundamentalFrequency(q,side)`,
+`M=fundamentalSourceMoment(w0,s,amp)` and `T=continuedOnset(s,w0)`.
+For both physical branches and either fundamental QNM, Lean proves
+
+```
+Res(a,w0) = C*M*T/(-connectionSimpleSlope(w0,chi,side)),
+Res(connection(w,chi)*a'(w),w0) = C*M*T,
+Res(beta(w)*(a(w)+2*w*a'(w)),w0) = C*M*T.
+```
+
+Subtracting the first displayed pole leaves an analytic germ, also when its
+coefficient vanishes. On the convergence half-plane, differentiation of this
+continued amplitude equals the first moment of the original causal horizon
+trace, including the normalization's `log(2)` term.
+
+**Meaning for full matching.** The response-trace part of the proposed corner
+now has the source-derived residue `mu*lambda*C*M*T`. This is the coefficient
+needed in the cancellation test above. The forcing trace and its continued
+first-moment contact are now derived below. Complete angular finite-part
+attachment, whole-current remainder admission, and prescribed spacetime
+finite-part comparison remain open; full matching and RH remain open.
+Clean scratch checking and the isolated exact leaf build passed without warnings;
+the new leaf is wired into the umbrella. Global lint still reports the existing
+unrelated unwired `RHTower.Sieve.KloostermanGlobalCollisionCoprime` module.
+
+Broad primary literature search also found [Hansen's March 2026 Radon-transform
+paper](https://arxiv.org/html/2603.10804v1): Mellin pole cancellations sharpen
+boundary expansion estimates that otherwise predict excess logarithms. This
+provides a method comparison for the corner calculation, not an HB admission
+theorem; the original current's remainder estimates must still be proved.
+
+### Original forcing trace and complete corner candidate — Lean closure
+
+`ThetaCuspHawkingBMOriginalCornerForcing` derives the normalized horizon source
+from `JointSource.timeOriginalForcing`, before angular subtraction. With
+`u=radialUnit(x)`, its exact coefficient after dividing by `z_h=1-u^2` is
+
+```
+P(u) = -2*u*(1+u)^(2*s)*amp^2 *
+  ((5*s^2+15*s+4)*J/4 + s*(s-1)*u^2*((s+2)^2*J-K)/4),
+E(p) = P(1)*timeOnset(2*s,p).
+```
+
+Here `J=fullSquarePotential(q,z)` and `K=fullGradientEnergy(q,z)/2` are the
+full original angular fields. At `x=-L/2`, the actual normalized source differs
+from `E(p)` by at most `B*exp(-L)*exp(Re(2*s)*p)`, uniformly in all ingoing
+times `p`, for sufficiently large `L`. The constant can depend on the angular
+point; this is not an unproved uniform cusp estimate.
+
+The original collar Laplace integrals are admitted for `Re(w)>Re(2*s)` and
+converge to the same normalized transform
+`e(w)=exp(-w*log(2))*P(1)*continuedOnset(s,w)`. Every temporal moment of `E`
+is integrable there. Its frequency derivative is the original first moment,
+including the normalization's `log(2)` term. No numerical input or assumed
+horizon trace is used.
+
+The full angular equation gives the exact basis decomposition
+`P(1)=b0*J+b2*Laplacian(J)`, where
+
+```
+b0 = -2*2^(2*s)*amp^2 *
+  ((5*s^2+15*s+4)/4+s*(s-1)*(s+2)*(2*s+3)/4),
+b2 = 2^(2*s)*amp^2*s*(s-1)/4.
+```
+
+The original Green gradient slot satisfies `P(1;1,K_green)=b0+mu*b2`
+at the actual physical radial parameter. This verifies coefficient consistency;
+it does not itself transpose the angular Laplacian through a finite part.
+
+At either physical fundamental QNM, the source pole `w=2*s` is separated from
+`w0`. Thus `e` and its derivative are analytic there and `beta(w)*w*e'(w)`
+tends to zero. Combining this with the already identified original response
+amplitude proves, with every physical coefficient fixed,
+
+```
+Res(physicalCornerCandidate,w0) = mu*(mu-2)*C*M*T.
+```
+
+**Meaning for full matching.** The forcing contact introduces no extra QNM
+residue; the entire proposed corner has the response residue required by the
+comparison test. Its equality with the original full spacetime finite part is
+still unproved. The next obligation is the original current's angular
+finite-part attachment and integrable remainder, followed by its exact finite
+triangle/time-cap comparison. This result proves neither extinction nor RH.
+
+Clean `lake env lean` scratch check and isolated exact leaf `lake build` passed
+without warnings; the leaf is wired into `RHTower`. The final build ran two jobs
+and took 37 seconds. Global lint reports only the existing unrelated unreachable
+`RHTower.Sieve.KloostermanGlobalCollisionCoprime` error, alongside existing
+large-file warnings.
+
+## Complete original scalar and static current — Lean closure
+
+`ThetaCuspHawkingBMOriginalOrbitCurrent.scalar_green_integral` supplies the
+actual scalar Green transfer. Its specialization in
+`ThetaCuspHawkingBMOriginalModularOrbit` fixes the full finite-cutoff current.
+Let `U=sourceScalar`, `W=leftScalar`, `D_j=orbitDerivative`,
+`mu=eigenvalue`, `lambda=mu-2`, `f=R^2-1`, and `F=originalForcing`.
+Write `P(A,B)` for the literal truncated angular period and `T(A,B)` for
+the actual top transfer. The complete boundary contribution is
+
+```
+B_j = T(D_j U,C(W))-T(C(U),D_j W)
+      +mu*(T(D_j W,U)-T(U,D_j W)).
+I_j = R^-2 * [mu*lambda*(P(U,D_j W)-P(D_j U,W))
+               +mu*R^3/f*P(F,D_j W)+B_j].
+```
+
+The last Green flux comes from transferring the source Laplacian; it cannot
+be omitted or covered by the existing theorem for only the first two terms.
+The actual reader's time derivative is `W_p=-w*W`. Consequently the static
+current with its physical orientation satisfies
+
+```
+I_0-I_1/f = mu*lambda/(R^2*f)*(P(U_p,W)+w*P(U,W))
+            +mu*R*w/f^2*P(F,W)+(B_0-B_1/f)/R^2.
+```
+
+These are `original_source_orbit_green`, `original_forced_orbit_period`,
+`original_metric_complete_scalar_integral`, `original_reader_time_derivative`
+and `original_static_metric_scalar_integral`. They retain the literal source,
+physical left QNM, complete forcing and finite angular periods, for all source
+branches, reader sides, radial normalizations and amplitudes at `p>0`, `R>1`,
+`Y>=1`. No assumed original source regularity, extra mode equation or division
+by the source coupling is used.
+
+**Meaning for full matching.** The temporal scalar density and all finite-domain
+boundary terms are now derived from the original metric current. The next
+section supplies the complete `B_j` cusp attachment at fixed time and radius.
+The open comparison must still attach the varying-frequency family, bound the
+full horizon remainder and identify the finite causal triangle/time-cap
+correction. The existing corner candidate residue is not yet
+a residue of that complete spacetime finite part.
+
+Both clean scratch checks and isolated exact module builds passed without
+warnings (117 seconds and 27 seconds; two jobs each). Both modules were already
+wired into `RHTower`; no umbrella was built. Global lint still fails on the
+unrelated unreachable `RHTower.Sieve.KloostermanGlobalCollisionCoprime`, with
+existing large-file warnings. Source and audited copies agree byte for byte.
+
+## Complete scalar-transposition cusp attachment — Lean closure
+
+The additional Green flux in the full scalar reduction is now attached to
+the original source and orbit reader. `OriginalCuspFlux.scalarGreenFlux`
+is `S*partial_y(Z)-Z*partial_y(S)`. Its exact principal coefficients are
+`coefficient_i*readerCoefficient*(principalExponent_i-readerExponent)`;
+`original_scalarGreenFlux_expansion` proves that the integrated remainder
+decays after every complex height weight, with all source/reader tail products
+retained at fixed nonnegative null coordinates.
+
+`OriginalContactCusp.original_source_normal` derives the physical normal
+derivative of `U=R*Z`, retaining `R`. Write `alpha_i=principalExponent_i`,
+`beta=readerExponent`, `b=readerCoefficient`, `A_i=R*coefficient_i`, and
+`ell_j=readerOrbitAmplitude`. If `M_ji` denotes the previous signed two-transfer
+metric coefficient, the complete coefficient is
+
+```
+N_ji = M_ji + mu*ell_j*b*A_i*(alpha_i-beta)/R^2,
+gamma_i = alpha_i+beta-1.
+```
+
+`complete_scalar_top_cusp_limit` proves
+
+```
+B_j(exp(k))/R^2 - sum_i N_ji*exp(gamma_i*k) -> 0.
+```
+
+`complete_scalar_top_finitePart` subtracts only the nonconstant powers and
+retains exactly `sum_{gamma_i=0} N_ji`. The original diagonal/reflected readers
+have no such exponent, so their complete constant term is zero
+(`complete_scalar_cusp_constant`). This classification keeps the possible
+constant of an independent reader.
+
+`original_static_cusp_transfer` then applies the actual finite-domain metric
+identity. The static metric integral minus its full forced scalar periods has
+exactly the subtraction coefficients `N_0i-N_1i/(R^2-1)`, and the subtracted
+difference tends to zero. All source branches, reader sides, radial
+normalizations and amplitudes are retained.
+
+**Meaning for full matching.** The missing third cusp transfer in the preceding
+section is closed at each fixed `p>0,R>1` for the original fundamental-QNM
+reader. A fixed-point angular limit does not prove the compact-parameter
+passage or an interchange with infinite time and the horizon. The following
+frequency-family results now attach the reader and complete finite-domain
+current on the convergence band. The original causal triangle/time-cap
+comparison must still identify the corner correction. Neither full matching nor its impossibility
+has been established.
+
+Both clean scratch checks and isolated exact module audits passed without
+warnings (25 seconds for `OriginalCuspFlux`, 32 seconds for
+`OriginalContactCusp`; two jobs each). Both modules were already umbrella-wired;
+no umbrella build ran. Global lint reports 159 existing large-file warnings
+and the unrelated unreachable `RHTower.Sieve.KloostermanGlobalCollisionCoprime`
+error. Audited copies match source byte for byte.
+
+## Independent temporal-frequency reader — analytical attachment
+
+Fix the original arithmetic source and reader labels `q,r`, and leave only
+the temporal frequency `w` independent. Use the existing physical family
+`physicalLeftModeStream r w outer`, with its unchanged radial mode
+`g_w=tortoiseMode outer w (physicalRadialFrequency r)` and angular scalar `S`.
+For every nonreal `w`, the continued radial equations give
+`g_w''=(w^2-mu*z_h)*g_w`. Both radial normalizations have their actual first
+and second derivatives; the smooth linear ODE gives all spacetime derivatives.
+
+For `f=R^2-1`, `x=tortoise(R)`, and `H_w(R)=R*g_w(x)`, differentiation gives
+
+```
+H_w'  = g_w+R*g_w'/f,
+H_w'' = (R*g_w''-2*g_w')/f^2,
+-R^2*f*H_w''+R^2*w^2*H_w/f-2*R*H_w' = (mu-2)*H_w.
+```
+
+Hence the actual ingoing scalar
+`W_w=exp(-w*(p-tortoise(R)))*H_w(R)*S` satisfies
+`C(W_w)=(mu-2)*W_w`, `Delta(W_w)=mu*W_w`, and
+`partial_p(W_w)=-w*W_w`. Its coexact derivative is the existing physical
+stream, and composing with the original ingoing coordinate map returns that
+same static stream. At `w=frequency r side`, this is definitionally the
+previous original QNM reader and metric current.
+
+The reconstructed metric-current identity applies to these actual smooth
+stream jets. With the original source `U` and its full forced contact `D`,
+it gives `R^-2*(pairing(D_j U,C(W_w))-pairing(D,D_j W_w))`.
+Thus the same source, clock and normalization cover the Laplace convergence
+band and the prescribed QNMs; no hypothesized matching identity supplies
+the family. `OriginalReaderEquation` now proves this attachment in Lean:
+`modeProfile_smooth`, `mode_scalar_contact`, `mode_angular_equation`,
+`mode_time_derivative`, `mode_coexact`, `mode_metric_current_eq` and
+`mode_metric_density`. `modeScalar_specialize` and
+`modeMetricDensity_specialize` recover the original reader and current by
+definitional equality. The clean scratch check and isolated exact module
+audit passed; the audit built only this leaf (94 seconds, two jobs).
+The complete angular-period and finite-time extensions are closed below.
+
+**Meaning for full matching.** For fixed arithmetic labels, the cusp powers
+`alpha_i+beta-1` do not depend on temporal `w`. Its variation changes the
+reader amplitudes and their orbit derivatives. Consequently the angular
+transfer can be organized as a finite linear combination of the same original
+source angular periods and cusp fluxes. The remaining limit comparison must
+still control the original time/radius domains and identify their moving
+corner; this separation alone does not prove that comparison or RH.
+
+### Complete frequency-family transfer — Lean closure
+
+`OriginalModularOrbit.mode_metric_complete_scalar_integral` proves the
+complete finite-domain metric identity for `W=modeScalar r w outer`, every
+nonreal `w`, both original radial normalizations, and unchanged source data:
+
+```
+I_j = R^(-2) * [mu*(mu-2)*(P(U,D_j W)-P(D_j U,W))
+                +mu*R^3/f*P(F,D_j W)+B_j].
+B_j = T(D_j U,C(W))-T(C(U),D_j W)
+      +mu*(T(D_j W,U)-T(U,D_j W)).
+```
+
+The proof applies the actual reader equation, full original forced contact,
+and modular side/core cancellations. `mode_static_metric_scalar_integral`
+then proves the original static combination
+
+```
+I_0-I_1/f = mu*(mu-2)/(R^2*f)*(P(U_p,W)+w*P(U,W))
+            +mu*R*w/f^2*P(F,W)+(B_0-B_1/f)/R^2.
+```
+
+`modeCompleteTopFlux_specialize` returns the old complete QNM flux by
+definitional equality. These identities hold at fixed `p>0,R>1,Y>=1`;
+no temporal or horizon interchange is part of their statement.
+
+`mode_time_transfer` separately integrates the actual source derivative at
+fixed exterior radius and angular point, on every `0<a<=b`:
+
+```
+integral_a^b (U_p+w*U)*W dp
+  = U(b)*W(b)-U(a)*W(a)+2*w*integral_a^b U*W dp.
+```
+
+Both endpoint values are retained. The proof derives the clock derivatives
+from the original smooth fields and uses `W_p=-w*W`; it does not assume a
+derivative formula for an already regularized angular period. Thus a route
+to the subsequent limit comparison is to perform this transfer at finite
+cutoffs, then pass the original source-value and boundary-flux finite parts.
+The source-value compact angular/time interchange, including onset and
+every polynomial time moment, is closed below. The complete metric boundary
+flux is also restored on compact time intervals below; the unbounded causal
+triangle still needs its own limit proof.
+
+**Meaning for full matching.** The former frequency-family attachment gap is
+closed for the full original finite-domain current. The remaining task is
+to control its actual cutoffs and identify the moving corner, including its
+residue. The corner candidate alone is not that identification.
+
+The clean scratch check and isolated exact `OriginalModularOrbit` audit
+passed without warnings (52 seconds, two jobs); the module was already
+umbrella-wired. Only existing compiled dependencies were copied into an
+isolated cache to avoid another agent's concurrent cache updates; no
+dependency or umbrella build ran.
+
+### Compact original cusp/time restoration — Lean closure
+
+`OriginalCausalPeriod` now derives one integrable angular envelope for
+`S*originalCutoffResidual(p,r)` uniformly over `0<=p,r<=T`. Its construction
+retains the original circle kernel, compact modular core, all three smooth
+cutoff corrections and the unchanged onset lift. If `P_Y` denotes the
+literal finite-height scalar period minus the prescribed counterterms and
+`P` its original restored radial value, then for `Y>=4`
+
+```
+P_Y(p,r)-P(p,r) = -integral_{height>Y} S*originalCutoffResidual(p,r),
+sup_{0<=p,r<=T} norm(P_Y-P) <= integral_{height>Y} G -> 0.
+```
+
+The supremum notation summarizes the proved pointwise uniform bound;
+`original_finiteHeight_uniform_error` supplies one real error function for
+all targets. `original_finiteHeight_sub_radial` proves the exact identity.
+Actual time-continuity follows from the original moving-rectangle integral
+representation and domination, so the passage is not based on undefined
+Bochner integrals. For every `n : Nat`, every complex `w`, `0<=a<=b`, and
+fixed `x<=0`, `original_compact_time_moment_restoration` proves
+
+```
+lim_{Y->infinity} integral_a^b p^n*exp(-w*p)*P_Y(p,p-2*x) dp
+  = integral_a^b p^n*exp(-w*p)*P(p,p-2*x) dp.
+```
+
+The onset endpoint is included. The first moment is the one entering the
+moving-corner comparison; no temporal-frequency restriction is needed on
+this compact interval. Independently,
+`original_remainder_jet_compact_rapid_bound` proves arbitrary-order cusp
+decay for every log-height angular jet of the full original source,
+uniformly over bounded null targets and all horizontal positions. It adds
+the actual bounded onset lift to the corpus's compact native-response jet
+estimate.
+
+**Meaning for full matching.** The source-value period and its compact time
+moments can now pass through cusp restoration. Uniform source angular jets
+are available for the complete metric cusp-flux attachment. Its forcing
+flux and the unbounded causal triangle/horizon comparison remain to be
+assembled; these theorems do not identify the whole metric action or prove
+RH. Clean scratch and the exact isolated leaf audit passed without warnings
+(42 seconds, two jobs). Only this leaf was built; it was already wired into
+`RHTower`. Global lint still reports the unrelated unreachable module
+`Sieve.KloostermanGlobalCollisionCoprime`.
+
+The recent boundary-renormalization papers inspected during this step do
+not discharge an HB hypothesis. Ivanov's
+[quartic-model gluing theorem](https://arxiv.org/html/2608.23069v1)
+requires additional interface counterterms in its compact Riemannian
+setting. The [variational prescription](https://arxiv.org/html/2607.14330v1)
+studies Euclidean black-hole solutions and subtracts finite exact variations
+according to an ensemble choice. Neither identifies our fixed original
+Lorentzian causal subtraction. The finite-height tail identity above is
+derived instead from the corpus's actual source and prescribed counterterms.
+
+### Static boundary cancellation removes reader radius derivatives
+
+Apply the original physical static combination before any limit. Bilinearity
+of `T(A,B)=integral(A*partial_y B)` and `W_p=-w*W` give
+
+```
+D_0 U-D_1 U/f = -U_p/f,
+D_0 W-D_1 W/f = w*W/f,
+(B_0-B_1/f)/R^2 =
+  [-lambda*T(U_p,W)-w*T(C(U),W)
+   +mu*w*(T(W,U)-T(U,W))]/(R^2*f).
+```
+
+Every radius derivative of the physical reader cancels in this actual static
+boundary combination. With the notation `A_i`, `C_i`, `alpha_i`, `beta`, `b`
+above and `W=ell*S`, its principal coefficient is
+
+```
+-ell*b/(R^2*f) *
+  [beta*(lambda*partial_p(A_i)+w*C_i)
+   -mu*w*A_i*(alpha_i-beta)].
+```
+
+This is an analytical consequence of the complete current, not a new source
+ansatz. For the whole matching problem it reduces the required static collar
+control to the original source time derivative, full forcing and reader value;
+no reader radius-derivative bound is needed for this combined boundary term.
+The source-value compact cusp passage is proved above; the complete flux
+attachment and moving-corner comparison remain necessary.
+
+At finite angular cutoff, further integration by parts on `0<a<=b` gives
+an explicit normal form for that remaining flux. Since
+`partial_p T(U,W)=T(U_p,W)-w*T(U,W)`, and the original forced equation is
+`C(U)=Delta(U)-2*U+R^3*F/f`,
+
+```
+integral_a^b (B_0-B_1/f)/R^2 dp =
+  [-lambda*[T(U,W)]_a^b
+   +w*integral_a^b (mu*T(W,U)-T(Delta(U),W)
+                    -2*lambda*T(U,W)-R^3*T(F,W)/f) dp]/(R^2*f).
+```
+
+This identity is now proved in Lean as
+`OriginalModularOrbit.mode_complete_boundary_time_transfer`;
+`mode_static_top_flux` proves the preceding static identity. The proof
+derives all compact integral admission and Fubini hypotheses from the
+actual fields, commutes the smooth reader derivatives, and keeps both
+original endpoint values. The full forcing boundary term is retained.
+Treating `C(U)` as `Delta(U)-2*U` would omit that term.
+
+Clean scratch and the isolated exact leaf audit passed without warnings
+(99 seconds, two jobs). The existing umbrella import is retained; no
+dependency or umbrella build ran. Global lint still reports the unrelated
+unreachable `Sieve.KloostermanGlobalCollisionCoprime` module.
+
+
+### Complete compact-time cusp boundary — Lean closure
+
+Fix `0<a<=b`, `R>1` and a nonreal temporal frequency `w`. Write
+`W(p,R,z)=ell(p)*S_r(z)`, `S_r~c_r*y^beta`,
+`U~sum_i A_i(p)*y^alpha_i`, with the original source amplitudes
+`A_i(p)=R*coefficient_i(p,p-2*tortoise(R))`. The actual forcing has coefficients
+
+```
+F_i(p)=(forcingValueCoefficient(p)
+       +forcingLaplacianCoefficient(p)*alpha_i*(alpha_i-1))*principalAmplitude_i.
+```
+
+The exact time-integrated boundary theorem fixes its three coefficients:
+
+```
+K_i = { -lambda*beta*c_r*[ell*A_i]_a^b
+        +w*c_r*integral_a^b ell(p)*
+          ((mu*alpha_i-beta*alpha_i*(alpha_i-1)-2*lambda*beta)*A_i(p)
+           -beta*R^3*F_i(p)/f) dp }/(R^2*f).
+```
+
+These coefficients come from the unchanged metric current and its original
+source contact. They are not freely chosen subtractions. The paper proof
+of the corresponding compact-time cusp expansion is:
+
+1. F198 gives arbitrary-order uniform cusp decay of source remainder jets
+   on the bounded null rectangle containing `(p,p-2*tortoise(R))`.
+   In log height, `partial_y=exp(-k)*partial_k` and
+   `Delta=exp(2*k)*partial_X^2+partial_k^2-partial_k`. Thus the value,
+   normal derivative and `Delta U` retain uniform rapid remainders.
+   Only source jets through order two are needed: the normal derivative
+   in `T(Delta U,W)` acts on `W`, not on `Delta U`. The extra exponential factors are absorbed by choosing
+   a higher order in F198.
+2. `OriginalMetricCusp.original_forcing_laplacian` expresses the full forcing
+   as its two continuous time coefficients multiplying the original square
+   source and its angular Laplacian. Those coefficients are bounded on
+   `[a,b]`; the existing native cusp-jet estimates give the forcing remainder
+   uniformly in time. This uses the full gradient-energy contribution.
+3. The actual reader amplitude `ell` is bounded on `[a,b]`. Its complete
+   angular scalar and normal derivative have their original principal terms
+   and uniform rapid tails. Products with the source expansions leave only
+   the powers `gamma_i=alpha_i+beta-1`; all product errors tend uniformly to
+   zero in time and horizontal position. Integrating over the finite time
+   interval and width-one top edge preserves this convergence.
+4. Apply the exact boundary theorem, retaining both endpoint expansions.
+   Its four transfer coefficients give precisely the displayed `K_i`. Hence
+
+```
+lim_{k->infinity} [ integral_a^b (B_0-B_1/f)(p,R,exp(k))/R^2 dp
+                   -sum_i K_i*exp(gamma_i*k) ] = 0.
+```
+
+`OriginalCuspFlux.fluxExponent_nonzero_original` shows that every `gamma_i`
+is nonzero for the original diagonal/reflected angular readers, independently
+of `w`. Consequently their prescribed compact-time boundary finite part is
+zero. `OriginalCompactBoundary.mode_complete_boundary_compact_cusp`
+proves this exact complete-boundary expansion, and
+`mode_complete_boundary_compact_finitePart` proves the zero prescribed finite
+part for both original arithmetic reader relations. Its
+`compactBoundaryCoefficient` expresses the displayed coefficient through
+the four original transfer moments, retaining both endpoints.
+
+The new leaf passed a clean scratch check and an isolated exact module
+audit. It is umbrella-wired; no dependency or umbrella build ran.
+`OriginalCuspFlux.original_source_logarithmic_remainders` supplies the exact
+log-coordinate conversion used by the uniform estimates and passed its own
+exact leaf audit. The original `OriginalContactCusp` module is unchanged.
+
+This does not include `a=0` or a joint/unbounded time-height-horizon limit.
+The next whole-route obligation is the original unbounded causal-triangle
+comparison and its first temporal moment, with the actual current remainder
+proved integrable before comparing the two finite-part prescriptions.
+
+A broad literature search found the
+[superfluid memory calculation](https://arxiv.org/html/2608.31172v1), where a
+vanishing zeroth pulse moment coexists with a nonzero first-moment memory
+at the stated EFT order. This supplies no HB premise; it is a useful
+comparison for retaining the first moment in the corner calculation.
+The [time-dependent medium scattering construction](https://arxiv.org/html/2602.19981v1)
+uses operator-valued frequency coupling and a compact spacetime perturbation;
+it does not identify our original metric/current or its subtraction.
+
+The [2026 Radon mapping analysis](https://arxiv.org/html/2603.10804v1)
+resolves boundary degeneracy geometrically and uses Mellin pole cancellation
+to remove logarithmic terms overpredicted by general mapping estimates.
+This suggests inspecting the actual coupled corner coefficients before
+inferring an obstruction from separate face estimates; its Radon hypotheses
+and density are not HB premises. The
+[2026 AKSZ corner analysis](https://arxiv.org/html/2608.02928v1)
+organizes signed face defects under an explicit formal mapping-space
+hypothesis. That identity does not provide the analytic trace or unbounded
+integral admission required by our original current.
 
 ## Actual RH closing obligation
 
@@ -1038,14 +1743,13 @@ integral_D_Y JR
             -(f*ell_R+ell_p)*M_Y(C(U))).
 ```
 
-These are **analytical derivations, not yet Lean closures**. Applying the
-first-Green correspondence to the differentiated source and `C(U)` requires
-their actual modularity and smoothness. Those follow on paper by
-differentiating the original modular identity at finite parameter values;
-no infinite-cusp limit is differentiated. The formulas specify both the
-scalar current and every normal-flux correction that must be compared with
-the restored physical residue. They do not dispose of the horizon or onset
-contacts.
+These amplitude-factored formulas are **analytical derivations**. The actual
+metric-to-scalar-period identity, reader equations and paired angular-boundary
+cancellation are formalized below. The original modular identity is
+differentiated at finite time/radius values; no infinite-cusp limit is
+differentiated. The formulas specify both the scalar current and normal-flux
+correction to compare with the restored physical residue. Horizon and onset
+contacts remain.
 
 The original wave equation also supplies a direct source reduction of this
 contact. Put `x=tortoise(R)` and
@@ -1121,9 +1825,140 @@ radial equation and two-jet, without a positive-frequency convergence premise.
 Clean scratch checks and isolated exact module audits passed at unchanged
 heartbeats; the leaf import is wired. The explicit coordinate formula is exposed
 by `ThetaCuspHawkingBMOriginalAngularCurrent.leftScalar_value`.
-Paired-side/core cancellation and the prescribed temporal/cusp/horizon limit
-comparison remain open. No limit is interchanged by this finite identity.
-Full matching and its impossibility remain unproved.
+`ThetaCuspHawkingBMOriginalModularOrbit.original_transfer_boundary` proves
+paired-side and curved-core cancellation for both fully transferred pairs.
+With `T_Y(A,B)=int_(-1/2)^(1/2) A*B_Y dX`, its
+`original_metric_top_integral` identifies the actual finite metric current as
+
+```
+int_D_Y J_j + R^(-2)*[
+  mu*(mu-2)*P_Y(D_j U,W)-mu*P_Y(C(U),D_j W)]
+ = R^(-2)*[T_Y(D_j U,C(W))-T_Y(C(U),D_j W)].
+```
+
+This retains the complete original forcing. The proof differentiates the
+original modular identity only at finite time/radius values, and uses the
+actual reader covector Jacobian. Clean scratch and isolated exact leaf audit
+passed, with its umbrella import wired. The prescribed temporal/cusp/horizon
+limit comparison and moving-corner attachment remain open. Full matching
+and its impossibility remain unproved.
+
+**[BRIDGE; proved in Lean, scratch and exact leaf audit passed]** Both genuine first null
+derivatives of the restored remainder have arbitrary cusp decay, uniformly
+for `0<p,r<=T` and all horizontal positions. The corpus already supplies the
+exact Goursat derivative identities in `CausalResponseCusp`: each first null
+derivative is a single integral of the remainder forcing. That forcing is
+the native source remainder plus `Delta(responseRemainder)/(4*cosh^2)`.
+The angular remainder bounds are uniform on the closed causal rectangle;
+using decay order `N+2` absorbs the `exp(2*k)` Laplacian coefficient.
+The source weight and null-potential coefficient are bounded there. The
+single integrals therefore preserve decay order `N`. Restoring the original
+lift adds its genuine null derivative times the native remainder; the lift
+derivatives are continuous and bounded on the same rectangle. All three
+original principal coefficients remain inside the differentiated remainder.
+`ThetaCuspHawkingBMOriginalNullCusp.original_null_cusp_bound` proves the
+uniform bound, and `original_null_cusp_limit` allows arbitrary complex cusp
+weights and arbitrary bounded positive null-time and horizontal paths.
+No convergence or regularity of those paths is assumed. The leaf is wired;
+its isolated exact audit built only this module.
+
+This is the derivative order required by the transferred finite metric
+identity: the source-contact equation has already removed second time/radius
+derivatives. Consequently no additional second-invariant estimate is needed
+for this step. The existing native invariant Volterra formulas remain
+available for higher derivatives.
+
+**[BRIDGE; proved in Lean, scratch and exact leaf audit passed]** The physical
+coordinate attachment is closed in `ThetaCuspHawkingBMOriginalOrbitCusp`.
+Write `v=p-2*tortoise(R)`, `f=R^2-1`, and `U_pr` for `R` times the three
+original principal terms. The genuine orbit differences are
+
+```
+partial_R(U-U_pr) = E-(2R/f)*partial_v E,
+(f*partial_R+partial_p)(U-U_pr) = f*E+R*(partial_p E-partial_v E).
+```
+
+Continuous original Goursat partials first yield joint differentiability of
+the principal coefficients. The actual chart chain rule then retains every
+term from radius reconstruction and the original onset lift. Both differences
+vanish with any complex cusp weight, uniformly in horizontal position and
+after integration over the width-one cusp, at each fixed `p>0,R>1`.
+The leaf is wired; its exact audit built only this module. Its explicit
+principal orbit expansion is also proved. If
+`A_i(p,R)=R*c_i(p,p-2*tortoise(R))`, the two coefficients are
+`partial_R A_i` and `(R^2-1)*partial_R A_i+partial_p A_i`; the original
+three height exponents are unchanged. `principal_orbit_expansion` proves
+the exact differentiated principal identity, and `original_orbit_expansion`
+attaches it to the actual field with a remainder vanishing after every
+complex cusp weight along arbitrary horizontal paths. Genuine coefficient
+differentiability is proved first, retaining the original onset lifts.
+The complete principal metric top-flux coefficients and both actual cusp
+remainders are proved below, including the original forcing contact and the
+integrated signed difference of the two top fluxes.
+The prescribed temporal/horizon/corner comparison remains open; these fixed
+exterior bounds do not authorize arbitrary joint limits.
+
+### Complete metric cusp coefficients — Lean closure at fixed time and radius
+
+Keep the original `U=R*Z`, `W=ell(p,R)*S`, `Delta S=mu*S`, and
+`C(U)=Delta U-2U+R^3/(R^2-1)*F`. Let `P` be the literal half-square
+source. The original angular equation retains the entire gradient energy
+and gives `F=B0*P+B2*Delta P`. The explicit coefficients `B0,B2` are
+`forcingValueCoefficient` and `forcingLaplacianCoefficient` in
+`ThetaCuspHawkingBMOriginalMetricCusp`; their common `forcingScale`
+retains the original source amplitude and fixed onset.
+
+Write `alpha_i=principalExponent q i`, `a_i=principalAmplitude q i`,
+`A_i=R*coefficient q branch amp p (p-2*tortoise R) i`, and
+`K_ji=principalOrbitCoefficient q branch amp j p R i`. The original
+source contact's principal coefficients are therefore
+
+```
+C_i = (alpha_i*(alpha_i-1)-2)*A_i
+    + R^3/(R^2-1)*(B0+B2*alpha_i*(alpha_i-1))*a_i.
+```
+
+For the physical reader, put `beta=readerExponent r`,
+`b=readerCoefficient r`, and
+`ell_j=readerOrbitAmplitude r side outer j p R`. Genuine exterior
+derivatives give `partial_Y C(W)=(mu-2)*ell*partial_Y S` and
+`partial_Y D_j W=ell_j*partial_Y S`. Thus the complete right-hand cusp
+term of `OriginalModularOrbit.original_metric_top_integral` has coefficients
+
+```
+M_ji = R^(-2)*b*beta*((mu-2)*ell*K_ji-ell_j*C_i),
+gamma_i = alpha_i+beta-1.
+```
+
+At fixed `p>0,R>1`, the original potential's angular jets and the literal
+half-square remainder jets decay after every complex height weight.
+Multiplication by `R`, the fixed forcing coefficients and the angular
+Laplacian preserves this property. The full signed reader-normal tail also
+has that decay. Expanding each product leaves a principal term plus three
+rapid remainder terms. Arbitrary-horizontal-path bounds give the uniform
+width-one integral bound. Consequently these coefficients prescribe the
+entire cusp subtraction for both metric terms on paper. The existing
+nonresonance theorem gives `gamma_i<>0` for original diagonal and reflected
+readers, so there is no extra constant metric cusp contribution.
+
+**Lean status:** the reusable full-reader normal-flux expansion and its
+integrated remainder are audited in `OriginalCuspFlux`; `OriginalMetricCusp`
+proves the first transfer, both reader normal identities and the complete
+forcing decomposition. The audited and wired `OriginalContactCusp` now
+proves the actual physical angular restriction, the full `C(U)` expansion,
+and `second_metric_cusp_expansion`. Genuine continuity supplies interval
+integrability before principal subtractions are moved outside the integrals.
+`complete_metric_top_cusp_limit` proves that the original signed difference
+of both top fluxes, minus the displayed three-power sum, tends to zero.
+`complete_metric_cusp_constant` excludes a constant contribution for original
+diagonal/reflected readers. The exact leaf audit built two jobs; no umbrella
+build was run. No vanishing source amplitude or coupling is assumed.
+
+This closes the complete cusp subtraction at each fixed `p>0,R>1`. It does
+not exchange the original time and horizon limits or remove their
+moving-corner term. The Lean reader identities concern the original
+`frequency r side` in `leftScalar`; matching an independently varying
+temporal-frequency family remains open.
 
 ### Connection to the complete Einstein angular current — analytical
 

@@ -1,0 +1,44 @@
+{
+  "theta-divisor-individual-erasure-2026-09-13": {
+    "tasks": 18,
+    "wall_seconds": 53.844075836241245,
+    "worker_seconds": 393.29232093319297,
+    "all_workers_ok": true
+  },
+  "theta-divisor-collective-erasure-2026-09-13": {
+    "tasks": 14,
+    "wall_seconds": 32.67067206092179,
+    "worker_seconds": 240.27722523733974,
+    "all_workers_ok": true
+  },
+  "theta-divisor-single-independent-challenge-2026-09-13": {
+    "tasks": 8,
+    "wall_seconds": 3.6405109763145447,
+    "worker_seconds": 17.85033645108342,
+    "all_workers_ok": true
+  },
+  "theta-divisor-collective-independent-challenge-2026-09-13": {
+    "tasks": 4,
+    "wall_seconds": 4.12921497784555,
+    "worker_seconds": 11.99760378524661,
+    "all_workers_ok": true
+  },
+  "theta-divisor-interaction-collisions-2026-09-13": {
+    "tasks": 11,
+    "wall_seconds": 14.672103133052588,
+    "worker_seconds": 116.23997746407986,
+    "all_workers_ok": true
+  },
+  "theta-divisor-collision-independent-challenge-2026-09-13": {
+    "tasks": 6,
+    "wall_seconds": 4.650842733681202,
+    "worker_seconds": 16.94120230898261,
+    "all_workers_ok": true
+  },
+  "theta-divisor-strip-witness-correction-2026-09-13": {
+    "tasks": 2,
+    "wall_seconds": 4.127957100048661,
+    "worker_seconds": 5.407215893268585,
+    "all_workers_ok": true
+  }
+}

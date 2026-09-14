@@ -1,0 +1,47 @@
+{
+  "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+  "platform": "Linux-6.8.0-101-generic-x86_64-with-glibc2.29",
+  "affinity": [
+    0,
+    21,
+    37,
+    50,
+    68,
+    84,
+    91,
+    92,
+    96,
+    117,
+    133,
+    146,
+    164,
+    180,
+    187,
+    188
+  ],
+  "packages": [
+    "mpmath==1.3.0",
+    "numpy==1.24.4",
+    "scipy==1.10.1",
+    "sympy==1.13.3"
+  ],
+  "cap_seconds": 585,
+  "cleanup_seconds": 10,
+  "max_workers": 14,
+  "threads_per_worker": 1,
+  "memory_limit_per_process_bytes": 3221225472,
+  "input_sha256": {
+    "method-matrix.json": "5a1ed238763de6501c8549c93515efa98ee4a680ddaaf3731924c225d8c1a5b0",
+    "theta-divisor-surgery-method-current.json": "c2f6808fbc4f11f35c1c5d972ba992975322a94a33de4898855ff205fdabaa11",
+    "theta-divisor-surgery-current.json": "176a9ef8e987538c7600055bdb7a7247220f7f39c5e6707b42c75929a6ac970e",
+    "theta-surgery-validation-frontier.json": "129f6168705418470244864fd446eeb0afdfcc01fce4e47eeab4eaf8460864f2",
+    "validation-jobs.json": "dcfe78e6b2d947a8f1e52790c66b363bc5db077a32d8c8000261ca122c35b7e4",
+    "experiment.py": "038f596b34742a8f3d71982bccd1915bbac4d54af8a5176158da611be17d5595",
+    "common.py": "21b47ff65e209a32ed7b9528a868de83001e9146d36468f67ba7bc300ef3e114",
+    "source-provenance.json": "bdd915b12cafefd7f14c9b3b4c5c0895cb7824c5703bf556c65fe1db8149e42f",
+    "guard.py": "3d14d9594046a8a1c1ec0c4507e51a3b8d5157f5fb2a67d7bc558a5434267760",
+    "nodes.json": "aea1d6476becbf27e0552246b66191c868aeeb1d41298d9c02ac7d3f3ac0070c",
+    "PROTOCOL.md": "31dfc4992bbbf9c99cc12124647add89d30851d51e80d0a824be296cb5e51491",
+    "validation.py": "e89c1a8341c7f2b572618226252aa12d25af8c27bc7d518b7219b56c7dabb7d0"
+  }
+}

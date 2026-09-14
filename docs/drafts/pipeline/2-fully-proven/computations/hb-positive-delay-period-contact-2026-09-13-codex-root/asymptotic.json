@@ -1,0 +1,221 @@
+{
+  "rows": [
+    {
+      "gamma": 200.0,
+      "V": 2.0,
+      "order": 80,
+      "relative": 0.029741435926083807,
+      "gamma_relative": 5.948287185216762,
+      "abs_signed": 1286413115392.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 200.0,
+      "V": 2.0,
+      "order": 128,
+      "relative": 0.02973865613916585,
+      "gamma_relative": 5.94773122783317,
+      "abs_signed": 1286294343680.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 200.0,
+      "V": 4.0,
+      "order": 80,
+      "relative": 0.029723906198063768,
+      "gamma_relative": 5.9447812396127535,
+      "abs_signed": 1285835800576.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 200.0,
+      "V": 4.0,
+      "order": 128,
+      "relative": 0.029739180410036255,
+      "gamma_relative": 5.947836082007251,
+      "abs_signed": 1286516834304.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 200.0,
+      "V": 8.0,
+      "order": 80,
+      "relative": 0.029731184486065064,
+      "gamma_relative": 5.946236897213013,
+      "abs_signed": 1286111199232.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 200.0,
+      "V": 8.0,
+      "order": 128,
+      "relative": 0.029743399023208775,
+      "gamma_relative": 5.948679804641755,
+      "abs_signed": 1286683656192.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 300.0,
+      "V": 2.0,
+      "order": 80,
+      "relative": 0.019874782349892768,
+      "gamma_relative": 5.962434704967831,
+      "abs_signed": 9786454638592.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 300.0,
+      "V": 2.0,
+      "order": 128,
+      "relative": 0.019828381020392267,
+      "gamma_relative": 5.94851430611768,
+      "abs_signed": 9763273244672.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 300.0,
+      "V": 4.0,
+      "order": 80,
+      "relative": 0.019676972669591116,
+      "gamma_relative": 5.903091800877335,
+      "abs_signed": 9688483823616.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 300.0,
+      "V": 4.0,
+      "order": 128,
+      "relative": 0.019902589034939508,
+      "gamma_relative": 5.970776710481853,
+      "abs_signed": 9802188914688.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 300.0,
+      "V": 8.0,
+      "order": 80,
+      "relative": 0.02028180752958055,
+      "gamma_relative": 6.084542258874165,
+      "abs_signed": 9988112121856.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 300.0,
+      "V": 8.0,
+      "order": 128,
+      "relative": 0.019770823355022688,
+      "gamma_relative": 5.931247006506807,
+      "abs_signed": 9737194897408.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 400.0,
+      "V": 2.0,
+      "order": 80,
+      "relative": 0.01413993582781907,
+      "gamma_relative": 5.655974331127628,
+      "abs_signed": 39095074029568.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 400.0,
+      "V": 2.0,
+      "order": 128,
+      "relative": 0.01509244278448432,
+      "gamma_relative": 6.0369771137937285,
+      "abs_signed": 41739364597760.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 400.0,
+      "V": 4.0,
+      "order": 80,
+      "relative": 0.01587560184659653,
+      "gamma_relative": 6.350240738638611,
+      "abs_signed": 44093711319040.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 400.0,
+      "V": 4.0,
+      "order": 128,
+      "relative": 0.01433943899713253,
+      "gamma_relative": 5.735775598853012,
+      "abs_signed": 39682142371840.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 400.0,
+      "V": 8.0,
+      "order": 80,
+      "relative": 0.014085529061586373,
+      "gamma_relative": 5.634211624634549,
+      "abs_signed": 39189462646784.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 400.0,
+      "V": 8.0,
+      "order": 128,
+      "relative": 0.014346511867577629,
+      "gamma_relative": 5.738604747031052,
+      "abs_signed": 39683056730112.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 500.0,
+      "V": 2.0,
+      "order": 80,
+      "relative": 0.01737336706048602,
+      "gamma_relative": 8.686683530243009,
+      "abs_signed": 183978145349632.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 500.0,
+      "V": 2.0,
+      "order": 128,
+      "relative": 0.015804716228051664,
+      "gamma_relative": 7.902358114025832,
+      "abs_signed": 166795222712320.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 500.0,
+      "V": 4.0,
+      "order": 80,
+      "relative": 0.04357610394763276,
+      "gamma_relative": 21.78805197381638,
+      "abs_signed": 449899971739648.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 500.0,
+      "V": 4.0,
+      "order": 128,
+      "relative": 0.0025400043311175386,
+      "gamma_relative": 1.2700021655587692,
+      "abs_signed": 26650439843840.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 500.0,
+      "V": 8.0,
+      "order": 80,
+      "relative": 0.05472732287200732,
+      "gamma_relative": 27.36366143600366,
+      "abs_signed": 580227533111296.0,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 500.0,
+      "V": 8.0,
+      "order": 128,
+      "relative": 0.023762871888166955,
+      "gamma_relative": 11.881435944083478,
+      "abs_signed": 249829959663616.0,
+      "conjugacy_error": 0.0
+    }
+  ],
+  "max_order_change": 20.51804980825761
+}

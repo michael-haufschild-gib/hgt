@@ -253,6 +253,25 @@ private theorem pairing_integral (A B : F) (p R : ℝ)
     (area_integrable (fun z hz => (density_smooth (hA z hz) (hB z hz)).continuousAt) Y)] at h
   exact h
 
+/-- Antisymmetrizing the two original integrations by parts transfers the
+scalar Laplacian while retaining every finite-domain normal flux. -/
+theorem scalar_green_integral (A B : F) (p R : ℝ)
+    (hA : ∀ z : ℂ, 0<z.im → ContDiffAt ℝ ∞ A (slice p R z))
+    (hB : ∀ z : ℂ, 0<z.im → ContDiffAt ℝ ∞ B (slice p R z))
+    {Y : ℝ} (hY : 1≤Y) :
+    (∫ w in domain Y, scalarDensity B A (slice p R (point w.1 w.2)))-
+      (∫ w in domain Y, scalarDensity A B (slice p R (point w.1 w.2)))=
+      boundary (transfer B A 0) (transfer B A 1) p R Y-
+        boundary (transfer A B 0) (transfer A B 1) p R Y := by
+  have hab := pairing_integral A B p R hA hB hY
+  have hba := pairing_integral B A p R hB hA hY
+  have hs : pairing B A=pairing A B := by
+    funext x
+    unfold pairing
+    simp_rw [mul_comm]
+  rw [hs] at hba
+  linear_combination hba-hab
+
 /-- Ingoing time current uses U_R; radial current uses f U_R+U_p. -/
 def orbitDerivative (U : F) (j : Fin 2) (x : P) : ℂ :=
   if j=0 then coordDeriv 1 U x else
@@ -463,5 +482,23 @@ theorem original_metric_integral (q r : XiZeroCopy) (branch side outer : Bool) (
   rw [he]
   linear_combination (1/(R:ℂ)^2)*hAB-(1/(R:ℂ)^2)*hDE
 
+
+
+/-- Reusable full-boundary pairing identity for the independently varying physical reader. -/
+theorem coexact_pairing_integral (A B : F) (p R : ℝ)
+    (hA : ∀ z : ℂ, 0<z.im → ContDiffAt ℝ ∞ A (slice p R z))
+    (hB : ∀ z : ℂ, 0<z.im → ContDiffAt ℝ ∞ B (slice p R z))
+    {Y : ℝ} (hY : 1≤Y) :
+    (∫ w in domain Y, pairing A B (slice p R (point w.1 w.2)))+
+      (∫ w in domain Y, scalarDensity A B (slice p R (point w.1 w.2)))=
+      boundary (transfer A B 0) (transfer A B 1) p R Y := pairing_integral A B p R hA hB hY
+
+/-- Original orbit-current reduction for a smooth scalar source and reader family. -/
+theorem coexact_orbit_current {U W : F} {x : P}
+    (hU : ContDiffAt ℝ ∞ U x) (hW : ContDiffAt ℝ ∞ W x) (j : Fin 2) :
+    D4BMIngoingFullCurrent.current (x 1) (x 3)
+      (fun a => ofField (coexactField U a) x) (fun a => ofField (coexactField W a) x) (if j=0 then 0 else 1)=
+      1/(x 1:ℂ)^2*(pairing (orbitDerivative U j) (scalarContact W) x-
+        pairing (orbitDerivative W j) (scalarContact U) x) := orbit_current hU hW j
 
 end RHTower.D4BMOriginalOrbitCurrent

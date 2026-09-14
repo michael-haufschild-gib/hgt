@@ -1,0 +1,84 @@
+[
+  {
+    "label": "central-plus-0",
+    "base": [
+      1
+    ],
+    "extra": 0
+  },
+  {
+    "label": "central-plus-4",
+    "base": [
+      1
+    ],
+    "extra": 4
+  },
+  {
+    "label": "central-plus-7",
+    "base": [
+      1
+    ],
+    "extra": 7
+  },
+  {
+    "label": "central-plus-8",
+    "base": [
+      1
+    ],
+    "extra": 8
+  },
+  {
+    "label": "central-plus-11",
+    "base": [
+      1
+    ],
+    "extra": 11
+  },
+  {
+    "label": "central-plus-12",
+    "base": [
+      1
+    ],
+    "extra": 12
+  },
+  {
+    "label": "central-4-plus-0",
+    "base": [
+      1,
+      4
+    ],
+    "extra": 0
+  },
+  {
+    "label": "central-4-plus-7",
+    "base": [
+      1,
+      4
+    ],
+    "extra": 7
+  },
+  {
+    "label": "central-4-plus-8",
+    "base": [
+      1,
+      4
+    ],
+    "extra": 8
+  },
+  {
+    "label": "central-4-plus-11",
+    "base": [
+      1,
+      4
+    ],
+    "extra": 11
+  },
+  {
+    "label": "central-4-plus-12",
+    "base": [
+      1,
+      4
+    ],
+    "extra": 12
+  }
+]

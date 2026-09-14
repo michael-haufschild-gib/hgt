@@ -1,6 +1,7 @@
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Fin.Rev
+import Mathlib.Data.Nat.Choose.Vandermonde
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.GCongr
@@ -8,6 +9,7 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
+import Lean.Elab.Tactic.Omega
 
 /-!
 # Navier--Stokes analytic convolution estimate
@@ -20,6 +22,7 @@ constant `4`, improving the paper's sufficient constant `8`.
 namespace GaloisForLFunctions.HTGeometry.NavierStokesAnalyticConvolution
 
 open Finset
+open Finset.Nat
 open scoped BigOperators
 
 /-- Reciprocal-square coefficient weight used in the analytic profile norm. -/
@@ -86,6 +89,30 @@ theorem reciprocalSquareConvolution_le_eight (N : ℕ) :
   have hsum : 0 ≤ ∑ i : Fin (N + 1), reciprocalSquareWeight i :=
     Finset.sum_nonneg fun _ _ => by simp [reciprocalSquareWeight]; positivity
   nlinarith
+
+/-- The binomial ratio estimate (B.8).  Selecting `k` objects from a first block and `β-k`
+from a second block is one summand in Vandermonde's count of all `β`-subsets. -/
+theorem splitBlockChooseProduct_le (i k α β : ℕ) (hi : i ≤ α) (hk : k ≤ β) :
+    (i + k).choose k * ((α - i) + (β - k)).choose (β - k) ≤
+      (α + β).choose β := by
+  have hmem : (k, β - k) ∈ antidiagonal β := by
+    simp [hk]
+  have hterm :
+      (i + k).choose k * ((α - i) + (β - k)).choose (β - k) ≤
+        ∑ ij ∈ antidiagonal β,
+          (i + k).choose ij.1 * ((α - i) + (β - k)).choose ij.2 := by
+    exact Finset.single_le_sum (s := antidiagonal β)
+      (f := fun ij => (i + k).choose ij.1 *
+        ((α - i) + (β - k)).choose ij.2)
+      (fun ij _ => Nat.zero_le _) hmem
+  calc
+    _ ≤ ∑ ij ∈ antidiagonal β,
+          (i + k).choose ij.1 * ((α - i) + (β - k)).choose ij.2 := hterm
+    _ = ((i + k) + ((α - i) + (β - k))).choose β :=
+      (Nat.add_choose_eq _ _ _).symm
+    _ = (α + β).choose β := by
+      congr 1
+      omega
 
 /-- The radial integration weight ratio in equation (B.9) has the paper's uniform bound `80`. -/
 theorem radialIntegrationWeightRatio_le (α β : ℕ) :

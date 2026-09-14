@@ -1,0 +1,8 @@
+{
+  "production_cases": 36,
+  "validation_tasks": 16,
+  "selected_configurations": 8,
+  "max_scaled_component_difference_100_160": 6.941067056064536e-13,
+  "max_scaled_production_difference": 6.942190950992699e-09,
+  "max_pure_state_ratio_difference": 9.997924710347661e-11
+}

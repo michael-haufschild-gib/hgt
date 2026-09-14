@@ -1,0 +1,18 @@
+{
+  "metrics": {
+    "tasks": 11,
+    "wall_seconds": 14.672103133052588,
+    "worker_seconds": 116.23997746407986,
+    "all_workers_ok": true
+  },
+  "evidence_status": "numerical, not Lean proof",
+  "scope": "actual theta-source quotient counterfactual; no physical HB attachment",
+  "hostile_review": {
+    "nested_failures_checked": true,
+    "precision_challenges_checked": true,
+    "absence_not_inferred": true,
+    "source_node_list_not_complete": true,
+    "selection_deviation_disclosed": false,
+    "no_priority_claim": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-13",
+  "repository_revision": "9d774a1ea257311ad02f21d521ec31441b980657",
+  "pod_1": {
+    "host": "213.173.105.94:47180",
+    "container": "21d50a266aa9",
+    "allocated_workers": 16,
+    "cpu": "AMD EPYC 9655P 96-Core Processor",
+    "python": "3.8.10",
+    "numpy": "1.17.4",
+    "mpmath": "1.3.0"
+  },
+  "pod_2": {
+    "host": "213.173.105.97:40850",
+    "container": "0604b52ecccd",
+    "allocated_workers": 16,
+    "cpu": "AMD EPYC 9655 96-Core Processor",
+    "python": "3.8.10",
+    "numpy": "1.17.4",
+    "mpmath": "1.3.0"
+  }
+}

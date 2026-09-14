@@ -1,0 +1,13 @@
+{
+  "targets": 16,
+  "reported_roots": 78,
+  "finite_paths": 312,
+  "reasons": {
+    "boundary_approach": 156,
+    "source_zero_approach": 122,
+    "step budget": 34
+  },
+  "phase_below_1e6": 280,
+  "max_phase_drift": 0.11012550279405087,
+  "scope": "Exploratory finite trajectories, not certified thimbles. Step-budget paths with large phase drift are inconclusive. No shared-ledger topological claim."
+}

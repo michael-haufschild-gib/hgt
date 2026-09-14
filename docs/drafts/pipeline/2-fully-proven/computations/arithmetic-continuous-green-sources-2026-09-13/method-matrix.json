@@ -1,0 +1,122 @@
+[
+  {
+    "operation": 1,
+    "name": "Split",
+    "action": "Separate original source, individual continuous resolvents and their positive composition."
+  },
+  {
+    "operation": 2,
+    "name": "Falsify",
+    "action": "Search complex source zeros; one validated interior witness kills a full-strip logarithm for that host and kernel."
+  },
+  {
+    "operation": 3,
+    "name": "Reverse",
+    "action": "Apply (alpha^2-D^2)Psi=2alphaPhi as control, preserving all derivative and tail terms."
+  },
+  {
+    "operation": 4,
+    "name": "Viewpoint",
+    "action": "Keep spectral zeros but change the positive source representation; distinguish arithmetic function from source coordinates."
+  },
+  {
+    "operation": 5,
+    "name": "Visual",
+    "action": "Save root map for12 host/kernel combinations; compare with discrete-tail witnesses."
+  },
+  {
+    "operation": 6,
+    "name": "Action",
+    "action": "Apply Laplace kernels atalpha=.5,1.5 and their composition to each of4 arithmetic hosts."
+  },
+  {
+    "operation": 7,
+    "name": "Essentials",
+    "action": "Retain full theta source, total exponential moment, both upper incomplete-gamma tails and all partial-fraction terms."
+  },
+  {
+    "operation": 8,
+    "name": "Similar",
+    "action": "Use zeta, primitive conductor4/5 and actual Davenport-Heilbronn as separately verified hosts."
+  },
+  {
+    "operation": 9,
+    "name": "Small",
+    "action": "Single resolvent is minimal; original differential identity is control, not discovery."
+  },
+  {
+    "operation": 10,
+    "name": "Extreme",
+    "action": "Composition removes two spectral pole pairs from reciprocal multiplier; inspect near source-strip boundary and both real tails by symmetry."
+  },
+  {
+    "operation": 11,
+    "name": "Experiment",
+    "action": "60digit pilot/control gates and12cases,14workers maximum,one600second cap. Selected surprises require100/160independent ODE/Jacobi validation."
+  },
+  {
+    "operation": 12,
+    "name": "Invariant",
+    "action": "Fourier multipliers2alpha/(alpha^2+w^2) have no zeros or interior RH-strip poles; convolution preserves real positivity/evenness."
+  },
+  {
+    "operation": 13,
+    "name": "Monotone",
+    "action": "Do not assume smoother source has fewer complex zeros or composition improves the logarithm domain."
+  },
+  {
+    "operation": 14,
+    "name": "Weaker bridge",
+    "action": "Finite interior node witnesses only; no root found cannot certify nonvanishing."
+  },
+  {
+    "operation": 15,
+    "name": "Stronger hunch",
+    "action": "Continuous kernel might remove discrete Floquet obstruction; test whether a different complex-source obstruction remains."
+  },
+  {
+    "operation": 16,
+    "name": "Minimal counterexample",
+    "action": "Compare composition against both constituent resolvents for same host."
+  },
+  {
+    "operation": 17,
+    "name": "Representation",
+    "action": "Compute via upper incomplete-gamma tails; validate with forced ODE and independent Jacobi source."
+  },
+  {
+    "operation": 18,
+    "name": "Technique",
+    "action": "Current deep/source-method hits support convolution and Gaussian heat primitives but not this complete bridge. Homogenization paper suggests testing microscopic structure versus limiting representation."
+  },
+  {
+    "operation": 19,
+    "name": "Fake proof",
+    "action": "Same spectral zeros and positive source do not entail RH or holomorphic source logarithm."
+  },
+  {
+    "operation": 20,
+    "name": "Missing lemma",
+    "action": "Global nonvanishing of an admissible source representation and a source-specific real-rootedness theorem; either may fail."
+  },
+  {
+    "operation": 21,
+    "name": "Dependency",
+    "action": "Verified arithmetic host -> convergent Green convolution -> exact spectral multiplier -> numerical source nodes; no HB action attachment."
+  },
+  {
+    "operation": 22,
+    "name": "Nearby false",
+    "action": "Gaussian-source convolution is exactly a rotated/rescaled backward deBruijn deformation; naive scanning was rejected as a repackaging."
+  },
+  {
+    "operation": 23,
+    "name": "Boundary",
+    "action": "Retain multiplier poles at+-i alpha and noncompact source tails; source evaluation confined to |Im z|<pi/4."
+  },
+  {
+    "operation": 24,
+    "name": "Salvage",
+    "action": "If all tested Green sources retain nodes, abandon generic resolvent removal and identify representation-invariant information required of a source-to-spectrum mechanism."
+  }
+]

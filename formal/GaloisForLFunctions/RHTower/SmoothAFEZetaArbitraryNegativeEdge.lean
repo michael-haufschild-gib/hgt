@@ -325,15 +325,7 @@ theorem smoothAFEZetaDualMellinEdge_eq_left_one
   have hOne := riemannZeta_eq_smoothAFEZetaMellin_sub_dualEdge_sub_residue
     hx (show (0 : ℝ) < 1 by norm_num) (show (1 : ℝ) ≤ 1 by norm_num)
       hs hre0 (by linarith)
-  have hcSolve : smoothAFEZetaDualMellinEdge s x c =
-      smoothAFEZetaMellinAt 1 s x - smoothAFEZetaShiftedPoleResidue s x -
-        riemannZeta s := by
-    linear_combination hcEdge
-  have hOneSolve : smoothAFEZetaDualMellinEdge s x 1 =
-      smoothAFEZetaMellinAt 1 s x - smoothAFEZetaShiftedPoleResidue s x -
-        riemannZeta s := by
-    linear_combination hOne
-  rw [hcSolve, hOneSolve]
+  exact sub_right_inj.mp (sub_left_inj.mp (hcEdge.symm.trans hOne))
 
 /-- On the displaced Levinson line, depth `4-d` fixes `Re(s+w)=-7/2` while
 leaving the exact dual integral unchanged. -/

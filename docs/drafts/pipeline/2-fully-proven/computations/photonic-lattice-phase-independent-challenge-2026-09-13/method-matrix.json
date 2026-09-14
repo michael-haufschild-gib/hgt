@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "method": "Split",
+    "application": "Four stabilizer-sign sections, odd dimensions1/3 and invariant even-dimension2 control; both projector/density metrics.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 2,
+    "method": "Falsify",
+    "application": "Test whether the phase section needed for the full modular quotient eliminates the observed cusp anisotropy. Failure leaves physical boundary law open.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 3,
+    "method": "Reverse",
+    "application": "Given the desired modular quotient, derive phase transformation from Weyl law before imposing a scalar reader.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 4,
+    "method": "Viewpoint",
+    "application": "Use the full optical displacement group rather than its bare lattice drawing; phase is physical data.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 5,
+    "method": "Visual",
+    "application": "Display phase-sector ratio maps with invariant-section markers and generator fidelities.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 6,
+    "method": "Action",
+    "application": "Change stabilizer phases while holding shape, area, energy envelope and reader fixed; combine with cusp approach.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 7,
+    "method": "Essentials",
+    "application": "Retain every Weyl sign in both comb sums and all logical channels; no phase average substituted.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 8,
+    "method": "Similar",
+    "application": "Odd d1/3 each compare all four half-phase choices. Even d2 zero-phase section is a structural control.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 9,
+    "method": "Small",
+    "application": "First full case is sizing pilot; generator S/T fidelity checks are predicted implementation tests only.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 10,
+    "method": "Extreme",
+    "application": "Two fixed delta*y paths at delta.1/.05; both cusp depth and finite energy change. No infinite-limit theorem claimed.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 11,
+    "method": "Experiment",
+    "application": "36cases with14workers under one600secondguard; adverse selected results need100/160independent summation.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 12,
+    "method": "Invariant",
+    "application": "Weyl law D(v1+v2)=(-1)^d D(v1)D(v2) fixes which constant sign section is invariant under S/T.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 13,
+    "method": "Monotone",
+    "application": "No claim that symmetry restoration monotonically improves metric anisotropy or scattering.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 14,
+    "method": "Weaker bridge",
+    "application": "Modular-generator closure is only a kinematic bridge and does not replace the unknown physical scalar operator.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 15,
+    "method": "New hunch",
+    "application": "H3 frozen: retaining the modularly invariant stabilizer phase may restore a common hyperbolic cusp geometry. This is independent of H1/H2 and cannot redefine them.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 16,
+    "method": "Minimal counterexample",
+    "application": "Same d,shape and delta with only one sign flipped isolates the missing data.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 17,
+    "method": "Representation",
+    "application": "Gaussian kernel/comb with explicit phase factors; S/T controls compare equivalent lattice bases in actual symplectic charts.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 18,
+    "method": "Technique",
+    "application": "Weyl multiplication and phase-torus bundle from primary GKP literature; current cached search supplies no checked continuum theorem.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 19,
+    "method": "Fake proof",
+    "application": "A lattice and its relabeled basis define the same zero-phase code for every d. Odd-d Weyl sign is the exact gap.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 20,
+    "method": "Missing lemma",
+    "application": "A justified phase/readout sector whose full photonic response is the scalar modular cusp receiver.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 21,
+    "method": "Dependency",
+    "application": "Quantum commutation -> symplectic integral lattice -> phase-correct modular identification -> physical metric/response -> resonance law.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 22,
+    "method": "Nearby false",
+    "application": "Uniform phase averaging may destroy lattice information; do not treat it as a harmless gauge quotient. Individually normalized phase mixtures differ from unnormalized averaging.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 23,
+    "method": "Boundary",
+    "application": "Keep all phase weights, logical Gram spectra, rotation, energy envelope and sum/derivative resolution.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  },
+  {
+    "id": 24,
+    "method": "Salvage",
+    "application": "If invariant phase does not fix end geometry, retain correct quotient and stop using wrong phase sections; identify the remaining physical metric as the next object.",
+    "validation_application": "Apply to paired phase sectors at fixed geometry. Validate all tensor components and S/T fidelities with independent Jacobi sums/direct complex SVD, twice outer cutoff and smaller derivative steps; retain the parent scientific interpretation and its limits."
+  }
+]

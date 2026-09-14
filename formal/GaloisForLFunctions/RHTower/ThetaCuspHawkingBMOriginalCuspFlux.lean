@@ -895,5 +895,232 @@ theorem pairingFluxConstant_original_readers (q : XiZeroCopy) (branch : Bool) (a
   · simp [pairingFluxConstant,hq]
   · simp [pairingFluxConstant,hf]
 
+
+/-- Genuine normal differentiation of the full original reader retains only its derived principal power. -/
+theorem original_reader_normal_expansion (r : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
+    Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
+      (D 1 (D4BMLiteralCusp.scalar (physicalAngularParameter r)) ![X k,Real.exp k]-
+        readerCoefficient r*readerExponent r*Complex.exp ((readerExponent r-1)*(k:ℂ))))
+      atTop (𝓝 0) := by
+  have h := tail_derivative_rapid r w X
+  apply h.congr'
+  filter_upwards [] with k
+  rw [reader_derivative r (Real.exp_pos k),readerPrincipal_derivative r (Real.exp_pos k)]
+  simp only [E,atHeight,Matrix.cons_val,exp_cpow]
+  ring
+
+/-- The actual original source Laplacian retains its differentiated principal coefficients. -/
+theorem original_source_laplacian_expansion (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : Ici (0:ℝ)) (X : ℝ → ℝ) (w : ℂ) :
+    Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
+      (L (D4BMOriginalAngularGreen.source q branch amp p v) ![X k,Real.exp k]-
+        ∑ i : Fin 3, coefficient q branch amp p v i*principalExponent q i*
+          (principalExponent q i-1)*Complex.exp (principalExponent q i*(k:ℂ))))
+      atTop (𝓝 0) := by
+  have h := source_laplacian_rapid q branch amp p v w X
+  apply h.congr'
+  filter_upwards [] with k
+  rw [(source_operators q branch amp p v (Real.exp_pos k)).2,
+    sourcePrincipal_laplacian q branch amp p v (Real.exp_pos k)]
+  simp only [E,atHeight,Matrix.cons_val,exp_cpow]
+  ring
+
+private theorem normal_remainder_rapid (q r : XiZeroCopy) (F : Field) (a : Fin 3 → ℂ)
+    (hF : ∀ (X : ℝ → ℝ) (w : ℂ), Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
+      (F ![X k,Real.exp k]-∑ i : Fin 3, a i*Complex.exp (principalExponent q i*(k:ℂ))))
+      atTop (𝓝 0)) :
+    Rapid (fun z => F ![z 0,Real.exp (z 1)]*
+      D 1 (D4BMLiteralCusp.scalar (physicalAngularParameter r)) ![z 0,Real.exp (z 1)]-
+      ∑ i : Fin 3, a i*readerCoefficient r*readerExponent r*E (fluxExponent q r i) z) := by
+  let P : Field := fun z => ∑ i : Fin 3, a i*E (principalExponent q i) z
+  let Q := atHeight (D 1 (readerPrincipal r))
+  let T := atHeight (D 1 (readerTail r))
+  let e : Field := fun z => atHeight F z-P z
+  have he : Rapid e := by
+    intro w X
+    simpa only [e,P,E,atHeight,Matrix.cons_val] using hF X w
+  have hP : Moderate P :=
+    Moderate.sum_three (fun i z => a i*E (principalExponent q i) z)
+      (fun i => (Moderate.exp (principalExponent q i)).scale (a i))
+  have h := ((he.mul_moderate (readerPrincipal_derivative_moderate r)).add
+    (hP _ (tail_derivative_rapid r))).add (he.mul (tail_derivative_rapid r))
+  have hPQ (z : Point) : P z*Q z=
+      ∑ i : Fin 3, a i*readerCoefficient r*readerExponent r*E (fluxExponent q r i) z := by
+    dsimp only [P,Q,atHeight]
+    rw [readerPrincipal_derivative r (Real.exp_pos _)]
+    simp only [Matrix.cons_val,exp_cpow,Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i _
+    have hx : E (principalExponent q i) z*E (readerExponent r-1) z=E (fluxExponent q r i) z := by
+      rw [E_mul]
+      congr 1
+      unfold fluxExponent
+      ring
+    change a i*E (principalExponent q i) z*
+      (readerCoefficient r*readerExponent r*E (readerExponent r-1) z)=_
+    rw [← hx]
+    ring
+  apply h.congr
+  intro z
+  change e z*Q z+P z*T z+e z*T z=_
+  rw [← hPQ]
+  have hr := reader_derivative r (z:=![z 0,Real.exp (z 1)]) (Real.exp_pos _)
+  rw [hr]
+  change (atHeight F z-P z)*Q z+P z*T z+(atHeight F z-P z)*T z=
+    atHeight F z*(Q z+T z)-P z*Q z
+  ring
+
+/-- Pairing a derived source expansion with the full reader preserves the exact normal-flux powers. -/
+theorem normal_flux_of_expansion (q r : XiZeroCopy) (F : Field) (a : Fin 3 → ℂ)
+    (hF : ∀ (X : ℝ → ℝ) (w : ℂ), Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
+      (F ![X k,Real.exp k]-∑ i : Fin 3, a i*Complex.exp (principalExponent q i*(k:ℂ))))
+      atTop (𝓝 0)) (X : ℝ → ℝ) (w : ℂ) :
+    Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
+      (F ![X k,Real.exp k]*D 1 (D4BMLiteralCusp.scalar (physicalAngularParameter r)) ![X k,Real.exp k]-
+        ∑ i : Fin 3, a i*readerCoefficient r*readerExponent r*Complex.exp (fluxExponent q r i*(k:ℂ))))
+      atTop (𝓝 0) := by
+  simpa only [E,Matrix.cons_val] using normal_remainder_rapid q r F a hF w X
+
+/-- Arbitrary horizontal paths give the uniform bound needed by the actual width-one cusp integral. -/
+theorem normal_flux_integral_of_expansion (q r : XiZeroCopy) (F : Field) (a : Fin 3 → ℂ)
+    (hF : ∀ (X : ℝ → ℝ) (w : ℂ), Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
+      (F ![X k,Real.exp k]-∑ i : Fin 3, a i*Complex.exp (principalExponent q i*(k:ℂ))))
+      atTop (𝓝 0)) (w : ℂ) :
+    Tendsto (fun k : ℝ => ∫ X in (-1/2:ℝ)..1/2, Complex.exp (w*(k:ℂ))*
+      (F ![X,Real.exp k]*D 1 (D4BMLiteralCusp.scalar (physicalAngularParameter r)) ![X,Real.exp k]-
+        ∑ i : Fin 3, a i*readerCoefficient r*readerExponent r*Complex.exp (fluxExponent q r i*(k:ℂ))))
+      atTop (𝓝 0) := by
+  simpa only [E,Matrix.cons_val] using (normal_remainder_rapid q r F a hF).integral w
+
+/-- Original diagonal/reflected reader heights cannot resonate with any source normal-flux power. -/
+theorem fluxExponent_nonzero_original (q r : XiZeroCopy)
+    (h : (r.1:ℂ).im=(q.1:ℂ).im ∨ (r.1:ℂ).im= -(q.1:ℂ).im) (i : Fin 3) :
+    fluxExponent q r i≠0 := exponent_nonzero_of_im_or q r h i
+
+
+/-- Scalar Green flux of the complete original source and unchanged physical reader. -/
+def scalarGreenFlux (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : ℝ) (z : Point) : ℂ :=
+  D4BMLiteralCusp.scalar (physicalAngularParameter r) z*
+    D 1 (D4BMOriginalAngularGreen.source q branch amp p v) z-
+  D4BMOriginalAngularGreen.source q branch amp p v z*
+    D 1 (D4BMLiteralCusp.scalar (physicalAngularParameter r)) z
+
+/-- Original principal coefficient of the scalar Green transposition. -/
+def scalarGreenCoefficient (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : ℝ) (i : Fin 3) : ℂ :=
+  coefficient q branch amp p v i*readerCoefficient r*
+    (principalExponent q i-readerExponent r)
+
+private def scalarGreenPrincipal (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : ℝ) (z : Point) : ℂ :=
+  readerPrincipal r z*D 1 (sourcePrincipal q branch amp p v) z-
+    sourcePrincipal q branch amp p v z*D 1 (readerPrincipal r) z
+
+private theorem scalarGreenPrincipal_expansion (q r : XiZeroCopy) (branch : Bool)
+    (amp : ℂ) (p v : ℝ) {z : Point} (hz : 0<z 1) :
+    scalarGreenPrincipal q r branch amp p v z=∑ i : Fin 3,
+      scalarGreenCoefficient q r branch amp p v i*(z 1:ℂ)^(fluxExponent q r i) := by
+  have hn : (z 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hz.ne'
+  have hm (a b : ℂ) : (z 1:ℂ)^a*(z 1:ℂ)^b=(z 1:ℂ)^(a+b) :=
+    (Complex.cpow_add a b hn).symm
+  rw [scalarGreenPrincipal,sourcePrincipal_derivative q branch amp p v hz,
+    readerPrincipal_derivative r hz,readerPrincipal,sourcePrincipal]
+  simp only [Finset.mul_sum,Finset.sum_mul,← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  calc
+    _ = coefficient q branch amp p v i*readerCoefficient r*
+        (principalExponent q i*((z 1:ℂ)^(readerExponent r)*
+          (z 1:ℂ)^(principalExponent q i-1))-
+        readerExponent r*((z 1:ℂ)^(principalExponent q i)*
+          (z 1:ℂ)^(readerExponent r-1))) := by ring
+    _ = _ := by
+      rw [hm,hm,show readerExponent r+(principalExponent q i-1)=fluxExponent q r i by
+          unfold fluxExponent;ring,
+        show principalExponent q i+(readerExponent r-1)=fluxExponent q r i by
+          unfold fluxExponent;ring]
+      unfold scalarGreenCoefficient
+      ring
+
+private theorem scalarGreenRemainder_rapid (q r : XiZeroCopy) (branch : Bool)
+    (amp : ℂ) (p v : Ici (0:ℝ)) : Rapid (atHeight (fun z =>
+      scalarGreenFlux q r branch amp p v z-scalarGreenPrincipal q r branch amp p v z)) := by
+  have hD := source_derivative_rapid q branch amp p v
+  have hR := source_remainder_rapid q branch amp p v
+  have hT := tail_rapid r
+  have hTd := tail_derivative_rapid r
+  have h := (((hT.mul_moderate (sourcePrincipal_derivative_moderate q branch amp p v)).add
+    ((readerPrincipal_moderate r) _ hD)).add (hT.mul hD)).sub
+    (((hR.mul_moderate (readerPrincipal_derivative_moderate r)).add
+      ((sourcePrincipal_moderate q branch amp p v) _ hTd)).add (hR.mul hTd))
+  apply h.congr
+  intro z
+  dsimp only [atHeight]
+  rw [scalarGreenFlux,scalarGreenPrincipal,
+    (source_operators q branch amp p v (Real.exp_pos (z 1))).1,
+    source_decomposition q branch amp p v _ (Real.exp_pos (z 1)),
+    reader_derivative r (Real.exp_pos (z 1)),reader_decomposition]
+  ring
+
+/-- The original scalar Green remainder vanishes in the actual cusp integral,
+with every complex height weight and every source/reader power retained. -/
+theorem original_scalarGreenFlux_expansion (q r : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v : Ici (0:ℝ)) (w : ℂ) :
+    Tendsto (fun k : ℝ => ∫ X in (-1/2:ℝ)..1/2, Complex.exp (w*(k:ℂ))*
+      (scalarGreenFlux q r branch amp p v ![X,Real.exp k]-
+        ∑ i : Fin 3, scalarGreenCoefficient q r branch amp p v i*
+          Complex.exp (fluxExponent q r i*(k:ℂ)))) atTop (𝓝 0) := by
+  have h := (scalarGreenRemainder_rapid q r branch amp p v).integral w
+  apply h.congr'
+  filter_upwards [] with k
+  apply intervalIntegral.integral_congr
+  intro X _
+  simp only [E,atHeight,Matrix.cons_val,
+    scalarGreenPrincipal_expansion q r branch amp p v (z:=![X,Real.exp k]) (Real.exp_pos k),exp_cpow]
+
+
+/-- Exact conversion of the original logarithmic remainder jets into the
+source value, height-normal derivative and angular Laplacian. The parameters
+remain free, so uniform estimates may be applied along bounded time paths. -/
+theorem original_source_logarithmic_remainders (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
+    (p v X k : ℝ) :
+    let U := D4BMOriginalAngularGreen.source q branch amp p v
+    let J := fun word => D4BMSquareCuspJets.coordinateJet word (remainder q branch amp p v) ![X,k]
+    U ![X,Real.exp k]=
+      (∑ i : Fin 3,coefficient q branch amp p v i*Complex.exp (principalExponent q i*(k:ℂ)))+J [] ∧
+    D 1 U ![X,Real.exp k]=
+      (∑ i : Fin 3,coefficient q branch amp p v i*principalExponent q i*
+        Complex.exp ((principalExponent q i-1)*(k:ℂ)))+Complex.exp (-(k:ℂ))*J [1] ∧
+    L U ![X,Real.exp k]=
+      (∑ i : Fin 3,coefficient q branch amp p v i*principalExponent q i*(principalExponent q i-1)*
+        Complex.exp (principalExponent q i*(k:ℂ)))+
+        (Complex.exp (2*(k:ℂ))*J [0,0]+J [1,1]-J [1]) := by
+  dsimp only
+  have hz : 0<(![X,Real.exp k]:Point) 1 := Real.exp_pos k
+  have hn : D 1 (sourceRemainder q branch amp p v) ![X,Real.exp k]=
+      Complex.exp (-(k:ℂ))*D4BMSquareCuspJets.coordinateJet [1]
+        (remainder q branch amp p v) ![X,k] := by
+    simpa only [sourceRemainder,chart,Matrix.cons_val,Real.log_exp,Complex.exp_neg,
+      ← Complex.ofReal_exp,show ¬(1:Fin 2)=0 by decide,if_false,
+      D4BMSquareCuspJets.coordinateJet] using
+        chart_first (remainder_smooth q branch amp p v) hz 1
+  have he : Complex.exp (2*(k:ℂ))=(Real.exp k:ℂ)^2 := by
+    rw [← exp_cpow,Complex.cpow_two]
+  have hl : L (sourceRemainder q branch amp p v) ![X,Real.exp k]=
+      Complex.exp (2*(k:ℂ))*D4BMSquareCuspJets.coordinateJet [0,0] (remainder q branch amp p v) ![X,k]+
+        D4BMSquareCuspJets.coordinateJet [1,1] (remainder q branch amp p v) ![X,k]-
+        D4BMSquareCuspJets.coordinateJet [1] (remainder q branch amp p v) ![X,k] := by
+    simpa only [sourceRemainder,chart,Matrix.cons_val,Real.log_exp,he,D4BMSquareCuspJets.coordinateJet] using
+      pull_laplacian (remainder_smooth q branch amp p v) hz
+  refine ⟨?_,?_,?_⟩
+  · rw [source_decomposition q branch amp p v _ hz]
+    simp only [sourcePrincipal,sourceRemainder,pull,chart,Matrix.cons_val,Real.log_exp,
+      exp_cpow,D4BMSquareCuspJets.coordinateJet]
+  · rw [(source_operators q branch amp p v hz).1,sourcePrincipal_derivative q branch amp p v hz,hn]
+    simp only [Matrix.cons_val,exp_cpow]
+  · rw [(source_operators q branch amp p v hz).2,sourcePrincipal_laplacian q branch amp p v hz,hl]
+    simp only [Matrix.cons_val,exp_cpow]
+
 end
 end RHTower.D4BMOriginalCuspFlux

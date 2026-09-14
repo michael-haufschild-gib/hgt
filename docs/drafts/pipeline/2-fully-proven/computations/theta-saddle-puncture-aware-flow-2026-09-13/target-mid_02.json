@@ -1,0 +1,587 @@
+{
+  "label": "mid_02",
+  "w": [
+    "23.01644860945862187792113529322986229799694509873038921356303120516635",
+    "0"
+  ],
+  "dps": 50,
+  "status": "ok",
+  "roots": [
+    {
+      "point": [
+        "-0.73374790330557674913910580186134875112310009171741",
+        "-0.71442407417257470092291524928805726097305127424929"
+      ],
+      "relative_residual": "4.6516879877822588472114892214609204205555205332003e-38",
+      "correction": "1.4401504977884170469093693197981191514230276773383e-40",
+      "terms": 17,
+      "iterations": 17
+    },
+    {
+      "point": [
+        "-0.2554163494399623425899123724248569969826959171262",
+        "-0.76994200542880552901596909492328067243561130015214"
+      ],
+      "relative_residual": "2.5161730572151499980168173742259719075110664296223e-44",
+      "correction": "2.4624823476505342955214754025157825472991342911889e-48",
+      "terms": 42,
+      "iterations": 12
+    },
+    {
+      "point": [
+        "-3.7206240288418441816754643007498799800998227663362e-52",
+        "-0.69163719306341158631919108740444255837917330809386"
+      ],
+      "relative_residual": "3.0651607382155861410937205373076625998554904607343e-45",
+      "correction": "1.6168716388811369759389774573050221730931059939131e-47",
+      "terms": 25,
+      "iterations": 6
+    },
+    {
+      "point": [
+        "0.2554163494399623425899123724248569969826959171262",
+        "-0.76994200542880552901596909492328067243561130015214"
+      ],
+      "relative_residual": "2.5161730572151499980168173742259719075110664296223e-44",
+      "correction": "2.4624823476505342955214754025157825472991342911889e-48",
+      "terms": 42,
+      "iterations": 12
+    },
+    {
+      "point": [
+        "0.73374790330557674913910580186134875112310009171741",
+        "-0.71442407417257470092291524928805726097305127424929"
+      ],
+      "relative_residual": "4.6516879877822588472114892214609204205555205332003e-38",
+      "correction": "1.4401504977884170469093693197981191514230276773383e-40",
+      "terms": 17,
+      "iterations": 17
+    }
+  ],
+  "newton_failures": [
+    {
+      "start": [
+        -1.5,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.775
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0,
+        -0.775
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.775
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    }
+  ],
+  "flows": [
+    {
+      "direction": -1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        -0.771258301720987,
+        -0.7799913918757246
+      ],
+      "arc": 0.08608067144197594,
+      "steps": 71,
+      "rejected": 13,
+      "newton_source_distance": 0.0019388770568860088,
+      "boundary_distance": 8.608124275388818e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 1.3651602894861088e-07,
+      "saddle": 0
+    },
+    {
+      "direction": -1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        -0.693637828667332,
+        -0.7799925890750693
+      ],
+      "arc": 0.08603308763375979,
+      "steps": 59,
+      "rejected": 4,
+      "newton_source_distance": 0.0021711393692836886,
+      "boundary_distance": 7.410924930728591e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 5.6464996234240055e-08,
+      "saddle": 0
+    },
+    {
+      "direction": 1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "step budget",
+      "endpoint": [
+        -2.431057904144175,
+        -0.061110999655166365
+      ],
+      "arc": 1.8791202118567298,
+      "steps": 1997,
+      "rejected": 3,
+      "newton_source_distance": 0.0012383500572835662,
+      "boundary_distance": 0.06918865952455899,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 4.251752727668645e-09,
+      "saddle": 0
+    },
+    {
+      "direction": 1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "source_zero_approach",
+      "endpoint": [
+        -0.7338389414619013,
+        -0.7511882667554455
+      ],
+      "arc": 0.036770763293869774,
+      "steps": 47,
+      "rejected": 7,
+      "newton_source_distance": 8.382478847669814e-06,
+      "boundary_distance": 0.02881173324455455,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 4.4471700100245926e-07,
+      "saddle": 0
+    },
+    {
+      "direction": -1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        -0.2634162568282925,
+        -0.7799930830956946
+      ],
+      "arc": 0.01439932178977374,
+      "steps": 33,
+      "rejected": 5,
+      "newton_source_distance": 0.0023277287697474366,
+      "boundary_distance": 6.9169043054317925e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 8.063256018431275e-08,
+      "saddle": 1
+    },
+    {
+      "direction": -1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        -0.24740710247858647,
+        -0.7799930456571
+      ],
+      "arc": 0.014409818178627146,
+      "steps": 33,
+      "rejected": 5,
+      "newton_source_distance": 0.0023360718934988013,
+      "boundary_distance": 6.954342899989641e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 7.943285318390281e-08,
+      "saddle": 1
+    },
+    {
+      "direction": 1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "source_zero_approach",
+      "endpoint": [
+        -0.25565029537766576,
+        -0.6955488738382621
+      ],
+      "arc": 0.07523048407368461,
+      "steps": 61,
+      "rejected": 2,
+      "newton_source_distance": 9.457526776273333e-06,
+      "boundary_distance": 0.08445112616173789,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 2.5488712385168816e-07,
+      "saddle": 1
+    },
+    {
+      "direction": 1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "source_zero_approach",
+      "endpoint": [
+        -0.25541281272108846,
+        -0.775780940770602
+      ],
+      "arc": 0.005828937021699401,
+      "steps": 27,
+      "rejected": 3,
+      "newton_source_distance": 8.32870427245298e-06,
+      "boundary_distance": 0.004219059229398026,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 4.992056634733899e-08,
+      "saddle": 1
+    },
+    {
+      "direction": -1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        0.0766179339927092,
+        -0.7799915201653554
+      ],
+      "arc": 0.14972576489861805,
+      "steps": 64,
+      "rejected": 7,
+      "newton_source_distance": 0.0019118200206251293,
+      "boundary_distance": 8.479834644581352e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 2.1099922564715714e-07,
+      "saddle": 2
+    },
+    {
+      "direction": -1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        -0.0766179339927092,
+        -0.7799915201653554
+      ],
+      "arc": 0.14972576489861805,
+      "steps": 64,
+      "rejected": 7,
+      "newton_source_distance": 0.0019118200206251293,
+      "boundary_distance": 8.479834644581352e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 2.1099922564715714e-07,
+      "saddle": 2
+    },
+    {
+      "direction": 1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "step budget",
+      "endpoint": [
+        -9.688373008289797e-08,
+        -0.775331667600631
+      ],
+      "arc": 0.08368465269965994,
+      "steps": 1819,
+      "rejected": 181,
+      "newton_source_distance": 0.0002875250307654399,
+      "boundary_distance": 0.004668332399369035,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 0.0992286649250893,
+      "saddle": 2
+    },
+    {
+      "direction": 1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "source_zero_approach",
+      "endpoint": [
+        -5.0382608038447855e-17,
+        -0.6388386426571754
+      ],
+      "arc": 0.052788550406235576,
+      "steps": 42,
+      "rejected": 0,
+      "newton_source_distance": 8.588080552970166e-06,
+      "boundary_distance": 0.14116135734282464,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 3.867772088434216e-12,
+      "saddle": 2
+    },
+    {
+      "direction": -1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        0.2634162568282925,
+        -0.7799930830956946
+      ],
+      "arc": 0.01439932178977374,
+      "steps": 33,
+      "rejected": 5,
+      "newton_source_distance": 0.0023277287697474366,
+      "boundary_distance": 6.9169043054317925e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 8.063256018431275e-08,
+      "saddle": 3
+    },
+    {
+      "direction": -1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        0.24740710247858647,
+        -0.7799930456571
+      ],
+      "arc": 0.014409818178627146,
+      "steps": 33,
+      "rejected": 5,
+      "newton_source_distance": 0.0023360718934988013,
+      "boundary_distance": 6.954342899989641e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 7.943285318390281e-08,
+      "saddle": 3
+    },
+    {
+      "direction": 1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "source_zero_approach",
+      "endpoint": [
+        0.25541281272108846,
+        -0.775780940770602
+      ],
+      "arc": 0.005828937021699401,
+      "steps": 27,
+      "rejected": 3,
+      "newton_source_distance": 8.32870427245298e-06,
+      "boundary_distance": 0.004219059229398026,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 4.992056634733899e-08,
+      "saddle": 3
+    },
+    {
+      "direction": 1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "source_zero_approach",
+      "endpoint": [
+        0.25565029537766576,
+        -0.6955488738382621
+      ],
+      "arc": 0.07523048407368461,
+      "steps": 61,
+      "rejected": 2,
+      "newton_source_distance": 9.457526776273333e-06,
+      "boundary_distance": 0.08445112616173789,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 2.5488712385168816e-07,
+      "saddle": 3
+    },
+    {
+      "direction": -1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        0.771258301720987,
+        -0.7799913918757246
+      ],
+      "arc": 0.08608067144197594,
+      "steps": 71,
+      "rejected": 13,
+      "newton_source_distance": 0.0019388770568860088,
+      "boundary_distance": 8.608124275388818e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 1.3651602894861088e-07,
+      "saddle": 4
+    },
+    {
+      "direction": -1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "boundary_approach",
+      "endpoint": [
+        0.693637828667332,
+        -0.7799925890750693
+      ],
+      "arc": 0.08603308763375979,
+      "steps": 59,
+      "rejected": 4,
+      "newton_source_distance": 0.0021711393692836886,
+      "boundary_distance": 7.410924930728591e-06,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 5.6464996234240055e-08,
+      "saddle": 4
+    },
+    {
+      "direction": 1,
+      "side": -1,
+      "status": "bounded",
+      "reason": "source_zero_approach",
+      "endpoint": [
+        0.7338389414619013,
+        -0.7511882667554455
+      ],
+      "arc": 0.036770763293869774,
+      "steps": 47,
+      "rejected": 7,
+      "newton_source_distance": 8.382478847669814e-06,
+      "boundary_distance": 0.02881173324455455,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 4.4471700100245926e-07,
+      "saddle": 4
+    },
+    {
+      "direction": 1,
+      "side": 1,
+      "status": "bounded",
+      "reason": "step budget",
+      "endpoint": [
+        2.431057904144175,
+        -0.061110999655166365
+      ],
+      "arc": 1.8791202118567298,
+      "steps": 1997,
+      "rejected": 3,
+      "newton_source_distance": 0.0012383500572835662,
+      "boundary_distance": 0.06918865952455899,
+      "real_crossings": [],
+      "max_wrapped_phase_drift": 4.251752727668645e-09,
+      "saddle": 4
+    }
+  ],
+  "seconds": 7.373830355703831
+}

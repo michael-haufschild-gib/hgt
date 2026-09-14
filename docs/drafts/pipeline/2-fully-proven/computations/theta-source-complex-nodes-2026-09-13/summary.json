@@ -1,0 +1,1406 @@
+{
+  "planned": 120,
+  "rows": [
+    {
+      "start": [
+        0.2,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0661090761423111
+    },
+    {
+      "start": [
+        1,
+        0.775
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "1.0182408183530347171237649307322670750082391141132",
+        "0.76599694599891155612121609213490861491767683731294"
+      ],
+      "term_refinement_residual": "7.4331824160342194054433286635468744617716017368714e-47",
+      "relative_residual": "7.4331824160342194054433286635468744617716017368714e-47",
+      "correction": "9.8798656299379757032290889288949649486303639855797e-49",
+      "terms": 21,
+      "iterations": 11,
+      "seconds": 0.049029383808374405
+    },
+    {
+      "start": [
+        0,
+        0.7
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "1.5247938709144644525085276160458057114416414814805e-53",
+        "0.63883005360059357748537349728704913113745125606244"
+      ],
+      "term_refinement_residual": "4.6974340140247013667680758690299869096400677392419e-51",
+      "relative_residual": "4.6974340140247013667680758690299869096400677392419e-51",
+      "correction": "5.9267403095801455017877613124907786651355952376376e-52",
+      "terms": 22,
+      "iterations": 6,
+      "seconds": 0.03157894313335419
+    },
+    {
+      "start": [
+        0,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.04722164198756218
+    },
+    {
+      "start": [
+        0,
+        0.6
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "-8.8544039305692730154336448588664356522844408504398e-53",
+        "0.63883005360059357748537349728704913113745125606245"
+      ],
+      "term_refinement_residual": "2.4748443047214206838651518203534407327012955293485e-51",
+      "relative_residual": "2.4748443047214206838651518203534407327012955293485e-51",
+      "correction": "3.1225046391146948938266326056953787249235932369296e-52",
+      "terms": 22,
+      "iterations": 8,
+      "seconds": 0.05198536813259125
+    },
+    {
+      "start": [
+        0,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0627858154475689
+    },
+    {
+      "start": [
+        0,
+        0.65
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "-8.5879315700459368237572231849799950323940186072499e-53",
+        "0.63883005360059357748537349728704913113745125606245"
+      ],
+      "term_refinement_residual": "2.4748443047214206838651518203534407327012955293485e-51",
+      "relative_residual": "2.4748443047214206838651518203534407327012955293485e-51",
+      "correction": "3.1225046391146948938266326056953787249235932369296e-52",
+      "terms": 22,
+      "iterations": 6,
+      "seconds": 0.07588672265410423
+    },
+    {
+      "start": [
+        0.05,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06018108129501343
+    },
+    {
+      "start": [
+        0.05,
+        0.65
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "-1.3172328402895301502230102512795052627944122443273e-50",
+        "0.63883005360059357748537349728704913113745125606257"
+      ],
+      "term_refinement_residual": "1.0369669855789048226304393694238935860372491525114e-48",
+      "relative_residual": "1.0369669855789048226304393694238935860372491525114e-48",
+      "correction": "1.3083385556423466758727736680072029996083597865149e-49",
+      "terms": 22,
+      "iterations": 8,
+      "seconds": 0.03531141206622124
+    },
+    {
+      "start": [
+        0.05,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06713379546999931
+    },
+    {
+      "start": [
+        0.05,
+        0.7
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "-2.7835905676569211931244031184550662967138965025305e-38",
+        "0.63883005360059357748537349728704913116530315589264"
+      ],
+      "term_refinement_residual": "3.1209722985255188210361158062948554007324125582013e-37",
+      "relative_residual": "3.1209722985255188210361158062948554007324125582013e-37",
+      "correction": "3.9377226527352608748088569269970957722974584804771e-38",
+      "terms": 22,
+      "iterations": 8,
+      "seconds": 0.029796991497278214
+    },
+    {
+      "start": [
+        0,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.10281830281019211
+    },
+    {
+      "start": [
+        0.05,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07237913459539413
+    },
+    {
+      "start": [
+        0.05,
+        0.73
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "7.5960133459117690685053045670199768705586013380809e-52",
+        "0.63883005360059357748537349728704913113745125606245"
+      ],
+      "term_refinement_residual": "8.5314019625678883791836440282614836311255540570358e-51",
+      "relative_residual": "8.5314019625678883791836440282614836311255540570358e-51",
+      "correction": "1.0764047724314958517201225901825996054146610732162e-51",
+      "terms": 22,
+      "iterations": 10,
+      "seconds": 0.04571277275681496
+    },
+    {
+      "start": [
+        0.05,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07693852111697197
+    },
+    {
+      "start": [
+        0.1,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.04384562745690346
+    },
+    {
+      "start": [
+        0.05,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.09415724128484726
+    },
+    {
+      "start": [
+        0.1,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06915190443396568
+    },
+    {
+      "start": [
+        0.1,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07108483090996742
+    },
+    {
+      "start": [
+        0.1,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0720321275293827
+    },
+    {
+      "start": [
+        0.1,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.074974924325943
+    },
+    {
+      "start": [
+        0.05,
+        0.781
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.050065261555069167547661435991614368010905108677517",
+        "0.78189969870036628870244207973867957227331343374725"
+      ],
+      "term_refinement_residual": "1.1887848334043726156953483035163672350395400410998e-39",
+      "relative_residual": "1.1887848334043726156953483035163672350395400410998e-39",
+      "correction": "7.4459575741036782012985999033876994109676073962254e-42",
+      "terms": 99,
+      "iterations": 9,
+      "seconds": 0.16525176540017128
+    },
+    {
+      "start": [
+        0.1,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0790378786623478
+    },
+    {
+      "start": [
+        0.1,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.08196432515978813
+    },
+    {
+      "start": [
+        0.05,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.050065261555069167547661435991614368010906843497521",
+        "0.78189969870036628870244207973867957227332067478887"
+      ],
+      "term_refinement_residual": "1.3167022640041244951989524574750088782230376333822e-49",
+      "relative_residual": "1.3167022640041244951989524574750088782230376333822e-49",
+      "correction": "8.2471688063386004289163784035967135374023436476409e-52",
+      "terms": 99,
+      "iterations": 10,
+      "seconds": 0.19272364675998688
+    },
+    {
+      "start": [
+        0.1,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.08649953454732895
+    },
+    {
+      "start": [
+        0.1,
+        0.775
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.1004938311379854511409157516025434460829300317488",
+        "0.77138887351484276561713882856803313709782649386018"
+      ],
+      "term_refinement_residual": "4.2279115401674938879491803649613271381914608752252e-36",
+      "relative_residual": "4.2279115401674938879491803649613271381914608752252e-36",
+      "correction": "7.1993523058094938498558518198199481645071570035513e-38",
+      "terms": 50,
+      "iterations": 7,
+      "seconds": 0.07067108526825905
+    },
+    {
+      "start": [
+        0.2,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.04362553730607033
+    },
+    {
+      "start": [
+        0.1,
+        0.781
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.10049383113798545114091575160254344601207697246213",
+        "0.77138887351484276561713882856803313708486308260604"
+      ],
+      "term_refinement_residual": "3.8773706929704348655215422402439880241576424418211e-39",
+      "relative_residual": "3.8773706929704348655215422402439880241576424418211e-39",
+      "correction": "6.602446000516128567087949762625562221871170911133e-41",
+      "terms": 50,
+      "iterations": 10,
+      "seconds": 0.10056791827082634
+    },
+    {
+      "start": [
+        0.1,
+        0.765
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.16869674827303739175775524773824520307224209997861",
+        "0.74625911077138574861220741786085376253843913954989"
+      ],
+      "term_refinement_residual": "2.6472240862969282310206660568181827091023738012529e-50",
+      "relative_residual": "2.6472240862969282310206660568181827091023738012529e-50",
+      "correction": "9.1807520964736317287038735214591353184361992975699e-52",
+      "terms": 31,
+      "iterations": 17,
+      "seconds": 0.12403156980872154
+    },
+    {
+      "start": [
+        0.2,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06706331297755241
+    },
+    {
+      "start": [
+        0.2,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06954532489180565
+    },
+    {
+      "start": [
+        0.2,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06953636556863785
+    },
+    {
+      "start": [
+        0,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.4208012670278549
+    },
+    {
+      "start": [
+        0,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.42425815388560295
+    },
+    {
+      "start": [
+        0.05,
+        0.775
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.34951818361878395
+    },
+    {
+      "start": [
+        0.2,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07076242193579674
+    },
+    {
+      "start": [
+        0.2,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07603815197944641
+    },
+    {
+      "start": [
+        0.2,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07955881580710411
+    },
+    {
+      "start": [
+        0.05,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.3707241751253605
+    },
+    {
+      "start": [
+        0.1,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.1003353477187935209263893701598342517614872271687",
+        "0.78394237064423317985029720267727593156168673011556"
+      ],
+      "term_refinement_residual": "7.6064752647678180864719760111825697279779242013091e-48",
+      "relative_residual": "7.606475264767818086471976011182569727977924201309e-48",
+      "correction": "2.8469381845877829593854511972932792989966798619942e-50",
+      "terms": 143,
+      "iterations": 7,
+      "seconds": 0.1918436959385872
+    },
+    {
+      "start": [
+        0,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.4726990535855293
+    },
+    {
+      "start": [
+        0.35,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0422002412378788
+    },
+    {
+      "start": [
+        0.2,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0875755250453949
+    },
+    {
+      "start": [
+        0,
+        0.775
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.49106162413954735
+    },
+    {
+      "start": [
+        0.35,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06570477411150932
+    },
+    {
+      "start": [
+        0.2,
+        0.775
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.09928280860185623
+    },
+    {
+      "start": [
+        0.35,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06754879653453827
+    },
+    {
+      "start": [
+        0.35,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06817028298974037
+    },
+    {
+      "start": [
+        0.2,
+        0.781
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.16869674827303739175775524773824520307224209997861",
+        "0.74625911077138574861220741786085376253843913954989"
+      ],
+      "term_refinement_residual": "5.7965499589614223995023467826378627680104453116014e-50",
+      "relative_residual": "5.7965499589614223995023467826378627680104453116014e-50",
+      "correction": "2.0102827132587568091491106951282453823789163348266e-51",
+      "terms": 31,
+      "iterations": 16,
+      "seconds": 0.10356903448700905
+    },
+    {
+      "start": [
+        0.35,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07047344371676445
+    },
+    {
+      "start": [
+        0.35,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07842342182993889
+    },
+    {
+      "start": [
+        0.35,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07479875907301903
+    },
+    {
+      "start": [
+        0.35,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0773177444934845
+    },
+    {
+      "start": [
+        0.2,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.16869674827303739175775524773824520307227459709753",
+        "0.74625911077138574861220741786085376253842358841344"
+      ],
+      "term_refinement_residual": "1.0388029133546681700561004424754415530694977874821e-39",
+      "relative_residual": "1.0388029133546681700561004424754415530694977874821e-39",
+      "correction": "3.6026387316325064094599069747349566007896385513768e-41",
+      "terms": 31,
+      "iterations": 17,
+      "seconds": 0.13434145599603653
+    },
+    {
+      "start": [
+        0.5,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.04226498678326607
+    },
+    {
+      "start": [
+        0.35,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.08370697870850563
+    },
+    {
+      "start": [
+        0.35,
+        0.775
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.08567294850945473
+    },
+    {
+      "start": [
+        0.5,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06435444205999374
+    },
+    {
+      "start": [
+        0.5,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0665251612663269
+    },
+    {
+      "start": [
+        0.5,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06880079954862595
+    },
+    {
+      "start": [
+        0.5,
+        0.775
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.49913843532465828414156294913775166921142669223785",
+        "0.77505939074073046499864871395985450515724489532565"
+      ],
+      "term_refinement_residual": "1.5263802226873142679726738461413794970743452991021e-42",
+      "relative_residual": "1.5263802226873142679726738461413794970743452991021e-42",
+      "correction": "1.6627400787416979428171566710639436911834776293098e-44",
+      "terms": 41,
+      "iterations": 6,
+      "seconds": 0.05040031298995018
+    },
+    {
+      "start": [
+        0.35,
+        0.781
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.11317037418484688
+    },
+    {
+      "start": [
+        0.5,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07497959211468697
+    },
+    {
+      "start": [
+        0.5,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07437946647405624
+    },
+    {
+      "start": [
+        0.5,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06962667778134346
+    },
+    {
+      "start": [
+        0.5,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07158780097961426
+    },
+    {
+      "start": [
+        0.7,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.04189107194542885
+    },
+    {
+      "start": [
+        0.5,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.08227013796567917
+    },
+    {
+      "start": [
+        0.5,
+        0.781
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.49913843532465828414156294913775166868727632572506",
+        "0.77505939074073046499864871395985450551011684661553"
+      ],
+      "term_refinement_residual": "5.8004547357770051401636851909307756979607243438736e-35",
+      "relative_residual": "5.8004547357770051401636851909307756979607243438736e-35",
+      "correction": "6.3186409393613200200865231798253641536902196696287e-37",
+      "terms": 41,
+      "iterations": 9,
+      "seconds": 0.06688401103019714
+    },
+    {
+      "start": [
+        0.35,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.38291597068586145767771936585063918075092907245559",
+        "0.7721298681073776431922947918388515105543718036074"
+      ],
+      "term_refinement_residual": "2.5346550668684871097896508583911389030720416135225e-46",
+      "relative_residual": "2.5346550668684871097896508583911389030720416135225e-46",
+      "correction": "7.0561443369983509903804990517428493250805780538613e-48",
+      "terms": 40,
+      "iterations": 19,
+      "seconds": 0.15596555173397064
+    },
+    {
+      "start": [
+        0.7,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07309022545814514
+    },
+    {
+      "start": [
+        0,
+        0.781
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.671376172453165
+    },
+    {
+      "start": [
+        0.7,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06579340249300003
+    },
+    {
+      "start": [
+        0.7,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06772158667445183
+    },
+    {
+      "start": [
+        0.7,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06746067851781845
+    },
+    {
+      "start": [
+        0.5,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.49913843532465828414156294913775166919977086022614",
+        "0.77505939074073046499864871395985450515405509236524"
+      ],
+      "term_refinement_residual": "1.1093404661526976262318230203056348461210019631525e-36",
+      "relative_residual": "1.1093404661526976262318230203056348461210019631525e-36",
+      "correction": "1.2084438900778076413555095225769930158948800764931e-38",
+      "terms": 41,
+      "iterations": 12,
+      "seconds": 0.10980113968253136
+    },
+    {
+      "start": [
+        0.7,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0678001269698143
+    },
+    {
+      "start": [
+        0.7,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07109645009040833
+    },
+    {
+      "start": [
+        0.7,
+        0.775
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.86706216081741606732890525314953612292086744279738",
+        "0.75913469413914244537006618718469371864626878068732"
+      ],
+      "term_refinement_residual": "4.4004378130150478535036913108901063562694248515982e-50",
+      "relative_residual": "4.4004378130150478535036913108901063562694248515982e-50",
+      "correction": "7.9060115884768610557845321172672539245203205942316e-52",
+      "terms": 21,
+      "iterations": 15,
+      "seconds": 0.0587838813662529
+    },
+    {
+      "start": [
+        0.7,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07284021005034447
+    },
+    {
+      "start": [
+        0.7,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07623714581131935
+    },
+    {
+      "start": [
+        0.7,
+        0.781
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.73383954017078252690960773278777935295946845193372",
+        "0.75119662264564926831601216383875024317661932708993"
+      ],
+      "term_refinement_residual": "1.421784990347831032411248493049300566328339851986e-50",
+      "relative_residual": "1.421784990347831032411248493049300566328339851986e-50",
+      "correction": "3.3860502796471684610351404109843589373899516414447e-52",
+      "terms": 21,
+      "iterations": 15,
+      "seconds": 0.061261191964149475
+    },
+    {
+      "start": [
+        1,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.049541257321834564
+    },
+    {
+      "start": [
+        1,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06116800382733345
+    },
+    {
+      "start": [
+        1.5,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.03496205061674118
+    },
+    {
+      "start": [
+        1,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06325379014015198
+    },
+    {
+      "start": [
+        1,
+        0.781
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "1.0008119141725232459562504831346071774124571140253",
+        "0.77802604672972487639414676739751470726938080940229"
+      ],
+      "term_refinement_residual": "7.1137172056371897783209346220424966841305354788217e-37",
+      "relative_residual": "7.1137172056371897783209346220424966841305354788217e-37",
+      "correction": "4.6075506617236579144824366518744281469683591477188e-39",
+      "terms": 31,
+      "iterations": 8,
+      "seconds": 0.04932718724012375
+    },
+    {
+      "start": [
+        1,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0640798956155777
+    },
+    {
+      "start": [
+        0,
+        0.784
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.7441398650407791
+    },
+    {
+      "start": [
+        1,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0640336275100708
+    },
+    {
+      "start": [
+        1,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06784502044320107
+    },
+    {
+      "start": [
+        1,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07260443270206451
+    },
+    {
+      "start": [
+        1,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07117331027984619
+    },
+    {
+      "start": [
+        1,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07280725613236427
+    },
+    {
+      "start": [
+        1.5,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.057743411511182785
+    },
+    {
+      "start": [
+        1,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "1.0008119141725232459562504831346071774166976998966",
+        "0.77802604672972487639414676739751470726757887861328"
+      ],
+      "term_refinement_residual": "1.7017282277417109925407800929120325564813395795029e-49",
+      "relative_residual": "1.7017282277417109925407800929120325564813395795029e-49",
+      "correction": "1.1022084228470299699857595006356851970804650888509e-51",
+      "terms": 31,
+      "iterations": 12,
+      "seconds": 0.07741160690784454
+    },
+    {
+      "start": [
+        1.5,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.05843900144100189
+    },
+    {
+      "start": [
+        1.5,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.05560252070426941
+    },
+    {
+      "start": [
+        2,
+        0
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.03624134883284569
+    },
+    {
+      "start": [
+        1.5,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06214629113674164
+    },
+    {
+      "start": [
+        1.5,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06475729495286942
+    },
+    {
+      "start": [
+        1.5,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06773301959037781
+    },
+    {
+      "start": [
+        1.5,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06290025636553764
+    },
+    {
+      "start": [
+        1.5,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.08153364062309265
+    },
+    {
+      "start": [
+        1.5,
+        0.775
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.07139729335904121
+    },
+    {
+      "start": [
+        2,
+        0.25
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.056602779775857925
+    },
+    {
+      "start": [
+        2,
+        0.784
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton domain escape')",
+      "seconds": 0.003967754542827606
+    },
+    {
+      "start": [
+        1.5,
+        0.781
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0757441371679306
+    },
+    {
+      "start": [
+        2,
+        0.5
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.055146120488643646
+    },
+    {
+      "start": [
+        2,
+        0.65
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.05254794657230377
+    },
+    {
+      "start": [
+        2,
+        0.7
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.04648657888174057
+    },
+    {
+      "start": [
+        2,
+        0.6
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.056559909135103226
+    },
+    {
+      "start": [
+        1.5,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "1.5061307877712211084778797579776500121428607868502",
+        "0.78461060429325932136937864584212722959421302633268"
+      ],
+      "term_refinement_residual": "1.468823300821937991203423589761475412957576018079e-48",
+      "relative_residual": "1.468823300821937991203423589761475412957576018079e-48",
+      "correction": "1.7170590843816813537419226352249897481996634343796e-51",
+      "terms": 52,
+      "iterations": 11,
+      "seconds": 0.09002021700143814
+    },
+    {
+      "start": [
+        2,
+        0.75
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0452173613011837
+    },
+    {
+      "start": [
+        2,
+        0.73
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06150244176387787
+    },
+    {
+      "start": [
+        0.7,
+        0.784
+      ],
+      "dps": 50,
+      "status": "ok",
+      "root": [
+        "0.69925011114310232668082323280608869081059727599937",
+        "0.78449868172045979721818481890291995654607490031746"
+      ],
+      "term_refinement_residual": "9.8755069285158518116161783429112388080657897014172e-50",
+      "relative_residual": "9.8755069285158518116161783429112388080657897014172e-50",
+      "correction": "1.1792196704904137029532322096933992065629260977215e-51",
+      "terms": 102,
+      "iterations": 13,
+      "seconds": 0.21591966971755028
+    },
+    {
+      "start": [
+        2,
+        0.765
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.06038319319486618
+    },
+    {
+      "start": [
+        2,
+        0.781
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.050361134111881256
+    },
+    {
+      "start": [
+        2,
+        0.775
+      ],
+      "dps": 50,
+      "status": "error",
+      "error": "ArithmeticError('Newton iteration limit')",
+      "seconds": 0.0698840394616127
+    }
+  ],
+  "seconds": 0.9730887413024902
+}

@@ -1,7 +1,7 @@
 # RH research ledger
 
 **No route proves or disproves RH.** This register separates **25 active routes**,
-**36 named candidates**, and **270 closed mechanisms**. “Active” means a formal
+**36 named candidates**, and **274 closed mechanisms**. “Active” means a formal
 route architecture with an independent mathematical problem still open, not a proof in hand.
 
 [Active routes](#active-routes) · [Route candidates](#route-candidates) ·
@@ -20,10 +20,10 @@ route architecture with an independent mathematical problem still open, not a pr
 - Route labels are lookup keys, not claims of independence. A receiver ending in RH
   does not prove its source premise. A killed subroute does not kill its whole family.
 
-**Source-audit cutoff: 2026-09-13, `c5201958270e866b20322bdac6d66f9d3652b0a5`.**
-Reconciled all 115 changed formal files since `0ffc77419f5423bb08c6e2fb3bdc3615e86ecf7f`
-(110 new leaves, three modified leaves and two import umbrellas). Uncommitted research
-notes are outside this audit. No builds, Lean checks, tests, lint or index refresh were run.
+**Source-audit cutoff: 2026-09-13, `9d774a1ea257311ad02f21d521ec31441b980657`.**
+Reconciled all 66 changed formal files since `c5201958270e866b20322bdac6d66f9d3652b0a5`
+(54 new leaves, ten modified leaves and two import umbrellas). Uncommitted work is
+outside this audit. No builds, Lean checks, tests, lint or index refresh were run.
 
 ## Active routes
 
@@ -117,18 +117,24 @@ dependency graph.
 
 ### HB — theta-cusp Hawking causal scattering
 
-- **Closed:** Both actual angular polarizations decay as `O(1/Y)`; the modular defect tensor vanishes. The literal scalar quadratic source is identified in all 16 components, and its full **nonseparated SS particular metric** solves the sourced Einstein equation using only `S²` and two simple angular resolvents. The contact-inclusive **SV particular metric** also solves every mixed component, including independent scalar/vector amplitudes. These replace the old cusp-removal and separated-only reconstruction frontiers.
-- **Open:** Identify and assemble the complete original causal corrections and independent SS/SV/VV action; pass jointly through cusp, infinite-time, horizon and corner limits; retain principal fields, onset lift, contact terms and reader remainder. Prove source/onset and full-coupling nonvanishing with affine-factor control, then fixed-Hawking-clock extinction. Particular metrics and stationary kernels do not supply these global statements.
+- **Closed:** Both actual angular polarizations decay as `O(1/Y)`; the modular defect tensor vanishes. The literal scalar quadratic source is identified in all 16 components, and its full **nonseparated SS particular metric** solves the sourced Einstein equation using only `S²` and two simple angular resolvents. The contact-inclusive **SV particular metric** also solves every mixed component, including independent scalar/vector amplitudes. Original circle/causal scalar periods, full source contact and the continued reader's contact equation are now closed as detailed below.
+- **Open:** Complete original temporal/metric/QNM matching: cancel or retain the paired-side/core fluxes of the fully transferred fields, then justify the prescribed temporal, cusp, horizon and corner limits with all source/onset terms. Assemble independent SS/SV/VV causal action and identify its spectral comparison without dropping counterterms. Source/onset and full-coupling nonvanishing with affine-factor control, then fixed-Hawking-clock extinction, remain separate gates. Scalar-period matching is not full metric-action matching.
 - **Evidence:** [Tensor vanishing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMAngularTwoCuspDecay.lean), [literal source](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarSourceIdentification.lean), [full SS metric](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMThreeFieldMetric.lean), [mixed SV closure](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedQuadraticClosure.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-1646).
 
 | Remaining HB front | What is closed | What is not closed |
 |---|---|---|
-| Original causal field and physical current | Onset-restored retarded identity, joint smoothness and future-horizon extension; actual full metric current; [compact parameter-rectangle identity](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalGreenBoundary.lean) with all four edges and explicit reader remainder. | Full integrated causal pairing and simultaneous endpoint limits. Exact vanishing near the horizon on each finite static-time slab has a time-dependent neighbourhood, not a uniform infinite-time limit. |
-| Angular cusp face | Native mixed-reader flux decays; particular/contact flux has two explicit independent-reader resonances. The [original modular finite part](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalModularGreen.lean) is zero for diagonal and reflected pairs at fixed nonnegative null coordinates. | Vanishing of other causal faces or complete action. Subtraction of the derived nonconstant cusp powers does not justify time/horizon interchange. |
-| Cap, reader and radial work | Actual normal traces, image-arm limit and [radial source-memory classification](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapRadialMemory.lean); complete left-QNM correction exchange; elementary mixed radial overlaps. | Late positive clock steps retain nonzero source work unless its explicit prefactor vanishes. Full source/contact overlap is not identically removed by radial weights. |
+| Original scalar/circle period | Actual circle period equals the physical source coefficient times the Legendre circle kernel. All three principal corrections cancel on restoration; the [original causal scalar finite part](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCausalPeriod.lean) is exactly `source coefficient × (radial response + onset lift)`. | This is the original same-copy scalar projection at fixed nonnegative null coordinates, not the full metric current or an exchanged infinite-time/horizon limit. |
+| Physical metric current | Original forced scalar/coexact contact is identified. For the unchanged continued reader, `C(W)=(μ−2)W` and `ΔW=μW`. Both actual orbit-current integrals have an [exact finite-domain scalar-period formula](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalReaderEquation.lean), with explicit eigenvalue factors, independent Xi labels, both reader normalizations and complete normal flux. The earlier compact parameter-rectangle identity remains available. | Paired-side/core cancellation for these fully transferred fields; actual top-flux subtraction and the prescribed full temporal/metric/QNM passage. Reader equations alone do not remove source forcing or normal flux. |
+| Angular cusp face | Native mixed-reader flux decays; particular/contact flux has two independent-reader resonances. Original modular angular finite parts vanish for diagonal/reflected pairs. The [physical coexact pairing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalScalarPairing.lean) has the correct negative reader-eigenvalue scalar normalization and retained normal boundary term; its diagonal/reflected finite-part defect vanishes at fixed null coordinates. | Vanishing of other causal faces or complete action. Equal-reader vanishing does not justify unrenormalized continuity in two reader parameters: [the split-reader family has a genuine pole](rh-killed-routes.md#no-go-271). |
+| Horizon, cap and corner | Original causal scalar value and null-derivative horizon traces are admitted, including the onset lift; the reduced response has quantified characteristic bounds. Earlier cap normal traces and [radial source-memory classification](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapRadialMemory.lean) survive. The opposite-mode connection slope equals the radial norm, and response differentiation retains the exact source-weighted pole. | Attach the admitted traces to the complete metric/current boundary limits. A vanishing opposite-mode coefficient cannot simply erase the differentiated response pole. Static finite-time support remains nonuniform in infinite time; source/contact work remains. |
 | Stationary two-rate kernels | Exact SS/VV and mixed current/trace formulae, finite parts, tilt detectors and harmonic sign laws. The constant-mode FE-invariance receiver detects `σ=1/2` for `0≤σ≤1`, `t≥92`. | Source-produced FE invariance and transport to the original causal action. SS and VV have opposite signs on an explicit band; [amplitude-independent kernel sign is excluded](rh-killed-routes.md#no-go-268). Chiral positivity on its proved band is not global physical extinction. |
+| On-line spectral comparison | SS plateau satisfies `abs(Im K)≤t⁹` for `t≥50`, `l≥t`. The constant-mode weight is strictly positive at every real height; `Re(ξ′/ξ)(1+2it)≥c log log(t)/t` eventually. Imaginary-order Bessel and compact-cusp Eisenstein tails have explicit exponential bounds. The actual modular Dirichlet form is closable, with a constant-fixing covariance and rank-one functional-calculus lower bound. | Apply these bounds to the full source-retaining physical pairing: identify the correct form/renormalization, bound the actual bulk weight relative to the constant weight, and connect the comparison to the original causal current. The generic `L²` assembly theorem does not perform this identification. |
 
 Additional evidence: [native-reader decay](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedNativeReaderFlux.lean), [particular cusp resonances](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedParticularCuspFlux.lean), [finite static slabs](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMActualIngoingCurrent.lean), [mixed radial overlap](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedRadialOverlap.lean), [left-QNM exchange](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLeftQNMCorrectionExchange.lean), [constant-mode receiver](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewConstantFE.lean).
+
+Current matching evidence: [circle Darboux equation and exact period](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCircleEquation.lean), [scalar restoration](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalScalarRestoration.lean), [full source contact](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalSourceContact.lean), [finite orbit current](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalOrbitCurrent.lean), [horizon admission](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCausalAdmission.lean), [corner residue](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCornerSpectralBalance.lean).
+
+Current spectral evidence: [uniform kernel bound](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewUniformBound.lean), [constant-weight positivity](../../../../formal/GaloisForLFunctions/RHTower/XiLogDerivLineOnePositive.lean), [logarithmic-derivative growth](../../../../formal/GaloisForLFunctions/RHTower/XiLogDerivLineOneGrowth.lean), [Bessel bound](../../../../formal/GaloisForLFunctions/RHTower/BesselKImaginaryOrderUniformBound.lean), [Eisenstein bound, `t≥1`, `1/2≤Y≤1`](../../../../formal/GaloisForLFunctions/RHTower/EisensteinCuspTailImaginaryOrderBound.lean), [modular form assembly](../../../../formal/GaloisForLFunctions/HTGeometry/ModularDirichletFormDomain.lean), [closability](../../../../formal/GaloisForLFunctions/HTGeometry/ModularDirichletFormClosable.lean).
 
 <a id="hc--horizontal-collision-charge"></a>
 
@@ -583,7 +589,7 @@ does not independently solve the problem; they do not mean its premise is false.
 
 ### Closed subroutes inside otherwise live families
 
-The complete catalogue contains **all 270 named entries**, not a selected list. Each family
+The complete catalogue contains **all 274 named entries**, not a selected list. Each family
 opens a name index followed by one structured result/survivor card per mechanism.
 The 16 original-label records above are included in that total; FD2 and RBH also have
 their longer architecture verdicts in the reference.
@@ -593,12 +599,12 @@ their longer architecture verdicts in the reference.
 | [Retired original route labels](rh-killed-routes.md#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](rh-killed-routes.md#ccm) | 17 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](rh-killed-routes.md#arithmetic) | 32 |
-| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 46 |
-| [Theta, Schur, spectral and positivity mechanisms](rh-killed-routes.md#theta) | 22 |
+| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 47 |
+| [Theta, Schur, spectral and positivity mechanisms](rh-killed-routes.md#theta) | 23 |
 | [Singular descent, formation and completion](rh-killed-routes.md#completion) | 26 |
 | [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 30 |
 | [Analytic roots, multiplicity and regularization](rh-killed-routes.md#roots) | 9 |
-| [Other finite, scalar and source-blind selectors](rh-killed-routes.md#other) | 72 |
+| [Other finite, scalar and source-blind selectors](rh-killed-routes.md#other) | 74 |
 
 ## Shared infrastructure and unlabelled continuation problems
 
@@ -651,6 +657,20 @@ remove—or expose—inside the named routes.
 - **Open:** Complete Tauberian inversion/unsmoothing to the ordinary coefficient
   asymptotic and the existing `ZetaBinomialHalfKatoInversion` input.
 - **Evidence:** [Tauberian progress](rh-frontier-reference-2026-09-12.md#zeta-half-tauberian) and [boundary/inversion statement](rh-frontier-reference-2026-09-12.md#zeta-half-boundary).
+
+### Source-construction and selector checks
+
+These results strengthen reusable infrastructure or close a specific proposed mechanism;
+none supplies a new independent RH route.
+
+| Family | Closed | Remaining boundary |
+|---|---|---|
+| Vector balancing | Open Banaszczyk transforms, finite sign recovery **conditional on nonempty iterated transform**, exact one-dimensional model; normalized cosine/rational product densities, moments and Gaussian–chi-square mixture/Jensen bound with factor `sqrt(2/π)`. | Prove the required multidimensional transform stability/nonemptiness and connect it to a literal RH source. Finite recovery and distribution identities do not supply either. |
+| Multiple elliptic gamma | Nome-group rank modulo torsion equals augmented rational period rank minus one. For at least two upper-half-plane periods, the differentially algebraic locus is null/meagre and its complement is full-measure/comeagre. | Generic hypertranscendence is not a source-to-Xi orientation theorem; the prime-completion collapse result is unchanged. |
+| Causal finite assemblies | Exact retarded interaction-shell pruning; real-frequency delay phases preserve power Gram and coherent-return modulus, including concrete BM responses. | The analytic scattering sum-rule hypotheses and full nonlinear action are not established by these finite identities. A [full logarithmic turn within the literal theta series' summability domain](rh-killed-routes.md#no-go-272) is impossible; logarithmic scale is not thereby physical Hawking time. |
+| Differential/cohomological selectors | [Painlevé III(D₆) polynomial-gauge bridge excluded](rh-killed-routes.md#no-go-274) from its actual local sigma equation, not an assumed differential-algebraicity premise. [Saddle/de Rham shortcuts fail](rh-killed-routes.md#no-go-273), while exact Mellin, Hodge and arithmetic-contraction identities survive. | A different carrier/source law must escape the stated obstruction. Neither local stationarity, closedness nor a critical-line norm receiver locates the Xi divisor. |
+
+Evidence: [finite sign-recovery interface](../../../../formal/GaloisForLFunctions/HTGeometry/BanaszczykSignRecovery.lean), [mixture identity](../../../../formal/GaloisForLFunctions/RHTower/BanaszczykGammaMixtureBridge.lean), [product Jensen bound](../../../../formal/GaloisForLFunctions/RHTower/BanaszczykChiSquareJensen.lean), [nome rank and genericity](../../../../formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaNomeRankGenericity.lean), [finite causal applications](../../../../formal/GaloisForLFunctions/RHTower/ArxivCausalityCorpusApplications.lean), [delay-algebra scope](../../../../formal/GaloisForLFunctions/HTGeometry/Arxiv2608CausalitySumRules.lean).
 
 ### Other shared bridges
 
@@ -709,12 +729,18 @@ them to active routes.
 
 ### Evidence boundary
 
-The register reconciles committed Lean source through the cutoff above. The 115-file delta
-contains 81 HB files, 14 other RHTower files, 18 HTGeometry leaves and two import umbrellas.
-Twelve HTGeometry additions concern quantum diagnostics, least squares and stag-hunt
-models; they supply no RH source-to-target theorem here and do not create new route labels.
-The 25 active routes and 36 candidates are unchanged; three narrow mechanisms join the
-no-go catalogue. Existing signed-load and squarefree-half records are strengthened in place.
+The register reconciles committed Lean source through the cutoff above. The 66-file delta
+contains 16 HB files, ten other RHTower files, 38 HTGeometry leaves and two import umbrellas.
+All changed leaves were inspected for scope; imports and modified statements were compared.
+The nine new Navier–Stokes support leaves prove generic convolution, moment, covariance,
+finite-inverse and small-correction results, not an RH handoff or a Navier–Stokes existence
+theorem. Dirac algebra, general integral/translation bounds and de Rham identities are
+likewise not new RH selectors. Definition/import moves in the elliptic-gamma hierarchy
+do not change its existing rank or prime-completion verdicts.
+
+The 25 active routes and 36 candidates are unchanged; four scoped mechanisms join the
+no-go catalogue. E, reflected-AFE and dyadic-root frontiers retain their previous status:
+the current delta supplies no new capstone closing their listed source estimates or continuation gates.
 
 This is a source-statement audit, not a fresh kernel/dependency validation. It does not
 broaden theorem hypotheses or promote uncommitted paper arguments. Current source links

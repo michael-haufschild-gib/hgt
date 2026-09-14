@@ -1,0 +1,89 @@
+{
+  "section": {
+    "x": -0.4,
+    "y": -0.6,
+    "X": 0.13,
+    "k": 1.5,
+    "V": 2.0
+  },
+  "rows": [
+    {
+      "gamma": 15.0,
+      "ordered_imag": 1546112400.0928917,
+      "relative": 0.0964177621035118,
+      "h_order": 45,
+      "seconds": 166.52915923297405,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.0375,
+      "ordered_imag": 1718864065.4345934,
+      "relative": 0.1316750802460565,
+      "h_order": 45,
+      "seconds": 155.4391807578504,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.075,
+      "ordered_imag": 1160130981.318986,
+      "relative": 0.14249286519222643,
+      "h_order": 45,
+      "seconds": 162.41547979041934,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.1125,
+      "ordered_imag": -347093164.94419193,
+      "relative": 0.21300508654721695,
+      "h_order": 45,
+      "seconds": 173.6866510771215,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.15,
+      "ordered_imag": -2778562794.668629,
+      "relative": 0.44289584766596907,
+      "h_order": 45,
+      "seconds": 196.0334043316543,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.1875,
+      "ordered_imag": -5721402317.408401,
+      "relative": 0.42398231902728645,
+      "h_order": 45,
+      "seconds": 175.32063052803278,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.225000000000001,
+      "ordered_imag": -8393576915.66529,
+      "relative": 0.44931618735883155,
+      "h_order": 45,
+      "seconds": 155.55310731381178,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.262500000000001,
+      "ordered_imag": -9921336751.89531,
+      "relative": 0.482034831309593,
+      "h_order": 45,
+      "seconds": 170.72739578783512,
+      "conjugacy_error": 0.0
+    },
+    {
+      "gamma": 15.3,
+      "ordered_imag": -9724340220.377722,
+      "relative": 0.514244620456533,
+      "h_order": 45,
+      "seconds": 166.5481792986393,
+      "conjugacy_error": 0.0
+    }
+  ],
+  "sign_change_brackets": [
+    [
+      15.075,
+      15.1125
+    ]
+  ]
+}

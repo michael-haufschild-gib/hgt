@@ -1,0 +1,18 @@
+{
+  "metrics": {
+    "tasks": 14,
+    "passed": 14,
+    "failed": 0,
+    "wall_seconds": 4.6323231514543295,
+    "worker_seconds": 18.92639871314168
+  },
+  "evidence": "numerical observations; no certified enclosure or Lean proof",
+  "hostile_review": {
+    "original_checksums": true,
+    "nested_failures_disclosed": true,
+    "no_absence_from_search": true,
+    "no_HB_attachment": true,
+    "no_historical_priority": true
+  },
+  "open": "global source-to-spectrum attachment, not more constant optimization"
+}

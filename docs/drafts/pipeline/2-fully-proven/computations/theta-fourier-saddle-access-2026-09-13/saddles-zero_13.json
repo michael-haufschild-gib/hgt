@@ -1,0 +1,205 @@
+{
+  "roots": [],
+  "failures": [
+    {
+      "start": [
+        -1.5,
+        -0.2
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.5
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.7
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.775
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.2
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.5
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.7
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.775
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.2
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.5
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.7
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.775
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0,
+        -0.2
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0,
+        -0.5
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0,
+        -0.7
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0,
+        -0.775
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.2
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.5
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.7
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.775
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.2
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.5
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.7
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.775
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.2
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.5
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.7
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.775
+      ],
+      "error": "TimeoutError('whole-experiment deadline')"
+    }
+  ],
+  "w": [
+    "59.3470440026023530796536486749922190310987728064666696981224517547468",
+    "0"
+  ]
+}

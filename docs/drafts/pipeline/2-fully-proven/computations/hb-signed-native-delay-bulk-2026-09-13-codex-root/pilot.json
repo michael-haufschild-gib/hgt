@@ -1,0 +1,132 @@
+[
+  {
+    "n": 1,
+    "gamma": 14.134725141734695,
+    "h_order": 28,
+    "clock_order": 12,
+    "theta_order": 16,
+    "margin": 30,
+    "dps": 30,
+    "seconds": 79.08303857967257,
+    "full_relative": 0.9081157368824289,
+    "principal_relative": 0.9080916453606107,
+    "full_ordered": [
+      0.0,
+      7932985322.688827
+    ],
+    "principal_ordered": [
+      0.0,
+      7932563814.199227
+    ],
+    "full_sheet": [
+      -1828893340.2025545,
+      3966492661.3444133
+    ],
+    "full_conjugacy_error": 0.0,
+    "log_abs_completed_lambda_sq": -42.37801769629644
+  },
+  {
+    "n": 1,
+    "gamma": 14.134725141734695,
+    "h_order": 40,
+    "clock_order": 16,
+    "theta_order": 24,
+    "margin": 40,
+    "dps": 35,
+    "seconds": 210.7740605585277,
+    "full_relative": 0.9080788582266044,
+    "principal_relative": 0.9080542379728674,
+    "full_ordered": [
+      0.0,
+      7932776992.90968
+    ],
+    "principal_ordered": [
+      0.0,
+      7932359106.666882
+    ],
+    "full_sheet": [
+      -1829268896.8356328,
+      3966388496.45484
+    ],
+    "full_conjugacy_error": 0.0,
+    "log_abs_completed_lambda_sq": -42.37801769629644
+  },
+  {
+    "n": 1,
+    "gamma": 14.134725141734695,
+    "h_order": 52,
+    "clock_order": 20,
+    "theta_order": 32,
+    "margin": 50,
+    "dps": 45,
+    "seconds": 401.9090112708509,
+    "full_relative": 0.9080789228112721,
+    "principal_relative": 0.9080543556339354,
+    "full_ordered": [
+      0.0,
+      7932794374.762985
+    ],
+    "principal_ordered": [
+      0.0,
+      7932376740.306614
+    ],
+    "full_sheet": [
+      -1829272163.2505834,
+      3966397187.3814926
+    ],
+    "full_conjugacy_error": 0.0,
+    "log_abs_completed_lambda_sq": -42.37801769629644
+  },
+  {
+    "n": 4,
+    "gamma": 30.424876125859512,
+    "h_order": 56,
+    "clock_order": 14,
+    "theta_order": 16,
+    "margin": 30,
+    "dps": 30,
+    "seconds": 178.71539346128702,
+    "full_relative": 0.4928948836836119,
+    "principal_relative": 0.910893243990648,
+    "full_ordered": [
+      0.0,
+      -4409831694918.894
+    ],
+    "principal_ordered": [
+      0.0,
+      6355474274849.998
+    ],
+    "full_sheet": [
+      3892255309310.1816,
+      -2204915847459.447
+    ],
+    "full_conjugacy_error": 0.0,
+    "log_abs_completed_lambda_sq": -96.2175045260281
+  },
+  {
+    "n": 4,
+    "gamma": 30.424876125859512,
+    "h_order": 72,
+    "clock_order": 18,
+    "theta_order": 24,
+    "margin": 40,
+    "dps": 35,
+    "seconds": 434.13417254015803,
+    "full_relative": 0.4928611427315508,
+    "principal_relative": 0.9104215687494487,
+    "full_ordered": [
+      0.0,
+      -4410162096708.122
+    ],
+    "principal_ordered": [
+      0.0,
+      6347143937440.426
+    ],
+    "full_sheet": [
+      3892898925737.6445,
+      -2205081048354.061
+    ],
+    "full_conjugacy_error": 0.0,
+    "log_abs_completed_lambda_sq": -96.2175045260281
+  }
+]

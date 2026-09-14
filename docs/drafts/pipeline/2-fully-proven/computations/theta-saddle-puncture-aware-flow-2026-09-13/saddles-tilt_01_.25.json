@@ -1,0 +1,221 @@
+{
+  "roots": [
+    {
+      "point": [
+        "-0.73349493072375215508369070021853258935488458004726",
+        "-0.72719458169213927637268292064615517809372290425778"
+      ],
+      "relative_residual": "5.355589419953867328470099269828740622735157706307e-37",
+      "correction": "5.7033881136646307488443849549791123678809159231203e-40",
+      "terms": 18,
+      "iterations": 16
+    },
+    {
+      "point": [
+        "-0.25542409949277369244466861377756609964811417252733",
+        "-0.77027670034374409283576505295046616940463546953874"
+      ],
+      "relative_residual": "3.8845200291915907385466987683072728488337671237969e-46",
+      "correction": "3.4603090751016986936980096871007662784694483937092e-50",
+      "terms": 43,
+      "iterations": 12
+    },
+    {
+      "point": [
+        "-0.00026126773850698738308840757049335408801051479150915",
+        "-0.70193694005834727645546026067795187831073437875129"
+      ],
+      "relative_residual": "4.6884107543855939800088766130885067728785596577701e-40",
+      "correction": "2.2798225917258331451492839593994607562874012748179e-42",
+      "terms": 26,
+      "iterations": 5
+    },
+    {
+      "point": [
+        "0.25540654826759046555220031746606739128275992577643",
+        "-0.7702766542739367741676757841727320770899879391836"
+      ],
+      "relative_residual": "5.146179216425332997500735663252237209823294195221e-48",
+      "correction": "4.5843896756028981888274285480032886247467871948402e-52",
+      "terms": 43,
+      "iterations": 12
+    },
+    {
+      "point": [
+        "0.73309155673818428500967118642639543077598794097943",
+        "-0.72719475570689334934696332818098923459075329800111"
+      ],
+      "relative_residual": "7.9996861618853316205969394755445712892859448759773e-49",
+      "correction": "8.5294165451360381904406576088499486828942602611005e-52",
+      "terms": 18,
+      "iterations": 17
+    }
+  ],
+  "failures": [
+    {
+      "start": [
+        -1.5,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -1.5,
+        -0.775
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.75,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        -0.25,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0,
+        -0.775
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.25,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        0.75,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.2
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.5
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.7
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    },
+    {
+      "start": [
+        1.5,
+        -0.775
+      ],
+      "error": "ArithmeticError('Newton iteration limit')"
+    }
+  ],
+  "w": [
+    "14.13472514173469379045725198356247027078425711569924317568556746014996",
+    ".25"
+  ]
+}

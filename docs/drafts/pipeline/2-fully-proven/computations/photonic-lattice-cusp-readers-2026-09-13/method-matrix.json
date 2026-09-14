@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "method": "Split",
+    "application": "Two physical preparation/readout geometries, four logical dimensions, compact and two coupled cusp paths."
+  },
+  {
+    "id": 2,
+    "method": "Falsify",
+    "application": "Test H2 that the canonical mixture restores one hyperbolic end; retained anisotropy or dimension dependence falsifies finite versions and challenges limiting claim."
+  },
+  {
+    "id": 3,
+    "method": "Reverse",
+    "application": "Inspect Gram eigenvalues to determine whether normalizing code support magnifies weak channels; do not infer causality from correlation."
+  },
+  {
+    "id": 4,
+    "method": "Viewpoint",
+    "application": "Replace uniform probability on code support by actual canonical mixture density; topology alone does not specify probabilities."
+  },
+  {
+    "id": 5,
+    "method": "Visual",
+    "application": "Plot both metric ratios and density purity versus regulator on fixed-cusp-product paths."
+  },
+  {
+    "id": 6,
+    "method": "Action",
+    "application": "Mix logical inputs before normalization; combine this reader change with stronger squeezing and energy-envelope removal."
+  },
+  {
+    "id": 7,
+    "method": "Essentials",
+    "application": "Retain entire cross-Gram and its singular values. No deletion of small logical eigenvalues except recorded roundoff handling."
+  },
+  {
+    "id": 8,
+    "method": "Similar",
+    "application": "Dimensions1,2,3,4 distinguish pure state from several code capacities; d1 readers must agree as a cheap check."
+  },
+  {
+    "id": 9,
+    "method": "Small",
+    "application": "Pilot is one complete d1 case within cap, including both metrics; identity of pure-state readers checks implementation."
+  },
+  {
+    "id": 10,
+    "method": "Extreme",
+    "application": "delta decreases while y=c/delta increases; fixed-y compact controls distinguish limits. No infinite-limit claim from three scales."
+  },
+  {
+    "id": 11,
+    "method": "Experiment",
+    "application": "36cases,14workers,one600secondcap; selected outcomes demand100/160 independent challenge."
+  },
+  {
+    "id": 12,
+    "method": "Invariant",
+    "application": "Symplectic area2pi*d and common lattice shape within each reader pair; mixture invariant under unitary logical basis relabeling."
+  },
+  {
+    "id": 13,
+    "method": "Monotone",
+    "application": "Measure purity and Gram conditioning without assuming either alone predicts metric directionality."
+  },
+  {
+    "id": 14,
+    "method": "Weaker bridge",
+    "application": "Compact-region agreement survives separately even if H1/H2 uniform cusp claim fails."
+  },
+  {
+    "id": 15,
+    "method": "New hunch",
+    "application": "H2 is separately frozen: canonical mixture may restore common hyperbolic end. It does not redefine H1."
+  },
+  {
+    "id": 16,
+    "method": "Minimal counterexample",
+    "application": "Seek first dimension/cusp path where stable mixture and projector geometries disagree qualitatively."
+  },
+  {
+    "id": 17,
+    "method": "Representation",
+    "application": "Bures root fidelity from singular values of cross-Gram, contrasted with support-projector overlaps. Validate SVD/eigen and theta/recurrence separately."
+  },
+  {
+    "id": 18,
+    "method": "Technique",
+    "application": "Current corpus has operator/matrix Bures and rectangular-incidence identities; no claimed GKP derivative or cusp theorem."
+  },
+  {
+    "id": 19,
+    "method": "Fake proof",
+    "application": "Fixed-lattice isometry allows replacing Gram by scalar identity uniformly at the cusp. The missing uniform bound is precisely tested."
+  },
+  {
+    "id": 20,
+    "method": "Missing lemma",
+    "application": "Preparation-independent physical cusp geometry, or a justified unique preparation and surviving response generator."
+  },
+  {
+    "id": 21,
+    "method": "Dependency",
+    "application": "Native quantum lattice -> canonical finite-energy density -> full physical distinguishability -> end geometry -> scattering. Later arrows remain open."
+  },
+  {
+    "id": 22,
+    "method": "Nearby false",
+    "application": "Support projector and probability-weighted density share support but need not have the same metric. Difference alone is known; its limiting geometric form is the discovery target."
+  },
+  {
+    "id": 23,
+    "method": "Boundary",
+    "application": "Track all Gram eigenvalues and positivity, finite sums and finite-difference scales. Small singular values retained; no hard rank cutoff."
+  },
+  {
+    "id": 24,
+    "method": "Salvage",
+    "application": "Identify which channels/limits carry hyperbolic geometry. If no universal metric survives, specify the actual density/reader needed for further dynamics instead of declaring all photonic approaches dead."
+  }
+]

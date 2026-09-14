@@ -1,0 +1,34 @@
+{
+  "starts": 324,
+  "successful_starts": 118,
+  "failures": {
+    "ArithmeticError('Newton iteration limit')": 206
+  },
+  "distinct_candidates": 43,
+  "nonreal_candidates_in_spectral_strip": [
+    {
+      "start": [
+        0.15,
+        0.74
+      ],
+      "dps": 60,
+      "status": "ok",
+      "point": [
+        "0.235860448489655792034249196422149659321913627918723875119077",
+        "0.557578346016638811950015723572268179992306355917018647209721"
+      ],
+      "frequency": [
+        "-9.6245796228626731871950455603856133047235056274442222690843",
+        "0.479910513237394655004183193668574764604933772782219756869033"
+      ],
+      "residual": "4.44287562348064297438448880898075007275847098312304653371137e-61",
+      "term_refinement_residual": "4.44287562348064297438448880898075007275847098312304653371137e-61",
+      "frequency_truncation_disagreement": "0.0",
+      "normalized_source_value": "0.985831688322480091140719398504258621334336416488566550603079",
+      "terms": 17,
+      "iterations": 21,
+      "seconds": 0.16574743576347828
+    }
+  ],
+  "scope": "Incomplete60digit critical-frequency search; four selected candidates independently validated100/160digits."
+}

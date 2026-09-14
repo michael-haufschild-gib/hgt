@@ -1,0 +1,3 @@
+# Successful numerical pilot; sizing gate stopped the family
+
+The complete128-step d2,m3,delta.2 path passed at50digits with independent Jacobi summation and twice outer cutoff. It took82.5446s, exceeding the frozen75s sizing allowance. The guard stopped the family after1of9planned tasks; the remaining8were not run. The independent map agrees with the original complex128calculation, but this one point is not a100/160digit validation. The reformulated64-step family subsequently ran all9full-path50/100/160checks. Original source, outputs and checksums are retained; no scientific failure or RH consequence is inferred from a resource-sizing stop.

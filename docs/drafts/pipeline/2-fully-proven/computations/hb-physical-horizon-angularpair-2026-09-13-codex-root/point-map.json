@@ -1,0 +1,110 @@
+[
+  {
+    "label": "zeta1",
+    "gamma": 14.134725141734695,
+    "seconds": 135.89137158542871,
+    "counts": {
+      "difference_positive": 443,
+      "difference_negative": 646,
+      "full_positive": 33,
+      "full_negative": 1056
+    },
+    "extrema": {
+      "difference_min": [
+        -4907438.8694309015,
+        [
+          -0.3125,
+          0.993568225629299
+        ]
+      ],
+      "difference_max": [
+        688171.8099200989,
+        [
+          -0.40625,
+          0.9137619698258403
+        ]
+      ]
+    }
+  },
+  {
+    "label": "mid1",
+    "gamma": 17.578382390253125,
+    "seconds": 139.68706224113703,
+    "counts": {
+      "difference_positive": 439,
+      "difference_negative": 650,
+      "full_positive": 41,
+      "full_negative": 1048
+    },
+    "extrema": {
+      "difference_min": [
+        -12555017.125605496,
+        [
+          -0.21875,
+          1.1137652737222388
+        ]
+      ],
+      "difference_max": [
+        1541766.259561912,
+        [
+          -0.46875,
+          1.1184420889077586
+        ]
+      ]
+    }
+  },
+  {
+    "label": "zeta4",
+    "gamma": 30.424876125859512,
+    "seconds": 116.82860489189625,
+    "counts": {
+      "difference_positive": 285,
+      "difference_negative": 804,
+      "full_positive": 76,
+      "full_negative": 1013
+    },
+    "extrema": {
+      "difference_min": [
+        -3726457287.5713305,
+        [
+          -0.5,
+          1.465421635131869
+        ]
+      ],
+      "difference_max": [
+        25284451.110534217,
+        [
+          -0.3125,
+          2.440233777608675
+        ]
+      ]
+    }
+  },
+  {
+    "label": "mid4",
+    "gamma": 31.679968856799352,
+    "seconds": 115.72988351434469,
+    "counts": {
+      "difference_positive": 480,
+      "difference_negative": 609,
+      "full_positive": 69,
+      "full_negative": 1020
+    },
+    "extrema": {
+      "difference_min": [
+        -263278722.82300347,
+        [
+          -0.5,
+          0.952935961920314
+        ]
+      ],
+      "difference_max": [
+        17417253.40055695,
+        [
+          -0.09375,
+          1.2921969768439436
+        ]
+      ]
+    }
+  }
+]

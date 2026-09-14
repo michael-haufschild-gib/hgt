@@ -1,0 +1,17 @@
+# Frozen critical-frequency map of the literal theta source
+
+Question: where does the complex saddle-coordinate map w(z)=−i Phi'(z)/Phi(z) branch, and do nonreal branch values enter the spectral strip abs(Im w)<.5 relevant to RH? This tests whether a globally simple saddle coordinate is even available. A critical value of this map is not a zero of Xi or zeta.
+
+Literal source Phi and its derivatives are exactly those copied from the holomorphic strip source. The saddle equation for Phi(z)exp(−iwz) is Phi'(z)−iwPhi(z)=0. Degeneracy requires Q=Phi Phi^(2)−(Phi')^2=0 while Phi!=0; Q'=Phi Phi^(3)−Phi'Phi^(2). These identities are derived controls, not discoveries. The source-node search and independent validation show genuine numerical source nodes; such nodes are poles of w, not automatically branch points.
+
+Prediction attempt: a turning point on the imaginary source axis is foreseeable from the source node and near-origin behavior, so its mere existence or precise constant is not a discovery target. The unretrieved/underived question is the geometry of the full set of sampled complex critical values, especially nonreal values in the RH spectral strip and distinct source points projecting to nearby frequencies. No frequency is assumed to be a zeta zero. Failed Newton starts do not prove absence.
+
+Run324starts: Re z=0,.025,.05,.075,.1,.15,.2,.3,.4,.5,.6,.7,.85,1,1.25,1.5,1.75,2; Im z=.05,.15,.3,.4,.5,.55,.6,.625,.65,.675,.7,.725,.74,.755,.765,.775,.781,.784.60digits,60iterations,stepclamp.1,domain abs(Re z)<=3,abs(Im z)<.7851. Require abs(Q)/(abs(Phi Phi^(2))+abs(Phi')^2)<1e-43 and abs(Q/Q')<1e-37. Retain source-value normalization to reject spurious tiny-tail zeros, re-evaluate with30extra terms, and deduplicate by actual complex coordinates after the run. Two-startpilot inside the same wall clock.
+
+The current source corpus contains real log-curvature and complex-strip holomorphy results. Neither is assumed to classify the complex critical-frequency map. Deep/source-method evidence and source hashes are archived; partial retrieval is not an absence theorem, and source text is not a fresh kernel certificate. No Lean builds.
+
+Interpretation: a nonreal critical value inside the relevant spectral strip would require a contour proof to handle saddle degeneracy there even if the full transform stays analytic and nonzero. A successful finite exclusion scan would provide a candidate structural separation only, not establish it globally. The positive survivor of a failed simple-coordinate model is the branched source-saddle surface with all relevant cycles and coefficients retained. Complete physical-action identification/selection remains uncomputed.
+
+Cross-field method: source action critical values and caustics, inspired by Li/Li/Tang arXiv:2605.08867v1 sections1–2 and Weber arXiv:2605.03794 abstract. Their global thimble theorems are not imported. All24mechanical operations in METHODS.md apply, with the map/degeneracy equation above replacing the node equation. The concrete additional variations are complex interior/boundary starts, source versus frequency coordinates, term refinement, and subsequent independent validation of any interesting frequencies. No predictable identity is billed as discovery.
+
+At most14workers, native threads1,575cooperative/585forcedseconds plus cleanup<10seconds; partial results and own process-group cleanup retained. Seeds deterministic; no other agent's processes or files are inspected or changed.

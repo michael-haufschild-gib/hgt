@@ -1,0 +1,11 @@
+{
+  "metrics": {
+    "tasks": 12,
+    "passed": 12,
+    "wall_seconds": 31.20529904961586,
+    "worker_seconds": 236.410931635648
+  },
+  "status": "numerical; scientific acceptance separately reported",
+  "no_absence_claim": true,
+  "physical_attachment": false
+}
