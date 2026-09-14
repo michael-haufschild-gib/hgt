@@ -30,7 +30,13 @@ original radial test `g`, the candidate restored temporal density is
 -mu * (-2*w*lambda*h*g/f - w*R^2*g*F/f^2).
 ```
 
-Both the lift and its wave/source contact belong in `h,F`. The finite-time
+Both the lift and its wave/source contact belong in `h,F`. At every fixed
+exterior radius, `OriginalMetricTimeLimit.original_metric_time_limit` now
+identifies this density with the independently removed onset and terminal
+limits of the original angular-restored metric time integral, for
+`Re(w)>3/2`, `Im(w)!=0`. Its scratch check and isolated exact leaf audit
+passed; artifacts and umbrella import are installed. This takes the angular
+finite part first. The finite-time
 algebra retains the temporal endpoint. If `M(t,R)` denotes a sufficiently
 regular scalar period before its time transform, then
 
@@ -42,90 +48,192 @@ int_0^T exp(-w*t)*(M_t+w*M) dt
 Consequently the original temporal current has the additional term
 `mu*lambda*g/f * (exp(-w*T)*M(T,R)-M(0,R))` before its limit.
 This sign follows from `Jstatic^t=Jingoing^p-Jingoing^R/f` and the complete
-source contact, not a homogeneous-source substitution. Attachment and passage
-to the full original pairing are still required.
+source contact. Its two endpoint terms vanish at fixed exterior radius:
+the complete original scalar is zero at onset and has ingoing-time growth
+at most `C_R*exp(Re(readerExponent(q))*p)`. The actual causal clock shift
+then identifies its admitted Laplace integral with `exp(-w*x)*h(w,x)`.
+The complete angular-first exterior cutoff comparison is now derived below.
+The complete original radial finite part is now restored at one common
+cutoff near either fundamental QNM. Its residue cancels the retained
+temporal-corner residue exactly, without a critical-line assumption.
+The restored radial-plus-corner expression also has a proved analytic
+extension and a fixed finite QNM value. Identifying this continuation with
+the complete original pairing under independent cusp/time/horizon removal
+remains required.
 
-### Temporal/height interchange: analytical Plancherel argument
+### Complete outer frequency integral and QNM residue
 
-The actual corpus supplies a stronger estimate than height admission at one
-frequency. Set `B=principalKernelGrowth(q)<2` and choose `B<c<2`.
-Let `U(t)=causalJointForcedResponse(q,branch,a,t)` and let `F(t)` be its
-complete `causalCuspSourceVector`. Let `W_N=cuspSpatialMultiply(N)` and
-`W=cuspWeightLimit`; the original height satisfies `y<=3*W` on the modular
-cell. The fixed angular vectors `W*squareResidual` and each
-`W*cutoffCommutator_i` are in the actual angular L2 space. The separated
-source decomposition and the original radial source/principal transform
-bounds therefore give
+Let `n_w(x)` be the unchanged normalizable mode, `K=reducedGreenGradient(chi,s,1)`
+and `P_s(K,x)=forcingProfile(s,amp,1,K,radialUnit(x))`. The retained original
+lift and forcing satisfy the exact identity
 
 ```
-A_c = int_0^infty exp(-c*t)*norm(W*F(t)) dt < infinity,
-norm(W_N*Fhat(c+i*xi)) <= A_c, independently of N and xi.
+Q(x) = 2*(mu-2)*radialLift(s,0,amp,1,x)+P_s(K,x)
+     = P_s(K-(mu-2),x).
+J_T(w) = int_T^0 exp(w*x)*Q(x)*n_w(x) dx.
 ```
 
-This includes all three principal channels. It uses the strict native kernel
-threshold, not the older sum-of-growth threshold.
-`CuspWeightRotatedEnergy.jointWaveResponse_cuspWeight_rotated_bound` gives
-for the same actual causal transform
+For each fixed `T<0`, `J_T` is entire. The proof derives a common bound from
+the compact exponential/source factor and the original normalizable mode's
+outer bound, then applies dominated holomorphy. Thus this statement concerns
+the integrated complete lift/contact term, rather than only its pointwise
+frequency behavior.
+
+With `D_w(x)=(R(x)^2-1)*metricFrequencyDensity(w,R(x))`, the exact decomposition
+on `-2<Re(w)`, off the connection and source poles, is
+
+```
+int_T^0 D_w(x) dx
+ = 2*mu*w*(mu-2)*C*continuedReducedOuterPairing(chi,s,amp,T,w)
+   +mu*w*C*continuedOnset(s,w)*J_T(w).
+```
+
+Both terms are proved integrable before splitting the original density.
+At either physical fundamental frequency `w0`, the second term is analytic.
+The first has residue `2*mu*w0*(mu-2)*C` times the existing exact reduced
+outer-pairing residue, retaining its source moment, onset and mode-square
+integral. `OriginalMetricOuter.originalMetricOuter_QNM_residue` derives this
+after integration with the original angular factor `-mu`.
+
+**Formal status:** the complete leaf passed scratch and its isolated exact
+module audit; artifacts are installed, umbrella wired, and formal lint passed.
+The original outer time interchange and exterior corner assembly are derived
+below. **Remaining matching problem:** continue the complete original horizon
+finite part and retain independent cusp control. The older projected
+field `C*G+P` differs from the original restored `C*(G+L)` by `C*L-P`; its
+radial restoration theorem cannot be substituted without that correction.
+
+### Complete exterior temporal cutoff comparison
+
+For each `T<0`, the complete original scalar satisfies
+`norm(originalScalar(p,p-2*x)) <= B_T*exp(Re(readerExponent(q))*p)` uniformly
+for `x in [T,0]`, `p>=0`. The original causal-response bound controls the
+response; compactness bounds its retained lift through the outer endpoint.
+With `V_w(x,p)=exp(-w*p)*originalScalar(p,p-2*x)` and
+`E_w(x)=exp(w*x)*n_w(x)`, the original radial Jacobian gives exactly
+
+```
+f(x)*restoredMetricTime(a,b,R(x))
+ = mu*E_w(x)*(
+     (mu-2)*(V_w(x,b)-V_w(x,a)+2*w*int_a^b V_w(x,p) dp)
+     +w*C*P_s(K,x)*int_a^b exp(-w*p)*timeOnset(2*s,p) dp).
+```
+
+For `Re(w)>3/2`, this complete density has an integrable outer bound uniform
+in `0<=a<=b`. Its integrated limit as `(a,b)->(0+,infinity)` equals the
+original frequency integral `outerIntegral(T,w)`. The original static cutoff
+has upper ingoing time `p=b+x`; its integrated outer limit is the same.
+Both statements derive admission and keep the original forcing and endpoints.
+
+At the common interface `T=-L0/2`, define the complete exterior comparison by
+
+```
+exteriorCutoffDifference(L0,b)
+ = metricCutoffDifference(L0,b)
+   +outerStaticTimeIntegral(-L0/2,b)-outerIntegral(-L0/2,w).
+```
+
+`OriginalMetricOuterTime.original_exterior_cutoff_difference` proves that
+some `L0>0` gives limit `physicalCornerCandidate(q,br,amp,w)`. Thus the whole
+angular-restored exterior has the original temporal corner: the bounded
+outer contribution tends to zero, while the collar retains its already-derived
+first moment and fixed logarithmic coordinate term. This does not assume a
+QNM expansion or make the angular cutoff independent of the other limits.
+
+**Formal status:** the complete leaf passed scratch and isolated exact audit
+(only this leaf built). Artifacts are installed, umbrella wired, and formal lint
+passed. Full temporal/metric/QNM matching and its impossibility remain open.
+
+### Temporal/height interchange — original causal field
+
+Set `B=principalKernelGrowth(q)`, so `3/2<=B<2`, and let
+`U(t)=causalJointForcedResponse(q,branch,a,t)` retain its complete causal
+forcing `F(t)=causalCuspSourceVector(q,branch,a,t)`. For every `c>B`, the
+original damped orbit is L2 in time by
+`PhysicalCausalGreenBand.causalJointForcedResponse_memLp_of_native`.
+
+`OriginalWeightedOrbit.heightSource` multiplies the literal forcing by height
+in the original spatial measure. Its four separated terms keep the native
+angular residual and all three principal cutoff commutators, with their
+original time/radial coefficients. The explicit envelope is
+`sourceEnvelope=(cuspWeightBase+y)*F`, and
+
+```
+A_c = sourceBound(q,branch,a,c)
+    = int_0^infty norm(expRay(c,t)*sourceEnvelope(t)) dt < infinity.
+```
+
+The bound uses this envelope, rather than claiming the sharper constant
+`int norm(expRay(c,t)*W*F(t))` from the earlier paper derivation. Every bounded
+cusp multiplier `W_N` is dominated by the same envelope. The original rotated
+resolvent and vector Plancherel give
 
 ```
 norm(W_N*Uhat(c+i*xi))
- <= c*A_c / ((c^2-9/4)*sqrt(c^2+xi^2)).
-```
-
-For every fixed `N`, the multiplier is bounded and commutes with the original
-Bochner transform. The original damped response is L2 in time: this is the
-`native_forced_weighted_memLp`/`native_forced_eq_original` argument already
-proved inside `PhysicalCausalGreenBand`, with a shift strictly between `B`
-and `c`. Hilbert-valued Plancherel, with angular frequency `xi`, now gives
-
-```
+ <= c*A_c / ((c^2-9/4)*sqrt(c^2+xi^2)),
 int_0^infty exp(-2*c*t)*norm(W_N*U(t))^2 dt
- <= c*A_c^2 / (2*(c^2-9/4)^2).
+ <= (c*A_c/(c^2-9/4))^2/(2*c).
 ```
 
-The right side does not depend on `N`. Apply Fatou on the original
-time/radial/modular product measure using the actual multiplier convergence.
-This proves the same bound with `W`, and then the bound with actual height
-`y` with an extra factor `9`. For every `d>c`, Cauchy--Schwarz supplies
+The right sides are independent of the actual cusp cutoff. No spectral
+expansion or supplied weighted-orbit hypothesis enters these estimates.
+
+`OriginalCuspTime` removes the cusp weight in the time-dependent field itself.
+Spatial Fatou bounds the limiting weight by the lower limit of cutoff norms;
+temporal Fatou makes that lower limit finite almost everywhere. The ratios
+`W_N/W` are bounded by one and converge to one, giving strong spatial
+convergence on each admitted slice. This also proves Bochner measurability of
+the limiting time field. The resulting actual representative
+`V_c(t)=expRay(c,t)*W*U(t)` is L2 in time with the same energy bound.
+
+For every complex `w` with `Re(w)>B`, choose `B<c<Re(w)`. Cauchy--Schwarz
+admits `expRay(w-c,t)*V_c(t)` as a Bochner time integral. Bounded multiplication
+by `1/W` identifies its integral with `W*Uhat(w)`. Bounded multiplication by
+`y/W`, whose norm is at most three, then yields an admitted field `H_w` with
 
 ```
-int_0^infty exp(-d*t)*norm(y*U(t)) dt
- <= 3*sqrt(c/2)*A_c / ((c^2-9/4)*sqrt(2*(d-c))).
+H_w(t) = expRay(w,t)*y*U(t)             (a.e. in the original measures),
+int_0^infty H_w(t) dt = y*Uhat(w).
 ```
 
-Thus the required time-integrability of the height-weighted **actual causal
-residual** has an analytical proof from the inspected corpus ingredients.
-It is not yet a Lean theorem in this work. The fixed finite-dimensional
-principal/lift restoration must be added with its own coefficients; this
-estimate does not silently treat the raw growing source as L2.
+Thus the unbounded height multiplication and original time transform commute
+on the whole native Laplace half-plane. In the physical Green band
+`B<Re(w)<2`, `Im(w)!=0`, the unchanged angular reader satisfies
 
-**Meaning for full matching.** This argument supplies the missing domination
-for temporal/height interchange of the original scalar reading and compact
-transposed tests. It avoids inventing a new evolution or assuming a weighted
-orbit contraction. It does not by itself identify the metric current's
-derivative traces, the full normalizable radial logarithmic subtraction, or
-the ingoing/static-time corner. In particular, performing the time transform
-first constructs only one ordered pairing until its original boundary
-counterterms are identified. Full matching remains the target; no failure of
-an intermediate interchange has established impossibility.
+```
+int_0^infty physicalJointProjection(r,H_w(t)) dt
+ = causalPhysicalProjection(q,r,branch,a,w).
+```
 
-Relevant inspected source interfaces: `CuspWeightRotatedEnergy` (uniform
-imaginary-axis bound), `CuspWeightLimit` (actual multiplier limit and height
-comparison), `PhysicalWeightedAngularData` (all four weighted source
-vectors), `NativeGreenBand` (strict threshold below two),
-`PhysicalCausalGreenBand` (actual causal transform and damped L2 argument),
-`VectorFourierPlancherelIntegral` (the actual Hilbert Plancherel identity),
-and `HilbertL2FourierNaturality` (bounded multipliers commute with the
-actual Hilbert-valued Fourier transform). Prefixes are `ThetaCuspHawkingBM`
-for the first five modules. Searches supplied source-level candidates;
-the new assembled admission statement has not been kernel-checked.
+The existing `causalPhysicalProjection_ae_green` theorem identifies this
+radial function with the complete physical Green profile. This is an identity
+for the original weighted causal field; the bounded reading is applied before
+the time integral with its integrability derived.
+
+**Formal status:** `ThetaCuspHawkingBMOriginalWeightedOrbit` and
+`ThetaCuspHawkingBMOriginalCuspTime` passed scratch checks and isolated exact
+leaf audits. Their artifacts and umbrella imports are installed; no umbrella
+build was run. The native damped-L2 interface in `PhysicalCausalGreenBand` also
+passed its scratch check and isolated exact leaf audit.
+
+**Meaning for full matching.** The residual temporal/height admission and its
+bounded physical projection are closed. The finite-dimensional principal and
+lift restoration must still be assembled with their original coefficients.
+The separate `OriginalMetricTimeLimit` result closes the complete restored
+metric's temporal endpoints at fixed radius. Metric derivative traces,
+radial trace evaluation, independent cusp/time/horizon limits and the
+complete QNM continuation remain open. These results neither identify a
+finite-variation Jost expansion nor
+fixes a zero-mode coefficient. It proves neither full matching nor its
+impossibility.
 
 ### Decisive corner comparison: preserve the first temporal moment
 
-**Full matching remains open.** The following fixes a concrete candidate
-for the previously unidentified corner, including its possible QNM residue.
-The finite-cut geometry is exact; application to the complete original
-current still needs the indicated admission and remainder proof.
+**Full matching remains open.** The corner below, including its possible
+QNM residue, is attached to the angular-restored original metric collar by
+`OriginalMetricCorner` (F212–F213). Its first temporal moment and integrable
+collar remainder are proved. Passage to the complete original action with
+independent cusp/time/horizon limits and the outer region remains open.
 
 The original normalizable mode has opposite coefficient
 `beta(w)=connection(w,chi)/(2*w)`. Set `p=t+x`, with the original tortoise
@@ -178,11 +286,11 @@ FP_static_time(original current)
 ```
 
 The two `log(2)` contributions cancel in these normalized amplitudes.
-Incoming and opposite remainder densities must be proved integrable before
-this leading-density comparison can be asserted for the whole current.
-The first displayed equality is an algebraic evaluation of the corner
-candidate; the second is the **active full-current conjecture**, not a
-definition of the original pairing and not yet a theorem.
+The incoming and opposite collar remainder is integrable after angular
+restoration by F213. The first displayed equality evaluates the corner;
+the second remains the **active full-current conjecture** for the complete
+independently regularized pairing, including its outer region. It is not a
+definition of that pairing.
 
 The spectral consequence is sharp. At the physical fundamental root `w0`,
 the inspected Gamma formulas give
@@ -208,16 +316,351 @@ An analytic logarithmic coefficient therefore does **not** suffice to
 discard its temporal corner: a first temporal moment differentiates the
 meromorphic horizon response.
 
-**Exact remaining test.** Derive the weighted first-moment and integrable
-remainder estimates for the complete original cusp-restored horizon trace
-from its compact direct/image source formula, and identify the prescribed
-time-cap boundary with the corner above. An initial sufficiently far-right
-frequency half-plane is enough for this test; continuation must then use
-the already fixed causal/Green family. The calculation cannot yet prove
-impossibility of full matching: it has not identified the full physical
-time-cap prescription, nor proved nonzero coupling for a counterexample.
-It does show why matching the corner can change the QNM residue, rather
-than merely adding an analytic finite value.
+### Original forcing and lift/contact horizon restoration
+
+`ThetaCuspHawkingBMOriginalMetricHorizon` passed scratch and isolated exact
+leaf audit. Its artifacts are installed and its umbrella import is wired.
+For every fixed gradient `K`, the original forcing kernel has exact pullback
+
+```
+exp(w*x)*P_s(K,x)*n_w(x)*dx/dz
+  = -z^(w-1)*A(w)*H(w,z)*S_K(w,z)
+    -[connection(w)/(2*w)]*H(-w,z)*S_K(w,z)/z.
+```
+
+`S_K` is the original source remainder, `A` the actual regular Wronskian
+coefficient, and `H` the actual Gauss factor. Proved uniform quadratic jets
+produce two power counterterms and one logarithmic counterterm. Their
+restored value is analytic at either actual fundamental QNM. The coordinate
+substitution is proved for the original radial integral, not postulated.
+
+For `K-(mu-2)`, joining the restored horizon to the original outer integral
+proves the entire regular contribution, including its unchanged onset and
+metric coefficient, has zero QNM residue. Its finite value is retained.
+
+The complete density has a second exact form:
+
+```
+D_w = 2*mu*w*(mu-2)*C*G_native*n_w
+      +mu*w*C*continuedOnset(s,w)*exp(w*x)*P_s(K,x)*n_w.
+```
+
+The lift cancels because `continuedReducedGreen=G_native-L`. The existing
+`normalizableOuterPairing` uses native Green response on its horizon interval
+and reduced Green response on its outer interval. Its matching regular terms
+are therefore the unshifted forcing on the horizon and the shifted forcing
+outside. Both have now been restored analytically at the physical QNM.
+
+### Complete original radial restoration and temporal-corner balance
+
+`ThetaCuspHawkingBMOriginalMetricRadial` passed scratch and isolated exact
+leaf audit; artifacts are installed and its umbrella import is wired.
+The strengthened `physicalNormalizableOuterPairing_residue_and_restoration_below`
+chooses its interface below any prescribed positive cap. Its proof uses
+canonical instances and no transparency override. This permits the actual
+Green and forcing restorations to use the same cutoff.
+
+Put `a_G(w)=2*mu*w*(mu-2)*C` and
+`a_F(w)=mu*w*C*continuedOnset(s,w)`. For some source-derived interface `b`,
+the complete original radial finite part is
+
+```
+R(w) = a_G(w)*normalizableOuterPairing(tortoiseOf(b),w)
+       +a_F(w)*(nativeForcingHorizonFinitePart(b,w)
+                 +shiftedForcingOuterMoment(tortoiseOf(b),w)).
+```
+
+`radialCutoff_decomposition` is an equality of the literal original metric
+integral from `tortoiseOf(e)` to the outer endpoint, together with its
+derived Green and forcing counterterms. The actual coordinate substitution,
+integrability and interface split are proved. The theorem
+`original_radial_restoration_and_corner_balance` constructs a frequency ball,
+interface and three forcing coefficients, then proves this one-cutoff
+integral tends to `R(w)` off the original connection zero.
+
+For either actual fundamental QNM `w0`, write
+`S=mu*(mu-2)*C*fundamentalSourceMoment(w0,s,amp)*continuedOnset(s,w0)`.
+The same theorem proves
+
+```
+lim_(w->w0,w!=w0) (w-w0)*R(w) = -S,
+lim_(w->w0,w!=w0) (w-w0)*(R(w)+physicalCornerCandidate(w)) = 0.
+```
+
+The corner is the one already obtained from the complete angular-first
+exterior cutoff comparison. No new subtraction or nonvanishing premise is
+used. **Meaning for the whole route:** the corrected original residue
+vanishes for every actual Xi label, so this residue alone cannot select
+horizontal zero locations. The finite value remains retained; zero residue
+alone does not prove full matching. The analytic extension is established
+below using the actual connection-cleared source expressions.
+
+### Complete corrected QNM continuation and finite value
+
+`ThetaCuspHawkingBMOriginalMetricQNM.original_corrected_action_QNM` passed
+scratch and isolated exact leaf audit; its artifacts and umbrella import
+are installed. The complete restored radial-plus-corner function has an
+analytic extension across either actual fundamental QNM, with its original
+source, forcing, onset, radial normalization and corner retained.
+
+Let `c(w)=connection(w,chi)`, `A(w)=continuedCornerAmplitude(w)` and
+`H(w)` be the analytic extension of `c(w)*A(w)`. Its center value is proved
+to be `c'(w0)*cornerResidue`, from the original amplitude residue. If
+`F(w)=continuedForcingTransform(w)`, the exact cleared corner is
+
+```
+N_corner(w) = mu*((mu-2)*(c*H/(2*w)+c*H'-H*c')
+                   +c^2*C*F'/2).
+```
+
+The source-defined `greenNumerator` clears the native horizon and reduced
+outer Green pairing at their common interface; its analytic proof retains
+both horizon branches. With `J` the complete regular forcing finite part,
+
+```
+N(w) = a_G(w)*greenNumerator(w)+c(w)*a_F(w)*J(w)+N_corner(w),
+N(w) = c(w)*(radialFinitePart(w)+physicalCornerCandidate(w))
+```
+
+on the original punctured frequency neighborhood. `N` is analytic at `w0`.
+The already proved zero corrected residue and the original simple connection
+zero imply `N(w0)=0`. Thus the actual corrected function agrees near `w0`
+with the analytic quotient `dslope(N,w0)/dslope(c,w0)`, and
+
+```
+lim_(w->w0,w!=w0) [radialFinitePart(w)+physicalCornerCandidate(w)]
+    = finiteQNMValue = N'(w0)/c'(w0).
+```
+
+The theorem also retains convergence of the literal radial cutoff plus the
+actual temporal corner to this same punctured function. The companion
+`original_radial_restoration_and_corner_balance_below` exports the original
+regular-term analyticity and allows an arbitrary positive interface cap;
+its previous public theorem is preserved. No nonvanishing or critical-line
+premise is added. **Meaning for the whole route:** the local QNM singularity
+is removable, but the finite value is not proved zero. It retains source
+derivatives and the regular forcing contribution, which residues alone miss.
+
+**Exact remaining test.** Identify this analytic continuation with the
+complete original metric pairing under independent cusp/time/horizon
+removal. This requires controlling all mixed corner contributions, not
+only the limits on separate faces. The literal forcing's joint cusp/horizon
+radial restoration is now closed below. Current compact cusp bounds have
+constants depending on the time/radius compact set; they do not supply the
+required unbounded moving-corner estimate. F207/F213 and F222–F232 need no
+reproof. Full matching, impossibility, spectral nonvanishing and RH remain
+unproved.
+
+### Original forcing at the mixed cusp/horizon corner
+
+**Lean closed.** Let `Q_Y` be the literal square period minus its three
+principal counterterms, `D_Y=greenCut(Y)`, and
+`K=reducedGreenGradient(chi,s,1)`. The actual finite-height forcing obeys
+
+```
+profileCut(Y,u) = (Q_Y-D_Y/2)*P_s(K,u) + (D_Y/2)*P_s(K+1,u).
+```
+
+The unchanged normalizable reader and radial integral preserve this exact
+two-term decomposition. If `CT_K(e,w)` and `CT_(K+1)(e,w)` are the previously
+derived two-power-plus-logarithm counterterms, the finite-height subtraction is
+
+```
+(Q_Y-D_Y/2)*CT_K(e,w) + (D_Y/2)*CT_(K+1)(e,w).
+```
+
+With this source-derived subtraction, the literal forcing radial integral
+converges as `(e,k)->(0+,infinity)`, `Y=exp(k)`, at arbitrary relative rates,
+to `C*horizonFinitePart_K(w)`. This holds throughout a neighborhood of either
+actual fundamental QNM, including its center, and the limiting function is
+analytic there. The proof uses `Q_Y->C`, `D_Y->0` only after each fixed
+radial kernel has been restored. It therefore controls the otherwise
+unbounded products with the horizon powers and logarithm. No finite constant
+is inserted. Reference: `ThetaCuspHawkingBMOriginalForcingJointHorizon`,
+`profile_two_kernels`, `radialCut_decomposition`,
+`original_forcing_joint_horizon_QNM`. Scratch, exact isolated leaf audit and
+repository lint passed; umbrella import installed without building it.
+
+**Meaning for full matching:** the explicit forcing term has no remaining
+cusp/horizon interchange gap with these derived counterterms. The causal
+response, complete angular boundary current and temporal corner still need
+their joint metric attachment. This theorem does not establish that attachment.
+
+### Original source-square horizon jets: Lean closure
+
+**Active full-current bridge.** Prove a uniform horizon Taylor estimate for the
+literal source-square Jacobian times `compactForcing`, applied to the exact
+principal-subtracted square and height-weighted gradient energy. Keep the
+fixed onset, both triangles, and normalized circle integral. The proposed
+bound is `C*exp(B*p-N*k)*abs(rho)` for every cusp order `N`, with independent
+unbounded `p,k`. This is a bridge toward the unchanged full temporal/metric/QNM
+matching target. Its decisive tests are the moving lower endpoint, collapsed
+circle edges, and the sampled `Y^2` gradient factor; none may be dropped.
+
+The exact complete integrated metric boundary is the four-transfer expression
+`T(U,W), T(W,U), T(Delta U,W), T(F,W)` in `OriginalCompactBoundary`.
+Its source-normal derivative is angular height derivative; temporal derivatives
+are already represented by endpoints. The remaining mixed horizon comparison
+requires controlling the horizon derivative of these actual source fields,
+with the source-domain motion retained.
+
+**[BRIDGE; scratch and isolated exact leaf audit passed]** In the original unit
+source square, write `e=exp(-p*(1-alpha))`, `Z=sourceZ(image,p,rho,alpha,beta)`,
+`Zrho=0` for the image and `(1-beta)*e` for the direct triangle, and
+
+```
+L=e/(1-rho*e)+1/(1+rho)+Zrho/(1+Z).
+```
+
+For `p>=0`, `abs(rho)<=1/4`, `alpha,beta in [0,1]`, every term is
+nonnegative and at most `4/3`, so `0<=L<=4`. The actual horizon factor
+satisfies `F_rho=-F*L`. Thus the exact original source-circle radius,
+`d=2*arsinh(sqrt((1-alpha)*beta)*sqrt(F))`, satisfies
+`d_rho=-t/sqrt(1+t^2)*L`, where `t=sqrt((1-alpha)*beta)*sqrt(F)`.
+Consequently `-4<=d_rho<=0`, uniformly over all source times and the
+complete source square, including collapsed circles. Equivalently the
+transported invariant satisfies `I_rho=-(I-1)*L`. The direct triangle's
+extra fixed-`z` derivative term is absorbed by the actual source-domain
+motion `Zrho`; its Jacobian and forcing derivatives must remain in the
+full integral.
+
+The radius also satisfies `0<=d<=2*p+6` for `p>=0` and the full source
+square. The exact native circle derivatives obey
+`abs(offsetRadial),abs(heightRadial)<=exp(d)`; their defining identity is
+`denominator^2-radialNumerator^2=sin(theta)^2`.
+
+The resulting Taylor bound is now proved for every actual coordinate jet
+`f=D^word R` of the square-source remainder or any gradient-product remainder.
+Write `J(rho)=f(logCircle(unitRadius(image,p,rho,alpha,beta),theta,x,k))`.
+For every `N : Nat`, the source supplies `C,B>=0` such that
+
+```
+norm(deriv J rho) <= C*exp(B*p-N*k),
+norm(J(rho)-J(0)) <= C*exp(B*p-N*k)*abs(rho),
+```
+
+uniformly over `p,k>=0`, `abs(rho)<=1/4`, `alpha,beta in [0,1]`, all
+`theta,x`, and both original source triangles. Constants depend only on the
+fixed source parameter, derivative word and `N`. The mean-value proof retains
+the actual moving source coordinate. `sample_eq_original` identifies this
+sample with the original `arcosh(max(1,compactInvariant))` circle for `p>0`.
+**References:** `OriginalHorizonSourceJets.square_jet_horizon_estimate`,
+`gradient_jet_horizon_estimate`; radius statements use namespace
+`D4BMOriginalHorizonRadiusDerivative` in the same leaf. Scratch and the single
+isolated exact leaf audit passed; artifacts are installed and umbrella wired.
+
+**Next complete-current attachment.** The literal `compactForcing` is linear
+in `J,K`. Its coefficients depend on `Z` through `compactUnit(Z)`, inverse
+powers of `1+Z` and `power(2*s,2/(1+Z))`; the latter base stays in `[1,8/3]`
+on the original source square, so it has no characteristic-endpoint zero.
+The original source Jacobian is `p*(1-sourceLower)`, with horizon derivative
+bounded by `p`. The physical onset is `timeOnset(2*s,p*alpha)` and is independent
+of `rho`. Beware normalization: `s=ModularCore.physicalRate`; the rate called
+`CuspProjection.physicalRate` is doubled. Its real-part bound controls this
+same `timeOnset(2*s,...)` through `timeOnset_pair_bound`.
+
+The full gradient-energy remainder is the sampled height squared times the
+sum of the two diagonal gradient-product remainders. This requires retaining
+that height factor and its horizon derivative; arbitrary `N` in the proved
+jet bounds absorbs its base-height power. The next formal target is the
+Taylor bound for the original Jacobian times this complete forcing remainder,
+then its actual normalized circle/unit-square integral. After exponential
+time damping in a sufficiently far right half-plane, these bounds provide a
+candidate common domination for independent cusp/time/horizon removal.
+The complete metric angular products, finite-height horizon counterterms and
+QNM continuation must still be identified explicitly. Full matching and its
+impossibility remain unproved.
+
+### Uniform native circle jets: source and source-chart estimates closed, metric attachment open
+
+For every native radius/base-coordinate word `a` and every `N : Nat`, the
+analytical target is
+
+```
+exists C>=0, B>=0, forall d,x,k, d>=0 -> k>=0 ->
+  norm(nativeJet a cuspMeanRemainder [d,x,k]) <= C*exp(B*d-N*k).
+```
+
+The source estimate can be obtained directly from the defining Bessel
+integral. For an integer `n>norm(nu)`, its literal kernel satisfies
+
+```
+x^n * norm(exp(-x*cosh(t))*cosh(nu*t))
+  <= n!*2^n*exp((norm(nu)-n)*t),  x>0, t>=0.
+```
+
+This follows from `v^n*exp(-v)<=n!`, `cosh(t)>=exp(t)/2` and the proved
+complex-cosh norm bound. Integration gives a global bound on
+`x^n*norm(K_nu(x))`. The actual arithmetic coefficient bound is
+`norm(coefficient(u,d,N)) <= (N+1)^(3*abs(Re(u))+1+d)`.
+Choosing `n>max(norm(nu),3*abs(Re(u))+1+d+2)` makes the resulting Fourier
+majorant summable. Thus every member of the literal signed Fourier–Bessel
+family has a bound `C*exp(B*abs(k))` at height `exp(k)`.
+`SquareCuspJets.Rapid` is already closed under actual coordinate derivatives,
+products, complex height powers and finite sums. Its induction therefore
+proves this global log-height estimate for every genuine square-source,
+spin-two and gradient-product remainder jet, for every complex source
+parameter. No modular higher-derivative theorem or Xi-zero premise is needed.
+**Lean:** `AngularGlobalGrowth` and all three
+`SquareCuspJets.*_jet_global_log_growth` statements passed scratch checks
+and isolated exact leaf audits. Their artifacts are installed.
+
+For a transported source jet `f`, write its global bound as
+`norm(f([x,exp(l)]))<=A*exp(G*abs(l))`. The actual circle denominator lies
+between `exp(-d)` and `exp(d)`, so its sampled log-height lies between
+`k-d` and `k+d`. For any independent nonnegative integers `m,N`, split:
+
+- `k>=d`: use the established positive-height source bound with weight
+  `N+m`. Then `exp(m*k)*norm(f(circle))<=H*exp((N+m)*d-N*k)`.
+- `0<=k<=d`: the global log-height bound gives
+  `exp(m*k)*norm(f(circle))<=A*exp(m*k+G*(k+d))`, which is at most
+  `A*exp((N+m+2*G)*d-N*k)`.
+
+Hence each transported genuine source jet, with any generated height
+monomial, has the required bound. There is no need to prove `m<=j` or to
+preserve a sharp source growth exponent. The exact statements for the
+square-source, spin-two and gradient-product remainders are closed in
+`NativeSourceJetGrowth`; scratch and isolated exact leaf audit passed.
+
+The remaining native-jet step is the *generated coefficient* estimate.
+Each coefficient produced by the differentiation rules in `NativeCuspJets`
+is a finite rational expression in `exp(d)`, `exp(-d)`, `sin(theta)`,
+`cos(theta)` and inverse circle denominator. This class is closed under
+those rules and every expression is bounded by `C*exp(A*d)`. Multiplying
+by the transported source-jet estimate, finite summation and the actual
+normalized circle average give the displayed native-jet target. Existing
+`Represented` permits arbitrary smooth coefficients, so its smoothness
+premise alone cannot supply this global estimate; the generated expressions
+must be attached explicitly.
+
+**Meaning for full matching:** the source's low-height region has a direct,
+unconditional analytical bound. What remains is the generated-coefficient
+attachment and uniform estimates through the original compact horizon
+integral and complete metric boundary current, followed by independent
+cusp/time/horizon removal. Full matching and impossibility remain unproved.
+
+The same leaf proves a uniform bound for the original horizon source chart:
+
+```
+3*p/10 <= horizonFactor(image,p,rho,alpha,beta) <= (20/9)*p*exp(p),
+p>=0, abs(rho)<=1/4, alpha,beta in [0,1].
+```
+
+This includes both complete original source triangles. For `p>=1`, the
+factor under the characteristic square root is at least `3/10`, uniformly
+over the source square. The proof uses the exact removable quotient
+`expc(t)` with `1<=expc(t)<=exp(t)` for `t>=0`, and
+`sourceZ in [-1/4,1]`. **Lean:**
+`NativeSourceJetGrowth.horizonFactor_uniform_bounds`, same passed audit.
+This permits a direct attack on the finite observer-coordinate derivatives
+of the original compact integrand. A useful exact analytical identity is
+`d/dp [p*expc(p*delta)]=exp(p*delta)`, including `delta=0`; for nonzero
+`delta`, differentiate `p*expc(p*delta)=(exp(p*delta)-1)/delta`.
+Its higher positive-order derivatives are bounded by `exp(p)` when
+`p>=0` and `delta in [0,1]`. This derivative identity has not yet been
+formalized here and is not a prerequisite of the horizon-derivative proof
+above, where the exponential factor is fixed. The complete observer-jet estimates and joint metric
+limit remain open; they do not follow from value bounds alone.
 
 The actual compact source geometry supplies a useful estimate for this
 remaining test. In `RetardedHorizonGeometry.compactInvariant`, write
@@ -615,13 +1058,14 @@ is supplied. References: `original_horizon_onset_zero`,
 **Meaning for full matching:** the scalar-horizon first-moment mechanism
 in the corner conjecture has an original-field proof. This is not the
 complete angular/metric boundary attachment: the forcing remainder bound
-is still pointwise in the angular variable, and the assembled action's
-continuation to the physical QNM remains open. Together with the admitted
+is still pointwise in the angular variable. The exact forcing decomposition
+below separately supplies its joint angular/horizon/time moment transfer.
+The assembled action's continuation to the physical QNM remains open. Together with the admitted
 remainder comparison above, this identifies exactly which angular and
 metric attachment remains before the candidate residue can decide matching.
 Clean scratch checking and the isolated exact leaf build passed; the umbrella
-is wired without an umbrella build. Global lint retains the unrelated
-unreachable `RHTower.Sieve.KloostermanGlobalCollisionCoprime` module.
+is wired without an umbrella build. The latest repository lint status is
+recorded with the forcing leaf below.
 
 Broad/deep/method retrieval was partial and predominantly source-only. Its
 proposed forcing-period ingredient set used unrelated finite-period lemmas
@@ -633,6 +1077,163 @@ its transfer-matrix expansion separates a threshold background from a
 phase-delay observable. Its real compact-potential assumptions and clock
 definition do not identify the HB action or authorize an additional
 subtraction here.
+
+### Original metric moving-corner attachment — angular-first collar
+
+The fixed full-matching target is unchanged. The actual coordinate identity is
+`horizonCoordinate(x)=(R^2-1)/R^2`, with `R=tortoiseRadius(x)`.
+Together with `radiusLift=R*modeProfile(x)`, this cancels every extra radial
+factor in the retained forcing slot. The derived original
+angular-restored metric density, after multiplying by `R^2-1`, is
+
+```
+A_L(p)=mu*N_L*exp(-w*p)*((mu-2)*(m_L'(p)+w*m_L(p))
+       +w*C*forcingProfile(s,amp,1,reducedGreenGradient(chi,s,1),u_L)
+         *timeOnset(2*s,p)).
+```
+
+Here `m_L` is the unchanged original scalar and `N_L` the unchanged normalizable
+reader, with `x=-L/2`. `original_metric_current_finitePart` identifies
+`integral_a^b A_L` with `(R^2-1)` times the complete original metric angular
+finite part, for `L>0`, `0<a<=b` and nonreal `w`. Its original source endpoints,
+full forcing and all cusp-flux counterterms remain.
+
+`original_metric_remainder_integrable` proves `A_L-A_infinity` integrable on
+`(L0,infinity) x (0,infinity)` for some `L0>0`, when
+`Re(w)>Re(readerExponent(q))` and `Im(w)!=0`. The exact decomposition retains
+both the evolved source and forcing remainders. The latter separates into an
+integrable radial error and the literal damped onset; no angular uniformity
+assumption is inserted. The true radial derivative is `dR/dL=-(R^2-1)/2`.
+
+Let `K=integral_0^infinity A_infinity(p) dp`. For `Re(w)>3/2`, `Im(w)!=0`,
+`original_metric_collar_cutoff_difference` proves
+
+```
+(staticCut(A,L0,T)-radialCut(A,L0,T))/2
+ -(T+log(horizonCoordinate(-T))/2)*K
+ -> physicalCornerCandidate(q,branch,amplitude,w).
+```
+
+The static cut is `p+L/2<T`; the radial cut is `L/2<T`. Product integrability
+makes the complete remainder's cutoff difference vanish. The leading
+difference tends to `-integral p*A_infinity(p) dp`; the coordinate shift
+tends to `log(2)`. Their fixed combination is exactly the original corner
+candidate, including its source contact. This attaches the scalar-horizon
+correction to the complete angular-restored metric collar.
+
+**Formal status:** the new leaf `ThetaCuspHawkingBMOriginalMetricCorner` passed
+a clean scratch check and its isolated exact leaf audit; its artifacts are
+installed and its umbrella import is wired without an umbrella build. The full
+matching target is unchanged. The angular finite part is taken first;
+independent cusp/time/horizon limits, original onset removal, outer-region
+assembly and continuation of the complete action to QNM frequencies remain
+open. The original weighted temporal/height admission and bounded physical
+projection are closed by `OriginalCuspTime` above. Metric endpoint and radial
+trace control remain needed for the full joint comparison. No full matching,
+impossibility theorem or finite-variation Jost expansion follows.
+
+### Complete metric time-period assembly — Lean closure on compact time intervals
+
+`ThetaCuspHawkingBMOriginalMetricTimePeriod` identifies the angular finite part
+of the time-integrated original Einstein current at every fixed `R>1`, for
+`0<a<=b` and nonreal independent temporal frequency `w`. Both source branches,
+both original radial reader normalizations and every amplitude remain.
+
+Write `x=tortoise(R)`, `f=R^2-1`, `mu=eigenvalue(q)`, and
+`E=exp(w*x)*radiusLift(modeProfile(q,w,outer),R)`. Define
+
+```
+S(p)=R*E*exp(-w*p)*originalRadialPeriod(q,br,amp,p,p-2*x),
+F(p)=E*horizonCoordinate(x)*C*exp(-w*p)*timeOnset(2*s,p)
+       *forcingProfile(s,amp,1,reducedGreenGradient(chi,s,1),radialUnit(x)),
+A=mu*(mu-2)/(R^2*f),  B=mu*R*w/f^2.
+```
+
+The actual finite part is exactly
+
+```
+A*(S(b)-S(a)+2*w*integral_a^b S(p) dp)+B*integral_a^b F(p) dp.
+```
+
+The proof starts with `modeMetricDensity` on the complete finite modular
+domain. Derived smoothness supplies compact product integrability and Fubini;
+the original reader equation transfers the time derivative while retaining
+both endpoints. The finite-domain identity prescribes the counterterm as the
+source endpoint counterterms, source moment counterterm, forcing moment
+counterterm and the three complete top-flux powers. The original source,
+forcing and boundary restoration theorems then prove convergence to the
+displayed value. The derivative source and cusp flux are kept through their
+exact cancellation; no finite constant is chosen to enforce matching.
+
+**Formal status:** `original_metric_time_transfer` and
+`original_metric_time_finitePart` passed a clean scratch check and the isolated
+exact leaf build; the leaf is wired into the umbrella without an umbrella
+build. This closes the correspondence between the original metric integral
+and its assembled source/forcing expression on compact positive time
+intervals. The angular-first moving time/horizon collar is attached above.
+The full matching target is unchanged: original onset removal, independent
+cusp/time/horizon limits, complete radial/outer assembly and continuation
+of that assembled action to QNM frequencies remain open. A compact-time
+identity does not justify interchanging those limits or establish a
+finite-variation Jost representation. Full matching and its impossibility
+are not proved.
+
+### Original forcing angular period and joint cutoff moments — Lean closure
+
+`ThetaCuspHawkingBMOriginalForcingAngularPeriod` uses the literal full forcing,
+the unchanged angular reader and all three prescribed principal counterterms.
+Put `J=fullSquarePotential`, `D=Delta(J)-mu*J`, and
+
+```
+P(u)=forcingProfile(s,amp,1,reducedGreenGradient(chi,s,1),u),
+B(u)=u^3*(1+u)^(2*s)*amp^2*s*(s-1)/4.
+```
+
+The actual profile equals `P(u)*J+B(u)*D`, and its principal coefficients
+have the identical decomposition. Before taking any limit, its regularized
+angular integral therefore equals
+
+```
+profileCut(u,Y)=P(u)*squareCut(Y)+B(u)*greenCut(Y).
+```
+
+The original square period gives `squareCut(Y)->C`. The original angular
+Green theorem, including the curved modular core and the derived normal-flux
+counterterm, gives `greenCut(Y)->0`. Thus the forcing finite part is exactly
+`C*P(u)` at every original radius; its derivative source was not discarded.
+
+On the actual collar, `u_L=radialUnit(-L/2)`, the normalized original source
+at `(t,x)=(p+L/2,-L/2)` is the full profile times `timeOnset(2*s,p)`.
+The same factorization holds for its finite angular integral and counterterms.
+For nonreal `w` with `Re(w)>0`, all damped polynomial time moments are admitted.
+Retaining the actual normalizable radial reader `N_L` gives
+
+```
+lim_(P,L,log Y -> infinity) N_L * int_0^P p^n*exp(-w*p)*normalizedCut(L,p,Y)
+ = N_inf*C*int_0^infinity p^n*exp(-w*p)*forcingTrace(s,amp,1,reducedGradient,p).
+```
+
+This is a joint limit with arbitrary relative cutoff rates, proved by the
+exact finite-height decomposition. References: `original_profile_cut_decomposition`,
+`original_profile_finitePart`, `original_normalized_cut`,
+`original_forcing_joint_angular_horizon_moment`, `original_forcing_three_cutoff_moment`.
+
+**Meaning for full matching:** the actual forcing/contact angular coefficient
+and these coupled moments are identified. The remaining full-current task
+is the evolved response and complete metric boundary/corner assembly, with
+the original static-time triangular domain, followed by continuation of that
+assembled action to the physical QNM. The independent rectangular moment
+limit does not itself prove that whole-current comparison or its impossibility.
+
+Clean scratch and exact isolated leaf build passed; only the leaf was built
+(2 jobs), and its source-identical artifacts were promoted. The umbrella is
+wired without being built. Repository lint reports the unrelated unreachable
+`RHTower.SuzukiFourierLivsicSecondJet`; no error names this new leaf.
+Broad and deep corpus retrieval supplied the original Green-flux ingredient;
+other proposed method combinations were source-only or partial, not matching
+proofs. The experiment review retains F186–F187 and F192's scope distinctions:
+persistent spectral cancellation, lift/lift horizon background, and physical
+drive versus geometric monitoring are different assertions from this matching.
 
 **2. Identify the complete causal scalar and its needed horizon bounds.**
 Set `s=D4BMModularCore.physicalRate(q,branch)` (the undoubled rate),

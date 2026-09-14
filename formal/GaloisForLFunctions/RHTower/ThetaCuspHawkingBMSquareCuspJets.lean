@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularGlobalGrowth
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalCutoffLaplacian
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceOverlap
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModularLaplacian
@@ -7,7 +8,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMWeightedSquareCuspBound
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularScalarEquation
 
 /-! Every actual coordinate jet of the full squared-source cusp remainder has
-all complex height-weighted bounds. The proof differentiates the complete
+all complex height-weighted bounds and global exponential log-height bounds. The proof differentiates the complete
 signed Fourier–Bessel family and retains both principal–tail cross terms.
 The quartic contact fields have the same derivative bounds, actual regulated
 L²/L¹ admission, and an integrated principal-subtracted cusp Green-flux limit.
@@ -92,6 +93,55 @@ private theorem Rapid.bound {f : Field} (h : Rapid f) (w : ℂ)
       obtain ⟨A,hA,ha⟩ := ih w
       exact ⟨A,hA,fun z hz => by rw [← he z (hl.trans_le hz)]; exact ha z hz⟩
 
+private theorem Rapid.global_log_growth {f : Field} (h : Rapid f) :
+    ∃ C B : ℝ, 0 ≤ C ∧ 0 ≤ B ∧ ∀ x k : ℝ,
+      ‖f ![x,Real.exp k]‖ ≤ C * Real.exp (B * |k|) := by
+  induction h with
+  | zero => exact ⟨0,0,le_rfl,le_rfl,by simp⟩
+  | bessel u nu a d negative => exact value_global_log_growth u nu a d negative
+  | add hf hg ihf ihg =>
+      obtain ⟨C,B,hC,hB,hf⟩ := ihf
+      obtain ⟨D,A,hD,hA,hg⟩ := ihg
+      refine ⟨C+D,B+A,add_nonneg hC hD,add_nonneg hB hA,?_⟩
+      intro x k
+      calc
+        _ ≤ C * Real.exp (B * |k|) + D * Real.exp (A * |k|) :=
+          (norm_add_le _ _).trans (add_le_add (hf x k) (hg x k))
+        _ ≤ C * Real.exp ((B+A) * |k|) + D * Real.exp ((B+A) * |k|) := by gcongr <;> linarith
+        _ = _ := by ring
+  | scale c hf ih =>
+      obtain ⟨C,B,hC,hB,hf⟩ := ih
+      refine ⟨‖c‖*C,B,mul_nonneg (norm_nonneg _) hC,hB,?_⟩
+      intro x k
+      rw [norm_mul,mul_assoc]
+      exact mul_le_mul_of_nonneg_left (hf x k) (norm_nonneg _)
+  | power w hf ih =>
+      obtain ⟨C,B,hC,hB,hf⟩ := ih
+      refine ⟨C,|w.re|+B,hC,add_nonneg (abs_nonneg _) hB,?_⟩
+      intro x k
+      have hp : ‖(Real.exp k:ℂ)^w‖ ≤ Real.exp (|w.re| * |k|) := by
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos (Real.exp_pos k),← Real.exp_mul]
+        apply Real.exp_le_exp.mpr
+        simpa only [abs_mul,mul_comm] using le_abs_self (k*w.re)
+      simp only [Matrix.cons_val_one,Matrix.cons_val_zero]
+      calc
+        _ = ‖(Real.exp k:ℂ)^w‖ * ‖_‖ := norm_mul _ _
+        _ ≤ Real.exp (|w.re| * |k|) * (C * Real.exp (B * |k|)) :=
+          mul_le_mul hp (hf x k) (norm_nonneg _) (Real.exp_nonneg _)
+        _ = _ := by rw [mul_left_comm,← Real.exp_add]; congr 2; ring
+  | mul hf hg ihf ihg =>
+      obtain ⟨C,B,hC,hB,hf⟩ := ihf
+      obtain ⟨D,A,hD,hA,hg⟩ := ihg
+      refine ⟨C*D,B+A,mul_nonneg hC hD,add_nonneg hB hA,?_⟩
+      intro x k
+      calc
+        _ = ‖_‖*‖_‖ := norm_mul _ _
+        _ ≤ (C * Real.exp (B * |k|)) * (D * Real.exp (A * |k|)) :=
+          mul_le_mul (hf x k) (hg x k) (norm_nonneg _) (by positivity)
+        _ = _ := by rw [mul_mul_mul_comm,← Real.exp_add]; congr 2; ring
+  | congr hf he ih =>
+      obtain ⟨C,B,hC,hB,hf⟩ := ih
+      exact ⟨C,B,hC,hB,fun x k => by rw [← he _ (Real.exp_pos k)]; exact hf x k⟩
 private theorem Rapid.derivative {f : Field} (h : Rapid f) (i : Fin 2) :
     Rapid (coordDeriv i f) := by
   induction h with
@@ -217,12 +267,24 @@ private theorem Rapid.vanish {f : Field} (h : Rapid f) (w : ℂ) (X : ℝ → �
   rw [dist_zero_right,heq,norm_div,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hy0]
   exact (div_le_div_of_nonneg_right (hb ![X y,y] hy1) hy0.le).trans_lt hCy
 
+/-- Every genuine remainder jet has a uniform exponential bound in absolute log-height. -/
+theorem squareRemainder_jet_global_log_growth (u : ℂ) (word : List (Fin 2)) :
+    ∃ C B : ℝ, 0 ≤ C ∧ 0 ≤ B ∧ ∀ x k : ℝ,
+      ‖coordinateJet word (squareRemainder u) ![x,Real.exp k]‖ ≤ C * Real.exp (B * |k|) :=
+  ((squareRemainder_rapid u).jet word).global_log_growth
+
 /-- Every genuine coordinate jet of the complete squared-source remainder is
 bounded after any complex height weight, uniformly over the whole half-strip. -/
 theorem squareRemainder_jet_weighted_bound (u w : ℂ) (word : List (Fin 2)) (l : Ioi (0:ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ z : Fin 2 → ℝ, l.val ≤ z 1 →
       ‖(z 1:ℂ)^w * coordinateJet word (squareRemainder u) z‖ ≤ C :=
   ((squareRemainder_rapid u).jet word).bound w l.val l.property
+
+/-- Every genuine remainder jet has a uniform exponential bound in absolute log-height. -/
+theorem spinTwoRemainder_jet_global_log_growth (u : ℂ) (word : List (Fin 2)) :
+    ∃ C B : ℝ, 0 ≤ C ∧ 0 ≤ B ∧ ∀ x k : ℝ,
+      ‖coordinateJet word (spinTwoRemainder u) ![x,Real.exp k]‖ ≤ C * Real.exp (B * |k|) :=
+  ((spinTwoRemainder_rapid u).jet word).global_log_growth
 
 /-- The original fourth-order angular remainder and every further coordinate
 jet have all height-weighted bounds; no angular operator is discarded. -/
@@ -538,6 +600,12 @@ private theorem gradientProductRemainder_rapid (u : ℂ) (i j : Fin 2) :
   product_remainder_rapid (AngularExpression.seed.derivative_remainder u i)
     ((literal_principal u).derivative i) (AngularExpression.seed.derivative_remainder u j)
     ((literal_principal u).derivative j)
+
+/-- Every genuine remainder jet has a uniform exponential bound in absolute log-height. -/
+theorem gradientProductRemainder_jet_global_log_growth (u : ℂ) (i j : Fin 2) (word : List (Fin 2)) :
+    ∃ C B : ℝ, 0 ≤ C ∧ 0 ≤ B ∧ ∀ x k : ℝ,
+      ‖coordinateJet word (gradientProductRemainder u i j) ![x,Real.exp k]‖ ≤ C * Real.exp (B * |k|) :=
+  ((gradientProductRemainder_rapid u i j).jet word).global_log_growth
 
 /-- Every actual gradient-product remainder jet has all complex height-weighted bounds. -/
 theorem gradientProductRemainder_jet_weighted_bound (u w : ℂ) (i j : Fin 2)

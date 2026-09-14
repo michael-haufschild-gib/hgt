@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.KloostermanCoprimeCrossPhaseFrequency
 import GaloisForLFunctions.RHTower.Sieve.CircleSeparation
-import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenC3PaperScale
+import GaloisForLFunctions.RHTower.Sieve.FiniteReciprocalBound
 
 /-!
 # Harmonic bound for the product-unit chord sum
@@ -174,7 +174,7 @@ theorem sum_zmodUnits_inv_val_le_one_add_log
       ∑ z : (ZMod N)ˣ, 1 / (f z : ℝ) := by
     exact Finset.sum_image (fun _ _ _ _ h => hfinj h)
   rw [← hsum]
-  apply sum_inv_finset_le_one_add_log
+  apply sum_inv_finset_bounded_le_one_add_log
   · intro n hn
     rcases Finset.mem_image.mp hn with ⟨z, hz, rfl⟩
     exact Nat.one_le_iff_ne_zero.mpr
@@ -203,7 +203,7 @@ theorem sum_zmodUnits_inv_complementVal_le_one_add_log
       ∑ z : (ZMod N)ˣ, 1 / (f z : ℝ) := by
     exact Finset.sum_image (fun _ _ _ _ h => hfinj h)
   rw [← hsum]
-  apply sum_inv_finset_le_one_add_log
+  apply sum_inv_finset_bounded_le_one_add_log
   · intro n hn
     rcases Finset.mem_image.mp hn with ⟨z, hz, rfl⟩
     have := ZMod.val_lt (z : ZMod N)

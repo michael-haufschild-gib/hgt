@@ -9,8 +9,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxHeartbeats 2000000
-
 /-- A Xi right-half-plane bound gives the matching zero-free half-plane for zeta. -/
 theorem riemannZeta_ne_zero_of_xiZeroHalfPlaneBound
     {alpha : ℝ} (halpha : 0 ≤ alpha) (hXi : XiZeroHalfPlaneBound alpha) {s : ℂ}
@@ -518,7 +516,7 @@ theorem exists_chebyshev_error_halfInt_bound_of_xiZeroHalfPlaneBound
         (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
       nlinarith [hL1, hlogx0]
     have hmul := mul_le_mul hlogle hxe hxe0 (by nlinarith [hL1])
-    nlinarith [hmul]
+    simpa only [mul_comm] using hmul
   have hmaster := norm_chebyshev_sub_halfInt_le_of_xiZeroHalfPlaneBound
     (N := N) (sigma1 := 1 / 2 + alpha + epsilon / 2)
     (sigma0 := 1 + epsilon / 2) (T := (N : ℝ) + 1 / 2)

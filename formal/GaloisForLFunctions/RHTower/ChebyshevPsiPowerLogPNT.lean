@@ -18,7 +18,6 @@ namespace RHTower
 
 open ArithmeticFunction
 
-set_option maxHeartbeats 3200000 in
 /-- **The power-log PNT for Chebyshev's `ψ`.** -/
 theorem exists_chebyshevPsi_power_log :
     ∃ c C x₀ : ℝ, 0 < c ∧ 0 ≤ C ∧ 3 ≤ x₀ ∧
@@ -199,20 +198,20 @@ theorem exists_chebyshevPsi_power_log :
       have h4 : x * (Real.exp h - 1)
           = x * Real.exp h - x := by ring
       have h5 : x * (h + h ^ 2) = x * h + x * h ^ 2 := by ring
-      nlinarith [hlow, h1, h2, hyd]
+      linarith only [hlow, h1, h2, hyd, h3, h4, h5]
     -- lower estimate
     have hlow1 : h * (x - chebyshevPsi ⌊x⌋₊)
         ≤ x * h ^ 2 + C₀ * x * h ^ (2 : ℕ)
           + C₀ * x * h ^ (4 : ℕ) := by
       have h1 := (abs_le.1 hBx').2
       have h2 := (abs_le.1 hBx).1
-      nlinarith [hup, h1, h2, hxd]
+      linarith only [hup, h1, h2, hxd]
     -- cancel one power of `h`
     have hh4le : h ^ (4 : ℕ) ≤ h ^ 2 := by
       calc h ^ (4 : ℕ) = h ^ 2 * h ^ 2 := by ring
         _ ≤ 1 * h ^ 2 := by
             apply mul_le_mul_of_nonneg_right _ (by positivity)
-            nlinarith [hh1, hh0.le]
+            nlinarith only [hh1, hh0.le]
         _ = h ^ 2 := one_mul _
     have hk1 : C₀ * Real.exp 1 * x * h ^ (4 : ℕ)
         ≤ C₀ * Real.exp 1 * x * h ^ 2 :=
@@ -222,7 +221,7 @@ theorem exists_chebyshevPsi_power_log :
     have hk3 : C₀ * x * h ^ 2 ≤ C₀ * Real.exp 1 * x * h ^ 2 := by
       have h1 := mul_le_mul_of_nonneg_left he1
         (show (0 : ℝ) ≤ C₀ * x * h ^ 2 by positivity)
-      nlinarith [h1]
+      nlinarith only [h1]
     have hfinal_up : chebyshevPsi ⌊x⌋₊ - x
         ≤ (1 + 2 * Real.exp 1 * C₀) * x * h := by
       have h1 : h * (chebyshevPsi ⌊x⌋₊ - x)
@@ -230,7 +229,7 @@ theorem exists_chebyshevPsi_power_log :
         have hrhs : h * ((1 + 2 * Real.exp 1 * C₀) * x * h)
             = x * h ^ 2 + 2 * (C₀ * Real.exp 1 * x * h ^ 2) := by
           ring
-        linarith [hup1, hk1, hk2, hk3, hrhs]
+        linarith only [hup1, hk1, hk2, hk3, hrhs]
       exact le_of_mul_le_mul_left h1 hh0
     have hfinal_low : x - chebyshevPsi ⌊x⌋₊
         ≤ (1 + 2 * Real.exp 1 * C₀) * x * h := by
@@ -239,7 +238,7 @@ theorem exists_chebyshevPsi_power_log :
         have hrhs : h * ((1 + 2 * Real.exp 1 * C₀) * x * h)
             = x * h ^ 2 + 2 * (C₀ * Real.exp 1 * x * h ^ 2) := by
           ring
-        linarith [hlow1, hk1, hk2, hk3, hrhs]
+        linarith only [hlow1, hk1, hk2, hk3, hrhs]
       exact le_of_mul_le_mul_left h1 hh0
     rw [abs_sub_le_iff]
     exact ⟨hfinal_up, hfinal_low⟩

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.KloostermanCompleteColumnCorrelation
 import GaloisForLFunctions.RHTower.Sieve.StadlmannReciprocalPhaseApplications
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries
+import GaloisForLFunctions.RHTower.Sieve.KloostermanRamanujanDivisorSum
 
 /-!
 # Complete Kloosterman columns as Ramanujan coefficients
@@ -42,7 +42,7 @@ theorem kloostermanCompleteColumnCorrelation_eq_gcd_mobiusDivisorSum
           (d : ℂ) *
             ((ArithmeticFunction.moebius (q / d) : ℤ) : ℂ) := by
   rw [kloostermanCompleteColumnCorrelation_eq_cglRamanujan,
-    RHTower.cglRamanujanAdditiveSum_eq_gcd_mobiusDivisorSum]
+    cglRamanujanAdditiveSum_eq_gcd_mobiusDivisorSum_sieve]
 
 /-- Unconditional divisor-sum majorant for complete equal-modulus column correlation. -/
 theorem norm_kloostermanCompleteColumnCorrelation_le_divisorSum

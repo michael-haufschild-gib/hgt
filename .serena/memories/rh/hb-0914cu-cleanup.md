@@ -1,0 +1,1 @@
+CU guarded cleanup10672 exited0; all11 explicit CU scratch/search/lint/snapshot paths removed. Scratch11922, exactleaf66188, search43020/22528, lint55418 terminal0. No owned Lean/Lake process left. Authoritative work/results in mem:rh/hb-original-metric-radial-0914cu. Full matching/RH still open; do not mark goal complete or blocked for mathematical difficulty.

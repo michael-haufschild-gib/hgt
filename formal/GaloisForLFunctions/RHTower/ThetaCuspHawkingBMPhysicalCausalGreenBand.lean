@@ -150,6 +150,16 @@ private theorem native_forced_eq_original (q : XiZeroCopy) (branch : Bool) (a : 
   have he := sub_eq_zero.mp (ht (Set.mem_univ t))
   exact smul_right_injective SpatialSpace (show expRay (k:ℂ) t ≠ 0 from Complex.exp_ne_zero _) he
 
+/-- The original causal orbit has square-integrable damping at every native frequency. -/
+theorem causalJointForcedResponse_memLp_of_native (q : XiZeroCopy) (branch : Bool) (a : ℂ)
+    (k : ℝ) (hk : principalKernelGrowth q < k) :
+    MemLp (fun t => expRay (k:ℂ) t • causalJointForcedResponse q branch a t) 2
+      (volume.restrict (Ioi (0:ℝ))) := by
+  obtain ⟨c,hc,hck⟩ := exists_between hk
+  apply (native_forced_weighted_memLp q branch a c hc k hck).ae_eq
+  filter_upwards [native_forced_eq_original q branch a c hc] with t ht
+  rw [ht]
+
 /-- Absolute Bochner convergence of the original full joint response in the native half-plane. -/
 theorem causalJointForcedResponse_integrable_of_native (q : XiZeroCopy) (branch : Bool) (a w : ℂ)
     (hw : principalKernelGrowth q < w.re) :

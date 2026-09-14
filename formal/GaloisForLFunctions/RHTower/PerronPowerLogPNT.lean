@@ -19,7 +19,6 @@ namespace RHTower
 
 open MeasureTheory Set
 
-set_option maxHeartbeats 3200000 in
 /-- **The power-log PNT for the smoothed Chebyshev sum.** -/
 theorem exists_smoothed_chebyshev_power_log :
     ∃ c₀ C₀ x₀ : ℝ, 0 < c₀ ∧ 0 ≤ C₀ ∧ 3 ≤ x₀ ∧

@@ -7,10 +7,6 @@ namespace RHTower.D4BMJointSource
 open Complex Set Filter Topology Metric MeasureTheory D4BMLaplaceRadial D4BMModularCore
 noncomputable section
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
-attribute [-instance] instInnerProductSpaceRealComplex
-attribute [-instance] RCLike.toInnerProductSpaceReal
-attribute [-instance] NormedSpace.complexToReal
 
 private theorem incoming_residue_at_cutoff (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     {b : ℝ} (hb : b ∈ Ioo (0:ℝ) 1)
@@ -114,12 +110,12 @@ def normalizableOuterPairingCutoff (chi s a : ℂ) (T : ℝ) (w : ℂ) (e : ℝ)
     continuedReducedOuterPairing chi s a T w
 
 /-- Both horizon branches are restored at one source-derived cutoff before the physical residue is extracted. -/
-theorem physicalNormalizableOuterPairing_residue_and_restoration (q : XiZeroCopy)
-    (branch side : Bool) (a : ℂ) :
+theorem physicalNormalizableOuterPairing_residue_and_restoration_below (q : XiZeroCopy)
+    (branch side : Bool) (a : ℂ) (cap : ℝ) (hcap : 0<cap) :
     let w := physicalFundamentalFrequency q side
     let s := physicalRate q branch
     let chi := physicalRadialFrequency q
-    ∃ T R : ℝ, T < 0 ∧ 0 < R ∧
+    ∃ T R : ℝ, T < 0 ∧ 0 < R ∧ horizonCoordinate T≤cap ∧
       Tendsto (fun u => (u-w)*normalizableOuterPairing chi s a T u) (𝓝[≠] w)
         (𝓝 (physicalIncomingPoleAmplitude q branch side a*D4BMFundamentalNorm.normFinitePart w)) ∧
       ∀ u ∈ ball w R, connection u chi ≠ 0 →
@@ -137,10 +133,10 @@ theorem physicalNormalizableOuterPairing_residue_and_restoration (q : XiZeroCopy
     incomingPairingFinitePart_horizon_restoration_below s chi a 1 K w hw.1 hwr hs
   obtain ⟨RO,BO,hRO,hBO,_,hsmallO⟩ :=
     oppositePairingFinitePart_horizon_restoration_below s chi a 1 K w hw.1 hwr hs
-  let b := min BI BO
-  have hb : 0 < b := lt_min hBI hBO
-  have hbI : b ≤ BI := min_le_left _ _
-  have hbO : b ≤ BO := min_le_right _ _
+  let b := min cap (min BI BO)
+  have hb : 0 < b := lt_min hcap (lt_min hBI hBO)
+  have hbI : b ≤ BI := (min_le_right _ _).trans (min_le_left _ _)
+  have hbO : b ≤ BO := (min_le_right _ _).trans (min_le_right _ _)
   have hb1 : b < 1 := lt_of_le_of_lt (hbI.trans hBIhalf) (by norm_num)
   obtain ⟨hN,hJ,hP,hcutI⟩ := hsmallI b hb hbI
   obtain ⟨hL,hQ,_,hcutO⟩ := hsmallO b hb hbO
@@ -175,7 +171,7 @@ theorem physicalNormalizableOuterPairing_residue_and_restoration (q : XiZeroCopy
     ring
   change Tendsto _ _ (𝓝 (_+_)) at hlim
   rw [hvalue] at hlim
-  refine ⟨T,R,hT,hR,?_,?_⟩
+  refine ⟨T,R,hT,hR,by rw [hTb]; exact min_le_left _ _,?_,?_⟩
   · apply hlim.congr'
     filter_upwards [] with u
     dsimp only [normalizableOuterPairing,normalizableHorizonPairingFinitePart]
@@ -200,6 +196,22 @@ theorem physicalNormalizableOuterPairing_residue_and_restoration (q : XiZeroCopy
     filter_upwards [self_mem_nhdsWithin,he] with e he0 heb
     dsimp only [normalizableOuterPairingCutoff]
     rw [hTb,normalizableHorizonPairingCutoff_eq s chi a 1 K u hui hur he0 heb.le hb1]
+
+/-- Both horizon branches are restored before the physical residue is extracted. -/
+theorem physicalNormalizableOuterPairing_residue_and_restoration (q : XiZeroCopy)
+    (branch side : Bool) (a : ℂ) :
+    let w := physicalFundamentalFrequency q side
+    let s := physicalRate q branch
+    let chi := physicalRadialFrequency q
+    ∃ T R : ℝ, T < 0 ∧ 0 < R ∧
+      Tendsto (fun u => (u-w)*normalizableOuterPairing chi s a T u) (𝓝[≠] w)
+        (𝓝 (physicalIncomingPoleAmplitude q branch side a*D4BMFundamentalNorm.normFinitePart w)) ∧
+      ∀ u ∈ ball w R, connection u chi ≠ 0 →
+        Tendsto (normalizableOuterPairingCutoff chi s a T u) (𝓝[>] (0:ℝ))
+          (𝓝 (normalizableOuterPairing chi s a T u)) := by
+  obtain ⟨T,R,hT,hR,_,hres,hcut⟩ :=
+    physicalNormalizableOuterPairing_residue_and_restoration_below q branch side a 1 (by norm_num)
+  exact ⟨T,R,hT,hR,hres,hcut⟩
 
 end
 end RHTower.D4BMJointSource

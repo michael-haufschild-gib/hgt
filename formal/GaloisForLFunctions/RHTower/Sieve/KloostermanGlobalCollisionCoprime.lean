@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.KloostermanGlobalFrequencyParseval
+import GaloisForLFunctions.RHTower.Sieve.KloostermanSourceFareyLargeSieve
 
 open scoped BigOperators
 open Finset
@@ -780,6 +781,87 @@ theorem sum_normSq_kloostermanGlobalCrossTupleCoefficient_eq
       intro x
       rw [Finset.mul_sum]
 
+private theorem sum_mul_sum_erase_le_sq
+    {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (A : ι → ℝ) (hA : ∀ i, 0 ≤ A i) :
+    (∑ i ∈ s, ∑ j ∈ s.erase i, A i * A j) ≤ (∑ i ∈ s, A i) ^ 2 := by
+  calc
+    (∑ i ∈ s, ∑ j ∈ s.erase i, A i * A j) ≤
+        ∑ i ∈ s, ∑ j ∈ s, A i * A j := by
+      apply Finset.sum_le_sum
+      intro i hi
+      exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset i s)
+        (fun j hjs hj => mul_nonneg (hA i) (hA j))
+    _ = (∑ i ∈ s, A i) ^ 2 := by
+      rw [pow_two, Finset.sum_mul_sum]
+
+/-- Pairwise-coprime positive clocks bound global collision energy by twice the square of one
+aggregate unit-frequency source energy. -/
+theorem kloostermanGlobalFrequencyCollisionEnergy_le_two_sq_unitFrequencyEnergy
+    (Q : Finset ℕ)
+    (hpair : (Q : Set ℕ).Pairwise (Function.onFun Nat.Coprime (fun q => q + 1)))
+    (hpos : ∀ q ∈ Q, 0 < q)
+    (w : ℕ → ℂ) (B : Finset ℕ) (b : ℕ → ℂ) :
+    RHTower.Sieve.kloostermanGlobalFrequencyCollisionEnergy Q w B b ≤
+      2 * kloostermanWeightedUnitFrequencyEnergy Q w B b ^ 2 := by
+  let A : ℕ → ℝ := fun q => Complex.normSq (w q) *
+    ∑ x : (ZMod (q + 1))ˣ,
+      Complex.normSq (RHTower.Sieve.kloostermanSourceFourier (q + 1) B b x)
+  have hA : ∀ q, 0 ≤ A q := fun q =>
+    mul_nonneg (Complex.normSq_nonneg _)
+      (Finset.sum_nonneg fun x hx => Complex.normSq_nonneg _)
+  calc
+    RHTower.Sieve.kloostermanGlobalFrequencyCollisionEnergy Q w B b ≤
+        2 * ∑ p : KloostermanGlobalCrossTuple Q,
+          Complex.normSq (kloostermanGlobalCrossTupleCoefficient Q w B b p) :=
+      kloostermanGlobalFrequencyCollisionEnergy_le_two_crossTuple Q hpair hpos w B b
+    _ = 2 * ∑ q ∈ Q, ∑ r ∈ Q.erase q, A q * A r := by
+      rw [sum_normSq_kloostermanGlobalCrossTupleCoefficient_eq]
+      congr 1
+      apply Finset.sum_congr rfl
+      intro q hq
+      apply Finset.sum_congr rfl
+      intro r hr
+      dsimp only [A]
+      ring
+    _ ≤ 2 * (∑ q ∈ Q, A q) ^ 2 :=
+      mul_le_mul_of_nonneg_left (sum_mul_sum_erase_le_sq Q A hA) (by norm_num)
+    _ = 2 * kloostermanWeightedUnitFrequencyEnergy Q w B b ^ 2 := by
+      rfl
+
+/-- Pairwise-coprime clocks plus the Farey large sieve give a closed classical-scale collision
+bound.  Any stronger moving-cusp result must improve the displayed aggregate source scale or its
+uniform weight bound. -/
+theorem kloostermanGlobalFrequencyCollisionEnergy_le_two_sq_largeSieve
+    {N M : ℕ} (hM : 2 ≤ M)
+    (Q : Finset ℕ)
+    (hpair : (Q : Set ℕ).Pairwise (Function.onFun Nat.Coprime (fun q => q + 1)))
+    (hpos : ∀ q ∈ Q, 0 < q)
+    (hcut : ∀ q ∈ Q, q + 1 ≤ M)
+    (w : ℕ → ℂ) {W : ℝ} (hW : 0 ≤ W)
+    (hw : ∀ q ∈ Q, Complex.normSq (w q) ≤ W)
+    (B : Finset ℕ) (hB : B ⊆ Finset.range N) (b : ℕ → ℂ) :
+    RHTower.Sieve.kloostermanGlobalFrequencyCollisionEnergy Q w B b ≤
+      2 * (W * (((N : ℝ) + (M : ℝ) ^ 2 *
+        (1 + Real.log ((M : ℝ) ^ 2 / 2 + 1))) *
+          ∑ n ∈ B, Complex.normSq (b n))) ^ 2 := by
+  have hcollision :=
+    kloostermanGlobalFrequencyCollisionEnergy_le_two_sq_unitFrequencyEnergy
+      Q hpair hpos w B b
+  have henergy := kloostermanWeightedUnitFrequencyEnergy_le_largeSieve
+    hM Q hpos hcut w hW hw B hB b
+  have henergy0 : 0 ≤ kloostermanWeightedUnitFrequencyEnergy Q w B b := by
+    unfold kloostermanWeightedUnitFrequencyEnergy
+    exact Finset.sum_nonneg fun q hq =>
+      mul_nonneg (Complex.normSq_nonneg _)
+        (Finset.sum_nonneg fun x hx => Complex.normSq_nonneg _)
+  have hbound0 : 0 ≤ W * (((N : ℝ) + (M : ℝ) ^ 2 *
+      (1 + Real.log ((M : ℝ) ^ 2 / 2 + 1))) *
+        ∑ n ∈ B, Complex.normSq (b n)) :=
+    henergy0.trans henergy
+  exact hcollision.trans <| mul_le_mul_of_nonneg_left
+    ((sq_le_sq₀ henergy0 hbound0).2 henergy) (by norm_num)
+
 /-- Pairwise-coprime positive clocks force constant signed global-frequency
 collision multiplicity, followed by exact source residue-energy control. -/
 theorem kloostermanGlobalFrequencyCollisionEnergy_le_two_residueEnergy_of_pairwise_coprime
@@ -897,6 +979,19 @@ theorem kloostermanPrimeIndexSet_pairwise_coprime
   intro hps
   apply hqr
   rw [← hpq, ← hsr, hps]
+
+/-- Prime clocks inherit the constant-two aggregate unit-frequency collision bound through their
+predecessor stored indices. -/
+theorem kloostermanPrimeIndexSet_globalFrequencyCollisionEnergy_le_two_sq_unitFrequencyEnergy
+    (P : Finset ℕ) (hPprime : ∀ p ∈ P, p.Prime)
+    (w : ℕ → ℂ) (B : Finset ℕ) (b : ℕ → ℂ) :
+    kloostermanGlobalFrequencyCollisionEnergy (kloostermanPrimeIndexSet P) w B b ≤
+      2 * kloostermanWeightedUnitFrequencyEnergy
+        (kloostermanPrimeIndexSet P) w B b ^ 2 := by
+  exact kloostermanGlobalFrequencyCollisionEnergy_le_two_sq_unitFrequencyEnergy
+    (kloostermanPrimeIndexSet P)
+    (kloostermanPrimeIndexSet_pairwise_coprime P hPprime)
+    (kloostermanPrimeIndexSet_pos P hPprime) w B b
 
 theorem kloostermanPrimeIndexSet_globalFrequencyCollisionEnergy_le_two_residueEnergy
     (P : Finset ℕ) (hPprime : ∀ p ∈ P, p.Prime)

@@ -1,7 +1,5 @@
 import GaloisForLFunctions.RHTower.SuzukiSecondDefectCompactParitySource
-import GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler
-import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
-import Mathlib.Analysis.Complex.Schwarz
+import GaloisForLFunctions.RHTower.SuzukiAllAngleCarrierSchurSecondJet
 
 /-!
 # Suzuki's two-jet shifted-Hankel gate
@@ -32,167 +30,6 @@ namespace RHTower
 
 noncomputable section
 
-private theorem diskMobius_normSq_sub
-    (a w : ℂ) :
-    Complex.normSq (1 - (starRingEnd ℂ) a * w) -
-        Complex.normSq (w - a) =
-      (1 - Complex.normSq a) * (1 - Complex.normSq w) := by
-  rw [Complex.normSq_sub, Complex.normSq_sub, Complex.normSq_mul,
-    Complex.normSq_conj]
-  simp only [one_mul, Complex.normSq_eq_norm_sq]
-  have hre : (((starRingEnd ℂ) ((starRingEnd ℂ) a * w)).re) =
-      (((starRingEnd ℂ) a * w).re) := by
-    simpa only [map_mul, star_star] using
-      Complex.conj_re ((starRingEnd ℂ) a * w)
-  rw [hre, norm_one]
-  ring
-
-private theorem diskMobius_norm_le_one
-    {a w : ℂ} (ha : ‖a‖ < 1) (hw : ‖w‖ ≤ 1) :
-    ‖(w - a) / (1 - (starRingEnd ℂ) a * w)‖ ≤ 1 := by
-  have hprod : ‖(starRingEnd ℂ) a * w‖ < 1 := by
-    rw [norm_mul, Complex.norm_conj]
-    calc
-      ‖a‖ * ‖w‖ ≤ ‖a‖ * 1 :=
-        mul_le_mul_of_nonneg_left hw (norm_nonneg a)
-      _ < 1 * 1 := by simpa using ha
-      _ = 1 := one_mul 1
-  have hden : 1 - (starRingEnd ℂ) a * w ≠ 0 := by
-    rw [sub_ne_zero]
-    intro heq
-    have : ‖(starRingEnd ℂ) a * w‖ = 1 := by
-      rw [← heq, norm_one]
-    linarith
-  have haSq : Complex.normSq a < 1 := by
-    rw [Complex.normSq_eq_norm_sq]
-    nlinarith [norm_nonneg a]
-  have hwSq : Complex.normSq w ≤ 1 := by
-    rw [Complex.normSq_eq_norm_sq]
-    nlinarith [norm_nonneg w]
-  have hSq : Complex.normSq (w - a) ≤
-      Complex.normSq (1 - (starRingEnd ℂ) a * w) := by
-    have hid := diskMobius_normSq_sub a w
-    have hnonneg : 0 ≤
-        (1 - Complex.normSq a) * (1 - Complex.normSq w) :=
-      mul_nonneg (le_of_lt (sub_pos.mpr haSq)) (sub_nonneg.mpr hwSq)
-    linarith
-  rw [norm_div, div_le_one (norm_pos_iff.mpr hden)]
-  rw [← (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _))]
-  simpa only [← Complex.normSq_eq_norm_sq] using hSq
-
-/-- **Anchored Schur second-jet bound.**  This is the order-two Schwarz--Pick constraint at the
-origin, proved here in the exact normalization used by Suzuki's disk carrier. -/
-theorem norm_iteratedDeriv_two_le_schurSlack
-    {f : ℂ → ℂ}
-    (hf : DifferentiableOn ℂ f (Metric.ball 0 1))
-    (hf0 : f 0 = 0)
-    (hmap : MapsTo f (Metric.ball 0 1) (Metric.closedBall 0 1))
-    (ha : ‖deriv f 0‖ < 1) :
-    ‖iteratedDeriv 2 f 0‖ ≤ 2 * (1 - ‖deriv f 0‖ ^ 2) := by
-  let g : ℂ → ℂ := dslope f 0
-  let a : ℂ := deriv f 0
-  let h : ℂ → ℂ :=
-    fun z => (g z - a) / (1 - (starRingEnd ℂ) a * g z)
-  have hball : Metric.ball (0 : ℂ) (1 : ℝ) ∈ nhds 0 :=
-    Metric.ball_mem_nhds 0 (by norm_num : (0 : ℝ) < 1)
-  have hg : DifferentiableOn ℂ g (Metric.ball 0 1) := by
-    exact (differentiableOn_dslope hball).mpr hf
-  have hgw : ∀ z ∈ Metric.ball (0 : ℂ) 1, ‖g z‖ ≤ 1 := by
-    intro z hz
-    have hm : MapsTo f (Metric.ball (0 : ℂ) 1)
-        (Metric.closedBall (f 0) 1) := by
-      simpa only [hf0] using hmap
-    have hs := Complex.norm_dslope_le_div_of_mapsTo_ball hf hm hz
-    norm_num [g] at hs ⊢
-    exact hs
-  have hden : ∀ z ∈ Metric.ball (0 : ℂ) 1,
-      1 - (starRingEnd ℂ) a * g z ≠ 0 := by
-    intro z hz
-    rw [sub_ne_zero]
-    intro heq
-    have hprod : ‖(starRingEnd ℂ) a * g z‖ < 1 := by
-      rw [norm_mul, Complex.norm_conj]
-      calc
-        ‖a‖ * ‖g z‖ ≤ ‖a‖ * 1 :=
-          mul_le_mul_of_nonneg_left (hgw z hz) (norm_nonneg a)
-        _ < 1 * 1 := by simpa only [a, mul_one, one_mul] using ha
-        _ = 1 := one_mul 1
-    have : ‖(starRingEnd ℂ) a * g z‖ = 1 := by
-      rw [← heq, norm_one]
-    linarith
-  have hh : DifferentiableOn ℂ h (Metric.ball 0 1) := by
-    intro z hz
-    exact ((hg z hz).sub_const a).div
-      ((differentiableWithinAt_const (c := (1 : ℂ))).sub
-        ((hg z hz).const_mul ((starRingEnd ℂ) a)))
-      (hden z hz)
-  have hmaph : MapsTo h (Metric.ball (0 : ℂ) 1)
-      (Metric.closedBall (h 0) 1) := by
-    intro z hz
-    have hg0 : g 0 = a := by
-      simp only [g, a, dslope_same]
-    have hh0 : h 0 = 0 := by
-      simp only [h, hg0, sub_self, zero_div]
-    rw [hh0, mem_closedBall_zero_iff]
-    exact diskMobius_norm_le_one ha (hgw z hz)
-  have hdh :=
-    Complex.norm_deriv_le_one_of_mapsTo_ball hh hmaph (by norm_num)
-  have hg0 : g 0 = a := by
-    simp only [g, a, dslope_same]
-  have haSq : 1 - Complex.normSq a ≠ 0 := by
-    rw [Complex.normSq_eq_norm_sq]
-    nlinarith [norm_nonneg a]
-  have hgd : HasDerivAt g (iteratedDeriv 2 f 0 / 2) 0 := by
-    have hfa : AnalyticAt ℂ f 0 := hf.analyticAt hball
-    have hs :=
-      HTGeometry.iteratedDeriv_dslope_self_eq_iteratedDeriv_succ_div hfa 1
-    have hderiv : deriv g 0 = iteratedDeriv 2 f 0 / 2 := by
-      simpa only [one_add_one_eq_two, Nat.cast_one, iteratedDeriv_one, g] using hs
-    rw [← hderiv]
-    exact (hg.differentiableAt hball).hasDerivAt
-  have hhd : HasDerivAt h
-      ((iteratedDeriv 2 f 0 / 2) / (1 - Complex.normSq a)) 0 := by
-    have hnum := hgd.sub_const a
-    have hden' := (hasDerivAt_const (x := (0 : ℂ)) (1 : ℂ)).sub
-      (hgd.const_mul ((starRingEnd ℂ) a))
-    have hq := hnum.div hden' (by
-      change 1 - (starRingEnd ℂ) a * g 0 ≠ 0
-      rw [hg0, ← Complex.normSq_eq_conj_mul_self]
-      exact_mod_cast haSq)
-    simp only [Pi.sub_apply, hg0, sub_self, zero_mul, sub_zero,
-      ← Complex.normSq_eq_conj_mul_self] at hq
-    change HasDerivAt h
-      (iteratedDeriv 2 f 0 / 2 * (1 - (Complex.normSq a : ℂ)) /
-        (1 - (Complex.normSq a : ℂ)) ^ 2) 0 at hq
-    have hcoeff :
-        iteratedDeriv 2 f 0 / 2 * (1 - (Complex.normSq a : ℂ)) /
-            (1 - (Complex.normSq a : ℂ)) ^ 2 =
-          (iteratedDeriv 2 f 0 / 2) / (1 - Complex.normSq a) := by
-      have hcast : (1 - (Complex.normSq a : ℂ)) ≠ 0 := by
-        exact_mod_cast haSq
-      field_simp [hcast]
-    rw [hcoeff] at hq
-    exact hq
-  have hnorm :
-      ‖(iteratedDeriv 2 f 0 / 2) / (1 - Complex.normSq a)‖ ≤ 1 := by
-    simpa only [hhd.deriv] using hdh
-  rw [norm_div, norm_div] at hnorm
-  have hpos : 0 < 1 - Complex.normSq a := by
-    rw [Complex.normSq_eq_norm_sq]
-    nlinarith [norm_nonneg a]
-  have hdennorm :
-      ‖(1 - (Complex.normSq a : ℂ))‖ = 1 - Complex.normSq a := by
-    rw [← Complex.ofReal_one, ← Complex.ofReal_sub, Complex.norm_real,
-      Real.norm_eq_abs, abs_of_pos hpos]
-  rw [hdennorm] at hnorm
-  rw [Complex.normSq_eq_norm_sq] at hnorm hpos
-  simp only [a] at hnorm hpos
-  norm_num at hnorm
-  have hhalf :
-      ‖iteratedDeriv 2 f 0‖ / 2 ≤ 1 - ‖deriv f 0‖ ^ 2 :=
-    (div_le_one hpos).mp hnorm
-  nlinarith
-
 /-- Real form of the anchored Schur lower-curvature boundary. -/
 theorem real_secondJet_add_schurBoundary_nonneg
     {f : ℂ → ℂ} {firstJet secondJet : ℝ}
@@ -200,12 +37,9 @@ theorem real_secondJet_add_schurBoundary_nonneg
     (hf0 : f 0 = 0)
     (hmap : MapsTo f (Metric.ball 0 1) (Metric.closedBall 0 1))
     (hfirst : deriv f 0 = (firstJet : ℂ))
-    (hsecond : iteratedDeriv 2 f 0 = (secondJet : ℂ))
-    (hfirstStrict : |firstJet| < 1) :
+    (hsecond : iteratedDeriv 2 f 0 = (secondJet : ℂ)) :
     0 ≤ secondJet + 2 * (1 - firstJet ^ 2) := by
-  have hbound := norm_iteratedDeriv_two_le_schurSlack hf hf0 hmap (by
-    rw [hfirst, Complex.norm_real, Real.norm_eq_abs]
-    exact hfirstStrict)
+  have hbound := norm_iteratedDeriv_two_le_schurSlack_closed hf hf0 hmap
   rw [hfirst, hsecond] at hbound
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs] at hbound
   have hlower := neg_le_of_abs_le hbound
@@ -225,57 +59,15 @@ theorem suzukiAllAngleCarrier_forces_real_twoJetSlack
     (hsecond : iteratedDeriv 2 (fun w =>
       GaloisForLFunctions.RHTower.suzukiLivsicQuotient A E
         (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w)) 0 =
-      (secondJet : ℂ))
-    (hfirstStrict : |firstJet| < 1) :
+      (secondJet : ℂ)) :
     0 ≤ secondJet + 2 * (1 - firstJet ^ 2) := by
-  let f : ℂ → ℂ := fun w =>
-    GaloisForLFunctions.RHTower.suzukiLivsicQuotient A E
-      (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w)
-  have hopen : IsOpen {z : ℂ | 0 < z.im} :=
-    isOpen_lt continuous_const Complex.continuous_im
-  have hquot :=
-    GaloisForLFunctions.RHTower.differentiableOn_suzukiLivsicQuotient_upperHalfPlane
-      hA hE hAi hreal
-  have hf : DifferentiableOn ℂ f (Metric.ball 0 1) := by
-    intro w hw
-    have hwlt : ‖w‖ < 1 := by
-      simpa [mem_ball_zero_iff] using hw
-    have hw1 : w ≠ 1 := by
-      intro heq
-      rw [heq, norm_one] at hwlt
-      exact (lt_irrefl 1) hwlt
-    have hinv :
-        DifferentiableAt ℂ
-          GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w := by
-      change DifferentiableAt ℂ
-        (fun v : ℂ => I * ((1 + v) / (1 - v))) w
-      fun_prop (disch := exact sub_ne_zero.mpr (Ne.symm hw1))
-    have him :=
-      GaloisForLFunctions.RHTower.suzukiUpperCayleyInv_im_pos_of_norm_lt_one hwlt
-    have hout :
-        DifferentiableAt ℂ
-          (GaloisForLFunctions.RHTower.suzukiLivsicQuotient A E)
-          (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w) :=
-      hquot.differentiableAt (hopen.mem_nhds him)
-    exact (hout.comp w hinv).differentiableWithinAt
-  have hf0 : f 0 = 0 := by
-    change GaloisForLFunctions.RHTower.suzukiLivsicQuotient A E
-      (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv 0) = 0
-    rw [show GaloisForLFunctions.RHTower.suzukiUpperCayleyInv 0 = I by
-      norm_num [GaloisForLFunctions.RHTower.suzukiUpperCayleyInv]]
-    exact GaloisForLFunctions.RHTower.suzukiLivsicQuotient_I_eq_zero hAi
-  have hmap :
-      MapsTo f (Metric.ball (0 : ℂ) 1) (Metric.closedBall 0 1) := by
-    intro w hw
-    rw [mem_closedBall_zero_iff]
-    have hwlt : ‖w‖ < 1 := by
-      simpa [mem_ball_zero_iff] using hw
-    exact (GaloisForLFunctions.RHTower.norm_suzukiLivsicQuotient_lt_one
-      hA.continuous hE.continuous hAi hreal
-      (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv_im_pos_of_norm_lt_one
-        hwlt)).le
-  exact real_secondJet_add_schurBoundary_nonneg
-    hf hf0 hmap hfirst hsecond hfirstStrict
+  have hbound := norm_suzukiAllAngleCarrier_secondJet_le_schurSlack
+    hA hE hAi hreal
+  dsimp only at hbound
+  rw [hfirst, hsecond] at hbound
+  simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs] at hbound
+  have hlower := neg_le_of_abs_le hbound
+  linarith
 
 /-- Exact parity-coordinate form of the Schur two-jet slack. -/
 theorem suzukiParity_twoJetSlack_eq
@@ -311,17 +103,8 @@ theorem suzukiSchurCarrier_forces_parity_twoJetSlack
     0 ≤ oddEnergy * (evenEnergy + evenTilt) -
       evenEnergy * oddTilt := by
   have hsum : 0 < evenEnergy + oddEnergy := add_pos heven hodd
-  have hangle :
-      |GaloisForLFunctions.RHTower.suzukiDefectAngle
-        evenEnergy oddEnergy| < 1 := by
-    rw [GaloisForLFunctions.RHTower.suzukiDefectAngle, abs_lt]
-    constructor
-    · rw [lt_div_iff₀ hsum]
-      linarith
-    · rw [div_lt_iff₀ hsum]
-      linarith
   have hslack := real_secondJet_add_schurBoundary_nonneg
-    hf hf0 hmap hfirst hsecond hangle
+    hf hf0 hmap hfirst hsecond
   rw [suzukiParity_twoJetSlack_eq hsum.ne'] at hslack
   have hden : 0 < (evenEnergy + oddEnergy) ^ 2 :=
     sq_pos_of_pos hsum
@@ -350,17 +133,8 @@ theorem suzukiAllAngleCarrier_forces_parity_twoJetSlack
     0 ≤ oddEnergy * (evenEnergy + evenTilt) -
       evenEnergy * oddTilt := by
   have hsum : 0 < evenEnergy + oddEnergy := add_pos heven hodd
-  have hangle :
-      |GaloisForLFunctions.RHTower.suzukiDefectAngle
-        evenEnergy oddEnergy| < 1 := by
-    rw [GaloisForLFunctions.RHTower.suzukiDefectAngle, abs_lt]
-    constructor
-    · rw [lt_div_iff₀ hsum]
-      linarith
-    · rw [div_lt_iff₀ hsum]
-      linarith
   have hslack := suzukiAllAngleCarrier_forces_real_twoJetSlack
-    hA hE hAi hreal hfirst hsecond hangle
+    hA hE hAi hreal hfirst hsecond
   rw [suzukiParity_twoJetSlack_eq hsum.ne'] at hslack
   have hden : 0 < (evenEnergy + oddEnergy) ^ 2 :=
     sq_pos_of_pos hsum

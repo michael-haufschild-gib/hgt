@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.KloostermanTerminalGeometricCancellation
 import GaloisForLFunctions.RHTower.Sieve.KloostermanDistinctModulusTerminalQuadratic
+import GaloisForLFunctions.RHTower.Sieve.KloostermanSourceFourier
 
 /-!
 # Source-Fourier factorization of terminal Kloosterman correlations
@@ -16,12 +17,6 @@ open Complex Finset
 namespace RHTower.Sieve
 
 noncomputable section
-
-/-- Additive source transform at one inverse unit frequency. -/
-def kloostermanSourceFourier
-    (q : ℕ) [NeZero q] (B : Finset ℕ) (b : ℕ → ℂ) (x : (ZMod q)ˣ) : ℂ :=
-  ∑ n ∈ B, b n * ZMod.stdAddChar
-    ((n : ZMod q) * ((x⁻¹ : (ZMod q)ˣ) : ZMod q))
 
 /-- Terminal geometric orbit attached to two modulus-unit frequencies. -/
 def kloostermanTerminalOrbit

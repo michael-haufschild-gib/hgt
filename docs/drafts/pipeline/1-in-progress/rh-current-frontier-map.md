@@ -1,7 +1,7 @@
 # RH research ledger
 
 **No route proves or disproves RH.** This register separates **25 active routes**,
-**36 named candidates**, and **274 closed mechanisms**. “Active” means a formal
+**37 named candidates**, and **278 closed mechanisms**. “Active” means a formal
 route architecture with an independent mathematical problem still open, not a proof in hand.
 
 [Active routes](#active-routes) · [Route candidates](#route-candidates) ·
@@ -20,9 +20,9 @@ route architecture with an independent mathematical problem still open, not a pr
 - Route labels are lookup keys, not claims of independence. A receiver ending in RH
   does not prove its source premise. A killed subroute does not kill its whole family.
 
-**Source-audit cutoff: 2026-09-13, `9d774a1ea257311ad02f21d521ec31441b980657`.**
-Reconciled all 66 changed formal files since `c5201958270e866b20322bdac6d66f9d3652b0a5`
-(54 new leaves, ten modified leaves and two import umbrellas). Uncommitted work is
+**Source-audit cutoff: 2026-09-14, `f279e3a973bfcada34c9a91cac608242b730dfba`.**
+Reconciled all 80 changed formal files since `9d774a1ea257311ad02f21d521ec31441b980657`
+(68 additions and 12 modifications, including import umbrellas). Uncommitted work is
 outside this audit. No builds, Lean checks, tests, lint or index refresh were run.
 
 ## Active routes
@@ -93,9 +93,9 @@ dependency graph.
 
 ### E — squarefree Wold transport
 
-- **Closed:** Marker supply, endpoint reversal and singleton factorization; the sign-complete finite degree satisfies `2 degree = squarefree shell mass − μ(source) × shell Möbius sum`, with a corresponding variance bound. For positive stored indices whose actual clocks `q+1` are pairwise coprime, global Kloosterman collision fibres have at most two orientations, giving a factor-two residue-energy bound (including prime clocks).
-- **Open:** Prove physical shell-density/Möbius-energy and seam-flux estimates giving cofinal Hall/load control; or bound the remaining collective nested-aperture residue energy; or obtain cofinal bounded moving-cusp signed covariance. Keep hard-cutoff birth terms. Signed normalizer flux is exactly twice the original signed imbalance under its symmetry/nonzero-row hypotheses: renaming it is [not a cancellation proof](rh-killed-routes.md#no-go-026).
-- **Evidence:** [Degree and variance](../../../../formal/GaloisForLFunctions/RHTower/RouteESignCompletePhysicalDegree.lean), [normalizer identity](../../../../formal/GaloisForLFunctions/RHTower/RouteESignedNormalizerFluxCircularity.lean), [coprime collision bound](../../../../formal/GaloisForLFunctions/RHTower/Sieve/KloostermanGlobalCollisionCoprime.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-764).
+- **Closed:** Marker supply, endpoint reversal and singleton factorization; the sign-complete finite degree satisfies `2 degree = squarefree shell mass − μ(source) × shell Möbius sum`, with a corresponding variance bound. For positive stored indices whose actual clocks `q+1` are pairwise coprime, global Kloosterman collision fibres have at most two orientations. Collision energy is therefore at most twice the square of aggregate weighted unit-frequency source energy. Inverse units are reduced Farey points, giving the unconditional classical-scale bound `(N + M²(1 + log(M²/2 + 1))) Σ|bₙ|²`, and a uniform `|w_q|² ≤ W` costs only the factor `W` before squaring.
+- **Open:** Beat the classical `M²` Farey-density term using the actual moving-cusp weights or Möbius source structure, then transport that gain through finite energy and Mellin continuation; alternatively prove physical shell-density/Möbius-energy and seam-flux estimates giving cofinal Hall/load control, or obtain cofinal bounded moving-cusp signed covariance. Keep hard-cutoff birth terms. Signed normalizer flux is exactly twice the original signed imbalance under its symmetry/nonzero-row hypotheses: renaming it is [not a cancellation proof](rh-killed-routes.md#no-go-026).
+- **Evidence:** [Degree and variance](../../../../formal/GaloisForLFunctions/RHTower/RouteESignCompletePhysicalDegree.lean), [normalizer identity](../../../../formal/GaloisForLFunctions/RHTower/RouteESignedNormalizerFluxCircularity.lean), [source Farey large sieve](../../../../formal/GaloisForLFunctions/RHTower/Sieve/KloostermanSourceFareyLargeSieve.lean), [coprime collision bound](../../../../formal/GaloisForLFunctions/RHTower/Sieve/KloostermanGlobalCollisionCoprime.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-764).
 
 <a id="fzz-p--parity-delay-mellin-orientation"></a>
 
@@ -117,22 +117,22 @@ dependency graph.
 
 ### HB — theta-cusp Hawking causal scattering
 
-- **Closed:** Both actual angular polarizations decay as `O(1/Y)`; the modular defect tensor vanishes. The literal scalar quadratic source is identified in all 16 components, and its full **nonseparated SS particular metric** solves the sourced Einstein equation using only `S²` and two simple angular resolvents. The contact-inclusive **SV particular metric** also solves every mixed component, including independent scalar/vector amplitudes. Original circle/causal scalar periods, full source contact and the continued reader's contact equation are now closed as detailed below.
-- **Open:** Complete original temporal/metric/QNM matching: cancel or retain the paired-side/core fluxes of the fully transferred fields, then justify the prescribed temporal, cusp, horizon and corner limits with all source/onset terms. Assemble independent SS/SV/VV causal action and identify its spectral comparison without dropping counterterms. Source/onset and full-coupling nonvanishing with affine-factor control, then fixed-Hawking-clock extinction, remain separate gates. Scalar-period matching is not full metric-action matching.
+- **Closed:** Both actual angular polarizations decay as `O(1/Y)`; the modular defect tensor vanishes. The literal scalar quadratic source is identified in all 16 components, and its full **nonseparated SS particular metric** and contact-inclusive **SV particular metric** solve their sourced equations. For the original causal field, the scalar transform/continued-Green match, complete three-power cusp subtraction, compact-time metric finite part, horizon moments, source/forcing corner-remainder admission, and leading temporal-corner normalization are now proved. The modular covariance also carries an assembled all-`L²` on-line spectral lower bound.
+- **Open:** Lift those scalar and compact-time closures to the complete original metric action: justify the joint unbounded-time/cusp/horizon/corner passage, retain all source/contact terms, and reconcile the physical reflected reader with the original horizon domain. Identify the literal physical source field in the modular `L²` comparison and prove its constant mode dominates its orthogonal part. Independent SS/SV/VV causal assembly, source/onset and full-coupling nonvanishing, affine-factor control, and fixed-Hawking-clock extinction remain separate gates.
 - **Evidence:** [Tensor vanishing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMAngularTwoCuspDecay.lean), [literal source](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarSourceIdentification.lean), [full SS metric](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMThreeFieldMetric.lean), [mixed SV closure](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedQuadraticClosure.lean); [earlier architecture](rh-frontier-reference-2026-09-12.md#source-line-1646).
 
 | Remaining HB front | What is closed | What is not closed |
 |---|---|---|
-| Original scalar/circle period | Actual circle period equals the physical source coefficient times the Legendre circle kernel. All three principal corrections cancel on restoration; the [original causal scalar finite part](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCausalPeriod.lean) is exactly `source coefficient × (radial response + onset lift)`. | This is the original same-copy scalar projection at fixed nonnegative null coordinates, not the full metric current or an exchanged infinite-time/horizon limit. |
-| Physical metric current | Original forced scalar/coexact contact is identified. For the unchanged continued reader, `C(W)=(μ−2)W` and `ΔW=μW`. Both actual orbit-current integrals have an [exact finite-domain scalar-period formula](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalReaderEquation.lean), with explicit eigenvalue factors, independent Xi labels, both reader normalizations and complete normal flux. The earlier compact parameter-rectangle identity remains available. | Paired-side/core cancellation for these fully transferred fields; actual top-flux subtraction and the prescribed full temporal/metric/QNM passage. Reader equations alone do not remove source forcing or normal flux. |
-| Angular cusp face | Native mixed-reader flux decays; particular/contact flux has two independent-reader resonances. Original modular angular finite parts vanish for diagonal/reflected pairs. The [physical coexact pairing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalScalarPairing.lean) has the correct negative reader-eigenvalue scalar normalization and retained normal boundary term; its diagonal/reflected finite-part defect vanishes at fixed null coordinates. | Vanishing of other causal faces or complete action. Equal-reader vanishing does not justify unrenormalized continuity in two reader parameters: [the split-reader family has a genuine pole](rh-killed-routes.md#no-go-271). |
-| Horizon, cap and corner | Original causal scalar value and null-derivative horizon traces are admitted, including the onset lift; the reduced response has quantified characteristic bounds. Earlier cap normal traces and [radial source-memory classification](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCapRadialMemory.lean) survive. The opposite-mode connection slope equals the radial norm, and response differentiation retains the exact source-weighted pole. | Attach the admitted traces to the complete metric/current boundary limits. A vanishing opposite-mode coefficient cannot simply erase the differentiated response pole. Static finite-time support remains nonuniform in infinite time; source/contact work remains. |
+| Original scalar/circle period | Actual circle period equals the physical source coefficient times the Legendre circle kernel. All principal corrections cancel on restoration. The [original time integral](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCharacteristicTransform.lean) equals the continued reduced Green family on its convergence chamber, for both source branches, and the finite-height error is the explicit cusp tail with uniform control on bounded null rectangles. | Full metric/action matching and exchange of unbounded time, cusp and horizon limits. Scalar-period matching alone does not control every boundary component. |
+| Physical metric current | Original forced scalar/coexact contact and exact finite-domain orbit-current identities are closed. The complete static current retains source contact, and the [complete finite-time boundary transfer](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalModularOrbit.lean) isolates endpoint values and full forcing flux. | Pass from finite time and radius to the prescribed complete causal action. Existing identities expose rather than cancel the retained forcing/contact terms. |
+| Angular cusp face | Native mixed-reader flux decays; particular/contact flux has two independent-reader resonances. Genuine null and orbit derivatives have uniform weighted cusp bounds. All three original scalar transfers and both metric transfers have their prescribed cusp subtraction; diagonal/reflected constant terms vanish, including after compact-time integration of the [complete metric boundary](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCompactBoundary.lean). | Joint cusp with horizon/unbounded-time limits and the complete action. Equal-reader vanishing does not justify unrenormalized split-reader continuity: [the family has a genuine pole](rh-killed-routes.md#no-go-271). |
+| Horizon, cap and corner | Actual horizon traces admit all exponentially damped moments; horizon passage commutes with them, and the first frequency derivative is the original first time moment. Source-current and forcing remainders are integrable and static/radial cutoffs agree. The [actual causal horizon triangle](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalTemporalCorner.lean), with the fixed `log 2` radial shift, equals the meromorphic corner candidate. | Attach this leading scalar corner to full angular/metric current and QNM specialization. The reflected normalizable reader has a nonzero opposite-horizon coefficient and [does not satisfy the original horizon domain](rh-killed-routes.md#no-go-276); a different physical matching is required. |
 | Stationary two-rate kernels | Exact SS/VV and mixed current/trace formulae, finite parts, tilt detectors and harmonic sign laws. The constant-mode FE-invariance receiver detects `σ=1/2` for `0≤σ≤1`, `t≥92`. | Source-produced FE invariance and transport to the original causal action. SS and VV have opposite signs on an explicit band; [amplitude-independent kernel sign is excluded](rh-killed-routes.md#no-go-268). Chiral positivity on its proved band is not global physical extinction. |
-| On-line spectral comparison | SS plateau satisfies `abs(Im K)≤t⁹` for `t≥50`, `l≥t`. The constant-mode weight is strictly positive at every real height; `Re(ξ′/ξ)(1+2it)≥c log log(t)/t` eventually. Imaginary-order Bessel and compact-cusp Eisenstein tails have explicit exponential bounds. The actual modular Dirichlet form is closable, with a constant-fixing covariance and rank-one functional-calculus lower bound. | Apply these bounds to the full source-retaining physical pairing: identify the correct form/renormalization, bound the actual bulk weight relative to the constant weight, and connect the comparison to the original causal current. The generic `L²` assembly theorem does not perform this identification. |
+| On-line spectral comparison | SS plateau satisfies `abs(Im K)≤t⁹` for `t≥50`, while its constant mode is at least `t¹¹/2176`. The modular Dirichlet form is dense and closable, its covariance is `(1−Δ)⁻¹`, and the [assembled spectral inequality](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSkewPlateauCovarianceKernel.lean) holds for every modular `L²` field: constant-mode contribution minus `t⁹` times orthogonal energy bounds the quadratic form below. | Identify the actual source-retaining HB field in this `L²` space and prove the source-specific domination `orthogonal energy = o(t² × constant energy)` (or a sufficient explicit variant), then connect the form to the original causal current. The general spectral theorem does not supply that source estimate. |
 
 Additional evidence: [native-reader decay](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedNativeReaderFlux.lean), [particular cusp resonances](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedParticularCuspFlux.lean), [finite static slabs](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMActualIngoingCurrent.lean), [mixed radial overlap](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedRadialOverlap.lean), [left-QNM exchange](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLeftQNMCorrectionExchange.lean), [constant-mode receiver](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewConstantFE.lean).
 
-Current matching evidence: [circle Darboux equation and exact period](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCircleEquation.lean), [scalar restoration](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalScalarRestoration.lean), [full source contact](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalSourceContact.lean), [finite orbit current](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalOrbitCurrent.lean), [horizon admission](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCausalAdmission.lean), [corner residue](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCornerSpectralBalance.lean).
+Current matching evidence: [circle Darboux equation and exact period](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCircleEquation.lean), [scalar restoration](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalScalarRestoration.lean), [full source contact](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalSourceContact.lean), [finite orbit current](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalOrbitCurrent.lean), [horizon time trace](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalHorizonTimeTrace.lean), [corner continuation](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalHorizonGreenMatch.lean), [corner admission](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCornerCurrentAdmission.lean).
 
 Current spectral evidence: [uniform kernel bound](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewUniformBound.lean), [constant-weight positivity](../../../../formal/GaloisForLFunctions/RHTower/XiLogDerivLineOnePositive.lean), [logarithmic-derivative growth](../../../../formal/GaloisForLFunctions/RHTower/XiLogDerivLineOneGrowth.lean), [Bessel bound](../../../../formal/GaloisForLFunctions/RHTower/BesselKImaginaryOrderUniformBound.lean), [Eisenstein bound, `t≥1`, `1/2≤Y≤1`](../../../../formal/GaloisForLFunctions/RHTower/EisensteinCuspTailImaginaryOrderBound.lean), [modular form assembly](../../../../formal/GaloisForLFunctions/HTGeometry/ModularDirichletFormDomain.lean), [closability](../../../../formal/GaloisForLFunctions/HTGeometry/ModularDirichletFormClosable.lean).
 
@@ -264,7 +264,7 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### Find a candidate
 
-[AKC](#candidate-akc) · [APF](#candidate-apf) · [BPC](#candidate-bpc) · [BSH](#candidate-bsh) · [CTF](#candidate-ctf) · [EDQ](#candidate-edq) · [EGC](#candidate-egc) · [EWJ](#candidate-ewj) · [FEL](#candidate-fel) · [GTA](#candidate-gta) · [HCF](#candidate-hcf) · [HDL](#candidate-hdl) · [HJ](#candidate-hj) · [IRK](#candidate-irk) · [JAS](#candidate-jas) · [K-RVM](#candidate-k-rvm) · [MPLF](#candidate-mplf) · [PBM](#candidate-pbm) · [PCS](#candidate-pcs) · [PMP/LPC](#candidate-pmplpc) · [PSRC](#candidate-psrc) · [RFHM](#candidate-rfhm) · [RG-ETA](#candidate-rg-eta) · [RG-HF](#candidate-rg-hf) · [RHist](#candidate-rhist) · [S6F](#candidate-s6f) · [SC](#candidate-sc) · [SEC](#candidate-sec) · [SQB](#candidate-sqb) · [TCD](#candidate-tcd) · [TK](#candidate-tk) · [TMD](#candidate-tmd) · [UEB](#candidate-ueb) · [W1C](#candidate-w1c) · [WBF](#candidate-wbf) · [WS2](#candidate-ws2)
+[AKC](#candidate-akc) · [APF](#candidate-apf) · [BPC](#candidate-bpc) · [BSH](#candidate-bsh) · [CTF](#candidate-ctf) · [EDQ](#candidate-edq) · [EGC](#candidate-egc) · [EWJ](#candidate-ewj) · [FEL](#candidate-fel) · [GTA](#candidate-gta) · [HCF](#candidate-hcf) · [HDL](#candidate-hdl) · [HJ](#candidate-hj) · [IRK](#candidate-irk) · [JAS](#candidate-jas) · [K-RVM](#candidate-k-rvm) · [MPLF](#candidate-mplf) · [PBM](#candidate-pbm) · [PCS](#candidate-pcs) · [PMP/LPC](#candidate-pmplpc) · [PSRC](#candidate-psrc) · [PTR](#candidate-ptr) · [RFHM](#candidate-rfhm) · [RG-ETA](#candidate-rg-eta) · [RG-HF](#candidate-rg-hf) · [RHist](#candidate-rhist) · [S6F](#candidate-s6f) · [SC](#candidate-sc) · [SEC](#candidate-sec) · [SQB](#candidate-sqb) · [TCD](#candidate-tcd) · [TK](#candidate-tk) · [TMD](#candidate-tmd) · [UEB](#candidate-ueb) · [W1C](#candidate-w1c) · [WBF](#candidate-wbf) · [WS2](#candidate-ws2)
 
 <a id="candidate-akc"></a>
 
@@ -366,9 +366,9 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### HJ
 
-- **Closed / available:** Hurwitz anchor-jet reflection interface.
-- **Open:** Derive the projective anchor and reflection law from source.
-- **Evidence:** [Exact mechanism, qualifications and remaining theorem](rh-frontier-reference-2026-09-12.md#candidate-hj).
+- **Closed / available:** Hurwitz anchor-jet reflection interface. A normalized finite rational-Hurwitz fibre recovers every scale `n^s`; at modulus two its reflected value equality is exactly the first-prime seam condition and, on all Xi fibres, exactly RH.
+- **Open:** Derive that finite reflected-value equality from an arithmetic source law. The finite-value chain is an exact receiver, not a producer.
+- **Evidence:** [Finite rational-fibre seam and RH equivalence](../../../../formal/GaloisForLFunctions/RHTower/XiHurwitzRationalFiberSeam.lean); [earlier HJ architecture](rh-frontier-reference-2026-09-12.md#candidate-hj).
 
 <a id="candidate-irk"></a>
 
@@ -433,6 +433,14 @@ Some are alternative presentations of an active route's existing open problem.
 - **Closed / available:** Prime-shift singular residue-graph interface.
 - **Open:** Prove source closability; bounded split descent is blind.
 - **Evidence:** [Exact mechanism, qualifications and remaining theorem](rh-frontier-reference-2026-09-12.md#candidate-psrc).
+
+<a id="candidate-ptr"></a>
+
+### PTR
+
+- **Closed / available:** Exact analytic photonic return receiver: the transfer response reduces to `diag(1, ζ(s)²)`, defect confinement is equivalent to RH, and its zero kernel is the parabolic flux-null line. The logarithmic phase lift has an explicit nontrivial deck character whose invariant projection recovers the regular germ and first-jet return matrix.
+- **Open:** Derive the transfer matrix and ramified phase coordinate from a physical Maxwell/time-crystal source, then prove a source law confining defects. Algebraic return identities and monodromy do not provide physical occurrence or confinement.
+- **Evidence:** [Parabolic return and confinement receiver](../../../../formal/GaloisForLFunctions/RHTower/PhotonicParabolicReturn.lean), [phase-cover monodromy](../../../../formal/GaloisForLFunctions/RHTower/PhotonicReturnMonodromy.lean).
 
 <a id="candidate-rfhm"></a>
 
@@ -589,7 +597,7 @@ does not independently solve the problem; they do not mean its premise is false.
 
 ### Closed subroutes inside otherwise live families
 
-The complete catalogue contains **all 274 named entries**, not a selected list. Each family
+The complete catalogue contains **all 278 named entries**, not a selected list. Each family
 opens a name index followed by one structured result/survivor card per mechanism.
 The 16 original-label records above are included in that total; FD2 and RBH also have
 their longer architecture verdicts in the reference.
@@ -598,13 +606,13 @@ their longer architecture verdicts in the reference.
 |---|---:|
 | [Retired original route labels](rh-killed-routes.md#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](rh-killed-routes.md#ccm) | 17 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](rh-killed-routes.md#arithmetic) | 32 |
-| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 47 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](rh-killed-routes.md#arithmetic) | 33 |
+| [HB, FZZ and PW: scattering and physical action](rh-killed-routes.md#scattering) | 48 |
 | [Theta, Schur, spectral and positivity mechanisms](rh-killed-routes.md#theta) | 23 |
 | [Singular descent, formation and completion](rh-killed-routes.md#completion) | 26 |
 | [Ward, Suzuki, prime–Gamma and operator landing](rh-killed-routes.md#ward) | 30 |
 | [Analytic roots, multiplicity and regularization](rh-killed-routes.md#roots) | 9 |
-| [Other finite, scalar and source-blind selectors](rh-killed-routes.md#other) | 74 |
+| [Other finite, scalar and source-blind selectors](rh-killed-routes.md#other) | 76 |
 
 ## Shared infrastructure and unlabelled continuation problems
 
@@ -616,12 +624,13 @@ remove—or expose—inside the named routes.
 - **Closed:** Literal reflected-AFE positive-energy event, covariance identities and stable
   power minors. Product-ordered, separated terminal prime–cofactor blocks supply `C N^J`
   distinct coloured transversals; a common determinant floor `δ` yields the corresponding
-  Gram determinant lower bound by summing their squared minors.
+  Gram determinant lower bound by summing their squared minors. Smooth-AFE negative-edge
+  values now agree for every negative edge; the former `c≤1` restriction was artificial.
 - **Open:** Prove that robust determinant floor for the literal reflected-AFE coefficients
   at the required scales, then uniform conditional covariance, simultaneous local target
   probability and deterministic vertical prime-flow recurrence. Counting alone supplies
   no minor floor; retain smooth background, complement and pole.
-- **Evidence:** [Coloured Gram-minor inequality](../../../../formal/GaloisForLFunctions/HTGeometry/ComplexGramColoredMinors.lean), [actual terminal blocks and conditional Gram bound](../../../../formal/GaloisForLFunctions/RHTower/SteinhausTerminalColoredMinors.lean); [earlier AFE details](rh-frontier-reference-2026-09-12.md#source-line-2720).
+- **Evidence:** [Coloured Gram-minor inequality](../../../../formal/GaloisForLFunctions/HTGeometry/ComplexGramColoredMinors.lean), [actual terminal blocks and conditional Gram bound](../../../../formal/GaloisForLFunctions/RHTower/SteinhausTerminalColoredMinors.lean), [arbitrary negative edge](../../../../formal/GaloisForLFunctions/RHTower/SmoothAFEZetaArbitraryNegativeEdge.lean); [earlier AFE details](rh-frontier-reference-2026-09-12.md#source-line-2720).
 
 ### Dyadic Xi roots and continuation
 
@@ -668,9 +677,12 @@ none supplies a new independent RH route.
 | Vector balancing | Open Banaszczyk transforms, finite sign recovery **conditional on nonempty iterated transform**, exact one-dimensional model; normalized cosine/rational product densities, moments and Gaussian–chi-square mixture/Jensen bound with factor `sqrt(2/π)`. | Prove the required multidimensional transform stability/nonemptiness and connect it to a literal RH source. Finite recovery and distribution identities do not supply either. |
 | Multiple elliptic gamma | Nome-group rank modulo torsion equals augmented rational period rank minus one. For at least two upper-half-plane periods, the differentially algebraic locus is null/meagre and its complement is full-measure/comeagre. | Generic hypertranscendence is not a source-to-Xi orientation theorem; the prime-completion collapse result is unchanged. |
 | Causal finite assemblies | Exact retarded interaction-shell pruning; real-frequency delay phases preserve power Gram and coherent-return modulus, including concrete BM responses. | The analytic scattering sum-rule hypotheses and full nonlinear action are not established by these finite identities. A [full logarithmic turn within the literal theta series' summability domain](rh-killed-routes.md#no-go-272) is impossible; logarithmic scale is not thereby physical Hawking time. |
+| Finite Dirichlet algebra | Units in the finite-abscissa source algebra are exactly the series with nonzero first coefficient, and inversion remains in that algebra. Every scalar algebra map, and every invariant linear readout of a fixed nontrivial Dirichlet twist, is coefficient-one evaluation. Zeta has no literal nonzero translation period. | Higher homology or changed source modules remain open, but scalar evaluation, fixed twisted quotients and unchanged-coordinate periodicity are [closed shortcuts](rh-killed-routes.md#no-go-275). Balanced fixed eta rounds converge in the strip; unbalanced rounds diverge, and endpoint subtraction recovers eta without selecting zeros. |
+| Finite cutoff and QFI | Finite continuation is an exact sum of two oppositely normalized escaping terms. At strict-left zeros the Möbius overflow has a zero-specific compensated limit. | Leading relative-phase QFI tends to the same value at every strict-left point, while inverse QFI coordinates merely reconstruct finite zeta; the [QFI/compensating-infinity selector is closed](rh-killed-routes.md#no-go-277). Subleading source-sensitive structure remains open. |
+| Prime-face topology | Dirichlet weights gauge the admitted prime-face boundary graph to a parameter-independent graph; every cutoff cycle through `N` explicitly bounds through `2N`, also with Dirichlet weights. | Bare finite homology is [nonselective](rh-killed-routes.md#no-go-278). Filling norms, cofinal quantitative torsion, distinguished source classes and analytic completion remain open. |
 | Differential/cohomological selectors | [Painlevé III(D₆) polynomial-gauge bridge excluded](rh-killed-routes.md#no-go-274) from its actual local sigma equation, not an assumed differential-algebraicity premise. [Saddle/de Rham shortcuts fail](rh-killed-routes.md#no-go-273), while exact Mellin, Hodge and arithmetic-contraction identities survive. | A different carrier/source law must escape the stated obstruction. Neither local stationarity, closedness nor a critical-line norm receiver locates the Xi divisor. |
 
-Evidence: [finite sign-recovery interface](../../../../formal/GaloisForLFunctions/HTGeometry/BanaszczykSignRecovery.lean), [mixture identity](../../../../formal/GaloisForLFunctions/RHTower/BanaszczykGammaMixtureBridge.lean), [product Jensen bound](../../../../formal/GaloisForLFunctions/RHTower/BanaszczykChiSquareJensen.lean), [nome rank and genericity](../../../../formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaNomeRankGenericity.lean), [finite causal applications](../../../../formal/GaloisForLFunctions/RHTower/ArxivCausalityCorpusApplications.lean), [delay-algebra scope](../../../../formal/GaloisForLFunctions/HTGeometry/Arxiv2608CausalitySumRules.lean).
+Evidence: [finite sign-recovery interface](../../../../formal/GaloisForLFunctions/HTGeometry/BanaszczykSignRecovery.lean), [mixture identity](../../../../formal/GaloisForLFunctions/RHTower/BanaszczykGammaMixtureBridge.lean), [product Jensen bound](../../../../formal/GaloisForLFunctions/RHTower/BanaszczykChiSquareJensen.lean), [nome rank and genericity](../../../../formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaNomeRankGenericity.lean), [finite causal applications](../../../../formal/GaloisForLFunctions/RHTower/ArxivCausalityCorpusApplications.lean), [delay-algebra scope](../../../../formal/GaloisForLFunctions/HTGeometry/Arxiv2608CausalitySumRules.lean), [eta round convergence](../../../../formal/GaloisForLFunctions/RHTower/EtaArithmeticRoundConvergence.lean), [visible-coprime summability](../../../../formal/GaloisForLFunctions/RHTower/VisibleCoprimeMellinSummability.lean).
 
 ### Other shared bridges
 

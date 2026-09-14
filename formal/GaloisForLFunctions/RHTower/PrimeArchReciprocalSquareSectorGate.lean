@@ -130,16 +130,17 @@ theorem xiReciprocalSquareUpperSectorNonnegative_of_continuedPrimeArch
     ← logDeriv_XiC_eq_relativeResolventTrace hXi] at h
   exact h
 
-/-- **Quantitative positive local pole law.**  Every neighborhood of a nonreal zero of `XiC` in
-the centered upper strip contains a regular point at which the reciprocal-square sector value is
-strictly negative. -/
-theorem exists_xiReciprocalSquareUpperSector_neg_near_of_zero
+/-- **Inward quantitative positive local pole law.**  Every neighborhood of a nonreal zero of
+`XiC` in the centered upper strip contains a regular point at which the reciprocal-square sector
+value is strictly negative.  The regular point lies horizontally toward the imaginary axis. -/
+theorem exists_xiReciprocalSquareUpperSector_inward_neg_near_of_zero
     {alpha : ℂ}
     (haim : 0 < alpha.im) (haimhalf : alpha.im < 1 / 2)
     (hare : alpha.re ≠ 0) (haXi : XiC alpha = 0)
     (r : ℝ) (hr : 0 < r) :
     ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ XiC z ≠ 0 ∧
-      dist z alpha < r ∧ z.re * (-logDeriv XiC z / z).im < 0 := by
+      dist z alpha < r ∧ (z.re - alpha.re) * alpha.re < 0 ∧
+        z.re * (-logDeriv XiC z / z).im < 0 := by
   let sigma : ℂ := 1 / 2 + alpha * I
   have hsigmaZero : xi sigma = 0 := by
     simpa [XiC, sigma] using haXi
@@ -231,8 +232,8 @@ theorem exists_xiReciprocalSquareUpperSector_neg_near_of_zero
       atTop (nhds (-((m : ℂ) / alpha)))
     convert h using 1
     · funext n
-      ring
-    · ring
+      ring_nf
+    · ring_nf
   have hquotIm : Tendsto
       (fun n => t n * (-logDeriv XiC (z n) / z n).im)
       atTop (nhds (-((m : ℂ) / alpha)).im) := by
@@ -282,13 +283,15 @@ theorem exists_xiReciprocalSquareUpperSector_neg_near_of_zero
     have hcoord : 1 / 2 + z n * I = s n := by
       simp [z, s, sigma]
       ring
-    refine ⟨z n, ?_, ?_, ?_, ?_, ?_⟩
+    refine ⟨z n, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · simp [z]
       exact haim
     · simpa only [z, Complex.add_im, Complex.ofReal_im, add_zero] using haimhalf
     · rw [XiC, hcoord]
       exact hxis
     · simpa only [mem_ball] using hnNear
+    · simp only [z, Complex.add_re, Complex.ofReal_re]
+      nlinarith
     · nlinarith
   · have hlimitNeg : alpha.re * (-((m : ℂ) / alpha)).im < 0 :=
       mul_neg_of_neg_of_pos hneg.1 hlimitFactor
@@ -311,14 +314,31 @@ theorem exists_xiReciprocalSquareUpperSector_neg_near_of_zero
     have hcoord : 1 / 2 + z n * I = s n := by
       simp [z, s, sigma]
       ring
-    refine ⟨z n, ?_, ?_, ?_, ?_, ?_⟩
+    refine ⟨z n, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · simp [z]
       exact haim
     · simpa only [z, Complex.add_im, Complex.ofReal_im, add_zero] using haimhalf
     · rw [XiC, hcoord]
       exact hxis
     · simpa only [mem_ball] using hnNear
+    · simp only [z, Complex.add_re, Complex.ofReal_re]
+      nlinarith
     · nlinarith
+
+/-- **Quantitative positive local pole law.**  Every neighborhood of a nonreal zero of `XiC` in
+the centered upper strip contains a regular point at which the reciprocal-square sector value is
+strictly negative. -/
+theorem exists_xiReciprocalSquareUpperSector_neg_near_of_zero
+    {alpha : ℂ}
+    (haim : 0 < alpha.im) (haimhalf : alpha.im < 1 / 2)
+    (hare : alpha.re ≠ 0) (haXi : XiC alpha = 0)
+    (r : ℝ) (hr : 0 < r) :
+    ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ XiC z ≠ 0 ∧
+      dist z alpha < r ∧ z.re * (-logDeriv XiC z / z).im < 0 := by
+  obtain ⟨z, hzim, hzimUpper, hzXi, hnear, _hinward, hsector⟩ :=
+    exists_xiReciprocalSquareUpperSector_inward_neg_near_of_zero
+      haim haimhalf hare haXi r hr
+  exact ⟨z, hzim, hzimUpper, hzXi, hnear, hsector⟩
 
 /-- **Positive local pole law.**  Every nonreal zero of `XiC` in the centered upper strip emits a
 nearby regular point at which the reciprocal-square sector value is strictly negative. -/

@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**274 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**278 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-13, `9d774a1ea257311ad02f21d521ec31441b980657`**.
+Source-audit cutoff: **2026-09-14, `f279e3a973bfcada34c9a91cac608242b730dfba`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -23,13 +23,13 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 |---|---:|
 | [Retired original route labels](#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 17 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 32 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 47 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 33 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 48 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 23 |
 | [Singular descent, formation and completion](#completion) | 26 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 30 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
-| [Other finite, scalar and source-blind selectors](#other) | 74 |
+| [Other finite, scalar and source-blind selectors](#other) | 76 |
 
 <a id="retired-labels"></a>
 
@@ -572,6 +572,32 @@ Exact nonempty update retains mixed products minus the absorbed singleton square
 - [LI local Bernstein or global quotient complete monotonicity](#no-go-057)
 - [T1 fixed finite-aperture/order/type prime extraction](#no-go-178)
 - [T2 regular/compact-open semicontinuous scalar descent](#no-go-147)
+- [finite-abscissa Dirichlet scalar, shift and period selector](#no-go-275)
+
+<a id="no-go-275"></a>
+
+### finite-abscissa Dirichlet scalar, shift and period selector
+
+**Closed result**
+
+Every complex algebra homomorphism from the full formal Dirichlet-convolution algebra,
+and from its finite-abscissa subalgebra, is coefficient-one evaluation. For every fixed
+nonzero-real-part Dirichlet twist, the relation ideal is exactly the augmentation kernel;
+every invariant scalar linear readout again sees only coefficient one. Independently,
+zeta has no nonzero additive translation period in its unchanged coordinate. Thus none
+of scalar evaluation, a fixed twisted quotient, or literal translation periodicity can
+detect the nontrivial divisor.
+
+**Survivor / still open**
+
+Finite-abscissa units are classified exactly by nonzero coefficient one, their formal
+Dirichlet inverses remain finite-abscissa, and the twisted difference equation has an
+explicit primitive in the same algebra. These rigidity and solvability theorems leave
+higher homology, changed bimodules/domains, and periodic structure of the zero set open.
+
+Evidence: [formal scalar classification](../../../../formal/GaloisForLFunctions/RHTower/ArithmeticFunctionScalarEvaluation.lean), [finite-abscissa units and evaluation](../../../../formal/GaloisForLFunctions/RHTower/FiniteAbscissaArithmeticUnits.lean), [twisted boundary quotient](../../../../formal/GaloisForLFunctions/RHTower/ArithmeticDirichletTwistedBoundary.lean), [translation-period rigidity](../../../../formal/GaloisForLFunctions/RHTower/DirichletTranslationPeriod.lean).
+
+[Back to family](#arithmetic) · [Current source-construction checks](rh-current-frontier-map.md#source-construction-and-selector-checks)
 
 <a id="no-go-022"></a>
 
@@ -1071,6 +1097,7 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [HB scalar angular reconstruction](#no-go-213)
 - [HB scalar Poincare-radial descent](#no-go-212)
 - [HB Schwarz-odd diagonal or Schwarz-exchanged global Peierls realization](#no-go-206)
+- [HB reflected normalizable reader as original horizon mode](#no-go-276)
 - [HB unrenormalized split-reader continuity](#no-go-271)
 - [HB zero-cusp, unmodified scalar-RSZ, or pointwise specialization](#no-go-198)
 - [inverse-character sideband audit as physical BM closure](#no-go-217)
@@ -1086,6 +1113,28 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [raw Birmingham--Mokhtari causal decay or two-sided boundedness](#no-go-219)
 - [RBH complementary/wall finite part, separated-sign linear production, or passive normalization](#no-go-225)
 - [scalar-history, regular Borel, grade-diagonal, or rescaling-invariant Parikh--Wilczek balance](#no-go-222)
+
+<a id="no-go-276"></a>
+
+### HB reflected normalizable reader as original horizon mode
+
+**Closed result**
+
+At each unchanged fundamental frequency, the reflected reader's connection coefficient
+is an explicit nonzero Gamma quotient. Its normalizable mode therefore retains a nonzero
+opposite-horizon coordinate and fails the original horizon-domain condition. Identifying
+the reflected fixed-frequency boundary mode with the original physical horizon mode is
+impossible without changing the matching prescription.
+
+**Survivor / still open**
+
+The exact nonzero connection coefficient and boundary mismatch are retained. A physical
+successor must use a different reader/domain match or prove a complete coupled cancellation;
+the result does not exclude nonlinear or cross-channel cancellation in the full action.
+
+Evidence: [reflected connection and horizon mismatch](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMReflectedReaderBoundary.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
 <a id="no-go-216"></a>
 
@@ -3177,6 +3226,7 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [finite Feller tensor admission as selector](#no-go-134)
 - [finite residue positivity](#no-go-251)
 - [finite retained-prime/Dirichlet annihilator](#no-go-126)
+- [finite-cutoff compensating-infinity or QFI selector](#no-go-277)
 - [finite-cylinder double realization](#no-go-227)
 - [finite-prefix, relabelling, weighted-coefficient, or formal-inverse continuation](#no-go-001)
 - [finite-prime D2/P tail](#no-go-125)
@@ -3211,6 +3261,7 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [positive or naive signed Euler--Wold budget descent](#no-go-173)
 - [PPM centered-prime natural-power monodromy](#no-go-098)
 - [prime-Poisson common recovery or internal sewing](#no-go-182)
+- [prime-face gauge or bounded-cutoff homology selector](#no-go-278)
 - [prime-window phase supply as selector](#no-go-124)
 - [printed Connes–Consani prime normalization](#no-go-188)
 - [projected versus joint prime--Gamma naturality](#no-go-090)
@@ -3230,6 +3281,53 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [two-atom centered Euler truncation](#no-go-127)
 - [U scalar source-capital inference](#no-go-240)
 - [universal squared-Euler anti-Löwner positivity](#no-go-256)
+
+<a id="no-go-277"></a>
+
+### finite-cutoff compensating-infinity or QFI selector
+
+**Closed result**
+
+Throughout the open strip, the normalized finite Dirichlet head tends to `1` and its
+continuation correction to `-1`, while both unnormalized terms escape and their sum tends
+to zeta. The finite QFI open-ball chart is injective; its antidiagonal condition and inverse
+chart recover exactly the same finite zeta continuation. On every strict-left point, the
+leading relative-phase QFI has the same limit `4`, so this statistic is not zero-selective.
+Exact compensating escape also need not sweep out a full phase circle.
+
+**Survivor / still open**
+
+At strict-left zeros, the Möbius overflow and recovery terms have an exact zero-specific
+compensated limit, and the finite continuation remains a valid approximation. Any viable
+QFI or phase construction needs subleading, source-sensitive information; leading escape,
+chart inversion and circle-filling heuristics are terminal.
+
+Evidence: [compensating infinity](../../../../formal/GaloisForLFunctions/RHTower/FiniteCutoffCompensatingInfinityNoGo.lean), [finite QFI chart](../../../../formal/GaloisForLFunctions/RHTower/FiniteCutoffQFIHigherContactNoGo.lean), [zero-specific overflow](../../../../formal/GaloisForLFunctions/RHTower/FiniteMobiusLeftOverflowEscape.lean), [universal strict-left QFI](../../../../formal/GaloisForLFunctions/RHTower/FiniteMobiusRelativePhaseQFIUniversalNoGo.lean), [cofinal circle obstruction](../../../../formal/GaloisForLFunctions/RHTower/CofinalQFICircleNoGo.lean).
+
+[Back to family](#other) · [Current source-construction checks](rh-current-frontier-map.md#source-construction-and-selector-checks)
+
+<a id="no-go-278"></a>
+
+### prime-face gauge or bounded-cutoff homology selector
+
+**Closed result**
+
+Literal Dirichlet weights gauge the admitted prime-face boundary graph homeomorphically
+to one parameter-independent unweighted graph. Separately, every reduced prime-chain
+cycle supported through cutoff `N` has an explicit filling through `2N`, including the
+Dirichlet-weighted and augmented degree-zero complexes. These finite topological data
+therefore cannot by themselves create parameter-sensitive Xi orientation.
+
+**Survivor / still open**
+
+The exact boundary-graph gauge and doubled-cutoff contraction are reusable chain-level
+classifications. They do not control filling norms, birth counts, distinguished source
+classes, analytic completion, or cofinal quantitative torsion; a successor must add one
+of those structures rather than read bare finite homology.
+
+Evidence: [prime-face boundary gauge](../../../../formal/GaloisForLFunctions/RHTower/PrimeFaceBoundaryGauge.lean), [prime-chain cutoff contraction](../../../../formal/GaloisForLFunctions/RHTower/PrimeProductCutoffContraction.lean).
+
+[Back to family](#other) · [Current source-construction checks](rh-current-frontier-map.md#source-construction-and-selector-checks)
 
 <a id="no-go-167"></a>
 
