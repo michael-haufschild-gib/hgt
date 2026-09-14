@@ -595,29 +595,54 @@ After division by the actual metric factor `R_L²-1`, arbitrary cusp decay remai
 to zero along every nonnegative time-cutoff net and every horizontal path.
 These statements hold on the source-derived right half-plane, not at a QNM.
 
-**Next full-metric obligation.** Attach these exact angular-product comparisons
-and finite-height horizon counterterms to the complete metric identity. The
-complete current contains `T(U,W), T(W,U), T(Delta U,W), T(F,W)` and temporal
-endpoints. The remaining comparison must retain all four transfers, both radial
-reader branches and the finite-height subtraction coefficients before taking
-independent time, cusp and horizon limits. The fourth transfer's normalized
-source has the existing exact decomposition into `fullSquarePotential` and
-`angularDefect`, with smooth compact-radius coefficients and the original onset
-(`OriginalForcingAngularPeriod.profile_decomposition`). This gives a concrete
-two-component attack for that remaining forcing term. The product comparison
-does not yet identify the complete action with
-`OriginalMetricQNM.regularAction`. Full matching, impossibility and RH remain open.
+**Next full-metric obligation.** Restore the assembled complete boundary under
+independent cusp, time and horizon removal, retaining its actual leading trace.
+The remaining comparison must retain both radial reader branches and the actual
+finite-height coefficients, and justify independent time/cusp/horizon restoration
+and QNM continuation for the evolved-source terms. The source-product estimates
+above are still convergence-half-plane statements. The complete action has not
+been identified with `OriginalMetricQNM.regularAction`; full matching,
+impossibility and RH remain open.
 
-**Fourth-transfer conjecture under attack.** Divide the literal forcing by its
-original geometric horizon factor. Its exact squared-source/Green-defect
-decomposition and all three principal counterterms use the same two smooth
-compact-radius coefficients. Pair each fixed angular field with the actual
-reader value or normal derivative and subtract its original principal product.
-The conjectured difference from the horizon expression is bounded by
-`C*(exp(-L)+exp(-Re(w)*L))*exp(-N*k)*exp(-p)`, uniformly in source time and angular
-position on a derived right half-plane. This would retain arbitrary cusp decay
-after the remaining singular metric factor and supply the fourth transfer
-needed for the complete finite-height counterterm comparison.
+**Combined-source bridge [BRIDGE; scratch and isolated exact leaf audits passed].**
+`OriginalMetricSourceJets` identifies the actual coordinate derivatives with
+the five base operations. `OriginalMetricSourceTransfers` identifies the
+first three physical cuts with `R²*exp(-wp)` times `A_0,true`,
+`exp(-k)*A_1,false`, and `exp(2k)*A_2,true+A_3,true-A_1,true`.
+`OriginalCompleteTransfer.complete_metric_boundary_products` attaches all four
+products and both time endpoints to the existing complete metric top flux,
+subtracting exactly its three `compactBoundaryCoefficient` powers.
+All compact integral admission comes from the actual fields.
+`complete_boundary_radial_density` proves that the actual radial measure
+cancels every extra metric denominator: the forcing cancellation uses
+`R²*Z=R²-1`, and the collar coordinate supplies the factor one-half.
+The next comparison retains the actual leading horizon trace and integrates
+the combined error uniformly over independent cutoffs. Full action matching
+and QNM continuation are still open.
+
+**Fourth forcing transfer [BRIDGE; Lean scratch and isolated exact leaf audits passed].**
+`OriginalFixedForcingProducts` proves arbitrary uniform cusp decay for
+`E_J=J*G_d-P_J*Q_d`, with `J=fullSquarePotential` or `fullGradientEnergy/2`,
+both actual reader operations, and all three original principal powers.
+`OriginalForcingProductBounds` proves the full normalized forcing comparison
+`C*(exp(-L)+exp(-Re(w)*L))*exp(-N*k)*exp(-p)` for nonreal `Re(w)>=1`.
+The identity `R²*Z=R²-1` preserves arbitrary cusp order after the physical weight
+`R²/(R²-1)²`, uniformly in the actual time cutoff.
+`OriginalMetricForcingMatch` identifies each metric counterterm and proves
+`forcingTransferCut=R*exp(-wp)*rawProduct`, retaining the complete-boundary
+coefficient `-w*R/(R²-1)²` and the horizontal period.
+
+`OriginalForcingBoundaryQNM` supplies the further QNM comparison. The normal-reader
+boundary kernel is exactly `(E_square-E_gradient)*forcingKernel(K=0)` plus
+`E_gradient*forcingKernel(K=1)`. The original radius Jacobian converts the physical
+metric forcing density into `-w*exp(-wp)*timeOnset(2s,p)*boundaryKernel`.
+Both source rates obey `Re(2s)<-2`, while either QNM has `Re(w)>-2`, so the actual
+forcing time integral converges at the QNM. The two radial kernels have their
+source-derived power and logarithmic counterterms. Keeping their finite-height
+angular weights and the same finite-time onset integral proves
+`physical_forcing_three_cutoff_QNM`: independent time, cusp and horizon restoration
+gives zero for this boundary term at either fundamental QNM. The scalar bulk
+forcing weights have a different limit; its bulk contribution is not set to zero.
 
 **[BRIDGE; scratch and isolated exact leaf audit passed]** In the original unit
 source square, write `e=exp(-p*(1-alpha))`, `Z=sourceZ(image,p,rho,alpha,beta)`,
