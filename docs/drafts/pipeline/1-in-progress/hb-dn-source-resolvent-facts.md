@@ -205,3 +205,175 @@
   unique source-normalized continuation through either physical QNM. The
   remaining comparison must retain the native forcing's canonical power/log
   terms and prove equality with the full canonical metric/temporal action.
+
+- **DN19 — Lean verified.** `OriginalNativeSourceFinitePart` identifies the
+  native forcing pullback with the bare fixed source overlap, admits its
+  actual outer integral at every positive interface, and proves that integral
+  entire. The original canonical two-branch horizon restoration then glues
+  to a single full-cutoff limit, analytic for nonreal `Re(w)>-2`. The canonical
+  incoming value, incoming slope and opposite logarithmic value all remain.
+  Scratch and isolated exact audit passed; module wired. **Whole-route
+  effect:** both source finite parts in the proposed complete QNM action are
+  now analytic and source-normalized. The full canonical action/source
+  identity is the next unproved equality, not an assumed matching premise.
+
+- **DN20 — Lean verified.** `OriginalCanonicalSourceAction` proves equality
+  of the complete canonical metric/temporal action with the two actual
+  source finite parts and retained forcing temporal corner in the genuine
+  chamber. Meromorphic uniqueness extends the identity to both physical
+  QNMs. Their canonical value is exactly
+  `-mu*(mu-2)*C*Dsource + mu*w*C*T*Nnative`; the forcing corner vanishes by
+  the actual connection zero. No matching, admission or limit premise is
+  supplied. Scratch and isolated exact module audit passed; module wired.
+  **Whole-route effect:** the evolved response and temporal/metric
+  reconstruction are eliminated from the remaining value problem. The
+  decisive burden is now extinction/nonextinction of this combined source
+  value relative to the unit left-source clock, including the original
+  angular coefficient. No receiver equality or impossibility is proved.
+
+- **DN21 — Existing corpus statements inspected; application unproved.**
+  `ExponentialTypeZeroDensity.exponentialType_zeroCount_linear` supplies an
+  `O(T)` zero bound for a nonzero entire function with a global finite
+  exponential-type bound. `Zeta23SimpleCriticalDensity` supplies the closed
+  `T*log(T)/(72*pi)` simple-critical census. The uniform Ingham detector
+  density bound has exponent `(16/5)*(1-sigma)`, hence `4/5` at `sigma=3/4`,
+  with fixed polylogarithmic loss. The angular four-Lambda formula's inspected
+  strict-right restriction enters through `nativeRamanujanChamber`, whose
+  divisor shifts are packaged with strictly negative real parts; the preceding
+  actual Bessel/Fourier and three-moment modular identities permit all Xi
+  copies. **Whole-route effect:** a possible full-action impossibility test has
+  specific growth, angular-boundary and counting obligations. The exact
+  contour numerator and those remaining obligations are stated in the own
+  source-reduction paper. Those census statements alone do not supply the
+  canonical-cutoff attachment or matching impossibility.
+
+- **DN22 — Lean verified.** `OriginalElementaryQNMAction` evaluates the
+  canonical incoming forcing coefficients at either actual QNM as `F0=F(0)`
+  and `F1=-2^(2*s-w)*amp^2*((2*s-w+2)*(A+B)/4+B)`, with opposite logarithmic
+  coefficient zero. It proves the complete canonical value is the limit of
+  one elementary source integral plus these forcing counterterms and the
+  original differentiated-source primitive, including `-log(2)`. No response,
+  transfer coefficient, limit or matching premise remains in that cutoff.
+  Scratch and isolated exact module audit passed; module wired. **Whole-route
+  effect:** the full value problem is now expressed in the elementary
+  Mellin/logarithmic periods needed for the compact-contour test. Its
+  nonvanishing and the resulting matching obstruction remain unproved.
+
+- **DN23 — Lean verified.** `PhysicalAngularClosedHalfPlane` extends the actual
+  divisor-product four-zeta identity to shifts with nonpositive real parts by
+  dominated convergence, using the existing divisor-square majorant. The
+  original Bessel/Fourier, modular three-moment, and testing-parameter
+  continuation then give `physicalSelfSourceCoefficient_fourLambda_closedHalfPlane`
+  for every actual copy with `Re(rho)>=1/2`. Its zero condition is exactly
+  `xi(5*rho/2-1)=0 or xi(rho/2)=0 or xi(3*rho/2)=0`, including critical
+  copies. Scratch and isolated exact module audit passed; module wired.
+  **Whole-route effect:** critical angular exceptions in the full-action
+  counting test are now identified with actual affine Xi collisions. The
+  complete canonical-cutoff attachment and the counting injection remain open
+  in Lean; no matching impossibility is claimed.
+
+- **DN24 — Lean verified.** `FundamentalJacobiMonodromy` proves that the
+  actual first-subtracted source moment times `exp(2*pi*i*w)-1` equals its
+  compact logarithmic-cover contour for `Re(w)>-2`, `w+1!=0`. The small-circle
+  remainder bound follows from the source's derivative on the unit disk.
+  On every affine parameter curve the contour is entire and has a global
+  finite exponential-type bound. Scratch and isolated exact module audit
+  passed; module wired. **Whole-route effect:** the scalar Jacobi moments
+  now have the required contour representation without a continuation or
+  growth premise. Its attachment to the original complete action and the
+  angular/radial counting comparison remain open; matching impossibility
+  is not yet proved.
+
+- **DN25 — Lean verified.** `FundamentalCanonicalContour` proves the
+  fixed-source Jacobi derivative's exact monodromy correction and the full
+  candidate numerator's entirety, finite exponential type, and linear zero
+  count. Its direct nonzero anchor is at `w=-1`, `s=-2`:
+  `H_n(-1,s)=2*pi*i*2^(2*s)`, `A=-3/2`, `B=0`, `H_M=-3*pi*i/8`, hence
+  `G(-1)=27*pi^2*T(-2,-1)/4>0`. Positivity uses the original smooth onset
+  against `exp(-3*u)`, with its positive plateau. Every other summand of
+  this same numerator contains the zero monodromy factor at the anchor.
+  The fixed-source onset derivative is cleared before substituting its
+  physical affine gap. Scratch and isolated exact module audit passed;
+  module wired. Default heartbeat limits are unchanged.
+  **Whole-route effect:** nontriviality needs no second-order expansion at
+  `w=0`. The numerator's identity with the actual canonical cutoff and the
+  angular/radial counting comparison are still required. The forcing
+  attachment must use the two-subtraction finite part or its first-moment
+  integration-by-parts combination; the first-subtraction definition cannot
+  be applied directly to exponent `w-1` in the physical strip.
+
+- **DN26 — Lean verified.** `FundamentalJacobiLogIntegral` identifies the
+  fixed-source Jacobi derivative with the admitted first-subtracted
+  logarithmic integral and its exact constant
+  `-g0*(log(2)/(2*(w+1))+1/(2*(w+1)^2))`. Its restored positive-cutoff
+  integral converges to that same derivative for `Re(w)>-2`, `w+1!=0`.
+  Uniform source derivative bounds and Cauchy domination derive admission;
+  no integral, differentiation or limit premise is supplied. Scratch and
+  isolated exact module audit passed; module wired. **Whole-route effect:**
+  the logarithmic period is now attached to its own original cutoff. The
+  nonlinear radius transport and twice-subtracted forcing attachment still
+  precede the canonical-action equality and counting obstruction.
+
+- **DN27 — Lean verified.** `FundamentalCountertermTransport` proves
+  `tortoise(x*(2-x))=(log(x)-log(2-x))/2` and transports the original
+  logarithmic counterterm with zero finite discrepancy for `Re(w)>-2`.
+  It also transports both forcing counterterms, retaining the slope
+  `g1=-(w+1)*2^w*F0/2+2^(w+1)*F1`, away from `w=-1`.
+  Analytic divided slopes derive the vanishing quadratic remainder;
+  positive complex powers absorb its logarithmic counterpart. Scratch and
+  isolated exact module audit passed; module wired. **Whole-route effect:**
+  neither counterterm introduces an adjustable finite constant under the
+  original radius substitution. The actual forcing integral and complete
+  canonical-action assembly remain to be attached.
+
+- **DN28 — Lean verified.** `FundamentalForcingMoment` identifies the
+  actual twice-subtracted Jacobi forcing with
+  `Y_n=n*J_(n-1)(w,s-1/2)+(2*s-1)*J_n(w,s-1)` for `n>0`,
+  `Re(w)>-2`, `w+1!=0`. The upper boundary vanishes and the lower
+  quadratic remainder tends to zero by the analytic divided-slope lemma.
+  Both forcing coefficients are retained; no shifted first-subtraction
+  integral is asserted to converge. Scratch and isolated exact module
+  audit passed; module wired. **Whole-route effect:** the forcing period
+  used in the complete contour numerator has its original finite-part
+  normalization. The source coefficient transport and canonical assembly
+  remain to be completed in Lean.
+
+- **DN29 — Lean verified.** `FundamentalSourceLogTransport` attaches the
+  actual degree-four source's tortoise-weighted integral in the original
+  radius to `2*a^2*(A*X_2+B*X_4)`. Its positive-cutoff pullback is exact,
+  and its restored limit retains the original `log(z)/2-log(2)` constant.
+  Scratch and isolated exact module audit passed; module wired.
+  **Whole-route effect:** the full logarithmic source contribution is
+  attached. The original forcing coefficient transport and complete
+  canonical-action assembly remain open in Lean.
+
+- **DN30 — Lean verified.** `FundamentalSourceForcingTransport` attaches
+  the original physical-radius forcing to `2*a^2*(A*Y_2+B*Y_4)`.
+  The original source core and slope give exactly the transported value
+  `2^w*F0` and slope `-(w+1)*2^w*F0/2+2^(w+1)*F1`.
+  The full restored forcing limit follows with both counterterms retained.
+  Scratch and isolated exact module audit passed; module wired.
+  **Whole-route effect:** all three source periods now have their original
+  normalization. Assembling them into the canonical value and applying
+  the radial/angular counting obstruction remain open in Lean.
+
+- **DN31 — Lean verified.** `CanonicalSourcePeriodAttachment` identifies
+  the full original canonical QNM value with
+  `-mu*C*((mu-2)*(Td*M+T*X)+T*Y)` at every physical copy, branch,
+  side and source amplitude. `Td` differentiates frequency with the source
+  rate fixed; all three periods retain their original finite-part constants.
+  Scratch and isolated exact module audit passed; module wired.
+  **Whole-route effect:** the complete temporal, metric and forcing action
+  is now evaluated in source periods. Attaching its entire numerator and
+  proving the critical-copy counting obstruction remain open in Lean.
+
+- **DN32 — Lean verified.** `CanonicalContourAttachment` proves, on the
+  actual true/true unit-source curve,
+  `E(w)^2*(5*w+8)^2*canonicalQNMValue=-mu*C*G(w)`.
+  The entire numerator from DN25 is thus attached to the complete original
+  temporal/metric/QNM value. Its logarithmic monodromy correction and
+  twice-subtracted forcing survive unchanged. Scratch and isolated exact
+  module audit passed; module wired. **Whole-route effect:** the proposed
+  counting obstruction now concerns the actual full action. The remaining
+  obligation is to compare its radial/angular exceptional sets with the
+  actual simple critical Xi census.

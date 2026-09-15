@@ -230,6 +230,26 @@ theorem flux_decay (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
   rw [(mass_hasDerivAt N f hy).deriv]
   ring
 
+/-- Above the frequency cutoff, the actual outgoing mass flux is nonpositive.
+The cusp ODE makes the mass convex while its terminal value vanishes, so its
+derivative, hence half the flux, cannot be positive. -/
+theorem flux_nonpos (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
+    {y : ℝ} (hy : cutoff N ≤ y) :
+    flux N f y ≤ 0 := by
+  have hderiv := decaying_convex_deriv_nonpos (A := cutoff N) (u := mass N f)
+    (v := deriv (mass N f)) (a2 := deriv (deriv (mass N f)))
+    (fun t ht => (mass_hasDerivAt N f ((cutoff_pos N).trans_le ht)).differentiableAt.hasDerivAt)
+    (fun t ht => (mass_second_hasDerivAt N f ((cutoff_pos N).trans_le ht)).differentiableAt.hasDerivAt)
+    (fun t ht =>
+      (mul_nonneg (sq_nonneg (rate N))
+        (mass_nonneg N f ((cutoff_pos N).trans_le ht))).trans
+        (mass_second_lower N lam f ht))
+    (mass_decay N f)
+  have hm : deriv (mass N f) y ≤ 0 := hderiv y hy
+  rw [(mass_hasDerivAt N f ((cutoff_pos N).trans_le hy)).deriv] at hm
+  linarith
+
 /-- Above the cutoff, actual flux growth dominates a fixed positive multiple of mass. -/
 theorem flux_deriv_lower (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))

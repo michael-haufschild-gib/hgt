@@ -76,6 +76,68 @@ theorem massPhase_timelike_stationary_iff {u h : ℝ} (hu : 0 < u) (hh : 0 ≤ h
     rw [ht]
     simp
 
+/-- Rationalized separation of two timelike stationary actions. -/
+theorem timelikeStationaryAction_gap_eq
+    {u h k : ℝ} (hh : 0 ≤ h) (hhk : h ≤ k) (hku : k < u) :
+    Real.sqrt (u ^ 2 - h ^ 2) - Real.sqrt (u ^ 2 - k ^ 2) =
+      (k ^ 2 - h ^ 2) /
+        (Real.sqrt (u ^ 2 - h ^ 2) + Real.sqrt (u ^ 2 - k ^ 2)) := by
+  have hrad_h : 0 < u ^ 2 - h ^ 2 := by nlinarith
+  have hrad_k : 0 < u ^ 2 - k ^ 2 := by nlinarith
+  have hs_h : Real.sqrt (u ^ 2 - h ^ 2) ^ 2 = u ^ 2 - h ^ 2 :=
+    Real.sq_sqrt hrad_h.le
+  have hs_k : Real.sqrt (u ^ 2 - k ^ 2) ^ 2 = u ^ 2 - k ^ 2 :=
+    Real.sq_sqrt hrad_k.le
+  have hden : Real.sqrt (u ^ 2 - h ^ 2) + Real.sqrt (u ^ 2 - k ^ 2) ≠ 0 := by
+    positivity
+  apply (eq_div_iff hden).mpr
+  nlinarith
+
+/-- Deep timelike stationary actions are compressed on every fixed frequency pair. -/
+theorem timelikeStationaryAction_gap_le_inverse_height
+    {u h k : ℝ} (hh : 0 ≤ h) (hhk : h < k) (hdeep : 2 * k ≤ u) :
+    Real.sqrt (u ^ 2 - h ^ 2) - Real.sqrt (u ^ 2 - k ^ 2) ≤
+      (k ^ 2 - h ^ 2) / u := by
+  have hk0 : 0 < k := lt_of_le_of_lt hh hhk
+  have hu0 : 0 < u := lt_of_lt_of_le (by linarith) hdeep
+  have hku : k < u := by linarith
+  have hrad_order : u ^ 2 - k ^ 2 ≤ u ^ 2 - h ^ 2 := by nlinarith
+  have hsqrt_order : Real.sqrt (u ^ 2 - k ^ 2) ≤
+      Real.sqrt (u ^ 2 - h ^ 2) := Real.sqrt_le_sqrt hrad_order
+  have hhalf_sq : (u / 2) ^ 2 ≤ u ^ 2 - k ^ 2 := by nlinarith
+  have hhalf_nonneg : 0 ≤ u / 2 := by linarith
+  have hsqrt_half : u / 2 ≤ Real.sqrt (u ^ 2 - k ^ 2) := by
+    rw [← Real.sqrt_sq hhalf_nonneg]
+    exact Real.sqrt_le_sqrt hhalf_sq
+  have hden : u ≤ Real.sqrt (u ^ 2 - h ^ 2) + Real.sqrt (u ^ 2 - k ^ 2) := by
+    linarith
+  have hnum : 0 ≤ k ^ 2 - h ^ 2 := by nlinarith
+  rw [timelikeStationaryAction_gap_eq hh hhk.le hku]
+  exact div_le_div_of_nonneg_left hnum hu0 hden
+
+/-- A timelike stationary rapidity is confined to an inverse-mass band. -/
+theorem timelikeRapidity_le_two_mul_div
+    {u h : ℝ} (hh : 0 < h) (hdeep : 2 * h ≤ u) :
+    timelikeRapidity u h ≤ 2 * h / u := by
+  have hu0 : 0 < u := lt_of_lt_of_le (by linarith) hdeep
+  have hhu : h < u := by linarith
+  have hsqrt : u / 2 ≤ Real.sqrt (u ^ 2 - h ^ 2) := by
+    have hhalf_sq : (u / 2) ^ 2 ≤ u ^ 2 - h ^ 2 := by nlinarith
+    have hhalf_nonneg : 0 ≤ u / 2 := by linarith
+    rw [← Real.sqrt_sq hhalf_nonneg]
+    exact Real.sqrt_le_sqrt hhalf_sq
+  have harg_nonneg : 0 ≤ h / Real.sqrt (u ^ 2 - h ^ 2) := by positivity
+  have harsinh : Real.arsinh (h / Real.sqrt (u ^ 2 - h ^ 2)) ≤
+      h / Real.sqrt (u ^ 2 - h ^ 2) := by
+    rw [← Real.sinh_le_sinh, Real.sinh_arsinh]
+    exact Real.self_le_sinh_iff.mpr harg_nonneg
+  rw [timelikeRapidity]
+  calc
+    Real.arsinh (h / Real.sqrt (u ^ 2 - h ^ 2)) ≤
+        h / Real.sqrt (u ^ 2 - h ^ 2) := harsinh
+    _ ≤ h / (u / 2) := div_le_div_of_nonneg_left hh.le (by linarith) hsqrt
+    _ = 2 * h / u := by field_simp
+
 /-! ## The spacelike collapse -/
 
 /-- The spacelike rapidity. -/

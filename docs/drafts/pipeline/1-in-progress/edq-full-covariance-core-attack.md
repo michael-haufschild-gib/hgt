@@ -22,6 +22,52 @@ Square-multiple cofactors vanish by Möbius. The source identity and each
 prime-incidence packet identity are formalized in
 `RHTower.EulerDeletionRamarePhysical` and its targeted module build passes.
 
+The full signed packet field has now been reduced to its literal finite
+physical Gram form, with no packet term discarded:
+
+```
+integral_(u>1) (rough_(P,M)(u) - sum_p packet_(P,M,p)(u))^2
+ = sum_(m,n<=M) mu(m)*mu(n)*bdGram(1/m,1/n).
+```
+
+`RHTower.EulerDeletionRamarePhysicalEnergy` proves this identity by finite
+integral linearity and the exact discrete Báez--Duarte Gram kernel. The
+cofactor and complete packet also vanish below the unit physical boundary;
+reciprocal dilation has its exact `1/p` bilinear scaling law. These facts do
+not bound the signed form, but they make the missing upper law source-faithful
+and explicit. The same module proves that this Gram form is exactly
+`||bdMobiusModularApproximantVec(M)||^2`. Combined with the established
+modular decomposition into a logarithmically bounded diagonal and the full
+signed off-diagonal cross sum, the active producer is exactly a cofinal upper
+return for that cross sum. No unweighted period average or isolated packet
+norm can replace it.
+
+The chronological residue filtration now maps to this same physical carrier
+without a surrogate. Its Möbius source is exactly the negative modular
+approximant, while its orthogonal innovation part has squared norm at most
+`2`. Consequently `EulerDeletionResidueMartingalePhysicalBridge` proves the
+unconditional, complete-field inequality
+
+```
+integral_(u>1) (rough_(P,N)(u) - sum_p packet_(P,N,p)(u))^2
+ <= 2 * ||predictableDrift(N)||^2 + 4.
+```
+
+Every rough term, packet, and signed cross term remains on the left. Thus the
+only possible unbounded part of the literal physical energy is the exact
+chronological `predictableDrift`; proving its cofinal polylogarithmic squared
+norm ceiling would supply the required EDQ producer. The present filtration
+does not bound that drift, and moving-window estimates do not yet control its
+fixed-cutoff covariance.
+
+The alternative product-fibre representation is equally exact: the
+Gamma--Hankel off-diagonal covariance is a Liouville-signed sum of
+nonnegative nonsquare product fibres. Its total nonsquare absolute variation
+diverges for every relevant exponent `1 < r < 2`. Thus ordinary Abel or
+summation-by-parts transfer from a Liouville partial-sum estimate cannot be
+used unless it first proves a new collective variation bound for the actual
+fibre weights. No such bound is present.
+
 The remaining EDQ producer is an unconditional cofinal upper bound for the
 full signed physical energy of this rough remainder minus these packets,
 including prime-prime, prime-rough and harmonic cross terms. The available
@@ -100,6 +146,11 @@ This is a paper derivation of the loss, not a new formalized theorem or a
 proof that every congruence method fails. The surviving object is the full
 signed, coefficient-weighted floor-count defect, with its actual interval
 and compensation retained.
+
+The first complementary EDQ block has an exact weighted fixed-cutoff window form: `incrementEnergy(N)` is the sum over `N<n<=2N` of the Möbius window norm square on `(N,n]`, weighted by `1/(n(n+1))`. This is formalized in `EulerDeletionFirstTailWindowEnergy`. `EulerDeletionPredictableDriftFirstTail` now proves that this exact window is at most `24*||predictableDrift(N)||^2+60`, through the complete Báez--Duarte error and physical Ramaré source. Thus every cofinal drift ceiling must control this literal fixed-start signed window. Available short-window mean-square theorems average moving lower endpoints and do not control this carrier; their `o(X^2)` twisted-sum term also remains too large for a cofinal polylogarithmic return. The remaining requirement is signed covariance for this exact fixed-cutoff kernel and, beyond it, the complete quotient tail.
+
+The complete quotient tail is already canonically centered: `EulerDeletionCountertermRigidity` identifies the harmonic scalar as minus the full signed continuous-cell increment mass, and writes the physical error as quotient sampling minus that mass. The compensator is unique among linear counterterms with finite weighted energy; the uncompensated floor residual has finite energy exactly when the harmonic defect is zero. Thus no uncentered Hardy or tail-only `L²` estimate can control the EDQ source. The unconditional critical Mertens `L²` boundary theory yields only the `k^(-1/2)` Báez--Duarte wavelet scale. Its positive exponential moments yield the stronger scale but also force the corresponding zeta zero-free half-plane, so they cannot supply the missing cofinal signed covariance. The active target remains the compensated same-cutoff `J_q` family and its full physical tail.
+
 
 The corpus's `Sieve.DirichletCorrelationMultiplicative` cannot shortcut
 this problem: its hypotheses require complete multiplicativity and modulus
@@ -412,6 +463,17 @@ preserves these exact coprime masks. Its logarithmic rates do not supply
 the reciprocal-cutoff saving needed after multiplication by headMass(N).
 In particular, the q=1 square remains the literal harmonic defect, so a
 fixed-modulus rate cannot be promoted to the required all-cutoff power rate.
+
+The inversion is an exact signed identity, not a positivity decomposition. With
+`a_d=mu(d)/d`, for `r>=1` it is
+`sum_(d,e<=N,gcd(d,e)=r) a_d*a_e = sum_(l<=N/r) mu(l)*J_(r*l)(N)^2`.
+Expanding the right side and interchanging the finite sums leaves
+`sum_(l | gcd(d,e)/r) mu(l)`, which is one exactly when `gcd(d,e)=r` and
+zero otherwise. The left side is `harmonicQuadratic r N`. At `N=3`, its
+`r=1` coefficient is `-1/3`, so the exact groups are not nonnegative
+energies. The necessary new estimate must therefore preserve cancellation
+between the divisor levels and the complete physical tail; a PSD or
+absolute-value substitution loses the target mechanism.
 
 [BRIDGE candidate, not a replacement RH conjecture.] The complete harmonic
 gcd family may provide a useful selector for the full source, beyond

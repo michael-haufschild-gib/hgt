@@ -25,7 +25,7 @@ inductive QuadraticQuantumDetectorIndex (n : ℕ)
   | root
   | single (i : Fin n)
   | pair (p : QuantumLawPair (Fin n))
-  deriving DecidableEq
+  deriving DecidableEq, Fintype
 
 /-- Amplitudes on the quadratic detector grades. -/
 abbrev QuadraticQuantumDetectorState (M : Type v) (n : ℕ) :=

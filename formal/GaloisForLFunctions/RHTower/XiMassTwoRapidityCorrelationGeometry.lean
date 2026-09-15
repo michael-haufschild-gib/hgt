@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMassRapidityMassPhase
+import GaloisForLFunctions.RHTower.XiMassCriticalTruePrimeCone
 import GaloisForLFunctions.HTGeometry.TanhSubstitution
 
 /-!
@@ -23,6 +24,140 @@ restriction of the two rapidity variables. -/
 def xiMassTwoRapidityCorrelationPhase (u h k t s : ℝ) : ℝ :=
   (u * Real.cosh t + h * Real.sinh t) -
     (u * Real.cosh s + k * Real.sinh s)
+
+/-- Positive damping amplitude in the Hermitian product of two mass rapidity kernels. -/
+def xiMassTwoRapidityCorrelationAmplitude (a sigma t s : ℝ) : ℂ :=
+  ((Real.cosh t * Real.exp (-(a * sigma) * Real.cosh t) *
+      Real.cosh s * Real.exp (-(a * sigma) * Real.cosh s) : ℝ) : ℂ)
+
+/-- **Literal two-rapidity attachment.** The Hermitian product of the actual mass rapidity
+kernels has exactly the two-rapidity correlation phase. -/
+theorem xiMassRapidityPhaseKernel_mul_star_eq_twoRapidityCorrelation
+    (a sigma u h k t s : ℝ) :
+    xiMassRapidityPhaseKernel a sigma u h t *
+        (starRingEnd ℂ) (xiMassRapidityPhaseKernel a sigma u k s) =
+      xiMassTwoRapidityCorrelationAmplitude a sigma t s *
+        Complex.exp (-(Complex.I *
+          ((a * xiMassTwoRapidityCorrelationPhase u h k t s : ℝ) : ℂ))) := by
+  rw [xiMassRapidityPhaseKernel, xiMassRapidityPhaseKernel,
+    xiMassTwoRapidityCorrelationAmplitude, xiMassTwoRapidityCorrelationPhase]
+  rw [map_mul, map_mul, Complex.conj_ofReal, Complex.conj_ofReal,
+    ← Complex.exp_conj]
+  simp only [map_neg, map_mul, Complex.conj_I, Complex.conj_ofReal]
+  calc
+    _ = ((Real.cosh t * Real.exp (-(a * sigma) * Real.cosh t) *
+          Real.cosh s * Real.exp (-(a * sigma) * Real.cosh s) : ℝ) : ℂ) *
+        (Complex.exp (-(Complex.I *
+          ((a * (u * Real.cosh t + h * Real.sinh t) : ℝ) : ℂ))) *
+          Complex.exp (-(-Complex.I *
+            ((a * (u * Real.cosh s + k * Real.sinh s) : ℝ) : ℂ)))) := by
+      push_cast
+      ring
+    _ = _ := by
+      rw [← Complex.exp_add]
+      congr 1
+      push_cast
+      ring
+
+/-- **Literal two-rapidity covariance.** The Hermitian product of two actual mass
+rapidity integrals is exactly the product-measure oscillatory integral whose phase is
+`xiMassTwoRapidityCorrelationPhase`.  No diagonal substitution or cancellation estimate is
+used here. -/
+theorem xiMassRapidityPhaseKernel_integral_mul_star_eq_twoRapidityCorrelation
+    (a sigma u h k : ℝ) :
+    (∫ t : ℝ, xiMassRapidityPhaseKernel a sigma u h t) *
+        (starRingEnd ℂ) (∫ s : ℝ, xiMassRapidityPhaseKernel a sigma u k s) =
+      ∫ z : ℝ × ℝ, xiMassTwoRapidityCorrelationAmplitude a sigma z.1 z.2 *
+        Complex.exp (-(Complex.I *
+          ((a * xiMassTwoRapidityCorrelationPhase u h k z.1 z.2 : ℝ) : ℂ))) := by
+  rw [← integral_conj, ← MeasureTheory.integral_prod_mul]
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards with z
+  exact xiMassRapidityPhaseKernel_mul_star_eq_twoRapidityCorrelation
+    a sigma u h k z.1 z.2
+
+/-- The literal prime-cone coefficient of one rapidity mass kernel. -/
+def xiMassCriticalPrimeConeRapidityWeight (a : ℝ) (k : ℕ) : ℂ :=
+  ((ArithmeticFunction.vonMangoldt (k + 2) : ℝ) : ℂ) *
+    ((Real.exp (-Real.log ((k : ℝ) + 2) / 2) : ℝ) : ℂ) * (a : ℂ)
+
+/-- The exact moving prime cone, before integration, in the rapidity variable. -/
+def xiMassCriticalPrimeConeRapidityKernel (a sigma d u t : ℝ) : ℂ :=
+  ∑ k ∈ Finset.range (⌊Real.exp (d * u / (d - 1 / 2))⌋₊ - 1),
+    xiMassCriticalPrimeConeRapidityWeight a k *
+      xiMassRapidityPhaseKernel a sigma u (Real.log ((k : ℝ) + 2)) t
+
+/-- **Finite cone source attachment.** The actual moving prime cone is one rapidity integral.
+The cutoff remains finite and mass-dependent; no limiting interchange is used. -/
+theorem xiMassCriticalPrimeAtomConeSum_eq_integral_rapidityKernel
+    {a sigma d u : ℝ} (ha : 0 < a) (hsigma : 0 < sigma) :
+    xiMassCriticalPrimeAtomConeSum a sigma d u =
+      ∫ t : ℝ, xiMassCriticalPrimeConeRapidityKernel a sigma d u t := by
+  unfold xiMassCriticalPrimeAtomConeSum xiMassCriticalPrimeConeRapidityKernel
+  rw [MeasureTheory.integral_finsetSum _ (by
+    intro k _
+    exact (integrable_xiMassRapidityPhaseKernel ha hsigma).const_mul
+      (xiMassCriticalPrimeConeRapidityWeight a k))]
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [xiMassCriticalDampedFourierProfile_eq_integral_rapidityPhase ha hsigma,
+    MeasureTheory.integral_const_mul]
+  simp only [xiMassCriticalPrimeConeRapidityWeight]
+  ring
+
+/-- The finite prime-pair covariance integrand of the moving cone.  Every prime pair is retained
+with its literal two-rapidity phase. -/
+def xiMassCriticalPrimeConeTwoRapidityCovariance
+    (a sigma d u t s : ℝ) : ℂ :=
+  ∑ k ∈ Finset.range (⌊Real.exp (d * u / (d - 1 / 2))⌋₊ - 1),
+    ∑ l ∈ Finset.range (⌊Real.exp (d * u / (d - 1 / 2))⌋₊ - 1),
+      xiMassCriticalPrimeConeRapidityWeight a k *
+        (starRingEnd ℂ) (xiMassCriticalPrimeConeRapidityWeight a l) *
+          xiMassTwoRapidityCorrelationAmplitude a sigma t s *
+            Complex.exp (-(Complex.I * ((a *
+              xiMassTwoRapidityCorrelationPhase u
+                (Real.log ((k : ℝ) + 2)) (Real.log ((l : ℝ) + 2)) t s : ℝ) : ℂ)))
+
+/-- The product of finite prime-cone kernels expands exactly into the literal prime-pair
+two-rapidity covariance. -/
+theorem xiMassCriticalPrimeConeRapidityKernel_mul_star_eq_twoRapidityCovariance
+    (a sigma d u t s : ℝ) :
+    xiMassCriticalPrimeConeRapidityKernel a sigma d u t *
+        (starRingEnd ℂ) (xiMassCriticalPrimeConeRapidityKernel a sigma d u s) =
+      xiMassCriticalPrimeConeTwoRapidityCovariance a sigma d u t s := by
+  unfold xiMassCriticalPrimeConeRapidityKernel
+    xiMassCriticalPrimeConeTwoRapidityCovariance
+  rw [map_sum, Finset.sum_mul_sum]
+  apply Finset.sum_congr rfl
+  intro k _
+  apply Finset.sum_congr rfl
+  intro l _
+  rw [map_mul]
+  calc
+    _ = (xiMassCriticalPrimeConeRapidityWeight a k *
+        (starRingEnd ℂ) (xiMassCriticalPrimeConeRapidityWeight a l)) *
+      (xiMassRapidityPhaseKernel a sigma u (Real.log ((k : ℝ) + 2)) t *
+        (starRingEnd ℂ) (xiMassRapidityPhaseKernel a sigma u
+          (Real.log ((l : ℝ) + 2)) s)) := by ring
+    _ = _ := by
+      rw [xiMassRapidityPhaseKernel_mul_star_eq_twoRapidityCorrelation]
+      ring
+
+/-- **Literal finite prime-pair covariance.** The Hermitian square of the exact moving
+prime cone is the product-measure integral of its full finite prime-pair covariance.  This is an
+identity, not a claimed cancellation or uniform bound. -/
+theorem xiMassCriticalPrimeAtomConeSum_mul_star_eq_twoRapidityCovariance
+    {a sigma d u : ℝ} (ha : 0 < a) (hsigma : 0 < sigma) :
+    xiMassCriticalPrimeAtomConeSum a sigma d u *
+        (starRingEnd ℂ) (xiMassCriticalPrimeAtomConeSum a sigma d u) =
+      ∫ z : ℝ × ℝ, xiMassCriticalPrimeConeTwoRapidityCovariance
+        a sigma d u z.1 z.2 := by
+  rw [xiMassCriticalPrimeAtomConeSum_eq_integral_rapidityKernel ha hsigma,
+    ← integral_conj, ← MeasureTheory.integral_prod_mul]
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards with z
+  exact xiMassCriticalPrimeConeRapidityKernel_mul_star_eq_twoRapidityCovariance
+    a sigma d u z.1 z.2
 
 /-- Stationarity equations for the two independent rapidities of a mass-mode
 correlation. -/
@@ -99,6 +234,33 @@ theorem XiMassTwoRapidityCorrelationStationary.rapidities_order_reverse_of_frequ
   by_contra hst
   exact (not_le_of_gt hratio)
     (HTGeometry.tanh_strictMono.monotone (le_of_not_gt hst))
+
+/-- A fixed-width rapidity neighborhood of the diagonal does not exclude distinct-frequency
+timelike saddles: at sufficiently large mass it contains the stationary pair of every ordered
+timelike frequency pair. -/
+theorem exists_xiMassTwoRapidityCorrelationStationary_near_diagonal
+    {u h k ε : ℝ} (hh : 0 ≤ h) (hhk : h < k) (hdeep : 2 * k ≤ u)
+    (hε : 2 * k / u ≤ ε) :
+    ∃ t s : ℝ, XiMassTwoRapidityCorrelationStationary u h k t s ∧
+      0 < t - s ∧ t - s ≤ ε := by
+  have hk : 0 < k := lt_of_le_of_lt hh hhk
+  have hu : 0 < u := lt_of_lt_of_le (by linarith) hdeep
+  have hku : k < u := by linarith
+  have hhu : h < u := hhk.trans hku
+  have hhrapidity : 0 ≤ timelikeRapidity u h := by
+    rw [timelikeRapidity]
+    exact Real.arsinh_nonneg_iff.mpr
+      (div_nonneg hh (Real.sqrt_nonneg _))
+  have hstat : XiMassTwoRapidityCorrelationStationary u h k
+      (-timelikeRapidity u h) (-timelikeRapidity u k) := by
+    constructor
+    · exact (massPhase_timelike_stationary_iff hu hh hhu _).mpr rfl
+    · exact (massPhase_timelike_stationary_iff hu hk.le hku _).mpr rfl
+  refine ⟨-timelikeRapidity u h, -timelikeRapidity u k, hstat, ?_, ?_⟩
+  · exact sub_pos.mpr (hstat.rapidities_order_reverse_of_frequency_lt hu hhk)
+  · have hbound : timelikeRapidity u k ≤ 2 * k / u :=
+      timelikeRapidity_le_two_mul_div hk hdeep
+    linarith
 
 /-- Distinct-frequency stationary pairs lie strictly in the anti-ordered rapidity cone. -/
 theorem XiMassTwoRapidityCorrelationStationary.frequency_rapidity_orientation_neg

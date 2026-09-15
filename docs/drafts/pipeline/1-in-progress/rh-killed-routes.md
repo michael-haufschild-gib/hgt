@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**288 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**293 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-15, `160e2ed5ae8b335f72eeac2239f6e3ceb81e6b27`**.
+Source-audit cutoff: **2026-09-15, `277d498a24567a583bcd09ff24dd56243b687e89`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -22,14 +22,14 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 16 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 17 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 18 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 33 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 55 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 57 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 23 |
 | [Singular descent, formation and completion](#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 31 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 32 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
-| [Other finite, scalar and source-blind selectors](#other) | 78 |
+| [Other finite, scalar and source-blind selectors](#other) | 79 |
 
 <a id="retired-labels"></a>
 
@@ -297,6 +297,28 @@ Source-native aperture invariant is required.
 - [CCM-FU uniform successor averaging](#no-go-012)
 - [CCM-FU uniformly budgeted increasing-prime elimination](#no-go-006)
 - [CCM-FU universal nonempty-energy contraction](#no-go-010)
+- [CCM-FU fixed-range critical signed transport](#no-go-289)
+
+<a id="no-go-289"></a>
+
+### CCM-FU fixed-range critical signed transport
+
+**Closed result**
+
+Every prime `p≥27` creates a positive literal critical Mertens--polar cell of size at least
+`log p/(2p)`. If a forward block beginning there has nonpositive net source, its length is at
+least `log p/2`. Consequently every fixed forward transport range leaves a positive block at all
+sufficiently large primes and cannot close the FU reporter.
+
+**Survivor / still open**
+
+The exact polar-drift lower bound and growing-range requirement survive. CCM-FU needs signed
+inter-cell transport with unbounded range, or another global cancellation law proving the critical
+variation/energy bound; cellwise absolute estimates and bounded-memory transport are terminal.
+
+Evidence: [quantitative transport-range obstruction](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalTransportRangeNoGo.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
 <a id="no-go-075"></a>
 
@@ -1082,6 +1104,7 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [FZZ same-scale scalar Laurent fusion](#no-go-115)
 - [FZZ same-source divisor gradient flow](#no-go-117)
 - [FZZ unmarked torus averaging](#no-go-110)
+- [FZZ all-depth factorized neutral Ward selector](#no-go-290)
 - [HB amplitude-independent stationary skew-kernel sign](#no-go-268)
 - [HB analytic or finite-rank two-leg compensation](#no-go-201)
 - [HB analytic perturbative QNM clock](#no-go-209)
@@ -1104,6 +1127,7 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [HB QNM-conserved reflected-pair response](#no-go-279)
 - [HB copywise unit-phase darkness repair](#no-go-280)
 - [HB regular five-half trapped-collision producer](#no-go-281)
+- [HB symmetry-only affine-collision exclusion](#no-go-291)
 - [HB reflected normalizable reader as original horizon mode](#no-go-276)
 - [HB unrenormalized split-reader continuity](#no-go-271)
 - [HB zero-cusp, unmodified scalar-RSZ, or pointwise specialization](#no-go-198)
@@ -1120,6 +1144,48 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [raw Birmingham--Mokhtari causal decay or two-sided boundedness](#no-go-219)
 - [RBH complementary/wall finite part, separated-sign linear production, or passive normalization](#no-go-225)
 - [scalar-history, regular Borel, grade-diagonal, or rescaling-invariant Parikh--Wilczek balance](#no-go-222)
+
+<a id="no-go-290"></a>
+
+### FZZ all-depth factorized neutral Ward selector
+
+**Closed result**
+
+There is an explicit fixed-support model with every neutral screening depth active and every
+weighted depth contribution nonzero, yet the full absolutely convergent factorized opposite-winding
+Ward response vanishes identically, including off wall. Neutrality and all-depth activation alone
+therefore cannot make the scalar response a wall selector.
+
+**Survivor / still open**
+
+FZZ-P needs a literal source-derived cross-depth phase/coherence noncancellation law, or support
+motion/nonfactorization before Jacobian integration. Completeness of the neutral tower creates a
+global coherence obligation; it does not prevent cancellation.
+
+Evidence: [all-depth factorized neutral-Ward no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityNeutralAllDepthFactorizedWardNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-291"></a>
+
+### HB symmetry-only affine-collision exclusion
+
+**Closed result**
+
+An explicit finite entire function obeys Xi-style reflection and conjugation symmetry, has isolated
+zeros confined to the open critical strip and no real zeros, yet has simultaneous roots at
+`a = 3/4 + i` and `a/2`. Those generic symmetries cannot exclude the half-affine collision that
+can annihilate HB's physical self-source coefficient.
+
+**Survivor / still open**
+
+Any HB nonvanishing/extinction bridge must use an Xi-specific arithmetic or analytic collision
+invariant, or a different literal vector-to-radial receiver. More symmetry manipulation and scalar
+normalization cannot establish the needed affine no-collision premise.
+
+Evidence: [Xi affine-collision symmetry countermodel](../../../../formal/GaloisForLFunctions/RHTower/XiAffineCollisionSymmetryModelNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
 <a id="no-go-283"></a>
 
@@ -2778,6 +2844,26 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [Suzuki torque-only second-jet selector](#no-go-282)
 - [Suzuki wall-light finite-linear compression](#no-go-078)
 - [unrenormalized Suzuki Ward energy](#no-go-259)
+- [Suzuki odd-phase diagonal quadratic readout](#no-go-292)
+
+<a id="no-go-292"></a>
+
+### Suzuki odd-phase diagonal quadratic readout
+
+**Closed result**
+
+For every reflection-compatible causal operator, its self-adjoint phase coordinate maps an odd
+source into the even sector. The diagonal quadratic readout of that source and phase response is
+therefore identically zero and cannot orient the signed connection current.
+
+**Survivor / still open**
+
+The parity transfer law survives. A source-faithful Suzuki mechanism must retain an off-diagonal
+cross term or an affine channel before scalarization; diagonal phase energy is terminal.
+
+Evidence: [odd-phase diagonal no-go](../../../../formal/GaloisForLFunctions/RHTower/SuzukiVolterraPhaseOddDiagonalNoGo.lean).
+
+[Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
 
 <a id="no-go-282"></a>
 
@@ -3467,6 +3553,28 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [two-atom centered Euler truncation](#no-go-127)
 - [U scalar source-capital inference](#no-go-240)
 - [universal squared-Euler anti-Löwner positivity](#no-go-256)
+- [unchanged timelike-mass transport to Vaughan near-diagonal phase](#no-go-293)
+
+<a id="no-go-293"></a>
+
+### unchanged timelike-mass transport to Vaughan near-diagonal phase
+
+**Closed result**
+
+The reduced timelike mass action `sqrt(u²-h²)` is even in its frequency coordinate, whereas the
+positive Vaughan near-diagonal phase in logarithmic coordinates is strictly antitone. No affine
+coordinate and amplitude normalization can identify them, so direct unchanged phase transport is
+impossible.
+
+**Survivor / still open**
+
+The mass action and Vaughan phase remain candidates for a genuinely new bilinear comparison or
+nontrivial transport identity. The full two-rapidity phase has off-diagonal stationary pairs, so a
+successful T1 estimate must also justify diagonal localization or same-order causal support.
+
+Evidence: [timelike-mass/Vaughan transport no-go](../../../../formal/GaloisForLFunctions/RHTower/XiMassNearDiagonalStationaryNoGo.lean), [two-rapidity stationary geometry](../../../../formal/GaloisForLFunctions/RHTower/XiMassTwoRapidityCorrelationGeometry.lean).
+
+[Back to family](#other) · [Current T1 frontier](rh-current-frontier-map.md#t1--theta-tail-core-current)
 
 <a id="no-go-277"></a>
 

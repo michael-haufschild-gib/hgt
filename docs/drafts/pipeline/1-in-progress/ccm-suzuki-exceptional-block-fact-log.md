@@ -117,6 +117,60 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
 - Fixed finite exterior-measure gauges are automatically harmless in both frequency tails, so
   global representative positivity reduces exactly to one compact core
   (`exists_compactCore_nonneg_iff_correctedExteriorMeasureGaugeRepresentative_nonneg`).
+- The canonical actual wall-light completion has the exact nonzero local affine datum that the
+  homogeneous incidence lacks: at zero frequency it equals the critical Mellin atom, and its
+  oriented imaginary coordinate has strictly positive first jet at every prime power
+  (`ccmActualHeadWallLightCompletedPhase_zero`,
+  `deriv_ccmActualHeadWallLightCompletedPhase_im_zero_pos`).  Hence any remaining Route-O/CCM-FU
+  completion failure is global: it must concern a signed prime--polar--Gamma sewing of this
+  already fixed two-channel phase, not construction of a free local reserve.
+- The global sewing now closes exactly: the real deficit of the natural-indexed affine wall phase
+  is the literal reflected-chord energy, its prime-power restriction is the completed Suzuki
+  phase, and the finite signed affine producer equals the completed source quadratic
+  (`ccmActualHeadPrimeWallAffinePhaseEnergy_eq_chordEnergy`,
+  `ccmRestrictedWeilActualHeadWallAffinePhaseSignedProducer_eq_sourceQuadratic`).  Thus Route O
+  and CCM-FU no longer lack a coefficient-faithful pre-scalar affine carrier.  Their sole shared
+  hard core is a cofinal signed lower bound for this exact carrier; no local phase completion or
+  source-identification modification can resolve it.
+- Off-pole logarithmic phase integration has exact tail mass `1 / log U`; its remainder therefore
+  obeys the unconditional outer-tail scale `1 / (|lambda| log U)`
+  (`integral_Ioi_logTailWeight_eq`, `norm_integral_Ioi_oscLogRemainder_le`).  Hence every moving
+  phase regime with `|lambda| log U → ∞` is analytically harmless before arithmetic transport.
+  The only nonuniform phase zone is the scale-boundary layer `|lambda| log U = O(1)`.  This does
+  not estimate the completed prime--polar source, so it narrows—rather than closes—the shared
+  Route-O/CCM-FU hard core.
+- The PNT error term has now been separated uniformly from that obstruction: for every fixed
+  compact band `|lambda| ≤ R`, its Abel-summation tail is uniformly small
+  (`exists_uniform_compact_oscLogKernelDeriv_thetaError_tail`).  This is a closed unconditional
+  Lean theorem with only standard Lean axioms.  Combined with the exact phase tail, it proves that
+  bounded-frequency arithmetic error cannot create the moving obstruction; only the explicit
+  shrinking band `|lambda| log U = O(1)` remains.  This is still an analytic prime-phase result,
+  not a completed prime--polar lower bound.
+- The required relevance test is negative: no exact Lean map connects `primeCpowSum` or its
+  oscillatory logarithmic phase to the literal third-grade CCM/FU completed prime--polar source.
+  Therefore the uniform prime-phase theorem must not be presented as an RH-bearing CCM result.
+  The real FU problem remains its triangular completed window; future work must start from that
+  source rather than from an auxiliary one-line Euler phase.
+- The natural central unit-Riesz barycenter is not a surviving FU producer despite its exact
+  source landing: its uniform bound is unconditionally false
+  (`not_ccmUnitRieszCentralBarycenterNaturalBound`).  Lean identifies the reason exactly: it is
+  equivalent to RH plus the false square-root Chebyshev remainder bound
+  (`unitRieszCentralBarycenterNaturalBound_iff_rh_and_normalizedErrorBounded`,
+  `not_psiRemainderSquareRootBounded_of_riemannHypothesis`).  Thus every first-moment or
+  central-barycenter compression loses the required scale cancellation.  A viable CCM-FU
+  producer must remain higher-dimensional and pre-scalar through the triangular coupling.
+- A cross-route transport test fails at the dictionary, not at an estimate: the proved
+  squarefree-Möbius moving-boundary product cancellation
+  (`squarefreeMobiusBoundaryLayerLaplace_mul_signed_eq`) has no Lean source map to either the
+  actual-head Gamma autocorrelation or affine-wall producer (exhaustive symbol-file intersection:
+  empty).  It cannot be used as a CCM positivity argument.  Its positive residue is structural:
+  cancellation must occur before a singular moving-boundary limit; any prospective CCM carrier
+  must provide that missing dictionary explicitly.
+- The fixed physical divisor core `{2}` has no bound uniform over one new prime insertion and all
+  later dilations: `not_exists_uniform_coreTwo_insert_dilationMean_bound` combines the exact
+  inserted-prime negative `sqrt p` band with Bertrand primes.  Hence a one-step renewal induction
+  cannot control CCM-FU/CCM-UR by a core-independent estimate.  Any viable producer must retain
+  cancellation among multiple newly inserted prime coordinates before imposing uniform control.
 
 ## No-gos
 
@@ -331,3 +385,14 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   has matching zeroth moment and all scaled Hausdorff-difference inequalities but no parameter
   matching all moments (`f2HausdorffCompactFiberEscape`).  Compactness/positivity alone cannot
   supply source identification on that route.
+- CSB low-moment matching is not an independent opening: the unconditional thermal second
+  truncation converges to its own thermodynamic value, while convergence to the first nontrivial
+  prime--archimedean source moment is already equivalent to RH
+  (`tendsto_xiThermalTruncation_one_iff_rh`).  Thus frozen low-moment targets cannot supply a
+  source-faithful cofinal comparison estimate; CSB still needs a genuinely degree-coupled signed
+  packet mechanism.
+- G’s pure marked-clock branch is exhausted: its actual two-port producer and finite
+  self-adjoint transport are already closed, but the zero-clock odd port is identically zero
+  (`mobiusClockSoninMarkedOddPort_zeroClock`).  Since the surviving G-CE coefficient is the
+  nonzero-charge datum whose vanishing is RH, a commutator-only refinement cannot be the missing
+  producer; it must alter the affine complement channel before scalarization.

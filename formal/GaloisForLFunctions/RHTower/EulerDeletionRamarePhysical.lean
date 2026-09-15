@@ -67,6 +67,27 @@ def harmonic (P : Finset ℕ) (M p : ℕ) : ℝ :=
 def packet (P : Finset ℕ) (M p : ℕ) (u : ℝ) : ℝ :=
   dilate p (cofactor P M p) u + harmonic P M p * bdGenReal (1 / (p : ℝ)) u
 
+/-- Every complete physical Ramaré packet vanishes below the unit boundary.
+Both the reciprocal-dilated cofactor and its forced affine correction are
+retained in this support statement. -/
+theorem packet_eq_zero_of_mem_Ioo_one (P : Finset ℕ) (M p : ℕ) (hp : 0 < p)
+    {u : ℝ} (hu : u ∈ Set.Ioo (0 : ℝ) 1) :
+    packet P M p u = 0 := by
+  have hpR : (0 : ℝ) < p := by exact_mod_cast hp
+  have hpR1 : (1 : ℝ) ≤ p := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr hp.ne'
+  have huDiv : u / (p : ℝ) ∈ Set.Ioo (0 : ℝ) 1 := by
+    constructor
+    · exact div_pos hu.1 hpR
+    · apply (div_lt_one₀ hpR).2
+      nlinarith [hu.2, hpR1]
+  have htheta0 : 0 ≤ 1 / (p : ℝ) := by positivity
+  have htheta1 : 1 / (p : ℝ) ≤ 1 := by
+    simpa using one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 1) hpR1
+  unfold packet dilate
+  rw [cofactor_eq_zero_of_mem_Ioo_one P M p hp huDiv, mul_zero, zero_add,
+    bdGenReal_eq_zero_of_mem_Ioo_one htheta0 htheta1 hu, mul_zero]
+
 /-- The p-incidence portion of the physical source, with its exact Ramaré weight. -/
 def inner (P : Finset ℕ) (M p : ℕ) (u : ℝ) : ℝ :=
   ∑ n ∈ {n ∈ Icc 1 M | p ∣ n},

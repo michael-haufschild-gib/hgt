@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.MaassModelHilbertGenerators
 import GaloisForLFunctions.RHTower.MaassModelHilbertAnalyticVectorBounds
+import GaloisForLFunctions.RHTower.RealSL2Cartan
 import GaloisForLFunctions.HTGeometry.KrylovProjectedCompleteIncidenceLaw
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Comp
@@ -79,6 +80,46 @@ theorem modelToLp_mem_range_modelIsometry
   refine ⟨c • v, ?_⟩
   change c⁻¹ • modelToLp N lam f (ComplementaryKFinite.toModel lam (c • v)) = _
   rw [map_smul, map_smul, ← mul_smul, inv_mul_cancel₀ hc, one_smul]
+
+/-- Quotient translation by a compact element exactly intertwines the finite Maass model with
+its finite `K`-type action.  This is an equality of actual quotient-`L²` vectors, not merely an
+infinitesimal compact-generator identity. -/
+theorem integralSubgroupUnitary_modelToLp_K
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (v : SphericalKFiniteModel) (k : upperHalfPlaneStabilizer) :
+    integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) (k : SL2R)
+      (modelToLp N lam f v) =
+      modelToLp N lam f (sphericalKTypeAction k v) := by
+  rw [unitary_eq_translated_toLp]
+  apply Lp.ext
+  filter_upwards [
+    (translatedFunction_memLp N lam f (k : SL2R) v).coeFn_toLp,
+    modelToLp_ae N lam f (sphericalKTypeAction k v)] with q htrans hmodel
+  rw [htrans, hmodel]
+  obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective q
+  rw [translatedFunction_mk, modelToBounded_apply]
+  have hK := congrArg (fun F : automorphicFunctionSpace
+    (realImage (CongruenceSubgroup.Gamma (N + 1))) => F.1 g⁻¹)
+    (MaassSmooth.modelToMaass_K lam f v k)
+  simpa [automorphicRightRegularRepresentation_apply] using hK
+
+/-- The normalized finite complementary-model embedding exactly intertwines compact quotient
+translation with the finite `K`-type action. -/
+theorem integralSubgroupUnitary_modelIsometry_K
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (v : ComplementaryKFinite lam) (k : upperHalfPlaneStabilizer) :
+    integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) (k : SL2R)
+      (modelIsometry N lam f v) =
+      modelIsometry N lam f (sphericalKTypeAction k v) := by
+  change integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) (k : SL2R)
+      ((‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ •
+        modelToLp N lam f (ComplementaryKFinite.toModel lam v)) =
+      (‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ •
+        modelToLp N lam f (ComplementaryKFinite.toModel lam (sphericalKTypeAction k v))
+  rw [map_smul, integralSubgroupUnitary_modelToLp_K]
+  rfl
 
 /-- The finite complementary-model diagonal quotient orbit is continuous. -/
 theorem continuous_modelToLpComplementaryDiagonalOrbit
@@ -621,6 +662,144 @@ theorem closedSubmodule_iteratedDeriv_mem_of_mem_Icc
         dsimp [c] at hy hcx ⊢
         linarith [hx.1, hy.1], hy.2.trans hx.2⟩
 
+/-- A closed real submodule contains a smooth orbit for all nonnegative time when it contains
+every initial jet and the orbit has a uniform factorial derivative majorant.  This is the
+closed-range analytic-continuation mechanism used for complementary-model diagonal orbits. -/
+theorem closedSubmodule_mem_of_iteratedDeriv_factorial_nonneg
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (W : Submodule ℝ E) (hW : IsClosed (W : Set E))
+    (g : ℝ → E) (C A : ℝ) (hCpos : 0 < C)
+    (hderiv : ∀ n x, HasDerivAt (iteratedDeriv n g) (iteratedDeriv (n + 1) g x) x)
+    (hcont : ∀ n : ℕ, ContDiff ℝ n g)
+    (hbound : ∀ n t, ‖iteratedDeriv n g t‖ ≤ C ^ n * n.factorial * A)
+    (hzero : ∀ n : ℕ, iteratedDeriv n g 0 ∈ W)
+    (t : ℝ) (ht : 0 ≤ t) : g t ∈ W := by
+  have hstep : ∀ a h : ℝ, (∀ n : ℕ, iteratedDeriv n g a ∈ W) →
+      0 < h → C * h < 1 → g (a + h) ∈ W := by
+    intro a h hjets hpos hsmall
+    have hcontShift : ∀ n : ℕ, ContDiff ℝ n (fun u => g (a + u)) := by
+      intro n
+      exact (hcont n).comp (contDiff_const.add contDiff_id)
+    have hpoly : ∀ K : ℕ,
+        taylorWithinEval (fun u => g (a + u)) K (Set.Icc 0 h) 0 h ∈ W := by
+      intro K
+      rw [taylor_within_apply]
+      apply W.sum_mem
+      intro k hk
+      rw [iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc hpos)
+        ((hcontShift k).contDiffAt) ⟨le_rfl, hpos.le⟩,
+        iteratedDeriv_comp_const_add]
+      simpa only [add_zero, sub_zero] using W.smul_mem _ (hjets k)
+    have hrem : ∀ K : ℕ,
+        ‖g (a + h) - taylorWithinEval (fun u => g (a + u)) K (Set.Icc 0 h) 0 h‖ ≤
+          A * (C * h) ^ (K + 1) := by
+      intro K
+      calc
+        ‖g (a + h) - taylorWithinEval (fun u => g (a + u)) K (Set.Icc 0 h) 0 h‖ ≤
+          (C ^ (K + 1) * (K + 1).factorial * A) * h ^ (K + 1) /
+              (K + 1).factorial := by
+          apply HTGeometry.norm_sub_taylorWithinEval_le_factorial hpos.le
+            (hcontShift (K + 1)).contDiffOn
+          intro y hy
+          rw [iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc hpos)
+            ((hcontShift (K + 1)).contDiffAt) hy, iteratedDeriv_comp_const_add]
+          exact hbound (K + 1) (a + y)
+        _ = A * (C * h) ^ (K + 1) := by
+          have hfac : (((K + 1).factorial : ℕ) : ℝ) ≠ 0 := by positivity
+          rw [mul_pow]
+          field_simp
+    have hbase : 0 ≤ C * h := mul_nonneg hCpos.le hpos.le
+    have hshift : Filter.Tendsto (fun K : ℕ => K + 1) Filter.atTop Filter.atTop := by
+      apply Filter.tendsto_atTop.2
+      intro b
+      filter_upwards [Filter.eventually_ge_atTop b] with K hK
+      exact hK.trans (Nat.le_add_right K 1)
+    have hgeometric : Filter.Tendsto
+        (fun K : ℕ => A * (C * h) ^ (K + 1)) Filter.atTop (nhds 0) := by
+      simpa using ((tendsto_pow_atTop_nhds_zero_of_lt_one hbase hsmall).comp hshift).const_mul A
+    have hnorm : Filter.Tendsto
+        (fun K : ℕ => ‖g (a + h) -
+          taylorWithinEval (fun u => g (a + u)) K (Set.Icc 0 h) 0 h‖)
+          Filter.atTop (nhds 0) := by
+      apply squeeze_zero
+      · intro K
+        exact norm_nonneg _
+      · intro K
+        exact hrem K
+      · exact hgeometric
+    have htaylor : Filter.Tendsto
+        (fun K : ℕ => taylorWithinEval (fun u => g (a + u)) K (Set.Icc 0 h) 0 h)
+        Filter.atTop (nhds (g (a + h))) := by
+      rw [tendsto_iff_norm_sub_tendsto_zero]
+      simpa only [norm_sub_rev] using hnorm
+    exact hW.mem_of_tendsto htaylor (Filter.Eventually.of_forall hpoly)
+  let d : ℝ := (2 * C)⁻¹
+  have hdpos : 0 < d := by
+    dsimp [d]
+    positivity
+  have hCd : C * d = 1 / 2 := by
+    dsimp [d]
+    field_simp
+  have hP : ∀ n : ℕ, ∀ s : ℝ, 0 ≤ s → s ≤ (n : ℝ) * d → g s ∈ W := by
+    intro n
+    induction n with
+    | zero =>
+        intro s hs hsn
+        have hs_zero : s = 0 := by
+          norm_num at hsn ⊢
+          linarith
+        subst s
+        exact hzero 0
+    | succ n ih =>
+        intro s hs hsn
+        by_cases hle : s ≤ (n : ℝ) * d
+        · exact ih s hs hle
+        · have hlt : (n : ℝ) * d < s := lt_of_not_ge hle
+          let a : ℝ := (n : ℝ) * d
+          let h : ℝ := s - a
+          have hpos : 0 < h := by
+            dsimp [h, a]
+            linarith
+          have hhd : h ≤ d := by
+            dsimp [h, a]
+            rw [Nat.cast_succ] at hsn
+            nlinarith [hsn]
+          have hsmall : C * h < 1 := by
+            calc
+              C * h ≤ C * d := mul_le_mul_of_nonneg_left hhd hCpos.le
+              _ = 1 / 2 := hCd
+              _ < 1 := by norm_num
+          have hjets : ∀ k : ℕ, iteratedDeriv k g a ∈ W := by
+            cases n with
+            | zero =>
+                intro k
+                have ha_zero : a = 0 := by
+                  dsimp [a]
+                  norm_num
+                rw [ha_zero]
+                exact hzero k
+            | succ n =>
+                intro k
+                refine closedSubmodule_iteratedDeriv_mem_of_mem_Icc W hW (a := a) (b := 0)
+                  hderiv ?_ k a ?_
+                · intro x hx
+                  exact ih x hx.1 hx.2
+                · refine ⟨?_, le_rfl⟩
+                  dsimp [a]
+                  rw [Nat.cast_succ]
+                  positivity
+          have hnext := hstep a h hjets hpos hsmall
+          have hasum : a + h = s := by
+            dsimp [h]
+            ring
+          rw [hasum] at hnext
+          exact hnext
+  obtain ⟨n, hn⟩ := exists_nat_gt (t / d)
+  have hbound : t ≤ (n : ℝ) * d := by
+    apply (div_le_iff₀ hdpos).mp
+    exact hn.le
+  exact hP n t ht hbound
+
 /-- The exact derivative of every finite complementary-model diagonal orbit jet is its next
 orbit jet. -/
 theorem hasDerivAt_iteratedDeriv_modelToLpComplementaryDiagonalOrbit
@@ -639,6 +818,121 @@ theorem hasDerivAt_iteratedDeriv_modelToLpComplementaryDiagonalOrbit
   rw [iteratedDeriv_modelToLp_complementaryDiagonal_orbit N lam f v k,
     iteratedDeriv_modelToLp_complementaryDiagonal_orbit N lam f v (k + 1)]
   exact modelToLp_complementaryDiagonalIterate_hasDerivAt_all_times N lam f v k x
+
+/-- The reverse parameterization has an exact derivative at every iterated jet. -/
+theorem hasDerivAt_iteratedDeriv_modelToLpComplementaryNegativeDiagonalOrbit
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (v : ComplementaryKFinite lam) (k : ℕ) (x : ℝ) :
+    HasDerivAt (iteratedDeriv k (modelToLpComplementaryNegativeDiagonalOrbit N lam f v))
+      (iteratedDeriv (k + 1) (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) x) x := by
+  let g := modelToLpComplementaryDiagonalOrbit N lam f v
+  have hcomp := (hasDerivAt_iteratedDeriv_modelToLpComplementaryDiagonalOrbit
+    N lam f v k (-x)).scomp x (hasDerivAt_neg x)
+  have hscaled := HasDerivAt.const_smul ((-1 : ℝ) ^ k) hcomp
+  have hjet : iteratedDeriv k (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) =
+      fun u : ℝ => (-1 : ℝ) ^ k • iteratedDeriv k
+        (modelToLpComplementaryDiagonalOrbit N lam f v) (-u) := by
+    funext u
+    change iteratedDeriv k (fun y : ℝ =>
+      modelToLpComplementaryDiagonalOrbit N lam f v (-y)) u = _
+    rw [iteratedDeriv_comp_neg]
+  have hjetnext : iteratedDeriv (k + 1) (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) x =
+      (-1 : ℝ) ^ (k + 1) • iteratedDeriv (k + 1)
+        (modelToLpComplementaryDiagonalOrbit N lam f v) (-x) := by
+    change iteratedDeriv (k + 1) (fun y : ℝ =>
+      modelToLpComplementaryDiagonalOrbit N lam f v (-y)) x = _
+    rw [iteratedDeriv_comp_neg]
+  rw [hjet, hjetnext]
+  convert hscaled using 1 <;> try rfl
+  rw [pow_succ, smul_smul]
+
+/-- Every reverse-orbit jet at the identity is already in the completed complementary-model
+range: it is a real scalar multiple of a finite complementary-model iterate. -/
+theorem iteratedDeriv_modelToLpComplementaryNegativeDiagonalOrbit_zero_mem_range_completedModelIsometry
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (v : ComplementaryKFinite lam) (n : ℕ) :
+    iteratedDeriv n (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) 0 ∈
+      Set.range (completedModelIsometry N lam f) := by
+  let W : Submodule ℝ (Lp ℂ 2
+      (integralSubgroupQuotientMeasure (CongruenceSubgroup.Gamma (N + 1)))) :=
+    (LinearMap.range (completedModelIsometry N lam f).toLinearMap).restrictScalars ℝ
+  have hfinite : modelToLp N lam f (ComplementaryKFinite.toModel lam
+      (complementaryDiagonalIterate lam n v)) ∈ W := by
+    change modelToLp N lam f (ComplementaryKFinite.toModel lam
+        (complementaryDiagonalIterate lam n v)) ∈
+      Set.range (completedModelIsometry N lam f)
+    rw [completedModelIsometry_range]
+    apply subset_closure
+    exact modelToLp_mem_range_modelIsometry N lam f
+      (complementaryDiagonalIterate lam n v)
+  change iteratedDeriv n (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) 0 ∈ W
+  change iteratedDeriv n (fun u : ℝ =>
+    modelToLpComplementaryDiagonalOrbit N lam f v (-u)) 0 ∈ W
+  rw [iteratedDeriv_comp_neg]
+  simp only [neg_zero]
+  change (-1 : ℝ) ^ n • iteratedDeriv n (fun u =>
+    integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+      (realPositiveDiagonalBorel (-u) : SL2R)
+      (modelToLp N lam f (ComplementaryKFinite.toModel lam v))) 0 ∈ W
+  rw [iteratedDeriv_modelToLp_complementaryDiagonal_orbit]
+  simp only [neg_zero, realPositiveDiagonalBorel_zero, OneMemClass.coe_one,
+    integralSubgroupUnitary_one]
+  exact W.smul_mem _ hfinite
+
+/-- A finite complementary-model reverse diagonal orbit stays in the completed model range for
+all nonnegative reverse times.  This is the generic closed-range continuation theorem applied to
+the exact reverse jet chain. -/
+theorem modelToLpComplementaryNegativeDiagonalOrbit_mem_range_completedModelIsometry_of_nonneg
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (v : ComplementaryKFinite lam) (r : ℝ) (hr : 0 ≤ r)
+    (hsupp : ∀ m ∈ (ComplementaryKFinite.toModel lam v).support, |(m : ℝ)| ≤ r)
+    (t : ℝ) (ht : 0 ≤ t) :
+    modelToLpComplementaryNegativeDiagonalOrbit N lam f v t ∈
+      Set.range (completedModelIsometry N lam f) := by
+  let W : Submodule ℝ (Lp ℂ 2
+      (integralSubgroupQuotientMeasure (CongruenceSubgroup.Gamma (N + 1)))) :=
+    (LinearMap.range (completedModelIsometry N lam f).toLinearMap).restrictScalars ℝ
+  have hWclosed : IsClosed (W : Set (Lp ℂ 2
+      (integralSubgroupQuotientMeasure (CongruenceSubgroup.Gamma (N + 1))))) := by
+    change IsClosed (Set.range (completedModelIsometry N lam f))
+    exact (completedModelIsometry N lam f).isometry.isClosedEmbedding.isClosed_range
+  let C : ℝ := 2 * r + 2
+  let A : ℝ := ‖modelToLp N lam f (Finsupp.single 0 1)‖ * ‖v‖
+  have hCpos : 0 < C := by
+    dsimp [C]
+    nlinarith
+  have hderiv : ∀ n x, HasDerivAt
+      (iteratedDeriv n (modelToLpComplementaryNegativeDiagonalOrbit N lam f v))
+      (iteratedDeriv (n + 1) (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) x) x :=
+    hasDerivAt_iteratedDeriv_modelToLpComplementaryNegativeDiagonalOrbit N lam f v
+  have hcont : ∀ n : ℕ, ContDiff ℝ n
+      (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) :=
+    contDiff_modelToLpComplementaryNegativeDiagonalOrbit N lam f v
+  have hbound : ∀ n x, ‖iteratedDeriv n
+      (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) x‖ ≤ C ^ n * n.factorial * A := by
+    intro n x
+    calc
+      ‖iteratedDeriv n (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) x‖ ≤
+        (2 * r + 2) ^ n * n.factorial *
+          ‖modelToLp N lam f (Finsupp.single 0 1)‖ * ‖v‖ :=
+        norm_iteratedDeriv_modelToLpComplementaryNegativeDiagonalOrbit_le_factorial
+          N lam f v r hr hsupp n x
+      _ = C ^ n * n.factorial * A := by
+        simp [C, A]
+        ring
+  have hzero : ∀ n : ℕ, iteratedDeriv n
+      (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) 0 ∈ W := by
+    intro n
+    change iteratedDeriv n (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) 0 ∈
+      Set.range (completedModelIsometry N lam f)
+    exact iteratedDeriv_modelToLpComplementaryNegativeDiagonalOrbit_zero_mem_range_completedModelIsometry
+      N lam f v n
+  change modelToLpComplementaryNegativeDiagonalOrbit N lam f v t ∈ W
+  exact closedSubmodule_mem_of_iteratedDeriv_factorial_nonneg W hWclosed
+    (modelToLpComplementaryNegativeDiagonalOrbit N lam f v) C A hCpos hderiv hcont hbound hzero t ht
 
 /-- Every finite-model diagonal-orbit jet belongs to the completed range throughout its
 certified local interval. -/
@@ -1309,6 +1603,186 @@ theorem sourceLp_diagonal_mem_range_completedModelIsometry_of_nonneg
     change modelToLp N lam f (Finsupp.single 0 1) = MaassQuotientL2.sourceLp N f
     exact modelToLp_spherical N lam f
   simpa only [modelToLpComplementaryDiagonalOrbit, hzero] using h
+
+/-- Global forward invariance of every normalized finite complementary-model vector. -/
+theorem integralSubgroupUnitary_modelIsometry_mem_range_completedModelIsometry_of_nonneg
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (v : ComplementaryKFinite lam) (r : ℝ) (hr : 0 ≤ r)
+    (hsupp : ∀ m ∈ (ComplementaryKFinite.toModel lam v).support, |(m : ℝ)| ≤ r)
+    (t : ℝ) (ht : 0 ≤ t) :
+    integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+      (realPositiveDiagonalBorel (-t) : SL2R) (modelIsometry N lam f v) ∈
+      Set.range (completedModelIsometry N lam f) := by
+  rcases modelToLpComplementaryDiagonalOrbit_mem_range_completedModelIsometry_of_nonneg
+      N lam f v r hr hsupp t ht with ⟨w, hw⟩
+  refine ⟨(‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ • w, ?_⟩
+  change completedModelIsometry N lam f
+      ((‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ • w) =
+      integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+        (realPositiveDiagonalBorel (-t) : SL2R)
+        ((‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ •
+          modelToLp N lam f (ComplementaryKFinite.toModel lam v))
+  rw [map_smul, map_smul, hw]
+  rfl
+
+/-- Every finite complementary-model vector has a real support radius, constructed from the
+finite sum of absolute `K`-indices. -/
+theorem exists_complementaryKFinite_support_radius
+    (lam : SelbergExceptionalEigenvalue) (v : ComplementaryKFinite lam) :
+    ∃ r : ℝ, 0 ≤ r ∧
+      ∀ m ∈ (ComplementaryKFinite.toModel lam v).support, |(m : ℝ)| ≤ r := by
+  let s := (ComplementaryKFinite.toModel lam v).support
+  refine ⟨s.sum fun m => |(m : ℝ)|, ?_, ?_⟩
+  · apply Finset.sum_nonneg
+    intro m hm
+    exact abs_nonneg (m : ℝ)
+  · intro m hm
+    change m ∈ s at hm
+    change |(m : ℝ)| ≤ s.sum fun k => |(k : ℝ)|
+    exact Finset.single_le_sum (s := s) (f := fun k : ℤ => |(k : ℝ)|)
+      (fun k hk => abs_nonneg (k : ℝ)) hm
+
+/-- A quotient-space linear isometry preserves the completed model range once it preserves the
+dense normalized finite model image. -/
+theorem linearIsometryEquiv_mapsTo_completedModelIsometry_range_of_finite
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (U : Lp ℂ 2 (integralSubgroupQuotientMeasure (CongruenceSubgroup.Gamma (N + 1))) ≃ₗᵢ[ℂ]
+      Lp ℂ 2 (integralSubgroupQuotientMeasure (CongruenceSubgroup.Gamma (N + 1))))
+    (hfinite : ∀ v : ComplementaryKFinite lam,
+      U (modelIsometry N lam f v) ∈ Set.range (completedModelIsometry N lam f)) :
+    Set.MapsTo U (Set.range (completedModelIsometry N lam f))
+      (Set.range (completedModelIsometry N lam f)) := by
+  rw [completedModelIsometry_range]
+  have hfinite' : U '' Set.range (modelIsometry N lam f) ⊆
+      closure (Set.range (modelIsometry N lam f)) := by
+    rintro _ ⟨_, ⟨v, rfl⟩, rfl⟩
+    rw [← completedModelIsometry_range]
+    exact hfinite v
+  have hclosure : U '' closure (Set.range (modelIsometry N lam f)) ⊆
+      closure (Set.range (modelIsometry N lam f)) := by
+    calc
+      U '' closure (Set.range (modelIsometry N lam f)) ⊆
+          closure (U '' Set.range (modelIsometry N lam f)) :=
+        image_closure_subset_closure_image U.continuous
+      _ ⊆ closure (closure (Set.range (modelIsometry N lam f))) := closure_mono hfinite'
+      _ = closure (Set.range (modelIsometry N lam f)) := closure_closure
+  intro x hx
+  exact hclosure ⟨x, hx, rfl⟩
+
+/-- The completed complementary-model image is invariant under every compact `K` element. -/
+theorem integralSubgroupUnitary_mapsTo_completedModelIsometry_range_K
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (k : upperHalfPlaneStabilizer) :
+    Set.MapsTo
+      (integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) (k : SL2R))
+      (Set.range (completedModelIsometry N lam f))
+      (Set.range (completedModelIsometry N lam f)) := by
+  apply linearIsometryEquiv_mapsTo_completedModelIsometry_range_of_finite N lam f
+  intro v
+  rw [integralSubgroupUnitary_modelIsometry_K]
+  rw [completedModelIsometry_range]
+  apply subset_closure
+  exact ⟨sphericalKTypeAction k v, rfl⟩
+
+/-- The completed complementary-model image is invariant under every nonnegative diagonal
+time.  Global continuation first handles every finite `K`-type vector; continuity of the actual
+quotient unitary then transports that invariant dense image to its certified closure. -/
+theorem integralSubgroupUnitary_mapsTo_completedModelIsometry_range_of_nonneg
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (t : ℝ) (ht : 0 ≤ t) :
+    Set.MapsTo
+      (integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+        (realPositiveDiagonalBorel (-t) : SL2R))
+      (Set.range (completedModelIsometry N lam f))
+      (Set.range (completedModelIsometry N lam f)) := by
+  apply linearIsometryEquiv_mapsTo_completedModelIsometry_range_of_finite N lam f
+  intro v
+  obtain ⟨r, hr, hsupp⟩ := exists_complementaryKFinite_support_radius lam v
+  exact integralSubgroupUnitary_modelIsometry_mem_range_completedModelIsometry_of_nonneg
+    N lam f v r hr hsupp t ht
+
+/-- Global reverse-time invariance of every normalized finite complementary-model vector. -/
+theorem integralSubgroupUnitary_modelIsometry_mem_range_completedModelIsometry_of_nonpos
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (v : ComplementaryKFinite lam) (r : ℝ) (hr : 0 ≤ r)
+    (hsupp : ∀ m ∈ (ComplementaryKFinite.toModel lam v).support, |(m : ℝ)| ≤ r)
+    (t : ℝ) (ht : t ≤ 0) :
+    integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+      (realPositiveDiagonalBorel (-t) : SL2R) (modelIsometry N lam f v) ∈
+      Set.range (completedModelIsometry N lam f) := by
+  have hneg := modelToLpComplementaryNegativeDiagonalOrbit_mem_range_completedModelIsometry_of_nonneg
+    N lam f v r hr hsupp (-t) (neg_nonneg.mpr ht)
+  have hforward : modelToLpComplementaryDiagonalOrbit N lam f v t ∈
+      Set.range (completedModelIsometry N lam f) := by
+    simpa only [modelToLpComplementaryNegativeDiagonalOrbit, neg_neg] using hneg
+  rcases hforward with ⟨w, hw⟩
+  refine ⟨(‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ • w, ?_⟩
+  change completedModelIsometry N lam f
+      ((‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ • w) =
+      integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+        (realPositiveDiagonalBorel (-t) : SL2R)
+        ((‖modelToLp N lam f (Finsupp.single 0 1)‖ : ℂ)⁻¹ •
+          modelToLp N lam f (ComplementaryKFinite.toModel lam v))
+  rw [map_smul, map_smul, hw]
+  rfl
+
+/-- The completed complementary-model image is invariant under the full two-sided diagonal
+one-parameter group. -/
+theorem integralSubgroupUnitary_mapsTo_completedModelIsometry_range
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (t : ℝ) :
+    Set.MapsTo
+      (integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+        (realPositiveDiagonalBorel (-t) : SL2R))
+      (Set.range (completedModelIsometry N lam f))
+      (Set.range (completedModelIsometry N lam f)) := by
+  rcases le_total 0 t with ht | ht
+  · exact integralSubgroupUnitary_mapsTo_completedModelIsometry_range_of_nonneg N lam f t ht
+  · apply linearIsometryEquiv_mapsTo_completedModelIsometry_range_of_finite N lam f
+    intro v
+    obtain ⟨r, hr, hsupp⟩ := exists_complementaryKFinite_support_radius lam v
+    exact integralSubgroupUnitary_modelIsometry_mem_range_completedModelIsometry_of_nonpos
+      N lam f v r hr hsupp t ht
+
+/-- The completed complementary-model image is invariant under the full real `SL(2)` action.
+Cartan factorization reduces an arbitrary group element to the already certified compact and
+positive-diagonal actions. -/
+theorem integralSubgroupUnitary_mapsTo_completedModelIsometry_range_SL2R
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (g : SL2R) :
+    Set.MapsTo
+      (integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) g)
+      (Set.range (completedModelIsometry N lam f))
+      (Set.range (completedModelIsometry N lam f)) := by
+  rcases realSL2_exists_compact_diagonal_compact g with ⟨k₁, k₂, t, hg⟩
+  have hK₁ := integralSubgroupUnitary_mapsTo_completedModelIsometry_range_K N lam f k₁
+  have hA : Set.MapsTo
+      (integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+        (realPositiveDiagonalBorel t : SL2R))
+      (Set.range (completedModelIsometry N lam f))
+      (Set.range (completedModelIsometry N lam f)) := by
+    simpa only [neg_neg] using
+      integralSubgroupUnitary_mapsTo_completedModelIsometry_range N lam f (-t)
+  have hK₂ := integralSubgroupUnitary_mapsTo_completedModelIsometry_range_K N lam f k₂
+  have hU :
+      (fun x => integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) g x) =
+        fun x => integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) (k₁ : SL2R)
+          (integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1))
+            (realPositiveDiagonalBorel t : SL2R)
+            (integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) (k₂ : SL2R) x)) := by
+    funext x
+    rw [hg, integralSubgroupUnitary_mul, integralSubgroupUnitary_mul]
+  change Set.MapsTo
+    (fun x => integralSubgroupUnitary (CongruenceSubgroup.Gamma (N + 1)) g x) _ _
+  rw [hU]
+  exact hK₁.comp (hA.comp hK₂)
 
 /-- The locally invariant finite raw model image transports to the normalized isometric image. -/
 theorem integralSubgroupUnitary_modelIsometry_mem_range_completedModelIsometry_of_abs_lt

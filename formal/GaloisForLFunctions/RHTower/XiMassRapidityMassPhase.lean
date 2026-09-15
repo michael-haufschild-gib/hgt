@@ -44,6 +44,21 @@ theorem xiMassHyperbolicFourierKernel_eq_rapidity (a sigma u h t : ℝ) :
   push_cast
   ring
 
+/-- The rapidity mass kernel is integrable whenever the damping and mass are positive.
+This is scalar transport from the already-integrable hyperbolic kernel. -/
+theorem integrable_xiMassRapidityPhaseKernel
+    {a sigma u h : ℝ} (ha : 0 < a) (hsigma : 0 < sigma) :
+    Integrable (xiMassRapidityPhaseKernel a sigma u h) := by
+  have hhyper : Integrable (xiMassHyperbolicFourierKernel a sigma u h) :=
+    integrable_xiMassHyperbolicFourierKernel ha hsigma
+  have haC : (a : ℂ) ≠ 0 := by
+    exact_mod_cast ha.ne'
+  refine (hhyper.const_mul ((a : ℂ)⁻¹)).congr (ae_of_all _ fun t => ?_)
+  change (a : ℂ)⁻¹ * xiMassHyperbolicFourierKernel a sigma u h t =
+    xiMassRapidityPhaseKernel a sigma u h t
+  rw [xiMassHyperbolicFourierKernel_eq_rapidity]
+  field_simp
+
 /-- **(8.1) The exact hyperbolic representation of the mass profile.**  The substitution
 `x = a sinh t` turns the mass Fourier transform into a rapidity integral with real amplitude and
 the single mass phase `a(u cosh t + h sinh t)`. -/

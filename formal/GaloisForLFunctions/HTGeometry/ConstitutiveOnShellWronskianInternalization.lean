@@ -1,5 +1,6 @@
 import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.RingTheory.Ideal.Quotient.Operations
+import Mathlib.RingTheory.AdjoinRoot
 import Mathlib.Algebra.Polynomial.Derivation
 
 /-!
@@ -219,6 +220,12 @@ section Polynomial
 open Polynomial
 
 variable {K : Type*} [Field K] [CharZero K]
+
+/-- A polynomial equation fibre cut out by `X ^ m` is finite-dimensional over its
+coefficient field.  Its standard representatives have degree strictly below `m`. -/
+noncomputable instance polynomialEquationFibreFinite (m : ℕ) :
+    Module.Finite K (EquationFibre ((X : Polynomial K) ^ m)) :=
+  (Polynomial.monic_X_pow (R := K) m).finite_quotient
 
 /-- Every positive polynomial multiplicity has a nonzero on-shell conormal current. -/
 theorem polynomialEquationWronskian_one_ne_zero (m : ℕ) (hm : 0 < m) :

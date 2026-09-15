@@ -32,6 +32,14 @@ structure QuantumLawPair (ι : Type*) [LT ι] where
   isLt : lower < upper
   deriving DecidableEq
 
+/-- Increasing pairs inherit a finite enumeration from their coordinate type. -/
+instance : Fintype (QuantumLawPair ι) :=
+  Fintype.ofEquiv {p : ι × ι // p.1 < p.2}
+    { toFun := fun p => ⟨p.1.1, p.1.2, p.2⟩
+      invFun := fun p => ⟨(p.lower, p.upper), p.isLt⟩
+      left_inv := fun p => by cases p; rfl
+      right_inv := fun p => by cases p; rfl }
+
 /-- The ordered quadratic monomial attached to an increasing law pair. -/
 def quantumPairOperator (G : ι → Module.End K M) (p : QuantumLawPair ι) :
     Module.End K M :=
