@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**286 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**288 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-14, `d2fceb0e7ed7d61cf457ed9e2aeefa43196c8b73`**.
+Source-audit cutoff: **2026-09-15, `160e2ed5ae8b335f72eeac2239f6e3ceb81e6b27`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -29,7 +29,7 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | [Singular descent, formation and completion](#completion) | 26 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 31 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
-| [Other finite, scalar and source-blind selectors](#other) | 76 |
+| [Other finite, scalar and source-blind selectors](#other) | 78 |
 
 <a id="retired-labels"></a>
 
@@ -2296,13 +2296,13 @@ Actual theta D1 is now globally strict with a fixed compact reserve, and its ran
 
 **Closed result**
 
-Nonzero Bessel seams defeat block positivity; pure phases and zero-mean nodal profiles defeat norm-only arguments; pointwise regulator limits lose mass; reciprocal-amplitude resistance has zero limiting capacity. Eisenstein powers refute uniform positive scalar comparison; fixed generator words have level-divergent cost. Scalar deck averaging annihilates the source. Character projectors and inversion preserve all energy, but every character pair has the same absolute probability Gram kernel, so norms do not orient phase. Every nonzero finite complete quarter packet fails native `L²`, while the admitted infinite damped resummation has nonzero Gamma mean and therefore explicit nonzero covariance defect. The zero-mean theta source has strictly positive shifted phase current for every Xi copy, hence is nonselective. The reflected theta field has nonzero forcing and response vectors and exact unit-normalized uncentered/centered graph equations, but both retain one fixed forcing term; inhomogeneous graph admission is not homogeneous eigen-occurrence. Its exact real-line density `Xi(t)^2*w(t)` is nonnegative, yet the Cauchy denominator is complex for off-axis spectral points, so positivity alone supplies no reality law. Complete positive Eisenstein probes prove finite packet separation even at real energies, but give no cofinal quantitative lower bound. Polynomial Casimir and native-scattering shortcuts remain terminal, and the literal corrected source/cutoff family still has positive residual.
+Nonzero Bessel seams defeat block positivity; pure phases and zero-mean nodal profiles defeat norm-only arguments; pointwise regulator limits lose mass; reciprocal-amplitude resistance has zero limiting capacity. Eisenstein powers refute uniform positive scalar comparison; fixed generator words have level-divergent cost. Scalar deck averaging annihilates the source. Character projectors and inversion preserve total energy, but every character pair has the same absolute probability Gram kernel, so norms do not orient phase. Source-attached diagonal inversion sharpens this: total diagonal loss dominates `N` times source density and some channel is strictly lossy at every positive-level source, but that unsigned loss still does not orient the core boundary. Exceptional sources now have exact zero congruence mean, discharging the old mean premise without supplying a gap. Every nonzero finite complete quarter packet fails native `L²`, while the admitted infinite damped resummation has nonzero Gamma mean and therefore explicit nonzero covariance defect. The zero-mean theta source has strictly positive shifted phase current for every Xi copy, hence is nonselective. The reflected theta field has nonzero forcing and response vectors and exact unit-normalized uncentered/centered graph equations, but both retain one fixed forcing term; inhomogeneous graph admission is not homogeneous eigen-occurrence. Its exact real-line density `Xi(t)^2*w(t)` is nonnegative, yet the Cauchy denominator is complex for off-axis spectral points, so positivity alone supplies no reality law. Complete positive Eisenstein probes prove finite packet separation even at real energies, but give no cofinal quantitative lower bound. Polynomial Casimir and native-scattering shortcuts remain terminal, and the literal corrected source/cutoff family still has positive residual.
 
 **Survivor / still open**
 
-Full gradient integration gives `lambda >= 3*pi^2/(2*(N+1)^2)`, excluding exceptional sources through level seven. At levels at least eight, current density, exact core--cusp stress laws, and the strict period-product floor survive with the flat-node and unoriented-boundary alternatives. The entire transform remains a complete self-adjoint wall receiver. Literal horizontal Mellin/contour transport, exact native mean cancellation, the centered Cauchy pairing, and the canonical six-root cutoff reduction are positive survivors: prove pairing reality/vanishing, rank-seven/all-order signed positivity, and a cofinal residual estimate. Forcing, finite separation, nonzero-vector, normalization, transform, contour, and mean-residue statements are closed and cannot be listed as missing. Current-order survivor is orientation of the retained stress/current boundary into the area quarter bound; SQB then proves the Selberg `1/4` gap.
+Full gradient integration gives `lambda >= 3*pi^2/(2*(N+1)^2)`, excluding exceptional sources through level seven. At levels at least eight, current density, exact core--cusp stress laws, and the strict period-product floor survive with the flat-node and unoriented-boundary alternatives. Above the explicit Bessel transition cutoff, every seam is nonnegative, so an exceptional source would force the literal compact-core quarter form to be strictly negative. Prove a source-attached lower bound excluding that negativity, or pairing reality/vanishing, rank-seven/all-order signed positivity and a cofinal residual estimate. Local loss, mean zero, forcing, finite separation and transform identities are closed and cannot substitute for this signed global coercivity.
 
-[Back to family](#theta) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-052)
+[Back to family](#theta) · [Boundary positivity reduction](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassBoundaryPositivity.lean) · [Diagonal loss](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassDiagonalLoss.lean) · [Exceptional mean zero](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassExceptionalMeanZero.lean) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-052)
 
 <a id="no-go-086"></a>
 
@@ -3414,6 +3414,7 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [finite-cylinder double realization](#no-go-227)
 - [finite-prefix, relabelling, weighted-coefficient, or formal-inverse continuation](#no-go-001)
 - [finite-prime D2/P tail](#no-go-125)
+- [finite prime-correct co-moving Levinson depth packet](#no-go-287)
 - [finite/moving-horizon mass sign closure in HB](#no-go-220)
 - [first-Laguerre line anchor from generic positive kernels](#no-go-058)
 - [five-point angle concavity promotion](#no-go-122)
@@ -3442,6 +3443,7 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [physical dilation, BBM pullback, or finite autonomous spectrum](#no-go-243)
 - [positive critical-prime Fock determinant](#no-go-244)
 - [positive diagonal repair](#no-go-236)
+- [positive energy of the symmetric reciprocal Levinson pair](#no-go-288)
 - [positive or naive signed Euler--Wold budget descent](#no-go-173)
 - [PPM centered-prime natural-power monodromy](#no-go-098)
 - [prime-Poisson common recovery or internal sewing](#no-go-182)
@@ -3841,13 +3843,27 @@ Finite coefficient agreement, weighted coefficient proximity, scalar reindexing,
 
 **Closed result**
 
-Every fixed finite von Mangoldt prefix has log-height defect below every floor at arbitrarily high Gaussian-rational points. The same holds for slowly growing schedules whose three-quarter power stays below `log t / 84`.
+Every fixed finite von Mangoldt prefix has log-height defect below every floor at arbitrarily high Gaussian-rational points. More sharply, for every `c>42`, the same holds cofinally for every eventual schedule satisfying `c·depth(n)^(3/4) ≤ log n`. The exact critical envelope is formal and its residual slack tends to minus infinity.
 
 **Survivor / still open**
 
-Any D2/P pure-prime proof must use the genuinely infinite source or a height-dependent depth meeting the formal lower-growth requirement.
+Any D2/P pure-prime proof must use the genuinely infinite source or a height-dependent depth beyond this critical envelope, then prove a common interior lower floor directly.
 
-[Back to family](#other) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-125)
+[Back to family](#other) · [Strengthened subcritical-schedule theorem](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchFinitePrefixSubcriticalScheduleNoGo.lean) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-125)
+
+<a id="no-go-287"></a>
+
+### finite prime-correct co-moving Levinson depth packet
+
+**Closed result**
+
+Every finite legal true-prime depth packet is classified by its total coefficient charge. Zero-charge packets are unconditionally line bounded; every nonzero-charge packet is line bounded exactly when one reference prime cone is, hence exactly under RH. Rough-tail prime correctness forces zero charge, so every finite prime-correct packet of this form is automatically bounded and cannot be the missing selector.
+
+**Survivor / still open**
+
+The exact charge decomposition and uniform boundedness of depth differences survive. A useful successor must use genuinely cofinal/infinite depth structure, a changed prime-correct source carrying nontrivial global charge, or a phase-sensitive invariant not collapsed to total charge.
+
+[Back to family](#other) · [Formal charge classification and prime-correctness consequence](../../../../formal/GaloisForLFunctions/RHTower/XiMassLevinsonComovingDepthChargeNoGo.lean)
 
 <a id="no-go-220"></a>
 
@@ -4064,13 +4080,27 @@ Fixed-support deterministic/torus transfer, logarithmic truncation, and head/tai
 
 **Closed result**
 
-For every differentiable Young mollifier profile with endpoints `0,1`, the displaced mean-square functional satisfies `c_P'(0)=c_P(0)`, independently of profile and mollifier length. Exact truncation, both high-block tails, cutoff monotonicity, direct and frozen-dual mean values, moving-dual freezing, sub-block assembly, and sharp chi modulus are closed. `SharpEnergyInput C` now implies the full `zeta*Psi` dyadic law.
+For every differentiable Young mollifier profile with endpoints `0,1`, the displaced mean-square functional satisfies `c_P'(0)=c_P(0)`, independently of profile and mollifier length. Exact truncation, both high-block tails, cutoff monotonicity, direct and frozen-dual mean values, moving-dual freezing, sub-block assembly, and sharp chi modulus are closed. `SharpEnergyInput C` implies the full `zeta*Psi` dyadic law. Barban--Vehov absolute coefficient mass is now linear, and reciprocal tuning at the exact quadratic horizon has full energy `1/6`, with included/omitted masses `1/48` and `7/48`.
 
 **Survivor / still open**
 
-Profile optimization cannot improve first-order shift credit. Prove the source-scale sharp Barban--Vehov convolution-energy input and the detector-specific displaced dyadic law; then meet the census constant and separately exclude sparse off-line zeros. Any endpoint improvement must use nonlinear shift information, arithmetic dependence beyond the Young functional, better `zeta*Psi` credit, or quantized sparse-zero exclusion.
+Profile optimization cannot improve first-order shift credit. The fixed quadratic-horizon laws do not supply `SharpEnergyInput C`, which is uniform over block base, displacement and every sharp head length. Prove that uniform convolution-energy input and the detector-specific displaced dyadic law; then meet the census constant and separately exclude sparse off-line zeros. Any endpoint improvement must use nonlinear shift information, arithmetic dependence beyond the Young functional, better `zeta*Psi` credit, or quantized sparse-zero exclusion.
 
-[Back to family](#other) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-042)
+[Back to family](#other) · [Quadratic-horizon Barban--Vehov energy](../../../../formal/GaloisForLFunctions/RHTower/Sieve/DifferentiatedBarbanVehovQuadraticHorizonEnergy.lean) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-042)
+
+<a id="no-go-288"></a>
+
+### positive energy of the symmetric reciprocal Levinson pair
+
+**Closed result**
+
+Opposite reciprocal Levinson jets collapse pointwise to the zero jet, and their co-moving source lands exactly on the von Mangoldt prime-power cone. Its positive short-coefficient energy is exactly the von Mangoldt harmonic square sum, tends to infinity and is asymptotic to one half of `log(M)^2`. Therefore no aperture-independent positive `L²` budget exists for this exact paired source.
+
+**Survivor / still open**
+
+The coefficient-faithful zero-jet landing remains an exact RH receiver. Any bound strong enough to drive T1 must exploit signed phase cancellation, a renormalized relative energy, or another nonpositive source law; raw positive coefficient energy is terminal.
+
+[Back to family](#other) · [Formal energy obstruction](../../../../formal/GaloisForLFunctions/RHTower/XiMassLevinsonSymmetricReciprocalEnergyNoGo.lean) · [Exact reciprocal landing](../../../../formal/GaloisForLFunctions/RHTower/XiMassLevinsonSymmetricReciprocalLanding.lean)
 
 <a id="no-go-179"></a>
 

@@ -5,6 +5,20 @@ the current SP-E investigation. It is not a route history.
 
 ## Verified corpus frontier
 
+- The authoritative current map defines SP-E as **signed prime dilation versus continuum** and
+  leaves only signed moderation of the completed-Abel/checkpoint scale connection (equivalently
+  local formation production or corrected Chebyshev mass-error defect) open.  The similarly named
+  `prime-gamma-signed-permutation-eulerian-rh` card labels itself a large outlandish detour and
+  marks its artificial all-prime core superseded; its finite stability/determinant results cannot
+  be substituted for the current SP-E source gate.
+
+- The actual-prime width-five Suzuki--Mangoldt flank block has an unconditional surplus bounded
+  below by a positive multiple of `sqrt n`, hence is unbounded.  Raw source capacity is therefore
+  not the SP-E bottleneck.  The exact bicausal no-free-splice law removes all apparent capacity
+  gain after charging the duplicate seam, and the positive same-phase shared-plane fusion is
+  already ruled out.  Any SP-E producer must preserve orientation through the source-to-current
+  map; positive capacity alone cannot control the signed completed-Abel high-pass.
+
 - Normalized prime wall laws converge to the unit exponential law. Complete ordered-tuple
   Fredholm coefficients, one summable Hadamard majorant on each closed disc, and locally uniform
   convergence of the wall entire determinant are already proved in
@@ -24,6 +38,61 @@ the current SP-E investigation. It is not a route history.
   correction or direct canonical wall identification cannot work.
 
 ## New closed bridge
+
+- `SuzukiChebyshevMassErrorEulerianBridge` proves the corrected Chebyshev mass-error Cesàro
+  defect is exactly the finite Eulerian sum
+  `1 / (N + 1) * Σ_{2 ≤ k ≤ N} (k + 1) * (Λ(k + 1) / sqrt(k + 1) -
+  2 * (sqrt(k + 1) - sqrt k))`.  Thus SP-E's open source gate contains no hidden averaging:
+  it is precisely uniform signed cancellation between literal prime increments and their exact
+  continuum increments, with the checkpoint-history weights displayed.  The theorem is closed in
+  Lean with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+- `SuzukiPrimeFlankEulerianKernel` proves that every aligned width-five Mangoldt flank atom is
+  exactly `2 * suzukiPrimeWeight (p - 2)` times the nonnegative kernel
+  `max 0 (log 5 - |log (p / n)|)`.  The unbounded actual-prime flank block and the SP-E Eulerian
+  current therefore share a literal atom-level coordinate.  This eliminates a source-normalization
+  mismatch as an explanation of the blockage; only global signed cancellation against the exact
+  continuum and complementary prime increments remains.  The composite theorem is closed in Lean
+  with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+- `SuzukiEulerianPrimeBlockPressure` proves that past the symbolic Chebyshev threshold, the
+  normalized width-five actual-prime component in the shared Eulerian coordinate is at least
+  `(sqrt 2 / 20) * sqrt n`, and proves this component is unbounded.  The source-side contribution
+  is therefore unbounded on the exact SP-E coordinate.  This does not make the full signed current
+  unbounded: its only possible
+  moderation is the explicitly exposed cancellation against the deterministic continuum increment
+  and remaining prime history.  The theorem is closed in Lean with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+
+- `SuzukiEulerianSignedGammaCurrent` proves the exact finite identity
+  `massError(N) = -(signedCurvaturePrefix(N) + higherBinetGammaPrefix(N)) / (N + 1)`.
+  The Gamma prefix is definitionally the pre-existing checkpoint archimedean tail, is nonnegative,
+  and is at most `(8 / 3) * sqrt(N + 2)`.  Consequently the difference between the mass-error
+  current and the negative normalized signed-curvature prefix has forced nonpositive sign; Gamma
+  cannot conceal a positive SP-E excursion.  This replaces the prior bounded-error comparison by
+  an exact signed prime--Gamma decomposition.  The theorem is closed in Lean with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+
+- `SuzukiEulerianSelbergAbelWeld` proves that the two Gamma channels in that identity cancel
+  cellwise to the deterministic lattice atom
+  `sqrt p / (sqrt p + sqrt(p - 1))^2`.  Its prefix is nonnegative and at most
+  `2 * sqrt(N + 2)`.  Consequently
+  `massError(N) = normalizedChebyshevError(log(N + 1)) -
+  (sqrt(3) * psiRemainder(2) + squareRootAbelMoment(N) + latticePrefix(N)) / (N + 1)`
+  exactly.  Thus every non-elementary interior contribution to the SP-E mass current is now one
+  literal signed half-order Selberg Abel action; neither Gamma channel remains a possible
+  explanation or source of moderation.  The theorem is closed in Lean with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+
+- The same module proves the stronger source weld
+  `massError(N) - normalizedChebyshevError(log(N + 1)) + completedOutgoingCharge(N + 1) → 0`.
+  Its finite residual is exactly a completed polar lattice defect minus the positive SP-E lattice
+  prefix and a fixed two-cell anchor, divided by `N + 1`; every residual component is formally
+  shown to vanish.  Hence the SP-E mass-error gate and the literal completed outgoing source are
+  cofinally the same signed object after the terminal normalized error is removed.  This closes
+  the source-coordinate ambiguity: proving moderation now requires a theorem about this exact
+  outgoing source, not a new prime/Gamma reparametrization.  The theorem is closed in Lean with
+  only `propext`, `Classical.choice`, and `Quot.sound`.
 
 - `PrimeArchThetaThirdCumulantProductKernel` identifies the sixth reciprocal trace with one signed
   triple-product theta integral, preserving the cancellation lost by independent moment boxes.
@@ -74,6 +143,26 @@ the current SP-E investigation. It is not a route history.
 
 ## No-gos and scope boundaries
 
+- The absolute linear bound on `suzukiCheckpointWeightedSignedCurvaturePrefix` is unconditionally
+  false (`CCMFULittlewoodNoGo`): its exact classification would require both RH and bounded
+  square-root-normalized Chebyshev remainder, while the latter is false even under RH.  Hence
+  neither uniform central unit-Riesz control nor an absolute first-moment estimate is a viable
+  SP-E producer.  The live target is genuinely one-sided signed moderation of the mass-error
+  current.
+
+- The new square-root-scale prime pressure cannot be promoted to divergence of the full SP-E
+  current: the exact Eulerian identity subtracts a deterministic continuum component of the same
+  scale, and `SuzukiPNTEnvelopeCesaroNoGo` already proves that magnitude, positivity,
+  monotonicity, and sublinearity cannot bound the resulting high-pass.  The remaining theorem must
+  be genuinely signed arithmetic discrepancy control; a stronger positive-source estimate is not
+  a route forward.
+- Fixed-core pair reserve is not a conserved schedule credit.  The exact changing-core renewal
+  law changes both the source head and its sign threshold after each insertion; the formal
+  transferable-pair-reserve no-go shows that a pair releasing over an even core can cost after a
+  prescribed insertion, with the debt increasing as the pair is moved out.  Thus no invariant
+  based on banking fixed-core pair certificates can solve exhaustive source coverage.  A surviving
+  SP-E/CCM-FU producer must orient the current state synchronously and uniformly, rather than
+  replaying previously proved reserves.
 - A logarithmic coefficient built only from the first theta atom is mathematically valid but does
   not by itself address the refined SP-E landing gate; higher-atom perturbations remain. The useful
   invariant is the full normalized Xi coefficient above.

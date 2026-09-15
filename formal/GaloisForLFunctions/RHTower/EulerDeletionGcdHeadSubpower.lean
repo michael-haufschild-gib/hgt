@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerDeletionCoprimeHeadSubpower
+import GaloisForLFunctions.RHTower.EulerDeletionMobiusPrimitiveEnergy
 /-!
 # Subpower remainder of all exact-gcd Möbius residue heads
 
@@ -469,5 +470,247 @@ theorem exists_initialEnergy_variation_comparison {ε : ℝ} (hε : 0<ε) :
         |initialEnergy r N-harmonicQuadratic r N*DeletionCoprimeHead.headMass N| :=
       Finset.sum_le_sum (fun r _ => abs_abs_sub_abs_le_abs_sub _ _)
     _ ≤ _ := hrem N
+
+
+/-- Partition the full positive divisor square by its exact gcd. -/
+private theorem gcd_pair_partition (N : ℕ) (F : ℕ × ℕ → ℝ) :
+    ∑ r ∈ Icc 1 N, ∑ de ∈ (Icc 1 N ×ˢ Icc 1 N).filter
+        (fun de => de.1.gcd de.2 = r), F de =
+      ∑ de ∈ Icc 1 N ×ˢ Icc 1 N, F de := by
+  classical
+  calc
+    _ = ∑ r ∈ Icc 1 N, ∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+        if de.1.gcd de.2 = r then F de else 0 := by
+      apply Finset.sum_congr rfl
+      intro r _
+      rw [Finset.sum_filter]
+    _ = ∑ de ∈ Icc 1 N ×ˢ Icc 1 N, ∑ r ∈ Icc 1 N,
+        if de.1.gcd de.2 = r then F de else 0 := by
+      rw [Finset.sum_comm]
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      rintro ⟨d,e⟩ hde
+      have hd : d ∈ Icc 1 N := (mem_product.mp hde).1
+      have he : e ∈ Icc 1 N := (mem_product.mp hde).2
+      have hgcd : d.gcd e ∈ Icc 1 N := by
+        exact mem_Icc.mpr ⟨Nat.gcd_pos_of_pos_left e (mem_Icc.mp hd).1,
+          le_trans (Nat.gcd_le_left e (mem_Icc.mp hd).1) (mem_Icc.mp hd).2⟩
+      simp [hgcd]
+
+/-- Reassemble every coprime-cofactor gcd group into the literal divisor square. -/
+private theorem gcd_group_reassembly (N : ℕ) (F : ℕ × ℕ → ℝ) :
+    ∑ r ∈ Icc 1 N, ∑ a ∈ Icc 1 (N/r), ∑ b ∈ Icc 1 (N/r),
+      (if a.Coprime b then F (r*a,r*b) else 0) =
+    ∑ d ∈ Icc 1 N, ∑ e ∈ Icc 1 N, F (d,e) := by
+  classical
+  have hgroup (r : ℕ) (hr : r ∈ Icc 1 N) :
+      ∑ a ∈ Icc 1 (N/r), ∑ b ∈ Icc 1 (N/r),
+        (if a.Coprime b then F (r*a,r*b) else 0) =
+      ∑ de ∈ (Icc 1 N ×ˢ Icc 1 N).filter (fun de => de.1.gcd de.2 = r), F de := by
+    rw [gcd_pairs_eq_image (mem_Icc.mp hr).1 N,
+      Finset.sum_image (fun x _ y _ hxy => by
+        rcases x with ⟨a,b⟩
+        rcases y with ⟨c,d⟩
+        apply Prod.ext
+        · exact Nat.mul_left_cancel (mem_Icc.mp hr).1 (congrArg Prod.fst hxy)
+        · exact Nat.mul_left_cancel (mem_Icc.mp hr).1 (congrArg Prod.snd hxy))]
+    simp only [Finset.sum_filter, Finset.sum_product]
+  calc
+    _ = ∑ r ∈ Icc 1 N, ∑ de ∈ (Icc 1 N ×ˢ Icc 1 N).filter
+        (fun de => de.1.gcd de.2 = r), F de := by
+      apply Finset.sum_congr rfl
+      intro r hr
+      exact hgroup r hr
+    _ = ∑ de ∈ Icc 1 N ×ˢ Icc 1 N, F de := gcd_pair_partition N F
+    _ = _ := by rw [Finset.sum_product]
+
+private theorem square_sum (N : ℕ) (q : ℕ → ℝ) :
+    ∑ d ∈ Icc 1 N, ∑ e ∈ Icc 1 N, q d*q e =
+      (∑ d ∈ Icc 1 N, q d)^2 := by
+  rw [pow_two, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro d _
+  rw [Finset.mul_sum]
+
+/-- All exact gcd residue quadratics assemble to the literal modular Möbius square. -/
+theorem total_residueQuadratic_eq_bdMobiusModularApproximant_sq (N k : ℕ) :
+    ∑ r ∈ Icc 1 N, residueQuadratic r N k =
+      bdMobiusModularApproximant N k ^ 2 := by
+  calc
+    _ = ∑ r ∈ Icc 1 N, ∑ a ∈ Icc 1 (N/r), ∑ b ∈ Icc 1 (N/r),
+        if a.Coprime b then
+          (mu (r*a)*(((k%(r*a) : ℕ) : ℝ)/(r*a : ℕ))) *
+            (mu (r*b)*(((k%(r*b) : ℕ) : ℝ)/(r*b : ℕ)))
+        else 0 := by
+      apply Finset.sum_congr rfl
+      intro r _
+      rw [residueQuadratic_eq_actual]
+      apply Finset.sum_congr rfl
+      intro a _
+      apply Finset.sum_congr rfl
+      intro b _
+      split_ifs <;> ring
+    _ = ∑ d ∈ Icc 1 N, ∑ e ∈ Icc 1 N,
+        (mu d * (((k % d : ℕ) : ℝ) / (d : ℝ))) *
+          (mu e * (((k % e : ℕ) : ℝ) / (e : ℝ))) :=
+      gcd_group_reassembly N (fun de =>
+        (mu de.1 * (((k % de.1 : ℕ) : ℝ) / (de.1 : ℝ))) *
+          (mu de.2 * (((k % de.2 : ℕ) : ℝ) / (de.2 : ℝ))))
+    _ = (∑ d ∈ Icc 1 N,
+        mu d * (((k % d : ℕ) : ℝ) / (d : ℝ))) ^ 2 :=
+      square_sum N (fun d => mu d * (((k % d : ℕ) : ℝ) / (d : ℝ)))
+    _ = _ := by
+      unfold bdMobiusModularApproximant
+      simp only [mu]
+      ring
+
+
+/-- The total physical initial head is exactly the literal modular Möbius head. -/
+theorem total_initialEnergy_eq_bdMobiusModularHead (N : ℕ) :
+    ∑ r ∈ Icc 1 N, initialEnergy r N =
+      ∑ k ∈ Icc 1 N, bdMobiusModularApproximant N k ^ 2 /
+        ((k : ℝ) * (k + 1)) := by
+  unfold initialEnergy
+  calc
+    _ = ∑ k ∈ Icc 1 N, ∑ r ∈ Icc 1 N,
+        residueQuadratic r N k / ((k : ℝ) * (k + 1)) := by
+      rw [Finset.sum_comm]
+    _ = ∑ k ∈ Icc 1 N,
+        (∑ r ∈ Icc 1 N, residueQuadratic r N k) /
+          ((k : ℝ) * (k + 1)) := by
+      apply Finset.sum_congr rfl
+      intro k _
+      rw [Finset.sum_div]
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro k _
+      rw [total_residueQuadratic_eq_bdMobiusModularApproximant_sq]
+/-- All exact gcd harmonic coefficients assemble to the physical harmonic Möbius square. -/
+theorem total_harmonicQuadratic_eq_deningerHarmonicPartial_sq (N : ℕ) :
+    ∑ r ∈ Icc 1 N, harmonicQuadratic r N = deningerHarmonicPartial N ^ 2 := by
+  calc
+    _ = ∑ r ∈ Icc 1 N, ∑ a ∈ Icc 1 (N/r), ∑ b ∈ Icc 1 (N/r),
+        if a.Coprime b then
+          (mu (r*a)/(r*a : ℕ))*(mu (r*b)/(r*b : ℕ))
+        else 0 := by
+      apply Finset.sum_congr rfl
+      intro r hr
+      rw [harmonicQuadratic_eq_actual (mem_Icc.mp hr).1 N]
+      apply Finset.sum_congr rfl
+      intro a _
+      apply Finset.sum_congr rfl
+      intro b _
+      split_ifs <;> ring
+    _ = ∑ d ∈ Icc 1 N, ∑ e ∈ Icc 1 N,
+        (mu d/(d : ℕ))*(mu e/(e : ℕ)) :=
+      gcd_group_reassembly N (fun de =>
+        (mu de.1/(de.1 : ℕ))*(mu de.2/(de.2 : ℕ)))
+    _ = (∑ d ∈ Icc 1 N, mu d/(d : ℕ))^2 :=
+      square_sum N (fun d => mu d/(d : ℕ))
+    _ = _ := by
+      rw [deningerHarmonicPartial_eq_sum_Icc]
+      simp only [mu]
+
+/-- The full physical initial head differs from its literal harmonic Möbius square by subpower growth. -/
+theorem exists_total_initialEnergy_harmonic_remainder_subpower {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ,
+      |(∑ r ∈ Icc 1 N, initialEnergy r N) -
+        DeletionCoprimeHead.headMass N * deningerHarmonicPartial N ^ 2| ≤
+        C * (N : ℝ)^ε := by
+  obtain ⟨C,hC,hrem⟩ := exists_initialEnergy_remainders_subpower hε
+  refine ⟨C,hC,?_⟩
+  intro N
+  have hsum : (∑ r ∈ Icc 1 N, initialEnergy r N) -
+      DeletionCoprimeHead.headMass N * deningerHarmonicPartial N ^ 2 =
+      ∑ r ∈ Icc 1 N,
+        (initialEnergy r N-harmonicQuadratic r N*DeletionCoprimeHead.headMass N) := by
+    rw [← total_harmonicQuadratic_eq_deningerHarmonicPartial_sq]
+    calc
+      _ = (∑ r ∈ Icc 1 N, initialEnergy r N) -
+          ∑ r ∈ Icc 1 N, harmonicQuadratic r N*DeletionCoprimeHead.headMass N := by
+        rw [Finset.mul_sum]
+        congr 1
+        apply Finset.sum_congr rfl
+        intro r _
+        ring
+      _ = _ := by rw [Finset.sum_sub_distrib]
+  rw [hsum]
+  calc
+    _ ≤ ∑ r ∈ Icc 1 N,
+        |initialEnergy r N-harmonicQuadratic r N*DeletionCoprimeHead.headMass N| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ _ := hrem N
+
+/-- The exact initial gcd head is bounded by the complete literal primitive energy.  Every
+complementary coordinate of that energy remains present on the right. -/
+theorem total_initialEnergy_le_primitiveEnergy (N : ℕ) :
+    (∑ r ∈ Icc 1 N, initialEnergy r N) ≤ DeletionMobiusPrimitive.primitiveEnergy N := by
+  rw [total_initialEnergy_eq_bdMobiusModularHead]
+  have hhead :
+      (∑ k ∈ Icc 1 N, bdMobiusModularApproximant N k ^ 2 /
+        ((k : ℝ) * (k + 1))) =
+      ∑ n ∈ Finset.range N, bdMobiusModularApproximant N (n + 1) ^ 2 /
+        (((n : ℝ) + 1) * ((n : ℝ) + 2)) := by
+    induction N with
+    | zero => simp
+    | succ N ih =>
+      rw [Finset.sum_Icc_succ_top (by omega), Finset.sum_range_succ, ih]
+      push_cast
+      ring
+  have hterm (n : ℕ) :
+      bdMobiusModularApproximant N (n + 1) ^ 2 /
+          (((n : ℝ) + 1) * ((n : ℝ) + 2)) ≤
+        DeletionMobiusPrimitive.normalizedPrimitive N n ^ 2 := by
+    rw [DeletionMobiusPrimitive.normalizedPrimitive,
+      DeletionMobiusPrimitive.primitive_eq_modular, norm_neg,
+      Complex.norm_real, Real.norm_eq_abs, div_pow, sq_abs]
+    apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
+    nlinarith [sq_nonneg (bdMobiusModularApproximant N (n + 1))]
+  rw [hhead]
+  calc
+    _ ≤ ∑ n ∈ Finset.range N, DeletionMobiusPrimitive.normalizedPrimitive N n ^ 2 :=
+      Finset.sum_le_sum fun n _ => hterm n
+    _ ≤ ∑' n : ℕ, DeletionMobiusPrimitive.normalizedPrimitive N n ^ 2 :=
+      (DeletionMobiusPrimitive.summable_normalizedPrimitive_sq N).sum_le_tsum
+        (Finset.range N) fun n _ => sq_nonneg _
+    _ = _ := rfl
+
+/-- The deterministic mass of the first `N` critical carrier coordinates is at least `N/2`. -/
+theorem half_nat_le_headMass (N : ℕ) :
+    (N : ℝ) / 2 ≤ DeletionCoprimeHead.headMass N := by
+  calc
+    (N : ℝ) / 2 = ∑ k ∈ Icc 1 N, (1 : ℝ) / 2 := by
+      rw [Finset.sum_const, Nat.card_Icc, nsmul_eq_mul]
+      push_cast
+      ring
+    _ ≤ ∑ k ∈ Icc 1 N, (k : ℝ) / (k + 1) := by
+      apply Finset.sum_le_sum
+      intro k hk
+      apply (le_div_iff₀ (by positivity : (0 : ℝ) < (k : ℝ) + 1)).mpr
+      have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast (Finset.mem_Icc.mp hk).1
+      nlinarith
+    _ = _ := rfl
+
+/-- Any cofinal subpower ceiling for the complete EDQ primitive energy must suppress the
+literal harmonic Möbius scalar at its square-root scale.  The subpower remainder is exact;
+the missing ingredient is an upper law for the primitive energy itself. -/
+theorem exists_harmonic_head_le_primitiveEnergy_subpower {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ,
+      (N : ℝ) / 2 * deningerHarmonicPartial N ^ 2 ≤
+        DeletionMobiusPrimitive.primitiveEnergy N + C * (N : ℝ) ^ ε := by
+  obtain ⟨C, hC, hrem⟩ := exists_total_initialEnergy_harmonic_remainder_subpower hε
+  refine ⟨C, hC, ?_⟩
+  intro N
+  have hhead := total_initialEnergy_le_primitiveEnergy N
+  have hmean : DeletionCoprimeHead.headMass N * deningerHarmonicPartial N ^ 2 ≤
+      (∑ r ∈ Icc 1 N, initialEnergy r N) + C * (N : ℝ) ^ ε := by
+    have habs := (abs_le.mp (hrem N)).1
+    linarith
+  calc
+    (N : ℝ) / 2 * deningerHarmonicPartial N ^ 2 ≤
+        DeletionCoprimeHead.headMass N * deningerHarmonicPartial N ^ 2 :=
+      mul_le_mul_of_nonneg_right (half_nat_le_headMass N) (sq_nonneg _)
+    _ ≤ (∑ r ∈ Icc 1 N, initialEnergy r N) + C * (N : ℝ) ^ ε := hmean
+    _ ≤ _ := add_le_add_right hhead _
 
 end RHTower.DeletionGcdHead

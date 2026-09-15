@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalMetricRadial
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalMetricCornerFirstJet
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalCanonicalMetricAction
 
 /-! Analytic continuation and finite value of the complete original radial/corner action. -/
 open Set Filter Topology Metric Complex MeasureTheory
@@ -221,6 +222,130 @@ theorem original_corrected_action_QNM (q : XiZeroCopy) (br side : Bool) (amp : �
   refine ⟨R,b,c₀,c₁,d₀,hR,hb,hbh,hF,hN0,hvalue,hFeq,hlimit,?_⟩
   intro w hw hc
   exact (hcut w hw hc).add_const (physicalCornerCandidate q br amp w)
+
+/-- The canonical endpoint coefficients give the literal connection-cleared
+finite QNM value of the complete original radial/corner action.  This is the
+source-defined derivative quotient, rather than a residue-only proxy. -/
+theorem canonical_action_QNM_value_formula (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
+    let K := reducedGreenGradient (chi q) (rate q br) 1
+    ∃ b : ℝ, 0 < b ∧ b ≤ 1 / 2 ∧
+      actionNumerator q br side amp
+        (D4BMOriginalCanonicalHorizon.incomingValue q br amp K)
+        (D4BMOriginalCanonicalHorizon.incomingSlope q br amp K)
+        (D4BMOriginalCanonicalHorizon.oppositeValue q br amp K) b
+        (physicalFundamentalFrequency q side) = 0 ∧
+      D4BMOriginalCanonicalAction.canonicalQNMValue q br side amp =
+        finiteQNMValue q br side amp
+          (D4BMOriginalCanonicalHorizon.incomingValue q br amp K)
+          (D4BMOriginalCanonicalHorizon.incomingSlope q br amp K)
+          (D4BMOriginalCanonicalHorizon.oppositeValue q br amp K) b := by
+  dsimp only
+  let w₀ := physicalFundamentalFrequency q side
+  let K := reducedGreenGradient (chi q) (rate q br) 1
+  have hw := physicalFundamentalFrequency_strip q side
+  have hwr : -2 < w₀.re := (abs_lt.mp hw.2).1
+  obtain ⟨BG, hBG, hBGh, hG⟩ := greenNumerator_analytic_below q br side amp
+  obtain ⟨RL, BL, hRL, hBL, hBLh, hL⟩ :=
+    D4BMOriginalCanonicalMetricGerm.canonical_radial_value_local q br amp w₀ hw.1 hwr
+  obtain ⟨BF, hBF, hBFh, hF⟩ :=
+    D4BMOriginalCanonicalRestoration.canonical_regular_part_analytic q br amp w₀ hw.1 hwr
+  let b := min BG (min BL BF)
+  have hb : 0 < b := lt_min hBG (lt_min hBL hBF)
+  have hbG : b ≤ BG := min_le_left _ _
+  have hbL : b ≤ BL := (min_le_right _ _).trans (min_le_left _ _)
+  have hbF : b ≤ BF := (min_le_right _ _).trans (min_le_right _ _)
+  have hbhalf : b ≤ 1 / 2 := hbG.trans hBGh
+  let c₀ : ℂ → ℂ := D4BMOriginalCanonicalHorizon.incomingValue q br amp K
+  let c₁ : ℂ → ℂ := D4BMOriginalCanonicalHorizon.incomingSlope q br amp K
+  let d₀ : ℂ → ℂ := D4BMOriginalCanonicalHorizon.oppositeValue q br amp K
+  let N := actionNumerator q br side amp c₀ c₁ d₀ b
+  have hAG : AnalyticAt ℂ (greenCoefficient q) w₀ := by
+    unfold greenCoefficient
+    fun_prop
+  have hAF : AnalyticAt ℂ (forcingCoefficient q br) w₀ := by
+    unfold forcingCoefficient
+    exact ((analyticAt_const.mul analyticAt_id).mul analyticAt_const).mul
+      (continuedOnset_analyticAt _ _ (physicalFundamentalFrequency_sub_sourceRate_ne_zero q br side))
+  have hN : AnalyticAt ℂ N w₀ := by
+    dsimp only [N, c₀, c₁, d₀]
+    exact ((hAG.mul (hG b hb hbG)).add ((connection_frequency_analyticAt w₀ (chi q) hw.1).mul hAF |>.mul
+      (hF b hb hbF))).add (cornerNumerator_analytic q br side amp)
+  have hf : w₀ = -3 / 2 - Complex.I * chi q ∨ w₀ = -3 / 2 + Complex.I * chi q := by
+    dsimp only [w₀, chi]
+    rw [physicalFundamentalFrequency_connection_root]
+    cases side <;> simp
+  have hbI : b ∈ Ioo (0 : ℝ) 1 := ⟨hb, lt_of_le_of_lt hbhalf (by norm_num)⟩
+  have hh : horizon w₀ (chi q) b ≠ 0 := by
+    rw [horizon_eq_normalizable_fundamental w₀ (chi q) hw.1 hf hbI,
+      normalizable_fundamental_value w₀ (chi q) hf]
+    exact mul_ne_zero (power_ne_zero _ hb) (power_ne_zero _ (sub_pos.mpr hbI.2))
+  have hcne : ∀ᶠ w in 𝓝[≠] w₀, conn q w ≠ 0 :=
+    (physicalFundamental_connection_hasDerivAt q side).eventually_ne (c := 0)
+      (physicalFundamental_connectionSlope_ne_zero q side)
+  have hsne : ∀ᶠ w : ℂ in 𝓝[≠] w₀, w - 2 * rate q br ≠ 0 :=
+    ((continuousAt_id.sub continuousAt_const).eventually_ne
+      (physicalFundamentalFrequency_sub_sourceRate_ne_zero q br side)).filter_mono nhdsWithin_le_nhds
+  have hhne : ∀ᶠ w in 𝓝[≠] w₀, horizon w (chi q) b ≠ 0 :=
+    ((horizon_frequency_analyticAt w₀ (chi q) hw.1 hbI).continuousAt.eventually_ne hh).filter_mono
+      nhdsWithin_le_nhds
+  have hEq : N =ᶠ[𝓝[≠] w₀] (fun w => conn q w *
+      (radialFinitePart q br amp c₀ c₁ d₀ b w + physicalCornerCandidate q br amp w)) := by
+    filter_upwards [hcne, hsne, hhne, cornerNumerator_germ q br side amp] with w hcw hsw hhw hK
+    dsimp only [N, actionNumerator, radialFinitePart]
+    rw [greenNumerator_eq q br amp w hbI hsw hcw hhw, hK]
+    ring
+  have hCanonicalEq : (fun w => radialFinitePart q br amp c₀ c₁ d₀ b w +
+      physicalCornerCandidate q br amp w) =ᶠ[𝓝[≠] w₀]
+      D4BMOriginalCanonicalAction.canonicalAction q br amp := by
+    filter_upwards [
+      (Filter.Eventually.filter_mono nhdsWithin_le_nhds (ball_mem_nhds w₀ RL)), hcne] with w hwL hcw
+    unfold D4BMOriginalCanonicalAction.canonicalAction
+    dsimp only [c₀, c₁, d₀]
+    rw [(hL b hb hbL).2 w hwL hcw]
+  have hSlope : Tendsto (fun w => conn q w / (w - w₀)) (𝓝[≠] w₀)
+      (𝓝 (connectionSimpleSlope w₀ (chi q) side)) := by
+    apply (physicalFundamental_connection_hasDerivAt q side).tendsto_slope.congr'
+    filter_upwards [] with w
+    simp only [slope_def_field, physicalFundamentalFrequency_connection_zero, sub_zero]
+    rfl
+  have hzero := D4BMOriginalCanonicalAction.canonical_action_QNM_residue_zero q br side amp
+  have hlimN : Tendsto N (𝓝[≠] w₀) (𝓝 0) := by
+    have h := hSlope.mul hzero
+    simp only [mul_zero] at h
+    apply h.congr'
+    filter_upwards [self_mem_nhdsWithin, hEq, hCanonicalEq] with w hwne hNw hAw
+    rw [hNw, hAw]
+    field_simp [sub_ne_zero.mpr hwne]
+  have hN0 : N w₀ = 0 := tendsto_nhds_unique
+    (hN.continuousAt.tendsto.mono_left nhdsWithin_le_nhds) hlimN
+  have hdc : deriv (conn q) w₀ = connectionSimpleSlope w₀ (chi q) side :=
+    (physicalFundamental_connection_hasDerivAt q side).deriv
+  have hRegular : AnalyticAt ℂ (regularAction q br side amp c₀ c₁ d₀ b) w₀ := by
+    apply (analytic_dslope hN).div
+      (analytic_dslope (connection_frequency_analyticAt w₀ (chi q) hw.1))
+    rw [dslope_same, hdc]
+    exact physicalFundamental_connectionSlope_ne_zero q side
+  have hValue : regularAction q br side amp c₀ c₁ d₀ b w₀ =
+      finiteQNMValue q br side amp c₀ c₁ d₀ b := by
+    unfold regularAction finiteQNMValue
+    rw [dslope_same, dslope_same, hdc]
+  have hRegularEq : regularAction q br side amp c₀ c₁ d₀ b =ᶠ[𝓝[≠] w₀]
+      (fun w => radialFinitePart q br amp c₀ c₁ d₀ b w + physicalCornerCandidate q br amp w) := by
+    filter_upwards [self_mem_nhdsWithin, hEq, hcne] with w hwne hNw hcw
+    change dslope N w₀ w / dslope (conn q) w₀ w = _
+    rw [dslope_of_ne N hwne, dslope_of_ne (conn q) hwne, slope_def_field, slope_def_field,
+      hN0, physicalFundamentalFrequency_connection_zero, sub_zero, sub_zero, hNw]
+    field_simp [sub_ne_zero.mpr hwne, hcw]
+  have hFinite : Tendsto (fun w => radialFinitePart q br amp c₀ c₁ d₀ b w +
+      physicalCornerCandidate q br amp w) (𝓝[≠] w₀)
+      (𝓝 (finiteQNMValue q br side amp c₀ c₁ d₀ b)) := by
+    rw [← hValue]
+    exact (hRegular.continuousAt.tendsto.mono_left nhdsWithin_le_nhds).congr' hRegularEq
+  have hCanonical := (D4BMOriginalCanonicalAction.canonical_action_QNM q br side amp).2.1
+  refine ⟨b, hb, hbhalf, ?_, ?_⟩
+  · exact hN0
+  · apply tendsto_nhds_unique hCanonical
+    exact hFinite.congr' hCanonicalEq
 
 end
 end RHTower.D4BMOriginalMetricQNM

@@ -47,6 +47,81 @@ theorem supportFn_attained (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → �
     ∃ i ∈ S, supportFn S hS κ lam x = covDemandOfPair x (κ i) (lam i) :=
   Finset.exists_mem_eq_inf' hS _
 
+/-- **Midpoint concavity of the variational support value.**  This is the finite-dimensional
+ground-energy concavity mechanism from Fredheim--Kvaal, arXiv:2510.12242, applied to the corpus's
+infimum of affine exponent-pair demands. -/
+theorem supportFn_midpoint_concave (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → ℚ)
+    (x y : ℚ) :
+    (supportFn S hS κ lam x + supportFn S hS κ lam y) / 2 ≤
+      supportFn S hS κ lam ((x + y) / 2) := by
+  apply Finset.le_inf'
+  intro i hi
+  have hx := supportFn_le S hS κ lam x hi
+  have hy := supportFn_le S hS κ lam y hi
+  simp only [covDemandOfPair, covFunctional] at hx hy ⊢
+  linarith
+
+/-- Largest absolute affine slope among the competing exponent-pair demands. -/
+noncomputable def supportSlopeBound (S : Finset ι) (hS : S.Nonempty)
+    (κ lam : ι → ℚ) : ℚ :=
+  S.sup' hS fun i => |epDisplacement (κ i) (lam i)|
+
+theorem abs_epDisplacement_le_supportSlopeBound
+    (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → ℚ) {i : ι} (hi : i ∈ S) :
+    |epDisplacement (κ i) (lam i)| ≤ supportSlopeBound S hS κ lam :=
+  by
+    simpa [supportSlopeBound] using
+      (Finset.le_sup' (fun k => |epDisplacement (κ k) (lam k)|) hi)
+
+/-- **Global Lipschitz bound for the variational support value.**  This is the finite-family
+counterpart of Fredheim--Kvaal, arXiv:2510.12242, Lemma 6.3: the ground energy varies at most by the
+largest available affine slope. -/
+theorem abs_supportFn_sub_supportFn_le
+    (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → ℚ) (x y : ℚ) :
+    |supportFn S hS κ lam x - supportFn S hS κ lam y| ≤
+      supportSlopeBound S hS κ lam * |x - y| := by
+  obtain ⟨i, hi, hxi⟩ := supportFn_attained S hS κ lam x
+  obtain ⟨j, hj, hyj⟩ := supportFn_attained S hS κ lam y
+  have hxy := supportFn_le S hS κ lam x hj
+  have hyx := supportFn_le S hS κ lam y hi
+  have hslope (k : ι) (hk : k ∈ S) (u v : ℚ) :
+      epDisplacement (κ k) (lam k) * (u - v) ≤
+        supportSlopeBound S hS κ lam * |u - v| := by
+    calc
+      epDisplacement (κ k) (lam k) * (u - v)
+          ≤ |epDisplacement (κ k) (lam k) * (u - v)| := le_abs_self _
+      _ = |epDisplacement (κ k) (lam k)| * |u - v| := abs_mul _ _
+      _ ≤ supportSlopeBound S hS κ lam * |u - v| :=
+        mul_le_mul_of_nonneg_right
+          (abs_epDisplacement_le_supportSlopeBound S hS κ lam hk) (abs_nonneg _)
+  have hupper : supportFn S hS κ lam x - supportFn S hS κ lam y ≤
+      supportSlopeBound S hS κ lam * |x - y| := by
+    calc
+      supportFn S hS κ lam x - supportFn S hS κ lam y
+          ≤ covDemandOfPair x (κ j) (lam j) - covDemandOfPair y (κ j) (lam j) := by
+            rw [hyj]
+            exact sub_le_sub_right hxy _
+      _ = epDisplacement (κ j) (lam j) * (x - y) := by
+        rw [covDemand_factorisation, covDemand_factorisation]
+        ring
+      _ ≤ supportSlopeBound S hS κ lam * |x - y| := hslope j hj x y
+  have hlower : supportFn S hS κ lam y - supportFn S hS κ lam x ≤
+      supportSlopeBound S hS κ lam * |x - y| := by
+    calc
+      supportFn S hS κ lam y - supportFn S hS κ lam x
+          ≤ covDemandOfPair y (κ i) (lam i) - covDemandOfPair x (κ i) (lam i) := by
+            rw [hxi]
+            exact sub_le_sub_right hyx _
+      _ = epDisplacement (κ i) (lam i) * (y - x) := by
+        rw [covDemand_factorisation, covDemand_factorisation]
+        ring
+      _ ≤ supportSlopeBound S hS κ lam * |y - x| := hslope i hi y x
+      _ = supportSlopeBound S hS κ lam * |x - y| := by rw [abs_sub_comm]
+  rw [abs_le]
+  constructor
+  · linarith
+  · exact hupper
+
 /-- At the critical length the support function is the family's best pointwise exponent. -/
 theorem supportFn_at_critical (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → ℚ) :
     supportFn S hS κ lam (1 / 2) = S.inf' hS fun i => epMu (κ i) (lam i) := by
@@ -94,18 +169,25 @@ theorem supportFn_reflect (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → ℚ
     _ = covDemandOfPair x (κ i) (lam i) := hdemand
     _ = supportFn S hS κ lam x := hval.symm
 
+/-- A `B`-closed family has exact reflection symmetry. -/
+theorem supportFn_reflect_eq (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → ℚ)
+    (hclosed : BClosed S κ lam) (x : ℚ) :
+    supportFn S hS κ lam (1 - x) = supportFn S hS κ lam x := by
+  apply le_antisymm
+  · exact supportFn_reflect S hS κ lam hclosed x
+  · have h := supportFn_reflect S hS κ lam hclosed (1 - x)
+    have hx : (1 : ℚ) - (1 - x) = x := by ring
+    rwa [hx] at h
+
 /-- **Hence the maximality holds at every length, not only below the critical one.** -/
 theorem supportFn_global_max (S : Finset ι) (hS : S.Nonempty) (κ lam : ι → ℚ)
     (hclosed : BClosed S κ lam) (x : ℚ) :
     supportFn S hS κ lam x ≤ supportFn S hS κ lam (1 / 2) := by
-  by_cases hx : x ≤ 1 / 2
-  · exact supportFn_le_at_critical S hS κ lam hclosed hx
-  · have hx' : 1 / 2 < x := lt_of_not_ge hx
-    have h1 : (1 : ℚ) - x ≤ 1 / 2 := by linarith
-    have h2 := supportFn_reflect S hS κ lam hclosed (1 - x)
-    have h3 : (1 : ℚ) - (1 - x) = x := by ring
-    rw [h3] at h2
-    exact h2.trans (supportFn_le_at_critical S hS κ lam hclosed h1)
+  have hmid := supportFn_midpoint_concave S hS κ lam x (1 - x)
+  rw [supportFn_reflect_eq S hS κ lam hclosed x] at hmid
+  have hx : (x + (1 - x)) / 2 = (1 / 2 : ℚ) := by ring
+  rw [hx] at hmid
+  linarith
 
 /-! ### Nonnegativity and the degeneration -/
 

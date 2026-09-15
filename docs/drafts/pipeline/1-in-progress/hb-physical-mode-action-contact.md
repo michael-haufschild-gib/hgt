@@ -6,14 +6,248 @@ RH remains unproved. The frontier map is read-only.
 
 ## Sole active target: full temporal/metric/QNM matching
 
-**OPEN. Neither full matching nor its impossibility is proved.** The target is
-the complete original causal Einstein pairing against the unchanged physical
-left mode, with its actual temporal, cusp, radial, horizon and onset contacts,
-and its identification with the restored meromorphic pairing at the original
-fundamental QNM. A scalar restoration, a local current identity, or construction
-using a different order of limits does not settle this target.
+**OPEN: identify the complete finite QNM value with the source-detecting
+physical left-channel action, or prove that identification impossible.** The
+current corpus already supplies synchronized complete static matching and
+canonical QNM continuation. Additional independent-cutoff strengthening below
+is deferred: it does not evaluate the remaining action. No full receiver
+matching, extinction law or RH conclusion is established.
 
-### Current complete-collar comparison
+### Active source-moment cancellation conjecture
+
+The detailed analytical derivation, including the regularized two-frequency
+pairing and all three QNM source counterterms, is in
+[HB DN source reduction](hb-dn-source-moment-reduction.md). Its global Lean
+proof is pending. Current verified findings are kept separately in
+[HB DN facts](hb-dn-source-resolvent-facts.md).
+
+Keep the original source frequency `w` and angular parameter `chi` fixed;
+vary only the normalizable reader frequency `v`. Write `y_w` for the actual
+native continued response, `n_v` for the unchanged reader, `S_w` for
+`continuedSourceProfile`, and `rho(z)=1/(2*z*sqrt(1-z))`. The actual radial
+bracket `W=p*(y_w*n_v'-y_w'*n_v)`, `p=z*sqrt(1-z)`, gives on every compact
+original radial interval:
+
+```
+(v^2-w^2)*int rho*y_w*n_v = 2*[W] + int n_v*S_w,
+2*w*int rho*y_w*n_w = 2*[partial_v W at v=w]
+                       + partial_v int n_v*S_w at v=w.
+```
+
+Both integral admissions and the diagonal reader limit passed Lean scratch
+and isolated exact module audit in `OriginalSourceResolvent`. This reduction does not differentiate the evolved
+response. A fundamental-mode identity at one frequency cannot be
+differentiated as though the angular parameter moved with that frequency.
+
+The next conjecture is stronger: the temporal corner cancels the remaining
+reader derivative after horizon restoration. Let `E(w)` be the original native
+horizon amplitude, `c(w)=connection(w,chi)`, `beta=c/(2*w)`, and
+`J(w,v)=int n_v*S_w`. On a right convergence chamber, the proposed original
+horizon finite-part identity is
+
+```
+2*w*GreenFP(w) = partial_v J(w,v)|v=w + E(w)*(beta(w)+2*w*beta'(w)).
+```
+
+The exact horizon source relation is `c*E=-J(w,w)`. The retained temporal
+corner has Green part `mu*(mu-2)*C*(c*E/(2*w)+c*E')`, with
+`C=physicalSelfSourceCoefficient`. If the displayed finite-part identity is
+proved with the original counterterms, their sum reduces to
+
+```
+-mu*(mu-2)*C * partial_w J(w,v)|v=w,
+```
+
+where this last derivative varies the source frequency only. The actual
+source profile is `S_w(z)=exp(w*x(z))*A(z)*T(w)`, with fixed profile `A`,
+original tortoise coordinate `x`, and unchanged smooth onset transform `T`.
+Thus its derivative is the explicit source moment
+`exp(w*x)*A*(x*T+T')`; no unknown Green-response derivative remains.
+The native forcing contribution and its original counterterms must also be
+retained. Its candidate radial expression is `-mu*w*C*FP int n_w*S_w/z`;
+the forcing temporal corner is `mu*c*C*F'/2` and vanishes at the QNM because
+the actual forcing transform is analytic there.
+
+**Unproved obligations:** the displayed horizon finite-part identity,
+continuation of the assembled source-moment expression with the same
+subtractions, and comparison of its QNM value with the left-channel receiver.
+These are not premises of a claimed matching theorem. The payoff is an
+explicit source-only QNM invariant rather than an unevaluated response pairing.
+
+At the actual fundamental frequency `w0`, put `s=physicalRate`,
+`mu=(w0+1)*(w0+2)`, `C=physicalSelfSourceCoefficient`,
+`T=continuedOnset(s,.)`, and
+`F(z)=fundamentalSourceCore(w0,s,amp,z)`. The concrete candidate is
+
+```
+canonicalQNMValue = -mu*C*((mu-2)*(T'(w0)*M+T(w0)*X)+w0*T(w0)*Z),
+M = FP int_0^1 z^w0*F(z),
+X = FP int_0^1 z^w0*F(z)*tortoiseOf(z),
+Z = FP int_0^1 z^(w0-1)*F(z).
+```
+
+`M` is the existing literal `fundamentalSourceMoment`. With `F0=F(0)` and
+`F1=F'(0)`, the prescribed lower-end counterterms added to the integrals
+from `e` to `1` are respectively
+
+```
+M: F0*e^(w0+1)/(w0+1),
+X: F0*e^(w0+1)*((log(e)/2-log(2))/(w0+1)-1/(2*(w0+1)^2)),
+Z: F0*e^w0/w0+F1*e^(w0+1)/(w0+1).
+```
+
+The candidate uses the original coordinate constant `log(2)`. Its source
+frequency derivative holds `chi` and the source gradient fixed; differentiating
+`fundamentalSourceMoment(w,s,amp)` along the fundamental-mode curve instead
+would change both and is not the asserted identity.
+
+The horizon step to prove can be attacked by the uniform local Frobenius
+expansion. For fixed `Re(w)>0`, write `y_w=z^(w/2)*R_w(z)` with `R_w(0)=E`,
+and `n_v=A(v)*z^(v/2)*F_v(z)+beta(v)*z^(-v/2)*F_{-v}(z)` with
+`F_v(0)=1`. The exact bracket gives, after differentiating the reader only,
+
+```
+partial_v W(w,v,e)|v=w
+  = E*(-beta/2-w*beta'+w*beta*log(e)/2)+o(1).
+```
+
+The incoming branch decays as `e^Re(w)` times logarithms; the profile
+remainders are `O(e*abs(log(e)))`. Cauchy estimates on a fixed frequency
+neighborhood provide the derivative bounds. The original Green logarithmic
+counterterm cancels exactly the displayed logarithm. This is the pending
+source-specific endpoint proof, not an assumed vanishing boundary.
+
+### Verified independent-cutoff contact ingredients
+
+`OriginalWholeStaticContacts` retains the original finite-cusp mass and both
+moving corner contacts; their complete metric discrepancy is uniformly
+cusp-small with independent onset, time and radial cutoffs (F297).
+`OriginalRestoredTemporalContacts` identifies the admitted actual mass-tail
+corner with its first moment and the prescribed canonical corner (F298).
+`OriginalRestoredStaticGeometry` proves the exact original static-triangle
+mass/two-corner identity, including empty and crossing windows (F299).
+`OriginalIndependentStaticCollar` proves the complete angular-restored metric
+period's independent onset/time/horizon limit (F300):
+
+```
+original corrected metric collar -> int(metricRemainder)/2-(A/2)*M(0)-C(0).
+```
+
+All four leaves passed scratch and isolated exact audits and are wired.
+Those four leaves strengthen independent cutoff removal. Current corpus
+source already supplies synchronized complete static matching and canonical
+QNM continuation. Further independent-cutoff assembly is deferred; it does
+not evaluate the live finite-QNM/source-receiver equality.
+
+### Deferred independent-cutoff strengthening
+
+Let `K=collarDensity`, `U=leadingDensity`, `M(a)=int_a^infinity U`,
+`C(a)=int_a^infinity M`, `e_B=horizonCoordinate(-B/2)`, and
+`J_B=int_(A,B] x (0,infinity) K/2`. With
+`Lambda=max(a,T)-max(a,T-B/2)` and `R=max(a,T-B/2)`, the finite comparison is
+
+```
+D(a,B,T) = staticTriangle(K)-Lambda*M(a)+C(R)-C(a)
+           -[J_B-(B/2)*M(0)]-[B/2+log(e_B)/2]*M(0).
+```
+
+F298–F300 and absolute radial exhaustion give
+`D -> -C(0)-log(2)*M(0)=physicalCornerCandidate` independently of all
+three cutoffs. Its Lean proof is under validation in the independent-corner
+leaf. The time-first identification needed for the full physical equality is
+`J_B=int_(-B/2)^(-A/2) outerDensity`; it follows from slice admission,
+`original_metric_collar_integral`, `original_metric_time_limit` and Fubini.
+The outer positive-onset static integral must converge to `outerIntegral`.
+
+Writing `CT(e)` for the unchanged sum of the original canonical Green and
+forcing counterterms, the finite algebra after that identification is
+
+```
+outerStatic(a,T) + correctedStaticCollar(a,B,T)
+  +CT(e_B)-log(e_B)*M(0)/2
+= canonicalMetricCutoff(e_B)+D(a,B,T)
+  +outerStatic(a,T)-outerIntegral.
+```
+
+Thus the canonical radial limit and F298 supply `canonicalAction`; F297
+then restores the finite cusp uniformly. The finite physical equality and
+all constituent admission must be checked before claiming full matching or
+attaching `canonical_action_QNM`. These are pending Lean obligations, not
+assumed matching premises.
+
+### Current outer and whole-domain comparison
+
+The full finite-cusp outer metric estimate is closed in Lean. The actual
+native angular jets have bounds `C_N*exp(B_N*d-N*k)` at every nonnegative
+circle radius. On the literal causal source rectangle, `d<=p+log(6)`;
+the original signed response and unchanged onset lift therefore give
+`C_N*exp(B_N*p-N*k)` for all five source operations. Physical damping
+controls all original source/reader products, forcing products and four
+boundary transfers uniformly through the outer endpoint `L=0`.
+
+`OriginalOuterCuspMetric.full_outer_static_metric_restoration` proves
+separate radial admission of the complete discrepancy
+`D=f*(metricTimeCut-restoredMetricTime)` and
+
+```
+norm(int_0^A D(a,max(a,T-L/2),L,k)/2) <= eta(k) -> 0,
+```
+
+uniformly over `a>0,T`, at each finite `A>0`, in a derived nonreal right
+half-plane. The source, forcing and complete boundary are separately
+admitted before the exact metric identity combines their integrals.
+`NativeAngularGrowth`, `OriginalCausalCuspGrowth`,
+`OriginalOuterCuspSource`, `OriginalOuterCuspProducts`,
+`OriginalOuterCuspBoundary`, `OriginalOuterCuspForcing` and
+`OriginalOuterCuspMetric` passed scratch and isolated exact leaf audits;
+all seven leaves are wired.
+
+The whole-domain producer `OriginalWholeStaticMetric` passed scratch and
+isolated exact audit and is wired into the umbrella. Formal lint passed
+for all eight new leaves. It retains
+`M(k,a)=metricHorizonMassDifference(k,a)` and proves
+
+```
+norm(int_0^B D(a,max(a,T-L/2),L,k)/2
+     -(max(a,T)-max(a,T-B/2))*M(k,a)) <= eta(k) -> 0,
+```
+
+uniformly over positive onset and arbitrary terminal/radial cutoffs above
+one fixed interface. The interface correction has length at most `A/2`;
+the actual trace-mass decay and forcing onset L1 bound control it. The
+unbounded clock multiplier remains attached to the finite-onset mass.
+
+### Canonical contact attachment to solve
+
+The corpus already proves the synchronized angular-restored static cutoff
+converges to `canonicalAction` (`OriginalStaticCanonicalAction`), and that
+this same action has a unique finite continuation at either physical QNM.
+Full matching still requires the original finite-cusp contacts and the
+independently removed onset/time/horizon cuts to select that same action.
+
+The next paper identity uses the actual retained horizon mass and its tail
+primitive. Write `H(a,b)=M(a)-M(b)` and `C(x)=int_x^infinity M(p) dp`.
+For `S=max(a,T-A/2)` and `R=max(a,T-B/2)`, the original static triangle gives
+
+```
+int_A^B H(a,max(a,T-L/2)) dL/2
+  = (S-R)*M(a)+C(S)-C(R).
+```
+
+Keeping the lower moving-corner contact `C(R)-C(a)` leaves
+`(S-R)*M(a)+C(S)-C(a)`. Thus terminal removal sends `C(S)` to zero
+without any condition on how the lower moving endpoint `R` behaves.
+For the actual angular-restored `leadingDensity`, its already admitted
+zeroth and first absolute moments give `M(x)=int_x^infinity leadingDensity`
+and `C(x)=int_x^infinity (p-x)*leadingDensity(p) dp`. Their original
+coordinate logarithm and the existing first-moment corner formula determine
+the finite canonical contact. For the finite-cusp discrepancy, the analogous
+primitive is the actual trace corner plus the forcing onset first moment;
+the existing trace-corner decay and `horizonForcingDifference -> 0` control
+it uniformly in positive onset. These contact attachments are paper targets;
+the complete canonical identification has not been formalized.
+
+### Supporting collar comparisons
 
 The actual source endpoints and time moment now have separate radial admission
 (`OriginalSourceRadialAdmission`, `OriginalSourceRadialRestoration`). Let

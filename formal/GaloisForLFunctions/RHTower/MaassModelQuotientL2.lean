@@ -85,6 +85,18 @@ theorem modelToLp_ae (v : SphericalKFiniteModel) :
     modelToLp N lam f v =ᵐ[MaassQuotientL2.quotientMeasure N] modelToBounded N lam f v :=
   BoundedContinuousFunction.coeFn_toLp 2 (MaassQuotientL2.quotientMeasure N) ℂ _
 
+/-- The zero `K`-type in the finite model is the original Maass vector in quotient `L²`. -/
+theorem modelToLp_spherical :
+    modelToLp N lam f (Finsupp.single 0 1) = MaassQuotientL2.sourceLp N f := by
+  apply Lp.ext
+  filter_upwards [modelToLp_ae N lam f (Finsupp.single 0 1),
+    MaassQuotientL2.sourceLp_ae N f] with q hmodel hsource
+  rw [hmodel, hsource]
+  obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective q
+  rw [modelToBounded_apply]
+  simpa only [MaassQuotientL2.sourceFunction, maassInvariantQuotientLift_mk] using
+    modelToMaass_spherical lam f g⁻¹
+
 /-- Passing the whole finite model to almost-everywhere classes preserves injectivity. -/
 theorem modelToLp_injective : Function.Injective (modelToLp N lam f) :=
   (BoundedContinuousFunction.toLp_injective (p := 2)

@@ -3,6 +3,37 @@
 Stage: 1-in-progress. Primary target remains an unconditional proof or falsification of RH through EDQ.
 Full chain: Euler deletion → exact complex zero balance → signed arithmetic separation → off-line exclusion → RH.
 
+## Current physical Ramaré packet reduction
+
+For finite cutoff `M` and a finite prime set `P`, the literal physical
+Möbius source has the dependency-closed identity
+
+```
+source_M(u) = rough_(P,M)(u) - sum_(p in P) packet_(P,M,p)(u),
+packet_p(u) = dilate_p(cofactor_p)(u)
+              + harmonic_p * bdGenReal(1/p)(u).
+```
+
+The `cofactor_p` sum is over p-free Ramaré cofactors with weight
+`mu(m)/(omega_P(m)+1)`, and `harmonic_p` is the same sum with the forced
+additional factor `1/m`. The affine term follows from the exact reciprocal
+generator law; it cannot be discarded without changing the physical source.
+Square-multiple cofactors vanish by Möbius. The source identity and each
+prime-incidence packet identity are formalized in
+`RHTower.EulerDeletionRamarePhysical` and its targeted module build passes.
+
+The remaining EDQ producer is an unconditional cofinal upper bound for the
+full signed physical energy of this rough remainder minus these packets,
+including prime-prime, prime-rough and harmonic cross terms. The available
+unweighted Ramaré logarithmic-polynomial mean-square form is not such a
+bound: the physical Mellin transform retains the zeta multiplier. No
+source-faithful comparison controlling that multiplier has been established.
+Likewise, complete-period gcd covariance is not a physical coercivity bound:
+the closed carrier formula retains an infinite, residue-dependent progression
+weight at every period class. Its exact weighted-period representation is the
+positive survivor of that failed replacement; the remaining weighted tail is
+still the signed-energy obligation.
+
 ## Hard target and work constraint
 
 Prove an actual cofinal subpower ceiling in the preserved inner cutoff X for
@@ -1490,10 +1521,12 @@ G_N = U_(P,N)-sum_(p in P) Z_p,
 The prime-pair sum is ordered. Each packet norm includes its full cofactor
 cross terms and affine correction. The existing O(log N) bound for the
 individual-generator diagonal is not a bound for this packet diagonal.
-A narrow foreground `lake env lean` scratch check instantiated
-`Sieve.sum_eq_ramare_add_rough` with `mu(n)*bdGenReal(1/n,u)` and the literal
-cutoff `Icc 1 N`; it exited 0 without diagnostics. That check certifies the
-pointwise Ramaré splitting, not the entire paper calculation or a growth bound.
+`EulerDeletionRamareDilation` now formalizes the source identity
+`b_(p*m)=D_p b_m+b_p/m` and its exact finite cofactor-packet summation law.
+The affine correction is retained as the actual finite harmonic coefficient.
+This certifies the generator algebra required by the pointwise Ramaré split;
+it neither identifies the complete Ramaré coefficient formula nor bounds the
+resulting signed physical packet.
 
 Two choices of P expose the actual recurrence requirements:
 
@@ -1527,10 +1560,11 @@ it does not bound the complete energy. Theta dilation inversion uses its
 theta source, and the retrieved EDQ logarithmic saving is the existing
 `N/log(N)^q` estimate. None supplies the missing subpower bound.
 
-No new unconditional source estimate was obtained. No Lean module, dependency
-build, umbrella build, axiom audit, or mathematical computation was added.
-No route is retired by this audit; the full signed source bound and RH remain
-open. The frontier map and route-independent STATUS ledger were left unchanged.
+No new unconditional source estimate was obtained. The new source-only module
+was verified by a scratch check and its targeted leaf build; no umbrella build,
+axiom audit, or mathematical computation was used. No route is retired by this
+audit; the full signed source bound and RH remain open. The frontier map and
+route-independent STATUS ledger were left unchanged.
 
 ## Growing-prime correction budget for the damped cofactor
 

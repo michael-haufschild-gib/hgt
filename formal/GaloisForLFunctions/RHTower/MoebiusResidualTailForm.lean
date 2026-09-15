@@ -77,6 +77,44 @@ theorem moebius_residual_tail_form {n N : ℕ} (hn : 1 ≤ n) :
   rw [hgen]
   ring
 
+/-- Beyond the cutoff, the cutoff-local harmonic term cancels exactly with the
+`n / d` component of the omitted floor tail.  The residual is therefore one global
+harmonic Möbius sum plus the literal fractional-floor tail. -/
+theorem moebius_residual_fractional_tail_form {n N : ℕ} (hn : 1 ≤ n) (hNn : N ≤ n) :
+    1 - ∑ d ∈ Finset.Icc 1 N, (-((moebius d : ℤ) : ℝ)) *
+        (((n % d : ℕ) : ℝ) / (d : ℝ)) =
+      (∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ) *
+        (((n / d : ℕ) : ℝ) - (n : ℝ) / (d : ℝ))) +
+        (n : ℝ) * ∑ d ∈ Finset.Icc 1 n, ((moebius d : ℤ) : ℝ) / (d : ℝ) := by
+  have hunion : Finset.Icc 1 N ∪ Finset.Ioc N n = Finset.Icc 1 n := by
+    ext d
+    simp only [Finset.mem_union, Finset.mem_Icc, Finset.mem_Ioc]
+    omega
+  have hdisj : Disjoint (Finset.Icc 1 N) (Finset.Ioc N n) := by
+    refine Finset.disjoint_left.mpr fun d hdN hdTail => ?_
+    rw [Finset.mem_Icc] at hdN
+    rw [Finset.mem_Ioc] at hdTail
+    omega
+  have hsplit :
+      (∑ d ∈ Finset.Icc 1 n, ((moebius d : ℤ) : ℝ) / (d : ℝ)) =
+        (∑ d ∈ Finset.Icc 1 N, ((moebius d : ℤ) : ℝ) / (d : ℝ)) +
+          ∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ) / (d : ℝ) := by
+    rw [← hunion, Finset.sum_union hdisj]
+  have htail :
+      (∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ) *
+        (((n / d : ℕ) : ℝ) - (n : ℝ) / (d : ℝ))) =
+        (∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ) * ((n / d : ℕ) : ℝ)) -
+          (n : ℝ) * ∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ) / (d : ℝ) := by
+    calc
+      _ = ∑ d ∈ Finset.Ioc N n, (((moebius d : ℤ) : ℝ) * ((n / d : ℕ) : ℝ) -
+          (n : ℝ) * (((moebius d : ℤ) : ℝ) / (d : ℝ))) := by
+        apply Finset.sum_congr rfl
+        intro d hd
+        ring
+      _ = _ := by rw [Finset.sum_sub_distrib, ← Finset.mul_sum]
+  rw [moebius_residual_tail_form hn, htail, hsplit]
+  ring
+
 /-- For `n ≤ N` the tail is empty: the first form is recovered. -/
 theorem moebius_residual_tail_form_of_le {n N : ℕ} (hn : 1 ≤ n) (hnN : n ≤ N) :
     1 - ∑ d ∈ Finset.Icc 1 N, (-((moebius d : ℤ) : ℝ)) * (((n % d : ℕ) : ℝ) / (d : ℝ))

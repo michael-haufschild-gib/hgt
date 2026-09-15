@@ -101,8 +101,78 @@ Own fact log for Route T1. Facts and no-gos only; `rh-current-frontier-map.md` r
   analytic cancellation); improving separate full/omitted positive energies cannot close RH.
 - Lean certificate:
   `GaloisForLFunctions.RHTower.XiMassLevinsonSymmetricReciprocalEnergyNoGo`.
+- The positive Vaughan near-diagonal phase after the natural pullback `n = exp h` is strictly
+  antitone, while the reduced timelike mass action is symmetric about every affine coordinate
+  center. Consequently no affine-coordinate and affine-amplitude normalization of the mass action
+  can equal that Vaughan phase. Existing Vaughan/Kubalalika tail bounds cannot be transplanted to
+  the T1 residual by direct reindexing, rescaling, translation, reflection, or affine renormalization.
+  The surviving hard problem is either a new oscillatory estimate for the actual mass phase or a
+  proved genuinely non-affine transport identity; this result does not exclude either.
+- Lean certificate:
+  `GaloisForLFunctions.RHTower.XiMassNearDiagonalStationaryNoGo`.
+- In a same-rapidity restriction of two distinct mass modes, the common timelike action cancels and
+  leaves the nonstationary phase `(h-k)sinh t`. But the actual squared rapidity representation has
+  independent variables `(t,s)`, and for every pair of timelike frequencies it has a stationary
+  pair `(-eta_h,-eta_k)`. For distinct frequencies that stationary pair is strictly off the
+  diagonal. Hence diagonal phase cancellation is real but cannot by itself yield the required
+  covariance bound; an independently proved diagonal localization would remove every off-diagonal
+  stationary pair. A viable mass-phase bilinear theorem must derive that localization or an
+  equivalent `t≠s` suppression identity from the signed source before applying nonstationary
+  estimates.
+- Lean certificate:
+  `GaloisForLFunctions.RHTower.XiMassTwoRapidityCorrelationGeometry`.
+- For every unequal-frequency stationary pair with positive time frequency,
+  frequency order and rapidity order are strictly opposite:
+  `(h - k) * (t - s) < 0`.  Hence the same-order wedge
+  `0 ≤ (h - k) * (t - s)` contains no such stationary pair.  This sharpens
+  the previous merely off-diagonal obstruction into an exact necessary
+  geometry for any covariance mechanism: source-faithful same-order
+  localization would remove all unequal-frequency timelike stationary pairs.
+  It supplies no such localization or receiver bound by itself.
+- Lean certificates:
+  `GaloisForLFunctions.RHTower.XiMassTwoRapidityCorrelationStationary.frequency_rapidity_orientation_neg`
+  and
+  `GaloisForLFunctions.RHTower.not_exists_xiMassTwoRapidityCorrelationStationary_of_same_order`.
+- Strict timelike frequency order does not itself create the required same-order rapidity
+  support: for every `0 ≤ h < k < u`, there is a stationary pair with `s < t`.
+  Thus the existing ordered-prime/Volterra connection identities, without an additional
+  two-variable source identity, retain a saddle in precisely the opposite rapidity triangle.
+  This closes the proposed “ordering alone” localization mechanism; it does not rule out a
+  new source-faithful two-variable kernel.
+- Lean certificate:
+  `GaloisForLFunctions.RHTower.exists_xiMassTwoRapidityCorrelationStationary_with_rapidities_order_reverse`.
+- Finite Abel summation on the full ordered prime-log graph has no surviving terminal ambiguity:
+  the terminal flux tends to zero, and the literal valuation-one source is exactly the ordered
+  cumulative-prime-mass connection-gradient layer.  Moving the critical half-density into the
+  profile reduces cumulative mass to Mertens-logarithmic size and again kills the terminal flux,
+  but preserves the same source and the same RH-equivalent line-bound problem.  Thus this gauge is
+  a conditioning identity, not a cancellation proof; its unresolved object is the signed,
+  height-uniform connection gradient.
+- Lean certificates:
+  `GaloisForLFunctions.RHTower.XiMassFullAdjacentPrimeConnection` and
+  `GaloisForLFunctions.RHTower.XiMassHalfDensityAdjacentPrimeConnection`.
+- The proposed endpoint-singularity transport obstruction is not route-central: the literal
+  source phase is a hyperbolic Fourier integral, and every prime log-height `0 ≤ h < u` lies in
+  the timelike stationary regime.  The residual RH criterion is precisely an expanding finite
+  timelike-plus-glancing sum; a direct first-derivative estimate cannot control it.  The endpoint
+  `h=0` lies below the first prime log-height and formalising that narrower transport no-go would
+  not remove the actual obstruction.
+- Lean certificates:
+  `GaloisForLFunctions.RHTower.XiMassRapidityPhaseGeometry` and
+  `GaloisForLFunctions.RHTower.XiMassTimelikeGlancingResidualCriterion`.
 
 ## No-gos
+
+- The exact Route-T line-bound problem is the finite signed timelike-plus-glancing cone
+  `xiMassCriticalCenteredTimelikeGlancingConeSum`; after the summable strict-spacelike sector is
+  removed, its uniform bound is equivalent to RH.  Thus no remaining spacelike estimate can
+  advance T1; progress must control the signed finite timelike source.
+  Lean certificate: `GaloisForLFunctions.RHTower.XiMassTimelikeGlancingResidualCriterion`.
+- A fixed entire multiplier cannot remove the timelike obstruction: timelike saddle dispersions
+  sweep the full real interval `(a,∞)`, so a multiplier vanishing on every such saddle vanishes
+  identically.  Any surviving cancellation mechanism must be source-dependent or covariant, not
+  a fixed spectral filter.
+  Lean certificate: `GaloisForLFunctions.RHTower.XiMassTimelikeIdentityWall`.
 
 - Treating omitted head as a small error is false: it carries asymptotic mass `7ρ²/12`, seven
   eighths of full energy.
@@ -131,3 +201,16 @@ Own fact log for Route T1. Facts and no-gos only; `rh-current-frontier-map.md` r
   energy bounds also lose the cross-phase term, and mean-square control alone cannot imply the
   required uniform vertical line bound. Any successful transfer must retain signed covariance or
   exploit analytic propagation with a quantitatively adequate bandwidth cost.
+- Direct affine identification of the natural-coordinate positive Vaughan near-diagonal phase with
+  the reduced timelike mass action is impossible. This phase-geometry no-go does not rule out an
+  independently proved mass-phase estimate or a genuinely non-affine transport.
+- The apparent nonstationarity of the same-rapidity off-diagonal mass phase does not transfer to
+  the true two-rapidity correlation integral: it retains an interior stationary pair throughout
+  the timelike region. A covariance proof without a separately proved diagonal localization is
+  therefore invalid.
+- The canonical semigroup aperture high-pass differs from the fixed mass-one prime current by a
+  vertical `C₀` term. Co-moving aperture subtraction therefore cannot improve the RH-strength
+  boundedness problem or supply a new cancellation mechanism; it only changes the current by a
+  decaying remainder.
+- Lean certificate:
+  `GaloisForLFunctions.RHTower.XiMassComovingPrimeExtinction.tendsto_xiMassPrimeSemigroupHighPass_sub_fixedSource_zero`.

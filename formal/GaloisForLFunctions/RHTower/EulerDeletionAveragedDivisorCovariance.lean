@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.EulerDeletionCutoffAverage
 import GaloisForLFunctions.RHTower.Sieve.GrahamMeanSquare
+import GaloisForLFunctions.RHTower.MoebiusResidualTailForm
 
 /-!
 # Averaged divisor source and cumulative covariance
@@ -130,6 +131,199 @@ theorem error_eq_cumulative {X M : ℕ} (hXM : X≤M) {n : ℕ} (hn : 1≤n) :
   rw [hi]
   simp only [Finset.sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul]
   ring
+
+private theorem raw_error_eq_signed_floorTail (N n : ℕ) (hn : 1≤n) :
+    1-bdMobiusModularApproximant N n=
+      (∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ))+
+        (n : ℝ)*deningerHarmonicPartial N := by
+  have hneg :
+      (∑ d ∈ Finset.Icc 1 N,
+        (-((moebius d : ℤ) : ℝ))*(((n%d : ℕ) : ℝ)/(d : ℝ)))=
+        -(∑ d ∈ Finset.Icc 1 N,
+          ((moebius d : ℤ) : ℝ)*(((n%d : ℕ) : ℝ)/(d : ℝ))) := by
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_congr rfl
+    intro d hd
+    ring
+  calc
+    1-bdMobiusModularApproximant N n=
+        1-∑ d ∈ Finset.Icc 1 N,
+          (-((moebius d : ℤ) : ℝ))*(((n%d : ℕ) : ℝ)/(d : ℝ)) := by
+      rw [bdMobiusModularApproximant,hneg]
+    _ = (∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ))+
+          (n : ℝ)*(∑ d ∈ Finset.Icc 1 N, ((moebius d : ℤ) : ℝ)/(d : ℝ)) :=
+      moebius_residual_tail_form hn
+    _ = _ := by rw [deningerHarmonicPartial_eq_sum_Icc]
+
+/-- The averaged error keeps the complete signed omitted Möbius-floor tail at every cutoff.
+No absolute-value or endpoint replacement occurs in this representation. -/
+theorem error_eq_signed_floorTail_average {X M n : ℕ}
+    (hX : 1≤X) (hXM : X<M) (hn : 1≤n) :
+    1-modular X M n=
+      ∑ j ∈ Finset.Ico X M, logWeight X M j*
+        ((∑ d ∈ Finset.Ioc j n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ))+
+          (n : ℝ)*deningerHarmonicPartial j) := by
+  rw [error_eq_average hX hXM]
+  apply Finset.sum_congr rfl
+  intro j hj
+  rw [raw_error_eq_signed_floorTail j n hn]
+
+/-- Portion of the logarithmic cutoff average that remains after a modulus `d` enters its
+omitted-floor tail. -/
+def signedFloorTailRamp (X M d : ℕ) : ℝ :=
+  ∑ j ∈ Finset.Ico X M, if j<d then logWeight X M j else 0
+
+/-- Below the outer endpoint, the omitted-tail ramp is the complementary generator taper. -/
+theorem signedFloorTailRamp_eq_one_sub_taper {X M d : ℕ}
+    (hX : 1≤X) (hXM : X<M) (hdM : d≤M) :
+    signedFloorTailRamp X M d=1-taper X M d := by
+  have hsplit :
+      (∑ j ∈ Finset.Ico X M, if j<d then logWeight X M j else 0)+
+        (∑ j ∈ Finset.Ico X M, if d≤j then logWeight X M j else 0)=
+          ∑ j ∈ Finset.Ico X M, logWeight X M j := by
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro j hj
+    by_cases hjd : j<d
+    · simp [hjd]
+    · have hdj : d≤j := by omega
+      simp [hjd,hdj]
+  have hsuffix := logWeight_suffix (X := X) (M := M) (d := d) hXM.le hdM
+  unfold signedFloorTailRamp
+  linarith [hsplit,logWeight_sum hX hXM]
+
+/-- Once a modulus lies beyond the outer endpoint, it has entered every omitted-floor tail. -/
+theorem signedFloorTailRamp_eq_one_of_outer_le {X M d : ℕ}
+    (hX : 1≤X) (hXM : X<M) (hMd : M≤d) :
+    signedFloorTailRamp X M d=1 := by
+  unfold signedFloorTailRamp
+  calc
+    (∑ j ∈ Finset.Ico X M, if j<d then logWeight X M j else 0)=
+        ∑ j ∈ Finset.Ico X M, logWeight X M j := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      have hjM := (Finset.mem_Ico.mp hj).2
+      simp [show j<d by omega]
+    _ = 1 := logWeight_sum hX hXM
+
+/-- The retained ramp resolves every omitted modulus before the outer cutoff: advancing the
+modulus by one adds exactly that cutoff's positive logarithmic mass. -/
+theorem signedFloorTailRamp_succ_sub {X M d : ℕ}
+    (hXd : X≤d) (hdM : d<M) :
+    signedFloorTailRamp X M (d+1)-signedFloorTailRamp X M d=logWeight X M d := by
+  have hrestrict (e : ℕ) (hXe : X≤e) (heM : e≤M) :
+      (∑ j ∈ Finset.Ico X M, if j<e then logWeight X M j else 0)=
+        ∑ j ∈ Finset.Ico X e, logWeight X M j := by
+    rw [← Finset.sum_filter]
+    congr 1
+    ext j
+    simp only [Finset.mem_filter, Finset.mem_Ico]
+    omega
+  unfold signedFloorTailRamp
+  rw [hrestrict d hXd hdM.le,
+    hrestrict (d+1) (by omega) (by omega),
+    Finset.sum_Ico_succ_top hXd]
+  ring
+
+/-- A quotient-only transform cannot reproduce the EDQ ramp across a quotient collision.
+Tatuzawa--Iseki inputs have precisely this quotient-only form, so its identity cannot replace
+the retained ramped tail by a Chebyshev sum without a separate boundary term. -/
+theorem signedFloorTailRamp_not_factor_through_natDiv
+    {X M N d : ℕ} (hX : 1≤X) (hXM : X<M) (hXd : X≤d) (hdM : d<M)
+    (hquot : N/d=N/(d+1)) :
+    ¬ ∃ Q : ℕ → ℝ,
+      Q (N/d)=signedFloorTailRamp X M d ∧
+        Q (N/(d+1))=signedFloorTailRamp X M (d+1) := by
+  rintro ⟨Q,hQd,hQsucc⟩
+  have hramp : signedFloorTailRamp X M d=signedFloorTailRamp X M (d+1) := by
+    calc signedFloorTailRamp X M d=Q (N/d) := hQd.symm
+      _ = Q (N/(d+1)) := by rw [hquot]
+      _ = signedFloorTailRamp X M (d+1) := hQsucc
+  have hslope := signedFloorTailRamp_succ_sub hXd hdM
+  have hpos := logWeight_pos hX hXM (Finset.mem_Ico.mpr ⟨hXd,hdM⟩)
+  linarith
+
+/-- Concrete quotient collision: `10/4 = 10/5`, while the EDQ ramp retains the distinct
+fourth cutoff mass. -/
+theorem signedFloorTailRamp_not_factor_through_natDiv_example :
+    ¬ ∃ Q : ℕ → ℝ,
+      Q (10/4)=signedFloorTailRamp 1 5 4 ∧
+        Q (10/5)=signedFloorTailRamp 1 5 5 := by
+  exact signedFloorTailRamp_not_factor_through_natDiv
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+
+/-- Reassembling all signed omitted-floor tails produces one ramped tail.  This is finite Fubini:
+each omitted modulus retains its precise time of entry and no tail is estimated. -/
+theorem signed_floorTail_average_eq_ramped {X M n : ℕ} :
+    (∑ j ∈ Finset.Ico X M, logWeight X M j*
+      (∑ d ∈ Finset.Ioc j n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)))=
+      ∑ d ∈ Finset.Ioc X n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)*
+        signedFloorTailRamp X M d := by
+  have htail (j : ℕ) (hj : j∈Finset.Ico X M) :
+      (∑ d ∈ Finset.Ioc j n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ))=
+        ∑ d ∈ Finset.Ioc X n,
+          if j<d then ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ) else 0 := by
+    rw [← Finset.sum_filter]
+    congr 1
+    ext d
+    simp only [Finset.mem_filter,Finset.mem_Ioc]
+    have hXj := (Finset.mem_Ico.mp hj).1
+    omega
+  calc
+    (∑ j ∈ Finset.Ico X M, logWeight X M j*
+      (∑ d ∈ Finset.Ioc j n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)))=
+        ∑ j ∈ Finset.Ico X M, logWeight X M j*
+          (∑ d ∈ Finset.Ioc X n,
+            if j<d then ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ) else 0) := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      rw [htail j hj]
+    _ = ∑ j ∈ Finset.Ico X M, ∑ d ∈ Finset.Ioc X n,
+          if j<d then ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)*logWeight X M j else 0 := by
+      simp_rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j hj
+      apply Finset.sum_congr rfl
+      intro d hd
+      split <;> ring
+    _ = ∑ d ∈ Finset.Ioc X n, ∑ j ∈ Finset.Ico X M,
+          if j<d then ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)*logWeight X M j else 0 := by
+      rw [Finset.sum_comm]
+    _ = ∑ d ∈ Finset.Ioc X n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)*
+          signedFloorTailRamp X M d := by
+      apply Finset.sum_congr rfl
+      intro d hd
+      unfold signedFloorTailRamp
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j hj
+      split <;> ring
+
+/-- Exact averaged EDQ error in terms of one signed ramped floor tail and the retained harmonic
+drift.  A proof route must bound their cancellation without replacing either term by an endpoint
+or an absolute-value majorant. -/
+theorem error_eq_ramped_signed_floorTail_average {X M n : ℕ}
+    (hX : 1≤X) (hXM : X<M) (hn : 1≤n) :
+    1-modular X M n=
+      (∑ d ∈ Finset.Ioc X n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)*
+        signedFloorTailRamp X M d)+
+      ∑ j ∈ Finset.Ico X M, logWeight X M j*
+        ((n : ℝ)*deningerHarmonicPartial j) := by
+  calc
+    1-modular X M n=
+        ∑ j ∈ Finset.Ico X M, logWeight X M j*
+          ((∑ d ∈ Finset.Ioc j n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ))+
+            (n : ℝ)*deningerHarmonicPartial j) :=
+      error_eq_signed_floorTail_average hX hXM hn
+    _ = (∑ j ∈ Finset.Ico X M, logWeight X M j*
+          (∑ d ∈ Finset.Ioc j n, ((moebius d : ℤ) : ℝ)*((n/d : ℕ) : ℝ)))+
+        ∑ j ∈ Finset.Ico X M, logWeight X M j*
+          ((n : ℝ)*deningerHarmonicPartial j) := by
+      rw [← Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro j hj
+      ring
+    _ = _ := by rw [signed_floorTail_average_eq_ramped]
 
 /-- Exact finite cumulative energy at the modular carrier weight. -/
 def cumulativeEnergy (c : ℕ → ℝ) (T : ℕ) : ℝ :=
