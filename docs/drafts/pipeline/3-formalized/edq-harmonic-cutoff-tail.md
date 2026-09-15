@@ -29,6 +29,24 @@ E_N^(1)=I_N+2*H_N*B_N+H_N^2*sum_(N<n<=2N)n/(n+1).
 The signed cross term is retained. Since the last sum is at most N, the
 inequality (a+b)^2<=2a^2+2b^2, in both directions, gives
 E_N^(1)<=2*I_N+2*N*H_N^2 and I_N<=2*E_N^(1)+2*N*H_N^2.
+
+The cross moment is now reindexed exactly as
+`B_N=sum_(N<d<=2N) mu(d)*sum_(d<=n<=2N) 1/(n+1)`
+(`incrementMoment_eq_mobius_block_covariance`). Thus `2*H_N*B_N` is a
+literal signed covariance between the harmonic low block and a positive-kernel
+transform of the next Möbius block. This retains every sign and identifies the
+missing estimate; it supplies neither a fixed sign nor a subpower bound.
+
+The same `I_N` is now exactly the weighted one-start diagonal
+`sum_(N<n<=2N) fixedWindowSq(mu,n-N,N)/(n(n+1))`
+(`incrementEnergy_eq_weighted_fixedWindowSq`). For `N>=1`, each diagonal
+entry is bounded by the corresponding literal dyadic start mean, giving the
+formal weighted reduction `incrementEnergy_le_weighted_dyadicMeanSquare`.
+This extraction has no signed cancellation: the available harmonic-to-ordinary
+dyadic receiver retains an endpoint term of order `N^3` at window length `N`.
+It therefore cannot supply the required polylogarithmic tail ceiling; a
+pointwise or signed covariance transfer remains necessary.
+
 The corpus's exact prefix/complement splitting puts E_N^(1) inside the genuine
 infinite complementary tail. Its initial-error lower bound N*H_N^2/2<=E_full
 therefore also gives I_N<=6*E_full. All statements are unconditional and
@@ -79,4 +97,3 @@ Scoped whitespace, declaration coverage, umbrella, and documentation-link checks
 passed. All owned Lean processes exited and temporary proof/API/audit sources
 were removed. Owned RunPod processes and temporary
 files were already cleaned after downloading the successful and failed-run records.
-

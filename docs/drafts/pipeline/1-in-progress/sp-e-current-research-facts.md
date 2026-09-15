@@ -214,6 +214,55 @@ the current SP-E investigation. It is not a route history.
   signed-current estimate has no automatic D2 transport: a common route would need an exact
   complex, phase-controlled source identity, not a shared scalar prime bound.
 
+- The P-G100--102 boundary experiment closes the apparent polar-residue repair at operator level.
+  Source-weighted four-coordinate Pluecker packet descent has boundary trace exactly `4`, and the
+  literal polar countercurrent tends to `-4`, so their signed relative finite part tends to zero.
+  But every scalar countercurrent with a finite boundary limit leaves finite-coordinate faces
+  non-uniformly unbounded; moreover neither bounded resolvent channel, nor the unnormalised
+  inverse in the actual zero-boundary shell, can supply SP-E's required amplitude `8`.  The
+  positive survivor is a cofinal, label-weighted singular descent carrying a four-unit quantum;
+  it has not been identified with a divisor-bearing curvature.  Thus the common P/SP-E obstacle
+  is not residue cancellation: it is a source-derived, genuinely oriented off-diagonal or
+  node-moving operator that changes the carrier before singular inversion and retains signed
+  history through the global divisor handoff.
+
+- P-G105S/U/W/X/Y close the analytic Stokes-child wall rather than supply its arithmetic landing:
+  the normalized prime scale tends to the exponential law; cubic coherence tends to `16/35`; the
+  literal child Hilbert--Schmidt energy tends to `256/35`; every ordered-tuple Fredholm
+  coefficient has one Hadamard majorant; and the physical child entire series converges locally
+  uniformly, after its source scale factor tends to `4`, to the exponential-wall series at `4z`.
+  Hence another second-order or determinant-summability estimate cannot move SP-E/P.  The open
+  task is source selection: a global signed, nonlocal carrier change whose resulting
+  divisor-bearing operator has an independently derived Xi landing.
+
+- `EulerPrimitiveJointDepthKreinXiLanding` gives an unconditional signed source-to-Xi identity on
+  the positive Laplace chamber: the literal prime/depth source and co-source are paired by a swap
+  Krein form, two forced polar terms, and the fixed Gamma connection.  Its diagonal sector is
+  positive and anti-diagonal sector negative, while its balanced-reflection cross series is not
+  summable.  It therefore supplies orientation but cannot itself be completed as an ordinary
+  boundary Hilbert pairing.  The whole-route consequence is that a valid positive quotient must
+  alter the completion domain before positivity; it cannot reinterpret the existing two legs as
+  wall vectors.
+
+- The source-native scalar Gamma sewing fails before any Xi comparison.  For every fixed prime
+  and positive aperture, the Gamma-sewn Möbius valuation multiplier has a negative two-aperture
+  Pick/Gram-loss determinant for all sufficiently small positive second apertures
+  (`GammaSewnMobiusPickObstruction`).  Thus primewise scalar contraction cannot be the required
+  source completion.  The surviving class is genuinely cross-prime/nonlocal signed completion,
+  not a stronger estimate for a diagonal multiplier.
+
+- The shared SP-E/RG/formation carrier is already irreducible to a new coordinate:
+  `suzukiTransitionCoreCompletedAbelSource (N + 1)` is the next high-pass innovation of the unique
+  completed formation history, and its square (with factor `(N + 1)/(N + 2)`) is exactly the
+  one-step increase of the monotone completed formation action.  Eventual boundedness of this
+  innovation energy is equivalent to RH.  The completed CFI/Möbius readout reaches this same core
+  with an inverse-square landing error but supplies no bound on it.  The only audited scalar
+  shortcut--a linear weighted-curvature first moment, equivalently a natural central unit-Riesz
+  barycenter bound--would additionally force square-root bounded Chebyshev remainder and is
+  formally false even under RH.  Thus the shared open producer is neither a new completion nor an
+  absolute moment estimate: it must be a signed, source-faithful law controlling the innovation
+  against its full history.
+
 - The current external result Wang--Yu, arXiv:2609.10975 (submitted 10 September 2026), proves
   that signed-cycle parity constraints can have subgraph-minimal obstructions of arbitrarily large
   order and hence no finite forbidden-subgraph characterization.  This corroborates, but does not

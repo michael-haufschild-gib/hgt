@@ -140,10 +140,32 @@
   critical-energy receiver.  Thus a multiscale cover of the packet-visible
   gaps cannot close T2 by itself; a new averaged sub-packet gap-square theorem
   is necessary, not merely a width-cover/summation lemma.
-- The CLG degree-8 cofactor frontier has advanced: term 0 now has a direct
-  default-limit certificate, and term 1 has a default-limit factorized
-  certificate assembled from its eighteen fixed factor coefficients and the
-  exact index-8 product formula.  Both source proofs and source-level axiom
-  audits close with only Lean's standard trusted axioms.  Terms 2--6 at slice
-  8 remain open; this is a certified partial cofactor advance, not yet the
-  missing determinant coefficient identity.
+- All seven CLG degree-8 cofactor terms now have default-limit source proofs.
+  Terms 1--6 close by staging their factor coefficients and reassembling with
+  the exact index-8 convolution identity; term 6 further needs its `R10^2`
+  factor staged from the existing degree-0--7 source slices because direct
+  normalization recurses.  Every individual theorem has a source-level axiom
+  audit using only Lean's standard trusted axioms.  This removes the claimed
+  slice-7 cofactor boundary, but not yet the missing determinant coefficient:
+  degree-8 assembly against `evenCompactRawGapGrade8` remains open.
+- The apparent T2 non-diagonal Hardy transport is not an independent strict-right
+  comparator.  In `GammaSewnMobiusXiWardHardyTransport`,
+  `xiRightCanonicalProduct` is defined by an indexed product over
+  `XiRightZeroCopy`, and its continued anti-causal Ward response is a Schwarz-paired
+  sum over that same strict-right divisor.  The Möbius--Gamma tangent reaches this
+  response exactly, but the final Hardy leg has already built in the residues to be
+  excluded.  The positive survivor is a sharply specified missing bridge: a
+  divisor-independent Hardy projection from the completed source Julia column to a
+  strict-right singular comparator.
+- `ccmHardyProjection` does not fill that bridge: it is a bounded
+  `SoninL2 → SoninL2` Fourier-half-line projector, and identifier tracing finds no
+  map from either the completed source Julia column or
+  `woldNatSingularAbelContinuation` into its domain.  A T2 comparator must therefore
+  be a meromorphic/distributional extension with a proved residue law, not an ordinary
+  `L²` Hardy projection.
+- The required extension cannot regularize the critical pole by an absolute graph norm.
+  `XiHeatCassiniWoldCriticalGraphNoGo` proves that analytic residual source plus
+  summable critical prime-gap energy forces a critical zero with a nonzero radial
+  residual pole and radial norm tending to infinity.  Thus the only viable T2
+  extension must retain signed boundary cancellation while carrying that pole; bounded,
+  dominated, or absolute-energy Hardy closure is a formal no-go.

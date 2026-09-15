@@ -1,10 +1,14 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-14
+Updated: 2026-09-15
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
 ## RH: route-independent research constraints
+
+- **Must prove a proposed source-to-receiver map respects the receiver's boundary domain.** An exact source-transpose identity alone does not supply that admission. The [local transpose classification](../../5-failed/hb-local-source-transpose-matching.md) derives the entire preserving radial-multiplier family from the original source and proves that every nonzero member carries a forbidden boundary charge. Must retain that charge or derive a different map and its boundary law; this obstruction does not classify nonlocal maps or projected actions.
+
+- **Must retain source variations distinguished by the quantity being matched.** Identical encoded data with distinct physical responses cannot be repaired by any downstream map, even nonlinear, discontinuous, or copy-dependent. The [complete QNM-action audit](../../5-failed/hb-full-canonical-source-encoding.md) and [original causal-field audit](../../5-failed/hb-native-retarded-source-encoding.md) exclude reconstruction from the unchanged carrier across nonzero amplitudes. The full original field distinguishes exactly squared amplitude at every Xi copy, and a local wave-operator observation recovers it. A replacement must retain this original source information; fixed-amplitude fitting is outside these obstructions.
 
 - **Cannot identify zeta with a carrier having a fixed nonzero translation period in the unchanged complex coordinate.** Even equality `zeta(x+a)=zeta(x)` only for all sufficiently large real `x` forces `a=0`. A primitive with derivative zeta on a right half-plane also admits `F(z+a)=F(z)+b` throughout that half-plane only when `a=b=0`. The [exact source-period classification](../../../../../formal/GaloisForLFunctions/RHTower/DirichletTranslationPeriod.lean) is closed in Lean: a finite-abscissa Dirichlet source has a period precisely when `n^(-a)=1` at every supported coefficient. Must distinguish a period of the function from a periodic pattern among its zeros; the latter is not excluded by this theorem. No zero-location conclusion follows.
 

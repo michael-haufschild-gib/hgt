@@ -18,7 +18,7 @@ open scoped MatrixGroups LinearAlgebra.Projectivization
 
 noncomputable section
 
-/-- A rational invertible matrix is an integral cusp scaling followed by an
+/- A rational invertible matrix is an integral cusp scaling followed by an
 upper-triangular real matrix. -/
 set_option backward.isDefEq.respectTransparency false in
 theorem rationalGL_exists_integral_upperTriangular (g : GL (Fin 2) ℚ) :

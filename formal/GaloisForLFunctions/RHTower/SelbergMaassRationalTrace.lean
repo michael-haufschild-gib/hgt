@@ -30,19 +30,26 @@ theorem rationalConjugateGroup_isFiniteRelIndex (N : ℕ) (g : GL (Fin 2) ℚ) :
   apply Subgroup.IsFiniteRelIndex.mk
   have hg := rationalGL_mem_commensurator_principalCongruenceGL N g⁻¹
   rw [Subgroup.Commensurable.commensurator_mem_iff] at hg
+  have hmap : g.map (algebraMap ℚ ℝ) = g.map (Rat.castHom ℝ) := by
+    apply GeneralLinearGroup.ext
+    intro i j
+    rfl
+  unfold rationalConjugateGroup
+  rw [hmap]
   simpa only [Matrix.GeneralLinearGroup.map_inv] using hg.1
 
 /-- Rational pullback is invariant under the rationally conjugated principal group. -/
 def rationalMaassPullbackInvariant (N : ℕ) (g : GL (Fin 2) ℚ)
     {lam : ℝ} (f : GLMaassCuspEigenform (principalCongruenceGL N) lam) :
-    upperHalfPlaneInvariantFunctions (rationalConjugateGroup N g) :=
+    glUpperHalfPlaneInvariantFunctions (rationalConjugateGroup N g) :=
   ⟨fun z => f.1.1 (g.map (algebraMap ℚ ℝ) • z), by
     intro γ z
-    rw [Subgroup.mem_pointwise_smul_iff_inv_smul_mem] at γ
+    have hγ := γ.2
+    rw [Subgroup.mem_pointwise_smul_iff_inv_smul_mem] at hγ
     let h : GL (Fin 2) ℝ :=
       g.map (algebraMap ℚ ℝ) * γ.val * (g.map (algebraMap ℚ ℝ))⁻¹
     have hh : h ∈ principalCongruenceGL N := by
-      simpa only [h, ConjAct.toConjAct_smul] using γ.2
+      simpa only [h, ConjAct.toConjAct_inv, inv_inv, ConjAct.toConjAct_smul] using hγ
     change f.1.1 (g.map (algebraMap ℚ ℝ) • (γ.val • z)) =
       f.1.1 (g.map (algebraMap ℚ ℝ) • z)
     rw [← mul_smul]
@@ -61,12 +68,15 @@ def rationalMaassPullback (N : ℕ) (g : GL (Fin 2) ℚ)
   ⟨rationalMaassPullbackInvariant N g f, by
     intro hpull
     apply f.2.1
-    apply Subtype.ext
     funext z
-    have hz := congrArg (fun F : upperHalfPlaneInvariantFunctions (rationalConjugateGroup N g) =>
-      F.1 ((g.map (algebraMap ℚ ℝ))⁻¹ • z)) hpull
-    simpa only [rationalMaassPullbackInvariant, ZeroMemClass.coe_zero, Pi.zero_apply,
-      mul_smul, inv_mul_cancel, one_smul] using hz,
+    have hz := congrFun hpull ((g.map (algebraMap ℚ ℝ))⁻¹ • z)
+    calc
+      f.1.1 z = f.1.1 ((g.map (algebraMap ℚ ℝ) * (g.map (algebraMap ℚ ℝ))⁻¹) • z) := by
+        rw [mul_inv_cancel, one_smul]
+      _ = f.1.1 (g.map (algebraMap ℚ ℝ) • ((g.map (algebraMap ℚ ℝ))⁻¹ • z)) := by
+        rw [mul_smul]
+      _ = 0 := by
+        simpa only [rationalMaassPullbackInvariant, Pi.zero_apply] using hz,
     (rationalGL_maass_eigenfunction_cuspidal_pullback g hg lam f.1.1 f.2.2.1 f.2.2.2).1,
     (rationalGL_maass_eigenfunction_cuspidal_pullback g hg lam f.1.1 f.2.2.1 f.2.2.2).2⟩
 
@@ -76,13 +86,13 @@ def rationalPrincipalTraceFunction (N : ℕ) (g : GL (Fin 2) ℚ)
     (f : GLMaassCuspEigenform (principalCongruenceGL N) lam) : ℍ → ℂ := by
   letI : (rationalConjugateGroup N g).IsFiniteRelIndex (principalCongruenceGL N) :=
     rationalConjugateGroup_isFiniteRelIndex N g
-  exact maassTraceFunction (rationalMaassPullback N g hg lam f).1
+  exact maassTraceFunction (H := principalCongruenceGL N) (rationalMaassPullback N g hg lam f).1
 
 /-- The rational trace with its exact target invariance, eigen-equation, and cusp decay. -/
 def rationalPrincipalTraceData (N : ℕ) (g : GL (Fin 2) ℚ)
     (hg : 0 < (g.map (algebraMap ℚ ℝ)).val.det) (lam : ℝ)
     (f : GLMaassCuspEigenform (principalCongruenceGL N) lam) :
-    {F : upperHalfPlaneInvariantFunctions (principalCongruenceGL N) //
+    {F : glUpperHalfPlaneInvariantFunctions (principalCongruenceGL N) //
       IsMaassEigenfunction lam F.1 ∧ IsCuspidalAtIntegralCusps F.1} := by
   letI : (rationalConjugateGroup N g).IsFiniteRelIndex (principalCongruenceGL N) :=
     rationalConjugateGroup_isFiniteRelIndex N g
@@ -98,7 +108,8 @@ theorem rationalPrincipalTrace_zero_or_eigenform (N : ℕ) (g : GL (Fin 2) ℚ)
         F.1.1 = rationalPrincipalTraceFunction N g hg lam f := by
   letI : (rationalConjugateGroup N g).IsFiniteRelIndex (principalCongruenceGL N) :=
     rationalConjugateGroup_isFiniteRelIndex N g
-  exact principalMaassTrace_zero_or_eigenform N lam (rationalMaassPullback N g hg lam f)
+  simpa only [rationalPrincipalTraceFunction] using
+    principalMaassTrace_zero_or_eigenform N lam (rationalMaassPullback N g hg lam f)
 
 end
 

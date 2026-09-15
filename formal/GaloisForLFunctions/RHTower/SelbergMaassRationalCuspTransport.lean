@@ -18,18 +18,17 @@ open scoped MatrixGroups LinearAlgebra.Projectivization
 
 noncomputable section
 
-/-- Casting a rational matrix after composing with an integral special-linear
+/- Casting a rational matrix after composing with an integral special-linear
 matrix equals the corresponding real product. -/
 set_option backward.isDefEq.respectTransparency false in
 theorem rationalGL_mul_integral_real (g : GL (Fin 2) ℚ) (B : SL2Z) :
     (g * mapGL ℚ B).map (algebraMap ℚ ℝ) =
       g.map (algebraMap ℚ ℝ) * mapGL ℝ B := by
   rw [Matrix.GeneralLinearGroup.map_mul]
-  rw [← (Rat.castHom ℝ).algebraMap_toAlgebra]
-  exact congrArg (fun h : GL (Fin 2) ℝ →* GL (Fin 2) ℝ => h g) (by
-    rw [Matrix.SpecialLinearGroup.map_mapGL])
+  congr 1
+  exact Matrix.SpecialLinearGroup.map_mapGL B
 
-/-- Rational pullback preserves decay at each integral cusp. -/
+/- Rational pullback preserves decay at each integral cusp. -/
 set_option backward.isDefEq.respectTransparency false in
 theorem rationalGL_cuspidal_pullback (g : GL (Fin 2) ℚ) (f : ℍ → ℂ)
     (hf : IsCuspidalAtIntegralCusps f) :
@@ -44,16 +43,25 @@ theorem rationalGL_cuspidal_pullback (g : GL (Fin 2) ℚ) (f : ℍ → ℂ)
     dsimp only [U]
     group
   have hdecay : Tendsto (fun z => f (mapGL ℝ A • z)) atImInfty (𝓝 (0 : ℂ)) := by
-    simpa only [IsZeroAtImInfty, ZeroAtFilter] using hf A
+    apply (hf A).congr'
+    filter_upwards [] with z
+    rfl
   have htransport := hdecay.comp (UpperHalfPlane.tendsto_smul_atImInfty hU)
   change Tendsto (fun z => f (g.map (algebraMap ℚ ℝ) • (B • z))) atImInfty (𝓝 (0 : ℂ))
   have hmul : g.map (algebraMap ℚ ℝ) * mapGL ℝ B = gB.map (algebraMap ℚ ℝ) := by
     rw [rationalGL_mul_integral_real]
   apply htransport.congr'
   filter_upwards [] with z
-  change f (g.map (algebraMap ℚ ℝ) • ((mapGL ℝ B : GL (Fin 2) ℝ) • z)) =
-    f (mapGL ℝ A • (U • z))
-  rw [← mul_smul, hmul, hfactor, mul_smul]
+  change f (mapGL ℝ A • (U • z)) =
+    f (g.map (algebraMap ℚ ℝ) • ((mapGL ℝ B : GL (Fin 2) ℝ) • z))
+  calc
+    f (mapGL ℝ A • (U • z)) = f ((mapGL ℝ A * U) • z) := by
+      exact congrArg f (mul_smul (mapGL ℝ A) U z).symm
+    _ = f (gB.map (algebraMap ℚ ℝ) • z) :=
+      congrArg (fun M : GL (Fin 2) ℝ => f (M • z)) hfactor.symm
+    _ = f ((g.map (algebraMap ℚ ℝ) * mapGL ℝ B) • z) :=
+      congrArg (fun M : GL (Fin 2) ℝ => f (M • z)) hmul.symm
+    _ = f (g.map (algebraMap ℚ ℝ) • ((mapGL ℝ B : GL (Fin 2) ℝ) • z)) := by rw [mul_smul]
 
 /-- A positive rational pullback preserves the analytic Maass equation and the
 integral-cusp condition simultaneously. -/

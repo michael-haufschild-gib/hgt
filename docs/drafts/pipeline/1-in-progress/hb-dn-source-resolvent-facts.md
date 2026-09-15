@@ -438,3 +438,97 @@
   [Exact bridge](hb-eg-original-causal-source-matching.md). Scratch and isolated
   exact-module audit passed (128 seconds, two jobs); umbrella wired; formal
   lint passed. No heartbeat/transparency override or axiom audit was added.
+
+- **DN38 — Lean verified.** The complete action satisfies
+  `A_q(a)=a^2*A_q(1)` for every original Xi copy and all four fundamental
+  branch combinations. Its exact amplitude fibres are
+  `A_q(a)=A_q(b) iff A_q(1)=0 or a^2=b^2`.
+  **Whole-route effect:** source-amplitude information survives the complete
+  temporal/metric/forcing assembly; it is not removed by QNM continuation.
+
+- **DN39 — Lean verified.** At each fixed copy and branch combination, an
+  arbitrary decoder of `hbXiPeierlsPlusSource a q` recovers the complete
+  action for all amplitudes iff critical-line placement implies `A_q(1)=0`.
+  Away from the critical line, evaluation of the carrier's original
+  coordinate followed by division by its nonzero unit coefficient supplies
+  the converse. This classifies existence, not physical production of that
+  decoder. **Whole-route effect:** no regularity or Peierls-pairing restriction
+  is responsible for the source-encoding obstruction.
+
+- **DN40 — Lean verified; stronger matching no-go closed.** No arbitrary
+  copy-dependent decoder of the literal source carrier matches the complete
+  true/true action across nonzero amplitudes. DN35 supplies an actual
+  critical copy; amplitudes one and two have identical zero carriers but
+  distinct actions `A_q(1)` and `4*A_q(1)`. No vacuum assumption is used.
+  Positive survivor: at an actual erased critical fibre, the full physical
+  action distinguishes exactly the squared amplitudes. **Whole-route effect:**
+  replacing only the returned vector or output reader cannot repair the
+  original encoding; additional original source data must be retained.
+  Fixed-amplitude fitting and encodings supplied with additional data are
+  outside this obstruction. [Exact scope and classification](../5-failed/hb-full-canonical-source-encoding.md).
+  `FullCanonicalSourceEncodingNoGo`: scratch and exact audit passed (102
+  seconds, two jobs); umbrella wired; formal lint passed. RH remains open.
+
+- **DN41 — Lean verified.** The original full Eisenstein scalar
+  `scalar(center q)` is nonzero somewhere for every actual Xi copy. Its
+  horizontal mean and first height derivative would force both original
+  Weyl coefficients to vanish if the scalar vanished identically; reflection
+  and the closed right-half-plane zero-free theorem exclude this. The
+  unchanged time-domain source is consequently nonzero at some physical
+  interior point on each branch, using its AdS-leading radial coefficient.
+  **Whole-route effect:** no Xi copy is a vacuum source merely because a
+  selected angular or QNM period cancels.
+
+- **DN42 — Lean verified.** Equality of complete original causal
+  potentials on the open physical wedge is equivalent to equality of
+  squared amplitudes, for every Xi copy and both branches. An original
+  local wave-operator observation, with point and nonzero normalization
+  independent of amplitude, recovers exactly `a^2`.
+  **Whole-route effect:** this gives a concrete physical observation of the
+  information erased by the literal carrier, before QNM continuation.
+
+- **DN43 — Lean verified.** No arbitrary copy-dependent decoder of
+  the unchanged Peierls source carrier can reconstruct the original causal
+  potential across nonzero amplitudes. An actual critical copy erases both
+  amplitudes one and two; DN42 distinguishes their physical fields. The
+  matched object is the original potential on `0<p<r`, not a classification
+  modulo arbitrary metric gauge equivalences. Fixed-amplitude fitting and
+  encodings retaining additional original data remain outside the no-go.
+  **Whole-route effect:** temporal matching through this carrier already
+  fails before taking a QNM readout. RH remains open.
+
+  [Exact scope and positive recovery](../5-failed/hb-native-retarded-source-encoding.md).
+  `NativeFieldMatchingNoGo`: scratch and exact audit passed (91 seconds, two
+  jobs); umbrella wired without an umbrella build; formal lint passed.
+
+- **DN44 — Lean verified.** At every actual Xi copy, the literal source
+  contact `((7λ−2)Q−2ΔQ)/8` is nonzero somewhere. Identical vanishing would
+  annihilate its entire two-jet; the established differential identity
+  would then annihilate the original scalar, contradicting DN41.
+  **Whole-route effect:** this coefficient cannot be treated as an absent
+  term when deriving a pointwise transpose of the full original source.
+
+- **DN45 — Lean verified; exact positive classification.** Every
+  differentiable radial multiplier preserving the original opposite-branch
+  source-transpose identity, with all amplitudes and onset times retained,
+  is exactly `c(1+u)^5/u^4` on `x<0`, `u=−tanh(x)`. Conversely every such
+  multiplier preserves that identity. The actual nonzero contact forces
+  the weight equation; no freely chosen angular test is substituted.
+  Its exact fourth-order boundary coefficient is
+  `c a² timeOnset(2t,v) Q(z)`, with the original opposite rate `t`.
+  **Whole-route effect:** the boundary charge is forced by source
+  reciprocity throughout this class, rather than an arbitrary normalization.
+
+- **DN46 — Lean verified; local matching option closed.** No nonzero
+  differentiable radial multiplier preserving that full source identity
+  gives finite AdS limits at every angular point. Consequently it cannot
+  produce any physical fundamental QNM radial profile, even with an
+  independent target Xi copy, either QNM branch or radial normalization,
+  and arbitrary angular coefficient. This is a pointwise full-source
+  result; projected actions, integral transforms, angular operators,
+  changed clocks and extra boundary contributions are outside its scope.
+  **Whole-route effect:** radial multiplication cannot repair this source
+  transpose into an admitted QNM. General physical matching and RH remain
+  open. [Proof and positive boundary-charge classification](../5-failed/hb-local-source-transpose-matching.md).
+  Exact `LocalSourceTransposeRigidity` audit passed (53.67 seconds, two jobs);
+  umbrella wired without an umbrella build.

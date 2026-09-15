@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergMaassFiniteIndexTrace
+import GaloisForLFunctions.RHTower.SelbergMaassTraceEnergy
 
 /-!
 # Maass trace to a principal congruence target
@@ -14,11 +15,12 @@ namespace GaloisForLFunctions.RHTower
 
 open Complex Set Filter Topology UpperHalfPlane ModularGroup
 open Matrix SpecialLinearGroup GeneralLinearGroup OnePoint
+open SelbergMaassTraceEnergy
 open scoped MatrixGroups ContDiff
 
 noncomputable section
 
-variable {𝒢 : Subgroup (GL (Fin 2) ℝ)} [𝒢.IsFiniteRelIndex (principalCongruenceGL N)]
+variable (N : ℕ) {𝒢 : Subgroup (GL (Fin 2) ℝ)} [𝒢.IsFiniteRelIndex (principalCongruenceGL N)]
 
 local notation "ℋ" => principalCongruenceGL N
 local notation "𝒬" => ℋ ⧸ (𝒢.subgroupOf ℋ)
@@ -26,41 +28,51 @@ local notation "𝒬" => ℋ ⧸ (𝒢.subgroupOf ℋ)
 local instance : MulAction ℋ ℋ := Monoid.toMulAction ..
 local instance : MulAction ℋ 𝒬 := .quotient ..
 
-private theorem principalTrace_component_eigen (N : ℕ) (lam : ℝ)
-    (f : upperHalfPlaneInvariantFunctions 𝒢) (hf : IsMaassEigenfunction lam f.1) (q : 𝒬) :
+private theorem integralSL2ToReal_toGL_inv (A : SL2Z) :
+    ((integralSL2ToReal A⁻¹).toGL : GL (Fin 2) ℝ) = (mapGL ℝ A)⁻¹ := by
+  rw [← map_inv (mapGL ℝ) A]
+  apply GeneralLinearGroup.ext
+  intro i j
+  exact congr_fun
+    (congr_fun (Matrix.SpecialLinearGroup.mapGL_coe_matrix (S := ℝ) A⁻¹).symm i) j
+
+private theorem principalTrace_component_eigen (lam : ℝ)
+    (f : glUpperHalfPlaneInvariantFunctions 𝒢) (hf : IsMaassEigenfunction lam f.1) (q : 𝒬) :
     IsMaassEigenfunction lam (maassTraceQuotientFunc f q) := by
   induction q using Quotient.inductionOn with
   | h r =>
-    simpa only [maassTraceQuotientFunc_mk] using
-      (show IsMaassEigenfunction lam (fun z => f.1 (r.val⁻¹ • z)) from by
-        obtain ⟨A, hA, hEq⟩ := r.2
-        rw [← hEq]
-        simpa only [Matrix.SpecialLinearGroup.mapGL_inv, ModularGroup.sl_moeb] using
-          SelbergMaassCuspTransport.eigenfunction_pullback A⁻¹ lam f.1 hf)
+    change IsMaassEigenfunction lam
+      (fun z => maassTraceQuotientFunc f (QuotientGroup.mk r) z)
+    simp only [maassTraceQuotientFunc_mk]
+    obtain ⟨A, hA, hEq⟩ := r.2
+    rw [← hEq]
+    rw [← integralSL2ToReal_toGL_inv A]
+    exact SelbergMaassCuspTransport.eigenfunction_pullback A⁻¹ lam f.1 hf
 
-private theorem principalTrace_component_cusp (N : ℕ)
-    (f : upperHalfPlaneInvariantFunctions 𝒢) (hf : IsCuspidalAtIntegralCusps f.1) (q : 𝒬) :
+private theorem principalTrace_component_cusp
+    (f : glUpperHalfPlaneInvariantFunctions 𝒢) (hf : IsCuspidalAtIntegralCusps f.1) (q : 𝒬) :
     IsCuspidalAtIntegralCusps (maassTraceQuotientFunc f q) := by
   induction q using Quotient.inductionOn with
   | h r =>
-    simpa only [maassTraceQuotientFunc_mk] using
-      (show IsCuspidalAtIntegralCusps (fun z => f.1 (r.val⁻¹ • z)) from by
-        obtain ⟨A, hA, hEq⟩ := r.2
-        rw [← hEq]
-        simpa only [Matrix.SpecialLinearGroup.mapGL_inv, ModularGroup.sl_moeb] using
-          SelbergMaassCuspTransport.cuspidal_pullback A⁻¹ f.1 hf)
+    change IsCuspidalAtIntegralCusps
+      (fun z => maassTraceQuotientFunc f (QuotientGroup.mk r) z)
+    simp only [maassTraceQuotientFunc_mk]
+    obtain ⟨A, hA, hEq⟩ := r.2
+    rw [← hEq]
+    rw [← integralSL2ToReal_toGL_inv A]
+    exact SelbergMaassCuspTransport.cuspidal_pullback A⁻¹ f.1 hf
 
 /-- The finite principal trace retains real `C²` upper-half-plane regularity. -/
-theorem principalMaassTrace_smooth (N : ℕ) (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) :
-    IsRealSmoothUpperHalfPlane (maassTraceFunction f.1) := by
+theorem principalMaassTrace_smooth (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) :
+    IsRealSmoothUpperHalfPlane (maassTraceFunction (H := principalCongruenceGL N) f.1) := by
   letI := Fintype.ofFinite 𝒬
   unfold maassTraceFunction
   exact ContDiffOn.sum (fun q _ => (principalTrace_component_eigen N lam f.1 f.2.2.1 q).1)
 
 /-- The finite principal trace has the unchanged Maass eigenvalue. -/
-theorem principalMaassTrace_eigen (N : ℕ) (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) (z : ℍ) :
-    positiveHyperbolicLaplacian (maassTraceFunction f.1) z =
-      (lam : ℂ) * maassTraceFunction f.1 z := by
+theorem principalMaassTrace_eigen (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) (z : ℍ) :
+    positiveHyperbolicLaplacian (maassTraceFunction (H := principalCongruenceGL N) f.1) z =
+      (lam : ℂ) * maassTraceFunction (H := principalCongruenceGL N) f.1 z := by
   letI := Fintype.ofFinite 𝒬
   have hq (q : 𝒬) : ContDiffAt ℝ 2 (maassTraceQuotientFunc f.1 q ∘ ofComplex) (z : ℂ) :=
     (principalTrace_component_eigen N lam f.1 f.2.2.1 q).1.contDiffAt
@@ -79,8 +91,8 @@ theorem principalMaassTrace_eigen (N : ℕ) (lam : ℝ) (f : GLMaassCuspEigenfor
     (fun q _ => (principalTrace_component_eigen N lam f.1 f.2.2.1 q).2 z)
 
 /-- The finite principal trace preserves every integral-cusp decay condition. -/
-theorem principalMaassTrace_cuspidal (N : ℕ) (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) :
-    IsCuspidalAtIntegralCusps (maassTraceFunction f.1) := by
+theorem principalMaassTrace_cuspidal (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) :
+    IsCuspidalAtIntegralCusps (maassTraceFunction (H := principalCongruenceGL N) f.1) := by
   intro A
   letI := Fintype.ofFinite 𝒬
   change Tendsto (fun z : ℍ => ∑ q : 𝒬,
@@ -89,26 +101,27 @@ theorem principalMaassTrace_cuspidal (N : ℕ) (lam : ℝ) (f : GLMaassCuspEigen
     (fun q _ => principalTrace_component_cusp N f.1 f.2.2.2 q A)
 
 /-- The principal trace, with its exact invariant, eigenfunction, and cusp data. -/
-def principalMaassTraceData (N : ℕ) (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) :
-    {F : upperHalfPlaneInvariantFunctions (principalCongruenceGL N) //
+def principalMaassTraceData (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam) :
+    {F : glUpperHalfPlaneInvariantFunctions (principalCongruenceGL N) //
       IsMaassEigenfunction lam F.1 ∧ IsCuspidalAtIntegralCusps F.1} :=
-  ⟨maassTraceInvariant f.1,
+  ⟨maassTraceInvariant (H := principalCongruenceGL N) f.1,
     ⟨⟨principalMaassTrace_smooth N lam f, principalMaassTrace_eigen N lam f⟩,
       principalMaassTrace_cuspidal N lam f⟩⟩
 
 /-- A principal Maass trace either vanishes or yields a bundled nonzero Maass eigenform
 at the principal target with the same eigenvalue. -/
-theorem principalMaassTrace_zero_or_eigenform (N : ℕ) (lam : ℝ)
+theorem principalMaassTrace_zero_or_eigenform (lam : ℝ)
     (f : GLMaassCuspEigenform 𝒢 lam) :
-    maassTraceFunction f.1 = 0 ∨
-      ∃ F : GLMaassCuspEigenform (principalCongruenceGL N) lam, F.1.1 = maassTraceFunction f.1 := by
+    maassTraceFunction (H := principalCongruenceGL N) f.1 = 0 ∨
+      ∃ F : GLMaassCuspEigenform (principalCongruenceGL N) lam, F.1.1 = maassTraceFunction (H := principalCongruenceGL N) f.1 := by
   classical
-  by_cases hzero : maassTraceFunction f.1 = 0
+  by_cases hzero : maassTraceFunction (H := principalCongruenceGL N) f.1 = 0
   · exact Or.inl hzero
   · refine Or.inr ⟨⟨(principalMaassTraceData N lam f).1, ?_,
       (principalMaassTraceData N lam f).2.1, (principalMaassTraceData N lam f).2.2⟩, rfl⟩
     intro h
-    exact hzero (congrArg Subtype.val h)
+    change maassTraceFunction (H := principalCongruenceGL N) f.1 = 0 at h
+    exact hzero h
 
 end
 

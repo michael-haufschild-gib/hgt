@@ -407,3 +407,78 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   (`mobiusClockSoninMarkedOddPort_zeroClock`).  Since the surviving G-CE coefficient is the
   nonzero-charge datum whose vanishing is RH, a commutator-only refinement cannot be the missing
   producer; it must alter the affine complement channel before scalarization.
+- A proposed causal positive transport with a terminal flux is not a new FU mechanism: its exact
+  prefix-flux accounting is already the discrete Abel identity
+  `suzukiCheckpointCriticalVariationAction_eq_initial_add_incrementSum`.  Applied to the actual
+  source, its sole non-source-free term is exactly the Mertens-deviation variation action
+  (`ccmFUSuzukiCriticalMertensDeviationVariationActionBound_iff_riemannHypothesis`).  Thus a
+  transport construction helps only if it adds a new source-faithful *inequality* on that flux;
+  repackaging the flux as a queue, matching, or terminal charge does not move the route.
+- The apparent autocorrelation/spectral-factor bridge is also already closed at its strongest
+  source-faithful level: the exact FU triangular weight is a positive marked direct mixture of
+  literal interval-head autocorrelations
+  (`ccmGuinandWeilThirdGradeCesaroTriangularWeight_eq_fixedRectangularMixture`), and Fubini keeps
+  prime and polar terms coupled in the resulting marked rectangular current
+  (`ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_fubini`).  Passing to one abstract
+  spectral factor cannot add a sign inequality; it only hides this already exact signed direct
+  integral.  Any advance must control the actual coupled rectangular current, not realize its
+  positive kernel again.
+- The candidate "retain a first-moment affine charge" is already subsumed by the literal
+  central affine weld.  The exact FU source is a positive marked mixture of central affine
+  remainders (`ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_eq_neg_half_centralAffineMixture`);
+  each remainder is a Xi-screw codiagonal plus a purely archimedean Lerch defect
+  (`ccmFUCentralRectangularAffineRemainder_eq_two_mul_xiScrewCodiagonal_add_lerchDefect`), and
+  that defect is uniformly bounded (`exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture`).
+  Uniform control of the surviving codiagonal mixture is equivalent to the FU moment bound and
+  hence RH (`ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_xiScrewCodiagonalMixtureBound`).
+  Therefore an affine first-jet rewrite has no independent leverage: a valid new producer must
+  impose a new signed inequality on this literal codiagonal mixture, not re-center its cells.
+- The corpus already has exact Vaughan decompositions and nonstationary exponential-sum envelopes,
+  but their tested phase is `ndPhaseExp T r n = exp(2πi·T log(1+r/n)/(2π))` with the essential
+  hypothesis `0 < r` (`exists_norm_sum_vonMangoldt_ndPhaseExp_le_secondThird_mixed_hybrid`).
+  No CCM or Suzuki module contains an identity from the literal third-grade prime--polar window
+  to this phase family.  Thus this sieve technology is not yet a FU producer: it lacks a
+  source-faithful bridge and its derivative estimates exclude the nonoscillatory `r = 0` channel.
+  Any attempt to import it must first prove that bridge while retaining the polar continuum;
+  applying its norm bounds directly would change the problem.
+- G-CE's finite source-native self-adjoint completion is not a debt-cancellation mechanism.  On
+  one strictly cofinal depth schedule its actual source budget converges to
+  `4 + mobiusGammaXiCoupledErrorSingularGraphDebt`
+  (`exists_mobiusGammaXiCoupledErrorFiniteSelfAdjointBoundaryTransport`), and the debt vanishes
+  iff RH (`mobiusGammaXiCoupledErrorSingularGraphDebt_eq_zero_iff_rh`).  Thus the positive
+  singular graph leg faithfully transports, rather than removes, the obstruction.
+- Scalar cancellation is fully exhausted in G-CE.  For every bounded complex-linear scalar
+  controller, cancelling the actual charge is equivalent to `RH ∨ T = -I`
+  (`mobiusGammaXiDebtController_cancellation_iff_rh_or_eq_opposite`).  The unconditional `-I`
+  branch erases every scalar source and transfers twice the original debt to its hidden port
+  (`mobiusGammaXiOppositeDebtController_exactPhysicalCancellation`).  It cannot be counted as a
+  source-selective cancellation.
+- The existing pre-scalar affine prime--polar--Gamma packet already lands coefficient-faithfully
+  on the actual finite G-CE base response
+  (`mobiusGammaXiPreScalarAffineBoundaryRenormalization_eq_sourceResponse_base`).  Its pure
+  marked commutator port vanishes identically at zero clock
+  (`mobiusGammaXiPreScalarAffineProducer_zeroClock_oddJet`), so no construction factoring through
+  that port can provide the missing base-charge partner.  Contractive Sonin boundary transport
+  lands on the same Ward coefficient, not a new signed term
+  (`exists_soninContractivePreScalarAffineCriticalBoundaryRenormalization`).
+- The apparent real-antilinear G-CE escape is now closed.  Schwarz pairing makes the literal
+  completed Ward response real at every positive real node
+  (`im_continuedXiAntiCausalWardResponse_of_real`).  Hence the reflection `z ↦ -conj z` cancels
+  the entire physical real Ward ray, rather than selecting the critical charge; at that charge it
+  pays one debt and puts exactly `2|d|²` in the hidden antisymmetric port
+  (`mobiusGammaXiRealReflection_exactPhysicalRayErasure`).  This is a new no-go: real reflection
+  cannot serve as a source-faithful pre-scalar G-CE producer.
+- The apparent non-scalar Euler lead is pointed-only.  The literal pre-scalar reporter splits
+  orthogonally into radial and transverse four-unit records
+  (`eulerPositivePreScalarGamma_orthogonal_four_plus_four_law`), but the transverse record reports
+  only the normalized current difference and is exactly zero at the base node
+  (`eulerPositivePreScalarGraphNormalizedCoefficient_transverse_zero`,
+  `eulerPositiveTransverseGammaXiPointedReporter_eq_continued_sub_base`).  It cannot alter the
+  absolute G-CE charge `d`; restoring the anchor necessarily reintroduces the radial record.
+  Consequently, a G-CE advance needs a literal nonzero zero-clock complementary channel with an
+  exact *signed cross-form* against the completed source, not another pointed reporter, positive
+  completion, or scalar controller.
+- Broad 2026 arXiv searches on `Krein`, `Schur`, `boundary`, `operator`, `spectral`, and
+  `renormalization` yielded no transferable source-preserving cancellation theorem.  Search hits
+  were either unrelated or positive/renormalization frameworks that would replace the signed
+  prime--polar current.  No external mechanism was imported.

@@ -50,6 +50,73 @@ def incrementEnergy (N : ℕ) : ℝ :=
 def incrementMoment (N : ℕ) : ℝ :=
   ∑ n ∈ Finset.Ioc N (2*N), (Sieve.mertensM n-Sieve.mertensM N)/((n : ℝ)+1)
 
+private theorem mertens_sub_eq_mobius_block {N n : ℕ} (hNn : N ≤ n) :
+    Sieve.mertensM n - Sieve.mertensM N =
+      ∑ d ∈ Finset.Ioc N n, ((moebius d : ℤ) : ℝ) := by
+  have hunion : Finset.range (n + 1) =
+      Finset.range (N + 1) ∪ Finset.Ioc N n := by
+    ext d
+    simp only [Finset.mem_range, Finset.mem_union, Finset.mem_Ioc]
+    omega
+  have hdisjoint : Disjoint (Finset.range (N + 1)) (Finset.Ioc N n) := by
+    simp only [Finset.disjoint_left, Finset.mem_range, Finset.mem_Ioc]
+    omega
+  rw [Sieve.mertensM, Sieve.mertensM, hunion, Finset.sum_union hdisjoint]
+  ring
+
+/-- The first-tail cross moment is an exact signed low--next-block Möbius covariance. -/
+theorem incrementMoment_eq_mobius_block_covariance (N : ℕ) :
+    incrementMoment N =
+      ∑ d ∈ Finset.Ioc N (2 * N), ((moebius d : ℤ) : ℝ) *
+        (∑ n ∈ Finset.Icc d (2 * N), 1 / ((n : ℝ) + 1)) := by
+  let S := Finset.Ioc N (2 * N)
+  let a : ℕ → ℝ := fun d => ((moebius d : ℤ) : ℝ)
+  have htail (n : ℕ) (hn : n ∈ S) :
+      (∑ d ∈ Finset.Ioc N n, a d) =
+        ∑ d ∈ S, if d ≤ n then a d else 0 := by
+    simp only [S, Finset.mem_Ioc] at hn
+    rw [← Finset.sum_filter]
+    congr 1
+    ext d
+    simp only [Finset.mem_filter, Finset.mem_Ioc, S]
+    omega
+  have hinner (d : ℕ) (hd : d ∈ S) :
+      (∑ n ∈ S, if d ≤ n then a d / ((n : ℝ) + 1) else 0) =
+        a d * (∑ n ∈ Finset.Icc d (2 * N), 1 / ((n : ℝ) + 1)) := by
+    simp only [S, Finset.mem_Ioc] at hd
+    rw [← Finset.sum_filter]
+    have hset : S.filter (fun n => d ≤ n) = Finset.Icc d (2 * N) := by
+      ext n
+      simp only [Finset.mem_filter, Finset.mem_Ioc, Finset.mem_Icc, S]
+      omega
+    rw [hset, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro n hn
+    ring
+  unfold incrementMoment
+  calc
+    (∑ n ∈ Finset.Ioc N (2 * N),
+      (Sieve.mertensM n - Sieve.mertensM N) / ((n : ℝ) + 1)) =
+        ∑ n ∈ S, ∑ d ∈ S,
+          if d ≤ n then a d / ((n : ℝ) + 1) else 0 := by
+      apply Finset.sum_congr rfl
+      intro n hn
+      rw [mertens_sub_eq_mobius_block (by
+        have := (Finset.mem_Ioc.mp hn).1
+        omega), htail n hn]
+      rw [Finset.sum_div]
+      apply Finset.sum_congr rfl
+      intro d hd
+      split_ifs <;> ring
+    _ = ∑ d ∈ S, ∑ n ∈ S,
+          if d ≤ n then a d / ((n : ℝ) + 1) else 0 := by
+      rw [Finset.sum_comm]
+    _ = ∑ d ∈ Finset.Ioc N (2 * N), ((moebius d : ℤ) : ℝ) *
+        (∑ n ∈ Finset.Icc d (2 * N), 1 / ((n : ℝ) + 1)) := by
+      apply Finset.sum_congr rfl
+      intro d hd
+      exact hinner d hd
+
 /-- Complete first-tail energy, with its signed cross term retained exactly. -/
 theorem firstTailErrorEnergy_eq (N : ℕ) :
     firstTailErrorEnergy N = incrementEnergy N + 2*deningerHarmonicPartial N*incrementMoment N +
