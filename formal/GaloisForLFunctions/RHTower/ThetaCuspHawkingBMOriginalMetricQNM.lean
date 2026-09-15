@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalMetricRadial
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalMetricCornerFirstJet
 
 /-! Analytic continuation and finite value of the complete original radial/corner action. -/
 open Set Filter Topology Metric Complex MeasureTheory
@@ -76,50 +77,6 @@ private theorem greenNumerator_analytic_below (q : XiZeroCopy) (br side : Bool) 
   have hOut := physicalClearedReducedOuterPairing_analyticAt q br side amp (tortoiseOf_neg hbI)
   exact ((hA.mul (((hB.neg.sub (hC.mul hP)).mul hN).add (hC.mul hJ))).add (hC.mul hExt)).add
     (hOut.div (analyticAt_id.sub analyticAt_const).neg (neg_ne_zero.mpr hs))
-
-/-- The actual connection-cleared causal horizon amplitude, including its fixed QNM value. -/
-def clearedCornerAmplitude (q : XiZeroCopy) (br side : Bool) (amp : ℂ) : ℂ→ℂ :=
-  Function.update (fun w => conn q w*continuedCornerAmplitude q br amp w)
-    (physicalFundamentalFrequency q side)
-    (connectionSimpleSlope (physicalFundamentalFrequency q side) (chi q) side*cornerResidue q br side amp)
-
-private theorem clearedCornerAmplitude_analytic (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
-    AnalyticAt ℂ (clearedCornerAmplitude q br side amp) (physicalFundamentalFrequency q side) := by
-  let w := physicalFundamentalFrequency q side
-  have hw := physicalFundamentalFrequency_strip q side
-  have hC := connection_frequency_analyticAt w (chi q) hw.1
-  have hM := hC.meromorphicAt.mul (continuedCornerAmplitude_meromorphic q br amp w hw.1 (abs_lt.mp hw.2).1)
-  apply (hM.update w _).analyticAt
-  apply continuousAt_update_same.mpr
-  have hc := (physicalFundamental_connection_hasDerivAt q side).tendsto_slope
-  have hlim := hc.mul (continuedCornerAmplitude_residue q br side amp)
-  apply hlim.congr'
-  filter_upwards [self_mem_nhdsWithin] with u hu
-  simp only [slope_def_field,physicalFundamentalFrequency_connection_zero,sub_zero]
-  change conn q u/(u-w)*((u-w)*continuedCornerAmplitude q br amp u)=
-    conn q u*continuedCornerAmplitude q br amp u
-  have hdelta : u-w≠0 := sub_ne_zero.mpr hu
-  field_simp [hdelta]
-
-/-- Clearing the actual temporal corner retains the derivative of its source amplitude. -/
-def cornerNumerator (q : XiZeroCopy) (br side : Bool) (amp w : ℂ) : ℂ :=
-  let H := clearedCornerAmplitude q br side amp
-  mu q*((mu q-2)*(conn q w*H w/(2*w)+conn q w*deriv H w-H w*deriv (conn q) w)+
-    conn q w^2*physicalSelfSourceCoefficient q/2*
-      deriv (continuedForcingTransform (rate q br) amp 1 (grad q br)) w)
-
-private theorem cornerNumerator_analytic (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
-    AnalyticAt ℂ (cornerNumerator q br side amp) (physicalFundamentalFrequency q side) := by
-  let w := physicalFundamentalFrequency q side
-  have hw := physicalFundamentalFrequency_strip q side
-  have hC := connection_frequency_analyticAt w (chi q) hw.1
-  have hH := clearedCornerAmplitude_analytic q br side amp
-  have hF := physical_forcing_analyticAt q br side amp 1 (grad q br)
-  have hw0 : w≠0 := by intro h; apply hw.1; change w.im=0; rw [h]; rfl
-  exact analyticAt_const.mul ((analyticAt_const.mul
-    ((((hC.mul hH).div (analyticAt_const.mul analyticAt_id) (mul_ne_zero (by norm_num) hw0)).add
-      (hC.mul hH.deriv)).sub (hH.mul hC.deriv))).add
-    ((((hC.pow 2).mul analyticAt_const).div analyticAt_const (by norm_num)).mul hF.deriv))
 
 private theorem cornerNumerator_germ (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
     cornerNumerator q br side amp =ᶠ[𝓝[≠] physicalFundamentalFrequency q side]

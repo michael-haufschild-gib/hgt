@@ -517,3 +517,31 @@ One potentially relevant adelic hit was checked directly: `CCMRationalAdelicBruh
 Broad newest-first arXiv searches used `generation` and `continuation`. [Yamaguchi--Tajima, September 10, 2026](https://arxiv.org/abs/2609.11926) was screened at abstract level: its conversion theorem concerns finite-dimensional states with compact Lie group symmetries and a family of quantum Fisher matrices. No transfer to the actual noncompact Maass action or lower bound for A was established. It is not used in the quartic derivation.
 
 The prior turn yielded evidence changing which source transfers to test; this turn followed its still-open quadratic alternative through the actual differential equation. No eigenvalue improvement, global arithmetic lift, generic-unitary classification, or Selberg proof was obtained. No Lean source was edited and no Lean/build or numerical process was launched. The full original objective remains incomplete.
+
+## Closed pointwise quartic bridge (2026-09-14)
+
+The previous pass left the square-density equation as a paper deduction. It is now a closed Lean theorem for the literal finite congruence trace:
+
+    -y^2 L(rho^2)
+      = 4 lambda rho^2
+        - 3 y^2 (current_1^2 + current_I^2)
+        - 4 y^2 rho angularEnergy.
+
+`SelbergMaassDensityQuartic.density_sq_realLaplacian` proves the Euclidean
+product rule, and `density_sq_hyperbolic_laplacian` substitutes the actual trace
+PDE and the node-safe radial/angular decomposition. The theorem is pointwise,
+including common density zeros; it has no analytic or arithmetic premise. Its only
+Lean axioms are `propext`, `Classical.choice`, and `Quot.sound`.
+
+The new result does not assert the unproved cutoff/Green passage or the coercive
+target `3D + 4A >= R`. It makes their exact dependency explicit. Thus the direct
+route's hard mathematical obstacle is now a global lower bound for the retained
+actual current/phase energy and density variation, or a different source-attached
+arithmetic exclusion. Scalar Poincare inequalities remain too weak because the
+descended density has a positive horizontal mean.
+
+The shared `sq_dir`, `sq_second_dir`, and `realLaplacian_sq` lemmas were moved to
+`SelbergMaassTraceEnergy`; the identical private product-rule proof was removed
+from `SelbergMaassTraceRegularized`. Targeted `lake env lean` and `lake build`
+audits passed for the energy, regularized, and new quartic modules. The new module
+is wired into `RHTower.lean`; no umbrella build was run.

@@ -10,3 +10,15 @@
 - Frontier audit: complete independent-limit metric matching is HB's first listed open gate; HB-OMA is route-critical, not a side lemma.
 - 2026 Hardy-series shared-prime replacement preserves one prime across sites but keeps distinct primes independent; corpus already kills fixed coherent quadratic cross-boundary mixing. It does not produce the shared Ward endpoint.
 - Failure: bulk slots alone omit two slot-0 temporal endpoints and horizontal period. Complete HB matching must control both endpoint and moment functionals in the exact normalized boundary.
+- Proven in Lean: every fixed height weight has joint cusp/horizon restoration after metric division, full horizontal period, arbitrary positive endpoint paths, and arbitrary nonnegative time-cutoff paths.
+- Exact boundary integral order is controlled directly by an abstract iterated norm bound; no Fubini/continuity premise is needed.
+- HB physical fundamental QNM lies in `-2 < Re w < -1`; both endpoint powers and the logarithm are divergent there.
+- Proven in Lean: finite convergence of `A e^w + B e^(w+1) + C log e` at `e→0+` forces `A=B=C=0` for `Re w < -1`.
+- Proven in Lean: two admissible three-counterterm renormalizations of one endpoint profile have identical coefficients and identical finite value. HB QNM finite part is subtraction-scheme independent.
+- No-go: scheme uniqueness does not imply `finiteQNMValue ≠ 0`; source-specific nonvanishing remains HB's hard spectral gate.
+- Proven in Lean: complete temporal-corner first jet is rigid. Unknown regular Laurent coefficient cancels; forcing contact contributes zero at first order.
+- Exact surviving corner factor: residue times `connectionSlope/(2*w₀) - connectionSecondDerivative`; no horizon-amplitude remainder remains.
+- HB consequence: `finiteQNMValue ≠ 0` now needs only radial/Green finite jet plus explicit connection two-jet and source residue; corner continuation is discharged.
+- Proven in Lean: at a fundamental connection zero, `connection'' = connectionSlope · (2ψ(C)-ψ(other)-ψ(1))`; no unknown Gamma jet remains.
+- Proven in Lean: the resulting physical connection-corner factor is nonzero for every `XiZeroCopy` and both Boolean branches. Input is only the corpus height gap `13/2 < |Im ρ|`, digamma vertical sandwich, recurrence, and conjugation.
+- HB consequence: connection geometry/digamma phase cannot cancel the temporal-corner first jet. Remaining new analytic gate is source residue (angular source × incoming pole amplitude); exact Lean iff composition awaits a clean dependency audit.

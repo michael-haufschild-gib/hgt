@@ -535,5 +535,29 @@ theorem original_metric_time_finitePart (q : XiZeroCopy) (br outer : Bool) (amp 
   rw [metric_time_cut_decomposition q br outer amp w hw a b R (Real.exp k) ha hab hr hk,Real.log_exp]
   rfl
 
+/-- Compact admission of the original source period with its prescribed cusp subtraction. -/
+theorem original_source_cut_time_integrable (q : XiZeroCopy) (br outer : Bool) (amp w : ℂ)
+    (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hY : 4≤Y) :
+    IntervalIntegrable (fun p => sourcePeriodCut q br outer amp w p R Y) volume a b :=
+  source_cut_time_integrable q br outer amp w a b R Y ha hab hr hY
+
+/-- Compact admission of the full original forcing period with its cusp subtraction. -/
+theorem original_forcing_cut_time_integrable (q : XiZeroCopy) (br outer : Bool) (amp w : ℂ)
+    (a b R Y : ℝ) : IntervalIntegrable (fun p => forcingPeriodCut q br outer amp w p R Y) volume a b :=
+  forcing_cut_time_integrable q br outer amp w a b R Y
+
+/-- The exact finite-cutoff metric identity exported for joint restoration.
+The source endpoints, source moment, forcing moment and whole boundary flux remain. -/
+theorem original_metric_time_cut_decomposition (q : XiZeroCopy) (br outer : Bool) (amp w : ℂ)
+    (hw : w.im≠0) (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hY : 4≤Y) :
+    metricTimeCut q br outer amp w a b R Y=
+      sourcePrefactor q R*(sourcePeriodCut q br outer amp w b R Y-sourcePeriodCut q br outer amp w a R Y+
+        2*w*(∫ p in a..b,sourcePeriodCut q br outer amp w p R Y))+
+      forcingPrefactor q w R*(∫ p in a..b,forcingPeriodCut q br outer amp w p R Y)+
+      ((∫ p in a..b,boundarySlice q br outer amp w p R Y)-
+        ∑ i : Fin 3,compactBoundaryCoefficient q q br outer amp w a b R i*
+          Complex.exp (D4BMOriginalCuspFlux.fluxExponent q q i*(Real.log Y:ℂ))) :=
+  metric_time_cut_decomposition q br outer amp w hw a b R Y ha hab hr hY
+
 end
 end RHTower.D4BMOriginalMetricTimePeriod

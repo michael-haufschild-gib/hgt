@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**282 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**286 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-14, `8aef75a546b75b3b548732d8dc8881838bf0d6d9`**.
+Source-audit cutoff: **2026-09-14, `d2fceb0e7ed7d61cf457ed9e2aeefa43196c8b73`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -24,7 +24,7 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | [Retired original route labels](#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 17 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 33 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 51 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 55 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 23 |
 | [Singular descent, formation and completion](#completion) | 26 |
 | [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 31 |
@@ -1074,6 +1074,10 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [FZZ finite normalized logarithmic-density threshold](#no-go-114)
 - [FZZ generic tempered scalar puncture occurrence](#no-go-113)
 - [FZZ holomorphic real-slice or horizontally stratified generator](#no-go-118)
+- [FZZ depth-one full annular Hessian universal sign](#no-go-286)
+- [FZZ momentum-fitted radial/compact Ward selector](#no-go-285)
+- [FZZ one-sided radial plus real compact Hessian](#no-go-283)
+- [FZZ one common compact response for a nonzero reflected pair](#no-go-284)
 - [FZZ regular finite-exponential-type physical response](#no-go-119)
 - [FZZ same-scale scalar Laurent fusion](#no-go-115)
 - [FZZ same-source divisor gradient flow](#no-go-117)
@@ -1116,6 +1120,87 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [raw Birmingham--Mokhtari causal decay or two-sided boundedness](#no-go-219)
 - [RBH complementary/wall finite part, separated-sign linear production, or passive normalization](#no-go-225)
 - [scalar-history, regular Borel, grade-diagonal, or rescaling-invariant Parikh--Wilczek balance](#no-go-222)
+
+<a id="no-go-283"></a>
+
+### FZZ one-sided radial plus real compact Hessian
+
+**Closed result**
+
+The physical one-sided radial replica--momentum derivative has strictly negative imaginary
+part at every real momentum. The full opposite-winding depth-one annular Hessian is real,
+so it cannot cancel that radial response for any momentum or annulus geometry.
+
+**Survivor / still open**
+
+Any viable compact or all-depth completion must carry a strictly positive imaginary response.
+The required complex phase, cross-charge weighting and source-fixed all-depth assembly remain
+open; the theorem does not kill FZZ-P itself.
+
+Evidence: [one-sided real-compact Ward no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarOneSidedRadialRealCompactWardNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-284"></a>
+
+### FZZ one common compact response for a nonzero reflected pair
+
+**Closed result**
+
+One source-fixed complex compact response cancels both one-sided responses at momenta `p`
+and `-p` exactly when `p=0`. Thus no conjugate-blind common response can fit a nonzero
+reflected pair.
+
+**Survivor / still open**
+
+Separate cancelling responses obey the sharp conjugate-odd law `C₋=-conj(C₊)`. A surviving
+producer must retain this orientation and derive its all-depth normalization and cross-charge
+weights from the source.
+
+Evidence: [common-compact reflected-pair classification](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarOneSidedRadialCommonCompactPairNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-285"></a>
+
+### FZZ momentum-fitted radial/compact Ward selector
+
+**Closed result**
+
+At every physical cigar level and every radial momentum, there is exactly one annular
+log-separation cancelling the literal paired radial response. Allowing compact geometry to
+depend on target momentum therefore makes Ward cancellation universal rather than selective
+for zero momentum.
+
+**Survivor / still open**
+
+The unique cancelling-separation law survives. A selective route must fix annulus geometry
+and phase independently of target momentum, then prove the complete source Ward identity.
+
+Evidence: [momentum-fitted Ward no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityMomentumFittedRadialCompactWardNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-286"></a>
+
+### FZZ depth-one full annular Hessian universal sign
+
+**Closed result**
+
+The complete one-pair annular Hessian equals direct contact plus connected logarithmic-radius
+fluctuation. At every physical level it is surjective as annulus geometry varies, has one
+unique zero and realizes both signs. This depth-one factor has no geometry-independent Ward
+orientation.
+
+**Survivor / still open**
+
+The exact Hessian and its unique zero remain useful. A source-fixed orientation must come from
+the complete neutral screening sum, with geometry, phase and cross-depth correlations fixed
+before evaluation.
+
+Evidence: [full annular Hessian classification](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityTwoMarkedFullAnnularHessianNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
 
 <a id="no-go-279"></a>
 

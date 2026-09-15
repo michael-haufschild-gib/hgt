@@ -336,5 +336,39 @@ theorem complete_boundary_radial_density (q : XiZeroCopy) (br : Bool) (amp w : �
   rw [← mul_assoc,he,one_mul]
   rfl
 
+/-- Actual joint time/horizontal continuity of every normalized physical
+transfer at positive source time and any fixed exterior collar. -/
+theorem radial_transfer_continuousAt (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hw : w.im≠0)
+    (L k : ℝ) (hL : 0<L) (j : Fin 4) (z : ℝ×ℝ) (hp : 0<z.1) :
+    ContinuousAt (fun t : ℝ×ℝ => radialTransfer q br amp w j t.1 L t.2 k) z := by
+  let R : ℂ := tortoiseRadius (-L/2)
+  let Z : ℂ := horizonCoordinate (-L/2)
+  let c : Fin 4→ℂ := ![R^2,R^2,R^2,R*Z]
+  have hR := tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0)
+  have hR0 : R≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
+  have hZ0 : Z≠0 := Complex.ofReal_ne_zero.mpr
+    (ne_of_gt (horizonCoordinate_interior (-L/2) (by linarith)).1)
+  have hc0 : c j≠0 := by fin_cases j <;> simp [c,hR0,hZ0]
+  have hscale (p x : ℝ) (hp : 0<p) :
+      transferCut q br amp w j p L x k=c j*radialTransfer q br amp w j p L x k := by
+    rw [normalized_cut q br amp w hw p L x k hp hL j]
+    fin_cases j <;> simp [c,R,Z,radialTransfer,normalizedTransfer,
+      D4BMOriginalForcingProductBounds.raw_product_factor q br amp w true p L x k hL]; ring
+  have hco : Continuous (fun t : ℝ×ℝ => ∑ i : Fin 3,
+      modeTransferCoefficient q q br true amp w j t.1 (tortoiseRadius (-L/2)) i*
+        Complex.exp (fluxExponent q q i*(k:ℂ))) := by
+    apply continuous_finsetSum
+    intro i _
+    exact ((coefficient_continuous q br amp w (tortoiseRadius (-L/2)) j i).comp continuous_fst).mul_const _
+  have hcut : ContinuousAt (fun t : ℝ×ℝ => transferCut q br amp w j t.1 L t.2 k) z :=
+    (transfer_continuous q br amp w hw _ _ hR (Real.exp_pos k) j z hp).sub hco.continuousAt
+  have he : (fun t : ℝ×ℝ => radialTransfer q br amp w j t.1 L t.2 k) =ᶠ[𝓝 z]
+      (fun t : ℝ×ℝ => transferCut q br amp w j t.1 L t.2 k/c j) := by
+    have hpos : ∀ᶠ t : ℝ×ℝ in 𝓝 z,0<t.1 := continuous_fst.continuousAt.eventually (lt_mem_nhds hp)
+    filter_upwards [hpos] with t ht
+    rw [hscale t.1 t.2 ht]
+    field_simp [hc0]
+  exact (hcut.div_const (c j)).congr_of_eventuallyEq he
+
 end
 end RHTower.D4BMOriginalCompleteTransfer

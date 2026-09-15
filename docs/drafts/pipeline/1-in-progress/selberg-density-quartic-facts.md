@@ -1,0 +1,385 @@
+# Selberg density-quartic facts
+
+- `SelbergMaassDensityQuartic.density_sq_realLaplacian` is a closed pointwise
+  identity for the literal finite congruence-trace density.
+- `density_sq_hyperbolic_laplacian` gives
+  `-y^2 L(rho^2) = 4 lam rho^2 - 3 y^2(current_1^2 + current_I^2) -
+  4 y^2 rho angularEnergy`.
+- The identity uses `trace_laplacian` and `density_mul_gradientDensity`; its
+  source terms remain defined at density zeros.
+- The desired quarter bound on the quadratic route remains equivalent on paper
+  to `3 D + 4 A >= R`; neither pointwise identity proves this global inequality.
+- Scalar Poincare control of density variation cannot establish the quarter
+  target because the positive horizontal density mean survives descent.
+- `MaassCuspAutomorphicCorrespondence` identifies Maass forms with spherical
+  right-regular automorphic vectors, but does not construct the global L-function,
+  functorial lifts, or generic GL(n,R) classification needed for parameter exclusion.
+- `GenericUnitaryExponentBounds` proves only finite prescribed rank-one packet
+  criteria; it is not a generic-unitary classification theorem.
+- Deep corpus search, snapshot generation `916875`, for a coupled phase-stress
+  compensation returned no source-attached Selberg core/side/top inequality in
+  its ranked candidates.  Its generated Bessel/HTGeometry ingredient set does
+  not supply the missing congruence-coefficient premise and is unusable.
+- The literal phase record remains `sidePhaseFlux = integral phaseStressXX` and
+  `topPhaseFlux = integral (x * phaseStressXY + phaseStressYY)`.  Since the
+  latter contains signed off-diagonal Fourier interference, the existing
+  positive tail Gram theorem does not imply its sign; this is the precise
+  source-level gap in the phase route.
+- For `L = N+1`, the existing projector decompositions imply on paper that
+  summing `lossEnergy N r s v` over independent residues `r,s` gives
+  `(L^2 - 1) * ||v||^2`.  This full average cannot be inserted into the seam
+  estimate, whose source identity requires `r = s`; it therefore collapses to
+  the already-known full trace identity rather than supplying quarter
+  coercivity.
+- The diagonal projector-Gram deep search, completed at generation `916900`,
+  returned projector identities and generic matrix material but no
+  source-attached diagonal spectral gap.  Direct source review identifies the
+  diagonal coupling with the already-audited weighted finite-Gram/Kloosterman
+  branch, which lacks the needed spectral estimate and is not resumed.
+- `source_lower_character` transfers a lower residue at `z` to an upper residue
+  at `S⁻¹ • z`; it does not turn the diagonal pair into arbitrary independent
+  character pairs while preserving the same core/seam functional.
+- The completed deformation/residue search at generation `916911` returned the
+  known Maass boundary-trace decomposition and unrelated Xi-residue records,
+  not a modular-symbol residue-detection theorem.  The Maass result is only an
+  exact Bessel boundary rewrite and has no signed varying-modulus estimate.
+- `SelbergScattering*` modules inspected here are built from `XiZeroCopy` and
+  have no `MaassCuspEigenform` or congruence-source parameter.  Their residual
+  statements do not attach to the target proof chain.
+- `SelbergMaassInversionPhaseEnergy.diagonal_transfer_loss_sum_lower` is a
+  closed Lean theorem: for the diagonal phase family, `sum_r lossEnergy r r v
+  >= (L - 1) * ||v||^2`.  Each transfer loss contains the upper-projector loss,
+  whose sum is exactly `||v||^2`; diagonal loss therefore cannot vanish
+  simultaneously on a nonzero source.
+- This lower bound does not close the phase estimate.  The seam/Rellich Cauchy
+  bound uses loss as an *upper* factor, so a lower loss bound has the wrong
+  direction for bounding the signed core/side/top stress.  The missing result
+  remains a signed coercive comparison, not phase-loss nondegeneracy.
+- Broad arXiv screening found Ramaré's May 2026 weighted-large-sieve Parseval
+  paper.  Its theorem concerns one trigonometric polynomial with coefficients
+  independent of the sampled rational point and a local support condition.  A
+  Kloosterman summand has the coefficient `exp(n * inverse(a,c)/c)`, which
+  varies with both numerator and denominator.  It is not one such polynomial;
+  the paper does not provide the required signed short-modulus sum.
+- A fresh deep search for the signed short-modulus target was partial at
+  generation `916918`.  Its top Bessel candidate is a generic order-zero
+  `J_0` van-der-Corput bound with no Maass/Kloosterman source attachment;
+  the other leading candidates are Xi/prime-sampling material.  No returned
+  statement binds a signed modulus sum to the actual Maass Bessel test.
+- A broad current-arXiv screen on `observability`, `cancellation`, and `boundary`
+  returned no January--September 2026 analytic result with a transfer to the
+  source-attached Maass boundary form.  The matching results were unrelated
+  holography, software observability, and statistical mechanics.  No external
+  method is admitted into the proof route without an exact source-level map.
+- The source-current modules now prove pair-plus-phase positivity, divergence of
+  the total phase current, and its exact modular covariance.  A deep search at
+  generation `917049` found no source phase-period vanishing theorem.  The
+  nearby current-limit results instead show that a vanishing horizontal current
+  limit forces pair/phase vanishing and then a common node with zero horizontal
+  derivative energy.  Conservation therefore does not close the signed
+  boundary term without a new global period/cancellation input.
+- The flat-node unique-continuation experiment was partial at generation
+  `917068`.  Its Maass-relevant result is only
+  `exceptional_positive_limit_or_flat_node`; no source theorem turns a common
+  zero plus one vanishing horizontal derivative into global vanishing.  The
+  available unique-continuation hits are unrelated.  This alternative cannot
+  be discarded by current corpus facts.
+- The completed current-mass search at generation `917082` found the
+  source-attached upper bound `periodCurrentLimit_le_accelerationBound`, but
+  its right side is a source-dependent horizontal acceleration integral.  It
+  provides continuity and compact-band integrability, not a uniform quotient
+  comparison that can oppose the positive current-band mass.  Thus the actual
+  missing theorem is a global automorphic cancellation/comparison estimate,
+  not another local current identity.
+- A second broad arXiv screen on `control` and `boundary` produced only
+  unrelated holography, stochastic control, and physics/ML results.  It adds
+  no theorem with a source-functional map and is rejected.
+- Boundary-form search at generation `917095` reached
+  `SelbergBesselAdverseModes`: the signed Bessel seam is nonnegative outside
+  an exact finite adverse Fourier block, but that block has unbounded size as
+  the congruence width grows.  The module explicitly has no Maass compact-core
+  response.  This is the previously audited finite-Gram/debt branch; it cannot
+  yield a level-uniform quarter bound without new signed arithmetic control.
+- For an exceptional source, `SelbergMaassDeckAverage.sum_deck_values_zero`
+  proves the pointwise deck sum is zero.  By the definition of the finite
+  regular `sourceMean`, this gives `sourceMean N f = 0` identically (an
+  immediate unrecorded corollary of existing Lean theorems).  Hence the
+  mean-zero block/path identities apply to the actual source.  Their known
+  conversion from finite deck displacement to differential path current still
+  has level-growing unipotent path lengths, so this correction does not by
+  itself yield the required level-uniform quartic inequality.
+- The refreshed signed Kloosterman search at generation `917126` again found
+  generic Poincare-series and sieve Kloosterman formulas but no theorem
+  attaching a signed varying-modulus cancellation estimate to the actual Maass
+  Bessel boundary test.  This remains the arithmetic gap.
+- The Maass-to-model/Hilbert bridge is no longer the active gap: `MaassQuotientL2`,
+  `MaassModelQuotientL2`, `MaassModelHilbertGenerators`,
+  `MaassModelHilbertForm`, and `MaassModelHilbertCompletion` already attach every
+  hypothetical exceptional Maass source to an injective finite-model map in the
+  genuine quotient `L²`, identify all three infinitesimal generators, identify its
+  pullback form with the positive complementary form, and extend the normalized
+  map isometrically to the canonical completion.  This makes local unitarity a
+  receiver: exceptional parameters remain compatible with this source-attached
+  unitary realization.  The remaining symmetric-power route gap is the global
+  unbounded-degree lift/local-factor producer, not another local-model lemma.
+- Summing the character seam mismatch over every residue cancels algebraically:
+  `sum_characterProjection` reconstructs both upper and lower source vectors,
+  while `radialFlux_seam_identity` expresses the paired current as their
+  difference.  This does not create a new Selberg inequality.  Its sum is
+  already represented by `SelbergMaassTraceArea.core_cusp_quarter_identity`,
+  whose unsolved term is the signed global `coreQuarter + boundarySum` form.
+  Formalizing the cancellation alone would duplicate that existing source-free
+  trace identity.
+- `SelbergBesselAdverseModes` proves the Bessel boundary coefficient is negative
+  exactly on an explicit finite integer block and decomposes every finite packet
+  into nonnegative square/positive boundary terms minus its adverse debt.  Its
+  `integer_width_cutoff_unbounded` theorem proves this block is unbounded with
+  congruence width.  Therefore the direct route's precise hard problem remains
+  a source-attached, level-uniform comparison that pays this adverse debt from
+  original compact-core/gradient response; finite-mode positivity cannot close
+  the global quarter bound.
+- `SelbergMaassPhaseStress.core_cusp_phase_stress_bound` now reduces the direct
+  source route to its exact angular phase energy and side/top phase-stress
+  record.  `SelbergMaassKernelWronskian.coefficientWronskian_eq_tail` controls
+  the antisymmetric cross-mode combination by the positive tail Gram kernel.
+  On paper, pairing the `x * phaseStressXY` Fourier terms for two same-residue
+  frequencies instead produces the height derivative of their *symmetric* Gram
+  pairing.  It is not the Wronskian.  Thus tail-kernel positivity alone cannot
+  replace the weighted top term; a new source-attached derivative or weighted
+  Gram comparison is the remaining direct-route target.
+- Shifting the dilation origin cannot remove the weighted top obstruction.  The
+  horizontal stress row `(phaseStressXX, phaseStressXY)` is conserved, and its
+  side flux cancels by the proved unit translation law.  Green's identity then
+  identifies its unweighted top flux with the opposite circular-arc flux.
+  Replacing the dilation current by that current minus `a` times the horizontal
+  row subtracts `a` times the top flux and adds exactly the opposite amount to
+  the arc flux.  Thus a shifted multiplier only moves the same signed moment
+  between top and core; it cannot supply the missing sign or coercivity.
+- The current Bessel response is deliberately the order-zero, critical
+  (`lambda = 1/4`) Riccati solution.  Combining its Riccati equation with the
+  actual modal ODE shows that `a' + response(k,·) a = 0` for a nonzero
+  exceptional mode would force `(1/4-lambda)a/y^2 = 0`, hence is impossible.
+  The formal nonnegative `remainder` is therefore the exact exceptional
+  parameter defect, not an omitted proof of a coefficient-to-response map.
+  The generic Bessel carrier exists, but no source-attached order-dependent
+  Maass model is available.  More decisively, the internal two-frequency test
+  with the exact decaying Bessel ODE has a negative top-stress determinant at
+  frequencies `A = 2*pi*R`, `B = 4*pi*R` for all sufficiently large natural
+  `R`.  Thus local ODE/DtN information cannot make the top stress universally
+  positive; any survivor must use actual arithmetic coefficient relations or
+  compensation by the source core and side terms.
+- The completed deep search for a signed dual-mode bridge returned only generic
+  `RHTower.Sieve` Kloosterman/Dirichlet carriers and unrelated boundary
+  results.  The inspected physical-residue kernel is explicitly a finite
+  ordinary Dirichlet bilinear form whose promised spectral saving remains open;
+  no map from a `SelbergMaass` source into that carrier was returned or found
+  in its source.  It cannot advance the direct Maass route without first
+  proving precisely the missing source attachment, so the active target is the
+  existing source-only density inequality `3*D + 4*A >= R`.
+- The completed global-lift deep search returns only real-quotient/differential
+  Maass lifts, local-factor identities, and local packet operations.  None is
+  a global automorphic symmetric-power lift attached to the actual Maass
+  source, let alone an unbounded compatible family with its archimedean local
+  factor.  This confirms the local all-degree implication is a receiver, not
+  a global producer; it does not establish nonexistence of such a producer.
+- The completed twist/nonvanishing deep search returns Mellin injectivity only
+  under line- or strip-wide vanishing and a nonvanishing statement only for
+  Dirichlet `L`-functions.  It returns no fixed-Maass twist family, no forced
+  value theorem, and no completeness map turning its isolated forced zeros
+  into the hypotheses of Mellin injectivity.  The twist route therefore stops
+  at the missing source-attached global assertion rather than a formalization
+  gap.
+- The actual finite Maass-to-model intertwiner is
+  `MaassModelIntertwiner.maassDifferentialModelEquiv`.  It is a closed linear
+  equivalence from the intrinsic differentiated cyclic space of an exceptional
+  Maass source to `SphericalKFiniteModel`; its inverse `modelToMaass` realizes
+  each finite model vector by an actual automorphic Maass derivative.  It
+  intertwines compact right translation and the three derived directions
+  (`E+F`, `i(E-F)`, `iH`).  `MaassModelHilbertGenerators` and
+  `MaassModelHilbertCompletion` then give the corresponding three quotient-L2
+  derivatives and an isometric completion.  Neither path defines an integrated
+  noncompact action on that completion or proves range invariance under the
+  quotient `SL(2,ℝ)` action; both completion docstrings identify the missing
+  full-group/orbit argument.  This closes the finite differential
+  Maass-to-model arrow, but its integration would still not construct the
+  separate global unbounded-degree lift/local-factor producer, which remains
+  the route-closing target.
+- A bounded deep/method query returned `SelbergMaassCuspTransport` as a possible
+  direct mechanism.  Its exact every-integral-cusp flux identity has a strictly
+  negative exceptional defect times the strictly positive tail mass, but it is
+  only the translated version of the existing cusp decomposition and explicitly
+  excludes a compact-core estimate.  `SelbergMaassTraceMass.core_boundary_strict_neg`
+  already gives the combined consequence: an exceptional source forces
+  `coreQuarter + boundarySum < 0`.  Hence cusp flux negativity is compatible
+  with ordinary cusp decay and cannot close the route.  The positive survivor
+  is the sharp signed target itself: a source-arithmetic lower bound
+  `0 ≤ coreQuarter + boundarySum` would immediately exclude the exceptional
+  source.  The search had pending index coverage and supplied no such bound.
+- A second bounded deep/method query tested whether the actual finite
+  Maass-to-model equivalence transfers complementary-series positivity to the
+  direct signed form.  Its only Maass hits were the equivalence, its inverse,
+  and the complementary inner form; no candidate connected any of them to
+  `coreQuarter`, `boundarySum`, or their sum.  Thus current model positivity is
+  not a comparison theorem for the direct source functional.  The query also
+  had pending coverage; no absence claim beyond the inspected candidates is
+  made.
+- A third bounded deep/method query tested the only identified arithmetic
+  source mechanism: an actual Maass Hecke, normalizer, or deck coefficient
+  relation that controls the signed core–boundary form.  Its Maass candidates
+  were only the finite model equivalence, Fourier-coefficient definition, and
+  quotient translation; it returned no Hecke/normalizer action, no coefficient
+  identity, no proof idea, and no ingredient set.  With its pending coverage,
+  this records only that no inspected corpus candidate supplies the needed
+  source-arithmetic comparison.
+- The full local compact-picture principal-series action already exists in
+  `RealPrincipalSeriesCompactAction`, and `RealPrincipalSeriesCompactHarishChandra`
+  identifies the finite model with its finite compact K-types.  The latter
+  proves only K-invariance; `RealPrincipalSeriesCompactUnitarity` proves only
+  infinitesimal complementary-form invariance.  No inspected declaration makes
+  the full compact action isometric on a complementary Hilbert completion, or
+  extends the Maass map equivariantly to it.  This is the exact remaining full
+  Maass-to-model bridge.  It is local and does not manufacture the separate
+  global lift family, so it cannot by itself close either active Selberg route.
+- The current generic-unitary module is exactly a finite rank-one packet
+  calculation: `GenericUnitaryExponentBounds` defines packet positivity from
+  explicit complementary-series blocks and proves its half-strip criterion.
+  Its own scope excludes classification of generic `GL(n,ℝ)` representations.
+  The bounded deep/method search and exhaustive module-name/text audit found no
+  `GL(n,ℝ)` generic, Whittaker, Langlands, or Maass-to-adelic representation
+  object to which a general bound could apply; the only Whittaker files belong
+  to a distinct Eisenstein construction.  Thus a general generic-unitary
+  exponent theorem is a missing foundational development, not an existing
+  source theorem awaiting formal proof.  It cannot advance the actual Maass
+  route until a source-attached global lift provides such a representation.
+- For every exceptional principal-congruence Maass source, the proved pointwise
+  deck cancellation is exactly `sourceMean = 0`. The closed module
+  `SelbergMaassExceptionalMeanZero` derives this equality and removes the
+  conditional mean-zero premise from the full deck-mixing identity, the
+  uniform four-unipotent-block variance bound, and the existing finite-cost
+  `S,T` comparison. Thus finite deck algebra is not an open link in the direct
+  route; the remaining link is a level-uniform source-energy comparison.
+- The fixed-generator experiment has a precise negative result in the inspected
+  corpus: no finite-congruence spectral-gap/Poincaré theorem or fixed-`S,T`
+  source-to-hyperbolic-energy bridge was retrieved. The existing word-cost
+  comparison is formally proved to diverge with level, while the inversion
+  seam/phase-stress route retains an unrestricted signed angular/side/top
+  boundary functional. Neither proves the needed uniform comparison.
+- `SelbergMaassInversionPhaseEnergy.diagonal_transfer_loss_sum_lower` gives
+  `(N : ℝ) * ‖v‖² ≤ Σ_r lossEnergy(N,r,r,v)`. The closed
+  `SelbergMaassDiagonalLoss` source bridge specializes this to `sourceVector`,
+  then combines `density_pos_somewhere` with finite-sum positivity: for every
+  positive `N`, an actual Maass source has a point and diagonal channel of
+  strictly positive transfer loss. This closes finite source attachment of
+  aggregate diagonal loss, but it gives no source-energy-to-core coercivity.
+- The phase Rellich core functional integrates `massPhaseDensity` only over the
+  circular arc `x ↦ point x (arcHeight x)`. Corpus proof
+  `exceptional_density_pos_in_unit_period` supplies a positive source-density
+  point on each fixed horizontal slice, not on that circular arc. No inspected
+  theorem transfers this positivity to the arc or signs the remaining angular,
+  side, and top stress. Therefore strict loss at an arbitrary source point
+  cannot yet enter `core_cusp_phase_stress_bound`.
+- The current corpus has a concrete analytic Maass-to-automorphic correspondence
+  (`MaassCuspAutomorphicCorrespondence`) and a nonzero algebraic cyclic
+  right-regular `SL2R` subrepresentation (`MaassCyclicAutomorphicRepresentation`).
+  `MaassModelIntertwiner` further identifies the K-finite model image with the
+  minimal subspace stable under two noncompact *derivatives*. This advances the
+  local source attachment beyond K-covariance, but establishes neither a
+  completed unitary right-regular representation nor an adelic/local-factor
+  construction.
+- `MaassModelQuotientL2` injects every finite model vector into quotient `L2`,
+  and `MaassLadderL2` proves first-order L2 admission plus an exact first-ladder
+  energy identity. The inspected declarations do not prove a right-regular
+  quotient-measure isometry, identify the pulled-back L2 form with the
+  complementary-series form, or construct symmetric-power lifts.
+  `GenericUnitaryExponentBounds` proves exponent zero only after certificates
+  for every positive symmetric-power packet; these certificates are not
+  attached to any Maass source. Thus the global route's precise remaining
+  mathematical link is source-attached all-degree symmetric-power unitarity,
+  not the finite local packet calculation.
+- `SelbergMaassExceptionalMeanZero.no_exceptional_level_one` is target-built and axiom-audited
+  (only `propext`, `Classical.choice`, and `Quot.sound`): an exceptional source at `N = 0`
+  would have a singleton congruence deck, so deck cancellation says its source is zero and
+  contradicts Maass nonvanishing. Hence the positive-level restriction in the strict diagonal
+  transfer-loss theorem leaves no exceptional source untreated.
+- `SymmetricPowerDegreeFamilies` proves an exact necessity result for the global route: every
+  finite degree family admits a complementary exponent and an eigenvalue in `(0, 1/4)`, while
+  an infinite degree family is precisely what isolates exponent zero. `SelbergExceptionalSphericalModel`
+  already turns any exceptional eigenvalue into a nonzero complementary exponent and proves that
+  some positive even packet fails its explicit local unitarity test. Therefore the only missing
+  global step is an unbounded even-degree, source-attached automorphic unitary lift family.
+- `SelbergMaassBoundaryPositivity` is target-built and axiom-audited (only `propext`,
+  `Classical.choice`, and `Quot.sound`). The exact Bessel adverse-mode criterion implies
+  `boundarySum N f (transitionCutoff N) ≥ 0` for every actual principal-congruence source,
+  where `transitionCutoff` places the first Fourier frequency at the Bessel transition. Combining
+  this with the exceptional core--cusp identity proves `coreQuarter N f (exp transitionCutoff) < 0`.
+  Thus the direct obstruction has been sharpened: any proof of nonnegativity of this one
+  source-attached compact-core quarter form would rule out an exceptional source; cusp boundary
+  signs are no longer an open part of that implication.
+- A bounded deep search for that compact-core inequality returned only the exact existing
+  core--cusp/flux identities and generic coercivity APIs. Its inspected candidates contain no
+  source-attached compact-core Poincare or inversion-loss-to-core lower bound. This is a
+  coverage-qualified no-go for the inspected mechanisms, not an assertion that no such theorem
+  can be developed.
+- Deck cancellation cannot force the period-current limit to vanish: in
+  `SelbergMaassAverageCurrents`, `sourceMean = 0` makes the mean field and its mixed brackets
+  vanish, while the original pair and phase currents remain exactly those of the centered family.
+  `SelbergMaassPeriodCurrentRigidity` therefore only yields the existing alternative “positive
+  current limit or a common first-order-flat node.” This rules out that particular direct bridge.
+- Modal Cauchy uniqueness in `SelbergMaassSliceRigidity` excludes a whole zero horizontal slice,
+  but its stated scope and the proved period dichotomy leave common value-and-horizontal-derivative
+  zeros open. Hence the period-current route cannot presently exclude its flat-node branch.
+- A 278-second deep search for a source-attached mean-zero deck-displacement to compact-core
+  hyperbolic-gradient/Poincare estimate returned zero matching declarations. Its generic
+  coercivity candidates are unrelated operator models; source, compiler, and semantic coverage
+  were incomplete. This is a coverage-qualified no-go for an existing bridge, leaving the exact
+  open target: an integrated displacement-to-gradient inequality strong enough to dominate
+  `density / (4*y^2)` in `coreQuarter`.
+- The only existing deck-variance coefficient is formally known to be unsuitable as a uniform
+  route ingredient: `SelbergMaassGeneratorCostGrowth.generatorConstant_tendsto_atTop` and
+  `not_exists_uniform_generatorConstant_bound` prove divergence of the all-word `S,T`
+  comparison constant. This does not rule out a different finite-quotient or source-geometric
+  inequality, but it rules out extracting the required level-uniform core estimate from that
+  certified word-cost recipe alone.
+- The weak-curvature route has an explicit scalar no-go. `SelbergScalarCurvatureFamily` constructs
+  smooth positive modular scalar models with positive curvature and the same total curvature
+  budget for every positive parameter, and proves `no_scalar_quarter_comparison`. Thus
+  nonnegative scalar/amplitude curvature cannot yield Selberg's (1/4) bound; any curvature
+  completion must use Maass-specific vector/deck information. The surviving target is again a
+  quantitative link from that vector information to the compact-core quarter form.
+- Focused deep search `diagonal inversion loss frequency weighted reverse lower horizontal vertical Maass core quarter` (15 Sep 2026; 58,106 source files inventoried; source index incomplete, semantic coverage unavailable) returned no matching declaration. Existing `SelbergMaassInversionPhaseEnergy.transfer_loss_decomposition` and coefficient-residue identities provide exact norm redistribution, while the source comparison remains `weighted_phase_loss_le_horizontal`; no reverse weighted-loss or vertical-ODE-to-core bridge was found. Thus the current character-inversion mechanism does not remove the strip bound's low-frequency factor.
+- Deep search `observability unique continuation compact core deck source Maass energy` (15 Sep 2026; source index incomplete, semantic coverage unavailable) had no matching declaration. Returned finite-matrix/other-program spectral-gap candidates only, with no `MaassCuspEigenform` source bridge. The search was partial at its filtering stage, so this is not an exhaustiveness claim; it gives no usable observability theorem for the direct route.
+- `HTGeometry.carleman_weighted_estimate` is a compact-support one-dimensional inequality. Applied to a log-height cutoff of an actual Fourier coefficient, its cutoff derivative yields the lower modular-arc endpoint term. The only returned source identity, `SelbergMaassTraceBoundary.arc_current_cancellation`, rewrites that vertical arc current using horizontal arc currents; it supplies no sign. Since the trace density is a deck sum of squared norms, `sourceMean = 0` does not cancel this current. Therefore Carleman plus present arc identities cannot prove the required core-quarter nonnegativity.
+- Deep search `congruence deck Cayley spectral gap expansion Maass coercivity` (15 Sep 2026; source index incomplete, semantic coverage unavailable) returned no source-attached expansion or Cayley-gap theorem. Its only Maass candidates were the existing correspondence and trace identities; abstract Cayley/spectral lemmas carried no `MaassCuspEigenform` energy bridge. Thus no corpus theorem currently supplies the direct route's needed level-free deck coercivity.
+- Deep search `Maass Hecke adelic automorphic local representation source correspondence` (15 Sep 2026; source index incomplete, semantic coverage unavailable) found `maassCuspToSphericalAutomorphicCorrespondence` and finite differential lifts only. No candidate constructs an adelic completion, a local packet attached to the Maass source, or an all-even-degree unitary lift family. Thus the global route remains blocked at the source-attached completed lifting step.
+- `MaassModelHilbertForm` proves the source-attached complementary-series norm identity on every finite K-type. `MaassModelHilbertCompletion` therefore defines `completedModelIsometry : ComplementaryHilbert lam →ₗᵢ Lp` and proves its range is the closure of the normalized finite Maass image. This closes the isometric-completion part of Maass-to-model correspondence. Its stated remaining condition is closed-range invariance and full (SL_2(ℝ))-equivariance; `MaassModelHilbertGenerators` proves only infinitesimal identities on finite vectors.
+- `HTGeometry.norm_sub_taylorWithinEval_le_factorial` supplies a Banach-valued Taylor remainder with exact factorial denominator. `sphericalPrincipalE_single` and `sphericalPrincipalF_single` give the required one-step affine K-index recurrence. A focused deep search found no Maass/all-order weighted-shift norm estimate or analytic-vector theorem. Hence completing noncompact intertwining reduces concretely to proving factorial bounds for repeated (E\pm F) in the established complementary norm and matching those iterates to quotient-unitary orbit derivatives.
+- The complementary `K`-type recurrence gives exact singleton energies
+  `((2m+1)^2-s^2)/4` and `((2m-1)^2-s^2)/4` times the respective diagonal weight
+  for `E` and `F`.  This can support analytic-vector completion arguments, but the
+  already source-attached complementary Hilbert receiver still cannot produce the
+  missing unbounded-degree global lift family or the direct core inequality; it is
+  not pursued as a Selberg-closing route.
+- The Poincaré/Bessel candidate fails source attachment: `PoincareSeriesBesselCoefficient`
+  proves coefficient and Petersson identities for holomorphic level-one cusp forms,
+  while the target `MaassCuspEigenform` has no pairing or transfer theorem to that
+  space.  Its Kloosterman--Bessel formula therefore cannot control the actual Maass
+  adverse packet without a new, independent Maass Poincaré correspondence.
+- The refreshed symmetric-power search again finds only the exact local shrinkage theorem
+  `genericUnitarySymPower_degree_family_eq_singleton_iff`.  `MaassLadderQuotientL2`
+  supplies all compact-weight vectors in the same quotient `L²`; tensoring or multiplying
+  them remains diagonal `SL₂` automorphy and has no map to the higher-rank packet required by
+  `SymmetricPowerSphericalPacketUnitarizable`.  It cannot serve as the missing lift family.
+- The multi-cusp/deck experiment yields no uniform compact-core gap.  The full deck trace
+  descends to level one and is already identically zero, whereas every nonzero coordinate or
+  character readout remains a level-`N+1` Maass source with its original widening cusp.
+  The search returns no theorem aggregating those readouts into a source-attached uniform
+  coercive estimate; summing their exact identities returns the audited full trace identity.
+- The July 2026 Ginzburg--Landau comparison-field method and the September 2026
+  Hardy--Wronskian boundary method do not transfer.  The former needs a unit-modulus
+  nonlinear exterior state and Jacobi coercivity, while every cuspidal Maass source decays to
+  zero.  The latter needs a Liouville/Robin equation and holomorphic frames.  The actual Maass
+  `coefficientWronskian_eq_tail` controls antisymmetric coefficient currents; the unresolved
+  top flux contains the symmetric weighted `x * phaseStressXY` term.  Neither supplies the
+  missing signed compact-core comparison.
+
+- `RealSphericalComplementaryGeneratorEnergy` now proves, with closed Lean derivations, the exact one-step complementary-form energies of `sphericalPrincipalE` and `sphericalPrincipalF` on every spherical K-type.  Each is the quadratic coefficient `((2m ± 1)^2 - s^2)/4` times the preceding weight.  This supplies the literal recurrence-controlled base case for a finite-support analytic-vector estimate; it does not by itself integrate a noncompact action or produce the independent global higher-rank lift family.

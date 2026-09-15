@@ -34,6 +34,43 @@ the current SP-E investigation. It is not a route history.
 - Therefore the order-24 cap is exactly
   `[u^3] log A_3 < 1/20000000`, and this logarithmic-coefficient inequality is equivalent to the
   signed product-kernel inequality. These are algebraic identities, not numerical approximations.
+- The order-24 cap itself was already unconditionally closed in
+  `XiCenteredOrderTwentyFourSixthTraceClosure`. Hence the product-kernel identity is a new
+  representation of a closed finite-order result, not the live SP-E frontier. The live frontier is
+  all-order/cofinal incidence.
+
+## Cross-route frontier facts
+
+- The signed mixed center hierarchy is already complete through strict rank six. Rank-seven PSD is
+  equivalent to the native successor integral in `ThetaCuspCenterMixedSuccessorSource`; the
+  canonical degree-six minimizer and its signed norm are identified in
+  `ThetaCuspCenterMixedCutoffPolynomial`.
+- `PolynomialODEEvenCompactGapCoefficient4`, `PolynomialODEEvenCompactGapCoefficient5`, and
+  `PolynomialODEEvenCompactGapCoefficient6`, and `PolynomialODEEvenCompactGapCoefficient7` now
+  prove the previously missing degree-four through degree-seven coefficients of the exact even
+  compact incidence identity. Each degree is split into
+  seven independently certified cofactor sectors; this avoids the documented monolithic
+  determinant-expression blowup. Coefficients 8 through 11 and extensional assembly remain open.
+- `compactGapCofactorHigherCertified%` retains the equality proof already produced by higher-slice
+  normalization instead of discarding it and rerunning normalization in the theorem. Degree-five
+  head and cofactor sectors close under default heartbeat with this representation.
+- A moving-cusp/Möbius Gamma--Hankel covariance and the route-E Kloosterman response defect live on
+  different parameter spaces. Corpus search exposes no canonical identity between them; treating
+  them as the same covariance is unsupported and cannot currently bridge the routes.
+- `PrimeArchFinitePrefixSubcriticalScheduleNoGo` sharpens the D2 finite-prefix schedule obstruction:
+  for every real `c > 42`, any eventually positive depth schedule satisfying
+  `c * depth(n)^(3/4) ≤ log n` has log-height defect cofinally below every real floor. Thus `42`,
+  not the earlier sufficient constant `84`, is the exact boundary exposed by the current absolute
+  Chebyshev envelope. More sharply, the defect has the exact pointwise upper envelope
+  `42 * depth(n)^(3/4) - log n`, and it tends to minus infinity whenever the residual slack
+  `log n - 42 * depth(n)^(3/4)` tends to plus infinity. Any surviving D2 truncation must therefore
+  keep this additive slack bounded above cofinally or exploit prime-phase cancellation unavailable
+  to the envelope argument; the bounded-slack critical regime remains open.
+- Weighted reflection gives
+  `reflect 20 evenCompactGapDetPolynomial = evenCompactGapReversedDetPolynomial`; it does not make
+  the determinant self-reciprocal. Therefore existing high-degree coefficient theorems do not imply
+  degrees 7 through 11. The pending whole reversed-degree-11 proof is subject to the documented
+  lower-reversed-coefficient resource no-go and must be split before checking.
 
 ## No-gos and scope boundaries
 
@@ -43,3 +80,5 @@ the current SP-E investigation. It is not a route history.
 - The new logarithmic bridge supplies a source-native coefficient target and falsifier for changed
   determinant carriers. It does not prove trace class, ordinary determinant restoration, a changed
   source operator, or Xi-divisor identification.
+- The compact coefficient-four/five closures are exact algebraic progress toward rank seven, but do
+  not establish the full polynomial identity, the integrated successor sign, or RH.

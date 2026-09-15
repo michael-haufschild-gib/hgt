@@ -8,6 +8,7 @@ import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapReflectedSixSli
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapReflectedEightSlices
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapReflectedTenSlices
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapReflectedTwelveSlices
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCertifiedNormalizer
 
 /-! # Proof-assisted normal forms for cofactor coefficients through index ten -/
 namespace HTGeometry
@@ -16,8 +17,7 @@ set_option maxHeartbeats 500000
 set_option maxRecDepth 10000
 
 meta section
-elab "compactGapCofactorHigherSlice% " e:term : term => do
-  let e ← elabTermAndSynthesize e (some (mkConst ``Real))
+private meta def compactGapCofactorHigherNormalize (e : Expr) : TermElabM (Expr × Expr) := do
   let (rhs, g) ← Conv.mkConvGoalFor e
   let goals ← Tactic.run g.mvarId! do
     evalTactic (← `(conv| norm_num [evenCompactGapHeadPolynomial,
@@ -140,7 +140,20 @@ elab "compactGapCofactorHigherSlice% " e:term : term => do
     pruneSolvedGoals
   unless goals.isEmpty do
     throwError "cofactor normalization left open goals"
-  instantiateMVars rhs
+  let rhs ← instantiateMVars rhs
+  let proof ← instantiateMVars g
+  return (rhs, proof)
+
+elab "compactGapCofactorHigherSlice% " e:term : term => do
+  let e ← elabTermAndSynthesize e (some (mkConst ``Real))
+  let (rhs, _) ← compactGapCofactorHigherNormalize e
+  return rhs
+
+/-- Normalize a higher cofactor coefficient once and retain its exact equality proof. -/
+elab "compactGapCofactorHigherCertified% " e:term : term => do
+  let e ← elabTermAndSynthesize e (some (mkConst ``Real))
+  let (rhs, proof) ← compactGapCofactorHigherNormalize e
+  return mkApp3 (mkConst ``CompactGapNormalForm.mk) e rhs proof
 end
 
 end HTGeometry

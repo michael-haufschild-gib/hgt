@@ -104,6 +104,26 @@ theorem transfer_loss_decomposition (N : ℕ) (r s : ZMod (N+1))
   rw [characterProjection_loss,characterProjection_loss,lowerProjection_transfer_norm]
   ring
 
+/-- Summing the diagonal inversion losses leaves at least `N` full deck energies.
+The upper-character decomposition is exact; the second lower-character loss is nonnegative. -/
+theorem diagonal_transfer_loss_sum_lower (N : ℕ) (v : EuclideanSpace ℂ (Deck N)) :
+    (N : ℝ)*‖v‖^2 ≤
+      ∑ r : ZMod (N+1), (‖v‖^2-‖inversionTransfer N r r v‖^2) := by
+  have hpoint (r : ZMod (N+1)) :
+      ‖v-characterProjection N (upperBlock N) r v‖^2 ≤
+        ‖v‖^2-‖inversionTransfer N r r v‖^2 := by
+    rw [transfer_loss_decomposition]
+    exact le_add_of_nonneg_right (sq_nonneg _)
+  calc
+    (N : ℝ)*‖v‖^2 = ∑ r : ZMod (N+1), ‖v-characterProjection N (upperBlock N) r v‖^2 := by
+      simp_rw [characterProjection_loss]
+      rw [Finset.sum_sub_distrib,Finset.sum_const,Finset.card_univ,nsmul_eq_mul,
+        sum_characterProjection_norm_sq, ZMod.card]
+      push_cast
+      ring
+    _ ≤ ∑ r : ZMod (N+1), (‖v‖^2-‖inversionTransfer N r r v‖^2) :=
+      Finset.sum_le_sum (fun r _ => hpoint r)
+
 /-- The original character phase multiplying one actual block motion. -/
 def blockMotion (N : ℕ) (p : Multiplicative (ZMod (N+1)) →* Deck N)
     (r b : ZMod (N+1)) (v : EuclideanSpace ℂ (Deck N)) : EuclideanSpace ℂ (Deck N) :=

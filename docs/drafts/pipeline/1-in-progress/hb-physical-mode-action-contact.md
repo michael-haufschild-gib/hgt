@@ -13,6 +13,185 @@ and its identification with the restored meromorphic pairing at the original
 fundamental QNM. A scalar restoration, a local current identity, or construction
 using a different order of limits does not settle this target.
 
+### Current complete-collar comparison
+
+The actual source endpoints and time moment now have separate radial admission
+(`OriginalSourceRadialAdmission`, `OriginalSourceRadialRestoration`). Let
+`D=f*(metricTimeCut-restoredMetricTime)`, `F=mu*w*int_a^b forcingPeriodError`,
+and `H=horizonSourceFunctional+horizonBoundary`. The complete physical identity
+gives `D-F-H=sourceError+boundaryError`. On a derived right half-plane this has
+bound `C*exp(-L-N*k)` uniformly for every `0<a<=b`. The separately admitted
+integral `[int_A^M(D-F)-(M-A)*H]/2` tends to zero at every sufficiently deep
+interface as cusp height tends to infinity, with arbitrary external temporal
+intervals and upper radial cutoffs. `OriginalFullCollarRestoration` also proves
+separate radial admission of the entire actual metric discrepancy and forcing
+moment. Their original one-half Jacobian identifies the forcing integral with
+the canonical kernel discrepancy. At a common deep interface, the complete
+rectangular collar minus its length-trace term and the source-fixed canonical
+forcing counterterm difference tends to zero under independent horizon/cusp
+removal, uniformly over arbitrary external positive time intervals. All four
+leaves passed isolated exact audits and are wired into the umbrella.
+
+The complete static-collar comparison now covers an endpoint varying inside
+the radial integral: a static-time cut has upper endpoint `max(a,T-L/2)`.
+`OriginalSourceJointContinuity` now proves joint continuity of the actual
+scalar-period discrepancy from its separately admitted, uniformly dominated
+angular tail. It proves radial admission of every continuous positive moving
+source endpoint and of the complete source endpoint/moment functional on that
+static-time triangle. This fifth leaf passed its isolated exact audit and is
+wired. The subsequent static trace and metric collar theorems below also
+close moving boundary admission and retain the complete leading trace.
+F282–F284 below close its forcing assembly. Equality of the retained contacts
+with the prescribed full contacts, finite-cusp outer attachment and canonical
+QNM attachment still need proof for the same physical cut.
+
+The complete logarithmic collar attachment is now proved. Every actual
+horizon source/reader and forcing-reader product has arbitrary damped cusp
+decay. The source and all four boundary transfers give
+`norm(H(a,b,k))<=C_N*exp(-N*k)` uniformly for `0<a<=b` on a derived half-plane.
+The exact original coordinate identity is
+
+```
+(L-A)/2 + log(horizonCoordinate(-L/2))/2
+  = log(1+radialUnit(-L/2))-A/2 -> log(2)-A/2.
+```
+
+Consequently the entire admitted metric collar with literal logarithmic trace
+subtraction and the same source-fixed forcing counterterm difference tends to
+zero under independent horizon/cusp removal, uniformly over arbitrary external
+positive temporal intervals. No finite-height trace cancellation is assumed.
+**Formal status:** `OriginalHorizonProductDecay`, `OriginalMetricTraceDecay`
+and `OriginalMetricLogMatching` passed scratch and isolated exact leaf audits;
+all three are installed and wired. The last leaf's
+`full_metric_logarithmic_restoration` is the complete rectangular comparison.
+
+The static-time trace is now formally attached to both original moving
+endpoints (F278). With `P_j` the four actual horizon-transfer periods and
+`E=horizonPeriodError`, define
+
+```
+U=(mu-2)*(mu*E-P_0)
+V=2*w*U+w*(mu*P_1-P_2-P_3)
+K(a)=-U(a)+int_a^infinity V
+Z(p)=U(p)-int_p^infinity V
+Q(p)=-int_p^infinity Z
+H(a,b)=K(a)+Z(b)
+int_R^S H(a,b) db=(S-R)*K(a)+Q(S)-Q(R).
+```
+
+The actual fields have separate compact and half-line admission. Both corners
+obey `norm(Q(p))<=C_N*exp(-N*k-p)`. For `S=max(a,T-A/2)` and
+`R=max(a,T-B/2)`, the original one-half radial Jacobian gives exactly this
+identity on the truncated static triangle, including empty and crossing cuts.
+`OriginalStaticTraceDensity`, `OriginalStaticTracePrimitive` and
+`OriginalStaticTraceGeometry` passed scratch and isolated exact audits and
+are wired. The equivalent first-moment formula for `Q` is proved on paper;
+its separate Lean equality remains open.
+
+The actual moving metric source/boundary sector is also closed (F280).
+`OriginalStaticMetricCollar` proves continuity of every original boundary
+endpoint and moment on this geometry, separate radial admission of `D-F`,
+and the bound
+
+```
+norm(int_A^B (D-F)(a,max(a,T-L/2),L,k)/2-(S-R)*K(a))
+  <= C_N*exp(-N*k).
+```
+
+It is uniform over `a>0`, arbitrary `T`, and `B>=A` beyond a sufficiently
+deep interface, on a derived right half-plane. The leaf passed scratch and
+isolated exact audit and is wired. The forcing moment remains retained.
+
+The moving forcing bridge (F279, F281–F283) is now formalized. For
+`xi<=b<0`, `u=max(a,T+b)`, `r=max(a,T+xi)`, let `f` be the actual damped
+onset, `C_j(x)` the existing canonical forcing counterterm evaluated at
+`horizonCoordinate(x)`, and `J_j(x)=int_x^b K_j-C_j(x)`. Finite Fubini gives
+
+```
+int_xi^b K_j(x)*int_a^max(a,T+x) f
+  = int_a^u f(p)*J_j(max(xi,p-T)) + Cstatic_j
+Cstatic_j = int_a^r f*C_j(xi) + int_r^u f(p)*C_j(p-T).
+```
+
+These are the unchanged source-fixed coefficients transported along the
+original causal boundary. Compact product admission justifies Fubini. The
+canonical primitive has a finite horizon limit and is continuous elsewhere,
+hence is bounded over the entire collar. This uniform bound, and the
+vanishing two angular coefficients, now pass Lean in
+`OriginalStaticForcingPrimitive.forcing_primitive_uniform_restoration`
+(F281; scratch and isolated exact audit passed, installed and wired).
+The actual onset has a global L1 bound. `OriginalStaticForcingTriangle` proves
+the finite identity with separate product and integral admission;
+`OriginalStaticForcingRestoration` proves the time-integrated primitive
+discrepancy uniformly cusp-small, independently of all onset, lower radial
+and terminal cutoffs. Both leaves passed scratch and exact audits and are wired.
+
+`OriginalFullStaticCollar.full_static_metric_collar_restoration` assembles the
+entire original moving metric discrepancy, including separate admission of
+the full metric and forcing terms. At every sufficiently deep fixed interface
+on a derived nonreal right half-plane, one `eta(k)>=0`, `eta(k)->0`, bounds
+
+```
+norm(int_A^B D(a,max(a,T-L/2),L,k)/2
+  -(S-R)*K(a)-mu*w*Cstatic(a,-B/2,-A/2,T,k)) <= eta(k).
+```
+
+This leaf passed scratch and its exact audit and is wired.
+`OriginalForcingClockContact` now proves the exact forcing logarithm
+coefficient `oppositeValue=-horizonReader*forcingProfile(1)/2`, without a
+frequency restriction. On `Re(w)>=0`, the same canonical counterterm plus
+`x*horizonForcing` is bounded for every exterior `x<0`. Its finite-height
+discrepancy therefore agrees, uniformly up to a cusp-vanishing bound, with
+the physical horizon triangle
+
+```
+H_k*int_a^max(a,T+b) onset(p)*(b-max(xi,p-T)).
+```
+
+F285's `full_static_horizon_restoration` replaces `Cstatic` in the entire
+metric comparison above by this actual triangle. The fixed interface's
+finite term is retained. Scratch and isolated exact audit passed; leaf wired.
+The bounded-power argument is on the convergence chamber; its direct use at
+negative-real-part QNMs is not justified.
+
+The single mass-contact argument is now formalized in
+`OriginalStaticPhysicalMass` (F286): with
+`W(p)=max(0,b-max(xi,p-T))`, one has `W(a)=S-R` and
+`abs(W(p)-W(a))<=p-a<=p` for `p>=a>=0`. The actual onset has finite first
+absolute moment. Consequently the triangle differs from
+`(S-R)*H_k*int_a^infinity onset` by at most `norm(H_k)` times that moment,
+uniformly over every cutoff. The complete original static-collar discrepancy
+is therefore uniformly cusp-small after the single subtraction
+
+```
+(S-R)*(K(a)+mu*w*H_k*int_a^infinity onset).
+```
+
+The actual metric integral is separately admitted. Scratch and isolated
+exact audit passed; leaf installed and wired. This retains the finite-onset
+mass; substituting its zero-onset limit before length removal would require
+a separate estimate.
+
+F212–F213 and F222–F224 already prove the complete angular-restored
+metric/current identity, corner limit and outer time limit; these must be
+reused. Full finite-cusp outer attachment and identification with the canonical
+action remain open. No full matching or impossibility is proved.
+
+For the remaining finite-cusp outer estimate, the original null rectangle
+already gives `1<=I<=3*exp(p)`, hence source-circle radius `d<=p+log(6)`
+(`OriginalCausalAdmission.nullInvariant_ingoing_bound`). Reuse
+`CausalResponseCusp.responseRemainder_jet_integral`, the actual integrable
+`sourceWeight` envelope, and `OriginalCuspJets.original_remainder_jet`,
+including its onset lift. The missing producer is the global native angular
+jet bound obtained from `NativeSourceJetGrowth` and the weighted circle
+derivative identities. It should yield, for the five actual base operations,
+`norm(sourceJet_j(p,L,x,k))<=C_N*exp(G_N*p-N*k)` on each full finite outer
+interval `0<L<=A`, followed by the complete four-transfer metric estimate
+`norm(int_0^A D(a,max(a,T-L/2),L,k)/2)<=C_N*exp(-N*k)` uniformly in `a>0,T`.
+These two assembled bounds remain open. The transposed complete metric
+identity needs angular source jets here, so extending the horizon radial
+Taylor estimates to the outer boundary is not a prerequisite.
+
 Write `mu=physicalAngularParameter(q)^2-1/4`, `lambda=mu-2`,
 `C=physicalSelfSourceCoefficient(q)`, `L=radialLift`, and
 `G=continuedReducedGreen` at the unchanged physical parameters. The known
@@ -595,8 +774,8 @@ After division by the actual metric factor `R_L²-1`, arbitrary cusp decay remai
 to zero along every nonnegative time-cutoff net and every horizontal path.
 These statements hold on the source-derived right half-plane, not at a QNM.
 
-**Next full-metric obligation.** Restore the assembled complete boundary under
-independent cusp, time and horizon removal, retaining its actual leading trace.
+**Next full-metric obligation.** Assemble the original scalar-period cusp-tail
+error with the complete boundary and identify the retained horizon/corner terms.
 The remaining comparison must retain both radial reader branches and the actual
 finite-height coefficients, and justify independent time/cusp/horizon restoration
 and QNM continuation for the evolved-source terms. The source-product estimates
@@ -616,9 +795,124 @@ All compact integral admission comes from the actual fields.
 `complete_boundary_radial_density` proves that the actual radial measure
 cancels every extra metric denominator: the forcing cancellation uses
 `R²*Z=R²-1`, and the collar coordinate supplies the factor one-half.
-The next comparison retains the actual leading horizon trace and integrates
-the combined error uniformly over independent cutoffs. Full action matching
-and QNM continuation are still open.
+`OriginalBoundaryRestoration` derives separate compact admission of the actual
+leading trace from uniform convergence of the smooth physical transfers. Its
+physical boundary restoration and collar joint-limit theorem retain both
+endpoints, all four transfers, three cusp powers and the factor one-half.
+Boundary radial integral admission and identification of that leading trace
+with the prescribed full-action counterterms remain to be proved.
+`OriginalSourceTailCollar` attaches the actual scalar-period discrepancy to its
+original modular cusp tail and proves the mixed bound `C*exp(-L-N*k-p)` after
+retaining its actual horizon trace. `OriginalSourceTailAdmission` proves joint
+absolute admission over the unbounded time/horizon product and the original
+angular tail. Source-tail Fubini therefore has no admission premise.
+Full action matching and QNM identification are still open.
+
+**Canonical spectral coefficients [Lean; exact leaf audit passed].**
+`OriginalCanonicalHorizon` defines the regular incoming value and slope and
+opposite value by actual positive-radius limits of the original profiles.
+They are analytic at every nonreal frequency. Every admitted local quadratic
+jet agrees with this one family on its parameter overlap. This removes the
+freedom to choose unrelated counterterm functions near the convergence chamber
+and a QNM. The existing `OriginalHorizonGreenMatch.greenHorizonAmplitude_local`
+and `greenHorizonAmplitude_meromorphic` already provide the corresponding
+source-defined Green amplitude.
+
+`OriginalCanonicalRestoration` is also audited. For every nonreal frequency
+with real part greater than minus two, it restores the original radial integral
+with these same two power coefficients and logarithmic coefficient, throughout
+one neighborhood and at every sufficiently small interface. Both horizon
+branches remain. Adding the original regular outer moment proves local
+analyticity of the complete `OriginalMetricRadial.regularFinitePart` with this
+one family. This closes the regular term's frequency-domain coefficient and
+restoration gap; full Green/corner and metric attachment are still required.
+
+**Canonical full radial cutoff [Lean; exact leaf audit passed].**
+`OriginalCanonicalMetricCutoff.original_green_endpoint_below` proves that
+`incomingResponseEndpoint(...,b)=greenHorizonAmplitude` at every sufficiently
+small interface, throughout one frequency neighborhood off connection zeros.
+`canonicalMetricCutoff` uses this actual Green amplitude and the canonical
+regular coefficients in the prescribed counterterms. It contains the complete
+original `outerDensity` integral and has no auxiliary interface parameter.
+`original_metric_cutoff_canonical` identifies it exactly with the existing
+`OriginalMetricRadial.radialCutoff` at every sufficiently small local interface.
+
+**Canonical radial/corner continuation [Lean; isolated exact leaf audit and
+formal lint passed; installed and wired].**
+`OriginalCanonicalMetricAction` combines both Green branches, the canonical
+regular forcing term and the actual outer integral at a common small interface.
+Its `D4BMOriginalCanonicalMetricGerm.canonicalRadialValue` is the positive-radius
+limit of the same literal `canonicalMetricCutoff` at every frequency. The cutoff
+converges for every nonreal `w` with `Re(w)>-2` off connection zeros. Uniqueness
+identifies every sufficiently small local formula with this value. Punctured-germ
+equality proves meromorphy throughout that domain, including connection zeros.
+
+`D4BMOriginalCanonicalAction.canonicalAction` adds the actual
+`physicalCornerCandidate`. It is meromorphic on the same domain. At either
+fundamental QNM, replacing a locally restored forcing formula by the canonical
+coefficients adds an analytic remainder; the original radial/corner residue
+balance therefore gives `(w-w0)*canonicalAction(w) -> 0`. Its meromorphic order
+is consequently nonnegative. `canonical_action_QNM` proves analyticity after
+updating the QNM value to its unique finite limit, and retains the actual radial
+cutoff plus temporal corner in the restoration statement. That finite value is
+not asserted to vanish.
+
+**Complete finite metric discrepancy and canonical forcing [Lean; isolated exact
+leaf audits passed; installed and wired].** `OriginalFullMetricDifference` proves
+
+```
+f*(metricTimeCut-restoredMetricTime)
+ = mu*(mu-2)*(E(b)-E(a)+2*w*int_a^b E)
+   + mu*w*int_a^b F + radialBoundary.
+```
+
+Here `E=originalPeriodError` is the literal scalar cusp-tail discrepancy and
+`F` is the original forcing-period discrepancy with the unchanged reader.
+All radius factors cancel in the original radial measure. Compact admission
+is derived separately before subtracting the source and forcing integrals;
+both temporal endpoints and all four boundary transfers remain.
+
+Its `D4BMOriginalCanonicalForcingMatch` namespace closes the forcing discrepancy
+for every nonreal `w` with `Re(w)>-2`. At each sufficiently small interface, the
+canonically restored discrepancy is exactly `(firstWeight-C)` times the
+restored kernel at gradient `K`, plus `secondWeight` times the one at `K+1`.
+The two angular weights vanish while both canonically restored kernels have
+finite horizon limits, so the product-filter limit is zero. The actual source
+onset has one L1 bound over every positive time interval. Consequently this
+zero limit persists when the temporal endpoints vary arbitrarily with the
+independent cusp and horizon cuts. `original_forcing_error_kernel` identifies
+the kernel in this limit with the forcing term of the full finite identity.
+No rate relation between the cutoffs or new spectral coefficient choice is used.
+
+**Admitted complete boundary restoration [Lean; isolated exact leaf audit
+passed; installed and wired].** `OriginalBoundaryRadialAdmission` derives joint
+continuity in horizon depth, positive source time and horizontal position for
+all four actual normalized transfers. Compact product admission then supplies
+radial integrability of each endpoint transfer and each time/horizontal moment.
+The complete physical boundary therefore has a separately admitted radial
+integral. Its actual leading horizon trace `H=horizonBoundary` contributes
+exactly `(M-L0)*H` on a collar `L0..M`.
+
+`boundary_radial_joint_limit` proves that
+
+```
+(int_L0^M radialBoundary(a,b,L,k) - (M-L0)*H(a,b,k))/2 -> 0
+```
+
+in the derived convergence half-plane under independent cutoff removal.
+Both positive temporal endpoints and the upper radial cutoff may vary
+arbitrarily. The factor one-half remains the original collar Jacobian.
+This closes the radial-admission gap in the physical boundary comparison;
+it does not identify the entire metric pairing with the canonical QNM action.
+
+**Remaining full matching:** identify independent time/cusp/horizon removal of
+the original metric pairing with this one canonical action. The finite metric
+identity retains source endpoints, a source moment, a forcing moment and the
+complete boundary flux. Their jointly restored sum must match the prescribed
+horizon subtractions and the temporal corner. Source-tail product admission, the canonical forcing discrepancy, and the
+separately admitted boundary restoration are proved. The source endpoint/moment
+radial assembly and the complete physical contact comparison still need proof. Neither full matching, impossibility nor RH
+follows from canonical radial/corner continuation alone.
 
 **Fourth forcing transfer [BRIDGE; Lean scratch and isolated exact leaf audits passed].**
 `OriginalFixedForcingProducts` proves arbitrary uniform cusp decay for
