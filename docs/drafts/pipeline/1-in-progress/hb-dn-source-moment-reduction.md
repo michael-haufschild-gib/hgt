@@ -3,40 +3,22 @@
 Scope: evaluate the original complete temporal/metric/QNM action, then compare
 it with the physical source receiver. The frontier map remains read-only.
 
-**Status.** The compact two-frequency identity and its diagonal limit are
-Lean-verified in `ThetaCuspHawkingBMOriginalSourceResolvent.lean`, including
-separate admission of both integrals. The actual two-frequency endpoint brackets pass Lean scratch and isolated
-exact module audit in `OriginalSourceResolventEndpoints`. Both whole-domain integral admissions and the full-exterior source-resolvent
-identity are Lean-verified in `OriginalWholeSourceResolvent` (scratch and
-isolated exact audit passed). The source-derived reader remainder, diagonal continuity, and exact opposite-
-branch logarithmic normalization are verified in `OriginalReaderRegularization`.
-The complete horizon diagonal equals the original metric finite part in
-`OriginalReaderDiagonalMatch` (scratch and isolated exact audit passed). The
-whole-domain combined source-difference identity (2a) is Lean-verified in
-`OriginalRegularizedSourceResolvent`, including the actual horizon amplitude
-and diagonal source admission (scratch and isolated exact audit passed).
-`OriginalMetricTemporalDiagonal` identifies its complete metric/temporal
-diagonal with the original finite part and corner (scratch and isolated exact
-audit passed). `OriginalSourceActionReduction` proves the actual-source Cauchy bound,
-admits the source derivative integral, and establishes (2b) and its exact
-tortoise-weighted form (scratch and isolated exact audit passed).
-`OriginalPhysicalSourceAction` identifies the physical Green/corner
-coefficients, the exact native forcing pullback, and the combined elementary
-source-action density at either QNM (scratch and isolated exact audit passed).
-`OriginalSourceIncomingSubtraction`, `OriginalSourceHorizonFinitePart` and
-`OriginalSourceFinitePart` prove the full source derivative continuation for
-nonreal `Re(w)>-2`, with the literal cutoff limit and its original power/log
-finite constant. It agrees with the ordinary integral in the convergence
-chamber (scratch and isolated exact audits passed).
-`OriginalNativeSourceFinitePart` proves the native forcing continuation with
-all three original counterterms. `OriginalCanonicalSourceAction` proves the
-full canonical metric/temporal action equals these source finite parts,
-including its unique value at both physical QNMs (scratch and isolated exact
-audits passed). The unit left-channel extinction comparison and RH remain open.
-`OriginalElementaryQNMAction` also evaluates both incoming forcing
-coefficients and proves the complete elementary QNM cutoff limit (scratch
-and isolated exact audit passed). The contour/counting obstruction below
-remains under development.
+**Status.** The original complete source reduction, finite-part continuation,
+QNM evaluation and compact-contour attachment are Lean verified. The original
+source derivative holds the source rate fixed; the logarithmic and forcing
+terms retain all original counterterms. `CanonicalSourcePeriodAttachment`
+proves the three-period formula; `CanonicalContourAttachment` attaches its
+entire numerator to the actual canonical action.
+
+`FullCanonicalMatchingNoGo` proves that matching this full action to the
+literal complementary unit-source receiver is impossible, even if only
+extinction loci must agree. Its positive survivor is quantitative: zero
+canonical action occurs at only `O(N)` simple critical Xi zeros up to height
+`N/3`, and their relative density is zero. Some actual critical Xi copy
+therefore has nonzero full action while every unit-source probe erases it.
+Scratch checks and isolated exact module audits passed; modules are wired.
+[Exact no-go scope and positive survivor](../5-failed/hb-full-canonical-unit-source-matching.md).
+Different source-retaining receivers and RH remain open.
 
 ## Fixed original data
 
@@ -392,8 +374,8 @@ zero need not equal their meromorphic extensions.
 
 The exact fundamental identities give `a(w0)=1`, `beta(w0)=0`,
 `n_w0=z^(w0/2)*sqrt(1-z)` and `mu=(w0+1)*(w0+2)`. Put
-`F(z)=fundamentalSourceCore w0 s amp z`. Equation (4) then gives the proposed
-Lean target
+`F(z)=fundamentalSourceCore w0 s amp z`. Equation (4) gives the source-period formula verified in DN31
+(with `w0*Z0=Y` as verified in DN28–DN30)
 
 ```
 canonicalQNMValue q br side amp
@@ -431,7 +413,10 @@ integral at the horizon.
 
 ## QNM forcing moment by exact integration by parts
 
-**Analytical reduction; Lean proof pending.** At a physical QNM write
+**Original-radius analytical identity.** DN28–DN30 prove the required
+forcing combination by integration by parts after the polynomial coordinate
+change; the displayed original-radius derivative identity is not needed by
+the Lean matching obstruction. At a physical QNM write
 `F=fundamentalSourceCore(w,s,amp)`, `F0=F(0)`, `F1=F'(0)`.
 The explicit source gives `F(1)=0`, a quadratic Taylor remainder at zero,
 and an integrable square-root derivative at the outer endpoint. For
@@ -453,7 +438,7 @@ w*(int_e^1 z^(w-1)*F(z)
 
 The last term tends to zero because the actual source remainder is
 `O(e^2)` and `Re(w)>-2`. Thus `w*Z0=-D`, with no constant shift.
-The proposed QNM formula is equivalently
+The QNM formula is equivalently
 
 ```
 canonicalQNMValue = mu*C*(T*D-(mu-2)*(T'*M+T*X)).
@@ -465,27 +450,25 @@ problem to one common Mellin exponent and preserves all original finite
 constants. DN20 establishes continuation of (4); this integration-by-parts
 reduction does not establish extinction.
 
-## Remaining decisive work
+## Matching conclusion
 
-Evaluate the combined source finite parts in DN20 and prove or disprove their
-extinction/nonextinction relation to the physical unit left-channel source
-clock. The canonical metric/temporal action and its QNM source continuation
-are now identified in Lean. The remaining value retains both the source
-derivative (including the original tortoise moment) and the native forcing.
-Nonvanishing of the scalar source moment alone cannot settle their possible
-cancellation. Angular source collisions remain a separate factor in the
-same original action; no RH implication follows from DN20 alone.
+DN31 evaluates the combined source finite parts, and DN32 attaches them to
+the complete contour numerator. DN33–DN35 compare the resulting actual action
+with the physical unit left-channel source clock and disprove their
+extinction equivalence. Both the fixed-source derivative and native forcing
+are retained; the counting proof controls cancellation of their whole sum.
+Angular source collisions are controlled separately in the same original
+action. This closes the literal unit-source matching option, not RH.
 
-## Candidate impossibility test: compact contours and zero counts
+## Complete-action obstruction from compact contours and zero counts
 
-**Conjecture under analytical development; not a proved matching obstruction.**
-Test the proposed extinction equivalence on critical copies. The corpus proves
+**Lean verified.** The corpus's
 `eventually_superlinear_xiSimpleCriticalZeroCount` in
-`Zeta23SimpleCriticalDensity`: simple critical zeros have a positive
-`T*log(T)` lower bound. `exponentialType_zeroCount_linear` in
-`HTGeometry/ExponentialTypeZeroDensity` bounds zeros of a nonzero entire
-finite-exponential-type function by `O(T)`. These statements were inspected
-in source; their application to the complete action is still unproved.
+`Zeta23SimpleCriticalDensity` supplies a positive `T*log(T)` lower bound.
+`exponentialType_zeroCount_linear` supplies the linear bound for a nonzero
+entire function of finite exponential type. `FullCanonicalMatchingNoGo`
+applies both to the complete action using the exact source attachment and
+angular counting injections.
 
 For the actual `br=side=true` source, `s=-2*w-4`. Set `E(w)=exp(2*pi*i*w)-1`
 and `lambda=w-2*s=5*w+8`. The polynomial coordinate `z=x*(2-x)` gives
@@ -502,7 +485,7 @@ only the Jacobi periods, holding these coefficients fixed:
 `X=2*amp^2*(A*delta J_2+B*delta J_4)`,
 `delta=(1/2)*partial_w-(1/4)*partial_s`.
 
-The candidate contour identity uses the unit circle with the lifted logarithm
+The exact contour identity uses the unit circle with the lifted logarithm
 `log(x)=i*t`, `0<=t<=2*pi`, and the single analytic branch of `log(2-x)`:
 
 ```
@@ -521,7 +504,7 @@ insert the bounded contour weight `(i*t-Log(2-exp(i*t)))/2`, still holding
 E^2*X = E*H_X-pi*i*exp(2*pi*i*w)*H_M.
 ```
 
-With `Theta0=lambda*T` and `Theta1=lambda^2*T'`, the proposed entire
+With `Theta0=lambda*T` and `Theta1=lambda^2*T'`, the entire
 numerator of the complete radial action is
 
 ```
@@ -533,11 +516,11 @@ G = E^2*lambda^2*((mu-2)*(T'*M+T*X)+w*T*Z).
 
 Every contour is compact and avoids `x=0,2`; the cleared onset and its
 fixed-source derivative are compact transition transforms plus polynomials.
-This supplies a concrete route to global finite exponential type after
-substituting `s=-2*w-4`. Nontriviality should follow from the removable
-`w=0` value of the radial expression: `mu=2`, `w*Z -> F(0)`,
-`F(0)=51/256` for unit amplitude, and `T(-4,0)>0` from the fixed positive
-onset. DN24 closes the scalar contour identity and its affine entirety/growth in Lean. DN25 closes the logarithmic contour identity, the complete candidate numerator, its nonzero pole anchor and linear zero count. Attachment to the original cutoff remains open.
+This proves global finite exponential type after substituting `s=-2*w-4`.
+DN25 proves nontriviality at `w=-1`: `G(-1)=27*pi^2*T(-2,-1)/4>0`,
+using positivity of the original onset. DN24–DN30 identify the normalized
+scalar, logarithmic and forcing contours and their original cutoffs.
+DN31–DN32 assemble and attach the entire numerator to the complete action.
 
 Angular cancellation cannot be discarded. **DN23, Lean verified:**
 `physicalSelfSourceCoefficient_fourLambda_closedHalfPlane` extends the actual
@@ -546,15 +529,17 @@ collisions lie on the `Re=1/4` or `Re=3/4` Xi lines at heights scaled by
 `1/2,3/2,5/2`. The corpus's
 `Sieve.exists_eventually_zetaLittlewoodZeroCountAbove_le_linearExponent`
 has exponent `(16/5)*(1-sigma)` and fixed polylogarithmic loss for
-`7/10<=sigma<1`; at `sigma=3/4` this is `4/5`. A precise reflected affine
-counting injection would make those collisions sublinear. The resulting
-`O(T)+o(T)` exceptional set could not cover the critical census.
+`7/10<=sigma<1`; at `sigma=3/4` this is `4/5`. DN33 proves the reflected affine
+counting injections and an eventual bound of `N` for each collision set at
+census height `N/3`. Together with the radial bound, this gives only `O(N)`
+exceptions, which cannot cover the superlinear critical census.
 
-**Whole-route test:** if all these obligations close, some actual critical
-copy has nonzero complete canonical action, disproving the proposed
-critical-wall extinction equivalence. This is an attack on the full action,
-including its source amplitude, rather than on a selected scalar term.
-No such impossibility theorem is currently claimed.
+**Whole-route conclusion:** DN35 proves that an actual critical copy has
+nonzero complete canonical action. The literal unit-source receiver erases
+that copy for every returned vector, so both value matching and extinction
+matching are impossible. DN34 proves the stronger positive statement of
+relative-density-one nonvanishing. Different source-retaining receivers
+are outside this no-go.
 
 The inspected strict-right restriction has a precise arithmetic origin:
 `NativeFourierDirichletValue.nativeRamanujanChamber` packages
@@ -646,21 +631,21 @@ T(-4,0) = int_0^infinity smoothTransition(u)*exp(-8*u) du > 0
 
 because it is nonnegative and equals one for `u>=1`. Thus the radial
 expression has value `51*T(-4,0)/256`. Since `lambda(0)=8` and
-`E(w)/w -> 2*pi*i`, its proposed compact numerator satisfies
+`E(w)/w -> 2*pi*i`, its compact numerator would satisfy
 
 ```
 G(w)/w^2 -> -51*pi^2*T(-4,0) != 0.
 ```
 
-The nonzero anchor and contour estimates would therefore apply to the
-complete action, not merely to its scalar source moment. Their Lean proofs,
-the actual finite-part identification, and the affine counting injection
-are still required before claiming the matching obstruction.
+This alternative `w=0` expansion is not used in the Lean proof. DN25
+instead proves a nonzero anchor at `w=-1`, avoiding a second-order
+expansion. DN32 and DN33–DN35 complete the actual finite-part attachment
+and critical-copy counting obstruction.
 
 
 ## Attachment of the logarithmic moment
 
-The remaining logarithmic contour can be proved without differentiating along
+The logarithmic contour is obtained without differentiating along
 the physical parameter curve. Define
 
 ```
@@ -677,8 +662,8 @@ constant is `-log(2)/2`: `tortoise(x*(2-x))=(log(x)-log(2-x))/2`.
 Together with `z~2*x`, this agrees with the original `log(z)/2-log(2)`
 constant. DN25 proves the fixed-direction derivative and contour monodromy;
 DN26 proves its admitted integral and cutoff equality; DN27 proves the exact
-nonlinear-radius counterterm transport. Their assembly with the complete
-canonical action remains open in Lean.
+nonlinear-radius counterterm transport. DN29, DN31 and DN32 assemble these
+identities with the complete canonical action in Lean.
 
 The onset clearing can also retain the fixed-source derivative explicitly.
 Put `F(lambda)=clearedOnset 0 lambda=1+lambda*onsetCorrection 0 lambda`.
@@ -699,7 +684,7 @@ source-defined entire function and its derivative, rather than a new clock.
 
 ## Nonzero anchor at the first Mellin pole
 
-**DN25, Lean verified.** The full candidate cleared
+**DN25, Lean verified.** The full cleared
 numerator has a simpler nonzero anchor at `w=-1`, `s=-2` than at `w=0`.
 At this point `E=0`, `lambda=3`, `mu=0`, `A=-3/2`, and `B=0`.
 The source-normalized contour residue is
@@ -722,8 +707,8 @@ the integrand is nonnegative everywhere and positive on `[1,2]`. This tests
 the same full numerator, including onset, its derivative and forcing; their
 other terms vanish by their explicit monodromy factors at this anchor.
 The outer action factor `mu` is nonzero at every actual nonreal QNM, so its
-zero at the auxiliary anchor does not affect the proposed critical-zero
-counting argument. No off-shell nonzero action is being substituted for an
+zero at the auxiliary anchor does not affect the critical-zero
+counting proof. No off-shell nonzero action is being substituted for an
 actual Xi-copy nonzero action.
 
 For formal attachment of forcing, the displayed shifted `J_n(w-1,s-1/2)`
@@ -742,11 +727,12 @@ this formulation is in its verified first-subtraction domain.
 
 ## Complete analytical matching obstruction
 
-**Paper derivation; canonical-cutoff attachment and counting injections are
-not yet Lean-verified.** Fix the `true/true` branch and unit amplitude.
+**Lean verified:** `CanonicalContourAttachment` proves the canonical-cutoff
+identity; `FullCanonicalMatchingNoGo` proves the counting injections and
+matching obstruction. Fix the `true/true` branch and unit amplitude.
 For a critical copy write `rho=1/2+i*t`, `w=-rho/2-1`, `s=-2*w-4`.
 Then `w` is nonreal, `-2<Re(w)`, and `mu`, `E(w)` and `lambda=5*w+8`
-are nonzero. The exact proposed attachment is
+are nonzero. The exact attachment is
 
 ```
 E(w)^2*lambda^2*canonicalQNMValue(q,true,true,1)
@@ -818,9 +804,9 @@ complete canonical action. The corpus's source-probe range classification
 then excludes matching that action through the unit complementary source,
 regardless of how the returned vector depends on the copy.
 
-The positive survivor is stronger than one counterexample: once the
-attachment and injections are formalized, only `O(T)` simple critical zeros
-can have zero complete action, among an `Omega(T*log(T))` census. Thus the
+The Lean-verified positive survivor is stronger than one counterexample:
+only `O(T)` simple critical zeros can have zero complete action, among an
+`Omega(T*log(T))` census (formalized at heights `T=N/3`). Thus the
 nonzero action occupies asymptotic relative density one in that census.
 This constrains the proposed unit-source-clock matching; it neither
 falsifies RH nor excludes every possible source-retaining HB receiver.

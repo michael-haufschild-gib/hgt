@@ -377,3 +377,39 @@
   counting obstruction now concerns the actual full action. The remaining
   obligation is to compare its radial/angular exceptional sets with the
   actual simple critical Xi census.
+
+- **DN33 — Lean verified.** `FullCanonicalMatchingNoGo` injects the three
+  actual critical-copy angular collision sets into the residue-unit zero
+  count on `Re=3/4`. For the simple-critical census up to height `N/3`,
+  each image lies within ordinate `N-2` when `N>=12`. The corpus density
+  bound makes each exceptional count at most `N` eventually. Multiplicities
+  are retained; every injected zero has positive analytic order.
+  Scratch and isolated exact module audit passed; module wired.
+  **Whole-route effect:** angular cancellation cannot absorb the
+  superlinear simple-critical census.
+
+- **DN34 — Lean verified.** `FullCanonicalMatchingNoGo` proves the actual
+  complete canonical action has zero value at only `O(N)` simple critical
+  Xi zeros up to height `N/3`. For every `eps>0`, their number is eventually
+  at most `eps` times the actual simple-critical count. The argument uses
+  DN32's complete-action factorization, DN25's nonzero entire numerator,
+  DN33's angular injections and the corpus's `Omega(N*log(N))` lower bound.
+  Scratch and isolated exact module audit passed; module wired.
+  **Whole-route effect:** full-action nonvanishing has relative density one
+  on this critical census, including all possible cancellation between the
+  temporal, metric and forcing contributions.
+
+- **DN35 — Lean verified; matching no-go closed with positive survivor.**
+  `exists_critical_canonicalQNMValue_ne_zero` produces an actual critical Xi
+  copy with nonzero complete true/true unit-amplitude QNM action.
+  `not_exists_hbXiPeierls_fullCanonicalQNM_matching` excludes matching it
+  through the literal complementary unit-source probe for every possible
+  copy-dependent returned vector. The stronger
+  `not_exists_hbXiPeierls_fullCanonicalExtinction_matching` excludes even
+  equality of their zero loci; arbitrary nonlinear carrier responses are
+  included. DN34 is the quantitative positive survivor. Scratch and
+  isolated exact module audit passed (98 seconds, two jobs); module wired.
+  **Whole-route effect:** this literal unit-source matching option is
+  impossible. Different source-retaining receivers are not excluded;
+  RH is neither proved nor falsified. Exact scope and proof:
+  [closed matching option](../5-failed/hb-full-canonical-unit-source-matching.md).

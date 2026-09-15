@@ -60,6 +60,33 @@ private theorem chart_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)
   simp only [Complex.ofReal_div, Complex.ofReal_one, Complex.ofReal_pow]
   ring
 
+private theorem chart_laplacian_pullback_gl (A : GL (Fin 2) ℝ) (hA : 0 < A.val.det)
+    (f : ℍ → ℂ) (hf : IsRealSmoothUpperHalfPlane f) (z : ℍ) :
+    chartLaplacian (fun w => f (A • w)) z = chartLaplacian f (A • z) := by
+  let G : ℂ → ℂ := fun w => ((A • ofComplex w : ℍ) : ℂ)
+  have hG : ContDiffAt ℂ 2 G (z : ℂ) :=
+    (UpperHalfPlane.analyticAt_smul (g := A) hA z).contDiffAt
+  have hF : ContDiffAt ℝ 2 (f ∘ ofComplex) (G (z : ℂ)) := by
+    simpa only [G, ofComplex_apply] using chart_contDiffAt hf (A • z)
+  have hc := laplacian_holomorphic_comp hF hG
+  have hfun : (f ∘ ofComplex) ∘ G = (fun w : ℍ => f (A • w)) ∘ ofComplex := by
+    funext w
+    simp only [G, Function.comp_apply, ofComplex_apply]
+  rw [hfun] at hc
+  have hd : deriv G (z : ℂ) = A.val.det / (denom A z) ^ 2 := by
+    simpa only [G] using UpperHalfPlane.deriv_smul (g := A) hA z
+  simp only [G, ofComplex_apply] at hc
+  unfold chartLaplacian
+  rw [hc, hd, ← mul_assoc]
+  congr 1
+  rw [UpperHalfPlane.im_smul_eq_div_normSq]
+  simp only [Matrix.GeneralLinearGroup.val_det_apply, abs_of_pos hA,
+    Complex.ofReal_div, Complex.ofReal_mul, Complex.ofReal_pow, div_pow, Complex.normSq_div,
+    Complex.normSq_ofReal, map_pow]
+  have hnorm : Complex.normSq (denom A z) ≠ 0 :=
+    UpperHalfPlane.normSq_denom_ne_zero A z.im_ne_zero
+  field_simp
+
 private theorem positive_eq_neg_chart (f : ℍ → ℂ) (z : ℍ) :
     positiveHyperbolicLaplacian f z = -chartLaplacian f z := by
   simp only [positiveHyperbolicLaplacian, chartLaplacian, laplacian, neg_mul]
@@ -70,6 +97,14 @@ theorem positive_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)
     positiveHyperbolicLaplacian (fun w => f (A • w)) z =
       positiveHyperbolicLaplacian f (A • z) := by
   rw [positive_eq_neg_chart, chart_laplacian_pullback A f hf, positive_eq_neg_chart]
+
+/-- Positive-determinant real Möbius pullback commutes with the positive
+hyperbolic Laplacian at real `C²` regularity. -/
+theorem positive_laplacian_pullback_gl (A : GL (Fin 2) ℝ) (hA : 0 < A.val.det) (f : ℍ → ℂ)
+    (hf : IsRealSmoothUpperHalfPlane f) (z : ℍ) :
+    positiveHyperbolicLaplacian (fun w => f (A • w)) z =
+      positiveHyperbolicLaplacian f (A • z) := by
+  rw [positive_eq_neg_chart, chart_laplacian_pullback_gl A hA f hf, positive_eq_neg_chart]
 
 /-- An integral Möbius pullback retains the actual real C² chart regularity. -/
 theorem smooth_pullback (A : SL2Z) (f : ℍ → ℂ)
@@ -85,6 +120,19 @@ theorem smooth_pullback (A : SL2Z) (f : ℍ → ℂ)
   have h := (hF.comp (z : ℂ) hG).contDiffWithinAt (s := {v : ℂ | 0 < v.im})
   simpa only [Function.comp_def, ofComplex_apply] using h
 
+/-- Positive-determinant real Möbius pullback retains real `C²` chart regularity. -/
+theorem smooth_pullback_gl (A : GL (Fin 2) ℝ) (hA : 0 < A.val.det) (f : ℍ → ℂ)
+    (hf : IsRealSmoothUpperHalfPlane f) :
+    IsRealSmoothUpperHalfPlane (fun w => f (A • w)) := by
+  intro w hw
+  let z : ℍ := ⟨w, hw⟩
+  have hG : ContDiffAt ℝ 2 (fun v : ℂ => ((A • ofComplex v : ℍ) : ℂ)) (z : ℂ) :=
+    ((UpperHalfPlane.analyticAt_smul (g := A) hA z).contDiffAt).restrict_scalars ℝ
+  have hF : ContDiffAt ℝ 2 (f ∘ ofComplex) ((A • ofComplex (z : ℂ) : ℍ) : ℂ) := by
+    simpa only [ofComplex_apply] using chart_contDiffAt hf (A • z)
+  have h := (hF.comp (z : ℂ) hG).contDiffWithinAt (s := {v : ℂ | 0 < v.im})
+  simpa only [Function.comp_def, ofComplex_apply] using h
+
 /-- The real image and integral matrix actions agree on the upper half-plane. -/
 @[simp] theorem integral_action (A : SL2Z) (z : ℍ) :
     integralSL2ToReal A • z = A • z := rfl
@@ -95,6 +143,14 @@ theorem eigenfunction_pullback (A : SL2Z) (lam : ℝ) (f : ℍ → ℂ)
     IsMaassEigenfunction lam (fun w => f (A • w)) :=
   ⟨smooth_pullback A f hf.1, fun z => by
     rw [positive_laplacian_pullback A f hf.1 z]
+    exact hf.2 (A • z)⟩
+
+/-- Positive-determinant real Möbius pullback preserves the Maass eigenvalue. -/
+theorem eigenfunction_pullback_gl (A : GL (Fin 2) ℝ) (hA : 0 < A.val.det) (lam : ℝ)
+    (f : ℍ → ℂ) (hf : IsMaassEigenfunction lam f) :
+    IsMaassEigenfunction lam (fun w => f (A • w)) :=
+  ⟨smooth_pullback_gl A hA f hf.1, fun z => by
+    rw [positive_laplacian_pullback_gl A hA f hf.1 z]
     exact hf.2 (A • z)⟩
 
 /-- All integral cusp decay conditions are preserved by composing scaling matrices. -/

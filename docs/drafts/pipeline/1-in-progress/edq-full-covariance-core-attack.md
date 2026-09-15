@@ -455,7 +455,8 @@ factorization identity retains rather than controls the signed cross terms.
 ## Retained harmonic coefficients and same-cutoff tail control
 
 Write `J_q(N)=sum_(q|d,d<=N)mu(d)/d`. Exact finite divisor inversion gives
-`K_r(N)=sum_(l<=N/r)mu(l)*J_(rl)(N)^2`. For squarefree q,
+`K_r(N)=sum_(l<=N/r)mu(l)*J_(rl)(N)^2`; it is formalized as
+`DeletionCoprimeKernel.coprimeHarmonicQuadratic_eq_signedMultiples`. For squarefree q,
 `J_q(N)=mu(q)/q*sum_(j<=N/q,gcd(j,q)=1)mu(j)/j`; nonsquarefree q contributes
 zero. Taking absolute values outside that inversion gives
 `sum_r |K_r|<=sum_q tau(q)*J_q^2`. The corpus's prime-supported expansion
@@ -474,6 +475,10 @@ zero otherwise. The left side is `harmonicQuadratic r N`. At `N=3`, its
 energies. The necessary new estimate must therefore preserve cancellation
 between the divisor levels and the complete physical tail; a PSD or
 absolute-value substitution loses the target mechanism.
+`EulerDeletionCoprimeKernelDiagonalization` now formalizes both the signed
+multiple-square identity and the sharper finite no-go
+`mobius_divisorKernel_not_posSemidef`: once coordinate `2` is present, the
+Möbius divisor kernel cannot be a positive-semidefinite carrier.
 
 [BRIDGE candidate, not a replacement RH conjecture.] The complete harmonic
 gcd family may provide a useful selector for the full source, beyond

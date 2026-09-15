@@ -31,7 +31,7 @@ theorem divisorCoreMellinPairResidue_uniform_margin (P : Finset ℕ) (hP : P.Non
     have hp1 : (1 : ℝ) < p := by exact_mod_cast (hprime p hp).one_lt
     have hs : Real.sqrt (1 : ℝ) < Real.sqrt p :=
       Real.sqrt_lt_sqrt (by norm_num) hp1
-    exact sub_nonneg.mpr (by simpa using hs).le
+    exact sub_nonneg.mpr (by simpa only [Real.sqrt_one] using hs.le)
   have hmoment := integral_mobiusDivisorContinuousHead_moment_uniform_lower P hprime
   have he : (∏ p ∈ P, (1 - Real.sqrt p : ℝ)) =
       (-1 : ℝ) ^ P.card * ∏ p ∈ P, (Real.sqrt p - 1 : ℝ) := by
@@ -41,22 +41,32 @@ theorem divisorCoreMellinPairResidue_uniform_margin (P : Finset ℕ) (hP : P.Non
         intro p _
         ring
       _ = _ := by rw [Finset.prod_mul_distrib, Finset.prod_const]
-  rw [divisorCoreMellinPairResidue_eq_signed_moment P hP hprime,
-    divisorCoreMellinEuler_zero P hprime]
-  simp only [Complex.mul_re, Complex.neg_re, Complex.ofReal_re, Complex.ofReal_im,
-    mul_zero, sub_zero, neg_div]
-  rw [he, pow_succ]
   have hmul := mul_le_mul_of_nonneg_left hmoment hfactor
   have hs : ((-1 : ℝ) ^ P.card) ^ 2 = 1 := by
     rw [← pow_mul, mul_comm P.card 2, pow_mul]
     norm_num
-  convert hmul using 1
-  calc
-    _ = ((-1 : ℝ) ^ P.card) ^ 2 *
+  have hresidue :
+      (-1 : ℝ) ^ (P.card + 1) * (divisorCoreMellinPairResidue P).re =
         ((divisorSourceEntire (-(1 / 2))).re *
-          Real.exp (-2 * ∑' n : ℕ, (n : ℝ) ^ (-3 / 2 : ℝ)) *
-          (∫ x in Ioi (0 : ℝ), divisorContinuousUnitHead x / x ^ 3) *
-          (∏ p ∈ P, (Real.sqrt p - 1 : ℝ))) := by ring
-    _ = _ := by rw [hs, one_mul]
+          (∏ p ∈ P, (Real.sqrt p - 1 : ℝ))) *
+          ∫ x in Ioi (0 : ℝ), mobiusDivisorContinuousHead P x / x ^ 3 := by
+    rw [divisorCoreMellinPairResidue_eq_signed_moment P hP hprime,
+      divisorCoreMellinEuler_zero P hprime]
+    simp only [Complex.mul_re, Complex.neg_re, Complex.ofReal_re, Complex.ofReal_im,
+      mul_zero, sub_zero, neg_div]
+    rw [he, pow_succ]
+    calc
+      _ = ((-1 : ℝ) ^ P.card) ^ 2 *
+          (((divisorSourceEntire (-(1 / 2))).re *
+            (∏ p ∈ P, (Real.sqrt p - 1 : ℝ))) *
+            ∫ x in Ioi (0 : ℝ), mobiusDivisorContinuousHead P x / x ^ 3) := by ring
+      _ = _ := by rw [hs, one_mul]
+  rw [hresidue]
+  calc
+    _ = ((divisorSourceEntire (-(1 / 2))).re *
+        (∏ p ∈ P, (Real.sqrt p - 1 : ℝ))) *
+        (Real.exp (-2 * ∑' n : ℕ, (n : ℝ) ^ (-3 / 2 : ℝ)) *
+          ∫ x in Ioi (0 : ℝ), divisorContinuousUnitHead x / x ^ 3) := by ring
+    _ ≤ _ := hmul
 
 end RHTower

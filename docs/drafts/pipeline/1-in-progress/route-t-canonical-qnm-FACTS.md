@@ -63,11 +63,13 @@
   `11` to indices `10` and `9`, for which the corpus already proves every
   required fixed-index product expansion.  Degrees `8` and `9` additionally
   require product expansions at indices `12` and `11`.
-- The degree-11 reversed-coefficient proof is a concrete open Lean experiment:
-  it specializes the closed degree-12 normal form from reversed index `8` to
-  index `9` and needs no new determinant identity.  Its validity remains
-  unestablished because the local Lake graph lacks the required olean and its
-  nominal leaf build expands to the full `8735`-job replay, which is disallowed.
+- The degree-11 reversed coefficient has a sharper obstruction than a missing
+  olean: its index-`9` product formula exists, but the certified cofactor
+  normal-form architecture ends at slice `7`.  The direct degree-12 template
+  times out at Lean's default heartbeat bound and succeeds only with the
+  disallowed monolithic heartbeat escalation.  A valid closure therefore needs
+  a decomposed, certified index-`9` cofactor normal form, not another copied
+  global normalization.
 - The theta source-Bezoutian and Hedenmalm center-mixed constructions are exact
   RH receivers, not sign producers: finite packet energies are Hermitian (their
   imaginary part vanishes), and the concrete critical-aperture Krein/Fourier
@@ -123,3 +125,18 @@
   phase.  Hence the remaining T1 theorem is specifically a uniform signed
   bound for this unrestricted covariance; existing pair-count and even-kernel
   results do not establish that bound or remove its timelike saddles.
+- The apparent T2 bridge from the natural Abel current to the lower-Hardy
+  residual is unusable: `woldLaplaceCurrent_eq_naturalAbel_add_logMesh` assumes
+  `WoldNatResidualSquareEnergy t` with `t > 1/2`, while
+  `not_woldNatResidualSquareEnergy_of_half_lt` proves that premise false.
+  Exhaustive identifier tracing finds no separate transport identity from
+  `woldNatSingularAbelContinuation` to the lower-Hardy ray.  Therefore
+  lower-Hardy injectivity is a faithful receiver here, not the missing
+  strict-right residue comparison.
+- The Maynard fixed-source packet begins only at relative width
+  `x^(-49/80)`, i.e. additive gap scale `x^(31/80)`.  Below that scale, the
+  pointwise shell discharge costs at best `x * (x^(31/80))^2 = x^(71/40)`,
+  already larger than the strict `< 3/2` prefix exponent required by the
+  critical-energy receiver.  Thus a multiscale cover of the packet-visible
+  gaps cannot close T2 by itself; a new averaged sub-packet gap-square theorem
+  is necessary, not merely a width-cover/summation lemma.

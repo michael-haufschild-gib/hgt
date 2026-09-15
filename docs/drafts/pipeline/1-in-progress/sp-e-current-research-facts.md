@@ -310,3 +310,14 @@ the current SP-E investigation. It is not a route history.
   source operator, or Xi-divisor identification.
 - The compact coefficient-four/five closures are exact algebraic progress toward rank seven, but do
   not establish the full polynomial identity, the integrated successor sign, or RH.
+
+- The canonical exterior constant-mode superoscillation cannot provide a pointwise-positive
+  representative.  For every physical aperture, its phase parameters
+  `H = 8πa`, `δ = 4πa` give two measures supported at physical lags at least `2a`, but at the
+  test frequency `N / (4a)` their signed cosine gauge is exactly `(-3)^N`.  Since the corrected
+  CCM symbol has an unconditional logarithmic envelope, a sufficiently large odd order has a
+  strictly negative actual representative
+  (`exists_phaseLockedExteriorPacket_negative`).  This removes the phase-locked canonical repair
+  before any mass-wall argument.  It is not a no-go for arbitrary finite exterior measures: the
+  remaining route-wide task is a scale-controlled signed current that links core correction to
+  tail positivity without an exponentially oscillating packet.
