@@ -171,6 +171,11 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   inserted-prime negative `sqrt p` band with Bertrand primes.  Hence a one-step renewal induction
   cannot control CCM-FU/CCM-UR by a core-independent estimate.  Any viable producer must retain
   cancellation among multiple newly inserted prime coordinates before imposing uniform control.
+- Cellwise positivity cannot exploit matched zero-mass transport: the literal matched Schur
+  completion is nonnegative, but its prime value at zero has a divergent sum
+  (`not_summable_ccmActualHeadMatchedPhaseSchurCompletionProfile_prime_zero`).  Thus a
+  cell-by-cell Γ/graph-square completion necessarily loses the collective affine cancellation;
+  only a full-block, phase-sensitive affine mechanism remains relevant.
 
 ## No-gos
 
@@ -233,6 +238,12 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   (`tendsto_exteriorCosineMeasureGauge_mass_div_pow_atTop_of_constant_approximation`).  A viable
   exterior correction must be source-adapted and finite-aperture, not a universal constant-mode
   approximation.
+- Moving the exterior support threshold with the aperture does not evade this wall: if the
+  Sonin scale `delta N * H₀ N` diverges, every fixed-error constant-mode approximation by signed
+  finite exterior measures has Jordan mass larger than every power of that moving scale
+  (`tendsto_exteriorCosineMeasureGauge_mass_div_scalePow_atTop_of_variable_constant_approximation`).
+  This removes only threshold-rescaled universal completions; source-adapted nonconstant
+  corrections remain an open class.
 - The exact Cauchy reporter route cannot start from its positive prime Gram energy.  Its
   transition-separated cross-block is favorable, but its exact positive transition core grows at
   least linearly; every bounded correction makes the rectangular Ward defect tend to `-∞`, and

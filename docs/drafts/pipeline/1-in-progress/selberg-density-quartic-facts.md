@@ -431,3 +431,18 @@
 - **Flat-bundle/graph and tensor-square reframes (current corpus, 2026-09-15).** The deep searches found generic weighted-graph spectral-gap and tensor/Cauchy lemmas, but no Maass-source map to a flat bundle or tensor-square quotient representation with a spectral decomposition. The graph theorem requires the desired gap as its hypothesis; the tensor candidates provide only algebraic norm inequalities. Combined with the already-proved level growth of literal generator costs, these are reformulations of the missing global coercivity, not bridges to it.
 - **Approach-1 revalidation (current corpus, 2026-09-15).** The source-attached real arrows are now closed through `integralSubgroupUnitary_mapsTo_completedModelIsometry_range_SL2R`. A fresh deep search for the next arrow returned only Maass ladder automorphy, quotient lifts, and the finite rank-one packet criterion. Direct source review confirms that `MaassCyclicAutomorphicRepresentation` is algebraic real-group data and `GenericUnitaryExponentBounds` classifies only its explicitly defined finite rank-one packets. No returned candidate constructs an adelic Maass representation, a compatible unbounded symmetric-power lift, or a generic higher-rank local factor. Thus approach 1 remains blocked at the first source-attached global construction; repackaging its completed real range would not bridge that gap.
 - **Approach-1 arithmetic prerequisite test (current corpus, 2026-09-15).** A second deep search for a Maass Hecke/local-global/converse/Whittaker bridge produced only unrelated finite-adele constructions, along with existing ladder and quotient-L2 results. The current Maass definition contains no Hecke-eigen or finite-place datum, and no inspected declaration creates such data from it. Therefore even the adelic source object needed before symmetric-power lifting cannot presently be stated source-faithfully from the available Maass package. The positive survivor is a precise prerequisite: construct an adelic realization with finite-place Hecke action and prove its archimedean component agrees with the completed complementary model.
+- `SelbergMaassCuspTransport.positive_laplacian_pullback_gl`, `smooth_pullback_gl`, and
+  `eigenfunction_pullback_gl` now prove closed covariance of the actual positive hyperbolic
+  Laplacian and Maass eigen-equation under every positive-determinant real `GL(2)` Möbius map.
+  This removes determinant normalization as a Hecke-route obstacle; it does not establish source
+  invariance or cuspidality for a rational correspondence.
+- `SelbergMaassRationalCommensurator` proves that the embedded actual source level
+  `Gamma (N + 1) : Subgroup GL(2, R)` is arithmetic and that every `GL(2, Q)` element maps into
+  its Mathlib commensurator. This gives a closed finite-index home for every rational Hecke
+  correspondence. The remaining first global bridge is an explicit finite trace on the current
+  `SL2R`-invariant Maass source and a proof that it preserves integral-cusp decay.
+- `SelbergMaassCongruenceTrace` is a source-attached template only for the finite quotient by
+  integral principal-congruence matrices: it proves descent, finite summation, invariance, and
+  cusp decay because every summand is an integral pullback. Its construction cannot absorb a
+  rational commensurator element. Thus the positive survivor is the exact rational-trace theorem,
+  not another deck average.

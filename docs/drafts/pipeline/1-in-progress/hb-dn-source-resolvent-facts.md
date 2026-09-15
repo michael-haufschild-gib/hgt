@@ -413,3 +413,28 @@
   impossible. Different source-retaining receivers are not excluded;
   RH is neither proved nor falsified. Exact scope and proof:
   [closed matching option](../5-failed/hb-full-canonical-unit-source-matching.md).
+
+- **DN36 — Lean verified.** At every actual Xi copy and all four source-branch /
+  fundamental-QNM combinations, `Re(2*s)<Re(w)`. The continued onset and its
+  fixed-source frequency derivative are therefore the ordinary convergent
+  integrals of `chi(u)*exp((2*s-w)*u)` and minus `u` times that density.
+  `OriginalCausalSourceMatching` proves derivative admission by the local
+  majorant `u*exp(-d*u)`, `d=(Re(w)-Re(2*s))/2>0`.
+  **Whole-route effect:** fundamental-QNM time moments need no regularization;
+  the source's spatial finite parts remain essential. No statement about
+  arbitrary overtones is included.
+
+- **DN37 — Lean verified.** The original spatial cutoff with factor
+  `(mu-2)*(tortoise(z)-u)+w/z` and all original counterterms converges to
+  `K(u)=-mu*C*chi(u)*exp(2*s*u)*((mu-2)*(X-u*M)+Y)`.
+  Its absolutely convergent Laplace integral at the actual fundamental QNM
+  equals `canonicalQNMValue`, for every Xi copy, source branch, QNM side and
+  amplitude. `canonicalCausalSourceCutoff_tendsto` and
+  `canonicalCausalSourceProfile_laplace` prove this without a matching premise.
+  **Whole-route effect:** a concrete causal receiver retaining all three
+  original source periods now matches the complete canonical action. This
+  receiver is not identified with the retarded field or Hawking-clock
+  extinction observable; DN35's unit-source obstruction remains.
+  [Exact bridge](hb-eg-original-causal-source-matching.md). Scratch and isolated
+  exact-module audit passed (128 seconds, two jobs); umbrella wired; formal
+  lint passed. No heartbeat/transparency override or axiom audit was added.

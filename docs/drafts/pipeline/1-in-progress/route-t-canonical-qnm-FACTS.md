@@ -140,3 +140,10 @@
   critical-energy receiver.  Thus a multiscale cover of the packet-visible
   gaps cannot close T2 by itself; a new averaged sub-packet gap-square theorem
   is necessary, not merely a width-cover/summation lemma.
+- The CLG degree-8 cofactor frontier has advanced: term 0 now has a direct
+  default-limit certificate, and term 1 has a default-limit factorized
+  certificate assembled from its eighteen fixed factor coefficients and the
+  exact index-8 product formula.  Both source proofs and source-level axiom
+  audits close with only Lean's standard trusted axioms.  Terms 2--6 at slice
+  8 remain open; this is a certified partial cofactor advance, not yet the
+  missing determinant coefficient identity.

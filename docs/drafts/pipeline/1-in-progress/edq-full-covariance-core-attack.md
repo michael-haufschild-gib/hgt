@@ -80,6 +80,14 @@ weight at every period class. Its exact weighted-period representation is the
 positive survivor of that failed replacement; the remaining weighted tail is
 still the signed-energy obligation.
 
+Uniform period averaging is now formally excluded as a producer, rather than
+merely unavailable. `EulerDeletionPeriodAveragingObstruction` proves that its
+literal complete-period variance has an eventual `N/(524288*log N)` lower
+bound and cannot have cofinal polynomial-log upper returns; it also proves
+that the actual modular physical energy divided by that period average tends
+to zero. Thus replacing residue-dependent progression weights by a uniform
+period mean erases, rather than estimates, the required signed cancellation.
+
 ## Hard target and work constraint
 
 Prove an actual cofinal subpower ceiling in the preserved inner cutoff X for
