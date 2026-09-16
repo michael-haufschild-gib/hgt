@@ -50,6 +50,19 @@ private theorem shifted_second (v : ℂ) (c u : ℝ) :
           2*v*((deriv Real.smoothTransition u:ℝ):ℂ)+v^2*(Real.smoothTransition u:ℂ)) := by ring
     _ = _ := by rw [← he]; ring
 
+private theorem shifted_third (v : ℂ) (c u : ℝ) :
+    timeOnsetThird v u = Complex.exp (-(c:ℂ)*(u:ℂ))*
+      (timeOnsetThird (v+c) u-3*c*timeOnsetSecond (v+c) u+
+        3*(c:ℂ)^2*timeOnsetFirst (v+c) u-(c:ℂ)^3*timeOnset (v+c) u) := by
+  unfold timeOnsetThird timeOnsetSecond timeOnsetFirst timeOnset
+  have he : Complex.exp (-(c:ℂ)*(u:ℂ))*Complex.exp ((v+c)*(u:ℂ)) =
+      Complex.exp (v*(u:ℂ)) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  rw [← he]
+  ring
+
 /-- The original onset's first two derivatives share the source-admitted decay exponent. -/
 theorem onset_derivative_bound (q : XiZeroCopy) (branch : Bool) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ u : ℝ,
@@ -88,6 +101,67 @@ theorem onset_derivative_bound (q : XiZeroCopy) (branch : Bool) :
   have hf : ‖timeOnsetFirst v u‖ ≤ B*Real.exp (-c*u) := by
     linarith [hb u,norm_nonneg (timeOnset v u)]
   change ‖timeOnsetFirst v u‖+‖timeOnsetSecond v u‖ ≤ _
+  nlinarith
+
+/- The next jet is the exact analytic threshold for a strong second-order cap equation. -/
+private theorem onset_second_derivative_bound (q : XiZeroCopy) (branch : Bool) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ u : ℝ,
+      ‖timeOnsetSecond (2*physicalRate q branch) u‖+
+        ‖timeOnsetThird (2*physicalRate q branch) u‖ ≤ B*Real.exp (-decayExponent q*u) := by
+  let v := 2*physicalRate q branch
+  let c := decayExponent q
+  have hv : v.re ≤ -c := by
+    have h := currentRate_re_lt q branch
+    change (2*physicalRate q branch).re < -2 at h
+    dsimp [v,c]
+    linarith [(decayExponent_bounds q).2]
+  have hc : 0 ≤ c := (decay_pos q).le
+  have hvc : (v+c).re ≤ 0 := by
+    simp only [Complex.add_re,Complex.ofReal_re]
+    linarith
+  obtain ⟨B,hB,hb⟩ := onset_derivative_bound q branch
+  obtain ⟨D,hD,hd⟩ := timeOnset_second_derivative_pair_bound (v+c) hvc
+  obtain ⟨A,hA,ha⟩ := timeOnset_pair_bound (v+c) 0 (by simpa using hvc)
+  refine ⟨B+D+3*c*D+3*c^2*A+c^3*A,by positivity,fun u => ?_⟩
+  have h0 : ‖timeOnset (v+c) u‖ ≤ A := by
+    have h := ha u
+    simp only [neg_zero,zero_mul,Real.exp_zero,mul_one] at h
+    linarith [norm_nonneg (timeOnsetFirst (v+c) u)]
+  have h1 : ‖timeOnsetFirst (v+c) u‖ ≤ A := by
+    have h := ha u
+    simp only [neg_zero,zero_mul,Real.exp_zero,mul_one] at h
+    linarith [norm_nonneg (timeOnset (v+c) u)]
+  have h2 : ‖timeOnsetSecond (v+c) u‖ ≤ D := by
+    linarith [hd u,norm_nonneg (timeOnsetThird (v+c) u)]
+  have h3 : ‖timeOnsetThird (v+c) u‖ ≤ D := by
+    linarith [hd u,norm_nonneg (timeOnsetSecond (v+c) u)]
+  have ht : ‖timeOnsetThird v u‖ ≤
+      Real.exp (-c*u)*(D+3*c*D+3*c^2*A+c^3*A) := by
+    rw [shifted_third v c u,norm_mul,Complex.norm_exp]
+    have he : (-(c:ℂ)*(u:ℂ)).re = -c*u := by simp
+    rw [he]
+    apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
+    calc
+      _ ≤ ‖timeOnsetThird (v+c) u‖+
+          ‖3*(c:ℂ)*timeOnsetSecond (v+c) u‖+
+          ‖3*(c:ℂ)^2*timeOnsetFirst (v+c) u‖+
+          ‖(c:ℂ)^3*timeOnset (v+c) u‖ := by
+        calc
+          _ ≤ ‖timeOnsetThird (v+c) u-3*c*timeOnsetSecond (v+c) u+
+              3*(c:ℂ)^2*timeOnsetFirst (v+c) u‖+
+              ‖(c:ℂ)^3*timeOnset (v+c) u‖ := norm_sub_le _ _
+          _ ≤ (‖timeOnsetThird (v+c) u-3*c*timeOnsetSecond (v+c) u‖+
+              ‖3*(c:ℂ)^2*timeOnsetFirst (v+c) u‖)+
+              ‖(c:ℂ)^3*timeOnset (v+c) u‖ :=
+            add_le_add (norm_add_le _ _) le_rfl
+          _ ≤ _ := add_le_add (add_le_add (norm_sub_le _ _) le_rfl) le_rfl
+      _ ≤ D+3*c*D+3*c^2*A+c^3*A := by
+        simp only [norm_mul,norm_pow,Complex.norm_ofNat,Complex.norm_real,
+          Real.norm_eq_abs,abs_of_nonneg hc]
+        gcongr
+  have hs : ‖timeOnsetSecond v u‖ ≤ B*Real.exp (-c*u) := by
+    linarith [hb u,norm_nonneg (timeOnsetFirst v u)]
+  change ‖timeOnsetSecond v u‖+‖timeOnsetThird v u‖ ≤ _
   nlinarith
 
 private theorem first_continuous (s : ℂ) : Continuous (timeOnsetFirst s) :=
@@ -226,6 +300,91 @@ private theorem weightedArm_limit (q : XiZeroCopy) (branch normal : Bool) (v X k
 def timeArm (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) : ℂ :=
   weightedArm q branch false v x X k
 
+/- The second time jet of the direct cap arm; it retains the literal third onset jet. -/
+private def secondTimeDensity (q : XiZeroCopy) (branch : Bool) (v x X k h : ℝ) : ℂ :=
+  timeOnsetThird (2*physicalRate q branch) (v+h)*horizonMean q x h X k
+
+private theorem secondTimeDensity_continuous (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
+    Continuous (secondTimeDensity q branch v x X k) :=
+  ((timeOnsetThird_continuous _).comp (continuous_const.add continuous_id)).mul
+    (mean_continuous q x X k)
+
+private theorem secondTimeDensity_bound (q : XiZeroCopy) (branch : Bool) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v x X k h : ℝ, 0 ≤ h →
+      ‖secondTimeDensity q branch v x X k h‖ ≤
+        (C*Real.exp (-decayExponent q*v+sourceGrowthExponent q*|k|))*
+          Real.exp ((sourceGrowthExponent q-decayExponent q)*h) := by
+  obtain ⟨B,hB,hb⟩ := onset_second_derivative_bound q branch
+  obtain ⟨C,hC,hc⟩ := horizonMean_growth q
+  refine ⟨B*C,mul_nonneg hB hC,fun v x X k h hh => ?_⟩
+  have hthird : ‖timeOnsetThird (2*physicalRate q branch) (v+h)‖ ≤
+      B*Real.exp (-decayExponent q*(v+h)) := by
+    linarith [hb (v+h),norm_nonneg (timeOnsetSecond (2*physicalRate q branch) (v+h))]
+  rw [secondTimeDensity,norm_mul]
+  calc
+    _ ≤ (B*Real.exp (-decayExponent q*(v+h)))*
+        (C*Real.exp (sourceGrowthExponent q*(h+|k|))) :=
+      mul_le_mul hthird (hc x h X k hh) (norm_nonneg _) (by positivity)
+    _ = _ := by
+      have he : Real.exp (-decayExponent q*(v+h))*Real.exp (sourceGrowthExponent q*(h+|k|)) =
+          Real.exp (-decayExponent q*v+sourceGrowthExponent q*|k|)*
+            Real.exp ((sourceGrowthExponent q-decayExponent q)*h) := by
+        rw [← Real.exp_add,← Real.exp_add]
+        congr 1
+        ring
+      calc
+        _ = (B*C)*(Real.exp (-decayExponent q*(v+h))*
+            Real.exp (sourceGrowthExponent q*(h+|k|))) := by ring
+        _ = _ := by rw [he]
+
+private theorem secondTimeDensity_integrable (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
+    IntegrableOn (secondTimeDensity q branch v x X k) (Ioi 0) := by
+  obtain ⟨C,hC,hb⟩ := secondTimeDensity_bound q branch
+  apply (majorant_integrable q (C*Real.exp (-decayExponent q*v+sourceGrowthExponent q*|k|))).mono'
+    (secondTimeDensity_continuous q branch v x X k).aestronglyMeasurable
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+  exact hb v x X k h hh.le
+
+/-- Admitted direct-cap second time density. -/
+def timeSecondArm (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) : ℂ :=
+  ∫ h in Ioi (0:ℝ), secondTimeDensity q branch v x X k h
+
+/-- The first cap time density is differentiable under its literal source integral. -/
+theorem timeArm_hasDerivAt (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
+    HasDerivAt (fun w => timeArm q branch w x X k) (timeSecondArm q branch v x X k) v := by
+  obtain ⟨C,hC,hb⟩ := secondTimeDensity_bound q branch
+  let B := C*Real.exp (-decayExponent q*(v-1)+sourceGrowthExponent q*|k|)
+  have hn : Ioo (v-1) (v+1) ∈ 𝓝 v := Ioo_mem_nhds (by linarith) (by linarith)
+  exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (μ := volume.restrict (Ioi (0:ℝ)))
+    (F := fun w h => weightedDensity q branch false w x X k h)
+    (F' := fun w h => secondTimeDensity q branch w x X k h)
+    (bound := fun h => B*Real.exp ((sourceGrowthExponent q-decayExponent q)*h)) hn
+    (Filter.Eventually.of_forall (fun w =>
+      (density_continuous q branch false w x X k).aestronglyMeasurable))
+    (density_integrable q branch false v x X k)
+    (secondTimeDensity_continuous q branch v x X k).aestronglyMeasurable
+    (by
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+      intro w hw
+      apply (hb w x X k h hh.le).trans
+      dsimp only [B]
+      have he : -decayExponent q*w+sourceGrowthExponent q*|k| ≤
+          -decayExponent q*(v-1)+sourceGrowthExponent q*|k| := by
+        have h := mul_le_mul_of_nonpos_left hw.1.le (neg_nonpos.mpr (decay_pos q).le)
+        linarith
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr he) hC) (Real.exp_pos _).le)
+    (majorant_integrable q B)
+    (by
+      filter_upwards with h
+      intro w hw
+      simpa only [weightedDensity,sourceWeight,Bool.false_eq_true,↓reduceIte,
+        secondTimeDensity,add_comm] using
+        (HasDerivAt.comp_const_add h w
+          (timeOnsetSecond_hasDerivAt (2*physicalRate q branch) (h+w))).mul_const
+          (horizonMean q x h X k))).2
+
 /-- Original cap time derivative; no differentiated-theta estimate is supplied. -/
 theorem boundaryArm_time_hasDerivAt (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
     HasDerivAt (fun w => boundaryArm q branch w x X k) (timeArm q branch v x X k) v := by
@@ -260,6 +419,41 @@ theorem boundaryArm_time_hasDerivAt (q : XiZeroCopy) (branch : Bool) (v x X k : 
       simpa only [boundaryDensity,weightedDensity,sourceWeight,Bool.false_eq_true,↓reduceIte,add_comm] using
         (HasDerivAt.comp_const_add h w (timeOnsetFirst_hasDerivAt (2*physicalRate q branch) (h+w))).mul_const
           (horizonMean q x h X k))).2
+
+/-- The direct cap arm has its literal second original-time derivative. -/
+theorem boundaryArm_time_second_hasDerivAt (q : XiZeroCopy) (branch : Bool) (v x X k : ℝ) :
+    HasDerivAt (fun w => deriv (fun z => boundaryArm q branch z x X k) w)
+      (timeSecondArm q branch v x X k) v := by
+  have he : (fun w => deriv (fun z => boundaryArm q branch z x X k) w) =
+      fun w => timeArm q branch w x X k := by
+    funext w
+    exact (boundaryArm_time_hasDerivAt q branch w x X k).deriv
+  rw [he]
+  exact timeArm_hasDerivAt q branch v x X k
+
+/-- The full direct-minus-image cap has a closed second original-time trace. -/
+theorem capBoundaryField_time_second_hasDerivAt (q : XiZeroCopy) (branch : Bool)
+    (amplitude : ℂ) (τ x X k : ℝ) :
+    HasDerivAt (fun t => deriv (fun s => capBoundaryField q branch amplitude s x X k) t)
+      (-liftTraceCoefficient q branch amplitude*
+        (timeSecondArm q branch (τ+x) x X k-timeSecondArm q branch (τ-x) (-x) X k)) τ := by
+  have hfirst : (fun t => deriv (fun s => capBoundaryField q branch amplitude s x X k) t) =
+      fun t => -liftTraceCoefficient q branch amplitude*
+        (timeArm q branch (t+x) x X k-timeArm q branch (t-x) (-x) X k) := by
+    funext t
+    have hdirect := HasDerivAt.comp_add_const t x
+      (boundaryArm_time_hasDerivAt q branch (t+x) x X k)
+    have himage := HasDerivAt.comp_sub_const t x
+      (boundaryArm_time_hasDerivAt q branch (t-x) (-x) X k)
+    have hcap := (hdirect.sub himage).const_mul (-liftTraceCoefficient q branch amplitude)
+    convert hcap.deriv using 1
+    simp only [capBoundaryField]
+  rw [hfirst]
+  have hdirect := HasDerivAt.comp_add_const τ x
+    (boundaryArm_time_second_hasDerivAt q branch (τ+x) x X k)
+  have himage := HasDerivAt.comp_sub_const τ x
+    (boundaryArm_time_second_hasDerivAt q branch (τ-x) (-x) X k)
+  exact (hdirect.sub himage).const_mul (-liftTraceCoefficient q branch amplitude)
 
 private theorem sourceWeight_integrable (q : XiZeroCopy) (branch normal : Bool) (v : ℝ) :
     IntegrableOn (sourceWeight q branch normal v) (Ioi 0) := by

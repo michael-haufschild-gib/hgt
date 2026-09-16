@@ -17,9 +17,20 @@ open scoped MatrixGroups ContDiff
 
 noncomputable section
 
-/-- Functions invariant under the Möbius action of a `GL(2, ℝ)` subgroup. -/
-def glUpperHalfPlaneInvariantFunctions (Γ : Subgroup (GL (Fin 2) ℝ)) :=
-  {f : ℍ → ℂ // ∀ γ : Γ, ∀ z : ℍ, f (γ.1 • z) = f z}
+/-- The complex submodule of functions invariant under the Möbius action of a
+`GL(2, ℝ)` subgroup. -/
+def glUpperHalfPlaneInvariantFunctions (Γ : Subgroup (GL (Fin 2) ℝ)) :
+    Submodule ℂ (ℍ → ℂ) where
+  carrier := {f | ∀ γ : Γ, ∀ z : ℍ, f (γ.1 • z) = f z}
+  zero_mem' := by
+    intro γ z
+    rfl
+  add_mem' := by
+    intro f g hf hg γ z
+    simp only [Pi.add_apply, hf γ z, hg γ z]
+  smul_mem' := by
+    intro c f hf γ z
+    simp only [Pi.smul_apply, hf γ z]
 
 /-- Nonzero smooth cuspidal Maass eigenfunctions invariant under a `GL(2, ℝ)` subgroup. -/
 def GLMaassCuspEigenform (Γ : Subgroup (GL (Fin 2) ℝ)) (eigenvalue : ℝ) :=
@@ -50,6 +61,22 @@ def integralMaassCuspEigenformToGL (Γ : Subgroup SL2Z) (eigenvalue : ℝ)
       ext z
       exact congrFun hzero z
     exact f.2.2⟩
+
+/-- Reindex a Maass cusp eigenform invariant under an integral subgroup viewed in `GL(2, ℝ)`
+back to the identical real `SL(2, ℝ)` action. -/
+def glIntegralMaassCuspEigenformToMaass (Γ : Subgroup SL2Z) (eigenvalue : ℝ)
+    (f : GLMaassCuspEigenform (Γ : Subgroup (GL (Fin 2) ℝ)) eigenvalue) :
+    MaassCuspEigenform (realImage Γ) eigenvalue :=
+  ⟨⟨f.1.1, by
+    intro γ z
+    obtain ⟨A, hA, hγ⟩ := γ.2
+    rw [← hγ]
+    exact f.1.2 ⟨integralSL2ToReal A, ⟨A, hA, rfl⟩⟩ z
+  ⟩, by
+    refine ⟨?_, f.2.2.1, f.2.2.2⟩
+    intro hzero
+    apply f.2.1
+    exact congrArg Subtype.val hzero⟩
 
 end
 

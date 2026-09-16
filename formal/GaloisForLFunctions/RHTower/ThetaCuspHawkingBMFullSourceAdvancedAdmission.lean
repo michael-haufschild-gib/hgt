@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceCircleGrowth
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeGreenBand
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeGoursat
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSourceTimeDerivative
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Integral.Prod
 
@@ -108,6 +109,18 @@ private theorem density_measurable (q : XiZeroCopy) (branch : Bool) (amplitude :
     (show Continuous (fun p : ℝ × ℝ => (τ+p.1,p.2)) by fun_prop)
   exact (kernel_measurable q x X k).mul hs.measurable
 
+/-- Literal original-time derivative of the full future source density. -/
+def timeDensity (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (τ x X k : ℝ) (p : ℝ × ℝ) : ℂ :=
+  nativeDirichletCausalKernel q p.1 x p.2 X k*
+    timeReducedFirst (physicalRate q branch) amplitude (τ+p.1) p.2
+
+private theorem timeDensity_measurable (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (τ x X k : ℝ) : Measurable (timeDensity q branch amplitude τ x X k) := by
+  have hs := (timeReducedFirst_joint_continuous (physicalRate q branch) amplitude).comp
+    (show Continuous (fun p : ℝ × ℝ => (τ+p.1,p.2)) by fun_prop)
+  exact (kernel_measurable q x X k).mul hs.measurable
+
 /-- Decay in future delay and towards the original horizon holds simultaneously. -/
 theorem density_bound (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ τ x X k h y : ℝ, 0 < h → y < 0 →
@@ -120,6 +133,34 @@ theorem density_bound (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) :
     (decayExponent q) (decayExponent_bounds q).2
   refine ⟨C*B,mul_nonneg hC hB,fun τ x X k h y hh hy => ?_⟩
   rw [density,norm_mul]
+  have hb := mul_le_mul (hkernel h x y X k hh.le) (hsource (τ+h) y hy)
+    (norm_nonneg _) (mul_nonneg hC (Real.exp_pos _).le)
+  refine hb.trans_eq ?_
+  calc
+    _ = (C*B)*(Real.exp (sourceGrowthExponent q*(h+|k|))*
+        (Real.exp (-decayExponent q*(τ+h))*Real.exp ((2-decayExponent q)*y))) := by ring
+    _ = _ := by
+      simp only [mul_assoc,← Real.exp_add]
+      congr 3
+      ring
+
+/-- The time-differentiated full density has the same integrable future-delay
+majorant as the literal source itself. -/
+theorem timeDensity_bound (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ τ x X k h y : ℝ, 0 < h → y < 0 →
+      ‖timeDensity q branch amplitude τ x X k (h,y)‖ ≤
+        (C*Real.exp (-decayExponent q*τ+sourceGrowthExponent q*|k|))*
+          (Real.exp ((sourceGrowthExponent q-decayExponent q)*h)*
+            Real.exp ((2-decayExponent q)*y)) := by
+  obtain ⟨C,hC,hkernel⟩ := kernel_growth q
+  have hδ : 0 ≤ decayExponent q := by
+    have hg := (sourceGrowthExponent_bounds q).1
+    dsimp only [decayExponent]
+    linarith
+  obtain ⟨B,hB,hsource⟩ := timeReducedFirst_physical_bound q branch amplitude
+    (decayExponent q) hδ (decayExponent_bounds q).2
+  refine ⟨C*B,mul_nonneg hC hB,fun τ x X k h y hh hy => ?_⟩
+  rw [timeDensity,norm_mul]
   have hb := mul_le_mul (hkernel h x y X k hh.le) (hsource (τ+h) y hy)
     (norm_nonneg _) (mul_nonneg hC (Real.exp_pos _).le)
   refine hb.trans_eq ?_
@@ -152,9 +193,69 @@ theorem density_integrable (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
   exact (ae_restrict_iff' (measurableSet_Ioi.prod measurableSet_Iio)).mpr
     (Eventually.of_forall (fun p hp => hb τ x X k p.1 p.2 hp.1 hp.2))
 
+/-- The literal time derivative is integrable on the full future source region. -/
+theorem timeDensity_integrable (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (τ x X k : ℝ) :
+    IntegrableOn (timeDensity q branch amplitude τ x X k) (Ioi 0 ×ˢ Iio 0) := by
+  obtain ⟨C,hC,hb⟩ := timeDensity_bound q branch amplitude
+  have hm := majorant_integrable q
+    (C*Real.exp (-decayExponent q*τ+sourceGrowthExponent q*|k|))
+  apply hm.mono' (timeDensity_measurable q branch amplitude τ x X k).aestronglyMeasurable.restrict
+  exact (ae_restrict_iff' (measurableSet_Ioi.prod measurableSet_Iio)).mpr
+    (Eventually.of_forall (fun p hp => hb τ x X k p.1 p.2 hp.1 hp.2))
+
 /-- Absolutely convergent future convolution of the original reduced source. -/
 def response (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) (τ x X k : ℝ) : ℂ :=
   ∫ p in Ioi 0 ×ˢ Iio 0, density q branch amplitude τ x X k p
+
+/-- The literal derivative of the full advanced future convolution. -/
+def timeResponse (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) (τ x X k : ℝ) : ℂ :=
+  ∫ p in Ioi 0 ×ˢ Iio 0, timeDensity q branch amplitude τ x X k p
+
+/-- The original full future response is differentiable in its source clock.
+The proof retains the actual two-dimensional source region and its native
+direct-minus-image kernel. -/
+theorem response_hasDerivAt (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
+    (τ x X k : ℝ) :
+    HasDerivAt (fun w => response q branch amplitude w x X k)
+      (timeResponse q branch amplitude τ x X k) τ := by
+  obtain ⟨C,hC,hb⟩ := timeDensity_bound q branch amplitude
+  have hδ : 0 ≤ decayExponent q := by
+    have hg := (sourceGrowthExponent_bounds q).1
+    dsimp only [decayExponent]
+    linarith
+  let B := C*Real.exp (-decayExponent q*(τ-1)+sourceGrowthExponent q*|k|)
+  have hn : Ioo (τ-1) (τ+1) ∈ 𝓝 τ := Ioo_mem_nhds (by linarith) (by linarith)
+  exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (μ := volume.restrict (Ioi (0:ℝ) ×ˢ Iio (0:ℝ)))
+    (F := fun w p => density q branch amplitude w x X k p)
+    (F' := fun w p => timeDensity q branch amplitude w x X k p)
+    (bound := fun p => B*(Real.exp ((sourceGrowthExponent q-decayExponent q)*p.1)*
+      Real.exp ((2-decayExponent q)*p.2))) hn
+    (Filter.Eventually.of_forall (fun w =>
+      (density_measurable q branch amplitude w x X k).aestronglyMeasurable))
+    (density_integrable q branch amplitude τ x X k)
+    (timeDensity_measurable q branch amplitude τ x X k).aestronglyMeasurable
+    (by
+      filter_upwards [ae_restrict_mem (measurableSet_Ioi.prod measurableSet_Iio)] with p hp
+      intro w hw
+      apply (hb w x X k p.1 p.2 hp.1 hp.2).trans
+      dsimp only [B]
+      have he : -decayExponent q*w+sourceGrowthExponent q*|k| ≤
+          -decayExponent q*(τ-1)+sourceGrowthExponent q*|k| := by
+        have h := mul_le_mul_of_nonpos_left hw.1.le (neg_nonpos.mpr hδ)
+        linarith
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr he) hC)
+        (mul_nonneg (Real.exp_pos _).le (Real.exp_pos _).le))
+    (majorant_integrable q B)
+    (by
+      filter_upwards with p
+      intro w hw
+      simpa only [density,timeDensity,mul_comm] using
+        (HasDerivAt.comp_const_add p.1 w
+          (timeReducedCoefficient_hasDerivAt (physicalRate q branch) amplitude
+            (w+p.1) p.2)).mul_const (nativeDirichletCausalKernel q p.1 x p.2 X k))).2
 
 theorem response_fubini (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) (τ x X k : ℝ) :
     response q branch amplitude τ x X k =

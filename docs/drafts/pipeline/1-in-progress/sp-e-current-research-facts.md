@@ -784,3 +784,214 @@ the current SP-E investigation. It is not a route history.
   Whole-route consequence: D2 cannot supply SP-E's missing cancellation by truncation or a
   height-only prime floor; it corroborates that the unresolved content must be a source-specific
   nonlocal law.
+
+- The Gamma-sewn Julia channel is source-faithful only through a singular pointwise boundary
+  limit: `GammaSewnJuliaRectangularDivisorTransgression` recovers every finite rectangular
+  prime--Gamma coefficient and the completed Xi-Weil scalar as `x → 0+`.  Its candidate
+  cofinal four-unit Ward lift is nevertheless exactly RH-equivalent
+  (`riemannHypothesis_iff_continuedXiWardFourUnitBoundaryLiftLaw`), with a strict-right zero
+  already producing a negative one-node Schur defect.  Whole-route consequence: singular
+  source recovery is necessary infrastructure, not a producer; it cannot be promoted to a
+  positive cofinal boundary Gram without first proving the missing signed source law.
+
+- The actual completed SP-E wall has an exact atomic--continuous form:
+  `unitRieszSuzukiGreen_eq_primeCharge_sub_regularWardMass` is finite von-Mangoldt outgoing
+  mass minus a positive regular-screw continuum, and
+  `riemannHypothesis_iff_suzukiWardAtomicContinuousImbalanceBounded` identifies uniform
+  control of that displacement with RH.  Both wall-light legs escape to `+∞` unconditionally
+  (`SuzukiWardUnconditionalMassEscape`), so this is necessarily a semifinite signed
+  renormalization problem.  The source-labelled nonabelian Cartan construction realizes the
+  negative-light leg exactly but differs from the same imbalance only by a positive `o(1)`
+  cubic term; `SuzukiTransitionCoreLinearCompensationNoGo` further forces any rectangular
+  semibounded correction to have linear cofinal scale and sends positive growing-rank Cartan
+  fission to `-∞`.  Whole-route consequence: no local nonlinear, positive, bounded-trace, or
+  merely growing-rank mechanism can close SP-E.  The sole live target is an actual signed,
+  linear-scale atomic--continuous source relation prior to Gram/cofinal passage.
+
+- Route U has an exact singularity classification stronger than ordinary numerator regularity.
+  The literal adaptive arithmetic numerator is continuous and interval-integrable at every
+  occupied strict frontier, but division by the vanishing newborn admission norm makes the
+  exact Christoffel source wall non-integrable on every right neighborhood.  The global law
+  `XiShiftedAllStrictFrontierSourceWallsLocallyIntegrable` is equivalent to RH
+  (`riemannHypothesis_iff_xiShiftedAllStrictFrontierSourceWallsLocallyIntegrable`).  Whole-route
+  consequence: a source/reader comparison can close U only if it controls the *quotient* on a
+  singular graph domain; numerator smoothness, pointwise source charge, and cofinal wall spikes
+  cannot be integrated or accumulated by themselves.
+
+- Route P has a coefficient-faithful per-cell unbounded graph landing, not a bounded source
+  operator.  Two actual upper prime--Gamma secant atoms converge in the complete Xi `ell²`
+  carrier to the negative squared-Cauchy/Burnol reporter at every strict-right zero
+  (`tendsto_routePPrimitiveBurnolDeningerSecantPacket_to_graphJet`), while every nonzero raw
+  secant coefficient diverges linearly
+  (`tendsto_norm_routePPrimitiveBurnolDeningerSecantCoefficient_atTop`).  Independently,
+  depth squaring is an exact `1/8` contraction of finite cubic-weighted source energy
+  (`routePPrimitiveDepthSquare_cubicWeightedEnergy`).  Whole-route consequence: P has neither
+  a missing local incidence nor a boundedness repair; its live gap is a coefficient-faithful
+  *global* graph-to-cubic-trace/passivity assembly that retains cross terms.  The existing
+  subquantum cubic trace bound is only an RH-equivalent target-capacity receiver and cannot be
+  substituted for that assembly.
+
+- A January--September 2026 broad arXiv scan using `Hankel`, `singular`, `incidence`, and
+  `Tauberian` returned no applicable primary theorem for coefficient-faithful unbounded
+  graph-to-trace assembly.  The contemporary hits were outside analytic number theory or did
+  not retain the required source labels, unbounded graph domain, and signed trace.  Whole-route
+  consequence: no external theorem was imported as a premise or mistaken for a source law.
+
+- Route P depth-squaring now transports cubic source energy at infinite support without a
+  finite-packet cutoff: if `f` has summable cubic-weighted energy, then its source-indexed
+  depth-square transform is summable, and its `tsum` is exactly one eighth of the original
+  (`summable_routePPrimitiveDepthSquare_cubicWeightedEnergy`,
+  `tsum_routePPrimitiveDepthSquare_cubicWeightedEnergy`).  Both are dependency-closed Lean
+  theorems.  Whole-route consequence: reindexing/limit passage is no longer an obstruction for
+  this energy conduit; the unresolved P obstruction remains the source-faithful graph-reporter
+  sum and its signed cross terms, which these theorems intentionally do not assert.
+
+- SP-E now has an exact local bridge to the Weil-lag receiver.  In
+  `SuzukiWeilLagTailBridge`, the integer lag loses its endpoint Chebyshev error exactly and is
+  the Chebyshev tail `∫_{(n,∞)} (ψ(t)-t)/t² dt` plus its fixed trivial channel
+  (`sqrt_mul_integerLag_eq_neg_mul_weilLagChebyshevTail_add_arch`).  More sharply, each literal
+  SP-E cell `psiRemainder k` is `k(k+1)` times the difference of successive such tails plus the
+  explicit logarithmic cell (`psiRemainder_eq_weilLagChebyshevTail_difference`).  The closed
+  finite Green formula `coherentSelbergSquareRootAbelMoment_eq_weilLagTail_green` then expresses
+  the exact SP-E Abel prefix as two tail endpoints, a signed weighted interior tail mean, and
+  the explicit archimedean cells.  `coherentSelbergSquareRootAbelMoment_eq_integerLag_green`
+  removes every tail at scale at least two: it is exactly one terminal integer-lag numerator plus
+  a signed weighted finite mean of the preceding integer-lag numerators, with only the fixed
+  scale-one tail and explicit archimedean cells left.  The target module compiled and all bridge
+  declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`.  Whole-route
+  consequence: the remaining producer is precisely a source-derived endpoint-corrected signed
+  integer-lag-mean law; the known positive-part lag receiver cannot be substituted for it.
+
+- Synchronized Gamma formation has a forced cross-prime curvature, formalized in
+  `GammaSewnSynchronizedRecoveryMixedCurvature`.  For a fresh prime `p`, adding it to `P`
+  changes the curvature beyond the singleton term by exactly
+  `(1/12) log(p) * sum(q in P) log(q)`
+  (`gammaSewnSynchronizedRecoveryQuadraticCost_insert`).  Hence the curvature after subtracting
+  every singleton curvature is nonnegative and is strictly positive on every support containing
+  two distinct primes
+  (`gammaSewnSynchronizedRecoveryQuadraticCrossAnomaly_pos_of_two_mem`); in particular a
+  singleton-additive formation law is false there
+  (`gammaSewnSynchronizedRecoveryQuadraticCost_ne_sum_singletons_of_two_mem`).  The established
+  formation trace weights singleton curvature by `1/p`, so this theorem does not identify the
+  required completed relative current.  Whole-route consequence: the active P/direct-anchor
+  strictness theorem must construct a genuinely mixed, signed pre-divisor companion; any direct
+  sum of independently cancelled prime cells is now formally excluded.
+
+- The required finite mixed counterterm is not free data.  The literal synchronized recovery
+  ratio factors exactly as the product of its singleton prime recoveries times the
+  density-independent chord factor
+  `gammaSewnSynchronizedRecoveryCrossFactor`
+  (`gammaSewnSynchronizedRecoveryRatio_eq_prod_singleton_mul_crossFactor`).  Its exact quadratic
+  boundary jet is the *negative* cross anomaly
+  (`tendsto_gammaSewnSynchronizedRecoveryCrossFactor_quadraticJet_zero`), while the product of
+  literal primewise multipliers contributes only the singleton jets
+  (`tendsto_gammaSewnSynchronizedRecoveryPrimewiseFactor_quadraticJet_zero`).  Whole-route
+  consequence: P/direct-anchor now has a coefficient-forced, finite, pre-divisor mixed
+  counterterm with the necessary sign; the remaining open theorem is specifically to assemble
+  this labelled finite factor through completion into the global source primitive without losing
+  cross terms or replacing it by a target-side scalar.
+
+- The mixed factor now has an exact *literal source* realization, not only a normalized-recovery
+  realization.  For every nonempty finite prime support, the all-LCM Rees-renormalized source
+  weight is exactly the product of singleton Rees source weights times
+  `gammaSewnSynchronizedLcmReesCrossFactor`
+  (`gammaSewnSynchronizedLcmReesRenormalizedWeight_eq_prod_singleton_mul_crossFactor`).  That
+  factor is the prime-log Cauchy boundary
+  `prod(log p) / sum(log p)` times the canonical chord counterterm; neither factor can be
+  removed without changing the literal source weight.  Whole-route consequence: finite
+  cross-prime formation has a coefficient-faithful source assembly with its Cauchy geometry and
+  negative curvature retained.  The sole remaining P/direct-anchor gap is its signed,
+  completion-stable passage to the global primitive/current, rather than the absence of a finite
+  source assembly law.
+
+- The signed recovery itself now preserves that mixed carrier before any norm square: on every
+  nonempty finite support it is exactly the product of singleton signed amplitudes times the
+  positive square root of the canonical cross factor
+  (`gammaSewnSynchronizedSignedRecoveryAmplitude_eq_prod_singleton_mul_sqrt_crossFactor`).  The
+  relative amplitude has quadratic jet
+  `(-1)^|P| * (-crossAnomaly(P)/2)`
+  (`tendsto_gammaSewnSynchronizedSignedRecoveryAmplitude_sub_prod_singleton_div_sq_zero`).
+  Thus a support with two distinct primes has a nonzero complex-valued, genuinely mixed source
+  coefficient before scalarization.  Whole-route consequence: the loss of cross terms in the
+  direct anchor cannot be attributed to finite signed formation or its passage from densities to
+  amplitudes; it must occur in global completion, graph aggregation, or an invalid scalar/diagonal
+  reduction.
+
+- The preceding relative signed coefficient has a closed cubic coupling to every continued Xi
+  Ward cross cell:
+  `tendsto_gammaSewnSynchronizedSignedRecovery_relative_cross_julia_div_cu_zero` identifies its
+  limit as the explicit signed half-cross-curvature times `ccmContinuedCauchyKernel`.  This theorem
+  is conditional only on the pre-existing local zero-free continuation-domain predicates for the
+  two nodes, not on RH, and audits to `propext`, `Classical.choice`, and `Quot.sound` alone.
+  Whole-route consequence: a finite source-to-Julia cross term now exists with its coefficient
+  fixed.  It cannot close RH by itself because its domain excludes the putative zeros; the live
+  P/direct-anchor theorem is sharpened to a global, completion-stable signed aggregation of these
+  cubic cells that crosses the divisor boundary without discarding this coefficient.
+
+- For every two distinct primes, the mixed signed amplitude is eventually unequal to the product
+  of its two singleton amplitudes on the positive-aperture punctured neighbourhood
+  (`eventually_gammaSewnSynchronizedSignedRecoveryAmplitude_pair_ne_prod_singletons`).  This is
+  stronger than the nonzero quadratic coefficient: the actual finite source multiplier cannot
+  collapse to a scalar singleton product near the boundary.  Whole-route consequence: any scalar
+  prime-word readout that erases mixed support is incompatible with the literal synchronized
+  amplitude before completion; the required global construction must retain marked mixed support
+  through its genus-one/Hilbert--Schmidt aggregation.
+
+- The PCOB cubic source birth is now Lean-closed on the literal normalized cofinal
+  prime--history kernel (`PrimeHodgeCubicOrbitBirth`).  Its exact coordinate law is
+  `(log p + log q)^3 K_d(p,q) = 8 b_d(p) conj(b_d(q))`; its diagonal is the normalized
+  transported Stokes density times `(log p)^3`; every prime-pair source entry is nonzero; and
+  the cubic equation determines the actual source kernel coordinatewise
+  (`primeHodgeHistoryDefectKernel_unique_of_cubicClock`).  Whole-route consequence: PHCCED no
+  longer needs a paper-only or freely selected PCOB source object.  The remaining gate is exactly
+  a pre-divisor theta graph morphism that acts on this fixed, label-faithful cubic core and carries
+  its boundary class to the Xi escape incidence with the same ideal representative and budget.
+
+- The fixed PCOB birth is now identified with the existing literal prime-log critical-Laplace
+  reporter, rather than merely being compatible at a norm or diagonal level
+  (`PrimeHodgeCubicCriticalLaplaceBridge`).  For every `d > 0` and prime `p`, Lean proves
+  `b_d(p) = sqrt(2 / (d * J_d)) * primeLogCriticalLaplaceFeatureC p d`
+  (`primeHodgeCubicBirthVector_eq_criticalLaplaceFeature`), and hence constructs the actual
+  source-Hilbert vector `primeHodgeCubicBirthCriticalReporter` whose coordinate is exactly
+  `b_d(p)` and never vanishes.  This is an identity forced by the literal Stokes current and
+  contains no prime-dependent reweighting.  Whole-route consequence: PHCCED's still-missing
+  theta quotient has a fixed, all-prime reporter in the existing critical-Laplace source chart on
+  which to act; it cannot resolve the gate by changing source labels, source weights, or the
+  cubic birth.
+
+- The literal theta action has now reached the exact finite core of that graph, without a divisor
+  specialization (`PrimeLogThetaFiniteCoreLanding`).  It sends prime `p` to the actual theta-cusp
+  translate at `log p` with its forced coefficient `2(log p)^2/sqrt p`.  For every finite prime
+  source `l` and every `0 < t < 1`, Lean proves the product identity
+  `t * FL(Theta(l))(-I*t) = XiC(-I*t) * sum_p l(p) * primeLogCriticalLaplaceFeatureC(p,t)`
+  (`mul_primeLogThetaFourierLaplace_neg_I_eq_XiC_mul_graph`).  It neither divides by `XiC` nor
+  selects a zero; the theta strip is the explicit, proved `t < 1` constraint.  Whole-route
+  consequence: MUST-195/196 now has a concrete all-prime pre-divisor theta action on every
+  retained finite graph-core value.  The hard remaining theorem is to extend this action as the
+  required source-framed relative Calderón/graph class on `Graph(cl A_*)`, prove cubic-clock
+  covariance there, and obtain the one same-representative escape/budget boundary pairing.
+
+- The critical-Laplace graph core now has its literal cubic source-clock covariance in Lean
+  (`PrimeLogCubicClockGraphCoreCovariance`).  On every positive-time germ the forced Euler
+  expression `-d/dt + 1/t` sends each unrescaled feature to `log(p)` times itself; consequently,
+  on every finite prime core, its third iterate is exactly the unmodified
+  `sum_p l(p) (log p)^3 phi_p(t)`
+  (`primeLogCriticalLaplaceEuler_cubic_clockedMass`).  The endpoint is not falsely filled in:
+  the theorem is explicitly a positive-time germ because the source expression is singular at
+  zero.  Whole-route consequence: the PCOB/critical-Laplace source side of cubic covariance is
+  now closed on the exact retained graph core; remaining PHCCED work cannot alter the source
+  clock or evade the `log(p)^3` action.
+
+- The literal finite theta ray has a denominator-free relative cubic transport law in Lean
+  (`PrimeLogThetaWronskianCubicJet`).  With
+  `W_m(y) = xiCent * (-d/dt + 1/t)(y) + m * xiCent' * y`, all finite `l` and all `0 < t < 1`
+  satisfy
+  `W_3 W_2 W_1 (t * Theta_l(-I*t)) = xiCent(t)^4 * sum_p l(p) (log p)^3 phi_p(t)`
+  (`primeLogThetaWronskian_cubic_thetaRay`).  This uses only the literal theta transform,
+  multiplication by `xiCent`, and its derivative: there is no inverse-Xi, zero selection,
+  source reweighting, or scalar quotient.  Whole-route consequence: the proven real-ray law
+  fixes the four-level Xi-power/Wronskian graph that a viable theta-side cubic morphism must
+  retain.  It does not itself evaluate a nontrivial Xi zero; the still-open hard construction is
+  to extend precisely this relative graph through `Graph(cl A_*)` and the complex theta strip,
+  then identify one resulting boundary representative simultaneously with Xi escape and the
+  proved nuclear budget.

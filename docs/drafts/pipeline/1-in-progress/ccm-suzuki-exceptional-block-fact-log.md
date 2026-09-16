@@ -4,6 +4,13 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
 
 ## Facts
 
+- The exact high-order first-atom enclosure discharges all five premises of the order-24 sector
+  reduction.  Therefore the twenty-third normalized completed prime--Gamma moment is now closed
+  unconditionally (`PrimeArchMomentTwentyThreeClosure.lean`,
+  `normalizedPrimeArchMoment_twentyThree_pos`).  Whole-route consequence: one additional finite
+  positive moment is available to exterior source windows; it does not supply the missing
+  all-moment source weld or the source-selected mixed-incidence sign, each of which remains
+  RH-strength.
 - For every positive aperture, real-parameter movable Suzuki raw deficiencies have dense complex
   linear span in Suzuki energy space
   (`suzukiTaRawDeficiencySpan_closure_eq_top`).
@@ -111,6 +118,25 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   actual head density (`ccmActualHeadCoherentCompletedGammaProducer_eq_sourceQuadratic`).  On
   canonical Gamma--Slepian heads, reverse-prime control is exactly nonnegativity of this same
   signed average (`ccmRestrictedWeilCanonicalGroundHead_reversePrimeBound_iff_correctedSymbolAverage_nonneg`).
+- The source-horizontal adaptive class-law observer has no off-centre reserve: at each retained
+  prime and scale ratio its certificate exists exactly at centred rate zero
+  (`sourceHorizontalPrimeAdaptiveClassLawScaleOrbitCertificate_nonempty_iff`), while its global
+  Xi-copy version is equivalent to RH
+  (`sourceHorizontalAdaptiveFisherGlobalClassLawScaleOrbitProducer_iff_riemannHypothesis`).
+  It is therefore a classified neutral observer, not an independent Route-O/G producer.
+- Matched-phase Fock tomography has one global PSD carrier already: every finite source packet is
+  a restriction of `ccmActualHeadMatchedPhaseGlobalFockKernel`, not a separately chosen Gram
+  matrix (`ccmActualHeadMatchedPhaseGlobalFockKernel_isPSDKernel`,
+  `ccmActualHeadMatchedPrimePolarFiniteBlock_eq_globalPhaseFockKernel`).  Thus cofinal kernel
+  selection and compactness are false subproblems; remaining datum is a signed estimate for its
+  logarithmic anchor reporter after spectral integration.
+- PSD/Jensen extraction from that carrier is excluded pointwise: each literal prime-power reporter
+  takes strict opposite signs at its two phase probes while the projective Fock kernel is PSD at
+  both (`ccmActualHeadMatchedPhaseGlobalProjectiveFockPrimePowerReporterSignStraddle`), and the
+  negative probes recur cofinally in frequency.  Hence a continuous scalar source-to-Ward repair
+  must have cofinal zero walls
+  (`ccmActualHeadMatchedPhasePrimePowerContinuousScalarReporterFaithful_cofinal_zero`); a valid
+  mechanism must be non-scalar and couple distinct frequencies before readout.
 - Endpoint mismatch is a null aperture gauge, not arithmetic debt.  The completed quantile symbol
   and its endpoint-free representative have identical quadratic averages on every physical head
   (`integral_ccmActualHeadOutgoingQuantileEndpointFreeCosinePhaseSymbol_eq_completed`).
@@ -188,6 +214,28 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   (`eventually_prime_suzukiCheckpointCriticalMertensDeviationCore_bidirectionalBlock_pos`).
   Hence no translation-invariant finite-memory signed transport can close CCM-FU; scale-growing
   collective transport is the first surviving class.
+- **Contiguous bicausal cancellation needs logarithmic, not merely growing, support (new, Lean
+  closed).** If `2*(L+1) ≤ p` and a block from `p-L-3` through `p-2+R` containing prime `p ≥ 27`
+  has nonpositive literal Mertens--polar mass, then
+  \(\log p/2\le 2L+R\)
+  (`suzukiCheckpointCriticalMertensDeviationCore_prime_nonpos_bidirectionalBlock_forces_combined_log_radius`).
+  Its cofinal scheduler corollary
+  (`eventually_prime_suzukiCheckpointCriticalMertensDeviationCore_bidirectionalBlock_pos_of_eventually_combined_radius_lt_log`)
+  rejects every schedule eventually satisfying \(2L(p)+R(p)<\log(p)/2\). Whole-route
+  consequence: every contiguous bicausal producer with combined support \(o(\log p)\) is
+  impossible on the actual source; the remaining collective class must use at least logarithmic
+  reach or noncontiguous cross-scale pairing. This is a constraint, not a bound for the
+  RH-bearing triangular action.
+- **Sharp two-unit log-Haar transport is still conditional infrastructure, not an available
+  cancellation estimate (Lean/literature audit).** `SuzukiMangoldtLogHaarTransport.lean` makes
+  every sharp-cell result depend on `MangoldtLogHaarCapacity`, exactly
+  \(\sum_{n\le N}\Lambda(n)/n\le\log N\); no corpus theorem proves it. Ramaré--Zuniga Alterman
+  (arXiv:2312.05138v3, Appendix) prove it through a floor-kernel integral, Hanson’s global
+  Chebyshev bound, and finite cutoff verification, none formalized here. Even after that
+  prerequisite is formalized, `SuzukiBicausalNoFreeSplice.lean` charges the full duplicate seam
+  back to the original capacity deficit. Whole-route consequence: capacity formalization would
+  make a useful exact transport unconditional, but cannot by itself control the FU triangular
+  action; a non-capacity, source-sensitive collective pairing remains required.
 - The literal linear weighted-curvature first-moment route is false, not merely unproved: it is
   equivalent to RH plus the square-root Chebyshev remainder bound, and the latter contradicts the
   cofinal Deninger phase escape even under RH
@@ -489,6 +537,16 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   hence RH (`ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_xiScrewCodiagonalMixtureBound`).
   Therefore an affine first-jet rewrite has no independent leverage: a valid new producer must
   impose a new signed inequality on this literal codiagonal mixture, not re-center its cells.
+- **Scalar rectangular-Euler inversion is closed as a no-go (new, Lean closed).** The literal
+  marked FU measure sends the unbounded affine-normalized quadratic source
+  (q_b(t)=(t-b)^2) exactly to
+  (32(1/b-1/H)^2) for every (0<b\le H)
+  (`CCMFUSuzukiRectangularEulerNoGo.lean`,
+  `rectangularMixDensity_quadratic_codiagonal`).  This response is uniformly bounded by the
+  fixed lower wall even though (q_b) is unbounded. Whole-route consequence: no scalar
+  Volterra/Euler inversion can obtain source control from the FU reporter bound alone; a
+  surviving argument must exploit a literal prime--polar/divisor relation that excludes this
+  quadratic invisible mode while preserving the signed cancellation.
 - The corpus already has exact Vaughan decompositions and nonstationary exponential-sum envelopes,
   but their tested phase is `ndPhaseExp T r n = exp(2πi·T log(1+r/n)/(2π))` with the essential
   hypothesis `0 < r` (`exists_norm_sum_vonMangoldt_ndPhaseExp_le_secondThird_mixed_hybrid`).
@@ -1035,3 +1093,119 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   inserted by identifying its negative Gram with the regular continuum; any valid Robin/Gamma
   assembly must account for an additional signed relative channel of root scale before seeking a
   lower bound.
+- **The literal all-gcd cross is irreducibly collective (Lean use audit).**
+  `sum_mobiusDivisorGcdCross` identifies the sum over every common-divisor sector with the exact
+  off-diagonal of the completed Möbius--divisor Abel source.  But
+  `mobiusDivisorGcdCross_positive_unbounded` gives unbounded positive individual sectors, while
+  `sum_mobiusDivisorGcdCross_eleven_lt_neg_oneHundredth` gives a negative total at the same
+  finite cutoff where the coprime sector is positive.  Whole-route consequence: no componentwise
+  gcd estimate, coprime-column estimate, or finite selection of sectors can be promoted to the
+  required cancellation.  Any surviving CCM--FU producer must bound one simultaneous all-scale
+  signed cross-form tied to the literal Abel source.
+- **Prime-by-prime and independent-core control are excluded at their natural scales (Lean use
+  audit).** `MobiusDivisorDilationMeanUniformCoreNoGo.lean` refutes a core-uniform one-step
+  physical-renewal bound; `MobiusHalfSelectionGrowthObstruction.lean` refutes a fixed diagonal
+  budget for independent half-subset averaging; and `MobiusDivisorCoareaOrderBarrier.lean` forces
+  every complete one-prime order through a superquadratic coarea action.  Whole-route consequence:
+  these statements do not rule out a raw endpoint-energy inequality, but they rule out proving it
+  by uniform local insertion, independent randomization, or a bounded intermediate coarea
+  potential.  The remaining mechanism has to preserve cancellation jointly before any
+  intermediate norm or averaging operation.
+- **The inclusive all-scale gcd PSD completion is superquadratic (new, Lean closed).**
+  `MobiusDivisorInclusiveGcdGramNoGo.lean` factorizes its exact literal channel form into
+  totient-weighted divisor sums of squares and proves
+  \[
+    \frac25\,\mathrm{latePrimeMass}(4N)^2\le G_{\gcd}(4N).
+  \]
+  `MobiusDivisorInclusiveGcdGramAsymptotic.lean` then proves
+  \(G_{\gcd}(4N)/(4N)^2\to+\infty\), using the existing literal late-prime mass divergence.
+  Whole-route consequence: no positive-semidefinite all-gcd preconditioner can be the missing
+  CCM--FU signed-cancellation producer. Its positive survivor is an exact scale-resolved
+  totient-square factorization; any viable global controller must retain signed cancellation or
+  explicitly remove the late-prime diagonal by a source-faithful compensator.
+- **Reflection-compatible scalar shorting cannot repair the opposite-radial source signature
+  (new, Lean closed).** `XiWardCubicScalarShortingNoGo.lean` proves that every scalar multiplier
+  covariant under functional-equation reflection and radial reversal preserves the exact negative
+  norm-square of the signed completed conormal boundary product.  Whole-route consequence: the
+  remaining polar--Gamma contraction cannot be a scalar boundary shorting; it must perform
+  coefficient-faithful, nonlocal or matrix-valued oriented cancellation before continuation.
+- **Literal outgoing quantile curvature has an exact signed-credit/debt law (new, Lean closed).**
+  `CCMActualHeadOutgoingQuantileBarycentricDebt.lean` proves that every actual mass-quantile cell
+  has quadratic Fourier curvature equal to its signed barycentric displacement credit minus its
+  nonnegative squared-displacement debt, and that a finite block has nonnegative curvature only
+  if its total signed credit pays the entire accumulated debt.  Whole-route consequence: neither
+  Γ-head energy nor absolute transport work can close Route O; the missing cofinal producer must
+  establish this precise unshorted signed credit inequality.  The next source-faithful bridge is
+  a finite Stieltjes crossing identity between mass-clock cells and log-height atoms, retaining
+  both intrusion and overshoot corrections.
+- **Mass-clock/time-clock crossing is favorable and exact (new, Lean closed).**
+  `CCMActualHeadOutgoingQuantileStieltjesCrossing.lean` proves, at every literal outgoing cutoff
+  \(b_N\), that its finite quadratic moment is exactly
+  \[
+    \mathrm{completedSignedAction}_N-\mathrm{inwardArchimedeanLeakage}_N+
+    \mathrm{crossingCredit}_N,
+    \qquad \mathrm{crossingCredit}_N\ge0.
+  \]
+  The crossing credit is the explicit sum of log-time atoms intruding past the mass cutoff and
+  the negative quadratic profiles of mass-clock atoms overshooting the log-time cutoff; neither
+  is discarded or bounded absolutely. The same expression is the literal outgoing Fourier
+  curvature, and nonnegative moment is equivalent to completed action plus crossing credit
+  paying the full inward leakage. Whole-route consequence: Route O now has a source-faithful
+  finite landing rather than a clock mismatch. The remaining hard datum is the cofinal signed
+  inequality for this exact completed-action-plus-crossing expression; no Gamma-head or
+  time-clock proxy can replace it.
+- **The apparent inward archimedean leakage is exactly removable by source centering (new,
+  Lean closed).** `CCMActualHeadOutgoingQuantileStieltjesCrossing.lean` now proves, for every
+  real \(H\),
+
+  \[
+    \int_0^H e^{-h/2}(H^2-h^2)\,dh
+      =2\int_0^H h\,2(1-e^{-h/2})\,dh.
+  \]
+  It also proves that the literal complex Stieltjes action is
+  \(2\int_0^{b_N}hE(h)\,dh\), using only established local integrability of the actual prime
+  staircase. Consequently the literal outgoing moment is exactly
+  \[
+    2\int_0^{b_N} h\bigl(E(h)-2(1-e^{-h/2})\bigr)\,dh+
+      \mathrm{crossingCredit}_N,
+    \qquad \mathrm{crossingCredit}_N\ge0.
+  \]
+  Whole-route consequence: the prior task “pay archimedean leakage” was a false decomposition;
+  Route O's open core is solely a cofinal lower bound for this one threshold-centered, signed
+  prime--polar action on actual quantile endpoints. This is neither a separate-prime estimate
+  nor a Gamma-clock comparison.
+- **The centered action and barycentric debt are now one exact literal invariant (new, Lean
+  closed).** The terminal-mass action is pointwise an oriented polar tail from the quantile
+  boundary of \(\lfloor e^h\rfloor+1\) to \(h\).  Lean proves
+  \[
+    \mathrm{terminalMassAction}_N+\mathrm{crossingCredit}_N
+      =\mathrm{barycentricCredit}_N-\mathrm{squaredDisplacementDebt}_N.
+  \]
+  Consequently its nonnegativity is equivalent, at each finite actual head, to signed
+  barycentric credit paying the complete squared displacement debt. Whole-route consequence:
+  Route O has no residual mismatch between source, crossing, and geometry. The remaining
+  cofinal producer must control this single signed invariant; independent Γ-head positivity,
+  absolute terminal-mismatch bounds, and model-clock replacement cannot supply it.
+- **Actual matched polar coverage has a finite adjacent codiagonal normal form (new, Lean
+  closed).** `CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal.lean` proves
+  \[
+    \delta_{n+1}-\delta_n=U_n-L_{n+1}
+  \]
+  for the literal matched-to-quantile displacement, and rewrites every finite matched-minus-
+  quantile block exactly as the signed sum of the oriented adjacent windows
+  \(\int_{L_{n+1}}^{U_n}\) plus its two endpoint windows.  The proof works solely on strictly
+  positive polar-mass intervals; it assumes neither continuity at the logarithmic coordinate
+  singularity nor a sign/order for any matched cells. Whole-route consequence: the CCM--FU
+  coverage problem is now a marked von Mangoldt--polar codiagonal pairing with the actual
+  translation-defect profile.  A cellwise displacement corridor, absolute transport estimate, or
+  proxy graph energy cannot control this pairing; a valid advance must bound its signed aggregate
+  while retaining every overlap, gap, and boundary term.
+- **Bare adjacent codiagonal has no scalar zero-clock charge (new, Lean closed no-go).** The
+  same module proves that its profile-level codiagonal annihilates the constant function exactly:
+  \(\mathcal C_K[1]=0\) for every finite literal head.  This follows from exact equality of
+  each matched polar-cell mass and its quantile-cell mass, with telescoping rather than an
+  asymptotic cancellation. Whole-route consequence: the requested zero-clock prime--polar--Γ
+  charge cannot be supplied after scalarizing through the bare codiagonal. The positive survivor
+  is precise: only its nonconstant actual autocorrelation/commutator profile can carry the
+  residual source information, so a viable higher-dimensional producer must preserve that marked
+  profile before any scalar zero-mode readout.

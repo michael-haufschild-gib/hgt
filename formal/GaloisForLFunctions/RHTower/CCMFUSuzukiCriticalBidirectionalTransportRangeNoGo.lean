@@ -90,27 +90,16 @@ private theorem log_suzukiCheckpointCritical_backwardBlock_drift_le
         mul_inv_cancel₀ hbasepos.ne'
       linear_combination hinv
 
-/-- **Fixed-radius two-sided transport is impossible cofinally.**  For any fixed left and right
-memory radii, every sufficiently large prime leaves strictly positive literal
-Mertens--polar mass in its full two-sided block.  This closes the remaining bounded-memory
-orientation loophole: a source-faithful CCM-FU cancellation mechanism must have scale-growing,
-not merely bidirectional, support. -/
-theorem eventually_prime_suzukiCheckpointCriticalMertensDeviationCore_bidirectionalBlock_pos
-    (L R : ℕ) :
-    ∀ᶠ p : ℕ in atTop, p.Prime →
-      0 < suzukiCheckpointCriticalMertensDeviationCore (p - 2 + R) -
-        suzukiCheckpointCriticalMertensDeviationCore (p - L - 3) := by
-  have hlogReal : Tendsto (fun x : ℝ => Real.log x / 2) atTop atTop :=
-    Real.tendsto_log_atTop.atTop_div_const (by norm_num)
-  have hlog : Tendsto (fun p : ℕ => Real.log (p : ℝ) / 2) atTop atTop :=
-    hlogReal.comp tendsto_natCast_atTop_atTop
-  filter_upwards [hlog.eventually (eventually_gt_atTop (2 * (L : ℝ) + R)),
-    eventually_ge_atTop (27 : ℕ),
-    eventually_ge_atTop (2 * (L + 1))] with p hlarge hp27 htw hp
-  by_contra hnonpos
-  have hblock : suzukiCheckpointCriticalMertensDeviationCore (p - 2 + R) -
-      suzukiCheckpointCriticalMertensDeviationCore (p - L - 3) ≤ 0 :=
-    le_of_not_gt hnonpos
+/-- **Quantitative bicausal locality law.** A contiguous source-faithful block that
+contains a large prime and has nonpositive net Mertens--polar mass must have combined
+left/right radius at least `log p / 2`. Thus not only fixed memory but every
+sublogarithmic contiguous cancellation scheme is excluded. The conclusion is in
+event-label coordinates, before scalar FU readout. -/
+theorem suzukiCheckpointCriticalMertensDeviationCore_prime_nonpos_bidirectionalBlock_forces_combined_log_radius
+    {p L R : ℕ} (hp : p.Prime) (hp27 : 27 ≤ p) (htw : 2 * (L + 1) ≤ p)
+    (hblock : suzukiCheckpointCriticalMertensDeviationCore (p - 2 + R) -
+      suzukiCheckpointCriticalMertensDeviationCore (p - L - 3) ≤ 0) :
+    Real.log (p : ℝ) / 2 ≤ 2 * (L : ℝ) + R := by
   have hleft : L + 3 ≤ p := by omega
   have hspan :=
     suzukiCheckpointCriticalMertensDeviationCore_prime_nonpos_bidirectionalBlock_forces_log_span
@@ -146,13 +135,61 @@ theorem eventually_prime_suzukiCheckpointCriticalMertensDeviationCore_bidirectio
       _ = (2 * (L : ℝ) + R) / p := by ring
   have hbound : Real.log (p : ℝ) / (2 * p) ≤ (2 * (L : ℝ) + R) / p :=
     hspan.trans hsum
-  have hkey : Real.log (p : ℝ) / 2 ≤ 2 * (L : ℝ) + R := by
-    calc
-      Real.log (p : ℝ) / 2 = (Real.log (p : ℝ) / (2 * p)) * p := by
-        field_simp
-      _ ≤ ((2 * (L : ℝ) + R) / p) * p :=
-        mul_le_mul_of_nonneg_right hbound hp0.le
-      _ = 2 * (L : ℝ) + R := by field_simp
+  calc
+    Real.log (p : ℝ) / 2 = (Real.log (p : ℝ) / (2 * p)) * p := by
+      field_simp
+    _ ≤ ((2 * (L : ℝ) + R) / p) * p :=
+      mul_le_mul_of_nonneg_right hbound hp0.le
+    _ = 2 * (L : ℝ) + R := by field_simp
+
+/-- **Cofinal sublogarithmic bicausal obstruction.** Any varying contiguous left/right
+transport schedule whose combined radius is eventually smaller than `log p / 2` leaves
+strictly positive literal source on every sufficiently large prime block. This turns the
+pointwise locality law into the exact rejection criterion for proposed growing-memory
+transport schedules. -/
+theorem eventually_prime_suzukiCheckpointCriticalMertensDeviationCore_bidirectionalBlock_pos_of_eventually_combined_radius_lt_log
+    (L R : ℕ → ℕ)
+    (hwidth : ∀ᶠ p : ℕ in atTop, 2 * (L p + 1) ≤ p)
+    (hsmall : ∀ᶠ p : ℕ in atTop,
+      2 * (L p : ℝ) + R p < Real.log (p : ℝ) / 2) :
+    ∀ᶠ p : ℕ in atTop, p.Prime →
+      0 < suzukiCheckpointCriticalMertensDeviationCore (p - 2 + R p) -
+        suzukiCheckpointCriticalMertensDeviationCore (p - L p - 3) := by
+  filter_upwards [eventually_ge_atTop (27 : ℕ), hwidth, hsmall]
+    with p hp27 hpwidth hsmallp hp
+  by_contra hnonpos
+  have hblock : suzukiCheckpointCriticalMertensDeviationCore (p - 2 + R p) -
+      suzukiCheckpointCriticalMertensDeviationCore (p - L p - 3) ≤ 0 :=
+    le_of_not_gt hnonpos
+  have hradius :=
+    suzukiCheckpointCriticalMertensDeviationCore_prime_nonpos_bidirectionalBlock_forces_combined_log_radius
+      hp hp27 hpwidth hblock
+  linarith
+
+/-- **Fixed-radius two-sided transport is impossible cofinally.**  For any fixed left and right
+memory radii, every sufficiently large prime leaves strictly positive literal
+Mertens--polar mass in its full two-sided block.  This closes the remaining bounded-memory
+orientation loophole: a source-faithful CCM-FU cancellation mechanism must have scale-growing,
+not merely bidirectional, support. -/
+theorem eventually_prime_suzukiCheckpointCriticalMertensDeviationCore_bidirectionalBlock_pos
+    (L R : ℕ) :
+    ∀ᶠ p : ℕ in atTop, p.Prime →
+      0 < suzukiCheckpointCriticalMertensDeviationCore (p - 2 + R) -
+        suzukiCheckpointCriticalMertensDeviationCore (p - L - 3) := by
+  have hlogReal : Tendsto (fun x : ℝ => Real.log x / 2) atTop atTop :=
+    Real.tendsto_log_atTop.atTop_div_const (by norm_num)
+  have hlog : Tendsto (fun p : ℕ => Real.log (p : ℝ) / 2) atTop atTop :=
+    hlogReal.comp tendsto_natCast_atTop_atTop
+  filter_upwards [hlog.eventually (eventually_gt_atTop (2 * (L : ℝ) + R)),
+    eventually_ge_atTop (27 : ℕ),
+    eventually_ge_atTop (2 * (L + 1))] with p hlarge hp27 htw hp
+  by_contra hnonpos
+  have hblock : suzukiCheckpointCriticalMertensDeviationCore (p - 2 + R) -
+      suzukiCheckpointCriticalMertensDeviationCore (p - L - 3) ≤ 0 :=
+    le_of_not_gt hnonpos
+  have hkey :=
+    suzukiCheckpointCriticalMertensDeviationCore_prime_nonpos_bidirectionalBlock_forces_combined_log_radius
+      hp hp27 htw hblock
   linarith
 
 end

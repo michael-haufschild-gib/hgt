@@ -449,3 +449,65 @@
 - **Rational Maass trace closed (current corpus, 2026-09-15).** `rationalGL_exists_integral_upperTriangular` factors every rational `GL₂` matrix after every integral cusp scaling as an integral `SL₂` factor followed by an upper-triangular real factor. Together with `UpperHalfPlane.tendsto_smul_atImInfty`, `rationalGL_cuspidal_pullback` proves that rational pullback preserves the actual integral-cusp decay condition; positive-determinant covariance preserves the Maass eigen-equation.
 - **Source-attached rational correspondence closed (current corpus, 2026-09-15).** `rationalMaassPullback` constructs the nonzero conjugate-level source; `maassTraceInvariant` proves finite relative-coset trace invariance; `principalMaassTraceData` proves trace preservation of smoothness, eigenvalue, and cusp decay; `rationalPrincipalTrace_zero_or_eigenform` returns either zero or a nonzero principal-level `GLMaassCuspEigenform` at the original eigenvalue. Target build and axiom audits pass with only `propext`, `Classical.choice`, and `Quot.sound`.
 - **Route boundary after rational trace.** The trace is zero-permitted and is not yet a Hecke endomorphism theorem: no fixed-eigenvalue vector space, trace linearity/operator identity, commuting/self-adjoint rational double-coset algebra, simultaneous eigenvector, finite-dimensional spectral realization, or adelic factorization has been proved. The next whole-route bridge is to package these zero-permitted maps on a proved finite-dimensional Maass eigenspace; only then can this correspondence supply finite-place data for a global lift.
+- **Zero-inclusive Hecke precursor closed (current corpus, 2026-09-16).** `glMaassCuspEigenspace Γ λ` is a closed Lean `ℂ`-submodule of upper-half-plane functions: it retains GL invariance, the exact positive-hyperbolic-Laplacian equation, and every integral-cusp decay condition under zero, addition, and complex scalar multiplication. The proof uses exact second directional derivative sum/scalar rules, not a presumed linearity of the Maass equation.
+- **Linear rational correspondence closed (current corpus, 2026-09-16).** `maassTraceLinear` is the finite relative-coset trace as a complex-linear map. `principalMaassTraceLinear` restricts it to the fixed Maass eigenspace using the new zero-inclusive analytic trace theorem. `rationalMaassPullbackLinear` and `rationalPrincipalTraceLinear` compose positive rational pullback with finite trace into a closed linear endomorphism of the same principal-level eigenspace. Target build and theorem-level axiom audit report only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Next global-route boundary.** Deep search finds generic joint-eigenvector theorems only conditional on a finite-dimensional module and commuting endomorphisms. It returns no source-attached double-coset product/commutation identity, finite-dimensional Maass eigenspace, compact resolvent, or spectral realization. The next proof attempt must establish rational-double-coset identities for `rationalPrincipalTraceLinear`, or construct a source-attached finite-dimensional spectral realization; without one, the linear maps cannot yet create finite-place Hecke eigenvalues or an adelic lift.
+- **Nested finite-trace composition closed (current corpus, 2026-09-16).** `maassTraceCosetProductEquiv` proves the exact relative-coset factorization `K / (G ∩ K) ≃ (K / (H ∩ K)) × (H / (G ∩ H))` for `G ≤ H ≤ K`. `maassTraceCosetProduct_summand` identifies the actual Maass summand in these coordinates, and `maassTraceFunction_transitive` closes `Tr_{G→K} = Tr_{H→K} ∘ Tr_{G→H}` for finite nested chains. This supplies the composition engine missing from the rational correspondence route.
+- **Generic rational pullback composition closed (current corpus, 2026-09-16).** `rationalMaassPullbackInvariant_general` and `rationalMaassPullbackLinearOfGroup` extend the rational pullback to every fixed Maass eigenspace. `rationalPullbackConjugateGroup_mul`, `rationalGL_map_det_mul_pos`, and `rationalMaassPullbackLinearOfGroup_comp_apply` prove subgroup, positivity, and pointwise function composition for successive positive rational matrices. The remaining operator-product bridge is base change through intersections of non-nested rational conjugate subgroups.
+- **Rational-conjugate analytic trace closed (current corpus, 2026-09-16).** `rationalConjugateGroup_exists_positive_rational_lift` gives every target representative a positive rational lift. `SelbergMaassRationalConjugateTrace` uses it quotient-class by quotient-class to prove finite trace into every rationally conjugated principal target preserves smoothness, the exact Maass eigen-equation, and integral-cusp decay. `rationalConjugateMaassTraceLinear` and `rationalConjugateGroupsTraceLinear` therefore give closed complex-linear maps between all rational-conjugate fixed eigenspaces.
+- **Trace/pullback base change closed (current corpus, 2026-09-16).** `SelbergMaassTraceBaseChange` constructs the conjugation equivalence of relative-coset quotients, transports finite relative index, and proves `maassTrace_rationalPullback_baseChange`: rational pullback commutes exactly with finite trace. This removes all analytic and conjugation-order defects from rational-operator composition. The remaining Hecke-algebra bridge is a finite double-coset decomposition for composition of traces through non-nested conjugate subgroups; no source-attached product formula or finite spectral realization is yet present.
+- **Mackey combinatorics and block source closed (current corpus, 2026-09-16).** `SelbergMaassDoubleCosetTrace.maassTraceFunction_doubleCoset` gives the exact orbit--stabilizer reindexing of any finite Maass trace, `maassTrace_mem_stabilizer_iff` and `maassTrace_stabilizer_eq_conjugateComap` identify the stabilizer with the conjugated intersection, and `maassDoubleCosetBlockPullback` constructs its literal invariant pullback source. The exact remaining local bridge is analytic trace preservation for mapped subgroup intersections which inherit positive rational lifts from a rational-conjugate parent; after that, nested trace transitivity can convert each block into an explicit correspondence term.
+- **Positive rational lifts descend to intersections (current corpus, 2026-09-16).** `HasPositiveRationalLifts` records the exact representative property needed by the analytic trace proof. `rationalConjugateGroup_hasPositiveRationalLifts` closes it for every rational-conjugate principal parent, and `HasPositiveRationalLifts.map_subgroup` closes it for every mapped subgroup, including the stabilizer intersections in the Mackey decomposition. Direct RationalTrace source and target audits pass.
+
+- **Positive-rational Mackey blocks are now closed (current corpus, 2026-09-16).** `positiveRationalMaassTraceData_of_data` proves finite trace preserves invariant, Maass-eigen, and integral-cusp data for every target carrying a `HasPositiveRationalLifts` witness. `maassTrace_mappedStabilizerQuotientEquiv` proves the actual stabilizer-coset quotient is equivalent to the quotient of its mapped subgroup, so its mapped stabilizer has finite relative index. `maassDoubleCosetBlockTraceFunction_eq_orbitSum` identifies the finite trace of a literal double-coset block with its original stabilizer-orbit summands, and `maassDoubleCosetBlockTraceFunction_eq_representativeOrbitSum` attaches that equality to a representative-based orbit--stabilizer equivalence. The remaining global finite sum equality is mathematically reduced to these closed facts; its direct source proof reached Lean's default elaboration limit without any heartbeat modification, so no unverified global theorem was retained.
+- **Rational-trace compact-core no-go (current corpus, 2026-09-16).**
+  `glIntegralMaassCuspEigenformToMaass` now reindexes every principal-level
+  `GLMaassCuspEigenform` to the identical `realImage (Gamma (N+1))` Maass source, retaining its
+  literal function, nonvanishing, eigen-equation, and integral-cusp decay.  Consequently
+  `rationalPrincipalTrace_zero_or_coreQuarter_strict_neg_at_transitionCutoff` proves that each
+  rational principal trace of an exceptional source either vanishes or is represented by a
+  principal-level Maass source with strictly negative `coreQuarter` at the canonical Bessel
+  cutoff.  `weighted_coreQuarter_sum_strict_neg_at_transitionCutoff` extends this to every finite
+  nonnegative-weight family having positive total weight.  Thus neither a positive finite trace
+  average nor cross terms packaged as a nonzero traced eigenform can supply the required
+  `0 ≤ coreQuarter` direct coercivity.  The positive survivor is exact: any direct route must use
+  a new sign-indefinite/source-sensitive comparison (for example a lower flux or density-weighted
+  quartic bound), while the global route still requires adelic finite-place realization followed
+  by compatible unbounded symmetric-power lifts.  Source checks and targeted builds of
+  `SelbergMaassGLCorrespondence` and `SelbergMaassTraceAverageNoGo` pass; theorem axiom audits
+  report only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Quotient-Casimir prerequisite test (current corpus, 2026-09-16).**
+  `MaassSmooth.laplacian_ofMaass` and `lower_raise_ofMaass` give the literal smooth
+  upper-half-plane Laplace/Casimir factorization, while `MaassLadderQuotientL2` admits every
+  individual raised and lowered automorphic ladder function to quotient `L²`.  The fresh deep
+  search for a quotient derived Casimir, operator domain, closedness, resolvent, or source
+  eigenvector compatibility returned no declaration.  Direct source inspection confirms that the
+  quotient module exports only `toLp` vectors and almost-everywhere representatives, not an
+  unbounded Laplacian/Casimir.  Therefore compact-resolvent or finite-dimensional-eigenspace
+  arguments are not yet well-typed from the present data; pointwise differential identities cannot
+  replace that missing operator layer.  Positive survivor: a source-attached smooth Casimir
+  factorization and quotient-`L²` admission of every finite ladder vector.  A global spectral route
+  first needs a closed cusp-Laplacian/derived-Casimir realization that contains this ladder and
+  identifies its eigenvalue.
+- **Geometric trace-formula audit (current corpus, 2026-09-16).** A deep search for a
+  source-attached geodesic/orbital spectral-parameter positivity mechanism returned only the Maass
+  correspondence, Fourier coefficients, and unrelated finite spectral positivity. An exhaustive
+  name/text audit for `trace formula`, `Selberg trace`, `orbital integral`, `closed geodesic`, and
+  `hyperbolic conjugacy` finds no congruence-Maass geometric trace-formula implementation; the
+  apparent trace-formula modules belong to distinct Connes/RH carriers. Therefore no direct
+  geometric positivity bridge is presently available for the Selberg source. Any such route first
+  requires a new source-attached trace formula with a proved spectral side and an orbital-side sign
+  estimate.
+- **Global Mackey block decomposition closed (current corpus, 2026-09-16).**
+  `maassTraceFunction_eq_sum_doubleCosetBlockTraceFunctions` proves that every finite Maass trace
+  is exactly the finite sum of the analytic traces of its double-coset blocks. The proof uses the
+  existing orbit--stabilizer decomposition, `Subgroup.quotientEquivOfEq` to transport the dependent
+  stabilizer quotients between literal and quotient-chosen representatives, and enumeration
+  independence of finite sums. `maassTraceDoubleCosetOrbitFintype` and
+  `maassTraceDoubleCosetStabilizerFintype` are now public canonical enumerations so this equality
+  composes definitionally with the existing trace reindexing. This removes the prior formal
+  obstruction at the global finite sum, without asserting an adelic realization or an operator
+  product formula. The next global bridge is to specialize the decomposition to products of
+  `rationalPrincipalTraceLinear` maps and identify each block as a source-attached rational
+  correspondence endomorphism; finite-place Hecke structure still requires that product theorem,
+  then an adelic realization agreeing with the completed real model.

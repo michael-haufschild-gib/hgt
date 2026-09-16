@@ -18,8 +18,6 @@ def streamMasterFirst (w r B : ℂ) (square : Bool) (V : Covector) (k : Fin 2) (
   masterFirst w r (streamRadialValue w r B square) (streamRadialFirst w r B square)
     (streamRadialSecond w r B square) (streamRadialThird w r B square) (V k z) (streamAngularOperator V k z)
 
-set_option maxRecDepth 4096 in
-set_option maxHeartbeats 400000 in
 /-- Differentiating the full two-factor master defect retains exactly the original current derivative. -/
 theorem masterFirst_resolvent_defect (s r B J K A D : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
     masterFirst (2*s) r (streamRadialValue (2*s) r (B^2) false)
