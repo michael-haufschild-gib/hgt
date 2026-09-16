@@ -127,6 +127,124 @@ theorem maassTrace_mackey_compose
     _ = _ := by
       simp only [Finset.sum_apply]
 
+/-- The relative-coset quotient depends only on its subgroup of the target. -/
+noncomputable def maassRelativeCosetEquivOfEq
+    {G H K : Subgroup (GL (Fin 2) ℝ)}
+    (hGH : G.subgroupOf K = H.subgroupOf K) :
+    K ⧸ (G.subgroupOf K) ≃ K ⧸ (H.subgroupOf K) :=
+  Quotient.congr (Equiv.refl K) (by
+    intro x y
+    rw [QuotientGroup.leftRel_apply, QuotientGroup.leftRel_apply, hGH]
+    rfl)
+
+@[simp] theorem maassRelativeCosetEquivOfEq_mk
+    {G H K : Subgroup (GL (Fin 2) ℝ)}
+    (hGH : G.subgroupOf K = H.subgroupOf K) (k : K) :
+    maassRelativeCosetEquivOfEq hGH (QuotientGroup.mk k) = QuotientGroup.mk k :=
+  rfl
+
+/-- A finite trace only depends on the source subgroup as seen inside its target,
+provided its underlying function is unchanged. -/
+theorem maassTraceFunction_congr_source
+    {G H K : Subgroup (GL (Fin 2) ℝ)}
+    [G.IsFiniteRelIndex K] [H.IsFiniteRelIndex K]
+    (hGH : G.subgroupOf K = H.subgroupOf K)
+    (fG : glUpperHalfPlaneInvariantFunctions G)
+    (fH : glUpperHalfPlaneInvariantFunctions H)
+    (hfun : fG.1 = fH.1) :
+    maassTraceFunction (H := K) fG = maassTraceFunction (H := K) fH := by
+  letI : Fintype (K ⧸ (G.subgroupOf K)) := Fintype.ofFinite _
+  letI : Fintype (K ⧸ (H.subgroupOf K)) := Fintype.ofFinite _
+  let e := maassRelativeCosetEquivOfEq hGH
+  funext z
+  unfold maassTraceFunction
+  rw [← Equiv.sum_comp e (fun q => maassTraceQuotientFunc fH q z)]
+  apply Finset.sum_congr rfl
+  intro q hq
+  induction q using Quotient.inductionOn with
+  | h k =>
+    rw [maassRelativeCosetEquivOfEq_mk, maassTraceQuotientFunc_mk,
+      maassTraceQuotientFunc_mk]
+    exact congrFun hfun _
+
+/-- Restricting a source function to the subgroup visible in the target does not
+change its finite trace. -/
+theorem maassTrace_restrict_subgroupOf_eq
+    (H K : Subgroup (GL (Fin 2) ℝ)) [H.IsFiniteRelIndex K]
+    (f : glUpperHalfPlaneInvariantFunctions H) :
+    let J := K.subgroupOf H
+    let T := J.map H.subtype
+    letI : T.IsFiniteRelIndex K := by
+      rw [Subgroup.isFiniteRelIndex_iff_finiteIndex]
+      have hsub : T.subgroupOf K = H.subgroupOf K := by
+        apply (Subgroup.map_subtype_inj).mp
+        rw [Subgroup.subgroupOf_map_subtype, Subgroup.subgroupOf_map_subtype]
+        simp only [T, J, Subgroup.subgroupOf_map_subtype, inf_comm, inf_left_comm, inf_idem]
+      rw [hsub]
+      exact Subgroup.finiteIndex_of_finite_quotient
+    maassTraceFunction (H := K)
+      (maassInvariantRestrict (maassDoubleCosetTarget_le J) f) =
+      maassTraceFunction (H := K) f := by
+  dsimp only
+  let J : Subgroup H := K.subgroupOf H
+  let T : Subgroup (GL (Fin 2) ℝ) := J.map H.subtype
+  have hsub : T.subgroupOf K = H.subgroupOf K := by
+    apply (Subgroup.map_subtype_inj).mp
+    rw [Subgroup.subgroupOf_map_subtype, Subgroup.subgroupOf_map_subtype]
+    simp only [T, J, Subgroup.subgroupOf_map_subtype, inf_comm, inf_left_comm, inf_idem]
+  letI : T.IsFiniteRelIndex K := by
+    rw [Subgroup.isFiniteRelIndex_iff_finiteIndex, hsub]
+    exact Subgroup.finiteIndex_of_finite_quotient
+  apply maassTraceFunction_congr_source hsub
+  rfl
+
+/-- Mackey composition with the literal outer finite trace. The acting subgroup is
+the intersection of the intermediate and outer target groups. -/
+theorem maassTrace_mackey_compose_subgroupOf
+    (G H K : Subgroup (GL (Fin 2) ℝ)) [G.IsFiniteRelIndex H]
+    [H.IsFiniteRelIndex K] (f : glUpperHalfPlaneInvariantFunctions G) :
+    let J := K.subgroupOf H
+    let T := J.map H.subtype
+    letI : T.IsFiniteRelIndex K := by
+      rw [Subgroup.isFiniteRelIndex_iff_finiteIndex]
+      have hsub : T.subgroupOf K = H.subgroupOf K := by
+        apply (Subgroup.map_subtype_inj).mp
+        rw [Subgroup.subgroupOf_map_subtype, Subgroup.subgroupOf_map_subtype]
+        simp only [T, J, Subgroup.subgroupOf_map_subtype, inf_comm, inf_left_comm, inf_idem]
+      rw [hsub]
+      exact Subgroup.finiteIndex_of_finite_quotient
+    let Ω := Quotient (orbitRel J (H ⧸ (G.subgroupOf H)))
+    letI : Fintype Ω := maassTraceDoubleCosetOrbitFintype G H J
+    maassTraceFunction (H := K) (maassTraceInvariant (H := H) f) =
+      ∑ q : Ω,
+        (maassDoubleCosetBlockTraceToInvariant G H K J q.out.out
+          (by
+            rintro x ⟨j, hj, rfl⟩
+            exact hj) f).1 := by
+  dsimp only
+  let J : Subgroup H := K.subgroupOf H
+  let T : Subgroup (GL (Fin 2) ℝ) := J.map H.subtype
+  have hsub : T.subgroupOf K = H.subgroupOf K := by
+    apply (Subgroup.map_subtype_inj).mp
+    rw [Subgroup.subgroupOf_map_subtype, Subgroup.subgroupOf_map_subtype]
+    simp only [T, J, Subgroup.subgroupOf_map_subtype, inf_comm, inf_left_comm, inf_idem]
+  have hTK : T ≤ K := by
+    rintro x ⟨j, hj, rfl⟩
+    exact hj
+  letI : T.IsFiniteRelIndex K := by
+    rw [Subgroup.isFiniteRelIndex_iff_finiteIndex, hsub]
+    exact Subgroup.finiteIndex_of_finite_quotient
+  letI : Fintype (Quotient (orbitRel J (H ⧸ (G.subgroupOf H)))) :=
+    maassTraceDoubleCosetOrbitFintype G H J
+  calc
+    maassTraceFunction (H := K) (maassTraceInvariant (H := H) f) =
+        maassTraceFunction (H := K)
+          (maassInvariantRestrict (maassDoubleCosetTarget_le J)
+            (maassTraceInvariant (H := H) f)) := by
+      exact (maassTrace_restrict_subgroupOf_eq H K
+        (maassTraceInvariant (H := H) f)).symm
+    _ = _ := maassTrace_mackey_compose G H K J hTK f
+
 end
 
 end GaloisForLFunctions.RHTower

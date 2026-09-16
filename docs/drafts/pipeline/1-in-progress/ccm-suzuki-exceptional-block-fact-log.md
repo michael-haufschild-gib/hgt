@@ -1209,3 +1209,19 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   is precise: only its nonconstant actual autocorrelation/commutator profile can carry the
   residual source information, so a viable higher-dimensional producer must preserve that marked
   profile before any scalar zero-mode readout.
+- **The mass-coordinate first codiagonal mode has a forced endpoint contaminant (new, Lean
+  closed no-go and survivor).**
+  `CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal.lean` proves exactly
+  \[
+    \mathcal C_K[y]=-
+      \sum_{n\le K}\Lambda_{\rm crit}(n+2)\,\delta_{n+2}
+    =\sum_{n\le K}\Lambda_{\rm crit}(n+2)
+      \bigl(E_{\rm out}(n+2)+\mathrm{upperExcess}_{n+2}\bigr).
+  \]
+  The upper excess is the literal nonnegative displacement of the raw matched upper endpoint
+  from the prime-centre mass coordinate. Whole-route consequence: the unmarked linear
+  codiagonal is not a cancellation-faithful completed-source reporter. The exact positive
+  survivor is its endpoint-renormalized two-channel readout, which Lean identifies with
+  \(\sum\Lambda_{\rm crit}(n+2)E_{\rm out}(n+2)\). This is a source extraction only, not a
+  bound; it does not close the CCM--FU triangular transform, whose irreducible signed curvature
+  current is separately RH-bearing.

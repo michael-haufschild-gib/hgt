@@ -223,6 +223,38 @@ theorem physical_moebius_source_cross_block_eq_signed_gram (N L : ℕ) :
   simp
   ring
 
+/-- The new--new covariance in a complete cutoff block is the second signed Gram rectangle.
+Together with `physical_moebius_source_cross_block_eq_signed_gram`, this is the full algebraic
+content available before the required multi-prime cancellation estimate. -/
+theorem physical_moebius_source_block_norm_sq_eq_signed_gram_square (N L : ℕ) :
+    ‖∑ i ∈ range L, ((((μ (N + i + 1) : ℤ) : ℝ) : ℂ) •
+        bdGen (1 / ((N + i + 1 : ℕ) : ℝ)))‖ ^ 2 =
+      ∑ j ∈ range L, ((μ (N + j + 1) : ℤ) : ℝ) *
+        ∑ i ∈ range L, ((μ (N + i + 1) : ℤ) : ℝ) *
+          bdGram (1 / ((N + i + 1 : ℕ) : ℝ))
+            (1 / ((N + j + 1 : ℕ) : ℝ)) := by
+  let B : BDCarrier := ∑ i ∈ range L, ((((μ (N + i + 1) : ℤ) : ℝ) : ℂ) •
+    bdGen (1 / ((N + i + 1 : ℕ) : ℝ)))
+  have hself : Complex.re (inner ℂ B B) = ‖B‖ ^ 2 :=
+    by simpa only [RCLike.re_to_complex] using
+      (inner_self_eq_norm_sq (𝕜 := ℂ) B)
+  rw [← hself]
+  dsimp only [B]
+  rw [inner_sum]
+  simp_rw [sum_inner]
+  rw [Complex.re_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Finset.mul_sum]
+  rw [Complex.re_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [inner_smul_left, inner_smul_right, inner_bdGen_eq_bdGram,
+    Complex.conj_ofReal]
+  push_cast
+  simp
+  ring
+
 private theorem sum_initial_cell_weight (N : ℕ) :
     (∑ i ∈ range N, 1 / (((i : ℝ) + 1) * ((i : ℝ) + 2))) =
       1 - 1 / ((N : ℝ) + 1) := by

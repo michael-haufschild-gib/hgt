@@ -511,3 +511,16 @@
   `rationalPrincipalTraceLinear` maps and identify each block as a source-attached rational
   correspondence endomorphism; finite-place Hecke structure still requires that product theorem,
   then an adelic realization agreeing with the completed real model.
+- **Mackey trace composition closed (current corpus, 2026-09-16).**
+  `SelbergMaassMackeyTraceComposition.maassTrace_mackey_compose` proves the actual finite product
+  mechanism: trace from `G` to `H`, restrict to the image of `J ≤ H`, then trace to an outer
+  finite-relative-index target `K`; the result is exactly the finite sum of direct outer traces of
+  the stabilized double-coset pullbacks. The proof establishes the canonical-representative
+  summand law `maassTraceQuotientFunc_eq_out`, interchanges the two literal finite sums, and uses
+  `maassTrace_block_then_outer_eq_direct` to flatten every block by nested transitivity. This
+  closes Mackey composition without a heartbeat increase, an adelic premise, or an added axiom.
+  What remains is a specialization of this general formula to the two
+  `rationalPrincipalTraceLinear` maps, including the subgroup-intersection identification that
+  selects `J`; only after that specialization can the finite correspondence algebra be presented
+  as source-attached finite-place Hecke data. The global adelic realization and compatible
+  symmetric-power lift remain separate unsolved bridges.

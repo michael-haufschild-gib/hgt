@@ -995,3 +995,28 @@ the current SP-E investigation. It is not a route history.
   to extend precisely this relative graph through `Graph(cl A_*)` and the complex theta strip,
   then identify one resulting boundary representative simultaneously with Xi escape and the
   proved nuclear budget.
+
+- The literal finite theta formula now has a closed **complex-strip** cubic transport law
+  (`PrimeLogThetaStripWronskianCubicJet`).  For
+  `Q_n,l(w) = sum_p l(p) (2(log p)^2/sqrt p) (log p)^n exp(-i*w*log p)`, Lean proves on
+  `|Im w| < 1` that `i*d/dw Q_n,l = Q_(n+1),` and that the denominator-free relative ladder
+  `W_m(y) = XiC*i*d/dw(y) - m*i*d/dw(XiC)*y` satisfies
+  `W_3 W_2 W_1 Theta_l = XiC^4 Q_3,l`
+  (`primeLogThetaStripWronskian_cubic_thetaFourierLaplace`).  The proof begins from the actual
+  finite translated-theta Fourier--Laplace identity and performs no Xi division, source
+  reweighting, completion replacement, or zero selection.  Whole-route consequence: cubic
+  covariance is now proved at the actual complex zero coordinates, not only on the positive
+  Laplace ray.
+
+- The complex-strip theorem has a sharp source-specific scalar-loss corollary.  For every prime
+  `p` and every strip point `w`, the literal cubic one-prime symbol
+  `Q_3,(single p 1)(w)` is nonzero
+  (`primeLogThetaStripSymbol_cube_single_ne_zero`); but if `XiC(w)=0`, its scalar cubic theta
+  Wronskian evaluation is zero
+  (`primeLogThetaStrip_XiZero_has_nontrivial_prime_cubic_scalar_loss`).  All declarations audit
+  to only `propext`, `Classical.choice`, and `Quot.sound`.  Whole-route consequence: pointwise
+  scalar evaluation at an Xi zero is formally ruled out as a faithful final target for the
+  literal prime-labelled theta graph.  The surviving mandatory datum is the four-level Xi
+  filtration; the open PHCCED gate is now more precise: construct the literal closed
+  `Graph(cl A_*)` theta morphism and relative Calderón/boundary class that retains this
+  filtration while carrying its same representative to Xi escape and the nuclear `< 1` budget.
