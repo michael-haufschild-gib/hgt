@@ -524,3 +524,80 @@
   selects `J`; only after that specialization can the finite correspondence algebra be presented
   as source-attached finite-place Hecke data. The global adelic realization and compatible
   symmetric-power lift remain separate unsolved bridges.
+- **Literal-trace coherence and rational Mackey product closed (current corpus, 2026-09-16).**
+  `maassTraceFunction_congr_source` proves that a finite Maass trace is invariant under changing
+  its source presentation when the induced target subgroup and underlying function agree;
+  `maassTrace_restrict_subgroupOf_eq` resolves the intersection presentation required by the
+  outer trace.  Therefore `maassTrace_mackey_compose_subgroupOf` is a literal two-stage finite
+  trace product formula, rather than a restricted surrogate.  The new
+  `rationalPrincipalTrace_mackey_baseChange` combines exact rational trace/pullback base change
+  with that theorem: composing the source-attached rational traces for `g` and `h` equals the
+  finite Mackey sum from `(P^g)^h`, whose subgroup is exactly `P^(g*h)` by the existing
+  `rationalPullbackConjugateGroup_mul`.  Source check and targeted leaf builds pass without
+  changed heartbeats; theorem-level axioms remain ordinary Lean foundations.  This supplies the
+  finite-correspondence product law needed before finite-place data can be extracted.  It does
+  **not** identify each stabilizer block with a rational principal endomorphism, construct an
+  adelic realization/local factor, or produce any symmetric-power lift or exponent bound.
+- **Principal Hecke-coset descent closed (current corpus, 2026-09-16).**
+  `positiveRationalGLRealImage` is the actual positive-rational correspondence monoid in
+  `GL(2,R)`. `principalCongruenceGL_isHeckeTriple_positiveRational` proves it contains and
+  commensurates the principal source group, so it is a Mathlib `IsHeckeTriple`. The two exact
+  invariances `rationalPrincipalTrace_right_mul_principal` and
+  `rationalPrincipalTrace_left_mul_principal`, combined in
+  `rationalPrincipalTrace_eq_of_principal_doubleCoset`, prove that the literal source trace is
+  constant on principal double cosets. `rationalPrincipalHeckeCosetTrace` and
+  `rationalPrincipalHeckeCosetLinear` consequently descend the trace to a closed complex-linear
+  endomorphism for every Mathlib Hecke-coset basis element and every fixed Maass eigenspace.
+  This eliminates representative ambiguity from the finite-place bridge. The next exact
+  obstruction is convolution: Mathlib's installed Hecke file supplies only the coset/module
+  carriers, while the corpus Mackey product still has stabilizer-block terms not identified as
+  a finite combination of these descended basis endomorphisms. The larger adelic realization,
+  compatible local factorization, and symmetric-power lift remain open.
+- **Mackey multiplicity engine closed (current corpus, 2026-09-16).**
+  `maassTraceFunction_eq_card_smul_of_targetInvariant` proves that an unnormalised finite trace
+  of a function already invariant under its target is exactly the relative-coset cardinal times
+  that function. `maassTraceFunction_eq_card_smul_of_le_of_targetInvariant` combines this with
+  exact nested trace transitivity: for `L ≤ M ≤ K`, the outer trace from `L` is the relative
+  multiplicity `[M:L]` times the outer trace from `M` whenever the source function is
+  `M`-invariant. This is the precise coefficient law required to collapse a stabilizer block.
+  The unresolved finite-algebra step is now concrete: identify each rational Mackey block's
+  stabilizer source `L` as a finite-index subgroup of the relevant rational correspondence
+  source intersection `M`, and prove its literal block pullback agrees with the `M`-invariant
+  rational pullback. Only then does the existing Mackey sum become Hecke convolution.
+- **Rational Mackey block source and finite index closed (current corpus, 2026-09-16).**
+  `rationalMackey_blockPullback_eq_rationalPullback` identifies the literal function in a
+  rational principal Mackey block with pullback by `g * h * b⁻¹`, where `b` is a rational lift
+  of its relative-coset representative. `maassDoubleCosetBlockSource_eq_conjugate_inf` proves
+  its mapped stabilizer source is exactly the intersection of the conjugated ambient source and
+  mapped acting source. In the principal rational specialization,
+  `rationalMackey_blockSource_le_rationalDoubleCosetSource` and
+  `rationalMackey_blockSource_isFiniteRelIndex_rationalDoubleCosetSource` prove that this source
+  lies in, and has finite relative index in, `P^(g*h*b⁻¹) ∩ P`. The finite-index argument uses
+  rational-conjugate arithmeticity and arithmetic-intersection commensurability. The leaf module
+  is source-checked and targeted-built; theorem axiom audits report only `propext`,
+  `Classical.choice`, and `Quot.sound`. The finite bottleneck is now exact reindexing of the
+  Mackey orbit sum by rational double cosets with these relative-index multiplicities; that
+  coefficient identity is required for convolution.
+- **Rational Mackey block coefficient collapse closed (current corpus, 2026-09-16).**
+  `rationalMackey_blockTrace_eq_card_smul_rationalTrace` proves the exact analytic summand law:
+  the outer trace of each actual principal rational Mackey block is the cardinality of its
+  stabilizer-source quotient times the direct rational trace labelled by `g*h*b⁻¹`. The proof
+  combines the literal block-pullback identity, the finite-index bridge into
+  `P^(g*h*b⁻¹) ∩ P`, nested trace multiplicity, and source-inside-target trace coherence. It
+  therefore closes the per-block coefficient calculation without an adelic assumption or added
+  axiom. The remaining finite problem is global reindexing: construct and prove the relation
+  between the Mackey orbit set and principal Hecke double cosets, including aggregation of blocks
+  whose labels lie in one double coset. Targeted leaf build and axiom audit pass with only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **Actual Mackey-orbit/Hecke-label coherence closed (current corpus, 2026-09-16).**
+  `SelbergMaassMackeyOrbitDoubleCoset` proves the exact quotient descender: a relative representative
+  `r` has real double-coset label `P · ((g*h) r⁻¹) · P`; this is invariant under its source relation
+  and under the actual Mackey acting subgroup. For positive-determinant rational inputs, a chosen
+  positive rational lift of `r` produces a positive-rational Hecke-coset label, and
+  `rationalMackeyOrbitToHeckeCoset_toDoubleCoset` proves that forgetting its monoid membership
+  recovers precisely that descended real label. This resolves representative and orbit coherence,
+  with no replacement model. The remaining finite obstruction is aggregation: prove the exact
+  finite fiber formula for the Mackey sum under this label, retaining the established stabilizer
+  indices, and identify the resulting finite-support coefficient function as correspondence
+  convolution. The leaf source check and targeted build pass; the final theorem uses only
+  `propext`, `Classical.choice`, and `Quot.sound`.

@@ -862,6 +862,42 @@ the current SP-E investigation. It is not a route history.
   consequence: the remaining producer is precisely a source-derived endpoint-corrected signed
   integer-lag-mean law; the known positive-part lag receiver cannot be substituted for it.
 
+- `SuzukiIntegerLagMeanCriterion` now names that exact remaining object:
+  `coherentSelbergIntegerLagMean N` retains the scale-one tail, the moving terminal integer-lag
+  numerator, every signed interior lag coefficient, and every explicit archimedean cell.  It proves
+  `completedOutgoing(N+2) = (integerLagMean(N) + polarLatticeDefect(N+2)) / (N+2)` exactly, and
+  proves `RiemannHypothesis ↔ CoherentSelbergIntegerLagMeanBounded`.  This is a closed criterion,
+  not a claimed bound: it rules out discarding either the endpoint correction or signed interior
+  mean as a source-free error, and fixes the only remaining SP-E target in a reusable Lean form.
+
+- The same SP-E criterion now has a direct analytic handoff, rather than only an RH-mediated
+  equivalence.  Any literal bound `|integerLagMean(N)/(N+2)| <= B` gives the exact
+  integer-log resolvent estimate `|criticalMellinChebyshevResolventSource(log M)| <= 2*(B+1)` for
+  every `M >= 2` (`abs_criticalMellinChebyshevResolventSource_log_nat_le_of_integerLagMeanBound`).
+  The `+1` is precisely the source-free polar-lattice loss.  The lossless log-lattice continuation
+  then proves RH directly (`riemannHypothesis_of_coherentSelbergIntegerLagMeanBounded`).  Both
+  declarations are dependency-closed Lean theorems with only `propext`, `Classical.choice`, and
+  `Quot.sound`; neither asserts the missing bound.  Whole-route consequence: SP-E is now a
+  coefficient-faithful sampled critical-Mellin resolvent law, so its sole remaining producer is
+  genuinely a signed source estimate, not a discrete-to-continuous or target-analytic gap.
+
+- `SPEQuantileRieszSourceTransport` identifies a second, source-faithful SP-E carrier on the
+  literal outgoing mass clock.  With Riesz profile
+  `F_M(h) = 2 * (sqrt(M) * exp(h/2) - exp(h))`, the completed oriented prime-quantile cells and
+  their terminal seam, after the forced lower-edge correction `2 * (sqrt(M) - 2/3)`, equal
+  `M * criticalMellinChebyshevResolventSource(log M)` exactly
+  (`speCompletedQuantileRieszTransport_eq_resolvent_source`).  The profile is zero at the
+  physical wall; the lower correction is not optional, since it restores the omitted physical
+  interval below log-height zero.  Consequently
+  `RiemannHypothesis ↔ SPECompletedQuantileRieszTransportBounded`.  This is a closed identity and
+  criterion, not a bound.  Whole-route consequence: the remaining SP-E problem can be posed as
+  signed cancellation in one actual labelled mass-quantile current; the existing logarithmic
+  barycentric-credit/debt identities do not control this square-root Riesz-coordinate current.
+  Moreover `F_M` is nonnegative through the physical wall and nonpositive beyond it, so the
+  completed terminal quantile seam is unconditionally nonpositive
+  (`speQuantileRieszTerminalTransport_nonpos`).  Hence it cannot furnish a hidden positive
+  compensator: any positive source contribution must be produced by the labelled interior cells.
+
 - Synchronized Gamma formation has a forced cross-prime curvature, formalized in
   `GammaSewnSynchronizedRecoveryMixedCurvature`.  For a fresh prime `p`, adding it to `P`
   changes the curvature beyond the singleton term by exactly
@@ -1020,3 +1056,33 @@ the current SP-E investigation. It is not a route history.
   filtration; the open PHCCED gate is now more precise: construct the literal closed
   `Graph(cl A_*)` theta morphism and relative Calderón/boundary class that retains this
   filtration while carrying its same representative to Xi escape and the nuclear `< 1` budget.
+
+- The literal theta coefficient has a sharp, unconditional source-topology boundary
+  (`PrimeLogThetaStripReporterBoundary`).  At every real theta coordinate `x`, its one-prime
+  coefficient has squared norm exactly `4(log p)^4/p`
+  (`norm_sq_primeLogThetaStripRealAxisReporter`); since this prime series is not summable, the
+  coefficient is not in source `ℓ²`, and no vector of `primeLogCriticalSourceL2` can represent
+  real-axis literal theta evaluation coefficientwise
+  (`no_sourceReporter_primeLogThetaStripRealAxis`).  Conversely, for each `t>0`, the literal
+  coefficient at `w=-i*t` is exactly the existing critical-Laplace evaluation vector scaled by
+  `t⁻¹` (`primeLogThetaStripLowerReporter_apply`).  Every declaration audits to only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Whole-route consequence: the right-hand source ray has
+  the required honest reporter, but the real theta axis containing critical-line Xi coordinates
+  cannot be handled by an ordinary bounded source-vector evaluation.  This independently forces
+  the still-open construction to be a literal graph-relative/Xi-adic theta boundary morphism on
+  `Graph(cl A_*)`, not a scalar or ordinary source-Hilbert landing.
+
+- The lower-half literal theta action now reaches the actual canonical closed graph
+  (`PrimeLogThetaLowerClosedGraphLanding`).  For every `0<t<1`, Lean constructs the bounded
+  functional `primeLogThetaLowerClosedGraphEvaluation t` on
+  `primeLogCriticalLaplaceSynthesis.closure.graph`, by applying the canonical lower reporter to
+  the source projection.  On every literal finite graph-core point it proves the exact identity
+  `Theta(core x)(-i*t) = XiC(-i*t) * lowerGraphEvaluation_t(corePoint x)`
+  (`primeLogThetaFourierLaplace_closedGraphCore`).  The finite core is shown inside the canonical
+  closure directly, not through an assumed bounded extension.  These declarations audit to only
+  `propext`, `Classical.choice`, and `Quot.sound`.  Whole-route consequence: one half of the
+  required pre-divisor theta landing is now a genuine closed-graph construction with exact
+  literal compatibility.  Its real-axis failure is known, so the remaining PHCCED work is
+  specifically to replace this lower-half scalar family by the required Xi-adic relative
+  cubic-clock boundary morphism, retain the four Xi levels, and identify its same representative
+  with both escape multiplicity and the nuclear budget.

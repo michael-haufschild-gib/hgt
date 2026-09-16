@@ -1,4 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.Degrees
+import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Misc
 
@@ -106,5 +107,49 @@ theorem det_eq_corner_mul_minor_add {n : ℕ}
     rw [h1, hminor i]
   · rw [Matrix.det_succ_column_zero]
     rw [← Finset.add_sum_erase _ _ (Finset.mem_univ r₀), hcorner]
+
+/-- A polynomial of degree zero in one variable has zero partial derivative in that variable. -/
+theorem pderiv_eq_zero_of_degreeOf_eq_zero
+    (p : MvPolynomial σ K) (s : σ) (h : MvPolynomial.degreeOf s p = 0) :
+    MvPolynomial.pderiv s p = 0 := by
+  apply MvPolynomial.pderiv_eq_zero_of_notMem_vars
+  rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
+  exact not_ne_iff.mpr h
+
+/-- **Fresh-variable noncancellation for a determinant.** If one corner is a new variable, all
+other entries are independent of it, and the complementary minor is nonzero, then the full
+determinant is nonzero. -/
+theorem det_ne_zero_of_fresh_corner {n : ℕ}
+    (M : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPolynomial σ K)) (s : σ)
+    (r₀ : Fin (n + 1))
+    (hcorner : M r₀ 0 = MvPolynomial.X s)
+    (hzero : ∀ i j, ¬ (i = r₀ ∧ j = 0) → MvPolynomial.degreeOf s (M i j) = 0)
+    (hminor : (M.submatrix r₀.succAbove Fin.succ).det ≠ 0) :
+    M.det ≠ 0 := by
+  have hminorDegree : MvPolynomial.degreeOf s
+      (M.submatrix r₀.succAbove Fin.succ).det = 0 := by
+    apply degreeOf_det_eq_zero
+    intro i j
+    apply hzero
+    rintro ⟨-, hj⟩
+    exact Fin.succ_ne_zero j hj
+  obtain ⟨B, hB, hdet⟩ := det_eq_corner_mul_minor_add M s r₀ hcorner hzero
+  intro hM
+  have hderiv := congrArg (MvPolynomial.pderiv s) hdet
+  have hminorDeriv : MvPolynomial.pderiv s
+      (M.submatrix r₀.succAbove Fin.succ).det = 0 :=
+    pderiv_eq_zero_of_degreeOf_eq_zero _ _ hminorDegree
+  have hBDeriv : MvPolynomial.pderiv s B = 0 :=
+    pderiv_eq_zero_of_degreeOf_eq_zero _ _ hB
+  rw [hM] at hderiv
+  simp [hminorDeriv, hBDeriv] at hderiv
+  exact hminor (by simpa using hderiv.symm)
+
+/-- A closed two-dimensional certificate for the fresh-coefficient mechanism. -/
+theorem fresh_variable_two_by_two_det_ne_zero :
+    (!![MvPolynomial.X (), 0; 0, 1] :
+      Matrix (Fin 2) (Fin 2) (MvPolynomial Unit ℤ)).det ≠ 0 := by
+  rw [Matrix.det_fin_two]
+  simp
 
 end GaloisForLFunctions.HTGeometry

@@ -171,6 +171,600 @@ theorem frozenMixedDifferenceJet_cosmological (q : XiZeroCopy) (branch : Bool)
     cosmological_frequencyMetricJetCombination _ _ _ hdet]
   linear_combination hw - hv
 
+open scoped ContDiff
+open D4BMFundamentalScalarMetric
+
+/-- Pure time factor used to separate the temporal frequency from a radial profile. -/
+def frequencyPhase (u : ℂ) (x : Fin 4 → ℝ) : ℂ :=
+  Complex.exp (u * (x 0 : ℂ))
+
+/-- A literal separated factor with time frequency `w` and radial profile frequency `v`. -/
+def frequencyEnvelope (w v a : ℂ) (x : Fin 4 → ℝ) : ℂ :=
+  frequencyPhase (w - v) x * envelope v a x
+
+private def frequencyPhaseJet (u t : ℂ) : ScalarTwoJet (Fin 4) ℂ where
+  value := Complex.exp (u * t)
+  first := ![u * Complex.exp (u * t), 0, 0, 0]
+  second := !![u ^ 2 * Complex.exp (u * t), 0, 0, 0;
+    0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0]
+
+/-- Complete jet of a factor with independent temporal and radial frequencies. -/
+def frequencyEnvelopeJet (w v r B : ℂ) : ScalarTwoJet (Fin 4) ℂ where
+  value := B
+  first := ![w * B, v * B / (r * (r ^ 2 - 1)), 0, 0]
+  second := !![w ^ 2 * B, w * v * B / (r * (r ^ 2 - 1)), 0, 0;
+    w * v * B / (r * (r ^ 2 - 1)),
+      B * (v ^ 2 - v * (3 * r ^ 2 - 1)) / (r ^ 2 * (r ^ 2 - 1) ^ 2), 0, 0;
+    0, 0, 0, 0; 0, 0, 0, 0]
+
+private theorem frequencyPhase_smooth (u : ℂ) (p : D4BMBackground.ExteriorPoint)
+    (m : WithTop ℕ∞) : ContDiffAt ℝ m (frequencyPhase u) p.val := by
+  unfold frequencyPhase
+  apply Complex.contDiff_exp.contDiffAt.comp p.val
+  exact (contDiffAt_const.mul
+    ((Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 0)).contDiffAt))
+
+private theorem frequencyPhase_jet (u : ℂ) (p : D4BMBackground.ExteriorPoint) :
+    ofField (frequencyPhase u) p.val = frequencyPhaseJet u (p.val 0) := by
+  let Q : (Fin 4 → ℝ) → ℂ := fun x => u * (x 0 : ℂ)
+  have hQ : ContDiffAt ℝ 2 Q p.val :=
+    contDiffAt_const.mul ((Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 0)).contDiffAt)
+  have hQJ : ofField Q p.val =
+      (constant u).mul (coordinateJet (p.val 0) 0) := by
+    change ofField (fun x => u * (x 0 : ℂ)) p.val = _
+    have h := ScalarTwoJet.ofField_mul (x := p.val) (f := fun _ : Fin 4 → ℝ => u)
+      (g := fun x : Fin 4 → ℝ => (x 0 : ℂ)) (contDiffAt_const (x := p.val))
+        ((Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 0)).contDiffAt (x := p.val))
+    rw [ScalarTwoJet.ofField_constant, coordinate_jet] at h
+    exact h
+  change ofField (fun x => Complex.exp (Q x)) p.val = _
+  rw [ScalarTwoJet.ofField_comp Complex.contDiff_exp.contDiffAt hQ, Complex.deriv_exp, hQJ]
+  ext i j
+  · rfl
+  · fin_cases i <;>
+      simp [frequencyPhaseJet, coordinateJet, ScalarTwoJet.compose, ScalarTwoJet.mul,
+        ScalarTwoJet.constant] <;> ring
+  · fin_cases i <;> fin_cases j <;>
+      simp [frequencyPhaseJet, coordinateJet, ScalarTwoJet.compose, ScalarTwoJet.mul,
+        ScalarTwoJet.constant] <;> ring
+
+/-- The independent-frequency factor has the displayed genuine coordinate jet. -/
+theorem frequencyEnvelope_jet (w v a : ℂ) (p : D4BMBackground.ExteriorPoint) :
+    ofField (frequencyEnvelope w v a) p.val =
+      frequencyEnvelopeJet w v (p.val 1) (frequencyEnvelope w v a p.val) := by
+  have hp : ContDiffAt ℝ 2 (frequencyPhase (w - v)) p.val :=
+    frequencyPhase_smooth (w - v) p 2
+  have he : ContDiffAt ℝ 2 (envelope v a) p.val := envelope_contDiffAt v a p 2
+  unfold frequencyEnvelope
+  rw [ScalarTwoJet.ofField_mul hp he, frequencyPhase_jet, envelope_jet]
+  apply ScalarTwoJet.ext
+  · rfl
+  · funext i
+    fin_cases i <;>
+      simp [frequencyEnvelopeJet, frequencyPhaseJet, envelopeJet, ScalarTwoJet.mul,
+        frequencyPhase] <;> ring
+  · funext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [frequencyEnvelopeJet, frequencyPhaseJet, envelopeJet, ScalarTwoJet.mul,
+        frequencyPhase] <;> ring
+
+/-- On the physical diagonal the two-rate factor is the original literal envelope. -/
+theorem frequencyEnvelope_diagonal (v a : ℂ) (x : Fin 4 → ℝ) :
+    frequencyEnvelope v v a x = envelope v a x := by
+  simp [frequencyEnvelope, frequencyPhase]
+
+/-- The quadratic off-frequency stream is the square of its primary two-rate factor. -/
+theorem frequencyEnvelope_square (w s a : ℂ) (x : Fin 4 → ℝ) :
+    frequencyEnvelope (w / 2) s a x ^ 2 =
+      frequencyEnvelope w (2 * s) (a ^ 2) x := by
+  rw [frequencyEnvelope, frequencyEnvelope, envelope_double]
+  unfold frequencyPhase
+  have hfactor : Complex.exp ((w / 2 - s) * (x 0 : ℂ)) * envelope s a x *
+      (Complex.exp ((w / 2 - s) * (x 0 : ℂ)) * envelope s a x) =
+      (Complex.exp ((w / 2 - s) * (x 0 : ℂ)) *
+        Complex.exp ((w / 2 - s) * (x 0 : ℂ))) * (envelope s a x ^ 2) := by ring
+  rw [pow_two, hfactor, ← Complex.exp_add]
+  congr 2
+  ring
+
+/-- Product of two primary legs is the stream-rate envelope with their paired amplitude. -/
+theorem frequencyEnvelope_mul (w s a d : ℂ) (x : Fin 4 → ℝ) :
+    frequencyEnvelope (w / 2) s a x * frequencyEnvelope (w / 2) s d x =
+      frequencyEnvelope w (2 * s) (a * d) x := by
+  rw [frequencyEnvelope, frequencyEnvelope, frequencyEnvelope,
+    envelope_eq_exp, envelope_eq_exp, envelope_eq_exp]
+  unfold frequencyPhase
+  have hfactor : Complex.exp ((w / 2 - s) * (x 0 : ℂ)) *
+      (a * Complex.exp (s * (x 0 : ℂ) + (s / 2) * Complex.log (bmCoordinate x))) *
+      (Complex.exp ((w / 2 - s) * (x 0 : ℂ)) *
+        (d * Complex.exp (s * (x 0 : ℂ) + (s / 2) * Complex.log (bmCoordinate x)))) =
+      (Complex.exp ((w / 2 - s) * (x 0 : ℂ)) *
+        Complex.exp ((w / 2 - s) * (x 0 : ℂ))) *
+        ((a * d) *
+          (Complex.exp (s * (x 0 : ℂ) + (s / 2) * Complex.log (bmCoordinate x)) *
+            Complex.exp (s * (x 0 : ℂ) + (s / 2) * Complex.log (bmCoordinate x)))) := by
+    ring
+  rw [hfactor, ← Complex.exp_add, ← Complex.exp_add]
+  congr 2 <;> ring
+
+/-- Literal radial profile with temporal frequency \`w\` and radial rate \`v\`. -/
+def frequencyRadialField (w v a : ℂ) (square : Bool) (x : Fin 4 → ℝ) : ℂ :=
+  frequencyPhase (w - v) x * streamRadialField v a square x
+
+/-- Its actual radial derivative; the pure time phase has no radial derivative. -/
+def frequencyRadialDerivative (w v a : ℂ) (square : Bool) (x : Fin 4 → ℝ) : ℂ :=
+  frequencyPhase (w - v) x * streamRadialDerivative v a square x
+
+private theorem frequencyRadialFields_smooth (w v a : ℂ) (square : Bool)
+    (p : D4BMBackground.ExteriorPoint) (m : WithTop ℕ∞) :
+    ContDiffAt ℝ m (frequencyRadialField w v a square) p.val ∧
+      ContDiffAt ℝ m (frequencyRadialDerivative w v a square) p.val := by
+  have hP : ContDiffAt ℝ m (frequencyPhase (w - v)) p.val :=
+    frequencyPhase_smooth (w - v) p m
+  have hR := streamRadialFields_smooth v a square p m
+  exact ⟨hP.mul hR.1, hP.mul hR.2⟩
+
+private theorem frequencyPhase_mul_radialJet (u v t H H1 H2 : ℂ) :
+    (frequencyPhaseJet u t).mul (radialJet v H H1 H2) =
+      radialJet (u + v) (Complex.exp (u * t) * H)
+        (Complex.exp (u * t) * H1) (Complex.exp (u * t) * H2) := by
+  apply ScalarTwoJet.ext
+  · rfl
+  · funext i
+    fin_cases i <;>
+      simp [frequencyPhaseJet, radialJet, ScalarTwoJet.mul] <;> ring
+  · funext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [frequencyPhaseJet, radialJet, ScalarTwoJet.mul] <;> ring
+
+private theorem streamRadialValue_phase (v r B P : ℂ) (square : Bool) :
+    P * streamRadialValue v r B square = streamRadialValue v r (P * B) square := by
+  cases square <;> simp [streamRadialValue] <;> ring
+
+private theorem streamRadialFirst_phase (v r B P : ℂ) (square : Bool) :
+    P * streamRadialFirst v r B square = streamRadialFirst v r (P * B) square := by
+  cases square <;> simp [streamRadialFirst] <;> ring
+
+private theorem streamRadialSecond_phase (v r B P : ℂ) (square : Bool) :
+    P * streamRadialSecond v r B square = streamRadialSecond v r (P * B) square := by
+  cases square <;> simp [streamRadialSecond] <;> ring
+
+private theorem streamRadialThird_phase (v r B P : ℂ) (square : Bool) :
+    P * streamRadialThird v r B square = streamRadialThird v r (P * B) square := by
+  cases square <;> simp [streamRadialThird] <;> ring
+
+/-- The literal radial factor has the exact off-frequency jet used by the cochain. -/
+theorem frequencyRadialField_jet (w v a : ℂ) (square : Bool) (p : D4BMBackground.ExteriorPoint) :
+    ofField (frequencyRadialField w v a square) p.val =
+      radialJet w (streamRadialValue v (p.val 1) (frequencyEnvelope w v a p.val) square)
+        (streamRadialFirst v (p.val 1) (frequencyEnvelope w v a p.val) square)
+        (streamRadialSecond v (p.val 1) (frequencyEnvelope w v a p.val) square) := by
+  have hP : ContDiffAt ℝ 2 (frequencyPhase (w - v)) p.val :=
+    frequencyPhase_smooth (w - v) p 2
+  have hR := streamRadialFields_smooth v a square p 2
+  unfold frequencyRadialField
+  rw [ScalarTwoJet.ofField_mul hP hR.1, frequencyPhase_jet, streamRadialField_jet,
+    frequencyPhase_mul_radialJet]
+  have hrate : w - v + v = w := by ring
+  rw [hrate, streamRadialValue_phase, streamRadialFirst_phase, streamRadialSecond_phase]
+  rfl
+
+/-- The displayed radial derivative is an actual derivative field with its full off-frequency jet. -/
+theorem frequencyRadialDerivative_jet (w v a : ℂ) (square : Bool)
+    (p : D4BMBackground.ExteriorPoint) :
+    ofField (frequencyRadialDerivative w v a square) p.val =
+      radialJet w (streamRadialFirst v (p.val 1) (frequencyEnvelope w v a p.val) square)
+        (streamRadialSecond v (p.val 1) (frequencyEnvelope w v a p.val) square)
+        (streamRadialThird v (p.val 1) (frequencyEnvelope w v a p.val) square) := by
+  have hP : ContDiffAt ℝ 2 (frequencyPhase (w - v)) p.val :=
+    frequencyPhase_smooth (w - v) p 2
+  have hR := streamRadialFields_smooth v a square p 2
+  unfold frequencyRadialDerivative
+  rw [ScalarTwoJet.ofField_mul hP hR.2, frequencyPhase_jet, streamRadialDerivative_jet,
+    frequencyPhase_mul_radialJet]
+  have hrate : w - v + v = w := by ring
+  rw [hrate, streamRadialFirst_phase, streamRadialSecond_phase, streamRadialThird_phase]
+  rfl
+
+/-- Time component of the off-frequency stream. -/
+def frequencyStreamTimeBlock (w v a : ℂ) (square : Bool) (x : Fin 4 → ℝ) : ℂ :=
+  ((x 1 : ℂ) * (x 1 : ℂ) + (-1)) * frequencyRadialDerivative w v a square x
+
+/-- Radial component of the off-frequency stream. -/
+def frequencyStreamRadiusBlock (w v a : ℂ) (square : Bool) (x : Fin 4 → ℝ) : ℂ :=
+  (w * frequencyRadialField w v a square x) * ((x 1 : ℂ) * (x 1 : ℂ) + (-1))⁻¹
+
+/-- Complete actual stream metric with independent time and radial-profile frequencies. -/
+def frequencyStreamMetricField (w v a : ℂ) (square : Bool) (V : Covector)
+    (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
+  let T := frequencyStreamTimeBlock w v a square x
+  let R := frequencyStreamRadiusBlock w v a square x
+  let A := V 0 (angularPoint x)
+  let C := V 1 (angularPoint x)
+  !![0, 0, T * A, T * C; 0, 0, R * A, R * C;
+    T * A, R * A, 0, 0; T * C, R * C, 0, 0]
+
+private theorem frequency_block_smooth (w v a : ℂ) (square : Bool)
+    (p : D4BMBackground.ExteriorPoint) :
+    ContDiffAt ℝ 2 (frequencyStreamTimeBlock w v a square) p.val ∧
+      ContDiffAt ℝ 2 (frequencyStreamRadiusBlock w v a square) p.val := by
+  have hR : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ)) p.val :=
+    (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 1)).contDiffAt
+  have hF : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ) * (x 1 : ℂ) + (-1)) p.val :=
+    (hR.mul hR).add contDiffAt_const
+  have hF0 : (p.val 1 : ℂ) * (p.val 1 : ℂ) + (-1) ≠ 0 := by
+    have h : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    simpa only [← pow_two, ← sub_eq_add_neg] using h
+  exact ⟨hF.mul (frequencyRadialFields_smooth w v a square p 2).2,
+    (contDiffAt_const.mul (frequencyRadialFields_smooth w v a square p 2).1).mul
+      (hF.inv hF0)⟩
+
+private theorem frequency_block_jets (w v a : ℂ) (square : Bool)
+    (p : D4BMBackground.ExteriorPoint) :
+    let r := (p.val 1 : ℂ)
+    let B := frequencyEnvelope w v a p.val
+    let R := coord r 1
+    let F := (R.mul R).add (constant (-1))
+    ofField (frequencyStreamTimeBlock w v a square) p.val =
+      F.mul (radialJet w (streamRadialFirst v r B square)
+        (streamRadialSecond v r B square) (streamRadialThird v r B square)) ∧
+    ofField (frequencyStreamRadiusBlock w v a square) p.val =
+      ((constant w).mul (radialJet w (streamRadialValue v r B square)
+        (streamRadialFirst v r B square) (streamRadialSecond v r B square))).mul F.inv := by
+  have hR : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ)) p.val :=
+    (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 1)).contDiffAt
+  have hF : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ) * (x 1 : ℂ) + (-1)) p.val :=
+    (hR.mul hR).add contDiffAt_const
+  have hF0 : (p.val 1 : ℂ) * (p.val 1 : ℂ) + (-1) ≠ 0 := by
+    have h : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    simpa only [← pow_two, ← sub_eq_add_neg] using h
+  have hJF : ofField (fun x : Fin 4 → ℝ => (x 1 : ℂ) * (x 1 : ℂ) + (-1)) p.val =
+      ((coord (p.val 1) 1).mul (coord (p.val 1) 1)).add (constant (-1)) := by
+    rw [ScalarTwoJet.ofField_add (hR.mul hR) contDiffAt_const,
+      ScalarTwoJet.ofField_mul hR hR, ScalarTwoJet.ofField_constant, coordinate_jet]
+    rfl
+  constructor
+  · unfold frequencyStreamTimeBlock
+    rw [ScalarTwoJet.ofField_mul hF (frequencyRadialFields_smooth w v a square p 2).2,
+      hJF, frequencyRadialDerivative_jet]
+  · have hFi : ContDiffAt ℝ 2
+        (fun x : Fin 4 → ℝ => ((x 1 : ℂ) * (x 1 : ℂ) + (-1))⁻¹) p.val :=
+      hF.inv hF0
+    unfold frequencyStreamRadiusBlock
+    rw [ScalarTwoJet.ofField_mul
+        ((contDiffAt_const (c := w)).mul (frequencyRadialFields_smooth w v a square p 2).1) hFi,
+      ScalarTwoJet.ofField_mul (contDiffAt_const (c := w))
+        (frequencyRadialFields_smooth w v a square p 2).1,
+      ScalarTwoJet.ofField_constant, ScalarTwoJet.ofField_inv hF hF0, hJF,
+      frequencyRadialField_jet]
+
+private def frequency_assemble
+    (J : Matrix (Fin 4) (Fin 4) (ScalarTwoJet (Fin 4) ℂ)) : CoordinateMetricTwoJet 4 ℂ :=
+  ⟨fun i j => (J i j).value, fun k i j => (J i j).first k,
+    fun k l i j => (J i j).second k l⟩
+
+/-- Every displayed off-frequency stream component and derivative is realized by the field. -/
+theorem frequencyStreamMetricField_jet (w v a : ℂ) (square : Bool) (V : Covector)
+    (p : D4BMBackground.ExteriorPoint)
+    (hV : ∀ k, ContDiffAt ℝ 2 (V k) (angularPoint p.val))
+    (hD : ∀ z, 0 < z 1 → divergence V z = 0) :
+    ofMetricField (frequencyStreamMetricField w v a square V) p.val =
+      frozenStreamMetricJet w v (p.val 1) (frequencyEnvelope w v a p.val) square V
+        (angularPoint p.val) := by
+  have hu : ContDiff ℝ 2 angularPoint := by
+    apply contDiff_pi.mpr
+    intro k
+    fin_cases k <;> exact contDiff_apply ℝ ℝ _
+  have hLift (k : Fin 2) : ContDiffAt ℝ 2 (fun x => V k (angularPoint x)) p.val :=
+    (hV k).comp p.val hu.contDiffAt
+  have ht (k : Fin 2) :=
+    ScalarTwoJet.ofField_mul (frequency_block_smooth w v a square p).1 (hLift k)
+  have hr (k : Fin 2) :=
+    ScalarTwoJet.ofField_mul (frequency_block_smooth w v a square p).2 (hLift k)
+  simp_rw [(frequency_block_jets w v a square p).1,
+    streamAngularJet_actual V p hV hD] at ht
+  simp_rw [(frequency_block_jets w v a square p).2,
+    streamAngularJet_actual V p hV hD] at hr
+  change frequency_assemble _ = frequency_assemble _
+  congr 1
+  funext i j
+  fin_cases i <;> fin_cases j
+  all_goals
+    first
+    | exact ScalarTwoJet.ofField_constant 0 p.val
+    | exact ht 0
+    | exact ht 1
+    | exact hr 0
+    | exact hr 1
+
+/-- The literal off-frequency metric is twice continuously differentiable on the exterior. -/
+theorem frequencyStreamMetricField_smooth (w v a : ℂ) (square : Bool) (V : Covector)
+    (p : D4BMBackground.ExteriorPoint)
+    (hV : ∀ k, ContDiffAt ℝ 2 (V k) (angularPoint p.val)) (i j : Fin 4) :
+    ContDiffAt ℝ 2 (fun x => frequencyStreamMetricField w v a square V x i j) p.val := by
+  have hu : ContDiff ℝ 2 angularPoint := by
+    apply contDiff_pi.mpr
+    intro k
+    fin_cases k <;> exact contDiff_apply ℝ ℝ _
+  have hLift (k : Fin 2) : ContDiffAt ℝ 2 (fun x => V k (angularPoint x)) p.val :=
+    (hV k).comp p.val hu.contDiffAt
+  fin_cases i <;> fin_cases j
+  all_goals
+    first
+    | exact contDiffAt_const
+    | exact (frequency_block_smooth w v a square p).1.mul (hLift 0)
+    | exact (frequency_block_smooth w v a square p).1.mul (hLift 1)
+    | exact (frequency_block_smooth w v a square p).2.mul (hLift 0)
+    | exact (frequency_block_smooth w v a square p).2.mul (hLift 1)
+
+private theorem frequency_response_c2 (q : XiZeroCopy) (branch : Bool)
+    (p : D4BMBackground.ExteriorPoint) (k : Fin 2) :
+    ContDiffAt ℝ 2 (fullAngularCovector q branch k) (angularPoint p.val) := by
+  have h := (contDiffAt_infty.mp
+    (fullAngularCovector_smooth q branch (angularPoint p.val) p.property.2 k)) 2
+  norm_num at h
+  exact h
+
+private theorem frequency_square_c2 (q : XiZeroCopy) (p : D4BMBackground.ExteriorPoint)
+    (k : Fin 2) : ContDiffAt ℝ 2 (fullSquareCovector q k) (angularPoint p.val) := by
+  simpa using fullSquareCovector_smooth q (angularPoint p.val) p.property.2 2 k
+
+/-- Complete literal metric field carrying the source-pole cochain at temporal frequency `w`. -/
+def frequencyMixedMetricField (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
+    (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
+  let s := physicalRate q branch
+  frequencyStreamMetricField w (2 * s) (a ^ 2) false (fullAngularCovector q branch) x -
+    (s * (s - 1) / 4) •
+      frequencyStreamMetricField w (2 * s) (a ^ 2) true (fullSquareCovector q) x
+
+private theorem frequencyRadialField_smul (w v c a : ℂ) (square : Bool) (x : Fin 4 → ℝ) :
+    frequencyRadialField w v (c * a) square x =
+      c * frequencyRadialField w v a square x := by
+  simp only [frequencyRadialField, streamRadialField, envelope_eq_exp]
+  split <;> ring
+
+private theorem frequencyRadialField_add (w v a d : ℂ) (square : Bool) (x : Fin 4 → ℝ) :
+    frequencyRadialField w v (a + d) square x =
+      frequencyRadialField w v a square x + frequencyRadialField w v d square x := by
+  simp only [frequencyRadialField, streamRadialField, envelope_eq_exp]
+  split <;> ring
+
+private theorem frequencyRadialDerivative_smul (w v c a : ℂ) (square : Bool)
+    (x : Fin 4 → ℝ) :
+    frequencyRadialDerivative w v (c * a) square x =
+      c * frequencyRadialDerivative w v a square x := by
+  simp only [frequencyRadialDerivative, streamRadialDerivative, envelope_eq_exp]
+  split <;> ring
+
+private theorem frequencyRadialDerivative_add (w v a d : ℂ) (square : Bool)
+    (x : Fin 4 → ℝ) :
+    frequencyRadialDerivative w v (a + d) square x =
+      frequencyRadialDerivative w v a square x + frequencyRadialDerivative w v d square x := by
+  simp only [frequencyRadialDerivative, streamRadialDerivative, envelope_eq_exp]
+  split <;> ring
+
+private theorem frequencyStreamMetricField_smul (w v c a : ℂ) (square : Bool) (V : Covector)
+    (x : Fin 4 → ℝ) :
+    frequencyStreamMetricField w v (c * a) square V x =
+      c • frequencyStreamMetricField w v a square V x := by
+  have hT : frequencyStreamTimeBlock w v (c * a) square x =
+      c * frequencyStreamTimeBlock w v a square x := by
+    unfold frequencyStreamTimeBlock
+    rw [frequencyRadialDerivative_smul]
+    ring
+  have hR : frequencyStreamRadiusBlock w v (c * a) square x =
+      c * frequencyStreamRadiusBlock w v a square x := by
+    unfold frequencyStreamRadiusBlock
+    rw [frequencyRadialField_smul]
+    ring
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [frequencyStreamMetricField, hT, hR] <;> ring
+
+private theorem frequencyStreamMetricField_add (w v a d : ℂ) (square : Bool) (V : Covector)
+    (x : Fin 4 → ℝ) :
+    frequencyStreamMetricField w v (a + d) square V x =
+      frequencyStreamMetricField w v a square V x + frequencyStreamMetricField w v d square V x := by
+  have hT : frequencyStreamTimeBlock w v (a + d) square x =
+      frequencyStreamTimeBlock w v a square x + frequencyStreamTimeBlock w v d square x := by
+    unfold frequencyStreamTimeBlock
+    rw [frequencyRadialDerivative_add]
+    ring
+  have hR : frequencyStreamRadiusBlock w v (a + d) square x =
+      frequencyStreamRadiusBlock w v a square x + frequencyStreamRadiusBlock w v d square x := by
+    unfold frequencyStreamRadiusBlock
+    rw [frequencyRadialField_add]
+    ring
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [frequencyStreamMetricField, hT, hR] <;> ring
+
+/-- Exact bilinear polarization of the literal stream with independent temporal and radial rates. -/
+def frequencyStreamMetricBilinear (w v : ℂ) (square : Bool) (V : Covector) :
+    ℂ →ₗ[ℂ] ℂ →ₗ[ℂ] ((Fin 4 → ℝ) → Matrix (Fin 4) (Fin 4) ℂ) :=
+  LinearMap.mk₂ ℂ (fun a d x => frequencyStreamMetricField w v (a * d) square V x)
+    (by
+      intro a b d
+      funext x
+      rw [show (a + b) * d = a * d + b * d by ring, frequencyStreamMetricField_add]
+      rfl)
+    (by
+      intro c a d
+      funext x
+      change frequencyStreamMetricField w v ((c * a) * d) square V x =
+        c • frequencyStreamMetricField w v (a * d) square V x
+      rw [show (c * a) * d = c * (a * d) by ring, frequencyStreamMetricField_smul])
+    (by
+      intro a d e
+      funext x
+      rw [show a * (d + e) = a * d + a * e by ring, frequencyStreamMetricField_add]
+      rfl)
+    (by
+      intro c a d
+      funext x
+      change frequencyStreamMetricField w v (a * (c * d)) square V x =
+        c • frequencyStreamMetricField w v (a * d) square V x
+      rw [show a * (c * d) = c * (a * d) by ring, frequencyStreamMetricField_smul])
+
+/-- Its diagonal is the literal squared-primary stream field. -/
+theorem frequencyStreamMetricBilinear_diag (w v a : ℂ) (square : Bool) (V : Covector)
+    (x : Fin 4 → ℝ) :
+    frequencyStreamMetricBilinear w v square V a a x =
+      frequencyStreamMetricField w v (a ^ 2) square V x := by
+  simp only [frequencyStreamMetricBilinear, LinearMap.mk₂_apply, pow_two]
+
+/-- The literal two-rate stream is symmetric in its two primary amplitudes. -/
+theorem frequencyStreamMetricBilinear_symm (w v a d : ℂ) (square : Bool) (V : Covector)
+    (x : Fin 4 → ℝ) :
+    frequencyStreamMetricBilinear w v square V a d x =
+      frequencyStreamMetricBilinear w v square V d a x := by
+  simp only [frequencyStreamMetricBilinear, LinearMap.mk₂_apply]
+  rw [mul_comm]
+
+/-- Literal cyclic polarization of the off-frequency source-pole metric field. -/
+def frequencyMixedMetricBilinear (q : XiZeroCopy) (branch : Bool) (w : ℂ) :
+    ℂ →ₗ[ℂ] ℂ →ₗ[ℂ] ((Fin 4 → ℝ) → Matrix (Fin 4) (Fin 4) ℂ) :=
+  let s := physicalRate q branch
+  frequencyStreamMetricBilinear w (2 * s) false (fullAngularCovector q branch) -
+    (s * (s - 1) / 4) •
+      frequencyStreamMetricBilinear w (2 * s) true (fullSquareCovector q)
+
+/-- This polarized source-pole metric is symmetric before imposing causal boundary data. -/
+theorem frequencyMixedMetricBilinear_symm (q : XiZeroCopy) (branch : Bool) (w a d : ℂ)
+    (x : Fin 4 → ℝ) :
+    frequencyMixedMetricBilinear q branch w a d x =
+      frequencyMixedMetricBilinear q branch w d a x := by
+  unfold frequencyMixedMetricBilinear
+  have hA := frequencyStreamMetricBilinear_symm w (2 * physicalRate q branch) a d false
+    (fullAngularCovector q branch) x
+  have hB := frequencyStreamMetricBilinear_symm w (2 * physicalRate q branch) a d true
+    (fullSquareCovector q) x
+  rw [hA, hB]
+
+/-- Diagonal restriction of cyclic polarization recovers the source-pole field exactly. -/
+theorem frequencyMixedMetricBilinear_diag (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
+    (x : Fin 4 → ℝ) :
+    frequencyMixedMetricBilinear q branch w a a x =
+      frequencyMixedMetricField q branch w a x := by
+  unfold frequencyMixedMetricBilinear frequencyMixedMetricField
+  rw [frequencyStreamMetricBilinear_diag, frequencyStreamMetricBilinear_diag]
+
+/-- Exact two-leg polarization of every channel in the literal mixed Einstein source. -/
+def literalMixedSourceBilinear (q : XiZeroCopy) (branch : Bool) (r B D : ℂ) (z : Point) :
+    Matrix (Fin 4) (Fin 4) ℂ :=
+  let s := physicalRate q branch
+  let J := fullSquareCovector q
+  let K := fullGradientCovector q branch
+  let T0 := (B * D) * (timeSquare s r * J 0 z + timeGradient s r * K 0 z)
+  let T1 := (B * D) * (timeSquare s r * J 1 z + timeGradient s r * K 1 z)
+  let R0 := (B * D) * (radialSquare s r * J 0 z + radialGradient s r * K 0 z)
+  let R1 := (B * D) * (radialSquare s r * J 1 z + radialGradient s r * K 1 z)
+  !![0, 0, T0, T1; 0, 0, R0, R1; T0, R0, 0, 0; T1, R1, 0, 0]
+
+/-- The two-leg source is symmetric before any causal boundary condition is imposed. -/
+theorem literalMixedSourceBilinear_symm (q : XiZeroCopy) (branch : Bool) (r B D : ℂ)
+    (z : Point) :
+    literalMixedSourceBilinear q branch r B D z =
+      literalMixedSourceBilinear q branch r D B z := by
+  unfold literalMixedSourceBilinear
+  rw [mul_comm B D]
+
+/-- Diagonal restriction recovers the original retained mixed source exactly. -/
+theorem literalMixedSourceBilinear_diag (q : XiZeroCopy) (branch : Bool) (r B : ℂ)
+    (z : Point) :
+    literalMixedSourceBilinear q branch r B B z = literalMixedSource q branch r B z := by
+  simp only [literalMixedSourceBilinear, literalMixedSource, pow_two]
+
+/-- Literal paired source at the two primary temporal frequencies. -/
+def frequencyMixedSourceBilinear (q : XiZeroCopy) (branch : Bool) (w a d : ℂ)
+    (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
+  literalMixedSourceBilinear q branch (x 1)
+    (frequencyEnvelope (w / 2) (physicalRate q branch) a x)
+    (frequencyEnvelope (w / 2) (physicalRate q branch) d x) (angularPoint x)
+
+/-- The actual paired source is cyclic in the two primary legs. -/
+theorem frequencyMixedSourceBilinear_symm (q : XiZeroCopy) (branch : Bool) (w a d : ℂ)
+    (x : Fin 4 → ℝ) :
+    frequencyMixedSourceBilinear q branch w a d x =
+      frequencyMixedSourceBilinear q branch w d a x := by
+  unfold frequencyMixedSourceBilinear
+  exact literalMixedSourceBilinear_symm _ _ _ _ _ _
+
+/-- The paired source's diagonal is the original source-pole source. -/
+theorem frequencyMixedSourceBilinear_diag (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
+    (x : Fin 4 → ℝ) :
+    frequencyMixedSourceBilinear q branch w a a x =
+      literalMixedSource q branch (x 1)
+        (frequencyEnvelope (w / 2) (physicalRate q branch) a x) (angularPoint x) := by
+  unfold frequencyMixedSourceBilinear
+  exact literalMixedSourceBilinear_diag _ _ _ _ _
+
+private theorem frequencyMixedMetricField_smooth (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
+    (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
+    ContDiffAt ℝ 2 (fun x => frequencyMixedMetricField q branch w a x i j) p.val := by
+  unfold frequencyMixedMetricField
+  exact (frequencyStreamMetricField_smooth _ _ _ false _ p
+    (frequency_response_c2 q branch p) i j).sub
+      (contDiffAt_const.mul (frequencyStreamMetricField_smooth _ _ _ true _ p
+        (frequency_square_c2 q p) i j))
+
+/-- Literal realization of the source-pole cochain by an actual off-frequency metric field.
+This removes the former formal-jet gap; the remaining HB burden is its noncompact causal cap
+pairing with the retained contact field. -/
+theorem frequencyMixedMetricField_cosmological_source (q : XiZeroCopy) (branch : Bool)
+    (p : D4BMBackground.ExteriorPoint) (w a : ℂ) (i j : Fin 4) :
+    CoordinateMetricTwoJet.Linearization.cosmological
+      (D4BMBackground.jet (p.val 1) (p.val 3))
+      (ofMetricField (frequencyMixedMetricField q branch w a) p.val) (-3) i j +
+      literalMixedSource q branch (p.val 1)
+        (frequencyEnvelope (w / 2) (physicalRate q branch) a p.val)
+        (angularPoint p.val) i j =
+      (w - 2 * physicalRate q branch) *
+        frequencyDefectCochain q branch w (p.val 1)
+          (frequencyEnvelope (w / 2) (physicalRate q branch) a p.val)
+          (angularPoint p.val) i j := by
+  have hJ : (D4BMBackground.jet (p.val 1) (p.val 3)).metric.det ≠ 0 := by
+    have hr : (p.val 1 : ℂ) ≠ 0 := by
+      exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
+    have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
+    have hf : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
+    rw [D4BMBackground.metric_det _ _ hf]
+    exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ (inv_ne_zero hy)))
+  unfold frequencyMixedMetricField
+  rw [ofMetricField_combination _ _ _ p.val
+      (frequencyStreamMetricField_smooth _ _ _ false _ p (frequency_response_c2 q branch p))
+      (frequencyStreamMetricField_smooth _ _ _ true _ p (frequency_square_c2 q p)),
+    cosmological_metricJetCombination _ _ _ hJ,
+    frequencyStreamMetricField_jet _ _ _ false _ p (frequency_response_c2 q branch p)
+      (fullAngularCovector_divergence q branch),
+    frequencyStreamMetricField_jet _ _ _ true _ p (frequency_square_c2 q p)
+      (fullSquareCovector_divergence q)]
+  rw [← frequencyEnvelope_square]
+  exact frozen_stream_cosmological_source_factor q branch p
+    (frequencyEnvelope (w / 2) (physicalRate q branch) a p.val) w i j
+
+/-- Diagonal source identity for the literal cyclic two-leg source-pole metric. -/
+theorem frequencyMixedMetricBilinear_diagonal_cosmological_source (q : XiZeroCopy) (branch : Bool)
+    (p : D4BMBackground.ExteriorPoint) (w a : ℂ) (i j : Fin 4) :
+    CoordinateMetricTwoJet.Linearization.cosmological
+      (D4BMBackground.jet (p.val 1) (p.val 3))
+      (ofMetricField (frequencyMixedMetricBilinear q branch w a a) p.val) (-3) i j +
+      frequencyMixedSourceBilinear q branch w a a p.val i j =
+      (w - 2 * physicalRate q branch) *
+        frequencyDefectCochain q branch w (p.val 1)
+          (frequencyEnvelope (w / 2) (physicalRate q branch) a p.val)
+          (angularPoint p.val) i j := by
+  have hfield : frequencyMixedMetricBilinear q branch w a a =
+      frequencyMixedMetricField q branch w a := by
+    funext x
+    exact frequencyMixedMetricBilinear_diag q branch w a x
+  rw [hfield, frequencyMixedSourceBilinear_diag]
+  exact frequencyMixedMetricField_cosmological_source q branch p w a i j
+
 end
 
 end RHTower.D4BMModularCore

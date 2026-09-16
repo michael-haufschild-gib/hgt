@@ -46,6 +46,22 @@ theorem symmetricSquareMatrix_map
   ext i j
   fin_cases i <;> fin_cases j <;> simp [symmetricSquareMatrix, map_ofNat]
 
+/-- The determinant of the quadratic representation is the cube of the original determinant.
+This is the rank-two instance of the symmetric-square determinant law. -/
+theorem det_symmetricSquareMatrix (M : Matrix (Fin 2) (Fin 2) A) :
+    (symmetricSquareMatrix M).det = M.det ^ 3 := by
+  simp [symmetricSquareMatrix, Matrix.det_fin_three, Matrix.det_fin_two]
+  ring
+
+/-- Every companion matrix with off-diagonal entries one has orientation-reversing quadratic
+representation, independently of its free coefficient. -/
+theorem det_symmetricSquare_companion (b : A) :
+    (symmetricSquareMatrix
+      (!![0, 1; 1, b] : Matrix (Fin 2) (Fin 2) A)).det = -1 := by
+  rw [det_symmetricSquareMatrix]
+  simp [Matrix.det_fin_two]
+  ring
+
 /-- Moreau, arXiv:2608.23907v1, equation (44), without dividing by two: the character of the
 symmetric-square representation is determined by the character of `M` and of `M²`. -/
 theorem two_mul_trace_symmetricSquareMatrix (M : Matrix (Fin 2) (Fin 2) A) :

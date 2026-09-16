@@ -87,6 +87,37 @@ with the exact `exp(-k)` hyperbolic angular adjoint.  The new Lean leaf
 two-coordinate compact Green primitives.  The remaining Lean work is the
 explicit target-coordinate/angular assembly, not a new mathematical premise.
 
+## Frozen bridge B2a — finite two-leg contact transgression
+
+**Proof chain it closes:**
+
+`source pole → explicit wave cochain → B1 homogeneous causal difference →
+[B2a] finite current/source two-leg identity → noncompact causal limit →
+mixedField boundary → Peierls extinction → RH`.
+
+`physicalProjectedModeAction_transport` has the exact form
+`J_o(t)-J_o(s)=(-c I_o-(K_o(t)-K_o(s)))N`, where `K_o` is the literal source
+contact.  Therefore `J_o+K_oN` transports by `-cI_oN`, and subtracting the two
+outer legs gives an exactly skew finite two-leg functional.  This dependency-
+closed algebra is recorded in
+`../2-fully-proven/hb-literal-finite-cutoff-two-leg-current.md`.
+
+**Remaining content.** B2a does not label the two outer modes retarded and
+advanced, take a noncompact causal limit, or compare the result to the
+source-pole cochain and `mixedField`.  A nonzero residual in that comparison
+kills the literal distributional/action realization.
+
+## Cutoff-face reduction
+
+The literal physical lift current has horizon spectral factor
+`(2s+3)((s+1)(s+2)-2)((s+1)(s+2)-6)`.  It is now Lean-proved nonzero at every
+`s=physicalRate q branch` in
+`ThetaCuspHawkingBMPhysicalRateNonreal`.  Hence the cutoff-face test has no
+spectral-root escape: after unit source amplitude, only the actual angular
+pairing/contact or a cross-channel term can cancel it.  The next conjecture
+must prove that exact cancellation in the `mixedField` action, or show its
+residual is nonzero and retire this realization.
+
 ## Log
 
 - 2026-09-16 — candidate created after on-shell Hilbert no-go left only an action/distributional survivor.

@@ -249,6 +249,43 @@ theorem exists_det_one_mulVec_eq_single {R : Type*} [CommRing R] [IsDedekindDoma
           have : ((j.castSucc : Fin (n+1)) : ℕ) = (j : ℕ) := rfl
           rw [this]
 
+/-- Over a field, every nonzero vector of dimension at least two can be carried to the first
+coordinate vector by a determinant-one matrix. -/
+theorem exists_det_one_mulVec_eq_single_of_ne_zero
+    {K : Type*} [Field K] (n : ℕ) (hn : 2 ≤ n) (v : Fin n → K) (hv : v ≠ 0) :
+    ∃ B : Matrix (Fin n) (Fin n) K, B.det = 1 ∧
+      ∀ i : Fin n, (B *ᵥ v) i = if (i : ℕ) = 0 then 1 else 0 := by
+  classical
+  have hi : ∃ i, v i ≠ 0 := by
+    by_contra h
+    apply hv
+    funext i
+    by_contra hvi
+    exact h ⟨i, hvi⟩
+  obtain ⟨i, hi⟩ := hi
+  apply exists_det_one_mulVec_eq_single n hn v
+  refine ⟨fun j => if j = i then (v i)⁻¹ else 0, ?_⟩
+  rw [Finset.sum_eq_single i]
+  · simp [hi]
+  · intro j _ hji
+    simp [hji]
+  · simp
+
+/-- A determinant-one change of basis normalizes every companion column `(1,b)` without any
+condition on the free coefficient. -/
+theorem exists_det_one_normalizes_companion_column {K : Type*} [Field K] (b : K) :
+    ∃ B : Matrix (Fin 2) (Fin 2) K, B.det = 1 ∧
+      B *ᵥ ![1, b] = ![1, 0] := by
+  have hv : (![1, b] : Fin 2 → K) ≠ 0 := by
+    intro h
+    have h0 := congrFun h 0
+    simp at h0
+  obtain ⟨B, hBdet, hB⟩ :=
+    exists_det_one_mulVec_eq_single_of_ne_zero 2 (by omega) ![1, b] hv
+  refine ⟨B, hBdet, ?_⟩
+  funext i
+  fin_cases i <;> simp [hB]
+
 /-! ### Extending a unimodular vector to a basis -/
 
 /-- **A unimodular vector is the first column of a determinant-one matrix.**  Over a Dedekind

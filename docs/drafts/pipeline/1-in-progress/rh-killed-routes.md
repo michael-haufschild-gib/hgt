@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**310 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**324 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-15, `c65e250f973631df9cc59552bf8498bf99975290`**.
+Source-audit cutoff: **2026-09-16, `e876f08380382e6380c9d063c28c4cc057e2a526`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -22,12 +22,12 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 16 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 20 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 36 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 66 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 24 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 22 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 37 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 69 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 26 |
 | [Singular descent, formation and completion](#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 33 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 39 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
 | [Other finite, scalar and source-blind selectors](#other) | 80 |
 
@@ -300,6 +300,8 @@ Source-native aperture invariant is required.
 - [CCM-FU uniformly budgeted increasing-prime elimination](#no-go-006)
 - [CCM-FU universal nonempty-energy contraction](#no-go-010)
 - [CCM-FU fixed-range critical signed transport](#no-go-289)
+- [CCM-FU scalar rectangular-Euler inversion](#no-go-311)
+- [CCM matched adjacent-codiagonal scalarization](#no-go-312)
 
 <a id="no-go-294"></a>
 
@@ -345,22 +347,23 @@ Evidence: [phase-locked exterior no-go](../../../../formal/GaloisForLFunctions/R
 
 <a id="no-go-289"></a>
 
-### CCM-FU fixed-range critical signed transport
+### CCM-FU sublogarithmic two-sided critical signed transport
 
 **Closed result**
 
-Every prime `p≥27` creates a positive literal critical Mertens--polar cell of size at least
-`log p/(2p)`. If a forward block beginning there has nonpositive net source, its length is at
-least `log p/2`. Consequently every fixed forward transport range leaves a positive block at all
-sufficiently large primes and cannot close the FU reporter.
+Every prime `p≥27` creates a positive literal critical Mertens--polar cell. If any contiguous
+two-sided block containing it has nonpositive net source, its combined event-label radius obeys
+`log p/2 ≤ 2L+R`. Consequently every fixed-radius and every eventually sublogarithmic bicausal
+transport schedule leaves a strictly positive block at all sufficiently large primes.
 
 **Survivor / still open**
 
-The exact polar-drift lower bound and growing-range requirement survive. CCM-FU needs signed
-inter-cell transport with unbounded range, or another global cancellation law proving the critical
-variation/energy bound; cellwise absolute estimates and bounded-memory transport are terminal.
+The exact polar-drift law and logarithmic reach threshold survive. CCM-FU needs at least
+logarithmic contiguous reach, noncontiguous cross-scale pairing, or another global cancellation
+law proving the critical variation/energy bound; cellwise absolute and sublogarithmic-memory
+transport are terminal.
 
-Evidence: [quantitative transport-range obstruction](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalTransportRangeNoGo.lean).
+Evidence: [two-sided transport-range obstruction](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalBidirectionalTransportRangeNoGo.lean).
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
@@ -602,6 +605,46 @@ Exact nonempty update retains mixed products minus the absorbed singleton square
 
 [Back to family](#ccm) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-010)
 
+<a id="no-go-311"></a>
+
+### CCM-FU scalar rectangular-Euler inversion
+
+**Closed result**
+
+After affine normalization, the unbounded source `(t-b)^2` has literal rectangular response
+`32(1/b-1/H)^2`, uniformly bounded as the upper window grows. Scalar reporter boundedness and
+Volterra geometry therefore cannot invert the formal `(D-4)(D-3)` Euler factor.
+
+**Survivor / still open**
+
+The exact quadratic response identity survives. Any inverse must use source-specific prime--polar
+or divisor data and retain the signed nonconstant profile.
+
+Evidence: [rectangular-Euler obstruction](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiRectangularEulerNoGo.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-312"></a>
+
+### CCM matched adjacent-codiagonal scalarization
+
+**Closed result**
+
+The bare adjacent codiagonal annihilates constants exactly. Its first mass-coordinate mode is not
+the completed node error alone: it contains a forced nonnegative upper-endpoint excess. Thus
+neither scalar zero-clock charge nor the unrenormalized linear mode is a faithful completed-source
+reporter.
+
+**Survivor / still open**
+
+The full oriented-window normal form and endpoint-renormalized first mode survive, the latter
+equaling the completed error exactly. The live problem is a signed bound for the nonconstant
+translation-defect/autocorrelation profile before scalarization.
+
+Evidence: [adjacent-codiagonal normal form](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
 <a id="arithmetic"></a>
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
@@ -642,6 +685,7 @@ Exact nonempty update retains mixed products minus the absorbed singleton square
 - [T1 fixed-width rapidity diagonal localization](#no-go-298)
 - [T2 regular/compact-open semicontinuous scalar descent](#no-go-147)
 - [finite-abscissa Dirichlet scalar, shift and period selector](#no-go-275)
+- [EDQ inclusive all-gcd positive completion](#no-go-313)
 
 <a id="no-go-296"></a>
 
@@ -1193,6 +1237,27 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 
 [Back to family](#arithmetic) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-147)
 
+<a id="no-go-313"></a>
+
+### EDQ inclusive all-gcd positive completion
+
+**Closed result**
+
+The literal inclusive gcd form factorizes as a nonnegative totient-weighted sum of divisor-tail
+squares, but it retains every late prime's uncancellable diagonal. It dominates `2/5` of squared
+late-prime mass and, along cutoffs `4N`, grows superquadratically after quadratic normalization.
+Positive-semidefinite all-gcd completion cannot control EDQ's signed source at the required scale.
+
+**Survivor / still open**
+
+The exact totient-square decomposition is a scale-resolved positive invariant. EDQ still needs
+joint signed residue-covariance cancellation, or an explicit source-faithful subtraction of the
+late-prime diagonal.
+
+Evidence: [inclusive gcd Gram](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorInclusiveGcdGramNoGo.lean), [superquadratic asymptotic](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorInclusiveGcdGramAsymptotic.lean).
+
+[Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
+
 <a id="scattering"></a>
 
 ## HB, FZZ and PW: scattering and physical action
@@ -1263,6 +1328,9 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [raw Birmingham--Mokhtari causal decay or two-sided boundedness](#no-go-219)
 - [RBH complementary/wall finite part, separated-sign linear production, or passive normalization](#no-go-225)
 - [scalar-history, regular Borel, grade-diagonal, or rescaling-invariant Parikh--Wilczek balance](#no-go-222)
+- [HB genuine Green-pole matching by the unit-source clock](#no-go-314)
+- [HB finite scalar/packet realization of the original source clock](#no-go-315)
+- [HB literal on-shell same-frequency, holomorphic or native-L2 realization](#no-go-316)
 
 <a id="no-go-299"></a>
 
@@ -2328,6 +2396,69 @@ The all-orders-flat carrier, fixed-neutral energy selector, and boundary-singula
 
 [Back to family](#scattering) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-222)
 
+<a id="no-go-314"></a>
+
+### HB genuine Green-pole matching by the unit-source clock
+
+**Closed result**
+
+Original physical fundamental Green poles survive for every nonzero source amplitude and every
+interior detector on a relative-density-one subset of actual simple critical Xi sources. The
+unchanged complementary unit-source clock vanishes there, so it matches neither the residues nor
+their extinction locus. A regular canonical action can coexist with the genuine pole.
+
+**Survivor / still open**
+
+Density-one pole survival and the distinction between canonical value and physical pole survive.
+A viable receiver must retain original source amplitude and use the pole residue in a nonlocal or
+distributional action comparison.
+
+Evidence: [original Green-pole matching no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalGreenPoleMatchingNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
+<a id="no-go-315"></a>
+
+### HB finite scalar/packet realization of the original source clock
+
+**Closed result**
+
+The late original profile is `exp(2su)(A+uB)`, and every surviving physical pole forces `B≠0`.
+No scalar late multiplier, finite sum of exponential modes, finite physical-clock packet or fixed
+linear readout can reproduce that first frequency jet; finite-time extinction is impossible.
+
+**Survivor / still open**
+
+The doubled source rate is exactly a fourth harmonic of the unchanged centered physical clock.
+A quartic clock observation with its first time moment reproduces the profile, and its convergent
+integral is the complete canonical value. The open problem is its global Peierls/action transport.
+
+Evidence: [source-clock rigidity and quartic survivor](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalSourceClockRigidity.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
+<a id="no-go-316"></a>
+
+### HB literal on-shell same-frequency, holomorphic or native-L2 realization
+
+**Closed result**
+
+The physical Einstein frequency has real part below `-4`, while the literal causal projected
+stream requires real part above `3/2`; same-frequency sewing is impossible. The source transform
+has unit normalized residue at `w=2s`, so uncorrected holomorphic continuation is impossible.
+On paper, its cleared native radial coefficient has a nonzero horizon factor and grows toward the
+negative ray, excluding native radial `L²`.
+
+**Survivor / still open**
+
+The compulsory pole residue, exact frequency-defect quotient and nonzero horizon datum survive.
+Only a meromorphic boundary/distributional realization remains: prove its noncompact cutoff-face
+transgression to the `mixedField` action, or a nonzero face kills it.
+
+Evidence: [same-frequency wall](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralSameFrequencyPeierlsNoGo.lean), [unit source pole](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralOnShellSourcePole.lean), [paper-closed native `L²` no-go](../2-fully-proven/hb-onshell-cleared-native-l2-no-go.md), [frequency-defect survivor](../1-in-progress/hb-source-pole-frequency-defect-cochain.md).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -2356,6 +2487,8 @@ The all-orders-flat carrier, fixed-neutral energy selector, and boundary-singula
 - [SQB current finite-deck word/full-block coercivity](#no-go-308)
 - [theta-pair/product-fibre Wigner positivity](#no-go-086)
 - [W2C positive-cone extension or common-translation propagation](#no-go-121)
+- [SQB positive rational-trace averaging for compact-core coercivity](#no-go-317)
+- [prime-labelled cubic theta scalar evaluation at an Xi zero](#no-go-318)
 
 <a id="no-go-308"></a>
 
@@ -2710,6 +2843,48 @@ The nonnegative-node kernel splits into a geometric PSD Gram plus an entrywise n
 Complex-tilted separated exterior packets are PSD in the explicit source tube. Clustered and mixed-sign packets require a coupled source theorem; positive extension and Loewner-decrease translation are retired.
 
 [Back to family](#theta) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-121)
+
+<a id="no-go-317"></a>
+
+### SQB positive rational-trace averaging for compact-core coercivity
+
+**Closed result**
+
+Every exceptional rational principal trace either vanishes or returns a principal-level Maass
+source with strictly negative `coreQuarter` at the canonical Bessel transition cutoff. Every
+finite nonnegative-weight family with positive total weight has strictly negative total form.
+Positive rational-trace averaging has the opposite sign from the missing direct coercivity.
+
+**Survivor / still open**
+
+The rational traces, their linear eigenspace action and finite Mackey composition survive. Direct
+SQB needs a sign-indefinite source-sensitive lower-flux or density-weighted quartic comparison;
+the global route still needs finite-place spectral and adelic realization.
+
+Evidence: [trace-average no-go](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassTraceAverageNoGo.lean).
+
+[Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
+
+<a id="no-go-318"></a>
+
+### prime-labelled cubic theta scalar evaluation at an Xi zero
+
+**Closed result**
+
+For every prime, the literal cubic one-prime symbol is nonzero throughout the complex theta strip.
+At every Xi zero, however, its scalar third Wronskian evaluation vanishes because the exact
+denominator-free transport carries four Xi factors. Pointwise scalar evaluation at the divisor
+cannot faithfully retain the prime-labelled cubic source.
+
+**Survivor / still open**
+
+The complete four-level Xi filtration and complex-strip Wronskian transport survive. Route P's
+theta formulation must retain that filtration in a closed graph/relative boundary class rather
+than evaluate it to one scalar at the zero.
+
+Evidence: [complex-strip cubic theta jet](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaStripWronskianCubicJet.lean).
+
+[Back to family](#theta) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
 <a id="completion"></a>
 
@@ -3159,6 +3334,12 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [Suzuki wall-light finite-linear compression](#no-go-078)
 - [unrenormalized Suzuki Ward energy](#no-go-259)
 - [Suzuki odd-phase diagonal quadratic readout](#no-go-292)
+- [cofinal Sonin-isometric Euler four-unit repair](#no-go-319)
+- [signed-Eulerian top-fibre Plücker carrier](#no-go-320)
+- [Suzuki positive/affine completion of the atomic--continuous current](#no-go-321)
+- [Suzuki Green-boundary orthogonal closure split](#no-go-322)
+- [reflection-compatible scalar shorting of the Xi conormal current](#no-go-323)
+- [singleton-additive synchronized Gamma recovery](#no-go-324)
 
 <a id="no-go-309"></a>
 
@@ -3493,11 +3674,13 @@ Natural ordering and within-scale adaptive reordering are terminal CCM-FU produc
 
 **Closed result**
 
-Depth-zero/full weak-trace source is not trace-class-close to ordered Xi. Raw cubic magnitude overshoots, normalized completion vanishes, constant attenuation fails, and fixed-charge/single-branch unit Rees landings are empty. The paired Hellinger wall is nuclear, noncollapsing, and real-rooted, but its quadratic jet is `-32/35`, distinct from normalized Xi's theta-moment jet. Equal divisors would force equal normalized even order-one entire functions, so exact Xi-divisor identification is false.
+Depth-zero/full weak-trace source is not trace-class-close to ordered Xi. Raw cubic magnitude overshoots, normalized completion vanishes, constant attenuation fails, and fixed-charge/single-branch unit Rees landings are empty. The paired Hellinger wall is nuclear, noncollapsing, and real-rooted, but its quadratic jet is `-32/35`, distinct from normalized Xi's theta-moment jet. The actual physical signed-permutation pivot is Hilbert--Schmidt-null after current normalization, so its ordinary determinant has that same wall as locally uniform limit and still cannot converge to normalized Xi.
 
 **Survivor / still open**
 
-Physical Lorentz factorization, premise-free near-wall transverse sign, contact-seven two-sheet monodromy, and the real-rooted wall determinant survive as rigidity. Live P is the signed exterior-curvature tail above `233/20`. Any determinant successor must change the divisor-bearing operator, not add a zero-free gauge.
+Physical Lorentz factorization, premise-free near-wall transverse sign, contact-seven two-sheet monodromy, and the real-rooted wall determinant survive as rigidity. Live P is the signed exterior-curvature/global graph-current assembly. Any determinant successor must change the divisor-bearing operator before the aperture-wall limit, not retune the pivot or add a zero-free gauge.
+
+Evidence: [physical pivot-wall transfer no-go](../../../../formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaPhysicalStokesPivotWallTransferNoGo.lean).
 
 [Back to family](#ward) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-245)
 
@@ -3640,6 +3823,128 @@ Cauchy energy grows linearly while Xi curvature has square-root envelope; defect
 Relative signed SP-E comparison retaining and coupling the common divergent sector.
 
 [Back to family](#ward) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-259)
+
+<a id="no-go-319"></a>
+
+### cofinal Sonin-isometric Euler four-unit repair
+
+**Closed result**
+
+The literal positive Euler pre-scalar Gamma source has critical squared norm `8`. Every moving
+family of linear isometries, including every source-dependent cofinal Sonin depth schedule,
+preserves that limit. A bounded same-carrier map preserving the complete source--damping Gram
+family also preserves source energy. Carrier isometry alone cannot produce a four-unit budget.
+
+**Survivor / still open**
+
+The exact all-phase Sonin carrier survives. A viable Ward completion must change signed incidence
+or use a genuinely non-isometric relative channel before taking positive Gram energy.
+
+Evidence: [cofinal-isometric Euler no-go](../../../../formal/GaloisForLFunctions/RHTower/EulerPreScalarGammaCofinalSoninIsometryNoGo.lean).
+
+[Back to family](#ward) · [Current G frontier](rh-current-frontier-map.md#g--ward-orientation)
+
+<a id="no-go-320"></a>
+
+### signed-Eulerian top-fibre Plücker carrier
+
+**Closed result**
+
+Factoring the adjacent-edge kernel through the type-B Eulerian top signature erases the first
+four-label SP-E curvature. The canonical two-variable Pluecker pencil is then identically
+singular. Top-fibre statistics cannot carry the required growing-rank orientation.
+
+**Survivor / still open**
+
+The exact curvature minor identifies what must survive: descent-bottom incidence or another
+label-faithful ordered-history coordinate before reflection sewing.
+
+Evidence: [top-fibre collapse](../../../../formal/GaloisForLFunctions/RHTower/PrimeGammaSignedEulerianTopFiberNoGo.lean).
+
+[Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
+
+<a id="no-go-321"></a>
+
+### Suzuki positive/affine completion of the atomic--continuous current
+
+**Closed result**
+
+The positive regular-screw Ward mass grows like `sqrt N/3` and has no finite cofinal limit. Paying
+the negative-light mass directly still leaves a positive residual of scale `sqrt N/6`. The exact
+quarter-dilation increments do have cumulative `o(sqrt N)` cancellation, but asking that scalar
+partial sum to be uniformly bounded is already equivalent to RH. Positive or scalar-affine
+completion does not independently moderate the source.
+
+**Survivor / still open**
+
+The exact signed atomic--continuous difference, quarter-dilation balance and sub-root cancellation
+survive. SP-E needs a source-derived endpoint-corrected signed history/lag-mean law proving the
+uniform bound without separating the divergent sectors.
+
+Evidence: [regular-mass divergence](../../../../formal/GaloisForLFunctions/RHTower/SuzukiWardContinuousCoDivergence.lean), [completed-light residual](../../../../formal/GaloisForLFunctions/RHTower/SuzukiWardCompletedLightResidualNoGo.lean), [quarter-dilation balance](../../../../formal/GaloisForLFunctions/RHTower/SuzukiCompletedOutgoingDilationBalance.lean).
+
+[Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
+
+<a id="no-go-322"></a>
+
+### Suzuki Green-boundary orthogonal closure split
+
+**Closed result**
+
+The literal self-adjoint Suzuki resolvent has an exact Green-boundary quotient, but its minimal
+closure component is not orthogonal to the spectral vector: one closure-domain vector pairs with
+every spectral vector as exactly `1`. The quotient cannot be turned into a positive norm split by
+discarding the closure term.
+
+**Survivor / still open**
+
+The exact quotient and positive Herglotz graph energy survive. A characteristic/resolvent proof
+must control the closure--source cross term and relate it to the completed prime--polar codiagonal.
+
+Evidence: [actual resolvent witness](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTaActualResolventHerglotzEnergy.lean), [Green-boundary quotient](../../../../formal/GaloisForLFunctions/HTGeometry/DeficiencyResolventBoundaryQuotient.lean).
+
+[Back to family](#ward) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-323"></a>
+
+### reflection-compatible scalar shorting of the Xi conormal current
+
+**Closed result**
+
+Every scalar multiplier compatible with functional-equation reflection and opposite-radial
+orientation preserves the anti-Hermitian law of the signed completed Xi conormal column. Its
+reflected product remains minus its norm square and is everywhere nonpositive. Scalar
+polar--Gamma shorting cannot create a positive source form.
+
+**Survivor / still open**
+
+The exact opposite-radial signature survives. Any global shorting law must act coefficient-
+faithfully through a nonlocal or matrix-valued oriented contraction before continuation.
+
+Evidence: [scalar-shorting no-go](../../../../formal/GaloisForLFunctions/RHTower/XiWardCubicScalarShortingNoGo.lean).
+
+[Back to family](#ward) · [Current G frontier](rh-current-frontier-map.md#g--ward-orientation)
+
+<a id="no-go-324"></a>
+
+### singleton-additive synchronized Gamma recovery
+
+**Closed result**
+
+Adding a fresh prime creates the exact mixed quadratic curvature
+`(1/12) log p * sum log q`. After subtracting every singleton contribution, the anomaly is
+nonnegative and strictly positive on every support containing two primes. Synchronized recovery
+cannot be reconstructed as a sum or product of independently cancelled singleton cells.
+
+**Survivor / still open**
+
+The mixed factor is coefficient-forced: it has an exact all-LCM source realization, signed
+amplitude, negative quadratic counter-curvature and cubic coupling to the continued Julia cell.
+Route P must preserve this labelled factor through global completion and divisor crossing.
+
+Evidence: [synchronized mixed curvature](../../../../formal/GaloisForLFunctions/RHTower/GammaSewnSynchronizedRecoveryMixedCurvature.lean).
+
+[Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
 <a id="roots"></a>
 

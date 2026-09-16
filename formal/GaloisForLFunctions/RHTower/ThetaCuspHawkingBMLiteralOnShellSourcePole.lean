@@ -40,6 +40,46 @@ theorem smoothOnset_pole_residue (v : ℂ) :
   field_simp [hsub]
   simp only [g]
 
+/-- Differentiating the literal smooth-onset pole has the exact double-pole
+coefficient `-1`.  This is the source-side first-moment datum that a genuine
+cutoff-face contact term must match; no continuation through the pole is used. -/
+theorem smoothOnset_pole_derivative_leading (v : ℂ) :
+    Tendsto (fun w : ℂ => (w - v) ^ 2 *
+      deriv (fun z : ℂ => 1 / (z - v) + onsetCorrection v z) w)
+      (𝓝[≠] v) (𝓝 (-1 : ℂ)) := by
+  let A : ℂ → ℂ := onsetCorrection v
+  have hA : AnalyticAt ℂ A v := (onsetCorrection_entire v).analyticAt v
+  have hlin : Tendsto (fun w : ℂ => w - v) (𝓝[≠] v) (𝓝 0) := by
+    simpa only [id_eq, sub_self] using
+      ((tendsto_id.mono_left nhdsWithin_le_nhds : Tendsto (fun w : ℂ => w) (𝓝[≠] v) (𝓝 v)).sub_const v)
+  have hreg : Tendsto (fun w : ℂ => (w - v) ^ 2 * deriv A w) (𝓝[≠] v) (𝓝 0) := by
+    simpa only [pow_two, zero_mul] using
+      hlin.pow 2 |>.mul ((hA.deriv.continuousAt.tendsto).mono_left nhdsWithin_le_nhds)
+  have hmain : Tendsto (fun w : ℂ => (w - v) ^ 2 * (-1 / (w - v) ^ 2))
+      (𝓝[≠] v) (𝓝 (-1 : ℂ)) := by
+    apply tendsto_const_nhds.congr'
+    filter_upwards [self_mem_nhdsWithin] with w hw
+    field_simp [sub_ne_zero.mpr hw]
+  have hsum : Tendsto (fun w : ℂ => (w - v) ^ 2 * (-1 / (w - v) ^ 2) +
+      (w - v) ^ 2 * deriv A w) (𝓝[≠] v) (𝓝 (-1 : ℂ)) := by
+    simpa using hmain.add hreg
+  refine hsum.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with w hw
+  have hsub : w - v ≠ 0 := sub_ne_zero.mpr hw
+  have hrat := (hasDerivAt_const w (1 : ℂ)).div ((hasDerivAt_id w).sub_const v) hsub
+  have hcorr := (onsetCorrection_entire v w).hasDerivAt
+  have hder := hrat.add hcorr
+  have hfun : ((fun z : ℂ => 1) / fun z => z - v) + onsetCorrection v =
+      fun z : ℂ => 1 / (z - v) + onsetCorrection v z := by
+    rfl
+  have hder' : deriv (fun z : ℂ => 1 / (z - v) + onsetCorrection v z) w =
+      -1 / (w - v) ^ 2 + deriv (onsetCorrection v) w := by
+    rw [← hfun]
+    simpa only [id_eq, zero_mul, one_mul, zero_sub] using hder.deriv
+  rw [hder']
+  dsimp only [A]
+  field_simp [hsub]
+
 /-- No holomorphic causal source transform can retain the uncorrected onset through its source pole. -/
 theorem smoothOnset_not_continuous (v : ℂ) :
     ¬ ContinuousAt (fun w : ℂ => 1 / (w - v) + onsetCorrection v w) v := by

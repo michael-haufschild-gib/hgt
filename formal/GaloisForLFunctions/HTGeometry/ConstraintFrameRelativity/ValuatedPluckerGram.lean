@@ -57,6 +57,16 @@ variable {r n : ℕ}
 def frameMinor (T : Matrix (Fin r) (Fin n) R) (b : Fin r → Fin n) : R :=
   (T.submatrix id b).det
 
+/-- Left multiplication scales every maximal frame minor by the determinant of the acting
+matrix. -/
+theorem frameMinor_mul_left (A : Matrix (Fin r) (Fin r) R)
+    (T : Matrix (Fin r) (Fin n) R) (b : Fin r → Fin n) :
+    frameMinor (A * T) b = A.det * frameMinor T b := by
+  have hsub : (A * T).submatrix id b = A * T.submatrix id b := by
+    ext i j
+    simp [Matrix.mul_apply]
+  rw [frameMinor, hsub, Matrix.det_mul, frameMinor]
+
 omit [CommRing R] in
 theorem submatrix_update (T : Matrix (Fin r) (Fin n) R) (b : Fin r → Fin n) (i : Fin r)
     (k : Fin n) :
@@ -193,6 +203,29 @@ theorem valuation_integral_combination_attained (val : Valuation K Γ)
       simp [hb]
     · intro h
       exact absurd (Finset.mem_univ b₀) h
+
+/-- Largest multiplicative valuation among the maximal minors.  This is the order-dual form of
+the paper's minimum additive minor valuation. -/
+noncomputable def maximalFrameMinorValue
+    (val : Valuation K Γ) (T : Matrix (Fin r) (Fin n) K) : Γ :=
+  Finset.univ.sup fun b => val (frameMinor T b)
+
+/-- An arbitrary left change of basis scales the complete maximal-minor valuation profile by the
+valuation of its determinant.  The statement includes singular actions and empty selection
+families. -/
+theorem maximalFrameMinorValue_mul_left
+    (val : Valuation K Γ) (A : Matrix (Fin r) (Fin r) K)
+    (T : Matrix (Fin r) (Fin n) K) :
+    maximalFrameMinorValue val (A * T) =
+      val A.det * maximalFrameMinorValue val T := by
+  unfold maximalFrameMinorValue
+  simp_rw [frameMinor_mul_left, Valuation.map_mul]
+  by_cases h : (Finset.univ : Finset (Fin r → Fin n)).Nonempty
+  · rw [← Finset.sup'_eq_sup h, ← Finset.sup'_eq_sup h]
+    exact (Finset.mul₀_sup' (show (0 : Γ) ≤ val A.det from zero_le)
+      (fun b => val (frameMinor T b)) Finset.univ h).symm
+  · rw [Finset.not_nonempty_iff_eq_empty.mp h]
+    rw [Finset.sup_empty, Finset.sup_empty, bot_eq_zero, mul_zero]
 
 end Valuated
 
