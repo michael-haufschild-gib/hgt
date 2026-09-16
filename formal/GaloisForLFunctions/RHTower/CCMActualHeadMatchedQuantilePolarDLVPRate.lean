@@ -135,12 +135,15 @@ theorem tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevPrimitive_atTo
     have harg : Tendsto (fun h : ℝ => -h / 2) atTop atBot := by
       have hmul := tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 1 / 2)
       have hneg := tendsto_neg_atBot_iff.2 hmul
-      convert hneg using 1 <;> ext h <;> simp only [id_eq] <;> ring
-    have hexp := Real.tendsto_exp_atBot.comp harg
-    convert hexp.const_mul A using 1
-    · ext h
+      convert hneg using 1
+      ext h
+      simp only [id_eq]
       ring
-    · ring
+    have hexp : Tendsto (fun h : ℝ => Real.exp (-h / 2)) atTop (𝓝 0) := by
+      convert Real.tendsto_exp_atBot.comp harg using 1
+      ext h
+      simp only [Function.comp_apply]
+    simpa only [zero_mul] using hexp.mul_const A
   obtain ⟨H, hH⟩ := Metric.tendsto_atTop.mp hhead (eps / 2) (by linarith)
   refine ⟨max T' H, fun h hh => ?_⟩
   have hT'h : T' ≤ h := le_trans (le_max_left _ _) hh
@@ -149,6 +152,8 @@ theorem tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevPrimitive_atTo
     simpa only [Real.dist_eq, sub_zero] using hH h hHh
   have htailInt : IntervalIntegrable criticalMellinNormalizedChebyshevError volume T' h := by
     refine intervalIntegrable_of_bound_on
+      (C := criticalCumulative (fun k => ArithmeticFunction.vonMangoldt k) (Real.exp h) +
+        Real.exp h)
       measurable_criticalMellinNormalizedChebyshevError hT'h ?_
     intro x hx
     exact abs_criticalMellinNormalizedChebyshevError_le_endpoint
@@ -178,9 +183,10 @@ theorem tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevPrimitive_atTo
                     |criticalMellinNormalizedChebyshevError t| := by ring
               _ = |criticalMellinNormalizedChebyshevError t| := by
                 rw [← Real.exp_add]
-                convert one_mul _ using 1 <;> ring
+                rw [show t / 2 + -t / 2 = 0 by ring, Real.exp_zero, one_mul]
           rw [Real.norm_eq_abs, hrewrite]
-          exact (mul_lt_mul_of_pos_left hpoint' (Real.exp_pos _)).le)
+          simpa only [mul_comm] using
+            (mul_lt_mul_of_pos_left hpoint' (Real.exp_pos (t / 2))).le)
         hgInt
   have hExpInt : ∫ t in T'..h, Real.exp (t / 2) =
       2 * Real.exp (h / 2) - 2 * Real.exp (T' / 2) := by
@@ -189,9 +195,13 @@ theorem tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevPrimitive_atTo
       intro x _
       dsimp only [F]
       have hlin : HasDerivAt (fun y : ℝ => y / 2) (1 / 2) x := by
-        convert (hasDerivAt_id x).div_const 2 using 1 <;> ring
-      have h' := ((Real.hasDerivAt_exp (x / 2)).comp x hlin).const_mul 2
-      convert h' using 1 <;> ring
+        simpa using (hasDerivAt_id x).div_const (2 : ℝ)
+      have h' : HasDerivAt (fun y : ℝ => 2 * Real.exp (y / 2))
+          (2 * (Real.exp (x / 2) * (1 / 2))) x := by
+        simpa only [Function.comp_apply] using
+          ((Real.hasDerivAt_exp (x / 2)).comp x hlin).const_mul (2 : ℝ)
+      convert h' using 1
+      ring
     have hint : IntervalIntegrable (fun x : ℝ => Real.exp (x / 2)) volume T' h :=
       (Real.continuous_exp.comp (continuous_id.div_const 2)).intervalIntegrable _ _
     simpa only [F] using intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
@@ -221,15 +231,15 @@ theorem tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevPrimitive_atTo
               eps / 2 * (Real.exp (-h / 2) * Real.exp (h / 2)) := by ring
           _ = eps / 2 := by
             rw [← Real.exp_add]
-            convert mul_one _ using 1 <;> ring
-  have hsplit := intervalIntegral.integral_add_adjacent_intervals
-    (a := (0 : ℝ)) (b := T') (c := h)
-    (by
-      refine intervalIntegrable_of_bound_on
-        measurable_criticalMellinNormalizedChebyshevError hT0 ?_
-      intro x hx
-      exact abs_criticalMellinNormalizedChebyshevError_le_endpoint hx)
-    htailInt
+            rw [show -h / 2 + h / 2 = 0 by ring, Real.exp_zero, mul_one]
+  have hheadInt : IntervalIntegrable criticalMellinNormalizedChebyshevError volume 0 T' := by
+    refine intervalIntegrable_of_bound_on
+      (C := criticalCumulative (fun k => ArithmeticFunction.vonMangoldt k) (Real.exp T') +
+        Real.exp T')
+      measurable_criticalMellinNormalizedChebyshevError hT0 ?_
+    intro x hx
+    exact abs_criticalMellinNormalizedChebyshevError_le_endpoint hx
+  have hsplit := intervalIntegral.integral_add_adjacent_intervals hheadInt htailInt
   change |Real.exp (-h / 2) *
     (∫ t in (0 : ℝ)..h, criticalMellinNormalizedChebyshevError t) - 0| < eps
   rw [sub_zero, ← hsplit]
@@ -242,7 +252,59 @@ theorem tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevPrimitive_atTo
             (∫ t in T'..h, criticalMellinNormalizedChebyshevError t)| := by
       dsimp only [A]
       rw [mul_add]
-      exact abs_add _ _
+      exact abs_add_le _ _
     _ < eps := by linarith
+
+/-- The literal completed critical-Mellin error is negligible relative to polar mass.
+
+This is the exact consequence of the DLV P driver after the causal Volterra completion; it is
+not a bound on the signed collective coverage seam. -/
+theorem tendsto_exp_neg_half_mul_criticalMellinCompletedError_atTop_zero :
+    Tendsto (fun h : ℝ => Real.exp (-h / 2) * criticalMellinCompletedError h)
+      atTop (𝓝 0) := by
+  have harg : Tendsto (fun h : ℝ => -h / 2) atTop atBot := by
+    have hmul := tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 1 / 2)
+    have hneg := tendsto_neg_atBot_iff.2 hmul
+    convert hneg using 1
+    ext h
+    simp only [id_eq]
+    ring
+  have hexp : Tendsto (fun h : ℝ => Real.exp (-h / 2)) atTop (𝓝 0) := by
+    convert Real.tendsto_exp_atBot.comp harg using 1
+    ext h
+    simp only [Function.comp_apply]
+  have hexpsq : Tendsto (fun h : ℝ =>
+      Real.exp (-h / 2) * Real.exp (-h / 2)) atTop (𝓝 0) := by
+    simpa only [zero_mul] using hexp.mul hexp
+  have hfirst : Tendsto (fun h : ℝ => Real.exp (-h / 2) * (1 : ℝ))
+      atTop (𝓝 0) := by
+    simpa only [zero_mul] using hexp.mul_const (1 : ℝ)
+  have hdriver :=
+    tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevError_atTop_zero
+  have hprimitive :=
+    tendsto_exp_neg_half_mul_criticalMellinNormalizedChebyshevPrimitive_atTop_zero
+  have hmodel := ((hfirst.sub (hexpsq.const_mul (2 : ℝ))).sub hdriver).sub
+    (hprimitive.const_mul (1 / 2 : ℝ))
+  have hmodelzero : Tendsto (fun h : ℝ =>
+      Real.exp (-h / 2) * 1 -
+        2 * (Real.exp (-h / 2) * Real.exp (-h / 2)) -
+        Real.exp (-h / 2) * criticalMellinNormalizedChebyshevError h -
+        (1 / 2 : ℝ) * (Real.exp (-h / 2) *
+          ∫ t in (0 : ℝ)..h, criticalMellinNormalizedChebyshevError t))
+      atTop (𝓝 0) := by
+    simpa only [zero_mul, mul_zero, zero_sub, sub_zero] using hmodel
+  apply hmodelzero.congr'
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with h hh
+  rw [criticalMellinCompletedError_eq_volterraPotential hh,
+    criticalMellinChebyshevVolterraPotential, sqrt_exp_eq_exp_half]
+  have hinv : (Real.exp (h / 2))⁻¹ = Real.exp (-h / 2) := by
+    rw [← Real.exp_neg]
+    congr 1
+    ring
+  have htwo : (2 : ℝ) / Real.exp (h / 2) =
+      2 * Real.exp (-h / 2) := by
+    rw [div_eq_mul_inv, hinv]
+  rw [htwo, intervalIntegral.integral_of_le hh]
+  ring
 
 end RHTower

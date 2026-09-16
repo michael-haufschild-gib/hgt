@@ -176,6 +176,62 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   (`not_summable_ccmActualHeadMatchedPhaseSchurCompletionProfile_prime_zero`).  Thus a
   cell-by-cell Γ/graph-square completion necessarily loses the collective affine cancellation;
   only a full-block, phase-sensitive affine mechanism remains relevant.
+- The locality obstruction is now orientation-complete for contiguous critical FU blocks.  If a
+  block containing any prime `p ≥ 27` has nonpositive literal Mertens--polar mass, its left and
+  right spans must together supply the exact logarithmic polar drift at least
+  `log p / (2p)` (`suzukiCheckpointCriticalMertensDeviationCore_prime_nonpos_bidirectionalBlock_forces_log_span`).
+  Thus borrowing from earlier cells does not rescue bounded-memory transport.  This still leaves
+  genuinely nonlocal, noncontiguous collective transport open.
+- The orientation-complete obstruction has a cofinal fixed-radius form: for every fixed pair of
+  left/right radii, the literal two-sided Mertens--polar block around every sufficiently large
+  prime is strictly positive
+  (`eventually_prime_suzukiCheckpointCriticalMertensDeviationCore_bidirectionalBlock_pos`).
+  Hence no translation-invariant finite-memory signed transport can close CCM-FU; scale-growing
+  collective transport is the first surviving class.
+- The literal linear weighted-curvature first-moment route is false, not merely unproved: it is
+  equivalent to RH plus the square-root Chebyshev remainder bound, and the latter contradicts the
+  cofinal Deninger phase escape even under RH
+  (`not_ccmFUSuzukiWeightedCurvatureFirstMomentLinearBound`).  Thus CCM-FU/UR/HG cannot pass
+  through a separately bounded central first moment.
+- The remaining scalar FU source is the normalized coupled half-order Abel action
+  `coherentSelbergSquareRootAbelMoment M / M`; it equals the completed outgoing charge up to an
+  explicit vanishing polar-lattice correction, and its uniform boundedness is exactly RH
+  (`coherentCompletedOutgoing_eq_abel_add_latticeDefect_div`,
+  `riemannHypothesis_iff_coherentSelbergSquareRootAbelBounded`).  Any viable producer must bound
+  this coupled action directly rather than its terminal or interior pieces.
+- The literal SP-E mass-error discrepancy from terminal normalized Chebyshev error is not an
+  independent cancellation target: it is the negative completed outgoing charge plus a
+  source-free polar--lattice residual uniformly bounded by
+  `5 + |suzukiEulerianCoherentBoundaryAnchor|`
+  (`SuzukiEulerianOutgoingChargeRigidity`).  Its uniform boundedness is therefore equivalent to
+  RH.  This collapses SP-E into the same FU/O phase-preserving outgoing-charge frontier rather
+  than providing a separate scalar producer.
+- The resonant G-cap density has an exact potential-flow direction: writing
+  `a = 51/100 + transverseLevel`, its coefficients multiply
+  `∂_a log|XiC| - (2x/a) ∂_x log|XiC|`, whose characteristics satisfy `x*a^2 = constant`.
+  This does not yet control the cap: the RH-bearing functional is a height integral at fixed
+  transverse level, while the characteristic argument requires a joint transverse-height
+  Green/coarea identity.  Exhaustive `XiWard*.lean` search finds no such source functional.
+  Therefore transverse transport is a conditional new producer shape, not a valid bound or a
+  substitute for the signed cap estimate.
+- Factor-two-separated Suzuki reporter secants have coefficient-faithful negative Cauchy cross
+  energy, including the literal prime pairs below the multiplicative hyperbola
+  (`suzukiNaturalApertureFarHyperbolaCauchyEnergy_nonpos`), but removing all of that favorable
+  sector still leaves a transition core with cofinal linear divergence
+  (`tendsto_suzukiNaturalApertureTransitionCoreCauchyEnergy_eight_mul_atTop`).  Thus far-scale
+  negativity cannot fund FU; a survivor must cancel the positive near-hyperbola core itself.
+- On actual quantile Gamma heads, the higher-Gamma plus signed completed-error autocorrelation
+  producer converges on canonical heads without splitting prime and polar channels
+  (`tendsto_ccmCanonicalGroundHead_signedCompletedErrorGammaProducer`).  Its available lower
+  bound cannot close the sign problem because it contains a reciprocal-Gamma chi-square cost
+  proven to diverge on literal heads (`tendsto_ccmOutgoingQuantileGammaChiSquare_atTop`).  Hence
+  convergence is closed; only a source-specific sign/coercivity law for the coupled current is live.
+- Even the cross-prime coherent quantile-field chi-square cannot provide that coercivity: the
+  post-cancellation scalar reserve `2 * gammaHardyPhaseRate 0 + 4` is strictly negative, so its
+  nonnegative norm cost cannot be paid by any nonzero canonical head
+  (`eventually_not_ccmRestrictedWeilCanonicalGroundHead_coherentChiSquare_le_centralBudget`).
+  Therefore a viable O/CCM producer must retain the phase of the joint higher-Gamma/current
+  bilinear block; every norm-square completion is excluded.
 
 ## No-gos
 
@@ -468,6 +524,11 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   pays one debt and puts exactly `2|d|²` in the hidden antisymmetric port
   (`mobiusGammaXiRealReflection_exactPhysicalRayErasure`).  This is a new no-go: real reflection
   cannot serve as a source-faithful pre-scalar G-CE producer.
+- The scalar no-go is now exhaustive even for real-linear, not merely complex-linear, controllers:
+  cancellation of the actual critical charge is exactly `RH ∨` erasure of every real physical Ward
+  value (`mobiusGammaXiRealLinearDebtController_cancellation_iff_rh_or_physicalRayErasure`).
+  Thus anti-linear mixing cannot supply the missing G-CE channel; a viable mechanism must be
+  genuinely non-scalar before the Ward readout.
 - The apparent non-scalar Euler lead is pointed-only.  The literal pre-scalar reporter splits
   orthogonally into radial and transverse four-unit records
   (`eulerPositivePreScalarGamma_orthogonal_four_plus_four_law`), but the transverse record reports
@@ -478,7 +539,499 @@ Scope: Codex `/root` research only. Facts and no-gos; no chronology or status di
   Consequently, a G-CE advance needs a literal nonzero zero-clock complementary channel with an
   exact *signed cross-form* against the completed source, not another pointed reporter, positive
   completion, or scalar controller.
+- Enlarging the transverse reporter to its full natural Hardy half-plane does not alter that
+  conclusion.  At every admissible complex moving node its exact readout remains the pointed
+  difference `trace(endpoint) - trace(base)`
+  (`eulerPositiveTransverseGammaXiHardyPointedReporter_eq_continued_sub_base`), never an absolute
+  base readout.  The only existing coefficient-faithful zero-clock completion adds the forced
+  nonright-canonical-product correction
+  (`mobiusGammaXiPreScalarAffineBoundaryCorrection_eq_forcedDifference`), hence is divisorial
+  rather than a new literal pre-scalar channel.  Moving an anchor alone cannot supply the missing
+  G-CE partner.
 - Broad 2026 arXiv searches on `Krein`, `Schur`, `boundary`, `operator`, `spectral`, and
   `renormalization` yielded no transferable source-preserving cancellation theorem.  Search hits
   were either unrelated or positive/renormalization frameworks that would replace the signed
   prime--polar current.  No external mechanism was imported.
+- The reduced first-clock Julia equilibrium Gram does restore literal cross-prime correlations,
+  but only in the forward capacity direction: a negative attenuated packet forces its squared
+  excursion into the coherent bad-prime energy
+  (`ccmFirstClockJulia_negative_attenuatedCompletedPacket_forces_badCoherentEnergy`).  No Lean
+  theorem bounds that energy from above by the continuous budget or identifies it with the
+  third-grade/actual-head source.  Therefore PSD Julia coherence is a necessary certificate of a
+  negative first-clock excursion, not a CCM-FU/O control mechanism.  Any reuse needs a new
+  source-faithful reverse estimate; pointwise or Gram positivity cannot provide it.
+- The source-selected complex-Dirac self-polarization is also not a positive completion: for
+  every nonempty finite prime-power packet and positive shear time, its determinant response is
+  strictly negative at every nonzero spectral frequency and vanishes only at the center
+  (`ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceFinitePrimePowerSelfPolarizedDeterminantResponse_neg_iff`).
+  Thus lifting the two real phase coordinates and then scalarizing atomwise reverses the desired
+  sign.  A phase-based producer would have to retain genuinely cross-frequency (not merely
+  cross-prime or per-atom self-polarized) coupling through the source readout.
+- On literal canonical Gamma--Slepian heads, the reverse-prime inequality is exactly the
+  nonnegativity of the completed-error defect balance
+  (`ccmRestrictedWeilCanonicalGroundHead_reversePrimeBound_iff_completedErrorDefectControl`):
+  full form energy plus the completed-error scalar and prime translation defect must dominate the
+  polar autocorrelation defect.  That balance is also the ground floor times head mass plus the
+  certified nonnegative vanishing truncation tail
+  (`ccmRestrictedWeilCanonicalGroundHead_completedErrorDefectBalance_eq_ground_add_tail`).
+  Thus improving head convergence cannot remove the obstacle; new work must sign the exact-ground
+  balance itself while retaining the prime--polar coupling.
+- The apparent endpoint-coefficient gap in coherent Suzuki transport is closed exactly, not
+  asymptotically: outgoing minus incoming plus `Λ(X)/√X` is the normalized completed Chebyshev
+  error (`unitRieszCoherentBoundaryJump_eq_normalizedChebyshevError`), and the induced cofinal
+  transport is coefficient-faithful.  Its remaining boundedness demand is still the literal
+  prime--polar source bound, so endpoint repair cannot be counted as an independent FU producer.
+- [NO-GO] Position torque cannot control Suzuki's two-jet source sign away from exact
+  parity-energy balance.  At fixed torque, the Schur numerator realizes every real value
+  (`suzukiParity_twoJetSlack_surjective_at_fixed_torque`); the missing term is the local
+  tilt-asymmetry.  Hence bounded actual boundary torque cannot supply the FU/O reverse-prime
+  inequality without a new source cross-form that controls this independent coordinate.
+- G's sliding source-rectangle construction is an exact finite source receiver: translation
+  averaging produces the triangular Ward annulus and its full `3π` charge
+  (`card_mul_three_pi_le_xiWardSlidingSourceRectangleAnnulusEnergy`).  Poisson dissipation reduces
+  its obstruction to a uniform upper bound for literal narrow-line prime--polar--Gamma rectangle
+  energy (`card_mul_three_pi_le_xiWardSlidingSourceRectangleNarrowEnergy`).  Rademacher cell signs
+  prove only a zero-side randomized coercivity and are not source-realizable; this upper bound is
+  therefore the genuine one-scale Ward frontier, not an already solved positivity statement.
+- The sliding Ward receiver is not yet a canonical arithmetic producer.  Its narrow energy is a
+  functional of four arbitrary maps `z₁ z₂ z₁' z₂' : ℝ → ℂ`, while the packet identities which
+  give the `3π` charge are explicit hypotheses of
+  `card_mul_three_pi_le_xiWardSlidingSourceRectangleNarrowEnergy`.  Exhaustive uses of that
+  functional occur only in its receiver/budget modules; no source-defined moving rectangle family
+  is present.  Thus an upper bound for arbitrary maps would be the wrong claim.  A valid G advance
+  must first construct a zero-independent contour family that has the packet-realization law, then
+  bound that particular source functional.
+- The existing G-CE “coefficient-faithful source contour” cannot fill this producer gap: its
+  integrand explicitly contains
+  `xiFiniteCoefficientInterpolant (xiCClosedRectangleZeros z₁ z₂) target`
+  (`normalizedXiFiniteCoefficientSourceContour`).  It is an exact finite divisor-adaptive
+  interpolation device, and its proposed strict subquantum law is formally equivalent to RH
+  (`xiPrimeWardExteriorCoefficientFaithfulSourceSubquantum_iff_riemannHypothesis`).  Whole-route
+  consequence: finite Lagrange lifting is a receiver/normalization theorem, not a lawful
+  arithmetic cancellation mechanism; importing it into G would conceal the missing source
+  producer rather than remove it.
+- **Abel-boundary resonance (formalized in
+  `HedenmalmExteriorCayleyAbelGreenLanding.lean`; direct check, `.olean` emission, and axiom
+  audit passed).**  Direct substitution of
+  `realCayley x = (x-i)/(x+i)` into
+  `sourceCayleyAbelGreenMultiplier` gives
+  \(M_R(x)=-4/((1+R)x+i(1-R))\), hence
+  \(|M_R(x)|^2=16/((1+R)^2x^2+(1-R)^2)\).  For every `0 < |x| < 1`, the denominator has its
+  strict interior minimum at \(R_*=(1-x^2)/(1+x^2)\); there
+  \(|M_{R_*}(x)|^2=(1+x^2)|M_1(x)|^2\).  Thus the source-safe Abel family overshoots its
+  exterior boundary energy before reaching it.  Whole-route consequence: no argument based on
+  monotone transport of a safe-radius energy bound can close G/G-CE.  The usable new target is
+  signed control of the explicit radius defect
+  \((1-R)((3+R)x^2-(1-R))\), whose sign changes across the resonant scale; absolute estimates
+  destroy exactly the cancellation needed for moving-boundary transport.
+- **First-phase rigidity (formalized in
+  `MobiusCriticalComplexPhaseHermitianGram.lean`).**  The centered infinitesimal imaginary
+  source-phase coefficient is exactly `(I / 2)` times
+  `infiniteMobiusCriticalFisherTangentWeight`
+  (`infiniteMobiusCriticalCenteredImaginaryPhaseCoefficient_eq_i_half_fisher`); it is therefore
+  not an independent source direction.  The audited complex source-to-Xi landing is for this
+  Fisher tangent, while the generic packet Julia derivative accepts arbitrary target nodes and
+  still requires their rectangle realization.  Whole-route consequence: neither first phase
+  motion nor generic packet transport supplies G's zero-independent common-clock producer; a
+  viable producer must introduce a nonseparable source operation with a new arithmetic landing.
+- **Shared-ghost branch closed.**  The exact bilateral cubic completion reduces its indefinite
+  packet to one shared rank-one ghost, but a source/Gamma-natural shared scalar satisfying the
+  two retained prime labels `2,3` exists only at neutral grade
+  (`primeGammaTwoThreeSharedInverseOrientedGhostWard_iff`); global descent is equivalent to RH
+  (`everyFrankensteinSourceSelectedGammaWardSharedGhostDescends_iff_riemannHypothesis`).
+  Whole-route consequence: a single Gamma/polar ghost cannot short the amplified bilateral
+  cubic credit.  Any surviving pre-scalar producer must retain non-scalar primitive-index
+  covariance through continuation.
+- **Reflected radial Wirtinger law (scratch-certified).**  For the literal reflected conormal
+  feature (M(\rho,r)=\overline{r\exp(- (\rho-\tfrac12)r)}), the unconditional Lean calculation
+  gives \(\bar\partial_\rho M=-rM\).  It is the sole non-holomorphic leg of the pre-scalar
+  quadratic source; the completed trace is holomorphic only in its initial zero-free half-plane,
+  while its divisor poles lie beyond that boundary.  Whole-route consequence: the resulting
+  oriented current reweights the already-positive residue form by `r`, but cannot by itself
+  establish the missing signed completed-source bound.  The real remaining problem is a
+  pole-crossing identity that retains the completed prime--polar cancellation.
+- **A.e. literal-edge admissibility (formalized).**  The complete centered Xi divisor is
+  countable, so each of its real and imaginary projections is countable.  Therefore every
+  injectively moving vertical edge with fixed endpoints strictly in
+  \((-\tfrac12,\tfrac12)\), and every injectively moving horizontal edge remaining in that
+  strip, is `XiExplicitAdmissible` along its entire finite edge for almost every parameter
+  (`XiWardAERectangleAdmissibility.lean`).  Whole-route consequence: a continuous
+  source-defined transverse-band family need not select zero-free contour levels; the bad
+  parameters are rigorously null.  This removes only the edge-selection obstruction.  It does
+  not provide the two-parameter response identity, control moving height cutoffs, or bound the
+  resulting source energy, which remain the RH-bearing G obstacles.
+- **Canonical transverse coarea scan (formalized).**  The source-defined chart
+  \(\theta(t)=\tfrac14+\arctan(t)/(2\pi)\) is a strict bijective coordinate from the scan line
+  to \((0,\tfrac12)\).  For every strict-right transverse displacement \(a\), the literal lower
+  spectral ordinate \(-a\) lies in the canonical lower-half band
+  \([ -\theta(t+L),-\theta(t)]\) iff
+  \(t\in[\theta^{-1}(a)-L,\theta^{-1}(a)]\); that selector has exact parameter length \(L\).
+  The band endpoints are source-defined, strictly interior, and compatible with a.e. contour
+  admissibility (`XiWardCanonicalTransverseScan.lean`).  Whole-route consequence: G now has a
+  zero-independent transverse selector with equal scan-interval width, rather than only
+  zero-adaptive slab widths.  The surviving hard core is height-direction closure: prove a source response for the
+  all-height moving rectangles and a cofinal upper bound without losing prime--polar--Gamma
+  cancellation at the moving horizontal cutoffs.
+- **All-height source obstruction identified.**  The completed prime--archimedean trace is
+  unconditionally the *full* relative resolvent, while the raw strict-right Ward response is that
+  full trace minus `logDeriv xiNonrightCanonicalProduct` plus the Schwarz boundary symbol
+  (`continuedXiAntiCausalWardResponse_eq_full_sub_nonright`).  Hence replacing finite rectangles
+  by one scalar full-height source evaluation cannot select the strict-right divisor: it silently
+  drops the complementary factor.  Whole-route consequence: the all-height producer must retain
+  contour geometry (or an equivalent non-scalar projector); scalar source completion is not a
+  valid shortcut.
+- **Precise remaining cap datum.**  `exists_horizontal_xi_bound` proves only an *unweighted
+  signed imaginary* horizontal integral of `logDeriv xi` is `O(log T)` on a zero-free height.
+  It does not bound the complex Cauchy-weighted cap, nor its partial primitives.  A Cauchy factor
+  supplies formal `O(1/T)` decay, but promoting that to a cap limit would require uniform signed
+  control of the completed prime--polar trace on every subinterval before the Cauchy weight is
+  varied.  Whole-route consequence: the genuine G height-closure lemma is a coefficient-faithful
+  **weighted partial-horizontal cancellation** law; an absolute-value edge bound or the existing
+  unweighted count bound cannot supply it.
+- **Schwarz cap kernel exact law (formalized).**  On canonical lower cap points
+  \(x-i\theta(s)\) and \(-x-i\theta(s)\), the literal Ward-weight difference is exactly
+  \[
+    \frac{-4i\tau}{(\frac{51}{100}+\theta(s)+i(\tau+x))
+      (\frac{51}{100}+\theta(s)+i(x-\tau))}.
+  \]
+  At the moving resonance \(\tau=x\), its second denominator is the fixed positive transverse
+  distance, not a large-height factor (`XiWardSchwarzCapKernel.lean`; direct check, `.olean`
+  emission, and axiom audit passed).  Existing paired Hilbert/Schwarz source-vector results do
+  not identify a completed prime--polar horizontal cap with this kernel.  Whole-route
+  consequence: raw Schwarz pairing cannot supply the missing uniform pointwise cap decay; the
+  only viable G height-closure target remains a literal source-level weighted partial-horizontal
+  cancellation theorem, preserving the completed trace through the height integration.
+- **All-height canonical cap admissibility (formalized).**  For every injective moving height
+  level in the open centered strip, the *entire* horizontal line is `XiExplicitAdmissible` for
+  almost every parameter, because the preimage of the countable set of Xi-zero imaginary
+  coordinates is countable.  Applied to \(-\theta(s)\), this gives an a.e. source-defined
+  lower cap line with no finite-height truncation (`XiWardAllHeightCapAdmissibility.lean`; direct
+  check, `.olean` emission, and axiom audit passed).  Whole-route consequence: G no longer has
+  a contour-selection barrier at all heights.  Any remaining failure to close the cap is
+  necessarily an analytic signed-cancellation failure of the literal completed trace, not an
+  unlicensed choice of zero-free edges.
+- **Literal Schwarz source-pair factorization (formalized).**  On that same conull family of
+  canonical cap levels, at every height and observation frequency, the actual reflected
+  completed prime--polar--Gamma cap pair equals the two-pole Schwarz kernel times one *unaltered*
+  `continuedPrimeArchSourceRelativeTrace` value
+  (`XiWardSchwarzCapSourcePairing.lean`; direct check, `.olean` emission, and axiom audit
+  passed).  The identity uses the exact source reflection, not a spectral sum.  Whole-route
+  consequence: source-level pairing is no longer a missing bridge.  The one remaining G cap
+  datum is now exact and irreducible: a cofinal signed bound for the height integral of this
+  two-pole kernel against the literal completed trace.  The resonant kernel law precludes
+  replacing that datum by pointwise two-pole decay.
+- **Finite cap semantics completed (formalized).**  The factorized kernel is continuous at every
+  height (both denominators have fixed positive real part), and every finite symmetric cap on
+  the conull canonical family is interval-integrable against the literal completed trace.  The
+  reflected source cap integral equals exactly that factorized integral
+  (`XiWardSchwarzCapKernel.lean`, `XiWardSchwarzCapSourcePairing.lean`; direct checks, `.olean`
+  emissions, and axiom audits passed).  Whole-route consequence: the remaining cofinal claim
+  cannot be dismissed as undefined contour algebra or hidden non-integrability.  It is precisely
+  the uniform signed behavior of these genuine finite source integrals as the cutoff and
+  observation frequency move together.
+- **Cap anti-Schwarz law (formalized).**  The literal paired Ward kernel satisfies
+  `K_{tau,s}(-x) = -conj(K_{tau,s}(x))`
+  (`XiWardSchwarzCapReflection.lean`; scratch check, isolated `.olean` emission, and axiom
+  audit passed).  `XiWardSchwarzCapRealCharge.lean` then formalizes the source-pair and
+  factor-density conjugate symmetry on the conull canonical-cap family, with its own `.olean`
+  emission and standard-axiom audit.  Its factorized density is
+  `K(-x) S(-x-i theta) = conj(K(x) S(x-i theta))`.
+  Whole-route consequence: the symmetric cap is a real signed charge, not an odd integral that
+  reflection can kill.  Thus parity is a closed no-go for the cofinal bound; any surviving
+  height closure must control its real signed local mass near the moving resonance.
+- **Half-cap reduction (formalized).**  The same module now proves, with no cutoff-sign or
+  source-bound premise, that every factorized symmetric cap is exactly twice the real integral
+  over its positive half.  This uses only finite interval-integrability and the literal
+  conjugate-even source density (`ae_forall_xiWardSchwarzCapFactorIntegral_eq_two_re_half`; direct
+  `.olean` emission and standard-axiom audit passed).  Whole-route consequence: cancellation
+  between the two reflected cap halves is not available.  The precise G analytic problem is a
+  uniform signed bound for one real positive-half current through its moving Cauchy resonance.
+- **Pointwise source-control no-go (verified in existing Lean).**
+  `continuedPrimeArchUpperImBoundedAbove_iff_riemannHypothesis` proves that merely imposing a
+  finite global upper bound on the continued completed-source imaginary part throughout its
+  pole-free upper half-strip is equivalent to RH.  Whole-route consequence: neither the G cap
+  nor CCM-FU can obtain its required signed-window cancellation from a generic one-sided or
+  pointwise completed-source estimate; that would conceal the desired theorem itself.  The
+  estimate must use the exact observer/window geometry and preserve prime--polar--Gamma
+  cancellation.
+- **CCM-FU literal-cancellation boundary (verified in existing Lean).**
+  `increment_rieszTail_eq_completedPrimePolarGamma_window` identifies the transported
+  prime-free FU tail with the actual completed von-Mangoldt--polar--Gamma Riesz window before
+  any estimate.  The subsequent first-moment Abel theorem proves that linear control of the
+  *literal* weighted signed-curvature prefixes would bound the triangular FU reporter and hence
+  imply RH.  Whole-route consequence: the literal cancellation bridge is already closed; the
+  irreducible FU datum is the signed first-moment/barycenter control, not another transform or
+  a separated prime/polar estimate.  It is distinct from G's cap current, so combining their
+  conclusions without a source-faithful bridge would be invalid.
+- **Two-dimensional transverse-current reframe is already exhausted by G (verified in existing
+  Lean).**  The canonical transverse scan, a.e. moving-rectangle identities, and
+  `card_mul_three_pi_le_xiWardSlidingSourceRectangleNarrowEnergy` already turn the full
+  two-dimensional rectangle current into a coefficient-faithful `3*pi` charge for every
+  strict-right finite packet.  Poisson dissipation reduces it to the narrow completed-source
+  energy.  Whole-route consequence: promoting the transverse parameter does not create a new
+  producer; that exact coarea construction is already the established G receiver.  Its remaining
+  upper bound is genuinely new source information, not a missing contour or scan identity.
+- **Resonant real/imaginary quadrature (formalized).**  Put
+  \(a_s=51/100+\theta(s)>0\).  The literal Schwarz-paired cap kernel at its moving
+  resonance has the exact coefficients
+  \[
+    \Re K_{x,s}(x)=-\frac{8x^2}{a_s(a_s^2+4x^2)},\qquad
+    \Im K_{x,s}(x)=-\frac{4x}{a_s^2+4x^2}.
+  \]
+  Consequently the actual unaltered completed-source density is exactly
+  \[
+    \Re(K_{x,s}(x)S)=
+    -\frac{8x^2}{a_s(a_s^2+4x^2)}\Re S+
+    \frac{4x}{a_s^2+4x^2}\Im S,
+  \]
+  where \(S=\mathrm{continuedPrimeArchSourceRelativeTrace}(x-i\theta(s))\).
+  The real coefficient is zero at the central height and strictly negative at every other
+  height (`XiWardSchwarzCapResonantQuadrature.lean`; isolated source `.olean` emission and
+  standard-axiom audit passed).  Whole-route consequence: the existing critical-locus
+  imaginary-source reserve cannot by itself determine the moving-resonance G current.  A genuine
+  G producer must establish a source-faithful cross-quadrature law or a signed bound on the real
+  completed source in this exact geometry; replacing it with an imaginary-only estimate would
+  leave an uncontrolled nonzero term.
+- **Log-modulus transport (formalized).**  On the same conull canonical cap family,
+  \[
+    \Re\,\mathrm{continuedPrimeArchSourceRelativeTrace}(x-i\theta(s))
+    =\frac{d}{dx}\log\lVert\Xi_C(x-i\theta(s))\rVert.
+  \]
+  Substitution into the resonant quadrature gives an exact actual-source current consisting of
+  the explicit negative real coefficient times this Xi log-potential derivative, plus the
+  explicit imaginary-source term (`XiWardSchwarzCapLogModulusCurrent.lean`; isolated source
+  `.olean` emission and standard-axiom audit passed).  Whole-route consequence: G's residual
+  real channel is now a coefficient-faithful divisor-potential transport problem.  This creates
+  a lawful integration-by-parts target, but does not give its cofinal bound: available Xi decay
+  is an upper bound and does not control the lower log modulus near the zero divisor.
+- **Generic Hilbert/Cauchy recovery does not land (verified in existing Lean).**  The corpus gives
+  local analyticity of `logDeriv XiC` on each admissible cap line, while
+  `FokasLenellsCauchyExtension` is an arbitrary `SoninL2` Cauchy transform.  No theorem supplies
+  a global pole-free strip, a Hardy/L2 boundary norm for this literal completed source, or an
+  identification of that source with the generic Cauchy carrier.  Whole-route consequence: an
+  imaginary-source reserve cannot be promoted to the required real-channel bound by importing
+  Hilbert-transform theory alone; any such bridge must first prove new source-faithful global
+  pole-distance or log-potential control.
+- **Canonical divisor-detection law (formalized).**  For every `XiZeroCopy` with
+  \(\Re\rho>1/2\), set \(a=\Re\rho-1/2\in(0,1/2)\) and take the canonical scan parameter
+  \(s=\mathrm{xiWardTransverseCoordinate}(a)\).  Lean now proves
+  \[
+    \mathrm{xiWardLowerCapPoint}\bigl(s,\Re\,\mathrm{xiSpectralPoint}(\rho)\bigr)
+      =\mathrm{xiSpectralPoint}(\rho),
+  \]
+  hence that literal lower-cap point is a zero of `XiC`
+  (`XiWardSchwarzCapDivisorDetection.lean`; isolated source `.olean` emission and standard-axiom
+  audit passed).  Whole-route consequence: the canonical source scan detects every possible
+  RH-counterexample zero.  A uniform zero-free, positive-distance, or lower-log-modulus estimate
+  over its full foliation is therefore RH-bearing; a valid G producer must instead exploit the
+  exact moving signed geometry without silently imposing such a uniform avoidance condition.
+- **CCM-FU has one irreducible arithmetic action (verified in existing Lean).** After exact
+  critical rescaling and Abel summation, the third-grade Suzuki curvature transform differs from
+  a uniformly bounded source-free Gamma/harmonic action by precisely
+  `suzukiCheckpointCriticalVariationAction suzukiCheckpointCriticalMertensDeviation`.
+  Its uniform bound is formally equivalent to RH
+  (`CCMFUSuzukiCriticalRemainderVariation.lean`,
+  `ccmFUSuzukiCriticalMertensDeviationVariationActionBound_iff_riemannHypothesis`). The
+  deviation is exactly the compensated pair ψ-error-at-endpoint divided by endpoint minus its
+  full future \(t^{-2}\) tail. Whole-route consequence: neither Gamma control, scalar critical
+  convergence, nor another local prime--polar matching can close CCM-FU. A valid new producer
+  must control this *coupled moving Abel action* without splitting its endpoint from its tail.
+- **Cross-route landing is exact, but does not solve the action (verified in existing Lean).**
+  `unitRiesz_center_eq_weightedSignedCurvature_add_arch` identifies the weighted signed-curvature
+  prefix with the central CCM-UR/HG completed barycenter plus an explicit archimedean
+  renormalization. A uniform natural-aperture barycenter bound would therefore close CCM-FU and
+  imply RH (`SuzukiFirstMomentTriangularAbelTransfer.lean`). Whole-route consequence: CCM-FU and
+  CCM-UR/HG share the same missing signed first-moment coherence; Route O's absolutely summable
+  quadratic head current is not a lawful substitute because its damping removes this moment.
+- **Bounded-memory cancellation is closed (verified in existing Lean).** A critical block
+  containing a sufficiently large prime cannot have nonpositive mass unless its span grows at
+  least \(\log p/2\); fixed one- or two-sided transport radii consequently fail cofinally
+  (`CCMFUSuzukiCriticalTransportRangeNoGo.lean`,
+  `CCMFUSuzukiCriticalBidirectionalTransportRangeNoGo.lean`). Whole-route consequence: any
+  surviving CCM producer must be a genuinely growing-range, coefficient-faithful transport or
+  phase-coherence law. Finite-window positivity, reordering, and fixed-light Suzuki cells are
+  ruled out as closure mechanisms.
+- **Every moving isometric carrier preserves the eight-unit Euler cost (new proof term; project
+  audit pending restored dependency cache).** For any critical-parameter-dependent family of
+  linear isometries, the literal squared full-Euler source norm is preserved pointwise, hence its
+  limit remains \(8\); canonical cofinal Sonin embeddings are a specialization
+  (`EulerPreScalarGammaCofinalSoninIsometryNoGo.lean`). Whole-route consequence: no isometric
+  change of carrier can remove the four-unit debt. Any G-CE survivor must alter signed source
+  incidence through a non-isometric relative channel before positive Gram energy is formed;
+  carrier transport alone is closed.
+- **Damping-Gram-faithful compression is also closed (new checked proof term; project audit
+  pending restored dependency cache).** If a bounded same-carrier map preserves the complete
+  source--damping Gram coefficients after acting on both source and every nonnegative critical
+  damping state, totality forces \(T^*T\) to fix the literal source, so its squared norm is
+  unchanged (`norm_sq_map_eulerPositivePreScalarGammaSource_of_dampedGram`). Whole-route
+  consequence: a non-isometric reweighting is not enough when it preserves the full original
+  incidence. A G-CE survivor must modify which source--test pairings enter the Gram formation,
+  not merely compress their shared carrier.
+- **Canonical two-leg source-normal repair is inadmissible (verified in existing Lean).** Its
+  physical multiplier is exactly the prime, and already its exponent-zero restriction has
+  divergent squared Gamma weight; hence it cannot enter the Hilbert graph domain
+  (`SuzukiCausalDepthGammaTwoLegSourceNormalGraphDomainNoGo.lean`). Whole-route consequence:
+  the sole algebraic escape from the damping-Gram no-go cannot be implemented by canonical
+  source-normal deattenuation. Any surviving two-leg incidence must use a different,
+  source-faithful unbounded-domain law and prove its graph admission rather than assume it.
+- **Abstract pre-quasi two-leg geometry is not a new producer (verified in existing Lean).**
+  `HilbertPreQuasiPair` already supplies closed, dense, pairing-preserving two-leg singular
+  pairs, including a proper graph defect. But the actual full-source, momentum-symmetric
+  Hedenmalm theta form has no ordinary-\(L^2\) pre-quasi realization
+  (`PreQuasiGelfandTwoSidedSingularDefect.lean`,
+  `HedenmalmThetaOrdinaryL2PreQuasiExclusion.lean`). Whole-route consequence: replacing a
+  Hilbert carrier by an abstract two-leg graph does not land the arithmetic source. A valid
+  distributional/finite-head arena must provide a new literal source map and cannot silently
+  reuse ordinary \(L^2\) full-source Gram realization.
+- **Fixed-affine SP-E compensation is closed (verified in existing Lean).** Once a constant
+  affine correction cancels the transition-core scale, its residual is exactly a scalar multiple
+  of aligned completed Gamma energy: negative coefficient is RH-equivalent, zero erases the
+  source, and positive coefficient gives a vacuous nonpositive upper bound
+  (`SuzukiFixedAffineSignedCompensationClassification.lean`). Whole-route consequence: no
+  constant coefficient can provide missing cancellation; surviving SP-E/CCM-FU work must retain
+  a non-affine, source-labelled relative term.
+- **Growing-rank positive fission is closed as a cancellation mechanism (verified in existing
+  Lean).** The Cartan logarithmic fission has a uniformly bounded cubic remainder, but its
+  completed observable is the literal positive transition core plus a nonnegative remainder and
+  still escapes cofinally (`SuzukiTransitionCoreGrowingRankCartanFission.lean`). Whole-route
+  consequence: nonlinear finite-rank completion can regularize an error without changing signed
+  source order; a genuine producer must introduce an exact signed cross-pairing with continuum
+  increment and retained prime history before scalarization.
+- **A scalar SP-E coboundary is only a renaming (verified from exact Lean identities).** The
+  cumulative quarter-dilation increment is identically
+  `unitRieszCoherentCompletedOutgoingCharge N - unitRieszCoherentCompletedOutgoingCharge 2`;
+  its uniform bound is already equivalent to RH
+  (`SuzukiCompletedOutgoingDilationBalance.lean`). Whole-route consequence: writing the
+  increment as a bounded scalar causal state cannot be a new mechanism. Any valid reframe needs
+  a genuinely non-scalar source observable whose boundedness does not collapse to this partial
+  sum.
+- **Canonical two-leg completed-source shorting is identically zero, even across distinct Xi
+  labels (verified in existing Lean).**
+  `suzukiTransitionCoreCompletedSourceEnvironmentBlock_short_eq_zero` has arbitrary `rho` and
+  `tau`; it is not a same-fibre accident. Whole-route consequence: no bilinear two-leg residue
+  Schur complement can supply the missing signed SP-E order. A surviving pre-scalar producer must
+  be at least higher-relational than this canonical two-column environment and retain a literal
+  prime--continuum source map.
+- **The marked Volterra--Xi compound target is not yet source-faithful (Lean use audit).** The
+  exact Bezoutian and midpoint theorems leave `x,X,y,Y,c` arbitrary; exhaustive Lean references
+  occur only in those algebraic modules, with no map from `completedPrimePolarGammaAtom`, its
+  Riesz window, or the completed outgoing charge. Whole-route consequence: its proposed
+  prime--Gamma Gram factorization is presently an uninstantiated algebraic target, not a lawful
+  producer. It must not be used to claim cancellation progress until a literal source map is
+  constructed and verified.
+- **Harmonic-to-Riesz second formation is fully classified and cannot be the missing bound
+  (verified in existing Lean).** The literal completed source has absolutely summable zero
+  harmonic charge, but the relative Riesz rate and its first difference are unbounded; only its
+  second curvature is uniformly bounded. The resulting absolute drift-plus-history action is
+  equivalent to RH (`SuzukiHarmonicRieszClockTransmutation.lean`,
+  `SuzukiObserverJetFormationCompletion.lean`,
+  `SuzukiObserverJetLinearActionClassification.lean`). Whole-route consequence: bounded clock
+  curvature is kinematic only. Any survivor must use a source-specific signed relation not
+  controlled by the absolute second-formation action; a generic clock-transmutation or Hardy--Green
+  estimate cannot close CCM-FU/SP-E.
+- **Third-grade Suzuki realization is already exact, not a remaining convergence gap (verified in
+  existing Lean).** A common positive cofinal parameter schedule sends the connected finite
+  Suzuki chord to the literal coupled third-grade prime--polar window with pointed error
+  \(<1/(N+1)\) (`exists_suzukiConnectedChordThirdGradeLiteralCofinalSchedule`). At base wall
+  one, uniform boundedness of the source-adaptive positive chord, matched-coverage seam, and
+  completed quantile transport are pairwise equivalent (`CCMFUSuzukiHardCoreLanding.lean`).
+  Whole-route consequence: another finite-head limit, cell-coordinate change, or quantile
+  reassembly cannot be claimed as new CCM-FU control; all retain the same unbounded signed Abel
+  datum.
+- **Actual unbounded Suzuki resolvent has an exact positive graph-energy carrier (new, Lean
+  closed).** `SuzukiTaActualResolventHerglotzEnergy.lean` proves that the normalized resolvent
+  readout of `suzukiTaSelfAdjointExtension` has imaginary part
+  \(\operatorname{Im}z(\|Ar\|^2+\|r\|^2)\), strictly positive for nonzero source in the upper
+  half-plane. This uses the literal extension and its domain, not a finite spectral surrogate.
+  Whole-route consequence: source-faithful Herglotz positivity is no longer blocked by absence of
+  a resolvent carrier; the remaining hard datum is an exact comparison from this carrier to the
+  finite Suzuki characteristic / completed prime--polar codiagonal that retains signed
+  cancellation. Positivity alone cannot supply that comparison.
+- **A nonreal self-adjoint deficiency resolvent has an exact Green-boundary quotient (new, Lean
+  closed).** `DeficiencyResolventBoundaryQuotient.lean` proves
+  \((A-z)^{-1}v=c-\langle w,v\rangle B(w,b)^{-1}b\), with `c` in the closure domain, whenever
+  the adjoint eigenvector `w` has eigenvalue \(\bar z\) and its boundary pairing `B(w,b)` is
+  nonzero. The literal Suzuki characteristic is already exactly this pairing in existing Lean.
+  Whole-route consequence: a lawful resolvent-to-characteristic comparison can only fail through
+  control of the closure component or of the source numerator; it cannot invoke an absent
+  spectral-model bridge. Neither component has yet been related to the completed
+  prime--polar codiagonal, so this does not furnish the CCM-FU bound.
+- **Closure--spectral orthogonality is false on the literal Suzuki space (new, Lean closed).**
+  `exists_suzukiTaMinimalClosure_inner_spectralVector_eq_one` constructs a vector in the minimal
+  closure domain whose pairing with every spectral vector is exactly \(1\). Whole-route
+  consequence: the Green-boundary quotient cannot be converted to a positive norm split by
+  discarding its closure component. A surviving characteristic/resolvent argument must control
+  the closure--source cross term while preserving prime--polar cancellation.
+- **The Euler-deletion Möbius Gram cross criterion has no established CCM/G source transport
+  (Lean use audit).** `EulerDeletionMobiusGramCancellation.lean` proves that a cofinally
+  polynomial-log bounded raw Möbius Gram cross sum implies RH, after an unconditional logarithmic
+  diagonal bound. Its sole open datum is that cross bound, and no Lean consumer identifies this
+  raw Gram cross with the completed prime--polar codiagonal or the critical Ward response.
+  Whole-route consequence: it is an auxiliary RH receiver, not evidence for signed cancellation
+  on Route O, CCM-FU, or G; importing it as a producer would add an unproved source map.
+- **Midpoint prime--polar positivity has no established Ward-debt transport (Lean use audit).**
+  `criticalMellinMidpointCodiagonal_eq_completedError_sq` gives the exact nonnegative
+  source-faithful midpoint codiagonal ½\(E(2a)^2\), with every non-midpoint readout retaining its
+  explicit atom-square debt. Exhaustive joint searches find no declaration or consumer relating
+  it to `continuedXiAntiCausalWardResponse` or its G singular-graph debt. Whole-route consequence:
+  midpoint cancellation removes the *local atomic* debt only; it cannot be claimed to cancel
+  G-CE's global \(|d|^2\) without a new literal transform identity.
+- **Coupled-floor critical cancellation already lands coefficient-faithfully but does not bound
+  the target (Lean use audit).** `CoupledFloorMobiusCriticalBoundaryCancellation.lean` proves
+  strong critical-carrier convergence, and `CoupledFloorMobiusAffineRieszHandoff.lean` identifies
+  its completed affine readout with the literal Möbius-divisor Abel source; the resulting uniform
+  cofinal bound is proved equivalent to RH. `CoupledFloorMobiusTransitionCoreXiFission.lean`
+  makes the remaining landing error inverse-square only after subtracting that same explicit
+  error. Whole-route consequence: CFI solves convergence and source transport, not the signed
+  bound. It cannot be reused as a new CCM-FU/G cancellation producer without a non-circular
+  inequality for its literal readout.
+- **Causal-depth Carathéodory positivity is not the sharp CCM trace block (Lean use audit).**
+  `SuzukiRectangularWallGramGate.lean` gives literal von-Mangoldt diagonal cells and finite-packet
+  PSD for the compact sharp wall kernel, while
+  `xiGammaBoundary_fusedRectangle_ne_suzukiRectangularWallGramKernel_diagonal` proves the
+  source-selected Gamma/fused rectangle remains nonzero outside that support. Its positive block
+  also enters the assembled formula with coefficient \(-2\). Whole-route consequence: local
+  Gamma--Euler positivity cannot supply the signed completed source inequality or be substituted
+  for the sharp prime--polar trace; any compensation must be an exact global signed cross-form.
+- **The Suzuki Weil--Robin connector is not yet source-instantiated (Lean use audit).**
+  `SuzukiCausalWeilRobinGreenIdentity.lean` and
+  `SuzukiAffineSewnWeilRobinFarTailFactorization.lean` quantify freely over endpoint jets
+  `U,U'` and `weilExterior`; all three current consumers retain those variables. The file itself
+  labels the integrations by parts and distributional identification as paper-level. Whole-route
+  consequence: its exact denominator cancellation and far-tail no-go are valid algebraic
+  constraints, but neither supplies an occurrence of the completed prime--polar source in the
+  Robin/Gamma/holonomy carrier. The next lawful infrastructure task is an unconditional literal
+  finite-hinge instantiation, followed by a separately proved cofinal distributional transport.
+- **The completed restricted source already has an exact literal Xi-zero realization (Lean use
+  audit).** `SuzukiCCMMixedScrewWeilBridge.lean` proves, for every strict interior complex test,
+  `ccmRestrictedWeilForm_complexSmooth_eq_suzukiWeilDistribution`: the CCM restricted Weil form
+  equals Suzuki's actual Hermitian-convolution Weil distribution, after an exact screw-form
+  bridge. This is a stronger source-fidelity result than the real diagonal source identity, but
+  it contains no causal endpoint/exterior map. Whole-route consequence: a successful Robin/Gamma
+  producer may start from the literal Xi-zero/prime--polar source without any comparison premise;
+  it still must construct a one-sided signed trace identity or lower bound. Repackaging the
+  two-sided Weil form as a positive or spectral statement cannot discharge the Ward debt.
+- **Mass-matched actual-head wall incidence is too small to pay the Ward debt (Lean use audit).**
+  `CCMActualHeadMatchedOrientedWallLightIncidence.lean` gives a division-free, coefficient-faithful
+  occurrence of each matched prime--polar cell as the signed Suzuki wall-light imbalance.
+  `CCMActualHeadMatchedSignedControlProducer.lean` then proves its current has a quadratic-aperture
+  gain and is absolutely summable, while
+  `CCMActualHeadMatchedSuzukiTransitionCoreNoGo.lean` proves every range-block correction leaves
+  the rectangular Ward defect tending to `-infinity`. Whole-route consequence: the source trace
+  cannot be a fixed mass-matched cell sum. A valid assembly must preserve a genuinely
+  unsummable atomic--continuous relative channel before quadratic matching; that relative
+  boundedness is already RH-equivalent in the unit-Riesz representation, so it is a target, not
+  an available estimate.
+- **Direct negative-light payment leaves a forced divergent continuum residual (new, Lean
+  closed).** `SuzukiWardCompletedLightResidualNoGo.lean` proves at spectral center
+  
+  \[
+    \frac{\mathrm{regularWardMass}-\mathrm{negativeLightMass}}{\sqrt N}
+      \longrightarrow \frac16,
+  \]
+  and hence this literal residual tends to `+infinity`, unconditionally. The exact unit-Riesz
+  source is therefore positive light minus a still macroscopic regular residual, not positive
+  minus negative light. Whole-route consequence: an FE-reflected light completion cannot be
+  inserted by identifying its negative Gram with the regular continuum; any valid Robin/Gamma
+  assembly must account for an additional signed relative channel of root scale before seeking a
+  lower bound.

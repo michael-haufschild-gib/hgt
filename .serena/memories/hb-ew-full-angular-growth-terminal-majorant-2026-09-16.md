@@ -1,0 +1,20 @@
+EW completed: actual full angular growth and uniform source-horizon majorant. RH and full temporal/metric/QNM matching remain OPEN; leave active goal unchanged.
+
+New leaf formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularMeanGrowth.lean (531 lines), namespace RHTower.D4BMFullAngularGrowth. Imports FullAngularCircleGreen, FullSourceAdvancedAdmission, CothInfra; only autoImplicit false, no heartbeat/instance/transparency hacks. Scratch /tmp/hb-ew-check8.log passed without errors/warnings. Exact private leaf audit passed 19.25 seconds, two jobs, no warnings; .olean 2,152,248 bytes. Audited source bytes verified equal. Umbrella import wired; no umbrella build. Global lint sole error remains unrelated unwired ThetaCuspHawkingBMOnsetTransgressionHorizon, plus existing size warnings.
+
+Public APIs:
+- angularMean_growth line360: for actual q,branch,X,k exists C>=0, forall d>=0, norm angularMean + norm its radial deriv <= C exp(decayExponent(q)*d).
+- terminal_exponent_neg line416: 2*physicalRate.re+decayExponent<0.
+- angularMean_terminal_majorant line425: integrable B exp((2*s.re+gamma)*v), bounding exp(2*s.re*v)*(norm M(d)+norm M'(d)) whenever 0<=d<=v+abs R.
+- source_horizon_radius_bound line463: for v>=0,y<=0, ALL x, arcosh(max 1 (invariant(v-y-tau,x,y)))<=v+abs tau+log4.
+- angularMean_source_horizon_majorant line513: actual invariant radius in previous bound; one integrable clock majorant independent of BOTH radial variables x,y. Fixed angular X,k; no global angular uniformity asserted.
+
+Proof: actual forced mean M''+coth(d)M'=kappa(M+N). Roots nu=2s+1,mu=-2s-2 have real parts<=g=sourceGrowthExponent; delta nonzero from actual Xi strip. A=M'-mu M,B=M'-nu M,E=normSq A+normSq B. Decoder K=(norm nu+norm mu)/norm delta. eta=gamma-g>0. Beyond D=max(1,4K/eta), corpus coth(d)-1<1/d absorbs perturbation and Young gives E'<=2gamma E+C exp(2g d). W=exp(-2gamma d)E+C/(2eta)exp(-2eta d) antitone by finite-interval derivative argument. Compact initial interval yields global M,M' bound. Radius proof uses exact invariant affine in u=radialUnit y in[0,1], convex exponential bound, cosh x>=1 to prove I<=2exp(v+abs tau); comparison with cosh(T+log4).
+
+Whole-route consequence: angular growth and angular part of terminal dominated-convergence majorant are closed. Still formalise actual seed amplitude/first-derivative bounds/limits, pulse admission, actual future integral coordinate identification, and terminal cap limit to close frozen bridge kappa*A_Q+Seed=A_P+CSeed. Metric/current differentiated admission and noncompact left-QNM matching remain open. Do not define cap as discrepancy. Previous EV finite_future_seed_wave and finite_future_source_balance already audited; no repeated axiom checks.
+
+Own fact log docs/drafts/pipeline/1-in-progress/hb-dn-source-resolvent-facts.md updated DN70 and DN72, added DN73. Own bridge card hb-eu-future-onset-pulse-reconstruction.md updated exact scope and stronger radius proof. Frontier map READ ONLY; STATUS unchanged. No computations or experiment reviews, no git/launch, no #print axioms. One foreground Lean process at a time, LEAN_NUM_THREADS=1, 240-second guard; collect same handle to terminal.
+
+Search: energy deep broad completed with snapshot mostly pending/source-only compiler coverage; ProlateTurningLayer/KleinGordonAdiabatic weighted-energy methods inspected. Boundary deep partial, generated ingredient sets do not prove terminal limit. Follow-up sourceSeedFieldFirst hybrid complete: canonical definitions FullSourceOnsetReduction lines61/64, derivatives93/99; FutureSeedFiniteGreen.seedNullFirst390 and seedNull_first402. No ready-made seed horizon bound located. Broad arXiv dissipativity/resolvent: 2609.14914 and2608.23462 primary abstracts opened; no external theorem used.
+
+All owned Lean/audit/search/lint sessions terminal. Cleanup retains only successful scratch, exact audit, lint logs; removes private audit directory and owned scratch/search/draft artifacts. Do not stop other agents' processes.

@@ -48,6 +48,17 @@ the current SP-E investigation. It is not a route history.
 
 ## New closed bridge
 
+- `MobiusDivisorQuadraticCompletionSPEWeld` closes the exact selection-to-SP-E handoff:
+  a literal complete prime-insertion path at every cutoff, with one uniform
+  quadratic cap on its full selection-energy profile, implies the normalized
+  signed Möbius--divisor half-order Abel bound and hence RH.  The proof keeps
+  the exact terminal channel and the exact completed selection endpoint; it
+  does not substitute a fixed-core, finite-batch, monotone, or absolute-value
+  surrogate.  Whole-route consequence: the remaining scheduling problem has
+  one precise success criterion—uniform quadratic *full completion*—and all
+  local batch/repair theorems fall strictly short only at their changing-core
+  cofinal transport step.
+
 - `SuzukiChebyshevMassErrorEulerianBridge` proves the corrected Chebyshev mass-error Cesàro
   defect is exactly the finite Eulerian sum
   `1 / (N + 1) * Σ_{2 ≤ k ≤ N} (k + 1) * (Λ(k + 1) / sqrt(k + 1) -
@@ -103,6 +114,15 @@ the current SP-E investigation. It is not a route history.
   outgoing source, not a new prime/Gamma reparametrization.  The theorem is closed in Lean with
   only `propext`, `Classical.choice`, and `Quot.sound`.
 
+- `PrimeGammaSignedEulerianTopFiberNoGo` proves a new sharp closure obstruction.  If the
+  adjacent-edge weight of a signed-Eulerian construction factors through the type-B top signature,
+  then the `3142`/`3241` collision forces its four-label curvature
+  `κ(3,1)κ(4,2) - κ(3,2)κ(4,1)` to vanish; the corresponding canonical Plücker pencil is
+  identically singular for all spectral variables.  Positive survivor: a viable growing-rank
+  SP-E moderator must retain ordered descent-bottom incidence, not only top, ascent-top, and
+  sign-count statistics.  This is a closed Lean no-go, not a claim that the survivor is already
+  bounded; both theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
 - `PrimeArchThetaThirdCumulantProductKernel` identifies the sixth reciprocal trace with one signed
   triple-product theta integral, preserving the cancellation lost by independent moment boxes.
 - The same module identifies the normalized degree-three Xi square-coordinate jet with the
@@ -119,6 +139,61 @@ the current SP-E investigation. It is not a route history.
 
 ## Cross-route frontier facts
 
+- `SuzukiCompletedOutgoingDilationBalance` makes the live SP-E dynamic datum
+  explicit: the cumulative quarter-dilation imbalance
+  `Σ(gain - debt - (sqrt(j+1)-sqrt(j))/3)` is the completed outgoing charge
+  up to its fixed initial value, is unconditionally `o(sqrt N)`, and its
+  uniform boundedness is equivalent to RH.  This identifies the exact missing
+  upgrade in the literal gain--debt coordinate, rather than a new source
+  reparametrization.
+
+- The finite-action CCM-FU front is now sharply separated from the live
+  cross-scale problem.  `MobiusDivisorCoupledTwoPrimeBatches` supplies
+  arbitrarily long locally nonincreasing batches at one cofinal parent cutoff,
+  and `RetainedPrimeBoundedBatches` does so for every fixed retained field.
+  But the latter's prepared-state ceiling is exactly
+  `2 ^ P.card * 722 * M^2`; neither theorem transports a uniform quadratic
+  ceiling from one parent cutoff to the next as the retained field grows.
+  Thus local source directions and prime supply are closed.  The remaining
+  CCM-FU/SP-E schedule invariant must control changing-core cross-scale
+  transport (or bypass schedules via the literal Abel estimate); this is not
+  an established no-go against such an invariant.
+
+- Full initial Möbius parity is not an inductive schedule invariant.  The
+  exact signed-fibre insertion is a sum, but after removing Möbius parity it
+  is the *difference*
+  `orientedFibre (insert q P) R = orientedFibre P R - orientedFibre P (insert q R)`.
+  Hence the unconditional first-step contraction from the empty oriented
+  field cannot be iterated: it would require coordinatewise transverse
+  domination of every partner.  The corpus's parity-defect and mixed
+  transverse-compensation laws already identify the resulting defect packet
+  exactly.  Whole-route consequence: a schedule proof must control that
+  defect across core changes, rather than promote first-step parity to a
+  global monotonicity claim.
+
+- Uniform randomization cannot repair the transverse defect.  At an exact
+  admitted cutoff-22 source state, the corpus proves that the uniform average
+  of next successor envelopes exceeds the original energy budget, although
+  the unique least-energy successor remains admissible and persistently
+  contracting.  Hence neither uniform averaging nor “choose a random
+  surviving prime” supplies a schedule invariant.  The surviving positive
+  front is deterministic, source-sensitive selection; large first primes
+  already preserve full parity and admit any second merger.  A head-budgeted
+  high-prime block is also closed, but its single unit-channel budget cannot
+  exhaust the sector; no composition across changing core or scale is
+  established.
+
+- The Tatuzawa--Iseki/Selberg recurrence is not a new scalar route to the
+  SP-E Abel bound.  Its exact left side is already a signed Möbius floor sum,
+  but the available recurrence takes absolute values and has a macroscopic
+  `O(N)` forcing term.  More decisively, its constant floor weight and its
+  Möbius inverse both have critical absolute condition number of order
+  `sqrt N`; replacing that by the necessary signed critical cancellation is
+  itself RH-strength.  Whole-route consequence: no generic scalar
+  floor-average/recurrence bootstrap can moderate the SP-E current.  A
+  survivor must use non-scalar source geometry or a source-specific signed
+  estimate not implied by the floor transform alone.
+
 - Route Q's certified exterior sign is a genuinely finite-head argument, not a concealed
   full-strip Herglotz theorem: `PrimeArchPositivePairedDiagonalExteriorOverlap` uses positivity
   of `normalizedPrimeArchMoment n` only for `n < 23`, together with the unconditional
@@ -133,6 +208,14 @@ the current SP-E investigation. It is not a route history.
   translation-covariant scalar transport from the primitive conormal to a strict-right conormal
   is formally impossible.  Thus neither further cold-jet signs nor scalar attenuation can close
   the exterior-wall handoff; a surviving P producer must be source-derived and non-scalar.
+
+- The Hedenmalm rank-one/curvature route does not provide that non-scalar producer.  Its all-prime
+  information virial is nonsummable at every positive horizontal displacement
+  (`HedenmalmThetaRoutePAllPrimeInformationVirialDivergence`), while its gauge-invariant
+  curvature-normalized right-strip budget is formally equivalent to the completed-source
+  dissipativity criterion and hence to RH (`HedenmalmStokesCurvatureNormalizedFluxBudget`).
+  Therefore a Hedenmalm anomaly may diagnose the required rate defect but cannot be used as an
+  unconditional finite source budget or a substitute for the signed SP-E history law.
 
 - The coefficient-faithful E--P/SP-E source transport is now closed further than the scalar
   P wall: `RoutePPrimitiveGammaJuliaCompletedXiDivisorShorting` carries the literal
@@ -244,12 +327,44 @@ the current SP-E investigation. It is not a route history.
   alter the completion domain before positivity; it cannot reinterpret the existing two legs as
   wall vectors.
 
+- The only literal two-label extension currently available for that primitive-depth source is
+  also terminal: its normalized reflected incidence is the flat coboundary
+  `exp(a * (log n_j - log n_i))`.  Every finite matrix is diagonally similar to the zero-tilt
+  matrix, so its characteristic polynomial, determinant, and cyclic trace moments erase
+  horizontal displacement; uniform all-label capacity is itself equivalent to RH
+  (`EulerPrimitiveJointDepthOffDiagonalCountertransport`).  Thus the required singular
+  cross-prime carrier cannot be a separable log-clock coboundary.  It must have genuinely
+  non-coboundary incidence or retain ordered history before reflection sewing.
+
 - The source-native scalar Gamma sewing fails before any Xi comparison.  For every fixed prime
   and positive aperture, the Gamma-sewn Möbius valuation multiplier has a negative two-aperture
   Pick/Gram-loss determinant for all sufficiently small positive second apertures
   (`GammaSewnMobiusPickObstruction`).  Thus primewise scalar contraction cannot be the required
   source completion.  The surviving class is genuinely cross-prime/nonlocal signed completion,
   not a stronger estimate for a diagonal multiplier.
+
+- The recent prime-gap preprint arXiv:2605.14871 cannot supply a source estimate.  Its abstract
+  asserts the incompatible constant `4` while the stated main conclusion is `51 / 16`; moreover,
+  its displayed line (2.18) replaces `(51 / 16) * B_{n+1}` by `(37 / 16) * (...)` without an
+  intervening identity.  The claimed `O(log^2 p)` gap law is therefore not a validated theorem
+  to formalize or use in Route T, E, or SP-E.
+
+- `RiemannSourceNonlocalSingularCompletionLaw` gives a sharp architecture constraint for the
+  only surviving reflected source completion: if it retains output information while exactly
+  sewing the positive and reflected prime-valuation Hellinger sectors, then its topology is
+  strictly finer than every finite-prime product observation and its sewing norms dominate every
+  inverse finite power of the Wold boundary volume.  Thus a finite-prime, bounded, or finite-Rees
+  Krein/Pontryagin repair is not merely insufficient in current implementations; it is excluded
+  for the source class.  The remaining problem is a source-derived singular cross-prime domain
+  whose divisor landing survives this forced nonlocality.
+
+- Route L independently enforces the same domain-change requirement.  For each fixed positive
+  damping above one, the original-prime source packet converges in the complete Xi graph, but
+  every cofinal normalized zero-damping prime prefix escapes all compact sets in the original
+  Meyer source topology (`DeningerDampedPrimeMellinGrowth`).  Hence a full-packet zero-damping
+  passage cannot be obtained by dominated convergence with the fixed physical reader continuous;
+  a valid singular carrier must alter the topology/reader pair while preserving the source
+  discriminator.
 
 - The shared SP-E/RG/formation carrier is already irreducible to a new coordinate:
   `suzukiTransitionCoreCompletedAbelSource (N + 1)` is the next high-pass innovation of the unique
@@ -329,6 +444,15 @@ the current SP-E investigation. It is not a route history.
   quadratic minus its scalar Gamma term and converges on canonical Gamma--Slepian heads; its
   eventual threshold condition is exactly ground-energy nonnegativity.  Thus global coverage and
   convergence are paid, while only the cancellation-preserving sign remains RH-bearing.
+
+- The phase-coherent quantile chi-square does not repair that failure.  Gauss's exact
+  quarter-digamma evaluation gives `2 * gammaHardyPhaseRate 0 + 4 < 0`, whereas
+  `ccmActualHeadCoherentQuantileGammaChiSquare` is nonnegative.  Consequently no nonzero head
+  can satisfy the proposed central-budget inequality, and canonical Gamma--Slepian heads violate
+  it cofinally (`CCMActualHeadCoherentQuantileGammaNoGo`).  Whole-route consequence: retaining
+  cross-prime coherence but then taking a chi-square still loses the decisive phase; any Route
+  O/SP-E transfer must constrain a signed higher-Gamma--arithmetic cross current before any norm
+  or absolute-value step.
 - `CCMPrimeFreeApertureCharacteristicPair` rules out the strongest Fourier simplification:
   `ccmCorrectedSymbol a 0 < 0` throughout the positive prime-free aperture range, even though
   the continuous even symbol tends to `+∞` at both frequency tails and hence has only a compact
@@ -370,3 +494,293 @@ the current SP-E investigation. It is not a route history.
   before any mass-wall argument.  It is not a no-go for arbitrary finite exterior measures: the
   remaining route-wide task is a scale-controlled signed current that links core correction to
   tail positivity without an exponentially oscillating packet.
+
+- The DLV P driver bound now survives its exact causal Volterra primitive:
+  `exp (-h/2) * ∫_0^h criticalMellinNormalizedChebyshevError t dt → 0`.  Together with the exact
+  completed-error Volterra identity, this formally gives
+  `exp (-h/2) * criticalMellinCompletedError h → 0` in
+  `CCMActualHeadMatchedQuantilePolarDLVPRate`.  Thus the literal completed error, not only its
+  driver, is negligible relative to polar mass.  It supplies neither sign nor a summable bound
+  for the oriented coverage seam; those remain the RH-bearing obstruction.
+
+- The Möbius--divisor hyperbola is already fully source-faithful: clipped dilation tents,
+  Mertens-gradient transport, complete/terminal cancellation, and the one zero-boundary
+  Möbius--Riesz tail are exact in `CCMFUSuzukiMobiusDivisorDilationChannels`.  A hyperbola
+  reindexing is therefore not a new SP-E producer.  The whole-route obstruction remains the
+  signed source action after that transport, not an omitted boundary term.
+
+- Harmonic zero charge cannot be promoted by a source-independent clock argument.  The literal
+  harmonic-to-square-root rate is unbounded; fixed-mass neutral dipoles have arbitrarily large
+  response (`SuzukiHarmonicRieszClockTransmutation`).  Moreover the strongest absolute
+  observer-jet action is iff RH (`SuzukiObserverJetLinearActionClassification`).  Thus any
+  surviving SP-E/CCM-FU law must be source-specific and signed, rather than a universal
+  transmutation or absolute-history estimate.
+
+- The candidate transfer through Euler-deletion martingale innovations is unavailable.  Its
+  literal innovations have bounded total energy, but every squarefree composite lies in the
+  predictable drift; the full source differs from that drift by only a bounded norm gap.
+  `edq-full-covariance-core-attack` records that controlling the drift is EDQ's distinct
+  fixed-cutoff covariance problem, with no existing identity to the SP-E completed Abel current.
+  It does not remove SP-E's signed-history obstruction.
+
+- Suzuki's revised August 2026 paper *Weil's quadratic form via the screw function* adds no
+  unconditional source theorem beyond the corpus's formalized finite-aperture package
+  (Friedrichs realization, continuous floor, small-aperture simple even ground, and all-angle
+  real-zero characteristics).  Its Corollary 1.6 remains a convergence premise, and the paper
+  explicitly identifies control of the arithmetic prime contribution as the missing ingredient.
+  Thus the literature corroborates, rather than bypasses, the corpus frontier: finite spectral
+  regularity cannot replace a source-faithful signed prime--polar order law.
+
+- The cross-prime singular-carrier experiment exposes a route-wide topology law.  The concrete
+  Calderon--Witt arithmetic span is dense in its `ell²` packet completion, while the old oriented
+  boundary vanishes on that entire span; every continuous extension of it is therefore zero.
+  Independently, canonical prime-harmonic rows have unit one-leg trace and converge to zero in
+  that same packet completion but to a nonzero vertical generator in the one-leg graph.  Exact
+  reconstruction is consequently discontinuous at zero.  A source-bearing boundary cannot arise
+  from a bounded Hilbert/Krein repair after this completion: it must be a pre-completion,
+  nonlocal singular topology with a new orientation law.
+
+- Recent broad literature screening found Najnudel--Nikeghbali, arXiv:2609.15862, *Cauchy laws
+  for zeta logarithmic derivatives and stationary Stieltjes transforms*.  Its Cauchy limit for
+  projected zero ordinates is unconditional, but its comparison with the critical-line logarithmic
+  derivative assumes that the multiplicity-weighted distances of zeros to the right of the line up
+  to height `2T` are `o(T)`.  It is thus an asymptotic-density result, not an unconditional
+  source-to-divisor orientation or a way around SP-E's signed-current obstruction.
+
+- The apparently new Alpoge--Furman two-thirds result, arXiv:2608.13637, is already imported and
+  transported to the project's Xi census in `Zeta23SimpleCriticalDensity`: it yields both the
+  cumulative simple-critical `2/3` bound and an unconditional superlinear simple-critical count.
+  The corpus's rank--trace audit additionally proves the decisive limitation: finite
+  critical-density compression cannot see a finite or density-zero off-line hyperbolic block.
+  Consequently its sharper optimized constant is not a missing SP-E ingredient.  The failed
+  amplification experiment has a sharp survivor: source replication increases positive index one
+  unit per block, so no moment-neutral scalar compression can convert the density theorem into an
+  individual orientation law.
+
+- `SoninCofinalComplexPhaseGlobalCarrier` now gives one zero-independent strictly cofinal Sonin
+  depth sequence carrying the complex Fisher score to `2 I t / (1 + I t)^2` for every real phase
+  `t` simultaneously.  The proof first establishes strong continuity of the actual
+  pure-imaginary Möbius `ell²` column by dominated convergence, then upgrades contractive strong
+  pullback to compact phase windows by a finite subcover, and finally exhausts windows `[-j,j]`.
+  Whole-route consequence: target-indexed scheduling is no longer a Route P/SP-E obstruction;
+  the surviving hard core is an arithmetic source inequality that forces this faithfully carried
+  odd profile to vanish (equivalently, the required strict-right passivity/sign law).
+
+- The literal convergent abelian-class-law experiment cannot furnish that source inequality by
+  adaptive scale selection.  Its only coefficient-faithful scale-orbit producer is the neutral
+  prime-depth-one observer, and `SourceHorizontalAdaptiveFisherGlobalClassLawProducer` proves
+  existence of a nonneutral local certificate iff the centered rate is zero (hence its global
+  Xi-indexed producer iff RH).  More generally, source contiguity forces every nonneutral
+  reflected adaptive realization to send its forward admission mass to zero
+  (`SourceHorizontalAdaptiveContiguityApertureDichotomy`).  Whole-route consequence: a
+  fixed-source adaptive-Bernoulli/passive class-law argument cannot be the missing P/SP-E/UQ
+  producer; a surviving source law must be non-scalar and retain a non-evacuating interventional
+  aperture, or arise in a genuinely different source category.
+
+- `exists_soninCofinalCriticalComplexReporter_allPhase_diagonal` upgrades the global Sonin
+  carrier to a literal global source-reporter carrier.  One strictly cofinal depth sequence,
+  chosen from convergence of the undamped source column alone, sends the reporter-selected
+  source vector to `2 I t / (1 + I t)^2` for every real phase `t`.  The reason is structural:
+  imaginary phase acts only through a norm-`≤ 1` arithmetic clock, so zero-phase pullback error
+  controls every phase without a target-dependent selector.  Whole-route consequence: any claim
+  that P/SP-E lacks a source-defined all-phase occurrence is now false; the only remaining
+  RH-bearing claim is a source-native signed/interventional law that annihilates or contradicts
+  this explicitly nonzero off-line profile.
+
+- The aligned prime-tail/Bockstein product does not yield a finite-action contradiction.  For a
+  nonneutral grade, the signed Bockstein tends to zero cofinally but its absolute prime sequence
+  is not summable (`PrimeGammaCofinalBocksteinCStarShilovBlindness`); off-line copies therefore
+  admit arbitrarily many nonzero labelled hyperbolic blocks with arbitrarily small average
+  Frobenius cost (`SourceHorizontalMomentNeutralAmplification`).  Conversely, any cofinally
+  recurrent finite-action replay at even one marked ordinary-prime coordinate already forces the
+  critical line (`PreDivisorTransverseFiniteActionSuperselection`).  Whole-route consequence:
+  no Hilbert/trace-class/finite-action completion can close P/SP-E/UQ.  A viable intervention
+  must retain a nonlocal pre-completion charge rather than summing, thresholding, or merely
+  bounding the aligned prime family.
+
+- The positive all-prime Sonin escape hatch is closed, including moving apertures.  Any exact
+  all-moment section is eventually confined to a compact positive aperture interval
+  (`SoninAllPrimeMomentWeldApertureCeiling`), hence has a convergent subsequence; aperture
+  continuity promotes that subsequence to an exact fixed positive aperture
+  (`soninPrimeArchSingleMomentCoupling_exists_exact_positive_aperture`).  The literal fixed
+  source is impossible (`not_soninAllPrime_exact_positive_aperture_moments`), so
+  `not_soninAllPrimeExactTraceMomentWeld` follows.  Whole-route consequence: neither fixed nor
+  escaping positive trace-class Sonin moments can supply the P/SP-E signed source law.
+
+- The prospective Ramanujan/DFT concentration import does not touch Route E's literal source.
+  `KloostermanSourceFareyLargeSieve` has arbitrary coefficients `b`, while the source-faithful
+  moving-aperture construction is the distinct literal `moebiusPhase` Ramaré off-diagonal
+  (`RouteERamareNestedApertureScalarLocalization`).  No corpus bridge identifies those sources
+  or improves the displayed Farey `M²` scale.  Whole-route consequence: finite Fourier
+  concentration alone is not an E/SP-E advance; a valid improvement must be proved on the
+  physical moving-cusp/Möbius source.
+
+- The completed SP-E charge has an exact one-step global balance
+  (`unitRieszCoherentCompletedOutgoingCharge_succ_sub_eq_quarterDilationBalance`): its increment
+  is quarter-dilation prime gain minus debt, less exactly
+  `(sqrt (N + 1) - sqrt N) / 3`.  Thus completion creates no local endpoint or free
+  compensator; boundedness requires cumulative equality between the entire retained prime
+  history and the literal continuum increment.  Whole-route consequence: the remaining SP-E
+  theorem is necessarily nonlocal signed cancellation, matching the existing Abel/RH
+  classification rather than any separate prime, Gamma, or local-flux estimate.
+
+- The exact SP-E dynamic imbalance has a nontrivial unconditional positive survivor:
+  its cumulative quarter-dilation gain-minus-debt-minus-continuum sum is `o(sqrt N)`
+  (`tendsto_sum_quarterDilationBalance_div_sqrt_atTop_zero`).  This follows by exact telescoping
+  to the completed outgoing charge and the unconditional polar-normalized Chebyshev decay; no
+  absolute value is taken before the global cancellation.
+
+- The sharp remaining boundary is proved rather than assumed:
+  `CompletedQuarterDilationBalanceBounded` is equivalent to RH
+  (`riemannHypothesis_iff_completedQuarterDilationBalanceBounded`).  Whole-route consequence:
+  the new sub-root survivor is genuine but cannot by itself close SP-E; the irreducible target is
+  a uniform bound for the literal accumulated global imbalance, not a better pointwise bound on
+  either prime gain, prime debt, or the continuum increment.
+
+- The Route-L original Green zero-damping continuation now has a complete scalar-normalization
+  classification.  A fixed power `a^(2m)` has finite limits at every literal prime/Xi coordinate
+  iff every Xi multiplicity is at most `m`
+  (`deningerOriginalPrimeGreen_uniformFiniteDampingLimit_two_mul_iff`); it has nonzero limits at
+  every coordinate iff every Xi multiplicity equals `m`
+  (`deningerOriginalPrimeGreen_uniformNonzeroDampingLimit_two_mul_iff`).  This packages the
+  source-forced local pole order `2 * multiplicity` into a global sharp boundary without an RH,
+  simplicity, or bounded-multiplicity premise.  Whole-route consequence: scalar damping cannot
+  be conflated with the missing completed source/physical-reader limit.  Any valid Route-L
+  closure must construct a genuinely source-space, multiplicity-exact nonlocal comparison; a
+  common scalar regularizer either loses coordinates or imposes a global multiplicity law.
+
+- Broad recent arXiv search on `regularization` yielded no analytic-number-theoretic or
+  source-space construction applicable to the literal Green continuation; returned results were
+  unrelated learning-theory papers.  Whole-route consequence: no external regularization import
+  was used to bridge the Route-L source/reader gap.
+
+- The stronger Route-L source-space no-go is now closed:
+  `not_deningerOriginalPrimeGreenLiteralCoordinatewiseHilbertZeroDampingLift` proves that no
+  Xi-Hilbert field can both agree eventually at every Xi coordinate with the literal original
+  prime-Green damping continuation and converge to a finite zero-damping vector.  One actual Xi
+  copy suffices: continuous coordinate evaluation would turn such a vector limit into the
+  previously forbidden finite scalar limit.  This uses the actual nonempty Xi divisor support,
+  not a hypothetical off-line copy.  Whole-route consequence: the adaptive harmonic Green
+  boundary (whose fixed limit is a different reflected-Gaussian source) cannot be reinterpreted
+  as the literal zero-damping source completion.  Route L must instead supply a different,
+  source-faithful singular-domain/reader mechanism; no coordinatewise Hilbert completion remains
+  available.
+
+- Route-U all-degree capital cannot itself rule out a cofinal quadratic frontier escape.
+  `XiShiftedRouteUSparseParabolicCapitalEscape` gives an exact exponentially sparse model with
+  positive source action, the same local flux dissipation/adjacent connector inequalities, strict
+  all-degree reserve, divergent pointwise renormalized action, and nevertheless summable selected
+  entry flux.  Whole-route consequence: the exact all-degree source account is genuine progress
+  but not degree-uniform coercivity; any U closure must use a literal shifted-Xi history law that
+  forbids this sparse scheduling, not another scalar capitalization or fixed-degree integral.
+
+- The SP-E atomic and regular Ward masses have the same unconditional leading scale:
+  `suzukiUnitRieszRegularWardMass (log (N + 2)) / sqrt (N + 2) → 1 / 3`
+  (`SuzukiWardContinuousCoDivergence`).  Hence the regular mass tends to `+∞` and has no finite
+  cofinal real limit, independently of RH.  Together with the atomic `1 / 3` asymptotic and the
+  Green `o(sqrt N)` law, the leading mass cancels only in their signed relative difference.
+  Whole-route consequence: an absolute positive or Hilbert completion is excluded before RH;
+  the live SP-E object is necessarily a signed nonlocal history/coupling invariant.
+
+- The actual P-G105 physical Hellinger channel has the exact aperture wall as its normalized
+  locally uniform ordinary-determinant limit, not only its balanced `r = 1` specialization
+  (`tendstoLocallyUniformly_routePPrimitiveGammaJuliaPhysicalStokesPivot_scaled_ordinary_to_exact_wall`).
+  Its pivot perturbation is Hilbert--Schmidt-null after current normalization and its trace
+  character tends to one.  Consequently normalized Xi is impossible for this actual channel
+  (`not_tendstoLocallyUniformly_routePPrimitiveGammaJuliaPhysicalStokesPivot_scaled_ordinary_to_normalized_XiC`),
+  by the certified aperture-wall/Xi quadratic-jet mismatch.  Whole-route consequence: phase
+  pivoting is not a surviving P-G105 degree of freedom; a successor must alter the normalized
+  source operator discontinuously or before the aperture-wall limit, rather than retune the
+  physical pivot.
+
+- Route U now has a literal finite consecutive-degree history budget:
+  `routeU_finset_adjacentCrossDegreeReserve_le_literalSourceSupply` proves that the sum of
+  strictly positive cross-degree admission reserves is paid by the corresponding sum of literal
+  completed arithmetic source supplies.  This retains the non-kinetic degree-change cost even
+  when all adjacent logarithmic velocities vanish.  Whole-route consequence: cofinal charge or
+  capital arguments cannot close U; its irreducible missing theorem is a lower bound or
+  non-summability law for this full literal source history.  No RH, rate, or source-floor claim
+  follows from the budget alone.
+
+- Hawking--Suzuki wall scattering is not an SP-E producer.  The exact KMS commutator readout is
+  the unmodified critical-Mellin sine wall current
+  (`thetaCuspHawkingWallKMSCommutatorCurrent_eq_criticalMellinSine`) and vanishes at spectral
+  center while the negative-light reserve is strictly positive
+  (`not_negativeLight_le_abs_thetaCuspHawkingWallKMSCommutatorCurrent`).  Whole-route
+  consequence: passive thermal doubling preserves the signed carrier and cannot supply its
+  missing global moderation; a successor must alter source formation or impose a genuinely
+  non-passive global relation.
+
+- `SuzukiFormationInnovationPhaseGauge` exposes a route-wide obstruction sharper than a
+  positivity shortfall.  The literal completed Abel current reconstructs a unique anchored
+  formation history, but independent one-scale sign flips preserve every local production,
+  every accumulated formation variance, and the conditioned aligned-Gamma energy while changing
+  the recovered history whenever the flipped innovation is nonzero.  One anchor sign plus all
+  adjacent holonomies reconstructs the gauge (`scaleInnovationGauge_ext_of_base_holonomy`).
+  Whole-route consequence: no positive energy, variance, or local passivity estimate can be an
+  SP-E moderator.  A viable producer must impose a literal source-derived cross-scale orientation
+  law; adjacent holonomy alone is not a magnitude bound.
+
+- The actual-head CCM quantile normal form identifies the same live obstruction in a second
+  source realization.  `ccmRestrictedWeilSourceQuadratic_eq_quantileAutocorrelation` writes the
+  literal source quadratic as positive higher-Gamma/scalar terms plus one completed quantile
+  autocorrelation current, after exact prime--polar mass cancellation on consecutive quantile
+  cells.  But `CCMActualHeadCoherentQuantileGammaNoGo` proves the natural phase-free completion
+  false for every nonzero head: its central scalar budget
+  `2 * gammaHardyPhaseRate 0 + 4` is strictly negative while the coherent chi-square is
+  nonnegative; the failure holds cofinally on the canonical Gamma--Slepian heads.  Whole-route
+  consequence: retaining cross-prime correlations is insufficient if their phase against the
+  translation increment is discarded.  SP-E/CCM must control a signed joint current before any
+  nonnegative norm completion, not seek a sharper energy budget.
+
+- `SuzukiCausalDepthGammaSchurCoherence` proves strict finite faithfulness of the literal
+  prime-depth Gamma Schur Gram after mean/conductor projection, whereas its completed carrier is
+  trace class.  The bounded-trace, fixed-diagonal, common-domain, and fixed-singular-value moving
+  branches are therefore closed by the corresponding CausalDepthGamma no-gos.  Whole-route
+  consequence: the remaining shared CCM/SP-E interface is not recovery of finite source
+  directions; it is identification of a literal source-faithful, unbounded/non-trace-class
+  relative trace *before* Gram/cofinal completion.  Any proposed construction inside a fixed
+  Hilbert trace ideal is already ruled out.
+
+- Exact CCM/Suzuki source matching cannot supply that non-trace-class channel after its natural
+  quadratic damping.  `CCMActualHeadMatchedSuzukiTransitionCoreNoGo` proves that every partial
+  sum of the coefficient-faithful matched actual-head Suzuki current has one uniform upper bound,
+  while the raw Suzuki reporter transition core is linearly divergent; the corrected Ward defect
+  therefore tends to minus infinity.  Whole-route consequence: the all-order matched
+  prime--polar phase cocycle is a faithful finite identity but lies in the wrong cofinal scaling
+  class.  The surviving bridge must be assembled before matched quadratic damping, where the
+  atomic--continuous relative channel is still unsummable and oriented.
+
+- The raw positive-core alternative is also closed.  `SuzukiTransitionCoreGrowingRankCartanFission`
+  realizes every positive transition pair as a determinant-one growing-rank Stokes block with a
+  uniformly bounded cubic remainder, but `SuzukiTransitionCoreLinearCompensationNoGo` proves its
+  completed observable remains at least the transition core and its Ward defect tends to minus
+  infinity.  More generally, a semibounded Ward defect forces a correction of at least
+  `n / 576` on apertures `8n`.  Whole-route consequence: rank growth is not an orientation law;
+  the correction must be source-faithful, signed, and linear-scale.  The exact aligned correction
+  already has that scale, and its residual is the literal completed Abel source—so the global
+  problem has not moved to a missing operator construction.
+
+- Broad arXiv scans restricted to January--September 2026 for `cocycle`, `commutator`,
+  `renewal`, and `cancellation` yielded no theorem applicable to the literal completed Abel
+  current.  The closest mathematical hits concern bounded primitives/cocycles, finite von
+  Neumann commutators, and low moments of *random* Hecke sums; each lies inside a bounded or
+  model-dependent class already excluded by the corpus or lacks a connection to the literal
+  prime--polar--Gamma source.  Whole-route consequence: no external result was imported as a
+  premise; the unresolved source-current bound remains a genuinely literal arithmetic problem.
+
+- Every fixed nonlinear contact hierarchy is now formally excluded as an RH endpoint mechanism.
+  `suzukiTransitionCoreFiniteContactResidual m` bounded at fixed `m ≥ 2` yields only the
+  strictly positive width `(m - 1)/(2m)`, while `suzukiFiniteContact_algebraicEndpointNoGo`
+  shows that its underlying positive algebra cannot uniformly bound the completed Green
+  amplitude.  Whole-route consequence: replacing the first signed current by any finite power,
+  ratio, or fixed-order positive moment necessarily spends continuation width; a valid SP-E/CCM
+  law must be infinite-history and signed, not a higher finite contact.
+
+- D2's apparently separate infinite pure-prime lower bound is a direct RH receiver, not an
+  independent source advance: its half-logarithmic condition above height `233/20` is equivalent
+  to RH (`infinitePrimeFluxGaussianRatPositiveFrequencyAboveLogHeightBoundedBelow_twoHundredThirtyThree_twentieths_iff_rh`), while every subcritical finite-prefix schedule has cofinally
+  unbounded-below defect (`finiteVonMangoldtPrimeLogHeightDefect_subcriticalSchedule_cofinally_unboundedBelow`).
+  Whole-route consequence: D2 cannot supply SP-E's missing cancellation by truncation or a
+  height-only prime floor; it corroborates that the unresolved content must be a source-specific
+  nonlocal law.

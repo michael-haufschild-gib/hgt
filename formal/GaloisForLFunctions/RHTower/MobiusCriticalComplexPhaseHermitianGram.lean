@@ -23,6 +23,25 @@ noncomputable section
 
 namespace RHTower
 
+/-- Coordinate of the centered infinitesimal imaginary clock phase.  The centering removes the
+base-state component before comparison with the Fisher source tangent. -/
+def infiniteMobiusCriticalCenteredImaginaryPhaseCoefficient
+    (sigma : ℝ) (n : ℕ) : ℂ :=
+  -I * (((sigma - 1) *
+    (Real.log n - squarefreeMobiusLogMoment 1 sigma) : ℝ) : ℂ) *
+      infiniteMobiusSignedWeight sigma n
+
+/-- The centered first imaginary phase direction has no new source coordinate: it is exactly a
+quarter-turn and half-rescaling of the already present Fisher tangent. -/
+theorem infiniteMobiusCriticalCenteredImaginaryPhaseCoefficient_eq_i_half_fisher
+    (sigma : ℝ) (n : ℕ) :
+    infiniteMobiusCriticalCenteredImaginaryPhaseCoefficient sigma n =
+      (I / 2) * infiniteMobiusCriticalFisherTangentWeight sigma n := by
+  unfold infiniteMobiusCriticalCenteredImaginaryPhaseCoefficient
+    infiniteMobiusCriticalFisherTangentWeight
+  push_cast
+  ring
+
 /-- Hermitian Euler overlap kernel of two complex inward Möbius source nodes. -/
 def mobiusCriticalComplexPhaseKernel
     (sigma : ℝ) (u v : ℂ) : ℂ :=

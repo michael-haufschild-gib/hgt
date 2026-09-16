@@ -532,3 +532,582 @@
   open. [Proof and positive boundary-charge classification](../5-failed/hb-local-source-transpose-matching.md).
   Exact `LocalSourceTransposeRigidity` audit passed (53.67 seconds, two jobs);
   umbrella wired without an umbrella build.
+
+- **DN47 — Lean verified.** The original compact onset pulse transform
+  satisfies `P(0)=1` and `|P(z)|≤2 exp(2|z|)`. Its true/true QNM argument
+  is exactly `5ρ/2−3`. Hence only `O(T)` actual simple critical Xi sources
+  up to height `T` have a zero onset factor, with the original duration
+  unchanged. **Whole-route effect:** a fixed onset cannot erase a positive
+  fraction of the simple critical source census through this factor.
+
+- **DN48 — Lean verified; positive pole-survival theorem.** Only `O(T)`
+  actual simple critical Xi sources have zero original true/true physical
+  fundamental residue. The census is `Ω(T log T)`, so surviving sources
+  have relative density one. Their original continued Green response has
+  no finite limit at the fundamental QNM, for every interior detector and
+  every nonzero original amplitude. An actual surviving critical source
+  simultaneously has an analytic full canonical action at that QNM.
+  **Whole-route effect:** action regularity and response-pole disappearance
+  are distinct; changing observables does not inherit a vanishing law.
+
+- **DN49 — Lean verified; original pole matching option closed.** No
+  arbitrary returned Peierls carrier matches the genuine unit-source
+  fundamental residue at all Xi copies, even only in their zero loci.
+  Every critical unit probe vanishes, while DN48 supplies actual critical
+  sources with surviving poles. **Whole-route effect:** replacing the
+  regular canonical value by the original Green residue does not repair
+  the unchanged complementary unit-source clock. Other metric or nonlocal
+  receivers, full temporal matching, fixed-time extinction and RH remain
+  outside this theorem.
+  [Exact scope and positive survivor](../5-failed/hb-original-green-pole-matching.md).
+  `OriginalGreenPoleMatchingNoGo`: scratch passed (10.21 seconds); exact
+  module audit passed (9.12 seconds, two jobs); umbrella wired without a build.
+  Global lint reports the separate unwired `OnsetTransgressionHorizon` module.
+
+- **DN50 — Lean verified; exact temporal classification.** The original
+  canonical source profile is `K(u)=chi(u)*exp(2su)*(A+uB)`, with
+  `A=−mu*C*((mu−2)*X+Y)` and `B=mu*C*(mu−2)*M`. For `u≥1`, its pair
+  `(K(u),exp(2su)*B)` translates by `exp(2sT)*(k+T*b,b)`.
+  Two late samples recover the second coordinate exactly. A scalar clock
+  represents every late step iff `B=0`; eventual zero is equivalent to
+  `A=B=0`, hence to an identically zero profile.
+  **Whole-route effect:** the first source-time moment is retained data,
+  not a scalar normalization or an arithmetic multiplicity claim.
+
+- **DN51 — Lean verified; arbitrary finite-packet linear matching closed.**
+  A finite exponential mixture with arbitrary, possibly repeated complex
+  frequencies represents the late original profile only if `B=0`.
+  Every surviving DN48 pole forces `B≠0` for all nonzero original
+  amplitudes. Thus an actual critical Xi source excludes every finite
+  packet encoding and every time-independent complex-linear readout of
+  the original centered physical clock, for every overtone index.
+  **Whole-route effect:** increasing packet size or retaining amplitude
+  data does not repair this temporal matching. Infinite expansions,
+  time-dependent readers and nonlinear observations are outside this no-go.
+
+- **DN52 — Lean verified; positive matching formula.** At the original
+  source-time coordinate, both source branches obey
+  `K(u)=chi(u)*exp(−3u)*h(u)^4*(A+uB)`, where `h(u)` is the original
+  centered-clock coordinate of the reflected unit copy for the true
+  branch and the original unit copy for the false branch. The complete
+  canonical temporal/metric/QNM action equals its convergent Laplace
+  integral, with both original moment coordinates retained. No clock-time
+  rescaling or fitted frequency is used.
+  **Whole-route effect:** the source supplies an explicit quartic,
+  time-dependent clock observation. This is not a conjugacy of the full
+  PDE flow with the packet clock, a physical Peierls pairing, or RH.
+  [Proof, obstruction and positive survivor](../5-failed/hb-original-source-clock-rigidity.md).
+  `OriginalSourceClockRigidity`: scratch passed (82.10 seconds); exact
+  module audit passed (93.83 seconds, two jobs); umbrella wired without a build.
+  Global lint still reports the separate unwired `OnsetTransgressionHorizon` module.
+
+- **DN53 — Lean verified; original time/radial reciprocity.** For the full
+  theta-square Dirichlet kernel and two original reduced source branches,
+  `f_b(t,x)*K(s-t,x,y)*f_c(s,y)` is absolutely integrable over both original
+  positive time axes and both negative radial rays. Its majorant separates
+  as `exp(-(alpha+g)t)*exp((g-alpha)s)*exp((2-alpha)(x+y))`, with
+  `1<=g<alpha<2`. The established future response equals its source-event
+  integral. Kernel radial symmetry and admitted Fubini give
+  `integral f_b*A_c = integral R_b*f_c`, retaining both causal supports,
+  the image term and fixed onset. **Whole-route effect:** reciprocity of
+  this actual reduced-source bulk is constructed without an abstract
+  reciprocity premise.
+
+- **DN54 — Lean verified; actual antisymmetric source bulk and reflection.**
+  The causal integral `integral f_b*(R_c-A_c)` equals the full kernel
+  applied to `f_c(t,x)*f_b(s,y)-f_b(t,x)*f_c(s,y)`. Restoring the full
+  angular testing square preserves absolute admission and skewness.
+  Literal source reflection gives
+  `P(reflect(q),true,false,a,d)=-P(q,true,false,d,a)` with independent
+  amplitudes retained. **Whole-route effect:** the candidate now has an
+  admitted source-integral bulk with proved skewness and branch exchange.
+  The retarded null-field identification, advanced wave equation, lift/cap
+  contributions and complete metric/QNM attachment remain unproved;
+  this is not the completed physical Peierls matching or RH.
+  [Proof and scope](hb-en-original-source-reciprocity.md).
+  `FullSourceRadialReciprocity`: scratch 9.34 seconds; exact module audit
+  11.95 seconds, two jobs; umbrella wired without a build.
+
+- **DN55 — Lean verified; original kernel source vertex.** For the literal
+  full-theta Riemann kernel in source-based null distances, compact
+  separated-test transposition gives `integral H*phi'*psi' =
+  Q*phi(0)*psi(0)+integral angularAction*phi*psi/(4*cosh(x)^2)`.
+  **Whole-route effect:** the weak kernel equation retains the exact
+  full-square source vertex and characteristic coefficient. General
+  temporal tests and source-coordinate transport remain to be proved.
+
+- **DN56 — Lean verified; strict growth after angular testing.** In the
+  original log-height chart, set `T(psi)=DX²(exp(k)*psi)+
+  Dk²(exp(-k)*psi)+Dk(exp(-k)*psi)`. For every smooth compact test,
+  `integral exp(-k)*psi*angularAction = integral T(psi)*angularKernel`.
+  The pairing is bounded by `C(q,psi)*exp(g*arcosh(t))`, with the original
+  `g=1+2*abs(Re(center(q)))<2`. **Whole-route effect:** weak angular
+  transposition supplies the strict growth margin needed for the future
+  source without a pointwise angular-jet growth premise.
+
+- **DN57 — Lean verified; full original future-source angular action.**
+  The product of `T(psi)` with the original future density is jointly
+  absolutely integrable in angular position, positive delay and the full
+  negative radial ray. Its majorant separates as
+  `exp(-alpha*tau)*exp((g-alpha)*h)*exp((2-alpha)*y)*
+  norm(T(psi)(z))*exp(g*abs(im(z)))`, with `g<alpha<2`.
+  Admitted Fubini identifies `integral T(psi)*originalFutureResponse` with
+  the original reduced source integrated against the angular-tested
+  direct-minus-image kernel, retaining both causal indicators and fixed
+  onset. **Whole-route effect:** the actual future field now has this
+  constructed weak angular action. The complete temporal wave equation,
+  lift/cap equations and full metric/QNM attachment remain open.
+  [Proof and exact remaining obligations](hb-eo-advanced-wave-transposition.md).
+  `AdvancedKernelTransposition`: scratch passed; isolated exact module
+  audit 119.64 seconds, two jobs; umbrella wired without a build.
+
+- **DN58 — Lean verified; general temporal tests of the original kernel.**
+  The native closed-cone Goursat kernel satisfies
+  `integral H*eta_uv=Q*eta(0,0)+integral J*eta` for joint null tests.
+  Smooth compact physical time/radius tests supply the far-edge conditions
+  through compact support of their actual derivatives. The identity extends
+  to the entire causal cone. **Whole-route effect:** temporal testing no
+  longer requires separated time/radius tests or a density assumption.
+
+- **DN59 — Lean verified; physical source normalization.** The actual
+  advanced chart is `tau=s-(u+v)/2`, `x=y+(u-v)/2`. Its measure pushforward
+  is `2*volume`, and its mixed derivative of a smooth physical test is
+  `(partial_tau^2-partial_x^2)/4`. The area factor `1/2` and the original
+  kernel half-factor give source coefficient one. **Whole-route effect:**
+  the temporal operator and source vertex now share the actual coordinates
+  and normalization, without a spectral or clock substitution.
+
+- **DN60 — Lean verified; original Dirichlet temporal weak equation.**
+  For every smooth compact joint time/radius test, the full native kernel
+  obeys `integral [K_D*wave(phi)-A_D*phi/cosh(x)^2] =
+  Q*(phi(s,y)-phi(s,-y))`, where `A_D` retains both causal angular actions
+  and their half-factor. Both cone residuals are absolutely integrable.
+  For `y<0` and tests supported in `x<0`, the result is exactly `Q*phi(s,y)`.
+  **Whole-route effect:** general temporal source/image matching is closed
+  at kernel level. The original infinite-response weak equation, lift/cap
+  equations and complete metric/QNM matching remain open.
+  [Proof and remaining source-level identity](hb-ep-general-temporal-transposition.md).
+  `GeneralTemporalTransposition`: scratch passed; exact leaf audit
+  40.29 seconds, two jobs; umbrella wired without a build.
+
+- **DN61 — Lean verified; original source/target absolute admission.**
+  The original source-event density times any continuous compact joint
+  target test is absolutely integrable. A product majorant is
+  `C*exp((g-alpha)*s)*exp((2-alpha)*y)*
+  norm(phi(tau,x,z))*exp(-g*tau+g*abs(im(z)))`, with `g<alpha<2`.
+  Admitted Fubini identifies this integral with the actual infinite future
+  response tested in all four target variables. **Whole-route effect:**
+  full source transposition is available without a pointwise angular-jet
+  growth assumption, while retaining the fixed onset and entire radial ray.
+
+- **DN62 — Lean verified; actual future response's full reduced weak wave.**
+  For every joint smooth compact test `Phi` supported in `x<0`, the actual
+  infinite future response `A` obeys
+  `integral A*(exp(-k)*wave(Phi)-T(Phi)/cosh(x)^2)
+  = integral exp(-k)*Q*S*Phi`. Both sides are absolutely admitted. Kernel
+  temporal and angular transposition retain the source normalization and
+  Dirichlet image; joint compact support removes the image vertex.
+  **Whole-route effect:** the original response's reduced temporal/angular
+  equation is closed. Original lift/cap equations, boundary identification
+  and the full physical metric/left-QNM action remain open.
+  [Exact proof and remaining matching obligations](hb-eq-full-source-weak-wave.md).
+  `FullSourceWeakWave`: scratch passed; exact leaf audit 31.02 seconds,
+  two jobs; umbrella wired without a build.
+
+- **DN63 — Lean verified; source-horizon escape preserves weak action.**
+  With original source time `s=v-y`, the invariant depends on the escaping
+  source radius through `radialUnit(y) in [0,1]` for `y<0`. This compact
+  parameter gives a uniform bound on each compact joint target test.
+  Dominated convergence commutes the actual source-horizon kernel limit
+  with that pairing. The source vertex leaves the test support, so the
+  original direct-minus-image horizon kernel has zero bulk weak wave
+  action. **Whole-route effect:** source-horizon passage retains the wave
+  equation without pointwise angular-jet bounds or a postulated cap PDE.
+
+- **DN64 — Lean verified; original cap preserves the reduced bulk source.**
+  The actual cap equals `-2*liftTraceCoefficient*integral_(v>0) b(v)*H_v`,
+  with original onset derivative `b`, both characteristic arms and original
+  horizon kernel half-factor. A product majorant with `g<alpha<2` admits
+  source-time/target Fubini. The cap is a homogeneous weak solution for
+  every joint smooth compact physical test; its pairing is absolutely
+  convergent. Subtracting it from the actual infinite future response
+  preserves the complete original reduced source. **Whole-route effect:**
+  cap bulk matching is closed. Assemble the existing pointwise source-lift
+  equation with this response/cap identity, then identify the complete
+  physical metric/current/left-QNM action and boundary data.
+  [Proof and exact remaining obligations](hb-er-original-cap-wave.md).
+  `OriginalCapWeakWave`: scratch passed; exact leaf audit 11.59 seconds,
+  two jobs; umbrella wired without a build. No full matching or RH claim.
+
+- **DN65 — Lean verified; complete original bulk source of the corrected future field.**
+  For every joint smooth compact test supported in `x<0`,
+  `U = timeLiftField + originalFutureResponse - capBoundaryField` satisfies
+  `integral U*weakWaveTest(Phi) = integral exp(-k)*timeOriginalForcing*Phi`.
+  Every field/source pairing is absolutely admitted. Temporal integration
+  by parts and zero-radius angular transposition identify the original
+  lift's actual wave. Original onset plus physical test support convert the
+  reduced source-event integral to the full target integral; the existing
+  gradient-absorption identity then restores the complete original forcing.
+  **Whole-route effect:** original bulk source identification is closed for
+  this corrected future field. Full metric/current reconstruction and the
+  noncompact left-QNM/boundary action are not established by a compact-test
+  weak equation. Matching and RH remain open.
+  [Exact proof and scope](hb-es-complete-original-weak-source.md).
+  `CompleteOriginalWeakSource`: scratch passed without errors or warnings;
+  exact leaf audit 16.93 seconds, two jobs; umbrella wired without a build.
+
+- **DN66 — Lean verified; admitted retarded inverse is the actual original field.**
+  `retardedResponse((p+r)/2,(p-r)/2) = fullNullResponse(p,r)` for all real
+  null coordinates, with the same original source, theta square and image.
+  Odd reflection folds the whole-line source to the negative radial ray.
+  Onset and causal support restrict the exact null transport to a compact
+  source rectangle; its Jacobian preserves the original factor `1/4`.
+  **Whole-route effect:** the admitted source reciprocity now uses the same
+  retarded field as the existing actual metric/current construction.
+
+- **DN67 — Lean verified; corrected future comparison retains an explicit cap.**
+  With `U` the original lift plus actual future response minus original cap,
+  `originalPotential-U = retardedResponse-response+cap` pointwise.
+  Consequently the admitted source pairing is exactly
+  `integral S_b*(originalPotential_c-U_c-cap_c)` on the complete original
+  source-event domain. Its absolute integrability is proved separately.
+  **Whole-route effect:** replacing the reduced future field by `U` must
+  retain this cap contribution in the metric/current comparison; no cap
+  current vanishing, full QNM matching or RH conclusion follows here.
+
+- **DN68 — Lean verified; retarded event inverse has the original pulse reconstruction.**
+  The admitted retarded response equals `-timeAngularSeedField/kappa +
+  retardedNullAction(fullSourceOnsetPulse)/kappa`. The pulse and angular
+  seed are the independently constructed original fields; the existing
+  pulse support theorem confines ingoing time to `[0,1]`.
+  **Whole-route effect:** the corresponding future reconstruction can be
+  attacked through this specified pulse and the seed's horizon cap. That
+  future identity is unproved; pulse support does not erase radial infinity
+  or a boundary current.
+  [Exact identities and remaining matching obligations](hb-et-original-retarded-causal-difference.md).
+  `OriginalCausalDifference`: scratch passed without errors or warnings;
+  exact leaf audit 104.81 seconds, two jobs; umbrella wired without a build.
+
+- **DN69 — Lean verified; future seed Green identity retains one null face.**
+  In source null coordinates `v=t_source+y,w=t_source-y`, cut at `w=L`.
+  For `b(v,w)=sourceSeedField((v-w)/2)*timeOnset(v)`, use
+  `K*b_vw-b*K_vw=partial_w(K*b_v)-partial_v(b*K_w)`.
+  The actual direct and image diagonals cancel, leaving
+  `A_waveSeed^L=Seed+integral_(p..L) K_D(v,L)*b_v(v,L)
+  -integral_(r..L) K_I(v,L)*b_v(v,L)`.
+  **Whole-route effect:** the required cap comes from a specified physical
+  terminal face; this orientation needs no angular-kernel derivative limit.
+  `FutureSeedFiniteGreen.finite_future_seed_wave`: the original fields,
+  derivatives and characteristic values discharge all analytic premises.
+  Scratch and exact leaf audit passed without warnings; audit 36.61 seconds,
+  two jobs. Umbrella wired without a build.
+
+- **DN70 — Lean verified; source growth controls the actual seed angular mean.**
+  The inspected forced mean equation has limiting roots `2*s+1,-2*s-2`.
+  Their real parts are bounded above by the existing
+  `g=1+2*|Re(q)-1/2|<2`; for the positive root this follows separately
+  on both physical branches. The two-mode squared energy absorbs
+  `coth(d)-1<1/d` in the positive gap `gamma-g`, yielding
+  `|M(d)|+|M'(d)|<=C exp(((g+2)/2)*d)` at each angular base point.
+  The original clock exponent satisfies `2*Re(s)+gamma<0`, giving an
+  integrable clock-weighted majorant for the mean and radial derivative.
+  **Whole-route effect:** a strict decay margin for the independently
+  specified seed cap is available without RH or a spectral projection.
+  `FullAngularMeanGrowth.angularMean_growth` and
+  `angularMean_terminal_majorant`: scratch and exact leaf audit passed
+  without warnings; audit 19.25 seconds, two jobs. Constants may depend
+  on the fixed angular base point; no global angular uniformity is claimed.
+
+- **DN71 — Lean verified; specified future seed/pulse bridge.**
+  The actual seed and lift first derivatives are `O(exp(2*y))` for
+  `y<0`; pulse support in `v in [0,1]` confines causal circle radii to
+  a compact interval. This admits the independently defined future
+  pulse integral. DN69's terminal integrand has the integrable bound
+  `C exp((2*Re(s)+(g+2)/2)*v)` and converges to the independently
+  defined `-CSeed`. Combining with the already admitted original future
+  response gives `kappa*A_Q+Seed=A_P+CSeed`, now verified in DN77.
+  **Whole-route effect:** the future and retarded reconstructions use the
+  same original seed/pulse and an explicit surviving cap. Differentiated
+  metric/current admission and noncompact left-QNM matching remain open.
+  [Derivation, factors, boundary terms and precise scope](hb-eu-future-onset-pulse-reconstruction.md).
+  Its finite identity is verified in DN69 and DN72; the terminal cap and
+  null-exhaustion limit in DN74; original-coordinate admission/exhaustion
+  in DN75–DN76; exact coordinate identification and limit assembly in DN77.
+
+- **DN72 — Lean verified; finite future reconstruction uses the original source balance.**
+  `finite_future_source_balance` integrates the actual
+  `fullSourceOnsetPulse-kappa*timeReducedCoefficient*fullSquarePotential`
+  on the direct/image finite future null regions and obtains exactly
+  `timeAngularSeedField+seedTerminal`. The original amplitude, clock,
+  theta square, circle averaging and factor `1/4` remain present.
+  **Whole-route effect:** the finite part of DN71's infinite bridge is now
+  closed without a response or matching premise. DN75–DN77 identify its
+  infinite limit with the original future integrals; full
+  temporal/metric/QNM matching remains open.
+  [Verified finite identity and remaining infinite bridge](hb-eu-future-onset-pulse-reconstruction.md).
+
+- **DN73 — Lean verified; terminal angular control is uniform in both radial variables.**
+  For `v>=0,y<=0` and every real target radius `x`,
+  `arcosh(max(1,I(v-y-tau,x,y)))<=v+|tau|+log(4)`.
+  The exact invariant is affine in `u=radialUnit(y) in [0,1]`;
+  its numerator and `cosh(x)>=1` give `I<=2*exp(v+|tau|)`.
+  Combining with DN70 yields one integrable physical-clock majorant for
+  the actual full angular mean and radial derivative, independent of
+  both `x` and `y`. This includes the direct and reflected target radii.
+  **Whole-route effect:** the angular part of the moving terminal-face
+  domination is closed; DN74 also supplies the actual seed factors and
+  terminal limit; DN75–DN77 complete pulse admission and coordinate identification.
+  differentiated metric/current and noncompact left-QNM matching remain open.
+  `FullAngularMeanGrowth.source_horizon_radius_bound` and
+  `angularMean_source_horizon_majorant`, audited with DN70.
+
+- **DN74 — Lean verified; actual future seed boundary converges to its independent cap.**
+  `seedTraceCoefficient=-kappa*power(2*s,2)*amp^2` is the actual seed limit;
+  its radial derivative tends to zero. `seedCapField=-2*cSeed*integral_(v>0)
+  timeOnsetFirst(v)*H_B(v)` retains the full angular mean, original
+  direct/image characteristics and half factor. Its integrand is absolutely
+  admitted, and the existing `seedTerminal` tends to `-seedCapField` for
+  every real pair of null target coordinates. Consequently the original
+  finite pulse-minus-source actions tend to `Seed-CSeed`.
+  **Whole-route effect:** the terminal face in the frozen future bridge is
+  closed without a matching/decay premise or a cap defined by discrepancy.
+  DN75–DN77 identify that null exhaustion with `A_P-kappa*A_Q`.
+  Metric/current and noncompact left-QNM matching remain open.
+  `FutureSeedHorizonCap.seedTerminal_horizon_limit`, `seedCap_integrable`,
+  `finite_source_balance_limit`: scratch and exact leaf audit passed without
+  warnings; audit 28.91 seconds, two jobs. Umbrella wired without a build.
+
+- **DN75 — Lean verified; pulse admission has a product majorant in original coordinates.**
+  Choose `gamma=decayExponent(q)<alpha=(gamma+2)/2<2`.
+  The actual seed derivative factors as `exp(2*y)` times a profile continuous
+  on `u=radialUnit(y) in [0,1]`; the existing `radialLiftFirst_horizon` gives
+  the same factor for twice the lift derivative. The fixed transition factor
+  is bounded by `C exp(-alpha*v)` via the actual onset and its derivative.
+  On either causal cone, circle radius is at most elapsed time `h`, so DN70
+  and the existing native source bound give the pulse-kernel majorant
+  `C exp(-alpha*tau) exp((gamma-alpha)*h) exp((2-alpha)*y)`.
+  Both factors are integrable on `h>0,y<0`.
+  **Whole-route effect:** absolute admission is proved directly in the
+  original future coordinates; DN77 identifies it with DN74's null exhaustion.
+  `FuturePulseAdmission.seedFirst_horizon`, `density_bound`,
+  `density_integrable`, `response_fubini`: scratch check passed;
+  exact leaf audit passed in 65.20 seconds, two jobs, with an informational
+  `ring_nf` suggestion and no errors or warnings. Umbrella wired without a build.
+
+- **DN76 — Lean verified; original outgoing cuts exhaust the admitted source balance.**
+  `futureRegion(tau,L)={h>0,y<0,tau+h-y<=L}` increases to the entire
+  original future source region. `truncatedResponse_limit` gives its
+  pulse integral limit `A_P`; `sourceBalance_limit` gives the actual
+  pulse-minus-source integral limit `A_P-kappa*A_Q` without a matching
+  premise. This uses DN75 and the existing absolute admission of `A_Q`.
+  **Whole-route effect:** the original-coordinate side of the scalar
+  matching limit is closed. DN77 identifies this cut integral with the
+  finite null Green action, including Jacobian, causal supports, image
+  sign, and circle factor. Metric/current and
+  noncompact left-QNM matching remain open. Audited in the same leaf as DN75.
+
+- **DN77 — Lean verified; the original future scalar bridge is closed.**
+  `FutureSourceBridge.finite_source_balance_coordinates` identifies the
+  original outgoing cut of `P-kappa*S*Q` with the finite null Green action.
+  Open/closed boundary sets agree almost everywhere. Under
+  `v=tau+h+y,w=tau+h-y`, the direct cone is
+  `p<=v,r<=w,v<=w,w<=L`; the image is `r<=v<=w<=L`.
+  Both cone integrals are admitted separately. The exact area factor
+  and unchanged half-kernel give the original factor `1/4`.
+  Uniqueness of DN74 and DN76's limits proves `future_source_balance`:
+  `kappa*A_Q+Seed=A_P+CSeed`, for every time, nonnegative radial depth,
+  physical branch, source amplitude and angular base point. No matching,
+  decay or response premise is added; the cap is independently defined.
+  **Whole-route effect:** future scalar reconstruction uses the same
+  original seed/pulse as the retarded inverse, with the surviving cap
+  retained. Required metric/current regularity and noncompact left-QNM
+  admission/identification remain open; RH is not proved.
+  Scratch check passed in 74.69 seconds; exact leaf audit in 25.57 seconds,
+  two jobs, no warnings. Umbrella wired without a build.
+
+- **DN78 — Lean verified; the full future upper direct pulse is smooth through its corner.**
+  For `a=v-r`, `b=1-exp(2*y)`, its actual invariant has
+  `I-1=2*(1-exp(-w-a))*(exp(a)-1+b)/((1+exp(-w))*(2-b))`.
+  Resolving `(a/T,b)` into `(t,t*u)` and `(t*u,t)` gives `I-1=2*t*H`
+  with H strictly positive on both closed squares for `w,T>0`.
+  Signed `arsinh` radii are smooth and equal the original radii at the
+  compact parameters. The exact triangle Jacobian is `T*t`.
+  Both full angular fields and the original transition derivative are retained.
+  `cornerAction_eq_upperDirectAction` proves exact integral equality;
+  `upperDirectAction_smooth` proves every target/cutoff derivative exists.
+  `upperSample_original` identifies each sample with the original future pulse
+  divided by `4*exp(2*y)`, and `future_invariant_compact` verifies time reversal.
+  **Whole-route effect:** this characteristic corner is no longer an obstruction
+  to differentiating the actual pulse. Lower direct/image assembly, equality
+  with the admitted source-event response, cap regularity, and noncompact
+  left-QNM matching remain open. RH is not proved.
+  Leaf `ThetaCuspHawkingBMFuturePulseCorner`: scratch 42.12 seconds; exact audit
+  85.13 seconds, two jobs, no warnings. Source/olean verified; umbrella wired.
+  Repository lint still flags the pre-existing unwired OnsetTransgressionHorizon.
+
+- **DN79 — Lean verified; one smooth cutoff covers the full pulse at every target time.**
+  `T(r)=1+exp(-r)>0` obeys `r+T(r)>=2`, directly from the inspected
+  `Real.add_one_le_exp (-r)`. Since the actual pulse vanishes for source
+  ingoing time `v>1`, both upper future regions may be truncated at this
+  smooth cutoff without losing any source. The lower direct region remains
+  `p<=v<=r`. **Whole-route effect:** global assembly of DN78 with the two
+  remaining characteristic charts needs no target-dependent cutoff patches.
+  The exact compact-to-source-event integral identification is still required;
+  `FuturePulseAssembly.pulseSpan_covers` formalises the cutoff; DN80–DN81
+  formalise the compact assembly and its cutoff tail.
+
+- **DN80 — Lean verified; all three compact future pulse regions form one smooth action.**
+  Lower direct uses `v=r-w+w*a,z=exp(-w*(1-a))*b`, Jacobian
+  `w*exp(-w*(1-a))`; upper image uses `v=r+T*a,z=b`, Jacobian T.
+  Their exact invariants factor into `2*a*(1-b)*Hlower` and `2*a*Himage`,
+  with both H strictly positive on the closed source square for w,T>0.
+  Smooth signed radii agree with the original radii there.
+  `edgeAction_eq_integral` and `upperDirectAction_eq_integral` preserve
+  every source coordinate factor. `compactFutureAction_eq_charts` assembles
+  lower direct + upper direct - image using DN79's smooth span;
+  `compactFutureAction_smooth` proves joint smoothness in r, log(w), X, k.
+  `compactSample_original` identifies both kernels with the original pulse
+  divided by `4*exp(2*y)`. No angular channel or original clock is replaced.
+  **Whole-route effect:** compact regularity of the entire pulse formula is
+  closed; exact identification with admitted source-event A_P remains open.
+  Horizon-cap regularity and noncompact left-QNM matching still remain.
+  Leaf FuturePulseAssembly: scratch 32.21 seconds; exact audit 101.52 seconds,
+  two jobs, no warnings. Source/olean verified and umbrella wired.
+
+- **DN81 — Lean verified; the actual compact mean loses no outgoing-cut strip.**
+  For either image choice and every finite v interval `[a,b]`,
+  `integral_(a..b) integral_(0..exp(v-L)) compactMean(v,z)` tends to zero.
+  The mean extended by `z -> max(0,z)` is continuous in `(v,z)` and equals
+  the original mean on this strip. Writing `epsilon=exp(-L)` reduces its
+  limit to continuity of a finite parameter-dependent primitive at epsilon=0.
+  **Whole-route effect:** the needed source-horizon cutoff removal is closed
+  without a new growth/decay premise. The finite-cut equality with the original
+  gated source-event integral remains necessary before invoking uniqueness
+  with the already admitted A_P limit. `compactMean_cut_tail`, audited in DN80.
+
+- **DN82 — Lean verified; the admitted original future pulse is jointly smooth.**
+  The original gated source-event cut equals direct compact cut minus image
+  compact cut, with exact null and exponential Jacobians. After the single
+  support cutoff, it equals the full compact action minus two direct strips
+  plus one image strip. DN81 removes all three strips; uniqueness with the
+  original `truncatedResponse_limit` proves `response_eq_compactFutureAction`.
+  `original_response_smooth` proves joint smoothness in r,W,X,k for
+  `tau=r-exp(W)/2,x=-exp(W)/2`, covering the physical radial interior.
+  Both original angular fields, both causal indicators and the fixed pulse
+  are retained. **Whole-route effect:** original future-pulse regularity is
+  closed; horizon-cap regularity, differentiated metric/current identification
+  and noncompact left-QNM admission remain. Full matching and RH are not proved.
+  Leaf FuturePulseIdentity: scratch 41.29 seconds; exact audit 104.41 seconds,
+  two jobs, no warnings, default heartbeats. Source/olean verified; umbrella wired.
+  Lint has only the pre-existing unreachable OnsetTransgressionHorizon error;
+  no new-leaf error. Owned check/audit processes exited and scratch was removed.
+
+- **DN83 — Lean verified; both original horizon caps share one fixed source radius.**
+  `V_x(h)=tau+log(cosh(x)*exp(h)+sinh(x))` maps `h>0` bijectively to
+  `v>tau+x`; its Jacobian is `cosh(x)*exp(h)/(cosh(x)*exp(h)+sinh(x))`.
+  The actual horizon argument is exactly exp(h). `sourceArm_eq_fixedArm`
+  retains the original positive-time domain and characteristic gate;
+  `liftCap_eq_fixed` and `seedCap_eq_fixed` attach both admitted original caps.
+  `combinedCap_eq_fixed` identifies `CSeed-kappa*CLift` with kappa times
+  the original squared-amplitude factor and the fixed-arm difference for
+  `B-s*(s-1)*Q/4`. Both characteristic arms remain.
+  **Whole-route effect:** differentiation can target explicit scalar weights
+  without moving the angular sampling radius. It does not identify the full
+  physical Peierls/QNM observable with the canonical source-profile receiver.
+  Leaf FixedSourceHorizon: scratch 12.41 seconds; exact audit 16.05 seconds,
+  two jobs, no warnings, default heartbeats. Source/olean verified; umbrella wired.
+  Existing seed-cap arm theorem made public with unchanged proof; exact
+  dependency audit 58.73 seconds, two jobs, no warnings.
+
+- **DN84 — Lean verified kernel; analytical temporal/radial cap regularity.**
+  Beyond the unchanged onset interval the weight is `exp(2*s*h)*W(tau,x,exp(-h))`.
+  Its denominator `cosh(x)+z*sinh(x)=(1-z)*cosh(x)+z*exp(x)` is strictly
+  positive for `0<=z<=1`. `tailWeight_smooth` proves W smooth through z=0;
+  `late_weight_factorization` proves exact equality with the original weight.
+  On a compact tau/x neighborhood all its target derivatives are bounded
+  uniformly in z. The already proved mean growth gamma<2 and `Re(2*s)<-2`
+  give the same integrable tail exponent at every temporal/radial order.
+  Finite-prefix integration plus dominated differentiation proves joint
+  temporal/radial C-infinity regularity of both caps on paper, at fixed X,k;
+  that integral-regularity theorem is not yet formalised. **Whole-route effect:**
+  angular differentiation remains a distinct obligation. Norm-of-mean growth
+  alone does not justify the proposed absolute fixed-plane source integral.
+  Full temporal/metric/QNM matching and RH remain open.
+
+- **DN85 — Lean verified; quantitative global mean-square bound for the actual response.**
+  A modular cell meeting the radius-R hyperbolic ball, R>=0, has representative
+  entries bounded by `2 exp(R)`: bottom-row square norm <=`2 exp(R)`, top-row
+  square norm <=`2 exp(2R)`. Integer-box counting gives at most `(7 exp(R))^4`
+  projective cell pullbacks. The original scalar lift satisfies
+  `integral_ball |lift(u)|^2 <= (7 exp(R))^4 integral |cellExtension(u)|^2`.
+  `globalResponse_ball_square_bound` attaches this bound to the actual smooth
+  full-forcing response with `u=embedding(weakResponse(q,branch))`; its native
+  zero-extension integral is finite by the established L2 membership.
+  **Whole-route effect:** supplies quantitative absolute source control that
+  cannot be inferred from norm-of-spherical-mean growth. No angular-jet growth
+  premise is added. Leaf ModularBallGrowth: scratch 43.48 seconds; exact audit
+  8.59 seconds, two jobs, no warnings, default heartbeats; umbrella wired.
+
+- **DN86 — Analytical proof; absolute angular admission closes the cap regularity argument on paper.**
+  Hyperbolic ball area <=`2*pi*exp(R)` and DN85 give L1 ball growth
+  `C exp(5R/2)` for the actual L2 remainder. The explicit three cusp powers
+  and existing `fullSquarePotential_global_growth` have pointwise ball growth
+  exponents below 2, hence L1 exponents below 3. Therefore the complete
+  `F=B-s(s-1)Q/4` admits every radial weight `exp(-p*d)`, p>3, by geometric
+  shell summation. The original fixed-plane kernel has exactly
+  `p=1-2 Re(s)>3`. Every target derivative preserves this exponent because
+  `D=cosh(x)*cosh(d)+sinh(x)` stays positive and every target derivative of
+  `cosh(d)=((X-a)^2+Y^2+y^2)/(2Yy)` is bounded by a compact-target constant
+  times cosh(d). Substituting `h=log(cosh(d))` in DN83 gives the exact polar
+  measure and original kernel. Absolute Fubini and dominated differentiation
+  prove joint C-infinity regularity of both original caps on paper, without
+  bounds on differentiated sources. DN88–DN89 formalise weighted absolute
+  admission. The parameter theorem and original-cap attachment remain
+  unformalised; DN85 alone is not that theorem. **Whole-route effect:** removes the analytical angular regularity
+  obstruction to differentiating the full corrected field; noncompact physical
+  left-QNM admission and field/action identification remain open. Full proof:
+  `hb-fe-absolute-angular-admission.md`. Full matching and RH are not proved.
+
+- **DN87 — Lean verified; weighted absolute admission of the actual response.**
+  In the original hyperbolic volume, radius-R ball area is at most `8 exp(R)`.
+  Combining this with DN85 via `|f| <= (|f|^2/t+t)/2`, `t=exp(3R/2)`,
+  proves `integral_ball |globalResponse(q,branch)| <= C exp(5R/2)`.
+  Geometric shell summation proves integrability of
+  `exp(-p*dist(z,i))*|globalResponse(q,branch,z)|` for every `p>5/2`.
+  The response theorem has no additional growth or integrability premise.
+  **Whole-route effect:** supplies absolute admission of the actual L2 remainder
+  needed for the fixed-plane cap representation. DN88–DN89 attach the cutoff,
+  full square and kernel; cap differentiation and physical left-QNM field/action
+  identification remain distinct formal obligations. Full matching remains open.
+  Leaf `ThetaCuspHawkingBMWeightedResponseAdmission`: scratch 5.69 seconds;
+  exact audit 7.26 seconds, two jobs, no warnings; umbrella import wired.
+
+- **DN88 — Lean verified; full-source admission at the unchanged physical exponent.**
+  All three principal cusp powers have real exponent at most two; the actual
+  cutoff vanishes below height two. Modular invariance and orbit-height control
+  give `|globalCuspCutoff|<=C max(1,y,1/y)^2`. The proved full-square bound
+  gives the same ceiling. Ball area then yields absolute mass `O(exp(3R))`;
+  geometric shells admit every weight with exponent p>3. Combining DN87 proves
+  weighted absolute admission of `B-aQ` for every complex a and every radial
+  center. The original fundamental rate satisfies `-2<Re(s)<-1`, so the actual
+  `F=B-s(s-1)Q/4` is admitted at `p=1-2 Re(s)>3`, with no new growth premise.
+  **Whole-route effect:** closes the complete source estimate needed for
+  fixed-plane cap admission; no angular remainder or mixed cusp term is dropped.
+  Leaf `CompleteSourceAdmission`: scratch 87.91 seconds; exact audit 42.58
+  seconds, two jobs, no warnings; default heartbeats; umbrella wired.
+
+- **DN89 — Lean verified; original two-arm plane-kernel admission and exact density.**
+  For `D=cosh(x)cosh(d)+sinh(x)` and
+  `c_x=min(cosh(x),exp(x))/2>0`, `D>=c_x exp(d)`. The original onset bound
+  yields `|cosh(x) onsetFirst(v,tau+log(D))/D|<=C exp(-(1-Re(v))d)` for
+  `Re(v)<=1`, with C independent of source and target points. At v=2s, DN88
+  proves absolute admission of both arms of the complete F, including original
+  factor `parameter(q,branch)*power(2s,2)*amp^2/(2*pi)`.
+  `planeKernel_radial_density` proves the exact pointwise equality between
+  `sourceJac*onsetFirst*sinh(d)/cosh(d)` and `planeKernel*sinh(d)` under
+  `h=log(cosh(d))`. **Whole-route effect:** absolute source admission and the
+  radial density are proved. The global hyperbolic polar integration identity,
+  equality with the original cap, parameter differentiation, and physical
+  left-QNM pairing remain open; full matching and RH are not proved.
+  Leaf `PlaneKernelAdmission`: scratch 9.54 seconds; exact audit 10.03 seconds,
+  two jobs, no warnings; default heartbeats; umbrella wired.

@@ -36,6 +36,56 @@ def sourceCayleyAbelGreenMultiplier (R x : ℝ) : ℂ :=
   2 * I * (1 - GaloisForLFunctions.HTGeometry.realCayley x) /
     (1 + (R : ℂ) * GaloisForLFunctions.HTGeometry.realCayley x)
 
+/-- Exact rational form of the source-Cayley Abel multiplier.  Its sole boundary singularity is
+the simultaneous `R = 1`, `x = 0` resonance, where both totalized quotients are zero. -/
+theorem sourceCayleyAbelGreenMultiplier_eq_rational (R x : ℝ) :
+    sourceCayleyAbelGreenMultiplier R x =
+      (-4 : ℂ) / ((((1 + R) * x : ℝ) : ℂ) + ((1 - R : ℝ) : ℂ) * I) := by
+  unfold sourceCayleyAbelGreenMultiplier GaloisForLFunctions.HTGeometry.realCayley
+  have hx : (x : ℂ) + I ≠ 0 := by
+    intro h
+    have him := congrArg Complex.im h
+    norm_num at him
+  by_cases hD : ((((1 + R) * x : ℝ) : ℂ) + ((1 - R : ℝ) : ℂ) * I) = 0
+  · have him := congrArg Complex.im hD
+    have hre := congrArg Complex.re hD
+    norm_num at him hre
+    have hR : R = 1 := by linarith
+    have hx0 : x = 0 := by
+      rw [hR] at hre
+      rcases hre with h | h
+      · norm_num at h
+      · exact h
+    subst R
+    subst x
+    norm_num
+  · have hnum :
+        2 * I * (1 - (((x : ℂ) - I) / ((x : ℂ) + I))) =
+          (-4 : ℂ) / ((x : ℂ) + I) := by
+      field_simp [hx]
+      ring_nf
+      rw [I_sq]
+      norm_num
+    have hden :
+        1 + (R : ℂ) * (((x : ℂ) - I) / ((x : ℂ) + I)) =
+          ((((1 + R) * x : ℝ) : ℂ) + ((1 - R : ℝ) : ℂ) * I) /
+            ((x : ℂ) + I) := by
+      field_simp [hx]
+      push_cast
+      ring
+    rw [hnum, hden]
+    field_simp [hx, hD]
+
+/-- At the Abel resonance `R = (1-x²)/(1+x²)`, the multiplier denominator is explicit.
+This is an equality, so it is valid also at the degenerate point `x = 0`. -/
+theorem sourceCayleyAbelGreen_resonant_denominator (x : ℝ) :
+    let R : ℝ := (1 - x ^ 2) / (1 + x ^ 2)
+    (1 + R) ^ 2 * x ^ 2 + (1 - R) ^ 2 = 4 * x ^ 2 / (1 + x ^ 2) := by
+  dsimp
+  have hx : 0 < 1 + x ^ 2 := by positivity
+  field_simp
+  ring
+
 /-- At every strict Abel radius, finite Cayley polynomials converge to the resolvent multiplier. -/
 theorem tendsto_sourceCayleyAbelGreenPolynomial
     {R : ℝ} (hR : |R| < 1) (x : ℝ) :

@@ -96,10 +96,12 @@ private theorem real_smul_eq_of_im_eq_zero
     apply Complex.ext <;> simp [hre, hdim]
   rw [Algebra.smul_def]
   have hd : d = (d.re : ℂ) := by
-    rw [← Complex.conj_eq_iff_re, Complex.conj_eq_iff_im]
-    exact hdim
-  rw [hd, ← Complex.ofReal_div]
-  field_simp [hdre]
+    apply Complex.ext <;> simp [hdim]
+  rw [hd]
+  simp only [Complex.ofReal_re]
+  change ((r / d.re : ℝ) : ℂ) * (d.re : ℂ) = (r : ℂ)
+  rw [← Complex.ofReal_mul]
+  exact_mod_cast div_mul_cancel₀ r hdre
 
 /-- **Real-linear scalar-controller dichotomy.**  Even after admitting anti-linear behaviour,
 cancelling the actual critical charge either proves RH or erases the entire physical real Ward
@@ -124,7 +126,7 @@ theorem mobiusGammaXiRealLinearDebtController_cancellation_iff_rh_or_physicalRay
         real_smul_eq_of_im_eq_zero d
           (by simpa [d] using mobiusGammaXiCoupledErrorCriticalCoefficient_im_eq_zero) hd r
       rw [← hrd, T.map_smul, hTd]
-      simpa [smul_neg] using congrArg Neg.neg hrd
+      rw [smul_neg]
   · rintro (hRH | herase)
     · have hd : mobiusGammaXiCoupledErrorCriticalCoefficient = 0 := by
         exact continuedXiAntiCausalWardResponse_half_eq_zero_iff_rh.mpr hRH
@@ -132,8 +134,8 @@ theorem mobiusGammaXiRealLinearDebtController_cancellation_iff_rh_or_physicalRay
     · rw [mobiusGammaXiRealLinearControlledCriticalResidual]
       have hd : mobiusGammaXiCoupledErrorCriticalCoefficient =
           (mobiusGammaXiCoupledErrorCriticalCoefficient.re : ℂ) := by
-        rw [← Complex.conj_eq_iff_re, Complex.conj_eq_iff_im]
-        exact mobiusGammaXiCoupledErrorCriticalCoefficient_im_eq_zero
+        apply Complex.ext <;>
+          simp [mobiusGammaXiCoupledErrorCriticalCoefficient_im_eq_zero]
       rw [hd, herase]
       ring
 

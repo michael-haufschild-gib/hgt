@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**293 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**310 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-15, `277d498a24567a583bcd09ff24dd56243b687e89`**.
+Source-audit cutoff: **2026-09-15, `c65e250f973631df9cc59552bf8498bf99975290`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -22,14 +22,14 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 16 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 18 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 33 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 57 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 23 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 20 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 36 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 66 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 24 |
 | [Singular descent, formation and completion](#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 32 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 33 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
-| [Other finite, scalar and source-blind selectors](#other) | 79 |
+| [Other finite, scalar and source-blind selectors](#other) | 80 |
 
 <a id="retired-labels"></a>
 
@@ -280,6 +280,8 @@ Source-native aperture invariant is required.
 
 ## CCM-FU: prime scheduling and current bounds
 
+- [CCM exterior constant-mode adaptive-mass repair](#no-go-294)
+- [CCM phase-locked canonical exterior packet](#no-go-295)
 - [CCM all-frequency positive/scalar Ward completion](#no-go-075)
 - [CCM causal-depth regular operator assembly](#no-go-069)
 - [CCM Littlewood/triangular/observer/Robin producer package](#no-go-068)
@@ -298,6 +300,48 @@ Source-native aperture invariant is required.
 - [CCM-FU uniformly budgeted increasing-prime elimination](#no-go-006)
 - [CCM-FU universal nonempty-energy contraction](#no-go-010)
 - [CCM-FU fixed-range critical signed transport](#no-go-289)
+
+<a id="no-go-294"></a>
+
+### CCM exterior constant-mode adaptive-mass repair
+
+**Closed result**
+
+For every moving exterior threshold/window scale whose product tends to infinity, fixed-error
+approximation of the constant mode by a positive-minus-positive exterior cosine measure forces
+its total Jordan mass, divided by every fixed power of that scale, to tend to infinity. Changing
+the aperture schedule cannot make this universal constant-mode completion polynomially controlled.
+
+**Survivor / still open**
+
+The scale-covariant lower wall is exact. A viable exterior correction must be source-adapted and
+nonconstant, and still prove the signed reverse-prime/source-energy inequality; the theorem does
+not obstruct arbitrary such signed gauges.
+
+Evidence: [adaptive exterior mass wall](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadExteriorCosineAdaptiveMassWall.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-295"></a>
+
+### CCM phase-locked canonical exterior packet
+
+**Closed result**
+
+The canonical constant-mode exterior superoscillation has exact values `(-3)^N` on a physical
+phase-locked sequence. The corrected CCM symbol grows only logarithmically, so some odd packet
+has a strictly negative corrected representative despite exterior support. This canonical packet
+family cannot supply universal positivity.
+
+**Survivor / still open**
+
+Exact phase locking and the logarithmic symbol envelope survive. Arbitrary finite exterior signed
+measures remain outside this no-go and would need a new source-faithful construction and signed
+lower bound.
+
+Evidence: [phase-locked exterior no-go](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadExteriorCosinePhaseLockedNoGo.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
 <a id="no-go-289"></a>
 
@@ -562,6 +606,8 @@ Exact nonempty update retains mixed products minus the absorbed singleton square
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
 
+- [EDQ Möbius divisor-kernel positivity](#no-go-296)
+- [EDQ uniform one-prime core insertion bound](#no-go-297)
 - [E bounded-density binary singleton histories](#no-go-022)
 - [E complete factor-two activation histogram](#no-go-046)
 - [E complete-prime/integer-prefix identification](#no-go-044)
@@ -593,8 +639,72 @@ Exact nonempty update retains mixed products minus the absorbed singleton square
 - [LI eventual negativity, generic square-cone, ordinary boundary summation, finite/adaptive prefix, sublinear repair, absolute endpoint assembly, or uniform normalized tail](#no-go-255)
 - [LI local Bernstein or global quotient complete monotonicity](#no-go-057)
 - [T1 fixed finite-aperture/order/type prime extraction](#no-go-178)
+- [T1 fixed-width rapidity diagonal localization](#no-go-298)
 - [T2 regular/compact-open semicontinuous scalar descent](#no-go-147)
 - [finite-abscissa Dirichlet scalar, shift and period selector](#no-go-275)
+
+<a id="no-go-296"></a>
+
+### EDQ Möbius divisor-kernel positivity
+
+**Closed result**
+
+The coprime-pair quadratic form has an exact signed diagonalization into divisor-level squares,
+but the coefficients are Möbius signed. Once coordinate two is present, the resulting divisor
+kernel is not positive semidefinite. Replacing EDQ's signed levels by a positive Gram carrier is
+therefore invalid.
+
+**Survivor / still open**
+
+The exact identity
+`K_r(N)=sum_(l<=N/r) mu(l) J_(rl)(N)^2` survives. EDQ must control cancellation between these
+divisor levels together with the complete physical tail; absolute values or PSD substitution lose
+the target mechanism.
+
+Evidence: [coprime-kernel diagonalization](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionCoprimeKernelDiagonalization.lean).
+
+[Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
+
+<a id="no-go-297"></a>
+
+### EDQ uniform one-prime core insertion bound
+
+**Closed result**
+
+The fixed core `{2}` has arbitrarily deep one-prime extensions whose literal physical dilation
+mean is negative on the square-root scale. No core-uniform one-step insertion bound can control
+the source before interaction among inserted primes.
+
+**Survivor / still open**
+
+The oriented Mellin pair-residue nevertheless has a positive core-uniform margin. Failure occurs
+in threshold/cutoff transport, so any renewal proof must retain multi-prime signed cancellation
+before taking a uniform bound.
+
+Evidence: [uniform-core no-go](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorDilationMeanUniformCoreNoGo.lean), [uniform residue margin](../../../../formal/GaloisForLFunctions/RHTower/DivisorCoreMellinResidueUniformMargin.lean).
+
+[Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
+
+<a id="no-go-298"></a>
+
+### T1 fixed-width rapidity diagonal localization
+
+**Closed result**
+
+For every ordered timelike frequency pair, sufficiently deep mass places its distinct-frequency
+stationary rapidities inside any prescribed fixed-width neighborhood of the diagonal. A fixed
+rapidity tube therefore does not remove the off-diagonal saddle from the literal two-variable
+mass covariance.
+
+**Survivor / still open**
+
+The moving prime cone now has an exact full finite prime-pair covariance integral. A survivor must
+prove signed cancellation in that integral or derive frequency--rapidity order support excluding
+the anti-ordered stationary pairs; pointwise diagonal nonstationarity is insufficient.
+
+Evidence: [two-rapidity covariance and near-diagonal saddle](../../../../formal/GaloisForLFunctions/RHTower/XiMassTwoRapidityCorrelationGeometry.lean).
+
+[Back to family](#arithmetic) · [Current T1 frontier](rh-current-frontier-map.md#t1--theta-tail-core-current)
 
 <a id="no-go-275"></a>
 
@@ -1089,6 +1199,11 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 
 - [channelwise third-order Hawking/AIME cancellation](#no-go-216)
 - [diagonal or sector-local Hawking completion](#no-go-215)
+- [FZZ cubic raw zero-collar cutoff](#no-go-299)
+- [FZZ Fermi-characteristic/parity-Mellin amplitude identification](#no-go-300)
+- [FZZ shared-coupling direct affine phase matching](#no-go-301)
+- [FZZ one-sided radial plus additive Hermitian chiral Ward cancellation](#no-go-302)
+- [FZZ one-sided radial plus scalar-real renormalized-plane Ward cancellation](#no-go-303)
 - [finite-state FZZ/Schwarzschild closure](#no-go-221)
 - [FZZ canonical joint natural radial/phase incidence](#no-go-116)
 - [FZZ charge-balanced holonomy-only replica area](#no-go-111)
@@ -1117,7 +1232,11 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [HB finite-energy Hilbert, bounded-Krein, or arbitrary two-leg graph compensation](#no-go-202)
 - [HB finite-variation damped spectral cancellation](#no-go-205)
 - [HB finite/local/Hermitian/passive completion](#no-go-203)
+- [HB full canonical action through literal unit-source receiver](#no-go-304)
+- [HB full canonical action through arbitrary literal-carrier decoder](#no-go-305)
 - [HB global propagator, fixed pairing, or meromorphic scalar cancellation](#no-go-200)
+- [HB original retarded field through literal-carrier decoder](#no-go-306)
+- [HB local radial source-transpose matching](#no-go-307)
 - [HB modular spectral, positive-height graph, characteristic-kernel, principal-causal, or local residual admission](#no-go-041)
 - [HB nonzero FE-invariant scalar response correction](#no-go-211)
 - [HB regular passive/equivariant, arbitrary or maximal unbounded dissipative, or self-adjoint exclusion](#no-go-079)
@@ -1144,6 +1263,178 @@ Exact divisor tomography, two-unit bubble jump, four-unit collision defect, and 
 - [raw Birmingham--Mokhtari causal decay or two-sided boundedness](#no-go-219)
 - [RBH complementary/wall finite part, separated-sign linear production, or passive normalization](#no-go-225)
 - [scalar-history, regular Borel, grade-diagonal, or rescaling-invariant Parikh--Wilczek balance](#no-go-222)
+
+<a id="no-go-299"></a>
+
+### FZZ cubic raw zero-collar cutoff
+
+**Closed result**
+
+The physical cubic raw zero-collar screening integral has no finite collar-removal limit. Its
+collision correction diverges, while raw integral plus correction converges to the exact local
+finite part; omitting the counterterm is impossible.
+
+**Survivor / still open**
+
+The independently renormalized local and whole-plane finite parts survive. A mixed Ward producer
+must retain both structural counterterms and orient the renormalized source.
+
+Evidence: [raw cubic cutoff no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarCubicRawCutoffNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-300"></a>
+
+### FZZ Fermi-characteristic/parity-Mellin amplitude identification
+
+**Closed result**
+
+No real momentum frame, even copy-dependent and nonlinear, identifies the everywhere-nonzero
+shared Fermi characteristic with the divisor-bearing parity-Mellin amplitude: an actual Xi copy
+makes the latter zero.
+
+**Survivor / still open**
+
+The characteristic is a nonzero normalization, not a divisor carrier. A source law must introduce
+a literal marked, cross-charge or nonlocal factor carrying the divisor before passivity.
+
+Evidence: [characteristic/amplitude no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarFermiCharacteristicMellinAmplitudeNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-301"></a>
+
+### FZZ shared-coupling direct affine phase matching
+
+**Closed result**
+
+For no level, coupling and affine momentum calibration does the fully integrated shared-coupling
+receiver equal the unwrapped balanced external-Gamma phase pointwise. Direct receiver equality is
+therefore closed.
+
+**Survivor / still open**
+
+Their canonical zero loci remain compatible. FZZ-P still needs a literal physical source-frame
+evaluation or a nonpointwise, mode-dependent Ward current transporting that zero locus.
+
+Evidence: [direct phase no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarFermiSharedCouplingDirectPhaseNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-302"></a>
+
+### FZZ one-sided radial plus additive Hermitian chiral Ward cancellation
+
+**Closed result**
+
+Every Hermitian chiral source observable has real value, while the physical one-sided radial
+response has strictly negative imaginary part at every momentum. Their additive sum cannot vanish,
+even when the Hermitian matrix has a nonzero imaginary off-diagonal coefficient.
+
+**Survivor / still open**
+
+The Hermitian family still classifies source orientation, but cancellation requires a non-Hermitian
+or non-additive source term with positive imaginary response.
+
+Evidence: [Hermitian chiral Ward no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarOneSidedRadialHermitianChiralWardNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-303"></a>
+
+### FZZ one-sided radial plus scalar-real renormalized-plane Ward cancellation
+
+**Closed result**
+
+Neither a finite-cutoff nor finite-part first-exponent derivative of the counterterm-preserving
+real plane source can cancel the physical radial response: the source derivative is real and the
+radial term has a strictly negative imaginary part.
+
+**Survivor / still open**
+
+Renormalization fixes finiteness but cannot create orientation. The remaining source term must be
+complex, non-scalar and cross-depth coherent, or use support motion/nonfactorization.
+
+Evidence: [renormalized-plane Ward no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarOneSidedRenormalizedPlaneWardNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-304"></a>
+
+### HB full canonical action through literal unit-source receiver
+
+**Closed result**
+
+No copy-dependent returned vector makes the literal complementary unit-source probe match the
+complete original canonical QNM action, even only in zero locus. Some actual critical copy has
+nonzero full action while every such probe vanishes there.
+
+**Survivor / still open**
+
+Zero complete action occurs on only `O(N)` simple critical zeros in the stated census and has
+relative density zero. A viable receiver must retain critical-copy data erased by the unit source.
+
+Evidence: [full canonical matching no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullCanonicalMatchingNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
+<a id="no-go-305"></a>
+
+### HB full canonical action through arbitrary literal-carrier decoder
+
+**Closed result**
+
+At a critical copy the literal carrier erases every source amplitude, while the complete action is
+quadratic in amplitude and distinguishes amplitudes one and two. Even arbitrary copy-dependent,
+nonlinear and discontinuous postprocessing cannot reconstruct the action across amplitudes.
+
+**Survivor / still open**
+
+The action's fibres are exactly equal squared amplitudes unless the unit action vanishes. Any
+successful encoding must retain squared source amplitude before postprocessing.
+
+Evidence: [source-encoding no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullCanonicalSourceEncodingNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
+<a id="no-go-306"></a>
+
+### HB original retarded field through literal-carrier decoder
+
+**Closed result**
+
+The complete original retarded potential distinguishes exactly squared source amplitudes at every
+actual Xi copy, while the literal carrier erases all amplitudes at critical copies. No arbitrary
+decoder of that unchanged carrier reconstructs the physical field across nonzero amplitudes.
+
+**Survivor / still open**
+
+A local wave-operator observation recovers squared amplitude from the original potential. A
+replacement representation may survive only if it retains that source information.
+
+Evidence: [native-field matching no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeFieldMatchingNoGo.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
+<a id="no-go-307"></a>
+
+### HB local radial source-transpose matching
+
+**Closed result**
+
+Every differentiable radial multiplier preserving the literal fixed-clock source transpose is a
+constant multiple of `(1+u)^5/u^4`. Every nonzero member has a forced AdS boundary charge, so none
+is an admitted physical fundamental-QNM test.
+
+**Survivor / still open**
+
+The exact one-dimensional transpose space and boundary coefficient survive. Nonlocal integral
+transforms, angular operators, changed clocks or explicit boundary modifications remain possible
+but still need a source-faithful matching proof.
+
+Evidence: [local source-transpose rigidity](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLocalSourceTransposeRigidity.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
 <a id="no-go-290"></a>
 
@@ -2062,8 +2353,30 @@ The all-orders-flat carrier, fixed-neutral energy selector, and boundary-singula
 - [S6F/TCD regular star-algebra contravariant carrier](#no-go-064)
 - [S6F/TCD static chamber, D1--C5 weld, lower-jet, monotone Schrödinger potential, second-level concavity, whole-positive-chamber, generic positive-head, atomwise-PSD, or raw matrix-Bernstein closure](#no-go-103)
 - [SQB scalar, polynomial/native-scattering, finite-word, deck-average, norm-only character, finite-packet, nonzero-mean resummation, phase-current, common-forcing-as-occurrence, pointwise-regulator, and path-resistance shortcuts](#no-go-052)
+- [SQB current finite-deck word/full-block coercivity](#no-go-308)
 - [theta-pair/product-fibre Wigner positivity](#no-go-086)
 - [W2C positive-cone extension or common-translation propagation](#no-go-121)
+
+<a id="no-go-308"></a>
+
+### SQB current finite-deck word/full-block coercivity
+
+**Closed result**
+
+The certified all-word `S,T` comparison constant diverges with congruence level for every complete
+choice of literal generator-word representatives. Regrouping into full unipotent blocks does not
+repair this: geometric realization carries the exact multiplier `N(2N+1)/12`. These existing
+finite-deck recipes cannot yield a level-uniform lower bound for the compact-core quarter form.
+
+**Survivor / still open**
+
+Exact mean-zero deck variance, regulated path cost and parameter moments survive. SQB needs a new
+source-sensitive non-word/non-full-block geometry and a lower flux or density-weighted gradient
+comparison strong enough to prove `coreQuarter ≥ 0`.
+
+Evidence: [SQB fact audit](selberg-density-quartic-facts.md), [generator-cost growth](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassGeneratorCostGrowth.lean), [unipotent path factor](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassUnipotentPaths.lean).
+
+[Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
 
 <a id="no-go-193"></a>
 
@@ -2827,6 +3140,7 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [fixed-rank positive Suzuki/Ward resolution](#no-go-067)
 - [G finite zero-mass width high-pass](#no-go-071)
 - [G-CE finite local analytic annihilator or fixed ceiling](#no-go-158)
+- [G-CE real-reflection cancellation](#no-go-309)
 - [growing-rank positive Cartan fission as Suzuki/Ward producer](#no-go-087)
 - [higher fixed Suzuki contact as RH endpoint](#no-go-133)
 - [MSC ordinary/stable Hilbert and fixed-rigging transport](#no-go-076)
@@ -2845,6 +3159,26 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [Suzuki wall-light finite-linear compression](#no-go-078)
 - [unrenormalized Suzuki Ward energy](#no-go-259)
 - [Suzuki odd-phase diagonal quadratic readout](#no-go-292)
+
+<a id="no-go-309"></a>
+
+### G-CE real-reflection cancellation
+
+**Closed result**
+
+Schwarz pairing makes the completed Ward response real at every positive real node. A real-linear
+controller cancelling the critical charge therefore either proves RH or erases the entire physical
+real ray. In particular `z ↦ -conj z` cancels visibly but transfers the exact graph debt to its
+hidden antisymmetric port.
+
+**Survivor / still open**
+
+The physical-ray reality and debt-transfer laws survive. G needs a literal nonzero zero-clock
+complementary channel with a signed cross-form, not complex-linear or anti-linear scalar erasure.
+
+Evidence: [real-reflection cancellation no-go](../../../../formal/GaloisForLFunctions/RHTower/MobiusGammaXiRealReflectionCancellationNoGo.lean).
+
+[Back to family](#ward) · [Current G frontier](rh-current-frontier-map.md#g--ward-orientation)
 
 <a id="no-go-292"></a>
 
@@ -3494,6 +3828,7 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [finite ABHN/Bruhat landing](#no-go-266)
 - [finite critical-observation cover as nonabelian selector](#no-go-232)
 - [finite Feller tensor admission as selector](#no-go-134)
+- [finite nilpotent determinant detector](#no-go-310)
 - [finite residue positivity](#no-go-251)
 - [finite retained-prime/Dirichlet annihilator](#no-go-126)
 - [finite-cutoff compensating-infinity or QFI selector](#no-go-277)
@@ -3554,6 +3889,27 @@ A structure presenting the exact Xi divisor cannot force every multiplicity even
 - [U scalar source-capital inference](#no-go-240)
 - [universal squared-Euler anti-Löwner positivity](#no-go-256)
 - [unchanged timelike-mass transport to Vaughan near-diagonal phase](#no-go-293)
+
+<a id="no-go-310"></a>
+
+### finite nilpotent determinant detector
+
+**Closed result**
+
+For every finite nilpotent matrix, linear endomorphism or continuous endomorphism `N`,
+`det(1-zN)=1` identically; exponentiation also has determinant one. The corpus now instantiates
+this blindness across Jordan, BRST, Fock, Lax, Wronskian, completion-detector and principal-symbol
+nilpotent directions. Ordinary finite determinant cannot detect any of them.
+
+**Survivor / still open**
+
+The exact determinant-one classification and odd/nonzero determinant law for integral `I-2T`
+survive. Determinant routes must introduce nonnilpotent or infinite-dimensional spectral data and
+prove source occurrence; no approximation-limit conclusion follows from these finite identities.
+
+Evidence: [Kammeyer determinant core](../../../../formal/GaloisForLFunctions/HTGeometry/KammeyerDeterminantApproximationCore.lean), [corpus applications](../../../../formal/GaloisForLFunctions/HTGeometry/KammeyerDeterminantApproximationApplications.lean).
+
+[Back to family](#other) · [Current ledger](rh-current-frontier-map.md)
 
 <a id="no-go-293"></a>
 
