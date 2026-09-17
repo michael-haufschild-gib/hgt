@@ -89,3 +89,19 @@ estimators.  Its exponential growth rate is exactly the analytic-continuation wi
 route: the elementary rate `1/2` supplies only the already-honest half-plane, while RH requires
 rate `0`.  Thus the remaining obstacle is neither normalization nor a missing transform: it is a
 source-faithful proof that the common oriented charge loses its elementary `exp(t/2)` growth.
+
+## Endpoint continuation closure
+
+The generic exponential-width continuation interface had a strict `alpha < 1/2` input although
+its identity-theorem proof remains valid at `alpha = 1/2`.  The literal source satisfies this
+endpoint rate, so its causal defect extension now equals `regularizedCriticalMellinDefect` on the
+full open right half-plane, unconditionally.  The proof uses equality on the real ray `r > 2` and
+analytic continuation; it introduces no bound below the endpoint.
+
+Formal source: `RHTower/CCMUnitRieszCausalLaplaceBridge.lean`, theorem
+`criticalMellinChebyshevResolventDefectExtension_eq_regularized_rightHalfPlane`.
+
+This closes a genuine analytic interface gap but does not improve the exponent.  Hence it does
+not weaken the identified RH obstacle: moving the continuation boundary from `Re u > 0` to the
+critical boundary still requires a rate strictly below `1/2`, and RH requires the endpoint rate
+`0`.

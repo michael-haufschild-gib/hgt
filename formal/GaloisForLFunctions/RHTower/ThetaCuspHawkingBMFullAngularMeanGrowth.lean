@@ -2,7 +2,10 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleGreen
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceAdvancedAdmission
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularGoursat
 import GaloisForLFunctions.RHTower.CothInfra
+import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 /-!
 Growth of the constructed full angular circle mean, with the literal theta-square
@@ -11,12 +14,257 @@ an exponent strictly below two. The original physical clock then supplies an
 integrable source-horizon majorant, uniform in both radial variables.
 -/
 namespace RHTower.D4BMFullAngularGrowth
-open Set Filter Topology
+open Set Filter Topology MeasureTheory
 open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse D4BMFullAngularCircle
 open D4BMNativeCircle D4BMFullSourceAdvanced
 open scoped ContDiff
 noncomputable section
 set_option autoImplicit false
+
+private theorem smooth_even_quadratic_bound (f : ℝ → ℂ)
+    (hf : ContDiff ℝ ∞ f) (he : Function.Even f) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ d : Icc (0 : ℝ) 2, ‖f d - f 0‖ ≤ C * d.val ^ 2 := by
+  have hf1 := (contDiff_infty_iff_deriv.mp hf).2
+  have hf2 := (contDiff_infty_iff_deriv.mp hf1).2
+  obtain ⟨B, hB⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    hf2.continuous.continuousOn (s := Icc (0 : ℝ) 2)
+  let C := max B 0
+  have hC : 0 ≤ C := le_max_right _ _
+  have hzero : deriv f 0 = 0 := by
+    have hcomp := ((hf.contDiffAt.differentiableAt (by simp)).hasDerivAt).scomp 0
+      (hasDerivAt_neg 0)
+    have hfun : (fun t : ℝ => f (-t)) = f := funext he
+    change HasDerivAt (fun t : ℝ => f (-t)) _ 0 at hcomp
+    rw [hfun] at hcomp
+    have hneg : -(deriv f 0) = deriv f 0 := by simpa using hcomp.deriv.symm
+    linear_combination -(1 / 2 : ℂ) * hneg
+  have hd (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 2) : ‖deriv f t‖ ≤ C * t := by
+    have h := (convex_Icc (0 : ℝ) 2).norm_image_sub_le_of_norm_deriv_le (C := C)
+      (fun u _ => hf1.differentiable (by simp) u)
+      (fun u hu => (hB u hu).trans (show B ≤ C from le_max_left _ _))
+      (show (0 : ℝ) ∈ Icc 0 2 by constructor <;> norm_num) ht
+    simpa [hzero, Real.norm_eq_abs, abs_of_nonneg ht.1] using h
+  refine ⟨C, hC, fun d => ?_⟩
+  have h := (convex_Icc (0 : ℝ) d.val).norm_image_sub_le_of_norm_deriv_le
+    (fun u _ => hf.differentiable (by simp) u)
+    (fun u hu => (hd u ⟨hu.1, hu.2.trans d.property.2⟩).trans
+      (mul_le_mul_of_nonneg_left hu.2 hC))
+    (show (0 : ℝ) ∈ Icc 0 d.val from ⟨le_rfl, d.property.1⟩)
+    (show d.val ∈ Icc 0 d.val from ⟨d.property.1, le_rfl⟩)
+  simpa [Real.norm_eq_abs, abs_of_nonneg d.property.1, mul_assoc, pow_two] using h
+
+private theorem deriv_even_odd (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f)
+    (he : Function.Even f) (x : ℝ) : deriv f (-x) = -deriv f x := by
+  have hcomp := ((hf.contDiffAt.differentiableAt (by simp)).hasDerivAt).scomp x
+    (hasDerivAt_neg x)
+  have hfun : (fun t : ℝ => f (-t)) = f := funext he
+  change HasDerivAt (fun t : ℝ => f (-t)) _ x at hcomp
+  rw [hfun] at hcomp
+  have hneg : -(deriv f (-x)) = deriv f x := by
+    simpa using hcomp.deriv.symm
+  linear_combination -hneg
+
+private theorem deriv_odd_even (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f)
+    (ho : ∀ x, f (-x) = -f x) (x : ℝ) : deriv f (-x) = deriv f x := by
+  have hcomp := ((hf.contDiffAt.differentiableAt (by simp)).hasDerivAt).scomp x
+    (hasDerivAt_neg x)
+  have hfun : (fun t : ℝ => f (-t)) = fun t => -f t := funext ho
+  change HasDerivAt (fun t : ℝ => f (-t)) _ x at hcomp
+  rw [hfun] at hcomp
+  have hneg : HasDerivAt (fun t : ℝ => -f t) (-deriv f x) x :=
+    ((hf.contDiffAt.differentiableAt (by simp)).hasDerivAt).neg
+  have heq := hneg.unique hcomp
+  simpa using heq.symm
+
+private theorem smooth_even_quartic_bound (f : ℝ → ℂ)
+    (hf : ContDiff ℝ ∞ f) (he : Function.Even f) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ d : Icc (0 : ℝ) 2,
+      ‖f d - f 0 - (d.val ^ 2 / 2) • deriv (deriv f) 0‖ ≤ C * d.val ^ 4 := by
+  have hf1 := (contDiff_infty_iff_deriv.mp hf).2
+  have hf2 := (contDiff_infty_iff_deriv.mp hf1).2
+  have hodd : ∀ x : ℝ, deriv f (-x) = -deriv f x := deriv_even_odd f hf he
+  have heven : Function.Even (deriv (deriv f)) :=
+    fun x => deriv_odd_even (deriv f) hf1 hodd x
+  obtain ⟨C, hC, hCbound⟩ := smooth_even_quadratic_bound (deriv (deriv f)) hf2 heven
+  have hf0 : deriv f 0 = 0 := by
+    have h := hodd 0
+    have h' : deriv f 0 = -deriv f 0 := by simpa using h
+    linear_combination (1 / 2 : ℂ) * h'
+  let g : ℝ → ℂ := fun t => deriv f t - deriv f 0 - t • deriv (deriv f) 0
+  have hg_deriv (t : ℝ) : HasDerivAt g (deriv (deriv f) t - deriv (deriv f) 0) t := by
+    have h1 : HasDerivAt (deriv f) (deriv (deriv f) t) t :=
+      (hf1.contDiffAt.differentiableAt (by simp)).hasDerivAt
+    have h2 : HasDerivAt (fun _ : ℝ => deriv f 0) 0 t := hasDerivAt_const t _
+    have h3 : HasDerivAt (fun u : ℝ => u • deriv (deriv f) 0)
+        (deriv (deriv f) 0) t := by
+      simpa using (hasDerivAt_id t).smul_const (deriv (deriv f) 0)
+    change HasDerivAt ((fun u : ℝ => deriv f u) - (fun _ => deriv f 0) -
+      fun u => u • deriv (deriv f) 0) _ t
+    simpa using h1.sub h2 |>.sub h3
+  have hg_bound (d : Icc (0 : ℝ) 2) : ‖g d.val‖ ≤ C * d.val ^ 3 := by
+    have h := (convex_Icc (0 : ℝ) d.val).norm_image_sub_le_of_norm_deriv_le
+      (fun u _ => (hg_deriv u).differentiableAt)
+      (fun u hu => by
+        rw [(hg_deriv u).deriv]
+        have hsq : u ^ 2 ≤ d.val ^ 2 := by
+          nlinarith [mul_nonneg (sub_nonneg.mpr hu.2) (add_nonneg hu.1 d.property.1)]
+        exact (hCbound ⟨u, ⟨hu.1, hu.2.trans d.property.2⟩⟩).trans
+          (mul_le_mul_of_nonneg_left hsq hC))
+      (show (0 : ℝ) ∈ Icc 0 d.val from ⟨le_rfl, d.property.1⟩)
+      (show d.val ∈ Icc 0 d.val from ⟨d.property.1, le_rfl⟩)
+    have hg0 : g 0 = 0 := by simp [g]
+    have hdabs : ‖d.val - 0‖ = d.val := by
+      rw [Real.norm_eq_abs, sub_zero, abs_of_nonneg d.property.1]
+    rw [hg0, sub_zero, hdabs] at h
+    calc
+      ‖g d.val‖ ≤ (C * d.val ^ 2) * d.val := h
+      _ = C * d.val ^ 3 := by ring
+  let R : ℝ → ℂ := fun t => f t - f 0 - (t ^ 2 / 2) • deriv (deriv f) 0
+  have hR_deriv (t : ℝ) : HasDerivAt R (g t) t := by
+    have h1 : HasDerivAt f (deriv f t) t :=
+      (hf.contDiffAt.differentiableAt (by simp)).hasDerivAt
+    have h2 : HasDerivAt (fun _ : ℝ => f 0) 0 t := hasDerivAt_const t _
+    have hquad : HasDerivAt (fun u : ℝ => ((u ^ 2 / 2 : ℝ) : ℂ)) (t : ℂ) t := by
+      have hc := ((hasDerivAt_pow 2 t).div_const (2 : ℝ)).ofReal_comp
+      convert hc using 1
+      · norm_num
+    have h3 := hquad.mul_const (deriv (deriv f) 0)
+    have hder := h1.sub h2 |>.sub h3
+    change HasDerivAt ((f - fun _ : ℝ => f 0) -
+      fun u : ℝ => (u ^ 2 / 2) • deriv (deriv f) 0)
+      (deriv f t - deriv f 0 - t • deriv (deriv f) 0) t
+    rw [hf0]
+    simpa only [Complex.real_smul, sub_zero] using hder
+  refine ⟨C, hC, fun d => ?_⟩
+  have h := (convex_Icc (0 : ℝ) d.val).norm_image_sub_le_of_norm_deriv_le
+    (fun u _ => (hR_deriv u).differentiableAt)
+    (fun u hu => by
+      rw [(hR_deriv u).deriv]
+      have hsq : u ^ 2 ≤ d.val ^ 2 := by
+        nlinarith [mul_nonneg (sub_nonneg.mpr hu.2) (add_nonneg hu.1 d.property.1)]
+      have hcube : u ^ 3 ≤ d.val ^ 3 := by
+        calc
+          u ^ 3 = u ^ 2 * u := by ring
+          _ ≤ d.val ^ 2 * u := mul_le_mul_of_nonneg_right hsq hu.1
+          _ ≤ d.val ^ 2 * d.val := mul_le_mul_of_nonneg_left hu.2 (sq_nonneg _)
+          _ = d.val ^ 3 := by ring
+      exact (hg_bound ⟨u, ⟨hu.1, hu.2.trans d.property.2⟩⟩).trans
+        (mul_le_mul_of_nonneg_left hcube hC))
+    (show (0 : ℝ) ∈ Icc 0 d.val from ⟨le_rfl, d.property.1⟩)
+    (show d.val ∈ Icc 0 d.val from ⟨d.property.1, le_rfl⟩)
+  have hR0 : R 0 = 0 := by simp [R]
+  have hdabs : ‖d.val - 0‖ = d.val := by
+    rw [Real.norm_eq_abs, sub_zero, abs_of_nonneg d.property.1]
+  rw [hR0, sub_zero, hdabs] at h
+  calc
+    ‖R d.val‖ ≤ (C * d.val ^ 3) * d.val := h
+    _ = C * d.val ^ 4 := by ring
+
+private theorem arcosh_small_bound (u : Icc (0 : ℝ) 1) :
+    0 ≤ Real.arcosh (1 + u.val) ∧ Real.arcosh (1 + u.val) ≤ 2 ∧
+      (Real.arcosh (1 + u.val)) ^ 2 ≤ 3 * u.val := by
+  have hu : 1 ≤ 1 + u.val := le_add_of_nonneg_right u.property.1
+  have hd := Real.arcosh_nonneg hu
+  have hs := Real.self_le_sinh_iff.mpr hd
+  have hh := Real.cosh_sq_sub_sinh_sq (Real.arcosh (1 + u.val))
+  rw [Real.cosh_arcosh hu] at hh
+  have hs0 := Real.sinh_nonneg_iff.mpr hd
+  have hsq : (Real.arcosh (1 + u.val)) ^ 2 ≤ 3 * u.val := by
+    nlinarith [u.property.1, u.property.2]
+  refine ⟨hd, ?_, hsq⟩
+  nlinarith [u.property.2]
+
+private theorem cosh_corner_quadratic_bound :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ d u : ℝ, d ∈ Icc (0 : ℝ) 2 → u ∈ Icc (0 : ℝ) 1 →
+      Real.cosh d = 1 + u → d ^ 2 ≤ 3 * u → |d ^ 2 - 2 * u| ≤ C * u ^ 2 := by
+  let f : ℝ → ℂ := fun t => (Real.cosh t : ℂ)
+  have hf : ContDiff ℝ ∞ f := by
+    dsimp [f]
+    exact Complex.ofRealCLM.contDiff.comp Real.contDiff_cosh
+  have he : Function.Even f := by
+    intro t
+    simp only [f, Real.cosh_neg]
+  obtain ⟨B, hB, hbound⟩ := smooth_even_quartic_bound f hf he
+  have hdfirst (t : ℝ) : deriv f t = (Real.sinh t : ℂ) := by
+    exact ((Real.hasDerivAt_cosh t).ofReal_comp).deriv
+  have hdsecond : deriv (deriv f) 0 = 1 := by
+    rw [show deriv f = fun t => (Real.sinh t : ℂ) by funext t; exact hdfirst t]
+    simpa using ((Real.hasDerivAt_sinh 0).ofReal_comp).deriv
+  refine ⟨18 * B, by positivity, fun d u hd hu hcosh hsq => ?_⟩
+  have h := hbound ⟨d, hd⟩
+  have hreal : |Real.cosh d - 1 - d ^ 2 / 2| ≤ B * d ^ 4 := by
+    rw [hdsecond] at h
+    dsimp [f] at h
+    simp only [Real.cosh_zero, Complex.ofReal_one, mul_one] at h
+    have hrewriteC : (Real.cosh d : ℂ) - 1 - (d ^ 2 / 2 : ℝ) =
+        (Real.cosh d - 1 - d ^ 2 / 2 : ℝ) := by
+      push_cast
+      ring
+    rw [hrewriteC, Complex.norm_real, Real.norm_eq_abs] at h
+    exact h
+  have hd4 : d ^ 4 ≤ 9 * u ^ 2 := by
+    nlinarith [sq_nonneg (d ^ 2 - 3 * u)]
+  have hrewrite : Real.cosh d - 1 - d ^ 2 / 2 = u - d ^ 2 / 2 := by
+    rw [hcosh]
+    ring
+  rw [hrewrite] at hreal
+  rw [show d ^ 2 - 2 * u = -2 * (u - d ^ 2 / 2) by ring, abs_mul]
+  norm_num
+  have hmul := mul_le_mul_of_nonneg_left hd4 hB
+  nlinarith
+
+private theorem arcosh_sq_quadratic_bound :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ u : Icc (0 : ℝ) 1,
+      |(Real.arcosh (1 + u.val)) ^ 2 - 2 * u.val| ≤ C * u.val ^ 2 := by
+  obtain ⟨C, hC, hbound⟩ := cosh_corner_quadratic_bound
+  refine ⟨C, hC, fun u => ?_⟩
+  obtain ⟨hd0, hd2, hsq⟩ := arcosh_small_bound u
+  apply hbound (Real.arcosh (1 + u.val)) u.val ⟨hd0, hd2⟩ u.property
+  · exact Real.cosh_arcosh (le_add_of_nonneg_right u.property.1)
+  · exact hsq
+
+private theorem smooth_even_arcosh_quadratic_bound (f : ℝ → ℂ)
+    (hf : ContDiff ℝ ∞ f) (he : Function.Even f) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ u : Icc (0 : ℝ) 1,
+      ‖f (Real.arcosh (1 + u.val)) - f 0 - u.val • deriv (deriv f) 0‖ ≤ C * u.val ^ 2 := by
+  obtain ⟨B, hB, hquartic⟩ := smooth_even_quartic_bound f hf he
+  obtain ⟨D, hD, hcorner⟩ := arcosh_sq_quadratic_bound
+  let A := deriv (deriv f) 0
+  refine ⟨9 * B + D * ‖A‖, by positivity, fun u => ?_⟩
+  obtain ⟨hd0, hd2, hsq⟩ := arcosh_small_bound u
+  let d := Real.arcosh (1 + u.val)
+  have hquartic' := hquartic (⟨d, ⟨hd0, hd2⟩⟩ : Icc (0 : ℝ) 2)
+  have hcorner' := hcorner u
+  have hd4 : d ^ 4 ≤ 9 * u.val ^ 2 := by
+    dsimp [d] at hsq ⊢
+    nlinarith [sq_nonneg ((Real.arcosh (1 + u.val)) ^ 2 - 3 * u.val)]
+  have hfirst : B * d ^ 4 ≤ (9 * B) * u.val ^ 2 := by
+    have hmul := mul_le_mul_of_nonneg_left hd4 hB
+    nlinarith
+  have hhalf : |d ^ 2 / 2 - u.val| ≤ D * u.val ^ 2 := by
+    rw [show d ^ 2 / 2 - u.val = (d ^ 2 - 2 * u.val) / 2 by ring, abs_div]
+    have habs : |(2 : ℝ)| = 2 := by norm_num
+    rw [habs]
+    have hdiv : |d ^ 2 - 2 * u.val| / 2 ≤ |d ^ 2 - 2 * u.val| :=
+      div_le_self (abs_nonneg _) (by norm_num)
+    exact hdiv.trans hcorner'
+  have hsecond : ‖(d ^ 2 / 2 - u.val) • A‖ ≤ (D * ‖A‖) * u.val ^ 2 := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc
+      |d ^ 2 / 2 - u.val| * ‖A‖ ≤ (D * u.val ^ 2) * ‖A‖ :=
+        mul_le_mul_of_nonneg_right hhalf (norm_nonneg _)
+      _ = (D * ‖A‖) * u.val ^ 2 := by ring
+  change ‖f d - f 0 - u.val • A‖ ≤ _
+  have heq : f d - f 0 - u.val • A =
+      (f d - f 0 - (d ^ 2 / 2) • A) + (d ^ 2 / 2 - u.val) • A := by
+    module
+  rw [heq]
+  calc
+    ‖f d - f 0 - (d ^ 2 / 2) • A + (d ^ 2 / 2 - u.val) • A‖ ≤
+        ‖f d - f 0 - (d ^ 2 / 2) • A‖ + ‖(d ^ 2 / 2 - u.val) • A‖ := norm_add_le _ _
+    _ ≤ (9 * B) * u.val ^ 2 + (D * ‖A‖) * u.val ^ 2 :=
+      add_le_add (hquartic'.trans hfirst) hsecond
+    _ = (9 * B + D * ‖A‖) * u.val ^ 2 := by ring
 
 private theorem normSq_hasDerivAt {a : ℝ → ℂ} {v : ℂ} {y : ℝ} (ha : HasDerivAt a v y) :
     HasDerivAt (fun t => Complex.normSq (a t))
@@ -513,6 +761,37 @@ private theorem fullKernel_local_bound (q : XiZeroCopy) (branch : Bool) (X k : �
         D = (D/δ)*δ := by field_simp
         _ ≤ _ := mul_le_mul_of_nonneg_left hδu (div_nonneg hD hδ.le)
     exact hdiff.trans (hscale.trans (by gcongr))
+
+/-- Literal quadratic corner jet of the full angular response used by the B2 cap. -/
+theorem fullKernel_quadratic_remainder (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ u : Icc (0 : ℝ) 1,
+      ‖angularMean q branch (Real.arcosh (1 + u.val)) X k -
+        fullAngularField q branch ![X, Real.exp k] -
+        u.val • deriv (deriv (fun d => angularMean q branch d X k)) 0‖ ≤ C * u.val ^ 2 := by
+  obtain ⟨C, hC, hbound⟩ := smooth_even_arcosh_quadratic_bound
+    (fun d => angularMean q branch d X k) (angularMean_smooth q branch X k)
+    (fun d => angularMean_neg_radius q branch d X k)
+  refine ⟨C, hC, fun u => ?_⟩
+  simpa only [angularMean_zero] using hbound u
+
+private theorem not_integrableOn_exp_pos_mul_Ioi (c : ℝ) (hc : 0 < c) :
+    ¬ IntegrableOn (fun h : ℝ => Real.exp (c * h)) (Ioi (0 : ℝ)) volume := by
+  intro hi
+  have hone : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Ioi (0 : ℝ)) volume := by
+    apply hi.mono' (aestronglyMeasurable_const)
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+    simpa using Real.one_le_exp_iff.mpr (mul_nonneg hc.le hh.le)
+  rw [integrableOn_const_iff] at hone
+  rcases hone with hzero | hfinite
+  · norm_num at hzero
+  · rw [Real.volume_Ioi] at hfinite
+    exact (lt_irrefl _) hfinite
+
+/-- The absolute unrenormalized second cap-scale tail cannot furnish a DCT majorant.
+The first-order cap majorant survives; this does not rule out a cancellation-based second limit. -/
+theorem secondCapScale_absolute_tail_noGo (q : XiZeroCopy) :
+    ¬ IntegrableOn (fun h : ℝ => Real.exp ((2 - decayExponent q) * h)) (Ioi (0 : ℝ)) volume :=
+  not_integrableOn_exp_pos_mul_Ioi _ (sub_pos.mpr (decayExponent_bounds q).2)
 
 private theorem full_large_radius_bound (b h : ℝ) (hb : 0 < b)
     (hu : 1 ≤ b*(Real.exp h-1)) :

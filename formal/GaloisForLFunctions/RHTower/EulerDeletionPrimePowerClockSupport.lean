@@ -37,4 +37,35 @@ theorem successor_dvd_clock_of_not_isPrimePow (n : ℕ) (hn : ¬ IsPrimePow (n +
         (Nat.le_of_lt_succ hlt)
     exact (hp.pow_dvd_iff_le_factorization (clock_pos n).ne').mp hclock
 
+/-- Any positive modulus absent from a chronological clock has a prime-power divisor that is
+strictly newer than that clock.  This is an exact factorization statement: it introduces no
+size estimate and identifies the chronological prime-power coordinate that remains unresolved. -/
+theorem exists_primePow_dvd_of_not_dvd_clock
+    {L n : ℕ} (hn : n ≠ 0) (hnd : ¬ n ∣ clock L) :
+    ∃ q : ℕ, IsPrimePow q ∧ q ∣ n ∧ L < q := by
+  have hfac : ¬ n.factorization ≤ (clock L).factorization := by
+    intro h
+    exact hnd ((Nat.factorization_le_iff_dvd hn (clock_pos L).ne').mp h)
+  rw [Finsupp.le_def] at hfac
+  push Not at hfac
+  obtain ⟨p, hp⟩ := hfac
+  have he : 0 < n.factorization p :=
+    lt_of_le_of_lt (Nat.zero_le _) hp
+  have hprime : p.Prime := by
+    by_contra hnot
+    have hzero := Nat.factorization_eq_zero_of_not_prime n hnot
+    omega
+  have hdiv : p ^ n.factorization p ∣ n :=
+    (hprime.pow_dvd_iff_le_factorization hn).mpr le_rfl
+  have hgt : L < p ^ n.factorization p := by
+    by_contra hle
+    have hclock : p ^ n.factorization p ∣ clock L :=
+      dvd_clock (Nat.one_le_iff_ne_zero.mpr (pow_ne_zero _ hprime.ne_zero))
+        (Nat.le_of_not_gt hle)
+    have hlefac := (hprime.pow_dvd_iff_le_factorization (clock_pos L).ne').mp hclock
+    omega
+  exact ⟨p ^ n.factorization p,
+    (isPrimePow_nat_iff _).mpr ⟨p, n.factorization p, hprime, he, rfl⟩,
+    hdiv, hgt⟩
+
 end RHTower.DeletionResidueMartingale

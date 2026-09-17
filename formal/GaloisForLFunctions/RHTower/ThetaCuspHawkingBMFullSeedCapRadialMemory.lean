@@ -50,6 +50,22 @@ private theorem fullHorizonMean_eq_kernel (q : XiZeroCopy) (branch : Bool)
     nlinarith
   rw [fullHorizonMean, max_eq_right hz]
 
+/-- Exact second cap-scale jet of the full angular horizon factor on the physical arm. -/
+theorem fullHorizonMean_quadratic_remainder (q : XiZeroCopy) (branch : Bool)
+    (x h X k : ℝ) (hh : 0 ≤ h)
+    (hu : capScale x * (Real.exp h - 1) ≤ 1) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ‖fullHorizonMean q branch x h X k - fullAngularField q branch ![X, Real.exp k] -
+        (capScale x * (Real.exp h - 1)) •
+          deriv (deriv (fun d => angularMean q branch d X k)) 0‖ ≤
+        C * (capScale x * (Real.exp h - 1)) ^ 2 := by
+  obtain ⟨C, hC, hbound⟩ := fullKernel_quadratic_remainder q branch X k
+  have hu0 : 0 ≤ capScale x * (Real.exp h - 1) := by
+    exact mul_nonneg (scale_pos x).le (sub_nonneg.mpr (Real.one_le_exp_iff.mpr hh))
+  refine ⟨C, hC, ?_⟩
+  rw [fullHorizonMean_eq_kernel q branch x h X k hh]
+  exact hbound ⟨capScale x * (Real.exp h - 1), hu0, hu⟩
+
 private theorem fullHorizonMean_continuous (q : XiZeroCopy) (branch : Bool)
     (x X k : ℝ) : Continuous (fun h => fullHorizonMean q branch x h X k) := by
   apply (angularMean_smooth q branch X k).continuous.comp

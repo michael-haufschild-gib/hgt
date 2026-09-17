@@ -1088,3 +1088,199 @@
   contains no extraction of a single `K`-type from an arbitrary finite vector. The next local
   bridge is therefore differential irreducibility of `SphericalKFiniteModel`; it still must be
   connected to a bounded source trace before a Schur argument can select Hecke scalars.
+
+- **Compact (K)-finite local irreducibility was already present; the local gap is bounded trace preservation (2026-09-17).**
+  `RealPrincipalSeriesCompactIrreducibility.compactSphericalPrincipal_irreducible_of_abs_lt_one`
+  proves irreducibility of the compact spherical Harish--Chandra submodule for |`s`| < 1.
+  The earlier statement that no Maass-model irreducibility theorem existed was therefore too
+  broad. The remaining local obstruction is that no bounded quotient-ℒ² rational trace has
+  been proved to preserve the source cyclic range, so this irreducibility cannot yet be used in
+  a Schur argument on the actual Maass orbit.
+
+- **Every rational trace component now has an exact source-coordinate cusp Fourier window (2026-09-17).**
+  `SelbergMaassAffineFourierTransport` proves the positive upper-triangular affine action and
+  exact Fourier dilation/translation formulas. `SelbergMaassRationalCuspFourierTransport` and
+  `SelbergMaassRationalCuspFourierCoefficient` attach these formulas to a positive rational
+  pullback. `principalCongruenceGL_hasPositiveRationalLifts` supplies positive rational lifts
+  for literal target representatives, and
+  `rationalPrincipalTrace_summand_cusp_affine` /
+  `rationalPrincipalTrace_summand_cusp_fourier_windowed` carry the result through the actual
+  `maassTraceQuotientFunc`. All exported declarations were leaf-built and axiom-audited with
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+
+- **The finite rational trace has an exact common-width window identity, but not termwise modal orientation (2026-09-17).**
+  `rationalPrincipalTrace_cusp_fourier_window_sum` expresses a literal target Fourier
+  coefficient as a finite sum of integral-translate source windows with each component's exact
+  positive scale and shift. A component becomes a standard source modal coefficient only at its
+  adaptive width `(N+1)/scale`; those widths vary with the component. Thus summing individual
+  modal character formulas does not produce a common-period sign theorem. The positive survivor
+  is the explicit finite window sum now formalized; the remaining direct Selberg theorem must
+  orient that sum (or its induced same-residue loss derivative) using arithmetic structure not
+  yet present in the corpus.
+
+- **Rational-trace positivity does not yet reach the direct phase obstruction (2026-09-17).**
+  Deep corpus search at generation `946423` finds
+  `rationalPrincipalTrace_cusp_fourier_window_sum` and its summand theorem, but no declaration
+  relating either to `phaseStressXYHorizontal_fourierCoeff_source`, `lossPair`,
+  `coefficientMixedLoss`, or `coefficientWronskian`.  This is structural: the trace-window
+  identities are linear in the Maass source, whereas the unresolved coefficient is quadratic in
+  two source derivatives.  A possible positive route would require first a bounded
+  quotient-`L²` rational Hecke correspondence and then a proved quadratic intertwiner showing
+  that its `T* T` form controls the same-residue derivative sum.  Neither bridge exists in the
+  audited corpus, so trace-window positivity cannot presently orient the weighted top term.
+
+- **The exact rational Hecke algebra is still only linear; its first missing quadratic bridge is now isolated (2026-09-17).**
+  `rationalPrincipalTraceLinear_comp_eq_fiberwise_HeckeCosetLinear` already gives the full
+  source-level finite Mackey convolution law, while
+  `rationalPrincipalTrace_restrictToSL_commutes_right` gives right-regular equivariance on
+  function carriers.  Audit of every Selberg--Maass Hecke, trace, quotient-mass, and unitary
+  module found no quotient-`L²` Hecke map, adjoint, norm identity, or `T* T` formula.
+  `integralSubgroupUnitary` is unitary only within one integral quotient, and its own source
+  records that inter-level norm comparison is missing.  The direct bridge is therefore finite
+  push--pull along the two coverings from the integral intersection subgroup
+  `Γ ∩ g⁻¹ Γ g`, with the quotient-Haar normalization proved before defining the adjoint.
+  This is necessary but not sufficient: no current theorem identifies that positive quadratic
+  form with `phaseStressXYHorizontal` or `coefficientMixedLoss`.
+
+- **The exact mixed phase loss has its sharp intrinsic Cauchy bound, but this does not orient the Selberg top flux (2026-09-17).**
+  `SelbergMaassPhaseLossCauchy.lossPair_sq_le_lossEnergy_mul` proves
+  `lossPair(v,w)^2 ≤ lossEnergy(v) * lossEnergy(w)` directly from the existing positive
+  inversion-loss quadratic form, and
+  `phaseStressXY_sq_le_derivative_losses` specializes it to the literal Maass horizontal and
+  vertical derivatives.  Both were leaf-built and axiom-audited with only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Substitution in the exact top integrand gives
+  `2*x*B + (Ly - Lx) + P`; the new theorem bounds `B` but supplies no relation on `Ly - Lx`.
+  Therefore it cannot prove the needed sign or `3D + 4A ≥ R`.  The positive survivor is the
+  sharp control of the actual signed coefficient; the next necessary direct target is an
+  arithmetic covariance law for the horizontal and vertical diagonal losses (equivalently, for
+  the same-residue Fourier loss derivative), not another generic positivity estimate.
+
+- **Full residue averaging exactly destroys the finite arithmetic loss; it cannot orient Selberg's selective channel (2026-09-17).**
+  `SelbergMaassAllChannelLoss.allChannel_lossEnergy_sum` proves
+  `Σ_{r,s} lossEnergy r s v = ((N+1)^2 - 1) ‖v‖²`, and its polarization
+  `allChannel_lossPair_sum` proves that the corresponding mixed form is only
+  `((N+1)^2 - 1) Re⟨v,w⟩`.  The proof uses the actual transfer-column Parseval identity,
+  not an estimate.  Both declarations were leaf-built and axiom-audited with only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Thus all-channel averaging restores the ambient
+  scalar metric and loses the finite transfer defect; it cannot constrain the diagonal-residue
+  phase stress that appears in the core–cusp inequality.  The surviving direct target remains a
+  selective-residue covariance or an exact same-residue Fourier law.
+
+- **Finite phase-readout products now recombine before the limit, closing the deck-coordinate analytic bridge (2026-09-17).**
+  `SelbergMaassPhaseProductLossLimit.tendsto_phaseProductPartial` sums the finite
+  `PhaseIndex` family of source-attached horizontal/height Fourier partial products and proves
+  convergence to the corresponding literal phase-readout product.  This is the exact finite
+  phase family whose normalized real part is identified pointwise with `lossPair` by
+  `phaseAverage_pair`; it preserves every same-residue cross term.  The source check and leaf
+  build pass, and its axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+  The remaining analytic calculation is explicit, not a missing reconstruction theorem: change
+  from `t` to physical `x=(N+1)t`, use unit periodicity, and separate the centered top moment
+  from the mean.  That calculation exposes the already isolated signed same-residue series; it
+  cannot create its required arithmetic orientation.
+
+- **The phase-product limit is now the exact literal mixed-loss moment (2026-09-17).**
+  `SelbergMaassPhaseProductLossLimit.phaseProductExact_re_eq_unitLossMoment` proves
+  `Re phaseProductExact = ∫₀¹ t · lossPair(F_x((N+1)t+i), F_y((N+1)t+i)) dt` for the
+  actual source derivatives and the same finite phase family used by the core--cusp route.
+  Its proof identifies each rescaled readout with its physical derivative, applies the exact
+  finite phase average, and moves only finite sums through the interval integral.  Source check
+  passes.  This removes the last analytic ambiguity between the phase-product limit and the
+  selective source loss; it leaves the same-residue off-diagonal orientation unchanged.
+
+- **The current inversion-transfer interface does not provide same-residue scalarity (2026-09-17).**
+  `inversionTransfer_coefficientVector` and `inversionTransfer_coord` give an explicit
+  character-projection/finite-regular-action transform, while
+  `inversionTransfer_energy_sum` gives its all-output energy identity.  The direct deep search
+  found no theorem making this transform scalar on a same-residue component, nor any theorem
+  forcing the off-diagonal `coefficientLoss` or `coefficientWronskian` imaginary part to vanish.
+  Thus those transfer identities cannot presently close the paired formula
+  `real_weighted_pair_decomposition`; a new source-attached global coefficient relation is still
+  required.
+
+- **Level raising does not thin the same-residue collision channel (2026-09-17; paper no-go).**
+  For a source already periodic with period `q`, its Fourier expansion regarded at period
+  `Q = kq` has support only at indices `ka`.  The selective condition at the raised level is
+  `ka ≡ kb (mod kq)`, which is equivalent to `a ≡ b (mod q)`.  Thus this proposed way to
+  force finite partial sums toward the diagonal only rescales the original collision classes;
+  it cannot orient the off-diagonal source series.  No source-level period-change/coefficient
+  transport theorem was found in the current corpus, so this is recorded as a paper-level no-go,
+  not a formal theorem.
+
+- **Leaf audit completed for the exact phase-product loss moment (2026-09-17).**
+  `lake build GaloisForLFunctions.RHTower.SelbergMaassPhaseProductLossLimit` passes.  Both
+  `tendsto_phaseProductPartial` and `phaseProductExact_re_eq_unitLossMoment` have axiom audit
+  exactly `[propext, Classical.choice, Quot.sound]`.
+
+- **Selective mixed-loss mean is exactly zero in the exceptional range (2026-09-17).**
+  `SelbergMaassPhaseProductMean.unitLossMean_eq_zero` proves, for every phase selector,
+  `∫₀¹ lossPair(F_x((N+1)t+i), F_y((N+1)t+i)) dt = 0`.  Its finite partial theorem first
+  uses Fourier orthogonality to retain only equal frequency indices.  Finite phase averaging
+  turns each surviving summand into the literal selective loss, and
+  `real_weighted_diagonal_mixed_eq_zero` proves it zero.  The new unweighted pairing limit
+  `tendsto_l2Pair_fourierPartialSum` passes this cancellation to the source pairing.
+  `SelbergMaassPhaseProductMean` is wired into `RHTower.lean`; its leaf build passes and both
+  `phasePairPartial_re_eq_zero` and `unitLossMean_eq_zero` audit only
+  `propext`, `Classical.choice`, and `Quot.sound`.  Hence the phase-product construction has no
+  residual mean term.  The unresolved direct problem is precisely the centered moment, already
+  represented by the source-attached same-residue off-diagonal Fourier series.
+
+- **Zero mean and periodicity do not orient the centered loss moment (2026-09-17; paper no-go).**
+  The new mean-zero theorem cannot by itself make the centered moment vanish: the smooth real
+  unit-periodic function `sin(2πx)` has zero mean and a nonzero centered first moment.  Thus the
+  direct proof cannot replace the remaining same-residue orientation theorem by periodicity,
+  real-valuedness, or the new mean cancellation.  Any successful final step must use genuinely
+  automorphic arithmetic information about the coefficient kernel.
+
+- **The literal zero automorphic ladder is now identified with the completed-model source (2026-09-17).**
+  `MaassLadderSourceIntertwiner.raisedFunction_zero_eq_sourceFunction` proves that inversion of
+  `raisedAutomorphic f 0` is literally `MaassQuotientL2.sourceFunction`; its `L²` consequence
+  `raisedLp_zero_eq_sourceLp` identifies their AE classes.  Hence
+  `completedModelIsometry_maassSourceModelVector_eq_raisedLp_zero` and
+  `maassSourceModelVector_orbit_intertwines_raisedLp_zero` attach the canonical completed
+  complementary-model vector to the literal all-order automorphic ladder and its full real
+  `SL(2,ℝ)` orbit.  The leaf build passes and all four theorems audit only `propext`,
+  `Classical.choice`, and `Quot.sound`.  This closes a real-place identification gap; it has no
+  finite-place action, restricted tensor product, global automorphic lift, or symmetric-power
+  compatibility, so it does not reduce the remaining approach-1 global-lift obstruction.
+
+- **Exceptional Maass sources now have a finite-deck equivariant Dirichlet completion (2026-09-17).**
+  `MaassFiniteDeckDirichlet.formPreDomain` is the submodule of finite-deck-valued chart-C¹
+  functions satisfying literal `SL2Z` regular-representation covariance and L² admission of
+  their value and two hyperbolically weighted chart derivatives.  For an exceptional source,
+  `sourceHypGrad_energy` identifies the sum of squared weighted derivative norms with the
+  established `hyperbolicGradient`; `sourceHypGradX_memLp` and `sourceHypGradY_memLp` discharge
+  both derivative coordinates.  `sourceInFormPreDomain` gives the source as an element of this
+  exact pre-domain.  Its three-coordinate L² closure and `formInclusion` are constructed, and
+  `formInclusion_sourceFormVector` identifies the completed source value coordinate with the
+  existing nonzero `sourceLp`.  The current formal frontier has no theorem that this completed
+  value-coordinate map is injective or compact, and no closed cuspidal subspace; these are the
+  next finite-multiplicity obligations.  No scalar modular domain is used.
+
+- **Finite-deck form coordinates are rigid on the pre-domain, but this does not establish closability (2026-09-17).**
+  `MaassFiniteDeckDirichlet.formEmbeddingMap_injective` proves that the three-coordinate
+  finite-deck form embedding is injective. Equality of its value L² coordinate gives equality
+  almost everywhere on `fd`; chart-C¹ continuity upgrades that equality to the closed cell, and
+  literal regular deck covariance transports it to all of `ℍ`. This is a closed proof of
+  pre-domain rigidity. It does not imply injectivity of `formInclusion` on the topological
+  closure, so it does not supply the closability or compact-resolvent premise required by the
+  Friedrichs route.
+
+- **Existing scalar closability isolates a coordinatewise finite-deck route (2026-09-17).**
+  `HTGeometry.ModularDirichletFormClosable.formInclusion_injective` proves scalar closability by
+  compactly supported interior tests, local integration by parts, and the chart fundamental
+  lemma. Its integration-by-parts input is local to chart-C¹ functions; scalar modular invariance
+  is not used in that argument. Therefore the exact next formal target is a finite-deck
+  coordinatewise version of its test functionals and integration-by-parts identities, followed by
+  the same fundamental-lemma argument for every deck coordinate. This would prove injectivity of
+  the completed `MaassFiniteDeckDirichlet.formInclusion`. No such vector theorem currently occurs
+  in the corpus. Compactness remains a separate cuspidal-tail obligation.
+
+- **Finite-deck interior integration by parts is now formalized coordinatewise (2026-09-17).**
+  `MaassFiniteDeckDirichletIntegrationByParts.component_c1` and the two
+  `component_hypGrad*` theorems identify every deck coordinate of a finite-deck pre-domain
+  element and its weighted derivatives with the scalar modular chart data. Consequently
+  `component_testWeight_hypGradX` and `component_testWeight_hypGradY` transfer the scalar
+  compact-interior integration-by-parts identities to every deck coordinate. Their leaf build
+  and axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`. This is the
+  local weak-derivative input for completed-form closability; remaining work is to construct
+  coordinate test functionals on the completed triple and apply the chart fundamental lemma.

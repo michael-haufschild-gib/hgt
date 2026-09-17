@@ -147,6 +147,55 @@ theorem criticalNormalizedChebyshevErrorLaplace_eq_resolvent_on_real
   exact criticalNormalizedChebyshevErrorLaplace_eq_resolvent_on_real_of_exponentialBound
     hB0 hB hr hr
 
+/-- The endpoint rate `1/2` still identifies the causal defect extension with the regularized
+critical-Mellin defect throughout its exact right-half-plane domain.  This is the closed endpoint
+of the generic exponential-width argument: its proof uses the real ray `r > 2` as an identity
+set and does not require an artificial strict gap below `1/2`. -/
+theorem criticalMellinChebyshevResolventDefectExtension_eq_regularized_rightHalfPlane
+    {u : ℂ} (hu : 0 < u.re) :
+    criticalMellinChebyshevResolventDefectExtension u =
+      regularizedCriticalMellinDefect u := by
+  rcases criticalMellinChebyshevResolvent_halfExponentialBounded with ⟨B, hB0, hB⟩
+  let U : Set ℂ := {v : ℂ | 0 < v.re}
+  have hAfull :=
+    analyticOnNhd_criticalMellinChebyshevResolventDefectExtension_of_exponentialBound
+      (alpha := 1 / 2) (by norm_num : 0 ≤ (1 / 2 : ℝ)) hB0 hB
+  have hA : AnalyticOnNhd ℂ criticalMellinChebyshevResolventDefectExtension U :=
+    hAfull.mono (by
+      intro v hv
+      change 0 < v.re at hv
+      change (1 / 2 : ℝ) - 1 / 2 < v.re
+      norm_num
+      exact hv)
+  have hR : AnalyticOnNhd ℂ regularizedCriticalMellinDefect U := by
+    simpa only [U] using analyticOnNhd_regularizedCriticalMellinDefect_rightHalfPlane
+  have htwo : (2 : ℂ) ∈ U := by
+    change 0 < (2 : ℂ).re
+    norm_num
+  have htend : Tendsto (fun r : ℝ => (r : ℂ))
+      (𝓝[>] (2 : ℝ)) (𝓝[≠] (2 : ℂ)) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h : Tendsto (fun r : ℝ => (r : ℂ))
+          (𝓝 (2 : ℝ)) (𝓝 (2 : ℂ)) := by
+        simpa using Complex.continuous_ofReal.tendsto (2 : ℝ)
+      exact h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      simp only [mem_compl_iff, mem_singleton_iff]
+      intro hcon
+      have : r = 2 := by exact_mod_cast hcon
+      exact absurd this (ne_of_gt hr)
+  have hfreq : ∃ᶠ v in 𝓝[≠] (2 : ℂ),
+      criticalMellinChebyshevResolventDefectExtension v =
+        regularizedCriticalMellinDefect v := by
+    refine htend.frequently (Filter.Eventually.frequently ?_)
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    change (2 : ℝ) < r at hr
+    exact criticalMellinChebyshevResolventDefectExtension_eq_regularized_on_real_of_exponentialBound
+      hB0 hB (lt_trans (by norm_num) hr) (by linarith)
+  have heq := hA.eqOn_of_preconnected_of_frequently_eq hR
+    (convex_halfSpace_re_gt 0).isPreconnected htwo hfreq
+  exact heq hu
+
 /-- Exact source-faithful Laplace bridge from the causal unit-Riesz charge to zeta's
 regularized logarithmic derivative, retaining the pre-prime `2/3` boundary mass. -/
 theorem criticalMellinChebyshevResolventLaplace_eq_logDeriv_on_real

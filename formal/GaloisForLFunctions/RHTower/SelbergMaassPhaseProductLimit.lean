@@ -225,5 +225,146 @@ theorem tendsto_unitCoord_sourceReadout_partial_pair
     (SelbergMaassFourierPartial.continuous_unitRescaledHorizontalReadout N f L hy)
     (SelbergMaassFourierPartial.continuous_unitRescaledVerticalReadout N f H hy)
 
+
+/-- Unweighted unit Fourier partial pairings converge to the physical pairing. -/
+theorem tendsto_l2Pair_fourierPartialSum {f g : ℝ → ℂ}
+    (hf : Continuous f) (hg : Continuous g) :
+    Tendsto (fun M : ℕ =>
+      l2Pair (fourierPartialSum f M) (fourierPartialSum g M)) atTop
+      (𝓝 (l2Pair f g)) := by
+  have hF0 := tendsto_l2NormSq_sub_fourierPartialSum hf
+  have hG0 := tendsto_l2NormSq_sub_fourierPartialSum hg
+  have hF : Tendsto (fun M : ℕ =>
+      l2NormSq (fun t => fourierPartialSum f M t - f t)) atTop (𝓝 0) := by
+    refine hF0.congr' ?_
+    filter_upwards with M
+    exact l2NormSq_sub_comm
+  have hG : Tendsto (fun M : ℕ =>
+      l2NormSq (fun t => fourierPartialSum g M t - g t)) atTop (𝓝 0) := by
+    refine hG0.congr' ?_
+    filter_upwards with M
+    exact l2NormSq_sub_comm
+  have hGsmall : ∀ᶠ M : ℕ in atTop,
+      l2NormSq (fun t => fourierPartialSum g M t - g t) ≤ 1 := by
+    filter_upwards [hG.eventually (Metric.ball_mem_nhds (0 : ℝ) (by norm_num : (0 : ℝ) < 1))] with M hM
+    rw [dist_zero_right] at hM
+    have hnn := l2NormSq_nonneg (fun t => fourierPartialSum g M t - g t)
+    rw [Real.norm_eq_abs, abs_of_nonneg hnn] at hM
+    linarith
+  let C : ℝ := 2 * l2NormSq g + 2
+  have hPGbound : ∀ᶠ M : ℕ in atTop, l2NormSq (fourierPartialSum g M) ≤ C := by
+    filter_upwards [hGsmall] with M hM
+    have hcont : Continuous (fun t => fourierPartialSum g M t - g t) :=
+      (continuous_fourierPartialSum g M).sub hg
+    have hadd := l2NormSq_add_le hg hcont
+    have hfun : (fun t => g t + (fourierPartialSum g M t - g t)) =
+        fourierPartialSum g M := by
+      funext t
+      ring
+    rw [hfun] at hadd
+    dsimp [C]
+    linarith
+  have hFroot : Tendsto (fun M : ℕ =>
+      Real.sqrt (l2NormSq (fun t => fourierPartialSum f M t - f t))) atTop (𝓝 0) := by
+    change Tendsto ((fun x : ℝ => Real.sqrt x) ∘
+      fun M : ℕ => l2NormSq (fun t => fourierPartialSum f M t - f t)) atTop (𝓝 0)
+    simpa only [Real.sqrt_zero] using (Real.continuous_sqrt.tendsto 0).comp hF
+  have hGroot : Tendsto (fun M : ℕ =>
+      Real.sqrt (l2NormSq (fun t => fourierPartialSum g M t - g t))) atTop (𝓝 0) := by
+    change Tendsto ((fun x : ℝ => Real.sqrt x) ∘
+      fun M : ℕ => l2NormSq (fun t => fourierPartialSum g M t - g t)) atTop (𝓝 0)
+    simpa only [Real.sqrt_zero] using (Real.continuous_sqrt.tendsto 0).comp hG
+  have hR : Tendsto (fun M : ℕ =>
+      Real.sqrt (l2NormSq (fun t => fourierPartialSum f M t - f t)) * Real.sqrt C +
+        Real.sqrt (l2NormSq f) *
+          Real.sqrt (l2NormSq (fun t => fourierPartialSum g M t - g t))) atTop (𝓝 0) := by
+    have h1 := hFroot.mul_const (Real.sqrt C)
+    have h2 := hGroot.const_mul (Real.sqrt (l2NormSq f))
+    simpa using h1.add h2
+  have hbound : ∀ᶠ M : ℕ in atTop,
+      ‖l2Pair (fourierPartialSum f M) (fourierPartialSum g M) - l2Pair f g‖ ≤
+        Real.sqrt (l2NormSq (fun t => fourierPartialSum f M t - f t)) * Real.sqrt C +
+          Real.sqrt (l2NormSq f) *
+            Real.sqrt (l2NormSq (fun t => fourierPartialSum g M t - g t)) := by
+    filter_upwards [hPGbound] with M hM
+    have hPF : Continuous (fourierPartialSum f M) := continuous_fourierPartialSum f M
+    have hPG : Continuous (fourierPartialSum g M) := continuous_fourierPartialSum g M
+    have hEF : Continuous (fun t => fourierPartialSum f M t - f t) := hPF.sub hf
+    have hEG : Continuous (fun t => fourierPartialSum g M t - g t) := hPG.sub hg
+    have hsplit :
+        l2Pair (fourierPartialSum f M) (fourierPartialSum g M) - l2Pair f g =
+          l2Pair (fun t => fourierPartialSum f M t - f t) (fourierPartialSum g M) +
+            l2Pair f (fun t => fourierPartialSum g M t - g t) := by
+      have hright : l2Pair f (fourierPartialSum g M) - l2Pair f g =
+          l2Pair f (fun t => fourierPartialSum g M t - g t) := by
+        rw [← l2Pair_sub_right hf hPG hg]
+      calc
+        l2Pair (fourierPartialSum f M) (fourierPartialSum g M) - l2Pair f g =
+            (l2Pair (fourierPartialSum f M) (fourierPartialSum g M) -
+              l2Pair f (fourierPartialSum g M)) +
+              (l2Pair f (fourierPartialSum g M) - l2Pair f g) := by ring
+        _ = (l2Pair (fourierPartialSum f M) (fourierPartialSum g M) -
+              l2Pair f (fourierPartialSum g M)) +
+              l2Pair f (fun t => fourierPartialSum g M t - g t) := by rw [hright]
+        _ = _ := by rw [← l2Pair_sub_left hPF hf hPG]
+    rw [hsplit]
+    calc
+      ‖l2Pair (fun t => fourierPartialSum f M t - f t) (fourierPartialSum g M) +
+        l2Pair f (fun t => fourierPartialSum g M t - g t)‖ ≤
+          ‖l2Pair (fun t => fourierPartialSum f M t - f t) (fourierPartialSum g M)‖ +
+          ‖l2Pair f (fun t => fourierPartialSum g M t - g t)‖ := norm_add_le _ _
+      _ ≤ Real.sqrt (l2NormSq (fun t => fourierPartialSum f M t - f t)) *
+          Real.sqrt (l2NormSq (fourierPartialSum g M)) +
+          Real.sqrt (l2NormSq f) *
+            Real.sqrt (l2NormSq (fun t => fourierPartialSum g M t - g t)) := by
+        gcongr
+        · exact norm_l2Pair_le_sqrt_l2NormSq hEF hPG
+        · exact norm_l2Pair_le_sqrt_l2NormSq hf hEG
+      _ ≤ Real.sqrt (l2NormSq (fun t => fourierPartialSum f M t - f t)) * Real.sqrt C +
+          Real.sqrt (l2NormSq f) *
+            Real.sqrt (l2NormSq (fun t => fourierPartialSum g M t - g t)) := by
+        have hPGroot : Real.sqrt (l2NormSq (fourierPartialSum g M)) ≤ Real.sqrt C :=
+          Real.sqrt_le_sqrt hM
+        gcongr
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero' (Filter.Eventually.of_forall fun _ => norm_nonneg _) hbound hR
+
+
+/-- A finite unweighted Fourier pairing contains only equal Fourier indices. -/
+theorem l2Pair_fourierPartialSum_eq_diagonal (f g : ℝ → ℂ) (M : ℕ) :
+    l2Pair (fourierPartialSum f M) (fourierPartialSum g M) =
+      ∑ n ∈ Finset.Icc (-(M : ℤ)) (M : ℤ),
+        (starRingEnd ℂ) (l2Pair (fourierChar n) f) * l2Pair (fourierChar n) g := by
+  set S : Finset ℤ := Finset.Icc (-(M : ℤ)) (M : ℤ) with hS
+  set cf : ℤ → ℂ := fun n => l2Pair (fourierChar n) f with hcf
+  set cg : ℤ → ℂ := fun n => l2Pair (fourierChar n) g with hcg
+  have hexp : ∀ x : ℝ, (starRingEnd ℂ) (fourierPartialSum f M x) * fourierPartialSum g M x =
+      ∑ i ∈ S, ∑ j ∈ S, ((starRingEnd ℂ) (cf i) * cg j) *
+        (fourierChar (-i) x * fourierChar j x) := by
+    intro x
+    simp only [fourierPartialSum_eq, hS, hcf, hcg, map_sum, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_mul, fourierChar_conj, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  rw [l2Pair, intervalIntegral.integral_congr (fun x _ => hexp x),
+    intervalIntegral.integral_finsetSum]
+  · refine Finset.sum_congr rfl fun i hi => ?_
+    rw [intervalIntegral.integral_finsetSum]
+    · rw [Finset.sum_eq_single i]
+      · rw [intervalIntegral.integral_const_mul, integral_fourierChar_orthonormal, if_pos rfl,
+          mul_one]
+      · intro j _ hji
+        rw [intervalIntegral.integral_const_mul, integral_fourierChar_orthonormal,
+          if_neg (fun h => hji h.symm), mul_zero]
+      · intro h
+        exact absurd hi h
+    · intro j _
+      refine Continuous.intervalIntegrable ?_ _ _
+      exact continuous_const.mul ((continuous_fourierChar _).mul (continuous_fourierChar _))
+  · intro i _
+    refine Continuous.intervalIntegrable ?_ _ _
+    refine continuous_finsetSum _ fun j _ => ?_
+    exact continuous_const.mul ((continuous_fourierChar _).mul (continuous_fourierChar _))
+
 end
 end GaloisForLFunctions.RHTower.SelbergMaassPhaseProductLimit

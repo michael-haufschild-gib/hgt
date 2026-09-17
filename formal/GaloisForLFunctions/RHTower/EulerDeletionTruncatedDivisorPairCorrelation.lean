@@ -3,6 +3,8 @@ import GaloisForLFunctions.RHTower.Sieve.ShiftReindex
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples
 import GaloisForLFunctions.RHTower.EulerDeletionResidueMartingale
 import GaloisForLFunctions.RHTower.EulerDeletionCanonicalClockResolvent
+import GaloisForLFunctions.RHTower.EulerDeletionPrimePowerClockSupport
+import GaloisForLFunctions.RHTower.MobiusCoprimeMatrixFactorization
 
 /-!
 # Exact finite correlations of the Euler-deletion truncated divisor field
@@ -278,6 +280,609 @@ theorem lcmMoebiusPairCoefficient_eq_moebius (n : ℕ) :
   rcases n.eq_zero_or_pos with rfl | hn
   · simp [lcmMoebiusPairCoefficient]
   · exact (hpairInv n hn).symm.trans (hmuInv n hn)
+
+/-- The weighted contribution from the exact lcm fibre `n`. -/
+def lcmPairFibre (a : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ∑ de ∈ (n.divisors ×ˢ n.divisors).filter (fun de => Nat.lcm de.1 de.2 = n),
+    a de.1 * a de.2
+
+/-- The one-divisor partial sum whose square accumulates all lcm fibres below a modulus. -/
+def divisorFibrePrefix (a : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ∑ d ∈ n.divisors, a d
+
+/-- Exact reindexing of a finite divisor-pair sum by its literal lcm fibre. -/
+theorem sum_pair_reindex_lcm {R : Type*} [AddCommMonoid R]
+    (s : Finset ℕ) (f : ℕ × ℕ → R) :
+    ∑ de ∈ s ×ˢ s, f de =
+      ∑ n ∈ (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2),
+        ∑ de ∈ (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = n), f de := by
+  classical
+  exact (Finset.sum_fiberwise_of_maps_to
+    (s := s ×ˢ s) (t := (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2))
+    (g := fun de => Nat.lcm de.1 de.2) (f := f)
+    (fun de hde => Finset.mem_image_of_mem _ hde)).symm
+
+private theorem divisor_sum_lcmPairFibre (a : ℕ → ℝ) (n : ℕ) :
+    ∑ q ∈ n.divisors, lcmPairFibre a q = (divisorFibrePrefix a n) ^ 2 := by
+  classical
+  unfold lcmPairFibre
+  have hmem : ∀ (q : ℕ) (de : ℕ × ℕ),
+      q ∈ n.divisors ∧
+          de ∈ (q.divisors ×ˢ q.divisors).filter (fun de => Nat.lcm de.1 de.2 = q) ↔
+        q ∈ n.divisors.filter (fun q => Nat.lcm de.1 de.2 = q) ∧
+          de ∈ n.divisors ×ˢ n.divisors := by
+    intro q de
+    constructor
+    · rintro ⟨hq, hde⟩
+      obtain ⟨hdeq, hlcm⟩ := Finset.mem_filter.mp hde
+      obtain ⟨hd, he⟩ := Finset.mem_product.mp hdeq
+      refine ⟨Finset.mem_filter.mpr ⟨hq, hlcm⟩, Finset.mem_product.mpr ⟨?_, ?_⟩⟩
+      · exact Nat.mem_divisors.mpr
+          ⟨(Nat.dvd_of_mem_divisors hd).trans (Nat.dvd_of_mem_divisors hq),
+            (Nat.mem_divisors.mp hq).2⟩
+      · exact Nat.mem_divisors.mpr
+          ⟨(Nat.dvd_of_mem_divisors he).trans (Nat.dvd_of_mem_divisors hq),
+            (Nat.mem_divisors.mp hq).2⟩
+    · rintro ⟨hq, hde⟩
+      obtain ⟨hqdiv, hlcm⟩ := Finset.mem_filter.mp hq
+      obtain ⟨hd, he⟩ := Finset.mem_product.mp hde
+      have hq0 : q ≠ 0 := (Nat.pos_of_mem_divisors hqdiv).ne'
+      refine ⟨hqdiv, Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨?_, ?_⟩, hlcm⟩⟩
+      · exact Nat.mem_divisors.mpr ⟨by simpa [hlcm] using Nat.dvd_lcm_left de.1 de.2, hq0⟩
+      · exact Nat.mem_divisors.mpr ⟨by simpa [hlcm] using Nat.dvd_lcm_right de.1 de.2, hq0⟩
+  rw [Finset.sum_comm' hmem]
+  have hinner : ∀ de ∈ n.divisors ×ˢ n.divisors,
+      (∑ q ∈ n.divisors.filter (fun q => Nat.lcm de.1 de.2 = q),
+        a de.1 * a de.2) = a de.1 * a de.2 := by
+    intro de hde
+    obtain ⟨hd, he⟩ := Finset.mem_product.mp hde
+    have hqdiv : Nat.lcm de.1 de.2 ∈ n.divisors :=
+      Nat.mem_divisors.mpr ⟨Nat.lcm_dvd (Nat.dvd_of_mem_divisors hd)
+        (Nat.dvd_of_mem_divisors he), (Nat.mem_divisors.mp hd).2⟩
+    have hfilter : n.divisors.filter (fun q => Nat.lcm de.1 de.2 = q) =
+        {Nat.lcm de.1 de.2} := by
+      ext q
+      simp only [Finset.mem_filter, Finset.mem_singleton]
+      constructor
+      · rintro ⟨_, hq⟩
+        exact hq.symm
+      · intro hq
+        subst q
+        exact ⟨hqdiv, rfl⟩
+    rw [hfilter, Finset.sum_singleton]
+  rw [Finset.sum_congr rfl hinner, Finset.sum_product]
+  change (∑ d ∈ n.divisors, ∑ e ∈ n.divisors, a d * a e) = _
+  rw [← Finset.sum_mul_sum, pow_two]
+  rfl
+
+/-- Exact Möbius inversion of one weighted lcm fibre into squares of divisor-prefix sums. -/
+theorem lcmPairFibre_moebius_inversion (a : ℕ → ℝ) (n : ℕ) (hn : 0 < n) :
+    ∑ x ∈ n.divisorsAntidiagonal,
+      ((moebius x.1 : ℤ) : ℝ) * (divisorFibrePrefix a x.2) ^ 2 =
+        lcmPairFibre a n := by
+  exact (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq
+    (f := lcmPairFibre a) (g := fun q => (divisorFibrePrefix a q) ^ 2)).mp
+      (by
+        intro q hq
+        exact divisor_sum_lcmPairFibre a q) n hn
+
+/-- The weighted contribution from one lcm fibre on a finite divisor carrier. -/
+def finiteLcmPairFibre (s : Finset ℕ) (a : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ∑ de ∈ (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = n), a de.1 * a de.2
+
+/-- The bilinear contribution from one lcm fibre on a finite divisor carrier. -/
+def finiteLcmPairCrossFibre (s : Finset ℕ) (a b : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ∑ de ∈ (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = n), a de.1 * b de.2
+
+/-- Exact lcm-fibre reindexing for two distinct finite divisor weights. -/
+theorem finite_sum_mul_eq_lcmPairCrossFibres (s : Finset ℕ) (a b : ℕ → ℝ) :
+    (∑ d ∈ s, a d) * (∑ e ∈ s, b e) =
+      ∑ n ∈ (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2),
+        finiteLcmPairCrossFibre s a b n := by
+  rw [Finset.sum_mul_sum]
+  calc
+    ∑ d ∈ s, ∑ e ∈ s, a d * b e =
+        ∑ de ∈ s ×ˢ s, a de.1 * b de.2 := by
+      rw [Finset.sum_product]
+    _ = ∑ n ∈ (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2),
+        ∑ de ∈ (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = n), a de.1 * b de.2 := by
+      rw [sum_pair_reindex_lcm]
+
+/-- The divisor prefix of a finite carrier at one modulus. -/
+def finiteDivisorFibrePrefix (s : Finset ℕ) (a : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ∑ d ∈ s.filter (fun d => d ∣ n), a d
+
+private theorem divisor_sum_finiteLcmPairFibre
+    (s : Finset ℕ) (a : ℕ → ℝ) (n : ℕ) (hn : 0 < n) :
+    ∑ q ∈ n.divisors, finiteLcmPairFibre s a q =
+      (finiteDivisorFibrePrefix s a n) ^ 2 := by
+  classical
+  let U := (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 ∣ n)
+  have hmaps : ∀ de ∈ U, Nat.lcm de.1 de.2 ∈ n.divisors := by
+    intro de hde
+    exact Nat.mem_divisors.mpr ⟨(Finset.mem_filter.mp hde).2, hn.ne'⟩
+  have hfib := Finset.sum_fiberwise_of_maps_to
+    (s := U) (t := n.divisors) (g := fun de => Nat.lcm de.1 de.2)
+    (f := fun de : ℕ × ℕ => a de.1 * a de.2) hmaps
+  have hqset : ∀ q ∈ n.divisors,
+      (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = q) =
+        U.filter (fun de => Nat.lcm de.1 de.2 = q) := by
+    intro q hq
+    ext de
+    simp only [Finset.mem_filter, Finset.mem_product, U]
+    constructor
+    · rintro ⟨hde, hlcm⟩
+      exact ⟨⟨hde, by simpa [hlcm] using Nat.dvd_of_mem_divisors hq⟩, hlcm⟩
+    · rintro ⟨⟨hde, hdn⟩, hlcm⟩
+      exact ⟨hde, hlcm⟩
+  calc
+    ∑ q ∈ n.divisors, finiteLcmPairFibre s a q =
+      ∑ q ∈ n.divisors,
+        ∑ de ∈ U.filter (fun de => Nat.lcm de.1 de.2 = q), a de.1 * a de.2 := by
+      unfold finiteLcmPairFibre
+      refine Finset.sum_congr rfl fun q hq => ?_
+      rw [hqset q hq]
+    _ = ∑ de ∈ U, a de.1 * a de.2 := hfib
+    _ = (finiteDivisorFibrePrefix s a n) ^ 2 := by
+      have hUset : U = (s.filter (fun d => d ∣ n)) ×ˢ (s.filter (fun d => d ∣ n)) := by
+        ext de
+        simp only [U, Finset.mem_filter, Finset.mem_product, Nat.lcm_dvd_iff]
+        constructor
+        · rintro ⟨⟨hd, he⟩, hln⟩
+          exact ⟨⟨hd, hln.1⟩, ⟨he, hln.2⟩⟩
+        · rintro ⟨⟨hd, hdn⟩, ⟨he, hen⟩⟩
+          exact ⟨⟨hd, he⟩, ⟨hdn, hen⟩⟩
+      rw [hUset, Finset.sum_product]
+      change (∑ d ∈ s.filter (fun d => d ∣ n),
+        ∑ e ∈ s.filter (fun d => d ∣ n), a d * a e) = _
+      rw [← Finset.sum_mul_sum, pow_two]
+      rfl
+
+/-- Exact Möbius inversion of an lcm fibre on the actual finite divisor carrier. -/
+theorem finiteLcmPairFibre_moebius_inversion
+    (s : Finset ℕ) (a : ℕ → ℝ) (n : ℕ) (hn : 0 < n) :
+    ∑ x ∈ n.divisorsAntidiagonal,
+      ((moebius x.1 : ℤ) : ℝ) * (finiteDivisorFibrePrefix s a x.2) ^ 2 =
+        finiteLcmPairFibre s a n := by
+  exact (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq
+    (f := finiteLcmPairFibre s a) (g := fun q => (finiteDivisorFibrePrefix s a q) ^ 2)).mp
+      (by
+        intro q hq
+        exact divisor_sum_finiteLcmPairFibre s a q hq) n hn
+
+/-- Divisor-prefix accumulation for a literal bilinear lcm fibre. -/
+private theorem divisor_sum_finiteLcmPairCrossFibre
+    (s : Finset ℕ) (a b : ℕ → ℝ) (n : ℕ) (hn : 0 < n) :
+    ∑ q ∈ n.divisors, finiteLcmPairCrossFibre s a b q =
+      finiteDivisorFibrePrefix s a n * finiteDivisorFibrePrefix s b n := by
+  classical
+  let U := (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 ∣ n)
+  have hmaps : ∀ de ∈ U, Nat.lcm de.1 de.2 ∈ n.divisors := by
+    intro de hde
+    exact Nat.mem_divisors.mpr ⟨(Finset.mem_filter.mp hde).2, hn.ne'⟩
+  have hfib := Finset.sum_fiberwise_of_maps_to
+    (s := U) (t := n.divisors) (g := fun de => Nat.lcm de.1 de.2)
+    (f := fun de : ℕ × ℕ => a de.1 * b de.2) hmaps
+  have hqset : ∀ q ∈ n.divisors,
+      (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = q) =
+        U.filter (fun de => Nat.lcm de.1 de.2 = q) := by
+    intro q hq
+    ext de
+    simp only [Finset.mem_filter, Finset.mem_product, U]
+    constructor
+    · rintro ⟨hde, hlcm⟩
+      exact ⟨⟨hde, by simpa [hlcm] using Nat.dvd_of_mem_divisors hq⟩, hlcm⟩
+    · rintro ⟨⟨hde, hdn⟩, hlcm⟩
+      exact ⟨hde, hlcm⟩
+  calc
+    ∑ q ∈ n.divisors, finiteLcmPairCrossFibre s a b q =
+      ∑ q ∈ n.divisors,
+        ∑ de ∈ U.filter (fun de => Nat.lcm de.1 de.2 = q), a de.1 * b de.2 := by
+      unfold finiteLcmPairCrossFibre
+      refine Finset.sum_congr rfl fun q hq => ?_
+      rw [hqset q hq]
+    _ = ∑ de ∈ U, a de.1 * b de.2 := hfib
+    _ = finiteDivisorFibrePrefix s a n * finiteDivisorFibrePrefix s b n := by
+      have hUset : U = (s.filter (fun d => d ∣ n)) ×ˢ (s.filter (fun d => d ∣ n)) := by
+        ext de
+        simp only [U, Finset.mem_filter, Finset.mem_product, Nat.lcm_dvd_iff]
+        constructor
+        · rintro ⟨⟨hd, he⟩, hln⟩
+          exact ⟨⟨hd, hln.1⟩, ⟨he, hln.2⟩⟩
+        · rintro ⟨⟨hd, hdn⟩, ⟨he, hen⟩⟩
+          exact ⟨⟨hd, he⟩, ⟨hdn, hen⟩⟩
+      rw [hUset, Finset.sum_product]
+      change (∑ d ∈ s.filter (fun d => d ∣ n),
+        ∑ e ∈ s.filter (fun d => d ∣ n), a d * b e) = _
+      rw [← Finset.sum_mul_sum]
+      rfl
+
+/-- Exact Möbius inversion of a literal bilinear lcm fibre into its two divisor-prefix
+factors.  This retains their signs and the distinct two-variable weights. -/
+theorem finiteLcmPairCrossFibre_moebius_inversion
+    (s : Finset ℕ) (a b : ℕ → ℝ) (n : ℕ) (hn : 0 < n) :
+    ∑ z ∈ n.divisorsAntidiagonal,
+      ((moebius z.1 : ℤ) : ℝ) *
+        (finiteDivisorFibrePrefix s a z.2 * finiteDivisorFibrePrefix s b z.2) =
+      finiteLcmPairCrossFibre s a b n := by
+  exact (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq
+    (f := finiteLcmPairCrossFibre s a b)
+    (g := fun q => finiteDivisorFibrePrefix s a q * finiteDivisorFibrePrefix s b q)).mp
+      (by
+        intro q hq
+        exact divisor_sum_finiteLcmPairCrossFibre s a b q hq) n hn
+
+/-- A finite weighted divisor square is exactly the signed sum of its Möbius-inverted
+lcm-prefix fibres. -/
+theorem finite_divisorSum_sq_eq_lcmMöbiusPrefixes
+    (s : Finset ℕ) (a : ℕ → ℝ) (hs : ∀ d ∈ s, 0 < d) :
+    (∑ d ∈ s, a d) ^ 2 =
+      ∑ n ∈ (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2),
+        ∑ z ∈ n.divisorsAntidiagonal,
+          ((moebius z.1 : ℤ) : ℝ) * (finiteDivisorFibrePrefix s a z.2) ^ 2 := by
+  rw [pow_two, Finset.sum_mul_sum]
+  change (∑ d ∈ s, ∑ e ∈ s, a d * a e) = _
+  calc
+    ∑ d ∈ s, ∑ e ∈ s, a d * a e =
+        ∑ de ∈ s ×ˢ s, a de.1 * a de.2 := by
+      rw [Finset.sum_product]
+    _ = ∑ n ∈ (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2),
+        ∑ de ∈ (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = n), a de.1 * a de.2 := by
+      rw [sum_pair_reindex_lcm]
+    _ = ∑ n ∈ (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2),
+        ∑ z ∈ n.divisorsAntidiagonal,
+          ((moebius z.1 : ℤ) : ℝ) * (finiteDivisorFibrePrefix s a z.2) ^ 2 := by
+      refine Finset.sum_congr rfl fun n hn => ?_
+      rcases Finset.mem_image.mp hn with ⟨de, hde, rfl⟩
+      obtain ⟨hd, he⟩ := Finset.mem_product.mp hde
+      have hpos : 0 < Nat.lcm de.1 de.2 :=
+        Nat.lcm_pos (hs de.1 hd) (hs de.2 he)
+      exact (finiteLcmPairFibre_moebius_inversion s a (Nat.lcm de.1 de.2) hpos).symm
+
+/-- A finite lcm carrier whose two divisor coordinates are at most `N` has no fibre above
+`N²`.  This is the exact large-prefix boundary for the truncated EDQ carrier. -/
+theorem finiteLcmPairFibre_eq_zero_of_mul_lt
+    (s : Finset ℕ) (a : ℕ → ℝ) (N n : ℕ)
+    (hpos : ∀ d ∈ s, 0 < d) (hle : ∀ d ∈ s, d ≤ N) (hn : N * N < n) :
+    finiteLcmPairFibre s a n = 0 := by
+  classical
+  unfold finiteLcmPairFibre
+  refine Finset.sum_eq_zero ?_
+  intro de hde
+  obtain ⟨hde, hlcm⟩ := Finset.mem_filter.mp hde
+  obtain ⟨hd, he⟩ := Finset.mem_product.mp hde
+  have hprodpos : 0 < de.1 * de.2 := Nat.mul_pos (hpos de.1 hd) (hpos de.2 he)
+  have hlcmle : Nat.lcm de.1 de.2 ≤ de.1 * de.2 :=
+    Nat.le_of_dvd hprodpos
+      (Nat.lcm_dvd (Dvd.intro de.2 rfl) (Dvd.intro de.1 (Nat.mul_comm _ _)))
+  have hprodle : de.1 * de.2 ≤ N * N := Nat.mul_le_mul (hle de.1 hd) (hle de.2 he)
+  have : n ≤ N * N := by simpa [hlcm] using hlcmle.trans hprodle
+  omega
+
+/-- On the literal EDQ divisor carrier `Icc 1 N`, lcm fibres above `N²` vanish exactly. -/
+theorem finiteLcmPairFibre_Icc_eq_zero_of_square_lt
+    (N n : ℕ) (a : ℕ → ℝ) (hn : N * N < n) :
+    finiteLcmPairFibre (Icc 1 N) a n = 0 := by
+  apply finiteLcmPairFibre_eq_zero_of_mul_lt (N := N) (n := n) (a := a) (hn := hn)
+  · intro d hd
+    exact (Finset.mem_Icc.mp hd).1
+  · intro d hd
+    exact (Finset.mem_Icc.mp hd).2
+
+/-- A whole signed lcm fibre vanishes when its modulus divides a clock on which every retained
+divisor weight vanishes.  No absolute value or positive completion is introduced. -/
+theorem finiteLcmPairFibre_eq_zero_of_dvd_clock
+    (s : Finset ℕ) (a : ℕ → ℝ) (n C : ℕ)
+    (ha : ∀ d ∈ s, d ∣ C → a d = 0) (hnC : n ∣ C) :
+    finiteLcmPairFibre s a n = 0 := by
+  classical
+  unfold finiteLcmPairFibre
+  refine Finset.sum_eq_zero ?_
+  intro de hde
+  obtain ⟨hde, hlcm⟩ := Finset.mem_filter.mp hde
+  obtain ⟨hd, _⟩ := Finset.mem_product.mp hde
+  have hlcmC : Nat.lcm de.1 de.2 ∣ C := by simpa [hlcm] using hnC
+  have hdC : de.1 ∣ C := by
+    exact (Nat.dvd_lcm_left de.1 de.2).trans hlcmC
+  rw [ha de.1 hd hdC, zero_mul]
+
+/-- A signed bilinear lcm fibre vanishes when its first divisor weight vanishes on every
+divisor of a clock.  This is the two-variable form needed before forming the actual beta
+double integral; no sign or cross term is discarded. -/
+theorem finiteLcmPairCrossFibre_eq_zero_of_dvd_clock
+    (s : Finset ℕ) (a b : ℕ → ℝ) (n C : ℕ)
+    (ha : ∀ d ∈ s, d ∣ C → a d = 0) (hnC : n ∣ C) :
+    finiteLcmPairCrossFibre s a b n = 0 := by
+  classical
+  unfold finiteLcmPairCrossFibre
+  refine Finset.sum_eq_zero ?_
+  intro de hde
+  obtain ⟨hde, hlcm⟩ := Finset.mem_filter.mp hde
+  obtain ⟨hd, _⟩ := Finset.mem_product.mp hde
+  have hlcmC : Nat.lcm de.1 de.2 ∣ C := by simpa [hlcm] using hnC
+  have hdC : de.1 ∣ C := by
+    exact (Nat.dvd_lcm_left de.1 de.2).trans hlcmC
+  rw [ha de.1 hd hdC, zero_mul]
+
+/-- Every modulus occurring in the literal lcm image of the EDQ carrier is in `Icc 1 (N²)`. -/
+theorem mem_lcmImage_Icc_mem_Icc_square
+    {N n : ℕ} (hn : n ∈ (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)) :
+    n ∈ Icc 1 (N * N) := by
+  obtain ⟨de, hde, rfl⟩ := Finset.mem_image.mp hn
+  obtain ⟨hd, he⟩ := Finset.mem_product.mp hde
+  obtain ⟨hd1, hdN⟩ := Finset.mem_Icc.mp hd
+  obtain ⟨he1, heN⟩ := Finset.mem_Icc.mp he
+  refine Finset.mem_Icc.mpr ⟨Nat.lcm_pos hd1 he1, ?_⟩
+  exact Nat.le_of_dvd (Nat.mul_pos hd1 he1)
+    (Nat.lcm_dvd (Dvd.intro de.2 rfl) (Dvd.intro de.1 (Nat.mul_comm _ _))) |>.trans
+      (Nat.mul_le_mul hdN heN)
+
+/-- A modulus in the lcm carrier that does not divide the child clock starts strictly above the
+child-clock index.  Together with `mem_lcmImage_Icc_mem_Icc_square`, its exact range is
+`l + 1 < n ≤ N²`. -/
+theorem mem_lcmImage_Icc_nonclock_gt_childIndex
+    {N l n : ℕ}
+    (hn : n ∈ (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2))
+    (hnC : ¬ n ∣ DeletionResidueMartingale.clock (l + 1)) :
+    l + 1 < n := by
+  by_contra h
+  have hn1 : 1 ≤ n := (Finset.mem_Icc.mp (mem_lcmImage_Icc_mem_Icc_square hn)).1
+  exact hnC (DeletionResidueMartingale.dvd_clock hn1 (Nat.le_of_not_gt h))
+
+/-- Every surviving non-clock lcm fibre contains a literal prime-power divisor created after
+the child clock.  Its chronological coordinate lies in `l + 1 < q ≤ n ≤ N²`; this allocates
+the fibre to the prime-power chronology without estimating or splitting its signed weight. -/
+theorem exists_primePow_dvd_of_mem_lcmImage_Icc_nonclock
+    {N l n : ℕ}
+    (hn : n ∈ (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2))
+    (hnC : ¬ n ∣ DeletionResidueMartingale.clock (l + 1)) :
+    ∃ q : ℕ, IsPrimePow q ∧ q ∣ n ∧ l + 1 < q ∧ q ≤ n ∧ n ≤ N * N := by
+  have hn1 : 1 ≤ n := (Finset.mem_Icc.mp (mem_lcmImage_Icc_mem_Icc_square hn)).1
+  obtain ⟨q, hqpow, hqdiv, hqgt⟩ :=
+    DeletionResidueMartingale.exists_primePow_dvd_of_not_dvd_clock hn1.ne' hnC
+  exact ⟨q, hqpow, hqdiv, hqgt, Nat.le_of_dvd hn1 hqdiv,
+    (Finset.mem_Icc.mp (mem_lcmImage_Icc_mem_Icc_square hn)).2⟩
+
+/-- The exact EDQ lcm-prefix square has one fully resolved component through `N` and one
+literal unresolved component on `N < q ≤ N²`. -/
+theorem finite_divisorSum_Icc_sq_eq_lcmMöbiusPrefixes_split_at
+    (N : ℕ) (a : ℕ → ℝ) :
+    (∑ d ∈ Icc 1 N, a d) ^ 2 =
+      (∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => n ≤ N),
+        ∑ z ∈ n.divisorsAntidiagonal,
+          ((moebius z.1 : ℤ) : ℝ) * (finiteDivisorFibrePrefix (Icc 1 N) a z.2) ^ 2) +
+      ∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => N < n),
+        ∑ z ∈ n.divisorsAntidiagonal,
+          ((moebius z.1 : ℤ) : ℝ) * (finiteDivisorFibrePrefix (Icc 1 N) a z.2) ^ 2 := by
+  classical
+  rw [finite_divisorSum_sq_eq_lcmMöbiusPrefixes]
+  · simpa only [not_le] using
+      (Finset.sum_filter_add_sum_filter_not
+        ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2))
+        (fun n : ℕ => n ≤ N)
+        (fun n => ∑ z ∈ n.divisorsAntidiagonal,
+          ((moebius z.1 : ℤ) : ℝ) * (finiteDivisorFibrePrefix (Icc 1 N) a z.2) ^ 2)).symm
+  · intro d hd
+    exact (Finset.mem_Icc.mp hd).1
+
+/-- Within the finite carrier through `N`, the Möbius common-divisor detector is the
+literal coprimality indicator. -/
+private theorem finite_moebius_divisor_indicator_eq_coprime
+    (N q k : ℕ) (hq : q ∈ Icc 1 N) :
+    ∑ d ∈ (Icc 1 N).filter (fun d => d ∣ q),
+      ((moebius d : ℤ) : ℝ) * (if d ∣ k then 1 else 0) =
+        if q.Coprime k then 1 else 0 := by
+  have h := finiteMobiusCoprimeIncidenceEntry_eq_coprimeIndicator N ⟨q, hq⟩ k
+  unfold finiteMobiusCoprimeIncidenceEntry at h
+  rw [Finset.sum_filter]
+  calc
+    ∑ d ∈ Icc 1 N,
+        (if d ∣ q then ((moebius d : ℤ) : ℝ) * (if d ∣ k then 1 else 0) else 0) =
+      ∑ d ∈ Icc 1 N,
+        (if d ∣ q then 1 else 0) * ((moebius d : ℤ) : ℝ) *
+          (if d ∣ k then 1 else 0) := by
+      refine Finset.sum_congr rfl fun d hd => ?_
+      split <;> ring
+    _ = if q.Coprime k then 1 else 0 := by
+      exact_mod_cast h
+
+/-- For a prefix modulus contained in the finite EDQ carrier, Möbius divisor incidence against
+any literal physical weight is exactly coprime-residue incidence. -/
+theorem weighted_moebius_divisor_filter_eq_coprime_filter
+    (N q : ℕ) (hq : q ∈ Icc 1 N) (K : Finset ℕ) (w : ℕ → ℝ) :
+    ∑ d ∈ (Icc 1 N).filter (fun d => d ∣ q), ((moebius d : ℤ) : ℝ) *
+      ∑ k ∈ K.filter (fun k => d ∣ k), w k =
+        ∑ k ∈ K.filter (fun k => q.Coprime k), w k := by
+  let F := (Icc 1 N).filter (fun d => d ∣ q)
+  have hdet : ∀ k : ℕ,
+      ∑ d ∈ F.filter (fun d => d ∣ k), ((moebius d : ℤ) : ℝ) =
+        if q.Coprime k then 1 else 0 := by
+    intro k
+    dsimp [F]
+    rw [Finset.sum_filter]
+    calc
+      ∑ d ∈ (Icc 1 N).filter (fun d => d ∣ q),
+          (if d ∣ k then ((moebius d : ℤ) : ℝ) else 0) =
+        ∑ d ∈ (Icc 1 N).filter (fun d => d ∣ q),
+          ((moebius d : ℤ) : ℝ) * (if d ∣ k then 1 else 0) := by
+        refine Finset.sum_congr rfl fun d hd => ?_
+        split <;> ring
+      _ = if q.Coprime k then 1 else 0 :=
+        finite_moebius_divisor_indicator_eq_coprime N q k hq
+  change ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+    ∑ k ∈ K.filter (fun k => d ∣ k), w k = _
+  calc
+    ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+        ∑ k ∈ K.filter (fun k => d ∣ k), w k =
+      ∑ d ∈ F, ∑ k ∈ K.filter (fun k => d ∣ k),
+        ((moebius d : ℤ) : ℝ) * w k := by
+      refine Finset.sum_congr rfl fun d hd => ?_
+      rw [Finset.mul_sum]
+    _ = ∑ k ∈ K, ∑ d ∈ F.filter (fun d => d ∣ k),
+        ((moebius d : ℤ) : ℝ) * w k := by
+      rw [Finset.sum_comm']
+      intro d k
+      simp only [Finset.mem_filter]
+      tauto
+    _ = ∑ k ∈ K, (if q.Coprime k then 1 else 0) * w k := by
+      refine Finset.sum_congr rfl fun k hk => ?_
+      rw [← Finset.sum_mul, hdet]
+    _ = ∑ k ∈ K.filter (fun k => q.Coprime k), w k := by
+      rw [Finset.sum_filter]
+      refine Finset.sum_congr rfl fun k hk => ?_
+      split <;> ring
+
+/-- The count part of every finite EDQ prefix with prefix modulus `q ≤ N` is exactly its
+literal coprime-residue count, retaining every beta-time weight. -/
+theorem weighted_moebius_divisor_prefixCount_filter_eq_coprime
+    (N q t C Q : ℕ) (x : ℝ) (hq : q ∈ Icc 1 N) :
+    ∑ d ∈ (Icc 1 N).filter (fun d => d ∣ q), ((moebius d : ℤ) : ℝ) *
+      ∑ s ∈ range Q, x ^ (s * C) *
+        ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ) =
+      ∑ s ∈ range Q, x ^ (s * C) *
+        ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+  let F := (Icc 1 N).filter (fun d => d ∣ q)
+  have hcount : ∀ s : ℕ,
+      ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+        ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ) =
+        ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+    intro s
+    calc
+      ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ) =
+        ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          ∑ k ∈ (Ioc t (t + (s + 1) * C)).filter (fun k => d ∣ k), (1 : ℝ) := by
+        refine Finset.sum_congr rfl fun d hd => ?_
+        rw [Finset.sum_const, nsmul_eq_mul]
+        ring
+      _ = ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+        exact weighted_moebius_divisor_filter_eq_coprime_filter N q hq
+          (Ioc t (t + (s + 1) * C)) (fun _ => (1 : ℝ))
+  change ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+    ∑ s ∈ range Q, x ^ (s * C) *
+      ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ) = _
+  calc
+    ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q, x ^ (s * C) *
+          ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ) =
+      ∑ d ∈ F, ∑ s ∈ range Q, x ^ (s * C) *
+        (((moebius d : ℤ) : ℝ) *
+          ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) := by
+      refine Finset.sum_congr rfl fun d hd => ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun s hs => ?_
+      ring
+    _ = ∑ s ∈ range Q, x ^ (s * C) *
+        (∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) := by
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun s hs => ?_
+      rw [Finset.mul_sum]
+    _ = ∑ s ∈ range Q, x ^ (s * C) *
+        ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+      refine Finset.sum_congr rfl fun s hs => ?_
+      rw [hcount s]
+
+/-- For every prefix modulus `q ≤ N`, the complete beta-weighted Möbius divisor prefix is
+exactly a harmonic density minus the literal beta-weighted coprime-residue count. -/
+theorem weighted_moebius_divisor_prefixDiscrepancy_filter_eq_coprime
+    (N q t C Q : ℕ) (x : ℝ) (hq : q ∈ Icc 1 N) :
+    ∑ d ∈ (Icc 1 N).filter (fun d => d ∣ q), ((moebius d : ℤ) : ℝ) *
+      ∑ s ∈ range Q, x ^ (s * C) *
+        ((((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+          ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) =
+      ∑ s ∈ range Q, x ^ (s * C) *
+        ((((s + 1 : ℕ) : ℝ) * (C : ℝ) *
+          ∑ d ∈ (Icc 1 N).filter (fun d => d ∣ q), ((moebius d : ℤ) : ℝ) / (d : ℝ)) -
+          ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ)) := by
+  let F := (Icc 1 N).filter (fun d => d ∣ q)
+  have hcount : ∀ s : ℕ,
+      ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+        ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ) =
+        ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+    intro s
+    calc
+      ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ) =
+        ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          ∑ k ∈ (Ioc t (t + (s + 1) * C)).filter (fun k => d ∣ k), (1 : ℝ) := by
+        refine Finset.sum_congr rfl fun d hd => ?_
+        rw [Finset.sum_const, nsmul_eq_mul]
+        ring
+      _ = ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+        exact weighted_moebius_divisor_filter_eq_coprime_filter N q hq
+          (Ioc t (t + (s + 1) * C)) (fun _ => (1 : ℝ))
+  have hstep : ∀ s : ℕ,
+      ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+        ((((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+          ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) =
+        (((s + 1 : ℕ) : ℝ) * (C : ℝ) *
+          ∑ d ∈ F, ((moebius d : ℤ) : ℝ) / (d : ℝ)) -
+          ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+    intro s
+    have hmain :
+        (∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          (((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ))) =
+          (((s + 1 : ℕ) : ℝ) * (C : ℝ)) *
+            (∑ d ∈ F, ((moebius d : ℤ) : ℝ) / (d : ℝ)) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun d hd => ?_
+      ring
+    calc
+      ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          ((((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+            ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) =
+        ∑ d ∈ F, (((moebius d : ℤ) : ℝ) *
+          (((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+          ((moebius d : ℤ) : ℝ) *
+            ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) := by
+          refine Finset.sum_congr rfl fun d hd => ?_
+          ring
+      _ = (∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          (((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ))) -
+          (∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+            ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) := by
+          rw [Finset.sum_sub_distrib]
+      _ = (((s + 1 : ℕ) : ℝ) * (C : ℝ) *
+          ∑ d ∈ F, ((moebius d : ℤ) : ℝ) / (d : ℝ)) -
+          ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ) := by
+          rw [hmain, hcount s]
+  change ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+    ∑ s ∈ range Q, x ^ (s * C) *
+      ((((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+        ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) =
+      ∑ s ∈ range Q, x ^ (s * C) *
+        ((((s + 1 : ℕ) : ℝ) * (C : ℝ) *
+          ∑ d ∈ F, ((moebius d : ℤ) : ℝ) / (d : ℝ)) -
+          ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ))
+  calc
+    ∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q, x ^ (s * C) *
+          ((((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+            ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ)) =
+      ∑ d ∈ F, ∑ s ∈ range Q, x ^ (s * C) *
+        (((moebius d : ℤ) : ℝ) *
+          ((((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+            ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ))) := by
+      refine Finset.sum_congr rfl fun d hd => ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun s hs => ?_
+      ring
+    _ = ∑ s ∈ range Q, x ^ (s * C) *
+        (∑ d ∈ F, ((moebius d : ℤ) : ℝ) *
+          ((((s + 1 : ℕ) : ℝ) * (C : ℝ) / (d : ℝ)) -
+            ((#{k ∈ Ioc t (t + (s + 1) * C) | d ∣ k} : ℕ) : ℝ))) := by
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun s hs => ?_
+      rw [Finset.mul_sum]
+    _ = ∑ s ∈ range Q, x ^ (s * C) *
+        ((((s + 1 : ℕ) : ℝ) * (C : ℝ) *
+          ∑ d ∈ F, ((moebius d : ℤ) : ℝ) / (d : ℝ)) -
+          ∑ _ ∈ (Ioc t (t + (s + 1) * C)).filter (q.Coprime ·), (1 : ℝ)) := by
+      refine Finset.sum_congr rfl fun s hs => ?_
+      rw [hstep s]
 
 /-- At a physical lag divisible by its lcm, a complete signed Möbius lcm fibre
 collapses to one divisor incidence. -/
@@ -987,6 +1592,15 @@ theorem card_dvd_Ioc_length_eq_div (d t C : ℕ) (hdC : d ∣ C) :
 def divisorWindowDiscrepancy (d t C : ℕ) : ℝ :=
   (C : ℝ) / (d : ℝ) - ((#{k ∈ Ioc t (t + C) | d ∣ k} : ℕ) : ℝ)
 
+/-- A divisor aligned with a physical window length has zero literal discrepancy. -/
+theorem divisorWindowDiscrepancy_eq_zero_of_dvd
+    (d t C : ℕ) (hd : 0 < d) (hdC : d ∣ C) :
+    divisorWindowDiscrepancy d t C = 0 := by
+  unfold divisorWindowDiscrepancy
+  rw [card_dvd_Ioc_length_eq_div d t C hdC,
+    Nat.cast_div hdC (by exact_mod_cast hd.ne')]
+  ring
+
 /-- Exact Euler-deletion law for one raw window: every divisor that divides its child clock
 cancels identically; only non-clock divisors retain a signed discrepancy. -/
 theorem truncatedDivisorWindowDeviation_eq_nonclockDiscrepancy (N t C : ℕ) :
@@ -1211,6 +1825,24 @@ theorem selectedRefinementBlock_divisorBetaPrefix_eq_intervalDiscrepancy
   rw [divisorWindowDiscrepancy_prefix_eq_intervalDiscrepancy d
     (u + b * clock l + 1) (clock (l + 1)) s (clock_pos (l + 1))]
 
+/-- A clock divisor has zero contribution to every chronological beta-prefix cofactor. -/
+theorem selectedRefinementBlock_divisorBetaPrefix_eq_zero_of_dvd_childClock
+    (N l u b d : ℕ) (x : ℝ) (hd : d ∈ Icc 1 N) (hdC : d ∣ clock (l + 1)) :
+    ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+        (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+        x ^ (s * clock (l + 1)) = 0 := by
+  apply Finset.sum_eq_zero
+  intro s hs
+  have hinner : ∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+      (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro i hi
+    exact divisorWindowDiscrepancy_eq_zero_of_dvd d
+      (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))
+      (Finset.mem_Icc.mp hd).1 hdC
+  rw [hinner, zero_mul]
+
 /-- The complete selected beta deviation has the child-clock factor already at the level of the
 signed future-divisor sum.  Its cofactor retains every divisor, every prefix, and every beta
 time; no termwise estimate or cancellation of a denominator is used. -/
@@ -1269,6 +1901,286 @@ theorem selectedRefinementBlock_betaDeviation_eq_childClockFactor_futurePrefix
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun d hd => ?_
       ring
+
+/-- Clock-deletion can be removed inside the chronological prefix sum: deleted divisors have
+already vanished termwise on every child-clock prefix. -/
+theorem selectedRefinementBlock_betaDeviation_eq_childClockFactor_fullPrefix
+    (N l u b : ℕ) (x : ℝ) (hlN : l < N) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1)
+    let C := clock (l + 1)
+    ∑ s ∈ range Q, x ^ (s * C) *
+      ((C : ℝ) * ∑ q ∈ Icc 1 N, ((moebius q : ℤ) : ℝ) / (q : ℝ) -
+        ∑ k ∈ Ioc (t + s * C) (t + (s + 1) * C), truncMoebiusDivisorSum N k) =
+      (1 - x ^ C) *
+        ∑ d ∈ Icc 1 N, ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range (Q - 1),
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C) * x ^ (s * C) := by
+  dsimp
+  rw [selectedRefinementBlock_betaDeviation_eq_childClockFactor_futurePrefix N l u b x hlN]
+  apply congrArg (fun z : ℝ => (1 - x ^ clock (l + 1)) * z)
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  by_cases hdC : d ∣ clock (l + 1)
+  · rw [if_neg (not_not.mpr hdC),
+      selectedRefinementBlock_divisorBetaPrefix_eq_zero_of_dvd_childClock
+        N l u b d x hd hdC]
+    ring
+  · rw [if_pos hdC]
+
+/-- Exact lcm-fibre form of the actual selected EDQ beta energy.  Clock deletion has already
+been restored to zero-valued terms, so every finite divisor pair is placed in its literal lcm
+fibre without changing its prefix weight. -/
+theorem selectedRefinementBlock_betaDeviation_sq_eq_childClockFactor_lcmFibres
+    (N l u b : ℕ) (x : ℝ) (hlN : l < N) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1)
+    let C := clock (l + 1)
+    let S := Icc 1 N
+    let P : ℕ → ℝ := fun d =>
+      ∑ s ∈ range (Q - 1),
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C) * x ^ (s * C)
+    (∑ s ∈ range Q, x ^ (s * C) *
+      ((C : ℝ) * ∑ q ∈ Icc 1 N, ((moebius q : ℤ) : ℝ) / (q : ℝ) -
+        ∑ k ∈ Ioc (t + s * C) (t + (s + 1) * C), truncMoebiusDivisorSum N k)) ^ 2 =
+      (1 - x ^ C) ^ 2 *
+        ∑ n ∈ (S ×ˢ S).image (fun de => Nat.lcm de.1 de.2),
+          ∑ de ∈ (S ×ˢ S).filter (fun de => Nat.lcm de.1 de.2 = n),
+            (((moebius de.1 : ℤ) : ℝ) * P de.1) *
+              (((moebius de.2 : ℤ) : ℝ) * P de.2) := by
+  dsimp
+  rw [pow_two, selectedRefinementBlock_betaDeviation_eq_childClockFactor_fullPrefix N l u b x hlN]
+  let a : ℝ := 1 - x ^ clock (l + 1)
+  let S := Icc 1 N
+  let P : ℕ → ℝ := fun d =>
+    ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+        (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+        x ^ (s * clock (l + 1))
+  change
+    (a * ∑ d ∈ S, ((moebius d : ℤ) : ℝ) * P d) *
+        (a * ∑ d ∈ S, ((moebius d : ℤ) : ℝ) * P d) =
+      a ^ 2 * ∑ n ∈ (S ×ˢ S).image (fun de => Nat.lcm de.1 de.2),
+        ∑ de ∈ (S ×ˢ S).filter (fun de => Nat.lcm de.1 de.2 = n),
+          (((moebius de.1 : ℤ) : ℝ) * P de.1) *
+            (((moebius de.2 : ℤ) : ℝ) * P de.2)
+  calc
+    (a * ∑ d ∈ S, ((moebius d : ℤ) : ℝ) * P d) *
+        (a * ∑ d ∈ S, ((moebius d : ℤ) : ℝ) * P d) =
+      a ^ 2 *
+        ((∑ d ∈ S, ((moebius d : ℤ) : ℝ) * P d) *
+          ∑ e ∈ S, ((moebius e : ℤ) : ℝ) * P e) := by ring
+    _ = a ^ 2 * ∑ d ∈ S, ∑ e ∈ S,
+        (((moebius d : ℤ) : ℝ) * P d) * (((moebius e : ℤ) : ℝ) * P e) := by
+      rw [Finset.sum_mul_sum]
+    _ = a ^ 2 * ∑ de ∈ S ×ˢ S,
+        (((moebius de.1 : ℤ) : ℝ) * P de.1) * (((moebius de.2 : ℤ) : ℝ) * P de.2) := by
+      rw [Finset.sum_product]
+    _ = a ^ 2 * ∑ n ∈ (S ×ˢ S).image (fun de => Nat.lcm de.1 de.2),
+        ∑ de ∈ (S ×ˢ S).filter (fun de => Nat.lcm de.1 de.2 = n),
+          (((moebius de.1 : ℤ) : ℝ) * P de.1) * (((moebius de.2 : ℤ) : ℝ) * P de.2) := by
+      rw [sum_pair_reindex_lcm]
+
+/-- Every actual selected-block lcm fibre on the child clock is identically zero before
+forming the signed lcm sum.  Thus the unresolved EDQ pair correlation is supported on moduli
+that do not divide the child clock. -/
+theorem selectedRefinementBlock_lcmFibre_eq_zero_of_dvd_childClock
+    (N l u b n : ℕ) (x : ℝ) (hnC : n ∣ clock (l + 1)) :
+    finiteLcmPairFibre (Icc 1 N)
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+            (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+            x ^ (s * clock (l + 1))) n = 0 := by
+  apply finiteLcmPairFibre_eq_zero_of_dvd_clock (C := clock (l + 1)) (hnC := hnC)
+  intro d hd hdC
+  rw [selectedRefinementBlock_divisorBetaPrefix_eq_zero_of_dvd_childClock
+    N l u b d x hd hdC, mul_zero]
+
+/-- The complete actual selected-block lcm sum is exactly its non-clock part.  This deletes
+only fibres proved identically zero and leaves every surviving signed pair untouched. -/
+theorem selectedRefinementBlock_lcmFibre_sum_eq_nonclock
+    (N l u b : ℕ) (x : ℝ) :
+    ∑ n ∈ (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2),
+      finiteLcmPairFibre (Icc 1 N)
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+              (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+              x ^ (s * clock (l + 1))) n =
+      ∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ clock (l + 1)),
+        finiteLcmPairFibre (Icc 1 N)
+          (fun d => ((moebius d : ℤ) : ℝ) *
+            ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+              (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+                (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+                x ^ (s * clock (l + 1))) n := by
+  classical
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl fun n hn => ?_
+  by_cases hnC : n ∣ clock (l + 1)
+  · simp [hnC, selectedRefinementBlock_lcmFibre_eq_zero_of_dvd_childClock N l u b n x hnC]
+  · simp [hnC]
+
+/-- In a literal cross-beta lcm fibre, a modulus dividing the child clock vanishes from the
+first beta weight.  Thus this exact deletion applies before the two beta variables are
+identified. -/
+theorem selectedRefinementBlock_lcmCrossFibre_eq_zero_of_dvd_childClock
+    (N l u b n : ℕ) (x y : ℝ) (hnC : n ∣ clock (l + 1)) :
+    finiteLcmPairCrossFibre (Icc 1 N)
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+            (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+            x ^ (s * clock (l + 1)))
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+            (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+            y ^ (s * clock (l + 1))) n = 0 := by
+  apply finiteLcmPairCrossFibre_eq_zero_of_dvd_clock (C := clock (l + 1)) (b := fun d =>
+    ((moebius d : ℤ) : ℝ) *
+      ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+          (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+          y ^ (s * clock (l + 1))) (hnC := hnC)
+  intro d hd hdC
+  rw [selectedRefinementBlock_divisorBetaPrefix_eq_zero_of_dvd_childClock
+    N l u b d x hd hdC, mul_zero]
+
+/-- The complete literal cross-beta lcm sum equals its non-clock part.  It retains both beta
+variables and every surviving signed cross fibre. -/
+theorem selectedRefinementBlock_lcmCrossFibre_sum_eq_nonclock
+    (N l u b : ℕ) (x y : ℝ) :
+    ∑ n ∈ (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2),
+      finiteLcmPairCrossFibre (Icc 1 N)
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+              (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+              x ^ (s * clock (l + 1)))
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+              (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+              y ^ (s * clock (l + 1))) n =
+      ∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ clock (l + 1)),
+        finiteLcmPairCrossFibre (Icc 1 N)
+          (fun d => ((moebius d : ℤ) : ℝ) *
+            ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+              (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+                (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+                x ^ (s * clock (l + 1)))
+          (fun d => ((moebius d : ℤ) : ℝ) *
+            ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+              (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+                (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+                y ^ (s * clock (l + 1))) n := by
+  classical
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl fun n hn => ?_
+  by_cases hnC : n ∣ clock (l + 1)
+  · simp [hnC,
+      selectedRefinementBlock_lcmCrossFibre_eq_zero_of_dvd_childClock N l u b n x y hnC]
+  · simp [hnC]
+
+/-- Exact two-variable lcm-fibre form of the selected EDQ beta kernel.  This is the literal
+cross-beta object needed by the global square of integrals: it keeps the two endpoint
+variables distinct and deletes only clock fibres that vanish termwise. -/
+theorem selectedRefinementBlock_betaDeviation_mul_eq_childClockFactors_nonclockLcmCrossFibres
+    (N l u b : ℕ) (x y : ℝ) (hlN : l < N) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1)
+    let C := clock (l + 1)
+    let S := Icc 1 N
+    let Px : ℕ → ℝ := fun d =>
+      ∑ s ∈ range (Q - 1),
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C) * x ^ (s * C)
+    let Py : ℕ → ℝ := fun d =>
+      ∑ s ∈ range (Q - 1),
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C) * y ^ (s * C)
+    (∑ s ∈ range Q, x ^ (s * C) *
+      ((C : ℝ) * ∑ q ∈ Icc 1 N, ((moebius q : ℤ) : ℝ) / (q : ℝ) -
+        ∑ k ∈ Ioc (t + s * C) (t + (s + 1) * C), truncMoebiusDivisorSum N k)) *
+      (∑ s ∈ range Q, y ^ (s * C) *
+        ((C : ℝ) * ∑ q ∈ Icc 1 N, ((moebius q : ℤ) : ℝ) / (q : ℝ) -
+          ∑ k ∈ Ioc (t + s * C) (t + (s + 1) * C), truncMoebiusDivisorSum N k)) =
+      (1 - x ^ C) * (1 - y ^ C) *
+        ∑ n ∈ ((S ×ˢ S).image (fun de => Nat.lcm de.1 de.2)).filter
+          (fun n => ¬ n ∣ C),
+          finiteLcmPairCrossFibre S (fun d => ((moebius d : ℤ) : ℝ) * Px d)
+            (fun d => ((moebius d : ℤ) : ℝ) * Py d) n := by
+  dsimp
+  rw [selectedRefinementBlock_betaDeviation_eq_childClockFactor_fullPrefix N l u b x hlN,
+    selectedRefinementBlock_betaDeviation_eq_childClockFactor_fullPrefix N l u b y hlN]
+  let a : ℝ := 1 - x ^ clock (l + 1)
+  let c : ℝ := 1 - y ^ clock (l + 1)
+  let S := Icc 1 N
+  let Px : ℕ → ℝ := fun d =>
+    ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+        (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+        x ^ (s * clock (l + 1))
+  let Py : ℕ → ℝ := fun d =>
+    ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+        (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+        y ^ (s * clock (l + 1))
+  change
+    (a * ∑ d ∈ S, ((moebius d : ℤ) : ℝ) * Px d) *
+        (c * ∑ e ∈ S, ((moebius e : ℤ) : ℝ) * Py e) =
+      a * c * ∑ n ∈ ((S ×ˢ S).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ clock (l + 1)),
+        finiteLcmPairCrossFibre S (fun d => ((moebius d : ℤ) : ℝ) * Px d)
+          (fun d => ((moebius d : ℤ) : ℝ) * Py d) n
+  calc
+    (a * ∑ d ∈ S, ((moebius d : ℤ) : ℝ) * Px d) *
+        (c * ∑ e ∈ S, ((moebius e : ℤ) : ℝ) * Py e) =
+      a * c *
+        ((∑ d ∈ S, ((moebius d : ℤ) : ℝ) * Px d) *
+          ∑ e ∈ S, ((moebius e : ℤ) : ℝ) * Py e) := by ring
+    _ = a * c * ∑ n ∈ (S ×ˢ S).image (fun de => Nat.lcm de.1 de.2),
+        finiteLcmPairCrossFibre S (fun d => ((moebius d : ℤ) : ℝ) * Px d)
+          (fun d => ((moebius d : ℤ) : ℝ) * Py d) n := by
+      rw [finite_sum_mul_eq_lcmPairCrossFibres]
+    _ = a * c * ∑ n ∈ ((S ×ˢ S).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ clock (l + 1)),
+        finiteLcmPairCrossFibre S (fun d => ((moebius d : ℤ) : ℝ) * Px d)
+          (fun d => ((moebius d : ℤ) : ℝ) * Py d) n := by
+      rw [selectedRefinementBlock_lcmCrossFibre_sum_eq_nonclock]
+
+/-- The selected EDQ beta energy is exactly a child-clock square factor times its signed
+non-clock lcm fibres.  Every possible surviving modulus lies in `Icc 1 (N²)` by
+`mem_lcmImage_Icc_mem_Icc_square`. -/
+theorem selectedRefinementBlock_betaDeviation_sq_eq_childClockFactor_nonclockLcmFibres
+    (N l u b : ℕ) (x : ℝ) (hlN : l < N) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1)
+    let C := clock (l + 1)
+    let S := Icc 1 N
+    let P : ℕ → ℝ := fun d =>
+      ∑ s ∈ range (Q - 1),
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C) * x ^ (s * C)
+    (∑ s ∈ range Q, x ^ (s * C) *
+      ((C : ℝ) * ∑ q ∈ Icc 1 N, ((moebius q : ℤ) : ℝ) / (q : ℝ) -
+        ∑ k ∈ Ioc (t + s * C) (t + (s + 1) * C), truncMoebiusDivisorSum N k)) ^ 2 =
+      (1 - x ^ C) ^ 2 *
+        ∑ n ∈ (S ×ˢ S).image (fun de => Nat.lcm de.1 de.2) |>.filter
+          (fun n => ¬ n ∣ C),
+          finiteLcmPairFibre S (fun d => ((moebius d : ℤ) : ℝ) * P d) n := by
+  dsimp
+  rw [selectedRefinementBlock_betaDeviation_sq_eq_childClockFactor_lcmFibres N l u b x hlN]
+  change (1 - x ^ clock (l + 1)) ^ 2 *
+      ∑ n ∈ (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2),
+        finiteLcmPairFibre (Icc 1 N)
+          (fun d => ((moebius d : ℤ) : ℝ) *
+            ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+              (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+                (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+                x ^ (s * clock (l + 1))) n = _
+  rw [selectedRefinementBlock_lcmFibre_sum_eq_nonclock]
 
 /-- Exact signed energy factorization of the selected EDQ beta deviation.  The square retains a
 joint finite bilinear future-divisor cofactor, multiplied by the forced child-clock factor

@@ -50,3 +50,12 @@
   It supplies neither an unconditional estimate for one literal signed
   Möbius--divisor source nor the labelled endpoint/seam control required by
   SP-E, so there is no literature theorem to import as a proof here.
+
+- `eventually_mobiusDivisorCoupledTwoCapacity_ge_logarithmic` now proves an
+  unconditional common supply bound of
+  `N / (14 * log (14 * b * N))` for the literal quotient-two, quotient-seven,
+  and quotient-fourteen repair windows.  Hence the two-plane repair has
+  mesoscopic PNT-scale source capacity, not only the prior square-root lower
+  bound.  This is not a completion schedule: a successful moving-core law
+  must still renew that finite supply while preserving the joint two-plane
+  cross terms.

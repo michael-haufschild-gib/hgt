@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**328 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**332 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-16, `67c6c77ec0cf4a8d65d56fd0220e30d684bf38a2`**.
+Source-audit cutoff: **2026-09-17, `b6555bd48db0fd6021a655cbcae470746fe5ccc2`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -24,10 +24,10 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | [Retired original route labels](#retired-labels) | 16 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 23 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 37 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 70 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 26 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 71 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 27 |
 | [Singular descent, formation and completion](#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 41 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 43 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
 | [Other finite, scalar and source-blind selectors](#other) | 80 |
 
@@ -634,7 +634,9 @@ Evidence: [rectangular-Euler obstruction](../../../../formal/GaloisForLFunctions
 The bare adjacent codiagonal annihilates constants exactly. Its first mass-coordinate mode is not
 the completed node error alone: it contains a forced nonnegative upper-endpoint excess. Thus
 neither scalar zero-clock charge nor the unrenormalized linear mode is a faithful completed-source
-reporter.
+reporter. The exact three-moment carrier sharpens this: its second coordinate is completed linear
+charge minus squared displacement debt, while every block-diagonal parabolic form is blind to that
+displacement. Scalar or diagonal positivity cannot recover the missing relative-clock coordinate.
 
 **Survivor / still open**
 
@@ -643,6 +645,7 @@ equaling the completed error exactly. The live problem is a signed bound for the
 translation-defect/autocorrelation profile before scalarization.
 
 Evidence: [adjacent-codiagonal normal form](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal.lean).
+[Three-moment parabolic transport](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarParabolicTransport.lean).
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
@@ -1323,6 +1326,7 @@ Evidence: [inclusive gcd Gram](../../../../formal/GaloisForLFunctions/RHTower/Mo
 - [HB full canonical action through arbitrary literal-carrier decoder](#no-go-305)
 - [HB global propagator, fixed pairing, or meromorphic scalar cancellation](#no-go-200)
 - [HB original retarded field through literal-carrier decoder](#no-go-306)
+- [HB one-counterterm or compact raw-cap shortcut](#no-go-330)
 - [HB local radial source-transpose matching](#no-go-307)
 - [HB modular spectral, positive-height graph, characteristic-kernel, principal-causal, or local residual admission](#no-go-041)
 - [HB nonzero FE-invariant scalar response correction](#no-go-211)
@@ -2504,6 +2508,29 @@ Evidence: [physical-rate noncancellation](../../../../formal/GaloisForLFunctions
 
 [Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
+<a id="no-go-330"></a>
+
+### HB one-counterterm or compact raw-cap shortcut
+
+**Closed result**
+
+The endpoint asymptotics have two power counterterms and one logarithmic counterterm. Finite
+continuation forces all three coefficients, and equal finite limits force coefficientwise
+agreement; a single endpoint counterterm cannot stand in for this source. Separately, the compact
+raw horizon cap is a homogeneous weak solution: it pairs to zero against every admissible compact
+weak-wave test, so compact bulk testing cannot detect the required cap holonomy.
+
+**Survivor / still open**
+
+The complete three-counterterm continuation and explicit full two-arm cap normal trace survive.
+The remaining problem is noncompact and source-sensitive: control the cap corner and prove the
+corrected-future combined-cap coefficient equals `contactField`, or exhibit a mismatch and close
+the literal HB route.
+
+Evidence: [endpoint-counterterm uniqueness](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEndpointCountertermUniqueness.lean), [three-response continuation](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMJointSourcePrincipalContinuation.lean), [compact-cap weak-wave vanishing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCapWeakWave.lean), [full seed-cap radial memory](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -2534,6 +2561,7 @@ Evidence: [physical-rate noncancellation](../../../../formal/GaloisForLFunctions
 - [W2C positive-cone extension or common-translation propagation](#no-go-121)
 - [SQB positive rational-trace averaging for compact-core coercivity](#no-go-317)
 - [prime-labelled cubic theta scalar evaluation at an Xi zero](#no-go-318)
+- [SQB universal pointwise Möbius stress sign](#no-go-332)
 
 <a id="no-go-308"></a>
 
@@ -2930,6 +2958,26 @@ than evaluate it to one scalar at the zero.
 Evidence: [complex-strip cubic theta jet](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaStripWronskianCubicJet.lean).
 
 [Back to family](#theta) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-332"></a>
+
+### SQB universal pointwise Möbius stress sign
+
+**Closed result**
+
+For the literal Maass phase-stress source, a multiplier that forces the proposed pointwise
+Möbius-weighted stress sign for every source mode must vanish. Thus no nonzero universal scalar
+Möbius multiplier can orient the local stress before the modes are coupled.
+
+**Survivor / still open**
+
+The exact Fourier source coefficients and same-residue off-diagonal modal reduction survive.
+SQB must obtain orientation from the coupled source-attached Fourier loss or the all-cusp Hecke
+action, not from a modewise universal sign.
+
+Evidence: [Möbius multiplier obstruction](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassMobiusMultiplierNoGo.lean), [phase-stress Fourier reduction](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassPhaseStressFourier.lean).
+
+[Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
 
 <a id="completion"></a>
 
@@ -3387,6 +3435,8 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [singleton-additive synchronized Gamma recovery](#no-go-324)
 - [Route-P ordinary source-Hilbert real-axis theta reporter](#no-go-327)
 - [SP-E positive terminal-seam compensation](#no-go-328)
+- [D2 real-flux-only transfer to Q](#no-go-329)
+- [SP-E quantile/Suzuki independent-estimator combination](#no-go-331)
 
 <a id="no-go-309"></a>
 
@@ -4002,7 +4052,10 @@ Evidence: [synchronized mixed curvature](../../../../formal/GaloisForLFunctions/
 At every real theta coordinate, the squared one-prime reporter coefficient is exactly
 `4(log p)^4/p`; its prime sum diverges. No vector in the completed critical source `ℓ²` space can
 represent literal real-axis theta evaluation coefficientwise. Ordinary bounded source-vector
-evaluation therefore cannot land the critical-line theta boundary.
+evaluation therefore cannot land the critical-line theta boundary. More strongly, the real-axis
+graph reader has no continuous extension to the ambient Hilbert space and no densely defined
+closable scalar extension with the required core values; finite tuples of such scalar readers
+cannot repair the obstruction.
 
 **Survivor / still open**
 
@@ -4011,7 +4064,7 @@ Laplace reporter scaled by `t⁻¹`; for `0<t<1` it gives a bounded functional o
 graph with exact finite-core compatibility. Route P still needs an Xi-adic relative boundary
 morphism carrying this graph datum to escape multiplicity and nuclear budget.
 
-Evidence: [real-axis reporter boundary](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaStripReporterBoundary.lean), [lower closed-graph landing](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaLowerClosedGraphLanding.lean).
+Evidence: [real-axis reporter boundary](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaStripReporterBoundary.lean), [four-level lower closed-graph landing](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaFourLevelLowerClosedGraphLanding.lean), [ambient Hilbert obstruction](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaRealAxisAmbientHilbertObstruction.lean), [closable-reader no-go](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaRealAxisClosableReaderNoGo.lean).
 
 [Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
@@ -4034,6 +4087,47 @@ the required cancellation must come from the labelled interior cells with the lo
 correction retained.
 
 Evidence: [quantile-Riesz source transport](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszSourceTransport.lean).
+
+[Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
+
+<a id="no-go-329"></a>
+
+### D2 real-flux-only transfer to Q
+
+**Closed result**
+
+The Q observable is the oblique projection of the completed prime--Gamma flux, not its real part.
+The explicit flux value `-i` has nonnegative real component but the wrong Q projection. Therefore
+a D2 lower bound on real flux alone cannot imply the Q exterior sign.
+
+**Survivor / still open**
+
+The exact oblique-flux identity and the new order-23 positive exterior-overlap band survive. A
+cofinal proof must control the full complex phase, or prove a source law coupling real and
+imaginary flux, uniformly across the upper strip.
+
+Evidence: [D2/Q oblique-flux identity and counterexample](../../../../formal/GaloisForLFunctions/RHTower/PrimeArchD2QObliqueFlux.lean).
+
+[Back to family](#ward) · [Current D2 frontier](rh-current-frontier-map.md#d2--continued-primearchimedean-free-sector-passivity)
+
+<a id="no-go-331"></a>
+
+### SP-E quantile/Suzuki independent-estimator combination
+
+**Closed result**
+
+Quantile-Riesz transport and the Suzuki discrepancy are not independent estimators whose
+combination can average away the hard term. After normalization, both expose the same unbounded
+displacement coordinate up to an explicit bounded residual; channelwise or dyadic completion
+therefore repackages rather than cancels the source debt.
+
+**Survivor / still open**
+
+The common infinite-shift codiagonal carrier, exact completed outgoing charge and causal Laplace
+bridge survive. The live problem is one uniform changing-core, cross-prime source estimate that
+controls this shared coordinate and removes the elementary `exp(t/2)` envelope.
+
+Evidence: [relative quantile-Riesz carrier](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRelativeCarrier.lean), [Suzuki--Eulerian bridge](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszSuzukiEulerianBridge.lean), [causal Laplace bridge](../../../../formal/GaloisForLFunctions/RHTower/CCMUnitRieszCausalLaplaceBridge.lean).
 
 [Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
 
