@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCompletedQuantileTran
 import GaloisForLFunctions.RHTower.CCMUnitRieszCoherentOutgoingChargeHankel
 import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels
 import GaloisForLFunctions.RHTower.CCMUnitRieszSuzukiGreenProducerClassification
+import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarCoordinateTransport
 
 /-!
 # SP-E: source-faithful quantile Riesz transport
@@ -28,6 +29,26 @@ open GaloisForLFunctions.RHTower
 /-- Riesz profile whose prime-atom pairing is the order-one square-root window at aperture `M`. -/
 def speQuantileRieszProfile (M : ℕ) (h : ℝ) : ℝ :=
   2 * (Real.sqrt (M : ℝ) * Real.exp (h / 2) - Real.exp h)
+
+/-- The source-forced Riesz profile in canonical polar mass coordinate `Y = 2 exp(h / 2)`. -/
+def speQuantileRieszMassProfile (M : ℕ) (y : ℝ) : ℝ :=
+  y * Real.sqrt (M : ℝ) - y ^ 2 / 2
+
+/-- A primitive of the mass-coordinate Riesz profile. -/
+def speQuantileRieszMassAntiderivative (M : ℕ) (y : ℝ) : ℝ :=
+  Real.sqrt (M : ℝ) * y ^ 2 / 2 - y ^ 3 / 6
+
+/-- The arithmetic node `log n` in canonical polar mass coordinate. -/
+def speQuantileRieszMassNode (n : ℕ) : ℝ :=
+  2 * Real.sqrt (n : ℝ)
+
+/-- Center of the literal outgoing quantile cell in canonical polar mass coordinate. -/
+def speQuantileRieszMassCellCenter (n : ℕ) : ℝ :=
+  ccmActualHeadQuantilePolarCoordinate n + criticalMellinAtomWeight n / 2
+
+/-- Signed displacement from a literal quantile-cell center to its arithmetic mass node. -/
+def speQuantileRieszMassCellDisplacement (n : ℕ) : ℝ :=
+  speQuantileRieszMassNode n - speQuantileRieszMassCellCenter n
 
 /-- Completed actual-quantile transport for the SP-E Riesz profile, with the forced lower-edge
 correction restoring the physical source interval below logarithmic height zero. -/
@@ -79,6 +100,184 @@ theorem criticalMellinAtomWeight_mul_speQuantileRieszProfile_log
           (Real.sqrt n * Real.sqrt M - Real.sqrt n * Real.sqrt n) := by rw [hsquare]
     _ = Real.sqrt n * ArithmeticFunction.vonMangoldt n *
           (Real.sqrt M - Real.sqrt n) := by ring
+
+/-- The source atom is the mass-coordinate Riesz profile evaluated at its arithmetic node. -/
+theorem criticalMellinAtomWeight_mul_speQuantileRieszProfile_eq_massNode
+    (M n : ℕ) :
+    criticalMellinAtomWeight n * speQuantileRieszProfile M (Real.log n) =
+      criticalMellinAtomWeight n *
+        speQuantileRieszMassProfile M (speQuantileRieszMassNode n) := by
+  by_cases hn : n = 0
+  · subst n
+    have hzero : criticalMellinAtomWeight (0 : ℕ) = 0 := by
+      simp [criticalMellinAtomWeight]
+    rw [hzero]
+    ring
+  · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
+    have hnR : (0 : ℝ) < n := by exact_mod_cast hnpos
+    have hsqrt : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hnR
+    have hhalf : Real.exp (Real.log (n : ℝ) / 2) = Real.sqrt (n : ℝ) := by
+      rw [← Real.log_sqrt hnR.le, Real.exp_log hsqrt]
+    have hsquare : Real.sqrt (n : ℝ) * Real.sqrt n = (n : ℝ) :=
+      Real.mul_self_sqrt hnR.le
+    have hmass : speQuantileRieszMassProfile M (speQuantileRieszMassNode n) =
+        2 * (Real.sqrt (M : ℝ) * Real.sqrt n - (n : ℝ)) := by
+      unfold speQuantileRieszMassProfile speQuantileRieszMassNode
+      rw [show (2 * Real.sqrt (n : ℝ)) ^ 2 =
+          4 * (Real.sqrt (n : ℝ) * Real.sqrt n) by ring, hsquare]
+      ring
+    rw [speQuantileRieszProfile, hhalf, Real.exp_log hnR, hmass]
+
+/-- Exact mass-coordinate primitive for one literal outgoing Riesz quantile cell. -/
+theorem speQuantileRieszCellIntegral_eq_massAntiderivative
+    (M n : ℕ) :
+    (∫ h in ccmOutgoingPrimeQuantileBoundary n..
+        ccmOutgoingPrimeQuantileBoundary (n + 1),
+      Real.exp (h / 2) * speQuantileRieszProfile M h) =
+      speQuantileRieszMassAntiderivative M
+          (ccmActualHeadQuantilePolarCoordinate (n + 1)) -
+        speQuantileRieszMassAntiderivative M
+          (ccmActualHeadQuantilePolarCoordinate n) := by
+  let b0 := ccmOutgoingPrimeQuantileBoundary n
+  let b1 := ccmOutgoingPrimeQuantileBoundary (n + 1)
+  let P : ℝ → ℝ := fun h =>
+    2 * Real.sqrt (M : ℝ) * Real.exp h -
+      (4 / 3 : ℝ) * Real.exp (h * 3 / 2)
+  let G : ℝ → ℝ := fun h => Real.exp (h / 2) * speQuantileRieszProfile M h
+  have hderiv : ∀ h ∈ uIcc b0 b1, HasDerivAt P (G h) h := by
+    intro h hh
+    have hlin : HasDerivAt (fun x : ℝ => x * 3 / 2) (3 / 2 : ℝ) h := by
+      simpa [mul_comm] using ((hasDerivAt_id h).const_mul (3 : ℝ)).div_const (2 : ℝ)
+    have hthree : HasDerivAt (fun x : ℝ => Real.exp (x * 3 / 2))
+        ((3 / 2 : ℝ) * Real.exp (h * 3 / 2)) h := by
+      simpa [mul_comm] using hlin.exp
+    have hraw :=
+      ((Real.hasDerivAt_exp h).const_mul (2 * Real.sqrt (M : ℝ))).sub
+        (hthree.const_mul (4 / 3 : ℝ))
+    change HasDerivAt P (G h) h
+    dsimp only [P, G, speQuantileRieszProfile]
+    rw [show h * 3 / 2 = h + h / 2 by ring, Real.exp_add] at hraw
+    apply HasDerivAt.congr_deriv hraw
+    have hsquareexp : Real.exp (h / 2) ^ 2 = Real.exp h := by
+      rw [pow_two, ← Real.exp_add]
+      congr 1
+      ring
+    calc
+      2 * Real.sqrt (M : ℝ) * Real.exp h -
+          (4 / 3 : ℝ) * ((3 / 2 : ℝ) *
+            (Real.exp h * Real.exp (h / 2))) =
+          2 * Real.sqrt (M : ℝ) * Real.exp h -
+            2 * Real.exp h * Real.exp (h / 2) := by ring
+      _ = 2 * Real.sqrt (M : ℝ) * Real.exp (h / 2) ^ 2 -
+            2 * Real.exp h * Real.exp (h / 2) := by rw [hsquareexp]
+      _ = Real.exp (h / 2) *
+            (2 * (Real.sqrt (M : ℝ) * Real.exp (h / 2) - Real.exp h)) := by ring
+  have hint : IntervalIntegrable G volume b0 b1 := by
+    dsimp only [G]
+    exact ((by fun_prop : Continuous fun h : ℝ => Real.exp (h / 2)).mul
+      (continuous_speQuantileRieszProfile M)).intervalIntegrable _ _
+  have hprimitive :
+      (∫ h in b0..b1, Real.exp (h / 2) * speQuantileRieszProfile M h) = P b1 - P b0 := by
+    rw [show (fun h : ℝ => Real.exp (h / 2) * speQuantileRieszProfile M h) = G by rfl]
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  have hP (h : ℝ) :
+      P h = speQuantileRieszMassAntiderivative M (ccmActualHeadPolarMassCoordinate h) := by
+    dsimp only [P, speQuantileRieszMassAntiderivative, ccmActualHeadPolarMassCoordinate]
+    have hsq : Real.exp (h / 2) ^ 2 = Real.exp h := by
+      rw [pow_two, ← Real.exp_add]
+      congr 1
+      ring
+    have hcub : Real.exp (h / 2) ^ 3 = Real.exp (h * 3 / 2) := by
+      rw [pow_three, ← Real.exp_add, ← Real.exp_add]
+      congr 1
+      ring
+    rw [← hsq, ← hcub]
+    ring
+  change (∫ h in b0..b1, Real.exp (h / 2) * speQuantileRieszProfile M h) = _
+  rw [hprimitive, hP, hP]
+  rfl
+
+/-- The signed atom-minus-continuum form is exactly the literal reporter cell. -/
+theorem speQuantileRieszAtom_sub_cellIntegral_eq_reporterTransport
+    (M n : ℕ) :
+    criticalMellinAtomWeight n * speQuantileRieszProfile M (Real.log n) -
+        (∫ h in ccmOutgoingPrimeQuantileBoundary n..
+          ccmOutgoingPrimeQuantileBoundary (n + 1),
+          Real.exp (h / 2) * speQuantileRieszProfile M h) =
+      ccmPrimePolarReporterQuantileCellTransport (speQuantileRieszProfile M) n := by
+  let lo := ccmOutgoingPrimeQuantileBoundary n
+  let hi := ccmOutgoingPrimeQuantileBoundary (n + 1)
+  have hweight : Continuous (fun h : ℝ => Real.exp (h / 2)) := by fun_prop
+  have hconst : IntervalIntegrable
+      (fun h : ℝ => Real.exp (h / 2) * speQuantileRieszProfile M (Real.log n)) volume lo hi :=
+    (hweight.mul continuous_const).intervalIntegrable _ _
+  have hvar : IntervalIntegrable
+      (fun h : ℝ => Real.exp (h / 2) * speQuantileRieszProfile M h) volume lo hi :=
+    (hweight.mul (continuous_speQuantileRieszProfile M)).intervalIntegrable _ _
+  have hmass := integral_exp_half_quantileCell_eq_atomWeight n
+  have hfirst :
+      (∫ h in lo..hi, Real.exp (h / 2) * speQuantileRieszProfile M (Real.log n)) =
+        criticalMellinAtomWeight n * speQuantileRieszProfile M (Real.log n) := by
+    calc
+      _ = speQuantileRieszProfile M (Real.log n) * ∫ h in lo..hi, Real.exp (h / 2) := by
+        rw [← intervalIntegral.integral_const_mul]
+        apply intervalIntegral.integral_congr
+        intro h hh
+        ring
+      _ = _ := by rw [hmass]; ring
+  rw [ccmPrimePolarReporterQuantileCellTransport]
+  calc
+    criticalMellinAtomWeight n * speQuantileRieszProfile M (Real.log n) -
+        (∫ h in lo..hi, Real.exp (h / 2) * speQuantileRieszProfile M h) =
+      (∫ h in lo..hi, Real.exp (h / 2) * speQuantileRieszProfile M (Real.log n)) -
+        ∫ h in lo..hi, Real.exp (h / 2) * speQuantileRieszProfile M h := by rw [hfirst]
+    _ = ∫ h in lo..hi,
+        (Real.exp (h / 2) * speQuantileRieszProfile M (Real.log n) -
+          Real.exp (h / 2) * speQuantileRieszProfile M h) :=
+      (intervalIntegral.integral_sub hconst hvar).symm
+    _ = _ := by
+      apply intervalIntegral.integral_congr
+      intro h hh
+      ring
+
+/-- Exact source normal form of one literal SP-E reporter cell: signed node-to-center
+orientation plus its forced cubic concavity reserve. -/
+theorem speQuantileRieszReporterCell_eq_signedDisplacement
+    (M n : ℕ) :
+    ccmPrimePolarReporterQuantileCellTransport (speQuantileRieszProfile M) n =
+      criticalMellinAtomWeight n * speQuantileRieszMassCellDisplacement n *
+          (Real.sqrt (M : ℝ) -
+            (speQuantileRieszMassNode n + speQuantileRieszMassCellCenter n) / 2) +
+        criticalMellinAtomWeight n ^ 3 / 24 := by
+  rw [← speQuantileRieszAtom_sub_cellIntegral_eq_reporterTransport]
+  rw [criticalMellinAtomWeight_mul_speQuantileRieszProfile_eq_massNode,
+    speQuantileRieszCellIntegral_eq_massAntiderivative]
+  have hstep := ccmActualHeadQuantilePolarCoordinate_succ_sub_eq_atomWeight n
+  have hcoord : ccmActualHeadQuantilePolarCoordinate (n + 1) =
+      ccmActualHeadQuantilePolarCoordinate n + criticalMellinAtomWeight n := by
+    linarith
+  simp only [speQuantileRieszMassProfile, speQuantileRieszMassAntiderivative,
+    speQuantileRieszMassNode, speQuantileRieszMassCellCenter,
+    speQuantileRieszMassCellDisplacement]
+  rw [hcoord]
+  ring
+
+/-- The source displacement is the completed outgoing node error plus the forced half-atom
+centering shift. -/
+theorem speQuantileRieszMassCellDisplacement_eq_outgoingNodeError_add_half
+    {n : ℕ} (hn : 0 < n) :
+    speQuantileRieszMassCellDisplacement n =
+      ccmActualHeadOutgoingNodeError n + criticalMellinAtomWeight n / 2 := by
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have hsqrt : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hnR
+  have hhalf : Real.exp (Real.log (n : ℝ) / 2) = Real.sqrt (n : ℝ) := by
+    rw [← Real.log_sqrt hnR.le, Real.exp_log hsqrt]
+  have herror := two_exp_log_half_sub_quantile_succ_eq_outgoingNodeError n hn
+  have hstep := ccmActualHeadQuantilePolarCoordinate_succ_sub_eq_atomWeight n
+  unfold speQuantileRieszMassCellDisplacement speQuantileRieszMassNode
+    speQuantileRieszMassCellCenter
+  rw [← hhalf]
+  linarith
 
 theorem sum_range_criticalMellinAtomWeight_mul_speQuantileRieszProfile_log
     {M : ℕ} (hM : 1 ≤ M) :
@@ -207,6 +406,25 @@ theorem speCompletedQuantileRieszTransport_eq_resolvent_source
       rw [hres]
       ring
 
+/-- The full labelled quantile--Riesz transport is exactly twice the completed signed Abel
+action, including the polar-lattice correction.  Thus no terminal seam or quantile-cell term is
+discarded before comparison with the literal SP-E source. -/
+theorem speCompletedQuantileRieszTransport_eq_two_mul_coherentSelbergAbel_add_polar
+    {M : ℕ} (hM : 2 ≤ M) :
+    speCompletedQuantileRieszTransport M =
+      2 * (coherentSelbergSquareRootAbelMoment M +
+        coherentSquareRootPolarLatticeDefect M) := by
+  calc
+    speCompletedQuantileRieszTransport M =
+        (M : ℝ) * criticalMellinChebyshevResolventSource (Real.log M) :=
+      speCompletedQuantileRieszTransport_eq_resolvent_source hM
+    _ = 2 * ((M : ℝ) * unitRieszCoherentCompletedOutgoingCharge M) := by
+      rw [unitRieszCoherentCompletedOutgoingCharge_eq_resolvent_half hM]
+      ring
+    _ = 2 * (coherentSelbergSquareRootAbelMoment M +
+        coherentSquareRootPolarLatticeDefect M) := by
+      rw [coherentCompletedOutgoing_mul_eq_abel_add_latticeDefect hM]
+
 theorem speCompletedQuantileRieszTransport_div_eq_resolvent_source
     {M : ℕ} (hM : 2 ≤ M) :
     speCompletedQuantileRieszTransport M / (M : ℝ) =
@@ -302,5 +520,79 @@ theorem speQuantileRieszTerminalTransport_nonpos
     intro h hh
     exact mul_nonneg (Real.exp_nonneg _) (by
       linarith [speQuantileRieszProfile_nonpos_of_log_le hM hh.1])
+
+/-- The signed interior cells, before the terminal seam, of the source-forced Riesz transport. -/
+def speQuantileRieszInteriorTransport (M : ℕ) : ℝ :=
+  ∑ n ∈ Finset.range M,
+    ccmPrimePolarReporterQuantileCellTransport (speQuantileRieszProfile M) n
+
+/-- Exact finite source normal form of the labelled SP-E interior: each cell retains its signed
+node-to-center orientation and its cubic concavity reserve. -/
+def speQuantileRieszInteriorSignedDisplacementNormalForm (M : ℕ) : ℝ :=
+  ∑ n ∈ Finset.range M,
+    (criticalMellinAtomWeight n * speQuantileRieszMassCellDisplacement n *
+        (Real.sqrt (M : ℝ) -
+          (speQuantileRieszMassNode n + speQuantileRieszMassCellCenter n) / 2) +
+      criticalMellinAtomWeight n ^ 3 / 24)
+
+theorem speQuantileRieszInteriorTransport_eq_signedDisplacementNormalForm
+    (M : ℕ) :
+    speQuantileRieszInteriorTransport M =
+      speQuantileRieszInteriorSignedDisplacementNormalForm M := by
+  unfold speQuantileRieszInteriorTransport speQuantileRieszInteriorSignedDisplacementNormalForm
+  apply Finset.sum_congr rfl
+  intro n hn
+  exact speQuantileRieszReporterCell_eq_signedDisplacement M n
+
+/-- Finite completed-error form of the SP-E interior current. The orientation field is exactly
+the outgoing node error; the only local correction is the forced half-atom centering shift. -/
+def speQuantileRieszInteriorOutgoingNodeErrorNormalForm (M : ℕ) : ℝ :=
+  ∑ n ∈ Finset.Icc 1 (M - 1),
+    (criticalMellinAtomWeight n *
+        (ccmActualHeadOutgoingNodeError n + criticalMellinAtomWeight n / 2) *
+        (Real.sqrt (M : ℝ) -
+          (speQuantileRieszMassNode n + speQuantileRieszMassCellCenter n) / 2) +
+      criticalMellinAtomWeight n ^ 3 / 24)
+
+theorem speQuantileRieszInteriorTransport_eq_outgoingNodeErrorNormalForm
+    {M : ℕ} (hM : 1 ≤ M) :
+    speQuantileRieszInteriorTransport M =
+      speQuantileRieszInteriorOutgoingNodeErrorNormalForm M := by
+  rw [speQuantileRieszInteriorTransport_eq_signedDisplacementNormalForm]
+  unfold speQuantileRieszInteriorSignedDisplacementNormalForm
+    speQuantileRieszInteriorOutgoingNodeErrorNormalForm
+  have hrange : Finset.range M = insert 0 (Finset.Icc 1 (M - 1)) := by
+    ext n
+    simp only [Finset.mem_range, Finset.mem_insert, Finset.mem_Icc]
+    omega
+  rw [hrange, Finset.sum_insert]
+  · have hzero : criticalMellinAtomWeight (0 : ℕ) = 0 := by
+      simp [criticalMellinAtomWeight]
+    rw [hzero]
+    norm_num
+    apply Finset.sum_congr rfl
+    intro n hn
+    have hnpos : 0 < n := (Finset.mem_Icc.mp hn).1
+    rw [speQuantileRieszMassCellDisplacement_eq_outgoingNodeError_add_half hnpos]
+  · simp
+
+/-- The terminal seam has no positive contribution.  Thus the completed source is bounded above
+by its labelled interior cells and the explicit lower-edge correction. -/
+theorem speCompletedQuantileRieszTransport_le_interior
+    {M : ℕ} (hM : 2 ≤ M) :
+    speCompletedQuantileRieszTransport M ≤
+      speQuantileRieszInteriorTransport M - 2 * (Real.sqrt M - 2 / 3) := by
+  have hterm := speQuantileRieszTerminalTransport_nonpos (M := M) (by omega : 0 < M)
+  unfold speCompletedQuantileRieszTransport speQuantileRieszInteriorTransport
+    ccmPrimePolarReporterCompletedQuantileTransport
+  linarith
+
+/-- Direct one-sided source reduction to the labelled SP-E interior Riesz cells. -/
+theorem criticalMellinChebyshevResolventSource_mul_nat_le_speQuantileRieszInterior
+    {M : ℕ} (hM : 2 ≤ M) :
+    (M : ℝ) * criticalMellinChebyshevResolventSource (Real.log M) ≤
+      speQuantileRieszInteriorTransport M - 2 * (Real.sqrt M - 2 / 3) := by
+  rw [← speCompletedQuantileRieszTransport_eq_resolvent_source hM]
+  exact speCompletedQuantileRieszTransport_le_interior hM
 
 end RHTower

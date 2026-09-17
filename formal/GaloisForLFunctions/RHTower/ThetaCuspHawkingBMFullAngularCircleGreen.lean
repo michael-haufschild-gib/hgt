@@ -307,6 +307,18 @@ private theorem source_periodic (q : XiZeroCopy) (branch : Bool) (d x k theta : 
     angularSource q branch d (theta+2*Real.pi) x k=angularSource q branch d theta x k := by
   simp [angularSource,logCircle,circle,offset,height,denominator,Real.sin_add_two_pi,Real.cos_add_two_pi]
 
+/-- Negating the literal native radius is the same circle after the forced half-turn. -/
+theorem logCircle_neg_radius_eq_halfTurn (d theta x k : ℝ) :
+    logCircle (-d) theta x k = logCircle d (theta + Real.pi) x k := by
+  funext i
+  fin_cases i <;> simp [logCircle,circle,offset,height,denominator]
+
+/-- The full constructed response is transported by the same literal half-turn. -/
+theorem angularSource_neg_radius_eq_halfTurn (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ) :
+    angularSource q branch (-d) theta x k = angularSource q branch d (theta + Real.pi) x k := by
+  unfold angularSource
+  rw [logCircle_neg_radius_eq_halfTurn]
+
 private theorem smooth_derivative {f : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (deriv f) :=
   (contDiff_infty_iff_deriv.mp hf).2
 
@@ -367,6 +379,39 @@ theorem angularMean_zero (q : XiZeroCopy) (branch : Bool) (x k : ℝ) :
     simp [angularSource,logCircle,circle,offset,height,denominator]
   rw [angularMean,he,average_constant]
 
+/-- The complete full angular mean is even in the signed literal radius.  This is
+the exact parity required before regularizing the seed-cap corner; it is not a
+source-only replacement. -/
+theorem angularMean_neg_radius (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
+    angularMean q branch (-d) x k = angularMean q branch d x k := by
+  have hsource : (fun theta => angularSource q branch (-d) theta x k) =
+      fun theta => angularSource q branch d (theta + Real.pi) x k := by
+    funext theta
+    exact angularSource_neg_radius_eq_halfTurn q branch d theta x k
+  rw [angularMean,hsource]
+  unfold D4BMNativeCircle.average
+  congr 1
+  have hpi : 0 ≤ 2 * Real.pi := by positivity
+  have hperiod : Function.Periodic (fun theta => angularSource q branch d theta x k) (2 * Real.pi) :=
+    fun theta => source_periodic q branch d x k theta
+  change (∫ theta in Ioc (0 : ℝ) (2 * Real.pi),
+      angularSource q branch d (theta + Real.pi) x k) =
+    ∫ theta in Ioc (0 : ℝ) (2 * Real.pi), angularSource q branch d theta x k
+  calc
+    (∫ theta in Ioc (0 : ℝ) (2 * Real.pi),
+        angularSource q branch d (theta + Real.pi) x k) =
+        ∫ theta in (0 : ℝ)..2 * Real.pi, angularSource q branch d (theta + Real.pi) x k :=
+      (intervalIntegral.integral_of_le hpi).symm
+    _ = ∫ theta in Real.pi..2 * Real.pi + Real.pi, angularSource q branch d theta x k := by
+      simpa only [zero_add] using
+        intervalIntegral.integral_comp_add_right
+          (a := (0 : ℝ)) (b := 2 * Real.pi)
+          (fun theta => angularSource q branch d theta x k) Real.pi
+    _ = ∫ theta in (0 : ℝ)..2 * Real.pi, angularSource q branch d theta x k := by
+      simpa only [zero_add, add_comm] using (hperiod.intervalIntegral_add_eq 0 Real.pi).symm
+    _ = ∫ theta in Ioc (0 : ℝ) (2 * Real.pi), angularSource q branch d theta x k :=
+      intervalIntegral.integral_of_le hpi
+
 private theorem average_finite_smooth (n : ℕ) {F : ℝ × ℝ → ℂ} (hf : ContDiff ℝ ∞ F) :
     ContDiff ℝ n (fun r => D4BMNativeCircle.average (fun theta => F (r,theta))) := by
   have hd : Differentiable ℝ (fun r => D4BMNativeCircle.average (fun theta => F (r,theta))) :=
@@ -386,6 +431,62 @@ private theorem average_finite_smooth (n : ℕ) {F : ℝ × ℝ → ℂ} (hf : C
 /-- Every radial derivative of the actual finite circle average exists, including at radius zero. -/
 theorem angularMean_smooth (q : XiZeroCopy) (branch : Bool) (x k : ℝ) : ContDiff ℝ ∞ (fun d => angularMean q branch d x k) :=
   contDiff_infty.mpr (fun n => average_finite_smooth n (radial_family q branch x k))
+
+private theorem deriv_neg_of_even {f : ℝ → ℂ} (heven : Function.Even f)
+    (hf : Differentiable ℝ f) (x : ℝ) : deriv f (-x) = -deriv f x := by
+  have hneg : HasDerivAt (fun y : ℝ => -y) (-1) x := (hasDerivAt_id x).neg
+  have hcomp : HasDerivAt (fun y : ℝ => f (-y)) (deriv f (-x) * (-1)) x :=
+    (hf (-x)).hasDerivAt.comp x hneg
+  have heq : (fun y : ℝ => f (-y)) = f := funext heven
+  have hderiv := congrArg (fun g : ℝ → ℂ => deriv g x) heq
+  change deriv (fun y : ℝ => f (-y)) x = deriv f x at hderiv
+  rw [hcomp.deriv] at hderiv
+  linear_combination hderiv
+
+private theorem deriv2_even_of_even {f : ℝ → ℂ} (heven : Function.Even f)
+    (hf : ContDiff ℝ ∞ f) (u : ℝ) :
+    deriv (deriv f) (-u) = deriv (deriv f) u := by
+  have hf1 := smooth_derivative hf
+  have hodd : Function.Odd (deriv f) := by
+    intro x
+    exact deriv_neg_of_even heven (hf.differentiable (by simp)) x
+  have hneg : HasDerivAt (fun y : ℝ => -y) (-1) u := (hasDerivAt_id u).neg
+  have hleft : HasDerivAt (fun y : ℝ => deriv f (-y))
+      (deriv (deriv f) (-u) * (-1)) u :=
+    (hf1.differentiable (by simp) (-u)).hasDerivAt.comp u hneg
+  have hright : HasDerivAt (fun y : ℝ => -deriv f y)
+      (-deriv (deriv f) u) u :=
+    ((hf1.differentiable (by simp) u).hasDerivAt).neg
+  have heq : (fun y : ℝ => deriv f (-y)) = fun y : ℝ => -deriv f y := funext hodd
+  have hleft' : HasDerivAt (fun y : ℝ => -deriv f y)
+      (deriv (deriv f) (-u) * (-1)) u := by
+    rwa [← heq]
+  have huniq := hleft'.unique hright
+  linear_combination huniq
+
+/-- The actual full circle germ has no odd radial jets through order three.
+These are the exact local compatibility conditions required by the literal
+`arcosh (max 1 ·)` cap corner before any two-jet construction. -/
+theorem angularMean_radial_oddJets_zero (q : XiZeroCopy) (branch : Bool) (x k : ℝ) :
+    deriv (fun d => angularMean q branch d x k) 0 = 0 ∧
+      deriv (deriv (deriv (fun d => angularMean q branch d x k))) 0 = 0 := by
+  let f : ℝ → ℂ := fun d => angularMean q branch d x k
+  have heven : Function.Even f := by
+    intro d
+    exact angularMean_neg_radius q branch d x k
+  have hf : ContDiff ℝ ∞ f := angularMean_smooth q branch x k
+  have hf1 := smooth_derivative hf
+  have hf2 := smooth_derivative hf1
+  constructor
+  · have h := deriv_neg_of_even heven (hf.differentiable (by simp)) 0
+    simp only [neg_zero] at h
+    linear_combination h / 2
+  · have heven2 : Function.Even (deriv (deriv f)) := by
+      intro d
+      exact deriv2_even_of_even heven hf d
+    have h := deriv_neg_of_even heven2 (hf2.differentiable (by simp)) 0
+    simp only [neg_zero] at h
+    linear_combination h / 2
 
 /-- The forced circular equation retains the literal half-square source on both physical branches. -/
 theorem angularMean_forced (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :

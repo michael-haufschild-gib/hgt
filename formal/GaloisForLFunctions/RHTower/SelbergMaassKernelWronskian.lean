@@ -156,6 +156,20 @@ def coefficientWronskian (n m : ℤ) (y : ℝ) : ℂ :=
   complexLoss N r s (coefficientHeightVector N f n y) (coefficientVector N f m y)-
     complexLoss N r s (coefficientVector N f n y) (coefficientHeightVector N f m y)
 
+/-- The original coefficient-loss kernel is Hermitian under frequency exchange. -/
+theorem coefficientLoss_conj_exchange (n m : ℤ) (y : ℝ) :
+    (starRingEnd ℂ) (coefficientLoss N r s f n m y) =
+      coefficientLoss N r s f m n y := by
+  exact complexLoss_conj N r s _ _
+
+/-- The original coefficient Wronskian current is anti-Hermitian under frequency exchange. -/
+theorem coefficientWronskian_conj_exchange (n m : ℤ) (y : ℝ) :
+    (starRingEnd ℂ) (coefficientWronskian N r s f n m y) =
+      -coefficientWronskian N r s f m n y := by
+  unfold coefficientWronskian
+  rw [map_sub, complexLoss_conj, complexLoss_conj]
+  ring
+
 /-- The common Maass potential cancels exactly in the full arithmetic mixed current. -/
 theorem coefficientWronskian_hasDerivAt (n m : ℤ) {y : ℝ} (hy : 0 < y) :
     HasDerivAt (coefficientWronskian N r s f n m)
@@ -297,6 +311,12 @@ theorem coefficientWronskian_eq_tail (n m : ℤ) {Y : ℝ} (hY : 0 < Y) :
   simp only [Complex.ofReal_sub,zero_sub] at h ⊢
   change _=_*∫ y in Ioi Y, coefficientLoss N r s g n m y
   linear_combination h
+
+/-- Every diagonal coefficient Wronskian vanishes identically in the exceptional cusp range. -/
+theorem coefficientWronskian_self_eq_zero (n : ℤ) {Y : ℝ} (hY : 0 < Y) :
+    coefficientWronskian N r s g n n Y = 0 := by
+  rw [coefficientWronskian_eq_tail N r s e g n n hY]
+  simp
 
 /-- Distinct original residue channels cancel in the actual infinite-tail kernel. -/
 theorem tailLoss_eq_zero_of_residue_ne (n m : ℤ)

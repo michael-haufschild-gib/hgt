@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**324 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**328 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-16, `e876f08380382e6380c9d063c28c4cc057e2a526`**.
+Source-audit cutoff: **2026-09-16, `67c6c77ec0cf4a8d65d56fd0220e30d684bf38a2`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -22,12 +22,12 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 16 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 22 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 23 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 37 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 69 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 70 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 26 |
 | [Singular descent, formation and completion](#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 39 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 41 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
 | [Other finite, scalar and source-blind selectors](#other) | 80 |
 
@@ -302,6 +302,7 @@ Source-native aperture invariant is required.
 - [CCM-FU fixed-range critical signed transport](#no-go-289)
 - [CCM-FU scalar rectangular-Euler inversion](#no-go-311)
 - [CCM matched adjacent-codiagonal scalarization](#no-go-312)
+- [CCM reflection-odd wall jet at a parity-pole first contact](#no-go-325)
 
 <a id="no-go-294"></a>
 
@@ -642,6 +643,27 @@ equaling the completed error exactly. The live problem is a signed bound for the
 translation-defect/autocorrelation profile before scalarization.
 
 Evidence: [adjacent-codiagonal normal form](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-325"></a>
+
+### CCM reflection-odd wall jet at a parity-pole first contact
+
+**Closed result**
+
+The completed restricted-Weil form splits into reflection-even and reflection-odd channels with
+zero cross term. The oriented wall-chord jet is reflection-odd and vanishes on both literal
+parity-pole vectors. Hence, if pole compression reaches its certified first zero, every such wall
+jet is zero there and cannot exclude that contact.
+
+**Survivor / still open**
+
+The full source-faithful adjacent-codiagonal-plus-terminal normal form survives. A viable wall
+producer must retain an even marked boundary datum, or another nonlocal source coordinate not
+reduced to the reflection-odd jet, and prove the complete signed lower bound.
+
+Evidence: [pole-parity wall-jet obstruction](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadWallJetPoleParityNoGo.lean), [adjacent-seam source bridge](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedAdjacentCodiagonalSourceBridge.lean).
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
@@ -1331,6 +1353,7 @@ Evidence: [inclusive gcd Gram](../../../../formal/GaloisForLFunctions/RHTower/Mo
 - [HB genuine Green-pole matching by the unit-source clock](#no-go-314)
 - [HB finite scalar/packet realization of the original source clock](#no-go-315)
 - [HB literal on-shell same-frequency, holomorphic or native-L2 realization](#no-go-316)
+- [HB spectral-root or physical-chamber cutoff-face escape](#no-go-326)
 
 <a id="no-go-299"></a>
 
@@ -2459,6 +2482,28 @@ Evidence: [same-frequency wall](../../../../formal/GaloisForLFunctions/RHTower/T
 
 [Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
+<a id="no-go-326"></a>
+
+### HB spectral-root or physical-chamber cutoff-face escape
+
+**Closed result**
+
+At every physical stream rate, the complete horizon spectral factor
+`(2s+3)((s+1)(s+2)-2)((s+1)(s+2)-6)` is nonzero. The literal finite metric-collar identity,
+however, lives in `3/2 < Re(w)`, while the source pole has `Re(2s) < -4`. Thus the remaining
+cutoff face cannot vanish through a physical spectral root or be evaluated by relabelling the
+existing metric-collar theorem into the pole chamber.
+
+**Survivor / still open**
+
+Finite Green balance and the contact-renormalized two-leg transgression survive. The live problem
+is a genuine meromorphic/distributional noncompact limit: identify its cap holonomy with
+`contactField`, or compute a nonzero mismatch and retire the last literal HB realization.
+
+Evidence: [physical-rate noncancellation](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalRateNonreal.lean), [metric-collar chamber](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalMetricCorner.lean), [current bridge status](hb-source-pole-frequency-defect-cochain.md).
+
+[Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -3340,6 +3385,8 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [Suzuki Green-boundary orthogonal closure split](#no-go-322)
 - [reflection-compatible scalar shorting of the Xi conormal current](#no-go-323)
 - [singleton-additive synchronized Gamma recovery](#no-go-324)
+- [Route-P ordinary source-Hilbert real-axis theta reporter](#no-go-327)
+- [SP-E positive terminal-seam compensation](#no-go-328)
 
 <a id="no-go-309"></a>
 
@@ -3945,6 +3992,50 @@ Route P must preserve this labelled factor through global completion and divisor
 Evidence: [synchronized mixed curvature](../../../../formal/GaloisForLFunctions/RHTower/GammaSewnSynchronizedRecoveryMixedCurvature.lean).
 
 [Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-327"></a>
+
+### Route-P ordinary source-Hilbert real-axis theta reporter
+
+**Closed result**
+
+At every real theta coordinate, the squared one-prime reporter coefficient is exactly
+`4(log p)^4/p`; its prime sum diverges. No vector in the completed critical source `ℓ²` space can
+represent literal real-axis theta evaluation coefficientwise. Ordinary bounded source-vector
+evaluation therefore cannot land the critical-line theta boundary.
+
+**Survivor / still open**
+
+For every lower-strip point `-it`, `t>0`, the literal coefficient is the canonical critical-
+Laplace reporter scaled by `t⁻¹`; for `0<t<1` it gives a bounded functional on the actual closed
+graph with exact finite-core compatibility. Route P still needs an Xi-adic relative boundary
+morphism carrying this graph datum to escape multiplicity and nuclear budget.
+
+Evidence: [real-axis reporter boundary](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaStripReporterBoundary.lean), [lower closed-graph landing](../../../../formal/GaloisForLFunctions/RHTower/PrimeLogThetaLowerClosedGraphLanding.lean).
+
+[Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-328"></a>
+
+### SP-E positive terminal-seam compensation
+
+**Closed result**
+
+The source-forced quantile-Riesz profile vanishes at its physical aperture wall, is nonnegative
+before that wall and nonpositive after it. Its completed terminal quantile seam is therefore
+always nonpositive. The seam cannot supply a hidden positive compensator for the missing signed
+SP-E bound.
+
+**Survivor / still open**
+
+The completed labelled quantile transport equals exactly `M` times the sampled critical-Mellin
+resolvent, and normalized boundedness is equivalent to RH. Any positive source contribution and
+the required cancellation must come from the labelled interior cells with the lower-edge
+correction retained.
+
+Evidence: [quantile-Riesz source transport](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszSourceTransport.lean).
+
+[Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
 
 <a id="roots"></a>
 

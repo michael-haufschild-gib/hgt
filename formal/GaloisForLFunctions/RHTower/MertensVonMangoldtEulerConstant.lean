@@ -568,7 +568,7 @@ theorem tendsto_chebyshevError_div :
     simp only [Function.comp, neg_mul]
 
 /-- **Mertens' theorem with the Euler constant**: `Σ_{n ≤ x} Λ(n)/n − log x → −γ`. -/
-theorem tendsto_sum_vonMangoldt_div_sub_log :
+theorem tendsto_real_sum_vonMangoldt_div_sub_log :
     Tendsto (fun x : ℝ => (∑ k ∈ Finset.Icc 0 ⌊x⌋₊, vonMangoldt k / k) - Real.log x) atTop
       (𝓝 (-Real.eulerMascheroniConstant)) := by
   have key : ∀ x : ℝ, 1 ≤ x →

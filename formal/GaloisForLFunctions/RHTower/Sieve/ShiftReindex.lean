@@ -46,6 +46,65 @@ theorem sum_upper_triangle_eq_sum_shift (R : ℕ) (F : ℕ → ℕ → ℝ) :
     have : n + (m - n) = m := by omega
     simp [this]
 
+/-- **Reindexing a strict dyadic interval triangle by the literal shift.**
+
+The ordered pair `(u, a)` ranges over `N < a < u ≤ 2N`; it is sent to
+`(u - a, a)`.  Thus no endpoint is averaged or completed: shift `h` retains
+the exact inner interval `N < a ≤ 2N - h`. -/
+theorem sum_strict_ioc_eq_sum_shift (N : ℕ) (F : ℕ → ℕ → ℝ) :
+    (∑ ab ∈ (Finset.Ioc N (2 * N)).product (Finset.Ioc N (2 * N)) |>.filter
+        (fun ab => ab.2 < ab.1), F ab.1 ab.2) =
+      ∑ h ∈ Finset.Ico 1 N, ∑ a ∈ Finset.Ioc N (2 * N - h), F (a + h) a := by
+  let S := Finset.Ioc N (2 * N)
+  let G : ℕ × ℕ → ℝ := fun ab => F ab.1 ab.2
+  let T := Finset.sigma (Finset.Ico 1 N) (fun h => Finset.Ioc N (2 * N - h))
+  change (∑ ab ∈ (S.product S).filter (fun ab => ab.2 < ab.1), G ab) =
+    ∑ h ∈ Finset.Ico 1 N, ∑ a ∈ Finset.Ioc N (2 * N - h), G (a + h, a)
+  rw [Finset.sum_sigma']
+  change (∑ ab ∈ (S.product S).filter (fun ab => ab.2 < ab.1), G ab) =
+    ∑ ha ∈ T, G (ha.2 + ha.1, ha.2)
+  refine Finset.sum_nbij' (fun ab : ℕ × ℕ => Sigma.mk (ab.1 - ab.2) ab.2)
+    (fun ha : Sigma fun _ : ℕ => ℕ => (ha.2 + ha.1, ha.2)) ?_ ?_ ?_ ?_ ?_
+  · rintro ⟨u, a⟩ hmem
+    have hm : (u ∈ S ∧ a ∈ S) ∧ a < u := by
+      simpa [S] using hmem
+    have hu : N < u ∧ u ≤ 2 * N := by simpa [S] using hm.1.1
+    have ha : N < a ∧ a ≤ 2 * N := by simpa [S] using hm.1.2
+    have hua : a + (u - a) = u := Nat.add_sub_of_le (Nat.le_of_lt hm.2)
+    change Sigma.mk (u - a) a ∈
+      Finset.sigma (Finset.Ico 1 N) (fun h => Finset.Ioc N (2 * N - h))
+    rw [Finset.mem_sigma]
+    refine ⟨Finset.mem_Ico.mpr ?_, Finset.mem_Ioc.mpr ?_⟩
+    · refine ⟨Nat.succ_le_iff.mpr (Nat.sub_pos_iff_lt.mpr hm.2), ?_⟩
+      exact (Nat.sub_lt_iff_lt_add (Nat.le_of_lt hm.2)).mpr (by omega)
+    · refine ⟨ha.1, Nat.le_sub_of_add_le ?_⟩
+      simpa [hua] using hu.2
+  · rintro ⟨h, a⟩ hmem
+    have hm : (1 ≤ h ∧ h < N) ∧ N < a ∧ a ≤ 2 * N - h := by
+      simpa [T] using hmem
+    change (a + h, a) ∈ (S.product S).filter (fun ab => ab.2 < ab.1)
+    refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨?_, ?_⟩, by omega⟩
+    · simpa [S] using (Finset.mem_Ioc.mpr (show N < a + h ∧ a + h ≤ 2 * N by omega))
+    · simpa [S] using (Finset.mem_Ioc.mpr (show N < a ∧ a ≤ 2 * N by omega))
+  · rintro ⟨u, a⟩ hmem
+    have hm : (u ∈ S ∧ a ∈ S) ∧ a < u := by
+      simpa [S] using hmem
+    have hua : a + (u - a) = u := by omega
+    dsimp
+    simp [hua]
+  · rintro ⟨h, a⟩ _
+    dsimp
+    apply Sigma.ext
+    · simp
+    · rfl
+  · rintro ⟨u, a⟩ hmem
+    have hua : a + (u - a) = u := by
+      have hm : (u ∈ S ∧ a ∈ S) ∧ a < u := by
+        simpa [S] using hmem
+      omega
+    change G (u, a) = G (a + (u - a), a)
+    rw [hua]
+
 /-- **Trichotomy split of a symmetric pair sum.** -/
 theorem sum_pair_eq_diag_add_two_upper (R : ℕ) (W : ℕ → ℕ → ℝ)
     (hsymm : ∀ n m, W n m = W m n) :

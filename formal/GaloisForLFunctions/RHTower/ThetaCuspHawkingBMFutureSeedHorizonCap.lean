@@ -150,6 +150,22 @@ private theorem closedMean_continuous (q : XiZeroCopy) (branch : Bool) (X k : �
 def halfKernel (q : XiZeroCopy) (branch : Bool) (tau x v X k : ℝ) : ℂ :=
   if tau+x ≤ v then closedMean q branch X k (D4BMFutureHorizon.horizonArgument tau x v) else 0
 
+/-- Exact delay chart for one literal full-angular seed arm.  Unlike the source
+cap kernel, its circle value is the full angular response. -/
+theorem halfKernel_at_delay (q : XiZeroCopy) (branch : Bool) (tau x h X k : ℝ)
+    (hh : 0 ≤ h) :
+    halfKernel q branch tau x (tau+x+h) X k =
+      angularMean q branch (Real.arcosh (max 1
+        (1+(Real.exp x/Real.cosh x)*(Real.exp h-1)))) X k := by
+  rw [halfKernel, if_pos (by linarith)]
+  change angularMean q branch
+    (Real.arcosh (max 1 (D4BMFutureHorizon.horizonArgument tau x (tau+x+h)))) X k = _
+  congr 3
+  unfold D4BMFutureHorizon.horizonArgument
+  rw [show tau+x+h-tau = x+h by ring, Real.exp_add, ← Real.cosh_add_sinh x]
+  field_simp [(Real.cosh_pos x).ne']
+  ring
+
 private theorem source_depth_limit (v : ℝ) :
     Tendsto (fun w : ℝ => (v-w)/2) atTop atBot := by
   apply tendsto_atBot.mpr

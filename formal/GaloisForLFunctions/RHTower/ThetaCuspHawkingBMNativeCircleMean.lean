@@ -167,6 +167,20 @@ private theorem source_periodic (q : XiZeroCopy) (d x k theta : ℝ) :
     source q d (theta+2*Real.pi) x k=source q d theta x k := by
   simp [source,logCircle,circle,offset,height,denominator,Real.sin_add_two_pi,Real.cos_add_two_pi]
 
+/-- Negating native radius is exactly the same upper-half-plane point after a
+half-turn of the original angular chart. -/
+theorem logCircle_neg_radius_eq_halfTurn (d theta x k : ℝ) :
+    logCircle (-d) theta x k = logCircle d (theta + Real.pi) x k := by
+  funext i
+  fin_cases i <;> simp [logCircle, circle, offset, height, denominator]
+
+/-- The source on a negative-radius chart is the source on that same literal
+circle after its forced angular half-turn. -/
+theorem source_neg_radius_eq_halfTurn (q : XiZeroCopy) (d theta x k : ℝ) :
+    source q (-d) theta x k = source q d (theta + Real.pi) x k := by
+  unfold source
+  rw [logCircle_neg_radius_eq_halfTurn]
+
 private theorem smooth_derivative {f : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (deriv f) :=
   (contDiff_infty_iff_deriv.mp hf).2
 
@@ -288,6 +302,39 @@ theorem mean_zero (q : XiZeroCopy) (x k : ℝ) :
     funext theta
     simp [source,logCircle,circle,offset,height,denominator]
   rw [mean,he,average_constant]
+
+/-- The actual native-circle mean is even in signed radius.  This forces the
+zero-radius odd germ to vanish, but does not by itself regularize the cap's
+`arcosh (max 1 ·)` corner. -/
+theorem mean_neg_radius (q : XiZeroCopy) (d x k : ℝ) :
+    mean q (-d) x k = mean q d x k := by
+  have hsource : (fun theta => source q (-d) theta x k) =
+      fun theta => source q d (theta + Real.pi) x k := by
+    funext theta
+    exact source_neg_radius_eq_halfTurn q d theta x k
+  rw [mean, hsource]
+  unfold average
+  congr 1
+  have hpi : 0 ≤ 2 * Real.pi := by positivity
+  have hperiod : Function.Periodic (fun theta => source q d theta x k) (2 * Real.pi) :=
+    fun theta => source_periodic q d x k theta
+  change (∫ theta in Ioc (0 : ℝ) (2 * Real.pi),
+      source q d (theta + Real.pi) x k) =
+    ∫ theta in Ioc (0 : ℝ) (2 * Real.pi), source q d theta x k
+  calc
+    (∫ theta in Ioc (0 : ℝ) (2 * Real.pi), source q d (theta + Real.pi) x k) =
+        ∫ theta in (0 : ℝ)..2 * Real.pi, source q d (theta + Real.pi) x k :=
+      (intervalIntegral.integral_of_le hpi).symm
+    _ = ∫ theta in Real.pi..2 * Real.pi + Real.pi, source q d theta x k :=
+      by
+        simpa only [zero_add] using
+          intervalIntegral.integral_comp_add_right
+            (a := (0 : ℝ)) (b := 2 * Real.pi)
+            (fun theta => source q d theta x k) Real.pi
+    _ = ∫ theta in (0 : ℝ)..2 * Real.pi, source q d theta x k := by
+      simpa only [zero_add, add_comm] using (hperiod.intervalIntegral_add_eq 0 Real.pi).symm
+    _ = ∫ theta in Ioc (0 : ℝ) (2 * Real.pi), source q d theta x k :=
+      intervalIntegral.integral_of_le hpi
 
 private theorem average_finite_smooth (n : ℕ) {F : ℝ × ℝ → ℂ} (hf : ContDiff ℝ ∞ F) :
     ContDiff ℝ n (fun r => average (fun theta => F (r,theta))) := by

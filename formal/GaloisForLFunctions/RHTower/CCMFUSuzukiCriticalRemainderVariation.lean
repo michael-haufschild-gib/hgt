@@ -94,14 +94,28 @@ cancellation. -/
 theorem suzukiCheckpointCriticalMertensDeviation_eq_chebyshev_endpoint_sub_tail
     (N : ℕ) :
     suzukiCheckpointCriticalMertensDeviation N =
-      chebyshevError (((N + 2 : ℕ) : ℝ)) / (((N + 2 : ℕ) : ℝ) -
+      chebyshevError (((N + 2 : ℕ) : ℝ)) / (((N + 2 : ℕ) : ℝ)) -
         ∫ t in Set.Ioi (((N + 2 : ℕ) : ℝ)), chebyshevError t / t ^ 2 := by
   have h := mertensDeviation_eq
     (x := (((N + 2 : ℕ) : ℝ)))
-      (by positivity : (1 : ℝ) ≤ ((N + 2 : ℕ) : ℝ))
+      (by exact_mod_cast (by omega : 1 ≤ N + 2))
+  norm_num only [Nat.floor_natCast] at h
+  rw [← mertensSum_eq_Icc_zero] at h
+  change mertensSum (N + 2) - Real.log ((N + 2 : ℕ) : ℝ) +
+      Real.eulerMascheroniConstant = _
+  exact h
+
+/-- One literal prime--polar increment of the sole arithmetic critical remainder. -/
+theorem suzukiCheckpointCriticalMertensDeviation_succ_sub (N : ℕ) :
+    suzukiCheckpointCriticalMertensDeviation (N + 1) -
+        suzukiCheckpointCriticalMertensDeviation N =
+      ArithmeticFunction.vonMangoldt (N + 3) / ((N + 3 : ℕ) : ℝ) -
+        (Real.log ((N + 3 : ℕ) : ℝ) - Real.log ((N + 2 : ℕ) : ℝ)) := by
   unfold suzukiCheckpointCriticalMertensDeviation
-  rw [← mertensSum_eq_Icc_zero]
-  simpa using h
+  rw [show N + 1 + 2 = N + 2 + 1 by omega,
+    Finset.sum_Icc_succ_top (a := 1) (b := N + 2) (by omega)
+      (fun k : ℕ => ArithmeticFunction.vonMangoldt k / (k : ℝ))]
+  ring
 
 /-- The variation action is linear under source separation. -/
 theorem suzukiCheckpointCriticalVariationAction_sub
@@ -163,6 +177,24 @@ theorem suzukiCheckpointCriticalVariationAction_eq_initial_add_incrementSum
                 (r (m + 1) - r m) * w m) := by abel
   unfold suzukiCheckpointCriticalVariationAction
   simpa only [n, w] using hfinite n
+
+/-- Exact source form of the RH-equivalent critical variation action.  The full moving
+prime--polar history is retained under its literal triangular multiplier; no unsigned or
+endpoint-only substitute has been taken. -/
+theorem suzukiCheckpointCriticalMertensDeviationVariationAction_eq_weightedPrimePolar
+    (H : ℝ) :
+    suzukiCheckpointCriticalVariationAction suzukiCheckpointCriticalMertensDeviation H =
+      suzukiCheckpointCriticalMertensDeviation 0 *
+          suzukiCheckpointCriticalTriangularMultiplier H 0 +
+        ∑ j ∈ Finset.range (suzukiCheckpointEventIndex H - 2),
+          (ArithmeticFunction.vonMangoldt (j + 3) / ((j + 3 : ℕ) : ℝ) -
+            (Real.log ((j + 3 : ℕ) : ℝ) - Real.log ((j + 2 : ℕ) : ℝ))) *
+            suzukiCheckpointCriticalTriangularMultiplier H j := by
+  rw [suzukiCheckpointCriticalVariationAction_eq_initial_add_incrementSum]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro j _hj
+  rw [suzukiCheckpointCriticalMertensDeviation_succ_sub]
 
 /-- The source-free finite-part remainder has an exact local increment: one Gamma correction
 plus one harmonic-versus-log cell defect. -/

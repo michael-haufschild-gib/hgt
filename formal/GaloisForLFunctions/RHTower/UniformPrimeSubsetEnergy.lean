@@ -71,6 +71,13 @@ def subsetLabelFibre (I : Finset ι) (a : ι → Finset α) (c : ι → ℝ)
 def subsetLabelEnergy (U : Finset α) (I : Finset ι) (a : ι → Finset α)
     (c : ι → ℝ) (P : Finset α) : ℝ := ∑ R ∈ U.powerset, (subsetLabelFibre I a c P R)^2
 
+/-- Retained-square energy weighted by the number of coordinates still present
+in its label.  Unlike ordinary energy, a pair that first meets only after all
+of its coordinates are processed has zero weight at that meeting. -/
+def subsetLabelArityEnergy (U : Finset α) (I : Finset ι) (a : ι → Finset α)
+    (c : ι → ℝ) (P : Finset α) : ℝ :=
+  ∑ R ∈ U.powerset, (R.card : ℝ) * (subsetLabelFibre I a c P R)^2
+
 private theorem sdiff_eq_iff_symmDiff_subset (S T P : Finset α) :
     S \ P = T \ P ↔ S ∆ T ⊆ P := by
   simp only [Finset.ext_iff, mem_sdiff, subset_iff, mem_symmDiff]
@@ -113,6 +120,61 @@ theorem subsetLabelEnergy_eq_pairs (U : Finset α) (I : Finset ι) (a : ι → F
     have hh : a i \ P ≠ R := Ne.symm hne
     simp [hh]
   · exact fun hn => (hn hm).elim
+
+/-- Exact all-source pair expansion for arity-weighted retained energy.  The
+pair weight is the cardinality of its common remaining label, retained without
+an absolute-value or positivity relaxation. -/
+theorem subsetLabelArityEnergy_eq_pairs (U : Finset α) (I : Finset ι)
+    (a : ι → Finset α) (c : ι → ℝ) (ha : ∀ i ∈ I, a i ⊆ U) (P : Finset α) :
+    subsetLabelArityEnergy U I a c P =
+      ∑ i ∈ I, ∑ j ∈ I,
+        if a i ∆ a j ⊆ P then ((a i \ P).card : ℝ) * c i * c j else 0 := by
+  unfold subsetLabelArityEnergy subsetLabelFibre
+  simp_rw [sq, sum_mul_sum, mul_sum]
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro i hi
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro j hj
+  simp only [← sdiff_eq_iff_symmDiff_subset]
+  have hm : a i \ P ∈ U.powerset := mem_powerset.mpr (sdiff_subset.trans (ha i hi))
+  rw [sum_eq_single (a i \ P)]
+  · by_cases h : a i \ P = a j \ P
+    · simp [h]
+      ring
+    · simp [h, Ne.symm h]
+  · intro R hR hne
+    have hh : a i \ P ≠ R := Ne.symm hne
+    simp [hh]
+  · exact fun hn => (hn hm).elim
+
+/-- Any additive label potential whose weight vanishes at the empty remaining
+label is blind to a pair of disjoint source labels.  Before the pair can
+interfere its indicator vanishes; once it can interfere, its common remaining
+label is empty. -/
+theorem weightedPair_zero_of_disjoint (w : ℕ → ℝ) (hw : w 0 = 0)
+    (S T P : Finset α) (x y : ℝ) (hST : Disjoint S T) :
+    (if S ∆ T ⊆ P then w (S \ P).card * x * y else 0) = 0 := by
+  by_cases h : S ∆ T ⊆ P
+  · rw [if_pos h]
+    have hSP : S ⊆ P := by
+      intro z hz
+      apply h
+      refine mem_symmDiff.mpr (Or.inl ⟨hz, ?_⟩)
+      intro hzT
+      exact disjoint_left.mp hST hz hzT
+    rw [sdiff_eq_empty_iff_subset.mpr hSP]
+    simp [hw]
+  · simp [h]
+
+/-- Arity-weighted elimination is the linear-weight instance of the universal
+disjoint-pair blindness theorem. -/
+theorem arityPair_zero_of_disjoint (S T P : Finset α) (x y : ℝ)
+    (hST : Disjoint S T) :
+    (if S ∆ T ⊆ P then ((S \ P).card : ℝ) * x * y else 0) = 0 := by
+  simpa using weightedPair_zero_of_disjoint (fun n => (n : ℝ)) (by norm_num)
+    S T P x y hST
 
 /-- Exact uniform-averaged energy kernel on the original source labels. -/
 theorem uniformSubsetMean_labelEnergy (U : Finset α) (I : Finset ι) (a : ι → Finset α)

@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.XiPositivePairedDiagonalSectorCollapse
 import GaloisForLFunctions.RHTower.PrimeArchExtendedHausdorffSourceBand
 import GaloisForLFunctions.RHTower.PrimeArchCoefficientSignCone
 import GaloisForLFunctions.RHTower.PrimeArchExplicitCircleStateReflection
+import GaloisForLFunctions.RHTower.PrimeArchMomentTwentyThreeClosure
 
 /-!
 # Prime--Gamma positive-paired diagonal on an exterior overlap band
@@ -189,6 +190,14 @@ theorem normalizedPrimeArchMoment_pos_of_lt_twentyThree
   have h22 : n = 22 := by omega
   simpa [h22] using normalizedPrimeArchMoment_twentyTwo_pos
 
+/-- The closed twenty-third source moment extends the finite positive prefix by one index. -/
+private theorem normalizedPrimeArchMoment_pos_of_lt_twentyFour
+    (n : ℕ) (hn : n < 24) :
+    0 < normalizedPrimeArchMoment n := by
+  by_cases h23 : n = 23
+  · simpa [h23] using normalizedPrimeArchMoment_twentyThree_pos
+  · exact normalizedPrimeArchMoment_pos_of_lt_twentyThree n (by omega)
+
 /-- Polar form of the imaginary part of an integral complex power. -/
 private theorem pow_im_eq_norm_mul_sin_arg (z : ℂ) (n : ℕ) :
     (z ^ n).im = ‖z‖ ^ n * Real.sin (n * z.arg) := by
@@ -234,6 +243,33 @@ private theorem pow_two_mul_im_nonneg_of_exteriorBand
   have hnR : (n : ℝ) ≤ 22 := by exact_mod_cast hn
   have hangle : ((2 * n : ℕ) : ℝ) * z.arg ≤ Real.pi := by
     have hpi : (2200 / 701 : ℝ) < Real.pi := by
+      nlinarith [Real.pi_gt_d20]
+    have hmul := mul_le_mul_of_nonneg_left hargUpper
+      (show (0 : ℝ) ≤ ((2 * n : ℕ) : ℝ) by positivity)
+    norm_num at hmul
+    push_cast
+    nlinarith
+  rw [pow_im_eq_norm_mul_sin_arg]
+  exact mul_nonneg (pow_nonneg (norm_nonneg z) _)
+    (Real.sin_nonneg_of_mem_Icc ⟨mul_nonneg (by positivity) harg0, hangle⟩)
+
+/-- Above the former overlap edge, the narrower argument cone keeps the added twenty-third
+even power in the upper half-plane as well. -/
+private theorem pow_two_mul_im_nonneg_of_orderTwentyThreeExteriorOverlap
+    (z : ℂ) (hzre : (207 / 20 : ℝ) < z.re)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2)
+    (n : ℕ) (hn : n ≤ 23) :
+    0 ≤ (z ^ (2 * n)).im := by
+  have hre : 0 < z.re := by linarith
+  have harg0 : 0 ≤ z.arg := Complex.arg_nonneg_iff.mpr hzim.le
+  have harg : |z.arg| ≤ (10 / 207 : ℝ) :=
+    abs_arg_le_of_re_pos_for_scaledHausdorff hre (by
+      rw [abs_of_pos hzim]
+      nlinarith)
+  have hargUpper : z.arg ≤ (10 / 207 : ℝ) := le_trans (le_abs_self _) harg
+  have hnR : (n : ℝ) ≤ 23 := by exact_mod_cast hn
+  have hangle : ((2 * n : ℕ) : ℝ) * z.arg ≤ Real.pi := by
+    have hpi : (460 / 207 : ℝ) < Real.pi := by
       nlinarith [Real.pi_gt_d20]
     have hmul := mul_le_mul_of_nonneg_left hargUpper
       (show (0 : ℝ) ≤ ((2 * n : ℕ) : ℝ) by positivity)
@@ -434,6 +470,19 @@ private theorem norm_sq_lt_oneHundredFifty_of_extendedExteriorOverlap
     ‖z ^ 2‖ < 150 := by
   have hre : 0 ≤ z.re := by linarith
   have hnormz : ‖z‖ < 547 / 50 :=
+    (Complex.norm_le_abs_re_add_abs_im z).trans_lt (by
+      rw [abs_of_nonneg hre, abs_of_pos hzim]
+      linarith)
+  rw [norm_pow]
+  nlinarith [norm_nonneg z]
+
+private theorem norm_sq_lt_oneHundredFifty_of_orderTwentyThreeExteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 1047 / 100)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
+    ‖z ^ 2‖ < 150 := by
+  have hre : 0 ≤ z.re := by linarith
+  have hnormz : ‖z‖ < 1097 / 100 :=
     (Complex.norm_le_abs_re_add_abs_im z).trans_lt (by
       rw [abs_of_nonneg hre, abs_of_pos hzim]
       linarith)
@@ -654,6 +703,50 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
         z hzre hzim hzimUpper n (by omega))
       (by norm_num) (by norm_num) hratio hscalar
 
+/-- The closed moment of index twenty-three enlarges the exact-tail exterior overlap band to
+`701/100 < Re z ≤ 1047/100`.  The new part uses a stricter argument cone to preserve every
+prefix term through order twenty-three. -/
+theorem im_primeArchCircleMomentResolvent_sq_pos_of_orderTwentyThreeExteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 1047 / 100)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
+    0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
+  by_cases hold : z.re ≤ 261 / 25
+  · exact im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
+      z hzre hold hzim hzimUpper
+  · have holdStrict : (261 / 25 : ℝ) < z.re := lt_of_not_ge hold
+    have h207 : (207 / 20 : ℝ) < z.re := by linarith
+    have hre : (0 : ℝ) ≤ z.re := by linarith
+    have ha0 : (0 : ℝ) ≤ z.re + |z.im| := by positivity
+    have haUpper : z.re + |z.im| < (1097 / 100 : ℝ) := by
+      rw [abs_of_pos hzim]
+      linarith
+    have hratio : (z.re + |z.im|) ^ 2 / 150 ≤ (803 / 1000 : ℝ) := by
+      nlinarith [sq_nonneg ((z.re + |z.im|) - 1097 / 100)]
+    have htailCoefficient :
+        0 < (74 / 73 : ℝ) * linearWeightedTail 24 (803 / 1000) := by
+      simp only [linearWeightedTail]
+      positivity
+    have hscalar :
+        (74 / 73 : ℝ) * (z.re + |z.im|) *
+            linearWeightedTail 24 (803 / 1000) < z.re := by
+      calc
+        (74 / 73 : ℝ) * (z.re + |z.im|) *
+              linearWeightedTail 24 (803 / 1000) =
+            ((74 / 73 : ℝ) * linearWeightedTail 24 (803 / 1000)) *
+                (z.re + |z.im|) := by ring
+        _ < ((74 / 73 : ℝ) * linearWeightedTail 24 (803 / 1000)) *
+                (1097 / 100 : ℝ) :=
+          mul_lt_mul_of_pos_left haUpper htailCoefficient
+        _ < 207 / 20 := by norm_num [linearWeightedTail]
+        _ < z.re := h207
+    exact im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
+      z (by linarith) hzim 24 (by norm_num)
+      (fun n hn => (normalizedPrimeArchMoment_pos_of_lt_twentyFour n hn).le)
+      (fun n hn => pow_two_mul_im_nonneg_of_orderTwentyThreeExteriorOverlap
+        z h207 hzim hzimUpper n (by omega))
+      (by norm_num) (by norm_num) hratio hscalar
+
 /-- The circle atomic resolvent at `z²` is exactly the reciprocal-square resolvent sum at `z`. -/
 theorem primeArchCircleAtomicResolvent_sq_eq_reciprocalSquare_tsum (z : ℂ) :
     primeArchCircleAtomicResolvent (z ^ 2) =
@@ -697,6 +790,22 @@ theorem continuedPrimeArchReciprocalSquareTrace_im_pos_of_extendedExteriorOverla
   exact im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
     z hzre hzreUpper hzim hzimUpper
 
+/-- The moment-twenty-three exterior-overlap positivity transfers to the continued
+prime--Gamma reciprocal-square trace. -/
+theorem continuedPrimeArchReciprocalSquareTrace_im_pos_of_orderTwentyThreeExteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 1047 / 100)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2)
+    (hzeta : riemannZeta (1 / 2 + z * I) ≠ 0) :
+    0 < (continuedPrimeArchReciprocalSquareTrace z).im := by
+  have hw := norm_sq_lt_oneHundredFifty_of_orderTwentyThreeExteriorOverlap
+    z hzre hzreUpper hzim hzimUpper
+  rw [continuedPrimeArchReciprocalSquareTrace_eq_tsum hzim hzimUpper hzeta,
+    ← primeArchCircleAtomicResolvent_sq_eq_reciprocalSquare_tsum,
+    ← primeArchCircleMomentResolvent_eq_atomicResolvent_of_norm_lt_oneHundredFifty hw]
+  exact im_primeArchCircleMomentResolvent_sq_pos_of_orderTwentyThreeExteriorOverlap
+    z hzre hzreUpper hzim hzimUpper
+
 /-- Route Q is strictly positive, not merely nonnegative, on the explicit exterior overlap band
 `701/100 < Re z ≤ 207/20`. -/
 theorem ccmPositivePairedReducedKernel_self_pos_of_exteriorOverlap
@@ -723,6 +832,20 @@ theorem ccmPositivePairedReducedKernel_self_pos_of_extendedExteriorOverlap
   exact mul_pos
     (mul_pos (by norm_num) (div_pos (by linarith) hzim))
     (continuedPrimeArchReciprocalSquareTrace_im_pos_of_extendedExteriorOverlap
+      z hzre hzreUpper hzim hzimUpper hzeta)
+
+/-- Route Q is strictly positive on the moment-twenty-three exterior overlap band
+`701/100 < Re z ≤ 1047/100`. -/
+theorem ccmPositivePairedReducedKernel_self_pos_of_orderTwentyThreeExteriorOverlap
+    (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
+    (hzreUpper : z.re ≤ 1047 / 100)
+    (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2)
+    (hzeta : riemannZeta (1 / 2 + z * I) ≠ 0) :
+    0 < ccmPositivePairedReducedKernel z z := by
+  rw [ccmPositivePairedReducedKernel_self_eq_reciprocalSquareSector hzim.ne']
+  exact mul_pos
+    (mul_pos (by norm_num) (div_pos (by linarith) hzim))
+    (continuedPrimeArchReciprocalSquareTrace_im_pos_of_orderTwentyThreeExteriorOverlap
       z hzre hzreUpper hzim hzimUpper hzeta)
 
 /-- Closed source-only statement of strict Route-Q positivity on the exterior overlap band. -/
@@ -755,6 +878,23 @@ theorem primeArchPositivePairedDiagonalExtendedExteriorOverlap :
     PrimeArchPositivePairedDiagonalExtendedExteriorOverlap := by
   intro z hzre hzreUpper hzim hzimUpper hzeta
   exact ccmPositivePairedReducedKernel_self_pos_of_extendedExteriorOverlap
+    z hzre hzreUpper hzim hzimUpper hzeta
+
+/-- Closed source-only statement of strict Route-Q positivity through the twenty-third moment
+overlap band. -/
+def PrimeArchPositivePairedDiagonalOrderTwentyThreeExteriorOverlap : Prop :=
+  ∀ z : ℂ,
+    (701 / 100 : ℝ) < z.re → z.re ≤ 1047 / 100 →
+    0 < z.im → z.im < 1 / 2 →
+    riemannZeta (1 / 2 + z * I) ≠ 0 →
+      0 < ccmPositivePairedReducedKernel z z
+
+/-- The prime--Gamma source unconditionally satisfies strict Route-Q positivity through the
+closed twenty-third source moment. -/
+theorem primeArchPositivePairedDiagonalOrderTwentyThreeExteriorOverlap :
+    PrimeArchPositivePairedDiagonalOrderTwentyThreeExteriorOverlap := by
+  intro z hzre hzreUpper hzim hzimUpper hzeta
+  exact ccmPositivePairedReducedKernel_self_pos_of_orderTwentyThreeExteriorOverlap
     z hzre hzreUpper hzim hzimUpper hzeta
 
 end

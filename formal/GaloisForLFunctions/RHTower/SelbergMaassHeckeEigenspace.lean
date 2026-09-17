@@ -131,6 +131,42 @@ def maassEigenspaceToInvariant
     (f : glMaassCuspEigenspace Γ lam) : glUpperHalfPlaneInvariantFunctions Γ :=
   ⟨f.1, f.2.1⟩
 
+/-- A nonzero `GL(2, ℝ)` Maass eigenform, regarded in the zero-inclusive
+fixed-eigenvalue space on which rational Hecke traces act. -/
+def glMaassCuspEigenformToEigenspace {Γ : Subgroup (GL (Fin 2) ℝ)} {lam : ℝ}
+    (f : GLMaassCuspEigenform Γ lam) : glMaassCuspEigenspace Γ lam :=
+  ⟨f.1.1, ⟨f.1.2, f.2.2⟩⟩
+
+/-- The inclusion of a nonzero Maass form into the zero-inclusive eigenspace
+does not lose its nonvanishing. -/
+theorem glMaassCuspEigenformToEigenspace_ne_zero {Γ : Subgroup (GL (Fin 2) ℝ)} {lam : ℝ}
+    (f : GLMaassCuspEigenform Γ lam) : glMaassCuspEigenformToEigenspace f ≠ 0 := by
+  intro hzero
+  apply f.2.1
+  exact congrArg Subtype.val hzero
+
+/-- The actual principal-level Maass source as a nonzero vector of the
+zero-inclusive `GL(2, ℝ)` Hecke eigenspace. -/
+def principalMaassCuspEigenformToHeckeEigenspace (N : ℕ) (lam : ℝ)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) :
+    glMaassCuspEigenspace (principalCongruenceGL N) lam :=
+  glMaassCuspEigenformToEigenspace
+    (integralMaassCuspEigenformToGL (CongruenceSubgroup.Gamma (N + 1)) lam f)
+
+/-- The actual exceptional source stays nonzero after entering the Hecke
+eigenspace. -/
+theorem principalMaassCuspEigenformToHeckeEigenspace_ne_zero (N : ℕ) (lam : ℝ)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) :
+    principalMaassCuspEigenformToHeckeEigenspace N lam f ≠ 0 := by
+  exact glMaassCuspEigenformToEigenspace_ne_zero
+    (integralMaassCuspEigenformToGL (CongruenceSubgroup.Gamma (N + 1)) lam f)
+
+/-- The Hecke-eigenspace source is literally the original Maass function. -/
+@[simp] theorem principalMaassCuspEigenformToHeckeEigenspace_apply (N : ℕ) (lam : ℝ)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (z : ℍ) :
+    (principalMaassCuspEigenformToHeckeEigenspace N lam f).1 z = f.1.1 z :=
+  rfl
+
 /-- The finite principal trace of the zero invariant function is zero. -/
 theorem principalMaassTrace_zero
     (N : ℕ) {Γ : Subgroup (GL (Fin 2) ℝ)}

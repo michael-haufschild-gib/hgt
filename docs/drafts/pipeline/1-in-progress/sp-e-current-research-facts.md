@@ -897,6 +897,29 @@ the current SP-E investigation. It is not a route history.
   completed terminal quantile seam is unconditionally nonpositive
   (`speQuantileRieszTerminalTransport_nonpos`).  Hence it cannot furnish a hidden positive
   compensator: any positive source contribution must be produced by the labelled interior cells.
+  Formally, `M * resolventSource(log M)` is bounded above by that interior cell sum minus the
+  forced lower-edge term (`criticalMellinChebyshevResolventSource_mul_nat_le_speQuantileRieszInterior`).
+  The unsolved producer is therefore sharpened to a one-sided, cross-scale orientation law for
+  the interior cells, with no terminal or continuum compensator left to hide in.
+
+- The same literal SP-E cells now have an exact completed-error normal form in the canonical
+  polar mass coordinate `Y(h) = 2 * exp(h / 2)`
+  (`SPEQuantileRieszSourceTransport`).  If `w_n` is the critical Mellin atom,
+  `x_n = 2 * sqrt(n)` its arithmetic mass node, and
+  `c_n = Y(b_n) + w_n / 2` its literal quantile-cell center, then the `n`th Riesz reporter cell
+  is exactly
+  `w_n * (x_n - c_n) * (sqrt(M) - (x_n + c_n) / 2) + w_n^3 / 24`
+  (`speQuantileRieszReporterCell_eq_signedDisplacement`).  For every positive `n`, its signed
+  displacement is exactly the existing completed outgoing node error plus the forced half-atom
+  centering shift (`speQuantileRieszMassCellDisplacement_eq_outgoingNodeError_add_half`).  Thus,
+  for every finite aperture, the entire interior current is an exact finite sum of those signed
+  completed-error terms over `1 <= n < M`
+  (`speQuantileRieszInteriorTransport_eq_outgoingNodeErrorNormalForm`).  All new declarations
+  audit to only `propext`, `Classical.choice`, and `Quot.sound`.  Whole-route consequence: this
+  does not prove the required uniform bound; it removes the remaining ambiguity about what must
+  be bounded.  A closing SP-E law must control this literal signed cross-scale completed-error
+  sum together with its aperture-varying coefficient, rather than any positive mass, local
+  energy, terminal seam, or source-independent scalarization.
 
 - Synchronized Gamma formation has a forced cross-prime curvature, formalized in
   `GammaSewnSynchronizedRecoveryMixedCurvature`.  For a fresh prime `p`, adding it to `P`

@@ -104,7 +104,9 @@ theorem onset_derivative_bound (q : XiZeroCopy) (branch : Bool) :
   nlinarith
 
 /- The next jet is the exact analytic threshold for a strong second-order cap equation. -/
-private theorem onset_second_derivative_bound (q : XiZeroCopy) (branch : Bool) :
+/-- Decay majorant for the second and third literal onset jets.  This is the
+analytic input for any strong second-order cap equation. -/
+theorem onset_second_derivative_bound (q : XiZeroCopy) (branch : Bool) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ u : ℝ,
       ‖timeOnsetSecond (2*physicalRate q branch) u‖+
         ‖timeOnsetThird (2*physicalRate q branch) u‖ ≤ B*Real.exp (-decayExponent q*u) := by

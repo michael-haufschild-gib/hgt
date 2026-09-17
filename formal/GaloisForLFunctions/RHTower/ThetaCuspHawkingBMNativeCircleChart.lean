@@ -148,6 +148,59 @@ private theorem circle_quadratic (d theta : ℝ) :
   linear_combination ((Real.cos theta)^2-1)*Real.cosh_sq_sub_sinh_sq d+
     Real.sin_sq_add_cos_sq theta
 
+/-- The literal circle chart has hyperbolic polar area factor `sinh d`.
+This is the local measure identity needed to turn a polar cap cutoff into an
+unweighted angular integral after division by the chart height squared. -/
+theorem polar_area_jacobian (d theta : ℝ) :
+    offsetRadial d theta*heightAngular d theta-
+      offsetAngular d theta*heightRadial d theta =
+        -Real.sinh d*(height d theta)^2 := by
+  have hn := (denominator_pos d theta).ne'
+  have he := circle_quadratic d theta
+  dsimp [offsetRadial,heightAngular,offsetAngular,heightRadial,height]
+  field_simp [hn]
+  linear_combination -Real.sinh d*he
+
+/-- The polar area identity is invariant under the literal positive base-height scaling. -/
+theorem polar_area_jacobian_scaled (d theta y : ℝ) :
+    (y*offsetRadial d theta)*(y*heightAngular d theta)-
+      (y*offsetAngular d theta)*(y*heightRadial d theta) =
+        -Real.sinh d*(y*height d theta)^2 := by
+  rw [show (y*offsetRadial d theta)*(y*heightAngular d theta)-
+      (y*offsetAngular d theta)*(y*heightRadial d theta)=
+        y^2*(offsetRadial d theta*heightAngular d theta-
+          offsetAngular d theta*heightRadial d theta) by ring,
+    polar_area_jacobian]
+  ring
+
+/-- The chart reconstructs the hyperbolic radial distance from its normalized point. -/
+theorem polar_distance_cosh (d theta : ℝ) :
+    (offset d theta ^ 2 + height d theta ^ 2 + 1) / (2 * height d theta) = Real.cosh d := by
+  have hn := (denominator_pos d theta).ne'
+  have hcore :
+      (Real.sinh d * Real.sin theta) ^ 2 + 1 + (denominator d theta) ^ 2 =
+        2 * Real.cosh d * denominator d theta := by
+    dsimp [denominator]
+    nlinarith [Real.cosh_sq_sub_sinh_sq d, Real.sin_sq_add_cos_sq theta]
+  rw [offset, height]
+  field_simp [hn]
+  nlinarith [hcore]
+
+/-- The normalized horizontal coordinate is the radial sine component. -/
+theorem polar_normalized_sin (d theta : ℝ) :
+    offset d theta / height d theta = Real.sinh d * Real.sin theta := by
+  have hn := (denominator_pos d theta).ne'
+  dsimp [offset, height]
+  field_simp [hn]
+
+/-- The normalized height defect is the radial cosine component. -/
+theorem polar_normalized_cos (d theta : ℝ) :
+    Real.cosh d - (height d theta)⁻¹ = Real.sinh d * Real.cos theta := by
+  have hn := (denominator_pos d theta).ne'
+  dsimp [height, denominator]
+  field_simp [hn]
+  ring
+
 /-- The polar principal symbol is the original hyperbolic Laplacian, with no omitted mixed jet. -/
 theorem polar_principal (d theta : ℝ) :
     (Real.sinh d)^2*(offsetRadial d theta)^2+(offsetAngular d theta)^2=

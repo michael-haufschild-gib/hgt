@@ -49,6 +49,51 @@ theorem integral_dilate_mul (p : ℕ) (hp : 0 < p) (f g : ℝ → ℝ) :
       simp only [smul_eq_mul, mul_one, one_div]
       field_simp [hpR.ne']
 
+/-- Exact physical covariance of two reciprocal dilations with different
+scales.  The surviving kernel records their rational resonance; no absolute
+value or componentwise estimate has been taken. -/
+theorem integral_dilate_mul_unequal (p q : ℕ) (hp : 0 < p) (hq : 0 < q)
+    (f g : ℝ → ℝ) :
+    (∫ u in Ioi (1 : ℝ), dilate p f u * dilate q g u) =
+      (1 / (q : ℝ)) * ∫ v in Ioi (1 / (p : ℝ)),
+        f v * g (((p : ℝ) / (q : ℝ)) * v) := by
+  have hpR : (0 : ℝ) < p := by exact_mod_cast hp
+  have hqR : (0 : ℝ) < q := by exact_mod_cast hq
+  change (∫ u in Ioi (1 : ℝ),
+      ((1 / (p : ℝ)) * f (u / (p : ℝ))) *
+        ((1 / (q : ℝ)) * g (u / (q : ℝ)))) = _
+  calc
+    _ = ((1 / (p : ℝ)) * (1 / (q : ℝ))) *
+        (∫ u in Ioi (1 : ℝ), f (u / (p : ℝ)) * g (u / (q : ℝ))) := by
+      rw [← integral_const_mul]
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro u hu
+      ring
+    _ = ((1 / (p : ℝ)) * (1 / (q : ℝ))) *
+        (∫ u in Ioi (1 : ℝ),
+          (fun v => f v * g (((p : ℝ) / (q : ℝ)) * v)) ((p : ℝ)⁻¹ * u)) := by
+      congr 1
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro u hu
+      have huP : u / (p : ℝ) = (p : ℝ)⁻¹ * u := by
+        field_simp [hpR.ne']
+      have huQ : u / (q : ℝ) = ((p : ℝ) / (q : ℝ)) * ((p : ℝ)⁻¹ * u) := by
+        field_simp [hpR.ne', hqR.ne']
+      change f (u / (p : ℝ)) * g (u / (q : ℝ)) =
+        f ((p : ℝ)⁻¹ * u) * g (((p : ℝ) / (q : ℝ)) * ((p : ℝ)⁻¹ * u))
+      rw [huP, huQ]
+    _ = ((1 / (p : ℝ)) * (1 / (q : ℝ))) *
+        ((p : ℝ) * ∫ v in Ioi (1 / (p : ℝ)),
+          f v * g (((p : ℝ) / (q : ℝ)) * v)) := by
+      congr 1
+      have hscale := integral_comp_mul_left_Ioi
+        (fun v : ℝ => f v * g (((p : ℝ) / (q : ℝ)) * v)) 1
+        (inv_pos.mpr hpR)
+      rw [inv_inv] at hscale
+      simpa only [smul_eq_mul, mul_one, one_div] using hscale
+    _ = _ := by
+      field_simp [hpR.ne', hqR.ne']
+
 /-- Diagonal form of `integral_dilate_mul`. -/
 theorem integral_dilate_sq (p : ℕ) (hp : 0 < p) (f : ℝ → ℝ) :
     (∫ u in Ioi (1 : ℝ), dilate p f u ^ 2) =

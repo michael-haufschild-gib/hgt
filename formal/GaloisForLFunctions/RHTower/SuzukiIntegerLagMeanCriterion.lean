@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.SuzukiWeilLagTailBridge
 import GaloisForLFunctions.RHTower.CCMUnitRieszCoherentOutgoingChargeHankel
 import GaloisForLFunctions.RHTower.CCMUnitRieszResolventRHCriterion
+import GaloisForLFunctions.RHTower.SPEQuantileRieszSourceTransport
 
 /-!
 # Endpoint-corrected signed integer-lag mean for SP-E
@@ -35,6 +36,30 @@ theorem coherentSelbergSquareRootAbelMoment_eq_integerLagMean (N : ℕ) :
     coherentSelbergSquareRootAbelMoment (N + 2) = coherentSelbergIntegerLagMean N := by
   simpa only [coherentSelbergIntegerLagMean] using
     coherentSelbergSquareRootAbelMoment_eq_integerLag_green N
+
+/-- Completed labelled quantile transport is the endpoint-corrected signed integer-lag current
+exactly. The equality retains the terminal seam, lower edge, moving endpoint, signed interior,
+and polar lattice term; no absolute-value surrogate enters. -/
+theorem speCompletedQuantileRieszTransport_eq_two_mul_integerLagMean_add_polar (N : ℕ) :
+    speCompletedQuantileRieszTransport (N + 2) =
+      2 * (coherentSelbergIntegerLagMean N +
+        coherentSquareRootPolarLatticeDefect (N + 2)) := by
+  calc
+    speCompletedQuantileRieszTransport (N + 2) =
+        ((N + 2 : ℕ) : ℝ) *
+          criticalMellinChebyshevResolventSource (Real.log ((N + 2 : ℕ) : ℝ)) :=
+      speCompletedQuantileRieszTransport_eq_resolvent_source (by omega : 2 ≤ N + 2)
+    _ = 2 * (((N + 2 : ℕ) : ℝ) *
+          unitRieszCoherentCompletedOutgoingCharge (N + 2)) := by
+      rw [unitRieszCoherentCompletedOutgoingCharge_eq_resolvent_half
+        (by omega : 2 ≤ N + 2)]
+      ring
+    _ = 2 * (coherentSelbergSquareRootAbelMoment (N + 2) +
+          coherentSquareRootPolarLatticeDefect (N + 2)) := by
+      rw [coherentCompletedOutgoing_mul_eq_abel_add_latticeDefect (by omega : 2 ≤ N + 2)]
+    _ = 2 * (coherentSelbergIntegerLagMean N +
+          coherentSquareRootPolarLatticeDefect (N + 2)) := by
+      rw [coherentSelbergSquareRootAbelMoment_eq_integerLagMean]
 
 /-- The completed outgoing charge is the endpoint-corrected signed lag mean plus only its
 source-free polar lattice correction. -/

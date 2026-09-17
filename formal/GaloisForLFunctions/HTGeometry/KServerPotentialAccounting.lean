@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.Order.Ring.Basic
 import Mathlib.Tactic.Abel
-import Mathlib.Tactic.Ring
 
 /-!
 # Extended-cost and potential accounting
@@ -45,6 +44,20 @@ theorem potential_pays_sum
       exact Finset.sum_le_sum fun t ht => hstep t (Finset.mem_range.mp ht)
     _ = potential T - potential 0 := Finset.sum_range_sub potential T
 
+/-- One-step potential sandwich: a common minor bound cancels, leaving the auxiliary improvement
+to pay the request cost. This is the arithmetic passage from Lemmas 4.1--4.3 to Corollary 4.4. -/
+theorem potential_pays_request_of_sandwich
+    {α : Type*} [AddCommGroup α] [LinearOrder α] [IsOrderedAddMonoid α]
+    (oldPotential newPotential common oldAux newAux cost : α)
+    (hold : oldPotential ≤ common + oldAux)
+    (hnew : common + newAux ≤ newPotential)
+    (hcost : cost ≤ newAux - oldAux) :
+    cost ≤ newPotential - oldPotential := by
+  calc
+    cost ≤ newAux - oldAux := hcost
+    _ = (common + newAux) - (common + oldAux) := by abel
+    _ ≤ newPotential - oldPotential := sub_le_sub hnew hold
+
 /-- The final competitive-ratio algebra: extended-cost accounting plus a paying potential with
 the paper's initial and terminal bounds yields the coefficient `k`. -/
 theorem kServer_competitive_of_potential
@@ -72,15 +85,15 @@ theorem kServer_competitive_of_potential
       _ ≤ (((k + 1 : ℕ) : α) * work T - terminalClique) - potential 0 :=
         sub_le_sub_right hterminal _
       _ = ((k + 1 : ℕ) : α) * work T + initialClique - terminalClique := by
-        rw [hinitial]
-        ring
+        rw [hinitial, sub_neg_eq_add]
+        abel
   calc
     (∑ t ∈ Finset.range T, movement t) =
         ((∑ t ∈ Finset.range T, movement t) + work T) - work T := by abel
     _ ≤ (((k + 1 : ℕ) : α) * work T + initialClique - terminalClique) - work T :=
       sub_le_sub_right htotal _
     _ = (k : α) * work T + initialClique - terminalClique := by
-      rw [Nat.cast_add, Nat.cast_one]
-      ring
+      rw [Nat.cast_add, Nat.cast_one, add_mul, one_mul]
+      abel
 
 end GaloisForLFunctions.HTGeometry

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplacePowerLimits
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedSmoothCurrentLaplace
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplaceSourceRemainderCore
 
 /-! The original mixed source in the true radial coordinate, with its full
 angular coefficients and fixed smooth-onset factor retained. -/
@@ -10,10 +11,6 @@ noncomputable section
 attribute [-instance] instInnerProductSpaceRealComplex
 attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
-
-def sourceRemainder (s w a J K T : ℂ) (z : ℝ) : ℂ :=
-  power (2*s-w) (1+Real.sqrt (1-z))*a^2*
-    (((5*s^2+15*s+4)/4)*J+(1-(z:ℂ))*s*(s-1)/4*((s+2)^2*J-K))*T
 
 def sourceProfile (s w a J K T : ℂ) (z : ℝ) : ℂ :=
   power (w/2) z*sourceRemainder s w a J K T z

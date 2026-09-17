@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleGreen
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceAdvancedAdmission
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularGoursat
 import GaloisForLFunctions.RHTower.CothInfra
+import Mathlib.Analysis.Calculus.Deriv.Slope
 
 /-!
 Growth of the constructed full angular circle mean, with the literal theta-square
@@ -40,6 +42,41 @@ private theorem young_two (eta c x y n : ℝ) (he : 0 < eta) :
       nlinarith [sq_nonneg (eta*x-c*n),sq_nonneg (eta*y-c*n)]
     _ = eta*(eta*(x^2+y^2)+(2*c^2/eta)*n^2) := by
       field_simp
+
+/-- A one-sided derivative gives a literal linear increment bound near its endpoint. -/
+private theorem local_increment_bound {f : ℝ → ℂ} {a : ℂ}
+    (hf : HasDerivWithinAt f a (Ici 1) 1) :
+    ∃ δ B : ℝ, 0 < δ ∧ 0 ≤ B ∧ ∀ u : ℝ, 0 ≤ u → u ≤ δ →
+      ‖f (1+u)-f 1‖ ≤ B*u := by
+  have hs := (hasDerivWithinAt_iff_tendsto_slope' (by simp : (1:ℝ) ∉ Ioi 1)).mp
+    (hf.mono Ioi_subset_Ici_self)
+  have hnear : ∀ᶠ z in 𝓝[Ioi 1] (1:ℝ), slope f 1 z ∈ Metric.ball a 1 :=
+    hs.eventually (Metric.ball_mem_nhds _ (by norm_num))
+  obtain ⟨δ,hδ,hsub⟩ := Metric.mem_nhdsWithin_iff.mp hnear
+  refine ⟨δ,‖a‖+1,hδ,by positivity,?_⟩
+  intro u hu huδ
+  by_cases hu0 : u=0
+  · subst u
+    simp
+  · have hu0' : 0 < u := lt_of_le_of_ne hu (Ne.symm hu0)
+    have hmem : slope f 1 (1+u) ∈ Metric.ball a 1 := by
+      apply hsub
+      constructor
+      · rw [Metric.mem_ball]
+        simpa only [Real.dist_eq,abs_of_nonneg hu] using huδ
+      · exact lt_add_of_pos_right 1 hu0'
+    have hdist : ‖slope f 1 (1+u)-a‖ < 1 := by
+      simpa only [Metric.mem_ball,Complex.dist_eq] using hmem
+    have hnorm : ‖slope f 1 (1+u)‖ < ‖a‖+1 := by
+      calc
+        _ ≤ ‖a‖+‖slope f 1 (1+u)-a‖ := norm_le_norm_add_norm_sub _ _
+        _ < _ := by linarith
+    rw [slope_def_module,sub_eq_add_neg,show (1+u:ℝ)-1=u by ring]
+    simp only [Complex.real_smul,Complex.ofReal_inv]
+    have huC : (u:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hu0
+    rw [div_eq_mul_inv,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hu0']
+    rw [div_lt_iff₀ hu0']
+    exact hnorm
 
 /-- Young's inequality absorbs the small hyperbolic correction in the spectral gap. -/
 private theorem pair_energy_bound (a b d n nu mu kap : ℂ) (g eta K eps : ℝ)
@@ -280,14 +317,16 @@ private theorem energy_inequality (q : XiZeroCopy) (branch : Bool) (X k d eta : 
   simpa only [energy,sub_eq_add_neg,add_assoc] using hb
 
 /-- The existing literal-source bound discharges the forcing estimate for the actual modes. -/
-private theorem energy_tail (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+private theorem energy_tail_at (q : XiZeroCopy) (branch : Bool) (X k gamma : ℝ)
+    (hgamma : sourceGrowthExponent q < gamma) :
     ∃ D B : ℝ, 0 < D ∧ 0 ≤ B ∧ ∀ d, D ≤ d →
-      energy q branch X k d ≤ B*Real.exp (2*decayExponent q*d) := by
+      energy q branch X k d ≤ B*Real.exp (2*gamma*d) := by
   let g := sourceGrowthExponent q
-  let gamma := decayExponent q
   let eta := gamma-g
   let K := decoder q branch
-  have he : 0 < eta := sub_pos.mpr (decayExponent_bounds q).1
+  have he : 0 < eta := by
+    dsimp only [eta,g]
+    exact sub_pos.mpr hgamma
   have hK : 0 ≤ K := by dsimp only [K,decoder]; positivity
   let D := max 1 (4*K/eta)
   have hD : 0 < D := lt_of_lt_of_le (by norm_num) (le_max_left _ _)
@@ -330,7 +369,9 @@ private theorem energy_tail (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
     rw [hge]
     nlinarith only [hm]
   obtain ⟨B,hB,hb⟩ := energy_comparison (energy q branch X k) D g gamma
-    ((2*‖parameter q branch‖^2/eta)*L^2) (decayExponent_bounds q).1 (by positivity)
+    ((2*‖parameter q branch‖^2/eta)*L^2) (by
+      dsimp only [g]
+      exact hgamma) (by positivity)
     (fun d _ => add_nonneg (Complex.normSq_nonneg _) (Complex.normSq_nonneg _))
     (fun d hd => (ht d hd).1) (fun d hd => (ht d hd).2)
   exact ⟨D,B,hD,hB,hb⟩
@@ -355,35 +396,36 @@ private theorem decode_field (q : XiZeroCopy) (branch : Bool) (X k d : ℝ) :
         decoder q branch*(‖modeA q branch X k d‖+‖modeB q branch X k d‖) := add_le_add hm hd
     _ = _ := by ring
 
-/-- The actual full angular circle mean and its radial derivative have an exponent
-strictly below two. The constants come from the constructed field and literal source. -/
-theorem angularMean_growth (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+/-- Every exponent strictly above the literal source growth controls the actual full
+angular circle mean and its radial derivative. -/
+private theorem angularMean_growth_at (q : XiZeroCopy) (branch : Bool) (X k gamma : ℝ)
+    (hgamma : sourceGrowthExponent q < gamma) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ d : ℝ, 0 ≤ d →
       ‖angularMean q branch d X k‖+‖deriv (fun r => angularMean q branch r X k) d‖ ≤
-        C*Real.exp (decayExponent q*d) := by
-  obtain ⟨D,B,hD,hB,hb⟩ := energy_tail q branch X k
+        C*Real.exp (gamma*d) := by
+  obtain ⟨D,B,hD,hB,hb⟩ := energy_tail_at q branch X k gamma hgamma
   let L := 1/‖nu q branch-mu q branch‖+decoder q branch
   have hL : 0 ≤ L := by dsimp only [L,decoder]; positivity
   have ht (d : ℝ) (hd : D ≤ d) :
       ‖angularMean q branch d X k‖+‖deriv (fun r => angularMean q branch r X k) d‖ ≤
-        (L*(B+1))*Real.exp (decayExponent q*d) := by
+        (L*(B+1))*Real.exp (gamma*d) := by
     let u := ‖modeA q branch X k d‖+‖modeB q branch X k d‖
     have hu : 0 ≤ u := add_nonneg (norm_nonneg _) (norm_nonneg _)
     have hu2 : u^2 ≤ 2*energy q branch X k d := by
       dsimp only [u,energy]
       rw [← Complex.sq_norm,← Complex.sq_norm]
       nlinarith [sq_nonneg (‖modeA q branch X k d‖-‖modeB q branch X k d‖)]
-    have hex : Real.exp (2*decayExponent q*d)=Real.exp (decayExponent q*d)^2 := by
+    have hex : Real.exp (2*gamma*d)=Real.exp (gamma*d)^2 := by
       rw [pow_two,← Real.exp_add]
       congr 1
       ring
     have hbe := hb d hd
     rw [hex] at hbe
     have hc : 2*B ≤ (B+1)^2 := by nlinarith [sq_nonneg B]
-    have hm := mul_le_mul_of_nonneg_right hc (sq_nonneg (Real.exp (decayExponent q*d)))
-    have hs : u^2 ≤ ((B+1)*Real.exp (decayExponent q*d))^2 := by
+    have hm := mul_le_mul_of_nonneg_right hc (sq_nonneg (Real.exp (gamma*d)))
+    have hs : u^2 ≤ ((B+1)*Real.exp (gamma*d))^2 := by
       nlinarith only [hu2,hbe,hm]
-    have hb1 : 0 ≤ (B+1)*Real.exp (decayExponent q*d) := by positivity
+    have hb1 : 0 ≤ (B+1)*Real.exp (gamma*d) := by positivity
     have hub := (sq_le_sq₀ hu hb1).mp hs
     exact (decode_field q branch X k d).trans (by
       change L*u ≤ _
@@ -402,15 +444,166 @@ theorem angularMean_growth (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
   rcases le_total d D with hleft | hright
   · have hb0 := hC0 d ⟨hd,hleft⟩
     rw [Real.norm_eq_abs,abs_of_nonneg (add_nonneg (norm_nonneg _) (norm_nonneg _))] at hb0
-    have hg : 0 ≤ decayExponent q := by
+    have hg : 0 ≤ gamma := by
       have h1 := (sourceGrowthExponent_bounds q).1
-      have h2 := (decayExponent_bounds q).1
       linarith
-    have he1 : 1 ≤ Real.exp (decayExponent q*d) := Real.one_le_exp_iff.mpr (mul_nonneg hg hd)
+    have he1 : 1 ≤ Real.exp (gamma*d) := Real.one_le_exp_iff.mpr (mul_nonneg hg hd)
     have h01 : C0 ≤ C := (le_max_left _ _).trans (le_add_of_nonneg_right hLB)
     exact (hb0.trans h01).trans (by nlinarith [mul_le_mul_of_nonneg_left he1 hC])
   · exact (ht d hright).trans (mul_le_mul_of_nonneg_right
       (le_add_of_nonneg_left (le_max_right _ _)) (Real.exp_pos _).le)
+
+/-- The actual full angular circle mean and its radial derivative have an exponent
+strictly below two. The constants come from the constructed field and literal source. -/
+theorem angularMean_growth (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ d : ℝ, 0 ≤ d →
+      ‖angularMean q branch d X k‖+‖deriv (fun r => angularMean q branch r X k) d‖ ≤
+        C*Real.exp (decayExponent q*d) :=
+  angularMean_growth_at q branch X k (decayExponent q) (decayExponent_bounds q).1
+
+/-- Midway between the literal source and clock exponents, retaining strict tail slack. -/
+def strictGrowthExponent (q : XiZeroCopy) : ℝ :=
+  (sourceGrowthExponent q+decayExponent q)/2
+
+theorem strictGrowthExponent_bounds (q : XiZeroCopy) :
+    sourceGrowthExponent q < strictGrowthExponent q ∧
+      strictGrowthExponent q < decayExponent q := by
+  dsimp only [strictGrowthExponent]
+  linarith [(decayExponent_bounds q).1]
+
+/-- The literal full angular response has a strict gap below the physical clock
+exponent. This is the tail slack required by the unrenormalized seed-cap limit. -/
+theorem angularMean_strict_growth (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ d : ℝ, 0 ≤ d →
+      ‖angularMean q branch d X k‖+‖deriv (fun r => angularMean q branch r X k) d‖ ≤
+        C*Real.exp (strictGrowthExponent q*d) :=
+  angularMean_growth_at q branch X k (strictGrowthExponent q)
+    (strictGrowthExponent_bounds q).1
+
+private theorem fullKernel_local_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ u : ℝ, 0 ≤ u → u ≤ 1 →
+      ‖angularMean q branch (Real.arcosh (1+u)) X k-fullAngularField q branch ![X,Real.exp k]‖ ≤
+        B*u := by
+  obtain ⟨δ,B,hδ,hB,hb⟩ := local_increment_bound
+    (D4BMFullAngularGoursat.fullAngularKernel_right_derivative q branch X k)
+  have hc : ContinuousOn (fun z : ℝ => angularMean q branch (Real.arcosh z) X k) (Icc 1 2) :=
+    (angularMean_smooth q branch X k).continuous.comp_continuousOn
+      ((Real.continuousOn_arcosh 1 (by simp)).mono Icc_subset_Ici_self)
+  obtain ⟨A,hA⟩ := isCompact_Icc.exists_bound_of_continuousOn hc
+  let D := max A 0+‖fullAngularField q branch ![X,Real.exp k]‖
+  have hD : 0 ≤ D := by dsimp only [D]; positivity
+  refine ⟨B+D/δ,add_nonneg hB (div_nonneg hD hδ.le),?_⟩
+  intro u hu hu1
+  by_cases huδ : u ≤ δ
+  · have h := hb u hu huδ
+    have hB : B*u ≤ (B+D/δ)*u := by gcongr
+    exact (by simpa only [Real.arcosh_zero,angularMean_zero] using h).trans hB
+  · have hδu : δ ≤ u := (lt_of_not_ge huδ).le
+    have hz : 1+u ∈ Icc (1:ℝ) 2 := by constructor <;> linarith
+    have hK : ‖angularMean q branch (Real.arcosh (1+u)) X k‖ ≤ max A 0 :=
+      (hA (1+u) hz).trans (le_max_left _ _)
+    have hdiff : ‖angularMean q branch (Real.arcosh (1+u)) X k-
+        fullAngularField q branch ![X,Real.exp k]‖ ≤ D := by
+      calc
+        _ ≤ ‖angularMean q branch (Real.arcosh (1+u)) X k‖+
+            ‖fullAngularField q branch ![X,Real.exp k]‖ := norm_sub_le _ _
+        _ ≤ _ := by dsimp only [D]; linarith
+    have hscale : D ≤ (D/δ)*u := by
+      calc
+        D = (D/δ)*δ := by field_simp
+        _ ≤ _ := mul_le_mul_of_nonneg_left hδu (div_nonneg hD hδ.le)
+    exact hdiff.trans (hscale.trans (by gcongr))
+
+private theorem full_large_radius_bound (b h : ℝ) (hb : 0 < b)
+    (hu : 1 ≤ b*(Real.exp h-1)) :
+    Real.arcosh (1+b*(Real.exp h-1)) ≤ Real.log 4+Real.log b+h := by
+  have hbe : 1 < b*Real.exp h := by nlinarith
+  have hp : 0 ≤ Real.log 4+Real.log b+h := by
+    have ht : Real.log (b*Real.exp h)=Real.log b+h := by
+      rw [Real.log_mul hb.ne' (Real.exp_pos h).ne',Real.log_exp]
+    have hi := Real.log_nonneg hbe.le
+    rw [ht] at hi
+    linarith [Real.log_nonneg (by norm_num : (1:ℝ) ≤ 4)]
+  have hz : 1 ≤ 1+b*(Real.exp h-1) := by linarith
+  have hx : 1+b*(Real.exp h-1) ≤ 2*b*Real.exp h := by nlinarith
+  have he : Real.exp (Real.log 4+Real.log b+h)=4*b*Real.exp h := by
+    rw [Real.exp_add,Real.exp_add,Real.exp_log (by norm_num : (0:ℝ)<4),Real.exp_log hb]
+  have hc : 2*b*Real.exp h ≤ Real.cosh (Real.log 4+Real.log b+h) := by
+    rw [Real.cosh_eq,he]
+    linarith [Real.exp_pos (-(Real.log 4+Real.log b+h))]
+  have hl := Real.cosh_le_cosh.mp ((Real.cosh_arcosh hz).trans_le (hx.trans hc))
+  simpa only [abs_of_nonneg (Real.arcosh_nonneg hz),abs_of_nonneg hp] using hl
+
+/-- Scale-normalized full seed increments admit a strict-clock majorant.  This
+uses the literal full characteristic coefficient and full response tail, not a
+source surrogate or a renormalized kernel. -/
+theorem fullAngularKernel_scaled_bound (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ b h : ℝ, 0 < b → b ≤ 1 → 0 ≤ h →
+      ‖angularMean q branch (Real.arcosh (1+b*(Real.exp h-1))) X k-
+        fullAngularField q branch ![X,Real.exp k]‖ ≤
+        b*C*(Real.exp h+Real.exp (strictGrowthExponent q*h)) := by
+  obtain ⟨B,hB,hb⟩ := fullKernel_local_bound q branch X k
+  obtain ⟨D,hD,hd⟩ := angularMean_strict_growth q branch X k
+  let A := D*Real.exp (strictGrowthExponent q*(Real.log 4+|k|))
+  let Q := fullAngularField q branch ![X,Real.exp k]
+  have hgamma : 1 ≤ strictGrowthExponent q := by
+    linarith [(sourceGrowthExponent_bounds q).1,(strictGrowthExponent_bounds q).1]
+  have hgamma0 : 0 ≤ strictGrowthExponent q := hgamma.trans (by norm_num)
+  have hA : 0 ≤ A := mul_nonneg hD (Real.exp_pos _).le
+  refine ⟨B+A+‖Q‖,by positivity,fun b h hb0 hb1 hh => ?_⟩
+  have he : 1 ≤ Real.exp h := Real.one_le_exp_iff.mpr hh
+  have hu0 : 0 ≤ b*(Real.exp h-1) := by positivity
+  by_cases hu : b*(Real.exp h-1) ≤ 1
+  · apply (hb _ hu0 hu).trans
+    have hprod : B*b*(Real.exp h-1) ≤ b*B*Real.exp h := by nlinarith
+    have hm : b*B*Real.exp h ≤ b*(B+A+‖Q‖)*
+        (Real.exp h+Real.exp (strictGrowthExponent q*h)) := by
+      apply mul_le_mul (mul_le_mul_of_nonneg_left (by linarith [norm_nonneg Q]) hb0.le)
+        (by linarith [Real.exp_pos (strictGrowthExponent q*h)]) (Real.exp_pos h).le (by positivity)
+    nlinarith
+  · have hu1 : 1 ≤ b*(Real.exp h-1) := (lt_of_not_ge hu).le
+    have hz : 1 ≤ 1+b*(Real.exp h-1) := by linarith
+    have hr0 := Real.arcosh_nonneg hz
+    have hlog : Real.log b ≤ 0 := Real.log_nonpos hb0.le hb1
+    have hpow : Real.exp (strictGrowthExponent q*Real.log b) ≤ b := by
+      calc
+        _ ≤ Real.exp (Real.log b) := Real.exp_le_exp.mpr (by nlinarith)
+        _ = b := Real.exp_log hb0
+    have hg : ‖angularMean q branch (Real.arcosh (1+b*(Real.exp h-1))) X k‖ ≤
+        A*b*Real.exp (strictGrowthExponent q*h) := by
+      have hm := hd (Real.arcosh (1+b*(Real.exp h-1))) hr0
+      have hm' : ‖angularMean q branch (Real.arcosh (1+b*(Real.exp h-1))) X k‖ ≤
+          D*Real.exp (strictGrowthExponent q*Real.arcosh (1+b*(Real.exp h-1))) :=
+        (le_add_of_nonneg_right (norm_nonneg _)).trans hm
+      apply hm'.trans
+      calc
+        _ ≤ D*Real.exp (strictGrowthExponent q*(Real.log 4+Real.log b+h+|k|)) := by
+          apply mul_le_mul_of_nonneg_left _ hD
+          apply Real.exp_le_exp.mpr
+          apply mul_le_mul_of_nonneg_left _ hgamma0
+          linarith [full_large_radius_bound b h hb0 hu1]
+        _ = A*Real.exp (strictGrowthExponent q*Real.log b)*
+            Real.exp (strictGrowthExponent q*h) := by
+          have heq : Real.exp (strictGrowthExponent q*(Real.log 4+Real.log b+h+|k|))=
+              Real.exp (strictGrowthExponent q*(Real.log 4+|k|))*
+              Real.exp (strictGrowthExponent q*Real.log b)*
+              Real.exp (strictGrowthExponent q*h) := by
+            rw [← Real.exp_add,← Real.exp_add]
+            congr 1
+            ring
+          rw [heq]
+          dsimp only [A]
+          ring
+        _ ≤ _ := by gcongr
+    have hQ : ‖Q‖ ≤ b*‖Q‖*Real.exp h := by
+      have hbe : 1 ≤ b*Real.exp h := by nlinarith
+      nlinarith [mul_le_mul_of_nonneg_left hbe (norm_nonneg Q)]
+    apply (norm_sub_le _ _).trans
+    change ‖angularMean q branch (Real.arcosh (1+b*(Real.exp h-1))) X k‖+‖Q‖ ≤ _
+    have hc : 0 ≤ b*B*(Real.exp h+Real.exp (strictGrowthExponent q*h)) := by positivity
+    have h1 : 0 ≤ b*A*Real.exp h := by positivity
+    have h2 : 0 ≤ b*‖Q‖*Real.exp (strictGrowthExponent q*h) := by positivity
+    nlinarith
 
 /-- The original doubled physical clock dominates the full mean's proved growth. -/
 theorem terminal_exponent_neg (q : XiZeroCopy) (branch : Bool) :
@@ -419,6 +612,12 @@ theorem terminal_exponent_neg (q : XiZeroCopy) (branch : Bool) :
   have hg := (decayExponent_bounds q).2
   cases branch <;> simp only [physicalRate,↓reduceIte,Complex.sub_re] <;>
     norm_num <;> linarith
+
+/-- The strict full-response exponent remains integrable against the unchanged
+doubled physical clock. -/
+theorem strict_terminal_exponent_neg (q : XiZeroCopy) (branch : Bool) :
+    2*(physicalRate q branch).re+strictGrowthExponent q < 0 := by
+  linarith [terminal_exponent_neg q branch,(strictGrowthExponent_bounds q).2]
 
 /-- An integrable clock-weighted majorant, uniform over all circle radii
 bounded by ingoing time plus a fixed offset. This is the terminal-face regime. -/

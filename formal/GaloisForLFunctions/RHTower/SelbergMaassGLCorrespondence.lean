@@ -78,6 +78,22 @@ def glIntegralMaassCuspEigenformToMaass (Γ : Subgroup SL2Z) (eigenvalue : ℝ)
     apply f.2.1
     exact congrArg Subtype.val hzero⟩
 
+/-- Reindexing the same integral congruence action between its `SL(2, ℝ)` and
+`GL(2, ℝ)` carriers is an exact equivalence of Maass cusp eigenspaces. -/
+def integralMaassCuspEigenformGLCorrespondence (Γ : Subgroup SL2Z) (eigenvalue : ℝ) :
+    MaassCuspEigenform (realImage Γ) eigenvalue ≃
+      GLMaassCuspEigenform (Γ : Subgroup (GL (Fin 2) ℝ)) eigenvalue where
+  toFun := integralMaassCuspEigenformToGL Γ eigenvalue
+  invFun := glIntegralMaassCuspEigenformToMaass Γ eigenvalue
+  left_inv f := by
+    apply Subtype.ext
+    apply Subtype.ext
+    rfl
+  right_inv f := by
+    apply Subtype.ext
+    apply Subtype.ext
+    rfl
+
 end
 
 end GaloisForLFunctions.RHTower

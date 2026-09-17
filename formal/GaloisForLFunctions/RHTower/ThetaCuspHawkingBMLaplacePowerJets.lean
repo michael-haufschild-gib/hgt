@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalMonodromyMaster
-import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplacePowerCore
 
 /-! Actual complex-power radial derivatives in the positive real chart. -/
 
@@ -11,7 +11,6 @@ attribute [-instance] instInnerProductSpaceRealComplex
 attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
 
-def power (a : ℂ) (z : ℝ) : ℂ := (z:ℂ)^a
 def powerFirst (a : ℂ) (z : ℝ) : ℂ := a*power a z/(z:ℂ)
 def powerSecond (a : ℂ) (z : ℝ) : ℂ := a*(a-1)*power a z/(z:ℂ)^2
 

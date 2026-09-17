@@ -601,3 +601,490 @@
   indices, and identify the resulting finite-support coefficient function as correspondence
   convolution. The leaf source check and targeted build pass; the final theorem uses only
   `propext`, `Classical.choice`, and `Quot.sound`.
+- **Finite rational Mackey-to-Hecke convolution closed (current corpus, 2026-09-16).**
+  `SelbergMaassMackeyHeckeAggregation` now proves the missing global finite algebra step. It
+  defines the actual rational Mackey-orbit carrier, each block’s literal outer trace, and its
+  exact stabilizer-index multiplicity. For positive-determinant inputs,
+  `rationalMackeyBlockTrace_eq_multiplicity_smul_HeckeCosetTrace` identifies every actual block
+  with that multiplicity times the descended positive-rational Hecke-coset trace of its canonical
+  orbit label. `rationalMackeyBlockTrace_sum_eq_fiberwise_HeckeCosetTrace` then reindexes the
+  entire finite Mackey sum over the finite image of the orbit-to-Hecke map; the coefficient of
+  each label is the finite sum of its actual stabilizer indices. This makes no false finiteness
+  claim about the ambient Hecke carrier. Source check and targeted leaf build pass; both theorem
+  axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`. The finite
+  correspondence-convolution stage is therefore closed at the level of source-attached Maass
+  traces. The next actual barrier is an adelic/local realization that identifies these
+  correspondence operators with local factors, followed by an independently constructed
+  compatible symmetric-power lift and a generic exponent bound.
+- The source frontier advanced: `SelbergMaassHeckeEigenspace` and
+  `SelbergMaassRationalHeckeDoubleCoset` define the representative-independent
+  endomorphism `rationalPrincipalHeckeCosetLinear` of the actual fixed
+  principal-level Maass eigenspace.  `rationalPrincipalTrace_mackey_baseChange`
+  and `rationalMackeyBlockTrace_sum_eq_fiberwise_HeckeCosetTrace` already give
+  its finite correspondence composition at function level.  Thus the earlier
+  bounded search's failure to find a Maass Hecke action is superseded; the
+  missing link is not basis-level Hecke action or Mackey composition.
+- The direct Hecke-coercivity attempt fails structurally.  A nonzero output of
+  any source Hecke linear combination remains in the same exceptional Maass
+  eigenspace and hence has strictly negative `coreQuarter` at the transition
+  cutoff.  Existing `SelbergMaassTraceAverageNoGo` already proves the
+  representative-trace version.  Hecke input can only help by forcing an
+  annihilation or incompatible local parameter, not by averaging the signed
+  compact-core form.
+- The slice-rigidity alternative also has the wrong sign for the quarter
+  contradiction.  `exceptional_compact_slice_mass_floor` supplies a
+  source-dependent positive mass floor, while `core_quarter_identity` places
+  that mass under the negative coefficient `lam - 1/4` for a hypothetical
+  exceptional source.  It strengthens the negative side of the existing
+  identity and gives no lower bound for `coreQuarter + boundarySum`.
+- Deep search at snapshot generation `941269` for the global Hecke bridge
+  found `Module.End.exists_eigenvalue`, whose explicit prerequisites are an
+  algebraically closed scalar field, nontrivial carrier, and
+  `FiniteDimensional`.  A lexical audit of all 112 Lean files containing a
+  Maass source/carrier found no finite-dimensionality, local-factor,
+  Euler-factor, finite-adele, or adelic-factorization theorem attached to that
+  carrier.  The first global bridge is therefore: construct quotient L2
+  spectral theory strong enough to prove finite multiplicity of the fixed
+  cuspidal Maass eigenspace; a finite-adelic local factorization remains after
+  that.  This is a source-audit fact, not a nonexistence assertion about
+  mathematics outside the inspected corpus.
+- Broad September 2026 arXiv screening under the one-word `automorphic` query
+  found a Chenevier orthogonal-polynomial positivity result but no map from its
+  kernel or variables to a congruence-Maass source, its Hecke operators, or the
+  signed core--cusp functional.  It is rejected from this route pending such a
+  source-level map.
+- **Rational level-one trace separation is not a corpus route (2026-09-16).**
+  `rationalPrincipalTraceFunction` in `SelbergMaassRationalTrace` traces a rational pullback
+  back to `principalCongruenceGL N`, its original level; its strongest result is
+  `rationalPrincipalTrace_zero_or_eigenform`.  It does not target level one.
+  `SelbergMaassDeckAverage.scalarTrace_eq_zero` is a separate full deck average for integral
+  congruence data.  Thus these theorems do not compose into a level-one separation argument.
+- **The direct source problem has a sharpened exact form (2026-09-16).**
+  `core_cusp_quarter_identity` gives
+  `coreQuarter + boundarySum + squareSum = (lam - 1/4) * totalMass` for every hypothetical
+  exceptional source; `squareSum_nonneg` therefore yields the already formalized strict negative
+  upper bound.  Any analytic completion must add a genuinely arithmetic lower bound on the same
+  left-hand functional, or an incompatible identity.  Existing phase/closed-period results only
+  bound seam/current quantities and do not yet supply that lower bound.
+- **Current rigidity closes only a conditional branch (2026-09-16).**
+  `SelbergMaassPeriodCurrentRigidity.exceptional_positive_limit_or_flat_node` proves, at every
+  positive height of a hypothetical exceptional source, either a strictly positive limiting
+  horizontal current or a common source node whose complete horizontal derivative energy is zero.
+  The Maass equation available in `SelbergMaassAverageCurrents.eigenfunction_planar_equation`
+  constrains only the sum of the two second directional derivatives at a node.  The inspected
+  corpus supplies no theorem turning the first-order flat-node alternative, or positive current,
+  into a core--cusp quarter lower bound.  This makes that missing conversion the current direct
+  route barrier.
+- **The archimedean Maass-to-model step is now source-complete (2026-09-16).**
+  `MaassModelIntertwiner.modelToMaass` is an injective map from the finite spherical
+  complementary model to actual automorphic Maass derivatives, with exact compact action and
+  three infinitesimal intertwining identities.  `MaassModelHilbertOrbitDerivatives`
+  extends its completed quotient-`L²` image to an isometric complementary Hilbert model and
+  proves invariance under every actual `SL2R` quotient unitary
+  (`integralSubgroupUnitary_mapsTo_completedModelIsometry_range_SL2R`).
+  Hence the earlier “find the Maass-to-model intertwiner” barrier is closed at the real place.
+  This representation admits the exceptional parameter by construction; it cannot itself yield
+  the quarter contradiction.  The remaining global-route bridge starts at finite-adelic action
+  and source-attached local factorization.
+- **Source Hecke composition is now an operator equality (2026-09-16).**
+  `SelbergMaassHeckeOperatorConvolution.rationalPrincipalHeckeCosetLinear_apply` identifies
+  each descended Hecke-coset endomorphism with its literal source trace after evaluation.
+  `rationalPrincipalTraceLinear_comp_eq_fiberwise_HeckeCosetLinear` lifts the exact Mackey
+  fiber formula from functions to endomorphisms of the fixed principal-level Maass eigenspace:
+  the product of the two positive rational trace operators is the finite sum of the descended
+  Hecke-coset operators with the established stabilizer-fiber coefficients.  The leaf source
+  check and targeted build pass.  This does not construct a finite-adelic group action, a
+  canonical placewise factorization, or any symmetric-power lift; those remain the global
+  route's first unresolved mathematical bridge.
+- **Closed-period cancellation does not reach the quarter functional (2026-09-16).**
+  `source_period_product_floor` gives each original period cost a strict
+  `8 / (N+1)^2`-scale floor, while `parameterMoment = N*(2*N+1)/12` carries
+  the quadratic path factor.  Their product has a genuine level-independent
+  lower scale for `N >= 1`.  But the resulting theorem is only a lower bound
+  for nonnegative two-period current cost (`limiting_period_cost_lower_of_mean_zero`).
+  A source audit found no identity from this cost, or its horizontal-current
+  rectangle integral, to `coreQuarter + boundarySum`; it cannot reverse the
+  strict-negative core--cusp inequality.
+- **Nodal removal is formally ruled out as the direct bridge (2026-09-16).**
+  `curvature_restrict_nodes` identifies the residual curvature with curvature
+  restricted to the common-source node set, and `curvatureMeasure_noAtoms`
+  removes only point atoms.  `SelbergNodalCurvature.nodal_curvature_survives_integration`
+  gives the exact local countermechanism: regularized curvature tends to zero
+  almost everywhere yet has nonzero limiting integrated nodal charge.
+  `SelbergNodalResistance.nodalResistance_tendsto_atTop` gives the matching
+  logarithmic resistance divergence.  Thus neither atomlessness nor regulator
+  removal can delete nodal residuals; a new global theorem would have to control
+  common nodal curves of the whole deck source.
+- **Exact active direct target reaffirmed (2026-09-16).**
+  `SelbergMaassPhaseStress.core_cusp_phase_stress_bound` reduces the remaining
+  source inequality to the signed physical phase-stress record.  Its unresolved
+  term contains the weighted top integral
+  `∫ x, x * phaseStressXY(point x 1) + phaseStressYY(point x 1)`.
+  `SelbergMaassKernelWronskian` proves positivity only for the antisymmetric
+  tail Wronskian kernel, not this symmetric weighted stress.  The existing
+  local Bessel/DtN no-go therefore leaves exactly a source-attached arithmetic
+  Fourier-coefficient relation (the signed varying-modulus boundary comparison)
+  as the direct route's active mathematical problem.
+- **The first unresolved global bridge is Hecke/right-regular compatibility, not a new
+  abstract adelic carrier (2026-09-16).**
+  `MaassModelIntertwiner.modelToMaass` and `maassToModel` are inverse linear maps between
+  the finite spherical model and the actual differentiated cyclic automorphic space;
+  `modelToMaass_spherical` identifies its spherical vector with the original source
+  function.  Separately, `maassTraceFunction` is literally the finite sum over relative
+  cosets of `f (h⁻¹ • z)`, and a rational Hecke trace is this sum after the literal rational
+  pullback `z ↦ f (g • z)`.  Searches of the Maass and rational-Hecke modules found no
+  theorem transporting this operator through `modelToMaass`, or proving commutation with
+  the right-regular differential directions.  The required exact lemma is to normalize a
+  positive-real `GL₂` correspondence to its determinant-one `SL₂` representative and show
+  its source action is left translation on the automorphic model; left and right
+  translations then commute pointwise.  This would carry the *existing* source Hecke
+  algebra into the real model, but would still leave finite-place factorization and lifts
+  unresolved.
+- **The active signed top term has a precise Fourier reduction target (2026-09-16).**
+  `topPhaseFlux_eq` contains the mixed term
+  `∫ x in -(1/2)..1/2, x * phaseStressXY N r s f (point x 1)`.
+  The corpus proves full source smoothness in `MaassCuspEigenform.contDiffOn`, exact unit
+  translation in `phaseStressXY_translation`, and generic absolute Fourier summability and
+  pointwise inversion for periodic `C²` functions in `PeriodicFourierDecay`.  The phase-stress
+  modules currently expose only continuity because their readout/stress regularity declarations
+  stop at finite order.  Thus the next closed target is to carry `C∞` through the finite readouts
+  and stress, instantiate that Fourier theorem for this literal term, and then prove an exact
+  weighted coefficient identity.  That identity will expose the remaining signed off-diagonal
+  arithmetic coefficients; it does not itself establish their sign.
+- **The active mixed boundary term has an exact finite same-residue modal decomposition (2026-09-17).**
+  `SelbergMaassModalMixedLoss.finiteModal_mixedLoss_sameResidue` retains precisely pairs
+  `n ≡ m (mod N+1)`, with the literal horizontal factor
+  `conj ((2π n/(N+1)) i)` and the value--height loss
+  `coefficientMixedLoss`.  `two_coefficientMixedLoss_eq_deriv_sub_wronskian` gives the exact
+  identity `2 mixedLoss = deriv coefficientLoss - coefficientWronskian`; the finite stress is
+  therefore a signed same-residue derivative sum minus its Wronskian sum.  Existing tail
+  positivity controls only the latter.  Thus the first remaining direct target is an arithmetic
+  inequality or cancellation for the derivative sum, not another local positivity claim.
+  The direct leaf audit currently stops at the absent dependency Olean
+  `SelbergMaassSourceCurrents.olean` before parsing this source file; no completed module audit is claimed.
+- **Rational pullback and finite trace are source-level right-regular intertwiners (2026-09-17).**
+  `SelbergMaassGLAutomorphicIntertwiner` introduces the literal left-quotient carrier on
+  `GL(2, ℝ)`. `glLift_rationalMaassPullbackInvariant_general` identifies the existing rational
+  upper-half-plane pullback with left multiplication between the conjugate quotients;
+  `glAutomorphicTrace_commutes_right` proves that the existing finite relative-coset trace
+  commutes with every right `SL(2, ℝ)` translation; and
+  `rationalPrincipalPullbackTrace_lift_commutes_right` composes the two for the actual
+  principal-level rational trace. This removes the prior unproved right-regular compatibility
+  bridge without choosing a determinant-normalized representative or falsely treating a
+  correspondence as an endomorphism before tracing. The targeted leaf build passes and all three
+  axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`. This is an
+  operator identity in the new `GL(2, ℝ)` carrier. It does not yet construct a map from that
+  carrier to `modelToMaass`'s `SL(2, ℝ)` cyclic carrier, nor show that a nonzero trace remains in
+  the original cyclic representation. That carrier comparison and range-stability statement,
+  then finite-place realization and a generic exponent bound, remain the global obstacle.
+- **Actual Maass sources now enter the formal Hecke eigenspace without a carrier gap (2026-09-17).**
+  `SelbergMaassGLCorrespondence.integralMaassCuspEigenformToGL` and
+  `glIntegralMaassCuspEigenformToMaass` were already inverse-direction source reindexings between
+  the real integral quotient and its identical `GL(2,R)` action. The new closed maps
+  `glMaassCuspEigenformToEigenspace` and `principalMaassCuspEigenformToHeckeEigenspace` place the
+  actual principal-level Maass form in `glMaassCuspEigenspace`, which is the exact domain of the
+  existing rational Hecke endomorphisms; `principalMaassCuspEigenformToHeckeEigenspace_ne_zero`
+  preserves the required nonvanishing and the `..._apply` theorem records literal equality of
+  functions. Thus source-to-Hecke entry is closed. The corpus contains no compact-resolvent or
+  fixed-eigenvalue finite-dimensionality theorem, no commuting self-adjoint Hecke family, no
+  simultaneous Hecke-eigenvector selection, and no global `GL(2)` attachment. These are the active
+  global obstruction; trace preservation of one arbitrarily preselected cyclic line is not required
+  for the selection route. The leaf source check passed before the targeted final audit.
+
+- **The corpus double-commutator mechanism has no source-specific Selberg input (2026-09-17).**
+  `SchattenDoubleCommutatorRelocation` proves a conditional identity for bounded Hilbert operators
+  `Q,B`: it requires a self-adjoint Hilbert--Schmidt skeleton `Q`, a self-adjoint bounded `B`, and
+  an already supplied eigenbasis. Its own module documentation states that it neither constructs
+  the physical boundary operator `B` nor proves its endpoint determinant identity. Exact scoped
+  source search found no Maass/deck/trace commutator theorem instantiating these hypotheses. The
+  finite congruence deck is finite-dimensional, but this does not turn the full quotient Maass
+  energy or its unbounded Laplacian into the required Hilbert--Schmidt skeleton. Therefore this
+  mechanism does not supply the missing complete coercivity `fullMass <= 4 * fullGradient`; the
+  direct problem remains the signed source-attached arithmetic boundary comparison.
+
+- **Full transfer-channel summation removes, rather than controls, the diagonal obstruction (2026-09-17).**
+  For a fixed input residue `s`, `inversionTransfer_energy_sum` gives
+  `sum_r ||T_{r,s} v||² = ||P_s v||²`; summing `phaseAverage_norm` over both residues therefore
+  gives exactly `((N+1)^2 - 1) * ||v||²` for the aggregate phase loss, and `phaseAverage_dir`
+  gives the same identity for each physical derivative.  This is a closed finite Parseval
+  calculation from the inspected declarations, not a new spectral estimate.  The core--cusp
+  inequality `core_cusp_phase_stress_bound` uses only the diagonal transfer `T_{r,r}`, because
+  its seam is the upper character `r` matched to its inverted lower character.  The full
+  `(r,s)` sum has no such core--cusp link and merely rescales the original energy identity;
+  it cannot cancel the signed diagonal phase stress in the existing theorem.  The surviving
+  direct target is consequently the diagonal same-residue derivative term itself.
+
+- **Real-source and opposite-residue pairing does not cancel mixed phase stress (2026-09-17).**
+  This was tested directly against the literal definitions.  For `r=s`,
+  `tripleWeight N r r a b c = stdAddChar (r * (b-a-c))`; replacing `r` by `-r`
+  conjugates the weight.  If the Maass source is real-valued, the deck permutation in
+  `tripleMotion` commutes with coordinatewise conjugation, hence the `-r,-r` phase readout is
+  the complex conjugate of the `r,r` readout.  From the literal definition
+  `stressXY = 2 * Re(dx * conj(dy))`, both physical derivatives conjugate and `stressXY`
+  is therefore unchanged.  Equivalently, under simultaneous `(r,n,m) -> (-r,-n,-m)`, the
+  conjugated signed horizontal factor and the conjugated mixed loss have the same real part as
+  before.  Opposite residues add their mixed stress; they do not cancel it.  Thus real/imaginary
+  reduction of a hypothetical complex Maass form cannot resolve the diagonal derivative term.
+
+- **Varying the cusp cutoff creates no monotone phase bound in the present identities (2026-09-17).**
+  `phase_rellich_identity` makes `sidePhaseFlux(Y) + topPhaseFlux(Y)` independent of every
+  `Y >= 1`, while `sidePhaseFlux_eq` is the integral up to `Y` of `phaseStressXX`.
+  But `phaseStressXX_eq` is the signed difference of horizontal and vertical transfer losses,
+  plus potential mass; no sign follows from transfer-loss positivity.  The exact Bessel boundary
+  source independently records finite adverse mode blocks and shows their cutoff size is
+  unbounded across integer widths at each fixed height (`integer_width_cutoff_unbounded`).
+  Hence moving the cutoff only trades the same signed quantity between side and top terms.  It
+  cannot produce a level-uniform coercive sign without the missing arithmetic control of those
+  signed modes.
+
+- **The current Hecke implementation has no Fourier-coefficient action theorem (2026-09-17).**
+  A source-specific deep search for a relation between Maass coefficient derivatives, rational
+  Hecke traces, and the signed transfer loss returned no lexical declaration and timed out during
+  later ranking; inspected candidates supplied only the modal ODE, coefficient regularity, and
+  the existing finite Hecke-trace/Mackey composition.  Exact source search of
+  `SelbergMaassRationalHeckeDoubleCoset`, `SelbergMaassHeckeOperatorConvolution`,
+  `SelbergMaassMackeyHeckeAggregation`, and `SelbergMaassHeckeEigenspace` found no coefficient
+  formula.  This is not corpus-wide absence evidence.  It locates the concrete arithmetic bridge:
+  derive the Fourier action of the already defined rational principal Hecke trace and then prove
+  a source-specific estimate for the same-residue derivative loss.  Hecke action alone is not a
+  Selberg proof—the needed estimate and, for eigenvalue relations, a simultaneous-eigenvector
+  selection/local factorization remain open.
+
+- **The principal real and rational-Hecke Maass carriers are now a closed equivalence (2026-09-17).**
+  `SelbergMaassGLCorrespondence.integralMaassCuspEigenformGLCorrespondence` packages the two
+  existing reindexing maps into an exact equivalence between the integral real `SL(2,R)` source
+  and its identical integral `GL(2,R)` action.  It preserves the literal function, nonvanishing,
+  Laplace equation, and cusp condition.  The source check and leaf build passed; its axiom audit
+  has only `propext`, `Classical.choice`, and `Quot.sound`.  This closes the real-carrier
+  dictionary edge needed by rational Hecke traces, but does not construct a finite-adelic action,
+  local factors, or compatible lifts.
+
+- **The finite-modal phase-stress obstruction is now strictly off-diagonal (2026-09-17).**
+  `SelbergMaassModalMixedLoss` now compiles its exact finite same-residue modal reduction.
+  `SelbergMaassKernelWronskian.coefficientLoss_conj_exchange` makes its coefficient loss Hermitian
+  under `(n,m)` exchange, while `...coefficientWronskian_conj_exchange` makes the current
+  anti-Hermitian.  The new
+  `real_weighted_pair_decomposition` proves that each real horizontal pair is exactly the sum of a
+  frequency-difference times `Im (deriv coefficientLoss)` and a frequency-sum times
+  `-Im coefficientWronskian`.  In the exceptional range,
+  `coefficientWronskian_self_eq_zero` and
+  `real_weighted_diagonal_mixed_eq_zero` remove every `n=m` contribution.  Source checks and the
+  two required leaf builds pass; all five new direct declarations audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Thus generic loss positivity and diagonal analysis cannot
+  prove Selberg even at finite modal level: its survivor is an off-diagonal same-residue arithmetic
+  sum of those two imaginary quantities.  This module has not yet proved that finite modal
+  truncations reconstruct the full `sourceDerivative` in the physical boundary integral, so the
+  statement does not yet transfer this elimination to the full phase stress.
+
+- **Fixed-height derivative reconstruction is blocked at elliptic regularity, not Parseval (2026-09-17).**
+  The corpus proves `coefficient_norm_summable` from the actual `C²` inverse-square coefficient
+  bound, and it proves Parseval `HasSum` identities for squared horizontal and vertical coefficient
+  norms.  Neither is a vector-valued Fourier reconstruction theorem for `sourceDerivative` at a
+  fixed boundary point: multiplying the available `O(|n|⁻²)` bound by one horizontal frequency
+  gives only harmonic decay.  The corpus's arbitrary-order theorem
+  `deningerSmoothPeriodic_coeff_decay` requires a separately supplied `DeningerSmoothPeriodic`
+  object; deep search found no elliptic-regularity bootstrap from the Maass Laplace equation to
+  that smoothness.  Thus the finite modal diagonal elimination cannot yet reach physical phase
+  stress.  Even an eventual bootstrap would solve only this analytic bridge: the verified finite
+  survivor remains the off-diagonal same-residue imaginary derivative/current sum.
+
+- **The real Maass source and rational-Hecke `GL(2, ℝ)` carrier are now exactly equivalent (2026-09-17).**
+  `SelbergMaassGLCorrespondence.integralMaassCuspEigenformGLCorrespondence` packages the existing
+  reindexing maps into a two-sided equivalence between
+  `MaassCuspEigenform (realImage Γ) λ` and
+  `GLMaassCuspEigenform (Γ : Subgroup (GL (Fin 2) ℝ)) λ`.  Its maps preserve the literal function,
+  nonvanishing, Laplace equation, and integral-cusp decay; the checked declaration depends only on
+  `propext`, `Classical.choice`, and `Quot.sound`.  Thus the actual principal Maass source reaches
+  the rational-Hecke carrier reversibly, rather than through a one-way source embedding.  This
+  closes a real-group dictionary edge only: the carrier still has no source-attached finite-adelic
+  local representation, Hecke character selection, or compatible unbounded lift family.
+
+- **The fixed-height derivative bridge now exists in (L^2), with no elliptic bootstrap (2026-09-17).**
+  `SelbergMaassFourierPartial` proves the exact substitution identity
+  `l2Pair_fourierChar_unitRescaled_eq_coefficient`: after (x=(N+1)t), a unit-interval
+  Fourier coefficient is exactly the literal normalized Maass coefficient.  For every continuous
+  deck readout, it transports this identity to the source, horizontal derivative, and height
+  derivative; each rescaled physical field has closed mean-square convergence of its symmetric
+  Fourier partial sums.  The source check and leaf build pass, its six central declarations audit
+  with only `propext`, `Classical.choice`, and `Quot.sound`, and the module is imported by the
+  `RHTower` umbrella.  This replaces the prior need for pointwise/vector-series reconstruction:
+  finite modal fields can now approach physical scalar derivative readouts in (L^2).  It does
+  not control the (x)-weighted product in `topPhaseFlux_eq` yet.  That remaining product-limit
+  theorem must preserve the same-residue off-diagonal terms, so it is now the direct analytic
+  bottleneck before the finite diagonal elimination reaches the physical phase stress.
+
+- **The (x)-weighted mixed-product estimate is now reduced to one convergence assembly (2026-09-17).**
+  `SelbergMaassPhaseProductLimit.norm_l2Pair_le_sqrt_l2NormSq` gives closed complex
+  Cauchy--Schwarz for the exact unit-interval pairing, and
+  `l2NormSq_unitCoord_mul_le` proves that multiplication by the Rellich coordinate is an
+  (L^2)-contraction.  Both pass source and leaf checks and audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`; the module is wired into `RHTower`.  Combined with the
+  six (L^2)-convergence facts in `SelbergMaassFourierPartial`, these estimates reduce the
+  physical top-term bridge to a standard telescoping product-limit proof for the horizontal and
+  height partial sums, followed by finite deck-coordinate recombination into `lossPair`.  Neither
+  step has been asserted yet.  In particular, no sign or cancellation has been claimed for the
+  surviving same-residue off-diagonal terms.
+
+- **Finite modal mixed products now converge to physical Maass derivative-readout pairings (2026-09-17).**
+  `SelbergMaassPhaseProductLimit.tendsto_l2Pair_unitCoord_fourierPartialSum` proves the
+  coordinate-weighted (L^2\times L^2\to L^1) product limit by a closed telescoping argument.
+  Its physical specialization `tendsto_unitCoord_sourceReadout_partial_pair` applies it to every
+  horizontal and height readout of the literal deck-valued Maass source.  The updated source and
+  leaf checks pass; both declarations audit with only `propext`, `Classical.choice`, and
+  `Quot.sound`.  This closes the analytic reconstruction gap identified for finite modal
+  products: it neither discards nor bounds away same-residue off-diagonal terms.  The next exact
+  obstruction is finite deck-coordinate recombination into the transfer form `lossPair`, followed
+  by a proof controlling its surviving off-diagonal imaginary derivative/current sum.  No such
+  recombination or sign conclusion is present yet.
+- `SelbergMaassPhaseStressFourier.phaseStressXYHorizontal_fourierCoeff_neg`
+  is closed: opposite Fourier coefficients of the real physical phase stress
+  are complex conjugates.  Pairing signs therefore leaves an imaginary-part
+  coefficient functional; conjugate symmetry supplies reality of the moment
+  but no orientation.  This rules out deriving the needed nonnegativity from
+  real-valuedness alone.
+- `SelbergMaassPhaseStressFourier.phaseStressXYHorizontal_fourierCoeff_source`
+  is closed: every coefficient of the residual centered moment is exactly twice
+  the oscillatory integral of `lossPair` applied to the actual horizontal and
+  vertical derivatives of the original congruence source.  This gives the
+  required exact source attachment.  The remaining sign assertion is an
+  arithmetic orientation estimate for these oscillatory derivative-loss
+  integrals; neither translation symmetry nor horizontal conservation orients
+  them.
+- Leaf audit of `SelbergMaassPhaseStressFourier` passed after the coefficient
+  attachment and conjugate-symmetry additions.  The three new declarations
+  depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+- The direct loss-pair query at generation `944116` found generic oscillatory
+  magnitude estimates and the existing finite same-residue modal/Wronskian
+  decomposition, but no congruence-source sign relation.  Magnitude decay is
+  already stronger than needed for the closed absolutely convergent series, so
+  these estimates do not orient its signed imaginary coefficient sum and do
+  not advance the quarter inequality.
+- Whole-route check: `SelbergExceptionalSphericalDegreeFamily` is the closed
+  conditional receiver from an infinite compatible unitary degree family to a
+  contradiction; `SelbergMaassGLAutomorphicIntertwiner` and the Mackey modules
+  provide right-regular/finite-correspondence algebra only.  None produces a
+  global lift, local factor, or Fourier action for the actual Maass source.
+- Density-route test at generation `944143`: slice rigidity proves strictly
+  positive exceptional slice mass and a source-dependent compact-band mass
+  floor.  This does not lower-bound density variation or angular energy, while
+  the positive horizontal density mean remains.  It therefore cannot prove
+  the required level-uniform quartic coercivity `3*D + 4*A >= R`.
+
+- **Completed Maass model now has a closed full local `SL(2,R)` realization (2026-09-17).**
+  `MaassModelHilbertRepresentation` restricts literal quotient-`L²` translation to the proved
+  invariant range of `completedModelIsometry`, proves the restricted action preserves the Hilbert
+  inner product, and transports it through `completedModelRangeEquiv` to
+  `completedComplementaryModelRepresentation` on `ComplementaryHilbert`.  The exact theorem
+  `completedComplementaryModelRepresentation_intertwines` identifies the transported action with
+  quotient translation of the original completed Maass embedding.  Source check and leaf build
+  pass; both the range-unitarity theorem and the intertwiner audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`.  This closes the local Hilbert-representation arrow.  It
+  does **not** construct finite-adelic local factors, a global functorial lift, or an
+  unbounded-degree compatible lift family; those remain the only missing producer before the
+  already formalized generic-unitarity degree contradiction can apply.
+
+- **No pointwise Möbius-multiplier sign can close the direct phase-stress route (2026-09-17).**
+  `SelbergMaassMobiusMultiplierNoGo` proves that the derivative-only top flux
+  `2*a*u*v + b*(v^2-u^2)` is indefinite whenever `(a,b) ≠ (0,0)`, and that a
+  translation--dilation--special-conformal combination with nonnegative top flux for every
+  local derivative jet has all three coefficients zero.  The proof is source-checked, leaf-built,
+  and audits with only `propext`, `Classical.choice`, and `Quot.sound`.  This is a no-go for a
+  **universal pointwise stress-sign argument**, not a claim that arbitrary jets occur for a Maass
+  form.  It leaves the circle-tangent `K-T` current as an additional exact-integral candidate, but
+  forces any successful direct proof to add a global relation on the already isolated same-residue
+  modal kernel.
+
+- **Rational-trace loops do not yet orient the same-residue loss moment (2026-09-17).**
+  The direct corpus searches for rational-cusp Fourier transport and for double-coset
+  trace/phase composition found the exact finite orbit-sum theorem
+  `maassTraceFunction_doubleCoset`, but no action on
+  `phaseStressXYHorizontal_fourierCoeff_source` or on its coefficient-loss kernel.
+  `SelbergMaassRationalCuspTransport.rationalGL_cuspidal_pullback` gives the useful exact
+  factorization of every rational pullback at an integral cusp into an integral cusp transport
+  and an upper-triangular map; current results use it only to transport decay.  Thus the
+  specific missing direct bridge is an all-cusp nonconstant Fourier-coefficient transport
+  formula, followed by an arithmetic orientation theorem for the resulting finite sum.  This is
+  not supplied by trace averaging: `rationalPrincipalTrace_zero_or_coreQuarter_strict_neg_at_transitionCutoff`
+  proves that each nonzero rational trace remains exceptional with strictly negative canonical
+  compact-core quarter form.  Hence finite positive trace averages cannot create the coercivity
+  or signed-loss cancellation required by the Selberg chain.
+
+- **Global-lift producer remains absent after current corpus audit (2026-09-17).**
+  The deep Maass/adelic/local-factor/lift search found the real spherical correspondence,
+  all-integral-cusp transport, finite rational traces, and the completed local Hilbert
+  representation only.  No source-attached finite-adelic local factor, global automorphic lift,
+  or compatible unbounded-degree lift family was found.  Therefore the formal generic-unitary
+  degree receiver cannot yet be applied to an actual Maass source.
+
+- **`SelbergScattering*` is a separate Xi route, not a Maass route (2026-09-17).**
+  The complete family was audited after filename discovery.  Its source declarations are typed by
+  `XiZeroCopy`: `SelbergScatteringSourceVector.sourceVector q` is the cusp-subtracted
+  `globalResidual q`, and `SelbergScatteringSourceGraph.sourceNativeDomain_equation` is an
+  equation for that Xi source and its separate `energyOperator`.  Exact source search found no
+  declaration taking `MaassCuspEigenform`, `CongruenceSubgroup`, `phaseStressXY`, or the Maass
+  `lossPair` into this operator.  Consequently its residual and entire-eigenvector theorems do
+  not advance Selberg's (1/4) chain.  A map from an exceptional congruence Maass source to this
+  Xi operator would be a new, stronger unproved correspondence and must not be assumed.
+
+- **The completed local Maass model cannot be substituted for generic symmetric-power
+  unitarity (2026-09-17).**
+  `completedComplementaryModelRepresentation` has the precise type
+  `Representation ℂ SL2R (ComplementaryHilbert lam)`.  By contrast,
+  `SymmetricPowerLocalExponentPositive` is an abstract direct sum of rank-one forms indexed by
+  the proposed symmetric-power exponent packet.  The audited interfaces contain no map from a
+  tensor/symmetric power of the completed `SL2R` model to that packet, no generic-constituent
+  theorem, and no finite-adelic action.  Hence tensor-product unitarity of the local model cannot
+  establish the receiver's generic packet condition.  The required missing theorem is actual
+  generic local classification/compatibility for a source-attached global lift, in addition to
+  construction of an infinite compatible lift family.
+
+- **Present rational Hecke data cannot yet select a finite-place eigen-source (2026-09-17).**
+  The deep audit found exact finite Hecke-coset composition and Mackey aggregation, including
+  `rationalPrincipalTraceLinear_comp_eq_fiberwise_HeckeCosetLinear` and
+  `rationalMackeyHeckeFiberCoefficient`.  It found no source theorem that these operators are
+  self-adjoint, normal, or commuting, no finite-dimensional spectral realization of a fixed
+  Maass Laplace eigenspace, no simultaneous Hecke eigenvector, and no local-factor definition.
+  Generic finite-matrix joint-spectrum lemmas do not apply to the function-space eigenspace.
+  The positive survivor is a concrete next global bridge: turn the existing Hecke-coset
+  convolution into a commuting adjointable operator algebra on a proved finite spectral space;
+  only then can it yield finite local eigenvalues.  It cannot presently feed the lift receiver.
+
+- **The completed model is now attached to the actual Maass source orbit (2026-09-17).**
+  `MaassSourceModelIntertwiner` defines the canonical vector
+  `maassSourceModelVector` by taking the inverse of `completedModelRangeEquiv` at
+  `MaassQuotientL2.sourceLp`. It proves
+  `completedModelIsometry_maassSourceModelVector` and the full real-group equality
+  `maassSourceModelVector_orbit_intertwines`: applying
+  `completedComplementaryModelRepresentation g` and then the completed embedding is exactly
+  literal quotient-`L²` translation of the actual Maass source by every `g : SL2R`. Source
+  audit and leaf build passed; all three exported declarations audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`. This removes the real-place source-attachment
+  ambiguity in approach 1. It still supplies no finite adelic action, local Hecke factor,
+  generic constituent, global lift, or compatible lift family, so it cannot yet trigger the
+  generic-unitary exponent receiver.
+
+- **Global finite-multiplicity route currently stops before its first analytic operator (2026-09-17).**
+  Deep corpus searches at generations `944985` and `945009` found the actual quotient-`L²`
+  source vector and its pointwise Laplace equation, but no Laplacian `LinearPMap` on the
+  cuspidal quotient carrier, no cusp Sobolev/Rellich compact embedding, no compact resolvent,
+  and no finite-dimensionality theorem for the fixed Maass function space. The generic
+  Friedrichs and compact-resolvent lemmas therefore cannot be instantiated. Finite multiplicity
+  must concern the right-`K`-fixed Maass/Laplacian space, not the full completed `SL2R` source
+  orbit, which contains all `K`-types. The earliest real global construction is a closed
+  hyperbolic cusp Sobolev form and compact embedding on that `K`-fixed quotient space.
+
+- **Direct coefficient route remains blocked at arithmetic orientation (2026-09-17).**
+  The current deep search returned only generic Wronskian identities and preservation of the
+  Laplace equation under rational trace. It found no source-attached all-cusp Fourier transport
+  or relation that orients the signed same-residue derivative loss. Thus no local Wronskian
+  positivity or trace-eigenfunction statement advances the core--cusp quarter inequality.
+
+- **Commutant bridge has a precise three-part gap (2026-09-17).**
+  Existing `rationalPrincipalTrace_restrictToSL_commutes_right` is an exact right-regular
+  intertwiner on the function carrier. Scoped audit confirms no bounded quotient-`L²` trace
+  operator, no theorem that it maps the source cyclic range to itself, and no Maass-model
+  irreducibility theorem. `MaassModelIntertwiner.modelToMaass_range_minimal` does prove
+  spherical cyclicity under its two differential directions, with nonzero ladder steps, but
+  contains no extraction of a single `K`-type from an arbitrary finite vector. The next local
+  bridge is therefore differential irreducibility of `SphericalKFiniteModel`; it still must be
+  connected to a bounded source trace before a Schur argument can select Hecke scalars.

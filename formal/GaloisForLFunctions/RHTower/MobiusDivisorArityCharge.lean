@@ -20,12 +20,37 @@ on three coordinates the sharp universal next-step factor is four thirds.
 
 noncomputable section
 open Finset
+open scoped symmDiff
 namespace RHTower
 
 /-- Full retained square energy weighted by the number of unprocessed primes in each label. -/
 def mobiusDivisorArityEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
   ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
     (R.card : ℝ)*(mobiusDivisorSelectionFibre M P R)^2
+
+private theorem mobiusDivisorSelectionPrimeFactors_subset (M : ℕ) :
+    ∀ d ∈ mobiusDivisorSelectionIndices M,
+      d.primeFactors ⊆ mobiusDivisorSelectionPrimes M := by
+  intro d hd p hp
+  obtain ⟨hd,hds⟩ := mem_filter.mp hd
+  obtain ⟨hd1,hdM⟩ := mem_Icc.mp hd
+  have hpd := Nat.le_of_mem_primeFactors hp
+  exact mem_filter.mpr ⟨mem_range.mpr (by omega), (Nat.mem_primeFactors.mp hp).1⟩
+
+/-- Literal all-source pair expansion of arity energy.  The factor is the
+common unprocessed-prime arity of an interfering pair; no signed sector is
+dropped. -/
+theorem mobiusDivisorArityEnergy_eq_pairs (M : ℕ) (P : Finset ℕ) :
+    mobiusDivisorArityEnergy M P =
+      ∑ d ∈ mobiusDivisorSelectionIndices M, ∑ e ∈ mobiusDivisorSelectionIndices M,
+        if d.primeFactors ∆ e.primeFactors ⊆ P then
+          ((d.primeFactors \ P).card : ℝ) * mobiusDivisorDilationChannel M d *
+            mobiusDivisorDilationChannel M e
+        else 0 := by
+  change subsetLabelArityEnergy (mobiusDivisorSelectionPrimes M)
+    (mobiusDivisorSelectionIndices M) Nat.primeFactors (mobiusDivisorDilationChannel M) P = _
+  exact subsetLabelArityEnergy_eq_pairs _ _ _ _
+    (mobiusDivisorSelectionPrimeFactors_subset M) P
 
 /-- Complete signed overlap charge, with the exact parent-label arity retained. -/
 def mobiusDivisorArityCharge (M : ℕ) (P : Finset ℕ) (p : ℕ) : ℝ :=

@@ -40,7 +40,7 @@ theorem tendsto_reciprocalMangoldtError :
       rcases this with rfl | rfl
       · simp
       · simp [ArithmeticFunction.vonMangoldt_apply_one]
-  have h := tendsto_sum_vonMangoldt_div_sub_log.comp Real.tendsto_exp_atTop
+  have h := tendsto_real_sum_vonMangoldt_div_sub_log.comp Real.tendsto_exp_atTop
   refine h.congr fun t => ?_
   simp only [Function.comp_def, reciprocalMangoldtError, reciprocalMangoldtCumulative, hsum,
     Real.log_exp]

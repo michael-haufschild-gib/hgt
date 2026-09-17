@@ -1,0 +1,6 @@
+# C1/P lower Cauchy totality — research facts
+
+- `RHTower.deningerPrimeGammaLowerCauchyHilbertSubspace_eq_xiWeilCauchyHilbertSubspace` proves unconditionally that the closed complex span of lower prime--Gamma Cauchy atoms equals the full regular Xi--Weil Cauchy Hilbert subspace.  Its proof uses a regular ball wholly contained in the lower Euler sector, Cauchy-transform completeness, and the already formalized fibre-sum annihilator characterization.
+- The source map `deningerPrimeGammaLowerToXiHilbert` identifies each lower one-point packet with its Xi Cauchy atom through the graded source-jet equivalence.  Hence the theorem is a source reachability statement, rather than merely a statement about abstract Cauchy kernels.
+- Boundary: totality supplies neither the source-reflected diagonal identity nor positivity of that diagonal.  The unsolved P/C1 obstruction remains construction of a non-scalar source-level polarization/boundary morphism whose closure retains mixed cross terms.
+- Lean status: `formal/GaloisForLFunctions/RHTower/DeningerPrimeGammaLowerCauchyTotality.lean` typechecked directly; its required OLean built; `#print axioms` for the two central theorems reports only `propext`, `Classical.choice`, and `Quot.sound`.

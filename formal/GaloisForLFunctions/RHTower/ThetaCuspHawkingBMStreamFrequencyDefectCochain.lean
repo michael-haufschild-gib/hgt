@@ -6,7 +6,8 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.ScalarTwoJet
 
 namespace RHTower.D4BMModularCore
 
-open D4BMHorizon D4BMVectorStream D4BMQuadraticMixedSource D4BMMetricReconstruction
+open D4BMHorizon D4BMScalarLinearEquation D4BMVectorStream D4BMQuadraticMixedSource
+  D4BMMetricReconstruction
 open ComplexCoordinateMetricTwoJet
 
 set_option autoImplicit false
@@ -35,6 +36,40 @@ private theorem cosmological_frequencyMetricJetCombination
   change _ + Λ * (K.metric i j - c * L.metric i j) = _
   simp only [smul_eq_mul]
   ring
+
+/-- A literal field combination realizes the complete combined jet in this frequency module. -/
+private theorem frequency_ofMetricField_combination (c : ℂ)
+    (F G : (Fin 4 → ℝ) → Matrix (Fin 4) (Fin 4) ℂ) (x : Fin 4 → ℝ)
+    (hF : ∀ i j, ContDiffAt ℝ 2 (fun y => F y i j) x)
+    (hG : ∀ i j, ContDiffAt ℝ 2 (fun y => G y i j) x) :
+    ofMetricField (fun y i j => F y i j - c * G y i j) x =
+      frequencyMetricJetCombination c (ofMetricField F x) (ofMetricField G x) := by
+  have hj (i j : Fin 4) : ofField (fun y => F y i j - c * G y i j) x =
+      (ofField (fun y => F y i j) x).add
+        ((constant (-c)).mul (ofField (fun y => G y i j) x)) := by
+    have he : (fun y => F y i j - c * G y i j) =
+        (fun y => F y i j + (-c) * G y i j) := by
+      funext y
+      ring
+    rw [he, ofField_add (hF i j) (contDiffAt_const.mul (hG i j)),
+      ofField_mul contDiffAt_const (hG i j), ofField_constant]
+  have hs : toSpace (ofMetricField (fun y i j => F y i j - c * G y i j) x) =
+      toSpace (frequencyMetricJetCombination c (ofMetricField F x) (ofMetricField G x)) := by
+    apply Prod.ext
+    · rfl
+    apply Prod.ext
+    · funext k i j
+      have h := congrArg (fun a => a.first k) (hj i j)
+      change coordDeriv k (fun y => F y i j - c * G y i j) x =
+        coordDeriv k (fun y => F y i j) x - c * coordDeriv k (fun y => G y i j) x
+      simpa [ofField, ScalarTwoJet.add, ScalarTwoJet.mul, constant, sub_eq_add_neg] using h
+    · funext k l i j
+      have h := congrArg (fun a => a.second k l) (hj i j)
+      change coordDeriv k (coordDeriv l (fun y => F y i j - c * G y i j)) x =
+        coordDeriv k (coordDeriv l (fun y => F y i j)) x -
+          c * coordDeriv k (coordDeriv l (fun y => G y i j)) x
+      simpa [ofField, ScalarTwoJet.add, ScalarTwoJet.mul, constant, sub_eq_add_neg] using h
+  exact congrArg ofSpace hs
 
 /-- The exact quotient of the off-frequency defect by its source-pole factor.
 Its radial entries retain the original mixed source current. -/
@@ -641,7 +676,58 @@ theorem frequencyMixedMetricBilinear_symm (q : XiZeroCopy) (branch : Bool) (w a 
     (fullAngularCovector q branch) x
   have hB := frequencyStreamMetricBilinear_symm w (2 * physicalRate q branch) a d true
     (fullSquareCovector q) x
+  dsimp only
+  simp only [LinearMap.sub_apply, LinearMap.smul_apply, Pi.sub_apply, Pi.smul_apply]
   rw [hA, hB]
+
+/-! The next two lemmas keep the two primary legs literal.  They identify the
+off-diagonal field with the polarization of two independently constructed physical diagonal
+fields; no square-root choice, fitted propagator, or causal boundary condition enters. -/
+
+private theorem linear_polarization {E : Type*} [AddCommGroup E] [Module ℂ E]
+    (L : ℂ →ₗ[ℂ] E) (a d : ℂ) :
+    L (a * d) = (4 : ℂ)⁻¹ • (L ((a + d) ^ 2) - L ((a - d) ^ 2)) := by
+  have h : a * d = (4 : ℂ)⁻¹ • ((a + d) ^ 2 - (a - d) ^ 2) := by
+    change a * d = (4 : ℂ)⁻¹ * ((a + d) ^ 2 - (a - d) ^ 2)
+    ring
+  rw [h, L.map_smul, L.map_sub]
+
+private theorem frequencyStreamMetricBilinear_polarization (w v a d : ℂ) (square : Bool)
+    (V : Covector) (x : Fin 4 → ℝ) :
+    frequencyStreamMetricBilinear w v square V a d x =
+      (4 : ℂ)⁻¹ •
+        (frequencyStreamMetricField w v ((a + d) ^ 2) square V x -
+          frequencyStreamMetricField w v ((a - d) ^ 2) square V x) := by
+  let L : ℂ →ₗ[ℂ] Matrix (Fin 4) (Fin 4) ℂ :=
+    { toFun := fun z => frequencyStreamMetricField w v z square V x
+      map_add' := by
+        intro z z'
+        exact frequencyStreamMetricField_add w v z z' square V x
+      map_smul' := by
+        intro c z
+        change frequencyStreamMetricField w v (c * z) square V x =
+          c • frequencyStreamMetricField w v z square V x
+        exact frequencyStreamMetricField_smul w v c z square V x }
+  change L (a * d) = (4 : ℂ)⁻¹ • (L ((a + d) ^ 2) - L ((a - d) ^ 2))
+  exact linear_polarization L a d
+
+/-- The literal off-diagonal stream metric is exactly the polarization of its two actual
+diagonal metric fields.  This is the bulk two-leg realization required before a causal
+retarded-minus-advanced comparison can be attempted. -/
+theorem frequencyMixedMetricBilinear_polarization (q : XiZeroCopy) (branch : Bool)
+    (w a d : ℂ) (x : Fin 4 → ℝ) :
+    frequencyMixedMetricBilinear q branch w a d x =
+      (4 : ℂ)⁻¹ •
+        (frequencyMixedMetricField q branch w (a + d) x -
+          frequencyMixedMetricField q branch w (a - d) x) := by
+  unfold frequencyMixedMetricBilinear frequencyMixedMetricField
+  dsimp only
+  simp only [LinearMap.sub_apply, LinearMap.smul_apply, Pi.sub_apply, Pi.smul_apply]
+  rw [frequencyStreamMetricBilinear_polarization,
+    frequencyStreamMetricBilinear_polarization]
+  ext i j
+  simp only [Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul]
+  ring
 
 /-- Diagonal restriction of cyclic polarization recovers the source-pole field exactly. -/
 theorem frequencyMixedMetricBilinear_diag (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
@@ -649,19 +735,26 @@ theorem frequencyMixedMetricBilinear_diag (q : XiZeroCopy) (branch : Bool) (w a 
     frequencyMixedMetricBilinear q branch w a a x =
       frequencyMixedMetricField q branch w a x := by
   unfold frequencyMixedMetricBilinear frequencyMixedMetricField
+  dsimp only
+  simp only [LinearMap.sub_apply, LinearMap.smul_apply, Pi.sub_apply, Pi.smul_apply]
   rw [frequencyStreamMetricBilinear_diag, frequencyStreamMetricBilinear_diag]
 
-/-- Exact two-leg polarization of every channel in the literal mixed Einstein source. -/
-def literalMixedSourceBilinear (q : XiZeroCopy) (branch : Bool) (r B D : ℂ) (z : Point) :
+/-- The amplitude-free tensor retained by the literal mixed Einstein source. -/
+private def literalMixedSourceKernel (q : XiZeroCopy) (branch : Bool) (r : ℂ) (z : Point) :
     Matrix (Fin 4) (Fin 4) ℂ :=
   let s := physicalRate q branch
   let J := fullSquareCovector q
   let K := fullGradientCovector q branch
-  let T0 := (B * D) * (timeSquare s r * J 0 z + timeGradient s r * K 0 z)
-  let T1 := (B * D) * (timeSquare s r * J 1 z + timeGradient s r * K 1 z)
-  let R0 := (B * D) * (radialSquare s r * J 0 z + radialGradient s r * K 0 z)
-  let R1 := (B * D) * (radialSquare s r * J 1 z + radialGradient s r * K 1 z)
+  let T0 := timeSquare s r * J 0 z + timeGradient s r * K 0 z
+  let T1 := timeSquare s r * J 1 z + timeGradient s r * K 1 z
+  let R0 := radialSquare s r * J 0 z + radialGradient s r * K 0 z
+  let R1 := radialSquare s r * J 1 z + radialGradient s r * K 1 z
   !![0, 0, T0, T1; 0, 0, R0, R1; T0, R0, 0, 0; T1, R1, 0, 0]
+
+/-- Exact two-leg polarization of every channel in the literal mixed Einstein source. -/
+def literalMixedSourceBilinear (q : XiZeroCopy) (branch : Bool) (r B D : ℂ) (z : Point) :
+    Matrix (Fin 4) (Fin 4) ℂ :=
+  (B * D) • literalMixedSourceKernel q branch r z
 
 /-- The two-leg source is symmetric before any causal boundary condition is imposed. -/
 theorem literalMixedSourceBilinear_symm (q : XiZeroCopy) (branch : Bool) (r B D : ℂ)
@@ -675,7 +768,9 @@ theorem literalMixedSourceBilinear_symm (q : XiZeroCopy) (branch : Bool) (r B D 
 theorem literalMixedSourceBilinear_diag (q : XiZeroCopy) (branch : Bool) (r B : ℂ)
     (z : Point) :
     literalMixedSourceBilinear q branch r B B z = literalMixedSource q branch r B z := by
-  simp only [literalMixedSourceBilinear, literalMixedSource, pow_two]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [literalMixedSourceBilinear, literalMixedSourceKernel, literalMixedSource, pow_two]
 
 /-- Literal paired source at the two primary temporal frequencies. -/
 def frequencyMixedSourceBilinear (q : XiZeroCopy) (branch : Bool) (w a d : ℂ)
@@ -701,6 +796,67 @@ theorem frequencyMixedSourceBilinear_diag (q : XiZeroCopy) (branch : Bool) (w a 
   unfold frequencyMixedSourceBilinear
   exact literalMixedSourceBilinear_diag _ _ _ _ _
 
+private theorem frequencyEnvelope_add (w v a d : ℂ) (x : Fin 4 → ℝ) :
+    frequencyEnvelope w v (a + d) x =
+      frequencyEnvelope w v a x + frequencyEnvelope w v d x := by
+  simp [frequencyEnvelope, frequencyPhase, envelope_eq_exp]
+  ring
+
+private theorem frequencyEnvelope_sub (w v a d : ℂ) (x : Fin 4 → ℝ) :
+    frequencyEnvelope w v (a - d) x =
+      frequencyEnvelope w v a x - frequencyEnvelope w v d x := by
+  simp [frequencyEnvelope, frequencyPhase, envelope_eq_exp]
+  ring
+
+/-- The complete literal mixed Einstein source is the exact two-leg polarization of the original
+source-pole source.  Both angular channels and every tensor component are retained. -/
+theorem frequencyMixedSourceBilinear_polarization (q : XiZeroCopy) (branch : Bool)
+    (w a d : ℂ) (x : Fin 4 → ℝ) :
+    frequencyMixedSourceBilinear q branch w a d x =
+      (4 : ℂ)⁻¹ •
+        (literalMixedSource q branch (x 1)
+          (frequencyEnvelope (w / 2) (physicalRate q branch) (a + d) x)
+          (angularPoint x) -
+          literalMixedSource q branch (x 1)
+            (frequencyEnvelope (w / 2) (physicalRate q branch) (a - d) x)
+            (angularPoint x)) := by
+  let B := frequencyEnvelope (w / 2) (physicalRate q branch) a x
+  let D := frequencyEnvelope (w / 2) (physicalRate q branch) d x
+  have hplus : frequencyEnvelope (w / 2) (physicalRate q branch) (a + d) x = B + D := by
+    dsimp only [B, D]
+    exact frequencyEnvelope_add _ _ _ _ _
+  have hminus : frequencyEnvelope (w / 2) (physicalRate q branch) (a - d) x = B - D := by
+    dsimp only [B, D]
+    exact frequencyEnvelope_sub _ _ _ _ _
+  unfold frequencyMixedSourceBilinear
+  change literalMixedSourceBilinear q branch (x 1) B D (angularPoint x) = _
+  rw [hplus, hminus]
+  let K := literalMixedSourceKernel q branch (x 1) (angularPoint x)
+  let L : ℂ →ₗ[ℂ] Matrix (Fin 4) (Fin 4) ℂ :=
+    { toFun := fun t => t • K
+      map_add' := by
+        intro u v
+        exact add_smul u v K
+      map_smul' := by
+        intro c u
+        change (c * u) • K = c • u • K
+        rw [mul_smul] }
+  change L (B * D) = _
+  rw [linear_polarization L B D]
+  have hL (u : ℂ) : L (u ^ 2) =
+      literalMixedSourceBilinear q branch (x 1) u u (angularPoint x) := by
+    change u ^ 2 • K = (u * u) • K
+    rw [pow_two]
+  rw [hL, hL, literalMixedSourceBilinear_diag, literalMixedSourceBilinear_diag]
+
+/-- Polarized source-pole residue cochain.  It is defined by the two literal primary legs,
+rather than by choosing a square root of their product. -/
+def frequencyDefectCochainBilinear (q : XiZeroCopy) (branch : Bool) (w r B D : ℂ)
+    (z : Point) : Matrix (Fin 4) (Fin 4) ℂ :=
+  (4 : ℂ)⁻¹ •
+    (frequencyDefectCochain q branch w r (B + D) z -
+      frequencyDefectCochain q branch w r (B - D) z)
+
 private theorem frequencyMixedMetricField_smooth (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
     ContDiffAt ℝ 2 (fun x => frequencyMixedMetricField q branch w a x i j) p.val := by
@@ -709,6 +865,43 @@ private theorem frequencyMixedMetricField_smooth (q : XiZeroCopy) (branch : Bool
     (frequency_response_c2 q branch p) i j).sub
       (contDiffAt_const.mul (frequencyStreamMetricField_smooth _ _ _ true _ p
         (frequency_square_c2 q p) i j))
+
+private theorem ofMetricField_smul (F : (Fin 4 → ℝ) → Matrix (Fin 4) (Fin 4) ℂ)
+    (p : D4BMBackground.ExteriorPoint)
+    (hF : ∀ i j, ContDiffAt ℝ 2 (fun x => F x i j) p.val) (c : ℂ) :
+    ofMetricField (fun x => c • F x) p.val =
+      ofSpace (c • toSpace (ofMetricField F p.val)) := by
+  have hs (i j : Fin 4) :
+      ScalarTwoJet.ofField (fun x => c * F x i j) p.val =
+        ScalarTwoJet.mul (ScalarTwoJet.constant c)
+          (ScalarTwoJet.ofField (fun x => F x i j) p.val) := by
+    rw [ScalarTwoJet.ofField_mul contDiffAt_const (hF i j),
+      ScalarTwoJet.ofField_constant]
+  apply Eq.trans (ofSpace_toSpace _).symm
+  congr 1
+  apply Prod.ext
+  · rfl
+  · apply Prod.ext
+    · funext k i j
+      change (ScalarTwoJet.ofField (fun x => c * F x i j) p.val).first k = _
+      rw [hs]
+      simp [ScalarTwoJet.mul, ScalarTwoJet.constant, toSpace, ofMetricField]
+      rfl
+    · funext k l i j
+      change (ScalarTwoJet.ofField (fun x => c * F x i j) p.val).second k l = _
+      rw [hs]
+      simp [ScalarTwoJet.mul, ScalarTwoJet.constant, toSpace, ofMetricField]
+      rfl
+
+private theorem cosmological_ofSpace_smul (J K : CoordinateMetricTwoJet 4 ℂ)
+    (hJ : J.metric.det ≠ 0) (c Λ : ℂ) (i j : Fin 4) :
+    CoordinateMetricTwoJet.Linearization.cosmological J (ofSpace (c • toSpace K)) Λ i j =
+      c * CoordinateMetricTwoJet.Linearization.cosmological J K Λ i j := by
+  simp only [CoordinateMetricTwoJet.Linearization.cosmological,
+    CoordinateMetricTwoJet.Linearization.einstein_eq_fderiv _ _ hJ,
+    toSpace_ofSpace, map_smul]
+  change c * _ + Λ * (c * K.metric i j) = c * (_ + Λ * K.metric i j)
+  ring
 
 /-- Literal realization of the source-pole cochain by an actual off-frequency metric field.
 This removes the former formal-jet gap; the remaining HB burden is its noncompact causal cap
@@ -734,11 +927,20 @@ theorem frequencyMixedMetricField_cosmological_source (q : XiZeroCopy) (branch :
     change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
     rw [D4BMBackground.metric_det _ _ hf]
     exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ (inv_ne_zero hy)))
-  unfold frequencyMixedMetricField
-  rw [ofMetricField_combination _ _ _ p.val
+  have hfield : frequencyMixedMetricField q branch w a =
+      fun x i j =>
+        frequencyStreamMetricField w (2 * physicalRate q branch) (a ^ 2) false
+            (fullAngularCovector q branch) x i j -
+          (physicalRate q branch * (physicalRate q branch - 1) / 4) *
+            frequencyStreamMetricField w (2 * physicalRate q branch) (a ^ 2) true
+              (fullSquareCovector q) x i j := by
+    funext x i j
+    unfold frequencyMixedMetricField
+    simp only [Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul]
+  rw [hfield, frequency_ofMetricField_combination _ _ _ p.val
       (frequencyStreamMetricField_smooth _ _ _ false _ p (frequency_response_c2 q branch p))
       (frequencyStreamMetricField_smooth _ _ _ true _ p (frequency_square_c2 q p)),
-    cosmological_metricJetCombination _ _ _ hJ,
+    cosmological_frequencyMetricJetCombination _ _ _ hJ,
     frequencyStreamMetricField_jet _ _ _ false _ p (frequency_response_c2 q branch p)
       (fullAngularCovector_divergence q branch),
     frequencyStreamMetricField_jet _ _ _ true _ p (frequency_square_c2 q p)
@@ -746,6 +948,64 @@ theorem frequencyMixedMetricField_cosmological_source (q : XiZeroCopy) (branch :
   rw [← frequencyEnvelope_square]
   exact frozen_stream_cosmological_source_factor q branch p
     (frequencyEnvelope (w / 2) (physicalRate q branch) a p.val) w i j
+
+/-- Literal cyclic Peierls bulk realization.  The two independent primary legs produce an
+actual exterior metric field whose full cosmological Einstein residual is exactly the paired
+literal mixed source plus the paired source-pole cochain.  No causal propagator, branch lift,
+or target-dependent normalization is introduced. -/
+theorem frequencyMixedMetricBilinear_cosmological_source (q : XiZeroCopy) (branch : Bool)
+    (p : D4BMBackground.ExteriorPoint) (w a d : ℂ) (i j : Fin 4) :
+    CoordinateMetricTwoJet.Linearization.cosmological
+      (D4BMBackground.jet (p.val 1) (p.val 3))
+      (ofMetricField (frequencyMixedMetricBilinear q branch w a d) p.val) (-3) i j +
+      frequencyMixedSourceBilinear q branch w a d p.val i j =
+      (w - 2 * physicalRate q branch) *
+        frequencyDefectCochainBilinear q branch w (p.val 1)
+          (frequencyEnvelope (w / 2) (physicalRate q branch) a p.val)
+          (frequencyEnvelope (w / 2) (physicalRate q branch) d p.val)
+          (angularPoint p.val) i j := by
+  let Fp := frequencyMixedMetricField q branch w (a + d)
+  let Fm := frequencyMixedMetricField q branch w (a - d)
+  let c : ℂ := (4 : ℂ)⁻¹
+  have hfield : frequencyMixedMetricBilinear q branch w a d =
+      fun x i j => (c • Fp x) i j - (1 : ℂ) * (c • Fm x) i j := by
+    funext x i j
+    rw [frequencyMixedMetricBilinear_polarization]
+    dsimp only [c, Fp, Fm]
+    simp only [Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul]
+    ring
+  have hFp (u v : Fin 4) : ContDiffAt ℝ 2 (fun x => Fp x u v) p.val := by
+    exact frequencyMixedMetricField_smooth q branch w (a + d) p u v
+  have hFm (u v : Fin 4) : ContDiffAt ℝ 2 (fun x => Fm x u v) p.val := by
+    exact frequencyMixedMetricField_smooth q branch w (a - d) p u v
+  have hJ : (D4BMBackground.jet (p.val 1) (p.val 3)).metric.det ≠ 0 := by
+    have hr : (p.val 1 : ℂ) ≠ 0 := by
+      exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
+    have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
+    have hf : (p.val 1 : ℂ) ^ 2 - 1 ≠ 0 := by
+      exact_mod_cast (by nlinarith [p.property.1] : (p.val 1) ^ 2 - 1 ≠ 0)
+    change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
+    rw [D4BMBackground.metric_det _ _ hf]
+    exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ hr) (pow_ne_zero _ (inv_ne_zero hy)))
+  have hplus := frequencyMixedMetricField_cosmological_source q branch p w (a + d) i j
+  have hminus := frequencyMixedMetricField_cosmological_source q branch p w (a - d) i j
+  have hsource := frequencyMixedSourceBilinear_polarization q branch w a d p.val
+  have hscale := ofMetricField_smul Fp p hFp c
+  have hscale' := ofMetricField_smul Fm p hFm c
+  rw [hfield, frequency_ofMetricField_combination 1 (fun x => c • Fp x) (fun x => c • Fm x) p.val
+    (fun u v => (contDiffAt_const.mul (hFp u v)))
+    (fun u v => (contDiffAt_const.mul (hFm u v))),
+    cosmological_frequencyMetricJetCombination _ _ _ hJ 1 (-3) i j,
+    hscale, cosmological_ofSpace_smul _ _ hJ c (-3) i j,
+    hscale', cosmological_ofSpace_smul _ _ hJ c (-3) i j,
+    hsource]
+  dsimp only [frequencyDefectCochainBilinear]
+  rw [frequencyEnvelope_add] at hplus
+  rw [frequencyEnvelope_sub] at hminus
+  rw [frequencyEnvelope_add, frequencyEnvelope_sub]
+  simp only [Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul] at ⊢
+  dsimp only [Fp, Fm, c] at hplus hminus ⊢
+  linear_combination (4 : ℂ)⁻¹ * hplus - (4 : ℂ)⁻¹ * hminus
 
 /-- Diagonal source identity for the literal cyclic two-leg source-pole metric. -/
 theorem frequencyMixedMetricBilinear_diagonal_cosmological_source (q : XiZeroCopy) (branch : Bool)

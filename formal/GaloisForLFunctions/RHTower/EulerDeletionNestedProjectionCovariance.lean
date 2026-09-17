@@ -516,6 +516,17 @@ def pairedMoebiusSource (N j : ℕ) : ℝ :=
     ∑ i ∈ Finset.range N,
       ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) * (((j + 1) / (i + 1) : ℕ) : ℝ)
 
+/-- The finite Möbius harmonic coefficient retained inside the paired source. -/
+def pairedMoebiusHarmonicSum (N : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range N,
+    ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) / ((i : ℝ) + 1)
+
+/-- The finite signed divisor accumulation at an integer physical coordinate.  This is kept as
+one complete Möbius sum and is not estimated componentwise. -/
+def pairedMoebiusFloorSum (N n : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range N,
+    ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) * (((n / (i + 1) : ℕ) : ℝ))
+
 /-- Exact all-cell floor normal form of the original finite source.  The two summands remain
 paired because their separate physical representatives are not available to the layer map. -/
 theorem sourceVec_moebius_apply_eq_pairedMoebiusSource (N j : ℕ) :
@@ -541,6 +552,98 @@ theorem sourceVec_moebius_apply_eq_pairedMoebiusSource (N j : ℕ) :
   norm_num [Nat.cast_add, Nat.cast_one]
   ring
 
+/-- The paired form is the literal simultaneous finite sum of its modular source residues. -/
+theorem pairedMoebiusSource_eq_residue_sum (N j : ℕ) :
+    pairedMoebiusSource N j =
+      ∑ i ∈ Finset.range N,
+        ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) * residue (i + 1) j := by
+  rw [← sourceVec_moebius_apply_eq_pairedMoebiusSource, sourceVec_apply_eq_cell]
+  unfold DeletionCoefficientTransfer.cell residue
+  simp only [Nat.cast_add, Nat.cast_one, mul_div_assoc]
+
+/-- A literal history-clock increment of the complete paired source kills exactly the already
+measurable residue levels.  Every remaining Möbius coefficient stays in one simultaneous tail. -/
+theorem pairedMoebiusSource_clock_increment_eq_unprocessed_tail (N L j : ℕ) :
+    pairedMoebiusSource N (j + clock L) - pairedMoebiusSource N j =
+      ∑ i ∈ Finset.range N, if L ≤ i then
+        ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+          (residue (i + 1) (j + clock L) - residue (i + 1) j) else 0 := by
+  rw [pairedMoebiusSource_eq_residue_sum, pairedMoebiusSource_eq_residue_sum,
+    ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i hi
+  by_cases hLi : L ≤ i
+  · simp only [if_pos hLi]
+    ring
+  · have hiL : i < L := Nat.lt_of_not_ge hLi
+    have hdiv : i + 1 ∣ clock L := dvd_clock (by omega) (by omega)
+    have hres := residue_add_eq_of_dvd (n := i + 1) (j := j) hdiv
+    rw [hres]
+    simp [hLi]
+
+/-- Finite geometric summation by parts, retaining the complete forward difference of an arbitrary
+sequence.  This is an exact identity, with no sign or size hypothesis. -/
+theorem finite_geometric_forward_difference (f : ℕ → ℝ) (y : ℝ) (K : ℕ) :
+    (1 - y) * (∑ s ∈ Finset.range K, y ^ s * f s) =
+      f 0 - y ^ K * f K -
+        y * ∑ s ∈ Finset.range K, y ^ s * (f s - f (s + 1)) := by
+  induction K with
+  | zero => simp
+  | succ K ih =>
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, mul_add, ih, pow_succ]
+    ring
+
+/-- The periodic form of finite geometric summation by parts. -/
+theorem finite_geometric_periodic_forward_difference (f : ℕ → ℝ) (y : ℝ) (K : ℕ)
+    (hperiod : f K = f 0) :
+    (1 - y) * (∑ s ∈ Finset.range K, y ^ s * f s) =
+      (1 - y ^ K) * f 0 -
+        y * ∑ s ∈ Finset.range K, y ^ s * (f s - f (s + 1)) := by
+  rw [finite_geometric_forward_difference, hperiod]
+  ring
+
+/-- At the actual joint-clock endpoint every literal modular residue vanishes, so the complete
+paired source vanishes without an estimate. -/
+theorem pairedMoebiusSource_clock_pred_eq_zero (N : ℕ) :
+    pairedMoebiusSource N (clock N - 1) = 0 := by
+  have hclock : 0 < clock N := clock_pos N
+  rw [← sourceVec_moebius_apply_eq_pairedMoebiusSource, sourceVec_apply_eq_cell]
+  unfold DeletionCoefficientTransfer.cell
+  apply Finset.sum_eq_zero
+  intro i hi
+  have hdiv : i + 1 ∣ clock N := dvd_clock (by omega) (by
+    exact Nat.succ_le_iff.mpr (Finset.mem_range.mp hi))
+  have hmod : clock N % (i + 1) = 0 := Nat.mod_eq_zero_of_dvd hdiv
+  rw [show clock N - 1 + 1 = clock N by omega, hmod]
+  norm_num
+
+/-- The literal finite source is the exact discrepancy from the chord of its complete truncated
+Möbius floor accumulation across the true joint clock.  This is an equality of the unsplit signed
+source, not a bound on either term. -/
+theorem pairedMoebiusSource_eq_jointClock_floor_discrepancy (N j : ℕ) :
+    pairedMoebiusSource N j =
+      (((j + 1 : ℕ) : ℝ) / (clock N : ℝ)) * pairedMoebiusFloorSum N (clock N) -
+        pairedMoebiusFloorSum N (j + 1) := by
+  have hclock : 0 < clock N := clock_pos N
+  have hendpoint := pairedMoebiusSource_clock_pred_eq_zero N
+  have hclockpred : clock N - 1 + 1 = clock N := by omega
+  unfold pairedMoebiusSource at hendpoint
+  rw [hclockpred] at hendpoint
+  have hendpoint' : (clock N : ℝ) * pairedMoebiusHarmonicSum N -
+      pairedMoebiusFloorSum N (clock N) = 0 := by
+    simpa only [pairedMoebiusHarmonicSum, pairedMoebiusFloorSum] using hendpoint
+  have hharmonic : pairedMoebiusHarmonicSum N =
+      pairedMoebiusFloorSum N (clock N) / (clock N : ℝ) := by
+    apply (eq_div_iff (ne_of_gt (Nat.cast_pos.mpr hclock))).mpr
+    linarith
+  unfold pairedMoebiusSource pairedMoebiusFloorSum
+  change ((j + 1 : ℕ) : ℝ) * pairedMoebiusHarmonicSum N -
+      ∑ i ∈ Finset.range N,
+        ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) * (((j + 1) / (i + 1) : ℕ) : ℝ) = _
+  rw [hharmonic]
+  unfold pairedMoebiusFloorSum
+  field_simp [ne_of_gt (Nat.cast_pos.mpr hclock)]
+
 /-- The complete paired source has the exact joint clock period.  This is a pointwise equality
 of the original finite signed source, not a replacement of a fibre prefix by a period average. -/
 theorem pairedMoebiusSource_add_clock (N j : ℕ) :
@@ -558,6 +661,435 @@ theorem pairedMoebiusSource_add_clock (N j : ℕ) :
   unfold residue at hres
   simpa only [Nat.cast_add, Nat.cast_one] using
     congrArg (fun x : ℝ => ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) * x) hres
+
+/-- Every multiple of the joint clock preserves the complete paired source.  This iterates the
+literal pointwise period; it makes no statement about a finite prefix or about its mean. -/
+theorem pairedMoebiusSource_add_clock_mul (N j k : ℕ) :
+    pairedMoebiusSource N (j + k * clock N) = pairedMoebiusSource N j := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [Nat.succ_mul, ← Nat.add_assoc, pairedMoebiusSource_add_clock]
+    exact ih
+
+/-- Exact summation by parts of the finite joint-clock paired-source kernel.  Its forward
+differences remain complete source differences; no Möbius level is bounded or discarded. -/
+theorem pairedMoebiusSource_finite_joint_kernel_forward_difference
+    (N L r K : ℕ) (y : ℝ) (hK : K * clock L = clock N) :
+    (1 - y) * (∑ s ∈ Finset.range K,
+      y ^ s * pairedMoebiusSource N (r + s * clock L)) =
+      (1 - y ^ K) * pairedMoebiusSource N r -
+        y * ∑ s ∈ Finset.range K, y ^ s *
+          (pairedMoebiusSource N (r + s * clock L) -
+            pairedMoebiusSource N (r + (s + 1) * clock L)) := by
+  have hperiod :
+      (fun s : ℕ => pairedMoebiusSource N (r + s * clock L)) K =
+        (fun s : ℕ => pairedMoebiusSource N (r + s * clock L)) 0 := by
+    simp only
+    have harg : r + K * clock L = r + clock N := by rw [hK]
+    rw [harg, pairedMoebiusSource_add_clock]
+    simp
+  simpa using finite_geometric_periodic_forward_difference
+    (fun s : ℕ => pairedMoebiusSource N (r + s * clock L)) y K hperiod
+
+/-- Joint-clock summation by parts exposes a single complete unprocessed Möbius tail.  This is the
+source-faithful finite kernel that must be controlled collectively; no individual divisor level
+has been estimated. -/
+theorem pairedMoebiusSource_finite_joint_kernel_eq_unprocessed_tail
+    (N L r K : ℕ) (y : ℝ) (hK : K * clock L = clock N) :
+    (1 - y) * (∑ s ∈ Finset.range K,
+      y ^ s * pairedMoebiusSource N (r + s * clock L)) =
+      (1 - y ^ K) * pairedMoebiusSource N r +
+        y * ∑ s ∈ Finset.range K, y ^ s *
+          (∑ i ∈ Finset.range N, if L ≤ i then
+            ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+              (residue (i + 1) (r + (s + 1) * clock L) -
+                residue (i + 1) (r + s * clock L)) else 0) := by
+  rw [pairedMoebiusSource_finite_joint_kernel_forward_difference N L r K y hK]
+  have hdiff (s : ℕ) :
+      pairedMoebiusSource N (r + s * clock L) -
+        pairedMoebiusSource N (r + (s + 1) * clock L) =
+        -(∑ i ∈ Finset.range N, if L ≤ i then
+          ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+            (residue (i + 1) (r + (s + 1) * clock L) -
+              residue (i + 1) (r + s * clock L)) else 0) := by
+    have h := pairedMoebiusSource_clock_increment_eq_unprocessed_tail N L
+      (r + s * clock L)
+    have harg : r + s * clock L + clock L = r + (s + 1) * clock L := by
+      rw [Nat.succ_mul]
+      ac_rfl
+    rw [harg] at h
+    linarith
+  have hsum :
+      (∑ s ∈ Finset.range K, y ^ s *
+        (pairedMoebiusSource N (r + s * clock L) -
+          pairedMoebiusSource N (r + (s + 1) * clock L))) =
+        -(∑ s ∈ Finset.range K, y ^ s *
+          (∑ i ∈ Finset.range N, if L ≤ i then
+            ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+              (residue (i + 1) (r + (s + 1) * clock L) -
+                residue (i + 1) (r + s * clock L)) else 0)) := by
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_congr rfl
+    intro s hs
+    rw [hdiff]
+    ring
+  rw [hsum]
+  ring
+
+/-- Enumerate a finite residue type by its literal natural representatives.  This is a bijective
+reindexing only; it neither completes nor averages a physical kernel. -/
+theorem sum_zmod_eq_sum_range_natCast
+    {R : Type*} [AddCommMonoid R] (q : ℕ) [NeZero q] (f : ZMod q → R) :
+    ∑ a : ZMod q, f a = ∑ r ∈ Finset.range q, f (r : ZMod q) := by
+  have hfinEquiv (r : Fin q) : ZMod.finEquiv q r = (r.val : ZMod q) := by
+    cases q with
+    | zero => exact (NeZero.ne 0 rfl).elim
+    | succ q =>
+        apply ZMod.val_injective
+        change r.val = r.val % (q + 1)
+        rw [Nat.mod_eq_of_lt r.isLt]
+  calc
+    (∑ a : ZMod q, f a) = ∑ r : Fin q, f (ZMod.finEquiv q r) :=
+      ((ZMod.finEquiv q).sum_comp f).symm
+    _ = ∑ r : Fin q, f (r.val : ZMod q) := by simp_rw [hfinEquiv]
+    _ = ∑ r ∈ Finset.range q, f (r : ZMod q) := by
+      exact Fin.sum_univ_eq_sum_range (fun r : ℕ => f (r : ZMod q)) q
+
+/-- Multiplication by the literal geometric mass of one history clock cancels the beta
+`(1 - x)` factor exactly.  The remaining finite numerator is still one simultaneous signed
+unprocessed tail; this is an identity, not a componentwise estimate. -/
+theorem pairedMoebiusSource_scaled_finite_joint_kernel_eq_unprocessed_tail
+    (N L r K : ℕ) (x : ℝ) (hK : K * clock L = clock N) :
+    (∑ a ∈ Finset.range (clock L), x ^ a) *
+        ((1 - x) * x ^ r *
+          (∑ s ∈ Finset.range K,
+            x ^ (s * clock L) * pairedMoebiusSource N (r + s * clock L)) *
+              (1 - x ^ (K * clock L))⁻¹) =
+      x ^ r *
+        (((1 - x ^ (K * clock L)) * pairedMoebiusSource N r +
+          x ^ clock L * ∑ s ∈ Finset.range K, x ^ (s * clock L) *
+            (∑ i ∈ Finset.range N, if L ≤ i then
+              ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+                (residue (i + 1) (r + (s + 1) * clock L) -
+                  residue (i + 1) (r + s * clock L)) else 0)) *
+            (1 - x ^ (K * clock L))⁻¹) := by
+  have hpow (s : ℕ) : (x ^ clock L) ^ s = x ^ (s * clock L) := by
+    rw [← pow_mul, Nat.mul_comm]
+  have habel := pairedMoebiusSource_finite_joint_kernel_eq_unprocessed_tail N L r K
+    (x ^ clock L) hK
+  simp_rw [hpow] at habel
+  have hgeom := geom_sum_mul x (clock L)
+  have hclock :
+      (∑ a ∈ Finset.range (clock L), x ^ a) * (1 - x) = 1 - x ^ clock L := by
+    calc
+      (∑ a ∈ Finset.range (clock L), x ^ a) * (1 - x) =
+          -((∑ a ∈ Finset.range (clock L), x ^ a) * (x - 1)) := by ring
+      _ = -(x ^ clock L - 1) := by rw [hgeom]
+      _ = 1 - x ^ clock L := by ring
+  calc
+    (∑ a ∈ Finset.range (clock L), x ^ a) *
+        ((1 - x) * x ^ r *
+          (∑ s ∈ Finset.range K,
+            x ^ (s * clock L) * pairedMoebiusSource N (r + s * clock L)) *
+              (1 - x ^ (K * clock L))⁻¹) =
+        x ^ r *
+          (((∑ a ∈ Finset.range (clock L), x ^ a) * (1 - x)) *
+            (∑ s ∈ Finset.range K,
+              x ^ (s * clock L) * pairedMoebiusSource N (r + s * clock L)) *
+                (1 - x ^ (K * clock L))⁻¹) := by ring
+    _ = x ^ r *
+          ((1 - x ^ clock L) *
+            (∑ s ∈ Finset.range K,
+              x ^ (s * clock L) * pairedMoebiusSource N (r + s * clock L)) *
+                (1 - x ^ (K * clock L))⁻¹) := by rw [hclock]
+    _ = _ := by rw [habel]
+
+/-- The scaled beta resolvent of the original literal fibre kernel is exactly the signed
+unprocessed-tail expression.  `ZMod K` is expanded only into its canonical finite representatives,
+so this connects the actual resolvent to the tail without a period average or a positivity step. -/
+theorem pairedMoebiusSource_scaled_periodic_geometric_kernel_eq_unprocessed_tail
+    (N L r K : ℕ) [NeZero K] (x : ℝ) (hK : K * clock L = clock N) :
+    (∑ a ∈ Finset.range (clock L), x ^ a) *
+        ((1 - x) * x ^ r *
+          ∑ s : ZMod K,
+            (x ^ (s.val * clock L) * pairedMoebiusSource N (r + s.val * clock L)) *
+              (1 - x ^ (K * clock L))⁻¹) =
+      x ^ r *
+        (((1 - x ^ (K * clock L)) * pairedMoebiusSource N r +
+          x ^ clock L * ∑ s ∈ Finset.range K, x ^ (s * clock L) *
+            (∑ i ∈ Finset.range N, if L ≤ i then
+              ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+                (residue (i + 1) (r + (s + 1) * clock L) -
+                  residue (i + 1) (r + s * clock L)) else 0)) *
+            (1 - x ^ (K * clock L))⁻¹) := by
+  have hzmod :
+      (∑ s : ZMod K,
+        (x ^ (s.val * clock L) * pairedMoebiusSource N (r + s.val * clock L)) *
+          (1 - x ^ (K * clock L))⁻¹) =
+        (∑ s ∈ Finset.range K,
+          x ^ (s * clock L) * pairedMoebiusSource N (r + s * clock L)) *
+          (1 - x ^ (K * clock L))⁻¹ := by
+    rw [sum_zmod_eq_sum_range_natCast K]
+    simp only [ZMod.val_natCast]
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro s hs
+    rw [Nat.mod_eq_of_lt (Finset.mem_range.mp hs)]
+  rw [hzmod]
+  simpa only [mul_assoc] using
+    pairedMoebiusSource_scaled_finite_joint_kernel_eq_unprocessed_tail N L r K x hK
+
+/-- Fixed-cutoff domination of the literal finite source.  It is used only to establish
+convergence of its beta kernel for one `N`; it has no uniform-in-`N` content and is not an EDQ
+energy estimate. -/
+private theorem abs_pairedMoebiusSource_le (N j : ℕ) :
+    |pairedMoebiusSource N j| ≤ (N : ℝ) := by
+  rw [← sourceVec_moebius_apply_eq_pairedMoebiusSource, sourceVec_apply_eq_cell]
+  unfold DeletionCoefficientTransfer.cell
+  calc
+    |∑ i ∈ range N,
+        ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+          (((j + 1) % (i + 1) : ℕ) : ℝ) / ((i : ℝ) + 1)| ≤
+        ∑ i ∈ range N, |((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+          (((j + 1) % (i + 1) : ℕ) : ℝ) / ((i : ℝ) + 1)| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _ ∈ range N, (1 : ℝ) := by
+      apply Finset.sum_le_sum
+      intro i hi
+      have hden : 0 < (i : ℝ) + 1 := by positivity
+      have hmod0 : 0 ≤ (((j + 1) % (i + 1) : ℕ) : ℝ) := Nat.cast_nonneg _
+      have hmodle : (((j + 1) % (i + 1) : ℕ) : ℝ) ≤ (i : ℝ) + 1 := by
+        exact_mod_cast Nat.le_of_lt (Nat.mod_lt _ (Nat.succ_pos i))
+      have hfrac0 : 0 ≤ (((j + 1) % (i + 1) : ℕ) : ℝ) / ((i : ℝ) + 1) :=
+        div_nonneg hmod0 hden.le
+      have hfrac : (((j + 1) % (i + 1) : ℕ) : ℝ) / ((i : ℝ) + 1) ≤ 1 :=
+        (div_le_one₀ hden).mpr hmodle
+      have hmu : |((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ)| ≤ 1 := by
+        exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := i + 1)
+      calc
+        |((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) *
+            (((j + 1) % (i + 1) : ℕ) : ℝ) / ((i : ℝ) + 1)| =
+            |((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ)| *
+              ((((j + 1) % (i + 1) : ℕ) : ℝ) / ((i : ℝ) + 1)) := by
+          rw [abs_div, abs_mul, abs_of_pos hden, abs_of_nonneg hmod0]
+          ring
+        _ ≤ 1 * ((((j + 1) % (i + 1) : ℕ) : ℝ) / ((i : ℝ) + 1)) :=
+          mul_le_mul_of_nonneg_right hmu hfrac0
+        _ ≤ 1 := by simpa using hfrac
+    _ = N := by simp
+
+/-- For a fixed finite source cutoff, the original signed beta kernel is summable along every
+physical clock fibre.  This supplies only the dominated-reindexing side condition; its bound
+grows with `N` and is not used to control the EDQ energy. -/
+private theorem summable_pairedMoebiusSource_clock_kernel (N L r : ℕ) {x : ℝ}
+    (hx0 : 0 ≤ x) (hx1 : x < 1) :
+    Summable (fun k : ℕ =>
+      x ^ (k * clock L) * pairedMoebiusSource N (r + k * clock L)) := by
+  have hclock : 0 < clock L := clock_pos L
+  have hxclock0 : 0 ≤ x ^ clock L := pow_nonneg hx0 _
+  have hxclock1 : x ^ clock L < 1 :=
+    pow_lt_one₀ hx0 hx1 hclock.ne'
+  have hgeom : Summable (fun k : ℕ => (x ^ clock L) ^ k) := by
+    apply summable_geometric_of_norm_lt_one
+    rw [Real.norm_eq_abs, abs_of_nonneg hxclock0]
+    exact hxclock1
+  apply Summable.of_norm_bounded (hgeom.mul_left (N : ℝ))
+  intro k
+  have hpow : 0 ≤ x ^ (k * clock L) := pow_nonneg hx0 _
+  rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hpow]
+  calc
+    x ^ (k * clock L) * |pairedMoebiusSource N (r + k * clock L)| ≤
+        x ^ (k * clock L) * (N : ℝ) :=
+      mul_le_mul_of_nonneg_left (abs_pairedMoebiusSource_le N _) hpow
+    _ = (N : ℝ) * (x ^ clock L) ^ k := by
+      calc
+        x ^ (k * clock L) * (N : ℝ) = (x ^ clock L) ^ k * (N : ℝ) := by
+          rw [← pow_mul]
+          congr 2
+          ac_rfl
+        _ = _ := by ring
+
+/-- One literal paired-source cell on a chronological fibre, viewed through the original beta
+mixture of physical cell weights. -/
+def fibrePairedMoebiusBetaKernel (N L r k : ℕ) (x : ℝ) : ℝ :=
+  (1 - x) * x ^ (r + k * clock L) * pairedMoebiusSource N (r + k * clock L)
+
+private theorem fibrePairedMoebiusBetaKernel_integrable (N L r k : ℕ) :
+    Integrable (fibrePairedMoebiusBetaKernel N L r k)
+      (volume.restrict (Set.Ioc (0 : ℝ) 1)) := by
+  change IntegrableOn (fibrePairedMoebiusBetaKernel N L r k) (Set.Ioc (0 : ℝ) 1) volume
+  apply (intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)).mp
+  exact (((continuous_const.sub continuous_id).mul
+    (continuous_id.pow (r + k * clock L))).mul continuous_const).intervalIntegrable _ _
+
+private theorem fibrePairedMoebiusBetaKernel_integral_eq_physical (N L r k : ℕ) :
+    (∫ x, fibrePairedMoebiusBetaKernel N L r k x ∂
+      volume.restrict (Set.Ioc (0 : ℝ) 1)) =
+      cellWeight (r + k * clock L) * pairedMoebiusSource N (r + k * clock L) := by
+  calc
+    (∫ x, fibrePairedMoebiusBetaKernel N L r k x ∂
+        volume.restrict (Set.Ioc (0 : ℝ) 1)) =
+        ∫ x in (0 : ℝ)..1, fibrePairedMoebiusBetaKernel N L r k x :=
+      (intervalIntegral.integral_of_le (by norm_num)).symm
+    _ = cellWeight (r + k * clock L) * pairedMoebiusSource N (r + k * clock L) := by
+      unfold fibrePairedMoebiusBetaKernel
+      rw [intervalIntegral.integral_mul_const, ← cellWeight_eq_beta_interval_integral]
+
+private theorem fibrePairedMoebiusBetaKernel_norm_integral_eq_physical (N L r k : ℕ) :
+    (∫ x, ‖fibrePairedMoebiusBetaKernel N L r k x‖ ∂
+      volume.restrict (Set.Ioc (0 : ℝ) 1)) =
+      cellWeight (r + k * clock L) * |pairedMoebiusSource N (r + k * clock L)| := by
+  calc
+    (∫ x, ‖fibrePairedMoebiusBetaKernel N L r k x‖ ∂
+        volume.restrict (Set.Ioc (0 : ℝ) 1)) =
+        ∫ x in (0 : ℝ)..1, ‖fibrePairedMoebiusBetaKernel N L r k x‖ :=
+      (intervalIntegral.integral_of_le (by norm_num)).symm
+    _ = ∫ x in (0 : ℝ)..1,
+        (1 - x) * x ^ (r + k * clock L) * |pairedMoebiusSource N (r + k * clock L)| := by
+      apply intervalIntegral.integral_congr
+      intro x hx
+      unfold fibrePairedMoebiusBetaKernel
+      change ‖(1 - x) * x ^ (r + k * clock L) *
+        pairedMoebiusSource N (r + k * clock L)‖ =
+        (1 - x) * x ^ (r + k * clock L) * |pairedMoebiusSource N (r + k * clock L)|
+      rw [Real.norm_eq_abs, abs_mul, abs_mul]
+      have hx' : x ∈ Set.Icc (0 : ℝ) 1 := by simpa using hx
+      rw [abs_of_nonneg (sub_nonneg.mpr hx'.2), abs_of_nonneg (pow_nonneg hx'.1 _)]
+    _ = _ := by
+      rw [intervalIntegral.integral_mul_const, ← cellWeight_eq_beta_interval_integral]
+
+private theorem summable_fibrePairedMoebiusBetaKernel_norm_integral (N L r : ℕ) :
+    Summable (fun k : ℕ =>
+      ∫ x, ‖fibrePairedMoebiusBetaKernel N L r k x‖ ∂
+        volume.restrict (Set.Ioc (0 : ℝ) 1)) := by
+  have hweight := summable_fibre_weight_progression L r
+  apply Summable.of_norm_bounded (hweight.mul_left (N : ℝ))
+  intro k
+  rw [Real.norm_eq_abs,
+    abs_of_nonneg (integral_nonneg fun _ => norm_nonneg _),
+    fibrePairedMoebiusBetaKernel_norm_integral_eq_physical]
+  have hweight_nonneg : 0 ≤ cellWeight (r + k * clock L) := by
+    unfold cellWeight
+    positivity
+  calc
+    cellWeight (r + k * clock L) * |pairedMoebiusSource N (r + k * clock L)| ≤
+        cellWeight (r + k * clock L) * (N : ℝ) :=
+      mul_le_mul_of_nonneg_left (abs_pairedMoebiusSource_le N _) hweight_nonneg
+    _ = (N : ℝ) * cellWeight (r + k * clock L) := by ring
+
+/-- The complete paired Möbius source has an exact beta form on every original physical fibre.
+Its `tsum` retains the full finite signed source before the joint-clock resolvent is applied. -/
+theorem fibre_pairedMoebiusSource_progression_eq_beta_tsum (N L r : ℕ) :
+    (∑' k : ℕ,
+      cellWeight (r + k * clock L) * pairedMoebiusSource N (r + k * clock L)) =
+      ∫ x in (0 : ℝ)..1, (1 - x) * x ^ r *
+        ∑' k : ℕ,
+          x ^ (k * clock L) * pairedMoebiusSource N (r + k * clock L) := by
+  calc
+    (∑' k : ℕ,
+        cellWeight (r + k * clock L) * pairedMoebiusSource N (r + k * clock L)) =
+        ∑' k : ℕ, ∫ x, fibrePairedMoebiusBetaKernel N L r k x ∂
+          volume.restrict (Set.Ioc (0 : ℝ) 1) := by
+      apply tsum_congr
+      intro k
+      exact (fibrePairedMoebiusBetaKernel_integral_eq_physical N L r k).symm
+    _ = ∫ x, ∑' k : ℕ, fibrePairedMoebiusBetaKernel N L r k x ∂
+          volume.restrict (Set.Ioc (0 : ℝ) 1) :=
+      MeasureTheory.integral_tsum_of_summable_integral_norm
+        (fibrePairedMoebiusBetaKernel_integrable N L r)
+        (summable_fibrePairedMoebiusBetaKernel_norm_integral N L r)
+    _ = ∫ x in (0 : ℝ)..1, ∑' k : ℕ, fibrePairedMoebiusBetaKernel N L r k x :=
+      (intervalIntegral.integral_of_le (by norm_num)).symm
+    _ = _ := by
+      apply intervalIntegral.integral_congr
+      intro x hx
+      unfold fibrePairedMoebiusBetaKernel
+      change (∑' k : ℕ,
+        (1 - x) * x ^ (r + k * clock L) * pairedMoebiusSource N
+          (r + k * clock L)) =
+        (1 - x) * x ^ r * ∑' k : ℕ,
+          x ^ (k * clock L) * pairedMoebiusSource N (r + k * clock L)
+      rw [show (fun k : ℕ =>
+          (1 - x) * x ^ (r + k * clock L) * pairedMoebiusSource N
+            (r + k * clock L)) =
+          fun k => ((1 - x) * x ^ r) *
+            (x ^ (k * clock L) * pairedMoebiusSource N (r + k * clock L)) by
+          funext k
+          rw [pow_add]
+          ring, tsum_mul_left]
+
+/-- Exact joint-clock resolvent for the original complete paired signed source along one history
+fibre.  It only reindexes its convergent `tsum`; the finite numerator still contains every
+Möbius sign and no period average, absolute value, or single-prime component. -/
+theorem pairedMoebiusSource_clock_kernel_tsum_eq_periodic_geometric
+    (N L r K : ℕ) [NeZero K] (hK : K * clock L = clock N) {x : ℝ}
+    (hKpos : 0 < K) (hx0 : 0 ≤ x) (hx1 : x < 1) :
+    (∑' k : ℕ, x ^ (k * clock L) * pairedMoebiusSource N (r + k * clock L)) =
+      ∑ s : ZMod K,
+        (x ^ (s.val * clock L) * pairedMoebiusSource N (r + s.val * clock L)) *
+          (1 - x ^ (K * clock L))⁻¹ := by
+  have hsum := summable_pairedMoebiusSource_clock_kernel N L r hx0 hx1
+  calc
+    (∑' k : ℕ, x ^ (k * clock L) * pairedMoebiusSource N (r + k * clock L)) =
+        ∑ s : ZMod K, ∑' k : ℕ,
+          x ^ ((s.val + K * k) * clock L) * pairedMoebiusSource N
+            (r + (s.val + K * k) * clock L) :=
+      Nat.sumByResidueClasses hsum K
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro s hs
+      rw [show (fun k : ℕ =>
+          x ^ ((s.val + K * k) * clock L) * pairedMoebiusSource N
+            (r + (s.val + K * k) * clock L)) =
+          fun k => (x ^ (s.val * clock L) * pairedMoebiusSource N
+            (r + s.val * clock L)) * (x ^ (K * clock L)) ^ k by
+          funext k
+          have harg : r + (s.val + K * k) * clock L =
+              (r + s.val * clock L) + k * clock N := by
+            rw [Nat.add_mul, ← hK]
+            ac_rfl
+          have hexp : (s.val + K * k) * clock L =
+              s.val * clock L + k * (K * clock L) := by
+            rw [Nat.add_mul]
+            ac_rfl
+          have hpow : x ^ (k * (K * clock L)) = (x ^ (K * clock L)) ^ k := by
+            calc
+              x ^ (k * (K * clock L)) = x ^ ((K * clock L) * k) := by
+                congr 1
+                ac_rfl
+              _ = (x ^ (K * clock L)) ^ k := pow_mul x (K * clock L) k
+          rw [harg, pairedMoebiusSource_add_clock_mul, hexp, pow_add, hpow]
+          ring]
+      rw [tsum_mul_left, tsum_geometric_of_lt_one (pow_nonneg hx0 _)
+        (pow_lt_one₀ hx0 hx1 (Nat.mul_ne_zero hKpos.ne' (clock_pos L).ne'))]
+
+/-- Exact finite joint-clock beta resolvent of the original paired physical fibre numerator.
+The right side retains the complete signed source in each `ZMod K` coordinate; it is not a
+completed column, period average, or absolute estimate. -/
+theorem fibre_pairedMoebiusSource_progression_eq_beta_periodic_geometric
+    (N L r K : ℕ) [NeZero K] (hK : K * clock L = clock N) (hKpos : 0 < K) :
+    (∑' k : ℕ,
+      cellWeight (r + k * clock L) * pairedMoebiusSource N (r + k * clock L)) =
+      ∫ x in (0 : ℝ)..1, (1 - x) * x ^ r *
+        ∑ s : ZMod K,
+          (x ^ (s.val * clock L) * pairedMoebiusSource N (r + s.val * clock L)) *
+            (1 - x ^ (K * clock L))⁻¹ := by
+  rw [fibre_pairedMoebiusSource_progression_eq_beta_tsum]
+  apply intervalIntegral.integral_congr
+  intro x hx
+  have hx' : x ∈ Set.Icc (0 : ℝ) 1 := by simpa using hx
+  by_cases hxeq : x = 1
+  · subst x
+    simp
+  · have hxlt : x < 1 := lt_of_le_of_ne hx'.2 hxeq
+    change (1 - x) * x ^ r *
+        ∑' k : ℕ, x ^ (k * clock L) * pairedMoebiusSource N (r + k * clock L) =
+      (1 - x) * x ^ r * ∑ s : ZMod K,
+        (x ^ (s.val * clock L) * pairedMoebiusSource N (r + s.val * clock L)) *
+          (1 - x ^ (K * clock L))⁻¹
+    rw [pairedMoebiusSource_clock_kernel_tsum_eq_periodic_geometric N L r K hK hKpos
+      hx'.1 hxlt]
 
 /-- The paired floor form represents the finite `L²` source pointwise on the full physical
 space. -/
@@ -588,6 +1120,42 @@ private theorem historyFibre_measurable_top_paired (L r : ℕ) :
 def pairedMoebiusQuotient (N L r : ℕ) : ℝ :=
   (∑' j : ℕ, cellWeight j * ((historyFibre L r).indicator (pairedMoebiusSource N) j)) /
     cellMeasure.real (historyFibre L r)
+
+/-- The literal paired-source numerator on a physical history fibre is its actual arithmetic
+progression, with no measure replacement. -/
+theorem pairedMoebiusSource_numerator_eq_progression (N L r : ℕ) (hr : r < clock L) :
+    (∑' j : ℕ, cellWeight j * ((historyFibre L r).indicator (pairedMoebiusSource N) j)) =
+      ∑' k : ℕ,
+        cellWeight (r + k * clock L) * pairedMoebiusSource N (r + k * clock L) := by
+  calc
+    (∑' j : ℕ, cellWeight j * ((historyFibre L r).indicator (pairedMoebiusSource N) j)) =
+        ∑' j : ℕ,
+          (historyFibre L r).indicator (fun j => cellWeight j * pairedMoebiusSource N j) j := by
+      apply tsum_congr
+      intro j
+      by_cases hj : j ∈ historyFibre L r <;> simp [hj]
+    _ = ∑' j : historyFibre L r, cellWeight j * pairedMoebiusSource N j := by
+      exact (_root_.tsum_subtype (historyFibre L r)
+        (fun j => cellWeight j * pairedMoebiusSource N j)).symm
+    _ = _ :=
+      (historyFibreProgressionEquiv L r hr).tsum_eq
+        (fun j => cellWeight j * pairedMoebiusSource N j) |>.symm
+
+/-- Exact joint-clock beta form of the original paired conditional quotient.  Every source term
+and the original fibre mass remain present, so bounding the finite signed numerator is precisely
+the remaining EDQ task. -/
+theorem pairedMoebiusQuotient_eq_beta_periodic_geometric
+    (N L r K : ℕ) [NeZero K] (hr : r < clock L)
+    (hK : K * clock L = clock N) (hKpos : 0 < K) :
+    pairedMoebiusQuotient N L r =
+      (∫ x in (0 : ℝ)..1, (1 - x) * x ^ r *
+        ∑ s : ZMod K,
+          (x ^ (s.val * clock L) * pairedMoebiusSource N (r + s.val * clock L)) *
+            (1 - x ^ (K * clock L))⁻¹) /
+        cellMeasure.real (historyFibre L r) := by
+  unfold pairedMoebiusQuotient
+  rw [pairedMoebiusSource_numerator_eq_progression N L r hr,
+    fibre_pairedMoebiusSource_progression_eq_beta_periodic_geometric N L r K hK hKpos]
 
 private theorem integral_historyProjection_source_on_fibre_eq_pairedMoebiusSource
     (N L r : ℕ) :
