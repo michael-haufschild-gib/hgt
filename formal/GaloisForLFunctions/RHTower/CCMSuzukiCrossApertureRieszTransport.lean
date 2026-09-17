@@ -312,4 +312,195 @@ theorem inner_suzukiTaRiesz_metricRenormalized_oldBlock_eq_zero
   rw [hinner] at hmetric
   rw [map_sub, inner_sub_left, hres, hmetric, sub_self]
 
+/-- The exact pre-scalar aperture residual after removal of the unique retained-block metric
+charge.  Its two leading terms are the literal completed covariance responses at the two
+apertures; no positive or scalarized replacement is used. -/
+def suzukiTaRiesz_metricRenormalizedShell
+    {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) (eps : ℝ) :
+    CCMArchimedeanFormDomain b :=
+  suzukiTaToFormCLM b (suzukiTaRawDeficiency b eps) -
+    ccmArchimedeanFormDomain_extension hab
+      (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps)) -
+    suzukiTaRiesz_metricShiftCorrection hab eps
+
+/-- The metric-renormalized shell is exactly Riesz-orthogonal to every retained form test. -/
+theorem inner_suzukiTaRiesz_metricRenormalizedShell_oldBlock_eq_zero
+    {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) (eps : ℝ)
+    (v : CCMArchimedeanFormDomain a) :
+    inner ℂ
+      (boundedPerturbedFormRiesz
+        (suzukiWeilIntervalFormEmbedding b)
+        (suzukiWeilIntervalBoundedRemainder b)
+        (suzukiTaRiesz_metricRenormalizedShell hab eps))
+      (ccmArchimedeanFormDomain_extension hab v) = 0 := by
+  simpa only [suzukiTaRiesz_metricRenormalizedShell] using
+    inner_suzukiTaRiesz_metricRenormalized_oldBlock_eq_zero hab eps v
+
+/-- Zero-extending a retained form vector commutes exactly with aperture extension. -/
+theorem suzukiApertureZeroExtendL2_formEmbedding_extension_eq
+    {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1)
+    (u : CCMArchimedeanFormDomain a) :
+    suzukiApertureZeroExtendL2
+      (suzukiWeilIntervalFormEmbedding b
+        (ccmArchimedeanFormDomain_extension hab u)) =
+      suzukiApertureZeroExtendL2 (suzukiWeilIntervalFormEmbedding a u) := by
+  have hphysical : ∀ (d : SuzukiPositiveAperture) (z : CCMArchimedeanFormDomain d),
+      suzukiApertureZeroExtendL2 (suzukiWeilIntervalFormEmbedding d z) =
+        (ccmArchimedeanFormToAperture d z : SoninL2) := by
+    intro d z
+    change ((suzukiApertureL2Equiv d)
+      ((suzukiApertureL2Equiv d).symm (ccmArchimedeanFormToAperture d z)) : SoninL2) =
+        (ccmArchimedeanFormToAperture d z : SoninL2)
+    rw [(suzukiApertureL2Equiv d).apply_symm_apply]
+  rw [hphysical b, hphysical a,
+    ccmArchimedeanFormToAperture_coe_eq_of_val_eq
+      (ccmArchimedeanFormDomain_extension_val hab u)]
+
+/-- The explicit metric correction has an exact physical realization: covariance at the larger
+aperture applied to the transported old completed response. -/
+theorem suzukiWeilIntervalFormEmbedding_metricShiftCorrection_eq_covariance
+    {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) (eps : ℝ) :
+    suzukiWeilIntervalFormEmbedding b
+      (suzukiTaRiesz_metricShiftCorrection hab eps) =
+      ((boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a) -
+        boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder b) : ℝ) : ℂ) •
+        suzukiWeilIntervalCovariance b
+          (suzukiWeilIntervalFormEmbedding b
+            (ccmArchimedeanFormDomain_extension hab
+              (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps)))) := by
+  rw [suzukiTaRiesz_metricShiftCorrection, suzukiWeilIntervalCovariance,
+    boundedPerturbedFormCovariance]
+  simp only [ContinuousLinearMap.comp_apply, map_smul]
+
+/-- **Literal source-coordinate shell identity.**  After exact retained-block cancellation,
+the physical residual is the larger completed covariance response minus the transported smaller
+one, less precisely the metric-response required by the changed coercive Riesz geometry.  This
+is the sole object whose paired `eps = ±1` cofinal control can advance Suzuki convergence. -/
+theorem suzukiTaRiesz_metricRenormalizedShell_physical_eq
+    {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) (eps : ℝ) :
+    suzukiApertureZeroExtendL2
+      (suzukiWeilIntervalFormEmbedding b
+        (suzukiTaRiesz_metricRenormalizedShell hab eps)) =
+      suzukiTaMovableCompletedCovarianceSource b eps -
+        suzukiTaMovableCompletedCovarianceSource a eps -
+        ((boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a) -
+          boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder b) : ℝ) : ℂ) •
+          suzukiApertureZeroExtendL2
+            (suzukiWeilIntervalCovariance b
+              (suzukiWeilIntervalFormEmbedding b
+                (ccmArchimedeanFormDomain_extension hab
+                  (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps))))) := by
+  have hnew (d : SuzukiPositiveAperture) :
+      suzukiApertureZeroExtendL2
+        (suzukiWeilIntervalFormEmbedding d
+          (suzukiTaToFormCLM d (suzukiTaRawDeficiency d eps))) =
+        suzukiTaMovableCompletedCovarianceSource d eps := by
+    have hphysical :
+        suzukiApertureZeroExtendL2
+          (suzukiWeilIntervalFormEmbedding d
+            (suzukiTaToFormCLM d (suzukiTaRawDeficiency d eps))) =
+          (ccmArchimedeanFormToAperture d
+            (suzukiTaToFormCLM d (suzukiTaRawDeficiency d eps)) : SoninL2) := by
+      change ((suzukiApertureL2Equiv d)
+        ((suzukiApertureL2Equiv d).symm
+          (ccmArchimedeanFormToAperture d
+            (suzukiTaToFormCLM d (suzukiTaRawDeficiency d eps)))) : SoninL2) = _
+      rw [(suzukiApertureL2Equiv d).apply_symm_apply]
+    rw [hphysical]
+    exact ccmArchimedeanFormToAperture_movableCompletedCovarianceCCMResponse_eq_source d eps
+  have hold :
+      suzukiApertureZeroExtendL2
+        (suzukiWeilIntervalFormEmbedding b
+          (ccmArchimedeanFormDomain_extension hab
+            (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps)))) =
+        suzukiTaMovableCompletedCovarianceSource a eps := by
+    rw [suzukiApertureZeroExtendL2_formEmbedding_extension_eq hab]
+    exact hnew a
+  have hcorrection :
+      suzukiApertureZeroExtendL2
+        (suzukiWeilIntervalFormEmbedding b
+          (suzukiTaRiesz_metricShiftCorrection hab eps)) =
+        ((boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a) -
+          boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder b) : ℝ) : ℂ) •
+          suzukiApertureZeroExtendL2
+            (suzukiWeilIntervalCovariance b
+              (suzukiWeilIntervalFormEmbedding b
+                (ccmArchimedeanFormDomain_extension hab
+                  (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps))))) := by
+    rw [suzukiWeilIntervalFormEmbedding_metricShiftCorrection_eq_covariance,
+      suzukiApertureZeroExtendL2_smul]
+  unfold suzukiTaRiesz_metricRenormalizedShell
+  rw [map_sub, map_sub]
+  rw [show (suzukiWeilIntervalFormEmbedding b
+      (suzukiTaToFormCLM b (suzukiTaRawDeficiency b eps)) -
+      suzukiWeilIntervalFormEmbedding b
+        (ccmArchimedeanFormDomain_extension hab
+          (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps))) -
+      suzukiWeilIntervalFormEmbedding b
+        (suzukiTaRiesz_metricShiftCorrection hab eps)) =
+      suzukiWeilIntervalFormEmbedding b
+        (suzukiTaToFormCLM b (suzukiTaRawDeficiency b eps)) +
+      (-1 : ℂ) • suzukiWeilIntervalFormEmbedding b
+        (ccmArchimedeanFormDomain_extension hab
+          (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps))) +
+      (-1 : ℂ) • suzukiWeilIntervalFormEmbedding b
+        (suzukiTaRiesz_metricShiftCorrection hab eps) by module]
+  rw [suzukiApertureZeroExtendL2_add, suzukiApertureZeroExtendL2_add,
+    suzukiApertureZeroExtendL2_smul, suzukiApertureZeroExtendL2_smul,
+    hnew b, hold, hcorrection]
+  module
+
+/-- Coefficient-faithful physical source obtained by retaining the literal Riesz-deficiency
+normalization.  At `eps = 1` this is the normalization carried by Suzuki's plus channel. -/
+def suzukiTaNormalizedCompletedCovarianceSource
+    (a : SuzukiPositiveAperture) (eps : ℝ) : SoninL2 :=
+  (‖suzukiTaRawDeficiency a eps‖ : ℂ) •
+    suzukiTaMovableCompletedCovarianceSource a eps
+
+/-- **Coefficient-faithful cross-aperture law.**  A normalized Suzuki source difference splits
+exactly into three literal terms: normalized pure shell, normalization drift on the old completed
+source, and the explicit covariance metric response.  In particular, a convergence argument may
+not discard or absorb the raw-deficiency normalization factor. -/
+theorem suzukiTaNormalizedCompletedCovarianceSource_crossAperture_eq
+    {a b : SuzukiPositiveAperture} (hab : a.1 ≤ b.1) (eps : ℝ) :
+    suzukiTaNormalizedCompletedCovarianceSource b eps -
+      suzukiTaNormalizedCompletedCovarianceSource a eps =
+      (‖suzukiTaRawDeficiency b eps‖ : ℂ) •
+        suzukiApertureZeroExtendL2
+          (suzukiWeilIntervalFormEmbedding b
+            (suzukiTaRiesz_metricRenormalizedShell hab eps)) +
+      ((‖suzukiTaRawDeficiency b eps‖ - ‖suzukiTaRawDeficiency a eps‖ : ℝ) : ℂ) •
+        suzukiTaMovableCompletedCovarianceSource a eps +
+      ((‖suzukiTaRawDeficiency b eps‖ : ℂ) *
+        ((boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a) -
+          boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder b) : ℝ) : ℂ)) •
+        suzukiApertureZeroExtendL2
+          (suzukiWeilIntervalCovariance b
+            (suzukiWeilIntervalFormEmbedding b
+              (ccmArchimedeanFormDomain_extension hab
+                (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps))))) := by
+  let nb : ℝ := ‖suzukiTaRawDeficiency b eps‖
+  let na : ℝ := ‖suzukiTaRawDeficiency a eps‖
+  let S : SoninL2 := suzukiApertureZeroExtendL2
+    (suzukiWeilIntervalFormEmbedding b
+      (suzukiTaRiesz_metricRenormalizedShell hab eps))
+  let P : SoninL2 := suzukiTaMovableCompletedCovarianceSource b eps
+  let Q : SoninL2 := suzukiTaMovableCompletedCovarianceSource a eps
+  let d : ℂ := ((boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder a) -
+    boundedPerturbedFormShift (suzukiWeilIntervalBoundedRemainder b) : ℝ) : ℂ)
+  let K : SoninL2 := suzukiApertureZeroExtendL2
+    (suzukiWeilIntervalCovariance b
+      (suzukiWeilIntervalFormEmbedding b
+        (ccmArchimedeanFormDomain_extension hab
+          (suzukiTaToFormCLM a (suzukiTaRawDeficiency a eps)))))
+  change (nb : ℂ) • P - (na : ℂ) • Q =
+    (nb : ℂ) • S + ((nb - na : ℝ) : ℂ) • Q + ((nb : ℂ) * d) • K
+  have hs : S = P - Q - d • K := by
+    exact suzukiTaRiesz_metricRenormalizedShell_physical_eq hab eps
+  have hp : P = S + Q + d • K := by
+    rw [hs]
+    module
+  rw [hp]
+  module
+
 end RHTower

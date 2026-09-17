@@ -32,6 +32,27 @@ def suzukiCompactL2Fourier (a : ℝ) (f : SoninL2) (z : ℂ) : ℂ :=
   ∫ x : ℝ, (indicatorCutoff (Icc (-a) a) measurableSet_Icc f) x *
     Complex.exp (I * z * (x : ℂ))
 
+/-- The literal compact Fourier readout preserves scalar coefficients.  This is formulated at
+the `L²` level, so it uses equality almost everywhere rather than selecting representatives. -/
+theorem suzukiCompactL2Fourier_smul
+    (a : ℝ) (c : ℂ) (f : SoninL2) (z : ℂ) :
+    suzukiCompactL2Fourier a (c • f) z =
+      c * suzukiCompactL2Fourier a f z := by
+  unfold suzukiCompactL2Fourier
+  rw [map_smul]
+  change (∫ x : ℝ,
+      ((c • indicatorCutoff (Icc (-a) a) measurableSet_Icc f : SoninL2) : ℝ → ℂ) x *
+        Complex.exp (I * z * (x : ℂ))) =
+    c • ∫ x : ℝ,
+      ((indicatorCutoff (Icc (-a) a) measurableSet_Icc f : SoninL2) : ℝ → ℂ) x *
+        Complex.exp (I * z * (x : ℂ))
+  rw [← integral_smul]
+  apply integral_congr_ae
+  filter_upwards [Lp.coeFn_smul c
+    (indicatorCutoff (Icc (-a) a) measurableSet_Icc f)] with x hx
+  rw [hx]
+  simp only [Pi.smul_apply, smul_eq_mul, mul_assoc]
+
 /-- Physical zero extension to `[-a,a]`; fixed points are the global model of `L²(-a,a)`. -/
 abbrev suzukiCutoff (a : ℝ) (f : SoninL2) : SoninL2 :=
   indicatorCutoff (Icc (-a) a) measurableSet_Icc f

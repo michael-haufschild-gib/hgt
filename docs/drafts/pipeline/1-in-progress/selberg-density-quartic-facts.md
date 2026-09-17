@@ -1284,3 +1284,57 @@
   and axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`. This is the
   local weak-derivative input for completed-form closability; remaining work is to construct
   coordinate test functionals on the completed triple and apply the chart fundamental lemma.
+
+- **The finite-deck Dirichlet inclusion is now closed and injective (2026-09-17).**
+  `MaassFiniteDeckDirichletIntegrationByParts.componentL2_toModularL2` identifies each
+  finite-deck coordinate projection with the existing scalar modular `L²` class, for every
+  vector-valued `L²` function.  The two `componentTestFunctional_formEmbeddingMap_*` theorems
+  put the literal horizontal and vertical integration-by-parts constraints into continuous
+  scalar functionals on the vector form triple.  Their kernels contain the completed form
+  domain.  The scalar chart fundamental lemma then makes every derivative coordinate projection
+  vanish when the value coordinate vanishes, and
+  `deckL2_eq_zero_of_forall_componentL2_eq_zero` recombines the finite deck coordinates.
+  Consequently `formInclusion_injective` is a closed proof of finite-deck Dirichlet closability.
+  The leaf build passes and its audited declarations use only `propext`, `Classical.choice`, and
+  `Quot.sound`.  The next finite-deck obstruction is separate: define the closed cuspidal tail
+  condition and prove its compact resolvent; this result does not create the global compatible
+  symmetric-power lift required by approach 1.
+
+- **No finite-cover quotient-`L²` transfer exists in the current corpus (2026-09-17; source audit).**
+  Deep search for a finite-index quotient pullback, its norm, and a finite direct-sum decomposition
+  found no declaration. Mathlib does provide the needed generic ingredients: finite quotients from
+  `Subgroup.FiniteIndex` and fundamental-domain measure decompositions. Thus the missing finite-place
+  bridge is a new measure-comparison theorem for the exact common cover, not an already formalized
+  Hecke boundedness result.
+
+- **Rational Hecke correspondence has a closed integral common cover (2026-09-17).**
+  `MaassRationalHeckeIntegralIntersection` defines
+  `Γ(N+1) ∩ (rationalConjugateGroup N g).comap (mapGL ℝ)`.  It proves finite index in
+  `SL(2,ℤ)`, finite relative index over `Γ(N+1)`, and the exact real identity
+  `realImage(commonCover) = realImage(Γ(N+1)) ∩ rationalConjugateSL2Group`.
+  `rationalConjugateSL2Group_map_toGL` also proves that the determinant-one real source maps
+  onto the full rational conjugate GL source.  Leaf source check and build pass; all four
+  declarations audit only `propext`, `Classical.choice`, and `Quot.sound`.  This removes the
+  group-domain mismatch for a Hecke `L²` correspondence, but no quotient-measure comparison,
+  trace norm, finite-place local factor, or global compatible lift is proved.
+
+- **The actual Maass source has an `L²` lift to every rational common cover (2026-09-17).**
+  `MaassRationalHeckeIntegralCoverL2` constructs the measurable, surjective quotient projection
+  from the common-cover quotient to the principal quotient.  It restricts each principal Maass
+  cusp eigenform to the cover and proves its quotient function is pointwise the pullback of
+  `MaassQuotientL2.sourceFunction`; finite covolume then proves its `L²` admission.  The leaf
+  build passes and audited declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+  The unsolved next edge is exact finite-cover quotient-measure scaling. Without it, the pointwise
+  pullback has no proved norm formula and cannot yet be promoted to a bounded Hecke `L²` operator.
+
+- **A finite-index integral cover now has a closed Haar fundamental selector (2026-09-17).**
+  `IntegralSubgroupFiniteCoverDecomposition` proves the required left form of a Mathlib right-coset
+  representative, `a = k q.out⁻¹`, and proves equality of two such decompositions forces equality
+  of their quotient cosets. `IntegralSubgroupFiniteCoverFundamentalDomain` uses those results to
+  construct the finite union `⋃ q, q.out • F_Γ` and prove that every `SL(2,ℝ)` point has exactly
+  one `(realImage K).op` translate in it. It therefore supplies an
+  `IsFundamentalDomain (realImage K).op` for every finite-relative-index inclusion `K ≤ Γ`.
+  Source checks, its leaf build, and audits of all five declarations pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. This closes the selector and disjointness part of the
+  finite-cover measure problem. The remaining statement is additivity of Haar measure across its
+  finite translated pieces and its transfer to the quotient measures.

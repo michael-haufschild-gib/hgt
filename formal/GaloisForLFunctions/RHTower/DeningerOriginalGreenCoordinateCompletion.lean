@@ -14,8 +14,8 @@ take the product topology.
 
 This module retains the literal original-prime Mellin source on its admitted
 half-plane, both native zeta jets, and every Xi copy.  It proves only the
-coordinate product completion.  It does not identify that product completion
-with a Green/BV source-domain completion or with the fixed physical reader.
+coordinate product completion and its exact fixed-reader image.  It does not
+identify that product completion with a Green/BV source-domain completion.
 -/
 
 open Complex Filter Topology

@@ -272,6 +272,40 @@ theorem scalar_green_integral (A B : F) (p R : ℝ)
   rw [hs] at hba
   linear_combination hba-hab
 
+/-- Public exact field type for finite modular-domain Green identities. -/
+abbrev PhysicalField := (Fin 4 → ℝ) → ℂ
+
+/-- Physical angular slice used by the finite modular current. -/
+def physicalSlice (p R : ℝ) (z : ℂ) : Fin 4 → ℝ := slice p R z
+
+/-- Public finite-domain scalar density; this is the exact planar density used
+by the original current, not a cutoff surrogate. -/
+def physicalScalarDensity (A B : PhysicalField) (x : Fin 4 → ℝ) : ℂ :=
+  scalarDensity A B x
+
+/-- Public angular transfer current on the same physical slice. -/
+def physicalTransfer (A B : PhysicalField) (j : Fin 2) (x : Fin 4 → ℝ) : ℂ :=
+  transfer A B j x
+
+/-- Every side, top, and curved-core flux of the finite modular domain. -/
+def physicalBoundary (A B : PhysicalField) (p R Y : ℝ) : ℂ :=
+  boundary A B p R Y
+
+/-- Exact finite modular Green identity in public physical coordinates.  This
+exports the existing full-boundary identity without discarding a side, top, or
+curved-core flux. -/
+theorem physical_scalar_green_integral (A B : PhysicalField) (p R : ℝ)
+    (hA : ∀ z : ℂ, 0 < z.im → ContDiffAt ℝ ∞ A (physicalSlice p R z))
+    (hB : ∀ z : ℂ, 0 < z.im → ContDiffAt ℝ ∞ B (physicalSlice p R z))
+    {Y : ℝ} (hY : 1 ≤ Y) :
+    (∫ w in domain Y,
+      physicalScalarDensity B A (physicalSlice p R (point w.1 w.2))) -
+      (∫ w in domain Y,
+        physicalScalarDensity A B (physicalSlice p R (point w.1 w.2))) =
+      physicalBoundary (physicalTransfer B A 0) (physicalTransfer B A 1) p R Y -
+        physicalBoundary (physicalTransfer A B 0) (physicalTransfer A B 1) p R Y := by
+  exact scalar_green_integral A B p R hA hB hY
+
 /-- Ingoing time current uses U_R; radial current uses f U_R+U_p. -/
 def orbitDerivative (U : F) (j : Fin 2) (x : P) : ℂ :=
   if j=0 then coordDeriv 1 U x else

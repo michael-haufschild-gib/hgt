@@ -1,0 +1,3 @@
+import GaloisForLFunctions.RHTower.GammaSewnPluckerRouteNProjectiveLeakageNoGo
+
+#print axioms RHTower.not_exists_C1RootIncidence_projectiveLeakage_majorization

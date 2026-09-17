@@ -36,6 +36,22 @@ private theorem circlePoint_coordinates (d theta : ℝ) (z : UpperHalfPlane) :
   ext i
   fin_cases i <;> simp [coordinates,circlePoint]
 
+/-- Literal normalized average of an upper-half-plane field over the native
+circle about its actual base point. -/
+def circleAverage (F : UpperHalfPlane → ℂ) (d : ℝ) (z : UpperHalfPlane) : ℂ :=
+  average (fun theta => F (circlePoint d theta z))
+
+/-- The literal circle average in the upper-half-plane chart is the original
+`(X, log Y)` circle average. -/
+theorem circleAverage_coordinates (F : Point → ℂ) (d : ℝ) (z : UpperHalfPlane) :
+    circleAverage (fun w => F (coordinates w)) d z =
+      average (fun theta => F (logCircle d theta z.re (Real.log z.im))) := by
+  unfold circleAverage
+  apply congrArg average
+  funext theta
+  rw [circlePoint_coordinates]
+  simp only [logCircle,coordinates,Real.exp_log z.im_pos]
+
 private def radiusPoint (d : ℝ) : UpperHalfPlane :=
   ⟨Complex.I*(Real.exp d:ℂ),by
     simp only [Complex.mul_im,Complex.I_re,Complex.I_im,Complex.ofReal_re,
@@ -170,6 +186,36 @@ private theorem average_shift {f : ℝ → ℂ}
   congr 1
   rw [intervalIntegral.integral_comp_add_left]
   simpa only [add_zero,zero_add] using hf.intervalIntegral_add_eq c 0
+
+private theorem circlePoint_periodic (d theta : ℝ) (z : UpperHalfPlane) :
+    circlePoint d (theta + 2 * Real.pi) z = circlePoint d theta z := by
+  apply UpperHalfPlane.ext
+  simp [circlePoint,circle,offset,height,denominator,Real.sin_add_two_pi,
+    Real.cos_add_two_pi]
+
+/-- A modular-invariant upper-half-plane field has a modular-invariant literal
+native-circle average. The result retains the radius and the actual circle
+chart; only its angular origin is shifted. -/
+theorem circleAverage_modular (F : UpperHalfPlane → ℂ)
+    (hF : ∀ g : SL(2,ℤ), ∀ z : UpperHalfPlane, F (g • z) = F z)
+    (d : ℝ) (g : SL(2,ℤ)) (z : UpperHalfPlane) :
+    circleAverage F d (g • z) = circleAverage F d z := by
+  obtain ⟨phi,hphi⟩ := circlePoint_transport (g : SL2R) z
+  let f : ℝ → ℂ := fun theta => F (circlePoint d theta (g • z))
+  have hf : Function.Periodic f (2 * Real.pi) := by
+    intro theta
+    dsimp only [f]
+    rw [circlePoint_periodic]
+  calc
+    circleAverage F d (g • z) = average f := rfl
+    _ = average (fun theta => f (2 * phi + theta)) := (average_shift hf (2 * phi)).symm
+    _ = average (fun theta => F (circlePoint d theta z)) := by
+      apply congrArg average
+      funext theta
+      dsimp only [f]
+      rw [show 2 * phi + theta = theta + 2 * phi by ring, ← hphi d theta]
+      exact hF g (circlePoint d theta z)
+    _ = circleAverage F d z := rfl
 
 /-- The original normalized theta circle mean is modular invariant for every real
 radius, with the original chart and angular measure. -/
