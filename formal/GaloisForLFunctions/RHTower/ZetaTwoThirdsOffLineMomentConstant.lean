@@ -29,7 +29,94 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxHeartbeats 1000000 in
+/-! ## Auxiliary estimates -/
+
+theorem log_gate_slack_le {c₁ η : ℝ} (hc₁ : 1 ≤ c₁) (hη : 0 < η) :
+    Real.log (c₁ + c₁ * (η / 8)) ≤ Real.log c₁ + η / 8 := by
+  have h1 : Real.log (c₁ + c₁ * (η / 8)) = Real.log c₁ + Real.log (1 + η / 8) := by
+    rw [← Real.log_mul (by linarith) (by linarith)]
+    congr 1
+    ring
+  have h2 : Real.log (1 + η / 8) ≤ η / 8 := by
+    have := Real.log_le_sub_one_of_pos (by linarith : (0 : ℝ) < 1 + η / 8)
+    linarith
+  linarith
+
+theorem twoThirds_eps'_bound {R η ε₀ : ℝ} (hR : 0 < R) (hη : 0 < η) (hε₀0 : 0 < ε₀) :
+    2 * Real.pi * (η / (60 * Real.pi * R)) * R * (1 + (2 / 3 - ε₀) + 0) ≤ η / 16 := by
+  have hπ : 0 < Real.pi := Real.pi_pos
+  have hid : 2 * Real.pi * (η / (60 * Real.pi * R)) * R = η / 30 := by
+    field_simp
+    try ring
+  rw [hid]
+  have hcoef : 1 + (2 / 3 - ε₀) + 0 ≤ 5 / 3 := by linarith
+  calc η / 30 * (1 + (2 / 3 - ε₀) + 0) ≤ η / 30 * (5 / 3) :=
+        mul_le_mul_of_nonneg_left hcoef (by positivity)
+    _ ≤ η / 16 := by nlinarith
+
+theorem eventually_mul_log_le_quarter {K η : ℝ} (hK : 0 < K) (hη : 0 < η) :
+    ∀ᶠ U : ℝ in atTop, 12 * K * Real.log U ≤ η / 4 * U := by
+  have hc : (0 : ℝ) < η / (4 * (12 * K + 1)) := by positivity
+  have h := Real.isLittleO_log_id_atTop.def hc
+  filter_upwards [h, eventually_gt_atTop (1 : ℝ)] with U hU hU1
+  have hU0 : (0 : ℝ) < U := by linarith
+  rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (Real.log_pos hU1), id,
+    abs_of_pos hU0] at hU
+  have h12 : 12 * K * (η / (4 * (12 * K + 1)) * U) ≤ η / 4 * U := by
+    have hid : 12 * K * (η / (4 * (12 * K + 1)) * U) = (12 * K / (12 * K + 1)) * (η / 4 * U) := by
+      field_simp
+      try ring
+    rw [hid]
+    have h1 : 12 * K / (12 * K + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]
+      linarith
+    have h2 : 0 ≤ η / 4 * U := by positivity
+    nlinarith
+  calc 12 * K * Real.log U ≤ 12 * K * (η / (4 * (12 * K + 1)) * U) :=
+        mul_le_mul_of_nonneg_left hU (by positivity)
+    _ ≤ η / 4 * U := h12
+
+theorem eventually_const_le_quarter_sub_one (D : ℝ) {η : ℝ} (hη : 0 < η) :
+    ∀ᶠ U : ℝ in atTop, D ≤ η / 4 * (U - 1) := by
+  filter_upwards [eventually_ge_atTop (4 * D / η + 1)] with U hU
+  have hid : η / 4 * (4 * D / η) = D := by
+    field_simp
+    try ring
+  have : η / 4 * (4 * D / η) ≤ η / 4 * (U - 1) :=
+    mul_le_mul_of_nonneg_left (by linarith only [hU]) (by positivity)
+  linarith only [hid, this]
+
+/-- The real arithmetic after the window bound: `T₂ B ≤ (U−1) B + |B|` and the collection of the
+constant terms. -/
+theorem twoThirds_tail_arith {R C K η B lc L₂ T₂ U mU M₂ M₁ m21 n₁ n21 κ ε' : ℝ}
+    (hT₂0 : 0 ≤ T₂) (hT₂big : U - 1 < T₂) (hT₂U : T₂ ≤ U)
+    (harith : 4 * Real.pi * M₂
+      ≤ T₂ * (lc - R * (1 + κ + 0) * (1 - 2 * Real.pi * ε')) + 12 * K * L₂ + 2 * C
+        + 4 * Real.pi * M₁ + 4 * Real.pi * R * n₁ / L₂)
+    (hbr : lc - R * (1 + κ + 0) * (1 - 2 * Real.pi * ε') ≤ B)
+    (hM₁ : 4 * Real.pi * M₁ ≤ 4 * Real.pi * m21)
+    (hlast : 4 * Real.pi * R * n₁ / L₂ ≤ 4 * Real.pi * R * n21 / Real.log 20)
+    (hKlog : 12 * K * L₂ ≤ η / 4 * U)
+    (hmono' : 4 * Real.pi * mU ≤ 4 * Real.pi * M₂) :
+    4 * Real.pi * mU
+      ≤ (U - 1) * B + (|B| + 2 * C + 4 * Real.pi * m21 + 4 * Real.pi * R * n21 / Real.log 20)
+        + η / 4 * U := by
+  have hT₂B : T₂ * (lc - R * (1 + κ + 0) * (1 - 2 * Real.pi * ε')) ≤ T₂ * B :=
+    mul_le_mul_of_nonneg_left hbr hT₂0
+  have hTB : T₂ * B ≤ (U - 1) * B + |B| := by
+    rcases le_or_gt 0 B with hB0 | hB0
+    · have : T₂ * B ≤ U * B := mul_le_mul_of_nonneg_right hT₂U hB0
+      rw [abs_of_nonneg hB0]
+      linarith only [this]
+    · have h0 : 0 ≤ (T₂ - (U - 1)) * (-B) :=
+        mul_nonneg (by linarith only [hT₂big]) (by linarith only [hB0])
+      have hid : (T₂ - (U - 1)) * (-B) = (U - 1) * B - T₂ * B := by ring
+      rw [abs_of_neg hB0]
+      linarith only [h0, hid, hB0]
+  linarith only [harith, hT₂B, hTB, hM₁, hlast, hKlog, hmono']
+
+/-! ## The ceiling -/
+
 /-- **The `(L)` ceiling from one mean-square gate and the unconditional two-thirds proportion.**
 
 `4π · Σ_{Im ρ ≤ V} m_ρ (Re ρ − ½) ≤ (log c₁ − (5/3) R + η) · V`  eventually, for every `η > 0`. -/
@@ -50,67 +137,20 @@ theorem eventually_offLineMoment_le_of_zetaGate_twoThirds {R c₁ η : ℝ} (hR 
           mul_le_mul_of_nonneg_right h1 hR.le
       _ = η / 16 := h2
   have hκ₀ : (0 : ℝ) ≤ 2 / 3 - ε₀ := by linarith
-  set ε : ℝ := c₁ * (η / 8) with hεdef
-  have hε0 : 0 < ε := by positivity
-  have hlogε : Real.log (c₁ + ε) ≤ Real.log c₁ + η / 8 := by
-    have h1 : Real.log (c₁ + ε) = Real.log c₁ + Real.log (1 + η / 8) := by
-      rw [← Real.log_mul (by linarith) (by linarith)]
-      congr 1
-      rw [hεdef]
-      ring
-    have h2 : Real.log (1 + η / 8) ≤ η / 8 := by
-      have := Real.log_le_sub_one_of_pos (by linarith : (0 : ℝ) < 1 + η / 8)
-      linarith
-    linarith
-  set ε' : ℝ := η / (60 * Real.pi * R) with hε'def
-  have hε'0 : 0 < ε' := by positivity
-  have hε'bound : 2 * Real.pi * ε' * R * (1 + (2 / 3 - ε₀) + 0) ≤ η / 16 := by
-    have hid : 2 * Real.pi * ε' * R = η / 30 := by
-      rw [hε'def]
-      field_simp
-      try ring
-    rw [hid]
-    have hcoef : 1 + (2 / 3 - ε₀) + 0 ≤ 5 / 3 := by linarith
-    calc η / 30 * (1 + (2 / 3 - ε₀) + 0) ≤ η / 30 * (5 / 3) :=
-          mul_le_mul_of_nonneg_left hcoef (by positivity)
-      _ ≤ η / 16 := by nlinarith
-  obtain ⟨T₀, _, hrvm⟩ := exists_xiZeroCount_close ε' hε'0
+  have hε0 : 0 < c₁ * (η / 8) := by positivity
+  have hlogε := log_gate_slack_le hc₁ hη
+  have hε'0 : 0 < η / (60 * Real.pi * R) := by positivity
+  have hε'bound := twoThirds_eps'_bound (ε₀ := ε₀) hR hη hε₀0
+  obtain ⟨T₀, _, hrvm⟩ := exists_xiZeroCount_close (η / (60 * Real.pi * R)) hε'0
   obtain ⟨U₁, hU₁⟩ := two_thirds_simpleCritical_epsilon ε₀ hε₀0
-  set B : ℝ := Real.log c₁ - (5 / 3) * R + η / 4 with hBdef
-  set D : ℝ := |B| + 2 * C + 4 * Real.pi * offLineMoment 21
-    + 4 * Real.pi * R * (xiPosZeroCount 21 : ℝ) / Real.log 20 with hDdef
-  have hlogsmall : ∀ᶠ U : ℝ in atTop, 12 * K * Real.log U ≤ η / 4 * U := by
-    have hc : (0 : ℝ) < η / (4 * (12 * K + 1)) := by positivity
-    have h := Real.isLittleO_log_id_atTop.def hc
-    filter_upwards [h, eventually_gt_atTop (1 : ℝ)] with U hU hU1
-    have hU0 : (0 : ℝ) < U := by linarith
-    rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (Real.log_pos hU1), id,
-      abs_of_pos hU0] at hU
-    have h12 : 12 * K * (η / (4 * (12 * K + 1)) * U) ≤ η / 4 * U := by
-      have hid : 12 * K * (η / (4 * (12 * K + 1)) * U) = (12 * K / (12 * K + 1)) * (η / 4 * U) := by
-        field_simp
-        try ring
-      rw [hid]
-      have h1 : 12 * K / (12 * K + 1) ≤ 1 := by
-        rw [div_le_one (by positivity)]
-        linarith
-      have h2 : 0 ≤ η / 4 * U := by positivity
-      nlinarith
-    calc 12 * K * Real.log U ≤ 12 * K * (η / (4 * (12 * K + 1)) * U) :=
-          mul_le_mul_of_nonneg_left hU (by positivity)
-      _ ≤ η / 4 * U := h12
-  have hDsmall : ∀ᶠ U : ℝ in atTop, D ≤ η / 4 * (U - 1) := by
-    filter_upwards [eventually_ge_atTop (4 * D / η + 1)] with U hU
-    have hid : η / 4 * (4 * D / η) = D := by
-      field_simp
-      try ring
-    have : η / 4 * (4 * D / η) ≤ η / 4 * (U - 1) :=
-      mul_le_mul_of_nonneg_left (by linarith only [hU]) (by positivity)
-    linarith only [hid, this]
   have hev : ∀ᶠ U : ℝ in atTop,
       4 * Real.pi * offLineMoment (U - 1) ≤ (Real.log c₁ - (5 / 3) * R + η) * (U - 1) := by
-    filter_upwards [hg₁ ε hε0, eventually_ge_atTop (max (T₀ + 1) (max (U₁ + 1) 23)),
-      hlogsmall, hDsmall] with U hU hUbig hlogU hDU
+    filter_upwards [hg₁ (c₁ * (η / 8)) hε0, eventually_ge_atTop (max (T₀ + 1) (max (U₁ + 1) 23)),
+      eventually_mul_log_le_quarter hK hη,
+      eventually_const_le_quarter_sub_one (|Real.log c₁ - (5 / 3) * R + η / 4| + 2 * C
+        + 4 * Real.pi * offLineMoment 21
+        + 4 * Real.pi * R * (xiPosZeroCount 21 : ℝ) / Real.log 20) hη]
+      with U hU hUbig hlogU hDU
     obtain ⟨T₁, T₂, σ₀, Mb, b, N, hT₁, hT₂, hN, hb1, hbn, hbreal, hMb1, hmass, hlogMb,
       hσ₀a, hσ₀b, hσ₀R, hG1, hG2, hP1, hP2, hMsq⟩ := hU
     have hU23 : 23 ≤ U := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hUbig
@@ -125,12 +165,13 @@ theorem eventually_offLineMoment_le_of_zetaGate_twoThirds {R c₁ η : ℝ} (hR 
     have hT₂U₁ : U₁ ≤ T₂ := by linarith
     have hlogT₂ : 0 < Real.log T₂ := Real.log_pos (by linarith)
     obtain ⟨Z, hZ⟩ := exists_zetaRectangleZeros_finset hT₁20 hT12
-    have hc := hceil b N hN hb1 hbn hbreal Mb hMb1 hmass σ₀ T₁ T₂ ((c₁ + ε) * (T₂ - T₁))
-      hσ₀a hσ₀b hT₁20 hT12 hG1 hG2 hP1 hP2 hMsq Z hZ
-    have hlogMsq : Real.log ((c₁ + ε) * (T₂ - T₁) / (T₂ - T₁)) = Real.log (c₁ + ε) := by
+    have hc := hceil b N hN hb1 hbn hbreal Mb hMb1 hmass σ₀ T₁ T₂
+      ((c₁ + c₁ * (η / 8)) * (T₂ - T₁)) hσ₀a hσ₀b hT₁20 hT12 hG1 hG2 hP1 hP2 hMsq Z hZ
+    have hlogMsq : Real.log ((c₁ + c₁ * (η / 8)) * (T₂ - T₁) / (T₂ - T₁))
+        = Real.log (c₁ + c₁ * (η / 8)) := by
       rw [mul_div_assoc, div_self (by linarith : T₂ - T₁ ≠ 0), mul_one]
     rw [hlogMsq] at hc
-    -- the count credit, now from the unconditional two-thirds theorem
+    -- the count credit, from the unconditional two-thirds theorem
     have hbridge1 := rightHalfOrderSum_sub_le_zetaZeroSum hT12.le Z hZ
     have hbridge2 := offLineMoment_le_add_zetaZeroMoment hT12.le Z hZ
     have hrefl₂ : (2 * rightHalfOrderSum T₂ : ℝ)
@@ -148,37 +189,29 @@ theorem eventually_offLineMoment_le_of_zetaGate_twoThirds {R c₁ η : ℝ} (hR 
         ≤ ∑ w ∈ Z, ((analyticOrderAt riemannZeta w).toNat : ℝ) := by
       linarith only [hbridge1, hrefl₂, hR₁, hprop, hsimple]
     -- Riemann–von Mangoldt
-    have hN₂ : (1 / (2 * Real.pi) - ε') * (T₂ * Real.log T₂) ≤ (xiPosZeroCount T₂ : ℝ) := by
+    have hN₂ : (1 / (2 * Real.pi) - η / (60 * Real.pi * R)) * (T₂ * Real.log T₂)
+        ≤ (xiPosZeroCount T₂ : ℝ) := by
       have h := hrvm T₂ hT₂T₀
       have hcast : ((xiZeroCount T₂ : ℤ) : ℝ) = (xiPosZeroCount T₂ : ℝ) := by
         rw [← xiPosZeroCount_eq_xiZeroCount (by linarith)]
         simp
       rw [hcast] at h
       have h1 := (abs_le.mp h).1
-      have hid : (1 / (2 * Real.pi) - ε') * (T₂ * Real.log T₂)
-          = 1 / (2 * Real.pi) * (T₂ * Real.log T₂) - ε' * (T₂ * Real.log T₂) := by ring
+      have hid : (1 / (2 * Real.pi) - η / (60 * Real.pi * R)) * (T₂ * Real.log T₂)
+          = 1 / (2 * Real.pi) * (T₂ * Real.log T₂) - η / (60 * Real.pi * R) * (T₂ * Real.log T₂) := by
+        ring
       linarith only [h1, hid]
     have harith := offLineMoment_window_arith hR hlogT₂ hσ₀R (by linarith) hT12.le hK.le hlogMb
       (Real.log_nonneg (by linarith)) hκ₀ (le_refl (0 : ℝ)) hε'0.le (Nat.cast_nonneg _)
       (Nat.cast_nonneg _) hc hS hbridge2 hN₂
     have hmono := offLineMoment_mono (le_of_lt hT₂big)
-    have hbr : Real.log (c₁ + ε) - R * (1 + (2 / 3 - ε₀) + 0) * (1 - 2 * Real.pi * ε') ≤ B := by
-      have hid : R * (1 + (2 / 3 - ε₀) + 0) * (1 - 2 * Real.pi * ε')
-          = (5 / 3) * R - ε₀ * R - 2 * Real.pi * ε' * R * (1 + (2 / 3 - ε₀) + 0) := by ring
-      rw [hBdef]
+    have hbr : Real.log (c₁ + c₁ * (η / 8))
+        - R * (1 + (2 / 3 - ε₀) + 0) * (1 - 2 * Real.pi * (η / (60 * Real.pi * R)))
+        ≤ Real.log c₁ - (5 / 3) * R + η / 4 := by
+      have hid : R * (1 + (2 / 3 - ε₀) + 0) * (1 - 2 * Real.pi * (η / (60 * Real.pi * R)))
+          = (5 / 3) * R - ε₀ * R
+            - 2 * Real.pi * (η / (60 * Real.pi * R)) * R * (1 + (2 / 3 - ε₀) + 0) := by ring
       linarith only [hlogε, hε'bound, hid, hε₀R]
-    have hT₂B : T₂ * (Real.log (c₁ + ε) - R * (1 + (2 / 3 - ε₀) + 0) * (1 - 2 * Real.pi * ε'))
-        ≤ T₂ * B := mul_le_mul_of_nonneg_left hbr (by linarith)
-    have hTB : T₂ * B ≤ (U - 1) * B + |B| := by
-      rcases le_or_gt 0 B with hB0 | hB0
-      · have : T₂ * B ≤ U * B := mul_le_mul_of_nonneg_right hT₂U hB0
-        rw [abs_of_nonneg hB0]
-        linarith only [this]
-      · have h0 : 0 ≤ (T₂ - (U - 1)) * (-B) :=
-          mul_nonneg (by linarith only [hT₂big]) (by linarith only [hB0])
-        have hid : (T₂ - (U - 1)) * (-B) = (U - 1) * B - T₂ * B := by ring
-        rw [abs_of_neg hB0]
-        linarith only [h0, hid, hB0]
     have hM₁ : 4 * Real.pi * offLineMoment T₁ ≤ 4 * Real.pi * offLineMoment 21 :=
       mul_le_mul_of_nonneg_left (offLineMoment_mono hT₁21) (by positivity)
     have hN₁nat : xiPosZeroCount T₁ ≤ xiPosZeroCount 21 :=
@@ -195,26 +228,15 @@ theorem eventually_offLineMoment_le_of_zetaGate_twoThirds {R c₁ η : ℝ} (hR 
       le_trans (mul_le_mul_of_nonneg_left hlogT₂U (by positivity)) hlogU
     have hmono' : 4 * Real.pi * offLineMoment (U - 1) ≤ 4 * Real.pi * offLineMoment T₂ :=
       mul_le_mul_of_nonneg_left hmono (by positivity)
-    have hDeq : D = |B| + 2 * C + 4 * Real.pi * offLineMoment 21
-        + 4 * Real.pi * R * (xiPosZeroCount 21 : ℝ) / Real.log 20 := hDdef
-    have hfinal : 4 * Real.pi * offLineMoment (U - 1) ≤ (U - 1) * B + D + η / 4 * U := by
-      generalize offLineMoment (U - 1) = mU at *
-      generalize offLineMoment T₂ = mT₂ at *
-      generalize offLineMoment T₁ = mT₁ at *
-      generalize offLineMoment 21 = m21 at *
-      generalize (xiPosZeroCount T₁ : ℝ) = n₁ at *
-      generalize (xiPosZeroCount 21 : ℝ) = n21 at *
-      generalize Real.log T₂ = L₂ at *
-      generalize Real.log (c₁ + ε) = lc at *
-      linarith only [harith, hT₂B, hTB, hM₁, hlast, hKlog, hmono', hDeq]
+    have hfinal := twoThirds_tail_arith (by linarith) hT₂big hT₂U harith hbr hM₁ hlast hKlog
+      hmono'
     have hηU : η / 4 * U = η / 4 * (U - 1) + η / 4 := by ring
     have hη1 : η / 4 ≤ η / 4 * (U - 1) := by
       have h0 : 0 ≤ η / 4 * (U - 2) := mul_nonneg (by positivity) (by linarith only [hU23])
       have hid : η / 4 * (U - 1) = η / 4 + η / 4 * (U - 2) := by ring
       linarith only [h0, hid]
     have hBη : (Real.log c₁ - (5 / 3) * R + η) * (U - 1)
-        = (U - 1) * B + 3 * (η / 4 * (U - 1)) := by
-      rw [hBdef]
+        = (U - 1) * (Real.log c₁ - (5 / 3) * R + η / 4) + 3 * (η / 4 * (U - 1)) := by
       ring
     rw [hBη]
     linarith only [hfinal, hDU, hηU, hη1]

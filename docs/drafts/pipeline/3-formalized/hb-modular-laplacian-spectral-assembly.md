@@ -1,8 +1,8 @@
 # HB on-line clock: spectral assembly on the modular surface (input (ii)(b))
 
 - **ID:** HB-SPEC-001
-- **Stage:** 1-in-progress (assembly inequality in Lean; closability and the source element open)
-- **Type:** THEOREM (paper) — Lean blocked by missing infrastructure
+- **Stage:** 3-formalized (assembly inequality and the on-line sign law for the principal-subtraction source in Lean; the Maass–Selberg value of `⟨F,1⟩` for the Arthur-truncated source stays a paper input, off the critical path)
+- **Type:** THEOREM (Lean)
 - **Source:** docs/notes.md row 40, input (ii)(b); card `3-formalized/hb-scalar-scalar-quadratic-source-closed-forms.md` passes 26–30
 - **Statement:** For `t ≥ 50`, `F := Λ¹(E*(·,½+it)²) ∈ L²(SL(2,ℤ)\H)`, `Δ` the Friedrichs Laplacian (`Δ ≤ 0`) and `K(s,·)` the certified plateau kernel at `s = −3/2+it`, `Im⟨F, K(s,Δ)F⟩ ≥ |⟨F,1⟩|²·Im K(s,0)/vol − t⁹·‖F − P₀F‖²`, where `P₀` is the orthogonal projection onto constants.
 
@@ -18,9 +18,9 @@ consistency check of the route's physical premise on the line. It is receiver-si
 does not touch the producer obstacle (C), which is closed by the general-Fuchsian barrier.
 
 ## Gates
-- [ ] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
+- [x] 1 → 2  fully-proven: complete paper proof (S1–S4 below), no open dependency
+- [x] 2 → 3  formalized: Lean theorems `hb_online_clock_spectral_assembly'` (assembly, every `F ∈ L²(𝒟)`, `t ≥ 50`) and `hb_online_sign_law_eisenstein_source` (sign law for `F_P`, all large `t`); `lake build` green on both modules, axioms `propext, Classical.choice, Quot.sound`
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -156,3 +156,18 @@ assembled bound needs only `t² M² > 2176·vol·V` with `M = ∫_𝒟 F_P`, `V 
 - S4. Combine with `hb_online_clock_spectral_assembly'`: `∃ t₀, ∀ t ≥ t₀`, the on-line clock coefficient
   `Re⟪(Im K̂)(C)F_P, F_P⟫` is positive. The threshold is large (numerics: crossover near zeta ordinate 30).
 E4 (Green's identity / Maass–Selberg) is thereby removed from the critical path of the sign law.
+- 2026-09-18 — S1–S4 CLOSED IN LEAN (`H = e²`). Modules (namespace `RHTower`): `BesselKImaginaryOrderPowerSaving`
+  (`‖K_{iτ}(x)‖ ≤ 420 e^{−πτ/2} τ^{−1/3}` for `τ ≥ 2`, `x > 0`, by the contour `θ = π/2 − 1/τ` and the corpus's
+  first/second derivative tests), `EisensteinLineModeSizeBounds` (ℓ¹/ℓ² mode sums, head `N ≤ t/(πY)` with the
+  power saving, tail geometric), `EisensteinLineTailParseval` (`∫_0^1‖tail‖² = 8Σ modeSize²`, zero mean in `x`,
+  `‖tail‖ ≤ 4Σ modeSize`), `EisensteinLineConstantTerm` (`∫_1^{e²}‖c‖²/y² ≥ (5/2)‖Λ‖²`,
+  `‖Λ‖² ≥ e^{−πt}‖ζ(1+2it)‖²`), `EisensteinLineSourceSlices` / `…Integrability` / `…MeanSquare`
+  (`M ≥ (5/2)‖Λ‖²`, `V ≤ 128‖Λ‖⁴e² + 256‖Λ‖²P₂(log t+1) + 2K(t)`), `EisensteinLineSourceL2` (the `L²(𝒟)`
+  element, `∫_𝒟 F = M`, `‖F‖² = V`, `‖F − P₀F‖² ≤ ‖F‖²`, `0 < vol 𝒟 ≤ 2`), `EisensteinLineSourceRatio`
+  (`V ≤ ‖Λ‖⁴(128e² + B t^{5/3}(log t)^{50})` for `t ≥ T`, using the corpus's
+  `exists_lower_bound_riemannZeta_near_one_line`), `HBOnLineSignLawEisensteinSource`
+  (`hb_online_sign_law_eisenstein_source`). S2 used `H = e²` (so `log H − 1/t ≥ 3/2`) rather than a free `H`.
+  S3's exponent is `t^{5/3}` polylog, weaker than the card's `t log^k t` (the ℓ¹ head sum is bounded by
+  `t^{2/3}(1+log(t+1))/(π√Y)` instead of a divisor-sum estimate) but sufficient since `t^{5/3+ε} = o(t²)`.
+  Threshold implicit (from the zeta lower bound constants); the numerics' crossover near ordinate 30 is not
+  certified. Receiver-side; no RH content (STATUS MUST-351).

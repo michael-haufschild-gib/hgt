@@ -4033,3 +4033,28 @@ Audit of the built bricks against the crude assembly (all exponents for `a ≥ U
    and `eventually_offLineMoment_le_of_zetaGate_twoThirds`.
 
 New modules are prefixed `ZetaGateProductAFE*`; none of the existing bricks is edited.
+
+### Brick 5bz — closed (2026-09-18, session C, later)
+
+`ZetaGateProductAFEDyadicLaw.exists_eventually_offLineMoment_le_mul : ∃ C, ∀ᶠ V, offLineMoment V ≤ C·V`
+and `exists_zetaMollifiedMeanSquareGate_productAFE (hR : 0 < R) : ∃ c ≥ 1, ZetaMollifiedMeanSquareGate R c`,
+both unconditional, axioms `propext, Classical.choice, Quot.sound`. Modules (all wired after
+`ZetaGateFromDyadicMeanSquare` in `RHTower.lean`): `ZetaGateProductAFEDualSplit` (free split `V`,
+constant uniform in `d`), `…DiagonalIndex`, `…MainTermInputs`, `…BlockExpansion` (block identity),
+`…BlockBound` (diagonals, residues, pair decomposition and error), `…BlockInequality` (the real
+inequality with `S₁ ≥ 0` dropped), `…HighBlockPieces` (envelopes in `u = a^{1/100}`), `…HighBlock`
+(the high-block bound), `…DyadicLaw`. Card `3-formalized/zeta-off-line-first-moment-linear-unconditional.md`.
+
+Two plan corrections beyond 5bz's list: (i) the split-oscillation constant must be uniform in `d`
+(the plan's `exists_norm_chiCarrier_le hd hdq` is per-`d`; fixed by a strip bound on
+`[−¾, −½]`); (ii) the tail `e^{−V²/2}` is handled with `V = u^5` and `e^{−y} ≤ n!/y^n`
+(`n = 200`), so no logarithm enters the parameter algebra — every error term is a monomial in `u`.
+What remains for the sharp constant (the original 5bz target `0.0535V`): the same chain with
+Young's `c₁(R, θ)` in place of the symbolic envelopes, i.e. a quantitative diagonal
+(`S₂ ζ(1+2d)` evaluated, not bounded) and the direct main term kept rather than dropped.
+
+Lean traps met (recorded in memory `offline-moment-linear-unconditional-lean`): a numeral power
+`2^800` in the context breaks `linarith` entirely; `nlinarith`/`linarith` scanning integral-valued
+hypotheses time out (use `linarith only`); `gcongr` side goals on `q − p + 2η` need the mass as an
+atom (`set W := …`); `field_simp` unfolds `Nat.factorial 200` (wrap it in a `def`); `set u :=
+a^(1/100)` as a let-binding makes the unifier unfold `Real.rpow` (use `obtain ⟨u, rfl-eq⟩`).

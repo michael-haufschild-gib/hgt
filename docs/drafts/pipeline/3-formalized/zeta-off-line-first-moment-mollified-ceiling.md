@@ -242,3 +242,10 @@ mollified-Littlewood family cannot reach `(L)` even from density one, confirming
 Proof: copy of the two-gate proof with `hprop` taken from `two_thirds_simpleCritical_epsilon`,
 `xiSimpleCriticalZeroCount_le_xiPosCriticalZeroCount`, slack `ε₀ = min(1/3, η/(16R))`, `δ = 0`,
 `ε' = η/(60πR)`.
+
+## 2026-09-18 — the gate is a theorem
+`ZetaMollifiedMeanSquareGate R c` holds unconditionally for every `R > 0` with a crude `c`
+(`ZetaGateProductAFEDyadicLaw.exists_zetaMollifiedMeanSquareGate_productAFE`), so this card's
+ceiling and its two-thirds sharpening (`eventually_offLineMoment_le_of_zetaGate_twoThirds`) are now
+unconditional statements: `offLineMoment V ≤ C V` eventually
+(`exists_eventually_offLineMoment_le_mul`). See `zeta-off-line-first-moment-linear-unconditional.md`.

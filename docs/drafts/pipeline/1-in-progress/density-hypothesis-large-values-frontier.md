@@ -22590,3 +22590,243 @@ a Dirichlet polynomial of length `N`, and `x=n/m` with `n,m∼N`, `n≠m`,**
 By Theorems 543–544 this is the measure half of the zero-selection route, it involves no zeros, and it
 is a statement purely about the geometry of a Dirichlet polynomial's large-value SET — an object about
 which this card has proved nothing so far.
+
+# =====================================================================================
+# Cycle 349 (2026-09-18) — **THE MEASURE PART RESONATES**: selection by a factorized polynomial
+# =====================================================================================
+
+## Method record `[MANDATORY]`
+```
+   Hypothesis under test: Conjecture 539 / OPEN CORE 388 (the measure part ∫_E x^{it}dt is
+   ≪ (meas E)^{1/2} N^{o(1)} for every ratio x = n/m, n,m ∼ N, x ∉ {1,2,1/2}).
+   Standing test applied: evaluate at the one configuration whose answer is known — here a
+   Dirichlet polynomial that FACTORS through a two-term polynomial with frequency log x.
+   Corpus check: Theorem 394 used an abstract arithmetic-progression point set; Cycle 312 read
+   resonance as near-divisibility of lags. Neither used an actual Dirichlet polynomial nor the
+   divisibility of the POLYNOMIAL itself. rg on this card for "factoriz|divisib.*polynomial": none.
+```
+
+## Theorem 546 (factorized polynomials have a resonant large-value set) `[PROVED — paper; Lean pending]`
+*Let `x₀ = p/q ∈ (1,2)` in lowest terms, `q ∤ p`, and let `B(t) = Σ_{n ∈ S} b_n n^{it}` with
+`S ⊆ [N, 2Nq/p] ∩ qℤ`, `|b_n| ≤ 1`. Put*
+```
+        D(t) := (1 + x₀^{it}) B(t) = Σ_{n∈S} b_n n^{it} + Σ_{n∈S} b_n (np/q)^{it} .
+```
+*Then `D` is a Dirichlet polynomial supported in `[N,2N]` with `|a_m| ≤ 1`, and*
+```
+        |D(t)| = 2 |cos(t λ/2)| · |B(t)| ,        λ = log x₀ .
+```
+*Hence for every threshold `V` the large-value set `E = {|D| ≥ V}` satisfies, on every period
+`J` of `cos(tλ)` on which `|B|` is within a factor `1+ε` of a constant `K V/2` (`K ≥ 1`),*
+```
+        ∫_{E∩J} cos(tλ) dt  ≥  (2/λ) sin(2θ₀) − (shell of width O(ε)) ,   cos θ₀ = 1/K ,
+```
+*which is `≥ c(K)·meas(E∩J)` with `c(K) ≍ 1/K`. In particular `Re ∫_E x₀^{it} dt ≍ meas E` whenever
+`|B| ≍ V` on the bulk of its large-value windows: full resonance, not square-root cancellation.*
+```
+   Concrete instance (deterministic, one window):  p/q = 3/2, S = even integers in [N,4N/3],
+   b_n = n^{−it₀} for any t₀ (e.g. t₀ ∼ T), V = N^{3/4}.  Then |B(t₀+u)| = |Σ_{k∈[N/2,2N/3]} k^{iu}|
+   ≍ N/(1+|u|) (Euler–Maclaurin: |Σ − ∫| ≤ 1 + 0.15|u|, |∫| ∈ [N/(6|1+iu|), 7N/(6|1+iu|)]), so
+   E lies in the window |u| ≲ N^{1/4}, meas E ≍ N^{1/4}, and Re ∫_E (3/2)^{it}dt ≥ c·meas E ≍ N^{1/4},
+   against the conjectured (meas E)^{1/2}N^{o(1)} = N^{1/8+o(1)}.   Violation factor: N^{1/8}.
+   Spread instance: b_n = R^{−1}Σ_{r≤R} n^{−it_r}, t_r spaced by ≥ N, gives R ≍ N^{1/4} windows
+   (R ≍ N^{1/2} with random phases and |b_n| ≤ N^{o(1)}), every window resonant.
+```
+∎
+
+## Correction #80 — Conjecture 539 is false as stated; restricting to zeros does not remove it
+```
+   By Theorem 543, Σ_{t∈S} x^{it} = (measure part) + (fluctuation part).  For the polynomials of
+   Theorem 546 the measure part is ≍ |S| (not |S|^{1/2}); the fluctuation part ∫ x^{it} 1_E dS is a
+   sum over the ≍ meas E/P arcs of E of increments of S(t) over intervals of length ≍ 1, whose mean
+   square is O(log log T) per arc (Fujii, unconditional; not in the corpus), so it is o(|S|) for
+   typical window positions t₀.  Hence Σ_{t∈S} (3/2)^{it} ≍ |S| for typical t₀ ∼ T:
+   selection by a length-N polynomial DOES create multiplicative structure in the selected zeros.
+   ⟹ Theorem 537's hope (the barrier ledger is vacuous for ordinates of zeros) fails for this
+     mechanism: the resonance sits in the measure part, which contains no zeros at all.
+   ⟹ The exceptional set of ratios for actual polynomials contains every reduced p/q ∈ (1,2) with
+     max(p,q) ≤ N^{1/4−ε} (B supported on q-multiples still has length ≥ N^{3/4+ε}); that is
+     ≍ H² ratios of height ≤ H — NOT N^{o(1)}.  In ρ-weight (Theorem 393) they carry ≍ N·H of the
+     N³ mass, i.e. a negligible weighted fraction: the trace ladder must be re-derived with the
+     WEIGHTED exceptional set before Conjecture 539 can be re-stated.
+```
+`[OPEN CORE 389 — the weighted trace ladder]` **Re-derive Theorem 393's ladder tolerating an
+exceptional ratio set of ρ-weight `N^{1+1/4}` (not count `N^{o(1)}`).**
+
+## Conjecture 547 (**SELECTION RESONANCE IS FACTORIZATION**) `[FROZEN — new primary conjecture]`
+> *Public sentence:* the only way the large values of a long Dirichlet polynomial can beat with a
+> multiplicative frequency is for the polynomial to be (nearly) divisible by a short polynomial
+> carrying that frequency.
+>
+> *Statement.* Let `D` have length `N`, `|a_n| ≤ 1`, `V ≥ N^{1/2+ε}`, `E = {t ∈ [T,2T] : |D(t)| ≥ V}`.
+> If `|∫_E x^{it} dt| ≥ (meas E)^{1/2+ε}` for `x = n/m` (`n,m ∼ N`), then `x = p/q` in lowest terms has
+> height `max(p,q) ≤ N^{1/4+o(1)}`, and there is a generalised Dirichlet polynomial
+> `C(t) = Σ_{j≤J} c_j y_j^{it}` with `J = N^{o(1)}` rational frequencies of height `N^{o(1)}` and a
+> polynomial `B` with `‖D − C·B‖_{L²[T,2T]} ≤ N^{−ε}‖D‖_{L²}`.
+>
+> *Why believed:* the 2k-point autocorrelations of `D` at a coprime ratio of height `≍ N` are
+> `≪ N^{−1}` relative to the diagonal for every `k` (the only solutions of `n₁⋯n_k m₀ = m₁⋯m_k n₀`
+> in `[N,2N]^{2k}` use the pair `(n₀,m₀)` itself), while at a ratio `p/q` of height `H` the 2-point
+> autocorrelation `Σ_k a_{kp}ā_{kq}` can reach `N/H` and equals `‖a‖²·(1−o(1))` on the divisible
+> support exactly when `a_{kp} ≈ c·a_{kq}`, the factorization. Harmonics `x = y^j` enter through `C`.
+>
+> *Shadow table:* Theorem 394 (AP point sets) = the abstract shadow (no polynomial, so no
+> factorization constraint, hence the larger exceptional set `T/R`); Cycle 312's near-divisibility
+> of lags = the lag-side shadow; Theorem 546 = the equality case; the `N^{1/8}` invariant = the
+> square root of the exceptional-height cap `N^{1/4}`.
+>
+> *Falsifiers:* a polynomial with `|a_n| ≤ 1`, no short approximate divisor, whose large-value set
+> resonates at a coprime ratio of height `≍ N` beyond square root. *Risky prediction:* at coprime
+> ratios of height `≥ N^{1/4+ε}` the measure part obeys square-root cancellation for EVERY `D`.
+```
+   Route consequence if true: Conjecture 539′ (539 off the ρ-negligible small-height set) follows,
+   and with OPEN CORE 389 the zero-selection route survives.  If false at a large-height ratio, the
+   zero-selection route is dead by the same mechanism as Theorem 394, now for actual polynomials.
+```
+## Next
+```
+   (a) Lean certificate of Theorem 546's deterministic instance (Euler–Maclaurin window bounds,
+       arc integrals, measure bookkeeping), so the refutation of OPEN CORE 388 is machine-checked.
+   (b) OPEN CORE 389 (weighted ladder).  (c) attack Conjecture 547 as false at height N^{1/4+ε}.
+```
+
+### Cycle 349 — Lean certificate of Theorem 546 (deterministic instance) `[LEAN PROVED]`
+```
+   RHTower.selection_resonance_factorized (m ≥ 1000), axioms propext/Classical.choice/Quot.sound:
+     D(u) = (2^{iu} + 3^{iu}) · Σ_{3m⁴ ≤ k ≤ 4m⁴} (k/4m⁴)^{20} k^{iu}   (resPoly)
+         = Σ_{6m⁴ ≤ n ≤ 12m⁴} a_n n^{iu},  |a_n| ≤ 1                    (resPoly_eq_dirichlet, norm_resCoeff_le)
+     E := {u ∈ [0, ⌊m²/P⌋P] : |D(u)| ≥ 4m³},  P = 2π/log(3/2)              (resLargeSet)
+     E ⊆ [0, 3m],  vol E ≤ 3m,  Re ∫_E (3/2)^{iu} du ≥ m/10 ≥ vol(E)/30,
+     (Re ∫_E (3/2)^{iu} du)² ≥ (m/300) · vol E.
+   Length N = 6m⁴, threshold 4m³ ≍ N^{3/4}, ratio 3/2 = n/m with n = 3k, m' = 2k ∼ N.
+   So the measure part at x = 3/2 is ≥ c·vol(E), against the conjectured (vol E)^{1/2}N^{o(1)}:
+   violation factor (vol E)^{1/2} ≍ m^{1/2} = N^{1/8}.
+   Modules: WeightedBlockDirichletEnvelope (second-order Euler–Maclaurin envelope of the weighted
+   block, |B(u)| = 4M(1 ± 1/400)/√(441+u²) ± 2), CosineArcPeriodLowerBound (period lemma:
+   core arc ⊆ E ⊆ outer arc ⟹ ∫_J 1_E cos ≥ (2/λ) sin 2θ), SelectionResonanceFactorizationBlock
+   (modulus identity |D| = 2|cos(λu/2)||B|, window, core/outer/nonnegativity conditions),
+   SelectionResonanceFactorizationMain (period sums, the explicit m/10), …DirichletForm.
+   Scope: the window is |u| ≤ m² (the envelope's range); for |u| ∈ [3m, m²] the certificate shows
+   |D| < 4m³, and for larger u the paper claim (no large values, van der Corput) is not certified.
+   The zero-selection version (Conjecture 539 for ordinates) remains paper-only (Fujii input).
+```
+
+# =====================================================================================
+# Cycle 350 (2026-09-18) — Conjecture 547 attacked as false: two holes, one re-freeze
+# =====================================================================================
+
+## Theorem 548 (harmonics: resonance at coprime ratios of height up to `N^{1−ε}`) `[PROVED — paper]`
+*Let `y = (L+1)/L` with `L ≤ N^{1/4−ε}`, `B` a block supported on `L`-multiples in `[N, 2NL/(L+1)]`
+(length `≍ N/L ≥ N^{3/4+ε}`) with the `1/u`-type envelope of Theorem 546, and `D = (1 + y^{iu}) B`.
+Then for every `1 ≤ j ≤ 0.69 L` the ratio `x = y^j = (L+1)^j / L^j` is admissible (`x ∈ [1,2]`,
+`x = n/m` with `n = (L+1)^j k`, `m = L^j k ∼ N`, `k ≍ N/L^j ≥ 1`), coprime, of height `(L+1)^j`, and*
+```
+        ∫_E x^{iu} du  ≍_j  vol(E)      (strength ≍ vol(E)/j, sign (−1)^{j+1}).
+```
+*Proof sketch.* On each period the arc set is `{|cos(φ/2)| ≥ κ(u)}`, and the harmonic coefficient
+is `∫_{arcs} cos(jφ) dφ = (2/j) sin(2jθ₀)`, `θ₀ = arccos κ`.  With the envelope `|B| ∝ 1/u` the
+threshold `κ ∝ u` sweeps `[0,1]` uniformly, so summing over the periods gives
+```
+        Σ_periods (2/j) sin(2jθ₀(u)) ≍ (1/j) ∫_0^1 sin(2j·arccos κ) dκ
+                                    = (1/j) ∫_0^{π/2} sin(2jθ) sin θ dθ
+                                    = (1/j) · (−1)^{j+1} · 2j/(4j²−1) ≠ 0 ,
+```
+a fixed nonzero constant times the window length, i.e. `≍ vol(E)/j`.  For `j = 1` this is the
+`4/3 > 0` behind Theorem 546.  ∎
+```
+   ⟹ the height clause of Conjecture 547 (`max(p,q) ≤ N^{1/4+o(1)}`) is FALSE: with L = N^{1/4−ε}
+     and j = 2, 3, 4 the resonant ratios have heights ≍ N^{1/2−2ε}, N^{3/4−3ε}, N^{1−4ε}.
+     What is bounded is not the height of x but its WORD LENGTH in the multiplicative group
+     generated by the divisor's frequencies, with strength decaying like 1/(word length).
+```
+
+## Theorem 549 (concentration: low-frequency resonance without any divisor) `[PROVED — trivial]`
+*If `E ⊆ [t₀, t₀ + W]` then `|∫_E x^{iu} du| ≥ (1 − W|log x|) vol(E)` for every `x` with
+`|log x| ≤ 1/W`.  For the single-window `E` of Theorem 546 (`W = 3m ≍ N^{1/4}`) every ratio with
+`|n − m| ≲ N^{3/4}` resonates at full strength, with no factorization involved.*  ∎
+```
+   ⟹ Conjecture 547 must exclude frequencies below the reciprocal diameter of E.  In the DH regime
+     (R ≍ N^{5/6} well-spaced points, so diam E ≥ N^{5/6}) this only affects |n − m| ≲ N^{1/6}, a
+     ρ-negligible family, but the mechanism is distinct from factorization.
+```
+
+## Correction #81 — Conjecture 547 retired; Conjecture 550 frozen
+```
+   Both exceptional families found are ρ-negligible (S-unit words: Σ_{L ≤ N^{1/4}} N/L² ≍ N pairs;
+   concentration: N^{1+1/6} pairs; out of N²), so the weighted ladder (OPEN CORE 389) remains the
+   route's real obligation; but 547's height clause and mechanism clause were both wrong.
+```
+## Conjecture 550 (**RESONANCE IS A SHORT-DIVISOR WORD**) `[FROZEN — replaces 547]`
+> *Let `D` have length `N`, `|a_n| ≤ 1`, `V ≥ N^{1/2+ε}`, `E = {t ∈ [T, 2T] : |D(t)| ≥ V}` with
+> `diam(E) ≥ N^{ε}`. If `|∫_E x^{iu} du| ≥ (vol E)^{1/2+ε}` for `x = n/m` with `|log x| ≥ N^{ε}/diam(E)`,
+> then there are a generalised Dirichlet polynomial `C(u) = Σ_{j ≤ J} c_j y_j^{iu}` with `J = O(1)`
+> rational frequencies, a polynomial `B` with `‖D − C·B‖_{L²} ≤ N^{−ε}‖D‖_{L²}`, and integers
+> `e_j` with `Σ|e_j| ≤ N^{ε}` such that `x = Π y_j^{e_j}`.*
+>
+> *Risky prediction:* for a prime `p ∈ (N^{1/4+ε}, N/2)` and `x = (p+1)/p`, no polynomial `D` has a
+> large-value set resonating at `x` beyond square root (the only divisor reaching `x` is
+> `1 + x^{iu}` itself, which needs `B` supported on `p`-multiples, at most two terms).
+> *Falsifier:* a polynomial resonating at such an `x`.
+
+## What this means for the whole route
+```
+   DH via zero selection now rests on two statements: OPEN CORE 389 (ρ-weighted ladder) and
+   Conjecture 550 (an inverse theorem for large-value sets).  The second is a structure theorem of
+   Montgomery-conjecture strength for structured polynomials; no proof route is visible.  The
+   route is not dead, but its remaining content is exactly the inverse theorem, which the abstract
+   barrier ledger (Theorems 391–396) already located as the whole problem.
+```
+
+### Cycle 350 — Lean certificate of the two identities behind Theorem 548 `[LEAN PROVED]`
+```
+   RHTower.integral_arcs_cos_harmonic (j ≥ 1):  ∫_0^{2θ} cos(jφ) + ∫_{2π−2θ}^{2π} cos(jφ) = (2/j) sin(2jθ)
+   RHTower.integral_sin_harmonic_mul_sin (j ≥ 1): ∫_0^{π/2} sin(2jθ) sin θ dθ = (−1)^{j+1}·2j/(4j²−1)
+   RHTower.abs_sweep_coefficient_ge:              |(−1)^{j+1}·2j/(4j²−1)| ≥ 1/(2j)
+   (module CosineArcHarmonicCoefficients, axioms standard).  The discretisation over periods and
+   the envelope slack of the full Theorem 548 remain paper; the arc coefficient and the
+   nonvanishing of the sweep average — the only non-routine steps — are machine-checked.
+```
+
+# =====================================================================================
+# Cycle 351 (2026-09-18) — Conjecture 550 tested by varying the threshold: the height cap is `N/V`
+# =====================================================================================
+
+## Theorem 551 (the exceptional height scales with the threshold) `[PROVED — paper]`
+*For a threshold `V` (with `N^{1/2+ε} ≤ V ≤ N^{1−ε}`) and any `L ≤ c·N/V`, the polynomial
+`D = (1 + ((L+1)/L)^{iu}) · B` with `B` supported on `L`-multiples in `[N, 2NL/(L+1)]` (length `≍ N/L ≥ V/c`,
+bounded coefficients) has a large-value set at threshold `V` that resonates at full strength at the
+coprime ratio `(L+1)/L`, of height `L + 1`.*  (The single-window instance realises `L ≤ (N/V)^{1/2}`;
+the spread instance with `R ≍ N/(LV)` windows realises `L ≍ N/V`.)  ∎
+```
+   ⟹ the prediction of Conjecture 550 was stated without its threshold dependence: resonance at
+     `(p+1)/p` IS possible for `p ≤ N/V`.  Corrected prediction: for `p ∈ (N^{1+ε}/V, N/2)` prime,
+     no `D` of length `N` with `|a_n| ≤ 1` has a `V`-large-value set resonating at `(p+1)/p` beyond
+     square root.  At the DH-critical `V = N^{3/4}` this is `p > N^{1/4+ε}`, as before.
+   ⟹ The card's invariant `N^{1/8}` at the critical point is `(N/V)^{1/2}`: the square root of the
+     exceptional height cap.  Read this way it is the size of the "factorization slack" of a
+     threshold-`V` selection, not a property of the point `(σ,τ) = (3/4, 3/2)` alone.
+```
+
+## Conjecture 550 (amended statement) `[FROZEN]`
+> As in Cycle 350, with the word-length bound replaced by: the frequencies `y_j` of the short divisor
+> `C` have heights `≤ N^{1+o(1)}/V`, and `x` is a word of length `≤ N^{ε}` in them.
+> *Risky prediction:* at `V = N^{3/4}` no polynomial's large-value set resonates at `(p+1)/p`, `p`
+> prime in `(N^{1/4+ε}, N/2)`.
+
+## What this means for the whole route
+```
+   Nothing changes for OPEN CORE 389 (ρ-weight of the exceptional set is still ≪ N^{1+1/4} out of
+   N³ at the critical threshold).  The route's content is unchanged: the inverse theorem.
+```
+
+### Cycle 351 — Lean certificate of the single-window scaling instance `[LEAN PROVED]`
+```
+   RHTower.selection_resonance_factorized_general (2 ≤ L, 1000 ≤ m, 1000·L ≤ m), axioms standard:
+     D_L(u) = (L^{iu} + (L+1)^{iu}) · Σ_{3m⁴ ≤ k ≤ 4m⁴} (k/4m⁴)^{20} k^{iu}   (resPolyL, length 3Lm⁴)
+     E := {u ∈ [0, ⌊m²/P_L⌋P_L] : |D_L(u)| ≥ 4m³},  P_L = 2π/log((L+1)/L) ∈ [2πL, 2π(L+1)]
+     E ⊆ [0,3m],  vol E ≤ 3m,  Re ∫_E ((L+1)/L)^{iu} du ≥ m/10 ≥ vol(E)/30.
+   So every coprime ratio (L+1)/L with L ≤ m/1000 is a full-strength resonant frequency of a
+   length-3Lm⁴ polynomial at threshold 4m³ ≍ (N/L)^{3/4}: the single-window half of Theorem 551
+   (heights up to (N/V)^{1/2} up to constants).  The spread half (heights up to N/V) stays paper.
+   Modules: SelectionResonanceFactorizationGeneralBlock, …GeneralMain (the L = 2 modules are kept).
+```
