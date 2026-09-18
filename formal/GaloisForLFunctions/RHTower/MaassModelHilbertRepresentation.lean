@@ -162,6 +162,29 @@ def completedComplementaryModelRepresentation
     exact LinearMap.congr_fun ((completedModelRangeRepresentation N lam f).map_mul g h)
       (completedModelRangeEquiv N lam f v)
 
+/-- The completed complementary model action is unitary for every exceptional parameter. -/
+theorem completedComplementaryModelRepresentation_inner
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1)
+    (g : SL2R) (v w : ComplementaryHilbert lam) :
+    inner ℂ (completedComplementaryModelRepresentation N lam f g v)
+      (completedComplementaryModelRepresentation N lam f g w) = inner ℂ v w := by
+  change inner ℂ (completedComplementaryModelAction N lam f g v)
+    (completedComplementaryModelAction N lam f g w) = inner ℂ v w
+  let e := completedModelRangeEquiv N lam f
+  calc
+    inner ℂ (completedComplementaryModelAction N lam f g v)
+        (completedComplementaryModelAction N lam f g w) =
+        inner ℂ (e (completedComplementaryModelAction N lam f g v))
+          (e (completedComplementaryModelAction N lam f g w)) :=
+      (e.inner_map_map _ _).symm
+    _ = inner ℂ (completedModelRangeAction N lam f g (e v))
+          (completedModelRangeAction N lam f g (e w)) := by
+      rw [completedComplementaryModelAction_conj, completedComplementaryModelAction_conj]
+    _ = inner ℂ (e v) (e w) :=
+      completedModelRangeAction_inner N lam f g (e v) (e w)
+    _ = inner ℂ v w := e.inner_map_map v w
+
 /-- The completed Maass model action intertwines with literal quotient translation. -/
 theorem completedComplementaryModelRepresentation_intertwines
     (N : ℕ) (lam : SelbergExceptionalEigenvalue)

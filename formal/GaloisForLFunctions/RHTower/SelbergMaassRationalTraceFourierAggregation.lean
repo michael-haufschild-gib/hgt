@@ -21,12 +21,12 @@ open scoped BigOperators MatrixGroups
 
 noncomputable section
 
-private theorem deningerFourierKernel_continuous (w : ℝ) (n : ℤ) :
+theorem deningerFourierKernel_continuous (w : ℝ) (n : ℤ) :
     Continuous (deningerFourierKernel w n) :=
   continuous_iff_continuousAt.mpr
     (fun x => (deningerFourierKernel_hasDerivAt w n x).continuousAt)
 
-private theorem deningerFourierCoeff_fintype_sum {ι : Type*} [Fintype ι]
+theorem deningerFourierCoeff_fintype_sum {ι : Type*} [Fintype ι]
     (w : ℝ) (n : ℤ) (F : ι → ℝ → ℂ) (hF : ∀ i, Continuous (F i)) :
     deningerFourierCoeff w (fun x => ∑ i, F i x) n =
       ∑ i, deningerFourierCoeff w (F i) n := by

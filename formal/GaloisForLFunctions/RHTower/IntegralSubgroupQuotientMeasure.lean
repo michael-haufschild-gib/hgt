@@ -59,7 +59,9 @@ private theorem strictDomain_of_countable_cover
   have heq := huniq m (g • x) (a * g⁻¹) (hm ▸ hg) (by simpa [mul_smul] using ham)
   exact mul_inv_eq_one.mp heq
 
-private theorem strictDomain_of_discrete_subgroup
+/-- A countable discrete subgroup of a second-countable group has a Borel strict domain
+for its right action. -/
+theorem exists_measurable_strictDomain_of_discrete_subgroup
     {H : Type*} [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
     [SecondCountableTopology H] [MeasurableSpace H] [BorelSpace H]
     (Γ : Subgroup H) [Countable Γ] [DiscreteTopology Γ] :
@@ -119,17 +121,17 @@ instance realImage_discreteTopology (Γ : Subgroup SL2Z) : DiscreteTopology (rea
 
 /-- A measurable selector for orbits of right multiplication by the integral subgroup. -/
 noncomputable def integralSubgroupFundamentalSet (Γ : Subgroup SL2Z) : Set SL2R :=
-  (strictDomain_of_discrete_subgroup (realImage Γ)).choose
+  (exists_measurable_strictDomain_of_discrete_subgroup (realImage Γ)).choose
 
 /-- The chosen selector is Borel measurable. -/
 theorem integralSubgroupFundamentalSet_measurable (Γ : Subgroup SL2Z) :
     MeasurableSet (integralSubgroupFundamentalSet Γ) :=
-  (strictDomain_of_discrete_subgroup (realImage Γ)).choose_spec.1
+  (exists_measurable_strictDomain_of_discrete_subgroup (realImage Γ)).choose_spec.1
 
 /-- Every orbit meets the chosen selector exactly once. -/
 theorem integralSubgroupFundamentalSet_unique (Γ : Subgroup SL2Z) (x : SL2R) :
     ∃! g : (realImage Γ).op, g • x ∈ integralSubgroupFundamentalSet Γ :=
-  (strictDomain_of_discrete_subgroup (realImage Γ)).choose_spec.2 x
+  (exists_measurable_strictDomain_of_discrete_subgroup (realImage Γ)).choose_spec.2 x
 
 /-- The actual selector is a Haar fundamental domain. -/
 theorem integralSubgroupFundamentalSet_isFundamentalDomain (Γ : Subgroup SL2Z) :

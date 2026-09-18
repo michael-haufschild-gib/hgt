@@ -66,7 +66,9 @@ private theorem integral_screwRegularKernel_checkpoint_pos {k : ℕ} (hk : 3 ≤
     exact suzukiCheckpointReservoirDeriv_curvature_pos_of_log_two_le
       (hlog2.trans hloglt.le)
 
-private theorem integral_screwRegularKernel_checkpoint_upper {k : ℕ} (hk : 3 ≤ k) :
+/-- The regular curvature carried by one source-valid checkpoint cell is at
+most its explicit exponential-half cell mass. -/
+theorem integral_screwRegularKernel_checkpoint_upper {k : ℕ} (hk : 3 ≤ k) :
     (∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
         screwRegularKernel t) ≤
       2 * (Real.sqrt k - Real.sqrt (k - 1 : ℕ)) := by
@@ -80,6 +82,66 @@ private theorem integral_screwRegularKernel_checkpoint_upper {k : ℕ} (hk : 3 �
   have hexp := integral_exp_half_log_cell (k := k - 1) (by omega : 1 ≤ k - 1)
   rw [Nat.sub_add_cancel (by omega : 1 ≤ k)] at hexp
   rw [hexp]
+  linarith
+
+/-- A signed curvature cell is bounded above by its smooth exponential-half
+budget minus the literal prime atom at its endpoint. -/
+theorem suzukiCheckpointSignedCurvatureCell_le_expHalfGap
+    {k : ℕ} (hk : 3 ≤ k) :
+    suzukiCheckpointSignedCurvatureCell (k - 1) ≤
+      2 * (Real.sqrt k - Real.sqrt (k - 1 : ℕ)) - criticalMellinAtomWeight k := by
+  unfold suzukiCheckpointSignedCurvatureCell
+  rw [Nat.sub_add_cancel (by omega : 1 ≤ k)]
+  linarith [integral_screwRegularKernel_checkpoint_upper hk]
+
+/-- **Finite-block source budget.**  Starting at any source-valid endpoint,
+the literal signed curvature over that endpoint and any finite forward block
+is no larger than the telescoped smooth square-root gain minus the first
+prime atom.  Thus later prime atoms cannot pay an earlier prime jump; every
+possible payment is already contained in the displayed regular budget. -/
+theorem suzukiCheckpointSignedCurvature_forwardBlock_le
+    {k m : ℕ} (hk : 3 ≤ k) :
+    suzukiCheckpointSignedCurvatureCell (k - 1) +
+        ∑ j ∈ Finset.range m, suzukiCheckpointSignedCurvatureCell (k + j) ≤
+      2 * (Real.sqrt (k + m : ℕ) - Real.sqrt (k - 1 : ℕ)) -
+        criticalMellinAtomWeight k := by
+  induction m with
+  | zero =>
+      simpa using suzukiCheckpointSignedCurvatureCell_le_expHalfGap hk
+  | succ m ih =>
+      have hkm : 3 ≤ k + m + 1 := by omega
+      have hcell := suzukiCheckpointSignedCurvatureCell_le_expHalfGap hkm
+      have hweight : 0 ≤ criticalMellinAtomWeight (k + m + 1) := by
+        exact criticalMellinAtomWeight_nonneg _
+      have hnext : suzukiCheckpointSignedCurvatureCell (k + m) ≤
+          2 * (Real.sqrt (k + m + 1 : ℕ) - Real.sqrt (k + m : ℕ)) := by
+        simpa only [Nat.add_sub_cancel] using hcell.trans (sub_le_self _ hweight)
+      rw [Finset.sum_range_succ]
+      calc
+        suzukiCheckpointSignedCurvatureCell (k - 1) +
+            ((∑ j ∈ Finset.range m, suzukiCheckpointSignedCurvatureCell (k + j)) +
+              suzukiCheckpointSignedCurvatureCell (k + m)) =
+          (suzukiCheckpointSignedCurvatureCell (k - 1) +
+            ∑ j ∈ Finset.range m, suzukiCheckpointSignedCurvatureCell (k + j)) +
+              suzukiCheckpointSignedCurvatureCell (k + m) := by ring
+        _ ≤ (2 * (Real.sqrt (k + m : ℕ) - Real.sqrt (k - 1 : ℕ)) -
+              criticalMellinAtomWeight k) +
+            2 * (Real.sqrt (k + m + 1 : ℕ) - Real.sqrt (k + m : ℕ)) :=
+          add_le_add ih hnext
+        _ = 2 * (Real.sqrt (k + (m + 1) : ℕ) - Real.sqrt (k - 1 : ℕ)) -
+              criticalMellinAtomWeight k := by
+          push_cast
+          ring
+
+/-- A finite forward block stays strictly negative whenever its exposed first
+atom exceeds the full smooth budget available through the block endpoint. -/
+theorem suzukiCheckpointSignedCurvature_forwardBlock_neg_of_atom_gt
+    {k m : ℕ} (hk : 3 ≤ k)
+    (hbudget : 2 * (Real.sqrt (k + m : ℕ) - Real.sqrt (k - 1 : ℕ)) <
+      criticalMellinAtomWeight k) :
+    suzukiCheckpointSignedCurvatureCell (k - 1) +
+        ∑ j ∈ Finset.range m, suzukiCheckpointSignedCurvatureCell (k + j) < 0 := by
+  have hbound := suzukiCheckpointSignedCurvature_forwardBlock_le (m := m) hk
   linarith
 
 private theorem integral_screwRegularKernel_checkpoint_lower {k : ℕ} (hk : 4 ≤ k) :

@@ -56,6 +56,16 @@ theorem completedModelIsometry_maassSourceModelVector
     MaassQuotientL2.sourceLp N f
   simpa only [completedModelRangeEquiv_coe] using congrArg Subtype.val hx
 
+/-- The canonical complementary-model source vector is nonzero. -/
+theorem maassSourceModelVector_ne_zero
+    (N : ℕ) (lam : SelbergExceptionalEigenvalue)
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam.1) :
+    maassSourceModelVector N lam f ≠ 0 := by
+  intro hzero
+  have himage := congrArg (MaassModelQuotientL2.completedModelIsometry N lam f) hzero
+  rw [completedModelIsometry_maassSourceModelVector, map_zero] at himage
+  exact MaassQuotientL2.sourceLp_ne_zero N f himage
+
 /-- The completed complementary representation intertwines the canonical source vector with
 the literal full \`SL(2,R)\` quotient orbit. -/
 theorem maassSourceModelVector_orbit_intertwines

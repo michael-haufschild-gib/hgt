@@ -60,6 +60,48 @@ theorem deningerFourierKernel_periodic (T : ℝ) (hT : T ≠ 0) (n : ℤ) :
 noncomputable def deningerFourierCoeff (T : ℝ) (f : ℝ → ℂ) (n : ℤ) : ℂ :=
   (1 / T) * ∫ x in (0 : ℝ)..T, deningerFourierKernel T n x * f x
 
+/-- The Fourier coefficient of a derivative over an arbitrary finite window.
+
+The endpoint jump is retained explicitly.  The periodic coefficient rule below is
+the special case in which this seam vanishes. -/
+theorem deningerFourierCoeff_deriv_with_boundary {T : ℝ} (hT : T ≠ 0) {f f' : ℝ → ℂ}
+    (hderiv : ∀ x, HasDerivAt f (f' x) x) (hf' : Continuous f') (n : ℤ) :
+    deningerFourierCoeff T f' n =
+      (f T - f 0) / T + (2 * Real.pi * Complex.I * n) / T * deningerFourierCoeff T f n := by
+  have hker : ∀ x ∈ Set.uIcc (0 : ℝ) T, HasDerivAt (deningerFourierKernel T n)
+      (-(2 * Real.pi * Complex.I * n) / T * deningerFourierKernel T n x) x :=
+    fun x _ => deningerFourierKernel_hasDerivAt T n x
+  have hfder : ∀ x ∈ Set.uIcc (0 : ℝ) T, HasDerivAt f (f' x) x := fun x _ => hderiv x
+  have hkercont : Continuous (deningerFourierKernel T n) := by
+    refine Continuous.cexp ?_
+    fun_prop
+  have hint1 : IntervalIntegrable
+      (fun x => -(2 * Real.pi * Complex.I * n) / T * deningerFourierKernel T n x)
+      volume 0 T := (hkercont.const_mul _).intervalIntegrable _ _
+  have hint2 : IntervalIntegrable f' volume 0 T := hf'.intervalIntegrable _ _
+  have hparts := integral_mul_deriv_eq_deriv_mul hker hfder hint1 hint2
+  have hbdry : deningerFourierKernel T n T * f T - deningerFourierKernel T n 0 * f 0 =
+      f T - f 0 := by
+    rw [deningerFourierKernel_periodic T hT n]
+    have hzero : deningerFourierKernel T n 0 = 1 := by
+      rw [deningerFourierKernel]
+      norm_num
+    rw [hzero]
+    ring
+  have hpull : ∫ x in (0 : ℝ)..T,
+      (-(2 * Real.pi * Complex.I * n) / T * deningerFourierKernel T n x) * f x
+      = (-(2 * Real.pi * Complex.I * n) / T)
+        * ∫ x in (0 : ℝ)..T, deningerFourierKernel T n x * f x := by
+    rw [← intervalIntegral.integral_const_mul]
+    exact intervalIntegral.integral_congr fun x _ => by ring
+  have hsimp : ∫ x in (0 : ℝ)..T, deningerFourierKernel T n x * f' x =
+      (f T - f 0) + (2 * Real.pi * Complex.I * n) / T *
+        ∫ x in (0 : ℝ)..T, deningerFourierKernel T n x * f x := by
+    rw [hparts, hbdry, hpull]
+    ring
+  rw [deningerFourierCoeff, deningerFourierCoeff, hsimp]
+  ring
+
 /-- **The Fourier coefficient of the derivative of a periodic function.**  Integrating by parts
 over one period, the boundary terms cancel by periodicity. -/
 theorem deningerFourierCoeff_deriv {T : ℝ} (hT : T ≠ 0) {f f' : ℝ → ℂ}

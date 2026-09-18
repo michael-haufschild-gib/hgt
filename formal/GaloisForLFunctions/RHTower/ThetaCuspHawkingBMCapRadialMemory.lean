@@ -812,6 +812,32 @@ theorem sourceMemory_late (q : XiZeroCopy) (branch : Bool) (v : Ici (1:ℝ)) :
   simp only [Complex.ofReal_zero,mul_zero,Complex.exp_zero]
   ring
 
+/-- Literal one-branch clock bridge for HB-B2.  The cap memory at late original
+time is exactly the actual compact-horizon temporal envelope at the same doubled
+physical rate, with its forced resolvent coefficient.  Thus the remaining
+cap/contact problem is metric-current transport, not a source-clock mismatch. -/
+theorem sourceMemory_late_eq_compactEnvelope (q : XiZeroCopy) (branch : Bool)
+    (v : Ici (1:ℝ)) :
+    sourceMemory q branch v =
+      (-Complex.exp (-(2*physicalRate q branch)*Complex.log 2)/
+        (2*physicalRate q branch+1))*
+      D4BMIngoingCoordinates.compactEnvelope (2*physicalRate q branch) 1 v 1 := by
+  rw [sourceMemory_late]
+  simp only [D4BMIngoingCoordinates.compactEnvelope,one_mul]
+  rw [show (1:ℂ)+1=2 by norm_num]
+  have he : Complex.exp (-(2*physicalRate q branch)*Complex.log 2)*
+      Complex.exp ((2*physicalRate q branch)*((v:ℂ)+Complex.log 2)) =
+      Complex.exp ((2*physicalRate q branch)*(v:ℂ)) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  calc
+    -Complex.exp ((2*physicalRate q branch)*(v:ℂ))/(2*physicalRate q branch+1) =
+        -(Complex.exp (-(2*physicalRate q branch)*Complex.log 2)*
+          Complex.exp ((2*physicalRate q branch)*((v:ℂ)+Complex.log 2)))/
+            (2*physicalRate q branch+1) := by rw [he]
+    _ = _ := by ring
+
 /-- A positive physical-clock step has a nontrivial multiplier on the late boundary memory. -/
 theorem late_memory_multiplier_ne_one (q : XiZeroCopy) (branch : Bool) (T : Ioi (0:ℝ)) :
     Complex.exp ((2*physicalRate q branch+1)*(T.val:ℂ)) ≠ 1 := by

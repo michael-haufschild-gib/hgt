@@ -150,6 +150,14 @@ private theorem closedMean_continuous (q : XiZeroCopy) (branch : Bool) (X k : �
 def halfKernel (q : XiZeroCopy) (branch : Bool) (tau x v X k : ℝ) : ℂ :=
   if tau+x ≤ v then closedMean q branch X k (D4BMFutureHorizon.horizonArgument tau x v) else 0
 
+/-- Literal full-circle form of one seed horizon arm.  This is only the
+definition of `halfKernel` with its closed physical radius exposed. -/
+theorem halfKernel_eq_angularMean (q : XiZeroCopy) (branch : Bool) (tau x v X k : ℝ) :
+    halfKernel q branch tau x v X k =
+      if tau+x ≤ v then angularMean q branch
+        (Real.arcosh (max 1 (D4BMFutureHorizon.horizonArgument tau x v))) X k else 0 := by
+  rfl
+
 /-- Exact delay chart for one literal full-angular seed arm.  Unlike the source
 cap kernel, its circle value is the full angular response. -/
 theorem halfKernel_at_delay (q : XiZeroCopy) (branch : Bool) (tau x h X k : ℝ)

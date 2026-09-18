@@ -1338,3 +1338,366 @@
   `Classical.choice`, and `Quot.sound`. This closes the selector and disjointness part of the
   finite-cover measure problem. The remaining statement is additivity of Haar measure across its
   finite translated pieces and its transfer to the quotient measures.
+
+- **Finite-cover quotient measures now scale exactly, including every `Lᵖ` pullback (2026-09-17).**
+  `IntegralSubgroupFiniteCoverMeasureScaling` proves the cover selector pieces are Haar-a.e.
+  disjoint, computes its Haar mass as the relative-index cardinality times the base mass, and
+  proves the full measure identity
+  `Measure.map (subgroupQuotientProjection (realImage K) (realImage Γ) ...) μ_K = [Γ:K] • μ_Γ`.
+  It derives exact `eLpNorm` scaling and `MemLp` pullback for every continuous-enormed target.
+  `MaassRationalHeckeIntegralCoverL2Scaling` applies this to the actual rational-Hecke cover:
+  the literal cover source has the exact degree-rescaled `L²` seminorm of the principal source,
+  and its `L²` membership follows through the quotient projection. Both leaf builds and all nine
+  declaration audits pass with only `propext`, `Classical.choice`, and `Quot.sound`.
+  Thus the source-to-common-cover `L²` leg is closed. The next open finite-place leg is a bounded
+  trace/pushforward from the common cover through the rational conjugated source and its local
+  Hecke factor; no such analytic trace theorem occurs in the corpus.
+
+- **The rational-conjugate quotient is the present finite-place blocker (2026-09-17; source audit).**
+  The corpus proves `rationalConjugateGroup_commensurable` and finite relative index for the
+  `GL(2,ℝ)` rational conjugates. It also proves
+  `rationalConjugateSL2Group.map toGL = rationalConjugateGroup` and identifies the common cover
+  with `realImage Γ ∩ rationalConjugateSL2Group`. No declaration transfers that GL
+  commensurability to finite relative index/discreteness/fundamental-domain measure for the
+  determinant-one rational-conjugate subgroup. Consequently no quotient measure, `L²` trace, or
+  bounded local Hecke operator for that target yet exists. The next direct proof target is that
+  transfer theorem, followed by the same finite-cover measure construction on the conjugate leg.
+
+- **The GL-to-SL₂ source transport is now an actual group equivalence (2026-09-17).**
+  `RationalConjugateSL2FiniteCover.rationalConjugateSL2ToGLEquiv` restricts `toGL` to a
+  multiplicative equivalence from `rationalConjugateSL2Group N g` onto
+  `rationalConjugateGroup N g`. Its inverse is constructed from the existing onto-image theorem,
+  and its left inverse uses `toGL_injective`. The same module now transports the GL relative
+  quotient across this equivalence, giving finite relative index of the principal determinant-one
+  source and, through the exact common-cover intersection identity, of the common cover in the
+  rational-conjugate SL₂ source. Rational lifts make the latter countable, and finite extension of
+  the discrete common cover makes it discrete. Its leaf build and audit pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+
+- **The rational-conjugate SL₂ quotient measure is now closed (2026-09-17).**
+  `RationalConjugateSL2QuotientMeasure` exposes the generic Borel strict-domain theorem, applies
+  it to the now countable discrete rational-conjugate SL₂ subgroup, and defines its quotient Haar
+  measure. It proves the quotient-measure preimage identity, `SL2R` invariance, and sigma
+  finiteness. Source check, leaf build, and audit of all declarations pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. The next exact finite-place obligation is a trace or
+  pushforward from the common-cover quotient into this rational quotient with a proved `L²` bound;
+  no such analytic map is presently formalized.
+
+- **The common-cover-to-rational quotient is now an exact finite measured cover (2026-09-17).**
+  `MaassRationalHeckeConjugateCoverL2` constructs a finite selector from the rational quotient
+  strict domain, proves its uniqueness and Haar-a.e. disjointness, and identifies the canonical
+  common-cover quotient measure with that selector. It proves
+  `map_rationalHeckeConjugateCoverProjection_integralSubgroupQuotientMeasure`:
+  the projection pushes the common-cover measure to `[R:K] • μ_R`, then proves exact `eLpNorm`
+  pullback scaling and `MemLp` pullback. Leaf build and audit of every declaration pass with only
+  `propext`, `Classical.choice`, and `Quot.sound`. The remaining finite-place obstruction is not
+  measure normalization: define the choice-independent finite fiber trace on this non-normal
+  cover and prove its (L²) bound.
+
+- **The non-normal finite fiber trace is now formalized and is an exact raw model intertwiner
+  (2026-09-17).** `MaassRationalHeckeFiberTrace` reuses the corpus’s
+  `RHTower.deningerFiberMap` and `deningerFiberShift` to define the finite sum from the common
+  cover quotient to the rational quotient. The shift equivalence proves independence of the
+  quotient representative. The module proves its literal finite-sum formula, complex linearity,
+  and intertwining with left regular quotient translation. Source check, leaf build, and audit
+  pass with only `propext`, `Classical.choice`, and `Quot.sound`. The exact remaining obstruction
+  is analytic: prove this raw finite-fiber sum is measurable on the quotient and extend it to a
+  bounded `L²` operator, then identify that operator with the raw sum.
+
+- **The raw rational fiber trace is now an `L²` Maass-model vector (2026-09-17).**
+  `MaassRationalHeckeFiberTrace` proves every fiber coordinate is continuous by its literal
+  representative `a ↦ [a * c.out]`, hence the finite trace itself is continuous. It also proves
+  the rational-conjugate quotient measure is finite: evaluating the existing exact identity
+  `p_* μ_K = [R:K] • μ_R` on `univ`, with the nonempty finite fiber cardinal, transfers finite
+  covolume from the integral common cover. The globally bounded Maass source then gives the exact
+  pointwise estimate `‖Trace f‖ ≤ [R:K] · C`, and therefore
+  `rationalHeckeConjugateFiberTrace_source_memLp`. Source check and leaf build pass; all seven
+  new declarations audit only `propext`, `Classical.choice`, and `Quot.sound`. This closes
+  analytic admission of the actual raw trace. It does **not** establish a generic bounded trace
+  operator, trace nonvanishing for nontrivial rational correspondences, a local Hecke factor, or
+  the global unitary-exponent implication; those remain the next proof-chain blockers.
+
+- **Generic unitarity is a formal no-go for the Selberg bound (2026-09-17).**
+  `MaassSourceModelIntertwiner.maassSourceModelVector_ne_zero` proves that any assumed
+  exceptional Maass cusp eigenform produces a nonzero vector in its completed complementary
+  Hilbert model. `MaassModelHilbertRepresentation.completedComplementaryModelRepresentation_inner`
+  proves that the resulting `SL2R` action preserves the Hilbert inner product, while the existing
+  source-model orbit theorem identifies that action with the actual quotient orbit. Thus the
+  exceptional parameter is already compatible with the corpus's real-place unitarity and model
+  correspondence. Source checks, both leaf builds, and an axiom audit pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. The proof route must therefore derive an *additional
+  arithmetic finite-place/global condition* and show that condition excludes this complementary
+  model; any proposed proof using only generic unitarity is closed as a no-go.
+
+- **The finite rational Hecke product is already formalized (2026-09-17).**
+  Deep corpus search located `SelbergMaassHeckeOperatorConvolution`:
+  `rationalPrincipalTraceLinear_comp_eq_fiberwise_HeckeCosetLinear` proves exact composition of
+  two source Maass trace endomorphisms as the finite Mackey-fiber sum of descended Hecke-coset
+  endomorphisms, with exact stabilizer-index coefficients. This closes the earlier
+  Mackey-to-convolution candidate as a source-level correspondence identity. Its own module
+  explicitly records the remaining deficit: it does not construct finite local factors, an
+  adelic representation, or a condition that relates them to the complementary real parameter.
+
+- **All finite descent to principal levels 1–7 is now formally annihilated in the exceptional range (2026-09-17).**
+  `SelbergMaassSmallLevelTraceAnnihilation.small_level_principalMaassTrace_eq_zero` proves
+  that a finite principal trace from any commensurable GL-Maass source to any of these targets
+  must be zero: a nonzero trace would be a target-level exceptional Maass cusp eigenform, but
+  `SelbergMaassStripGap.small_level_no_exceptional` has closed those targets. Its
+  zero-inclusive strengthening, `small_level_principalMaassTraceLinear_eq_zero`, makes the
+  entire finite trace map zero on every sub-quarter eigenspace. Source check and leaf build pass;
+  its axiom audit is only `propext`, `Classical.choice`, and `Quot.sound`. This removes all
+  oldspace descent through the currently excluded small principal levels. It does not force a
+  high-level exceptional source to have nonzero trace, so the unsolved survivor is the joint
+  trace-zero/new component and requires a real local/global constraint.
+
+- **Boundary and generic-Hecke attempts have exact no-go boundaries (2026-09-17).**
+  The boundary route proves positive mass on every height slice and an exact
+  boundary-plus-nonnegative-squares identity, but no theorem forces a vanishing slice or a
+  boundary limit that would contradict it. The finite rational Hecke route already proves its
+  Mackey composition law, but Mathlib supplies only the formal Hecke-coset module—not its
+  convolution/ring—and the corpus has neither finite-dimensionality, Hilbert adjoints,
+  good-prime commutation, nor a local factorization. These failures show that neither boundary
+  positivity nor generic finite correspondence algebra excludes the surviving new component.
+
+- **All-channel phase averaging does not orient the surviving first moment (2026-09-17).**
+  `SelbergMaassAllChannelPhaseStress.allChannel_phaseStressXY_sum` proves that summing
+  `SelbergMaassPhaseStress.phaseStressXY` over every pair
+  of finite character channels gives exactly
+  `2 * (((N + 1 : ℕ) : ℝ)^2 - 1) * Re⟪∂ₓ sourceVector, ∂ᵧ sourceVector⟫`, by
+  `phaseStressXY_eq` and `allChannel_lossPair_sum`. Thus full channel averaging removes the
+  selective arithmetic transfer and leaves the ordinary signed density cross-derivative. The
+  exceptional theorem `SelbergMaassPhaseProductMean.unitLossMean_eq_zero` already makes its
+  unweighted unit-cell mean zero. The Selberg boundary term is its coordinate-weighted first
+  moment, which periodicity reduces only to a vertical-side mixed-density derivative; no corpus
+  theorem gives that derivative a sign. So all-channel averaging cannot close the orientation
+  gap and should not be extended as a proof route.
+
+- **The rational correspondence is now an all-vector automorphic intertwiner (2026-09-17).**
+  `SelbergMaassRationalHeckeAutomorphic.rationalPrincipalGLAutomorphicTrace` defines the
+  rational pullback-plus-finite-trace map as an endomorphism of the entire principal
+  `GL(2,R)` automorphic carrier, rather than merely an operation on a chosen Maass source.
+  `rationalPrincipalGLAutomorphicTrace_commutes_right` proves exact intertwining with every
+  right `SL(2,R)` translation; `rationalPrincipalGLAutomorphicTrace_apply_lift` identifies
+  its value on every lifted invariant source with the literal rational finite trace, and the
+  restriction theorem carries that equality to the principal `SL(2,R)` automorphic carrier.
+  Source check, leaf build, and all three axiom audits pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. This closes the carrier-level finite-correspondence
+  step. The next hard theorem is still a generic bounded `L2` extension of the non-normal
+  finite-fiber trace: the existing measure scaling proves pullback norms, but it does not prove
+  the adjoint fiber-integration identity needed to bound the trace/pushforward.
+
+- **The missing non-normal finite-fibre integral identity is now proved at selector level (2026-09-17).**
+  `SelbergMaassFiniteFiberIntegration.setIntegral_rationalConjugateFiniteCoverFundamentalSet_eq_fiberSum`
+  proves, for every integrable vector-valued function on the actual rational common-cover
+  selector, that its integral is the integral over the rational-conjugate selector of the sum
+  over the complete finite fibre. The proof uses the already-proved a.e.-disjoint selector
+  union and the corpus theorem that `realSL2Haar` is right invariant. This is an exact
+  disintegration identity, not a source boundedness argument. It supplies the analytic
+  equality needed for the trace `L²` energy estimate. The remaining blocker is descent from
+  raw representatives to a.e. quotient functions, including preservation of null sets by the
+  non-normal fibre sum; only after that can this identity define a bounded operator on `L²`.
+
+- **The non-normal finite-fibre trace now descends to a bounded generic quotient `L²` operator (2026-09-17).**
+  `SelbergMaassFiniteFiberIntegration` proves measurability and a.e.-representative independence
+  of `rationalHeckeConjugateFiberTrace`, then defines its action on `AEEqFun` and on generic
+  quotient `Lp ℂ 2` classes. The theorem
+  `rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurable` proves the exact
+  energy bound `∫ ‖Tf‖² ≤ |D| ∫ ‖f‖²`, by combining the common-cover selector disintegration with
+  the finite-sum Cauchy--Schwarz inequality. Consequently
+  `rationalHeckeConjugateFiberTraceLpContinuousLinear` is a closed continuous complex-linear
+  operator with the explicit (non-sharp) bound `‖Tf‖ ≤ |D| ‖f‖`. Source check, leaf build, and
+  axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`. The analytic
+  finite-cover bridge is closed; the next unsolved link is to connect this bounded operator to
+  the all-vector automorphic Hecke intertwiner and then obtain the absent finite-place/global
+  spectral exclusion of complementary parameters.
+
+- **The bounded common-cover trace is now tied to actual Maass inputs (2026-09-17).**
+  `coe_rationalHeckeConjugateFiberTraceSourceLp` proves that the new continuous quotient operator,
+  applied to `rationalHeckeIntegralCoverSourceLp`, has the literal
+  `rationalHeckeConjugateFiberTrace` of the original common-cover Maass source as its a.e.
+  representative. This closes the analytic source-to-operator identification. Corpus searches
+  found no theorem equating this cover-to-rational-conjugate trace with the separate all-vector
+  principal automorphic Hecke endomorphism: those are different correspondence legs. The precise
+  remaining bridge is therefore to place the rational-conjugate output in a Maass/automorphic
+  Hilbert carrier and compose it with the return trace; only then can local/global arithmetic
+  structure constrain the exceptional parameter.
+
+- **The `SL₂` and `GL₂` finite-fibre index sets are now identified (2026-09-17).**
+  `rationalPrincipalSL2FiberCosetEquiv` gives a canonical equivalence between the relative cosets
+  of the principal subgroup in `rationalConjugateSL2Group` and the matching relative cosets in
+  `rationalConjugateGroup`. `rationalHeckeCommonCover_subgroupOf_eq_principal` proves that the
+  common-cover subgroup used by the bounded trace is precisely that principal intersection. Thus
+  the only remaining part of the Maass-to-automorphic compatibility is term-level: identify the
+  `SL₂` action in each finite summand with the corresponding `GL₂` action and transport the finite
+  sum through this proved coset equivalence. This is now a concrete theorem, not an unspecified
+  index comparison.
+
+- **The actual Maass-to-model fibre-trace intertwiner is now formalized (2026-09-18).**
+  `rationalCommonCoverGLTrace_apply_eq_rationalHeckeConjugateFiberTrace_mk` proves, for every
+  literal `a : SL2R`, that the rational-conjugate `GL₂` common-cover trace evaluated at
+  `a⁻¹ • I` equals the raw finite fibre trace at `[a]`. Consequently
+  `rationalHeckeConjugateFiberTrace_source_eq_glTraceQuotientLift` is an equality of quotient
+  functions: the raw trace is exactly `maassInvariantQuotientLift` of the restricted
+  rational-conjugate automorphic trace. Its `Lp` version,
+  `coe_rationalHeckeConjugateFiberTraceSourceLp_eq_glTraceQuotientLift`, identifies the bounded
+  quotient operator's source output with that automorphic trace almost everywhere. The same trace
+  transfers the Maass eigen-equation and integral-cusp decay to the raw section. Source check and
+  leaf build pass; four representative theorems audit only `propext`, `Classical.choice`, and
+  `Quot.sound`. This closes the common-cover source-to-rational-conjugate automorphic carrier leg.
+  It still does not construct
+  the return trace as a bounded Maass/automorphic operator on this carrier, a finite-place factor,
+  or an exclusion of complementary parameters.
+
+- **The pulled common-cover return diagram is now exact (2026-09-18).**
+  `rationalPulledCommonCoverGLTrace` uses the actual rationally pulled principal Maass source,
+  restricted to `principalCongruenceGL N ⊓ rationalConjugateGroup N g`, rather than the earlier
+  unpulled common-cover source. `maassTraceFunction_restrict_of_targetInvariant` proves the
+  finite trace of already target-invariant data is precisely its relative-coset cardinality
+  multiple. Instantiating it gives
+  `rationalPulledCommonCoverGLTrace_then_principal_eq_card_smul`: tracing the pulled source
+  through the common cover and back to principal level equals that nonzero finite-cardinality
+  scalar times `rationalPrincipalTraceFunction`. The source specialization starts from the
+  original `MaassCuspEigenform`, so this is the exact return leg of the rational Hecke
+  correspondence. It does **not** identify the bounded `L²` trace of the earlier unpulled source
+  with the Hecke operator; those inputs differ by rational pullback. Source check and leaf build
+  pass; all four new theorems audit only `propext`, `Classical.choice`, and `Quot.sound`.
+  The remaining hard obstruction is therefore arithmetic: construct a finite-place/global
+  representation attached to this exact Hecke correspondence and prove a constraint that rules
+  out a complementary archimedean exponent.
+
+- **The present local/global boundary is now isolated (2026-09-18).**
+  `SelbergMaassHeckeOperatorConvolution` gives an exact Mackey product formula for principal
+  rational Hecke traces, but contains no commutativity theorem, simultaneous Hecke eigenvector,
+  or finite-dimensionality result. `PrincipalMaassEigenspaceL2` injects the whole fixed Maass
+  eigenspace into its quotient `L²` realization and explicitly lacks the quotient Laplacian and
+  compact-resolvent theorem needed for finite multiplicity. Separately,
+  `principalCongruenceMaassCuspCorrespondence` reaches a spherical automorphic vector, while
+  `SphericalExponentPacketUnitarity` proves the abstract packet criterion; no declaration links
+  that concrete vector to a finite-place Satake parameter or to compatible symmetric-power
+  packets. Thus current correspondence work cannot legitimately treat the rational trace algebra
+  as a commutative local Satake algebra. The next direct proofs are quotient-Laplacian compact
+  resolvent and an actual finite-place/global lift construction; the latter is the step that can
+  exclude complementary parameters.
+
+- **Weighted top phase stress now has an exact same-residue kernel (2026-09-18).**
+  `SelbergMaassPhaseComplexPolarization.phaseAverageC_pair` upgrades the finite phase average
+  from the real mixed loss to the full Hermitian complex transfer loss.  Combined with the
+  unit-coordinate Fourier expansion,
+  `SelbergMaassWeightedPhaseKernel.phaseProductPartial_eq_sameResidue_kernel` identifies every
+  finite weighted top phase product with a literal finite double sum of
+  `coefficientMixedLoss`; all distinct upper-residue pairs vanish identically.  Together with
+  the already-proved weighted partial-product limit, the physical top moment is therefore the
+  limit of these explicit same-residue kernels.  No sign, cancellation, or bound for their
+  off-diagonal terms is proved; that kernel inequality is now the direct-route obstruction.
+
+- **The phase-stress obstruction is now strictly off-diagonal with its literal Cauchy kernel (2026-09-18).**
+  `unitCoordFourierKernel_self` proves the diagonal kernel is `1 / 2`; the existing exceptional
+  diagonal mixed-loss theorem consequently removes every diagonal real contribution.
+  `unitCoordFourierKernel_offDiagonal` proves that for distinct indices the kernel is exactly
+  `1 / (2 * π * I * (m - n))`.  `phaseProductPartial_re_eq_sameResidue_offDiagonal` and
+  `tendsto_phaseProductPartial_re_sameResidue_offDiagonal` therefore identify the physical
+  unit-height weighted loss moment with the limit of the literal same-residue, strictly
+  off-diagonal Cauchy-weighted coefficient sums.  The corpus has Wronskian transport and tail
+  integrability for those coefficients, but no sign or cancellation theorem for this paired
+  real off-diagonal current.
+
+- **The off-diagonal phase current now has an exact moment-ODE coupling (2026-09-18).**
+  `weightedKernel_pair_scaled` eliminates the Cauchy denominator for one unordered pair: its
+  real current is the coefficient-loss derivative plus the Wronskian current.  For an
+  exceptional form, `weightedKernel_exceptional_pair_scaled_tail` replaces that current by the
+  exact tail term with coefficient
+  `(2 * π / (N + 1))^2 * (m - n) * (m + n)^2`.
+  `SelbergMaassWeightedPhaseMomentOde` proves that the finite zeroth coefficient moment satisfies
+  `V₀'' = (2 * π / (N + 1))^2 * V₂ - (λ / y^2) * V₀`, polarizes the literal `(m + n)^2` tail
+  weight into zeroth, first, and squared-frequency tail Grams, and proves the local identity
+  `d Re loss(V₀,V₀') = lossEnergy(V₀') + c * Re loss(V₀,V₂) - (λ/y^2) * lossEnergy(V₀)`.
+  Thus tail-Gram positivity alone cannot sign the phase current: its signed cross moment must be
+  controlled through this ODE and a cusp-boundary identity.  The next concrete missing theorem
+  is decay and tail integration for `finiteZerothMomentCurrent`, which would turn the local
+  coupling into an exact integrated energy law.
+
+- **Tensor powers do not supply the finite symmetric-power packet automatically (2026-09-18).**
+  `MaassTensorSquareMultiplicity` identifies the algebraic tensor square of the actual spherical
+  `K`-finite model with `Finsupp (ℤ × ℤ) ℂ`, transports the diagonal compact-weight operator, and
+  proves that `w_{2m} ⊗ w_{-2m}` has weight zero for every `m : ℤ`.  The coordinate vectors indexed
+  by `m` are linearly independent; hence
+  `tensorDiagonalHCoordinates_kernel_has_independent_family` gives an independent zero-weight
+  family of every finite cardinality.  This closes the attempted inference from unitarity of the
+  completed Maass model and its tensor powers to unitarity of the finite symmetric-power exponent
+  packet: that inference needs a new finite-multiplicity selection/intertwining map, which is not
+  present in the tensor construction.  The positive survivor is the exact tensor-square
+  compact-weight multiplicity law.  Source check and leaf build pass; the four audited theorems
+  use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+- **Finite phase currents now have a closed cusp-boundary package (2026-09-18).**
+  `SelbergMaassWeightedPhaseMomentOde` now expands every finite coefficient or height moment
+  into literal coefficient pairs and proves the resulting complex transfer losses integrable on
+  each `Ioi Y`.  The bounded multiplier proof for `λ / y²` gives
+  `finiteZerothMomentCurrent_re_deriv_integrable`; together with
+  `finiteZerothMomentCurrent_integrable` it gives
+  `finiteZerothMomentCurrent_re_tendsto_zero`.  Finally,
+  `finiteZerothMomentCurrent_re_eq_neg_integral_tail` identifies the finite current at every
+  positive height with the negative integral of its exact ODE source.  This closes the earlier
+  tail-decay and tail-integration gap in the off-diagonal phase route.  The remaining direct
+  obstruction is genuinely the sign of the integrated coefficient--frequency cross term, or an
+  arithmetic orientation of the equivalent phase-stress Fourier functional; it is not a missing
+  cusp integrability or boundary-limit lemma.  Source check and leaf build pass; all four audited
+  theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+- **A source-attached rational correspondence module is now closed under every positive rational trace (2026-09-18).**
+  `MaassRationalHeckeOrbit.principalHeckeOrbitSpan` is the literal complex span of all positive
+  rational Hecke-coset images of one principal-congruence Maass eigenspace vector.
+  `rationalPrincipalTraceLinear_orbit_generator_mem` derives the image of each generator from the
+  finite rational Mackey product, and
+  `rationalPrincipalTraceLinear_maps_principalHeckeOrbitSpan` extends that result to the whole
+  span.  This is an exact global correspondence carrier, not a local Hecke algebra: it proves no
+  commutativity, finite-dimensionality, identity/source nonvanishing, local factorization,
+  Satake parameter, or symmetric-power packet.  The next substantive bridge is to lift this
+  module to a joint automorphic right-regular/correspondence carrier and construct genuine
+  finite-place operators there.  Source check and leaf build pass; audited declarations use only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+
+- **The rational correspondence orbit now has a concrete joint automorphic carrier (2026-09-18).**
+  `MaassRationalHeckeAutomorphicOrbit` defines
+  `principalAutomorphicHeckeOrbitSpan` as the span of literal right
+  `SL(2, ℝ)` translates of all positive rational Hecke-coset images of one Maass
+  eigenspace vector.  The linear lift intertwines the source and carrier rational traces;
+  `rationalPrincipalGLAutomorphicTrace_maps_principalAutomorphicHeckeOrbitSpan` closes that
+  span under every positive rational trace, while
+  `glAutomorphicRightTranslation_maps_principalAutomorphicHeckeOrbitSpan` closes it under the
+  entire right regular `SL(2, ℝ)` action.  This makes the global representation carrier
+  explicit.  It still proves no nonzero source attachment, finite-dimensionality, local
+  factorization, local Hecke commutativity, Satake parameter, or compatible symmetric-power
+  packet.  The finite-place/global comparison is therefore now the hard route bottleneck.
+  Source check and leaf build pass; three central theorems audit to only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+
+- **Rational trace composition now has an exact formal Hecke-coset product (2026-09-18).**
+  `MaassRationalHeckeFormalProduct` packages the finite Mackey output of two positive rational
+  representatives into `rationalMackeyHeckeCosetFormalProduct`, a finitely supported complex
+  combination of principal Hecke cosets.  Its linear action on the fixed Maass eigenspace is
+  exactly the composed trace by `rationalMackeyHeckeCosetFormalProduct_action`.  This is a
+  positive product law, but only at rational representatives.  Mathlib's installed
+  `HeckeCosetModule` currently has no scalar-module or convolution structure, and no theorem
+  proves the new formal product invariant under changing either input representative within a
+  Hecke double coset.  Consequently associativity, a Hecke algebra, local commutativity, and
+  finite-place factorization remain unproved.  Source check and leaf build pass; the two audited
+  theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+- **The rational Mackey product now descends to the actual Maass operator image (2026-09-18).**
+  `MaassRationalHeckeOperatorDescent.rationalPrincipalTraceLinear_eq_of_principal_doubleCoset`
+  lifts the existing function-level double-coset descent to equality of fixed-eigenspace
+  endomorphisms.  Its left and right corollaries show that replacing either input rational
+  representative by the same principal double coset leaves
+  `rationalMackeyHeckeCosetFormalProduct` unchanged after its concrete `Finsupp` action.
+  Therefore composition supplies an associative product on the image of the formal coset action.
+  This does **not** prove equality of formal coset sums, faithfulness, commutativity, an
+  unramified local subalgebra, or a finite-place factorization.  The latter is now the exact
+  global bottleneck.  Source check and leaf build pass; the three audited theorems use only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **Rational trace and Maass Fourier carrier now coincide.** `SelbergMaassRationalTraceFourierAggregation.rationalPrincipalTrace_cusp_fourier_window_sum` already gives the exact finite translated-window formula for the raw trace. New `SelbergMaassRationalTraceFourierEigenform.rationalPrincipalTrace_cusp_maassCoefficient_sum` transfers it to every bundled nonzero principal-level trace eigenform; it source-checks and its leaf build passes. The remaining direct obstruction is height-uniformity of the cusp data needed to differentiate this formula into the phase current.
+- **Height-uniform rational Fourier transport is now closed.** `SelbergMaassRationalTraceFourierUniform` proves that each rational trace summand’s integral translate and positive triangular factor can be selected before height; it aggregates them into one all-height finite-window formula and transfers that formula to nonzero bundled trace eigenforms. Source check and leaf build pass; all three public theorems audit to `[propext, Classical.choice, Quot.sound]`. This permits differentiation, but each individual scaled window need not be periodic, so its modal equation necessarily exposes horizontal seam terms.
+- `SelbergMaassRationalTraceWindowedModal.rationalPrincipalTrace_summandSeam_sum_eq_zero` is a closed theorem: if a rational principal trace is nonzero and hence a principal-level Maass eigenform, the finite sum of the literal common-window endpoint seams of its raw rational coset summands is zero for every Fourier index and every positive height. Its proof first identifies the trace coefficient with that finite raw sum, transfers equality through two derivatives on the positive-height open set, and subtracts the homogeneous trace ODE from the summed local ODE.
+- Source review of `SelbergMaassPhaseStressFourier.phaseStressXYHorizontal_centered_moment_fourier` shows the remaining phase obstruction is a signed Fourier functional of the original source cross-loss. No corpus map identifies it with the rational-trace seam, so the new seam cancellation does not supply its sign. The direct active target remains the source-density coercivity `3*D + 4*A >= R`.
+- `SelbergMaassGeneratorCostGrowth.generatorConstant_gt_of_large_level` proves that the existing finite-word `S,T` regular-action comparison exceeds `k^2 / 2` whenever `2 * 5^k < N + 1`. Therefore this comparison cannot provide a level-uniform deck spectral gap or the density coercivity `3*D + 4*A >= R`.
+- The characterwise source route reaches the closed inequality `core_cusp_balance_sq_le`: its seam balance squared is at most `(2 / 3) * ∫ arcLossGradient`. `diagonal_transfer_loss_sum_lower` supplies only a lower bound for the summed inversion losses, while the seam estimate uses them as an upper bound. Thus the available inequalities have incompatible directions and cannot yield `3*D + 4*A >= R`. Searches found no rational-trace-to-character/inversion-transfer theorem, so rational-window seam cancellation cannot currently change that direction.

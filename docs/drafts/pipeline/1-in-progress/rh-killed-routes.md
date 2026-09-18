@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**332 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**337 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-17, `b6555bd48db0fd6021a655cbcae470746fe5ccc2`**.
+Source-audit cutoff: **2026-09-17, `1823264842e5e4ccfee10a0920b608ed3e3d2f6a`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -25,9 +25,9 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 23 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 37 |
 | [HB, FZZ and PW: scattering and physical action](#scattering) | 71 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 27 |
-| [Singular descent, formation and completion](#completion) | 26 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 43 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 28 |
+| [Singular descent, formation and completion](#completion) | 27 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 46 |
 | [Analytic roots, multiplicity and regularization](#roots) | 9 |
 | [Other finite, scalar and source-blind selectors](#other) | 80 |
 
@@ -637,6 +637,8 @@ neither scalar zero-clock charge nor the unrenormalized linear mode is a faithfu
 reporter. The exact three-moment carrier sharpens this: its second coordinate is completed linear
 charge minus squared displacement debt, while every block-diagonal parabolic form is blind to that
 displacement. Scalar or diagonal positivity cannot recover the missing relative-clock coordinate.
+Terminal completion does not repair this uniformly: at every exact quantile wall its interval and
+mass mismatch vanish, returning the completed form to the same mass-neutral value `-C₁²`.
 
 **Survivor / still open**
 
@@ -644,8 +646,7 @@ The full oriented-window normal form and endpoint-renormalized first mode surviv
 equaling the completed error exactly. The live problem is a signed bound for the nonconstant
 translation-defect/autocorrelation profile before scalarization.
 
-Evidence: [adjacent-codiagonal normal form](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal.lean).
-[Three-moment parabolic transport](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarParabolicTransport.lean).
+Evidence: [adjacent-codiagonal normal form](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal.lean), [three-moment parabolic transport](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarParabolicTransport.lean), [terminal quantile-wall no-go](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarParabolicCompletedSourceBoundary.lean).
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
@@ -2562,6 +2563,7 @@ Evidence: [endpoint-counterterm uniqueness](../../../../formal/GaloisForLFunctio
 - [SQB positive rational-trace averaging for compact-core coercivity](#no-go-317)
 - [prime-labelled cubic theta scalar evaluation at an Xi zero](#no-go-318)
 - [SQB universal pointwise Möbius stress sign](#no-go-332)
+- [SQB all-channel averaging, level raising, or mean-zero orientation](#no-go-337)
 
 <a id="no-go-308"></a>
 
@@ -2979,6 +2981,28 @@ Evidence: [Möbius multiplier obstruction](../../../../formal/GaloisForLFunction
 
 [Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
 
+<a id="no-go-337"></a>
+
+### SQB all-channel averaging, level raising, or mean-zero orientation
+
+**Closed result**
+
+Summing inversion loss over all residue channels restores only the ambient scalar metric and
+erases the selective transfer defect. Raising the Fourier period preserves exactly the same
+same-residue collision classes. The literal selective mixed loss has zero unweighted mean, but a
+zero-mean periodic function can still have a nonzero centered first moment. None of these three
+operations orients the centered off-diagonal source series.
+
+**Survivor / still open**
+
+The exact phase-product limit, zero-mean theorem and selective same-residue loss survive. SQB
+needs a genuinely arithmetic covariance or Hecke relation for that centered coefficient kernel,
+not full-channel Parseval, period rescaling or mean cancellation.
+
+Evidence: [all-channel loss collapse](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassAllChannelLoss.lean), [selective zero mean](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassPhaseProductMean.lean), [exact centered moment](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassPhaseProductLossLimit.lean), [route fact audit](selberg-density-quartic-facts.md).
+
+[Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
+
 <a id="completion"></a>
 
 ## Singular descent, formation and completion
@@ -3009,6 +3033,7 @@ Evidence: [Möbius multiplier obstruction](../../../../formal/GaloisForLFunction
 - [SC unmarked pointwise rigged-fibre geometry](#no-go-170)
 - [split additive-exponential Hopf hidden-kernel mechanism](#no-go-165)
 - [XST signed cross-orbit incidence](#no-go-159)
+- [C1 positive nuclear-root transport of Route-N projective leakage](#no-go-333)
 
 <a id="no-go-181"></a>
 
@@ -3390,6 +3415,27 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 
 [Back to family](#completion) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-159)
 
+<a id="no-go-333"></a>
+
+### C1 positive nuclear-root transport of Route-N projective leakage
+
+**Closed result**
+
+The literal positive four-label C1 Gamma-sewn Plücker root incidence is globally summable. At
+every nonneutral grade, no finite scalar and no injective placement of ordinary primes into that
+entire carrier can pointwise majorize Route-N projective leakage. Distributing the source over all
+four labels does not overcome the nuclear budget.
+
+**Survivor / still open**
+
+The simultaneous four-channel lower-Cauchy carrier survives and retains every mixed Gram term.
+Any C1/P formation law that controls projective leakage must be signed, non-nuclear,
+label-colliding or non-coordinatewise, and still prove a source-derived coercivity law.
+
+Evidence: [four-label projective-leakage obstruction](../../../../formal/GaloisForLFunctions/RHTower/GammaSewnPluckerRouteNProjectiveLeakageNoGo.lean), [finite Gram survivor](../../../../formal/GaloisForLFunctions/RHTower/DeningerPrimeGammaLowerCauchyFiniteGramApproximation.lean).
+
+[Back to family](#completion) · [Current C1 frontier](rh-current-frontier-map.md#c1--class-space-quotient-and-global-weil-positivity)
+
 <a id="ward"></a>
 
 ## Ward, Suzuki, prime–Gamma and operator landing
@@ -3437,6 +3483,9 @@ Theta spin, monodromy, three-slot thinning, and the exact wall receiver survive.
 - [SP-E positive terminal-seam compensation](#no-go-328)
 - [D2 real-flux-only transfer to Q](#no-go-329)
 - [SP-E quantile/Suzuki independent-estimator combination](#no-go-331)
+- [Route-P bounded Big-Witt seam for the labelled Gamma profile](#no-go-334)
+- [Route-P scalar physical signed-word carrier](#no-go-335)
+- [Suzuki unpaired zero-time divisor velocity](#no-go-336)
 
 <a id="no-go-309"></a>
 
@@ -4130,6 +4179,69 @@ controls this shared coordinate and removes the elementary `exp(t/2)` envelope.
 Evidence: [relative quantile-Riesz carrier](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRelativeCarrier.lean), [Suzuki--Eulerian bridge](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszSuzukiEulerianBridge.lean), [causal Laplace bridge](../../../../formal/GaloisForLFunctions/RHTower/CCMUnitRieszCausalLaplaceBridge.lean).
 
 [Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
+
+<a id="no-go-334"></a>
+
+### Route-P bounded Big-Witt seam for the labelled Gamma profile
+
+**Closed result**
+
+At every depth, bounded canonical reciprocal-prime Big-Witt seam energy for the labelled adjacent
+Gamma-valuation profile is equivalent to that complete prime axis being zero. Requiring the bound
+at every depth is equivalent to vanishing of the entire coefficient-faithful ordered profile.
+Thus this bounded seam completion cannot carry a nonzero literal Gamma source.
+
+**Survivor / still open**
+
+The summable labelled adjacent primitive and finite Big-Witt seam incidence survive. Route P needs
+a non-scalar prime/depth tail law that preserves the profile without reducing it to the
+constant-radical reciprocal-prime seam norm.
+
+Evidence: [Big-Witt seam obstruction](../../../../formal/GaloisForLFunctions/RHTower/GammaValuationSchurBigWittPrimeSeamNoGo.lean), [labelled Gamma profile](../../../../formal/GaloisForLFunctions/RHTower/GammaValuationSchurLabelledProfile.lean).
+
+[Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-335"></a>
+
+### Route-P scalar physical signed-word carrier
+
+**Closed result**
+
+The literal scalar physical prime--Gamma word coefficient is invariant under every orientation
+assignment and every permutation of its labelled positions. In particular it assigns equal
+coefficients to the first two four-label orders separated by the type-B descent-bottom
+discriminator. Scalar word/profile transport loses the required orientation before completion.
+
+**Survivor / still open**
+
+The off-diagonal Cauchy-cubic prime source has strictly positive four-label signed-Eulerian
+curvature, preserved by every positive diagonal source transport. The missing bridge maps this
+pair incidence into completed signed-word columns or an actual type-B insertion action.
+
+Evidence: [hyperoctahedral blindness](../../../../formal/GaloisForLFunctions/RHTower/PrimeGammaPhysicalWordHyperoctahedralBlindness.lean), [Cauchy-cubic curvature survivor](../../../../formal/GaloisForLFunctions/RHTower/PrimeGammaCauchyCubicSignedEulerianCurvature.lean).
+
+[Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-336"></a>
+
+### Suzuki unpaired zero-time divisor velocity
+
+**Closed result**
+
+Differentiating Suzuki's literal Xi-zero divisor series at time zero removes one divisor
+denominator. At every base point off the Xi divisor, the resulting unpaired velocity is not
+absolutely summable. It therefore cannot define the missing canonical source boundary by direct
+termwise differentiation.
+
+**Survivor / still open**
+
+Reflection pairing restores the exact reciprocal-square velocity and absolute summability. The
+paired datum is the canonical convergent boundary, but still needs a prime-source orientation and
+cofinal graph-energy law.
+
+Evidence: [zero-time velocity obstruction and reflection survivor](../../../../formal/GaloisForLFunctions/RHTower/SuzukiWeilZeroVelocityNoGo.lean).
+
+[Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
 
 <a id="roots"></a>
 

@@ -27,7 +27,7 @@ local instance : MulAction H H := Monoid.toMulAction ..
 local instance : MulAction H 𝒬 := .quotient ..
 
 omit [G.IsFiniteRelIndex H] in
-private theorem positiveRationalTrace_component_eigen
+theorem positiveRationalTrace_component_eigen
     (hH : HasPositiveRationalLifts H) (lam : ℝ)
     (f : glUpperHalfPlaneInvariantFunctions G) (hf : IsMaassEigenfunction lam f.1) (q : 𝒬) :
     IsMaassEigenfunction lam (maassTraceQuotientFunc f q) := by

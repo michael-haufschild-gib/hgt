@@ -137,6 +137,45 @@ theorem fullSquare_leftReader_green (q reader : XiZeroCopy)
     exact leftReaderPhysicalField_smooth reader p R z hz
   · exact hY
 
+/-- Finite modular Green transport for the exact physical cyclic Peierls
+coefficient.  Both full and retained-square fields, both orientations, and
+every side/top/core boundary term remain explicit.  This is the finite-domain
+angular boundary identity needed before the noncompact cap/contact limit. -/
+theorem cyclicPeierls_leftReader_green (q reader : XiZeroCopy) (branch : Bool)
+    (p R : ℝ) {Y : ℝ} (hY : 1 ≤ Y) :
+    ((∫ w in domain Y,
+      physicalScalarDensity (leftReaderPhysicalField reader)
+        (fullAngularPhysicalField q branch) (physicalSlice p R (point w.1 w.2))) -
+      (∫ w in domain Y,
+        physicalScalarDensity (fullAngularPhysicalField q branch)
+          (leftReaderPhysicalField reader) (physicalSlice p R (point w.1 w.2)))) -
+      (physicalRate q branch*(physicalRate q branch-1)/4)*
+        ((∫ w in domain Y,
+          physicalScalarDensity (leftReaderPhysicalField reader)
+            (fullSquarePhysicalField q) (physicalSlice p R (point w.1 w.2))) -
+          (∫ w in domain Y,
+            physicalScalarDensity (fullSquarePhysicalField q)
+              (leftReaderPhysicalField reader) (physicalSlice p R (point w.1 w.2)))) =
+      (physicalBoundary
+        (physicalTransfer (leftReaderPhysicalField reader) (fullAngularPhysicalField q branch) 0)
+        (physicalTransfer (leftReaderPhysicalField reader) (fullAngularPhysicalField q branch) 1)
+        p R Y -
+        physicalBoundary
+          (physicalTransfer (fullAngularPhysicalField q branch) (leftReaderPhysicalField reader) 0)
+          (physicalTransfer (fullAngularPhysicalField q branch) (leftReaderPhysicalField reader) 1)
+          p R Y) -
+      (physicalRate q branch*(physicalRate q branch-1)/4)*
+        (physicalBoundary
+          (physicalTransfer (leftReaderPhysicalField reader) (fullSquarePhysicalField q) 0)
+          (physicalTransfer (leftReaderPhysicalField reader) (fullSquarePhysicalField q) 1)
+          p R Y -
+          physicalBoundary
+            (physicalTransfer (fullSquarePhysicalField q) (leftReaderPhysicalField reader) 0)
+            (physicalTransfer (fullSquarePhysicalField q) (leftReaderPhysicalField reader) 1)
+            p R Y) := by
+  rw [fullAngular_leftReader_green q reader branch p R hY,
+    fullSquare_leftReader_green q reader p R hY]
+
 end
 
 end RHTower.D4BMLiteralCyclicPeierlsAngularGreen

@@ -82,6 +82,46 @@ def contactField (q : XiZeroCopy) (branch : Bool) (a : ℂ) (x : Fin 4 → ℝ) 
     Matrix (Fin 4) (Fin 4) ℂ :=
   fun i j => (contactExpr (physicalRate q branch) i j).eval (fun k => atoms q branch a k x)
 
+/-- Literal two-leg polarization of the actual contact field.  This is the
+contact carrier required by the cyclic Peierls branch: its diagonal is the
+already constructed physical contact, while independent legs remain available
+for the full bilinear causal source. -/
+def contactFieldBilinear (q : XiZeroCopy) (branch : Bool) (a d : ℂ)
+    (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
+  (4 : ℂ)⁻¹ • (contactField q branch (a+d) x-contactField q branch (a-d) x)
+
+private theorem contactField_amplitude_square (q : XiZeroCopy) (branch : Bool)
+    (a : ℂ) (x : Fin 4 → ℝ) :
+    contactField q branch a x = (a^2) • contactField q branch 1 x := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [contactField,contactExpr,atoms,D4BMFundamentalScalarMetric.envelope,
+      ScalarTwoJet.Expression.eval,smul_eq_mul]
+  all_goals ring
+
+/-- The polarized contact is exactly the product of its two independent
+physical amplitudes. -/
+theorem contactFieldBilinear_eq_product (q : XiZeroCopy) (branch : Bool)
+    (a d : ℂ) (x : Fin 4 → ℝ) :
+    contactFieldBilinear q branch a d x = (a*d) • contactField q branch 1 x := by
+  unfold contactFieldBilinear
+  rw [contactField_amplitude_square,contactField_amplitude_square]
+  ext i j
+  simp only [Matrix.smul_apply,Matrix.sub_apply,smul_eq_mul]
+  ring
+
+/-- Cyclic symmetry is literal before any causal boundary condition. -/
+theorem contactFieldBilinear_symm (q : XiZeroCopy) (branch : Bool)
+    (a d : ℂ) (x : Fin 4 → ℝ) :
+    contactFieldBilinear q branch a d x = contactFieldBilinear q branch d a x := by
+  rw [contactFieldBilinear_eq_product,contactFieldBilinear_eq_product,mul_comm]
+
+/-- The diagonal of the two-leg contact is the original actual contact field. -/
+theorem contactFieldBilinear_diag (q : XiZeroCopy) (branch : Bool)
+    (a : ℂ) (x : Fin 4 → ℝ) :
+    contactFieldBilinear q branch a a x = contactField q branch a x := by
+  rw [contactFieldBilinear_eq_product,contactField_amplitude_square,pow_two]
+
 private theorem atoms_smooth (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (p : D4BMBackground.ExteriorPoint) (k : Fin 5) :
     ContDiffAt ℝ 2 (atoms q branch a k) p.val := by
@@ -113,6 +153,17 @@ theorem contactField_smooth (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     ContDiffAt ℝ 2 (fun x => contactField q branch a x i j) p.val :=
   ((contactExpr (physicalRate q branch) i j).eval_jet_correct
     (atoms_smooth q branch a p) (contact_regular q branch a p i j)).1
+
+/-- The literal two-leg contact has an actual coordinate two-jet on every
+exterior point; no supplied boundary jets are used. -/
+theorem contactFieldBilinear_smooth (q : XiZeroCopy) (branch : Bool) (a d : ℂ)
+    (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
+    ContDiffAt ℝ 2 (fun x => contactFieldBilinear q branch a d x i j) p.val := by
+  unfold contactFieldBilinear
+  simp only [Matrix.smul_apply,Matrix.sub_apply,smul_eq_mul]
+  exact contDiffAt_const.mul
+    ((contactField_smooth q branch (a+d) p i j).sub
+      (contactField_smooth q branch (a-d) p i j))
 
 private def atomJets (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (p : D4BMBackground.ExteriorPoint) : Fin 5 → ScalarTwoJet (Fin 4) ℂ :=

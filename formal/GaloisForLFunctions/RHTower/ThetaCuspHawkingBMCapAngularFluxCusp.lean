@@ -31,6 +31,18 @@ def angularFlux (q r : XiZeroCopy) (j : Fin 2) (z : Point) : ℂ :=
   (physicalAngularParameter r^2-1/4)*reader r z*coordDeriv j (fullSquarePotential q) z-
     scalarLaplacian (fullSquarePotential q) z*coordDeriv j (reader r) z
 
+/-- Public expansion of the literal cap source flux.  It exposes the exact
+reader and square-potential slots needed by the same-branch cyclic cap
+current, without suppressing the scalar action in the reader derivative. -/
+theorem angularFlux_eq (q r : XiZeroCopy) (j : Fin 2) (z : Point) :
+    angularFlux q r j z =
+      (physicalAngularParameter r^2 - 1 / 4) *
+        D4BMLiteralCusp.scalar (physicalAngularParameter r) z *
+          coordDeriv j (fullSquarePotential q) z -
+        scalarLaplacian (fullSquarePotential q) z *
+          coordDeriv j (D4BMLiteralCusp.scalar (physicalAngularParameter r)) z := by
+  rfl
+
 private theorem square_first (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (j : Fin 2) :
     coordDeriv j (fullSquarePotential q) z=
       scalar (center q) z*coordDeriv j (scalar (center q)) z := by

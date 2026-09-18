@@ -535,6 +535,47 @@ theorem fullAngularRiemannKernel_goursat (q : XiZeroCopy) (branch : Bool)
           (4*(Real.cosh (p.source+(a-b)/2):ℂ)^2) :=
   kernel_goursat q branch p X k
 
+/-- Definitional realization of the literal full Riemann kernel by the
+branch-dependent circle response.  This exposes the exact kernel used in the
+direct-minus-image source-horizon trace. -/
+theorem fullAngularRiemannKernel_eq_angularMean (q : XiZeroCopy) (branch : Bool)
+    (h x y X k : ℝ) :
+    fullAngularRiemannKernel q branch h x y X k =
+      angularMean q branch (Real.arcosh (invariant h x y)) X k := by
+  rfl
+
+/-- On a literal closed null rectangle, the full Riemann kernel is exactly its
+original circle mean in the physical `arcosh` chart.  This exposes the
+closed-chart realization needed for compact weak transposition without
+replacing the branch-dependent full kernel by the native one. -/
+theorem fullAngularRiemannKernel_null_closed (q : XiZeroCopy) (branch : Bool)
+    (y u v X k : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
+    fullAngularRiemannKernel q branch ((u+v)/2) (y+(u-v)/2) y X k =
+      angularMean q branch
+        (Real.arcosh (max 1 (invariant ((u+v)/2) (y+(u-v)/2) y))) X k := by
+  have hz : 1 ≤ invariant ((u+v)/2) (y+(u-v)/2) y := by
+    apply invariant_causal
+    rw [abs_le]
+    constructor <;> linarith
+  unfold fullAngularRiemannKernel
+  change angularMean q branch (Real.arcosh (invariant ((u+v)/2) (y+(u-v)/2) y)) X k = _
+  rw [max_eq_right hz]
+
+/-- The native theta kernel has the same literal closed-chart realization on
+the same null rectangle.  It is kept as the native summand in the full
+Goursat forcing, not identified with the full response. -/
+theorem nativeRiemannKernel_null_closed (q : XiZeroCopy)
+    (y u v X k : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
+    D4BMNativeCircle.nativeRiemannKernel q ((u+v)/2) (y+(u-v)/2) y X k =
+      D4BMNativeCircle.mean q
+        (Real.arcosh (max 1 (invariant ((u+v)/2) (y+(u-v)/2) y))) X k := by
+  have hz : 1 ≤ invariant ((u+v)/2) (y+(u-v)/2) y := by
+    apply invariant_causal
+    rw [abs_le]
+    constructor <;> linarith
+  unfold D4BMNativeCircle.nativeRiemannKernel D4BMNativeCircle.angularKernel
+  rw [max_eq_right hz]
+
 /-- The integrated literal full angular action in the original direct causal cone. -/
 def fullAngularCorrection (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) : ℂ :=
   if |x-y| ≤ h then
