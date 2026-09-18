@@ -146,3 +146,18 @@
 - Lean status: `XiWardCubicAdaptivePrimitiveSectorNoGo` directly checks; its linear defect bound
   and adaptive-rate-and-aperture no-go have only `propext`, `Classical.choice`, and `Quot.sound`
   in their axiom footprints.
+- Route P's source-selected compact phase average is not an independent arithmetic producer:
+  existing Lean proves, for every real `a`, that its ceiling
+  `4π(1-a)·N + o(N)` is equivalent to critical-line density at least `a`.  Its exact off-line
+  mass asymptotic is already formalized.  Therefore any scalar P argument based only on this
+  phase average is a density/RH receiver in source coordinates, not a way around the source
+  covariance ceiling.
+- The literal reflected Suzuki `2,-3` source survivor has a sharp abelian classification.  The
+  linear abelianization of `-suzukiCurvatureSuccessorValuation 2` is the reduced prime-chain
+  cycle `e₂-e₃` at product cutoff `3`, and its explicit oriented filling is `-(e₂∧e₃)` at cutoff
+  `6`.  Thus this actual nonzero ordered boundary-excursion witness becomes null in the cofinal
+  abelian prime-chain carrier.  A viable P/SP-E lift must retain secondary/noncommutative
+  chronology rather than only valuation or abelian chain data.
+- Lean status: `SuzukiReflectedHistoryPrimeChainBoundary` directly checks and has its target
+  olean built.  The source prime-step abelianization, cutoff-cycle, and explicit-filling theorems
+  audit with only `propext`, `Classical.choice`, and `Quot.sound`.

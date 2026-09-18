@@ -1701,3 +1701,17 @@
 - Source review of `SelbergMaassPhaseStressFourier.phaseStressXYHorizontal_centered_moment_fourier` shows the remaining phase obstruction is a signed Fourier functional of the original source cross-loss. No corpus map identifies it with the rational-trace seam, so the new seam cancellation does not supply its sign. The direct active target remains the source-density coercivity `3*D + 4*A >= R`.
 - `SelbergMaassGeneratorCostGrowth.generatorConstant_gt_of_large_level` proves that the existing finite-word `S,T` regular-action comparison exceeds `k^2 / 2` whenever `2 * 5^k < N + 1`. Therefore this comparison cannot provide a level-uniform deck spectral gap or the density coercivity `3*D + 4*A >= R`.
 - The characterwise source route reaches the closed inequality `core_cusp_balance_sq_le`: its seam balance squared is at most `(2 / 3) * ∫ arcLossGradient`. `diagonal_transfer_loss_sum_lower` supplies only a lower bound for the summed inversion losses, while the seam estimate uses them as an upper bound. Thus the available inequalities have incompatible directions and cannot yield `3*D + 4*A >= R`. Searches found no rational-trace-to-character/inversion-transfer theorem, so rational-window seam cancellation cannot currently change that direction.
+
+- **The first rational Hecke Hilbert correspondence is now bounded and source-identified (2026-09-18).**
+  `MaassFiniteCoverPullbackL2.integralFiniteCoverPullbackLpContinuousLinear` constructs the
+  finite-cover pullback on every quotient `L²` space and proves its exact norm identity
+  `norm_integralFiniteCoverPullbackLp`, with factor `sqrt (Nat.card (Γ ⧸ K.subgroupOf Γ))`.
+  `MaassRationalHeckeCorrespondenceL2.rationalHeckePrincipalToConjugateLpContinuousLinear`
+  composes it with the existing bounded rational-conjugate fiber trace.  Its source theorem
+  identifies the image of `MaassQuotientL2.sourceLp` with
+  `rationalHeckeConjugateFiberTraceSourceLp`, hence with the literal rational-conjugate
+  automorphic trace.  This closes the earlier claim that no bounded `L²` correspondence existed:
+  the closed result is an inter-quotient operator from principal to rational-conjugate `L²`, not
+  an endomorphism of the principal quotient or of the completed complementary-model image.
+  The next hard bridge is transport/closure on that completed source carrier and a finite-place
+  parameter inequality; no such transport or local factorization has been proved.

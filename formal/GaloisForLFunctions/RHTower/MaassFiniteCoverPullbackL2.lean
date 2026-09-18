@@ -88,6 +88,39 @@ noncomputable def integralFiniteCoverPullbackLpLinear
     rw [hsmul, hf]
     rfl
 
+/-- Finite-cover pullback has the exact square-root degree norm scaling. -/
+theorem norm_integralFiniteCoverPullbackLp
+    (K Γ : Subgroup SL2Z) [K.IsFiniteRelIndex Γ] (hKΓ : K ≤ Γ)
+    (f : Lp ℂ 2 (integralSubgroupQuotientMeasure Γ)) :
+    ‖integralFiniteCoverPullbackLp K Γ hKΓ f‖ =
+      Real.sqrt (Nat.card (Γ ⧸ K.subgroupOf Γ) : ℝ) * ‖f‖ := by
+  let Q := Γ ⧸ K.subgroupOf Γ
+  letI : Nonempty Q := ⟨QuotientGroup.mk 1⟩
+  letI : Fintype Q := Fintype.ofFinite _
+  have hcardNat : Nat.card Q ≠ 0 := Nat.ne_of_gt (Nat.card_pos (α := Q))
+  have hcard : (Nat.card Q : ENNReal) ≠ 0 := by
+    exact_mod_cast hcardNat
+  rw [Lp.norm_def, Lp.norm_def,
+    eLpNorm_congr_ae (coe_integralFiniteCoverPullbackLp K Γ hKΓ f),
+    eLpNorm_comp_subgroupQuotientProjection K Γ hKΓ
+      (f : SL2R ⧸ realImage Γ → ℂ) 2
+      ((Lp.aestronglyMeasurable f).smul_measure _)]
+  rw [← Nat.cast_smul_eq_nsmul ENNReal,
+    eLpNorm_smul_measure_of_ne_zero hcard, smul_eq_mul, ENNReal.toReal_mul]
+  congr 1
+  rw [← ENNReal.toReal_rpow]
+  norm_num
+  rw [← Real.sqrt_eq_rpow]
+
+/-- Finite-cover pullback is a bounded complex-linear map on quotient `L²`. -/
+noncomputable def integralFiniteCoverPullbackLpContinuousLinear
+    (K Γ : Subgroup SL2Z) [K.IsFiniteRelIndex Γ] (hKΓ : K ≤ Γ) :
+    Lp ℂ 2 (integralSubgroupQuotientMeasure Γ) →L[ℂ]
+      Lp ℂ 2 (integralSubgroupQuotientMeasure K) :=
+  LinearMap.mkContinuous (integralFiniteCoverPullbackLpLinear K Γ hKΓ)
+    (Real.sqrt (Nat.card (Γ ⧸ K.subgroupOf Γ) : ℝ))
+    (fun f => (norm_integralFiniteCoverPullbackLp K Γ hKΓ f).le)
+
 end
 
 end GaloisForLFunctions.RHTower
