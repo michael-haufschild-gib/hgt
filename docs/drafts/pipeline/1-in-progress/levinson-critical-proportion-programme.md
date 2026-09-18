@@ -3990,3 +3990,46 @@ or reproduce Lamzouri's Hilbert-space inequality plus BGSTB); the Levinson lane 
 `c₁` in the explicit `(L)` ceiling. The new mechanism is an RH receiver (support-1 ceiling `≈ 0.682`;
 off-line pairs enter only as an upper bound on the positive index of `Q`; no entire kernel with
 `Re K ≥ 0` on `ℂ`).
+
+## Brick 5bz — the crude `ζΨ` gate is now sufficient; assembly plan (2026-09-18, session C)
+
+`ZetaTwoThirdsOffLineMomentConstant.eventually_offLineMoment_le_of_zetaGate_twoThirds` replaces the
+Levinson detector gate `c₂` by the unconditional two-thirds proportion (Zeta23), so the `(L)`
+ceiling `4π Σ(β−½)⁺ ≤ (log c₁ − (5/3)R + η)V` needs only `ZetaMollifiedMeanSquareGate R c₁` with
+**any** finite `c₁`. Brick 5by's correction ("crude route vacuous for the κ gate") no longer
+applies: the crude route through the product AFE gives the first unconditional Lean theorem
+`Σ_{Im ρ ≤ V} m_ρ(Re ρ − ½) = O(V)` (Selberg 1946 / Najnudel–Nikeghbali Lemma 8.4), which is not
+in Lean anywhere (no zero-density theorem is).
+
+Audit of the built bricks against the crude assembly (all exponents for `a ≥ U^{1/8}`):
+1. Mollifier length is existential in the gate; take `N = ⌊U^{1/100}⌋`, `b = hbCoeff N`. Then the
+   diagonal remainders at `Re w = −1/4` (`exists_norm_smoothDiagonal_left_le`,
+   `exists_norm_dualDiagonal_left_le`) summed over `N²` pairs are `≪ a^{−0.05}(v−a+2η)` and
+   `≪ a^{−0.21+2d}(v−a+2η)`: no deeper contour shift is needed. (With `N = U^{1/20}` they are
+   `a^{1.55}`, too large.)
+2. Window `w = blockWindow a v η` with `η = a^{19/20}`: the overhang `2η = o(a)` is absorbed by the
+   dyadic law's `ε·a` slack, so short blocks (the consumer's last partial block) need no separate
+   argument. Direct envelope: `(A,K) = (20,38)` satisfies `1 < A + σ₀ − K/2` and total exponent
+   `1 + A − 0.95K + 0.16(K/2) + 0.16 < 1`.
+3. **The dual oscillation bound as built does not close.** `exists_norm_integral_blockWindow_dualCarrierWeight_le`
+   splits the frequency integral at `|v| = (p−η)/2`, so `windowCarrierJetConst K η (p−η) ((p−η)/2)`
+   carries the carrier factor `(33(1+(p−η)/2)/(p−η))^{K−j} ≈ 16.5^{K−j}`, and the oscillation gain
+   `J_K/|ξ|^K` is `≥ 1` for every near-diagonal pair: the range `Y ∈ [a, a²]` (between the
+   oscillation and right-shift regimes) is uncovered. Fix: the same proof with a free split
+   `1 ≤ V ≤ (p−η)/2`, tail `e^{−V²/2}`; with `V ≍ √(log a)` the carrier factor is `≍ (V/a)^{K−j}`
+   and the first envelope part is `≪ a^{5.5+ε₁−K(0.9−0.08−ε₁/2)}`.
+4. Diagonal identification: the direct diagonal `(m+1)h = (n+1)k` is `{((j+1)k'−1,(j+1)h'−1)}`,
+   `h = gh'`, `k = gk'`, giving `c^{−σ₀}(∫w)·smoothDiagonal σ₀ c x`, `c = h'k'`; the dual diagonal
+   `(n+1)h = (m+1)k` gives `c^{σ₀−1}∫w(t)·dualDiagonal d c x t`. Both envelopes vanish on their
+   diagonals, so they bound the off-diagonal part of the full `tsum` directly.
+5. Main terms: `ζ(2σ₀)(∫w)S₁ ≤ 0` (`sum_gcd_rpow_div_nonneg`, `ζ(2σ₀) < 0`);
+   `ζ(1+2d)(∫w·χ(s₁)χ(s₂))S₂` with `0 ≤ S₂ ≤ 64C²N^{2d}(1+log N)/log²N`
+   (`sum_barbanVehov_gcd_rpow_div_le`), `|χ(s₁)χ(s₂)| ≤ C(q+η)^{2d}`; residues cancel pairwise
+   (`smoothDiagonalShiftedResidue_add_dual_cancel`); product-AFE residues are `O(e^{−t²})`.
+6. Interchange `∫w·Σ'_P` by `integral_tsum`: direct majorant `(mn)^{−σ₀}|V(mn/x)|`, dual majorant
+   `(mn)^{σ₀−1}·sup_supp|A_{mnx}| ≤ C(1+q+η)^{2K''+1}(mnx)^{−(½−d+K'')}`.
+7. Assembly copies the skeleton of `exists_zetaDyadicMeanSquareLaw_of_sharpEnergyInput` with the
+   low blocks from `integral_normSq_zeta_mul_edPoly_crude`; then `zetaMollifiedMeanSquareGate_of_dyadicLaw`
+   and `eventually_offLineMoment_le_of_zetaGate_twoThirds`.
+
+New modules are prefixed `ZetaGateProductAFE*`; none of the existing bricks is edited.

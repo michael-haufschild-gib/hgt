@@ -785,6 +785,18 @@ blows up.  A Fejer deconvolution of the safe edge lands at the same missing tang
   11. higher trace moments cannot improve the unconditional bandwidth-one certificate: the
       available range is `k lambda<2`, so `lambda>1/2` permits no useful even moment beyond two,
       while `lambda<=1/2` has a nonpositive dimension certificate.
+  12. (2026-09-18) sieve upper bounds on prime correlations cannot extend the pair-correlation
+      support beyond one.  Extending the Fejer window to `[-1-delta,1+delta]` would gain
+      `(2/3)delta - O(delta^2 sup F)` in the simple-on-line proportion for ANY bounded `F` on
+      `(1,1+delta)`, so the whole question is an unconditional upper bound for `F(alpha)`,
+      `alpha>1`.  There the prime side is a Dirichlet polynomial of length `x=T^alpha>T`; its
+      off-diagonal is `T sum_(h<=x/T) C(h)/x + 2 sum_(h>x/T) C(h)/h` with
+      `C(h)=sum_(n<=x) Lambda(n)Lambda(n+h)`.  The Selberg/Halberstam--Richert bound
+      `C(h)<=(8+o(1))S(h)x` gives `F(alpha)<=1+O(T^(alpha-1)/log T)`: the `T^(alpha-1)` relevant
+      shifts each lose a constant, and only Hardy--Littlewood-strength cancellation
+      `C(h)-S(h)x=o(x)` on average could remove it.  The reachable extension is
+      `delta asymp 1/log T`, i.e. a proportion gain `o(1)`.  Dead unconditionally; not a
+      corpus-native mechanism.
 - **Strongest positive survivor:** anti-causal Euler--Gamma density estimate `(EG75)`, with `(HC)`
   as current-theoretic alternative.
 - **New insight:** the corpus's absolute `<2` horizontal-charge target is unnecessarily strong for

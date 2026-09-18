@@ -66,7 +66,7 @@ theorem exists_norm_riemannZeta_le_leftStrip :
           apply mul_le_mul_of_nonneg_left h1 (by positivity)
 
 /-- The trivial bound right of `Re s = 2`. -/
-theorem norm_riemannZeta_le_of_two_le_re {s : ℂ} (hs : 2 ≤ s.re) :
+theorem norm_riemannZeta_le_of_two_le_re_tsum {s : ℂ} (hs : 2 ≤ s.re) :
     ‖riemannZeta s‖ ≤ ∑' n : ℕ, 1 / (n + 1 : ℝ) ^ 2 := by
   have hre : 1 < s.re := by linarith
   rw [zeta_eq_tsum_one_div_nat_add_one_cpow hre]
@@ -87,7 +87,7 @@ theorem norm_riemannZeta_le_of_two_le_re {s : ℂ} (hs : 2 ≤ s.re) :
 
 /-! ## Pointwise bounds on the integrand -/
 
-theorem norm_smoothAFEGaussianKernel_eq (w : ℂ) :
+theorem norm_smoothAFEGaussianKernel_eq_contour (w : ℂ) :
     ‖smoothAFEGaussianKernel w‖ = Real.exp (w.re ^ 2 - w.im ^ 2) / ‖w‖ := by
   unfold smoothAFEGaussianKernel
   rw [norm_div, Complex.norm_exp]
@@ -137,7 +137,7 @@ theorem norm_smoothDiagonalIntegrand_horizontal_le {σ₀ c x : ℝ} (hc : 0 < c
   -- kernel factor
   have hk : ‖smoothAFEGaussianKernel ((u : ℂ) + ((ε * T : ℝ) : ℂ) * I)‖
       ≤ Real.exp 1 * Real.exp (-(T ^ 2)) := by
-    rw [norm_smoothAFEGaussianKernel_eq]
+    rw [norm_smoothAFEGaussianKernel_eq_contour]
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im, Complex.I_re,
       Complex.I_im, mul_zero, mul_one, sub_zero, add_zero, Complex.add_im, Complex.mul_im, zero_add]
     have hnorm : T ≤ ‖(u : ℂ) + ((ε * T : ℝ) : ℂ) * I‖ := by
@@ -189,7 +189,7 @@ theorem norm_smoothDiagonalIntegrand_left_le {σ₀ c x : ℝ} (hc : 0 < c) (hx 
     simp
   have hk : ‖smoothAFEGaussianKernel ((((-(1 / 4) : ℝ) : ℂ)) + (t : ℂ) * I)‖
       ≤ 4 * Real.exp (1 / 16) * Real.exp (-(t ^ 2)) := by
-    rw [norm_smoothAFEGaussianKernel_eq]
+    rw [norm_smoothAFEGaussianKernel_eq_contour]
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im, Complex.I_re,
       Complex.I_im, mul_zero, mul_one, sub_zero, add_zero, Complex.add_im, Complex.mul_im, zero_add]
     have hnorm : (1 / 4 : ℝ) ≤ ‖(((-(1 / 4) : ℝ) : ℂ)) + (t : ℂ) * I‖ := by
@@ -224,7 +224,7 @@ theorem norm_smoothDiagonalIntegrand_right_le {σ₀ c x : ℝ} (hc : 0 < c) (hx
   rw [norm_mul, norm_mul]
   have hz : ‖riemannZeta (((2 * σ₀ : ℝ) : ℂ) + 2 * (((1 : ℝ) : ℂ) + (t : ℂ) * I))‖
       ≤ ∑' n : ℕ, 1 / (n + 1 : ℝ) ^ 2 := by
-    apply norm_riemannZeta_le_of_two_le_re
+    apply norm_riemannZeta_le_of_two_le_re_tsum
     simp
     linarith
   have hp : ‖((x / c : ℝ) : ℂ) ^ (((1 : ℝ) : ℂ) + (t : ℂ) * I)‖ = x / c := by

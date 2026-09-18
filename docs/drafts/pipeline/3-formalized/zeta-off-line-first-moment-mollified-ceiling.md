@@ -220,3 +220,25 @@ positive number for every fixed `a'`, and only the mollifier length moves the ex
 Files: `formal/GaloisForLFunctions/RHTower/LevinsonMollifiedBudgetWide.lean`,
 `formal/GaloisForLFunctions/RHTower/ZetaZeroDensityRightShiftedLine.lean` (both wired in
 `RHTower.lean`); pod scripts `shifted_general.py` (taper kernel), `density_const.py` (optimisation).
+
+## Update 2026-09-18 — the on-line proportion input is now unconditional (two thirds)
+
+The two-gate constant `eventually_offLineMoment_le_of_gates` derived the on-line proportion `κ₀`
+from Levinson's detector gate, capped at `κ₀ < 1 − log c₂/R` (paper value `κ₀ ≈ 0.34`).
+Alpöge–Furman's unconditional two-thirds theorem (Zeta23, pinned Lake dependency; Xi-census
+transport `two_thirds_simpleCritical_epsilon`) replaces that gate:
+
+`RHTower.eventually_offLineMoment_le_of_zetaGate_twoThirds`
+(`formal/GaloisForLFunctions/RHTower/ZetaTwoThirdsOffLineMomentConstant.lean`, wired after
+`SingleInputOffLineMomentConstant`; `lake build` green; axioms `propext, Classical.choice, Quot.sound`):
+
+  `ZetaMollifiedMeanSquareGate R c₁ → ∀ η > 0, ∀ᶠ V, 4π · Σ_{Im ρ ≤ V} m_ρ (Re ρ − ½) ≤ (log c₁ − (5/3)R + η) V`.
+
+Only one external input remains (the mollified mean square of `ζΨ` on the Levinson line). Paper
+values with Young's `c₁(R, θ)`, `θ = 4/7`: minimising `log c₁ − (5/3)R` gives `≈ 0.672` at
+`R ≈ 1.1`, i.e. `Σ(β−½)⁺ ≤ 0.0535·T` and `(1/T)∫_0^T log|ζ(½+it)| ≤ 0.336`, against the two-gate
+`0.0714·T`. With density one (`κ₀ = 1`) the same arithmetic bottoms out at `≈ 0.006·T`: the
+mollified-Littlewood family cannot reach `(L)` even from density one, confirming CANNOT-300–305.
+Proof: copy of the two-gate proof with `hprop` taken from `two_thirds_simpleCritical_epsilon`,
+`xiSimpleCriticalZeroCount_le_xiPosCriticalZeroCount`, slack `ε₀ = min(1/3, η/(16R))`, `δ = 0`,
+`ε' = η/(60πR)`.

@@ -173,7 +173,7 @@ theorem norm_dualDiagonalIntegrand_horizontal_le {d c x τ : ℝ} (hd : 0 < d) (
   -- the kernel
   have hk : ‖smoothAFEGaussianKernel ((u : ℂ) + ((ε * T : ℝ) : ℂ) * I)‖
       ≤ Real.exp 1 * Real.exp (-(T ^ 2)) := by
-    rw [norm_smoothAFEGaussianKernel_eq]
+    rw [norm_smoothAFEGaussianKernel_eq_contour]
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im, Complex.I_re,
       Complex.I_im, mul_zero, mul_one, sub_zero, add_zero, Complex.add_im, Complex.mul_im, zero_add]
     have hnorm : T ≤ ‖(u : ℂ) + ((ε * T : ℝ) : ℂ) * I‖ := by
@@ -285,7 +285,7 @@ theorem norm_dualDiagonalIntegrand_left_le {d c x τ : ℝ} (hd : 0 < d) (hd8 : 
   -- kernel
   have hk : ‖smoothAFEGaussianKernel ((((-(1 / 4) : ℝ) : ℂ)) + (v : ℂ) * I)‖
       ≤ 4 * Real.exp (1 / 16) * Real.exp (-(v ^ 2)) := by
-    rw [norm_smoothAFEGaussianKernel_eq]
+    rw [norm_smoothAFEGaussianKernel_eq_contour]
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im, Complex.I_re,
       Complex.I_im, mul_zero, mul_one, sub_zero, add_zero, Complex.add_im, Complex.mul_im, zero_add]
     have hnorm : (1 / 4 : ℝ) ≤ ‖(((-(1 / 4) : ℝ) : ℂ)) + (v : ℂ) * I‖ := by
@@ -383,7 +383,7 @@ theorem integrable_dualDiagonalIntegrand_right {d c x τ : ℝ} (hd : 0 < d) (hd
   unfold dualDiagonalIntegrand
   rw [norm_mul, mul_comm]
   apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
-  apply norm_riemannZeta_le_of_two_le_re
+  apply norm_riemannZeta_le_of_two_le_re_tsum
   simp
   linarith
 
