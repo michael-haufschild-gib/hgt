@@ -174,15 +174,17 @@ theorem riemannHypothesis_iff_suzukiEulerianCompletedOutgoingDiscrepancyBounded 
         rw [unitRieszCoherentCompletedOutgoingCharge_eq_resolvent_half hM]
         ring
       rw [hresEq, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
-      linarith
+      linarith [abs_nonneg (unitRieszCoherentCompletedOutgoingCharge 2)]
     · have hMtwo : M = 2 := by omega
       subst M
       have hresEq : criticalMellinChebyshevResolventSource (Real.log 2) =
           2 * unitRieszCoherentCompletedOutgoingCharge 2 := by
         rw [unitRieszCoherentCompletedOutgoingCharge_eq_resolvent_half (by omega)]
         ring
+      norm_num at hresEq ⊢
       rw [hresEq, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
-      nlinarith [abs_nonneg (unitRieszCoherentCompletedOutgoingCharge 2)]
+      nlinarith [hB, abs_nonneg suzukiEulerianCoherentBoundaryAnchor,
+        abs_nonneg (unitRieszCoherentCompletedOutgoingCharge 2)]
 
 end
 

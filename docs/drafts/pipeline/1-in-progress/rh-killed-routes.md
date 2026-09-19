@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**337 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**343 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-17, `1823264842e5e4ccfee10a0920b608ed3e3d2f6a`**.
+Source-audit cutoff: **2026-09-19, `486c3e043ccf06af6b8d57572153c580bef51534`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. FD2's full verdict and
 RBH's retired architecture remain accessible from
@@ -21,14 +21,14 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 
 | Family | Entries |
 |---|---:|
-| [Retired original route labels](#retired-labels) | 16 |
+| [Retired original route labels](#retired-labels) | 17 |
 | [CCM-FU: prime scheduling and current bounds](#ccm) | 23 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 37 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 71 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 28 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 38 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 72 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 29 |
 | [Singular descent, formation and completion](#completion) | 27 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 46 |
-| [Analytic roots, multiplicity and regularization](#roots) | 9 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 47 |
+| [Analytic roots, multiplicity and regularization](#roots) | 10 |
 | [Other finite, scalar and source-blind selectors](#other) | 80 |
 
 <a id="retired-labels"></a>
@@ -44,6 +44,7 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 - [F](#no-go-136)
 - [G2](#no-go-142)
 - [H](#no-go-145)
+- [HB](#no-go-341)
 - [IW](#no-go-163)
 - [J](#no-go-146)
 - [K](#no-go-150)
@@ -177,6 +178,31 @@ Even Taylor factorization erases orientation.
 Relation-valued indefinite primitive.
 
 [Back to family](#retired-labels) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-145)
+
+<a id="no-go-341"></a>
+
+### HB
+
+**Closed result**
+
+The general-Fuchsian scattering architecture cannot force second-sheet poles onto the Riemann
+line: every geometric, causal, Maass--Selberg and positivity input survives finite-area cusped
+deformation while resonances move off the symmetry line. The PSL₂(ℤ)-specific repair programme
+through Hecke eigenvalues and moments, Rankin--Selberg phases, Kuznetsov residues, Ward
+stationarity, Hardy factorization and resonant-state Gram laws was exhausted; each candidate is
+an exact receiver, a positive Cauchy/Breit--Wigner model valid throughout `Re ρ < 1`, or an
+RH-equivalent premise. HB therefore has no independent producer and is retired as an RH route.
+
+**Survivor / still open**
+
+The full receiver stack survives: Maass--Selberg, height-one source sign, resonant norm and
+partner-angle laws, exact Hecke moments, pulse-layer direct/image decomposition and the Peierls
+lift defect. Image domination, strong Goursat regularity and `contactField` identification remain
+physical transport problems, not an arithmetic zero-selection route.
+
+Evidence: [producer loop](hb-producer-conjecture-loop.md), [Maass--Selberg model](../../../../formal/GaloisForLFunctions/RHTower/EisensteinMaassSelbergLineModel.lean), [resonant spectral kernel](../../../../formal/GaloisForLFunctions/RHTower/EisensteinResonantSpectralKernel.lean), [pulse layer](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean).
+
+[Back to family](#retired-labels) · [Current receiver summary](rh-current-frontier-map.md#hb-receiver-stack-after-route-retirement)
 
 <a id="no-go-163"></a>
 
@@ -712,6 +738,7 @@ Evidence: [pole-parity wall-jet obstruction](../../../../formal/GaloisForLFuncti
 - [T2 regular/compact-open semicontinuous scalar descent](#no-go-147)
 - [finite-abscissa Dirichlet scalar, shift and period selector](#no-go-275)
 - [EDQ inclusive all-gcd positive completion](#no-go-313)
+- [factorized Dirichlet-polynomial large-value selection](#no-go-340)
 
 <a id="no-go-296"></a>
 
@@ -1284,6 +1311,29 @@ Evidence: [inclusive gcd Gram](../../../../formal/GaloisForLFunctions/RHTower/Mo
 
 [Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
 
+<a id="no-go-340"></a>
+
+### factorized Dirichlet-polynomial large-value selection
+
+**Closed result**
+
+Long Dirichlet polynomials can select their own multiplicative resonance. For
+`D(u)=(L^{iu}+(L+1)^{iu})B(u)`, the threshold large-value set concentrates on arcs where
+`((L+1)/L)^{iu}` has positive real part. Explicit corpus polynomials have
+`Re ∫_E ((L+1)/L)^{iu}du ≥ vol(E)/30`, contradicting the proposed square-root cancellation
+for the measure part. Restricting the final sum to zero ordinates does not remove the defect:
+the resonance already occurs in the zero-free measure term.
+
+**Survivor / still open**
+
+A selector may still work after excluding approximate divisibility by short factors, for example
+at coprime ratios above the factorization height, but it must control both the measure and
+zero-fluctuation terms. The unrestricted density-hypothesis selection conjecture is false.
+
+Evidence: [factorized resonance](../../../../formal/GaloisForLFunctions/RHTower/SelectionResonanceFactorizationMain.lean), [general block](../../../../formal/GaloisForLFunctions/RHTower/SelectionResonanceFactorizationGeneralMain.lean), [large-values audit](density-hypothesis-large-values-frontier.md).
+
+[Back to family](#arithmetic) · [Shared frontier](rh-current-frontier-map.md#off-line-first-moment-and-large-value-selection)
+
 <a id="scattering"></a>
 
 ## HB, FZZ and PW: scattering and physical action
@@ -1348,6 +1398,7 @@ Evidence: [inclusive gcd Gram](../../../../formal/GaloisForLFunctions/RHTower/Mo
 - [positive moment-admissible PW boundary regularization](#no-go-223)
 - [PW-B convergent endpoint moment series](#no-go-082)
 - [PW-B literal global weighted Mellin dual-mass bound](#no-go-084)
+- [HB B2 coefficientwise square-reader cancellation](#no-go-342)
 - [PW-B positive, conditionally ordered, uniformly energized, or closed-linear endpoint darkness](#no-go-085)
 - [PW-B raw Gamma skew-source scalar occurrence](#no-go-081)
 - [PW-B singular connection index or canonical Hilbert density](#no-go-120)
@@ -2532,6 +2583,28 @@ Evidence: [endpoint-counterterm uniqueness](../../../../formal/GaloisForLFunctio
 
 [Back to family](#scattering) · [Current HB frontier](rh-current-frontier-map.md#hb--theta-cusp-hawking-causal-scattering)
 
+<a id="no-go-342"></a>
+
+### HB B2 coefficientwise square-reader cancellation
+
+**Closed result**
+
+At every on-line zero `ρ=1/2+iγ`, both Weyl coefficients of the square reader are nonzero:
+`Λ(2ρ)=Λ(1+2iγ)` and `Λ(2ρ-1)=Λ(2iγ)=conj Λ(1+2iγ)`. Hardy supplies such zeros, so a
+universal B2 law forcing either coefficient to vanish has a false antecedent. The principal face
+is instead a nonnegative real perfect square, with all three channels nonzero and sharing growth
+rate `y`.
+
+**Survivor / still open**
+
+A residual-face law can read only the relative growth rates `2 Re ρ`, `1` and `2-2 Re ρ`, which
+coincide on the critical line. This is the already-certified cutoff-growth receiver, not a
+coefficientwise zero-forcing producer. Remaining B2 work must be phrased as growth transport.
+
+Evidence: [square-reader channels](../../../../formal/GaloisForLFunctions/RHTower/HBSquareReaderChannelsOnLine.lean), [B2 audit](hb-b2-literal-peierls-facts.md).
+
+[Back to family](#scattering) · [HB retirement](#no-go-341)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -2564,6 +2637,7 @@ Evidence: [endpoint-counterterm uniqueness](../../../../formal/GaloisForLFunctio
 - [prime-labelled cubic theta scalar evaluation at an Xi zero](#no-go-318)
 - [SQB universal pointwise Möbius stress sign](#no-go-332)
 - [SQB all-channel averaging, level raising, or mean-zero orientation](#no-go-337)
+- [approximate or smoothed prime-measure Weil positivity](#no-go-343)
 
 <a id="no-go-308"></a>
 
@@ -3002,6 +3076,31 @@ not full-channel Parseval, period rescaling or mean cancellation.
 Evidence: [all-channel loss collapse](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassAllChannelLoss.lean), [selective zero mean](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassPhaseProductMean.lean), [exact centered moment](../../../../formal/GaloisForLFunctions/RHTower/SelbergMaassPhaseProductLossLimit.lean), [route fact audit](selberg-density-quartic-facts.md).
 
 [Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
+
+<a id="no-go-343"></a>
+
+### approximate or smoothed prime-measure Weil positivity
+
+**Closed result**
+
+Changing any one prime weight by any nonzero amount, inserting a block at any new scale, or
+removing all primes forces the restricted-Weil ground energy through zero. More generally, every
+finite perturbation and every countable perturbation with summable block norm and logarithmic
+moment is positive at all apertures only when RH holds and every perturbation coefficient is zero.
+Thus sieve majorants/minorants, PNT averages, smoothed prime measures and approximate explicit
+formulae cannot prove literal all-aperture positivity: they share their available bounds with
+prime measures whose operator has an actual kernel.
+
+**Survivor / still open**
+
+The exact von Mangoldt block is rigid and load-bearing. Route O must prove its literal global
+inequality prime by prime, or control a genuinely heavy nonsummable perturbation regime outside
+the bounded-family theorem. Rigidity narrows the producer; it does not prove positivity for the
+true block.
+
+Evidence: [countable rigidity](../../../../formal/GaloisForLFunctions/RHTower/WeilPrimeMeasureRigidityCountable.lean), [arbitrary insertion crossing](../../../../formal/GaloisForLFunctions/RHTower/WeilInsertionAnyWeight.lean), [single-prime deletion](../../../../formal/GaloisForLFunctions/RHTower/WeilSinglePrimeDeletionUniform.lean), [prime-free crossing](../../../../formal/GaloisForLFunctions/RHTower/WeilPrimeFreeCrossing.lean).
+
+[Back to family](#theta) · [Current Route O frontier](rh-current-frontier-map.md#o--restricted-weil-ground-and-genus-lag-order)
 
 <a id="completion"></a>
 
@@ -3486,6 +3585,7 @@ Evidence: [four-label projective-leakage obstruction](../../../../formal/GaloisF
 - [Route-P bounded Big-Witt seam for the labelled Gamma profile](#no-go-334)
 - [Route-P scalar physical signed-word carrier](#no-go-335)
 - [Suzuki unpaired zero-time divisor velocity](#no-go-336)
+- [Suzuki reflected-history abelian prime-chain transport](#no-go-338)
 
 <a id="no-go-309"></a>
 
@@ -4243,6 +4343,28 @@ Evidence: [zero-time velocity obstruction and reflection survivor](../../../../f
 
 [Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
 
+<a id="no-go-338"></a>
+
+### Suzuki reflected-history abelian prime-chain transport
+
+**Closed result**
+
+The first nonzero reflected Suzuki successor history, from prime `2` to prime `3`, is nontrivial
+as ordered aperture chronology. After abelianizing to its signed valuation `e₂-e₃`, however, it is
+the boundary of the explicit chain `-(e₂∧e₃)`: the cycle visible at cutoff `3` is already filled
+at cutoff `6`. Abelian prime-chain homology therefore cannot transport this source witness into
+P or SP-E.
+
+**Survivor / still open**
+
+The ordered boundary-excursion chronology remains nonzero. A viable carrier must retain secondary,
+noncommutative or order-sensitive data while controlling the completed current; valuation classes
+alone erase the signal.
+
+Evidence: [reflected-history boundary](../../../../formal/GaloisForLFunctions/RHTower/SuzukiReflectedHistoryPrimeChainBoundary.lean).
+
+[Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
 <a id="roots"></a>
 
 ## Analytic roots, multiplicity and regularization
@@ -4256,6 +4378,7 @@ Evidence: [zero-time velocity obstruction and reflection survivor](../../../../f
 - [positive convolution square as a causal-root growth bound](#no-go-270)
 - [reciprocal-Xi Clifford split](#no-go-254)
 - [symplectic doubling, universal even multiplicity, or quadratic-symbol orientation](#no-go-060)
+- [one-point Cauchy marginal as horizontal-displacement detector](#no-go-339)
 
 <a id="no-go-260"></a>
 
@@ -4406,6 +4529,29 @@ Doubling any nondegenerate symmetric `K`-self-adjoint block produces a nondegene
 A structure presenting the exact Xi divisor cannot force every multiplicity even. Determinant-copy, reflected-pair parity, and leading-jet-weighted oddness are either imposed by duplication, contradicted by Xi, or algebraically nonselective. Surviving first-rung interface is a source law fixing the unsquared terminal theta character without absorbing it into coefficient parity, followed by a cofinal multiplicity ladder or independent local-normality/zero-exclusion theorem.
 
 [Back to family](#roots) · [Original evidence and surrounding qualifications](rh-frontier-reference-2026-09-12.md#source-no-go-060)
+
+<a id="no-go-339"></a>
+
+### one-point Cauchy marginal as horizontal-displacement detector
+
+**Closed result**
+
+A Poisson-smoothed periodic picket fence of growing atom mass has a bounded one-point statistic
+for every positive smoothing width, yet its law converges to the standard Cauchy law while every
+atom remains horizontally displaced. Thus convergence of the critical-line logarithmic
+derivative's one-point marginal to Cauchy does not, by itself, imply vanishing horizontal
+displacement. Boole-tail and Hilbert-pair variants recover at most the same first horizontal
+moment.
+
+**Survivor / still open**
+
+For zeta, Fujii-type clustering control excludes this abstract counterexample, but then any
+converse still needs that cluster bound and remains a receiver for the Littlewood first moment.
+The exact cotangent law, Boole identity and weak Cauchy limit survive as formal infrastructure.
+
+Evidence: [picket-fence Cauchy law](../../../../formal/GaloisForLFunctions/RHTower/PoissonSmoothedPicketFenceCauchyLaw.lean), [audit](cauchy-marginal-horizontal-displacement-blindness.md).
+
+[Back to family](#roots) · [Shared frontier](rh-current-frontier-map.md#off-line-first-moment-and-large-value-selection)
 
 <a id="other"></a>
 

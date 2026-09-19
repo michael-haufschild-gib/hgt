@@ -41,6 +41,7 @@ theorem suzukiEulerianCompletedOutgoingDiscrepancy_eq_neg_speTransport_add_resid
         suzukiEulerianCompletedOutgoingResidual N := by
   rw [suzukiEulerianCompletedOutgoingDiscrepancy_eq_neg_charge_add_residual hN,
     ← speCompletedQuantileRieszTransport_div_two_mul_eq_completedOutgoingCharge (by omega)]
+  rw [neg_div]
 
 /-- SP-E controls the Suzuki discrepancy with only the explicitly bounded source-free residual. -/
 theorem abs_suzukiEulerianCompletedOutgoingDiscrepancy_le_abs_speTransport_add
@@ -54,7 +55,7 @@ theorem abs_suzukiEulerianCompletedOutgoingDiscrepancy_le_abs_speTransport_add
         suzukiEulerianCompletedOutgoingResidual N| ≤
         |speCompletedQuantileRieszTransport (N + 1) / (2 * ((N + 1 : ℕ) : ℝ))| +
           |suzukiEulerianCompletedOutgoingResidual N| := by
-      simpa only [abs_neg] using abs_add_le
+      simpa only [neg_div, abs_neg] using abs_add_le
         (-speCompletedQuantileRieszTransport (N + 1) / (2 * ((N + 1 : ℕ) : ℝ)))
         (suzukiEulerianCompletedOutgoingResidual N)
     _ ≤ |speCompletedQuantileRieszTransport (N + 1) / (2 * ((N + 1 : ℕ) : ℝ))| +
@@ -75,6 +76,11 @@ theorem abs_speTransport_le_abs_suzukiEulerianCompletedOutgoingDiscrepancy_add
       (2 * ((N + 1 : ℕ) : ℝ)) =
       suzukiEulerianCompletedOutgoingResidual N -
         suzukiEulerianCompletedOutgoingDiscrepancy N := by
+    have hsource' : suzukiEulerianCompletedOutgoingDiscrepancy N =
+        -(speCompletedQuantileRieszTransport (N + 1) /
+          (2 * ((N + 1 : ℕ) : ℝ))) +
+          suzukiEulerianCompletedOutgoingResidual N := by
+      simpa only [neg_div] using hsource
     linarith
   rw [hrewrite]
   calc

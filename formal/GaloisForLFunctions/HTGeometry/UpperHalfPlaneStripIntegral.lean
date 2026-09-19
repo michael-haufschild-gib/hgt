@@ -164,6 +164,81 @@ theorem setIntegral_modularStrip_eq_iterated (F : ℍ → ℂ) (hF : IntegrableO
   simp only [stripChartIntegrand]
   rw [integral_smul]
 
+/-! ## High-cusp restriction -/
+
+/-- The part of the translation strip at height at least `Y`.  This is a single cusp tail,
+not the whole modular unfolding. -/
+def modularCuspStrip (Y : ℝ) : Set ℍ := modularStrip ∩ {z | Y ≤ z.im}
+
+theorem measurableSet_modularCuspStrip (Y : ℝ) : MeasurableSet (modularCuspStrip Y) :=
+  measurableSet_modularStrip.inter (measurableSet_le measurable_const continuous_im.measurable)
+
+theorem ofComplex_mem_modularCuspStrip {Y x y : ℝ}
+    (hy : 0 < y) (hx : x ∈ Ico (0 : ℝ) 1) (hY : Y ≤ y) :
+    ofComplex (⟨x, y⟩ : ℂ) ∈ modularCuspStrip Y := by
+  rw [modularCuspStrip]
+  refine ⟨?_, ?_⟩
+  · change 0 ≤ (ofComplex (⟨x, y⟩ : ℂ)).re ∧ (ofComplex (⟨x, y⟩ : ℂ)).re < 1
+    rw [ofComplex_apply_of_im_pos hy]
+    exact hx
+  · rw [ofComplex_apply_of_im_pos hy]
+    exact hY
+
+/-- **Fubini on one cusp tail**:
+`∫_{0 ≤ x < 1, Y ≤ y} F dx dy/y² = ∫_{max(0,Y)}^∞ y⁻² ∫_0^1 F(x+iy) dx dy`.
+Unlike `setIntegral_modularStrip_eq_iterated`, this theorem only requires integrability on the
+actual tail and cannot introduce an infinite modular unfolding. -/
+theorem setIntegral_modularCuspStrip_eq_iterated (Y : ℝ) (F : ℍ → ℂ)
+    (hF : IntegrableOn F (modularCuspStrip Y) volume) :
+    ∫ z in modularCuspStrip Y, F z
+      = ∫ y in Ioi (0 : ℝ) ∩ Ici Y,
+          (y ^ 2)⁻¹ • ∫ x in Ico (0 : ℝ) 1, F (ofComplex ⟨x, y⟩) := by
+  have hG : IntegrableOn ((modularCuspStrip Y).indicator F) modularStrip volume := by
+    rw [integrableOn_indicator_iff (measurableSet_modularCuspStrip Y)]
+    rw [inter_eq_self_of_subset_left]
+    · exact hF
+    · intro z hz
+      exact hz.1
+  calc
+    ∫ z in modularCuspStrip Y, F z
+        = ∫ z in modularStrip ∩ modularCuspStrip Y, F z := by
+          rw [inter_eq_right.mpr (by intro z hz; exact hz.1)]
+    _ = ∫ z in modularStrip, (modularCuspStrip Y).indicator F z :=
+          (MeasureTheory.setIntegral_indicator (measurableSet_modularCuspStrip Y)).symm
+    _ = ∫ y in Ioi (0 : ℝ), (y ^ 2)⁻¹ •
+          ∫ x in Ico (0 : ℝ) 1, (modularCuspStrip Y).indicator F (ofComplex ⟨x, y⟩) := by
+          rw [setIntegral_modularStrip_eq_iterated _ hG]
+    _ = ∫ y in Ioi (0 : ℝ) ∩ Ici Y,
+          (y ^ 2)⁻¹ • ∫ x in Ico (0 : ℝ) 1, F (ofComplex ⟨x, y⟩) := by
+      rw [← MeasureTheory.setIntegral_indicator measurableSet_Ici]
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro y hy
+      change 0 < y at hy
+      by_cases hY : Y ≤ y
+      · rw [Set.indicator_of_mem (show y ∈ Ici Y from hY)]
+        dsimp
+        congr 1
+        apply setIntegral_congr_fun measurableSet_Ico
+        intro x hx
+        change (modularCuspStrip Y).indicator F (ofComplex ⟨x, y⟩) = F (ofComplex ⟨x, y⟩)
+        rw [Set.indicator_of_mem (ofComplex_mem_modularCuspStrip hy hx hY)]
+      · rw [Set.indicator_of_notMem (show y ∉ Ici Y from hY)]
+        dsimp
+        calc
+          (y ^ 2)⁻¹ • ∫ x in Ico (0 : ℝ) 1,
+              (modularCuspStrip Y).indicator F (ofComplex ⟨x, y⟩)
+            = (y ^ 2)⁻¹ • ∫ x in Ico (0 : ℝ) 1, 0 := by
+                congr 1
+                apply setIntegral_congr_fun measurableSet_Ico
+                intro x hx
+                change (modularCuspStrip Y).indicator F (ofComplex ⟨x, y⟩) = 0
+                rw [Set.indicator_of_notMem]
+                intro h
+                rw [modularCuspStrip] at h
+                rw [ofComplex_apply_of_im_pos hy] at h
+                exact hY h.2
+          _ = 0 := by simp
+
 end
 
 end GaloisForLFunctions.HTGeometry

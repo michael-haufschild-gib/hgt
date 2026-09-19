@@ -78,11 +78,13 @@ theorem routePJuliaKrein_history_ordered_coordinate_asymmetry :
         congr 1
         nlinarith
       _ = 63 / 64 := Complex.ofReal_div _ _
-  constructor <;>
-    simp [routePJuliaKreinChildHistoryStep, routePJuliaKreinNegativePivotHistoryStep,
+  constructor
+  · simpa [routePJuliaKreinChildHistoryStep, routePJuliaKreinNegativePivotHistoryStep,
       routePPrimitiveGammaJuliaSignedChannelDiagonal,
-      routePPrimitiveBurnolJuliaKreinBlock, Matrix.mul_apply, Fin.sum_univ_two,
-      hdefect] <;> ring
+      routePPrimitiveBurnolJuliaKreinBlock, Matrix.mul_apply, Fin.sum_univ_two, pow_two] using hdefect
+  · simp [routePJuliaKreinChildHistoryStep, routePJuliaKreinNegativePivotHistoryStep,
+      routePPrimitiveGammaJuliaSignedChannelDiagonal,
+      routePPrimitiveBurnolJuliaKreinBlock, Matrix.mul_apply]
 
 /-- The calibrated P target history readout has the same `1`/`0` ordered-value shape as the
 literal pruned Suzuki source witness. -/
@@ -95,10 +97,12 @@ theorem routePJuliaKreinHistoryReadout_ordered_value_asymmetry :
           [routePJuliaKreinNegativePivotHistoryStep, routePJuliaKreinChildHistoryStep]) = 0 := by
   rw [show routePJuliaKreinHistoryAction
         [routePJuliaKreinChildHistoryStep, routePJuliaKreinNegativePivotHistoryStep] =
-        routePJuliaKreinChildHistoryStep * routePJuliaKreinNegativePivotHistoryStep by rfl,
+        routePJuliaKreinChildHistoryStep * routePJuliaKreinNegativePivotHistoryStep by
+          simp [routePJuliaKreinHistoryAction],
     show routePJuliaKreinHistoryAction
         [routePJuliaKreinNegativePivotHistoryStep, routePJuliaKreinChildHistoryStep] =
-        routePJuliaKreinNegativePivotHistoryStep * routePJuliaKreinChildHistoryStep by rfl]
+        routePJuliaKreinNegativePivotHistoryStep * routePJuliaKreinChildHistoryStep by
+          simp [routePJuliaKreinHistoryAction]]
   constructor
   · rw [routePJuliaKreinHistoryReadout,
       routePJuliaKrein_history_ordered_coordinate_asymmetry.1]
@@ -147,6 +151,7 @@ theorem routePJuliaKreinIncidenceChildHistoryStep_eq_kronecker {N : ℕ}
   rw [routePJuliaKreinIncidenceChildHistoryStep,
     routePJuliaKreinIncidenceHistoryStep, routePJuliaKreinChildHistoryStep,
     ← Matrix.mul_kronecker_mul]
+  simp
 
 /-- The literal full-incidence pivot step is the negative-pivot chronology port tensored with
 every P-G186 incidence entry. -/
@@ -157,6 +162,7 @@ theorem routePJuliaKreinIncidenceNegativePivotHistoryStep_eq_kronecker {N : ℕ}
   rw [routePJuliaKreinIncidenceNegativePivotHistoryStep,
     routePJuliaKreinIncidenceHistoryStep, routePJuliaKreinNegativePivotHistoryStep,
     ← Matrix.mul_kronecker_mul]
+  simp
 
 /-- Full P-G186 incidence survives the ordered child/pivot distinction exactly: the forward
 amplitude is the forced defect square times `H²`, while the reverse amplitude vanishes. -/
@@ -168,12 +174,11 @@ theorem routePJuliaKreinIncidence_history_ordered_coordinate_asymmetry {N : ℕ}
       (routePJuliaKreinIncidenceNegativePivotHistoryStep H *
         routePJuliaKreinIncidenceChildHistoryStep H) (0, i) (0, j) = 0 := by
   rw [routePJuliaKreinIncidenceChildHistoryStep_eq_kronecker,
-    routePJuliaKreinIncidenceNegativePivotHistoryStep_eq_kronecker,
-    Matrix.mul_kronecker_mul]
+    routePJuliaKreinIncidenceNegativePivotHistoryStep_eq_kronecker]
   constructor
-  · rw [Matrix.kronecker_apply,
+  · rw [← Matrix.mul_kronecker_mul, Matrix.kronecker_apply,
       routePJuliaKrein_history_ordered_coordinate_asymmetry.1]
-  · rw [Matrix.kronecker_apply,
+  · rw [← Matrix.mul_kronecker_mul, Matrix.kronecker_apply,
       routePJuliaKrein_history_ordered_coordinate_asymmetry.2, zero_mul]
 
 /-- The full ordered port specializes without loss to the literal prime-log-conjugated P-G186

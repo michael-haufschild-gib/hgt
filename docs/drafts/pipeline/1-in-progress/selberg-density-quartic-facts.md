@@ -1715,3 +1715,175 @@
   an endomorphism of the principal quotient or of the completed complementary-model image.
   The next hard bridge is transport/closure on that completed source carrier and a finite-place
   parameter inequality; no such transport or local factorization has been proved.
+
+- **Principal and rational-conjugate Maass quotient models are now canonically Haar-isometric (2026-09-19).**
+  `MaassRationalConjugateModelTransport` normalizes every positive-determinant rational
+  representative to `SL₂(ℝ)`, proves conjugation of the principal subgroup to its
+  rational-conjugate subgroup, and descends right multiplication to
+  `rationalSL2ConjugateQuotientEquiv`. Its image of the principal selector is a fundamental
+  domain for the rational-conjugate action. The theorem
+  `rationalSL2ConjugateQuotientEquiv_measurePreserving` proves the induced quotient equivalence
+  preserves Haar quotient measure, by transporting restricted Haar measure through that selector.
+  Thus the existing bounded rational Hecke correspondence can now be made into an actual
+  principal-quotient `L²` operator. This does not create finite-place factorization, local
+  commutativity, Satake data, or a unitary exponent bound; that global-to-local comparison remains
+  the route bottleneck. Source check and leaf build pass; the two audited transport theorems use
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+
+- **The principal rational Hecke operators now form an actual joint real Hilbert carrier (2026-09-19).**
+  `MaassRationalConjugateModelTransport.rationalHeckePrincipalLpEndomorphism_intertwines_unitary`
+  proves that every positive-determinant rational representative’s bounded principal-quotient
+  `L²` endomorphism commutes with every `integralSubgroupUnitary` real `SL₂` translation.
+  The proof closes each literal leg: finite-cover pullback, finite fibre trace, and the canonical
+  Haar-isometric rational-conjugate quotient transport. It introduces neither Hecke stability of
+  a chosen source vector nor an adelic/local assumption. This produces the required global joint
+  carrier, but does not construct finite-place factors, an unramified Hecke algebra, a Satake
+  parameter, or any exponent bound; global-to-local factorization is now the direct bottleneck.
+  Source check and leaf build pass; the finite-trace and principal endpoint theorems audit to only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+
+- **The joint carrier now agrees with the literal Maass quotient model (2026-09-19).**
+  `rationalHeckePrincipalLpEndomorphism_source_ae_glTraceQuotientLift` identifies the principal
+  endomorphism applied to `MaassQuotientL2.sourceLp` with the rational-conjugate automorphic
+  quotient lift of the raw `GL₂(ℚ)` common-cover trace. This attaches the new joint carrier to
+  the existing Maass source rather than merely to an abstract `L²` class. It still supplies no
+  composition law on that carrier and no finite-place factorization. The source check and leaf
+  build pass; the theorem audits to only `propext`, `Classical.choice`, and `Quot.sound`.
+- `MaassRationalConjugateModelTransport.rationalCommonCoverGLTrace_normalization_inverse_eq_principalTrace` is closed: on the determinant-normalized quotient section, the completed common-cover correspondence for `g` equals the ordinary principal trace for `g⁻¹`.  The relevant finite quotient is already the shared intersection `P ∩ R_{g⁻¹}`; no scalar multiplicity occurs.  The previously considered cardinal factor belongs only to a distinct iterated trace through `R_{g⁻¹}`.
+- `rationalHeckePrincipalLpEndomorphism_toLpLinear_eq_inverseTrace` lifts that equality to every zero-inclusive principal Maass eigenspace vector in genuine quotient `L²`.  `rationalHeckePrincipalLpEndomorphism_comp_toLpLinear_eq_inverseMackey` consequently transfers the existing formal Mackey product to this source-attached completed carrier, with the forced inverse representative orientation.
+- **Finite rational fibre trace now has its exact Hilbert adjoint (2026-09-19).**
+  `MaassRationalHeckeAdjoint` proves the common-cover projection is quasi-measure-preserving,
+  constructs its bounded `L²` pullback, and proves the exact square-root fibre-degree norm law.
+  The theorem `rationalHeckeConjugateFiberTraceLpContinuousLinear_adjoint` establishes
+  `Trace_{K→R}† = Pullback_{R→K}` from the selector disintegration identity and quotient-measure
+  scaling, with no unproved operator assumption. This supplies the adjoint leg needed for a
+  normal/self-adjoint rational Hecke algebra. It does not yet identify the full principal
+  endomorphism adjoint with the inverse rational correspondence, prove finite spectral
+  multiplicity, preserve a chosen Maass line, or create finite-place/Satake data; those are the
+  remaining direct bridges to an eigenpacket and the local exponent argument. Leaf source and
+  `lake build GaloisForLFunctions.RHTower.MaassRationalHeckeAdjoint` pass; the four key theorems
+  audit to only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Spectral selection is genuinely absent from the present Maass layer (2026-09-19).**
+  Direct deep search found no quotient-Laplacian operator, domain/form closure, self-adjointness,
+  compact resolvent, finite-dimensional Maass eigenspace, or simultaneous rational-Hecke
+  eigenvector constructor. `MaassCuspEigenform` is presently a smooth pointwise hyperbolic
+  Laplace-eigenfunction plus cusp-decay predicate, and `MaassModelIntertwiner` identifies only
+  the cyclic differentiated representation generated by one chosen source. Consequently the
+  latter’s local irreducibility cannot force a rational Hecke correspondence to preserve that
+  cyclic copy in a potentially higher-multiplicity ambient automorphic space. The required next
+  theorem is a source-connected self-adjoint/compact-resolvent realization of the cuspidal
+  quotient Laplacian (or an equivalent source-attached finite Hecke-eigenpacket construction).
+- **The Maass quotient source now has a closed Laplacian-core identity (2026-09-19).**
+  `MaassQuotientLaplacianCore.sourceFunction_positiveHyperbolicLaplacian_section`
+  proves that the canonical quotient `L²` source lift, restricted through the
+  upper-half-plane section, satisfies the literal positive hyperbolic Laplace equation with
+  eigenvalue `lam`. This is the exact core identity a future Friedrichs realization must extend.
+  Maass-specific searches found source-level cusp Fourier/energy coercivity, but no cuspidal
+  Sobolev form domain, dense embedding, compact embedding, or compact-resolvent theorem. Those
+  estimates alone do not establish finite spectral multiplicity; the next direct construction is
+  that form domain and its compactness proof.
+
+- **The finite-deck Dirichlet form already supplies completion and closability (2026-09-19).**
+  `MaassFiniteDeckDirichlet` defines `formPreDomain N` of deck-equivariant vector-valued C¹
+  functions with literal hyperbolic gradient coordinates, completes it as `FormDomain N`, and
+  places every exceptional source in that domain. `MaassFiniteDeckDirichletIntegrationByParts`
+  proves `formInclusion_injective`: compactly supported interior tests force both weak gradient
+  coordinates to vanish when the L² coordinate vanishes. Therefore the earlier “no form domain”
+  entry was too strong: the remaining form prerequisites are the density and compactness of this
+  finite-deck inclusion, followed by identification of its Friedrichs operator with the source
+  Laplacian core. Corpus search finds no finite-deck density or compact-embedding theorem; the
+  scalar analogue `HTGeometry.ModularDirichletFormDense` proves density only for scalar modular
+  functions and is the concrete template for the next proof.
+
+- **Whole finite-deck `L²` is the wrong carrier; the central-fixed carrier is formalized (2026-09-19).**
+  The literal `SL2Z` action on the upper half-plane has `(-1) • z = z`
+  (`ModularGroup.SL_neg_smul`). Thus `deckEquivariant` forces every finite-deck form pre-vector
+  to be fixed by the regular deck action of `QuotientGroup.mk (-1)`. The whole regular-deck
+  `DeckL2` therefore contains directions which cannot be approximated by this form; a full-space
+  density theorem is false in general. `MaassFiniteDeckDirichletCentral` defines the closed
+  `deckCentralFixedL2` kernel, proves pre-domain fixedness, carries it through
+  `formDomainClosure` by `topologicalClosure_minimal`, gives the injective restricted inclusion
+  `formInclusionCentral`, and places `sourceLp` in the carrier. Its source check and leaf build
+  pass; key theorems audit to only `propext`, `Classical.choice`, and `Quot.sound`. The next
+  mathematical theorem is density of `formInclusionCentral`, requiring vector compact-support
+  periodization with precisely this central compatibility.
+
+- 2026-09-19: `MaassFiniteDeckDirichletPeriodization.lean` now proves vector-valued compact-chart smooth approximation: `exists_contDiff_uniform_approx_vector` assembles scalar compact approximants and proves the Euclidean L²-coordinate norm estimate without an added axiom. This supplies the analytic ingredient missing from scalar periodization. The next required theorem is density after central averaging; central averaging is being formalized, with no claim of density made yet.
+- 2026-09-19: Central averaging is now a concrete Lean map on compact seeds and on `DeckL2`; `centralizeL2_fixed` verifies it fixes the exact `deckCentralFixedL2` carrier. A direct triangle-inequality contraction proof hit Lean's deterministic heartbeat limit, so it was removed rather than increasing heartbeats. The surviving next obligation is to express the pointwise averaging in `Lp` and obtain the contraction through a bounded/isometric `compLp` map with a lower-elaboration proof.
+- **Central approximation transfer is closed (2026-09-19).**
+  `MaassFiniteDeckDirichletPeriodization.norm_centralizeL2_le` proves that averaging over the
+  central deck involution is contractive on finite-deck `L²`; `centralizeL2_toDeckL2` identifies
+  that carrier operation with pointwise central seed averaging; and
+  `exists_formInclusion_approx_of_interior` turns any compact interior vector approximation of a
+  central target into an equally accurate closed-form approximation. `lake env lean` and the leaf
+  build pass; all three audit only to `propext`, `Classical.choice`, and `Quot.sound`. Thus vector
+  compact-interior density, not central symmetry or periodization, is the remaining direct
+  analytic gap before density of the central form inclusion.
+- **Finite-deck central form density is now closed (2026-09-19).**
+  `MaassFiniteDeckDirichletDense.exists_interior_approx_vector` proves compact-interior `C¹`
+  density in the complete finite-deck `L²` carrier by continuous compact-support approximation,
+  an interior cutoff, and the proved finite-coordinate smooth approximation. Combining this with
+  central averaging yields `dense_range_formInclusionCentral` and its linear-range form. Source
+  check and leaf build pass; all three theorems audit only to `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **Compact resolvent does not follow from the present finite-deck form (2026-09-19).**
+  Corpus search found no finite-deck cusp-tail compactness theorem. The present `formPreDomain`
+  has no cuspidal constant-term or tail condition, while the generic Friedrichs compact-resolvent
+  theorem explicitly requires an `IsCompactOperator` inclusion. Thus finite deck degree and form
+  density alone cannot close the spectral step; a source-connected cuspidal form and a tail
+  compactness theorem are required.
+- **The cusp-zero carrier and its sharp period estimate are formalized (2026-09-19).**
+  `MaassFiniteDeckCuspidalDirichlet` defines the closed-completion precursor
+  `cuspidalFormPreDomain`: finite-deck `C¹` form vectors whose every coordinate has zero
+  integral on every complete level horocycle. Every exceptional source belongs to it.
+  `component_level_periodic` proves the level-period closing from deck equivariance, and
+  `component_wirtinger_slice_hypGradX` proves the exact estimate
+  `slice mass ≤ ((N+1)/(2π))² y⁻² × horizontal form energy`. The full vector value norm is
+  one-periodic. These are prerequisites for tail compactness, not a spectral-gap claim.
+  `mem_fd_and_one_le_im_iff` closes the set-theoretic cusp geometry: above height one the
+  modular cell is exactly `|Re z| ≤ 1/2`. The unclosed analytic bridge is the weighted
+  change-of-variables/Fubini identity identifying modular-cell tail integrals with these
+  period-strip integrals, followed by compact-core Rellich; corpus search found no such theorem.
+- **The direct core route has a verified sign obstruction (2026-09-19).**
+  `SelbergMaassBoundaryPositivity.coreQuarter_strict_neg_at_transitionCutoff` proves an
+  exceptional source has strictly negative compact-core quarter form after the Bessel boundary is
+  nonnegative. `SelbergMaassTraceAverageNoGo.weighted_coreQuarter_sum_strict_neg_at_transitionCutoff`
+  extends this to every nontrivial finite positive rational-trace average. Therefore core
+  pointwise positivity and finite positive Hecke averaging cannot supply the missing quarter
+  coercivity; any successful direct proof needs a different source-specific invariant.
+
+- **The high-cusp Fubini bridge and unit-width finite-deck cusp inequality are now closed (2026-09-19).**
+  `HTGeometry.setIntegral_modularCuspStrip_eq_iterated` proves the modular cusp-tail formula under
+  actual tail integrability, using a tail indicator rather than assuming integrability on the
+  infinite modular unfolding. `MaassFiniteDeckCuspidalTail.unit_cusp_slice_poincare` then sums the
+  coordinate cusp-zero Wirtinger inequalities, proves exact finite-deck value and horizontal-energy
+  sum identities, and transports the level-period estimate through differentiated deck covariance.
+  It yields the unit-width bound
+  `∫₀¹ ‖F(x+iy)‖² dx ≤ ((N+1)/(2π))² y⁻² ∫₀¹ ‖∇ₓ^hyp F(x+iy)‖² dx`.
+  The module is wired into `RHTower.lean`; source check and leaf build pass; its three public
+  theorems audit to only `propext`, `Classical.choice`, and `Quot.sound`. The remaining direct
+  compactness bridge is to identify these iterated integrals with `cellMeasure` on the high cusp,
+  prove the uniform tail estimate for the completed cusp-zero form, and combine it with compact-core
+  Rellich.
+- **Finite-deck cuspidal cusp tails now have a closed uniform energy bound (2026-09-19).**
+  `MaassFiniteDeckCuspidalTail.cusp_normSq_tail_eq_iterated` transports the actual
+  `cellMeasure` mass on `fd ∩ {Y < Im}` to the centered cusp rectangle with the exact
+  `y⁻²` density. `cusp_tail_mass_le_horizontal_energy` combines that identity with the
+  centered cusp-zero Poincaré inequality and the proved comparison
+  `y⁻⁴ ≤ Y⁻² y⁻²` for `y > Y ≥ 1`, giving
+  `tailMass(F,Y) ≤ ((N+1)/(2π))² Y⁻² tailHorizontalEnergy(F,Y)` for every finite-deck
+  cuspidal pre-form. The theorem uses the actual `memLp F` and `memLp_gradX F` inputs;
+  it has no new premise or axiom. Source check and leaf build pass; the key tail theorems
+  audit only to `propext`, `Classical.choice`, and `Quot.sound`. The remaining compactness
+  obstacle is now precise: extend this pre-form estimate through `CuspidalFormDomain`, then
+  prove compact-core Rellich in the central fixed carrier and splice the two estimates.
+- **Cusp-tail control now survives completion (2026-09-19).**
+  `MaassFiniteDeckCuspidalTail.cuspTailProjection` is the continuous `L²(cellMeasure)` multiplier
+  by the measurable high-cusp indicator. `normSq_cuspTailProjection_toDeckL2` identifies its
+  squared norm with the actual modular-cell tail mass. Since the resulting norm inequality is a
+  closed subset of `FormTriple`, `cuspidalFormDomain_tail_projection_bound` extends the pre-form
+  estimate to every `CuspidalFormDomain` vector. Source check and the leaf build pass; both new
+  theorems audit only to `propext`, `Classical.choice`, and `Quot.sound`. Therefore cusp escape
+  is quantitatively controlled on the completed source carrier. The remaining compactness
+  theorem is bounded-core Rellich for finite-deck, centrally fixed form data, followed by
+  splicing that compact-core approximation with this uniform tail bound.

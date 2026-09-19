@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCovector
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspIndicialSelection
 
 /-!
 # Cross-branch angular source for literal cyclic Peierls B2
@@ -19,6 +20,7 @@ namespace RHTower.D4BMLiteralCyclicPeierlsCrossBranchSource
 
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.ScalarTwoJet
 open D4BMHorizon D4BMAngularSeries D4BMGlobalAngularResponse D4BMModularCore
+open D4BMCuspProjection
 
 noncomputable section
 set_option autoImplicit false
@@ -77,6 +79,63 @@ theorem crossBranchAngular_product_equation (q : XiZeroCopy) (z : Point)
     fullAngularField_equation q false z hz]
   unfold crossBranchAngularForcing crossBranchGradient
   ring
+
+/-- Clock carried by the two complementary physical Peierls legs. -/
+def crossBranchClock (q : XiZeroCopy) : ℂ :=
+  physicalRate q true + physicalRate q false
+
+/-- Indicial parameter associated with the total cross-branch clock. -/
+def crossBranchClockParameter (q : XiZeroCopy) : ℂ :=
+  (crossBranchClock q + 1) * (crossBranchClock q + 2)
+
+/-- Sum of the literal angular parameters carried by the two product factors. -/
+def crossBranchAngularParameter (q : XiZeroCopy) : ℂ :=
+  parameter q true + parameter q false
+
+/-- Complementary physical legs carry the exact fixed clock required by the
+cross-rate current. -/
+theorem crossBranchClock_eq_neg_six (q : XiZeroCopy) :
+    crossBranchClock q = (-6 : ℂ) := by
+  simp only [crossBranchClock, physicalRate, if_true, Bool.false_eq_true, if_false]
+  ring
+
+/-- The cross-rate clock would have indicial parameter `20` if its angular
+carrier were homogeneous at that clock. -/
+theorem crossBranchClockParameter_eq_twenty (q : XiZeroCopy) :
+    crossBranchClockParameter q = (20 : ℂ) := by
+  rw [crossBranchClockParameter, crossBranchClock_eq_neg_six]
+  norm_num
+
+/-- Exact angular parameter of the literal product before its forced
+cross-gradient term is accounted for. -/
+theorem crossBranchAngularParameter_eq (q : XiZeroCopy) :
+    crossBranchAngularParameter q =
+      8 * (q.1 : ℂ) ^ 2 - 8 * (q.1 : ℂ) + 6 := by
+  rw [crossBranchAngularParameter, physicalRate_parameter q true,
+    physicalRate_parameter q false]
+  simp only [physicalRate, if_true, Bool.false_eq_true, if_false]
+  ring
+
+/-- The literal product's displayed angular parameter differs from the
+homogeneous parameter selected by its total clock.  Thus a direct
+parameter-identification cannot remove the explicit cross forcing; whether
+that forcing can compensate the mismatch is a separate question. -/
+theorem crossBranchAngularParameter_ne_crossBranchClockParameter (q : XiZeroCopy) :
+    crossBranchAngularParameter q ≠ crossBranchClockParameter q := by
+  rw [crossBranchAngularParameter_eq, crossBranchClockParameter_eq_twenty]
+  intro h
+  have him := congrArg Complex.im h
+  have hre := congrArg Complex.re h
+  norm_num [Complex.add_im, Complex.sub_im, Complex.mul_im, pow_two] at him
+  norm_num [Complex.add_re, Complex.sub_re, Complex.mul_re, pow_two] at hre
+  have hfactor : (q.1 : ℂ).im * (2 * (q.1 : ℂ).re - 1) = 0 := by
+    nlinarith [him]
+  have hreal : (q.1 : ℂ).re = 1 / 2 := by
+    rcases mul_eq_zero.mp hfactor with hzero | hzero
+    · exact False.elim (xi_divisor_support_im_ne_zero q.1 hzero)
+    · linarith
+  have hsq := sq_nonneg ((q.1 : ℂ).im)
+  nlinarith [hre]
 
 end
 
