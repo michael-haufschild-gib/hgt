@@ -530,3 +530,46 @@ e^{2τ(a+ℓ)}(ℓ + 26/(πD) + 9τ/(π²D²))`, `band_inner_ge_wide`, `band_inn
 replacing the Taylor band constants with the damped Montgomery–Vaughan bounds (`_ge_band`/`_le_band`); no `τ ≤ 1`,
 `a + ℓ ≤ 1` hypotheses. All three band laws (single, dominant, isolated-density-conditional) are now at the natural
 unit (isolation)/`log T`.
+
+## Sixth cycle (2026-09-19): the fifth-cycle law is out of reach of every windowed mean square
+
+**Question.** Can any windowed mean square of the zero exponential sum `S(η) = Σ_j e^{(δ_j+iγ_j)η}` (the
+`α`-averaged Montgomery form is `∫|S|²K`, `K ≈ (1/L)·1_{[L/2,L]}`, `L = log T`) prove the isolation–density law
+at `(1+Δ)`-times-mean-gap spacing for `δ ≫ 1/L`?
+
+**Answer: no; the obstruction is one phenomenon, not two.** The weight `e^{2δη}` of a zero at distance `δ`
+from the line puts its mean-square mass in the last `O(1/δ)` of any window. Montgomery–Vaughan on an
+effective window of length `1/δ` needs ordinate gaps `≥ 2π(1+Δ)δ`. At mean-gap spacing `(1+Δ)2π/L` this is
+`δ ≤ (1+Δ)/L`, where the count `N ≪ T^{1−2δ}` is trivial. The `ξ`-route's `W = O(1)` and the `α`-route's
+"amplitude varies by `T^{ℓδ}` across bands" (fifth cycle) are both this localisation. Quantitatively, on
+the half-line the Gram of `e^{−(δ+iγ_j)u}` has Carleson constant `≈ exp(−(δL)²/(6(1+Δ)²))`, so cross terms
+can cancel the self terms of mean-gap-spaced zeros entirely once `δ ≫ 1/√L`.
+
+**What the mechanism does give (uniform multi-band form; polynomial constants).** Cut `[L/2, L]` into windows
+of length `θ/δ_max`; on each, the coefficients `e^{δ_jη}` vary by a factor `≤ e^{θ}`, so Montgomery–Vaughan
+(lower bound, plus the upper bound for the perturbation) gives `∫_window |S|² ≥ (1−Cθ)(1 − 2π(1+Δ)δ_max/(θg))·
+(θ/δ_max)·Σ_j e^{2δ_j a}` when the gaps satisfy `g ≥ 2π(1+Δ)δ_max/θ`; summing windows recovers
+`c(θ,Δ)·Σ_j ∫_{L/2}^L e^{2δ_j a}da`, the full self-energy `≍ Σ_j T^{2δ_j}/δ_j`. Against the unconditional
+BGSTB value `∫_{1/2}^1 F(T^α,T)dα = (3/16π)TL(1+o(1))` this yields the density-hypothesis count
+`N(½+δ, T) ≪ δ L T^{1−2δ}` for zeros pairwise spaced by `≥ Cδ_max`. **Verdict: REDISCOVERED** — this is the
+corpus's own threshold "clusters of width `≲ δ` are the evaders" (first/fourth cycles) with the constant
+`(3π³/s)e^{−6π/s}` replaced by a polynomial one and the spacing scale tied to `δ_max`; no new evader is
+excluded, since the evaders have width `< Cδ`.
+
+**Status of the fifth-cycle law.** Unchanged as a statement (`SURVIVES PRELIMINARY ATTACK`); as a target
+for mean-square mechanisms it is closed: no windowed mean square of `S` detects mean-gap-spaced zeros with
+`δ ≫ 1/L`. A proof would need a different observable (a lower bound not localised by `e^{2δη}`), i.e. exactly
+the phase-balanced-cluster information every producer must supply (CANNOT-332). No Lean: certifying the
+uniform multi-band count would formalise a rediscovery.
+
+**Candidate examined and killed the same day: robust finite Putnam / Landau at the block step.** The tapered
+AP-block and periodic-array evaders have block spacing `s = 2πc/L`; a Putnam kernel at step `s` has period
+`P = 2π/s = L/c`, and a Landau-formula reading `Σ_{γ≤T} x^{iγ}` of the same structure sits at `x = e^{L/c} = T^{1/c}
+≥ T^{1+2πδ}`, where Landau's error term `O(x log² T)` exceeds the main term. Both are the wall this card already
+states ("primes beyond `T^{1+2πδ}` at height `T`"): verdict BRIDGE/REDISCOVERED, not a new mechanism. Side facts
+kept for reuse: the corpus certifies Putnam's exclusion of exact infinite one-sided vertical progressions of on-line
+zeros (`xiRealDivisor_no_progression`, chain `PutnamKernel` … `PutnamPeriodizationLimits`); the kernel `C_{σ,a}`
+with transform `−ζ(s)/s` exists at every `σ ∈ (0,1)`; and the abstract statement "bounded periodic function with a
+jump and `N` vanishing nonnegative Fourier coefficients" gives only `log N ≲ sup|D|/|jump|` (sawtooth minus a
+trigonometric polynomial is a model), so finite progression bounds must use the arithmetic of `{e^x}` (van
+Frankenhuijsen 2005). No literature on approximate progressions found (searches 2026-09-19).

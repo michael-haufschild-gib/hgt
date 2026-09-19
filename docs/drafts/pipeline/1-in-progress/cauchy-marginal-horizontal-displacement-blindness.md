@@ -118,3 +118,38 @@ an RH-strength error term; none gives a new inequality.
 - 2026-09-18 — created from the weekly leads report; NN and Desogus read in full; M1–M4 attempted
   and failed on paper; picket-fence cotangent law, Boole's law and the Cauchy limit without collapse
   proved in Lean.
+
+## Lead 2 revisited (2026-09-19): a computation-free refutation of the Desogus chain
+Text extracted from arXiv 2609.20367v1 (67 pp.). Facts used, all quoted from the paper:
+- Arithmetic endpoints are `a_k = ½ log k`, `k ≥ 7` (§6.13); the base certificate 6.62 is at `a_7 = ½ log 7`.
+- The chain: `𝔤_k^{M+} > 0 (k ≥ 7) ⇒ H_k*A_{k+1}H_k ≻ 0 whenever A_k ≻ 0 ⇒ A_{N,−} ≻ 0 (N ≥ 7) ⇒ A_{a,−} ⪰ 0 (a>0) ⇒ RH`
+  (page 2), with `𝔤_k^{M+} = ½ + log k − (439/(250 log 2))Σ_m V_{k,m} − (5/2)W_k`, `V_{k,m}` a variance of `Λ(n)/√n`
+  over `N_{k,m} = {n = p^ℓ ≤ k : n ∤ k, ⌊k/n⌋ = m}` (166), `W_{k,m} ≤ (0.0301/m²)Σ_{N_{k,m}}Λ(n)²/n`.
+- Arithmetic inputs: "The only global arithmetic input needed below is an explicit Chebyshev capacity"
+  (Lemma 3.4: `sup_k (ψ(k) − log k)/k < 1.01823`), `Λ(n) ≤ log n`, the exact prime data in the finite sweeps
+  `k ≤ X₀ = 3 594 641`, and for `k ≥ X₀` the tail bounds `Σ_m V_{k,m} < 0.14736 log k + 2.904` (170),
+  `σ̃_k ≥ F(k) − 0.18486 − (log k)/7` (171), `W_k < 0.06024 log k`, proved from `|ϑ(x) − x| < 0.2x/log²x` with
+  the gap `8.702 − 7.399` at `X₀`. The operator lemmas (8.1, 8.2, 8.4, 6.49, 6.53, 6.55, 6.57) are identities and
+  Cauchy–Schwarz/Young inequalities in which `Λ(n) ≥ 0` enters only as branch coefficients; the divisor squares
+  (Lemma 3.2) are `≥ 0` for any nonnegative coefficients.
+**Barrier.** Let `p₀` be any prime `> X₀` and `Λ' := Λ − (log p₀)·1_{p₀}`. Every input above holds for `Λ'`
+(finite sweeps unchanged; `0 ≤ Λ' ≤ log n`; the capacity is a sup that only decreases; the tail bounds move by
+`O(log p₀/p₀) ≈ 10⁻⁵` against a gap `> 1`; every debit is monotone in the coefficients). Hence the chain, if
+valid, proves `A_{a,−}[Λ'] ⪰ 0` for all `a`. But for the real odd test `f(y) = φ(y − u₀/2) − φ(y + u₀/2)`,
+`u₀ = log p₀ ≈ 15.1`, `φ` an even C^∞ bump of half-width `s < u₀/2` with `|φ̂(z)| ≤ (c/|z|)^{8}` on `|Im z| ≤ ½`,
+the explicit formula gives `⟨A_a[Λ']f, f⟩ = −Σ_ρ m_ρ F(γ_ρ)² + 2(log p₀/√p₀)R_f(u₀)` with `R_f(u₀) = −‖φ‖²`
+exactly (disjoint supports) and `Σ_ρ m_ρ|F(γ_ρ)|² ≤ 4cosh²(u₀/4)·c^{16}·Σ_ρ m_ρ|γ_ρ|^{−16} ≪ (log p₀/√p₀)‖φ‖²`
+(certified inputs: `|γ_ρ|² > 41/2`, `Σ_ρ|γ_ρ|^{−2} ≤ 1.1(2+γ−log 4π)`). So `A_a[Λ']` is indefinite at
+`a ≈ u₀/2 + s`: the chain proves a false statement. **Verdict: REFUTED as written** — no proof of Weil
+positivity can control the primes beyond a finite threshold only through Chebyshev-type bounds, because
+deleting a single large prime destroys positivity at the scale of that prime. (This is the general-Fuchsian
+barrier pattern applied to the arithmetic side: the hypothesis "Λ is the von Mangoldt function beyond `X₀`"
+is carried but never used.) Lean target: the single-prime-deletion indefiniteness (module in progress,
+built on Zeta23's unconditional `EF_lit_zeta`).
+- 2026-09-19 (later) — **Lean certification of the deletion lemma done:** `RHTower.WeilDeletion.exists_deletedRHS_re_neg` (`∃ p₀ prime, 3 594 641 < p₀ ≤ 7 189 282, ∃ f ∈ C²_c real, Re(literatureRHS(f⋆f̃) + (log p₀/√p₀)(k(log p₀)+k(−log p₀))) < 0`), built on Zeta23's unconditional `EF_lit_zeta`; four modules, axioms standard, wired. STATUS MUST-357. Lead 2 verdict: REFUTED as written (barrier), with the mathematical core certified.
+- 2026-09-19 (later) — Uniform version certified: `deletedRHS_re_neg_of_large` for every prime `p ≥ e^{18}` (`WeilSinglePrimeDeletionUniform`), STATUS MUST-358. The barrier is now universal in the deleted prime.
+
+## Leads 3 and 4 (adjacent machinery), classified 2026-09-19
+- **Azimifard 2609.14946** (transition-eigenvalue bounds for positive time-frequency localization operators `S − S²`; Thm 2.1 counting identity, Thm 2.5 rank-`N` + Hilbert–Schmidt residual, Lemma 4.10 core–tail RSS, Prop 8.1 `Tr(S − S²) = ½∫|1̂_C(u)|²|A△(A−u)|du`). Zero-side, prolate-lane machinery; the corpus's prolate toolkit is at stage 3 (`prolate-alpha-toolkit-complete`, `prolate-sharp-leakage-gap`) and the negative-squares/index lane is closed at the microscopic wall (`l-microscopic-displacement-conjecture-loop`, cycle 3). Transfer to the signed Weil form's negative index is indirect (the report's own caveat). Verdict: INSIGNIFICANT for RH; usable only to tighten finite prolate comparisons. Not formalized.
+- **Fucci–Stanfill 2609.19322** (transfer matrices `e^{iφ}M`, `M ∈ SL(2,ℝ)`, for generalized point interactions; characteristic functions; coalescence rule `M_N⋯M_1`). Self-adjoint extension language for Uvarov-type atoms; no negative-square index, no Christoffel–Darboux identity; its spectral ζ is unrelated to Riemann's. The corpus's protector-atom lanes (Hedenmalm/de Branges) are receivers. Verdict: INSIGNIFICANT for RH. Not formalized.
+- Cross-reference: the single-prime deletion barrier (MUST-357/358) is the reason behind the corpus's earlier observation that a finite constrained-Weil certificate (`S ≤ 1`, prime `2` only) can never reach all apertures: positivity at aperture `S` needs every prime `p` with `log p ≲ 2S` individually.

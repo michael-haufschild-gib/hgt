@@ -764,3 +764,62 @@ all-orders source-specific expansion or flatness-to-`H1_0` theorem.
 - [ ] complete paper proof of the literal source theorem
 - [ ] formalize exact theorem unconditionally in Lean
 - [ ] prove RH or a genuine whole-route no-go
+
+## Deletion test on the active E-class conjecture (2026-09-19)
+
+The single-prime deletion barrier (STATUS MUST-357/358) is now certified inside the literal CCM
+restricted Weil operator (`WeilDeletionCCMSource`, `WeilDeletionCCMCrossing`, axioms standard). With
+`ccmVisiblePrimeBlock a p` the block `Λ(p)·T_p` present exactly when `p ≤ e^{2a}`, the deleted
+remainder `B + Λ(p)T_p` defines a deleted ground energy through the same Friedrichs covariance.
+`ccmDeletedGroundEnergy_sign_change`: for every prime `p ≥ e^{18}` the deleted ground energy is
+positive on an initial aperture range (it equals the literal one below `½ log p`, where the
+literal one is positive by `exists_suzukiSmallAperture_ccmGroundEnergy_pos`) and negative at an
+aperture `≤ log p + 1` (the two-bump source of the uniform deletion theorem, whose CCM source
+quadratic is the zero-side sum `Re Σ_q k̂(γ_q)` by `ccmRestrictedWeilSourceQuadratic_twoBumpSource_eq_tsum`,
+bounded by the explicit constant, while the removed block is `(log p/√p)(−2∫φ²)`).
+
+Consequence for E3 (`det N_{(a,0)} ≠ 0` at every aperture ⟹ RH) and for the small-aperture-positivity
+plus no-crossing architecture: every certified structural input of the E lane (positive atomic jump
+form, half-log traces, Gamma skew flux, support-pruned self-adjoint carrier) holds verbatim for the
+deleted block `Λ − log p·1_p`, whose family provably changes sign. A no-crossing proof must use an
+input that distinguishes `Λ(p) = log p` from `0` at every prime `p ≥ e^{18}`; the lane has none
+recorded. Not a refutation of the conjecture (which concerns the true `Λ`), but a certified Phase-4
+constraint on its mechanism. Continuity of the deleted ground energy in `a` (which would turn the
+sign change into a zero crossing) is not certified; the literal continuity proof
+(`SuzukiGroundEnergyContinuity`) is specific to the literal remainder.
+
+**Same day, two-sided and for all three classes.** The insertion mirror (STATUS MUST-360,
+`WeilInsertionCCMCrossing`): adding a fictitious prime power of weight `≥ log x` at any real scale
+`x ≥ e^{18}` also forces a sign change of the ground energy. Since classes P (cofinal restricted-Weil
+floor), E (no crossing / `det N_{(a,0)} ≠ 0`) and I (no negative spectral birth at any aperture) all
+concern the sign of the same ground energy across apertures, the constraint applies to all three: the
+prime block enters exactly, at every scale, in both directions; neither a sieve majorant nor a sieve
+minorant of `Λ`, nor a smoothed prime measure, can be the object a producer works with.
+
+**Same day, zero crossings certified (MUST-361).** The sign changes are now genuine kernel elements:
+with the ground-energy continuity of Suzuki's Theorem 1.3 generalised to any aperture-compatible
+family of remainders (`CCMRemainderFamily`), the deleted operator (every prime `p ≥ e^{18}`) and the
+inserted operator (every real scale `x ≥ e^{18}`, weight `≥ log x`) each have an aperture `≤ log p + 1`
+(resp. `≤ log x + 1`) with `ker ≠ 0`. The E-lane's target `ker A_a = 0 ∀a` is thus literally false in
+two families sharing every certified structural input of the lane. Open experiment for the lane: where in
+the chain (signed half-log traces → trace zero ⟹ `H¹₀` → raw Evans injectivity) does the deleted zero
+mode escape; that step is where prime-exactness must enter.
+
+**Same day, the prime-free endpoint (MUST-362).** The archimedean-plus-polar operator (no primes)
+also crosses zero: its ground energy is negative at every large aperture because the archimedean
+multiplier `2γ(2πξ)` is negative near `ξ = 0` and pole-vanishing sources can concentrate there. So
+the prime block is load-bearing in totality as well as prime by prime: positivity across all
+apertures (⟺ RH) is exactly the statement that the primes compensate the low-frequency archimedean
+deficit, and by MUST-359/360 only the exact primes can do so.
+
+**Same day, no threshold on the weight (MUST-363).** The deletion/insertion crossings hold for *any*
+nonzero change of the prime weight at any scale `x ≥ 2` (`exists_inserted_zero_crossing_of_ne_zero`), in
+particular for `Λ(p) ↦ Λ(p) − ε` with `ε > 0` arbitrarily small (`exists_partial_deletion_zero_crossing`).
+The witness is a wide bump modulated at a frequency strictly below the first zero, so that under RH the
+zero side of the literal form is `O(L⁻⁴)` while the block term is of size `L`; without RH the literal
+ground energy is unbounded below and the block is a bounded perturbation. For the lane this means that the
+prime-exactness required of a producer is *weight*-exactness: an argument that knows `Λ(p)` only up to any
+error `ε` (any sieve, any PNT-type average, any approximate explicit formula) cannot exclude the crossing.
+Conjectural closure of the picture (PMR, notes.md 2026-09-19): the true prime measure is the unique positive
+measure with nonnegative ground energy at every aperture; the point-mass case is now certified, the general
+case is the open core.

@@ -42,7 +42,7 @@ def xiPartialFractionTerm (s : ℂ) (q : XiZeroCopy) : ℂ :=
 
 /-- The partial-fraction terms are summable wherever `ξ s ≠ 0`; they are `−i` times the
 relative resolvent terms in the centred coordinate `z = (s − 1/2)(−i)`. -/
-theorem summable_xiPartialFractionTerm {s : ℂ} (hs : xi s ≠ 0) :
+theorem summable_xiPartialFractionTerm_lineOne {s : ℂ} (hs : xi s ≠ 0) :
     Summable (xiPartialFractionTerm s) := by
   have hz : XiC ((s - 1 / 2) * (-I)) ≠ 0 := by
     rw [← xi_eq_XiC_comp]
@@ -66,7 +66,7 @@ private theorem re_xiPartialFractionTerm (s : ℂ) (q : XiZeroCopy) :
 theorem re_logDeriv_xi_eq_tsum {s : ℂ} (hs : xi s ≠ 0) :
     (logDeriv xi s).re = ∑' q : XiZeroCopy, (xiPartialFractionTerm s q).re := by
   rw [logDeriv_xi_eq_partialFraction hs]
-  exact Complex.re_tsum (summable_xiPartialFractionTerm hs)
+  exact Complex.re_tsum (summable_xiPartialFractionTerm_lineOne hs)
 
 /-- The reflection-paired resolvent term of `ξ'/ξ` at `s` for the divisor copy `q`:
 `(Re s − β)/|s − ρ|² + (Re s − (1 − β))/|s − (1 − ρ)|²`. -/
@@ -124,7 +124,7 @@ theorem nonempty_xiZeroCopy : Nonempty XiZeroCopy := by
 theorem summable_xiPairedResolventTerm {s : ℂ} (hs : xi s ≠ 0) :
     Summable (xiPairedResolventTerm s) := by
   have hsum : Summable (fun q : XiZeroCopy => (xiPartialFractionTerm s q).re) :=
-    (summable_xiPartialFractionTerm hs).mapL Complex.reCLM
+    (summable_xiPartialFractionTerm_lineOne hs).mapL Complex.reCLM
   have hsumR : Summable
       (fun q : XiZeroCopy => (xiPartialFractionTerm s (xiZeroCopyReflectEquiv q)).re) :=
     (xiZeroCopyReflectEquiv.summable_iff).mpr hsum
@@ -136,7 +136,7 @@ theorem summable_xiPairedResolventTerm {s : ℂ} (hs : xi s ≠ 0) :
 theorem two_mul_re_logDeriv_xi_eq_tsum_paired {s : ℂ} (hs : xi s ≠ 0) :
     2 * (logDeriv xi s).re = ∑' q : XiZeroCopy, xiPairedResolventTerm s q := by
   have hsum : Summable (fun q : XiZeroCopy => (xiPartialFractionTerm s q).re) :=
-    (summable_xiPartialFractionTerm hs).mapL Complex.reCLM
+    (summable_xiPartialFractionTerm_lineOne hs).mapL Complex.reCLM
   have hsumR : Summable
       (fun q : XiZeroCopy => (xiPartialFractionTerm s (xiZeroCopyReflectEquiv q)).re) :=
     (xiZeroCopyReflectEquiv.summable_iff).mpr hsum

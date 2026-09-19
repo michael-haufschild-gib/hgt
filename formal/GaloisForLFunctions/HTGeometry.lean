@@ -15905,3 +15905,4 @@ import GaloisForLFunctions.HTGeometry.CubicEndpointCpowIntegrability
 import GaloisForLFunctions.HTGeometry.CubicEndpointCpowLogIntegrability
 import GaloisForLFunctions.HTGeometry.HyperbolicRadialZeroJet
 import GaloisForLFunctions.HTGeometry.VolterraRectangleTransposition
+import GaloisForLFunctions.HTGeometry.CosineSumNonposZero

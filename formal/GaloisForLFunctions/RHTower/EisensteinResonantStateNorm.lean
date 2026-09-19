@@ -105,7 +105,9 @@ theorem integral_norm_sq_of_msA_eq_zero {u : ℂ} (hu : u ∈ eisensteinLineDoma
   have hsub : u - -(starRingEnd ℂ) u = ((2 * u.re : ℝ) : ℂ) := by
     apply Complex.ext <;> simp; ring
   have hadd : u + -(starRingEnd ℂ) u = ((2 * u.im : ℝ) : ℂ) * Complex.I := by
-    apply Complex.ext <;> simp <;> ring
+    refine Complex.ext ?_ ?_
+    · simp
+    · simp; ring
   have hpow : (Y : ℂ) ^ (-(starRingEnd ℂ) u - u) = ((Y ^ (-2 * u.re) : ℝ) : ℂ) := by
     rw [Complex.ofReal_cpow hYpos.le]
     congr 1
@@ -134,8 +136,8 @@ theorem integral_norm_sq_of_msA_eq_zero {u : ℂ} (hu : u ∈ eisensteinLineDoma
   have h1' : 2 * u.re * (∫ z in fd, ‖truncatedLineModel u Y z‖ ^ 2) =
       -(‖msB u‖ ^ 2 * Y ^ (-2 * u.re)) := by exact_mod_cast h1
   have hne : -2 * u.re ≠ 0 := by linarith
-  field_simp
-  linarith
+  rw [eq_div_iff hne]
+  linear_combination -h1'
 
 /-! ## Resonant states -/
 

@@ -220,6 +220,7 @@ theorem timeOnset_second_derivative_pair_bound (v : ℂ) (hv : v.re ≤ 0) :
       _ ≤ L+3*‖v‖*K+3*‖v‖^2*Λ+‖v‖^3 := by
         simp only [norm_mul,norm_pow,Complex.norm_ofNat]
         gcongr
+        exact mul_le_of_le_one_right (by positivity) hχ
   have hSecond : ‖timeOnsetSecond v u‖ ≤ B := by
     linarith [hb u,norm_nonneg (timeOnsetFirst v u)]
   linarith

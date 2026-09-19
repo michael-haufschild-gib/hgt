@@ -102,3 +102,51 @@ identities; the growth bound `Vb/‖Λ‖⁴ ≤ 128e² + B t^{5/3}(log t)^{50}`
 `‖Λ‖² ≥ e^{−πt}‖ζ(1+2it)‖²` and the corpus's `‖ζ(1+2it)‖ ≥ c/log(2t)^{11}`; and the eventual dominance
 `t² · 25/4 · ‖Λ‖⁴ > 4352 · Vb`. Verdict unchanged: receiver-side, no RH content; the numerics' crossover
 near ordinate 30 is not certified (the Lean threshold is implicit).
+
+## 2026-09-19 — producer conjecture loop, cycles 4 and 5
+
+Cycle 4 (candidate from the B2 card: the coefficientwise cancellation law of the square-reader
+residual face, whose stated consequence was `Λ(2ρ−1) = 0` at every Xi occurrence, hence RH by
+`affine_lower_lambda_zero_not_left`). Phase 4 verdict: FALSE. On the line `ρ = ½+iγ` both Weyl
+coefficients are nonzero, `Λ(2ρ)Λ(2ρ−1) = |Λ(1+2iγ)|² > 0`, and Hardy's theorem supplies such zeros;
+so the antecedent is unsatisfiable (Lean: `HBSquareReaderChannelsOnLine`, CANNOT-367). Survivor: on the
+line the face is the perfect square `y·(2Re(Λ(1+2iγ)y^{iγ}))²`; the three channels have real growth
+`2σ, 1, 2−2σ`, equal exactly on the line, so any residual-face law constraining `σ` is a cutoff-growth
+detector (the MUST-353 receiver). Reusable check: test every proposed law at an on-line zero first.
+
+Cycle 5 (candidate: the "only shape left" of the 2026-09-13 reframing — a stationarity/Ward identity of
+the literal action with nonzero total weight). Phase 1 search shows the class is already classified in
+Lean: `ThetaCuspHawkingBMFESchwarzFixedWeightWardDichotomy` (zero total weight ⇒ unconditional and
+RH-blind; positive total weight ⇒ the identity is equivalent to RH), `…CanonicalLeftActionCovarianceEndpoint`
+(unit canonical left-response stationarity ⟺ RH), `…SourceFEQNMGeneratorLocalityNoGo` (the physical
+identity kernel is QNM-time-conserved and nondegenerate unconditionally; its source-FE covariance ⟺ RH),
+`…SourceFECocycleFixedPairingRigidity` (fixed-pairing compatibility ⟺ RH). Verdict: REDISCOVERED — the
+positive-weight Ward identity is the receiver statement itself, not a mechanism that proves it; the
+dilation Ward identity is the Euler homogeneity of a weight-two form (`B(zx,zx) = z²B(x,x)`) and carries
+no content, and the literal action has no other continuous symmetry (no global clock translation;
+modular invariance is group-independent; Hecke stationarity is cycle 1's commutator identity).
+
+Loop verdict after five cycles: NO PRODUCER FOUND; loop closed. The RH-bearing content of HB is the
+Class II time-delay ledger `−φ'/φ(½+it) = 4Re(ξ'/ξ)(1+2it) = Σ_ρ Lorentzian(β,1−β)` (now the certified
+height-one source mean, `integral_norm_sq_height_one_eq_time_delay`): fixed total mass `π` per zero,
+peak `1/β + 1/(1−β) ≥ 4` sharpened off the line, exclusion width `c/log γ` from the classical bound on
+`Re(ζ'/ζ)(1+it)`; a producer would be an upper bound on that peak sharper than the zero-free region, which
+is RH-strength (the microscopic wall of `l-microscopic-wall-conjecture-loop`).
+
+## 2026-09-19 — cycle 6 (the ledger itself) and the exit from HB
+
+Candidate: a bound on the peak `1/β + 1/(1−β)` of the time-delay density at a zero's ordinate, using
+HB's certified identity `∫_𝒟‖Λ¹E*‖² = Im(Λ²)/t + ‖Λ‖²(2Σ_ρ Lorentzian − 4/(1+4t²))`. Phase 1 kill before
+construction: the corpus already classifies this ledger (ULF-SLC-001, `ulf-pontryagin-index-one-reading`)
+as Class II with peak `(1/2π)(1/β+1/(1−β))`, floor `(1/2π)/(1+(2r−γ)²)` and exclusion width `c/log γ`
+(Ceiling C2); any peak bound sharper than the classical bound on `Re(ζ'/ζ)(1+it)` is a zero-free region
+of the same strength, i.e. the microscopic wall (`l-microscopic-displacement-conjecture-loop`, cycles 1–3:
+resolution of every smooth detector is `Θ(1/log T)`; the only escape is prime pair correlation with the
+sharp constant beyond bandwidth one). Verdict: REDISCOVERED (Ceiling C2). Also checked: the Hermitian Gram
+matrix of truncated resonant states from Maass–Selberg (MUST-352) is the Gram matrix of their Weyl terms
+`Λ(ρ_j−1)y^{−ρ_j/2}` on `(0,Y)` — positive semidefinite for free, σ-blind.
+
+Exit: HB's receiver side is complete (MUST-352–356), its producer loop is closed after six cycles, and its
+only RH-bearing object is a Class II ledger at the C2 ceiling. The route cannot supply arithmetic
+information beyond bandwidth one; the HB objects remain useful only as tests of proposed laws (Hardy
+consistency at on-line zeros; general-Fuchsian invariance). Further HB work is receiver-side transport.
