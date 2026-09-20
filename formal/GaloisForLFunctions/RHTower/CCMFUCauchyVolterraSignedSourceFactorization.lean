@@ -16,6 +16,101 @@ namespace RHTower
 
 noncomputable section
 
+/--
+An active lower endpoint can be moved to a common outer interval only by retaining its indicator.
+The identity is exact for signed sources: no coefficient is discarded at the moving boundary.
+-/
+theorem cauchyVolterra_intervalIntegral_activeLower_eq
+    {x ξ Y : ℝ} (hxξ : x ≤ ξ) (hξY : ξ ≤ Y) (g : ℝ → ℝ)
+    (hleft : IntervalIntegrable (fun y => if ξ ≤ y then g y else 0) volume x ξ)
+    (hright : IntervalIntegrable (fun y => if ξ ≤ y then g y else 0) volume ξ Y) :
+    (∫ y in x..Y, if ξ ≤ y then g y else 0) = ∫ y in ξ..Y, g y := by
+  have hzero : (∫ y in x..ξ, if ξ ≤ y then g y else 0) = 0 := by
+    calc
+      (∫ y in x..ξ, if ξ ≤ y then g y else 0) = ∫ y in x..ξ, (0 : ℝ) := by
+        apply intervalIntegral.integral_congr_Ioo_of_le hxξ
+        intro y hy
+        simp [not_le_of_gt hy.2]
+      _ = 0 := intervalIntegral.integral_zero
+  have hid : (∫ y in ξ..Y, if ξ ≤ y then g y else 0) = ∫ y in ξ..Y, g y := by
+    apply intervalIntegral.integral_congr_Ioo_of_le hξY
+    intro y hy
+    simp [hy.1.le]
+  calc
+    (∫ y in x..Y, if ξ ≤ y then g y else 0) =
+        (∫ y in x..ξ, if ξ ≤ y then g y else 0) +
+          ∫ y in ξ..Y, if ξ ≤ y then g y else 0 :=
+      (intervalIntegral.integral_add_adjacent_intervals hleft hright).symm
+    _ = _ := by rw [hzero, hid, zero_add]
+
+/--
+Finite signed Cauchy--Volterra transport with genuine variable lower clocks.
+
+The active indicator is part of the transported source.  Omitting it would replace the physical
+triangular source by a different common-base-point source.
+-/
+theorem cauchyVolterra_finite_signed_transport_variable_lower
+    {ι : Type*} (s : Finset ι) (a : ι → ℝ) (ξ : ι → ℝ)
+    {x Y : ℝ} {q : ℝ → ℝ}
+    (hrange : ∀ i ∈ s, x ≤ ξ i ∧ ξ i ≤ Y)
+    (hleft : ∀ i ∈ s, IntervalIntegrable
+      (fun y => if ξ i ≤ y then a i * (q y * cauchyVolterraKernel (ξ i) y) else 0)
+      volume x (ξ i))
+    (hright : ∀ i ∈ s, IntervalIntegrable
+      (fun y => if ξ i ≤ y then a i * (q y * cauchyVolterraKernel (ξ i) y) else 0)
+      volume (ξ i) Y)
+    (hfull : ∀ i ∈ s, IntervalIntegrable
+      (fun y => if ξ i ≤ y then a i * (q y * cauchyVolterraKernel (ξ i) y) else 0)
+      volume x Y) :
+    (∑ i ∈ s, a i * ∫ y in ξ i..Y, q y * cauchyVolterraKernel (ξ i) y) =
+      ∫ y in x..Y, ∑ i ∈ s,
+        if ξ i ≤ y then a i * (q y * cauchyVolterraKernel (ξ i) y) else 0 := by
+  calc
+    (∑ i ∈ s, a i * ∫ y in ξ i..Y, q y * cauchyVolterraKernel (ξ i) y) =
+        ∑ i ∈ s, ∫ y in x..Y,
+          if ξ i ≤ y then a i * (q y * cauchyVolterraKernel (ξ i) y) else 0 := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          rw [← intervalIntegral.integral_const_mul]
+          exact (cauchyVolterra_intervalIntegral_activeLower_eq
+            (hrange i hi).1 (hrange i hi).2 _ (hleft i hi) (hright i hi)).symm
+    _ = _ := (intervalIntegral.integral_finsetSum hfull).symm
+
+/-- Active zeroth source moment at a common clock.  The indicator retains each cell's literal
+moving lower endpoint. -/
+def cauchyVolterraActiveZerothMoment {ι : Type*} (s : Finset ι) (a : ι → ℝ)
+    (ξ : ι → ℝ) (y : ℝ) : ℝ :=
+  ∑ i ∈ s, if ξ i ≤ y then a i else 0
+
+/-- Active first square-root-clock source moment at a common clock. -/
+def cauchyVolterraActiveFirstMoment {ι : Type*} (s : Finset ι) (a : ι → ℝ)
+    (ξ : ι → ℝ) (y : ℝ) : ℝ :=
+  ∑ i ∈ s, if ξ i ≤ y then a i * ξ i else 0
+
+/-- The signed active Cauchy codiagonal has exactly two coupled source moments.  It is crucial
+that this is a difference of moments *after* common active support has been imposed: separate
+bounds on the two moments do not preserve the critical cancellation. -/
+theorem cauchyVolterra_activeCodiagonal_eq_coupledMoments
+    {ι : Type*} (s : Finset ι) (a : ι → ℝ) (ξ : ι → ℝ)
+    {y : ℝ} (hy : y ≠ 0) :
+    (∑ i ∈ s, if ξ i ≤ y then a i * cauchyVolterraKernel (ξ i) y else 0) =
+      cauchyVolterraActiveZerothMoment s a ξ y / y -
+        cauchyVolterraActiveFirstMoment s a ξ y / y ^ 2 := by
+  unfold cauchyVolterraActiveZerothMoment cauchyVolterraActiveFirstMoment
+    cauchyVolterraKernel
+  calc
+    (∑ i ∈ s, if ξ i ≤ y then a i * (1 / y - ξ i / y ^ 2) else 0) =
+        ∑ i ∈ s, ((if ξ i ≤ y then a i else 0) / y -
+          (if ξ i ≤ y then a i * ξ i else 0) / y ^ 2) := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          split_ifs with h
+          · field_simp [hy]
+          · simp
+    _ = (∑ i ∈ s, if ξ i ≤ y then a i else 0) / y -
+        (∑ i ∈ s, if ξ i ≤ y then a i * ξ i else 0) / y ^ 2 := by
+          rw [Finset.sum_sub_distrib, ← Finset.sum_div, ← Finset.sum_div]
+
 private theorem ccmFUSuzuki_activeSqrtClockRange
     {H : ℝ} (hH : 2 ≤ H) {j : ℕ}
     (hj : j ∈ Finset.range (suzukiCheckpointEventIndex H - 2)) :
@@ -62,6 +157,40 @@ private theorem ccmFUSuzuki_criticalMultiplier_eq_cellProfile (H : ℝ) (j : ℕ
 noncomputable def ccmFUSuzukiCriticalPrimePolarIncrement (j : ℕ) : ℝ :=
   ArithmeticFunction.vonMangoldt (j + 3) / ((j + 3 : ℕ) : ℝ) -
     (Real.log ((j + 3 : ℕ) : ℝ) - Real.log ((j + 2 : ℕ) : ℝ))
+
+/-- Literal active zeroth moment of the critical finite prime--polar head. -/
+noncomputable def ccmFUSuzukiCriticalActiveZerothMoment (H y : ℝ) : ℝ :=
+  cauchyVolterraActiveZerothMoment
+    (Finset.range (suzukiCheckpointEventIndex H - 2))
+    (fun j => ((j + 3 : ℕ) : ℝ) * ccmFUSuzukiCriticalPrimePolarIncrement j)
+    (fun j => Real.sqrt ((j + 3 : ℕ) : ℝ)) y
+
+/-- Literal active first square-root-clock moment of the critical finite prime--polar head. -/
+noncomputable def ccmFUSuzukiCriticalActiveFirstMoment (H y : ℝ) : ℝ :=
+  cauchyVolterraActiveFirstMoment
+    (Finset.range (suzukiCheckpointEventIndex H - 2))
+    (fun j => ((j + 3 : ℕ) : ℝ) * ccmFUSuzukiCriticalPrimePolarIncrement j)
+    (fun j => Real.sqrt ((j + 3 : ℕ) : ℝ)) y
+
+/-- Minimal signed invariant carried by the literal critical finite head at clock `y`.
+This is the codiagonal which must be controlled jointly under the positive FU curvature. -/
+noncomputable def ccmFUSuzukiCriticalActiveCauchyCodiagonal (H y : ℝ) : ℝ :=
+  ∑ j ∈ Finset.range (suzukiCheckpointEventIndex H - 2),
+    if Real.sqrt ((j + 3 : ℕ) : ℝ) ≤ y then
+      (((j + 3 : ℕ) : ℝ) * ccmFUSuzukiCriticalPrimePolarIncrement j) *
+        cauchyVolterraKernel (Real.sqrt ((j + 3 : ℕ) : ℝ)) y
+    else 0
+
+/-- Exact two-moment reduction of the actual signed critical Cauchy codiagonal. -/
+theorem ccmFUSuzukiCriticalActiveCauchyCodiagonal_eq_coupledMoments
+    {H y : ℝ} (hy : y ≠ 0) :
+    ccmFUSuzukiCriticalActiveCauchyCodiagonal H y =
+      ccmFUSuzukiCriticalActiveZerothMoment H y / y -
+        ccmFUSuzukiCriticalActiveFirstMoment H y / y ^ 2 := by
+  exact cauchyVolterra_activeCodiagonal_eq_coupledMoments
+    (Finset.range (suzukiCheckpointEventIndex H - 2))
+    (fun j => ((j + 3 : ℕ) : ℝ) * ccmFUSuzukiCriticalPrimePolarIncrement j)
+    (fun j => Real.sqrt ((j + 3 : ℕ) : ℝ)) hy
 
 /--
 Exact source-faithful cell decomposition of the literal weighted prime--polar source.

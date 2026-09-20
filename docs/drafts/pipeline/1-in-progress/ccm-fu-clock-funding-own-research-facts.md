@@ -41,3 +41,47 @@
   whose residual labels differ by exactly the inserted prime. Thus the open
   charge bound is an explicit adjacent-label Möbius divisor correlation, not an
   unspecified changing-field effect.
+- `mobiusDivisorArityHeadCharge_empty_eq_prime_shift` is now formally proved
+  and axiom-audited. At the empty core, squarefree source support collapses each
+  adjacent residual-label pair uniquely to `e = p*d`; the exact surviving
+  charge is the cutoff-truncated signed correlation weighted by
+  `primeFactors(d).card + 1_{d=1}`. Therefore the immediate cancellation
+  problem is a one-index truncated rank-weighted prime shift, not a residual
+  label-pair problem. The cutoff `p*d ∈ mobiusDivisorSelectionIndices M` is
+  essential and must remain in any analytic transform.
+- `mobiusDivisorArityHeadEnergy_empty_eq_diagonal` is now formally proved and
+  axiom-audited. The completed entrance cost is exactly
+  `∑_{d∈I_M} (primeFactors(d).card + 1_{primeFactors(d)=∅}) C_d²`.
+  It is therefore a positive source diagonal: Möbius signs have already
+  squared away before the first insertion. Any route claiming to neutralize
+  this entrance logarithm by signed charge cancellation confuses two distinct
+  problems; a successful CCM-FU proof needs a sharper literal-channel amplitude
+  estimate for this diagonal in addition to a signed prime-shift estimate.
+- `MobiusDivisorWeightedCutoffDiagonal` is now formally proved and
+  axiom-audited. For every fixed source weight, the literal channel-square
+  diagonal has an exact cutoff successor law: a signed mixed Abel-source term
+  plus the complete new-square remainder. Specializing the weight to
+  `primeFactors(d).card + 1_{primeFactors(d)=∅}` identifies the completed
+  entrance energy with the full-cutoff diagonal (nonsquarefree and terminal
+  channels vanish) and gives its exact successor law. Thus the positive
+  entrance obstruction is not an immutable initial constant: it is a
+  cumulative signed cutoff-time correlation together with an explicit positive
+  defect. Remaining problem is to control that correlation strongly enough
+  against the defect, and to relate it if possible to the history prime-shift
+  correlation.
+- Expanding `mobiusDivisorDilationChannel_eq_moebius_unsigned` corrects the
+  earlier sign diagnosis: in the cutoff successor mixed term, the source
+  factor is `C_M(d) * (mu(d) * primeFreeDivisorDefect(M/d))`, so the two
+  squarefree Möbius signs cancel.  In contrast, at the empty core a legal
+  prime shift has exactly `C_M(d) * C_M(p*d) = -B_M(d) * B_M(p*d)`.  Thus
+  the cutoff obstacle is unsigned defect covariance, while first-prime
+  history charge has fixed negative orientation; neither can be explained by
+  fluctuating Möbius signs.
+- `MobiusDivisorArityHeadEmptyOrientation` is now formally proved in scratch
+  and promoted.  `mobiusDivisorArityHeadCharge_empty_nonpos` states, without
+  premises beyond primality, that every first insertion has nonpositive
+  completed arity-head charge.  This local dissipation cannot be extrapolated
+  to a complete history: nonempty processed cores retain multiple source
+  indices per residual label.  The remaining CCM-FU hard problem is therefore
+  precise—find a growing-core replacement orientation/cancellation law, and
+  control the separate unsigned cutoff defect covariance.

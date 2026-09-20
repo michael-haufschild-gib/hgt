@@ -206,4 +206,147 @@ theorem mobiusDivisorArityHeadCharge_eq_pairs (M : ℕ) (P : Finset ℕ) (p : �
         intro e he
         exact hcollapse d e hd he
 
+/-- On the empty processed core, squarefree source support makes every adjacent
+residual-label pair uniquely a literal prime shift.  The cutoff condition is
+retained exactly: only `p*d` still inside the source index set contributes. -/
+private lemma empty_adjacent_eq_prime_mul {M p d e : ℕ}
+    (hd : d ∈ mobiusDivisorSelectionIndices M)
+    (he : e ∈ mobiusDivisorSelectionIndices M)
+    (hpD : p ∉ d.primeFactors)
+    (hlabel : e.primeFactors = insert p d.primeFactors) :
+    e = p * d := by
+  have hds : Squarefree d := (mem_filter.mp hd).2
+  have hes : Squarefree e := (mem_filter.mp he).2
+  calc
+    e = ∏ q ∈ e.primeFactors, q := (Nat.prod_primeFactors_of_squarefree hes).symm
+    _ = ∏ q ∈ insert p d.primeFactors, q := by rw [hlabel]
+    _ = p * ∏ q ∈ d.primeFactors, q := prod_insert hpD
+    _ = p * d := by rw [Nat.prod_primeFactors_of_squarefree hds]
+
+/-- The empty-core completed charge is exactly one signed, cutoff-truncated
+prime-shift correlation.  Its arity factor is the source squarefree rank, with
+the separate empty-label boundary contribution retained. -/
+theorem mobiusDivisorArityHeadCharge_empty_eq_prime_shift (M : ℕ) {p : ℕ}
+    (hp : p.Prime) :
+    mobiusDivisorArityHeadCharge M ∅ p =
+      2 * ∑ d ∈ mobiusDivisorSelectionIndices M,
+        if p ∉ d.primeFactors ∧ p * d ∈ mobiusDivisorSelectionIndices M then
+          ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+            mobiusDivisorDilationChannel M d * mobiusDivisorDilationChannel M (p * d)
+        else 0 := by
+  rw [mobiusDivisorArityHeadCharge_eq_pairs]
+  simp only [sdiff_empty]
+  congr 1
+  apply sum_congr rfl
+  intro d hd
+  have hd0 : d ≠ 0 := by
+    have := (mem_Icc.mp (mem_filter.mp hd).1).1
+    omega
+  have hlabel_mul : (p * d).primeFactors = insert p d.primeFactors := by
+    rw [Nat.primeFactors_mul hp.ne_zero hd0, hp.primeFactors, singleton_union]
+  change
+    (∑ e ∈ mobiusDivisorSelectionIndices M,
+      if p ∉ d.primeFactors ∧ e.primeFactors = insert p d.primeFactors then
+        ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+          mobiusDivisorDilationChannel M d * mobiusDivisorDilationChannel M e
+      else 0) =
+    if p ∉ d.primeFactors ∧ p * d ∈ mobiusDivisorSelectionIndices M then
+      ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+        mobiusDivisorDilationChannel M d * mobiusDivisorDilationChannel M (p * d)
+    else 0
+  by_cases hpD : p ∉ d.primeFactors
+  · by_cases hpd : p * d ∈ mobiusDivisorSelectionIndices M
+    · rw [if_pos (And.intro hpD hpd)]
+      let f : ℕ → ℝ := fun e =>
+        if p ∉ d.primeFactors ∧ e.primeFactors = insert p d.primeFactors then
+          ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+            mobiusDivisorDilationChannel M d * mobiusDivisorDilationChannel M e
+        else 0
+      change (∑ e ∈ mobiusDivisorSelectionIndices M, f e) = _
+      have hpoint : f (p * d) =
+          ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+            mobiusDivisorDilationChannel M d * mobiusDivisorDilationChannel M (p * d) := by
+        dsimp [f]
+        rw [if_pos (And.intro hpD hlabel_mul)]
+      exact (sum_eq_single
+        (s := mobiusDivisorSelectionIndices M) (f := f) (p * d)
+        (by
+          intro e he hne
+          have hzero : ¬(p ∉ d.primeFactors ∧
+              e.primeFactors = insert p d.primeFactors) := by
+            intro h
+            exact hne (empty_adjacent_eq_prime_mul hd he h.1 h.2)
+          dsimp [f]
+          rw [if_neg hzero])
+        (by intro hnot; exact (hnot hpd).elim)).trans hpoint
+    · have houter : ¬(p ∉ d.primeFactors ∧ p * d ∈ mobiusDivisorSelectionIndices M) :=
+          fun h => hpd h.2
+      rw [if_neg houter]
+      apply sum_eq_zero
+      intro e he
+      by_cases hcond : p ∉ d.primeFactors ∧
+          e.primeFactors = insert p d.primeFactors
+      · have heq := empty_adjacent_eq_prime_mul hd he hcond.1 hcond.2
+        exact (hpd (heq ▸ he)).elim
+      · rw [if_neg hcond]
+  · have houter : ¬(p ∉ d.primeFactors ∧ p * d ∈ mobiusDivisorSelectionIndices M) :=
+        fun h => hpD h.1
+    rw [if_neg houter]
+    apply sum_eq_zero
+    intro e he
+    have hinner : ¬(p ∉ d.primeFactors ∧
+        e.primeFactors = insert p d.primeFactors) := fun h => hpD h.1
+    rw [if_neg hinner]
+
+/-- Squarefree source labels determine their source indices. -/
+private lemma selection_primeFactors_injective {M d e : ℕ}
+    (hd : d ∈ mobiusDivisorSelectionIndices M)
+    (he : e ∈ mobiusDivisorSelectionIndices M)
+    (h : d.primeFactors = e.primeFactors) : d = e := by
+  have hds : Squarefree d := (mem_filter.mp hd).2
+  have hes : Squarefree e := (mem_filter.mp he).2
+  calc
+    d = ∏ q ∈ d.primeFactors, q := (Nat.prod_primeFactors_of_squarefree hds).symm
+    _ = ∏ q ∈ e.primeFactors, q := by rw [h]
+    _ = e := Nat.prod_primeFactors_of_squarefree hes
+
+/-- The empty-core completed entrance energy is a positive source diagonal:
+signs have already squared away before any prime is inserted. -/
+theorem mobiusDivisorArityHeadEnergy_empty_eq_diagonal (M : ℕ) :
+    mobiusDivisorArityHeadEnergy M ∅ =
+      ∑ d ∈ mobiusDivisorSelectionIndices M,
+        ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+          (mobiusDivisorDilationChannel M d)^2 := by
+  rw [mobiusDivisorArityHeadEnergy_eq_pairs]
+  simp only [sdiff_empty]
+  apply sum_congr rfl
+  intro d hd
+  have hiff (e : ℕ) : d.primeFactors ∆ e.primeFactors ⊆ ∅ ↔
+      e.primeFactors = d.primeFactors := by
+    rw [subset_empty, symmDiff_eq_empty]
+    exact eq_comm
+  let f : ℕ → ℝ := fun e =>
+    if d.primeFactors ∆ e.primeFactors ⊆ ∅ then
+      ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+        mobiusDivisorDilationChannel M d * mobiusDivisorDilationChannel M e
+    else 0
+  change (∑ e ∈ mobiusDivisorSelectionIndices M, f e) = _
+  have hpoint : f d =
+      ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
+        (mobiusDivisorDilationChannel M d)^2 := by
+    dsimp [f]
+    rw [if_pos (by simp)]
+    ring
+  exact (sum_eq_single
+    (s := mobiusDivisorSelectionIndices M) (f := f) d
+    (by
+      intro e he hne
+      have hzero : ¬d.primeFactors ∆ e.primeFactors ⊆ ∅ := by
+        intro hsub
+        have heq : d.primeFactors = e.primeFactors := (hiff e).mp hsub |>.symm
+        exact hne (selection_primeFactors_injective (d := d) (e := e) hd he heq).symm
+      dsimp [f]
+      rw [if_neg hzero])
+    (by intro hnot; exact (hnot hd).elim)).trans hpoint
+
 end RHTower

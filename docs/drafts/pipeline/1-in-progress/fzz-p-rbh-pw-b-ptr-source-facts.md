@@ -193,3 +193,32 @@
   prove the complete source-fixed branch kernel retains this modulus with nonzero oriented
   coefficient through physical replica/compact integration and couples it to the mixed Ward
   identity.
+- **FZZ-P single external-BRST branch closure (2026-09-20):** literal branch charges are `±p`.
+  Exact unit-circle orthogonality makes both unweighted compact averages zero whenever `p≠0`
+  (equivalently, branch incident). **Route killed:** one charged external branch → unweighted
+  compact integration → Ward source. **Positive survivor:** a charge-neutral multipoint external
+  correlator or matching nonfactorized Fourier weight; neither is ruled out.
+- **FZZ-P finite factorized cross-depth closure (2026-09-20):** every finite real-factorized
+  accumulation of the literal covariance `C(u₁)·conj(C(u₂))` is exactly
+  `‖Σ_u w(u)C(u)‖²`; thus its imaginary part is zero and its real part nonnegative.
+  **Route killed:** cross-depth coherence → finite real factorized depth integration → oriented
+  Ward term. **Positive survivor:** source-derived order-sensitive/nonfactorized or genuinely
+  complex counterterm coupling.
+- **FZZ-P all-depth factorized cross-depth closure (2026-09-20):** the literal nested all-depth
+  real-factorized covariance tower is exactly `‖Σ_n w_n C(u_n)‖²`; every well-defined such
+  tower is real and nonnegative. **Route killed:** full factorized real cross-depth
+  neutral-screening tower → oriented Ward term. **Positive survivor:** only source-derived
+  nonfactorization, order sensitivity, or complex counterterm coupling can carry orientation.
+- **FZZ-P real-kernel exchange classification (2026-09-20):** every finite real
+  exchange-symmetric depth kernel has identically zero imaginary covariance contribution. The
+  minimal exchange difference `C(u₁,u₂)−C(u₂,u₁)` has imaginary part
+  `2·Im C(u₁,u₂)`, nonzero at every literal off-node phase. **Route killed:** real
+  exchange-symmetric source kernel → oriented Ward term. **Exact survivor/premise:** derive a
+  nonzero source-fixed exchange-antisymmetric ordered kernel (or a complex kernel); mere
+  nonfactorization is insufficient.
+- **FZZ-P two-marked source exchange closure (2026-09-20):** the literal independently marked
+  OPE exponent, positive pair kernel, and compact-annular integral are all exactly symmetric in
+  their two marks; both exchange defects vanish identically. **Route killed:** two-marked local
+  OPE/contact alone → antisymmetric ordered kernel → oriented Ward term. **Positive survivor:**
+  only a genuinely temporal/ordered source term, external-BRST product, or complex counterterm
+  coupling can supply the required antisymmetry.

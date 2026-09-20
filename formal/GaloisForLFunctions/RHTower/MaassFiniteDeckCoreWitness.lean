@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.MaassFiniteDeckDirichlet
 import GaloisForLFunctions.HTGeometry.RectangleGridDecomposition
 import GaloisForLFunctions.HTGeometry.SmoothHeightRetraction
 import GaloisForLFunctions.HTGeometry.WitnessLinePoincare
+import Mathlib.MeasureTheory.Function.LpSpace.Indicator
 
 /-!
 # Global witness fields for finite-deck Maass cores
@@ -11,7 +12,7 @@ smooth height retraction supplies global scalar fields that agree with every
 finite-deck coordinate, with its chart germ, on a prescribed positive core.
 -/
 
-open UpperHalfPlane Set Filter Topology Complex
+open UpperHalfPlane Set Filter Topology Complex MeasureTheory
 open scoped ContDiff
 
 namespace GaloisForLFunctions.RHTower.MaassFiniteDeckDirichlet
@@ -525,9 +526,24 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
         ((8 * hx ^ 2) * X k j + (2 * hy ^ 2) * Y k j)) =
         (8 * hx ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, X k j) +
           (2 * hy ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, Y k j) := by
-    rw [Finset.sum_add_distrib]
-    simp_rw [← Finset.mul_sum]
-    rw [← Finset.mul_sum, ← Finset.mul_sum]
+    calc
+      (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
+        ((8 * hx ^ 2) * X k j + (2 * hy ^ 2) * Y k j)) =
+          ∑ k ∈ Finset.range K,
+            ((∑ j ∈ Finset.range M, (8 * hx ^ 2) * X k j) +
+              ∑ j ∈ Finset.range M, (2 * hy ^ 2) * Y k j) := by
+            apply Finset.sum_congr rfl
+            intro k _
+            rw [Finset.sum_add_distrib]
+      _ = ∑ k ∈ Finset.range K,
+            ((8 * hx ^ 2) * (∑ j ∈ Finset.range M, X k j) +
+              (2 * hy ^ 2) * (∑ j ∈ Finset.range M, Y k j)) := by
+            apply Finset.sum_congr rfl
+            intro k _
+            rw [← Finset.mul_sum, ← Finset.mul_sum]
+      _ = (8 * hx ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, X k j) +
+          (2 * hy ^ 2) * (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M, Y k j) := by
+            rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
   have hXgrid := setIntegral_rectangle_grid_sum
     (continuous_retractedDeckEnergyX hε F) (a := a) (c := c) (hx := hx) (hy := hy)
       (le_of_lt hhx) hhy M K
@@ -585,6 +601,203 @@ theorem exists_retractedDeck_product_grid_witness {N : ℕ} {ε a c hx hy : ℝ}
           rw [← hXgrid]
           rw [Finset.sum_comm]
           rw [← hYgrid]
+
+/-- The indicator of one measurable cell is linear in its finite-deck value. -/
+noncomputable def deckCellIndicator {N : ℕ} (s : Set ℍ) (hs : MeasurableSet s) :
+    DeckSpace N →ₗ[ℂ] DeckL2 N where
+  toFun := fun v => indicatorConstLp 2 hs (measure_ne_top cellMeasure s) v
+  map_add' := by
+    intro v w
+    exact indicatorConstLp_add.symm
+  map_smul' := by
+    intro z v
+    apply Lp.ext
+    filter_upwards [
+      (indicatorConstLp_coeFn (p := 2) (hs := hs)
+        (hμs := measure_ne_top cellMeasure s) (c := z • v)),
+      (indicatorConstLp_coeFn (p := 2) (hs := hs)
+        (hμs := measure_ne_top cellMeasure s) (c := v)),
+      Lp.coeFn_smul z (indicatorConstLp 2 hs (measure_ne_top cellMeasure s) v)]
+      with x hzv hv hsmul
+    rw [hzv]
+    change s.indicator (fun _ => z • v) x =
+      (z • indicatorConstLp 2 hs (measure_ne_top cellMeasure s) v) x
+    rw [hsmul, Pi.smul_apply, hv]
+    by_cases hx : x ∈ s <;> simp [hx]
+
+/-- The fixed finite-dimensional space of fields constant on a given finite cell family. -/
+noncomputable def deckFiniteCellSpan {N : ℕ} {I : Type*} [Fintype I]
+    (cell : I → Set ℍ) (hcell : ∀ i, MeasurableSet (cell i)) :
+    Submodule ℂ (DeckL2 N) :=
+  Submodule.span ℂ (Set.range fun p : I × Deck N =>
+    deckCellIndicator (cell p.1) (hcell p.1)
+      ((EuclideanSpace.basisFun (Deck N) ℂ) p.2))
+
+/-- The cell-constant space is finite dimensional independently of the field being approximated. -/
+theorem finiteDimensional_deckFiniteCellSpan {N : ℕ} {I : Type*} [Fintype I]
+    (cell : I → Set ℍ) (hcell : ∀ i, MeasurableSet (cell i)) :
+    FiniteDimensional ℂ (deckFiniteCellSpan (N := N) cell hcell) := by
+  unfold deckFiniteCellSpan
+  exact FiniteDimensional.span_of_finite ℂ (Set.finite_range _)
+
+/-- Every deck value on a fixed cell belongs to the cell family's fixed finite span. -/
+theorem deckCellIndicator_mem_deckFiniteCellSpan {N : ℕ} {I : Type*} [Fintype I]
+    (cell : I → Set ℍ) (hcell : ∀ i, MeasurableSet (cell i)) (i : I) (v : DeckSpace N) :
+    deckCellIndicator (cell i) (hcell i) v ∈ deckFiniteCellSpan (N := N) cell hcell := by
+  unfold deckFiniteCellSpan
+  let b : Module.Basis (Deck N) ℂ (DeckSpace N) :=
+    (EuclideanSpace.basisFun (Deck N) ℂ).toBasis
+  rw [← b.sum_repr v, map_sum]
+  apply Submodule.sum_mem
+  intro q _
+  rw [map_smul]
+  apply Submodule.smul_mem
+  apply Submodule.subset_span
+  exact ⟨(i, q), by simp [b]⟩
+
+/-- A field formed by one deck value on every cell lies in the fixed finite cell span. -/
+theorem sum_deckCellIndicator_mem_deckFiniteCellSpan {N : ℕ} {I : Type*} [Fintype I]
+    (cell : I → Set ℍ) (hcell : ∀ i, MeasurableSet (cell i)) (value : I → DeckSpace N) :
+    (∑ i, deckCellIndicator (cell i) (hcell i) (value i)) ∈
+      deckFiniteCellSpan (N := N) cell hcell := by
+  apply Submodule.sum_mem
+  intro i _
+  exact deckCellIndicator_mem_deckFiniteCellSpan cell hcell i (value i)
+
+/-- One Euclidean product-grid cell, pulled back to the upper-half-plane chart. -/
+def upperChartGridCell {M K : ℕ} (a c hx hy : ℝ) (i : Fin K × Fin M) : Set ℍ :=
+  (fun z : ℍ => ((z : ℂ).re, (z : ℂ).im)) ⁻¹'
+    (Set.Ioc (a + (i.2 : ℝ) * hx) (a + ((i.2 : ℕ) + 1 : ℝ) * hx) ×ˢ
+      Set.Ioc (c + (i.1 : ℝ) * hy) (c + ((i.1 : ℕ) + 1 : ℝ) * hy))
+
+theorem measurableSet_upperChartGridCell {M K : ℕ} (a c hx hy : ℝ) (i : Fin K × Fin M) :
+    MeasurableSet (upperChartGridCell a c hx hy i) := by
+  have hchart : Continuous fun z : ℍ => ((z : ℂ).re, (z : ℂ).im) :=
+    (Complex.continuous_re.comp UpperHalfPlane.continuous_coe).prodMk
+      (Complex.continuous_im.comp UpperHalfPlane.continuous_coe)
+  exact (measurableSet_Ioc.prod measurableSet_Ioc).preimage hchart.measurable
+
+/-- The deck-valued step field attached to a finite product grid. -/
+noncomputable def deckGridStep {N M K : ℕ} (a c hx hy : ℝ)
+    (C : ℕ → ℕ → DeckSpace N) : DeckL2 N :=
+  ∑ i : Fin K × Fin M,
+    deckCellIndicator (upperChartGridCell a c hx hy i)
+      (measurableSet_upperChartGridCell a c hx hy i) (C i.1 i.2)
+
+/-- Two distinct positive product-grid cells are disjoint. -/
+theorem disjoint_upperChartGridCell {M K : ℕ} {a c hx hy : ℝ}
+    (hhx : 0 < hx) (hhy : 0 < hy) {i j : Fin K × Fin M} (hij : i ≠ j) :
+    Disjoint (upperChartGridCell a c hx hy i) (upperChartGridCell a c hx hy j) := by
+  rw [Set.disjoint_left]
+  intro z hzi hzj
+  change
+    z.re ∈ Set.Ioc (a + (i.2 : ℝ) * hx) (a + ((i.2 : ℕ) + 1 : ℝ) * hx) ∧
+      z.im ∈ Set.Ioc (c + (i.1 : ℝ) * hy) (c + ((i.1 : ℕ) + 1 : ℝ) * hy) at hzi
+  change
+    z.re ∈ Set.Ioc (a + (j.2 : ℝ) * hx) (a + ((j.2 : ℕ) + 1 : ℝ) * hx) ∧
+      z.im ∈ Set.Ioc (c + (j.1 : ℝ) * hy) (c + ((j.1 : ℕ) + 1 : ℝ) * hy) at hzj
+  have hhorizontal : (i.2 : ℕ) = (j.2 : ℕ) := by
+    rcases lt_trichotomy (i.2 : ℕ) (j.2 : ℕ) with hlt | heq | hlt
+    · have hle : (i.2 : ℕ) + 1 ≤ (j.2 : ℕ) := Nat.succ_le_iff.mpr hlt
+      have hleR : (i.2 : ℝ) + 1 ≤ (j.2 : ℝ) := by
+        exact_mod_cast hle
+      have hmul := mul_le_mul_of_nonneg_right hleR hhx.le
+      exfalso
+      exact (not_lt_of_ge (hzi.1.2.trans (by nlinarith [hmul]))) hzj.1.1
+    · exact heq
+    · have hle : (j.2 : ℕ) + 1 ≤ (i.2 : ℕ) := Nat.succ_le_iff.mpr hlt
+      have hleR : (j.2 : ℝ) + 1 ≤ (i.2 : ℝ) := by
+        exact_mod_cast hle
+      have hmul := mul_le_mul_of_nonneg_right hleR hhx.le
+      exfalso
+      exact (not_lt_of_ge (hzj.1.2.trans (by nlinarith [hmul]))) hzi.1.1
+  have hvertical : (i.1 : ℕ) = (j.1 : ℕ) := by
+    rcases lt_trichotomy (i.1 : ℕ) (j.1 : ℕ) with hlt | heq | hlt
+    · have hle : (i.1 : ℕ) + 1 ≤ (j.1 : ℕ) := Nat.succ_le_iff.mpr hlt
+      have hleR : (i.1 : ℝ) + 1 ≤ (j.1 : ℝ) := by
+        exact_mod_cast hle
+      have hmul := mul_le_mul_of_nonneg_right hleR hhy.le
+      exfalso
+      exact (not_lt_of_ge (hzi.2.2.trans (by nlinarith [hmul]))) hzj.2.1
+    · exact heq
+    · have hle : (j.1 : ℕ) + 1 ≤ (i.1 : ℕ) := Nat.succ_le_iff.mpr hlt
+      have hleR : (j.1 : ℝ) + 1 ≤ (i.1 : ℝ) := by
+        exact_mod_cast hle
+      have hmul := mul_le_mul_of_nonneg_right hleR hhy.le
+      exfalso
+      exact (not_lt_of_ge (hzj.2.2.trans (by nlinarith [hmul]))) hzi.2.1
+  apply hij
+  apply Prod.ext
+  · exact Fin.ext hvertical
+  · exact Fin.ext hhorizontal
+
+/-- The `Lp` grid step has its expected finite indicator representative. -/
+theorem deckGridStep_coeFn {N M K : ℕ} (a c hx hy : ℝ)
+    (C : ℕ → ℕ → DeckSpace N) :
+    ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) : ℍ → DeckSpace N) =ᵐ[cellMeasure]
+      fun z => ∑ i : Fin K × Fin M,
+        (upperChartGridCell a c hx hy i).indicator (fun _ => C i.1 i.2) z := by
+  have hcell (i : Fin K × Fin M) :
+      ((deckCellIndicator (upperChartGridCell a c hx hy i)
+        (measurableSet_upperChartGridCell a c hx hy i) (C i.1 i.2) : DeckL2 N) :
+          ℍ → DeckSpace N) =ᵐ[cellMeasure]
+        (upperChartGridCell a c hx hy i).indicator (fun _ => C i.1 i.2) := by
+    change ((indicatorConstLp 2 (measurableSet_upperChartGridCell a c hx hy i)
+      (measure_ne_top cellMeasure (upperChartGridCell a c hx hy i)) (C i.1 i.2) : DeckL2 N) :
+        ℍ → DeckSpace N) =ᵐ[cellMeasure]
+      (upperChartGridCell a c hx hy i).indicator (fun _ => C i.1 i.2)
+    exact indicatorConstLp_coeFn (p := 2)
+      (hs := measurableSet_upperChartGridCell a c hx hy i)
+      (hμs := measure_ne_top cellMeasure (upperChartGridCell a c hx hy i))
+      (c := C i.1 i.2)
+  have hsum (s : Finset (Fin K × Fin M)) :
+      ((∑ i ∈ s, deckCellIndicator (upperChartGridCell a c hx hy i)
+        (measurableSet_upperChartGridCell a c hx hy i) (C i.1 i.2) : DeckL2 N) :
+          ℍ → DeckSpace N) =ᵐ[cellMeasure]
+        fun z => ∑ i ∈ s,
+          (upperChartGridCell a c hx hy i).indicator (fun _ => C i.1 i.2) z := by
+    classical
+    induction s using Finset.induction_on with
+    | empty => exact Filter.Eventually.of_forall fun z => by simp
+    | insert i s his ih =>
+        filter_upwards [Lp.coeFn_add
+          (deckCellIndicator (upperChartGridCell a c hx hy i)
+            (measurableSet_upperChartGridCell a c hx hy i) (C i.1 i.2))
+          (∑ j ∈ s, deckCellIndicator (upperChartGridCell a c hx hy j)
+            (measurableSet_upperChartGridCell a c hx hy j) (C j.1 j.2)), hcell i, ih]
+          with z hadd hi hs
+        simp only [Finset.sum_insert his]
+        rw [hadd, hi, hs]
+  simpa only [deckGridStep] using hsum Finset.univ
+
+/-- On each positive grid cell the `Lp` step agrees almost everywhere with its assigned value. -/
+theorem deckGridStep_ae_eq_cell_value {N M K : ℕ} {a c hx hy : ℝ}
+    (hhx : 0 < hx) (hhy : 0 < hy) (C : ℕ → ℕ → DeckSpace N)
+    (i : Fin K × Fin M) :
+    ∀ᵐ z ∂cellMeasure, z ∈ upperChartGridCell a c hx hy i →
+      ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
+        ℍ → DeckSpace N) z = C i.1 i.2 := by
+  classical
+  filter_upwards [deckGridStep_coeFn (N := N) (M := M) (K := K) a c hx hy C] with z hz hzi
+  rw [hz, Finset.sum_eq_single i]
+  · exact Set.indicator_of_mem hzi _
+  · intro j _ hji
+    exact Set.indicator_of_notMem
+      (fun hzj => (Set.disjoint_left.mp
+        (disjoint_upperChartGridCell hhx hhy hji.symm) hzi hzj)) _
+  · simp
+
+/-- Every grid step lies in its fixed finite-dimensional cell-constant space. -/
+theorem deckGridStep_mem_deckFiniteCellSpan {N M K : ℕ} (a c hx hy : ℝ)
+    (C : ℕ → ℕ → DeckSpace N) :
+    deckGridStep (M := M) (K := K) a c hx hy C ∈
+      deckFiniteCellSpan (N := N) (upperChartGridCell (M := M) (K := K) a c hx hy)
+        (measurableSet_upperChartGridCell (M := M) (K := K) a c hx hy) := by
+  unfold deckGridStep
+  exact sum_deckCellIndicator_mem_deckFiniteCellSpan
+    (upperChartGridCell (M := M) (K := K) a c hx hy)
+    (measurableSet_upperChartGridCell (M := M) (K := K) a c hx hy)
+    (fun i => C i.1 i.2)
 
 end
 

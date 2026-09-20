@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerDeletionNonclockLcmTailBridge
+import GaloisForLFunctions.RHTower.EulerDeletionPhysicalCellMoebiusIdentity
 
 /-!
 # EDQ physical child contrasts
@@ -195,6 +196,105 @@ def terminalChildWindowDeviation (n s : ℕ) : ℝ :=
   (clock n : ℝ) * ∑ d ∈ Icc 1 (n + 1), ((moebius d : ℤ) : ℝ) / (d : ℝ) -
     ∑ k ∈ Ioc (clock n + s * clock n) (clock n + (s + 1) * clock n),
       truncMoebiusDivisorSum (n + 1) k
+
+/-- A terminal child-window deviation is the exact increment of the literal physical Möbius
+source between its two clock-aligned endpoints.  This transfers the remaining signed tail to the
+existing physical source-energy carrier without an estimate. -/
+theorem terminalChildWindowDeviation_eq_physicalCell_increment (n s : ℕ) :
+    terminalChildWindowDeviation n s =
+      DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+        (clock n + (s + 1) * clock n) -
+      DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+        (clock n + s * clock n) := by
+  let A := clock n
+  let a := A + s * A
+  let b := A + (s + 1) * A
+  have hab : a ≤ b := by
+    dsimp [a, b]
+    rw [Nat.succ_mul]
+    omega
+  have hsplit := Finset.sum_Ioc_consecutive
+    (fun j : ℕ => truncMoebiusDivisorSum (n + 1) j) (Nat.zero_le a) hab
+  have hprefix :
+      (∑ j ∈ Icc 1 a, truncMoebiusDivisorSum (n + 1) j) +
+        ∑ j ∈ Ioc a b, truncMoebiusDivisorSum (n + 1) j =
+      ∑ j ∈ Icc 1 b, truncMoebiusDivisorSum (n + 1) j := by
+    simpa only [← Finset.Icc_add_one_left_eq_Ioc, Nat.zero_add] using hsplit
+  have hwindow :
+      (∑ j ∈ Ioc a b, truncMoebiusDivisorSum (n + 1) j) =
+        (∑ j ∈ Icc 1 b, truncMoebiusDivisorSum (n + 1) j) -
+          ∑ j ∈ Icc 1 a, truncMoebiusDivisorSum (n + 1) j := by
+    linarith
+  rw [RHTower.physical_moebius_cell_eq_truncated_divisor_tail,
+    RHTower.physical_moebius_cell_eq_truncated_divisor_tail]
+  change (A : ℝ) * (∑ d ∈ Icc 1 (n + 1), ((moebius d : ℤ) : ℝ) / (d : ℝ)) -
+      ∑ j ∈ Ioc a b, truncMoebiusDivisorSum (n + 1) j = _
+  rw [hwindow]
+  dsimp [a, b, A]
+  push_cast
+  ring
+
+/-- The complete tail carried by one terminal child block telescopes to one literal physical
+source cell.  Its far clock endpoint vanishes because every divisor in the cutoff divides that
+clock.  Thus no multi-window estimate remains inside a terminal child tail. -/
+theorem terminalChildWindowDeviation_tail_eq_neg_physicalCell
+    (n b : ℕ) (hb : b < clock (n + 1) / clock n) :
+    (∑ s ∈ range (clock (n + 1) / clock n - 1 - b),
+      terminalChildWindowDeviation n (b + s)) =
+      -DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+        (clock n * (b + 1)) := by
+  let q := clock (n + 1) / clock n
+  let A := clock n
+  let K := q - 1 - b
+  let F : ℕ → ℝ := fun s =>
+    DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+      (A + (b + s) * A)
+  have htel : ∀ T : ℕ, (∑ s ∈ range T, (F (s + 1) - F s)) = F T - F 0 := by
+    intro T
+    induction T with
+    | zero => simp
+    | succ T ih =>
+      rw [sum_range_succ, ih]
+      ring
+  have hdeviation (s : ℕ) : terminalChildWindowDeviation n (b + s) = F (s + 1) - F s := by
+    unfold F
+    simpa [A, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+      terminalChildWindowDeviation_eq_physicalCell_increment n (b + s)
+  have hqpos : 0 < q := by
+    dsimp [q]
+    exact Nat.div_pos (Nat.le_of_dvd (clock_pos (n + 1)) (clock_dvd (Nat.le_succ n)))
+      (clock_pos n)
+  have hbK : b + K = q - 1 := by
+    dsimp [K]
+    omega
+  have hspan : q * A = clock (n + 1) := by
+    dsimp [q, A]
+    exact Nat.div_mul_cancel (clock_dvd (Nat.le_succ n))
+  have hendpoint : A + (b + K) * A = clock (n + 1) := by
+    rw [hbK]
+    have : A + (q - 1) * A = q * A := by
+      calc
+        A + (q - 1) * A = (1 + (q - 1)) * A := by rw [Nat.add_mul, one_mul]
+        _ = q * A := by congr 1; omega
+    rw [this, hspan]
+  have hcellclock :
+      DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+        (clock (n + 1)) = 0 := by
+    unfold DeletionCoefficientTransfer.cell
+    apply Finset.sum_eq_zero
+    intro i hi
+    have hidvd : i + 1 ∣ clock (n + 1) :=
+      dvd_clock (Nat.succ_pos i) (Nat.succ_le_of_lt (mem_range.mp hi))
+    simp [Nat.mod_eq_zero_of_dvd hidvd]
+  change (∑ s ∈ range K, terminalChildWindowDeviation n (b + s)) = _
+  rw [Finset.sum_congr rfl (fun s _ => hdeviation s), htel]
+  unfold F
+  rw [hendpoint, hcellclock]
+  dsimp [A]
+  rw [zero_sub]
+  congr 1
+  rw [Nat.mul_succ]
+  ac_rfl
 
 /-- The terminal physical child innovations have exact signed zero total over the complete
 child cycle.  This identifies the cancellation carrier that remains after Euler deletion. -/
@@ -961,6 +1061,25 @@ def terminalChildTailWeight (n b : ℕ) : ℝ :=
     (1 - x) * x ^ (clock n * (b + 1) - 1) *
       (1 - x ^ clock (n + 1))⁻¹
 
+/-- A finite initial segment of a nonnegative geometric denominator controls its last power.
+This is the pointwise half-prefix estimate needed to compare a terminal beta weight with the
+native physical cell mass. -/
+theorem geometric_denominator_half_prefix_lower
+    (x : ℝ) (hx0 : 0 ≤ x) (hx1 : x ≤ 1) (h C : ℕ) (hhC : h ≤ C) :
+    (h : ℝ) * x ^ (h - 1) ≤ ∑ i ∈ range C, x ^ i := by
+  calc
+    (h : ℝ) * x ^ (h - 1) ≤ ∑ i ∈ range h, x ^ i := by
+      calc
+        (h : ℝ) * x ^ (h - 1) = ∑ i ∈ range h, x ^ (h - 1) := by simp
+        _ ≤ ∑ i ∈ range h, x ^ i := by
+          apply Finset.sum_le_sum
+          intro i hi
+          exact pow_le_pow_of_le_one hx0 hx1 (Nat.le_pred_of_lt (mem_range.mp hi))
+    _ ≤ ∑ i ∈ range C, x ^ i := by
+      apply Finset.sum_le_sum_of_subset_of_nonneg (range_mono hhC)
+      intro i _ _
+      positivity
+
 /-- The terminal tail kernel integral is its signed finite innovation sum times its exact beta
 weight.  No absolute value, asymptotic replacement, or unproved analytic remainder occurs. -/
 theorem intervalIntegral_terminalChildTailKernel_eq_weighted_tail (n b : ℕ) :
@@ -983,6 +1102,45 @@ theorem intervalIntegral_terminalChildTailKernel_eq_weighted_tail (n b : ℕ) :
           intro x hx
           ring
     _ = _ := intervalIntegral.integral_const_mul _ _
+
+/-- A terminal tail-kernel integral is one literal physical Möbius source cell times its beta
+weight.  The signed tail has telescoped completely, leaving no unresolved window sum. -/
+theorem intervalIntegral_terminalChildTailKernel_eq_physicalCell_weight
+    (n b : ℕ) (hb : b < clock (n + 1) / clock n) :
+    (∫ x in (0 : ℝ)..1, terminalChildTailKernel n b x) =
+      DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+        (clock n * (b + 1)) * terminalChildTailWeight n b := by
+  rw [intervalIntegral_terminalChildTailKernel_eq_weighted_tail,
+    terminalChildWindowDeviation_tail_eq_neg_physicalCell n b hb]
+  ring
+
+/-- Exact terminal child energy in physical endpoint-cell coordinates.  Each child block is now
+one literal source cell weighted by its beta carrier; the only remaining nonlocal term is the
+unchanged local signed innovation. -/
+theorem two_mul_terminal_historyLayer_parent_child_energy_eq_physicalCell_pairwise (n : ℕ) :
+    2 * cellMeasure.real (historyFibre n (clock n - 1)) *
+        (∑ b ∈ range (clock (n + 1) / clock n),
+          cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
+            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ 2) =
+      ∑ b ∈ range (clock (n + 1) / clock n),
+        ∑ c ∈ range (clock (n + 1) / clock n),
+          cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
+            cellMeasure.real (historyFibre (n + 1) (clock n - 1 + c * clock n)) *
+            (((DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+                  (clock n * (b + 1)) * terminalChildTailWeight n b) /
+                cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) -
+              (DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+                  (clock n * (c + 1)) * terminalChildTailWeight n c) /
+                cellMeasure.real (historyFibre (n + 1) (clock n - 1 + c * clock n))) -
+              (signedInnovation n (clock n - 1 + b * clock n) -
+                signedInnovation n (clock n - 1 + c * clock n))) ^ 2 := by
+  rw [two_mul_terminal_historyLayer_parent_child_energy_eq_tail_pairwise]
+  apply Finset.sum_congr rfl
+  intro b hb
+  apply Finset.sum_congr rfl
+  intro c hc
+  rw [intervalIntegral_terminalChildTailKernel_eq_physicalCell_weight n b (mem_range.mp hb),
+    intervalIntegral_terminalChildTailKernel_eq_physicalCell_weight n c (mem_range.mp hc)]
 
 /-- The terminal physical EDQ energy is a finite pairwise quadratic form in signed chronological
 innovation-tail sums, their exact beta weights, and the pre-existing local innovations. -/

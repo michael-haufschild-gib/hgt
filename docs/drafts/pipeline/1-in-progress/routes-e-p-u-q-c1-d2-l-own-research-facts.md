@@ -547,7 +547,7 @@
   bridge.  It does **not** prove refinement compatibility, graph closure, a cofinal bound, or
   Xi/theta divisor landing; those remain the RH-bearing obstacle.  Lean status:
   `SPEQuantileRieszRoutePFiveChannelKreinFactorization` source check and its directly required
-  olean pass; ten public theorems audit with only `propext`, `Classical.choice`, and
+  olean pass; twelve public theorems audit with only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - **P/SP-E source-radical / terminal two-gauge separation.**  The tempting identification of the
   source-form radical with the moving terminal connection is false.  The literal running aggregate
@@ -563,7 +563,7 @@
   before graph closure or a bound can even be formulated faithfully.  This is a positive boundary
   theorem; it does not construct that refinement action, establish graph closure, or prove RH.
   Lean status: `SPEQuantileRieszRoutePFiveChannelKreinFactorization` direct source check and leaf
-  olean pass; all ten public theorems audit with only `propext`, `Classical.choice`, and
+  olean pass; all twelve public theorems audit with only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - **P/SP-E zero-atom radical--null affine constraint.**  At every non-prime-power atom, the
   literal terminal P-G105F coordinate increment is a **nonzero null vector** for the actual
@@ -577,5 +577,33 @@
   two current Julia channels.  It rules out fixed-terminal, positive-norm-terminal, and
   radical-quotient refinements at zero atoms.  It does **not** supply the required refinement
   morphism, graph closure, cofinal bound, or Xi landing.  Lean status:
-  `SPEQuantileRieszRoutePFiveChannelKreinFactorization` source check and leaf olean pass; all ten
+  `SPEQuantileRieszRoutePFiveChannelKreinFactorization` source check and leaf olean pass; all twelve
   public theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **P/SP-E stationary-affine translation no-go.**  A terminal zero-atom update being P-Julia-null
+  does not make it a P-Julia isometry.  For the literal first Julia basis vector, translating by
+  that update changes the actual P quadratic by exactly
+  `(sqrt(K+4)-sqrt(K+3))/2`, whose real part is strictly positive.  Thus the zero-atom endpoint
+  update cannot be realized by a state-independent affine translation preserving the P quadratic,
+  despite being nonzero and null.  **Route consequence:** the only remaining faithful
+  cofinal-action class must include a state-dependent connection/unipotent extension coupling the
+  terminal light translation to the retained source/radical/current state; “preserve the Julia
+  form plus a null shift” is mathematically ruled out.  This sharpens, but does not construct, the
+  graph-closed P-G186 refinement cocycle or its cofinal bound.  Lean status:
+  `SPEQuantileRieszRoutePFiveChannelKreinFactorization` source check and leaf olean pass; all
+  twelve public theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **LI exact source localization and its genuine obstruction.**  The existing corpus already
+  identifies every positive even Li coefficient with a literal completed prime--Gamma cross
+  balance, and then exactly with
+  `2*pi * L_t[X * (X + 1/4) * B_n^2]`; equivalently it is the differential expression
+  `F_n''(t) - (1/4) F_n'(t)` for an explicit base-square heat energy.  Consequently the LI
+  frontier is not a missing comparison with the Euler-safe two-node kernel.  It is the direct,
+  source-side positivity of this Stieltjes-localized moment family without assuming that Xi's
+  squared spectral coordinates are real.  Existing formal no-gos sharpen the required mechanism:
+  reflection-odd data are invisible to the whole even-Li family; exterior current becomes
+  eventually strictly positive; every nonempty finite critical packet has cofinal linear
+  excursions of both signs; and no sublinear or coefficient-recovering finite-prefix repair can
+  restore all-mode positivity.  Therefore any LI advance must supply a genuinely infinite,
+  leading-scale, reflection-even completed prime--Gamma cancellation law, not a finite packet,
+  a real-axis complete-monotonicity argument, or a generic Hankel-cone transfer.  Lean status:
+  these facts are already formalized in `LiEvenSquarePrimeGammaCrossBalanceCriterion` and the
+  LI-CAB4/7/8/9 no-go modules; no new LI theorem is claimed here.

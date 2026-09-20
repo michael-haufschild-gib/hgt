@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszTerminalZeroAtomConnection
+import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileParabolicNormalizedVarianceFlow
 
 /-!
 # Prime-power support of the SP-E strict-cross history
@@ -92,5 +93,64 @@ theorem ccmActualHeadMatchedQuantileParabolicStrictCross_sub_zero_eq_primePowerH
   exact Finset.sum_range_sub (fun n =>
     ccmParabolicPairing (ccmActualHeadMatchedQuantileParabolicCodiagonal n)
       (ccmActualHeadMatchedQuantileParabolicSourceBoundary n)) K
+
+/-- **Scalar prime-power history law.**  The complete signed exterior-history-minus-debt
+curvature is not an irreducibly two-vector control problem.  It is the newly admitted literal
+mass times one scalar discrete barrier: previous normalized variance defect minus the preceding
+physical mass times the full centred affine displacement jet.  Every prime, polar, terminal and
+debt coefficient is retained. -/
+theorem speQuantileRieszPrimePowerHistoryCurvature_eq_scalarVarianceBarrier
+    (K : ℕ) :
+    speQuantileRieszPrimePowerHistoryCurvature K =
+      criticalMellinAtomWeight (K + 3) *
+        (ccmActualHeadMatchedQuantileParabolicNormalizedVarianceDefect K -
+          ccmActualHeadParabolicMass K *
+            (2 * ccmActualHeadMatchedQuantileParabolicCenteredMatchedOffset K *
+                ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K +
+              ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ 2)) := by
+  have hmass : ccmActualHeadParabolicMass (K + 1) =
+      ccmActualHeadParabolicMass K + criticalMellinAtomWeight (K + 3) := by
+    unfold ccmActualHeadParabolicMass
+    rw [Finset.sum_range_succ]
+  have hM : ccmActualHeadParabolicMass K ≠ 0 :=
+    (ccmActualHeadParabolicMass_pos K).ne'
+  have hMnext : ccmActualHeadParabolicMass (K + 1) ≠ 0 :=
+    (ccmActualHeadParabolicMass_pos (K + 1)).ne'
+  rw [← speQuantileRieszPhysicalWallDynamicSourceTransport_add_terminalConnectionIncrement_eq_primePowerHistoryCurvature]
+  rw [speQuantileRieszPhysicalWallDynamicSourceTransport_add_terminalConnectionIncrement_eq_strictCross_increment]
+  have hsource (j : ℕ) :
+      ccmParabolicPairing (ccmActualHeadMatchedQuantileParabolicCodiagonal j)
+          (ccmActualHeadMatchedQuantileParabolicSourceBoundary j) =
+        ccmActualHeadParabolicMass j *
+          ccmActualHeadMatchedQuantileParabolicNormalizedVarianceDefect j := by
+    rw [ccmActualHeadMatchedQuantileParabolicNormalizedVarianceDefect_eq_sourceCurrent]
+    field_simp [(ccmActualHeadParabolicMass_pos j).ne']
+  rw [hsource (K + 1), hsource K]
+  rw [show ccmActualHeadMatchedQuantileParabolicNormalizedVarianceDefect (K + 1) =
+      ccmActualHeadMatchedQuantileParabolicNormalizedVarianceDefect K +
+        ccmActualHeadMatchedQuantileParabolicNormalizedVarianceFlux K by
+      linarith [ccmActualHeadMatchedQuantileParabolicNormalizedVarianceDefect_succ_sub_eq_flux K]]
+  rw [ccmActualHeadMatchedQuantileParabolicNormalizedVarianceFlux_eq_centered_signed_increment,
+    hmass]
+  have hMsum : ccmActualHeadParabolicMass K + criticalMellinAtomWeight (K + 3) ≠ 0 := by
+    rw [← hmass]
+    exact hMnext
+  field_simp [hM, hMsum]
+  ring
+
+/-- On a literal prime-power admission, nonnegative full history curvature is exactly the scalar
+variance barrier from `speQuantileRieszPrimePowerHistoryCurvature_eq_scalarVarianceBarrier`.
+Thus the remaining uniform prime-power-history problem has one sign-bearing datum per active
+admission, rather than separate exterior and debt inequalities. -/
+theorem speQuantileRieszPrimePowerHistoryCurvature_nonneg_iff_scalarVarianceBarrier
+    (K : ℕ) (hK : IsPrimePow (K + 3)) :
+    0 ≤ speQuantileRieszPrimePowerHistoryCurvature K ↔
+      0 ≤ ccmActualHeadMatchedQuantileParabolicNormalizedVarianceDefect K -
+        ccmActualHeadParabolicMass K *
+          (2 * ccmActualHeadMatchedQuantileParabolicCenteredMatchedOffset K *
+              ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K +
+            ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ 2) := by
+  rw [speQuantileRieszPrimePowerHistoryCurvature_eq_scalarVarianceBarrier]
+  exact mul_nonneg_iff_of_pos_left (criticalMellinAtomWeight_pos hK)
 
 end RHTower

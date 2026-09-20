@@ -108,6 +108,31 @@ theorem not_exists_uniform_lower_bound_primeGammaCauchyHorizonGrade
   obtain ⟨q, hq⟩ := hev.exists
   exact (not_lt_of_ge (hlower q)) hq
 
+/-- Every fixed finite lower prime--Gamma source packet decays along the infinite Xi divisor.
+This extends the one-atom horizon law to all finite Cauchy combinations. -/
+theorem tendsto_norm_deningerPrimeGammaLowerCauchyTest_cofinite_zero
+    (x : DeningerPrimeGammaLowerPacket) :
+    Filter.Tendsto (fun q : XiZeroCopy =>
+      ‖deningerPrimeGammaLowerCauchyTest x (xiSpectralPoint q)‖)
+      Filter.cofinite (nhds 0) := by
+  have hsq := (deningerPrimeGammaLowerCauchyTest_squareSummable x).tendsto_cofinite_zero
+  have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
+  simpa only [Function.comp_def, Real.sqrt_sq_eq_abs,
+    abs_of_nonneg, norm_nonneg, Real.sqrt_zero] using hsqrt
+
+/-- No fixed finite lower Cauchy packet can be a uniformly stable coefficient-faithful divisor
+normalizer.  Hence C1's finite four-channel Gram reachability cannot itself yield its missing
+coercivity law; any surviving formation must be genuinely cofinal and signed across channels. -/
+theorem not_exists_uniform_lower_bound_deningerPrimeGammaLowerCauchyTest
+    (x : DeningerPrimeGammaLowerPacket) :
+    ¬ ∃ c : ℝ, 0 < c ∧ ∀ q : XiZeroCopy,
+      c ≤ ‖deningerPrimeGammaLowerCauchyTest x (xiSpectralPoint q)‖ := by
+  rintro ⟨c, hc, hlower⟩
+  have hev :=
+    (tendsto_norm_deningerPrimeGammaLowerCauchyTest_cofinite_zero x).eventually_lt_const hc
+  obtain ⟨q, hq⟩ := hev.exists
+  exact (not_lt_of_ge (hlower q)) hq
+
 end
 
 end DeningerMeyerGaussianGreen
