@@ -1887,3 +1887,5 @@
   is quantitatively controlled on the completed source carrier. The remaining compactness
   theorem is bounded-core Rellich for finite-deck, centrally fixed form data, followed by
   splicing that compact-core approximation with this uniform tail bound.
+- **No-go for 2D vertex grids (2026-09-19).** The corpus has only the one-dimensional left-endpoint approximation `HTGeometry.L2GridApproximation.totallyBounded_toLp_of_tight_deriv`. Its direct tensorization would require point evaluation on `H¹(ℝ²)`, which is not uniformly bounded. A bounded-core Rellich proof must therefore use cell averages (or an equivalent stable smoothing); a vertex-grid approximation is not a valid completion-level route.
+- **Stress-identity no-go for compactness (2026-09-19).** `RHTower.SelbergMaassDilationRellich` proves exact Rellich boundary identities for smooth source eigenforms, but contains no `TotallyBounded`, compact-inclusion, form-domain completion, or compact-resolvent declaration. It cannot supply the finite-packet step. Its surviving contribution is source-level radial/angular/boundary energy control; completed bounded-core Rellich remains independently necessary.

@@ -17,9 +17,12 @@ identically zero whenever either atom is inactive.  Thus every source coordinate
 carrying the two-history curvature has a distinct nondegenerate P cell port; no raw zero-mass
 label is silently discarded.
 
-This is a coefficient-domain result only.  It does not identify the resulting interval ports
-with P-G186's full off-diagonal incidence, nor construct the required signed-word/history
-intertwiner or cofinal graph-closed transport.
+At zero ordinate clock, it also identifies the literal P-G186 primitive Burnol column at every
+active `(prime, depth)` label with its exact arithmetic-amplitude-weighted SP-E cubic ray, and
+identifies pairwise half-line entries with the corresponding cubic Cauchy edge.  This is not a
+full P-G186 incidence map: it does not construct the required signed-word/history intertwiner,
+match the SP-E plaquette coefficients to that history, or assemble a cofinal graph-closed
+transport.
 -/
 
 open MeasureTheory Set
@@ -108,6 +111,74 @@ theorem speQuantileRieszRoutePActiveQuantileCellEndpointPort_ne_zero_of_isPrimeP
   have hvalue := congrFun hzero u
   rw [speQuantileRieszRoutePActiveQuantileCellEndpointPort_eq_indicator M n hwall] at hvalue
   simp [hu] at hvalue
+
+/-- At zero ordinate clock, a literal P-G186 primitive Burnol column is exactly its arithmetic
+amplitude times the SP-E cubic generator ray.  This is an equality of actual half-line columns,
+not merely of their scalar pairings. -/
+theorem routePPrimitiveBurnolWindowFeature_zero_eq_speQuantileRieszCubicRay
+    (pe : Nat.Primes × ℕ) (L : ℝ) :
+    routePPrimitiveBurnolWindowFeature pe 0 L =
+      finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat pe) *
+        (primeGammaCauchyCubicRayFeature (xiGammaEulerPrimitiveLogFrequency pe) L : ℂ) := by
+  calc
+    routePPrimitiveBurnolWindowFeature pe 0 L =
+        finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat pe) *
+          xiWardResolvedRadialGeneratorMode
+            ((xiGammaEulerPrimitiveLogFrequency pe : ℂ) + Complex.I * (0 : ℂ)) L :=
+      routePPrimitiveBurnolWindowFeature_eq_resolvedRadialGeneratorMode pe 0 L
+    _ = finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat pe) *
+          xiWardResolvedRadialGeneratorMode (xiGammaEulerPrimitiveLogFrequency pe : ℂ) L := by
+      congr 2
+      norm_num
+    _ = finiteVonMangoldtDepthOneAmplitude (xiGammaEulerValuationNat pe) *
+          (primeGammaCauchyCubicRayFeature (xiGammaEulerPrimitiveLogFrequency pe) L : ℂ) := by
+      rw [primeGammaCauchyCubicRayFeature_eq_xiWardResolvedRadialGeneratorMode]
+
+/-- Every active SP-E prime-power atom has a literal P primitive `(prime, depth)` label whose
+zero-clock P-G186 column is the corresponding cubic generator ray with its exact arithmetic
+amplitude. -/
+theorem isPrimePow_exists_routePPrimitiveBurnolZeroClockRay
+    (n : ℕ) (hn : IsPrimePow n) :
+    ∃ pe : Nat.Primes × ℕ,
+      xiGammaEulerValuationNat pe = n ∧
+      xiGammaEulerPrimitiveLogFrequency pe = Real.log n ∧
+      ∀ L : ℝ,
+        routePPrimitiveBurnolWindowFeature pe 0 L =
+          finiteVonMangoldtDepthOneAmplitude n *
+            (primeGammaCauchyCubicRayFeature (Real.log n) L : ℂ) := by
+  rcases (isPrimePow_iff_pow_succ n).mp hn with ⟨p, k, hp, hpow⟩
+  let p' : Nat.Primes := ⟨p, Nat.prime_iff.mpr hp⟩
+  refine ⟨(p', k), ?_, ?_, ?_⟩
+  · simpa [xiGammaEulerValuationNat, p'] using hpow
+  · rw [xiGammaEulerPrimitiveLogFrequency]
+    congr 1
+    simp [xiGammaEulerValuationNat, p', hpow]
+  · intro L
+    rw [routePPrimitiveBurnolWindowFeature_zero_eq_speQuantileRieszCubicRay]
+    simp [xiGammaEulerValuationNat, xiGammaEulerPrimitiveLogFrequency, p', hpow]
+
+/-- **Actual finite incidence bridge.** Any pair of active SP-E prime-power labels admits
+literal zero-clock P-G186 primitive columns whose exact half-line pairing is their
+von-Mangoldt-amplitude-weighted real cubic Cauchy edge.  No pair is collapsed to a diagonal or
+scalar surrogate. -/
+theorem isPrimePow_pair_exists_routePPrimitiveBurnol_zero_clock_entry
+    (m n : ℕ) (hm : IsPrimePow m) (hn : IsPrimePow n) :
+    ∃ pe tau : Nat.Primes × ℕ,
+      xiGammaEulerValuationNat pe = m ∧
+      xiGammaEulerValuationNat tau = n ∧
+      (∫ L : ℝ in Ioi 0,
+        star (routePPrimitiveBurnolWindowFeature pe 0 L) *
+          routePPrimitiveBurnolWindowFeature tau 0 L) =
+        finiteVonMangoldtDepthOneAmplitude m *
+          (primeGammaCauchyCubicEdge (Real.log m) (Real.log n) : ℂ) *
+            star (finiteVonMangoldtDepthOneAmplitude n) := by
+  obtain ⟨pe, hpe, hpeLog, _⟩ := isPrimePow_exists_routePPrimitiveBurnolZeroClockRay m hm
+  obtain ⟨tau, htau, htauLog, _⟩ := isPrimePow_exists_routePPrimitiveBurnolZeroClockRay n hn
+  refine ⟨pe, tau, hpe, htau, ?_⟩
+  rw [integral_star_routePPrimitiveBurnolWindowFeature_mul]
+  rw [hpe, htau, hpeLog, htauLog]
+  simp only [sub_self]
+  rw [routePBaseCauchyCubicKernel_one_zero_eq_primeGammaCauchyCubicEdge]
 
 /-- The source two-history plaquette vanishes identically when its new cutoff atom is inactive. -/
 theorem ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel_plaquette_eq_zero_of_not_isPrimePow_left

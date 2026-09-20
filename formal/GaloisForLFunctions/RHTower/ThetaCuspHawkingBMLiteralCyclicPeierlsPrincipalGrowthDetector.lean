@@ -44,6 +44,18 @@ private theorem tendsto_cpow_atTop_zero_of_re_neg {w : ℂ} (hw : w.re < 0) :
   congr 1
   ring
 
+/-- A positive real limit gives an eventual lower bound by half its value. -/
+private theorem eventually_half_le_of_tendsto_pos {f : ℝ → ℝ} {L : ℝ}
+    (hL : 0 < L) (h : Tendsto f atTop (𝓝 L)) :
+    ∀ᶠ y in atTop, L / 2 ≤ f y := by
+  have hball : Metric.ball L (L / 2) ∈ 𝓝 L :=
+    Metric.ball_mem_nhds L (by linarith)
+  filter_upwards [h.eventually hball] with y hy
+  rw [Real.dist_eq] at hy
+  exact le_of_lt (by
+    have hlower := (abs_lt.mp hy).1
+    linarith)
+
 /-- On the left half of the strip, the lower Weyl channel is the unique
 dominant principal-square channel. -/
 theorem principalSquare_left_normalized_tendsto (q : XiZeroCopy)
@@ -151,6 +163,26 @@ theorem principalSquare_left_norm_growth_tendsto_pos (q : XiZeroCopy)
   · exact norm_pos_iff.mpr hne
   · exact principalSquare_left_norm_growth_tendsto q hleft
 
+/-- The left principal square eventually has a fixed positive proportion of
+its dominant Weyl growth.  This is the lower-bound form needed to rule out
+transport into a genuinely lower-order physical boundary term. -/
+theorem principalSquare_left_norm_growth_eventually_lower (q : XiZeroCopy)
+    (hleft : (q.1 : ℂ).re < 1 / 2) :
+    ∀ᶠ y in atTop,
+      (‖reflectedCompletedLambda (2 * (q.1 : ℂ) - 1) ^ 2 / 2‖ / 2) *
+        y ^ (2 - 2 * (q.1 : ℂ).re) ≤ ‖principalSquare q ![0, y]‖ := by
+  have hpos := (principalSquare_left_norm_growth_tendsto_pos q hleft).1
+  have hlim := (principalSquare_left_norm_growth_tendsto_pos q hleft).2
+  have hratio := eventually_half_le_of_tendsto_pos hpos hlim
+  filter_upwards [hratio, eventually_gt_atTop (0 : ℝ)] with y hy hypos
+  have hpower : 0 < y ^ (2 - 2 * (q.1 : ℂ).re) :=
+    Real.rpow_pos_of_pos hypos _
+  calc
+    _ ≤ (‖principalSquare q ![0, y]‖ /
+        y ^ (2 - 2 * (q.1 : ℂ).re)) * y ^ (2 - 2 * (q.1 : ℂ).re) :=
+      mul_le_mul_of_nonneg_right hy hpower.le
+    _ = _ := div_mul_cancel₀ _ hpower.ne'
+
 /-- Every off-line Xi divisor copy yields a (possibly reflected) left-half
 copy carrying the nonzero literal principal-square growth witness.  This is
 the source-side receiver for a revised, growth-based B2 statement. -/
@@ -194,6 +226,21 @@ theorem exists_left_principalSquare_norm_growth_detector_of_re_ne_half
       norm_num [Complex.sub_re]
       linarith
     exact ⟨qleft, hleft, principalSquare_left_norm_growth_tendsto_pos qleft hleft⟩
+
+/-- Global phase-free lower-bound receiver for an off-line divisor copy.
+The displayed rate is an unavoidable source-side cusp channel for any literal
+B2 current/boundary transport. -/
+theorem exists_left_principalSquare_norm_growth_eventually_lower_of_re_ne_half
+    (q : XiZeroCopy) (hline : (q.1 : ℂ).re ≠ 1 / 2) :
+    ∃ qleft : XiZeroCopy, (qleft.1 : ℂ).re < 1 / 2 ∧
+      0 < ‖reflectedCompletedLambda (2 * (qleft.1 : ℂ) - 1) ^ 2 / 2‖ ∧
+        ∀ᶠ y in atTop,
+          (‖reflectedCompletedLambda (2 * (qleft.1 : ℂ) - 1) ^ 2 / 2‖ / 2) *
+            y ^ (2 - 2 * (qleft.1 : ℂ).re) ≤ ‖principalSquare qleft ![0, y]‖ := by
+  rcases exists_left_principalSquare_norm_growth_detector_of_re_ne_half q hline with
+    ⟨qleft, hleft, hpos, _⟩
+  exact ⟨qleft, hleft, hpos,
+    principalSquare_left_norm_growth_eventually_lower qleft hleft⟩
 
 end
 

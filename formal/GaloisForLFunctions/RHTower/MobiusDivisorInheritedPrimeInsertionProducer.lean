@@ -19,6 +19,15 @@ chosen before the lower bound on helper primes, controls every preparation
 subset at every cutoff, both before and after the prescribed insertion.
 The budget still depends on the inherited core and prescribed prime; uniform
 control across changing cores and exhaustive coverage remain unproved.
+
+The logarithmic admission clock gives an exact distinction between delayed
+phase control and net repayment. The final producer chooses actual debt primes
+of every even nonempty core. Fresh helpers can reverse their marginal sign
+beyond any clock time while leaving all earlier fibres untouched, yet retain
+a fixed positive net debt. Repayment after clock time τ instead forces a fixed
+positive reciprocal-prime mass and inverse-square-root mass above η exp(τ/2).
+The obstruction follows from unchanged early blocks and their density factor;
+it does not presume that divergent helper mass forces divergent energy.
 -/
 
 noncomputable section
@@ -1369,5 +1378,340 @@ theorem exists_mobiusDivisorBudgetedInheritedPrimeInsertionProducer :
   · apply (prefix_halfweight_budget (insert r (P ∪ T)) hRprime M).trans
     dsimp [K]
     gcongr
+
+
+
+private def barrierEnergy (P : Finset ℕ) : ℝ := ∑' n,mobiusDivisorFixedCoreBlockMass P n
+private def barrierDensity (S : Finset ℕ) : ℝ := ∏ p ∈ S,(p:ℝ)/(p+1)
+
+private lemma barrier_energy_nonneg (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) :
+    0 ≤ barrierEnergy P := tsum_nonneg (mobiusDivisorFixedCoreBlockMass_nonneg P hP)
+
+private lemma barrier_fibre_insert (M p : ℕ) (P R : Finset ℕ) (hMp : M ≤ p) :
+    mobiusDivisorSelectionFibre M (insert p P) R=mobiusDivisorSelectionFibre M P R := by
+  unfold mobiusDivisorSelectionFibre subsetLabelFibre
+  apply sum_congr rfl
+  intro d hd
+  have hpD : p ∉ d.primeFactors := by
+    intro h
+    have hpd := Nat.le_of_mem_primeFactors h
+    have hdM := mem_Icc.mp (mem_filter.mp hd).1
+    omega
+  rw [Finset.sdiff_insert_of_notMem hpD]
+
+private lemma barrier_fibre_union (M : ℕ) (P S R : Finset ℕ)
+    (hS : ∀ p ∈ S,M ≤ p) :
+    mobiusDivisorSelectionFibre M (P ∪ S) R=mobiusDivisorSelectionFibre M P R := by
+  classical
+  induction S using Finset.induction with
+  | empty => simp
+  | @insert p S hpS ih =>
+    rw [Finset.union_insert,barrier_fibre_insert M p (P ∪ S) R (hS p (mem_insert_self p S))]
+    exact ih (fun q hq => hS q (mem_insert_of_mem hq))
+
+private lemma barrier_primitive_union (P S : Finset ℕ) (n : ℕ) (c : ℝ)
+    (hS : ∀ p ∈ S,n+1 ≤ p) :
+    mobiusDivisorHeadBlockPrimitive (P ∪ S) n c=mobiusDivisorHeadBlockPrimitive P n c := by
+  have hn := barrier_fibre_union n P S ∅ (fun p hp => (Nat.le_succ n).trans (hS p hp))
+  have hn1 := barrier_fibre_union (n+1) P S ∅ hS
+  simp only [mobiusDivisorHeadBlockPrimitive,mobiusDivisorHeadBlockIntercept,
+    mobiusDivisorHeadBlockSlope,hn,hn1]
+
+private lemma barrier_block_union (P S : Finset ℕ) (hPS : Disjoint P S) (n : ℕ)
+    (hS : ∀ p ∈ S,n+1 ≤ p) :
+    mobiusDivisorFixedCoreBlockMass (P ∪ S) n=barrierDensity S*mobiusDivisorFixedCoreBlockMass P n := by
+  by_cases hn : n=0
+  · simp [mobiusDivisorFixedCoreBlockMass,hn]
+  · simp only [mobiusDivisorFixedCoreBlockMass,if_neg hn,
+      barrier_primitive_union P S n _ hS,Finset.prod_union hPS,barrierDensity]
+    ring
+
+private lemma barrier_prefix_lower (P S : Finset ℕ) (hP : ∀ p ∈ P,p.Prime)
+    (hSprime : ∀ p ∈ S,p.Prime) (hPS : Disjoint P S) (N : ℕ)
+    (hS : ∀ p ∈ S,N ≤ p) :
+    barrierDensity S*(∑ n ∈ range N,mobiusDivisorFixedCoreBlockMass P n) ≤ barrierEnergy (P ∪ S) := by
+  have hprime : ∀ p ∈ P ∪ S,p.Prime := by
+    intro p hp
+    exact (Finset.mem_union.mp hp).elim (hP p) (hSprime p)
+  have he : barrierDensity S*(∑ n ∈ range N,mobiusDivisorFixedCoreBlockMass P n)=
+      ∑ n ∈ range N,mobiusDivisorFixedCoreBlockMass (P ∪ S) n := by
+    rw [mul_sum]
+    apply sum_congr rfl
+    intro n hn
+    exact (barrier_block_union P S hPS n (fun p hp =>
+      (Nat.succ_le_of_lt (mem_range.mp hn)).trans (hS p hp))).symm
+  rw [he]
+  exact (summable_mobiusDivisorFixedCoreBlockMass (P ∪ S) hprime).sum_le_tsum (range N)
+    (fun n hn => mobiusDivisorFixedCoreBlockMass_nonneg (P ∪ S) hprime n)
+
+private lemma barrier_density_bounds (S : Finset ℕ) : 0 ≤ barrierDensity S ∧ barrierDensity S ≤ 1 := by
+  have hp0 (p : ℕ) : (0:ℝ) ≤ (p:ℝ)/(p+1) := by positivity
+  have hp1 (p : ℕ) : (p:ℝ)/(p+1) ≤ 1 := by
+    apply (div_le_one (by positivity : (0:ℝ) < p+1)).mpr
+    linarith
+  exact ⟨prod_nonneg (fun p hp => hp0 p),Finset.prod_le_one (fun p hp => hp0 p) (fun p hp => hp1 p)⟩
+
+private lemma barrier_density_deficit (S : Finset ℕ) :
+    1-barrierDensity S ≤ ∑ p ∈ S,1/((p:ℝ)+1) := by
+  classical
+  induction S using Finset.induction with
+  | empty => simp [barrierDensity]
+  | @insert p S hpS ih =>
+    have hp1 : (p:ℝ)/(p+1) ≤ 1 := by
+      apply (div_le_one (by positivity : (0:ℝ) < p+1)).mpr
+      linarith
+    have hpId : 1-(p:ℝ)/(p+1)=1/((p:ℝ)+1) := by field_simp; ring
+    have he : barrierDensity (insert p S)=((p:ℝ)/(p+1))*barrierDensity S :=
+      Finset.prod_insert hpS
+    rw [he,Finset.sum_insert hpS]
+    have hm := mul_nonneg (sub_nonneg.mpr hp1) (sub_nonneg.mpr (barrier_density_bounds S).2)
+    linarith
+
+private lemma barrier_reciprocal_cost (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ N : ℕ,∃ η : ℝ,0 < η ∧ ∀ S : Finset ℕ,
+      (∀ p ∈ S,p.Prime ∧ N ≤ p) → Disjoint P S →
+      (∑ p ∈ S,1/((p:ℝ)+1)) ≤ η → barrierEnergy P-ε < barrierEnergy (P ∪ S) := by
+  have hEP := barrier_energy_nonneg P hP
+  let η := ε/(2*(barrierEnergy P+1))
+  have hη : 0 < η := by dsimp [η]; positivity
+  have heη : η*(barrierEnergy P+1)=ε/2 := by dsimp [η]; field_simp
+  have hsum := (summable_mobiusDivisorFixedCoreBlockMass P hP).hasSum.tendsto_sum_nat
+  obtain ⟨N,hN⟩ := (hsum.eventually (eventually_gt_nhds
+    (show barrierEnergy P-ε/2 < barrierEnergy P by linarith))).exists
+  refine ⟨N,η,hη,?_⟩
+  intro S hS hPS hmass
+  let A := ∑ n ∈ range N,mobiusDivisorFixedCoreBlockMass P n
+  have hA0 : 0 ≤ A := sum_nonneg (fun n hn => mobiusDivisorFixedCoreBlockMass_nonneg P hP n)
+  have hAE : A ≤ barrierEnergy P :=
+    (summable_mobiusDivisorFixedCoreBlockMass P hP).sum_le_tsum (range N)
+      (fun n hn => mobiusDivisorFixedCoreBlockMass_nonneg P hP n)
+  have hden : 1-η ≤ barrierDensity S := by linarith [barrier_density_deficit S]
+  have hlow := barrier_prefix_lower P S hP (fun p hp => (hS p hp).1) hPS N (fun p hp => (hS p hp).2)
+  have hmul := mul_le_mul_of_nonneg_right hden hA0
+  have hcost := mul_le_mul_of_nonneg_left hAE hη.le
+  change barrierEnergy P-ε/2 < A at hN
+  change barrierDensity S*A ≤ barrierEnergy (P ∪ S) at hlow
+  nlinarith only [hN,heη,hη,hlow,hmul,hcost]
+
+private lemma barrier_reciprocal_halfweight {x W : ℝ} (hx : 0 < x)
+    (S : Finset ℕ) (hS : ∀ p ∈ S,x ≤ (p:ℝ)) (hmass : (∑ p ∈ S,(Real.sqrt p)⁻¹) ≤ W) :
+    (∑ p ∈ S,1/((p:ℝ)+1)) ≤ W/Real.sqrt x := by
+  have hpoint (p : ℕ) (hp : p ∈ S) : 1/((p:ℝ)+1) ≤ (Real.sqrt p)⁻¹/Real.sqrt x := by
+    have hp0 : (0:ℝ) < p := hx.trans_le (hS p hp)
+    have hroot : 0 < Real.sqrt p := Real.sqrt_pos.mpr hp0
+    have hfirst : 1/((p:ℝ)+1) ≤ 1/(p:ℝ) := one_div_le_one_div_of_le hp0 (by linarith)
+    have he : 1/(p:ℝ)=(Real.sqrt p)⁻¹/Real.sqrt p := by
+      rw [one_div, div_eq_mul_inv, ← pow_two, inv_pow, Real.sq_sqrt hp0.le]
+    rw [he] at hfirst
+    exact hfirst.trans (div_le_div_of_nonneg_left (inv_nonneg.mpr hroot.le)
+      (Real.sqrt_pos.mpr hx) (Real.sqrt_le_sqrt (hS p hp)))
+  calc
+    _ ≤ ∑ p ∈ S,(Real.sqrt p)⁻¹/Real.sqrt x := sum_le_sum hpoint
+    _ = (∑ p ∈ S,(Real.sqrt p)⁻¹)/Real.sqrt x := by rw [sum_div]
+    _ ≤ _ := div_le_div_of_nonneg_right hmass (Real.sqrt_nonneg x)
+
+private lemma barrier_far_halfweight (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime)
+    {ε W : ℝ} (hε : 0 < ε) :
+    ∃ B : ℕ,∀ S : Finset ℕ,(∀ p ∈ S,p.Prime ∧ B < p) →
+      (∑ p ∈ S,(Real.sqrt p)⁻¹) ≤ W → barrierEnergy P-ε < barrierEnergy (P ∪ S) := by
+  obtain ⟨N,η,hη,hclose⟩ := barrier_reciprocal_cost P hP hε
+  have ht : Tendsto (fun n : ℕ => W/Real.sqrt (n:ℝ)) atTop (𝓝 0) := by
+    simpa only [div_eq_mul_inv,mul_zero,Function.comp_def] using
+      (tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop)).const_mul W
+  obtain ⟨B,hBcost,hBN⟩ := ((ht.eventually (eventually_lt_nhds hη)).and
+    (eventually_ge_atTop (N+P.sup id+1))).exists
+  refine ⟨B,?_⟩
+  intro S hS hmass
+  have hB : (0:ℝ) < B := by exact_mod_cast (show 0 < B by omega)
+  apply hclose S (fun p hp => ⟨(hS p hp).1,by have := (hS p hp).2; omega⟩)
+  · apply Finset.disjoint_left.mpr
+    intro p hp hs
+    have hsup : p ≤ P.sup id := Finset.le_sup (f := id) hp
+    have hBp := (hS p hs).2
+    omega
+  · exact (barrier_reciprocal_halfweight hB S (fun p hp => by exact_mod_cast (hS p hp).2.le) hmass).trans hBcost.le
+
+private lemma barrier_debt_prime (P : Finset ℕ) (hP : P.Nonempty)
+    (hprime : ∀ p ∈ P,p.Prime) (heven : Even P.card) (N : ℕ) :
+    ∃ r : ℕ,r.Prime ∧ N < r ∧ r ∉ P ∧ barrierEnergy P < barrierEnergy (insert r P) := by
+  obtain ⟨A,hA⟩ := Filter.eventually_atTop.mp
+    (eventually_mobiusDivisorPrimeReleaseCoefficient_oriented_pos P hP hprime)
+  obtain ⟨r,hrge,hr⟩ := Nat.exists_infinite_primes (A+N+P.sup id+1)
+  have hrP : r ∉ P := by
+    intro h
+    have hsup : r ≤ P.sup id := Finset.le_sup (f := id) h
+    omega
+  have hs := hA r (by omega) hr hrP
+  rw [pow_succ,heven.neg_one_pow] at hs
+  refine ⟨r,hr,by omega,hrP,?_⟩
+  change 0 < 1 * (-1) * (barrierEnergy P-barrierEnergy (insert r P)) at hs
+  linarith
+
+private lemma barrier_logclock_cost (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ τ₀ η : ℝ,0 < η ∧ ∀ τ : ℝ,τ₀ ≤ τ →
+      ∀ S : Finset ℕ,(∀ p ∈ S,p.Prime ∧ τ < Real.log p) →
+      barrierEnergy (P ∪ S) ≤ barrierEnergy P-ε →
+      η < (∑ p ∈ S,1/((p:ℝ)+1)) ∧
+        η*Real.exp (τ/2) < ∑ p ∈ S,(Real.sqrt p)⁻¹ := by
+  obtain ⟨N,η,hη,hclose⟩ := barrier_reciprocal_cost P hP hε
+  let L : ℕ := N+P.sup id+1
+  have hL : (0:ℝ) < L := by exact_mod_cast (show 0 < L by dsimp [L]; omega)
+  refine ⟨Real.log L,η,hη,?_⟩
+  intro τ hτ S hS hdrop
+  have hLτ : (L:ℝ) ≤ Real.exp τ := by
+    simpa only [Real.exp_log hL] using Real.exp_le_exp.mpr hτ
+  have hLp (p : ℕ) (hp : p ∈ S) : L < p := by
+    have hp0 : (0:ℝ) < p := by exact_mod_cast (hS p hp).1.pos
+    have hexp : Real.exp τ < (p:ℝ) := by
+      simpa only [Real.exp_log hp0] using Real.exp_lt_exp.mpr (hS p hp).2
+    exact_mod_cast hLτ.trans_lt hexp
+  have hPS : Disjoint P S := by
+    apply Finset.disjoint_left.mpr
+    intro p hp hs
+    have hsup : p ≤ P.sup id := Finset.le_sup (f := id) hp
+    have := hLp p hs
+    dsimp [L] at this
+    omega
+  have hcost : η < ∑ p ∈ S,1/((p:ℝ)+1) := by
+    by_contra! h
+    have hlt := hclose S (fun p hp => ⟨(hS p hp).1,by
+      have := hLp p hp
+      dsimp [L] at this
+      omega⟩) hPS h
+    exact (not_lt_of_ge hdrop) hlt
+  refine ⟨hcost,?_⟩
+  have hc := barrier_reciprocal_halfweight (Real.exp_pos τ) S
+    (fun p hp => by
+      have hp0 : (0:ℝ) < p := by exact_mod_cast (hS p hp).1.pos
+      simpa only [Real.exp_log hp0] using (Real.exp_le_exp.mpr (hS p hp).2.le)) le_rfl
+  have hroot : Real.sqrt (Real.exp τ)=Real.exp (τ/2) := by
+    apply (Real.sqrt_eq_iff_mul_self_eq (Real.exp_pos τ).le (Real.exp_pos (τ/2)).le).mpr
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [hroot] at hc
+  exact (lt_div_iff₀ (Real.exp_pos (τ/2))).mp (hcost.trans_le hc)
+
+
+private lemma barrier_subset_budget (P S : Finset ℕ) (r : ℕ) (W : ℝ)
+    (hprime : ∀ p ∈ P,p.Prime) (hr : r.Prime) (hrP : r ∉ P)
+    (hSpr : ∀ p ∈ S,p.Prime) (hPS : Disjoint P S) (hrS : r ∉ S)
+    (hmass : (∑ p ∈ S,(Real.sqrt p)⁻¹) ≤ W) :
+    ∀ T : Finset ℕ,T ⊆ S → ∀ M : ℕ,
+      mobiusDivisorSelectionEnergy M (P ∪ T) ≤
+        ((9/25:ℝ)*Real.exp (4*((∑ p ∈ P,(Real.sqrt p)⁻¹)+W+(Real.sqrt r)⁻¹)))*(M:ℝ)^2 ∧
+      mobiusDivisorSelectionEnergy M (insert r (P ∪ T)) ≤
+        ((9/25:ℝ)*Real.exp (4*((∑ p ∈ P,(Real.sqrt p)⁻¹)+W+(Real.sqrt r)⁻¹)))*(M:ℝ)^2 := by
+  intro T hTS M
+  have hTprime : ∀ p ∈ T,p.Prime := fun p hp => hSpr p (hTS hp)
+  have hPT : Disjoint P T := by
+    apply Finset.disjoint_left.mpr
+    intro p hp hpt
+    exact Finset.disjoint_left.mp hPS hp (hTS hpt)
+  have hQT : ∀ p ∈ P ∪ T,p.Prime := by
+    intro p hp
+    exact (Finset.mem_union.mp hp).elim (hprime p) (hTprime p)
+  have hrPT : r ∉ P ∪ T := by
+    intro hrt
+    exact (Finset.mem_union.mp hrt).elim hrP (fun ht => hrS (hTS ht))
+  have hRprime : ∀ p ∈ insert r (P ∪ T),p.Prime := by simpa using And.intro hr hQT
+  have hmT : (∑ p ∈ T,(Real.sqrt p)⁻¹) ≤ W :=
+    (Finset.sum_le_sum_of_subset_of_nonneg hTS (fun p hp hnot => by positivity)).trans hmass
+  have hmQT : (∑ p ∈ P ∪ T,(Real.sqrt p)⁻¹) ≤
+      (∑ p ∈ P,(Real.sqrt p)⁻¹)+W+(Real.sqrt r)⁻¹ := by
+    rw [Finset.sum_union hPT]
+    linarith [inv_nonneg.mpr (Real.sqrt_nonneg (r:ℝ))]
+  have hmR : (∑ p ∈ insert r (P ∪ T),(Real.sqrt p)⁻¹) ≤
+      (∑ p ∈ P,(Real.sqrt p)⁻¹)+W+(Real.sqrt r)⁻¹ := by
+    rw [Finset.sum_insert hrPT,Finset.sum_union hPT]
+    linarith only [hmT]
+  constructor
+  · apply (prefix_halfweight_budget (P ∪ T) hQT M).trans
+    gcongr
+  · apply (prefix_halfweight_budget (insert r (P ∪ T)) hRprime M).trans
+    gcongr
+
+/-- Actual prime insertion can be controlled after an arbitrary logarithmic
+clock delay while preserving every earlier fibre and one all-cutoff preparation
+budget. For arbitrarily distant prescribed primes of every even nonempty core,
+this favorable marginal sign coexists with a fixed positive net debt.
+
+The same witnesses expose the obstruction to complete repayment: once every
+helper clock lies beyond `τ`, reducing that debt by half requires reciprocal
+prime mass above `η` and inverse-square-root mass above `η * exp (τ/2)`.
+Thus bounded-mass delayed phase control cannot supply complete debt payment.
+All constants and actual prime preparations are produced unconditionally. -/
+theorem exists_mobiusDivisorClockDelayedInsertionProducer :
+    ∀ P : Finset ℕ,P.Nonempty → (∀ p ∈ P,p.Prime) → Even P.card → ∀ N : ℕ,
+      ∃ r : ℕ,∃ δ η W K τ₀ : ℝ,
+        r.Prime ∧ N < r ∧ r ∉ P ∧ 0 < δ ∧ 0 < η ∧ 0 < W ∧ 0 < K ∧
+        (∑' n,mobiusDivisorFixedCoreBlockMass P n)+2*δ =
+          (∑' n,mobiusDivisorFixedCoreBlockMass (insert r P) n) ∧
+        (∀ τ : ℝ,τ₀ ≤ τ → ∀ S : Finset ℕ,
+          (∀ p ∈ S,p.Prime ∧ τ < Real.log p) →
+          (∑' n,mobiusDivisorFixedCoreBlockMass (insert r (P ∪ S)) n) ≤
+            (∑' n,mobiusDivisorFixedCoreBlockMass P n)+δ →
+          η < (∑ p ∈ S,1/((p:ℝ)+1)) ∧
+            η*Real.exp (τ/2) < ∑ p ∈ S,(Real.sqrt p)⁻¹) ∧
+        ∀ τ : ℝ,∃ S : Finset ℕ,
+          (∀ p ∈ S,p.Prime ∧ τ < Real.log p) ∧ Disjoint P S ∧ r ∉ S ∧
+          (∑ p ∈ S,(Real.sqrt p)⁻¹) ≤ W ∧
+          (∑' n,mobiusDivisorFixedCoreBlockMass P n)+δ <
+            (∑' n,mobiusDivisorFixedCoreBlockMass (insert r (P ∪ S)) n) ∧
+          (∑' n,mobiusDivisorFixedCoreBlockMass (insert r (P ∪ S)) n) <
+            (∑' n,mobiusDivisorFixedCoreBlockMass (P ∪ S) n) ∧
+          (∃ c : ℝ,0 < c ∧ ∀ᶠ M : ℕ in atTop,c*(M:ℝ)^2 ≤
+            mobiusDivisorSelectionEnergy M (P ∪ S)-
+              mobiusDivisorSelectionEnergy M (insert r (P ∪ S))) ∧
+          (∀ M : ℕ,(M:ℝ) ≤ Real.exp τ → ∀ R : Finset ℕ,
+            mobiusDivisorSelectionFibre M (P ∪ S) R=mobiusDivisorSelectionFibre M P R) ∧
+          ∀ T : Finset ℕ,T ⊆ S → ∀ M : ℕ,
+            mobiusDivisorSelectionEnergy M (P ∪ T) ≤ K*(M:ℝ)^2 ∧
+            mobiusDivisorSelectionEnergy M (insert r (P ∪ T)) ≤ K*(M:ℝ)^2 := by
+  classical
+  intro P hP hprime heven N
+  obtain ⟨r,hr,hNr,hrP,hdebt⟩ := barrier_debt_prime P hP hprime heven N
+  let δ := (barrierEnergy (insert r P)-barrierEnergy P)/2
+  have hδ : 0 < δ := by dsimp [δ]; linarith
+  have hgap : barrierEnergy P+2*δ=barrierEnergy (insert r P) := by dsimp [δ]; ring
+  have hQ : ∀ p ∈ insert r P,p.Prime := by simpa using And.intro hr hprime
+  have hunion (S : Finset ℕ) : (insert r P) ∪ S=insert r (P ∪ S) := by
+    ext p
+    simp only [Finset.mem_union,Finset.mem_insert]
+    tauto
+  obtain ⟨τ₀,η,hη,hcost⟩ := barrier_logclock_cost (insert r P) hQ hδ
+  obtain ⟨W,hW,hprep⟩ := prefix_weighted_insertion P hP hprime r hr hrP
+  obtain ⟨Bδ,hfar⟩ := barrier_far_halfweight (insert r P) hQ (W := W) hδ
+  let K : ℝ := (9/25)*Real.exp (4*((∑ p ∈ P,(Real.sqrt p)⁻¹)+W+(Real.sqrt r)⁻¹))
+  have hK : 0 < K := by dsimp [K]; positivity
+  refine ⟨r,δ,η,W,K,τ₀,hr,hNr,hrP,hδ,hη,hW,hK,hgap,?_,?_⟩
+  · intro τ hτ S hS hdrop
+    apply hcost τ hτ S hS
+    rw [hunion]
+    change barrierEnergy (insert r (P ∪ S)) ≤ barrierEnergy P+δ at hdrop
+    linarith only [hdrop,hgap]
+  · intro τ
+    let B := max ⌈Real.exp τ⌉₊ Bδ
+    obtain ⟨S,hS,hPS,hrS,hmass,hsign,htail⟩ := hprep B
+    have hclock (p : ℕ) (hp : p ∈ S) : Real.exp τ < (p:ℝ) := by
+      have hBp : B < p := (hS p hp).2
+      have hceil : ⌈Real.exp τ⌉₊ ≤ B := le_max_left _ _
+      exact (Nat.le_ceil _).trans_lt (by exact_mod_cast (hceil.trans_lt hBp))
+    have hlog (p : ℕ) (hp : p ∈ S) : p.Prime ∧ τ < Real.log p := by
+      have hpr := (hS p hp).1
+      exact ⟨hpr,(Real.lt_log_iff_exp_lt (by exact_mod_cast hpr.pos)).mpr (hclock p hp)⟩
+    have hlow := hfar S (fun p hp => ⟨(hS p hp).1,
+      (show Bδ ≤ B from le_max_right _ _).trans_lt (hS p hp).2⟩) hmass
+    rw [hunion] at hlow
+    refine ⟨S,hlog,hPS,hrS,hmass,?_,hsign,htail,?_,?_⟩
+    · change barrierEnergy P+δ < barrierEnergy (insert r (P ∪ S))
+      linarith only [hlow,hgap]
+    · intro M hM R
+      apply barrier_fibre_union
+      intro p hp
+      exact_mod_cast (hM.trans_lt (hclock p hp)).le
+    · exact barrier_subset_budget P S r W hprime hr hrP (fun p hp => (hS p hp).1) hPS hrS hmass
 
 end RHTower

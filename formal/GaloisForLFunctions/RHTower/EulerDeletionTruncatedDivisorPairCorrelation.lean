@@ -5,6 +5,9 @@ import GaloisForLFunctions.RHTower.EulerDeletionResidueMartingale
 import GaloisForLFunctions.RHTower.EulerDeletionCanonicalClockResolvent
 import GaloisForLFunctions.RHTower.EulerDeletionPrimePowerClockSupport
 import GaloisForLFunctions.RHTower.MobiusCoprimeMatrixFactorization
+import GaloisForLFunctions.RHTower.Sieve.RamareWeight
+import GaloisForLFunctions.RHTower.Sieve.TotientMoebiusNormalisation
+import GaloisForLFunctions.RHTower.Sieve.SelbergInversion
 
 /-!
 # Exact finite correlations of the Euler-deletion truncated divisor field
@@ -374,6 +377,145 @@ def finiteLcmPairFibre (s : Finset ℕ) (a : ℕ → ℝ) (n : ℕ) : ℝ :=
 def finiteLcmPairCrossFibre (s : Finset ℕ) (a b : ℕ → ℝ) (n : ℕ) : ℝ :=
   ∑ de ∈ (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = n), a de.1 * b de.2
 
+/-- The portion of a literal lcm cross fibre where a selected prime occurs only in the
+left divisor coordinate.  This preserves the signed product and the original lcm label. -/
+def finiteLcmPairCrossFibre_primeLeftOnly
+    (s : Finset ℕ) (a b : ℕ → ℝ) (n p : ℕ) : ℝ :=
+  ∑ de ∈ (s ×ˢ s).filter (fun de =>
+      Nat.lcm de.1 de.2 = n ∧ p ∣ de.1 ∧ ¬ p ∣ de.2), a de.1 * b de.2
+
+/-- The portion of a literal lcm cross fibre where a selected prime occurs only in the
+right divisor coordinate. -/
+def finiteLcmPairCrossFibre_primeRightOnly
+    (s : Finset ℕ) (a b : ℕ → ℝ) (n p : ℕ) : ℝ :=
+  ∑ de ∈ (s ×ˢ s).filter (fun de =>
+      Nat.lcm de.1 de.2 = n ∧ ¬ p ∣ de.1 ∧ p ∣ de.2), a de.1 * b de.2
+
+/-- The portion of a literal lcm cross fibre where a selected prime occurs in both divisor
+coordinates. -/
+def finiteLcmPairCrossFibre_primeShared
+    (s : Finset ℕ) (a b : ℕ → ℝ) (n p : ℕ) : ℝ :=
+  ∑ de ∈ (s ×ˢ s).filter (fun de =>
+      Nat.lcm de.1 de.2 = n ∧ p ∣ de.1 ∧ p ∣ de.2), a de.1 * b de.2
+
+/-- A prime carried by an lcm label splits its full signed cross fibre into exactly three
+disjoint channels: left-only, right-only, and shared.  The identity is algebraic; it neither
+averages a residue class nor applies an inequality. -/
+theorem finiteLcmPairCrossFibre_eq_primeChannels
+    (s : Finset ℕ) (a b : ℕ → ℝ) (n p : ℕ)
+    (hp : p.Prime) (hpn : p ∣ n) :
+    finiteLcmPairCrossFibre s a b n =
+      finiteLcmPairCrossFibre_primeLeftOnly s a b n p +
+        finiteLcmPairCrossFibre_primeRightOnly s a b n p +
+          finiteLcmPairCrossFibre_primeShared s a b n p := by
+  classical
+  unfold finiteLcmPairCrossFibre finiteLcmPairCrossFibre_primeLeftOnly
+    finiteLcmPairCrossFibre_primeRightOnly finiteLcmPairCrossFibre_primeShared
+  let U := (s ×ˢ s).filter (fun de => Nat.lcm de.1 de.2 = n)
+  let f : ℕ × ℕ → ℝ := fun de => a de.1 * b de.2
+  change (∑ de ∈ U, f de) = _
+  have hsplitLeft := Finset.sum_filter_add_sum_filter_not U (fun de => p ∣ de.1) f
+  have hsplitRight := Finset.sum_filter_add_sum_filter_not
+    (U.filter (fun de => p ∣ de.1)) (fun de => p ∣ de.2) f
+  have hright : U.filter (fun de => ¬ p ∣ de.1) =
+      (s ×ˢ s).filter (fun de =>
+        Nat.lcm de.1 de.2 = n ∧ ¬ p ∣ de.1 ∧ p ∣ de.2) := by
+    ext de
+    simp only [U, Finset.mem_filter, Finset.mem_product]
+    constructor
+    · rintro ⟨⟨hde, hlcm⟩, hnotleft⟩
+      have hplcm : p ∣ Nat.lcm de.1 de.2 := by simpa [hlcm] using hpn
+      exact ⟨hde, hlcm, hnotleft, (hp.dvd_lcm.mp hplcm).resolve_left hnotleft⟩
+    · rintro ⟨hde, hlcm, hnotleft, _⟩
+      exact ⟨⟨hde, hlcm⟩, hnotleft⟩
+  have hleftOnly : (U.filter (fun de => p ∣ de.1)).filter (fun de => ¬ p ∣ de.2) =
+      (s ×ˢ s).filter (fun de =>
+        Nat.lcm de.1 de.2 = n ∧ p ∣ de.1 ∧ ¬ p ∣ de.2) := by
+    ext de
+    simp [U, and_assoc]
+  have hshared : (U.filter (fun de => p ∣ de.1)).filter (fun de => p ∣ de.2) =
+      (s ×ˢ s).filter (fun de =>
+        Nat.lcm de.1 de.2 = n ∧ p ∣ de.1 ∧ p ∣ de.2) := by
+    ext de
+    simp [U, and_assoc]
+  rw [← hsplitLeft, ← hsplitRight, hright, hleftOnly, hshared]
+  ring
+
+private theorem squarefree_lcm_of_squarefree {d e : ℕ}
+    (hd : Squarefree d) (he : Squarefree e) : Squarefree (Nat.lcm d e) := by
+  refine Nat.squarefree_of_factorization_le_one (Nat.lcm_ne_zero hd.ne_zero he.ne_zero) ?_
+  intro p
+  rw [Nat.factorization_lcm hd.ne_zero he.ne_zero, Finsupp.sup_apply]
+  exact max_le (hd.natFactorization_le_one p) (he.natFactorization_le_one p)
+
+/-- A literal Möbius cross fibre at a non-squarefree lcm modulus vanishes termwise.  Hence the
+actual EDQ cross kernel has no proper prime-power lcm fibres; this is cancellation from the
+source coefficient itself, with neither an absolute value nor an inequality. -/
+theorem finiteLcmPairCrossFibre_moebius_eq_zero_of_not_squarefree
+    (s : Finset ℕ) (P Q : ℕ → ℝ) (n : ℕ) (hn : ¬ Squarefree n) :
+    finiteLcmPairCrossFibre s
+      (fun d => ((moebius d : ℤ) : ℝ) * P d)
+      (fun d => ((moebius d : ℤ) : ℝ) * Q d) n = 0 := by
+  classical
+  unfold finiteLcmPairCrossFibre
+  refine Finset.sum_eq_zero ?_
+  intro de hde
+  obtain ⟨_, hlcm⟩ := Finset.mem_filter.mp hde
+  by_cases hd : Squarefree de.1
+  · by_cases he : Squarefree de.2
+    · exfalso
+      apply hn
+      simpa [hlcm] using squarefree_lcm_of_squarefree hd he
+    · change (((moebius de.1 : ℤ) : ℝ) * P de.1) *
+        (((moebius de.2 : ℤ) : ℝ) * Q de.2) = 0
+      rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree he]
+      norm_num
+  · change (((moebius de.1 : ℤ) : ℝ) * P de.1) *
+      (((moebius de.2 : ℤ) : ℝ) * Q de.2) = 0
+    rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree hd]
+    norm_num
+
+/-- The full signed Möbius cross-fibre sum is exactly supported on squarefree lcm moduli. -/
+theorem finiteLcmPairCrossFibre_moebius_sum_eq_filter_squarefree
+    (s : Finset ℕ) (P Q : ℕ → ℝ) :
+    ∑ n ∈ (s ×ˢ s).image (fun de => Nat.lcm de.1 de.2),
+      finiteLcmPairCrossFibre s
+        (fun d => ((moebius d : ℤ) : ℝ) * P d)
+        (fun d => ((moebius d : ℤ) : ℝ) * Q d) n =
+      ∑ n ∈ ((s ×ˢ s).image (fun de => Nat.lcm de.1 de.2)).filter Squarefree,
+        finiteLcmPairCrossFibre s
+          (fun d => ((moebius d : ℤ) : ℝ) * P d)
+          (fun d => ((moebius d : ℤ) : ℝ) * Q d) n := by
+  classical
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl fun n hn => ?_
+  by_cases hsq : Squarefree n
+  · simp [hsq]
+  · simp [hsq, finiteLcmPairCrossFibre_moebius_eq_zero_of_not_squarefree s P Q n hsq]
+
+/-- Clock deletion and squarefree support commute for the complete signed Möbius cross-fibre
+sum.  The right side is the exact unresolved carrier: non-clock, squarefree lcm moduli only. -/
+theorem finiteLcmPairCrossFibre_moebius_nonclock_sum_eq_filter_squarefree
+    (s : Finset ℕ) (P Q : ℕ → ℝ) (C : ℕ) :
+    ∑ n ∈ ((s ×ˢ s).image (fun de => Nat.lcm de.1 de.2)).filter (fun n => ¬ n ∣ C),
+      finiteLcmPairCrossFibre s
+        (fun d => ((moebius d : ℤ) : ℝ) * P d)
+        (fun d => ((moebius d : ℤ) : ℝ) * Q d) n =
+      ∑ n ∈ ((s ×ˢ s).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ C ∧ Squarefree n),
+        finiteLcmPairCrossFibre s
+          (fun d => ((moebius d : ℤ) : ℝ) * P d)
+          (fun d => ((moebius d : ℤ) : ℝ) * Q d) n := by
+  classical
+  rw [Finset.sum_filter, Finset.sum_filter]
+  refine Finset.sum_congr rfl fun n hn => ?_
+  by_cases hnC : n ∣ C
+  · simp [hnC]
+  by_cases hsq : Squarefree n
+  · simp [hnC, hsq]
+  · simp [hnC, hsq,
+      finiteLcmPairCrossFibre_moebius_eq_zero_of_not_squarefree s P Q n hsq]
+
 /-- Exact lcm-fibre reindexing for two distinct finite divisor weights. -/
 theorem finite_sum_mul_eq_lcmPairCrossFibres (s : Finset ℕ) (a b : ℕ → ℝ) :
     (∑ d ∈ s, a d) * (∑ e ∈ s, b e) =
@@ -639,9 +781,85 @@ theorem exists_primePow_dvd_of_mem_lcmImage_Icc_nonclock
     ∃ q : ℕ, IsPrimePow q ∧ q ∣ n ∧ l + 1 < q ∧ q ≤ n ∧ n ≤ N * N := by
   have hn1 : 1 ≤ n := (Finset.mem_Icc.mp (mem_lcmImage_Icc_mem_Icc_square hn)).1
   obtain ⟨q, hqpow, hqdiv, hqgt⟩ :=
-    DeletionResidueMartingale.exists_primePow_dvd_of_not_dvd_clock hn1.ne' hnC
+    DeletionResidueMartingale.exists_primePow_dvd_of_not_dvd_clock
+      (Nat.one_le_iff_ne_zero.mp hn1) hnC
   exact ⟨q, hqpow, hqdiv, hqgt, Nat.le_of_dvd hn1 hqdiv,
     (Finset.mem_Icc.mp (mem_lcmImage_Icc_mem_Icc_square hn)).2⟩
+
+/-- A squarefree surviving non-clock lcm fibre is charged to a genuinely new **prime**, rather
+than a proper prime power.  Combined with termwise non-squarefree-fibre vanishing, this makes
+prime (not prime-power) chronology the exact carrier of the unresolved signed cross kernel. -/
+theorem exists_prime_dvd_of_mem_lcmImage_Icc_nonclock_squarefree
+    {N l n : ℕ}
+    (hn : n ∈ (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2))
+    (hnC : ¬ n ∣ DeletionResidueMartingale.clock (l + 1)) (hsq : Squarefree n) :
+    ∃ p : ℕ, p.Prime ∧ p ∣ n ∧ l + 1 < p ∧ p ≤ n ∧ n ≤ N * N := by
+  obtain ⟨q, hqpow, hqdiv, hqgt, hqle, hnle⟩ :=
+    exists_primePow_dvd_of_mem_lcmImage_Icc_nonclock hn hnC
+  exact ⟨q, (Nat.squarefree_and_prime_pow_iff_prime.mp
+    ⟨hsq.squarefree_of_dvd hqdiv, hqpow⟩), hqdiv, hqgt, hqle, hnle⟩
+
+/-- The complete unresolved signed EDQ cross carrier is exactly allocated over its genuinely
+new primes.  Each squarefree non-clock lcm label is distributed with reciprocal new-prime
+incidence weight, so it is counted once even when it contains several new primes.  Together with
+`finiteLcmPairCrossFibre_eq_primeChannels`, the right side retains the left-only, right-only, and
+shared-prime channels on which any cancellation argument must act. -/
+theorem finiteLcmPairCrossFibre_moebius_nonclock_squarefree_sum_eq_newPrimeIncidences
+    (N l : ℕ) (A B : ℕ → ℝ) :
+    ∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ DeletionResidueMartingale.clock (l + 1) ∧ Squarefree n),
+      finiteLcmPairCrossFibre (Icc 1 N)
+        (fun d => ((moebius d : ℤ) : ℝ) * A d)
+        (fun d => ((moebius d : ℤ) : ℝ) * B d) n =
+      ∑ p ∈ (Icc (l + 2) (N * N)).filter Nat.Prime,
+        ∑ n ∈ (((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+            (fun n => ¬ n ∣ DeletionResidueMartingale.clock (l + 1) ∧ Squarefree n)).filter
+          (fun n => p ∣ n),
+          finiteLcmPairCrossFibre (Icc 1 N)
+            (fun d => ((moebius d : ℤ) : ℝ) * A d)
+            (fun d => ((moebius d : ℤ) : ℝ) * B d) n /
+              ((Sieve.primeFactorsIn ((Icc (l + 2) (N * N)).filter Nat.Prime) n).card : ℝ) := by
+  classical
+  apply Sieve.sum_eq_sum_ramare
+  intro n hn
+  obtain ⟨hnImage, hnC, hsq⟩ := Finset.mem_filter.mp hn
+  obtain ⟨p, hpPrime, hpd, hpgt, hple, hnle⟩ :=
+    exists_prime_dvd_of_mem_lcmImage_Icc_nonclock_squarefree hnImage hnC hsq
+  refine ⟨p, Sieve.mem_primeFactorsIn.mpr ⟨?_, hpd⟩⟩
+  refine Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr ⟨?_, hple.trans hnle⟩, hpPrime⟩
+  omega
+
+/-- Prime-incidence allocation of the unresolved EDQ cross carrier with every local signed
+channel displayed.  A fixed new prime is present left-only, right-only, or in both divisor
+coordinates; no fourth case is possible because it divides the lcm label.  This is the exact
+object on which the missing cancellation law must be proved. -/
+theorem finiteLcmPairCrossFibre_moebius_nonclock_squarefree_sum_eq_newPrimeChannelIncidences
+    (N l : ℕ) (A B : ℕ → ℝ) :
+    ∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ DeletionResidueMartingale.clock (l + 1) ∧ Squarefree n),
+      finiteLcmPairCrossFibre (Icc 1 N)
+        (fun d => ((moebius d : ℤ) : ℝ) * A d)
+        (fun d => ((moebius d : ℤ) : ℝ) * B d) n =
+      ∑ p ∈ (Icc (l + 2) (N * N)).filter Nat.Prime,
+        ∑ n ∈ (((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+            (fun n => ¬ n ∣ DeletionResidueMartingale.clock (l + 1) ∧ Squarefree n)).filter
+          (fun n => p ∣ n),
+          (finiteLcmPairCrossFibre_primeLeftOnly (Icc 1 N)
+              (fun d => ((moebius d : ℤ) : ℝ) * A d)
+              (fun d => ((moebius d : ℤ) : ℝ) * B d) n p +
+            finiteLcmPairCrossFibre_primeRightOnly (Icc 1 N)
+              (fun d => ((moebius d : ℤ) : ℝ) * A d)
+              (fun d => ((moebius d : ℤ) : ℝ) * B d) n p +
+              finiteLcmPairCrossFibre_primeShared (Icc 1 N)
+                (fun d => ((moebius d : ℤ) : ℝ) * A d)
+                (fun d => ((moebius d : ℤ) : ℝ) * B d) n p) /
+              ((Sieve.primeFactorsIn ((Icc (l + 2) (N * N)).filter Nat.Prime) n).card : ℝ) := by
+  rw [finiteLcmPairCrossFibre_moebius_nonclock_squarefree_sum_eq_newPrimeIncidences]
+  refine Finset.sum_congr rfl fun p hp => ?_
+  refine Finset.sum_congr rfl fun n hn => ?_
+  have hpPrime : p.Prime := (Finset.mem_filter.mp hp).2
+  have hpd : p ∣ n := (Finset.mem_filter.mp hn).2
+  rw [finiteLcmPairCrossFibre_eq_primeChannels _ _ _ _ _ hpPrime hpd]
 
 /-- The exact EDQ lcm-prefix square has one fully resolved component through `N` and one
 literal unresolved component on `N < q ≤ N²`. -/
@@ -1592,6 +1810,1408 @@ theorem card_dvd_Ioc_length_eq_div (d t C : ℕ) (hdC : d ∣ C) :
 def divisorWindowDiscrepancy (d t C : ℕ) : ℝ :=
   (C : ℝ) / (d : ℝ) - ((#{k ∈ Ioc t (t + C) | d ∣ k} : ℕ) : ℝ)
 
+/-- If an old cofactor `r` divides a child-clock window, adjoining any positive residual modulus
+`m` transports the literal discrepancy of `m*r` exactly to the quotient physical window.  The
+floor count and archimedean term descend together; this is an equality, not a remainder estimate. -/
+theorem divisorWindowDiscrepancy_mul_positive_clockCofactor_eq_quotient
+    (m r t C : ℕ) (hm : 0 < m) (hr : 0 < r) (hrC : r ∣ C) :
+    divisorWindowDiscrepancy (m * r) t C =
+      divisorWindowDiscrepancy m (t / r) (C / r) := by
+  unfold divisorWindowDiscrepancy
+  have hendpoint : (t + C) / (m * r) = (t / r + C / r) / m := by
+    calc
+      (t + C) / (m * r) = (t + C) / (r * m) := by rw [Nat.mul_comm]
+      _ = (t + C) / r / m := (Nat.div_div_eq_div_mul _ _ _).symm
+      _ = (t / r + C / r) / m := by rw [Nat.add_div_of_dvd_left hrC]
+  have hstart : t / (m * r) = (t / r) / m := by
+    calc
+      t / (m * r) = t / (r * m) := by rw [Nat.mul_comm]
+      _ = t / r / m := (Nat.div_div_eq_div_mul _ _ _).symm
+  have hcountLeft : #{k ∈ Ioc t (t + C) | m * r ∣ k} =
+      (t + C) / (m * r) - t / (m * r) := by
+    exact Sieve.card_filter_dvd_Ioc (m * r) t (t + C) (by omega)
+  have hcountRight : #{k ∈ Ioc (t / r) (t / r + C / r) | m ∣ k} =
+      (t / r + C / r) / m - (t / r) / m := by
+    exact Sieve.card_filter_dvd_Ioc m (t / r) (t / r + C / r) (Nat.le_add_right _ _)
+  have hcount : #{k ∈ Ioc t (t + C) | m * r ∣ k} =
+      #{k ∈ Ioc (t / r) (t / r + C / r) | m ∣ k} := by
+    rw [hcountLeft, hcountRight, hendpoint, hstart]
+  have hC : r * (C / r) = C := Nat.mul_div_cancel' hrC
+  have hm0 : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
+  have hr0 : (r : ℝ) ≠ 0 := by exact_mod_cast hr.ne'
+  have hmain : (C : ℝ) / ((m * r : ℕ) : ℝ) =
+      ((C / r : ℕ) : ℝ) / (m : ℝ) := by
+    have hCcast : (C : ℝ) = (r : ℝ) * ((C / r : ℕ) : ℝ) := by
+      exact_mod_cast hC.symm
+    rw [hCcast]
+    push_cast
+    field_simp
+  rw [hcount, hmain]
+
+/-- The prime-residual transport used by a one-prime channel is the corresponding specialization
+of the exact positive-residual identity. -/
+theorem divisorWindowDiscrepancy_mul_clockCofactor_eq_quotient
+    (p r t C : ℕ) (hp : p.Prime) (hr : 0 < r) (hrC : r ∣ C) :
+    divisorWindowDiscrepancy (p * r) t C =
+      divisorWindowDiscrepancy p (t / r) (C / r) :=
+  divisorWindowDiscrepancy_mul_positive_clockCofactor_eq_quotient p r t C hp.pos hr hrC
+
+/-- The quotient transport persists through every chronological prefix of the literal beta
+kernel for an arbitrary positive residual modulus.  Its beta exponents stay on the original
+physical child clock; only the residue counting process transfers to the quotient window. -/
+theorem divisorWindowDiscrepancy_mul_positive_clockCofactor_betaPrefix_eq_quotient
+    (m r t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hr : 0 < r) (hrC : r ∣ C) :
+    ∑ s ∈ range Q,
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) *
+        x ^ (s * C) =
+      ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy m
+          (t / r + i * (C / r)) (C / r)) * x ^ (s * C) := by
+  refine Finset.sum_congr rfl fun s hs => ?_
+  congr 1
+  refine Finset.sum_congr rfl fun i hi => ?_
+  have htime : (t + i * C) / r = t / r + i * (C / r) := by
+    have hC : r * (C / r) = C := Nat.mul_div_cancel' hrC
+    have himul : i * C = r * (i * (C / r)) := by
+      calc
+        i * C = i * (r * (C / r)) := by rw [hC]
+        _ = r * (i * (C / r)) := by ring
+    have hdiv : r ∣ i * C := ⟨i * (C / r), himul⟩
+    calc
+      (t + i * C) / r = t / r + (i * C) / r := Nat.add_div_of_dvd_left hdiv
+      _ = t / r + i * (C / r) := by rw [himul, Nat.mul_div_cancel_left _ hr]
+  rw [show divisorWindowDiscrepancy (m * r) (t + i * C) C =
+    divisorWindowDiscrepancy m ((t + i * C) / r) (C / r) from
+      divisorWindowDiscrepancy_mul_positive_clockCofactor_eq_quotient m r (t + i * C) C hm hr hrC,
+    htime]
+
+/-- The prime-residual beta transport is the corresponding specialization of the exact
+positive-residual identity. -/
+theorem divisorWindowDiscrepancy_mul_clockCofactor_betaPrefix_eq_quotient
+    (p r t C Q : ℕ) (x : ℝ) (hp : p.Prime) (hr : 0 < r) (hrC : r ∣ C) :
+    ∑ s ∈ range Q,
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (p * r) (t + i * C) C) *
+        x ^ (s * C) =
+      ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy p
+          (t / r + i * (C / r)) (C / r)) * x ^ (s * C) :=
+  divisorWindowDiscrepancy_mul_positive_clockCofactor_betaPrefix_eq_quotient
+    p r t C Q x hp.pos hr hrC
+
+/-- Möbius inversion on an arbitrary finite carrier: summing divisibility incidences over all
+cofactors of `C` detects exactly the entries coprime to `C`. -/
+theorem moebius_divisor_count_eq_coprime_count
+    (C : ℕ) (hC : 0 < C) (S : Finset ℕ) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        ((#{j ∈ S | r ∣ j} : ℕ) : ℝ) =
+      ((#{j ∈ S | Nat.Coprime C j} : ℕ) : ℝ) := by
+  classical
+  have hleft :
+      ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+          ((#{j ∈ S | r ∣ j} : ℕ) : ℝ) =
+        ∑ r ∈ C.divisors, ∑ j ∈ S,
+          if r ∣ j then ((moebius r : ℤ) : ℝ) else 0 := by
+    refine Finset.sum_congr rfl fun r hr => ?_
+    have hcard : ((#{j ∈ S | r ∣ j} : ℕ) : ℝ) =
+        ∑ j ∈ Finset.filter (fun j => r ∣ j) S, (1 : ℝ) := by
+      rw [Finset.sum_const, nsmul_eq_mul, mul_one]
+    rw [hcard, Finset.sum_filter, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j hj => ?_
+    by_cases hrj : r ∣ j <;> simp [hrj]
+  rw [hleft]
+  have hmem : ∀ (j r : ℕ),
+      j ∈ S ∧ r ∈ (Nat.gcd C j).divisors ↔
+        j ∈ Finset.filter (fun j => r ∣ j) S ∧ r ∈ C.divisors := by
+    intro j r
+    constructor
+    · rintro ⟨hj, hr⟩
+      have hrg : r ∣ Nat.gcd C j := Nat.dvd_of_mem_divisors hr
+      have hrC : r ∣ C := hrg.trans (Nat.gcd_dvd_left _ _)
+      have hrj : r ∣ j := hrg.trans (Nat.gcd_dvd_right _ _)
+      exact ⟨Finset.mem_filter.mpr ⟨hj, hrj⟩,
+        Nat.mem_divisors.mpr ⟨hrC, hC.ne'⟩⟩
+    · rintro ⟨hj, hr⟩
+      obtain ⟨hjS, hrj⟩ := Finset.mem_filter.mp hj
+      have hrC : r ∣ C := Nat.dvd_of_mem_divisors hr
+      refine ⟨hjS, Nat.mem_divisors.mpr ⟨Nat.dvd_gcd hrC hrj, ?_⟩⟩
+      exact (Nat.gcd_pos_of_pos_left j hC).ne'
+  have hleft' :
+      ∑ r ∈ C.divisors, ∑ j ∈ S,
+          (if r ∣ j then ((moebius r : ℤ) : ℝ) else 0) =
+        ∑ r ∈ C.divisors, ∑ j ∈ Finset.filter (fun j => r ∣ j) S,
+          ((moebius r : ℤ) : ℝ) := by
+    refine Finset.sum_congr rfl fun r hr => ?_
+    rw [Finset.sum_filter]
+  rw [hleft', ← Finset.sum_comm' hmem]
+  have hright : ((#{j ∈ S | Nat.Coprime C j} : ℕ) : ℝ) =
+      ∑ j ∈ S, if Nat.Coprime C j then (1 : ℝ) else 0 := by
+    calc
+      ((#{j ∈ S | Nat.Coprime C j} : ℕ) : ℝ) =
+          ∑ j ∈ Finset.filter (fun j => Nat.Coprime C j) S, (1 : ℝ) := by
+        rw [Finset.sum_const, nsmul_eq_mul, mul_one]
+      _ = ∑ j ∈ S, if Nat.Coprime C j then (1 : ℝ) else 0 := by
+        rw [Finset.sum_filter]
+  rw [hright]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  rw [RHTower.Sieve.sum_divisors_moebius_real]
+
+/-- Divisibility by `m * r` in a physical window quotients exactly to divisibility by `r` in the
+literal quotient interval.  Summing the old cofactors of `C` therefore produces the exact
+reduced-residue count in that interval. -/
+theorem cofactor_moebius_incidence_eq_reducedResidue_count
+    (m t C : ℕ) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        ((#{k ∈ Ioc t (t + C) | m * r ∣ k} : ℕ) : ℝ) =
+      ((#{j ∈ Ioc (t / m) ((t + C) / m) | Nat.Coprime C j} : ℕ) : ℝ) := by
+  classical
+  have hquot : t / m ≤ (t + C) / m := Nat.div_le_div_right (Nat.le_add_right t C)
+  have hcount : ∀ r : ℕ,
+      ((#{k ∈ Ioc t (t + C) | m * r ∣ k} : ℕ) : ℝ) =
+        ((#{j ∈ Ioc (t / m) ((t + C) / m) | r ∣ j} : ℕ) : ℝ) := by
+    intro r
+    congr 1
+    rw [Sieve.card_filter_dvd_Ioc (m * r) t (t + C) (Nat.le_add_right t C),
+      Sieve.card_filter_dvd_Ioc r (t / m) ((t + C) / m) hquot]
+    simp [Nat.div_div_eq_div_mul]
+  rw [Finset.sum_congr rfl fun r hr => by rw [hcount r]]
+  exact moebius_divisor_count_eq_coprime_count C hC (Ioc (t / m) ((t + C) / m))
+
+/-- Complete old-cofactor Möbius summation has a nonzero exact survivor: the totient density minus
+the literal reduced-residue count in the quotient interval.  Thus the physical quotient windows
+cannot be discarded by generic sign cancellation; any EDQ cancellation must control this precise
+primitive discrepancy and the truncation boundary separately. -/
+theorem cofactor_moebius_discrepancy_eq_reducedResidue
+    (m t C : ℕ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        divisorWindowDiscrepancy (m * r) t C =
+      (Nat.totient C : ℝ) / (m : ℝ) -
+        ((#{j ∈ Ioc (t / m) ((t + C) / m) | Nat.Coprime C j} : ℕ) : ℝ) := by
+  classical
+  unfold divisorWindowDiscrepancy
+  have hmain :
+      ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+          ((C : ℝ) / ((m * r : ℕ) : ℝ)) = (Nat.totient C : ℝ) / (m : ℝ) := by
+    calc
+      ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+          ((C : ℝ) / ((m * r : ℕ) : ℝ)) =
+          ((C : ℝ) / (m : ℝ)) *
+            ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) / (r : ℝ) := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun r hr => ?_
+          push_cast
+          field_simp [hm.ne']
+      _ = ((C : ℝ) / (m : ℝ)) * ((Nat.totient C : ℝ) / (C : ℝ)) := by
+          rw [RHTower.Sieve.sum_moebius_div_divisors_eq_totient_div hC]
+      _ = (Nat.totient C : ℝ) / (m : ℝ) := by
+          field_simp [hC.ne', hm.ne']
+  calc
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        ((C : ℝ) / ((m * r : ℕ) : ℝ) -
+          ((#{k ∈ Ioc t (t + C) | m * r ∣ k} : ℕ) : ℝ)) =
+        (∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+          ((C : ℝ) / ((m * r : ℕ) : ℝ))) -
+        ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+          ((#{k ∈ Ioc t (t + C) | m * r ∣ k} : ℕ) : ℝ) := by
+      rw [← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun r hr => by ring
+    _ = (Nat.totient C : ℝ) / (m : ℝ) -
+        ((#{j ∈ Ioc (t / m) ((t + C) / m) | Nat.Coprime C j} : ℕ) : ℝ) := by
+      rw [hmain, cofactor_moebius_incidence_eq_reducedResidue_count m t C hC]
+
+
+/-- The complete old-cofactor law commutes with the exact chronological beta prefix.  The beta
+powers remain on their original physical clock; only each divisor incidence becomes its literal
+reduced-residue quotient count. -/
+theorem cofactor_moebius_discrepancy_betaPrefix_eq_reducedResidue
+    (m t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) *
+            x ^ (s * C)) =
+      ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1),
+          ((Nat.totient C : ℝ) / (m : ℝ) -
+            ((#{j ∈ Ioc ((t + i * C) / m) ((t + (i + 1) * C) / m) |
+              Nat.Coprime C j} : ℕ) : ℝ))) *
+          x ^ (s * C) := by
+  classical
+  calc
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) *
+            x ^ (s * C)) =
+        ∑ r ∈ C.divisors, ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), ((moebius r : ℤ) : ℝ) *
+            divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) := by
+          refine Finset.sum_congr rfl fun r hr => ?_
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun s hs => ?_
+          calc
+            ((moebius r : ℤ) : ℝ) *
+                ((∑ i ∈ range (s + 1),
+                  divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C)) =
+                (((moebius r : ℤ) : ℝ) *
+                  ∑ i ∈ range (s + 1),
+                    divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) := by ring
+            _ = (∑ i ∈ range (s + 1), ((moebius r : ℤ) : ℝ) *
+                  divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) := by
+                  rw [Finset.mul_sum]
+    _ = ∑ s ∈ range Q, ∑ i ∈ range (s + 1),
+          (∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+            divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) := by
+          rw [Finset.sum_comm]
+          refine Finset.sum_congr rfl fun s hs => ?_
+          calc
+            ∑ r ∈ C.divisors, (∑ i ∈ range (s + 1), ((moebius r : ℤ) : ℝ) *
+                divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) =
+                (∑ r ∈ C.divisors, ∑ i ∈ range (s + 1), ((moebius r : ℤ) : ℝ) *
+                  divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) := by
+                  rw [Finset.sum_mul]
+            _ = (∑ i ∈ range (s + 1), ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+                  divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) := by
+                  rw [Finset.sum_comm]
+            _ = ∑ i ∈ range (s + 1),
+                (∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+                  divisorWindowDiscrepancy (m * r) (t + i * C) C) * x ^ (s * C) := by
+                  rw [Finset.sum_mul]
+    _ = ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1),
+          ((Nat.totient C : ℝ) / (m : ℝ) -
+            ((#{j ∈ Ioc ((t + i * C) / m) ((t + (i + 1) * C) / m) |
+              Nat.Coprime C j} : ℕ) : ℝ))) *
+          x ^ (s * C) := by
+          refine Finset.sum_congr rfl fun s hs => ?_
+          rw [← Finset.sum_mul]
+          refine congrArg (fun z : ℝ => z * x ^ (s * C)) ?_
+          refine Finset.sum_congr rfl fun i hi => ?_
+          simpa [Nat.succ_mul, Nat.add_assoc] using
+            (cofactor_moebius_discrepancy_eq_reducedResidue m (t + i * C) C hm hC)
+
+
+/-- Consecutive reduced-residue quotient intervals telescope exactly, including all floor endpoints.
+This is the chronological counterpart of the old-cofactor Möbius collapse. -/
+theorem quotient_coprime_counts_telescope (C m t Q : ℕ) :
+    ∑ i ∈ range Q,
+      ((#{j ∈ Ioc ((t + i * C) / m) ((t + (i + 1) * C) / m) |
+        Nat.Coprime C j} : ℕ) : ℝ) =
+      ((#{j ∈ Ioc (t / m) ((t + Q * C) / m) | Nat.Coprime C j} : ℕ) : ℝ) := by
+  classical
+  let f : ℕ → ℝ := fun j => if Nat.Coprime C j then 1 else 0
+  have hcount (a b : ℕ) :
+      ((#{j ∈ Ioc a b | Nat.Coprime C j} : ℕ) : ℝ) = ∑ j ∈ Ioc a b, f j := by
+    unfold f
+    calc
+      ((#{j ∈ Ioc a b | Nat.Coprime C j} : ℕ) : ℝ) =
+          ∑ j ∈ Finset.filter (fun j => Nat.Coprime C j) (Ioc a b), (1 : ℝ) := by
+            rw [Finset.sum_const, nsmul_eq_mul, mul_one]
+      _ = ∑ j ∈ Ioc a b, if Nat.Coprime C j then 1 else 0 := by
+            rw [Finset.sum_filter]
+  induction Q with
+  | zero => simp
+  | succ Q ih =>
+      rw [Finset.sum_range_succ, ih, hcount, hcount, hcount]
+      have hleft : t / m ≤ (t + Q * C) / m :=
+        Nat.div_le_div_right (Nat.le_add_right t (Q * C))
+      have hright : (t + Q * C) / m ≤ (t + (Q + 1) * C) / m := by
+        apply Nat.div_le_div_right
+        simp [Nat.succ_mul]
+      simpa [Nat.succ_eq_add_one] using Finset.sum_Ioc_consecutive f hleft hright
+
+
+/-- The chronological prefix in the complete old-cofactor beta law is one reduced-residue
+quotient interval.  This keeps the original physical beta exponent and removes every nested
+chronological count. -/
+theorem cofactor_moebius_discrepancy_betaPrefix_eq_reducedResidueInterval
+    (m t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) *
+            x ^ (s * C)) =
+      ∑ s ∈ range Q,
+        (((s + 1 : ℕ) : ℝ) * (Nat.totient C : ℝ) / (m : ℝ) -
+          ((#{j ∈ Ioc (t / m) ((t + (s + 1) * C) / m) | Nat.Coprime C j} : ℕ) : ℝ)) *
+          x ^ (s * C) := by
+  rw [cofactor_moebius_discrepancy_betaPrefix_eq_reducedResidue m t C Q x hm hC]
+  refine Finset.sum_congr rfl fun s hs => ?_
+  rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul,
+    quotient_coprime_counts_telescope C m t (s + 1)]
+  ring
+
+/-- For a squarefree divisor, a chronological beta prefix transports every old prime factor at
+once.  The residual modulus is the exact quotient by its gcd with the child clock, and every
+prime still present in that residual is strictly future to the clock index. -/
+theorem squarefree_divisor_betaPrefix_eq_clockResidual
+    (L d t Q : ℕ) (x : ℝ) (hsq : Squarefree d) :
+    ∑ s ∈ range Q,
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+        x ^ (s * clock L) =
+      ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1),
+          divisorWindowDiscrepancy (d / gcd d (clock L))
+            (t / gcd d (clock L) + i * (clock L / gcd d (clock L)))
+            (clock L / gcd d (clock L))) * x ^ (s * clock L) := by
+  obtain ⟨hdeq, hm, hr, hrC, _⟩ := squarefree_clock_gcd_split (L := L) hsq
+  have hprefix := congrArg (fun a : ℕ =>
+    ∑ s ∈ range Q,
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy a (t + i * clock L) (clock L)) *
+        x ^ (s * clock L)) hdeq
+  calc
+    ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+          x ^ (s * clock L) =
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1),
+            divisorWindowDiscrepancy
+              ((d / gcd d (clock L)) * gcd d (clock L))
+              (t + i * clock L) (clock L)) * x ^ (s * clock L) := by
+          exact hprefix
+    _ = ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1),
+            divisorWindowDiscrepancy (d / gcd d (clock L))
+              (t / gcd d (clock L) + i * (clock L / gcd d (clock L)))
+              (clock L / gcd d (clock L))) * x ^ (s * clock L) :=
+      divisorWindowDiscrepancy_mul_positive_clockCofactor_betaPrefix_eq_quotient
+        (d / gcd d (clock L)) (gcd d (clock L)) t (clock L) Q x hm hr hrC
+
+/-- Möbius weighting extends the all-old-factor quotient transport to every divisor: nonsquarefree
+divisors vanish identically, while squarefree divisors use the exact clock-residual transport. -/
+theorem moebius_mul_divisor_betaPrefix_eq_clockResidual
+    (L d t Q : ℕ) (x : ℝ) :
+    ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+            x ^ (s * clock L) =
+      ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1),
+            divisorWindowDiscrepancy (d / gcd d (clock L))
+              (t / gcd d (clock L) + i * (clock L / gcd d (clock L)))
+              (clock L / gcd d (clock L))) * x ^ (s * clock L) := by
+  by_cases hsq : Squarefree d
+  · rw [squarefree_divisor_betaPrefix_eq_clockResidual L d t Q x hsq]
+  · simp [moebius_eq_zero_of_not_squarefree hsq]
+
+/-- The exact old-factor quotient transport lifts through a complete signed lcm cross fibre.
+The lcm labels and distinct beta variables remain fixed; only each physical prefix is rewritten
+as its exact residual quotient prefix. -/
+theorem finiteLcmPairCrossFibre_moebius_betaPrefixes_eq_clockResidual
+    (S : Finset ℕ) (L t Q n : ℕ) (x y : ℝ) :
+    finiteLcmPairCrossFibre S
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+            x ^ (s * clock L))
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+            y ^ (s * clock L)) n =
+      finiteLcmPairCrossFibre S
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1),
+              divisorWindowDiscrepancy (d / gcd d (clock L))
+                (t / gcd d (clock L) + i * (clock L / gcd d (clock L)))
+                (clock L / gcd d (clock L))) * x ^ (s * clock L))
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1),
+              divisorWindowDiscrepancy (d / gcd d (clock L))
+                (t / gcd d (clock L) + i * (clock L / gcd d (clock L)))
+                (clock L / gcd d (clock L))) * y ^ (s * clock L)) n := by
+  classical
+  unfold finiteLcmPairCrossFibre
+  refine Finset.sum_congr rfl fun de hde => ?_
+  dsimp
+  rw [moebius_mul_divisor_betaPrefix_eq_clockResidual L de.1 t Q x,
+    moebius_mul_divisor_betaPrefix_eq_clockResidual L de.2 t Q y]
+
+/-- Every literal selected-block cross fibre has an exact all-old-factor quotient form.  It keeps
+the original lcm fibre and the two physical beta variables, while restricting every nonzero
+residual coordinate to primes beyond the child-clock index. -/
+theorem selectedRefinementBlock_lcmCrossFibre_eq_clockResidual
+    (N l u b n : ℕ) (x y : ℝ) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1) - 1
+    finiteLcmPairCrossFibre (Icc 1 N)
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+            (clock (l + 1))) * x ^ (s * clock (l + 1)))
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+            (clock (l + 1))) * y ^ (s * clock (l + 1))) n =
+      finiteLcmPairCrossFibre (Icc 1 N)
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1),
+              divisorWindowDiscrepancy (d / gcd d (clock (l + 1)))
+                (t / gcd d (clock (l + 1)) +
+                  i * (clock (l + 1) / gcd d (clock (l + 1))))
+                (clock (l + 1) / gcd d (clock (l + 1)))) * x ^ (s * clock (l + 1)))
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1),
+              divisorWindowDiscrepancy (d / gcd d (clock (l + 1)))
+                (t / gcd d (clock (l + 1)) +
+                  i * (clock (l + 1) / gcd d (clock (l + 1))))
+                (clock (l + 1) / gcd d (clock (l + 1)))) * y ^ (s * clock (l + 1))) n := by
+  dsimp
+  exact finiteLcmPairCrossFibre_moebius_betaPrefixes_eq_clockResidual
+    (Icc 1 N) (l + 1) (u + b * clock l + 1) (canonicalClockRatio N (l + 1) - 1) n x y
+
+/-- The zero-extended signed physical beta weight after extracting every chronological prime
+factor.  A nonsquarefree divisor is explicitly zero; a squarefree divisor carries the product of
+its future and old Möbius signs and its exact quotient prefix. -/
+def clockResidualBetaWeight (L t Q : ℕ) (x : ℝ) (d : ℕ) : ℝ :=
+  if Squarefree d then
+    (((moebius (d / gcd d (clock L)) : ℤ) : ℝ) *
+      ((moebius (gcd d (clock L)) : ℤ) : ℝ)) *
+      ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1),
+          divisorWindowDiscrepancy (d / gcd d (clock L))
+            (t / gcd d (clock L) + i * (clock L / gcd d (clock L)))
+            (clock L / gcd d (clock L))) * x ^ (s * clock L)
+  else 0
+
+/-- The exact future/old factorization of a literal lcm label. -/
+def clockSplitLcmLabel (L d e : ℕ) : ℕ :=
+  Nat.lcm (d / gcd d (clock L)) (e / gcd e (clock L)) *
+    Nat.lcm (gcd d (clock L)) (gcd e (clock L))
+
+/-- The only pair of natural residuals whose lcm is one is `(1, 1)`.  Consequently, on
+any finite residual set which contains `1`, deleting the `lcm = 1` channel factors an exact
+weighted pair sum into its two one-residual sums minus that singleton channel. -/
+theorem lcm_ne_one_pair_sum_eq_product_sub_singleton
+    (S : Finset ℕ) (A B : ℕ → ℝ) (h1 : 1 ∈ S) :
+    (∑ m ∈ S, ∑ n ∈ S,
+      if Nat.lcm m n ≠ 1 then A m * B n else 0) =
+      (∑ m ∈ S, A m) * (∑ n ∈ S, B n) - A 1 * B 1 := by
+  have hlcm_one (m n : ℕ) : Nat.lcm m n = 1 ↔ m = 1 ∧ n = 1 := by
+    constructor
+    · intro h
+      exact ⟨Nat.dvd_one.mp (by rw [← h]; exact Nat.dvd_lcm_left _ _),
+        Nat.dvd_one.mp (by rw [← h]; exact Nat.dvd_lcm_right _ _)⟩
+    · rintro ⟨rfl, rfl⟩
+      simp
+  have hpartition :
+      (∑ m ∈ S, ∑ n ∈ S, A m * B n) =
+        (∑ m ∈ S, ∑ n ∈ S,
+          if Nat.lcm m n ≠ 1 then A m * B n else 0) +
+        ∑ m ∈ S, ∑ n ∈ S,
+          if Nat.lcm m n = 1 then A m * B n else 0 := by
+    calc
+      ∑ m ∈ S, ∑ n ∈ S, A m * B n =
+          ∑ m ∈ S, ∑ n ∈ S,
+            ((if Nat.lcm m n ≠ 1 then A m * B n else 0) +
+              (if Nat.lcm m n = 1 then A m * B n else 0)) := by
+        refine Finset.sum_congr rfl fun m hm => ?_
+        refine Finset.sum_congr rfl fun n hn => ?_
+        by_cases h : Nat.lcm m n = 1 <;> simp [h]
+      _ = _ := by
+        simp_rw [Finset.sum_add_distrib]
+  have heq :
+      (∑ m ∈ S, ∑ n ∈ S,
+        if Nat.lcm m n = 1 then A m * B n else 0) = A 1 * B 1 := by
+    calc
+      (∑ m ∈ S, ∑ n ∈ S,
+          if Nat.lcm m n = 1 then A m * B n else 0) =
+        (∑ m ∈ S, ∑ n ∈ S,
+          if m = 1 ∧ n = 1 then A m * B n else 0) := by
+        refine Finset.sum_congr rfl fun m hm => ?_
+        refine Finset.sum_congr rfl fun n hn => ?_
+        simp [hlcm_one]
+      _ = (∑ m ∈ S, if m = 1 then A m * B 1 else 0) := by
+        refine Finset.sum_congr rfl fun m hm => ?_
+        by_cases hm1 : m = 1
+        · subst m
+          simp [h1]
+        · simp [hm1]
+      _ = A 1 * B 1 := by simp [h1]
+  rw [Finset.sum_mul_sum S S A B]
+  rw [eq_sub_iff_add_eq]
+  rw [← heq]
+  exact hpartition.symm
+
+/-- The singleton-channel factorization remains exact when each residual has a finite dependent
+old-cofactor fibre.  This is the form needed by the physical EDQ carrier: no cofactor cutoff is
+changed or averaged. -/
+theorem lcm_ne_one_dependent_cofactor_pair_sum_eq_product_sub_singleton
+    (S : Finset ℕ) (R : ℕ → Finset ℕ) (A B : ℕ → ℕ → ℝ) (h1 : 1 ∈ S) :
+    (∑ m ∈ S, ∑ r ∈ R m, ∑ n ∈ S, ∑ s ∈ R n,
+      if Nat.lcm m n ≠ 1 then A m r * B n s else 0) =
+      (∑ m ∈ S, ∑ r ∈ R m, A m r) * (∑ n ∈ S, ∑ s ∈ R n, B n s) -
+        (∑ r ∈ R 1, A 1 r) * (∑ s ∈ R 1, B 1 s) := by
+  let A' : ℕ → ℝ := fun m => ∑ r ∈ R m, A m r
+  let B' : ℕ → ℝ := fun n => ∑ s ∈ R n, B n s
+  change (∑ m ∈ S, ∑ r ∈ R m, ∑ n ∈ S, ∑ s ∈ R n,
+      if Nat.lcm m n ≠ 1 then A m r * B n s else 0) =
+    (∑ m ∈ S, ∑ r ∈ R m, A m r) * (∑ n ∈ S, ∑ s ∈ R n, B n s) -
+      (∑ r ∈ R 1, A 1 r) * (∑ s ∈ R 1, B 1 s)
+  calc
+    (∑ m ∈ S, ∑ r ∈ R m, ∑ n ∈ S, ∑ s ∈ R n,
+        if Nat.lcm m n ≠ 1 then A m r * B n s else 0) =
+      (∑ m ∈ S, ∑ n ∈ S,
+        if Nat.lcm m n ≠ 1 then A' m * B' n else 0) := by
+      refine Finset.sum_congr rfl fun m hm => ?_
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun n hn => ?_
+      by_cases h : Nat.lcm m n ≠ 1
+      · simp only [if_pos h, A', B']
+        rw [Finset.sum_mul_sum]
+      · simp [h]
+    _ = (∑ m ∈ S, A' m) * (∑ n ∈ S, B' n) - A' 1 * B' 1 :=
+      lcm_ne_one_pair_sum_eq_product_sub_singleton S A' B' h1
+    _ = _ := rfl
+
+/-- For a zero-extended squarefree summand, truncating a finite cofactor fibre leaves exactly its
+literal upper boundary.  No squarefree term is estimated or discarded. -/
+theorem truncated_squarefree_sum_eq_full_sub_upperBoundary
+    (D : Finset ℕ) (N m : ℕ) (F : ℕ → ℝ)
+    (hzero : ∀ r, ¬ Squarefree (m * r) → F r = 0) :
+    (∑ r ∈ Finset.filter (fun r => m * r ≤ N ∧ Squarefree (m * r)) D, F r) =
+      (∑ r ∈ D, F r) -
+        ∑ r ∈ Finset.filter (fun r => N < m * r) D, F r := by
+  have hpartition :
+      (∑ r ∈ D, F r) =
+        (∑ r ∈ Finset.filter (fun r => m * r ≤ N ∧ Squarefree (m * r)) D, F r) +
+        ∑ r ∈ Finset.filter (fun r => N < m * r) D, F r := by
+    calc
+      ∑ r ∈ D, F r =
+          ∑ r ∈ D,
+            ((if m * r ≤ N ∧ Squarefree (m * r) then F r else 0) +
+              (if N < m * r then F r else 0)) := by
+        refine Finset.sum_congr rfl fun r hr => ?_
+        by_cases hle : m * r ≤ N
+        · by_cases hsq : Squarefree (m * r)
+          · simp [hle, hsq]
+          · simp [hle, hsq, hzero r hsq]
+        · have hgt : N < m * r := Nat.lt_of_not_ge hle
+          simp [hle, hgt]
+      _ = _ := by
+        simp_rw [Finset.sum_add_distrib, ← Finset.sum_filter]
+  rw [eq_sub_iff_add_eq]
+  exact hpartition.symm
+
+/-- Future residuals which survive the physical divisor cutoff after the child clock is split
+off. -/
+def futureResidualCarrier (N L : ℕ) : Finset ℕ :=
+  Finset.filter (fun m => Nat.Coprime m (clock L)) (Icc 1 N)
+
+/-- The literal old-cofactor fibre over a future residual.  Both faces of the physical cutoff and
+squarefree support remain in the carrier. -/
+def futureOldCofactorCarrier (N L m : ℕ) : Finset ℕ :=
+  Finset.filter (fun r => m * r ≤ N ∧ Squarefree (m * r)) (clock L).divisors
+
+/-- The singleton residual belongs to every nonempty physical future carrier. -/
+theorem one_mem_futureResidualCarrier {N L : ℕ} (hN : 1 ≤ N) :
+    1 ∈ futureResidualCarrier N L := by
+  simp [futureResidualCarrier, hN]
+
+/-- The physical future residual carrier is not closed under complement in the ambient clock
+quotient once that quotient exceeds the cutoff.  Therefore a divisor-complement involution
+cannot cancel the remaining EDQ residual total inside this carrier. -/
+theorem canonicalClockRatio_not_mem_futureResidualCarrier_of_lt
+    {N L : ℕ} (hQN : N < canonicalClockRatio N L) :
+    canonicalClockRatio N L ∉ futureResidualCarrier N L := by
+  intro hmem
+  exact (not_le_of_gt hQN) (Finset.mem_Icc.mp (Finset.mem_filter.mp hmem).1).2
+
+/-- The quotient-complement map `m ↦ canonicalClockRatio N L / m` fails on an explicit live
+residual whenever the ambient quotient exceeds the physical cutoff: its image of `1` is outside.
+This isolates the remaining cancellation problem to non-complementary signed boundary laws. -/
+theorem futureResidualCarrier_not_closed_under_canonicalClockComplement_of_lt
+    {N L : ℕ} (hN : 1 ≤ N) (hQN : N < canonicalClockRatio N L) :
+    ∃ m ∈ futureResidualCarrier N L,
+      canonicalClockRatio N L / m ∉ futureResidualCarrier N L := by
+  refine ⟨1, one_mem_futureResidualCarrier hN, ?_⟩
+  simpa using canonicalClockRatio_not_mem_futureResidualCarrier_of_lt hQN
+
+/-- Every future residual surviving the physical EDQ cutoff divides the chronological quotient
+from the child clock to the ambient clock.  Coprimality with the child clock is what removes the
+old factor from the ambient-clock divisibility. -/
+theorem mem_futureResidualCarrier_dvd_canonicalClockRatio {N L m : ℕ} (hLN : L ≤ N)
+    (hm : m ∈ futureResidualCarrier N L) : m ∣ canonicalClockRatio N L := by
+  have hm' := Finset.mem_filter.mp hm
+  have hm1 : 1 ≤ m := (Finset.mem_Icc.mp hm'.1).1
+  have hmN : m ≤ N := (Finset.mem_Icc.mp hm'.1).2
+  rw [canonicalClockRatio_eq_div_of_le N L hLN]
+  apply hm'.2.dvd_of_dvd_mul_right
+  rw [Nat.div_mul_cancel (clock_dvd hLN)]
+  exact dvd_clock hm1 hmN
+
+/-- At the selected EDQ beta cutoff, every live future residual sees the same terminal state:
+the prefix length has residue `m - 1` modulo that residual.  Hence the prefix consists of full
+`m`-periods with exactly its final state omitted. -/
+theorem canonicalClockRatio_sub_one_mod_eq_pred_of_mem_futureResidualCarrier
+    {N L m : ℕ} (hLN : L ≤ N) (hm : m ∈ futureResidualCarrier N L) :
+    (canonicalClockRatio N L - 1) % m = m - 1 := by
+  have hm' := Finset.mem_filter.mp hm
+  have hm1 : 1 ≤ m := (Finset.mem_Icc.mp hm'.1).1
+  have hratio : 0 < canonicalClockRatio N L := by
+    rw [canonicalClockRatio_eq_div_of_le N L hLN]
+    exact Nat.div_pos (Nat.le_of_dvd (clock_pos N) (clock_dvd hLN)) (clock_pos L)
+  have hdiv : m ∣ canonicalClockRatio N L :=
+    mem_futureResidualCarrier_dvd_canonicalClockRatio hLN hm
+  have hRm : canonicalClockRatio N L ≡ m [MOD m] :=
+    hdiv.modEq_zero_nat.trans (Nat.dvd_refl m).modEq_zero_nat.symm
+  calc
+    (canonicalClockRatio N L - 1) % m = (m - 1) % m :=
+      Nat.ModEq.sub hratio hm1 hRm (by rfl)
+    _ = m - 1 := Nat.mod_eq_of_lt (by omega)
+
+/-- The omitted last selected beta state lies exactly one child-clock before the ambient-clock
+endpoint.  This time is independent of the future residual. -/
+theorem canonicalClockRatio_sub_one_mul_clock_eq_clock_sub_clock {N L : ℕ} (hLN : L ≤ N) :
+    (canonicalClockRatio N L - 1) * clock L = clock N - clock L := by
+  rw [canonicalClockRatio_eq_div_of_le N L hLN, Nat.sub_mul,
+    Nat.div_mul_cancel (clock_dvd hLN)]
+  simp
+
+/-- The missing `m - 1` phase of every live residual's final beta block lands at the common
+ambient time `clock N - clock L`.  Thus all residual-dependent terminal blocks have one exact
+chronological endpoint available for a boundary pairing. -/
+theorem terminal_beta_missing_state_eq_clock_sub_clock_of_mem_futureResidualCarrier
+    {N L m : ℕ} (hLN : L ≤ N) (hm : m ∈ futureResidualCarrier N L) :
+    ((canonicalClockRatio N L - 1) / m) * (m * clock L) + (m - 1) * clock L =
+      clock N - clock L := by
+  have hmod : (canonicalClockRatio N L - 1) % m = m - 1 :=
+    canonicalClockRatio_sub_one_mod_eq_pred_of_mem_futureResidualCarrier hLN hm
+  have hdecomp :
+      (canonicalClockRatio N L - 1) / m * m +
+          ((canonicalClockRatio N L - 1) % m) = canonicalClockRatio N L - 1 := by
+    simpa [Nat.mul_comm] using Nat.div_add_mod (canonicalClockRatio N L - 1) m
+  rw [hmod] at hdecomp
+  calc
+    ((canonicalClockRatio N L - 1) / m) * (m * clock L) + (m - 1) * clock L =
+        ((canonicalClockRatio N L - 1) / m * m + (m - 1)) * clock L := by
+          rw [← Nat.mul_assoc, Nat.add_mul]
+    _ = (canonicalClockRatio N L - 1) * clock L := by rw [hdecomp]
+    _ = clock N - clock L := canonicalClockRatio_sub_one_mul_clock_eq_clock_sub_clock hLN
+
+/-- The selected terminal beta endpoint agrees with the joint-clock predecessor exactly for the
+single aligned child offset `clock L - 1`.  A joint-clock endpoint identity therefore cannot be
+used as generic cancellation across selected child blocks. -/
+theorem selected_beta_terminal_endpoint_eq_clock_pred_iff {N L t : ℕ} (hLN : L ≤ N) :
+    t + (canonicalClockRatio N L - 1) * clock L = clock N - 1 ↔
+      t = clock L - 1 := by
+  rw [canonicalClockRatio_sub_one_mul_clock_eq_clock_sub_clock hLN]
+  have hclock : clock L ≤ clock N :=
+    Nat.le_of_dvd (clock_pos N) (clock_dvd hLN)
+  have hLpos : 0 < clock L := clock_pos L
+  have hNpos : 0 < clock N := clock_pos N
+  omega
+
+/-- Complementing a positive divisor of `C` converts the EDQ upper threshold into an exact
+reciprocal lower threshold. -/
+theorem divisor_threshold_duality {N m C r : ℕ} (hC : 0 < C) (hr : r ∣ C) :
+    N < m * r ↔ N * (C / r) < m * C := by
+  have hrpos : 0 < r := Nat.pos_of_dvd_of_pos hr hC
+  have hdivmul : C / r * r = C := Nat.div_mul_cancel hr
+  have hqpos : 0 < C / r := Nat.div_pos (Nat.le_of_dvd hC hr) hrpos
+  constructor
+  · intro h
+    calc
+      N * (C / r) < (m * r) * (C / r) := (Nat.mul_lt_mul_right hqpos).mpr h
+      _ = m * C := by
+        rw [Nat.mul_assoc, Nat.mul_comm r (C / r), hdivmul]
+  · intro h
+    by_contra hnot
+    have hle : m * r ≤ N := Nat.le_of_not_gt hnot
+    have hmul : (m * r) * (C / r) ≤ N * (C / r) :=
+      Nat.mul_le_mul_right _ hle
+    have hbound : m * C ≤ N * (C / r) := by
+      simpa only [Nat.mul_assoc, Nat.mul_comm r (C / r), hdivmul] using hmul
+    exact (not_lt_of_ge hbound) h
+
+/-- Divisor complementation is an involution on the positive divisors of `C`. -/
+theorem divisor_complement_involutive {C r : ℕ} (hC : 0 < C) (hr : r ∣ C) :
+    C / (C / r) = r := by
+  have hrpos : 0 < r := Nat.pos_of_dvd_of_pos hr hC
+  have hqpos : 0 < C / r := Nat.div_pos (Nat.le_of_dvd hC hr) hrpos
+  calc
+    C / (C / r) = (C / r * r) / (C / r) := by rw [Nat.div_mul_cancel hr]
+    _ = r := Nat.mul_div_cancel_left r hqpos
+
+/-- A divisor complement remains a divisor of the same positive ambient integer. -/
+theorem divisor_complement_mem {C r : ℕ} (hC : 0 < C) (hr : r ∈ C.divisors) :
+    C / r ∈ C.divisors := by
+  refine Nat.mem_divisors.mpr ⟨?_, hC.ne'⟩
+  exact ⟨r, (Nat.div_mul_cancel (Nat.dvd_of_mem_divisors hr)).symm⟩
+
+/-- Complete divisor summation is invariant under the reciprocal divisor involution.  This is
+the untruncated companion to the EDQ boundary reindexing and preserves every literal summand. -/
+theorem sum_divisors_eq_sum_divisor_complements
+    {M : Type*} [AddCommMonoid M] (C : ℕ) (hC : 0 < C) (F : ℕ → M) :
+    (∑ r ∈ C.divisors, F r) = ∑ q ∈ C.divisors, F (C / q) := by
+  classical
+  refine Finset.sum_bij (fun r _ => C / r) ?_ ?_ ?_ ?_
+  · intro r hr
+    exact divisor_complement_mem hC hr
+  · intro r hr s hs hrs
+    have hrdiv : r ∣ C := Nat.dvd_of_mem_divisors hr
+    have hsdiv : s ∣ C := Nat.dvd_of_mem_divisors hs
+    calc
+      r = C / (C / r) := (divisor_complement_involutive hC hrdiv).symm
+      _ = C / (C / s) := by rw [hrs]
+      _ = s := divisor_complement_involutive hC hsdiv
+  · intro q hq
+    have hqdiv : q ∣ C := Nat.dvd_of_mem_divisors hq
+    exact ⟨C / q, divisor_complement_mem hC hq,
+      divisor_complement_involutive hC hqdiv⟩
+  · intro r hr
+    rw [divisor_complement_involutive hC (Nat.dvd_of_mem_divisors hr)]
+
+/-- Any weighted upper divisor boundary has an exact complement-lower representation.  It is a
+bijection of the literal finite divisor carrier, not a completion or an estimate. -/
+theorem sum_upper_divisor_boundary_eq_complement_lower
+    {M : Type*} [AddCommMonoid M] (N m C : ℕ) (hC : 0 < C) (F : ℕ → M) :
+    (∑ r ∈ Finset.filter (fun r => N < m * r) C.divisors, F r) =
+      ∑ q ∈ Finset.filter (fun q => N * q < m * C) C.divisors, F (C / q) := by
+  classical
+  refine Finset.sum_bij (fun r _ => C / r) ?_ ?_ ?_ ?_
+  · intro r hr
+    have hr' := Finset.mem_filter.mp hr
+    refine Finset.mem_filter.mpr ⟨divisor_complement_mem hC hr'.1, ?_⟩
+    exact (divisor_threshold_duality hC (Nat.dvd_of_mem_divisors hr'.1)).mp hr'.2
+  · intro r hr s hs hrs
+    have hrdiv : r ∣ C := Nat.dvd_of_mem_divisors (Finset.mem_filter.mp hr).1
+    have hsdiv : s ∣ C := Nat.dvd_of_mem_divisors (Finset.mem_filter.mp hs).1
+    calc
+      r = C / (C / r) := (divisor_complement_involutive hC hrdiv).symm
+      _ = C / (C / s) := by rw [hrs]
+      _ = s := divisor_complement_involutive hC hsdiv
+  · intro q hq
+    have hq' := Finset.mem_filter.mp hq
+    have hqdiv : q ∣ C := Nat.dvd_of_mem_divisors hq'.1
+    refine ⟨C / q, ?_, divisor_complement_involutive hC hqdiv⟩
+    refine Finset.mem_filter.mpr ⟨divisor_complement_mem hC hq'.1, ?_⟩
+    rw [divisor_threshold_duality hC
+      (Nat.dvd_of_mem_divisors (divisor_complement_mem hC hq'.1)),
+      divisor_complement_involutive hC hqdiv]
+    exact hq'.2
+  · intro r hr
+    rw [divisor_complement_involutive hC
+      (Nat.dvd_of_mem_divisors (Finset.mem_filter.mp hr).1)]
+
+/-- The literal EDQ cofactor boundary is the divisor-complement lower sum.  The beta weight is
+transported unchanged except for its actual old cofactor `r ↦ clock L / r`. -/
+theorem futureOldCofactor_upperBoundary_eq_complement_lower
+    (N L t Q m : ℕ) (x : ℝ) :
+    (∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+      clockResidualBetaWeight L t Q x (m * r)) =
+      ∑ q ∈ Finset.filter (fun q => N * q < m * clock L) (clock L).divisors,
+        clockResidualBetaWeight L t Q x (m * (clock L / q)) := by
+  exact sum_upper_divisor_boundary_eq_complement_lower N m (clock L) (clock_pos L)
+    (fun r => clockResidualBetaWeight L t Q x (m * r))
+
+/-- Under divisor complementation, a coprime future residual remains unchanged while the
+old-clock modulus is exactly the complementary divisor. -/
+theorem clockResidualBetaWeight_divisor_complement_eq
+    {L m q t Q : ℕ} (x : ℝ) (hmC : Nat.Coprime m (clock L))
+    (hq : q ∈ (clock L).divisors) :
+    clockResidualBetaWeight L t Q x (m * (clock L / q)) =
+      if Squarefree (m * (clock L / q)) then
+        (((moebius m : ℤ) : ℝ) * ((moebius (clock L / q) : ℤ) : ℝ)) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1),
+              divisorWindowDiscrepancy m
+                (t / (clock L / q) + i * q) q) * x ^ (s * clock L)
+      else 0 := by
+  have hC : 0 < clock L := clock_pos L
+  have hqdiv : q ∣ clock L := Nat.dvd_of_mem_divisors hq
+  have hcomp : clock L / q ∣ clock L := by
+    exact ⟨q, (Nat.div_mul_cancel hqdiv).symm⟩
+  have hgcd : Nat.gcd (m * (clock L / q)) (clock L) = clock L / q :=
+    Nat.gcd_mul_of_coprime_of_dvd hmC hcomp
+  have hrpos : 0 < clock L / q :=
+    Nat.div_pos (Nat.le_of_dvd hC hqdiv) (Nat.pos_of_dvd_of_pos hqdiv hC)
+  have hquot : (m * (clock L / q)) / (clock L / q) = m := by
+    simpa [Nat.mul_comm] using Nat.mul_div_right m hrpos
+  have hinv : clock L / (clock L / q) = q := by
+    calc
+      clock L / (clock L / q) = (clock L / q * q) / (clock L / q) := by
+        rw [Nat.div_mul_cancel hqdiv]
+      _ = q := Nat.mul_div_cancel_left q hrpos
+  simp only [clockResidualBetaWeight, gcd_eq_nat_gcd, hgcd, hquot, hinv]
+
+/-- The EDQ spatial boundary is a lower reciprocal-threshold sum of explicit cross-modulus
+primitive kernels.  This is the exact remaining object that must cancel against the terminal
+chronological contribution. -/
+theorem futureOldCofactor_upperBoundary_eq_complement_kernel
+    (N L t Q m : ℕ) (x : ℝ) (hmC : Nat.Coprime m (clock L)) :
+    (∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+      clockResidualBetaWeight L t Q x (m * r)) =
+      ∑ q ∈ Finset.filter (fun q => N * q < m * clock L) (clock L).divisors,
+        if Squarefree (m * (clock L / q)) then
+          (((moebius m : ℤ) : ℝ) * ((moebius (clock L / q) : ℤ) : ℝ)) *
+            ∑ s ∈ range Q,
+              (∑ i ∈ range (s + 1),
+                divisorWindowDiscrepancy m
+                  (t / (clock L / q) + i * q) q) * x ^ (s * clock L)
+        else 0 := by
+  rw [futureOldCofactor_upperBoundary_eq_complement_lower]
+  refine Finset.sum_congr rfl fun q hq => ?_
+  exact clockResidualBetaWeight_divisor_complement_eq x hmC (Finset.mem_filter.mp hq).1
+
+/-- A live future residual cannot meet the complement-lower boundary at the full child-clock
+modulus.  Every surviving boundary term has a strictly smaller old modulus. -/
+theorem complement_lower_boundary_modulus_lt_clock {N L m q : ℕ} (hmN : m ≤ N)
+    (hq : N * q < m * clock L) : q < clock L := by
+  by_contra hnot
+  have hCq : clock L ≤ q := Nat.le_of_not_gt hnot
+  have hleft : m * clock L ≤ N * q :=
+    (Nat.mul_le_mul_right (clock L) hmN).trans (Nat.mul_le_mul_left N hCq)
+  exact (not_lt_of_ge hleft) hq
+
+/-- The complete complement-lower boundary carrier is supported only on proper child-clock
+divisors for every live residual. -/
+theorem complement_lower_boundary_subset_Iio_clock {N L m : ℕ} (hmN : m ≤ N) :
+    Finset.filter (fun q => N * q < m * clock L) (clock L).divisors ⊆
+      Finset.Iio (clock L) := by
+  intro q hq
+  exact Finset.mem_Iio.mpr
+    (complement_lower_boundary_modulus_lt_clock hmN (Finset.mem_filter.mp hq).2)
+
+/-- On the squarefree EDQ carrier, being non-clock is a condition only on the two future
+residuals.  The two old gcd factors remain in the literal lcm label but cannot affect whether
+that label divides the child clock. -/
+theorem clockSplitLcmLabel_not_dvd_clock_iff_residual_lcm_ne_one
+    {L d e : ℕ} (hsd : Squarefree d) (hse : Squarefree e) :
+    (¬ clockSplitLcmLabel L d e ∣ clock L) ↔
+      Nat.lcm (d / gcd d (clock L)) (e / gcd e (clock L)) ≠ 1 := by
+  unfold clockSplitLcmLabel
+  exact lcm_mul_clock_not_dvd_iff_residual_lcm_ne_one
+    (squarefree_clock_residual_coprime_clock hsd)
+    (squarefree_clock_residual_coprime_clock hse)
+    (Nat.gcd_dvd_right d (clock L)) (Nat.gcd_dvd_right e (clock L))
+
+/-- Exact future-only form of a signed physical lcm pair sum.  Nonsquarefree inputs are still
+zero-extended by their Möbius weights; for live squarefree inputs, the non-clock restriction is
+precisely `lcm residualLeft residualRight ≠ 1`. -/
+theorem clockSplit_pairSum_eq_futureResidualPairSum
+    (S : Finset ℕ) (L t Q : ℕ) (x y : ℝ) :
+    (∑ de ∈ S ×ˢ S,
+      if ¬ clockSplitLcmLabel L de.1 de.2 ∣ clock L then
+        clockResidualBetaWeight L t Q x de.1 * clockResidualBetaWeight L t Q y de.2
+      else 0) =
+    ∑ de ∈ S ×ˢ S,
+      if Nat.lcm (de.1 / gcd de.1 (clock L)) (de.2 / gcd de.2 (clock L)) ≠ 1 then
+        clockResidualBetaWeight L t Q x de.1 * clockResidualBetaWeight L t Q y de.2
+      else 0 := by
+  classical
+  refine Finset.sum_congr rfl fun de hde => ?_
+  by_cases hd : Squarefree de.1
+  · by_cases he : Squarefree de.2
+    · simp only [clockSplitLcmLabel_not_dvd_clock_iff_residual_lcm_ne_one hd he]
+    · simp [clockResidualBetaWeight, he]
+  · simp [clockResidualBetaWeight, hd]
+
+/-- Exact four-coordinate form of the future-only EDQ pair kernel.  The physical squarefree
+carrier is reindexed by `(m, r, n, s)`, where `r` and `s` are chronological cofactors.  Its only
+lcm restriction is `lcm m n ≠ 1`; both physical cutoff faces remain literal. -/
+theorem futureResidualPairSum_eq_fourCoordinate
+    (N L t Q : ℕ) (x y : ℝ) :
+    (∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+      if Nat.lcm (de.1 / gcd de.1 (clock L)) (de.2 / gcd de.2 (clock L)) ≠ 1 then
+        clockResidualBetaWeight L t Q x de.1 * clockResidualBetaWeight L t Q y de.2
+      else 0) =
+    ∑ m ∈ Finset.filter (fun m => Nat.Coprime m (clock L)) (Icc 1 N),
+      ∑ r ∈ Finset.filter (fun r => m * r ≤ N ∧ Squarefree (m * r)) (clock L).divisors,
+        ∑ n ∈ Finset.filter (fun n => Nat.Coprime n (clock L)) (Icc 1 N),
+          ∑ s ∈ Finset.filter (fun s => n * s ≤ N ∧ Squarefree (n * s)) (clock L).divisors,
+            if Nat.lcm m n ≠ 1 then
+              clockResidualBetaWeight L t Q x (m * r) *
+                clockResidualBetaWeight L t Q y (n * s)
+            else 0 := by
+  classical
+  let K : ℕ → ℕ → ℝ := fun d e =>
+    if Nat.lcm (d / gcd d (clock L)) (e / gcd e (clock L)) ≠ 1 then
+      clockResidualBetaWeight L t Q x d * clockResidualBetaWeight L t Q y e
+    else 0
+  change (∑ de ∈ Icc 1 N ×ˢ Icc 1 N, K de.1 de.2) = _
+  calc
+    ∑ de ∈ Icc 1 N ×ˢ Icc 1 N, K de.1 de.2 =
+        ∑ de ∈ (Finset.filter Squarefree (Icc 1 N)) ×ˢ
+          (Finset.filter Squarefree (Icc 1 N)), K de.1 de.2 := by
+      symm
+      refine Finset.sum_subset ?_ ?_
+      · intro de hde
+        rw [Finset.mem_product] at hde ⊢
+        exact ⟨(Finset.filter_subset Squarefree (Icc 1 N)) hde.1,
+          (Finset.filter_subset Squarefree (Icc 1 N)) hde.2⟩
+      · intro de hde hnot
+        have hde' : de.1 ∈ Icc 1 N ∧ de.2 ∈ Icc 1 N := Finset.mem_product.mp hde
+        by_cases hd : Squarefree de.1
+        · by_cases he : Squarefree de.2
+          · exfalso
+            apply hnot
+            exact Finset.mem_product.mpr
+              ⟨Finset.mem_filter.mpr ⟨hde'.1, hd⟩,
+                Finset.mem_filter.mpr ⟨hde'.2, he⟩⟩
+          · simp [K, clockResidualBetaWeight, he]
+        · simp [K, clockResidualBetaWeight, hd]
+    _ = ∑ d ∈ Finset.filter Squarefree (Icc 1 N),
+          ∑ e ∈ Finset.filter Squarefree (Icc 1 N), K d e := by
+      rw [Finset.sum_product']
+    _ = ∑ m ∈ Finset.filter (fun m => Nat.Coprime m (clock L)) (Icc 1 N),
+          ∑ r ∈ Finset.filter (fun r => m * r ≤ N ∧ Squarefree (m * r)) (clock L).divisors,
+            ∑ n ∈ Finset.filter (fun n => Nat.Coprime n (clock L)) (Icc 1 N),
+              ∑ s ∈ Finset.filter (fun s => n * s ≤ N ∧ Squarefree (n * s))
+                (clock L).divisors,
+                K (m * r) (n * s) :=
+      squarefree_interval_pair_sum_reindex_gcd N (clock L) (clock_pos L) K
+    _ = _ := by
+      refine Finset.sum_congr rfl fun m hm => ?_
+      have hmC : Nat.Coprime m (clock L) := (Finset.mem_filter.mp hm).2
+      refine Finset.sum_congr rfl fun r hr => ?_
+      have hrC : r ∣ clock L := Nat.dvd_of_mem_divisors (Finset.mem_filter.mp hr).1
+      refine Finset.sum_congr rfl fun n hn => ?_
+      have hnC : Nat.Coprime n (clock L) := (Finset.mem_filter.mp hn).2
+      refine Finset.sum_congr rfl fun s hs => ?_
+      have hsC : s ∣ clock L := Nat.dvd_of_mem_divisors (Finset.mem_filter.mp hs).1
+      simp only [K, gcd_eq_nat_gcd,
+        residual_lcm_mul_old_eq (clock_pos L) hmC hnC hrC hsC]
+
+/-- The physical EDQ future-pair kernel has no residual pair interaction after clock splitting.
+It is exactly the product of two literal one-residual cofactor sums, less the only deleted
+future channel `(m,n) = (1,1)`.  All beta weights and cutoff faces are retained. -/
+theorem futureResidualPairSum_eq_product_sub_futureSingleton
+    (N L t Q : ℕ) (x y : ℝ) (hN : 1 ≤ N) :
+    (∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+      if Nat.lcm (de.1 / gcd de.1 (clock L)) (de.2 / gcd de.2 (clock L)) ≠ 1 then
+        clockResidualBetaWeight L t Q x de.1 * clockResidualBetaWeight L t Q y de.2
+      else 0) =
+      (∑ m ∈ futureResidualCarrier N L,
+        ∑ r ∈ futureOldCofactorCarrier N L m,
+          clockResidualBetaWeight L t Q x (m * r)) *
+      (∑ n ∈ futureResidualCarrier N L,
+        ∑ s ∈ futureOldCofactorCarrier N L n,
+          clockResidualBetaWeight L t Q y (n * s)) -
+      (∑ r ∈ futureOldCofactorCarrier N L 1,
+        clockResidualBetaWeight L t Q x (1 * r)) *
+      (∑ s ∈ futureOldCofactorCarrier N L 1,
+        clockResidualBetaWeight L t Q y (1 * s)) := by
+  rw [futureResidualPairSum_eq_fourCoordinate]
+  simpa only [futureResidualCarrier, futureOldCofactorCarrier] using
+    (lcm_ne_one_dependent_cofactor_pair_sum_eq_product_sub_singleton
+      (futureResidualCarrier N L) (futureOldCofactorCarrier N L)
+      (fun m r => clockResidualBetaWeight L t Q x (m * r))
+      (fun n s => clockResidualBetaWeight L t Q y (n * s))
+      (one_mem_futureResidualCarrier hN))
+
+/-- Each one-residual physical EDQ cofactor sum is its complete chronological cofactor sum minus
+the literal upper-cutoff boundary.  The zero extension of `clockResidualBetaWeight` is the only
+reason squarefree support can be removed from the complete term. -/
+theorem futureOldCofactorCarrier_sum_eq_full_sub_upperBoundary
+    (N L t Q m : ℕ) (x : ℝ) :
+    (∑ r ∈ futureOldCofactorCarrier N L m,
+      clockResidualBetaWeight L t Q x (m * r)) =
+      (∑ r ∈ (clock L).divisors,
+        clockResidualBetaWeight L t Q x (m * r)) -
+        ∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+          clockResidualBetaWeight L t Q x (m * r) := by
+  unfold futureOldCofactorCarrier
+  apply truncated_squarefree_sum_eq_full_sub_upperBoundary
+  intro r hsq
+  simp [clockResidualBetaWeight, hsq]
+
+/-- Each Möbius-weighted physical beta prefix is exactly its zero-extended signed clock-residual
+weight. -/
+theorem moebius_divisor_betaPrefix_eq_clockResidualBetaWeight
+    (L d t Q : ℕ) (x : ℝ) :
+    ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+            x ^ (s * clock L) =
+      clockResidualBetaWeight L t Q x d := by
+  unfold clockResidualBetaWeight
+  by_cases hsq : Squarefree d
+  · rw [if_pos hsq, moebius_squarefree_clock_gcd_split hsq,
+      squarefree_divisor_betaPrefix_eq_clockResidual L d t Q x hsq]
+    push_cast
+    ring
+  · simp [hsq, moebius_eq_zero_of_not_squarefree]
+
+/-- A divisor already carried by the child clock contributes zero to every literal EDQ beta
+prefix.  Its discrepancy vanishes window by window, before any Möbius or residual summation. -/
+theorem clockResidualBetaWeight_eq_zero_of_dvd_clock
+    {L d t Q : ℕ} (x : ℝ) (hd : 0 < d) (hdC : d ∣ clock L) :
+    clockResidualBetaWeight L t Q x d = 0 := by
+  rw [← moebius_divisor_betaPrefix_eq_clockResidualBetaWeight L d t Q x]
+  have hprefix :
+      ∑ s ∈ range Q,
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+          (t + i * clock L) (clock L)) * x ^ (s * clock L) = 0 := by
+    apply Finset.sum_eq_zero
+    intro s hs
+    have hwindow : ∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+        (t + i * clock L) (clock L) = 0 := by
+      apply Finset.sum_eq_zero
+      intro i hi
+      unfold divisorWindowDiscrepancy
+      rw [card_dvd_Ioc_length_eq_div d (t + i * clock L) (clock L) hdC,
+        Nat.cast_div hdC (by exact_mod_cast hd.ne')]
+      ring
+    rw [hwindow, zero_mul]
+  rw [hprefix, mul_zero]
+
+/-- The residual-one EDQ cofactor fibre is identically zero.  It contains only old divisors of
+the child clock, each of which has already cancelled locally in every chronological window. -/
+theorem futureOldCofactorCarrier_one_sum_eq_zero
+    (N L t Q : ℕ) (x : ℝ) :
+    (∑ r ∈ futureOldCofactorCarrier N L 1,
+      clockResidualBetaWeight L t Q x (1 * r)) = 0 := by
+  apply Finset.sum_eq_zero
+  intro r hr
+  have hr' := Finset.mem_filter.mp hr
+  have hrpos : 0 < r := Nat.pos_of_mem_divisors hr'.1
+  simpa using clockResidualBetaWeight_eq_zero_of_dvd_clock x hrpos
+    (Nat.dvd_of_mem_divisors hr'.1)
+
+/-- Once the residual-one local cancellation is exposed, the EDQ pair kernel is the exact
+product of its future-residual cofactor sums.  The former singleton correction is zero on both
+faces term by term. -/
+theorem futureResidualPairSum_eq_product
+    (N L t Q : ℕ) (x y : ℝ) (hN : 1 ≤ N) :
+    (∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+      if Nat.lcm (de.1 / gcd de.1 (clock L)) (de.2 / gcd de.2 (clock L)) ≠ 1 then
+        clockResidualBetaWeight L t Q x de.1 * clockResidualBetaWeight L t Q y de.2
+      else 0) =
+      (∑ m ∈ futureResidualCarrier N L,
+        ∑ r ∈ futureOldCofactorCarrier N L m,
+          clockResidualBetaWeight L t Q x (m * r)) *
+      (∑ n ∈ futureResidualCarrier N L,
+        ∑ s ∈ futureOldCofactorCarrier N L n,
+          clockResidualBetaWeight L t Q y (n * s)) := by
+  rw [futureResidualPairSum_eq_product_sub_futureSingleton N L t Q x y hN,
+    futureOldCofactorCarrier_one_sum_eq_zero N L t Q x,
+    futureOldCofactorCarrier_one_sum_eq_zero N L t Q y]
+  ring
+
+/-- The literal physical non-clock lcm pair kernel is rank one after chronological clock
+splitting.  Thus its only surviving analytic content is carried by the two one-residual
+cofactor sums; the deleted residual-one channel is already zero locally. -/
+theorem clockSplit_Icc_pairSum_eq_futureCofactor_product
+    (N L t Q : ℕ) (x y : ℝ) (hN : 1 ≤ N) :
+    (∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+      if ¬ clockSplitLcmLabel L de.1 de.2 ∣ clock L then
+        clockResidualBetaWeight L t Q x de.1 * clockResidualBetaWeight L t Q y de.2
+      else 0) =
+      (∑ m ∈ futureResidualCarrier N L,
+        ∑ r ∈ futureOldCofactorCarrier N L m,
+          clockResidualBetaWeight L t Q x (m * r)) *
+      (∑ n ∈ futureResidualCarrier N L,
+        ∑ s ∈ futureOldCofactorCarrier N L n,
+          clockResidualBetaWeight L t Q y (n * s)) := by
+  rw [clockSplit_pairSum_eq_futureResidualPairSum,
+    futureResidualPairSum_eq_product N L t Q x y hN]
+
+/-- The signed physical divisor prefix itself has a one-residual form.  This is the linear
+counterpart of the rank-one non-clock pair factorization: clock splitting reindexes every live
+squarefree divisor once, while nonsquarefree inputs vanish identically. -/
+theorem Icc_sum_clockResidualBetaWeight_eq_futureCofactor_sum
+    (N L t Q : ℕ) (x : ℝ) :
+    (∑ d ∈ Icc 1 N, clockResidualBetaWeight L t Q x d) =
+      ∑ m ∈ futureResidualCarrier N L,
+        ∑ r ∈ futureOldCofactorCarrier N L m,
+          clockResidualBetaWeight L t Q x (m * r) := by
+  classical
+  calc
+    (∑ d ∈ Icc 1 N, clockResidualBetaWeight L t Q x d) =
+        ∑ d ∈ Finset.filter Squarefree (Icc 1 N),
+          clockResidualBetaWeight L t Q x d := by
+      symm
+      refine Finset.sum_subset ?_ ?_
+      · intro d hd
+        exact (Finset.filter_subset Squarefree (Icc 1 N)) hd
+      · intro d hd hnot
+        by_cases hsq : Squarefree d
+        · exfalso
+          apply hnot
+          exact Finset.mem_filter.mpr ⟨hd, hsq⟩
+        · simp [clockResidualBetaWeight, hsq]
+    _ = _ := by
+      simpa only [futureResidualCarrier, futureOldCofactorCarrier] using
+        (squarefree_interval_sum_reindex_gcd N (clock L) (clock_pos L)
+          (fun d => clockResidualBetaWeight L t Q x d))
+
+/-- The complete physical old-cofactor part of one EDQ residual is the future Möbius sign times
+its exact primitive reduced-residue beta prefix.  This transports the complete term exposed by
+the cutoff decomposition into the existing finite-period cofactor law. -/
+theorem complete_clockResidualCofactor_sum_eq_reducedResidueInterval
+    (L t Q m : ℕ) (x : ℝ) (hm : 0 < m) (hmC : Nat.Coprime m (clock L)) :
+    (∑ r ∈ (clock L).divisors,
+      clockResidualBetaWeight L t Q x (m * r)) =
+      ((moebius m : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (((s + 1 : ℕ) : ℝ) * (Nat.totient (clock L) : ℝ) / (m : ℝ) -
+            ((#{j ∈ Ioc (t / m) ((t + (s + 1) * clock L) / m) |
+              Nat.Coprime (clock L) j} : ℕ) : ℝ)) * x ^ (s * clock L) := by
+  calc
+    (∑ r ∈ (clock L).divisors,
+        clockResidualBetaWeight L t Q x (m * r)) =
+      ∑ r ∈ (clock L).divisors,
+        ((moebius m : ℤ) : ℝ) *
+          (((moebius r : ℤ) : ℝ) *
+            ∑ s ∈ range Q,
+              (∑ i ∈ range (s + 1),
+                divisorWindowDiscrepancy (m * r) (t + i * clock L) (clock L)) *
+                  x ^ (s * clock L)) := by
+      refine Finset.sum_congr rfl fun r hr => ?_
+      rw [← moebius_divisor_betaPrefix_eq_clockResidualBetaWeight L (m * r) t Q x]
+      have hrC : r ∣ clock L := Nat.dvd_of_mem_divisors hr
+      rw [ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime
+        (hmC.coprime_dvd_right hrC)]
+      push_cast
+      ring
+    _ = ((moebius m : ℤ) : ℝ) *
+        (∑ r ∈ (clock L).divisors, ((moebius r : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1),
+              divisorWindowDiscrepancy (m * r) (t + i * clock L) (clock L)) *
+                x ^ (s * clock L)) := by
+      rw [Finset.mul_sum]
+    _ = _ := by
+      rw [cofactor_moebius_discrepancy_betaPrefix_eq_reducedResidueInterval
+        m t (clock L) Q x hm (clock_pos L)]
+
+/-- Final one-residual normal form before the unresolved boundary cancellation: every physical
+cofactor fibre is a signed finite primitive periodic prefix minus its literal upper boundary. -/
+theorem futureOldCofactorCarrier_sum_eq_primitive_sub_upperBoundary
+    (N L t Q m : ℕ) (x : ℝ) (hm : 0 < m) (hmC : Nat.Coprime m (clock L)) :
+    (∑ r ∈ futureOldCofactorCarrier N L m,
+      clockResidualBetaWeight L t Q x (m * r)) =
+      ((moebius m : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (((s + 1 : ℕ) : ℝ) * (Nat.totient (clock L) : ℝ) / (m : ℝ) -
+            ((#{j ∈ Ioc (t / m) ((t + (s + 1) * clock L) / m) |
+              Nat.Coprime (clock L) j} : ℕ) : ℝ)) * x ^ (s * clock L) -
+        ∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+          clockResidualBetaWeight L t Q x (m * r) := by
+  rw [futureOldCofactorCarrier_sum_eq_full_sub_upperBoundary,
+    complete_clockResidualCofactor_sum_eq_reducedResidueInterval L t Q m x hm hmC]
+
+/-- In the EDQ bulk range `m * clock L ≤ N`, no old cofactor crosses the physical cutoff.
+Thus the complete primitive periodic law is already the literal cofactor sum; all unresolved
+boundary work is confined to `N < m * clock L`. -/
+theorem futureOldCofactorCarrier_sum_eq_primitive_of_mul_clock_le
+    (N L t Q m : ℕ) (x : ℝ) (hm : 0 < m) (hmC : Nat.Coprime m (clock L))
+    (hbulk : m * clock L ≤ N) :
+    (∑ r ∈ futureOldCofactorCarrier N L m,
+      clockResidualBetaWeight L t Q x (m * r)) =
+      ((moebius m : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (((s + 1 : ℕ) : ℝ) * (Nat.totient (clock L) : ℝ) / (m : ℝ) -
+            ((#{j ∈ Ioc (t / m) ((t + (s + 1) * clock L) / m) |
+              Nat.Coprime (clock L) j} : ℕ) : ℝ)) * x ^ (s * clock L) := by
+  rw [futureOldCofactorCarrier_sum_eq_primitive_sub_upperBoundary N L t Q m x hm hmC]
+  have hboundary :
+      (∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+        clockResidualBetaWeight L t Q x (m * r)) = 0 := by
+    refine Finset.sum_eq_zero fun r hr => ?_
+    have hrC : r ∣ clock L := Nat.dvd_of_mem_divisors (Finset.mem_filter.mp hr).1
+    have hrle : m * r ≤ m * clock L :=
+      Nat.mul_le_mul_left m (Nat.le_of_dvd (clock_pos L) hrC)
+    exact False.elim ((not_lt_of_ge (hrle.trans hbulk)) (Finset.mem_filter.mp hr).2)
+  rw [hboundary, sub_zero]
+
+/-- Exact signed old/future normal form of a complete physical lcm cross fibre.  The original
+label condition is replaced by the product of its future and old lcm labels, and every live
+weight remains its literal quotient beta prefix with the two beta variables distinct. -/
+theorem finiteLcmPairCrossFibre_moebius_betaPrefixes_eq_clockSplit
+    (S : Finset ℕ) (L t Q n : ℕ) (x y : ℝ) :
+    finiteLcmPairCrossFibre S
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+            x ^ (s * clock L))
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock L) (clock L)) *
+            y ^ (s * clock L)) n =
+      ∑ de ∈ S ×ˢ S,
+        if clockSplitLcmLabel L de.1 de.2 = n then
+          clockResidualBetaWeight L t Q x de.1 * clockResidualBetaWeight L t Q y de.2
+        else 0 := by
+  classical
+  unfold finiteLcmPairCrossFibre
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl fun de hde => ?_
+  dsimp
+  rw [moebius_divisor_betaPrefix_eq_clockResidualBetaWeight L de.1 t Q x,
+    moebius_divisor_betaPrefix_eq_clockResidualBetaWeight L de.2 t Q y]
+  by_cases hd : Squarefree de.1
+  · by_cases he : Squarefree de.2
+    · have hlabel := squarefree_clock_gcd_split_lcm (L := L) hd he
+      simp [clockSplitLcmLabel, hlabel]
+    · simp [clockResidualBetaWeight, he]
+  · simp [clockResidualBetaWeight, hd]
+
+/-- The normal form applies directly to one selected EDQ cross fibre at the literal child clock. -/
+theorem selectedRefinementBlock_lcmCrossFibre_eq_clockSplit
+    (N l u b n : ℕ) (x y : ℝ) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1) - 1
+    finiteLcmPairCrossFibre (Icc 1 N)
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+            (clock (l + 1))) * x ^ (s * clock (l + 1)))
+      (fun d => ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+            (clock (l + 1))) * y ^ (s * clock (l + 1))) n =
+      ∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+        if clockSplitLcmLabel (l + 1) de.1 de.2 = n then
+          clockResidualBetaWeight (l + 1) t Q x de.1 *
+            clockResidualBetaWeight (l + 1) t Q y de.2
+        else 0 := by
+  dsimp
+  exact finiteLcmPairCrossFibre_moebius_betaPrefixes_eq_clockSplit
+    (Icc 1 N) (l + 1) (u + b * clock l + 1)
+    (canonicalClockRatio N (l + 1) - 1) n x y
+
+/-- The complete selected non-clock cross-fibre carrier has the exact four-coordinate old/future
+normal form.  The non-clock lcm restriction stays on its original physical label. -/
+theorem selectedRefinementBlock_nonclockLcmCrossFibre_sum_eq_clockSplit
+    (N l u b : ℕ) (x y : ℝ) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1) - 1
+    let S := Icc 1 N
+    ∑ n ∈ ((S ×ˢ S).image (fun de => Nat.lcm de.1 de.2)).filter
+      (fun n => ¬ n ∣ clock (l + 1)),
+      finiteLcmPairCrossFibre S
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+              (clock (l + 1))) * x ^ (s * clock (l + 1)))
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+              (clock (l + 1))) * y ^ (s * clock (l + 1))) n =
+      ∑ n ∈ ((S ×ˢ S).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ clock (l + 1)),
+        ∑ de ∈ S ×ˢ S,
+          if clockSplitLcmLabel (l + 1) de.1 de.2 = n then
+            clockResidualBetaWeight (l + 1) t Q x de.1 *
+              clockResidualBetaWeight (l + 1) t Q y de.2
+          else 0 := by
+  dsimp
+  refine Finset.sum_congr rfl fun n hn => ?_
+  exact selectedRefinementBlock_lcmCrossFibre_eq_clockSplit N l u b n x y
+
+/-- Collapsing the lcm-label delta leaves one literal signed pair sum.  Its only remaining label
+restriction is that the factored future/old label is non-clock; no lcm fibre or Möbius term has
+been discarded. -/
+theorem selectedRefinementBlock_nonclockLcmCrossFibre_sum_eq_clockSplit_pairSum
+    (N l u b : ℕ) (x y : ℝ) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1) - 1
+    let S := Icc 1 N
+    ∑ n ∈ ((S ×ˢ S).image (fun de => Nat.lcm de.1 de.2)).filter
+      (fun n => ¬ n ∣ clock (l + 1)),
+      finiteLcmPairCrossFibre S
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+              (clock (l + 1))) * x ^ (s * clock (l + 1)))
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+              (clock (l + 1))) * y ^ (s * clock (l + 1))) n =
+      ∑ de ∈ S ×ˢ S,
+        if ¬ clockSplitLcmLabel (l + 1) de.1 de.2 ∣ clock (l + 1) then
+          clockResidualBetaWeight (l + 1) t Q x de.1 *
+            clockResidualBetaWeight (l + 1) t Q y de.2
+        else 0 := by
+  dsimp
+  calc
+    ∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+        (fun n => ¬ n ∣ clock (l + 1)),
+        finiteLcmPairCrossFibre (Icc 1 N)
+          (fun d => ((moebius d : ℤ) : ℝ) *
+            ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+              (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+                (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+                x ^ (s * clock (l + 1)))
+          (fun d => ((moebius d : ℤ) : ℝ) *
+            ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+              (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+                (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+                y ^ (s * clock (l + 1))) n =
+        ∑ n ∈ ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+          (fun n => ¬ n ∣ clock (l + 1)),
+          ∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+            if clockSplitLcmLabel (l + 1) de.1 de.2 = n then
+              clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+                (canonicalClockRatio N (l + 1) - 1) x de.1 *
+                clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+                  (canonicalClockRatio N (l + 1) - 1) y de.2
+            else 0 :=
+      selectedRefinementBlock_nonclockLcmCrossFibre_sum_eq_clockSplit N l u b x y
+    _ = ∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+          if clockSplitLcmLabel (l + 1) de.1 de.2 ∈
+              ((Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2)).filter
+                (fun n => ¬ n ∣ clock (l + 1)) then
+            clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+              (canonicalClockRatio N (l + 1) - 1) x de.1 *
+              clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+                (canonicalClockRatio N (l + 1) - 1) y de.2
+          else 0 := by
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun de hde => ?_
+      simp
+    _ = ∑ de ∈ Icc 1 N ×ˢ Icc 1 N,
+          if ¬ clockSplitLcmLabel (l + 1) de.1 de.2 ∣ clock (l + 1) then
+            clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+              (canonicalClockRatio N (l + 1) - 1) x de.1 *
+              clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+                (canonicalClockRatio N (l + 1) - 1) y de.2
+          else 0 := by
+      refine Finset.sum_congr rfl fun de hde => ?_
+      by_cases hd : Squarefree de.1
+      · by_cases he : Squarefree de.2
+        · have hlabel := squarefree_clock_gcd_split_lcm (L := l + 1) hd he
+          have hmem : clockSplitLcmLabel (l + 1) de.1 de.2 ∈
+              (Icc 1 N ×ˢ Icc 1 N).image (fun de => Nat.lcm de.1 de.2) := by
+            unfold clockSplitLcmLabel
+            rw [← hlabel]
+            exact Finset.mem_image.mpr ⟨de, hde, rfl⟩
+          simp [Finset.mem_filter, hmem]
+        · simp [clockResidualBetaWeight, he]
+      · simp [clockResidualBetaWeight, hd]
+
+/-- The selected EDQ non-clock lcm-fibre cross sum is rank one.  Its apparent two-divisor
+interaction is exactly the product of two chronological residual cofactor sums, with no
+exceptional residual-one contribution. -/
+theorem selectedRefinementBlock_nonclockLcmCrossFibre_sum_eq_futureCofactor_product
+    (N l u b : ℕ) (x y : ℝ) (hN : 1 ≤ N) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1) - 1
+    let S := Icc 1 N
+    ∑ n ∈ ((S ×ˢ S).image (fun de => Nat.lcm de.1 de.2)).filter
+      (fun n => ¬ n ∣ clock (l + 1)),
+      finiteLcmPairCrossFibre S
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+              (clock (l + 1))) * x ^ (s * clock (l + 1)))
+        (fun d => ((moebius d : ℤ) : ℝ) *
+          ∑ s ∈ range Q,
+            (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * clock (l + 1))
+              (clock (l + 1))) * y ^ (s * clock (l + 1))) n =
+      (∑ m ∈ futureResidualCarrier N (l + 1),
+        ∑ r ∈ futureOldCofactorCarrier N (l + 1) m,
+          clockResidualBetaWeight (l + 1) t Q x (m * r)) *
+      (∑ n ∈ futureResidualCarrier N (l + 1),
+        ∑ s ∈ futureOldCofactorCarrier N (l + 1) n,
+          clockResidualBetaWeight (l + 1) t Q y (n * s)) := by
+  dsimp
+  rw [selectedRefinementBlock_nonclockLcmCrossFibre_sum_eq_clockSplit_pairSum,
+    clockSplit_Icc_pairSum_eq_futureCofactor_product N (l + 1)
+      (u + b * clock l + 1) (canonicalClockRatio N (l + 1) - 1) x y hN]
+
 /-- A divisor aligned with a physical window length has zero literal discrepancy. -/
 theorem divisorWindowDiscrepancy_eq_zero_of_dvd
     (d t C : ℕ) (hd : 0 < d) (hdC : d ∣ C) :
@@ -1808,6 +3428,579 @@ theorem divisorWindowDiscrepancy_prefix_eq_intervalDiscrepancy
   rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul, hcounts]
   ring
 
+/-- A chronological prefix has exactly zero total discrepancy when its full physical span is a
+multiple of its divisor. -/
+theorem divisorWindowDiscrepancy_prefix_eq_zero_of_dvd_span
+    (d t C s : ℕ) (hd : 0 < d) (hC : 0 < C) (hspan : d ∣ (s + 1) * C) :
+    ∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C = 0 := by
+  rw [divisorWindowDiscrepancy_prefix_eq_intervalDiscrepancy d t C s hC,
+    card_dvd_Ioc_length_eq_div d t ((s + 1) * C) hspan,
+    Nat.cast_div hspan (by exact_mod_cast hd.ne')]
+  push_cast
+  ring
+
+/-- If a divisor divides `m * C`, then its physical discrepancy prefixes are periodic with
+chronological period `m`.  The proof is a literal zero discrepancy on the intervening block. -/
+theorem divisorWindowDiscrepancy_prefix_periodic_of_dvd_span
+    (d t C m s : ℕ) (hd : 0 < d) (hm : 0 < m) (hC : 0 < C) (hspan : d ∣ m * C) :
+    ∑ i ∈ range (s + m + 1), divisorWindowDiscrepancy d (t + i * C) C =
+      ∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C := by
+  let f : ℕ → ℝ := fun i => divisorWindowDiscrepancy d (t + i * C) C
+  have hmEq : m - 1 + 1 = m := Nat.sub_add_cancel (Nat.succ_le_iff.mpr hm)
+  have htail : ∑ i ∈ range m, f (s + 1 + i) = 0 := by
+    rw [← hmEq]
+    have hzero := divisorWindowDiscrepancy_prefix_eq_zero_of_dvd_span d
+      (t + (s + 1) * C) C (m - 1) hd hC (by simpa [hmEq] using hspan)
+    simpa [f, Nat.add_mul, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hzero
+  change ∑ i ∈ range (s + m + 1), f i = ∑ i ∈ range (s + 1), f i
+  rw [show s + m + 1 = (s + 1) + m by omega, Finset.sum_range_add, htail, add_zero]
+
+/-- Complete old-clock Möbius cofactor prefixes are periodic with the future residual `m`.
+Every component `m * r` has a vanishing intervening block because `r ∣ C`. -/
+theorem cofactor_moebius_discrepancy_prefix_periodic
+    (m t C s : ℕ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ i ∈ range (s + m + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) =
+      ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) := by
+  refine Finset.sum_congr rfl fun r hr => ?_
+  have hrC : r ∣ C := Nat.dvd_of_mem_divisors hr
+  have hr : 0 < r := Nat.pos_of_mem_divisors hr
+  have hspan : m * r ∣ m * C := by
+    refine ⟨C / r, ?_⟩
+    calc
+      m * C = m * (r * (C / r)) := by rw [Nat.mul_div_cancel' hrC]
+      _ = (m * r) * (C / r) := by ring
+  rw [divisorWindowDiscrepancy_prefix_periodic_of_dvd_span
+    (m * r) t C m s (Nat.mul_pos hm hr) hm hC hspan]
+
+
+
+/-- The complete old-cofactor chronological prefix is exactly one primitive reduced-residue
+quotient discrepancy. -/
+theorem cofactor_moebius_discrepancy_prefix_eq_reducedResidueInterval
+    (m t C s : ℕ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) =
+      ((s + 1 : ℕ) : ℝ) * (Nat.totient C : ℝ) / (m : ℝ) -
+        ((#{j ∈ Ioc (t / m) ((t + (s + 1) * C) / m) | Nat.Coprime C j} : ℕ) : ℝ) := by
+  calc
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) =
+        ∑ r ∈ C.divisors, ∑ i ∈ range (s + 1), ((moebius r : ℤ) : ℝ) *
+          divisorWindowDiscrepancy (m * r) (t + i * C) C := by
+            refine Finset.sum_congr rfl fun r hr => ?_
+            rw [Finset.mul_sum]
+    _ = ∑ i ∈ range (s + 1), ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+          divisorWindowDiscrepancy (m * r) (t + i * C) C := by
+            rw [Finset.sum_comm]
+    _ = ∑ i ∈ range (s + 1),
+        ((Nat.totient C : ℝ) / (m : ℝ) -
+          ((#{j ∈ Ioc ((t + i * C) / m) ((t + (i + 1) * C) / m) |
+            Nat.Coprime C j} : ℕ) : ℝ)) := by
+            refine Finset.sum_congr rfl fun i hi => ?_
+            simpa [Nat.succ_mul, Nat.add_assoc] using
+              (cofactor_moebius_discrepancy_eq_reducedResidue m (t + i * C) C hm hC)
+    _ = ((s + 1 : ℕ) : ℝ) * (Nat.totient C : ℝ) / (m : ℝ) -
+        ((#{j ∈ Ioc (t / m) ((t + (s + 1) * C) / m) | Nat.Coprime C j} : ℕ) : ℝ) := by
+            rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul,
+              quotient_coprime_counts_telescope C m t (s + 1)]
+            ring
+
+
+/-- The primitive quotient discrepancy exposed by complete old-cofactor summation is periodic
+with the future residual `m`.  This is an exact finite-state law, not an estimate. -/
+theorem cofactor_reducedResidueInterval_periodic
+    (m t C s : ℕ) (hm : 0 < m) (hC : 0 < C) :
+    (((s + m + 1 : ℕ) : ℝ) * (Nat.totient C : ℝ) / (m : ℝ) -
+      ((#{j ∈ Ioc (t / m) ((t + (s + m + 1) * C) / m) | Nat.Coprime C j} : ℕ) : ℝ)) =
+      (((s + 1 : ℕ) : ℝ) * (Nat.totient C : ℝ) / (m : ℝ) -
+        ((#{j ∈ Ioc (t / m) ((t + (s + 1) * C) / m) | Nat.Coprime C j} : ℕ) : ℝ)) := by
+  rw [← cofactor_moebius_discrepancy_prefix_eq_reducedResidueInterval
+        m t C (s + m) hm hC,
+    ← cofactor_moebius_discrepancy_prefix_eq_reducedResidueInterval m t C s hm hC]
+  exact cofactor_moebius_discrepancy_prefix_periodic m t C s hm hC
+
+/-- A finite beta sum of a periodic real sequence factors exactly into one period polynomial and
+one geometric block sum. -/
+theorem sum_range_periodic_beta_blocks
+    (f : ℕ → ℝ) (m Q : ℕ) (y : ℝ) (hf : Function.Periodic f m) :
+    ∑ s ∈ range (Q * m), f s * y ^ s =
+      (∑ a ∈ range m, f a * y ^ a) * ∑ b ∈ range Q, y ^ (b * m) := by
+  induction Q with
+  | zero => simp
+  | succ Q ih =>
+      have htail :
+          ∑ i ∈ range m, f (Q * m + i) * y ^ (Q * m + i) =
+            y ^ (Q * m) * ∑ i ∈ range m, f i * y ^ i := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun i hi => ?_
+        have hfi : f (Q * m + i) = f i := by
+          simpa [Nat.add_comm] using (hf.nat_mul Q i)
+        rw [hfi, pow_add]
+        ring
+      rw [Nat.succ_mul, Finset.sum_range_add, ih, Finset.sum_range_succ, htail]
+      ring
+
+
+/-- Every finite beta prefix of a periodic sequence splits exactly by Euclidean division into
+complete period blocks and a remainder shorter than the period. -/
+theorem sum_range_periodic_beta_div_mod
+    (f : ℕ → ℝ) (m Q : ℕ) (y : ℝ) (hf : Function.Periodic f m) :
+    ∑ s ∈ range Q, f s * y ^ s =
+      (∑ a ∈ range m, f a * y ^ a) * ∑ b ∈ range (Q / m), y ^ (b * m) +
+        y ^ ((Q / m) * m) * ∑ a ∈ range (Q % m), f a * y ^ a := by
+  let q := Q / m
+  let r := Q % m
+  have hQr : Q = q * m + r := by
+    dsimp [q, r]
+    simpa [Nat.mul_comm] using (Nat.div_add_mod Q m).symm
+  have htail (q r : ℕ) :
+      ∑ i ∈ range r, f (q * m + i) * y ^ (q * m + i) =
+        y ^ (q * m) * ∑ i ∈ range r, f i * y ^ i := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    have hfi : f (q * m + i) = f i := by
+      simpa [Nat.add_comm] using (hf.nat_mul q i)
+    rw [hfi, pow_add]
+    ring
+  calc
+    ∑ s ∈ range Q, f s * y ^ s = ∑ s ∈ range (q * m + r), f s * y ^ s := by rw [← hQr]
+    _ = (∑ a ∈ range m, f a * y ^ a) * ∑ b ∈ range q, y ^ (b * m) +
+        y ^ (q * m) * ∑ a ∈ range r, f a * y ^ a := by
+          rw [Finset.sum_range_add, sum_range_periodic_beta_blocks f m q y hf, htail]
+    _ = _ := by rfl
+
+/-- A quotient-window discrepancy at any positive old modulus has chronological period equal to
+its positive future residual.  This is the common period shared by every complement-boundary
+summand. -/
+theorem divisorWindowDiscrepancy_prefix_periodic_residual_modulus
+    (m t q : ℕ) (hm : 0 < m) (hq : 0 < q) :
+    Function.Periodic
+      (fun s => ∑ i ∈ range (s + 1), divisorWindowDiscrepancy m (t + i * q) q) m := by
+  intro s
+  exact divisorWindowDiscrepancy_prefix_periodic_of_dvd_span m t q m s hm hm hq
+    (dvd_mul_right m q)
+
+/-- A beta prefix of a quotient-window discrepancy has an exact `m`-block plus remainder
+factorization even when its old modulus is an arbitrary positive divisor of the child clock. -/
+theorem divisorWindowDiscrepancy_beta_div_mod_residual_modulus
+    (m t q C Q : ℕ) (x : ℝ) (hm : 0 < m) (hq : 0 < q) :
+    ∑ s ∈ range Q,
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy m (t + i * q) q) * x ^ (s * C) =
+      (∑ a ∈ range m,
+        (∑ i ∈ range (a + 1), divisorWindowDiscrepancy m (t + i * q) q) * x ^ (a * C)) *
+        ∑ b ∈ range (Q / m), x ^ (b * (m * C)) +
+        x ^ ((Q / m) * (m * C)) *
+          ∑ a ∈ range (Q % m),
+            (∑ i ∈ range (a + 1), divisorWindowDiscrepancy m (t + i * q) q) * x ^ (a * C) := by
+  let f : ℕ → ℝ := fun s =>
+    ∑ i ∈ range (s + 1), divisorWindowDiscrepancy m (t + i * q) q
+  have hf : Function.Periodic f m :=
+    divisorWindowDiscrepancy_prefix_periodic_residual_modulus m t q hm hq
+  have hbase := sum_range_periodic_beta_div_mod f m Q (x ^ C) hf
+  have hpow (n : ℕ) : x ^ (n * C) = (x ^ C) ^ n := by
+    simpa [Nat.mul_comm] using (pow_mul x C n)
+  have hpowBlock (b : ℕ) : x ^ (b * (m * C)) = (x ^ C) ^ (b * m) := by
+    rw [← Nat.mul_assoc]
+    exact hpow (b * m)
+  simpa only [f, hpow, hpowBlock] using hbase
+
+/-- At the selected EDQ quotient, every complement-boundary modulus has the same forced terminal
+remainder length `m - 1` as the complete primitive cofactor. -/
+theorem divisorWindowDiscrepancy_beta_terminal_remainder_of_mem_futureResidualCarrier
+    {N L m q : ℕ} (t : ℕ) (x : ℝ) (hLN : L ≤ N)
+    (hm : m ∈ futureResidualCarrier N L) (hq : q ∈ (clock L).divisors) :
+    ∑ s ∈ range (canonicalClockRatio N L - 1),
+      (∑ i ∈ range (s + 1), divisorWindowDiscrepancy m (t + i * q) q) *
+        x ^ (s * clock L) =
+      (∑ a ∈ range m,
+        (∑ i ∈ range (a + 1), divisorWindowDiscrepancy m (t + i * q) q) *
+          x ^ (a * clock L)) *
+        ∑ b ∈ range ((canonicalClockRatio N L - 1) / m),
+          x ^ (b * (m * clock L)) +
+        x ^ (((canonicalClockRatio N L - 1) / m) * (m * clock L)) *
+          ∑ a ∈ range (m - 1),
+            (∑ i ∈ range (a + 1), divisorWindowDiscrepancy m (t + i * q) q) *
+              x ^ (a * clock L) := by
+  have hmpos : 0 < m :=
+    (Finset.mem_Icc.mp (Finset.mem_filter.mp hm).1).1
+  have hqpos : 0 < q :=
+    Nat.pos_of_dvd_of_pos (Nat.dvd_of_mem_divisors hq) (clock_pos L)
+  rw [divisorWindowDiscrepancy_beta_div_mod_residual_modulus
+    m t q (clock L) (canonicalClockRatio N L - 1) x hmpos hqpos,
+    canonicalClockRatio_sub_one_mod_eq_pred_of_mem_futureResidualCarrier hLN hm]
+
+/-- The selected physical EDQ boundary has a completely explicit cross-modulus block-plus-tail
+form.  Every summand has the same quotient block factor and terminal length `m - 1`; only its
+proper old modulus and phase remain to be related collectively. -/
+theorem futureOldCofactor_upperBoundary_selected_eq_crossModulus_blocks
+    {N L m : ℕ} (t : ℕ) (x : ℝ) (hLN : L ≤ N)
+    (hm : m ∈ futureResidualCarrier N L) :
+    (∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+      clockResidualBetaWeight L t (canonicalClockRatio N L - 1) x (m * r)) =
+      ∑ q ∈ Finset.filter (fun q => N * q < m * clock L) (clock L).divisors,
+        if Squarefree (m * (clock L / q)) then
+          (((moebius m : ℤ) : ℝ) * ((moebius (clock L / q) : ℤ) : ℝ)) *
+            ((∑ a ∈ range m,
+              (∑ i ∈ range (a + 1),
+                divisorWindowDiscrepancy m
+                  (t / (clock L / q) + i * q) q) * x ^ (a * clock L)) *
+              ∑ b ∈ range ((canonicalClockRatio N L - 1) / m),
+                x ^ (b * (m * clock L)) +
+              x ^ (((canonicalClockRatio N L - 1) / m) * (m * clock L)) *
+                ∑ a ∈ range (m - 1),
+                  (∑ i ∈ range (a + 1),
+                    divisorWindowDiscrepancy m
+                      (t / (clock L / q) + i * q) q) * x ^ (a * clock L))
+        else 0 := by
+  rw [futureOldCofactor_upperBoundary_eq_complement_kernel N L t
+    (canonicalClockRatio N L - 1) m x (Finset.mem_filter.mp hm).2]
+  refine Finset.sum_congr rfl fun q hq => ?_
+  by_cases hsq : Squarefree (m * (clock L / q))
+  · simp only [if_pos hsq]
+    rw [divisorWindowDiscrepancy_beta_terminal_remainder_of_mem_futureResidualCarrier
+      (t / (clock L / q)) x hLN hm (Finset.mem_filter.mp hq).1]
+  · simp [hsq]
+
+/-- The primitive quotient discrepancy whose finite periodic state controls complete old-cofactor
+summation. -/
+def cofactorReducedResiduePrefix (m t C s : ℕ) : ℝ :=
+  ((s + 1 : ℕ) : ℝ) * (Nat.totient C : ℝ) / (m : ℝ) -
+    ((#{j ∈ Ioc (t / m) ((t + (s + 1) * C) / m) | Nat.Coprime C j} : ℕ) : ℝ)
+
+/-- Identification of the physical complete old-cofactor prefix with its primitive quotient state. -/
+theorem cofactor_moebius_discrepancy_prefix_eq_cofactorReducedResiduePrefix
+    (m t C s : ℕ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) =
+      cofactorReducedResiduePrefix m t C s := by
+  simpa [cofactorReducedResiduePrefix] using
+    (cofactor_moebius_discrepancy_prefix_eq_reducedResidueInterval m t C s hm hC)
+
+/-- The complete primitive cofactor prefix has an exact reciprocal-divisor representation.
+The old cofactor `r` becomes the quotient clock `q = C / r`; its physical phase is transported
+to `t / r`, with no hypothesis that `r` divides that phase. -/
+theorem cofactorReducedResiduePrefix_eq_complement_divisor_sum
+    (m t C s : ℕ) (hm : 0 < m) (hC : 0 < C) :
+    cofactorReducedResiduePrefix m t C s =
+      ∑ q ∈ C.divisors, ((moebius (C / q) : ℤ) : ℝ) *
+        ∑ i ∈ range (s + 1),
+          divisorWindowDiscrepancy m (t / (C / q) + i * q) q := by
+  rw [← cofactor_moebius_discrepancy_prefix_eq_cofactorReducedResiduePrefix m t C s hm hC,
+    sum_divisors_eq_sum_divisor_complements C hC]
+  refine Finset.sum_congr rfl fun q hq => ?_
+  have hrmem : C / q ∈ C.divisors := divisor_complement_mem hC hq
+  have hrpos : 0 < C / q := Nat.pos_of_mem_divisors hrmem
+  have hrdiv : C / q ∣ C := Nat.dvd_of_mem_divisors hrmem
+  have hqeq : C / (C / q) = q :=
+    divisor_complement_involutive hC (Nat.dvd_of_mem_divisors hq)
+  congr 1
+  refine Finset.sum_congr rfl fun i hi => ?_
+  have htime : (t + i * C) / (C / q) = t / (C / q) + i * (C / (C / q)) := by
+    have hCeq : (C / q) * (C / (C / q)) = C := Nat.mul_div_cancel' hrdiv
+    have himul : i * C = (C / q) * (i * (C / (C / q))) := by
+      calc
+        i * C = i * ((C / q) * (C / (C / q))) := by rw [hCeq]
+        _ = (C / q) * (i * (C / (C / q))) := by ring
+    have hdiv : C / q ∣ i * C := ⟨i * (C / (C / q)), himul⟩
+    calc
+      (t + i * C) / (C / q) = t / (C / q) + (i * C) / (C / q) :=
+        Nat.add_div_of_dvd_left hdiv
+      _ = t / (C / q) + i * (C / (C / q)) := by
+        rw [himul, Nat.mul_div_cancel_left _ hrpos]
+  rw [show divisorWindowDiscrepancy (m * (C / q)) (t + i * C) C =
+      divisorWindowDiscrepancy m ((t + i * C) / (C / q)) (C / (C / q)) from
+        divisorWindowDiscrepancy_mul_positive_clockCofactor_eq_quotient
+          m (C / q) (t + i * C) C hm hrpos hrdiv,
+    htime, hqeq]
+
+/-- The primitive quotient state is exactly periodic in the future residual. -/
+theorem cofactorReducedResiduePrefix_periodic
+    (m t C : ℕ) (hm : 0 < m) (hC : 0 < C) :
+    Function.Periodic (cofactorReducedResiduePrefix m t C) m := by
+  intro s
+  simpa [cofactorReducedResiduePrefix] using
+    (cofactor_reducedResidueInterval_periodic m t C s hm hC)
+
+/-- Complete old-cofactor beta prefixes factor through their finite `m`-state primitive quotient
+period.  Every original physical beta exponent is retained. -/
+theorem cofactorReducedResiduePrefix_beta_blocks
+    (m t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ s ∈ range (Q * m), cofactorReducedResiduePrefix m t C s * x ^ (s * C) =
+      (∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+        ∑ b ∈ range Q, x ^ (b * (m * C)) := by
+  have hbase := sum_range_periodic_beta_blocks (cofactorReducedResiduePrefix m t C)
+    m Q (x ^ C) (cofactorReducedResiduePrefix_periodic m t C hm hC)
+  have hpow (n : ℕ) : x ^ (n * C) = (x ^ C) ^ n := by
+    simpa [Nat.mul_comm] using (pow_mul x C n)
+  have hpowBlock (b : ℕ) : x ^ (b * (m * C)) = (x ^ C) ^ (b * m) := by
+    rw [← Nat.mul_assoc]
+    exact hpow (b * m)
+  simpa only [hpow, hpowBlock] using hbase
+
+/-- The complete physical old-cofactor beta sum has the same finite-period factorization.  Thus
+no unsigned bound or generic sign cancellation is needed to expose its exact residual kernel. -/
+theorem cofactor_moebius_discrepancy_betaPrefix_blocks
+    (m t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ s ∈ range (Q * m),
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) *
+            x ^ (s * C)) =
+      (∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+        ∑ b ∈ range Q, x ^ (b * (m * C)) := by
+  rw [cofactor_moebius_discrepancy_betaPrefix_eq_reducedResidueInterval
+    m t C (Q * m) x hm hC]
+  exact cofactorReducedResiduePrefix_beta_blocks m t C Q x hm hC
+
+/-- The arbitrary EDQ primitive quotient beta prefix consists of complete `m`-period blocks and
+one exact remainder of length `Q % m`. -/
+theorem cofactorReducedResiduePrefix_beta_div_mod
+    (m t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ s ∈ range Q, cofactorReducedResiduePrefix m t C s * x ^ (s * C) =
+      (∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+        ∑ b ∈ range (Q / m), x ^ (b * (m * C)) +
+          x ^ ((Q / m) * (m * C)) *
+            ∑ a ∈ range (Q % m), cofactorReducedResiduePrefix m t C a * x ^ (a * C) := by
+  have hbase := sum_range_periodic_beta_div_mod (cofactorReducedResiduePrefix m t C)
+    m Q (x ^ C) (cofactorReducedResiduePrefix_periodic m t C hm hC)
+  have hpow (n : ℕ) : x ^ (n * C) = (x ^ C) ^ n := by
+    simpa [Nat.mul_comm] using (pow_mul x C n)
+  have hpowBlock (b : ℕ) : x ^ (b * (m * C)) = (x ^ C) ^ (b * m) := by
+    rw [← Nat.mul_assoc]
+    exact hpow (b * m)
+  simpa only [hpow, hpowBlock] using hbase
+
+/-- The full physical complete-old-cofactor beta kernel has the same exact block-plus-remainder
+form.  The remaining obstruction is therefore confined to its finite period polynomial and the
+actual truncation boundary, not an uncontrolled chronological tail. -/
+theorem cofactor_moebius_discrepancy_betaPrefix_div_mod
+    (m t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hC : 0 < C) :
+    ∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ s ∈ range Q,
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) *
+            x ^ (s * C)) =
+      (∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+        ∑ b ∈ range (Q / m), x ^ (b * (m * C)) +
+          x ^ ((Q / m) * (m * C)) *
+            ∑ a ∈ range (Q % m), cofactorReducedResiduePrefix m t C a * x ^ (a * C) := by
+  rw [cofactor_moebius_discrepancy_betaPrefix_eq_reducedResidueInterval m t C Q x hm hC]
+  exact cofactorReducedResiduePrefix_beta_div_mod m t C Q x hm hC
+
+/-- The complete primitive beta prefix at the selected EDQ cutoff has a forced terminal
+remainder of length `m - 1` for every live future residual.  This is the exact temporal term
+that must be compared with the literal spatial cutoff boundary. -/
+theorem cofactorReducedResiduePrefix_beta_terminal_remainder_of_mem_futureResidualCarrier
+    {N L m : ℕ} (t : ℕ) (x : ℝ) (hLN : L ≤ N)
+    (hm : m ∈ futureResidualCarrier N L) :
+    ∑ s ∈ range (canonicalClockRatio N L - 1),
+      cofactorReducedResiduePrefix m t (clock L) s * x ^ (s * clock L) =
+      (∑ a ∈ range m,
+        cofactorReducedResiduePrefix m t (clock L) a * x ^ (a * clock L)) *
+          ∑ b ∈ range ((canonicalClockRatio N L - 1) / m),
+            x ^ (b * (m * clock L)) +
+        x ^ (((canonicalClockRatio N L - 1) / m) * (m * clock L)) *
+          ∑ a ∈ range (m - 1),
+            cofactorReducedResiduePrefix m t (clock L) a * x ^ (a * clock L) := by
+  have hm1 : 0 < m :=
+    (Finset.mem_Icc.mp (Finset.mem_filter.mp hm).1).1
+  rw [cofactorReducedResiduePrefix_beta_div_mod m t (clock L)
+    (canonicalClockRatio N L - 1) x hm1 (clock_pos L),
+    canonicalClockRatio_sub_one_mod_eq_pred_of_mem_futureResidualCarrier hLN hm]
+
+/-- A literal EDQ cofactor fibre at the selected beta cutoff is a full primitive block polynomial
+plus the forced `m - 1` terminal segment, less its exact spatial cutoff boundary.  This is the
+sharp normal form for the remaining boundary-cancellation problem. -/
+theorem futureOldCofactorCarrier_sum_eq_terminal_blocks_sub_upperBoundary_of_mem_futureResidualCarrier
+    {N L m : ℕ} (t : ℕ) (x : ℝ) (hLN : L ≤ N)
+    (hm : m ∈ futureResidualCarrier N L) :
+    (∑ r ∈ futureOldCofactorCarrier N L m,
+      clockResidualBetaWeight L t (canonicalClockRatio N L - 1) x (m * r)) =
+      ((moebius m : ℤ) : ℝ) *
+        ((∑ a ∈ range m,
+          cofactorReducedResiduePrefix m t (clock L) a * x ^ (a * clock L)) *
+          ∑ b ∈ range ((canonicalClockRatio N L - 1) / m),
+            x ^ (b * (m * clock L)) +
+          x ^ (((canonicalClockRatio N L - 1) / m) * (m * clock L)) *
+            ∑ a ∈ range (m - 1),
+              cofactorReducedResiduePrefix m t (clock L) a * x ^ (a * clock L)) -
+        ∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+          clockResidualBetaWeight L t (canonicalClockRatio N L - 1) x (m * r) := by
+  have hm' := Finset.mem_filter.mp hm
+  have hmpos : 0 < m := (Finset.mem_Icc.mp hm'.1).1
+  rw [futureOldCofactorCarrier_sum_eq_primitive_sub_upperBoundary N L t
+    (canonicalClockRatio N L - 1) m x hmpos hm'.2]
+  change ((moebius m : ℤ) : ℝ) *
+      (∑ s ∈ range (canonicalClockRatio N L - 1),
+        cofactorReducedResiduePrefix m t (clock L) s * x ^ (s * clock L)) - _ = _
+  rw [cofactorReducedResiduePrefix_beta_terminal_remainder_of_mem_futureResidualCarrier
+    t x hLN hm]
+
+/-- Factor a finite family of block-plus-tail terms with shared scalar, block, and tail powers.
+This is a literal distributive identity, used to separate the EDQ temporal factors from its
+finite complementary-divisor coefficients. -/
+theorem sum_if_mul_block_tail_factor {M : Type*} [DecidableEq M]
+    (S : Finset M) (P : M → Prop) [DecidablePred P]
+    (a g x : ℝ) (c u v : M → ℝ) :
+    (∑ q ∈ S, if P q then a * c q * (u q * g + x * v q) else 0) =
+      a * ((∑ q ∈ S, if P q then c q * u q else 0) * g +
+        x * ∑ q ∈ S, if P q then c q * v q else 0) := by
+  have hU :
+      (∑ q ∈ S, if P q then a * c q * u q else 0) =
+        a * ∑ q ∈ S, if P q then c q * u q else 0 := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun q hq => ?_
+    by_cases hp : P q
+    · simp [hp]
+      ring
+    · simp [hp]
+  have hV :
+      (∑ q ∈ S, if P q then a * c q * x * v q else 0) =
+        (a * x) * ∑ q ∈ S, if P q then c q * v q else 0 := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun q hq => ?_
+    by_cases hp : P q
+    · simp [hp]
+      ring
+    · simp [hp]
+  calc
+    (∑ q ∈ S, if P q then a * c q * (u q * g + x * v q) else 0) =
+        ∑ q ∈ S, ((if P q then a * c q * u q * g else 0) +
+          (if P q then a * c q * x * v q else 0)) := by
+      refine Finset.sum_congr rfl fun q hq => ?_
+      by_cases hp : P q
+      · simp [hp]
+        ring
+      · simp [hp]
+    _ = (∑ q ∈ S, if P q then a * c q * u q * g else 0) +
+        ∑ q ∈ S, if P q then a * c q * x * v q else 0 := by
+      rw [Finset.sum_add_distrib]
+    _ = (∑ q ∈ S, if P q then a * c q * u q else 0) * g +
+        ∑ q ∈ S, if P q then a * c q * x * v q else 0 := by
+      congr 1
+      rw [Finset.sum_mul]
+      refine Finset.sum_congr rfl fun q hq => ?_
+      by_cases hp : P q
+      · simp [hp]
+      · simp [hp]
+    _ = (a * ∑ q ∈ S, if P q then c q * u q else 0) * g +
+        (a * x) * ∑ q ∈ S, if P q then c q * v q else 0 := by
+      rw [hU, hV]
+    _ = _ := by ring
+
+/-- Proper-modulus coefficients of the common complete `m`-period block in the complementary
+EDQ boundary. -/
+def complementBoundaryBlock (N L m t : ℕ) (x : ℝ) : ℝ :=
+  ∑ q ∈ Finset.filter (fun q => N * q < m * clock L) (clock L).divisors,
+    if Squarefree (m * (clock L / q)) then
+      ((moebius (clock L / q) : ℤ) : ℝ) *
+        ∑ a ∈ range m,
+          (∑ i ∈ range (a + 1),
+            divisorWindowDiscrepancy m
+              (t / (clock L / q) + i * q) q) * x ^ (a * clock L)
+    else 0
+
+/-- Proper-modulus coefficients of the common `m - 1` terminal tail in the complementary EDQ
+boundary. -/
+def complementBoundaryTail (N L m t : ℕ) (x : ℝ) : ℝ :=
+  ∑ q ∈ Finset.filter (fun q => N * q < m * clock L) (clock L).divisors,
+    if Squarefree (m * (clock L / q)) then
+      ((moebius (clock L / q) : ℤ) : ℝ) *
+        ∑ a ∈ range (m - 1),
+          (∑ i ∈ range (a + 1),
+            divisorWindowDiscrepancy m
+              (t / (clock L / q) + i * q) q) * x ^ (a * clock L)
+    else 0
+
+/-- The selected physical EDQ upper boundary has the same two common chronological factors as
+the complete cofactor.  Its remaining coefficients are the finite proper-modulus sums above. -/
+theorem futureOldCofactor_upperBoundary_selected_eq_commonFactors
+    {N L m : ℕ} (t : ℕ) (x : ℝ) (hLN : L ≤ N)
+    (hm : m ∈ futureResidualCarrier N L) :
+    (∑ r ∈ Finset.filter (fun r => N < m * r) (clock L).divisors,
+      clockResidualBetaWeight L t (canonicalClockRatio N L - 1) x (m * r)) =
+      ((moebius m : ℤ) : ℝ) *
+        (complementBoundaryBlock N L m t x *
+          ∑ b ∈ range ((canonicalClockRatio N L - 1) / m), x ^ (b * (m * clock L)) +
+          x ^ (((canonicalClockRatio N L - 1) / m) * (m * clock L)) *
+            complementBoundaryTail N L m t x) := by
+  rw [futureOldCofactor_upperBoundary_selected_eq_crossModulus_blocks t x hLN hm]
+  unfold complementBoundaryBlock complementBoundaryTail
+  let S := Finset.filter (fun q => N * q < m * clock L) (clock L).divisors
+  let P : ℕ → Prop := fun q => Squarefree (m * (clock L / q))
+  let a : ℝ := ((moebius m : ℤ) : ℝ)
+  let g : ℝ := ∑ b ∈ range ((canonicalClockRatio N L - 1) / m),
+    x ^ (b * (m * clock L))
+  let z : ℝ := x ^ (((canonicalClockRatio N L - 1) / m) * (m * clock L))
+  let c : ℕ → ℝ := fun q => ((moebius (clock L / q) : ℤ) : ℝ)
+  let u : ℕ → ℝ := fun q => ∑ a ∈ range m,
+    (∑ i ∈ range (a + 1),
+      divisorWindowDiscrepancy m (t / (clock L / q) + i * q) q) * x ^ (a * clock L)
+  let v : ℕ → ℝ := fun q => ∑ a ∈ range (m - 1),
+    (∑ i ∈ range (a + 1),
+      divisorWindowDiscrepancy m (t / (clock L / q) + i * q) q) * x ^ (a * clock L)
+  change (∑ q ∈ S, if P q then a * c q * (u q * g + z * v q) else 0) =
+    a * ((∑ q ∈ S, if P q then c q * u q else 0) * g +
+      z * ∑ q ∈ S, if P q then c q * v q else 0)
+  exact sum_if_mul_block_tail_factor S P a g z c u v
+
+/-- Each literal physical EDQ cofactor fibre is a common signed scalar times two explicit finite
+coefficient differences.  This removes every implicit terminal or cutoff term from the remaining
+cross-modulus cancellation problem. -/
+theorem futureOldCofactorCarrier_sum_eq_factorized_terminal_coefficients
+    {N L m : ℕ} (t : ℕ) (x : ℝ) (hLN : L ≤ N)
+    (hm : m ∈ futureResidualCarrier N L) :
+    (∑ r ∈ futureOldCofactorCarrier N L m,
+      clockResidualBetaWeight L t (canonicalClockRatio N L - 1) x (m * r)) =
+      ((moebius m : ℤ) : ℝ) *
+        (((∑ a ∈ range m,
+          cofactorReducedResiduePrefix m t (clock L) a * x ^ (a * clock L)) -
+          complementBoundaryBlock N L m t x) *
+          ∑ b ∈ range ((canonicalClockRatio N L - 1) / m),
+            x ^ (b * (m * clock L)) +
+          x ^ (((canonicalClockRatio N L - 1) / m) * (m * clock L)) *
+            ((∑ a ∈ range (m - 1),
+              cofactorReducedResiduePrefix m t (clock L) a * x ^ (a * clock L)) -
+              complementBoundaryTail N L m t x)) := by
+  rw [futureOldCofactorCarrier_sum_eq_terminal_blocks_sub_upperBoundary_of_mem_futureResidualCarrier
+    t x hLN hm, futureOldCofactor_upperBoundary_selected_eq_commonFactors t x hLN hm]
+  ring
+
+/-- The exact forward-difference law for a complete `m`-period physical old-cofactor beta block.
+It leaves a finite primitive period polynomial and the literal terminal beta endpoint. -/
+theorem cofactor_moebius_discrepancy_betaPrefix_complete_period_forwardDifference
+    (m t C Q : ℕ) (x : ℝ) (hm : 0 < m) (hC : 0 < C) :
+    (1 - x ^ (m * C)) *
+      (∑ r ∈ C.divisors, ((moebius r : ℤ) : ℝ) *
+        (∑ s ∈ range (Q * m),
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy (m * r) (t + i * C) C) *
+            x ^ (s * C))) =
+      (∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+        (1 - x ^ (Q * (m * C))) := by
+  rw [cofactor_moebius_discrepancy_betaPrefix_blocks m t C Q x hm hC]
+  have hgeom : (1 - x ^ (m * C)) * ∑ b ∈ range Q, x ^ (b * (m * C)) =
+      1 - x ^ (Q * (m * C)) := by
+    let z : ℝ := x ^ (m * C)
+    have hpow (b : ℕ) : z ^ b = x ^ (b * (m * C)) := by
+      dsimp [z]
+      simpa [Nat.mul_comm] using (pow_mul x (m * C) b).symm
+    calc
+      (1 - x ^ (m * C)) * ∑ b ∈ range Q, x ^ (b * (m * C)) =
+          -((z - 1) * ∑ b ∈ range Q, z ^ b) := by
+            simp_rw [hpow]
+            dsimp [z]
+            ring
+      _ = -(z ^ Q - 1) := by rw [mul_geom_sum]
+      _ = 1 - x ^ (Q * (m * C)) := by rw [hpow Q]; ring
+  calc
+    (1 - x ^ (m * C)) *
+        ((∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+          ∑ b ∈ range Q, x ^ (b * (m * C))) =
+        (∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+          ((1 - x ^ (m * C)) * ∑ b ∈ range Q, x ^ (b * (m * C))) := by ring
+    _ = (∑ a ∈ range m, cofactorReducedResiduePrefix m t C a * x ^ (a * C)) *
+          (1 - x ^ (Q * (m * C))) := by rw [hgeom]
+
 /-- The exact beta cofactor of a single future divisor is a beta-weighted sequence of its literal
 interval discrepancies.  No inner chronological sum remains. -/
 theorem selectedRefinementBlock_divisorBetaPrefix_eq_intervalDiscrepancy
@@ -1927,6 +4120,40 @@ theorem selectedRefinementBlock_betaDeviation_eq_childClockFactor_fullPrefix
         N l u b d x hd hdC]
     ring
   · rw [if_pos hdC]
+
+/-- The selected beta deviation is the child-clock difference times the single chronological
+future-cofactor total.  Hence the EDQ source term, source--deviation cross term, and non-clock
+lcm square are governed by one signed scalar amplitude rather than independent divisor sums. -/
+theorem selectedRefinementBlock_betaDeviation_eq_childClockFactor_futureCofactor_sum
+    (N l u b : ℕ) (x : ℝ) (hlN : l < N) :
+    let t := u + b * clock l + 1
+    let Q := canonicalClockRatio N (l + 1)
+    let C := clock (l + 1)
+    ∑ s ∈ range Q, x ^ (s * C) *
+      ((C : ℝ) * ∑ q ∈ Icc 1 N, ((moebius q : ℤ) : ℝ) / (q : ℝ) -
+        ∑ k ∈ Ioc (t + s * C) (t + (s + 1) * C), truncMoebiusDivisorSum N k) =
+      (1 - x ^ C) *
+        ∑ m ∈ futureResidualCarrier N (l + 1),
+          ∑ r ∈ futureOldCofactorCarrier N (l + 1) m,
+            clockResidualBetaWeight (l + 1) t (Q - 1) x (m * r) := by
+  dsimp
+  rw [selectedRefinementBlock_betaDeviation_eq_childClockFactor_fullPrefix N l u b x hlN]
+  apply congrArg (fun z : ℝ => (1 - x ^ clock (l + 1)) * z)
+  calc
+    (∑ d ∈ Icc 1 N, ((moebius d : ℤ) : ℝ) *
+        ∑ s ∈ range (canonicalClockRatio N (l + 1) - 1),
+          (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d
+            (u + b * clock l + 1 + i * clock (l + 1)) (clock (l + 1))) *
+            x ^ (s * clock (l + 1))) =
+      ∑ d ∈ Icc 1 N,
+        clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+          (canonicalClockRatio N (l + 1) - 1) x d := by
+      refine Finset.sum_congr rfl fun d hd => ?_
+      exact moebius_divisor_betaPrefix_eq_clockResidualBetaWeight
+        (l + 1) d (u + b * clock l + 1)
+          (canonicalClockRatio N (l + 1) - 1) x
+    _ = _ := Icc_sum_clockResidualBetaWeight_eq_futureCofactor_sum N (l + 1)
+      (u + b * clock l + 1) (canonicalClockRatio N (l + 1) - 1) x
 
 /-- Exact lcm-fibre form of the actual selected EDQ beta energy.  Clock deletion has already
 been restored to zero-valued terms, so every finite divisor pair is placed in its literal lcm

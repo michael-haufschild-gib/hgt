@@ -400,8 +400,182 @@
   curvature at all.  At every active index the outgoing quantile boundary advances strictly, and
   below the physical wall its reversed cell is exactly a nonzero P endpoint-indicator function,
   before any scalar pairing or smoothing.  Hence every source coordinate capable of carrying
-  bivariate chronology has a literal nondegenerate P function port.  This is not yet the P-G186
-  off-diagonal incidence map, the signed-word/history intertwiner, or its graph-closed cofinal
-  assembly; those remain the hard route obligation.  Lean status:
+  bivariate chronology has a literal nondegenerate P function port.  Separately from the
+  pre-existing natural-number collision-Gram carrier identification, every active source atom
+  now has an exact literal `(prime, depth)` P-G186 primitive **zero-clock window column**: it is
+  its von-Mangoldt amplitude times the SP-E cubic ray at `log n`; active pairs have the exact
+  half-line P-G186 entry given by the corresponding cubic Cauchy edge.  This is not yet the
+  source-plaquette-to-P history coefficient map, the signed-word/history intertwiner, or its
+  graph-closed cofinal assembly; those remain the hard route obligation.  Lean status:
   `SPEQuantileRieszRoutePActiveQuantileCellPort` direct check and leaf build pass; its public
   theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Fibrewise-source necessity (HCF to HJ transport failed).**  HCF's
+  `tsum_thetaCuspSourceProductFiberSeamCoefficient_eq_zero` is an unparameterized real
+  convolution total.  HJ's `orbitwiseFirstPrimeSeamCharge rho` is a complex, `rho`-indexed
+  first-prime coefficient and vanishes exactly when `rho.re = 1 / 2`.  Hence the present objects
+  admit no literal equality or transport.  Any viable HCF-to-HJ bridge must construct a
+  Mellin/Xi-fibre-preserving source lift *before* global summation; a global cancellation alone
+  cannot feed a pointwise fibre receiver.  Status: audited from the defining terms, not an
+  abstract Lean no-go.
+- **T1 stationary-shell phase law.**  At the literal full two-rapidity timelike stationary pair
+  for frequencies `h,k`, the covariance phase is exactly
+  `sqrt (u^2-h^2) - sqrt (u^2-k^2)`.  For `0 ≤ h < k < u` it is strictly positive and, when
+  `2k ≤ u`, is at most `2k^2/u`.  Hence every regime with `k = o(sqrt u)` has a coalescing
+  (not dispersing) stationary *phase value*.  The anti-ordered saddle is not a zero-phase
+  diagonal contribution; phase separation cannot supply the desired bound in that deep
+  subcone.  This does not rule out a separate Hessian/amplitude cancellation mechanism.
+  The remaining T1 problem is genuinely signed prime-pair cancellation or a source-derived
+  support law that removes this anti-ordered region.  Lean status:
+  `XiMassTwoRapidityStationaryPhase` direct check and leaf build pass; all three public theorems
+  audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Route E automatic activation-exponent reduction.**  For a finite singleton-history cell, if
+  every inactive integer factor satisfies `2 <= a_i`, every active factor satisfies `b_i <= U`,
+  and the number of slots satisfies `10*(log_2 U + 2) <= m`, then
+  `b_i <= a_i^(log_2 U + 1)` is automatic.  The existing conditioned-divisor theorem therefore
+  proves that no five selected slots can have distinct receivers in the physical aperture
+  `W^55 < L^30`; no fixed-in-scale activation exponent is needed.  This closes the apparent
+  unbounded-exponent escape within the all-nonunit inactive-factor subclass.  It does not cover
+  inactive-unit factors, alternative occupancy laws, or signed covariance.  Lean status:
+  `RouteEAutomaticActivationExponent` direct check and leaf build pass; both public theorems
+  audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **P/SP-E zero-clock ordered-history density.**  On every nonempty finite primitive P-G186
+  packet at zero ordinate, every prime-log-conjugated two-step child/pivot forward coordinate is
+  nonzero, while the reversed coordinate is zero.  Thus every pair of active SP-E prime powers
+  has a literal two-label ordered support port, but the literal P carrier is all-path rather than
+  pairwise: a coefficient-faithful source lift must account for intermediate labels in a
+  graph-closed map.  This does **not** identify the SP-E plaquette coefficient with P history,
+  control strict-cross debt, or provide a cofinal bound.  Lean status:
+  `RoutePJuliaKreinZeroClockHistoryDensity` direct check and leaf build pass; both public
+  theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **P/SP-E literal exterior-current congruence.**  On every finite literal P-G186 primitive
+  packet, the alternating atom current with entries
+  `w_i w_j (c_i-c_j)` is exactly congruent under the prime-log P incidence to the alternating
+  current of the two propagated literal profiles `w` and `w c`.  Each output coordinate is the
+  exact double sum over all intermediate packet labels.  Thus all-path accounting and source
+  orientation coexist without fitted coefficients or a positive-part projection.  This covers
+  only the exterior component: it does **not** absorb the two debt orientations, identify the
+  strict-cross increment, give graph closure, or prove a cofinal bound.  Lean status:
+  `SPEQuantileRieszRoutePExteriorCurrentCongruence` direct check and leaf build pass; both public
+  theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **P/SP-E full strict-cross payload history.**  The literal two-cell strict-cross kernel has a
+  source-defined five-profile matrix representation using exactly `w`, `w*d`, `w*c`, `w*d*c`,
+  and `w*d^2`.  It equals the signed displacement--centroid orientation minus the full quadratic
+  displacement debt entrywise.  The complete finite SP-E source boundary is exactly the ordered
+  off-diagonal sum of this matrix.  Inserting that unchanged matrix between the literal P-G186
+  child and negative-pivot incidence legs gives forward coordinate
+  `(63/64) * (H * C * H) i j`, the exact double sum over all two-leg P paths and all source
+  entries; the reversed word is zero.  This is a coefficient-unfitted finite ordered action that
+  retains both source channels.  It does **not** construct compatibility under cofinal packet
+  refinement, a graph-closed non-Bessel/non-nuclear completion, a bound, or Xi/theta divisor
+  landing.  Lean status: `SPEQuantileRieszRoutePFullCrossCurrentHistory` direct check and leaf
+  build pass; its four public theorems audit with only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **T2/HJ finite-seam scalar no-go.**  Let `rho` be a zeta zero in the open strip with
+  `1/2 < rho.re`, and let `n > 1`.  The finite rational-Hurwitz reflection defect
+  `J_n(rho) = H_n(conj rho) - H_n(1-rho)` is nonzero by
+  `rationalHurwitzFiberResponse_reflection_fixed_iff`; the strict-right T2 Wold carrier has
+  punctured residue `-m` for some `m >= 1` by
+  `xiHeatCassiniWoldLaplaceContinuation_zero_residue`.  Therefore its scalar twist by `J_n(rho)`
+  has residue `J_n(rho) * (-m)`, which is nonzero.  A finite regular HJ reflection seam cannot
+  cancel a T2 strict-right divisor pole.  Any T2/HJ bridge capable of proving RH must instead
+  supply an arithmetic source counter-current with a compensating singular residue; finite seam
+  multiplication is categorically insufficient.  Status: dependency-closed paper derivation from
+  existing Lean theorems; merged Lean composition is pending the currently absent
+  `XiHeatCassiniWoldResidualTwoSidedClosure.olean` required by the canonical tomography import.
+- **T2 continuous-Chebyshev divisor-mirror classification.**  The apparent singular
+  counter-current obtained by shifting the literal continuous-Chebyshev source is
+  `-(s+1/2)^{-1} * criticalChebyshevBoostCurrent(s+1/2)`.  On its honest half-plane
+  `Re(s)>0`, it is simultaneously the literal source expression
+  `-((s+1) * criticalNormalizedChebyshevErrorLaplace(s+1/2) + 1)` and exactly
+  `logDeriv zetaResidueUnit(s+1)`.  It therefore carries the complete regularized zeta divisor
+  current; its opposite residue cancels a T2 Wold pole only tautologically, rather than supplying
+  an independent arithmetic exclusion of strict-right zeros.  Positive survivor: any viable T2
+  source counter-current must be source-defined while demonstrably not factoring through this full
+  divisor mirror.  Lean status: `XiHeatCassiniWoldChebyshevDivisorMirror` direct source check and
+  leaf build pass; both public theorems audit with only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **P/SP-E all fixed-history covariance growth.**  For every fixed literal adjacent-history
+  index `r`, the cutoff-dependent covariance coefficient
+  `ccmActualHeadMatchedQuantileParabolicCovarianceGapKernel (nth_prime j - 2) r` tends to
+  `+infinity` as `j` tends to infinity.  The proof isolates a source lower bound
+  `ccmActualHeadParabolicMass r * log p` at sufficiently large prime cutoffs: the retained-prefix
+  mass is strictly positive, and the new prime's matched centroid eventually exceeds the entire
+  prefix by at least `sqrt p`.  This strictly strengthens the existing `r = 0` growth no-go.
+  Consequence for the route: no cofinal P transport based on any finite stationary or
+  cutoff-local history family can represent literal SP-E covariance; a viable construction must
+  retain and renormalize growing two-history curvature jointly with full debt, terminal, and
+  physical-wall gauge terms.  It neither bounds their completed signed sum nor proves RH.  Lean
+  status: `SPEQuantileRieszCovarianceKernelAllHistoryGrowthNoGo` source check and leaf build pass; public
+  theorem axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
+- **P/SP-E cofinal terminal Julia--Krein endpoint lift.**  At every cutoff `K`, write `B_K` for
+  the completed zero-boundary and `D_K` for the signed terminal completed-error/atom displacement.
+  Exact source identities give `B_K-D_K=2M_K` and
+  `B_K+D_K=4(\sqrt{K+3}-1)`, so `B_K^2-D_K^2>0` unconditionally.  The previously finite
+  four-label light lift becomes a genuine cutoff-indexed P endpoint carrier after the forced
+  negative-sector split
+  `(B_K,D_K) \mapsto (B_K,D_K/8,\sqrt{63}D_K/8)`.  Its exact P-G105F coordinates are
+  `(8B_K-\sqrt{63}D_K,D_K/8)`; the literal four-label lift maps those coordinates to the
+  displayed source vector and the actual P Julia quadratic is exactly `B_K^2-D_K^2`.
+  Its exact cutoff increment is a two-source affine packet: the arithmetic atom
+  `criticalMellinAtomWeight(K+3)` and the archimedean wall increment
+  `2(\sqrt{K+4}-\sqrt{K+3})`, with opposite signs in the two terminal null coordinates.
+  Moreover the literal P child and negative-pivot channel matrices controllably realize every
+  such two-coordinate increment by explicit input vectors.  This resolves endpoint action, but
+  is deliberately only additive control: it does not claim the needed noncommutative
+  P-G186 ordered-history cocycle or strict-cross-current transport.
+  The real first P coordinate tends to `+infinity`; hence this source-faithful terminal carrier
+  is provably non-Bessel before any ordered covariance jet is attached.  This is the required
+  cofinal topology in a concrete endpoint sector, not a bounded surrogate.
+  Thus no fitted parameter, asymptotic estimate, or RH premise is needed to put the signed terminal
+  endpoint into the actual P Krein geometry.  The remaining hard obligation is not endpoint
+  signature: it is to prove that this two-source affine prime-cutoff update intertwines the
+  P-G186 off-diagonal ordered-history action while preserving the full covariance/debt current,
+  then establish its required cofinal non-Bessel/non-nuclear completion.  Lean status:
+  `SPEQuantileRieszTerminalLorentzCone` source check and its two directly required oleans pass;
+  terminal-cone, P-target, affine-update, channel-control, and escape public theorems audit with
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+- **P/SP-E five-channel double-Julia factorization.**  The complete literal strict-cross
+  orientation plus both displacement-debt orientations is exactly a five-profile matrix factor:
+  `C = V J Vᵀ`, where `V` consists of the profiles
+  `w`, `w*d`, `w*c`, `w*d*c`, `w*d²`.  The explicit nonzero channel vector
+  `(0, 0, 0, -1/2, 1)` lies in the radical of `J`.  More strongly, an exact explicit map `T`
+  gives `J = Tᵀ (B ⊕ B) T`, with `B` the literal Route-P Julia--Krein block.  Therefore
+  `C = (V Tᵀ) (B ⊕ B) (V Tᵀ)ᵀ`; no scalarization, fitted coefficient, or deletion of either
+  debt orientation occurs.  Substituting this equality into the actual P child/middle/pivot
+  carrier yields its forward coordinate as the corresponding two-Julia-block all-path factor,
+  while reversed chronology is still exactly zero.  This is a new finite coefficient/signature
+  bridge.  It does **not** prove refinement compatibility, graph closure, a cofinal bound, or
+  Xi/theta divisor landing; those remain the RH-bearing obstacle.  Lean status:
+  `SPEQuantileRieszRoutePFiveChannelKreinFactorization` source check and its directly required
+  olean pass; ten public theorems audit with only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **P/SP-E source-radical / terminal two-gauge separation.**  The tempting identification of the
+  source-form radical with the moving terminal connection is false.  The literal running aggregate
+  in the explicit radical profile `(0,0,0,-1/2,1)` is stationary at every non-prime-power atom.
+  In contrast, the canonical terminal connection has a strictly positive increment at every such
+  atom.  At the first composite zero atom `6`, these facts give an unconditional contradiction to
+  any global equality: the source aggregate has equal values at cutoffs `3` and `4`, while the
+  terminal connection cannot.  The proof of `6` not being a prime power extracts a hypothetical
+  prime base and derives that it must be both `2` and `3`; it is not a finite
+  prime-power-decider calculation.  **Route consequence:** the cofinal P-G186 action cannot place
+  endpoint data in the source radical quotient.  It must preserve a product extension containing
+  the two Julia channels, the source-radical gauge, and an independent affine terminal coordinate,
+  before graph closure or a bound can even be formulated faithfully.  This is a positive boundary
+  theorem; it does not construct that refinement action, establish graph closure, or prove RH.
+  Lean status: `SPEQuantileRieszRoutePFiveChannelKreinFactorization` direct source check and leaf
+  olean pass; all ten public theorems audit with only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **P/SP-E zero-atom radical--null affine constraint.**  At every non-prime-power atom, the
+  literal terminal P-G105F coordinate increment is a **nonzero null vector** for the actual
+  Julia--Krein quadratic.  The source proof is exact: the admitted prime-power weight vanishes,
+  so the two terminal source increments are the same positive physical square-root-wall increment;
+  substituting them into the literal Julia coordinates gives quadratic value zero.  Strict
+  monotonicity of `sqrt` proves that the second P coordinate is nonzero.  Coupled with the
+  source-radical/terminal separation above, this is stronger than a two-coordinate bookkeeping
+  warning: every source-faithful cofinal P-G186 refinement must implement a nontrivial affine
+  translation along a P-Julia null direction while separately retaining the source radical and
+  two current Julia channels.  It rules out fixed-terminal, positive-norm-terminal, and
+  radical-quotient refinements at zero atoms.  It does **not** supply the required refinement
+  morphism, graph closure, cofinal bound, or Xi landing.  Lean status:
+  `SPEQuantileRieszRoutePFiveChannelKreinFactorization` source check and leaf olean pass; all ten
+  public theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.

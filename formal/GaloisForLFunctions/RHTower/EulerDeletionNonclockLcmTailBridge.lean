@@ -80,4 +80,90 @@ theorem truncatedDivisorBlockKernel_sq_eq_source_cross_nonclockLcm
       dsimp [A, B, H, G, D, R, C, Q, t]
       ring
 
+/-- The complete literal EDQ block has one signed residual amplitude.  The source endpoint and
+the former source--deviation cross term combine linearly with the same future-cofactor total
+whose square is the non-clock lcm energy. -/
+theorem truncatedDivisorBlockKernel_eq_source_futureCofactor
+    (N l u b : ℕ) (x : ℝ) (hlN : l < N) :
+    truncatedDivisorBlockKernel N l u b x =
+      (x ^ (u + b * clock l) *
+        ((1 - x ^ clock N) * pairedMoebiusSource N (u + b * clock l) +
+          x ^ clock (l + 1) * (1 - x ^ clock (l + 1)) *
+            ∑ m ∈ futureResidualCarrier N (l + 1),
+              ∑ r ∈ futureOldCofactorCarrier N (l + 1) m,
+                clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+                  (canonicalClockRatio N (l + 1) - 1) x (m * r)) *
+        (1 - x ^ clock N)⁻¹) /
+    (∑ a ∈ range (clock (l + 1)), x ^ a) := by
+  unfold truncatedDivisorBlockKernel
+  have hdeviation :
+      (∑ s ∈ range (canonicalClockRatio N (l + 1)),
+        x ^ (s * clock (l + 1)) *
+          ((clock (l + 1) : ℝ) *
+              ∑ d ∈ Icc 1 N, ((moebius d : ℤ) : ℝ) / (d : ℝ) -
+            ∑ k ∈ Ioc (u + b * clock l + s * clock (l + 1) + 1)
+              (u + b * clock l + (s + 1) * clock (l + 1) + 1),
+              truncMoebiusDivisorSum N k)) =
+        (1 - x ^ clock (l + 1)) *
+          ∑ m ∈ futureResidualCarrier N (l + 1),
+            ∑ r ∈ futureOldCofactorCarrier N (l + 1) m,
+              clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+                (canonicalClockRatio N (l + 1) - 1) x (m * r) := by
+    simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+      (selectedRefinementBlock_betaDeviation_eq_childClockFactor_futureCofactor_sum
+        N l u b x hlN)
+  rw [hdeviation]
+  ring
+
+/-- On every physical beta coordinate, the actual canonical child block is the same explicit
+source-plus-future-cofactor scalar.  This carries the rank-one EDQ reduction into the literal
+resolvent integrand used by the drift energy. -/
+theorem canonicalRefinementBlockKernel_eq_source_futureCofactor
+    (N l u b : ℕ) (x : ℝ) (hlN : l < N) (hx : 0 ≤ x) :
+    canonicalRefinementBlockKernel N l u b x =
+      (x ^ (u + b * clock l) *
+        ((1 - x ^ clock N) * pairedMoebiusSource N (u + b * clock l) +
+          x ^ clock (l + 1) * (1 - x ^ clock (l + 1)) *
+            ∑ m ∈ futureResidualCarrier N (l + 1),
+              ∑ r ∈ futureOldCofactorCarrier N (l + 1) m,
+                clockResidualBetaWeight (l + 1) (u + b * clock l + 1)
+                  (canonicalClockRatio N (l + 1) - 1) x (m * r)) *
+        (1 - x ^ clock N)⁻¹) /
+      (∑ a ∈ range (clock (l + 1)), x ^ a) := by
+  rw [canonicalRefinementBlockKernel_eq_truncatedDivisorBlockKernel N l u b hlN x hx,
+    truncatedDivisorBlockKernel_eq_source_futureCofactor N l u b x hlN]
+
+/-- The terminal child block closes exactly.  At the last refinement its sole beta coordinate
+is the joint-clock predecessor, where the complete paired Möbius source vanishes.  This is the
+endpoint condition available for a signed summation-by-parts law across refinement time. -/
+theorem terminalRefinementBlockKernel_eq_zero (n : ℕ) (x : ℝ) :
+    canonicalRefinementBlockKernel (n + 1) n (clock n - 1)
+      (clock (n + 1) / clock n - 1) x = 0 := by
+  classical
+  rw [canonicalRefinementBlockKernel_eq_canonical_finite_kernel]
+  have hratio : canonicalClockRatio (n + 1) (n + 1) = 1 := by
+    rw [canonicalClockRatio_eq_div_of_le (n + 1) (n + 1) le_rfl]
+    exact Nat.div_self (clock_pos (n + 1))
+  rw [hratio]
+  simp only [Fin.sum_univ_one, Fin.val_zero, Nat.zero_mul, pow_zero, one_mul]
+  have hclock : (clock (n + 1) / clock n) * clock n = clock (n + 1) :=
+    Nat.div_mul_cancel (clock_dvd (Nat.le_succ n))
+  have hclockpos : 0 < clock n := clock_pos n
+  have hle : clock n ≤ clock (n + 1) :=
+    Nat.le_of_dvd (clock_pos (n + 1)) (clock_dvd (Nat.le_succ n))
+  have hindex :
+      clock n - 1 + (clock (n + 1) / clock n - 1) * clock n = clock (n + 1) - 1 := by
+    calc
+      clock n - 1 + (clock (n + 1) / clock n - 1) * clock n =
+          clock n - 1 + ((clock (n + 1) / clock n) * clock n - clock n) := by
+            rw [Nat.sub_mul]
+            simp
+      _ = clock n - 1 + (clock (n + 1) - clock n) := by rw [hclock]
+      _ = clock (n + 1) - 1 := by omega
+  rw [hindex]
+  have hsource : pairedMoebiusSource (n + 1) (clock (n + 1) - 1 + 0) = 0 := by
+    simpa using pairedMoebiusSource_clock_pred_eq_zero (n + 1)
+  rw [hsource]
+  ring
+
 end RHTower.DeletionResidueMartingale

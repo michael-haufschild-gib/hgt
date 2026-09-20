@@ -1028,6 +1028,53 @@ MobiusDivisorPrescribedDebtReserveProducer. This is a pending mathematical
 test, not a proved obstruction. If it fails, retain the actual sign/budget
 producer and change the preparation class rather than adding more carriers.
 
+**Frozen net-cost experiment [BRIDGE; open]:** produce actual inherited even
+prime core/prescribed-prime debt witnesses with two simultaneous properties:
+fresh preparations still give favorable marginal insertion and the proved
+all-cutoff budget, but repayment of the original fixed debt cannot use
+arbitrarily distant helpers of uniformly bounded inverse-square-root mass.
+The stronger positive invariant to test is a nonzero reciprocal-prime cost.
+Source inspection finds a discrete proof: the block primitive depends only
+on the two actual fibres at n and n+1 (MobiusDivisorFixedCoreBlockLimit20–33).
+Helpers beyond N leave every block n<N unchanged apart from their common
+density product. Nonnegative summable block masses (FixedCoreEnergyLimit214–248)
+recover the full energy from those prefixes. The product deficit is at most
+sum 1/(p+1), and bounded sum 1/sqrt(p) makes this deficit vanish with helper
+distance. The parity-oriented actual prime-release theorem supplies strict
+debt at arbitrarily large missing primes of every even nonempty inherited
+core. This is a source-derived conjecture/proof experiment, not yet a
+checked no-go. Its route implication would be to abandon bounded-mass
+distant preparation for complete fixed-debt payment, while retaining the
+actual marginal-control/budget producer. No numerical test is used.
+
+**Clock specialization requested by user:** retain the actual logarithmic
+prime-admission time `log p`, already the shift of the physical head under
+`x -> x/p` and the frequency of its Mellin phase. Test the stronger closed
+producer: after any real delay τ, actual helpers preserve all literal fibres
+at M≤exp τ while reversing the prescribed marginal insertion sign under one
+K(P,r). For the same actual debt witnesses, repayment after τ must require
+sum 1/sqrt(p)>η exp(τ/2), with η>0 fixed before τ. This is a cost of delayed
+arithmetic actions, not an assumed physical time or a zero-location premise.
+The delay/cost clock formula and combined capstone are pending Lean audit.
+The underlying fixed-prefix/density obstruction and actual even-core debt
+prime selection have passed scratch Lean.
+
+**Clock/source and broad-paper audit:** the deep corpus clock search completed
+against the available snapshot (compiler coverage remains mostly pending).
+`MobiusDivisorDilationMeanRenewal.mobiusDivisorContinuousHead_insert` gives
+literal dilation x/p; `MobiusDivisorDilationMean_eq_contour` at log p retains
+its exact Mellin phase. `PrimeDelayHerglotzNoGo` excludes positivity of raw
+delay modes. `CCMPrimePoleFiniteCoherence` produces delayed finite phase
+recurrence but does not give a changing-core energy budget. No raw-delay
+positivity or finite recurrence is substituted for the missing producer.
+Broad recent arXiv search for synchronization found Hassler et al.,
+[2605.30271v1](https://arxiv.org/html/2605.30271v1), May 2026: stationary phase
+localization alone does not diagnose dynamical synchronization; their test
+retains accumulated phase slips. Here this only suggests keeping accumulated
+arithmetic debt alongside phase control. No stochastic or quantum hypothesis,
+approximation, or paper theorem enters Lean. The latest-first delay page was
+rate-limited; no inference from missing September hits.
+
 ## Log
 
 - 2026-09-19 — Opened from the current corpus, after reading the frontier, relevant source constraints, prior theta producer attempts, and source definitions.

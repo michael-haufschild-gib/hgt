@@ -310,4 +310,20 @@ favorable marginal release proves combined preparation-and-insertion energy
 is below the original inherited energy. The next source test uses the exact
 head-insertion identity in MobiusDivisorDilationMeanRenewal and the exact
 density/diagonal identity in MobiusDivisorPrescribedDebtReserveProducer.
-No impossibility theorem for combined payment has yet been checked.
+The fixed-core net-payment obstruction is now scratch-checked. If all fresh
+helpers have logarithmic admission times beyond τ, reducing a fixed positive
+energy debt requires sum 1/(p+1)>η and sum 1/sqrt(p)>η exp(τ/2), for one η>0
+and all sufficiently late τ. Proof: every fixed prefix of quotient-block
+masses is unchanged except its common density product; these nonnegative
+prefixes converge to the complete energy, and 1-product p/(p+1) is at most
+sum 1/(p+1). Even nonempty cores produce arbitrarily large actual prescribed
+prime debt witnesses by the existing parity theorem. No numerical input.
+The actual clock-delayed sign/budget producer and this obstruction are being
+combined in one capstone; the combined public declaration is not yet audited.
+
+**Route consequence:** bounded total inverse-square-root mass cannot repay a
+fixed inherited debt by moving all helpers arbitrarily far into the future.
+This does not rule out small decaying reserves, preparations with nonvanishing
+reciprocal mass, or other bounded-energy histories. The existing Young bound
+is a sufficient budget bound, not a proof that energy must diverge when helper
+mass diverges. That distinction must survive the next construction.
