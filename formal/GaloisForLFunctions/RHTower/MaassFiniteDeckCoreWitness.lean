@@ -758,7 +758,9 @@ theorem deckGridStep_coeFn {N M K : ℕ} (a c hx hy : ℝ)
           (upperChartGridCell a c hx hy i).indicator (fun _ => C i.1 i.2) z := by
     classical
     induction s using Finset.induction_on with
-    | empty => exact Filter.Eventually.of_forall fun z => by simp
+    | empty =>
+        filter_upwards [Lp.coeFn_zero (E := DeckSpace N) (p := 2) (μ := cellMeasure)] with z hz
+        simpa only [Finset.sum_empty, Pi.zero_apply] using hz
     | insert i s his ih =>
         filter_upwards [Lp.coeFn_add
           (deckCellIndicator (upperChartGridCell a c hx hy i)
@@ -767,7 +769,7 @@ theorem deckGridStep_coeFn {N M K : ℕ} (a c hx hy : ℝ)
             (measurableSet_upperChartGridCell a c hx hy j) (C j.1 j.2)), hcell i, ih]
           with z hadd hi hs
         simp only [Finset.sum_insert his]
-        rw [hadd, hi, hs]
+        simp only [hadd, Pi.add_apply, hi, hs]
   simpa only [deckGridStep] using hsum Finset.univ
 
 /-- On each positive grid cell the `Lp` step agrees almost everywhere with its assigned value. -/

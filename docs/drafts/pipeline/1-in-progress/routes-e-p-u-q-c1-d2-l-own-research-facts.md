@@ -607,3 +607,28 @@
   a real-axis complete-monotonicity argument, or a generic Hankel-cone transfer.  Lean status:
   these facts are already formalized in `LiEvenSquarePrimeGammaCrossBalanceCriterion` and the
   LI-CAB4/7/8/9 no-go modules; no new LI theorem is claimed here.
+- **HCF horizontal-pole blindness.**  At every XiC zero `x₀ + eta*I` with
+  `0 < eta < 1/2`, its positive multiplicity is locally factored as
+  `(z - (x₀ + eta*I))^m * g(z)` with `m > 0` and nonvanishing analytic `g`.
+  On the punctured horizontal scan through that zero, the literal continued
+  pole--Gamma source is exactly `-pi⁻¹ * Im(g'/g)`; the full `m/(x-x₀)` pole is
+  real and is annihilated by the HCF imaginary projection.  Thus a proposed HCF
+  source-`L¹` contradiction based on a horizontal pole is mathematically
+  impossible.  The surviving producer must retain transverse shift information;
+  a quadratic cross-shift frame is a candidate, not yet a theorem.  Lean status:
+  `HedenmalmCriticalFeatureSourceHorizontalPoleBlindness` source check, direct
+  olean build, and two-theorem axiom audit pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **HCF transverse residue survives with exact sign.**  For the same local factorization, holding
+  height `x₀` fixed and varying the positive shift gives the exact punctured identity
+  `source(eta,x₀) = m / (pi * (eta-eta₀)) - pi⁻¹ * Im(g'/g)(x₀+i*eta)`.
+  Hence the residue is not merely detectable off the horizontal direction: it is a positive,
+  multiplicity-quantized reciprocal pole.  Combined with the corpus's existing height-local
+  critical-feature lower frame (`64/2025` after its forced inverse-square normalization), this
+  isolates a viable HCF architecture: a source-native *cross-shift quadratic trace* could see
+  precisely the singular channel that both horizontal scalar averaging and the existing receiver
+  frame leave separate.  It does not supply that trace or its finite source ceiling; those are the
+  remaining hard HCF obstacle.  Lean status:
+  `criticalFeaturePositiveShiftPoleGammaDensity_eq_transverse_pole_sub_cofactor_im_of_vertical_factor`
+  passes direct source check and direct target-olean build; axiom audit is only `propext`,
+  `Classical.choice`, `Quot.sound`.

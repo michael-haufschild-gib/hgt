@@ -165,6 +165,17 @@ the punctured carrier-density limit. -/
 def suzukiXiRealAxisCarrierDensityRemovablePatch (a x : ℝ) : ℝ :=
   if x = a then 0 else suzukiXiRealAxisCarrierDensity x
 
+/-- A one-point repair leaves the Lebesgue `L²` symbol unchanged. -/
+theorem ae_eq_suzukiXiRealAxisCarrierDensityRemovablePatch
+    (a : ℝ) :
+    suzukiXiRealAxisCarrierDensityRemovablePatch a =ᵐ[volume]
+      suzukiXiRealAxisCarrierDensity := by
+  have hne : ∀ᵐ x : ℝ, x ≠ a := by
+    simp [ae_iff, measure_singleton]
+  filter_upwards [hne] with x hx
+  unfold suzukiXiRealAxisCarrierDensityRemovablePatch
+  rw [if_neg hx]
+
 /-- The one-point repaired density is continuous at every real spectral Xi
 divisor.  Thus a real multiple zero obstructs continuity of the literal
 totalized symbol, but not the local construction of a removable `L²`
@@ -190,7 +201,8 @@ theorem continuousAt_suzukiXiRealAxisCarrierDensityRemovablePatch_at_real_spectr
         suzukiXiRealAxisCarrierDensity x := by
     filter_upwards [self_mem_nhdsWithin] with x hx
     simp only [mem_compl_iff, mem_singleton_iff] at hx
-    simp [suzukiXiRealAxisCarrierDensityRemovablePatch, hx]
+    unfold suzukiXiRealAxisCarrierDensityRemovablePatch
+    rw [if_neg hx]
   exact hlimit.congr' (hEq.mono fun _ hx ↦ hx.symm)
 
 end

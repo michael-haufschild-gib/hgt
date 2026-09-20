@@ -222,3 +222,9 @@
   OPE/contact alone → antisymmetric ordered kernel → oriented Ward term. **Positive survivor:**
   only a genuinely temporal/ordered source term, external-BRST product, or complex counterterm
   coupling can supply the required antisymmetry.
+- **FZZ-P neutral external-BRST compact bridge (2026-09-20):** literal opposite external branch
+  holonomies multiply pointwise to one. Their compact-circle integral therefore preserves the
+  exact neutral cross-depth covariance and its nonzero off-node imaginary part. **Premise
+  discharged:** charge-neutral external-BRST compact integration does not erase orientation.
+  **Boundary:** external OPE coefficients, fractional screening, both counterterms, physical
+  normalization, and their source-fixed mixed Ward coupling remain unproved.

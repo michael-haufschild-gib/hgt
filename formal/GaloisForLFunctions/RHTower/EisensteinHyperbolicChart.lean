@@ -77,6 +77,27 @@ theorem setIntegral_coord_eq {A : Set (ℝ × ℝ)} (hA : MeasurableSet A)
       simp only [G, Complex.measurableEquivRealProd_apply]
     _ = _ := integral_indicator hA
 
+/-- Real-valued form of hyperbolic coordinate transport. -/
+theorem setIntegral_coord_eq_real {A : Set (ℝ × ℝ)} (hA : MeasurableSet A)
+    (hpos : ∀ p ∈ A, 0 < p.2) (F : ℝ × ℝ → ℝ) :
+    ∫ z in {z : ℍ | (z.re, z.im) ∈ A}, F (z.re, z.im) =
+      ∫ p in A, F p / p.2 ^ 2 := by
+  apply Complex.ofReal_injective
+  calc
+    ((∫ z in {z : ℍ | (z.re, z.im) ∈ A}, F (z.re, z.im) : ℝ) : ℂ) =
+        ∫ z in {z : ℍ | (z.re, z.im) ∈ A}, (F (z.re, z.im) : ℂ) := by
+          exact (integral_ofReal (𝕜 := ℂ)
+            (μ := volume.restrict {z : ℍ | (z.re, z.im) ∈ A})).symm
+    _ = ∫ p in A, (F p : ℂ) / ((p.2 : ℝ) : ℂ) ^ 2 :=
+      setIntegral_coord_eq hA hpos (fun p => (F p : ℂ))
+    _ = ∫ p in A, ((F p / p.2 ^ 2 : ℝ) : ℂ) := by
+      apply setIntegral_congr_fun hA
+      intro p _
+      change (F p : ℂ) / ((p.2 : ℝ) : ℂ) ^ 2 = ((F p / p.2 ^ 2 : ℝ) : ℂ)
+      rw [← Complex.ofReal_pow, ← Complex.ofReal_div]
+    _ = ((∫ p in A, F p / p.2 ^ 2 : ℝ) : ℂ) := by
+      exact integral_ofReal (𝕜 := ℂ)
+
 /-! ## The cusp rectangle -/
 
 /-- The cusp rectangle `[−½, ½] × (Y, ∞)`. -/

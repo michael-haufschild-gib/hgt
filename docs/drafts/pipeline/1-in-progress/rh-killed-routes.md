@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**350 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**362 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,10 +11,10 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-19, `06ffc635ef27d7e787dc3ca881968b30e5338332`**.
+Source-audit cutoff: **2026-09-20, `45a84bfa077d5d7b2ff859f5c296c19d1866eef1`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
-historical evidence. No builds or fresh kernel checks were run. Record 350 is a current
-working-tree paper no-go, explicitly not Lean-promoted. FD2's full verdict and
+historical evidence. No builds or fresh kernel checks were run. Record 350 now has a committed
+witness-line/grid replacement, with one uncommitted proof-only source edit marked WIP. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
 
@@ -23,12 +23,12 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 24 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 38 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 72 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 31 |
-| [Singular descent, formation and completion](#completion) | 27 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 51 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 26 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 41 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 75 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 32 |
+| [Singular descent, formation and completion](#completion) | 28 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 53 |
 | [Analytic roots, multiplicity and regularization](#roots) | 10 |
 | [Other finite, scalar and source-blind selectors](#other) | 80 |
 
@@ -331,6 +331,8 @@ Source-native aperture invariant is required.
 - [CCM matched adjacent-codiagonal scalarization](#no-go-312)
 - [CCM reflection-odd wall jet at a parity-pole first contact](#no-go-325)
 - [CCM fixed local matched/quantile graph wall](#no-go-344)
+- [CCM-FU clock-delayed finite-packet budget](#no-go-351)
+- [CCM/O fixed affine and common-clock coercivity repairs](#no-go-352)
 
 <a id="no-go-294"></a>
 
@@ -720,6 +722,50 @@ Evidence: [prime-edge cone escape and wall no-go](../../../../formal/GaloisForLF
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
+<a id="no-go-351"></a>
+
+### CCM-FU clock-delayed finite-packet budget
+
+**Closed result**
+
+For arbitrarily late prescribed-prime debts, halving the debt after log-clock `τ` forces helper
+inverse-square-root mass greater than a positive constant times `exp(τ/2)`. Bounded reciprocal
+mass still gives only marginal contraction. Consequently the existing finite-packet budget,
+which is exponential in inverse-square-root mass, cannot be the global budget for a delayed
+exhaustive prime order.
+
+**Survivor / still open**
+
+Fresh-prime deletion remains an exact signed two-scale renewal, and first insertion is dissipative.
+CCM-FU needs a cancellation-stable unbounded-mass relative budget, or a theorem excluding every
+exhaustion that relies on delayed repayment.
+
+Evidence: [inherited insertion and delayed clock obstruction](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorInheritedPrimeInsertionProducer.lean), [clock-funding audit](ccm-fu-clock-funding-own-research-facts.md).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-352"></a>
+
+### CCM/O fixed affine and common-clock coercivity repairs
+
+**Closed result**
+
+The fourth-order-cancelling two-offset affine combination is exactly the unshifted source current
+minus a strictly positive endpoint debt, so it cannot change historical prime--polar interaction.
+Separately, the exact restricted-Weil common-clock transgression makes every newly entering
+arithmetic collar nonpositive; the full prime-power common-clock charge is bounded above by the
+completed smooth channel. Neither fixed repair can create positive source coercivity.
+
+**Survivor / still open**
+
+The coefficient-faithful homogeneous wall law and Volterra envelope survive. Route O must prove a
+lower/coercive law for the already-admitted literal joint block; CCM must use a nonlocal or adaptive
+source relation rather than endpoint fitting or new-entry counting.
+
+Evidence: [two-offset endpoint debt](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantileTwoOffsetEndpointNoGo.lean), [common-clock envelope](../../../../formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleParityCommonClockEnvelope.lean).
+
+[Back to family](#ccm) · [Current Route O frontier](rh-current-frontier-map.md#o--restricted-weil-ground-and-genus-lag-order)
+
 <a id="arithmetic"></a>
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
@@ -762,6 +808,9 @@ Evidence: [prime-edge cone escape and wall no-go](../../../../formal/GaloisForLF
 - [finite-abscissa Dirichlet scalar, shift and period selector](#no-go-275)
 - [EDQ inclusive all-gcd positive completion](#no-go-313)
 - [factorized Dirichlet-polynomial large-value selection](#no-go-340)
+- [T1 regular stationary diagonal-germ localization](#no-go-353)
+- [T2 normal Möbius and Chebyshev-mirror second comparison](#no-go-354)
+- [EDQ uniform-period replacement of physical child energy](#no-go-355)
 
 <a id="no-go-296"></a>
 
@@ -1357,6 +1406,67 @@ Evidence: [factorized resonance](../../../../formal/GaloisForLFunctions/RHTower/
 
 [Back to family](#arithmetic) · [Shared frontier](rh-current-frontier-map.md#off-line-first-moment-and-large-value-selection)
 
+<a id="no-go-353"></a>
+
+### T1 regular stationary diagonal-germ localization
+
+**Closed result**
+
+The two stationary rapidities have opposite curvature, zero signature and positive real amplitude;
+there is no Maslov sign to orient the pair. The anti-ordered saddle survives every multiplier
+nonzero near the diagonal. Its phase is positive but compresses to zero in the relevant deep-mass
+regime, so a regular fixed diagonal germ is neither excluding nor dispersive.
+
+**Survivor / still open**
+
+The exact saddle geometry and finite Abel line-bound receiver survive. T1 needs signed nonlocal
+prime-frequency cancellation or source order support excluding anti-ordered pairs.
+
+Evidence: [saddle polarity](../../../../formal/GaloisForLFunctions/RHTower/XiMassTwoRapiditySaddlePolarity.lean), [stationary phase](../../../../formal/GaloisForLFunctions/RHTower/XiMassTwoRapidityStationaryPhase.lean), [diagonal-germ no-go](../../../../formal/GaloisForLFunctions/RHTower/XiMassDiagonalGermStationaryNoGo.lean).
+
+[Back to family](#arithmetic) · [Current T1 frontier](rh-current-frontier-map.md#t1--theta-tail-core-current)
+
+<a id="no-go-354"></a>
+
+### T2 normal Möbius and Chebyshev-mirror second comparison
+
+**Closed result**
+
+The joint-depth normal Möbius source transport is exactly the known prime-log/Wold divisor carrier
+and retains every strict-right residue. The Chebyshev mirror is the same full divisor current.
+Thus neither reorganization is an independent second comparison; a strict-right zero also forces a
+nonzero noncompact cofinal compensator.
+
+**Survivor / still open**
+
+The source decomposition, holomorphic higher-dilate tail and Möbius--valuation duality survive.
+T2 needs a genuinely different source law excluding the compensator.
+
+Evidence: [joint-depth transport](../../../../formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldJointDepthMöbiusSourceTransport.lean), [Chebyshev mirror](../../../../formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldChebyshevDivisorMirror.lean).
+
+[Back to family](#arithmetic) · [Current T2 frontier](rh-current-frontier-map.md#t2--natural-abel-singular-wold-divisor)
+
+<a id="no-go-355"></a>
+
+### EDQ uniform-period replacement of physical child energy
+
+**Closed result**
+
+The exact chronological EDQ covariance is asymptotically negligible relative to unweighted
+complete-period variance. Replacing physical child-fibre weights by a uniform clock average
+therefore changes the scale and retains an isolated-prime component that the physical energy
+cancels.
+
+**Survivor / still open**
+
+Parent fibres decompose exactly into successor fibres, and their energy is a pairwise form in
+signed source--cofactor contrasts. The remaining polylogarithmic bound must exploit those physical
+weights and signed innovations directly.
+
+Evidence: [energy/period separation](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionEnergyPeriodSeparation.lean), [child-fibre contrast](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionChildFibreContrast.lean).
+
+[Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
+
 <a id="scattering"></a>
 
 ## HB, FZZ and PW: scattering and physical action
@@ -1433,6 +1543,9 @@ Evidence: [factorized resonance](../../../../formal/GaloisForLFunctions/RHTower/
 - [HB finite scalar/packet realization of the original source clock](#no-go-315)
 - [HB literal on-shell same-frequency, holomorphic or native-L2 realization](#no-go-316)
 - [HB spectral-root or physical-chamber cutoff-face escape](#no-go-326)
+- [FZZ real-factorized, symmetric and local-branch cross-depth orientation](#no-go-356)
+- [PTR global-clock, uniform-frame, scalar or positive-metric transfer](#no-go-357)
+- [PTR finite closed Floquet truncation](#no-go-358)
 
 <a id="no-go-299"></a>
 
@@ -2628,6 +2741,68 @@ Evidence: [square-reader channels](../../../../formal/GaloisForLFunctions/RHTowe
 
 [Back to family](#scattering) · [HB retirement](#no-go-341)
 
+<a id="no-go-356"></a>
+
+### FZZ real-factorized, symmetric and local-branch cross-depth orientation
+
+**Closed result**
+
+Finite and nested all-depth real-factorized accumulations of the literal complex cross-depth
+covariance are nonnegative Hermitian Gram squares. Every real exchange-symmetric kernel has zero
+imaginary part; a single charged external-BRST branch averages to zero; and the literal two-mark
+OPE/contact source has zero exchange defect. None can produce the missing oriented Ward term.
+
+**Survivor / still open**
+
+The pointwise complex covariance and its nonzero exchange-antisymmetric difference survive. A
+physical source must derive an ordered/nonfactorized or genuinely complex cross-depth kernel before
+integration.
+
+Evidence: [finite factorized no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityCrossDepthFactorizedGramNoGo.lean), [all-depth no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityCrossDepthAllDepthFactorizedGramNoGo.lean), [symmetric-kernel classification](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityCrossDepthSymmetricKernelNoGo.lean), [single-branch average](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityExternalBRSTSingleBranchAngularNoGo.lean), [two-mark exchange](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityTwoMarkedSourceExchangeNoGo.lean).
+
+[Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
+
+<a id="no-go-357"></a>
+
+### PTR global-clock, uniform-frame, scalar or positive-metric transfer
+
+**Closed result**
+
+One global Floquet clock cannot contain first nodes from two distinct prime lattices, and no finite
+disjoint clock array contains all primes. The normalized prime monodromy jet needs a prime-dependent
+frame. No scalar two-channel multiplier can realize the parabolic transfer, and the literal coupled
+prime cell preserves no positive-definite Hermitian metric.
+
+**Survivor / still open**
+
+The exact infinite prime-indexed sideband measure, prime-dependent non-scalar cyclic cell and
+indefinite/Krein flux survive. A literal temporal-Maxwell slab now realizes the finite transfer;
+the infinite rotating/OAM ladder and independent confinement law remain open.
+
+Evidence: [clock lattice no-go](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPrimeClockDeningerLatticeNoGo.lean), [prime-frame obstruction](../../../../formal/GaloisForLFunctions/RHTower/DeningerPhotonicParabolicJetBridge.lean), [scalar no-go](../../../../formal/GaloisForLFunctions/RHTower/PhotonicScalarFloquetParabolicNoGo.lean), [cyclic realization and metric obstruction](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPrimeCyclicSlabParabolicRealization.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-358"></a>
+
+### PTR finite closed Floquet truncation
+
+**Closed result**
+
+Every nonempty finite Floquet-index set has an escaping upper shift. The literal positive-helical
+prime material coefficient is nonzero at every index, so no nonempty finite closed channel model
+can realize that constitutive ladder without an additional boundary-dark mode.
+
+**Survivor / still open**
+
+A literal Maxwell realization must retain an infinite sideband ladder or derive a source-faithful
+modal-overlap dark boundary. The complex-PTC infinite multiplier and its bilateral sewing law give
+the exact target, but moderation on all Xi copies is already RH-equivalent.
+
+Evidence: [finite-ladder obstruction and infinite conormal target](../../../../formal/GaloisForLFunctions/RHTower/PhotonicPrimeCyclicSlabParabolicRealization.lean), [temporal-Maxwell finite transfer](../../../../formal/GaloisForLFunctions/RHTower/PhotonicTemporalMaxwellSlabRealization.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -2663,6 +2838,7 @@ Evidence: [square-reader channels](../../../../formal/GaloisForLFunctions/RHTowe
 - [approximate or smoothed prime-measure Weil positivity](#no-go-343)
 - [SQB whole finite-deck L2 density](#no-go-349)
 - [SQB two-dimensional vertex-grid compactness](#no-go-350)
+- [RG literal totalized carrier-density continuity at real nodes](#no-go-359)
 
 <a id="no-go-308"></a>
 
@@ -3158,15 +3334,37 @@ therefore not a valid completion-level proof of bounded-core Rellich compactness
 
 **Survivor / still open**
 
-Completed cusp-tail control is already uniform. The bounded-core argument must use cell averages,
-stable smoothing, or another genuine two-dimensional Rellich construction, then splice it with
-the tail estimate.
+The replacement is now source-implemented: cell-local Poincaré, a common witness line for every
+finite deck coordinate, product-grid energy control and a fixed finite-dimensional cell-constant
+space. The remaining step is the actual bounded-core `DeckL2` approximation/total-boundedness
+theorem and its splice with uniform cusp-tail control.
 
-Evidence: [SQB route audit](selberg-density-quartic-facts.md), [one-dimensional grid theorem](../../../../formal/GaloisForLFunctions/HTGeometry/L2GridApproximation.lean).
+Evidence: [witness-line replacement](../../../../formal/GaloisForLFunctions/HTGeometry/WitnessLinePoincare.lean), [finite-deck grid witness](../../../../formal/GaloisForLFunctions/RHTower/MaassFiniteDeckCoreWitness.lean), [mechanism audit](new_scientific_knowledge/sqb-two-cell-witness-line-rellich-bridge.md).
 
-Status: working-tree paper result; not promoted as a checked Lean theorem.
+Status: no-go retained; positive survivor is committed source. One proof-only grid-step edit remains uncommitted and was not checked.
 
 [Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
+
+<a id="no-go-359"></a>
+
+### RG literal totalized carrier-density continuity at real nodes
+
+**Closed result**
+
+At every real spectral Xi node, the exact Suzuki carrier density tends to zero on the punctured
+real line. At a simultaneous Xi/derivative zero, its literal totalized value is `1/4`; hence that
+literal representative is not continuous and cannot directly define the claimed continuous
+Cayley/Hankel symbol.
+
+**Survivor / still open**
+
+An uncommitted source edit gives the exact one-point patch, a.e. equality and continuity at every
+real node. RG-HF must justify the chosen a.e. representative and endpoint regularity separately,
+then still prove global compactness/orientation.
+
+Evidence: [real-node density obstruction and WIP repair](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiCarrierRealNodeDensityNoGo.lean).
+
+[Back to family](#theta) · [Current RG frontier](rh-current-frontier-map.md#rg--gaussian-arithmetic-and-suzuki-transport-positivity)
 
 <a id="completion"></a>
 
@@ -3199,6 +3397,7 @@ Status: working-tree paper result; not promoted as a checked Lean theorem.
 - [split additive-exponential Hopf hidden-kernel mechanism](#no-go-165)
 - [XST signed cross-orbit incidence](#no-go-159)
 - [C1 positive nuclear-root transport of Route-N projective leakage](#no-go-333)
+- [RHist scalar positive darkness with finite continuous-observer price](#no-go-360)
 
 <a id="no-go-181"></a>
 
@@ -3601,6 +3800,27 @@ Evidence: [four-label projective-leakage obstruction](../../../../formal/GaloisF
 
 [Back to family](#completion) · [Current C1 frontier](rh-current-frontier-map.md#c1--class-space-quotient-and-global-weil-positivity)
 
+<a id="no-go-360"></a>
+
+### RHist scalar positive darkness with finite continuous-observer price
+
+**Closed result**
+
+The literal two-repair scalar source admits a positive norm-dark finite history exactly on the
+critical line; changing positive weights cannot make it dark off line. A genuine normalized
+Big-Witt cross-prime row is ambient-norm-dark, but every continuous positive observer retaining a
+fixed response-times-price gap forces the price to escape to infinity.
+
+**Survivor / still open**
+
+RHist must add a source-visible vector channel and use singular/noncontinuous observation or
+another nonescaping price law. Scalar positive repair mixtures and ambient continuous finite-price
+observers are terminal.
+
+Evidence: [repair-pair classification](../../../../formal/GaloisForLFunctions/RHTower/XiCanonicalRepairPairPositiveDarkHistoryNoGo.lean), [Big-Witt price escape](../../../../formal/GaloisForLFunctions/RHTower/DeningerBigWittCrossPrimeRHistPriceEscape.lean).
+
+[Back to family](#completion) · [Current RHist frontier](rh-current-frontier-map.md#candidate-rhist)
+
 <a id="ward"></a>
 
 ## Ward, Suzuki, prime–Gamma and operator landing
@@ -3656,6 +3876,8 @@ Evidence: [four-label projective-leakage obstruction](../../../../formal/GaloisF
 - [Suzuki rooted endpoint contraction](#no-go-346)
 - [SP-E/P one-label diagonal clock transport](#no-go-347)
 - [P/CCM finite-cell anti-alignment](#no-go-348)
+- [SP-E/P finite stationary history and stationary null translation](#no-go-361)
+- [Suzuki finite-head recurrence and fractional transition-core correction](#no-go-362)
 
 <a id="no-go-309"></a>
 
@@ -4514,6 +4736,49 @@ generate it.
 Evidence: [finite anti-alignment classification](../../../../formal/GaloisForLFunctions/RHTower/FrankensteinRoutePCCMGammaSixFiniteAntiAlignmentClassification.lean).
 
 [Back to family](#ward) · [Current Route P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-361"></a>
+
+### SP-E/P finite stationary history and stationary null translation
+
+**Closed result**
+
+Every fixed literal covariance-history coordinate diverges to `+∞` along successive prime cutoffs,
+so no finite stationary or cutoff-local history family carries the SP-E source cofinally. The
+terminal zero-atom increment is a nonzero P-Julia-null vector, but translation by it is not a
+stationary Julia isometry. Identifying it with the five-channel source radical also fails.
+
+**Survivor / still open**
+
+The complete current factors through two Julia blocks with separate source and terminal gauges.
+A viable P action must be state-dependent/connection-valued, graph-closed and growing with history,
+while controlling the matched-versus-quantile variance defect.
+
+Evidence: [all-history growth](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszCovarianceKernelAllHistoryGrowthNoGo.lean), [five-channel gauges and translation](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePFiveChannelKreinFactorization.lean).
+
+[Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
+
+<a id="no-go-362"></a>
+
+### Suzuki finite-head recurrence and fractional transition-core correction
+
+**Closed result**
+
+Every fixed pair, and every fixed finite positive causal-depth Frostman head, returns arbitrarily
+close to its central cap at arbitrarily late heights. No such finite head has an eventual positive
+separation wall. Independently, any correction that makes the rectangular Ward defect eventually
+lower-semibounded must asymptotically cancel every fixed fraction of the literal linear transition
+core; fixed fractional under-compensation is impossible.
+
+**Survivor / still open**
+
+Endpoint prime regularization, the anchored completed source and exact recurrence constants
+survive. Suzuki/SV2 needs a moving infinite-head signed residual law after near-total
+atomic--continuous cancellation.
+
+Evidence: [two-prime recurrence](../../../../formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthFrostmanRecurrenceNoGo.lean), [finite-head recurrence](../../../../formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthFiniteHeadRecurrenceNoGo.lean), [transition-core saturation](../../../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreAsymptoticSaturation.lean).
+
+[Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
 
 <a id="roots"></a>
 
