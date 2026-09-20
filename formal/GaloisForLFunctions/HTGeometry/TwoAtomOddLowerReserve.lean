@@ -8,7 +8,7 @@ polynomial expansions retain its coupling to the actual physical scale.
 -/
 namespace HTGeometry
 noncomputable section
-set_option maxHeartbeats 8000000
+set_option maxHeartbeats 2000000
 set_option maxRecDepth 8192
 
 /-- Reciprocal upper envelope for the relative second Gaussian. -/

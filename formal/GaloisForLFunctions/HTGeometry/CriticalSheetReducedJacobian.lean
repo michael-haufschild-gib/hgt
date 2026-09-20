@@ -18,7 +18,7 @@ noncomputable section
 
 open Polynomial IsLocalRing
 
-set_option maxHeartbeats 40000000
+set_option maxHeartbeats 8000000
 set_option synthInstance.maxHeartbeats 1000000
 
 /-- The horizon observation Jacobian is functorial in the coefficient ring. -/
@@ -98,7 +98,7 @@ theorem criticalSheet_jacobian_eq_horizon (σ : criticalGeometricSheet K m n)
               (Fact.out : 0 < n)).map
             (IsLocalRing.residue (criticalNormalClosureSchurValuationSubring K
               (Fact.out : 0 < m) (Fact.out : 0 < n)))) n m := by
-  rw [RingHom.coe_comp, ← Matrix.map_map, criticalObservationJacobian_eq_horizon K,
+  simp only [RingHom.coe_comp, ← Matrix.map_map, criticalObservationJacobian_eq_horizon K,
     horizonObservationJacobian_map, horizonObservationJacobian_map,
     criticalSheet_recipPolynomialIntegral_map K σ hsing]
 

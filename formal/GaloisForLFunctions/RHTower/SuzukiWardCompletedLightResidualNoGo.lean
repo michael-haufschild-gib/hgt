@@ -31,15 +31,15 @@ theorem tendsto_suzukiUnitRieszLightCompletedRegularResidual_zero_div_sqrt_atTop
         Real.sqrt ((N + 2 : ℕ) : ℝ)) atTop (nhds (1 / 6 : ℝ)) := by
   have hprime : Tendsto (fun N : ℕ =>
       unitRieszCoherentPrimeOutgoingCharge (N + 2) /
-        Real.sqrt ((N + 2 : ℕ) : ℝ)) atTop (nhds (1 / 3 : ℝ)) := by
-    simpa using
-      tendsto_unitRieszCoherentPrimeOutgoingCharge_div_sqrt_atTop_one_third.comp
-        (Filter.tendsto_add_atTop_nat 2)
+        Real.sqrt ((N + 2 : ℕ) : ℝ)) atTop (nhds (1 / 3 : ℝ)) :=
+    tendsto_unitRieszCoherentPrimeOutgoingCharge_div_sqrt_atTop_one_third.comp
+      (Filter.tendsto_add_atTop_nat 2)
   have hneg : Tendsto (fun N : ℕ =>
       suzukiUnitRieszReporterWeightedNegativeLightMass (N + 2) 0 /
         Real.sqrt ((N + 2 : ℕ) : ℝ)) atTop (nhds (1 / 6 : ℝ)) := by
-    have hscale := (tendsto_const_nhds.mul hprime)
-      (show (1 / 2 : ℝ) * (1 / 3 : ℝ) = 1 / 6 by norm_num)
+    have hscale := hprime.const_mul (1 / 2 : ℝ)
+    have hval : (1 / 2 : ℝ) * (1 / 3 : ℝ) = 1 / 6 := by norm_num
+    rw [hval] at hscale
     refine hscale.congr' ?_
     filter_upwards with N
     rw [suzukiUnitRieszReporterWeightedNegativeLightMass_zero_eq_prime_half
@@ -48,6 +48,8 @@ theorem tendsto_suzukiUnitRieszLightCompletedRegularResidual_zero_div_sqrt_atTop
   have hregular :=
     tendsto_suzukiUnitRieszRegularWardMass_logNat_div_sqrt_atTop_one_third
   have hsub := hregular.sub hneg
+  have hval2 : (1 / 3 : ℝ) - 1 / 6 = 1 / 6 := by norm_num
+  rw [hval2] at hsub
   refine hsub.congr' ?_
   filter_upwards with N
   rw [suzukiUnitRieszLightCompletedRegularResidual]

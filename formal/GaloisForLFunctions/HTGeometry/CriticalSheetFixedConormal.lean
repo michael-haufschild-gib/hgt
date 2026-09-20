@@ -24,7 +24,7 @@ noncomputable section
 
 open Polynomial IsLocalRing
 
-set_option maxHeartbeats 40000000
+set_option maxHeartbeats 8000000
 set_option synthInstance.maxHeartbeats 1000000
 
 variable (K : Type*) [Field K] [CharZero K] [IsAlgClosed K] {m n : ℕ}

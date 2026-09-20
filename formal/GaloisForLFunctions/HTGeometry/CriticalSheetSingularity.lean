@@ -17,7 +17,7 @@ noncomputable section
 
 open Polynomial IsLocalRing
 
-set_option maxHeartbeats 40000000
+set_option maxHeartbeats 2000000
 set_option synthInstance.maxHeartbeats 1000000
 
 variable (K : Type*) [Field K] [CharZero K] [IsAlgClosed K] {m n : ℕ}
@@ -67,7 +67,7 @@ theorem det_criticalReciprocalJacobian_criticalSheetReducedRecipPolynomial
           ((criticalGeometricSheetToSchurFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ).1.2
             + criticalNormalClosureSchurReciprocalTailIntegral K (Fact.out : 0 < m)
               (Fact.out : 0 < n)) n m).det) := by
-  rw [criticalSheetReducedRecipPolynomial, ← criticalReciprocalJacobian_map,
+  simp only [criticalSheetReducedRecipPolynomial, ← criticalReciprocalJacobian_map,
     ← RingHom.mapMatrix_apply, ← RingHom.map_det]
 
 /-- The sheet image of the source caustic determinant. -/

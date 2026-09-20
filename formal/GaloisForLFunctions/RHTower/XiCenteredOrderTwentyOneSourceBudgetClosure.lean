@@ -19,7 +19,7 @@ namespace RHTower
 noncomputable section
 
 set_option maxRecDepth 60000 in
-set_option maxHeartbeats 12000000 in
+set_option maxHeartbeats 2000000 in
 theorem oneHundredFortyThree_div_fiftyThousand_lt_sum_firstAtomFourthLowerMass64 :
     (143 / 50000 : ℝ) <
       ∑ j ∈ Finset.range 56,

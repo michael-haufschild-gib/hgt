@@ -12,7 +12,7 @@ the determinant is proved separately.
 open MvPolynomial
 namespace HTGeometry
 noncomputable section
-set_option maxHeartbeats 16000000
+
 set_option maxRecDepth 100000
 set_option linter.unusedSimpArgs false
 
@@ -171,7 +171,6 @@ theorem oddCompactRemainder_nonneg {u t w : ℝ}
     (oddCompactRemainderPart48_nonneg hu ht hw))
     (add_nonneg (oddCompactRemainderPart49_nonneg hu ht hw)
     (oddCompactRemainderPart50_nonneg hu ht hw)))))))
-
 
 end
 end HTGeometry

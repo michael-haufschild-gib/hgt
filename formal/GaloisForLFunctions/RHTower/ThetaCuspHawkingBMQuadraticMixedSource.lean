@@ -72,6 +72,69 @@ private theorem background_second (r y : ℂ) (k l : Fin 4) :
        else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
        else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] else 0) := rfl
 
+/-- Background first/second entries with the index conditionals already resolved, so the
+expansion below never evaluates a decidable branch. -/
+
+private theorem background_first_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_first_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2] := rfl
+
+private theorem background_first_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_first_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] := rfl
+
+private theorem background_second_0_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 1 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 3 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3, 2*y⁻¹^2, 2*y⁻¹^2] := rfl
+
+private theorem background_second_1_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+
+private theorem background_second_2_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 1 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 3 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+
+private theorem background_second_3_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] := rfl
+
 
 
 set_option maxRecDepth 16384 in
@@ -101,9 +164,9 @@ private theorem ricci_0_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -142,9 +205,9 @@ private theorem ricci_0_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -183,9 +246,9 @@ private theorem ricci_0_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -224,9 +287,9 @@ private theorem ricci_0_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -265,9 +328,9 @@ private theorem ricci_1_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -306,9 +369,9 @@ private theorem ricci_1_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -347,9 +410,9 @@ private theorem ricci_1_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -388,9 +451,9 @@ private theorem ricci_1_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -429,9 +492,9 @@ private theorem ricci_2_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -470,9 +533,9 @@ private theorem ricci_2_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -511,9 +574,9 @@ private theorem ricci_2_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -552,9 +615,9 @@ private theorem ricci_2_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -593,9 +656,9 @@ private theorem ricci_3_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -634,9 +697,9 @@ private theorem ricci_3_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -675,9 +738,9 @@ private theorem ricci_3_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -716,9 +779,9 @@ private theorem ricci_3_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
-  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply]
+  all_goals simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply]
   all_goals rw [← hK, ← hV, ← hM]
   all_goals simp (config := { maxSteps := 400000 }) [
     correctionJet, scalarJet, radialEntries, coexactJet, D4BMVectorLinearEquation.vectorJet,
@@ -788,7 +851,7 @@ theorem scalar_cancel (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     D4BMBackground.jet_ricci r y hr hy hf,
     CoordinateMetricTwoJet.MixedQuadratic.inverse, CoordinateMetricTwoJet.Linearization.inverse,
     background_metric, D4BMBackground.metric_inverse r y hr hy hf]
-  simp [Fin.sum_univ_succ, Matrix.mul_apply, D4BMBackground.metric, tensor,
+  simp [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply, D4BMBackground.metric, tensor,
     scalarJet, radialEntries, correctionJet, D4BMVectorLinearEquation.vectorJet,
     ScalarTwoJet.mul, ScalarTwoJet.add, ScalarTwoJet.neg, ScalarTwoJet.inv,
     ScalarTwoJet.constant, coord, temporalRadial, angular,

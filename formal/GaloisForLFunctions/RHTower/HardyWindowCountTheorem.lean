@@ -345,12 +345,12 @@ private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
         + 21381376 + 5 := by rw [hDdef]; ring
     rw [this]
     exact hTD
-  have hT0 : (0 : ℝ) < T := by
-    have h1 : (0 : ℝ) < (D + 1) ^ 16 := by positivity
-    linarith
-  have hT1 : (1 : ℝ) ≤ T := by
-    have h1 : (1 : ℝ) ≤ (D + 1) ^ 16 := one_le_pow₀ (by linarith)
-    linarith
+  -- Keep `(D + 1) ^ 16` away from `linarith`: while `D` is still `set`-bound to its
+  -- big body, ring-normalising that power builds a degree-48 polynomial in `CE, CF`.
+  have hD1 : (1 : ℝ) ≤ D + 1 := by linarith only [hD4]
+  have hT0 : (0 : ℝ) < T :=
+    lt_of_lt_of_le (pow_pos (by linarith only [hD1]) 16) hTD'
+  have hT1 : (1 : ℝ) ≤ T := le_trans (one_le_pow₀ hD1) hTD'
   set s1 : ℝ := Real.sqrt T with hs1def
   set s2 : ℝ := Real.sqrt s1 with hs2def
   set s3 : ℝ := Real.sqrt s2 with hs3def

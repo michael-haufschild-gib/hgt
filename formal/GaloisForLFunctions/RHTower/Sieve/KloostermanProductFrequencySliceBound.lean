@@ -245,7 +245,7 @@ theorem sum_injective_zmodFrequency_inv_val_le_one_add_log
       ∑ i, 1 / (g i : ℝ) := by
     exact Finset.sum_image (fun _ _ _ _ h => hginj h)
   rw [← hsum]
-  apply sum_inv_finset_le_one_add_log
+  apply sum_inv_finset_bounded_le_one_add_log
   · intro n hn
     rcases Finset.mem_image.mp hn with ⟨i, hi, rfl⟩
     exact Nat.one_le_iff_ne_zero.mpr ((ZMod.val_ne_zero _).mpr (hne i))
@@ -274,7 +274,7 @@ theorem sum_injective_zmodFrequency_inv_complementVal_le_one_add_log
       ∑ i, 1 / (g i : ℝ) := by
     exact Finset.sum_image (fun _ _ _ _ h => hginj h)
   rw [← hsum]
-  apply sum_inv_finset_le_one_add_log
+  apply sum_inv_finset_bounded_le_one_add_log
   · intro n hn
     rcases Finset.mem_image.mp hn with ⟨i, hi, rfl⟩
     have := ZMod.val_lt (f i)

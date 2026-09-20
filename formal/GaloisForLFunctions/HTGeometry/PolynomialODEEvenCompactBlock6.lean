@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactQuartic
 /-! # Exact integer-scaled polynomial block 6 and nonnegative discarded remainder -/
 namespace HTGeometry
 noncomputable section
-set_option maxHeartbeats 12000000
+
 set_option maxRecDepth 100000
 
 /-- One common denominator keeps the exact coefficient arithmetic outside the polynomial identity. -/

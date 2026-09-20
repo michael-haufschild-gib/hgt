@@ -21,7 +21,7 @@ noncomputable section
 
 open Polynomial IsLocalRing
 
-set_option maxHeartbeats 40000000
+set_option maxHeartbeats 8000000
 set_option synthInstance.maxHeartbeats 1000000
 
 variable (K : Type*) [Field K] [CharZero K] [IsAlgClosed K] {m n : ℕ}
@@ -189,10 +189,10 @@ theorem criticalSchur_reducedFibre_eq_of_collisions [DecidableEq K]
       (Fact.out : 1 < m) (Fact.out : 1 < n))
     _ _ hU hV (fun h => hU0 (by rw [h, Polynomial.coeff_zero]))
     (criticalSheet_tangent_isCoprime K σ hsing hU hV hUV htan) ?_ ?_
-  · rw [criticalSheetReducedRecipPolynomial_eq, criticalSheetReducedRawPolynomial_eq] at htan
-    exact htan
-  · rw [criticalSheetReducedRecipPolynomial_eq, criticalSheetReducedRawPolynomial_eq] at htanσ'
-    exact htanσ'
+  · simpa only [criticalSheetReducedRecipPolynomial_eq, criticalSheetReducedRawPolynomial_eq]
+      using htan
+  · simpa only [criticalSheetReducedRecipPolynomial_eq, criticalSheetReducedRawPolynomial_eq]
+      using htanσ'
 
 end
 

@@ -57,8 +57,71 @@ def vectorWeight (s r : ℂ) : ℂ := s^2*(3*s^2+12*s+11)/(2*r^4)
 /-- Scalar--vector radial coefficient in the actual angular quadratic source. -/
 def mixedWeight (s r : ℂ) : ℂ := s^2*(s+1)/r^3
 
+/-- Background first/second derivative entries with the index conditionals already
+resolved: the big expansion below then never evaluates a decidable branch. -/
+
+private theorem background_first_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_first_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2] := rfl
+
+private theorem background_first_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_first_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] := rfl
+
+private theorem background_second_0_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 1 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 3 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3, 2*y⁻¹^2, 2*y⁻¹^2] := rfl
+
+private theorem background_second_1_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+
+private theorem background_second_2_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 1 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 3 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+
+private theorem background_second_3_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] := rfl
+
 set_option maxRecDepth 32768 in
-set_option maxHeartbeats 24000000 in
+set_option maxHeartbeats 8000000 in
 private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
     CoordinateMetricTwoJet.Quadratic.ricci (D4BMBackground.jet r y)
@@ -74,10 +137,10 @@ private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ
     CoordinateMetricTwoJet.Linearization.connection, CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel,
-    background_metric, background_first, background_second,
+    background_metric,
     D4BMBackground.metric_inverse r y hr hy hf]
   rw [← hK]
-  simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply, combinedJet, scalarJet, angular, radialEntries, ScalarTwoJet.neg, coexactJet, D4BMVectorLinearEquation.vectorJet, D4BMVectorLinearEquation.angular0,
+  simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply, combinedJet, scalarJet, angular, radialEntries, ScalarTwoJet.neg, coexactJet, D4BMVectorLinearEquation.vectorJet, D4BMVectorLinearEquation.angular0,
     D4BMVectorLinearEquation.angular1, temporalRadial, coord, ScalarTwoJet.add,
     ScalarTwoJet.mul, ScalarTwoJet.inv, ScalarTwoJet.constant]
   simp only [scalarWeight, vectorWeight, mixedWeight, ← pow_two, ← sub_eq_add_neg]
@@ -86,7 +149,7 @@ private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ
 
 
 set_option maxRecDepth 32768 in
-set_option maxHeartbeats 24000000 in
+set_option maxHeartbeats 8000000 in
 private theorem ricci_difference (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
     (CoordinateMetricTwoJet.Quadratic.ricci (D4BMBackground.jet r y)
@@ -105,10 +168,10 @@ private theorem ricci_difference (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     CoordinateMetricTwoJet.Linearization.connection, CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel,
-    background_metric, background_first, background_second,
+    background_metric,
     D4BMBackground.metric_inverse r y hr hy hf]
   rw [← hK]
-  simp (config := { maxSteps := 400000 }) [Fin.sum_univ_succ, Matrix.mul_apply, combinedJet, scalarJet, angular, radialEntries, ScalarTwoJet.neg, coexactJet, D4BMVectorLinearEquation.vectorJet, D4BMVectorLinearEquation.angular0,
+  simp (config := { maxSteps := 400000 }) [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply, combinedJet, scalarJet, angular, radialEntries, ScalarTwoJet.neg, coexactJet, D4BMVectorLinearEquation.vectorJet, D4BMVectorLinearEquation.angular0,
     D4BMVectorLinearEquation.angular1, temporalRadial, coord, ScalarTwoJet.add,
     ScalarTwoJet.mul, ScalarTwoJet.inv, ScalarTwoJet.constant]
   simp only [scalarWeight, vectorWeight, mixedWeight, ← pow_two, ← sub_eq_add_neg]

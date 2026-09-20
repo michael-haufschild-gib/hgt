@@ -206,7 +206,7 @@ private theorem integral_add_pow_mul_exp_neg_thetaCuspAtomPairMeasure
     (fun t : ℝ => t ^ (q - i) * Real.exp (-(B * t)))]
   ring
 
-set_option maxHeartbeats 8000000 in
+set_option maxHeartbeats 400000 in
 /-- The explicit atom-pair score mass is its literal product-measure eighth-score integral. -/
 theorem thetaCuspLikelihoodAtomPairEighthScoreMass_eq_integral
     {n m : ℕ} (hn : 2 ≤ n) (hm : 2 ≤ m) (A : ℝ)

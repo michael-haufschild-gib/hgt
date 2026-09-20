@@ -71,6 +71,69 @@ private theorem background_second (r y : ℂ) (k l : Fin 4) :
        else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
        else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] else 0) := rfl
 
+/-- Background first/second entries with the index conditionals already resolved, so the
+expansion below never evaluates a decidable branch. -/
+
+private theorem background_first_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_first_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2] := rfl
+
+private theorem background_first_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_first_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] := rfl
+
+private theorem background_second_0_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 1 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_0_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 0 3 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3, 2*y⁻¹^2, 2*y⁻¹^2] := rfl
+
+private theorem background_second_1_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_1_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+
+private theorem background_second_2_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 1 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_2_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 2 3 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_0 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_1 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+
+private theorem background_second_3_2 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
+
+private theorem background_second_3_3 (r y : ℂ) :
+    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] := rfl
+
 
 /-- Complete mixed source tensor determined by the vector master and its radial derivative. -/
 def sourceTensor (w r y H H1 H2 H3 A C Q R U V W Z : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
@@ -83,7 +146,7 @@ def sourceTensor (w r y H H1 H2 H3 A C Q R U V W Z : ℂ) : Matrix (Fin 4) (Fin 
   !![0,0,T0,T1; 0,0,R0,R1; T0,R0,0,0; T1,R1,0,0]
 
 set_option maxRecDepth 8192 in
-set_option maxHeartbeats 16000000 in
+set_option maxHeartbeats 8000000 in
 /-- All sixteen actual Ricci residual components are the displayed master curl.
 No angular eigen-equation or radial field equation is assumed. -/
 theorem ricci_component (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
@@ -101,10 +164,10 @@ theorem ricci_component (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
     CoordinateMetricTwoJet.Linearization.inverseSpatial,
     CoordinateMetricTwoJet.Linearization.inverse,
     CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
+    background_metric, 
     D4BMBackground.metric_inverse r y hr hy hf]
   all_goals rw [← hK]
-  all_goals simp [Fin.sum_univ_succ, Matrix.mul_apply, metricJet, radialJet, covector0, covector1,
+  all_goals simp [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply, metricJet, radialJet, covector0, covector1,
     coord, ScalarTwoJet.add, ScalarTwoJet.mul, ScalarTwoJet.inv, ScalarTwoJet.constant,
     sourceTensor]
   all_goals simp only [master, masterFirst, ← pow_two, ← sub_eq_add_neg]
@@ -121,7 +184,7 @@ theorem scalar_zero (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
   simp only [CoordinateMetricTwoJet.Linearization.scalar, hR,
     D4BMBackground.jet_ricci r y hr hy hf, CoordinateMetricTwoJet.Linearization.inverse,
     background_metric, D4BMBackground.metric_inverse r y hr hy hf]
-  simp [Fin.sum_univ_succ, Matrix.mul_apply, D4BMBackground.metric, sourceTensor,
+  simp [Fin.sum_univ_four, background_first_0, background_first_1, background_first_2, background_first_3, background_second_0_0, background_second_0_1, background_second_0_2, background_second_0_3, background_second_1_0, background_second_1_1, background_second_1_2, background_second_1_3, background_second_2_0, background_second_2_1, background_second_2_2, background_second_2_3, background_second_3_0, background_second_3_1, background_second_3_2, background_second_3_3, Matrix.mul_apply, D4BMBackground.metric, sourceTensor,
     metricJet, ScalarTwoJet.mul, ScalarTwoJet.constant]
 
 /-- The complete cosmological Einstein operator is the derived vector master curl. -/

@@ -49,6 +49,112 @@ def weightedTailXX (u : ℂ) (negative : Bool) (x Y : ℝ) : ℂ :=
 def weightedTailYY (u : ℂ) (negative : Bool) (x Y : ℝ) : ℂ :=
   ∑' N : ℕ, modeCoefficient u N * signedModeVerticalSecondJetR negative N u x Y
 
+/-! ## Window domination uniformly in the horizontal coordinate
+
+The mode jets carry their horizontal dependence only through the unit-modulus Fourier phase, so
+the window-domination constant of `WindowDominated` does not depend on `x`.  Recording that
+uniformity is what lets the termwise `x`-derivative be summed on a whole line. -/
+
+/-- Degree-`d` window domination with a constant uniform in the horizontal coordinate. -/
+def WindowDominatedX (Y₀ R : ℝ) (d : ℕ) (f : ℕ → ℂ → ℝ → ℝ → ℂ) : Prop :=
+  ∃ K : ℝ, 0 ≤ K ∧ ∀ (N : ℕ) (ν : ℂ), ‖ν‖ ≤ R → ∀ (x : ℝ), ∀ Y ∈ Icc (Y₀ / 2) (2 * Y₀),
+    ‖f N ν x Y‖ ≤ K * ((N : ℝ) + 1) ^ d * besselModeMajorant Y₀ (R + 2) N
+
+/-- A unit-modulus phase leaves the domination constant unchanged, hence is uniform in `x`. -/
+theorem WindowDominated.phase_mulX {Y₀ R : ℝ} {d : ℕ} {f : ℕ → ℂ → ℝ → ℂ}
+    (hf : WindowDominated Y₀ R d f) (negative : Bool) :
+    WindowDominatedX Y₀ R d
+      (fun N ν x Y => d4BMCompletedEisensteinFourierPhase negative N x * f N ν Y) := by
+  obtain ⟨K, hK, h⟩ := hf
+  refine ⟨K, hK, fun N ν hν x Y hY => ?_⟩
+  rw [norm_mul, norm_fourierPhase, one_mul]
+  exact h N ν hν Y hY
+
+/-- Multiplying by the Fourier rate raises the degree by one, uniformly in `x`. -/
+theorem WindowDominatedX.rate_mul {Y₀ R : ℝ} {d : ℕ} {f : ℕ → ℂ → ℝ → ℝ → ℂ}
+    (hf : WindowDominatedX Y₀ R d f) (negative : Bool) :
+    WindowDominatedX Y₀ R (d + 1)
+      (fun N ν x Y => d4BMSignedFourierRate negative N * f N ν x Y) := by
+  obtain ⟨K, hK, h⟩ := hf
+  refine ⟨2 * Real.pi * K, by positivity, fun N ν hν x Y hY => ?_⟩
+  rw [norm_mul, norm_signedFourierRate]
+  have h1 := h N ν hν x Y hY
+  have hB := besselModeMajorant_nonneg Y₀ (R + 2) N
+  calc 2 * Real.pi * ((N : ℝ) + 1) * ‖f N ν x Y‖ ≤
+        2 * Real.pi * ((N : ℝ) + 1) * (K * ((N : ℝ) + 1) ^ d * besselModeMajorant Y₀ (R + 2) N) :=
+        mul_le_mul_of_nonneg_left h1 (by positivity)
+    _ = 2 * Real.pi * K * ((N : ℝ) + 1) ^ (d + 1) * besselModeMajorant Y₀ (R + 2) N := by
+        rw [pow_succ]; ring
+
+theorem WindowDominatedX.congr {Y₀ R : ℝ} {d : ℕ} {f g : ℕ → ℂ → ℝ → ℝ → ℂ}
+    (hf : WindowDominatedX Y₀ R d f)
+    (h : ∀ N ν x, ∀ Y ∈ Icc (Y₀ / 2) (2 * Y₀), g N ν x Y = f N ν x Y) :
+    WindowDominatedX Y₀ R d g := by
+  obtain ⟨K, hK, hf⟩ := hf
+  exact ⟨K, hK, fun N ν hν x Y hY => by rw [h N ν x Y hY]; exact hf N ν hν x Y hY⟩
+
+/-- The weighted majorant of an `x`-uniformly dominated family, still uniform in `x`. -/
+theorem WindowDominatedX.weighted {Y₀ R : ℝ} {d : ℕ} {f : ℕ → ℂ → ℝ → ℝ → ℂ}
+    (hf : WindowDominatedX Y₀ R d f) {u : ℂ} (hu : ‖u‖ ≤ R) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (N : ℕ) (x : ℝ), ∀ Y ∈ Icc (Y₀ / 2) (2 * Y₀),
+      ‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩ * f N u x Y‖ ≤
+        K * ((N : ℝ) + 1) ^ (d + ⌈3 * R + 1⌉₊) * besselModeMajorant Y₀ (R + 2) N := by
+  obtain ⟨K, hK, h⟩ := hf
+  refine ⟨K, hK, fun N x Y hY => ?_⟩
+  rw [norm_mul]
+  have hcoef : ‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩‖ ≤
+      ((N : ℝ) + 1) ^ (⌈3 * R + 1⌉₊) := by
+    refine (d4BM_norm_completedEisensteinWhittakerCoefficient_le u ⟨N + 1, by omega⟩).trans ?_
+    have hN1 : (1 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le N)
+    have hre : |u.re| ≤ ‖u‖ := Complex.abs_re_le_norm u
+    calc ((N + 1 : ℕ) : ℝ) ^ (3 * |u.re| + 1) ≤ ((N + 1 : ℕ) : ℝ) ^ (⌈3 * R + 1⌉₊ : ℝ) := by
+          refine Real.rpow_le_rpow_of_exponent_le hN1 ?_
+          have := Nat.le_ceil (3 * R + 1)
+          linarith
+      _ = ((N : ℝ) + 1) ^ (⌈3 * R + 1⌉₊) := by
+          rw [Real.rpow_natCast]; push_cast; rfl
+  have h1 := h N u hu x Y hY
+  have hB := besselModeMajorant_nonneg Y₀ (R + 2) N
+  calc ‖d4BMCompletedEisensteinWhittakerCoefficient u ⟨N + 1, by omega⟩‖ * ‖f N u x Y‖ ≤
+        ((N : ℝ) + 1) ^ (⌈3 * R + 1⌉₊) *
+          (K * ((N : ℝ) + 1) ^ d * besselModeMajorant Y₀ (R + 2) N) :=
+        mul_le_mul hcoef h1 (norm_nonneg _) (by positivity)
+    _ = K * ((N : ℝ) + 1) ^ (d + ⌈3 * R + 1⌉₊) * besselModeMajorant Y₀ (R + 2) N := by
+        rw [pow_add]; ring
+
+theorem windowDominatedX_mode {Y₀ R : ℝ} (hY₀ : 0 < Y₀) (negative : Bool) :
+    WindowDominatedX Y₀ R 0 (fun N ν x Y => d4BMSignedWhittakerMode negative N ν x Y) := by
+  refine ((windowDominated_whittakerP0 (R := R) hY₀ (k := 0) (by norm_num)).phase_mulX
+    negative).congr fun N ν x Y _ => ?_
+  unfold d4BMSignedWhittakerMode
+  simp
+
+theorem windowDominatedX_mode_horizontalFirst {Y₀ R : ℝ} (hY₀ : 0 < Y₀) (negative : Bool) :
+    WindowDominatedX Y₀ R 1
+      (fun N ν x Y => d4BMSignedWhittakerModeHorizontalFirstJet negative N ν x Y) :=
+  ((windowDominatedX_mode (R := R) hY₀ negative).rate_mul negative).congr fun _ _ _ _ _ => rfl
+
+theorem windowDominatedX_mode_verticalFirst {Y₀ R : ℝ} (hY₀ : 0 < Y₀) (negative : Bool) :
+    WindowDominatedX Y₀ R 1
+      (fun N ν x Y => d4BMSignedWhittakerModeVerticalFirstJet negative N ν x Y) := by
+  refine ((windowDominated_whittakerP0FirstJet (R := R) hY₀ (k := 0) (by norm_num)).phase_mulX
+    negative).congr fun N ν x Y _ => ?_
+  unfold d4BMSignedWhittakerModeVerticalFirstJet
+  simp
+
+theorem windowDominatedX_mode_horizontalSecond {Y₀ R : ℝ} (hY₀ : 0 < Y₀) (negative : Bool) :
+    WindowDominatedX Y₀ R 2
+      (fun N ν x Y => d4BMSignedWhittakerModeHorizontalSecondJet negative N ν x Y) := by
+  refine (((windowDominatedX_mode (R := R) hY₀ negative).rate_mul negative).rate_mul
+    negative).congr fun N ν x Y _ => ?_
+  unfold d4BMSignedWhittakerModeHorizontalSecondJet
+  ring
+
+theorem windowDominatedX_mode_verticalSecondR {Y₀ R : ℝ} (hY₀ : 0 < Y₀) (negative : Bool) :
+    WindowDominatedX Y₀ R 2 (fun N ν x Y => signedModeVerticalSecondJetR negative N ν x Y) :=
+  ((windowDominated_whittakerP0SecondJetR (R := R) hY₀).phase_mulX negative).congr
+    fun _ _ _ _ _ => rfl
+
 /-- The uniform majorant on the window, for a weighted family, uniformly in `x`. -/
 theorem exists_majorant_of_windowDominatedX {Y₀ : ℝ} (hY₀ : 0 < Y₀) {d : ℕ}
     {f : ℕ → ℂ → ℝ → ℝ → ℂ} (u : ℂ) (hf : WindowDominatedX Y₀ ‖u‖ d f) :

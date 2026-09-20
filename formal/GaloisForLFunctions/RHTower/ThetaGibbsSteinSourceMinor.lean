@@ -16,7 +16,7 @@ open Real MeasureTheory Set Filter Topology Polynomial
 open scoped BigOperators
 namespace RHTower
 noncomputable section
-set_option maxHeartbeats 8000000
+set_option maxHeartbeats 400000
 
 private def massSteinWitness : Fin 4 → ℝ[X] :=
   ![C (795520895838047 / 5000000000000000 : ℝ) * X^0,

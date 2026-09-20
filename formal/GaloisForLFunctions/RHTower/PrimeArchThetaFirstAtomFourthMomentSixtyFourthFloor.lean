@@ -18,7 +18,7 @@ noncomputable section
 
 /- Exact 64-cell rational lower certificate for the dominant atom's fourth moment. -/
 set_option maxRecDepth 60000 in
-set_option maxHeartbeats 12000000 in
+set_option maxHeartbeats 2000000 in
 theorem twoThousandNineHundredFiftyOne_div_oneMillion_lt_sum_firstAtomFourthLowerMass64 :
     (2951 / 1000000 : ℝ) <
       ∑ j ∈ Finset.range 56,

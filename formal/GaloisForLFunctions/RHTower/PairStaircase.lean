@@ -89,14 +89,14 @@ theorem two_phase_window_pool {a b : ℝ} (hb : 0 < b) (hba : b < a)
     have hceil : (a * Jl - o) / (2 * Real.pi) ≤ (m : ℝ) := Int.le_ceil _
     rw [div_le_iff₀ h2pi] at hceil
     rw [hWldef, le_div_iff₀ ha]
-    nlinarith
+    linarith
   have hWlJl2 : Wl ≤ Jl + 2 * Real.pi / a := by
     have hceil : (m : ℝ) < (a * Jl - o) / (2 * Real.pi) + 1 := Int.ceil_lt_add_one _
     have hceil1 : (m : ℝ) - 1 < (a * Jl - o) / (2 * Real.pi) := by linarith
     rw [lt_div_iff₀ h2pi] at hceil1
     have hcancel : 2 * Real.pi / a * a = 2 * Real.pi := div_mul_cancel₀ _ ha.ne'
     rw [hWldef, div_le_iff₀ ha]
-    nlinarith
+    linarith
   have hWrJr : Wl + Real.pi / (4 * a) ≤ Jr := by
     have h0 : 2 * Real.pi / a = 8 * Real.pi / (4 * a) := by
       rw [div_eq_div_iff ha.ne' (by positivity : (4 : ℝ) * a ≠ 0)]
@@ -378,7 +378,7 @@ theorem windowPrimes_card_of_scale {L : ℝ} (hL2 : Real.log 2 < L) {W X Bt : �
       rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
       push_cast
       ring
-    nlinarith
+    nlinarith only [h2, hlog4, Real.log_pos (by norm_num : (1:ℝ) < 2)]
   have hxX : Real.exp X ≤ x := Real.exp_le_exp.mpr hWlo
   have hylog : (y - 1) * Real.log 2 - Real.log 4 * x
       = x * (Real.exp L * Real.log 2 - Real.log 4) - Real.log 2 := by
@@ -395,7 +395,7 @@ theorem windowPrimes_card_of_scale {L : ℝ} (hL2 : Real.log 2 < L) {W X Bt : �
     mul_le_mul_of_nonneg_left hlogy_le hN
   exact le_of_mul_le_mul_right (by linarith) hlogy_pos
 
-set_option maxHeartbeats 16000000 in
+set_option maxHeartbeats 8000000 in
 /-- **Pair-reachability of the two basepoint tilts** (nonnegative quadrant): for a
 strip point `ρ` and a narrow height split `c`, the pair
 `(anchorTilt P (ρ+ci), anchorTilt P (ρ−ci))` reaches any nonnegative target pair
@@ -440,7 +440,7 @@ theorem anchorTilt_pair_reachable_nonneg {ρ : ℂ} {c : ℝ}
       rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
       push_cast
       ring
-    nlinarith
+    nlinarith only [h2, hlog4, Real.log_pos (by norm_num : (1:ℝ) < 2)]
   set m₀ : ℝ := 2 / (1 - ρ.re) with hm₀def
   have hm₀1 : 1 ≤ m₀ := by
     rw [hm₀def, le_div_iff₀ (by linarith)]
@@ -786,11 +786,11 @@ theorem anchorTilt_pair_reachable_nonneg {ρ : ℂ} {c : ℝ}
       have hmono : (q : ℝ) ^ (-ρ.re) / (1 - (q : ℝ) ^ (-ρ.re))
           ≤ Real.exp (-(ρ.re * X)) / (1 - Real.exp (-(ρ.re * X))) := by
         rw [div_le_div_iff₀ (by linarith) (by linarith)]
-        nlinarith
+        linarith
       have hfinal : Real.exp (-(ρ.re * X)) / (1 - Real.exp (-(ρ.re * X)))
           ≤ 2 * Real.exp (-(ρ.re * X)) := by
         rw [div_le_iff₀ (by linarith)]
-        nlinarith
+        nlinarith only [hupos, hu2]
       rw [hdsdef]
       linarith
   -- the three pools as staircase fuel

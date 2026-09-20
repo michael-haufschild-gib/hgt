@@ -59,7 +59,7 @@ private theorem background_second (r y : ℂ) (k l : Fin 4) :
 
 
 set_option maxRecDepth 8192 in
-set_option maxHeartbeats 8000000 in
+set_option maxHeartbeats 1000000 in
 private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)
@@ -86,7 +86,7 @@ private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ
   ring
 
 set_option maxRecDepth 8192 in
-set_option maxHeartbeats 8000000 in
+set_option maxHeartbeats 1000000 in
 private theorem ricci_difference (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)

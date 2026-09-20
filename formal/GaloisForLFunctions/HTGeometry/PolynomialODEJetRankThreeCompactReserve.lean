@@ -11,7 +11,7 @@ of width three. All identities are proved in the real polynomial ring.
 
 namespace HTGeometry
 noncomputable section
-set_option maxHeartbeats 16000000
+set_option maxHeartbeats 400000
 set_option maxRecDepth 100000
 
 private theorem unit_monomial_slack_nonneg {u w : ℝ}
