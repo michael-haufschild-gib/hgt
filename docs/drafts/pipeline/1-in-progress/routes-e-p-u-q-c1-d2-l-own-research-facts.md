@@ -816,3 +816,146 @@
   an explicit boundary compensator.  Lean status:
   `MaassFiniteDeckHorocycleCutoffRigidity`, target-only olean build and public axiom audit pass
   with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **EDQ terminal prime support.** At every non-prime successor `n + 1`, each literal
+  terminal physical Möbius cell at `clock n * (b + 1)` is exactly zero.  The dichotomy is
+  exhaustive: a non-prime-power successor already divides `clock n`, while a proper prime
+  power has zero Möbius coefficient.  Hence each beta-weighted terminal tail and every terminal
+  child difference vanish, and the exact terminal pairwise child-energy expression is zero.
+  **Route consequence:** the EDQ cofinal signed-contrast problem is supported on terminal
+  primes, strictly sharpening prior prime-power clock-jump support; it still requires the
+  unresolved cofinal bound and complete quotient-tail summation on that prime carrier.  Lean
+  status: `EulerDeletionTerminalPrimeSupport` passes direct source check and target-only olean
+  build; its four public theorems audit with only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **EDQ global reverse-tail future-prime support.** For every history layer `l`, a residue
+  vector at modulus `d` is annihilated when `d ∣ clock l`.  If both its Möbius coefficient and
+  its layer contribution are nonzero, squarefreeness plus the exact clock factorization produces
+  a prime `p ∣ d` with `l < p`.  Consequently the complete predictable-drift reverse tail has
+  two exact finite forms: filter first by `¬ (i + 1 ∣ clock l)`, or equivalently filter directly
+  by existence of a prime divisor of `i + 1` strictly beyond `l`.  **Route consequence:** no
+  old-prime-only squarefree composite contributes to a live EDQ layer.  The unsolved covariance
+  is therefore precisely among moduli carrying one or more genuinely new primes (with their
+  retained old squarefree factors), not arbitrary composite residue tails.  This is a support
+  reduction only: it supplies neither the cross-new-prime cancellation nor the cofinal
+  quotient-tail bound.  Lean status:
+  `EulerDeletionReverseTailFuturePrimeSupport` passes scratch check and target-only olean build;
+  its five public theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **EDQ upper-half prime collapse.** If `N ≤ 2l`, then every positive divisor `p > l` of a
+  modulus `d ≤ N` forces `d = p`: any second cofactor would make `d ≥ 2p > 2l ≥ N`.  Combining
+  this sharp cutoff law with global future-prime support proves that every nonzero literal
+  reverse-tail term in history layer `l` is prime-indexed; all composite terms vanish before
+  the layer square.  Hence the exact upper-half drift tail is the finite prime sum with
+  `p = i + 1 ∈ (l + 1, N]`.  **Route consequence:** upper-half EDQ covariance is no longer a
+  mixed composite-modulus problem.  Its unresolved producer is exclusively signed correlation
+  among distinct surviving primes; this result alone provides no prime-pair cancellation or
+  cofinal norm bound.  Lean status: three public theorems in
+  `EulerDeletionReverseTailFuturePrimeSupport` pass direct source check and target-only olean
+  build; each audits with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **EDQ upper-half physical prime-residual collapse.** For the exact physical carrier
+  `futureResidualCarrier N L`, if `N ≤ 2L`, every member is either `1` or prime. A nontrivial
+  member has a prime divisor; coprimality with `clock L` makes that divisor exceed `L`, and the
+  upper-half cutoff forces equality with the full residual. The existing exact singleton
+  cofactor total is zero, so the complete future-old-cofactor total is exactly its prime-filtered
+  one-coefficient period sum. This propagates to literal `truncatedDivisorBlockKernel`, not
+  merely an abstract history layer. **Route consequence:** every upper-half physical EDQ
+  selected block has an exact signed prime-residual form. Remaining obstacle: a uniform/cofinal
+  bound for that explicit prime-residual coefficient sum; neither composite residuals nor the
+  unit residual can cause it. Lean status: `EulerDeletionUpperHalfPhysicalPrimeSupport` passes
+  direct source check and target-only olean build; its three public theorems audit with only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **EDQ physical carrier becomes an ordinary prime interval.** Without any asymptotic premise,
+  the prime-filtered carrier is exactly
+  `futureResidualCarrier N L |>.filter Prime = Icc (L + 1) N |>.filter Prime`: a carrier prime
+  cannot divide `clock L`, hence exceeds `L`; conversely every prime beyond `L` is coprime to
+  that clock.  Combined with upper-half physical collapse, the literal selected block at layer
+  `l` is an exact signed sum over ordinary primes `p ∈ [l + 2,N]`, with no residual-carrier
+  predicate. **Route consequence:** EDQ's unresolved prime coefficient is now in the same
+  finite prime-interval language as Route E's sieve/spectral work, making a genuine bridge
+  testable. No Route E estimate is imported or claimed: prime-interval syntax alone does not
+  control the coefficient. Lean status: two additional public theorems in
+  `EulerDeletionUpperHalfPhysicalPrimeSupport` pass direct source check and target-only olean
+  build; each audits with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **EDQ full-phase averaging is unavailable to the literal child energy.**  The exact
+  refinement-block energy samples the phase `t = r + 1` only for
+  `r ∈ range (clock (l + 1))`.  For every live upper-half residual prime
+  `p > l + 1`, a complete phase cycle of the corresponding reduced-residue coefficient has
+  length `p * clock (l + 1)`, strictly larger than that sampled span.  Thus an identity obtained
+  by averaging over a complete `p * clock (l + 1)` phase cycle cannot be substituted into the
+  literal energy formula.  **Route consequence:** the surviving EDQ object is an incomplete
+  prime-orbit reduced-residue discrepancy over one clock span; progress needs a bound or signed
+  cancellation for that incomplete object, not complete-period centering.  Lean status: source
+  fact from the exact phase decomposition in `EulerDeletionRefinementBlockEnergy`; no new Lean
+  theorem is claimed from this incompatibility.
+- **T1 finite-covariance exchange is Hermitian, not alternating.**  Interchanging the two
+  frequency--rapidity legs negates `xiMassTwoRapidityCorrelationPhase` and preserves its real
+  damping amplitude.  At the literal moving prime cone, the exact finite covariance satisfies
+  `star C(t,s) = C(s,t)`.  Thus the two orderings contribute conjugate cells (a real part), not
+  an antisymmetric pair with an identity forcing cancellation.  **Route consequence:** prime-leg
+  exchange cannot remove the anti-ordered timelike saddle.  The positive survivor is unchanged:
+  a genuinely signed bound on the remaining real prime-frequency covariance, or a source law
+  imposing same-order support.  Lean status: `XiMassTwoRapidityHermitianExchange` passes direct
+  source check and target-only olean build; all three public theorems audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **T2 has a literature theorem strictly beyond its recorded source input.**  Stadlmann,
+  *On the mean square gap between primes*, arXiv:2212.10867 (2022), states the unconditional
+  estimate `∑_{p_n ≤ x} (p_{n+1} - p_n)^2 = O_ε(x^(1.23 + ε))`.  Choosing, for example,
+  `ε = 1/100` yields a prefix exponent `31/25 < 3/2`, exactly below the Lean-proved Abel
+  threshold in `XiHeatCassiniPrimeGapMomentThreshold`.  Corpus deep search found no existing
+  declaration of this theorem or its `1.23` exponent; the recorded `1.71` Hoheisel input is
+  therefore not the literature frontier.  **Route consequence:** formalizing this literature
+  proof and translating its eventual estimate to the corpus's indexed prefix form would close
+  the T2 critical prime-gap-energy premise.  It does not yet close T2's separate signed
+  critical-pole/Hardy transport obstruction.  Lean status: no theorem claimed yet.
+- **T2 corpus disambiguation and exact paper interface.**  The existing
+  `Sieve/Stadlmann*` family formalizes arXiv:2608.31126 on bounded gaps, not
+  Stadlmann's 2022 mean-square-gap paper.  Conversely, the 2022 paper's final
+  geometric reduction is already present under Route-T names:
+  `MaynardOrderedPrimeGapOccupancy` proves every actual dyadic ordered-gap square
+  shell is at most eight times its gap scale times its literal prime-free base
+  measure, and `MaynardOrderedPrimeGapProportionalPrimeFree` gives the same fact
+  for the proportional physical window.  Hence the missing formal content of the
+  `1.23+eps` theorem is not a gap-to-prime-free conversion; it is the uniform
+  exceptional-set comparison/minorant estimate in the intermediate
+  `x^(0.475-eps) <= tau <= x^(0.77-eps)` regime, together with cofinal dyadic
+  summation.  Lean status: no new theorem claimed.
+- **HC thin-slice source landing is positive, not the missing signed comparison.**
+  `EulerShiftPairIncidenceCurrent` proves that the positive-real-shift thin
+  Poincare--Lelong Xi slice converges, cutoff-independently, to the exact
+  horizontal collision charge.  Its finite form is a sum of positive
+  multiplicity products over same-height, positively oriented pairs; the module
+  also proves every thin slice is nonnegative.  Therefore this literal source
+  landing cannot deliver the open HC signed off-diagonal cancellation.  Coupled
+  with the Gauss--Hodge linear escape theorem, it isolates the required new
+  object: an unbounded/singular label-preserving comparison that retains a
+  genuinely signed off-diagonal term before this positive thin-slice
+  scalarization.  Lean status: corpus result inspected; no duplicate theorem
+  claimed.
+- **HC exchange-orientation no-go with a positive survivor.**  On every finite,
+  unlabelled horizontal collision-pair carrier stable under swapping its two
+  entries, the multiplicity-weighted signed real displacement
+  `m(z)m(w)(w.re-z.re)` has exactly zero total sum.  Thus an attempt to obtain
+  the missing signed HC current by assigning only the order sign to the full
+  collision-pair carrier is identically void; it cannot detect off-line mass.
+  The surviving exchange-invariant quantity is the nonnegative weighted square
+  displacement, and its full-pair sum is exactly twice its strictly oriented
+  half.  **Route consequence:** a viable signed source must retain an external
+  label, a non-swap-stable domain, or another genuine exchange-breaking datum
+  before the cofinal limit.  Lean status:
+  `XiHorizontalCollisionExchangeOrientationNoGo` passes direct source check and
+  target-only olean build; its three central public results audit with only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **T2 already has the quantitative finite-compensator floor.**  For every
+  off-critical reflected Wold pole head of multiplicity `m`, any finite
+  shift-two coboundary completion has orbit-charge energy exactly `2m^2`, and
+  hence at least `2`.  The corpus also proves compact-open scalar descent of
+  this charge is RH-equivalent and that its quadratic collision reporter is
+  neither lower- nor upper-semicontinuous in the relevant source-faithful
+  senses.  **Route consequence:** a merely norm-small, limiting-zero,
+  compact-open, or scalar collision-stable compensator route is already
+  closed.  The remaining T2 producer must exclude a noncompact compensator
+  carrying persistent quantized orbit charge directly from a new literal
+  source law.  Lean status: existing
+  `XiHeatCassiniWoldOrbitChargeQuantization`,
+  `XiHeatCassiniWoldOrbitChargeCompactOpenNoGo`, and
+  `XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo` inspected;
+  no duplicate theorem claimed.

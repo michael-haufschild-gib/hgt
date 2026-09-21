@@ -219,3 +219,13 @@
   the alternating-parity quotient of these two aligned, same-core positive
   fields.  Any CCM-FU closure must prove a uniform source inequality for
   that two-scale quotient; positive mass accounting cannot supply it.
+- `mobiusDivisorOrientedFibre_insert_mul_prime_renormalization` is now
+  formally proved and axiom-audited. For every residual label omitting fresh
+  prime `p`, its post-processing oriented coordinate is exactly the p-free
+  background at cutoff `p*N` minus `sqrt(p)` times its old oriented
+  coordinate at `N`. Its square retains the full signed cross-scale term.
+  Vanishing is equivalent to exact equality of those two terms. Thus the
+  CCM-FU source inequality has a necessary-and-sufficient coordinatewise
+  target: establish stable background/copy matching (or its aggregate
+  replacement) across an exhaustive prime order; diagonal mass cannot
+  substitute for this cancellation.

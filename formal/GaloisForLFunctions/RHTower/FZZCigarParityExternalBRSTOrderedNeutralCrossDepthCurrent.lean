@@ -41,10 +41,10 @@ theorem fzzCigarExternalBRSTOrderedNeutralDiagonalCurrent_im_ne_zero
   rw [fzzCigarExternalBRSTOrderedNeutralDiagonalCurrent,
     fzzRadialCouplingCrossDepthCoherence_diagonal_eq_normSq]
   simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-    mul_zero, sub_zero, add_zero]
-  apply mul_ne_zero
-  · exact fzzCigarExternalBRSTOrderedNeutralAngularIntegral_im_ne_zero k j p ν hp
-  · exact (Complex.normSq_pos.mpr
+    mul_zero]
+  simpa only [zero_add] using mul_ne_zero
+    (fzzCigarExternalBRSTOrderedNeutralAngularIntegral_im_ne_zero k j p ν hp)
+    (Complex.normSq_pos.mpr
       (fzzRadialCouplingCharacteristic_ne_zero u v (p : ℝ))).ne'
 
 end

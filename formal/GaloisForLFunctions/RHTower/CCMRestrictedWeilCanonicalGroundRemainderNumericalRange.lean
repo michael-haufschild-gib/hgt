@@ -65,10 +65,20 @@ theorem ccmRestrictedWeilFormRemainder_re_inner_eq_scalar_polar_sub_prime
           (ccmArchimedeanFormToAperture a u)).re =
         (2 * gammaHardyPhaseRate 0 - 1) *
           ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+    have hself :
+        inner ℂ (ccmArchimedeanFormToAperture a u)
+          (ccmArchimedeanFormToAperture a u) =
+          (‖ccmArchimedeanFormToAperture a u‖ : ℂ) ^ 2 :=
+      inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (ccmArchimedeanFormToAperture a u)
+    have hnorm :
+        ((‖ccmArchimedeanFormToAperture a u‖ : ℂ) ^ 2).re =
+          ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+      rw [← Complex.ofReal_pow]
+      exact Complex.ofReal_re _
+    rw [hself]
     unfold ccmArchimedeanRemainderScalar
-    rw [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-      inner_self_eq_norm_sq_to_K]
-    norm_cast
+    rw [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, hnorm]
+    ring
   rw [Complex.sub_re, Complex.add_re, hscalar]
 
 /-- Exact signed numerical-range identity on the canonical ground. -/

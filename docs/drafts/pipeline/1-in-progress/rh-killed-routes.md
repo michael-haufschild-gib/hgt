@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**362 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**375 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,10 +11,10 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-20, `45a84bfa077d5d7b2ff859f5c296c19d1866eef1`**.
+Source-audit cutoff: **2026-09-21, `e318fb81324a3a253982b526510bf8af9c856af0`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
-historical evidence. No builds or fresh kernel checks were run. Record 350 now has a committed
-witness-line/grid replacement, with one uncommitted proof-only source edit marked WIP. FD2's full verdict and
+historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
+committed Rellich/Friedrichs replacement. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
 
@@ -23,13 +23,13 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 26 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 41 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 28 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 45 |
 | [HB, FZZ and PW: scattering and physical action](#scattering) | 75 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 32 |
-| [Singular descent, formation and completion](#completion) | 28 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 53 |
-| [Analytic roots, multiplicity and regularization](#roots) | 10 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 35 |
+| [Singular descent, formation and completion](#completion) | 29 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 55 |
+| [Analytic roots, multiplicity and regularization](#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](#other) | 80 |
 
 <a id="retired-labels"></a>
@@ -333,6 +333,8 @@ Source-native aperture invariant is required.
 - [CCM fixed local matched/quantile graph wall](#no-go-344)
 - [CCM-FU clock-delayed finite-packet budget](#no-go-351)
 - [CCM/O fixed affine and common-clock coercivity repairs](#no-go-352)
+- [CCM finite low-rank moment carriers](#no-go-363)
+- [CCM-FU copy-compatible positive processed-core metrics](#no-go-364)
 
 <a id="no-go-294"></a>
 
@@ -766,6 +768,47 @@ Evidence: [two-offset endpoint debt](../../../../formal/GaloisForLFunctions/RHTo
 
 [Back to family](#ccm) · [Current Route O frontier](rh-current-frontier-map.md#o--restricted-weil-ground-and-genus-lag-order)
 
+<a id="no-go-363"></a>
+
+### CCM finite low-rank moment carriers
+
+**Closed result**
+
+Every finite matched wall-light third-jet packet lands in the three-moment span and has an
+explicit nonzero cubic-difference kernel vector. The complete matched--quantile parabolic cross
+kernel similarly factors into four outer products. Neither finite carrier can be coercive on a
+growing physical head, regardless of positivity of its local packet weights.
+
+**Survivor / still open**
+
+The exact moment factorizations and full displacement debt survive. Route O/CCM needs a genuinely
+growing-rank or nonlocal source relation proving the signed numerical-range lower wall.
+
+Evidence: [third-jet kernel](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedWallLightThirdJetCoercivityNoGo.lean), [four-moment parabolic factorization](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarParabolicCrossKernelRankFactorization.lean).
+
+[Back to family](#ccm) · [Current Route O frontier](rh-current-frontier-map.md#o--restricted-weil-ground-and-genus-lag-order)
+
+<a id="no-go-364"></a>
+
+### CCM-FU copy-compatible positive processed-core metrics
+
+**Closed result**
+
+Fresh-prime processing copies every old processed-core coordinate by `sqrt(p)` and preserves the
+reinforcing opposite-parity sector. Its square mass is therefore at least `p` times the old mass.
+The same expansion holds for every nonnegative diagonal weight invariant under the canonical core
+copy. No such positive mass, reserve or Lyapunov metric can contract the carried debt.
+
+**Survivor / still open**
+
+The canonical mass splits exactly into the `p`-free large-cutoff background plus the copied old
+field. CCM-FU must prove source-specific off-diagonal cancellation between these aligned fields,
+with constants stable through exhaustive core growth.
+
+Evidence: [processed-core homothety and weighted expansion](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorArityHeadProcessedCoreHomothety.lean), [signed-measure orientation](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorArityHeadProcessedCoreSignedMeasure.lean).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
 <a id="arithmetic"></a>
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
@@ -811,6 +854,10 @@ Evidence: [two-offset endpoint debt](../../../../formal/GaloisForLFunctions/RHTo
 - [T1 regular stationary diagonal-germ localization](#no-go-353)
 - [T2 normal Möbius and Chebyshev-mirror second comparison](#no-go-354)
 - [EDQ uniform-period replacement of physical child energy](#no-go-355)
+- [EDQ strong-drift uniform integrability and fixed-tail compactness](#no-go-365)
+- [E complete replica-cell coprime parity](#no-go-366)
+- [E global Kloosterman collision orientation](#no-go-367)
+- [HCF horizontal multiplicity-pole projection](#no-go-368)
 
 <a id="no-go-296"></a>
 
@@ -1466,6 +1513,88 @@ weights and signed innovations directly.
 Evidence: [energy/period separation](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionEnergyPeriodSeparation.lean), [child-fibre contrast](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionChildFibreContrast.lean).
 
 [Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
+
+<a id="no-go-365"></a>
+
+### EDQ strong-drift uniform integrability and fixed-tail compactness
+
+**Closed result**
+
+The residue innovations have a strong physical `L²` limit, while the predictable drift converges
+coordinatewise to its complementary limit. Strong drift convergence would force the forbidden raw
+Baez--Duarte full-error limit. Exponent-two uniform integrability would upgrade coordinatewise
+convergence to that same strong limit, so it is impossible. More sharply, every fixed finite
+physical prefix leaves a complementary drift tail whose `L²` norm does not tend to zero.
+
+**Survivor / still open**
+
+The moving beta-weighted signed drift is now the sole EDQ cancellation carrier. A proof must be
+genuinely non-uniformly-integrable and retain the moving physical tail; martingale closure,
+fixed-window compactness and ordinary Vitali arguments cannot supply it.
+
+Evidence: [innovation limit](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionResidueMartingaleL2Limit.lean), [drift escape](../../../../formal/GaloisForLFunctions/RHTower/EulerDeletionResidueMartingaleDriftNoGo.lean).
+
+[Back to family](#arithmetic) · [Current EDQ frontier](rh-current-frontier-map.md#candidate-edq)
+
+<a id="no-go-366"></a>
+
+### E complete replica-cell coprime parity
+
+**Closed result**
+
+In a complete binary prime-component cell, one present anchor component and one distinct varying
+component already produce opposite-parity histories sharing a prime. Thus a complete coprime
+opposite-parity row can have at most one varying prime component. The full histogram parity row
+cannot be reused as a literal coprime Route-E edge.
+
+**Survivor / still open**
+
+The ANOVA endpoint inequality survives, but the arithmetic recurrence must choose a sparse
+coprime-compatible subrelation and prove its load, seam and cofinal coverage independently.
+
+Evidence: [complete-cell coprimality firewall](../../../../formal/GaloisForLFunctions/RHTower/RouteEReplicaCoprimeCompleteCellNoGo.lean).
+
+[Back to family](#arithmetic) · [Current Route E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
+<a id="no-go-367"></a>
+
+### E global Kloosterman collision orientation
+
+**Closed result**
+
+Every nonempty global cross-frequency fibre for pairwise-coprime stored clocks has exactly two
+representatives. The second is forced by clock swap and endpoint negation; for real/conjugation-
+fixed source data its coefficient equals the first. The existing factor two is sharp and carries
+no hidden cross-modulus cancellation.
+
+**Survivor / still open**
+
+Route E still needs the literal twisted fourth-moment saving or a different source mechanism.
+Improving collision multiplicity cannot beat the classical Farey-density term.
+
+Evidence: [global collision orientation](../../../../formal/GaloisForLFunctions/RHTower/Sieve/KloostermanGlobalCollisionOrientation.lean).
+
+[Back to family](#arithmetic) · [Current Route E frontier](rh-current-frontier-map.md#e--squarefree-wold-transport)
+
+<a id="no-go-368"></a>
+
+### HCF horizontal multiplicity-pole projection
+
+**Closed result**
+
+At an off-line XiC zero, the logarithmic multiplicity pole along the horizontal scan is purely
+real. HCF's literal imaginary pole--Gamma density removes it exactly, so no horizontal scalar
+`L¹` contradiction can detect multiplicity or exclude that zero.
+
+**Survivor / still open**
+
+The transverse positive-shift scan retains the exact residue `m/pi` and has nonintegrable square.
+HCF must derive a finite source-native vertical quadratic trace ceiling; horizontal averaging is
+terminal.
+
+Evidence: [horizontal-pole blindness](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSourceHorizontalPoleBlindness.lean), [vertical criterion](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeaturePositiveShiftVerticalL2Criterion.lean).
+
+[Back to family](#arithmetic) · [Current HCF frontier](rh-current-frontier-map.md#candidate-hcf)
 
 <a id="scattering"></a>
 
@@ -2748,17 +2877,22 @@ Evidence: [square-reader channels](../../../../formal/GaloisForLFunctions/RHTowe
 **Closed result**
 
 Finite and nested all-depth real-factorized accumulations of the literal complex cross-depth
-covariance are nonnegative Hermitian Gram squares. Every real exchange-symmetric kernel has zero
-imaginary part; a single charged external-BRST branch averages to zero; and the literal two-mark
-OPE/contact source has zero exchange defect. None can produce the missing oriented Ward term.
+covariance are nonnegative Hermitian Gram squares. Every exchange-stable Hermitian kernel is
+blind. The completed higher-screening two-puncture source is real and reflection-symmetric, so
+both finite exchange-stable integration and the joint all-depth natural screening sum have zero
+orientation. Single charged and local two-mark sources fail for the same ordering reason.
 
 **Survivor / still open**
 
-The pointwise complex covariance and its nonzero exchange-antisymmetric difference survive. A
-physical source must derive an ordered/nonfactorized or genuinely complex cross-depth kernel before
-integration.
+The exact ordered-source law leaves an anti-Hermitian kernel pairing plus exchange-order defect.
+A physical source must derive a non-exchange-stable ordered domain or genuinely anti-Hermitian
+kernel before integration and still fix phase, normalization and the full mixed Ward identity.
 
-Evidence: [finite factorized no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityCrossDepthFactorizedGramNoGo.lean), [all-depth no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityCrossDepthAllDepthFactorizedGramNoGo.lean), [symmetric-kernel classification](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityCrossDepthSymmetricKernelNoGo.lean), [single-branch average](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityExternalBRSTSingleBranchAngularNoGo.lean), [two-mark exchange](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityTwoMarkedSourceExchangeNoGo.lean).
+Evidence: [ordered source law](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarParityCrossDepthOrderedSourceLaw.lean), [higher-screening ordered no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarHigherScreeningOrderedSourceNoGo.lean), [all-depth joint no-go](../../../../formal/GaloisForLFunctions/RHTower/FZZCigarHigherScreeningAllDepthJointNoGo.lean).
+
+Working-tree extension, not counted as promoted closure: two untracked leaves claim the reverse
+neutral chamber carries the opposite inverse-frequency current, so unordered chamber
+symmetrization vanishes exactly. No build or Lean check was run.
 
 [Back to family](#scattering) · [Current FZZ-P frontier](rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation)
 
@@ -2839,6 +2973,9 @@ Evidence: [finite-ladder obstruction and infinite conormal target](../../../../f
 - [SQB whole finite-deck L2 density](#no-go-349)
 - [SQB two-dimensional vertex-grid compactness](#no-go-350)
 - [RG literal totalized carrier-density continuity at real nodes](#no-go-359)
+- [BSH Boolean contraction and ordinary closed completion](#no-go-369)
+- [K-RVM unitary recovery and scalar completion of cofinal tails](#no-go-370)
+- [SQB scalar modular cusp cutoff](#no-go-375)
 
 <a id="no-go-308"></a>
 
@@ -3334,14 +3471,14 @@ therefore not a valid completion-level proof of bounded-core Rellich compactness
 
 **Survivor / still open**
 
-The replacement is now source-implemented: cell-local Poincaré, a common witness line for every
-finite deck coordinate, product-grid energy control and a fixed finite-dimensional cell-constant
-space. The remaining step is the actual bounded-core `DeckL2` approximation/total-boundedness
-theorem and its splice with uniform cusp-tail control.
+The replacement is now complete: cell-local Poincaré, common witness lines, reciprocal product
+grids and uniform cusp-tail contraction give total boundedness of the completed form unit ball,
+compact inclusion and a canonical self-adjoint Friedrichs operator with compact resolvent. The
+remaining work is identification with the literal Maass Laplacian and downstream spectral input.
 
-Evidence: [witness-line replacement](../../../../formal/GaloisForLFunctions/HTGeometry/WitnessLinePoincare.lean), [finite-deck grid witness](../../../../formal/GaloisForLFunctions/RHTower/MaassFiniteDeckCoreWitness.lean), [mechanism audit](new_scientific_knowledge/sqb-two-cell-witness-line-rellich-bridge.md).
+Evidence: [witness-line replacement](../../../../formal/GaloisForLFunctions/HTGeometry/WitnessLinePoincare.lean), [cuspidal Rellich](../../../../formal/GaloisForLFunctions/RHTower/MaassFiniteDeckCuspidalRellich.lean), [compact-resolvent Friedrichs operator](../../../../formal/GaloisForLFunctions/RHTower/MaassFiniteDeckCuspidalFriedrichs.lean).
 
-Status: no-go retained; positive survivor is committed source. One proof-only grid-step edit remains uncommitted and was not checked.
+Status: no-go retained; positive replacement is committed through compact resolvent.
 
 [Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
 
@@ -3358,13 +3495,76 @@ Cayley/Hankel symbol.
 
 **Survivor / still open**
 
-An uncommitted source edit gives the exact one-point patch, a.e. equality and continuity at every
-real node. RG-HF must justify the chosen a.e. representative and endpoint regularity separately,
-then still prove global compactness/orientation.
+A committed global patch simultaneously changes the countable set of real spectral nodes to zero,
+is measurable and a.e. equal to the literal density, and is continuous at every such node. RG-HF
+still needs global compactness/orientation; representative choice is no longer open.
 
-Evidence: [real-node density obstruction and WIP repair](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiCarrierRealNodeDensityNoGo.lean).
+Evidence: [literal density obstruction](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiCarrierRealNodeDensityNoGo.lean), [global removable patch](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiCarrierGlobalRealNodePatch.lean).
 
 [Back to family](#theta) · [Current RG frontier](rh-current-frontier-map.md#rg--gaussian-arithmetic-and-suzuki-transport-positivity)
+
+<a id="no-go-369"></a>
+
+### BSH Boolean contraction and ordinary closed completion
+
+**Closed result**
+
+Mate-curvature vanishing at a zero boundary multiplier forces unitary character norm, while an
+explicit reciprocal contraction section is off-unitary. Boolean full-history contraction, its
+energy law and either one-sided Sonin contraction therefore cannot establish the missing mate
+identity. Norm/seminorm-closed finite-cut completions also retain the cofinal Gamma defect and
+cannot create the required pre-closure source factorization.
+
+**Survivor / still open**
+
+BSH needs a literal prime--Gamma section whose mate identity is proved before closure, or a
+nonordinary completion that explicitly retains that source factorization.
+
+Evidence: [BSH source audit](bsh-own-research-facts.md).
+
+[Back to family](#theta) · [Current BSH frontier](rh-current-frontier-map.md#candidate-bsh)
+
+<a id="no-go-370"></a>
+
+### K-RVM unitary recovery and scalar completion of cofinal tails
+
+**Closed result**
+
+Literal cofinal prime triangles have nonzero cubic trace, resist global unitary sign reversal and
+cannot be unitarily transported to the chiral smooth RVM skeleton. The completed-endpoint
+correction is Hilbert--Schmidt-orthogonal to that skeleton, whereas unitary recovery would require
+exact negative cross energy. Moreover, literal cofinal deletion tails vanish in operator and
+Hilbert--Schmidt norm; their determinants converge locally uniformly to one, and every scalar
+completion limit is zero-free.
+
+**Survivor / still open**
+
+The doubled source tail has exact chiral symmetry and an even determinant. K-RVM needs a
+nonorthogonal indefinite correction and a nonvanishing global assembly, not unitary recovery or
+scalar completion of the vanishing tail.
+
+Evidence: [prime-source unitary and determinant obstruction](../../../../formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean).
+
+[Back to family](#theta) · [Current K-RVM frontier](rh-current-frontier-map.md#candidate-k-rvm)
+
+<a id="no-go-375"></a>
+
+### SQB scalar modular cusp cutoff
+
+**Closed result**
+
+Any scalar height profile invariant under literal modular inversion is constant on all positive
+heights. If it vanishes in the high cusp, it vanishes everywhere. No nonzero compact modular
+cutoff can preserve the finite-deck zero horocycle mode as a scalar height multiplier.
+
+**Survivor / still open**
+
+The compact-resolvent Friedrichs construction survives. Identifying it with the literal Maass
+Laplacian requires non-scalar zero-mode transport or an explicit boundary compensator.
+
+Evidence: [horocycle cutoff rigidity](../../../../formal/GaloisForLFunctions/RHTower/MaassFiniteDeckHorocycleCutoffRigidity.lean).
+
+[Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
 
 <a id="completion"></a>
 
@@ -3398,6 +3598,7 @@ Evidence: [real-node density obstruction and WIP repair](../../../../formal/Galo
 - [XST signed cross-orbit incidence](#no-go-159)
 - [C1 positive nuclear-root transport of Route-N projective leakage](#no-go-333)
 - [RHist scalar positive darkness with finite continuous-observer price](#no-go-360)
+- [RHist square-root singular rescaling](#no-go-372)
 
 <a id="no-go-181"></a>
 
@@ -3821,6 +4022,27 @@ Evidence: [repair-pair classification](../../../../formal/GaloisForLFunctions/RH
 
 [Back to family](#completion) · [Current RHist frontier](rh-current-frontier-map.md#candidate-rhist)
 
+<a id="no-go-372"></a>
+
+### RHist square-root singular rescaling
+
+**Closed result**
+
+Square-root rescaling of the trace-normalized Big-Witt prime-two rows still tends to zero in the
+ambient cross-prime carrier, while its algebraic one-leg trace tends to positive infinity.
+Arbitrarily small ambient rows can therefore have arbitrarily large trace. Rescaling exposes the
+same discontinuity; it does not create a controlled finite-price observer.
+
+**Survivor / still open**
+
+The explicit dark-row/singular-trace separation identifies the required topology. RHist needs a
+source-defined singular observation law with a closed domain and nonescaping reciprocal price,
+not an unbounded algebraic functional applied after ad hoc normalization.
+
+Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTower/DeningerBigWittCrossPrimeRHistSingularRescalingNoGo.lean).
+
+[Back to family](#completion) · [Current RHist frontier](rh-current-frontier-map.md#candidate-rhist)
+
 <a id="ward"></a>
 
 ## Ward, Suzuki, prime–Gamma and operator landing
@@ -3878,6 +4100,8 @@ Evidence: [repair-pair classification](../../../../formal/GaloisForLFunctions/RH
 - [P/CCM finite-cell anti-alignment](#no-go-348)
 - [SP-E/P finite stationary history and stationary null translation](#no-go-361)
 - [Suzuki finite-head recurrence and fractional transition-core correction](#no-go-362)
+- [SP-E/P common-centroid translation gauge](#no-go-373)
+- [D2 passive KMS completion and scalar cancellation](#no-go-374)
 
 <a id="no-go-309"></a>
 
@@ -4750,11 +4974,12 @@ stationary Julia isometry. Identifying it with the five-channel source radical a
 
 **Survivor / still open**
 
-The complete current factors through two Julia blocks with separate source and terminal gauges.
-A viable P action must be state-dependent/connection-valued, graph-closed and growing with history,
-while controlling the matched-versus-quantile variance defect.
+The separate terminal gauge is now realized by a source-forced flat parabolic connection whose
+height is necessarily unbounded. A viable P action must be graph-closed and growing with history,
+intertwining that orbit with both ordered Julia legs while controlling the matched-versus-quantile
+variance defect.
 
-Evidence: [all-history growth](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszCovarianceKernelAllHistoryGrowthNoGo.lean), [five-channel gauges and translation](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePFiveChannelKreinFactorization.lean).
+Evidence: [all-history growth](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszCovarianceKernelAllHistoryGrowthNoGo.lean), [terminal parabolic connection](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePTerminalParabolicConnection.lean), [terminal irreducibility](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePTerminalIrreducibility.lean).
 
 [Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
 
@@ -4780,6 +5005,49 @@ Evidence: [two-prime recurrence](../../../../formal/GaloisForLFunctions/RHTower/
 
 [Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
 
+<a id="no-go-373"></a>
+
+### SP-E/P common-centroid translation gauge
+
+**Closed result**
+
+Independent common translations of the matched and quantile centroid profiles leave the complete
+prime-power history invariant. The same mode is an explicit unipotent isometry of the five-channel
+P Krein carrier and fixes its full strict-cross current. A canonical cutoffwise centering gauge
+removes the aggregate centroid coordinate without changing that current. Translation cannot alter
+the sign or size of the covariance/variance obstruction.
+
+**Survivor / still open**
+
+The live datum is relative cell displacement and the separate terminal parabolic connection.
+P/SP-E needs an unbounded ordered graph estimate, not a headwise common-centroid gauge repair.
+
+Evidence: [history translation gauge](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszPrimePowerHistoryTranslationGauge.lean), [P translation gauge](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePTranslationGauge.lean), [canonical gauge fix](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePCentroidGaugeFix.lean).
+
+[Back to family](#ward) · [Current SP-E frontier](rh-current-frontier-map.md#sp-e--signed-prime-dilation-versus-continuum)
+
+<a id="no-go-374"></a>
+
+### D2 passive KMS completion and scalar cancellation
+
+**Closed result**
+
+Finite Hermitian KMS entropy-production responses have the required centered parity, but their
+normalized positive-imaginary slope is nonpositive. The literal correction from universal
+squarefree incidence to the completed source has a positive, nonremovable centered-clock
+singularity, so no independently passive channel can supply it. If passive-minus-universal scalar
+cancellation converges to that correction anyway, the combined passive source realization already
+implies RH.
+
+**Survivor / still open**
+
+Cancellation must remain signed and pre-scalar, or use an indefinite/nonpassive source law.
+Parity compatibility alone is useful but cannot close D2's infinite source lower bound.
+
+Evidence: [source completion singularity](../../../../formal/GaloisForLFunctions/RHTower/MobiusIncidenceSourceCompletionSingularity.lean), [passive no-go](../../../../formal/GaloisForLFunctions/RHTower/MobiusIncidencePassiveCompletionNoGo.lean), [scalar capstone](../../../../formal/GaloisForLFunctions/RHTower/MobiusKMSScalarCancellationCapstone.lean).
+
+[Back to family](#ward) · [Current D2 frontier](rh-current-frontier-map.md#d2--continued-primearchimedean-free-sector-passivity)
+
 <a id="roots"></a>
 
 ## Analytic roots, multiplicity and regularization
@@ -4794,6 +5062,7 @@ Evidence: [two-prime recurrence](../../../../formal/GaloisForLFunctions/RHTower/
 - [reciprocal-Xi Clifford split](#no-go-254)
 - [symplectic doubling, universal even multiplicity, or quadratic-symbol orientation](#no-go-060)
 - [one-point Cauchy marginal as horizontal-displacement detector](#no-go-339)
+- [MPLF bounded forward raw-jet recovery](#no-go-371)
 
 <a id="no-go-260"></a>
 
@@ -4967,6 +5236,28 @@ The exact cotangent law, Boole identity and weak Cauchy limit survive as formal 
 Evidence: [picket-fence Cauchy law](../../../../formal/GaloisForLFunctions/RHTower/PoissonSmoothedPicketFenceCauchyLaw.lean), [audit](cauchy-marginal-horizontal-displacement-blindness.md).
 
 [Back to family](#roots) · [Shared frontier](rh-current-frontier-map.md#off-line-first-moment-and-large-value-selection)
+
+<a id="no-go-371"></a>
+
+### MPLF bounded forward raw-jet recovery
+
+**Closed result**
+
+Forward raw prime jets acquire the multiplier `p^(-a)`. Recovering the Meixner root
+half-density at time `theta` requires gain `sqrt(w_theta(p)) p^a`, which is unbounded over primes
+whenever `theta < 2a`. No bounded diagonal bridge, nor any bounded operator recovering every
+marked prime column into unit-norm channels, can perform this recovery. Along every positive root
+time sequence tending to zero, the obstruction occurs for every fixed positive forward time.
+
+**Survivor / still open**
+
+Packet-uniform finite Gram bounds along such a null sequence are exactly the critical-line
+condition. MPLF must derive them from a differently normalized or indefinite source transport;
+bounded columnwise forward recovery is terminal.
+
+Evidence: [forward-bridge no-go](../../../../formal/GaloisForLFunctions/RHTower/MeixnerRootPrimeLaplaceForwardBridgeNoGo.lean), [cofinal Gram classification](../../../../formal/GaloisForLFunctions/RHTower/MeixnerRootPrimeLaplaceCofinalGramClassification.lean).
+
+[Back to family](#roots) · [Current MPLF frontier](rh-current-frontier-map.md#candidate-mplf)
 
 <a id="other"></a>
 

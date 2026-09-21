@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspIndicialSelection
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularMasterCurrent
 
 /-!
 # Native-cap coefficient rigidity for literal cyclic Peierls action
@@ -18,7 +18,7 @@ Proof-chain role:
 
 namespace RHTower.D4BMLiteralCyclicPeierlsNativeCapCoefficientNoGo
 
-open D4BMCuspProjection
+open D4BMModularCore
 
 noncomputable section
 set_option autoImplicit false
@@ -30,24 +30,21 @@ theorem native_cap_coefficient_ne_zero (q : XiZeroCopy) (branch : Bool) :
   intro h
   have hmul : physicalRate q branch * (physicalRate q branch - 1) = (4 : ℂ) := by
     linear_combination -4 * h
-  have him : (physicalRate q branch).re * (physicalRate q branch).im +
-      (physicalRate q branch).im * ((physicalRate q branch).re - 1) = 0 := by
-    have hi := congrArg Complex.im hmul
-    simpa [Complex.mul_im] using hi
-  have hfactor : (2 * (physicalRate q branch).re - 1) *
+  have him : (2 * (physicalRate q branch).re - 1) *
       (physicalRate q branch).im = 0 := by
+    have hi := congrArg Complex.im hmul
+    norm_num [Complex.mul_im, Complex.sub_re, Complex.sub_im] at hi
     linarith
   have hleft : 2 * (physicalRate q branch).re - 1 ≠ 0 := by
-    intro hz
-    have hr := (physicalRate_re_bounds q branch).2
-    linarith
+    have hl := (xi_divisor_support_re_mem_open_unit q.1).1
+    have hr := (xi_divisor_support_re_mem_open_unit q.1).2
+    cases branch <;>
+      norm_num [physicalRate, Complex.sub_re, Complex.neg_re] <;>
+      intro hz <;> linarith
   have hz : (physicalRate q branch).im = 0 :=
-    (mul_eq_zero.mp hfactor).resolve_left hleft
+    (mul_eq_zero.mp him).resolve_left hleft
   apply xi_divisor_support_im_ne_zero q.1
-  cases branch <;>
-    norm_num [physicalRate, Complex.mul_im, Complex.sub_im, Complex.neg_im] at hz
-  · exact hz
-  · exact hz
+  cases branch <;> simpa [physicalRate] using hz
 
 end
 
