@@ -1,5 +1,10 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModularEnergyDomain
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMGlobalAngularWeakResponse
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMGlobalSmoothResponse
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularAssembly
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCovector
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleGreen
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleReconstruction
 import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
 import GaloisForLFunctions.RHTower.EisensteinLineRealness
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularCutoffCalculus
@@ -16,7 +21,7 @@ global forcing and unique finite-energy weak response; ordered CTP transport rem
 
 open MeasureTheory Set Filter Topology UpperHalfPlane ModularGroup
 open GaloisForLFunctions.HTGeometry
-open scoped ContDiff ComplexConjugate
+open scoped ContDiff ComplexConjugate ENNReal
 
 namespace RHTower.D4BMModularCore
 
@@ -269,6 +274,20 @@ theorem center_conj (q : XiZeroCopy) :
   rw [map_ofNat]
   norm_num
 
+/-- The literal fundamental time rate is Schwarz covariant without branch exchange. -/
+theorem physicalRate_conj (q : XiZeroCopy) (branch : Bool) :
+    (starRingEnd ℂ) (physicalRate q branch) =
+      physicalRate (xiZeroCopyConjEquiv q) branch := by
+  have hq := deningerDivisorThetaEigen_conjEquiv q
+  change ((xiZeroCopyConjEquiv q).1 : ℂ) = (starRingEnd ℂ) (q.1 : ℂ) at hq
+  unfold physicalRate
+  rw [hq]
+  cases branch
+  · change (starRingEnd ℂ) (-((q.1 : ℂ)) - 1) = -((starRingEnd ℂ) (q.1 : ℂ)) - 1
+    rw [map_sub, map_neg, map_one]
+  · change (starRingEnd ℂ) ((q.1 : ℂ) - 2) = (starRingEnd ℂ) (q.1 : ℂ) - 2
+    rw [map_sub, map_ofNat]
+
 /-- Each literal completed-Eisenstein cusp coefficient is Schwarz covariant. -/
 theorem cuspConstantCoefficient_conj (u : ℂ) (epsilon : Bool) :
     (starRingEnd ℂ) (d4BMCompletedEisensteinCuspConstantCoefficient u epsilon) =
@@ -422,6 +441,164 @@ theorem weakResponse_conj (q : XiZeroCopy) (minusBranch : Bool) :
   apply full_forcing_weak_response_unique
   · exact weakSolution_conj_transport q minusBranch _ (weakResponse_spec q minusBranch)
   · exact weakResponse_spec _ _
+
+/-- Zero extension from the open modular cell preserves the `L²` Schwarz relation. -/
+private theorem cellExtension_star_ae (u : Space) :
+    cellExtension (star u) =ᵐ[(volume : Measure UpperHalfPlane)]
+      fun z => (starRingEnd ℂ) (cellExtension u z) := by
+  have hstar := Lp.coeFn_star u
+  have hfdo := ae_restrict_of_ae_restrict_of_subset fdo_subset_fd hstar
+  have hvol := (ae_restrict_iff' isOpen_fdo.measurableSet).mp hfdo
+  filter_upwards [hvol] with z hz
+  by_cases hzfd : z ∈ fdo
+  · simp only [cellExtension, Set.indicator_of_mem hzfd]
+    exact hz hzfd
+  · simp only [cellExtension, Set.indicator_of_notMem hzfd, map_zero]
+
+/-- Modular periodization transports the Schwarz relation through the full countable orbit. -/
+private theorem globalLift_star_ae (u : Space) :
+    globalLift (star u) =ᵐ[(volume : Measure UpperHalfPlane)]
+      fun z => (starRingEnd ℂ) (globalLift u z) := by
+  have hcell := cellExtension_star_ae u
+  have hall : ∀ᵐ z : UpperHalfPlane ∂(volume : Measure UpperHalfPlane),
+      ∀ γ : PSL2Z, cellExtension (star u) (γ • z) =
+        (starRingEnd ℂ) (cellExtension u (γ • z)) := by
+    rw [MeasureTheory.ae_all_iff]
+    intro γ
+    exact (measurePreserving_smul γ volume).quasiMeasurePreserving.ae hcell
+  filter_upwards [hall] with z hz
+  unfold globalLift periodize
+  rw [Complex.conj_tsum]
+  apply tsum_congr
+  intro γ
+  exact hz γ
+
+private theorem chartSmooth_star {f : UpperHalfPlane → ℂ} (hf : ChartSmooth f) :
+    ChartSmooth (fun z => (starRingEnd ℂ) (f z)) := by
+  intro z
+  have hg : ContDiffAt ℝ ∞ (Complex.conjCLE.toContinuousLinearMap : ℂ → ℂ)
+      ((f ∘ ofComplex) (z : ℂ)) :=
+    Complex.conjCLE.toContinuousLinearMap.contDiff.contDiffAt
+  change ContDiffAt ℝ ∞ ((fun w => (starRingEnd ℂ) (f w)) ∘ ofComplex) (z : ℂ)
+  apply (hg.comp (z : ℂ) (hf z)).congr_of_eventuallyEq
+  filter_upwards with w
+  exact (Complex.conjCLE_apply _).symm
+
+private theorem chartSmooth_eq_of_ae_eq {f g : UpperHalfPlane → ℂ}
+    (hf : ChartSmooth f) (hg : ChartSmooth g)
+    (he : f =ᵐ[(volume : Measure UpperHalfPlane)] g) : f = g := by
+  have hm : ∀ᵐ z ∂Measure.map UpperHalfPlane.coe (volume : Measure UpperHalfPlane),
+      f (ofComplex z) = g (ofComplex z) :=
+    UpperHalfPlane.measurableEmbedding_coe.ae_map_iff.mpr (by
+      filter_upwards [he] with z hz
+      simpa only [ofComplex_apply] using hz)
+  rw [map_volume_chart_eq] at hm
+  have hd : Measurable (fun z : ℂ => (chartDensity z : ℝ≥0∞)) := by
+    unfold chartDensity
+    fun_prop
+  have hh := (ae_withDensity_iff hd).mp hm
+  have hae : (fun z : ℂ => f (ofComplex z)) =ᵐ[volume.restrict {z : ℂ | 0 < z.im}]
+      (fun z : ℂ => g (ofComplex z)) := by
+    filter_upwards [hh, ae_restrict_mem isOpen_upperHalfPlaneSet.measurableSet] with z hz hy
+    exact hz (by simp [chartDensity, ne_of_gt hy])
+  have hc (a : UpperHalfPlane → ℂ) (ha : ChartSmooth a) :
+      ContinuousOn (fun z : ℂ => a (ofComplex z)) {z : ℂ | 0 < z.im} := by
+    intro z hz
+    have hh := ha (ofComplex z)
+    rw [ofComplex_apply_of_im_pos hz] at hh
+    exact hh.continuousAt.continuousWithinAt
+  have hp := Measure.eqOn_open_of_ae_eq hae isOpen_upperHalfPlaneSet (hc f hf) (hc g hg)
+  funext z
+  simpa only [ofComplex_apply] using hp z.im_pos
+
+/-- The separately glued smooth response inherits the finite-energy Schwarz involution. -/
+theorem globalResponse_conj (q : XiZeroCopy) (minusBranch : Bool) :
+    globalResponse (xiZeroCopyConjEquiv q) minusBranch =
+      fun z => (starRingEnd ℂ) (globalResponse q minusBranch z) := by
+  apply chartSmooth_eq_of_ae_eq
+  · exact globalResponse_smooth _ _
+  · exact chartSmooth_star (globalResponse_smooth _ _)
+  have hembedding : embedding (weakResponse (xiZeroCopyConjEquiv q) minusBranch) =
+      star (embedding (weakResponse q minusBranch)) := by
+    rw [← weakResponse_conj, embedding_energyDomainConj]
+  have hleft := globalResponse_ae_lift (xiZeroCopyConjEquiv q) minusBranch
+  rw [hembedding] at hleft
+  have hstar := globalLift_star_ae (embedding (weakResponse q minusBranch))
+  have hright := globalResponse_ae_lift q minusBranch
+  filter_upwards [hleft, hstar, hright] with z hzleft hzstar hzright
+  rw [hzleft, hzstar, hzright]
+
+/-- The literal globally glued cusp cutoff is Schwarz covariant across every cell seam. -/
+theorem globalCuspCutoff_conj (q : XiZeroCopy) (minusBranch : Bool) :
+    globalCuspCutoff (xiZeroCopyConjEquiv q) minusBranch =
+      fun z => (starRingEnd ℂ) (globalCuspCutoff q minusBranch z) := by
+  funext z
+  obtain ⟨A, hA⟩ := exists_smul_mem_fd z
+  have hleft := globalCuspCutoff_invariant (xiZeroCopyConjEquiv q) minusBranch
+    (QuotientGroup.mk A) z
+  have hright := globalCuspCutoff_invariant q minusBranch (QuotientGroup.mk A) z
+  simp only [PSL2Z_mk_smul] at hleft hright
+  calc
+    globalCuspCutoff (xiZeroCopyConjEquiv q) minusBranch z =
+        globalCuspCutoff (xiZeroCopyConjEquiv q) minusBranch (A • z) := hleft.symm
+    _ = D4BMGlobalAngularResponse.cutoffResponse (xiZeroCopyConjEquiv q) minusBranch
+        (D4BMGlobalAngularResponse.coordinates (A • z)) :=
+      globalCuspCutoff_eq_on_fd _ _ _ hA
+    _ = (starRingEnd ℂ) (D4BMGlobalAngularResponse.cutoffResponse q minusBranch
+        (D4BMGlobalAngularResponse.coordinates (A • z))) :=
+      (cutoffResponse_conj q minusBranch _
+        (by simpa [D4BMGlobalAngularResponse.coordinates] using (A • z).im_pos)).symm
+    _ = (starRingEnd ℂ) (globalCuspCutoff q minusBranch (A • z)) :=
+      (congrArg (starRingEnd ℂ) (globalCuspCutoff_eq_on_fd q minusBranch _ hA)).symm
+    _ = (starRingEnd ℂ) (globalCuspCutoff q minusBranch z) := congrArg (starRingEnd ℂ) hright
+
+/-- The complete literal modular angular field is Schwarz covariant pointwise. -/
+theorem fullAngular_conj (q : XiZeroCopy) (minusBranch : Bool) :
+    fullAngular (xiZeroCopyConjEquiv q) minusBranch =
+      fun z => (starRingEnd ℂ) (fullAngular q minusBranch z) := by
+  funext z
+  unfold fullAngular
+  rw [globalCuspCutoff_conj, globalResponse_conj, map_add]
+
+/-- The original-coordinate full angular field is Schwarz covariant pointwise. -/
+theorem fullAngularField_conj (q : XiZeroCopy) (minusBranch : Bool) :
+    fullAngularField (xiZeroCopyConjEquiv q) minusBranch =
+      fun z => (starRingEnd ℂ) (fullAngularField q minusBranch z) := by
+  funext z
+  unfold fullAngularField
+  rw [fullAngular_conj]
+
+private theorem circleAverage_conj (F : ℝ → ℂ) :
+    (starRingEnd ℂ) (D4BMNativeCircle.average F) =
+      D4BMNativeCircle.average (fun theta => (starRingEnd ℂ) (F theta)) := by
+  have hcoeff : (starRingEnd ℂ) (1 / (2 * Real.pi : ℂ)) = 1 / (2 * Real.pi : ℂ) := by
+    rw [map_div₀, map_one, map_mul, map_ofNat, Complex.conj_ofReal]
+  unfold D4BMNativeCircle.average
+  rw [map_mul, hcoeff, ← integral_conj]
+
+/-- The literal full circular angular mean is Schwarz covariant. -/
+theorem angularMean_conj (q : XiZeroCopy) (minusBranch : Bool) (d x k : ℝ) :
+    (starRingEnd ℂ) (D4BMFullAngularCircle.angularMean q minusBranch d x k) =
+      D4BMFullAngularCircle.angularMean (xiZeroCopyConjEquiv q) minusBranch d x k := by
+  change (starRingEnd ℂ) (D4BMNativeCircle.average
+      (fun theta => fullAngularField q minusBranch (D4BMNativeCircle.logCircle d theta x k))) =
+    D4BMNativeCircle.average
+      (fun theta => fullAngularField (xiZeroCopyConjEquiv q) minusBranch
+        (D4BMNativeCircle.logCircle d theta x k))
+  rw [circleAverage_conj]
+  congr 1
+  funext theta
+  exact (congrFun (fullAngularField_conj q minusBranch) _).symm
+
+/-- The literal direct-minus-image circular kernel is Schwarz covariant. -/
+theorem angularDirichletKernel_conj (q : XiZeroCopy) (minusBranch : Bool)
+    (h x y X k : ℝ) :
+    (starRingEnd ℂ) (D4BMFullAngularReconstruction.angularDirichletKernel q minusBranch h x y X k) =
+      D4BMFullAngularReconstruction.angularDirichletKernel
+        (xiZeroCopyConjEquiv q) minusBranch h x y X k := by
+  unfold D4BMFullAngularReconstruction.angularDirichletKernel
+  by_cases hd : |x - y| ≤ h <;> by_cases hi : |x + y| ≤ h <;>
+    simp only [hd, hi, ↓reduceIte, map_sub, map_div₀, map_ofNat, map_zero, angularMean_conj]
 
 end
 

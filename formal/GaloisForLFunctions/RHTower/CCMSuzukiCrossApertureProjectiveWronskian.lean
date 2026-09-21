@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.CCMSuzukiCrossApertureRieszTransport
 import GaloisForLFunctions.RHTower.CCMSuzukiV2ProjectiveRawCarrier
 import GaloisForLFunctions.RHTower.SuzukiTaMovableCompletedCovarianceCharacteristic
 import GaloisForLFunctions.RHTower.SuzukiTaMovableCompletedCovarianceSchur
+import GaloisForLFunctions.RHTower.SuzukiTaV2ActualDefectJet
 import GaloisForLFunctions.RHTower.SoninCompressedWeylHolonomy
 import GaloisForLFunctions.RHTower.HalfLineMultiplierChart
 
@@ -271,5 +272,166 @@ theorem suzukiTaV2Livsic_sub_eq_rawWronskian_div
   field_simp [hEa, hEb]
   simpa [mul_comm] using
     suzukiTaV2RawCharacteristic_crossAperture_denominatorCleared a b z
+
+/-- The raw upper coordinate is entire. -/
+theorem differentiable_suzukiTaV2RawCharacteristicA
+    (a : SuzukiPositiveAperture) :
+    Differentiable ℂ (suzukiTaV2RawCharacteristicA a) := by
+  unfold suzukiTaV2RawCharacteristicA
+  exact (differentiable_id.sub_const I).mul
+    (differentiable_suzukiTaPhysicalFourier a (suzukiTaRawDeficiency a 1))
+
+/-- The raw lower coordinate is entire. -/
+theorem differentiable_suzukiTaV2RawCharacteristicE
+    (a : SuzukiPositiveAperture) :
+    Differentiable ℂ (suzukiTaV2RawCharacteristicE a) := by
+  unfold suzukiTaV2RawCharacteristicE
+  exact (differentiable_id.add_const I).mul
+    ((differentiable_suzukiTaPhysicalFourier a (suzukiTaRawDeficiency a (-1))).comp
+      (by fun_prop))
+
+/-- The raw completed plus-source Fourier coordinate is entire. -/
+theorem differentiable_suzukiTaV2RawCompletedFourier
+    (a : SuzukiPositiveAperture) :
+    Differentiable ℂ (suzukiTaV2RawCompletedFourier a) := by
+  unfold suzukiTaV2RawCompletedFourier
+  exact differentiable_suzukiCompactL2Fourier a.2.le _
+
+/-- The literal cross-aperture completed-source Wronskian is entire. -/
+theorem differentiable_suzukiTaV2CrossApertureRawWronskian
+    (a b : SuzukiPositiveAperture) :
+    Differentiable ℂ (suzukiTaV2CrossApertureRawWronskian a b) := by
+  unfold suzukiTaV2CrossApertureRawWronskian
+  exact (differentiable_suzukiTaV2RawCompletedFourier b).mul
+      ((differentiable_suzukiTaV2RawCompletedFourier a).comp (by fun_prop)) |>.sub
+    ((differentiable_suzukiTaV2RawCompletedFourier a).mul
+      ((differentiable_suzukiTaV2RawCompletedFourier b).comp (by fun_prop)))
+
+theorem suzukiTaV2RawCharacteristicA_I
+    (a : SuzukiPositiveAperture) : suzukiTaV2RawCharacteristicA a I = 0 := by
+  simp [suzukiTaV2RawCharacteristicA]
+
+/-- At the common anchor, differentiating the actual finite characteristic
+recovers the raw upper coordinate after multiplication by its raw lower
+coordinate. -/
+theorem deriv_suzukiTaV2Livsic_mul_rawCharacteristicE
+    (a : SuzukiPositiveAperture) :
+    deriv (suzukiTaV2Livsic a) I * suzukiTaV2RawCharacteristicE a I =
+      deriv (suzukiTaV2RawCharacteristicA a) I := by
+  have hE : suzukiTaV2RawCharacteristicE a I ≠ 0 :=
+    suzukiTaV2RawCharacteristicE_ne_zero_upperHalfPlane a (by norm_num)
+  have hA := differentiable_suzukiTaV2RawCharacteristicA a
+  have hEd := differentiable_suzukiTaV2RawCharacteristicE a
+  have hquot : suzukiTaV2Livsic a =
+      suzukiTaV2RawCharacteristicA a / suzukiTaV2RawCharacteristicE a := by
+    funext z
+    change suzukiTaV2Livsic a z =
+      suzukiTaV2RawCharacteristicA a z / suzukiTaV2RawCharacteristicE a z
+    exact suzukiTaV2Livsic_eq_rawDeficiency a z
+  rw [hquot]
+  have hdiv := (hA I).hasDerivAt.div (hEd I).hasDerivAt hE
+  rw [hdiv.deriv]
+  rw [suzukiTaV2RawCharacteristicA_I]
+  field_simp [hE]
+  ring
+
+/-- The first source coefficient of the aperture Wronskian is exactly the
+difference of the first finite projective jets. -/
+theorem suzukiTaV2CrossApertureRawWronskian_anchor_deriv
+    (a b : SuzukiPositiveAperture) :
+    (2 * I) * suzukiTaV2CrossApertureRawWronskian a b I =
+      (suzukiTaV2RawCharacteristicE b I * suzukiTaV2RawCharacteristicE a I) *
+        (deriv (suzukiTaV2Livsic b) I - deriv (suzukiTaV2Livsic a) I) := by
+  let A := fun c : SuzukiPositiveAperture => suzukiTaV2RawCharacteristicA c
+  let E := fun c : SuzukiPositiveAperture => suzukiTaV2RawCharacteristicE c
+  let W := suzukiTaV2CrossApertureRawWronskian a b
+  have hA_a := differentiable_suzukiTaV2RawCharacteristicA a
+  have hA_b := differentiable_suzukiTaV2RawCharacteristicA b
+  have hE_a := differentiable_suzukiTaV2RawCharacteristicE a
+  have hE_b := differentiable_suzukiTaV2RawCharacteristicE b
+  have hW := differentiable_suzukiTaV2CrossApertureRawWronskian a b
+  have hfac : HasDerivAt (fun z : ℂ => z ^ 2 + 1) (2 * I) I := by
+    have hbase : HasDerivAt (fun z : ℂ => z * z + 1) (I + I) I := by
+      simpa only [Pi.mul_apply, id_eq, one_mul, mul_one] using
+        ((hasDerivAt_id I).mul (hasDerivAt_id I)).add_const 1
+    simpa only [pow_two, two_mul] using hbase
+  have hleft : HasDerivAt
+      (fun z => A b z * E a z - A a z * E b z)
+      (deriv (A b) I * E a I + A b I * deriv (E a) I -
+        (deriv (A a) I * E b I + A a I * deriv (E b) I)) I := by
+    exact ((hA_b I).hasDerivAt.mul (hE_a I).hasDerivAt).sub
+      ((hA_a I).hasDerivAt.mul (hE_b I).hasDerivAt)
+  have hright : HasDerivAt
+      (fun z => (z ^ 2 + 1) * W z)
+      ((2 * I) * W I + (I ^ 2 + 1) * deriv W I) I := by
+    exact hfac.mul (hW I).hasDerivAt
+  have hcross : (fun z => A b z * E a z - A a z * E b z) =
+      fun z => (z ^ 2 + 1) * W z := by
+    funext z
+    exact suzukiTaV2RawCharacteristic_crossAperture_denominatorCleared a b z
+  have hderiv :
+      deriv (fun z => A b z * E a z - A a z * E b z) I =
+        deriv (fun z => (z ^ 2 + 1) * W z) I := by rw [hcross]
+  have hraw :
+      deriv (A b) I * E a I + A b I * deriv (E a) I -
+        (deriv (A a) I * E b I + A a I * deriv (E b) I) =
+        (2 * I) * W I + (I ^ 2 + 1) * deriv W I := by
+    rw [← hleft.deriv, hderiv, hright.deriv]
+  have hAa : A a I = 0 := suzukiTaV2RawCharacteristicA_I a
+  have hAb : A b I = 0 := suzukiTaV2RawCharacteristicA_I b
+  have hderA_a := deriv_suzukiTaV2Livsic_mul_rawCharacteristicE a
+  have hderA_b := deriv_suzukiTaV2Livsic_mul_rawCharacteristicE b
+  dsimp only [A, E, W] at hraw hAa hAb hderA_a hderA_b ⊢
+  rw [hAa, hAb] at hraw
+  norm_num at hraw
+  rw [← hderA_a, ← hderA_b] at hraw
+  linear_combination -hraw
+
+/-- **Exact first-mode source law.** The anchor value of the normalized
+cross-aperture raw completed-source Wronskian is minus one quarter of the
+literal completed even--odd covariance defect increment.  Thus existing
+energy information controls this one mode only; no cofinal conclusion is
+asserted for the remaining entire source current. -/
+theorem suzukiTaV2CrossApertureRawWronskian_anchor_eq_defect_increment
+    (a b : SuzukiPositiveAperture) :
+    suzukiTaV2CrossApertureRawWronskian a b I /
+        (suzukiTaV2RawCharacteristicE b I * suzukiTaV2RawCharacteristicE a I) =
+      -((suzukiDefectAngle (suzukiTaCoalescingEvenEnergy b 1)
+          (suzukiTaCoalescingOddEnergy b 1) : ℂ) -
+        (suzukiDefectAngle (suzukiTaCoalescingEvenEnergy a 1)
+          (suzukiTaCoalescingOddEnergy a 1) : ℂ)) / 4 := by
+  have hEa : suzukiTaV2RawCharacteristicE a I ≠ 0 :=
+    suzukiTaV2RawCharacteristicE_ne_zero_upperHalfPlane a (by norm_num)
+  have hEb : suzukiTaV2RawCharacteristicE b I ≠ 0 :=
+    suzukiTaV2RawCharacteristicE_ne_zero_upperHalfPlane b (by norm_num)
+  have hW := suzukiTaV2CrossApertureRawWronskian_anchor_deriv a b
+  rw [suzukiTaV2_coalescingDefectAngle_eq_two_I_mul_deriv,
+    suzukiTaV2_coalescingDefectAngle_eq_two_I_mul_deriv]
+  let E := suzukiTaV2RawCharacteristicE b I * suzukiTaV2RawCharacteristicE a I
+  let D := deriv (suzukiTaV2Livsic b) I - deriv (suzukiTaV2Livsic a) I
+  have htarget :
+      -(2 * I * deriv (suzukiTaV2Livsic b) I -
+          2 * I * deriv (suzukiTaV2Livsic a) I) / 4 =
+        -(2 * I * D) / 4 := by
+    dsimp only [D]
+    ring
+  rw [htarget]
+  change suzukiTaV2CrossApertureRawWronskian a b I / E = -(2 * I * D) / 4
+  change (2 * I) * suzukiTaV2CrossApertureRawWronskian a b I = E * D at hW
+  have hE : E ≠ 0 := mul_ne_zero hEb hEa
+  calc
+    suzukiTaV2CrossApertureRawWronskian a b I / E =
+        ((2 * I) * suzukiTaV2CrossApertureRawWronskian a b I) /
+          ((2 * I) * E) := by
+      field_simp [hE]
+    _ = (E * D) / ((2 * I) * E) := by rw [hW]
+    _ = D / (2 * I) := by
+      field_simp [hE]
+    _ = -(2 * I * D) / 4 := by
+      have hI : (I : ℂ) ^ 2 = -1 := by norm_num
+      field_simp
+      ring_nf
+      rw [hI]
+      ring
 
 end RHTower

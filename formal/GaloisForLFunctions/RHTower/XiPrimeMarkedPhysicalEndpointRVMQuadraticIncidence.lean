@@ -89,6 +89,13 @@ def routeKRVMTailWeight
     (s : Finset Nat.Primes) (p : Nat.Primes) : ℝ :=
   if p ∈ s then 0 else routeKPrimeRVMReciprocal p
 
+theorem routeKRVMTailWeight_nonneg
+    (s : Finset Nat.Primes) (p : Nat.Primes) :
+    0 ≤ routeKRVMTailWeight s p := by
+  by_cases hp : p ∈ s
+  · simp [routeKRVMTailWeight, hp]
+  · simp [routeKRVMTailWeight, hp, (routeKPrimeRVMReciprocal_pos p).le]
+
 theorem summable_routeKRVMHeadWeight_sq
     (s : Finset Nat.Primes) :
     Summable (fun p => routeKRVMHeadWeight s p ^ 2) := by
@@ -188,6 +195,20 @@ theorem routeKRVMTailOperator_basis
   · subst q
     simp [routeKRVMTailKernel, HilbertSchmidt.diagMul]
   · simp [routeKRVMTailKernel, HilbertSchmidt.diagMul, hqp]
+
+/-- Every RVM-tail power remains diagonal on the marked-prime basis. -/
+theorem routeKRVMTailOperator_pow_basis
+    (s : Finset Nat.Primes) (n : ℕ) (p : Nat.Primes) :
+    (routeKRVMTailOperator s ^ n) (routeKPrimeBasis p) =
+      (routeKRVMTailWeight s p ^ n : ℂ) • routeKPrimeBasis p := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [pow_succ, ContinuousLinearMap.mul_apply,
+        routeKRVMTailOperator_basis, map_smul, ih, smul_smul]
+      congr 1
+      norm_cast
+      ring
 
 theorem routeKRVMHeadKernel_hsAdjoint
     (s : Finset Nat.Primes) :

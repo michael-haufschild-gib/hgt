@@ -1034,3 +1034,95 @@
   be counted as a new source law.  Lean evidence:
   `XiCayleyWardDynamicalVisibility.sq_norm_xiWardLiCayleyNode_eq_transverseDefect`
   and `xiCayleyWardRadialVisibility_bounded_iff_rh`.
+- **HCF positivity-only variance route is closed.**  For the exact HCF boundary
+  periodization, normalized equal-weight packets at the uniform cell grid have
+  alias converging to zero.  This is a closed Lean theorem,
+  `tendsto_criticalFeatureUniformGridAlias`; it uses only the exact zero cell
+  mean and continuity.  Therefore positivity and total packet mass alone cannot
+  provide the density-scale lower bound for boundary-alias variance: those two
+  facts also hold for packets with arbitrarily small alias.  This does not assert
+  that the actual Xi packet equidistributes.  **Positive survivor:** a viable
+  HCF source theorem must supply a quantitative arithmetic anti-equidistribution
+  law for an actual boundary packet (equivalently, a controlled nonzero Fourier
+  mode or a lower variance-to-envelope ratio).  Lean status:
+  `RHTower.HedenmalmCriticalFeatureUniformGridAliasNoGo` is umbrella-wired,
+  passes direct `lake env lean`, target-only olean build, and axiom audit with
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+- **HC ordered-prime cross curvature supplies a source-defined orientation.**  The
+  literal Gamma-six `(2,3)` cross-curvature minus its `(3,2)` reversal has exact
+  factorization
+  `(e^(a log 2)-e^(a log 3)) (e^(a log 2)-1) (e^(a log 3)-1) /
+  (e^(a log 2)e^(a log 3))`.  It is strictly negative for `a>0`, strictly
+  positive for `a<0`, and zero exactly at `a=0`.  This is not the swap-stable
+  pair displacement: ordered actual prime clocks give an external label before
+  scalarization, with no zero-dependent branch or ad hoc sign.  At an Xi copy,
+  its zero locus is exactly `Re rho = 1/2`.  **Route consequence:** HC's
+  surviving producer can now be stated precisely as a coefficient-faithful,
+  singular or unbounded landing of this ordered source observable in the
+  Gauss--Hodge collision carrier.  The present theorem does not construct that
+  landing and does not claim RH.  Lean status:
+  `RHTower.XiHorizontalCollisionOrderedPrimeCrossCurvature` is umbrella-wired,
+  passes direct `lake env lean` and target-only OLean build; its factorization,
+  neutral-rate classifier, and Xi-rate classifier audit only with `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **HC scalarization of ordered-prime orientation is impossible on any
+  line-conjugation-stable finite carrier.**  The new ordered `(2,3)`
+  cross-curvature is odd in the centered rate.  Critical-line conjugation sends
+  that rate to its negative, hence sends the curvature to its negative; the
+  finite sum over every carrier closed under this exact copy involution is
+  identically zero.  This closes the tempting scalar signed-current landing:
+  it cannot retain off-line information even though the local source observable
+  is nonzero off the line.  **Positive survivor:** retain the ordered curvature
+  in a directed/vector-valued current or in a genuinely source-selected
+  non-line-conjugation-stable domain *before* scalarization; that landing must
+  also evade the existing bounded, closable, and old-boundary cross-prime
+  completion no-gos.  Lean evidence:
+  `sourceHorizontalGammaSixTwoThreeCrossOrientation_neg`,
+  `sourceHorizontalGammaSixTwoThreeCrossOrientation_centeredRate_lineConj`, and
+  `sum_sourceHorizontalGammaSixTwoThreeCrossOrientation_eq_zero_of_lineConj_stable`
+  in `RHTower.XiHorizontalCollisionOrderedPrimeCrossCurvature`; direct check,
+  target-only OLean build, and all three axiom audits pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **E cannot obtain its cofinal packet-square control from a fixed absolutely
+  summable cross-prime recurrence kernel.**  At arbitrarily large frequencies,
+  simultaneous antiscale recurrence of every finite prime head makes the full
+  ordered-pair form of any entrywise `ℓ¹` kernel arbitrarily small; hence no
+  such fixed kernel has a positive uniform coercive lower bound.  The relevant
+  already-formal theorem is
+  `RHTower.Sieve.not_exists_uniformly_coercive_routeEStaticAbsoluteKernel`.
+  **Route consequence:** an E completion must be genuinely moving or outside
+  this absolute-kernel class and must prove its own load/seam/fourth-moment
+  control; importing a static cross-prime recurrence is ruled out.
+- **LI radial response has one source-level complex differential carrier.**  In
+  the prime--Gamma convergence window `0 < y < 41/2`, the literal
+  prime--Gamma response is exactly the LI radial response.  For every `y > 0`,
+  its complex form is exactly
+  `2y (y L'(1-y) - L(1-y))`, where
+  `L = logDeriv xiSquaredSeamCassiniSource`; the real LI response is its real
+  trace.  Thus the all-mode two-scale divided difference acts on one explicit
+  Euler defect of one fixed entire Cassini source, rather than on separately
+  selected shifted moments.  **Route consequence:** any genuine LI producer
+  must prove a source-derived complex zero/singularity-support restriction for
+  this Euler defect (or its parent Cassini source) before coefficient
+  extraction.  The bridge alone is not zero exclusion and does not claim RH.
+  Lean evidence: `RHTower.LiEvenCrossCassiniRadialEulerBridge`, umbrella-wired;
+  direct check and target-only OLean build pass, and its three public theorems
+  audit only with `propext`, `Classical.choice`, and `Quot.sound`.
+- **T2 admits a strictly weaker, direction-preserving local producer target.**
+  The natural Wold residual is monotone arithmetic mass minus `log N`; hence a
+  positive center residual persists on the right square-root half-window, while
+  a negative center residual persists on the left.  Define the right mean using
+  only `max R_n 0` and the left mean using only `max (-R_n) 0`, both normalized
+  by the full square-root window.  Lean proves these two directed means are
+  equivalent to the exact natural Wold power spectrum at every zero width, and
+  at width zero equivalent to RH.  The proof uses only signed persistence and
+  the sharp `sqrt N / N = N^(-1/2)` logarithmic drift; it never reconstructs an
+  absolute local mean.  **Route consequence:** T2's remaining source law can
+  target forward positive and backward negative residual mass separately; it
+  need not prove the stronger symmetric absolute local mean.  This is still an
+  RH-equivalent producer target, not an unconditional source estimate or an RH
+  proof.  Lean evidence:
+  `RHTower.XiHeatCassiniWoldResidualNaturalSqrtOneSidedMeanSpectrum`,
+  umbrella-wired; direct check and target-only OLean build pass.  The spectrum,
+  all-width, and RH-endpoint theorems audit only with `propext`,
+  `Classical.choice`, and `Quot.sound`.

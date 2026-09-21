@@ -8,6 +8,8 @@ import GaloisForLFunctions.HTGeometry.RegularizedResolventTraceOperator
 import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
 import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuadraticIncidence
 import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuarticIncidence
+import GaloisForLFunctions.RHTower.PrimeIndexedRVMQuarticCubicTrace
+import GaloisForLFunctions.HTGeometry.EvenEntireSquareFactor
 
 /-!
 # K-RVM Pontryagin determinant survivor
@@ -883,6 +885,21 @@ theorem routeKQuarticallyAdmittedKernel_fourth_trace :
     routeKQuarticallyAdmittedKernel_toOperator]
   congr 1
 
+/-- The cubic Hilbert--Schmidt trace is the ordinary cubic trace of the literal carrier. -/
+theorem routeKQuarticallyAdmittedKernel_cube_trace :
+    (∑' p : Nat.Primes,
+      HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 2 (p, p)) =
+      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 3) := by
+  rw [show HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 2 =
+      HilbertSchmidt.hsComp routeKQuarticallyAdmittedKernel
+        (HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 1) by rfl]
+  rw [← HilbertSchmidt.opTrace_toOperator_comp
+    routeKQuarticallyAdmittedKernel_isHS
+    (HilbertSchmidt.isHS_hsPow routeKQuarticallyAdmittedKernel_isHS 1)]
+  rw [HilbertSchmidt.toOperator_hsPow routeKQuarticallyAdmittedKernel_isHS 1,
+    routeKQuarticallyAdmittedKernel_toOperator]
+  congr 1
+
 
 noncomputable def routeKQuarticallyAdmittedEntireDet : ℂ → ℂ :=
   GaloisForLFunctions.HTGeometry.entireDet2 routeKQuarticallyAdmittedKernel
@@ -945,6 +962,16 @@ theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_two :
   have h2 := two_mul_opTrace_sq_routeKQuarticallyAdmittedOperator
   linear_combination h2 / (-4)
 
+/-- The literal K-RVM determinant has a nonvanishing odd cubic coefficient. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_three :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedEntireDet 3 =
+      -ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 3) / 3 := by
+  rw [routeKQuarticallyAdmittedEntireDet,
+    GaloisForLFunctions.HTGeometry.taylorCoeff_entireDet2_three
+      routeKQuarticallyAdmittedKernel_isHS,
+    routeKQuarticallyAdmittedKernel_cube_trace]
+
 /-- The determinant is squared because the certified source carrier has two paired channels.
 Squaring retains its zero set and gives the source-normalized local multiplicity. -/
 noncomputable def routeKQuarticallyAdmittedSquaredEntireDet : ℂ → ℂ :=
@@ -963,6 +990,58 @@ theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_two :
     taylorCoeff_routeKQuarticallyAdmittedEntireDet_one,
     taylorCoeff_routeKQuarticallyAdmittedEntireDet_two]
   ring
+
+/-- Pairing channels doubles, rather than cancels, the literal cubic determinant coefficient. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_three :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedSquaredEntireDet 3 =
+      -(2 * ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 3)) / 3 := by
+  change GaloisForLFunctions.HTGeometry.taylorCoeff
+    (fun z => routeKQuarticallyAdmittedEntireDet z ^ 2) 3 = _
+  rw [GaloisForLFunctions.HTGeometry.taylorCoeff_sq_three_of_value_one_of_linear_zero
+    routeKQuarticallyAdmittedEntireDet_differentiable
+    routeKQuarticallyAdmittedEntireDet_zero
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_one,
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_three]
+  ring
+
+/-- The paired literal determinant's cubic Taylor coefficient cannot vanish. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_three_ne_zero :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedSquaredEntireDet 3 ≠ 0 := by
+  rw [taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_three]
+  have htwo : (2 : ℂ) ≠ 0 := by norm_num
+  have hthree : (3 : ℂ) ≠ 0 := by norm_num
+  exact div_ne_zero
+    (neg_ne_zero.mpr (mul_ne_zero htwo
+      opTrace_routeKQuarticallyAdmittedOperator_cube_ne_zero))
+    hthree
+
+/-- The normalized centered Xi function has a zero cubic Taylor coefficient by evenness. -/
+theorem taylorCoeff_normalized_XiC_three_eq_zero :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      (fun z : ℂ => XiC z / XiC 0) 3 = 0 := by
+  rw [GaloisForLFunctions.HTGeometry.taylorCoeff]
+  have heq : (fun z : ℂ => XiC z / XiC 0) =
+      fun z => (XiC 0)⁻¹ * XiC z := by
+    funext z
+    ring
+  rw [heq, iteratedDeriv_const_mul_field,
+    iteratedDeriv_XiC_odd_zero (by decide), mul_zero]
+  ring
+
+/-- The literal paired quartic carrier cannot satisfy the proposed all-order normalized Xi
+identity: its cubic coefficient is forced nonzero while Xi's is forced zero. -/
+theorem routeKQuarticallyAdmittedSquaredEntireDet_ne_normalized_XiC :
+    routeKQuarticallyAdmittedSquaredEntireDet ≠ (fun z : ℂ => XiC z / XiC 0) := by
+  intro h
+  have hcoeff := congrArg (fun f : ℂ → ℂ =>
+    GaloisForLFunctions.HTGeometry.taylorCoeff f 3) h
+  rw [taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_three,
+    taylorCoeff_normalized_XiC_three_eq_zero] at hcoeff
+  apply taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_three_ne_zero
+  rw [taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_three]
+  exact hcoeff
 
 /-- The paired determinant has the normalized quartic source coefficient. -/
 theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_four :

@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**388 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**392 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,25 +11,24 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-21, `b632fd56f1d3679a3d053aff534d7b61f86b398f`**.
+Source-audit cutoff: **2026-09-21, `ec8ee00bd862ebcd3160c04d90079d17e19c4fa8`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
-The concurrent uncommitted `MobiusDivisorCurrentClockPayment` leaf is not promoted or counted.
 
 ## Browse by family
 
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 30 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 31 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 47 |
 | [HB, FZZ and PW: scattering and physical action](#scattering) | 79 |
 | [Theta, Schur, spectral and positivity mechanisms](#theta) | 37 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 57 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 60 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](#other) | 81 |
 
@@ -338,6 +337,7 @@ Source-native aperture invariant is required.
 - [CCM-FU copy-compatible positive processed-core metrics](#no-go-364)
 - [CCM-FU arbitrary cutoff growth](#no-go-376)
 - [CCM-FU bounded-quotient current-clock repayment](#no-go-377)
+- [CCM-FU scalar graph-energy coercion](#no-go-389)
 
 <a id="no-go-294"></a>
 
@@ -851,6 +851,25 @@ still use deeper actual child fields and their cross terms, but bounded-quotient
 two-coordinate repairs are terminal.
 
 Evidence: [current-clock depth](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCurrentClockDepth.lean), [depth audit](rh-current-clock-depth-facts.md).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-389"></a>
+
+### CCM-FU scalar graph-energy coercion
+
+**Closed result**
+
+The explicit sequence `q_n = n H_n` has summable weighted graph slope while `q_n/n`
+diverges. Hence finite completed graph energy cannot by itself coerce the normalized scalar
+window required by the RH endpoint, even with exact adjacent-edge control.
+
+**Survivor / still open**
+
+The completed graph energy remains a valid local budget. CCM-FU needs a source-sensitive signed
+cumulative invariant linking checkpoints and apertures; scalar Sobolev/graph coercion is terminal.
+
+Evidence: [graph-energy scalar no-go](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiGraphEnergyScalarNoGo.lean).
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
@@ -3715,12 +3734,14 @@ completion limit is zero-free.
 
 **Survivor / still open**
 
-The doubled source tail has exact chiral symmetry and an even determinant. An explicit finite
-Pontryagin completion is nonzero, metric-self-adjoint, cubic nilpotent and determinant-one, so
-determinant-only exclusion of indefinite boundaries is false. K-RVM needs a source-derived,
-non-similarity, non-nilpotent global boundary assembly with the Xi divisor.
+The doubled source tail has exact chiral symmetry and an even determinant. Finite hyperbolic
+boundary completions preserve determinant and metric adjoint, and a quadratically admitted
+self-adjoint Hilbert--Schmidt determinant has a real zero with the source-fixed second Xi jet.
+A single determinant has a strict fourth-jet deficit, but a paired two-channel square matches
+the normalized quadratic and quartic Xi jets. K-RVM still needs a source-derived global paired
+assembly with the full Xi divisor and all higher jets.
 
-Evidence: [bounded-similarity obstruction](../../../../formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMNonunitarySimilarityNoGo.lean), [Pontryagin survivor](../../../../formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMPontryaginBoundarySurvivor.lean).
+Evidence: [bounded-similarity obstruction](../../../../formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMNonunitarySimilarityNoGo.lean), [Pontryagin and jet survivor](../../../../formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMPontryaginBoundarySurvivor.lean), [Hilbert--Schmidt fourth jet](../../../../formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtFourthJet.lean).
 
 [Back to family](#theta) · [Current K-RVM frontier](rh-current-frontier-map.md#candidate-k-rvm)
 
@@ -4319,6 +4340,9 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [Suzuki finite-head recurrence and fractional transition-core correction](#no-go-362)
 - [SP-E/P common-centroid translation gauge](#no-go-373)
 - [D2 passive KMS completion and scalar cancellation](#no-go-374)
+- [D2 source-selected reciprocal-power moment tail](#no-go-390)
+- [EGC reflection-only shifted-pole correction](#no-go-391)
+- [G symmetric Schwarz-cap regularization](#no-go-392)
 
 <a id="no-go-309"></a>
 
@@ -5305,6 +5329,63 @@ estimate may still close that problem.
 Evidence: [Lorentz graph kernel and radical](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLorentzGraphKernel.lean), [fact audit](p-sp-e-translation-gauge-own-research-facts.md).
 
 [Back to family](#ward) · [Current P frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-390"></a>
+
+### D2 source-selected reciprocal-power moment tail
+
+**Closed result**
+
+No source-selected continuous positive reciprocal-power carrier matches the complete normalized
+prime--archimedean moment tail after any finite starting index, for either parity. Under the
+moment-positivity endpoint, such tail matching would force RH and then contradict compact moment
+determinacy because the carrier retains mass away from Xi nodes.
+
+**Survivor / still open**
+
+D2 still needs a signed all-order source lower bound or a different carrier. Deleting finitely
+many moments cannot repair this positive reciprocal-power model.
+
+Evidence: [reciprocal-tail no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspCalibratedPowerReciprocalEvenTailNoGo.lean), [all-order audit](d2-all-order-source-own-research-facts.md).
+
+[Back to family](#ward) · [Current D2 frontier](rh-current-frontier-map.md#d2--continued-primearchimedean-free-sector-passivity)
+
+<a id="no-go-391"></a>
+
+### EGC reflection-only shifted-pole correction
+
+**Closed result**
+
+The outer shifted-pole residue correction does not cancel under functional reflection. Reflection
+can make the correction real, but cannot force its real part or normalized covariance to vanish.
+
+**Survivor / still open**
+
+The pole-safe inner Cauchy landing survives. EGC needs an independent source-side decay or
+real-part cancellation law along a cofinal contour family.
+
+Evidence: [reflection-correction no-go](../../../../formal/GaloisForLFunctions/RHTower/XiMeromorphicCauchyPairReflectionCorrectionNoGo.lean).
+
+[Back to family](#ward) · [Current EGC frontier](rh-current-frontier-map.md#candidate-egc)
+
+<a id="no-go-392"></a>
+
+### G symmetric Schwarz-cap regularization
+
+**Closed result**
+
+The exact lower-cap source response is odd in the cap parameter `tau`. Symmetric `±tau`
+Schwarz averaging therefore cancels identically and cannot orient the finite Xi packet or its
+annulus energy.
+
+**Survivor / still open**
+
+The one-sided cap response and finite packet identification survive. Route G needs a source-selected
+one-sided parameter and uniform cofinal integrability; symmetric smoothing is terminal.
+
+Evidence: [cap-odd no-go](../../../../formal/GaloisForLFunctions/RHTower/XiWardSchwarzCapTauOddNoGo.lean), [fact audit](g-own-research-facts.md).
+
+[Back to family](#ward) · [Current G frontier](rh-current-frontier-map.md#g--ward-orientation)
 
 <a id="roots"></a>
 

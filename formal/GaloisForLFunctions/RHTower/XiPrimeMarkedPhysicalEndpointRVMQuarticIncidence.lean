@@ -572,6 +572,16 @@ theorem routeKQuarticallyAdmittedOperator_sq :
     routeKQuarticReserve_mul_head_eq_zero]
   simp [pow_two]
 
+/-- The finite moment head and cofinite reserve are reducing summands, hence their cubic
+traces cannot generate mixed terms. -/
+theorem routeKQuarticallyAdmittedOperator_cube :
+    routeKQuarticallyAdmittedOperator ^ 3 =
+      routeKQuarticHead ^ 3 + routeKQuarticReserve ^ 3 := by
+  rw [show 3 = 2 + 1 by norm_num, pow_add,
+    routeKQuarticallyAdmittedOperator_sq, routeKQuarticallyAdmittedOperator]
+  noncomm_ring [routeKQuarticHead_mul_reserve_eq_zero,
+    routeKQuarticReserve_mul_head_eq_zero]
+
 theorem routeKQuarticallyAdmittedOperator_sq_isHilbertSchmidt :
     (routeKQuarticallyAdmittedOperator ^ 2).IsHilbertSchmidt := by
   rw [routeKQuarticallyAdmittedOperator_sq]

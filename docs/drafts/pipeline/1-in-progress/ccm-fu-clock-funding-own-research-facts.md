@@ -237,3 +237,22 @@
   target: establish stable background/copy matching (or its aggregate
   replacement) across an exhaustive prime order; diagonal mass cannot
   substitute for this cancellation.
+- `mobiusDivisorOrientedResidualEnergy_insert_mul_prime_eq_zero_rigid` is
+  formally proved.  For every finite residual detector with strictly positive
+  weights, zero post-insertion oriented energy forces
+  `background R = sqrt p * old R` at every measured residual label `R`.
+  Thus there is no aggregate or cross-label cancellation escape from the
+  two-scale identity: a viable CCM-FU schedule must establish simultaneous
+  pointwise matching on each residual family it uses.  The remaining open
+  problem is whether the literal p-free source can satisfy those cofinal
+  pointwise constraints while preserving, rather than renormalizing away,
+  the inherited changing-core debt.
+- At the unprocessed base core `P = ∅`, squarefree unique factorization makes
+  residual labels source-atomic: pointwise matching would require the unit
+  channel relation `C(p*N) = sqrt(p) * C(N)`.  This cannot be rejected by a
+  scaling argument.  The proved exact mean
+  `C(M) / sqrt(M) → log(2*pi)/2 - EulerGamma - 1/4` makes the relation
+  leading-order resonant.  Therefore the live CCM-FU obstruction is a
+  subleading, moving-endpoint defect in this channel relation.  A proof using
+  only positive mass, homogeneity, or leading asymptotics cannot resolve it;
+  it needs a new uniform nonvanishing/decorrelation law for that defect.

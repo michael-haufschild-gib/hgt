@@ -85,13 +85,21 @@ lemma retractedPoint_eventuallyEq_standard {ε x y : ℝ} (hε : 0 < ε) (hy : �
   change heightRetraction ε p.2 = p.2 at hp
   simp [retractedPoint, hp]
 
-/-- A `C¹` upper-half-plane chart field has a global `C¹` pullback through the positive retraction. -/
-lemma contDiff_retractedField {F : ℂ → ℂ} {ε : ℝ} (hε : 0 < ε)
-    (hF : ContDiffOn ℝ 1 F {z : ℂ | 0 < z.im}) :
-    ContDiff ℝ 1 (fun p => F (retractedPoint ε p)) := by
+/-- A smooth upper-half-plane chart field has a global pullback of the same order through
+the positive retraction. -/
+lemma contDiff_retractedField_of {F : ℂ → ℂ} {ε : ℝ} {n : WithTop ℕ∞}
+    (hn : n ≤ ∞) (hε : 0 < ε)
+    (hF : ContDiffOn ℝ n F {z : ℂ | 0 < z.im}) :
+    ContDiff ℝ n (fun p => F (retractedPoint ε p)) := by
   refine contDiff_iff_contDiffAt.mpr fun p => ?_
   exact (hF.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds
     (retractedPoint_im_pos hε p))).comp p
-      ((contDiff_retractedPoint ε).of_le (by simp)).contDiffAt
+      ((contDiff_retractedPoint ε).of_le hn).contDiffAt
+
+/-- A `C¹` upper-half-plane chart field has a global `C¹` pullback through the positive retraction. -/
+lemma contDiff_retractedField {F : ℂ → ℂ} {ε : ℝ} (hε : 0 < ε)
+    (hF : ContDiffOn ℝ 1 F {z : ℂ | 0 < z.im}) :
+    ContDiff ℝ 1 (fun p => F (retractedPoint ε p)) :=
+  contDiff_retractedField_of (by simp) hε hF
 
 end GaloisForLFunctions.HTGeometry

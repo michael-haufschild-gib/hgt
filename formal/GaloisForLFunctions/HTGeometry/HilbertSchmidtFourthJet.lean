@@ -247,6 +247,72 @@ theorem detCoeff_four_eq_trace {K : ι × ι → ℂ} (hK : IsHS K) :
   rw [hcoef4] at hrec
   linear_combination hrec / 4
 
+/-- The cubic coefficient of the Hilbert--Carleman determinant is its cubic
+holomorphic trace. -/
+theorem detCoeff_three_eq_neg_third_traceCube {K : ι × ι → ℂ} (hK : IsHS K) :
+    detCoeff K 3 = -(∑' i, hsPow K 2 (i, i)) / 3 := by
+  let r : ℝ := detRadius K
+  have hr0 : 0 < r := detRadius_pos K
+  have hr : r * hsNorm K < 1 := detRadius_mul_hsNorm_lt K
+  have hD : AnalyticAt ℂ (fredholmDet K) 0 :=
+    (fredholmDet_differentiableOn hK r hr).analyticAt
+      (isOpen_ball.mem_nhds (show (0 : ℂ) ∈ ball 0 r by simpa using hr0))
+  have hR : AnalyticAt ℂ (resolventTrace K) 0 := resolventTrace_analyticAt_zero hK
+  have hlocal :
+      deriv (fredholmDet K) =ᶠ[nhds (0 : ℂ)]
+        fredholmDet K * (-resolventTrace K) := by
+    filter_upwards [isOpen_ball.mem_nhds
+      (show (0 : ℂ) ∈ ball 0 r by simpa using hr0)] with z hz
+    exact (hasDerivAt_fredholmDet hK r hr z hz).deriv
+  have hps : GaloisForLFunctions.taylorPS (deriv (fredholmDet K)) =
+      GaloisForLFunctions.taylorPS (fredholmDet K) *
+        GaloisForLFunctions.taylorPS (-resolventTrace K) := by
+    calc
+      GaloisForLFunctions.taylorPS (deriv (fredholmDet K)) =
+          GaloisForLFunctions.taylorPS (fredholmDet K * (-resolventTrace K)) :=
+        taylorPS_congr_of_eventuallyEq_local hlocal
+      _ = GaloisForLFunctions.taylorPS (fredholmDet K) *
+          GaloisForLFunctions.taylorPS (-resolventTrace K) :=
+        taylorPS_mul_of_analyticAt_local hD hR.neg
+  have hD0 : PowerSeries.coeff 0 (GaloisForLFunctions.taylorPS (fredholmDet K)) = 1 := by
+    rw [GaloisForLFunctions.coeff_taylorPS]
+    simp [fredholmDet, fredholmExp]
+  have hD1 : PowerSeries.coeff 1 (GaloisForLFunctions.taylorPS (fredholmDet K)) = 0 := by
+    rw [GaloisForLFunctions.coeff_taylorPS]
+    simpa [detCoeff, taylorCoeff, div_eq_mul_inv, mul_comm] using detCoeff_one_eq_zero hK
+  have hRcoeff (n : ℕ) :
+      PowerSeries.coeff n (GaloisForLFunctions.taylorPS (-resolventTrace K)) =
+        -resolventTraceCoeff K n := by
+    calc
+      PowerSeries.coeff n (GaloisForLFunctions.taylorPS (-resolventTrace K)) =
+          -(iteratedDeriv n (resolventTrace K) 0 / (n.factorial : ℂ)) := by
+        rw [GaloisForLFunctions.coeff_taylorPS, iteratedDeriv_neg]
+        ring
+      _ = -taylorCoeff (resolventTrace K) n := by
+        simp [taylorCoeff, div_eq_mul_inv]
+        ring
+      _ = -resolventTraceCoeff K n := by
+        rw [resolventTraceCoeff_eq_taylorCoeff hK n]
+  have hR0 : PowerSeries.coeff 0 (GaloisForLFunctions.taylorPS (-resolventTrace K)) = 0 := by
+    rw [hRcoeff]
+    simp [resolventTraceCoeff]
+  have hR2 : PowerSeries.coeff 2 (GaloisForLFunctions.taylorPS (-resolventTrace K)) =
+      -(∑' i, hsPow K 2 (i, i)) := by
+    rw [hRcoeff]
+    rfl
+  have hrec := congrArg (PowerSeries.coeff 2) hps
+  rw [GaloisForLFunctions.taylorPS_deriv, PowerSeries.coeff_derivative,
+    PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk] at hrec
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add] at hrec
+  rw [hD0, hD1, hR0, hR2] at hrec
+  norm_num at hrec
+  have hcoef3 : iteratedDeriv 3 (fredholmDet K) 0 / 6 = detCoeff K 3 := by
+    rw [detCoeff, taylorCoeff]
+    norm_num [Nat.factorial]
+    ring
+  rw [hcoef3] at hrec
+  linear_combination hrec / 3
+
 /-- The fourth coefficient of the entire Hilbert--Carleman determinant is determined by
 its square and fourth holomorphic traces. -/
 theorem taylorCoeff_entireDet2_four {K : ι × ι → ℂ} (hK : IsHS K) :
@@ -254,6 +320,12 @@ theorem taylorCoeff_entireDet2_four {K : ι × ι → ℂ} (hK : IsHS K) :
       (∑' i, hsPow K 1 (i, i)) ^ 2 / 8 -
         (∑' i, hsPow K 3 (i, i)) / 4 := by
   rw [taylorCoeff_entireDet2_eq_detCoeff hK, detCoeff_four_eq_trace hK]
+
+/-- The cubic coefficient of the entire Hilbert--Carleman determinant is its cubic
+holomorphic trace. -/
+theorem taylorCoeff_entireDet2_three {K : ι × ι → ℂ} (hK : IsHS K) :
+    taylorCoeff (entireDet2 K) 3 = -(∑' i, hsPow K 2 (i, i)) / 3 := by
+  rw [taylorCoeff_entireDet2_eq_detCoeff hK, detCoeff_three_eq_neg_third_traceCube hK]
 
 
 /-- Squaring an entire function of value one and vanishing linear coefficient doubles its
@@ -275,6 +347,25 @@ theorem taylorCoeff_sq_two_of_value_one_of_linear_zero
   simp [h0, h1', taylorCoeff]
   ring
 
+/-- Squaring an entire function of value one and vanishing linear coefficient doubles its
+cubic Taylor coefficient. -/
+theorem taylorCoeff_sq_three_of_value_one_of_linear_zero
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f 0 = 1)
+    (h1 : taylorCoeff f 1 = 0) :
+    taylorCoeff (fun z => f z ^ 2) 3 = 2 * taylorCoeff f 3 := by
+  have hcf : ContDiffAt ℂ 3 f 0 := hf.contDiff.contDiffAt
+  have h1' : iteratedDeriv 1 f 0 = 0 := by
+    simpa [taylorCoeff] using h1
+  rw [taylorCoeff]
+  rw [show (fun z : ℂ => f z ^ 2) = f * f by
+    funext z
+    simp [pow_two]]
+  rw [iteratedDeriv_mul hcf hcf]
+  simp only [Finset.sum_range_succ, Nat.choose_self, Nat.choose_one_right,
+    Nat.choose_two_right, Nat.sub_zero, Nat.sub_self]
+  simp [h0, h1', taylorCoeff]
+  ring
+
 /-- Squaring an entire function of value one and vanishing linear coefficient gives the
 fourth Taylor coefficient `2 f₄ + f₂²`. -/
 theorem taylorCoeff_sq_four_of_value_one_of_linear_zero
@@ -292,6 +383,59 @@ theorem taylorCoeff_sq_four_of_value_one_of_linear_zero
   rw [iteratedDeriv_mul hcf hcf]
   simp only [Finset.sum_range_succ, Nat.choose_self, Nat.choose_one_right,
     Nat.choose_two_right, Nat.sub_zero, Nat.sub_self]
+  simp [h0, h1', taylorCoeff]
+  ring
+
+/-- Reflection pairing removes the odd sector without changing the quadratic jet of a
+center-normalized function with zero linear coefficient. -/
+theorem taylorCoeff_reflectionProduct_two_of_value_one_of_linear_zero
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f 0 = 1)
+    (h1 : taylorCoeff f 1 = 0) :
+    taylorCoeff (fun z => f z * f (-z)) 2 = 2 * taylorCoeff f 2 := by
+  have hcf : ContDiffAt ℂ 2 f 0 := hf.contDiff.contDiffAt
+  have hnegdiff : Differentiable ℂ (fun z : ℂ => f (-z)) :=
+    hf.comp differentiable_neg
+  have hcfneg : ContDiffAt ℂ 2 (fun z : ℂ => f (-z)) 0 :=
+    hnegdiff.contDiff.contDiffAt
+  have h1' : iteratedDeriv 1 f 0 = 0 := by
+    simpa [taylorCoeff] using h1
+  have hneg (n : ℕ) :
+      iteratedDeriv n (fun z : ℂ => f (-z)) 0 =
+        (-1 : ℂ) ^ n • iteratedDeriv n f 0 := by
+    simpa using iteratedDeriv_comp_neg n f 0
+  rw [taylorCoeff]
+  rw [show (fun z : ℂ => f z * f (-z)) = f * (fun z : ℂ => f (-z)) by rfl]
+  rw [iteratedDeriv_mul hcf hcfneg]
+  simp only [Finset.sum_range_succ, Nat.choose_self, Nat.choose_one_right,
+    Nat.sub_zero, Nat.sub_self]
+  rw [hneg 2, hneg 1, hneg 0]
+  simp [h0, h1', taylorCoeff]
+  ring
+
+/-- Reflection pairing removes the odd sector without changing the quartic jet of a
+center-normalized function with zero linear coefficient. -/
+theorem taylorCoeff_reflectionProduct_four_of_value_one_of_linear_zero
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f 0 = 1)
+    (h1 : taylorCoeff f 1 = 0) :
+    taylorCoeff (fun z => f z * f (-z)) 4 =
+      2 * taylorCoeff f 4 + (taylorCoeff f 2) ^ 2 := by
+  have hcf : ContDiffAt ℂ 4 f 0 := hf.contDiff.contDiffAt
+  have hnegdiff : Differentiable ℂ (fun z : ℂ => f (-z)) :=
+    hf.comp differentiable_neg
+  have hcfneg : ContDiffAt ℂ 4 (fun z : ℂ => f (-z)) 0 :=
+    hnegdiff.contDiff.contDiffAt
+  have h1' : iteratedDeriv 1 f 0 = 0 := by
+    simpa [taylorCoeff] using h1
+  have hneg (n : ℕ) :
+      iteratedDeriv n (fun z : ℂ => f (-z)) 0 =
+        (-1 : ℂ) ^ n • iteratedDeriv n f 0 := by
+    simpa using iteratedDeriv_comp_neg n f 0
+  rw [taylorCoeff]
+  rw [show (fun z : ℂ => f z * f (-z)) = f * (fun z : ℂ => f (-z)) by rfl]
+  rw [iteratedDeriv_mul hcf hcfneg]
+  simp only [Finset.sum_range_succ, Nat.choose_self, Nat.choose_one_right,
+    Nat.choose_two_right, Nat.sub_zero, Nat.sub_self]
+  rw [hneg 4, hneg 3, hneg 2, hneg 1, hneg 0]
   simp [h0, h1', taylorCoeff]
   ring
 

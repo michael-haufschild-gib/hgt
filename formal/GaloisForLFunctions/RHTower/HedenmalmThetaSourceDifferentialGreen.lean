@@ -312,6 +312,22 @@ def thetaSourceDifferentialBoundaryCoordinateElement (z : ℂ) (k : thetaCentere
     thetaSourceDifferentialBoundaryRelation z :=
   ⟨thetaSourceDifferentialBoundaryCoordinate z k, ⟨k, rfl⟩⟩
 
+/-- The complete monopole--dipole boundary record, read directly from an arbitrary element of
+the closed source relation. -/
+def thetaSourceDifferentialBoundaryPort (z : ℂ) :
+    thetaSourceDifferentialBoundaryRelation z →L[ℂ] (ℂ × ℂ) :=
+  (ContinuousLinearMap.snd ℂ (H × H) (ℂ × ℂ)).comp
+    (thetaSourceDifferentialBoundaryRelation z).subtypeL
+
+theorem thetaSourceDifferentialBoundaryPort_apply
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryPort z
+      (thetaSourceDifferentialBoundaryCoordinateElement z k) =
+      (pinnedMean (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k) := by
+  simp [thetaSourceDifferentialBoundaryPort,
+    thetaSourceDifferentialBoundaryCoordinateElement,
+    thetaSourceDifferentialBoundaryCoordinate_apply]
+
 theorem thetaSourceDifferentialBoundarySourceProjection_apply
     (z : ℂ) (k : thetaCentered) :
     thetaSourceDifferentialBoundarySourceProjection z
@@ -388,6 +404,68 @@ theorem thetaSourceDifferentialBoundaryEnergyEmbedding_dense_range (z : ℂ) :
   exact DenseRange.comp thetaMetricRoot_dense_range
     (thetaSourceDifferentialBoundarySourceProjection_dense_range z)
     thetaMetricRoot.continuous
+
+/-- The Riesz map of the energy relation into its continuous complex dual. It is necessarily
+conjugate-linear in the ambient Hilbert coordinate: complex Hilbert spaces embed in the
+continuous anti-dual, rather than linearly in the ordinary dual. -/
+noncomputable def thetaSourceDifferentialBoundaryEnergyAntiDualLM (z : ℂ) :
+    H →ₛₗ[starRingEnd ℂ]
+      (thetaSourceDifferentialBoundaryRelation z →L[ℂ] ℂ) where
+  toFun := fun h => (innerSL ℂ h).comp
+    (thetaSourceDifferentialBoundaryEnergyEmbedding z)
+  map_add' := by
+    intro x y
+    apply ContinuousLinearMap.ext
+    intro e
+    change inner ℂ (x + y) (thetaSourceDifferentialBoundaryEnergyEmbedding z e) =
+      inner ℂ x (thetaSourceDifferentialBoundaryEnergyEmbedding z e) +
+        inner ℂ y (thetaSourceDifferentialBoundaryEnergyEmbedding z e)
+    rw [inner_add_left]
+  map_smul' := by
+    intro q x
+    apply ContinuousLinearMap.ext
+    intro e
+    change inner ℂ (q • x) (thetaSourceDifferentialBoundaryEnergyEmbedding z e) =
+      (starRingEnd ℂ q) * inner ℂ x (thetaSourceDifferentialBoundaryEnergyEmbedding z e)
+    rw [inner_smul_left]
+
+/-- Continuous anti-dual realization of the literal dense energy embedding. -/
+noncomputable def thetaSourceDifferentialBoundaryEnergyAntiDual (z : ℂ) :
+    H →SL[starRingEnd ℂ]
+      (thetaSourceDifferentialBoundaryRelation z →L[ℂ] ℂ) :=
+  @LinearMap.mkContinuous ℂ ℂ H
+    (thetaSourceDifferentialBoundaryRelation z →L[ℂ] ℂ) _ _ _ _ _ _
+    (starRingEnd ℂ) (thetaSourceDifferentialBoundaryEnergyAntiDualLM z)
+    ‖thetaSourceDifferentialBoundaryEnergyEmbedding z‖ (by
+      intro h
+      change ‖(innerSL ℂ h).comp (thetaSourceDifferentialBoundaryEnergyEmbedding z)‖ ≤
+        ‖thetaSourceDifferentialBoundaryEnergyEmbedding z‖ * ‖h‖
+      apply ContinuousLinearMap.opNorm_le_bound _ (by positivity)
+      intro e
+      change ‖inner ℂ h (thetaSourceDifferentialBoundaryEnergyEmbedding z e)‖ ≤
+        ‖thetaSourceDifferentialBoundaryEnergyEmbedding z‖ * ‖h‖ * ‖e‖
+      calc
+        ‖inner ℂ h (thetaSourceDifferentialBoundaryEnergyEmbedding z e)‖ ≤
+            ‖h‖ * ‖thetaSourceDifferentialBoundaryEnergyEmbedding z e‖ :=
+          norm_inner_le_norm h (thetaSourceDifferentialBoundaryEnergyEmbedding z e)
+        _ ≤ ‖h‖ * (‖thetaSourceDifferentialBoundaryEnergyEmbedding z‖ * ‖e‖) := by
+          gcongr
+          exact (thetaSourceDifferentialBoundaryEnergyEmbedding z).le_opNorm e
+        _ = ‖thetaSourceDifferentialBoundaryEnergyEmbedding z‖ * ‖h‖ * ‖e‖ := by ring)
+
+@[simp] theorem thetaSourceDifferentialBoundaryEnergyAntiDual_apply
+    (z : ℂ) (h : H) (e : thetaSourceDifferentialBoundaryRelation z) :
+    thetaSourceDifferentialBoundaryEnergyAntiDual z h e =
+      inner ℂ h (thetaSourceDifferentialBoundaryEnergyEmbedding z e) := rfl
+
+/-- Dense energy range makes the anti-dual embedding injective. -/
+theorem thetaSourceDifferentialBoundaryEnergyAntiDual_injective (z : ℂ) :
+    Function.Injective (thetaSourceDifferentialBoundaryEnergyAntiDual z) := by
+  intro x y hxy
+  apply (thetaSourceDifferentialBoundaryEnergyEmbedding_dense_range z).eq_of_inner_left ℂ
+  rintro _ ⟨e, rfl⟩
+  have he := congrArg (fun φ : thetaSourceDifferentialBoundaryRelation z →L[ℂ] ℂ => φ e) hxy
+  simpa using he
 
 /-- A nonzero vertical fibre of the closed relation is exactly a nonzero source vector killed by
 the range coordinate. -/
@@ -615,6 +693,51 @@ theorem thetaPinnedMeanProjection_metricSkew_thetaCenteredSourceInverse
 def thetaMonopoleDipoleHyperbolicForm (u v : ℂ × ℂ) : ℂ :=
   (starRingEnd ℂ) u.1 * v.2 + v.1 * (starRingEnd ℂ) u.2
 
+/-- Literal conjugation on the source monopole--dipole boundary plane. -/
+def thetaMonopoleDipoleBoundaryConj (u : ℂ × ℂ) : ℂ × ℂ :=
+  (-(starRingEnd ℂ u.1), (starRingEnd ℂ u.2))
+
+/-- The Hodge operator forced by the source boundary reflection and exchange of the two
+hyperbolic channels. -/
+def thetaMonopoleDipoleHodge (u : ℂ × ℂ) : ℂ × ℂ :=
+  (-(starRingEnd ℂ u.2), (starRingEnd ℂ u.1))
+
+/-- The source boundary Hodge operator is anti-complex with square `-1`. -/
+theorem thetaMonopoleDipoleHodge_sq (u : ℂ × ℂ) :
+    thetaMonopoleDipoleHodge (thetaMonopoleDipoleHodge u) = -u := by
+  ext <;> simp [thetaMonopoleDipoleHodge]
+
+theorem thetaMonopoleDipoleHodge_add (u v : ℂ × ℂ) :
+    thetaMonopoleDipoleHodge (u + v) =
+      thetaMonopoleDipoleHodge u + thetaMonopoleDipoleHodge v := by
+  ext <;> simp [thetaMonopoleDipoleHodge, map_add, add_comm]
+
+theorem thetaMonopoleDipoleHodge_smul (c : ℂ) (u : ℂ × ℂ) :
+    thetaMonopoleDipoleHodge (c • u) =
+      (starRingEnd ℂ c) • thetaMonopoleDipoleHodge u := by
+  ext <;> simp [thetaMonopoleDipoleHodge, smul_eq_mul]
+
+/-- The source boundary Hodge operator as a conjugate-semilinear map. -/
+def thetaMonopoleDipoleHodgeSLM :
+    (ℂ × ℂ) →ₛₗ[starRingEnd ℂ] (ℂ × ℂ) where
+  toFun := thetaMonopoleDipoleHodge
+  map_add' := thetaMonopoleDipoleHodge_add
+  map_smul' := thetaMonopoleDipoleHodge_smul
+
+/-- Bilinear boundary cup form obtained from the literal reflected hyperbolic Green form. -/
+def thetaMonopoleDipoleCup (u v : ℂ × ℂ) : ℂ :=
+  -thetaMonopoleDipoleHyperbolicForm (thetaMonopoleDipoleBoundaryConj u) v
+
+/-- The reflected hyperbolic boundary plane has a positive Hodge diagonal. -/
+theorem thetaMonopoleDipoleCup_hodge (u : ℂ × ℂ) :
+    thetaMonopoleDipoleCup u (thetaMonopoleDipoleHodge u) =
+      (Complex.normSq u.1 : ℂ) + (Complex.normSq u.2 : ℂ) := by
+  simp only [thetaMonopoleDipoleCup, thetaMonopoleDipoleHyperbolicForm,
+    thetaMonopoleDipoleBoundaryConj, thetaMonopoleDipoleHodge, map_neg,
+    starRingEnd_self_apply, neg_mul]
+  rw [Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_conj_mul_self]
+  ring
+
 /-- Diagonal coordinates split the boundary form into one positive and one negative complex
 line.  This is the exact rank-one negative channel required by the singular completion. -/
 theorem thetaMonopoleDipoleHyperbolicForm_diagonal
@@ -819,6 +942,790 @@ theorem thetaSourceDifferentialBoundaryEnergy_green_conj
     thetaSourceDifferentialBoundaryEnergyEmbedding_apply,
     thetaMetricRoot_energy, thetaMetricRoot_energy]
   exact thetaSourceDifferentialRangeMap_metricGreen_conj z k l
+
+/-- The same Green defect expressed in the only complex-linear dual category available to the
+energy relation: the first term is the conjugate of an anti-dual evaluation, while the second
+is a reflected anti-dual evaluation. -/
+theorem thetaSourceDifferentialBoundaryEnergyAntiDual_green_conj
+    (z : ℂ) (k l : thetaCentered) :
+    (starRingEnd ℂ)
+        (thetaSourceDifferentialBoundaryEnergyAntiDual z
+          (thetaSourceDifferentialBoundaryEnergyReadout (starRingEnd ℂ z)
+            (thetaSourceDifferentialBoundaryCoordinateElement (starRingEnd ℂ z) l))
+          (thetaSourceDifferentialBoundaryCoordinateElement z k)) -
+      thetaSourceDifferentialBoundaryEnergyAntiDual (starRingEnd ℂ z)
+        (thetaSourceDifferentialBoundaryEnergyReadout z
+          (thetaSourceDifferentialBoundaryCoordinateElement z k))
+        (thetaSourceDifferentialBoundaryCoordinateElement (starRingEnd ℂ z) l) =
+      -(starRingEnd ℂ z * Complex.I * thetaMonopoleDipoleHyperbolicForm
+        (pinnedMean (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k)
+        (pinnedMean (thetaCenteredSourceInverse l), thetaCenteredDipoleTrace l)) := by
+  rw [thetaSourceDifferentialBoundaryEnergyAntiDual_apply,
+    thetaSourceDifferentialBoundaryEnergyAntiDual_apply, inner_conj_symm]
+  exact thetaSourceDifferentialBoundaryEnergy_green_conj z k l
+
+/-- Universal anti-dual Green identity.  Every closed-relation element has a unique literal
+source representative, so the hyperbolic boundary defect is a relation invariant rather than a
+formula limited to chosen coordinates. -/
+theorem thetaSourceDifferentialBoundaryEnergyAntiDual_green_conj_all
+    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z)
+    (s : thetaSourceDifferentialBoundaryRelation (starRingEnd ℂ z)) :
+    (starRingEnd ℂ)
+        (thetaSourceDifferentialBoundaryEnergyAntiDual z
+          (thetaSourceDifferentialBoundaryEnergyReadout (starRingEnd ℂ z) s) r) -
+      thetaSourceDifferentialBoundaryEnergyAntiDual (starRingEnd ℂ z)
+        (thetaSourceDifferentialBoundaryEnergyReadout z r) s =
+      -(starRingEnd ℂ z * Complex.I * thetaMonopoleDipoleHyperbolicForm
+        (thetaSourceDifferentialBoundaryPort z r)
+        (thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s)) := by
+  obtain ⟨k, hk⟩ :=
+    (thetaSourceDifferentialBoundaryRelation_mem_iff z (r : ((H × H) × (ℂ × ℂ)))).mp r.property
+  obtain ⟨l, hl⟩ :=
+    (thetaSourceDifferentialBoundaryRelation_mem_iff (starRingEnd ℂ z)
+      (s : ((H × H) × (ℂ × ℂ)))).mp s.property
+  have hr : r = thetaSourceDifferentialBoundaryCoordinateElement z k := by
+    apply Subtype.ext
+    exact hk.symm
+  have hs : s = thetaSourceDifferentialBoundaryCoordinateElement (starRingEnd ℂ z) l := by
+    apply Subtype.ext
+    exact hl.symm
+  rw [hr, hs, thetaSourceDifferentialBoundaryPort_apply,
+    thetaSourceDifferentialBoundaryPort_apply]
+  exact thetaSourceDifferentialBoundaryEnergyAntiDual_green_conj z k l
+
+/-- Universal energy-form Green identity on the closed source relation.  Unique literal source
+witnesses transport the coordinate calculation to every completed relation element. -/
+theorem thetaSourceDifferentialBoundaryEnergy_green_conj_all
+    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z)
+    (s : thetaSourceDifferentialBoundaryRelation (starRingEnd ℂ z)) :
+    (inner ℂ
+        (thetaSourceDifferentialBoundaryEnergyEmbedding z r)
+        (thetaSourceDifferentialBoundaryEnergyReadout (starRingEnd ℂ z) s) : ℂ) -
+      inner ℂ
+        (thetaSourceDifferentialBoundaryEnergyReadout z r)
+        (thetaSourceDifferentialBoundaryEnergyEmbedding (starRingEnd ℂ z) s) =
+      -(starRingEnd ℂ z * Complex.I * thetaMonopoleDipoleHyperbolicForm
+        (thetaSourceDifferentialBoundaryPort z r)
+        (thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s)) := by
+  obtain ⟨k, hk⟩ :=
+    (thetaSourceDifferentialBoundaryRelation_mem_iff z
+      (r : ((H × H) × (ℂ × ℂ)))).mp r.property
+  obtain ⟨l, hl⟩ :=
+    (thetaSourceDifferentialBoundaryRelation_mem_iff (starRingEnd ℂ z)
+      (s : ((H × H) × (ℂ × ℂ)))).mp s.property
+  have hr : r = thetaSourceDifferentialBoundaryCoordinateElement z k := by
+    apply Subtype.ext
+    exact hk.symm
+  have hs : s = thetaSourceDifferentialBoundaryCoordinateElement (starRingEnd ℂ z) l := by
+    apply Subtype.ext
+    exact hl.symm
+  rw [hr, hs, thetaSourceDifferentialBoundaryPort_apply,
+    thetaSourceDifferentialBoundaryPort_apply]
+  exact thetaSourceDifferentialBoundaryEnergy_green_conj z k l
+
+/-- The completed source embedding retains both the literal energy vector and its complete
+monopole--dipole boundary record. -/
+def thetaSourceDifferentialBoundaryAugmentedEmbedding (z : ℂ)
+    (r : thetaSourceDifferentialBoundaryRelation z) : H × (ℂ × ℂ) :=
+  (thetaSourceDifferentialBoundaryEnergyEmbedding z r,
+    thetaSourceDifferentialBoundaryPort z r)
+
+/-- The unique scalar boundary flow which cancels the exact Green defect of the closed source
+relation. -/
+def thetaSourceDifferentialBoundaryAugmentedReadout (z : ℂ)
+    (r : thetaSourceDifferentialBoundaryRelation z) : H × (ℂ × ℂ) :=
+  (thetaSourceDifferentialBoundaryEnergyReadout z r,
+    (Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z r)
+
+/-- Energy plus the source monopole--dipole Green form on the augmented carrier. -/
+def thetaSourceDifferentialBoundaryAugmentedGreenPair
+    (x y : H × (ℂ × ℂ)) : ℂ :=
+  inner ℂ x.1 y.1 + thetaMonopoleDipoleHyperbolicForm x.2 y.2
+
+/-- The augmented closed source relation satisfies an exact conjugate-parameter Green law.
+The coefficient `I / 2` is forced: its boundary skew term cancels the literal rank-two defect. -/
+theorem thetaSourceDifferentialBoundaryAugmented_green_conj
+    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z)
+    (s : thetaSourceDifferentialBoundaryRelation (starRingEnd ℂ z)) :
+    thetaSourceDifferentialBoundaryAugmentedGreenPair
+        (thetaSourceDifferentialBoundaryAugmentedEmbedding z r)
+        (thetaSourceDifferentialBoundaryAugmentedReadout (starRingEnd ℂ z) s) =
+      thetaSourceDifferentialBoundaryAugmentedGreenPair
+        (thetaSourceDifferentialBoundaryAugmentedReadout z r)
+        (thetaSourceDifferentialBoundaryAugmentedEmbedding (starRingEnd ℂ z) s) := by
+  unfold thetaSourceDifferentialBoundaryAugmentedGreenPair
+    thetaSourceDifferentialBoundaryAugmentedEmbedding
+    thetaSourceDifferentialBoundaryAugmentedReadout
+  dsimp only
+  have hgreen := thetaSourceDifferentialBoundaryEnergy_green_conj_all z r s
+  have hboundary :
+      thetaMonopoleDipoleHyperbolicForm
+          (thetaSourceDifferentialBoundaryPort z r)
+          ((Complex.I / 2 * (starRingEnd ℂ z)) •
+            thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s) -
+        thetaMonopoleDipoleHyperbolicForm
+          ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z r)
+          (thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s) =
+        Complex.I * (starRingEnd ℂ z) *
+          thetaMonopoleDipoleHyperbolicForm
+            (thetaSourceDifferentialBoundaryPort z r)
+            (thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s) := by
+    simp only [thetaMonopoleDipoleHyperbolicForm, Prod.smul_fst, Prod.smul_snd,
+      smul_eq_mul, map_mul, map_div₀, Complex.conj_I, map_ofNat]
+    ring
+  calc
+    _ =
+        (inner ℂ (thetaSourceDifferentialBoundaryEnergyEmbedding z r)
+            (thetaSourceDifferentialBoundaryEnergyReadout (starRingEnd ℂ z) s) -
+          inner ℂ (thetaSourceDifferentialBoundaryEnergyReadout z r)
+            (thetaSourceDifferentialBoundaryEnergyEmbedding (starRingEnd ℂ z) s)) +
+          (thetaMonopoleDipoleHyperbolicForm
+              (thetaSourceDifferentialBoundaryPort z r)
+              ((Complex.I / 2 * (starRingEnd ℂ z)) •
+                thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s) -
+            thetaMonopoleDipoleHyperbolicForm
+              ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z r)
+              (thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s)) +
+            (inner ℂ (thetaSourceDifferentialBoundaryEnergyReadout z r)
+                (thetaSourceDifferentialBoundaryEnergyEmbedding (starRingEnd ℂ z) s) +
+              thetaMonopoleDipoleHyperbolicForm
+                ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z r)
+                (thetaSourceDifferentialBoundaryPort (starRingEnd ℂ z) s)) := by ring
+    _ = _ := by rw [hgreen, hboundary]; ring
+
+/-- The finite monopole--dipole correction is represented in an ordinary Hilbert product by
+the bounded channel exchange.  This is the fundamental symmetry which turns the exact Green
+law into a bounded adjoint equation. -/
+def thetaMonopoleDipoleFundamentalSymmetry :
+    (ℂ × ℂ) →L[ℂ] (ℂ × ℂ) :=
+  (ContinuousLinearMap.snd ℂ ℂ ℂ).prod (ContinuousLinearMap.fst ℂ ℂ ℂ)
+
+theorem thetaMonopoleDipoleFundamentalSymmetry_apply (u : ℂ × ℂ) :
+    thetaMonopoleDipoleFundamentalSymmetry u = (u.2, u.1) := rfl
+
+/-- The hyperbolic Green form is the Hilbert inner product twisted by its fundamental
+symmetry. -/
+theorem thetaMonopoleDipoleHyperbolicForm_eq_inner_fundamentalSymmetry
+    (u v : ℂ × ℂ) :
+    thetaMonopoleDipoleHyperbolicForm u v =
+      inner ℂ (thetaMonopoleDipoleFundamentalSymmetry u) v := by
+  rw [thetaMonopoleDipoleFundamentalSymmetry_apply, WithLp.prod_inner_apply]
+  change (starRingEnd ℂ) u.1 * v.2 + v.1 * (starRingEnd ℂ) u.2 =
+    (starRingEnd ℂ) u.2 * v.1 + (starRingEnd ℂ) u.1 * v.2
+  ring
+
+theorem thetaMonopoleDipoleFundamentalSymmetry_isSymmetric
+    (u v : ℂ × ℂ) :
+    inner ℂ (thetaMonopoleDipoleFundamentalSymmetry u) v =
+      inner ℂ u (thetaMonopoleDipoleFundamentalSymmetry v) := by
+  rw [thetaMonopoleDipoleFundamentalSymmetry_apply,
+    thetaMonopoleDipoleFundamentalSymmetry_apply,
+    WithLp.prod_inner_apply, WithLp.prod_inner_apply]
+  ring
+
+theorem thetaMonopoleDipoleFundamentalSymmetry_sq (u : ℂ × ℂ) :
+    thetaMonopoleDipoleFundamentalSymmetry
+      (thetaMonopoleDipoleFundamentalSymmetry u) = u := by
+  ext <;> rfl
+
+/-- The Hilbert fundamental symmetry on energy plus the complete finite source boundary. -/
+def thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry :
+    (H × (ℂ × ℂ)) →L[ℂ] (H × (ℂ × ℂ)) :=
+  (ContinuousLinearMap.fst ℂ H (ℂ × ℂ)).prod
+    (thetaMonopoleDipoleFundamentalSymmetry.comp
+      (ContinuousLinearMap.snd ℂ H (ℂ × ℂ)))
+
+theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply
+    (x : H × (ℂ × ℂ)) :
+    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x =
+      (x.1, (x.2.2, x.2.1)) := rfl
+
+theorem thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_isSymmetric
+    (x y : H × (ℂ × ℂ)) :
+    inner ℂ (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x) y =
+      inner ℂ x (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry y) := by
+  rw [thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply,
+    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply,
+    WithLp.prod_inner_apply, WithLp.prod_inner_apply]
+  congr 1
+  exact thetaMonopoleDipoleFundamentalSymmetry_isSymmetric _ _
+
+/-- The completed Green pairing is an ordinary Hilbert pairing after the finite fundamental
+symmetry. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenPair_eq_inner_fundamentalSymmetry
+    (x y : H × (ℂ × ℂ)) :
+    thetaSourceDifferentialBoundaryAugmentedGreenPair x y =
+      inner ℂ (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry x) y := by
+  rw [thetaSourceDifferentialBoundaryAugmentedGreenPair,
+    thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry_apply,
+    WithLp.prod_inner_apply,
+    ← thetaMonopoleDipoleHyperbolicForm_eq_inner_fundamentalSymmetry]
+
+/-- Hermitian symmetry of the completed Green pairing. -/
+theorem thetaSourceDifferentialBoundaryAugmentedGreenPair_conj_symm
+    (x y : H × (ℂ × ℂ)) :
+    thetaSourceDifferentialBoundaryAugmentedGreenPair x y =
+      (starRingEnd ℂ) (thetaSourceDifferentialBoundaryAugmentedGreenPair y x) := by
+  simp only [thetaSourceDifferentialBoundaryAugmentedGreenPair,
+    thetaMonopoleDipoleHyperbolicForm, map_add, map_mul,
+    starRingEnd_self_apply, inner_conj_symm]
+  ring
+
+/-- Bounded source embedding of the completed Green carrier. -/
+def thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (z : ℂ) :
+    thetaSourceDifferentialBoundaryRelation z →L[ℂ] (H × (ℂ × ℂ)) :=
+  (thetaSourceDifferentialBoundaryEnergyEmbedding z).prod
+    (thetaSourceDifferentialBoundaryPort z)
+
+theorem thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply
+    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z) :
+    thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r =
+      thetaSourceDifferentialBoundaryAugmentedEmbedding z r := by
+  rfl
+
+/-- Bounded source readout after the unique finite boundary flow. -/
+def thetaSourceDifferentialBoundaryAugmentedReadoutCLM (z : ℂ) :
+    thetaSourceDifferentialBoundaryRelation z →L[ℂ] (H × (ℂ × ℂ)) :=
+  (thetaSourceDifferentialBoundaryEnergyReadout z).prod
+    ((Complex.I / 2 * z) • thetaSourceDifferentialBoundaryPort z)
+
+theorem thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply
+    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z) :
+    thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r =
+      thetaSourceDifferentialBoundaryAugmentedReadout z r := by
+  rfl
+
+/-- Exact bounded adjoint intertwining of the literal source embedding and differential
+readout.  The remaining maximality problem is now precisely whether this bounded intertwining
+extends to the closed unbounded graph, not a missing finite Green correction. -/
+theorem thetaSourceDifferentialBoundaryAugmented_adjoint_intertwining (z : ℂ) :
+    (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z).adjoint.comp
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z))) =
+    (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z).adjoint.comp
+      (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry.comp
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z))) := by
+  apply ContinuousLinearMap.ext
+  intro s
+  apply ext_inner_right ℂ
+  intro r
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z).adjoint_inner_left,
+    (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z).adjoint_inner_left]
+  have hgreen := thetaSourceDifferentialBoundaryAugmented_green_conj z r s
+  rw [← thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply,
+    ← thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply,
+    ← thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM_apply,
+    ← thetaSourceDifferentialBoundaryAugmentedReadoutCLM_apply] at hgreen
+  calc
+    inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) s))
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r) =
+      thetaSourceDifferentialBoundaryAugmentedGreenPair
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) s)
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r) := by
+          rw [thetaSourceDifferentialBoundaryAugmentedGreenPair_eq_inner_fundamentalSymmetry]
+    _ = (starRingEnd ℂ)
+        (thetaSourceDifferentialBoundaryAugmentedGreenPair
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM z r)
+          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM (starRingEnd ℂ z) s)) :=
+      (thetaSourceDifferentialBoundaryAugmentedGreenPair_conj_symm _ _).symm
+    _ = (starRingEnd ℂ)
+        (thetaSourceDifferentialBoundaryAugmentedGreenPair
+          (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r)
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) s)) := by
+      rw [hgreen]
+    _ = thetaSourceDifferentialBoundaryAugmentedGreenPair
+        (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) s)
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r) :=
+      (thetaSourceDifferentialBoundaryAugmentedGreenPair_conj_symm _ _)
+    _ = inner ℂ
+        (thetaSourceDifferentialBoundaryAugmentedFundamentalSymmetry
+          (thetaSourceDifferentialBoundaryAugmentedEmbeddingCLM (starRingEnd ℂ z) s))
+        (thetaSourceDifferentialBoundaryAugmentedReadoutCLM z r) := by
+          rw [thetaSourceDifferentialBoundaryAugmentedGreenPair_eq_inner_fundamentalSymmetry]
+
+/-! ## Literal conjugation and reflected source fibres -/
+
+/-- Pointwise conjugation on the quantile `L²` carrier. -/
+def thetaLpConj (f : H) : H :=
+  ((Lp.memLp f).mono
+    (Complex.continuous_conj.comp_aestronglyMeasurable
+      (Lp.aestronglyMeasurable f))
+    (Filter.Eventually.of_forall fun _ => by simp)).toLp
+      (fun t => (starRingEnd ℂ) ((f : ℝ → ℂ) t))
+
+theorem thetaLpConj_coeFn_ae (f : H) :
+    ⇑(thetaLpConj f) =ᵐ[unitIntervalMeasure]
+      fun t => (starRingEnd ℂ) ((f : ℝ → ℂ) t) :=
+  ((Lp.memLp f).mono
+    (Complex.continuous_conj.comp_aestronglyMeasurable
+      (Lp.aestronglyMeasurable f))
+    (Filter.Eventually.of_forall fun _ => by simp)).coeFn_toLp
+
+theorem thetaLpConj_add (f g : H) :
+    thetaLpConj (f + g) = thetaLpConj f + thetaLpConj g := by
+  apply Lp.ext
+  filter_upwards [thetaLpConj_coeFn_ae (f + g), thetaLpConj_coeFn_ae f,
+    thetaLpConj_coeFn_ae g, Lp.coeFn_add f g, Lp.coeFn_add (thetaLpConj f) (thetaLpConj g)]
+      with t hfg hf hg hadd hout
+  rw [hfg, hout, hadd]
+  simp only [Pi.add_apply]
+  rw [hf, hg]
+  simp
+
+theorem thetaLpConj_smul (c : ℂ) (f : H) :
+    thetaLpConj (c • f) = (starRingEnd ℂ c) • thetaLpConj f := by
+  apply Lp.ext
+  filter_upwards [thetaLpConj_coeFn_ae (c • f), thetaLpConj_coeFn_ae f,
+    Lp.coeFn_smul c f, Lp.coeFn_smul (starRingEnd ℂ c) (thetaLpConj f)]
+      with t hcf hf hin hout
+  rw [hcf, hout, hin]
+  simp only [Pi.smul_apply]
+  rw [hf]
+  simp [smul_eq_mul]
+
+theorem thetaLpConj_involutive (f : H) : thetaLpConj (thetaLpConj f) = f := by
+  apply Lp.ext
+  filter_upwards [thetaLpConj_coeFn_ae (thetaLpConj f), thetaLpConj_coeFn_ae f]
+      with t houter hinner
+  rw [houter, hinner]
+  simp
+
+theorem thetaLpConj_zero : thetaLpConj (0 : H) = 0 := by
+  apply Lp.ext
+  filter_upwards [thetaLpConj_coeFn_ae (0 : H), Lp.coeFn_zero ℂ (2 : ENNReal)
+    unitIntervalMeasure] with t hconj hzero
+  rw [hconj, hzero]
+  simp
+
+theorem thetaLpConj_injective : Function.Injective thetaLpConj := by
+  intro f g hfg
+  have h := congrArg thetaLpConj hfg
+  rw [thetaLpConj_involutive, thetaLpConj_involutive] at h
+  exact h
+
+/-- Pointwise conjugation is antiunitary for the literal `L²` inner product.  This is the
+positive ingredient needed to turn the real reflection into a doubled Hodge star. -/
+theorem inner_thetaLpConj (f g : H) :
+    inner ℂ (thetaLpConj f) (thetaLpConj g) =
+      (starRingEnd ℂ) (inner ℂ f g) := by
+  rw [MeasureTheory.L2.inner_def]
+  change (∫ t : ℝ, inner ℂ ((thetaLpConj f : H) t) ((thetaLpConj g : H) t)
+      ∂unitIntervalMeasure) =
+    (starRingEnd ℂ) (∫ t : ℝ, inner ℂ ((f : H) t) ((g : H) t) ∂unitIntervalMeasure)
+  rw [← integral_conj]
+  apply integral_congr_ae
+  filter_upwards [thetaLpConj_coeFn_ae f, thetaLpConj_coeFn_ae g] with t hf hg
+  rw [hf, hg]
+  simp only [RCLike.inner_apply', map_mul, starRingEnd_self_apply]
+
+/-- The literal positive theta metric is real, hence commutes with pointwise conjugation. -/
+theorem thetaMetricOperator_thetaLpConj (f : H) :
+    thetaMetricOperator (thetaLpConj f) = thetaLpConj (thetaMetricOperator f) := by
+  apply Lp.ext
+  filter_upwards
+      [metricOperator_coeFn thetaSource thetaMetricBound_nonneg
+        norm_metricSymbol_thetaSource_le (thetaLpConj f),
+       thetaLpConj_coeFn_ae (thetaMetricOperator f),
+       metricOperator_coeFn thetaSource thetaMetricBound_nonneg
+        norm_metricSymbol_thetaSource_le f,
+       thetaLpConj_coeFn_ae f] with t hleft hright hmetric hconj
+  change
+    ((metricOperator thetaSource thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le)
+      (thetaLpConj f) : H) t =
+      (thetaLpConj
+        ((metricOperator thetaSource thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le)
+          f) : H) t
+  change
+    (thetaLpConj
+      ((metricOperator thetaSource thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le)
+        f) : H) t =
+      (starRingEnd ℂ)
+        (((metricOperator thetaSource thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le)
+          f : H) t) at hright
+  rw [hleft, hright, hmetric, hconj, map_mul, starRingEnd_metricSymbol]
+
+/-- Doubling the literal real reflection gives an anti-linear almost-complex source action.
+Unlike pointwise conjugation itself, its square is `-1`. -/
+def thetaDoubledHodge (u : H × H) : H × H :=
+  (-thetaLpConj u.2, thetaLpConj u.1)
+
+theorem thetaDoubledHodge_add (u v : H × H) :
+    thetaDoubledHodge (u + v) = thetaDoubledHodge u + thetaDoubledHodge v := by
+  ext <;> simp [thetaDoubledHodge, thetaLpConj_add, add_comm]
+
+theorem thetaDoubledHodge_smul (c : ℂ) (u : H × H) :
+    thetaDoubledHodge (c • u) = (starRingEnd ℂ c) • thetaDoubledHodge u := by
+  ext <;> simp [thetaDoubledHodge, thetaLpConj_smul]
+
+def thetaDoubledHodgeSLM :
+    (H × H) →ₛₗ[starRingEnd ℂ] (H × H) where
+  toFun := thetaDoubledHodge
+  map_add' := thetaDoubledHodge_add
+  map_smul' := thetaDoubledHodge_smul
+
+theorem thetaDoubledHodge_sq (u : H × H) :
+    thetaDoubledHodge (thetaDoubledHodge u) = -u := by
+  have hneg (f : H) : thetaLpConj (-f) = -thetaLpConj f := by
+    simpa using thetaLpConj_smul (-1 : ℂ) f
+  ext <;> simp [thetaDoubledHodge, hneg, thetaLpConj_involutive]
+
+/-- The bilinear cup candidate induced by source conjugation on the doubled carrier. -/
+def thetaDoubledCup (u v : H × H) : ℂ :=
+  inner ℂ (thetaLpConj u.1) v.2 - inner ℂ (thetaLpConj u.2) v.1
+
+/-- Evaluating the doubled cup form against the doubled Hodge star is the sum of two literal
+Hilbert energies. -/
+theorem thetaDoubledCup_hodge (u : H × H) :
+    thetaDoubledCup u (thetaDoubledHodge u) =
+      inner ℂ (thetaLpConj u.1) (thetaLpConj u.1) +
+        inner ℂ (thetaLpConj u.2) (thetaLpConj u.2) := by
+  simp only [thetaDoubledCup, thetaDoubledHodge, inner_neg_right, sub_neg_eq_add]
+
+/-- The source-plus-boundary carrier combines the doubled literal source with its exact
+monopole--dipole Green completion. -/
+def thetaSourceGreenHodge (r : (H × H) × (ℂ × ℂ)) : (H × H) × (ℂ × ℂ) :=
+  (thetaDoubledHodge r.1, thetaMonopoleDipoleHodge r.2)
+
+theorem thetaSourceGreenHodge_add (r s : (H × H) × (ℂ × ℂ)) :
+    thetaSourceGreenHodge (r + s) = thetaSourceGreenHodge r + thetaSourceGreenHodge s := by
+  ext <;> simp [thetaSourceGreenHodge, thetaDoubledHodge_add,
+    thetaMonopoleDipoleHodge_add]
+
+theorem thetaSourceGreenHodge_smul (c : ℂ) (r : (H × H) × (ℂ × ℂ)) :
+    thetaSourceGreenHodge (c • r) =
+      (starRingEnd ℂ c) • thetaSourceGreenHodge r := by
+  ext <;> simp [thetaSourceGreenHodge, thetaDoubledHodge_smul,
+    thetaMonopoleDipoleHodge_smul]
+
+/-- The completed source Hodge star is conjugate-semilinear. -/
+def thetaSourceGreenHodgeSLM :
+    ((H × H) × (ℂ × ℂ)) →ₛₗ[starRingEnd ℂ] ((H × H) × (ℂ × ℂ)) where
+  toFun := thetaSourceGreenHodge
+  map_add' := thetaSourceGreenHodge_add
+  map_smul' := thetaSourceGreenHodge_smul
+
+/-- The source-plus-boundary Hodge star has square `-1`. -/
+theorem thetaSourceGreenHodge_sq (r : (H × H) × (ℂ × ℂ)) :
+    thetaSourceGreenHodge (thetaSourceGreenHodge r) = -r := by
+  ext <;> simp [thetaSourceGreenHodge, thetaDoubledHodge_sq,
+    thetaMonopoleDipoleHodge_sq]
+
+/-- Bilinear cup form on the completed source carrier. -/
+def thetaSourceGreenCup (r s : (H × H) × (ℂ × ℂ)) : ℂ :=
+  thetaDoubledCup r.1 s.1 + thetaMonopoleDipoleCup r.2 s.2
+
+/-- The completed source cup has the explicit positive Hodge diagonal. -/
+theorem thetaSourceGreenCup_hodge (r : (H × H) × (ℂ × ℂ)) :
+    thetaSourceGreenCup r (thetaSourceGreenHodge r) =
+      inner ℂ (thetaLpConj r.1.1) (thetaLpConj r.1.1) +
+        inner ℂ (thetaLpConj r.1.2) (thetaLpConj r.1.2) +
+          (Complex.normSq r.2.1 : ℂ) + (Complex.normSq r.2.2 : ℂ) := by
+  rw [thetaSourceGreenCup, thetaSourceGreenHodge,
+    thetaDoubledCup_hodge, thetaMonopoleDipoleCup_hodge]
+  ring
+
+theorem pinnedMean_thetaLpConj (f : H) :
+    pinnedMean (thetaLpConj f) = (starRingEnd ℂ) (pinnedMean f) := by
+  symm
+  rw [pinnedMean, ← integral_conj]
+  apply integral_congr_ae
+  exact (thetaLpConj_coeFn_ae f).symm
+
+theorem pinnedPrefix_thetaLpConj (f : H) (t : ℝ) :
+    pinnedPrefix (thetaLpConj f) t = (starRingEnd ℂ) (pinnedPrefix f t) := by
+  symm
+  rw [pinnedPrefix, ← integral_conj]
+  apply integral_congr_ae
+  filter_upwards [thetaLpConj_coeFn_ae f] with u hu
+  simp only [indicator_apply]
+  split_ifs <;> simp [hu]
+
+theorem pinnedVolterraFun_thetaLpConj (f : H) (t : ℝ) :
+    pinnedVolterraFun (thetaLpConj f) t =
+      (starRingEnd ℂ) (pinnedVolterraFun f t) := by
+  change pinnedPrefix (thetaLpConj f) t - (t : ℂ) * pinnedMean (thetaLpConj f) =
+    (starRingEnd ℂ) (pinnedPrefix f t - (t : ℂ) * pinnedMean f)
+  rw [pinnedPrefix_thetaLpConj, pinnedMean_thetaLpConj]
+  simp only [map_sub, map_mul, Complex.conj_ofReal]
+
+/-- The literal theta source inverse anticommutes with pointwise conjugation.  The sign comes
+from its intrinsic imaginary kernel factor, and is what realizes reflection across the critical
+axis. -/
+theorem thetaCompactSourceInverse_thetaLpConj (f : H) :
+    thetaLpConj (thetaCompactSourceInverse f) =
+      -thetaCompactSourceInverse (thetaLpConj f) := by
+  have hBf : (thetaCompactSourceInverse f : H) =ᵐ[unitIntervalMeasure]
+      fun t => pinnedKernelField thetaSource t f := by
+    simpa [thetaCompactSourceInverse] using
+      (pinnedKernelOperator_ae thetaSource hasFiniteKernelEnergy_thetaSource f)
+  have hBCf : (thetaCompactSourceInverse (thetaLpConj f) : H) =ᵐ[unitIntervalMeasure]
+      fun t => pinnedKernelField thetaSource t (thetaLpConj f) := by
+    simpa [thetaCompactSourceInverse] using
+      (pinnedKernelOperator_ae thetaSource hasFiniteKernelEnergy_thetaSource (thetaLpConj f))
+  apply Lp.ext
+  filter_upwards [thetaLpConj_coeFn_ae (thetaCompactSourceInverse f),
+    Lp.coeFn_neg (thetaCompactSourceInverse (thetaLpConj f)), hBf, hBCf]
+      with t hconj hneg hBf hBCf
+  rw [hconj, hneg, hBf]
+  simp only [Pi.neg_apply]
+  rw [hBCf, pinnedKernelField_apply_eq_pinnedVolterraFun,
+    pinnedKernelField_apply_eq_pinnedVolterraFun,
+    pinnedVolterraFun_thetaLpConj]
+  simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
+  ring
+
+theorem thetaLpConj_neg (f : H) : thetaLpConj (-f) = -thetaLpConj f := by
+  simpa using thetaLpConj_smul (-1 : ℂ) f
+
+/-- The metric-conjugate bilinear pairing carried by the literal theta source. -/
+def thetaMetricConjBilinear (f g : H) : ℂ :=
+  inner ℂ (thetaMetricOperator (thetaLpConj f)) g
+
+/-- The source flow fails to preserve the metric-conjugate pairing by exactly the rank-two
+Green boundary form.  The sign is fixed by conjugate-linearity in the first Hilbert argument. -/
+theorem thetaMetricConjBilinear_thetaKernel_defect (f g : H) :
+    thetaMetricConjBilinear (thetaKernelOperator f) g +
+        thetaMetricConjBilinear f (thetaKernelOperator g) =
+      Complex.I * inner ℂ (pinnedBoundaryCLM (thetaLpConj f)) g := by
+  have hgreen := congrArg (fun T : H →L[ℂ] H =>
+      (inner ℂ (T (thetaLpConj f)) g : ℂ))
+    thetaMetric_commutator_thetaKernelOperator
+  have hsub :
+      (thetaMetricOperator * thetaKernelOperator -
+        ContinuousLinearMap.adjoint thetaKernelOperator * thetaMetricOperator)
+          (thetaLpConj f) =
+        (thetaMetricOperator * thetaKernelOperator) (thetaLpConj f) -
+          (ContinuousLinearMap.adjoint thetaKernelOperator * thetaMetricOperator)
+            (thetaLpConj f) := by
+    change
+      ((↑(thetaMetricOperator * thetaKernelOperator -
+        ContinuousLinearMap.adjoint thetaKernelOperator * thetaMetricOperator) : H →ₗ[ℂ] H)
+        (thetaLpConj f)) = _
+    rw [ContinuousLinearMap.toLinearMap_sub, LinearMap.sub_apply]
+    rfl
+  rw [hsub, mul_apply_eq_comp, mul_apply_eq_comp, inner_sub_left,
+    smul_apply, inner_smul_left, ContinuousLinearMap.adjoint_inner_left] at hgreen
+  have hconjI : (starRingEnd ℂ) Complex.I = -Complex.I := Complex.conj_I
+  rw [hconjI] at hgreen
+  have hsourceConj : thetaLpConj (thetaKernelOperator f) =
+      -thetaKernelOperator (thetaLpConj f) := by
+    simpa only [thetaKernelOperator_eq_thetaCompactSourceInverse] using
+      thetaCompactSourceInverse_thetaLpConj f
+  unfold thetaMetricConjBilinear
+  rw [hsourceConj, map_neg, inner_neg_left]
+  linear_combination -hgreen
+
+/-- In the exact port coordinates, the metric-conjugate Green defect is incoming intensity
+minus outgoing intensity. -/
+theorem thetaMetricConjBilinear_thetaKernel_twoPort (f g : H) :
+    thetaMetricConjBilinear (thetaKernelOperator f) g +
+        thetaMetricConjBilinear f (thetaKernelOperator g) =
+      Complex.I * ((starRingEnd ℂ) (pinnedBoundaryInPort (thetaLpConj f)) *
+          pinnedBoundaryInPort g -
+        (starRingEnd ℂ) (pinnedBoundaryOutPort (thetaLpConj f)) *
+          pinnedBoundaryOutPort g) := by
+  rw [thetaMetricConjBilinear_thetaKernel_defect,
+    inner_pinnedBoundaryCLM_eq_twoPort_pair]
+
+theorem thetaLpConj_sub (f g : H) :
+    thetaLpConj (f - g) = thetaLpConj f - thetaLpConj g := by
+  rw [sub_eq_add_neg, thetaLpConj_add, thetaLpConj_neg, sub_eq_add_neg]
+
+theorem thetaLpConj_pinnedOne : thetaLpConj pinnedOne = pinnedOne := by
+  apply Lp.ext
+  filter_upwards [thetaLpConj_coeFn_ae pinnedOne, pinnedOne_coeFn] with t hconj hone
+  rw [hconj, hone]
+  simp
+
+/-- Conjugation restricts to the literal mean-zero source coordinate. -/
+def thetaCenteredConj (k : thetaCentered) : thetaCentered :=
+  ⟨thetaLpConj k, (mem_thetaCentered_iff _).mpr (by
+    rw [pinnedMean_thetaLpConj, (mem_thetaCentered_iff _).mp k.property]
+    simp)⟩
+
+theorem thetaCenteredConj_coe (k : thetaCentered) :
+    (thetaCenteredConj k : H) = thetaLpConj k := rfl
+
+theorem thetaCenteredConj_involutive (k : thetaCentered) :
+    thetaCenteredConj (thetaCenteredConj k) = k := by
+  apply Subtype.ext
+  exact thetaLpConj_involutive k
+
+theorem thetaCenteredSourceInverse_thetaCenteredConj (k : thetaCentered) :
+    thetaCenteredSourceInverse (thetaCenteredConj k) =
+      -thetaLpConj (thetaCenteredSourceInverse k) := by
+  have h := congrArg Neg.neg (thetaCompactSourceInverse_thetaLpConj (k : H))
+  simpa [thetaCenteredSourceInverse, thetaCenteredConj] using h.symm
+
+theorem pinnedMean_neg (f : H) : pinnedMean (-f) = -pinnedMean f := by
+  simpa using pinnedMean_smul (-1 : ℂ) f
+
+/-- The literal closed differential coordinate is equivariant for the critical-axis reflection
+`z ↦ -conj z`. -/
+theorem thetaSourceDifferentialRangeMap_thetaCenteredConj (z : ℂ) (k : thetaCentered) :
+    thetaLpConj (thetaSourceDifferentialRangeMap z k) =
+      thetaSourceDifferentialRangeMap (-(starRingEnd ℂ z)) (thetaCenteredConj k) := by
+  rw [thetaSourceDifferentialRangeMap_apply, thetaLpConj_add, thetaLpConj_smul,
+    thetaLpConj_sub, thetaLpConj_smul, thetaLpConj_pinnedOne,
+    thetaSourceDifferentialRangeMap_apply, thetaCenteredConj_coe,
+    thetaCenteredSourceInverse_thetaCenteredConj, pinnedMean_neg,
+    pinnedMean_thetaLpConj]
+  module
+
+theorem pinnedFirstMoment_thetaLpConj (f : H) :
+    pinnedFirstMoment (thetaLpConj f) = (starRingEnd ℂ) (pinnedFirstMoment f) := by
+  symm
+  rw [pinnedFirstMoment, ← integral_conj]
+  apply integral_congr_ae
+  filter_upwards [thetaLpConj_coeFn_ae f] with t ht
+  rw [map_mul, Complex.conj_ofReal, ht]
+
+/-- The second scalar port is also real-coordinate conjugation covariant. -/
+theorem thetaCenteredDipoleTrace_thetaCenteredConj (k : thetaCentered) :
+    thetaCenteredDipoleTrace (thetaCenteredConj k) =
+      (starRingEnd ℂ) (thetaCenteredDipoleTrace k) := by
+  rw [thetaCenteredDipoleTrace_apply, thetaCenteredDipoleTrace_apply,
+    thetaCenteredConj_coe]
+  exact pinnedFirstMoment_thetaLpConj (k : H)
+
+/-- The antilinear action on the full literal source and boundary record.  The two leading minus
+signs are forced by the imaginary source kernel; the boundary signs are then fixed by the same
+source action. -/
+def thetaSourceDifferentialBoundaryConj (r : ((H × H) × (ℂ × ℂ))) :
+    ((H × H) × (ℂ × ℂ)) :=
+  ((-thetaLpConj r.1.1, thetaLpConj r.1.2),
+    (-(starRingEnd ℂ r.2.1), starRingEnd ℂ r.2.2))
+
+/-- The source/differential exchange on a complete boundary record. -/
+def thetaSourceDifferentialBoundarySwap (r : ((H × H) × (ℂ × ℂ))) :
+    ((H × H) × (ℂ × ℂ)) :=
+  ((r.1.2, r.1.1), (r.2.2, r.2.1))
+
+/-- The completed Hodge star is exactly literal record reflection after exchanging source and
+differential legs.  Hence the unresolved Hodge-flow law is precisely a closed adjoint-swap
+transport problem for the source relation. -/
+theorem thetaSourceGreenHodge_eq_boundaryConj_swap (r : ((H × H) × (ℂ × ℂ))) :
+    thetaSourceGreenHodge r =
+      thetaSourceDifferentialBoundaryConj (thetaSourceDifferentialBoundarySwap r) := by
+  rfl
+
+/-- The explicit boundary action maps every literal source coordinate at `z` to the coordinate
+at the critical-axis reflection `-conj z`. -/
+theorem thetaSourceDifferentialBoundaryConj_coordinate (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryConj (thetaSourceDifferentialBoundaryCoordinate z k) =
+      thetaSourceDifferentialBoundaryCoordinate (-(starRingEnd ℂ z)) (thetaCenteredConj k) := by
+  rw [thetaSourceDifferentialBoundaryCoordinate_apply,
+    thetaSourceDifferentialBoundaryCoordinate_apply]
+  simp only [thetaSourceDifferentialBoundaryConj]
+  rw [thetaCenteredSourceInverse_thetaCenteredConj,
+    thetaSourceDifferentialRangeMap_thetaCenteredConj,
+    pinnedMean_neg, pinnedMean_thetaLpConj,
+    thetaCenteredDipoleTrace_thetaCenteredConj]
+
+theorem thetaSourceDifferentialBoundaryConj_add (r s : ((H × H) × (ℂ × ℂ))) :
+    thetaSourceDifferentialBoundaryConj (r + s) =
+      thetaSourceDifferentialBoundaryConj r + thetaSourceDifferentialBoundaryConj s := by
+  ext <;> simp [thetaSourceDifferentialBoundaryConj, thetaLpConj_add, add_comm]
+
+theorem thetaSourceDifferentialBoundaryConj_smul (c : ℂ) (r : ((H × H) × (ℂ × ℂ))) :
+    thetaSourceDifferentialBoundaryConj (c • r) =
+      (starRingEnd ℂ c) • thetaSourceDifferentialBoundaryConj r := by
+  ext <;> simp [thetaSourceDifferentialBoundaryConj, thetaLpConj_smul]
+
+theorem thetaSourceDifferentialBoundaryConj_involutive (r : ((H × H) × (ℂ × ℂ))) :
+    thetaSourceDifferentialBoundaryConj (thetaSourceDifferentialBoundaryConj r) = r := by
+  ext <;> simp [thetaSourceDifferentialBoundaryConj, thetaLpConj_neg,
+    thetaLpConj_involutive]
+
+/-- The complete record reflection as a conjugate-semilinear map. -/
+def thetaSourceDifferentialBoundaryConjSLM :
+    ((H × H) × (ℂ × ℂ)) →ₛₗ[starRingEnd ℂ] ((H × H) × (ℂ × ℂ)) where
+  toFun := thetaSourceDifferentialBoundaryConj
+  map_add' := thetaSourceDifferentialBoundaryConj_add
+  map_smul' := thetaSourceDifferentialBoundaryConj_smul
+
+theorem thetaSourceDifferentialBoundaryConj_mem
+    (z : ℂ) (r : thetaSourceDifferentialBoundaryRelation z) :
+    thetaSourceDifferentialBoundaryConj (r : ((H × H) × (ℂ × ℂ))) ∈
+      thetaSourceDifferentialBoundaryRelation (-(starRingEnd ℂ z)) := by
+  obtain ⟨k, hk⟩ :=
+    (thetaSourceDifferentialBoundaryRelation_mem_iff z
+      (r : ((H × H) × (ℂ × ℂ)))).mp r.property
+  refine (thetaSourceDifferentialBoundaryRelation_mem_iff (-(starRingEnd ℂ z))
+    (thetaSourceDifferentialBoundaryConj (r : ((H × H) × (ℂ × ℂ))))).mpr ?_
+  refine ⟨thetaCenteredConj k, ?_⟩
+  calc
+    thetaSourceDifferentialBoundaryCoordinate (-(starRingEnd ℂ z)) (thetaCenteredConj k) =
+        thetaSourceDifferentialBoundaryConj (thetaSourceDifferentialBoundaryCoordinate z k) :=
+      (thetaSourceDifferentialBoundaryConj_coordinate z k).symm
+    _ = thetaSourceDifferentialBoundaryConj (r : ((H × H) × (ℂ × ℂ))) := by rw [hk]
+
+/-- Closed source-relation reflection induced by the literal theta kernel. -/
+def thetaSourceDifferentialBoundaryRelationConj (z : ℂ) :
+    thetaSourceDifferentialBoundaryRelation z →ₛₗ[starRingEnd ℂ]
+      thetaSourceDifferentialBoundaryRelation (-(starRingEnd ℂ z)) where
+  toFun r := ⟨thetaSourceDifferentialBoundaryConj r,
+    thetaSourceDifferentialBoundaryConj_mem z r⟩
+  map_add' r s := by
+    apply Subtype.ext
+    exact thetaSourceDifferentialBoundaryConj_add r s
+  map_smul' c r := by
+    apply Subtype.ext
+    exact thetaSourceDifferentialBoundaryConj_smul c r
+
+theorem thetaSourceDifferentialBoundaryRelationConj_coordinate
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryRelationConj z
+      (thetaSourceDifferentialBoundaryCoordinateElement z k) =
+        thetaSourceDifferentialBoundaryCoordinateElement (-(starRingEnd ℂ z))
+          (thetaCenteredConj k) := by
+  apply Subtype.ext
+  exact thetaSourceDifferentialBoundaryConj_coordinate z k
+
+/-- Reflection carries every nonzero vertical fibre of the literal closed relation to a nonzero
+vertical fibre at the reflected parameter. -/
+theorem thetaSourceDifferentialBoundaryRelation_nonzero_vertical_reflect
+    (z : ℂ) :
+    (∃ r : ((H × H) × (ℂ × ℂ)), r ∈ thetaSourceDifferentialBoundaryRelation z ∧
+      r.1.2 = 0 ∧ r.1.1 ≠ 0) →
+      ∃ s : ((H × H) × (ℂ × ℂ)),
+        s ∈ thetaSourceDifferentialBoundaryRelation (-(starRingEnd ℂ z)) ∧
+          s.1.2 = 0 ∧ s.1.1 ≠ 0 := by
+  rintro ⟨r, hr, hrange, hsource⟩
+  refine ⟨thetaSourceDifferentialBoundaryConj r,
+    thetaSourceDifferentialBoundaryConj_mem z ⟨r, hr⟩, ?_, ?_⟩
+  · change thetaLpConj r.1.2 = 0
+    rw [hrange, thetaLpConj_zero]
+  · change -thetaLpConj r.1.1 ≠ 0
+    intro hzero
+    apply hsource
+    apply thetaLpConj_injective
+    have hc : thetaLpConj r.1.1 = 0 := neg_eq_zero.mp hzero
+    rw [hc, thetaLpConj_zero]
+
+/-- Source-faithful conjugation proves the expected reality reflection of the completed Xi zero
+set directly through its literal closed relation. -/
+theorem XiC_eq_zero_reflect_of_XiC_eq_zero {z : ℂ} (hz : XiC z = 0) :
+    XiC (-(starRingEnd ℂ z)) = 0 := by
+  apply (XiC_eq_zero_iff_thetaSourceDifferentialBoundaryRelation_nonzero_vertical
+    (-(starRingEnd ℂ z))).mpr
+  apply thetaSourceDifferentialBoundaryRelation_nonzero_vertical_reflect z
+  exact (XiC_eq_zero_iff_thetaSourceDifferentialBoundaryRelation_nonzero_vertical z).mp hz
+
+/-- The reflected boundary action reverses the hyperbolic signature.  Hence a completion that
+extends this literal action cannot treat the action as an ordinary Pontryagin isometry. -/
+theorem thetaMonopoleDipoleHyperbolicForm_boundaryConj
+    (u v : ℂ × ℂ) :
+    thetaMonopoleDipoleHyperbolicForm
+      (-(starRingEnd ℂ u.1), starRingEnd ℂ u.2)
+      (-(starRingEnd ℂ v.1), starRingEnd ℂ v.2) =
+      -(starRingEnd ℂ) (thetaMonopoleDipoleHyperbolicForm u v) := by
+  simp only [thetaMonopoleDipoleHyperbolicForm, map_neg, map_add, map_mul,
+    starRingEnd_self_apply]
+  ring
 
 end
 

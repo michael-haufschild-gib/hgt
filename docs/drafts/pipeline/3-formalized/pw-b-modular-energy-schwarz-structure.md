@@ -13,9 +13,15 @@ its closed span. It also proves conjugation covariance of the full cutoff,
 forcing vector, and canonical finite-energy `weakResponse`, the last by exact
 weak-form transport and nonreal-resolvent uniqueness.
 
-**Proof-chain consequence:** source-to-response Schwarz is closed. The sole
-remaining Schwarz bottleneck is transport through the literal ordered CTP
-source integral, then critical-fibre cancellation. No source cancellation or
-PW magnitude identity is claimed.
+**Proof-chain consequence:** forcing-to-finite-energy-weak-response Schwarz,
+the separately glued smooth field, and the literal angular direct-minus-image
+kernel are closed. Remaining bottlenecks are the time-reduced source coefficient,
+the ordered CTP source integral, and critical-fibre cancellation. No source
+cancellation or PW magnitude identity is claimed.
 
-**Verification:** `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMModularEnergySchwarz.lean` passed.  The umbrella import is wired; no umbrella build was run.
+**Verification:** the angular-Schwarz module audit passed before the current
+time-source additions. The new radial and residual source identities were
+independently audited in dependency-closed leaf files with `lake env lean`;
+the parent-module audit exceeded its 55-second cap without a diagnostic and
+must be rerun once current formal activity clears. The umbrella import is
+wired; no umbrella build was run.

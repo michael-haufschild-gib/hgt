@@ -841,6 +841,56 @@ private theorem re_inner_routeKCofinalTriangleNuclearCarrierFrom_cube_nonneg
     · intro n i hpi
       exact hp ⟨n, i, hpi⟩
 
+/-- The cubic trace of every complete cofinal triangle tail has strictly positive real part. -/
+theorem re_opTrace_routeKCofinalTriangleNuclearCarrierFrom_cube_pos (K : ℕ) :
+    0 < (ContinuousLinearMap.opTrace
+      (routeKCofinalTriangleNuclearCarrierFrom K ∘L
+        (routeKCofinalTriangleNuclearCarrierFrom K ∘L
+          routeKCofinalTriangleNuclearCarrierFrom K))).re := by
+  let T := routeKCofinalTriangleNuclearCarrierFrom K
+  let f : Nat.Primes → ℂ := fun p =>
+    inner ℂ (routeKPrimeBasis p) (T (T (T (routeKPrimeBasis p))))
+  have hT : MemSchattenClass 1 (T ∘L (T ∘L T)) := by
+    exact routeKCofinalTriangleNuclearCarrierFrom_cube_memSchattenClass_one K
+  have hsum : Summable f := by
+    have h := hT.one_summable_inner_diag_basis
+      (HilbertSchmidt.lpBasis Nat.Primes)
+    simpa [f, T, routeKPrimeBasis, HilbertSchmidt.lpBasis_apply,
+      ContinuousLinearMap.comp_apply] using h
+  have hsumRe : Summable (fun p : Nat.Primes => (f p).re) := by
+    simpa [Function.comp_def] using
+      hsum.map Complex.reCLM Complex.continuous_re
+  have hnonneg : ∀ p : Nat.Primes, 0 ≤ (f p).re := by
+    intro p
+    exact re_inner_routeKCofinalTriangleNuclearCarrierFrom_cube_nonneg K p
+  let p0 : Nat.Primes := routeKCofinalTrianglePrime K 0
+  have hpos : 0 < (f p0).re := by
+    change 0 < (inner ℂ (routeKPrimeBasis (routeKCofinalTrianglePrime K 0))
+      (routeKCofinalTriangleNuclearCarrierFrom K
+        (routeKCofinalTriangleNuclearCarrierFrom K
+          (routeKCofinalTriangleNuclearCarrierFrom K
+            (routeKPrimeBasis (routeKCofinalTrianglePrime K 0)))))).re
+    have h := inner_routeKCofinalTriangleNuclearCarrierFrom_cube_apply_zero K 0
+    rw [show 0 + K = K by omega] at h
+    rw [h]
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
+    exact mul_pos
+      (mul_pos
+        (mul_pos (by norm_num)
+          (routeKCofinalTriangleAmplitude_pos K 0))
+        (routeKCofinalTriangleAmplitude_pos K 1))
+      (routeKCofinalTriangleAmplitude_pos K 2)
+  have hsumPos : 0 < ∑' p : Nat.Primes, (f p).re := by
+    exact lt_of_lt_of_le hpos
+      (GaloisForLFunctions.term_le_tsum_of_nonneg hsumRe hnonneg p0)
+  have htrace : ContinuousLinearMap.opTrace (T ∘L (T ∘L T)) = ∑' p, f p := by
+    rw [opTrace_eq_tsum_basis_of_memSchattenClass_one hT
+      (HilbertSchmidt.lpBasis Nat.Primes)]
+    simp [f, T, routeKPrimeBasis, HilbertSchmidt.lpBasis_apply,
+      ContinuousLinearMap.comp_apply]
+  rw [htrace, Complex.re_tsum hsum]
+  exact hsumPos
+
 /-- The cubic ordinary trace of every complete cofinal triangle tail is nonzero.  Absolute
 summability and nonnegative diagonals prevent cancellation of its first positive block return. -/
 theorem opTrace_routeKCofinalTriangleNuclearCarrierFrom_cube_ne_zero (K : ℕ) :
