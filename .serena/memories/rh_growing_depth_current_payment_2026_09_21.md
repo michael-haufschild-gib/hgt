@@ -1,0 +1,15 @@
+# Growing-depth current-clock omitted-prime payment
+
+RH/exhaustive continuation remain open. New module `formal/GaloisForLFunctions/RHTower/MobiusDivisorGrowingDepthCurrentPayment.lean`, wired into RHTower umbrella. Own fact log `docs/drafts/pipeline/1-in-progress/rh-growing-depth-current-payment-facts.md`.
+
+Four checked public results:
+- `mobiusDivisorFiniteClockEnergy_insert_cost_le`: W(insert q P,M)-W(P,M) <= 2*((3/5)*2^(card P-1))^2*M^2*(1+log M)/q. W is FULL c=1 weighted clock energy. Exact insertion identity retains negative log copied-square term; mixed terms vanish for r>M/q, each bounded using exact clipped amplitude sqrt(r)|H(M/r)|<=D(P)sqrt M.
+- `eventually_exists_mobiusDivisorGrowingDepthOmittedPrimePayment`: closed producer over literal P0=SelectionPrimes15 erase2. Exists b,R,delta,A, then eventual N threshold, THEN all prescribed prime q with A*(1+log M)<=q and16*q<=M, M=14*(b+1)*N. Actual fresh helper list pays q's whole cost at SAME clock, retains G(insertqP0,M)+delta*M², controls all prefixes and all original cutoffs M<=L with L-M<=sqrt(sqrt M). G=Fempty²+(1+log2)Ftwo². No assumed energy/payment/sign premise.
+- `eventually_exists_mobiusDivisorLogarithmicPrime_paid_extension`: PNT constructs actual q in (A*(1+logM),2A*(1+logM)), full prime extension Q containingP0,q, W(Q,L)+delta*M²<=W(P0,M) on fourth-root interval. Actual q child-depth M/q >= M/(2A*(1+logM))-1.
+- `tendsto_mobiusDivisorLogarithmicChildDepth`: that quantitative lower bound tends infinity.
+
+Proof admission: q>=16 preserves shallow profile; q<=M/16 excludes helper pool with quotients2,7,14. Fixed seed amplitude E controls insertqP before current-clock producer. A=16+8E²/delta0 spends delta0*M²/4 on q; cutoff transport spends another quarter, leaveshalf.
+
+LIMITS: Growing depth is of prescribed omitted q; HELPER depths stay2,7,14. q must exceed moving log threshold. Fixed omitted small primes (including2) are not paid. Extensions across clocks independently selected, NOT nested. D(P)^2 grows exponentially in card P; no uniform evolving-core invariant. Whole-pool freshness not preserved under arbitrary iterations. Existing CurrentClockDepth and InheritedPrimeInsertionProducer delayed-half-repayment obstructions rule out naïve shallow/bounded-mass continuation. Need retained evolving-core mixed correlations and fixed-small-prime payment before changing thresholds; no schedule or RH closure established.
+
+Scratch `lake env lean /tmp/hgt-deep-payment.lean` passed without warnings; allfour axiom audits standard propext/Classical.choice/Quot.sound only. Named leaf `lake build GaloisForLFunctions.RHTower.MobiusDivisorGrowingDepthCurrentPayment` passed; dependencies replayed warnings, leafnone. Index refreshed; lint result in factlog whencompleted. No fullumbrella build. No addedaxioms, sorry, computations. Broad2026 discrepancy arxiv2608.00140 supplied no arithmetic input. Next work must attack accumulated cores and small omitted primes, not repackage this as exhaustive.

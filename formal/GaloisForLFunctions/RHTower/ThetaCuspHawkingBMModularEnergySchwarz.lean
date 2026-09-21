@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModularEnergyDomain
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMGlobalAngularWeakResponse
 import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.EisensteinLineRealness
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularCutoffCalculus
 import Mathlib.Topology.Algebra.Module.Basic
 
 /-!
@@ -8,8 +10,8 @@ import Mathlib.Topology.Algebra.Module.Basic
 
 The PW-B source has a value-plus-two-hyperbolic-derivative modular energy domain.  This module
 constructs its literal conjugate-linear real structure: conjugation preserves the smooth compact
-core graph and, by continuity, its closed completion.  It does not assert the still-open
-conjugation covariance of the global forcing or weak response.
+core graph and, by continuity, its closed completion. It proves covariance of the literal
+global forcing and unique finite-energy weak response; ordered CTP transport remains open.
 -/
 
 open MeasureTheory Set Filter Topology UpperHalfPlane ModularGroup
@@ -229,6 +231,20 @@ theorem energyConj_mem_energyDomain (x : EnergySpace) (hx : x ∈ energyDomain) 
     exact hstable hy
   exact hmaps.closure energyConj_continuous hx
 
+/-- The Schwarz involution restricted to the completed modular energy domain. -/
+def energyDomainConj (h : energyDomain) : energyDomain :=
+  ⟨energyConj h, energyConj_mem_energyDomain h h.property⟩
+
+@[simp] theorem embedding_energyDomainConj (h : energyDomain) :
+    embedding (energyDomainConj h) = star (embedding h) := by
+  change (energyConj (h : EnergySpace)).ofLp 0 = star ((h : EnergySpace).ofLp 0)
+  exact energyConj_apply _ _
+
+@[simp] theorem energyDomainConj_involutive (h : energyDomain) :
+    energyDomainConj (energyDomainConj h) = h := by
+  apply Subtype.ext
+  exact energyConj_involutive h
+
 /-- The physical branch parameter is transported by the divisor Schwarz involution. -/
 theorem parameter_conj (q : XiZeroCopy) (minusBranch : Bool) :
     D4BMGlobalAngularResponse.parameter (xiZeroCopyConjEquiv q) minusBranch =
@@ -240,7 +256,172 @@ theorem parameter_conj (q : XiZeroCopy) (minusBranch : Bool) :
   rw [hq]
   cases minusBranch <;> simp
   all_goals rw [map_ofNat]
-  all_goals ring
+
+/-- The literal Eisenstein center is transported by the divisor Schwarz involution. -/
+theorem center_conj (q : XiZeroCopy) :
+    D4BMGlobalAngularResponse.center (xiZeroCopyConjEquiv q) =
+      (starRingEnd ℂ) (D4BMGlobalAngularResponse.center q) := by
+  have hq := deningerDivisorThetaEigen_conjEquiv q
+  change ((xiZeroCopyConjEquiv q).1 : ℂ) = (starRingEnd ℂ) (q.1 : ℂ) at hq
+  unfold D4BMGlobalAngularResponse.center
+  rw [hq, map_sub]
+  norm_num
+  rw [map_ofNat]
+  norm_num
+
+/-- Each literal completed-Eisenstein cusp coefficient is Schwarz covariant. -/
+theorem cuspConstantCoefficient_conj (u : ℂ) (epsilon : Bool) :
+    (starRingEnd ℂ) (d4BMCompletedEisensteinCuspConstantCoefficient u epsilon) =
+      d4BMCompletedEisensteinCuspConstantCoefficient ((starRingEnd ℂ) u) epsilon := by
+  cases epsilon <;>
+    simp [d4BMCompletedEisensteinCuspConstantCoefficient, ← reflectedCompletedLambda_conj]
+  all_goals rw [map_ofNat]
+
+/-- Each explicit positive-height particular cusp power is Schwarz covariant. -/
+theorem powerResponse_conj (lambda p A : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
+    (starRingEnd ℂ) (D4BMQuadraticMixedSource.powerResponse lambda p A z) =
+      D4BMQuadraticMixedSource.powerResponse ((starRingEnd ℂ) lambda)
+        ((starRingEnd ℂ) p) ((starRingEnd ℂ) A) z := by
+  unfold D4BMQuadraticMixedSource.powerResponse
+  rw [map_mul, map_div₀, conj_cpow_of_pos hz, map_sub, map_mul, map_sub,
+    map_one]
+
+/-- The literal three-power cusp particular solution is Schwarz covariant. -/
+theorem cuspPowerResponse_conj (lambda rho A D : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
+    (starRingEnd ℂ) (D4BMQuadraticMixedSource.cuspPowerResponse lambda rho A D z) =
+      D4BMQuadraticMixedSource.cuspPowerResponse ((starRingEnd ℂ) lambda)
+        ((starRingEnd ℂ) rho) ((starRingEnd ℂ) A) ((starRingEnd ℂ) D) z := by
+  unfold D4BMQuadraticMixedSource.cuspPowerResponse
+  rw [map_add, map_add, powerResponse_conj _ _ _ _ hz, powerResponse_conj _ _ _ _ hz,
+    powerResponse_conj _ _ _ _ hz]
+  simp only [map_mul, map_pow, map_sub, map_one, map_ofNat]
+
+/-- The complete explicit cusp response is Schwarz covariant at every positive height. -/
+theorem cuspResponse_conj (q : XiZeroCopy) (minusBranch : Bool)
+    (z : Fin 2 → ℝ) (hz : 0 < z 1) :
+    (starRingEnd ℂ) (D4BMGlobalAngularResponse.cuspResponse q minusBranch z) =
+      D4BMGlobalAngularResponse.cuspResponse (xiZeroCopyConjEquiv q) minusBranch z := by
+  unfold D4BMGlobalAngularResponse.cuspResponse
+  rw [map_mul, map_div₀, parameter_conj, cuspPowerResponse_conj _ _ _ _ _ hz,
+    center_conj q]
+  have hq := deningerDivisorThetaEigen_conjEquiv q
+  change ((xiZeroCopyConjEquiv q).1 : ℂ) = (starRingEnd ℂ) (q.1 : ℂ) at hq
+  rw [hq, cuspConstantCoefficient_conj, cuspConstantCoefficient_conj]
+  rw [map_ofNat]
+
+/-- The literal smooth height cutoff is real. -/
+theorem cutoff_conj (z : Fin 2 → ℝ) :
+    (starRingEnd ℂ) (D4BMGlobalAngularResponse.cutoff z) =
+      D4BMGlobalAngularResponse.cutoff z := by
+  simp [D4BMGlobalAngularResponse.cutoff]
+
+/-- The complete explicit cutoff response is Schwarz covariant. -/
+theorem cutoffResponse_conj (q : XiZeroCopy) (minusBranch : Bool)
+    (z : Fin 2 → ℝ) (hz : 0 < z 1) :
+    (starRingEnd ℂ) (D4BMGlobalAngularResponse.cutoffResponse q minusBranch z) =
+      D4BMGlobalAngularResponse.cutoffResponse (xiZeroCopyConjEquiv q) minusBranch z := by
+  unfold D4BMGlobalAngularResponse.cutoffResponse
+  rw [map_mul, cutoff_conj, cuspResponse_conj _ _ _ hz]
+
+/-- The full literal Eisenstein scalar is Schwarz covariant at positive height. -/
+theorem scalar_conj (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
+    (starRingEnd ℂ) (D4BMGlobalAngularResponse.scalar (D4BMGlobalAngularResponse.center q) z) =
+      D4BMGlobalAngularResponse.scalar
+        (D4BMGlobalAngularResponse.center (xiZeroCopyConjEquiv q)) z := by
+  unfold D4BMGlobalAngularResponse.scalar
+  rw [cuspLeg_conj _ _ hz, center_conj q]
+
+/-- The complete literal angular forcing is Schwarz covariant at every positive-height point. -/
+theorem forcing_conj (q : XiZeroCopy) (minusBranch : Bool)
+    (z : Fin 2 → ℝ) (hz : 0 < z 1) :
+    (starRingEnd ℂ) (D4BMGlobalAngularResponse.forcing q minusBranch z) =
+      D4BMGlobalAngularResponse.forcing (xiZeroCopyConjEquiv q) minusBranch z := by
+  have hcut : D4BMGlobalAngularResponse.cutoffResponse (xiZeroCopyConjEquiv q) minusBranch =ᶠ[𝓝 z]
+      fun w => conj (D4BMGlobalAngularResponse.cutoffResponse q minusBranch w) := by
+    filter_upwards [(isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hz] with w hw
+    simpa using (cutoffResponse_conj q minusBranch w hw).symm
+  unfold D4BMGlobalAngularResponse.forcing
+  rw [map_sub, map_mul, map_div₀, parameter_conj, map_pow, scalar_conj _ _ hz,
+    map_sub, map_mul, cutoffResponse_conj _ _ _ hz,
+    D4BMAngularSeries.hyperbolicLaplacian_congr hcut,
+    D4BMAngularSeries.hyperbolicLaplacian_conj]
+  rw [map_ofNat]
+
+/-- The admitted finite-energy forcing vector is Schwarz covariant. -/
+theorem forcingVector_conj (q : XiZeroCopy) (minusBranch : Bool) :
+    star (D4BMGlobalAngularResponse.forcingVector q minusBranch) =
+      D4BMGlobalAngularResponse.forcingVector (xiZeroCopyConjEquiv q) minusBranch := by
+  apply Lp.ext
+  filter_upwards [D4BMGlobalAngularResponse.forcingVector_coe q minusBranch,
+    D4BMGlobalAngularResponse.forcingVector_coe (xiZeroCopyConjEquiv q) minusBranch,
+    Lp.coeFn_star (D4BMGlobalAngularResponse.forcingVector q minusBranch)] with z hq hqc hs
+  rw [hs, Pi.star_apply, hq, hqc]
+  exact forcing_conj q minusBranch (D4BMGlobalAngularResponse.coordinates z)
+    (by simpa [D4BMGlobalAngularResponse.coordinates] using z.im_pos)
+
+/-- Conjugation is antiunitary on the modular `L²` field space. -/
+theorem spaceStar_inner (f g : Space) :
+    inner ℂ (star f) (star g) = (starRingEnd ℂ) (inner ℂ f g) := by
+  rw [MeasureTheory.L2.inner_def, MeasureTheory.L2.inner_def, ← integral_conj]
+  refine integral_congr_ae ?_
+  filter_upwards [Lp.coeFn_star f, Lp.coeFn_star g] with z hf hg
+  rw [hf, hg]
+  simp only [Pi.star_apply, RCLike.star_def, RCLike.inner_apply', map_mul, Complex.conj_conj]
+
+/-- Componentwise conjugation is antiunitary on the finite modular energy frame. -/
+theorem energyConj_inner (x y : EnergySpace) :
+    inner ℂ (energyConj x) (energyConj y) = (starRingEnd ℂ) (inner ℂ x y) := by
+  rw [PiLp.inner_apply, PiLp.inner_apply, map_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  change inner ℂ (star (x.ofLp i)) (star (y.ofLp i)) =
+    (starRingEnd ℂ) (inner ℂ (x.ofLp i) (y.ofLp i))
+  exact spaceStar_inner _ _
+
+/-- The restricted Schwarz involution is antiunitary for the completed energy-domain form. -/
+theorem energyDomainConj_inner (x y : energyDomain) :
+    inner ℂ (energyDomainConj x) (energyDomainConj y) =
+      (starRingEnd ℂ) (inner ℂ x y) := by
+  change inner ℂ (energyConj (x : EnergySpace)) (energyConj (y : EnergySpace)) = _
+  exact energyConj_inner _ _
+
+private theorem star_inner_energyDomainConj_left (v h : energyDomain) :
+    (starRingEnd ℂ) (inner ℂ (energyDomainConj v) h) =
+      inner ℂ v (energyDomainConj h) := by
+  simpa using (energyDomainConj_inner (energyDomainConj v) h).symm
+
+private theorem star_inner_embedding_energyDomainConj_left (v h : energyDomain) :
+    (starRingEnd ℂ) (inner ℂ (embedding (energyDomainConj v)) (embedding h)) =
+      inner ℂ (embedding v) (embedding (energyDomainConj h)) := by
+  simpa only [embedding_energyDomainConj, energyDomainConj_involutive, star_star] using
+    (spaceStar_inner (embedding (energyDomainConj v)) (embedding h)).symm
+
+private theorem star_inner_embedding_energyDomainConj_forcing
+    (q : XiZeroCopy) (minusBranch : Bool) (v : energyDomain) :
+    (starRingEnd ℂ) (inner ℂ (embedding (energyDomainConj v))
+      (D4BMGlobalAngularResponse.forcingVector q minusBranch)) =
+      inner ℂ (embedding v)
+        (D4BMGlobalAngularResponse.forcingVector (xiZeroCopyConjEquiv q) minusBranch) := by
+  simpa only [embedding_energyDomainConj, star_star, forcingVector_conj] using
+    (spaceStar_inner (embedding (energyDomainConj v))
+      (D4BMGlobalAngularResponse.forcingVector q minusBranch)).symm
+
+private theorem weakSolution_conj_transport (q : XiZeroCopy) (minusBranch : Bool)
+    (h : energyDomain) (hh : WeakSolution q minusBranch h) :
+    WeakSolution (xiZeroCopyConjEquiv q) minusBranch (energyDomainConj h) := by
+  intro v
+  have hs := congrArg (starRingEnd ℂ) (hh (energyDomainConj v))
+  simpa only [map_sub, map_mul, map_neg, map_one, parameter_conj,
+    star_inner_energyDomainConj_left, star_inner_embedding_energyDomainConj_left,
+    star_inner_embedding_energyDomainConj_forcing] using hs
+
+/-- The constructed full finite-energy response obeys literal divisor Schwarz covariance. -/
+theorem weakResponse_conj (q : XiZeroCopy) (minusBranch : Bool) :
+    energyDomainConj (weakResponse q minusBranch) =
+      weakResponse (xiZeroCopyConjEquiv q) minusBranch := by
+  apply full_forcing_weak_response_unique
+  · exact weakSolution_conj_transport q minusBranch _ (weakResponse_spec q minusBranch)
+  · exact weakResponse_spec _ _
 
 end
 

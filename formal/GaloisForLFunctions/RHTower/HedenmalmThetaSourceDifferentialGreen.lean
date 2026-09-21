@@ -1,5 +1,8 @@
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.RingInverseOrder
 import GaloisForLFunctions.RHTower.HedenmalmThetaSourceDifferentialPencil
+import GaloisForLFunctions.RHTower.HedenmalmThetaActualStageGreenBalance
 import GaloisForLFunctions.RHTower.HedenmalmThetaMetricCommutator
+import GaloisForLFunctions.RHTower.HedenmalmThetaMetricPencil
 import GaloisForLFunctions.RHTower.HedenmalmPinnedBoundaryTwoPort
 
 /-!
@@ -26,6 +29,56 @@ private abbrev H := Lp ℂ 2 unitIntervalMeasure
 
 private local instance thetaSourceDifferentialGreenComplete : CompleteSpace thetaCentered :=
   thetaCentered_isClosed.completeSpace_coe
+
+section MetricRoot
+
+local instance : ContinuousFunctionalCalculus ℝ (H →L[ℂ] H) IsSelfAdjoint :=
+  IsSelfAdjoint.instContinuousFunctionalCalculus
+
+/-- The positive square root of the literal singular theta metric.  This is the dense energy
+coordinate for a rigged completion; it is not a bounded similarity because the metric has no
+lower bound. -/
+noncomputable def thetaMetricRoot : H →L[ℂ] H := CFC.sqrt thetaMetricOperator
+
+/-- Positivity of the source metric in operator order. -/
+theorem thetaMetricOperator_nonneg : (0 : H →L[ℂ] H) ≤ thetaMetricOperator :=
+  (ContinuousLinearMap.nonneg_iff_isPositive _).mpr thetaMetricOperator_isPositive
+
+/-- The square-root energy coordinate factors the literal metric exactly. -/
+theorem thetaMetricRoot_sq : thetaMetricRoot * thetaMetricRoot = thetaMetricOperator := by
+  exact CFC.sqrt_mul_sqrt_self thetaMetricOperator thetaMetricOperator_nonneg
+
+/-- The energy coordinate is self-adjoint in the original Hilbert space. -/
+theorem thetaMetricRoot_selfAdjoint :
+    ContinuousLinearMap.adjoint thetaMetricRoot = thetaMetricRoot := by
+  exact IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg thetaMetricOperator)
+
+/-- The energy coordinate remains injective, so it cannot erase a literal source fibre. -/
+theorem thetaMetricRoot_injective : Function.Injective thetaMetricRoot := by
+  intro x y hxy
+  apply RHTower.thetaMetricOperator_injective
+  rw [← thetaMetricRoot_sq]
+  change thetaMetricRoot (thetaMetricRoot x) = thetaMetricRoot (thetaMetricRoot y)
+  exact congrArg thetaMetricRoot hxy
+
+/-- The energy-coordinate image is dense.  It therefore realizes the metric completion without
+changing the ambient Hilbert carrier. -/
+theorem thetaMetricRoot_dense_range : Dense (thetaMetricRoot.range : Set H) := by
+  rw [Submodule.dense_iff_topologicalClosure_eq_top,
+    Submodule.topologicalClosure_eq_top_iff]
+  rw [thetaMetricRoot.orthogonal_range, thetaMetricRoot_selfAdjoint]
+  exact LinearMap.ker_eq_bot.mpr thetaMetricRoot_injective
+
+/-- The old singular Green pairing is exactly the ordinary Hilbert pairing after the energy
+coordinate. -/
+theorem thetaMetricRoot_energy (f g : H) :
+    inner ℂ (thetaMetricRoot f) (thetaMetricRoot g) =
+      inner ℂ (thetaMetricOperator f) g := by
+  rw [← ContinuousLinearMap.adjoint_inner_left, thetaMetricRoot_selfAdjoint]
+  change inner ℂ ((thetaMetricRoot * thetaMetricRoot) f) g = _
+  rw [thetaMetricRoot_sq]
+
+end MetricRoot
 
 /-- On the centered coordinate hyperplane, the closed-pencil inverse coordinate is the literal
 theta source inverse. -/
@@ -231,6 +284,110 @@ theorem thetaSourceDifferentialBoundaryRelation_mem_iff
     r ∈ thetaSourceDifferentialBoundaryRelation z ↔
       ∃ k : thetaCentered, thetaSourceDifferentialBoundaryCoordinate z k = r := by
   rfl
+
+/-- The literal primitive coordinate of the closed boundary relation. -/
+def thetaSourceDifferentialBoundarySourceProjection (z : ℂ) :
+    thetaSourceDifferentialBoundaryRelation z →L[ℂ] H :=
+  (ContinuousLinearMap.fst ℂ H H).comp
+    ((ContinuousLinearMap.fst ℂ (H × H) (ℂ × ℂ)).comp
+      (thetaSourceDifferentialBoundaryRelation z).subtypeL)
+
+/-- The source leg of the closed boundary relation, realized in the dense square-root energy
+coordinate. -/
+def thetaSourceDifferentialBoundaryEnergyEmbedding (z : ℂ) :
+    thetaSourceDifferentialBoundaryRelation z →L[ℂ] H :=
+  thetaMetricRoot.comp (thetaSourceDifferentialBoundarySourceProjection z)
+
+/-- The differential leg of the closed boundary relation in the same energy coordinate. -/
+def thetaSourceDifferentialBoundaryEnergyReadout (z : ℂ) :
+    thetaSourceDifferentialBoundaryRelation z →L[ℂ] H :=
+  thetaMetricRoot.comp
+    ((ContinuousLinearMap.snd ℂ H H).comp
+      ((ContinuousLinearMap.fst ℂ (H × H) (ℂ × ℂ)).comp
+        (thetaSourceDifferentialBoundaryRelation z).subtypeL))
+
+/-- The canonical point of the closed boundary relation corresponding to a literal centered
+source vector. -/
+def thetaSourceDifferentialBoundaryCoordinateElement (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryRelation z :=
+  ⟨thetaSourceDifferentialBoundaryCoordinate z k, ⟨k, rfl⟩⟩
+
+theorem thetaSourceDifferentialBoundarySourceProjection_apply
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundarySourceProjection z
+      (thetaSourceDifferentialBoundaryCoordinateElement z k) =
+      thetaCenteredSourceInverse k := by
+  simp [thetaSourceDifferentialBoundarySourceProjection,
+    thetaSourceDifferentialBoundaryCoordinateElement,
+    thetaSourceDifferentialBoundaryCoordinate_apply]
+
+theorem thetaSourceDifferentialBoundaryEnergyEmbedding_apply
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryEnergyEmbedding z
+      (thetaSourceDifferentialBoundaryCoordinateElement z k) =
+      thetaMetricRoot (thetaCenteredSourceInverse k) := by
+  simp [thetaSourceDifferentialBoundaryEnergyEmbedding,
+    thetaSourceDifferentialBoundarySourceProjection_apply]
+
+theorem thetaSourceDifferentialBoundaryEnergyReadout_apply
+    (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryEnergyReadout z
+      (thetaSourceDifferentialBoundaryCoordinateElement z k) =
+      thetaMetricRoot (thetaSourceDifferentialRangeMap z k) := by
+  simp [thetaSourceDifferentialBoundaryEnergyReadout,
+    thetaSourceDifferentialBoundaryCoordinateElement,
+    thetaSourceDifferentialBoundaryCoordinate_apply]
+
+/-- The closed relation retains its source coordinate injectively. -/
+theorem thetaSourceDifferentialBoundarySourceProjection_injective (z : ℂ) :
+    Function.Injective (thetaSourceDifferentialBoundarySourceProjection z) := by
+  intro r s hrs
+  apply Subtype.ext
+  have hrs' : r.1.1.1 = s.1.1.1 := by
+    simpa [thetaSourceDifferentialBoundarySourceProjection] using hrs
+  obtain ⟨k, hk⟩ := (thetaSourceDifferentialBoundaryRelation_mem_iff z r).mp r.property
+  obtain ⟨l, hl⟩ := (thetaSourceDifferentialBoundaryRelation_mem_iff z s).mp s.property
+  have hsource : thetaCenteredSourceInverse k = thetaCenteredSourceInverse l := by
+    calc
+      thetaCenteredSourceInverse k = r.1.1.1 := by
+        have h := congrArg (fun x : ((H × H) × (ℂ × ℂ)) => x.1.1) hk
+        simpa only [thetaSourceDifferentialBoundaryCoordinate_apply] using h
+      _ = s.1.1.1 := hrs'
+      _ = thetaCenteredSourceInverse l := by
+        have h := congrArg (fun x : ((H × H) × (ℂ × ℂ)) => x.1.1) hl
+        simpa only [thetaSourceDifferentialBoundaryCoordinate_apply] using h.symm
+  have hkl : k = l := thetaCenteredSourceInverse_injective hsource
+  calc
+    (r : ((H × H) × (ℂ × ℂ))) = thetaSourceDifferentialBoundaryCoordinate z k := hk.symm
+    _ = thetaSourceDifferentialBoundaryCoordinate z l := by rw [hkl]
+    _ = s := hl
+
+/-- The dense literal source range is retained by the closed-relation source projection. -/
+theorem thetaSourceDifferentialBoundarySourceProjection_dense_range (z : ℂ) :
+    Dense ((thetaSourceDifferentialBoundarySourceProjection z).range : Set H) := by
+  apply thetaCenteredSourceInverse_dense_range.mono
+  rintro x ⟨k, rfl⟩
+  refine ⟨thetaSourceDifferentialBoundaryCoordinateElement z k, ?_⟩
+  exact thetaSourceDifferentialBoundarySourceProjection_apply z k
+
+/-- The square-root energy embedding of the closed relation is injective: it preserves every
+literal source fibre while replacing the singular metric by ordinary Hilbert energy. -/
+theorem thetaSourceDifferentialBoundaryEnergyEmbedding_injective (z : ℂ) :
+    Function.Injective (thetaSourceDifferentialBoundaryEnergyEmbedding z) := by
+  intro r s hrs
+  apply thetaSourceDifferentialBoundarySourceProjection_injective z
+  apply thetaMetricRoot_injective
+  simpa [thetaSourceDifferentialBoundaryEnergyEmbedding] using hrs
+
+/-- The energy embedding of the closed relation has dense range.  Together with the relation's
+closedness, this supplies the source-faithful rigged Hilbert test embedding. -/
+theorem thetaSourceDifferentialBoundaryEnergyEmbedding_dense_range (z : ℂ) :
+    Dense ((thetaSourceDifferentialBoundaryEnergyEmbedding z).range : Set H) := by
+  change DenseRange (fun r => thetaMetricRoot
+    (thetaSourceDifferentialBoundarySourceProjection z r))
+  exact DenseRange.comp thetaMetricRoot_dense_range
+    (thetaSourceDifferentialBoundarySourceProjection_dense_range z)
+    thetaMetricRoot.continuous
 
 /-- A nonzero vertical fibre of the closed relation is exactly a nonzero source vector killed by
 the range coordinate. -/
@@ -454,6 +611,44 @@ theorem thetaPinnedMeanProjection_metricSkew_thetaCenteredSourceInverse
   simp only [map_neg, map_mul, Complex.conj_I]
   ring
 
+/-- Hermitian hyperbolic form on the source mean--dipole boundary pair. -/
+def thetaMonopoleDipoleHyperbolicForm (u v : ℂ × ℂ) : ℂ :=
+  (starRingEnd ℂ) u.1 * v.2 + v.1 * (starRingEnd ℂ) u.2
+
+/-- Diagonal coordinates split the boundary form into one positive and one negative complex
+line.  This is the exact rank-one negative channel required by the singular completion. -/
+theorem thetaMonopoleDipoleHyperbolicForm_diagonal
+    (m d m' d' : ℂ) :
+    thetaMonopoleDipoleHyperbolicForm (m, d) (m', d') =
+      (1 / 2 : ℂ) *
+        ((starRingEnd ℂ) (m + d) * (m' + d') -
+          (starRingEnd ℂ) (m - d) * (m' - d')) := by
+  simp only [thetaMonopoleDipoleHyperbolicForm, map_add, map_sub]
+  ring
+
+theorem thetaMonopoleDipoleHyperbolicForm_positive_unit :
+    thetaMonopoleDipoleHyperbolicForm ((1 : ℂ), 1) (1, 1) = 2 := by
+  norm_num [thetaMonopoleDipoleHyperbolicForm]
+
+theorem thetaMonopoleDipoleHyperbolicForm_negative_unit :
+    thetaMonopoleDipoleHyperbolicForm ((1 : ℂ), -1) (1, -1) = -2 := by
+  norm_num [thetaMonopoleDipoleHyperbolicForm]
+
+/-- The spectral-weight Green defect is exactly the hyperbolic mean--dipole boundary form of
+the closed source relation. -/
+theorem thetaPinnedMeanProjection_metricSkew_eq_hyperbolic
+    (k l : thetaCentered) :
+    (inner ℂ (thetaMetricOperator
+        (thetaPinnedMeanProjection (thetaCenteredSourceInverse k)))
+      (thetaCenteredSourceInverse l) : ℂ) -
+      inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k))
+        (thetaPinnedMeanProjection (thetaCenteredSourceInverse l)) =
+      Complex.I * thetaMonopoleDipoleHyperbolicForm
+        (pinnedMean (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k)
+        (pinnedMean (thetaCenteredSourceInverse l), thetaCenteredDipoleTrace l) := by
+  simpa only [thetaMonopoleDipoleHyperbolicForm] using
+    thetaPinnedMeanProjection_metricSkew_thetaCenteredSourceInverse k l
+
 /-- The unperturbed closed source action is symmetric for the singular theta metric on its exact
 source graph.  Thus every failure of a Pontryagin realization of `D_z` is concentrated in the
 bounded pinned-mean spectral weight and its one transverse defect channel. -/
@@ -557,6 +752,73 @@ theorem thetaSourceDifferentialRangeMap_metricGreen
     map_add, map_smul, inner_add_right, inner_smul_right,
     inner_add_left, inner_smul_left]
   linear_combination thetaCenteredSourceInverse_metricGreen k l
+
+/-- Conjugate spectral parameters expose only the one hyperbolic boundary plane.  The full
+closed source relation therefore has an exact Green law compatible with Schwarz reflection while
+retaining its literal `XiC` vertical fibre. -/
+theorem thetaSourceDifferentialRangeMap_metricGreen_conj
+    (z : ℂ) (k l : thetaCentered) :
+    (inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k))
+        (thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l) : ℂ) -
+      inner ℂ (thetaMetricOperator (thetaSourceDifferentialRangeMap z k))
+        (thetaCenteredSourceInverse l) =
+      -(starRingEnd ℂ z * Complex.I * thetaMonopoleDipoleHyperbolicForm
+        (pinnedMean (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k)
+        (pinnedMean (thetaCenteredSourceInverse l), thetaCenteredDipoleTrace l)) := by
+  have hgreen := thetaSourceDifferentialRangeMap_metricGreen z (starRingEnd ℂ z) k l
+  have hzero := inner_pinnedBoundaryCLM_thetaCentered_eq_zero k l
+  rw [hzero, mul_zero, zero_add,
+    ← thetaPinnedMeanProjection_apply (thetaCenteredSourceInverse l),
+    ← thetaPinnedMeanProjection_apply (thetaCenteredSourceInverse k)] at hgreen
+  have hskew := thetaPinnedMeanProjection_metricSkew_eq_hyperbolic k l
+  calc
+    (inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k))
+        (thetaSourceDifferentialRangeMap (starRingEnd ℂ z) l) : ℂ) -
+      inner ℂ (thetaMetricOperator (thetaSourceDifferentialRangeMap z k))
+        (thetaCenteredSourceInverse l) =
+        (starRingEnd ℂ) z *
+            inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k))
+              (thetaPinnedMeanProjection (thetaCenteredSourceInverse l)) -
+          (starRingEnd ℂ) z *
+            inner ℂ (thetaMetricOperator
+              (thetaPinnedMeanProjection (thetaCenteredSourceInverse k)))
+              (thetaCenteredSourceInverse l) := hgreen
+    _ = -(starRingEnd ℂ z *
+        ((inner ℂ (thetaMetricOperator
+            (thetaPinnedMeanProjection (thetaCenteredSourceInverse k)))
+          (thetaCenteredSourceInverse l) : ℂ) -
+          inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k))
+            (thetaPinnedMeanProjection (thetaCenteredSourceInverse l)))) := by ring
+    _ = -(starRingEnd ℂ z * Complex.I * thetaMonopoleDipoleHyperbolicForm
+        (pinnedMean (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k)
+        (pinnedMean (thetaCenteredSourceInverse l), thetaCenteredDipoleTrace l)) := by
+      rw [hskew]
+      ring
+
+/-- The exact conjugate-parameter Green law on the closed, dense energy test relation.  Both
+legs remain the literal source primitive and differential coordinates, while the right-hand side
+is the single hyperbolic monopole--dipole boundary plane. -/
+theorem thetaSourceDifferentialBoundaryEnergy_green_conj
+    (z : ℂ) (k l : thetaCentered) :
+    (inner ℂ
+        (thetaSourceDifferentialBoundaryEnergyEmbedding z
+          (thetaSourceDifferentialBoundaryCoordinateElement z k))
+        (thetaSourceDifferentialBoundaryEnergyReadout (starRingEnd ℂ z)
+          (thetaSourceDifferentialBoundaryCoordinateElement (starRingEnd ℂ z) l)) : ℂ) -
+      inner ℂ
+        (thetaSourceDifferentialBoundaryEnergyReadout z
+          (thetaSourceDifferentialBoundaryCoordinateElement z k))
+        (thetaSourceDifferentialBoundaryEnergyEmbedding (starRingEnd ℂ z)
+          (thetaSourceDifferentialBoundaryCoordinateElement (starRingEnd ℂ z) l)) =
+      -(starRingEnd ℂ z * Complex.I * thetaMonopoleDipoleHyperbolicForm
+        (pinnedMean (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k)
+        (pinnedMean (thetaCenteredSourceInverse l), thetaCenteredDipoleTrace l)) := by
+  rw [thetaSourceDifferentialBoundaryEnergyEmbedding_apply,
+    thetaSourceDifferentialBoundaryEnergyReadout_apply,
+    thetaSourceDifferentialBoundaryEnergyReadout_apply,
+    thetaSourceDifferentialBoundaryEnergyEmbedding_apply,
+    thetaMetricRoot_energy, thetaMetricRoot_energy]
+  exact thetaSourceDifferentialRangeMap_metricGreen_conj z k l
 
 end
 

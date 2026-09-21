@@ -207,6 +207,14 @@
   `1/p` discard the replicated old debt rather than pay it.  Any viable global
   estimate must use genuinely off-diagonal signed background/copy
   cancellation, with constants stable as the core changes.
+- `mobiusDivisorProcessedCoreChildCopyBilinear_eq_scale` is formally proved:
+  every finite bilinear observer of the entire inherited processed-core copy
+  sector, with arbitrary signed off-diagonal core weights and arbitrary two
+  residual labels, is multiplied exactly by the fresh dilation prime `p`.
+  This strictly strengthens pairwise and diagonal expansion.  Hence no
+  copied-sector cancellation can pay inherited core-changing covariance; the
+  only possible CCM-FU repayment is a quantitatively controlled cross term
+  with the new `p`-free background.
 - `mobiusDivisorSelectionProcessedCoreFibre_insert_pfree` and
   `mobiusDivisorSelectionProcessedCoreFibre_oriented_mass_insert_mul_prime`
   are now source-compiled and axiom-audited.  At cutoff `p*N`, every

@@ -3,8 +3,11 @@ import GaloisForLFunctions.HTGeometry.KammeyerDeterminantApproximationCore
 import GaloisForLFunctions.HTGeometry.RegularizedDeterminantAlgebraicMultiplicity
 import GaloisForLFunctions.HTGeometry.CompactSelfAdjointEigenvalue
 import GaloisForLFunctions.HTGeometry.HermitianDilationSecondJetObstruction
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtFourthJet
+import GaloisForLFunctions.HTGeometry.RegularizedResolventTraceOperator
 import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
 import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuadraticIncidence
+import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuarticIncidence
 
 /-!
 # K-RVM Pontryagin determinant survivor
@@ -839,6 +842,198 @@ theorem normalized_XiC_fourth_jet_eq_source_moments :
   field_simp [hA]
   linear_combination 32 * h - 96 * h0 * (normalizedPrimeArchMoment 0 : ℂ)
 
+
+def routeKQuarticallyAdmittedKernel : Nat.Primes × Nat.Primes → ℂ :=
+  HilbertSchmidt.matrixOf routeKQuarticallyAdmittedOperator
+
+theorem routeKQuarticallyAdmittedKernel_isHS :
+    HilbertSchmidt.IsHS routeKQuarticallyAdmittedKernel := by
+  exact HilbertSchmidt.isHS_matrixOf
+    routeKQuarticallyAdmittedOperator_isHilbertSchmidt
+
+theorem routeKQuarticallyAdmittedKernel_toOperator :
+    HilbertSchmidt.toOperator routeKQuarticallyAdmittedKernel_isHS =
+      routeKQuarticallyAdmittedOperator := by
+  simpa [routeKQuarticallyAdmittedKernel] using
+    (HilbertSchmidt.toOperator_matrixOf
+      routeKQuarticallyAdmittedOperator_isHilbertSchmidt)
+
+theorem routeKQuarticallyAdmittedKernel_square_trace :
+    (∑' p : Nat.Primes,
+      HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 1 (p, p)) =
+      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 2) := by
+  rw [show HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 1 =
+      HilbertSchmidt.hsComp routeKQuarticallyAdmittedKernel
+        routeKQuarticallyAdmittedKernel by rfl]
+  rw [← HilbertSchmidt.opTrace_toOperator_comp
+    routeKQuarticallyAdmittedKernel_isHS routeKQuarticallyAdmittedKernel_isHS,
+    routeKQuarticallyAdmittedKernel_toOperator]
+  rfl
+
+theorem routeKQuarticallyAdmittedKernel_fourth_trace :
+    (∑' p : Nat.Primes,
+      HilbertSchmidt.hsPow routeKQuarticallyAdmittedKernel 3 (p, p)) =
+      ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 4) := by
+  rw [← HilbertSchmidt.hsComp_hsPow
+    routeKQuarticallyAdmittedKernel_isHS 1 1]
+  rw [← HilbertSchmidt.opTrace_toOperator_comp
+    (HilbertSchmidt.isHS_hsPow routeKQuarticallyAdmittedKernel_isHS 1)
+    (HilbertSchmidt.isHS_hsPow routeKQuarticallyAdmittedKernel_isHS 1)]
+  rw [HilbertSchmidt.toOperator_hsPow routeKQuarticallyAdmittedKernel_isHS 1,
+    routeKQuarticallyAdmittedKernel_toOperator]
+  congr 1
+
+
+noncomputable def routeKQuarticallyAdmittedEntireDet : ℂ → ℂ :=
+  GaloisForLFunctions.HTGeometry.entireDet2 routeKQuarticallyAdmittedKernel
+
+/-- The quartic K-RVM determinant coefficient is fixed by the actual source's first two moments. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_four :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedEntireDet 4 =
+      (routeKSourceZerothMoment : ℂ) ^ 2 / 32 -
+        (routeKSourceFirstMoment : ℂ) / 8 := by
+  rw [routeKQuarticallyAdmittedEntireDet,
+    GaloisForLFunctions.HTGeometry.taylorCoeff_entireDet2_four
+      routeKQuarticallyAdmittedKernel_isHS,
+    routeKQuarticallyAdmittedKernel_square_trace,
+    routeKQuarticallyAdmittedKernel_fourth_trace]
+  have h2 := two_mul_opTrace_sq_routeKQuarticallyAdmittedOperator
+  have h4 := two_mul_opTrace_four_routeKQuarticallyAdmittedOperator
+  have h2' : ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 2) =
+      (routeKSourceZerothMoment : ℂ) / 2 := by
+    linear_combination h2 / 2
+  have h4' : ContinuousLinearMap.opTrace (routeKQuarticallyAdmittedOperator ^ 4) =
+      (routeKSourceFirstMoment : ℂ) / 2 := by
+    linear_combination h4 / 2
+  rw [h2', h4']
+  ring
+
+
+
+private theorem routeKQuarticallyAdmittedEntireDet_differentiable :
+    Differentiable ℂ routeKQuarticallyAdmittedEntireDet := by
+  simpa [routeKQuarticallyAdmittedEntireDet] using
+    GaloisForLFunctions.HTGeometry.differentiable_entireDet2
+      routeKQuarticallyAdmittedKernel_isHS
+
+private theorem routeKQuarticallyAdmittedEntireDet_zero :
+    routeKQuarticallyAdmittedEntireDet 0 = 1 := by
+  rw [routeKQuarticallyAdmittedEntireDet]
+  exact (GaloisForLFunctions.HTGeometry.isRegularizedDet_entireDet2
+    routeKQuarticallyAdmittedKernel_isHS).eq_one_at_zero
+
+private theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_one :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedEntireDet 1 = 0 := by
+  rw [routeKQuarticallyAdmittedEntireDet,
+    GaloisForLFunctions.HTGeometry.taylorCoeff_entireDet2_eq_detCoeff
+      routeKQuarticallyAdmittedKernel_isHS,
+    GaloisForLFunctions.HTGeometry.detCoeff_one_eq_zero
+      routeKQuarticallyAdmittedKernel_isHS]
+
+/-- The quartic carrier's quadratic determinant coefficient is the half-mass dictated by the
+paired prime--archimedean source. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedEntireDet_two :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedEntireDet 2 =
+      -(routeKSourceZerothMoment : ℂ) / 4 := by
+  rw [routeKQuarticallyAdmittedEntireDet,
+    GaloisForLFunctions.HTGeometry.taylorCoeff_entireDet2_two
+      routeKQuarticallyAdmittedKernel_isHS,
+    routeKQuarticallyAdmittedKernel_square_trace]
+  have h2 := two_mul_opTrace_sq_routeKQuarticallyAdmittedOperator
+  linear_combination h2 / (-4)
+
+/-- The determinant is squared because the certified source carrier has two paired channels.
+Squaring retains its zero set and gives the source-normalized local multiplicity. -/
+noncomputable def routeKQuarticallyAdmittedSquaredEntireDet : ℂ → ℂ :=
+  fun z => routeKQuarticallyAdmittedEntireDet z ^ 2
+
+/-- The paired determinant has the normalized quadratic source coefficient. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_two :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedSquaredEntireDet 2 =
+      -(routeKSourceZerothMoment : ℂ) / 2 := by
+  change GaloisForLFunctions.HTGeometry.taylorCoeff
+    (fun z => routeKQuarticallyAdmittedEntireDet z ^ 2) 2 = _
+  rw [GaloisForLFunctions.HTGeometry.taylorCoeff_sq_two_of_value_one_of_linear_zero
+    routeKQuarticallyAdmittedEntireDet_differentiable
+    routeKQuarticallyAdmittedEntireDet_zero
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_one,
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_two]
+  ring
+
+/-- The paired determinant has the normalized quartic source coefficient. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_four :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedSquaredEntireDet 4 =
+      (routeKSourceZerothMoment : ℂ) ^ 2 / 8 -
+        (routeKSourceFirstMoment : ℂ) / 4 := by
+  change GaloisForLFunctions.HTGeometry.taylorCoeff
+    (fun z => routeKQuarticallyAdmittedEntireDet z ^ 2) 4 = _
+  rw [GaloisForLFunctions.HTGeometry.taylorCoeff_sq_four_of_value_one_of_linear_zero
+    routeKQuarticallyAdmittedEntireDet_differentiable
+    routeKQuarticallyAdmittedEntireDet_zero
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_one,
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_four,
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_two]
+  ring
+
+/-- The paired determinant and normalized centered Xi have the same quadratic Taylor jet. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_two_eq_normalized_XiC :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedSquaredEntireDet 2 =
+      deriv (deriv XiC) 0 / XiC 0 / 2 := by
+  rw [taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_two]
+  unfold routeKSourceZerothMoment
+  rw [analyticTraceMoments_normalizedPrimeArchSource_zero_eq_Xi_ratio]
+  have hXi2 : deriv (deriv XiC) 0 = ((deriv (deriv Xi) 0 : ℝ) : ℂ) := by
+    simpa using XiC_secondDeriv_ofReal 0
+  have hXi0 : XiC 0 = ((Xi 0 : ℝ) : ℂ) := by
+    simpa using XiC_ofReal 0
+  rw [hXi2, hXi0]
+  have hXi : Xi 0 ≠ 0 := Xi_zero_pos.ne'
+  push_cast
+  field_simp [hXi]
+
+/-- The paired determinant and normalized centered Xi have the same quartic Taylor jet. -/
+theorem taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_four_eq_normalized_XiC :
+    GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuarticallyAdmittedSquaredEntireDet 4 =
+      iteratedDeriv 4 XiC 0 / XiC 0 / 24 := by
+  rw [taylorCoeff_routeKQuarticallyAdmittedSquaredEntireDet_four,
+    normalized_XiC_fourth_jet_eq_source_moments,
+    routeKSourceZerothMoment_eq_normalizedPrimeArchMoment,
+    routeKSourceFirstMoment_eq_normalizedPrimeArchMoment]
+
+/-- Exact fourth-jet diagnostic for the unsquared quartic K-RVM determinant. -/
+theorem normalized_XiC_fourth_jet_sub_four_mul_routeKQuarticallyAdmittedEntireDet_four :
+    iteratedDeriv 4 XiC 0 / XiC 0 / 24 -
+      4 * GaloisForLFunctions.HTGeometry.taylorCoeff
+        routeKQuarticallyAdmittedEntireDet 4 =
+      (routeKSourceFirstMoment : ℂ) / 4 := by
+  rw [normalized_XiC_fourth_jet_eq_source_moments,
+    taylorCoeff_routeKQuarticallyAdmittedEntireDet_four,
+    routeKSourceZerothMoment_eq_normalizedPrimeArchMoment,
+    routeKSourceFirstMoment_eq_normalizedPrimeArchMoment]
+  ring
+
+
+/-- A single determinant has a strictly positive fourth-jet deficit; the paired
+determinant above removes this deficit at degree four. -/
+theorem normalized_XiC_fourth_jet_ne_four_mul_routeKQuarticallyAdmittedEntireDet_four :
+    iteratedDeriv 4 XiC 0 / XiC 0 / 24 ≠
+      4 * GaloisForLFunctions.HTGeometry.taylorCoeff
+        routeKQuarticallyAdmittedEntireDet 4 := by
+  have hgap :=
+    normalized_XiC_fourth_jet_sub_four_mul_routeKQuarticallyAdmittedEntireDet_four
+  have hnonzero : (routeKSourceFirstMoment : ℂ) / 4 ≠ 0 :=
+    div_ne_zero (Complex.ofReal_ne_zero.mpr routeKSourceFirstMoment_pos.ne') (by norm_num)
+  intro heq
+  apply hnonzero
+  rw [← hgap, heq]
+  ring
 
 end KRVMPaired
 end

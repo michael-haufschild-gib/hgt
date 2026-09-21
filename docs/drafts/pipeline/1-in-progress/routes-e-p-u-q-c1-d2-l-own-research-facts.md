@@ -1015,3 +1015,22 @@
   passes direct check and target-only olean build; its channel identity and
   boundedness theorem audit only with `propext`, `Classical.choice`, and
   `Quot.sound`.
+- **HCF height-cell calibration identifies the real obstruction.**  The exact
+  height-cell source covariance is `4*pi` times the complementary canonical
+  critical-line density, modulo `o(N)`.  Consequently its asymptotic ceiling
+  at `4*pi*(1-a)` is equivalent to a lower bound `a` for the critical-line
+  census; phase selection removes alias/cutoff losses but cannot independently
+  prove a stronger density.  The unconditional corpus baseline is the
+  Alpöge--Furman `a = 2/3` transfer, yielding the `4*pi/3` HCF ceiling.
+  Lean evidence: `HedenmalmCriticalFeatureDensityCalibration` and
+  `HedenmalmCriticalFeatureZeta23Baseline`.
+- **LI--HC radial bridge is already closed, and is not a new route.**  For a
+  strict-right Xi zero, the corpus already proves
+  `‖w_ρ‖² = 1 - (2 Re ρ - 1) / ‖ρ‖²`; hence the Li Cayley radial defect is
+  precisely the horizontal centered rate divided by the zero's norm square.
+  The associated source-weighted inverse-radial visibility tower is itself
+  equivalent to RH, with exponential growth under an off-line zero.  Thus the
+  coordinate bridge supplies detection but no pre-divisor estimate, and cannot
+  be counted as a new source law.  Lean evidence:
+  `XiCayleyWardDynamicalVisibility.sq_norm_xiWardLiCayleyNode_eq_transverseDefect`
+  and `xiCayleyWardRadialVisibility_bounded_iff_rh`.
