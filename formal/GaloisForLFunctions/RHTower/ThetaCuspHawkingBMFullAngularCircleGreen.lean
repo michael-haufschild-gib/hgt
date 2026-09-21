@@ -435,13 +435,17 @@ theorem angularMean_smooth (q : XiZeroCopy) (branch : Bool) (x k : ℝ) : ContDi
 private theorem deriv_neg_of_even {f : ℝ → ℂ} (heven : Function.Even f)
     (hf : Differentiable ℝ f) (x : ℝ) : deriv f (-x) = -deriv f x := by
   have hneg : HasDerivAt (fun y : ℝ => -y) (-1) x := (hasDerivAt_id x).neg
-  have hcomp : HasDerivAt (fun y : ℝ => f (-y)) (deriv f (-x) * (-1)) x :=
-    (hf (-x)).hasDerivAt.comp x hneg
+  have hcomp := ((hf (-x)).hasDerivAt.scomp x hneg).deriv
+  have hreflect : f ∘ Neg.neg = (fun y : ℝ => f (-y)) := by rfl
+  rw [hreflect] at hcomp
   have heq : (fun y : ℝ => f (-y)) = f := funext heven
   have hderiv := congrArg (fun g : ℝ → ℂ => deriv g x) heq
   change deriv (fun y : ℝ => f (-y)) x = deriv f x at hderiv
-  rw [hcomp.deriv] at hderiv
-  linear_combination hderiv
+  rw [hcomp] at hderiv
+  have hderiv' : -deriv f (-x) = deriv f x := by simpa using hderiv
+  calc
+    deriv f (-x) = -(-deriv f (-x)) := by ring
+    _ = -deriv f x := by rw [hderiv']
 
 private theorem deriv2_even_of_even {f : ℝ → ℂ} (heven : Function.Even f)
     (hf : ContDiff ℝ ∞ f) (u : ℝ) :
@@ -451,18 +455,20 @@ private theorem deriv2_even_of_even {f : ℝ → ℂ} (heven : Function.Even f)
     intro x
     exact deriv_neg_of_even heven (hf.differentiable (by simp)) x
   have hneg : HasDerivAt (fun y : ℝ => -y) (-1) u := (hasDerivAt_id u).neg
-  have hleft : HasDerivAt (fun y : ℝ => deriv f (-y))
-      (deriv (deriv f) (-u) * (-1)) u :=
-    (hf1.differentiable (by simp) (-u)).hasDerivAt.comp u hneg
-  have hright : HasDerivAt (fun y : ℝ => -deriv f y)
-      (-deriv (deriv f) u) u :=
-    ((hf1.differentiable (by simp) u).hasDerivAt).neg
+  have hleft := ((hf1.differentiable (by simp) (-u)).hasDerivAt.scomp u hneg).deriv
+  have hreflect : deriv f ∘ Neg.neg = (fun y : ℝ => deriv f (-y)) := by rfl
+  rw [hreflect] at hleft
+  have hright : deriv (fun y : ℝ => -deriv f y) u = -deriv (deriv f) u :=
+    ((hf1.differentiable (by simp) u).hasDerivAt).neg.deriv
   have heq : (fun y : ℝ => deriv f (-y)) = fun y : ℝ => -deriv f y := funext hodd
-  have hleft' : HasDerivAt (fun y : ℝ => -deriv f y)
-      (deriv (deriv f) (-u) * (-1)) u := by
-    rwa [← heq]
-  have huniq := hleft'.unique hright
-  linear_combination huniq
+  have huniq := congrArg (fun g : ℝ → ℂ => deriv g u) heq
+  change deriv (fun y : ℝ => deriv f (-y)) u = deriv (fun y : ℝ => -deriv f y) u at huniq
+  rw [hleft, hright] at huniq
+  have huniq' : -deriv (deriv f) (-u) = -deriv (deriv f) u := by simpa using huniq
+  calc
+    deriv (deriv f) (-u) = -(-deriv (deriv f) (-u)) := by ring
+    _ = -(-deriv (deriv f) u) := by rw [huniq']
+    _ = deriv (deriv f) u := by ring
 
 /-- The actual full circle germ has no odd radial jets through order three.
 These are the exact local compatibility conditions required by the literal

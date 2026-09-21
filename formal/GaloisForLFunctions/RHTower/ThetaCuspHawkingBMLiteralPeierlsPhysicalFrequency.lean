@@ -20,6 +20,7 @@ namespace RHTower.D4BMLiteralPeierlsPhysicalFrequency
 
 open GaloisForLFunctions.HTGeometry
 open D4BMHorizon D4BMFundamentalScalarMetric D4BMModularCore
+open D4BMMetricReconstruction
 open D4BMLiteralPeierlsStream
 open ComplexCoordinateMetricTwoJet
 
@@ -80,7 +81,11 @@ theorem forcedMetricBilinear_cosmological_source (q : XiZeroCopy) (branch : Bool
         (envelope (physicalRate q branch) d p.val) (angularPoint p.val) i j = 0 := by
   have h := frequencyMixedMetricBilinear_cosmological_source q branch p
     (2 * physicalRate q branch) a d i j
-  rw [frequencyMixedMetricBilinear_physical, frequencyMixedSourceBilinear_physical] at h
+  have hmetric : frequencyMixedMetricBilinear q branch (2 * physicalRate q branch) a d =
+      forcedMetricBilinear q branch a d := by
+    funext x
+    exact frequencyMixedMetricBilinear_physical q branch a d x
+  rw [hmetric, frequencyMixedSourceBilinear_physical] at h
   simpa using h
 
 end

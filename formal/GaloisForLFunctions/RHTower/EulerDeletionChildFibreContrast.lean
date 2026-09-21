@@ -1169,4 +1169,48 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_weighted_tail_pairw
   rw [intervalIntegral_terminalChildTailKernel_eq_weighted_tail,
     intervalIntegral_terminalChildTailKernel_eq_weighted_tail]
 
+/-- At every composite terminal level, local EDQ innovations vanish pointwise.  The remaining
+child contrast is exactly the difference of the two beta-weighted literal physical Möbius cells.
+Thus the terminal signed-covariance problem has a prime-level local correction only; no
+uniform-period or absolute-value replacement is used. -/
+theorem terminal_historyLayer_child_difference_eq_physicalCell_of_not_prime
+    (n b c : ℕ) (hn : ¬ (n + 1).Prime)
+    (hb : b < clock (n + 1) / clock n)
+    (hc : c < clock (n + 1) / clock n) :
+    (historyLayer n (predictableDrift (n + 1))
+      (clock n - 1 + b * clock n) -
+      historyLayer n (predictableDrift (n + 1))
+        (clock n - 1 + c * clock n)) =
+      (DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+          (clock n * (b + 1)) * terminalChildTailWeight n b /
+        cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) -
+      DeletionCoefficientTransfer.cell (fun d => ((moebius d : ℤ) : ℝ)) (n + 1)
+          (clock n * (c + 1)) * terminalChildTailWeight n c /
+        cellMeasure.real (historyFibre (n + 1) (clock n - 1 + c * clock n))) := by
+  have hu : clock n - 1 < clock n := by
+    have hpos : 0 < clock n := clock_pos n
+    omega
+  have hub : clock n - 1 + b * clock n < clock (n + 1) :=
+    childResidue_lt_clock_succ n (clock n - 1) b hu hb
+  have huc : clock n - 1 + c * clock n < clock (n + 1) :=
+    childResidue_lt_clock_succ n (clock n - 1) c hu hc
+  have hinnovb : signedInnovation n (clock n - 1 + b * clock n) = 0 := by
+    exact cell_point_eq_of_ae (f := fun k => signedInnovation n k)
+      (g := fun _ => 0) (by
+        rw [signedInnovation_eq_zero_of_not_prime n hn]
+        exact Lp.coeFn_zero ℝ 2 cellMeasure) _
+  have hinnovc : signedInnovation n (clock n - 1 + c * clock n) = 0 := by
+    exact cell_point_eq_of_ae (f := fun k => signedInnovation n k)
+      (g := fun _ => 0) (by
+        rw [signedInnovation_eq_zero_of_not_prime n hn]
+        exact Lp.coeFn_zero ℝ 2 cellMeasure) _
+  rw [historyLayer_predictableDrift_child_difference_eq_sourceCofactorContrast
+    n (n + 1) (clock n - 1) b c (Nat.lt_succ_self n) hub huc,
+    intervalIntegral_terminal_childSourceCofactorBlock_eq_tailKernel n b hb,
+    intervalIntegral_terminal_childSourceCofactorBlock_eq_tailKernel n c hc,
+    intervalIntegral_terminalChildTailKernel_eq_physicalCell_weight n b hb,
+    intervalIntegral_terminalChildTailKernel_eq_physicalCell_weight n c hc,
+    hinnovb, hinnovc]
+  ring
+
 end RHTower.DeletionResidueMartingale

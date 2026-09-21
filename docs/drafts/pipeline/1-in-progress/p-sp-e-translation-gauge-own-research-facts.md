@@ -1,0 +1,7 @@
+# P/SP-E translation-gauge facts
+
+- The exact finite SP-E prime-power history is invariant under independent common translations of the matched and quantile centroid profiles. Lean: `speQuantileRieszPrimePowerHistory_eq_translatedCentroidVarianceDifference` in `SPEQuantileRieszPrimePowerHistoryTranslationGauge.lean`.
+- The same common-centroid mode acts by an explicit unipotent isometry of the full five-channel Route-P Krein carrier and leaves its complete strict-cross current matrix fixed. Lean: `speQuantileRieszStrictCrossFiveChannelCentroidTranslated_current_invariant` in `SPEQuantileRieszRoutePTranslationGauge.lean`.
+- A canonical cutoffwise gauge exists: subtract the weighted matched-centroid mean. The resulting finite P profile has zero aggregate centroid channel and exactly the original strict-cross current. Lean: `speQuantileRieszStrictCrossFiveChannelCenteredProfile_current_eq` in `SPEQuantileRieszRoutePCentroidGaugeFix.lean`.
+- Therefore a proposed P/SP-E graph repair whose only action on either finite source profile is a headwise common centroid translation cannot change the history, its sign, or its size. It cannot close the required covariance/variance gate.
+- This no-go does **not** identify the existing terminal parabolic connection with such a profile translation; corpus proves that terminal coordinate is independent. The remaining route-level burden is a source-derived bound for relative cell displacement/covariance in an unbounded ordered two-Julia graph domain.

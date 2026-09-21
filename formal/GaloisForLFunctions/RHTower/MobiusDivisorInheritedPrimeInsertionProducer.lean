@@ -1714,4 +1714,104 @@ theorem exists_mobiusDivisorClockDelayedInsertionProducer :
       exact_mod_cast (hM.trans_lt (hclock p hp)).le
     · exact barrier_subset_budget P S r W hprime hr hrP (fun p hp => (hS p hp).1) hPS hrS hmass
 
+/-- A bounded inverse-square-root helper budget has a finite logarithmic
+repayment horizon.  More precisely, every delayed helper family capable of
+reducing the persistent fixed-core debt by half must begin before the stated
+deadline.  The surviving CCM mechanism must therefore grow this source mass
+or retain cancellation beyond bounded delayed preparation. -/
+theorem exists_mobiusDivisorClockDelayedHalfRepaymentDeadline :
+    ∀ P : Finset ℕ, P.Nonempty → (∀ p ∈ P, p.Prime) → Even P.card → ∀ N : ℕ,
+      ∃ r : ℕ, ∃ δ η τ₀ : ℝ,
+        r.Prime ∧ N < r ∧ r ∉ P ∧ 0 < δ ∧ 0 < η ∧
+        (∑' n, mobiusDivisorFixedCoreBlockMass P n) + 2 * δ =
+          ∑' n, mobiusDivisorFixedCoreBlockMass (insert r P) n ∧
+        ∀ W : ℝ, 0 < W → ∀ τ : ℝ, τ₀ ≤ τ → 2 * Real.log (W / η) ≤ τ →
+          ∀ S : Finset ℕ,
+            (∀ p ∈ S, p.Prime ∧ τ < Real.log p) →
+            (∑ p ∈ S, (Real.sqrt p)⁻¹) ≤ W →
+            (∑' n, mobiusDivisorFixedCoreBlockMass (insert r (P ∪ S)) n) ≤
+              (∑' n, mobiusDivisorFixedCoreBlockMass P n) + δ →
+            False := by
+  intro P hP hprime heven N
+  obtain ⟨r, δ, η, _, _, τ₀, hr, hNr, hrP, hδ, hη, _, _, hgap, hcost, _⟩ :=
+    exists_mobiusDivisorClockDelayedInsertionProducer P hP hprime heven N
+  refine ⟨r, δ, η, τ₀, hr, hNr, hrP, hδ, hη, hgap, ?_⟩
+  intro W hW τ hτ hdeadline S hS hmass hrepay
+  obtain ⟨_, hneeded⟩ := hcost τ hτ S hS hrepay
+  have hstrict : η * Real.exp (τ / 2) < W := hneeded.trans_le hmass
+  have hrate : τ < 2 * Real.log (W / η) := by
+    have hratio : 0 < W / η := div_pos hW hη
+    have hexp : Real.exp (τ / 2) < W / η := by
+      exact (lt_div_iff₀ hη).mpr (by simpa [mul_comm] using hstrict)
+    have hlog : τ / 2 < Real.log (W / η) :=
+      (Real.lt_log_iff_exp_lt hratio).mpr hexp
+    linarith
+  exact (not_lt_of_ge hdeadline) hrate
+
+/-- Delayed half repayment is necessarily exponentially collective: if every
+helper begins after logarithmic clock `τ`, its cardinality exceeds
+`η * exp τ`.  Thus the unbounded-mass alternative to the bounded-budget
+no-go cannot be realized by a sparse delayed packet. -/
+theorem exists_mobiusDivisorClockDelayedHalfRepaymentCardinality :
+    ∀ P : Finset ℕ, P.Nonempty → (∀ p ∈ P, p.Prime) → Even P.card → ∀ N : ℕ,
+      ∃ r : ℕ, ∃ δ η τ₀ : ℝ,
+        r.Prime ∧ N < r ∧ r ∉ P ∧ 0 < δ ∧ 0 < η ∧
+        (∑' n, mobiusDivisorFixedCoreBlockMass P n) + 2 * δ =
+          ∑' n, mobiusDivisorFixedCoreBlockMass (insert r P) n ∧
+        ∀ τ : ℝ, τ₀ ≤ τ → ∀ S : Finset ℕ,
+          (∀ p ∈ S, p.Prime ∧ τ < Real.log p) →
+          (∑' n, mobiusDivisorFixedCoreBlockMass (insert r (P ∪ S)) n) ≤
+            (∑' n, mobiusDivisorFixedCoreBlockMass P n) + δ →
+          η * Real.exp τ < S.card := by
+  intro P hP hprime heven N
+  obtain ⟨r, δ, η, _, _, τ₀, hr, hNr, hrP, hδ, hη, _, _, hgap, hcost, _⟩ :=
+    exists_mobiusDivisorClockDelayedInsertionProducer P hP hprime heven N
+  refine ⟨r, δ, η, τ₀, hr, hNr, hrP, hδ, hη, hgap, ?_⟩
+  intro τ hτ S hS hrepay
+  obtain ⟨_, hneeded⟩ := hcost τ hτ S hS hrepay
+  have hSne : S.Nonempty := by
+    by_contra hSempty
+    have hSzero : S = ∅ := not_nonempty_iff_eq_empty.mp hSempty
+    subst S
+    simp only [sum_empty] at hneeded
+    exact (not_lt_of_ge (mul_pos hη (Real.exp_pos _)).le) hneeded
+  have hterm (p : ℕ) (hp : p ∈ S) : (Real.sqrt p)⁻¹ < Real.exp (-τ / 2) := by
+    obtain ⟨hpp, hlog⟩ := hS p hp
+    have hclock : Real.exp τ < (p : ℝ) :=
+      (Real.lt_log_iff_exp_lt (by exact_mod_cast hpp.pos)).mp hlog
+    have hsqrt : Real.exp (τ / 2) < Real.sqrt p := by
+      rw [Real.exp_half]
+      exact Real.sqrt_lt_sqrt (Real.exp_nonneg τ) hclock
+    rw [show -τ / 2 = -(τ / 2) by ring, Real.exp_neg]
+    simpa only [one_div] using
+      (one_div_lt_one_div_of_lt (Real.exp_pos (τ / 2)) hsqrt)
+  obtain ⟨p, hp⟩ := hSne
+  have hsum : (∑ p ∈ S, (Real.sqrt p)⁻¹) <
+      ∑ _p ∈ S, Real.exp (-τ / 2) := by
+    apply Finset.sum_lt_sum
+    · intro q hq
+      exact (hterm q hq).le
+    · exact ⟨p, hp, hterm p hp⟩
+  have hupper : η * Real.exp (τ / 2) < (S.card : ℝ) * Real.exp (-τ / 2) := by
+    simpa only [sum_const, nsmul_eq_mul] using hneeded.trans hsum
+  have hsplit : Real.exp τ = Real.exp (τ / 2) * Real.exp (τ / 2) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have hcancel : Real.exp (-τ / 2) * Real.exp (τ / 2) = 1 := by
+    calc
+      _ = Real.exp ((-τ / 2) + (τ / 2)) := (Real.exp_add _ _).symm
+      _ = Real.exp 0 := by congr 1; ring
+      _ = 1 := Real.exp_zero
+  calc
+    η * Real.exp τ = (η * Real.exp (τ / 2)) * Real.exp (τ / 2) := by
+      rw [hsplit]
+      ring
+    _ < ((S.card : ℝ) * Real.exp (-τ / 2)) * Real.exp (τ / 2) :=
+      mul_lt_mul_of_pos_right hupper (Real.exp_pos _)
+    _ = S.card := by
+      calc
+        _ = (S.card : ℝ) * (Real.exp (-τ / 2) * Real.exp (τ / 2)) := by ring
+        _ = S.card := by rw [hcancel, mul_one]
+
 end RHTower

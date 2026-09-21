@@ -18,7 +18,7 @@ open MeasureTheory Set
 namespace RHTower.D4BMFullAngularGoursatTransposition
 
 open GaloisForLFunctions.HTGeometry
-open D4BMHorizon D4BMModularCore D4BMNativeCircle D4BMCausalKernel
+open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse D4BMNativeCircle D4BMCausalKernel
 open D4BMFullAngularCircle D4BMFullAngularCircleAction D4BMFullAngularGoursat
 
 noncomputable section
@@ -36,10 +36,9 @@ private theorem nullInvariant_continuous (y : ℝ) :
 
 private theorem nullInvariant_causal (y u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
     1 ≤ nullInvariant y (u, v) := by
-  apply invariant_causal
-  change |(y + (u - v) / 2) - y| ≤ (u + v) / 2
-  rw [abs_le]
-  constructor <;> linarith
+  exact invariant_causal ⟨(u + v) / 2, y + (u - v) / 2, y, by
+    rw [abs_le]
+    constructor <;> linarith⟩
 
 private def closedFullKernel (q : XiZeroCopy) (branch : Bool) (y X k : ℝ)
     (p : ℝ × ℝ) : ℂ :=
@@ -114,7 +113,7 @@ private theorem closedFullKernel_goursat (q : XiZeroCopy) (branch : Bool)
           ⟨(u + v) / 2, y + (u - v) / 2, y, hinside⟩ X k)
     _ = fullAngularField q branch ![X, Real.exp k] +
         ∫ a in (0 : ℝ)..u, ∫ b in (0 : ℝ)..v, fullForcing q branch y X k (a, b) := by
-      congr 1
+      apply congrArg (fun z : ℂ => fullAngularField q branch ![X, Real.exp k] + z)
       apply intervalIntegral.integral_congr
       intro a ha
       apply intervalIntegral.integral_congr
@@ -122,6 +121,13 @@ private theorem closedFullKernel_goursat (q : XiZeroCopy) (branch : Bool)
       have ha0 : 0 ≤ a := (show a ∈ Icc 0 u by simpa [uIcc_of_le hu] using ha).1
       have hb0 : 0 ≤ b := (show b ∈ Icc 0 v by simpa [uIcc_of_le hv] using hb).1
       unfold fullForcing
+      change parameter q branch *
+          (fullAngularRiemannKernel q branch ((a + b) / 2) (y + (a - b) / 2) y X k +
+            D4BMNativeCircle.nativeRiemannKernel q ((a + b) / 2) (y + (a - b) / 2) y X k) /
+          (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ 2) =
+        parameter q branch *
+          (closedFullKernel q branch y X k (a, b) + closedNativeKernel q y X k (a, b)) /
+          (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ 2)
       rw [closedFullKernel_eq_actual q branch y a b X k ha0 hb0,
         closedNativeKernel_eq_actual q y a b X k ha0 hb0]
 
@@ -159,6 +165,9 @@ theorem fullAngularRiemannKernel_transposition (q : XiZeroCopy) (branch : Bool)
       intro v hv
       have hu0 : 0 ≤ u := (show u ∈ Icc 0 U by simpa [uIcc_of_le hU] using hu).1
       have hv0 : 0 ≤ v := (show v ∈ Icc 0 V by simpa [uIcc_of_le hV] using hv).1
+      change fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k *
+          phip u * psip v =
+        closedFullKernel q branch y X k (u, v) * phip u * psip v
       rw [closedFullKernel_eq_actual q branch y u v X k hu0 hv0]
     _ = fullAngularField q branch ![X, Real.exp k] * phi 0 * psi 0 +
         ∫ u in (0 : ℝ)..U, ∫ v in (0 : ℝ)..V,
@@ -169,13 +178,18 @@ theorem fullAngularRiemannKernel_transposition (q : XiZeroCopy) (branch : Bool)
             (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
               D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
             (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ 2) * phi u * psi v := by
-      congr 1
+      apply congrArg (fun z : ℂ => fullAngularField q branch ![X, Real.exp k] * phi 0 * psi 0 + z)
       apply intervalIntegral.integral_congr
       intro u hu
       apply intervalIntegral.integral_congr
       intro v hv
       have hu0 : 0 ≤ u := (show u ∈ Icc 0 U by simpa [uIcc_of_le hU] using hu).1
       have hv0 : 0 ≤ v := (show v ∈ Icc 0 V by simpa [uIcc_of_le hV] using hv).1
+      change fullForcing q branch y X k (u, v) * phi u * psi v =
+        parameter q branch *
+            (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
+              D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
+            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ 2) * phi u * psi v
       unfold fullForcing
       rw [closedFullKernel_eq_actual q branch y u v X k hu0 hv0,
         closedNativeKernel_eq_actual q y u v X k hu0 hv0]

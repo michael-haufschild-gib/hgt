@@ -252,10 +252,14 @@ theorem response_hasDerivAt (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ)
     (by
       filter_upwards with p
       intro w hw
-      simpa only [density,timeDensity,mul_comm] using
-        (HasDerivAt.comp_const_add p.1 w
-          (timeReducedCoefficient_hasDerivAt (physicalRate q branch) amplitude
-            (w+p.1) p.2)).mul_const (nativeDirichletCausalKernel q p.1 x p.2 X k))).2
+      have hd : HasDerivAt
+          (fun r => timeReducedCoefficient (physicalRate q branch) amplitude r p.2)
+          (timeReducedFirst (physicalRate q branch) amplitude (p.1 + w) p.2) (p.1 + w) := by
+        simpa only [add_comm] using
+          timeReducedCoefficient_hasDerivAt (physicalRate q branch) amplitude (w + p.1) p.2
+      simpa only [density,timeDensity,add_comm,mul_comm] using
+        (HasDerivAt.comp_const_add p.1 w hd).mul_const
+          (nativeDirichletCausalKernel q p.1 x p.2 X k))).2
 
 theorem response_fubini (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) (τ x X k : ℝ) :
     response q branch amplitude τ x X k =

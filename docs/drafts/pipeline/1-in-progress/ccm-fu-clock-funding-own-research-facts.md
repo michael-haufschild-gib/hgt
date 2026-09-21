@@ -15,6 +15,17 @@
   and inverse-square-root mass greater than a positive constant times
   `exp (tau / 2)`. Its bounded-mass helpers still give only marginal
   contraction, not repayment.
+- `exists_mobiusDivisorClockDelayedHalfRepaymentDeadline` is formally proved
+  and axiom-audited.  For each source-produced persistent debt and every
+  inverse-square-root helper budget `W`, delayed half repayment is impossible
+  once `tau ≥ 2 * log (W / eta)`.  Thus bounded-mass preparation has an exact
+  finite horizon; any exhaustive CCM-FU schedule must grow this mass or use a
+  cancellation invariant not represented by delayed helper support.
+- `exists_mobiusDivisorClockDelayedHalfRepaymentCardinality` is formally
+  proved and axiom-audited.  Every half-repaying helper set whose primes begin
+  after `tau` has cardinality strictly greater than `eta * exp tau`.  Thus the
+  growing-mass alternative is necessarily exponentially collective; sparse
+  delayed packets cannot be iterated into an exhaustive CCM-FU schedule.
 - Therefore the current finite-packet budget
   `K = (9/25) * exp (4 * inverse-square-root-mass)` cannot be the global
   CCM-FU budget mechanism for a clock-delayed exhaustive order. A successful
@@ -85,3 +96,126 @@
   indices per residual label.  The remaining CCM-FU hard problem is therefore
   precise—find a growing-core replacement orientation/cancellation law, and
   control the separate unsigned cutoff defect covariance.
+- `MobiusDivisorArityHeadCoreDiagonal` is now formally proved and
+  axiom-audited.  Every adjacent pair with the same processed prime core
+  reconstructs to the literal shift `e = p*d`, so its channel product is a
+  negative unsigned product.  The full nonempty-core charge has the exact
+  decomposition `same-core diagonal + core-changing covariance`, and the
+  diagonal is unconditionally nonpositive.  Thus the only unsigned-sign
+  freedom in the arity-head route is the explicitly named covariance between
+  *different* processed cores; a successful CCM-FU continuation must bound or
+  cancel that term, not search for a new sign law on the diagonal.
+- `MobiusDivisorArityHeadProcessedCoreFibre` is now formally proved and
+  axiom-audited.  Every residual-label fibre is the exact finite sum of its
+  processed-core coordinates.  Hence the remaining covariance has a canonical
+  finite off-diagonal core-coordinate representation; its next viable attack
+  is a source-derived bound or diagonalization of that operator, not further
+  regrouping of residual labels.
+- The same processed-core leaf proves a stricter fact: each
+  `(processed core, residual label)` coordinate is either zero or exactly one
+  literal channel at the product of those two prime sets.  Thus core-changing
+  charge is a cutoff-masked signed Boolean-hypercube bilinear form in explicit
+  channel values, rather than a many-to-many fibre correlation.  Any viable
+  bound must exploit this Boolean sign/kernel structure or source cancellation
+  across its vertices; generic fibre estimates cannot recover missing
+  information.
+- MobiusDivisorArityHeadProcessedCoreParity is now formally proved in scratch
+  and promoted. For every legal adjacent source pair, its signed product is
+  minus one to the sum of the core cardinalities times the unsigned product.
+  Thus equal-parity core pairs are dissipative and opposite-parity core pairs
+  are the only reinforcing terms. This does not bound the core-changing
+  covariance: it identifies its exact positive bipartite sector. The next
+  CCM-FU theorem must be a literal-source anti-correlation/coercivity law on
+  that sector, jointly with the separate unsigned cutoff-defect covariance.
+- MobiusDivisorArityHeadProcessedCoreOrientation is now formally proved in
+  scratch and promoted. Multiplying a core/residual coordinate by the parity
+  of both prime sets yields exactly one nonnegative unsigned literal channel,
+  or zero. Hence every residual fibre is a difference of positive even-core
+  and odd-core masses in its natural residual orientation. The unresolved
+  CCM-FU statement is now a source anti-correlation/coercivity law for those
+  two positive mass differences at adjacent residual labels; no unresolved
+  Möbius sign remains inside a coordinate.
+- MobiusDivisorArityHeadProcessedCoreSignedMeasure is now formally proved in
+  scratch and promoted. The ordinary residual orientation is exactly the
+  signed measure over canonical nonnegative core coordinates, with the sole
+  coefficient given by processed-core parity. This is a strict structural
+  reduction of the changing-core charge: the route no longer has a generic
+  signed source sum, but an adjacent-label correlation of two explicit
+  even-minus-odd positive measures. Proving its cofinal nonnegative
+  correlation is the remaining CCM-FU charge barrier.
+- `exists_mobiusDivisorFiniteDebtFamilyReserveProducer` is now formally
+  proved and compiled. For every finite family of nonempty prime cores whose
+  limiting fixed-core coefficient debts are strictly positive, one common
+  fresh prime and arbitrarily distant fresh prime pairs decrease every debt
+  by a common positive coefficient divided by the first pair prime. The proof
+  takes finite minima of literal relative negative bands and prime-release
+  constants; it is relative-debt control, not an absolute-energy surrogate.
+  The common coefficient and its thresholds depend on the whole finite
+  family. Therefore this does not overcome the clock-delayed obstruction or
+  construct an exhaustive order; the exact remaining requirement is a
+  cancellation-stable growth law for those constants as pending debt support
+  increases.
+- `exists_mobiusDivisorFiniteDebtFamilyTailReserveProducer` is now formally
+  proved and compiled. The same common pair has one common eventual cutoff
+  tail on which every family coordinate gains a positive quadratic reserve.
+  This removes the limiting-coefficient-only gap for finite debt vectors. The
+  eventual threshold is still obtained by a finite intersection and has no
+  source-uniform control as the family grows, so it cannot yet be iterated to
+  an exhaustive CCM-FU order.
+- `exists_mobiusDivisor_prescribed_stream_repair` has the explicit prefix
+  coefficient `C' = C + 2 * sqrt C * H + H^2 = (sqrt C + H)^2`, while its
+  endpoint decreases the unnormalised successor envelope by one cutoff. This
+  is an upper bound supplied by its construction, not a lower bound; it cannot
+  itself prove that repeated repaired streams fail to have a uniform budget.
+  The deep corpus search found no theorem upgrading this finite prescribed
+  stream to an exhaustive CCM-FU order.
+- `mobiusDivisorArityHeadCharge_nonpos_of_oriented_nonneg` is formally proved
+  and axiom-audited. If all oriented residual fibres at a processed core are
+  nonnegative, every completed arity-head charge is nonpositive: both the
+  weighted adjacent residual correlation and the head--singleton term reverse
+  sign under insertion. `exists_mobiusDivisorTwoChannelBlockArityHeadDissipation`
+  specializes this to every fresh prime at the existing two-channel blocks,
+  including nonempty cores. This is a genuine nonempty-core charge law, but
+  those blocks remain sparse and do not furnish the required exhaustive,
+  cancellation-stable global budget.
+- `MobiusDivisorArityHeadProcessedCoreHomothety` is formally proved and
+  axiom-audited. At cutoff `p*N`, processing prime `p` sends every old
+  processed-core coordinate `(A,R)` to `(insert p A,R)` as exactly
+  `-sqrt(p)` times its old value; in canonical core--residual orientation the
+  transported mass is therefore `sqrt(p)` times the old nonnegative mass.
+  Every old adjacent-label core-pair correlation is copied with the positive
+  factor `p`. Hence prime dilation/renewal preserves the reinforcing
+  opposite-parity sector rather than dissipating it. This closes the
+  homothety-only repair strategy: any exhaustive CCM-FU budget must quantify
+  cancellation from the new non-divisible background against the replicated
+  sector; the transport identity alone cannot deliver that cancellation.
+- The same axiom-audited leaf proves the stronger square-mass law: for every
+  residual label, the total square mass over *all* processed-core coordinates
+  after a fresh processed dilation is at least `p` times its former mass.  The
+  `p`-containing core slice has exactly that mass, and the p-free slice is a
+  sum of squares.  Hence no nonnegative processed-core energy, reserve, or
+  Lyapunov functional can be the missing exhaustive CCM-FU budget.  The only
+  remaining mechanism is a quantitatively source-specific cancellation in the
+  signed residual quotient between that expanding copied slice and the new
+  p-free background.
+- `mobiusDivisorSelectionProcessedCoreFibre_weighted_square_mass_insert_mul_prime_le`
+  is now formally proved, source-compiled and axiom-audited.  For every
+  nonnegative processed-core diagonal weight invariant under the canonical
+  copy `A ↦ insert p A`, its square functional expands by at least the factor
+  `p` under fresh prime dilation.  Thus no copy-compatible positive diagonal
+  metric can contract the carried CCM-FU debt; weights that compensate by
+  `1/p` discard the replicated old debt rather than pay it.  Any viable global
+  estimate must use genuinely off-diagonal signed background/copy
+  cancellation, with constants stable as the core changes.
+- `mobiusDivisorSelectionProcessedCoreFibre_insert_pfree` and
+  `mobiusDivisorSelectionProcessedCoreFibre_oriented_mass_insert_mul_prime`
+  are now source-compiled and axiom-audited.  At cutoff `p*N`, every
+  p-free processed-core coordinate is exactly its unprocessed value at the
+  large cutoff, while every p-containing coordinate is the canonical
+  `sqrt(p)` copy of the same old core at cutoff `N`.  Therefore the total
+  canonical positive core mass splits exactly into the p-free large-cutoff
+  background plus `sqrt(p)` times the small-cutoff mass.  The live
+  cancellation problem is consequently not generic cross-core mixing: it is
+  the alternating-parity quotient of these two aligned, same-core positive
+  fields.  Any CCM-FU closure must prove a uniform source inequality for
+  that two-scale quotient; positive mass accounting cannot supply it.

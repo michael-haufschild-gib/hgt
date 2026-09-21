@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalAngularPotential
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMForcedMetricField
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMWeightedCorrectionDiscrepancy
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralSourceReflection
 
 /-!
 # Actual mixed quadratic correction and its vanishing weighted residual
@@ -77,10 +78,56 @@ private def atoms (q : XiZeroCopy) (branch : Bool) (a : ℂ) (k : Fin 5) (x : Fi
     D4BMLiteralCusp.vector (D4BMGlobalAngularResponse.center q) 0 (angularPoint x),
     D4BMLiteralCusp.vector (D4BMGlobalAngularResponse.center q) 1 (angularPoint x)] k
 
+private theorem contact_center_reflect (q : XiZeroCopy) :
+    D4BMGlobalAngularResponse.center (xiZeroCopyReflectEquiv q) =
+      -D4BMGlobalAngularResponse.center q := by
+  change 1 - (q.1 : ℂ) - 1 / 2 = -((q.1 : ℂ) - 1 / 2)
+  ring
+
+private theorem contact_center_nonreal (q : XiZeroCopy) :
+    (D4BMGlobalAngularResponse.center q).im ≠ 0 := by
+  simpa [D4BMGlobalAngularResponse.center] using xi_divisor_support_im_ne_zero q.1
+
+private theorem contact_source_reflect (q : XiZeroCopy) :
+    source (xiZeroCopyReflectEquiv q) = source q := by
+  change D4BMLiteralCusp.scalar (D4BMGlobalAngularResponse.center
+      (xiZeroCopyReflectEquiv q)) =
+    D4BMLiteralCusp.scalar (D4BMGlobalAngularResponse.center q)
+  rw [contact_center_reflect]
+  exact D4BMLiteralCusp.scalar_neg _ (contact_center_nonreal q)
+
+private theorem contact_vector_reflect (q : XiZeroCopy) :
+    D4BMLiteralCusp.vector (D4BMGlobalAngularResponse.center
+      (xiZeroCopyReflectEquiv q)) =
+    D4BMLiteralCusp.vector (D4BMGlobalAngularResponse.center q) := by
+  rw [contact_center_reflect]
+  exact D4BMLiteralCusp.vector_neg _ (contact_center_nonreal q)
+
+private theorem contact_physicalRate_reflect (q : XiZeroCopy) (branch : Bool) :
+    physicalRate (xiZeroCopyReflectEquiv q) branch = physicalRate q (!branch) :=
+  D4BMLiteralCusp.physicalRate_reflect q branch
+
+private theorem atoms_reflect (q : XiZeroCopy) (branch : Bool) (a : ℂ) (k : Fin 5)
+    (x : Fin 4 → ℝ) :
+    atoms (xiZeroCopyReflectEquiv q) branch a k x = atoms q (!branch) a k x := by
+  fin_cases k <;>
+    simp [atoms, contact_physicalRate_reflect, contact_source_reflect, contact_vector_reflect]
+
 /-- Actual ingoing mixed contact, including its angular dependence. -/
 def contactField (q : XiZeroCopy) (branch : Bool) (a : ℂ) (x : Fin 4 → ℝ) :
     Matrix (Fin 4) (Fin 4) ℂ :=
   fun i j => (contactExpr (physicalRate q branch) i j).eval (fun k => atoms q branch a k x)
+
+/-- Functional-equation reflection transports the complete retained contact field,
+including its literal scalar, vector, radial-envelope, and branch-rate atoms. -/
+theorem contactField_reflect (q : XiZeroCopy) (branch : Bool) (a : ℂ) (x : Fin 4 → ℝ) :
+    contactField (xiZeroCopyReflectEquiv q) branch a x = contactField q (!branch) a x := by
+  unfold contactField
+  funext i j
+  rw [contact_physicalRate_reflect]
+  congr 1
+  funext k
+  exact atoms_reflect q branch a k x
 
 /-- Literal two-leg polarization of the actual contact field.  This is the
 contact carrier required by the cyclic Peierls branch: its diagonal is the
@@ -89,6 +136,14 @@ for the full bilinear causal source. -/
 def contactFieldBilinear (q : XiZeroCopy) (branch : Bool) (a d : ℂ)
     (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
   (4 : ℂ)⁻¹ • (contactField q branch (a+d) x-contactField q branch (a-d) x)
+
+/-- The literal two-leg contact polarization remains reflection-covariant. -/
+theorem contactFieldBilinear_reflect (q : XiZeroCopy) (branch : Bool) (a d : ℂ)
+    (x : Fin 4 → ℝ) :
+    contactFieldBilinear (xiZeroCopyReflectEquiv q) branch a d x =
+      contactFieldBilinear q (!branch) a d x := by
+  unfold contactFieldBilinear
+  rw [contactField_reflect, contactField_reflect]
 
 private theorem contactField_amplitude_square (q : XiZeroCopy) (branch : Bool)
     (a : ℂ) (x : Fin 4 → ℝ) :
@@ -105,7 +160,8 @@ theorem contactFieldBilinear_eq_product (q : XiZeroCopy) (branch : Bool)
     (a d : ℂ) (x : Fin 4 → ℝ) :
     contactFieldBilinear q branch a d x = (a*d) • contactField q branch 1 x := by
   unfold contactFieldBilinear
-  rw [contactField_amplitude_square,contactField_amplitude_square]
+  rw [contactField_amplitude_square q branch (a + d) x,
+    contactField_amplitude_square q branch (a - d) x]
   ext i j
   simp only [Matrix.smul_apply,Matrix.sub_apply,smul_eq_mul]
   ring
@@ -120,7 +176,8 @@ theorem contactFieldBilinear_symm (q : XiZeroCopy) (branch : Bool)
 theorem contactFieldBilinear_diag (q : XiZeroCopy) (branch : Bool)
     (a : ℂ) (x : Fin 4 → ℝ) :
     contactFieldBilinear q branch a a x = contactField q branch a x := by
-  rw [contactFieldBilinear_eq_product,contactField_amplitude_square,pow_two]
+  rw [contactFieldBilinear_eq_product,
+    contactField_amplitude_square q branch a x,pow_two]
 
 private theorem atoms_smooth (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (p : D4BMBackground.ExteriorPoint) (k : Fin 5) :

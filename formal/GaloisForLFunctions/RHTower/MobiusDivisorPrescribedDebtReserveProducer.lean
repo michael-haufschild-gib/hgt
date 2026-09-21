@@ -485,4 +485,317 @@ theorem exists_mobiusDivisorPrescribedDebtReserveProducer :
       mobiusDivisorSelectionEnergy M (insert q (insert p (insert a R)))
     linarith only [hM₀,hM₁,hm]
 
+/-! ## Simultaneous finite debt reduction -/
+
+/-- A finite family of strictly positive coefficient debts has one common
+fresh-prime negative band.  This is a finite vector statement: it retains the
+relative source sign of every pair rather than replacing the family by an
+absolute-energy reserve. -/
+private lemma common_relative_negative_band
+    (F : Finset (Finset ℕ × Finset ℕ))
+    (hF : ∀ X ∈ F, X.1.Nonempty ∧ X.2.Nonempty ∧
+      (∀ r ∈ X.1, r.Prime) ∧ (∀ r ∈ X.2, r.Prime) ∧
+      debtEnergy X.1 < debtEnergy X.2) :
+    ∃ η c T : ℝ, 0 < η ∧ 0 < c ∧ ∀ a : ℕ, a.Prime →
+      (∀ X ∈ F, a ∉ X.1 ∧ a ∉ X.2) → T ≤ (a : ℝ) → ∀ Y : ℝ,
+      (a : ℝ) ≤ Y → Y ≤ (1 + η) * (a : ℝ) → ∀ X ∈ F,
+        debtDensity (insert a X.2) * mobiusDivisorDilationMean (insert a X.2) Y -
+          debtDensity (insert a X.1) * mobiusDivisorDilationMean (insert a X.1) Y ≤
+            -c * Real.sqrt a := by
+  classical
+  induction F using Finset.induction_on with
+  | empty => exact ⟨1, 1, 0, by norm_num, by norm_num, by simp⟩
+  | @insert X F hXF ih =>
+    obtain ⟨η₀, c₀, T₀, hη₀, hc₀, h₀⟩ :=
+      ih (fun Y hY => hF Y (mem_insert_of_mem hY))
+    obtain ⟨hX₁, hX₂, hX₁prime, hX₂prime, hXdebt⟩ :=
+      hF X (mem_insert_self _ _)
+    obtain ⟨η₁, c₁, T₁, hη₁, hc₁, h₁⟩ :=
+      relative_negative_band X.1 X.2 hX₁ hX₂ hX₁prime hX₂prime hXdebt
+    refine ⟨min η₀ η₁, min c₀ c₁, max T₀ T₁, lt_min hη₀ hη₁,
+      lt_min hc₀ hc₁, ?_⟩
+    intro a ha hfree haT Y hYlo hYhi Z hZ
+    rcases mem_insert.mp hZ with rfl | hZ
+    · have hfreeZ := hfree Z (mem_insert_self _ _)
+      have hη : (1 + min η₀ η₁) * (a : ℝ) ≤ (1 + η₁) * a :=
+        mul_le_mul_of_nonneg_right (by linarith only [min_le_right η₀ η₁])
+          (Nat.cast_nonneg a)
+      have h := h₁ a ha hfreeZ.1 hfreeZ.2 ((le_max_right _ _).trans haT) Y hYlo
+        (hYhi.trans hη)
+      have hc := mul_le_mul_of_nonneg_right (min_le_right c₀ c₁)
+        (Real.sqrt_nonneg (a : ℝ))
+      linarith only [h, hc]
+    · have h := h₀ a ha (fun Y hY => hfree Y (mem_insert_of_mem hY))
+          ((le_max_left _ _).trans haT) Y hYlo
+          (hYhi.trans (mul_le_mul_of_nonneg_right
+            (by linarith only [min_le_left η₀ η₁]) (Nat.cast_nonneg a))) Z hZ
+      have hc := mul_le_mul_of_nonneg_right (min_le_left c₀ c₁)
+        (Real.sqrt_nonneg (a : ℝ))
+      linarith only [h, hc]
+
+/-- Once a common fresh prime has exposed a negative band, one prime pair
+releases a common positive fraction of every debt in that finite family. -/
+private lemma common_relative_window_release (a : ℕ) (ha : a.Prime)
+    (F : Finset (Finset ℕ × Finset ℕ))
+    (hF : ∀ X ∈ F, X.1.Nonempty ∧ X.2.Nonempty ∧
+      (∀ r ∈ X.1, r.Prime) ∧ (∀ r ∈ X.2, r.Prime))
+    (L U k : ℝ) (hL : 1 ≤ L) (hLU : L < U) (hk : 0 < k)
+    (hW : ∀ X ∈ F, ∀ Y : ℝ, L ≤ Y → Y ≤ U →
+      debtDensity (insert a X.2) * mobiusDivisorDilationMean (insert a X.2) Y -
+        debtDensity (insert a X.1) * mobiusDivisorDilationMean (insert a X.1) Y ≤ -k) :
+    ∃ c T : ℝ, 0 < c ∧ ∀ p q : ℕ, p.Prime → q.Prime →
+      (∀ X ∈ F, p ∉ insert a X.1 ∧ q ∉ insert p (insert a X.1) ∧
+        p ∉ insert a X.2 ∧ q ∉ insert p (insert a X.2)) → p < q → T ≤ (p : ℝ) →
+      L * (p : ℝ) ≤ q → (q : ℝ) ≤ U * p → ∀ X ∈ F,
+        c / (p : ℝ) ≤
+          (debtEnergy (insert a X.2) - debtEnergy (insert a X.1)) -
+            (debtEnergy (insert q (insert p (insert a X.2))) -
+              debtEnergy (insert q (insert p (insert a X.1)))) := by
+  classical
+  induction F using Finset.induction_on with
+  | empty => exact ⟨1, 0, by norm_num, by simp⟩
+  | @insert X F hXF ih =>
+    obtain ⟨c₀, T₀, hc₀, h₀⟩ := ih (fun Y hY => hF Y (mem_insert_of_mem hY))
+      (fun Y hY => hW Y (mem_insert_of_mem hY))
+    obtain ⟨hX₁, hX₂, hX₁prime, hX₂prime⟩ := hF X (mem_insert_self _ _)
+    have hXa₁ : (insert a X.1).Nonempty := insert_nonempty _ _
+    have hXa₂ : (insert a X.2).Nonempty := insert_nonempty _ _
+    have hXa₁prime : ∀ r ∈ insert a X.1, r.Prime := by
+      simpa using And.intro ha hX₁prime
+    have hXa₂prime : ∀ r ∈ insert a X.2, r.Prime := by
+      simpa using And.intro ha hX₂prime
+    obtain ⟨c₁, T₁, hc₁, h₁⟩ := relative_window_release (insert a X.1) (insert a X.2)
+      hXa₁ hXa₂ hXa₁prime hXa₂prime L U k hL hLU hk
+      (hW X (mem_insert_self _ _))
+    refine ⟨min c₀ c₁, max T₀ T₁, lt_min hc₀ hc₁, ?_⟩
+    intro p q hp hq hfree hpq hpT hlo hhi Y hY
+    rcases mem_insert.mp hY with rfl | hY
+    · have hfreeY := hfree _ (mem_insert_self _ _)
+      have hqY₁ : q ∉ insert a Y.1 := fun h => hfreeY.2.1 (mem_insert_of_mem h)
+      have hqY₂ : q ∉ insert a Y.2 := fun h => hfreeY.2.2.2 (mem_insert_of_mem h)
+      have h := h₁ p q hp hq hfreeY.1 hqY₁ hfreeY.2.2.1 hqY₂ hpq
+        ((le_max_right _ _).trans hpT) hlo hhi
+      exact (div_le_div_of_nonneg_right (min_le_right c₀ c₁) (Nat.cast_nonneg p)).trans h
+    · have h := h₀ p q hp hq (fun Z hZ => hfree Z (mem_insert_of_mem hZ)) hpq
+          ((le_max_left _ _).trans hpT) hlo hhi Y hY
+      exact (div_le_div_of_nonneg_right (min_le_left c₀ c₁) (Nat.cast_nonneg p)).trans h
+
+/-- Every finite family of strictly positive limiting fixed-core debts admits
+one common fresh preparation and arbitrarily distant prime pairs that reduce
+all its coordinates.  This is a simultaneous relative-debt theorem, not an
+exhaustive-order claim: it isolates the finite vector operation that an
+exhaustive cancellation-stable budget would have to iterate. -/
+theorem exists_mobiusDivisorFiniteDebtFamilyReserveProducer
+    (F : Finset (Finset ℕ × Finset ℕ))
+    (hF : ∀ X ∈ F, X.1.Nonempty ∧ X.2.Nonempty ∧
+      (∀ r ∈ X.1, r.Prime) ∧ (∀ r ∈ X.2, r.Prime) ∧
+      debtEnergy X.1 < debtEnergy X.2) :
+    ∀ B : ℕ, ∃ a : ℕ, B < a ∧ a.Prime ∧
+      (∀ X ∈ F, a ∉ X.1 ∧ a ∉ X.2) ∧ ∀ H : ℕ, ∃ p q : ℕ,
+        H ≤ p ∧ a < p ∧ p < q ∧ p.Prime ∧ q.Prime ∧
+        (∀ X ∈ F, p ∉ insert a X.1 ∧ q ∉ insert p (insert a X.1) ∧
+          p ∉ insert a X.2 ∧ q ∉ insert p (insert a X.2)) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ X ∈ F, c / (p : ℝ) ≤
+          (debtEnergy (insert a X.2) - debtEnergy (insert a X.1)) -
+            (debtEnergy (insert q (insert p (insert a X.2))) -
+              debtEnergy (insert q (insert p (insert a X.1)))) := by
+  classical
+  intro B
+  let S := F.biUnion fun X => X.1 ∪ X.2
+  obtain ⟨η, d, T, hη, hd, hband⟩ := common_relative_negative_band F hF
+  obtain ⟨a, haBound, ha⟩ := Nat.exists_infinite_primes
+    (max (B + 1) (max (S.sup id + 1) ⌈T⌉₊))
+  have hBa : B < a := Nat.lt_of_lt_of_le (Nat.lt_succ_self B)
+    ((le_max_left _ _).trans haBound)
+  have hSa : S.sup id < a := Nat.lt_of_lt_of_le (Nat.lt_succ_self _)
+    ((le_max_left _ _).trans ((le_max_right _ _).trans haBound))
+  have haT : T ≤ (a : ℝ) := (Nat.le_ceil T).trans
+    (by exact_mod_cast ((le_max_right _ _).trans ((le_max_right _ _).trans haBound)))
+  have haFree (X : Finset ℕ × Finset ℕ) (hX : X ∈ F) : a ∉ X.1 ∧ a ∉ X.2 := by
+    constructor <;> intro h
+    · have hS : a ∈ S := Finset.mem_biUnion.mpr ⟨X, hX, mem_union_left _ h⟩
+      exact (not_le_of_gt hSa) (Finset.le_sup (f := id) hS)
+    · have hS : a ∈ S := Finset.mem_biUnion.mpr ⟨X, hX, mem_union_right _ h⟩
+      exact (not_le_of_gt hSa) (Finset.le_sup (f := id) hS)
+  let U : ℝ := (1 + η) * (a : ℝ)
+  have ha0 : (0 : ℝ) < a := by exact_mod_cast ha.pos
+  have ha1 : (1 : ℝ) ≤ a := by exact_mod_cast ha.one_lt.le
+  have haU : (a : ℝ) < U := by
+    dsimp [U]
+    nlinarith only [mul_pos hη ha0]
+  have hFprime (X : Finset ℕ × Finset ℕ) (hX : X ∈ F) : X.1.Nonempty ∧ X.2.Nonempty ∧
+      (∀ r ∈ X.1, r.Prime) ∧ (∀ r ∈ X.2, r.Prime) := by
+    obtain ⟨hX₁, hX₂, hX₁prime, hX₂prime, _⟩ := hF X hX
+    exact ⟨hX₁, hX₂, hX₁prime, hX₂prime⟩
+  obtain ⟨c, V, hc, hrelease⟩ := common_relative_window_release a ha F hFprime
+    a U (d * Real.sqrt a) ha1 haU (mul_pos hd (Real.sqrt_pos.mpr ha0)) (by
+      intro X hX Y hYlo hYhi
+      simpa only [U, neg_mul] using hband a ha haFree haT Y hYlo hYhi X hX)
+  obtain ⟨Z, hZ⟩ := Filter.eventually_atTop.mp (prime_between hη)
+  refine ⟨a, hBa, ha, haFree, ?_⟩
+  intro H
+  obtain ⟨p, hpBound, hp⟩ := Nat.exists_infinite_primes
+    (max H (max (a + 1) (max ⌈V⌉₊ ⌈Z⌉₊)))
+  have hHp : H ≤ p := (le_max_left _ _).trans hpBound
+  have hap : a < p := by
+    have h := (le_max_left _ _).trans ((le_max_right _ _).trans hpBound)
+    omega
+  have hpV : V ≤ (p : ℝ) := (Nat.le_ceil V).trans
+    (by exact_mod_cast ((le_max_left _ _).trans ((le_max_right _ _).trans
+      ((le_max_right _ _).trans hpBound))))
+  have hpZ : Z ≤ (p : ℝ) := (Nat.le_ceil Z).trans
+    (by exact_mod_cast ((le_max_right _ _).trans ((le_max_right _ _).trans
+      ((le_max_right _ _).trans hpBound))))
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hpa : (p : ℝ) ≤ (a : ℝ) * p := by
+    simpa using mul_le_mul_of_nonneg_right ha1 hp0.le
+  obtain ⟨q, hq, hqlo, hqhi⟩ := hZ ((a : ℝ) * p) (hpZ.trans hpa)
+  have hpq : p < q := by exact_mod_cast hpa.trans_lt hqlo
+  have hqhi' : (q : ℝ) ≤ U * p := by
+    dsimp [U]
+    nlinarith only [hqhi.le]
+  have hpS : S.sup id < p := hSa.trans hap
+  have hqS : S.sup id < q := hpS.trans hpq
+  have hpFree (X : Finset ℕ × Finset ℕ) (hX : X ∈ F) :
+      p ∉ insert a X.1 ∧ q ∉ insert p (insert a X.1) ∧
+        p ∉ insert a X.2 ∧ q ∉ insert p (insert a X.2) := by
+    have hpX₁ : p ∉ X.1 := by
+      intro h
+      apply (not_le_of_gt hpS)
+      apply Finset.le_sup (f := id)
+      exact Finset.mem_biUnion.mpr ⟨X, hX, mem_union_left _ h⟩
+    have hpX₂ : p ∉ X.2 := by
+      intro h
+      apply (not_le_of_gt hpS)
+      apply Finset.le_sup (f := id)
+      exact Finset.mem_biUnion.mpr ⟨X, hX, mem_union_right _ h⟩
+    have hqX₁ : q ∉ X.1 := by
+      intro h
+      apply (not_le_of_gt hqS)
+      apply Finset.le_sup (f := id)
+      exact Finset.mem_biUnion.mpr ⟨X, hX, mem_union_left _ h⟩
+    have hqX₂ : q ∉ X.2 := by
+      intro h
+      apply (not_le_of_gt hqS)
+      apply Finset.le_sup (f := id)
+      exact Finset.mem_biUnion.mpr ⟨X, hX, mem_union_right _ h⟩
+    constructor
+    · intro h
+      rcases Finset.mem_insert.mp h with hpa | h
+      · exact hap.ne' hpa
+      · exact hpX₁ h
+    constructor
+    · intro h
+      rcases Finset.mem_insert.mp h with hqp | h
+      · exact hpq.ne hqp.symm
+      rcases Finset.mem_insert.mp h with hqa | h
+      · exact (hap.trans hpq).ne hqa.symm
+      · exact hqX₁ h
+    constructor
+    · intro h
+      rcases Finset.mem_insert.mp h with hpa | h
+      · exact hap.ne' hpa
+      · exact hpX₂ h
+    · intro h
+      rcases Finset.mem_insert.mp h with hqp | h
+      · exact hpq.ne hqp.symm
+      rcases Finset.mem_insert.mp h with hqa | h
+      · exact (hap.trans hpq).ne hqa.symm
+      · exact hqX₂ h
+  exact ⟨p, q, hHp, hap, hpq, hp, hq, hpFree, c, hc,
+    hrelease p q hp hq hpFree hpq hpV hqlo.le hqhi'⟩
+
+/-- Finite intersection upgrades a common limiting debt reduction to one
+common eventual cutoff tail.  No cutoff is selected per debt coordinate. -/
+private lemma eventually_all_relative_tail_gain (a p q : ℕ)
+    (ha : a.Prime) (hp : p.Prime) (hq : q.Prime)
+    (F : Finset (Finset ℕ × Finset ℕ))
+    (hF : ∀ X ∈ F, (∀ r ∈ X.1, r.Prime) ∧ (∀ r ∈ X.2, r.Prime))
+    (hfree : ∀ X ∈ F, p ∉ insert a X.1 ∧ q ∉ insert p (insert a X.1) ∧
+      p ∉ insert a X.2 ∧ q ∉ insert p (insert a X.2))
+    {c : ℝ} (hc : 0 < c)
+    (hE : ∀ X ∈ F, 2 * c ≤
+      (debtEnergy (insert a X.2) - debtEnergy (insert a X.1)) -
+        (debtEnergy (insert q (insert p (insert a X.2))) -
+          debtEnergy (insert q (insert p (insert a X.1))))) :
+    ∀ᶠ M : ℕ in atTop, ∀ X ∈ F, c * (M : ℝ) ^ 2 ≤
+      (mobiusDivisorSelectionEnergy M (insert a X.2) -
+        mobiusDivisorSelectionEnergy M (insert a X.1)) -
+          (mobiusDivisorSelectionEnergy M (insert q (insert p (insert a X.2))) -
+            mobiusDivisorSelectionEnergy M (insert q (insert p (insert a X.1))) ) := by
+  classical
+  induction F using Finset.induction_on with
+  | empty => simp
+  | @insert X F hXF ih =>
+    have hX := hF X (mem_insert_self _ _)
+    have hXa₁ : ∀ r ∈ insert a X.1, r.Prime := by
+      simpa using And.intro ha hX.1
+    have hXa₂ : ∀ r ∈ insert a X.2, r.Prime := by
+      simpa using And.intro ha hX.2
+    have hXap₁ : ∀ r ∈ insert p (insert a X.1), r.Prime := by
+      simpa using And.intro hp hXa₁
+    have hXap₂ : ∀ r ∈ insert p (insert a X.2), r.Prime := by
+      simpa using And.intro hp hXa₂
+    have hXapq₁ : ∀ r ∈ insert q (insert p (insert a X.1)), r.Prime := by
+      simpa using And.intro hq hXap₁
+    have hXapq₂ : ∀ r ∈ insert q (insert p (insert a X.2)), r.Prime := by
+      simpa using And.intro hq hXap₂
+    have hXtail := tail_relative_gain (insert a X.1) (insert a X.2)
+      (insert q (insert p (insert a X.1))) (insert q (insert p (insert a X.2)))
+      hXa₁ hXa₂ hXapq₁ hXapq₂ hc (hE X (mem_insert_self _ _))
+    have hFtail := ih (fun Y hY => hF Y (mem_insert_of_mem hY))
+      (fun Y hY => hfree Y (mem_insert_of_mem hY))
+      (fun Y hY => hE Y (mem_insert_of_mem hY))
+    filter_upwards [hXtail, hFtail] with M hXtail hFtail Y hY
+    rcases mem_insert.mp hY with rfl | hY
+    · exact hXtail
+    · exact hFtail Y hY
+
+/-- The simultaneous finite-family reserve is visible in the actual cutoff
+energy, not only in its fixed-core limiting coefficient.  Its tail and
+constant remain family dependent. -/
+theorem exists_mobiusDivisorFiniteDebtFamilyTailReserveProducer
+    (F : Finset (Finset ℕ × Finset ℕ))
+    (hF : ∀ X ∈ F, X.1.Nonempty ∧ X.2.Nonempty ∧
+      (∀ r ∈ X.1, r.Prime) ∧ (∀ r ∈ X.2, r.Prime) ∧
+      debtEnergy X.1 < debtEnergy X.2) :
+    ∀ B : ℕ, ∃ a : ℕ, B < a ∧ a.Prime ∧
+      (∀ X ∈ F, a ∉ X.1 ∧ a ∉ X.2) ∧ ∀ H : ℕ, ∃ p q : ℕ,
+        H ≤ p ∧ a < p ∧ p < q ∧ p.Prime ∧ q.Prime ∧
+        (∀ X ∈ F, p ∉ insert a X.1 ∧ q ∉ insert p (insert a X.1) ∧
+          p ∉ insert a X.2 ∧ q ∉ insert p (insert a X.2)) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ᶠ M : ℕ in atTop, ∀ X ∈ F,
+          c * (M : ℝ) ^ 2 ≤
+            (mobiusDivisorSelectionEnergy M (insert a X.2) -
+              mobiusDivisorSelectionEnergy M (insert a X.1)) -
+                (mobiusDivisorSelectionEnergy M (insert q (insert p (insert a X.2))) -
+                  mobiusDivisorSelectionEnergy M (insert q (insert p (insert a X.1))) ) := by
+  classical
+  intro B
+  obtain ⟨a, hBa, ha, haFree, hpair⟩ :=
+    exists_mobiusDivisorFiniteDebtFamilyReserveProducer F hF B
+  refine ⟨a, hBa, ha, haFree, ?_⟩
+  intro H
+  obtain ⟨p, q, hHp, hap, hpq, hp, hq, hpFree, d, hd, hdebt⟩ := hpair H
+  let c := d / (2 * (p : ℝ))
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hc : 0 < c := by
+    dsimp [c]
+    positivity
+  have hE (X : Finset ℕ × Finset ℕ) (hX : X ∈ F) : 2 * c ≤
+      (debtEnergy (insert a X.2) - debtEnergy (insert a X.1)) -
+        (debtEnergy (insert q (insert p (insert a X.2))) -
+          debtEnergy (insert q (insert p (insert a X.1)))) := by
+    have heq : 2 * c = d / (p : ℝ) := by
+      dsimp [c]
+      field_simp
+    rw [heq]
+    exact hdebt X hX
+  have hFprime (X : Finset ℕ × Finset ℕ) (hX : X ∈ F) :
+      (∀ r ∈ X.1, r.Prime) ∧ (∀ r ∈ X.2, r.Prime) := by
+    obtain ⟨_, _, hX₁prime, hX₂prime, _⟩ := hF X hX
+    exact ⟨hX₁prime, hX₂prime⟩
+  refine ⟨p, q, hHp, hap, hpq, hp, hq, hpFree, c, hc, ?_⟩
+  exact eventually_all_relative_tail_gain a p q ha hp hq F hFprime hpFree hc hE
+
 end RHTower

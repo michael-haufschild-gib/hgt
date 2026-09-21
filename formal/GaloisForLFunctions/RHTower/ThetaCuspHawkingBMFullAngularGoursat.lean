@@ -554,9 +554,9 @@ theorem fullAngularRiemannKernel_null_closed (q : XiZeroCopy) (branch : Bool)
       angularMean q branch
         (Real.arcosh (max 1 (invariant ((u+v)/2) (y+(u-v)/2) y))) X k := by
   have hz : 1 ≤ invariant ((u+v)/2) (y+(u-v)/2) y := by
-    apply invariant_causal
-    rw [abs_le]
-    constructor <;> linarith
+    exact invariant_causal ⟨(u+v)/2, y+(u-v)/2, y, by
+      rw [abs_le]
+      constructor <;> linarith⟩
   unfold fullAngularRiemannKernel
   change angularMean q branch (Real.arcosh (invariant ((u+v)/2) (y+(u-v)/2) y)) X k = _
   rw [max_eq_right hz]
@@ -570,9 +570,9 @@ theorem nativeRiemannKernel_null_closed (q : XiZeroCopy)
       D4BMNativeCircle.mean q
         (Real.arcosh (max 1 (invariant ((u+v)/2) (y+(u-v)/2) y))) X k := by
   have hz : 1 ≤ invariant ((u+v)/2) (y+(u-v)/2) y := by
-    apply invariant_causal
-    rw [abs_le]
-    constructor <;> linarith
+    exact invariant_causal ⟨(u+v)/2, y+(u-v)/2, y, by
+      rw [abs_le]
+      constructor <;> linarith⟩
   unfold D4BMNativeCircle.nativeRiemannKernel D4BMNativeCircle.angularKernel
   rw [max_eq_right hz]
 

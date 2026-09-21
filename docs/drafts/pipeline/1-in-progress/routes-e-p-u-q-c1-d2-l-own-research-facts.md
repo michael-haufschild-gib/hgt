@@ -632,3 +632,187 @@
   `criticalFeaturePositiveShiftPoleGammaDensity_eq_transverse_pole_sub_cofactor_im_of_vertical_factor`
   passes direct source check and direct target-olean build; axiom audit is only `propext`,
   `Classical.choice`, `Quot.sound`.
+- **HCF transverse quadratic concentration.**  The transverse pole is not only pointwise.
+  Its scaled source has the exact one-sided limit `pi⁻¹*m`, so for every genuine positive-shift
+  XiC zero the literal source square is not interval-integrable on *any* interval immediately
+  above its shift.  The proof uses the locally analytic cofactor only to make the remainder vanish
+  after multiplication by the displacement; it then applies the reciprocal-pole derivative
+  criterion to the actual source.  This is an unconditional source theorem, not a spectral
+  positivity criterion.  **Route consequence:** a proposed HCF height-summed cross-shift
+  quadratic frame now has a sharp sufficient target: prove a finite, source-native quadratic
+  trace ceiling for this literal transverse source.  Such a ceiling would exclude every off-line
+  zero directly; a horizontal scalar `L¹` budget cannot.  Lean status: direct source check passes
+  for `tendsto_sub_mul_criticalFeaturePositiveShiftPoleGammaDensity_of_vertical_factor`,
+  `sub_inv_isBigO_criticalFeaturePositiveShiftPoleGammaDensity_of_vertical_factor`, and
+  `not_intervalIntegrable_sq_criticalFeaturePositiveShiftPoleGammaDensity_of_XiC_zero`.
+- **HCF source vertical-square criterion.**  Finite squared energy of the literal continued
+  pole--Gamma source on every compact vertical segment
+  `eta ↦ criticalFeaturePositiveShiftPoleGammaDensity eta x`, with
+  `0 < a ≤ eta ≤ b < 1/2`, is equivalent to RH.  The reverse direction is unconditional
+  continuity from upper-half-plane XiC zero-freeness under RH.  The forward direction is the
+  new use of the transverse pole theorem: any nonreal XiC zero, reflected to positive shift if
+  necessary, contradicts interval integrability on the segment from its ordinate to its midpoint
+  with `1/2`.  **Route consequence:** an arithmetic proof of this source-only vertical-square
+  regularity is an exact RH endpoint; no ordinary horizontal `L¹` or complete-frame average can
+  substitute for it.  This does not construct the necessary finite four-leg/dephased trace
+  ceiling.  Lean status: `HedenmalmCriticalFeaturePositiveShiftVerticalL2Criterion` direct source
+  check and direct target-olean build pass; both public theorems audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **EDQ composite-level localization.**  In every terminal Euler-deletion layer with composite
+  `n + 1`, the signed local innovation is pointwise zero on all physical children.  Consequently
+  the exact child contrast is solely the difference of the two literal physical Möbius cells,
+  each multiplied by its own beta-tail weight and divided by its actual child-fibre mass.  This
+  required upgrading `Lp`-a.e. vanishing to pointwise vanishing using positive mass of every
+  physical atom; without that step it would not be a valid statement about the literal contrasts.
+  **Route consequence:** EDQ's local correction is supported only on prime levels.  The remaining
+  cofinal obstacle is still the signed, beta-weighted physical-cell contrast (including composite
+  levels); absolute Hardy/period estimates do not control it.  Lean status:
+  `terminal_historyLayer_child_difference_eq_physicalCell_of_not_prime` passes direct source
+  check and its target-only olean build; axiom audit is only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **EDQ innovation-series closure.**  The literal signed residue innovations are not only
+  finite-cutoff orthogonal with energy at most two: their complete physical `L²` series is
+  unconditionally summable.  The proof promotes the exact pairwise innovation orthogonality to
+  an orthogonal family of one-dimensional closed subspaces, and compares the shifted squared
+  norms to the summable physical cell masses using the quadratic clock lower bound.  Hence the
+  finite martingale part has a fixed strong `L²` limit.  **Route consequence:** no residual
+  innovation tail can pay the EDQ source energy; every possible producer estimate or obstruction
+  must act on the predictable drift.  This does not establish the required cofinal signed
+  beta-weighted drift bound, nor prove RH.  Lean status:
+  `EulerDeletionResidueMartingaleL2Limit` passes direct source check and its target-only olean
+  build; both public theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **EDQ strong-drift uniform-integrability no-go.**  The raw physical Möbius source plus the
+  constant physical target has squared norm *exactly* the full Baez--Duarte error energy at every
+  cutoff.  The innovation-series theorem gives a strong `L²` limit for the martingale term, and
+  positive mass of every physical cell upgrades that convergence to coordinate convergence.
+  Therefore the source identity forces the predictable drift to converge pointwise to the
+  complementary limiting drift, but it cannot converge strongly in physical `L²`: strong
+  convergence alone would force the same forbidden raw full-error limit.  If that drift family
+  were uniformly integrable at exponent two,
+  the finite-measure Vitali theorem would promote its pointwise convergence to `L²`; combining it
+  with the martingale limit would force the raw Baez--Duarte full error energy to tend to zero,
+  contradicting the established tail obstruction.  **Route consequence:** no EDQ proof can
+  obtain its necessary signed drift closure through ordinary `L²` uniform integrability.  The
+  only live EDQ producer problem is a genuinely non-UI cofinal signed beta-weighted drift
+  estimate (or an exact cancellation law strong enough to bypass raw full-error convergence).
+  **Positive survivor:** this is literal escape, not an abstract compactness label.  For every
+  fixed physical cell cutoff `K`, the `L²` norm of the complementary tail of
+  `predictableDrift(N) - predictableDriftLimit` does not tend to zero.  The proof constructs the
+  actual finite prefix from positive-mass singleton cell indicators, proves that prefix converges
+  strongly from coordinate convergence, and observes that a vanishing literal tail would recover
+  the forbidden strong drift limit.  Thus any viable EDQ producer must retain a genuinely moving
+  physical tail; fixed finite coordinates, compact tail truncation, and fixed-window martingale
+  closure cannot supply its signed cancellation.
+  Lean status: `EulerDeletionResidueMartingaleDriftNoGo` passes direct source check and its
+  target-only olean build; its public bridge/no-go theorems audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **Route E exact positive packet identity.**  For every finite real coefficient source and every
+  real order, its Gamma--Hankel energy is exactly
+  `Gamma(r) * 2^r * sum_k Ring.choose(r+k-1,k) * P_(a,N,r)(k)^2`, where
+  `P_(a,N,r)(k)` is the literal finite additive packet with node `n/(n+2)` and weight
+  `(n+2)^(-r)`.  The proof first identifies each additive kernel with its convergent real
+  binomial series, then takes finite sums of those `HasSum` identities and factors the double
+  source sum into a packet square.  For `r >= 0`, every generalized binomial weight is
+  nonnegative by its exact Pochhammer/factorial formula; for `r > 0` every weighted packet-square
+  summand is nonnegative.  The Möbius specialization is definitionally the corpus's literal
+  `MobiusPacketDifference.packet`, not a replacement coordinate system.  **Route consequence:**
+  E's hard open statement is now exactly a cofinal bound on this signed, nonnegative weighted
+  packet-square mass in `1 < r <= 2`; it cannot be hidden behind a missing diagonalization step.
+  The established opposite-detector and recurrence no-gos still rule out one-sign/monotone packet
+  reductions, so a successful bound must control aggregate moving-packet cancellation.  Lean
+  status: `MobiusRenewalPacketEnergy` direct source check and target-only olean build pass;
+  the positivity, kernel, generic energy, and Möbius energy theorems audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **Route E complete replica-cell coprimality firewall.**  Let a complete binary
+  prime-component histogram cell have a component `c` with at least one present anchor
+  realization and a distinct component `d` with both anchor states realized.  Then the cell
+  contains opposite-parity anchor histories which both contain the prime attached to `c`; hence
+  they are not coprime.  Therefore the full opposite-parity bipartite replica row cannot descend
+  to a literal coprime entropy-complement relation on any such cell.  Equivalently, once a
+  present prime component exists, a complete coprime opposite-parity row forces every distinct
+  component to have deterministic anchor occupancy; a mixed complete row has at most one varying
+  prime component.  **Positive survivor:** the ANOVA endpoint inequality remains valid as a
+  histogram-cell estimate, but every source-faithful recurrence must use a sparse
+  coprime-compatible subrelation and prove its own load and seam bounds; full-cell parity rows
+  cannot be silently reused as Route E edges.  Lean status:
+  `RouteEReplicaCoprimeCompleteCellNoGo`, theorem
+  `routeE_two_variable_histogram_complete_coprime_noGo`; direct source check and target-only
+  olean build pass; axiom audit is only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Route E centered-cofactor contraction bridge.**  For every finite normalized nonnegative
+  physical mass law `w` and every real sharp cofactor `G` with `0 ≤ G ≤ 1`, the centered
+  cofactor `G - sum_s w_s G_s` is pointwise in `[-1,1]`.  Hence its literal diagonal multiplier
+  on the square-root source `sqrt(w_s)` is a canonical norm-`≤1` contraction.  Paired with the
+  weighted marker vector `d_s sqrt(w_s)`, it is exactly the centered finite codiagonal score,
+  not merely an upper bound.  **Route consequence:** this discharges the abstract
+  “source-predeclared contraction” sub-obligation in the centered-cofactor/one-corner lane for
+  any actual Ramaré sharp indicator once its finite physical law and marker are identified.
+  It does **not** identify that arithmetic atom space with the Fisher one-corner, control the
+  source normalization through that identification, or carry the contraction through the
+  zero/one-large-prime recurrence seam; those remain the live hard obstacles.  Lean status:
+  `RouteECenteredCofactorContraction` passes direct source check and target-only olean build;
+  its public unit-source, contraction, exact-score, and certificate theorems audit with only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **EDQ terminal beta weight is sign-preserving harmonic damping.**  For every actual terminal
+  child `b < clock(n+1)/clock(n)`, write `A = clock(n)(b+1)` and `C = clock(n+1)`.  Clock
+  divisibility gives `1 ≤ A ≤ C`, and the literal beta weight satisfies
+  `0 ≤ W(n,b) ≤ 1/A`.  The proof removes the endpoint's removable geometric singularity on
+  `(0,1)`, where its integrand is exactly
+  `x^(A-1) / sum_{i<C} x^i`; the existing half-prefix inequality bounds that quotient by
+  `1/A`, and continuity supplies the closed-interval integral.  **Route consequence:** beta
+  transport neither changes a terminal Möbius cell's sign nor creates cancellation.  Combined
+  with the exact terminal child pairwise formula, non-prime terminal layers reduce entirely to
+  beta-damped signed endpoint-cell contrasts.  Hence the live EDQ producer is now more sharply
+  the cofinal covariance of those signed cells; bounds based only on the beta kernel cannot
+  close it.  Lean status: `EulerDeletionTerminalBetaWeightBound` direct source check and
+  target-only olean build pass; its public theorem audits with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **EDQ terminal coefficient collapse.**  For every positive future residual `m`, every old
+  clock divisor `r` has zero discrepancy over the endpoint span `m * clock L`.  Summing the
+  literal old-cofactor Möbius weights therefore proves
+  `cofactorReducedResiduePrefix m t (clock L) (m - 1) = 0`.  The same full-span calculation
+  applies separately to every reciprocal-divisor summand in the physical cutoff boundary.
+  Consequently the complete primitive block equals its `m - 1` terminal prefix and
+  `complementBoundaryBlock = complementBoundaryTail`, without any asymptotic or sign premise.
+  The exact physical fibre is now one coefficient times one finite geometric sum:
+  `μ(m) * (primitiveTail(m) - boundaryTail(m)) * sum_{b ≤ (Q-1)/m} x^(b*m*clock L)`.
+  **Route consequence:** the former temporal/spatial boundary-matching obstacle is eliminated;
+  EDQ's only remaining arithmetic obstruction at this reduction is a signed cross-residual
+  bound for the explicit one coefficients.  In particular, a pointwise-in-`m` cancellation claim
+  remains neither proved nor implied.  Lean status:
+  `EulerDeletionTerminalCoefficientCollapse` direct source check and target-only olean build
+  pass; its ten public collapse theorems audit with only `propext`, `Classical.choice`, and
+  `Quot.sound`.  They further prove that each live `m` divides the ambient quotient and that its
+  complete residual geometric factor has common numerator `1 - x^clock N`.  For `0 ≤ x < 1`,
+  the literal `truncatedDivisorBlockKernel` is therefore exactly
+  `x^phase * (pairedMoebiusSource + x^childClock * normalizedSignedResidualSum) /
+  childGeometricMass`: every residual period geometric block and the apparent resolvent cancel.
+  This is pointwise away from `x = 1`; treating that measure-zero beta endpoint inside an
+  integral remains an analytic obligation.  **Refined route consequence:** EDQ now requires a
+  cofinal physical-child contrast bound for the paired source plus the normalized signed
+  residual sum.  Terminal block geometry, quotient remainders, and the resolvent cannot supply
+  either an obstruction or a cancellation mechanism any longer.
+- **Route E global-collision orientation no-go.**  For every pairwise-coprime positive stored
+  clock family, each nonempty literal global Kloosterman cross-frequency fibre has exactly two
+  representatives, not merely the previously known upper bound of two.  The second is forced:
+  swap the two stored clocks and negate both unit endpoints.  At conjugation-fixed modulus weights
+  and source coefficients, its coefficient equals the first exactly, so this fibre is a
+  constructive orientation pair rather than a reservoir of unexploited cross-modulus
+  cancellation.  **Route consequence:** the global-frequency collision carrier cannot supply
+  the missing Deshouillers--Iwaniec saving by a sharper multiplicity or collision argument; its
+  factor two is geometrically sharp for real source data.  The remaining Route E Type-I obstacle
+  is therefore the literal spectral twisted fourth moment (or a genuinely different source
+  mechanism), not another global-collision envelope.  Lean status:
+  `KloostermanGlobalCollisionOrientation` passes direct source check and target-only olean build;
+  all six public theorems audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Route E finite-deck cusp-core scalar-cutoff rigidity.**  If a scalar height profile `g`
+  obeys the literal modular-inversion law
+  `g ((S • z).im) = g z.im` for every upper-half-plane point, then `g y = g w` for every
+  positive pair of heights.  The proof is constructive: inversion maps a point of either
+  horocycle to the common height `(y + w + 1)⁻¹`.  Hence any such profile with a zero high-cusp
+  tail vanishes at every positive height.  **Route consequence:** a nonzero compact modular
+  cutoff cannot preserve the finite-deck zero horocycle mode by being a scalar height multiplier
+  at every height.  This does not rule out modular cutoffs; it identifies the required positive
+  survivor: a successful Friedrichs/Green bridge must supply non-scalar zero-mode transport or
+  an explicit boundary compensator.  Lean status:
+  `MaassFiniteDeckHorocycleCutoffRigidity`, target-only olean build and public axiom audit pass
+  with only `propext`, `Classical.choice`, and `Quot.sound`.
