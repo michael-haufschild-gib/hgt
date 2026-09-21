@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModularEnergyDomain
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMGlobalAngularWeakResponse
+import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
 import Mathlib.Topology.Algebra.Module.Basic
 
 /-!
@@ -226,6 +228,19 @@ theorem energyConj_mem_energyDomain (x : EnergySpace) (hx : x ∈ energyDomain) 
     intro y hy
     exact hstable hy
   exact hmaps.closure energyConj_continuous hx
+
+/-- The physical branch parameter is transported by the divisor Schwarz involution. -/
+theorem parameter_conj (q : XiZeroCopy) (minusBranch : Bool) :
+    D4BMGlobalAngularResponse.parameter (xiZeroCopyConjEquiv q) minusBranch =
+      (starRingEnd ℂ) (D4BMGlobalAngularResponse.parameter q minusBranch) := by
+  have hq := deningerDivisorThetaEigen_conjEquiv q
+  change ((xiZeroCopyConjEquiv q).1 : ℂ) = (starRingEnd ℂ) (q.1 : ℂ) at hq
+  unfold D4BMGlobalAngularResponse.parameter D4BMQuadraticMixedSource.branchParameter
+    D4BMQuadraticMixedSource.resolventParameter
+  rw [hq]
+  cases minusBranch <;> simp
+  all_goals rw [map_ofNat]
+  all_goals ring
 
 end
 

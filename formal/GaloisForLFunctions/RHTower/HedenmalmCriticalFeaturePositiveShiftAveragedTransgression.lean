@@ -29,6 +29,44 @@ theorem xiWardCubicPositiveRealShift_centered_transverse
   rw [Complex.I_sq]
   ring
 
+/-- The centered logarithmic derivative is the original completed logarithmic derivative
+rotated by `I`.  This is the differential form of the centered coordinate
+`XiC z = xi (1 / 2 + z * I)`. -/
+theorem logDeriv_XiC_eq_I_mul_logDeriv_xi_centered (z : ℂ) :
+    logDeriv XiC z = I * logDeriv xi (1 / 2 + z * I) := by
+  have hinner : HasDerivAt (fun w : ℂ => 1 / 2 + w * I) I z := by
+    simpa using ((hasDerivAt_id z).mul_const I).const_add (1 / 2 : ℂ)
+  have hXiC : HasDerivAt XiC (deriv xi (1 / 2 + z * I) * I) z := by
+    have hxi : HasDerivAt xi (deriv xi (1 / 2 + z * I)) (1 / 2 + z * I) :=
+      (xi_differentiable _).hasDerivAt
+    exact hxi.comp z hinner
+  rw [logDeriv_apply, logDeriv_apply, hXiC.deriv, XiC]
+  ring
+
+/-- After displacement weighting, the continued Euler positive-shift transgression is exactly
+the centered endpoint logarithmic derivative minus its positive transverse predecessor.  Thus a
+positive interval average cannot erase an endpoint residue by reparameterization. -/
+theorem I_mul_ofReal_mul_xiWardCubicPositiveShiftDivisorTransgression_eq_centered_difference
+    (z : ℂ) {eps : ℝ} (heps : eps ≠ 0) :
+    I * ((eps : ℂ) * xiWardCubicPositiveShiftDivisorTransgression
+      (1 / 2 + z * I) eps) =
+      logDeriv XiC z - logDeriv XiC (z + (eps : ℂ) * I) := by
+  have htrans : xiWardCubicPositiveShiftDivisorTransgression
+      (1 / 2 + z * I) eps =
+      (logDeriv xi (1 / 2 + z * I) -
+        logDeriv xi (1 / 2 + z * I - (eps : ℂ))) / (eps : ℂ) := by
+    rw [xiWardCubicPositiveShiftDivisorTransgression,
+      xiFluxShiftDifference, seamFluxCochain, seamFluxCochain]
+    ring
+  have hcoord : (1 / 2 + z * I - (eps : ℂ) : ℂ) =
+      1 / 2 + (z + (eps : ℂ) * I) * I := by
+    ring_nf
+    rw [Complex.I_sq]
+    ring
+  rw [htrans, logDeriv_XiC_eq_I_mul_logDeriv_xi_centered,
+    logDeriv_XiC_eq_I_mul_logDeriv_xi_centered, hcoord]
+  field_simp [ofReal_ne_zero.mpr heps]
+
 /-- Every centered Xi zero has strictly positive multiplicity after every nondegenerate
 positive-real shift average.  Thus no interval average can cancel its transverse residue. -/
 theorem xiWardCubicShiftAveragedDivisorMultiplicity_re_pos_of_XiC_zero

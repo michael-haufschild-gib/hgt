@@ -178,6 +178,127 @@ theorem thetaSourceDifferentialGraphEnergyCoordinate_isClosed_range (z : ℂ) :
   rcases thetaSourceDifferentialGraphEnergyCoordinate_antilipschitz z with ⟨c, hc⟩
   exact hc.isClosed_range (thetaSourceDifferentialGraphEnergyCoordinate z).uniformContinuous
 
+/-- The closed boundary coordinate keeps both channels of the singular Green defect: the source
+mean of the primitive and the dipole of the centered derivative coordinate.  It is deliberately
+not a quotient of either channel, so its vertical fibre still represents the literal pencil
+kernel. -/
+def thetaSourceDifferentialBoundaryCoordinate (z : ℂ) :
+    thetaCentered →L[ℂ] ((H × H) × (ℂ × ℂ)) :=
+  (thetaCenteredSourceInverse.prod (thetaSourceDifferentialRangeMap z)).prod
+    ((thetaPinnedMeanCLM.comp thetaCenteredSourceInverse).prod thetaCenteredDipoleTrace)
+
+theorem thetaSourceDifferentialBoundaryCoordinate_apply (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialBoundaryCoordinate z k =
+      ((thetaCenteredSourceInverse k, thetaSourceDifferentialRangeMap z k),
+        (pinnedMean (thetaCenteredSourceInverse k), thetaCenteredDipoleTrace k)) := by
+  simp [thetaSourceDifferentialBoundaryCoordinate, thetaPinnedMeanCLM_apply]
+
+/-- The full monopole--dipole coordinate remains an antilipschitz parametrization of its source
+carrier.  Hence adjoining the two boundary channels cannot introduce a spurious closure point. -/
+theorem thetaSourceDifferentialBoundaryCoordinate_antilipschitz (z : ℂ) :
+    ∃ c : NNReal, AntilipschitzWith c (thetaSourceDifferentialBoundaryCoordinate z) := by
+  rcases thetaSourceDifferentialGraphMap_antilipschitz z with ⟨c, hc⟩
+  refine ⟨c, (thetaSourceDifferentialBoundaryCoordinate z).antilipschitz_of_bound ?_⟩
+  intro k
+  have hbound := hc.le_mul_dist k 0
+  simp only [dist_zero_right, map_zero] at hbound
+  calc
+    ‖k‖ ≤ c * ‖(thetaCenteredSourceInverse.prod
+        (thetaSourceDifferentialRangeMap z)) k‖ := hbound
+    _ ≤ c * ‖thetaSourceDifferentialBoundaryCoordinate z k‖ := by
+      gcongr
+      have hfst : (thetaSourceDifferentialBoundaryCoordinate z k).1 =
+          (thetaCenteredSourceInverse.prod (thetaSourceDifferentialRangeMap z)) k := rfl
+      rw [← hfst]
+      exact norm_fst_le _
+
+/-- The source-defined closed relation used for the singular completion candidate.  Its first
+pair is the literal closed differential graph; its second pair is the complete hyperbolic
+boundary record. -/
+def thetaSourceDifferentialBoundaryRelation (z : ℂ) : Submodule ℂ ((H × H) × (ℂ × ℂ)) :=
+  LinearMap.range (thetaSourceDifferentialBoundaryCoordinate z).toLinearMap
+
+theorem thetaSourceDifferentialBoundaryRelation_isClosed (z : ℂ) :
+    IsClosed (thetaSourceDifferentialBoundaryRelation z : Set ((H × H) × (ℂ × ℂ))) := by
+  change IsClosed (Set.range (thetaSourceDifferentialBoundaryCoordinate z))
+  rcases thetaSourceDifferentialBoundaryCoordinate_antilipschitz z with ⟨c, hc⟩
+  exact hc.isClosed_range (thetaSourceDifferentialBoundaryCoordinate z).uniformContinuous
+
+/-- Membership in the closed relation has a unique source witness.  This explicit presentation
+prevents completion from silently replacing the source differential by a different graph. -/
+theorem thetaSourceDifferentialBoundaryRelation_mem_iff
+    (z : ℂ) (r : ((H × H) × (ℂ × ℂ))) :
+    r ∈ thetaSourceDifferentialBoundaryRelation z ↔
+      ∃ k : thetaCentered, thetaSourceDifferentialBoundaryCoordinate z k = r := by
+  rfl
+
+/-- A nonzero vertical fibre of the closed relation is exactly a nonzero source vector killed by
+the range coordinate. -/
+theorem thetaSourceDifferentialBoundaryRelation_nonzero_vertical_iff (z : ℂ) :
+    (∃ r : ((H × H) × (ℂ × ℂ)), r ∈ thetaSourceDifferentialBoundaryRelation z ∧
+      r.1.2 = 0 ∧ r.1.1 ≠ 0) ↔
+      ∃ k : thetaCentered, thetaSourceDifferentialRangeMap z k = 0 ∧
+        thetaCenteredSourceInverse k ≠ 0 := by
+  constructor
+  · rintro ⟨r, hr, hrange, hsource⟩
+    obtain ⟨k, hk⟩ := (thetaSourceDifferentialBoundaryRelation_mem_iff z r).mp hr
+    refine ⟨k, ?_, ?_⟩
+    · have h := congrArg (fun x : ((H × H) × (ℂ × ℂ)) => x.1.2) hk
+      simpa only [thetaSourceDifferentialBoundaryCoordinate_apply] using h.trans hrange
+    · have h := congrArg (fun x : ((H × H) × (ℂ × ℂ)) => x.1.1) hk
+      intro hzero
+      apply hsource
+      simpa only [thetaSourceDifferentialBoundaryCoordinate_apply] using h.symm.trans hzero
+  · rintro ⟨k, hrange, hsource⟩
+    refine ⟨thetaSourceDifferentialBoundaryCoordinate z k,
+      (thetaSourceDifferentialBoundaryRelation_mem_iff z _).mpr ⟨k, rfl⟩, ?_, ?_⟩
+    · simpa only [thetaSourceDifferentialBoundaryCoordinate_apply] using hrange
+    · simpa only [thetaSourceDifferentialBoundaryCoordinate_apply] using hsource
+
+/-- The vertical fibre of the closed boundary relation is source-faithful: it is nontrivial
+exactly when the literal closed differential pencil has a nontrivial kernel. -/
+theorem thetaSourceDifferentialBoundaryRelation_nonzero_vertical_iff_pencil_kernel (z : ℂ) :
+    (∃ r : ((H × H) × (ℂ × ℂ)), r ∈ thetaSourceDifferentialBoundaryRelation z ∧
+      r.1.2 = 0 ∧ r.1.1 ≠ 0) ↔
+      ∃ f : H, f ≠ 0 ∧ ∃ hf : f ∈ (thetaSourceDifferentialPencil z).domain,
+        thetaSourceDifferentialPencil z ⟨f, hf⟩ = 0 := by
+  rw [thetaSourceDifferentialBoundaryRelation_nonzero_vertical_iff]
+  constructor
+  · rintro ⟨k, hrange, hsource⟩
+    refine ⟨thetaCenteredSourceInverse k, hsource, ?_⟩
+    exact ⟨(thetaSourceDifferentialPencil_apply_B z k).1,
+      (thetaSourceDifferentialPencil_apply_B z k).2.trans hrange⟩
+  · rintro ⟨f, hf, hfdom, hdiff⟩
+    have hfrange : f ∈ thetaCenteredSourceInverse.range := by
+      simpa only [thetaSourceDifferentialPencil, closedGraphTransform_domain] using hfdom
+    obtain ⟨k, hk⟩ := hfrange
+    have hkdom : thetaCenteredSourceInverse k ∈ (thetaSourceDifferentialPencil z).domain :=
+      (thetaSourceDifferentialPencil_apply_B z k).1
+    have heq : (⟨f, hfdom⟩ : (thetaSourceDifferentialPencil z).domain) =
+        ⟨thetaCenteredSourceInverse k, hkdom⟩ := Subtype.ext hk.symm
+    have hrange : thetaSourceDifferentialRangeMap z k = 0 := by
+      calc
+        thetaSourceDifferentialRangeMap z k =
+            thetaSourceDifferentialPencil z ⟨thetaCenteredSourceInverse k, hkdom⟩ :=
+          (thetaSourceDifferentialPencil_apply_B z k).2.symm
+        _ = thetaSourceDifferentialPencil z ⟨f, hfdom⟩ := congrArg
+          (thetaSourceDifferentialPencil z) heq.symm
+        _ = 0 := hdiff
+    refine ⟨k, hrange, ?_⟩
+    intro hzero
+    apply hf
+    rw [← hk]
+    exact hzero
+
+/-- The closed hyperbolic boundary relation retains the exact completed-Xi divisor rather than a
+surrogate spectral equation. -/
+theorem XiC_eq_zero_iff_thetaSourceDifferentialBoundaryRelation_nonzero_vertical (z : ℂ) :
+    XiC z = 0 ↔
+      ∃ r : ((H × H) × (ℂ × ℂ)), r ∈ thetaSourceDifferentialBoundaryRelation z ∧
+        r.1.2 = 0 ∧ r.1.1 ≠ 0 := by
+  exact (XiC_eq_zero_iff_exists_thetaSourceDifferentialPencil_kernel z).trans
+    (thetaSourceDifferentialBoundaryRelation_nonzero_vertical_iff_pencil_kernel z).symm
+
 /-- Bounded projection that removes precisely the pinned scalar mode retained by the source
 correction.  This is the spectral weight in the literal differential pencil. -/
 def thetaPinnedMeanProjection : H →L[ℂ] H :=

@@ -21,3 +21,9 @@
   bridge.  They found the local contour weld, Walsh diagonalization, and
   finite same-packet dissipation, none of which identifies the two literal
   rectangles' packets.
+- `XiWardSchwarzCapTauOddNoGo` proves the exact cap kernel, every finite
+  factorized cap, and (on the conull source-faithful cap family) every literal
+  source cap are odd under `tau ↦ -tau`.  Thus symmetric tau regularization
+  annihilates the cap response identically.  It cannot supply Ward
+  orientation; a surviving cap route must use a one-sided source-selected tau
+  law and prove its cofinal control without averaging away the divisor signal.
