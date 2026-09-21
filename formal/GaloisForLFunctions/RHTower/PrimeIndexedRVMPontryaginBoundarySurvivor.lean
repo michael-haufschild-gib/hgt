@@ -1,5 +1,9 @@
 import GaloisForLFunctions.HTGeometry.PontryaginBoundaryCompletion
 import GaloisForLFunctions.HTGeometry.KammeyerDeterminantApproximationCore
+import GaloisForLFunctions.HTGeometry.RegularizedDeterminantAlgebraicMultiplicity
+import GaloisForLFunctions.HTGeometry.CompactSelfAdjointEigenvalue
+import GaloisForLFunctions.HTGeometry.HermitianDilationSecondJetObstruction
+import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
 import GaloisForLFunctions.RHTower.XiPrimeMarkedPhysicalEndpointRVMQuadraticIncidence
 
 /-!
@@ -504,6 +508,336 @@ theorem pairedCompletion_conjugate_triangular
         boundaryChange, boundaryChangeInv, pairedCompletionZExpected,
         Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two] <;>
       ring
+
+
+def triangularIndexEquiv : n ⊕ Fin 2 ≃ (n ⊕ Fin 1) ⊕ Fin 1 where
+  toFun := fun x => match x with
+    | .inl i => .inl (.inl i)
+    | .inr j => Fin.cases (.inl (.inr 0)) (fun _ => .inr 0) j
+  invFun := fun x => match x with
+    | .inl (.inl i) => .inl i
+    | .inl (.inr _) => .inr 0
+    | .inr _ => .inr 1
+  left_inv := by
+    rintro (i | j)
+    · rfl
+    · fin_cases j <;> rfl
+  right_inv := by
+    rintro ((i | j) | k)
+    · rfl
+    · fin_cases j <;> rfl
+    · fin_cases k <;> rfl
+
+def triangularX0 (B : Matrix n n ℂ) (u : n → ℂ) : Matrix n (Fin 1) ℂ :=
+  fun i _ => pairedTriangularX B u i 0
+
+def triangularY1 (u : n → ℂ) : Matrix (Fin 1) n ℂ :=
+  fun _ j => pairedTriangularY u 1 j
+
+def triangularZ10 (u : n → ℂ) : Matrix (Fin 1) (Fin 1) ℂ :=
+  fun _ _ => pairedTriangularZ u 1 0
+
+def triangularLower (u : n → ℂ) (z : ℂ) : Matrix (Fin 1) (n ⊕ Fin 1) ℂ
+  | i, .inl j => -z * triangularY1 u i j
+  | i, .inr j => -z * triangularZ10 u i j
+
+def triangularReindexRhs (B : Matrix n n ℂ) (u : n → ℂ) (z : ℂ) :
+    Matrix ((n ⊕ Fin 1) ⊕ Fin 1) ((n ⊕ Fin 1) ⊕ Fin 1) ℂ :=
+  Matrix.fromBlocks
+    (Matrix.fromBlocks ((1 : Matrix n n ℂ) - z • B) (-z • triangularX0 B u) 0 1)
+    0
+    (triangularLower u z)
+    1
+
+theorem reindex_triangular_resolvent
+    (B : Matrix n n ℂ) (u : n → ℂ) (z : ℂ) :
+    Matrix.reindex triangularIndexEquiv triangularIndexEquiv
+      ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) -
+        z • pairedTriangularCompletion B u) = triangularReindexRhs B u z := by
+  ext i j
+  rcases i with i | i <;> rcases j with j | j
+  · rcases i with i | i <;> rcases j with j | j
+    · simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+        pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+    · fin_cases j
+      simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+        triangularX0, pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+    · fin_cases i
+      simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+        pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+    · fin_cases i <;> fin_cases j
+      simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+        triangularX0, pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+  · rcases i with i | i <;> fin_cases j
+    · simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+        pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+    · fin_cases i
+      simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+        pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+  · fin_cases i
+    rcases j with j | j
+    · simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+          triangularY1, pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+    · fin_cases j
+      simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+        triangularZ10, pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+  · fin_cases i <;> fin_cases j
+    simp [Matrix.reindex, triangularIndexEquiv, triangularReindexRhs,
+      pairedTriangularCompletion, pairedTriangularX, pairedTriangularY, pairedTriangularZ, triangularLower, Matrix.one_apply]
+
+theorem triangularReindexRhs_det (B : Matrix n n ℂ) (u : n → ℂ) (z : ℂ) :
+    (triangularReindexRhs B u z).det =
+      ((1 : Matrix n n ℂ) - z • B).det := by
+  rw [triangularReindexRhs, Matrix.det_fromBlocks_zero₁₂,
+    Matrix.det_fromBlocks_zero₂₁]
+  simp
+
+theorem pairedTriangularCompletion_det (B : Matrix n n ℂ) (u : n → ℂ) (z : ℂ) :
+    ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) -
+      z • pairedTriangularCompletion B u).det =
+      ((1 : Matrix n n ℂ) - z • B).det := by
+  rw [← Matrix.det_reindex_self triangularIndexEquiv,
+    reindex_triangular_resolvent]
+  exact triangularReindexRhs_det B u z
+
+theorem det_conj_general {m : Type*} [Fintype m] [DecidableEq m]
+    (P Q : Matrix m m ℂ) (h : Q * P = 1) (Y : Matrix m m ℂ) :
+    (Q * Y * P).det = Y.det := by
+  have hdet : Q.det * P.det = 1 := by
+    have := congrArg Matrix.det h
+    rwa [Matrix.det_mul, Matrix.det_one] at this
+  rw [Matrix.det_mul, Matrix.det_mul]
+  calc
+    Q.det * Y.det * P.det = Q.det * P.det * Y.det := by ring
+    _ = Y.det := by rw [hdet, one_mul]
+
+theorem pairedCompletion_det (B : Matrix n n ℂ) (u : n → ℂ) (hB : Bᴴ = B)
+    (z : ℂ) :
+    ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) - z • pairedCompletion B u).det =
+      ((1 : Matrix n n ℂ) - z • B).det := by
+  have hmatrix :
+      carrierChangeInv *
+          ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) - z • pairedCompletion B u) *
+          carrierChange =
+        (1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) -
+          z • pairedTriangularCompletion B u := by
+    calc
+      carrierChangeInv *
+          ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) - z • pairedCompletion B u) *
+          carrierChange =
+        carrierChangeInv * carrierChange -
+          z • (carrierChangeInv * pairedCompletion B u * carrierChange) := by
+            calc
+              carrierChangeInv *
+                  ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) -
+                    z • pairedCompletion B u) * carrierChange =
+                  (carrierChangeInv -
+                    z • (carrierChangeInv * pairedCompletion B u)) * carrierChange := by
+                      rw [Matrix.mul_sub, Matrix.mul_one, Matrix.mul_smul]
+              _ = carrierChangeInv * carrierChange -
+                  z • (carrierChangeInv * pairedCompletion B u * carrierChange) := by
+                    rw [Matrix.sub_mul, smul_mul_assoc]
+      _ = (1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) -
+          z • pairedTriangularCompletion B u := by
+        rw [carrierChangeInv_mul_carrierChange,
+          pairedCompletion_conjugate_triangular B u hB]
+  calc
+    ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) - z • pairedCompletion B u).det =
+        (carrierChangeInv *
+          ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) - z • pairedCompletion B u) *
+            carrierChange).det :=
+      (det_conj_general (carrierChange (n := n)) (carrierChangeInv (n := n))
+        (carrierChangeInv_mul_carrierChange (n := n)) _).symm
+    _ = ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) -
+        z • pairedTriangularCompletion B u).det := congrArg Matrix.det hmatrix
+    _ = ((1 : Matrix n n ℂ) - z • B).det := pairedTriangularCompletion_det B u z
+
+
+def routeKFiniteCompression (f : n → Nat.Primes) : Matrix n n ℂ :=
+  fun i j => inner ℂ (routeKPrimeBasis (f i))
+    (routeKQuadraticallyAdmittedOperator (routeKPrimeBasis (f j)))
+
+omit [Fintype n] [DecidableEq n] in
+theorem routeKFiniteCompression_hermitian (f : n → Nat.Primes) :
+    (routeKFiniteCompression f)ᴴ = routeKFiniteCompression f := by
+  ext i j
+  simp only [Matrix.conjTranspose_apply, routeKFiniteCompression]
+  rw [← starRingEnd_apply, inner_conj_symm]
+  exact (routeKQuadraticallyAdmittedOperator_isSelfAdjoint.isSymmetric _ _)
+
+theorem routeKFiniteCompression_pairedCompletion_det
+    (f : n → Nat.Primes) (u : n → ℂ) (z : ℂ) :
+    ((1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) -
+        z • pairedCompletion (routeKFiniteCompression f) u).det =
+      ((1 : Matrix n n ℂ) - z • routeKFiniteCompression f).det :=
+  pairedCompletion_det (routeKFiniteCompression f) u
+    (routeKFiniteCompression_hermitian f) z
+
+def routeKNthPrimeTripleCompression (n : ℕ) : Matrix (Fin 3) (Fin 3) ℂ :=
+  routeKFiniteCompression ![nthPrimeSubtype n, nthPrimeSubtype (n + 1),
+    nthPrimeSubtype (n + 2)]
+
+theorem exists_cofinal_nonzero_routeKNthPrimeTripleCompression_holonomy (N : ℕ) :
+    ∃ n : ℕ, N ≤ n ∧
+      routeKNthPrimeTripleCompression n 0 1 *
+        routeKNthPrimeTripleCompression n 1 2 *
+        routeKNthPrimeTripleCompression n 2 0 ≠ 0 := by
+  obtain ⟨n, hn, hcycle⟩ :=
+    exists_cofinal_nonzero_quadraticallyAdmitted_triangleHolonomy N
+  exact ⟨n, hn, by
+    simpa [routeKNthPrimeTripleCompression, routeKFiniteCompression] using hcycle⟩
+
+
+def routeKQuadraticallyAdmittedKernel : Nat.Primes × Nat.Primes → ℂ :=
+  HilbertSchmidt.matrixOf routeKQuadraticallyAdmittedOperator
+
+theorem routeKQuadraticallyAdmittedKernel_isHS :
+    HilbertSchmidt.IsHS routeKQuadraticallyAdmittedKernel := by
+  exact HilbertSchmidt.isHS_matrixOf
+    routeKQuadraticallyAdmittedOperator_isHilbertSchmidt
+
+theorem routeKQuadraticallyAdmittedKernel_toOperator :
+    HilbertSchmidt.toOperator routeKQuadraticallyAdmittedKernel_isHS =
+      routeKQuadraticallyAdmittedOperator := by
+  simpa [routeKQuadraticallyAdmittedKernel] using
+    (HilbertSchmidt.toOperator_matrixOf
+      routeKQuadraticallyAdmittedOperator_isHilbertSchmidt)
+
+theorem routeKQuadraticallyAdmittedKernel_isSelfAdjoint :
+    IsSelfAdjoint
+      (HilbertSchmidt.toOperator routeKQuadraticallyAdmittedKernel_isHS) := by
+  rw [routeKQuadraticallyAdmittedKernel_toOperator]
+  exact routeKQuadraticallyAdmittedOperator_isSelfAdjoint
+
+
+noncomputable def routeKQuadraticallyAdmittedEntireDet : ℂ → ℂ :=
+  GaloisForLFunctions.HTGeometry.entireDet2
+    routeKQuadraticallyAdmittedKernel
+
+theorem exists_routeKQuadraticallyAdmittedEntireDet_real_zero :
+    ∃ z : ℂ, z ≠ 0 ∧ z.im = 0 ∧ routeKQuadraticallyAdmittedEntireDet z = 0 := by
+  have hnormpos : 0 < ContinuousLinearMap.hsNormSq
+      routeKQuadraticallyAdmittedOperator := by
+    nlinarith [two_mul_hsNormSq_routeKQuadraticallyAdmittedOperator,
+      routeKSourceZerothMoment_pos]
+  have hTne : routeKQuadraticallyAdmittedOperator ≠ 0 := by
+    intro hzero
+    exact (ne_of_gt hnormpos)
+      ((ContinuousLinearMap.hsNormSq_eq_zero_iff
+        routeKQuadraticallyAdmittedOperator_isHilbertSchmidt).mpr hzero)
+  obtain ⟨μ, x, hμnorm, hxnorm, hxeig⟩ :=
+    ContinuousLinearMap.exists_unit_eigenvector_norm
+      routeKQuadraticallyAdmittedOperator_isHilbertSchmidt.isCompactOperator
+      routeKQuadraticallyAdmittedOperator_isSelfAdjoint.isSymmetric hTne
+  have hμne : μ ≠ 0 := by
+    intro hμzero
+    rw [hμzero, abs_zero] at hμnorm
+    exact hTne (norm_eq_zero.mp hμnorm.symm)
+  refine ⟨(μ : ℂ)⁻¹, inv_ne_zero (Complex.ofReal_ne_zero.mpr hμne), by simp, ?_⟩
+  unfold routeKQuadraticallyAdmittedEntireDet
+  apply (GaloisForLFunctions.HTGeometry.entireDet2_eq_zero_iff_exists_eigenvector
+    routeKQuadraticallyAdmittedKernel_isHS
+    (inv_ne_zero (Complex.ofReal_ne_zero.mpr hμne))).mpr
+  refine ⟨x, ?_, ?_⟩
+  · intro hxzero
+    rw [hxzero, norm_zero] at hxnorm
+    norm_num at hxnorm
+  · rw [routeKQuadraticallyAdmittedKernel_toOperator, inv_inv]
+    exact hxeig
+
+
+theorem routeKQuadraticallyAdmittedEntireDet_zero_im {z : ℂ}
+    (hz : routeKQuadraticallyAdmittedEntireDet z = 0) : z.im = 0 := by
+  have hz0 : z ≠ 0 := by
+    intro hzero
+    subst z
+    have hone :=
+      (GaloisForLFunctions.HTGeometry.isRegularizedDet_entireDet2
+        routeKQuadraticallyAdmittedKernel_isHS).eq_one_at_zero
+    exact one_ne_zero (hone.symm.trans hz)
+  obtain ⟨w, hw0, hw⟩ :=
+    (GaloisForLFunctions.HTGeometry.entireDet2_eq_zero_iff_exists_eigenvector
+      routeKQuadraticallyAdmittedKernel_isHS hz0).mp hz
+  have heig : Module.End.HasEigenvalue
+      (HilbertSchmidt.toOperator routeKQuadraticallyAdmittedKernel_isHS :
+        Module.End ℂ RouteKPrimeHilbert) z⁻¹ :=
+    Module.End.hasEigenvalue_of_hasEigenvector
+      ⟨Module.End.mem_eigenspace_iff.mpr hw, hw0⟩
+  have hsymm :
+      (HilbertSchmidt.toOperator routeKQuadraticallyAdmittedKernel_isHS :
+        Module.End ℂ RouteKPrimeHilbert).IsSymmetric :=
+    ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
+      routeKQuadraticallyAdmittedKernel_isSelfAdjoint
+  have hrealInv : star z⁻¹ = z⁻¹ := hsymm.conj_eigenvalue_eq_self heig
+  have himInv : z⁻¹.im = 0 := Complex.conj_eq_iff_im.mp hrealInv
+  rw [Complex.inv_im] at himInv
+  have hnorm : Complex.normSq z ≠ 0 := (Complex.normSq_pos.mpr hz0).ne'
+  exact neg_eq_zero.mp (div_eq_zero_iff.mp himInv |>.resolve_right hnorm)
+
+
+/-- The kernel-side square trace is exactly the operator square trace of the source carrier. -/
+theorem routeKQuadraticallyAdmittedKernel_square_trace :
+    (∑' p : Nat.Primes,
+      HilbertSchmidt.hsPow routeKQuadraticallyAdmittedKernel 1 (p, p)) =
+      ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ 2) := by
+  rw [show HilbertSchmidt.hsPow routeKQuadraticallyAdmittedKernel 1 =
+      HilbertSchmidt.hsComp routeKQuadraticallyAdmittedKernel
+        routeKQuadraticallyAdmittedKernel by rfl]
+  rw [← HilbertSchmidt.opTrace_toOperator_comp
+    routeKQuadraticallyAdmittedKernel_isHS routeKQuadraticallyAdmittedKernel_isHS,
+    routeKQuadraticallyAdmittedKernel_toOperator]
+  rfl
+
+/-- The regularized determinant's second coefficient is fixed by the completed source moment. -/
+theorem four_mul_taylorCoeff_routeKQuadraticallyAdmittedEntireDet_two :
+    4 * GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuadraticallyAdmittedEntireDet 2 =
+      -(routeKSourceZerothMoment : ℂ) := by
+  rw [routeKQuadraticallyAdmittedEntireDet,
+    GaloisForLFunctions.HTGeometry.taylorCoeff_entireDet2_two
+      routeKQuadraticallyAdmittedKernel_isHS,
+    routeKQuadraticallyAdmittedKernel_square_trace]
+  have hsource := two_mul_opTrace_sq_routeKQuadraticallyAdmittedOperator
+  calc
+    4 * (-ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ 2) / 2) =
+        -(2 * ContinuousLinearMap.opTrace (routeKQuadraticallyAdmittedOperator ^ 2)) := by ring
+    _ = -(routeKSourceZerothMoment : ℂ) := congrArg Neg.neg hsource
+
+/-- The K-RVM determinant and centered Xi have the same normalized second Taylor coefficient. -/
+theorem four_mul_taylorCoeff_routeKQuadraticallyAdmittedEntireDet_two_eq_Xi :
+    4 * GaloisForLFunctions.HTGeometry.taylorCoeff
+      routeKQuadraticallyAdmittedEntireDet 2 =
+      ((deriv (deriv Xi) 0 : ℝ) : ℂ) / (Xi 0 : ℂ) := by
+  rw [four_mul_taylorCoeff_routeKQuadraticallyAdmittedEntireDet_two]
+  have hsource :
+      (routeKSourceZerothMoment : ℂ) =
+        -((deriv (deriv Xi) 0 : ℝ) : ℂ) / (Xi 0 : ℂ) := by
+    norm_cast
+    unfold routeKSourceZerothMoment
+    exact analyticTraceMoments_normalizedPrimeArchSource_zero_eq_Xi_ratio
+  rw [hsource]
+  ring
+
+/-- The first two completed prime--archimedean source moments fix Xi's normalized fourth jet. -/
+theorem normalized_XiC_fourth_jet_eq_source_moments :
+    iteratedDeriv 4 XiC 0 / XiC 0 / 24 =
+      (normalizedPrimeArchMoment 0 : ℂ) ^ 2 / 8 -
+        (normalizedPrimeArchMoment 1 : ℂ) / 4 := by
+  have h := normalizedPrimeArchMoment_recursive 1
+  norm_num [Finset.sum_range_succ, thetaCuspXiJet,
+    thetaCuspPrimeArchProductJet, Nat.choose] at h
+  have h0 := normalizedPrimeArchMoment_recursive 0
+  norm_num [Finset.sum_range_succ, thetaCuspXiJet,
+    thetaCuspPrimeArchProductJet, Nat.choose] at h0
+  have hXi0 : XiC 0 = (thetaCuspRawEvenMoment 0 : ℂ) := by
+    simpa using iteratedDeriv_XiC_zero_eq_rawEvenMoment 0
+  have hXi4 : iteratedDeriv 4 XiC 0 = (thetaCuspRawEvenMoment 2 : ℂ) := by
+    simpa using iteratedDeriv_XiC_zero_eq_rawEvenMoment 2
+  rw [hXi0, hXi4]
+  have hA : (thetaCuspRawEvenMoment 0 : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr thetaCuspRawEvenMoment_zero_pos.ne'
+  field_simp [hA]
+  linear_combination 32 * h - 96 * h0 * (normalizedPrimeArchMoment 0 : ℂ)
 
 
 end KRVMPaired

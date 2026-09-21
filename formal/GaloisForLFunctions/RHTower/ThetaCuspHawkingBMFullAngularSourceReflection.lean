@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleReconstruc
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceRadialReciprocity
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralPeierlsStreamBilinear
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralSourceReflection
+import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
 
 /-!
 # Literal-source reflection of the completed angular forcing and weak response
@@ -353,6 +354,56 @@ theorem fullCircleCrossBranchSymmetricCausalPair_re_reflection_odd (q : XiZeroCo
   have h := congrArg Complex.re
     (fullCircleCrossBranchSymmetricCausalPair_reflection_odd q a X k)
   simpa using h
+
+/-- Real observables with the functional-equation oddness inherited by the
+completed CTP source. -/
+def divisorReflectionOddReal (F : XiZeroCopy → ℝ) : Prop :=
+  ∀ q, F (xiZeroCopyReflectEquiv q) = -F q
+
+/-- Reflection oddness alone cannot imply PW balance on the Xi divisor: the
+imaginary spectral coordinate is odd, yet every actual divisor copy has
+nonzero imaginary part.  This kills the proposed parity-only source bridge. -/
+theorem divisorReflectionOddReal_not_sufficient_for_balance :
+    ∃ F : XiZeroCopy → ℝ,
+      divisorReflectionOddReal F ∧ ∀ q, F q ≠ 0 := by
+  refine ⟨fun q => (q.1 : ℂ).im, ?_, ?_⟩
+  · intro q
+    change ((xiZeroCopyReflectEquiv q).1 : ℂ).im = -(q.1 : ℂ).im
+    rw [coordinate_reflect]
+    simp
+  · intro q
+    exact xi_divisor_support_im_ne_zero q.1
+
+/-- The exact positive survivor of the parity-only no-go.  A source observable
+with CTP reflection oddness vanishes on the critical fibre as soon as its real
+part is invariant between a divisor copy and its reflected partner there.
+For the literal CTP candidate, establishing this critical-fibre invariance (or
+the stronger PW magnitude law) is now a mandatory, explicitly typed premise. -/
+theorem divisorReflectionOddReal_eq_zero_of_criticalFiberInvariant
+    (F : XiZeroCopy → ℝ) (hodd : divisorReflectionOddReal F)
+    (hinvariant : ∀ q, (q.1 : ℂ).re = 1 / 2 →
+      F (xiZeroCopyReflectEquiv q) = F q)
+    (q : XiZeroCopy) (hq : (q.1 : ℂ).re = 1 / 2) :
+    F q = 0 := by
+  have hneg := hodd q
+  have hfix := hinvariant q hq
+  linarith
+
+/-- **Exact critical-fibre survivor for PW-B.** On the critical fibre the
+functional-equation partner is the canonical Schwarz-conjugate divisor copy.
+Consequently, the real branch-completed literal CTP source vanishes there if
+and only if it is invariant under that conjugation.  This replaces the killed
+parity-only inference by one concrete source-real-structure premise. -/
+theorem fullCircleCrossBranchSymmetricCausalPair_re_eq_zero_iff_conjInvariant_on_critical
+    (q : XiZeroCopy) (hq : (deningerDivisorThetaEigen q).re = 1 / 2)
+    (a : ℂ) (X k : ℝ) :
+    (fullCircleCrossBranchSymmetricCausalPair q a X k).re = 0 ↔
+      (fullCircleCrossBranchSymmetricCausalPair (xiZeroCopyConjEquiv q) a X k).re =
+        (fullCircleCrossBranchSymmetricCausalPair q a X k).re := by
+  have hreflect := xiZeroCopyReflectEquiv_eq_conjEquiv_of_re_eq_half q hq
+  have hodd := fullCircleCrossBranchSymmetricCausalPair_re_reflection_odd q a X k
+  rw [hreflect] at hodd
+  constructor <;> intro h <;> linarith
 
 end
 end RHTower.D4BMFullAngularSourceReflection

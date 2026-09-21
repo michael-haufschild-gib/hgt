@@ -20,10 +20,11 @@ route architecture with an independent mathematical problem still open, not a pr
 - Route labels are lookup keys, not claims of independence. A receiver ending in RH
   does not prove its source premise. A killed subroute does not kill its whole family.
 
-**Source-audit cutoff: 2026-09-21, `801fdb77d99ae7989a85dd658e8943e7e5de8552`.**
+**Source-audit cutoff: 2026-09-21, `b632fd56f1d3679a3d053aff534d7b61f86b398f`.**
 Reconciled the 58-file formal-source delta since the prior cutoff
 `e318fb81324a3a253982b526510bf8af9c856af0` (49 additions and 9 modifications).
 No builds, Lean checks, tests, lint or index refresh were run for this ledger update.
+The concurrent uncommitted `MobiusDivisorCurrentClockPayment` leaf is outside this closed-status audit.
 
 ## Active routes
 
@@ -53,7 +54,7 @@ problem. The family index is a navigation aid, not an exhaustive dependency grap
 
 ### CCM-FU — completed current and fixed-aperture Suzuki checkpoint
 
-- **Closed:** Fresh-prime processing copies each old core coordinate by `sqrt(p)` and adds one `p`-free background; its post-processing square retains the exact signed cross term, so the source target is now coordinatewise explicit. The complete moving prime--polar action is one signed delayed-charge transform, every fixed-wall quantile increment is nonnegative, the physical polar bulk is monotone on `[7,H-3]`, and one marked prime has enough literal polar capacity inside radius `ceil(2 log p)`. On the divisor-clock side, every finite core admits prescribed sufficiently large prime extensions that pay an entire fixed multiplicative clock block with a positive `c log M` margin.
+- **Closed:** Fresh-prime processing copies each old core coordinate by `sqrt(p)` and adds one `p`-free background; its post-processing square retains the exact signed cross term, so the source target is now coordinatewise explicit. The complete moving prime--polar action is one signed delayed-charge transform, and uniform boundedness of that transform is now exactly equivalent to bounded critical variation action and hence RH. Every fixed-wall quantile increment is nonnegative, the physical polar bulk is monotone on `[7,H-3]`, and one marked prime has enough literal polar capacity inside radius `ceil(2 log p)`. On the divisor-clock side, every finite core admits prescribed sufficiently large prime extensions that pay an entire fixed multiplicative clock block with a positive `c log M` margin.
 - **Open:** Globalize these local producers: choose an exhaustive prime/clock schedule that pays the least omitted/current debt before its threshold, controls overlapping prime--polar intervals and both boundary collars, and bounds the single signed delayed-charge transform. Arbitrary cutoff schedules have unbounded logarithmic first-cell cost, while bounded-quotient helper windows cannot repay inherited debt; a successful schedule must use deep child fields with uniform changing-core constants.
 - **Evidence:** [Coordinate target](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorOrientedPrimeDilationRenormalization.lean), [delayed-charge transport](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalDelayedChargeTransport.lean), [log-scale polar capacity](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalLogScalePrimePolarCapacity.lean), [finite clock-block payment](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorPrescribedClockBlock.lean), [clock-growth boundary](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorFiniteClockCutoffGrowth.lean), [current-clock depth](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCurrentClockDepth.lean), [schedule audit](rh-coupled-clock-schedule-facts.md).
 
@@ -327,8 +328,8 @@ Some are alternative presentations of an active route's existing open problem.
 
 ### HCF
 
-- **Closed / available:** Horizontal scanning is blind, while transverse scanning sees residue `m/pi` and gives the exact vertical `L²` RH receiver. The archimedean height-two increment is now `O(1/|t|)`, and the literal safe-line completed source increment `Delta₂J(t)` is uniformly bounded; its square has `O(T)` window cost. This closes the Gamma tail and supplies a concrete finite positive four-leg input.
-- **Open:** Continue a positive interval family of those squares to the transverse divisor while preventing equal-multiplicity pole cancellation. One fixed height-two difference can cancel separated equal poles and is not a producer.
+- **Closed / available:** Horizontal scanning is blind, while transverse scanning sees residue `m/pi` and gives the exact vertical `L²` RH receiver. The archimedean height-two increment is `O(1/|t|)`, every short positive-height Gamma increment on the safe line has one uniform bound, and the literal height-two completed source increment `Delta₂J(t)` is uniformly bounded with `O(T)` square cost. This closes both the summable fixed-step Gamma tail and the archimedean budget for an interval frame.
+- **Open:** Build and continue the full positive interval family of Euler--Gamma source squares to the transverse divisor while preventing residue cancellation. One fixed height-two difference can cancel separated equal poles and is not a producer.
 - **Evidence:** [Vertical Gamma tail](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureVerticalGammaTail.lean), [bounded source increment](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureVerticalSourceIncrement.lean), [fact audit](routes-e-p-u-q-c1-d2-l-own-research-facts.md).
 
 <a id="candidate-hdl"></a>
@@ -599,9 +600,9 @@ remove—or expose—inside the named routes.
 
 ### Singular theta metric and differential-pencil interface
 
-- **Closed:** The injective, non-bounded-below theta metric preserves the literal source-pencil kernel and hence the completed-Xi divisor. A rank-one monopole correction yields a closed unbounded differential pencil with the same kernels, and its Green defect is exactly one incoming minus one outgoing scalar port.
-- **Killed shortcut:** The metric range is not closed, so the metric coordinate alone cannot provide the closed-graph topology required by an index-one dilation.
-- **Still open:** Construct a genuinely new closed-graph coordinate and a source-derived index/capacity law for the two-port relation. Exact divisor retention and Green balance remain receiver infrastructure.
+- **Closed:** The injective, non-bounded-below theta metric preserves the literal source-pencil kernel and hence the completed-Xi divisor. A rank-one monopole correction yields a closed unbounded differential pencil with the same kernels and exact incoming-minus-outgoing Green defect. Its bounded source graph coordinate is injective, has closed range, and carries a bounded two-port trace recovering the literal ports.
+- **Killed shortcut:** The singular metric range itself is not closed, so that metric coordinate alone cannot provide the graph topology. The source graph coordinate is genuinely additional data.
+- **Still open:** Derive the index-one capacity or confinement law for the closed two-port relation. Divisor retention, closed graph and bounded trace are now available receiver infrastructure.
 - **Evidence:** [Metric pencil](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaMetricPencil.lean), [closed-graph barrier](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaMetricClosedGraphBarrier.lean), [differential pencil](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialPencil.lean), [two-port Green law](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean).
 
 <a id="hb--theta-cusp-hawking-causal-scattering"></a>

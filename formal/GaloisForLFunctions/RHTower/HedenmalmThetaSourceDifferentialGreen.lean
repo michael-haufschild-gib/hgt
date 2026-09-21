@@ -87,6 +87,311 @@ theorem inner_pinnedBoundaryCLM_eq_twoPort_pair (k l : H) :
     ContinuousLinearMap.adjoint_inner_left] at hports
   simpa only [RCLike.inner_apply'] using hports
 
+/-- The boundary form vanishes between any two centered source coordinates.  It can still send a
+centered vector to the constant mode, but that mode is orthogonal to the entire centered carrier. -/
+theorem inner_pinnedBoundaryCLM_thetaCentered_eq_zero (k l : thetaCentered) :
+    (inner ℂ (pinnedBoundaryCLM (k : H)) (l : H) : ℂ) = 0 := by
+  have hk : pinnedMean (k : H) = 0 :=
+    (mem_thetaCentered_iff (k : H)).mp k.property
+  have hl : pinnedMean (l : H) = 0 :=
+    (mem_thetaCentered_iff (l : H)).mp l.property
+  have hinnerl : inner ℂ pinnedOne (l : H) = 0 := by
+    change thetaPinnedMeanCLM (l : H) = 0
+    rw [thetaPinnedMeanCLM_apply, hl]
+  rw [pinnedBoundaryCLM_eq_affine_combination, hk]
+  simp only [zero_sub, zero_smul, sub_zero, inner_smul_left]
+  rw [hinnerl]
+  simp
+
+/-- Restoring the omitted scalar coordinate exposes the exact monopole--dipole normal form of
+the boundary defect.  The defect pairs this scalar with the centered dipole; neither component
+alone carries a nonzero boundary form. -/
+theorem pinnedBoundaryCLM_thetaCentered_add_scalar (k : thetaCentered) (m : ℂ) :
+    pinnedBoundaryCLM ((k : H) + m • pinnedOne) =
+      (-pinnedFirstMoment (k : H)) • pinnedOne - m • pinnedCenter := by
+  have hk : pinnedMean (k : H) = 0 :=
+    (mem_thetaCentered_iff (k : H)).mp k.property
+  rw [pinnedBoundaryCLM_eq_affine_combination,
+    pinnedMean_add, pinnedMean_smul, pinnedMean_pinnedOne, hk,
+    pinnedFirstMoment_add, pinnedFirstMoment_smul, pinnedFirstMoment_pinnedOne]
+  simp only [zero_add, mul_one]
+  rw [pinnedCenter]
+  module
+
+/-- On the centered source coordinate, the singular-metric commutator leaves exactly one
+transverse constant channel.  This identifies the channel that a minimal Pontryagin realization
+must couple to; the centered compression itself has no defect. -/
+theorem thetaMetric_commutator_thetaCentered_eq_monopole (k : thetaCentered) :
+    (thetaMetricOperator * thetaKernelOperator -
+      ContinuousLinearMap.adjoint thetaKernelOperator * thetaMetricOperator) (k : H) =
+        (-Complex.I * pinnedFirstMoment (k : H)) • pinnedOne := by
+  have hk : pinnedMean (k : H) = 0 :=
+    (mem_thetaCentered_iff (k : H)).mp k.property
+  rw [thetaMetric_commutator_thetaKernelOperator, smul_apply,
+    pinnedBoundaryCLM_eq_affine_combination, hk]
+  module
+
+/-- The centered dipole is a bounded trace in the ordinary Hilbert topology.  It is recorded
+separately because its continuity in the singular metric is the capacity bottleneck. -/
+def thetaCenteredDipoleTrace : thetaCentered →L[ℂ] ℂ :=
+  (innerSL ℂ pinnedCenter).comp thetaCentered.subtypeL
+
+theorem thetaCenteredDipoleTrace_apply (k : thetaCentered) :
+    thetaCenteredDipoleTrace k = pinnedFirstMoment (k : H) := by
+  change inner ℂ pinnedCenter (k : H) = pinnedFirstMoment (k : H)
+  have hk : pinnedMean (k : H) = 0 :=
+    (mem_thetaCentered_iff (k : H)).mp k.property
+  have hinnerk : inner ℂ pinnedOne (k : H) = 0 := by
+    change thetaPinnedMeanCLM (k : H) = 0
+    rw [thetaPinnedMeanCLM_apply, hk]
+  rw [pinnedCenter, inner_sub_left, inner_smul_left, hinnerk, mul_zero, sub_zero]
+  rw [inner_lp_eq, pinnedFirstMoment]
+  apply integral_congr_ae
+  filter_upwards [pinnedCoordinate_coeFn] with t ht
+  rw [ht]
+  simp
+
+/-- Closed graph-energy coordinate carrying the literal differential graph and its transverse
+dipole trace.  The added trace repairs continuity at the singular boundary without changing the
+source coordinate or its Xi kernel. -/
+def thetaSourceDifferentialGraphEnergyCoordinate (z : ℂ) :
+    thetaCentered →L[ℂ] ((H × H) × ℂ) :=
+  (thetaCenteredSourceInverse.prod (thetaSourceDifferentialRangeMap z)).prod
+    thetaCenteredDipoleTrace
+
+/-- Adding the dipole trace preserves the exact graph lower bound. -/
+theorem thetaSourceDifferentialGraphEnergyCoordinate_antilipschitz (z : ℂ) :
+    ∃ c : NNReal, AntilipschitzWith c (thetaSourceDifferentialGraphEnergyCoordinate z) := by
+  rcases thetaSourceDifferentialGraphMap_antilipschitz z with ⟨c, hc⟩
+  refine ⟨c, (thetaSourceDifferentialGraphEnergyCoordinate z).antilipschitz_of_bound ?_⟩
+  intro k
+  have hbound := hc.le_mul_dist k 0
+  simp only [dist_zero_right, map_zero] at hbound
+  refine hbound.trans ?_
+  gcongr
+  exact norm_fst_le (thetaSourceDifferentialGraphEnergyCoordinate z k)
+
+/-- The dipole-enriched graph coordinate has closed range, yielding a concrete closed energy
+carrier for the monopole--dipole completion candidate. -/
+theorem thetaSourceDifferentialGraphEnergyCoordinate_isClosed_range (z : ℂ) :
+    IsClosed (Set.range (thetaSourceDifferentialGraphEnergyCoordinate z)) := by
+  rcases thetaSourceDifferentialGraphEnergyCoordinate_antilipschitz z with ⟨c, hc⟩
+  exact hc.isClosed_range (thetaSourceDifferentialGraphEnergyCoordinate z).uniformContinuous
+
+/-- Bounded projection that removes precisely the pinned scalar mode retained by the source
+correction.  This is the spectral weight in the literal differential pencil. -/
+def thetaPinnedMeanProjection : H →L[ℂ] H :=
+  1 - thetaPinnedMeanCLM.smulRight pinnedOne
+
+theorem thetaPinnedMeanProjection_apply (f : H) :
+    thetaPinnedMeanProjection f = f - pinnedMean f • pinnedOne := by
+  simp [thetaPinnedMeanProjection, thetaPinnedMeanCLM_apply]
+
+/-- The repaired differential pencil and the closed weighted derivative have the same source
+domain. -/
+theorem thetaSourceDifferentialPencil_domain (z : ℂ) :
+    (thetaSourceDifferentialPencil z).domain = thetaWeightedDerivative.domain := by
+  rw [thetaSourceDifferentialPencil, closedGraphTransform_domain,
+    thetaWeightedDerivative, closedHyperplaneInverse_domain]
+
+/-- **Source action identity.** On its literal closed graph the repaired pencil is exactly the
+closed weighted derivative plus `z` times the pinned-mean projection.  In particular this does
+not replace the Xi source equation by a different compact model. -/
+theorem thetaSourceDifferentialPencil_apply_weightedDerivative
+    (z : ℂ) (x : (thetaSourceDifferentialPencil z).domain) :
+    thetaSourceDifferentialPencil z x =
+      thetaWeightedDerivative
+          ⟨(x : H), by simpa [thetaSourceDifferentialPencil_domain] using x.property⟩ +
+        z • thetaPinnedMeanProjection (x : H) := by
+  have hxrange : (x : H) ∈ thetaCenteredSourceInverse.range := by
+    simpa only [thetaSourceDifferentialPencil, closedGraphTransform_domain] using x.property
+  rcases hxrange with ⟨k, hk⟩
+  have hxDiff : x =
+      ⟨thetaCenteredSourceInverse k,
+        (thetaSourceDifferentialPencil_apply_B z k).1⟩ :=
+    Subtype.ext hk.symm
+  have hxA : thetaCenteredSourceInverse k ∈ thetaWeightedDerivative.domain :=
+    (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+      thetaCenteredSourceInverse_injective k).1
+  have hxeqA :
+      (⟨(x : H), by simpa [thetaSourceDifferentialPencil_domain] using x.property⟩ :
+        thetaWeightedDerivative.domain) =
+      ⟨thetaCenteredSourceInverse k, hxA⟩ := Subtype.ext hk.symm
+  have hDiffApply := (thetaSourceDifferentialPencil_apply_B z k).2
+  have hAApply := (closedHyperplaneInverse_apply_B thetaCentered
+    thetaCenteredSourceInverse thetaCenteredSourceInverse_injective k).2
+  have hAApply' :
+      thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hxA⟩ = (k : H) := by
+    change closedHyperplaneInverse thetaCentered thetaCenteredSourceInverse
+      ⟨thetaCenteredSourceInverse k, hxA⟩ = (k : H)
+    exact hAApply
+  calc
+    thetaSourceDifferentialPencil z x =
+        thetaSourceDifferentialPencil z
+          ⟨thetaCenteredSourceInverse k,
+            (thetaSourceDifferentialPencil_apply_B z k).1⟩ :=
+      congrArg (thetaSourceDifferentialPencil z) hxDiff
+    _ = thetaSourceDifferentialRangeMap z k := hDiffApply
+    _ = (k : H) + z •
+        (thetaCenteredSourceInverse k -
+          pinnedMean (thetaCenteredSourceInverse k) • pinnedOne) :=
+      thetaSourceDifferentialRangeMap_apply z k
+    _ = thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hxA⟩ +
+        z • thetaPinnedMeanProjection (thetaCenteredSourceInverse k) := by
+      rw [hAApply', thetaPinnedMeanProjection_apply]
+    _ = thetaWeightedDerivative
+          ⟨(x : H), by simpa [thetaSourceDifferentialPencil_domain] using x.property⟩ +
+        z • thetaPinnedMeanProjection (x : H) := by
+      rw [hxeqA]
+      exact congrArg (fun y : H =>
+        thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hxA⟩ +
+          z • thetaPinnedMeanProjection y) hk
+
+/-- The reverse pinned primitive sends the normalized constant precisely to the negative centered
+coordinate.  This identifies the dual channel of the source mean. -/
+theorem pinnedVolterraAdjoint_pinnedOne_eq_neg_center :
+    pinnedVolterraAdjoint pinnedOne = -pinnedCenter := by
+  change pinnedVolterraAdjointCLM pinnedOne = -pinnedCenter
+  calc
+    pinnedVolterraAdjointCLM pinnedOne =
+        pinnedVolterraCLM pinnedOne + pinnedVolterraAdjointCLM pinnedOne := by
+      rw [pinnedVolterraCLM_pinnedOne, zero_add]
+    _ = pinnedBoundaryCLM pinnedOne := by rfl
+    _ = (1 / 2 : ℂ) • pinnedOne - pinnedCoordinate :=
+      pinnedBoundaryCLM_pinnedOne
+    _ = -pinnedCenter := by
+      rw [pinnedCenter]
+      module
+
+/-- The source trace dual to the pinned mean is exactly the centered dipole.  Thus the two scalar
+channels in the spectral-weight Green defect are already present in the closed graph-energy
+coordinate: `mean (B k)` and `firstMoment k`. -/
+theorem inner_pinnedOne_thetaMetric_thetaCenteredSourceInverse
+    (k : thetaCentered) :
+    (inner ℂ pinnedOne (thetaMetricOperator (thetaCenteredSourceInverse k)) : ℂ) =
+      -Complex.I * thetaCenteredDipoleTrace k := by
+  have hGB : thetaMetricOperator (thetaCenteredSourceInverse k) =
+      Complex.I • pinnedVolterraCLM (k : H) := by
+    rw [thetaCenteredSourceInverse_eq_thetaKernelOperator]
+    change (thetaMetricOperator * thetaKernelOperator) (k : H) =
+      (Complex.I • pinnedVolterraCLM) (k : H)
+    rw [thetaMetricOperator_mul_thetaKernelOperator]
+  have hVright :
+      (inner ℂ (pinnedVolterra (k : H)) pinnedOne : ℂ) =
+        inner ℂ (k : H) (pinnedVolterraAdjoint pinnedOne) :=
+    inner_pinnedVolterra_eq_inner_pinnedVolterraAdjoint (k : H) pinnedOne
+  have hVleft :
+      (inner ℂ pinnedOne (pinnedVolterraCLM (k : H)) : ℂ) =
+        -inner ℂ pinnedCenter (k : H) := by
+    change (inner ℂ pinnedOne (pinnedVolterra (k : H)) : ℂ) = _
+    rw [← inner_conj_symm, hVright, pinnedVolterraAdjoint_pinnedOne_eq_neg_center,
+      inner_neg_right, map_neg, inner_conj_symm]
+  have hdipole : inner ℂ pinnedCenter (k : H) = thetaCenteredDipoleTrace k := by
+    rfl
+  rw [hGB, inner_smul_right, hVleft, hdipole]
+  ring
+
+/-- **One-channel hyperbolic Green factorization.** The bounded spectral weight in the literal
+source pencil has a metric skew defect only through the source mean and centered dipole.  Its
+Hermitian boundary form is one hyperbolic plane, hence carries exactly one negative direction
+once the closed relation action is completed. -/
+theorem thetaPinnedMeanProjection_metricSkew_thetaCenteredSourceInverse
+    (k l : thetaCentered) :
+    (inner ℂ (thetaMetricOperator
+        (thetaPinnedMeanProjection (thetaCenteredSourceInverse k)))
+      (thetaCenteredSourceInverse l) : ℂ) -
+      inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k))
+        (thetaPinnedMeanProjection (thetaCenteredSourceInverse l)) =
+      Complex.I *
+        ((starRingEnd ℂ) (pinnedMean (thetaCenteredSourceInverse k)) *
+            thetaCenteredDipoleTrace l +
+          pinnedMean (thetaCenteredSourceInverse l) *
+            (starRingEnd ℂ) (thetaCenteredDipoleTrace k)) := by
+  have hleft :
+      (inner ℂ (thetaMetricOperator pinnedOne)
+        (thetaCenteredSourceInverse l) : ℂ) =
+        inner ℂ pinnedOne
+          (thetaMetricOperator (thetaCenteredSourceInverse l)) := by
+    calc
+      inner ℂ (thetaMetricOperator pinnedOne) (thetaCenteredSourceInverse l) =
+          inner ℂ (thetaMetricOperator.adjoint pinnedOne)
+            (thetaCenteredSourceInverse l) := by rw [adjoint_thetaMetricOperator]
+      _ = inner ℂ pinnedOne
+          (thetaMetricOperator (thetaCenteredSourceInverse l)) := by
+        rw [ContinuousLinearMap.adjoint_inner_left]
+  have hright :
+      (inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k)) pinnedOne : ℂ) =
+        (starRingEnd ℂ)
+          (inner ℂ pinnedOne
+            (thetaMetricOperator (thetaCenteredSourceInverse k))) := by
+    rw [inner_conj_symm]
+  rw [thetaPinnedMeanProjection_apply, thetaPinnedMeanProjection_apply,
+    map_sub, map_smul, inner_sub_left, inner_smul_left,
+    inner_sub_right, inner_smul_right, hleft, hright,
+    inner_pinnedOne_thetaMetric_thetaCenteredSourceInverse k,
+    inner_pinnedOne_thetaMetric_thetaCenteredSourceInverse l]
+  simp only [map_neg, map_mul, Complex.conj_I]
+  ring
+
+/-- The unperturbed closed source action is symmetric for the singular theta metric on its exact
+source graph.  Thus every failure of a Pontryagin realization of `D_z` is concentrated in the
+bounded pinned-mean spectral weight and its one transverse defect channel. -/
+theorem thetaWeightedDerivative_metricSymmetric_on_sourceGraph
+    (k l : thetaCentered)
+    (hk : thetaCenteredSourceInverse k ∈ thetaWeightedDerivative.domain)
+    (hl : thetaCenteredSourceInverse l ∈ thetaWeightedDerivative.domain) :
+    (inner ℂ (thetaMetricOperator
+        (thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hk⟩))
+      (thetaCenteredSourceInverse l) : ℂ) =
+      inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k))
+        (thetaWeightedDerivative ⟨thetaCenteredSourceInverse l, hl⟩) := by
+  have hgreen := thetaCenteredSourceInverse_metricGreen k l
+  have hzero := inner_pinnedBoundaryCLM_thetaCentered_eq_zero k l
+  rw [hzero, mul_zero] at hgreen
+  have hswap :
+      inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k)) (l : H) =
+        inner ℂ (thetaMetricOperator (k : H)) (thetaCenteredSourceInverse l) :=
+    sub_eq_zero.mp hgreen
+  have hkApply :
+      thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hk⟩ = (k : H) := by
+    have h := (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+      thetaCenteredSourceInverse_injective k).2
+    have h' : thetaWeightedDerivative
+        ⟨thetaCenteredSourceInverse k,
+          (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+            thetaCenteredSourceInverse_injective k).1⟩ = (k : H) := by
+      simpa only [thetaWeightedDerivative] using h
+    have heq : (⟨thetaCenteredSourceInverse k, hk⟩ : thetaWeightedDerivative.domain) =
+        ⟨thetaCenteredSourceInverse k,
+          (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+            thetaCenteredSourceInverse_injective k).1⟩ := Subtype.ext rfl
+    exact (congrArg thetaWeightedDerivative heq).trans h'
+  have hlApply :
+      thetaWeightedDerivative ⟨thetaCenteredSourceInverse l, hl⟩ = (l : H) := by
+    have h := (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+      thetaCenteredSourceInverse_injective l).2
+    have h' : thetaWeightedDerivative
+        ⟨thetaCenteredSourceInverse l,
+          (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+            thetaCenteredSourceInverse_injective l).1⟩ = (l : H) := by
+      simpa only [thetaWeightedDerivative] using h
+    have heq : (⟨thetaCenteredSourceInverse l, hl⟩ : thetaWeightedDerivative.domain) =
+        ⟨thetaCenteredSourceInverse l,
+          (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+            thetaCenteredSourceInverse_injective l).1⟩ := Subtype.ext rfl
+    exact (congrArg thetaWeightedDerivative heq).trans h'
+  rw [hkApply, hlApply]
+  exact hswap.symm
+
+/-- The two scalar boundary ports are hyperbolically isotropic on the exact bounded coordinate of
+the closed source pencil.  Thus this coordinate alone cannot supply its required negative square. -/
+theorem thetaCentered_twoPort_isotropic (k l : thetaCentered) :
+    (starRingEnd ℂ) (pinnedBoundaryInPort (k : H)) * pinnedBoundaryInPort (l : H) =
+      (starRingEnd ℂ) (pinnedBoundaryOutPort (k : H)) * pinnedBoundaryOutPort (l : H) := by
+  have hzero := inner_pinnedBoundaryCLM_thetaCentered_eq_zero k l
+  rw [inner_pinnedBoundaryCLM_eq_twoPort_pair] at hzero
+  exact sub_eq_zero.mp hzero
+
 /-- Green identity in the literal incoming/outgoing coordinates on the closed-pencil graph. -/
 theorem thetaCenteredSourceInverse_twoPortGreen (k l : thetaCentered) :
     (inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k)) (l : H) : ℂ) -
@@ -98,6 +403,15 @@ theorem thetaCenteredSourceInverse_twoPortGreen (k l : thetaCentered) :
               pinnedBoundaryOutPort (l : H)) := by
   rw [thetaCenteredSourceInverse_metricGreen,
     inner_pinnedBoundaryCLM_eq_twoPort_pair]
+
+/-- On the centered coordinate, the source inverse is symmetric for the singular metric. -/
+theorem thetaCenteredSourceInverse_metricSymmetric (k l : thetaCentered) :
+    (inner ℂ (thetaMetricOperator (thetaCenteredSourceInverse k)) (l : H) : ℂ) =
+      inner ℂ (thetaMetricOperator (k : H)) (thetaCenteredSourceInverse l) := by
+  apply sub_eq_zero.mp
+  rw [thetaCenteredSourceInverse_metricGreen,
+    inner_pinnedBoundaryCLM_thetaCentered_eq_zero]
+  ring
 
 /-- Exact parameterized Green law for the closed source-faithful differential pencil.  The
 additional two terms are its required monopole correction; they are not a removable boundary
@@ -122,57 +436,6 @@ theorem thetaSourceDifferentialRangeMap_metricGreen
     map_add, map_smul, inner_add_right, inner_smul_right,
     inner_add_left, inner_smul_left]
   linear_combination thetaCenteredSourceInverse_metricGreen k l
-
-/-- The bounded coordinate whose range is the graph of the literal closed source pencil. -/
-def thetaSourceDifferentialGraphCoordinate (z : ℂ) : thetaCentered →L[ℂ] (H × H) :=
-  thetaCenteredSourceInverse.prod (thetaSourceDifferentialRangeMap z)
-
-/-- The graph coordinate is injective because the exact closed-pencil graph controls its source
-coordinate from below. -/
-theorem thetaSourceDifferentialGraphCoordinate_injective (z : ℂ) :
-    Function.Injective (thetaSourceDifferentialGraphCoordinate z) := by
-  rcases thetaSourceDifferentialGraphMap_antilipschitz z with ⟨c, hc⟩
-  exact hc.injective
-
-/-- The literal closed-pencil graph is the range of its bounded graph coordinate. -/
-theorem thetaSourceDifferentialPencil_graph_eq_coordinate_range (z : ℂ) :
-    (thetaSourceDifferentialPencil z).graph =
-      LinearMap.range (thetaSourceDifferentialGraphCoordinate z).toLinearMap := by
-  simpa only [thetaSourceDifferentialPencil, thetaSourceDifferentialGraphCoordinate] using
-    (closedGraphTransform_graph thetaCentered thetaCenteredSourceInverse
-      (thetaSourceDifferentialRangeMap z) thetaCenteredSourceInverse_injective)
-
-/-- The bounded graph coordinate has closed range, so graph traces can be transported without
-passing to the nonclosed singular-metric range. -/
-theorem thetaSourceDifferentialGraphCoordinate_isClosed_range (z : ℂ) :
-    IsClosed (Set.range (thetaSourceDifferentialGraphCoordinate z)) := by
-  rcases thetaSourceDifferentialGraphMap_antilipschitz z with ⟨c, hc⟩
-  exact hc.isClosed_range (thetaSourceDifferentialGraphCoordinate z).uniformContinuous
-
-/-- Incoming and outgoing scalar ports in the bounded source coordinate. -/
-def thetaSourceDifferentialPortPair : thetaCentered →L[ℂ] (ℂ × ℂ) :=
-  (pinnedBoundaryInPort.comp thetaCentered.subtypeL).prod
-    (pinnedBoundaryOutPort.comp thetaCentered.subtypeL)
-
-@[simp] theorem thetaSourceDifferentialPortPair_apply (k : thetaCentered) :
-    thetaSourceDifferentialPortPair k =
-      (pinnedBoundaryInPort (k : H), pinnedBoundaryOutPort (k : H)) := by
-  rfl
-
-/-- Bounded two-port trace on the actual closed-pencil graph, represented by its closed range. -/
-noncomputable def thetaSourceDifferentialGraphTrace (z : ℂ) :
-    (thetaSourceDifferentialGraphCoordinate z).range →L[ℂ] (ℂ × ℂ) :=
-  thetaSourceDifferentialPortPair.comp
-    ((thetaSourceDifferentialGraphCoordinate z).equivRange
-      (thetaSourceDifferentialGraphCoordinate_injective z)
-      (thetaSourceDifferentialGraphCoordinate_isClosed_range z)).symm.toContinuousLinearMap
-
-/-- The graph trace recovers the source ports exactly on every graph coordinate. -/
-theorem thetaSourceDifferentialGraphTrace_apply (z : ℂ) (k : thetaCentered) :
-    thetaSourceDifferentialGraphTrace z
-      ⟨thetaSourceDifferentialGraphCoordinate z k, ⟨k, rfl⟩⟩ =
-        thetaSourceDifferentialPortPair k := by
-  simp [thetaSourceDifferentialGraphTrace]
 
 end
 

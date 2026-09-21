@@ -109,6 +109,16 @@ The positive survivor is a uniform lower bound from exactly preserved old
 samples. This closes the bounded-quotient repair shortcut; an exhaustive
 producer controlling deeper child fields remains missing.
 
+## Current-clock positive producer
+
+The [current-clock payment certificate](rh-current-clock-payment-facts.md)
+constructs actual batches of size `capacity-1` with the full logarithmic
+weight retained. Every prefix costs at most `R² M`; the endpoint removes
+the initial weighted receiving square plus `delta M²`. Constants are uniform
+over admitted cores, and the literal initial core has a premise-free instance.
+This produces current-wall payment, but not transport to the next wall or
+repayment of the larger debts requiring increasing child depth.
+
 ## Search audit
 
 The focused schedule search completed with `partial=false` over an inventory
