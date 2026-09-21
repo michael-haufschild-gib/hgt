@@ -997,3 +997,21 @@
   `RHTower.HedenmalmCriticalFeatureVerticalGammaTail` is umbrella-wired, passes
   direct `lake env lean` and target-only olean build; its public theorem audits
   only with `propext`, `Classical.choice`, and `Quot.sound`.
+- **HCF now has a literal bounded safe-side height-two quadratic input.**  Define
+  `Δ₂J(t) = J(3/2 + i(t + 2)) - J(3/2 + it)` for the completed
+  Xi--Ward Euler--Gamma current.  It has the exact four-channel identity
+  `rational + rational + Gamma - vonMangoldt`.  The two rational differences
+  are bounded by `4/3` and `4`; Gamma is bounded by the new tail theorem; and
+  the two Euler values are bounded by the already-formalized absolutely
+  convergent `Re = 3/2` majorant.  Consequently `‖Δ₂J(t)‖ ≤ C` beyond a fixed
+  radius, unconditionally.  Squaring provides a finite, nonnegative,
+  coefficient-faithful safe-line source form with `O(T)` height-window cost,
+  below the canonical `T log T` zero-count scale.  **Route consequence:** the
+  prior vague request for a finite cross-height source trace has been narrowed
+  to a precise missing transport theorem: continue a positive-*interval* family
+  of such squares to the transverse divisor without permitting fixed-shift pole
+  cancellation.  A lone shift-two square is not an RH proof.  Lean status:
+  `RHTower.HedenmalmCriticalFeatureVerticalSourceIncrement` is umbrella-wired,
+  passes direct check and target-only olean build; its channel identity and
+  boundedness theorem audit only with `propext`, `Classical.choice`, and
+  `Quot.sound`.

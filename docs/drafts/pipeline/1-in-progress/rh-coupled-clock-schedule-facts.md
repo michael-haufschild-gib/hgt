@@ -98,6 +98,17 @@ completion at the original cutoff. A global construction must also control
 the action after all primes relevant to each original wall are processed,
 or supply an independent uniform comparison that proves that control.
 
+## Current-clock source-depth boundary
+
+The [current-clock depth certificate](rh-current-clock-depth-facts.md) proves
+that certain inherited prime debts over every nonempty even prime core
+cannot be repaid using only bounded-quotient helper windows. Even at an
+arbitrarily later cutoff `L ≥ M`, repayment requires a fresh helper `q`
+with `L/q ≥ η log L`. Helper sets and thresholds may change with the cutoff.
+The positive survivor is a uniform lower bound from exactly preserved old
+samples. This closes the bounded-quotient repair shortcut; an exhaustive
+producer controlling deeper child fields remains missing.
+
 ## Search audit
 
 The focused schedule search completed with `partial=false` over an inventory

@@ -1,10 +1,11 @@
 # Current-clock repayment depth
 
 - **Route:** cumulative signed payment → bounded critical action → RH.
-- **Status:** paper argument; Lean verification pending. No exhaustive construction.
+- **Status:** source-preservation bound and advancing-clock obstruction
+  formalized and audited. No exhaustive construction.
 - **Source question:** can unrestricted numbers of helper primes near the current cutoff pay a fixed inherited prime debt?
 
-## Paper facts to verify in Lean
+## Proved source facts
 
 Write `W(P,M)` for `mobiusDivisorFiniteClockEnergy 1 M P` and
 `C(P) = (3/5) * 2^(P.card-1)` (natural subtraction).
@@ -36,6 +37,35 @@ from `M` to `L ≥ M`: normalized clock debt is at least `δ*(1+log L)` once
 exceeds the upper coefficient of the starting core; positivity and
 `log M ≤ log L` retain the gap. Thus advancing the clock does not evade the
 required helper depth at `L`.
+
+The fresh-helper theorem removes every helper already in `P ∪ {r}` before
+taking the maximum quotient. Its witness therefore cannot be the prescribed
+prime itself or a redundant processed prime.
+
+## Lean certificates
+
+- `MobiusDivisorPrescribedClockBlock.lean`:
+  `mobiusDivisorFiniteClockEnergy_current_quotient_payment_le` and
+  `tendsto_mobiusDivisorFiniteClockEnergy_div_sq_log`.
+- `MobiusDivisorCurrentClockDepth.lean`:
+  `exists_mobiusDivisorAdvancingClockDebt_log_depth` and
+  `exists_mobiusDivisorAdvancingClockDebt_requires_deep_prime`.
+- Scratch checks and both named leaf builds passed. A final scratch import
+  of the compiled module audited all four public results: only
+  `[propext, Classical.choice, Quot.sound]`; no added axioms or numerical
+  computation. No full or umbrella build was run.
+- Index generation and whitespace checks passed. Global lint reports the
+  same four unrelated unreachable modules:
+  `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
+  `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
+  `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
+  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport`.
+- Positive survivor: the literal preserved-sample lower bound, uniform in
+  adaptive helper sets and their cardinalities, proved in Lean.
+- Search: focused depth search completed with `partial=false`; a second
+  broad novelty search returned partial results. No matching adaptive
+  advancing-clock depth barrier appeared among the inspected hits. This is
+  a corpus comparison, not a global literature-priority claim.
 
 ## Method audit
 

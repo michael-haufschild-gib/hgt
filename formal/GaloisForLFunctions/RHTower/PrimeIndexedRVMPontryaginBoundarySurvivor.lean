@@ -260,6 +260,253 @@ theorem routeKPrimeDiagonalPontryaginCompletion_metric_adjoint
   exact routeKPontryaginScalarCompletion_metric_adjoint
     (routeKQuadraticallyAdmittedDiagonalWeight p)
 
+namespace KRVMPaired
+
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+
+def pairedBoundary (u : n → ℂ) : Matrix n (Fin 2) ℂ :=
+  fun i _ => u i
+
+def hyperbolicBoundary : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, -1]
+
+def pairedCompletion (B : Matrix n n ℂ) (u : n → ℂ) :
+    Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ :=
+  GaloisForLFunctions.HTGeometry.completionOperator
+    B (pairedBoundary u) hyperbolicBoundary
+
+def boundaryChange : Matrix (Fin 2) (Fin 2) ℂ := !![1, 1; 1, -1]
+
+def boundaryChangeInv : Matrix (Fin 2) (Fin 2) ℂ :=
+  (1 / 2 : ℂ) • boundaryChange
+
+theorem boundaryChangeInv_mul_boundaryChange :
+    boundaryChangeInv * boundaryChange = 1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [boundaryChangeInv, boundaryChange, Matrix.mul_apply, Fin.sum_univ_two]
+
+theorem boundaryChange_mul_boundaryChangeInv :
+    boundaryChange * boundaryChangeInv = 1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [boundaryChangeInv, boundaryChange, Matrix.mul_apply, Fin.sum_univ_two]
+
+def carrierChange : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ :=
+  Matrix.fromBlocks 1 0 0 boundaryChange
+
+def carrierChangeInv : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ :=
+  Matrix.fromBlocks 1 0 0 boundaryChangeInv
+
+theorem carrierChangeInv_mul_carrierChange :
+    carrierChangeInv (n := n) * carrierChange (n := n) =
+      (1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) := by
+  rw [carrierChangeInv, carrierChange, Matrix.fromBlocks_multiply]
+  ext i j
+  rcases i with i | i <;> rcases j with j | j <;>
+    simp [Matrix.one_apply, boundaryChangeInv_mul_boundaryChange]
+
+theorem carrierChange_mul_carrierChangeInv :
+    carrierChange (n := n) * carrierChangeInv (n := n) =
+      (1 : Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ) := by
+  rw [carrierChangeInv, carrierChange, Matrix.fromBlocks_multiply]
+  ext i j
+  rcases i with i | i <;> rcases j with j | j <;>
+    simp [Matrix.one_apply, boundaryChange_mul_boundaryChangeInv]
+
+def pairedNormSq (u : n → ℂ) : ℂ :=
+  ∑ i, (starRingEnd ℂ) (u i) * u i
+
+theorem pairedBoundary_gram (u : n → ℂ) :
+    (pairedBoundary u)ᴴ * pairedBoundary u =
+      fun _ _ => pairedNormSq u := by
+  ext i j
+  simp [pairedBoundary, pairedNormSq, Matrix.mul_apply]
+
+theorem completionY_paired (u : n → ℂ) :
+    GaloisForLFunctions.HTGeometry.completionY
+        (pairedBoundary u) hyperbolicBoundary =
+      fun i j => if i = 0 then
+        -Complex.I / 2 * (starRingEnd ℂ) (u j) else
+        Complex.I / 2 * (starRingEnd ℂ) (u j) := by
+  ext i j
+  fin_cases i <;>
+    simp [GaloisForLFunctions.HTGeometry.completionY,
+      pairedBoundary, hyperbolicBoundary, Matrix.mul_apply, Fin.sum_univ_two] <;>
+    ring
+
+theorem pairedNormSq_weighted (u : n → ℂ) (c : ℂ) :
+    (∑ x, c * (starRingEnd ℂ) (u x) * u x) = c * pairedNormSq u := by
+  rw [pairedNormSq, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro x _
+  ring
+
+theorem pairedNormSq_star (u : n → ℂ) :
+    (starRingEnd ℂ) (pairedNormSq u) = pairedNormSq u := by
+  simp only [pairedNormSq, map_sum, map_mul, starRingEnd_apply, starRingEnd_self_apply]
+  apply Finset.sum_congr rfl
+  intro x _
+  rw [star_star]
+  ring
+
+def pairedCompletionZExpected (u : n → ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  !![-Complex.I * pairedNormSq u / 2, -Complex.I * pairedNormSq u / 2;
+    Complex.I * pairedNormSq u / 2, Complex.I * pairedNormSq u / 2]
+
+def pairedYUMatrix (u : n → ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  !![-Complex.I * pairedNormSq u / 2, -Complex.I * pairedNormSq u / 2;
+    Complex.I * pairedNormSq u / 2, Complex.I * pairedNormSq u / 2]
+
+theorem completionY_mul_pairedBoundary (u : n → ℂ) :
+    GaloisForLFunctions.HTGeometry.completionY
+        (pairedBoundary u) hyperbolicBoundary * pairedBoundary u = pairedYUMatrix u := by
+  rw [completionY_paired]
+  ext i j
+  fin_cases i <;> fin_cases j
+  · convert pairedNormSq_weighted u (-Complex.I / 2) using 1 <;>
+      simp [pairedYUMatrix, pairedBoundary, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+  · convert pairedNormSq_weighted u (-Complex.I / 2) using 1 <;>
+      simp [pairedYUMatrix, pairedBoundary, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+  · convert pairedNormSq_weighted u (Complex.I / 2) using 1 <;>
+      simp [pairedYUMatrix, pairedBoundary, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+  · convert pairedNormSq_weighted u (Complex.I / 2) using 1 <;>
+      simp [pairedYUMatrix, pairedBoundary, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+theorem completionZ_paired (B : Matrix n n ℂ) (u : n → ℂ) (hB : Bᴴ = B) :
+    GaloisForLFunctions.HTGeometry.completionZ
+        B (pairedBoundary u) hyperbolicBoundary = pairedCompletionZExpected u := by
+  have hY := completionY_mul_pairedBoundary u
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    simpa using (map_natCast (starRingEnd ℂ) 2)
+  have hYstar :
+      (pairedBoundary u)ᴴ *
+          (GaloisForLFunctions.HTGeometry.completionY
+            (pairedBoundary u) hyperbolicBoundary)ᴴ = (pairedYUMatrix u)ᴴ := by
+    rw [← Matrix.conjTranspose_mul, hY]
+  have hQY :
+      GaloisForLFunctions.HTGeometry.completionQ
+          (pairedBoundary u) hyperbolicBoundary *
+          GaloisForLFunctions.HTGeometry.completionY
+            (pairedBoundary u) hyperbolicBoundary * pairedBoundary u =
+        GaloisForLFunctions.HTGeometry.completionQ
+          (pairedBoundary u) hyperbolicBoundary * pairedYUMatrix u := by
+    rw [Matrix.mul_assoc, hY]
+  have hYstarQ :
+      (pairedBoundary u)ᴴ *
+          (GaloisForLFunctions.HTGeometry.completionY
+            (pairedBoundary u) hyperbolicBoundary)ᴴ *
+          GaloisForLFunctions.HTGeometry.completionQ
+            (pairedBoundary u) hyperbolicBoundary =
+        (pairedYUMatrix u)ᴴ *
+          GaloisForLFunctions.HTGeometry.completionQ
+            (pairedBoundary u) hyperbolicBoundary := by
+    rw [hYstar]
+  rw [GaloisForLFunctions.HTGeometry.completionZ,
+    GaloisForLFunctions.HTGeometry.completionK, hB, hQY, hYstarQ,
+    GaloisForLFunctions.HTGeometry.completionQ, pairedBoundary_gram]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [pairedCompletionZExpected, pairedYUMatrix, hyperbolicBoundary,
+      pairedNormSq_star, hstarTwo, Matrix.mul_apply, Matrix.vecMul, dotProduct,
+      Fin.sum_univ_two] <;>
+    ring
+
+def pairedBaseImage (B : Matrix n n ℂ) (u : n → ℂ) : Matrix n (Fin 2) ℂ :=
+  fun i _ => (B.mulVec u) i
+
+theorem base_mul_pairedBoundary (B : Matrix n n ℂ) (u : n → ℂ) :
+    B * pairedBoundary u = pairedBaseImage B u := by
+  ext i j
+  simp [pairedBoundary, pairedBaseImage, Matrix.mul_apply, Matrix.mulVec, dotProduct]
+
+def pairedYStarQExpected (u : n → ℂ) : Matrix n (Fin 2) ℂ :=
+  fun i _ => Complex.I / 2 * u i
+
+theorem completionY_star_mul_Q_paired (u : n → ℂ) :
+    (GaloisForLFunctions.HTGeometry.completionY
+      (pairedBoundary u) hyperbolicBoundary)ᴴ *
+      GaloisForLFunctions.HTGeometry.completionQ
+        (pairedBoundary u) hyperbolicBoundary = pairedYStarQExpected u := by
+  rw [GaloisForLFunctions.HTGeometry.completionQ, pairedBoundary_gram,
+    completionY_paired]
+  have hstarTwo : (starRingEnd ℂ) (2 : ℂ) = 2 := by
+    simpa using (map_natCast (starRingEnd ℂ) 2)
+  ext i j
+  fin_cases j
+  · simp [pairedYStarQExpected, hyperbolicBoundary,
+      hstarTwo, Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+    ring
+  · simp [pairedYStarQExpected, hyperbolicBoundary,
+      hstarTwo, Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+    ring
+
+theorem pairedBoundary_mul_completionZ (B : Matrix n n ℂ) (u : n → ℂ)
+    (hB : Bᴴ = B) :
+    pairedBoundary u * GaloisForLFunctions.HTGeometry.completionZ
+      B (pairedBoundary u) hyperbolicBoundary = 0 := by
+  rw [completionZ_paired B u hB]
+  ext i j
+  fin_cases j <;>
+    simp [pairedBoundary, pairedCompletionZExpected, Matrix.mul_apply,
+      Matrix.vecMul, dotProduct, Fin.sum_univ_two] <;>
+    ring
+
+def pairedCompletionXExpected (B : Matrix n n ℂ) (u : n → ℂ) : Matrix n (Fin 2) ℂ :=
+  fun i _ => (B.mulVec u) i + Complex.I / 2 * u i
+
+theorem completionX_paired (B : Matrix n n ℂ) (u : n → ℂ) (hB : Bᴴ = B) :
+    GaloisForLFunctions.HTGeometry.completionX
+      B (pairedBoundary u) hyperbolicBoundary = pairedCompletionXExpected B u := by
+  rw [GaloisForLFunctions.HTGeometry.completionX, hB,
+    base_mul_pairedBoundary, completionY_star_mul_Q_paired,
+    pairedBoundary_mul_completionZ B u hB]
+  ext i j
+  simp [pairedBaseImage, pairedYStarQExpected, pairedCompletionXExpected]
+
+def pairedTriangularX (B : Matrix n n ℂ) (u : n → ℂ) : Matrix n (Fin 2) ℂ :=
+  fun i j => if j = 0 then
+    2 * ((B.mulVec u) i + Complex.I / 2 * u i) else 0
+
+def pairedTriangularY (u : n → ℂ) : Matrix (Fin 2) n ℂ :=
+  fun i j => if i = 0 then 0 else -Complex.I / 2 * (starRingEnd ℂ) (u j)
+
+def pairedTriangularZ (u : n → ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  !![0, 0; -Complex.I * pairedNormSq u, 0]
+
+def pairedTriangularCompletion (B : Matrix n n ℂ) (u : n → ℂ) :
+    Matrix (n ⊕ Fin 2) (n ⊕ Fin 2) ℂ :=
+  Matrix.fromBlocks B (pairedTriangularX B u) (pairedTriangularY u) (pairedTriangularZ u)
+
+theorem pairedCompletion_conjugate_triangular
+    (B : Matrix n n ℂ) (u : n → ℂ) (hB : Bᴴ = B) :
+    carrierChangeInv * pairedCompletion B u * carrierChange =
+      pairedTriangularCompletion B u := by
+  rw [carrierChangeInv, pairedCompletion, carrierChange,
+    GaloisForLFunctions.HTGeometry.completionOperator,
+    Matrix.fromBlocks_multiply, Matrix.fromBlocks_multiply,
+    completionX_paired B u hB, completionY_paired,
+    completionZ_paired B u hB]
+  ext i j
+  rcases i with i | i <;> rcases j with j | j
+  · simp [pairedTriangularCompletion]
+  · fin_cases j <;>
+      simp [pairedTriangularCompletion, pairedTriangularX, pairedCompletionXExpected,
+        boundaryChange, Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two] <;>
+      ring
+  · fin_cases i <;>
+      simp [pairedTriangularCompletion, pairedTriangularY,
+        boundaryChangeInv, Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two] <;>
+      norm_num [boundaryChange] <;>
+      ring
+  · fin_cases i <;> fin_cases j <;>
+      simp [pairedTriangularCompletion, pairedTriangularZ,
+        boundaryChange, boundaryChangeInv, pairedCompletionZExpected,
+        Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two] <;>
+      ring
+
+
+end KRVMPaired
 end
 
 end RHTower

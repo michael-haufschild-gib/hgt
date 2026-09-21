@@ -129,6 +129,49 @@ theorem cauchyVolterraFUCurvature_pos
     (mul_pos (by norm_num) (cauchyVolterraFUDensityNumerator_pos hlog hlogH))
     (mul_pos (mul_pos hy0 hH) (pow_pos hlog 5))
 
+/-- The literal FU curvature times a Cauchy cell is integrable on every active compact clock
+interval.  This is the analytic certificate needed for finite signed transport; it makes no
+estimate of the arithmetic cell coefficient. -/
+theorem cauchyVolterraFUCurvature_mul_kernel_intervalIntegrable
+    {H x Y : ℝ} (hH : 0 < H) (hx : 1 < x) (hxY : x ≤ Y) :
+    IntervalIntegrable
+      (fun y : ℝ => cauchyVolterraFUCurvature H y * cauchyVolterraKernel x y)
+      volume x Y := by
+  have hHne : H ≠ 0 := ne_of_gt hH
+  have hcont' : ContinuousOn (cauchyVolterraFUProfileDerivTwo H) (Set.Icc x Y) := by
+    intro y hy
+    have hy1 : 1 < y := hx.trans_le hy.1
+    have hy0 : y ≠ 0 := ne_of_gt (by linarith)
+    have hlog0 : Real.log y ≠ 0 := ne_of_gt (Real.log_pos hy1)
+    have hlogcont : ContinuousAt Real.log y := (Real.hasDerivAt_log hy0).continuousAt
+    have hpre : ContinuousAt (fun z : ℝ => 4 / z ^ 3) y :=
+      continuousAt_const.div (continuousAt_id.pow 3) (pow_ne_zero _ hy0)
+    have hterm1 : ContinuousAt (fun z : ℝ => 12 / Real.log z ^ 5) y :=
+      continuousAt_const.div (hlogcont.pow 5) (pow_ne_zero _ hlog0)
+    have hterm2 : ContinuousAt (fun z : ℝ => (9 - 12 / H) / Real.log z ^ 4) y :=
+      continuousAt_const.div (hlogcont.pow 4) (pow_ne_zero _ hlog0)
+    have hterm3 : ContinuousAt (fun z : ℝ => (2 - 12 / H) / Real.log z ^ 3) y :=
+      continuousAt_const.div (hlogcont.pow 3) (pow_ne_zero _ hlog0)
+    have hden : ContinuousAt (fun z : ℝ => H * Real.log z ^ 2) y :=
+      continuousAt_const.mul (hlogcont.pow 2)
+    have hterm4 : ContinuousAt (fun z : ℝ => 4 / (H * Real.log z ^ 2)) y :=
+      continuousAt_const.div hden (mul_ne_zero hHne (pow_ne_zero _ hlog0))
+    exact (hpre.mul (((hterm1.add hterm2).add hterm3).sub hterm4)).continuousWithinAt
+  have hcurv : ContinuousOn (fun y : ℝ => cauchyVolterraFUCurvature H y) (Set.Icc x Y) := by
+    intro y hy
+    apply ((continuousAt_id.pow 2).continuousWithinAt.mul (hcont' y hy)).congr_of_mem _ hy
+    intro z hz
+    have hz1 : 1 < z := hx.trans_le hz.1
+    exact cauchyVolterraFUCurvature_eq_profileDerivTwo hHne
+      (ne_of_gt (by linarith)) (ne_of_gt (Real.log_pos hz1))
+  have hkernel : ContinuousOn (fun y : ℝ => cauchyVolterraKernel x y) (Set.Icc x Y) := by
+    intro y hy
+    have hy0 : y ≠ 0 := ne_of_gt (by linarith [hx, hy.1])
+    unfold cauchyVolterraKernel
+    exact ((continuousAt_const.div continuousAt_id hy0).sub
+      (continuousAt_const.div (continuousAt_id.pow 2) (pow_ne_zero _ hy0))).continuousWithinAt
+  exact (hcurv.mul hkernel).intervalIntegrable_of_Icc hxY
+
 /-- Exact positive Cauchy--Volterra mixture on every active square-root clock interval.  The
 endpoint term is retained because the literal profile vanishes only to first order at the wall. -/
 theorem cauchyVolterraFUProfile_reconstruction

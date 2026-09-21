@@ -316,5 +316,43 @@ theorem fullCircleCrossBranchCausalPair_reflection_odd (q : XiZeroCopy)
   simp only [Bool.not_false, Bool.not_true]
   ring
 
+/-- The physical two-branch completion of the literal CTP numerator.  This is
+the source scalar whose proposed normalized real-part magnitude law is meant
+to close the chain
+`literal CTP source → PW partner balance → RH`: summing the two forced Weyl
+channels is necessary before comparison with the branch-free divisor charge. -/
+def fullCircleCrossBranchSymmetricCausalPair (q : XiZeroCopy)
+    (a : ℂ) (X k : ℝ) : ℂ :=
+  fullCircleCrossBranchCausalPair q true a X k +
+    fullCircleCrossBranchCausalPair q false a X k
+
+/-- **Source-level PW orientation.** The completed, literal two-branch CTP
+numerator is reflection-odd without choosing a Weyl channel.  Hence its real
+part has exactly the parity of the PW/FZZ/Deninger divisor imbalance; the only
+remaining PW-B premise is an equality of normalized magnitudes. -/
+theorem fullCircleCrossBranchSymmetricCausalPair_reflection_odd (q : XiZeroCopy)
+    (a : ℂ) (X k : ℝ) :
+    fullCircleCrossBranchSymmetricCausalPair (xiZeroCopyReflectEquiv q) a X k =
+      -fullCircleCrossBranchSymmetricCausalPair q a X k := by
+  change fullCircleCrossBranchCausalPair (xiZeroCopyReflectEquiv q) true a X k +
+      fullCircleCrossBranchCausalPair (xiZeroCopyReflectEquiv q) false a X k =
+    -(fullCircleCrossBranchCausalPair q true a X k +
+      fullCircleCrossBranchCausalPair q false a X k)
+  rw [
+    fullCircleCrossBranchCausalPair_reflection_odd,
+    fullCircleCrossBranchCausalPair_reflection_odd]
+  simp only [Bool.not_true, Bool.not_false]
+  ring
+
+/-- Real source orientation in the exact codomain used by the PW partner
+imbalance. -/
+theorem fullCircleCrossBranchSymmetricCausalPair_re_reflection_odd (q : XiZeroCopy)
+    (a : ℂ) (X k : ℝ) :
+    (fullCircleCrossBranchSymmetricCausalPair (xiZeroCopyReflectEquiv q) a X k).re =
+      -(fullCircleCrossBranchSymmetricCausalPair q a X k).re := by
+  have h := congrArg Complex.re
+    (fullCircleCrossBranchSymmetricCausalPair_reflection_odd q a X k)
+  simpa using h
+
 end
 end RHTower.D4BMFullAngularSourceReflection
