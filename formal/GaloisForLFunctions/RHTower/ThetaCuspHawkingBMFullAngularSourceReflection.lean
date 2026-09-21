@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCovector
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleReconstruction
+import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceRadialReciprocity
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralPeierlsStreamBilinear
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralSourceReflection
 
@@ -19,6 +21,8 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.ScalarTwoJet
 open scoped ContDiff ENNReal SchwartzMap
 namespace RHTower.D4BMFullAngularSourceReflection
 open D4BMGlobalAngularResponse D4BMQuadraticMixedSource D4BMModularCore D4BMHorizon
+open D4BMFullAngularCircle D4BMFullAngularReconstruction D4BMFullSourceReciprocity
+open D4BMJointSource
 noncomputable section
 
 private theorem center_reflect (q : XiZeroCopy) :
@@ -240,6 +244,77 @@ theorem forcedMetricBilinear_reflect (q : XiZeroCopy) (branch : Bool) (a d : ℂ
       D4BMLiteralPeierlsStream.forcedMetricBilinear q (!branch) a d x := by
   unfold D4BMLiteralPeierlsStream.forcedMetricBilinear
   rw [physicalRate_reflect, fullAngularCovector_reflect, fullSquareCovector_reflect]
+
+/-- The literal full-circle angular mean is branch-equivariant.  This is the
+source-to-solution statement lifted through the actual circular average, not a
+postulated symmetry of a causal kernel. -/
+theorem angularMean_reflect (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
+    angularMean (xiZeroCopyReflectEquiv q) branch d x k =
+      angularMean q (!branch) d x k := by
+  change D4BMNativeCircle.average
+      (fun theta => fullAngularField (xiZeroCopyReflectEquiv q) branch
+        (D4BMNativeCircle.logCircle d theta x k)) =
+    D4BMNativeCircle.average
+      (fun theta => fullAngularField q (!branch)
+        (D4BMNativeCircle.logCircle d theta x k))
+  congr 1
+  funext theta
+  rw [fullAngularField_reflect]
+
+/-- The literal full direct-minus-image circle kernel transports under
+functional-equation reflection while exchanging its physical branch. -/
+theorem angularDirichletKernel_reflect (q : XiZeroCopy) (branch : Bool)
+    (h x y X k : ℝ) :
+    angularDirichletKernel (xiZeroCopyReflectEquiv q) branch h x y X k =
+      angularDirichletKernel q (!branch) h x y X k := by
+  simp only [angularDirichletKernel, angularMean_reflect]
+
+/-- Two source events coupled through the literal full direct-minus-image
+circle kernel.  This is the unintegrated CTP density whose two orderings form
+the cross-branch Peierls numerator. -/
+def fullCircleSourcePairDensity (q : XiZeroCopy) (branch b c : Bool)
+    (a d : ℂ) (X k : ℝ)
+    (z : D4BMFullSourceReciprocity.Event × D4BMFullSourceReciprocity.Event) : ℂ :=
+  timeReducedCoefficient (physicalRate q b) a z.1.1 z.1.2 *
+    angularDirichletKernel q branch (z.2.1 - z.1.1) z.1.2 z.2.2 X k *
+      timeReducedCoefficient (physicalRate q c) d z.2.1 z.2.2
+
+/-- Functional-equation reflection transports the literal full-circle density
+and exchanges both source legs. -/
+theorem fullCircleSourcePairDensity_reflect (q : XiZeroCopy)
+    (branch b c : Bool) (a d : ℂ) (X k : ℝ) :
+    fullCircleSourcePairDensity (xiZeroCopyReflectEquiv q) branch b c a d X k =
+      fullCircleSourcePairDensity q (!branch) (!b) (!c) a d X k := by
+  funext z
+  simp only [fullCircleSourcePairDensity,
+    D4BMSourceReflectionTransport.physicalRate_reflect,
+    angularDirichletKernel_reflect]
+
+/-- Equal-amplitude complementary source legs, antisymmetrized in their CTP
+ordering.  Its formula is intentionally kept as the literal pair of full
+direct-minus-image source integrals, with neither cap nor a scalar proxy
+substituted. -/
+def fullCircleCrossBranchCausalPair (q : XiZeroCopy) (branch : Bool)
+    (a : ℂ) (X k : ℝ) : ℂ :=
+  (∫ z, fullCircleSourcePairDensity q branch false true a a X k z ∂
+      D4BMFullSourceReciprocity.eventMeasure.prod D4BMFullSourceReciprocity.eventMeasure) -
+    ∫ z, fullCircleSourcePairDensity q branch true false a a X k z ∂
+      D4BMFullSourceReciprocity.eventMeasure.prod D4BMFullSourceReciprocity.eventMeasure
+
+/-- **Literal full CTP reflection orientation.** Functional-equation
+reflection reverses the equal-amplitude complementary-branch full-circle
+Peierls numerator.  Thus its source orientation has exactly the odd parity
+required by the PW forward/reverse real imbalance; only the still-open
+source-to-Borel magnitude law remains. -/
+theorem fullCircleCrossBranchCausalPair_reflection_odd (q : XiZeroCopy)
+    (branch : Bool) (a : ℂ) (X k : ℝ) :
+    fullCircleCrossBranchCausalPair (xiZeroCopyReflectEquiv q) branch a X k =
+      -fullCircleCrossBranchCausalPair q (!branch) a X k := by
+  have hft := fullCircleSourcePairDensity_reflect q branch false true a a X k
+  have htf := fullCircleSourcePairDensity_reflect q branch true false a a X k
+  rw [fullCircleCrossBranchCausalPair, fullCircleCrossBranchCausalPair, hft, htf]
+  simp only [Bool.not_false, Bool.not_true]
+  ring
 
 end
 end RHTower.D4BMFullAngularSourceReflection

@@ -111,7 +111,10 @@ theorem cauchyVolterra_activeCodiagonal_eq_coupledMoments
         (∑ i ∈ s, if ξ i ≤ y then a i * ξ i else 0) / y ^ 2 := by
           rw [Finset.sum_sub_distrib, ← Finset.sum_div, ← Finset.sum_div]
 
-private theorem ccmFUSuzuki_activeSqrtClockRange
+/-- Every literal active square-root clock lies strictly above the logarithmic singularity and
+below the moving FU wall.  This is the domain certificate required to transport the physical
+prime--polar head without replacing its moving lower endpoints. -/
+theorem ccmFUSuzuki_activeSqrtClockRange
     {H : ℝ} (hH : 2 ≤ H) {j : ℕ}
     (hj : j ∈ Finset.range (suzukiCheckpointEventIndex H - 2)) :
     1 < Real.sqrt ((j + 3 : ℕ) : ℝ) ∧

@@ -959,3 +959,41 @@
   `XiHeatCassiniWoldOrbitChargeCompactOpenNoGo`, and
   `XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo` inspected;
   no duplicate theorem claimed.
+- **HCF vertical Gamma finite-difference tail.**  On the complete right half-plane,
+  the unit height increment of digamma has a uniform closed bound
+  `‖ψ(s + I) - ψ(s)‖ ≤ K / ‖s‖` beyond a finite threshold.  The proof uses the
+  corpus's order-zero shifted Stirling expansion at both endpoints, the exact
+  right-half-plane log quotient, and the two-term complex log Taylor remainder.
+  Thus a cross-height difference removes the archimedean `log |t|` growth and has
+  square-summable tail on a vertical lattice.  **HCF consequence:** this closes the
+  Gamma-tail component of a proposed cross-height/four-leg source trace, but not
+  its residue-preserving continuation or finite quadratic ceiling.  A single fixed
+  height shift is insufficient: equal-multiplicity transverse poles separated by
+  that shift can cancel in the difference.  Any viable frame must range over a
+  positive interval of shifts (or retain an equivalent four-leg label) so that such
+  collisions are avoidable.  Lean status:
+  `HTGeometry.GammaShiftLadder.exists_norm_digamma_vertical_unit_shift_le` passes
+  direct source check and target-only module build; its axiom audit is only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **2026 Hedenmalm spectral paper does not transfer the HCF producer.**  The corpus
+  already formalizes the paper's full boundary-solution classification and the
+  algebraic consequences of formal pair self-adjointness in
+  `HedenmalmSpectralInterpretationCompletion`.  Its stated remaining premise is a
+  positive source-derived Hilbert form on the full concrete eigenfunction domain.
+  Hence it cannot supply HCF's finite cross-shift quadratic source ceiling without
+  exactly the missing positivity/continuation law; treating formal self-adjointness
+  as such a ceiling would be circular.
+- **HCF archimedean source tail closes at the natural height-two increment.**  Since
+  `logDeriv Γℝ(s) = ψ(s / 2) / 2 - log(π) / 2`, shifting `s` by `2I` is exactly the
+  unit digamma shift.  Therefore the new closed theorem
+  `exists_norm_logDeriv_GammaR_vertical_two_shift_le` gives, uniformly on the full
+  right half-plane beyond a fixed radius,
+  `‖(logDeriv Γℝ)(s + 2I) - (logDeriv Γℝ)(s)‖ ≤ K / ‖s‖`.
+  **Route consequence:** the Gamma contribution to a height-two four-leg source
+  norm is summable and no longer competes at the zero-count scale.  The remaining
+  obstruction is sharply confined to the Euler/continuation side: construct a
+  finite positive four-leg source form whose continued residue cannot cancel over
+  a positive interval of height shifts.  Lean status:
+  `RHTower.HedenmalmCriticalFeatureVerticalGammaTail` is umbrella-wired, passes
+  direct `lake env lean` and target-only olean build; its public theorem audits
+  only with `propext`, `Classical.choice`, and `Quot.sound`.

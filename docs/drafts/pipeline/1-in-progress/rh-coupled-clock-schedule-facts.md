@@ -37,6 +37,10 @@ Promoted module:
 Named final audit passed:
 `lake build GaloisForLFunctions.RHTower.MobiusDivisorPrescribedClockBlock`.
 The module is imported by the RH umbrella; no full or umbrella build was run.
+Index refresh and whitespace checks passed. Global lint retains the same four
+unrelated unreachable modules recorded in `rh-finite-clock-counting-facts.md`;
+no new failure was reported. Owned Lean processes exited and the scratch Lean
+file was removed. Logs: `/tmp/hgt-coupled-clock-{proof,final-build,index,lint}.log`.
 
 Exact statement: for every finite prime core `P`, there is `T(P)` such that
 every prescribed prime `r>=T(P)` belongs to a prime core `Q` extending `P`

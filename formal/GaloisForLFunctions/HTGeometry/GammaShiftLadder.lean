@@ -286,6 +286,107 @@ theorem exists_norm_digamma_shift_ladder_expansion_le (mu : ℂ) (M : ℕ) :
   convert h using 2
   ring
 
+/-- **A vertical finite difference removes the logarithmic digamma growth.**
+On the right half-plane, the unit imaginary translate of digamma is uniformly
+`O(‖s‖⁻¹)`.  Unlike the horizontal ladder step, this is the source-side estimate
+needed when a height difference is used to remove the archimedean `log |t|` mode. -/
+theorem exists_norm_digamma_vertical_unit_shift_le :
+    ∃ K R : ℝ, 0 ≤ K ∧ 2 ≤ R ∧ ∀ s : ℂ, 0 < s.re → R ≤ ‖s‖ →
+      ‖(s + Complex.I).digamma - s.digamma‖ ≤ K / ‖s‖ := by
+  obtain ⟨C, R, hC, hR, hbound⟩ := exists_norm_digamma_shift_ladder_expansion_le 0 0
+  refine ⟨3 * C + 2, 2 * R, by linarith, by linarith, fun s hs hsize => ?_⟩
+  have hsR : R ≤ ‖s‖ := by linarith
+  have hs2 : (2 : ℝ) ≤ ‖s‖ := le_trans hR hsR
+  have hspos : 0 < ‖s‖ := by linarith
+  have hs0 : s ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hspos
+    linarith
+  have hshiftre : 0 < (s + Complex.I).re := by
+    rw [Complex.add_re, Complex.I_re]
+    simpa using hs
+  have htriangle := norm_sub_le (s + Complex.I) Complex.I
+  have hsub : s + Complex.I - Complex.I = s := by ring
+  rw [hsub, Complex.norm_I] at htriangle
+  have hhalf : ‖s‖ / 2 ≤ ‖s + Complex.I‖ := by linarith
+  have hshiftR : R ≤ ‖s + Complex.I‖ := by linarith
+  have hshiftpos : 0 < ‖s + Complex.I‖ := lt_of_lt_of_le (by linarith : 0 < R) hshiftR
+  have hbase : ‖s.digamma - Complex.log s‖ ≤ C / ‖s‖ := by
+    simpa using hbound s hs hsR
+  have hbaseShift : ‖(s + Complex.I).digamma - Complex.log (s + Complex.I)‖
+      ≤ C / ‖s + Complex.I‖ := by
+    simpa using hbound (s + Complex.I) hshiftre hshiftR
+  have hshiftdiv : C / ‖s + Complex.I‖ ≤ 2 * C / ‖s‖ := by
+    apply (div_le_div_iff₀ hshiftpos hspos).mpr
+    have hnonneg : 0 ≤ C * (2 * ‖s + Complex.I‖ - ‖s‖) :=
+      mul_nonneg hC (by linarith)
+    nlinarith
+  have hu : ‖Complex.I / s‖ = 1 / ‖s‖ := by
+    rw [norm_div, Complex.norm_I]
+  have huhalf : ‖Complex.I / s‖ ≤ 1 / 2 := by
+    rw [hu]
+    apply (div_le_iff₀ hspos).mpr
+    linarith
+  have hlogeq : Complex.log (s + Complex.I) - Complex.log s
+      = Complex.log (1 + Complex.I / s) := by
+    rw [log_sub_log_of_re_pos hshiftre hs]
+    congr 1
+    field_simp
+  have hrem := norm_log_one_add_sub_taylor_le' huhalf (n := 2) (by omega)
+  have hrem' : ‖Complex.log (1 + Complex.I / s) - Complex.I / s‖ ≤ ‖Complex.I / s‖ ^ 2 := by
+    simpa [Finset.sum_range_succ] using hrem
+  have hlog : ‖Complex.log (s + Complex.I) - Complex.log s‖ ≤ 2 / ‖s‖ := by
+    rw [hlogeq]
+    calc
+      ‖Complex.log (1 + Complex.I / s)‖ =
+          ‖(Complex.log (1 + Complex.I / s) - Complex.I / s) + Complex.I / s‖ := by
+            congr 1
+            ring
+      _ ≤ ‖Complex.log (1 + Complex.I / s) - Complex.I / s‖ + ‖Complex.I / s‖ :=
+        norm_add_le _ _
+      _ ≤ ‖Complex.I / s‖ ^ 2 + ‖Complex.I / s‖ := by gcongr
+      _ ≤ 2 / ‖s‖ := by
+        rw [hu]
+        have hq0 : 0 ≤ 1 / ‖s‖ := by positivity
+        have hq1 : 1 / ‖s‖ ≤ 1 := by
+          apply (div_le_one₀ hspos).mpr
+          linarith
+        have hqmul : (1 / ‖s‖) * (1 / ‖s‖) ≤ (1 / ‖s‖) * 1 :=
+          mul_le_mul_of_nonneg_left hq1 hq0
+        calc
+          (1 / ‖s‖) ^ 2 + 1 / ‖s‖ ≤ 1 / ‖s‖ + 1 / ‖s‖ := by
+            gcongr
+            simpa [pow_two] using hqmul
+          _ = 2 / ‖s‖ := by ring
+  have hdecomp : (s + Complex.I).digamma - s.digamma =
+      ((s + Complex.I).digamma - Complex.log (s + Complex.I)) +
+        (Complex.log (s + Complex.I) - Complex.log s) +
+          (Complex.log s - s.digamma) := by ring
+  rw [hdecomp]
+  have hbaseNeg : ‖Complex.log s - s.digamma‖ ≤ C / ‖s‖ := by
+    rw [show Complex.log s - s.digamma = -(s.digamma - Complex.log s) by ring, norm_neg]
+    exact hbase
+  calc
+    ‖((s + Complex.I).digamma - Complex.log (s + Complex.I)) +
+        (Complex.log (s + Complex.I) - Complex.log s) + (Complex.log s - s.digamma)‖
+        ≤ ‖((s + Complex.I).digamma - Complex.log (s + Complex.I)) +
+              (Complex.log (s + Complex.I) - Complex.log s)‖ + ‖Complex.log s - s.digamma‖ :=
+          norm_add_le _ _
+    _ ≤ ‖(s + Complex.I).digamma - Complex.log (s + Complex.I)‖ +
+            ‖Complex.log (s + Complex.I) - Complex.log s‖ + ‖Complex.log s - s.digamma‖ := by
+          simpa [add_comm, add_left_comm, add_assoc] using
+            add_le_add_left (norm_add_le ((s + Complex.I).digamma - Complex.log (s + Complex.I))
+              (Complex.log (s + Complex.I) - Complex.log s)) ‖Complex.log s - s.digamma‖
+    _ ≤ C / ‖s + Complex.I‖ + 2 / ‖s‖ + C / ‖s‖ := by
+      exact add_le_add (add_le_add hbaseShift hlog) hbaseNeg
+    _ ≤ (3 * C + 2) / ‖s‖ := by
+      calc
+        C / ‖s + Complex.I‖ + 2 / ‖s‖ + C / ‖s‖
+            ≤ 2 * C / ‖s‖ + 2 / ‖s‖ + C / ‖s‖ := by gcongr
+        _ = (3 * C + 2) / ‖s‖ := by
+          field_simp
+          ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

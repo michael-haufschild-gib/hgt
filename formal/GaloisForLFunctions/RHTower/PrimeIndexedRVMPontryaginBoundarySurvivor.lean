@@ -204,8 +204,8 @@ theorem routeKPontryaginScalarCompletion_det (b : ℝ) (z : ℂ) :
   rw [← Matrix.det_reindex_self routeKPontryaginIndexEquiv,
     reindex_routeKPontryaginScalar_detMatrix]
   rw [Matrix.det_fin_three]
-  simp [routeKPontryaginScalarDetMatrix] <;>
-    ring
+  simp [routeKPontryaginScalarDetMatrix]
+  ring
 
 theorem routeKPontryaginScalar_selfAdjoint_defect (b : ℝ) :
     routeKPontryaginScalarBase b - (routeKPontryaginScalarBase b)ᴴ =

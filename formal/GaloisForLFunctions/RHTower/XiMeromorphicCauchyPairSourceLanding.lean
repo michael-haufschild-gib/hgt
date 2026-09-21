@@ -54,6 +54,28 @@ theorem analyticOnNhd_meromorphicCauchyPairKernel_left
   exact ((analyticAt_id.sub analyticAt_const).pow 2).div
     (((analyticAt_id.sub analyticAt_const).pow 2).sub (analyticAt_const.pow 2)) hden
 
+/-- **Two-pole correction identity.**  Multiplying one divisor Cauchy pole
+by the rational pair kernel creates exactly two prescribed shift residues.
+Their signs are forced: the `w + eps` residue is negative when written with
+denominator `rho - w - eps`, while the `w - eps` residue is positive. -/
+theorem meromorphicCauchyPairKernel_mul_cauchy_threePole
+    (eps : ℝ) (w rho z : ℂ)
+    (hρp : rho - w - (eps : ℂ) ≠ 0)
+    (hρq : rho - w + (eps : ℂ) ≠ 0)
+    (hzρ : z ≠ rho)
+    (hzp : z - w - (eps : ℂ) ≠ 0)
+    (hzq : z - w + (eps : ℂ) ≠ 0) :
+    meromorphicCauchyPairKernel eps z w * (z - rho)⁻¹ =
+      meromorphicCauchyPairKernel eps rho w * (z - rho)⁻¹ +
+        (-(eps / 2 : ℂ)) * (rho - w - (eps : ℂ))⁻¹ *
+          (z - w - (eps : ℂ))⁻¹ +
+        (eps / 2 : ℂ) * (rho - w + (eps : ℂ))⁻¹ *
+          (z - w + (eps : ℂ))⁻¹ := by
+  rw [meromorphicCauchyPairKernel_eq_resolventDifference eps z w hzp hzq,
+    meromorphicCauchyPairKernel_eq_resolventDifference eps rho w hρp hρq]
+  field_simp [sub_ne_zero.mpr hzρ, hρp, hρq, hzp, hzq]
+  ring
+
 /-- Normalized inner continued-source contour for a rational pair row.  The
 observation pole locations are prescribed by `eps` and `w`, before any Xi
 divisor expansion. -/
