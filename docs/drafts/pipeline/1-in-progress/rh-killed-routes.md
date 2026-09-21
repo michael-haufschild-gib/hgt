@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**375 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**388 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,7 +11,7 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-21, `e318fb81324a3a253982b526510bf8af9c856af0`**.
+Source-audit cutoff: **2026-09-21, `801fdb77d99ae7989a85dd658e8943e7e5de8552`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
@@ -23,14 +23,14 @@ the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subrou
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 28 |
-| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 45 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 75 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 35 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 30 |
+| [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 47 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 79 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 37 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 55 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 57 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
-| [Other finite, scalar and source-blind selectors](#other) | 80 |
+| [Other finite, scalar and source-blind selectors](#other) | 81 |
 
 <a id="retired-labels"></a>
 
@@ -335,6 +335,8 @@ Source-native aperture invariant is required.
 - [CCM/O fixed affine and common-clock coercivity repairs](#no-go-352)
 - [CCM finite low-rank moment carriers](#no-go-363)
 - [CCM-FU copy-compatible positive processed-core metrics](#no-go-364)
+- [CCM-FU arbitrary cutoff growth](#no-go-376)
+- [CCM-FU bounded-quotient current-clock repayment](#no-go-377)
 
 <a id="no-go-294"></a>
 
@@ -809,6 +811,48 @@ Evidence: [processed-core homothety and weighted expansion](../../../../formal/G
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
 
+<a id="no-go-376"></a>
+
+### CCM-FU arbitrary cutoff growth
+
+**Closed result**
+
+For every fixed finite prime core, the first quotient cell has positive limiting mass and forces
+`W₁(P,M)/M² ≥ a_P log(M/2)` eventually. Given any prescribed core sequence and target heights,
+strictly increasing cutoffs can be chosen so the normalized clock energy exceeds every target.
+Therefore no common payment bound can hold for arbitrary, independently advancing cutoffs.
+
+**Survivor / still open**
+
+The exact first-cell source and deliberately coupled schedules survive. CCM-FU must construct one
+exhaustive prime/clock rule whose signed payments control each required wall; fixed-core thresholds
+cannot be treated as uniform in the growing core.
+
+Evidence: [finite-clock cutoff growth](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorFiniteClockCutoffGrowth.lean), [growth audit](rh-finite-clock-growth-boundary.md).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-377"></a>
+
+### CCM-FU bounded-quotient current-clock repayment
+
+**Closed result**
+
+After inserting a distant inherited prime debt, helper primes confined to bounded quotient depth
+cannot repay it, regardless of helper-set size or how far the cutoff later advances. Any successful
+repayment at cutoff `L` requires a fresh helper with `L/q ≥ eta log L`; old source samples outside
+the explicitly counted discarded set remain exactly preserved.
+
+**Survivor / still open**
+
+The preserved-sample lower bound is uniform in adaptive helper sets. An exhaustive producer may
+still use deeper actual child fields and their cross terms, but bounded-quotient stream or
+two-coordinate repairs are terminal.
+
+Evidence: [current-clock depth](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorCurrentClockDepth.lean), [depth audit](rh-current-clock-depth-facts.md).
+
+[Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
 <a id="arithmetic"></a>
 
 ## E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation
@@ -858,6 +902,8 @@ Evidence: [processed-core homothety and weighted expansion](../../../../formal/G
 - [E complete replica-cell coprime parity](#no-go-366)
 - [E global Kloosterman collision orientation](#no-go-367)
 - [HCF horizontal multiplicity-pole projection](#no-go-368)
+- [T1 exchange cancellation of finite covariance](#no-go-380)
+- [HC unlabelled exchange orientation](#no-go-381)
 
 <a id="no-go-296"></a>
 
@@ -1596,6 +1642,46 @@ Evidence: [horizontal-pole blindness](../../../../formal/GaloisForLFunctions/RHT
 
 [Back to family](#arithmetic) · [Current HCF frontier](rh-current-frontier-map.md#candidate-hcf)
 
+<a id="no-go-380"></a>
+
+### T1 exchange cancellation of finite covariance
+
+**Closed result**
+
+Swapping the two frequency--rapidity legs negates the phase but preserves the real damping
+amplitude. The exact moving-prime covariance obeys `star C(t,s)=C(s,t)`: exchanged cells are
+conjugates and add through their real part, rather than forming an alternating pair that cancels.
+
+**Survivor / still open**
+
+The anti-ordered timelike saddle remains. T1 needs a signed bound for the real prime-frequency
+covariance or a source law excluding anti-ordered support; leg exchange alone is terminal.
+
+Evidence: [Hermitian exchange](../../../../formal/GaloisForLFunctions/RHTower/XiMassTwoRapidityHermitianExchange.lean).
+
+[Back to family](#arithmetic) · [Current T1 frontier](rh-current-frontier-map.md#t1--theta-tail-core-current)
+
+<a id="no-go-381"></a>
+
+### HC unlabelled exchange orientation
+
+**Closed result**
+
+On every finite swap-stable unlabelled collision-pair carrier, the multiplicity-weighted signed
+horizontal displacement sums exactly to zero. Assigning only the order sign to the complete pair
+carrier is therefore void. The exchange-invariant square displacement survives and its full-pair
+sum is exactly twice the strictly oriented half.
+
+**Survivor / still open**
+
+HC requires an external label, a non-swap-stable domain or another genuine exchange-breaking
+source datum before cofinal scalarization. The positive squared displacement is reusable but does
+not provide the missing signed current.
+
+Evidence: [exchange-orientation no-go](../../../../formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionExchangeOrientationNoGo.lean).
+
+[Back to family](#arithmetic) · [Current HC frontier](rh-current-frontier-map.md#hc--horizontal-collision-charge)
+
 <a id="scattering"></a>
 
 ## HB, FZZ and PW: scattering and physical action
@@ -1673,6 +1759,10 @@ Evidence: [horizontal-pole blindness](../../../../formal/GaloisForLFunctions/RHT
 - [HB literal on-shell same-frequency, holomorphic or native-L2 realization](#no-go-316)
 - [HB spectral-root or physical-chamber cutoff-face escape](#no-go-326)
 - [FZZ real-factorized, symmetric and local-branch cross-depth orientation](#no-go-356)
+- [PW-B finite or summable positive atomic seams](#no-go-382)
+- [PW-B scalar and one-endpoint seam transmutation](#no-go-383)
+- [PTR finite three-port OAM ladder](#no-go-384)
+- [PTR bare-harmonic conormal recovery](#no-go-385)
 - [PTR global-clock, uniform-frame, scalar or positive-metric transfer](#no-go-357)
 - [PTR finite closed Floquet truncation](#no-go-358)
 
@@ -2937,6 +3027,86 @@ Evidence: [finite-ladder obstruction and infinite conormal target](../../../../f
 
 [Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
 
+<a id="no-go-382"></a>
+
+### PW-B finite or summable positive atomic seams
+
+**Closed result**
+
+Neither a finite positive target carrier nor a countable carrier with summable mass and first
+moment below the physical cutoff can realize the two reflected PW grades, even with an independent
+nonzero contact. The grade equations force a negative quantity where positive support gives a
+strictly positive weighted displacement sum.
+
+**Survivor / still open**
+
+PW-B must use unbounded reciprocal support or signed, complex or singular spectral transport.
+Positive atomic completion of bounded support is terminal.
+
+Evidence: [finite positive seam](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekFinitePositiveAtomicSeamNoGo.lean), [countable positive seam](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCountablePositiveAtomicSeamNoGo.lean).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
+<a id="no-go-383"></a>
+
+### PW-B scalar and one-endpoint seam transmutation
+
+**Closed result**
+
+One reciprocal endpoint would require incompatible scales for recoil energy and first-winding
+contact. Literal two-emission scalar coherence is positive and exchange symmetric. A common
+nonzero scalar contact cannot repair the relative coefficient between the full and square terms;
+the required equality reduces to the raw metric-numerator mismatch and would force a real Xi
+parameter.
+
+**Survivor / still open**
+
+The literal branch rates already realize PW spectral labels and full CTP completion has the right
+reflection-odd parity. What remains is a field-valued, channel-relative multi-event lift defect
+that changes magnitude, not a scalar normalization.
+
+Evidence: [single-endpoint no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSingleEndpointSeamNoGo.lean), [two-emission no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekTwoEmissionCoherenceNoGo.lean), [forced-contact no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekForcedContactScalarTransmutationNoGo.lean).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
+<a id="no-go-384"></a>
+
+### PTR finite three-port OAM ladder
+
+**Closed result**
+
+Nonzero helical charge produces four distinct locked OAM labels already at Floquet grades
+`0,1,2,3`. No `Fin 3` port readout can represent them faithfully, so the conservative three-port
+cell cannot realize the required grade-resolved ladder.
+
+**Survivor / still open**
+
+An infinite OAM carrier or a physical mode-folding law identifying selected labels survives. The
+existing finite temporal-Maxwell transfer remains valid but does not supply that law.
+
+Evidence: [finite OAM-port no-go](../../../../formal/GaloisForLFunctions/RHTower/PhotonicFiniteOAMPortLadderNoGo.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-385"></a>
+
+### PTR bare-harmonic conormal recovery
+
+**Closed result**
+
+No spectral-label-blind function of the bare photonic constitutive harmonic can equal the complete
+conormal family for every spectral parameter: one fixed output would need to be moderate at
+`Re s=1/2` and non-moderate at `s=0`.
+
+**Survivor / still open**
+
+The source boundary law must retain spectral or temporal matching data beyond instantaneous bare
+helicity. A rotating infinite sideband/OAM map with defect confinement remains possible.
+
+Evidence: [bare-harmonic no-go](../../../../formal/GaloisForLFunctions/RHTower/PhotonicBareHarmonicConormalNoGo.lean).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -2975,7 +3145,11 @@ Evidence: [finite-ladder obstruction and infinite conormal target](../../../../f
 - [RG literal totalized carrier-density continuity at real nodes](#no-go-359)
 - [BSH Boolean contraction and ordinary closed completion](#no-go-369)
 - [K-RVM unitary recovery and scalar completion of cofinal tails](#no-go-370)
+- [RG compact phase-flip certificate without cutoff growth](#no-go-387)
+- [singular theta metric as sole closed-graph coordinate](#no-go-388)
 - [SQB scalar modular cusp cutoff](#no-go-375)
+- [MSC threshold-tracked real-power rigging](#no-go-379)
+- [P/SP-E finite Lorentz-graph coercivity](#no-go-386)
 
 <a id="no-go-308"></a>
 
@@ -3565,6 +3739,46 @@ Laplacian requires non-scalar zero-mode transport or an explicit boundary compen
 Evidence: [horocycle cutoff rigidity](../../../../formal/GaloisForLFunctions/RHTower/MaassFiniteDeckHorocycleCutoffRigidity.lean).
 
 [Back to family](#theta) · [Current SQB frontier](rh-current-frontier-map.md#candidate-sqb)
+
+<a id="no-go-387"></a>
+
+### RG compact phase-flip certificate without cutoff growth
+
+**Closed result**
+
+Any compact Gaussian center-minimum certificate whose interval reaches `pi/epsilon` must pay an
+explicit elementary peak through digamma gain and retained prime oscillation. The digamma channel
+has an explicit bound and the finite prime slope mass is at most `cutoff·log(cutoff)^2`, yielding a
+deterministic lower budget for every such phase-flip certificate.
+
+**Survivor / still open**
+
+Growing-cutoff certificates remain possible. RG must construct them uniformly in center and width
+with signed Suzuki seam control; compactness alone cannot hide the phase-flip cost.
+
+Evidence: [peak obstruction](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianCertificatePeakObstruction.lean), [digamma bound](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianCertificatePhaseFlipDigammaBound.lean), [cutoff budget](../../../../formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianCertificatePhaseFlipCutoffBudget.lean).
+
+[Back to family](#theta) · [Current RG frontier](rh-current-frontier-map.md#rg--gaussian-arithmetic-and-suzuki-transport-positivity)
+
+<a id="no-go-388"></a>
+
+### singular theta metric as sole closed-graph coordinate
+
+**Closed result**
+
+The source-faithful theta metric is injective and preserves the literal source-pencil kernel, but
+it is not bounded below and its range is not closed. Consequently a closed relation realizing the
+same metric pencil cannot obtain its domain topology from the metric coordinate alone.
+
+**Survivor / still open**
+
+The exact Xi divisor, repaired closed differential pencil and incoming-minus-outgoing two-port
+Green law survive. An index-one dilation needs a genuinely new closed-graph coordinate and a
+source-derived capacity/index theorem.
+
+Evidence: [metric-pencil divisor](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaMetricPencil.lean), [closed-range barrier](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaMetricClosedGraphBarrier.lean), [differential Green law](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean).
+
+[Back to family](#theta) · [Shared theta interface](rh-current-frontier-map.md#singular-theta-metric-and-differential-pencil-interface)
 
 <a id="completion"></a>
 
@@ -5272,6 +5486,7 @@ Evidence: [forward-bridge no-go](../../../../formal/GaloisForLFunctions/RHTower/
 - [centered abelian zeta-gas socle limit](#no-go-263)
 - [continuous Beurling regularity or thin-deletion asymptotics](#no-go-019)
 - [CTF finite positivity, fixed-tail weight, or perturbative bounded repair](#no-go-002)
+- [CTF bounded moving-tail `L¹` compactness](#no-go-378)
 - [diagonal thermofield purification](#no-go-226)
 - [differential-algebraic arithmetic heat carrier](#no-go-095)
 - [direct prime Ising](#no-go-262)

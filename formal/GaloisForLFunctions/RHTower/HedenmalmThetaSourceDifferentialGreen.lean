@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.HedenmalmThetaSourceDifferentialPencil
 import GaloisForLFunctions.RHTower.HedenmalmThetaMetricCommutator
+import GaloisForLFunctions.RHTower.HedenmalmPinnedBoundaryTwoPort
 
 /-!
 # Green law for the closed source-faithful theta differential pencil
@@ -22,6 +23,9 @@ open HedenmalmQuantile HedenmalmHilbertSchmidt HedenmalmClosedWeightedDerivative
   HedenmalmFredholmRange GaloisForLFunctions.HTGeometry
 
 private abbrev H := Lp ℂ 2 unitIntervalMeasure
+
+private local instance thetaSourceDifferentialGreenComplete : CompleteSpace thetaCentered :=
+  thetaCentered_isClosed.completeSpace_coe
 
 /-- On the centered coordinate hyperplane, the closed-pencil inverse coordinate is the literal
 theta source inverse. -/
@@ -118,6 +122,57 @@ theorem thetaSourceDifferentialRangeMap_metricGreen
     map_add, map_smul, inner_add_right, inner_smul_right,
     inner_add_left, inner_smul_left]
   linear_combination thetaCenteredSourceInverse_metricGreen k l
+
+/-- The bounded coordinate whose range is the graph of the literal closed source pencil. -/
+def thetaSourceDifferentialGraphCoordinate (z : ℂ) : thetaCentered →L[ℂ] (H × H) :=
+  thetaCenteredSourceInverse.prod (thetaSourceDifferentialRangeMap z)
+
+/-- The graph coordinate is injective because the exact closed-pencil graph controls its source
+coordinate from below. -/
+theorem thetaSourceDifferentialGraphCoordinate_injective (z : ℂ) :
+    Function.Injective (thetaSourceDifferentialGraphCoordinate z) := by
+  rcases thetaSourceDifferentialGraphMap_antilipschitz z with ⟨c, hc⟩
+  exact hc.injective
+
+/-- The literal closed-pencil graph is the range of its bounded graph coordinate. -/
+theorem thetaSourceDifferentialPencil_graph_eq_coordinate_range (z : ℂ) :
+    (thetaSourceDifferentialPencil z).graph =
+      LinearMap.range (thetaSourceDifferentialGraphCoordinate z).toLinearMap := by
+  simpa only [thetaSourceDifferentialPencil, thetaSourceDifferentialGraphCoordinate] using
+    (closedGraphTransform_graph thetaCentered thetaCenteredSourceInverse
+      (thetaSourceDifferentialRangeMap z) thetaCenteredSourceInverse_injective)
+
+/-- The bounded graph coordinate has closed range, so graph traces can be transported without
+passing to the nonclosed singular-metric range. -/
+theorem thetaSourceDifferentialGraphCoordinate_isClosed_range (z : ℂ) :
+    IsClosed (Set.range (thetaSourceDifferentialGraphCoordinate z)) := by
+  rcases thetaSourceDifferentialGraphMap_antilipschitz z with ⟨c, hc⟩
+  exact hc.isClosed_range (thetaSourceDifferentialGraphCoordinate z).uniformContinuous
+
+/-- Incoming and outgoing scalar ports in the bounded source coordinate. -/
+def thetaSourceDifferentialPortPair : thetaCentered →L[ℂ] (ℂ × ℂ) :=
+  (pinnedBoundaryInPort.comp thetaCentered.subtypeL).prod
+    (pinnedBoundaryOutPort.comp thetaCentered.subtypeL)
+
+@[simp] theorem thetaSourceDifferentialPortPair_apply (k : thetaCentered) :
+    thetaSourceDifferentialPortPair k =
+      (pinnedBoundaryInPort (k : H), pinnedBoundaryOutPort (k : H)) := by
+  rfl
+
+/-- Bounded two-port trace on the actual closed-pencil graph, represented by its closed range. -/
+noncomputable def thetaSourceDifferentialGraphTrace (z : ℂ) :
+    (thetaSourceDifferentialGraphCoordinate z).range →L[ℂ] (ℂ × ℂ) :=
+  thetaSourceDifferentialPortPair.comp
+    ((thetaSourceDifferentialGraphCoordinate z).equivRange
+      (thetaSourceDifferentialGraphCoordinate_injective z)
+      (thetaSourceDifferentialGraphCoordinate_isClosed_range z)).symm.toContinuousLinearMap
+
+/-- The graph trace recovers the source ports exactly on every graph coordinate. -/
+theorem thetaSourceDifferentialGraphTrace_apply (z : ℂ) (k : thetaCentered) :
+    thetaSourceDifferentialGraphTrace z
+      ⟨thetaSourceDifferentialGraphCoordinate z k, ⟨k, rfl⟩⟩ =
+        thetaSourceDifferentialPortPair k := by
+  simp [thetaSourceDifferentialGraphTrace]
 
 end
 

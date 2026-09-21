@@ -133,6 +133,68 @@ theorem ccmFUSuzukiCriticalMertensDeviationVariationAction_eq_zeroClock_add_dela
     hend, ccmFUSuzukiCriticalCauchyVolterraCells_eq_delayedChargeTransport hH]
   field_simp [hYne, hHne]
 
+/-- The sole RH-bearing arithmetic observable remaining after exact FU completion. -/
+def ccmFUSuzukiCriticalDelayedChargeTransform (H : ℝ) : ℝ :=
+  (64 / (Real.exp (H / 2) ^ 2 * H ^ 4)) *
+      ccmFUSuzukiCriticalActiveDelayedCharge H (Real.exp (H / 2)) +
+    ∫ y in 1..Real.exp (H / 2), cauchyVolterraFUCurvature H y *
+      (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ 2)
+
+/-- Uniform control of the literal completed delayed-charge transform. -/
+def CCMFUSuzukiCriticalDelayedChargeTransformBound : Prop :=
+  ∃ C : ℝ, 0 ≤ C ∧ ∀ H : ℝ, 2 ≤ H →
+    |ccmFUSuzukiCriticalDelayedChargeTransform H| ≤ C
+
+/-- Exact frontier reduction: the delayed-charge transform is bounded precisely when the
+literal critical prime--polar variation action is bounded.  The zero-clock contribution is the
+only discarded term, and has an unconditional finite budget. -/
+theorem ccmFUSuzukiCriticalDelayedChargeTransformBound_iff_mertensDeviationVariationActionBound :
+    CCMFUSuzukiCriticalDelayedChargeTransformBound ↔
+      CCMFUSuzukiCriticalMertensDeviationVariationActionBound := by
+  let B : ℝ := |suzukiCheckpointCriticalMertensDeviation 0| * (32 * Real.sqrt 3)
+  have hB0 : 0 ≤ B := by
+    dsimp only [B]
+    positivity
+  have hbase : ∀ H : ℝ, 2 ≤ H →
+      |suzukiCheckpointCriticalMertensDeviation 0 *
+        suzukiCheckpointCriticalTriangularMultiplier H 0| ≤ B := by
+    intro H hH
+    rw [abs_mul]
+    exact mul_le_mul_of_nonneg_left
+      (abs_suzukiCheckpointCriticalTriangularMultiplier_zero_le hH) (abs_nonneg _)
+  have hsplit : ∀ H : ℝ, 2 ≤ H →
+      suzukiCheckpointCriticalVariationAction suzukiCheckpointCriticalMertensDeviation H =
+        suzukiCheckpointCriticalMertensDeviation 0 *
+          suzukiCheckpointCriticalTriangularMultiplier H 0 +
+        ccmFUSuzukiCriticalDelayedChargeTransform H := by
+    intro H hH
+    rw [ccmFUSuzukiCriticalMertensDeviationVariationAction_eq_zeroClock_add_delayedChargeTransport hH]
+    unfold ccmFUSuzukiCriticalDelayedChargeTransform
+    ring
+  constructor
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨B + C, add_nonneg hB0 hC0, ?_⟩
+    intro H hH
+    rw [hsplit H hH]
+    exact (abs_add_le _ _).trans (add_le_add (hbase H hH) (hC H hH))
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C + B, add_nonneg hC0 hB0, ?_⟩
+    intro H hH
+    have hrearrange : ccmFUSuzukiCriticalDelayedChargeTransform H =
+        suzukiCheckpointCriticalVariationAction suzukiCheckpointCriticalMertensDeviation H -
+          suzukiCheckpointCriticalMertensDeviation 0 *
+            suzukiCheckpointCriticalTriangularMultiplier H 0 := by
+      rw [hsplit H hH]
+      ring
+    rw [hrearrange]
+    exact (abs_sub _ _).trans (add_le_add (hC H hH) (hbase H hH))
+
+/-- The remaining delayed-charge transform estimate is exactly equivalent to RH. -/
+theorem ccmFUSuzukiCriticalDelayedChargeTransformBound_iff_riemannHypothesis :
+    CCMFUSuzukiCriticalDelayedChargeTransformBound ↔ RiemannHypothesis := by
+  rw [ccmFUSuzukiCriticalDelayedChargeTransformBound_iff_mertensDeviationVariationActionBound,
+    ccmFUSuzukiCriticalMertensDeviationVariationActionBound_iff_riemannHypothesis]
+
 end
 
 end RHTower
