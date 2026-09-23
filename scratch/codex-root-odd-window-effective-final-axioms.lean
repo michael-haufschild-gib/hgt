@@ -1,0 +1,5 @@
+import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileOddWindowEffectiveResistanceEscape
+
+#print axioms RHTower.ccmOddLogWindowMismatchMass_le_baseExceptionalMass
+#print axioms RHTower.tendsto_ccmOddLogWindowBaseExceptionalMass_atTop
+#print axioms RHTower.tendsto_ccmOddLogWindowEffectiveGraphResistance_atTop

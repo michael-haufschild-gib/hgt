@@ -1,14 +1,26 @@
 # CLG/TTF: remaining compact determinant incidence
 
-**Classification:** `[BRIDGE]`. The inner endpoint `0≤x≤8/95` remains a target, not a proved source-positivity result. RH remains unproved.
+**Classification:** `[BRIDGE]`. RH remains unproved. The raw determinant identity and the unit-cube determinant reserve are now proved; the middle comparison, the integrated rank-seven sign and all-order positivity are not.
 
 **Full chain:** literal theta source → every signed center-mixed Hankel section nonnegative → Fourier-current sign → Xi Bezoutian orientation → RH.
 
-## Exact remaining identity
+## The raw determinant identity is closed
 
-`HTGeometry.evenCompactRawDet u a w = HTGeometry.evenCompactRawPolynomial u a w`.
+`HTGeometry.evenCompactRawDet u a w = HTGeometry.evenCompactRawPolynomial u a w`
+is a theorem in
+[`PolynomialODEEvenCompactGapDeterminantIdentity`](../../../../../formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactGapDeterminantIdentity.lean),
+together with the polynomial form
+`evenCompactGapDetPolynomial u w = evenCompactGapTablePolynomial u w`.
 
-The left side is the complete signed four-by-four source determinant with last-entry correction `10^12 Q(3Q−6/19)`, divided by `100^12`. Here `Q=u²/24+a/16−3/8`. The right side retains 2460 monomials in twenty-one gap degrees. Its definition is checked; its equality to the determinant is not.
+The left side is the complete signed four-by-four source determinant with last-entry correction `10^12 Q(3Q−6/19)`, divided by `100^12`. Here `Q=u²/24+a/16−3/8`. The right side retains 2460 monomials in twenty-one gap degrees.
+
+Consequently
+[`PolynomialODEEvenCompactDeterminant`](../../../../../formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactDeterminant.lean)
+now proves `evenCompactUnitDet_eq_polynomial` and
+
+`evenCompactUnitDet_lower : 0≤r → r≤1 → 0≤t → t≤1 → 0≤v → v≤1 → 1/1000 ≤ evenCompactUnitDet r t v`,
+
+the compact determinant reserve on the full unit cube. Both audits report only `propext`, `Classical.choice` and `Quot.sound`. This is the inner comparison the card was blocked on; it is not the remaining middle comparison and not RH.
 
 Every following substitution is checked:
 
@@ -17,13 +29,18 @@ Every following substitution is checked:
 3. All twelve drift-graded block identities and all twenty-one coefficient identities landing `H_0` in the independently positive polynomial `T`.
 4. The exact unit-to-raw determinant transport from the seven complete source-moment identities.
 
-The existing `T≥1/1000` theorem and actual source-coordinate/correction theorems cannot prove the inner endpoint until the displayed raw identity is closed.
+The determinant and raw table have exact lifts to `Polynomial ℝ` in the gap variable. All seven source-polynomial evaluation identities and degree bounds are proved, and both complete polynomials have degree at most twenty. All twenty-one target-table coefficient identities are proved without expanding their scalar grades. **All twenty-one determinant coefficient identities are now proved**, degrees `0–20`, and `evenCompactGapDetPolynomial_eq_table` closes the extensionality step by `Polynomial.ext` over those twenty-one identities plus the two `natDegree ≤ 20` bounds. The lifts copy existing algebraic expressions, and separate evaluation theorems verify them; no external coefficient computation is used.
 
-The determinant and raw table now have exact lifts to `Polynomial ℝ` in the gap variable. All seven source-polynomial evaluation identities and degree bounds are proved, and both complete polynomials have degree at most twenty. All twenty-one target-table coefficient identities are also proved without expanding their scalar grades. The remaining identity therefore reduces to the determinant coefficient identities and final polynomial extensionality. The determinant coefficient identities at gap degrees `0,1,2,3,12,13,14,15,16,17,18,19,20` are proved. Degrees `4–11` remain open. The lifts copy existing algebraic expressions, and separate evaluation theorems verify them; no external coefficient computation is used.
+Degrees `8–11` were closed by the seven-term cofactor split. Two packaging defects had to be repaired first.
+
+- `PolynomialODEEvenCompactGapCofactorTerm0Slice8` was **vacuous**: `compactGapCofactorHigherCertified%` normalizes with a `norm_num` list that unfolds `evenCompactGapHeadPolynomial` and `evenCompactGapCofactorTerm1…6` but **not** `evenCompactGapCofactorTerm0`, so the conv made no progress and `goal.refl` returned `value := (evenCompactGapCofactorTerm0 u w).coeff 8`. The certificate was true and carried no normalization. The repair follows the slice-seven pattern: factor `Term0 = Head · (ReflectedTwelve + Correction)`, convolve with `evenCompactGapCoeff_mul_N`, and normalize the factored scalar. This required the new `PolynomialODEEvenCompactGapHeadSlice8…11`. A vacuous certificate is detectable by olean size: the module went from 0.2 MB to 64 MB once it normalized.
+- The per-degree slice modules each declared `Term{i}{Left,Right}Slice{k}Certificate` for every `k ≤ N`, so indices `0–8` were declared four times across degrees `8–11`. Each module built alone; the first module importing two of them failed with `environment already contains …`. Since those declarations are the same object at every degree, they are hoisted into `PolynomialODEEvenCompactGapCofactorTerm{i}FactorSlices` (indices `0–11`, declared once) which degrees `9–11` consume. Degree eight keeps its original modules.
+
+Index eleven needed `evenCompactGapCoeff_mul_11`, which is added in `PolynomialODEEvenCompactGapTopCoefficients` and used by `PolynomialODEEvenCompactGapCofactorTopNormalizer`, a separate normalizer so that the existing `…CofactorHigherNormalizer` and everything downstream of it are not invalidated.
 
 The complete determinant also has an exact weighted reflection at degree twenty. Its coefficient at `20−n` equals coefficient `n` of the reflected determinant for `n≤20`. The correction has gap degree at most two, so its first six reflected coefficients vanish. The leading determinant coefficient follows from the weighted source degrees `2,3,…,8`; coefficients one and sixteen through nineteen use exact finite product formulas. Explicitly unrolled product coefficients through index ten avoid expanding source expressions while summation indices remain symbolic.
 
-The seven source polynomials have 41 independently proved normalized coefficients and complete bounds annihilating higher coefficients. The complete determinant has an exact seven-term cofactor decomposition. The leading cofactor’s coefficients zero through four and all three coefficients of the full correction are checked. All seven cubic contributions and their exact determinant sum are proved. At degree four, contributions zero through four are proved; contributions five and six and the final sum remain open. All normalization remains inside Lean and retains the exact source equality; external computations supply no premise.
+The seven source polynomials have 41 independently proved normalized coefficients and complete bounds annihilating higher coefficients. The complete determinant has an exact seven-term cofactor decomposition. The leading cofactor’s coefficients zero through four and all three coefficients of the full correction are checked. All seven cubic contributions and their exact determinant sum are proved, and every cofactor contribution at degrees four through eleven is now proved and assembled. All normalization remains inside Lean and retains the exact source equality; external computations supply no premise.
 
 ## Checked formal boundary
 
@@ -39,7 +56,7 @@ Do not repeat the monolithic determinant checks or raise their limits. The raw `
 
 The remaining raw gap coefficients must stay separately bounded. The generic cofactor degree bound uses explicit product, power, sum and difference bounds; automatic degree inference on abstract polynomial inputs was too expensive. Direct formulas for product coefficients zero and one, followed by a separate source-coefficient normalization, close gap degree one with a measured 1.6 GB physical footprint. The degree-two candidate reaches expensive proof-term traversal at 4.4 GB; isolating its final scalar proof with the corpus’s `as_aux_lemma` pattern reaches kernel checking at 6.4 GB but did not complete within the three-minute limit. Both degree-two processes were interrupted and exited. The source-cache form closes degrees twelve through fifteen within the same 500000-heartbeat budget. Degree twelve completed module serialization after reaching a measured 12.0 GB physical footprint in `CollectAxioms`/`FoldConsts`; lower reversed degrees must be split before checking, rather than extending that whole-coefficient proof form. The checked seven-term cofactor split now closes degree two. Direct `grind only` after full coefficient expansion also exhausted the unchanged heartbeat budget; the checked replacement uses independently normalized cofactor identities. Do not rerun superseded whole-coefficient proof forms or raise their limits. A resource failure is not a mathematical counterexample.
 
-`pending-lean/` preserves the unsuccessful raw proof forms, the untested degree-four cofactor/assembly and degree-five/reversed-degree-ten/eleven candidates, and the untested determinant/source capstones. Superseded degree-two, degree-three and degree-fifteen candidates are removed; their checked replacements are installed. These are research candidates outside the formal corpus; do not install or wire them before successful checks. If the raw identity closes, the pending capstones target determinant reserve `10^21 M(x)^8`, inner strictness for every `C≥10^12`, and canonical weighted strictness outside the remaining explicit middle interval. Those conclusions are not yet established.
+`pending-lean/` preserves the unsuccessful raw proof forms, the untested degree-four cofactor/assembly and degree-five/reversed-degree-ten/eleven candidates, and the untested determinant/source capstones. Superseded degree-two, degree-three and degree-fifteen candidates are removed; their checked replacements are installed. These are research candidates outside the formal corpus; do not install or wire them before successful checks. `PolynomialODEEvenCompactDeterminant` has been checked against the closed raw identity and is now installed and wired; the remaining pending capstones target determinant reserve `10^21 M(x)^8`, inner strictness for every `C≥10^12`, and canonical weighted strictness outside the remaining explicit middle interval. Those conclusions are not yet established.
 
 ## Computation boundary
 

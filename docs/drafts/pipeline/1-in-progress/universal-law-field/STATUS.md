@@ -1,12 +1,16 @@
 # Universal-law corpus facts
 
-Updated: 2026-09-15
+Updated: 2026-09-23
 
 Scope: compressed facts and logically forced design constraints extracted from audited positive theorems, negative no-gos, frontier branches, and RH endpoints. No active conjectures or work log.
 
 ## RH: route-independent research constraints
 
 - **Must verify both sides of the moment cone when deforming a nonnegative finite spectral carrier.** After fixing one atom `x` in an `N`-atom head of mass `E` and quadratic energy `F`, the remaining atoms require `(E-x)²/(N-1) ≤ F-x² ≤ (E-x)²`. The Cauchy lower bound alone does not certify nonnegative atoms. The [one-atom residual-window theorems](../../../../../formal/GaloisForLFunctions/RHTower/FiniteOneHeadResidualWindow.lean) prove a positive interval only after checking the upper bound separately; no zero-location conclusion follows from this finite constraint.
+
+- **Must match complete padded carrier vectors at support-count seams before using an intermediate-value argument.** Equal moments on neighboring branches do not ensure a continuous choice of atoms. At integer effective rank `k`, a reverse branch with `k` equal atoms of size `A/k` agrees coordinatewise after padding with the neighboring `(k+1)` branch, whose extra atom is zero. The [finite-fold selector theorem](../../../../../formal/GaloisForLFunctions/RHTower/FiniteReverseResidualSelector.lean) proves continuity from these seam identities wherever residual mass and energy are positive. The [branch moment theorem](../../../../../formal/GaloisForLFunctions/RHTower/FiniteReverseResidualBranchMoments.lean) separately proves nonnegative atoms and exact first two moments when the selected rank lies within its finite slot count.
+
+- **Must supply an all-order source representation or an independent divisor identity beyond any finite-jet carrier.** A nonnegative finite head can match the completed source's first three relevant power sums exactly and unconditionally; the [exact carrier theorem](../../../../../formal/GaloisForLFunctions/RHTower/XiPrimeMarkedFiniteSixthExactCarrier.lean) proves this without RH. Every fixed finite Hankel block has infinitely many unrestricted moment-sequence extensions by the [finite-face theorem](../../../../../formal/GaloisForLFunctions/HTGeometry/FiniteHankelBoundaryExtensionClass.lean), so finite data do not determine later moments. Representing every canonical source moment by one positive measure implies RH by the [moment-representation capstone](../../../../../formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean); the finite match alone establishes neither that representation nor Xi's divisor.
 
 - **Must retain the harmonic powers and time moments of the source observable being matched.** A finite sum of exponential modes cannot reproduce an exponential times a nonconstant affine time factor, even with freely chosen or repeated frequencies. Such a factor can arise from differentiating the source pairing without asserting a multiple arithmetic zero or a defective physical mode. The [original source-clock audit](../../5-failed/hb-original-source-clock-rigidity.md) derives both retained moment coordinates and an exact quartic-clock integral for the complete action; the representation alone supplies no vanishing law.
 

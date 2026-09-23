@@ -1915,3 +1915,265 @@ weight and trace land on `XiZeroCopy`.  Remaining source theorem is exact evalua
 height-local weighted polar--Gamma Stokes trace from pole/Gamma/von-Mangoldt data, followed by the
 `21N/100+o(N)` ceiling (`4N/25+o(N)` is the stronger target).  `(PS11)`--`(PS12)` remove the local
 counterterm and multiplicity ambiguity; they do not supply that global quantitative estimate.
+
+## Cross-channel sign is forced, not accidental (closed)
+
+The open bridge above asks for "a direct bound for the negative cross channel". That option is now
+closed for every finite Laplace weight, not only for the two-width annulus.
+
+Write a weight as `W(u) = sum_i c_i exp(-b_i |u|)`. Pairing two Ward responses at common advance
+`A = a_q + a_q'` and integrating gives the spatial cross kernel
+
+```text
+K_A(D) = sum_i 2 c_i (A+b_i) / ((A+b_i)^2 + D^2),     D = gamma_q - gamma_q'.
+```
+
+Each Lorentzian has real-line mass `2 pi` independently of its width, so
+
+```text
+integral_R K_A(D) dD = 2 pi * sum_i c_i = 2 pi * W(0),                     (MASS)
+```
+
+for every advance and every choice of widths. Baseline cancellation is exactly `W(0) = 0`. A
+continuous nonnegative function of zero mass vanishes identically, so:
+
+- **No-go.** A finite Laplace weight cannot both cancel the width-independent baseline and keep a
+  nontrivial nonnegative spatial cross kernel. Any baseline-cancelling weight whose cross kernel is
+  not identically zero takes a strictly negative value. The sign change observed for
+  `exp(-6u/5) - exp(-16u/5)` is therefore forced by `(MASS)`, not a defect of that particular pair.
+- **Positive survivor.** `(MASS)` is an exact budget law: if a cross kernel is nonnegative, its mass
+  on every measurable set is at most `2 pi W(0)`. The baseline leak is the entire cross-kernel
+  budget, with no dependence on the advance or on the widths. Trading a small leak `W(0) = eps` for
+  cross positivity buys total cross mass exactly `2 pi eps`.
+
+Lean: `formal/GaloisForLFunctions/RHTower/WardAnnulusCrossKernelMassRigidity.lean` —
+`integral_annulusCrossKernel` `(MASS)`, `setIntegral_annulusCrossKernel_le` (budget),
+`annulusCrossKernel_eq_zero_of_nonneg`, `exists_annulusCrossKernel_neg`,
+`wardBaselineCancellingNonnegativeCrossKernelRouteKilled` (route class),
+`exists_wardTwoWidthAnnulusCrossKernel_neg` (the card's own annulus). Wired into `RHTower`; targeted
+build and axiom audit pass with only `propext`, `Classical.choice`, `Quot.sound`.
+
+Consequence for the programme: of the two options named in the open bridge, only "a source-faithful
+trace/randomization" survives. Diagonal domination by weight design is impossible at every finite
+order, so `(EG75)` needs genuine cancellation among the cross terms, not a sign-definite kernel.
+This closes a candidate class; it does not prove `(HC75)`, `(EG75)`, or RH.
+
+## Exact window mass and the local survivor
+
+The no-go above is the `rho -> infinity` limit of an exact identity. For the same finite mixture,
+
+```text
+integral_(-rho)^(rho) K_A(D) dD = 4 sum_i c_i arctan(rho/(A+b_i)).            (WINDOW)
+```
+
+Letting `rho -> infinity` gives `(MASS)`. Nonnegativity of the cross kernel on `[-rho,rho]` is
+therefore the exact arctangent inequality `sum_i c_i arctan(rho/(A+b_i)) >= 0`, and with zero leak
+`sum_i c_i = 0` this is equivalent to `sum_i c_i arctan((A+b_i)/rho) <= 0`.
+
+For the two-width annulus with coefficients `1, -1` the sign locus factors completely:
+
+```text
+K_A(D) = 2((A+b_1)-(A+b_0))((A+b_0)(A+b_1) - D^2)
+           / (((A+b_0)^2+D^2)((A+b_1)^2+D^2)),
+K_A(D) >= 0  <=>  D^2 <= (A+b_0)(A+b_1).                                      (RADIUS)
+```
+
+So the positivity radius is exactly `rho = sqrt((A+b_0)(A+b_1))`; this proves, rather than observes,
+the sign-change locus recorded in `wardAnnulusCrossKernel_eq`.
+
+**Local survivor.** Inside the positivity radius the cross channel costs nothing. If every pairwise
+ordinate separation of a finite nonnegative family lies in `[-rho,rho]`, the full quadratic form
+dominates its diagonal, so the fixed quantum applies verbatim to that family. The method therefore
+delivers a clustered form of the count: off-line multiplicity is controlled within every ordinate
+cluster of diameter `sqrt((A+b_0)(A+b_1))`, which at a fixed Euler shift is `O(1)`, i.e. about
+`log T / 2 pi` mean gaps.
+
+**The remaining tension is now quantitative.** Covering a dyadic window needs `rho >= T`, hence
+`b_1 >= T^2/(A+b_0)`. But the `Gamma` census baselines of the two shifts cancel in `E_(h_0) - E_(h_1)`
+only while both shifts stay below the height: `Re psi((h+1/2+it)/2) = log(|t|/2) + O(h/|t|)`, and the
+residue turns into `(1/2) log(h_1/|t|)` once `h_1 >> |t|`. At `b_1 ~ T^2` the residue in the energy
+difference is of order `T log^2 T`, larger by `log T` than the whole quantum budget `pi R <= pi N`.
+Buying radius and keeping baseline cancellation are the same resource.
+
+Lean: `formal/GaloisForLFunctions/RHTower/WardAnnulusCrossKernelWindowMass.lean` —
+`intervalIntegral_annulusCrossKernel` `(WINDOW)`, `sum_arctan_nonneg_of_annulusCrossKernel_nonneg`,
+`annulusCrossKernel_two_eq` and `annulusCrossKernel_two_nonneg_iff` `(RADIUS)`,
+`sum_annulusCrossKernel_ge_diagonal` (local survivor). Wired into `RHTower`; targeted build and
+axiom audit pass with only `propext`, `Classical.choice`, `Quot.sound`.
+
+Next open item for this lane: a lower bound for the `Gamma`-baseline residue of `E_(h_0) - E_(h_1)`
+as a function of the shift gap, to turn the displayed tension into a proved exclusion of the whole
+two-parameter family rather than a scaling argument.
+
+## Baseline cancellation buys no cross budget (the two-parameter family is excluded)
+
+The scaling tension recorded above is now a theorem about the weight family itself, with no
+appeal to `Gamma` asymptotics.
+
+Every arctangent of a nonnegative argument lies in `[0, pi/2)`, so `(WINDOW)` gives, for every
+advance, every set of widths and every window radius,
+
+```text
+integral_(-rho)^(rho) K_A <= 2 pi * sum_i max(c_i, 0).                        (CEILING)
+```
+
+Only the positive part of the coefficient family appears. Imposing the baseline cancellation
+`sum_i c_i = 0` sets the *total* mass to zero but leaves `(CEILING)` untouched; in that case it
+reads `integral_(-rho)^(rho) K_A <= pi * sum_i |c_i|`. So the window budget is exactly what the
+positive part alone would supply, and cancelling the width-independent baseline contributes nothing
+to it.
+
+The two-width case is exact. Write the widths as `rho/r` and `rho*r` with `r > 1`; their product is
+`rho^2`, so by `(RADIUS)` the positivity radius is precisely `rho`, and there
+
+```text
+integral_(-rho)^(rho) K_A = 8 arctan r - 2 pi < 2 pi.                         (SAT)
+```
+
+The budget increases with the width ratio `r^2` and saturates at `2 pi`, the mass of a *single*
+Lorentzian. Buying positivity radius therefore drives the annulus into a single exponential in
+every quantity the argument can use: the leak is formally zero at `u = 0` but the usable cross
+budget converges to that of the uncancelled weight `exp(-b_0|u|)`.
+
+Consequence for `(EG75)`: the two-parameter annulus family is excluded as a source of a global
+diagonal-domination bound, not by a scaling estimate but by `(CEILING)` and `(SAT)`. Any advance
+must come from the surviving option, a source-faithful trace or randomization, or from a weight
+class outside the finite Laplace mixtures. The local survivor
+`sum_annulusCrossKernel_ge_diagonal` is unaffected and still gives the clustered count.
+
+Lean: `formal/GaloisForLFunctions/RHTower/WardAnnulusCrossKernelBudgetCeiling.lean` —
+`intervalIntegral_annulusCrossKernel_le_positivePart` `(CEILING)`,
+`intervalIntegral_annulusCrossKernel_le_of_sum_eq_zero`,
+`intervalIntegral_annulusCrossKernel_two_at_radius` `(SAT)`. Wired into `RHTower`; targeted build
+and axiom audit pass with only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Deficit law: the cross cost per zero is the smaller width times the density
+
+`(CEILING)` and `(SAT)` bound the budget from above. The complementary lower bound pins the
+exchange rate between cross cost and diagonal gain, and it is the source of the missing `log T`.
+
+With widths `rho/r` and `rho*r` the diagonal quantum is `K_A(0) = 2r/rho - 2/(rho r)`, and for
+width ratio `r^2 >= 4`
+
+```text
+(rho/r) * K_A(0)  <=  integral_(-rho)^(rho) K_A.                              (DEFICIT)
+```
+
+The proof is elementary: after clearing denominators the claim is `2 - 2/r^2 <= 8 arctan r - 2 pi`,
+and `arctan r = pi/2 - arctan(1/r) >= pi/2 - 1/r >= pi/2 - 1/2` gives
+`8 arctan r - 2 pi >= 2 pi - 8/r >= 2 pi - 4 > 2` because `pi > 3`.
+
+Read as an exchange rate: the positive cross mass available at the maximal positivity radius is at
+least the *smaller width* `rho/r` times one diagonal quantum. Since `(MASS)` makes the negative
+cross mass equal to the positive one under baseline cancellation, and the zeros in a dyadic window
+have mean density `log T / 2 pi` per unit ordinate, each zero is charged a cross cost of order
+`(smaller width) * (log T / 2 pi)` quanta against a diagonal gain of one quantum. Euler safety keeps
+the smaller width bounded below, so the charge exceeds the gain by a factor of order `log T`.
+
+This is the same `log T` that the card already records for the raw Ward first moment, now derived
+on the quadratic side and from the kernel alone, with no zero-counting and no `Gamma` asymptotics.
+Together with `(CEILING)` and `(SAT)` it excludes the two-width annulus family completely: shrinking
+the smaller width to recover the factor would leave the absolute Euler region.
+
+Lean: `smallWidth_mul_quantum_le_windowBudget`, `annulusCrossKernel_two_at_zero`, in
+`WardAnnulusCrossKernelBudgetCeiling.lean`. Wired; axiom audit clean.
+
+## Gapped clusters: the local survivor does extend
+
+The local survivor applies to one cluster. It extends to a configuration of clusters, which is the
+evader class the corpus identifies (periodic arrays of blocks): no separation hypothesis reaches
+those, because zeros inside a block are arbitrarily close.
+
+Beyond the positivity radius the kernel decays quadratically,
+
+```text
+|K_A(D)| <= M / D^2,      M = sum_i 2 |c_i| (A + b_i),   D != 0.               (TAIL)
+```
+
+Hence, if every pair of ordinates is EITHER inside the positivity radius OR separated by at least
+`Delta`, the quadratic form still dominates its diagonal up to the tail loss:
+
+```text
+K_A(0) * sum_j m_j^2  -  (M/Delta^2) * (sum_j m_j)^2
+   <= sum_(j,k) m_j m_k K_A(gamma_j - gamma_k).                                (GAP)
+```
+
+For unit multiplicities this is a count bound,
+
+```text
+card(F) * K_A(0) <= Q + (M/Delta^2) * card(F)^2,                               (GAPCOUNT)
+```
+
+so as long as `card(F) <= K_A(0) Delta^2 / (2M)` the form returns half a quantum per ordinate. The
+two regimes are now covered by one inequality: inside the radius positivity is free, outside it the
+loss is quadratic in the gap. Nothing here is conditional and no zero-counting enters; `(GAP)` is a
+statement about the kernel and an arbitrary finite nonnegative family.
+
+This is what the local survivor buys. It does NOT close `(EG75)`: the quantity it bounds is the
+quadratic form `Q`, and only the FULL form over all zeros is source-computable, so a genuine
+configuration still needs the between-cluster terms of the full family controlled, i.e. a real gap
+`Delta` for the actual off-line ordinates. Supplying that gap unconditionally is the same problem as
+before; `(GAP)` shows exactly how much gap is enough, namely `Delta^2 >= 2 M card(F) / K_A(0)`.
+
+Lean: `formal/GaloisForLFunctions/RHTower/WardAnnulusCrossKernelGappedClusters.lean` —
+`abs_annulusCrossKernel_le` `(TAIL)`, `sum_annulusCrossKernel_ge_diagonal_of_gapped` `(GAP)`,
+`card_mul_quantum_le_of_gapped` `(GAPCOUNT)`. Wired into `RHTower`; targeted build and axiom audit
+pass with only `propext`, `Classical.choice`, `Quot.sound`.
+
+### The gapped threshold, and what it yields
+
+`(GAPCOUNT)` becomes usable once the family is small enough for its own gap:
+
+```text
+2 M card(F) <= K_A(0) Delta^2   ==>   card(F) K_A(0) / 2 <= Q.                 (GAPHALF)
+```
+
+With the two-width annulus at widths `rho/r`, `rho*r` one has `K_A(0) ~ 2r/rho` and `M ~ 2 rho r`,
+so the threshold reads `card(F) <= Delta^2 / (2 rho^2)`: the gap must exceed the positivity radius
+by the square root of the count.
+
+For a periodic array of blocks filling a dyadic window — the corpus's own evader class for the pair
+form — `R/s` blocks of size `s` force `Delta <= s T / R`, so the threshold becomes
+`R^3 <= s^2 T^2 / (2 rho^2)`, i.e. `R << T^(2/3)` at bounded `s` and bounded `rho`. Gapped-cluster
+configurations of that size are therefore counted, which is `o(N)`. At positive density the same
+array has `Delta = O(1)` and the threshold fails, which is exactly where the `log T` deficit of
+`(DEFICIT)` reappears. The two statements agree: the annulus reaches sparse gapped arrays and stops
+at dense ones.
+
+Lean: `half_card_mul_quantum_le_of_gapped`.
+
+## Bridge: the kernel laws are laws about the Ward energy difference
+
+Everything above was stated for the abstract kernel. It is now tied to the quantity the programme
+uses. For a finite family of strict-right copies at a COMMON depth `a`, with unit-width Lorentzian
+responses `L_x(t) = x/(x^2+(t+gamma_q)^2)` at Euler shift `h`, put
+
+```text
+E(x) = integral_R ( sum_q m_q L_x(t + gamma_q) )^2 dt,        x = h + a.
+```
+
+Expanding the square and integrating termwise against the corpus cross-Lorentzian mass
+`integral L_x(.+b_1) L_x(.+b_2) = 2 pi x / (4x^2 + (b_1-b_2)^2)` gives
+
+```text
+E(x) = sum_(q,q') m_q m_q' * 2 pi x / (4 x^2 + (gamma_q - gamma_q')^2),
+E(h_0+a) - E(h_1+a) = (pi/2) * sum_(q,q') m_q m_q' K_(2a)(gamma_q - gamma_q'),  (BRIDGE)
+```
+
+with widths `2h_0`, `2h_1` and advance `2a`. So `(MASS)`, `(WINDOW)`, `(RADIUS)`, `(CEILING)`,
+`(SAT)`, `(DEFICIT)`, `(TAIL)`, `(GAP)`, `(GAPCOUNT)` and `(GAPHALF)` are statements about
+`E(h_0+a) - E(h_1+a)` itself, not about an auxiliary kernel. In particular the gapped count becomes
+
+```text
+pi * card(F) * K_(2a)(0) / 4 <= E(h_0+a) - E(h_1+a)                            (EGAP)
+```
+
+under the threshold of `(GAPHALF)`. The common-depth restriction is the corpus's own single-band
+setting (CANNOT-335/336); varying depths only enlarge the advance `A = a_q + a_q'`, and since the
+positivity radius `sqrt((A+b_0)(A+b_1))` increases with `A`, the smallest depth gives a uniform
+radius.
+
+Lean: `formal/GaloisForLFunctions/RHTower/WardFamilyEnergyCrossKernelBridge.lean` —
+`wardFamilyEnergy`, `wardFamilyEnergy_eq`, `wardFamilyEnergy_sub_eq` `(BRIDGE)`,
+`wardFamilyEnergy_sub_ge_of_gapped` `(EGAP)`. Wired into `RHTower`; targeted build and axiom audit
+pass with only `propext`, `Classical.choice`, `Quot.sound`.

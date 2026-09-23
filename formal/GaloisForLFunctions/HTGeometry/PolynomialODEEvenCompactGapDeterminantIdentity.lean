@@ -24,61 +24,41 @@ import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapTableCoefficien
 /-! # Exact equality of the compact gap determinant and its graded coefficient table -/
 namespace HTGeometry
 noncomputable section
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 800000
 set_option maxRecDepth 20000
 
 /-- The lifted compact determinant equals the stored raw coefficient table as a polynomial. -/
 theorem evenCompactGapDetPolynomial_eq_table (u w : ℝ) :
     evenCompactGapDetPolynomial u w = evenCompactGapTablePolynomial u w := by
   ext n
-  rcases le_or_lt n 20 with h | h
-  · interval_cases n <;>
-      simp only [evenCompactGapDetPolynomial_coeff_zero,
-    evenCompactGapDetPolynomial_coeff_one,
-    evenCompactGapDetPolynomial_coeff_two,
-    evenCompactGapDetPolynomial_coeff_three,
-    evenCompactGapDetPolynomial_coeff_four,
-    evenCompactGapDetPolynomial_coeff_five,
-    evenCompactGapDetPolynomial_coeff_six,
-    evenCompactGapDetPolynomial_coeff_seven,
-    evenCompactGapDetPolynomial_coeff_eight,
-    evenCompactGapDetPolynomial_coeff_nine,
-    evenCompactGapDetPolynomial_coeff_ten,
-    evenCompactGapDetPolynomial_coeff_eleven,
-    evenCompactGapDetPolynomial_coeff_twelve,
-    evenCompactGapDetPolynomial_coeff_thirteen,
-    evenCompactGapDetPolynomial_coeff_fourteen,
-    evenCompactGapDetPolynomial_coeff_fifteen,
-    evenCompactGapDetPolynomial_coeff_sixteen,
-    evenCompactGapDetPolynomial_coeff_seventeen,
-    evenCompactGapDetPolynomial_coeff_eighteen,
-    evenCompactGapDetPolynomial_coeff_nineteen,
-    evenCompactGapDetPolynomial_coeff_twenty,
-        evenCompactGapTablePolynomial_coeff_0,
-    evenCompactGapTablePolynomial_coeff_1,
-    evenCompactGapTablePolynomial_coeff_2,
-    evenCompactGapTablePolynomial_coeff_3,
-    evenCompactGapTablePolynomial_coeff_4,
-    evenCompactGapTablePolynomial_coeff_5,
-    evenCompactGapTablePolynomial_coeff_6,
-    evenCompactGapTablePolynomial_coeff_7,
-    evenCompactGapTablePolynomial_coeff_8,
-    evenCompactGapTablePolynomial_coeff_9,
-    evenCompactGapTablePolynomial_coeff_10,
-    evenCompactGapTablePolynomial_coeff_11,
-    evenCompactGapTablePolynomial_coeff_12,
-    evenCompactGapTablePolynomial_coeff_13,
-    evenCompactGapTablePolynomial_coeff_14,
-    evenCompactGapTablePolynomial_coeff_15,
-    evenCompactGapTablePolynomial_coeff_16,
-    evenCompactGapTablePolynomial_coeff_17,
-    evenCompactGapTablePolynomial_coeff_18,
-    evenCompactGapTablePolynomial_coeff_19,
-    evenCompactGapTablePolynomial_coeff_20]
-  · rw [Polynomial.coeff_eq_zero_of_natDegree_lt
-        (lt_of_le_of_lt (evenCompactGapDetPolynomial_degree u w) h),
+  by_cases h : n ≤ 20
+  · interval_cases n
+    · rw [evenCompactGapDetPolynomial_coeff_zero, evenCompactGapTablePolynomial_coeff_0]
+    · rw [evenCompactGapDetPolynomial_coeff_one, evenCompactGapTablePolynomial_coeff_1]
+    · rw [evenCompactGapDetPolynomial_coeff_two, evenCompactGapTablePolynomial_coeff_2]
+    · rw [evenCompactGapDetPolynomial_coeff_three, evenCompactGapTablePolynomial_coeff_3]
+    · rw [evenCompactGapDetPolynomial_coeff_four, evenCompactGapTablePolynomial_coeff_4]
+    · rw [evenCompactGapDetPolynomial_coeff_five, evenCompactGapTablePolynomial_coeff_5]
+    · rw [evenCompactGapDetPolynomial_coeff_six, evenCompactGapTablePolynomial_coeff_6]
+    · rw [evenCompactGapDetPolynomial_coeff_seven, evenCompactGapTablePolynomial_coeff_7]
+    · rw [evenCompactGapDetPolynomial_coeff_eight, evenCompactGapTablePolynomial_coeff_8]
+    · rw [evenCompactGapDetPolynomial_coeff_nine, evenCompactGapTablePolynomial_coeff_9]
+    · rw [evenCompactGapDetPolynomial_coeff_ten, evenCompactGapTablePolynomial_coeff_10]
+    · rw [evenCompactGapDetPolynomial_coeff_eleven, evenCompactGapTablePolynomial_coeff_11]
+    · rw [evenCompactGapDetPolynomial_coeff_twelve, evenCompactGapTablePolynomial_coeff_12]
+    · rw [evenCompactGapDetPolynomial_coeff_thirteen, evenCompactGapTablePolynomial_coeff_13]
+    · rw [evenCompactGapDetPolynomial_coeff_fourteen, evenCompactGapTablePolynomial_coeff_14]
+    · rw [evenCompactGapDetPolynomial_coeff_fifteen, evenCompactGapTablePolynomial_coeff_15]
+    · rw [evenCompactGapDetPolynomial_coeff_sixteen, evenCompactGapTablePolynomial_coeff_16]
+    · rw [evenCompactGapDetPolynomial_coeff_seventeen, evenCompactGapTablePolynomial_coeff_17]
+    · rw [evenCompactGapDetPolynomial_coeff_eighteen, evenCompactGapTablePolynomial_coeff_18]
+    · rw [evenCompactGapDetPolynomial_coeff_nineteen, evenCompactGapTablePolynomial_coeff_19]
+    · rw [evenCompactGapDetPolynomial_coeff_twenty, evenCompactGapTablePolynomial_coeff_20]
+  · have h' : 20 < n := by omega
+    rw [Polynomial.coeff_eq_zero_of_natDegree_lt
+        (lt_of_le_of_lt (evenCompactGapDetPolynomial_degree u w) h'),
       Polynomial.coeff_eq_zero_of_natDegree_lt
-        (lt_of_le_of_lt (evenCompactGapTablePolynomial_degree u w) h)]
+        (lt_of_le_of_lt (evenCompactGapTablePolynomial_degree u w) h')]
 
 /-- The complete signed four-by-four source determinant equals its raw graded polynomial. -/
 theorem evenCompactRawDet_eq_polynomial (u a w : ℝ) :

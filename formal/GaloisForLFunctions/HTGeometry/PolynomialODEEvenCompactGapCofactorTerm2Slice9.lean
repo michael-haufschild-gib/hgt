@@ -1,96 +1,33 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorHigherNormalizer
+import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm2FactorSlices
 
 namespace HTGeometry
 
 noncomputable section
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 800000
 set_option maxRecDepth 20000
-
-/-- Certified coefficients of the two factor polynomials needed at slice 9. -/
-def evenCompactGapCofactorTerm2LeftSlice0Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 0) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 0)
-def evenCompactGapCofactorTerm2LeftSlice1Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 1) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 1)
-def evenCompactGapCofactorTerm2LeftSlice2Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 2) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 2)
-def evenCompactGapCofactorTerm2LeftSlice3Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 3) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 3)
-def evenCompactGapCofactorTerm2LeftSlice4Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 4) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 4)
-def evenCompactGapCofactorTerm2LeftSlice5Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 5) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 5)
-def evenCompactGapCofactorTerm2LeftSlice6Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 6) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 6)
-def evenCompactGapCofactorTerm2LeftSlice7Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 7) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 7)
-def evenCompactGapCofactorTerm2LeftSlice8Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 8) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 8)
-def evenCompactGapCofactorTerm2LeftSlice9Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 9) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedFourPolynomial u w * evenCompactGapReflectedSixPolynomial u w - evenCompactGapReflectedTwoPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 9)
-
-def evenCompactGapCofactorTerm2RightSlice0Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 0) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 0)
-def evenCompactGapCofactorTerm2RightSlice1Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 1) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 1)
-def evenCompactGapCofactorTerm2RightSlice2Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 2) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 2)
-def evenCompactGapCofactorTerm2RightSlice3Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 3) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 3)
-def evenCompactGapCofactorTerm2RightSlice4Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 4) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 4)
-def evenCompactGapCofactorTerm2RightSlice5Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 5) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 5)
-def evenCompactGapCofactorTerm2RightSlice6Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 6) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 6)
-def evenCompactGapCofactorTerm2RightSlice7Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 7) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 7)
-def evenCompactGapCofactorTerm2RightSlice8Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 8) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 8)
-def evenCompactGapCofactorTerm2RightSlice9Certificate (u w : ℝ) : CompactGapNormalForm
-    ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 9) :=
-  compactGapCofactorHigherCertified% ((evenCompactGapReflectedSixPolynomial u w * evenCompactGapReflectedEightPolynomial u w).coeff 9)
 
 /-- Factorized normal form for adjugate contribution 2 at gap degree 9. -/
 def evenCompactGapCofactorTerm2Slice9 (u w : ℝ) : ℝ :=
-  2 * ((evenCompactGapCofactorTerm2LeftSlice0Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice9Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice1Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice8Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice2Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice7Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice3Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice6Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice4Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice5Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice5Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice4Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice6Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice3Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice7Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice2Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice8Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice1Certificate u w).value +
-    (evenCompactGapCofactorTerm2LeftSlice9Certificate u w).value *
-      (evenCompactGapCofactorTerm2RightSlice0Certificate u w).value)
+  2 * ((evenCompactGapCofactorTerm2LeftFactorCoeff0Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff9Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff1Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff8Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff2Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff7Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff3Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff6Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff4Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff5Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff5Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff4Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff6Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff3Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff7Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff2Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff8Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff1Certificate u w).value +
+    (evenCompactGapCofactorTerm2LeftFactorCoeff9Certificate u w).value *
+      (evenCompactGapCofactorTerm2RightFactorCoeff0Certificate u w).value)
 
 theorem evenCompactGapCofactorTerm2_coeff_slice9 (u w : ℝ) :
     (evenCompactGapCofactorTerm2 u w).coeff 9 = evenCompactGapCofactorTerm2Slice9 u w := by
@@ -105,26 +42,26 @@ theorem evenCompactGapCofactorTerm2_coeff_slice9 (u w : ℝ) :
   rw [hfactor]
   rw [Polynomial.coeff_C_mul, evenCompactGapCoeff_mul_9]
   simp only [
-    (evenCompactGapCofactorTerm2LeftSlice0Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice1Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice2Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice3Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice4Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice5Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice6Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice7Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice8Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2LeftSlice9Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice0Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice1Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice2Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice3Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice4Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice5Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice6Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice7Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice8Certificate u w).eq_value,
-    (evenCompactGapCofactorTerm2RightSlice9Certificate u w).eq_value]
+    (evenCompactGapCofactorTerm2LeftFactorCoeff0Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff1Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff2Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff3Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff4Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff5Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff6Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff7Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff8Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2LeftFactorCoeff9Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff0Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff1Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff2Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff3Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff4Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff5Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff6Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff7Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff8Certificate u w).eq_value,
+    (evenCompactGapCofactorTerm2RightFactorCoeff9Certificate u w).eq_value]
 
 end
 

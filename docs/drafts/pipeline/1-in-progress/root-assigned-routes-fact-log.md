@@ -172,3 +172,64 @@
   covariance or a refutation of the target: an independent signed pole--Gamma/zero-mode/exterior
   estimate could lower the starting bound.  Formal certificate:
   `HedenmalmCriticalFeatureVarianceSavingCeiling.lean` (targeted compile and standard-axiom audit).
+- EDQ's **recombined physical** upper-half prime fibre has a shorter phase period than its
+  separated reduced-residue coefficient. For `L < p ≤ N ≤ 2L`, the cutoff `p*r ≤ N` forces the
+  old cofactor `r = 1`. Hence the exact selected block is a sum over ordinary primes of literal
+  divisor-window prefixes, with no primitive reduced-residue or complementary-boundary term.
+  Every such prefix is exactly
+  `((t+(s+1)*clock L) % p - t % p)/p` (real difference), so its absolute value is `< 1`
+  and its period in the physical starting coordinate `t` is `p`. The prior `p*clock L`
+  full-phase no-go remains true for the *separated* coefficient; it does not govern the
+  recombined physical term. Certificate: `EulerDeletionUpperHalfPhysicalPrimeSupport.lean`.
+- Distinct upper-half prime phases are exactly orthogonal on one `p*q` starting-coordinate
+  period. For every incomplete prefix length `M`, every shifts `H,K`, and every geometric
+  weight `0 ≤ x ≤ 1`, the absolute cross sum
+  `|Σ_{t<M} phase(p,H,t) phase(q,K,t) x^t| ≤ p*q`. This is a finite, unconditional,
+  explicit bound independent of the length of the physical clock orbit. It removes the
+  isolated prime-pair phase-cancellation problem exposed by the singleton collapse, but it
+  does **not** yet bound the full EDQ martingale energy: summing both beta-prefix packets,
+  dividing by variable fibre masses, and subtracting the parent/innovation remain.
+  Certificate: `EulerDeletionUpperHalfPrimePhaseCovariance.lean`. Both modules pass targeted
+  `lake env lean -o` checks; five public capstones audit with only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- EDQ literal prime beta packets now have two independent closed controls. First, after
+  expanding both finite packets, their geometrically weighted cross covariance is at most
+  `p*q` times the two packet geometric masses, uniformly in the physical starting-prefix
+  length. Second, and stronger for physical energy, canonical normalization satisfies
+  `|x^r * x^C(1-x^C)·clockResidualBetaWeight L (r+1) (Q-1) x p /
+  ((1-x^clock N)·Σ_{a<C}x^a)| ≤ x^r/C`, where `C=clock L`,
+  `Q=canonicalClockRatio N L`, `L≤N`, `p` prime, and `0≤x<1`. The proof uses the exact
+  residue-prefix bound `<1`, `(1-x^C)Σ_{s<Q-1}x^(sC)≤1-x^clock N`, and
+  `C*x^C≤Σ_{a<C}x^a`; no completed orbit or prime-pair estimate is needed. Integrating
+  gives `|prime fibre numerator(r)|≤1/(C(r+1))`. The literal harmonic cell mass is at least
+  `1/((r+1)(r+2))`, so the sum over all `r<C` of numerator-square divided by the actual
+  cell mass is at most `2/C` **per prime packet**. This is an exact upper-half prime
+  component estimate, not yet a bound for the full EDQ drift: the paired Möbius source
+  endpoint, aggregate prime count, composite future cofactors away from the upper-half
+  regime, and parent/innovation subtraction remain. Certificates:
+  `EulerDeletionUpperHalfPrimePacketCovariance.lean`,
+  `EulerDeletionUpperHalfPrimePhysicalSuppression.lean`, and
+  `EulerDeletionUpperHalfPrimePhysicalEnergy.lean`; all targeted oleans compile and five
+  capstones audit with only `propext`, `Classical.choice`, `Quot.sound`.
+- The physical `truncatedDivisorBlockKernel` itself now has a closed exact upper-half
+  decomposition: paired Möbius source endpoint kernel plus the sum over
+  `p∈[l+2,N]` of the **same** `upperHalfPrimePacketKernel` controlled above. This
+  identifies the `2/clock(l+1)` theorem with a genuine summand of the selected EDQ
+  block, rather than an auxiliary proxy. Certificate:
+  `truncatedDivisorBlockKernel_eq_sourceEndpoint_add_upperHalfPrimePackets` in
+  `EulerDeletionUpperHalfPrimePhysicalEnergy.lean` (targeted olean compiled).
+- The whole upper-half prime correction, integrated **before** taking physical fibre
+  energy, is bounded by `2·N²/clock L` whenever `L≤N≤2L`. Measurability and interval
+  integrability of every literal packet justify commuting finite prime sum with beta
+  integral; Cauchy--Schwarz costs only the square of prime count, and the prime count
+  is at most `N`. Mathlib's `2^L≤(L+1)·lcmUpto L`, plus a new closed bridge
+  `lcmUpto L ∣ clock L`, gives `L²/clock L→0`. Therefore for every cofinal schedule
+  `L≤N(L)≤2L`, the exact upper-half prime-window physical energy tends to zero.
+  **Route consequence:** upper-half incomplete prime-orbit covariance is not the
+  remaining cofinal EDQ obstruction; the paired Möbius source endpoint, its parent
+  projection, and innovation interaction survive. Certificates:
+  `upperHalfPhysicalPrimeWindow_energy_tendsto_zero` in
+  `EulerDeletionUpperHalfPrimeClockGrowth.lean` and
+  `upperHalfPhysicalPrimeWindow_fibre_energy_le` in
+  `EulerDeletionUpperHalfPrimePhysicalEnergy.lean`; targeted oleans compile and eight
+  capstones audit with only `propext`, `Classical.choice`, `Quot.sound`.

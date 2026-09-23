@@ -9,7 +9,7 @@ import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCorrectionSlice
 
 namespace HTGeometry
 noncomputable section
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 800000
 set_option maxRecDepth 20000
 
 /-- Degree eight assembled from independently certified cofactor identities. -/

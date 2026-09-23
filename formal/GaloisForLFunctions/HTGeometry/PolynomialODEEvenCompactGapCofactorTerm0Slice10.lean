@@ -16,7 +16,7 @@ import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCertifiedNormal
 
 namespace HTGeometry
 noncomputable section
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 800000
 set_option maxRecDepth 20000
 
 /-- Degree-10 convolution of the leading cofactor with the full quadratic correction. -/

@@ -1,0 +1,7 @@
+import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePChebyshevAbelLattice
+
+#print axioms RHTower.routeP_quantile_normalized_variance_closed
+#print axioms RHTower.routeP_normalized_history_eq_arithmetic_null
+#print axioms RHTower.routeP_normalized_history_eq_credit_sub_two_square_debts
+#print axioms RHTower.routePWeightedChebyshevNullCredit_eq_abel_lattice
+#print axioms RHTower.routePWeightedChebyshevNullCredit_eq_baseline_sub_error

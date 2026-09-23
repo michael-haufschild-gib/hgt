@@ -34,8 +34,15 @@ the cancellation.
 3. **Critical cancellation closed:**
    `fullCircleCrossBranchSymmetricCausalPair_re_eq_zero_on_critical` applies
    the previously formalized exact iff with no scalar phase insertion.
-4. Remaining hard theorem: normalized cap/lift-defect magnitude identity with
-   fixed-grade PW imbalance; it must yield partner balance, then RH.
+4. Remaining hard theorems: normalized cap/lift-defect magnitude identity with
+   fixed-grade PW imbalance, and an independent all-divisor source law forcing
+   the resulting real CTP scalar to vanish. Only both together yield partner
+   balance, then RH; critical-fibre cancellation supplies neither off-line law.
+
+The later [`PW-B completed CTP → original cap/lift identity`](../3-formalized/pw-b-completed-ctp-original-cap-lift.md)
+closes the intervening source identification: the completed literal CTP scalar
+is twice the original retarded-minus-future-minus-cap pairing plus both
+full-minus-native lift defects. It does not supply the magnitude comparison.
 
 ## Existing formal boundary
 

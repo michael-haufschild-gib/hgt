@@ -1,7 +1,9 @@
 # SQB reflected pair with common theta forcing
 
 Status: source construction, full native graph equation, true constant-mode
-centering, and analytic graph limits are closed and audited in Lean.
+centering, and analytic graph limits are closed and audited in Lean. Local
+full-support of the arithmetic packet density has a paper proof; its Lean
+formalization and normalized full-Xi occurrence remain open.
 RH and normalized full-Xi occurrence remain unproved. Frontier map is read-only;
 all work is analytical.
 
@@ -136,3 +138,75 @@ strictly positive horizontal mean of the complete theta field. Its exact
 finite-volume constant-mode subtraction is retained. The formula and all eight
 public declarations are audited; the source estimate needed for normalized
 small residuals remains open.
+
+## Full local mass of the literal arithmetic packets (paper proof)
+
+The existing `SelbergThetaNativeMeanCancellation.sourcePairing_eq_cauchy`
+eliminates the constant-mode residue exactly. The native Gram theorem
+`SelbergThetaCommonForcingPacketMass.packet_norm_sq_eq_integral` uses the
+nonnegative density `d(t)=Xi(t)^2 B(t)`, where
+`B(t)=boundaryWeight(t)=|1+boundaryPhase(t)|^2/2`. This density has **full
+support on the real frequency line**, a stronger property than the already
+formalized assertion that it is not almost everywhere zero.
+
+Here is a direct proof retaining the complete arithmetic factor. Put
+`z=-1+it` and `N(z)=z xi(z+2)+(z+2) xi(z+1)`. Algebra in the literal
+scattering phase gives
+
+    B(t)=|N(-1+it)|^2 / (2 |(-1+it) xi(1+it)|^2).             (A)
+
+The denominator never vanishes: `-1+it` is nonzero and the corpus proves
+`xi(s) != 0` for `Re(s)>=1`. The entire function `N` is not identically
+zero, since `N(0)=2 xi(1)!=0`. The complex identity theorem therefore makes
+its zero set discrete; its intersection with `{-1+it:t in R}` is countable.
+Likewise `XiC(w)` is entire and not identically zero, since
+`XiC(-i)=xi(3/2)!=0`, so the real zero set of `Xi(t)` is countable. Thus
+`d(t)>0` outside a countable set, and every nonempty real open interval has
+strictly positive integral of `d`.
+
+For a finite packet with distinct squared spectral parameters and nonzero
+coefficient vector, `SelbergThetaCommonForcingPacketMass.numeratorPoly_ne_zero`
+shows its rational response is not identically zero. Its real zeros are finite
+when all denominators lie in the strict spectral half-plane. Consequently
+the packet density `d(t)*|rationalPacket(t)|^2` is positive almost everywhere
+on every nonempty interval, so every such interval contributes strictly
+positive native packet mass to the exact Gram formula. This is a
+source-specific local mass theorem, not merely abstract Hilbert positivity.
+
+The next occurrence test must turn this local mass into a sequence whose
+*normalized residual* tends to zero at the unchanged full-Xi target.
+Full support alone does not identify a possibly nonreal target with a real
+spectral point or prove density of the available rational packet family.
+The paper proof of (A) and the local-mass corollary have not been Lean-checked.
+For formalization, the corpus already supplies `boundaryWeight_eq_half_sq`,
+`xi_ne_zero_of_one_le_re`, and the finite-packet polynomial argument. Mathlib's
+`AnalyticOnNhd.preimage_zero_mem_codiscrete` and
+`IsLindelof.countable_of_isDiscrete` supply the isolated-zero-to-countable
+step for `N` and `XiC`.
+
+The common forcing also yields an **exact residual integral for every
+force-cancelled finite packet** in the strict upper spectral chamber. Let
+`e_i=5/4+z_i^2/4`, `D_i(t)=t^2-z_i^2`, `lambda(t)=5/4+t^2/4`, and
+`R(t)=sum_i c_i/D_i(t)`. If `sum_i c_i=0`, then the existing native graph
+identity gives
+
+    (A-e) sum_i c_i S_i = sum_i c_i(e_i-e) S_i,
+    sum_i c_i(e_i-e)/D_i(t) = (lambda(t)-e) R(t).           (B)
+
+The second equality follows termwise from
+`(e_i-e)/D_i=(lambda(t)-e)/D_i-1/4`; the last constant
+vanishes by force cancellation. Applying the already formalized packet
+Gram formula twice gives the exact source-specific quotient
+
+    ||(A-e)sum_i c_i S_i||^2 / ||sum_i c_i S_i||^2
+      = integral d(t)|lambda(t)-e|^2|R(t)|^2 dt
+          / integral d(t)|R(t)|^2 dt,                       (C)
+
+whenever the packet is nonzero. The denominator is strictly positive by
+the existing `packet_ne_zero` theorem; the new full-local-mass observation
+also locates positive contributions in every real interval. This reduces
+the hard normalized-occurrence problem to concentration of the **actual
+arithmetic rational packet** at the unchanged target energy. The graph
+identity and the pointwise algebra in (B) are the next small Lean targets;
+(C) is presently a paper deduction. A full-support density alone does not
+construct the concentrating packet.

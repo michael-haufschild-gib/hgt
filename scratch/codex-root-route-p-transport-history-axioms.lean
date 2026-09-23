@@ -1,0 +1,4 @@
+import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePTransportHistoryEscape
+
+#print axioms RHTower.routePWeightedChebyshevNullCredit_eq_neg_half_speTransport
+#print axioms RHTower.routeP_normalized_history_add_two_speTransport_tendsto_atBot

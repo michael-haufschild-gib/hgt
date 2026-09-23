@@ -4995,3 +4995,1295 @@ counterexample, if one exists, must lie in an intermediate compact displacement
 band depending on R. This does not exclude higher-node failures or close the
 four-node middle band. All three Terra agents completed; no task-owned process
 remains running.
+
+## Continuation 2026-09-23: source-recursion test and fresh compact certificate
+
+Previous turn classification: progress (source ratio/determinacy deductions and
+two verified reformulation traps changed the next action). Chain is still full
+nonlinear source -> signed source positivity at every rank -> RH. All-rank
+source-generated comparison remains the hard mathematical obstacle.
+
+USER STEERING: "no more subagents man". All three retained agents were
+immediately interrupted; each returned previous_status=running. Do not spawn,
+resume, or delegate to subagents again. Continue alone. No completed new agent
+reports existed at their three assigned /tmp paths at interruption. Process
+inspection showed no surviving research command attributable to those assignments;
+only parent-owned searches plus unrelated workspace research were running.
+Do not terminate unrelated research/build processes.
+
+### Fresh source chain changes the compact-rank investigation
+
+Before interruption, arithmetic agent located an exact intended compact
+determinant chain. Parent independently read all principal chain statements:
+
+1. `PolynomialODEEvenCompactUnitRaw:9`: UnitDet(u^2,t,v)=RawDet(u,gap,u(1+v/4)).
+2. `PolynomialODEEvenCompactGapDeterminantIdentity:84`: RawDet=RawPolynomial,
+   assembled from the 21 exact gap coefficient identities.
+3. `PolynomialODEEvenCompactRelativeDeterminant:15`: RawPolynomial under
+   relative-shear substitution equals RelativeDet.
+4. `PolynomialODEEvenCompactRelativeHorner:8`: the coupled-gap substitution
+   equals Horner0.
+5. `PolynomialODEEvenCompactHornerLanding:151`: Horner0=UnitPolynomial.
+6. `PolynomialODEEvenCompactUnitReserve:36`: UnitPolynomial>=1/1000 on
+   the entire unit cube.
+7. `ThetaCuspEvenCompactState:35`: the actual compact source orbit has these
+   unit coordinates, with r=u^2 in [0,1].
+8. `ThetaCuspEvenCompactSourceCoordinates:83`: UnitDet is the exact native
+   even-four determinant plus 10^12 times the normalized correction times the
+   positive leading-head cofactor, divided by 100^12 H^8.
+9. `ThetaCuspEvenCompactCorrection:32`: the actual chi dominates precisely
+   this normalized correction times H^2.
+
+Thus IF the fresh exact determinant identity is accepted, the positive cube
+reserve plus positive native even-three head closes M_even4+10^12 chi E>0
+through [0,8/95]. This overlaps the existing x>=1/12 theorem and supplies a
+global fixed source certificate. This is substantially stronger than our
+proposed scalar core-budget estimate and would make that estimate unnecessary.
+
+Verification limitation must remain explicit: read-only filesystem inspection
+found NO .olean for PolynomialODEEvenCompactGapDeterminantIdentity. Existing
+UnitReserve and HornerLanding oleans postdate their respective sources, but this
+does not certify the new connecting identity or all its dependencies. No Lean
+command was launched. Source scan found no active sorry/admit/axiom/opaque/unsafe
+marker in the compact family (one prose occurrence of 'admitted'). Do NOT call
+rank seven formally closed on that basis. This is a source-level proof chain
+awaiting actual compiler verification; unrelated agents own the fresh files.
+
+The corrected even source matrix at C=10^12 is literally the original even
+block with ONLY its last diagonal entry increased by C chi; parent checked
+`ThetaCuspNativeEvenFourTail:51`. Its exact aperture matrix preserves each
+mixed moment under integration (`ThetaCuspEvenFourCenterIntegration:35`).
+If the compact chain checks, combining it with the already proved odd-three
+repair gives an inclusion-compatible rank-seven repair with constant diagonal
+corrections in polynomial degrees 5 and 6. The same earlier integration then
+gives all-cutoff rank-seven tail positivity and all aperture-derivative signs
+for real filters through degree six, on PAPER. No all-rank implication follows.
+
+### New all-degree recursion attack, derived directly from the source product
+
+For a real polynomial p let S_p[k] be its native reflected signed quadratic
+density. The literal reflection product P(x,t)=k(x+t)k(x-t) satisfies
+
+    partial_x^2 P-partial_t^2 P=4 k'(x+t)k'(x-t).
+
+Commuting the finite polynomial differential operator with these derivatives
+gives the exact PAPER identity
+
+    S_(X p)[k]=4 S_p[k']-(S_p[k])''.
+
+Consequently, with all admitted infinity endpoints retained,
+
+    T_R^k(Xp)=4 T_R^(k')(p)+R^2 (S_p[k])'(R)
+              -2R S_p[k](R)-2 integral_R^infinity S_p[k].
+
+For a smooth half-line weight w vanishing suitably at zero, the corresponding
+integral is 4 integral w S_p[k']-integral w'' S_p[k]. For
+w=x sinh(2ax), w''=4a cosh(2ax)+4a^2 w. The recurrence contains a
+subtracted source form, not a positive combination, and changes the source to
+k'. Thus it is not itself a rank induction. A source-controlled inequality
+for this coupled derivative family would be a substantive producer; merely
+relabeling its right side as positive would assume the missing assertion.
+
+Current parent searches: tail-cutoff-falsification-2 63169 terminal;
+allorder-source-producer-2 15735 terminal; theta-product-positive-2 19758 terminal;
+compensation-recurrence-2 9057 terminal; corrected-odd-four-2 43672 last polled
+live. First three JSON candidate/source/proposal sections inspected; mostly
+partial retrieval and unrelated bundles. Continue polling owned handle 43672,
+and inspect the latter two JSON results. No Lean/build/numerical/CAS process.
+
+### New SOLO paper attack: native negativity returns arbitrarily far out
+
+Status: parent-derived PAPER proof from the literal complex-source series,
+not compiled Lean and not an independent-agent audit. This is a new exact
+candidate obstruction to one particular all-degree flux extension. It does NOT
+refute RH or the integrated sharp-tail cone. Every analytic step is recorded
+below so it can be scrutinized rather than inferred from a name or analogy.
+
+Parent read `ThetaCuspComplexStrip:28-62,213,233,259,322,622` (some in
+earlier continuation). For Re w>0 define the literal Gaussian sums
+
+    A(w)=sum_(n>=1) n^4 exp(-pi*n^2*w),
+    B(w)=sum_(n>=1) n^2 exp(-pi*n^2*w).
+
+The module's termwise Gaussian domination supplies absolute locally uniform
+convergence, and the same domination with two extra powers supplies derivatives.
+Thus A and B are holomorphic on the right half-plane, with exact period 2i.
+Expanding the module's ComplexSeed and ComplexTerm, w=exp(2z), gives EXACTLY
+
+    K(z)=4*pi^2*exp(z/2)*w^2 * (A(w)-3*B(w)/(2*pi*w)).       (K)
+
+No outside description of theta, modular asymptotic, or prime input is used.
+
+#### A literal zero of the leading Gaussian sum
+
+For r in (0,1), set c=-log(r)/pi. At w=c+i,
+
+    A(c+i)=sum_(n>=1) (-1)^n n^4 r^(n^2),
+
+which is real. The following are hand geometric bounds, not a numerical/CAS
+experiment. Let a_n=n^4 r^(n^2).
+
+* At r=1/4 and n>=2,
+  a_(n+1)/a_n <= (3/2)^4*(1/4)^5 < 1/2.
+  Therefore sum_(n>=2) a_n <=2*a_2=1/8, and A(c+i)<=-1/8<0.
+* At r=1/2 and n>=3,
+  a_(n+1)/a_n <= (4/3)^4*(1/2)^7=2/81<1/2.
+  The first two signed terms sum to 1/2, while the remaining absolute tail is
+  <=2*a_3=81/256. Consequently A(c+i)>=47/256>0.
+
+Uniform convergence on this compact r interval gives continuity. IVT therefore
+produces c0 in (log(2)/pi,log(4)/pi) with
+
+    w0=c0+i,  A(w0)=0.
+
+A is not identically zero: on the positive real axis every term is nonnegative
+and the first term is strictly positive. Holomorphic isolation therefore gives
+some epsilon>0 such that A(w0+i*epsilon) and A(w0-i*epsilon) are both nonzero.
+No simplicity of this zero and no nonvanishing of B(w0) are needed.
+
+#### Periodic copies create an exact complex midpoint violation
+
+Let d_n=2n+1, w_n=c0+i*d_n=w0+2ni,
+
+    z_n=(1/2)Log(w_n)=x_n+i*y_n,
+    t_n=epsilon/(2*d_n).
+
+Then x_n tends to infinity, 0<y_n<pi/4, and y_n tends to pi/4. Moreover
+
+    w_n*exp(plus/minus 2*t_n)-2ni -> w0 plus/minus i*epsilon.
+
+This follows directly from d_n*(exp(plus/minus epsilon/d_n)-1) ->
+plus/minus epsilon. Periodicity and continuity give convergence of both
+A and B at these translated points. Formula (K) consequently yields
+
+    |K(z_n+t_n) K(z_n-t_n)| / |w_n|^(9/2)
+      -> 16*pi^4*|A(w0+i*epsilon) A(w0-i*epsilon)| > 0,
+
+whereas A(w_n)=0 and B(w_n)=B(w0) give the EXACT center expression
+
+    |K(z_n)|^2 / |w_n|^(9/2)
+      =36*pi^2*|B(w0)|^2/|w_n|^2 ->0.
+
+The exp(plus/minus 2t_n) factors cancel in the product normalization. If
+B(w0)=0 the center is simply zero, making the contradiction stronger. Hence
+for all sufficiently large n,
+
+    |K(x_n+t_n+i*y_n)| |K(x_n-t_n+i*y_n)|
+       > |K(x_n+i*y_n)|^2.                              (MID)
+
+This is a failure of horizontal midpoint log-concavity of complex source
+modulus, at arbitrarily large REAL centers. No claim about real-axis source
+log-concavity is contradicted.
+
+#### Why MID forces an actual finite native negative direction
+
+For fixed x write P_x(z)=K(x+z)K(x-z). It is holomorphic on the strip and
+real-even on the real line. The existing closed-substrip bounds give
+|P_x(t+i*y)|<=C_delta^2 exp(-2|t|) uniformly for |y|<=delta<pi/4.
+Contour displacement therefore gives exponential decay of its real Fourier
+density rho_x at every smaller rate. Its raw moments are precisely the native
+signed derivatives, up to the positive Fourier normalization.
+
+Parent checked the generic sign law
+`UnwindowedHankelSignCone.completeHankelCone_rawMoment_iff_of_expDecay:109`
+(also explicitly applied at `HedenmalmRawHankelRH:74`). Thus if EVERY native
+finite Hankel matrix at x were PSD, rho_x would be nonnegative. Fourier
+inversion, exponential integrability and analytic continuation would then give
+
+    |P_x(t+i*y)| <= P_x(i*y) = |K(x+i*y)|^2              (PD-strip)
+
+for every |y|<pi/4. For any specified y choose the contour rate strictly between
+|y| and pi/4; no uniform bound at the strip boundary is asserted. Complex
+conjugation of K follows termwise from its real coefficients (or real-axis
+agreement plus holomorphic identity). The left side of PD-strip is exactly
+the product on the left of MID. Hence MID contradicts complete native Hankel
+positivity. For arbitrarily large x_n there must be a finite size and a real
+vector with strictly negative native quadratic form.
+
+This local/native conclusion does NOT transfer to the integrated tail T_R:
+integration can repair local negative directions, and its test vector must
+be shared across the whole source. The argument has not produced a negative
+sharp-tail Fourier value or an RH refuter.
+
+#### Specific all-degree ansatz excluded, with a positive survivor
+
+`ThetaCuspCenterCompensationSign:118` proves chi(x)<0 after one finite source
+transition. Suppose one tried to extend rank-six compensation with ONE fixed
+positive semidefinite bilinear form D on all real polynomials, whose finite
+restrictions satisfy
+
+    M_N(x)+chi(x)D_N >=0  for every N,x>=0.
+
+At a MID center beyond that transition, choose a native negative vector v.
+Then v^T(M_N+chi D_N)v<=v^T M_N v<0: contradiction. This excludes the
+current scalar-flux-times-fixed-positive-form extension, including every
+nonnegative constant diagonal coefficient sequence. It does not exclude
+indefinite D, other scalar flux shapes, or source-position-dependent positive
+forms. The whole no-go remains PAPER pending formalization.
+
+The resulting exact survivor is to retain a moving positive form D(x). Set
+
+    B(x)=x^3 k(x)^2 D(x),
+    J(x)=B'(x)/x^2=chi(x)D(x)+x k(x)^2 D'(x).
+
+For inclusion-compatible positive D(x), admitted zero endpoints, and
+M_N+J_N>=0, integration gives
+
+    integral x^2 h M_N
+       =integral x^2 h(M_N+J_N)+integral h' B_N >=0
+
+for admitted nonnegative increasing h. This recovers the RH aperture weights.
+Unlike the excluded constant-form ansatz, D'(x) can change the comparison
+direction where the scalar flux is adverse. A meaningful producer must derive
+D and D' from the literal local source vector field, independently of unknown
+integrated signs; an unrestricted nonlocal B would fall into the previous
+tautology. No such all-degree positive source-generated D has been constructed.
+
+### SOLO audit checkpoint: user stopped delegation; exact scope of the new obstruction
+
+User instruction: "no more subagents man". The three active research agents
+were interrupted; do not spawn, resume, or delegate further work. Continue solo.
+All new statements in this section are parent paper deductions, not independently
+audited or newly compiled Lean theorems. No Lean/source implementation or build
+was performed. Only this working log is an owned repository write.
+
+Parent self-audit of the cofinal native-negativity argument checked the actual
+source definitions, absolute convergence, strip analyticity, and closed-substrip
+decay again against ThetaCuspComplexStrip. The precise generic theorem at
+UnwindowedHankelSignCone:109 takes a CONTINUOUS real density bounded by
+C exp(-epsilon |xi|), C>=0, epsilon>0. Its conclusion is equivalence between
+the complete raw-moment Hankel cone and pointwise nonnegativity. This is the
+theorem needed, not a presumed moment representation theorem for arbitrary jets.
+
+For the application use the Fourier convention
+
+    rho_x(xi)=(1/(2*pi)) integral_R exp(-i*xi*t) P_x(t) dt.
+
+Real-even P_x gives real-even continuous rho_x. Contour displacement inside
+any fixed closed substrip yields |rho_x(xi)|<=C_delta exp(-delta|xi|).
+Fourier inversion and differentiation identify
+
+    integral xi^j rho_x(xi) dxi = (-i)^j P_x^(j)(0).
+
+Odd derivatives vanish, so this is exactly the real native moment matrix.
+For each selected y<pi/4, choose delta strictly between |y| and pi/4;
+the holomorphic Fourier integral then gives PD-strip by the ordinary triangle
+inequality if rho_x>=0. At t+i*y its second source factor is K(x-t-i*y);
+conjugation makes its modulus |K(x-t+i*y)|, as required by MID. No uniform
+estimate as y approaches pi/4 is used. The normalization in (K) and the powers
+9/2 and 2 in the two limits check exactly. The n=0 source term is identically
+zero. The isolation step needs no simple-zero assumption.
+
+Actual correction negativity is explicitly the final theorem at
+ThetaCuspCenterCompensationSign:118, for every center beyond its unique finite
+transition. Thus the fixed-positive-D contradiction is a cofinal one, independent
+of how a finite compact correction certificate is completed. It does not refute
+fixed corrections at any specified finite rank, the integrated cone, or RH.
+
+### A test that every moving positive correction must pass
+
+There is a stronger necessary condition than merely permitting D to depend on x.
+Suppose D(x) is differentiable and positive semidefinite on real polynomials,
+and M(x)+chi(x)D(x)+x*k(x)^2 D'(x) is positive semidefinite. At a center x>0
+and fixed vector v with M(x)[v,v]<0, necessarily D(x)[v,v]>0. Indeed if it
+were zero, the nonnegative differentiable scalar function D(y)[v,v] would
+have derivative zero at its interior minimum, leaving the correction zero
+in this direction. With D(x)[v,v]>0, the exact necessary inequality is
+
+    D'(x)[v,v]/D(x)[v,v] > -3/x - 2*k'(x)/k(x).             (MOVE)
+
+This follows because the correction must be strictly positive on v. It is
+equivalent to strict increase of x^3*k(x)^2*D(x)[v,v] at this center, with
+v held fixed during differentiation. At the cofinal native-negative centers
+the right side is positive. A moving form with a uniformly inadequate relative
+growth bound therefore still fails. There is no contradiction with vanishing
+boundary flux: the offending direction can vary with the center and degree.
+Do not assume the existence of D or claim MOVE alone supplies one.
+
+### Source-local form of the surviving constructive target
+
+Parent read PolynomialODEJetRankThreeSourcePositiveClosure:37-131 directly:
+v=(U,B,Q), v'=V(v), H'=B*H/2, k=H*Q, and every native derivative is H
+times the corresponding normalized source polynomial. Thus write
+
+    M_N(x)=H(x)^2 F_N(v(x)).
+
+A concrete sufficient candidate is a family R_N(x,v), compatible under leading
+principal restriction and positive semidefinite along the actual physical orbit.
+Set the boundary form (use a different letter from the source coordinate B)
+
+    mathcalB_N(x)=x^3 H(x)^2 R_N(x,v(x)),
+    L2 R = partial_x R + V(R) + B R.
+
+The exact local certificate to prove would be
+
+    R_N >=0,
+    F_N + 3 R_N + x L2 R_N >=0                            (SOURCE-CERT)
+
+for every N on the physical half-orbit, with admitted integrals and vanishing
+mathcalB_N at both endpoints. Entrywise differentiation gives
+
+    (mathcalB_N)'/x^2 = H^2(3 R_N+x L2 R_N).
+
+For any admitted nonnegative increasing scalar h,
+
+    integral x^2 h M_N
+      = integral x^2 h H^2(F_N+3R_N+x L2R_N)
+        + integral h' mathcalB_N >=0.
+
+Taking h(x)=sinh(2*a*x)/x (with its continuous value 2a at zero),
+0<a<1/2, yields the literal RH-equivalent signed aperture cone, up to its
+positive factor 4. Positivity of h' follows from y*cosh(y)-sinh(y)>=0 for
+y>=0, whose derivative is y*sinh(y)>=0. This final integration is PAPER;
+the exact all-order RH interface is already in
+ThetaCuspCenterMixedSignedJetCompleteness:216.
+
+The completed finite scalar corrections are the special case R_N=Q^2 D_N,
+with D_N constant. The new cofinal obstruction rules out that special case as
+one positive form on all degrees. SOURCE-CERT retains the actual three-state
+vector field instead of replacing it with a generic smooth source.
+
+Endpoint admission is a real condition: arbitrary positive polynomial R in
+the source coordinates need not decay after multiplication by H^2. Products of
+admitted source jets provide a natural class to inspect, but no all-degree
+positive R in that class is supplied here. Likewise a definition using unknown
+integrated signs would be circular. SOURCE-CERT is a precise research target,
+not a discovered positive producer or a demonstrated improvement in RH closure
+probability. The less restrictive alternative remains direct control of the
+integrated shared-filter compatibility cost already derived above.
+
+### Retrieval checkpoint after stopping agents
+
+The prior alternating-theta query (handle 63479) finished partial=true in
+124.928s. Its candidate and source-argument sections were inspected; it found
+the actual signed-jet and all-order integration interfaces but no existing
+formalization of the specific A(w) zero / cofinal MID argument. No proof ideas
+or ingredient sets were returned. This is not an exhaustive absence claim.
+
+New solo deep queries:
+* /tmp/hgt-rh-solo-moving-boundary-form.json: partial=true, 118.703s;
+* /tmp/hgt-rh-solo-source-cone-transport.json: partial=true, 132.325s.
+
+Both are terminal and their candidate/source/proposal sections were inspected.
+The proposed bundle based on DifferentialIndependent source rows is not a
+positivity producer and was rejected. Returned cofinal Cholesky and Jacobi
+interfaces do not prove positivity of the actual theta form merely by supplying
+a coherent tower. Snapshot: 59,241 inventoried files, 59,240 indexed, one
+index failure; 43 compiled snapshots, substantial pending/stale/unavailable
+compiler metadata. Do not turn source-only results into fresh compiler claims.
+
+Two narrower follow-up requests are running: source-lie-compensation 45023,
+positive-storage 10535. Poll owned handles to terminal; do not touch searches
+owned by other workspace tasks. No agents remain assigned to this work.
+
+### SOLO closing checkpoint
+
+Both narrower searches are now terminal: source-lie-compensation partial=false,
+88.508s; positive-storage partial=false,100.173s. Parent inspected every returned
+candidate/source summary and both proposed ingredient bundles. The former bundle
+includes the definition of a scalar contravariant form in a module that proves
+such a form impossible; a proposed "transfer to scalar form" is not a producer.
+The latter combines a Route E absolute flux estimate with positive Burnol flux
+on another carrier, with no identification between them; rejected.
+
+Parent also read the retrieved conservative/collective repair definitions and
+proofs in ConstitutiveViabilityCoercivityTransmutation and
+ConstitutiveCollectiveRepairThreshold. They are exact general linear and finite
+resource-cell results. They explain how adding dependent rules can alter kernel
+history while preserving the represented range, but supply no theta instance of
+SOURCE-CERT. RouteESignedInverseLoadFlux itself explicitly retains a remainder
+equivalent to its original signed current. None of these results closes the
+source inequality by analogy. No live owned search or build remains.
+
+Interpretive consequence: a real invertible change of coordinates preserves a
+native negative direction (pull it back by the inverse matrix). The new cofinal
+obstruction cannot be removed by a better local basis. A fuller description must
+retain operations absent from that local form: joint use of one filter over the
+source, or an admitted moving boundary comparison with its derivative. This is
+consistent with the exact quotient-fusion Schur identity, but does not identify
+all no-go statements with one universal cause. The finite nonlinear source state
+and its infinite linear observable hierarchy must still be distinguished.
+
+Progress classification: new self-audited PAPER obstruction and precise necessary
+condition for its surviving moving-form candidate. Proof chain under research:
+actual polynomial source law -> all-degree SOURCE-CERT (missing) -> signed
+aperture positivity -> existing RH equivalence. Hard obstacle: construct the
+positive compatible family from the source independently of the target integrals,
+with endpoint admission. Direct integrated compatibility control remains a second
+candidate; it is not refuted by the new local obstruction. Fresh compact rank-seven
+source chain has not been compiler-verified here. No unconditional RH proof, no
+new Lean theorem, and no justified probability ranking of routes. The active
+RH goal is not marked complete. Continue solo; do not restart agents.
+
+## SOLO goal continuation: a stronger cutoff obstruction and the failure of positive storage
+
+Previous turn: PROGRESS, a self-audited paper obstruction to fixed positive
+compensation, not a Lean theorem. This turn attacks the proposed stronger
+all-cutoff positivity rather than treating it as a premise. User's no-subagent
+instruction remains active. No numerical or CAS computation was run.
+
+Current proof chain remains full source law -> complete signed aperture cone ->
+RH. The new analysis below challenges an extra sufficient condition introduced
+in this log; it does NOT challenge the actual RH-equivalent full aperture cone.
+Its status is a detailed SOLO PAPER proof candidate with explicit analytic
+arguments. It has not been compiled or independently audited. Do not promote
+it to a closed Lean no-go, or silently mark existing finite compensation false.
+
+### First loop: why the earlier complex midpoint witness does not localize a tail
+
+For c>0, d->infinity, put w=c+i*d, b=|w|, R=log(b)/2 and y=arg(w)/2.
+At source difference t=tau/(2d), the normalized tail kernel has a positive
+weak limit obtained by averaging away distinct Gaussian atoms. Its diagonal
+part is proportional to
+
+    sum_(n>=1) n^8 integral_1^infinity
+      u^(7/2) exp(-2*pi*c*n^2*u) exp(-2*pi*i*tau*n^2*u) du.
+
+This is a Fourier transform of a positive measure (after v=n^2*u its density
+is proportional to v^(7/2) exp(-2*pi*c*v) sum_(n^2<=v) 1/n).
+Therefore importing the native MID witness by simply concentrating at the lower
+center is invalid. Pointwise convergence of these kernels cannot be inverted to
+pointwise convergence of their Fourier densities: off-diagonal oscillation can
+survive in the latter. A preliminary linearization would place atom thresholds
+at (n^2+m^2)/2; parent rejected that inference before using it. Exact spectral
+stationary points put thresholds at n*m, as derived next.
+
+### Exact literal-source reduction to a product cutoff
+
+Let W(x) be either x^2, or the physical aperture weight
+
+    W_a(x)=x*sinh(2*a*x),  0<a<1/2.
+
+Define the actual tail, with the same literal source k as above,
+
+    f_R^W(t)=integral_R^infinity W(x) k(x+t)k(x-t) dx,
+    rho_R^W(xi)=(1/(2*pi)) integral_R exp(-i*xi*t) f_R^W(t) dt.
+
+The second integral is over the whole real line; the subscript R labels the
+cutoff, not that Fourier integration domain. These functions are real-even.
+The strip source K in ThetaCuspComplexStrip provides their holomorphic extension.
+For fixed closed substrip, the bound for K gives exponential t-decay after
+integration against either W; for W_a use a<1. Thus shifting the Fourier contour
+to height y<pi/4 is legitimate, with no uniform strip-boundary claim.
+
+Fix v in (2,3), eventually take v=5/2. Set xi=4*pi*d*v and
+
+    N_d=W(R)*b^(9/2),
+    nu_d(v)=(2*d/N_d) integral_R
+      f_R^W(t+i*y) exp(4*pi*i*d*v*t) dt.
+
+Again the integral is over the whole real line. The exact contour identity is
+
+    nu_d(v)=(4*pi*d*exp(xi*y)/N_d) rho_R^W(xi).             (FOURIER-SIGN)
+
+Every factor preceding rho is positive for large d, so nu and rho have the same
+real sign. The plus Fourier exponential selects rho(-xi); evenness gives rho(xi).
+
+Expand both K factors using their LITERAL Gaussian seed series, n,m>=1. For each
+pair put l=n*m, x=R+log(u)/2 (u>=1), and
+
+    t=s+log(m/n)/2.
+
+At this shift both Gaussian scales have the same product l:
+
+    q_plus =pi*l*u*(c+i*d)*exp(2s),
+    q_minus=pi*l*u*(c-i*d)*exp(-2s).
+
+The source seed is exp(z/2)*(4*q^2-6*q)*exp(-q). Its exact product polynomial is
+
+    16*pi^4*l^4*b^4*u^4
+      -48*pi^3*l^3*b^2*u^3*(c*cosh(2s)+i*d*sinh(2s))
+      +36*pi^2*l^2*b^2*u^2.
+
+Write omega_d(u)=W(R+log(u)/2)/W(R). Including dx=du/(2u), the NORMALIZED
+amplitude in the u,s integral is exactly
+
+    A_(d,l)(u,s)=omega_d(u)*exp(-2*pi*c*l*u*cosh(2s)) *
+      [8*pi^4*l^4*u^(7/2)
+       -24*pi^3*l^3*b^(-2)*u^(5/2)*(c*cosh(2s)+i*d*sinh(2s))
+       +18*pi^2*l^2*b^(-2)*u^(3/2)].
+
+The remaining oscillatory phase is
+
+    Phi_l(u,s)=4*pi*v*s-2*pi*l*u*sinh(2s),
+
+and the pair's external phase is exp(2*pi*i*d*v*log(m/n)). Consequently nu is
+the sum of 2d times these double integrals, multiplied by their external phases.
+Pairwise shifting removes n/m from the amplitude. Absolute interchange follows
+from domination by a polynomial in l,u,cosh(2s) times exp(-2*pi*c*l*u*cosh(2s));
+the number of pairs of product l is at most l. Lower source-polynomial terms have
+the same domination and tend to zero, with their required derivatives, after
+normalization. This is stronger than discarding them before the oscillatory bound.
+
+### The asymptotic admission, without assuming a black-box saddle theorem
+
+The weight ratios satisfy, with beta=0 for x^2 and beta=a for W_a,
+
+    omega_d(u) -> u^beta,
+
+locally with all derivatives. For x^2 the ratio is (1+log(u)/(2R))^2. For W_a
+it is exactly
+
+    (1+log(u)/(2R)) *
+      (u^a-exp(-4*a*R)*u^(-a))/(1-exp(-4*a*R)).
+
+For R>=1 these and their finitely many needed derivatives are dominated by fixed
+powers of u and 1+log(u), which the Gaussian absorbs.
+
+The joint phase has one critical point, (u,s)=(v/l,0). It is interior for l<v,
+and absent for l>v. No integer product equals the chosen v.
+
+For l=1,2, isolate a smooth compact rectangle around that interior point. On it
+the following is an EXACT change of variables, not a quadratic approximation:
+
+    Y=sinh(2s),
+    Z=l*u-v*asinh(Y)/Y,  with asinh(Y)/Y=1 at Y=0.
+
+Then Phi_l=-2*pi*Y*Z and du*ds=dZ*dY/(2*l*sqrt(1+Y^2)). For a smooth compact
+amplitude a, Fourier inversion gives
+
+    d integral integral a(Y,Z) exp(-2*pi*i*d*Y*Z) dZ dY -> a(0,0).
+
+Proof: Fourier transform in Z, substitute r=dY, and dominate the transformed
+amplitudes by C/(1+r^2), using two Z derivatives and compact support. Dominated
+convergence and Fourier inversion at zero give the displayed limit. The same
+argument applies to the normalized d-dependent amplitudes because their common
+compact supports and C^2 convergence give uniform derivative bounds.
+
+The remainder can be controlled explicitly. Near s=0 but away from u=v/l,
+Phi_s=4*pi*(v-l*u*cosh(2s)) is bounded away from zero; integrate twice in s.
+Away from s=0, Phi_u=-2*pi*l*sinh(2s) is nonzero. Integrate in u twice.
+After multiplication by d, the only nonvanishing-order boundary expression is
+an L1 amplitude at u=1 against exp(i*d*Phi_l(1,s)). This boundary phase is
+nonconstant and has only two stationary points. Remove small neighborhoods of
+them, bound those neighborhoods by their L1 mass, and apply the first-derivative
+test on the remaining compact intervals; Gaussian tails control infinity.
+The expression tends to zero. Thus the cutoff boundary contributes o(1), not a
+second constant leading term. A moving amplitude can first be replaced in L1
+by its limit using the uniform bounds above.
+
+For ALL l>=3, v=5/2 gives
+
+    |Phi_s|=4*pi*(l*u*cosh(2s)-v)
+       >=(2*pi/3)*l*u*cosh(2s).
+
+Two integrations by parts in s, with no finite endpoint in s, give a bound
+C*d^(-1)*l^K*exp(-c0*l) AFTER multiplication by 2d, for fixed C,K,c0>0.
+Indeed derivatives of the reciprocal phase speed are bounded by constants times
+1/(l*u*cosh(2s)); derivatives of the amplitude introduce only polynomial factors
+absorbed by half its Gaussian exponential. The weight-ratio derivatives are
+uniformly dominated. Multiplying by at most l pairs still leaves a summable
+majorant. Hence the infinite l>=3 contribution is O(1/d), uniformly in the
+external unit phases. This is the essential all-atom estimate.
+
+The interior constant, including Jacobian and factor 2d, is
+
+    8*pi^4*v^(7/2+beta)*exp(-2*pi*c*v)*l^(-1/2-beta).
+
+Parent checked this both from the exact bilinear coordinates and from the mixed
+Hessian determinant; the bilinear-coordinate argument supplies the actual proof.
+The corpus methods supporting the argument are FourierScaledInversion:23,
+NonstationaryPhaseLowerBound:28,112, OscillatoryIntegrationByParts:57 and the
+source strip admission. They do not already instantiate this exact double limit.
+
+### A negative literal tail survives all other atoms
+
+For 2<v<3 the only interior pairs are (1,1), (1,2), (2,1). Therefore the above
+arguments give the PAPER asymptotic, with a real o(1) remainder,
+
+    nu_d(v)=C_beta(v,c) *
+      [1+2^(1/2-beta)*cos(2*pi*d*v*log(2))]+o(1),
+
+    C_beta(v,c)=8*pi^4*v^(7/2+beta)*exp(-2*pi*c*v)>0.
+
+Choose d_j=(j+1/2)/(v*log(2)), so the cosine is EXACTLY -1. For beta=0, and
+for every fixed physical aperture beta=a in (0,1/2), the limit is strictly
+negative: C_beta*(1-2^(1/2-beta))<0. R_j tends to infinity. By FOURIER-SIGN,
+the actual sharp-tail Fourier density is negative at xi_j=4*pi*d_j*v for every
+sufficiently large j. No numerical root or sampled coefficient is used.
+
+The earlier strip/exponential-moment sign law then yields a finite real
+polynomial filter with negative weighted tail form at each such cutoff. Its
+degree can increase with the cutoff. This is consistent with all already proved
+finite-rank tail positivity. It gives no negative FULL-aperture form at R=0.
+
+### Consequence for the proposed moving positive certificate
+
+If an admitted positive semidefinite boundary form B(x) tends to zero at infinity
+and W(x)M(x)+B'(x) is positive semidefinite at every x, then necessarily
+
+    integral_R^infinity W(x)M(x) dx
+       =integral_R^infinity [W(x)M(x)+B'(x)] dx+B(R) >=0
+
+at every cutoff and finite degree. The candidate sharp-tail obstruction therefore
+rules out this ENTIRE positive-boundary ansatz at all degrees, including the
+SOURCE-CERT moving family proposed in the preceding turn. It also applies to an
+aperture-dependent positive B_a at every fixed 0<a<1/2. Merely allowing motion
+or aperture dependence while retaining B>=0 does not escape it.
+
+This conclusion is conditional only on completing the paper/Lean audit of the
+specific asymptotic above, not on RH. Do not cite the no-go as kernel-verified.
+The mathematical next step changes: stop trying to prove positivity of every
+tail. An exact boundary representative for the full aperture may have to be
+indefinite somewhere, or one must control the globally assembled form directly.
+Arbitrary signed flux existence remains tautological without a source-local
+producer, so that is not itself a replacement proof.
+
+### Positive survivor: the missing square has a precise source location
+
+The cutoff keeps (1,2) and (2,1) but removes (2,2), whose stationary center is
+
+    x_22=R+log(v/4)/2 < R.
+
+Retaining that earlier contribution changes the three-term phase expression into
+
+    1+2*2^(-1/2-beta)*cos(theta)+2^(-1-2*beta)
+       =|1+2^(-1/2-beta)*exp(i*theta)|^2 >=0.
+
+This is an exact positive completion of the specific two-atom packet, not a claim
+that all remaining atoms assemble positively. General rectangular-packet square
+expansion is already formalized at GeneralizedDirichletMeanValue:50,121 (retrieved
+by method search). The product cutoff and the rectangular square retain different
+sets of pairings. A source-global comparison must preserve those pairings and
+their exact weights; arbitrary local positivity cannot replace that operation.
+This is a concrete survivor of the obstruction, with the carrier distinction
+made explicit, and a reason to return to the full nonlinear comparison law.
+
+## SOLO continuation: cutoff signature and the number of comparison channels
+
+No agents were started, resumed, or delegated to. No Lean source was changed or
+built. Proof chain remains actual source law -> complete signed aperture cone
+-> RH. Previous progress was the detailed PAPER sharp-tail obstruction above.
+This continuation audits its analytic mechanism and extracts a stronger invariant
+before choosing a replacement construction. RH remains open.
+
+### Audit of the sharp-tail argument and its positive completion
+
+Literal seed and term were checked again in ThetaCuspComplexStrip:28,46.
+The factor exp(x), pair shift log(m/n)/2, normalized mixed source polynomial,
+bilinear-coordinate Jacobian, and positive Fourier-sign prefactor agree. The
+source has complex-strip decay; for W_a the integrated horizontal decay is a
+polynomial times exp(-2(1-a)|t|), enough for each fixed strip displacement.
+Uniformity up to the boundary of the strip is neither available nor used.
+
+GeneralizedDirichletMeanValue:50,121 was read directly. It proves the exact
+finite rectangular square and bilinear expansion with arbitrary real frequencies.
+It does not identify the full weighted theta current with such a square.
+NonstationaryPhaseIteration:70,99 and OscillatoryIntegrationByParts:57 were
+also read. They provide finite-interval integration-by-parts mechanisms; the
+whole-line and parameter-uniform estimates needed above remain PAPER arguments.
+
+The important remainder checks are: the cutoff u=1 contributes o(1) after the
+2d normalization; for l>=3 two s integrations by parts give a summable
+C d^-1 l^K exp(-c0 l) bound; and the lower source-polynomial terms are retained
+through this estimate rather than discarded before multiplying by d.
+No contradictory sign or normalization was found in this self-audit. This is
+not independent verification and does not change the result's PAPER status.
+
+The two-atom square is only an isolated packet identity. Lowering the actual
+cutoff enough to restore (2,2) also admits additional pairs, including (1,3)
+and (3,1). It is invalid to infer positivity of a larger actual tail from the
+single completed square. ProductAFEDirect:160,199 was retrieved and read: it
+supplies an exact smoothed product-index expansion under its stated absolute
+convergence inequalities, not a positive rectangular decomposition of this
+theta aperture derivative. No bridge from it was accepted.
+
+### New PAPER consequence: infinite negative index at one fixed bad cutoff
+
+The tail obstruction is stronger than one failed determinant at each escaping
+cutoff. Fix any cutoff R for which the preceding argument gives
+rho_R^W(xi0)<0. Write rho=rho_R^W and dmu=|rho(xi)| dxi. This is a finite
+even measure with a positive exponential-moment window. Define
+
+    Q(p,q)=integral p(xi)q(xi)rho(xi) dxi,
+
+on REAL polynomials. The actual signed tail Hankel form is this form, up to
+the positive Fourier-normalization factor already audited above.
+
+Continuity supplies an open negative interval. For any integer m>=1, choose
+m disjoint smaller intervals inside it, and normalized indicator functions
+f_1,...,f_m in L2(mu), supported there. Then
+
+    inner_mu(f_i,f_j)=delta_ij,
+    Q(f_i,f_j)=-delta_ij.
+
+The corpus's LocalExponentialTestClosure:427 proves polynomial density in
+complex L2 for ONE exponential window. Taking real parts gives real-polynomial
+approximation of these real functions. In particular choose real p_j with
+
+    ||p_j-f_j||_L2(mu) < 1/(4 sqrt(m)).
+
+For a real coefficient vector c, put f=sum c_j f_j and e=sum c_j(p_j-f_j).
+Cauchy--Schwarz gives ||e|| < ||c||/4 and ||f||=||c||. Multiplication by
+sgn(rho) has norm at most one, so
+
+    Q(sum c_j p_j,sum c_j p_j)
+       <= -||c||^2 + 2||f||||e|| + ||e||^2
+       < -(7/16)||c||^2                       (c nonzero).
+
+Thus p_1,...,p_m are linearly independent and span a negative-definite
+subspace. All have some common finite degree bound. Since m was arbitrary,
+the increasing finite signed tail Hankel sections have UNBOUNDED negative
+index at this SINGLE R. No numerical eigenvalue or increasing-cutoff limit
+is used in this density step.
+
+The even/odd restriction does not remove the conclusion. The bad Fourier
+point above is positive. Choose the smaller intervals on the positive half-line
+and reflect them. Symmetric, respectively antisymmetric, normalized indicator
+pairs give the same construction in the even and odd real subspaces. Since
+mu is even, projection p(xi) -> (p(xi)+/-p(-xi))/2 is an L2 contraction and
+preserves approximation. BOTH parity Hankel hierarchies therefore have
+unbounded negative index at each admitted bad cutoff.
+
+There are also arbitrarily large positive subspaces. Fourier inversion gives
+
+    integral rho(xi) dxi = f_R^W(0)
+       = integral_R^infinity W(x) k(x)^2 dx > 0.
+
+Here W>0 on the positive tail and the literal k is strictly positive. Hence
+rho has a positive open interval as well, and the same approximation argument
+with the opposite sign applies, including both parity restrictions. The
+completed signed response form at these cutoffs has signature (infinity,
+infinity), in the precise sense of unbounded finite positive and negative
+indices. This does NOT assert the full R=0 aperture has this signature.
+
+Dependencies checked directly: UnwindowedHankelSignCone:109, the local-window
+density proof LocalExponentialTestClosure:350-430, and NegativeIndexRankBound
+(full file). EntireExponentialMomentPolynomialDensity was inspected but its
+ALL-exponential hypothesis is stronger than what is available here; it is not
+the needed density theorem. SuzukiArchimedeanParityHankelInfiniteNegativeIndex
+has a related signature mechanism for a DIFFERENT literal kernel. Its first
+230 lines were inspected; that theorem is not used as a theta-tail theorem.
+
+### Stronger exclusion and its exact scope
+
+Suppose a compatible boundary quadratic form B(x) tends to zero at infinity
+and W(x)M(x)+B'(x) is PSD on every finite real-polynomial section. Integration
+forces H_R-B(R) to be PSD, where H_R is the actual weighted tail form. On
+EVERY negative-definite subspace of H_R one then has
+
+    B(R)[p] <= H_R[p] < 0                  (p nonzero).
+
+Therefore B(R) must itself have arbitrarily large negative index. This rules
+out not only positive storage but every correction with a uniform finite
+negative index, including a fixed finite-rank SIGNED correction. For the
+finite-rank case the radical argument in NegativeIndexRankBound gives the
+same contradiction: a negative space of dimension greater than the correction
+rank contains a nonzero vector in its radical.
+
+This is a precise, conditional-on-the-tail-paper-audit explanation for needing
+infinitely many comparison directions in THIS compensation strategy. It does
+not show that the nonlinear source needs infinitely many independent state
+variables, and it does not rule out a finite formula producing an infinite-rank
+form. Nor does it contradict the already formalized rank-four split Hankel
+kernel: rank at a spectral parameter and rank on the whole polynomial-filter
+space are different objects. Do not identify these signatures by analogy.
+
+Smooth cutoff regularization cannot erase an individual strict witness. For
+a fixed negative polynomial test, its source integrand is integrable. Smooth
+cutoffs bounded between zero and one converging to the sharp indicator give
+the same negative integral eventually by dominated convergence. No assertion
+of a degree-uniform smoothing width follows from this argument.
+
+### A second frame test: real-filter geometry alone is universal
+
+The real-filter restriction in METRIC also has an exact PAPER interpretation.
+Let A=-2iD, g_a=exp(ax)k, and phi_a its unitary angular-frequency Fourier
+transform. The polynomial-momentum multiplier law is already in
+SchwartzPolynomialDifferentialFrame:50. Then
+
+    Fourier[p(A)g_a](xi)=p(2xi)phi_a(xi).
+
+For real p,q their Hilbert inner product is real. Thus the real cyclic family
+is isotropic for the imaginary part of the Hilbert inner product. With the
+admitted exponential moment and phi_a nonzero almost everywhere, its real
+closure is exactly
+
+    (phi_a/|phi_a|) L2(real amplitudes).
+
+Polynomial density proves the closure; the exceptional zeros have measure
+zero because the transform is nonzero analytic. This is a maximal isotropic
+real subspace. The construction is universal for such a source. Arbitrary
+spectral phases produce the same isotropic property, so isotropy itself does
+NOT enforce the needed orientation or use the nonlinear theta law.
+
+Indeed, where phi_a is nonzero, write its local phase theta_a. Directly
+differentiate the Fourier integral, retaining the real-filter domain:
+
+    partial_a phi_a=i partial_xi phi_a,
+    partial_a |phi_a|^2=-2 Im(conj(phi_a) partial_xi phi_a)
+                      =-2 |phi_a|^2 partial_xi theta_a.
+
+The missing metric monotonicity is precisely the sign of this phase current,
+not the existence of the isotropic subspace. This dictionary is compatible
+with HedenmalmHankelKreinChamber's already proved orientation identity and is
+not a new RH route. Promoting universal isotropy to spectral reality would
+repeat the earlier failure to distinguish source-specific law from generic
+analytic geometry.
+
+Current positive survivor: retain the complete source-generated pairing and
+allow comparison forms of unbounded signature. A useful next construction
+must PRODUCE such a form from the actual nonlinear source law, with both
+endpoint identities, or prove the full integrated orientation directly.
+Choosing an indefinite flux by integrating the unknown target would still
+be tautological. No global producer or RH sign has been established here.
+
+### Retrieval and end checkpoint
+
+All seven new searches are terminal. JSON artifacts under /tmp/hgt-rh-solo-:
+global-pairing-4 (deep, partial=true,145.480s), global-comparison-4
+(deep,partial=true,150.877s), pair-square-method-4
+(deep,partial=true,150.005s), product-cutoff-4
+(deep,partial=true,119.270s), real-filter-geometry-4
+(deep,partial=false,118.533s), real-cyclic-4
+(hybrid --any,partial=true,71.358s), and infinite-index-4
+(deep,partial=false,91.429s). Candidate lemmas, source arguments/method
+evidence, proof ideas and ingredient sets were inspected. Broad-query bundles
+often matched words rather than mathematical carriers. In particular generic
+matrix PSD results already assume positivity, root-pairing reflection is not
+theta reflection, and a negative-index theorem for reciprocal-factorial or
+zero-indexed Hankel matrices is not a theorem for the sharp-tail density.
+None of those generated combinations was accepted as a proof.
+
+Useful returned language was verified in installed mathlib's
+Analysis/InnerProductSpace/StandardSubspace:178-224: closed real separating
+and cyclic subspaces and their symplectic complements. It accurately describes
+the generic real-filter closure above; it contains no source-specific orientation
+theorem. The useful analytic mechanism is the ONE-window density theorem,
+not the stronger entire-exponential density package.
+
+Latest reported coverage: 59,255 inventoried files, 59,254 indexed, one failed;
+43 compiled snapshots, 43,611 pending compiler entries, 2,677 stale and 2,722
+unavailable. A preceding method snapshot reported 350,983 ready and 216,426
+stale methods. These are search coverage, not compiler verification of this
+investigation. Partial retrieval cannot establish absence from the whole corpus.
+
+Progress classification: new PAPER signature consequence and sharper exclusion
+of finite-index boundary repair, resting on the still-unformalized sharp-tail
+asymptotic. Also rejected the insufficient isotropy reframe and the inference
+from one completed atom square to global positivity. Next hard attack is the
+actual nonlinear law's control of the integrated pairing across a cut: if
+H_0=H_[0,R]+H_R is PSD, the head must dominate -H_R on every negative tail
+subspace. The source must supply that INFINITE-rank comparison, not merely a
+positive scalar reserve or an arbitrary retrospectively defined flux. This is
+the missing producer, not an established new sufficient theorem.
+
+Only this research log was edited. Its targeted git diff --check passed. No
+owned search, Lean process, build, numerical job, or subagent remains running.
+No unconditional RH proof or new Lean theorem was claimed. Keep working solo.
+
+## SOLO frame audit: full boundary jets and finite nonlinear source dimension
+
+User's latest instruction remains absolute: no more subagents. All three existing
+agents were confirmed interrupted; none was resumed or messaged. This pass uses
+corpus retrieval and source reading only. No Lean edits, builds, numerical jobs,
+or changes to the official route ledger. The immediate interpretive question is
+what mathematical description retains the information lost by the partial views;
+do not replace that question with a claim to have proved RH.
+
+### Evidence controls and rejected joins
+
+The six preceding `-5` searches were inspected and their remaining handles polled
+to terminal exit. Source-global and signed-flux-method were complete; theta-signed,
+source-orientation and wigner-source were partial; wigner-method was complete.
+Candidate statements, source arguments and generated ingredient bundles were
+inspected. The degree-bound plus `ZMod.sq_add_sq` bundle has no bearing on a real
+theta signed form. Neither root-pair reflection nor a generic dissipative flow
+supplies the missing full-source orientation. Broad semantic searches frequently
+match vocabulary across different mathematical carriers; no absence claim follows.
+
+New source checks:
+
+* `XiCTaylorThetaTailFiniteTranslationCurrent:20-96` retains the two mixed currents
+  and self-current of a finite translation top edge. Exact transport is proved;
+  no sign for these edge terms is supplied. It does not close an all-degree flux.
+* `ThetaCuspWignerGammaXiTransverseEnergyUniversalityLaw:43` identifies the SAME
+  actual current in Wigner, completed product-fibre, incomplete-Gamma and Xi
+  norm-derivative coordinates. This is a real dictionary, not another positivity
+  mechanism. Wigner phase-space language was already examined earlier in this log.
+* `BogomolnyPrasadSommerfieldBounds:187-249` completes a square for arbitrary two
+  amplitudes against the positive Wigner symbol. Saturation is an additional exact
+  amplitude equation. There is no theorem here placing the actual source on that
+  saturation locus; the positive symbol alone does not orient the cross term.
+* `PreDivisorTransverseRamificationRoosTransgression:115-158,201-270` distinguishes
+  equality of zero loci from equality of carriers. Its marked response retains a
+  parallel history coordinate because the critical unmarked response is not
+  injective off the wall. Do not collapse all no-go defects into one alleged
+  curvature on the basis of their common RH zero locus.
+* `XiSourceModularTypeSuperselectionLaw:1030-1125` packages explicit differences
+  between positive clocks, diagonal Hilbert terms, transverse charge and full
+  resolvent tests. Its bounded nonnegative defect budget is not a vanishing law.
+* `ConstitutiveMarkedResponseRealization:33-139` gives a unique marked LINEAR
+  equivalence from surjective presentations with equal separating probes. It
+  supplies no bounded inverse, theta application or spectral sign.
+* `SourcePointedExactDescentLaw:26-164` separates uniqueness of a lift, existence
+  and stable recovery. Its parallel conservative-factorization theorem permits
+  several incomplete comparisons whose joint kernel is trivial. No actual theta
+  comparisons satisfying its zero-observation hypotheses were constructed here.
+* `CommutingCyclicAlgebraicHorizon:74-134` strengthens a generic cyclic commuting
+  classification to arbitrary annihilator ideals. The dependence horizon is a
+  subspace; a crossing cone cannot occur in this construction. This is NOT a
+  theorem that theta requires a noncommutative geometry: no theta realization of
+  the theorem's particular horizon was established.
+
+### PAPER sharpening: the full boundary jet is faithful at every cut
+
+This deduction is independent of the unformalized sharp-tail asymptotic. It uses
+source-checked existing inputs, but the combined theorem was not formalized or
+compiled in this pass. It sharpens an earlier use of nonannihilation, rather than
+claiming novelty of the general analytic principle.
+
+Let k be the literal theta-cusp source, A=-2i d/dx, and for each real R define
+
+    J_R : ℂ[t] -> (ℕ -> ℂ),
+    J_R(p)_j = (d/dx)^j [p(A)k](R).
+
+Then J_R is injective for EVERY real R.
+
+Proof with exact dependencies:
+
+1. `ThetaCuspComplexStrip:259,269,312,322` gives a holomorphic extension of k to
+   the connected strip |Im x|<pi/4. Every finite constant-coefficient differential
+   filter p(A)k therefore has a holomorphic extension on this strip.
+2. J_R(p)=0 says every derivative at R vanishes. Taylor uniqueness and analytic
+   continuation on this connected strip give p(A)k=0 on the whole real line.
+3. `ThetaCuspSchwartz:362-379` places k in actual Schwartz space.
+   `SchwartzPolynomialDifferentialFrame:49` supplies the exact polynomial Fourier
+   multiplier identity. With A=-2iD and the corpus Fourier normalization it is
+
+       Fourier[p(A)k](xi) = p(4*pi*xi) Fourier[k](xi).
+
+4. `ThetaCuspSchwartzFourierXi:21` identifies Fourier[k](xi)=XiC(2*pi*xi).
+   XiC_zero_ne, also used in `ThetaCuspComplexStrip:926`, and continuity give an
+   open real interval on which this Fourier transform is nonzero. The polynomial
+   p consequently vanishes on an interval and is zero.
+
+Equivalently the countably infinite matrix k^(i+j)(R) has linearly independent
+finite sets of columns (the nonzero powers of -2i only rescale columns). A
+constant-coefficient linear recurrence for all these jets would contradict the
+argument. This does not conflict with the finite NONLINEAR U/B/Q source closure:
+the normalized jets are different polynomials in that state and its mass. Finite
+nonlinear generation does not bound the linear rank of all filtered responses.
+
+Every truncation to finitely many complex jet coordinates has a nontrivial kernel
+on C[t]. The same holds for real filters, treating finitely many complex traces as
+finitely many real linear measurements. The missing information can be recovered
+by more traces, but there is no fixed finite number that works for every degree.
+No continuity or bounded inverse for the full-jet observation is asserted.
+
+### Conditional boundary-repair consequence and its positive survivor
+
+Conditional on the previous PAPER sharp-tail/signature argument: at a fixed bad
+cut R, H_R has negative subspaces of every finite dimension. Suppose a proposed
+boundary correction has the form
+
+    B_R(p,q)=b_R(T_R p,T_R q),  T_R : R[t] -> R^m linear,
+
+with b_R any symmetric bilinear form. If H_R-B_R were nonnegative, choose a
+negative subspace of H_R of dimension m+1. Its intersection with ker T_R is
+nontrivial. On a nonzero p in this intersection B_R(p,p)=0 and H_R(p,p)<0,
+contradiction. Thus a fixed finite list of boundary traces cannot repair all
+degrees, even with signed coefficients and nonlinear dependence on the source
+state. This is an application of the earlier finite-rank exclusion, not a new
+unconditional Lean no-go.
+
+The survivor is concrete: the full source boundary jet does retain every filter.
+Growing-order concomitants or a bilinear form on that full jet are not excluded.
+The crucial unresolved work is to DERIVE a comparison form and its signed estimate
+from the actual source law. Choosing it by integrating the desired tail form is
+still circular. Faithful boundary information does not itself imply positivity.
+
+### Why adding every derivative response is still not a selector
+
+There is a separate exact PAPER diagnostic. On the already admitted spectral strip,
+integration by parts gives, with angular Fourier-Laplace parameter z,
+
+    integral exp(-izx) p(A)k(x) dx = p(2z) XiC(z).
+
+All boundary terms vanish by the literal derivative decay used in the corpus's
+Schwartz and Fourier-Laplace constructions. Thus at a Xi zero EVERY one of these
+differentially filtered transform reports vanishes, although J_R is injective and
+the source is nonzero. This is observer blindness at that spectral parameter, not
+a contradiction or a failure of the nonlinear source law. Critical zeros already
+exhibit it. Adding more constant-coefficient derivative reports cannot by itself
+distinguish real from nonreal zeros.
+
+Consequently a useful enlarged frame must retain operations and comparisons that
+do not merely reproduce this common Xi factor, and prove how the actual global
+source constrains their joint pairing. Merely collecting all responses, even a
+faithful complete jet, gives a description without a zero-location theorem.
+
+The supported interpretation remains: one globally specified nonlinear source,
+its infinite space of admitted responses and full boundary data, and the signed
+comparisons between those responses. The zeros are the coincidence locus of the
+two endpoint sections (`HedenmalmTwoEndedVolterraDefect:66,103`). The proposed
+infinite-dimensional part is the response/comparison space; infinitely many
+independent primitive source coordinates are neither needed nor established.
+This is a sharpened research frame, not evidence of a new route more likely to
+close than the current frontier. The all-order source comparison is still missing.
+
+### Retrieval and stopping checkpoint
+
+Four new SOLO deep searches completed:
+
+* `/tmp/hgt-rh-solo-complete-law-frame-6.json`: partial=true,141.029s;
+* `/tmp/hgt-rh-solo-source-rank-frame-6.json`: partial=true,154.394s;
+* `/tmp/hgt-rh-solo-native-comparison-frame-6.json`: partial=false,59.705s;
+* `/tmp/hgt-rh-solo-full-boundary-jet-6.json`: partial=true,145.471s.
+
+Their candidate and method/source-argument lists were inspected, then selected
+applicable declarations read in source. Generated bundles were not accepted as
+proofs. Final query's proposed jet-operator commutation does not establish
+analytic jet injectivity; the proof above instead uses the explicitly checked
+theta strip and Schwartz multiplier sources. Broad queries did not supply a
+source-specific all-order sign bridge. This is a retrieval result within reported
+coverage, not an exhaustive nonexistence theorem.
+
+Latest snapshot: 59,257 files, 59,256 indexed, one failure; 43 compiled snapshots,
+43,613 pending compiler entries, 2,677 stale and 2,722 unavailable; methods 350,990
+ready, 216,419 stale, 16 failed. No new theorem was compiler-verified by this task.
+All four new owned search processes and the six preceding `-5` searches are
+terminal. No active subagent, Lean process or numerical job belongs to this pass.
+Only this working log was edited; targeted git diff --check passed before this
+final checkpoint and is run once more after it.
+
+Progress classification: sharper PAPER description of the necessary response
+space (full boundary-jet faithfulness versus finite trace loss), a conditional
+finite-trace repair obstruction, and an explicit diagnostic showing why all
+derivative transform reports share the same zero blindness. No unconditional RH
+proof, no substantiated better-ranked new route, and no claim that a unique final
+geometry has been reconstructed. Next mathematical target remains a source-derived
+global comparison on the full response space with the required orientation.
+
+## SOLO goal continuation: an all-degree boundary identity and its failed sign test
+
+Proof chain remains actual nonlinear source law -> positivity of every integrated
+signed response form -> complete signed Hankel cone -> RH. Previous turn was
+research progress: full boundary-jet faithfulness and finite trace loss changed
+which comparison constructions remain plausible. This turn attacks an explicit
+all-degree boundary construction, its pointwise sign, and a real-root deletion
+induction. All new deductions below are PAPER, not newly checked Lean theorems.
+No subagents, Lean edits, builds, numerical or CAS calculations were used.
+
+### First loop: construct the boundary term instead of postulating it
+
+Write D=d/dx, A=-2iD, k=thetaCuspFullSource, g_a=exp(ax)k and
+
+    S_p[g](x) = sum_ij p_i p_j Re((-i)^(i+j))
+                  partial_t^(i+j)[g(x+t)g(x-t)] at t=0,
+
+for a real polynomial p. All functions used below are smooth and have the
+weighted derivative decay already supplied by the actual source corpus.
+
+There is an explicit polynomial b_p(X,Y), with real coefficients, such that
+
+    S_p[g] = |p(A)g|^2 + D^2 B_p[g],
+    B_p[g](x) = b_p(D_1,D_2)[g(x_1)g(x_2)] at x_1=x_2=x.
+
+Construction, with no unknown integral or RH premise:
+
+    E_p(X,Y) = (p(-i(X-Y))^2 + p(i(X-Y))^2)/2,
+    L_p(X,Y) = (p(-2iX)p(2iY) + p(-2iY)p(2iX))/2,
+    b_p(X,Y) = (E_p(X,Y)-L_p(X,Y))/(X+Y)^2.
+
+The quotient is a polynomial. E_p-L_p vanishes at Y=-X. Its derivative in the
+normal direction partial_X+partial_Y also vanishes there: E_p depends only on
+X-Y, and the two product-rule terms for each product in L_p cancel at Y=-X.
+Since the characteristic is zero, the numerator is divisible by (X+Y)^2.
+Both E_p and L_p have real coefficients and are symmetric in X,Y. Evaluation
+on the diagonal turns multiplication by X+Y into D, proving the identity.
+For degree d, b_p has total degree at most 2d-2; for constant p it is zero.
+
+Checks by direct symbolic algebra (not a CAS):
+
+    B_t[g] = -g^2,
+    B_(t^2)[g] = 2g g'' - 6(g')^2.
+
+Define the current
+
+    F_(a,p)(x) = 2x D B_p[g_a](x) - 2 B_p[g_a](x).
+
+Multiplying the density identity by 2x gives exactly
+
+    2x exp(2ax) S_p[k](x)
+      = 2x |p(A)g_a(x)|^2 + D F_(a,p)(x).
+
+The equality S_p[g_a]=exp(2ax)S_p[k] holds because the opposite shifts in
+g_a(x+t)g_a(x-t) cancel the t-dependent exponential before differentiation.
+
+Thus the actual sharp-tail signed form satisfies, for R>=0 and 0<a<1/2,
+
+    H_(a,R)[p] := 4 integral_R^infinity x sinh(2ax) S_p[k](x) dx
+      = 2 integral_R^infinity x
+          (|p(A)g_a(x)|^2-|p(A)g_(-a)(x)|^2) dx
+        + F_(a,p)(-R)-F_(a,p)(R).                       (BOUNDARY)
+
+Proof: integrate the preceding identity on the two outside rays. Evenness of k
+and reality of p give |p(A)g_a(-x)|=|p(A)g_(-a)(x)|. All currents vanish at
+infinity by the actual source derivative bounds. At R=0 the two displayed
+boundary values cancel, recovering the prior full-line metric identity.
+
+This boundary term really is generated by the finite nonlinear source law.
+If k^(n)=H P_n(v), v=(U,B,Q), then every g_a derivative is
+exp(ax)H times (V+B/2+a)^n Q. Consequently
+
+    B_p[g_a]=exp(2ax)H^2 bcal_(p,a)(U,B,Q),
+    F_(a,p)=2 exp(2ax)H^2
+       [x (V+B+2a)bcal_(p,a)-bcal_(p,a)],
+
+with an explicit polynomial bcal_(p,a) obtained from b_p. Its required jet order
+grows with deg p; it is not a fixed finite-rank boundary repair. This meets the
+previous information-retention requirement, but does NOT prove that the remaining
+bulk term in (BOUNDARY) is nonnegative. The proposed immediate positivity bridge
+therefore failed; the next loop tests the bulk directly on the actual source.
+
+### Second loop: the bulk comparison has both signs at EVERY positive location
+
+Fix ANY R>0 and 0<a<1/2. The corpus proves k(R)>0 and k'(R)<0:
+`ThetaTiltLogDensity:57-79` supplies strict logarithmic derivative decay, with
+the exact quotient identification at :34. No hypothetical countermodel is used.
+
+Let
+
+    c_+ = 4[k''(R)/k(R) + 2a k'(R)/k(R) + a^2],
+    p_+(t)=t^2+c_+.
+
+Direct differentiation gives
+
+    p_+(A)g_a(R)=0,
+    p_+(A)g_(-a)(R)=16a exp(-aR) k'(R),
+
+so the bulk norm difference at R is exactly
+
+    -256a^2 exp(-2aR) k'(R)^2 < 0.
+
+Conversely c_-=4[k''(R)/k(R)-2a k'(R)/k(R)+a^2] makes the negative-tilt
+output vanish and gives a strictly positive difference
+256a^2 exp(2aR) k'(R)^2. Both signs occur among real EVEN quadratic filters
+at every positive location, with the actual source and within the physical tilt.
+Each p is a single fixed polynomial once R,a are chosen; this is not a claim
+that one polynomial has the negative sign at every location.
+
+This does not contradict any finite positive result. In fact
+`ThetaCuspNativeEvenHead:27,83` proves S_p[k](x)>0 for every nonzero even
+polynomial of degree at most four, at every x>=0. Therefore the particular
+p_+ above has a strictly positive full integrated signed form. The boundary
+current is essential even in a section whose positivity is already proved.
+The counterexample rules out pointwise reflected-norm domination, not global
+domination for one shared filter. It strengthens the earlier linear-filter
+witness, which required selecting a point where k'/k=-a.
+
+### Third loop: all real-root deletions expose a quantitative, not sign-only, induction
+
+For a fixed monic polynomial p(t)=product_(j=1)^d(t-lambda_j) with real roots,
+let p_I be the polynomial obtained by deleting the factors indexed by I. Repeated
+roots are allowed. Define the two different positive metrics
+
+    G_a(p)=||p(A)(exp(ax)k)||^2,
+    J_a(p)=||exp(ax)p(A)k||^2.
+
+They must not be conflated: the filter acts after the tilt in G and before it
+in J. Conjugating the derivative gives
+
+    exp(ax)p(A)k = p(A+2ia)g_a.
+
+The checked Schwartz polynomial multiplier law and Fourier isometry, followed
+by the finite product identity
+
+    |p(t+2ia)|^2 = product_j[(t-lambda_j)^2+(2a)^2],
+
+give the exact all-subset formula
+
+    J_a(p) = sum_(I subset {1,...,d}) (2a)^(2|I|) G_a(p_I).
+
+For real p, |p(A)k|^2 is even (the even part of p gives a real even function;
+the odd part gives an imaginary odd function). Thus J'_a(p)>0 for a>0 and
+p nonzero. Strictness uses source nonannihilation from the preceding full-jet
+audit. Differentiating with p and all roots FIXED yields
+
+    J'_a(p) = H_a[p] + sum_(I nonempty)
+      [(2a)^(2r) H_a[p_I] + 4r(2a)^(2r-1) G_a(p_I)], r=|I|.     (DELETE)
+
+Here H_a=G'_a is the actual full signed form; all differentiation and boundary
+admission follow from the literal weighted derivative bounds. If an orthogonal
+cutoff polynomial moves with a, freeze it at the a being tested before using
+this formula. No root-motion terms have been discarded.
+
+Conjectured induction: positivity of the fixed-filter metric derivative J'_a
+and all lower-degree signed forms might force H_a[p]>=0. (DELETE) identifies
+the flaw exactly. H_a[p] is the positive J'_a MINUS an entire positive budget
+of lower-degree terms. At a hypothetical first zero H_a[p]=0, (DELETE) is fully
+consistent with strict positivity of every displayed remaining term. What is
+needed is the quantitative actual-source inequality
+
+    J'_a(p) >= sum_(I nonempty)
+      [(2a)^(2r) H_a[p_I]+4r(2a)^(2r-1) G_a(p_I)].
+
+No proof of that inequality was obtained. The product identity is generic for
+even admitted sources, so it cannot itself exploit the distinguishing nonlinear
+theta law. This is an explicit remaining comparison, not an easier RH theorem
+or a claimed all-degree positivity producer.
+
+### Retrieved source laws tested against their actual hypotheses
+
+`HTGeometry/HankelTerminalFlux` was read in full. Its rank-two finite-section
+flux requires m_n'=-(n+1)m_(n+1). This is NOT the theta aperture flow: the actual
+signed sequence has m_1=0, while
+
+    m_0'(a)=8 integral_0^infinity x^2 cosh(2ax) k(x)^2 dx > 0.
+
+The proposed identification fails at n=0, not merely at an unknown high-order
+boundary. `FiniteHankelBoundaryQuadrature:25-185` supplies real simple nodes and
+positive weights at a flat face with a positive head, but does not orient a
+crossing or supply the missing lower bound in (DELETE).
+
+`ThetaCuspCofinalWardConvexity:21-115,181-215` gives a substantial true source
+theorem: the complete tilted Ward density is convex for a<=1/4. Its proof uses
+W'+W/2=-k/(2pi), W>0 and q=(log k)'<0. The same argument works for an arbitrary
+positive even sufficiently decaying log-concave source, by defining
+
+    W(x)=exp(-x/2)/(2pi) integral_x^infinity exp(t/2) k(t) dt.
+
+It yields W_a''=(a-1/2)^2 W_a+(1/2-2a-q)exp(ax)k/(2pi)>0 for a<=1/4.
+Thus this convexity package alone does not use the full nonlinear theta law and
+does not evade the earlier explicit log-concave off-axis countermodel. No blanket
+claim against other uses of the Ward construction is made.
+
+`ThetaCuspAllOrderLikelihoodCooling:16-128` proves every FIXED finite derivative
+cools faster than every fixed scale power. Its quantifiers do not give an estimate
+uniform in the filter degree or pay the root-deletion budget. The already proved
+fixed-Bose first-face seam no-go was read in
+`ThetaCuspLikelihoodHomotopyBoseFirstFaceSeamNoGo:1-150`; it prevents treating that
+specific likelihood-face assembly as an all-order sign rule. The positive survivor
+is its exact seventh-order seam law, not a general ban on likelihood methods.
+
+### Retrieval, verification and next hard target
+
+Six new searches are terminal:
+
+* bilinear-concomitant-7: deep, partial=true,168.584s;
+* source-flux-7: deep, partial=false,119.508s;
+* differential-positivity-7: deep, partial=true,95.505s;
+* theta-compensation-7: hybrid, partial=true,55.385s;
+* green-method-7: hybrid, partial=true,66.774s;
+* source-score-7: deep, partial=false,123.019s.
+
+Artifacts are `/tmp/hgt-rh-solo-<name>.json`. Candidate lemmas, source arguments,
+proof ideas and proposed bundles were inspected; selected supporting statements
+and proofs were read. Several broad queries retrieved unrelated algebra and no
+usable common-carrier join. The differential-positivity request reported a local
+worker disconnection; its partial results were used without restarting it. No
+generated bundle was treated as a proof or whole-corpus absence certificate.
+One reported snapshot has 59,258 files, 59,257 indexed, one failure; compiler
+metadata includes 43 compiled snapshots, 43,614 pending, 2,677 stale and 2,722
+unavailable. No compilation was performed by this task.
+
+Progress: constructed a coherent all-degree source-polynomial boundary current;
+falsified pointwise reflected-norm ordering at every positive source location;
+and identified the full lower-degree budget in the real-root deletion comparison.
+None establishes the required global sign. Next attack must use the actual
+nonlinear source equations to bound that GLOBAL budget or produce a different
+global comparison; positivity of J, generic Ward convexity, a fixed number of
+boundary traces and a transplanted unrelated moment flow cannot supply it.
+RH remains open and the goal remains active. Only this log was edited; no
+owned Lean process, build, numerical job or subagent is running.

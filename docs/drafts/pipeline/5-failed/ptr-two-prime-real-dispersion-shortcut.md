@@ -1,0 +1,7 @@
+# PTR two-prime real-dispersion shortcut — duplicate, not a producer
+
+- **Stage:** 5-failed as an independent proof route; PTR remains open.
+- **Chain tested:** rotating Maxwell boundary map → real balanced prime symbols at `2,3` on Xi conormals → zero confinement → RH.
+- **Corpus audit:** `RouteRPrimeLogEssentialCapReflectedPhaseHermiticity.lean` already proves that two real reciprocal physical phase moments at primes `2,3` force the centered Xi coordinate to vanish, using the same reciprocal-symbol dichotomy and prime-log independence. `PhotonicPrimeCyclicSlabParabolicRealization.lean` already identifies the prescribed PCM multiplier with `p^(1/2-s)` and makes its moderation RH-equivalent.
+- **Result:** A new Lean derivation of the arithmetic two-prime step was checked, then discarded as duplicate before umbrella integration. It discharges no PTR physical premise. Real constitutive coefficients or a real cyclic transfer do **not** by themselves establish that an Xi-selected generalized boundary conormal has those two real reciprocal symbols; the off-wall conormal is not an `ℓ²` eigenstate. The source paper is weakly lossy and uses a finite `N_F=4` Floquet calculation, not this all-grade lossless boundary theorem.
+- **Positive survivor:** the exact target is the source-selected, distributionally valid infinite Maxwell boundary map plus its two-prime phase landing. That landing, not the arithmetic implication, is the full remaining load. No RH conclusion is claimed.

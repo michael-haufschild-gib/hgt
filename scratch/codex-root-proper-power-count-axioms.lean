@@ -1,0 +1,4 @@
+import GaloisForLFunctions.RHTower.Sieve.ProperPrimePowerCount
+
+#print axioms RHTower.Sieve.properPrimePower_count_mul_log_two_le_defect
+#print axioms RHTower.Sieve.properPrimePower_count_mul_log_two_le_sqrt_log

@@ -48,11 +48,9 @@
   `(criticalMellinAtomWeight 2 / 2)` times the critical-Mellin mass of prime powers where
   `ccmActualHeadOutgoingNodeError n + ccmActualHeadMatchedPolarUpperExcess n` differs from its
   `n=2` value. This is an exact source-faithful lower envelope, not a generic Cauchy estimate.
-- Current precise frontier: either this completed-source mismatch mass diverges cofinally, which
-  rules out a uniform effective-resistance graph wall, or a uniform effective wall forces a
-  cofinally massive exact level set of completed outgoing error plus retained endpoint channel.
-  Corpus presently supplies neither a divergence proof nor a lawful cancellation of that level
-  set; proving/refuting this alternative is the relevant next hard problem.
+- The completed-source mismatch-mass alternative is now resolved on canonical
+  odd-log heads: the mass diverges. Thus a uniform effective-resistance wall is
+  impossible; the remaining RH-bearing problem is signed source cancellation.
 - No-go verified against existing Lean: the unconditional DLV result gives only
   `delta_n / sqrt(n) -> 0`, which is compatible with any fixed base displacement, and the exact
   adjacent increment is an unoriented matched-cell overlap/gap. Hence neither relative decay nor
@@ -102,14 +100,76 @@
   `PrimeMassWindow.lean`. Thus odd-centered multiplicative windows have
   abundant primes; no new PNT infrastructure is needed. This offers a
   simpler parity-window route to effective-resistance divergence than
-  counting all near-integer resonances in dyadic blocks. The bridge from
-  prime density through proper-power separators to actual mismatch mass,
-  and its cofinal divergence, remain Lean-open. None of this supplies the
-  signed CCM-FU source bound or RH.
+  counting all near-integer resonances in dyadic blocks. The finite
+  prime/proper-power/mismatch bridge is now Lean-closed; its quantitative
+  cofinal mass divergence remains open. None of this supplies the signed
+  CCM-FU source bound or RH.
 - New, Lean-checked finite active-path law: if no adjacent prime-labeled
   vertices are both coherent, then
   `primeCount ≤ 2*mismatchCount + nonprimeCount + 1`.
   The proof uses literal adjacency, not a probabilistic independence
-  heuristic. Specialization to the ordered actual prime-power path in the
-  odd-centered windows is still open, as are quantitative prime/proper-power
-  counts in that path.
+  heuristic. Its exact specialization to the sorted actual prime-power path
+  and to every sufficiently late canonical odd-centered window is now
+  Lean-checked, with no analytic premise in the cofinal statement.
+- New, Lean-checked: the proper-prime-power count up to `K`, multiplied by
+  `log 2`, is at most the exact von Mangoldt prime-power defect and hence at
+  most `2 sqrt(K) log K`. This bound uses literal arithmetic weights, not an
+  auxiliary generic sparse-set assumption.
+- New, Lean-checked: on all sufficiently late canonical odd-centered windows
+  `[A,B]`, the literal source mismatch mass `M` satisfies
+  `P log(2)/sqrt(B) ≤ 2M + 2 log(B) + log(2)/sqrt(B)`, where `P` is the
+  prime count. This uses the exact von Mangoldt weight on every active
+  mismatched vertex; proper-power separators cost only `2 log(B)`.
+- New, Lean-checked no-go: corpus PNT on those *same* windows and
+  `sqrt(x)/log(x)^2 → ∞` force their actual completed-source mismatch mass
+  to `+∞`. The exact index shift `n ↦ n-2` embeds that window mass in the
+  base-prime mismatch mass; the existing source-faithful lower envelope then
+  forces effective Lorentz graph resistance to `+∞` along the canonical
+  heads. This rules out a uniform direct positive Cauchy wall even after
+  dissipation-null edges are deleted. It does not prove the signed CCM-FU
+  bound or RH. Its positive survivor is the explicit weighted source law
+  above; a viable producer must preserve global signed prime--polar
+  cancellation instead of bounding each active mismatch positively.
+- New, Lean-checked quantitative survivor: for any odd primes `p<q` with
+  `2t+1≤log p≤2t+1+1/4`, `p≥exp 2`, and `(log p)^2/(2p)<1/4`, the literal
+  arithmetic resonance center
+  `R(p,q)=(c_p+w_p/2)(w_p+w_q)/4` obeys `|q-p-R(p,q)|≥1/2`.
+  This is stronger than the prior qualitative no-resonance law and does not
+  require the pair to be adjacent active atoms. For adjacent active atoms,
+  `4(q-p-R)=d(d-(2c_p+w_p+w_q))` exactly, with `d` the signed quantile
+  displacement increment. Consequently `|d(d-(2c_p+w_p+w_q))|≥2` on these
+  pairs. The latter consequence is also Lean-checked.
+  It is a local coercive obstruction, not a signed FU producer or RH proof;
+  next test is whether prime supply makes its actual graph dissipation diverge.
+- New, Lean-checked: for adjacent active odd primes `p<q` in the same late
+  odd-log band, the literal matched--quantile displacement increment obeys
+  `|d_q-d_p| ≥ 1/(4 sqrt p)`. This follows from the fixed half-unit arithmetic
+  defect and the exact displacement factorization; no RH premise enters.
+- New, Lean-checked: the actual graph edge from prime `2` to cell `n+2` has
+  singular dissipation at least
+  `(w_2 w_{n+2}/2) (n+2) (d_{n+2}-d_2)^2` for `n≥7`, with physical von
+  Mangoldt weights. Adjacent-edge dissipation has a much smaller centroid
+  lever, so the base edge is the relevant test; this corrects the initial
+  adjacent-edge divergence conjecture.
+- New, Lean-checked: on every sufficiently late canonical odd-log window,
+  `primeCount ≤ 2*quantitativeMismatchCount + properPowerCount + 1`, where
+  quantitative mismatch means `|d_n-d_2| ≥ 1/(8 sqrt B)` on that exact
+  window. The finite active-path theorem and its unconditional cofinal
+  specialization are closed. Remaining step: embed these thresholded base
+  edges into the full graph sum and combine their physical weights with PNT.
+  Even graph-dissipation divergence would only retire a positive-energy
+  certificate, not prove the signed CCM--FU bound or RH.
+- New, Lean-checked signed orientation law on every literal atom-free active
+  gap `m<n`: with `c_j` the matched polar centroid, `w_j` the actual
+  von-Mangoldt weight, and `d=d_n-d_m`, the arithmetic defect is exactly
+  `4(n-m)-(c_m+w_m/2)(w_m+w_n)
+   =-[c_m+c_n+(w_m+w_n)/2]d`.
+  The bracket is strictly positive. Thus the sign of the actual displacement
+  increment is opposite the sign of the prime-gap excess, not merely
+  nonzero. On a late odd-log band, an atom-free prime gap at most `2t`
+  gives `d_q-d_p>0`, whereas one at least `2t+2` gives `d_q-d_p<0`.
+  No cofinal existence of either clean gap type or cancellation of the
+  all-pair signed current follows. Strong PNT error is in the corpus
+  (`Sieve.primeCounting_sub_logIntegral_isBigO`); a next discriminating
+  test is whether it supplies enough short gaps to survive proper-power
+  separators on canonical windows.

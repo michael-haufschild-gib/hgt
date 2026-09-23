@@ -1,0 +1,7 @@
+import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePWeightedCreditEscape
+
+#print axioms RHTower.routeP_centroid_excess_ge_two
+#print axioms RHTower.routeP_history_sub_credit_le_geometric_escape
+#print axioms RHTower.routeP_history_sub_credit_tendsto_atBot
+#print axioms RHTower.routeP_prime_power_history_div_mass_eq_normalized_defect
+#print axioms RHTower.routeP_prime_power_history_sub_credit_tendsto_atBot

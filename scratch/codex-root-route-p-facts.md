@@ -12,3 +12,57 @@
   correction is a finite constant, not a growing reservoir. The exact barrier
   remains `4 chebyshevError(x) + (mass-2 sqrt(x))² + 4 mass + O(1)`;
   its sign and the ordered-history graph intertwiner are still open.
+- For normalized centroid variance, summable excess is amplified by
+  barycentric recentering. Let `m_K` be critical mass, `p_K = ψ(K+2)`,
+  `e_K` matched centroid excess, `q_K = Σ_{n≤K+2} w_n³/4`, and
+  `c₀(n)=2 sqrt(n)`. Exact finite identity:
+  `Var_K(matched) - Var_K(c₀) = q_K - (4 p_K e_K + e_K²)/m_K`.
+  Lean: `SPEQuantileRieszRoutePIdealCentroidVarianceCorrection.lean`.
+- `w_n→0` by `Λ(n)≤log n`, so Cesàro gives `m_K/(K+1)→0`.
+  Unconditional PNT gives `p_K/(K+1)→1`; hence `p_K/m_K→∞`.
+  Existing corpus cube summability bounds `q_K`, and the atom at `n=2`
+  gives `e_K≥e₂>0`. Therefore
+  `Var_K(matched) - Var_K(c₀)→-∞`, proved in
+  `SPEQuantileRieszRoutePIdealCentroidVarianceEscape.lean`.
+- Whole-route implication: finite local geometry is not negligible after
+  global centering. Any cofinal nonnegative matched-minus-quantile variance
+  must gain an unbounded compensating contribution from the ideal-minus-quantile
+  term. This does not decide that term's sign or construct the ordered-history
+  graph intertwiner; those remain the hard route obstacles.
+- Equal-mass quantile cells tile one interval. Their normalized centroid
+  variance is exactly `mass³/12 - widthCubePrefix/3`. Consequently the literal
+  normalized prime-power history is `4 sqrtChebyshevMoment + 4 widthCubePrefix/3
+  - (2 psi + centroidExcess)²/mass - mass³/12`.
+  Lean: `SPEQuantileRieszRoutePArithmeticVarianceNull.lean`.
+- Put `x=K+2`, `r=√x`, `μ=mass-2r`, `ε=psi(x)-x`, `e=centroidExcess`,
+  `q=widthCubePrefix`, and `C=sqrtChebyshevMoment-(2/3)xr-rε`. Exact null law:
+  `history/mass = 4C - 2re - (2ε+e-rμ)²/mass - (4r+mass)μ²/12 + 4q/3`.
+  Thus linear endpoint mass error cancels; all remaining geometry except cubic
+  width is negative. Lean: `SPEQuantileRieszRoutePWeightedChebyshevCredit.lean`.
+- Finite Abel summation cancels terminal `psi(x)r` inside `C`:
+  `C = x r/3 - Σ_{j<K} psi(j+2)(√(j+3)-√(j+2))`, equivalently deterministic
+  lattice baseline minus the same Abel sum of `psi(j+2)-(j+2)`.
+  Lean: `SPEQuantileRieszRoutePChebyshevAbelLattice.lean`.
+- The geometric remainder `history/mass - 4C` tends to `-∞` unconditionally.
+  Prime-two centroid excess gives a fixed positive lower floor, multiplied by
+  `2√x`; cubic width is bounded and both square debts are nonnegative.
+  Lean: `SPEQuantileRieszRoutePWeightedCreditEscape.lean`.
+  Whole-route consequence: a nonnegative cofinal history must acquire growing
+  signed Abel-integrated Chebyshev credit. Bounded-credit/geometry-only repairs
+  cannot work. This does not establish the credit's sign or the independent
+  ordered-history terminal graph intertwiner.
+- Exact cross-route identification at `x=K+2`:
+  `C = x sqrt(x)/3 - (x/2)·unitRieszVonMangoldtRenewal(x,x)` and
+  `C = -(x/2)·criticalMellinChebyshevResolventSource(log x)`.
+  Lean: `SPEQuantileRieszRoutePUnitRieszRenewalBridge.lean`. Corpus already
+  proves the source has a zeta-log-derivative Laplace weld and RH-equivalent
+  boundedness; the new equality identifies P's only signed credit with that
+  source, not with a free graph correction.
+- SP-E's existing literal completed quantile transport equals `x` times the
+  same resolvent source, so `C = -transport(x)/2` exactly. Therefore
+  `history/mass + 2·transport(x) -> -∞` unconditionally.
+  Lean: `SPEQuantileRieszRoutePTransportHistoryEscape.lean`.
+  Whole-route consequence: scalar P history and SP-E completed transport are
+  linked but have an unbounded negative geometric mismatch. A cofinal ordered
+  graph action must carry that mismatch plus the independent terminal
+  connection; this result does not construct it or settle RH.

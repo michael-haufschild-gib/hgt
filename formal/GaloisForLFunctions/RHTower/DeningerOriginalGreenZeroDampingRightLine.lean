@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerZetaLeftLine
+import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.Analysis.MellinTransform
 
@@ -202,6 +203,70 @@ theorem deningerOriginalGreenZeroDampingSewnSymbol_verticalIntegrable_neg_one :
     simpa only [neg_sq] using
       deningerOriginalGreenZeroDampingSewnSymbol_norm_line_two_le (-t)
   simpa [VerticalIntegrable] using hleft
+
+/-- The explicit multiplier in the asymmetric zeta functional equation. -/
+def deningerOriginalGreenZeroDampingReflectionMultiplier (s : ℂ) : ℂ :=
+  2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.Gamma s *
+    Complex.cos ((Real.pi : ℂ) * s / 2)
+
+private theorem deningerOriginalGreenZeroDamping_zeta_reflection_line_two (t : ℝ) :
+    riemannZeta (1 - (2 + (t : ℂ) * I)) =
+      deningerOriginalGreenZeroDampingReflectionMultiplier (2 + (t : ℂ) * I) *
+        riemannZeta (2 + (t : ℂ) * I) := by
+  let s : ℂ := 2 + (t : ℂ) * I
+  have hsre : s.re = 2 := by simp [s]
+  have hne : ∀ n : ℕ, s ≠ -n := by
+    intro n h
+    have hre := congrArg Complex.re h
+    simp [hsre] at hre
+    have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    linarith
+  have hne1 : s ≠ 1 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp [hsre] at hre
+  have hfe := riemannZeta_one_sub hne hne1
+  simpa [deningerOriginalGreenZeroDampingReflectionMultiplier, s] using hfe
+
+/-- The zero-damping sewn Green symbol is the square of the Mellin transform of the literal
+Möbius--Laplace source, with its exact archimedean and reflection multipliers retained. -/
+theorem deningerOriginalGreenZeroDampingSewnSymbol_mobiusMellin_square_line_two (t : ℝ) :
+    let s : ℂ := 2 + (t : ℂ) * I
+    deningerOriginalGreenZeroDampingSewnSymbol s *
+        deningerOriginalGreenZeroDampingReflectionMultiplier s *
+        (Complex.Gamma s) ^ 2 =
+      deningerOriginalGreenCenteredGaussianMellin s *
+        (mellin mobiusDiscreteLaplaceTransform s) ^ 2 := by
+  let s : ℂ := 2 + (t : ℂ) * I
+  have hs : 1 < s.re := by simp [s]
+  have hz : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hs
+  have harg : (1 : ℂ) - s = -1 + ((-t : ℝ) : ℂ) * I := by
+    dsimp [s]
+    push_cast
+    ring
+  have hleft : riemannZeta (1 - s) ≠ 0 := by
+    rw [harg]
+    have hbound := norm_riemannZeta_left_line_ge_const (-t)
+    intro hzero
+    rw [hzero, norm_zero] at hbound
+    have hpos : (0 : ℝ) < 1 / (8 * Real.pi ^ 2) := by positivity
+    linarith
+  have hfe : riemannZeta (1 - s) =
+      deningerOriginalGreenZeroDampingReflectionMultiplier s * riemannZeta s := by
+    simpa [s] using deningerOriginalGreenZeroDamping_zeta_reflection_line_two t
+  have hC : deningerOriginalGreenZeroDampingReflectionMultiplier s ≠ 0 := by
+    intro hzero
+    rw [hzero, zero_mul] at hfe
+    exact hleft hfe
+  have hm : mellin mobiusDiscreteLaplaceTransform s =
+      Complex.Gamma s * (riemannZeta s)⁻¹ :=
+    mellin_mobiusDiscreteLaplaceTransform_eq_gamma_div_zeta hs
+  change deningerOriginalGreenZeroDampingSewnSymbol s *
+      deningerOriginalGreenZeroDampingReflectionMultiplier s * (Complex.Gamma s) ^ 2 =
+    deningerOriginalGreenCenteredGaussianMellin s *
+      (mellin mobiusDiscreteLaplaceTransform s) ^ 2
+  rw [deningerOriginalGreenZeroDampingSewnSymbol, hfe, hm]
+  field_simp [hz, hC]
 
 /-- An inverse-Mellin source datum on the safe right line. -/
 def deningerOriginalGreenZeroDampingRightLineSource (x : ℝ) : ℂ :=
