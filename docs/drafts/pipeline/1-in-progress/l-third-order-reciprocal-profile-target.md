@@ -1,6 +1,6 @@
 # Route L: one integer-order source target
 
-- **Status:** paper proofs below are complete; Lean formalization and the stated arithmetic bound are open.
+- **Status:** the finite source isometry and primitive-ratio sign localization are formalized in Lean; the infinite analytic reductions and the stated arithmetic bound remain paper-level/open as specified below.
 - **Hard target:** for one fixed order, prove a power-sharp block mean square of the literal Möbius source
 
 ```
@@ -116,7 +116,7 @@ W_(delta,N)(a,b)
                                                                (9)
 ```
 
-The inner scale weight is nonnegative and at most `zeta(1+delta)`; **all arithmetic sign cancellation has moved to primitive coprime ratios**. This uses the existing Lean generic gcd reindexing in `Sieve.PrimitiveRatioDecomposition` and Möbius coprime factorization in `Sieve.MoebiusScaledReindex`; their specialization to (9) is a paper proof, not yet a Lean theorem.
+The inner scale weight is nonnegative and at most `zeta(1+delta)`; **all arithmetic sign cancellation has moved to primitive coprime ratios**. `MobiusReciprocalPrimitiveRatio.finiteCubicMomentOffDiagonal_eq_primitiveScaleWeight` proves the finite off-diagonal form in Lean, using the existing generic gcd reindexing in `Sieve.PrimitiveRatioDecomposition` and Möbius coprime factorization in `Sieve.MoebiusScaledReindex`. The displayed diagonal separation and the uniform upper bound on the scale weight are paper-level here.
 
 Two large sectors of (9) are already uniformly controlled without any cancellation. The diagonal is bounded by `2^(-(5-delta)) zeta(1+delta)`. Divisibility pairs have `a=1` or `b=1`; since `k_delta(1,b)<=b^(-3)`, their total absolute contribution is at most `2 zeta(1+delta) sum_(b>=2)b^(-3)`. More generally, fix `q>(3-delta)/2`; for `a<=b` with `b>=a^q`,
 

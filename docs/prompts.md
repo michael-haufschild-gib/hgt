@@ -141,37 +141,23 @@ HB — theta-cusp Hawking causal scattering
 
 ## research Route
 
-create a formal proof of the riemann hypothesis via this route:
-
-**Proposed chain.** Construct analytic `2^k`-th roots of the actual completed zeta function, for every `k`, on a connected zero-exclusion region. The order of a hypothetical zero would be divisible by every `2^k`, contradicting its finite positive multiplicity.
-
-**Exact overlap and forbidden step.** The [existing theorem](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CoherentTower.lean:119) proves precisely this, assuming an open preconnected region, analyticity, a nonzero anchor, and global analytic roots of every order `2^k`. Coherence between successive roots is not even needed for this implication.
-
-The selection step is multiplicity rigidity: all-power divisibility forces the zero order to vanish. Root ladders and finite-root passports are already covered by the frontier. Replacing “roots” with covering lifts or divisibility data does not change that step.
-
+Goal: Create a formal proof or falsification of the riemann hypothesis using one or a combination of routes/route candidates STC, CSB, U, RG, BPC, K-RVM, MPLF, RG-ETA, RG-HF, RHist from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
 
 **Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
 2. Always build in the foreground, 1 process per single agent.
-3. No computations.
-4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
-   
-working rules:
-1. on every turn state the proof chain, what the hard mathematical obstacles are, how your last work has made progress and how your next steps will make progress solving these obstacles. 
-2. any work that does not attack and try to solve the hard mathematical obstacles is theatre and a waste of time
-3. use the search tool and deep search and method search extensively
-4. do not just search, also attack open problems using conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... loops
-5. use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (june to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
-6. Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
-7. Document high level knowledge about the problem as a whole independent of routes in docs/drafts/pipeline/1-in-progress/universal-law-field/STATUS.md. Entries document compact knowledge about RH and its solution in the form "Must be this", "Must be like this", "Must do this", "Must have this", "Must be able to do this", "Cannot be this", "Cannot be like this", Cannot have this", "Cannot be able to do this". If the entry cannot be understood without first researching a specific route, it does not belong here.
-      
-**Computations:**
-if computations can help you to find new leads or answer questions which you truly could not find or answer by reasoning, then computations are allowed.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
+7. make sure you don't leave stale lean processes running - clean up after yourself.
 
-run the computations on this runpod: ssh root@157.157.221.29 -p 27094 -i ~/.ssh/id_ed25519
-download results and document them in a subfolder in docs/drafts/pipeline/2-fully-proven/computations. optimize python code for multicore. once all computations are done, write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+**Working mode rules:**
+1. Use the search tool for our lean corpus heavily.
+2. Do not just search but also create missing knowledge via a heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
+3. Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Your conjectures based on it are bullshit. Use THE WHOLE LEAN CORPUS WITH MUCH MORE IDEAS, SOLUTIONS, TOY PROBLEMS, INNOVATIVE APPROACHES. NEVER EVER USE YOUR TRAINING DATA AS STARTING POINT - IT IS OUTDATED.
+4. on every turn state the research topic, what the hard mathematical obstacles are, how your last work has made progress and how your next steps will make progress solving these obstacles. 
+5. any work that does not attack and try to solve the hard mathematical obstacles is theatre and a waste of time
 
 goal is met when lean corpus has an uncondtional formal proof/falsification of the RH.
 
@@ -288,12 +274,10 @@ Lean rules:
 
 
 ## theorem experiment
-find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed arxiv papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
+find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2608.10427
-- https://arxiv.org/abs/2607.29504
-- https://arxiv.org/abs/2607.09738
+- https://arxiv.org/abs/2609.02882
   
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -372,7 +356,7 @@ Use computations and formalize lean to discover new routes, kill routes, sharpen
 **Lean rules:**
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
 2. Always build in the foreground, 1 process per single agent.
-3. No computational results can be used in lean proof - computations only support ideas and guidance.
+3. No computations.
 4. Always use  lake env lean \<file>  and only lake build \<module> for the final audit. Do not forget to wire new modules into the umbrellas.
 5. do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave stale lean processes running - clean up after yourself.
@@ -537,7 +521,7 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 2) For every new insight, for every new failure, ask: "What does it mean for the whole route?"
 
-3) Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Always use the search tool for the lean corpus to understand the real frontier we have proven and conjecture based on that.
+3) Do not conjecture or judge or assume or anything on your training data. Your training data is outdated. Always use the search tool for the lean corpus to understand the real frontier we have proven and open problems and conjecture based on that and develop experiments around actual problems we have, not what your training data tells you.
 
 4) Always ask "am I actually working on the right problem? Is this what I should be working on to bring the whole route forward? Or am I tunnelviewing on a minor problem that adds little to nothing while not moving the route as a whole?"
 

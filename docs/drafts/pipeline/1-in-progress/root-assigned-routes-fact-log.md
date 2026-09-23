@@ -271,3 +271,13 @@
   localised to at most `K(N)=O(log N)` early chronological layers plus base
   history. This does **not** bound those layers or prove RH. Certificate:
   `EulerDeletionLogClockLocalization.lean` (scratch and targeted olean compiled).
+- **Exact EDQ producer localisation:** define `lowClockProducerEnergy(N)` as base-history
+  projection energy plus the layers `l<min(K(N),N)`, with the logarithmic `K` above.
+  For every `N`, full predictable-drift energy equals this low-clock energy plus the
+  nonnegative high-clock band. Their difference tends to zero and is bounded by
+  `110/(N+1)` through the previous theorem. Thus a cofinal polylogarithmic ceiling
+  for the complete EDQ drift is equivalent to one for this source-faithful
+  moving low-clock carrier. This is an exact reduction, **not** the missing signed
+  arithmetic estimate. Certificate: `EulerDeletionLogClockProducerReduction.lean`
+  (targeted olean compiled; two capstones have only `propext`, `Classical.choice`,
+  `Quot.sound`).

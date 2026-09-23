@@ -87,3 +87,11 @@
   negative real Laplace parameter. That would contradict the just-proved
   Hardy-axis pole. The compact initial correction and weighted-holomorphy
   transfer remain proof obligations.
+- The required low-height analytic disk is now Lean-proved, not conjectural:
+  `F` is analytic at every `z` with `Re z > -1/2` and `|Im z|≤4`, hence on
+  `closedBall 1 (5/4)`. Lean:
+  `SPEQuantileRieszRoutePLandauDisk.lean`. The disk reaches `Re z=-1/4`
+  while staying clear of the `z+1`, `z+1/2` denominators and all zeta zeros.
+  This supplies exact Landau continuation radius. Positive-measure MGF
+  identification, compact initial correction, and Hardy-pole contradiction
+  are still open.

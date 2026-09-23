@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTopNorm
 namespace HTGeometry
 
 noncomputable section
+set_option maxHeartbeats 800000
 set_option maxRecDepth 20000
 
 def evenCompactGapCofactorTerm5LeftFactorCoeff0Certificate (u w : ℝ) : CompactGapNormalForm

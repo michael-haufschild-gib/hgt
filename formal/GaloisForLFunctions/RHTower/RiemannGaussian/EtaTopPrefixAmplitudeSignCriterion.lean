@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPositiveCriticalStripEtaLeadingLogMomentFiniteCenteredResidualFiniteWorkTopPrefixAmplitudeSummability
 
 /-!
-# A qualitative sign-recurrence criterion for the paired-eta prefix
+# Sign recurrence and a sharp full-norm law for the paired-eta prefix
 
 The sharp centered-tail asymptotic determines the eventual sign of the
 completed partner-minus-original amplitude. A zero to the right of the
@@ -10,6 +10,8 @@ reverses the sign on the left. On the critical line the difference vanishes
 at every cutoff. Hence it suffices to show, for every zero, that the difference
 is nonpositive at arbitrarily late cutoffs. This is an unconditional reduction
 to a source-side sign-recurrence problem, not a proof of that recurrence.
+The full prefix also has the slower partner component's sharp norm limit at
+any hypothetical right-half zero, irrespective of the relative phase.
 -/
 
 open Complex Filter Topology
@@ -113,6 +115,73 @@ theorem noPersistentPositiveTopPrefixAmplitudeDifference_iff_rh :
     have hdiff : topPrefixAmplitudeDifference rho M = 0 := by
       nlinarith only [hzero]
     exact le_of_eq hdiff
+
+/-- At any hypothetical right-half zero, the slower partner tail determines
+the sharp norm of the *full* top prefix. This limit is independent of relative
+phase: the faster original tail is negligible even under maximal cancellation. -/
+theorem tendsto_succOddEndpoint_partner_rpow_mul_norm_topPrefix_of_half_lt_re
+    (rho : NontrivialZetaZero) (hrho : 1 / 2 < rho.1.re) :
+    Tendsto (fun N : ℕ =>
+      (((2 * (N + 1) + 1 : ℕ) : ℝ) ^
+          (NontrivialZetaZero.conjugatePartner rho).1.re) *
+        ‖pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefix
+          rho N‖)
+      atTop
+      (nhds
+        (pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixPartnerAmplitudeSharpLimit
+          rho)) := by
+  let P (N : ℕ) : ℂ :=
+    pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixPartnerComponent rho N
+  let Q (N : ℕ) : ℂ :=
+    pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixConjugateComponent rho N
+  let T (N : ℕ) : ℂ :=
+    pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefix rho N
+  let scale (N : ℕ) : ℝ :=
+    (((2 * (N + 1) + 1 : ℕ) : ℝ) ^
+      (NontrivialZetaZero.conjugatePartner rho).1.re)
+  have hp : Tendsto (fun N => scale N * ‖P N‖) atTop
+      (nhds
+        (pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixPartnerAmplitudeSharpLimit
+          rho)) :=
+    tendsto_succOddEndpoint_partner_rpow_mul_norm_topPrefixPartnerComponent rho
+  have hq : Tendsto (fun N => scale N * ‖Q N‖) atTop (nhds 0) :=
+    tendsto_succOddEndpoint_partner_rpow_mul_norm_topPrefixConjugateComponent_zero_of_half_lt_re
+      rho hrho
+  have hleft : Tendsto (fun N => scale N * (‖P N‖ - ‖Q N‖)) atTop
+      (nhds
+        (pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixPartnerAmplitudeSharpLimit
+          rho)) := by
+    simpa only [sub_zero] using (hp.sub hq).congr'
+      (Eventually.of_forall fun N => by ring)
+  have hright : Tendsto (fun N => scale N * (‖P N‖ + ‖Q N‖)) atTop
+      (nhds
+        (pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixPartnerAmplitudeSharpLimit
+          rho)) := by
+    simpa only [add_zero] using (hp.add hq).congr'
+      (Eventually.of_forall fun N => by ring)
+  have hnorm (N : ℕ) : ‖T N‖ = ‖P N + Q N‖ := by
+    dsimp only [T, P, Q]
+    rw [norm_pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefix_eq_integral_halfIntegrand,
+      integral_pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixHalfIntegrand_eq_components]
+  have hlo (N : ℕ) : ‖P N‖ - ‖Q N‖ ≤ ‖T N‖ := by
+    rw [hnorm]
+    have h := norm_sub_le (P N + Q N) (Q N)
+    have heq : P N + Q N - Q N = P N := by abel
+    rw [heq] at h
+    linarith
+  have hhi (N : ℕ) : ‖T N‖ ≤ ‖P N‖ + ‖Q N‖ := by
+    rw [hnorm]
+    exact norm_add_le _ _
+  have hscale (N : ℕ) : 0 ≤ scale N := by
+    unfold scale
+    positivity
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le hleft hright
+  · intro N
+    change scale N * (‖P N‖ - ‖Q N‖) ≤ scale N * ‖T N‖
+    exact mul_le_mul_of_nonneg_left (hlo N) (hscale N)
+  · intro N
+    change scale N * ‖T N‖ ≤ scale N * (‖P N‖ + ‖Q N‖)
+    exact mul_le_mul_of_nonneg_left (hhi N) (hscale N)
 
 end
 end RiemannGaussian
