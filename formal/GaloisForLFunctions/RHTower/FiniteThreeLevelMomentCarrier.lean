@@ -384,6 +384,97 @@ theorem threeLevelSpectralFeasible_at_twoLevelSmall
   · rw [hmass, henergy]
     nlinarith [mul_pos hL hS]
 
+/-- Exact positive-spectral admission of the equal-share plateau.  The upper
+inequality is indispensable: the residual two-atom energy must not exceed the
+square of its mass. -/
+theorem threeLevelSpectralFeasible_at_mean_iff
+    {E F : ℝ} {N : ℕ} (hE : 0 < E) (hN : 3 ≤ N) :
+    ThreeLevelSpectralFeasible E F (E / (N : ℝ)) N ↔
+      E ^ (2 : ℕ) / (N : ℝ) < F ∧
+        F ≤ ((N : ℝ) + 2) * E ^ (2 : ℕ) / (N : ℝ) ^ (2 : ℕ) := by
+  have hNpos : (0 : ℝ) < N := by
+    exact_mod_cast (show 0 < N by omega)
+  have hmass :
+      threeLevelResidualMass E (E / (N : ℝ)) N = 2 * E / N := by
+    unfold threeLevelResidualMass
+    field_simp [hNpos.ne']
+    ring
+  have hlowIdentity :
+      threeLevelResidualEnergy F (E / (N : ℝ)) N -
+        threeLevelResidualMass E (E / (N : ℝ)) N ^ (2 : ℕ) / 2 =
+      F - E ^ (2 : ℕ) / N := by
+    rw [hmass]
+    unfold threeLevelResidualEnergy
+    field_simp [hNpos.ne']
+    ring
+  have hhighIdentity :
+      threeLevelResidualMass E (E / (N : ℝ)) N ^ (2 : ℕ) -
+        threeLevelResidualEnergy F (E / (N : ℝ)) N =
+      ((N : ℝ) + 2) * E ^ (2 : ℕ) / (N : ℝ) ^ (2 : ℕ) - F := by
+    rw [hmass]
+    unfold threeLevelResidualEnergy
+    field_simp [hNpos.ne']
+    ring
+  constructor
+  · rintro ⟨_, _, hlow, hhigh⟩
+    constructor
+    · linarith [hlowIdentity]
+    · linarith [hhighIdentity]
+  · rintro ⟨hlow, hhigh⟩
+    refine ⟨div_nonneg hE.le hNpos.le, ?_, ?_, ?_⟩
+    · rw [hmass]
+      exact div_pos (mul_pos (by norm_num) hE) hNpos
+    · linarith [hlowIdentity]
+    · linarith [hhighIdentity]
+
+/-- The first positive three-level head with admissible equal-share plateau
+exists at the smallest integer strictly above the effective rank `E²/F`.
+Its admission uses no asymptotic choice of atom count. -/
+theorem exists_threeLevelSpectralFeasible_at_mean
+    {E F : ℝ} (hE : 0 < E) (hF : 0 < F)
+    (hrank : 2 * F ≤ E ^ (2 : ℕ)) :
+    ∃ N : ℕ, 3 ≤ N ∧
+      ThreeLevelSpectralFeasible E F (E / (N : ℝ)) N := by
+  let r : ℝ := E ^ (2 : ℕ) / F
+  let N : ℕ := ⌊r⌋₊ + 1
+  have hrnonneg : 0 ≤ r := by positivity
+  have hrankReal : (2 : ℝ) ≤ r := by
+    dsimp [r]
+    exact (le_div_iff₀ hF).2 (by nlinarith)
+  have hfloorTwo : 2 ≤ ⌊r⌋₊ := Nat.le_floor hrankReal
+  have hN : 3 ≤ N := by dsimp [N]; omega
+  have hNpos : (0 : ℝ) < N := by
+    exact_mod_cast (show 0 < N by omega)
+  have hRlower : (N : ℝ) - 1 ≤ r := by
+    have hfloor := Nat.floor_le hrnonneg
+    dsimp [N]
+    push_cast
+    linarith
+  have hRupper : r < (N : ℝ) := by
+    have hfloor := Nat.lt_floor_add_one r
+    dsimp [N]
+    push_cast
+    exact hfloor
+  have hratio : r * F = E ^ (2 : ℕ) := by
+    dsimp [r]
+    field_simp [hF.ne']
+  have hlow : E ^ (2 : ℕ) / N < F := by
+    apply (div_lt_iff₀ hNpos).2
+    have hscaled := mul_lt_mul_of_pos_right hRupper hF
+    nlinarith [hscaled, hratio]
+  have hNplus : 0 ≤ (N : ℝ) + 2 := by positivity
+  have hprod := mul_le_mul_of_nonneg_left hRlower hNplus
+  have hpoly : (N : ℝ) ^ (2 : ℕ) ≤ ((N : ℝ) + 2) * r := by
+    have hNthree : (3 : ℝ) ≤ N := by exact_mod_cast hN
+    nlinarith [hprod]
+  have hpolyScaled := mul_le_mul_of_nonneg_right hpoly hF.le
+  have hhigh :
+      F ≤ ((N : ℝ) + 2) * E ^ (2 : ℕ) / (N : ℝ) ^ (2 : ℕ) := by
+    apply (le_div_iff₀ (sq_pos_of_pos hNpos)).2
+    nlinarith [hpolyScaled, hratio]
+  exact ⟨N, hN,
+    (threeLevelSpectralFeasible_at_mean_iff hE hN).2 ⟨hlow, hhigh⟩⟩
+
 /-- The cubic's two-level endpoint is precisely twice the old carrier's third power sum. -/
 theorem threeLevelCubic_at_twoLevelSmall
     {E F : ℝ} {N : ℕ} (hN : 2 ≤ N)
@@ -444,6 +535,40 @@ theorem threeLevel_twice_thirdMoment_at_mean_pos
   have hinterior : 0 < 3 * F * (N : ℝ) - 2 * E ^ (2 : ℕ) := by
     nlinarith
   exact mul_pos (by positivity) hinterior
+
+/-- Exact distance from the equal-share cubic endpoint to the Cauchy lower
+wall.  It identifies the extra quantitative source margin needed to use this
+endpoint in an intermediate-value bracket. -/
+theorem threeLevelCubic_at_mean_sub_cauchy_floor
+    {E F : ℝ} {N : ℕ} (hN : 0 < N) :
+    E * (threeLevelCubic E F N (E / (N : ℝ)) / 2) - F ^ (2 : ℕ) =
+      (((N : ℝ) * F - E ^ (2 : ℕ)) *
+        (2 * E ^ (2 : ℕ) - (N : ℝ) * F)) / (N : ℝ) ^ (2 : ℕ) := by
+  have hNne : (N : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hN)
+  unfold threeLevelCubic
+  field_simp [hNne]
+  ring
+
+/-- At a genuinely nonuniform equal-share carrier, its cubic moment lies
+strictly above the generic Cauchy lower wall.  Source Hankel positivity alone
+does not bracket this endpoint. -/
+theorem threeLevelCubic_at_mean_gt_cauchy_floor
+    {E F : ℝ} {N : ℕ} (hN : 0 < N)
+    (hlow : E ^ (2 : ℕ) / (N : ℝ) < F)
+    (hhigh : F < 2 * E ^ (2 : ℕ) / (N : ℝ)) :
+    F ^ (2 : ℕ) < E * (threeLevelCubic E F N (E / (N : ℝ)) / 2) := by
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast hN
+  have hleft : 0 < (N : ℝ) * F - E ^ (2 : ℕ) := by
+    have h := (div_lt_iff₀ hNpos).1 hlow
+    nlinarith
+  have hright : 0 < 2 * E ^ (2 : ℕ) - (N : ℝ) * F := by
+    have h := (lt_div_iff₀ hNpos).1 hhigh
+    nlinarith
+  have hquot : 0 <
+      (((N : ℝ) * F - E ^ (2 : ℕ)) *
+        (2 * E ^ (2 : ℕ) - (N : ℝ) * F)) / (N : ℝ) ^ (2 : ℕ) :=
+    div_pos (mul_pos hleft hright) (sq_pos_of_pos hNpos)
+  linarith [threeLevelCubic_at_mean_sub_cauchy_floor (E := E) (F := F) hN]
 
 /-- Exact cubic change produced by splitting the old repeated small atom.  It has a double
 root at the two-level endpoint, so the sixth energy cannot be increased by an infinitesimal

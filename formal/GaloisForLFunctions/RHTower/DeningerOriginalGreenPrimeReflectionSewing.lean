@@ -105,6 +105,32 @@ theorem deningerOriginalPrimeGreenZeroDampingCoefficient_prime_reflect_sewn
   congr 1
   ring
 
+/-- The completed scalar germ retains prime and reflection sewing at zero damping. -/
+theorem deningerOriginalPrimeGreenZeroDampingRegularization_prime_reflect_sewn
+    (p q : Nat.Primes) (rho : XiDivisorSupport) (a : ℂ) :
+    deningerOriginalPrimeGreenZeroDampingRegularization p rho a *
+        (1 - (p : ℂ) ^ (-(rho : ℂ))) =
+      deningerOriginalPrimeGreenZeroDampingRegularization q
+          (xiZeroReflectEquiv rho) a *
+        (1 - (q : ℂ) ^ (-(xiZeroReflectEquiv rho : ℂ))) := by
+  by_cases ha : a = 0
+  · subst a
+    rw [deningerOriginalPrimeGreenZeroDampingRegularization_zero,
+      deningerOriginalPrimeGreenZeroDampingRegularization_zero]
+    exact deningerOriginalPrimeGreenZeroDampingCoefficient_prime_reflect_sewn p q rho
+  · simp only [deningerOriginalPrimeGreenZeroDampingRegularization, if_neg ha,
+      xiSupportMultiplicity_reflect]
+    calc
+      _ = a ^ (2 * xiSupportMultiplicity rho) *
+          (deningerOriginalPrimeGreenDampingContinuation p rho a *
+            (1 - (p : ℂ) ^ (-(rho : ℂ)))) := by ring
+      _ = a ^ (2 * xiSupportMultiplicity rho) *
+          (deningerOriginalPrimeGreenDampingContinuation q
+            (xiZeroReflectEquiv rho) a *
+            (1 - (q : ℂ) ^ (-(xiZeroReflectEquiv rho : ℂ)))) := by
+              rw [deningerOriginalPrimeGreenDampingContinuation_prime_reflect_sewn]
+      _ = _ := by ring
+
 end
 
 end RHTower

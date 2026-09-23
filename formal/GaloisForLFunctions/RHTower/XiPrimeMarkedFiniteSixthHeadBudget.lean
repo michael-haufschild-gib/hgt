@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.FiniteTwoLevelThirdMomentCeiling
+import GaloisForLFunctions.RHTower.FiniteTwoLevelThirdMomentArbitraryCount
 import GaloisForLFunctions.RHTower.XiStrictSchwarzSixthSpectralCeiling
 import GaloisForLFunctions.RHTower.ThetaGibbsSteinSourceMinor
 
@@ -82,7 +83,7 @@ theorem normalizedPrimeArch_firstHankelMinor_pos_from_stein :
       _ ≤ 9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 := by
         gcongr
         · exact thetaCuspAtomRawEvenMoment_nonneg 3 1
-        · exact thetaCuspRawEvenMoment_nonneg 1
+        · exact mul_nonneg (by norm_num) (thetaCuspRawEvenMoment_nonneg 1)
   have hrelaxed : ThetaCuspRelaxedFourthMomentConcentration := by
     apply thetaCuspRelaxedFourthMomentConcentration_of_first_atom
     rw [thetaCuspAtomRawEvenMoment_one_eq_firstAtomWardMoment 0,
@@ -139,7 +140,6 @@ theorem normalizedPrimeArch_firstHankelMinor_pos_from_stein :
           thetaCuspRawEvenMoment 0 ^ (3 : ℕ) := by
       simp only [thetaCuspNormalizedEvenMoment]
       field_simp [thetaCuspRawEvenMoment_zero_pos.ne']
-      ring
     rw [heq]
     exact div_pos hrawCubic hden
   nlinarith [normalizedPrimeArch_firstHankelMinor_scaled_eq_thetaCuspMoments]
@@ -151,6 +151,17 @@ theorem routeKHalfSixth_sq_lt_halfFourth_cube :
       routeKQuarticHalfEnergy ^ (3 : ℕ) := by
   have h := normalizedPrimeArchMoment_strict_sixth_spectral_ceiling
   rw [routeKQuarticHalfEnergy,
+    routeKSourceFirstMoment_eq_normalizedPrimeArchMoment]
+  nlinarith
+
+/-- The same source target lies strictly above the Cauchy lower wall for
+positive squared eigenvalues. -/
+theorem routeKHalfFourth_sq_lt_halfSecond_mul_halfSixth :
+    routeKQuarticHalfEnergy ^ (2 : ℕ) <
+      routeKQuarticHalfMass * (normalizedPrimeArchMoment 2 / 2) := by
+  have h := normalizedPrimeArch_firstHankelMinor_pos_from_stein
+  rw [routeKQuarticHalfMass, routeKQuarticHalfEnergy,
+    routeKSourceZerothMoment_eq_normalizedPrimeArchMoment,
     routeKSourceFirstMoment_eq_normalizedPrimeArchMoment]
   nlinarith
 
@@ -171,6 +182,24 @@ theorem exists_routeKFiniteHead_sixth_surplus :
     routeKQuarticHalfMass_pos routeKQuarticHalfEnergy_pos hhigh
     (div_nonneg normalizedPrimeArchMoment_two_pos.le (by norm_num))
     routeKHalfSixth_sq_lt_halfFourth_cube
+
+/-- The sixth-moment upper head can be placed beyond every prescribed
+finite count, including a previously chosen reverse lower head. -/
+theorem exists_routeKFiniteHead_sixth_surplus_above (Nmin : ℕ) :
+    ∃ N : ℕ, Nmin ≤ N ∧ 3 ≤ N ∧
+      routeKQuarticHalfMass ^ (2 : ℕ) / N < routeKQuarticHalfEnergy ∧
+      normalizedPrimeArchMoment 2 / 2 <
+        twoLevelLarge routeKQuarticHalfMass routeKQuarticHalfEnergy N ^ (3 : ℕ) +
+          ((N : ℝ) - 1) *
+            twoLevelSmall routeKQuarticHalfMass routeKQuarticHalfEnergy N ^ (3 : ℕ) := by
+  have hhigh : routeKQuarticHalfEnergy ≤ routeKQuarticHalfMass ^ (2 : ℕ) := by
+    have hgap := routeKQuarticGap_pos
+    unfold routeKQuarticGap at hgap
+    linarith
+  exact exists_twoLevelThirdMoment_gt_above
+    routeKQuarticHalfMass_pos routeKQuarticHalfEnergy_pos hhigh
+    (div_nonneg normalizedPrimeArchMoment_two_pos.le (by norm_num))
+    routeKHalfSixth_sq_lt_halfFourth_cube Nmin
 
 end
 

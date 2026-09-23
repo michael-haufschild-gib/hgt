@@ -138,3 +138,37 @@
   labels.  The T1 estimate that matters is signed nonlocal cancellation of the centered pieces;
   no bound on either centered piece follows from the positive packet asymptotic.  Formal
   certificate: `XiMassCriticalDyadicApertureLiteral.lean`.
+- T1's actual centered `(Λ−1)` atom cone is an exact rapidity integral whose Hermitian square is
+  the full signed two-rapidity covariance.  Centering does not restore termwise source order:
+  every prime label from `3` onward has positive centered coefficient, and the `3 × 5` cell is
+  cofinally present, anti-ordered at its timelike stationary pair, nonzero everywhere, and
+  eventually positive in real part at that pair.  Thus the missing T1 theorem must control
+  cancellation across labels or regions in the integrated covariance; local centering and
+  exchange alone cannot supply it.  Pointwise saddle positivity is not an integrated lower
+  bound.  Formal certificate: `XiMassTwoRapidityCenteredSourceOrderNoGo.lean`.
+- HCF's source-selected compact boundary alias is exactly the critical-line slice of the
+  multiplicity-weighted complete Xi-ordinate alias with the same cutoff and phase.  The complete
+  alias splits into critical and off-critical slices, and the off-critical slice is bounded in
+  absolute value by `(37/200)` times its nonnegative cutoff-weighted multiplicity.  Consequently
+  the **actual** HCF variance/envelope saving at its selected phase is at most the absolute
+  complete alias plus `(37/200)` times off-critical mass.  This is an unconditional, axiom-closed
+  Lean theorem, not a model-packet bound: `HedenmalmCriticalFeatureOffLineAliasBalance.lean`.
+  Classical unconditional equidistribution modulo one of *all* zeta-zero ordinates, together
+  with the cutoff plateau and Riemann--von Mangoldt asymptotic, implies on paper that the complete
+  alias is `o(N)` uniformly in phase.  That last transfer is **not yet formalized**.  Its route
+  consequence is sharp: persistent linear fixed-period HCF variance saving forces positive-density
+  off-critical mass; if off-critical mass is `o(N)`, this saving is `o(N)`.  Thus fixed-period
+  anti-equidistribution cannot itself yield density-one/RH, though it may still contribute to a
+  partial-density receiver.  A surviving HCF mechanism needs a moving/non-precompact reporter or
+  a separate nonalias source cancellation law.  Literature input: Çiçek--Gonek, *Math. Proc.
+  Camb. Phil. Soc.* 176 (2024), introduction, citing Elliott's unconditional theorem.
+- HCF's fixed-period variance saving has an unconditional sharp-scale ceiling independent of
+  zero-ordinate equidistribution: `variance / envelope ≤ envelope ≤ (37/100) C(n+4) ≤
+  (37/100) N(n+4)`, where `C` is positive-height critical-line multiplicity and `N` total
+  multiplicity.  The already formalized fixed-height shift law gives the cofinal ceiling
+  `(37/100 + o(1)) N(n)`.  Since `37/100 < π/3`, this saving mechanism alone cannot account for
+  the `π/3·N` difference between HCF's unconditional `4π/3·N` *upper bound* and its `π·N`
+  three-quarter target.  This is an accounting obstruction, **not** a lower bound on actual
+  covariance or a refutation of the target: an independent signed pole--Gamma/zero-mode/exterior
+  estimate could lower the starting bound.  Formal certificate:
+  `HedenmalmCriticalFeatureVarianceSavingCeiling.lean` (targeted compile and standard-axiom audit).

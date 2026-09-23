@@ -1,0 +1,5 @@
+import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePTerminalCentroidExcessSummability
+
+#print axioms RHTower.ccmActualHeadMatchedCentroidChebyshevExcess_eq_atomPrefix
+#print axioms RHTower.ccmActualHeadMatchedCentroidChebyshevExcess_le_tsum
+#print axioms RHTower.ccmActualHeadMatchedCentroidChebyshevExcess_tendsto

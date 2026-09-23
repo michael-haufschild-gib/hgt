@@ -4110,3 +4110,888 @@ All three retained Terra tasks finished; their owned searches terminal or
 explicitly cancelled and reports saved. No Lean/build process was launched.
 Only this log edited in repository; no proof/source implementation built.
 RH remains unproved and the active goal remains active.
+
+## Goal continuation 2026-09-23: test metric convexity and Schur variation
+
+Proof chain: actual nonlinear theta law -> monotonicity of every tilted
+response norm -> complete signed Hankel cone -> RH. Preceding completed turn
+was research progress (exact METRIC dictionary, source-specific residual,
+finite compensation retrieval), not zero exclusion. An intervening interrupted
+turn only launched a search: no mathematical progress. Its handle 13187 was
+authoritatively missing and its /tmp output absent, so a replacement search
+was started rather than assuming the old process remained live. Current
+repository log was re-read; earlier working-log changes were now clean in git.
+
+### Convexity attack: exact second derivative and finite positive results
+
+For real polynomial p, A=-2iD, g=exp(ax)k, G_a(p)=||p(A)g||^2, parent
+derived and arithmetic Terra audited
+
+    G''_a(p)=4||x p(A)g||^2-8||p'(A)g||^2
+               +8 Re <p(A)g,p''(A)g>.                       (CONVEX)
+
+The inner product is conjugate-linear in its first argument. To check the
+signs: G'=2 integral x|p(A)g|^2, and the remaining imaginary cross term in
+its derivative is determined by
+
+    p(A)x p'(A)-p'(A)x p(A)=-2i((p'(A))^2-p(A)p''(A)).
+
+Convexity for every p throughout the critical tilt interval would imply
+the required monotonicity, because reflection gives G'_0(p)=0. No
+all-polynomial convexity theorem was proved or retrieved.
+
+First positive test succeeds from actual source log curvature. Write
+q=(log k)' and q_a=q+a. Two admitted spatial integrations by parts give
+
+    2 integral x^2(g')^2=||g||^2-integral x^2 q' g^2,
+    G''_a(t)=-8 integral x^2 q' g^2>0.                     (LINEAR)
+
+Here pointwise q'<0 follows from
+ThetaCuspKernelLogConcavity:971-1002, not merely the abstract definition of
+strict concavity. Parent checked the actual normalized negative numerator
+and second-log-derivative theorem. This works at every admitted tilt.
+
+The initial degree-two audit stopped prematurely after obtaining
+G''_a(t^2)=64(integral x^2(g'')^2-integral (g')^2).
+Parent corrected that missing-source conclusion by using the native head.
+Put kappa=-q'>0. For p(t)=t^2+s, the exact equivalent density is
+
+    G''_a(p)=4 integral x^2 g^2
+                ((s+2kappa)^2+8kappa^2-2kappa'').           (QUADRATIC)
+
+Indeed T2=-2k^2 kappa and T4=k^2(12kappa^2-2kappa'').
+The leading two-by-two minor of thetaCuspNativeEvenHead is
+k^4(8kappa^2-2kappa'')>0. Its globally strict three-by-three theorem is
+ThetaCuspNativeEvenHead:27-86 (parent read whole file). Thus QUADRATIC is
+strict for nonzero even degree-two filters. The same exact native-head
+congruence proves G''>0 for nonzero even filters of degree at most four.
+For a general real degree-two filter, the even-filter output is real and
+the odd linear output imaginary, so their squared norms add pointwise;
+LINEAR and QUADRATIC also cover that finite mixed case. Do not infer an
+all-order or arbitrary odd-subspace result from these finite sections.
+
+These are PAPER consequences of existing source signs, not new compiled
+theorems, and not a new RH exclusion. The earlier generic countermodel
+prevents using log concavity alone as an all-order rule. The full nonlinear
+law still needs to control the indefinite terms in CONVEX at arbitrary
+polynomial degree. Report: /tmp/hgt-rh-goal-metric-convexity-audit.md.
+
+### Real-filter domain audit: complexification needs its commutator
+
+Parent gave an explicit test, independently audited by outlying Terra.
+For a complex polynomial the correct formula is
+
+    G'_a(p)=2 integral x|p(A)g|^2
+                +4 Im <p(A)g,p'(A)g>.                     (COMPLEX)
+
+For p(t)=t-i at a=0, h=-i(2k'+k). Evenness and boundary decay give
+
+    integral x|h|^2=4 integral x k k'=-2||k||^2<0,
+    <h,k>=i||k||^2.
+
+Thus the extra term cancels the negative doubled barycenter exactly;
+G'_0(t-i)=0. Negative barycenter persists for small positive a by continuity.
+This is literal-theta evidence, no hypothetical root assumed.
+
+Scope: complex norm formulations remain valid and the metric splits into
+real and imaginary coefficient tests. Only extending the UNCORRECTED
+barycenter equality to complex filters is false. Other representations,
+complex arguments retaining (COMPLEX), or other rigorously identified test
+domains are not ruled out. Do not use arbitrary complex localization or
+polynomial density to replace the real-filter domain while discarding its
+commutator. Report: /tmp/hgt-rh-goal-metric-law-mechanism.md, corrected scope.
+
+### All-rank flux attempt: identify the condition it actually requires
+
+Geometry Terra source-audited the literal rank-four zero-flux construction.
+For a positive native head A(x), last column b(x), and last entry c(x), put
+s(x)=c-b^T A^-1 b. With w_a(r)=r sinh(ar), a bottom-entry correction d(r)
+to the weighted successor has Schur scalar w_a s(r/2)+d(r).
+
+If d is an admitted derivative with zero total integral, pointwise strict
+positivity forces integral w_a s>0. Conversely, if all smooth/integrable
+admission holds and this scalar integral is positive, choose positive h
+of the same integral and set d=h-w_a s; a zero-boundary primitive gives
+a variable repair. This characterizes that particular one-entry repair,
+not general matrix corrections, not the desired integrated successor.
+Actual fixed source-shaped flux requires the stronger comparison s+C chi>0.
+No all-rank source recurrence establishing either condition was found.
+
+### Positive survivor: exact integrated Schur variance, admitted at rank four
+
+Parent rejected the one-entry condition as a necessary condition for the
+actual integrated cone. It discards a positive term. Define dmu=w_a(r)dr,
+Abar=integral A, bbar=integral b, q=A^-1b, qbar=Abar^-1bbar. Exact algebra:
+
+    cbar-bbar^T Abar^-1 bbar
+       = integral (c-b^T A^-1 b) dmu
+          + integral (q-qbar)^T A(q-qbar) dmu.             (VARIANCE)
+
+The second term is nonnegative. Parent expanded and Terra audited the
+cross term integral Aq=bbar=Abar qbar. A finite scalar version was
+retrieved in QuotientFusionProjectionGenesis:249; parent checked its
+statement/proof. It is not itself the continuum theta theorem.
+
+For the first even rank-four test, A=(m_(i+j)) for i,j<3,
+b=(m3,m4,m5), c=m6, with m_j=(-1)^j T_(2j)(k). All inverse-before-integral
+terms are admitted on paper, not left as assumptions:
+ThetaCuspNativeEvenFourTail:39-105 gives exact full-source scaling
+M4=D4^T Mtilde4 D4 with D_i=phi lambda^i and Mtilde4 tending to a strict
+Gaussian matrix. Parent read the complete proof and exact factorization.
+The leading normalized inverse is bounded on a cofinal ray, hence
+
+    q_i=O(lambda^(3-i)),
+    b^T A^-1 b=O(phi^2 lambda^6),  |s3|=O(phi^2 lambda^6).
+
+The first-atom scale phi has the admitted superexponential tail and lambda
+grows exponentially, so the aperture weight is harmless. Compact source
+strictness and continuity bound A^-1 on the remaining interval. The
+integrated head is strict. Thus every term in (VARIANCE) exists for this
+actual source at every critical aperture. This completes the admission
+obligation at this rank; no claim made for arbitrary inverse heads.
+
+The source law does specify how the variance changes. Write A=H^2 A_R,
+b=H^2 b_R using normalized source-jet polynomials. Then
+
+    q'=A_R^-1(V b_R-(V A_R)q).
+
+The remaining sign is now exactly
+
+    integral w_a s3 + V3(a) >=0,
+    V3(a)=integral w_a(q-qbar)^T A(q-qbar).
+
+Neither this source ODE nor retrieved theorems bound the negative first
+term by V3. Higher rank also needs a positive head (possibly corrected);
+native-head positivity cannot silently be assumed beyond the proved
+finite section. Reports: /tmp/hgt-rh-goal-all-rank-flux-audit.md and
+/tmp/hgt-rh-goal-schur-variance-transport.md, admission appendix.
+
+### Retrieval, source audit, and end checkpoint
+
+Parent deep searches metric-sign-law, metric-convexity, mass-clock-metric
+are terminal (sessions 65504,11291,59995). All report partial=true; last
+inventory 59,188 files, one index failure, substantial stale/pending compiler
+and method metadata, semantic coverage unavailable. Candidate lemmas,
+source arguments, proof ideas and ingredient sets were read. Generated
+'norm preserves convexity' bundle does not apply to the nonlinear
+parameterized vector, and root-indexed Hawking identities do not supply
+the missing sign. No generated bundle accepted as proof.
+
+Source-grounded additional reads: PrimeArchThetaModularDifferentialClosure
+:1549-1644 proves normalized quasimodular drift monotonicity already;
+GAP CURRENT must not be advertised as independent newly discovered source
+content. ThetaCuspReflectedSourceOddStationaryCurvature:1-125 proves a
+reflected potential monotonicity, but no polynomial-filter transport.
+The mass-clock query found no recurrence controlling METRIC; the earlier
+forced-response barrier limitation remains intact.
+
+Outlying retrieval re-found literal modular likelihood seam fluctuation
+(parent checked ThetaCuspLikelihoodModularFluctuation:20-52) and a separate
+Sonin adjacent-norm reconstruction. Neither has a verified map to these
+filtered norms. Geometry/arithmetic/outlying searches all terminal and
+reports saved; no Lean or build process launched by this turn.
+
+Progress classification: finite convexity mechanism proved on paper,
+invalid complex-domain extension refuted, stronger-than-needed one-entry
+flux condition identified, and actual rank-four variance admission closed.
+No zero exclusion, no all-order sign, no new Lean theorem. Next attack must
+use the nonlinear source law to bound the Schur defect by the retained
+variance, or control CONVEX at every degree. Merely requesting pointwise
+positivity or listing more equivalent cones does not advance that step.
+Only this research log changed in repository. RH goal remains active.
+
+## Continuation 2026-09-23: global comparison geometry and the completed sixth rank
+
+The user's immediate interpretive request remains controlling: infer what object
+or frame makes the corpus's partial descriptions coexist. Do not substitute a
+catalogue of routes or another equivalent sign assertion. The source law / full
+response / boundary-incidence distinction from earlier sections remains valid;
+it is not newly discovered here. The substantive refinement tested this turn is
+the geometric difference between independently optimized local descriptions and
+one response/filter constrained across the entire source.
+
+### Correction of the finite frontier from current Lean source
+
+The prior five-rank summary was incomplete. Current source proves
+`thetaCuspCenterMixedSignedHankel_six_posDef` in
+`ThetaCuspCenterMixedSixthRank.lean:48` unconditionally for 0<a<1/2.
+`ThetaCuspCenterMixedSixPointCluster.lean` transports this to six-point clusters.
+The first open successor in the inspected family is rank seven / even rank four,
+not rank six. No Lean compilation was launched; these are inspected source proof
+terms and theorem statements, not a fresh build certification.
+
+The positive mechanism is already concrete:
+`ThetaCuspGlobalOddCompensation.lean:7-49` proves corrected native odd rank-three
+determinant positivity globally for every C in [10^9,3*10^9]. The proof joins:
+
+* Modular energy tube x in [0,8/95]: 0<=u<=1, 17<=A<=20, 0<=w<=1,
+  w<=(5/4)u; C>=10^9 repairs the negative seam determinant.
+* First-atom scale q in [3.7,5]: native determinant and compensation both positive.
+* q in [5,7]: normalized determinant >=70,500,000,000, head <=33100,
+  correction >=-1/2500; C<=3*10^9 retains a positive reserve.
+* Existing tail reserve covers q>=7.
+
+Parent read GlobalOddCompensation, OddEnergyCompensation and
+MiddleCompensatedDeterminant in full. The zero-boundary flux then proves the
+literal integrated odd-three sign. This is a completed source-specific sign
+transport on the actual carrier. It is not a generic theorem that correction
+coefficients can always be enlarged: the correction changes sign.
+
+Even-rank source also has exact progress: EvenCompensationCoefficient proves
+native even-four Schur at zero is negative, canonical coefficient in
+(10^12,3*10^12), and all C>=10^12 repair the seam. EvenFourMiddle proves the
+fixed C=10^12 corrected matrix positive for all x>=1/12. These statements do
+not by themselves close the intervening compact interval or every rank.
+
+### Tested bridges and their exact limits
+
+Terra reports completed:
+`/tmp/hgt-rh-goal-schur-source-sign-attack.md`,
+`/tmp/hgt-rh-goal-schur-variance-lower-bound.md`,
+`/tmp/hgt-rh-goal-cutoff-envelope-sign.md`,
+`/tmp/hgt-rh-goal-dyadic-native-gram-attack.md`.
+
+1. Source transport gives q'=Ahat^-1(Vbhat-(VAhat)q), with actual H^2 mass
+   factored out. The source gap-current law has not been linked to a signed
+   component of this q'. Negative even-four Schur at the seam refutes native
+   pointwise positivity; evenness also forces its first derivative there to zero.
+2. A two-window completion gives the PAPER bound
+
+       variance >= (q0-q1)^T(A0^-1+A1^-1)^-1(q0-q1),
+
+   with Aj and bj the integrated head and column on window j, qj=Aj^-1 bj.
+   Rank-four admission is covered by the preceding tail/compact inverse audit.
+   No quantitative source displacement bound has yet made this exceed the
+   integrated negative local Schur term.
+3. Actual monic degree-six cutoff p_a is smooth on the critical aperture on
+   paper; differentiation of H_a(p_a,p_a) cancels coefficient-motion terms by
+   H_a-orthogonality. Thus S6'(a)=G_a''(p_a,p_a), with p fixed when taking G''.
+   This does not cancel coefficient-motion terms in d/da G_a(p_a,p_a).
+4. `ThetaCuspCutoffJacobiCone.lean` ALREADY proves p6=t6-S*t4+E*t2-F,
+   S,E,F>0 from five positive Jacobi beta coefficients. Its explicit signed
+   norm contains alternating-sign density derivatives and has no sign theorem.
+   `AdaptiveOrthogonalSourceJacobiEnergy.lean` requires PositiveMomentForm for
+   its all-degree energy theorem; inserting the unproved signed form would be
+   circular. The formal degree-six root geometry is useful but not the missing
+   curvature bound.
+5. Exact lattice theta doubling retains two sectors, but no audited carrier map
+   transports it to derivatives of the COMPLETE source reflection product and
+   its noninvariant aperture weight. Product derivatives add nonconstant source
+   factor/cross terms. Addition alone does not produce the desired Gram sign.
+
+### New interpretation test: optimization and assembly do not commute
+
+Parent read `HTGeometry/QuotientFusionProjectionGenesis.lean` fully. It already
+formalizes a precise common-source phenomenon, not merely a verbal analogy:
+the energy of fitting several data with one shared parameter equals separate
+fit energies plus a nonnegative incompatibility energy. In finite dimensions
+the latter vanishes exactly when all local optimal histories have one common
+realization. Its scalar Schur identity is at :249.
+
+The preceding PAPER matrix-integral Schur identity is the actual rank-four
+theta version of this algebraic pattern. A local minimizing coefficient q(x)
+is permitted to vary with x; a test of the integrated signed form uses ONE
+constant coefficient vector. Its exact extra cost is
+
+       integral (q(x)-qbar)^T A(x)(q(x)-qbar) dmu(x).
+
+Consequently a local negative direction does not automatically assemble into a
+negative global response. This explains the logical room for native odd-three
+negativity and proved integrated odd-three positivity to coexist. Do not claim
+variance is the mechanism of the existing odd-compensation proof: it is a
+distinct exact decomposition. Do not assume native positive heads at all ranks.
+
+Candidate frame under renewed independent audit: the full nonlinear source
+with its globally constrained response/observable space; local charts and
+eliminations retain both inherited sign and the cost of compatibility. The
+metric G_a(p)=||p(-2iD)(e^(ax)k)||^2 supplies an unconditional positive ambient
+object. The open RH content is the sign of its aperture derivative for real
+filters, not existence of that metric. Thus a 'positive geometry' that assumes
+monotonicity has simply assumed the unsolved part.
+
+Current parent deep requests: global-metric session 69484,
+minimize-integrate session 82731. Terra agents now independently audit the frame
+against previous synthesis, current source laws and exact no-go scope. No Lean,
+build, numerical/CAS job, source edit, official-route edit or external math used.
+
+### Final frame audit and evidence controls
+
+All three Terra frame audits completed. Parent read the reports and spot-checked
+source claims: source factor/ODE and all-order jet template, both Volterra
+responses and their exact Xi defect, even-four negative seam, compensation's
+zero integral, quotient-fusion's exact energy theorem, and the ancestry example.
+Reports: `/tmp/hgt-rh-frame-arithmetic-audit.md`,
+`/tmp/hgt-rh-frame-geometry-audit.md`, `/tmp/hgt-rh-frame-outlying-audit.md`.
+
+Two report corrections matter:
+* The matrix centering vector is qbar=(integral A)^-1 integral b. It is NOT
+  ordinary average q, even for a probability measure. The earlier two-window
+  report uses the correct matrix centering. Geometry agent asked to repair its
+  shorthand formula and to distinguish infinite linear retention from nonlinear
+  dimension. Actual all-grade linear independence is verified at
+  JointAncestryCompletedThetaAllGradeMellinChain:297.
+* ConstitutiveLawDerivativeGenesis:166's ancestry-blind example uses a constant
+  Unit-valued reporter; the interaction partition is excluded middle. These
+  statements do not prove that a context-complete observer necessarily loses
+  ancestry, nor establish a missing theta interaction operation. Parent rejects
+  that overinterpretation. Marked-operation language remains a diagnostic
+  proposal; no theta specialization or new source theorem is obtained from it.
+
+The defensible interpretive hypothesis is consequently specific: global
+compatibility of responses generated by ONE nonlinear source can have positive
+content that disappears under independent local elimination. The exact matrix
+variance is one quantified instance. Source-derived zero-boundary flux gives a
+second, distinct operation: different local representatives have the same
+integrated observable. Neither operation licenses arbitrary kernel PSD or
+positivity of every native head. The current six-rank theorem is a successful
+finite source-specific certificate, not evidence of an automatic induction.
+
+This yields a falsifiable research mechanism rather than a name: use the actual
+source ODE to show its varying local optimizers impose enough shared-filter cost
+to overcome the integrated negative Schur contribution, starting with the first
+unclosed even block. An all-order version would need corrected/local head
+admission or a formulation in the unconditional metric G_a; native heads already
+fail. No such quantitative dominance is proved in this turn. Source completeness
+and RH-transparent geometry remain different accomplishments.
+
+The whole-system picture retains three levels: finite nonlinear source with
+mass/global conditions; infinite admitted observable/response family with its
+operations and integrated pairings; oriented endpoint coincidence (the Xi
+divisor). It does not infer that nonreal responses cannot exist: they exist as
+source-driven states. Reality concerns where the two endpoint sections meet.
+Nor does it identify all old no-go defects with one curvature or claim a unique
+universal geometric object has been reconstructed.
+
+Parent search completion:
+* schur-defect: partial=false,78.506s;
+* dyadic-gram: partial=false,92.029s;
+* bilinear-source-law: partial=true,175.768s;
+* odd-three-sign: partial=true,65.333s;
+* global-metric: partial=true,152.577s;
+* minimize-integrate: partial=false,111.999s.
+All six owned sessions polled to terminal exit. Latest snapshot: 59,202 files,
+59,201 indexed, one failure; 43 compiled snapshots versus substantial pending,
+stale and unavailable compiler metadata; method invalidation pending. Candidate
+lemmas/source arguments/proof ideas/ingredient sets inspected. Generated bundles
+joining quaternion rank or Brolin measures to theta Schur sign rejected as lacking
+the required common carrier. Minimize-integrate independently retrieved the
+actual QuotientFusionProjectionGenesis positive shared-energy example.
+
+Current ledger already names nonlinear-source selection (DYN), low-rank theta
+sections (CLG/TTF), and the singular differential-pencil interface. Therefore
+do not advertise source dynamics or endpoint incidence themselves as unlisted
+new routes. The additional research inference is the quantified shared-filter
+compatibility mechanism and its connection to the actual source's integrated
+positivity; novelty within the entire corpus is not established by these searches.
+
+Outcome: stronger finite frontier recognized; new paper envelope and two-window
+bound audited; false pointwise and dyadic shortcuts excluded; conceptual frame
+sharpened around a measurable compatibility cost. No RH proof, no new Lean
+theorem, and no demonstrated ranking of closure probabilities. Goal stays active.
+
+Both correction-only Terra followups are finished: geometry report now uses the
+matrix-weighted qbar throughout and cites the actual all-grade linear dimension
+result; outlying report withdraws claims about context-complete/minimal observers
+and treats its constant ancestry reporter only as that specific example.
+
+## Goal continuation 2026-09-23: quantitative tests and positive tail primitives
+
+Previous turn classification: research progress, not RH closure. It identified
+the already-closed sixth rank and quantified the difference between independent
+local minimization and a shared global filter. Current chain remains nonlinear
+source law -> global source comparison -> complete signed cone -> RH. This turn
+attacks the missing comparison by tail displacement, cutoff orthogonality, and
+transport of the completed source compensation. No Lean/build process launched.
+
+### First loop: large minimizer displacement fails as a variance producer
+
+The exact Gaussian tail SOS in `ThetaCuspNativeEvenFourTail.lean:24-38` gives,
+by hand triangular elimination with final coefficient 1,
+
+    minimizing vector = (-7680,2880,-120,1),
+    A_G^-1 b_G = (7680,-2880,120).
+
+For lambda=pi*exp(2x), actual normalized tail convergence therefore gives
+
+    (q0/lambda^3,q1/lambda^2,q2/lambda) -> (7680,-2880,120).
+
+The local minimizer really changes, but this alone cannot supply the needed
+variance. The following stronger PAPER no-go uses the already admitted inverse
+quadratic integrability, with no tail-window-width assumption. Fix a finite
+positive window with q0. For any escaping window E_R contained in [R,infinity),
+let A1,b1,q1 be its integrated data and P_R=(A0^-1+A1^-1)^-1. Then
+
+    (q0-q1)^T P_R(q0-q1)
+      <= 2 q1^T A1 q1 + 2 q0^T A1 q0
+      <= 2 integral_E_R w b^T A^-1 b + 2 q0^T A1 q0 -> 0.
+
+First inequality uses P_R<=A1. Second is matrix Cauchy, equivalently variational
+completion. Both tails tend to zero by admitted integrability. Divergent local
+coefficients do not compensate for disappearing matrix mass. This rejects the
+attempt to obtain a quantitative reserve merely by taking a far-away comparison
+window. It does not reject finite-window variance domination.
+
+Terra report `/tmp/hgt-rh-goal-even-minimizer-displacement.md` includes the exact
+source quantities for that pivot: seam moments/cofactors in EvenSeamJets and
+EvenSeamDeterminant, compact modular energy bounds, and the missing finite-window
+cofactor-ratio separation plus positive head-mass bound. These are not supplied
+by the corrected even-four middle theorem.
+
+### Exact tail Schur flow, with its unresolved crossing sign
+
+For A_R=integral_R^infinity wA, b_R likewise, qbar_R=A_R^-1 b_R and
+S_R=c_R-b_R^T A_R^-1 b_R, moving-endpoint differentiation gives on paper
+
+    qbar_R' = A_R^-1 w(R) A(R) (qbar_R-q(R)),
+    S_R' = -w(R) [s(R)+(q(R)-qbar_R)^T A(R)(q(R)-qbar_R)].
+
+Here s is the native local Schur, q=A^-1b. Tail invertibility/admission at the
+current even rank follows from the strict native head and previous inverse-tail
+audit. The RHS exposes the compatibility term directly in the cutoff flow.
+At a hypothetical S_R=0 crossing its sign remains unproved. Positivity near
+infinity does not propagate without that additional source-specific estimate.
+
+### Second loop: cutoff roots give an exact residual, not the required factor two
+
+Parent proposed and Terra audited a more precise version of the curvature test.
+Let p=p_a be the actual degree-six monic cutoff, with simple real roots lambda_j;
+g=exp(ax)k, Aop=-2iD, w=p(Aop)g, p_j=p/(t-lambda_j), w_j=p_j(Aop)g.
+All are admitted by literal weighted source derivative tails.
+
+Let C_ij=<w_i,w_j>, c_j=C_jj. The Gram C is real and strictly positive (root
+quotients span degree<=5 and the nonzero source cannot be annihilated by a
+nonzero constant-coefficient polynomial on the whole line). Signed cutoff
+orthogonality gives Re<w_j,xw>=0; the commutator [Aop,x]=-2i gives
+Im<w_j,xw>=c_j with the convention conjugate-linear in the first argument.
+Thus
+
+    ||xw||^2 = c^T C^-1 c + ||R||^2,
+    R=xw-i sum_j (C^-1 c)_j w_j.
+
+Using p'^2-p p''=sum_j p_j^2, the earlier exact curvature becomes
+
+    S6'(a)=G_a''(p)=4||R||^2+4(c^T C^-1 c-2 tr C).
+
+The required bound is therefore ||R||^2+c^T C^-1 c >=2 tr C. Ordinary projection
+only supplies c^T C^-1 c. C=t I shows why Gram positivity ALONE does not supply
+the factor two; this algebraic pattern is not claimed to be a realized theta
+cutoff counterexample. Jacobi orthogonality is for H_a=G_a', whereas C is for G_a.
+No source estimate linking the residual to the deficit was obtained. Report:
+`/tmp/hgt-rh-goal-cutoff-frame-bound.md`. This is a sharper open inequality,
+not proof of curvature or successor positivity.
+
+### Positive survivor: completed compensation controls all aperture derivatives
+
+Parent derived, outlying Terra audited, and parent checked the exact source
+inputs. Let M(x) be the literal native signed SIX-by-SIX matrix and let E be the
+CONSTANT coordinate projector onto its final odd coordinate (degree five).
+Choose fixed C in [10^9,3*10^9]. The native even3 head is strict at every x>=0;
+native odd2 head is strict; GlobalOddCompensation gives strict corrected odd3
+determinant. Cofactor expansion/Sylvester therefore yield on paper
+
+    M_C(x)=M(x)+C chi(x) E > 0,
+    chi(x)=3k(x)^2+2x k(x)k'(x),           x>=0.
+
+The nonconstant odd-head determinant occurs only in the determinant expansion,
+not in the entrywise correction. This distinction was explicitly re-audited
+after one agent initially confused the two.
+
+For fixed real polynomial p with degree<=5, write S_p=v^T M v. The exact prior
+METRIC dictionary gives
+
+    G_a^(j)(p)=2^(j+1) integral_0^infinity w_(j,a)(x) S_p(x) dx,
+    w_(j,a)=x^j cosh(2ax) for even j,
+            x^j sinh(2ax) for odd j.
+
+Take F_(j,a)=x w_(j,a) k^2. Then
+
+    F' - w chi = (x w'/w-2) w k^2 >=0  for j>=1, a>0.
+
+For even j>=2 the multiplier is j-2+2ax*tanh(2ax)>=0; for odd j>=3 it is
+j-2+2ax*coth(2ax)>0; j=1 uses y*coth(y)>=1. Hence
+
+    w M + C F' E = w M_C+C(F'-w chi)E >0.
+
+F and F' have admitted polynomial/exponential source tails; F vanishes at zero
+and infinity. Its integral derivative is zero. Consequently, on PAPER,
+
+    G_a^(j)(p)>0 for every j>=1, 0<a<1/2,
+    every nonzero real p of degree<=5.
+
+This is a substantive extension of the prior low-degree convexity calculation,
+derived from an actual completed source certificate. It does not add degree-six
+filter positivity. Report: `/tmp/hgt-rh-goal-source-weighted-curvature.md`.
+
+### Stronger positive survivor: every weighted tail primitive at rank six
+
+The same correction has a simpler source identity independent of aperture:
+
+    x^2 chi(x) = (x^3 k(x)^2)'.
+
+For every R>=0 define T_R=integral_R^infinity x^2 M(x) dx. Exact integration
+with the retained endpoint gives
+
+    T_R = integral_R^infinity x^2 M_C(x) dx
+          + C R^3 k(R)^2 E > 0.                         (TAIL)
+
+The source is Schwartz, so all entries are admitted and the infinity endpoint
+vanishes. For every nonzero vector the integral of the strictly positive
+continuous corrected form is strictly positive on an interval beyond R.
+Thus strictness holds at every finite R, including zero.
+
+For an admitted nonnegative nondecreasing scalar h, integration by parts gives
+
+    integral_0^infinity x^2 h(x) M(x) dx
+       = h(0) T_0 + integral_0^infinity T_R dh(R) >=0,
+
+with the relevant endpoint limits retained. Strictness follows for nontrivial
+weights with positive mass. Taking h=sinh(2ax)/x or the corresponding higher
+derivative weights recovers all the preceding aperture signs. This identifies
+a useful positive object: a tail-integrated matrix, rather than its indefinite
+local density. It is a PAPER consequence of Lean source theorems, not a newly
+compiled declaration or an all-rank result.
+
+Two independent final matrix audits:
+`/tmp/hgt-rh-goal-tail-primitive-certificate.md`,
+`/tmp/hgt-rh-goal-native6-integration-audit.md`.
+Do NOT integrate the corrected determinant: that would introduce a nonconstant
+head factor and an extra derivative term. TAIL integrates the matrix entries.
+
+All-rank TAIL positivity for EVERY R would suffice for the original signed
+aperture cone by the monotone-weight formula, hence RH. Positivity only at R=0
+has not been shown sufficient. The all-R/all-rank requirement may be stronger
+than RH and is under a separate literal-source falsification audit. Local
+native negativity alone cannot refute it. Rank-seven/even-four remains the
+first unclosed section in the currently inspected source family.
+
+### All-rank tail falsification audit and process checkpoint
+
+Outlying Terra tested the literal scalar kernel
+
+    f_R(t)=integral_R^infinity x^2 k(x+t)k(x-t) dx, R>=0.
+
+The source midpoint inequality `thetaCuspFullSource_mul_reflect_le_sq`
+(ThetaCuspKernelLogConcavity:1005) gives 0<f_R(t)<=f_R(0), so every tail passes
+the two-node positive-definite test. Large displacement plus the sharp center
+cutoff cannot falsify it that way. Dominated differentiation is admitted by
+all-order source exponential derivative bounds; the cutoff has no t-dependent
+boundary and creates no kink in f_R.
+
+The literal Fourier transform has the exact PAPER representation
+
+    fhat_R(xi)=(1/8) integral_{u+v>2R}
+      (u+v)^2 k(u)k(v) exp(-i xi(u-v)/2) du dv.
+
+Its real cosine phase has no elementary sign. No negative witness and no positive
+factorization was obtained. Do not infer Fourier positivity merely from complete
+local Hankel positivity for f_R: identification of its signed Fourier moments
+with a unique positive representing measure needs analytic/determinacy admission
+for this sharp-tail kernel. This issue concerns the Fourier falsification route;
+the direct all-R tail-cone -> monotone weights -> original aperture cone -> RH
+implication does NOT require that additional Fourier route.
+
+Report `/tmp/hgt-rh-goal-tail-primitive-allrank-test.md`. Its wording 'strictly
+stronger' must be understood only as a stronger imposed sufficient condition;
+no strict logical separation from RH has been proved. The all-R/all-rank cone
+remains an unproved candidate, neither certified nor refuted by this test.
+
+All parent searches this turn are terminal and their owned handles were polled:
+cutoff-uncertainty 76434 (partial=false,72.710s), tail-schur-flow 88636
+(false,158.671s), flux-aperture-derivatives 86884 (true,180.029s),
+two-modulus-source-product 62569 (true,210.048s), tail-primitive-cone 31583
+(true,149.879s). Latest inventory 59,216 files, 59,215 indexed, one failure;
+compiler metadata largely pending/stale/source-only. Flux query omitted coverage.
+Candidate lemmas, source arguments, proof ideas and generated ingredient sets
+were inspected; unrelated Sonin curvature, Brolin/block identities, theta lattice
+shift and plateau pushforward proposals do not furnish the required source sign.
+Terra searches also completed with partial coverage where noted in reports.
+
+No Lean compilation, build, numerical/CAS job, or source-code edit performed.
+Only this owned research log changed in the repository. No owned search process
+remains. Current progress is a new dependency-audited PAPER finite tail-primitive
+certificate and all-aperture-derivative consequence, plus two failed shortcuts
+with exact surviving targets. RH remains unproved; goal remains active.
+
+Next substantive attack: establish a source-controlled positive tail primitive
+at the first unclosed even rank, or exhibit an actual higher-rank finite-tail
+negative witness that rules out this stronger mechanism. A theorem at rank six
+does not license all-rank continuation; the entire open quantifier stays intact.
+
+## Continuation 2026-09-23: tail determinacy, finite tests, and boundary-form coherence
+
+Proof chain retained: literal nonlinear source -> all-rank signed response
+positivity -> RH. Previous progress was a PAPER rank-six tail certificate,
+deduced from existing Lean compensation theorems. The hard all-rank step is
+still open. This continuation tests both the stronger all-cutoff proposal and
+whether its finite certificates describe a consistent geometry.
+
+### First analytic admission closed: the actual sharp-tail Fourier measure
+
+Geometry Terra report `/tmp/hgt-rh-goal-sharp-tail-determinacy.md` was read;
+parent spot-checked `ThetaCuspComplexStrip:322,622`. The actual complex source
+K is holomorphic on |Im z|<pi/4, even there, agrees with k on the real axis,
+and satisfies |K(z)|<=C_delta exp(-|Re z|) on every closed smaller strip.
+Consequently the sharp-tail continuation
+
+    F_R(z)=integral_R^infinity x^2 K(x+z) K(x-z) dx
+
+is holomorphic on that strip. Its integrand is bounded by
+C_delta^2 x^2 exp(-2 max(x,|Re z|)), and integration gives a polynomial
+times exp(-2|Re z|) horizontal bound. Contour displacement gives exponential
+decay of the actual Fourier density of f_R=F_R|real. Thus its signed Fourier
+measure has exponential moments. All Hankel positivity would produce a positive
+Hamburger measure with the same moments; exponential even-moment bounds force
+exponential integrability of that measure too. Analytic Laplace uniqueness then
+identifies it with the actual signed Fourier density. Hence, on PAPER,
+
+    all finite signed tail Hankel matrices PSD
+       iff the actual Fourier density fhat_R is nonnegative.
+
+This closes determinacy, NOT the sign. No new Lean declaration was compiled.
+
+### First falsification test ruled out by the corpus itself
+
+Parent read `HedenmalmCenterMixedCorrelationAngle:1-235`.
+`thetaCuspReflectedSourceCorrelationAngle_subadditive_global` and
+`thetaCuspReflectedSourceThreePointMatrix_posSemidef` are unconditional source
+theorems for every center and every nonnegative pair of node gaps. Therefore
+integrating against x^2 on ANY admitted [R,infinity) gives all three-point
+matrices of f_R positive semidefinite. Arbitrary ordered triples follow by
+translation, gap selection and permutation; repeated points are included.
+This strengthens the previously recorded two-point bound. A proposed
+{-s,0,s} falsifier cannot work; outlying Terra was redirected to four-node
+or genuinely higher constraints. It is not enough to establish a triangle
+inequality and call the full source response a Hilbert geometry.
+
+Existing completed Wigner-fibre negativity does not transfer automatically:
+that fibre has a t-dependent seam with a |t| slope; f_R has a cutoff in x
+independent of t and is smooth and even in t. Report
+`/tmp/hgt-rh-goal-sharp-tail-sign-attack.md` retains this carrier distinction.
+
+### Zero cutoff exposes an existing obstacle, not a new route around it
+
+Parent derived and geometry Terra independently audited the exact identity.
+With F(b)=integral k(u)exp(-ibu)du and b=xi/2,
+
+    fhat_0(xi) = (F'(b)^2-F(b)F''(b))/8.
+
+The change u=x+t,v=x-t contributes 1/2 Jacobian and x^2=(u+v)^2/4,
+so the half-plane coefficient is 1/8. Simultaneous reflection and swapping
+u,v halve the full-plane integral; factoring its three terms gives
+2(F'^2-FF''). Parent checked `ThetaCuspFourierLaplace:98` and
+`XiLaguerrePolya:410`: F is literal Xi on the real axis, and the latter
+theorem assumes RH to prove exactly this first Laguerre sign.
+
+Thus the R=0 all-rank tail proposal is precisely the existing first Xi
+Laguerre inequality (PAPER transform identity). No converse to RH is supplied.
+The all-R proposal remains a sufficient condition, possibly stronger than RH;
+no strict separation, positive proof, or literal negative witness is obtained.
+Calling it a new bypass would be misleading. The new content is the finite
+all-cutoff certificate, not a new zero-cutoff spectral criterion.
+Report `/tmp/hgt-rh-goal-sharp-tail-laguerre-audit.md`.
+
+### Rank-seven attack reduced to a single finite core budget
+
+Arithmetic Terra audited the native even-four source and its fixed corrected
+tail in `/tmp/hgt-rh-goal-rank7-tail-core-attack.md`; parent read the report and
+the relevant `ThetaCuspEvenFourEffectiveSchur` and fixed-tail source statements.
+Let L=1/12, C=10^12, E=e3e3^T, M=[A,b;b^T,c], s=c-b^T A^-1 b, and
+
+    D0=integral_0^L x^2 max(-s(x),0) dx.
+
+The head A is strictly positive. Completing its square gives M>=-s_-E.
+Already proved fixed compensation for x>=L gives
+
+    T_L=P_L+C L^3 k(L)^2 E,  P_L=integral_L^infinity x^2 M_C(x)dx >0.
+
+Its last Schur complement therefore exceeds C L^3 k(L)^2 strictly. For
+every R<=L, T_R>=T_L-D0 E. It follows that the SINGLE sufficient estimate
+
+    D0 < C L^3 k(L)^2
+
+would close every compact cutoff at this even rank. This discards useful core
+and cross-window variance, so is stronger than necessary. Neither the scalar
+compact chi lower bound nor the seam repair supplies this integral estimate.
+Agent now attempts actual symbolic bounds, rather than merely recording its
+absence. The earlier variance formula remains the less restrictive alternative.
+
+### Current interpretive test, not a theorem claim
+
+Finite local matrices can be indefinite while their integrated source response
+is strictly positive. The actual proof modifies a density by an admitted total
+derivative with retained boundary values. Thus a candidate primary object is a
+source-generated bilinear response together with its boundary relation; local
+representatives need not be positive. This has concrete content in
+`ThetaCuspCenterCompensationFlux:62,97`, not only an analogy.
+
+However, the rank-six correction changes only entry (5,5). It is not a correction
+of one Hankel moment across all future ranks: the same moment also appears at
+(4,6),(6,4), etc. A global proof may use non-Hankel local representatives,
+provided the integrated form is unchanged and the finite restrictions fit.
+Geometry Terra is auditing whether actual flux forms admit such an extension;
+no all-rank extension or source-law induction has been found yet.
+
+The other concrete obstruction to a local interpretation remains the exact
+Schur-variance identity: minimizers permitted to vary with source position are
+not a single legal global filter. Their incompatibility contributes a positive
+term after integration. Neither this identity nor quotient terminology proves
+that its contribution dominates the local deficit at every rank.
+
+### Process checkpoint
+
+Prior parent requests now terminal: tail-fourier-falsifier 54414,
+critical-laguerre-tail 29975, variable-even-flux 85512,
+sharp-tail-source-pde 21375. Candidate lemmas, source arguments and generated
+ingredient bundles were inspected. All returned partial snapshots; e.g. inventory
+59,231 files, 59,230 indexed and one failed, mostly stale/pending compiler
+metadata. Unrelated generated ingredient combinations were rejected. The direct
+source three-point theorem, complex-strip bounds and Xi normalization were read.
+
+New parent research requests currently owned: source-transport-allrank 68736,
+indefinite-matrix-method 78277, positive-boundary-quotient 61077,
+native-every-center-obstruction 71220. Poll these exact handles to terminal.
+No Lean, build, numerical or CAS process was started. Only this owned log is
+changed by this task; unrelated worktree modifications belong to other work.
+
+### Quantitative core survivor from the actual modular tube
+
+Arithmetic Terra completed `/tmp/hgt-rh-goal-even-core-quantitative-attack.md`.
+Parent checked `ThetaCuspEvenCompactState:13-32`, the literal source realization
+`ThetaCuspOddCompactSourceCoordinates:102`, and the mass derivative proof in
+`ThetaCuspModularEnergyFloor:116`. No numerical evaluation is used here.
+On [0,L], L=1/12, the correlated source coordinates obey
+
+    0<=u<=1,
+    191/10-(12/5)u^2 <= A <= 96/5-(4/3)u^2,
+    k=H S,  S=u^2/24+A/16-3/8,  H'=Hu/6.
+
+Direct substitution gives 341/480<=S<=33/40. Since H is positive and
+nondecreasing, H(x)<=H(L), hence the new PAPER source-ratio bound is
+
+    k(x)^2/k(L)^2 <= (396/341)^2 < 27/20.
+
+Write s=H^2 shat using the normalized compact matrix. A bound
+
+    max(-shat,0)<=B S^2,  B<(20/9)*10^12
+
+would now suffice for D0<C L^3 k(L)^2: integrate x^2 and use the displayed
+ratio. The source's available seam upper bound of about 3*10^12 is too weak
+for this sufficient target; its lower bound does not contradict the target.
+No estimate for the normalized head inverse/cofactor throughout the correlated
+tube was obtained. This is a new explicit reduction with one source bound
+proved, not completion of rank seven.
+
+### Higher-node test: the open part is genuinely an odd comparison
+
+Outlying Terra report `/tmp/hgt-rh-goal-sharp-tail-finite-node-attack.md` was
+read and parent checked `ThetaCuspCenterMixedFourPointEvenGlobal:205` and
+`ThetaCuspCenterMixedPtolemyTransport:48-104`. Every sharp-tail equispaced
+four-node EVEN block is positive by integrating its unconditional fibrewise
+source theorem. With f=f_R and t>=0, the remaining ODD block asks exactly
+
+    (f(t)-f(2t))^2 <= (f(0)-f(t)) (f(0)-f(3t)).
+
+This is only the equispaced four-node family, not all four-node configurations.
+Writing fibre drops A_u,B_u,T_u and W_u=A_u T_u-B_u^2, polarization is
+
+    A_u T_v+A_v T_u-2B_u B_v
+      =(A_v/A_u)W_u+(A_u/A_v)W_v
+        +A_u A_v(B_u/A_u-B_v/A_v)^2.
+
+This is another concrete instance of the compatibility variance mechanism.
+Fibrewise W_u>=0 would suffice for all positive center weights; that source
+statement remains open. No negative literal sharp-tail packet was found.
+
+### The all-rank boundary-quotient idea fails without a local producer
+
+Geometry Terra audited `/tmp/hgt-rh-goal-compensation-coherence-audit.md`;
+parent read the full report. Local representatives need not remain Hankel.
+For a proof of the integrated Hankel form it is enough that boundary corrections
+are bilinear, inclusion-compatible, admitted and have zero endpoint difference.
+Nevertheless THESE conditions alone add no force. The following parent PAPER
+construction, independently audited, is a decisive tautology control.
+
+For f_N(x)=w(x)M_N(x), H_N=integral f_N and a single smooth phi>=0 with
+integral phi=1, define entrywise
+
+    B_N(x)=integral_0^x (phi(t)H_N-f_N(t))dt.
+
+Then B_N(0)=B_N(infinity)=0 and f_N+B_N'=phi H_N. Existence of such an
+unrestricted positive repaired density is therefore equivalent to H_N>=0.
+Choosing the SAME phi makes B_N compatible with all finite principal
+restrictions, so even coherence does not remove the tautology. A meaningful
+proof must produce the flux from LOCAL literal source operations, independently
+of the unknown integrated sign. The known rank-six flux does satisfy this
+non-tautological requirement at its finite rank.
+
+The obvious coherent diagonal family also has a limitation: chi becomes
+negative after its unique source transition. For D_N>=0, adding chi D_N
+cannot repair any negative direction there. Its all-rank success would require
+native all-rank reserves on that part of the source orbit. No literal negative
+direction in that same region was found, so this is a conditional obstruction,
+not a refutation of the family.
+
+### Frame retained after the new tests
+
+The candidate remains geometry of the literal nonlinear source and its globally
+realizable boundary responses. The current refinement is GLOBAL VARIATIONAL
+ORDER: local elimination allows the optimizer to depend on position, whereas
+a legal polynomial response uses one shared filter. Assembly retains both that
+compatibility cost and the admitted boundary flux. Source-local negative forms
+and a positive assembled response can therefore coexist without contradiction.
+This is supported by exact identities and a finite successful source theorem;
+it does not assert that every route's no-go has this explanation.
+
+The concrete infinite response space is the real polynomial-filter space with
+G_a(p)=||p(-2iD)(exp(ax)k)||^2. The earlier audited PAPER identity identifies
+G'_a with the actual signed source form, whose all-rank positivity is formally
+RH-equivalent. This gives a precise order question on an explicit positive
+family, not an inferred unknown manifold. Positivity of G_a is easy; positivity
+of its variation is exactly the hard part. A finite nonlinear generator and an
+infinite faithful linear response space coexist, so 'infinite dimensions' alone
+neither resolves nor explains the obstruction.
+
+Parent revisited the retrieved source contravariant no-go with exact scope:
+`PolynomialODEJetRankThreeSourcePositiveInfiniteContravariantNoGo` proves the
+vacuum and lowest-weight string force contradictory scalar adjoint signs.
+The D1 bounded-operator and star-algebra extensions also obstruct their stated
+ansatz; merely changing channel dimension/signature is not a cure. They do not
+forbid the parameter-dependent integrated form above or every possible geometry.
+
+Zeros remain the coincidence locus of the two actual endpoint sections:
+parent checked `HedenmalmTwoEndedVolterraDefect:56,95`. Both sections already
+exist at complex parameters and inherit the source. Any claimed reality proof
+must restrict where they coincide; existence and compatibility of responses
+alone cannot do so. This is the decisive qualification to the original broad
+nonlinear-rigidity hypothesis.
+
+### Final retrieval checkpoint for this continuation
+
+All four previously live parent searches were polled to completion:
+68736 (partial=true,140.799s), 78277 (true,150.548s),
+61077 (true,149.756s), 71220 (true,145.089s). Additional source-adjoint-connection
+56764 completed (partial=false,137.889s). Candidate lemmas, source arguments,
+proof ideas and proposed ingredient sets were inspected. The index is a source
+snapshot (59,230 files,59,229 indexed,one failure), with compiler metadata
+mostly pending/stale; completed retrieval does not certify current compilation.
+Generic positivity closure, unrelated differential-jet operations and generated
+cross-domain bundles did not supply an all-degree source sign. No owned parent
+search process remains.
+
+Progress classification: new PAPER determinacy admission, exact identification
+of the zero-cutoff Laguerre target, positive finite-node consequences, explicit
+compact source-ratio bound, and an independently audited tautology/refinement
+test for the proposed frame. No all-rank positivity, rank-seven closure or RH
+proof obtained. No source code/build/numerics/CAS. Goal remains active.
+
+Final finite-node refinement: outlying Terra audited the parent Taylor test.
+For f_R(t)=m0-m2*t^2/2+m4*t^4/24-m6*t^6/720+..., its odd four-node
+wall is (m2*m6-m4^2)t^8/4+o(t^8). The actual source's global strict
+second--sixth minor gives m2*m6-m4^2>0 after sharp-tail integration.
+Thus for EACH fixed finite R, sufficiently small nonzero t passes. Monotonicity
+also gives wall>=f_R(0)*(f_R(0)-2*f_R(t)); decay makes every sufficiently
+large |t| pass. No R-uniform thresholds are asserted. An actual four-node
+counterexample, if one exists, must lie in an intermediate compact displacement
+band depending on R. This does not exclude higher-node failures or close the
+four-node middle band. All three Terra agents completed; no task-owned process
+remains running.

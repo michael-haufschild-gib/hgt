@@ -618,3 +618,62 @@ will not establish that missing estimate.
   claimed as new payment knowledge. All owned search and Lean processes
   exited, and the scratch file was removed. The unresolved attempt is
   recorded in [whole-child fractional payment](rh-whole-child-fractional-payment.md).
+
+## Source regularity does not yet close the iteration
+
+- The actual pair profile uses two different inputs: a negative ratio
+  interval, and bounds for the distant dilation terms. In
+  `MobiusDivisorPrimePairRatioProfile`, its error constant is
+  `2*rho(P)*(3*B(P)+D(P))`; B bounds the old dilation mean and D bounds
+  the inserted-prime renewal remainder. Both precede the helper primes
+  but follow the core. Controlling only the ratio interval's continuity
+  does not remove this second dependency.
+- `DivisorContinuousHeadRegularity` proves L1 and L2 membership separately
+  for each literal finite-core logarithmic source. Its domination constant
+  depends on P. The audited declarations do not provide a bounded joint
+  energy/regularity invariant for the selected growing cores. No such
+  invariant or simultaneous descent was constructed in this attempt.
+- `not_exists_uniform_coreTwo_insert_dilationMean_bound` concerns every
+  single-prime extension of {2}. It does not disprove boundedness along
+  specially selected multi-prime cores; it must not be used to retire that
+  construction. Conversely, the scalar coefficient descent theorem does
+  not establish descent of an additional derivative or tightness budget.
+- [Larrain Silva--Acharya, August 2026](https://arxiv.org/html/2608.02215v1)
+  enforces dissipation by solving for an additive correction to the
+  prescribed evolution (equations 8--11). No realization of that free
+  correction by actual prime insertions has been proved. It supplies no
+  arithmetic payment used here.
+- No new source theorem, paid extension, or completed-action bound results.
+  The failure is an unconstructed joint source invariant, not evidence
+  against RH. The next constructive question is a finite helper-batch
+  payment with its full inter-pair covariance retained; a regularity
+  receiver alone would merely add another unproved premise.
+
+## Finite-batch audit: original signs versus evolving source
+
+- `MobiusDivisorAllOrderBooleanSign` already proves every original-core
+  Boolean energy jet has its forced sign. Its changing-core theorem needs
+  a late-prime core with nonnegative residual head. Extending the original
+  sign law to an arbitrary processed core is not a proved batch payment.
+- `MobiusDivisorThirdEnergyInteraction` retains the joint triple fibre;
+  `MobiusDivisorSmallCoreInteractions` removes that dependence only under
+  the actual joint-product cutoff condition. The latter's fixed-depth
+  bound still contains `4^L`. No depth-uniform signed batch bound was
+  obtained from these identities.
+- `MobiusDivisorBernoulliPrimeEnergy` already identifies uniform subset
+  averaging with the symmetric-difference kernel and its actual
+  half-weighted arithmetic mean. It proves a lower bound on averaged
+  energy from that mean, not the upper bound needed for payment. No
+  fractional arithmetic mean meeting the full payment budget was
+  constructed. A new Boolean averaging identity would not fix this gap.
+- The proposed continuous-density helper mean cannot invoke
+  `divisorCoreMellin_half_eq_zero` as convergence of an improper physical
+  integral at the half-line: `MobiusDivisorFiniteDepthPrimeCancellation`
+  uses convergence for exponents strictly above one half and a boundary
+  limit. A prime-sum approximation would also need a quantitative moving
+  endpoint remainder. Neither missing input was supplied here.
+- This batch attempt produced no new mathematical theorem. Paid exhaustive
+  continuation and the original action bound remain open; no route was
+  falsified or retired. The remaining constructive target is the actual
+  weighted helper mean together with its complete variance and mixed
+  products, not another sign or averaging receiver.

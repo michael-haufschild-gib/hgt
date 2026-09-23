@@ -73,3 +73,43 @@
   null flag `(0,0,-1,0)`. This gives a canonical singular terminal boundary despite the forced
   connection height tending to `-∞`. Its limit carries no signed prime-power history by itself;
   the ordered two-Julia graph pairing and its cofinal signed control remain open.
+- New, Lean-checked: across any interval `m<n` with no intermediate prime-power atom,
+  equal matched--quantile displacement forces the exact resonance
+  `4(n-m)=(c_m+w_m/2)(w_m+w_n)`, where `c_m` is the literal matched centroid and
+  `w_j=Λ(j)/sqrt(j)`. For prime endpoints `p<q`, the same resonance gives
+  `q-p ≤ log p + (log p)^2/(2p)` once `p≥exp(2)`, and
+  `log p-(q-p) ≤ log p*(q-p)/(4p)` without that cutoff. These are source-specific
+  necessary conditions for an active displacement level set, not RH or a cofinal signed bound.
+- Paper argument, Lean-open: the two bounds above and `log p≤p` force
+  `|(q-p)-log p|≤(log p)^2/(2p)` for resonant consecutive active primes.
+  On `[X,2X]`, their integer gap takes only `O(1)` values; for each value,
+  `p` lies in an `O(log² X)` interval around its exponential. Thus there are
+  `O(log² X)` resonant prime--prime active edges. Proper prime powers in the
+  block number `O(sqrt X log X)`, while PNT gives `≫X/log X` primes. Path-run
+  counting therefore yields `≫X/log X` noncoherent prime vertices and
+  `≫sqrt X` completed-source mismatch mass. By the already Lean-proved base-edge
+  envelope, the effective-resistance wall diverges. The quantitative counting,
+  prime-density link, and resulting no-go are not yet formalized; do not mark
+  the subroute retired before those Lean proofs are closed.
+- New, Lean-checked: the exact resonant adjacent-prime gap satisfies
+  `|(q-p)-log p|≤(log p)^2/(2p)` once `p≥exp 2`. The correction tends to zero.
+  Since odd primes have even integer gaps, no equal-displacement adjacent
+  odd-prime active pair can start in the logarithmic band
+  `2t+1≤log p≤2t+1+1/4` when that correction is below `1/4`.
+  The corresponding exponential-window theorem is also Lean-checked.
+- Corpus correction: `RHTower.tendsto_primeCounting_ratio` proves the
+  unconditional prime-counting asymptotic, contrary to the stale comment in
+  `PrimeMassWindow.lean`. Thus odd-centered multiplicative windows have
+  abundant primes; no new PNT infrastructure is needed. This offers a
+  simpler parity-window route to effective-resistance divergence than
+  counting all near-integer resonances in dyadic blocks. The bridge from
+  prime density through proper-power separators to actual mismatch mass,
+  and its cofinal divergence, remain Lean-open. None of this supplies the
+  signed CCM-FU source bound or RH.
+- New, Lean-checked finite active-path law: if no adjacent prime-labeled
+  vertices are both coherent, then
+  `primeCount ≤ 2*mismatchCount + nonprimeCount + 1`.
+  The proof uses literal adjacency, not a probabilistic independence
+  heuristic. Specialization to the ordered actual prime-power path in the
+  odd-centered windows is still open, as are quantitative prime/proper-power
+  counts in that path.
