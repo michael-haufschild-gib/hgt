@@ -1,5 +1,16 @@
 import GaloisForLFunctions.RHTower.PrimeArchCentralPairedFourthTraceBand
 
+/-!
+# Exact Route-Q atomwise phase resonance classification
+
+A line-conjugate reciprocal-square pair has nonnegative upper-quadrant phase when its
+Xi zero lies on the critical line.  Conversely, each off-line zero copy has an
+upper-strip point avoiding both pair poles where that literal pair has negative imaginary response.
+The proof uses the order-23 source sector ratio, the exact paired denominator, and a
+small transverse perturbation of its real resonance.  This classifies the atomwise
+all-strip sign; it does not bound the complete signed trace or prove RH.
+-/
+
 open Complex Filter Topology
 
 namespace RHTower
@@ -76,15 +87,14 @@ private theorem paired_response_negative_near_resonance (lam : ℂ)
     have hmul : (1 / lam.re) * -lam.im = 0 := by linarith only [hi]
     exact hb (neg_eq_zero.mp ((mul_eq_zero.mp hmul).resolve_left ha0))
   have hzcont : Continuous z := by
-    dsimp [z]
-    fun_prop
+    exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
   have hbarcont : ContinuousAt (fun y : ℝ => pairedBarrier (z y ^ (2 : ℕ)) lam) 0 :=
     ((pairedBarrier_continuous lam).comp (hzcont.pow 2)).continuousAt
   have hdencont : ContinuousAt (fun y : ℝ => 1 - z y ^ (2 : ℕ) * lam) 0 := by
-    fun_prop
+    exact (continuous_const.sub ((hzcont.pow 2).mul continuous_const)).continuousAt
   have hdenconjcont : ContinuousAt
       (fun y : ℝ => 1 - z y ^ (2 : ℕ) * (starRingEnd ℂ) lam) 0 := by
-    fun_prop
+    exact (continuous_const.sub ((hzcont.pow 2).mul continuous_const)).continuousAt
   have hev : ∀ᶠ y : ℝ in 𝓝 0,
       pairedBarrier (z y ^ (2 : ℕ)) lam < 0 ∧
       1 - z y ^ (2 : ℕ) * lam ≠ 0 ∧
@@ -103,8 +113,10 @@ private theorem paired_response_negative_near_resonance (lam : ℂ)
   obtain ⟨hbar, hden, hdenconj⟩ := hnear hydist
   have hzre : (z y).re = x := by simp [z]
   have hzim : (z y).im = y := by simp [z]
-  refine ⟨z y, hzre ▸ hxpos, hzim ▸ hypos, hzim ▸ hyhalf,
-    hden, hdenconj, ?_⟩
+  refine ⟨z y, ?_, ?_, ?_, hden, hdenconj, ?_⟩
+  · simpa only [hzre] using hxpos
+  · simpa only [hzim] using hypos
+  · simpa only [hzim] using hyhalf
   have hwim : 0 < (z y ^ (2 : ℕ)).im := by
     rw [pow_two, Complex.mul_im, hzre, hzim]
     nlinarith [mul_pos hxpos hypos]
@@ -120,6 +132,86 @@ private theorem paired_response_negative_near_resonance (lam : ℂ)
       Complex.normSq (1 - z y ^ (2 : ℕ) * (starRingEnd ℂ) lam)) < 0
   exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by positivity) hbar)
     (mul_pos hdenpos hdenconjpos)
+
+private theorem paired_response_nonneg_of_real_parameter
+    (lam z : ℂ) (hb : lam.im = 0)
+    (hzre : 0 < z.re) (hzim : 0 < z.im)
+    (hden : 1 - z ^ (2 : ℕ) * lam ≠ 0)
+    (hdenconj : 1 - z ^ (2 : ℕ) * (starRingEnd ℂ) lam ≠ 0) :
+    0 ≤ (lam / (1 - z ^ (2 : ℕ) * lam) +
+      (starRingEnd ℂ) lam /
+        (1 - z ^ (2 : ℕ) * (starRingEnd ℂ) lam)).im := by
+  have hwim : 0 ≤ (z ^ (2 : ℕ)).im := by
+    rw [pow_two, Complex.mul_im]
+    nlinarith [mul_pos hzre hzim]
+  have hbar : 0 ≤ pairedBarrier (z ^ (2 : ℕ)) lam := by
+    unfold pairedBarrier
+    rw [hb]
+    simp only [show (0 : ℝ) ^ (2 : ℕ) = 0 by ring,
+      mul_zero, add_zero, sub_zero]
+    apply mul_nonneg (Complex.normSq_nonneg _)
+    exact add_nonneg (sq_nonneg _)
+      (mul_nonneg (sq_nonneg _) (Complex.normSq_nonneg _))
+  exact centralPaired_lineConj_pair_im_nonneg_of_barrier
+    (z ^ (2 : ℕ)) lam hden hdenconj hwim hbar
+
+private theorem xiZeroCopyReciprocalSquare_im_ne_zero_of_offLine
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
+    (xiZeroCopyReciprocalSquare q).im ≠ 0 := by
+  rw [xiZeroCopyReciprocalSquare_im_formula]
+  have hd : (q.1 : ℂ).re - 1 / 2 ≠ 0 := sub_ne_zero.mpr hoff
+  have ht : (q.1 : ℂ).im ≠ 0 := xi_divisor_support_im_ne_zero q.1
+  have hD : 0 <
+      (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) +
+        (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    have ht2 : 0 < (q.1 : ℂ).im ^ (2 : ℕ) := sq_pos_of_ne_zero ht
+    nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
+  exact div_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num) hd) ht) hD.ne'
+
+theorem xiZeroCopy_offLine_iff_exists_negative_lineConj_pair_phase
+    (q : XiZeroCopy) :
+    ((q.1 : ℂ).re ≠ 1 / 2) ↔
+      ∃ z : ℂ, 0 < z.re ∧ 0 < z.im ∧ z.im < 1 / 2 ∧
+        1 - z ^ (2 : ℕ) * xiZeroCopyReciprocalSquare q ≠ 0 ∧
+        1 - z ^ (2 : ℕ) *
+          xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) ≠ 0 ∧
+        (xiReciprocalSquareResolventTerm z q +
+          xiReciprocalSquareResolventTerm z (xiZeroCopyLineConjEquiv q)).im < 0 := by
+  constructor
+  · intro hoff
+    let lam := xiZeroCopyReciprocalSquare q
+    have ha : 0 < lam.re := by
+      simpa only [lam, xiThermalNode] using xiThermalNode_pos q
+    have hb : lam.im ≠ 0 := by
+      simpa only [lam] using xiZeroCopyReciprocalSquare_im_ne_zero_of_offLine q hoff
+    have hphase : lam.im ^ (2 : ℕ) < lam.re ^ (2 : ℕ) := by
+      have hr := xiZeroCopyReciprocalSquare_orderTwentyThree_orientation_sq_lt q hoff
+      have ha2 : 0 < lam.re ^ (2 : ℕ) := sq_pos_of_pos ha
+      change lam.im ^ (2 : ℕ) < (1 / 215 : ℝ) * lam.re ^ (2 : ℕ) at hr
+      nlinarith [hr, ha2]
+    obtain ⟨z, hzre, hzim, hzimUpper, hden, hdenconj, hneg⟩ :=
+      paired_response_negative_near_resonance lam ha hb hphase
+    refine ⟨z, hzre, hzim, hzimUpper, hden, ?_, ?_⟩
+    · simpa only [lam, centralPaired_lineConj_reciprocalSquare] using hdenconj
+    · simpa only [xiReciprocalSquareResolventTerm,
+        centralPaired_lineConj_reciprocalSquare, lam] using hneg
+  · rintro ⟨z, hzre, hzim, _hzimUpper, hden, hdenconj, hneg⟩
+    intro hline
+    let lam := xiZeroCopyReciprocalSquare q
+    have hb : lam.im = 0 := by
+      dsimp only [lam]
+      rw [xiZeroCopyReciprocalSquare_im_formula, hline]
+      ring
+    have hnonneg := paired_response_nonneg_of_real_parameter lam z hb
+      hzre hzim hden
+      (by simpa only [lam, centralPaired_lineConj_reciprocalSquare] using hdenconj)
+    have hneg' :
+        (lam / (1 - z ^ (2 : ℕ) * lam) +
+          (starRingEnd ℂ) lam /
+            (1 - z ^ (2 : ℕ) * (starRingEnd ℂ) lam)).im < 0 := by
+      simpa only [xiReciprocalSquareResolventTerm,
+        centralPaired_lineConj_reciprocalSquare, lam] using hneg
+    exact (not_lt_of_ge hnonneg) hneg'
 
 end
 end RHTower

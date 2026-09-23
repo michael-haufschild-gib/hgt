@@ -53,6 +53,81 @@ For every integer `H>=0` and `K>=1`,
 
 where `D^c_(r,K)=sum_n mu(n)^2 H^c_(r,K)(n,n)`. Indeed at each time put `a_n(t)=|mu(n)|n^(-r)exp(-2t/n)` and apply `a_m a_n <= (a_m^2+a_n^2)/2`; each index occurs in at most `H` pairs on each side. Integrate and use the diagonal estimate. At order three, shifts `H<= (log(2K))^A` cost at most the proposed polylog budget. Thus the unproved part of the order-three bound concerns long-range signed correlations, not fixed-shift Chowla estimates.
 
+## Exact reciprocal/original source isometry and sharpened target
+
+Let `Phi(x)=sum_(n>=1) mu(n) exp(-nx)` be the original Möbius--Laplace source. For every real `R>2`, absolute Fubini on the double series gives the **source-specific exact identity**
+
+```
+integral_0^infinity x^(R-1) Phi(x)^2 dx
+  = 2^R integral_0^infinity t^(R-1) T_R(t)^2 dt
+  = Gamma(R) sum_(m,n>=1) mu(m)mu(n)/(m+n)^R.       (6)
+```
+
+The double series converges absolutely because `sum_(m,n) (m+n)^(-R)<infinity` for `R>2`. For the reciprocal integral, the `(m,n)` atom equals
+
+```
+(mn)^(-R) * Gamma(R) * [2(1/m+1/n)]^(-R)
+  = 2^(-R) Gamma(R)/(m+n)^R.
+```
+
+Thus the transform preserves the *signed* additive covariance exactly; it does not lose it to absolute values. At `R=3`, `integral x^2 Phi(x)^2 dx = 8 integral t^2 T_3(t)^2 dt`. Both sides are finite unconditionally. This global energy alone only yields `A_3(K)=O(K^(-2))`; it is not the required one-power arithmetic gain.
+
+The precise strengthening is a near-endpoint positive moment. Dyadic decomposition and positivity show that the order-three target for every `eta>0` is **equivalent** to
+
+```
+integral_1^infinity t^(4-delta) T_3(t)^2 dt < infinity
+  for every delta>0.                                  (7)
+```
+
+Indeed (7) bounds each `A_3(K)` by `K^(-4+delta)`; conversely, on dyadic blocks use the target with `eta<delta` and sum the resulting geometric series. Hence the next source argument may aim at a fractional moment of the exact isometry, but must prove new signed cancellation: (6) itself controls only weight `t^2`.
+
+For a finite cutoff `N`, a direct Gamma calculation rewrites the near-endpoint quadratic form without an integral. For `0<delta<5`,
+
+```
+integral_0^infinity t^(4-delta) Q_(3,N)(t)^2 dt
+  = Gamma(5-delta)/2^(5-delta)
+    * sum_(m,n<=N) mu(m)mu(n)
+        (mn)^(2-delta)/(m+n)^(5-delta).               (8)
+```
+
+Equation (8) is positive as a whole despite signed entries. For `0<delta<1`, the absolute kernel sum on comparable-index dyadic blocks has size `N^(1-delta)`; controlling its signed total uniformly as `N→infinity` is the genuine new arithmetic estimate behind (7). The finite `N` identity is unconditional; passing to the infinite weighted moment cannot be inferred from the global isometry.
+
+In particular, a finite **signed quadratic criterion** suffices for RH: for every `0<delta<1`, prove a bound independent of `N` for the double sum on the right of (8). The finite energy is nonnegative, and `Q_(3,N)(t)→T_3(t)` pointwise by absolute convergence. Fatou then yields (7), which gives the order-three block bound, fractional transport, packet energy, and RH. This asks for uniform control of one explicit arithmetic matrix along natural integer sections; no limit interchange or unproved regularity premise is hidden in the implication. Necessity of uniform *sharp-cutoff* energy is not asserted.
+
+### Primitive-ratio localization of the signed obstacle
+
+For `0<delta<1`, put `k_delta(m,n)=(mn)^(2-delta)/(m+n)^(5-delta)` and let `B_delta(N)` denote the double sum in (8), without its positive Gamma factor. Group every off-diagonal pair uniquely as `(m,n)=(da,db)` with `d=gcd(m,n)`, `(a,b)=1`, and `a!=b`. Möbius multiplicativity and squarefreeness give the exact identity
+
+```
+mu(da)mu(db)
+  = 1_((d,ab)=1) mu(d)^2 mu(a)mu(b),
+k_delta(da,db) = d^(-1-delta) k_delta(a,b).
+```
+
+Consequently the **finite** signed form is
+
+```
+B_delta(N)
+  = 2^(-(5-delta)) sum_(d<=N) mu(d)^2 d^(-1-delta)
+    + sum_(a!=b, (a,b)=1, a,b<=N)
+        mu(a)mu(b) k_delta(a,b) W_(delta,N)(a,b),
+W_(delta,N)(a,b)
+  = sum_(d<=N/max(a,b), (d,ab)=1) mu(d)^2 d^(-1-delta).
+                                                               (9)
+```
+
+The inner scale weight is nonnegative and at most `zeta(1+delta)`; **all arithmetic sign cancellation has moved to primitive coprime ratios**. This uses the existing Lean generic gcd reindexing in `Sieve.PrimitiveRatioDecomposition` and Möbius coprime factorization in `Sieve.MoebiusScaledReindex`; their specialization to (9) is a paper proof, not yet a Lean theorem.
+
+Two large sectors of (9) are already uniformly controlled without any cancellation. The diagonal is bounded by `2^(-(5-delta)) zeta(1+delta)`. Divisibility pairs have `a=1` or `b=1`; since `k_delta(1,b)<=b^(-3)`, their total absolute contribution is at most `2 zeta(1+delta) sum_(b>=2)b^(-3)`. More generally, fix `q>(3-delta)/2`; for `a<=b` with `b>=a^q`,
+
+```
+sum_(a>=1) sum_(b>=a^q) k_delta(a,b)
+  <= sum_(a>=1) a^(2-delta) sum_(b>=a^q) b^(-3)
+  <<_q sum_(a>=1) a^(2-delta-2q) < infinity.         (10)
+```
+
+The symmetric far-separated sector obeys the same bound. In particular the **same cutoff `b>=a^(3/2)` works for every `delta>0`**, because (10) then reduces to `sum_a a^(-1-delta)`. The unresolved band can therefore be fixed once and for all as primitive coprime pairs `2<=a<b<a^(3/2)`, together with its transpose. A uniform signed bound for that band for every `delta>0` would establish the finite criterion and RH. Formula (9) keeps the actual Möbius signs and the positive gcd-scale weights; replacing those signs by absolute values on this band loses a power.
+
 ## Finite one-large-prime window at the RH scale
 
 The Gamma transport above works with any fixed `R>r`, so order three is not forced. For each fixed integer `R>=3`, write `T_R=Q_(R,N)+E_(R,N)`, where `Q_(R,N)` sums only `n<=N`. Uniformly in `t>=0`,

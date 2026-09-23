@@ -233,3 +233,41 @@
   `upperHalfPhysicalPrimeWindow_fibre_energy_le` in
   `EulerDeletionUpperHalfPrimePhysicalEnergy.lean`; targeted oleans compile and eight
   capstones audit with only `propext`, `Classical.choice`, `Quot.sound`.
+- The actual selected upper-half block minus its **literal paired-source endpoint**
+  equals the finite prime-packet sum pointwise, before beta integration. Its physical
+  fibre energy is at most `2·N²/clock(l+1)` for `l<N≤2(l+1)`, and tends to zero on
+  every schedule `l+1≤N(l)≤2(l+1)`. This isolates the surviving EDQ upper-half term
+  as the paired-source endpoint against the lower-clock parent and signed innovation;
+  it does not assert that the full drift energy vanishes. Certificate:
+  `EulerDeletionUpperHalfPrimeSourceRemainder.lean` (targeted olean compiled).
+- A **generic high-clock source principle** now controls that endpoint itself. For any
+  real coefficients `|a(n)|≤1`, the physical chronological source layer satisfies
+  `‖historyLayer l (sourceVec a N)‖² ≤ 4N²/(clock(l)+1)`. Proof: predict each residue
+  by its value modulo the lower clock; the predictor lies in the lower history space,
+  each residue error costs only the exact physical tail `1/(clock(l)+1)`, and both
+  projections are contractions. For literal Möbius source, removing its one signed
+  innovation gives `‖historyLayer l (predictableDrift N)‖² ≤
+  (8N²+2)/(clock(l)+1)` when `l<N`. This whole **full drift** layer tends to zero
+  for every schedule `l+1≤N(l)≤2(l+1)`. Certificate:
+  `EulerDeletionHighClockLayerTail.lean`; targeted olean and five-capstone standard-
+  axiom audit passed.
+- The high-clock estimate also sums without separating Möbius signs: for every
+  `K≤N`, `Σ_{K≤l<N}‖historyLayer l (predictableDrift N)‖² ≤
+  (N-K)(8N²+2)/(clock(K)+1)`. Exponential clock growth implies the **entire**
+  upper-half band `N/2≤l<N` tends to zero as `N→∞`; the dyadic statement
+  `Σ_{L≤l<2L}‖historyLayer l (predictableDrift (2L))‖²→0` is separately closed.
+  This is a localisation theorem, not RH: moving lower-clock layers and the
+  fixed-start signed Mertens-window/first-tail energy still require genuinely new
+  arithmetic cancellation, and strong `L²` convergence of the drift is already
+  ruled out. Certificates: `EulerDeletionDyadicHighClockBand.lean` and
+  `EulerDeletionGeneralHighClockBand.lean` (both targeted oleans compiled; five
+  band capstones audit with only `propext`, `Classical.choice`, `Quot.sound`).
+- **Logarithmic EDQ localisation:** set `K(N)=5·(Nat.log2(N+1)+1)`. The exact
+  full-drift chronological energy above this threshold obeys
+  `Σ_{K(N)≤l<N}‖historyLayer l (predictableDrift N)‖² ≤ 110/(N+1)`, hence
+  tends to zero. Proof uses only the generic finite-band bound,
+  `2^K≤(K+1)clock(K)`, and `N+1<2^(log2(N+1)+1)`; it keeps the signed
+  Möbius source intact. The possible unbounded EDQ producer is thereby
+  localised to at most `K(N)=O(log N)` early chronological layers plus base
+  history. This does **not** bound those layers or prove RH. Certificate:
+  `EulerDeletionLogClockLocalization.lean` (scratch and targeted olean compiled).

@@ -3,7 +3,6 @@ import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapCofactorTerm6Fa
 namespace HTGeometry
 
 noncomputable section
-set_option maxHeartbeats 800000
 set_option maxRecDepth 20000
 
 /-- Factorized normal form for adjugate contribution 6 at gap degree 10. -/

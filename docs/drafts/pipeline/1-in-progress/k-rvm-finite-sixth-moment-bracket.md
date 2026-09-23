@@ -143,12 +143,21 @@ E > 0,  F > 0,  9F < E²,  247F² < 243EG,  G² < F³.
 The proof combines a strict reverse-head lower bracket, a strict large-count
 upper bracket, and the continuous residual selector. These inequalities are
 strict at the actual completed source, so its three-moment target has room
-for sufficiently small changes in all three coordinates. The next source
-task is to choose a positive-scale cofinite RVM/cycle reserve with its
-second, fourth, and sixth trace contributions inside that room, then use the
-general carrier theorem on the residual moments. This would extend literal
-K-RVM incidence through order six; it would still not control the full
-moment sequence or Xi divisor.
+for sufficiently small changes in all three coordinates. The next incidence
+task is to bound the cofinite reserve's second, fourth, and sixth trace
+contributions inside that room, then use the general carrier theorem on the
+residual moments. This would extend literal K-RVM incidence through order
+six; it would still not control the full moment sequence or Xi divisor.
+
+`XiPrimeMarkedCofiniteReserveAllPowerSmall.lean` proves the reserve-size
+half of that task. For every `ε>0` and every prescribed prime prefix, some
+later reciprocal-RVM tail plus a **positively scaled** cofinal cycle has
+Hilbert--Schmidt energy below `ε`. The same chosen reserve has
+`hsNormSq(R^(n+1))<ε` for every `n`, since its operator norm is at most its
+Hilbert--Schmidt norm. This uniform bound controls reserve magnitude; it
+does not identify its power traces with the source or prove the residual
+three-moment cone inequalities. Those inequalities and the arbitrary finite
+prime-diagonal head are the next exact-incidence steps.
 
 Even an exact finite sixth-moment match would leave the full moment sequence,
 cofinite reserve, Xi divisor identity, and RH open.

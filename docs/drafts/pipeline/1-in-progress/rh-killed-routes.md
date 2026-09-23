@@ -2,7 +2,7 @@
 
 [Current ledger](rh-current-frontier-map.md) · [Full source reference](rh-frontier-reference-2026-09-12.md#source-line-2865)
 
-**399 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
+**406 named mechanisms.** This catalogue retains every no-go entry from the frozen ledger
 and adds source-backed obstructions, grouped for lookup. Each entry separates the closed
 result from its strongest survivor and remaining problem. Grouping is navigational;
 it does not assert mathematical independence.
@@ -11,26 +11,25 @@ it does not assert mathematical independence.
 **equivalent to an RH premise rather than an independent producer**. Read the exact result;
 these are not interchangeable claims. A killed subroute does not retire its parent route.
 
-Source-audit cutoff: **2026-09-21, `327d41990bfaa2f8bd1bd0bfd4bcc0fe80da6f36`**.
+Source-audit cutoff: **2026-09-23, `21b5a4c07f1a541de002475140544ddce30c31fb`**.
 Updated records link directly to committed Lean statements; unchanged records retain their
 historical evidence. No builds or fresh kernel checks were run. Record 350 now has a complete
 committed Rellich/Friedrichs replacement. FD2's full verdict and
 RBH's retired architecture remain accessible from
 the [retired-route overview](rh-current-frontier-map.md#killed-routes-and-subroutes).
-Concurrent uncommitted formal edits, including the Route-P Chebyshev-cofinal leaf, remain pending
-evidence and are not counted.
+Concurrent uncommitted formal edits remain pending evidence and are not counted.
 
 ## Browse by family
 
 | Family | Entries |
 |---|---:|
 | [Retired original route labels](#retired-labels) | 17 |
-| [CCM-FU: prime scheduling and current bounds](#ccm) | 32 |
+| [CCM-FU: prime scheduling and current bounds](#ccm) | 33 |
 | [E, EDQ, HCF, T1/T2 and LI: arithmetic cancellation](#arithmetic) | 51 |
-| [HB, FZZ and PW: scattering and physical action](#scattering) | 79 |
-| [Theta, Schur, spectral and positivity mechanisms](#theta) | 39 |
+| [HB, FZZ and PW: scattering and physical action](#scattering) | 82 |
+| [Theta, Schur, spectral and positivity mechanisms](#theta) | 41 |
 | [Singular descent, formation and completion](#completion) | 29 |
-| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 60 |
+| [Ward, Suzuki, prime–Gamma and operator landing](#ward) | 61 |
 | [Analytic roots, multiplicity and regularization](#roots) | 11 |
 | [Other finite, scalar and source-blind selectors](#other) | 81 |
 
@@ -341,6 +340,7 @@ Source-native aperture invariant is required.
 - [CCM-FU bounded-quotient current-clock repayment](#no-go-377)
 - [CCM-FU scalar graph-energy coercion](#no-go-389)
 - [CCM-FU delayed short-clock-span payment](#no-go-393)
+- [CCM matched-quantile debt-only Cauchy wall](#no-go-400)
 
 <a id="no-go-294"></a>
 
@@ -899,6 +899,22 @@ source terms, moving thresholds and all intervening cutoffs.
 Evidence: [delayed clock-span debt](../../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorDelayedClockSpanDebt.lean), [failed-route card](../5-failed/rh-delayed-short-clock-span-payment.md), [continuation audit](rh-exhaustive-clock-continuation-facts.md).
 
 [Back to family](#ccm) · [Current CCM-FU frontier](rh-current-frontier-map.md#ccm-fu--completed-current-and-fixed-aperture-suzuki-checkpoint)
+
+<a id="no-go-400"></a>
+
+### CCM matched-quantile debt-only Cauchy wall
+
+**Closed result**
+
+For the literal matched-quantile Lorentz graph, the squared edge current factors into displacement debt times a conjugate geometric weight. The finite conjugate geometry diverges cofinally, already from the fixed base edge. A uniform Cauchy estimate treating displacement debt alone as energy therefore cannot bound the actual signed source.
+
+**Survivor / still open**
+
+The exact debt--geometry factorization and fixed-base lower envelope survive. A viable current bound must pay the growing conjugate geometry or exploit signed arithmetic cancellation beyond debt-only Cauchy.
+
+Evidence: [literal debt geometry](../../../../formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantileLorentzDebtGeometry.lean).
+
+[Back to family](#ccm) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
 
 <a id="arithmetic"></a>
 
@@ -1895,6 +1911,9 @@ Evidence: [all-source directed-mean no-go](../../../../formal/GaloisForLFunction
 - [PTR bare-harmonic conormal recovery](#no-go-385)
 - [PTR global-clock, uniform-frame, scalar or positive-metric transfer](#no-go-357)
 - [PTR finite closed Floquet truncation](#no-go-358)
+- [PW-B single cross-metric ordered CTP readout](#no-go-401)
+- [PTR fixed-`k` geometric Maxwell sideband](#no-go-402)
+- [PTR finite-energy bilateral conormal boundary](#no-go-403)
 
 <a id="no-go-299"></a>
 
@@ -3236,6 +3255,54 @@ Evidence: [bare-harmonic no-go](../../../../formal/GaloisForLFunctions/RHTower/P
 
 [Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
 
+<a id="no-go-401"></a>
+
+### PW-B single cross-metric ordered CTP readout
+
+**Closed result**
+
+Leg exchange fixes the entire complementary metric field, so every readout of that field has zero skew part. It cannot reproduce a nonzero ordered full CTP pair in both leg orientations.
+
+**Survivor / still open**
+
+The displayed metric/contact-completed-current pair has even/odd exchange parity. Derive its physical two-field source-contact incidence and the original-cap/lift-defect magnitude law; parity alone is not partner balance.
+
+Evidence: [cross-metric orientation no-go](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsCrossMetricOrientationNoGo.lean), [failed subroute](../5-failed/pwb-cross-metric-order-no-go.md).
+
+[Back to family](#scattering) · [Current PW-B frontier](rh-current-frontier-map.md#pw-b--recoildeninger-ward-transmutation)
+
+<a id="no-go-402"></a>
+
+### PTR fixed-`k` geometric Maxwell sideband
+
+**Closed result**
+
+For nonzero fixed spatial wavenumber and nonzero drive frequency, no nonzero geometric electric-field sequence solves all Floquet coefficient equations of the scalar temporal-Maxwell model. Grades `0,1,2` already force the contradiction.
+
+**Survivor / still open**
+
+The exact required grade-dependent dispersion profile is formal. A full rotating-cylinder multimode operator with moving spatial profiles is not excluded and must be derived with its physical boundary trace.
+
+Evidence: [fixed-`k` theorem](../../../../formal/GaloisForLFunctions/RHTower/PhotonicFixedKGeometricFloquetNoGo.lean), [failed subroute](../5-failed/ptr-fixed-k-geometric-maxwell-no-go.md).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
+<a id="no-go-403"></a>
+
+### PTR finite-energy bilateral conormal boundary
+
+**Closed result**
+
+The exact nonzero bilateral geometric prime-conormal sideband is never square-summable over all integer grades. Its two opposite tails cannot both decay, so a finite-energy `ℓ²` boundary output cannot equal it, even on the critical line.
+
+**Survivor / still open**
+
+The ladder is bilateral-moderate exactly on the critical wall. PTR needs a distribution-valued or rigged infinite boundary trace and an independent defect-confinement law.
+
+Evidence: [finite-energy no-go](../../../../formal/GaloisForLFunctions/RHTower/PhotonicConormalFiniteEnergyNoGo.lean), [source card](ptr-conormal-finite-energy-no-go.md).
+
+[Back to family](#scattering) · [Current PTR frontier](rh-current-frontier-map.md#candidate-ptr)
+
 <a id="theta"></a>
 
 ## Theta, Schur, spectral and positivity mechanisms
@@ -4449,12 +4516,14 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [fixed-interior Ward majorant](#no-go-143)
 - [fixed-rank positive Suzuki/Ward resolution](#no-go-067)
 - [G finite zero-mass width high-pass](#no-go-071)
+- [Ward baseline-cancelling nonnegative cross kernel](#no-go-404)
 - [G-CE finite local analytic annihilator or fixed ceiling](#no-go-158)
 - [G-CE real-reflection cancellation](#no-go-309)
 - [growing-rank positive Cartan fission as Suzuki/Ward producer](#no-go-087)
 - [higher fixed Suzuki contact as RH endpoint](#no-go-133)
 - [MSC ordinary/stable Hilbert and fixed-rigging transport](#no-go-076)
 - [P ordinary physical scalar depth completion](#no-go-050)
+- [P/SP-E transport-credit-only matched history](#no-go-405)
 - [positive same-phase shared-plane Suzuki fusion](#no-go-258)
 - [Route-P direct determinant and scalar/Rees/cubic matching](#no-go-245)
 - [Route-P matrix-complete subquantum repair](#no-go-074)
@@ -4466,6 +4535,7 @@ Evidence: [singular rescaling no-go](../../../../formal/GaloisForLFunctions/RHTo
 - [Suzuki divisor-blind cross-sewn holomorphic regularization](#no-go-089)
 - [Suzuki fixed-scale dressed transition-core producer](#no-go-129)
 - [Suzuki torque-only second-jet selector](#no-go-282)
+- [SV2 finite Schur anchor-jet identification](#no-go-406)
 - [Suzuki wall-light finite-linear compression](#no-go-078)
 - [unrenormalized Suzuki Ward energy](#no-go-259)
 - [Suzuki odd-phase diagonal quadratic readout](#no-go-292)
@@ -5537,6 +5607,54 @@ one-sided parameter and uniform cofinal integrability; symmetric smoothing is te
 Evidence: [cap-odd no-go](../../../../formal/GaloisForLFunctions/RHTower/XiWardSchwarzCapTauOddNoGo.lean), [fact audit](g-own-research-facts.md).
 
 [Back to family](#ward) · [Current G frontier](rh-current-frontier-map.md#g--ward-orientation)
+
+<a id="no-go-404"></a>
+
+### Ward baseline-cancelling nonnegative cross kernel
+
+**Closed result**
+
+For every finite Laplace-mixture weight, the full spatial cross-kernel mass is `2πW(0)`, independent of advance or widths. If `W(0)=0`, a nonnegative cross kernel is identically zero; any nonzero one takes negative values. Window mass is bounded by the positive coefficient budget, so width design cannot buy global diagonal domination while cancelling the baseline.
+
+**Survivor / still open**
+
+The two-width kernel is nonnegative on ordinate clusters within its exact radius `sqrt(β₀β₁)`; gapped-cluster estimates survive. A global density/annulus estimate needs source-faithful trace/randomization or a different weight class.
+
+Evidence: [mass rigidity](../../../../formal/GaloisForLFunctions/RHTower/WardAnnulusCrossKernelMassRigidity.lean), [window mass](../../../../formal/GaloisForLFunctions/RHTower/WardAnnulusCrossKernelWindowMass.lean), [budget ceiling](../../../../formal/GaloisForLFunctions/RHTower/WardAnnulusCrossKernelBudgetCeiling.lean), [75% target](zeta23-beyond-bandwidth-one-proportion.md).
+
+[Back to family](#ward) · [Current G frontier](rh-current-frontier-map.md#g--ward-orientation)
+
+<a id="no-go-405"></a>
+
+### P/SP-E transport-credit-only matched history
+
+**Closed result**
+
+The matched-quantile normalized history minus its exact weighted Chebyshev credit tends to `−∞`; by the source identity, the normalized history plus twice the completed transport does too. The credit or transport term alone cannot pay the literal centroid/square debts.
+
+**Survivor / still open**
+
+An exact arithmetic-null decomposition and unit-Riesz renewal representation remain. Prove a genuinely new signed source payment on the physical diagonal and a faithful ordered-history graph intertwiner.
+
+Evidence: [credit escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePWeightedCreditEscape.lean), [transport escape](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePTransportHistoryEscape.lean), [unit-Riesz bridge](../../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePUnitRieszRenewalBridge.lean).
+
+[Back to family](#ward) · [Current P/SP-E frontier](rh-current-frontier-map.md#p--paired-primegamma-signed-exterior-wall)
+
+<a id="no-go-406"></a>
+
+### SV2 finite Schur anchor-jet identification
+
+**Closed result**
+
+For every finite anchor-jet order, distinct strict disk Schur carriers have the same derivatives through that order, even with nonzero first derivative. Finite source-jet calibration plus strict Schur control cannot identify the global Suzuki carrier.
+
+**Survivor / still open**
+
+Use a global shell--metric Wronskian or another source-faithful all-prime law to control the moving infinite-head residual. Local jets remain valid checks, not a uniqueness theorem.
+
+Evidence: [finite-jet no-go](../../../../formal/GaloisForLFunctions/RHTower/SuzukiFiniteJetGlobalIdentificationNoGo.lean).
+
+[Back to family](#ward) · [Current SV2 frontier](rh-current-frontier-map.md#sv2--suzuki-projective-limit-and-shifted-kernel-inertia)
 
 <a id="roots"></a>
 

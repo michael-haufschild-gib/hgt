@@ -66,3 +66,24 @@
   linked but have an unbounded negative geometric mismatch. A cofinal ordered
   graph action must carry that mismatch plus the independent terminal
   connection; this result does not construct it or settle RH.
+- The literal source transform on `Re z>1/2` equals
+  `F(z)=(-(logDeriv zetaResidueUnit (z+1/2)+1)/(z+1/2)-2/3)/(z+1)`.
+  This follows algebraically from the corpus's already-proved complex defect
+  weld, without a new analytic premise. Hardy's theorem supplies a positive
+  critical-line ordinate where `F` is not even continuous, by transferring the
+  nonzero boost-current residue through the exact factorization.
+  Lean: `SPEQuantileRieszRoutePSourceSpectralPole.lean`; axiom audit only
+  `[propext, Classical.choice, Quot.sound]`.
+- Whole-route implication: P's signed credit and SP-E's completed transport
+  share a genuine imaginary-axis spectral singularity. Their scalar source
+  cannot be replaced by a globally holomorphic positive proxy. Still open:
+  a Landau proof that this forces cofinal signs of the literal source, transfer
+  to integer apertures, physical diagonal sign, ordered terminal graph.
+- Landau attack insight (not yet Lean-proved): existing low-height theorem
+  `zetaResidueUnit_ne_zero_of_re_pos_abs_im_le_four` makes `F` holomorphic on
+  the closed disk `|z-1|≤5/4`, reaching `Re z=-1/4`. If one source sign is
+  eventual, tilt its nonnegative tail at `Re z=1` and apply the corpus's
+  complex-MGF Landau transfer at radius `5/4` to force integrability at a
+  negative real Laplace parameter. That would contradict the just-proved
+  Hardy-axis pole. The compact initial correction and weighted-holomorphy
+  transfer remain proof obligations.
