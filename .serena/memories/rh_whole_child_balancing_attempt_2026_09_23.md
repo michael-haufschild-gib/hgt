@@ -1,0 +1,13 @@
+# Whole-child balancing attempt: no paid continuation
+
+Owner critical-clock product task. Main goal paid exhaustive continuation -> bounded critical action -> RH remains active/open. No new payment theorem, no RH proof, no new source Lean module this turn. Prior moving-clock debt producers are verified, preserved and wired in current tree.
+
+Rechecked current frontier and actual source signatures. Four deep searches (cumulative, whole-corpus methods, vector rounding, actual Mobius batches) returned candidates/source arguments with incomplete inventory: 5044 pending/stale files, so absence is not evidence. All search handles exited. Source checks include MobiusDivisorFiniteDepthPrimeCancellation, SmallCoreInteractions, CurrentClockPayment, FixedCoreProfile, BernoulliPrimeEnergy, and full bounded-Abel criterion.
+
+Attempt: balance the entire actual child vector using many helpers. Exact missing input: finite-child inward theorem chooses margin/collar/onset AFTER FIXING I. Taking I as the complete current child field exchanges quantifiers; fixing smaller I leaves newly active coordinates unbounded. Generic signing supplies error around a chosen mean, but neither the mean nor a complete weighted fractional payment has been constructed from the source. Overlapping helper products remain, beyond the product>=cutoff regime of SmallCoreInteractions. Do not promote a fractional-control premise as paid continuation.
+
+Broad current arXiv search found Guo-Fang-Lu Vector Balancing via Directional Total Variation, arxiv:2609.11189, Sept10 2026, and Greedy Vector Balancing arxiv:2606.17991. Opened primary sources. First claims dimension-free endpoint signing but explicitly no prefix guarantee; it is not an arithmetic feasibility theorem. No external theorem assumed in Lean.
+
+Checked only a scratch algebra diagnostic: with parent a, child b, weights w,w+ell and selection t, expected Boolean energy minus relaxed fractional energy = t*(1-t)*w*b^2. Both forms passed lake env lean /tmp/hgt-paid-rounding-diagnostic.lean, no warnings. Scratch removed. No numeric experiment, no full/umbrella build, no promoted generic receiver. All owned processes exited; logs /tmp/hgt-paid-* remain. This does not count as a new source payment result.
+
+Own card docs/drafts/pipeline/1-in-progress/rh-whole-child-fractional-payment.md; own fact log rh-exhaustive-clock-continuation-facts.md. Next work must CONSTRUCT full fractional source payment with copied squares and all active children, then cover rounding and original cutoffs. Do not spend another turn formalizing generic vector-balancing plumbing or another short-window obstruction. Current concurrent modifications to other modules/logs are not ours; preserve them.

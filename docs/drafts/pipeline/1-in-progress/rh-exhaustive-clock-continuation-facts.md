@@ -581,3 +581,40 @@ will not establish that missing estimate.
 - Corpus index refresh passed. All owned Lean/build/search/lint/index
   processes exited. Scratch proof and fragments were removed after
   promotion; audit logs remain under `/tmp/hgt-moving-clock*`.
+
+## Whole-child balancing: unresolved source feasibility
+
+- `eventually_exists_mobiusDivisorFiniteDepth_uniform_prime_collar` fixes
+  the child field I before choosing its inward margin, cutoff collar and
+  eventual onset. Applying it with the complete field at the running
+  cutoff would exchange these quantifiers. A smaller fixed I leaves new
+  receiving coordinates outside the controlled inner product. The full
+  weighted insertion identity still contains those coordinates.
+- Boolean selection and fractional merger have different squared
+  energies. For parent a, copied child b, receiving weight w, copied
+  weight w+ell and selection fraction t, their exact difference is
+  `t*(1-t)*w*b^2`. Keeping the full copied logarithmic weight does not
+  erase this variance. This scalar diagnostic alone does not account for
+  overlapping helper products or construct an arithmetic target.
+- A signing theorem controls deviation from a supplied fractional mean;
+  interpreting its signs as prime inclusion/exclusion does not bound that
+  mean. No complete weighted fractional source payment has been produced.
+  [Guo--Fang--Lu, September 2026](https://arxiv.org/html/2609.11189v1)
+  explicitly gives endpoint signing without a prefix bound. No theorem
+  from the paper is imported or assumed in Lean.
+- Whole-route consequence: sharper generic rounding cannot supply the
+  missing arithmetic mean or exchange the fixed-field quantifiers. The
+  open construction must establish full fractional payment, including
+  copied squares and all active children, before its Boolean rounding and
+  original-wall completion. This attempt supplies no new payment theorem.
+- Current retrieval had incomplete/stale inventory (5,044 pending files
+  in the reported snapshot). Four deep searches were inspected with their
+  candidate lemmas and source arguments; relevant signatures were checked
+  directly in current source. Missing search hits are not mathematical
+  evidence of impossibility.
+
+- The two weighted variance identities passed `lake env lean` in scratch
+  without warnings. No source module was added; the identities are not
+  claimed as new payment knowledge. All owned search and Lean processes
+  exited, and the scratch file was removed. The unresolved attempt is
+  recorded in [whole-child fractional payment](rh-whole-child-fractional-payment.md).

@@ -130,3 +130,11 @@
   aperture exactly above the first cell.  Thus T1's remote complement must cancel an explicitly
   unbounded literal source subpacket; it cannot dismiss the aperture as an external asymptotic
   proxy.  Formal certificate: `XiMassCriticalDyadicApertureLiteral.lean`.
+- The divergent literal packet has the prime-number-theorem bulk profile
+  `2(√2−1)√X · massBesselLeading` with relative error tending to zero.  Its growth alone is
+  therefore not evidence that the centered arithmetic fluctuation grows.  Along the same ray,
+  the dyadic index set lies inside every cone with `d>1/2` cofinally.  Both the prime cone and
+  the RH-equivalent centered `(Λ−1)` cone split exactly into this packet and disjoint remaining
+  labels.  The T1 estimate that matters is signed nonlocal cancellation of the centered pieces;
+  no bound on either centered piece follows from the positive packet asymptotic.  Formal
+  certificate: `XiMassCriticalDyadicApertureLiteral.lean`.

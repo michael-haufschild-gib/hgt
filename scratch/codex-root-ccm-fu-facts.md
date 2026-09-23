@@ -68,3 +68,8 @@
   debt as one entire positive factor can close Route O/CCM-FU. The surviving requirement is a
   genuinely signed, all-history prime-power admission mechanism; neither raw resistance nor
   debt-positive factorization can supply it.
+- New, Lean-checked: the Route-P terminal parabolic orbit, normalized by the reciprocal of
+  `4 * actual prime-power mass * (sqrt(K+3)-1)`, converges in `Fin 4 → ℝ` to the fixed vertical
+  null flag `(0,0,-1,0)`. This gives a canonical singular terminal boundary despite the forced
+  connection height tending to `-∞`. Its limit carries no signed prime-power history by itself;
+  the ordered two-Julia graph pairing and its cofinal signed control remain open.
